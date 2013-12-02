@@ -18,8 +18,6 @@
  */
 package io.vertigo.kernel.util;
 
-import io.vertigo.kernel.util.StringUtil;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -151,10 +149,10 @@ public final class StringUtilTest {
 
 	@Test
 	public void testNoSimpleLetter() {
-		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('ï¿½'));
-		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('ï¿½'));
-		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('ï¿½'));
-		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('ï¿½'));
+		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('é'));
+		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('à'));
+		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('ù'));
+		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('â'));
 		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('"'));
 		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('+'));
 		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('-'));
