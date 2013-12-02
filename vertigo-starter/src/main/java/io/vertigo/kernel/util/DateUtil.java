@@ -1,0 +1,121 @@
+/**
+ * vertigo - simple java starter
+ *
+ * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.vertigo.kernel.util;
+
+import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.lang.DateBuilder;
+
+import java.util.Calendar;
+import java.util.Date;
+
+
+/**
+ * Utilitaire concernant les dates.
+ * 
+ * On distingue deux types de date
+ *  - les dates pr�cises au jour 
+ *  - les dates pr�cises au jour, min, sec (ms)  
+ *  
+ * @author npiedeloup, pchretien 
+ * @version $Id: DateUtil.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
+ */
+public final class DateUtil {
+	private DateUtil() {
+		super();
+	}
+
+	/**
+	 * R�cup�re la date courante (pr�cise au jour).
+	 * @return current day.
+	 */
+	public static Date newDate() {
+		return new DateBuilder(newDateTime()).build();
+	}
+
+	/**
+	 * R�cup�re l'instant courant (avec heures, minutes, secondes, millisecondes).
+	 * @return current day.
+	 */
+	public static Date newDateTime() {
+		return new Date();
+	}
+
+	/**
+	 * Calcule le nombre de jours entre deux dates.
+	 * 
+	 * @param startDate Date de d�but
+	 * @param endDate Date de fin
+	 * @return Nombre de jours
+	 */
+	public static int daysBetween(final Date startDate, final Date endDate) {
+		Assertion.checkNotNull(startDate);
+		Assertion.checkNotNull(endDate);
+		checkIsDate(startDate);
+		checkIsDate(endDate);
+		//---------------------------------------------------------------------
+		final long diffMillis = endDate.getTime() / (24 * 60 * 60 * 1000L) - startDate.getTime() / (24 * 60 * 60 * 1000L);
+		return (int) diffMillis;
+	}
+
+	/**
+	 * Compare deux Date.
+	 * Cette m�thode s'utilise comme firstDate.compareTo(secondDate).
+	 * On peut alors utiliser l'op�rateur que l'on souhaite entre le r�sultat du compareTo et 0.
+	 * Ex: firstDate <= secondDate   eq.  firstDate.compareTo(secondDate) <= 0
+	 *     firstDate > secondDate    eq.  firstDate.compareTo(secondDate) > 0
+	 * @param firstDate Premi�re date
+	 * @param secondDate Deuxi�me date
+	 * @return 0 si �gale, moins de 0 si firstDate < secondDate, et plus de 0 si firstDate > secondDate
+	 */
+	public static int compareDate(final Date firstDate, final Date secondDate) {
+		Assertion.checkNotNull(firstDate);
+		Assertion.checkNotNull(secondDate);
+		checkIsDate(firstDate);
+		checkIsDate(secondDate);
+		//---------------------------------------------------------------------
+		return firstDate.compareTo(secondDate);
+	}
+
+	/**
+	 * Compare deux dateTime.
+	 * Cette m�thode s'utilise comme firstDate.compareTo(secondDate).
+	 * On peut alors utiliser l'op�rateur que l'on souhaite entre le r�sultat du compareTo et 0.
+	 * Ex: firstDate <= secondDate   eq.  firstDate.compareTo(secondDate) <= 0
+	 *     firstDate > secondDate    eq.  firstDate.compareTo(secondDate) > 0
+	 * @param firstDateTime Premi�re dateTime
+	 * @param secondDateTime Deuxi�me dateTime
+	 * @return 0 si �gale, moins de 0 si firstDate < secondDate, et plus de 0 si firstDate > secondDate
+	 */
+	public static int compareDateTime(final Date firstDateTime, final Date secondDateTime) {
+		Assertion.checkNotNull(firstDateTime);
+		Assertion.checkNotNull(secondDateTime);
+		//---------------------------------------------------------------------
+		return firstDateTime.compareTo(secondDateTime);
+	}
+
+	/**
+	 * V�rification que la date est du type Date(sans notion d'heure, min, sec, milisecondes) 
+	 * @param dateToCheck Date � v�rifier
+	 */
+	private static void checkIsDate(final Date dateToCheck) {
+		final Calendar calendar = Calendar.getInstance();
+		calendar.setTime(dateToCheck);
+		Assertion.checkArgument(calendar.get(Calendar.HOUR_OF_DAY) == 0 && calendar.get(Calendar.MINUTE) == 0 && calendar.get(Calendar.SECOND) == 0 && calendar.get(Calendar.MILLISECOND) == 0, "Cet objet n'est pas une Date mais une DateTime ({0}).", dateToCheck);
+	}
+}
