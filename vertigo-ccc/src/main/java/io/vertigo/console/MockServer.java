@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigoimpl.engines.command.console;
+package io.vertigo.console;
 
 import io.vertigo.kernel.command.VCommand;
 import io.vertigo.kernel.command.VCommandHandler;
@@ -32,11 +32,11 @@ import com.google.gson.GsonBuilder;
  * Mock server to test Console.
  * @author pchretien
  */
-public class CopyOfMockServer2 {
+public class MockServer {
 	private final VServer tcpServer2;
 
 	public static void main(String[] args) {
-		CopyOfMockServer2 server = new CopyOfMockServer2();
+		MockServer server = new MockServer();
 		server.start();
 	}
 
@@ -44,24 +44,25 @@ public class CopyOfMockServer2 {
 		new Thread(tcpServer2).start();
 	}
 
-	private CopyOfMockServer2() {
+	private MockServer() {
 		final Gson gson = new GsonBuilder().create();
 		tcpServer2 = new VServer(new VCommandHandler() {
 			@Override
 			public VResponse onCommand(VCommand command) {
 				switch (command.getName()) {
 					case "help":
-						return VResponse.createResponse(gson.toJson("zzi need somebody"));
+						return VResponse.createResponse(gson.toJson("i need somebody"));
 					case "ping":
-						return VResponse.createResponse(gson.toJson("zzpong"));
+						return VResponse.createResponse(gson.toJson("pong"));
 					case "pong":
-						return VResponse.createResponse(gson.toJson("zzping"));
+						return VResponse.createResponse(gson.toJson("ping"));
 					case "date":
 						return VResponse.createResponse(gson.toJson(new Date()));
 					default:
-						return VResponse.createResponseWithError("zzunknown command:" + command.getName());
+						return VResponse.createResponseWithError("unknown command:" + command.getName());
 				}
 			}
-		}, 4448);
+		}, 4444);
 	}
+
 }

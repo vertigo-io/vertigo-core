@@ -16,20 +16,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigoimpl.engines.command.console;
+package io.vertigo.console;
 
 import io.vertigo.kernel.command.VCommand;
 import io.vertigo.kernel.command.VCommandHandler;
 import io.vertigo.kernel.command.VResponse;
 import io.vertigo.kernel.lang.Activeable;
-import io.vertigoimpl.engines.command.json.JsonAdapater;
+import io.vertigoimpl.engines.command.json.JsonAdapter;
 import io.vertigoimpl.engines.command.tcp.VClient;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public final class VConsoleHandler implements VCommandHandler, Activeable {
-	private final JsonAdapater jsonAdapater = new JsonAdapater();
+	private final JsonAdapter jsonAdapter = new JsonAdapter();
 	private List<VClient> clients = new ArrayList<>();
 
 	VConsoleHandler() {
@@ -61,10 +61,10 @@ public final class VConsoleHandler implements VCommandHandler, Activeable {
 					for (VClient client : clients) {
 						remoteAddresses.add(client.getRemoteAddress());
 					}
-					return VResponse.createResponse(jsonAdapater.toJson(remoteAddresses));
+					return VResponse.createResponse(jsonAdapter.toJson(remoteAddresses));
 				case "$disconnect":
 					stop();
-					return VResponse.createResponse(jsonAdapater.toJson("disconnection OK"));
+					return VResponse.createResponse(jsonAdapter.toJson("disconnection OK"));
 				case "$connect":
 					//					if (client != null) {
 					//						return VResponse.createResponseWithError("you are already connected");
@@ -75,7 +75,7 @@ public final class VConsoleHandler implements VCommandHandler, Activeable {
 
 						VClient client = new VClient(host, port);
 						clients.add(client);
-						return VResponse.createResponse(jsonAdapater.toJson("connection successfull"));
+						return VResponse.createResponse(jsonAdapter.toJson("connection successfull"));
 					} catch (Exception e) {
 						return VResponse.createResponseWithError("connection failed " + e.getMessage());
 					}
@@ -93,7 +93,7 @@ public final class VConsoleHandler implements VCommandHandler, Activeable {
 			for (VClient client : clients) {
 				responses.add(client.onCommand(command));
 			}
-			return VResponse.createResponse(jsonAdapater.toJson(responses));
+			return VResponse.createResponse(jsonAdapter.toJson(responses));
 		}
 	}
 }

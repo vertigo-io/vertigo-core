@@ -34,7 +34,8 @@
   
 	<modules>
 		<module>vertigo-starter</module>
-		<!-- module>vertigo-ccc</module-->
+		<module>vertigo-ccc</module>
+		<module>vertigo-rest</module>
 	</modules>
 	<dependencies>
 		<dependency>

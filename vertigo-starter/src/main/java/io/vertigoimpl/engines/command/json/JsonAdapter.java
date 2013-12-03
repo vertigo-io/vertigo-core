@@ -37,10 +37,10 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-public final class JsonAdapater {
+public final class JsonAdapter {
 	private final Gson gson = createGson();
 
-	public <R> String toJson(R data) {
+	public String toJson(Object data) {
 		return gson.toJson(data);
 	}
 
