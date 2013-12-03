@@ -28,7 +28,7 @@ import io.vertigo.kernel.component.cglib.CGLIBAspectContainerTest;
 import io.vertigo.kernel.di.injector.InjectorTest;
 import io.vertigo.kernel.di.reactor.ReactorTest;
 import io.vertigo.kernel.home.HomeTest;
-import io.vertigo.kernel.home.HomeTest2;
+import io.vertigo.kernel.home.Home2Test;
 import io.vertigo.kernel.lang.AssertionTest;
 import io.vertigo.kernel.util.ClassUtilTest;
 import io.vertigo.kernel.util.DateUtilTest;
@@ -53,7 +53,7 @@ import org.junit.runners.Suite.SuiteClasses;
 //@formatter:off
 	//Kernel
 	HomeTest.class,
-	HomeTest2.class,
+	Home2Test.class,
 	XmlHomeTest.class,
 	XmlComponentsTest.class,
 	InjectorTest.class,
