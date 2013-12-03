@@ -1,0 +1,136 @@
+<!--
+
+    vertigo - simple java starter
+
+    Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+    KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script type="text/javascript" src="http://d3js.org/d3.v3.js"></script>
+		<style type="text/css">
+ 			.box {
+				 background-color:#BBB ;
+				 margin:10px;
+			 }
+			 .layer {
+				 background-color:#FCC ;
+				 padding:10px;
+				 margin:10px;
+			 }
+		</style>
+	</head>
+	<body>
+		<h2>Box</h2>
+		<svg width="500" height="500" id="root"></rect>
+		</svg>
+		 <div id="root2" class=".box"></div>
+	
+		 <div id="root3" class=".box"></div>
+
+		<script type="text/javascript">
+		 //Une boite possède un id
+		 //Une couche contient une liste ordonnée de boites
+	var _rootBox = [
+		{
+			id: "couche1",
+			boxes: [
+				{
+					id: "A",
+					boxes: [
+						{
+							id: "m1",
+							boxes: [
+								{
+									id: "c11"
+								}
+							]
+						}, 
+						{
+							id: "m2",
+							boxes: [
+								{
+									id: "c21",
+								}, 
+								{
+									id: "c22"
+								}
+							]
+						}
+					]
+				}
+			]
+		}, 
+		{
+			id: "couche2"
+		}
+	];
+	 //Draw a node of the tree.
+
+function drawBox(svg, id) {
+	svg
+		.append("rect")
+			.attr('class', 'box')
+			.attr('x', 0)
+			.attr('y', 0)
+			.attr('width', 50)
+			.attr('height', 20)
+			.attr('id', id)
+			.style("stroke", "#ccc")
+			.text(id);
+}
+ //Parse the datas. And draw the ids level.
+
+function parseData(boxes, parentId) {
+	for (prop in boxes) {
+		var box = boxes[prop];
+		drawBox(d3.select("#" + parentId).append ("svg"), box.id);
+		if (box.boxes) {
+			parseData(box.boxes, box.id)
+		}
+	}
+}
+ //First call with the data and the root container.
+parseData(_rootBox, 'root');
+
+
+
+		function boxChart(selection){
+			//affichage d'une box
+			selection
+				.enter()
+				.append("div")
+					.attr('class', 'box')
+					.text(function(d) { return d.id; })
+						//Couche du composant
+						//ppend ("div")
+						//attr('class', 'layer')
+	  				  		.selectAll(".box")
+							.data(function(d) { if (d.boxes) return d.boxes; else return new Array; })
+								.call(boxChart);
+					 //pour chaque boite on ajoutes ls couches
+		}
+
+
+
+	/*	d3.select("#root2")
+			.selectAll(".box").data(_rootBox).call(boxChart);*/
+		</script>
+	</body>
+
+</html>

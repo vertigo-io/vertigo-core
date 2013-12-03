@@ -1,0 +1,166 @@
+<!--
+
+    vertigo - simple java starter
+
+    Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+    KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script type="text/javascript" src="http://d3js.org/d3.v3.js"></script>
+		<style type="text/css">
+			body {
+				background-color:#111;
+			}
+
+			.module {
+				margin:5px;
+				background-color:#fff;
+			}
+
+			.component {
+				margin:5px;
+				/*padding:5px;*/
+				background-color:#aaa ;
+				width:160px;
+				height:50px;
+				display:inline-block;
+			}
+		</style>
+	</head>
+
+	<body>
+			Liste des modules
+	</body>
+		<script type="text/javascript">
+
+		var _box ={
+			layers : [
+				{"A", "B", "C"}, 
+				{"D", "E", "F"} 
+			];
+
+			dependencies : [
+			{from:"A" , to:"B"} // A depends on B
+		];
+		};
+/*		var _dependencies = [
+			{from:"A" , to:"E"}, // A depends on D
+			{from:"B" , to:"E"}, 
+			{from:"C" , to:"E"}, 
+		];
+
+		var _boxes = [
+			{id:"A"},
+			{id:"B"},
+			{id:"C"}
+		];
+*/
+		var getlayers = function (boxes, dependencies) {	
+			for (b in boxes){
+				box  = boxes[b];
+				for (i in dependencies){
+					dependency = dependencies[i];
+					if (dependency.from== box.id){
+						if (box.toIds == null){
+							box.toIds = [];
+						}
+						box.toIds.push(dependency.to);
+					}
+				/*	if (dependency.to== box.id){
+						if (box.fromBoxes == null){
+							box.fromBoxes = [];
+						}
+						box.fromBoxes.push(dependency.from);
+					}*/
+				}
+			}	
+			var layers = [];
+			var layer= [];
+
+			
+			layers.push(layer);
+
+			//===Liste des boxes à classer dns les layers
+			var todoBoxes = [];
+			for (b in boxes){
+				box  = boxes[b]; 
+				todoBoxes[box.id] = box;
+			}
+
+			for (id in todoBoxes){
+				box  = todoBoxes[id];
+				//On regarde toutes les dépendances de box pour savoir si déjà résolu.
+				var resolved = true;
+				for(toId in  box.toIds){
+					if (todoBoxes.indexOf(toId)<0){
+						//Il existe au moins une dépendance non résolue
+						resolved = false;
+					}
+				} 
+				if (resolved){
+					layer.push(box);
+					todoBoxes[id] = null;
+				}
+			}	
+
+		}
+
+		var displayLayers = function(boxes, depedencies){
+			var layers = getlayers(boxes, depedencies);
+		}	
+/*
+		var module = d3.select("rect").
+			.data(layers).enter()
+				.append("rect")
+					.attr("x", 10)
+					.attr("y", function(d) { return x(d.letter); }))
+					.attr("width", 50)
+					.attr("height", 100);
+					.attr('class', 'module');	
+
+			module
+				.append("div")
+					.attr('class', 'header')
+					.text(function(d) { return d.name; });
+			
+			var component = module
+				.append("div")
+					.attr('class', 'components')
+					.selectAll("div")
+					.data(function(d) { return d.componentConfigs; }).enter()
+						.append("div")
+						.attr('class', 'component');
+								
+			component
+				.append("a")
+					.attr('href', function(d) {return 'http://localhost:8086/spaces/components/'+ d.id})
+					.text(function(d) { return d.id; });
+				*/
+			//var container = document.querySelector('#modules');*/
+			/*var msnry = new Masonry( container, {
+				// options
+				columnWidth: 500, //M
+				itemSelector: '.module'
+			});*/
+	//	modules.sort(function(a,b){return a.componentConfigs.length-b.componentConfigs.length});
+		displayLayers(_boxes, _dependencies	);
+		</script>
+</html>
+
+
