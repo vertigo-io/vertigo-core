@@ -32,7 +32,6 @@ import java.util.Locale;
  * en fonction du param�trage de l'application.
  * Si le libelle n'est pas trouv�, l'affichage est 
  * @author npiedeloup, pchretien
- * @version $Id: MessageText.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public final class MessageText implements Serializable {
 	private static final long serialVersionUID = 1L;

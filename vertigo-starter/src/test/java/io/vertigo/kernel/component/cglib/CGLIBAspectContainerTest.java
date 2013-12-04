@@ -25,7 +25,6 @@ import io.vertigoimpl.engines.aop.cglib.CGLIBAopEngine;
 
 /**
  * @author pchretien
- * @version $Id: CGLIBAspectContainerTest.java,v 1.1 2013/10/09 14:04:13 pchretien Exp $
  */
 public final class CGLIBAspectContainerTest extends AbstractAspectTestCase {
 	@Override

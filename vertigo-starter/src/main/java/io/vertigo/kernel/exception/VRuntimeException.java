@@ -24,7 +24,6 @@ import io.vertigo.kernel.util.StringUtil;
  * Classe de base pour toutes les exceptions syst�mes.
  * 
  * @author fconstantin, pchretien
- * @version $Id: VRuntimeException.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public final class VRuntimeException extends RuntimeException {
 	private static final long serialVersionUID = -6326238492525656091L;

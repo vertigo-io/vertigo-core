@@ -40,7 +40,6 @@ import java.net.URL;
  *     /WEB-INF/components-config.xml
  *  
  * @author pchretien
- * @version $Id: ResourceManager.java,v 1.1 2013/10/09 14:02:59 pchretien Exp $
  */
 public interface ResourceManager extends Manager {
 	/**

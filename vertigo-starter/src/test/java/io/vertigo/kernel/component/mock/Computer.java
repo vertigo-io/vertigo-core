@@ -20,7 +20,6 @@ package io.vertigo.kernel.component.mock;
 
 /**
  * @author prahmoune
- * @version $Id: Computer.java,v 1.1 2013/10/09 14:04:13 pchretien Exp $
  */
 public interface Computer {
 	int sum(int i, int j);

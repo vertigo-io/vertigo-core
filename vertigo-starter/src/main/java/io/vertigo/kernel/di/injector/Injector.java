@@ -40,7 +40,6 @@ import javax.inject.Inject;
  * Injection des d�pendances. 
  * 
  * @author pchretien
- * @version $Id: Injector.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public final class Injector {
 	/**

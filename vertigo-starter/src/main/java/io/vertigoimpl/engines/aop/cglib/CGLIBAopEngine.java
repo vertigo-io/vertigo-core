@@ -32,7 +32,6 @@ import net.sf.cglib.proxy.Enhancer;
 
 /**
  * @author pchretien
- * @version $Id: CGLIBAopEngine.java,v 1.2 2013/11/18 15:12:08 pchretien Exp $
  */
 public final class CGLIBAopEngine implements AopEngine {
 

@@ -22,7 +22,6 @@ import io.vertigo.kernel.lang.Assertion;
 
 /**
 * @author pchretien
-* @version $Id: VResponse.java,v 1.3 2013/11/21 17:52:05 pchretien Exp $
 */
 public final class VResponse {
 	private final String response;

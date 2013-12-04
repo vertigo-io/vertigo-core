@@ -23,7 +23,6 @@ import io.vertigo.kernel.component.mock.aop.TenMore;
 
 /**
  * @author pchretien
- * @version $Id: F.java,v 1.1 2013/10/09 14:04:13 pchretien Exp $
  */
 @OneMore
 public class F {

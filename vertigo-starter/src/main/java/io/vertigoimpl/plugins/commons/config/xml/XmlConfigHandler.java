@@ -29,7 +29,6 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /** 
  * @author  pchretien
- * @version $Id: XmlConfigHandler.java,v 1.1 2013/10/09 14:02:59 pchretien Exp $
  */
 final class XmlConfigHandler extends DefaultHandler {
 	enum TagName {

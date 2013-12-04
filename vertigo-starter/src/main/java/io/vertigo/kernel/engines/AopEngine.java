@@ -30,7 +30,6 @@ import java.util.Map;
  * Cr�ation des objets g�rant les r�f�rences sur les instances et impl�mentant les interceptions.(AOP)
  * 
  * @author pchretien
- * @version $Id: AopEngine.java,v 1.1 2013/11/18 15:12:17 pchretien Exp $
  */
 public interface AopEngine extends Engine {
 

@@ -29,7 +29,6 @@ import java.util.Set;
  * Container contenant des param�tres.
  * 
  * @author pchretien
- * @version $Id: ParamsContainer.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public final class ParamsContainer implements Container {
 	private final Map<String, String> params;

@@ -71,7 +71,6 @@ import java.util.regex.Pattern;
  * getStringValue(maconf.subConf1.unknown, mapropriete2) => tata 
  * 
  * @author prahmoune, npiedeloup
- * @version $Id: ConfigManager.java,v 1.1 2013/10/09 14:02:59 pchretien Exp $ 
  */
 public interface ConfigManager extends Manager {
 	Pattern REGEX_PATH = Pattern.compile("([a-z][a-zA-Z0-9]*)([a-z][a-zA-Z0-9]*.)*");

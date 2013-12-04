@@ -28,7 +28,6 @@ import java.util.NoSuchElementException;
  *  - some : renseign�e 
  *
  * @author jmainaud
- * @version $Id: Option.java,v 1.2 2013/11/18 16:49:15 pchretien Exp $
  * @param <T> Type de l'objet optionnel.
  */
 public final class Option<T> {

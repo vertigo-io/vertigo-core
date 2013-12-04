@@ -37,7 +37,6 @@ import javax.inject.Inject;
  * Un composant est d�fini par ses d�pendances externes.
  * Les d�pendances � des objets fournis par les params ne sont pas expos�es. (ele ne servent pas dans la r�solution). 
  * @author prahmoune, pchretien
- * @version $Id: DIComponentInfo.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 final class DIComponentInfo {
 	private final String id;

@@ -26,7 +26,6 @@ import java.util.Set;
  * Cet identifiant est camelCase. (Voir REGEX ci-dessous)
  * 
  * @author pchretien, prahmoune
- * @version $Id: Container.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public interface Container {
 	//final Pattern REGEX_ID = Pattern.compile("[a-z][a-zA-Z0-9]{0,79}");

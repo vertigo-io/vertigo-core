@@ -37,7 +37,6 @@ import java.util.Map;
  * - api du composant (option) 
  * - liste des Plugins
  * @author npiedeloup, pchretien
- * @version $Id: ComponentConfig.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 final class ComponentConfig {
 	private final String id;

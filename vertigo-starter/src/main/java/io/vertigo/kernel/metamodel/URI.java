@@ -36,7 +36,6 @@ import java.util.regex.Pattern;
  * Cela permet de cr�er des URI plus intuitive comme URI<Personne> qui est un identifiant de personne.
  * 
  * @author  pchretien
- * @version $Id: URI.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  * @param <R> Type de la ressource repr�sent�e par l'URI
  */
 public final class URI<R extends Serializable> implements Serializable {

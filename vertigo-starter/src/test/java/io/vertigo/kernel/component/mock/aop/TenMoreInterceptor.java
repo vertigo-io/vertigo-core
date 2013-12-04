@@ -23,7 +23,6 @@ import io.vertigo.kernel.aop.MethodInvocation;
 
 /**
  * @author pchretien
- * @version $Id: TenMoreInterceptor.java,v 1.1 2013/10/09 14:04:13 pchretien Exp $
  */
 public class TenMoreInterceptor implements Interceptor {
 	@Override

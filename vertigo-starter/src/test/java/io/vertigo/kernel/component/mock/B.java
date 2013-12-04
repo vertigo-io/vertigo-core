@@ -22,7 +22,6 @@ import io.vertigo.kernel.lang.Activeable;
 
 /**
  * @author prahmoune
- * @version $Id: B.java,v 1.1 2013/10/09 14:04:13 pchretien Exp $
  */
 public interface B extends Activeable {
 	boolean isInitialized();

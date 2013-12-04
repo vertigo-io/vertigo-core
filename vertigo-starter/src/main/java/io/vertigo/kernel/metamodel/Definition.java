@@ -34,7 +34,6 @@ import java.util.regex.Pattern;
  *  - poss�de un nom unique qui doit v�rifier le pattern ci dessous
  *
  * @author  pchretien
- * @version $Id: Definition.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public interface Definition {
 	char SEPARATOR = '_';

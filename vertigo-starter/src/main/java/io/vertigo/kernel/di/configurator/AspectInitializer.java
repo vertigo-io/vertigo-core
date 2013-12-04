@@ -42,7 +42,6 @@ import java.util.Map;
  *  - des m�thodes.
  *  
  * @author pchretien, prahmoune
- * @version $Id: AspectInitializer.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 final class AspectInitializer {
 	private final Map<AspectConfig, Interceptor> interceptorsMap;

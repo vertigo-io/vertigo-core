@@ -64,7 +64,6 @@ import org.apache.log4j.xml.DOMConfigurator;
  * En revanche les composants (� ne pas r�aliser de d�pendances cycliques) peuvent �tre injecter dans les composants, les plugins et les initializers.
  * 
  * @author pchretien
- * @version $Id: ComponentSpaceImpl.java,v 1.3 2013/11/18 16:52:23 pchretien Exp $
  */
 public final class ComponentSpaceImpl implements ComponentSpace {
 	public static final ComponentSpace EMPTY = new ComponentSpaceImpl(new ComponentSpaceConfigBuilder().build());

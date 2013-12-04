@@ -40,7 +40,6 @@ import org.junit.Test;
 /**
  * Voir sur reactor pour l'arbre des d�pendances des objets A==>F.  
  * @author pchretien
- * @version $Id: InjectorTest.java,v 1.1 2013/10/09 14:04:13 pchretien Exp $
  */
 public final class InjectorTest {
 	private final Injector injector = new Injector();

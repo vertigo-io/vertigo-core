@@ -24,7 +24,6 @@ package io.vertigo.kernel.component;
  * Un plugin peut poss�der un �tat actif / inactif via l'interface Activeable.
  * 
  * @author pchretien
- * @version $Id: Plugin.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public interface Plugin {
 	//Un plugin peut �tre activeable.

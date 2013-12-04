@@ -25,7 +25,6 @@ import java.lang.annotation.Target;
 
 /**
  * @author pchretien
- * @version $Id: OneMore.java,v 1.1 2013/10/09 14:04:13 pchretien Exp $
  */
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)

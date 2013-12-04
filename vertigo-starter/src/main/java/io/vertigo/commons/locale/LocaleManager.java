@@ -47,7 +47,6 @@ import java.util.Locale;
  * 
  *  
  * @author pchretien
- * @version $Id: LocaleManager.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public interface LocaleManager extends Manager {
 	//=========================================================================

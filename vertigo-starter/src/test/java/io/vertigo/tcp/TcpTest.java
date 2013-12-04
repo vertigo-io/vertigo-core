@@ -29,7 +29,6 @@ import org.junit.Test;
 
 /**
  * @author pchretien
- * @version $Id: TcpTest.java,v 1.3 2013/11/25 13:48:52 pchretien Exp $
  */
 public final class TcpTest {
 	private static final String HOST = "localhost";

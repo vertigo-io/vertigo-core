@@ -28,7 +28,6 @@ import java.util.Properties;
 
 /**
  * @author pchretien
- * @version $Id: XmlComponentsTest.java,v 1.1 2013/10/09 14:04:13 pchretien Exp $
  */
 public final class XmlComponentsTest extends AbstractAspectTestCase {
 	@Override

@@ -34,7 +34,6 @@ import java.util.Map;
  * Etape 1 : Enregistrer les classes �ligibles (register)
  * Etape 2 : Ajouter les objets (put) 
  * @author pchretien
- * @version $Id: DefinitionSpace.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public final class DefinitionSpace implements Activeable {
 	/**

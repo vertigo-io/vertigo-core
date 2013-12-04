@@ -41,7 +41,6 @@ import java.util.Map;
  * - soit dans le fichier de conf li� � l'environnement.
  * 
  * @author npiedeloup, pchretien
- * @version $Id: PluginConfig.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 final class PluginConfig {
 	private final Class<? extends Plugin> implClass;

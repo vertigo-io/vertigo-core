@@ -42,7 +42,6 @@ package io.vertigo.kernel.component;
  *  - Lib�ration des ressources consomm�es par le composant lors du undeploy.
  * 		Exemples : connexions, thread, flux
  * @author pchretien
- * @version $Id: Manager.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public interface Manager {
 	//Comportements ajoutables : Activeable,  Describable

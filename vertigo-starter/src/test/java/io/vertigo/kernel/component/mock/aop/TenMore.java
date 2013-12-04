@@ -25,7 +25,6 @@ import java.lang.annotation.Target;
 
 /**
  * @author pchretien
- * @version $Id: TenMore.java,v 1.1 2013/10/09 14:04:13 pchretien Exp $
  */
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)

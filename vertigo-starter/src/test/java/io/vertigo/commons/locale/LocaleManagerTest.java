@@ -35,7 +35,6 @@ import org.junit.Test;
 
 /**
  * @author pchretien
- * @version $Id: LocaleManagerTest.java,v 1.3 2013/10/23 17:54:52 pchretien Exp $
  */
 public final class LocaleManagerTest extends AbstractTestCase2JU4 {
 	@Inject
@@ -58,7 +57,7 @@ public final class LocaleManagerTest extends AbstractTestCase2JU4 {
 	public void setup() {
 		localeManager.add("io.vertigo.commons.locale.city-guide", CityGuide.values());
 		try {
-			Thread.sleep(10000000);
+			Thread.sleep(10);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

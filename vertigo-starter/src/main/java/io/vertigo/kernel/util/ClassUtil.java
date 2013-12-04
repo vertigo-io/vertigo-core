@@ -39,7 +39,6 @@ import java.util.List;
  * Centralisation des cr�ations d'instances � partir d'une nom de classe. Cette approche �tant utilis�e pour cr�er des liens plus souples entre des objets.
  * 
  * @author pchretien
- * @version $Id: ClassUtil.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public final class ClassUtil {
 	private static final Class<?>[] EMPTY_CLAZZ_ARRAY = new Class[0];

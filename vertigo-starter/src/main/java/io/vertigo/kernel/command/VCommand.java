@@ -27,7 +27,6 @@ import java.util.Map;
  * Generic request with args to interact with vertigo, components. 
  * 
  * @author pchretien
- * @version $Id: VCommand.java,v 1.4 2013/11/29 13:30:29 pchretien Exp $
  */
 public final class VCommand {
 	private final String name;

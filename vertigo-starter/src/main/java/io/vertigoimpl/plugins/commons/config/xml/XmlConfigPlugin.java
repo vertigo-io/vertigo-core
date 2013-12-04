@@ -43,7 +43,6 @@ import org.xml.sax.SAXException;
 /**
  * Parser XML du param�trage de la config.
  * @author  pchretien
- * @version $Id: XmlConfigPlugin.java,v 1.2 2013/10/09 14:51:19 pchretien Exp $
  */
 public final class XmlConfigPlugin implements ConfigPlugin { /*implements Loader<HomeConfigBuilder>*/
 	//	private final URL managersURL;

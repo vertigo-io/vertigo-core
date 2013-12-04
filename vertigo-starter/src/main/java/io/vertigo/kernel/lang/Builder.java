@@ -22,7 +22,6 @@ package io.vertigo.kernel.lang;
  * Builder permettant de construire par �tapes un objet.
  * 
  * @author pchretien
- * @version $Id: Builder.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $ 
  * @param <T> Type de l'objet cr��.
  */
 public interface Builder<T> {

@@ -49,7 +49,6 @@ import org.apache.log4j.Logger;
  * Les ressources d�clar�es dans une enum sont charg�es par un fichier properties avec un resourceBundle.
  *
  * @author  pchretien
- * @version $Id: LocaleManagerImpl.java,v 1.2 2013/11/15 14:26:01 pchretien Exp $
  */
 public final class LocaleManagerImpl implements LocaleManager, Activeable, Describable {
 	private final Logger generalLog = Logger.getLogger(LocaleManager.class);

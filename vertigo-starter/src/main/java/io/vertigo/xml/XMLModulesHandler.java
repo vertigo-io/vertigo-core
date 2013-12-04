@@ -35,7 +35,6 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /** 
  * @author npiedeloup, pchretien
- * @version $Id: XMLModulesHandler.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 final class XMLModulesHandler extends DefaultHandler {
 	private final ComponentSpaceConfigBuilder componentSpaceConfigBuilder;

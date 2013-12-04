@@ -24,7 +24,6 @@ import io.vertigo.kernel.lang.MessageKey;
  * Dictionnaire des ressources.
  *
  * @author  pchretien
- * @version $Id: CityGuide.java,v 1.1 2013/10/09 14:04:13 pchretien Exp $
 */
 public enum CityGuide implements MessageKey {
 	/** Bonjour. */

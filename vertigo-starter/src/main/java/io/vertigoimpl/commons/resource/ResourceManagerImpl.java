@@ -38,7 +38,6 @@ import javax.inject.Inject;
  * L'enregistrement doit se faire lors de la phase de d�marrage.
  * 
  * @author pchretien
- * @version $Id: ResourceManagerImpl.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public final class ResourceManagerImpl implements ResourceManager {
 	@Inject

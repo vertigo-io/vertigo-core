@@ -33,7 +33,6 @@ import javax.inject.Named;
 
 /**
  * @author prahmoune
- * @version $Id: DIAnnotationUtil.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public final class DIAnnotationUtil {
 	private DIAnnotationUtil() {

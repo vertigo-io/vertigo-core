@@ -45,7 +45,6 @@ import java.util.Set;
 /**
  * Conteneur de tous les gestionnaires.
  * @author pchretien
- * @version $Id: ComponentContainer.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 final class ComponentContainer implements Container, Activeable {
 	//On conserve l'ordre d'enregistrement.

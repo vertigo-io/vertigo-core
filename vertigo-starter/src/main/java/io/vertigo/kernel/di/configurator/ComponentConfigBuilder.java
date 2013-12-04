@@ -34,7 +34,6 @@ import java.util.Map;
  * Param�trage de l'application.
  * 
  * @author npiedeloup, pchretien
- * @version $Id: ComponentConfigBuilder.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	//Par convention l'id du composant manager est le simpleName de la classe de l'api ou de l'impl.

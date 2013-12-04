@@ -27,7 +27,6 @@ package io.vertigo.kernel.aop;
  *  - transaction
  *  
  * @author pchretien
- * @version $Id: Interceptor.java,v 1.1 2013/10/09 14:02:59 pchretien Exp $
  */
 public interface Interceptor {
 	Object invoke(final Object args[], final MethodInvocation methodInvocation) throws Throwable;

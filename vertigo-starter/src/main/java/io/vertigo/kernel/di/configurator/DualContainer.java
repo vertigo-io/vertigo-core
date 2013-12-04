@@ -30,7 +30,6 @@ import java.util.Set;
  * Super Conteneur.
  * 
  * @author pchretien
- * @version $Id: DualContainer.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 final class DualContainer implements Container {
 	private final Container container1, container2;

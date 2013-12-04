@@ -36,7 +36,6 @@ import org.junit.Test;
 
 /**
  * @author prahmoune
- * @version $Id: MultiConfigManagerTest.java,v 1.2 2013/10/09 14:51:19 pchretien Exp $
  */
 public final class MultiConfigManagerTest extends AbstractTestCase2JU4 {
 	@Inject

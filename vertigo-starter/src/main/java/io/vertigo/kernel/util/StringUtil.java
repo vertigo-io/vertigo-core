@@ -27,7 +27,6 @@ import java.text.MessageFormat;
  * Classe utilitaire proposant des m�thodes de manipulation sur les String.
  *
  * @author  pchretien
- * @version $Id: StringUtil.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public final class StringUtil {
 	/**

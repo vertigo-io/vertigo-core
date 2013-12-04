@@ -33,7 +33,6 @@ import org.junit.Test;
 
 /**
  * @author pchretien
- * @version $Id: ResourceManagerTest.java,v 1.2 2013/10/09 14:51:19 pchretien Exp $
  */
 public final class ResourceManagerTest extends AbstractTestCase2JU4 {
 	@Inject

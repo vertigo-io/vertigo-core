@@ -23,7 +23,6 @@ package io.vertigo.kernel.di;
  * Cette exception est de type runtime, elle sert � valider le bon fonctionnement du moteur dans les tests.
  * 
  * @author pchretien
- * @version $Id: DIException.java,v 1.1 2013/10/09 14:02:59 pchretien Exp $
  */
 public final class DIException extends RuntimeException {
 	private static final long serialVersionUID = 1L;

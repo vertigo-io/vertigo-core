@@ -30,7 +30,6 @@ import java.net.URL;
  * Cette r�solution est en absolue.
  * 
  * @author prahmoune
- * @version $Id: ClassPathResourceResolverPlugin.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $ 
  */
 public final class ClassPathResourceResolverPlugin implements ResourceResolverPlugin {
 

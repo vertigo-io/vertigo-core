@@ -28,7 +28,6 @@ import io.vertigo.kernel.lang.Assertion;
  *  - d'un intercepteur (advice) d�fini par un composant
  * 
  * @author pchretien
- * @version $Id: AspectConfig.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 final class AspectConfig {
 	/** Annotation � intercepter. */

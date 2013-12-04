@@ -25,7 +25,6 @@ import org.junit.Test;
  * Test de l'utilitaitre de manipulation des strings.
  *
  * @author pchretien
- * @version $Id: StringUtilTest.java,v 1.1 2013/10/09 14:04:13 pchretien Exp $
  */
 public final class StringUtilTest {
 	private static final String XXX_YYY_ZZZ = "XXX_YYY_ZZZ";

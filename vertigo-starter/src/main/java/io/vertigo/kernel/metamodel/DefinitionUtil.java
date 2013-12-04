@@ -25,7 +25,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Utilitaire concernant les Definitions.
  *  
  * @author  pchretien 
- * @version $Id: DefinitionUtil.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public final class DefinitionUtil {
 	private DefinitionUtil() {

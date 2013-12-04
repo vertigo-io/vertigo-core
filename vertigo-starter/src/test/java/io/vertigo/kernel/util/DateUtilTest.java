@@ -32,7 +32,6 @@ import org.junit.Test;
 * Test de l'utilitaitre de manipulation des dates.
 *
 * @author pchretien
-* @version $Id: DateUtilTest.java,v 1.1 2013/10/09 14:04:13 pchretien Exp $
 */
 public final class DateUtilTest {
 

@@ -42,7 +42,6 @@ import com.sun.jersey.api.core.ResourceConfig;
  * Impl�mentation du tableau de bord.
  * 
  * @author pchretien
- * @version $Id: GrizzlyRestEngine.java,v 1.2 2013/11/18 15:12:08 pchretien Exp $
  */
 public final class GrizzlyRestEngine implements RestEngine, Activeable {
 	private HttpServer httpServer;

@@ -40,7 +40,6 @@ import javax.inject.Inject;
 /**
  * Impl�mentation du gestionnaire de configuration applicative.
  * @author prahmoune
- * @version $Id: ConfigManagerImpl.java,v 1.1 2013/10/09 14:02:59 pchretien Exp $
  */
 public final class ConfigManagerImpl implements ConfigManager {
 	@Inject

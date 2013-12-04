@@ -22,7 +22,6 @@ import javax.inject.Named;
 
 /**
  * @author prahmoune
- * @version $Id: BImpl.java,v 1.1 2013/10/09 14:04:13 pchretien Exp $
  */
 @Named("b")
 public class BImpl implements B {

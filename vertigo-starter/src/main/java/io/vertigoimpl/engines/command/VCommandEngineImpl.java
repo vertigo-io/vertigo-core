@@ -48,7 +48,6 @@ import javax.inject.Named;
 /**
 *
 * @author pchretien
-* @version $Id: VCommandEngineImpl.java,v 1.4 2013/11/22 12:50:14 pchretien Exp $ 
 */
 public final class VCommandEngineImpl implements VCommandEngine, Activeable {
 	private final int port;

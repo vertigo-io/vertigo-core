@@ -27,7 +27,6 @@ import java.lang.annotation.Target;
 /**
  * Prefix d'une d�finition
  * @author pchretien
- * @version $Id: Prefix.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited

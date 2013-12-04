@@ -30,7 +30,6 @@ import java.util.Map;
 
 /**
  * @author pchretien
- * @version $Id: CGLIBInvocationHandler.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 final class CGLIBInvocationHandler implements net.sf.cglib.proxy.InvocationHandler {
 	private final Object instance;

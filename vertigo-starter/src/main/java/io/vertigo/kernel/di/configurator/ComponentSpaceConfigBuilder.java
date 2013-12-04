@@ -38,7 +38,6 @@ import java.util.Map;
  * Param�trage de l'application.
  * 
  * @author npiedeloup, pchretien
- * @version $Id: ComponentSpaceConfigBuilder.java,v 1.4 2013/11/20 16:24:24 pchretien Exp $
  */
 public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpaceConfig> {
 	private final List<ModuleConfigBuilder> moduleConfigBuilders = new ArrayList<>();

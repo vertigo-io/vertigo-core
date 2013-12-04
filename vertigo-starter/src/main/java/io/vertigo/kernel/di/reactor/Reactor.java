@@ -34,7 +34,6 @@ import java.util.Set;
  * Puis il suffit d'appeler la m�thode  'proceed'  
  *   
  * @author pchretien
- * @version $Id: Reactor.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public final class Reactor {
 	//Map des composants et de leurs parents

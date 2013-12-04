@@ -36,7 +36,6 @@ import javax.inject.Named;
  * Plugin de gestion de configuration de fichiers properties.
  * 
  * @author skerdudou
- * @version $Id: PropertiesConfigPlugin.java,v 1.1 2013/10/09 14:02:59 pchretien Exp $
  */
 public final class PropertiesConfigPlugin implements ConfigPlugin {
 	private final Properties properties;

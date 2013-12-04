@@ -30,7 +30,6 @@ import java.io.Serializable;
 /**
  * R�f�rence SERIALIZABLE vers les definitions.
  * @author pchretien
- * @version $Id: DefinitionReference.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  * @param <D> Type de la d�finition
  */
 public final class DefinitionReference<D extends Definition> implements Serializable {

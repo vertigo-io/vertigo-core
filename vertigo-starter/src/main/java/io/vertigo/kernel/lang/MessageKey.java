@@ -24,7 +24,6 @@ import java.io.Serializable;
 * Cl� d'un message externalis�e.
 *
 * @author  pchretien, npiedeloup
-* @version $Id: MessageKey.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
 */
 public interface MessageKey extends Serializable {
 	/**

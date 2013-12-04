@@ -27,7 +27,6 @@ import java.net.URL;
 /**
  * R�sout une ressource en fournissant son URL.
  * @author prahmoune
- * @version $Id: ResourceResolverPlugin.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $ 
  */
 public interface ResourceResolverPlugin extends Plugin {
 	/**

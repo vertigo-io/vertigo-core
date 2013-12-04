@@ -25,7 +25,6 @@ import io.vertigo.kernel.lang.Option;
  * Interface d'un plugin de gestion de configuration applicative. 
  * Toutes les configuration sont g�r�es sous forme de String.
  * @author prahmoune
- * @version $Id: ConfigPlugin.java,v 1.1 2013/10/09 14:02:59 pchretien Exp $ 
  */
 public interface ConfigPlugin extends Plugin {
 	/** 

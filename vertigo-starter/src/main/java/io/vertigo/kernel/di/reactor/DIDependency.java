@@ -29,7 +29,6 @@ import java.lang.reflect.Field;
  * Une d�pendance est identifi�e par son id et son caract�re optionnel.
  * Un composant poss�de une liste de d�pendances.
  * @author pchretien
- * @version $Id: DIDependency.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 final class DIDependency {
 	//Id du composant d�clarant la d�pendance

@@ -29,7 +29,6 @@ import redis.clients.jedis.JedisPool;
  * Proxy http pour communication http au lieu de rmi.
  *
  * @author pchretien
- * @version $Id: RedisInvocationHandler.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 final class RedisInvocationHandler<F> implements InvocationHandler {
 	//	private final String serverURL;

@@ -32,7 +32,6 @@ import java.util.List;
  * Param�trage de l'application.
  * 
  * @author npiedeloup, pchretien
- * @version $Id: ModuleConfigBuilder.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	private final ComponentSpaceConfigBuilder componentSpaceConfigBuilder;

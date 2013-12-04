@@ -25,7 +25,6 @@ import io.vertigo.kernel.command.VCommand;
  * Vertigo can be requested with commands.
  * 
  * @author pchretien
- * @version $Id: VCommandEngine.java,v 1.3 2013/11/20 16:23:58 pchretien Exp $
  */
 public interface VCommandEngine extends Engine {
 	int DEFAULT_PORT = 4444;

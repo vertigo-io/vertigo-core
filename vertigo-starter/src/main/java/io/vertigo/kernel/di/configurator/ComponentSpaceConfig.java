@@ -35,7 +35,6 @@ import java.util.Map;
  * Param�trage des composants de l'application.
  * 
  * @author npiedeloup, pchretien
- * @version $Id: ComponentSpaceConfig.java,v 1.3 2013/11/18 16:50:14 pchretien Exp $
  */
 public final class ComponentSpaceConfig {
 	private final List<ModuleConfig> moduleConfigs;

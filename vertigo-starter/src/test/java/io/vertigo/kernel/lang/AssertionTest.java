@@ -26,7 +26,6 @@ import org.junit.Test;
  * Test de l'utilitaire des assertions.
  *
  * @author pchretien
- * @version $Id: AssertionTest.java,v 1.1 2013/10/09 14:04:13 pchretien Exp $
  */
 public final class AssertionTest {
 	@Test

@@ -25,7 +25,6 @@ import io.vertigo.kernel.lang.Activeable;
  * Centralisation des acc�s aux composants et aux plugins d'un module.
  * Les composants sont d'un type M.
  * @author pchretien
- * @version $Id: ComponentSpace.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public interface ComponentSpace extends Container, Activeable {
 	/**

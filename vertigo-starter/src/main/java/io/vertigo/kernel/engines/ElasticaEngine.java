@@ -27,7 +27,6 @@ import io.vertigo.kernel.Engine;
  *  - soit en mode server
  *  
  * @author pchretien
- * @version $Id: ElasticaEngine.java,v 1.1 2013/11/18 15:12:17 pchretien Exp $
  */
 public interface ElasticaEngine extends Engine {
 	/**

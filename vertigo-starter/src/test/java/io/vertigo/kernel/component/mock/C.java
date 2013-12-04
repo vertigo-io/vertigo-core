@@ -25,7 +25,6 @@ import javax.inject.Named;
 
 /**
  * @author prahmoune
- * @version $Id: C.java,v 1.1 2013/10/09 14:04:13 pchretien Exp $
  */
 @Named("c")
 public class C implements Activeable {

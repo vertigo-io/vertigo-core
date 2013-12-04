@@ -37,7 +37,6 @@ import io.vertigo.kernel.metamodel.DefinitionSpace;
  *
 
  * @author pchretien
- * @version $Id: Home.java,v 1.2 2013/11/15 14:24:12 pchretien Exp $
  */
 public final class Home {
 	//Start Date in milliseconds : used to have 'uptime'

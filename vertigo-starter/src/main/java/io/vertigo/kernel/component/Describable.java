@@ -23,7 +23,6 @@ import java.util.List;
 /**
  * Permet d'ajouter un comportement sur un composant.
  * @author pchretien
- * @version $Id: Describable.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public interface Describable {
 	/**

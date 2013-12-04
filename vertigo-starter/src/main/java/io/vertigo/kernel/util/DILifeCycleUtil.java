@@ -31,7 +31,6 @@ import javax.annotation.PreDestroy;
 
 /**
  * @author prahmoune
- * @version $Id: DILifeCycleUtil.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public final class DILifeCycleUtil {
 	private static final Method postConstructMethod = buildStartMethod();

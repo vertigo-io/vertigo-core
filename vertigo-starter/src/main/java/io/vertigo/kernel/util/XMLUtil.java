@@ -35,7 +35,6 @@ import org.xml.sax.SAXException;
 /**
  * XSD Validation.
  * @author pchretien
- * @version $Id: XMLUtil.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public final class XMLUtil {
 

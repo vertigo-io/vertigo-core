@@ -22,7 +22,6 @@ package io.vertigo.kernel.metamodel;
  * Type.
  *
  * @author  pchretien
- * @version $Id: DataType.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public interface DataType {
 	/**

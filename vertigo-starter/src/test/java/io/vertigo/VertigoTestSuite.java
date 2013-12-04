@@ -46,7 +46,6 @@ import org.junit.runners.Suite.SuiteClasses;
  * Test de l'impl�mentation standard.
  *
  * @author pchretien
- * @version $Id: VertigoTestSuite.java,v 1.3 2013/11/20 16:31:35 pchretien Exp $
  */
 @RunWith(Suite.class)
 @SuiteClasses({ 

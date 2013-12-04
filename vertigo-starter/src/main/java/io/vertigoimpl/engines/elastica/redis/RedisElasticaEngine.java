@@ -30,7 +30,6 @@ import redis.clients.jedis.JedisPoolConfig;
 /**
  *
  * @author pchretien
- * @version $Id: RedisElasticaEngine.java,v 1.3 2013/11/20 16:24:32 pchretien Exp $ 
  */
 public final class RedisElasticaEngine implements ElasticaEngine, Activeable {
 	private static final String HOST = "kasper-redis";

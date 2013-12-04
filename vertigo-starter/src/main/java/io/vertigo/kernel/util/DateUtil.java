@@ -33,7 +33,6 @@ import java.util.Date;
  *  - les dates pr�cises au jour, min, sec (ms)  
  *  
  * @author npiedeloup, pchretien 
- * @version $Id: DateUtil.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public final class DateUtil {
 	private DateUtil() {

@@ -30,7 +30,6 @@ import java.net.URL;
  * R�solution des URL par le standard java.net.URL.
  * 
  * @author npiedeloup
- * @version $Id: URLResourceResolverPlugin.java,v 1.1 2013/10/09 14:02:59 pchretien Exp $ 
  */
 public final class URLResourceResolverPlugin implements ResourceResolverPlugin {
 

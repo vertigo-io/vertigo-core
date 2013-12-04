@@ -22,7 +22,6 @@ import io.vertigo.kernel.command.VCommand;
 
 /**
 * @author pchretien
-* @version $Id: VCommandExecutor.java,v 1.2 2013/11/20 16:23:18 pchretien Exp $ 
 */
 public interface VCommandExecutor<R> {
 	R exec(VCommand command);

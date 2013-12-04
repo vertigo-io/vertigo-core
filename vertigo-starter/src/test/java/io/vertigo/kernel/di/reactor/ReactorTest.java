@@ -45,7 +45,6 @@ import org.junit.Test;
  * F d�pende de A et de param�tres nomm�s.
  *
  * @author pchretien
- * @version $Id: ReactorTest.java,v 1.1 2013/10/09 14:04:13 pchretien Exp $
  */
 public final class ReactorTest {
 	private static void nop(final Object o) {

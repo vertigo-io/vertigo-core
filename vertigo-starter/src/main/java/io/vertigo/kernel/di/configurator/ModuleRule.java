@@ -25,7 +25,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Rule : all components of a module must respect this rule.
  * 
  * @author pchretien
- * @version $Id: ModuleRule.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 interface ModuleRule {
 	void chek(final ModuleConfig moduleConfig);
@@ -35,7 +34,6 @@ interface ModuleRule {
  * Rule : all components of a module must have an API.
  * 
  * @author pchretien
- * @version $Id: ModuleRule.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 final class APIModuleRule implements ModuleRule {
 	/** {@inheritDoc} */
@@ -52,7 +50,6 @@ final class APIModuleRule implements ModuleRule {
  * Rule : all components of a module must inherit a class.
  * 
  * @author pchretien
- * @version $Id: ModuleRule.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 final class InheritanceModuleRule implements ModuleRule {
 	private final Class<?> superClass;

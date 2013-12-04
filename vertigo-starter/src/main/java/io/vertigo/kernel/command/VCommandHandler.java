@@ -20,7 +20,6 @@ package io.vertigo.kernel.command;
 
 /**
 * @author pchretien
-* @version $Id: VCommandHandler.java,v 1.1 2013/11/20 16:21:27 pchretien Exp $ 
 */
 public interface VCommandHandler {
 	VResponse onCommand(VCommand command);

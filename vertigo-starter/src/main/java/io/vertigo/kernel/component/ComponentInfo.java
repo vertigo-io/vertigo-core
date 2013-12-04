@@ -30,7 +30,6 @@ import java.util.Date;
  *  - une valeur 
  *
  * @author npiedeloup
- * @version $Id: ComponentInfo.java,v 1.3 2013/11/20 18:25:25 pchretien Exp $
  */
 public final class ComponentInfo {
 	private Object value;

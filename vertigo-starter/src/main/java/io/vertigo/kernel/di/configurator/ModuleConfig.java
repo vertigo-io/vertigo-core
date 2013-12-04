@@ -35,7 +35,6 @@ import java.util.List;
  *  - rules
  * 
  * @author npiedeloup, pchretien
- * @version $Id: ModuleConfig.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 final class ModuleConfig {
 	private final String name;

@@ -35,7 +35,6 @@ import io.vertigo.kernel.util.StringUtil;
  * <br>Pour aller plus loin lire articles et ouvrages autour des travaux de B. Meyer et M. Fowler concernant la programmation par contrat (design by contract).
  *
  * @author fconstantin
- * @version $Id: Assertion.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public final class Assertion {
 	//-------------------------------------------------------------------------
