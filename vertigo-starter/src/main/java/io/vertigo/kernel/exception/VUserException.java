@@ -21,20 +21,19 @@ package io.vertigo.kernel.exception;
 import io.vertigo.kernel.lang.MessageText;
 
 /**
- * Classe de base pour toutes les exceptions utilisateurs.
- *
- * Les exceptions utilisateurs sont construites sur la base d'un message (multilingue).
- * Il est possible d'ajouter une cause via la m�thode initCause.  
- *
+ * Root Class for all user exceptions.
+ * User Exceptions are built with a (localized) message 
+ * 
+ * A cause can be added by setting 'initCause' method
+ * 
  * @author fconstantin, pchretien
- * @version $Id: VUserException.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public class VUserException extends RuntimeException {
 	private static final long serialVersionUID = 3911465988816189879L;
 	private final MessageText messageText;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param messageText Message de l'exception
 	 */
 	public VUserException(final MessageText messageText) {

@@ -35,13 +35,13 @@ package io.vertigo.kernel.lang;
  */
 public interface Activeable {
 	/**
-	 * D�marrage du service.
+	 * Called when component is starting.
 	 * == postConstruct
 	 */
 	void start();
 
 	/**
-	 * Arr�t du service. 
+	 * Called when component is stopped.
 	 * == preDestroy
 	 */
 	void stop();

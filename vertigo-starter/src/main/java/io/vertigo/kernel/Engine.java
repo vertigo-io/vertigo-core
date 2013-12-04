@@ -19,10 +19,12 @@
 package io.vertigo.kernel;
 
 /**
- * Marqueur des engines.
+ * Engines are used to activate a native vertigo behavior.
+ * For example AOP or REST behaviors are defined by engines. 
+ * Like plugins, engines are often implemented by using external libraries.
+ * Unlike components, engines don't add new behaviors. 
  * 
  * @author pchretien
- * @version $Id: Engine.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public interface Engine {
 	//

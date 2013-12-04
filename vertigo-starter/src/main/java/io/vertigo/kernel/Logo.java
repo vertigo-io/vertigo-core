@@ -21,14 +21,13 @@ package io.vertigo.kernel;
 import java.io.PrintStream;
 
 /**
- * Affichage du logo.
+ * Displays logo.
  * 
  * @author pchretien
- * @version $Id: Logo.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public final class Logo {
 	/**
-	 * Affiche dans la console le logo.
+	 * Displays logo in console.
 	 */
 	public void printCredits(final PrintStream out) {
 		out.println();

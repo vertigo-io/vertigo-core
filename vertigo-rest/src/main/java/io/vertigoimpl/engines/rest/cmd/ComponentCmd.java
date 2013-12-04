@@ -21,7 +21,8 @@ package io.vertigoimpl.engines.rest.cmd;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.Definition;
-import io.vertigoimpl.engines.command.json.JsonAdapter;
+import io.vertigoimpl.engines.json.GoogleJsonEngine;
+import io.vertigoimpl.engines.json.JsonEngine;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -36,7 +37,7 @@ import com.sun.jersey.api.NotFoundException;
 @Path("/spaces")
 @Produces("application/json")
 public class ComponentCmd {
-	private static final JsonAdapter jsonAdapter = new JsonAdapter();
+	private static final JsonEngine jsonAdapter = new GoogleJsonEngine();
 
 	@Path("/components")
 	@GET

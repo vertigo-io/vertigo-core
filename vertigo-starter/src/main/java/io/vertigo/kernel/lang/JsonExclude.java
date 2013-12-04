@@ -26,7 +26,6 @@ import java.lang.annotation.Target;
 /**
  * Json Exclusion 
  * @author pchretien
- * @version $Id: JsonExclude.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 @Target({ ElementType.FIELD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)

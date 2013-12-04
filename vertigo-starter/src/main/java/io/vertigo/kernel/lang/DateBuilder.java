@@ -27,7 +27,6 @@ import java.util.Date;
  * - date (pr�cise au jour sans notion d'heure)
  * - dateTime 
  * @author npiedeloup, pchretien
- * @version $Id: DateBuilder.java,v 1.1 2013/10/09 14:02:58 pchretien Exp $
  */
 public final class DateBuilder implements Builder<Date> {
 	private final Calendar calendar;

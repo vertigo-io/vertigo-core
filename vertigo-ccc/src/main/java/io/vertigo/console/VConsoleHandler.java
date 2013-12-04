@@ -22,14 +22,15 @@ import io.vertigo.kernel.command.VCommand;
 import io.vertigo.kernel.command.VCommandHandler;
 import io.vertigo.kernel.command.VResponse;
 import io.vertigo.kernel.lang.Activeable;
-import io.vertigoimpl.engines.command.json.JsonAdapter;
 import io.vertigoimpl.engines.command.tcp.VClient;
+import io.vertigoimpl.engines.json.GoogleJsonEngine;
+import io.vertigoimpl.engines.json.JsonEngine;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public final class VConsoleHandler implements VCommandHandler, Activeable {
-	private final JsonAdapter jsonAdapter = new JsonAdapter();
+	private final JsonEngine jsonAdapter = new GoogleJsonEngine();
 	private List<VClient> clients = new ArrayList<>();
 
 	VConsoleHandler() {
