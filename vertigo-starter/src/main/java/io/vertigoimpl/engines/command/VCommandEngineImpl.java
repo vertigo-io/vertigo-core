@@ -29,8 +29,9 @@ import io.vertigo.kernel.engines.VCommandEngine;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.DefinitionSpace;
-import io.vertigoimpl.engines.command.json.JsonAdapter;
 import io.vertigoimpl.engines.command.tcp.VServer;
+import io.vertigoimpl.engines.json.GoogleJsonEngine;
+import io.vertigoimpl.engines.json.JsonEngine;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -52,7 +53,7 @@ import javax.inject.Named;
 public final class VCommandEngineImpl implements VCommandEngine, Activeable {
 	private final int port;
 	private final Map<String, VCommandExecutor> commmandExecutors = new LinkedHashMap<>();
-	private final JsonAdapter jsonAdapater = new JsonAdapter();
+	private final JsonEngine jsonAdapater = new GoogleJsonEngine();
 
 	@Inject
 	public VCommandEngineImpl(@Named("port") int port) {
