@@ -93,6 +93,9 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 		if (componentSpaceConfig.getRestEngine().isDefined()) {
 			engines.add(componentSpaceConfig.getRestEngine().get());
 		}
+		if (componentSpaceConfig.getJsonEngine().isDefined()) {
+			engines.add(componentSpaceConfig.getJsonEngine().get());
+		}
 		engines.add(componentSpaceConfig.getAopEngine());
 
 		for (Engine engine : engines) {
@@ -109,8 +112,8 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 		}
 
 		//VCommandEngine must be started after the container
-		if (componentSpaceConfig.getCommandEngineEngine().isDefined()) {
-			final VCommandEngine commandEngine = componentSpaceConfig.getCommandEngineEngine().get();
+		if (componentSpaceConfig.getCommandEngine().isDefined()) {
+			final VCommandEngine commandEngine = componentSpaceConfig.getCommandEngine().get();
 			if (commandEngine instanceof Activeable) {
 				((Activeable) commandEngine).start();
 			}

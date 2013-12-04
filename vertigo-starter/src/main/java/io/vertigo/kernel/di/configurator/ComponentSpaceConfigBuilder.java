@@ -20,6 +20,7 @@ package io.vertigo.kernel.di.configurator;
 
 import io.vertigo.kernel.engines.AopEngine;
 import io.vertigo.kernel.engines.ElasticaEngine;
+import io.vertigo.kernel.engines.JsonEngine;
 import io.vertigo.kernel.engines.RestEngine;
 import io.vertigo.kernel.engines.VCommandEngine;
 import io.vertigo.kernel.lang.Assertion;
@@ -28,6 +29,7 @@ import io.vertigo.kernel.lang.Loader;
 import io.vertigo.kernel.lang.Option;
 import io.vertigoimpl.engines.aop.cglib.CGLIBAopEngine;
 import io.vertigoimpl.engines.command.VCommandEngineImpl;
+import io.vertigoimpl.engines.json.gson.GoogleJsonEngine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Param�trage de l'application.
+ * Configuration.
  * 
  * @author npiedeloup, pchretien
  */
@@ -44,9 +46,10 @@ public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpace
 	private final Map<String, String> params = new HashMap<>(); //par d�faut vide
 	private boolean silence;
 	private AopEngine aopEngine = new CGLIBAopEngine();
+	private JsonEngine jsonEngine = new GoogleJsonEngine();
 	private RestEngine restEngine = null; //par d�faut par de serveur 
 	private ElasticaEngine elasticaEngine = null; //par d�faut pas d'elasticit�.
-	private VCommandEngine commandEngine = new VCommandEngineImpl(VCommandEngine.DEFAULT_PORT); //Par d�faut
+	private VCommandEngine commandEngine = new VCommandEngineImpl(jsonEngine, VCommandEngine.DEFAULT_PORT); //Par d�faut
 
 	//=========================================================================
 	//==================Param�trage g�n�ral====================================
@@ -147,6 +150,6 @@ public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpace
 			final ModuleConfig moduleConfig = moduleConfigBuilder.build();
 			moduleConfigs.add(moduleConfig);
 		}
-		return new ComponentSpaceConfig(params, moduleConfigs, aopEngine, Option.option(elasticaEngine), Option.option(restEngine), Option.option(commandEngine), silence);
+		return new ComponentSpaceConfig(params, moduleConfigs, aopEngine, Option.option(elasticaEngine), Option.option(restEngine), Option.option(commandEngine), Option.option(jsonEngine), silence);
 	}
 }

@@ -21,20 +21,25 @@ package io.vertigo.console;
 import io.vertigo.kernel.command.VCommand;
 import io.vertigo.kernel.command.VCommandHandler;
 import io.vertigo.kernel.command.VResponse;
+import io.vertigo.kernel.engines.JsonEngine;
 import io.vertigo.kernel.lang.Activeable;
+import io.vertigo.kernel.lang.Assertion;
 import io.vertigoimpl.engines.command.tcp.VClient;
-import io.vertigoimpl.engines.json.GoogleJsonEngine;
-import io.vertigoimpl.engines.json.JsonEngine;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public final class VConsoleHandler implements VCommandHandler, Activeable {
-	private final JsonEngine jsonAdapter = new GoogleJsonEngine();
+	private final JsonEngine jsonEngine;
 	private List<VClient> clients = new ArrayList<>();
 
-	VConsoleHandler() {
-		//
+	@Inject
+	public VConsoleHandler(final JsonEngine jsonEngine) {
+		Assertion.checkNotNull(jsonEngine);
+		//---------------------------------------------------------------------*
+		this.jsonEngine = jsonEngine;
 	}
 
 	public void start() {
@@ -62,10 +67,10 @@ public final class VConsoleHandler implements VCommandHandler, Activeable {
 					for (VClient client : clients) {
 						remoteAddresses.add(client.getRemoteAddress());
 					}
-					return VResponse.createResponse(jsonAdapter.toJson(remoteAddresses));
+					return VResponse.createResponse(jsonEngine.toJson(remoteAddresses));
 				case "$disconnect":
 					stop();
-					return VResponse.createResponse(jsonAdapter.toJson("disconnection OK"));
+					return VResponse.createResponse(jsonEngine.toJson("disconnection OK"));
 				case "$connect":
 					//					if (client != null) {
 					//						return VResponse.createResponseWithError("you are already connected");
@@ -76,7 +81,7 @@ public final class VConsoleHandler implements VCommandHandler, Activeable {
 
 						VClient client = new VClient(host, port);
 						clients.add(client);
-						return VResponse.createResponse(jsonAdapter.toJson("connection successfull"));
+						return VResponse.createResponse(jsonEngine.toJson("connection successfull"));
 					} catch (Exception e) {
 						return VResponse.createResponseWithError("connection failed " + e.getMessage());
 					}
@@ -94,7 +99,7 @@ public final class VConsoleHandler implements VCommandHandler, Activeable {
 			for (VClient client : clients) {
 				responses.add(client.onCommand(command));
 			}
-			return VResponse.createResponse(jsonAdapter.toJson(responses));
+			return VResponse.createResponse(jsonEngine.toJson(responses));
 		}
 	}
 }

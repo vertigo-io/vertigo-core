@@ -19,10 +19,9 @@
 package io.vertigoimpl.engines.rest.cmd;
 
 import io.vertigo.kernel.Home;
+import io.vertigo.kernel.engines.JsonEngine;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.Definition;
-import io.vertigoimpl.engines.json.GoogleJsonEngine;
-import io.vertigoimpl.engines.json.JsonEngine;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -37,12 +36,12 @@ import com.sun.jersey.api.NotFoundException;
 @Path("/spaces")
 @Produces("application/json")
 public class ComponentCmd {
-	private static final JsonEngine jsonAdapter = new GoogleJsonEngine();
+	private final JsonEngine jsonEngine = Home.getComponentSpace().resolve(JsonEngine.class);
 
 	@Path("/components")
 	@GET
 	public String getComponentSpaceConfig() {
-		return jsonAdapter.toJson(Home.getComponentSpace().getConfig());
+		return jsonEngine.toJson(Home.getComponentSpace().getConfig());
 	}
 
 	@Path("/components/{componentId}")
@@ -58,7 +57,7 @@ public class ComponentCmd {
 			for (int j = 0; j < jsonComponentConfigs.size(); j++) {
 				JsonObject jsonComponentConfig = (JsonObject) jsonComponentConfigs.get(j);
 				if (componentId.equalsIgnoreCase(jsonComponentConfig.get("id").getAsString())) {
-					return jsonAdapter.toJson(jsonComponentConfig);
+					return jsonEngine.toJson(jsonComponentConfig);
 				}
 			}
 		}
@@ -68,7 +67,7 @@ public class ComponentCmd {
 	@Path("/components/modules")
 	@GET
 	public String getModuleConfigs() {
-		return jsonAdapter.toJson(doGetModuleConfigs());
+		return jsonEngine.toJson(doGetModuleConfigs());
 	}
 
 	private JsonArray doGetModuleConfigs() {
@@ -88,7 +87,7 @@ public class ComponentCmd {
 		for (int i = 0; i < jsonModuleConfigs.size(); i++) {
 			JsonObject jsonModuleConfig = (JsonObject) jsonModuleConfigs.get(i);
 			if (moduleName.equalsIgnoreCase(jsonModuleConfig.get("name").getAsString())) {
-				return jsonAdapter.toJson(jsonModuleConfig);
+				return jsonEngine.toJson(jsonModuleConfig);
 			}
 		}
 		throw new NotFoundException();
@@ -97,13 +96,13 @@ public class ComponentCmd {
 	@Path("/definitions")
 	@GET
 	public String getDefinitionSpace() {
-		return jsonAdapter.toJson(Home.getDefinitionSpace());
+		return jsonEngine.toJson(Home.getDefinitionSpace());
 	}
 
 	@Path("/definitions/types")
 	@GET
 	public String getDefinitionTypes() {
-		return jsonAdapter.toJson(Home.getDefinitionSpace().getAllTypes());
+		return jsonEngine.toJson(Home.getDefinitionSpace().getAllTypes());
 	}
 
 	@Path("/definitions/types/{definitionType}")
@@ -111,7 +110,7 @@ public class ComponentCmd {
 	public String getDefinitionType(@PathParam("definitionType") String definitionType) {
 		for (Class<? extends Definition> definitionClass : Home.getDefinitionSpace().getAllTypes()) {
 			if (definitionClass.getSimpleName().equals(definitionType)) {
-				return jsonAdapter.toJson(Home.getDefinitionSpace().getAll(definitionClass));
+				return jsonEngine.toJson(Home.getDefinitionSpace().getAll(definitionClass));
 			}
 		}
 		throw new NotFoundException();
@@ -120,6 +119,6 @@ public class ComponentCmd {
 	@Path("/definitions/{definitionName}")
 	@GET
 	public String getDefinition(@PathParam("definitionName") String definitionName) {
-		return jsonAdapter.toJson(Home.getDefinitionSpace().resolve(definitionName));
+		return jsonEngine.toJson(Home.getDefinitionSpace().resolve(definitionName));
 	}
 }

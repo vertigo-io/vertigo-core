@@ -29,9 +29,10 @@
 	<url>www.kleegroup.com</url>
 	
 	<properties>
+		<compileSource>1.7</compileSource>
     	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   	</properties>
-  
+
 	<modules>
 		<module>vertigo-starter</module>
 		<module>vertigo-ccc</module>

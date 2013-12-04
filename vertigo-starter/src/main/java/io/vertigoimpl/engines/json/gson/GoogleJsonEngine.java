@@ -16,9 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigoimpl.engines.json;
+package io.vertigoimpl.engines.json.gson;
 
 import io.vertigo.kernel.component.ComponentInfo;
+import io.vertigo.kernel.engines.JsonEngine;
 import io.vertigo.kernel.lang.JsonExclude;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.metamodel.DefinitionReference;
@@ -37,12 +38,12 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
+/**
+ * @author pchretien
+ */
 public final class GoogleJsonEngine implements JsonEngine {
 	private final Gson gson = createGson();
 
-	/* (non-Javadoc)
-	 * @see io.vertigoimpl.engines.json.JsonEngine2#toJson(java.lang.Object)
-	 */
 	@Override
 	public String toJson(Object data) {
 		return gson.toJson(data);

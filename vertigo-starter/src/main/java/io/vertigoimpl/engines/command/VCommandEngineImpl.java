@@ -25,13 +25,12 @@ import io.vertigo.kernel.command.VResponse;
 import io.vertigo.kernel.component.ComponentInfo;
 import io.vertigo.kernel.component.Describable;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
+import io.vertigo.kernel.engines.JsonEngine;
 import io.vertigo.kernel.engines.VCommandEngine;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.DefinitionSpace;
 import io.vertigoimpl.engines.command.tcp.VServer;
-import io.vertigoimpl.engines.json.GoogleJsonEngine;
-import io.vertigoimpl.engines.json.JsonEngine;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -52,10 +51,13 @@ import javax.inject.Named;
 public final class VCommandEngineImpl implements VCommandEngine, Activeable {
 	private final int port;
 	private final Map<String, VCommandExecutor> commmandExecutors = new LinkedHashMap<>();
-	private final JsonEngine jsonAdapater = new GoogleJsonEngine();
+	private final JsonEngine jsonEngine;
 
 	@Inject
-	public VCommandEngineImpl(@Named("port") int port) {
+	public VCommandEngineImpl(final JsonEngine jsonEngine, @Named("port") int port) {
+		Assertion.checkNotNull(jsonEngine);
+		//---------------------------------------------------------------------
+		this.jsonEngine = jsonEngine;
 		this.port = port;
 
 	}
@@ -206,7 +208,7 @@ public final class VCommandEngineImpl implements VCommandEngine, Activeable {
 	}
 
 	public String toJson(Object result) {
-		return jsonAdapater.toJson(result);
+		return jsonEngine.toJson(result);
 	}
 }
 

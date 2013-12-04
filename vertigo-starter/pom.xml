@@ -29,7 +29,7 @@
 
 	<artifactId>vertigo-starter</artifactId>
 	<packaging>jar</packaging>
-	<name>vertigo starter</name>
+	<name>vertigo-starter</name>
 	
 	<build>
 		<resources>
