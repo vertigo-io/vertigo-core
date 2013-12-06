@@ -23,7 +23,6 @@ import org.junit.Test;
 
 /**
  * Test de l'utilitaitre de manipulation des strings.
- *
  * @author pchretien
  */
 public final class StringUtilTest {
@@ -48,7 +47,7 @@ public final class StringUtilTest {
 		Assert.assertEquals("yyyaYay", StringUtil.replace("YYYYYYaYaYY", "YY", "y"));
 		Assert.assertEquals("YY", StringUtil.replace("YYY", "YY", "Y"));
 
-		//On v�rifie si la chaine � remplacer n'existe pas.
+		//On vï¿½rifie si la chaine ï¿½ remplacer n'existe pas.
 		Assert.assertEquals("azertyuiop", StringUtil.replace("azertyuiop", "ZZ", "Y"));
 	}
 
@@ -148,10 +147,10 @@ public final class StringUtilTest {
 
 	@Test
 	public void testNoSimpleLetter() {
-		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('�'));
-		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('�'));
-		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('�'));
-		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('�'));
+		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('é'));
+		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('à'));
+		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('ù'));
+		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('â'));
 		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('"'));
 		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('+'));
 		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('-'));
@@ -175,7 +174,7 @@ public final class StringUtilTest {
 
 	@Test(expected = Exception.class)
 	public void testformatWithError() {
-		//Si on oublie de fermer une parenth�se
+		//Si on oublie de fermer une parenthï¿½se
 		StringUtil.format("bonjour {0 monde", "le");
 	}
 }

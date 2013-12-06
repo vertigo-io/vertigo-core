@@ -36,14 +36,12 @@
 			<resource>
 				<directory>src/main/java</directory>
 				<excludes>
-					<exclude>**/trash/**</exclude>
 					<exclude>*.java</exclude>
 				</excludes>
 			</resource>
 			<resource>
 				<directory>src/doc/docco</directory>
 				<excludes>
-					<exclude>**/trash/**</exclude>
 					<exclude>*.java</exclude>
 				</excludes>
 			</resource>
@@ -62,9 +60,6 @@
 					<configuration>
 						<source>1.7</source>
 						<target>1.7</target>
-						<excludes>
-							<exclude>**/trash/**</exclude>
-						</excludes>
 					</configuration>
 				</plugin>
 
