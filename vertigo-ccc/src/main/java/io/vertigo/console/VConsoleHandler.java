@@ -31,6 +31,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+/**
+ * @author pchretien
+ */
 public final class VConsoleHandler implements VCommandHandler, Activeable {
 	private final JsonEngine jsonEngine;
 	private List<VClient> clients = new ArrayList<>();

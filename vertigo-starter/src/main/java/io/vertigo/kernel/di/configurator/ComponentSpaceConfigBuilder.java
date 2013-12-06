@@ -28,8 +28,6 @@ import io.vertigo.kernel.lang.Builder;
 import io.vertigo.kernel.lang.Loader;
 import io.vertigo.kernel.lang.Option;
 import io.vertigoimpl.engines.aop.cglib.CGLIBAopEngine;
-import io.vertigoimpl.engines.command.VCommandEngineImpl;
-import io.vertigoimpl.engines.json.gson.GoogleJsonEngine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,10 +44,10 @@ public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpace
 	private final Map<String, String> params = new HashMap<>(); //par d�faut vide
 	private boolean silence;
 	private AopEngine aopEngine = new CGLIBAopEngine();
-	private JsonEngine jsonEngine = new GoogleJsonEngine();
+	private JsonEngine jsonEngine = null; //new GoogleJsonEngine();
 	private RestEngine restEngine = null; //par d�faut par de serveur 
 	private ElasticaEngine elasticaEngine = null; //par d�faut pas d'elasticit�.
-	private VCommandEngine commandEngine = new VCommandEngineImpl(jsonEngine, VCommandEngine.DEFAULT_PORT); //Par d�faut
+	private VCommandEngine commandEngine = null; // new VCommandEngineImpl(jsonEngine, VCommandEngine.DEFAULT_PORT); //Par d�faut
 
 	//=========================================================================
 	//==================Param�trage g�n�ral====================================

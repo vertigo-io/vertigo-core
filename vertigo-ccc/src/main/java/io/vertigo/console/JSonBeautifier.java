@@ -23,6 +23,9 @@ import java.util.Map.Entry;
 
 import com.google.gson.JsonElement;
 
+/**
+ * @author pchretien
+ */
 final class JSonBeautifier {
 
 	String beautify(final JsonElement jsonElement) {

@@ -27,13 +27,12 @@ import io.vertigo.commons.resource.ResourceManagerTest;
 import io.vertigo.kernel.component.cglib.CGLIBAspectContainerTest;
 import io.vertigo.kernel.di.injector.InjectorTest;
 import io.vertigo.kernel.di.reactor.ReactorTest;
-import io.vertigo.kernel.home.HomeTest;
 import io.vertigo.kernel.home.Home2Test;
+import io.vertigo.kernel.home.HomeTest;
 import io.vertigo.kernel.lang.AssertionTest;
 import io.vertigo.kernel.util.ClassUtilTest;
 import io.vertigo.kernel.util.DateUtilTest;
 import io.vertigo.kernel.util.StringUtilTest;
-import io.vertigo.tcp.TcpTest;
 import io.vertigo.xml.XmlComponentsTest;
 import io.vertigo.xml.XmlHomeTest;
 import junit.framework.TestSuite;
@@ -69,8 +68,6 @@ import org.junit.runners.Suite.SuiteClasses;
 	PropertiesConfigManagerTest.class,
 	XmlConfigManagerTest.class,
 	CGLIBAspectContainerTest.class, 
-	//------
-	TcpTest.class
 //@formatter:on
 })
 public final class VertigoTestSuite extends TestSuite {
