@@ -36,15 +36,17 @@ public class MockServer {
 	private final VServer tcpServer2;
 
 	public static void main(String[] args) {
-		MockServer server = new MockServer();
+		MockServer server = new MockServer(4444);
+		MockServer server2 = new MockServer(4443);
 		server.start();
+		server2.start();
 	}
 
 	private void start() {
 		new Thread(tcpServer2).start();
 	}
 
-	private MockServer() {
+	private MockServer(int port) {
 		final Gson gson = new GsonBuilder().create();
 		tcpServer2 = new VServer(new VCommandHandler() {
 			@Override
@@ -62,7 +64,7 @@ public class MockServer {
 						return VResponse.createResponseWithError("unknown command:" + command.getName());
 				}
 			}
-		}, 4444);
+		}, port);
 	}
 
 }
