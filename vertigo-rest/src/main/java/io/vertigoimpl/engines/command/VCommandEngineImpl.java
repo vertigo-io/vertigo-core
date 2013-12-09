@@ -83,7 +83,7 @@ public final class VCommandEngineImpl implements VCommandEngine, Activeable {
 
 		final VServer tcpServer2 = new VServer(new VCommandHandler() {
 			public VResponse onCommand(VCommand command) {
-				return VResponse.createResponse(toJson(exec(command)));
+				return VResponse.createResponse(jsonEngine.toJson(exec(command)));
 			}
 		}, port);
 		tcpServerThread = new Thread(tcpServer2);
@@ -205,10 +205,6 @@ public final class VCommandEngineImpl implements VCommandEngine, Activeable {
 			//---------------------------------------------------------------------
 			return Home.getDefinitionSpace();
 		}
-	}
-
-	public String toJson(Object result) {
-		return jsonEngine.toJson(result);
 	}
 }
 

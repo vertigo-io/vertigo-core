@@ -30,6 +30,4 @@ public interface VCommandEngine extends Engine {
 	int DEFAULT_PORT = 4444;
 
 	Object exec(VCommand command);
-
-	String toJson(Object result);
 }

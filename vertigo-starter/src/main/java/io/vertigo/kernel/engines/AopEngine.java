@@ -25,20 +25,20 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
-
 /**
- * Cr�ation des objets g�rant les r�f�rences sur les instances et impl�mentant les interceptions.(AOP)
+ * Create proxy-reference from component's instance.
+ * Proxy reference implements aspects (AOP). 
  * 
  * @author pchretien
  */
 public interface AopEngine extends Engine {
 
 	/**
-	 * Cr�e une r�f�rence sur l'instance du composant.
+	 * Create a proxy-reference.
 	 * 
-	 * @param instance Instance source non proxifi�e
-	 * @param joinPoints Points d'ex�cution 
-	 * @return R�f�rence proxifi�e sur l'instance du composant
+	 * @param instance Component's instance
+	 * @param joinPoints List of joinPoints 
+	 * @return  Proxy-Reference
 	 */
 	Object create(final Object instance, Map<Method, List<Interceptor>> joinPoints);
 }
