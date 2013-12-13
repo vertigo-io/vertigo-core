@@ -1,0 +1,184 @@
+<!--
+
+    vertigo - simple java starter
+
+    Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+    KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script type="text/javascript" src="http://d3js.org/d3.v3.js"></script>
+		<!--  script type="text/javascript" src="http://masonry.desandro.com/js/masonry-docs.min.js"></script-->
+
+		<style type="text/css">
+			.modules {
+			}
+			.module {
+				margin:10px;
+				padding:5px;
+				float:left;
+			}
+			.content {
+				position:relative;
+			}
+			.module.S { 
+				max-width:170px;
+				min-height:170px;
+			}
+			.module.SS {
+				max-width:340px;
+				min-height:170px;
+			}
+			.module.M {
+				max-width:340px;
+				min-height:340px;
+			}
+			.module.MM {
+				max-width:680px;
+				min-height:340px;
+			}
+			.module.L {
+				max-width:680px;
+				min-height:680px;
+			}
+			.module.LL {
+				max-width:1260x;
+				min-height:680px;
+			}
+			.XL {
+				max-width:1260px;
+				min-height:1260px;
+			}
+			.components {
+				background-color:#EEE;
+				position:absolute
+				bottom:0px;
+			}
+			.component {
+				margin:5px;
+				padding:5px;
+				background-color:#BBB ;
+				vertical-align:bottom;
+				width:150px;
+				height:50px;
+				display:inline-block;
+			}
+		</style>
+	</head>
+
+	<body>
+		<h2>Modules</h2>
+		<a href="http://localhost:8086/spaces/components/modules">view data</a>
+		<div id="modules"></div>
+
+		</body>
+		<script type="text/javascript">
+		var PURPLE = '#A200FF';
+		var MAGENTA = '	#FF0097';
+		var TEAL = '#00ABA9';
+		var LIME= '#8CBF26';
+		var BROWN= '#A05000';
+		var PINK='#E671B8';
+		var ORANGE='#F09609';
+		var BLUE='#1BA1E2';
+		var RED='#E51400';
+		var GREEN='#339933';
+		
+		var colors = new Array();
+		colors[0] = PURPLE;
+		colors[1] = MAGENTA;
+		colors[2] = TEAL;
+		colors[3] = LIME;
+		colors[4] = BROWN;
+		colors[5] = PINK;
+		colors[6] = ORANGE;
+		colors[7] = BLUE;
+		colors[8] = RED;
+		colors[9] = GREEN;
+		
+		var modules = 	d3.json('http://localhost:8086/spaces/components/modules', function(data) {
+			displayModules(data);
+		});
+		
+	/*	var modules = [
+			{name:"m1", componentConfigs :[{id:"c11"}]},
+			{name:"m2", componentConfigs :[{id:"c21"}, {id:"c22"}]},
+			{name:"m3", componentConfigs :[{id:"c31"}, {id:"c32"}, {id:"c33"}]},
+			{name:"m4", componentConfigs :[{id:"c41"}, {id:"c42"}, {id:"c43"}, {id:"c44"}]},
+			{name:"m5", componentConfigs :[{id:"c51"}, {id:"c52"}, {id:"c53"}, {id:"c54"}, {id:"c55"}]},
+			{name:"m6", componentConfigs :[{id:"c51"}, {id:"c52"}, {id:"c53"}, {id:"c54"}, {id:"c55"}, {id:"c6"}]},
+			{name:"m7", componentConfigs :[{id:"c51"}, {id:"c52"}, {id:"c53"}, {id:"c54"}, {id:"c55"}, {id:"c6"}, {id:"c7"}]},
+			{name:"m8", componentConfigs :[{id:"c51"}, {id:"c52"}, {id:"c53"}, {id:"c54"}, {id:"c55"}, {id:"c6"}, {id:"c7"}, {id:"c8"}]},
+			{name:"m9", componentConfigs :[{id:"c51"}, {id:"c52"}, {id:"c53"}, {id:"c54"}, {id:"c55"}, {id:"c6"}, {id:"c7"}, {id:"c8"}, {id:"c9"}]},
+			{name:"m12", componentConfigs :[
+					{id:"c51"}, {id:"c52"}, {id:"c53"}, {id:"c54"}, 
+					{id:"c51"}, {id:"c52"}, {id:"c53"}, {id:"c54"}, 
+					{id:"c51"}, {id:"c52"}, {id:"c53"}, {id:"c54"} 
+					]},
+			{name:"m16", componentConfigs :[
+					{id:"c51"}, {id:"c52"}, {id:"c53"}, {id:"c54"}, 
+					{id:"c51"}, {id:"c52"}, {id:"c53"}, {id:"c54"}, 
+					{id:"c51"}, {id:"c52"}, {id:"c53"}, {id:"c54"}, 
+					{id:"c51"}, {id:"c52"}, {id:"c53"}, {id:"c54"} 
+					]}
+		];
+*/
+		var size = function (count){
+			if (count<=1) return 'module S';
+			if (count<=2) return 'module SS';
+			if (count<=6) return 'module M';
+			if (count<=12) return 'module MM';
+			if (count<=28) return 'module L';
+			if (count<=56) return 'module LL';
+			return 'module XL';
+		};
+		
+		var displayModules = function(modules){
+			var module = d3.select("div").selectAll("div")
+				.data(modules).enter()
+				.append("div")
+					.attr('class', function(d) { return size(d.componentConfigs.length)})
+					.style("background-color", function(d, i) { return colors[i%10];})
+						.append("div")
+						.attr('class', 'content');
+					
+				module
+					.append("div")
+						.text(function(d) { return d.name; });
+				module	
+					.append("div")
+						.attr('class', 'components')
+						.selectAll("div")
+						  .data(function(d) { return d.componentConfigs; }).enter()
+							  .append("div")
+								.attr('class', 'component')
+								.append("a")
+									.attr('href', function(d) {return 'http://localhost:8086/spaces/components/'+ d.id})
+									.text(function(d) { return d.id; });
+				
+			//var container = document.querySelector('#modules');
+			/*var msnry = new Masonry( container, {
+				// options
+				columnWidth: 500, //M
+				itemSelector: '.module'
+			});*/
+		}
+		</script>
+</html>
+
+
