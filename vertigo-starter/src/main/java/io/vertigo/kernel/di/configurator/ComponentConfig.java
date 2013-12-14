@@ -44,7 +44,7 @@ final class ComponentConfig {
 	private final Class<?> implClass;
 	private final Map<String, String> params;
 	private final Class<? extends ComponentInitializer<?>> componentInitializerClass;
-	private final List<PluginConfig> pluginConfigs;
+	private final List<PluginConfig> plugins;
 	private final boolean elastic;
 
 	/**
@@ -63,7 +63,7 @@ final class ComponentConfig {
 		id = DIAnnotationUtil.buildId(apiClass, implClass);
 		this.elastic = elastic;
 		this.componentInitializerClass = componentInitializerClass;
-		pluginConfigs = Collections.unmodifiableList(new ArrayList<>(pluginConfigurations));
+		plugins = Collections.unmodifiableList(new ArrayList<>(pluginConfigurations));
 		//---------------------------------------------------------------------
 		this.apiClass = apiClass;
 		this.implClass = implClass;
@@ -74,7 +74,7 @@ final class ComponentConfig {
 	 * @return Liste des configurations de plugins
 	 */
 	List<PluginConfig> getPluginConfigs() {
-		return pluginConfigs;
+		return plugins;
 	}
 
 	/**

@@ -38,7 +38,7 @@ import java.util.Map;
  * @author npiedeloup, pchretien
  */
 public final class ComponentSpaceConfig {
-	private final List<ModuleConfig> moduleConfigs;
+	private final List<ModuleConfig> modules;
 	private final Map<String, String> params;
 	private final boolean silence;
 	@JsonExclude
@@ -61,7 +61,7 @@ public final class ComponentSpaceConfig {
 		Assertion.checkNotNull(jsonEngine);
 		//---------------------------------------------------------------------
 		this.params = params;
-		this.moduleConfigs = Collections.unmodifiableList(new ArrayList<>(moduleConfigs));
+		this.modules = Collections.unmodifiableList(new ArrayList<>(moduleConfigs));
 		this.silence = silence;
 		this.aopEngine = aopEngine;
 		this.restEngine = restEngine;
@@ -74,7 +74,7 @@ public final class ComponentSpaceConfig {
 	 * @return Liste des configurations de modules
 	 */
 	List<ModuleConfig> getModuleConfigs() {
-		return moduleConfigs;
+		return modules;
 	}
 
 	/**

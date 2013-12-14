@@ -38,8 +38,8 @@ import java.util.List;
  */
 final class ModuleConfig {
 	private final String name;
-	private final List<ComponentConfig> componentConfigs;
-	private final List<AspectConfig> aspectConfigs;
+	private final List<ComponentConfig> components;
+	private final List<AspectConfig> aspects;
 	@JsonExclude
 	private final List<ModuleRule> moduleRules;
 
@@ -50,8 +50,8 @@ final class ModuleConfig {
 		Assertion.checkNotNull(moduleRules);
 		//---------------------------------------------------------------------
 		this.name = name;
-		this.componentConfigs = Collections.unmodifiableList(new ArrayList<>(componentConfigs));
-		this.aspectConfigs = aspectConfigs;
+		this.components = Collections.unmodifiableList(new ArrayList<>(componentConfigs));
+		this.aspects = aspectConfigs;
 		this.moduleRules = Collections.unmodifiableList(new ArrayList<>(moduleRules));
 	}
 
@@ -59,11 +59,11 @@ final class ModuleConfig {
 	 * @return Liste des configurations de composants.
 	 */
 	List<ComponentConfig> getComponentConfigs() {
-		return componentConfigs;
+		return components;
 	}
 
 	List<AspectConfig> getAspectConfigs() {
-		return aspectConfigs;
+		return aspects;
 	}
 
 	/**
