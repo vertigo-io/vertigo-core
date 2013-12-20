@@ -24,13 +24,13 @@
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-parent</artifactId>
-		<version>0.1.0</version>
+		<version>0.1.0-snapshot</version>
 	</parent>
 
 	<artifactId>vertigo-starter</artifactId>
 	<packaging>jar</packaging>
 	<name>vertigo-starter</name>
-	
+
 	<build>
 		<resources>
 			<resource>
@@ -46,6 +46,7 @@
 				</excludes>
 			</resource>
 		</resources>
+		
 		<testResources>
 			<testResource>
 				<directory>src/test/java</directory>
@@ -65,6 +66,7 @@
 
 			</plugins>
 		</pluginManagement>
+		
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -111,14 +113,7 @@
 				<configuration>
 					<header>license.txt</header>
 				</configuration>
-				<!-- executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>license</goal>
-						</goals>
-					</execution>
-				</executions-->
+				<!-- executions> <execution> <phase>package</phase> <goals> <goal>license</goal> </goals> </execution> </executions -->
 			</plugin>
 		</plugins>
 	</build>
@@ -159,6 +154,7 @@
 			<version>2.2.2</version>
 		</dependency>
 	</dependencies>
+	
 	<pluginRepositories>
 		<pluginRepository>
 			<id>atlassian-public</id>

@@ -20,25 +20,48 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<groupId>io.vertigo</groupId>
 	<artifactId>vertigo-parent</artifactId>
-	<version>0.1.0</version>
+	<version>0.1.0-snapshot</version>
 	<name>vertigo</name>
 	<packaging>pom</packaging>
+	<description> </description>
 	<url>www.kleegroup.com</url>
-	
-	<properties>	
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>phlppchrtn</id>
+			<name>philippe chrétien</name>
+			<email>philippe dot chretien at kleegroup dot com</email>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git@github.com:vertigo-io/vertigo.git</connection>
+		<developerConnection>scm:git:git@github.com:vertigo-io/vertigo.git</developerConnection>
+		<url>git:github.com:vertigo-io/vertigo</url>
+	</scm>
+
+	<properties>
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
-    	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  	</properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
 	<modules>
 		<module>vertigo-starter</module>
-		<module>vertigo-ccc</module>
-		<module>vertigo-rest</module>
+		<!-- module>vertigo-ccc</module> <module>vertigo-rest</module -->
 	</modules>
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
