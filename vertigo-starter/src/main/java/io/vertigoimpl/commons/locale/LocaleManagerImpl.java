@@ -45,7 +45,7 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 
 /**
- * Impl�mentation standard de la gestion des ressources.
+ * Standard implementation of the 'Locale Management' component .
  * Les ressources d�clar�es dans une enum sont charg�es par un fichier properties avec un resourceBundle.
  *
  * @author  pchretien

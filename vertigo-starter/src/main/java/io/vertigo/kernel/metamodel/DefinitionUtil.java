@@ -46,8 +46,8 @@ public final class DefinitionUtil {
 		//On enl�ve le prefix et le separateur.
 		//On v�rifie aussi que le prefix est OK 
 		final String prefix = getPrefix(definitionClass);
-		Assertion.checkArgument(name.startsWith(prefix), "Le nom de la d�finition '{0}' ne commence pas par le prefix attendu : '{1}'", name, prefix);
-		Assertion.checkArgument(name.charAt(prefix.length()) == Definition.SEPARATOR, "S�parateur utilis� pour la d�finition '{0}' n'est pas corerect", name);
+		Assertion.checkArgument(name.startsWith(prefix), "Le nom de la définition '{0}' ne commence pas par le prefix attendu : '{1}'", name, prefix);
+		Assertion.checkArgument(name.charAt(prefix.length()) == Definition.SEPARATOR, "Séparateur utilisé pour la définition '{0}' n'est pas correct", name);
 		return name.substring(prefix.length() + 1);
 	}
 }

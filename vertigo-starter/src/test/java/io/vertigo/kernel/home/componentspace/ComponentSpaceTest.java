@@ -16,22 +16,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.kernel.home;
+package io.vertigo.kernel.home.componentspace;
 
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
-import io.vertigo.kernel.home.data.BioManager;
-import io.vertigo.kernel.home.data.BioManagerImpl;
-import io.vertigo.kernel.home.data.MathManager;
-import io.vertigo.kernel.home.data.MathManagerImpl;
-import io.vertigo.kernel.home.data.MathPlugin;
+import io.vertigo.kernel.home.componentspace.data.BioManager;
+import io.vertigo.kernel.home.componentspace.data.BioManagerImpl;
+import io.vertigo.kernel.home.componentspace.data.MathManager;
+import io.vertigo.kernel.home.componentspace.data.MathManagerImpl;
+import io.vertigo.kernel.home.componentspace.data.MathPlugin;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 
-public final class HomeTest {
+public final class ComponentSpaceTest {
 
 	@Test
 	public void testHome() {

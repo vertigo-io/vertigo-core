@@ -27,15 +27,15 @@ import io.vertigo.commons.resource.ResourceManagerTest;
 import io.vertigo.kernel.component.cglib.CGLIBAspectContainerTest;
 import io.vertigo.kernel.di.injector.InjectorTest;
 import io.vertigo.kernel.di.reactor.ReactorTest;
-import io.vertigo.kernel.home.Home2Test;
-import io.vertigo.kernel.home.HomeTest;
+import io.vertigo.kernel.home.componentspace.ComponentSpace2Test;
+import io.vertigo.kernel.home.componentspace.ComponentSpaceTest;
+import io.vertigo.kernel.home.definitionspace.DefinitionSpaceTest;
 import io.vertigo.kernel.lang.AssertionTest;
 import io.vertigo.kernel.util.ClassUtilTest;
 import io.vertigo.kernel.util.DateUtilTest;
 import io.vertigo.kernel.util.StringUtilTest;
 import io.vertigo.xml.XmlComponentsTest;
 import io.vertigo.xml.XmlHomeTest;
-import junit.framework.TestSuite;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -50,8 +50,9 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ 
 //@formatter:off
 	//Kernel
-	HomeTest.class,
-	Home2Test.class,
+	DefinitionSpaceTest.class,
+	ComponentSpaceTest.class,
+	ComponentSpace2Test.class,
 	XmlHomeTest.class,
 	XmlComponentsTest.class,
 	InjectorTest.class,
@@ -70,6 +71,6 @@ import org.junit.runners.Suite.SuiteClasses;
 	CGLIBAspectContainerTest.class, 
 //@formatter:on
 })
-public final class VertigoTestSuite extends TestSuite {
+public final class VertigoTestSuite {
 	//
 }

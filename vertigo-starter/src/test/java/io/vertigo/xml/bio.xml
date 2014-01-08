@@ -21,10 +21,10 @@
 -->
 <modules>
 	<module name="Bio"> 
-	    <component api="BioManager" class="io.vertigo.kernel.home.data.BioManagerImpl" />
-		<component api="MathManager" class="io.vertigo.kernel.home.data.MathManagerImpl" >
+	    <component api="BioManager" class="io.vertigo.kernel.home.componentspace.data.BioManagerImpl" />
+		<component api="MathManager" class="io.vertigo.kernel.home.componentspace.data.MathManagerImpl" >
 	    	<param name="start" value="100" />
-		    	<plugin class="io.vertigo.kernel.home.data.MathPlugin" >
+		    	<plugin class="io.vertigo.kernel.home.componentspace.data.MathPlugin" >
 		        	<param name="factor" value="20" />
 		        </plugin>
 	    </component>

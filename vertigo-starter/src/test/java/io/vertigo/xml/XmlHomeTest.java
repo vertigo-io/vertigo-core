@@ -21,7 +21,7 @@ package io.vertigo.xml;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
-import io.vertigo.kernel.home.data.BioManager;
+import io.vertigo.kernel.home.componentspace.data.BioManager;
 import io.vertigo.xml.XMLModulesLoader;
 
 import java.util.Properties;

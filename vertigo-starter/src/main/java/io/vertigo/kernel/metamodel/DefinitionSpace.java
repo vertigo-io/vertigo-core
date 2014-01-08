@@ -28,24 +28,23 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-
 /**
  * Espace d'objets.
- * Etape 1 : Enregistrer les classes �ligibles (register)
+ * Etape 1 : Enregistrer les classes éligibles (register)
  * Etape 2 : Ajouter les objets (put) 
  * @author pchretien
  */
 public final class DefinitionSpace implements Activeable {
 	/**
-	 * Liste des objets index�s par Class (le type) et identifiant.
+	 * Liste des objets indexés par Class (le type) et identifiant.
 	 */
 	private final Map<Class<? extends Definition>, Map<String, Definition>> definitions = new LinkedHashMap<>();
 	@JsonExclude
 	private final Map<String, Definition> allObjects = new LinkedHashMap<>(); //byId
 
 	/**
-	 * Enregistrement d'une nouveau type d'objet g�r� par le space (�ligibles).
-	 * @param clazz Classe g�r�e
+	 * Enregistrement d'une nouveau type d'objet géré par le space (éligibles).
+	 * @param clazz Classe gérée
 	 */
 	public void register(final Class<? extends Definition> clazz) {
 		Assertion.checkNotNull(clazz);
@@ -56,7 +55,7 @@ public final class DefinitionSpace implements Activeable {
 
 	/**
 	 * Enregistrement d'un nouvel object.
-	 * @param definition Objet � enregistrer
+	 * @param definition Objet à enregistrer
 	 * @param clazz type de l'object
 	 */
 	public void put(final Definition definition, final Class<? extends Definition> clazz) {
