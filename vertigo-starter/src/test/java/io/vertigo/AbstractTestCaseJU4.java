@@ -30,7 +30,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
-
 /**
  * Charge l'environnement de test par defaut.
  * @author pchretien

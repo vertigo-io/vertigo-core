@@ -26,9 +26,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-
 /**
- * R�f�rence SERIALIZABLE vers les definitions.
+ * Référence SERIALIZABLE vers les definitions.
  * @author pchretien
  * @param <D> Type de la d�finition
  */
