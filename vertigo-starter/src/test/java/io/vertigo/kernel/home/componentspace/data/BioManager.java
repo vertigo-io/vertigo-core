@@ -16,20 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.kernel.home.data;
+package io.vertigo.kernel.home.componentspace.data;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+import io.vertigo.kernel.component.Manager;
 
-public final class MathManagerImpl implements MathManager {
-	@Inject
-	private MathPlugin mathPlugin;
-	@Inject
-	@Named("start")
-	private int start;
+public interface BioManager extends Manager {
+	int add(int... a);
 
-	public int add(int a, int b) {
-		return start + mathPlugin.add(a, b);
-	}
-
+	boolean isActive();
 }

@@ -16,12 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.kernel.home.data;
+package io.vertigo.kernel.home.componentspace.data;
 
 import io.vertigo.kernel.component.Manager;
 
-public interface BioManager extends Manager {
-	int add(int... a);
-
-	boolean isActive();
+public interface MathManager extends Manager {
+	int add(int a, int b);
 }

@@ -16,36 +16,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.kernel.home.data;
+package io.vertigo.kernel.home.componentspace.data;
 
-import io.vertigo.kernel.lang.Activeable;
+import io.vertigo.kernel.component.Plugin;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 
-public final class BioManagerImpl implements BioManager, Activeable {
-	private boolean active = false;
+public class MathPlugin implements Plugin {
 	@Inject
-	private MathManager mathManager;
+	@Named("factor")
+	private int start;
 
-	public int add(final int... all) {
-		int res = 0;
-		for (final int a : all) {
-			res = mathManager.add(res, a);
-		}
-		return res;
+	public int add(int a, int b) {
+		return start + a + b;
 	}
-
-	public boolean isActive() {
-		return active;
-	}
-
-	public void start() {
-		active = true;
-	}
-
-	public void stop() {
-		//
-	}
-
 }
