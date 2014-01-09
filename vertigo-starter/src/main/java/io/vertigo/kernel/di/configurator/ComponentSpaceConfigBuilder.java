@@ -94,7 +94,7 @@ public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpace
 		return this;
 	}
 
-	public ComponentSpaceConfigBuilder withJSonEngine(final JsonEngine newJsonEngine) {
+	public ComponentSpaceConfigBuilder withJsonEngine(final JsonEngine newJsonEngine) {
 		Assertion.checkNotNull(newJsonEngine);
 		//---------------------------------------------------------------------
 		jsonEngine = newJsonEngine;

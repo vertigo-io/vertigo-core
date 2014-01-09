@@ -23,6 +23,7 @@ import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.kernel.lang.MessageKey;
 import io.vertigo.kernel.lang.MessageText;
 import io.vertigoimpl.commons.locale.LocaleManagerImpl;
+import io.vertigoimpl.engines.json.gson.GoogleJsonEngine;
 import io.vertigoimpl.engines.rest.grizzly.GrizzlyRestEngine;
 
 import java.io.Serializable;
@@ -45,6 +46,7 @@ public final class LocaleManagerTest extends AbstractTestCase2JU4 {
 	protected void configMe(final ComponentSpaceConfigBuilder componentSpaceConfiguilder) {
 		// @formatter:off
 		componentSpaceConfiguilder
+		.withJsonEngine(new GoogleJsonEngine())
 		.withRestEngine(new GrizzlyRestEngine(8080))
 		//.withCommandEngine(new VCommandEngineImpl(new GoogleJsonEngine(), 4400))
 		.beginModule("spaces").

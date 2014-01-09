@@ -22,6 +22,7 @@ import io.vertigo.kernel.Home;
 import io.vertigo.kernel.engines.JsonEngine;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.Definition;
+import io.vertigoimpl.engines.json.gson.GoogleJsonEngine;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -36,7 +37,7 @@ import com.sun.jersey.api.NotFoundException;
 @Path("/spaces")
 @Produces("application/json")
 public class ComponentCmd {
-	private final JsonEngine jsonEngine = Home.getComponentSpace().resolve(JsonEngine.class);
+	private final JsonEngine jsonEngine = new GoogleJsonEngine(); //.getComponentSpace().resolve(JsonEngine.class);
 
 	@Path("/components")
 	@GET
