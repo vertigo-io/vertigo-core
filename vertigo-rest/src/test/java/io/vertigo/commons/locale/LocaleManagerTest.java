@@ -59,12 +59,6 @@ public final class LocaleManagerTest extends AbstractTestCase2JU4 {
 	@Before
 	public void setup() {
 		localeManager.add("io.vertigo.commons.locale.city-guide", CityGuide.values());
-		try {
-			Thread.sleep(100000000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -77,6 +71,12 @@ public final class LocaleManagerTest extends AbstractTestCase2JU4 {
 	public void testDefaultDisplay() {
 		final MessageText helloTxt = new MessageText(CityGuide.HELLO);
 		Assert.assertEquals("bonjour", helloTxt.getDisplay());
+		try {
+			Thread.sleep(100000000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Test

@@ -29,9 +29,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Espace d'objets.
+ * Espace de définitions (non threadSafe).
+ * Il est nécessaier d'enregistrer toutes les définitions au démarrage du serveur.
  * Etape 1 : Enregistrer les classes éligibles (register)
  * Etape 2 : Ajouter les objets (put) 
+ * 
  * @author pchretien
  */
 public final class DefinitionSpace implements Activeable {

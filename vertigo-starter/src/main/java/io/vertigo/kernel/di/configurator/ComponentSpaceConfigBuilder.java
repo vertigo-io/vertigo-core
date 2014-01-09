@@ -41,12 +41,12 @@ import java.util.Map;
  */
 public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpaceConfig> {
 	private final List<ModuleConfigBuilder> moduleConfigBuilders = new ArrayList<>();
-	private final Map<String, String> params = new HashMap<>(); //par d�faut vide
+	private final Map<String, String> params = new HashMap<>(); //par défaut vide
 	private boolean silence;
 	private AopEngine aopEngine = new CGLIBAopEngine();
-	private JsonEngine jsonEngine = null; //new GoogleJsonEngine();
-	private RestEngine restEngine = null; //par d�faut par de serveur 
-	private ElasticaEngine elasticaEngine = null; //par d�faut pas d'elasticit�.
+	private JsonEngine jsonEngine = null;
+	private RestEngine restEngine = null; //par défaut par de serveur 
+	private ElasticaEngine elasticaEngine = null; //par défaut pas d'elasticit�.
 	private VCommandEngine commandEngine = null; // new VCommandEngineImpl(jsonEngine, VCommandEngine.DEFAULT_PORT); //Par d�faut
 
 	//=========================================================================
@@ -94,9 +94,10 @@ public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpace
 		return this;
 	}
 
-	public ComponentSpaceConfigBuilder withNoCommandEngine() {
+	public ComponentSpaceConfigBuilder withJSonEngine(final JsonEngine newJsonEngine) {
+		Assertion.checkNotNull(newJsonEngine);
 		//---------------------------------------------------------------------
-		commandEngine = null;
+		jsonEngine = newJsonEngine;
 		return this;
 	}
 

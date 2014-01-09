@@ -21,25 +21,25 @@ package io.vertigo.kernel.metamodel;
 import java.util.regex.Pattern;
 
 /**
- * D�finition.
+ * Définition.
  * 
- * Les D�finitions de service, de DT, les domaines, les Formatters sont des d�finitions.
- * De mani�re plus g�n�rale tout �l�ment qui sert � �tablir le mod�le est une d�finition.
- * Une d�finition sert � mod�liser le m�tier.
+ * Les Définitions de service, de DT, les domaines, les Formatters sont des définitions.
+ * De maniére plus générale tout élément qui sert établir le modèle est une définition.
+ * Une définition sert à modéliser le métier.
  *
- * Une d�finition 
+ * Une définition 
  *  - n'est pas serializable.
  *  - est invariante (non mutable) dans le temps.
- *  - est charg�e au (re)d�marrage du serveur.
- *  - poss�de un nom unique qui doit v�rifier le pattern ci dessous
+ *  - est chargée au (re)démarrage du serveur.
+ *  - possède un nom unique qui doit vérifier le pattern ci dessous
  *
  * @author  pchretien
  */
 public interface Definition {
 	char SEPARATOR = '_';
 	/**
-	 * Expression r�guli�re v�rifi�e par les noms des d�finitions.
-	 * 2 exemples accept�s :
+	 * Expression réguli�re v�rifi�e par les noms des d�finitions.
+	 * 2 exemples acceptés :
 	 * TO_TO
 	 * ou 
 	 * TO_TO$TI_TI
