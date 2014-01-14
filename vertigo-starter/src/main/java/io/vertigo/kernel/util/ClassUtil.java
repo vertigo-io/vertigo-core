@@ -34,9 +34,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-
 /**
- * Centralisation des créations d'instances à partir d'une nom de classe. Cette approche �tant utilis�e pour cr�er des liens plus souples entre des objets.
+ * Centralisation des créations d'instances à partir d'une nom de classe. Cette approche étant utilisée pour créer des liens plus souples entre des objets.
  * 
  * @author pchretien
  */
