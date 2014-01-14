@@ -23,7 +23,7 @@
 
 	<groupId>io.vertigo</groupId>
 	<artifactId>vertigo-parent</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.1.0</version>
 	<name>vertigo</name>
 	<packaging>pom</packaging>
 	<description> </description>
@@ -49,7 +49,8 @@
 		<connection>scm:git:git@github.com:vertigo-io/vertigo.git</connection>
 		<developerConnection>scm:git:git@github.com:vertigo-io/vertigo.git</developerConnection>
 		<url>git:github.com:vertigo-io/vertigo</url>
-	</scm>
+	  	<tag>vertigo-0.1.0</tag>
+  </scm>
 
 	<properties>
 		<maven.compiler.source>1.7</maven.compiler.source>
@@ -57,6 +58,27 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<build>
+    <!-- To define the plugin version in your parent POM -->
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.4.2</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <!-- To use the plugin goals in your POM or parent POM -->
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.4.2</version>
+      </plugin>
+    </plugins>
+  </build>
+  
 	<modules>
 		<module>vertigo-starter</module>
 		<!-- module>vertigo-ccc</module> <module>vertigo-rest</module -->

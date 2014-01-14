@@ -24,7 +24,7 @@
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-parent</artifactId>
-		<version>0.1.0-SNAPSHOT</version>
+		<version>0.1.0</version>
 	</parent>
 
 	<artifactId>vertigo-starter</artifactId>
@@ -35,6 +35,7 @@
 		<connection>scm:git:git@github.com:vertigo-io/vertigo.git</connection>
 		<url>scm:git:git@github.com:vertigo-io/vertigo.git</url>
 		<developerConnection>scm:git:git@github.com:vertigo-io/vertigo.git</developerConnection>
+		<tag>vertigo-0.1.0</tag>
 	</scm>
 	<build>
 		<resources>
