@@ -31,6 +31,11 @@
 	<packaging>jar</packaging>
 	<name>vertigo-starter</name>
 
+	<scm>
+		<connection>scm:git:git@github.com:vertigo-io/vertigo.git</connection>
+		<url>scm:git:git@github.com:vertigo-io/vertigo.git</url>
+		<developerConnection>scm:git:git@github.com:vertigo-io/vertigo.git</developerConnection>
+	</scm>
 	<build>
 		<resources>
 			<resource>
@@ -114,6 +119,50 @@
 					<header>license.txt</header>
 				</configuration>
 				<!-- executions> <execution> <phase>package</phase> <goals> <goal>license</goal> </goals> </execution> </executions -->
+			</plugin>
+			<plugin><!--Config pour déployer les sources et la javadoc :http://stackoverflow.com/questions/4725668/how-to-deploy-snapshot-with-sources-and-javadoc -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>jar</goal>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<!-- explicitly define maven-deploy-plugin after other to force exec order -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.7</version>
+				<executions>
+					<execution>
+						<id>deploy</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>deploy</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
