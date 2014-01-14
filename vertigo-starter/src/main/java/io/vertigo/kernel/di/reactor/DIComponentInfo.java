@@ -33,9 +33,9 @@ import javax.inject.Inject;
 
 
 /**
- * Md�le d'un composant.
- * Un composant est d�fini par ses d�pendances externes.
- * Les d�pendances � des objets fournis par les params ne sont pas expos�es. (ele ne servent pas dans la r�solution). 
+ * Modèle d'un composant.
+ * Un composant est défini par ses dépendances externes.
+ * Les dépendances à des objets fournis par les params ne sont pas exposées. (ele ne servent pas dans la résolution). 
  * @author prahmoune, pchretien
  */
 final class DIComponentInfo {
@@ -44,7 +44,7 @@ final class DIComponentInfo {
 
 	DIComponentInfo(final String id, final Class<?> implClass, final Set<String> pluginIds, final Set<String> params) {
 		Assertion.checkArgNotEmpty(id);
-		//		Assertion.precondition(Container.REGEX_ID.matcher(id).matches(), "id '{0}' doit �tre camelCase et commencer par une minuscule", id);
+		//		Assertion.precondition(Container.REGEX_ID.matcher(id).matches(), "id '{0}' doit être camelCase et commencer par une minuscule", id);
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
 		//---------------------------------------------------------------------
@@ -62,16 +62,16 @@ final class DIComponentInfo {
 
 	@Override
 	public String toString() {
-		//Utilis� pour afficher les messages d'erreurs lors du calcul des DI
+		//Utilisé pour afficher les messages d'erreurs lors du calcul des DI
 		return id;
 	}
 
 	//-------------------------------------------------------------------------
-	//------------------------Calcul des D�pendances---------------------------
+	//------------------------Calcul des Dépendances---------------------------
 	//-------------------------------------------------------------------------
 	private static Collection<DIDependency> buildDependencies(final DIComponentInfo diComponentInfo, final Class<?> implClass, final Set<String> params, final Set<String> pluginIds) {
 		final Collection<DIDependency> tmpDependencies = new ArrayList<>();
-		//Les param�tres sont suppos�s connus et ne sont donc pas concern�s par l'analyse de d�pendances
+		//Les paramètres sont supposés connus et ne sont donc pas concernés par l'analyse de dépendances
 		populateConstructorDepedencies(diComponentInfo, tmpDependencies, implClass, params);
 		populateFieldDepencies(diComponentInfo, tmpDependencies, implClass, params);
 		populatePluginDepedencies(diComponentInfo, tmpDependencies, pluginIds);
@@ -93,7 +93,7 @@ final class DIComponentInfo {
 	 */
 	private static void populateConstructorDepedencies(final DIComponentInfo diComponentInfo, final Collection<DIDependency> dependencies, final Class<?> implClass, final Set<String> params) {
 		final Constructor<?> constructor = DIAnnotationUtil.findInjectableConstructor(implClass);
-		//On construit la liste de ses d�pendances.
+		//On construit la liste de ses dépendances.
 		for (int i = 0; i < constructor.getParameterTypes().length; i++) {
 			final DIDependency dependency = new DIDependency(diComponentInfo, constructor, i);
 			if (!params.contains(dependency.getId())) {
@@ -108,7 +108,7 @@ final class DIComponentInfo {
 	private static void populateFieldDepencies(final DIComponentInfo diComponentInfo, final Collection<DIDependency> dependencies, final Class<?> implClass, final Set<String> params) {
 		final Collection<Field> fields = ClassUtil.getAllFields(implClass, Inject.class);
 		for (final Field field : fields) {
-			//On utilise le build sur les champs avec les options autoris�es.
+			//On utilise le build sur les champs avec les options autorisées.
 			final DIDependency dependency = new DIDependency(diComponentInfo, field);
 			if (!params.contains(dependency.getId())) {
 				dependencies.add(dependency);

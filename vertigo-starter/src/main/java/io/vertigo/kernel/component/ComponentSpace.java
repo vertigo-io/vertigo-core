@@ -22,7 +22,7 @@ import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
 import io.vertigo.kernel.lang.Activeable;
 
 /**
- * Centralisation des acc�s aux composants et aux plugins d'un module.
+ * Centralisation des accès aux composants et aux plugins d'un module.
  * Les composants sont d'un type M.
  * @author pchretien
  */
@@ -30,7 +30,7 @@ public interface ComponentSpace extends Container, Activeable {
 	/**
 	 * @param componentClass Classe type du composant(Interface)
 	 * @param <T> Type du composant
-	 * @return Gestionnaire centralis� des documents.
+	 * @return Gestionnaire centralisé des documents.
 	 */
 	<T> T resolve(final Class<T> componentClass);
 

@@ -37,14 +37,14 @@ public class VUserException extends RuntimeException {
 	 * @param messageText Message de l'exception
 	 */
 	public VUserException(final MessageText messageText) {
-		//Attention il convient d'utiliser une m�thode qui ne remonte d'exception.
+		//Attention il convient d'utiliser une méthode qui ne remonte d'exception.
 		super(messageText.getDisplay());
 		// On rerentre sur l'API des Exception en passant le message.
 		this.messageText = messageText;
 	}
 
 	/**
-	 * Gestion des messages d'erreur externalis�s.
+	 * Gestion des messages d'erreur externalisés.
 	 * @return messageText.
 	 */
 	public final MessageText getMessageText() {

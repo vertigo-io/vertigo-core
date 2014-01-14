@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 public interface Definition {
 	char SEPARATOR = '_';
 	/**
-	 * Expression réguli�re v�rifi�e par les noms des d�finitions.
+	 * Expression réguliére vérifiée par les noms des définitions.
 	 * 2 exemples acceptés :
 	 * TO_TO
 	 * ou 
@@ -47,7 +47,7 @@ public interface Definition {
 	Pattern REGEX_DEFINITION_URN = Pattern.compile("[A-Z0-9_]{3,60}([$][A-Z0-9_]{3,60})?");
 
 	/**
-	 * @return Nom de la d�finition.
+	 * @return Nom de la définition.
 	 */
 	String getName();
 }

@@ -48,7 +48,7 @@ public final class XMLUtil {
 	/**
 	 * Validation XSD.
 	 * @param xsd Validateur XSD
-	 * @param xml XML � valider
+	 * @param xml XML à valider
 	 */
 	public static void validateXmlByXsd(final URL xml, final URL xsd) {
 		Assertion.checkNotNull(xml);

@@ -25,7 +25,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Prefix d'une d�finition
+ * Prefix d'une définition
  * @author pchretien
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
 @Target({ ElementType.TYPE })
 public @interface Prefix {
 	/**
-	 * Pr�fix de la d�finition du champ.
+	 * Préfix de la définition du champ.
 	 */
 	String value();
 }

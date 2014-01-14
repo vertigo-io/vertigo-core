@@ -22,15 +22,15 @@ import io.vertigo.kernel.aop.Interceptor;
 import io.vertigo.kernel.lang.Assertion;
 
 /**
- * D�finition d'un aspect. 
- * Un aspect est la r�union 
- *  - d'un point d'interception d�fini par une annotation 
- *  - d'un intercepteur (advice) d�fini par un composant
+ * Définition d'un aspect. 
+ * Un aspect est la réunion 
+ *  - d'un point d'interception défini par une annotation 
+ *  - d'un intercepteur (advice) défini par un composant
  * 
  * @author pchretien
  */
 final class AspectConfig {
-	/** Annotation � intercepter. */
+	/** Annotation à intercepter. */
 	private final Class<?> annotationType;
 	private final Class<? extends Interceptor> implClass;
 
@@ -47,14 +47,14 @@ final class AspectConfig {
 	}
 
 	/**
-	 * @return Type d'Annotation pr�cisant l'interception
+	 * @return Type d'Annotation précisant l'interception
 	 */
 	Class<?> getAnnotationType() {
 		return annotationType;
 	}
 
 	/**
-	 * @return Classe d'impl�mentation du composant d'interception
+	 * @return Classe d'implémentation du composant d'interception
 	 */
 	Class<? extends Interceptor> getInterceptorImplClass() {
 		return implClass;

@@ -44,7 +44,7 @@ final class DualContainer implements Container {
 		ids = new LinkedHashSet<>();
 		ids.addAll(container1.keySet());
 		ids.addAll(container2.keySet());
-		Assertion.checkArgument(ids.size() == container1.keySet().size() + container2.keySet().size(), "Ambiguit� : il y a des ids en doublon");
+		Assertion.checkArgument(ids.size() == container1.keySet().size() + container2.keySet().size(), "Ambiguité : il y a des ids en doublon");
 	}
 
 	/** {@inheritDoc} */

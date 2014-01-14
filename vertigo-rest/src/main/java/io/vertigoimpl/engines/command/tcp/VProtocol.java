@@ -41,7 +41,7 @@ final class VProtocol {
 	VProtocol(/*VEventListener eventListener*/) {
 		//	Assertion.checkNotNull(eventListener);
 		//---------------------------------------------------------------------
-		//Todo � optimiser
+		//Todo à optimiser
 		buffer = ByteBuffer.allocate(1024 * 1024);
 		//		this.eventListener = eventListener;
 	}
@@ -59,7 +59,7 @@ final class VProtocol {
 		buffer.put(data.getBytes(CHARSET));
 
 		buffer.flip();
-		//Et on �crit les donn�es
+		//Et on écrit les données
 		while (buffer.hasRemaining()) {
 			socketChannel.write(buffer);
 		}
@@ -137,7 +137,7 @@ final class VProtocol {
 		//System.out.println("$execCommand 1 [waiting]");
 		final String dataReceived = pull(socketChannel);
 
-		///Si null cel� signifie que le flux est termin�
+		///Si null celà signifie que le flux est terminé
 		if (dataReceived != null) {
 			//		if (dataReceived.startsWith("!")) {
 			//			eventListener.onEvent(dataReceived.substring(1));

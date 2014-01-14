@@ -25,14 +25,14 @@ import java.net.URL;
 
 
 /**
- * R�sout une ressource en fournissant son URL.
+ * Résout une ressource en fournissant son URL.
  * @author prahmoune
  */
 public interface ResourceResolverPlugin extends Plugin {
 	/**
-	 * Retourne une URL � partir de sa repr�sentation 'cha�ne de caract�res'
-	 * @param resource Url de la ressource(cha�ne de caract�res)
-	 * @return URL associ�e � la ressource 
+	 * Retourne une URL à partir de sa représentation 'chaîne de caractères'
+	 * @param resource Url de la ressource(chaîne de caractères)
+	 * @return URL associée à la ressource 
 	 */
 	Option<URL> resolve(String resource);
 }

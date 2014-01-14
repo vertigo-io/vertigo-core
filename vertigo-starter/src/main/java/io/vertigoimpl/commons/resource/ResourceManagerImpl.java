@@ -33,9 +33,9 @@ import javax.inject.Inject;
  *  - de classes
  *  - de ressources
  *  
- * L'impl�mentation permet de d�finir une liste de plusieurs plugins de r�solutions de ressources.
- * Il est aussi possible d'enregistrer des @see ResourceResolver sp�cifique. (Par exemple pour stocker les ressources en BDD)
- * L'enregistrement doit se faire lors de la phase de d�marrage.
+ * L'implémentation permet de définir une liste de plusieurs plugins de résolutions de ressources.
+ * Il est aussi possible d'enregistrer des @see ResourceResolver spécifique. (Par exemple pour stocker les ressources en BDD)
+ * L'enregistrement doit se faire lors de la phase de démarrage.
  * 
  * @author pchretien
  */
@@ -51,7 +51,7 @@ public final class ResourceManagerImpl implements ResourceManager {
 				return url.get();
 			}
 		}
-		//On n'a pas trouv� de resolver permettant de lire la ressource.
-		throw new VRuntimeException("Ressource '{0}' non trouv�e", null, resource);
+		//On n'a pas trouvé de resolver permettant de lire la ressource.
+		throw new VRuntimeException("Ressource '{0}' non trouvée", null, resource);
 	}
 }

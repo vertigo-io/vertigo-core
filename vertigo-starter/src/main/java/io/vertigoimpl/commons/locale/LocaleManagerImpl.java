@@ -46,7 +46,7 @@ import org.apache.log4j.Logger;
 
 /**
  * Standard implementation of the 'Locale Management' component .
- * Les ressources d�clar�es dans une enum sont charg�es par un fichier properties avec un resourceBundle.
+ * Les ressources déclarées dans une enum sont chargées par un fichier properties avec un resourceBundle.
  *
  * @author  pchretien
  */
@@ -54,35 +54,35 @@ public final class LocaleManagerImpl implements LocaleManager, Activeable, Descr
 	private final Logger generalLog = Logger.getLogger(LocaleManager.class);
 
 	/**
-	 * Set des cl�s non trouv�es pour ne pas les reloguer.
-	 * On synchronise car il s'agit d'une ressource partag�e modifi�es par tous les threads.
+	 * Set des clés non trouvées pour ne pas les reloguer.
+	 * On synchronise car il s'agit d'une ressource partagée modifiées par tous les threads.
 	 */
 	private final Set<String> notFoundKeySet = java.util.Collections.synchronizedSet(new HashSet<String>());
 
-	//Bundle pour la locale par d�faut.
+	//Bundle pour la locale par défaut.
 	private final Map<Locale, Map<String, String>> dictionaries = new HashMap<>();
 
-	/** liste des locales g�r�es. */
+	/** liste des locales gérées. */
 	private final Locale[] locales;
 
 	/**
-	 * Strat�gie de choix de la langue.
-	 * Si pas de strat�gie ou pas de langue trouv�e alors langue par d�faut = premi�re langue d�clar�e.
+	 * Stratégie de choix de la langue.
+	 * Si pas de stratégie ou pas de langue trouvée alors langue par défaut = première langue déclarée.
 	 */
 	private LocaleProvider localeProvider;
 
 	/**
 	 * Constructeur.
-	 * Les exceptions sont toujours externalis�es.
-	 * Les libell�s de champs ne le sont pas.
-	 * La premi�re Locale est celle utilis�e si il n'y a aucun utilisateur d�clar� (cas des batchs).
+	 * Les exceptions sont toujours externalisées.
+	 * Les libellés de champs ne le sont pas.
+	 * La première Locale est celle utilisée si il n'y a aucun utilisateur déclaré (cas des batchs).
 	 *
-	 * On pr�cise la liste des locales sous la forme d'une chaine de caract�res
+	 * On précise la liste des locales sous la forme d'une chaine de caractères
 	 * exemples :
 	 * Locale.french : 'fr'
 	 * Locale.FRANCE + Locale.us : 'fr_FR,us'
-	 * Une locale est d�finie par une langue{_Pays{_Variante}} 
-	 * @param locales Liste des locales g�r�es par l'application. 
+	 * Une locale est définie par une langue{_Pays{_Variante}} 
+	 * @param locales Liste des locales gérées par l'application. 
 	 */
 	@Inject
 	public LocaleManagerImpl(@Named("locales") final String locales) {
@@ -91,13 +91,13 @@ public final class LocaleManagerImpl implements LocaleManager, Activeable, Descr
 		// this.locales = new Locale[] { Locale.getDefault() };
 		final List<Locale> localeList = new ArrayList<>();
 		{
-			//Liste des variables utilis�es dans la boucle
+			//Liste des variables utilisées dans la boucle
 			String language;
 			String country;
 			String variant;
 			for (final String locale : locales.split(",")) {
 				final String[] loc = locale.trim().split("_");
-				Assertion.checkArgument(loc.length > 0, "Locale specifi�e vide");
+				Assertion.checkArgument(loc.length > 0, "Locale specifiée vide");
 				language = loc[0];
 				country = loc.length > 1 ? loc[1] : "";
 				variant = loc.length > 2 ? loc[2] : "";
@@ -107,7 +107,7 @@ public final class LocaleManagerImpl implements LocaleManager, Activeable, Descr
 		this.locales = localeList.toArray(new Locale[localeList.size()]);
 		//---------------------------------------------------------------------
 		Assertion.checkNotNull(this.locales);
-		Assertion.checkArgument(this.locales.length > 0, "Il faut au moins d�clarer une locale");
+		Assertion.checkArgument(this.locales.length > 0, "Il faut au moins déclarer une locale");
 		//---------------------------------------------------------------------
 		for (final Locale locale : this.locales) {
 			dictionaries.put(locale, new HashMap<String, String>());
@@ -126,7 +126,7 @@ public final class LocaleManagerImpl implements LocaleManager, Activeable, Descr
 
 	/** {@inheritDoc} */
 	public void registerLocaleProvider(final LocaleProvider newLocaleProvider) {
-		Assertion.checkArgument(localeProvider == null, "localeProvider deja enregistr�");
+		Assertion.checkArgument(localeProvider == null, "localeProvider deja enregistré");
 		Assertion.checkNotNull(newLocaleProvider);
 		//---------------------------------------------------------------------
 		localeProvider = newLocaleProvider;
@@ -144,7 +144,7 @@ public final class LocaleManagerImpl implements LocaleManager, Activeable, Descr
 
 	private void add(final String baseName, final MessageKey[] enums, final boolean override) {
 		for (final Locale locale : locales) {
-			//Pour chaque locale g�r�e on charge le dictionnaire correspondant
+			//Pour chaque locale gérée on charge le dictionnaire correspondant
 			final ResourceBundle resourceBundle;
 			try {
 				resourceBundle = ResourceBundle.getBundle(baseName, locale);
@@ -153,16 +153,16 @@ public final class LocaleManagerImpl implements LocaleManager, Activeable, Descr
 					//Si on est en mode override on autorise des chargements partiels de dictionnaire
 					continue;
 				}
-				throw new VRuntimeException("le dictionnaire pour la locale '{0}' n'est pas renseign�", e, locale);
+				throw new VRuntimeException("le dictionnaire pour la locale '{0}' n'est pas renseigné", e, locale);
 			}
-			//On a trouv� un dictionnaire 
+			//On a trouvé un dictionnaire 
 			check(resourceBundle, enums, override);
 			load(locale, resourceBundle, override);
 		}
 	}
 
 	private Map<String, String> getDictionary(final Locale locale) {
-		Assertion.checkArgument(dictionaries.containsKey(locale), "La locale {0} n''est pas g�r�e", locale);
+		Assertion.checkArgument(dictionaries.containsKey(locale), "La locale {0} n''est pas gérée", locale);
 		return dictionaries.get(locale);
 	}
 
@@ -177,7 +177,7 @@ public final class LocaleManagerImpl implements LocaleManager, Activeable, Descr
 			Assertion.checkNotNull(value);
 			final String oldValue = getDictionary(locale).put(key, value);
 			if (!override) {
-				Assertion.checkState(oldValue == null, "Valeur deja renseign�e pour{0}", key);
+				Assertion.checkState(oldValue == null, "Valeur deja renseignée pour{0}", key);
 			}
 		}
 
@@ -185,29 +185,29 @@ public final class LocaleManagerImpl implements LocaleManager, Activeable, Descr
 
 	private void check(final ResourceBundle resourceBundle, final MessageKey[] enums, final boolean override) {
 		//============================================
-		//==On v�rifie que les listes sont compl�tes==
+		//==On vérifie que les listes sont complètes==
 		//============================================
 		final List<String> resourcesKeys = new ArrayList<>();
 		for (final MessageKey resourceKey : enums) {
 			resourcesKeys.add(resourceKey.name());
 		}
 
-		//1- Toutes les cl�s du fichier properties sont dans l'enum des resources
-		//On passe par la construction d'un set des keys car la fonction containsKey n'est dispo qu'� partir de java 1.6.
+		//1- Toutes les clés du fichier properties sont dans l'enum des resources
+		//On passe par la construction d'un set des keys car la fonction containsKey n'est dispo qu'é partir de java 1.6.
 		final Set<String> resourceBundleKeySet = new HashSet<>();
 		for (final String key : Collections.list(resourceBundle.getKeys())) {
 			resourceBundleKeySet.add(key);
 			if (!resourcesKeys.contains(key)) {
-				throw new IllegalStateException("Une cl� du fichier properties est inconnue : " + key);
+				throw new IllegalStateException("Une clé du fichier properties est inconnue : " + key);
 			}
 		}
 
-		//2- Toutes les cl�s de l'enum sont dans le fichier properties 
+		//2- Toutes les clés de l'enum sont dans le fichier properties 
 		if (!override) {
 			for (final String resourceKey : resourcesKeys) {
 				if (!resourceBundleKeySet.contains(resourceKey)) {
 					onResourceNotFound(resourceKey);
-					throw new IllegalStateException("Une ressource n'est pas d�clar�e dans le fichier properties : " + resourceKey);
+					throw new IllegalStateException("Une ressource n'est pas déclarée dans le fichier properties : " + resourceKey);
 				}
 			}
 		}
@@ -220,9 +220,9 @@ public final class LocaleManagerImpl implements LocaleManager, Activeable, Descr
 		Assertion.checkNotNull(locale);
 		//---------------------------------------------------------------------
 		final String msg = getDictionary(locale).get(messageKey.name());
-		//Cas anormal : o� la ressource n'est pas pr�sente.
+		//Cas anormal :  où la ressource n'est pas présente.
 		if (msg == null) {
-			//Cas anormal : o� la ressource n'est pas pr�sente.
+			//Cas anormal :  où la ressource n'est pas présente.
 			onResourceNotFound(messageKey.name());
 			return null;
 		}
@@ -234,15 +234,15 @@ public final class LocaleManagerImpl implements LocaleManager, Activeable, Descr
 		if (localeProvider != null && localeProvider.getCurrentLocale() != null) {
 			return localeProvider.getCurrentLocale();
 		}
-		//Si pas d'utilisateur on prend la premi�re langue d�clar�e.
+		//Si pas d'utilisateur on prend la première langue déclarée.
 		return locales[0];
 	}
 
 	private void onResourceNotFound(final String key) {
 		if (!notFoundKeySet.contains(key)) {
-			//	Si la ressource n'est pas pr�sente alors
-			//  - on loggue le fait que la ressource n'a pas �t� trouv�e
-			//  - on stocke la cl� pour �viter de reloguer
+			//	Si la ressource n'est pas présente alors
+			//  - on loggue le fait que la ressource n'a pas été trouvée
+			//  - on stocke la clé pour éviter de reloguer
 			//et on continue les traitements
 			logResourceNotFound(key);
 			notFoundKeySet.add(key);
@@ -250,11 +250,11 @@ public final class LocaleManagerImpl implements LocaleManager, Activeable, Descr
 	}
 
 	/**
-	 * Ev�nement remont� lorsqu'une ressource externalis�e n'est pas trouv�e.
-	 * @param resource  Nom de la ressource externalis�e non trouv�e
+	 * Evènement remonté lorsqu'une ressource externalisée n'est pas trouvée.
+	 * @param resource  Nom de la ressource externalisée non trouvée
 	 */
 	private void logResourceNotFound(final String resource) {
-		generalLog.warn("Resource " + resource + " non trouv�e");
+		generalLog.warn("Resource " + resource + " non trouvée");
 	}
 
 	private Map<Locale, Map<String, String>> getDictionaries() {

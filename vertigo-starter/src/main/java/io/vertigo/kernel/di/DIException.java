@@ -19,8 +19,8 @@
 package io.vertigo.kernel.di;
 
 /**
- * Exception g�n�rique aux services relatifs � la DI.
- * Cette exception est de type runtime, elle sert � valider le bon fonctionnement du moteur dans les tests.
+ * Exception générique aux services relatifs à la DI.
+ * Cette exception est de type runtime, elle sert à valider le bon fonctionnement du moteur dans les tests.
  * 
  * @author pchretien
  */

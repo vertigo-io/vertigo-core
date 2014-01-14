@@ -25,14 +25,14 @@ import java.net.URL;
 
 /**
  * Selecteurs de ressources. 
- * Les ressources sont identifi�es par une URL. 
- * Cette URL peut �tre 
+ * Les ressources sont identifiées par une URL. 
+ * Cette URL peut être 
  *  - relative au classpath de l'application dans le cas d'une application JAVA 
  *  - relative au context de l'application WEB 
  * 
- * La ressource peut aussi �tre r�solue de fa�on ad-hoc par la cr�ation d'un plugin de r�solution sp�cifique.
+ * La ressource peut aussi être résolue de façon ad-hoc par la création d'un plugin de résolution spécifique.
  * 
- * Les fichiers de configuration sont � consid�rer comme des ressources.  
+ * Les fichiers de configuration sont à considérer comme des ressources.  
  * Ex: 
  * 	classpath: 
  * 		/kasper/components/kasper-aspect-config_1_0.dtd
@@ -43,10 +43,10 @@ import java.net.URL;
  */
 public interface ResourceManager extends Manager {
 	/**
-	 * Retourne une URL � partir de sa repr�sentation 'cha�ne de caract�res'
+	 * Retourne une URL à partir de sa représentation 'chaîne de caractères'
 	 * 
-	 * @param resource Url de la ressource(cha�ne de caract�res)
-	 * @return URL associ�e � la ressource (Not Null)
+	 * @param resource Url de la ressource(chaîne de caractères)
+	 * @return URL associée à la ressource (Not Null)
 	 */
 	URL resolve(String resource);
 }

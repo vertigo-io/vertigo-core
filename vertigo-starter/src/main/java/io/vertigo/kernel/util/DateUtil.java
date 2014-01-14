@@ -29,8 +29,8 @@ import java.util.Date;
  * Utilitaire concernant les dates.
  * 
  * On distingue deux types de date
- *  - les dates pr�cises au jour 
- *  - les dates pr�cises au jour, min, sec (ms)  
+ *  - les dates précises au jour 
+ *  - les dates précises au jour, min, sec (ms)  
  *  
  * @author npiedeloup, pchretien 
  */
@@ -40,7 +40,7 @@ public final class DateUtil {
 	}
 
 	/**
-	 * R�cup�re la date courante (pr�cise au jour).
+	 * Récupère la date courante (précise au jour).
 	 * @return current day.
 	 */
 	public static Date newDate() {
@@ -48,7 +48,7 @@ public final class DateUtil {
 	}
 
 	/**
-	 * R�cup�re l'instant courant (avec heures, minutes, secondes, millisecondes).
+	 * Récupère l'instant courant (avec heures, minutes, secondes, millisecondes).
 	 * @return current day.
 	 */
 	public static Date newDateTime() {
@@ -58,7 +58,7 @@ public final class DateUtil {
 	/**
 	 * Calcule le nombre de jours entre deux dates.
 	 * 
-	 * @param startDate Date de d�but
+	 * @param startDate Date de début
 	 * @param endDate Date de fin
 	 * @return Nombre de jours
 	 */
@@ -74,13 +74,13 @@ public final class DateUtil {
 
 	/**
 	 * Compare deux Date.
-	 * Cette m�thode s'utilise comme firstDate.compareTo(secondDate).
-	 * On peut alors utiliser l'op�rateur que l'on souhaite entre le r�sultat du compareTo et 0.
+	 * Cette méthode s'utilise comme firstDate.compareTo(secondDate).
+	 * On peut alors utiliser l'opérateur que l'on souhaite entre le résultat du compareTo et 0.
 	 * Ex: firstDate <= secondDate   eq.  firstDate.compareTo(secondDate) <= 0
 	 *     firstDate > secondDate    eq.  firstDate.compareTo(secondDate) > 0
-	 * @param firstDate Premi�re date
-	 * @param secondDate Deuxi�me date
-	 * @return 0 si �gale, moins de 0 si firstDate < secondDate, et plus de 0 si firstDate > secondDate
+	 * @param firstDate première date
+	 * @param secondDate Deuxiéme date
+	 * @return 0 si égale, moins de 0 si firstDate < secondDate, et plus de 0 si firstDate > secondDate
 	 */
 	public static int compareDate(final Date firstDate, final Date secondDate) {
 		Assertion.checkNotNull(firstDate);
@@ -93,13 +93,13 @@ public final class DateUtil {
 
 	/**
 	 * Compare deux dateTime.
-	 * Cette m�thode s'utilise comme firstDate.compareTo(secondDate).
-	 * On peut alors utiliser l'op�rateur que l'on souhaite entre le r�sultat du compareTo et 0.
+	 * Cette méthode s'utilise comme firstDate.compareTo(secondDate).
+	 * On peut alors utiliser l'opérateur que l'on souhaite entre le résultat du compareTo et 0.
 	 * Ex: firstDate <= secondDate   eq.  firstDate.compareTo(secondDate) <= 0
 	 *     firstDate > secondDate    eq.  firstDate.compareTo(secondDate) > 0
-	 * @param firstDateTime Premi�re dateTime
-	 * @param secondDateTime Deuxi�me dateTime
-	 * @return 0 si �gale, moins de 0 si firstDate < secondDate, et plus de 0 si firstDate > secondDate
+	 * @param firstDateTime première dateTime
+	 * @param secondDateTime Deuxiéme dateTime
+	 * @return 0 si égale, moins de 0 si firstDate < secondDate, et plus de 0 si firstDate > secondDate
 	 */
 	public static int compareDateTime(final Date firstDateTime, final Date secondDateTime) {
 		Assertion.checkNotNull(firstDateTime);
@@ -109,8 +109,8 @@ public final class DateUtil {
 	}
 
 	/**
-	 * V�rification que la date est du type Date(sans notion d'heure, min, sec, milisecondes) 
-	 * @param dateToCheck Date � v�rifier
+	 * Vérification que la date est du type Date(sans notion d'heure, min, sec, milisecondes) 
+	 * @param dateToCheck Date à vérifier
 	 */
 	private static void checkIsDate(final Date dateToCheck) {
 		final Calendar calendar = Calendar.getInstance();

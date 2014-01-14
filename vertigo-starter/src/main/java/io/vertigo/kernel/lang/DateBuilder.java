@@ -24,7 +24,7 @@ import java.util.Date;
 /**
  * Utilitaire concernant les dates.
  * On distingue deux type de date
- * - date (pr�cise au jour sans notion d'heure)
+ * - date (précise au jour sans notion d'heure)
  * - dateTime 
  * @author npiedeloup, pchretien
  */
@@ -33,7 +33,7 @@ public final class DateBuilder implements Builder<Date> {
 
 	/**
 	 * Constructeur du builder de date.
-	 * @param date Date de d�part des traitements (elle n'est pas modifi�e)
+	 * @param date Date de départ des traitements (elle n'est pas modifiée)
 	 */
 	public DateBuilder(final Date date) {
 		Assertion.checkNotNull(date);
@@ -43,7 +43,7 @@ public final class DateBuilder implements Builder<Date> {
 	}
 
 	/**
-	 * @return Date tronqu�e � 0h 0min 0ss
+	 * @return Date tronquée à 0h 0min 0ss
 	 */
 	public Date build() {
 		calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -54,7 +54,7 @@ public final class DateBuilder implements Builder<Date> {
 	}
 
 	/**
-	 * @return Date compl�te avec minutes, secondes et millisecondes
+	 * @return Date complète avec minutes, secondes et millisecondes
 	 */
 	public Date toDateTime() {
 		return calendar.getTime();
@@ -63,7 +63,7 @@ public final class DateBuilder implements Builder<Date> {
 	/**
 	 * Ajoute un nombre de secondes.
 	 * 
-	 * @param seconds Nombre de secondes � ajouter
+	 * @param seconds Nombre de secondes à ajouter
 	 * @return Ce DateBuilder pour enchainer les traitements
 	 */
 	public DateBuilder addSeconds(final int seconds) {
@@ -74,7 +74,7 @@ public final class DateBuilder implements Builder<Date> {
 	/**
 	 * Ajoute un nombre de minutes.
 	 * 
-	 * @param minutes Nombre de minutes � ajouter
+	 * @param minutes Nombre de minutes à ajouter
 	 * @return Ce DateBuilder pour enchainer les traitements
 	 */
 	public DateBuilder addMinutes(final int minutes) {
@@ -85,7 +85,7 @@ public final class DateBuilder implements Builder<Date> {
 	/**
 	 * Ajoute un nombre d'heures. 
 	 * 
-	 * @param hours Nombre d'heures � ajouter
+	 * @param hours Nombre d'heures à ajouter
 	 * @return Ce DateBuilder pour enchainer les traitements
 	 */
 	public DateBuilder addHours(final int hours) {
@@ -96,7 +96,7 @@ public final class DateBuilder implements Builder<Date> {
 	/**
 	 * Ajoute un nombre de jours.
 	 * 
-	 * @param days Nombre de jours � ajouter
+	 * @param days Nombre de jours à ajouter
 	 * @return Ce DateBuilder pour enchainer les traitements
 	 */
 	public DateBuilder addDays(final int days) {
@@ -107,7 +107,7 @@ public final class DateBuilder implements Builder<Date> {
 	/**
 	 * Ajoute un nombre de semaines.
 	 * 
-	 * @param weeks Nombre de semaines � ajouter
+	 * @param weeks Nombre de semaines à ajouter
 	 * @return Ce DateBuilder pour enchainer les traitements
 	 */
 	public DateBuilder addWeeks(final int weeks) {
@@ -118,12 +118,12 @@ public final class DateBuilder implements Builder<Date> {
 
 	/**
 	 * Ajoute un nombre de mois. 
-	 * Si le nouveau mois est plus court, la date est tronqu�e 
+	 * Si le nouveau mois est plus court, la date est tronquée 
 	 * Cf. Calendar.add(int, int). 
 	 * For example, if the date is the 31 january 2004, 
 	 * addMonths(date, 1) will return 29 february 2004.
 	 * 
-	 * @param months Nombre de mois � ajouter
+	 * @param months Nombre de mois à ajouter
 	 * @return Ce DateBuilder pour enchainer les traitements
 	 */
 	public DateBuilder addMonths(final int months) {
@@ -132,9 +132,9 @@ public final class DateBuilder implements Builder<Date> {
 	}
 
 	/**
-	 * Ajoute un nombre d'ann�es.
+	 * Ajoute un nombre d'années.
 	 * 
-	 * @param years Nombre d'ann�es � ajouter
+	 * @param years Nombre d'années à ajouter
 	 * @return Ce DateBuilder pour enchainer les traitements
 	 */
 	public DateBuilder addYears(final int years) {

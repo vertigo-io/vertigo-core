@@ -251,7 +251,7 @@ public final class VConsole {
 				output.setText(pretty);
 			}
 
-			//On r�initialise le buffer d'input
+			//On réinitialise le buffer d'input
 			reset();
 		}
 

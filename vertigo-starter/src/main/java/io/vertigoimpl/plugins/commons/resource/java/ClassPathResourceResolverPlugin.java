@@ -26,8 +26,8 @@ import java.net.URL;
 
 
 /**
- * R�solution des URL li�es au classPath.
- * Cette r�solution est en absolue.
+ * Résolution des URL liées au classPath.
+ * Cette résolution est en absolue.
  * 
  * @author prahmoune
  */
@@ -43,7 +43,7 @@ public final class ClassPathResourceResolverPlugin implements ResourceResolverPl
 	}
 
 	private ClassLoader getClassLoader() {
-		//On r�cup�re le classLoader courant (celui qui a cr�� le thread).
+		//On récupère le classLoader courant (celui qui a créé le thread).
 		return Thread.currentThread().getContextClassLoader();
 	}
 }

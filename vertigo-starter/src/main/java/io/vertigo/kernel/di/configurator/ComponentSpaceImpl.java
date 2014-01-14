@@ -50,18 +50,18 @@ import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.xml.DOMConfigurator;
 
 /**
- * Centralisation des acc�s aux composants et aux plugins.
+ * Centralisation des accès aux composants et aux plugins.
  * 
- * Les composants et leur initializers sont instanci�s par injection 
- *  - des param�tres d�clar�s sur le scope composant.
+ * Les composants et leur initializers sont instanciés par injection 
+ *  - des paramètres déclarés sur le scope composant.
  *  - des autres composants 
  * 
- * Les plugins sont instanci�s par injection 
- *  - des param�tres d�clar�s sur le scope plugin.
+ * Les plugins sont instanciés par injection 
+ *  - des paramètres déclarés sur le scope plugin.
  *  - des autres composants
  * 
- * Donc un plugin ne peut pas �tre inject� dans un plugin, il ne peut �tre inject� que dans LE composant pour lequel il est pr�vu.
- * En revanche les composants (� ne pas r�aliser de d�pendances cycliques) peuvent �tre injecter dans les composants, les plugins et les initializers.
+ * Donc un plugin ne peut pas être injecté dans un plugin, il ne peut être injecté que dans LE composant pour lequel il est prévu.
+ * En revanche les composants (à ne pas réaliser de dépendances cycliques) peuvent être injecter dans les composants, les plugins et les initializers.
  * 
  * @author pchretien
  */
@@ -148,19 +148,19 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 				} else {
 					PropertyConfigurator.configure(url);
 				}
-				Logger.getRootLogger().info("Log4J configuration charg�e (resource) : " + url.getFile());
+				Logger.getRootLogger().info("Log4J configuration chargée (resource) : " + url.getFile());
 			} else {
 				Assertion.checkArgument(new File(log4jFileName).exists(), "Fichier de configuration log4j : {0} est introuvable", log4jFileName);
 				// Avec configureAndWatch (utilise un anonymous thread)
-				// on peut modifier � chaud le fichier de conf log4j
-				// mais en cas de hot-deploy, le thread reste pr�sent ce qui peut-entrainer des probl�mes.
+				// on peut modifier à chaud le fichier de conf log4j
+				// mais en cas de hot-deploy, le thread reste présent ce qui peut-entrainer des problèmes.
 				if (log4jFormatXml) {
 					DOMConfigurator.configureAndWatch(log4jFileName);
 				} else {
 					PropertyConfigurator.configureAndWatch(log4jFileName);
 				}
 			}
-			Logger.getRootLogger().info("Log4J configuration charg�e (fichier) : " + log4jFileName);
+			Logger.getRootLogger().info("Log4J configuration chargée (fichier) : " + log4jFileName);
 		}
 	}
 
@@ -170,7 +170,7 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 		final List<String> solved = new ArrayList<>();
 		for (final ModuleConfig moduleConfig : componentSpaceConfig.getModuleConfigs()) {
 			final Reactor reactor = new Reactor();
-			//Map des composants d�finis par leur id
+			//Map des composants définis par leur id
 			final Map<String, ComponentConfig> map = new HashMap<>();
 
 			for (final String id : solved) {
@@ -179,11 +179,11 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 
 			for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
 				map.put(componentConfig.getId(), componentConfig);
-				//On ins�re une seule fois un m�me type de Plugin pour la r�solution le plugin
+				//On insère une seule fois un même type de Plugin pour la résolution le plugin
 				final Set<String> pluginIds = new HashSet<>();
 				int nb = 0;
 				for (final PluginConfig pluginConfig : componentConfig.getPluginConfigs()) {
-					//Attention : il peut y avoir plusieurs plugin d'un m�me type
+					//Attention : il peut y avoir plusieurs plugin d'un même type
 					//On enregistre tjrs le premier Plugin de chaque type avec le nom du type de plugin
 					String pluginId = pluginConfig.getType();
 					if (pluginIds.contains(pluginId)) {
@@ -193,13 +193,13 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 					nb++;
 					pluginIds.add(pluginId);
 				}
-				//On ins�re les plugins puis les composants car les composants d�pendent des plugins
+				//On insère les plugins puis les composants car les composants dépendent des plugins
 				//de sorte on facilite le calcul d'ordre
 				reactor.addComponent(componentConfig.getId(), componentConfig.getImplClass(), pluginIds, componentConfig.getParams().keySet());
 			}
 
 			final List<String> ids = reactor.proceed();
-			//On a r�cup�r� la liste ordonn�e des ids.
+			//On a récupéré la liste ordonnée des ids.
 
 			//. On initialise l'injecteur AOP
 			final AspectInitializer aspectInitializer = new AspectInitializer(moduleConfig);
@@ -215,11 +215,11 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 	}
 
 	private void registerComponent(final ComponentConfig componentConfig, final AspectInitializer aspectInitializer, final AopEngine aopEngine) {
-		// 1. On cr�e et on enregistre les plugins (Qui ne doivent pas d�pendre du composant)
+		// 1. On crée et on enregistre les plugins (Qui ne doivent pas dépendre du composant)
 		final Map<PluginConfig, Plugin> plugins = createPlugins(componentConfig);
 		componentContainer.registerPlugins(componentConfig, plugins);
 
-		// 2. On cr�e l'initializer (Qui ne doit pas d�pendre du composant)
+		// 2. On crée l'initializer (Qui ne doit pas dépendre du composant)
 		final Option<ComponentInitializer> initializer;
 		if (componentConfig.getInitializerClass() != null) {
 			initializer = Option.<ComponentInitializer> some(createComponentInitializer(componentConfig));
@@ -227,7 +227,7 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 			initializer = Option.none();
 		}
 
-		// 3. On cr�e le composant
+		// 3. On crée le composant
 		final Object instance = createComponent(componentConfig);
 
 		//4. AOP, on aopise le composant 

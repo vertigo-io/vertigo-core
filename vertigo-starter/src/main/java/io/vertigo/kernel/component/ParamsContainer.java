@@ -26,7 +26,7 @@ import java.util.Set;
 
 
 /**
- * Container contenant des param�tres.
+ * Container contenant des paramètres.
  * 
  * @author pchretien
  */
@@ -49,11 +49,11 @@ public final class ParamsContainer implements Container {
 	/** {@inheritDoc} */
 	public <O> O resolve(final String id, final Class<O> clazz) {
 		Assertion.checkNotNull(id);
-		Assertion.checkNotNull(params.containsKey(id), "Le param�tre '{0}' de type '{1}' n'a pas �t� d�fini.", id, clazz.getSimpleName());
+		Assertion.checkNotNull(params.containsKey(id), "Le paramètre '{0}' de type '{1}' n'a pas été défini.", id, clazz.getSimpleName());
 		// ---------------------------------------------------------------------
 		final Object value = getParam(params, id, clazz);
 		final Class<O> type = box(clazz);
-		Assertion.checkArgument(type.isAssignableFrom(value.getClass()), "Composant/param�tre '{0}' type '{1}' , type attendu '{2}'", id, value.getClass(), clazz);
+		Assertion.checkArgument(type.isAssignableFrom(value.getClass()), "Composant/paramètre '{0}' type '{1}' , type attendu '{2}'", id, value.getClass(), clazz);
 		return type.cast(value);
 	}
 
@@ -63,10 +63,10 @@ public final class ParamsContainer implements Container {
 	}
 
 	/**
-	 * R�cup�ration d'un param�tre typ� par son nom.
-	 * @param paramName Nom du param�tre
-	 * @param paramType Type du param�tre attendu
-	 * @return Valeur sous forme texte du param�tre
+	 * Récupération d'un paramètre typé par son nom.
+	 * @param paramName Nom du paramètre
+	 * @param paramType Type du paramètre attendu
+	 * @return Valeur sous forme texte du paramètre
 	 */
 	private static Object getParam(final Map<String, String> params, final String paramName, final Class<?> paramType) {
 		Assertion.checkNotNull(params);
@@ -93,9 +93,9 @@ public final class ParamsContainer implements Container {
 		Assertion.checkNotNull(clazz);
 		//---------------------------------------------------------------------
 		if (clazz.isPrimitive()) {
-			//Boolean n'est pas assignable � boolean
-			//boolean n'est pas assignable � Boolean
-			//Or dans notre cas value est un objet et clazz peut �tre un type primitif !
+			//Boolean n'est pas assignable à boolean
+			//boolean n'est pas assignable à Boolean
+			//Or dans notre cas value est un objet et clazz peut être un type primitif !
 			if (boolean.class.equals(clazz)) {
 				return Boolean.class;
 			} else if (byte.class.equals(clazz)) {
@@ -113,7 +113,7 @@ public final class ParamsContainer implements Container {
 			} else if (double.class.equals(clazz)) {
 				return Double.class;
 			}
-			throw new IllegalArgumentException(clazz + "est un type primitif non g�r�");
+			throw new IllegalArgumentException(clazz + "est un type primitif non géré");
 		}
 		return clazz;
 	}

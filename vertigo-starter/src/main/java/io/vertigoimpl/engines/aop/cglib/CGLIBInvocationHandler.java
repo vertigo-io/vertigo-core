@@ -46,7 +46,7 @@ final class CGLIBInvocationHandler implements net.sf.cglib.proxy.InvocationHandl
 	/** {@inheritDoc} */
 	public final Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
 		if (!interceptors.containsKey(method)) {
-			//Si pas d'intercepteur sur la m�thode. 
+			//Si pas d'intercepteur sur la méthode. 
 			return ClassUtil.invoke(instance, method, args);
 		}
 		return new MyMethodInvocation(instance, method, interceptors.get(method)).proceed(args);

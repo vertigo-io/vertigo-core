@@ -21,7 +21,7 @@ package io.vertigo.kernel.aop;
 import java.lang.reflect.Method;
 
 /**
- * Abstraction de l'invocation d'une m�thode.
+ * Abstraction de l'invocation d'une méthode.
  * @author pchretien
  */
 public interface MethodInvocation {

@@ -37,7 +37,7 @@ import org.xml.sax.SAXException;
 
 
 /**
- * Parser XML du param�trage de l'application.
+ * Parser XML du paramétrage de l'application.
  * @author npiedeloup, pchretien
  */
 public final class XMLModulesLoader implements Loader<ComponentSpaceConfigBuilder> {
@@ -45,7 +45,7 @@ public final class XMLModulesLoader implements Loader<ComponentSpaceConfigBuilde
 	private final Properties properties;
 
 	/**
-	 * Builder de HomeConfig � partir d'une description XML et d'un fichier de propri�t�s.
+	 * Builder de HomeConfig à partir d'une description XML et d'un fichier de propriétés.
 	 */
 	public XMLModulesLoader(final URL managersURL, final Properties properties) {
 		Assertion.checkNotNull(managersURL);
@@ -56,7 +56,7 @@ public final class XMLModulesLoader implements Loader<ComponentSpaceConfigBuilde
 	}
 
 	/**
-	 * Charge une configuration, et compl�te celle existante.
+	 * Charge une configuration, et complète celle existante.
 	 */
 	public void load(ComponentSpaceConfigBuilder componentSpaceConfigBuilder) {
 		Assertion.checkNotNull(componentSpaceConfigBuilder);
@@ -64,11 +64,11 @@ public final class XMLModulesLoader implements Loader<ComponentSpaceConfigBuilde
 		try {
 			doLoad(componentSpaceConfigBuilder);
 		} catch (final ParserConfigurationException pce) {
-			throw new VRuntimeException("Erreur de configuration du parseur (fichier {0}), lors de l'appel � newSAXParser()", pce, managersURL.getPath());
+			throw new VRuntimeException("Erreur de configuration du parseur (fichier {0}), lors de l'appel à newSAXParser()", pce, managersURL.getPath());
 		} catch (final SAXException se) {
-			throw new VRuntimeException("Erreur de parsing (fichier {0}), lors de l'appel � parse()", se, managersURL.getPath());
+			throw new VRuntimeException("Erreur de parsing (fichier {0}), lors de l'appel à parse()", se, managersURL.getPath());
 		} catch (final IOException ioe) {
-			throw new VRuntimeException("Erreur d'entr�e/sortie (fichier {0}), lors de l'appel � parse()", ioe, managersURL.getPath());
+			throw new VRuntimeException("Erreur d'entrée/sortie (fichier {0}), lors de l'appel à parse()", ioe, managersURL.getPath());
 		}
 	}
 

@@ -21,17 +21,17 @@ package io.vertigo.kernel.lang;
 import io.vertigo.kernel.util.StringUtil;
 
 /**
- * Permet de g�rer les Assertions. 
- * C'est � dire les : 
+ * Permet de gérer les Assertions. 
+ * C'est à dire les : 
  * <ul>
- * 	<li>pr� conditions : validation des arguments</li>
- * 	<li>invariants / post conditions : validation des �tats</li>
+ * 	<li>pré conditions : validation des arguments</li>
+ * 	<li>invariants / post conditions : validation des états</li>
  * </ul>
- * Ces notions ont �t� introduites avec le langage Eiffel par B. Meyer. Elles sont relatives � la notion de contrat.
- * Il s'agit de v�rifier
- * les contrats en entr�e <b>-pr�condition-</b>
+ * Ces notions ont été introduites avec le langage Eiffel par B. Meyer. Elles sont relatives à la notion de contrat.
+ * Il s'agit de vérifier
+ * les contrats en entrée <b>-précondition-</b>
  * les contrats en sortie <b>-postcondition-</b>
- * les conditions obligatoirement v�rifi�es � l'int�rieur des m�thodes <b>-invariant-</b>.
+ * les conditions obligatoirement vérifiées à l'intérieur des méthodes <b>-invariant-</b>.
  * <br>Pour aller plus loin lire articles et ouvrages autour des travaux de B. Meyer et M. Fowler concernant la programmation par contrat (design by contract).
  *
  * @author fconstantin
@@ -42,21 +42,21 @@ public final class Assertion {
 	//-------------------------------------------------------------------------
 
 	/**
-	 * Permet de tester le caract�re obligatoire (non null) d'un objet.
+	 * Permet de tester le caractère obligatoire (non null) d'un objet.
 	 * @param o Object Objet obligatoire
 	 */
 	public static void checkNotNull(final Object o) {
 		if (o == null) {
-			// Optimis� pour message sans formattage
+			// Optimisé pour message sans formattage
 			throw new NullPointerException();
 		}
 	}
 
 	/**
-	 * Permet de tester le caract�re obligatoire (non null) d'un objet.
+	 * Permet de tester le caractère obligatoire (non null) d'un objet.
 	 * @param o Object Objet obligatoire
 	 * @param msg Message d'erreur
-	 * @param params Param�tres du message
+	 * @param params paramètres du message
 	 */
 	public static void checkNotNull(final Object o, final String msg, final Object... params) {
 		if (o == null) {
@@ -69,10 +69,10 @@ public final class Assertion {
 	//-------------------------------------------------------------------------
 	/**
 	 * Permet de tester les arguments.
-	 * Utilis� comme validation des pr�conditions.
-	 * @param test Expression bool�enne qui doit �tre v�rifi�e
-	 * @param msg Message affich� si le test <b>n'est pas</b> v�rifi�.
-	 * @param params Param�tres du message
+	 * Utilisé comme validation des préconditions.
+	 * @param test Expression booléenne qui doit être vérifiée
+	 * @param msg Message affiché si le test <b>n'est pas</b> vérifié.
+	 * @param params paramètres du message
 	 */
 	public static void checkArgument(final boolean test, final String msg, final Object... params) {
 		if (!test) {
@@ -81,7 +81,7 @@ public final class Assertion {
 	}
 
 	/**
-	 * Permet de tester le caract�re renseign� (non vide) d'une chaine.
+	 * Permet de tester le caractère renseigné (non vide) d'une chaine.
 	 * @param str String Chaine non vide
 	 */
 	public static void checkArgNotEmpty(final String str) {
@@ -92,10 +92,10 @@ public final class Assertion {
 	}
 
 	/**
-	 * Permet de tester le caract�re renseign� (non vide) d'une chaine.
+	 * Permet de tester le caractère renseigné (non vide) d'une chaine.
 	 * @param str String Chaine non vide
 	 * @param msg Message d'erreur
-	 * @param params Param�tres du message
+	 * @param params paramètres du message
 	 */
 	public static void checkArgNotEmpty(final String str, final String msg, final Object... params) {
 		checkNotNull(str, msg, params);
@@ -108,13 +108,13 @@ public final class Assertion {
 	//-------------------------IllegalStateException----------------------------
 	//-------------------------------------------------------------------------
 	/** 
-	 * V�rification d'un �tat.
-	 * S'utilise de mani�re courante dans les calculs pour v�rifer les �tats de variables au cours du traitement.
+	 * Vérification d'un état.
+	 * S'utilise de maniére courante dans les calculs pour vérifer les états de variables au cours du traitement.
 	 * S'utilise comme postCondition
 	 * 
-	 * @param test Expression bool�enne qui doit �tre v�rifi�e
-	 * @param msg Message affich� si le test <b>n'est pas</b> v�rifi�.
-	 * @param params Param�tres du message
+	 * @param test Expression booléenne qui doit être vérifiée
+	 * @param msg Message affiché si le test <b>n'est pas</b> vérifié.
+	 * @param params paramètres du message
 	 */
 	public static void checkState(final boolean test, final String msg, final Object... params) {
 		if (!test) {

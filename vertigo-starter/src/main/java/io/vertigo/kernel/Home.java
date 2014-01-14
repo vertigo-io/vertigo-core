@@ -26,14 +26,14 @@ import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.DefinitionSpace;
 
 /**
- * Home : Classe d'entr�e sur toutes les modules. 
+ * Home : Classe d'entrée sur toutes les modules. 
  * Cycle de vie : 
  *  on start : INACTIVE ==[starting]==> ACTIVE 
  *  on stop  : ACTIVE 	==[stopping]==>INACTIVE
  * 'starting' et 'stopping' sont des phases transitoires.
  * 
- * Si erreur durant la transition start (c'est � dire durant la phase starting) alors on proc�de � un arr�t via un stopping ==> INACTIVE.
- * Si erreur durant la transition stop (c'est � dire durant la phase stopping) alors on part sur une phase FAIL qui n�cessite un red�marrage. 
+ * Si erreur durant la transition start (c'est à dire durant la phase starting) alors on procéde à un arrét via un stopping ==> INACTIVE.
+ * Si erreur durant la transition stop (c'est à dire durant la phase stopping) alors on part sur une phase FAIL qui nécessite un redémarrage. 
  *
 
  * @author pchretien
@@ -43,13 +43,13 @@ public final class Home {
 	private static long start = -1;
 
 	private static enum State {
-		/** Composants non d�marr�s*/
+		/** Composants non démarrés*/
 		INACTIVE,
-		/** Composants en cours de d�marrage*/
+		/** Composants en cours de démarrage*/
 		starting,
-		/** Composants configur�s et d�marr�s*/
+		/** Composants configurés et démarrés*/
 		ACTIVE,
-		/** Composants en cours d'arr�t*/
+		/** Composants en cours d'arrét*/
 		stopping,
 		/** Echec*/
 		FAIL
@@ -63,11 +63,11 @@ public final class Home {
 	private ComponentSpace componentSpace = ComponentSpaceImpl.EMPTY;
 
 	private Home() {
-		// Classe statique d'acc�s aux composants.
+		// Classe statique d'accès aux composants.
 	}
 
 	/**
-	 * D�marrage de l'application.
+	 * Démarrage de l'application.
 	 */
 	public static void start(final ComponentSpaceConfig componentSpaceConfig) {
 		Assertion.checkNotNull(componentSpaceConfig);
@@ -80,14 +80,14 @@ public final class Home {
 			INSTANCE.componentSpace.start();
 			//	INSTANCE.jmx();
 		} catch (final Throwable t) {
-			//En cas d'erreur on essaie de fermer proprement les composants d�marr�s.
+			//En cas d'erreur on essaie de fermer proprement les composants démarrés.
 			INSTANCE.change(State.starting, State.stopping);
 			// ---------------------------------------------------------------------
 			INSTANCE.doStop();
 			// ---------------------------------------------------------------------
-			// L'arr�t s'est bien d�roul�.
+			// L'arrét s'est bien déroulé.
 			INSTANCE.change(State.stopping, State.INACTIVE);
-			throw new VRuntimeException("Erreur lors de la phase de d�marrage", t);
+			throw new VRuntimeException("Erreur lors de la phase de démarrage", t);
 		}
 		INSTANCE.change(State.starting, State.ACTIVE);
 		//---
@@ -102,7 +102,7 @@ public final class Home {
 		if (INSTANCE.state != State.INACTIVE) {
 			INSTANCE.change(State.ACTIVE, State.stopping);
 			INSTANCE.doStop();
-			// L'arr�t s'est bien d�roul�.
+			// L'arrét s'est bien déroulé.
 			INSTANCE.change(State.stopping, State.INACTIVE);
 		}
 	}
@@ -115,7 +115,7 @@ public final class Home {
 	}
 
 	//-------------------------------------------------------------------------
-	//-------------------M�thods publiques-------------------------------------
+	//-------------------Méthods publiques-------------------------------------
 	//-------------------------------------------------------------------------
 	public static DefinitionSpace getDefinitionSpace() {
 		return INSTANCE.doGetDefinitionSpace();
@@ -126,7 +126,7 @@ public final class Home {
 	}
 
 	//-------------------------------------------------------------------------
-	//-------------------M�thods priv�es---------------------------------------
+	//-------------------Méthods privées---------------------------------------
 	//-------------------------------------------------------------------------
 	/**
 	 * @return NameSpace 
@@ -143,21 +143,21 @@ public final class Home {
 			componentSpace.stop();
 			definitionSpace.stop();
 		} catch (final Throwable t) {
-			//Quel que soit l'�tat, on part en �chec de l'arr�t.
+			//Quel que soit l'état, on part en échec de l'arrét.
 			state = State.FAIL;
-			throw new VRuntimeException("Erreur lors de l'arr�t", t);
+			throw new VRuntimeException("Erreur lors de l'arrét", t);
 		}
 	}
 
 	private ComponentSpace doGetComponentSpace() {
-		//	check(State.ACTIVE, "'�tat non actif");
+		//	check(State.ACTIVE, "'état non actif");
 		//---------------------------------------------------------------------
 		return componentSpace;
 	}
 
 	private void change(final State fromState, final State toState) {
 		if (!state.equals(fromState)) {
-			System.err.println("Container pas dans l'�tat attendu pour la transition ['" + fromState + "'==>'" + toState + "'], �tat actuel :'" + state + "' ");
+			System.err.println("Container pas dans l'état attendu pour la transition ['" + fromState + "'==>'" + toState + "'], état actuel :'" + state + "' ");
 		}
 		//---------------------------------------------------------------------
 		state = toState;

@@ -45,14 +45,14 @@ public abstract class AbstractAspectTestCase extends AbstractTestCase2JU4 {
 	@Test
 	public final void testOneMoreOnMethod() {
 		final Computer comp = Home.getComponentSpace().resolve(Computer.class);
-		//On v�rifie que l'intercepteur ajoute bien 1 � la somme de 2+3
+		//On vérifie que l'intercepteur ajoute bien 1 à la somme de 2+3
 		Assert.assertEquals(6, comp.sum(2, 3));
 	}
 
 	@Test
 	public final void testOneMoreOnClass() {
 		final F f = Home.getComponentSpace().resolve(F.class);
-		//On v�rifie que l'intercepteur ajoute bien 1 � la somme de 2+3
+		//On vérifie que l'intercepteur ajoute bien 1 à la somme de 2+3
 		Assert.assertEquals(11, f.getValue(10));
 		Assert.assertEquals(12, f.getValue2(10));
 		Assert.assertEquals(22, f.getValue3(10));
@@ -62,7 +62,7 @@ public abstract class AbstractAspectTestCase extends AbstractTestCase2JU4 {
 	@Test
 	public final void testOneMoreTenMore() {
 		final Computer comp = Home.getComponentSpace().resolve(Computer.class);
-		//On v�rifie que l'intercepteur ajoute bien 1 � la somme de 2+3
+		//On vérifie que l'intercepteur ajoute bien 1 à la somme de 2+3
 		Assert.assertEquals(17, comp.multi(2, 3));
 	}
 

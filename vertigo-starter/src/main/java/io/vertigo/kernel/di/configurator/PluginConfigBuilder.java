@@ -27,7 +27,7 @@ import java.util.Map;
 
 
 /**
- * Param�trage de l'application.
+ * Paramétrage de l'application.
  * 
  * @author npiedeloup, pchretien
  */

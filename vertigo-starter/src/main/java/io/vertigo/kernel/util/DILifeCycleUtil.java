@@ -45,7 +45,7 @@ public final class DILifeCycleUtil {
 	}
 
 	private DILifeCycleUtil() {
-		//Constructeur priv� car classe utilitaire.
+		//Constructeur privé car classe utilitaire.
 	}
 
 	public static Method getStartMethod(final Class<?> clazz) {
@@ -54,7 +54,7 @@ public final class DILifeCycleUtil {
 		final Method startMethod = getMethod(clazz, PostConstruct.class);
 
 		if (Activeable.class.isAssignableFrom(clazz)) {
-			Assertion.checkState(startMethod == null, "Ambiguit� sur la m�thode de d�marrage sur {0}", clazz);
+			Assertion.checkState(startMethod == null, "Ambiguité sur la méthode de démarrage sur {0}", clazz);
 			return postConstructMethod;
 		}
 		return startMethod;
@@ -65,7 +65,7 @@ public final class DILifeCycleUtil {
 		//---------------------------------------------------------------------
 		final Method stopMethod = getMethod(clazz, PreDestroy.class);
 		if (Activeable.class.isAssignableFrom(clazz)) {
-			Assertion.checkState(stopMethod == null, "Ambiguit� sur la m�thode d'arr�t sur {0}", clazz);
+			Assertion.checkState(stopMethod == null, "Ambiguité sur la méthode d'arrét sur {0}", clazz);
 			return preDestroyMethod;
 		}
 		return stopMethod;
@@ -80,7 +80,7 @@ public final class DILifeCycleUtil {
 				return method;
 			}
 		}
-		//Si on ne trouve pas de m�thode avec l'annotation souhait�e
+		//Si on ne trouve pas de méthode avec l'annotation souhaitée
 		return null;
 	}
 }

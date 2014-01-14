@@ -50,13 +50,13 @@ final class ComponentContainer implements Container, Activeable {
 	//On conserve l'ordre d'enregistrement.
 	private final Map<String, Object> components = new LinkedHashMap<>();
 
-	//Map des composant d�marr�s dans l'ordre de d�marrage
+	//Map des composant démarrés dans l'ordre de démarrage
 	private final Map<String, Object> startedComponents = new LinkedHashMap<>();
 	private final Map<String, ComponentInitializer> initializers = new HashMap<>();
 	private final Map<String, List<Plugin>> subComponents = new LinkedHashMap<>();
 
 	/**
-	 * R�cup�re tous les plugins d'un composant.
+	 * Récupère tous les plugins d'un composant.
 	 * @return Liste des plugins
 	 */
 	List<Plugin> getPlugins(final String componentId) {
@@ -69,10 +69,10 @@ final class ComponentContainer implements Container, Activeable {
 		Assertion.checkArgNotEmpty(normalizedId);
 		Assertion.checkNotNull(component);
 		//---------------------------------------------------------------------
-		//D�marrage du composant
+		//Démarrage du composant
 		startComponent(component);
 		final Object previous = startedComponents.put(normalizedId, component);
-		Assertion.checkState(previous == null, "Composant '{0}' deja enregistr�", normalizedId);
+		Assertion.checkState(previous == null, "Composant '{0}' deja enregistré", normalizedId);
 	}
 
 	/** {@inheritDoc} */
@@ -91,22 +91,22 @@ final class ComponentContainer implements Container, Activeable {
 	/** {@inheritDoc} */
 	public <C> C resolve(final String id, final Class<C> componentClass) {
 		final String normalizedId = StringUtil.normalize(id);
-		Assertion.checkArgument(contains(normalizedId), "Aucun composant enregistr� pour id = {0} parmi {1}", normalizedId, Home.getComponentSpace().keySet());
+		Assertion.checkArgument(contains(normalizedId), "Aucun composant enregistré pour id = {0} parmi {1}", normalizedId, Home.getComponentSpace().keySet());
 		//---------------------------------------------------------------------
 		return componentClass.cast(startedComponents.get(normalizedId));
 	}
 
 	/**
-	 * R�cup�ration d'un composant d'un certain type.
+	 * Récupération d'un composant d'un certain type.
 	 * @param <M> Type du composant
 	 * @param componentClass Class du composant
-	 * @return Composant correspondant au type pr�cis�.
+	 * @return Composant correspondant au type précisé.
 	 */
 	<T> T resolveComponent(final Class<T> componentClass) {
 		final String normalizedId = StringUtil.normalize(componentClass.getSimpleName());
 		final T component = componentClass.cast(components.get(normalizedId));
 		//---------------------------------------------------------------------
-		Assertion.checkNotNull(component, "Aucun composant de type {0} enregistr� parmi {1}", componentClass, Home.getComponentSpace().keySet());
+		Assertion.checkNotNull(component, "Aucun composant de type {0} enregistré parmi {1}", componentClass, Home.getComponentSpace().keySet());
 		return component;
 	}
 
@@ -118,15 +118,15 @@ final class ComponentContainer implements Container, Activeable {
 		Assertion.checkNotNull(componentConfig);
 		Assertion.checkNotNull(plugins);
 		// ---------------------------------------------------------------------
-		//On cr�e le container des sous composants (plugins) associ�s au Manager.
+		//On crée le container des sous composants (plugins) associés au Manager.
 		final Object previous = subComponents.put(componentConfig.getId(), new ArrayList<Plugin>(plugins.values()));
-		Assertion.checkState(previous == null, "subComponents of component '{0}' deja enregistr�s", componentConfig.getId());
+		Assertion.checkState(previous == null, "subComponents of component '{0}' deja enregistrés", componentConfig.getId());
 		//---------------------------------------------------------------------
-		// Il est n�cessaire d'enregistrer les sous-composants.
+		// Il est nécessaire d'enregistrer les sous-composants.
 
 		int nb = 0;
 		for (final Entry<PluginConfig, Plugin> entry : plugins.entrySet()) {
-			//Attention : il peut y avoir plusieurs plugin d'un m�me type
+			//Attention : il peut y avoir plusieurs plugin d'un même type
 			//On enregistre tjrs le premier Plugin de chaque type avec le nom du type de plugin
 			String pluginId = entry.getKey().getType();
 			if (contains(pluginId)) {
@@ -146,9 +146,9 @@ final class ComponentContainer implements Container, Activeable {
 		Assertion.checkNotNull(componentConfig);
 		Assertion.checkNotNull(component);
 		Assertion.checkNotNull(componentInitializer);
-		//---On v�rifie que le manager est uunique-----------------------------
+		//---On vérifie que le manager est uunique-----------------------------
 		final Object old = components.put(componentConfig.getId(), component);
-		Assertion.checkState(old == null, "component {0} deja enregistr�", componentConfig.getId());
+		Assertion.checkState(old == null, "component {0} deja enregistré", componentConfig.getId());
 		//---------------------------------------------------------------------
 		registerComponent(component, componentConfig.getId());
 		if (componentInitializer.isDefined()) {
@@ -164,7 +164,7 @@ final class ComponentContainer implements Container, Activeable {
 
 	/** {@inheritDoc} */
 	public void start() {
-		//le d�marrage des composants est effectu� au fur et � mesure de leur cr�ation.
+		//le démarrage des composants est effectué au fur et à mesure de leur création.
 		//L'initialisation est en revanche globale.
 		for (final Entry<String, Object> component : startedComponents.entrySet()) {
 			initializeComponent(component.getKey(), component.getValue());
@@ -203,7 +203,7 @@ final class ComponentContainer implements Container, Activeable {
 	private void stopComponents() {
 		/* Fermeture de tous les gestionnaires.*/
 		//On fait les fermetures dans l'ordre inverse des enregistrements.
-		//On se limite aux composants qui ont �t� d�marr�s.
+		//On se limite aux composants qui ont été démarrés.
 		final List<Object> reverseComponents = new ArrayList<>(startedComponents.values());
 		java.util.Collections.reverse(reverseComponents);
 

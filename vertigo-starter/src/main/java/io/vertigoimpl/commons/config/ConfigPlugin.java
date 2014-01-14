@@ -23,16 +23,16 @@ import io.vertigo.kernel.lang.Option;
 
 /**
  * Interface d'un plugin de gestion de configuration applicative. 
- * Toutes les configuration sont g�r�es sous forme de String.
+ * Toutes les configuration sont gérées sous forme de String.
  * @author prahmoune
  */
 public interface ConfigPlugin extends Plugin {
 	/** 
-	 * Retourne une propri�t� de configuration.
-	 * Retourne none si la propri�t� n'est pas g�r�e.
+	 * Retourne une propriété de configuration.
+	 * Retourne none si la propriété n'est pas gérée.
 	 * @param config Nom de la configuration
-	 * @param propertyName Nom de la propri�t� de la configuration
-	 * @return Valeur de la propri�t�
+	 * @param propertyName Nom de la propriété de la configuration
+	 * @return Valeur de la propriété
 	 */
 	Option<String> getValue(String config, String propertyName);
 }

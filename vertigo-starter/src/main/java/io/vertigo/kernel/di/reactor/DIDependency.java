@@ -26,12 +26,12 @@ import java.lang.reflect.Field;
 
 
 /**
- * Une d�pendance est identifi�e par son id et son caract�re optionnel.
- * Un composant poss�de une liste de d�pendances.
+ * Une dépendance est identifiée par son id et son caractère optionnel.
+ * Un composant possède une liste de dépendances.
  * @author pchretien
  */
 final class DIDependency {
-	//Id du composant d�clarant la d�pendance
+	//Id du composant déclarant la dépendance
 	private final DIComponentInfo componentInfo;
 	private final String id;
 	private final boolean option;

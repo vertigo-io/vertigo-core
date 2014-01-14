@@ -150,7 +150,7 @@ public final class ClassUtilTest {
 	@Test
 	public void testAllFields() {
 		final Collection<Field> fields = ClassUtil.getAllFields(String.class);
-		//On v�rifi que la propri�t� 'value' appartient � la liste
+		//On vérifi que la propriété 'value' appartient à la liste
 		boolean found = false;
 		for (final Field field : fields) {
 			if ("value".equals(field.getName())) {
@@ -357,13 +357,13 @@ public final class ClassUtilTest {
 
 		final void initMyPrivateLong() {
 			myPrivateLong = 2L;
-			nop(myPrivateLong); //Pour faire croire que la var est utilis�e
+			nop(myPrivateLong); //Pour faire croire que la var est utilisée
 			nop(myFinalLong); //idem
 		}
 	}
 
 	public static final class MyGenerics {
-		//Tests pour les g�n�riques 
+		//Tests pour les génériques 
 		public Option<Long> myOption;
 		public List<Long> myList;
 		public List<?> myList2;
@@ -472,7 +472,7 @@ public final class ClassUtilTest {
 				return field;
 			}
 		}
-		Assert.fail("field " + fieldName + " non trouv� dans " + clazz.getSimpleName());
+		Assert.fail("field " + fieldName + " non trouvé dans " + clazz.getSimpleName());
 		return null;
 	}
 

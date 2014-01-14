@@ -46,16 +46,16 @@ public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpace
 	private AopEngine aopEngine = new CGLIBAopEngine();
 	private JsonEngine jsonEngine = null;
 	private RestEngine restEngine = null; //par défaut par de serveur 
-	private ElasticaEngine elasticaEngine = null; //par défaut pas d'elasticit�.
-	private VCommandEngine commandEngine = null; // new VCommandEngineImpl(jsonEngine, VCommandEngine.DEFAULT_PORT); //Par d�faut
+	private ElasticaEngine elasticaEngine = null; //par défaut pas d'elasticité.
+	private VCommandEngine commandEngine = null; // new VCommandEngineImpl(jsonEngine, VCommandEngine.DEFAULT_PORT); //Par défaut
 
 	//=========================================================================
-	//==================Param�trage g�n�ral====================================
+	//==================Paramétrage général====================================
 	//=========================================================================
 	/**
-	 * Ajout de param�tres  
-	 * @param paramName Nom du param�tre
-	 * @param paramValue Valeur du param�tre
+	 * Ajout de paramètres  
+	 * @param paramName Nom du paramètre
+	 * @param paramValue Valeur du paramètre
 	 * @return
 	 */
 	public ComponentSpaceConfigBuilder withParam(final String paramName, final String paramValue) {
@@ -67,7 +67,7 @@ public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpace
 	}
 
 	/**
-	 * Permet d'externaliser le processus de chargement dans un syst�me d�di�
+	 * Permet d'externaliser le processus de chargement dans un système dédié
 	 * @param loader Responsable du chagement d'un fragment de la conf
 	 * @return Builder
 	 */
@@ -77,7 +77,7 @@ public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpace
 	}
 
 	/**
-	 * Permet de d�finir un d�marrage silencieux. (Sans retour console)
+	 * Permet de définir un démarrage silencieux. (Sans retour console)
 	 * @param newSilence Si le mode est silencieux 
 	 * @return Builder
 	 */
@@ -132,7 +132,7 @@ public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpace
 	 * @return Builder
 	 */
 	public ModuleConfigBuilder beginModule(final String name) {
-		//On remet � null le plugin et le composant courant
+		//On remet à null le plugin et le composant courant
 		final ModuleConfigBuilder moduleConfigBuilder = new ModuleConfigBuilder(this, name);
 		moduleConfigBuilders.add(moduleConfigBuilder);
 		return moduleConfigBuilder;

@@ -19,14 +19,14 @@
 package io.vertigo.kernel.lang;
 
 /**
- * Builder permettant de construire par �tapes un objet.
+ * Builder permettant de construire par étapes un objet.
  * 
  * @author pchretien
- * @param <T> Type de l'objet cr��.
+ * @param <T> Type de l'objet créé.
  */
 public interface Builder<T> {
 	/**
-	 * @return Objet cr��
+	 * @return Objet créé
 	 */
 	T build();
 }

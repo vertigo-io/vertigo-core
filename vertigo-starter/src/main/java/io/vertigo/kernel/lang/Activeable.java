@@ -20,8 +20,8 @@ package io.vertigo.kernel.lang;
 
 /**
  * Interface assurant le cycle de vie des composants (Optionnelle). 
- * Comportement transverse permettant de d�marrer et d'arr�ter des services.
- * Les annotations JSR #250 sont pr�f�r�es.
+ * Comportement transverse permettant de démarrer et d'arréter des services.
+ * Les annotations JSR #250 sont préférées.
  * 
  * @javax.annotation.PostConstruct et @javax.annotation.PreDestroy. 
  * Ex: public class MyComponent {

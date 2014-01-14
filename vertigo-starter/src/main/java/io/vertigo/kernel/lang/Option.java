@@ -22,23 +22,23 @@ import java.util.NoSuchElementException;
 
 /**
  * Classe portant les types optionnels.
- * Inspir�e de la classe Scala de m�me nom.
- *  - option : null ou renseign�e
+ * Inspirée de la classe Scala de même nom.
+ *  - option : null ou renseignée
  *  - none : null
- *  - some : renseign�e 
+ *  - some : renseignée 
  *
  * @author jmainaud
  * @param <T> Type de l'objet optionnel.
  */
 public final class Option<T> {
-	/** Constante d�clarant l'option None. */
+	/** Constante déclarant l'option None. */
 	private static final Option<Object> NONE = new Option<>(null);
 
 	/** Valeur. */
 	private final T value;
 
 	/**
-	 * Cr�e une nouvelle instance de <code>Option</code>.
+	 * Crée une nouvelle instance de <code>Option</code>.
 	 * @param value Valeur null / non null
 	 */
 	private Option(final T value) {
@@ -48,7 +48,7 @@ public final class Option<T> {
 	/**
 	 * Donne l'instance de None. 
 	 *
-	 * @param <T> Type de l'option demand�.
+	 * @param <T> Type de l'option demandé.
 	 * @return None.
 	 */
 	public static <T> Option<T> none() {
@@ -83,28 +83,28 @@ public final class Option<T> {
 	}
 
 	/**
-	 * Indique si l'option est d�finie.
+	 * Indique si l'option est définie.
 	 *
-	 * @return <code>true</code> si d�finie, sinon <code>false</code>.
+	 * @return <code>true</code> si définie, sinon <code>false</code>.
 	 */
 	public boolean isDefined() {
 		return !isEmpty();
 	}
 
 	/**
-	 * Indique si l'option n'est pas d�finie.
+	 * Indique si l'option n'est pas définie.
 	 *
-	 * @return <code>false</code> si d�finie, sinon <code>true</code>.
+	 * @return <code>false</code> si définie, sinon <code>true</code>.
 	 */
 	public boolean isEmpty() {
 		return value == null;
 	}
 
 	/**
-	 * Permet de r�cup�rer le contenu.
+	 * Permet de récupérer le contenu.
 	 *
-	 * @return Contenu si la valeur est d�finie.
-	 * @throws NoSuchElementException Si la valeur n'est pas d�finie.
+	 * @return Contenu si la valeur est définie.
+	 * @throws NoSuchElementException Si la valeur n'est pas définie.
 	 */
 	public T get() {
 		if (value == null) {
@@ -114,20 +114,20 @@ public final class Option<T> {
 	}
 
 	/**
-	 * Si l'option est d�finie donne la valeur, sinon donne la valeur par d�faut.
+	 * Si l'option est définie donne la valeur, sinon donne la valeur par défaut.
 	 *
-	 * @param defaut Valeur par d�faut.
-	 * @return Contenu si la valeur est d�finie.
+	 * @param defaut Valeur par défaut.
+	 * @return Contenu si la valeur est définie.
 	 */
 	public T getOrElse(final T defaut) {
 		return value == null ? defaut : value;
 	}
 
 	/**
-	 * Permet de r�cup�rer le contenu.
+	 * Permet de récupérer le contenu.
 	 *
-	 * @param defaut Valeur par d�faut.
-	 * @return Contenu si la valeur est d�finie.
+	 * @param defaut Valeur par défaut.
+	 * @return Contenu si la valeur est définie.
 	 */
 	public Option<T> orElse(final Option<T> defaut) {
 		return value == null ? defaut : this;

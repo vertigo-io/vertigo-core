@@ -40,8 +40,8 @@ public abstract class AbstractTestCase2JU4 {
 	@Before
 	public final void setUp() throws Exception {
 
-		// Cr�ation de l'�tat de l'application
-		// Initialisation de l'�tat de l'application
+		// Création de l'état de l'application
+		// Initialisation de l'état de l'application
 		final ComponentSpaceConfigBuilder componentSpaceConfigBuilder = new ComponentSpaceConfigBuilder().withSilence(true);
 		//final ComponentSpaceConfigBuilder componentSpaceConfigBuilder = new ComponentSpaceConfigBuilder().withRestEngine(new GrizzlyRestEngine(8086)).withSilence(true);
 		configMe(componentSpaceConfigBuilder);
@@ -65,31 +65,31 @@ public abstract class AbstractTestCase2JU4 {
 	}
 
 	/**
-	 * Initialisation du test pour impl� sp�cifique.
+	 * Initialisation du test pour implé spécifique.
 	 * @throws Exception Erreur
 	 */
 	protected void doSetUp() throws Exception {
-		// pour impl� sp�cifique 
+		// pour implé spécifique 
 	}
 
 	/**
-	 * Finalisation du test pour impl� sp�cifique.
+	 * Finalisation du test pour implé spécifique.
 	 * @throws Exception Erreur
 	 */
 	protected void doTearDown() throws Exception {
-		// pour impl� sp�cifique 
+		// pour implé spécifique 
 	}
 
 	/**
-	 * Finalisation du test pour impl� sp�cifique.
+	 * Finalisation du test pour implé spécifique.
 	 * @throws Exception Erreur
 	 */
 	protected void doAfterTearDown() throws Exception {
-		// pour impl� sp�cifique 
+		// pour implé spécifique 
 	}
 
 	/**
-	 * Fournit le container utilis� pour l'injection.
+	 * Fournit le container utilisé pour l'injection.
 	 * @return Container de l'injection
 	 */
 	private Container getContainer() {

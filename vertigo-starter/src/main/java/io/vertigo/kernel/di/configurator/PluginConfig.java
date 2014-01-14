@@ -31,14 +31,14 @@ import java.util.Map;
 
 
 /**
- * Param�trage d'un plugin :
+ * Paramétrage d'un plugin :
  * - Type du plugin
  * - class du plugin
- * - param�tres du plugin
+ * - paramètres du plugin
  * 
- * Les param�tres sont :
- * - soit d�finies directement dans cette configuration, 
- * - soit dans le fichier de conf li� � l'environnement.
+ * Les paramètres sont :
+ * - soit définies directement dans cette configuration, 
+ * - soit dans le fichier de conf lié à l'environnement.
  * 
  * @author npiedeloup, pchretien
  */
@@ -51,7 +51,7 @@ final class PluginConfig {
 	/**
 	 * Constructeur.
 	 * @param pluginImplClass Class du plugin
-	 * @param params Param�tres du plugin
+	 * @param params paramètres du plugin
 	 */
 	PluginConfig(final Class<? extends Plugin> pluginImplClass, final Map<String, String> params) {
 		Assertion.checkNotNull(pluginImplClass);
@@ -63,7 +63,7 @@ final class PluginConfig {
 	}
 
 	/*
-	 * On cherche le type du plugin qui correspond � la premi�re interface ou classe qui h�rite de Plugin.
+	 * On cherche le type du plugin qui correspond à la première interface ou classe qui hérite de Plugin.
 	 */
 	private static String getType(Class<? extends Plugin> pluginImplClass) {
 		//We are seeking the first and unique Object that extends Plugin.
@@ -74,7 +74,7 @@ final class PluginConfig {
 				return DIAnnotationUtil.buildId(intf);
 			}
 		}
-		//On n'a pas trouv� dans les interfaces on attaque les classes en cherchant une classe qui impl�mente Plugin
+		//On n'a pas trouvé dans les interfaces on attaque les classes en cherchant une classe qui implémente Plugin
 		for (Class currentClass = pluginImplClass; currentClass != null; currentClass = currentClass.getSuperclass()) {
 			if (Arrays.asList(currentClass.getInterfaces()).contains(Plugin.class)) {
 				return DIAnnotationUtil.buildId(currentClass);
@@ -84,7 +84,7 @@ final class PluginConfig {
 	}
 
 	/**
-	 * @return Classe de l'impl�mentation du composant
+	 * @return Classe de l'implémentation du composant
 	 */
 	Class<? extends Plugin> getImplClass() {
 		return implClass;
@@ -98,7 +98,7 @@ final class PluginConfig {
 	}
 
 	/**
-	 * @return Map des param�tres du composant
+	 * @return Map des paramètres du composant
 	 */
 	Map<String, String> getParams() {
 		return params;

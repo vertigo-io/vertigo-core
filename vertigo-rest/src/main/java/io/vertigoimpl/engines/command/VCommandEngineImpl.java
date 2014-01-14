@@ -223,9 +223,9 @@ public final class VCommandEngineImpl implements VCommandEngine, Activeable {
 //		}
 //		//------------------------------------------------------------------------
 //		// Rendu html de la page effectuant un garbage collector.
-//		out.print("Garbage collector effectu� en ");
+//		out.print("Garbage collector effectué en ");
 //		out.print(SystemUtil.DOUBLE_FORMATTER.format(((double) end - begin) / 1000));
-//		out.print(" s, m�moire lib�r�e : ");
+//		out.print(" s, mémoire libérée : ");
 //		out.print(SystemUtil.DOUBLE_FORMATTER.format(((double) freeEnd - freeBegin) / 1024 / 1024));
 //		out.print(" Mo");
 //		out.println("<br/>");
@@ -256,10 +256,10 @@ public final class VCommandEngineImpl implements VCommandEngine, Activeable {
 //	}
 
 //	private synchronized void doThreadDump(final PrintStream out) {
-//		//Synchronized car appell�e pour l'affichage par un Thread de request HTTP : si double clic execution de cette m�thode gourmande.
+//		//Synchronized car appellée pour l'affichage par un Thread de request HTTP : si double clic execution de cette méthode gourmande.
 //		appendJavaScript(out);
 //
-//		final StringBuilder sb = new StringBuilder("Execution du ThreadDump � ");
+//		final StringBuilder sb = new StringBuilder("Execution du ThreadDump à ");
 //		sb.append(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss:SSS").format(new Date()));
 //
 //		final Map<Long, Long> currentCpuTimeByThreadId = appendThreadsInformations(sb);
@@ -376,7 +376,7 @@ public final class VCommandEngineImpl implements VCommandEngine, Activeable {
 //
 //	private void appendTotalCpuTime(final StringBuilder sb, final long totalCpuTime) {
 //		final long currentTime = System.currentTimeMillis();
-//		final long totalCpuPercentil = totalCpuTime * 100 / (currentTime - lastThreadDumpTime + 1); //+1 pour �viter le "/ by zero"
+//		final long totalCpuPercentil = totalCpuTime * 100 / (currentTime - lastThreadDumpTime + 1); //+1 pour éviter le "/ by zero"
 //		if (totalCpuPercentil >= 10) {
 //			sb.append("<span style=\"background-color:");
 //			sb.append(getColorByCpuPercentil(totalCpuPercentil));
@@ -388,7 +388,7 @@ public final class VCommandEngineImpl implements VCommandEngine, Activeable {
 //		sb.append(totalCpuPercentil);
 //		sb.append("%) en ");
 //		sb.append(currentTime - lastThreadDumpTime);
-//		sb.append(" ms de temps r�el.");
+//		sb.append(" ms de temps réel.");
 //		if (totalCpuPercentil >= 10) {
 //			sb.append("</b></span>");
 //		}

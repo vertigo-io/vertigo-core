@@ -42,7 +42,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * Test de l'impl�mentation standard.
+ * Test de l'implémentation standard.
  *
  * @author pchretien
  */

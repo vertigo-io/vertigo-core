@@ -28,7 +28,7 @@ import java.net.URL;
 
 
 /**
- * R�solution des URL li�es � l'emplacement local.
+ * Résolution des URL liées à l'emplacement local.
  * 
  * @author prahmoune
  */

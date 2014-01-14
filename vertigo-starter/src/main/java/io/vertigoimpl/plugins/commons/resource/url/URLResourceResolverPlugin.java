@@ -27,7 +27,7 @@ import java.net.URL;
 
 
 /**
- * R�solution des URL par le standard java.net.URL.
+ * Résolution des URL par le standard java.net.URL.
  * 
  * @author npiedeloup
  */

@@ -29,9 +29,9 @@ import java.util.Set;
 
 
 /**
- * R�acteur.
+ * Réacteur.
  * Objet dans lequel on met en vrac des composants.
- * Puis il suffit d'appeler la m�thode  'proceed'  
+ * Puis il suffit d'appeler la méthode  'proceed'  
  *   
  * @author pchretien
  */
@@ -42,9 +42,9 @@ public final class Reactor {
 	private final Set<String> parentComponentInfos = new HashSet<>();
 
 	private void check(final String id) {
-		//On v�rifie que l'on n'ins�re pas deux composants avec le m�me id.
+		//On vérifie que l'on n'insère pas deux composants avec le même id.
 		if (allComponentInfos.contains(id)) {
-			throw new DIException("deux composants ins�r�s avec le m�me id :'" + id + "'");
+			throw new DIException("deux composants insérés avec le même id :'" + id + "'");
 		}
 	}
 
@@ -61,7 +61,7 @@ public final class Reactor {
 	}
 
 	/**
-	 * Ajout d'un comoposant identifi� par son seul id.
+	 * Ajout d'un comoposant identifié par son seul id.
 	 */
 	public Reactor addParent(final String id) {
 		check(id);
@@ -71,16 +71,16 @@ public final class Reactor {
 	}
 
 	/**
-	 * M�thode cl� permettant d'activer la r�action.
-	 * @return Liste ordonn�e des ids de composants, selon leur d�pendances. 
+	 * Méthode clé permettant d'activer la réaction.
+	 * @return Liste ordonnée des ids de composants, selon leur dépendances. 
 	 */
 	public List<String> proceed() {
 		//-----------------------------------------------------------------------------------------
-		//1.On v�rifie si tous les composants d�finis par leurs ids existent
+		//1.On vérifie si tous les composants définis par leurs ids existent
 		final List<DIDependency> missing = new ArrayList<>();
 		for (final DIComponentInfo componentInfo : diComponentInfos) {
 			for (final DIDependency dependency : componentInfo.getDependencies()) {
-				//Si une r�f�rence est optionnelle alors elle n'est jamais manquante.
+				//Si une référence est optionnelle alors elle n'est jamais manquante.
 				if (!dependency.isOptional() && !allComponentInfos.contains(dependency.getId())) {
 					missing.add(dependency);
 				}
@@ -90,43 +90,43 @@ public final class Reactor {
 			throw new DIException("Components not found :" + missing + "\n\tLoaded components : " + diComponentInfos);
 		}
 		//-----------------------------------------------------------------------------------------
-		//2.On r�sout les d�pendances
+		//2.On résout les dépendances
 		final List<DIComponentInfo> unsorted = new ArrayList<>(diComponentInfos);
-		//Niveaux de d�pendances des composants 
+		//Niveaux de dépendances des composants 
 		//		final List<List<String>> levels = new ArrayList<>();
 		final List<String> sorted = new ArrayList<>();
 
-		//. Par d�faut on consid�re comme tri�s tous les parents
+		//. Par défaut on considére comme triés tous les parents
 		while (!unsorted.isEmpty()) {
 			final int countSorted = sorted.size();
 			for (final Iterator<DIComponentInfo> iterator = unsorted.iterator(); iterator.hasNext();) {
 				final DIComponentInfo componentInfo = iterator.next();
 				boolean solved = true;
 				for (final DIDependency dependency : componentInfo.getDependencies()) {
-					//On v�rifie si pour un composant 
-					//TOUTES ses d�pendances sont bien d�j� r�solues.
+					//On vérifie si pour un composant 
+					//TOUTES ses dépendances sont bien déjà résolues.
 					if (allComponentInfos.contains(dependency.getId()) || !dependency.isOptional()) {
-						//On doit r�soudre toutes des r�f�rences connues(y compris les r�f�renes optionnelles) sans tenir compte des r�f�rences inconnues et optionnelles.
+						//On doit résoudre toutes des références connues(y compris les référenes optionnelles) sans tenir compte des références inconnues et optionnelles.
 						solved = solved && (sorted.contains(dependency.getId()) || parentComponentInfos.contains(dependency.getId()));
 					}
 					if (!solved) {
 						//Si ce n'est pas le cas on passe au composant suivant.
-						//On arr�te de regarder les autres d�pendances
+						//On arréte de regarder les autres dépendances
 						break;
 					}
 				}
 				if (solved) {
-					//Le composant est r�solu
-					// - On l'ajoute sa cl� � la liste des cl�s de composants r�solus 
-					// - On le supprime de la liste des composants � r�soudre
+					//Le composant est résolu
+					// - On l'ajoute sa clé à la liste des clés de composants résolus 
+					// - On le supprime de la liste des composants à résoudre
 					sorted.add(componentInfo.getId());
 					iterator.remove();
 				}
 			}
-			// Si lors d'une it�ration on ne fait rien c'est qu'il y a une d�pendance cyclique
+			// Si lors d'une itération on ne fait rien c'est qu'il y a une dépendance cyclique
 			if (countSorted == sorted.size()) {
-				// On a une d�pendance cyclique !
-				throw new DIException("Liste des composants non r�solus :" + unsorted);
+				// On a une dépendance cyclique !
+				throw new DIException("Liste des composants non résolus :" + unsorted);
 			}
 		}
 		//-----------------------------------------------------------------------------------------

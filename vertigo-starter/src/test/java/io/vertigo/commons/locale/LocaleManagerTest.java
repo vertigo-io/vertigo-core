@@ -46,7 +46,7 @@ public final class LocaleManagerTest extends AbstractTestCase2JU4 {
 		componentSpaceConfiguilder
 		.beginModule("spacs").
 			beginComponent(LocaleManager.class, LocaleManagerImpl.class)
-				//les locales doivent �tre s�par�es par des virgules
+				//les locales doivent être séparées par des virgules
 				.withParam("locales", "fr_FR, en , de_DE")
 			.endComponent()
 		.endModule();	
@@ -112,7 +112,7 @@ public final class LocaleManagerTest extends AbstractTestCase2JU4 {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testUnknown() {
-		//On v�rifie que l'on ne connait pas le japonais
+		//On vérifie que l'on ne connait pas le japonais
 		Assert.assertNull(localeManager.getMessage(CityGuide.HELLO, Locale.JAPANESE));
 	}
 
@@ -123,7 +123,7 @@ public final class LocaleManagerTest extends AbstractTestCase2JU4 {
 				return Locale.JAPANESE;
 			}
 		});
-		//On v�rifie que l'on ne connait pas le japonais
+		//On vérifie que l'on ne connait pas le japonais
 		final MessageText helloTxt = new MessageText(CityGuide.HELLO);
 		Assert.assertEquals("<<ja:HELLO>>", helloTxt.getDisplay());
 	}
@@ -131,7 +131,7 @@ public final class LocaleManagerTest extends AbstractTestCase2JU4 {
 	@Test
 	public void testDynamicMessageKey() {
 		/* 
-		 * On teste que l'on acc�de au dictionnaire par une cl� sous forme de chaine de caract�res.
+		 * On teste que l'on accède au dictionnaire par une clé sous forme de chaine de caractères.
 		 */
 		final MessageKey key = new MessageKey() {
 			private static final long serialVersionUID = 4654362997955319282L;
@@ -154,8 +154,8 @@ public final class LocaleManagerTest extends AbstractTestCase2JU4 {
 				return "UNKNOWN KEY";
 			}
 		};
-		final MessageText helloTxt = new MessageText("bonjour par d�faut", key);
-		Assert.assertEquals("bonjour par d�faut", helloTxt.getDisplay());
+		final MessageText helloTxt = new MessageText("bonjour par défaut", key);
+		Assert.assertEquals("bonjour par défaut", helloTxt.getDisplay());
 	}
 
 	@Test

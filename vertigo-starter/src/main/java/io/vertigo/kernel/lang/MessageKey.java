@@ -21,13 +21,13 @@ package io.vertigo.kernel.lang;
 import java.io.Serializable;
 
 /**
-* Cl� d'un message externalis�e.
+* Clé d'un message externalisée.
 *
 * @author  pchretien, npiedeloup
 */
 public interface MessageKey extends Serializable {
 	/**
-	 * @return nom de la cl�.
+	 * @return nom de la clé.
 	 */
 	String name();
 }

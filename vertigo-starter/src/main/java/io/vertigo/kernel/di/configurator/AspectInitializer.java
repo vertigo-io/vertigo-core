@@ -34,12 +34,12 @@ import java.util.Map;
 
 
 /**
- * Classe permettant d'injecter les intercepteurs sur les points d'ex�cutions d�finis dans les aspects.
+ * Classe permettant d'injecter les intercepteurs sur les points d'exécutions définis dans les aspects.
  * La liste des intercepteurs est construite en amont.
  * 
- * Les points d'interceptions sont d�finis par des annotations plac�es au niveau 
+ * Les points d'interceptions sont définis par des annotations placées au niveau 
  *  - des classes
- *  - des m�thodes.
+ *  - des méthodes.
  *  
  * @author pchretien, prahmoune
  */
@@ -56,9 +56,9 @@ final class AspectInitializer {
 	}
 
 	/**
-	 * Cr�ation des composants
-	 * @param adviceInfos Liste des advices � cr�er
-	 * @param componentRefFactory Factory des r�f�rences utilisables 
+	 * Création des composants
+	 * @param adviceInfos Liste des advices à créer
+	 * @param componentRefFactory Factory des références utilisables 
 	 * @return Liste des composants
 	 */
 	private static Map<AspectConfig, Interceptor> createInterceptorsMap(final Collection<AspectConfig> aspectInfos) {
@@ -66,7 +66,7 @@ final class AspectInitializer {
 
 		final Map<AspectConfig, Interceptor> interceptorMap = new HashMap<>();
 		for (final AspectConfig aspectInfo : aspectInfos) {
-			// cr�ation de l'instance du composant
+			// création de l'instance du composant
 			final Interceptor interceptor = injector.newInstance(aspectInfo.getInterceptorImplClass(), Home.getComponentSpace());
 			interceptorMap.put(aspectInfo, interceptor);
 		}
@@ -74,10 +74,10 @@ final class AspectInitializer {
 	}
 
 	/**
-	 * Cr�ation des points d'ex�cution identifi�s par m�thode.
+	 * Création des points d'exécution identifiés par méthode.
 	 * 
 	 * @param implClass Classe portant les aspects
-	 * @return Map des aspects par m�thode
+	 * @return Map des aspects par méthode
 	 */
 	Map<Method, List<Interceptor>> createJoinPoints(final ComponentConfig componentConfig) {
 		final Map<Method, List<Interceptor>> joinPoints = new HashMap<>();
@@ -85,8 +85,8 @@ final class AspectInitializer {
 			// Build the interceptor list
 			final Interceptor advice = interceptorsMap.get(aspectInfo);
 
-			// On r�cup�re ttes les m�thodes matchant pour l'aspect concern�
-			// puis on cr�e la liste des intercepteurs
+			// On récupère ttes les méthodes matchant pour l'aspect concerné
+			// puis on crée la liste des intercepteurs
 			for (final Method method : getMatchingMethods(aspectInfo.getAnnotationType(), componentConfig.getImplClass())) {
 				List<Interceptor> interceptors = joinPoints.get(method);
 				if (interceptors == null) {
@@ -105,12 +105,12 @@ final class AspectInitializer {
 		// aspect au niveau classe
 		for (final Annotation annotation : implClass.getAnnotations()) {
 			if (annotation.annotationType().equals(annotationType)) {
-				// annotation trouv�e, il faut ajouter toutes les m�thodes de la classe.
+				// annotation trouvée, il faut ajouter toutes les méthodes de la classe.
 				methods.addAll(Arrays.asList(implClass.getMethods()));
 			}
 		}
 
-		// aspect au niveau m�thode
+		// aspect au niveau méthode
 		for (final Method method : implClass.getMethods()) {
 			for (final Annotation annotation : method.getAnnotations()) {
 				if (annotation.annotationType().equals(annotationType)) {

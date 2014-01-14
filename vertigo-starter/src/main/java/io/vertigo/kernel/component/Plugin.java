@@ -19,12 +19,12 @@
 package io.vertigo.kernel.component;
 
 /**
- * Tout plugin doit �tre ThreadSafe. 
+ * Tout plugin doit être ThreadSafe. 
  * Les plugins sont tous des singletons.
- * Un plugin peut poss�der un �tat actif / inactif via l'interface Activeable.
+ * Un plugin peut posséder un état actif / inactif via l'interface Activeable.
  * 
  * @author pchretien
  */
 public interface Plugin {
-	//Un plugin peut �tre activeable.
+	//Un plugin peut être activeable.
 }

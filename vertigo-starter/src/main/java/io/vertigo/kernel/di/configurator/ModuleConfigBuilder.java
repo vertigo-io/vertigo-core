@@ -29,7 +29,7 @@ import java.util.List;
 
 
 /**
- * Param�trage de l'application.
+ * Paramétrage de l'application.
  * 
  * @author npiedeloup, pchretien
  */
@@ -39,8 +39,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	private final List<ComponentConfigBuilder> componentConfigBuilders = new ArrayList<>();
 	private final List<AspectConfig> aspectConfigs = new ArrayList<>();
 	//---Rules
-	private boolean hasApi = true; //par d�faut on a une api.
-	private Class<?> superClass = Manager.class; //Par d�faut la super Classe est Manager
+	private boolean hasApi = true; //par défaut on a une api.
+	private Class<?> superClass = Manager.class; //Par défaut la super Classe est Manager
 
 	ModuleConfigBuilder(final ComponentSpaceConfigBuilder componentSpaceConfigBuilder, final String name) {
 		Assertion.checkNotNull(componentSpaceConfigBuilder);
@@ -68,7 +68,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
-	* Ajout d'un composant distribu�.
+	* Ajout d'un composant distribué.
 	* @param apiClass Classe du composant (Interface)
 	* @return Builder
 	*/
@@ -78,7 +78,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 
 	/**
 	* Ajout d'un composant.
-	* @param implClass Classe d'impl�mentation du composant
+	* @param implClass Classe d'implémentation du composant
 	* @return Builder
 	*/
 	public ComponentConfigBuilder beginComponent(final Class<?> implClass) {
@@ -88,7 +88,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	/**
 	* Ajout d'un composant.
 	* @param apiClass Classe du composant (Interface)
-	* @param implClass Classe d'impl�mentation du composant
+	* @param implClass Classe d'implémentation du composant
 	* @return Builder
 	*/
 	public ComponentConfigBuilder beginComponent(final Class<?> apiClass, final Class<?> implClass) {
@@ -98,7 +98,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	/**
 	* Ajout d'un composant.
 	* @param apiClass Classe du composant (Interface)
-	* @param implClass Classe d'impl�mentation du composant
+	* @param implClass Classe d'implémentation du composant
 	* @return Builder
 	*/
 	private ComponentConfigBuilder doBeginComponent(final Option<Class<?>> apiClass, final Class<?> implClass, final boolean elastic) {
@@ -114,7 +114,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	/** {@inheritDoc} */
 	public ModuleConfig build() {
 		final List<ModuleRule> moduleRules = new ArrayList<>();
-		//Mise � jour des r�gles. 
+		//Mise à jour des règles. 
 		if (hasApi) {
 			moduleRules.add(new APIModuleRule());
 		}

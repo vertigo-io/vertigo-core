@@ -32,7 +32,7 @@ import org.junit.Test;
  */
 public final class TcpTest {
 	private static final String HOST = "localhost";
-	//volontairement diff�rent de 4444
+	//volontairement différent de 4444
 	private static final int PORT = 4443;
 
 	@Test

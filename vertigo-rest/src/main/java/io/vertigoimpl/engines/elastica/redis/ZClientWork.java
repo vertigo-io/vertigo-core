@@ -72,13 +72,13 @@ public final class ZClientWork /*implements Runnable*/{
 		//On renseigne la demande de travaux
 		final String id = publish(jedis, work, true);
 
-		//On attend le r�sultat
+		//On attend le résultat
 		final String workId = jedis.brpoplpush("works:done:" + id, "works:completed", timeoutSeconds);
 		if (workId == null) {
-			throw new VRuntimeException("TimeOut survenu pour {0}, dur�e maximale: {1}", null, id, timeoutSeconds);
+			throw new VRuntimeException("TimeOut survenu pour {0}, durée maximale: {1}", null, id, timeoutSeconds);
 		}
 		if (!workId.equals(id)) {
-			throw new IllegalStateException("Id non coh�renents attendu '" + id + "' trouv� '" + workId + "'");
+			throw new IllegalStateException("Id non cohérenents attendu '" + id + "' trouvé '" + workId + "'");
 		}
 		if ("ok".equals(jedis.hget("work:" + id, "status"))) {
 			return Util.decodeResult(jedis.hget("work:" + id, "result"));
@@ -107,7 +107,7 @@ public final class ZClientWork /*implements Runnable*/{
 	//		final Jedis jedis = jedisPool.getResource();
 	//		try {
 	//			while (true) {
-	//				//On attend le r�sultat
+	//				//On attend le résultat
 	//				final String workId = jedis.brpoplpush("works:done", "works:completed", 60);
 	//				if (workId != null) {
 	//					final Object result = Util.decode(jedis.hget("work:" + workId, "result"));

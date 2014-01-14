@@ -21,8 +21,8 @@ package io.vertigo.kernel.engines;
 import io.vertigo.kernel.Engine;
 
 /** 
- * Gestion des appels distribu�s.
- * Ce module est utilis� 
+ * Gestion des appels distribués.
+ * Ce module est utilisé 
  *  - soit en mode client 
  *  - soit en mode server
  *  
@@ -30,10 +30,10 @@ import io.vertigo.kernel.Engine;
  */
 public interface ElasticaEngine extends Engine {
 	/**
-	 * Cr�ation d'un proxy client. 
-	 * Le proxy permet de distribuer des services ; ces services sont d�clar�s dans une interface et d�ploy�s sur un serveur.  
+	 * Création d'un proxy client. 
+	 * Le proxy permet de distribuer des services ; ces services sont déclarés dans une interface et déployés sur un serveur.  
 	 * 
-	 * @param <F> Type de l'interface � distribuer
+	 * @param <F> Type de l'interface à distribuer
 	 * @return Interface cliente du service
 	 */
 	<F> F createProxy(final Class<F> facadeClass);

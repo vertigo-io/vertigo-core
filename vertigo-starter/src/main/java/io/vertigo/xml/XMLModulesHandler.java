@@ -160,7 +160,7 @@ final class XMLModulesHandler extends DefaultHandler {
 	//-------------------------------------------------------------------------
 
 	//On recherche l'interface ayant le nom 'simpleName' dans l'arbre de la classe 'clazz'
-	//Cette interface doit exister et �tre unique.
+	//Cette interface doit exister et être unique.
 	private static Class<?> resolveInterface(final String simpleName, final Class<?> clazz) {
 		final Class<?>[] interfaces = ClassUtil.getAllInterfaces(clazz);
 		Class<?> found = null;

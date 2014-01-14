@@ -27,7 +27,7 @@ import java.util.Locale;
  */
 public interface LocaleProvider {
 	/**
-	 * @return Locale courante. (peut-�tre null)
+	 * @return Locale courante. (peut-être null)
 	 */
 	Locale getCurrentLocale();
 }

@@ -29,17 +29,17 @@ import java.io.Serializable;
 /**
  * Référence SERIALIZABLE vers les definitions.
  * @author pchretien
- * @param <D> Type de la d�finition
+ * @param <D> Type de la définition
  */
 public final class DefinitionReference<D extends Definition> implements Serializable {
 	private static final long serialVersionUID = 1L;
-	/** Nom de la D�finition. */
+	/** Nom de la Définition. */
 	private String definitionName;
 	private transient D definition;
 
 	/**
 	 * Constructeur.
-	 * @param definition D�finition
+	 * @param definition Définition
 	 */
 	public DefinitionReference(final D definition) {
 		Assertion.checkNotNull(definition);
@@ -49,7 +49,7 @@ public final class DefinitionReference<D extends Definition> implements Serializ
 	}
 
 	/**
-	 * @return Objet r�f�renc�
+	 * @return Objet référencé
 	 */
 	public D get() {
 		return definition;
@@ -71,12 +71,12 @@ public final class DefinitionReference<D extends Definition> implements Serializ
 	}
 
 	private void writeObject(final ObjectOutputStream oos) throws IOException {
-		//On �crit que le nom de la d�finition
+		//On écrit que le nom de la définition
 		oos.writeObject(definitionName);
 	}
 
 	private void readObject(final ObjectInputStream ois) throws ClassNotFoundException, IOException {
-		//On r�cup�re le nom de la d�finition
+		//On récupère le nom de la définition
 		definitionName = (String) ois.readObject();
 		definition = (D) Home.getDefinitionSpace().resolve(definitionName);
 	}

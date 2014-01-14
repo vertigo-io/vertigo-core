@@ -20,26 +20,26 @@ package io.vertigo.kernel.component;
 
 /**
  * Composant.
- * Tout composant doit �tre ThreadSafe. 
- * Un module poss�de un param�trage et un �tat interne,
+ * Tout composant doit être ThreadSafe. 
+ * Un module possède un paramétrage et un état interne,
  * ce qui lui permet d'offrir des services.
  *
  * L'usage du module permet d'enrichir des statistiques.
  *
- * Le module permet de repr�senter
+ * Le module permet de représenter
  * - ce qu'il est, ce qu'il fait (ex : module de cache permet de...)
  * - les statistiques d'usage (ex: 99 % d'utilisation du cache)
- * - son �tat interne (ex : 153 Mo utilis� dont 3 Mo sur disque)
- * - son param�trage. (ex : Impl�mentation eh cache avec les param�tres suivants ...)
+ * - son état interne (ex : 153 Mo utilisé dont 3 Mo sur disque)
+ * - son paramétrage. (ex : Implémentation eh cache avec les paramètres suivants ...)
  *
- * Les statistiques et l'�tat varient au fil du temps.
- * Le param�trage doit �tre stable et n�cessite une reconfiguration. (Nouvelle version d'une application)
- * Le contrat du composant (ce qu'il est, ce qu'il fait) doit �videmment �tre tr�s stable.
+ * Les statistiques et l'état varient au fil du temps.
+ * Le paramétrage doit être stable et nécessite une reconfiguration. (Nouvelle version d'une application)
+ * Le contrat du composant (ce qu'il est, ce qu'il fait) doit évidemment être très stable.
  *
- * Lors du d�marrage du composant. (m�thode Start)
- *  - V�rification de la configuration avec les m�thodes register.
- * Lors de l'arr�t du composant 
- *  - Lib�ration des ressources consomm�es par le composant lors du undeploy.
+ * Lors du démarrage du composant. (méthode Start)
+ *  - Vérification de la configuration avec les méthodes register.
+ * Lors de l'arrét du composant 
+ *  - Libération des ressources consommées par le composant lors du undeploy.
  * 		Exemples : connexions, thread, flux
  * @author pchretien
  */

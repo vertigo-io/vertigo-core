@@ -42,7 +42,7 @@ public final class ComponentSpace2Test extends AbstractTestCase2JU4 {
 		Assert.assertEquals(366, res);
 	}
 
-	//On v�rifie que les composants ont bien �t� d�marr�s
+	//On vérifie que les composants ont bien été démarrés
 	@Test
 	public void testActive() {
 		Assert.assertTrue(bioManager.isActive());

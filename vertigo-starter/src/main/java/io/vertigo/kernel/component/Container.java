@@ -22,7 +22,7 @@ import java.util.Set;
 
 /**
  * Container universel des composants.
- * Les composants sont tous identifi�s par un identifiant.
+ * Les composants sont tous identifiés par un identifiant.
  * Cet identifiant est camelCase. (Voir REGEX ci-dessous)
  * 
  * @author pchretien, prahmoune
@@ -31,24 +31,24 @@ public interface Container {
 	//final Pattern REGEX_ID = Pattern.compile("[a-z][a-zA-Z0-9]{0,79}");
 
 	/**
-	 * V�rification si un composant est d�j� enregistr�.
-	 * La casse du premier caract�re de l'Id n'est pas prise en compte.
+	 * Vérification si un composant est déjà enregistré.
+	 * La casse du premier caractère de l'Id n'est pas prise en compte.
 	 * @param id Id du composant
-	 * @return Si le composant est d�j� enregistr�.
+	 * @return Si le composant est déjà enregistré.
 	 */
 	boolean contains(final String id);
 
 	/**
-	 * R�cup�re un composant par son id et assure sn typage.
-	 * La casse du premier caract�re de l'Id n'est pas prise en compte.
+	 * Récupère un composant par son id et assure sn typage.
+	 * La casse du premier caractère de l'Id n'est pas prise en compte.
 	 * @param id Id du composant
 	 * @return Composant
 	 */
 	<T> T resolve(final String id, final Class<T> componentClass);
 
 	/**
-	 * Liste des ids g�r�s.
-	 * @return Liste des ids de TOUS les composants g�r�s par le pr�sent container
+	 * Liste des ids gérés.
+	 * @return Liste des ids de TOUS les composants gérés par le présent container
 	 */
 	Set<String> keySet();
 }

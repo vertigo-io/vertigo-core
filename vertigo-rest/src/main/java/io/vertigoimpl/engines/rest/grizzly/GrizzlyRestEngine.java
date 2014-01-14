@@ -39,7 +39,7 @@ import com.sun.jersey.api.core.ClassNamesResourceConfig;
 import com.sun.jersey.api.core.ResourceConfig;
 
 /**
- * Impl�mentation du tableau de bord.
+ * Implémentation du tableau de bord.
  * 
  * @author pchretien
  */

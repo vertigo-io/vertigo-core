@@ -21,7 +21,7 @@ package io.vertigo.kernel.exception;
 import io.vertigo.kernel.util.StringUtil;
 
 /**
- * Classe de base pour toutes les exceptions syst�mes.
+ * Classe de base pour toutes les exceptions systèmes.
  * 
  * @author fconstantin, pchretien
  */
@@ -42,10 +42,10 @@ public final class VRuntimeException extends RuntimeException {
 	 *
 	 * @param msg Message de l'exception
 	 * @param t Exception cause
-	 * @param params Param�tres de la resource
+	 * @param params paramètres de la resource
 	 */
 	public VRuntimeException(final String msg, final Throwable t, final Object... params) {
-		//Le message peut-�tre null sur certaines exceptions java (NullPointerException par exemple)
+		//Le message peut-être null sur certaines exceptions java (NullPointerException par exemple)
 		//Dans ce cas on positionne le nom de l'exception
 		super(StringUtil.format(msg != null ? msg : t.getClass().getSimpleName(), params), t);
 	}
@@ -54,7 +54,7 @@ public final class VRuntimeException extends RuntimeException {
 	 * Constructeur.
 	 *
 	 * @param t Exception cause
-	 * @param params Param�tres de la resource
+	 * @param params paramètres de la resource
 	 */
 	public VRuntimeException(final Throwable t, final Object... params) {
 		this(t.getMessage(), t, params);

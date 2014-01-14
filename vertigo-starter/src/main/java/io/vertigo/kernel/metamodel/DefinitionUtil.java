@@ -36,15 +36,15 @@ public final class DefinitionUtil {
 		//---------------------------------------------------------------------
 		final Prefix prefix = definitionClass.getAnnotation(Prefix.class);
 		if (prefix == null) {
-			throw new VRuntimeException("Annotation  '@Prefix' non trouv�e sur " + definitionClass.getName());
+			throw new VRuntimeException("Annotation  '@Prefix' non trouvée sur " + definitionClass.getName());
 		}
 		Assertion.checkArgNotEmpty(prefix.value());
 		return prefix.value();
 	}
 
 	public static String getLocalName(final String name, final Class<? extends Definition> definitionClass) {
-		//On enl�ve le prefix et le separateur.
-		//On v�rifie aussi que le prefix est OK 
+		//On enléve le prefix et le separateur.
+		//On vérifie aussi que le prefix est OK 
 		final String prefix = getPrefix(definitionClass);
 		Assertion.checkArgument(name.startsWith(prefix), "Le nom de la définition '{0}' ne commence pas par le prefix attendu : '{1}'", name, prefix);
 		Assertion.checkArgument(name.charAt(prefix.length()) == Definition.SEPARATOR, "Séparateur utilisé pour la définition '{0}' n'est pas correct", name);

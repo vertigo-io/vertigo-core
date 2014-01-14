@@ -59,28 +59,28 @@ public final class ConfigManagerTest extends AbstractTestCase2JU4 {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testFailPath() {
-		//On v�rifie que le path doit respecter la regex @See ConfigManager.REGEX_PATH
+		//On vérifie que le path doit respecter la regex @See ConfigManager.REGEX_PATH
 		final String value = configManager.getStringValue("Server", "name");
 		nop(value);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testFailPath2() {
-		//On v�rifie que le path doit respecter la regex @See ConfigManager.REGEX_PATH
+		//On vérifie que le path doit respecter la regex @See ConfigManager.REGEX_PATH
 		final String value = configManager.getStringValue("server.Fr", "name");
 		nop(value);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testFailProperty() {
-		//On v�rifie que la propert doit respecter la regex @See ConfigManager.REGEX_PROPERTY
+		//On vérifie que la propert doit respecter la regex @See ConfigManager.REGEX_PROPERTY
 		final String value = configManager.getStringValue("server", "Name");
 		nop(value);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testFailProperty2() {
-		//On v�rifie que la propert doit respecter la regex @See ConfigManager.REGEX_PROPERTY
+		//On vérifie que la propert doit respecter la regex @See ConfigManager.REGEX_PROPERTY
 		final String value = configManager.getStringValue("server", "name.first");
 		nop(value);
 	}
@@ -123,7 +123,7 @@ public final class ConfigManagerTest extends AbstractTestCase2JU4 {
 	@Test(expected = Exception.class)
 	public void testVo() {
 		configManager.resolve("serverTest", ServerConfigVo.class);
-		//Le r�solve ne doit pas �tre possible : les Values Object ne sont pas g�r�s.");
+		//Le résolve ne doit pas être possible : les Values Object ne sont pas gérés.");
 	}
 
 	@Test
@@ -138,7 +138,7 @@ public final class ConfigManagerTest extends AbstractTestCase2JU4 {
 	@Test(expected = Exception.class)
 	public void testBean1() {
 		configManager.resolve("server", ServerConfigBean.class);
-		//"Le r�solve ne doit pas �tre possible : il manque une propri�t�.");
+		//"Le résolve ne doit pas être possible : il manque une propriété.");
 	}
 
 	@Test

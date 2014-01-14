@@ -31,7 +31,7 @@ import java.util.Map;
 
 
 /**
- * Param�trage d'un composant.
+ * Paramétrage d'un composant.
  * - nom du compposant
  * - class du composant
  * - api du composant (option) 
@@ -49,10 +49,10 @@ final class ComponentConfig {
 
 	/**
 	 * @param apiClass Class de l'api du composant
-	 * @param implClass Class de l'impl�mentation du composant
+	 * @param implClass Class de l'implémentation du composant
 	 * @param componentInitializerClass Class de l'initialiseur du composant
 	 * @param pluginConfigurations Liste des plugins du composant
-	 * @param params Param�tres du composant
+	 * @param params paramètres du composant
 	 */
 	ComponentConfig(final Option<Class<?>> apiClass, final Class<?> implClass, final boolean elastic, final Class<? extends ComponentInitializer<?>> componentInitializerClass, final List<PluginConfig> pluginConfigurations, final Map<String, String> params) {
 		Assertion.checkNotNull(apiClass);
@@ -85,7 +85,7 @@ final class ComponentConfig {
 	}
 
 	/**
-	 * @return Classe de l'impl�mentation du composant
+	 * @return Classe de l'implémentation du composant
 	 */
 	Class<?> getImplClass() {
 		return implClass;
@@ -106,7 +106,7 @@ final class ComponentConfig {
 	}
 
 	/**
-	 * @return Map des param�tres du composant
+	 * @return Map des paramètres du composant
 	 */
 	Map<String, String> getParams() {
 		return params;

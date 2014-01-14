@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Param�trage des composants de l'application.
+ * Paramétrage des composants de l'application.
  * 
  * @author npiedeloup, pchretien
  */
@@ -78,7 +78,7 @@ public final class ComponentSpaceConfig {
 	}
 
 	/**
-	 * @return Map des param�tres globaux
+	 * @return Map des paramètres globaux
 	 */
 	Map<String, String> getParams() {
 		return params;

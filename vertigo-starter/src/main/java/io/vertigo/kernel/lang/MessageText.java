@@ -28,25 +28,25 @@ import java.util.Locale;
 
 
 /**
- * Texte pouvant �tre externalis� dans un fichier de ressources,
- * en fonction du param�trage de l'application.
- * Si le libelle n'est pas trouv�, l'affichage est 
+ * Texte pouvant être externalisé dans un fichier de ressources,
+ * en fonction du paramétrage de l'application.
+ * Si le libelle n'est pas trouvé, l'affichage est 
  * @author npiedeloup, pchretien
  */
 public final class MessageText implements Serializable {
 	private static final long serialVersionUID = 1L;
-	/**Cl� du libell� dans le dictionnaire. */
+	/**Clé du libellé dans le dictionnaire. */
 	private final MessageKey key;
-	/**Libell� non formatt�. */
+	/**Libellé non formatté. */
 	private final String defaultMsg;
-	/**Param�tres permettant de formatter le libell�. */
+	/**paramètres permettant de formatter le libellé. */
 	private final Serializable[] params;
 
 	/**
 	 * Constructeur.
 	 * 
-	 * @param key Cl� de la ressource
-	 * @param params Param�tres de la ressource
+	 * @param key Clé de la ressource
+	 * @param params paramètres de la ressource
 	 */
 	public MessageText(final MessageKey key, final Serializable... params) {
 		this(null, key, params);
@@ -54,14 +54,14 @@ public final class MessageText implements Serializable {
 
 	/**
 	 * Constructeur.
-	 * La cl� et/ou le message par d�faut doit �tre non null.
+	 * La clé et/ou le message par défaut doit être non null.
 	 * 
-	 * @param defaultMsg Message par d�faut (non formatt�) de la ressource
-	 * @param key Cl� de la ressource
-	 * @param params Param�tres de la ressource
+	 * @param defaultMsg Message par défaut (non formatté) de la ressource
+	 * @param key Clé de la ressource
+	 * @param params paramètres de la ressource
 	 */
 	public MessageText(final String defaultMsg, final MessageKey key, final Serializable... params) {
-		Assertion.checkArgument(!StringUtil.isEmpty(defaultMsg) || key != null, "La cl� ou le message dot �tre renseign�");
+		Assertion.checkArgument(!StringUtil.isEmpty(defaultMsg) || key != null, "La clé ou le message dot être renseigné");
 		//params n'est null que si l'on passe explicitement null
 		//dans ce cas on le transforme en en tableau vide.
 		// ----------------------------------------------------------------------
@@ -72,40 +72,40 @@ public final class MessageText implements Serializable {
 	}
 
 	/**
-	 * @return Param�tres du message
+	 * @return paramètres du message
 	 */
 	private Object[] getParams() {
 		return params;
 	}
 
 	/**
-	 * Formatte un message avec des param�tres.
+	 * Formatte un message avec des paramètres.
 	 * Ne lance aucune exception !!
-	 * @return Message formatt�.
+	 * @return Message formatté.
 	 */
 	public String getDisplay() {
 		/*
-		 * Cette m�thode doit toujours remonter un message. 
-		 * Si LocaleManager n'est pas enregistr� ou g�n�re une exception 
-		 * alors on se contente de retourner la cl� du message.
+		 * Cette méthode doit toujours remonter un message. 
+		 * Si LocaleManager n'est pas enregistré ou génére une exception 
+		 * alors on se contente de retourner la clé du message.
 		 */
 		Locale locale = null;
 		String msg = null;
 		if (key != null) {
-			//On ne recherche le dictionnaire (g�r� par localeManager) que si il y a une cl�.
+			//On ne recherche le dictionnaire (géré par localeManager) que si il y a une clé.
 			final LocaleManager localeManager;
 			try {
-				//Il est n�cessaire que LocaleManager soit enregistr�.
-				//Si pas d'utilisateur on prend la premi�re langue d�clar�e.
+				//Il est nécessaire que LocaleManager soit enregistré.
+				//Si pas d'utilisateur on prend la première langue déclarée.
 				localeManager = Home.getComponentSpace().resolve(LocaleManager.class);
 				locale = localeManager.getCurrentLocale();
 				msg = localeManager.getMessage(key, locale);
 			} catch (final Throwable t) {
-				//Si pas de locale msg est null et on va r�cup�rer s'il existe le message par d�faut.
+				//Si pas de locale msg est null et on va récupérer s'il existe le message par défaut.
 			}
 		}
 
-		//Si pas de cl� on recherche le libell� par d�faut.
+		//Si pas de clé on recherche le libellé par défaut.
 		if (msg == null) {
 			msg = defaultMsg;
 		}
@@ -113,7 +113,7 @@ public final class MessageText implements Serializable {
 			//On passe toujours dans le StringUtil.format pour unifier.
 			return StringUtil.format(msg, getParams());
 		}
-		//On a rien trouv� on renvoit ce que l'on peut. (locale peut �tre null)
+		//On a rien trouvé on renvoit ce que l'on peut. (locale peut être null)
 		return getPanicMessage(locale);
 	}
 

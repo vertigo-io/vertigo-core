@@ -37,12 +37,12 @@ import org.junit.Test;
 
 
 /**
- * A ne d�pend de personne.
- * B d�pend de A.
- * C d�pend de B et D.;
- * D d�pend de C.
- * E d�pend d'options de A et B.
- * F d�pende de A et de param�tres nomm�s.
+ * A ne dépend de personne.
+ * B dépend de A.
+ * C dépend de B et D.;
+ * D dépend de C.
+ * E dépend d'options de A et B.
+ * F dépende de A et de paramètres nommés.
  *
  * @author pchretien
  */
@@ -87,7 +87,7 @@ public final class ReactorTest {
 
 	@Test
 	public void testBWithParent() {
-		//rappel B d�pend de A
+		//rappel B dépend de A
 		final List<String> list = new Reactor() //
 				.addParent("a")//
 				.addComponent("b", B.class)//
@@ -97,7 +97,7 @@ public final class ReactorTest {
 	}
 
 	@Test
-	/** On change l'ordre ; on v�rifie que Reactor g�re bien l'ordre */
+	/** On change l'ordre ; on vérifie que Reactor gère bien l'ordre */
 	public void testDependency2bis() {
 		final List<String> list = new Reactor() //
 				.addComponent("b", B.class)//
@@ -115,14 +115,14 @@ public final class ReactorTest {
 				.addComponent("e", E.class)//
 				.addComponent("a", A.class)//
 				.proceed();
-		//E d�pend de option(A) et de option(B) donc A doit �tre le premier �l�ment list�
+		//E dépend de option(A) et de option(B) donc A doit être le premier élément listé
 		Assert.assertEquals(2, list.size());
 		Assert.assertEquals("a", list.get(0));
 		Assert.assertEquals("e", list.get(1));
 	}
 
 	@Test
-	/** On teste les param�tres */
+	/** On teste les paramètres */
 	public void testParams() {
 		final Set<String> params = new HashSet<>();
 		params.add("param1");
@@ -137,7 +137,7 @@ public final class ReactorTest {
 	}
 
 	@Test
-	/** On teste les param�tres */
+	/** On teste les paramètres */
 	public void testParams2() {
 		final Set<String> params = new HashSet<>();
 		params.add("a");

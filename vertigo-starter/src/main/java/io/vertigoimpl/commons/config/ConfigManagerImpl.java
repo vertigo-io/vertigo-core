@@ -38,7 +38,7 @@ import javax.inject.Inject;
 
 
 /**
- * Impl�mentation du gestionnaire de configuration applicative.
+ * Implémentation du gestionnaire de configuration applicative.
  * @author prahmoune
  */
 public final class ConfigManagerImpl implements ConfigManager {
@@ -50,12 +50,12 @@ public final class ConfigManagerImpl implements ConfigManager {
 
 	private static void checkPath(final String configPath) {
 		Assertion.checkArgNotEmpty(configPath);
-		Assertion.checkArgument(REGEX_PATH.matcher(configPath).matches(), "path '{0}' doit �tre camelCase et commencer par une minuscule", configPath);
+		Assertion.checkArgument(REGEX_PATH.matcher(configPath).matches(), "path '{0}' doit être camelCase et commencer par une minuscule", configPath);
 	}
 
 	private static void checkProperty(final String property) {
 		Assertion.checkArgNotEmpty(property);
-		Assertion.checkArgument(REGEX_PROPERTY.matcher(property).matches(), "property '{0}' doit �tre camelCase et commencer par une minuscule", property);
+		Assertion.checkArgument(REGEX_PROPERTY.matcher(property).matches(), "property '{0}' doit être camelCase et commencer par une minuscule", property);
 	}
 
 	/** {@inheritDoc} */
@@ -88,14 +88,14 @@ public final class ConfigManagerImpl implements ConfigManager {
 		final C configObject = ClassUtil.newInstance(config);
 
 		final Set<String> properties = new HashSet<>();
-		//1. On liste les propri�t�s g�r�es par la configuration
-		// Toutes les m�thodes en get et is sont �ligibles.
+		//1. On liste les propriétés gérées par la configuration
+		// Toutes les méthodes en get et is sont éligibles.
 		for (final Method method : config.getMethods()) {
 			if (method.getName().startsWith("get") || method.getName().startsWith("is")) {
 				properties.add(ClassUtil.getPropertyName(method));
 			}
 		}
-		//2. On affecte � ces propri�t�s les valeurs en 
+		//2. On affecte à ces propriétés les valeurs en 
 		for (final Field field : config.getDeclaredFields()) {
 			final String property = field.getName();
 			if (properties.contains(property)) {
@@ -109,7 +109,7 @@ public final class ConfigManagerImpl implements ConfigManager {
 	private <C> C createProxy(final String path, final Class<C> config) {
 		Assertion.checkNotNull(path);
 		Assertion.checkNotNull(config);
-		Assertion.checkArgument(config.isInterface(), "la configuration recherch�e doit �tre une interface");
+		Assertion.checkArgument(config.isInterface(), "la configuration recherchée doit être une interface");
 		//---------------------------------------------------------------------
 		final Map<Method, String> configs = new HashMap<>();
 		for (final Method method : config.getMethods()) {
@@ -119,17 +119,17 @@ public final class ConfigManagerImpl implements ConfigManager {
 		return config.cast(Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] { config }, new InvocationHandler() {
 			public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
 				final String property = configs.get(method);
-				Assertion.checkNotNull(property, "M�thode {0} inconnue sur la classe {1}", method, config.getSimpleName());
+				Assertion.checkNotNull(property, "Méthode {0} inconnue sur la classe {1}", method, config.getSimpleName());
 				return doGetPropertyValue(path, property, method.getReturnType());
 			}
 		}));
 	}
 
 	/**
-	 * Retourne la config a utiliser pour cette propri�t�.
-	 * Le s�parateur par d�faut est le .
-	 * @param configPath Chemin de la config de d�part
-	 * @return Config � utiliser : une sup�rieur ou �gale. Si property inconnue on retourne celle de d�part 
+	 * Retourne la config a utiliser pour cette propriété.
+	 * Le séparateur par défaut est le .
+	 * @param configPath Chemin de la config de départ
+	 * @return Config à utiliser : une supérieur ou égale. Si property inconnue on retourne celle de départ 
 	 */
 	private Object doGetPropertyValue(final String configPath, final String property, final Class<?> propertyClass) {
 		checkPath(configPath);
@@ -145,14 +145,14 @@ public final class ConfigManagerImpl implements ConfigManager {
 			}
 			subConfig = goUp(subConfig);
 		}
-		throw new IllegalArgumentException("Propri�t� '" + property + "' non trouv�e dans la configuration '" + configPath + "'.");
+		throw new IllegalArgumentException("propriété '" + property + "' non trouvée dans la configuration '" + configPath + "'.");
 	}
 
 	/**
-	 * Remonte un niveau dans la hi�rachie implicite des configs.
-	 * Le s�parateur par d�faut est le .
-	 * @param subConfig config de d�part
-	 * @return Config du niveau sup�rieur, null si pas de niveau sup�rieur
+	 * Remonte un niveau dans la hiérachie implicite des configs.
+	 * Le séparateur par défaut est le .
+	 * @param subConfig config de départ
+	 * @return Config du niveau supérieur, null si pas de niveau supérieur
 	 */
 	private static String goUp(final String subConfig) {
 		final int pathSeparatorIndex = subConfig.lastIndexOf(CONFIG_PATH_SEPARATOR);
@@ -164,10 +164,10 @@ public final class ConfigManagerImpl implements ConfigManager {
 
 	/**
 	 * Cast la valeur fournie sous forme de String dans le type cible : propertyClass.
-	 * @param config Chemin d�crivant la configuration
-	 * @param property Nom de la propri�t� de la configuration
-	 * @param propertyClass Class attendue pour la propri�t�
-	 * @return Valeur typ�e de la propri�t�
+	 * @param config Chemin décrivant la configuration
+	 * @param property Nom de la propriété de la configuration
+	 * @param propertyClass Class attendue pour la propriété
+	 * @return Valeur typée de la propriété
 	 */
 	private static Object castValue(final String config, final String property, final Class<?> propertyClass, final String value) {
 		if (boolean.class.equals(propertyClass)) {
@@ -177,12 +177,12 @@ public final class ConfigManagerImpl implements ConfigManager {
 		} else if (String.class.equals(propertyClass)) {
 			return value;
 		}
-		throw new IllegalArgumentException("Type de La propri�t� '" + config + ":" + property + " de type ' " + propertyClass + " non g�r�e");
+		throw new IllegalArgumentException("Type de La propriété '" + config + ":" + property + " de type ' " + propertyClass + " non gérée");
 	}
 
 	private static boolean toBoolean(final String config, final String property, final String value) {
 		if (!(TRUE.equalsIgnoreCase(value) || FALSE.equalsIgnoreCase(value))) {
-			throw new VRuntimeException("La propri�t� '{0}:{1}' n'est pas convertible en 'boolean' : {2}", null, config, property, value);
+			throw new VRuntimeException("La propriété '{0}:{1}' n'est pas convertible en 'boolean' : {2}", null, config, property, value);
 		}
 		return Boolean.parseBoolean(value);
 	}
@@ -191,7 +191,7 @@ public final class ConfigManagerImpl implements ConfigManager {
 		try {
 			return Integer.parseInt(value);
 		} catch (final NumberFormatException e) {
-			throw new VRuntimeException("La propri�t� '{0}:{1}'  n'est pas convertible en 'int' : {2}", e, config, property, value);
+			throw new VRuntimeException("La propriété '{0}:{1}'  n'est pas convertible en 'int' : {2}", e, config, property, value);
 		}
 	}
 }

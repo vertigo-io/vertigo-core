@@ -38,7 +38,7 @@ import org.junit.Test;
 
 
 /**
- * Voir sur reactor pour l'arbre des d�pendances des objets A==>F.  
+ * Voir sur reactor pour l'arbre des dépendances des objets A==>F.  
  * @author pchretien
  */
 public final class InjectorTest {

@@ -37,29 +37,29 @@ import javax.inject.Inject;
 
 
 /**
- * Injection des d�pendances. 
+ * Injection des dépendances. 
  * 
  * @author pchretien
  */
 public final class Injector {
 	/**
-	 * Injection de d�pendances.
-	 * Cr�ation d'une instance  � partir d'un conteneur de composants d�j� intsanci�s.
+	 * Injection de dépendances.
+	 * Création d'une instance  à partir d'un conteneur de composants déjà intsanciés.
 	 * 
 	 * @param <T> Type de l'instance
 	 * @param clazz Classe de l'instance
 	 * @param container Fournisseur de composants
-	 * @return Instance de composants cr��e. 
+	 * @return Instance de composants créée. 
 	 */
 	public <T> T newInstance(final Class<T> clazz, final Container container) {
 		Assertion.checkNotNull(clazz);
 		Assertion.checkNotNull(container);
 		//---------------------------------------------------------------------	
-		//On encapsule la cr�ation par un bloc try/ctach afin de pr�ciser le type de composant qui n'a pas pu �tre cr��. 
+		//On encapsule la création par un bloc try/ctach afin de préciser le type de composant qui n'a pas pu être créé. 
 		try {
 			//On a un et un seul constructeur public injectable.
 			final Constructor<T> constructor = DIAnnotationUtil.findInjectableConstructor(clazz);
-			//On recherche les param�tres
+			//On recherche les paramètres
 			final Object[] constructorParameters = findConstructorParameters(container, constructor);
 			final T instance = ClassUtil.newInstance(constructor, constructorParameters);
 
@@ -67,12 +67,12 @@ public final class Injector {
 			return instance;
 		} catch (final Throwable t) {
 			//Contextualisation de l'exception et des assertions.
-			throw new DIException("Erreur lors de la cr�ation du composant de type : '" + clazz.getName() + "'", t);
+			throw new DIException("Erreur lors de la création du composant de type : '" + clazz.getName() + "'", t);
 		}
 	}
 
 	/**
-	 * Injection des propri�t�s dans une instance. 
+	 * Injection des propriétés dans une instance. 
 	 */
 	public void injectMembers(final Object instance, final Container container) {
 		Assertion.checkNotNull(instance);
@@ -81,7 +81,7 @@ public final class Injector {
 		final Collection<Field> fields = ClassUtil.getAllFields(instance.getClass(), Inject.class);
 		for (final Field field : fields) {
 			final Object injected = getInjected(container, field);
-			//On v�rifie que si il s'agit d'un champ non primitif alors ce champs n'avait pas �t� initialis�
+			//On vérifie que si il s'agit d'un champ non primitif alors ce champs n'avait pas été initialisé
 			if (!field.getType().isPrimitive()) {
 				Assertion.checkState(null == ClassUtil.get(instance, field), "field '{0}' is already initialized", field);
 			}
@@ -97,7 +97,7 @@ public final class Injector {
 		return parameters;
 	}
 
-	//On r�cup�re pour le param�tre i du constructeur l'objet � injecter
+	//On récupère pour le paramètre i du constructeur l'objet à injecter
 	private static Object getInjected(final Container container, final Constructor<?> constructor, final int i) {
 		final String id = DIAnnotationUtil.buildId(constructor, i);
 		//------------
@@ -114,7 +114,7 @@ public final class Injector {
 		return value;
 	}
 
-	//On r�cup�re pour le champ 'field' l'objet � injecter
+	//On récupère pour le champ 'field' l'objet à injecter
 	private static Object getInjected(final Container container, final Field field) {
 		final String id = DIAnnotationUtil.buildId(field);
 		//Gestion des Options
@@ -129,10 +129,10 @@ public final class Injector {
 		final boolean pluginsField = DIAnnotationUtil.hasPlugins(field);
 		if (pluginsField) {
 			final String pluginType = DIAnnotationUtil.buildId(ClassUtil.getGeneric(field));
-			//on r�cup�re la liste des plugin du type concern�
+			//on récupère la liste des plugin du type concerné
 			final List<Plugin> list = new ArrayList<>();
 			for (final String pluginId : container.keySet()) {
-				//On prend tous les plugins du type concern�
+				//On prend tous les plugins du type concerné
 				if (pluginId.startsWith(pluginType)) {
 					list.add(container.resolve(pluginId, Plugin.class));
 				}

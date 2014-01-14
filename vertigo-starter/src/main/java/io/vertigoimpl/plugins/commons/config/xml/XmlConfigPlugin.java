@@ -41,7 +41,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.SAXException;
 
 /**
- * Parser XML du param�trage de la config.
+ * Parser XML du paramétrage de la config.
  * @author  pchretien
  */
 public final class XmlConfigPlugin implements ConfigPlugin { /*implements Loader<HomeConfigBuilder>*/
@@ -73,7 +73,7 @@ public final class XmlConfigPlugin implements ConfigPlugin { /*implements Loader
 	}
 
 	/**
-	 * Charge une configuration, et compl�te celle existante.
+	 * Charge une configuration, et complète celle existante.
 	 */
 	private static Map<String, Map<String, String>> readXML(final URL configURL) {
 		Assertion.checkNotNull(configURL);
@@ -81,11 +81,11 @@ public final class XmlConfigPlugin implements ConfigPlugin { /*implements Loader
 		try {
 			return doReadXML(configURL);
 		} catch (final ParserConfigurationException pce) {
-			throw new VRuntimeException("Erreur de configuration du parseur (fichier {0}), lors de l'appel � newSAXParser()", pce, configURL.getPath());
+			throw new VRuntimeException("Erreur de configuration du parseur (fichier {0}), lors de l'appel à newSAXParser()", pce, configURL.getPath());
 		} catch (final SAXException se) {
-			throw new VRuntimeException("Erreur de parsing (fichier {0}), lors de l'appel � parse()", se, configURL.getPath());
+			throw new VRuntimeException("Erreur de parsing (fichier {0}), lors de l'appel à parse()", se, configURL.getPath());
 		} catch (final IOException ioe) {
-			throw new VRuntimeException("Erreur d'entr�e/sortie (fichier {0}), lors de l'appel � parse()", ioe, configURL.getPath());
+			throw new VRuntimeException("Erreur d'entrée/sortie (fichier {0}), lors de l'appel à parse()", ioe, configURL.getPath());
 		}
 	}
 

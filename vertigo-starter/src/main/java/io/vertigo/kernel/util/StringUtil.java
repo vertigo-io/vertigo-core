@@ -24,29 +24,29 @@ import java.text.MessageFormat;
 
 
 /**
- * Classe utilitaire proposant des m�thodes de manipulation sur les String.
+ * Classe utilitaire proposant des méthodes de manipulation sur les String.
  *
  * @author  pchretien
  */
 public final class StringUtil {
 	/**
-	 * Constructeur priv� pour classe utilitaire
+	 * Constructeur privé pour classe utilitaire
 	 */
 	private StringUtil() {
 		//RAS
 	}
 
 	/**
-	 * Impl�mentation du test de la chaine vide.
+	 * Implémentation du test de la chaine vide.
 	 * ie null ou blank (espace, \t \n \r \p ...)
 	 * @param strValue String
-	 * @return Si la chaine apr�s trim est null ou vide
+	 * @return Si la chaine aprés trim est null ou vide
 	 */
 	public static boolean isEmpty(final String strValue) {
 		if (strValue == null) {
 			return true;
 		}
-		//On prefere cette implementation qui ne cr�e pas de nouvelle chaine (contrairement au trim())
+		//On prefere cette implementation qui ne crée pas de nouvelle chaine (contrairement au trim())
 		for (int i = 0; i < strValue.length(); i++) {
 			if (strValue.charAt(i) > ' ') {
 				return false;
@@ -58,7 +58,7 @@ public final class StringUtil {
 	/**
 	 * On normalise les id.
 	 * @param strValue String non null
-	 * @return id normalis�
+	 * @return id normalisé
 	 */
 	public static String normalize(final String strValue) {
 		Assertion.checkNotNull(strValue);
@@ -79,14 +79,14 @@ public final class StringUtil {
 		}
 
 		final char firstChar = strValue.charAt(0);
-		if (Character.isUpperCase(firstChar)) { //la m�thode est appell� souvant et la concat�nation de chaine est lourde : on test avant de faire l'op�ration
+		if (Character.isUpperCase(firstChar)) { //la méthode est appellé souvant et la concaténation de chaine est lourde : on test avant de faire l'opération
 			return Character.toLowerCase(firstChar) + strValue.substring(1);
 		}
 		return strValue;
 	}
 
 	/**
-	 * Capitalisation de la premi�re lettre.
+	 * Capitalisation de la première lettre.
 	 *
 	 * @param strValue String non null
 	 * @return Chaine avec la premiere lettre en majuscule
@@ -99,7 +99,7 @@ public final class StringUtil {
 		}
 
 		final char firstChar = strValue.charAt(0);
-		if (Character.isLowerCase(firstChar)) { //la m�thode est appell� souvant et la concat�nation de chaine est lourde : on test avant de faire l'op�ration
+		if (Character.isLowerCase(firstChar)) { //la méthode est appellé souvant et la concaténation de chaine est lourde : on test avant de faire l'opération
 			return Character.toUpperCase(firstChar) + strValue.substring(1);
 		}
 		return strValue;
@@ -107,15 +107,15 @@ public final class StringUtil {
 
 	/**
 	 * XXX_YYY_ZZZ -> XxxYyyZzz ou xxxYyyZzz.
-	 * @param str la chaine de carat�res sur laquelle s'appliquent les transformation
-	 * @param first2UpperCase d�finit si la premi�re lettre est en majuscules
-	 * @return Renvoie une chaine de carat�re correspondant � str en minuscule et sans underscores,
-	 * � l'exception des premi�res lettres apr�s les underscores dans str
+	 * @param str la chaine de caratéres sur laquelle s'appliquent les transformation
+	 * @param first2UpperCase définit si la première lettre est en majuscules
+	 * @return Renvoie une chaine de caratére correspondant à str en minuscule et sans underscores,
+	 * à l'exception des premières lettres aprés les underscores dans str
 	 */
 	public static String constToCamelCase(final String str, final boolean first2UpperCase) {
 		Assertion.checkNotNull(str);
-		Assertion.checkArgument(str.length() > 0, "Chaine � modifier invalide (ne doit pas �tre vide)");
-		Assertion.checkArgument(str.indexOf("__") == -1, "Chaine � modifier invalide : {0} (__ interdit)", str);
+		Assertion.checkArgument(str.length() > 0, "Chaine à modifier invalide (ne doit pas être vide)");
+		Assertion.checkArgument(str.indexOf("__") == -1, "Chaine à modifier invalide : {0} (__ interdit)", str);
 		// ----------------------------------------------------------------------
 		final StringBuilder result = new StringBuilder();
 		boolean upper = first2UpperCase;
@@ -132,7 +132,7 @@ public final class StringUtil {
 				upper = true;
 			} else {
 				if (digit != null) {
-					Assertion.checkArgument(digit.equals(Character.isDigit(c)), "Chaine � modifier invalide : {0} (lettres et chiffres doivent toujours �tre s�par�s par _)", str);
+					Assertion.checkArgument(digit.equals(Character.isDigit(c)), "Chaine à modifier invalide : {0} (lettres et chiffres doivent toujours être séparés par _)", str);
 				}
 				digit = Character.isDigit(c);
 
@@ -148,19 +148,19 @@ public final class StringUtil {
 	}
 
 	/**
-	 * Les chiffres sont assimil�s � des lettres en majuscules
+	 * Les chiffres sont assimilés à des lettres en majuscules
 	 * XxxYyyZzz ou xxxYyyZzz -> XXX_YYY_ZZZ
 	 * XxxYZzz ou xxxYZzz -> XXX_Y_ZZZ
 	 * Xxx123 -->XXX_123
 	 * XxxYzw123 --> (interdit)
 	 * Xxx123Y --> XXX_123_Y.
 	 * Xxx123y --> XXX_123Y.
-	 * @param str la chaine de carat�res sur laquelle s'appliquent les transformation
-	 * @return Passage en constante d'une cha�ne de caract�res (Fonction inverse de caseTransform)
+	 * @param str la chaine de caratéres sur laquelle s'appliquent les transformation
+	 * @return Passage en constante d'une chaîne de caractères (Fonction inverse de caseTransform)
 	 */
 	public static String camelToConstCase(final String str) {
 		Assertion.checkNotNull(str);
-		Assertion.checkArgument(str.length() > 0, "Chaine � modifier invalide");
+		Assertion.checkArgument(str.length() > 0, "Chaine à modifier invalide");
 		// ----------------------------------------------------------------------
 		final StringBuilder result = new StringBuilder();
 		final int length = str.length();
@@ -191,9 +191,9 @@ public final class StringUtil {
 	}
 
 	/**
-	 * Teste si un caract�re est une simple lettre (minuscule ou majuscule, sans accent)
+	 * Teste si un caractère est une simple lettre (minuscule ou majuscule, sans accent)
 	 * ou un chiffre.
-	 * @param c caract�re
+	 * @param c caractère
 	 * @return boolean
 	 */
 	public static boolean isSimpleLetterOrDigit(final char c) {
@@ -202,13 +202,13 @@ public final class StringUtil {
 
 	/**
 	 * Remplacement au sein d'une chaine d'un motif par un autre.
-	 * Le remplacement avance, il n'est pas r�cursif !!.
+	 * Le remplacement avance, il n'est pas récursif !!.
 	 * Attention : pour des char le String.replace(char old, char new) est plus performant.
 	 * 
 	 * @param str String
-	 * @param oldStr Chaine � remplacer
+	 * @param oldStr Chaine à remplacer
 	 * @param newStr Chaine de remplacement
-	 * @return Chaine remplac�e
+	 * @return Chaine remplacée
 	 */
 	public static String replace(final String str, final String oldStr, final String newStr) {
 		Assertion.checkNotNull(str);
@@ -220,16 +220,16 @@ public final class StringUtil {
 
 	/**
 	 * Remplacement au sein d'une chaine d'un motif par un autre.
-	 * Le remplacement avance, il n'est pas r�cursif !!.
-	 * Le StringBuilder est modifi� !! c'est pourquoi il n'y a pas de return.
+	 * Le remplacement avance, il n'est pas récursif !!.
+	 * Le StringBuilder est modifié !! c'est pourquoi il n'y a pas de return.
 	 * @param str StringBuilder
-	 * @param oldStr Chaine � remplacer
+	 * @param oldStr Chaine à remplacer
 	 * @param newStr Chaine de remplacement
 	 */
 	public static void replace(final StringBuilder str, final String oldStr, final String newStr) {
 		Assertion.checkNotNull(str);
 		Assertion.checkNotNull(oldStr);
-		Assertion.checkArgument(oldStr.length() > 0, "La chaine a remplacer ne doit pas �tre vide");
+		Assertion.checkArgument(oldStr.length() > 0, "La chaine a remplacer ne doit pas être vide");
 		Assertion.checkNotNull(newStr);
 		//------------------------------------------------------------------------
 		int index = str.indexOf(oldStr);
@@ -247,11 +247,11 @@ public final class StringUtil {
 	}
 
 	/**
-	 * Fusionne une chaine compatible avec les param�tres.
-	 * Les caract�res { }  sont interdits ou doivent �tre echapp�s avec \\.
+	 * Fusionne une chaine compatible avec les paramètres.
+	 * Les caractères { }  sont interdits ou doivent être echappés avec \\.
 	 * @param msg Chaine au format MessageFormat
-	 * @param params Param�tres du message
-	 * @return Chaine fusionn�e
+	 * @param params paramètres du message
+	 * @return Chaine fusionnée
 	 */
 	public static String format(final String msg, final Object... params) {
 		Assertion.checkNotNull(msg);
@@ -260,8 +260,8 @@ public final class StringUtil {
 			return msg;
 		}
 		//Gestion des doubles quotes 
-		//On simple quotes les doubles quotes d�j� pos�es.
-		//Puis on double toutes les simples quotes ainsi il ne reste plus de simple quote non doubl�e.
+		//On simple quotes les doubles quotes déjà posées.
+		//Puis on double toutes les simples quotes ainsi il ne reste plus de simple quote non doublée.
 		final StringBuilder newMsg = new StringBuilder(msg);
 		replace(newMsg, "''", "'");
 		replace(newMsg, "'", "''");

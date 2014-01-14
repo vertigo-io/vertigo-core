@@ -36,13 +36,13 @@ import javax.inject.Named;
  */
 public final class DIAnnotationUtil {
 	private DIAnnotationUtil() {
-		//Classe utilitaire, constructeur est priv�.
+		//Classe utilitaire, constructeur est privé.
 	}
 
 	/**
-	 * R�cup�ration du constructeur. 
+	 * Récupération du constructeur. 
 	 * Il doit y avoir 1 et un seul constructeur public
-	 * Ce constructeur doit �tre vide ou marqu� avec l'annotation @Inject.
+	 * Ce constructeur doit être vide ou marqué avec l'annotation @Inject.
 	 * @param clazz Class de l'objet
 	 * @return Constructeur de l'objet
 	 */
@@ -51,8 +51,8 @@ public final class DIAnnotationUtil {
 		//---------------------------------------------------------------------
 		final Constructor<T>[] constructors = (Constructor<T>[]) clazz.getConstructors();
 		Assertion.checkNotNull(constructors, "Aucun constructeur public identifiable");
-		Assertion.checkArgument(constructors.length == 1, "Un seul constructeur public doit �tre d�clar� sur {0}", clazz.getName());
-		Assertion.checkArgument(isInjectable(constructors[0]), "Le constructeur public de {0} doit �tre marqu� avec l'annotation @Inject ou bien �tre vide", clazz.getName());
+		Assertion.checkArgument(constructors.length == 1, "Un seul constructeur public doit être déclaré sur {0}", clazz.getName());
+		Assertion.checkArgument(isInjectable(constructors[0]), "Le constructeur public de {0} doit être marqué avec l'annotation @Inject ou bien être vide", clazz.getName());
 		//-----------------------------------------------------------------
 
 		//On a un et un seul constructeur.
@@ -64,10 +64,10 @@ public final class DIAnnotationUtil {
 	}
 
 	/**
-	 * Indique si le i-�me param�tre du constructeur est optionnel.
-	 * @param constructor Constructeur test�
-	 * @param i indice du param�tre
-	 * @return Si le i-�me param�tre du contructeur est optionnel.
+	 * Indique si le i-éme paramètre du constructeur est optionnel.
+	 * @param constructor Constructeur testé
+	 * @param i indice du paramètre
+	 * @return Si le i-éme paramètre du contructeur est optionnel.
 	 */
 	public static boolean isOptional(final Constructor<?> constructor, final int i) {
 		Assertion.checkNotNull(constructor);
@@ -87,7 +87,7 @@ public final class DIAnnotationUtil {
 	}
 
 	/**
-	 * Indique si le champ du composant correspond � une liste de plugins.
+	 * Indique si le champ du composant correspond à une liste de plugins.
 	 * @param field Champ du composant
 	 * @return Si ce champ est optionnel.
 	 */
@@ -104,7 +104,7 @@ public final class DIAnnotationUtil {
 	}
 
 	/**
-	 * @return Cr�ation de l'identifiant du composant
+	 * @return Création de l'identifiant du composant
 	 */
 	public static String buildId(Option<Class<?>> apiClass, Class<?> implClass) {
 		Assertion.checkNotNull(apiClass);
@@ -124,19 +124,19 @@ public final class DIAnnotationUtil {
 	}
 
 	/**
-	 * Construction d'un ID pour un composant d�fini par une impl�mentation.	
-	 * @param clazz Classe d'impl�mentation du composant
+	 * Construction d'un ID pour un composant défini par une implémentation.	
+	 * @param clazz Classe d'implémentation du composant
 	 * @return Identifiant du composant 
 	 */
 	public static String buildId(final Class<?> clazz) {
 		Assertion.checkNotNull(clazz);
 		//---------------------------------------------------------------------
 		//On construit l'identifiant du composant.
-		//Par ordre de priorit� l'id est 
-		// - la valeur de l'annotation Named si il y a une annotation Named d�clar�e
-		// - Sinon on prend le nom de la classe pass�e en param�tre.
+		//Par ordre de priorité l'id est 
+		// - la valeur de l'annotation Named si il y a une annotation Named déclarée
+		// - Sinon on prend le nom de la classe passée en paramètre.
 		if (clazz.isAnnotationPresent(Named.class)) {
-			//Si le composant recherch� n'est pas explicitement pr�cis� alors on le recherche via son type 
+			//Si le composant recherché n'est pas explicitement précisé alors on le recherche via son type 
 			//et dans ce cas son id est obligatoirement le nom complet de la classe ou de l'interface.
 			final Named named = clazz.getAnnotation(Named.class);
 			return named.value();
@@ -150,8 +150,8 @@ public final class DIAnnotationUtil {
 	}
 
 	/**
-	 * Construction d'un ID pour un champ (Les options sont autoris�es).
-	 * @param field Champ du composant (Option autoris�e)
+	 * Construction d'un ID pour un champ (Les options sont autorisées).
+	 * @param field Champ du composant (Option autorisée)
 	 * @return Identifiant du composant 
 	 */
 	public static String buildId(final Field field) {
@@ -174,9 +174,9 @@ public final class DIAnnotationUtil {
 	}
 
 	/**
-	 * Construction d'un ID pour le i-�me param�tre du constructeur (Les options sont autoris�es).
+	 * Construction d'un ID pour le i-éme paramètre du constructeur (Les options sont autorisées).
 	 * @param constructor Constructeur
-	 * @param i indice du param�tre
+	 * @param i indice du paramètre
 	 * @return Identifiant du composant
 	 */
 	public static String buildId(final Constructor<?> constructor, final int i) {

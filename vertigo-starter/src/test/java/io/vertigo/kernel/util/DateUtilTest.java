@@ -68,7 +68,7 @@ public final class DateUtilTest {
 		final Date date2 = new DateBuilder(now).addWeeks(28).toDateTime();
 		final long elapsed = date2.getTime() - now.getTime();
 		final long expected = 28L * 7 * 24 * 3600 * 1000;
-		//Le r�sultat est proche � plus ou moins une heure (� cause du chgt d'heure)
+		//Le résultat est proche à plus ou moins une heure (à cause du chgt d'heure)
 		assertEqualsWithChgtHeure(expected, elapsed);
 	}
 
@@ -139,7 +139,7 @@ public final class DateUtilTest {
 		Assert.assertEquals(0, date3.getSeconds());
 	}
 
-	//Date : on v�rifie que la date est bien positionn�e � Minuit.
+	//Date : on vérifie que la date est bien positionnée à Minuit.
 	@Test
 	public void testDate() {
 		final Date now = new Date();

@@ -43,7 +43,7 @@ final class RedisInvocationHandler<F> implements InvocationHandler {
 	 */
 	RedisInvocationHandler(final JedisPool jedisPool, final Class<F> beanClass) {
 		Assertion.checkNotNull(jedisPool);
-		Assertion.checkNotNull(beanClass, "Classe du Bean non renseign�e");
+		Assertion.checkNotNull(beanClass, "Classe du Bean non renseignée");
 		//---------------------------------------------------------------------
 		this.clientWork = new ZClientWork(jedisPool);
 		this.beanClass = beanClass;
@@ -57,8 +57,8 @@ final class RedisInvocationHandler<F> implements InvocationHandler {
 	//	 * @throws java.io.IOException   Exception de communication
 	//	 */
 	//	private static URLConnection openConnection(final String serverURL, final String address, final String methodName) throws IOException {
-	//		// gzip=false pour indiquer � un �ventuel filtre http de compression
-	//		// que le flux est d�j� compress� par HttpProxyClient et HttpProxyServer
+	//		// gzip=false pour indiquer à un éventuel filtre http de compression
+	//		// que le flux est déjà compressé par HttpProxyClient et HttpProxyServer
 	//		//System.out.println(">>>url= " + serverURL + '/' + address + '/' + methodName + "?gzip=false");
 	//		final URL url = new URL(serverURL + '/' + address + '/' + methodName + "?gzip=false");
 	//		final URLConnection connection = url.openConnection();
@@ -81,7 +81,7 @@ final class RedisInvocationHandler<F> implements InvocationHandler {
 		//System.out.println(">>invoke");
 		Assertion.checkNotNull(proxy);
 		Assertion.checkNotNull(method);
-		//Les m�thodes sans param�tres envoient null
+		//Les méthodes sans paramètres envoient null
 		//---------------------------------------------------------------------
 		final ZMethod zmethod = new ZMethod(beanClass, method, parameters);
 		final int timeoutSeconds = 10;
@@ -114,8 +114,8 @@ final class RedisInvocationHandler<F> implements InvocationHandler {
 	//	}
 
 	/**
-	 * Lit l'objet renvoy� dans le flux de r�ponse.
-	 * Il y a une sp�cificit� sur la connexion qui peut avoir un flux d'erreur qu'il faut fermer.
+	 * Lit l'objet renvoyé dans le flux de réponse.
+	 * Il y a une spécificité sur la connexion qui peut avoir un flux d'erreur qu'il faut fermer.
 	 * @return java.lang.Object
 	 * @param connection java.net.URLConnection
 	 * @throws java.io.IOException   Exception de communication
@@ -124,10 +124,10 @@ final class RedisInvocationHandler<F> implements InvocationHandler {
 	//		try {
 	//			return HttpTunnellingReaderWriterUtil.read(connection.getInputStream());
 	//		} catch (final ClassNotFoundException e) {
-	//			//Une classe transmise par le serveur n'a pas �t� trouv�e
-	//			throw new KRuntimeException("Une classe transmise par le serveur n'a pas �t� trouv�e", e);
+	//			//Une classe transmise par le serveur n'a pas été trouvée
+	//			throw new KRuntimeException("Une classe transmise par le serveur n'a pas été trouvée", e);
 	//		} finally {
-	//			// ce close doit �tre fait en finally
+	//			// ce close doit être fait en finally
 	//			// (http://java.sun.com/j2se/1.5.0/docs/guide/net/http-keepalive.html)
 	//			if (connection instanceof HttpURLConnection) {
 	//				final InputStream error = ((HttpURLConnection) connection).getErrorStream();

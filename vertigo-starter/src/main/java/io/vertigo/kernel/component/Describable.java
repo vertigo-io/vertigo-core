@@ -26,7 +26,7 @@ import java.util.List;
  */
 public interface Describable {
 	/**
-	 * @return Liste des informations relatives � ce composant
+	 * @return Liste des informations relatives à ce composant
 	 */
 	List<ComponentInfo> getInfos();
 }

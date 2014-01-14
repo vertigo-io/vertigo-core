@@ -36,7 +36,7 @@ public final class ComponentInfo {
 	private String title;
 
 	/**
-	 * @param value Valeur chaine ou num�rique
+	 * @param value Valeur chaine ou numérique
 	 */
 	private ComponentInfo(final String title, final Object value, boolean dummy) {
 		Assertion.checkArgNotEmpty(title);
@@ -70,7 +70,7 @@ public final class ComponentInfo {
 	}
 
 	/**
-	 * @return Titre ou unit� de la valeur
+	 * @return Titre ou unité de la valeur
 	 */
 	public String getTitle() {
 		return title;
@@ -97,7 +97,7 @@ public final class ComponentInfo {
 	//		} else if (value instanceof Double) {
 	//			formattedValue = new DecimalFormat("#,###.##", new DecimalFormatSymbols(Locale.FRENCH)).format(value);
 	//		} else {
-	//			throw new IllegalArgumentException("Format non impl�ment�");
+	//			throw new IllegalArgumentException("Format non implémenté");
 	//		}
 	//		return formattedValue;
 	//	}

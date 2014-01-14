@@ -45,10 +45,10 @@ public abstract class AbstractTestCaseJU4 extends AbstractTestCase2JU4 {
 	}
 
 	/**
-	 * @return fichier properties de param�trage des managers (par defaut Option.none())
+	 * @return fichier properties de paramétrage des managers (par defaut Option.none())
 	 */
 	protected Option<String> getPropertiesFileName() {
-		return Option.none(); //par d�faut pas de properties
+		return Option.none(); //par défaut pas de properties
 	}
 
 	/** {@inheritDoc} */
@@ -59,7 +59,7 @@ public abstract class AbstractTestCaseJU4 extends AbstractTestCase2JU4 {
 
 	private URL loadManagersXml() {
 		final URL url = getClass().getResource(getManagersXmlFileName());
-		Assertion.checkNotNull(url, "Configuration " + getManagersXmlFileName() + " non trouv�e");
+		Assertion.checkNotNull(url, "Configuration " + getManagersXmlFileName() + " non trouvée");
 		return url;
 	}
 
@@ -93,9 +93,9 @@ public abstract class AbstractTestCaseJU4 extends AbstractTestCase2JU4 {
 		try {
 			return new URL(fileName);
 		} catch (final MalformedURLException e) {
-			//Si fileName non trouv�, on recherche dans le classPath 
+			//Si fileName non trouvé, on recherche dans le classPath 
 			final URL url = getClass().getResource(fileName);
-			Assertion.checkNotNull(url, "Impossible de r�cup�rer le fichier [" + fileName + "]");
+			Assertion.checkNotNull(url, "Impossible de récupérer le fichier [" + fileName + "]");
 			return url;
 		}
 	}

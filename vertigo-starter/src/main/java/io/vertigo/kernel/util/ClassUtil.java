@@ -43,15 +43,15 @@ public final class ClassUtil {
 	private static final Class<?>[] EMPTY_CLAZZ_ARRAY = new Class[0];
 
 	/**
-	 * Constructeur priv� pour classe utilitaire
+	 * Constructeur privé pour classe utilitaire
 	 */
 	private ClassUtil() {
 		// RAS
 	}
 
 	/**
-	 * Cr�ation d'une nouvelle instance non typ�e via un nom de classe (constructeur vide).
-	 * Veuillez privil�gier les m�thodes retournat une instance typ� d�s que le type est connu.
+	 * Création d'une nouvelle instance non typée via un nom de classe (constructeur vide).
+	 * Veuillez privilégier les méthodes retournat une instance typé dés que le type est connu.
 	 * @param javaClassName Nom de la classe
 	 * @return Nouvelle instance
 	 */
@@ -61,11 +61,11 @@ public final class ClassUtil {
 	}
 
 	/**
-	 * Cr�ation d'une nouvelle instance typ�e via un nom de classe (constructeur vide).
+	 * Création d'une nouvelle instance typée via un nom de classe (constructeur vide).
 	 * 
-	 * @param <J> Type de l'instance retourn�e
+	 * @param <J> Type de l'instance retournée
 	 * @param javaClassName Nom de la classe
-	 * @param  type Type retourn�
+	 * @param  type Type retourné
 	 * @return Nouvelle instance
 	 */
 	public static <J> J newInstance(final String javaClassName, final Class<J> type) {
@@ -74,9 +74,9 @@ public final class ClassUtil {
 	}
 
 	/**
-	 * Cr�ation d'une nouvelle instance typ�e via une classe (constructeur vide).
+	 * Création d'une nouvelle instance typée via une classe (constructeur vide).
 	 * 
-	 * @param <J> Type de l'instance retourn�e
+	 * @param <J> Type de l'instance retournée
 	 * @param clazz Classe
 	 * @return Nouvelle instance
 	 */
@@ -86,9 +86,9 @@ public final class ClassUtil {
 	}
 
 	/**
-	 * Cr�ation d'une nouvelle instance typ�e via un constructeur et ses arguments.
+	 * Création d'une nouvelle instance typée via un constructeur et ses arguments.
 	 * 
-	 * @param <J> Type de l'instance retourn�e
+	 * @param <J> Type de l'instance retournée
 	 * @param constructor Constructeur
 	 * @param args Arguments de la construction
 	 * @return Nouvelle instance
@@ -102,7 +102,7 @@ public final class ClassUtil {
 		} catch (final InvocationTargetException e) {
 			throw handle(e, "Erreur lors de l'appel au constructeur de la classe: {0} ", constructor.getDeclaringClass());
 		} catch (final java.lang.IllegalAccessException e) {
-			throw new VRuntimeException("Acc�s final impossible � la classe : {0}", e, constructor.getDeclaringClass().getName());
+			throw new VRuntimeException("accès final impossible à la classe : {0}", e, constructor.getDeclaringClass().getName());
 		} catch (final Exception e) {
 			throw new VRuntimeException("Instanciation impossible de la classe : {0}", e, constructor.getDeclaringClass().getName());
 		}
@@ -121,19 +121,19 @@ public final class ClassUtil {
 	}
 
 	/**
-	 * R�cup�re le constructeur sans param�tres. 
+	 * Récupère le constructeur sans paramètres. 
 	 * @param clazz Classe sur laquelle on recherche le constructeur
-	 * @return Constructeur recherch� 
+	 * @return Constructeur recherché 
 	 */
 	private static <J> Constructor<J> findConstructor(final Class<J> clazz) {
 		return findConstructor(clazz, EMPTY_CLAZZ_ARRAY);
 	}
 
 	/**
-	* R�cup�re le constructeur correspondant � la signature indiqu�e. 
+	* Récupère le constructeur correspondant à la signature indiquée. 
 	* @param clazz Classe sur laquelle on recherche le constructeur
-	* @param parameterTypes Signature du constructeur recherch�
-	* @return Constructeur recherch� 
+	* @param parameterTypes Signature du constructeur recherché
+	* @return Constructeur recherché 
 	*/
 	public static <J> Constructor<J> findConstructor(final Class<J> clazz, final Class<?>[] parameterTypes) {
 		Assertion.checkNotNull(clazz);
@@ -143,15 +143,15 @@ public final class ClassUtil {
 			return clazz.getConstructor(parameterTypes);
 		} catch (final NoSuchMethodException e) {
 			if (parameterTypes.length == 0) {
-				//Dans le cas des constructeur vide (sans param�tre), on lance un message plus simple.
-				throw new VRuntimeException("Aucun constructeur vide trouv� sur {0} ", e, clazz.getSimpleName());
+				//Dans le cas des constructeur vide (sans paramètre), on lance un message plus simple.
+				throw new VRuntimeException("Aucun constructeur vide trouvé sur {0} ", e, clazz.getSimpleName());
 			}
-			throw new VRuntimeException("Aucun constructeur trouv� sur {0} avec la signature {1}", e, clazz.getSimpleName(), parameterTypes);
+			throw new VRuntimeException("Aucun constructeur trouvé sur {0} avec la signature {1}", e, clazz.getSimpleName(), parameterTypes);
 		}
 	}
 
 	/**
-	 * R�cup�ration d'une classe non typ�e � partir de son nom.
+	 * Récupération d'une classe non typée à partir de son nom.
 	 * 
 	 * @param javaClassName Nom de la classe
 	 * @return Classe java
@@ -167,9 +167,9 @@ public final class ClassUtil {
 	}
 
 	/**
-	 * R�cup�ration d'une classe typ�e � partir de son nom.
+	 * Récupération d'une classe typée à partir de son nom.
 	 * 
-	 * @param <J> Type de l'instance retourn�e
+	 * @param <J> Type de l'instance retournée
 	 * @param javaClassName Nom de la classe
 	 * @param type Type.
 	 * @return Classe java
@@ -186,12 +186,12 @@ public final class ClassUtil {
 	}
 
 	/**
-	 * Invocation dynamique d'une m�thode sur une instance.
+	 * Invocation dynamique d'une méthode sur une instance.
 	 * 
-	 * @param instance Objet sur lequel est invoqu� la m�thode
-	 * @param method Methode invoqu�e
+	 * @param instance Objet sur lequel est invoqué la méthode
+	 * @param method Methode invoquée
 	 * @param args Arguments
-	 * @return R Valeur retourn�e par l'invocation
+	 * @return R Valeur retournée par l'invocation
 	 */
 	public static Object invoke(final Object instance, final Method method, final Object... args) {
 		Assertion.checkNotNull(instance);
@@ -200,17 +200,17 @@ public final class ClassUtil {
 		try {
 			return method.invoke(instance, args);
 		} catch (final IllegalAccessException e) {
-			throw new VRuntimeException("Acc�s impossible � la m�thode : {0} de {1}", e, method.getName(), method.getDeclaringClass().getName());
+			throw new VRuntimeException("accès impossible à la méthode : {0} de {1}", e, method.getName(), method.getDeclaringClass().getName());
 		} catch (final InvocationTargetException e) {
-			throw handle(e, "Erreur lors de l'appel de la m�thode : {0} de {1}", method.getName(), method.getDeclaringClass().getName());
+			throw handle(e, "Erreur lors de l'appel de la méthode : {0} de {1}", method.getName(), method.getDeclaringClass().getName());
 		}
 	}
 
 	/**
-	 * Affectation dynamique de la valeur d'un champ (m�me priv�).
+	 * Affectation dynamique de la valeur d'un champ (méme privé).
 	 * 
-	 * @param instance Objet sur lequel est invoqu� la m�thode
-	 * @param field Champ concern�
+	 * @param instance Objet sur lequel est invoqué la méthode
+	 * @param field Champ concerné
 	 * @param value Nouvelle valeur
 	 */
 	public static void set(final Object instance, final Field field, final Object value) {
@@ -221,15 +221,15 @@ public final class ClassUtil {
 			field.setAccessible(true);
 			field.set(instance, value);
 		} catch (final IllegalAccessException e) {
-			throw new VRuntimeException("Acc�s impossible au champ : {0} de {1}", e, field.getName(), field.getDeclaringClass().getName());
+			throw new VRuntimeException("accès impossible au champ : {0} de {1}", e, field.getName(), field.getDeclaringClass().getName());
 		}
 	}
 
 	/**
-	 * R�cup�ration dynamique de la valeur d'un champ.
+	 * Récupération dynamique de la valeur d'un champ.
 	 * 
-	 * @param instance Objet sur lequel est invoqu� la m�thode
-	 * @param field Champ concern�
+	 * @param instance Objet sur lequel est invoqué la méthode
+	 * @param field Champ concerné
 	 * @return Valeur
 	 */
 	public static Object get(final Object instance, final Field field) {
@@ -240,16 +240,16 @@ public final class ClassUtil {
 			field.setAccessible(true);
 			return field.get(instance);
 		} catch (final IllegalAccessException e) {
-			throw new VRuntimeException("Acc�s impossible au champ : {0} de {1}", e, field.getName(), field.getDeclaringClass().getName());
+			throw new VRuntimeException("accès impossible au champ : {0} de {1}", e, field.getName(), field.getDeclaringClass().getName());
 		}
 	}
 
 	/**
-	 * R�cup�re la m�thode correspondant au nom et � la signature indiqu�e parmi les m�thodes pass�es. 
-	 * @param clazz Classe sur laquelle on recherche les m�thodes
-	 * @param methodName Nom de la m�thode recherch�e
-	 * @param parameterTypes Signature de la m�thode recherch�e
-	 * @return M�thode recherch�e 
+	 * Récupère la méthode correspondant au nom et à la signature indiquée parmi les méthodes passées. 
+	 * @param clazz Classe sur laquelle on recherche les méthodes
+	 * @param methodName Nom de la méthode recherchée
+	 * @param parameterTypes Signature de la méthode recherchée
+	 * @return Méthode recherchée 
 	 */
 	public static Method findMethod(final Class<?> clazz, final String methodName, final Class<?>... parameterTypes) {
 		Assertion.checkNotNull(clazz);
@@ -259,15 +259,15 @@ public final class ClassUtil {
 		try {
 			return clazz.getMethod(methodName, parameterTypes);
 		} catch (final NoSuchMethodException e) {
-			throw new VRuntimeException("M�thode {0} non trouv�e sur {1}", e, methodName, clazz.getName());
+			throw new VRuntimeException("Méthode {0} non trouvée sur {1}", e, methodName, clazz.getName());
 		}
 	}
 
 	/**
-	 * Retourne tous les champs d�clar�s (incluant les champs parents) et annot�s pour une classe donn�e.
+	 * Retourne tous les champs déclarés (incluant les champs parents) et annotés pour une classe donnée.
 	 * @param clazz Class
 	 * @param annotation Annotation attendue 
-	 * @return Tous les champs d�clar�s (incluant les champs parents)
+	 * @return Tous les champs déclarés (incluant les champs parents)
 	 */
 	public static Collection<Field> getAllFields(final Class<?> clazz, final Class<? extends Annotation> annotation) {
 		Assertion.checkNotNull(clazz);
@@ -283,9 +283,9 @@ public final class ClassUtil {
 	}
 
 	/**
-	 * Retourne tous les champs d�clar�s (incluant les champs parents) pour une classe donn�e.
+	 * Retourne tous les champs déclarés (incluant les champs parents) pour une classe donnée.
 	 * @param clazz Class
-	 * @return Tous les champs d�clar�s (incluant les champs parents)
+	 * @return Tous les champs déclarés (incluant les champs parents)
 	 */
 	public static Collection<Field> getAllFields(final Class<?> clazz) {
 		Assertion.checkNotNull(clazz);
@@ -323,60 +323,60 @@ public final class ClassUtil {
 	}
 
 	/**
-	 * R�cup�ration du type g�n�rique d'un champ param�tr�.
-	 * Il convient qu'il y ait UN et un seul g�n�rique d�clar�.
+	 * Récupération du type générique d'un champ paramétré.
+	 * Il convient qu'il y ait UN et un seul générique déclaré.
 	 * exemple  : 
 	 * List<Voiture> => Voiture
 	 * Option<Voiture> => Voiture
 	 * @param constructor constructeur 
-	 * @param i Index du param�tre dans le composant 
-	 * @return Classe du type g�n�rique
+	 * @param i Index du paramètre dans le composant 
+	 * @return Classe du type générique
 	 */
 	public static Class<?> getGeneric(final Constructor<?> constructor, final int i) {
 		Assertion.checkNotNull(constructor);
 		//---------------------------------------------------------------------	
 		final Class<?> generic = getGeneric(constructor.getGenericParameterTypes()[i]);
 		if (generic == null) {
-			throw new UnsupportedOperationException("La d�tection du g�n�rique n'a pas pu �tre effectu�e sur le constructeur " + constructor);
+			throw new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur le constructeur " + constructor);
 		}
 		return generic;
 	}
 
 	/**
-	 * R�cup�ration du type g�n�rique d'un champ param�tr�.
-	 * Il convient qu'il y ait UN et un seul g�n�rique d�clar�.
+	 * Récupération du type générique d'un champ paramétré.
+	 * Il convient qu'il y ait UN et un seul générique déclaré.
 	 * exemple  : 
 	 * List<Voiture> => Voiture
 	 * Option<Voiture> => Voiture
 	 * @param method method 
-	 * @param i Index du param�tre dans le composant 
-	 * @return Classe du type g�n�rique
+	 * @param i Index du paramètre dans le composant 
+	 * @return Classe du type générique
 	 */
 	public static Class<?> getGeneric(final Method method, final int i) {
 		Assertion.checkNotNull(method);
 		//---------------------------------------------------------------------	
 		final Class<?> generic = getGeneric(method.getGenericParameterTypes()[i]);
 		if (generic == null) {
-			throw new UnsupportedOperationException("La d�tection du g�n�rique n'a pas pu �tre effectu�e sur la methode " + method.getDeclaringClass() + "." + method.getName());
+			throw new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur la methode " + method.getDeclaringClass() + "." + method.getName());
 		}
 		return generic;
 	}
 
 	/**
-	 * R�cup�ration du type g�n�rique d'un champ param�tr�.
-	 * Il convient qu'il y ait UN et un seul g�n�rique d�clar�.
+	 * Récupération du type générique d'un champ paramétré.
+	 * Il convient qu'il y ait UN et un seul générique déclaré.
 	 * exemple  : 
 	 * List<Voiture> => Voiture
 	 * Option<Voiture> => Voiture
 	 * @param field Champ
-	 * @return Classe du type g�n�rique
+	 * @return Classe du type générique
 	 */
 	public static Class<?> getGeneric(final Field field) {
 		Assertion.checkNotNull(field);
 		//---------------------------------------------------------------------	
 		final Class<?> generic = getGeneric(field.getGenericType());
 		if (generic == null) {
-			throw new UnsupportedOperationException("La d�tection du g�n�rique n'a pas pu �tre effectu�e sur le champ " + field.getName());
+			throw new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur le champ " + field.getName());
 		}
 		return generic;
 	}
@@ -384,12 +384,12 @@ public final class ClassUtil {
 	private static Class<?> getGeneric(final Type type) {
 		if (type instanceof ParameterizedType) {
 			final ParameterizedType parameterizedType = ParameterizedType.class.cast(type);
-			Assertion.checkArgument(parameterizedType.getActualTypeArguments().length == 1, "Il doit y avoir 1 et 1 seul g�n�rique d�clar�");
+			Assertion.checkArgument(parameterizedType.getActualTypeArguments().length == 1, "Il doit y avoir 1 et 1 seul générique déclaré");
 			final Type optionType = parameterizedType.getActualTypeArguments()[0];
 			if (optionType instanceof Class) {
 				return (Class<?>) optionType;
 			} else if (optionType instanceof ParameterizedType) {
-				//Cas ou le type param�tr� est lui m�me param�tr�
+				//Cas ou le type paramétré est lui même paramétré
 				return (Class<?>) ((ParameterizedType) optionType).getRawType();
 			}
 
@@ -398,9 +398,9 @@ public final class ClassUtil {
 	}
 
 	/**
-	 * D�termine le nom de la propri�t� associ�e � un getteur.
-	 * @param method M�thode du getteur
-	 * @return Nom de la propri�t� associ�e
+	 * Détermine le nom de la propriété associée à un getteur.
+	 * @param method Méthode du getteur
+	 * @return Nom de la propriété associée
 	 */
 	public static String getPropertyName(final Method method) {
 		Assertion.checkNotNull(method);
@@ -409,12 +409,12 @@ public final class ClassUtil {
 		if (method.getName().startsWith("get")) {
 			property = method.getName().substring("get".length());
 		} else if (method.getName().startsWith("is")) {
-			Assertion.checkArgument(Boolean.class.equals(method.getReturnType()) || boolean.class.equals(method.getReturnType()), "une m�thode is concerne un boolean : {0}", method);
+			Assertion.checkArgument(Boolean.class.equals(method.getReturnType()) || boolean.class.equals(method.getReturnType()), "une méthode is concerne un boolean : {0}", method);
 			property = method.getName().substring("is".length());
 		} else {
-			throw new IllegalArgumentException("Type de M�thode " + method + " non g�r�e en tant que propri�t�");
+			throw new IllegalArgumentException("Type de Méthode " + method + " non gérée en tant que propriété");
 		}
-		//On abaisse la premi�re lettre
+		//On abaisse la première lettre
 		return StringUtil.first2LowerCase(property);
 	}
 }
