@@ -18,7 +18,8 @@
     limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.vertigo</groupId>
@@ -26,8 +27,8 @@
 	<version>0.2.0-SNAPSHOT</version>
 	<name>vertigo</name>
 	<packaging>pom</packaging>
-	<description> </description>
-	<url>www.kleegroup.com</url>
+	<description>Vertigo is a simple java project starter</description>
+	<url>http://vertigo.io</url>
 
 	<licenses>
 		<license>
@@ -43,14 +44,19 @@
 			<name>philippe chrétien</name>
 			<email>philippe dot chretien at kleegroup dot com</email>
 		</developer>
+		<developer>
+			<id>NPi2Loup</id>
+			<name>Nicolas Piedeloup</name>
+			<email>nicolas dot piedeloup at kleegroup dot com</email>
+		</developer>
 	</developers>
 
 	<scm>
 		<connection>scm:git:git@github.com:vertigo-io/vertigo.git</connection>
 		<developerConnection>scm:git:git@github.com:vertigo-io/vertigo.git</developerConnection>
-		<url>git:github.com:vertigo-io/vertigo</url>
-	  	<tag>vertigo-0.1.0</tag>
- 	</scm>
+		<url>scm:git:git@github.com:vertigo-io/vertigo.git</url>
+		<tag>vertigo-0.1.0</tag>
+	</scm>
 
 	<properties>
 		<maven.compiler.source>1.7</maven.compiler.source>
@@ -59,26 +65,26 @@
 	</properties>
 
 	<build>
-    <!-- To define the plugin version in your parent POM -->
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>2.4.2</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-    <!-- To use the plugin goals in your POM or parent POM -->
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <version>2.4.2</version>
-      </plugin>
-    </plugins>
-  </build>
-  
+		<!-- To define the plugin version in your parent POM -->
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.4.2</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<!-- To use the plugin goals in your POM or parent POM -->
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.4.2</version>
+			</plugin>
+		</plugins>
+	</build>
+
 	<modules>
 		<module>vertigo-starter</module>
 		<!-- module>vertigo-ccc</module> <module>vertigo-rest</module -->
