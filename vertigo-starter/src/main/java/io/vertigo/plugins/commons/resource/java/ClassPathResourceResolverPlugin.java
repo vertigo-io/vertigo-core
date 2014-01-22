@@ -16,32 +16,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigoimpl.plugins.commons.resource.local;
+package io.vertigo.plugins.commons.resource.java;
 
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 import io.vertigoimpl.commons.resource.ResourceResolverPlugin;
 
-import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 
 /**
- * Résolution des URL liées à l'emplacement local.
+ * Résolution des URL liées au classPath.
+ * Cette résolution est en absolue.
  * 
  * @author prahmoune
  */
-public final class LocalResourceResolverPlugin implements ResourceResolverPlugin {
+public final class ClassPathResourceResolverPlugin implements ResourceResolverPlugin {
 
 	/** {@inheritDoc} */
 	public Option<URL> resolve(final String resource) {
 		Assertion.checkNotNull(resource);
 		// ---------------------------------------------------------------------
-		try {
-			return Option.option(new File(resource).toURI().toURL());
-		} catch (final MalformedURLException e) {
-			return Option.none();
-		}
+		//le getClassLoader permet de se mettre en absolue (getClass().getRessource serait relatif)
+		final URL url = getClassLoader().getResource(resource);
+		return Option.option(url);
+	}
+
+	private ClassLoader getClassLoader() {
+		//On récupère le classLoader courant (celui qui a créé le thread).
+		return Thread.currentThread().getContextClassLoader();
 	}
 }

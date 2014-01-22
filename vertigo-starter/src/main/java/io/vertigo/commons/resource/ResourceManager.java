@@ -35,7 +35,7 @@ import java.net.URL;
  * Les fichiers de configuration sont à considérer comme des ressources.  
  * Ex: 
  * 	classpath: 
- * 		/kasper/components/kasper-aspect-config_1_0.dtd
+ * 		/myproject/components/components-config.dtd
  * 	web:
  *     /WEB-INF/components-config.xml
  *  

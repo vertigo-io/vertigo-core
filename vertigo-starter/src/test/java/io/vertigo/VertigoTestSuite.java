@@ -18,12 +18,6 @@
  */
 package io.vertigo;
 
-import io.vertigo.commons.config.hierarchy.ConfigManagerTest;
-import io.vertigo.commons.config.multi.MultiConfigManagerTest;
-import io.vertigo.commons.config.properties.PropertiesConfigManagerTest;
-import io.vertigo.commons.config.xml.XmlConfigManagerTest;
-import io.vertigo.commons.locale.LocaleManagerTest;
-import io.vertigo.commons.resource.ResourceManagerTest;
 import io.vertigo.kernel.component.cglib.CGLIBAspectContainerTest;
 import io.vertigo.kernel.di.injector.InjectorTest;
 import io.vertigo.kernel.di.reactor.ReactorTest;
@@ -62,12 +56,6 @@ import org.junit.runners.Suite.SuiteClasses;
 	DateUtilTest.class,
 	StringUtilTest.class,
 	//---
-	ConfigManagerTest.class,
-	LocaleManagerTest.class,
-	ResourceManagerTest.class,
-	MultiConfigManagerTest.class,
-	PropertiesConfigManagerTest.class,
-	XmlConfigManagerTest.class,
 	CGLIBAspectContainerTest.class, 
 //@formatter:on
 })

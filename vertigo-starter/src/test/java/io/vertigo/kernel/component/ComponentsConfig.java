@@ -33,8 +33,8 @@ import io.vertigo.kernel.component.mock.aop.TenMoreInterceptor;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.kernel.engines.AopEngine;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.plugins.commons.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigoimpl.commons.resource.ResourceManagerImpl;
-import io.vertigoimpl.plugins.commons.resource.java.ClassPathResourceResolverPlugin;
 
 public final class ComponentsConfig {
 	private final AopEngine aopEngine;

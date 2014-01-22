@@ -16,39 +16,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.config.hierarchy;
+package io.vertigo.plugins.commons.resource.local;
+
+import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.lang.Option;
+import io.vertigoimpl.commons.resource.ResourceResolverPlugin;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 
 /**
- * @author npiedeloup
+ * Résolution des URL liées à l'emplacement local.
+ * 
+ * @author prahmoune
  */
+public final class LocalResourceResolverPlugin implements ResourceResolverPlugin {
 
-public final class ServerConfigVo {
-	private final String name;
-	private final int port;
-	private final String host;
-	private final boolean active;
-
-	ServerConfigVo(final String name, final int port, final String host, final boolean active) {
-		this.name = name;
-		this.port = port;
-		this.host = host;
-		this.active = active;
+	/** {@inheritDoc} */
+	public Option<URL> resolve(final String resource) {
+		Assertion.checkNotNull(resource);
+		// ---------------------------------------------------------------------
+		try {
+			return Option.option(new File(resource).toURI().toURL());
+		} catch (final MalformedURLException e) {
+			return Option.none();
+		}
 	}
-
-	public String getName() {
-		return name;
-	}
-
-	public int getPort() {
-		return port;
-	}
-
-	public String getHost() {
-		return host;
-	}
-
-	public boolean isActive() {
-		return active;
-	}
-
 }

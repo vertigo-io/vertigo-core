@@ -21,8 +21,8 @@ package io.vertigo.commons.resource;
 import io.vertigo.AbstractTestCase2JU4;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.kernel.exception.VRuntimeException;
+import io.vertigo.plugins.commons.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigoimpl.commons.resource.ResourceManagerImpl;
-import io.vertigoimpl.plugins.commons.resource.java.ClassPathResourceResolverPlugin;
 
 import java.net.URL;
 
