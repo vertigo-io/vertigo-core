@@ -1,4 +1,4 @@
-package io.vertigo.plugins.cache.map;
+package io.vertigo.plugins.commons.cache.map;
 
 import io.vertigo.kernel.lang.Assertion;
 
