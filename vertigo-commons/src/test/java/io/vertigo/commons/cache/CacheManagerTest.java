@@ -2,6 +2,7 @@ package io.vertigo.commons.cache;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.lang.Modifiable;
 
 import java.io.Serializable;
 import java.util.HashSet;
