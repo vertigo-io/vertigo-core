@@ -18,7 +18,6 @@
  */
 package io.vertigo.commons.locale;
 
-import io.vertigo.AbstractTestCase2JU4;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.kernel.lang.MessageKey;
 import io.vertigo.kernel.lang.MessageText;

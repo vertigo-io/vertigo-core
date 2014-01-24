@@ -18,6 +18,7 @@
  */
 package io.vertigo;
 
+import io.vertigo.commons.locale.LocaleManagerTest;
 import io.vertigo.kernel.component.cglib.CGLIBAspectContainerTest;
 import io.vertigo.kernel.di.injector.InjectorTest;
 import io.vertigo.kernel.di.reactor.ReactorTest;
@@ -43,6 +44,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ 
 //@formatter:off
+	//LocaleManager
+	LocaleManagerTest.class,
 	//Kernel
 	DefinitionSpaceTest.class,
 	ComponentSpaceTest.class,

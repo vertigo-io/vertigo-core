@@ -1,0 +1,9 @@
+<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
+<modules>
+	<module name="kasper-commons">
+	    <component api="CodecManager" class="kasperimpl.codec.CodecManagerImpl" />
+	    <component api="CacheManager" class="kasperimpl.cache.CacheManagerImpl" initClass ="kasper.cache.CacheManagerInitializer">
+	        <plugin class="kasperimpl.cache.plugins.map.MapCachePlugin" />
+	    </component>
+	</module>
+</modules>

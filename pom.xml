@@ -88,6 +88,7 @@
 	<modules>
 		<module>vertigo-starter</module>
 		<!-- module>vertigo-ccc</module> <module>vertigo-rest</module -->
+		<module>vertigo-commons</module>
 	</modules>
 
 	<dependencies>
