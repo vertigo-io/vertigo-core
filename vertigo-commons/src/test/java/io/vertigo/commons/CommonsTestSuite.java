@@ -18,6 +18,7 @@
  */
 package io.vertigo.commons;
 
+import io.vertigo.commons.analytics.AnalyticsManagerTest;
 import io.vertigo.commons.cache.CacheManagerTest;
 import io.vertigo.commons.codec.base64.Base64CodecTest;
 import io.vertigo.commons.codec.compressedSerialization.CompressedSerializationCodecTest;
@@ -52,6 +53,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ 
 //@formatter:off
+	//--analytics
+		AnalyticsManagerTest.class,
 	//--cache
 		CacheManagerTest.class,
 	//--codec
