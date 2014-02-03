@@ -1,4 +1,4 @@
-package io.vertigo.commons.impl.util.parser;
+package io.vertigo.commons.parser;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;

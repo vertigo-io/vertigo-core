@@ -1,15 +1,15 @@
-package io.vertigo.commons.util.parser;
+package io.vertigo.commons.parser;
 
-import io.vertigo.commons.impl.util.parser.Choice;
-import io.vertigo.commons.impl.util.parser.FirstOfRule;
-import io.vertigo.commons.impl.util.parser.ManyRule;
-import io.vertigo.commons.impl.util.parser.NotFoundException;
-import io.vertigo.commons.impl.util.parser.OptionRule;
-import io.vertigo.commons.impl.util.parser.Parser;
-import io.vertigo.commons.impl.util.parser.Rule;
-import io.vertigo.commons.impl.util.parser.SequenceRule;
-import io.vertigo.commons.impl.util.parser.TermRule;
-import io.vertigo.commons.impl.util.parser.WordRule;
+import io.vertigo.commons.parser.Choice;
+import io.vertigo.commons.parser.FirstOfRule;
+import io.vertigo.commons.parser.ManyRule;
+import io.vertigo.commons.parser.NotFoundException;
+import io.vertigo.commons.parser.OptionRule;
+import io.vertigo.commons.parser.Parser;
+import io.vertigo.commons.parser.Rule;
+import io.vertigo.commons.parser.SequenceRule;
+import io.vertigo.commons.parser.TermRule;
+import io.vertigo.commons.parser.WordRule;
 import io.vertigo.kernel.lang.Option;
 
 import java.util.List;

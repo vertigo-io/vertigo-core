@@ -1,13 +1,13 @@
-package io.vertigo.commons.util.parser;
+package io.vertigo.commons.parser;
 
-import io.vertigo.commons.impl.util.parser.AbstractRule;
-import io.vertigo.commons.impl.util.parser.Choice;
-import io.vertigo.commons.impl.util.parser.FirstOfRule;
-import io.vertigo.commons.impl.util.parser.Rule;
-import io.vertigo.commons.impl.util.parser.SequenceRule;
-import io.vertigo.commons.impl.util.parser.TermRule;
-import io.vertigo.commons.impl.util.parser.WhiteSpaceRule;
-import io.vertigo.commons.impl.util.parser.WordRule;
+import io.vertigo.commons.parser.AbstractRule;
+import io.vertigo.commons.parser.Choice;
+import io.vertigo.commons.parser.FirstOfRule;
+import io.vertigo.commons.parser.Rule;
+import io.vertigo.commons.parser.SequenceRule;
+import io.vertigo.commons.parser.TermRule;
+import io.vertigo.commons.parser.WhiteSpaceRule;
+import io.vertigo.commons.parser.WordRule;
 
 import java.util.List;
 

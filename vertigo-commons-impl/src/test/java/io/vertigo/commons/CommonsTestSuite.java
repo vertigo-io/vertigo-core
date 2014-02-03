@@ -36,10 +36,10 @@ import io.vertigo.commons.config.multi.MultiConfigManagerTest;
 import io.vertigo.commons.config.properties.PropertiesConfigManagerTest;
 import io.vertigo.commons.config.xml.XmlConfigManagerTest;
 import io.vertigo.commons.locale.LocaleManagerTest;
+import io.vertigo.commons.parser.CalculatorTest;
+import io.vertigo.commons.parser.ParserTest;
 import io.vertigo.commons.resource.ResourceManagerTest;
 import io.vertigo.commons.script.ScriptManagerTest;
-import io.vertigo.commons.util.parser.CalculatorTest;
-import io.vertigo.commons.util.parser.ParserTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -53,6 +53,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ 
 //@formatter:off
+
 	//--analytics
 		AnalyticsManagerTest.class,
 	//--cache
