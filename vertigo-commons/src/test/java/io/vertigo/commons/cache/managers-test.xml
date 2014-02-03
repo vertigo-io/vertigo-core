@@ -1,9 +1,0 @@
-<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
-<modules>
-	<module name="commons">
-	    <component api="CodecManager" class="io.vertigo.commonsimpl.codec.CodecManagerImpl" />
-	    <component api="CacheManager" class="io.vertigo.commonsimpl.cache.CacheManagerImpl" initClass ="io.vertigo.commons.cache.CacheManagerInitializer">
-	        <plugin class="io.vertigo.plugins.commons.cache.map.MapCachePlugin" />
-	    </component>
-	</module>
-</modules>

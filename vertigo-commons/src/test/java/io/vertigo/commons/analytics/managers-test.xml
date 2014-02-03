@@ -1,8 +1,0 @@
-<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
-<modules>
-	<module name="vertigo-commons">
-		 <component api="AnalyticsManager" class="io.vertigo.commonsimpl.analytics.AnalyticsManagerImpl" >
-	        <plugin class="io.vertigo.plugins.commons.analytics.dummy.DummyAgentPlugin" />
-	     </component>
-	</module>
-</modules>
