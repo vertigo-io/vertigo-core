@@ -31,8 +31,6 @@ import javax.inject.Named;
 import javax.ws.rs.core.UriBuilder;
 
 import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.grizzly.http.server.StaticHttpHandler;
-
 
 import com.sun.jersey.api.container.grizzly2.GrizzlyServerFactory;
 import com.sun.jersey.api.core.ClassNamesResourceConfig;
@@ -76,8 +74,8 @@ public final class GrizzlyRestEngine implements RestEngine, Activeable {
 
 		final HttpServer httpServer = GrizzlyServerFactory.createHttpServer(baseURI, resourceConfig);
 
-		final StaticHttpHandler staticHttpHandler = new StaticHttpHandler(GrizzlyRestEngine.class.getResource("/web2").getFile());
-		httpServer.getServerConfiguration().addHttpHandler(staticHttpHandler, "/vertigo");
+		//		final StaticHttpHandler staticHttpHandler = new StaticHttpHandler(GrizzlyRestEngine.class.getResource("/web2").getFile());
+		//		httpServer.getServerConfiguration().addHttpHandler(staticHttpHandler, "/vertigo");
 
 		//		 new CLStaticHttpHandler(new URLClassLoader(new URL[] {
 		//		            new File("target/jersey1-grizzly2-spring-1.0-SNAPSHOT.jar").toURI().toURL()}), "webapp/static2/"), "/jarstatic");
