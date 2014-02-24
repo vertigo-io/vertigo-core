@@ -26,12 +26,9 @@ public final class SerializationCodec implements Codec<Serializable, byte[]> {
 		//---------------------------------------------------------------------
 		try {
 			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			final ObjectOutputStream oos = new ObjectOutputStream(baos);
-			try {
+			try (final ObjectOutputStream oos = new ObjectOutputStream(baos)) {
 				oos.writeObject(object);
 				oos.flush();
-			} finally {
-				oos.close();
 			}
 			return baos.toByteArray();
 		} catch (final IOException e) {
@@ -45,11 +42,8 @@ public final class SerializationCodec implements Codec<Serializable, byte[]> {
 		//---------------------------------------------------------------------
 		try {
 			final InputStream bais = new ByteArrayInputStream(serializedObject);
-			final ObjectInputStream ois = new ObjectInputStream(bais);
-			try {
+			try (final ObjectInputStream ois = new ObjectInputStream(bais)) {
 				return (Serializable) ois.readObject();
-			} finally {
-				ois.close();
 			}
 		} catch (final IOException e) {
 			throw new VRuntimeException("Deserialisation : erreur de lecture du flux", e);

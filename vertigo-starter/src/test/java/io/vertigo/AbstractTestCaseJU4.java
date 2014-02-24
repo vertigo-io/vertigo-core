@@ -68,11 +68,8 @@ public abstract class AbstractTestCaseJU4 extends AbstractTestCase2JU4 {
 			final Option<String> propertiesName = getPropertiesFileName();
 			final Properties properties = new Properties();
 			if (propertiesName.isDefined()) {
-				final InputStream in = createURL(propertiesName.get()).openStream();
-				try {
+				try (final InputStream in = createURL(propertiesName.get()).openStream()) {
 					properties.load(in);
-				} finally {
-					in.close();
 				}
 			}
 			return properties;

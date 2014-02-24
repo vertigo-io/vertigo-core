@@ -31,7 +31,6 @@ import java.util.Properties;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-
 /**
  * Plugin de gestion de configuration de fichiers properties.
  * 
@@ -60,13 +59,10 @@ public final class PropertiesConfigPlugin implements ConfigPlugin {
 	}
 
 	private static Properties loadProperties(final URL configURL) throws IOException {
-		final InputStream input = configURL.openStream();
-		try {
+		try (final InputStream input = configURL.openStream()) {
 			final Properties tmpProperties = new Properties();
 			tmpProperties.load(input);
 			return tmpProperties;
-		} finally {
-			input.close();
 		}
 	}
 
