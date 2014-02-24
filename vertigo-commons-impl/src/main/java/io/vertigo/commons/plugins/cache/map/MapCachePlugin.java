@@ -30,8 +30,8 @@ import javax.inject.Named;
  */
 public final class MapCachePlugin implements CachePlugin, Describable {
 	private final CodecManager codecManager;
-	private final Map<String, List<String>> cacheTypeMap = new LinkedHashMap<String, List<String>>();
-	private final Map<String, MapCache> cachesPerContext = new HashMap<String, MapCache>();
+	private final Map<String, List<String>> cacheTypeMap = new LinkedHashMap<>();
+	private final Map<String, MapCache> cachesPerContext = new HashMap<>();
 	private final Set<String> noSerializationContext;
 
 	/**
@@ -135,7 +135,7 @@ public final class MapCachePlugin implements CachePlugin, Describable {
 	private void registerCacheType(final String cacheName, final String cacheType) {
 		List<String> cacheNameList = cacheTypeMap.get(cacheType);
 		if (cacheNameList == null) {
-			cacheNameList = new ArrayList<String>();
+			cacheNameList = new ArrayList<>();
 			cacheTypeMap.put(cacheType, cacheNameList);
 		}
 		cacheNameList.add(cacheName);

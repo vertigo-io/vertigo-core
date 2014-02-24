@@ -1,8 +1,6 @@
 package io.vertigo.commons.codec;
 
 import io.vertigo.AbstractTestCase2JU4;
-import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.codec.Encoder;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 
@@ -58,6 +56,10 @@ public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends
 		checkEncodedValue(encodedValue);
 	}
 
+	/**
+	 * 
+	 * @param encodedValue
+	 */
 	protected void checkEncodedValue(final T encodedValue) {
 		// � implementer si besoin
 	}

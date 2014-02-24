@@ -25,7 +25,7 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 	//	private ExpressionEvaluatorPlugin mvelExpressionEvaluatorPlugin;
 
 	private static List<ExpressionParameter> createParameters() {
-		final List<ExpressionParameter> parameters = new ArrayList<ExpressionParameter>();
+		final List<ExpressionParameter> parameters = new ArrayList<>();
 		parameters.add(new ExpressionParameter("nom", String.class, "Duraton"));
 		parameters.add(new ExpressionParameter("prenom", String.class, "jean paul"));
 		parameters.add(new ExpressionParameter("age", Integer.class, 54));
@@ -78,7 +78,7 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testComment() {
-		final List<ScriptSeparator> separators = new ArrayList<ScriptSeparator>();
+		final List<ScriptSeparator> separators = new ArrayList<>();
 		separators.add(comment);
 
 		final String script = "bla <!--commentaires-->bla";
@@ -90,7 +90,7 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 
 	@Test(expected = Exception.class)
 	public void testOubliParametre() {
-		final List<ScriptSeparator> separators = new ArrayList<ScriptSeparator>();
+		final List<ScriptSeparator> separators = new ArrayList<>();
 		separators.add(comment);
 
 		final String script = "bla <!---->bla";
@@ -104,7 +104,7 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 	public void testEchappement() {
 		//Si le s�parateur est un car.
 		//il suffit de double le s�parateur pour l'�chapper.
-		final List<ScriptSeparator> separators = new ArrayList<ScriptSeparator>();
+		final List<ScriptSeparator> separators = new ArrayList<>();
 		separators.add(new ScriptSeparator('$'));
 		final String script = "le prix du barril est de $price$ $$";
 		final MyScriptParserHandler scriptHandler = new MyScriptParserHandler();
@@ -114,7 +114,7 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 
 	@Test(expected = Exception.class)
 	public void testOubliCaractereDeFin() {
-		final List<ScriptSeparator> separators = new ArrayList<ScriptSeparator>();
+		final List<ScriptSeparator> separators = new ArrayList<>();
 		separators.add(new ScriptSeparator('$'));
 		final String script = "le prix du barril est de $price";
 		final MyScriptParserHandler scriptHandler = new MyScriptParserHandler();

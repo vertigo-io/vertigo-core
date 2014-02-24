@@ -21,7 +21,6 @@ package io.vertigo.kernel.util;
 import io.vertigo.kernel.exception.VUserException;
 import io.vertigo.kernel.lang.MessageText;
 import io.vertigo.kernel.lang.Option;
-import io.vertigo.kernel.util.ClassUtil;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
@@ -36,7 +35,6 @@ import javax.inject.Inject;
 
 import org.junit.Assert;
 import org.junit.Test;
-
 
 /**
  * Test de l'utilitaire de manipulation des classes.
@@ -406,6 +404,7 @@ public final class ClassUtilTest {
 
 		public MyBean() {
 			nop(privateValue1);
+			nop(privateValue2);
 		}
 	}
 
@@ -416,6 +415,7 @@ public final class ClassUtilTest {
 
 		public MySubBean() {
 			nop(privateValue3);
+			nop(privateValue4);
 		}
 
 	}

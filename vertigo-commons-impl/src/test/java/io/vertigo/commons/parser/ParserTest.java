@@ -1,15 +1,5 @@
 package io.vertigo.commons.parser;
 
-import io.vertigo.commons.parser.Choice;
-import io.vertigo.commons.parser.FirstOfRule;
-import io.vertigo.commons.parser.ManyRule;
-import io.vertigo.commons.parser.NotFoundException;
-import io.vertigo.commons.parser.OptionRule;
-import io.vertigo.commons.parser.Parser;
-import io.vertigo.commons.parser.Rule;
-import io.vertigo.commons.parser.SequenceRule;
-import io.vertigo.commons.parser.TermRule;
-import io.vertigo.commons.parser.WordRule;
 import io.vertigo.kernel.lang.Option;
 
 import java.util.List;
@@ -99,7 +89,7 @@ public final class ParserTest {
 	public void testTermFail() throws NotFoundException {
 		final Parser<List<?>> parser = HELLO.createParser();
 		//---
-		final int end = parser.parse("Hi", 0);
+		parser.parse("Hi", 0);
 		Assert.fail();
 	}
 
@@ -125,7 +115,7 @@ public final class ParserTest {
 	public void testSequenceFail() throws NotFoundException {
 		final Parser<List<?>> parser = HELLO_WORLD.createParser();
 		//---
-		final int end = parser.parse("hello worms", 0);
+		parser.parse("hello worms", 0);
 		Assert.fail();
 	}
 
@@ -133,13 +123,12 @@ public final class ParserTest {
 	public void testFirstOf() throws NotFoundException {
 		final Parser<Choice> parser = WORLD_MUSIC.createParser();
 		//---
-		int end;
-		end = parser.parse("world", 0);
+		parser.parse("world", 0);
 		//On v�rifie que l'on a trouv� la chaine "world" qui correspond au cas 0
 		Assert.assertEquals(0, parser.get().getValue());
 		Assert.assertEquals("world", parser.get().getResult());
 		//---
-		end = parser.parse("music", 0);
+		parser.parse("music", 0);
 		//On v�rifie que l'on a trouv� la chaine "music" qui correspond au cas 1
 		Assert.assertEquals(1, parser.get().getValue());
 		Assert.assertEquals("music", parser.get().getResult());
@@ -149,7 +138,7 @@ public final class ParserTest {
 	public void testFirstOfFail() throws NotFoundException {
 		final Parser<Choice> parser = WORLD_MUSIC.createParser();
 		//---
-		final int end = parser.parse("worm", 0);
+		parser.parse("worm", 0);
 		Assert.fail();
 	}
 
@@ -158,7 +147,7 @@ public final class ParserTest {
 		//On cr�e une liste vide de choix 
 		final Parser<Choice> parser = new FirstOfRule().createParser();
 		//---
-		final int end = parser.parse("world", 0);
+		parser.parse("world", 0);
 		Assert.fail();
 	}
 
@@ -166,16 +155,15 @@ public final class ParserTest {
 	public void testFirstOf2() throws NotFoundException {
 		final Parser<List<?>> parser = HELLO_WORLD_MUSIC.createParser();
 		//---
-		int end;
 		Choice choice;
 		//-
-		end = parser.parse("hello world, my name", 0);
+		parser.parse("hello world, my name", 0);
 		//On v�rifie que l'on a trouv� la chaine "world" qui correspond au cas 0
 		choice = (Choice) parser.get().get(2);
 		Assert.assertEquals(0, choice.getValue());
 		Assert.assertEquals("world", choice.getResult());
 		//---
-		end = parser.parse("hello music, my name", 0);
+		parser.parse("hello music, my name", 0);
 		//On v�rifie que l'on a trouv� la chaine "music" qui correspond au cas 1
 		choice = (Choice) parser.get().get(2);
 		Assert.assertEquals(1, choice.getValue());
@@ -186,15 +174,14 @@ public final class ParserTest {
 	public void testOption() throws NotFoundException {
 		final Parser<List<?>> parser = HELLO_WORLD_FROM.createParser();
 		//---
-		int end;
 		Option<List<?>> from;
 
 		//-
-		end = parser.parse("hello world bla bla", 0);
+		parser.parse("hello world bla bla", 0);
 		from = (Option<List<?>>) parser.get().get(3);
 		Assert.assertTrue(from.isEmpty());
 		//-
-		end = parser.parse("hello world from mars", 0);
+		parser.parse("hello world from mars", 0);
 		from = (Option<List<?>>) parser.get().get(3);
 		Assert.assertTrue(from.isDefined());
 		Assert.assertEquals("mars", from.get().get(3));
@@ -204,11 +191,10 @@ public final class ParserTest {
 	public void testOptionFail() throws NotFoundException {
 		final Parser<List<?>> parser = HELLO_WORLD_FROM.createParser();
 		//---
-		int end;
 		Option<List<?>> from;
 
 		//-
-		end = parser.parse("hello world from ", 0);
+		parser.parse("hello world from ", 0);
 		from = (Option<List<?>>) parser.get().get(3);
 		Assert.assertFalse(from.isDefined()); //pas d'exception NotFound
 	}
@@ -217,10 +203,9 @@ public final class ParserTest {
 	public void testMany() throws NotFoundException {
 		final Parser<List<?>> parser = MANY_AB.createParser();
 		//---
-		int end;
 		List results;
 		//-
-		end = parser.parse("", 0);
+		parser.parse("", 0);
 		results = parser.get();
 		Assert.assertEquals(0, results.size());
 		//-
@@ -228,15 +213,15 @@ public final class ParserTest {
 		//		results = parser.get();
 		//		Assert.assertEquals(0, results.size()); //ce cas ne match pas (ab)+ 
 		//-
-		end = parser.parse("ab", 0);
+		parser.parse("ab", 0);
 		results = parser.get();
 		Assert.assertEquals(1, results.size());
 		//-
-		end = parser.parse("abc", 0);
+		parser.parse("abc", 0);
 		results = parser.get();
 		Assert.assertEquals(1, results.size());
 		//-
-		end = parser.parse("abababab", 0);
+		parser.parse("abababab", 0);
 		results = parser.get();
 		Assert.assertEquals(4, results.size());
 		Assert.assertEquals("ab", results.get(0));
@@ -265,7 +250,6 @@ public final class ParserTest {
 	public void testManyMore() throws NotFoundException {
 		final Parser<List<?>> parser = MANY_AB_MORE.createParser();
 		//---
-		int end;
 		List results;
 		//-
 		//		end = parser.parse("", 0);
@@ -276,15 +260,15 @@ public final class ParserTest {
 		//		results = parser.get();
 		//		Assert.assertEquals(0, results.size());
 		//-
-		end = parser.parse("ab", 0);
+		parser.parse("ab", 0);
 		results = parser.get();
 		Assert.assertEquals(1, results.size());
 		//-
-		end = parser.parse("abc", 0);
+		parser.parse("abc", 0);
 		results = parser.get();
 		Assert.assertEquals(1, results.size());
 		//-
-		end = parser.parse("abababab", 0);
+		parser.parse("abababab", 0);
 		results = parser.get();
 		Assert.assertEquals(4, results.size());
 		Assert.assertEquals("ab", results.get(0));
@@ -297,7 +281,7 @@ public final class ParserTest {
 	public void testManyMoreFail() throws NotFoundException {
 		final Parser<List<?>> parser = MANY_AB_MORE.createParser();
 		//---
-		final int end = parser.parse("", 0);
+		parser.parse("", 0);
 		Assert.fail();
 	}
 
@@ -305,7 +289,7 @@ public final class ParserTest {
 	public void testManyMoreFail2() throws NotFoundException {
 		final Parser<List<?>> parser = MANY_AB_MORE.createParser();
 		//---
-		final int end = parser.parse("a", 0);
+		parser.parse("a", 0);
 		Assert.fail();
 	}
 

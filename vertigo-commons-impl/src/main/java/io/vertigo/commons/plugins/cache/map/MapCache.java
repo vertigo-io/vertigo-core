@@ -6,7 +6,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
  * Implementation d'un cache memoire.
  * La purge des �l�ments trop vieux se fait lors de la lecture.
@@ -21,7 +20,7 @@ final class MapCache {
 	private long totalHits;
 	private long totalCalls;
 	//private long totalPuts;
-	private final Map<Serializable, CacheValue> cacheDatas = new HashMap<Serializable, CacheValue>();
+	private final Map<Serializable, CacheValue> cacheDatas = new HashMap<>();
 
 	/**
 	 * Constructeur.

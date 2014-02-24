@@ -2,7 +2,6 @@ package io.vertigo.kernel.home.definitionspace;
 
 import io.vertigo.AbstractTestCase2JU4;
 import io.vertigo.kernel.Home;
-import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.kernel.metamodel.Definition;
 import io.vertigo.kernel.metamodel.DefinitionReference;
@@ -22,12 +21,9 @@ public class DefinitionSpaceTest extends AbstractTestCase2JU4 {
 
 	@Override
 	protected void configMe(final ComponentSpaceConfigBuilder componentSpaceConfiguilder) {
-		// @formatter:off
-		final ComponentSpaceConfig componentSpaceConfig = new ComponentSpaceConfigBuilder()
-			.withParam("log4j.configurationFileName", "/log4j.xml")
-			.withSilence(false)
-		.build();
-		// @formatter:on
+		componentSpaceConfiguilder//
+				.withParam("log4j.configurationFileName", "/log4j.xml")//
+				.withSilence(false);
 	}
 
 	@Test

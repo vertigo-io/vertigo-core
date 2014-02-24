@@ -64,7 +64,7 @@ public final class NotFoundException extends Exception {
 		final StringBuilder sb = new StringBuilder();
 		sb.append(displayPosition());
 		sb.append("\n");
-		final List<String> errorRuleList = new ArrayList<String>();
+		final List<String> errorRuleList = new ArrayList<>();
 		Throwable cause = this;
 		while (cause instanceof NotFoundException) {
 			errorRuleList.add(0, ((NotFoundException) cause).displayRule());

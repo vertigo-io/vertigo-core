@@ -31,7 +31,7 @@ final class ScriptParserHandlerImpl implements ScriptParserHandler {
 	 */
 	private boolean isDynamic; //implicite = false;
 
-	private final List<String> textList = new ArrayList<String>();
+	private final List<String> textList = new ArrayList<>();
 	private final List<ExpressionParameter> parameters;
 
 	/**

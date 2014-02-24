@@ -153,7 +153,7 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testConcurrentAccess() {
-		final Set<Thread> threadSet = new HashSet<Thread>();
+		final Set<Thread> threadSet = new HashSet<>();
 		final long baseTime = System.currentTimeMillis();
 		final long deathTime = baseTime + 30 * 1000;
 		final int nbRow = 1000;

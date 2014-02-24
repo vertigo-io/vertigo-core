@@ -41,7 +41,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-
 /**
  * Conteneur de tous les gestionnaires.
  * @author pchretien
@@ -119,7 +118,7 @@ final class ComponentContainer implements Container, Activeable {
 		Assertion.checkNotNull(plugins);
 		// ---------------------------------------------------------------------
 		//On crée le container des sous composants (plugins) associés au Manager.
-		final Object previous = subComponents.put(componentConfig.getId(), new ArrayList<Plugin>(plugins.values()));
+		final Object previous = subComponents.put(componentConfig.getId(), new ArrayList<>(plugins.values()));
 		Assertion.checkState(previous == null, "subComponents of component '{0}' deja enregistrés", componentConfig.getId());
 		//---------------------------------------------------------------------
 		// Il est nécessaire d'enregistrer les sous-composants.

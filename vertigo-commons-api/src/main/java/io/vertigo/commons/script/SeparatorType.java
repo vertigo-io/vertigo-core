@@ -40,7 +40,7 @@ public enum SeparatorType {
 	private final List<ScriptSeparator> separatorList;
 
 	private SeparatorType(final String startExpression, final String endExpression) {
-		separatorList = new ArrayList<ScriptSeparator>(1);
+		separatorList = new ArrayList<>(1);
 		separatorList.add(new ScriptSeparator(startExpression, endExpression));
 	}
 
