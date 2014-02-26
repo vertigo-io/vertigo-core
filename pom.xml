@@ -4,7 +4,7 @@
 
 	<groupId>io.vertigo</groupId>
 	<artifactId>vertigo-parent</artifactId>
-	<version>0.2.0</version>
+	<version>0.3.0-SNAPSHOT</version>
 	<name>vertigo</name>
 	<packaging>pom</packaging>
 	<description>Vertigo is a simple java project starter</description>
@@ -35,7 +35,7 @@
 		<connection>scm:git:git@github.com:vertigo-io/vertigo.git</connection>
 		<developerConnection>scm:git:git@github.com:vertigo-io/vertigo.git</developerConnection>
 		<url>scm:git:git@github.com:vertigo-io/vertigo.git</url>
-		<tag>vertigo-parent-0.2.0</tag>
+		<tag>vertigo-0.2.0</tag>
 	</scm>
 
 	<properties>
