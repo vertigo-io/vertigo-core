@@ -32,9 +32,9 @@
 	</developers>
 
 	<scm>
-		<connection>scm:git:git@github.com:vertigo-io/vertigo.git</connection>
-		<developerConnection>scm:git:git@github.com:vertigo-io/vertigo.git</developerConnection>
-		<url>scm:git:git@github.com:vertigo-io/vertigo.git</url>
+		<connection>scm:git:https://github.com/vertigo-io/vertigo.git</connection>
+		<developerConnection>scm:git:https://github.com/vertigo-io/vertigo.git</developerConnection>
+		<url>scm:git:https://github.com/vertigo-io/vertigo.git</url>	
 		<tag>vertigo-0.2.0</tag>
 	</scm>
 
