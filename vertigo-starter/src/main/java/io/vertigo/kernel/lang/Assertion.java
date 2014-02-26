@@ -53,6 +53,28 @@ public final class Assertion {
 	}
 
 	/**
+	 * Permet de tester une erreur possible, ou le développeur à déjà tester la nullité de l'objet et appel checkNotNull tout de même.
+	 * @param o Object Objet obligatoire
+	 * @param msg Message d'erreur
+	 * @param params paramètres du message
+	 * @deprecated Vous n'utilisez certainement pas la bonne assertion, utiliser checkArgument à la place
+	 */
+	@Deprecated
+	public static void checkNotNull(final boolean o, final String msg, final Object... params) {
+		throw new IllegalArgumentException("Null assertion must be on Objet instance. You may have already checked nullity, use checkArgument instead.");
+	}
+
+	/**
+	 * Permet de tester le caractère obligatoire (non null) d'un Boolean.
+	 * @param o Object Objet obligatoire
+	 * @param msg Message d'erreur
+	 * @param params paramètres du message
+	 */
+	public static void checkBooleanNotNull(final Boolean o, final String msg, final Object... params) {
+		checkNotNull(o, msg, params);
+	}
+
+	/**
 	 * Permet de tester le caractère obligatoire (non null) d'un objet.
 	 * @param o Object Objet obligatoire
 	 * @param msg Message d'erreur

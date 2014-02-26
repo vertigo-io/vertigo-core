@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-
 /**
  * Container contenant des paramètres.
  * 
@@ -49,7 +48,7 @@ public final class ParamsContainer implements Container {
 	/** {@inheritDoc} */
 	public <O> O resolve(final String id, final Class<O> clazz) {
 		Assertion.checkNotNull(id);
-		Assertion.checkNotNull(params.containsKey(id), "Le paramètre '{0}' de type '{1}' n'a pas été défini.", id, clazz.getSimpleName());
+		Assertion.checkState(params.containsKey(id), "Le paramètre '{0}' de type '{1}' n'a pas été défini.", id, clazz.getSimpleName());
 		// ---------------------------------------------------------------------
 		final Object value = getParam(params, id, clazz);
 		final Class<O> type = box(clazz);
