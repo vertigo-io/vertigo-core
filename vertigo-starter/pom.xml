@@ -25,6 +25,7 @@
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-parent</artifactId>
 		<version>0.3.0-SNAPSHOT</version>
+		<relativePath></relativePath>
 	</parent>
 
 	<artifactId>vertigo-starter</artifactId>
@@ -32,123 +33,6 @@
 	<name>vertigo-starter</name>
 	<description>Vertigo is a simple java starter</description>
 	<url>http://vertigo.io</url>
-
-	<scm>
-		<connection>scm:git:git@github.com:vertigo-io/vertigo.git</connection>
-		<developerConnection>scm:git:git@github.com:vertigo-io/vertigo.git</developerConnection>
-		<url>git:github.com:vertigo-io/vertigo</url>
-		<tag>vertigo-0.2.0</tag>
-	</scm>
-
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<configuration>
-						<source>1.7</source>
-						<target>1.7</target>
-					</configuration>
-				</plugin>
-
-			</plugins>
-		</pluginManagement>
-
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<!-- On précise que l'on souhaite aussi un jar pour les tests -->
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.2</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>test-jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!-- <plugin>
-				<groupId>com.atlassian.docco</groupId>
-				<artifactId>atlassian-docco-maven</artifactId>
-				<version>1.0-beta4</version>
-				<configuration>
-					<indexTitle>Vertigo</indexTitle>
-					<outputDirectory>docco</outputDirectory>
-				</configuration>
-
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>docco</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin> -->
-
-			<!-- license:format -->
-			<plugin>
-				<groupId>com.mycila</groupId>
-				<artifactId>license-maven-plugin</artifactId>
-				<version>2.5</version>
-				<configuration>
-					<header>license.txt</header>
-				</configuration>
-				<!-- executions> <execution> <phase>package</phase> <goals> <goal>license</goal> </goals> </execution> </executions -->
-			</plugin>
-			<plugin><!--Config pour déployer les sources et la javadoc :http://stackoverflow.com/questions/4725668/how-to-deploy-snapshot-with-sources-and-javadoc -->
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.2.1</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>jar</goal>
-							<goal>test-jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9</version>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<!-- explicitly define maven-deploy-plugin after other to force exec order -->
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<version>2.7</version>
-				<executions>
-					<execution>
-						<id>deploy</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>deploy</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 
 	<dependencies>
 		<dependency>
@@ -186,19 +70,5 @@
 			<version>2.2.2</version>
 		</dependency>
 	</dependencies>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>atlassian-public</id>
-			<url>https://maven.atlassian.com/content/groups/public/</url>
-			<releases>
-				<checksumPolicy>fail</checksumPolicy>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<checksumPolicy>fail</checksumPolicy>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
 
 </project>
