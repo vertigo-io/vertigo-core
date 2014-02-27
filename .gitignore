@@ -6,3 +6,5 @@ docco/
 .project
 .settings/
 vertigo-release/
+mvn-release.txt
+*.bak
