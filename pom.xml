@@ -21,7 +21,7 @@ limitations under the License. -->
 	<groupId>io.vertigo</groupId>
 	<artifactId>vertigo-reactor</artifactId>
 	<version>0.3.0-SNAPSHOT</version>
-	<name>vertigo</name>
+	<name>vertigo-reactor</name>
 	<packaging>pom</packaging>
 	<description>Vertigo is a simple java project starter</description>
 	<url>http://vertigo.io</url>
