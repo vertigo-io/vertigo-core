@@ -18,10 +18,10 @@
  */
 package io.vertigo.xml;
 
+import io.vertigo.engines.aop.cglib.CGLIBAopEngine;
 import io.vertigo.kernel.component.AbstractAspectTestCase;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.xml.XMLModulesLoader;
-import io.vertigoimpl.engines.aop.cglib.CGLIBAopEngine;
 
 import java.util.Properties;
 

@@ -18,10 +18,10 @@
  */
 package io.vertigo.kernel.component.cglib;
 
+import io.vertigo.engines.aop.cglib.CGLIBAopEngine;
 import io.vertigo.kernel.component.AbstractAspectTestCase;
 import io.vertigo.kernel.component.ComponentsConfig;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
-import io.vertigoimpl.engines.aop.cglib.CGLIBAopEngine;
 
 /**
  * @author pchretien

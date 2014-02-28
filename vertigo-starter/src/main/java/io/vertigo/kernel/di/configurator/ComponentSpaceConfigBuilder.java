@@ -18,6 +18,7 @@
  */
 package io.vertigo.kernel.di.configurator;
 
+import io.vertigo.engines.aop.cglib.CGLIBAopEngine;
 import io.vertigo.kernel.engines.AopEngine;
 import io.vertigo.kernel.engines.ElasticaEngine;
 import io.vertigo.kernel.engines.JsonEngine;
@@ -27,7 +28,6 @@ import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Builder;
 import io.vertigo.kernel.lang.Loader;
 import io.vertigo.kernel.lang.Option;
-import io.vertigoimpl.engines.aop.cglib.CGLIBAopEngine;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -21,6 +21,10 @@ package io.vertigo.kernel.command;
 import io.vertigo.kernel.lang.Assertion;
 
 /**
+ * A response contains 
+ * - a status (in fact en errorMsg if there is only one error
+ * - a body response in a string  ( a json formatted string is perfect) 
+ * 
 * @author pchretien
 */
 public final class VResponse {
@@ -39,8 +43,8 @@ public final class VResponse {
 		return new VResponse(null, ErrorMsg);
 	}
 
-	private VResponse(String json, String errorMsg) {
-		this.response = json;
+	private VResponse(String response, String errorMsg) {
+		this.response = response;
 		this.errorMsg = errorMsg;
 	}
 

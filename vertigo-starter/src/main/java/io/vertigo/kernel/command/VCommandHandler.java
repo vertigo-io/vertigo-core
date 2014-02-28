@@ -19,8 +19,8 @@
 package io.vertigo.kernel.command;
 
 /**
-* @author pchretien
-*/
+ * @author pchretien
+ */
 public interface VCommandHandler {
 	VResponse onCommand(VCommand command);
 }

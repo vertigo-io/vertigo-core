@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigoimpl.engines.aop.cglib;
+package io.vertigo.engines.aop.cglib;
 
 import io.vertigo.kernel.aop.Interceptor;
 import io.vertigo.kernel.engines.AopEngine;

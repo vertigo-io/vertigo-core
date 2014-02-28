@@ -25,6 +25,9 @@ import java.util.Map;
 
 /**
  * Generic request with args to interact with vertigo, components. 
+ * A command contains
+ *  - a name like put, push...
+ *  - a list of args identified by their name and value. 
  * 
  * @author pchretien
  */
@@ -41,8 +44,8 @@ public final class VCommand {
 		Assertion.checkNotNull(name, "name is required");
 		Assertion.checkNotNull(args, "args is required, may be empty");
 		//-------------------------------------------------
-//		System.out.println("cmd : name => " + name);
-//		System.out.println("cmd : args => " + args);
+		//		System.out.println("cmd : name => " + name);
+		//		System.out.println("cmd : args => " + args);
 		this.name = name;
 		this.args = args;
 	}
@@ -52,7 +55,7 @@ public final class VCommand {
 	}
 
 	public String arg(String argName, String defaultValue) {
-//		System.out.println("arg : name => " + argName + " contains " + args.containsKey(argName));
+		//		System.out.println("arg : name => " + argName + " contains " + args.containsKey(argName));
 		return args.containsKey(argName) ? args.get(argName) : defaultValue;
 	}
 
