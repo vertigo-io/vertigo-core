@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.console;
+package io.vertigo.console.mock;
 
+import io.vertigo.engines.command.tcp.VServer;
 import io.vertigo.kernel.command.VCommand;
 import io.vertigo.kernel.command.VCommandHandler;
 import io.vertigo.kernel.command.VResponse;
-import io.vertigoimpl.engines.command.tcp.VServer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +53,7 @@ public class ZZDistributedMapServer {
 		private final Gson gson = new GsonBuilder().create();
 		private final Map<String, String> map = new HashMap<>();
 
-		public VResponse onCommand(VCommand command) {
+		public VResponse execCommand(VCommand command) {
 			System.out.println(">>ici>" + command);
 			try {
 				if ("put".equals(command.getName())) {

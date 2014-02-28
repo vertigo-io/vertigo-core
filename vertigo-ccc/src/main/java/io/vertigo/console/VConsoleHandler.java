@@ -18,32 +18,21 @@
  */
 package io.vertigo.console;
 
+import io.vertigo.engines.command.JsonUtil;
+import io.vertigo.engines.command.tcp.VClient;
 import io.vertigo.kernel.command.VCommand;
 import io.vertigo.kernel.command.VCommandHandler;
 import io.vertigo.kernel.command.VResponse;
-import io.vertigo.kernel.engines.JsonEngine;
 import io.vertigo.kernel.lang.Activeable;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigoimpl.engines.command.tcp.VClient;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * @author pchretien
  */
 public final class VConsoleHandler implements VCommandHandler, Activeable {
-	private final JsonEngine jsonEngine;
 	private List<VClient> clients = new ArrayList<>();
-
-	@Inject
-	public VConsoleHandler(final JsonEngine jsonEngine) {
-		Assertion.checkNotNull(jsonEngine);
-		//---------------------------------------------------------------------*
-		this.jsonEngine = jsonEngine;
-	}
 
 	public void start() {
 		//		clients.p = new VClient("localhost", 4444);
@@ -56,7 +45,7 @@ public final class VConsoleHandler implements VCommandHandler, Activeable {
 	}
 
 	@Override
-	public VResponse onCommand(VCommand command) {
+	public VResponse execCommand(VCommand command) {
 		if (command.getName().startsWith("$")) {
 			switch (command.getName()) {
 				case "$help":
@@ -70,10 +59,10 @@ public final class VConsoleHandler implements VCommandHandler, Activeable {
 					for (VClient client : clients) {
 						remoteAddresses.add(client.getRemoteAddress());
 					}
-					return VResponse.createResponse(jsonEngine.toJson(remoteAddresses));
+					return VResponse.createResponse(JsonUtil.toJson(remoteAddresses));
 				case "$disconnect":
 					stop();
-					return VResponse.createResponse(jsonEngine.toJson("disconnection OK"));
+					return VResponse.createResponse(JsonUtil.toJson("disconnection OK"));
 				case "$connect":
 					//					if (client != null) {
 					//						return VResponse.createResponseWithError("you are already connected");
@@ -84,7 +73,7 @@ public final class VConsoleHandler implements VCommandHandler, Activeable {
 
 						VClient client = new VClient(host, port);
 						clients.add(client);
-						return VResponse.createResponse(jsonEngine.toJson("connection successfull"));
+						return VResponse.createResponse(JsonUtil.toJson("connection successfull"));
 					} catch (Exception e) {
 						return VResponse.createResponseWithError("connection failed " + e.getMessage());
 					}
@@ -95,14 +84,14 @@ public final class VConsoleHandler implements VCommandHandler, Activeable {
 		if (clients.isEmpty()) {
 			return VResponse.createResponseWithError("you are not connected");
 		} else if (clients.size() == 1) {
-			return clients.get(0).onCommand(command);
+			return clients.get(0).execCommand(command);
 		} else {
 			//Multiples clients
 			List<VResponse> responses = new ArrayList<>();
 			for (VClient client : clients) {
-				responses.add(client.onCommand(command));
+				responses.add(client.execCommand(command));
 			}
-			return VResponse.createResponse(jsonEngine.toJson(responses));
+			return VResponse.createResponse(JsonUtil.toJson(responses));
 		}
 	}
 }

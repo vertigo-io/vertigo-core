@@ -19,8 +19,10 @@
 package io.vertigo.kernel.command;
 
 /**
+ * Local execution.
+ * example : resolve configuration of a specific component. 
  * @author pchretien
  */
-public interface VCommandHandler {
-	VResponse onCommand(VCommand command);
+public interface VCommandExecutor<R> {
+	R exec(VCommand command);
 }

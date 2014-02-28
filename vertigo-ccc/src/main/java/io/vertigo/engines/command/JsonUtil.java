@@ -16,10 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigoimpl.engines.json.gson;
+package io.vertigo.engines.command;
 
 import io.vertigo.kernel.component.ComponentInfo;
-import io.vertigo.kernel.engines.JsonEngine;
 import io.vertigo.kernel.lang.JsonExclude;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.metamodel.DefinitionReference;
@@ -41,11 +40,10 @@ import com.google.gson.JsonSerializer;
 /**
  * @author pchretien
  */
-public final class GoogleJsonEngine implements JsonEngine {
-	private final Gson gson = createGson();
+public final class JsonUtil {
+	private static final Gson gson = createGson();
 
-	@Override
-	public String toJson(Object data) {
+	public static String toJson(Object data) {
 		return gson.toJson(data);
 	}
 

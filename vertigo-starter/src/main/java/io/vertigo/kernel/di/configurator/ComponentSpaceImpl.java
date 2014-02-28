@@ -19,7 +19,10 @@
 package io.vertigo.kernel.di.configurator;
 
 import io.vertigo.kernel.Engine;
+import io.vertigo.kernel.Home;
 import io.vertigo.kernel.aop.Interceptor;
+import io.vertigo.kernel.command.VCommand;
+import io.vertigo.kernel.command.VCommandExecutor;
 import io.vertigo.kernel.component.ComponentInitializer;
 import io.vertigo.kernel.component.ComponentSpace;
 import io.vertigo.kernel.component.Container;
@@ -93,9 +96,7 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 		if (componentSpaceConfig.getRestEngine().isDefined()) {
 			engines.add(componentSpaceConfig.getRestEngine().get());
 		}
-		if (componentSpaceConfig.getJsonEngine().isDefined()) {
-			engines.add(componentSpaceConfig.getJsonEngine().get());
-		}
+
 		engines.add(componentSpaceConfig.getAopEngine());
 
 		for (Engine engine : engines) {
@@ -118,6 +119,14 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 				((Activeable) commandEngine).start();
 			}
 			engines.add(commandEngine);
+		}
+
+		if (Home.getCommandEngine().isDefined()) {
+			Home.getCommandEngine().get().registerCommandExecutor("config", new VCommandExecutor<ComponentSpaceConfig>() {
+				public ComponentSpaceConfig exec(VCommand command) {
+					return componentSpaceConfig;
+				}
+			});
 		}
 	}
 
@@ -294,4 +303,5 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 	public ComponentSpaceConfig getConfig() {
 		return componentSpaceConfig;
 	}
+
 }

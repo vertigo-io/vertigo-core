@@ -17,11 +17,5 @@
 	  	<artifactId>vertigo-starter</artifactId>
 	  	<version>0.1.0</version>
 	  </dependency>
-	  
-	  <dependency>
-	  	<groupId>io.vertigo</groupId>
-	  	<artifactId>vertigo-rest</artifactId>
-	  	<version>0.1.0</version>
-	  </dependency>
   </dependencies>
 </project>

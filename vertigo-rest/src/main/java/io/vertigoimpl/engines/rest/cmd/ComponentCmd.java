@@ -19,10 +19,8 @@
 package io.vertigoimpl.engines.rest.cmd;
 
 import io.vertigo.kernel.Home;
-import io.vertigo.kernel.engines.JsonEngine;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.Definition;
-import io.vertigoimpl.engines.json.gson.GoogleJsonEngine;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

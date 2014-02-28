@@ -20,7 +20,6 @@ package io.vertigo.kernel.di.configurator;
 
 import io.vertigo.kernel.engines.AopEngine;
 import io.vertigo.kernel.engines.ElasticaEngine;
-import io.vertigo.kernel.engines.JsonEngine;
 import io.vertigo.kernel.engines.RestEngine;
 import io.vertigo.kernel.engines.VCommandEngine;
 import io.vertigo.kernel.lang.Assertion;
@@ -49,16 +48,15 @@ public final class ComponentSpaceConfig {
 	private final Option<ElasticaEngine> elasticaEngine;
 	@JsonExclude
 	private final Option<VCommandEngine> commandEngine;
-	@JsonExclude
-	private final Option<JsonEngine> jsonEngine;
 
-	ComponentSpaceConfig(final Map<String, String> params, final List<ModuleConfig> moduleConfigs, final AopEngine aopEngine, final Option<ElasticaEngine> elasticaEngine, final Option<RestEngine> restEngine, final Option<VCommandEngine> commandEngine, final Option<JsonEngine> jsonEngine, final boolean silence) {
+	ComponentSpaceConfig(final Map<String, String> params, final List<ModuleConfig> moduleConfigs, final AopEngine aopEngine, final Option<ElasticaEngine> elasticaEngine, final Option<RestEngine> restEngine, final Option<VCommandEngine> commandEngine, final boolean silence) {
 		Assertion.checkNotNull(params);
+		Assertion.checkNotNull(moduleConfigs);
+		//---
 		Assertion.checkNotNull(aopEngine);
 		Assertion.checkNotNull(elasticaEngine);
-		Assertion.checkNotNull(moduleConfigs);
 		Assertion.checkNotNull(restEngine);
-		Assertion.checkNotNull(jsonEngine);
+		Assertion.checkNotNull(commandEngine);
 		//---------------------------------------------------------------------
 		this.params = params;
 		this.modules = Collections.unmodifiableList(new ArrayList<>(moduleConfigs));
@@ -67,7 +65,6 @@ public final class ComponentSpaceConfig {
 		this.restEngine = restEngine;
 		this.elasticaEngine = elasticaEngine;
 		this.commandEngine = commandEngine;
-		this.jsonEngine = jsonEngine;
 	}
 
 	/**
@@ -88,10 +85,6 @@ public final class ComponentSpaceConfig {
 		return silence;
 	}
 
-	Option<JsonEngine> getJsonEngine() {
-		return jsonEngine;
-	}
-
 	AopEngine getAopEngine() {
 		return aopEngine;
 	}
@@ -107,4 +100,5 @@ public final class ComponentSpaceConfig {
 	Option<RestEngine> getRestEngine() {
 		return restEngine;
 	}
+
 }

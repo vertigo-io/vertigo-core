@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigoimpl.engines.command.tcp;
+package io.vertigo.engines.command.tcp;
 
 import io.vertigo.kernel.command.VCommandHandler;
 import io.vertigo.kernel.lang.Assertion;

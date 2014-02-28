@@ -19,15 +19,15 @@
 package io.vertigo.kernel.engines;
 
 import io.vertigo.kernel.Engine;
-import io.vertigo.kernel.command.VCommand;
+import io.vertigo.kernel.command.VCommandExecutor;
+import io.vertigo.kernel.command.VCommandHandler;
 
 /**
  * Vertigo can be requested with commands.
  * 
  * @author pchretien
  */
-public interface VCommandEngine extends Engine {
-	int DEFAULT_PORT = 4444;
+public interface VCommandEngine extends Engine, VCommandHandler {
 
-	Object exec(VCommand command);
+	void registerCommandExecutor(String name, VCommandExecutor commandExecutor);
 }

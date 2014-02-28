@@ -22,7 +22,6 @@ import io.vertigo.kernel.command.VCommand;
 import io.vertigo.kernel.command.VResponse;
 import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigoimpl.engines.json.gson.GoogleJsonEngine;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -67,7 +66,7 @@ public final class VConsole {
 	private boolean jsonMode = true;
 
 	public VConsole() {
-		this.consoleHandler = new VConsoleHandler(new GoogleJsonEngine());
+		this.consoleHandler = new VConsoleHandler();
 	}
 
 	boolean isJsonMode() {
@@ -232,7 +231,7 @@ public final class VConsole {
 		private void onCommand(VCommand command) {
 			commands.add(command.getName());
 			//System.out.println(">>>command : " + command);
-			final VResponse response = consoleHandler.onCommand(command);
+			final VResponse response = consoleHandler.execCommand(command);
 
 			if (response.hasError()) {
 				output.setForeground(Color.RED);

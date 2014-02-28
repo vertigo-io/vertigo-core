@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigoimpl.engines.command.tcp;
+package io.vertigo.engines.command.tcp;
 
 import io.vertigo.kernel.command.VCommand;
 import io.vertigo.kernel.command.VCommandHandler;
@@ -160,7 +160,7 @@ final class VProtocol {
 			return VResponse.createResponseWithError("command must start with $");
 		}
 		try {
-			return commandHandler.onCommand(new VCommand(dataReceived.substring(1)));
+			return commandHandler.execCommand(new VCommand(dataReceived.substring(1)));
 		} catch (RuntimeException e) {
 			return VResponse.createResponseWithError("Error :" + e.getMessage());
 		}

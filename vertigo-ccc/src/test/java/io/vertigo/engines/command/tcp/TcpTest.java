@@ -16,13 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.tcp;
+package io.vertigo.engines.command.tcp;
 
 import io.vertigo.kernel.command.VCommand;
 import io.vertigo.kernel.command.VCommandHandler;
 import io.vertigo.kernel.command.VResponse;
-import io.vertigoimpl.engines.command.tcp.VClient;
-import io.vertigoimpl.engines.command.tcp.VServer;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -86,7 +84,7 @@ public final class TcpTest {
 					//if (i % 10 == 0) {
 					//	System.out.println(">>[" + id + "] :" + i);
 					//}
-					VResponse response = tcpClient.onCommand(new VCommand("ping"));
+					VResponse response = tcpClient.execCommand(new VCommand("ping"));
 					Assert.assertFalse(response.hasError());
 					//					if (response.hasError()) {
 					//						System.out.println("KO >" + response.getResponse());
@@ -99,7 +97,7 @@ public final class TcpTest {
 	}
 
 	private static class MyCommandHandler implements VCommandHandler {
-		public VResponse onCommand(VCommand command) {
+		public VResponse execCommand(VCommand command) {
 			if ("ping".equals(command.getName())) {
 				return VResponse.createResponse("pong");
 			} else if ("pong".equals(command.getName())) {

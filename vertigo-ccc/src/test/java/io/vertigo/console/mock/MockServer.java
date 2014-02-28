@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.console;
+package io.vertigo.console.mock;
 
+import io.vertigo.engines.command.tcp.VServer;
 import io.vertigo.kernel.command.VCommand;
 import io.vertigo.kernel.command.VCommandHandler;
 import io.vertigo.kernel.command.VResponse;
-import io.vertigoimpl.engines.command.tcp.VServer;
 
 import java.util.Date;
 
@@ -50,7 +50,7 @@ public class MockServer {
 		final Gson gson = new GsonBuilder().create();
 		tcpServer2 = new VServer(new VCommandHandler() {
 			@Override
-			public VResponse onCommand(VCommand command) {
+			public VResponse execCommand(VCommand command) {
 				switch (command.getName()) {
 					case "help":
 						return VResponse.createResponse(gson.toJson("i need somebody"));

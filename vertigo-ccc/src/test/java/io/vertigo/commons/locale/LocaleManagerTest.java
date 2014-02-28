@@ -19,12 +19,11 @@
 package io.vertigo.commons.locale;
 
 import io.vertigo.AbstractTestCase2JU4;
+import io.vertigo.engines.command.TcpVCommandEngine;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.kernel.lang.MessageKey;
 import io.vertigo.kernel.lang.MessageText;
 import io.vertigoimpl.commons.locale.LocaleManagerImpl;
-import io.vertigoimpl.engines.json.gson.GoogleJsonEngine;
-import io.vertigoimpl.engines.rest.grizzly.GrizzlyRestEngine;
 
 import java.io.Serializable;
 import java.util.Locale;
@@ -46,9 +45,8 @@ public final class LocaleManagerTest extends AbstractTestCase2JU4 {
 	protected void configMe(final ComponentSpaceConfigBuilder componentSpaceConfiguilder) {
 		// @formatter:off
 		componentSpaceConfiguilder
-		.withJsonEngine(new GoogleJsonEngine())
-		.withRestEngine(new GrizzlyRestEngine(8080))
-		//.withCommandEngine(new VCommandEngineImpl(new GoogleJsonEngine(), 4400))
+		//.withRestEngine(new GrizzlyRestEngine(8080))
+		.withCommandEngine(new TcpVCommandEngine( 4400))
 		.beginModule("spaces").
 			beginComponent(LocaleManager.class, LocaleManagerImpl.class)
 				//les locales doivent être séparées par des virgules
