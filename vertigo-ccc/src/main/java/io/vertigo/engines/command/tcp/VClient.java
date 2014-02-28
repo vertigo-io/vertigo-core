@@ -19,7 +19,6 @@
 package io.vertigo.engines.command.tcp;
 
 import io.vertigo.kernel.command.VCommand;
-import io.vertigo.kernel.command.VCommandHandler;
 import io.vertigo.kernel.command.VResponse;
 
 import java.io.IOException;
@@ -30,7 +29,7 @@ import java.nio.channels.SocketChannel;
  * TCP socket Client .
  * @author pchretien
  */
-public final class VClient implements AutoCloseable, VCommandHandler/*, VEventListener*/{
+public final class VClient implements AutoCloseable {
 	private static int DEFAULT_TIMEOUT = 5000;
 	private final SocketChannel socketChannel;
 	private final VProtocol protocol = new VProtocol();

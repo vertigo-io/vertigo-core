@@ -50,7 +50,7 @@ public class MockServer {
 		final Gson gson = new GsonBuilder().create();
 		tcpServer2 = new VServer(new VCommandHandler() {
 			@Override
-			public VResponse execCommand(VCommand command) {
+			public VResponse onCommand(VCommand command) {
 				switch (command.getName()) {
 					case "help":
 						return VResponse.createResponse(gson.toJson("i need somebody"));

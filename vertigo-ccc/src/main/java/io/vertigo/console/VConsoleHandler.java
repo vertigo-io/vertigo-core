@@ -21,7 +21,6 @@ package io.vertigo.console;
 import io.vertigo.engines.command.JsonUtil;
 import io.vertigo.engines.command.tcp.VClient;
 import io.vertigo.kernel.command.VCommand;
-import io.vertigo.kernel.command.VCommandHandler;
 import io.vertigo.kernel.command.VResponse;
 import io.vertigo.kernel.lang.Activeable;
 
@@ -31,7 +30,7 @@ import java.util.List;
 /**
  * @author pchretien
  */
-public final class VConsoleHandler implements VCommandHandler, Activeable {
+final class VConsoleHandler implements Activeable {
 	private List<VClient> clients = new ArrayList<>();
 
 	public void start() {
@@ -44,8 +43,7 @@ public final class VConsoleHandler implements VCommandHandler, Activeable {
 		}
 	}
 
-	@Override
-	public VResponse execCommand(VCommand command) {
+	VResponse execCommand(VCommand command) {
 		if (command.getName().startsWith("$")) {
 			switch (command.getName()) {
 				case "$help":

@@ -160,7 +160,7 @@ final class VProtocol {
 			return VResponse.createResponseWithError("command must start with $");
 		}
 		try {
-			return commandHandler.execCommand(new VCommand(dataReceived.substring(1)));
+			return commandHandler.onCommand(new VCommand(dataReceived.substring(1)));
 		} catch (RuntimeException e) {
 			return VResponse.createResponseWithError("Error :" + e.getMessage());
 		}

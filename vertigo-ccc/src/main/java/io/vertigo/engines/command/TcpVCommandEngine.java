@@ -122,7 +122,7 @@ public final class TcpVCommandEngine implements VCommandEngine, Activeable {
 		}
 	}
 
-	public VResponse execCommand(VCommand command) {
+	public VResponse onCommand(VCommand command) {
 		return VResponse.createResponse(JsonUtil.toJson(exec(command)));
 	}
 

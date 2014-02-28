@@ -97,7 +97,7 @@ public final class TcpTest {
 	}
 
 	private static class MyCommandHandler implements VCommandHandler {
-		public VResponse execCommand(VCommand command) {
+		public VResponse onCommand(VCommand command) {
 			if ("ping".equals(command.getName())) {
 				return VResponse.createResponse("pong");
 			} else if ("pong".equals(command.getName())) {

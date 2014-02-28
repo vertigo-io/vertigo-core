@@ -53,7 +53,7 @@ public class ZZDistributedMapServer {
 		private final Gson gson = new GsonBuilder().create();
 		private final Map<String, String> map = new HashMap<>();
 
-		public VResponse execCommand(VCommand command) {
+		public VResponse onCommand(VCommand command) {
 			System.out.println(">>ici>" + command);
 			try {
 				if ("put".equals(command.getName())) {
