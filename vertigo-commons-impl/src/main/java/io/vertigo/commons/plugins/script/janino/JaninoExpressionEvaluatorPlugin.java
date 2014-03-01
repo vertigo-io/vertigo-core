@@ -18,7 +18,7 @@ import org.codehaus.janino.ScriptEvaluator;
 public final class JaninoExpressionEvaluatorPlugin implements ExpressionEvaluatorPlugin {
 	/** {@inheritDoc} */
 	public <J> J evaluate(final String expression, final List<ExpressionParameter> parameters, final Class<J> type) {
-		// ---------Initialisation des types et noms de param�tre------------
+		// ---------Initialisation des types et noms de paramètre------------
 		final int size = parameters.size();
 
 		final String[] parameterNames = new String[size];
@@ -44,11 +44,11 @@ public final class JaninoExpressionEvaluatorPlugin implements ExpressionEvaluato
 			throw new VRuntimeException("Erreur durant la construction du preprocessing de texte dynamique dans \n" + expression + '\n', ex);
 		}
 
-		//2. Phase d'�valuation du script
+		//2. Phase d'évaluation du script
 		try {
 			return scriptEvaluator.evaluate(parameterValues);
 		} catch (final InvocationTargetException e) {
-			//On d�balle l'exception
+			//On déballe l'exception
 			//Si l'exception originale est une KSystemException on la retourne
 			//Sinon on l'embale dans une KSystemException
 			final Throwable t = e.getCause();
@@ -58,7 +58,7 @@ public final class JaninoExpressionEvaluatorPlugin implements ExpressionEvaluato
 			if (t instanceof Error) {
 				throw (Error) t;
 			}
-			throw new VRuntimeException("Erreur durant l'�valuation du script", t);
+			throw new VRuntimeException("Erreur durant l'évaluation du script", t);
 		}
 	}
 }

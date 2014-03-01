@@ -57,12 +57,12 @@ public final class ParserTest {
 		//---
 		int end;
 		end = parser.parse("hello", 0);
-		//On v�rifie que l'on a trouv� la chaine "hello"
+		//On vérifie que l'on a trouvé la chaine "hello"
 		Assert.assertEquals("hello".length(), end);
 		Assert.assertEquals("hello", parser.get());
 		//---
 		end = parser.parse("hello, my name is", 0);
-		//On v�rifie que l'on a trouv� la chaine "hello"
+		//On vérifie que l'on a trouvé la chaine "hello"
 		Assert.assertEquals("hello".length(), end);
 		Assert.assertEquals("hello", parser.get());
 
@@ -74,12 +74,12 @@ public final class ParserTest {
 		//---
 		int end;
 		end = parser.parse("hello \\\"mister\\\"", 0);
-		//On v�rifie que l'on a trouv� la chaine "mister"
+		//On vérifie que l'on a trouvé la chaine "mister"
 		Assert.assertEquals("hello \\\"mister\\\"".length(), end);
 		Assert.assertEquals("\"mister\"", parser.get().get(2));
 
 		end = parser.parse("hello mister\\\\truc\\\"hello\\\"", 0);
-		//On v�rifie que l'on a trouv� la chaine "mister"
+		//On vérifie que l'on a trouvé la chaine "mister"
 		Assert.assertEquals("hello mister\\\\truc\\\"hello\\\"".length(), end);
 		Assert.assertEquals("mister\\truc\"hello\"", parser.get().get(2));
 
@@ -99,13 +99,13 @@ public final class ParserTest {
 		//---
 		int end;
 		end = parser.parse("hello worlds", 0);
-		//On v�rifie que l'on a trouv� la chaine "hello world"
+		//On vérifie que l'on a trouvé la chaine "hello world"
 		Assert.assertEquals("hello world".length(), end);
 		Assert.assertEquals("hello", parser.get().get(0));
 		Assert.assertEquals("world", parser.get().get(2));
 
 		end = parser.parse("hello world, my name is", 0);
-		//On v�rifie que l'on a trouv� la chaine "hello world"
+		//On vérifie que l'on a trouvé la chaine "hello world"
 		Assert.assertEquals("hello world".length(), end);
 		Assert.assertEquals("hello", parser.get().get(0));
 		Assert.assertEquals("world", parser.get().get(2));
@@ -124,12 +124,12 @@ public final class ParserTest {
 		final Parser<Choice> parser = WORLD_MUSIC.createParser();
 		//---
 		parser.parse("world", 0);
-		//On v�rifie que l'on a trouv� la chaine "world" qui correspond au cas 0
+		//On vérifie que l'on a trouvé la chaine "world" qui correspond au cas 0
 		Assert.assertEquals(0, parser.get().getValue());
 		Assert.assertEquals("world", parser.get().getResult());
 		//---
 		parser.parse("music", 0);
-		//On v�rifie que l'on a trouv� la chaine "music" qui correspond au cas 1
+		//On vérifie que l'on a trouvé la chaine "music" qui correspond au cas 1
 		Assert.assertEquals(1, parser.get().getValue());
 		Assert.assertEquals("music", parser.get().getResult());
 	}
@@ -144,7 +144,7 @@ public final class ParserTest {
 
 	@Test(expected = NotFoundException.class)
 	public void testFirstOfFail2() throws NotFoundException {
-		//On cr�e une liste vide de choix 
+		//On crée une liste vide de choix 
 		final Parser<Choice> parser = new FirstOfRule().createParser();
 		//---
 		parser.parse("world", 0);
@@ -158,13 +158,13 @@ public final class ParserTest {
 		Choice choice;
 		//-
 		parser.parse("hello world, my name", 0);
-		//On v�rifie que l'on a trouv� la chaine "world" qui correspond au cas 0
+		//On vérifie que l'on a trouvé la chaine "world" qui correspond au cas 0
 		choice = (Choice) parser.get().get(2);
 		Assert.assertEquals(0, choice.getValue());
 		Assert.assertEquals("world", choice.getResult());
 		//---
 		parser.parse("hello music, my name", 0);
-		//On v�rifie que l'on a trouv� la chaine "music" qui correspond au cas 1
+		//On vérifie que l'on a trouvé la chaine "music" qui correspond au cas 1
 		choice = (Choice) parser.get().get(2);
 		Assert.assertEquals(1, choice.getValue());
 		Assert.assertEquals("music", choice.getResult());
@@ -308,7 +308,7 @@ public final class ParserTest {
 		final int end = parser.parse(text, 0);
 		System.out.println("======================================");
 		System.out.println("text  : " + text);
-		System.out.println("R�gle : " + rule.getExpression());
+		System.out.println("Règle : " + rule.getExpression());
 		System.out.println("  reste     :" + text.substring(end));
 		System.out.println("  elements  :" + parser.get());
 	}

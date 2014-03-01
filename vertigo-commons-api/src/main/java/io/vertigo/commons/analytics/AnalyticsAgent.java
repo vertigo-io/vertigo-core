@@ -7,32 +7,32 @@ package io.vertigo.commons.analytics;
  */
 public interface AnalyticsAgent {
 	/**
-	 * D�marrage d'un processus.
+	 * Démarrage d'un processus.
 	 * @param processType Type du processus
 	 * @param processName Nom du processus
 	 */
 	void startProcess(final String processType, final String processName);
 
 	/**
-	 * Incr�mente une mesure (set si pas pr�sente).
+	 * Incrémente une mesure (set si pas présente).
 	 * @param measureType Type de mesure
-	 * @param value Incr�ment de la mesure
+	 * @param value Incrément de la mesure
 	 */
 	void incMeasure(final String measureType, final double value);
 
 	/**
-	* Affecte une valeur fixe � la mesure.
-	* A utiliser pour les exceptions par exemple (et toute donn�e ne s'ajoutant pas). 
+	* Affecte une valeur fixe à la mesure.
+	* A utiliser pour les exceptions par exemple (et toute donnée ne s'ajoutant pas). 
 	* @param measureType Type de mesure
 	* @param value valeur de la mesure
 	*/
 	void setMeasure(final String measureType, final double value);
 
 	/**
-	 * Affecte une valeur fixe � une meta-donn�e.
+	 * Affecte une valeur fixe à une meta-donnée.
 	 *  
-	 * @param metaDataName Nom de la meta-donn�e
-	 * @param value Valeur de la meta-donn�e
+	 * @param metaDataName Nom de la meta-donnée
+	 * @param value Valeur de la meta-donnée
 	 */
 	void addMetaData(final String metaDataName, final String value);
 

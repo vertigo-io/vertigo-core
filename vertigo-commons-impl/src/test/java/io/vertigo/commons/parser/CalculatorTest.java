@@ -28,7 +28,7 @@ public class CalculatorTest {
 	public void testFail() throws NotFoundException {
 		final Parser<Integer> parser = MAIN.createParser();
 		//--
-		parser.parse("2 $ 3", 0); //l'op�rateur  $ n'existe pas 
+		parser.parse("2 $ 3", 0); //l'opérateur  $ n'existe pas 
 		Assert.fail();
 	}
 }

@@ -3,8 +3,8 @@ package io.vertigo.commons.parser;
 import io.vertigo.kernel.lang.Assertion;
 
 /**
- * Enl�ve les blancs et les commentaires
- * Cette r�gle ne plante jamais -sauf si un blanc obligatoire n'est pas pr�sent-
+ * Enlève les blancs et les commentaires
+ * Cette règle ne plante jamais -sauf si un blanc obligatoire n'est pas présent-
  * mais permet de faire avancer l'index.
  * @author pchretien
  * @version $Id: WhiteSpaceRule.java,v 1.7 2013/10/23 11:33:20 pchretien Exp $
@@ -14,7 +14,7 @@ public final class WhiteSpaceRule implements Rule<Void>, Parser<Void> {
 
 	/**
 	 * Constructeur.
-	 * @param blanks Caract�res "blancs" et commentaires.
+	 * @param blanks Caractères "blancs" et commentaires.
 	 */
 	public WhiteSpaceRule(final String blanks) {
 		super();
@@ -46,8 +46,8 @@ public final class WhiteSpaceRule implements Rule<Void>, Parser<Void> {
 			lastIndex = index;
 			index = text.indexOf("*/", index);
 			if (index < 0) {
-				//throw new NotFoundException(text, startComment, null, "Fermeture des commentaires */ non trouv�e");
-				throw new NotFoundException(text, lastIndex, null, "Fermeture des commentaires */ non trouv�e");
+				//throw new NotFoundException(text, startComment, null, "Fermeture des commentaires */ non trouvée");
+				throw new NotFoundException(text, lastIndex, null, "Fermeture des commentaires */ non trouvée");
 			}
 			index += 2;
 			//On supprime les blancs

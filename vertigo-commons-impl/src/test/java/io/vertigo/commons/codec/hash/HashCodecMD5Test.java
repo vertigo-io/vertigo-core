@@ -24,8 +24,8 @@ public final class HashCodecMD5Test extends AbstractEncoderTest<Encoder<byte[], 
 	@Test(expected = NullPointerException.class)
 	public void testNull() {
 		/*
-		* Test de cr�ation de l'empreinte MD5.
-		* On v�rifie que null ne respecte pas le contrat.
+		* Test de création de l'empreinte MD5.
+		* On vérifie que null ne respecte pas le contrat.
 		*/
 		codec.encode(null);
 	}
@@ -35,7 +35,7 @@ public final class HashCodecMD5Test extends AbstractEncoderTest<Encoder<byte[], 
 	@Override
 	@Test
 	public void testEncode() {
-		//Caract�res simples sans encodage
+		//Caractères simples sans encodage
 		final Encoder<byte[], String> hexEncoder = getCodecManager().getHexEncoder();
 		final byte[] encoded = codec.encode(TEXT.getBytes());
 		Assert.assertEquals(128 / 8, codec.encode(TEXT.getBytes()).length);

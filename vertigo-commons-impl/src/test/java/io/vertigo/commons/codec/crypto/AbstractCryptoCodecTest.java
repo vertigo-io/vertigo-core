@@ -44,7 +44,7 @@ public abstract class AbstractCryptoCodecTest extends AbstractCodecTest<byte[], 
 	@Override
 	@Test(expected = VRuntimeException.class)
 	public void testFailDecode() throws Exception {
-		// object ne correspondant pas � une classe;
+		// object ne correspondant pas à une classe;
 		final byte[] s = "qdfsdf".getBytes();
 		codec.decode(s);
 	}

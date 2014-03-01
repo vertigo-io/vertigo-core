@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 
 /**
- * Gestion centralis�e des m�canismes de codage/d�codage.
+ * Gestion centralisée des mécanismes de codage/décodage.
  * Tous les codecs sont threadSafe et StateLess.
  * 
  * - CSV null donne ""
@@ -50,7 +50,7 @@ public interface CodecManager extends Manager {
 	Encoder<byte[], String> getHexEncoder();
 
 	/**
-	 * Le codage base 64 propos� autorise l'utilisation dans les URL en restreignant certains caract�res.
+	 * Le codage base 64 proposé autorise l'utilisation dans les URL en restreignant certains caractères.
 	 * @return Codec Base 64.
 	 */
 	Codec<byte[], String> getBase64Codec();
@@ -66,17 +66,17 @@ public interface CodecManager extends Manager {
 	Codec<byte[], byte[]> getAES128Codec();
 
 	/**
-	 * @return Codec de compression de donn�es.
+	 * @return Codec de compression de données.
 	 */
 	Codec<byte[], byte[]> getCompressionCodec();
 
 	/**
-	 * @return Codec de s�rialisation de donn�es.
+	 * @return Codec de sérialisation de données.
 	 */
 	Codec<Serializable, byte[]> getSerializationCodec();
 
 	/**
-	 * @return Codec de s�rialisation compress�e de donn�es.
+	 * @return Codec de sérialisation compressée de données.
 	 */
 	Codec<Serializable, byte[]> getCompressedSerializationCodec();
 

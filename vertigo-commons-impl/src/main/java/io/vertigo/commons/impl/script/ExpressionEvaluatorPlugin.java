@@ -15,9 +15,9 @@ public interface ExpressionEvaluatorPlugin extends Plugin {
 	/**
 	 * Evaluation d'une expression.
 	 * @param expression Expression
-	 * @param parameters Param�tres
-	 * @param type Type retourn�
-	 * @return R�sultat de l'expression apr�s �valuation
+	 * @param parameters Paramètres
+	 * @param type Type retourné
+	 * @return Résultat de l'expression après évaluation
 	 */
 	<J> J evaluate(final String expression, List<ExpressionParameter> parameters, Class<J> type);
 }

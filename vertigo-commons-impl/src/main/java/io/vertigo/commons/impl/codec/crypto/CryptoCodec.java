@@ -14,7 +14,7 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 
 /**
- * Impl�mentation du cryptage
+ * Implémentation du cryptage
  * - Triple DES.
  * 
  * @author  alauthier, pchretien
@@ -22,7 +22,7 @@ import javax.crypto.KeyGenerator;
  */
 public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 	/**
-	 * M�thode de hashage autoris�es.
+	 * Méthode de hashage autorisées.
 	 *
 	 */
 	public enum Crypto {
@@ -45,15 +45,15 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 		}
 
 		/**
-		 * @return Algorithme � utiliser pour crypter.
-		 * Doit �tre coh�rent avec la taille de cl�.
+		 * @return Algorithme à utiliser pour crypter.
+		 * Doit être cohérent avec la taille de clé.
 		 */
 		String getAlgoName() {
 			return algoName;
 		}
 
 		/**
-		 * @return 	Taille de la cl� de crypto.
+		 * @return 	Taille de la clé de crypto.
 		 */
 		int getKeySize() {
 			return keySize;
@@ -65,7 +65,7 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 
 	/**
 	 * Constructeur.
-	 * @param crypto Algorithme et Taille de cl� � utiliser pour crypter le contexte.
+	 * @param crypto Algorithme et Taille de clé à utiliser pour crypter le contexte.
 	 */
 	public CryptoCodec(final Crypto crypto) {
 		Assertion.checkNotNull(crypto);
@@ -85,9 +85,9 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 	}
 
 	/**
-	 * Encryptage de donn�es.
-	 * @param data Donn�es � encrypter
-	 * @return Donn�es encrypt�es
+	 * Encryptage de données.
+	 * @param data Données à encrypter
+	 * @return Données encryptées
 	 */
 	public byte[] encode(final byte[] data) {
 		Assertion.checkNotNull(data);
@@ -102,9 +102,9 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 	}
 
 	/**
-	 * D�cryptage de donn�es.
-	 * @param data Donn�es � d�crypter
-	 * @return Donn�es d�crypt�es
+	 * Décryptage de données.
+	 * @param data Données à décrypter
+	 * @return Données décryptées
 	 */
 	public byte[] decode(final byte[] data) {
 		Assertion.checkNotNull(data);

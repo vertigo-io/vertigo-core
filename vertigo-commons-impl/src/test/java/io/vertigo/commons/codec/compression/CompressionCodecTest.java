@@ -23,7 +23,7 @@ public final class CompressionCodecTest extends AbstractCodecTest<byte[], byte[]
 	}
 
 	/**
-	 * Test des m�canismes de compression/d�compression des valeurs null.
+	 * Test des mécanismes de compression/décompression des valeurs null.
 	 ** 
 	 */
 	@Override
@@ -34,7 +34,7 @@ public final class CompressionCodecTest extends AbstractCodecTest<byte[], byte[]
 	}
 
 	/**
-	 * Test des m�canismes de compression/d�compression.
+	 * Test des mécanismes de compression/décompression.
 	 ** 
 	 */
 	@Override
@@ -55,7 +55,7 @@ public final class CompressionCodecTest extends AbstractCodecTest<byte[], byte[]
 
 	@Test
 	public void testUncompressedDecode() {
-		// object ne correspondant pas � une classe;
+		// object ne correspondant pas à une classe;
 		final byte[] s = "qdfsdf".getBytes();
 		Assert.assertTrue(s.length < CompressionCodec.MIN_SIZE_FOR_COMPRESSION);
 		final byte[] result = codec.decode(s);
@@ -64,7 +64,7 @@ public final class CompressionCodecTest extends AbstractCodecTest<byte[], byte[]
 
 	@Test
 	public void testNopDecode() {
-		// object sans pr�fix de compression, est laiss� tel quel;
+		// object sans préfixe de compression, est laissé tel quel;
 		final byte[] s = "qdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdf".getBytes();
 		Assert.assertTrue(s.length > CompressionCodec.MIN_SIZE_FOR_COMPRESSION);
 		final byte[] result = codec.decode(s);
@@ -75,7 +75,7 @@ public final class CompressionCodecTest extends AbstractCodecTest<byte[], byte[]
 	@Override
 	@Test(expected = VRuntimeException.class)
 	public void testFailDecode() throws Exception {
-		// object avec prefix ne correspondant pas � une classe;
+		// object avec prefix ne correspondant pas à une classe;
 		final byte[] s = "COMPqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdf".getBytes();
 		Assert.assertTrue(s.length > CompressionCodec.MIN_SIZE_FOR_COMPRESSION);
 		/* final byte[] result = */
@@ -84,4 +84,4 @@ public final class CompressionCodecTest extends AbstractCodecTest<byte[], byte[]
 		codec.decode(s);
 		Assert.fail();
 	}
-}
+}

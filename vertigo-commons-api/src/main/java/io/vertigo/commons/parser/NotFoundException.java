@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Exception lev�e lorsque la r�gle n'est pas respect�e.
+ * Exception levée lorsque la règle n'est pas respectée.
  * @author pchretien
  * @version $Id: NotFoundException.java,v 1.3 2013/08/22 14:52:32 npiedeloup Exp $
  */
@@ -18,11 +18,11 @@ public final class NotFoundException extends Exception {
 
 	/**
 	 * Constructeur.
-	 * @param s Texte pars�
+	 * @param s Texte parsé
 	 * @param index Index dans le texte
 	 * @param rootException Cause
 	 * @param comment Explication de l'erreur au format MessageFormat si il y a des valeurs
-	 * @param commentValues Valeurs pour le MessageFormat de comment (il n'est pas conseill� de les fusionner au pr�alable dans comment)
+	 * @param commentValues Valeurs pour le MessageFormat de comment (il n'est pas conseillé de les fusionner au préalable dans comment)
 	 */
 	public NotFoundException(final String s, final int index, final NotFoundException rootException, final String comment, final Object... commentValues) {
 		super(rootException);
@@ -33,8 +33,8 @@ public final class NotFoundException extends Exception {
 	}
 
 	/**
-	 * Ligne la plus avanc�e lors de de l'�valuation de la r�gle.
-	 * Cette ligne indique l'endroit vraisemblable de l'erreur SI IL s'agit de la bonne r�gle !!
+	 * Ligne la plus avancée lors de de l'évaluation de la règle.
+	 * Cette ligne indique l'endroit vraisemblable de l'erreur SI IL s'agit de la bonne règle !!
 	 * @return Index probable de l'erreur.
 	 */
 	int getLine() {
@@ -45,7 +45,7 @@ public final class NotFoundException extends Exception {
 			line++;
 			next = s.indexOf('\n', next + 1);
 			if (next >= s.length()) {
-				throw new IllegalStateException("Calcul du nombre de lignes erron�");
+				throw new IllegalStateException("Calcul du nombre de lignes erroné");
 			}
 		}
 		return line;
@@ -58,7 +58,7 @@ public final class NotFoundException extends Exception {
 	}
 
 	/**
-	 * @return Retourne le message complet de l'erreur avec la pile invers�e des causes.
+	 * @return Retourne le message complet de l'erreur avec la pile inversée des causes.
 	 */
 	public String getFullMessage() {
 		final StringBuilder sb = new StringBuilder();
@@ -84,7 +84,7 @@ public final class NotFoundException extends Exception {
 	}
 
 	/**
-	 * @return Cha�ne de caract�re pour la regle en question.
+	 * @return Chaîne de caractère pour la regle en question.
 	 */
 	private String displayRule() {
 		final StringBuilder sb = new StringBuilder();
@@ -98,7 +98,7 @@ public final class NotFoundException extends Exception {
 	}
 
 	/**
-	 * @return Cha�ne de caract�re pour la position de l'erreur (ligne, colonne, extrait).
+	 * @return Chaîne de caractère pour la position de l'erreur (ligne, colonne, extrait).
 	 */
 	private String displayPosition() {
 		final StringBuilder sb = new StringBuilder();
@@ -115,7 +115,7 @@ public final class NotFoundException extends Exception {
 			pointeur.append(' ');
 		}
 		pointeur.append("^^^");
-		sb.append("Erreur � la ligne ");
+		sb.append("Erreur à la ligne ");
 		sb.append(getLine());
 		sb.append(" colonne ");
 		sb.append(index - start);

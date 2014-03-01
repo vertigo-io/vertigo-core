@@ -14,14 +14,14 @@ import java.util.List;
 final class CalculatorRule extends AbstractRule<Integer, List<?>> {
 	private static final Rule<Void> SPACES = new WhiteSpaceRule(" ");
 
-	//---Liste des op�rations g�r�es
+	//---Liste des opérations gérées
 	private static final Rule<String> ADD = new TermRule("+");
 	private static final Rule<String> MINUS = new TermRule("-");
 	private static final Rule<String> MULTI = new TermRule("*");
 	private static final Rule<String> DIV = new TermRule("/");
 	private static final Rule OPERATOR = new FirstOfRule(MULTI, DIV, ADD, MINUS);
 
-	//---Par simplicit� un nombre est une suite de chiffres
+	//---Par simplicité un nombre est une suite de chiffres
 	private static final Rule<String> NUMBER = new WordRule(false, "0123456789", WordRule.Mode.ACCEPT);
 
 	private static final Rule<List<?>> EXPRESSION = new SequenceRule(//

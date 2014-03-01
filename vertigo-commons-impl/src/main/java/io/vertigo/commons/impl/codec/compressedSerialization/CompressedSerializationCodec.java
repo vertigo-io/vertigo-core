@@ -6,8 +6,8 @@ import io.vertigo.kernel.lang.Assertion;
 import java.io.Serializable;
 
 /**
- * Impl�mentation standard ThreadSafe g�rant les m�canismes permettant de 
- * s�rialiser de fa�on compress�e un objet en format binaire (byte[]).
+ * Implémentation standard ThreadSafe gérant les mécanismes permettant de 
+ * sérialiser de façon compressée un objet en format binaire (byte[]).
  * 
  * @author pchretien
  * @version $Id: CompressedSerializationCodec.java,v 1.5 2013/11/15 15:27:29 pchretien Exp $

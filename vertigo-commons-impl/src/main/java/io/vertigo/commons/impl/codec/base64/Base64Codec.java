@@ -5,9 +5,9 @@ import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 /**
- * Impl�mentation threadSafe des m�canismes standards d'encodage/d�codage.
- * Base 64 modifi� pour passer dans les urls ('+', '/' remplacer par '_', '-' )
- * Les codes sont g�r�s par quatre octets. 
+ * Implémentation threadSafe des mécanismes standards d'encodage/décodage.
+ * Base 64 modifié pour passer dans les urls ('+', '/' remplacer par '_', '-' )
+ * Les codes sont gérés par quatre octets. 
  * {voir wikipedia http://en.wikipedia.org/wiki/Base64#Privacy-Enhanced_Mail_.28PEM.29}
  * @author  npiedeloup
  * @version $Id: Base64Codec.java,v 1.6 2013/11/15 15:27:29 pchretien Exp $
@@ -38,11 +38,11 @@ public final class Base64Codec implements Codec<byte[], String> {
 			return new byte[0];
 		}
 		if (length % 4 != 0) {
-			throw new VRuntimeException("Donn�es transmises malform�es");
+			throw new VRuntimeException("Données transmises malformées");
 		}
 		for (int i = 0; i < coded.length(); i++) {
 			if (coded.charAt(i) != PADDING && DECODE_TABLE[coded.charAt(i)] == -1) {
-				throw new VRuntimeException("Donn�es transmises malform�es");
+				throw new VRuntimeException("Données transmises malformées");
 			}
 		}
 		// ----
@@ -68,7 +68,7 @@ public final class Base64Codec implements Codec<byte[], String> {
 		int pos = 0;
 
 		for (int i = 0; i < length; i += 4) {
-			// on part de i=1 puisque le caract�re 0 est la longeur modulo 3 (voir encode)
+			// on part de i=1 puisque le caractère 0 est la longeur modulo 3 (voir encode)
 			for (int j = 0; j < 4; j++) {
 				b[j] = DECODE_TABLE[coded.charAt(i + j)];
 			}
@@ -88,7 +88,7 @@ public final class Base64Codec implements Codec<byte[], String> {
 		Assertion.checkNotNull(raw);
 		//---------------------------------------------------------------------
 		/*
-		 * Encode une s�rie d'octets en base 64.
+		 * Encode une série d'octets en base 64.
 		 */
 		final int mod = raw.length % 3;
 		final int len = raw.length;

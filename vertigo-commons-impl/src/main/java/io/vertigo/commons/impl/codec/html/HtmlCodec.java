@@ -24,122 +24,122 @@ public final class HtmlCodec extends AbstractCodec {
 	}
 
 	/**
-	 * Mapping des caract�res sp�ciaux vers leur code HTML.
+	 * Mapping des caractères spéciaux vers leur code HTML.
 	 * Respecter l'espace entre le caractere et son code
-	 * Les caracteres ont �t� remplac�s par des caract�res
+	 * Les caracteres ont été remplacés par des caractères
 	 * unicode UTF-16
-	 * @return  tableau des �l�ments � remplacer
+	 * @return  tableau des éléments à remplacer
 	 */
 	@Override
 	public String[] getCharacters() {
-		//bas� sur Character entity references in HTML 4 : http://www.w3.org/TR/html4/sgml/entities.html#iso-88591
+		//basé sur Character entity references in HTML 4 : http://www.w3.org/TR/html4/sgml/entities.html#iso-88591
 		//replace UltraEdit (regExp): 
 		// '\p    [ ]+'  -> ' ' 
 		// puis '^\<\!ENTITY ([a-z0-9]+).*\#([0-9]+);.*-- (.*) U\+.*$' -> '(char) \2 + " &amp;\1;", //&\1;  : \3' 
 		// puis '<!--(.*)-->' -> '/** \1 */'
 		// et enfin '\p' -> '\p<br>'
-		// on copie colle depuis un browser web (pour les caract�res sp�ciaux, ont les enl�ves pour bien laisser le fichier en charset Standard
+		// on copie colle depuis un browser web (pour les caractères spéciaux, ont les enlèves pour bien laisser le fichier en charset Standard
 
 		return new String[] {
 		/**********************************************************/
 		/** Character entity references for ISO 8859-1 characters */
 		/**********************************************************/
 		(char) 160 + " &nbsp;", //  : no-break space = non-breaking space, 
-				(char) 161 + " &iexcl;", //� : inverted exclamation mark, 
-				(char) 162 + " &cent;", //� : cent sign, 
-				(char) 163 + " &pound;", //� : pound sign, 
-				(char) 164 + " &curren;", //� : currency sign, 
-				(char) 165 + " &yen;", //� : yen sign = yuan sign, 
-				(char) 166 + " &brvbar;", //� : broken bar = broken vertical bar, 
-				(char) 167 + " &sect;", //� : section sign, 
-				(char) 168 + " &uml;", //� : diaeresis = spacing diaeresis, 
-				(char) 169 + " &copy;", //� : copyright sign, 
-				(char) 170 + " &ordf;", //� : feminine ordinal indicator, 
-				(char) 171 + " &laquo;", //� : left-pointing double angle quotation mark = left pointing guillemet, 
-				(char) 172 + " &not;", //� : not sign, 
-				(char) 173 + " &shy;", //� : soft hyphen = discretionary hyphen, 
-				(char) 174 + " &reg;", //� : registered sign = registered trade mark sign, 
-				(char) 175 + " &macr;", //� : macron = spacing macron = overline = APL overbar, 
-				(char) 176 + " &deg;", //� : degree sign, 
-				(char) 177 + " &plusmn;", //� : plus-minus sign = plus-or-minus sign, 
-				(char) 178 + " &sup2;", //� : superscript two = superscript digit two = squared, 
-				(char) 179 + " &sup3;", //� : superscript three = superscript digit three = cubed, 
-				(char) 180 + " &acute;", //� : acute accent = spacing acute, 
-				(char) 181 + " &micro;", //� : micro sign, 
-				(char) 182 + " &para;", //� : pilcrow sign = paragraph sign, 
-				(char) 183 + " &middot;", //� : middle dot = Georgian comma = Greek middle dot, 
-				(char) 184 + " &cedil;", //� : cedilla = spacing cedilla, 
-				(char) 185 + " &sup1;", //� : superscript one = superscript digit one, 
-				(char) 186 + " &ordm;", //� : masculine ordinal indicator, 
-				(char) 187 + " &raquo;", //� : right-pointing double angle quotation mark = right pointing guillemet, 
-				(char) 188 + " &frac14;", //� : vulgar fraction one quarter = fraction one quarter, 
-				(char) 189 + " &frac12;", //� : vulgar fraction one half = fraction one half, 
-				(char) 190 + " &frac34;", //� : vulgar fraction three quarters = fraction three quarters, 
-				(char) 191 + " &iquest;", //� : inverted question mark = turned question mark, 
-				(char) 192 + " &Agrave;", //� : latin capital letter A with grave = latin capital letter A grave, 
-				(char) 193 + " &Aacute;", //� : latin capital letter A with acute, 
-				(char) 194 + " &Acirc;", //� : latin capital letter A with circumflex, 
-				(char) 195 + " &Atilde;", //� : latin capital letter A with tilde, 
-				(char) 196 + " &Auml;", //� : latin capital letter A with diaeresis, 
-				(char) 197 + " &Aring;", //� : latin capital letter A with ring above = latin capital letter A ring, 
-				(char) 198 + " &AElig;", //� : latin capital letter AE = latin capital ligature AE, 
-				(char) 199 + " &Ccedil;", //� : latin capital letter C with cedilla, 
-				(char) 200 + " &Egrave;", //� : latin capital letter E with grave, 
-				(char) 201 + " &Eacute;", //� : latin capital letter E with acute, 
-				(char) 202 + " &Ecirc;", //� : latin capital letter E with circumflex, 
-				(char) 203 + " &Euml;", //� : latin capital letter E with diaeresis, 
-				(char) 204 + " &Igrave;", //� : latin capital letter I with grave, 
-				(char) 205 + " &Iacute;", //� : latin capital letter I with acute, 
-				(char) 206 + " &Icirc;", //� : latin capital letter I with circumflex, 
-				(char) 207 + " &Iuml;", //� : latin capital letter I with diaeresis, 
-				(char) 208 + " &ETH;", //� : latin capital letter ETH, 
-				(char) 209 + " &Ntilde;", //� : latin capital letter N with tilde, 
-				(char) 210 + " &Ograve;", //� : latin capital letter O with grave, 
-				(char) 211 + " &Oacute;", //� : latin capital letter O with acute, 
-				(char) 212 + " &Ocirc;", //� : latin capital letter O with circumflex, 
-				(char) 213 + " &Otilde;", //� : latin capital letter O with tilde, 
-				(char) 214 + " &Ouml;", //� : latin capital letter O with diaeresis, 
-				(char) 215 + " &times;", //� : multiplication sign, 
-				(char) 216 + " &Oslash;", //� : latin capital letter O with stroke = latin capital letter O slash, 
-				(char) 217 + " &Ugrave;", //� : latin capital letter U with grave, 
-				(char) 218 + " &Uacute;", //� : latin capital letter U with acute, 
-				(char) 219 + " &Ucirc;", //� : latin capital letter U with circumflex, 
-				(char) 220 + " &Uuml;", //� : latin capital letter U with diaeresis, 
-				(char) 221 + " &Yacute;", //� : latin capital letter Y with acute, 
-				(char) 222 + " &THORN;", //� : latin capital letter THORN, 
-				(char) 223 + " &szlig;", //� : latin small letter sharp s = ess-zed, 
-				(char) 224 + " &agrave;", //� : latin small letter a with grave = latin small letter a grave, 
-				(char) 225 + " &aacute;", //� : latin small letter a with acute, 
-				(char) 226 + " &acirc;", //� : latin small letter a with circumflex, 
-				(char) 227 + " &atilde;", //� : latin small letter a with tilde, 
-				(char) 228 + " &auml;", //� : latin small letter a with diaeresis, 
-				(char) 229 + " &aring;", //� : latin small letter a with ring above = latin small letter a ring, 
-				(char) 230 + " &aelig;", //� : latin small letter ae = latin small ligature ae, 
-				(char) 231 + " &ccedil;", //� : latin small letter c with cedilla, 
-				(char) 232 + " &egrave;", //� : latin small letter e with grave, 
-				(char) 233 + " &eacute;", //� : latin small letter e with acute, 
-				(char) 234 + " &ecirc;", //� : latin small letter e with circumflex, 
-				(char) 235 + " &euml;", //� : latin small letter e with diaeresis, 
-				(char) 236 + " &igrave;", //� : latin small letter i with grave, 
-				(char) 237 + " &iacute;", //� : latin small letter i with acute, 
-				(char) 238 + " &icirc;", //� : latin small letter i with circumflex, 
-				(char) 239 + " &iuml;", //� : latin small letter i with diaeresis, 
-				(char) 240 + " &eth;", //� : latin small letter eth, 
-				(char) 241 + " &ntilde;", //� : latin small letter n with tilde, 
-				(char) 242 + " &ograve;", //� : latin small letter o with grave, 
-				(char) 243 + " &oacute;", //� : latin small letter o with acute, 
-				(char) 244 + " &ocirc;", //� : latin small letter o with circumflex, 
-				(char) 245 + " &otilde;", //� : latin small letter o with tilde, 
-				(char) 246 + " &ouml;", //� : latin small letter o with diaeresis, 
-				(char) 247 + " &divide;", //� : division sign, 
-				(char) 248 + " &oslash;", //� : latin small letter o with stroke, = latin small letter o slash, 
-				(char) 249 + " &ugrave;", //� : latin small letter u with grave, 
-				(char) 250 + " &uacute;", //� : latin small letter u with acute, 
-				(char) 251 + " &ucirc;", //� : latin small letter u with circumflex, 
-				(char) 252 + " &uuml;", //� : latin small letter u with diaeresis, 
-				(char) 253 + " &yacute;", //� : latin small letter y with acute, 
-				(char) 254 + " &thorn;", //� : latin small letter thorn, 
-				(char) 255 + " &yuml;", //� : latin small letter y with diaeresis,
+				(char) 161 + " &iexcl;", //à : inverted exclamation mark, 
+				(char) 162 + " &cent;", //à : cent sign, 
+				(char) 163 + " &pound;", //à : pound sign, 
+				(char) 164 + " &curren;", //à : currency sign, 
+				(char) 165 + " &yen;", //à : yen sign = yuan sign, 
+				(char) 166 + " &brvbar;", //à : broken bar = broken vertical bar, 
+				(char) 167 + " &sect;", //à : section sign, 
+				(char) 168 + " &uml;", //à : diaeresis = spacing diaeresis, 
+				(char) 169 + " &copy;", //à : copyright sign, 
+				(char) 170 + " &ordf;", //à : feminine ordinal indicator, 
+				(char) 171 + " &laquo;", //à : left-pointing double angle quotation mark = left pointing guillemet, 
+				(char) 172 + " &not;", //à : not sign, 
+				(char) 173 + " &shy;", //à : soft hyphen = discretionary hyphen, 
+				(char) 174 + " &reg;", //à : registered sign = registered trade mark sign, 
+				(char) 175 + " &macr;", //à : macron = spacing macron = overline = APL overbar, 
+				(char) 176 + " &deg;", //à : degree sign, 
+				(char) 177 + " &plusmn;", //à : plus-minus sign = plus-or-minus sign, 
+				(char) 178 + " &sup2;", //à : superscript two = superscript digit two = squared, 
+				(char) 179 + " &sup3;", //à : superscript three = superscript digit three = cubed, 
+				(char) 180 + " &acute;", //à : acute accent = spacing acute, 
+				(char) 181 + " &micro;", //à : micro sign, 
+				(char) 182 + " &para;", //à : pilcrow sign = paragraph sign, 
+				(char) 183 + " &middot;", //à : middle dot = Georgian comma = Greek middle dot, 
+				(char) 184 + " &cedil;", //à : cedilla = spacing cedilla, 
+				(char) 185 + " &sup1;", //à : superscript one = superscript digit one, 
+				(char) 186 + " &ordm;", //à : masculine ordinal indicator, 
+				(char) 187 + " &raquo;", //à : right-pointing double angle quotation mark = right pointing guillemet, 
+				(char) 188 + " &frac14;", //à : vulgar fraction one quarter = fraction one quarter, 
+				(char) 189 + " &frac12;", //à : vulgar fraction one half = fraction one half, 
+				(char) 190 + " &frac34;", //à : vulgar fraction three quarters = fraction three quarters, 
+				(char) 191 + " &iquest;", //à : inverted question mark = turned question mark, 
+				(char) 192 + " &Agrave;", //à : latin capital letter A with grave = latin capital letter A grave, 
+				(char) 193 + " &Aacute;", //à : latin capital letter A with acute, 
+				(char) 194 + " &Acirc;", //à : latin capital letter A with circumflex, 
+				(char) 195 + " &Atilde;", //à : latin capital letter A with tilde, 
+				(char) 196 + " &Auml;", //à : latin capital letter A with diaeresis, 
+				(char) 197 + " &Aring;", //à : latin capital letter A with ring above = latin capital letter A ring, 
+				(char) 198 + " &AElig;", //à : latin capital letter AE = latin capital ligature AE, 
+				(char) 199 + " &Ccedil;", //à : latin capital letter C with cedilla, 
+				(char) 200 + " &Egrave;", //à : latin capital letter E with grave, 
+				(char) 201 + " &Eacute;", //à : latin capital letter E with acute, 
+				(char) 202 + " &Ecirc;", //à : latin capital letter E with circumflex, 
+				(char) 203 + " &Euml;", //à : latin capital letter E with diaeresis, 
+				(char) 204 + " &Igrave;", //à : latin capital letter I with grave, 
+				(char) 205 + " &Iacute;", //à : latin capital letter I with acute, 
+				(char) 206 + " &Icirc;", //à : latin capital letter I with circumflex, 
+				(char) 207 + " &Iuml;", //à : latin capital letter I with diaeresis, 
+				(char) 208 + " &ETH;", //à : latin capital letter ETH, 
+				(char) 209 + " &Ntilde;", //à : latin capital letter N with tilde, 
+				(char) 210 + " &Ograve;", //à : latin capital letter O with grave, 
+				(char) 211 + " &Oacute;", //à : latin capital letter O with acute, 
+				(char) 212 + " &Ocirc;", //à : latin capital letter O with circumflex, 
+				(char) 213 + " &Otilde;", //à : latin capital letter O with tilde, 
+				(char) 214 + " &Ouml;", //à : latin capital letter O with diaeresis, 
+				(char) 215 + " &times;", //à : multiplication sign, 
+				(char) 216 + " &Oslash;", //à : latin capital letter O with stroke = latin capital letter O slash, 
+				(char) 217 + " &Ugrave;", //à : latin capital letter U with grave, 
+				(char) 218 + " &Uacute;", //à : latin capital letter U with acute, 
+				(char) 219 + " &Ucirc;", //à : latin capital letter U with circumflex, 
+				(char) 220 + " &Uuml;", //à : latin capital letter U with diaeresis, 
+				(char) 221 + " &Yacute;", //à : latin capital letter Y with acute, 
+				(char) 222 + " &THORN;", //à : latin capital letter THORN, 
+				(char) 223 + " &szlig;", //à : latin small letter sharp s = ess-zed, 
+				(char) 224 + " &agrave;", //à : latin small letter a with grave = latin small letter a grave, 
+				(char) 225 + " &aacute;", //à : latin small letter a with acute, 
+				(char) 226 + " &acirc;", //à : latin small letter a with circumflex, 
+				(char) 227 + " &atilde;", //à : latin small letter a with tilde, 
+				(char) 228 + " &auml;", //à : latin small letter a with diaeresis, 
+				(char) 229 + " &aring;", //à : latin small letter a with ring above = latin small letter a ring, 
+				(char) 230 + " &aelig;", //à : latin small letter ae = latin small ligature ae, 
+				(char) 231 + " &ccedil;", //à : latin small letter c with cedilla, 
+				(char) 232 + " &egrave;", //à : latin small letter e with grave, 
+				(char) 233 + " &eacute;", //à : latin small letter e with acute, 
+				(char) 234 + " &ecirc;", //à : latin small letter e with circumflex, 
+				(char) 235 + " &euml;", //à : latin small letter e with diaeresis, 
+				(char) 236 + " &igrave;", //à : latin small letter i with grave, 
+				(char) 237 + " &iacute;", //à : latin small letter i with acute, 
+				(char) 238 + " &icirc;", //à : latin small letter i with circumflex, 
+				(char) 239 + " &iuml;", //à : latin small letter i with diaeresis, 
+				(char) 240 + " &eth;", //à : latin small letter eth, 
+				(char) 241 + " &ntilde;", //à : latin small letter n with tilde, 
+				(char) 242 + " &ograve;", //à : latin small letter o with grave, 
+				(char) 243 + " &oacute;", //à : latin small letter o with acute, 
+				(char) 244 + " &ocirc;", //à : latin small letter o with circumflex, 
+				(char) 245 + " &otilde;", //à : latin small letter o with tilde, 
+				(char) 246 + " &ouml;", //à : latin small letter o with diaeresis, 
+				(char) 247 + " &divide;", //à : division sign, 
+				(char) 248 + " &oslash;", //à : latin small letter o with stroke, = latin small letter o slash, 
+				(char) 249 + " &ugrave;", //à : latin small letter u with grave, 
+				(char) 250 + " &uacute;", //à : latin small letter u with acute, 
+				(char) 251 + " &ucirc;", //à : latin small letter u with circumflex, 
+				(char) 252 + " &uuml;", //à : latin small letter u with diaeresis, 
+				(char) 253 + " &yacute;", //à : latin small letter y with acute, 
+				(char) 254 + " &thorn;", //à : latin small letter thorn, 
+				(char) 255 + " &yuml;", //à : latin small letter y with diaeresis,
 
 				/*************************************************************************************/
 				/** Character entity references for symbols, mathematical symbols, and Greek letters */
@@ -347,19 +347,19 @@ public final class HtmlCodec extends AbstractCodec {
 				(char) 8364 + " &euro;", //euro sign,
 
 				/*************************************************************/
-				/** Compl�ment KLEE                                          */
+				/** Complément KLEE                                          */
 				/*************************************************************/
 				(char) 39 + " &#39;", //caractere en collision avec l'apostrophe de word
 
-				/** Ces caract�res correspondent � un second encodage de caract�re HTML
+				/** Ces caractères correspondent à un second encodage de caractère HTML
 				 * (NB : le code ascii 128 pour l'euro est prioritaire sur 8364 car il y a un sort
-				 * le d�codage n'est donc pas forc�ment bijectif avec l'encodage). */
+				 * le décodage n'est donc pas forcément bijectif avec l'encodage). */
 				(char) 146 + " &#39;", // apostrophe de Word
 				(char) 128 + " &euro;", //euro sign
 				(char) 8217 + " &#8217;", // apostrophe de Word
-		//Ci-dessous des encodages supl�mentaires mais non compatibles avec le contrat du codec (start with & et end with ;)
+		//Ci-dessous des encodages supplémentaires mais non compatibles avec le contrat du codec (start with & et end with ;)
 		//'\n' + " <br/>", // retour chariot
-		//'\t' + " &nbsp; &nbsp; ", // tabulation s�cable
+		//'\t' + " &nbsp; &nbsp; ", // tabulation sécable
 		};
 	}
 
@@ -383,7 +383,7 @@ public final class HtmlCodec extends AbstractCodec {
 	@Override
 	protected boolean shouldEncode(final char c, final int index, final String stringToEncode) {
 		if (c == '&') {
-			//cas particulier pour html, le navigateur envoi les caract�res incompatible sous la forme : &#xxxx; il n faut pas encoder le & dans ce cas
+			//cas particulier pour html, le navigateur envoi les caractères incompatible sous la forme : &#xxxx; il n faut pas encoder le & dans ce cas
 			final Matcher matcher = pattern.matcher(stringToEncode);
 			matcher.region(index, Math.min(index + 7, stringToEncode.length()));
 			if (matcher.find()) {
@@ -393,4 +393,4 @@ public final class HtmlCodec extends AbstractCodec {
 		}
 		return true; //on encode	
 	}
-}
+}

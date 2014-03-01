@@ -13,7 +13,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test du codec de s�rialisation.
+ * Test du codec de sérialisation.
  * 
  * @author pchretien 
  * @version $Id: SerializationCodecTest.java,v 1.6 2013/11/15 15:51:02 pchretien Exp $
@@ -58,13 +58,13 @@ public final class SerializationCodecTest extends AbstractCodecTest<Serializable
 	@Override
 	@Test(expected = VRuntimeException.class)
 	public void testFailDecode() throws Exception {
-		// object ne correspondant pas � une classe;
+		// object ne correspondant pas à une classe;
 		final byte[] s = "qdfsdf".getBytes();
 		codec.decode(s);
 	}
 
 	// ===========================================================================
-	// =========================== Donn�es de tests
+	// =========================== Données de tests
 	// ==============================
 	// ===========================================================================
 	private List<Serializable> createObjectList() {
@@ -76,20 +76,20 @@ public final class SerializationCodecTest extends AbstractCodecTest<Serializable
 																							// d'une
 																							// chaine
 																							// de
-																							// caract�res
+																							// caractères
 																							// simples
-		valueList.add("���� �� �� ��� ��"); // Test des accents
-		valueList.add(">< & # @ %"); // Test des caract�res HTML XML
-		valueList.add(" % ' "); // Test des caract�res SQL
-		valueList.add("abcdef a��� ' () {}  \" ' 12345 \\ / /254sd %�!*-+/"); // Test
+		valueList.add("à��à �à �à �à� à�"); // Test des accents
+		valueList.add(">< & # @ %"); // Test des caractères HTML XML
+		valueList.add(" % ' "); // Test des caractères SQL
+		valueList.add("abcdef a�à� ' () {}  \" ' 12345 \\ / /254sd %à!*-+/"); // Test
 																				// d'une
 																				// chaine
 																				// de
-																				// caract�res
+																				// caractères
 																				// avec
-																				// caract�res
-																				// sp�ciaux
-																				// m�lang�s
+																				// caractères
+																				// spéciaux
+																				// mélangés
 
 		valueList.add(createPerson()); // Test d'un objet
 		return valueList;

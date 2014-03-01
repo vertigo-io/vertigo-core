@@ -13,7 +13,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
- * Impl�mentation standard threadSafe des m�canismes permettant de s�rialiser/ d�s�rialiser un objet.
+ * Implémentation standard threadSafe des mécanismes permettant de sérialiser/ dé-sérialiser un objet.
  *
  * @author  mcrouzet, pchretien
  * @version $Id: SerializationCodec.java,v 1.6 2013/11/15 15:27:29 pchretien Exp $
@@ -52,4 +52,4 @@ public final class SerializationCodec implements Codec<Serializable, byte[]> {
 		}
 	}
 
-}
+}

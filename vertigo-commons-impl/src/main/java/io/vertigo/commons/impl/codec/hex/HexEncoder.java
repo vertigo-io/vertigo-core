@@ -4,8 +4,8 @@ import io.vertigo.commons.codec.Encoder;
 import io.vertigo.kernel.lang.Assertion;
 
 /**
- * Impl�mentation threadSafe des m�canismes standards d'encodage/d�codage.
- * Hex transforme en chaine de caract�res un tableau d'octets
+ * Implémentation threadSafe des mécanismes standards d'encodage/décodage.
+ * Hex transforme en chaine de caractères un tableau d'octets
  * 
  * @author  pchretirn
  * @version $Id: HexEncoder.java,v 1.5 2013/11/15 15:27:29 pchretien Exp $

@@ -15,34 +15,34 @@ import java.util.List;
 public interface ScriptManager extends Manager {
 	/**
 	 * Parse le script, notifie le handler.
-	 * La grammaire est constitu�es de simples balises (S�parateurs). 
+	 * La grammaire est constituées de simples balises (Séparateurs). 
 	 *
-	 * @param script Script � analyser
-	 * @param scriptHandler Handler g�rant la grammaire analys�e
-	 * @param separators Liste des s�parateurs autoris�s dans la grammaire.
+	 * @param script Script à analyser
+	 * @param scriptHandler Handler gérant la grammaire analysée
+	 * @param separators Liste des séparateurs autorisés dans la grammaire.
 	 */
 	void parse(final String script, final ScriptParserHandler scriptHandler, final List<ScriptSeparator> separators);
 
 	/**
 	 * Evaluation du script.
 	 * Transforme un script en text.
-	 * @param script Script � �valuer
-	 * @return Script �valu�
+	 * @param script Script à évaluer
+	 * @return Script évalué
 	 */
 	String evaluateScript(final String script, final SeparatorType separatorType, final List<ExpressionParameter> parameters);
 
 	/**
 	 * Evaluation d'une expression et non d'un bloc de code.
-	 *  Exemple d'expressions exprim�es en java 
+	 *  Exemple d'expressions exprimées en java 
 	 *  - name  
 	 *  - birthDate
 	 *  - age>20
 	 *  - salary>5000 && age <30
 	 *  - name + surName
 	 * @param expression Expression
-	 * @param parameters Param�tres
-	 * @param type Type retourn�
-	 * @return R�sultat de l'expression apr�s �valuation
+	 * @param parameters Paramètres
+	 * @param type Type retourné
+	 * @return Résultat de l'expression après évaluation
 	 */
 	<J> J evaluateExpression(final String expression, List<ExpressionParameter> parameters, Class<J> type);
 }

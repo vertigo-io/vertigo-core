@@ -14,25 +14,25 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 /**
- * Impl�mentation standard ThreadSafe g�rant les m�canismes permettant de compresser/d�compresser un format binaire (byte[]) en un binaire.
+ * Implémentation standard ThreadSafe gérant les mécanismes permettant de compresser/décompresser un format binaire (byte[]) en un binaire.
  * 
  * @author pchretien
  * @version $Id: CompressionCodec.java,v 1.7 2013/11/15 15:27:29 pchretien Exp $
  */
 public final class CompressionCodec implements Codec<byte[], byte[]>, Describable {
 	/**
-	 * Seuil exprim� en octets en de�a duquel on ne compresse pas les donn�es.
+	 * Seuil exprimé en octets en deça duquel on ne compresse pas les données.
 	 */
 	public static final int MIN_SIZE_FOR_COMPRESSION = 100;
 
 	/**
-	 * Seuil maximal autoris� pour la compression, ce seuil est exprim� en octets. 
+	 * Seuil maximal autorisé pour la compression, ce seuil est exprimé en octets. 
 	 */
-	public static final int MAX_SIZE_FOR_COMPRESSION = 20 * 1024 * 1024; //au dela de 20Mo, on ne compresse pas en m�moire : le codec est inadapt�
+	public static final int MAX_SIZE_FOR_COMPRESSION = 20 * 1024 * 1024; //au dela de 20Mo, on ne compresse pas en mémoire : le codec est inadapté
 
 	/**
-	 * Niveau de compression de 0(pas de compression) � 9 (max compression). se
-	 * r�f�rer au classes impl�mentant zip pour des pr�cisions sur le niveau de
+	 * Niveau de compression de 0(pas de compression) à 9 (max compression). se
+	 * référer au classes implémentant zip pour des précisions sur le niveau de
 	 * compression.
 	 */
 	public static final int COMPRESSION_LEVEL = 1;
@@ -45,8 +45,8 @@ public final class CompressionCodec implements Codec<byte[], byte[]>, Describabl
 
 	/**
 	 * Compression d'un objet.
-	 * @param unCompressedObject Objet non compress�
-	 * @return Objet Compress�
+	 * @param unCompressedObject Objet non compressé
+	 * @return Objet Compressé
 	 */
 	public byte[] encode(final byte[] unCompressedObject) {
 		Assertion.checkNotNull(unCompressedObject);
@@ -77,7 +77,7 @@ public final class CompressionCodec implements Codec<byte[], byte[]>, Describabl
 		System.arraycopy(compressedObject, 0, newCompressedObject, COMPRESS_KEY.length + 4, compressedSize);
 		//        if (Logger.getRootLogger().isTraceEnabled()) {
 		//            Logger.getRootLogger().trace(
-		//                    "Compress notification de " + nonCompressedLength + " octets � " + newCompressedObject.length + " octets ("
+		//                    "Compress notification de " + nonCompressedLength + " octets à " + newCompressedObject.length + " octets ("
 		//                    + (((newCompressedObject.length * 10000) / nonCompressedLength) / 100d) + "%) en " + (System.currentTimeMillis() - time) + " ms");
 		//        }
 		return newCompressedObject;
@@ -85,14 +85,14 @@ public final class CompressionCodec implements Codec<byte[], byte[]>, Describabl
 
 	private static void checkMaxSize(final int length) {
 		if (length >= MAX_SIZE_FOR_COMPRESSION) {
-			throw new VRuntimeException("L''objet est trop gros pour �tre compress� en m�moire ({0} Mo)", null, length / (1024 * 1024));
+			throw new VRuntimeException("L''objet est trop gros pour être compressé en mémoire ({0} Mo)", null, length / (1024 * 1024));
 		}
 	}
 
 	/**
-	 * D�compression d'un objet.
-	 * @param compressedObject Objet compress�
-	 * @return Objet d�compress�
+	 * Décompression d'un objet.
+	 * @param compressedObject Objet compressé
+	 * @return Objet décompressé
 	 */
 	public byte[] decode(final byte[] compressedObject) {
 		Assertion.checkNotNull(compressedObject);
@@ -103,8 +103,8 @@ public final class CompressionCodec implements Codec<byte[], byte[]>, Describabl
 			System.arraycopy(compressedObject, 0, compressHeader, 0, COMPRESS_KEY.length);
 			if (Arrays.equals(COMPRESS_KEY, compressHeader)) {
 				final int ch1 = compressedObject[COMPRESS_KEY.length] & 0xff;
-				// le & 0xff est necessaire pour avoir un int de 0 � 255, sinon
-				// on a un int sign� de -127 � 128
+				// le & 0xff est necessaire pour avoir un int de 0 à 255, sinon
+				// on a un int signé de -127 à 128
 
 				final int ch2 = compressedObject[COMPRESS_KEY.length + 1] & 0xff;
 				final int ch3 = compressedObject[COMPRESS_KEY.length + 2] & 0xff;
@@ -120,7 +120,7 @@ public final class CompressionCodec implements Codec<byte[], byte[]>, Describabl
 						inflater.inflate(uncompressedObject);
 					}
 				} catch (final DataFormatException e) {
-					throw new VRuntimeException("d�compression", e);
+					throw new VRuntimeException("décompression", e);
 				}
 			}
 		}

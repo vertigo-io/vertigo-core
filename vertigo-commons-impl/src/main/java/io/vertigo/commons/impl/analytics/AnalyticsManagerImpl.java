@@ -7,7 +7,7 @@ import io.vertigo.kernel.lang.Option;
 import javax.inject.Inject;
 
 /**
- * Impl�mentation de r�f�rence des fonctions Analytiques.
+ * Implémentation de référence des fonctions Analytiques.
  * 
  * @author pchretien
  * @version $Id: AnalyticsManagerImpl.java,v 1.2 2013/10/22 12:35:20 pchretien Exp $

@@ -33,7 +33,7 @@ public final class HtmlCodecTest extends AbstractCodecTest<String, String> {
 	@Override
 	@Test
 	public void testEncode() {
-		//Carcat�res simples sans encodage
+		//Caractères simples sans encodage
 		Assert.assertEquals(codec.encode("abcdefghijklmnopqrstuvwxyz"), "abcdefghijklmnopqrstuvwxyz");
 		Assert.assertEquals(codec.encode("0123456789"), "0123456789");
 		Assert.assertEquals(codec.encode("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -42,7 +42,7 @@ public final class HtmlCodecTest extends AbstractCodecTest<String, String> {
 		Assert.assertEquals(codec.encode("/"), "/");
 		Assert.assertEquals(codec.encode(";"), ";");
 		Assert.assertEquals(codec.encode("-"), "-");
-		//Mixte de caract�res simples
+		//Mixte de caractères simples
 		Assert.assertEquals(codec.encode("abcdef; 01234/ABCDEF-"), "abcdef; 01234/ABCDEF-");
 		//Accents
 		Assert.assertEquals(codec.encode("é"), "&eacute;");
@@ -52,11 +52,11 @@ public final class HtmlCodecTest extends AbstractCodecTest<String, String> {
 		Assert.assertEquals(codec.encode(Character.toString((char) 128)), "&euro;");
 		// < >
 		Assert.assertEquals(codec.encode("<tag>"), "&lt;tag&gt;");
-		// caract�res sp�ciaux :  "
+		// caractères spéciaux :  "
 		Assert.assertEquals(codec.encode("\""), "&quot;");
 
 		/*
-		 Pour r�aliser des benchs de perfs
+		 Pour réaliser des benchs de perfs
 		 for (int i = 0; i < 100; i++) {
 		  String s = TestUtils.randomUserString(100000);
 		  final String codedValue = encoder.encodeString(s);
@@ -69,7 +69,7 @@ public final class HtmlCodecTest extends AbstractCodecTest<String, String> {
 	@Override
 	@Test
 	public void testDecode() {
-		//Carcat�res simples sans encodage
+		//Caractères simples sans encodage
 		Assert.assertEquals(codec.decode("abcdefghijklmnopqrstuvwxyz"), "abcdefghijklmnopqrstuvwxyz");
 		Assert.assertEquals(codec.decode("0123456789"), "0123456789");
 		Assert.assertEquals(codec.decode("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -79,16 +79,16 @@ public final class HtmlCodecTest extends AbstractCodecTest<String, String> {
 		Assert.assertEquals(codec.decode("&"), "&");
 		Assert.assertEquals(codec.decode(";"), ";");
 		Assert.assertEquals(codec.decode("-"), "-");
-		//Mixte de caract�res simples
+		//Mixte de caractères simples
 		Assert.assertEquals(codec.decode("abcdef; 01234/ABCDEF-"), "abcdef; 01234/ABCDEF-");
 		//Accents
 		Assert.assertEquals(codec.decode("&eacute;"), "é");
 		Assert.assertEquals(codec.decode("&egrave;"), "è");
-		//Symbole euro (dans HtmlCodec, l'euro est actuellement transform� en char 128)
+		//Symbole euro (dans HtmlCodec, l'euro est actuellement transformé en char 128)
 		Assert.assertEquals(codec.decode("&euro;"), Character.toString((char) 128));
 		// < >
 		Assert.assertEquals(codec.decode("&lt;tag&gt;"), "<tag>");
-		// caract�res sp�ciaux :  "
+		// caractères spéciaux :  "
 		Assert.assertEquals(codec.decode("&quot;"), "\"");
 	}
 
@@ -100,7 +100,7 @@ public final class HtmlCodecTest extends AbstractCodecTest<String, String> {
 	}
 
 	/**
-	 * Test les chaines qui ne doivent pas �tre d�cod�e.
+	 * Test les chaines qui ne doivent pas être décodée.
 	 */
 	@Test
 	public void testNotDecode() {
@@ -110,7 +110,7 @@ public final class HtmlCodecTest extends AbstractCodecTest<String, String> {
 	}
 
 	/**
-	 * Test les chaines qui ne doivent pas �tre encod�e.
+	 * Test les chaines qui ne doivent pas être encodée.
 	 */
 	@Test
 	public void testNotEncode() {

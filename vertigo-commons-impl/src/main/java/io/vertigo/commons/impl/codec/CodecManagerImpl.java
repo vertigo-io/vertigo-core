@@ -20,13 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Impl�mentation standard de CodecManager.
+ * Implémentation standard de CodecManager.
  *
  * @author pchretien
  * @version $Id: CodecManagerImpl.java,v 1.7 2013/11/15 15:27:29 pchretien Exp $
  */
 public final class CodecManagerImpl implements CodecManager, Describable {
-	/** Codage/d�codage HTML de String > String. */
+	/** Codage/décodage HTML de String > String. */
 	private final Codec<String, String> htmlCodec;
 
 	/** Crypto de byte[] > byte[]. */
@@ -44,19 +44,19 @@ public final class CodecManagerImpl implements CodecManager, Describable {
 	/** SHA-256 de byte[] > String. */
 	private final Encoder<byte[], byte[]> sha256Encoder;
 
-	/** S�rialisation de byte[] > String. */
+	/** Sérialisation de byte[] > String. */
 	private final Codec<byte[], String> base64Codec;
 
-	/** S�rialisation de byte[] > String. */
+	/** Sérialisation de byte[] > String. */
 	private final Encoder<byte[], String> hexEncoder;
 
 	/** Compression de byte[] > byte[]. */
 	private final Codec<byte[], byte[]> compressionCodec;
 
-	/** S�rialisation de Serializable > byte[]. */
+	/** Sérialisation de Serializable > byte[]. */
 	private final Codec<Serializable, byte[]> serializationCodec;
 
-	/** S�rialisation de Serializable > byte[]. */
+	/** Sérialisation de Serializable > byte[]. */
 	private final Codec<Serializable, byte[]> compressedSerializationCodec;
 
 	/** CSV de String > String. */

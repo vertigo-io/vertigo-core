@@ -4,7 +4,7 @@ import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 
 /**
- * R�gle optionnelle.
+ * Règle optionnelle.
  * @author pchretien
  * @version $Id: OptionRule.java,v 1.6 2013/10/22 12:23:44 pchretien Exp $
  */
@@ -14,7 +14,7 @@ public final class OptionRule<P> implements Rule<Option<P>> {
 
 	/**
 	 * Constructeur.
-	 * @param rule R�gle optionnelle
+	 * @param rule Règle optionnelle
 	 */
 	public OptionRule(final Rule<P> rule) {
 		super();
@@ -43,7 +43,7 @@ public final class OptionRule<P> implements Rule<Option<P>> {
 					index = parser.parse(text, index);
 					option = Option.option(parser.get());
 				} catch (final NotFoundException e) {
-					//Comme la r�gle est optionnelle si on ne trouve rien on reste au point de d�part. 
+					//Comme la règle est optionnelle si on ne trouve rien on reste au point de départ. 
 				}
 				return index;
 			}

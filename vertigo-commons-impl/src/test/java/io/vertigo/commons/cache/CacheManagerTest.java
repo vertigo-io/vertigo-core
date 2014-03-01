@@ -19,7 +19,7 @@ import org.junit.Test;
  * @version $Id: CacheManagerTest.java,v 1.5 2014/01/20 17:51:47 pchretien Exp $
  */
 public final class CacheManagerTest extends AbstractTestCaseJU4 {
-	private static final String KEY = "ma cl�";
+	private static final String KEY = "ma clé";
 	private static final String CONTEXT = CacheManagerInitializer.CONTEXT;
 
 	@Inject
@@ -43,7 +43,7 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 
 		cacheManager.put(CONTEXT, KEY, value);
 		final Serializable retrieve = cacheManager.get(CONTEXT, KEY);
-		//On v�rifie qu'il s'agit du m�me objet. 
+		//On vérifie qu'il s'agit du même objet. 
 		Assert.assertEquals(value, retrieve);
 	}
 
@@ -53,13 +53,13 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testRemove1() {
 		testPut1();
-		// v�rification de suppression d'un element
+		// vérification de suppression d'un element
 		Assert.assertTrue(cacheManager.remove(CONTEXT, KEY));
 		Assert.assertNull(cacheManager.get(CONTEXT, KEY));
 	}
 
 	/**
-	 * vide compl�tement le cache.
+	 * vide complètement le cache.
 	 */
 	@Test
 	public void testClear() {
@@ -69,7 +69,7 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * vide compl�tement tous les caches.
+	 * vide complètement tous les caches.
 	 */
 	@Test
 	public void testClearAll() {
@@ -85,27 +85,27 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 	public void testPut10k() {
 		final int nbRow = 10000;
 		for (int i = 0; i < nbRow; i++) {
-			final String key = "ma cl�[" + i + "]";
+			final String key = "ma clé[" + i + "]";
 			final Serializable value = new Element();
 			cacheManager.put(CONTEXT, key, value);
 		}
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
 
 		for (int i = 5000; i < 5500; i++) {
-			final String key = "ma cl�[" + i + "]";
+			final String key = "ma clé[" + i + "]";
 			Assert.assertNotNull(cacheManager.get(CONTEXT, key));
 		}
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
 
 		for (int i = 0; i < nbRow; i++) {
-			final String key = "ma cl�[" + i + "]";
+			final String key = "ma clé[" + i + "]";
 			Assert.assertNotNull(cacheManager.get(CONTEXT, key));
 		}
 		//	assertEquals(ManagerState.OK, cacheManager.getDescription().getMainSummaryInfo().getValueState());
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
 
 		for (int i = 0; i < nbRow; i++) {
-			final String key = "ma cl�[" + i + "]";
+			final String key = "ma clé[" + i + "]";
 			Assert.assertNotNull(cacheManager.get(CONTEXT, key));
 		}
 		//	assertEquals(ManagerState.OK, cacheManager.getDescription().getMainSummaryInfo().getValueState());
@@ -120,27 +120,27 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 	public void testPut10kUnmodifiable() {
 		final int nbRow = 10000;
 		for (int i = 0; i < nbRow; i++) {
-			final String key = "ma cl�[" + i + "]";
+			final String key = "ma clé[" + i + "]";
 			final Serializable value = new ElementUnmodifiable();
 			cacheManager.put(CONTEXT, key, value);
 		}
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
 
 		for (int i = 5000; i < 5500; i++) {
-			final String key = "ma cl�[" + i + "]";
+			final String key = "ma clé[" + i + "]";
 			Assert.assertNotNull(cacheManager.get(CONTEXT, key));
 		}
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
 
 		for (int i = 0; i < nbRow; i++) {
-			final String key = "ma cl�[" + i + "]";
+			final String key = "ma clé[" + i + "]";
 			Assert.assertNotNull(cacheManager.get(CONTEXT, key));
 		}
 		//	assertEquals(ManagerState.OK, cacheManager.getDescription().getMainSummaryInfo().getValueState());
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
 
 		for (int i = 0; i < nbRow; i++) {
-			final String key = "ma cl�[" + i + "]";
+			final String key = "ma clé[" + i + "]";
 			Assert.assertNotNull(cacheManager.get(CONTEXT, key));
 		}
 		//assertEquals(ManagerState.OK, cacheManager.getDescription().getMainSummaryInfo().getValueState());
@@ -149,7 +149,7 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test l'acc�s concurrent au cache.
+	 * Test l'accès concurrent au cache.
 	 */
 	@Test
 	public void testConcurrentAccess() {
@@ -172,7 +172,7 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 		for (final Thread th : threadSet) {
 			th.start();
 		}
-		System.out.println("Start : " + nbReader + " readers et " + nbWriter + " writers, utilisation de " + nbRow + " cl�s, pendant " + (deathTime - baseTime) / 1000 + "s ");
+		System.out.println("Start : " + nbReader + " readers et " + nbWriter + " writers, utilisation de " + nbRow + " clés, pendant " + (deathTime - baseTime) / 1000 + "s ");
 
 		//on attend la fin
 		for (final Thread th : threadSet) {
@@ -198,7 +198,7 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 
 		public void run() {
 			while (System.currentTimeMillis() < deathTime) {
-				final String key = "ma cl�[" + Math.round(Math.random() * nbRow) + "]";
+				final String key = "ma clé[" + Math.round(Math.random() * nbRow) + "]";
 				lCacheManager.get(CONTEXT, key); //on test juste le get
 				try {
 					Thread.sleep(10); //on rend juste la main
@@ -222,7 +222,7 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 
 		public void run() {
 			while (System.currentTimeMillis() < deathTime) {
-				final String key = "ma cl�[" + Math.round(Math.random() * nbRow) + "]";
+				final String key = "ma clé[" + Math.round(Math.random() * nbRow) + "]";
 				final Serializable value = new ElementUnmodifiable();
 				lCacheManager.put(CONTEXT, key, value);
 				try {
@@ -236,7 +236,7 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 
 	//	/**
 	//	 * Test que quand on ferme 
-	//	  * @throws KSystemException   si erreur r�cuperation cache
+	//	  * @throws KSystemException   si erreur récupération cache
 	//	 */
 	//	public void testClose() throws KSystemException {
 	//		manager.put(CONTEXT, String.valueOf(1), String.valueOf(1));

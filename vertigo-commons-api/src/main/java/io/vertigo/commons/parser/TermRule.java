@@ -3,7 +3,7 @@ package io.vertigo.commons.parser;
 import io.vertigo.kernel.lang.Assertion;
 
 /**
- * R�gle v�rifiant que le texte commence par la chaine pr�cis�e.
+ * Règle vérifiant que le texte commence par la chaine précisée.
  * Sinon retourne une erreur.
  * @author pchretien
  * @version $Id: TermRule.java,v 1.3 2013/10/22 12:23:44 pchretien Exp $
@@ -16,7 +16,7 @@ public final class TermRule implements Rule<String>, Parser<String> {
 	 * @param eval String
 	 */
 	public TermRule(final String term) {
-		Assertion.checkNotNull(term, "Terminal non renseign� !");
+		Assertion.checkNotNull(term, "Terminal non renseigné !");
 		//---------------------------------------------------------------------
 		this.term = term;
 	}
@@ -36,11 +36,11 @@ public final class TermRule implements Rule<String>, Parser<String> {
 	public int parse(final String text, final int start) throws NotFoundException {
 		final int end = Math.min(start + term.length(), text.length());
 		int match = start;
-		//On recherche jusqu'ou le text match avec la r�gle
+		//On recherche jusqu'ou le text match avec la règle
 		while (match < end && text.charAt(match) == term.charAt(match - start)) {
 			match++;
 		}
-		//Si on est all� au bout de la r�gle, c'est bon
+		//Si on est allé au bout de la règle, c'est bon
 		if (match == start + term.length()) {
 			return match;
 		}

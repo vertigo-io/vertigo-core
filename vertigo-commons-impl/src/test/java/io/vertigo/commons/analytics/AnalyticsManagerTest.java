@@ -16,7 +16,7 @@ import org.junit.Test;
  */
 public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 
-	/** Base de donn�es g�rant les articles envoy�s dans une commande. */
+	/** Base de données gérant les articles envoyés dans une commande. */
 	private static final String PROCESS_TYPE = "ARTICLE";
 
 	/** Logger. */
@@ -30,7 +30,7 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	/**
 	 * Test simple avec deux compteurs. 
 	 * Test sur l'envoi de 1000 articles d'un poids de 25 kg. 
-	 * Chaque article coute 10�.
+	 * Chaque article coute 10€.
 	 */
 	@Test
 	public void test1000Articles() {
@@ -43,16 +43,16 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test pour v�rifier que l'on peut se passer des processus si et seulement si le mode Analytics est d�sactiv�.
+	 * Test pour vérifier que l'on peut se passer des processus si et seulement si le mode Analytics est désactivé.
 	 */
 	@Test
 	public void testNoProcess() {
 		analyticsManager.getAgent().incMeasure("POIDS", 25);
-		//Dans le cas du dummy �a doit passer
+		//Dans le cas du dummy ça doit passer
 	}
 
 	/**
-	 * M�me test apr�s d�sactivation.
+	 * Même test après désactivation.
 	 */
 	@Test
 	public void testOff() {
@@ -60,10 +60,10 @@ public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test de r�cursivit�. 
+	 * Test de récursivité. 
 	 * Test sur l'envoi de 1000 commandes contenant chacune 1000 articles d'un poids de 25 kg. 
-	 * Chaque article coute 10�. 
-	 * Les frais d'envoi sont de 5�.
+	 * Chaque article coute 10€. 
+	 * Les frais d'envoi sont de 5€.
 	 */
 	@Test
 	public void test1000Commandes() {

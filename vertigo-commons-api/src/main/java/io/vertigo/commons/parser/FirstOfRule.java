@@ -50,7 +50,7 @@ public final class FirstOfRule implements Rule<Choice> {
 			private Choice result;
 
 			/**
-			 * @return num�ro de la r�gle ayant aboutie.
+			 * @return numéro de la règle ayant aboutie.
 			 */
 			public Choice get() {
 				return result;
@@ -58,7 +58,7 @@ public final class FirstOfRule implements Rule<Choice> {
 
 			/** {@inheritDoc} */
 			public int parse(final String text, final int start) throws NotFoundException {
-				//R�gle ayant �t� le plus profond
+				//Règle ayant été le plus profond
 				NotFoundException best = null;
 				int bestIndex = -1;
 				for (int i = 0; i < rules.size(); i++) {
@@ -67,7 +67,7 @@ public final class FirstOfRule implements Rule<Choice> {
 						final int end = parser.parse(text, start);
 						result = new Choice(i, parser.get());
 						if (end < bestIndex) {
-							throw best; //Si on a plus avanc� avec une autre r�gle c'est que celle ci n'avance pas assez (typiquement une WhiteSpace seule, ou une OptionRule)
+							throw best; //Si on a plus avancé avec une autre règle c'est que celle ci n'avance pas assez (typiquement une WhiteSpace seule, ou une OptionRule)
 						}
 						return end;
 					} catch (final NotFoundException e) {
@@ -76,13 +76,13 @@ public final class FirstOfRule implements Rule<Choice> {
 							bestIndex = e.getIndex();
 							best = e;
 						}
-						//Tant que l'on a des erreurs sur l'�valuation des r�gles
-						//on recommence jusqu'� trouver la premi�re qui fonctionne.
+						//Tant que l'on a des erreurs sur l'évaluation des règles
+						//on recommence jusqu'à trouver la première qui fonctionne.
 					}
 				}
-				//On a rien trouv�.
+				//On a rien trouvé.
 				if (best == null) {
-					throw new NotFoundException(text, start, null, "Echec lors de l''�valuation d''une r�gle FirstOf : ''{0}''", getExpression());
+					throw new NotFoundException(text, start, null, "Echec lors de l''évaluation d''une règle FirstOf : ''{0}''", getExpression());
 				}
 				throw best;
 			}

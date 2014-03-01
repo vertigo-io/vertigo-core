@@ -10,8 +10,8 @@ import org.junit.Assert;
 
 /**
  * @author dchallas
- * @param <S> Type Source � encoder
- * @param <T> Type cible, r�sultat de l'encodage
+ * @param <S> Type Source à encoder
+ * @param <T> Type cible, résultat de l'encodage
  */
 public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends AbstractTestCase2JU4 {
 	protected static final String TEXT = "Les sanglots longs des violons de l'automne blessent mon coeur d'une langueur monotone.";
@@ -39,14 +39,14 @@ public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends
 	}
 
 	/**
-	 * test l'encodage et le d�codage avec les chaines null.
-	 * @throws Exception si probl�me
+	 * test l'encodage et le décodage avec les chaines null.
+	 * @throws Exception si problème
 	 */
 	public abstract void testNull() throws Exception;
 
 	/**
 	 * test l'encodage de chaines non null.
-	 * @throws Exception si probl�me
+	 * @throws Exception si problème
 	 */
 	public abstract void testEncode() throws Exception;
 
@@ -61,7 +61,7 @@ public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends
 	 * @param encodedValue
 	 */
 	protected void checkEncodedValue(final T encodedValue) {
-		// � implementer si besoin
+		// à implementer si besoin
 	}
 
 	protected final CodecManager getCodecManager() {

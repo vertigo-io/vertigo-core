@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * Implementation d'un cache memoire.
- * La purge des �l�ments trop vieux se fait lors de la lecture.
+ * La purge des éléments trop vieux se fait lors de la lecture.
  * 
  * @author npiedeloup
  * @version $Id: MapCache.java,v 1.4 2013/10/22 12:38:24 pchretien Exp $
@@ -26,7 +26,7 @@ final class MapCache {
 	 * Constructeur.
 	 * @param name Nom du cache
 	 * @param eternal Si eternal
-	 * @param timeToLiveSeconds Dur�e de vie en secondes
+	 * @param timeToLiveSeconds Durée de vie en secondes
 	 */
 	MapCache(final String name, final boolean eternal, final long timeToLiveSeconds) {
 		Assertion.checkArgNotEmpty(name);
@@ -47,7 +47,7 @@ final class MapCache {
 	}
 
 	/**
-	 * @return Conf : temps de vie en seconde des �l�ments
+	 * @return Conf : temps de vie en seconde des éléments
 	 */
 	long getTimeToLiveSeconds() {
 		return timeToLiveSeconds;
@@ -61,20 +61,20 @@ final class MapCache {
 	}
 
 	//-------------------------------------------------------------------------
-	//-----------------------------Donn�es-------------------------------------
+	//-----------------------------Données-------------------------------------
 	//-------------------------------------------------------------------------
 	/**
-	 * @return Nombre d'�l�ment en cache
+	 * @return Nombre d'élément en cache
 	 */
 	synchronized int getElementCount() {
 		return cacheDatas.size();
 	}
 
 	//	/**
-	//	 * @return Taille m�moire
+	//	 * @return Taille mémoire
 	//	 */
 	//	long calculateInMemorySize() {
-	//		return -1; //TODO il serait bon de pouvoir l'�valuer
+	//		return -1; //TODO il serait bon de pouvoir l'évaluer
 	//	}
 
 	/**
@@ -92,8 +92,8 @@ final class MapCache {
 	}
 
 	/**
-	 * @param key Cl� de l'�l�ment
-	 * @return �l�ment du cache, null si n'existe pas ou obsolete
+	 * @param key Clé de l'élément
+	 * @return élément du cache, null si n'existe pas ou obsolete
 	 */
 	synchronized Serializable get(final Serializable key) {
 		totalCalls++;
@@ -113,7 +113,7 @@ final class MapCache {
 	}
 
 	/**
-	 * @param key Cl� de l'�l�ment
+	 * @param key Clé de l'élément
 	 * @param value Element
 	 */
 	synchronized void put(final Serializable key, final Serializable value) {
@@ -129,8 +129,8 @@ final class MapCache {
 	}
 
 	/**
-	 * @param key Cl� de l'�l�ment � supprimer
-	 * @return si supprim�
+	 * @param key Clé de l'élément à supprimer
+	 * @return si supprimé
 	 */
 	synchronized boolean remove(final Serializable key) {
 		return cacheDatas.remove(key) != null;

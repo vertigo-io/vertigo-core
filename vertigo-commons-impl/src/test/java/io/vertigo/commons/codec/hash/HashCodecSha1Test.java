@@ -27,8 +27,8 @@ public final class HashCodecSha1Test extends AbstractEncoderTest<Encoder<byte[],
 	@Test(expected = NullPointerException.class)
 	public void testNull() {
 		/*
-		 * Test de cr�ation de l'empreinte SHA 1.
-		 * On v�rifie que null ne respecte pas le contrat.
+		 * Test de création de l'empreinte SHA 1.
+		 * On vérifie que null ne respecte pas le contrat.
 		 */
 		codec.encode(null);
 	}
@@ -37,7 +37,7 @@ public final class HashCodecSha1Test extends AbstractEncoderTest<Encoder<byte[],
 	@Override
 	@Test
 	public void testEncode() {
-		//Carcat�res simples sans encodage
+		//Caractères simples sans encodage
 		final Encoder<byte[], String> hexEncoder = getCodecManager().getHexEncoder();
 		final byte[] encoded = codec.encode(TEXT.getBytes());
 		Assert.assertEquals(160 / 8, codec.encode(TEXT.getBytes()).length);

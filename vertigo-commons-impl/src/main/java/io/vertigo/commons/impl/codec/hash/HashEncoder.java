@@ -8,16 +8,16 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * Impl�mentation des hachages.
- * L'encodage n'autorise pas les donn�es null.
- * La fonction de d�codage n'existe pas.
+ * Implémentation des hachages.
+ * L'encodage n'autorise pas les données null.
+ * La fonction de décodage n'existe pas.
  * 
  * @author  pchretien
  * @version $Id: HashEncoder.java,v 1.6 2013/11/15 15:27:29 pchretien Exp $
  */
 public final class HashEncoder implements Encoder<byte[], byte[]> {
 	/**
-	 * M�thode de hashage autoris�es.
+	 * Méthode de hashage autorisées.
 	 *
 	 */
 	public enum Hash {
@@ -52,7 +52,7 @@ public final class HashEncoder implements Encoder<byte[], byte[]> {
 
 	/**
 	 * Constructeur.
-	 * @param hash m�thode de hashage
+	 * @param hash méthode de hashage
 	 */
 	public HashEncoder(final Hash hash) {
 		Assertion.checkNotNull(hash);

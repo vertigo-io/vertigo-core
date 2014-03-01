@@ -24,8 +24,8 @@ public final class HashCodecSha256Test extends AbstractEncoderTest<Encoder<byte[
 	@Test(expected = NullPointerException.class)
 	public void testNull() {
 		/*
-		 * Test de cr�ation de l'empreinte SHA 1.
-		 * On v�rifie que null ne respecte pas le contrat.
+		 * Test de création de l'empreinte SHA 1.
+		 * On vérifie que null ne respecte pas le contrat.
 		 */
 		codec.encode(null);
 	}
@@ -34,8 +34,8 @@ public final class HashCodecSha256Test extends AbstractEncoderTest<Encoder<byte[
 	@Override
 	@Test
 	public void testEncode() {
-		//Carat�res simples sans encodage
+		//Caractères simples sans encodage
 		//256 bits attendus soit 32 Octets
 		Assert.assertEquals(32, codec.encode(TEXT.getBytes()).length);
 	}
-}
+}

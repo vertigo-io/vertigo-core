@@ -8,34 +8,34 @@ import io.vertigo.kernel.lang.Assertion;
 import java.util.List;
 
 /**
- * Parse une chaine de caract�res. 
+ * Parse une chaine de caractères. 
  * (script SQL ou autre)
- * Notifie le handler des param�tres trouv�s.
+ * Notifie le handler des paramètres trouvés.
  *
  * @author  pchretien
  * @version $Id: ScriptParser.java,v 1.4 2013/10/22 12:26:59 pchretien Exp $
  */
 final class ScriptParser {
 	/**
-	 * Liste des s�parateurs admis pour cet analyseur.
+	 * Liste des séparateurs admis pour cet analyseur.
 	 */
 	private final List<ScriptSeparator> separators;
 
 	/**
-	 * Index de d�but du param�tre courant
-	 * On commence au d�but.
-	 * (-1 pour �viter de squizzer le premier caract�re)
+	 * Index de début du paramètre courant
+	 * On commence au début.
+	 * (-1 pour éviter de squizzer le premier caractère)
 	 */
 	private int currentBeginCar = -1;
 
 	/**
-	 * Type (du s�parateur) de param�tre courant
+	 * Type (du séparateur) de paramètre courant
 	 */
 	private ScriptSeparator currentSeparator;
 
 	/**
 	 * Constructeur.
-	 * @param separators S�parateurs pris en compte
+	 * @param separators Séparateurs pris en compte
 	 */
 	ScriptParser(final List<ScriptSeparator> separators) {
 		Assertion.checkNotNull(separators);
@@ -45,10 +45,10 @@ final class ScriptParser {
 
 	/**
 	 * Parse le script, notifie le handler.
-	 * La grammaire est constitu�es de simples balises (S�parateurs). 
+	 * La grammaire est constituées de simples balises (Séparateurs). 
 	 *
-	 * @param script Script � analyser
-	 * @param scriptHandler Handler g�rant la grammaire analys�e
+	 * @param script Script à analyser
+	 * @param scriptHandler Handler gérant la grammaire analysée
 	 */
 	void parse(final String script, final ScriptParserHandler scriptHandler) {
 		Assertion.checkNotNull(script);
@@ -57,21 +57,21 @@ final class ScriptParser {
 		int index = 0;
 		int endCar = -1;
 
-		// On isole les chaines entre 2 s�parateurs
+		// On isole les chaines entre 2 séparateurs
 		while (nextPosition(script, endCar + 1)) {
 			endCar = currentSeparator.indexOfEndCaracter(script, currentBeginCar + 1);
-			//Il faut qu'il y ait le caract�re de fin correspondant.
+			//Il faut qu'il y ait le caractère de fin correspondant.
 			if (endCar == -1) {
-				throw new IllegalStateException("Aucun s�parateur de fin trouv� pour " + currentSeparator + " � la position " + currentBeginCar + " sur " + script);
+				throw new IllegalStateException("Aucun séparateur de fin trouvé pour " + currentSeparator + " à la position " + currentBeginCar + " sur " + script);
 			}
 
 			onRequestText(scriptHandler, script, index, currentBeginCar);
-			//Si le s�parateur est un char, sa longueur est de 1.
+			//Si le séparateur est un char, sa longueur est de 1.
 			if (currentSeparator.isCar()) {
 				onRequestParam(scriptHandler, script, currentBeginCar + 1, endCar, currentSeparator);
 				index = endCar + 1;
 			} else {
-				//Si le s�parateur est une chaine de caract�res, sa longueur doit �tre calcul�e.
+				//Si le séparateur est une chaine de caractères, sa longueur doit être calculée.
 				onRequestParam(scriptHandler, script, currentBeginCar + currentSeparator.getBeginSeparator().length(), endCar, currentSeparator);
 				index = endCar + currentSeparator.getEndSeparator().length();
 			}
@@ -82,12 +82,12 @@ final class ScriptParser {
 	private static void onRequestParam(final ScriptParserHandler scriptHandler, final String script, final int beginCar, final int endCar, final ScriptSeparator separator) {
 		if (endCar == beginCar) {
 			if (separator.isCar()) {
-				//Si il s'agissait de deux m�mes caract�res coll�s,
-				//c'est que l'on voulait le caract�re lui m�me. (Echappement du s�parateur)
+				//Si il s'agissait de deux mêmes caractères collés,
+				//c'est que l'on voulait le caractère lui même. (Echappement du séparateur)
 				//on le remet donc dans la requete
 				scriptHandler.onText(String.valueOf(separator.getSeparator()));
 			} else {
-				throw new VRuntimeException("Le param�tre est vide");
+				throw new VRuntimeException("Le paramètre est vide");
 			}
 		} else {
 			scriptHandler.onExpression(script.substring(beginCar, endCar), separator);
@@ -99,12 +99,12 @@ final class ScriptParser {
 	}
 
 	/**
-	 * Recherche dans une requ�te la position de la prochaine occurence
-	 * d'un param�tre.
+	 * Recherche dans une requête la position de la prochaine occurence
+	 * d'un paramètre.
 	 * @param script Script
-	 * @param beginCar Index de d�but de recherche
+	 * @param beginCar Index de début de recherche
 	 *
-	 * @return Si il existe une prochaine position trouv�e.
+	 * @return Si il existe une prochaine position trouvée.
 	 */
 	private boolean nextPosition(final String script, final int beginCar) {
 		int minPosition = Integer.MAX_VALUE;
@@ -117,7 +117,7 @@ final class ScriptParser {
 				found = separator;
 			}
 		}
-		//Si il existe un s�parateur
+		//Si il existe un séparateur
 		//alors on retourne sa position.
 		if (found == null) {
 			currentSeparator = null;

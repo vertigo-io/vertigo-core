@@ -3,9 +3,9 @@ package io.vertigo.commons.parser;
 import io.vertigo.kernel.lang.Assertion;
 
 /**
- * Une r�gle peut �tre vue comme 
- * - la cr�ation d'une r�gle principale
- * - la gestion du r�sultat du parsing
+ * Une règle peut être vue comme 
+ * - la création d'une règle principale
+ * - la gestion du résultat du parsing
  * 
  * @author pchretien
  * @version $Id: AbstractRule.java,v 1.6 2013/10/22 12:23:44 pchretien Exp $

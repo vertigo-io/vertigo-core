@@ -33,8 +33,8 @@ final class ScriptEvaluator {
 
 	/**
 	 * Evaluation du script.
-	 * @param script Script � �valuer
-	 * @return Script �valu�
+	 * @param script Script à évaluer
+	 * @return Script évalué
 	 */
 	String evaluate(final String script) {
 		Assertion.checkNotNull(script);

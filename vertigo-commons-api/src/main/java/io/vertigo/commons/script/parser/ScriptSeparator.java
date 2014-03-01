@@ -3,12 +3,12 @@ package io.vertigo.commons.script.parser;
 import io.vertigo.kernel.lang.Assertion;
 
 /**
- * Gestion des S�parateurs utilis�s par le parser.
+ * Gestion des Séparateurs utilisés par le parser.
  * 
- * Un s�parateur est d�fini
- * - soit par un caract�re. (le m�me en d�but et fin)
+ * Un séparateur est défini
+ * - soit par un caractère. (le même en début et fin)
  *      Exemple #  : #name#
- * - soit par des chaines de caract�res.(qui peuvent �tre diff�rentes)
+ * - soit par des chaines de caractères.(qui peuvent être différentes)
  *      Exemple <% et %> : XXXX<%if (1=1){%>
  *
  * @author  pchretien
@@ -16,30 +16,30 @@ import io.vertigo.kernel.lang.Assertion;
  */
 public final class ScriptSeparator {
 	/**
-	 * Le param�tre est-il d�fini par un simple s�parateur.
+	 * Le paramètre est-il défini par un simple séparateur.
 	 */
 	private final boolean isCar;
 
 	/**
-	 * Si le param�tre est d�limit� par une String.
-	 * On distingue un s�parateur de d�but et un autre de fin
+	 * Si le paramètre est délimité par une String.
+	 * On distingue un séparateur de début et un autre de fin
 	 */
 	private final String beginSeparator;
 
 	/**
-	 * S�parateur de fin (String).
+	 * Séparateur de fin (String).
 	 */
 	private final String endSeparator;
 
 	/**
-	 * Si le param�tre est d�limit� par un char.
+	 * Si le paramètre est délimité par un char.
 	 */
 	private final char separatorCar;
 
 	/**
 	 * Constructeur
-	 * Si le s�parateur de d�but et de fin sont identiques sous forme de char.
-	 * @param separator S�parateur de d�but et de fin
+	 * Si le séparateur de début et de fin sont identiques sous forme de char.
+	 * @param separator Séparateur de début et de fin
 	 */
 	public ScriptSeparator(final char separator) {
 		isCar = true;
@@ -50,10 +50,10 @@ public final class ScriptSeparator {
 
 	/**
 	 * Constructeur
-	 * Si le s�parateur de d�but et de fin sont diff�rents sous forme de String.
+	 * Si le séparateur de début et de fin sont différents sous forme de String.
 	 *
-	 * @param beginSeparator S�parateur de d�but
-	 * @param endSeparator S�parateur de fin
+	 * @param beginSeparator Séparateur de début
+	 * @param endSeparator Séparateur de fin
 	 */
 	public ScriptSeparator(final String beginSeparator, final String endSeparator) {
 		Assertion.checkArgNotEmpty(beginSeparator);
@@ -66,28 +66,28 @@ public final class ScriptSeparator {
 	}
 
 	public String getBeginSeparator() {
-		Assertion.checkArgument(!isCar, "type de s�parateur inconsistant");
+		Assertion.checkArgument(!isCar, "type de séparateur inconsistant");
 		//---------------------------------------------------------------------
 		return beginSeparator;
 	}
 
 	public String getEndSeparator() {
-		Assertion.checkArgument(!isCar, "type de s�parateur inconsistant");
+		Assertion.checkArgument(!isCar, "type de séparateur inconsistant");
 		//---------------------------------------------------------------------
 		return endSeparator;
 	}
 
 	/**
-	 * @return Caract�re de s�paration, i le param�tre est d�limit� par un char.
+	 * @return Caractère de séparation, i le paramètre est délimité par un char.
 	 */
 	public char getSeparator() {
-		Assertion.checkArgument(isCar, "type de s�parateur inconsistant");
+		Assertion.checkArgument(isCar, "type de séparateur inconsistant");
 		//---------------------------------------------------------------------
 		return separatorCar;
 	}
 
 	/**
-	 * @return Si le s�parateur est un simple caract�re
+	 * @return Si le séparateur est un simple caractère
 	 */
 	public boolean isCar() {
 		return isCar;

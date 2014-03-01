@@ -19,7 +19,7 @@ import javax.inject.Inject;
  */
 public final class ScriptManagerImpl implements ScriptManager {
 	/**
-	 * Plugin pour l'�valuation d'expression.
+	 * Plugin pour l'évaluation d'expression.
 	 */
 	private final ExpressionEvaluatorPlugin expressionEvaluatorPlugin;
 

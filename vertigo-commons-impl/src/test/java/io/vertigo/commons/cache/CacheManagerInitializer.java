@@ -13,11 +13,11 @@ public final class CacheManagerInitializer implements ComponentInitializer<Cache
 
 	/** {@inheritDoc} */
 	public void init(final CacheManager manager) {
-		//Param�trage d'un cache sp�cifique au test	
+		//Paramétrage d'un cache spécifique au test	
 		/** Parametre du cache, pour une config ou il est multi-session*/
 		final int maxElementsInMemory = 5000;
-		final long timeToLiveSeconds = 10; //long�vit� d�un �l�ment
-		final long timeToIdleSeconds = 10; //long�vit� d�un �l�ment non utilis� 
+		final long timeToLiveSeconds = 10; //longévité d'un élément
+		final long timeToIdleSeconds = 10; //longévité d'un élément non utilisé 
 
 		manager.addCache("test", CONTEXT, maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds);
 	}

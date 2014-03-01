@@ -34,9 +34,9 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testStringReplace() {
-		final String script = "ce matin M.<%=nom%> est all� chercher son pain";
+		final String script = "ce matin M.<%=nom%> est allé chercher son pain";
 		final String result = scriptManager.evaluateScript(script, SeparatorType.CLASSIC, createParameters());
-		Assert.assertEquals("ce matin M.Duraton est all� chercher son pain", result);
+		Assert.assertEquals("ce matin M.Duraton est allé chercher son pain", result);
 	}
 
 	@Test
@@ -62,7 +62,7 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 
 	@Test(expected = Exception.class)
 	public void testSyntaxError() {
-		//On g�n�re une erreur java
+		//On génère une erreur java
 		final String script = "<%if (nom.sttart(\"Dur\")) {%>Il s'agit bien de M.Duraton<%}%>";
 		final String result = scriptManager.evaluateScript(script, SeparatorType.CLASSIC, createParameters());
 		nop(result);
@@ -70,7 +70,7 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testNonDynamic() {
-		//On fait une �valuation d'un texte qui s'av�re non dynamique. (Absence de <%)
+		//On fait une évaluation d'un texte qui s'avère non dynamique. (Absence de <%)
 		final String script = "Il s'agit bien de M.Duraton";
 		final String result = scriptManager.evaluateScript(script, SeparatorType.CLASSIC, createParameters());
 		Assert.assertEquals("Il s'agit bien de M.Duraton", result);
@@ -102,8 +102,8 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testEchappement() {
-		//Si le s�parateur est un car.
-		//il suffit de double le s�parateur pour l'�chapper.
+		//Si le séparateur est un car.
+		//il suffit de double le séparateur pour l'échapper.
 		final List<ScriptSeparator> separators = new ArrayList<>();
 		separators.add(new ScriptSeparator('$'));
 		final String script = "le prix du barril est de $price$ $$";

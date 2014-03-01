@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Simule le m�canisme JSP sur un fichier texte quelconque.
- * Remplace les �l�ments compris entre les s�parateurs par une �valuation dynamique.
- * <% %>  : permet d'ins�rer des blocs java
- * <%= %> : permet d'ajouter des �l�ments au texte
+ * Simule le mécanisme JSP sur un fichier texte quelconque.
+ * Remplace les éléments compris entre les séparateurs par une évaluation dynamique.
+ * <% %>  : permet d'insérer des blocs java
+ * <%= %> : permet d'ajouter des éléments au texte
  *
  * @author  pchretien
  * @version $Id: ScriptParserHandlerImpl.java,v 1.3 2013/10/22 12:26:59 pchretien Exp $
@@ -27,7 +27,7 @@ final class ScriptParserHandlerImpl implements ScriptParserHandler {
 
 	private final StringBuilder evaluatedScript = new StringBuilder();
 	/**
-	 * Si il y a au moins un param�tre alors la requ�te est dynamique.
+	 * Si il y a au moins un paramètre alors la requête est dynamique.
 	 */
 	private boolean isDynamic; //implicite = false;
 
@@ -36,7 +36,7 @@ final class ScriptParserHandlerImpl implements ScriptParserHandler {
 
 	/**
 	 * Constructeur.
-	 * @param parameters Map des param�tres
+	 * @param parameters Map des paramètres
 	 */
 	ScriptParserHandlerImpl(final ExpressionEvaluatorPlugin expressionEvaluatorPlugin, final String originalScript, final List<ExpressionParameter> parameters) {
 		Assertion.checkNotNull(expressionEvaluatorPlugin);
@@ -57,10 +57,10 @@ final class ScriptParserHandlerImpl implements ScriptParserHandler {
 
 	/** {@inheritDoc} */
 	public void onExpression(final String expression, final ScriptSeparator separator) {
-		isDynamic = true; //Si on entre dans cette m�thode, on est forc�ment dynamique
+		isDynamic = true; //Si on entre dans cette méthode, on est forcément dynamique
 		if (expression.charAt(0) == '=') {
 			// cas <%=s START_ATTRIBUTE
-			//On ajoute une �valuation de l'attribut
+			//On ajoute une évaluation de l'attribut
 			evaluatedScript.append("query.append(String.valueOf(").append(expression.substring(1)).append("));");
 		} else {
 			//On ajoute le bloc java
