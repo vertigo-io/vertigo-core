@@ -17,6 +17,7 @@
 			<artifactId>vertigo-starter</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-starter</artifactId>
@@ -25,12 +26,10 @@
 			<scope>test</scope>
 		</dependency>
 	
-	
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>2.2.3</version>
-			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 </project>

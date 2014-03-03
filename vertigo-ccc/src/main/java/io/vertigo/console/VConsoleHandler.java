@@ -25,6 +25,7 @@ import io.vertigo.kernel.command.VResponse;
 import io.vertigo.kernel.lang.Activeable;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -38,8 +39,10 @@ final class VConsoleHandler implements Activeable {
 	}
 
 	public void stop() {
-		for (VClient client : clients) {
-			client.close();
+		final Iterator<VClient> it = clients.iterator();
+		while (it.hasNext()) {
+			it.next().close();
+			it.remove();
 		}
 	}
 
