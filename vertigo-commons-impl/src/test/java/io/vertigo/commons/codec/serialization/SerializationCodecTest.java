@@ -16,7 +16,7 @@ import org.junit.Test;
  * Test du codec de sérialisation.
  * 
  * @author pchretien 
- * @version $Id: SerializationCodecTest.java,v 1.6 2013/11/15 15:51:02 pchretien Exp $
+ * @version $Id: SerializationCodecTest.java,v 1.3 2013/07/16 17:11:10 pchretien Exp $
  */
 public final class SerializationCodecTest extends AbstractCodecTest<Serializable, byte[]> {
 
@@ -78,10 +78,10 @@ public final class SerializationCodecTest extends AbstractCodecTest<Serializable
 																							// de
 																							// caractères
 																							// simples
-		valueList.add("à��à �à �à �à� à�"); // Test des accents
+		valueList.add("éèêë üû ïî àäâ öô"); // Test des accents
 		valueList.add(">< & # @ %"); // Test des caractères HTML XML
 		valueList.add(" % ' "); // Test des caractères SQL
-		valueList.add("abcdef a�à� ' () {}  \" ' 12345 \\ / /254sd %à!*-+/"); // Test
+		valueList.add("abcdef aéàè ' () {}  \" ' 12345 \\ / /254sd %§!*-+/"); // Test
 																				// d'une
 																				// chaine
 																				// de
