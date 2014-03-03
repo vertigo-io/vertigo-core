@@ -1,0 +1,32 @@
+<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
+<modules>
+	<module name="vertigo">
+	    <component api="LocaleManager" class="io.vertigoimpl.commons.locale.LocaleManagerImpl"> 
+	         <param name="multilingual" value="false" />
+	         <param name="locales" value="fr_FR" />
+	    </component>
+	</module>
+	<module name="vertigo-commons">
+	     <component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
+	    	<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin"/>                               
+	    </component> 
+	</module>	
+
+	<module name="dynamo">
+	    <component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
+	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.poweramc.OOMLoaderPlugin" >
+	               <param name ="oom" value="io/vertigo/dynamo/environment/oom/data/AssociationAA.oom"/>
+	        </plugin>
+	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" >
+	            <param name ="kpr" value="io/vertigo/dynamo/environment/oom/data/domain.kpr"/>
+	        </plugin>  
+	 <!--   <plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" >
+	               <param name ="classes" value="io.vertigo.dynamock.domain.DtDefinitions"/>
+	        </plugin>
+	-->        
+	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
+	<!--    <plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
+	-->
+	    </component>  
+	</module>
+</modules>	

@@ -1,0 +1,68 @@
+<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
+<modules>
+	<module name="vertigo">	
+	    <component api="LocaleManager" class="io.vertigoimpl.commons.locale.LocaleManagerImpl"> 
+	         <param name="multilingual" value="false" />
+	         <param name="locales" value="fr_FR" />
+	    </component>
+	</module>
+	
+	<module name="vertigo-commons">	
+	    <component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
+
+	     <component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
+	    	<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin"/>                               
+	    </component>
+	    <component api="ScriptManager" class="io.vertigo.commons.impl.script.ScriptManagerImpl">
+	        <plugin class="io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin"/>  
+	    </component> 
+	    
+	    <component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
+		<component api="CacheManager" class="io.vertigo.commons.impl.cache.CacheManagerImpl" >
+	        <plugin class="io.vertigo.commons.plugins.cache.map.MapCachePlugin" />
+	    </component>
+	     
+	</module>
+	
+	<module name="dynamo">
+	
+		<component api="DataBaseManager" class="io.vertigo.dynamo.impl.database.DataBaseManagerImpl" >
+		 <plugin class="io.vertigo.dynamo.plugins.database.connection.hibernate.HibernateConnectionProviderPlugin">
+	            <param name="dataBaseName" value="io.vertigo.dynamo.impl.database.vendor.hsql.HsqlDataBase" />
+	            <param name="persistenceUnit" value="JpaTest" />
+	         </plugin>
+		</component>
+		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl"/>
+	   	<component api="WorkManager" class="io.vertigo.dynamo.impl.work.WorkManagerImpl">
+	   		<param name="workerCount" value="5" />
+	   	</component>
+	   	
+		<component api="PersistenceManager" class="io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl" 
+			initClass ="io.vertigo.dynamo.persistence.PersistenceManagerInitializer">
+	        <plugin class="io.vertigo.dynamo.plugins.persistence.jpa.JpaStorePlugin"/>
+	        <plugin class="io.vertigo.dynamo.plugins.persistence.filestore.db.DbFileStorePlugin" />
+	    </component>
+	    
+	    <component api="KTransactionManager" class="io.vertigo.dynamo.impl.transaction.KTransactionManagerImpl"/>
+	    <component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl"/>
+	    
+	    <component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
+	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" >
+	            <param name="kpr" value="io/vertigo/dynamock/executionWfileinfo.kpr"/>
+	        </plugin>  
+	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" >
+	               <param name ="classes" value="io.vertigo.dynamock.domain.DtDefinitions"/>
+	        </plugin>
+	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
+	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
+	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
+	    </component> 
+    </module>
+ </modules>
+ 
+ 
+ 
+ 
+ 
+
+	   

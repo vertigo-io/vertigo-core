@@ -1,0 +1,208 @@
+package io.vertigo.dynamo.domain.metamodel;
+
+import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.lang.Option;
+import io.vertigo.kernel.metamodel.Definition;
+import io.vertigo.kernel.metamodel.DefinitionUtil;
+import io.vertigo.kernel.metamodel.Prefix;
+import io.vertigo.kernel.util.StringUtil;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Définition d'un type de DT.
+ *
+ * @author pchretien
+ * @version $Id: DtDefinition.java,v 1.7 2013/10/22 12:25:18 pchretien Exp $
+ */
+@Prefix("DT")
+public final class DtDefinition implements Definition {
+	/** Nom de la définition. */
+	private final String name;
+
+	/** Nom du package. */
+	private final String packageName;
+
+	/** Liste des champs du DTO.  */
+	private final List<DtField> fields = new ArrayList<>();
+
+	/** Map  des champs du DTO. (Nom du champ, DtField). */
+	private final Map<String, DtField> mappedFields = new HashMap<>();
+
+	/** Si la classe est persistée. */
+	private final boolean persistent;
+
+	/**
+	 * Si la classe est dynamic, c'est à dire non représentée par une classe.
+	 */
+	private final boolean dynamic;
+
+	/** Champ identifiant */
+	private final Option<DtField> idField;
+
+	private Option<DtField> sortField = Option.none();
+	private Option<DtField> displayField = Option.none();
+
+	/**
+	 * Constructeur.
+	 */
+	DtDefinition(final String name, final String packageName, final boolean persistent, final List<DtField> dtFields, final boolean dynamic) {
+		Assertion.checkArgNotEmpty(name);
+		Assertion.checkNotNull(dtFields);
+		//---------------------------------------------------------------------
+		this.name = name;
+		this.persistent = persistent;
+		this.packageName = packageName;
+		DtField id = null;
+
+		for (final DtField dtField : dtFields) {
+			if (DtField.FieldType.PRIMARY_KEY.equals(dtField.getType())) {
+				Assertion.checkState(id == null, "Un seul champ identifiant est autorisé par objet : {0}", name);
+				id = dtField;
+			}
+			doRegisterDtField(dtField);
+
+		}
+		idField = Option.option(id);
+		this.dynamic = dynamic;
+		//---------------------------------------------------------------------
+		Assertion.checkState(!persistent || idField.isDefined(), "Si un DT est persistant il doit posséder un ID");
+	}
+
+	private void registerSort(final DtField dtField) {
+		Assertion.checkNotNull(dtField);
+		Assertion.checkArgument(sortField.isEmpty(), "Un seul champ 'sort' est autorisé par objet : {0}", dtField.getName());
+		//----------------------------------------------------------------------
+		sortField = Option.some(dtField);
+	}
+
+	private void registerDisplay(final DtField dtField) {
+		Assertion.checkNotNull(dtField);
+		Assertion.checkArgument(displayField.isEmpty(), "Un seul champ 'display' est autorisé par objet : {0}", dtField.getName());
+		//----------------------------------------------------------------------
+		displayField = Option.some(dtField);
+	}
+
+	//TODO A fermer 
+	void registerDtField(final DtField dtField) {
+		Assertion.checkNotNull(dtField);
+		Assertion.checkArgument(!DtField.FieldType.PRIMARY_KEY.equals(dtField.getType()), "interdit d'ajouter les champs ID ");
+		//----------------------------------------------------------------------
+		doRegisterDtField(dtField);
+	}
+
+	private void doRegisterDtField(final DtField dtField) {
+		Assertion.checkNotNull(dtField);
+		Assertion.checkArgument(!mappedFields.containsKey(dtField.getName()), "Field {0} déjà enregistré sur {1}", dtField.getName(), this);
+		//----------------------------------------------------------------------
+		fields.add(dtField);
+		mappedFields.put(dtField.getName(), dtField);
+		if (dtField.isSort()) {
+			registerSort(dtField);
+		}
+		if (dtField.isDisplay()) {
+			registerDisplay(dtField);
+		}
+	}
+
+	/**
+	 * @return Nom canonique (i.e. avec le package) de la classe d'implémentation du DtObject
+	 */
+	public String getClassCanonicalName() {
+		return getPackageName() + '.' + getClassSimpleName();
+	}
+
+	/**
+	 * @return Simple Nom (i.e. sans le package) de la classe d'implémentation du DtObject
+	 */
+	public String getClassSimpleName() {
+		return StringUtil.constToCamelCase(getLocalName(), true);
+	}
+
+	/**
+	 * @return Nom du package
+	 */
+	public String getPackageName() {
+		return packageName;
+	}
+
+	/**
+	 * Retourne le champ correspondant SOUS CONDITION qu'il existe sinon assertion.
+	 *
+	 * @param fieldName Nom du champ
+	 * @return Champ correspondant
+	 */
+	public DtField getField(final String fieldName) {
+		Assertion.checkArgNotEmpty(fieldName);
+		//---------------------------------------------------------------------
+		final DtField dtField = mappedFields.get(fieldName);
+		//---------------------------------------------------------------------
+		Assertion.checkNotNull(dtField, "champ :{0} non trouvé pour le DT :{1}. Liste des champs disponibles :{2}", fieldName, this, mappedFields.keySet());
+		return dtField;
+	}
+
+	/**
+	 * @return Collection des champs.
+	 */
+	public List<DtField> getFields() {
+		return Collections.unmodifiableList(fields);
+	}
+
+	/**
+	 * @return Champ identifiant l'identifiant
+	 */
+	public Option<DtField> getIdField() {
+		return idField;
+	}
+
+	/**
+	 * @return Si la définition est dynamique. - C'est à dire non représentée par une classe spécifique - 
+	 */
+	public boolean isDynamic() {
+		return dynamic;
+	}
+
+	/**
+	 * Gestion de la persistance.
+	 * @return Si la définition est persistée.
+	 */
+	public boolean isPersistent() {
+		return persistent;
+	}
+
+	/**
+	 * @return Nom de la définition sans prefix (XXX_YYYY).
+	 */
+	public String getLocalName() {
+		return DefinitionUtil.getLocalName(name, DtDefinition.class);
+	}
+
+	/** {@inheritDoc} */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @return Champ représentant l'affichage
+	 */
+	public Option<DtField> getDisplayField() {
+		return displayField;
+	}
+
+	/**
+	 * @return Champ représentant le tri
+	 */
+	public Option<DtField> getSortField() {
+		return sortField;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return name;
+	}
+}

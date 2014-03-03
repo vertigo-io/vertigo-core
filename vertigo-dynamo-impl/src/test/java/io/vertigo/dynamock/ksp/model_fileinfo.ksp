@@ -1,0 +1,11 @@
+package io.vertigo.dynamock.domain.fileinfo;
+
+create DtDefinition DT_KX_FILE_INFO (
+	 persistent : "true";
+	 key FIL_ID (domain : DO_IDENTIFIANT; label : "Identifiant"; notNull : "true";);
+	 field FILE_NAME (domain : DO_STRING; label : "Nom"; notNull : "true";);
+	 field MIME_TYPE (domain : DO_STRING; label : "Type mime"; notNull : "true";);
+	 field LENGTH (domain : DO_LONG; label : "Taille"; notNull : "true";);
+	 field LAST_MODIFIED (domain : DO_DATE; label : "Date de dernière modification"; notNull : "true";);
+	 field FILE_DATA (domain : DO_STREAM; label : "data"; notNull : "false"; persistent:" true";); /* persistent si en BDD, false si en FS*/ 
+);

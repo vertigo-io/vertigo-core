@@ -1,0 +1,13 @@
+package io.vertigo.dynamock.search;
+
+create DtDefinition DT_CAR (
+    persistent : "false"
+    key ID                  ( domain : DO_IDENTIFIANT   label : "identifiant de la voiture"     notNull : "true")
+    field MAKE      ( domain : DO_KEYWORD     label : "Constructeur"                  notNull : "true")
+    field MODEL             ( domain : DO_FULL_TEXT     label : "Modèle"                        notNull : "true")
+    field DESCRIPTION       ( domain : DO_FULL_TEXT     label : "Descriptif"                    notNull : "true")
+    field YEAR              ( domain : DO_INTEGER       label : "Année"                         notNull : "true")
+    field KILO              ( domain : DO_INTEGER       label : "Kilométrage"                   notNull : "true")
+    field PRICE             ( domain : DO_INTEGER         label : "Prix"                        notNull : "true")
+    field MOTOR_TYPE        ( domain : DO_KEYWORD       label : "Type de moteur"          notNull : "true")
+)

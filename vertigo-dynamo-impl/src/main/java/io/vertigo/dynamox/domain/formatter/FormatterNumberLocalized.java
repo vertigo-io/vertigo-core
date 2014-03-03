@@ -1,0 +1,194 @@
+package io.vertigo.dynamox.domain.formatter;
+
+import io.vertigo.commons.locale.LocaleManager;
+import io.vertigo.kernel.Home;
+import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.lang.MessageText;
+
+import java.text.DecimalFormatSymbols;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.StringTokenizer;
+
+
+/**
+ * Formatteur multi-lingue.
+ * Les séparateurs décimaux et de milliers sont des listes de char.
+ * Le premier est celui utilisé par défaut dans les valueToString.
+ * La liste des char peut être le code d'une resource multi-lingue.
+ * 
+ * Exemple de saisie des args :
+ * #,###.00 |.,;|/u00A0
+ * format de rendu|séparateur décimalpar défaut puis ceux acceptés| séparateurs de milliers
+ * 
+ * #,###.00 |SEP_DECIMAUX|SEP_MILLIER  et dans resources_fr.properties : 
+ * 
+ * 
+ * @author npiedeloup
+ * @version $Id: FormatterNumberLocalized.java,v 1.5 2013/10/22 11:00:06 pchretien Exp $
+ */
+public class FormatterNumberLocalized extends FormatterNumber {
+
+	//Pour chaque locale on conserve les symboles utilisés 
+	private final Map<Locale, DecimalFormatSymbols> decimalFormatSymbolsMap;
+
+	private MessageText decimalSep;
+	private MessageText groupSep;
+
+	/**
+	 * Constructeur.
+	 */
+	public FormatterNumberLocalized(final String name) {
+		super(name);
+		decimalFormatSymbolsMap = java.util.Collections.synchronizedMap(new HashMap<Locale, DecimalFormatSymbols>());
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void initParameters(final String args) {
+		if (args != null) {
+			//----------------------------------------------------------------------
+			final StringTokenizer st = new StringTokenizer(args, "|");
+
+			//Affichage des nombre renseignées
+			assertArgs(st.hasMoreTokens());
+			final String decimalFormat = st.nextToken().trim();
+
+			super.initParameters(decimalFormat);
+
+			//séparateur de décimal
+			if (st.hasMoreTokens()) {
+				decimalSep = new MessageText(st.nextToken().trim(), null);//trim => l'espace ne peut être un séparateur de décimal
+				Assertion.checkArgNotEmpty(decimalSep.getDisplay(), "Il faut au moins un séparateur de décimal");
+			}
+
+			//séparateur de millier
+			if (st.hasMoreTokens()) {
+				groupSep = new MessageText(st.nextToken(), null);//pas de trim car il est probable que l'espace soit utilisé
+			}
+		}
+	}
+
+	@Override
+	protected DecimalFormatSymbols getDecimalFormatSymbols() {
+		//Il n'y a pas besoin de synchroniser la méthode car la map l'est déjà.
+		final Locale currentLocale = Home.getComponentSpace().resolve(LocaleManager.class).getCurrentLocale();
+		DecimalFormatSymbols decimalFormatSymbols = decimalFormatSymbolsMap.get(currentLocale);
+		if (decimalFormatSymbols == null) {
+			// si Locale.FRANCE cela donne la virugle comme séparateur décimal
+			// et l'espace insécable comme séparateur de milliers
+			decimalFormatSymbols = new java.text.DecimalFormatSymbols(currentLocale);
+			if (decimalSep != null) {
+				final String decimalSepValue = decimalSep.getDisplay();
+				decimalFormatSymbols.setDecimalSeparator(decimalSepValue.charAt(0));
+			}
+			if (groupSep != null) {
+				final String groupSepValue = groupSep.getDisplay();
+				if (groupSepValue.length() > 0) {//s'il n'y a pas de séparateur de group, on laisse celui par défaut.
+					decimalFormatSymbols.setGroupingSeparator(groupSepValue.charAt(0));
+				}
+			}
+
+			//vérification des conflits
+			checkConflict(currentLocale, decimalFormatSymbols);
+
+			decimalFormatSymbolsMap.put(currentLocale, decimalFormatSymbols);
+		}
+		return decimalFormatSymbols;
+	}
+
+	@Override
+	protected String cleanStringNumber(final String sValue, final DecimalFormatSymbols decimalFormatSymbols) {
+		final char[] decimalSepChar = obtainAcceptedDecimalSepChar(decimalFormatSymbols);
+		final char[] groupSepChar = obtainAcceptedGroupSepChar(decimalFormatSymbols);
+
+		/**
+		 * On commence par controller le format saisie.
+		 * On est assez strict.
+		 * Au passage on note les séparateurs utilisés (on n'accepte pas de mélange)
+		 */
+		final char[] decimalAndGroupCharUsed = getAndCheckDecimalAndGroupChar(sValue, decimalSepChar, groupSepChar);
+		final char decimalCharUsed = decimalAndGroupCharUsed[0];
+		final char groupCharUsed = decimalAndGroupCharUsed[1];
+
+		/**
+		 * Puis on transforme la chaine pour revenir à l'ecriture la plus simple.
+		 * Cela pour utiliser le Number.valueOf plutot que le parse de NumberFormat.
+		 */
+		return cleanStringNumber(sValue, decimalCharUsed, groupCharUsed);
+	}
+
+	private void assertArgs(final boolean test) {
+		Assertion.checkArgument(test, "Les arguments pour la construction de FormatterNumber sont invalides: format d'affichage{|séparateur de décimal}{|séparateur de millier}");
+	}
+
+	private void checkConflict(final Locale currentLocale, final DecimalFormatSymbols decimalFormatSymbols) {
+		if (decimalSep != null) {
+			for (final char decimalChar : decimalSep.getDisplay().toCharArray()) {
+				Assertion.checkArgument(decimalChar != decimalFormatSymbols.getGroupingSeparator(), "A decimal separator ({0}) is in conflict with a grouping separator {1}", decimalChar, currentLocale.getDisplayName());
+				if (groupSep != null) {
+					final String groupSepValue = groupSep.getDisplay();
+					Assertion.checkArgument(groupSepValue.indexOf(decimalChar) == -1, "A decimal separator ({0}) is in conflict with a grouping separator {1}", decimalChar, currentLocale.getDisplayName());
+				}
+			}
+		}
+	}
+
+	private char[] getAndCheckDecimalAndGroupChar(final String sValue, final char[] decimalSepChar, final char[] groupSepChar) {
+		final char[] result = { decimalSepChar[0], groupSepChar[0] };
+
+		int decimalIndex = sValue.length();
+		for (final char myDecimalChar : decimalSepChar) {
+			final int myDecimalIndex = sValue.indexOf(myDecimalChar);
+			if (myDecimalIndex != -1) {
+				result[0] = myDecimalChar;
+				decimalIndex = myDecimalIndex;
+				if (decimalIndex != sValue.lastIndexOf(myDecimalChar)) {
+					throw new NumberFormatException("Plusieurs séparateur de décimal sont présent (" + myDecimalChar + ").");
+				}
+				break;
+			}
+		}
+
+		boolean groupCharFound = false;
+		for (final char myGroupChar : groupSepChar) {
+			int groupIndex = sValue.indexOf(myGroupChar);
+
+			while (groupIndex != -1) {
+				if ((decimalIndex - groupIndex) % (3 + 1) != 0) {
+					throw new NumberFormatException("Un séparateur de millier est mal placé (" + myGroupChar + ").");
+				}
+				result[1] = myGroupChar;
+				groupCharFound = true;
+				groupIndex = sValue.indexOf(myGroupChar, groupIndex + 1);
+			}
+			if (groupCharFound) {
+				break;
+			}
+		}
+		return result;
+	}
+
+	private char[] obtainAcceptedGroupSepChar(final DecimalFormatSymbols decimalFormatSymbols) {
+		final char[] groupSepChar;
+		if (groupSep == null) {
+			groupSepChar = new char[1];
+			groupSepChar[0] = decimalFormatSymbols.getGroupingSeparator();
+		} else {
+			groupSepChar = groupSep.getDisplay().toCharArray();
+		}
+		return groupSepChar;
+	}
+
+	private char[] obtainAcceptedDecimalSepChar(final DecimalFormatSymbols decimalFormatSymbols) {
+		final char[] decimalSepChar;
+		if (decimalSep == null) {
+			decimalSepChar = new char[1];
+			decimalSepChar[0] = decimalFormatSymbols.getDecimalSeparator();
+		} else {
+			decimalSepChar = decimalSep.getDisplay().toCharArray();
+		}
+		return decimalSepChar;
+	}
+}

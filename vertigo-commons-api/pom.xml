@@ -15,7 +15,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-starter</artifactId>
+			<artifactId>vertigo-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

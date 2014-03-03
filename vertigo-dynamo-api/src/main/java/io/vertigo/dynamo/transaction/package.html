@@ -1,0 +1,29 @@
+<html>
+<body>
+<h1>Gestion des transactions Dynamo.</h1>
+Une transaction Dynamo est constituée de ressources.
+<br/>
+Ces ressources représentent des connexions à une base de données, des mailers etc...
+<br/>
+Les transactions sont fournies par KTransactionManager.
+<br/>
+<br/>
+
+Une transaction est :
+<ul>
+<li>soit en cours </li>
+<li>soit terminée </li>
+</ul>
+
+Il est possible de commiter ou rollbacker les transactions en cours. Cette action se propage sur toutes les ressources participant à la transaction.
+<br/>
+Il est aussi possible de rollbacker une transaction déjà terminée, en ce cas il ne se passe rien.
+<br/>
+<br/>
+
+Les transactions Dynamo sont conçues comme un liste ordonnée finie de ressources.
+<br/>
+Les ressources doivent être placées dans la transaction de la plus critique à la moins critique.
+
+</body>
+</html>

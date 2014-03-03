@@ -1,0 +1,17 @@
+package io.vertigo.dynamock.domain.famille;
+
+create DtDefinition DT_FAMILLE (
+		persistent : "true";
+		key FAM_ID  ( domain : DO_IDENTIFIANT; label : "identifiant de la famille"; notNull : "true";);
+		field LIBELLE   ( domain : DO_STRING; label : "Libelle"; notNull : "false";);
+)
+
+alter DtDefinition DT_FAMILLE (
+    computed DESCRIPTION (domain : DO_LIBELLE_LONG; label:"Libelle";
+        expression:"final StringBuilder builder = new StringBuilder();
+        builder.append(getLibelle());
+        builder.append('[');
+        builder.append(getFamId());
+        builder.append(']');
+        return builder.toString();");
+)

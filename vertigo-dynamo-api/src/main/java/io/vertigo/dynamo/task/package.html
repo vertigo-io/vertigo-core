@@ -1,0 +1,58 @@
+<html>
+<body>
+<h1>Gestion des services Vertigo.</h1>
+<h2>Introduction</h2>
+Un service, au sens Vertigo, fait partie de la couche Intégration ou DAO (Data Access Object) et permet de faciliter les échanges avec n'importe quel système de stockage de données : 
+<ul>
+<li>Base de données relationnelle, </li>
+<li>LDAP, </li>
+<li>Base de données non relationnelle, </li>
+<li>Moteur d'indexation, </li>
+<li>Web Services, </li>
+<li>etc... </li>
+</ul>
+<br/>
+Vertigo est fondé sur une approche déclarative, les services Vertigo sont donc conçus pour centraliser la problématique d'accès aux données en un et seul endroit (Fichiers de paramétrage KSP). 
+La déclaration des services est une tache de conception. 
+
+<h2>Principes</h2>
+Pour utiliser un service Vertigo, il faut l'avoir préalablement paramétré. Un service Vertigo doit être vu comme une boîte noire réalisant une tache bien précise. 
+Les services Vertigo sont des services techniques et non métier, ainsi ne faut-il pas les comparer avec les services métiers généralement évoqués dans des architectures SOA (Services Oriented Architecture). 
+Comprendre un service c'est comprendre son utilisation et son paramétrage. 
+
+<h2>Utilisation</h2>
+Le fonctionnement d'un service se passe en trois étapes 
+<ul>
+<li>injection des données, </li>
+<li>Exécution du service </li>
+<li>Récupération des données créées. </li>
+</ul> 
+<br/>
+
+Le fonctionnement est monitoré de façon automatisé. 
+<UL>
+<li>Fonctionnement réussi ou non, 
+<li>Temps de réponse 
+</ul> 
+<br/>
+
+<h2>Paramétrage</h2>
+Le paramétrage est un travail de conception qui permet de préciser :
+<ul>
+<li>les données en entrée (nom, domain vertigo,  caractère obligatoire), </li>
+<li>les données en sortie (nom, domain vertigo, caractère obligatoire), </li>
+<li>le moteur d'exécution utilisé : ServiceProvider, </li>
+<li>le paramétrage du ServiceProvider.</li>  
+</ul>
+<br/>
+
+Concrètement si l'on désire effectuer une requête à la base de données (type de recherche de personne à partir d'un formulaire de recherche), on précise : 
+<ul>
+<li>Le nom du Service ex: SV_LOAD_XXXX </li>
+<li>Le serviceProvider à utiliser ex: ServiceProviderSelect </li>
+<li>Les paramètres en entrée ex: le critère de recherche nommé DTO_CRITERE de type DT_PERSONNE_CRITERE </li>
+<li>Les paramètres en sortie ex: la collection DTC_RESULT de type DT_PERSONNE </li>
+</ul>
+
+</body>
+</html>
