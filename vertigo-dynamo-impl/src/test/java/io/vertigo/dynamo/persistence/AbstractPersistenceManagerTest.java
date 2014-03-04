@@ -604,6 +604,27 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	}
 
 	@Test
+	public void testTxNativeInsertCrudInsertCommit() {
+		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			final Car car = createNewCar(null);
+			final Car car2 = createNewCar(null);
+			nativeInsertCar(car2);
+			persistenceManager.getBroker().save(car);			
+			transaction.commit();
+		}
+	}
+	
+	@Test(expected = IllegalStateException.class)
+	public void testTxCrudInsertTwoCommit() {
+		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			final Car car = createNewCar(null);
+			persistenceManager.getBroker().save(car);
+			transaction.commit();
+			transaction.commit();
+		}
+	}
+	
+	@Test
 	public void testTxCrudInsertCommitCrudSelectRollback() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Car car = createNewCar(null);

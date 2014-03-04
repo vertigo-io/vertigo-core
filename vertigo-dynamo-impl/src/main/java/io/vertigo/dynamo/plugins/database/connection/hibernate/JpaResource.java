@@ -25,7 +25,7 @@ public class JpaResource implements KTransactionResource {
 	 * @param entityManagerFactory EntityManagerFactory
 	 */
 	public JpaResource(final EntityManagerFactory entityManagerFactory) {
-		em = entityManagerFactory.createEntityManager();
+		em = entityManagerFactory.createEntityManager(); //throw a NPE if persistence.xml declare à jta-data-source. Use à non-jta-data-source instead
 		tx = em.getTransaction();
 		// ---------------------------------------------------------------------
 		Assertion.checkNotNull(tx);
@@ -50,7 +50,7 @@ public class JpaResource implements KTransactionResource {
 	}
 
 	/**
-	 * @return EntityManager hibernate lié à la ressource
+	 * @return EntityManager of this resource
 	 */
 	public final EntityManager getEntityManager() {
 		return em;

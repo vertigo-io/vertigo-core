@@ -16,7 +16,8 @@ import javax.persistence.EntityManagerFactory;
  * @version $Id: OracleDataBase.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public final class JpaDataBase implements DataBase {
-	private static final KTransactionResourceId<JpaResource> JPA_RESOURCE_ID = new KTransactionResourceId<>(KTransactionResourceId.Priority.TOP, "Jpa");
+	//This Resource must be commited AFTER the KConnection ones. The release of EntityManager close the DB Connection and KConnection can't be commited anymore
+	private static final KTransactionResourceId<JpaResource> JPA_RESOURCE_ID = new KTransactionResourceId<>(KTransactionResourceId.Priority.NORMAL, "Jpa");
 
 	private final DataBase innerDataBase;
 	private final EntityManagerFactory entityManagerFactory;
