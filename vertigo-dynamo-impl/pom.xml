@@ -75,10 +75,10 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.hibernate.javax.persistence</groupId><!-- pas de version officiel, mais Hibernate fournit ce jar qui ne contient que l'API -->
+			<groupId>org.hibernate.javax.persistence</groupId><!-- no official version, but Hibernate publish this jar which contains only the API -->
 			<artifactId>hibernate-jpa-2.1-api</artifactId>
 			<version>1.0.0.Final</version>
-			<optional>true</optional> <!-- pour implé HibernateStorePlugin -->
+			<optional>true</optional> <!-- HibernateStorePlugin -->
 		</dependency>
 
 		<dependency>
@@ -98,7 +98,7 @@
 			<groupId>janino</groupId>
 			<artifactId>janino</artifactId>
 			<version>2.5.10</version>
-			<scope>test</scope><!-- pour JaninoExpressionEvaluatorPlugin -->
+			<scope>test</scope><!-- JaninoExpressionEvaluatorPlugin -->
 		</dependency>
 
 		<!-- Search -->
@@ -106,7 +106,7 @@
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-solrj</artifactId>
 			<version>4.6.0</version>
-			<optional>true</optional><!-- pour plugins.solr -->
+			<optional>true</optional><!-- plugins.solr -->
 		</dependency>
 		<!-- Because solr does not manage her own dependencies properly -->
 
@@ -118,11 +118,11 @@
 
 
 		<dependency>
-			<!--Serveur embarqu� -->
+			<!--Embedded Server for tests -->
 			<artifactId>solr-core</artifactId>
 			<groupId>org.apache.solr</groupId>
 			<version>4.6.0</version>
-			<optional>true</optional><!-- pour EmbeddedSolrSearchServicesPlugin -->
+			<optional>true</optional><!-- EmbeddedSolrSearchServicesPlugin -->
 			<exclusions>
 				<exclusion>
 					<groupId>woodstox</groupId>
@@ -132,28 +132,31 @@
 					<groupId>antlr</groupId>
 					<artifactId>antlr</artifactId>
 				</exclusion>
-				<!-- exclusion> <groupId>commons-fileupload</groupId> <artifactId>commons-fileupload</artifactId> </exclusion -->
+				<!-- exclusion> 
+					<groupId>commons-fileupload</groupId> 
+					<artifactId>commons-fileupload</artifactId> 
+				</exclusion -->
 			</exclusions>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-compress</artifactId>
-			<version>1.5</version> <!-- pour solr-core 4.6.0 pointe sur la 1.4.1. Tika pointe sur la 1.5 : on unifie les versions -->
-			<optional>true</optional><!-- pour EmbeddedSolrSearchServicesPlugin -->
+			<version>1.5</version> <!-- solr-core 4.6.0 depends on 1.4.1. Tika depends on 1.5 : we unified versions -->
+			<optional>true</optional><!-- EmbeddedSolrSearchServicesPlugin -->
 		</dependency>
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.6.6</version> <!-- solr-core 4.6.0 pointe sur la 1.6.1, on unifie sur la 1.6.6 venant d'ehcache 2.7.2 -->
+			<artifactId>slf4j-api</artifactId><!-- solr-core 4.6.0 depends on 1.6.1. Ehcache 2.7.2 depends on 1.6.6 : we unified versions -->
+			<version>1.6.6</version>
 		</dependency>
 
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.5</version>
-			<optional>true</optional><!-- pour EmbeddedSolrSearchServicesPlugin -->
+			<optional>true</optional><!-- EmbeddedSolrSearchServicesPlugin -->
 		</dependency>
 
 	</dependencies>
