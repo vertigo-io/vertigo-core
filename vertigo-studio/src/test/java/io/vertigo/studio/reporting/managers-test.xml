@@ -1,75 +1,66 @@
 <?xml version = '1.0' encoding = 'ISO-8859-1'?>
 <modules>
 	<module name="vertigo">
-	    <component api="LocaleManager" class="io.vertigoimpl.commons.locale.LocaleManagerImpl">
-	            <param name="multilingual" value="false" />
-	            <param name="locales" value="fr_FR" />
-	    </component>
-	    <component api="ResourceManager" class="io.vertigoimpl.commons.resource.ResourceManagerImpl">
-	        <plugin class="io.vertigoimpl.plugins.commons.resource.java.ClassPathResourceResolverPlugin"/>                               
-	    </component>
+		<component api="LocaleManager" class="io.vertigoimpl.commons.locale.LocaleManagerImpl">
+			<param name="multilingual" value="false" />
+			<param name="locales" value="fr_FR" />
+		</component>
+		<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
+			<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
+		</component>
 	</module>
-	
-	<module name="kasper-commons">    
-	    <component api="AnalyticsManager" class="kasperimpl.analytics.AnalyticsManagerImpl" />
-	    <component api="KSecurityManager" class="kasperimpl.security.KSecurityManagerImpl">
-	        <param name="userSessionClassName" value="fr.klee.demo.services.DemoUserSession" />
+    
+    <module name="vertigo-commons">
+	    <component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
+	    <component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
+	    <component api="ScriptManager" class="io.vertigo.commons.impl.script.ScriptManagerImpl" >
+	       <plugin class="io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin"/>  
 	    </component>
-	    <component api="CollectionsManager" class="kasperimpl.collections.CollectionsManagerImpl" />
-	    <component api="PublisherManager" class="kasperimpl.publisher.PublisherManagerImpl">
-	    	<plugin class="kasperimpl.publisher.plugins.docx.MergerPluginDOCX"/>  
+	  <component api="CacheManager" class="io.vertigo.commons.impl.cache.CacheManagerImpl">
+	        <plugin class="io.vertigo.commons.plugins.cache.map.MapCachePlugin" />
 	    </component>
-	    <component api="FileManager" class="kasperimpl.file.FileManagerImpl" />
-	    <component api="SearchManager" class="kasperimpl.search.SearchManagerImpl"/>
-	    
-	    <component api="KTransactionManager" class="kasperimpl.transaction.KTransactionManagerImpl"/>
-	    <component api="WorkManager" class="kasperimpl.work.WorkManagerImpl">
+	    </module>
+    
+    <module name="vertigo-dynamo">
+	    <component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl" />
+	    <component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
+	    <component api="SearchManager" class="io.vertigo.dynamo.impl.search.SearchManagerImpl" />
+	    <component api="KTransactionManager" class="io.vertigo.dynamo.impl.transaction.KTransactionManagerImpl"/>
+	    <component api="WorkManager" class="io.vertigo.dynamo.impl.work.WorkManagerImpl">
 	    	    	<param name="workerCount" value="5" />
 	    </component>
-	    <component api="CodecManager" class="kasperimpl.codec.CodecManagerImpl" />
-	 
-	    <component api="CacheManager" class="kasperimpl.cache.CacheManagerImpl">
-	        <plugin class="kasperimpl.cache.plugins.map.MapCachePlugin" />
-	    </component>
-	    <component api="PersistenceManager" class="kasperimpl.persistence.PersistenceManagerImpl">
-	        <plugin class="kasperimpl.persistence.plugins.oracle.OracleStorePlugin">
+	    <component api="PersistenceManager" class="io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl">
+	        <plugin class="io.vertigo.dynamo.plugins.persistence.oracle.OracleStorePlugin">
 	            <param name="sequencePrefix" value="SEQ_" />
 	        </plugin>
-	        <plugin class="kasperimpl.persistence.plugins.filestore.db.DbFileStorePlugin" />
+	        <plugin class="io.vertigo.dynamo.plugins.persistence.filestore.db.DbFileStorePlugin" />
 	    </component>
-	    <component api="ScriptManager" class="kasperimpl.script.ScriptManagerImpl" >
-	       <plugin class="kasperimpl.script.plugins.janino.JaninoExpressionEvaluatorPlugin"/>  
-	    </component>
-	    <component api="DataBaseManager" class="kasperimpl.database.DataBaseManagerImpl">
-	        <plugin class="kasperimpl.database.plugins.connection.mock.MockConnectionProviderPlugin">
-	              <param name="dataBaseClass" value="kasperimpl.database.vendor.hsql.HsqlDataBase"/>
+	    <component api="DataBaseManager" class="io.vertigo.dynamo.impl.database.DataBaseManagerImpl">
+	        <plugin class="io.vertigo.dynamo.plugins.database.connection.mock.MockConnectionProviderPlugin">
+	              <param name="dataBaseClass" value="io.vertigo.dynamo.impl.database.vendor.hsql.HsqlDataBase"/>
 	              <param name="jdbcDriver" value="org.hsqldb.jdbcDriver"/>
 	              <param name="jdbcUrl" value="jdbc:hsqldb:mem:database"/>
 	        </plugin>
 	    </component>
-
-	    <component api="EnvironmentManager" class="kasperimpl.environment.EnvironmentManagerImpl">
-	        <plugin class="kasperimpl.environment.plugins.loaders.kpr.KprLoaderPlugin" >
-	            <param name ="kpr" value="kaspermock/execution.kpr"/>
+	    <component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
+	       <plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" >
+	            <param name ="kpr" value="io/vertigo/dynamock/execution.kpr"/>
+	       </plugin>
+	       <plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" >
+	               <param name ="classes" value="io.vertigo.dynamock.domain.DtDefinitions"/>
 	        </plugin>  
-	        <plugin class="kasperimpl.environment.plugins.loaders.java.AnnotationLoaderPlugin" >
-	               <param name ="classes" value="kaspermock.domain.DtDefinitions"/>
-	        </plugin>  
-	        
-	        <plugin class="kasperimpl.environment.plugins.registries.domain.DomainDynamicRegistryPlugin" />
-	        <plugin class="kasperimpl.environment.plugins.registries.task.TaskDynamicRegistryPlugin" />
-	        <plugin class="kasperimpl.environment.plugins.registries.publisher.PublisherDynamicRegistryPlugin" />
-	        <plugin class="kasperimpl.environment.plugins.registries.search.SearchDynamicRegistryPlugin" />
-	        <plugin class="kasperimpl.environment.plugins.registries.file.FileDynamicRegistryPlugin" />
+	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
+	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
+	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
 	    </component>
-	</module>
+	</module> 
 	
-	<module name="kasper-mda">
-	    <component api="ReportingManager" class="kasperimpl.reporting.ReportingManagerImpl">
+    <module name="vertigo-studio">
+	   <component api="ReportingManager" class="io.vertigo.studio.impl.reporting.ReportingManagerImpl">
 	        <param name="rootPath" value="D:/perfs/" />
-	        <plugin class="kasperimpl.reporting.plugins.task.TaskReportingPlugin"/>
-	        <plugin class="kasperimpl.reporting.plugins.domain.DomainReportingPlugin"/>
+	        <plugin class="io.vertigo.studio.plugins.reporting.task.TaskReportingPlugin"/>
+	        <plugin class="io.vertigo.studio.plugins.reporting.domain.DomainReportingPlugin"/>
 	    </component>
-	</module>
+    </module>
 	  
 </modules>
