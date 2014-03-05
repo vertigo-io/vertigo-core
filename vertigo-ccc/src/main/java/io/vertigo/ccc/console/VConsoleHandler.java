@@ -26,16 +26,21 @@ import io.vertigo.kernel.lang.Activeable;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 /**
  * @author pchretien
  */
 final class VConsoleHandler implements Activeable {
+	private static String DEFAULT_HOST = "localhost";
+	private static int DEFAULT_PORT = 4400;
 	private Map<SocketAddress, VClient> clients = new LinkedHashMap<>();
 
 	public void start() {
@@ -55,25 +60,14 @@ final class VConsoleHandler implements Activeable {
 			switch (command.getName()) {
 				case "$help":
 					return VResponse.createResponse("toto");
-					//				case "$reconnect":
-					//					close(client);
-					//					client = new VClient("localhost", 4444);
-					//					return VResponse.createResponse(jsonAdapater.toJson("connection OK"));
 				case "$who":
-					//					List<String> remoteAddresses = new ArrayList<>();
-					//					for (VClient client : clients) {
-					//						remoteAddresses.add(client.getRemoteAddress());
-					//					}
 					return VResponse.createResponse(JsonUtil.toJson(clients.keySet()));
 				case "$disconnect":
 					stop();
 					return VResponse.createResponse(JsonUtil.toJson("disconnection OK"));
 				case "$connect":
-					//					if (client != null) {
-					//						return VResponse.createResponseWithError("you are already connected");
-					//					}
-					String host = command.arg("host", "localhost");
-					int port = command.arg("port", 4400);
+					String host = command.arg("host", DEFAULT_HOST);
+					int port = command.arg("port", DEFAULT_PORT);
 					SocketAddress socketAddress = new InetSocketAddress(host, port);
 					if (clients.containsKey(socketAddress)) {
 						return VResponse.createResponseWithError("connection already established");
@@ -92,14 +86,24 @@ final class VConsoleHandler implements Activeable {
 		}
 		if (clients.isEmpty()) {
 			return VResponse.createResponseWithError("you are not connected");
-		} //		} else if (clients.size() == 1) {
-			//			return clients.get(0).execCommand(command);
-			//		} else {
-			//Multiples clients
-		Map<SocketAddress, VResponse> responses = new HashMap<>();
-		for (Entry<SocketAddress, VClient> entry : clients.entrySet()) {
-			responses.put(entry.getKey(), entry.getValue().execCommand(command));
 		}
-		return VResponse.createResponse(JsonUtil.toJson(responses));
+		//
+		final JsonParser parser = new JsonParser();
+
+		//		} else if (clients.size() == 1) {
+		//			return clients.get(0).execCommand(command);
+		//		} else {
+		//Multiples clients
+		JsonObject map = new JsonObject();
+		for (Entry<SocketAddress, VClient> entry : clients.entrySet()) {
+			VResponse response = entry.getValue().execCommand(command);
+			if (response.hasError()) {
+				//if only one response has an error... 
+				return response;
+			}
+			final JsonElement jsonElement = parser.parse(response.getResponse());
+			map.add(entry.getKey().toString(), jsonElement);
+		}
+		return VResponse.createResponse(map.toString());
 	}
 }

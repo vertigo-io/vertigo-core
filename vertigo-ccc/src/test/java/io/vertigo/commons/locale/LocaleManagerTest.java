@@ -42,7 +42,7 @@ public final class LocaleManagerTest extends AbstractTestCase2JU4 {
 		// @formatter:off
 		componentSpaceConfiguilder
 		//.withRestEngine(new GrizzlyRestEngine(8080))
-		.withCommandEngine(new TcpVCommandEngine( 4400))
+		.withCommandEngine(new TcpVCommandEngine( 4406))
 		.beginModule("spaces").
 			beginComponent(LocaleManager.class, LocaleManagerImpl.class)
 				//les locales doivent être séparées par des virgules
