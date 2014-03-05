@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.console;
+package io.vertigo.ccc.console;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
