@@ -29,6 +29,8 @@
 		
 		<module>vertigo-dynamo-api</module>
 		<module>vertigo-dynamo-impl</module>
+
+		<module>vertigo-studio</module>
 	</modules>
 
 	<build>
