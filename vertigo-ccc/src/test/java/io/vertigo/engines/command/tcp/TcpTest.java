@@ -22,10 +22,18 @@ import io.vertigo.kernel.command.VCommand;
 import io.vertigo.kernel.command.VCommandHandler;
 import io.vertigo.kernel.command.VResponse;
 
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
+ * This test start 
+ * - 1 TCP server
+ * - n TCP clients (each clientis a separated java thread)
+ * 
+ *  a test sequence is a loop. 
  * @author pchretien
  */
 public final class TcpTest {
@@ -74,7 +82,8 @@ public final class TcpTest {
 		}
 
 		static VClient createClient() {
-			return new VClient(HOST, PORT);
+			SocketAddress socketAddress = new InetSocketAddress(HOST, PORT);
+			return new VClient(socketAddress);
 		}
 
 		@Override
@@ -86,11 +95,7 @@ public final class TcpTest {
 					//}
 					VResponse response = tcpClient.execCommand(new VCommand("ping"));
 					Assert.assertFalse(response.hasError());
-					//					if (response.hasError()) {
-					//						System.out.println("KO >" + response.getResponse());
-					//					} else {
-					//						System.out.println("OK >" + response.getResponse());
-					//					}
+					Assert.assertTrue(response.getResponse().contains("pong"));
 				}
 			}
 		}

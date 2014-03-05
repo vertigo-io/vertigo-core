@@ -24,22 +24,26 @@ import io.vertigo.kernel.command.VCommand;
 import io.vertigo.kernel.command.VResponse;
 import io.vertigo.kernel.lang.Activeable;
 
-import java.util.ArrayList;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author pchretien
  */
 final class VConsoleHandler implements Activeable {
-	private List<VClient> clients = new ArrayList<>();
+	private Map<SocketAddress, VClient> clients = new LinkedHashMap<>();
 
 	public void start() {
 		//		clients.p = new VClient("localhost", 4444);
 	}
 
 	public void stop() {
-		final Iterator<VClient> it = clients.iterator();
+		final Iterator<VClient> it = clients.values().iterator();
 		while (it.hasNext()) {
 			it.next().close();
 			it.remove();
@@ -56,11 +60,11 @@ final class VConsoleHandler implements Activeable {
 					//					client = new VClient("localhost", 4444);
 					//					return VResponse.createResponse(jsonAdapater.toJson("connection OK"));
 				case "$who":
-					List<String> remoteAddresses = new ArrayList<>();
-					for (VClient client : clients) {
-						remoteAddresses.add(client.getRemoteAddress());
-					}
-					return VResponse.createResponse(JsonUtil.toJson(remoteAddresses));
+					//					List<String> remoteAddresses = new ArrayList<>();
+					//					for (VClient client : clients) {
+					//						remoteAddresses.add(client.getRemoteAddress());
+					//					}
+					return VResponse.createResponse(JsonUtil.toJson(clients.keySet()));
 				case "$disconnect":
 					stop();
 					return VResponse.createResponse(JsonUtil.toJson("disconnection OK"));
@@ -68,12 +72,16 @@ final class VConsoleHandler implements Activeable {
 					//					if (client != null) {
 					//						return VResponse.createResponseWithError("you are already connected");
 					//					}
-					try {
-						String host = command.arg("host", "localhost");
-						int port = command.arg("port", 4444);
+					String host = command.arg("host", "localhost");
+					int port = command.arg("port", 4400);
+					SocketAddress socketAddress = new InetSocketAddress(host, port);
+					if (clients.containsKey(socketAddress)) {
+						return VResponse.createResponseWithError("connection already established");
+					}
 
-						VClient client = new VClient(host, port);
-						clients.add(client);
+					try {
+						VClient client = new VClient(socketAddress);
+						clients.put(socketAddress, client);
 						return VResponse.createResponse(JsonUtil.toJson("connection successfull"));
 					} catch (Exception e) {
 						return VResponse.createResponseWithError("connection failed " + e.getMessage());
@@ -84,15 +92,14 @@ final class VConsoleHandler implements Activeable {
 		}
 		if (clients.isEmpty()) {
 			return VResponse.createResponseWithError("you are not connected");
-		} else if (clients.size() == 1) {
-			return clients.get(0).execCommand(command);
-		} else {
+		} //		} else if (clients.size() == 1) {
+			//			return clients.get(0).execCommand(command);
+			//		} else {
 			//Multiples clients
-			List<VResponse> responses = new ArrayList<>();
-			for (VClient client : clients) {
-				responses.add(client.execCommand(command));
-			}
-			return VResponse.createResponse(JsonUtil.toJson(responses));
+		Map<SocketAddress, VResponse> responses = new HashMap<>();
+		for (Entry<SocketAddress, VClient> entry : clients.entrySet()) {
+			responses.put(entry.getKey(), entry.getValue().execCommand(command));
 		}
+		return VResponse.createResponse(JsonUtil.toJson(responses));
 	}
 }

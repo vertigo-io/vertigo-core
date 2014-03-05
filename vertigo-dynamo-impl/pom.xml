@@ -11,14 +11,14 @@
 	<artifactId>vertigo-dynamo-impl</artifactId>
 	<packaging>jar</packaging>
 	<name>vertigo-dynamo-impl</name>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-core</artifactId>
@@ -26,7 +26,7 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-commons-api</artifactId>
@@ -125,6 +125,10 @@
 			<optional>true</optional><!-- EmbeddedSolrSearchServicesPlugin -->
 			<exclusions>
 				<exclusion>
+					<groupId>org.apache.hadoop</groupId>
+  					<artifactId>hadoop-annotations</artifactId>
+				</exclusion>
+				<exclusion>
 					<groupId>woodstox</groupId>
 					<artifactId>wstx-asl</artifactId>
 				</exclusion>
@@ -132,10 +136,7 @@
 					<groupId>antlr</groupId>
 					<artifactId>antlr</artifactId>
 				</exclusion>
-				<!-- exclusion> 
-					<groupId>commons-fileupload</groupId> 
-					<artifactId>commons-fileupload</artifactId> 
-				</exclusion -->
+				<!-- exclusion> <groupId>commons-fileupload</groupId> <artifactId>commons-fileupload</artifactId> </exclusion -->
 			</exclusions>
 		</dependency>
 

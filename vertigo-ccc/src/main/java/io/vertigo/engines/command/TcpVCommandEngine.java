@@ -42,8 +42,6 @@ import javax.inject.Named;
  * @author pchretien
  */
 public final class TcpVCommandEngine implements VCommandEngine, Activeable {
-	//int DEFAULT_PORT = 4444;
-
 	private final int port;
 	private final Map<String, VCommandExecutor> commmandExecutors = new LinkedHashMap<>();
 

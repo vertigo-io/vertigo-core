@@ -20,9 +20,10 @@ package io.vertigo.engines.command.tcp;
 
 import io.vertigo.kernel.command.VCommand;
 import io.vertigo.kernel.command.VResponse;
+import io.vertigo.kernel.lang.Assertion;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.channels.SocketChannel;
 
 /**
@@ -34,9 +35,11 @@ public final class VClient implements AutoCloseable {
 	private final SocketChannel socketChannel;
 	private final VProtocol protocol = new VProtocol();
 
-	public VClient(String host, int port) {
+	public VClient(SocketAddress socketAddress) {
+		Assertion.checkNotNull(socketAddress);
+		//---------------------------------------------------------------------
 		try {
-			socketChannel = SocketChannel.open(new InetSocketAddress(host, port));
+			socketChannel = SocketChannel.open(socketAddress);
 			socketChannel.socket().setSoTimeout(DEFAULT_TIMEOUT);
 			//socketChannel.configureBlocking(true);
 			//			socket.setReuseAddress(true);
@@ -76,11 +79,11 @@ public final class VClient implements AutoCloseable {
 		}
 	}
 
-	public String getRemoteAddress() {
-		try {
-			return socketChannel.getRemoteAddress().toString();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	//	public String getRemoteAddress() {
+	//		try {
+	//			return socketChannel.getRemoteAddress().toString();
+	//		} catch (IOException e) {
+	//			throw new RuntimeException(e);
+	//		}
+	//	}
 }
