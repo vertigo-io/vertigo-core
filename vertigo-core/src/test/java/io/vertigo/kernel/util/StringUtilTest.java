@@ -47,7 +47,7 @@ public final class StringUtilTest {
 		Assert.assertEquals("yyyaYay", StringUtil.replace("YYYYYYaYaYY", "YY", "y"));
 		Assert.assertEquals("YY", StringUtil.replace("YYY", "YY", "Y"));
 
-		//On vï¿½rifie si la chaine ï¿½ remplacer n'existe pas.
+		//On vérifie si la chaine à remplacer n'existe pas.
 		Assert.assertEquals("azertyuiop", StringUtil.replace("azertyuiop", "ZZ", "Y"));
 	}
 
@@ -174,7 +174,7 @@ public final class StringUtilTest {
 
 	@Test(expected = Exception.class)
 	public void testformatWithError() {
-		//Si on oublie de fermer une parenthï¿½se
+		//Si on oublie de fermer une parenthèse
 		StringUtil.format("bonjour {0 monde", "le");
 	}
 }
