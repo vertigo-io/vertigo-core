@@ -18,9 +18,6 @@
  */
 package io.vertigo.kernel.metamodel;
 
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.command.VCommand;
-import io.vertigo.kernel.command.VCommandExecutor;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.JsonExclude;
@@ -148,17 +145,6 @@ public final class DefinitionSpace implements Activeable {
 	public void start() {
 		Assertion.checkState(definitions.isEmpty(), "DefinitionSpace must be empty");
 		Assertion.checkState(allObjects.isEmpty(), "DefinitionSpace must be empty");
-		if (Home.getCommandEngine().isDefined()) {
-			final DefinitionSpace definitionSpace = this;
-			Home.getCommandEngine().get().registerCommandExecutor("definitions", new VCommandExecutor<DefinitionSpace>() {
-				/** {@inheritDoc} */
-				public DefinitionSpace exec(VCommand command) {
-					Assertion.checkNotNull(command);
-					//---------------------------------------------------------------------
-					return definitionSpace;
-				}
-			});
-		}
 	}
 
 	/**

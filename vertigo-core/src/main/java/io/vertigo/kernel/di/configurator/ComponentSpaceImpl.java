@@ -35,6 +35,7 @@ import io.vertigo.kernel.engines.VCommandEngine;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
+import io.vertigo.kernel.metamodel.DefinitionSpace;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -118,13 +119,22 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 			if (commandEngine instanceof Activeable) {
 				((Activeable) commandEngine).start();
 			}
-			engines.add(commandEngine);
-		}
-
-		if (Home.getCommandEngine().isDefined()) {
-			Home.getCommandEngine().get().registerCommandExecutor("config", new VCommandExecutor<ComponentSpaceConfig>() {
+			//			engines.add(commandEngine);
+			//		}
+			//
+			//		if (componentSpaceConfig.getCommandEngine().isDefined()) {
+			commandEngine.registerCommandExecutor("config", new VCommandExecutor<ComponentSpaceConfig>() {
 				public ComponentSpaceConfig exec(VCommand command) {
 					return componentSpaceConfig;
+				}
+			});
+
+			commandEngine.registerCommandExecutor("definitions", new VCommandExecutor<DefinitionSpace>() {
+				/** {@inheritDoc} */
+				public DefinitionSpace exec(VCommand command) {
+					Assertion.checkNotNull(command);
+					//---------------------------------------------------------------------
+					return Home.getDefinitionSpace();
 				}
 			});
 		}

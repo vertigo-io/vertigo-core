@@ -38,7 +38,7 @@ import com.google.gson.JsonParser;
 /**
  * @author pchretien
  */
-final class VConsoleHandler implements Activeable {
+public final class VConsoleHandler implements Activeable {
 	private static String DEFAULT_HOST = "localhost";
 	private static int DEFAULT_PORT = 4400;
 	private Map<SocketAddress, VClient> clients = new LinkedHashMap<>();
@@ -55,7 +55,7 @@ final class VConsoleHandler implements Activeable {
 		}
 	}
 
-	VResponse execCommand(VCommand command) {
+	public VResponse execCommand(VCommand command) {
 		if (command.getName().startsWith("$")) {
 			switch (command.getName()) {
 				case "$help":

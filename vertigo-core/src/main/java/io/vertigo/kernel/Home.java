@@ -21,10 +21,8 @@ package io.vertigo.kernel;
 import io.vertigo.kernel.component.ComponentSpace;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
 import io.vertigo.kernel.di.configurator.ComponentSpaceImpl;
-import io.vertigo.kernel.engines.VCommandEngine;
 import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.metamodel.DefinitionSpace;
 
 /**
@@ -63,8 +61,6 @@ public final class Home {
 
 	private final DefinitionSpace definitionSpace = new DefinitionSpace();
 	private ComponentSpace componentSpace = ComponentSpaceImpl.EMPTY;
-
-	private final Option<VCommandEngine> commandEngine = Option.none();
 
 	private Home() {
 		// Classe statique d'accès aux composants.
@@ -166,8 +162,8 @@ public final class Home {
 		//---------------------------------------------------------------------
 		state = toState;
 	}
-
-	public static Option<VCommandEngine> getCommandEngine() {
-		return INSTANCE.commandEngine;
-	}
+	//
+	//	public static Option<VCommandEngine> getCommandEngine() {
+	//		return INSTANCE.commandEngine;
+	//	}
 }
