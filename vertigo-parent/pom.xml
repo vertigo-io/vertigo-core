@@ -50,7 +50,7 @@ limitations under the License. -->
 	<scm>
 		<connection>scm:git:https://github.com/vertigo-io/vertigo.git</connection>
 		<developerConnection>scm:git:https://github.com/vertigo-io/vertigo.git</developerConnection>
-		<url>scm:git:https://github.com/vertigo-io/vertigo.git</url>	
+		<url>scm:git:https://github.com/vertigo-io/vertigo.git</url>
 		<tag>vertigo-0.2.0</tag>
 	</scm>
 
@@ -83,6 +83,12 @@ limitations under the License. -->
 					<exclude>*.java</exclude>
 				</excludes>
 			</testResource>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<excludes>
+					<exclude>**/trash/**</exclude>
+				</excludes>
+			</testResource>
 		</testResources>
 		<!-- To define the plugin version in your parent POM -->
 		<pluginManagement>
@@ -101,12 +107,12 @@ limitations under the License. -->
 					<artifactId>maven-release-plugin</artifactId>
 					<version>2.4.2</version>
 					<dependencies>
-			        <dependency>
-			          <groupId>org.apache.maven.scm</groupId>
-			          <artifactId>maven-scm-provider-gitexe</artifactId>
-			          <version>1.9</version>
-			        </dependency>
-			    </dependencies>
+						<dependency>
+							<groupId>org.apache.maven.scm</groupId>
+							<artifactId>maven-scm-provider-gitexe</artifactId>
+							<version>1.9</version>
+						</dependency>
+					</dependencies>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -121,14 +127,14 @@ limitations under the License. -->
 				<artifactId>maven-release-plugin</artifactId>
 			</plugin>
 			<plugin>
-				<!-- On précise que l'on souhaite aussi un jar pour les tests -->
+				<!-- We need a test jar too  -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
-            <forceCreation>true</forceCreation>
-            <skipIfEmpty>true</skipIfEmpty>
-        </configuration>
+					<forceCreation>true</forceCreation>
+					<skipIfEmpty>true</skipIfEmpty>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -144,9 +150,10 @@ limitations under the License. -->
 				<configuration>
 					<header>license.txt</header>
 				</configuration>
-				<!-- executions> <execution> <phase>package</phase> <goals> <goal>license</goal> </goals> </execution> </executions -->
+				<!-- executions> <execution> <phase>package</phase> <goals> <goal>license</goal> 
+					</goals> </execution> </executions -->
 			</plugin>
-			<plugin><!--Config pour déployer les sources et la javadoc :http://stackoverflow.com/questions/4725668/how-to-deploy-snapshot-with-sources-and-javadoc -->
+			<plugin><!--Config pour dÃ©ployer les sources et la javadoc :http://stackoverflow.com/questions/4725668/how-to-deploy-snapshot-with-sources-and-javadoc -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>2.2.1</version>
@@ -192,7 +199,7 @@ limitations under the License. -->
 			</plugin>
 		</plugins>
 	</build>
-	
+
 	<pluginRepositories>
 		<pluginRepository>
 			<id>atlassian-public</id>
@@ -206,7 +213,7 @@ limitations under the License. -->
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
-  
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
