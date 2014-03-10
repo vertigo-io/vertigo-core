@@ -43,7 +43,7 @@ public final class SearchGeneratorPlugin extends AbstractGeneratorPlugin<SearchC
 		mapRoot.put("indexDefinition", indexDefinition);
 		mapRoot.put("indexType", new TemplateMethodIndexType());
 
-		final FileGenerator super2java = getFileGenerator(searchConfiguration, mapRoot, "schema", "solr/" + indexDefinition.getName() + "/conf", ".xml", "search/schema.ftl");
+		final FileGenerator super2java = getFileGenerator(searchConfiguration, mapRoot, "schema", "solr/" + indexDefinition.getName() + "/conf", ".xml", "schema.ftl");
 		super2java.generateFile(result, true);
 	}
 }

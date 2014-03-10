@@ -75,7 +75,7 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin<TaskConfi
 		final Map<String, Object> mapRoot = new HashMap<>();
 		mapRoot.put("dao", dao);
 
-		final FileGenerator daoGenerator = getFileGenerator(taskConfiguration, mapRoot, dao.getClassSimpleName(), dao.getPackageName(), ".java", "task/dao.ftl");
+		final FileGenerator daoGenerator = getFileGenerator(taskConfiguration, mapRoot, dao.getClassSimpleName(), dao.getPackageName(), ".java", "dao.ftl");
 		daoGenerator.generateFile(result, true);
 	}
 
@@ -88,7 +88,7 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin<TaskConfi
 		final Map<String, Object> mapRoot = new HashMap<>();
 		mapRoot.put("pao", pao);
 
-		final FileGenerator super2java = getFileGenerator(taskConfiguration, mapRoot, pao.getClassSimpleName(), pao.getPackageName(), ".java", "task/pao.ftl");
+		final FileGenerator super2java = getFileGenerator(taskConfiguration, mapRoot, pao.getClassSimpleName(), pao.getPackageName(), ".java", "pao.ftl");
 		super2java.generateFile(result, true);
 	}
 

@@ -94,7 +94,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 		mapRoot.put("classSimpleName", "DtDefinitions");
 		mapRoot.put("dtDefinitions", getDtDefinitions());
 
-		final FileGenerator super2java = getFileGenerator(domainConfiguration, mapRoot, "DtDefinitions", domainConfiguration.getDomainPackage(), ".java", "domain/dtdefinitions.ftl");
+		final FileGenerator super2java = getFileGenerator(domainConfiguration, mapRoot, "DtDefinitions", domainConfiguration.getDomainPackage(), ".java", "dtdefinitions.ftl");
 		super2java.generateFile(result, true);
 
 	}
@@ -113,7 +113,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 		mapRoot.put("annotations", new TemplateMethodAnnotations(generateJpaAnnotations));
 
 		final FileGenerator super2java = getFileGenerator(domainConfiguration, mapRoot, definition.getClassSimpleName(), definition.getPackageName(), //
-				".java", "domain/dto.ftl");
+				".java", "dto.ftl");
 		super2java.generateFile(result, true);
 	}
 
@@ -134,10 +134,10 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 				mapRoot.put("simpleClassName", simpleClassName);
 				mapRoot.put("dtDefinitions", dtDefinitionCollection);
 
-				final FileGenerator dtDefinitions2ResourceEnum = getFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".java", "domain/resources.ftl");
+				final FileGenerator dtDefinitions2ResourceEnum = getFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".java", "resources.ftl");
 				dtDefinitions2ResourceEnum.generateFile(result, true);
 
-				final FileGenerator dtDefinitions2ResourceProperties = getFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".properties", "domain/properties.ftl");
+				final FileGenerator dtDefinitions2ResourceProperties = getFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".properties", "properties.ftl");
 				dtDefinitions2ResourceProperties.generateFile(result, true);
 			}
 		}
@@ -148,7 +148,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 		mapRoot.put("sql", new TemplateMethodSqlOracle());
 		mapRoot.put("dtDefinitions", getDtDefinitions());
 		mapRoot.put("oracle", true);
-		final FileGenerator super2java = getFileGenerator(domainConfiguration, mapRoot, "crebas", "sqlgen", ".sql", "domain/sql.ftl");
+		final FileGenerator super2java = getFileGenerator(domainConfiguration, mapRoot, "crebas", "sqlgen", ".sql", "sql.ftl");
 		super2java.generateFile(result, true);
 	}
 

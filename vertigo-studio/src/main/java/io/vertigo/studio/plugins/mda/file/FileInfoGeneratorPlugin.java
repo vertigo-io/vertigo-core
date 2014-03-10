@@ -47,7 +47,7 @@ public final class FileInfoGeneratorPlugin extends AbstractGeneratorPlugin<FileI
 		mapRoot.put("packageName", fileInfoConfiguration.getFilePackage());
 
 		final FileGenerator super2java = getFileGenerator(fileInfoConfiguration, mapRoot, definition.getClassSimpleName(), fileInfoConfiguration.getFilePackage(), //
-				".java", "file/fileInfo.ftl");
+				".java", "fileInfo.ftl");
 		super2java.generateFile(result, true);
 	}
 }

@@ -65,24 +65,25 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 		this.packageName = packageName;
 		this.fileExtention = fileExtention;
 		this.templateName = templateName;
-		configuration = initConfiguration();
+		configuration = initConfiguration(parameters.getClass());
 		targetDir = parameters.getTargetDir();
 		targetGenDir = parameters.getTargetGenDir();
 	}
 
 	/**
+	 * @param referenceClass Class de référence du template
 	 * @return Configuration de FreeMarker
 	 */
-	private Configuration initConfiguration() {
+	private Configuration initConfiguration(Class<?> referenceClass) {
 		final Configuration config = new Configuration();
 		config.setSharedVariable("constToCamelCase", new TemplateMethodStringUtil());
-		setTemplateLoading(config);
+		setTemplateLoading(config, referenceClass);
 		config.setObjectWrapper(ObjectWrapper.BEANS_WRAPPER);
 		return config;
 	}
 
-	private void setTemplateLoading(final Configuration config) {
-		config.setClassForTemplateLoading(getClass(), "");
+	private void setTemplateLoading(final Configuration config, Class<?> referenceClass) {
+		config.setClassForTemplateLoading(referenceClass, "");
 	}
 
 	/** {@inheritDoc} */
