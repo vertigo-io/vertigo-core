@@ -48,6 +48,13 @@ limitations under the License. -->
 		<module>vertigo-studio</module>
 	</modules>
 
+	<scm>
+		<connection>scm:git:https://github.com/vertigo-io/vertigo.git</connection>
+		<developerConnection>scm:git:https://github.com/vertigo-io/vertigo.git</developerConnection>
+		<url>scm:git:https://github.com/vertigo-io/vertigo.git</url>
+		<tag>vertigo-0.2.0</tag>
+	</scm>
+
 	<build>
 		<plugins>
 			<plugin>
