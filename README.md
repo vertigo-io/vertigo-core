@@ -1,4 +1,4 @@
-# Vertigo
+#Vertigo
 
 A Simple Java Starter starter kit for **real projects**.
 
@@ -6,7 +6,7 @@ Its main purpose is to publish simple and homogeneous APIs over more complex lib
 
 
 #Modules
-``Vertigo`` is splitted into modules.
+__Vertigo__ is splitted into modules.
 
 ## vertigo-core
 Build and configure your own modules with 
@@ -17,33 +17,33 @@ Build and configure your own modules with
 
 
 
-## vertigo-commons
+##vertigo-commons
 A set of common tools 
 
-* ``analytics`` : track your process calls, time & errors
-* ``cache`` : keep your objects in memory to improve performance
-* ``codec`` : transform object into another. (main builtin : HTML, SHA1, Base64, Compress, Serialize) 
-* ``config`` : read configs for your application (overridable, externalizable, aggregate multiple configs)
-* ``parser`` : a simple parser for your [DSL](http://en.wikipedia.org/wiki/Domain-specific_language)
-* ``resource`` : a simple access to resource (builtin : lookup into classpath, webapp, filesystem with relative or absolute path)
-* ``script`` : execute String like script (because sometimes you need to merge code and data)
+* __analytics__ : track your process calls, time & errors
+* __cache__ : keep your objects in memory to improve performance
+* __codec__ : transform object into another. (main builtin : HTML, SHA1, Base64, Compress, Serialize) 
+* __config__ : read configs for your application (overridable, externalizable, aggregate multiple configs)
+* __parser__ : a simple parser for your [DSL](http://en.wikipedia.org/wiki/Domain-specific_language)
+* __resource__ : a simple access to resource (builtin : lookup into classpath, webapp, filesystem with relative or absolute path)
+* __script__ : execute String like script (because sometimes you need to merge code and data)
 
-## vertigo-dynamo
+##vertigo-dynamo
 A simple data access to your sql/nosql database, including search patterns.
   
-* ``collections`` : collections tools (builtin : fulltext indexation, facetting, filtering)   
-* ``database`` : databases handlers (builtin : Oracle, MSSql, Postgresql, Hsql, H2, Hibernate)
-* ``domain`` : top-2-bottom POJO to simplify layers communications from Database to GUI/WS
-* ``environment`` : initialize your components from differents sources (builtin : powerdesigner, DSL, Java annotations)
-* ``file`` : manage file's creation
-* ``kvdatastore`` : key/value datastore
-* ``persistence`` : simple persistence layer access (builtin : route by object type, CRUD operations, NN operations, SearchServer integration)
-* ``search`` : simple search api
-* ``task`` : manage your tasks
-* ``transaction`` : simple transaction managment 
-* ``work`` : process, shedule or distribute your task
+* __collections__ : collections tools (builtin : fulltext indexation, facetting, filtering)   
+* __database__ : databases handlers (builtin : Oracle, MSSql, Postgresql, Hsql, H2, Hibernate)
+* __domain__ : top-2-bottom POJO to simplify layers communications from Database to GUI/WS
+* __environment__ : initialize your components from differents sources (builtin : powerdesigner, DSL, Java annotations)
+* __file__ : manage file's creation
+* __kvdatastore__ : key/value datastore
+* __persistence__ : simple persistence layer access (builtin : route by object type, CRUD operations, NN operations, SearchServer integration)
+* __search__ : simple search api
+* __task__ : manage your tasks
+* __transaction__ : simple transaction managment 
+* __work__ : process, shedule or distribute your task
 
-## vertigo-rest 
+##vertigo-rest 
 add a rest access to your application
 
 ##vertigo-ccc
