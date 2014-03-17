@@ -1,14 +1,14 @@
 Version history
 ---------------
 
+
 Release 0.3.0 - 2014/03/13
 ==========================
 The most notable changes in Vertigo 0.3.0 over previous releases are:
   * Add vertigo-studio
   * Add Jpa/Hibernate support
   * Add vertigo-dynamo
-  * Add vertigo-ccc Command Control & Communications
-  * Engines are considerated like plugins
+  * Add vertigo-ccc Command & Control Center
   * Refactor maven modules
 
 Release 0.2.1 - 2014/02/26

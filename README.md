@@ -1,6 +1,6 @@
 #Vertigo
 
-A Simple Java Starter starter kit for **real projects**.
+A Simple Java Starter  kit for **real projects**.
 
 Its main purpose is to publish simple and homogeneous APIs over more complex libraries.
 
@@ -14,7 +14,6 @@ Build and configure your own modules with
 * a set of usefull elements such as assertion, option
 * a fast, simple and lightweight Dependency Injection
  
-
 
 
 ##vertigo-commons
