@@ -22,7 +22,6 @@ import io.vertigo.kernel.Home;
 import io.vertigo.kernel.Logo;
 import io.vertigo.kernel.component.ComponentInitializer;
 import io.vertigo.kernel.component.Container;
-import io.vertigo.kernel.component.Manager;
 import io.vertigo.kernel.component.Plugin;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
@@ -184,10 +183,10 @@ final class ComponentContainer implements Container, Activeable {
 		}
 	}
 
-	private void initializeComponent(final String normalizedId, final Object component) {
-		final ComponentInitializer<Manager> initializer = initializers.get(normalizedId);
+	private <C> void initializeComponent(final String normalizedId, final C component) {
+		final ComponentInitializer<C> initializer = initializers.get(normalizedId);
 		if (initializer != null) {
-			initializer.init((Manager) component);
+			initializer.init(component);
 		}
 	}
 
