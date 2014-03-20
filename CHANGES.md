@@ -1,6 +1,11 @@
 Version history
 ===============
 
+Running 0.3.1-SNAPSHOT
+----------------------
+  * Fix Issues #3 : add a new mandatory vertigo-studio parameter ```domain.dictionaryClassName``` 
+    * To maintain compatibility add : ```domain.dictionaryClassName=DtDefinitions``` in your studio-config.properties
+  * Fix Issues #2
 
 Release 0.3.0 - 2014/03/13
 --------------------------

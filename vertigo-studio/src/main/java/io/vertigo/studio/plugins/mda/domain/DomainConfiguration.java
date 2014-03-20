@@ -13,6 +13,7 @@ import java.util.Properties;
  */
 final class DomainConfiguration extends AbstractConfiguration {
 	private final boolean generateResourcesFile;
+	private final String domainDictionaryClassName;
 
 	/**
 	 * Constructeur.
@@ -22,6 +23,7 @@ final class DomainConfiguration extends AbstractConfiguration {
 		super(properties);
 		//---------------------------------------------------------------------
 		generateResourcesFile = Boolean.parseBoolean(getPropertyNotNull(properties, "generateResourcesFile", "generateResourcesFile doit être renseigné à true ou false"));
+		domainDictionaryClassName = getPropertyNotNull(properties, "domain.dictionaryClassName", "domain.dictionaryClassName doit être renseigné et préciser le nom de la class Dictionaire des DtDefinitions");
 	}
 
 	boolean isResourcesFileGenerated() {
@@ -30,5 +32,9 @@ final class DomainConfiguration extends AbstractConfiguration {
 
 	String getDomainPackage() {
 		return getProjectPackageName() + ".domain";
+	}
+
+	String getDomainDictionaryClassName() {
+		return domainDictionaryClassName;
 	}
 }
