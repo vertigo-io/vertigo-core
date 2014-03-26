@@ -54,9 +54,8 @@ public final class VRuntimeException extends RuntimeException {
 	 * Constructeur.
 	 *
 	 * @param t Exception cause
-	 * @param params paramètres de la resource
 	 */
-	public VRuntimeException(final Throwable t, final Object... params) {
-		this(t.getMessage(), t, params);
+	public VRuntimeException(final Throwable t) {
+		super(t);
 	}
 }
