@@ -33,6 +33,15 @@ public final class DateBuilder implements Builder<Date> {
 
 	/**
 	 * Constructeur du builder de date.
+	 * @param millis Time in UTC milliseconds from the epoch.
+	 */
+	public DateBuilder(final long timeinMillis) {
+		calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(timeinMillis);
+	}
+
+	/**
+	 * Constructeur du builder de date.
 	 * @param date Date de départ des traitements (elle n'est pas modifiée)
 	 */
 	public DateBuilder(final Date date) {
