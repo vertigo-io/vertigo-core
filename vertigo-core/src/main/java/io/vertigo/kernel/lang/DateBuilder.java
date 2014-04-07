@@ -31,14 +31,14 @@ import java.util.Date;
 public final class DateBuilder implements Builder<Date> {
 	private final Calendar calendar;
 
-	/**
-	 * Constructeur du builder de date.
-	 * @param millis Time in UTC milliseconds from the epoch.
-	 */
-	public DateBuilder(final long timeinMillis) {
-		calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(timeinMillis);
-	}
+	//	/**
+	//	 * Constructeur du builder de date.
+	//	 * @param millis Time in UTC milliseconds from the epoch.
+	//	 */
+	//	public DateBuilder(final long timeinMillis) {
+	//		calendar = Calendar.getInstance();
+	//		calendar.setTimeInMillis(timeinMillis);
+	//	}
 
 	/**
 	 * Constructeur du builder de date.
