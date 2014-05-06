@@ -37,11 +37,13 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 	 */
 	private List<String> writeJpaAnnotations(final DtDefinition dtDefinition) {
 		final List<String> lines = new ArrayList<>();
-		lines.add("@javax.persistence.Entity");
-		if (dtDefinition.isPersistent()) {
-			lines.add("@javax.persistence.Table (name = \"" + getTableName(dtDefinition) + "\")");
-			if (containsDataStreamField(dtDefinition)) {
-				lines.add("@org.hibernate.annotations.TypeDefs(value = { @org.hibernate.annotations.TypeDef(name = \"DO_STREAM\", typeClass = io.vertigo.dynamo.plugins.database.connection.hibernate.DataStreamType.class) })");
+		if (dtDefinition.getIdField().isDefined()) { //Il faut un Id pour déclarer l'élément comme Entity. Nous faisons le choix de déclarer comme Entity même les Objects non persistant.
+			lines.add("@javax.persistence.Entity");
+			if (dtDefinition.isPersistent()) {
+				lines.add("@javax.persistence.Table (name = \"" + getTableName(dtDefinition) + "\")");
+				if (containsDataStreamField(dtDefinition)) {
+					lines.add("@org.hibernate.annotations.TypeDefs(value = { @org.hibernate.annotations.TypeDef(name = \"DO_STREAM\", typeClass = io.vertigo.dynamo.plugins.database.connection.hibernate.DataStreamType.class) })");
+				}
 			}
 		}
 		return lines;
