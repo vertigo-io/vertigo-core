@@ -17,11 +17,10 @@ import org.apache.log4j.Logger;
 /**
  * Loader de fichier XMI version Enterprise Architect.
  * @author pforhan
- *
  */
 public class EAXmiLoader {
 	private final Map<EAXmiId, EAXmiObject> map;
-	
+
 	private final Logger log = Logger.getLogger(this.getClass());
 
 	/**
@@ -41,7 +40,7 @@ public class EAXmiLoader {
 	}
 
 	/**
-	 * Récupération des classes déclarées dans le XMI.
+	 * Rï¿½cupï¿½ration des classes dï¿½clarï¿½es dans le XMI.
 	 * @return Liste des classes
 	 */
 	public List<EAXmiClass> getClassList() {
@@ -57,7 +56,7 @@ public class EAXmiLoader {
 	}
 
 	/**
-	 * Récupération des associations déclarées dans le XMI.
+	 * Rï¿½cupï¿½ration des associations dï¿½clarï¿½es dans le XMI.
 	 * @return Liste des associations
 	 */
 	public List<EAXmiAssociation> getAssociationList() {
@@ -74,11 +73,11 @@ public class EAXmiLoader {
 	}
 
 	private EAXmiClass createEAXmiClass(final EAXmiObject obj) {
-		log.debug("Creation de classe : "+ obj.getName());
+		log.debug("Creation de classe : " + obj.getName());
 		//On recherche les attributs (>DtField) de cette classe(>Dt_DEFINITION)
 		final String code = obj.getName().toUpperCase();
 		final String packageName = obj.getParent().getPackageName();
-		
+
 		final List<EAXmiAttribute> keyAttributes = new ArrayList<>();
 		final List<EAXmiAttribute> fieldAttributes = new ArrayList<>();
 		for (final EAXmiObject child : obj.getChildList()) {
@@ -113,38 +112,37 @@ public class EAXmiLoader {
 	 * @return Association 
 	 */
 	private EAXmiAssociation buildDynAssociation(final EAXmiObject obj) {
-		log.debug("Créer association :" + obj.getName());
+		log.debug("Crï¿½er association :" + obj.getName());
 		final String code = obj.getName().toUpperCase();
 		final String packageName = obj.getParent().getPackageName();
 
 		final String multiplicityA = obj.getRoleAMultiplicity();
 		final String multiplicityB = obj.getRoleBMultiplicity();
 
-		//On recherche les objets référencés par l'association.
+		//On recherche les objets rï¿½fï¿½rencï¿½s par l'association.
 		EAXmiObject objectB = map.get(obj.getClassB());
 		EAXmiObject objectA = map.get(obj.getClassA());
-		
+
 		if (objectA == null || objectB == null) {
 			throw new IllegalArgumentException("Noeuds de l'association introuvables");
 		}
-		//Si les roles ne sont pas renseignés ont prend le nom de la table en CamelCase.
+		//Si les roles ne sont pas renseignï¿½s ont prend le nom de la table en CamelCase.
 		final String roleLabelA = obj.getRoleALabel() != null ? obj.getRoleALabel() : StringUtil.constToCamelCase(objectA.getName(), true);
 		final String roleLabelB = obj.getRoleBLabel() != null ? obj.getRoleBLabel() : StringUtil.constToCamelCase(objectB.getName(), true);
-		// Si il n'existe pas de libelle pour un role donné alors on utilise le nom de l'objet référencé.
-		//Le code du role est déduit du libellé.
+		// Si il n'existe pas de libelle pour un role donnï¿½ alors on utilise le nom de l'objet rï¿½fï¿½rencï¿½.
+		//Le code du role est dï¿½duit du libellï¿½.
 
-		//Attention pamc inverse dans oom les déclarations des objets !!
+		//Attention pamc inverse dans oom les dï¿½clarations des objets !!
 		final String codeA = objectA.getName().toUpperCase();
 		final String codeB = objectB.getName().toUpperCase();
 
 		// associationDefinition.
 		//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
 
-		// navigabilités sont optionnelles; elles sont déduites de la multiplicités quand elles ne sont pas renseignÃ©es
+		// navigabilitï¿½s sont optionnelles; elles sont dï¿½duites de la multiplicitï¿½s quand elles ne sont pas renseignÃ©es
 		final boolean navigabilityA = obj.getRoleANavigability() == null ? false : obj.getRoleANavigability();
 		final boolean navigabilityB = obj.getRoleBNavigability() == null ? true : obj.getRoleBNavigability();
 		return new EAXmiAssociation(code, packageName, multiplicityA, multiplicityB, roleLabelA, roleLabelB, codeA, codeB, navigabilityA, navigabilityB);
 	}
-
 
 }

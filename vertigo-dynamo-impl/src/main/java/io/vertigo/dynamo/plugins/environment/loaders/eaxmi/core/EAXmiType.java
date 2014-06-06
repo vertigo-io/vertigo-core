@@ -1,30 +1,28 @@
 package io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core;
 
-
 /**
- * Type d'objets du XMI géré.
+ * Type d'objets du XMI gï¿½rï¿½.
  * @author pforhan
- *
  */
 public enum EAXmiType {
 	/**
-	 * Objet Xmi décrivant un Package >>Package.
+	 * Objet Xmi dï¿½crivant un Package >>Package.
 	 */
 	Package("uml:Package"),
 	/**
-	 * Objet Xmi décrivant une Classe >> DtDefinition.
+	 * Objet Xmi dï¿½crivant une Classe >> DtDefinition.
 	 */
 	Class("uml:Class"),
 	/**
-	 * Objet Xmi décrivant un Attibut d'une Classe >> DtField.
+	 * Objet Xmi dï¿½crivant un Attibut d'une Classe >> DtField.
 	 */
 	Attribute("uml:Property"),
 	/**
-	 * Objet Xmi décrivant une Association >> Association.
+	 * Objet Xmi dï¿½crivant une Association >> Association.
 	 */
 	Association("uml:Association"),
 	/**
-	 * Tag Xmi pour un élément à traiter.
+	 * Tag Xmi pour un ï¿½lï¿½ment ï¿½ traiter.
 	 */
 	PackageElement("packageElement"),
 	/**
@@ -38,8 +36,7 @@ public enum EAXmiType {
 	/**
 	 * Tag d'extension EA pour une association.
 	 */
-	Connector("connector")
-	;
+	Connector("connector");
 
 	private final String code;
 
@@ -62,11 +59,11 @@ public enum EAXmiType {
 		} else if (Association.getCode().equals(name)) {
 			type = Association;
 		} else if (ClassAttribute.getCode().equals(name)) {
-				type = ClassAttribute;
+			type = ClassAttribute;
 		} else if (Connector.getCode().equals(name)) {
 			type = Association;
 		} else {
-			//rien trouvé
+			//rien trouvï¿½
 			type = null;
 		}
 		return type;
@@ -81,8 +78,7 @@ public enum EAXmiType {
 		ok = ok || Connector.getCode().equals(name);
 		return ok;
 	}
-	
-	
+
 	static boolean isObjet(final String type, final String tagName) {
 		boolean ok = false;
 		ok = ok || Attribute.getCode().equals(type) && OwnedAttribute.getCode().equals(tagName);
@@ -91,20 +87,20 @@ public enum EAXmiType {
 		ok = ok || Association.getCode().equals(type);
 		return ok;
 	}
-	
+
 	boolean isAttribute() {
 		boolean ok = false;
 		ok = ok || this == Attribute;
 		return ok;
 	}
-	
+
 	boolean isClass() {
 		boolean ok = false;
 		ok = ok || this == Class;
 		ok = ok || this == Association;
 		return ok;
 	}
-	
+
 	boolean isAssociation() {
 		boolean ok = false;
 		ok = ok || this == Association;

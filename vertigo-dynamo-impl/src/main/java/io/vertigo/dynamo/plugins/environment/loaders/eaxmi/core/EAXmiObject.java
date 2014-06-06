@@ -10,37 +10,36 @@ import org.xml.sax.Attributes;
 
 /**
  * Objets de l'arbre Xmi.
- * Les extensions correspondent à Enterprise Architect.
+ * Les extensions correspondent ï¿½ Enterprise Architect.
  * @author pforhan
- *
  */
-public class EAXmiObject {
-	// Propriétés des attributs
+final class EAXmiObject {
+	// Propriï¿½tï¿½s des attributs
 	private static final String PROPERTY_NAME = "name";
-	//Le libellé est dans une des deux propriétés suivantes s'il a été défini.
+	//Le libellï¿½ est dans une des deux propriï¿½tï¿½s suivantes s'il a ï¿½tï¿½ dï¿½fini.
 	// Style est prioritaire sur documentation.
 	private static final String PROPERTY_COMMENT = "documentation";
 	private static final String PROPERTY_ALIAS = "style";
 	// Nom de la variable qui contient la valeur dans les attributs
 	private static final String PROPERTY_ALIAS_NAME = "value";
-	//Définition du domaine
+	//Dï¿½finition du domaine
 	private static final String PROPERTY_DOMAIN = "properties";
-	private static final String PROPERTY_DOMAIN_NAME="type";
-	
+	private static final String PROPERTY_DOMAIN_NAME = "type";
+
 	// Identification de l'Id.
 	private static final String PROPERTY_ID = "xrefs";
-	private static final String PROPERTY_ID_NAME ="$DES=@PROP=@NAME=isID@ENDNAME;@TYPE=Boolean@ENDTYPE;@VALU=1@ENDVALU;";
-	
+	private static final String PROPERTY_ID_NAME = "$DES=@PROP=@NAME=isID@ENDNAME;@TYPE=Boolean@ENDTYPE;@VALU=1@ENDVALU;";
+
 	private static final String PROPERTY_MULTIPLICITY = "bounds";
 	private static final String PROPERTY_MULTIPLICITY_LOWER_NAME = "lower";
 	private static final String PROPERTY_MULTIPLICITY_UPPER_NAME = "upper";
-	
+
 	private static final String PROPERTY_CLASSE_A = "source";
 	private static final String PROPERTY_CLASSE_B = "target";
 	// On stocke les ids, les noms des classes seront misesp lus tard.
 	private static final String PROPERTY_CLASSE_NAME = "xmi:idref";
-	
-	// On évite de chercher les libellés/multiplicité dans les extrémités, on prend plutôt le résumé
+
+	// On ï¿½vite de chercher les libellï¿½s/multiplicitï¿½ dans les extrï¿½mitï¿½s, on prend plutï¿½t le rï¿½sumï¿½
 	private static final String PROPERTY_ROLE_MULTIPLICITY = "labels";
 	private static final String PROPERTY_ROLE_A_MULTIPLICITY = "lb";
 	private static final String PROPERTY_ROLE_B_MULTIPLICITY = "rb";
@@ -58,7 +57,7 @@ public class EAXmiObject {
 	private final EAXmiType type;
 	private final List<EAXmiObject> childList = new ArrayList<>();
 
-	//Données spécifiques
+	//Donnï¿½es spï¿½cifiques
 	private String name;
 
 	//=========Gestion des attributes============================
@@ -71,7 +70,7 @@ public class EAXmiObject {
 	//=========Gestion des associations==========================
 	private String roleALabel;
 	private String roleBLabel;
-	
+
 	private EAXmiId classA;
 	private EAXmiId classB;
 
@@ -83,7 +82,7 @@ public class EAXmiObject {
 
 	//============================================================
 	private final EAXmiObject root;
-	
+
 	private final Logger log = Logger.getLogger(this.getClass());
 
 	/**
@@ -112,7 +111,7 @@ public class EAXmiObject {
 	}
 
 	EAXmiObject createEAXmiObject(final EAXmiId newId, final EAXmiType newType, final String leNom) {
-		log.debug("Le père : "+ name + " le fils " + leNom + " Le Type " + newType.name().toString());
+		log.debug("Le pï¿½re : " + name + " le fils " + leNom + " Le Type " + newType.name().toString());
 		final EAXmiObject created = new EAXmiObject(this, newId, newType);
 		if (leNom != null) {
 			created.setName(leNom);
@@ -148,7 +147,7 @@ public class EAXmiObject {
 	String getName() {
 		return name != null ? name : id.toString();
 	}
-	
+
 	void setName(String name) {
 		this.name = name;
 	}
@@ -156,7 +155,7 @@ public class EAXmiObject {
 	String getLabel() {
 		return label != null ? label : getName();
 	}
-	
+
 	String getDomain() {
 		return this.domain;
 	}
@@ -164,14 +163,14 @@ public class EAXmiObject {
 	//================================ASSOCIATIONS==============================
 
 	/**
-	 * @return Libellé du role du noeud A, null si non defini
+	 * @return Libellï¿½ du role du noeud A, null si non defini
 	 */
 	String getRoleALabel() {
 		return roleALabel;
 	}
 
 	/**
-	 * @return Libellé du role du noeud B, null si non defini
+	 * @return Libellï¿½ du role du noeud B, null si non defini
 	 */
 	String getRoleBLabel() {
 		return roleBLabel;
@@ -192,14 +191,14 @@ public class EAXmiObject {
 	}
 
 	/**
-	 * @return Navigabilité du noeud A
+	 * @return Navigabilitï¿½ du noeud A
 	 */
 	Boolean getRoleANavigability() {
 		return roleANavigability;
 	}
 
 	/**
-	 * @return Navigabilité du noeud B
+	 * @return Navigabilitï¿½ du noeud B
 	 */
 	Boolean getRoleBNavigability() {
 		return roleBNavigability;
@@ -227,23 +226,12 @@ public class EAXmiObject {
 		return classB;
 	}
 
-	/**
-	 * Setter.
-	 * @param classB
-	 */
-	public void setClassB(EAXmiId classB) {
-		this.classB = classB;
-	}
+	// Gestion des propriï¿½tï¿½s
 
-	
-	
-	// Gestion des propriétés
-	
-	
 	void setProperty(final String propertyName, final String propertyValue, final Attributes attributs) {
 		Assertion.checkNotNull(propertyName);
 		//----------------------------------------------------------------------
-		if  (PROPERTY_NAME.equals(propertyName)) {
+		if (PROPERTY_NAME.equals(propertyName)) {
 			name = propertyValue;
 		} else if (PROPERTY_COMMENT.equals(propertyName)) {
 			label = attributs.getValue(PROPERTY_ALIAS_NAME);
@@ -251,31 +239,31 @@ public class EAXmiObject {
 			label = attributs.getValue(PROPERTY_ALIAS_NAME);
 		} else if (PROPERTY_DOMAIN.equals(propertyName)) {
 			manageDomain(attributs);
-			// Même nom pour le domaine et les navigabilité
+			// Mï¿½me nom pour le domaine et les navigabilitï¿½
 			manageNavigabilite(attributs);
 		} else if (PROPERTY_ID.equals(propertyName)) {
 			// On peut se retrouver en fin de fichier avec des xrefs qui reviennent.
-			// On ne mets à jour que si on ne l'a pas fait.
-				final String valeur = attributs.getValue(PROPERTY_ALIAS_NAME);
-				isId = (valeur != null && valeur.contains(PROPERTY_ID_NAME));
+			// On ne mets ï¿½ jour que si on ne l'a pas fait.
+			final String valeur = attributs.getValue(PROPERTY_ALIAS_NAME);
+			isId = (valeur != null && valeur.contains(PROPERTY_ID_NAME));
 		} else if (PROPERTY_MULTIPLICITY.equals(propertyName)) {
 			final String lower = attributs.getValue(PROPERTY_MULTIPLICITY_LOWER_NAME);
 			final String upper = attributs.getValue(PROPERTY_MULTIPLICITY_UPPER_NAME);
 			multiplicity = lower + ".." + upper;
 		} else if (PROPERTY_ROLE_MULTIPLICITY.equals(propertyName)) {
-			manageMultiplicity(attributs);		
+			manageMultiplicity(attributs);
 		} else if (PROPERTY_CLASSE_A.equals(propertyName)) {
 			final String valeur = attributs.getValue(PROPERTY_CLASSE_NAME);
 			if (valeur != null) {
 				classA = new EAXmiId(valeur);
-			}	
+			}
 		} else if (PROPERTY_CLASSE_B.equals(propertyName)) {
 			final String valeur = attributs.getValue(PROPERTY_CLASSE_NAME);
 			if (valeur != null) {
 				classB = new EAXmiId(valeur);
 			}
 		}
-		//On ne tient pas compte des autres propriétés
+		//On ne tient pas compte des autres propriï¿½tï¿½s
 	}
 
 	private void manageNavigabilite(final Attributes attributs) {
@@ -307,12 +295,12 @@ public class EAXmiObject {
 			roleBLabel = roleBLabel.substring(1);
 		}
 	}
-	
+
 	private void manageDomain(final Attributes attributs) {
-		if (domain == null ||domain.isEmpty()) {
+		if (domain == null || domain.isEmpty()) {
 			domain = attributs.getValue(PROPERTY_DOMAIN_NAME);
 		}
-		
+
 	}
 
 	//==========================================================================
@@ -338,9 +326,9 @@ public class EAXmiObject {
 		if (getType() == EAXmiType.Package) {
 			return getName();
 		}
-		// On remonte la hiérarchie pour trouver le pacakge.
+		// On remonte la hiï¿½rarchie pour trouver le pacakge.
 		return getParent().getPackageName();
-		
+
 	}
 
 }

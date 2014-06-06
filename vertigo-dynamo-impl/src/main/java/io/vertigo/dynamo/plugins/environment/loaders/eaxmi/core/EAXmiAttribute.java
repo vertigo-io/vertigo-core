@@ -2,8 +2,10 @@ package io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core;
 
 import io.vertigo.kernel.lang.Assertion;
 
-
-public class EAXmiAttribute {
+/**
+* @author pforhan
+*/
+public final class EAXmiAttribute {
 	private final String code;
 	private final String label;
 	private final boolean notNull;
@@ -16,7 +18,7 @@ public class EAXmiAttribute {
 		Assertion.checkArgNotEmpty(code);
 		Assertion.checkArgNotEmpty(label);
 		Assertion.checkArgNotEmpty(code);
-		Assertion.checkArgNotEmpty(domain, "Le domain du champ '{0}' a été oublié.", label);
+		Assertion.checkArgNotEmpty(domain, "Le domain du champ '{0}' a ï¿½tï¿½ oubliï¿½.", label);
 		//----------------------------------------------------------------------
 		this.code = code;
 		this.label = label;
@@ -32,7 +34,7 @@ public class EAXmiAttribute {
 	}
 
 	/**
-	 * @return Libellé.
+	 * @return Libellï¿½.
 	 */
 	public String getLabel() {
 		return label;
@@ -42,7 +44,7 @@ public class EAXmiAttribute {
 	 * @return Si l'attribut est persistent.
 	 */
 	public boolean isPersistent() {
-		// L'information de persistence ne peut pas être déduite du Xmi, tous les champs sont déclarés persistent de facto
+		// L'information de persistence ne peut pas ï¿½tre dï¿½duite du Xmi, tous les champs sont dï¿½clarï¿½s persistent de facto
 		return true;
 	}
 

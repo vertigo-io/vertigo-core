@@ -5,9 +5,8 @@ import io.vertigo.kernel.lang.Assertion;
 /**
  * Classe de gestion des identifiants du XMI.
  * @author pforhan
- *
- */
-public class EAXmiId {
+  */
+final class EAXmiId {
 	private final String keyValue;
 
 	/**

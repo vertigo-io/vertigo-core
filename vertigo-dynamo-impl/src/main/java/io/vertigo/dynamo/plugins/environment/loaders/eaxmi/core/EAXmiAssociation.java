@@ -8,7 +8,7 @@ import io.vertigo.kernel.lang.Assertion;
  * @author pforhan
  *
  */
-public class EAXmiAssociation {
+public final class EAXmiAssociation {
 	private final String code;
 	private final String packageName;
 
@@ -39,7 +39,7 @@ public class EAXmiAssociation {
 		this.code = code;
 		this.packageName = packageName;
 
-		// On gèe le cas du 1 tout seul.
+		// On gï¿½e le cas du 1 tout seul.
 		if ("1".equals(multiplicityA)) {
 			this.multiplicityA = "1..1";
 		} else {
@@ -50,7 +50,7 @@ public class EAXmiAssociation {
 		} else {
 			this.multiplicityB = multiplicityB;
 		}
-		
+
 		this.roleLabelA = roleLabelA;
 		this.roleLabelB = roleLabelB;
 
@@ -63,9 +63,9 @@ public class EAXmiAssociation {
 
 	/**
 	 * Formatage du code : AAA_YYY_{CODE NAME}
-	 * AAA = Trois première lettre du code de A
-	 * BBB = Trois première lettre du code de B
-	 * Le nom défini par l'utilisateur est facultatif.
+	 * AAA = Trois premiï¿½re lettre du code de A
+	 * BBB = Trois premiï¿½re lettre du code de B
+	 * Le nom dï¿½fini par l'utilisateur est facultatif.
 	 * 
 	 * @return Code de l'association
 	 */
@@ -74,8 +74,8 @@ public class EAXmiAssociation {
 	}
 
 	/**
-	 * Le code suivant est déduit du code.  
-	 * @return Nom de l'association défini par l'utilisateur. (Peut être null)
+	 * Le code suivant est dï¿½duit du code.  
+	 * @return Nom de l'association dï¿½fini par l'utilisateur. (Peut ï¿½tre null)
 	 */
 	public String getCodeName() {
 		if (code.length() > 8 && code.charAt(3) == '_' && code.charAt(7) == '_') {
@@ -92,56 +92,56 @@ public class EAXmiAssociation {
 	}
 
 	/**
-	 * @return Multiplicité de A.
+	 * @return Multiplicitï¿½ de A.
 	 */
 	public String getMultiplicityA() {
 		return multiplicityA;
 	}
 
 	/**
-	 * @return Multiplicité de B.
+	 * @return Multiplicitï¿½ de B.
 	 */
 	public String getMultiplicityB() {
 		return multiplicityB;
 	}
 
 	/**
-	 * @return Navigabilité de A.
+	 * @return Navigabilitï¿½ de A.
 	 */
 	public boolean isNavigableA() {
 		return navigabilityA;
 	}
 
 	/**
-	 * @return Navigabilité de B.
+	 * @return Navigabilitï¿½ de B.
 	 */
 	public boolean isNavigableB() {
 		return navigabilityB;
 	}
 
 	/**
-	 * @return Libellé du noeud A.
+	 * @return Libellï¿½ du noeud A.
 	 */
 	public String getRoleLabelA() {
 		return roleLabelA;
 	}
 
 	/**
-	 * @return Libellé du noeud B.
+	 * @return Libellï¿½ du noeud B.
 	 */
 	public String getRoleLabelB() {
 		return roleLabelB;
 	}
 
 	/**
-	 * @return Code de l'entité A participant à l'association
+	 * @return Code de l'entitï¿½ A participant ï¿½ l'association
 	 */
 	public String getCodeA() {
 		return codeA;
 	}
 
 	/**
-	 * @return Code de l'entité B participant à  l'association.
+	 * @return Code de l'entitï¿½ B participant ï¿½ l'association.
 	 */
 	public String getCodeB() {
 		return codeB;

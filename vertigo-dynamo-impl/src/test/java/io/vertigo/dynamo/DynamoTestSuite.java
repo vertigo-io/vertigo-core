@@ -24,6 +24,12 @@ import io.vertigo.dynamo.database.DataBaseManagerTest;
 import io.vertigo.dynamo.domain.DomainManagerTest;
 import io.vertigo.dynamo.domain.constraint.ConstraintTest;
 import io.vertigo.dynamo.domain.formatter.FormatterTest;
+import io.vertigo.dynamo.environment.eaxmi.EAXmiAATest;
+import io.vertigo.dynamo.environment.eaxmi.EAXmiEnvironmentManagerTest;
+import io.vertigo.dynamo.environment.eaxmi.EAXmiTest;
+import io.vertigo.dynamo.environment.eaxmi.EAXmiTestParser;
+import io.vertigo.dynamo.environment.eaxmi.EAXmiTestParserAA;
+import io.vertigo.dynamo.environment.eaxmi.EAXmiTestParserIdentifiers;
 import io.vertigo.dynamo.environment.java.JavaEnvironmentManagerTest;
 import io.vertigo.dynamo.environment.oom.OOMAATest;
 import io.vertigo.dynamo.environment.oom.OOMEnvironmentManagerTest;
@@ -67,6 +73,7 @@ import org.junit.runners.Suite.SuiteClasses;
 		JavaEnvironmentManagerTest.class,
 		//--OOM
 		OOMAATest.class, OOMEnvironmentManagerTest.class, OOMTest.class, TestParserOOM.class, TestParserOOMAA.class, TestParserOOMIdentifiers.class,
+		EAXmiAATest.class, EAXmiEnvironmentManagerTest.class, EAXmiTest.class, EAXmiTestParser.class, EAXmiTestParserAA.class, EAXmiTestParserIdentifiers.class,
 
 		//--
 

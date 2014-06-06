@@ -6,7 +6,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class EAXmiClass {
+/**
+* @author pforhan
+*/
+public final class EAXmiClass {
 	private final String code;
 	private final String packageName;
 	private final List<EAXmiAttribute> keyAttributes;
