@@ -21,7 +21,7 @@ public enum EAXmiType {
 	 * Objet Xmi d�crivant une Association >> Association.
 	 */
 	Association("uml:Association"),
-	/**
+	/**s
 	 * Tag Xmi pour un �l�ment � traiter.
 	 */
 	PackageElement("packageElement"),
@@ -100,11 +100,4 @@ public enum EAXmiType {
 		ok = ok || this == Association;
 		return ok;
 	}
-
-	boolean isAssociation() {
-		boolean ok = false;
-		ok = ok || this == Association;
-		return ok;
-	}
-
 }
