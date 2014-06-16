@@ -143,32 +143,30 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 			if (annotation instanceof io.vertigo.dynamo.domain.metamodel.annotation.Association) {
 				final io.vertigo.dynamo.domain.metamodel.annotation.Association association = (io.vertigo.dynamo.domain.metamodel.annotation.Association) annotation;
 				//============================================================
-				final DynamicDefinitionBuilder associationDefinitionBuilder = dynamicModelRepository.createDynamicDefinition(association.name(), associationMetaDefinition, packageName);
-				// associationDefinition.
-				//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
-
-				associationDefinitionBuilder.putPropertyValue(KspProperty.MULTIPLICITY_A, association.primaryMultiplicity())//
-						.putPropertyValue(KspProperty.MULTIPLICITY_B, association.foreignMultiplicity())//
-
-						// navigabilités
-						.putPropertyValue(KspProperty.NAVIGABILITY_A, association.primaryIsNavigable())//
-						.putPropertyValue(KspProperty.NAVIGABILITY_B, association.foreignIsNavigable())//
-
-						.putPropertyValue(KspProperty.ROLE_A, association.primaryRole())//
-						.putPropertyValue(KspProperty.LABEL_A, association.primaryLabel())//
-						.putPropertyValue(KspProperty.ROLE_B, association.foreignRole())//
-						.putPropertyValue(KspProperty.LABEL_B, association.foreignRole());
-
 				//Attention pamc inverse dans oom les déclarations des objets !!
 				final DynamicDefinitionKey primaryDtDefinitionKey = new DynamicDefinitionKey(association.primaryDtDefinitionName());
 				final DynamicDefinitionKey foreignDtDefinitionKey = new DynamicDefinitionKey(association.foreignDtDefinitionName());
 
-				associationDefinitionBuilder.addDefinition("dtDefinitionA", primaryDtDefinitionKey);
-				associationDefinitionBuilder.addDefinition("dtDefinitionB", foreignDtDefinitionKey);
+				final DynamicDefinition associationDefinition = dynamicModelRepository.createDynamicDefinition(association.name(), associationMetaDefinition, packageName)//
+						// associationDefinition.
+						//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
+						.putPropertyValue(KspProperty.MULTIPLICITY_A, association.primaryMultiplicity())//
+						.putPropertyValue(KspProperty.MULTIPLICITY_B, association.foreignMultiplicity())//
+						// navigabilités
+						.putPropertyValue(KspProperty.NAVIGABILITY_A, association.primaryIsNavigable())//
+						.putPropertyValue(KspProperty.NAVIGABILITY_B, association.foreignIsNavigable())//
+						//Roles	
+						.putPropertyValue(KspProperty.ROLE_A, association.primaryRole())//
+						.putPropertyValue(KspProperty.LABEL_A, association.primaryLabel())//
+						.putPropertyValue(KspProperty.ROLE_B, association.foreignRole())//
+						.putPropertyValue(KspProperty.LABEL_B, association.foreignRole())//
+						//---
+						.addDefinition("dtDefinitionA", primaryDtDefinitionKey)//
+						.addDefinition("dtDefinitionB", foreignDtDefinitionKey)//
+						//---
+						.putPropertyValue(KspProperty.FK_FIELD_NAME, association.fkFieldName())//
+						.build();
 
-				associationDefinitionBuilder.putPropertyValue(KspProperty.FK_FIELD_NAME, association.fkFieldName());
-				//============================================================
-				final DynamicDefinition associationDefinition = associationDefinitionBuilder.build();
 				if (!dynamicModelRepository.containsDefinitionKey(associationDefinition.getDefinitionKey())) {
 					//Les associations peuvent être déclarées sur les deux noeuds de l'association.
 					dynamicModelRepository.addDefinition(associationDefinition);
@@ -233,14 +231,15 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	 */
 	private void parseAnnotation(final DynamicDefinitionRepository dynamicModelrepository, final String fieldName, final DynamicDefinitionBuilder dtDefinition, final io.vertigo.dynamo.domain.metamodel.annotation.Field field) {
 		//Si on trouve un domaine on est dans un objet dynamo.
-		final DynamicDefinitionBuilder dtFieldBuilder = dynamicModelrepository.createDynamicDefinition(fieldName, dtFieldMetaDefinition, null);
 		final FieldType type = FieldType.valueOf(field.type());
 		final DynamicDefinitionKey fieldDomainKey = new DynamicDefinitionKey(field.domain());
-		dtFieldBuilder.addDefinition("domain", fieldDomainKey);
-		dtFieldBuilder.putPropertyValue(KspProperty.LABEL, field.label())//
+		final DynamicDefinition dtField = dynamicModelrepository.createDynamicDefinition(fieldName, dtFieldMetaDefinition, null)//
+				.addDefinition("domain", fieldDomainKey)//
+				.putPropertyValue(KspProperty.LABEL, field.label())//
 				.putPropertyValue(KspProperty.NOT_NULL, field.notNull())//
-				.putPropertyValue(KspProperty.PERSISTENT, field.persistent());
-		final DynamicDefinition dtField = dtFieldBuilder.build();
+				.putPropertyValue(KspProperty.PERSISTENT, field.persistent())//
+				.build();
+
 		switch (type) {
 			case PRIMARY_KEY:
 				dtDefinition.addChildDefinition(DomainGrammar.PRIMARY_KEY, dtField);

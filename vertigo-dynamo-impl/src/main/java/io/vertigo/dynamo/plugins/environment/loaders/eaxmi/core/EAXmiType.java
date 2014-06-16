@@ -21,7 +21,7 @@ public enum EAXmiType {
 	 * Objet Xmi d�crivant une Association >> Association.
 	 */
 	Association("uml:Association"),
-	/**s
+	/**
 	 * Tag Xmi pour un �l�ment � traiter.
 	 */
 	PackageElement("packageElement"),

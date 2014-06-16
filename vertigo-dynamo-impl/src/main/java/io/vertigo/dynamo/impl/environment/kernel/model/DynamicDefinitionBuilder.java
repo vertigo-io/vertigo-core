@@ -27,7 +27,7 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	 * @param fieldName Nom du champ
 	 * @param definitionKey Clé de la définition
 	 */
-	void addDefinition(final String fieldName, final DynamicDefinitionKey definitionKey);
+	DynamicDefinitionBuilder addDefinition(final String fieldName, final DynamicDefinitionKey definitionKey);
 
 	/**
 	 * Ajoute une liste de définitions au champ défini par fieldName.

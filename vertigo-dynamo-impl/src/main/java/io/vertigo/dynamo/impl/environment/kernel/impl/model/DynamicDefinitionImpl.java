@@ -224,12 +224,13 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return this;
 	}
 
-	public void addDefinition(final String fieldName, final DynamicDefinitionKey definitionKey) {
+	public DynamicDefinitionBuilder addDefinition(final String fieldName, final DynamicDefinitionKey definitionKey) {
 		// On vérifie que la liste est vide pour éviter les syntaxe avec multi
 		// déclarations
 		Assertion.checkArgument(obtainDefinitionKeys(fieldName).isEmpty(), "syntaxe interdite");
 		// ----------------------------------------------------------------------
 		doAddDefinition(fieldName, definitionKey);
+		return this;
 	}
 
 	public void check(final Entity myEntity) {

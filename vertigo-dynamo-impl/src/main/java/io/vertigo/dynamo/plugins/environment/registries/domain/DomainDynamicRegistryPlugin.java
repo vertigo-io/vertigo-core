@@ -412,17 +412,18 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		//Notamment la validité de la liste des contraintes et la nullité du formatter
 
 		final Entity metaDefinitionDomain = getGrammarProvider().getDomainEntity();
-		final DynamicDefinitionBuilder domainBuilder = dynamicModelRepository.createDynamicDefinition(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain, packageName);
-
 		final DynamicDefinitionKey fmtDefaultKey = new DynamicDefinitionKey(Formatter.FMT_DEFAULT);
 		final DynamicDefinitionKey dtObjectKey = new DynamicDefinitionKey("DtObject");
-		domainBuilder.addDefinition("formatter", fmtDefaultKey);
-		domainBuilder.addDefinition("dataType", dtObjectKey);
-		//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
-		domainBuilder.putPropertyValue(KspProperty.TYPE, definitionName);
+
+		final DynamicDefinition domain = dynamicModelRepository.createDynamicDefinition(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain, packageName)//
+				.addDefinition("formatter", fmtDefaultKey)//
+				.addDefinition("dataType", dtObjectKey)//
+				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
+				.putPropertyValue(KspProperty.TYPE, definitionName)//
+				.build();
 
 		//On ajoute le domain crée au repository
-		dynamicModelRepository.addDefinition(domainBuilder.build());
+		dynamicModelRepository.addDefinition(domain);
 
 		//On fait la même chose avec DTC
 

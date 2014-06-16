@@ -90,13 +90,14 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 	}
 
 	private DynamicDefinition toDynamicDefinition(final EAXmiAttribute attributeXmi, final DynamicDefinitionRepository dynamicModelrepository) {
-		final DynamicDefinitionBuilder dtFieldBuilder = dynamicModelrepository.createDynamicDefinition(attributeXmi.getCode(), dtFieldEntity, null);
-		dtFieldBuilder.putPropertyValue(KspProperty.LABEL, attributeXmi.getLabel());
-		dtFieldBuilder.putPropertyValue(KspProperty.PERSISTENT, attributeXmi.isPersistent());
-		dtFieldBuilder.putPropertyValue(KspProperty.NOT_NULL, attributeXmi.isNotNull());
 		final DynamicDefinitionKey domainKey = new DynamicDefinitionKey(attributeXmi.getDomain());
-		dtFieldBuilder.addDefinition("domain", domainKey);
-		return dtFieldBuilder.build();
+
+		return dynamicModelrepository.createDynamicDefinition(attributeXmi.getCode(), dtFieldEntity, null)//
+				.putPropertyValue(KspProperty.LABEL, attributeXmi.getLabel())//
+				.putPropertyValue(KspProperty.PERSISTENT, attributeXmi.isPersistent())//
+				.putPropertyValue(KspProperty.NOT_NULL, attributeXmi.isNotNull())//
+				.addDefinition("domain", domainKey)//
+				.build();
 	}
 
 	private DynamicDefinition toDynamicDefinition(final EAXmiAssociation associationXmi, final DynamicDefinitionRepository dynamicModelrepository) {
@@ -112,19 +113,18 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 		}
 
 		//On crée l'association
-		final DynamicDefinitionBuilder associationDefinitionBuilder = dynamicModelrepository.createDynamicDefinition(name, dynamicMetaDefinition, associationXmi.getPackageName());
-
-		associationDefinitionBuilder.putPropertyValue(KspProperty.NAVIGABILITY_A, associationXmi.isNavigableA())//
+		final DynamicDefinitionBuilder associationDefinitionBuilder = dynamicModelrepository.createDynamicDefinition(name, dynamicMetaDefinition, associationXmi.getPackageName())//
+				.putPropertyValue(KspProperty.NAVIGABILITY_A, associationXmi.isNavigableA())//
 				.putPropertyValue(KspProperty.NAVIGABILITY_B, associationXmi.isNavigableB())//
-
+				//---
 				.putPropertyValue(KspProperty.LABEL_A, associationXmi.getRoleLabelA())//
 				//On transforme en CODE ce qui est écrit en toutes lettres.
 				.putPropertyValue(KspProperty.ROLE_A, french2Java(associationXmi.getRoleLabelA()))//
 				.putPropertyValue(KspProperty.LABEL_B, associationXmi.getRoleLabelB())//
-				.putPropertyValue(KspProperty.ROLE_B, french2Java(associationXmi.getRoleLabelB()));
-
-		associationDefinitionBuilder.addDefinition("dtDefinitionA", getDtDefinitionKey(associationXmi.getCodeA()));
-		associationDefinitionBuilder.addDefinition("dtDefinitionB", getDtDefinitionKey(associationXmi.getCodeB()));
+				.putPropertyValue(KspProperty.ROLE_B, french2Java(associationXmi.getRoleLabelB()))
+				//---
+				.addDefinition("dtDefinitionA", getDtDefinitionKey(associationXmi.getCodeA()))//
+				.addDefinition("dtDefinitionB", getDtDefinitionKey(associationXmi.getCodeB()));
 
 		if (isAssociationNN) {
 			//Dans le cas d'une association NN il faut établir le nom de la table intermédiaire qui porte les relations
@@ -135,9 +135,9 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 			LOGGER.trace("!isAssociationNN:Code=" + associationXmi.getCode());
 			//Dans le cas d'une NN ses deux propriétés sont redondantes ; 
 			//elles ne font donc pas partie de la définition d'une association de type NN
-			associationDefinitionBuilder.putPropertyValue(KspProperty.MULTIPLICITY_A, associationXmi.getMultiplicityA());
-			associationDefinitionBuilder.putPropertyValue(KspProperty.MULTIPLICITY_B, associationXmi.getMultiplicityB());
-			associationDefinitionBuilder.putPropertyValue(KspProperty.FK_FIELD_NAME, buildFkFieldName(associationXmi, dynamicModelrepository));
+			associationDefinitionBuilder.putPropertyValue(KspProperty.MULTIPLICITY_A, associationXmi.getMultiplicityA())//
+					.putPropertyValue(KspProperty.MULTIPLICITY_B, associationXmi.getMultiplicityB())//
+					.putPropertyValue(KspProperty.FK_FIELD_NAME, buildFkFieldName(associationXmi, dynamicModelrepository));
 
 		}
 		return associationDefinitionBuilder.build();
