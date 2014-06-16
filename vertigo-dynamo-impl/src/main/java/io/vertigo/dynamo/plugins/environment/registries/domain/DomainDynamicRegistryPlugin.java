@@ -162,7 +162,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 		final String urn = xdomain.getDefinitionKey().getName();
 		//		final String packageName = xdomain.getPackageName();
-		return new Domain(urn, dataType, formatter, createConstraintList(constraintNames), extractProperties(xdomain));
+		return new Domain(urn, dataType, formatter, createConstraints(constraintNames), extractProperties(xdomain));
 	}
 
 	private final Map<String, DtDefinitionBuilder> dtDefinitionBuilders = new HashMap<>();
@@ -315,12 +315,12 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	}
 
 	// méthode permettant de créer une liste de contraintes à partir d'une liste de noms de contrainte
-	private List<Constraint<?, Object>> createConstraintList(final List<DynamicDefinitionKey> constraintKeyList) {
-		final List<Constraint<?, Object>> constraintList = new ArrayList<>(constraintKeyList.size());
-		for (final DynamicDefinitionKey constraintKey : constraintKeyList) {
-			constraintList.add(nameSpace.resolve(constraintKey.getName(), Constraint.class));
+	private List<Constraint<?, Object>> createConstraints(final List<DynamicDefinitionKey> constraintKeys) {
+		final List<Constraint<?, Object>> constraints = new ArrayList<>(constraintKeys.size());
+		for (final DynamicDefinitionKey constraintKey : constraintKeys) {
+			constraints.add(nameSpace.resolve(constraintKey.getName(), Constraint.class));
 		}
-		return constraintList;
+		return constraints;
 	}
 
 	/**

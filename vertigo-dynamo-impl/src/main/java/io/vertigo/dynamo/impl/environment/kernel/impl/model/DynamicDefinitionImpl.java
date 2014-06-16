@@ -112,9 +112,10 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return Collections.unmodifiableSet(propertyMap.keySet());
 	}
 
-	public final void putPropertyValue(final EntityProperty property, final Object value) {
+	public final DynamicDefinitionBuilder putPropertyValue(final EntityProperty property, final Object value) {
 		property.getDataType().checkValue(value);
 		propertyMap.put(property, value);
+		return this;
 	}
 
 	/** {@inheritDoc} */

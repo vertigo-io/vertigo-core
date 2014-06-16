@@ -19,7 +19,7 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	 * @param property Propriété
 	 * @param value Valeur de la propriété
 	 */
-	void putPropertyValue(final EntityProperty property, final Object value);
+	DynamicDefinitionBuilder putPropertyValue(final EntityProperty property, final Object value);
 
 	/**
 	 * Ajoute une définition au champ défini par fieldName.

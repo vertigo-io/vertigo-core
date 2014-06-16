@@ -147,17 +147,17 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 				// associationDefinition.
 				//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
 
-				associationDefinitionBuilder.putPropertyValue(KspProperty.MULTIPLICITY_A, association.primaryMultiplicity());
-				associationDefinitionBuilder.putPropertyValue(KspProperty.MULTIPLICITY_B, association.foreignMultiplicity());
+				associationDefinitionBuilder.putPropertyValue(KspProperty.MULTIPLICITY_A, association.primaryMultiplicity())//
+						.putPropertyValue(KspProperty.MULTIPLICITY_B, association.foreignMultiplicity())//
 
-				// navigabilités
-				associationDefinitionBuilder.putPropertyValue(KspProperty.NAVIGABILITY_A, association.primaryIsNavigable());
-				associationDefinitionBuilder.putPropertyValue(KspProperty.NAVIGABILITY_B, association.foreignIsNavigable());
+						// navigabilités
+						.putPropertyValue(KspProperty.NAVIGABILITY_A, association.primaryIsNavigable())//
+						.putPropertyValue(KspProperty.NAVIGABILITY_B, association.foreignIsNavigable())//
 
-				associationDefinitionBuilder.putPropertyValue(KspProperty.ROLE_A, association.primaryRole());
-				associationDefinitionBuilder.putPropertyValue(KspProperty.LABEL_A, association.primaryLabel());
-				associationDefinitionBuilder.putPropertyValue(KspProperty.ROLE_B, association.foreignRole());
-				associationDefinitionBuilder.putPropertyValue(KspProperty.LABEL_B, association.foreignRole());
+						.putPropertyValue(KspProperty.ROLE_A, association.primaryRole())//
+						.putPropertyValue(KspProperty.LABEL_A, association.primaryLabel())//
+						.putPropertyValue(KspProperty.ROLE_B, association.foreignRole())//
+						.putPropertyValue(KspProperty.LABEL_B, association.foreignRole());
 
 				//Attention pamc inverse dans oom les déclarations des objets !!
 				final DynamicDefinitionKey primaryDtDefinitionKey = new DynamicDefinitionKey(association.primaryDtDefinitionName());
@@ -237,9 +237,9 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		final FieldType type = FieldType.valueOf(field.type());
 		final DynamicDefinitionKey fieldDomainKey = new DynamicDefinitionKey(field.domain());
 		dtFieldBuilder.addDefinition("domain", fieldDomainKey);
-		dtFieldBuilder.putPropertyValue(KspProperty.LABEL, field.label());
-		dtFieldBuilder.putPropertyValue(KspProperty.NOT_NULL, field.notNull());
-		dtFieldBuilder.putPropertyValue(KspProperty.PERSISTENT, field.persistent());
+		dtFieldBuilder.putPropertyValue(KspProperty.LABEL, field.label())//
+				.putPropertyValue(KspProperty.NOT_NULL, field.notNull())//
+				.putPropertyValue(KspProperty.PERSISTENT, field.persistent());
 		final DynamicDefinition dtField = dtFieldBuilder.build();
 		switch (type) {
 			case PRIMARY_KEY:

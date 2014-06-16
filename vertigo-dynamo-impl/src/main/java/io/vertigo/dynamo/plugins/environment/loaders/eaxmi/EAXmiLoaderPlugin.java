@@ -1,13 +1,5 @@
 package io.vertigo.dynamo.plugins.environment.loaders.eaxmi;
 
-import java.net.URL;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.apache.log4j.Logger;
-
 import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
@@ -18,14 +10,22 @@ import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionBuilder;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
-import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.metamodel.Definition;
-import io.vertigo.kernel.metamodel.DefinitionUtil;
 import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core.EAXmiAssociation;
 import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core.EAXmiAttribute;
 import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core.EAXmiClass;
 import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core.EAXmiLoader;
+import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
+import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.metamodel.Definition;
+import io.vertigo.kernel.metamodel.DefinitionUtil;
+
+import java.net.URL;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.apache.log4j.Logger;
 
 public class EAXmiLoaderPlugin implements LoaderPlugin {
 
@@ -75,7 +75,7 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 	private DynamicDefinition toDynamicDefinition(final EAXmiClass classXmi, final DynamicDefinitionRepository dynamicModelrepository) {
 
 		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelrepository.createDynamicDefinition(getDtDefinitionName(classXmi.getCode()), dtDefinitionEntity, classXmi.getPackageName());
-		//Par défaut les DT lues depuis le XMI sont persistantes.
+		//Par dï¿½faut les DT lues depuis le XMI sont persistantes.
 		dtDefinitionBuilder.putPropertyValue(KspProperty.PERSISTENT, true);
 
 		for (final EAXmiAttribute attributeXmi : classXmi.getKeyAttributes()) {
@@ -103,8 +103,7 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 		final String name = associationXmi.getCode().toUpperCase();
 
 		//On regarde si on est dans le cas d'une association simple ou multiple
-		final boolean isAssociationNN = AssociationUtil.isMultiple(associationXmi.getMultiplicityA()) 
-				&& AssociationUtil.isMultiple(associationXmi.getMultiplicityB());
+		final boolean isAssociationNN = AssociationUtil.isMultiple(associationXmi.getMultiplicityA()) && AssociationUtil.isMultiple(associationXmi.getMultiplicityB());
 		final Entity dynamicMetaDefinition;
 		if (isAssociationNN) {
 			dynamicMetaDefinition = associationNNEntity;
@@ -115,14 +114,14 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 		//On crÃ©e l'association
 		final DynamicDefinitionBuilder associationDefinitionBuilder = dynamicModelrepository.createDynamicDefinition(name, dynamicMetaDefinition, associationXmi.getPackageName());
 
-		associationDefinitionBuilder.putPropertyValue(KspProperty.NAVIGABILITY_A, associationXmi.isNavigableA());
-		associationDefinitionBuilder.putPropertyValue(KspProperty.NAVIGABILITY_B, associationXmi.isNavigableB());
+		associationDefinitionBuilder.putPropertyValue(KspProperty.NAVIGABILITY_A, associationXmi.isNavigableA())//
+				.putPropertyValue(KspProperty.NAVIGABILITY_B, associationXmi.isNavigableB())//
 
-		associationDefinitionBuilder.putPropertyValue(KspProperty.LABEL_A, associationXmi.getRoleLabelA());
-		//On transforme en CODE ce qui est Ã©crit en toutes lettres.
-		associationDefinitionBuilder.putPropertyValue(KspProperty.ROLE_A, french2Java(associationXmi.getRoleLabelA()));
-		associationDefinitionBuilder.putPropertyValue(KspProperty.LABEL_B, associationXmi.getRoleLabelB());
-		associationDefinitionBuilder.putPropertyValue(KspProperty.ROLE_B, french2Java(associationXmi.getRoleLabelB()));
+				.putPropertyValue(KspProperty.LABEL_A, associationXmi.getRoleLabelA())//
+				//On transforme en CODE ce qui est Ã©crit en toutes lettres.
+				.putPropertyValue(KspProperty.ROLE_A, french2Java(associationXmi.getRoleLabelA()))//
+				.putPropertyValue(KspProperty.LABEL_B, associationXmi.getRoleLabelB())//
+				.putPropertyValue(KspProperty.ROLE_B, french2Java(associationXmi.getRoleLabelB()));
 
 		associationDefinitionBuilder.addDefinition("dtDefinitionA", getDtDefinitionKey(associationXmi.getCodeA()));
 		associationDefinitionBuilder.addDefinition("dtDefinitionB", getDtDefinitionKey(associationXmi.getCodeB()));
@@ -146,8 +145,8 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 
 	private String buildFkFieldName(final EAXmiAssociation associationXmi, final DynamicDefinitionRepository dynamicModelrepository) {
 		// Dans le cas d'une association simple, on recherche le nom de la FK
-		// recherche de code de contrainte destiné à  renommer la fk selon convention du vbsript PowerAMC
-		// Cas de la relation 1-n : où le nom de la FK est redéfini.
+		// recherche de code de contrainte destinï¿½ ï¿½ renommer la fk selon convention du vbsript PowerAMC
+		// Cas de la relation 1-n : oï¿½ le nom de la FK est redï¿½fini.
 		// Exemple : DOS_UTI_LIQUIDATION (relation entre dossier et utilisateur : FK >> UTILISATEUR_ID_LIQUIDATION)
 		final DynamicDefinition dtDefinitionA = dynamicModelrepository.getDefinition(getDtDefinitionKey(associationXmi.getCodeA()));
 		final DynamicDefinition dtDefinitionB = dynamicModelrepository.getDefinition(getDtDefinitionKey(associationXmi.getCodeB()));
@@ -155,28 +154,28 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 		final DynamicDefinition foreignDefinition = AssociationUtil.isAPrimaryNode(associationXmi.getMultiplicityA(), associationXmi.getMultiplicityB()) ? dtDefinitionA : dtDefinitionB;
 		final List<DynamicDefinition> primaryKeyList = foreignDefinition.getChildDefinitions(DomainGrammar.PRIMARY_KEY);
 		if (primaryKeyList.isEmpty()) {
-			throw new IllegalArgumentException("Pour l'association '" + associationXmi.getCode() + "' aucune clé primaire sur la définition '" + foreignDefinition.getDefinitionKey().getName() + "'");
+			throw new IllegalArgumentException("Pour l'association '" + associationXmi.getCode() + "' aucune clï¿½ primaire sur la dï¿½finition '" + foreignDefinition.getDefinitionKey().getName() + "'");
 		}
 		if (primaryKeyList.size() > 1) {
-			throw new IllegalArgumentException("Pour l'association '" + associationXmi.getCode() + "' clé multiple non géré sur '" + foreignDefinition.getDefinitionKey().getName() + "'");
+			throw new IllegalArgumentException("Pour l'association '" + associationXmi.getCode() + "' clï¿½ multiple non gï¿½rï¿½ sur '" + foreignDefinition.getDefinitionKey().getName() + "'");
 		}
 		if (dtDefinitionA.getDefinitionKey().getName().equals(dtDefinitionB.getDefinitionKey().getName()) && associationXmi.getCodeName() == null) {
-			throw new IllegalArgumentException("Pour l'association '" + associationXmi.getCode() + "' le nom de la clé est obligatoire (AutoJointure) '" + foreignDefinition.getDefinitionKey().getName() + "'");
+			throw new IllegalArgumentException("Pour l'association '" + associationXmi.getCode() + "' le nom de la clï¿½ est obligatoire (AutoJointure) '" + foreignDefinition.getDefinitionKey().getName() + "'");
 		}
 
-		//On récupère le nom de LA clé primaire . 
+		//On rï¿½cupï¿½re le nom de LA clï¿½ primaire . 
 		final String pkFieldName = primaryKeyList.get(0).getDefinitionKey().getName();
 
-		//Par défaut le nom de la clé étrangère est constituée de la clé primaire référencée.
+		//Par dï¿½faut le nom de la clï¿½ ï¿½trangï¿½re est constituï¿½e de la clï¿½ primaire rï¿½fï¿½rencï¿½e.
 		String fkFieldName = pkFieldName;
 
-		//Si l'association possède une nom défini par l'utilisateur, alors on l'ajoute à la FK avec un séparateur.
+		//Si l'association possï¿½de une nom dï¿½fini par l'utilisateur, alors on l'ajoute ï¿½ la FK avec un sï¿½parateur.
 		if (associationXmi.getCodeName() != null) {
-			//On construit le nom de la clé étrangère. 
+			//On construit le nom de la clï¿½ ï¿½trangï¿½re. 
 			fkFieldName = fkFieldName + '_' + associationXmi.getCodeName();
 		}
 
-		//On raccourci le nom de la clé étrangère. 
+		//On raccourci le nom de la clï¿½ ï¿½trangï¿½re. 
 		if (fkFieldName.length() > 30) { // 30 est le max de dynamo (et de Oracle)
 			fkFieldName = fkFieldName.substring(0, 30);
 			while (fkFieldName.endsWith("_")) {
@@ -186,7 +185,7 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 		}
 		LOGGER.trace(KspProperty.FK_FIELD_NAME + "=" + fkFieldName);
 		//-----------------------------------------------------------------
-		Assertion.checkNotNull(fkFieldName, "La clé primaire n''a pas pu être définie pour l'association '{0}'", associationXmi.getCode());
+		Assertion.checkNotNull(fkFieldName, "La clï¿½ primaire n''a pas pu ï¿½tre dï¿½finie pour l'association '{0}'", associationXmi.getCode());
 		return fkFieldName;
 	}
 
@@ -197,11 +196,11 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 	private DynamicDefinitionKey getDtDefinitionKey(final String code) {
 		return new DynamicDefinitionKey(getDtDefinitionName(code));
 	}
-	
-	// A sa place dans un util mais ramené ici pour indépendance des plugins
+
+	// A sa place dans un util mais ramenï¿½ ici pour indï¿½pendance des plugins
 	public String french2Java(final String str) {
 		Assertion.checkNotNull(str);
-		Assertion.checkArgument(str.length() > 0, "La chaine à modifier ne doit pas être vide.");
+		Assertion.checkArgument(str.length() > 0, "La chaine ï¿½ modifier ne doit pas ï¿½tre vide.");
 		// ----------------------------------------------------------------------
 		final StringBuilder suffix = new StringBuilder();
 		int i = 1;
@@ -212,7 +211,7 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 		final int length = str.length();
 		while (i < length) {
 			c = str.charAt(i);
-			//On considère blanc, et ' comme des séparateurs de mots.
+			//On considï¿½re blanc, et ' comme des sï¿½parateurs de mots.
 			if (c == ' ' || c == '\'') {
 				if (i + 1 < length) {
 					c = replaceAccent(str.charAt(i + 1));
@@ -221,7 +220,7 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 					}
 					i += 2;
 				} else {
-					i++; // évitons boucle infinie
+					i++; // ï¿½vitons boucle infinie
 				}
 			} else {
 				c = replaceAccent(c);
@@ -235,10 +234,10 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 	}
 
 	/**
-	 * Remplacement de caractères accentués par leurs équivalents non accentués
-	 * (par ex: accents dans rôles)
-	 * @param c caractère accentué à  traiter
-	 * @return caractère traité (sans accent)
+	 * Remplacement de caractï¿½res accentuï¿½s par leurs ï¿½quivalents non accentuï¿½s
+	 * (par ex: accents dans rï¿½les)
+	 * @param c caractï¿½re accentuï¿½ ï¿½ traiter
+	 * @return caractï¿½re traitï¿½ (sans accent)
 	 */
 	private static char replaceAccent(final char c) {
 		char result;
@@ -277,6 +276,5 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 
 		return result;
 	}
-
 
 }

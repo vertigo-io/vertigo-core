@@ -121,16 +121,16 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 		//On crée l'association
 		final DynamicDefinitionBuilder associationDefinitionBuilder = dynamicModelrepository.createDynamicDefinition(name, dynamicMetaDefinition, associationOOM.getPackageName());
 
-		associationDefinitionBuilder.putPropertyValue(KspProperty.NAVIGABILITY_A, associationOOM.isNavigableA());
-		associationDefinitionBuilder.putPropertyValue(KspProperty.NAVIGABILITY_B, associationOOM.isNavigableB());
+		associationDefinitionBuilder.putPropertyValue(KspProperty.NAVIGABILITY_A, associationOOM.isNavigableA())//
+				.putPropertyValue(KspProperty.NAVIGABILITY_B, associationOOM.isNavigableB())//
 
-		associationDefinitionBuilder.putPropertyValue(KspProperty.LABEL_A, associationOOM.getRoleLabelA());
-		//On transforme en CODE ce qui est écrit en toutes lettres.
-		associationDefinitionBuilder.putPropertyValue(KspProperty.ROLE_A, OOMUtil.french2Java(associationOOM.getRoleLabelA()));
-		associationDefinitionBuilder.putPropertyValue(KspProperty.LABEL_B, associationOOM.getRoleLabelB());
-		associationDefinitionBuilder.putPropertyValue(KspProperty.ROLE_B, OOMUtil.french2Java(associationOOM.getRoleLabelB()));
+				.putPropertyValue(KspProperty.LABEL_A, associationOOM.getRoleLabelA())//
+				//On transforme en CODE ce qui est écrit en toutes lettres.
+				.putPropertyValue(KspProperty.ROLE_A, OOMUtil.french2Java(associationOOM.getRoleLabelA()))//
+				.putPropertyValue(KspProperty.LABEL_B, associationOOM.getRoleLabelB())//
+				.putPropertyValue(KspProperty.ROLE_B, OOMUtil.french2Java(associationOOM.getRoleLabelB()))//
 
-		associationDefinitionBuilder.addDefinition("dtDefinitionA", getDtDefinitionKey(associationOOM.getCodeA()));
+				.addDefinition("dtDefinitionA", getDtDefinitionKey(associationOOM.getCodeA()));
 		associationDefinitionBuilder.addDefinition("dtDefinitionB", getDtDefinitionKey(associationOOM.getCodeB()));
 
 		if (isAssociationNN) {
