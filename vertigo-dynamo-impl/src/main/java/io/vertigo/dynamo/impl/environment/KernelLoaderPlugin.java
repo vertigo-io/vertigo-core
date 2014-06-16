@@ -21,7 +21,7 @@ final class KernelLoaderPlugin implements LoaderPlugin {
 		//--Enregistrement des types primitifs
 		final Entity dataTypeEntity = kernelGrammar.getDataTypeEntity();
 		for (final KDataType type : KDataType.values()) {
-			final DynamicDefinition definition = dynamicModelrepository.createDynamicDefinition(type.name(), dataTypeEntity, null).build();
+			final DynamicDefinition definition = dynamicModelrepository.createDynamicDefinitionBuilder(type.name(), dataTypeEntity, null).build();
 			dynamicModelrepository.addDefinition(definition);
 		}
 	}

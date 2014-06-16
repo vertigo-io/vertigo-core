@@ -57,7 +57,7 @@ final class InnerDefinitionRule extends AbstractRule<XDefinitionEntry, List<?>> 
 		final String definitionName = (String) parsing.get(2);
 		final XDefinitionBody definitionBody = (XDefinitionBody) parsing.get(4);
 
-		final DynamicDefinitionBuilder dynamicDefinitionBuilder = dynamicModelRepository.createDynamicDefinition(definitionName, entity, null);
+		final DynamicDefinitionBuilder dynamicDefinitionBuilder = dynamicModelRepository.createDynamicDefinitionBuilder(definitionName, entity, null);
 		populateDefinition(definitionBody, dynamicDefinitionBuilder);
 
 		//---

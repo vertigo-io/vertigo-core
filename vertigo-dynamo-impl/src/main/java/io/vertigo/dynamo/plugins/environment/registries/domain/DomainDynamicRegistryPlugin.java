@@ -414,7 +414,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final DynamicDefinitionKey fmtDefaultKey = new DynamicDefinitionKey(Formatter.FMT_DEFAULT);
 		final DynamicDefinitionKey dtObjectKey = new DynamicDefinitionKey("DtObject");
 
-		final DynamicDefinition domain = dynamicModelRepository.createDynamicDefinition(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain, packageName)//
+		final DynamicDefinition domain = dynamicModelRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain, packageName)//
 				.addDefinition("formatter", fmtDefaultKey)//
 				.addDefinition("dataType", dtObjectKey)//
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
@@ -427,7 +427,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		//On fait la même chose avec DTC
 
 		final DynamicDefinitionKey dtListKey = new DynamicDefinitionKey("DtList");
-		final DynamicDefinition domain2 = dynamicModelRepository.createDynamicDefinition(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTC", metaDefinitionDomain, packageName)//
+		final DynamicDefinition domain2 = dynamicModelRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTC", metaDefinitionDomain, packageName)//
 				.addDefinition("formatter", fmtDefaultKey)//
 				.addDefinition("dataType", dtListKey)//
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT

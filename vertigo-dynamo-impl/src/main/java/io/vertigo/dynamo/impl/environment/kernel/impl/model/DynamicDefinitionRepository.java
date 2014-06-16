@@ -29,7 +29,7 @@ public final class DynamicDefinitionRepository {
 	 * On retient les définitions dans l'ordre pour
 	 * créer les fichiers toujours de la même façon.
 	 */
-	private final Map<DynamicDefinitionKey, DynamicDefinition> definitionMap = new LinkedHashMap<>();
+	private final Map<DynamicDefinitionKey, DynamicDefinition> definitions = new LinkedHashMap<>();
 	private final List<DynamicDefinition> templates = new ArrayList<>();
 
 	private final DynamicRegistry dynamicRegistry;
@@ -59,7 +59,7 @@ public final class DynamicDefinitionRepository {
 	 * @return Si la définition a déjà été enregistrée
 	 */
 	public boolean containsDefinitionKey(final DynamicDefinitionKey definitionKey) {
-		return definitionMap.containsKey(definitionKey);
+		return definitions.containsKey(definitionKey);
 	}
 
 	/**
@@ -72,9 +72,9 @@ public final class DynamicDefinitionRepository {
 	 * @return DynamicDefinition Définition correspondante ou null.
 	 */
 	public DynamicDefinition getDefinition(final DynamicDefinitionKey definitionKey) {
-		Assertion.checkArgument(definitionMap.containsKey(definitionKey), "Aucune clé enregistrée pour :{0} parmi {1}", definitionKey, definitionMap.keySet());
+		Assertion.checkArgument(definitions.containsKey(definitionKey), "Aucune clé enregistrée pour :{0} parmi {1}", definitionKey, definitions.keySet());
 		//---------------------------------------------------------------------
-		final DynamicDefinition definition = definitionMap.get(definitionKey);
+		final DynamicDefinition definition = definitions.get(definitionKey);
 		//---------------------------------------------------------------------
 		Assertion.checkNotNull(definition, "Clé trouvée mais pas de définition enregistrée trouvée pour {0}", definitionKey);
 		return definition;
@@ -137,7 +137,7 @@ public final class DynamicDefinitionRepository {
 	 * @param entity Entité
 	 * @return Nouvelle Définition
 	 */
-	public DynamicDefinitionBuilder createDynamicDefinition(final String keyName, final Entity entity, final String packageName) {
+	public DynamicDefinitionBuilder createDynamicDefinitionBuilder(final String keyName, final Entity entity, final String packageName) {
 		final DynamicDefinitionKey dynamicDefinitionKey = new DynamicDefinitionKey(keyName);
 		return new DynamicDefinitionImpl(dynamicDefinitionKey, entity).withPackageName(packageName);
 	}
@@ -156,10 +156,10 @@ public final class DynamicDefinitionRepository {
 			Assertion.checkArgument(definition.getDefinitionKey().equals(definitionKey), "si la définition est renseignée la clé doit correspondre !");
 		}
 		//----------------------------------------------------------------------
-		final DynamicDefinition previousDefinition = definitionMap.get(definitionKey);
+		final DynamicDefinition previousDefinition = definitions.get(definitionKey);
 		if (previousDefinition == null) {
 			//On enregistre la définition qu'elle soit renseignée ou null.
-			definitionMap.put(definitionKey, definition);
+			definitions.put(definitionKey, definition);
 		} else {
 			//On vérifie que l'on n'essaie pas d'écraser la définition déjà présente.
 			Assertion.checkState(definition == null, "la définition {0} est déjà enregistrée", definitionKey);
@@ -169,10 +169,10 @@ public final class DynamicDefinitionRepository {
 	/**
 	 *  @return Liste des clés orphelines.
 	 */
-	public Collection<DynamicDefinitionKey> getOrphanDefinitionKeys() {
+	Collection<DynamicDefinitionKey> getOrphanDefinitionKeys() {
 		final Collection<DynamicDefinitionKey> collection = new ArrayList<>();
-		for (final DynamicDefinitionKey definitionKey : definitionMap.keySet()) {
-			if (definitionMap.get(definitionKey) == null) {
+		for (final DynamicDefinitionKey definitionKey : definitions.keySet()) {
+			if (definitions.get(definitionKey) == null) {
 				collection.add(definitionKey);
 			}
 		}
@@ -182,7 +182,7 @@ public final class DynamicDefinitionRepository {
 	/**
 	 * @return Liste des définitions complétes
 	 */
-	public Collection<DynamicDefinition> getDefinitions() {
-		return Collections.unmodifiableCollection(definitionMap.values());
+	Collection<DynamicDefinition> getDefinitions() {
+		return Collections.unmodifiableCollection(definitions.values());
 	}
 }

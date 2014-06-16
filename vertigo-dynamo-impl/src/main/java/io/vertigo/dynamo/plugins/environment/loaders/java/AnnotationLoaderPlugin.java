@@ -112,7 +112,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 		final String urn = DT_DEFINITION_PREFIX + SEPARATOR + StringUtil.camelToConstCase(simpleName);
 
-		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelRepository.createDynamicDefinition(urn, dtMetaDefinition, packageName)//
+		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelRepository.createDynamicDefinitionBuilder(urn, dtMetaDefinition, packageName)//
 				.putPropertyValue(KspProperty.PERSISTENT, dtDefinitionAnnotation.persistent());
 
 		// Le tri des champs et des méthodes par ordre alphabétique est important car classe.getMethods() retourne
@@ -147,7 +147,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 				final DynamicDefinitionKey primaryDtDefinitionKey = new DynamicDefinitionKey(association.primaryDtDefinitionName());
 				final DynamicDefinitionKey foreignDtDefinitionKey = new DynamicDefinitionKey(association.foreignDtDefinitionName());
 
-				final DynamicDefinition associationDefinition = dynamicModelRepository.createDynamicDefinition(association.name(), associationMetaDefinition, packageName)//
+				final DynamicDefinition associationDefinition = dynamicModelRepository.createDynamicDefinitionBuilder(association.name(), associationMetaDefinition, packageName)//
 						// associationDefinition.
 						//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
 						.putPropertyValue(KspProperty.MULTIPLICITY_A, association.primaryMultiplicity())//
@@ -179,7 +179,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 				final DynamicDefinitionKey dtDefinitionAKey = new DynamicDefinitionKey(association.dtDefinitionA());
 				final DynamicDefinitionKey dtDefinitionBKey = new DynamicDefinitionKey(association.dtDefinitionB());
 
-				final DynamicDefinition associationDefinition = dynamicModelRepository.createDynamicDefinition(association.name(), associationNNMetaDefinition, packageName)//
+				final DynamicDefinition associationDefinition = dynamicModelRepository.createDynamicDefinitionBuilder(association.name(), associationNNMetaDefinition, packageName)//
 				.putPropertyValue(KspProperty.TABLE_NAME, association.tableName())//
 
 				// associationDefinition.
@@ -233,7 +233,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		//Si on trouve un domaine on est dans un objet dynamo.
 		final FieldType type = FieldType.valueOf(field.type());
 		final DynamicDefinitionKey fieldDomainKey = new DynamicDefinitionKey(field.domain());
-		final DynamicDefinition dtField = dynamicModelrepository.createDynamicDefinition(fieldName, dtFieldMetaDefinition, null)//
+		final DynamicDefinition dtField = dynamicModelrepository.createDynamicDefinitionBuilder(fieldName, dtFieldMetaDefinition, null)//
 				.addDefinition("domain", fieldDomainKey)//
 				.putPropertyValue(KspProperty.LABEL, field.label())//
 				.putPropertyValue(KspProperty.NOT_NULL, field.notNull())//

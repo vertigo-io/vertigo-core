@@ -74,7 +74,7 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 
 	private DynamicDefinition toDynamicDefinition(final EAXmiClass classXmi, final DynamicDefinitionRepository dynamicModelrepository) {
 
-		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelrepository.createDynamicDefinition(getDtDefinitionName(classXmi.getCode()), dtDefinitionEntity, classXmi.getPackageName())//
+		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelrepository.createDynamicDefinitionBuilder(getDtDefinitionName(classXmi.getCode()), dtDefinitionEntity, classXmi.getPackageName())//
 				//Par d�faut les DT lues depuis le XMI sont persistantes.
 				.putPropertyValue(KspProperty.PERSISTENT, true);
 
@@ -92,7 +92,7 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 	private DynamicDefinition toDynamicDefinition(final EAXmiAttribute attributeXmi, final DynamicDefinitionRepository dynamicModelrepository) {
 		final DynamicDefinitionKey domainKey = new DynamicDefinitionKey(attributeXmi.getDomain());
 
-		return dynamicModelrepository.createDynamicDefinition(attributeXmi.getCode(), dtFieldEntity, null)//
+		return dynamicModelrepository.createDynamicDefinitionBuilder(attributeXmi.getCode(), dtFieldEntity, null)//
 				.putPropertyValue(KspProperty.LABEL, attributeXmi.getLabel())//
 				.putPropertyValue(KspProperty.PERSISTENT, attributeXmi.isPersistent())//
 				.putPropertyValue(KspProperty.NOT_NULL, attributeXmi.isNotNull())//
@@ -113,7 +113,7 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 		}
 
 		//On crée l'association
-		final DynamicDefinitionBuilder associationDefinitionBuilder = dynamicModelrepository.createDynamicDefinition(name, dynamicMetaDefinition, associationXmi.getPackageName())//
+		final DynamicDefinitionBuilder associationDefinitionBuilder = dynamicModelrepository.createDynamicDefinitionBuilder(name, dynamicMetaDefinition, associationXmi.getPackageName())//
 				.putPropertyValue(KspProperty.NAVIGABILITY_A, associationXmi.isNavigableA())//
 				.putPropertyValue(KspProperty.NAVIGABILITY_B, associationXmi.isNavigableB())//
 				//---

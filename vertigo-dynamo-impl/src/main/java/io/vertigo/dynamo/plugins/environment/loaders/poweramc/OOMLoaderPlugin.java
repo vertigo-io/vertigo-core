@@ -79,7 +79,7 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 
 	private DynamicDefinition toDynamicDefinition(final ClassOOM classOOM, final DynamicDefinitionRepository dynamicModelrepository) {
 
-		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelrepository.createDynamicDefinition(getDtDefinitionName(classOOM.getCode()), dtDefinitionEntity, classOOM.getPackageName());
+		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelrepository.createDynamicDefinitionBuilder(getDtDefinitionName(classOOM.getCode()), dtDefinitionEntity, classOOM.getPackageName());
 		//Par défaut les DT lues depuis OOM sont persistantes.
 		dtDefinitionBuilder.putPropertyValue(KspProperty.PERSISTENT, true);
 
@@ -97,7 +97,7 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 	private DynamicDefinition toDynamicDefinition(final AttributeOOM attributeOOM, final DynamicDefinitionRepository dynamicModelrepository) {
 		final DynamicDefinitionKey domainKey = new DynamicDefinitionKey(attributeOOM.getDomain());
 
-		return dynamicModelrepository.createDynamicDefinition(attributeOOM.getCode(), dtFieldEntity, null)//
+		return dynamicModelrepository.createDynamicDefinitionBuilder(attributeOOM.getCode(), dtFieldEntity, null)//
 				.putPropertyValue(KspProperty.LABEL, attributeOOM.getLabel())//
 				.putPropertyValue(KspProperty.PERSISTENT, attributeOOM.isPersistent())//
 				.putPropertyValue(KspProperty.NOT_NULL, attributeOOM.isNotNull())//
@@ -120,7 +120,7 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 		}
 
 		//On crée l'association
-		final DynamicDefinitionBuilder associationDefinitionBuilder = dynamicModelrepository.createDynamicDefinition(name, dynamicMetaDefinition, associationOOM.getPackageName())//
+		final DynamicDefinitionBuilder associationDefinitionBuilder = dynamicModelrepository.createDynamicDefinitionBuilder(name, dynamicMetaDefinition, associationOOM.getPackageName())//
 				.putPropertyValue(KspProperty.NAVIGABILITY_A, associationOOM.isNavigableA())//
 				.putPropertyValue(KspProperty.NAVIGABILITY_B, associationOOM.isNavigableB())//
 				//---
