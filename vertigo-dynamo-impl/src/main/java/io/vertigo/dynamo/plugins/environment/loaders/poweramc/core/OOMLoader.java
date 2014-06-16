@@ -18,18 +18,18 @@ import javax.xml.parsers.SAXParserFactory;
  * @author pchretien
  * @version $Id: LoaderOOM.java,v 1.6 2013/10/22 12:30:19 pchretien Exp $
  */
-public final class LoaderOOM {
-	private final Map<IdOOM, ObjectOOM> map;
+public final class OOMLoader {
+	private final Map<OOMId, OOMObject> map;
 
 	/**
 	 * Constructeur.
 	 * @param powerAMCURL URL du fichier PowerAMC
 	 */
-	public LoaderOOM(final URL powerAMCURL) {
+	public OOMLoader(final URL powerAMCURL) {
 		Assertion.checkNotNull(powerAMCURL);
 		//----------------------------------------------------------------------
 		map = new LinkedHashMap<>();
-		final HandlerOOM handler = new HandlerOOM(map);
+		final OOMHandler handler = new OOMHandler(map);
 		try {
 			SAXParserFactory.newInstance().newSAXParser().parse(powerAMCURL.openStream(), handler);
 		} catch (final Exception e) {
@@ -41,11 +41,11 @@ public final class LoaderOOM {
 	 * Récupération des classes déclarées dans l'OOM.
 	 * @return Liste des classes
 	 */
-	public List<ClassOOM> getClassOOMList() {
-		final List<ClassOOM> list = new ArrayList<>();
-		for (final ObjectOOM obj : map.values()) {
+	public List<OOMClass> getClassOOMList() {
+		final List<OOMClass> list = new ArrayList<>();
+		for (final OOMObject obj : map.values()) {
 			//On ne conserve que les classes et les domaines
-			if (obj.getType() == TypeOOM.Class) {
+			if (obj.getType() == OOMType.Class) {
 				list.add(createClassOOM(obj));
 			}
 		}
@@ -56,11 +56,11 @@ public final class LoaderOOM {
 	 * Récupération des associations déclarées dans l'OOM.
 	 * @return Liste des associations
 	 */
-	public List<AssociationOOM> getAssociationOOMList() {
-		final List<AssociationOOM> list = new ArrayList<>();
-		for (final ObjectOOM obj : map.values()) {
-			if (obj.getType() == TypeOOM.Association) {
-				final AssociationOOM associationOOM = buildDynAssociation(obj);
+	public List<OOMAssociation> getAssociationOOMList() {
+		final List<OOMAssociation> list = new ArrayList<>();
+		for (final OOMObject obj : map.values()) {
+			if (obj.getType() == OOMType.Association) {
+				final OOMAssociation associationOOM = buildDynAssociation(obj);
 				if (associationOOM != null) {
 					list.add(associationOOM);
 				}
@@ -69,7 +69,7 @@ public final class LoaderOOM {
 		return java.util.Collections.unmodifiableList(list);
 	}
 
-	private ClassOOM createClassOOM(final ObjectOOM obj) {
+	private OOMClass createClassOOM(final OOMObject obj) {
 		//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
 		final String code = obj.getCode();
 		final String packageName = obj.getParent().getPackageName();
@@ -78,30 +78,30 @@ public final class LoaderOOM {
 		//- une liste des identifiers qui référencent des champs
 		//- un bloc <c:PrimaryIdentifier> (non parsé) qui référence les primaryIdentifiers
 		//C'est pourquoi on a une double redirection
-		final List<IdOOM> pkList = new ArrayList<>();
-		for (final IdOOM ref : obj.getRefList()) {
-			final ObjectOOM childRef = map.get(ref); //On recherche les references vers identifiers (ceux dans PrimaryIdentifier)
-			if (childRef != null && childRef.getType() == TypeOOM.Identifier) {
+		final List<OOMId> pkList = new ArrayList<>();
+		for (final OOMId ref : obj.getRefList()) {
+			final OOMObject childRef = map.get(ref); //On recherche les references vers identifiers (ceux dans PrimaryIdentifier)
+			if (childRef != null && childRef.getType() == OOMType.Identifier) {
 				pkList.addAll(childRef.getRefList()); //On recherche les champs pointé par l'identifier				
 			}
 		}
 
-		final List<AttributeOOM> keyAttributes = new ArrayList<>();
-		final List<AttributeOOM> fieldAttributes = new ArrayList<>();
-		for (final ObjectOOM child : obj.getChildList()) {
-			if (child.getType() == TypeOOM.Attribute) {
+		final List<OOMAttribute> keyAttributes = new ArrayList<>();
+		final List<OOMAttribute> fieldAttributes = new ArrayList<>();
+		for (final OOMObject child : obj.getChildList()) {
+			if (child.getType() == OOMType.Attribute) {
 				if (pkList.contains(child.getId())) {
-					final AttributeOOM attributeOOm = createDynAttribute(child, true);
+					final OOMAttribute attributeOOm = createDynAttribute(child, true);
 					keyAttributes.add(attributeOOm);
 				} else {
 					fieldAttributes.add(createDynAttribute(child, false));
 				}
 			}
 		}
-		return new ClassOOM(code, packageName, keyAttributes, fieldAttributes);
+		return new OOMClass(code, packageName, keyAttributes, fieldAttributes);
 	}
 
-	private AttributeOOM createDynAttribute(final ObjectOOM obj, final boolean isPK) {
+	private OOMAttribute createDynAttribute(final OOMObject obj, final boolean isPK) {
 		final String code = obj.getCode();
 		final String label = obj.getLabel();
 		final boolean persistent = !"0".equals(obj.getPersistent());
@@ -116,14 +116,14 @@ public final class LoaderOOM {
 
 		//Domain
 		String domain = null;
-		for (final IdOOM ref : obj.getRefList()) {
-			final ObjectOOM childRef = map.get(ref);
-			if (childRef != null && childRef.getType() == TypeOOM.Domain) {
+		for (final OOMId ref : obj.getRefList()) {
+			final OOMObject childRef = map.get(ref);
+			if (childRef != null && childRef.getType() == OOMType.Domain) {
 				Assertion.checkState(domain == null, "domain deja affecté");
 				domain = childRef.getCode();
 			}
 		}
-		return new AttributeOOM(code, label, persistent, notNull, domain);
+		return new OOMAttribute(code, label, persistent, notNull, domain);
 	}
 
 	/**
@@ -131,7 +131,7 @@ public final class LoaderOOM {
 	 * @param obj ObjectOOM
 	 * @return Association 
 	 */
-	private AssociationOOM buildDynAssociation(final ObjectOOM obj) {
+	private OOMAssociation buildDynAssociation(final OOMObject obj) {
 		final String code = obj.getCode();
 		final String packageName = obj.getParent().getPackageName();
 
@@ -139,11 +139,11 @@ public final class LoaderOOM {
 		final String multiplicityB = obj.getRoleBMultiplicity();
 
 		//On recherche les objets référencés par l'association.
-		ObjectOOM objectB = null;
-		ObjectOOM objectA = null;
-		for (final IdOOM ref : obj.getRefList()) {
-			final ObjectOOM childRef = map.get(ref);
-			if (childRef != null && (childRef.getType() == TypeOOM.Class || childRef.getType() == TypeOOM.Shortcut)) {
+		OOMObject objectB = null;
+		OOMObject objectA = null;
+		for (final OOMId ref : obj.getRefList()) {
+			final OOMObject childRef = map.get(ref);
+			if (childRef != null && (childRef.getType() == OOMType.Class || childRef.getType() == OOMType.Shortcut)) {
 				if (objectB == null) {
 					objectB = childRef;
 				} else if (objectA == null) {
@@ -174,6 +174,6 @@ public final class LoaderOOM {
 		final boolean navigabilityA = obj.getRoleANavigability() == null ? false : obj.getRoleANavigability();
 		final boolean navigabilityB = obj.getRoleBNavigability() == null ? true : obj.getRoleBNavigability();
 
-		return new AssociationOOM(code, packageName, multiplicityA, multiplicityB, roleLabelA, roleLabelB, codeA, codeB, navigabilityA, navigabilityB);
+		return new OOMAssociation(code, packageName, multiplicityA, multiplicityB, roleLabelA, roleLabelB, codeA, codeB, navigabilityA, navigabilityB);
 	}
 }

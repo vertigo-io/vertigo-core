@@ -12,7 +12,7 @@ import java.util.List;
  * @author pchretien
  * @version $Id: ObjectOOM.java,v 1.4 2013/10/22 12:30:19 pchretien Exp $
  */
-final class ObjectOOM {
+final class OOMObject {
 	private static final String PROPERTY_CODE = "a:Code";
 	private static final String PROPERTY_NAME = "a:Name";
 	private static final String PROPERTY_COMMENT = "a:Comment";
@@ -29,11 +29,11 @@ final class ObjectOOM {
 	private static final String PROPERTY_ROLE_A_NAME = "a:RoleAName";
 	private static final String PROPERTY_ROLE_B_NAME = "a:RoleBName";
 
-	private final IdOOM id;
-	private final ObjectOOM parent;
-	private final TypeOOM type;
-	private final List<ObjectOOM> childList = new ArrayList<>();
-	private final List<IdOOM> refList = new ArrayList<>();
+	private final OOMId id;
+	private final OOMObject parent;
+	private final OOMType type;
+	private final List<OOMObject> childList = new ArrayList<>();
+	private final List<OOMId> refList = new ArrayList<>();
 
 	//Données spécifiques
 	private String code;
@@ -56,19 +56,19 @@ final class ObjectOOM {
 	private Boolean roleBNavigability;
 
 	//============================================================
-	private final ObjectOOM root;
+	private final OOMObject root;
 
 	/**
 	 * Constructeur de la racine
 	 */
-	private ObjectOOM() {
+	private OOMObject() {
 		id = null;
 		type = null;
 		parent = null;
 		root = this;
 	}
 
-	private ObjectOOM(final ObjectOOM parent, final IdOOM id, final TypeOOM type) {
+	private OOMObject(final OOMObject parent, final OOMId id, final OOMType type) {
 		Assertion.checkNotNull(parent);
 		Assertion.checkNotNull(id);
 		Assertion.checkNotNull(type);
@@ -79,37 +79,37 @@ final class ObjectOOM {
 		root = parent.root;
 	}
 
-	static ObjectOOM createdRoot() {
-		return new ObjectOOM();
+	static OOMObject createdRoot() {
+		return new OOMObject();
 	}
 
-	ObjectOOM createObjectOOM(final IdOOM newId, final TypeOOM newType) {
-		final ObjectOOM created = new ObjectOOM(this, newId, newType);
+	OOMObject createObjectOOM(final OOMId newId, final OOMType newType) {
+		final OOMObject created = new OOMObject(this, newId, newType);
 		childList.add(created);
 		return created;
 	}
 
-	List<IdOOM> getRefList() {
+	List<OOMId> getRefList() {
 		return refList;
 	}
 
-	List<ObjectOOM> getChildList() {
+	List<OOMObject> getChildList() {
 		return childList;
 	}
 
-	TypeOOM getType() {
+	OOMType getType() {
 		return type;
 	}
 
-	ObjectOOM getParent() {
+	OOMObject getParent() {
 		return parent;
 	}
 
-	IdOOM getId() {
+	OOMId getId() {
 		return id;
 	}
 
-	void addIdOOM(final IdOOM idOOM) {
+	void addIdOOM(final OOMId idOOM) {
 		refList.add(idOOM);
 	}
 
@@ -215,7 +215,7 @@ final class ObjectOOM {
 	@Override
 	public String toString() {
 		String s = type + "::" + name;
-		if (type == TypeOOM.Association) {
+		if (type == OOMType.Association) {
 			s += " [roleA=" + getRoleALabel() + ", roleB=" + getRoleBLabel() + ']';
 		} else {
 			s += " [label=" + label + ", multiplicity=" + multiplicity + ']';
@@ -252,7 +252,7 @@ final class ObjectOOM {
 	 */
 	String getPackageName() {
 		//1. On vérifie que cet objet est bien un package
-		Assertion.checkArgument(getType() == TypeOOM.Package, "père de l''objet {0} doit être un package", this);
+		Assertion.checkArgument(getType() == OOMType.Package, "père de l''objet {0} doit être un package", this);
 		//----------------------------------------------------------------------
 		//2. Si on arrive à la racine on s'arrète
 		if (getParent().equals(root)) {

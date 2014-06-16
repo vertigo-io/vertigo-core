@@ -7,7 +7,7 @@ package io.vertigo.dynamo.plugins.environment.loaders.poweramc.core;
  * @author pchretien
  * @version $Id: TypeOOM.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
-enum TypeOOM {
+enum OOMType {
 	/**
 	 * Objet OOM décrivant un Package >>Package.
 	 */
@@ -39,7 +39,7 @@ enum TypeOOM {
 
 	private final String code;
 
-	private TypeOOM(final String code) {
+	private OOMType(final String code) {
 		this.code = code;
 	}
 
@@ -47,8 +47,8 @@ enum TypeOOM {
 		return code;
 	}
 
-	static TypeOOM getType(final String name) {
-		final TypeOOM type;
+	static OOMType getType(final String name) {
+		final OOMType type;
 		if (Domain.getCode().equals(name)) {
 			type = Domain;
 		} else if (Package.getCode().equals(name)) {

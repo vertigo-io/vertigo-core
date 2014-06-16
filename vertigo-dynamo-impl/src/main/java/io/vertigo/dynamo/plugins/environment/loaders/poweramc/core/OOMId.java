@@ -8,14 +8,14 @@ import io.vertigo.kernel.lang.Assertion;
  * @author pchretien
  * @version $Id: IdOOM.java,v 1.3 2013/10/22 12:30:19 pchretien Exp $
  */
-final class IdOOM {
+final class OOMId {
 	private final String keyValue;
 
 	/**
 	 * Constructeur.
 	 * @param keyValue Valeur de l'identiant
 	 */
-	IdOOM(final String keyValue) {
+	OOMId(final String keyValue) {
 		Assertion.checkNotNull(keyValue);
 		//------------------------------------------------------------------
 		this.keyValue = keyValue;
@@ -30,8 +30,8 @@ final class IdOOM {
 	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object o) {
-		if (o instanceof IdOOM) {
-			return ((IdOOM) o).keyValue.equals(this.keyValue);
+		if (o instanceof OOMId) {
+			return ((OOMId) o).keyValue.equals(this.keyValue);
 		}
 		return false;
 	}

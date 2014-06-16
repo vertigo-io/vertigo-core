@@ -7,7 +7,7 @@ import io.vertigo.kernel.lang.Assertion;
  * @author pchretien
  * @version $Id: AttributeOOM.java,v 1.4 2013/10/22 12:30:19 pchretien Exp $
  */
-public final class AttributeOOM {
+public final class OOMAttribute {
 	private final String code;
 	private final String label;
 	private final boolean persistent;
@@ -17,7 +17,7 @@ public final class AttributeOOM {
 	/**
 	 * Constructeur.
 	 */
-	AttributeOOM(final String code, final String label, final boolean persistent, final boolean notNull, final String domain) {
+	OOMAttribute(final String code, final String label, final boolean persistent, final boolean notNull, final String domain) {
 		Assertion.checkArgNotEmpty(code);
 		Assertion.checkArgNotEmpty(label);
 		Assertion.checkArgNotEmpty(code);

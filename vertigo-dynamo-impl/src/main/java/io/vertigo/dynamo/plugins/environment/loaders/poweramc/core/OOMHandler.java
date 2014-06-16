@@ -13,23 +13,23 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author pchretien
  * @version $Id: HandlerOOM.java,v 1.3 2013/10/22 12:30:19 pchretien Exp $
  */
-final class HandlerOOM extends DefaultHandler {
+final class OOMHandler extends DefaultHandler {
 	private static final String ATTR_ID = "Id";
 	private static final String ATTR_REF = "Ref";
 
-	private final Map<IdOOM, ObjectOOM> map;
+	private final Map<OOMId, OOMObject> map;
 
-	private TagOOM currentTag;
+	private OOMTag currentTag;
 
 	private String chars;
 
-	HandlerOOM(final Map<IdOOM, ObjectOOM> map) {
+	OOMHandler(final Map<OOMId, OOMObject> map) {
 		Assertion.checkNotNull(map);
 		//---------------------------------------------------------------------
 		this.map = map;
-		final ObjectOOM root = ObjectOOM.createdRoot();
+		final OOMObject root = OOMObject.createdRoot();
 		//root.display();
-		currentTag = TagOOM.createRootTag(root);
+		currentTag = OOMTag.createRootTag(root);
 	}
 
 	/** {@inheritDoc} */
@@ -37,9 +37,9 @@ final class HandlerOOM extends DefaultHandler {
 	public void startElement(final String unusedUri, final String unusedLocalName, final String name, final org.xml.sax.Attributes attributes) {
 		//Dans le cas des références si on trouve une référence sur un objet courant alors on l'ajoute.
 		final String ref = attributes.getValue(ATTR_REF);
-		if (ref != null && TypeOOM.isNodeByRef(name) && currentTag.getCurrentOOM() != null) {
+		if (ref != null && OOMType.isNodeByRef(name) && currentTag.getCurrentOOM() != null) {
 			// Si le tag courant est associé à un objet alors on ajoute à cet objet la référence.
-			final IdOOM idOOM = new IdOOM(ref);
+			final OOMId idOOM = new OOMId(ref);
 			currentTag.getCurrentOOM().addIdOOM(idOOM);
 		}
 
@@ -47,11 +47,11 @@ final class HandlerOOM extends DefaultHandler {
 		final boolean isObj = name.startsWith("o:");
 		if (isObj) {
 			final String id = attributes.getValue(ATTR_ID);
-			final TypeOOM type = TypeOOM.getType(name);
+			final OOMType type = OOMType.getType(name);
 			if (type != null && id != null) {
 				//Il existe un nouvel objet géré associé à ce Tag
-				final IdOOM idOOM = new IdOOM(id);
-				final ObjectOOM obj = currentTag.getParentOOM().createObjectOOM(idOOM, type);
+				final OOMId idOOM = new OOMId(id);
+				final OOMObject obj = currentTag.getParentOOM().createObjectOOM(idOOM, type);
 				map.put(idOOM, obj);
 				currentTag = currentTag.createTag(obj);
 			} else {

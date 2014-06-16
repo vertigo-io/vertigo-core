@@ -11,13 +11,13 @@ import java.util.List;
  * @author pchretien
  * @version $Id: ClassOOM.java,v 1.3 2013/10/22 12:30:19 pchretien Exp $
  */
-public final class ClassOOM {
+public final class OOMClass {
 	private final String code;
 	private final String packageName;
-	private final List<AttributeOOM> keyAttributes;
-	private final List<AttributeOOM> fieldAttributes;
+	private final List<OOMAttribute> keyAttributes;
+	private final List<OOMAttribute> fieldAttributes;
 
-	ClassOOM(final String code, final String packageName, final List<AttributeOOM> keyAttributes, final List<AttributeOOM> fieldAttributes) {
+	OOMClass(final String code, final String packageName, final List<OOMAttribute> keyAttributes, final List<OOMAttribute> fieldAttributes) {
 		Assertion.checkArgNotEmpty(code);
 		//Assertion.notEmpty(packageName);
 		Assertion.checkNotNull(keyAttributes);
@@ -46,14 +46,14 @@ public final class ClassOOM {
 	/**
 	 * @return Listes des champs identifiants (PK).
 	 */
-	public List<AttributeOOM> getKeyAttributes() {
+	public List<OOMAttribute> getKeyAttributes() {
 		return keyAttributes;
 	}
 
 	/***
 	 * @return Liste des champs non PK.
 	 */
-	public List<AttributeOOM> getFieldAttributes() {
+	public List<OOMAttribute> getFieldAttributes() {
 		return fieldAttributes;
 	}
 }

@@ -10,10 +10,10 @@ import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionBuilder;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
-import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.AssociationOOM;
-import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.AttributeOOM;
-import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.ClassOOM;
-import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.LoaderOOM;
+import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMAssociation;
+import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMAttribute;
+import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMClass;
+import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMLoader;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.Definition;
@@ -66,35 +66,35 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 	public void load(final DynamicDefinitionRepository dynamicModelrepository) {
 		Assertion.checkNotNull(dynamicModelrepository);
 		//----------------------------------------------------------------------
-		final LoaderOOM loader = new LoaderOOM(powerAMCURL);
+		final OOMLoader loader = new OOMLoader(powerAMCURL);
 
-		for (final ClassOOM classOOM : loader.getClassOOMList()) {
+		for (final OOMClass classOOM : loader.getClassOOMList()) {
 			dynamicModelrepository.addDefinition(toDynamicDefinition(classOOM, dynamicModelrepository));
 		}
 
-		for (final AssociationOOM associationOOM : loader.getAssociationOOMList()) {
+		for (final OOMAssociation associationOOM : loader.getAssociationOOMList()) {
 			dynamicModelrepository.addDefinition(toDynamicDefinition(associationOOM, dynamicModelrepository));
 		}
 	}
 
-	private DynamicDefinition toDynamicDefinition(final ClassOOM classOOM, final DynamicDefinitionRepository dynamicModelrepository) {
+	private DynamicDefinition toDynamicDefinition(final OOMClass classOOM, final DynamicDefinitionRepository dynamicModelrepository) {
 
 		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelrepository.createDynamicDefinitionBuilder(getDtDefinitionName(classOOM.getCode()), dtDefinitionEntity, classOOM.getPackageName());
 		//Par défaut les DT lues depuis OOM sont persistantes.
 		dtDefinitionBuilder.putPropertyValue(KspProperty.PERSISTENT, true);
 
-		for (final AttributeOOM attributeOOM : classOOM.getKeyAttributes()) {
+		for (final OOMAttribute attributeOOM : classOOM.getKeyAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(attributeOOM, dynamicModelrepository);
 			dtDefinitionBuilder.addChildDefinition(DomainGrammar.PRIMARY_KEY, dtField);
 		}
-		for (final AttributeOOM attributeOOM : classOOM.getFieldAttributes()) {
+		for (final OOMAttribute attributeOOM : classOOM.getFieldAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(attributeOOM, dynamicModelrepository);
 			dtDefinitionBuilder.addChildDefinition("field", dtField);
 		}
 		return dtDefinitionBuilder.build();
 	}
 
-	private DynamicDefinition toDynamicDefinition(final AttributeOOM attributeOOM, final DynamicDefinitionRepository dynamicModelrepository) {
+	private DynamicDefinition toDynamicDefinition(final OOMAttribute attributeOOM, final DynamicDefinitionRepository dynamicModelrepository) {
 		final DynamicDefinitionKey domainKey = new DynamicDefinitionKey(attributeOOM.getDomain());
 
 		return dynamicModelrepository.createDynamicDefinitionBuilder(attributeOOM.getCode(), dtFieldEntity, null)//
@@ -105,7 +105,7 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 				.build();
 	}
 
-	private DynamicDefinition toDynamicDefinition(final AssociationOOM associationOOM, final DynamicDefinitionRepository dynamicModelrepository) {
+	private DynamicDefinition toDynamicDefinition(final OOMAssociation associationOOM, final DynamicDefinitionRepository dynamicModelrepository) {
 		//			final DynamicDefinition associationDefinition = dynamicModelrepository.createDynamicDefinition(name,
 		//					return associationDefinition;
 		final String name = associationOOM.getCode().toUpperCase();
@@ -150,7 +150,7 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 		return associationDefinitionBuilder.build();
 	}
 
-	private String buildFkFieldName(final AssociationOOM associationOOM, final DynamicDefinitionRepository dynamicModelrepository) {
+	private String buildFkFieldName(final OOMAssociation associationOOM, final DynamicDefinitionRepository dynamicModelrepository) {
 		// Dans le cas d'une association simple, on recherche le nom de la FK
 		// recherche de code de contrainte destiné à renommer la fk selon convention du vbsript PowerAMC
 		// Cas de la relation 1-n : où le nom de la FK est redéfini.
