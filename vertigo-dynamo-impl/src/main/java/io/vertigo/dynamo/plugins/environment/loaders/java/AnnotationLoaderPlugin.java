@@ -174,30 +174,30 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 			} else if (annotation instanceof io.vertigo.dynamo.domain.metamodel.annotation.AssociationNN) {
 				final io.vertigo.dynamo.domain.metamodel.annotation.AssociationNN association = (io.vertigo.dynamo.domain.metamodel.annotation.AssociationNN) annotation;
 				//============================================================
-				final DynamicDefinitionBuilder associationDefinitionBuilder = dynamicModelRepository.createDynamicDefinition(association.name(), associationNNMetaDefinition, packageName);
-				associationDefinitionBuilder.putPropertyValue(KspProperty.TABLE_NAME, association.tableName());
-
-				// associationDefinition.
-				//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
-
-				// navigabilités
-				associationDefinitionBuilder.putPropertyValue(KspProperty.NAVIGABILITY_A, association.navigabilityA());
-				associationDefinitionBuilder.putPropertyValue(KspProperty.NAVIGABILITY_B, association.navigabilityB());
-
-				associationDefinitionBuilder.putPropertyValue(KspProperty.ROLE_A, association.roleA());
-				associationDefinitionBuilder.putPropertyValue(KspProperty.LABEL_A, association.labelA());
-				associationDefinitionBuilder.putPropertyValue(KspProperty.ROLE_B, association.roleB());
-				associationDefinitionBuilder.putPropertyValue(KspProperty.LABEL_B, association.labelB());
 
 				//Attention pamc inverse dans oom les déclarations des objets !!
 				final DynamicDefinitionKey dtDefinitionAKey = new DynamicDefinitionKey(association.dtDefinitionA());
 				final DynamicDefinitionKey dtDefinitionBKey = new DynamicDefinitionKey(association.dtDefinitionB());
 
-				associationDefinitionBuilder.addDefinition("dtDefinitionA", dtDefinitionAKey);
-				associationDefinitionBuilder.addDefinition("dtDefinitionB", dtDefinitionBKey);
+				final DynamicDefinition associationDefinition = dynamicModelRepository.createDynamicDefinition(association.name(), associationNNMetaDefinition, packageName)//
+				.putPropertyValue(KspProperty.TABLE_NAME, association.tableName())//
 
-				//============================================================
-				final DynamicDefinition associationDefinition = associationDefinitionBuilder.build();
+				// associationDefinition.
+				//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
+
+				// navigabilités
+				.putPropertyValue(KspProperty.NAVIGABILITY_A, association.navigabilityA())//
+				.putPropertyValue(KspProperty.NAVIGABILITY_B, association.navigabilityB())//
+
+				.putPropertyValue(KspProperty.ROLE_A, association.roleA())//
+				.putPropertyValue(KspProperty.LABEL_A, association.labelA())//
+				.putPropertyValue(KspProperty.ROLE_B, association.roleB())//
+				.putPropertyValue(KspProperty.LABEL_B, association.labelB())//
+
+				.addDefinition("dtDefinitionA", dtDefinitionAKey)//
+				.addDefinition("dtDefinitionB", dtDefinitionBKey)//
+				.build();
+
 				if (!dynamicModelRepository.containsDefinitionKey(associationDefinition.getDefinitionKey())) {
 					//Les associations peuvent être déclarées sur les deux noeuds de l'association.
 					dynamicModelRepository.addDefinition(associationDefinition);
