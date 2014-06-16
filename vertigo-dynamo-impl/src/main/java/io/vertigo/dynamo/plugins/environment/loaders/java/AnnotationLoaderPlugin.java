@@ -112,8 +112,8 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 		final String urn = DT_DEFINITION_PREFIX + SEPARATOR + StringUtil.camelToConstCase(simpleName);
 
-		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelRepository.createDynamicDefinition(urn, dtMetaDefinition, packageName);
-		dtDefinitionBuilder.putPropertyValue(KspProperty.PERSISTENT, dtDefinitionAnnotation.persistent());
+		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelRepository.createDynamicDefinition(urn, dtMetaDefinition, packageName)//
+				.putPropertyValue(KspProperty.PERSISTENT, dtDefinitionAnnotation.persistent());
 
 		// Le tri des champs et des méthodes par ordre alphabétique est important car classe.getMethods() retourne
 		// un ordre relativement aléatoire et la lecture des annotations peut donc changer l'ordre

@@ -21,7 +21,6 @@ import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRep
 import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
 import io.vertigo.dynamo.impl.environment.kernel.meta.EntityProperty;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
-import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionBuilder;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
@@ -427,14 +426,15 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 		//On fait la même chose avec DTC
 
-		final DynamicDefinitionBuilder domainBuilder2 = dynamicModelRepository.createDynamicDefinition(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTC", metaDefinitionDomain, packageName);
 		final DynamicDefinitionKey dtListKey = new DynamicDefinitionKey("DtList");
-		domainBuilder2.addDefinition("formatter", fmtDefaultKey);
-		domainBuilder2.addDefinition("dataType", dtListKey);
-		//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
-		domainBuilder2.putPropertyValue(KspProperty.TYPE, definitionName);
+		final DynamicDefinition domain2 = dynamicModelRepository.createDynamicDefinition(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTC", metaDefinitionDomain, packageName)//
+				.addDefinition("formatter", fmtDefaultKey)//
+				.addDefinition("dataType", dtListKey)//
+				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
+				.putPropertyValue(KspProperty.TYPE, definitionName)//
+				.build();
 
 		//On ajoute le domain crée au repository
-		dynamicModelRepository.addDefinition(domainBuilder2.build());
+		dynamicModelRepository.addDefinition(domain2);
 	}
 }

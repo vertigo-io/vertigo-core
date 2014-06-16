@@ -74,9 +74,9 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 
 	private DynamicDefinition toDynamicDefinition(final EAXmiClass classXmi, final DynamicDefinitionRepository dynamicModelrepository) {
 
-		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelrepository.createDynamicDefinition(getDtDefinitionName(classXmi.getCode()), dtDefinitionEntity, classXmi.getPackageName());
-		//Par d�faut les DT lues depuis le XMI sont persistantes.
-		dtDefinitionBuilder.putPropertyValue(KspProperty.PERSISTENT, true);
+		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelrepository.createDynamicDefinition(getDtDefinitionName(classXmi.getCode()), dtDefinitionEntity, classXmi.getPackageName())//
+				//Par d�faut les DT lues depuis le XMI sont persistantes.
+				.putPropertyValue(KspProperty.PERSISTENT, true);
 
 		for (final EAXmiAttribute attributeXmi : classXmi.getKeyAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(attributeXmi, dynamicModelrepository);

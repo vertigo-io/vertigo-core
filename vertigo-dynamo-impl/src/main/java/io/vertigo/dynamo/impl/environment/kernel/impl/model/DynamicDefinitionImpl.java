@@ -38,14 +38,13 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	 * @param packageName Nom du package
 	 * @param entity Entité
 	 */
-	DynamicDefinitionImpl(final DynamicDefinitionKey dynamicDefinitionKey, final Entity entity, final String packageName) {
+	DynamicDefinitionImpl(final DynamicDefinitionKey dynamicDefinitionKey, final Entity entity) {
 		Assertion.checkNotNull(dynamicDefinitionKey);
 		//packageName peut être null
 		Assertion.checkNotNull(entity);
 		// -------------------------------------------------------------------------
 		this.dynamicDefinitionKey = dynamicDefinitionKey;
 		this.entity = entity;
-		this.packageName = packageName;
 	}
 
 	/** {@inheritDoc} */

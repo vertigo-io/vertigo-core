@@ -139,7 +139,7 @@ public final class DynamicDefinitionRepository {
 	 */
 	public DynamicDefinitionBuilder createDynamicDefinition(final String keyName, final Entity entity, final String packageName) {
 		final DynamicDefinitionKey dynamicDefinitionKey = new DynamicDefinitionKey(keyName);
-		return new DynamicDefinitionImpl(dynamicDefinitionKey, entity, packageName);
+		return new DynamicDefinitionImpl(dynamicDefinitionKey, entity).withPackageName(packageName);
 	}
 
 	//-------------------------------------------------------------------------
