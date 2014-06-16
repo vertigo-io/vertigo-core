@@ -83,12 +83,12 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	/**
 	 * Conteneur des couples (propriétés, valeur)
 	 */
-	private final Map<EntityProperty, Object> propertyMap = new HashMap<>();
+	private final Map<EntityProperty, Object> properties = new HashMap<>();
 	/**
 	 * Map des (FieldName, definitionKeyList)
 	 */
-	private final Map<String, List<DynamicDefinitionKey>> fieldNameDefinitionKeyListMap = new LinkedHashMap<>();
-	private final Map<String, List<DynamicDefinition>> fieldNameDefinitionCompositeListMap = new LinkedHashMap<>();
+	private final Map<String, List<DynamicDefinitionKey>> definitionKeysByFieldName = new LinkedHashMap<>();
+	private final Map<String, List<DynamicDefinition>> definitionsByFieldName = new LinkedHashMap<>();
 
 	/** {@inheritDoc} */
 	public final DynamicDefinitionKey getDefinitionKey() {
@@ -103,17 +103,17 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		// ----------------------------------------------------------------------
 		// Conformémément au contrat, on retourne null si pas de propriété
 		// trouvée
-		return propertyMap.get(property);
+		return properties.get(property);
 	}
 
 	/** {@inheritDoc} */
 	public Set<EntityProperty> getProperties() {
-		return Collections.unmodifiableSet(propertyMap.keySet());
+		return Collections.unmodifiableSet(properties.keySet());
 	}
 
 	public final DynamicDefinitionBuilder putPropertyValue(final EntityProperty property, final Object value) {
 		property.getDataType().checkValue(value);
-		propertyMap.put(property, value);
+		properties.put(property, value);
 		return this;
 	}
 
@@ -125,19 +125,19 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	private List<DynamicDefinitionKey> obtainDefinitionKeys(final String fieldName) {
 		Assertion.checkNotNull(fieldName);
 		// ------------------------------------------------------------------
-		List<DynamicDefinitionKey> list = fieldNameDefinitionKeyListMap.get(fieldName);
+		List<DynamicDefinitionKey> list = definitionKeysByFieldName.get(fieldName);
 		// ------------------------------------------------------------------
 		if (list == null) {
 			list = new ArrayList<>();
-			fieldNameDefinitionKeyListMap.put(fieldName, list);
+			definitionKeysByFieldName.put(fieldName, list);
 		}
 		return list;
 	}
 
 	/** {@inheritDoc} */
 	public final DynamicDefinitionKey getDefinitionKey(final String fieldName) {
-		Assertion.checkArgument(fieldNameDefinitionKeyListMap.containsKey(fieldName), "Aucune définition déclarée pour ''{0}'' sur ''{1}'' ", fieldName, getDefinitionKey().getName());
-		final List<DynamicDefinitionKey> list = fieldNameDefinitionKeyListMap.get(fieldName);
+		Assertion.checkArgument(definitionKeysByFieldName.containsKey(fieldName), "Aucune définition déclarée pour ''{0}'' sur ''{1}'' ", fieldName, getDefinitionKey().getName());
+		final List<DynamicDefinitionKey> list = definitionKeysByFieldName.get(fieldName);
 		final DynamicDefinitionKey definitionKey = list.get(0);
 		// ------------------------------------------------------------------
 		// On vérifie qu'il y a une définition pour le champ demandé
@@ -148,7 +148,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	/** {@inheritDoc} */
 	public final List<DynamicDefinitionKey> getAllDefinitionKeys() {
 		final List<DynamicDefinitionKey> dynamicDefinitionKeys = new ArrayList<>();
-		for (final List<DynamicDefinitionKey> dynamicDefinitionKeyList : fieldNameDefinitionKeyListMap.values()) {
+		for (final List<DynamicDefinitionKey> dynamicDefinitionKeyList : definitionKeysByFieldName.values()) {
 			dynamicDefinitionKeys.addAll(dynamicDefinitionKeyList);
 		}
 		return dynamicDefinitionKeys;
@@ -180,11 +180,11 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	private List<DynamicDefinition> obtainCompositeList(final String fieldName) {
 		Assertion.checkNotNull(fieldName);
 		// ------------------------------------------------------------------
-		List<DynamicDefinition> list = fieldNameDefinitionCompositeListMap.get(fieldName);
+		List<DynamicDefinition> list = definitionsByFieldName.get(fieldName);
 		// ------------------------------------------------------------------
 		if (list == null) {
 			list = new ArrayList<>();
-			fieldNameDefinitionCompositeListMap.put(fieldName, list);
+			definitionsByFieldName.put(fieldName, list);
 		}
 		return list;
 	}
@@ -197,7 +197,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	/** {@inheritDoc} */
 	public final List<DynamicDefinition> getAllChildDefinitions() {
 		final List<DynamicDefinition> dynamicDefinitions = new ArrayList<>();
-		for (final List<DynamicDefinition> dynamicDefinitionList : fieldNameDefinitionCompositeListMap.values()) {
+		for (final List<DynamicDefinition> dynamicDefinitionList : definitionsByFieldName.values()) {
 			dynamicDefinitions.addAll(dynamicDefinitionList);
 		}
 		return dynamicDefinitions;
@@ -212,12 +212,12 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		// 2. maj fieldNameDefinitionKeyListMap
 		final DynamicDefinitionImpl other = (DynamicDefinitionImpl) dynamicDefinition;
 
-		for (final Entry<String, List<DynamicDefinitionKey>> entry : other.fieldNameDefinitionKeyListMap.entrySet()) {
+		for (final Entry<String, List<DynamicDefinitionKey>> entry : other.definitionKeysByFieldName.entrySet()) {
 			obtainDefinitionKeys(entry.getKey()).addAll(entry.getValue());
 		}
 
 		// 3.
-		for (final Entry<String, List<DynamicDefinition>> entry : other.fieldNameDefinitionCompositeListMap.entrySet()) {
+		for (final Entry<String, List<DynamicDefinition>> entry : other.definitionsByFieldName.entrySet()) {
 			obtainCompositeList(entry.getKey()).addAll(entry.getValue());
 		}
 		return this;
