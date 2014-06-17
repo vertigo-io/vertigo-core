@@ -112,7 +112,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	}
 
 	public final DynamicDefinitionBuilder withPropertyValue(final EntityProperty property, final Object value) {
-		property.getDataType().checkValue(value);
+		property.getPrimitiveType().checkValue(value);
 		properties.put(property, value);
 		return this;
 	}
@@ -250,7 +250,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 		// 1.1.3 on vérifie les types des propriétés déclarées
 		for (final EntityProperty prop : propertySet) {
-			prop.getDataType().checkValue(getPropertyValue(prop));
+			prop.getPrimitiveType().checkValue(getPropertyValue(prop));
 		}
 
 		// 1.2 on vérifie les définitions composites (sous définitions).

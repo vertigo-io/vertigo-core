@@ -106,10 +106,7 @@ final class InnerDefinitionRule extends AbstractRule<XDefinitionEntry, List<?>> 
 	private static Object readProperty(final EntityProperty property, final String stringValue) {
 		Assertion.checkNotNull(property);
 		//---------------------------------------------------------------------
-		final Class<?> propertyClass = property.getDataType().getJavaClass();
-		final Object result = cast(propertyClass, stringValue);
-		property.getDataType().checkValue(result);
-		return result;
+		return property.getPrimitiveType().cast(stringValue);
 	}
 
 	private static List<DynamicDefinitionKey> toDefinitionKeyList(final List<String> list) {
@@ -120,23 +117,4 @@ final class InnerDefinitionRule extends AbstractRule<XDefinitionEntry, List<?>> 
 		return definitionKeyList;
 	}
 
-	private static Object cast(final Class<?> propertyClass, final String stringValue) {
-		final String sValue = stringValue == null ? null : stringValue.trim();
-		if (sValue == null || sValue.length() == 0) {
-			return null;
-		}
-		final Object result;
-		if (propertyClass.equals(Integer.class)) {
-			result = Integer.valueOf(sValue);
-		} else if (propertyClass.equals(Long.class)) {
-			result = Long.valueOf(sValue);
-		} else if (propertyClass.equals(String.class)) {
-			result = String.valueOf(sValue);
-		} else if (propertyClass.equals(Boolean.class)) {
-			result = Boolean.valueOf(sValue);
-		} else {
-			throw new IllegalArgumentException("cast de la propriété '" + propertyClass + "' non implémenté");
-		}
-		return result;
-	}
 }

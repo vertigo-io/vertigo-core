@@ -1,6 +1,5 @@
 package io.vertigo.dynamo.impl.environment.kernel.meta;
 
-import io.vertigo.dynamo.domain.metamodel.DataType;
 
 /**
  * Propriété (meta-data, aspect, attribute) d'une entity.
@@ -19,5 +18,5 @@ public interface EntityProperty {
 	 * Ceci permet de gérer au mieux l'utilisation des propriétés dans la grammaire.
 	 * @return Type primitif utilisé pour déclarer la valuer de la propriété.
 	 */
-	DataType getDataType();
+	PrimitiveType getPrimitiveType();
 }
