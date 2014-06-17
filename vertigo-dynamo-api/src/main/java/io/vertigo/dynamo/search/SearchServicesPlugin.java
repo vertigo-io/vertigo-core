@@ -16,7 +16,6 @@ import java.util.Collection;
  * Plugin offrant des services de recherche.
  *  
  * @author pchretien
- * @version $Id: SearchServicesPlugin.java,v 1.5 2014/01/28 18:53:45 pchretien Exp $
  */
 public interface SearchServicesPlugin extends Plugin {
 

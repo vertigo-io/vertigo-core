@@ -8,7 +8,6 @@ import java.util.Date;
  * Ce TextFile fournit un fichier de type text.
  *
  * @author npiedeloup
- * @version $Id: TextFile.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public final class TextFile extends AbstractKFile {
 	private static final long serialVersionUID = 1L;

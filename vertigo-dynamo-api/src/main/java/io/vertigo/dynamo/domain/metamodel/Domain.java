@@ -21,7 +21,6 @@ import java.util.List;
  * Un Domaine est un objet partagé par nature il est non modifiable.
  *
  * @author pchretien
- * @version $Id: Domain.java,v 1.7 2014/01/15 09:43:55 npiedeloup Exp $
  */
 @Prefix("DO")
 public final class Domain implements Definition {

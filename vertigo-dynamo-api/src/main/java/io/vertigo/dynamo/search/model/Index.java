@@ -13,7 +13,6 @@ import io.vertigo.kernel.lang.Assertion;
  *  - consulter le résultat d'une recherhe
  * 
  * @author dchallas
- * @version $Id: Index.java,v 1.6 2014/01/20 17:48:56 pchretien Exp $
  * @param <I> Type de l'objet contenant les champs à indexer
  * @param <R> Type de l'objet resultant de la recherche
  */

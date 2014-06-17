@@ -6,7 +6,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Attribut d'une entité.
  * 
  * @author pchretien
- * @version $Id: Attribute.java,v 1.3 2013/10/22 12:30:49 pchretien Exp $
  */
 public final class Attribute {
 	private final String name;

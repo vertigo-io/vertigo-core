@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
  * URI d'une DTC.
  *	
  * @author pchretien
- * @version $Id: DtListURI.java,v 1.4 2013/10/22 15:14:53 pchretien Exp $
  */
 public abstract class DtListURI implements Serializable {
 	/**

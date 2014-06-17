@@ -11,7 +11,6 @@ import java.io.Serializable;
 /**
  * Critères de recherche.
  * @author npiedeloup
- * @version $Id: SearchQuery.java,v 1.7 2014/01/28 18:53:45 pchretien Exp $ 
  */
 public final class SearchQuery implements Serializable {
 	private static final long serialVersionUID = -3215786603726103410L;

@@ -28,7 +28,6 @@ import java.util.Set;
 /**
  * Gestion des tables de relations NN.
  * @author dchallas
- * @version $Id: BrokerNNImpl.java,v 1.9 2014/01/20 18:57:19 pchretien Exp $
  */
 public final class BrokerNNImpl implements BrokerNN {
 	private final Domain integerDomain;

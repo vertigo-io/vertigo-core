@@ -16,7 +16,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Gestion des données mises en cache.
  * 
  * @author  pchretien
- * @version $Id: CacheStore.java,v 1.5 2014/01/20 17:49:32 pchretien Exp $
  */
 public final class CacheStore implements Store {
 	private final Store logicalStore;

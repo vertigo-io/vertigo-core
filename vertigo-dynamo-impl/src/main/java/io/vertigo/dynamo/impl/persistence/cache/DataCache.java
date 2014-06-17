@@ -14,7 +14,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Centralise la dépendance à CacheManager.
  *
  * @author  pchretien
- * @version $Id: DataCache.java,v 1.6 2014/01/24 17:59:38 pchretien Exp $
  */
 final class DataCache {
 	private final CacheManager cacheManager;

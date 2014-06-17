@@ -9,7 +9,6 @@ import java.util.Map;
 /**
  * Class de résolution du nom des champs de l'index, à partir du nom du DtIndex.
  * @author npiedeloup
- * @version $Id: IndexFieldNameResolver.java,v 1.4 2014/01/20 17:48:56 pchretien Exp $
  */
 public final class IndexFieldNameResolver {
 

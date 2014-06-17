@@ -16,7 +16,6 @@ import java.util.Set;
  * Si l'ensemble des définitions permet de construire le modèle, l'ensemble des entités permet de décrire le métamodèle.
  *
  * @author pchretien
- * @version $Id: Entity.java,v 1.4 2013/10/22 12:30:49 pchretien Exp $
  */
 public final class Entity {
 	/**

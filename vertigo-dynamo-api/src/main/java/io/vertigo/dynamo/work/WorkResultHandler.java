@@ -4,7 +4,6 @@ package io.vertigo.dynamo.work;
  * Hanlder permettant de définir le comportement après exécution asynchrone d'un work.
  * 
  * @author   pchretien, npiedeloup
- * @version $Id: WorkResultHandler.java,v 1.3 2013/11/15 15:43:35 pchretien Exp $
  */
 public interface WorkResultHandler<WR> {
 	/**

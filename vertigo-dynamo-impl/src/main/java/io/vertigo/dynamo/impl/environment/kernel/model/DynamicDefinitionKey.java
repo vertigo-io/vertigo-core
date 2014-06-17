@@ -5,7 +5,6 @@ import io.vertigo.kernel.lang.Assertion;
 /**
  * Clé d'une definition.
  * @author  pchretien
- * @version $Id: DynamicDefinitionKey.java,v 1.3 2013/10/22 12:30:28 pchretien Exp $
  */
 public final class DynamicDefinitionKey {
 	/**

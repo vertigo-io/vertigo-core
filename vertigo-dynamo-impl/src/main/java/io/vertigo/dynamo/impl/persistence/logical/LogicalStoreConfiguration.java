@@ -9,7 +9,6 @@ import io.vertigo.kernel.lang.Assertion;
 /**
  * Configuration logique des stores physiques.
  * @author pchretien
- * @version $Id: LogicalStoreConfiguration.java,v 1.4 2014/01/20 17:49:32 pchretien Exp $
  */
 public final class LogicalStoreConfiguration extends AbstractLogicalStoreConfiguration<DtDefinition, StorePlugin> {
 	private final PersistenceManager persistenceManager;

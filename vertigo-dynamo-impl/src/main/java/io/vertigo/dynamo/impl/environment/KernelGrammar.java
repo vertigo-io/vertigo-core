@@ -6,7 +6,6 @@ import io.vertigo.dynamo.impl.environment.kernel.meta.GrammarProvider;
 
 /**
  * @author pchretien
- * @version $Id: KernelGrammar.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public final class KernelGrammar extends GrammarProvider {
 	public static final KernelGrammar INSTANCE = new KernelGrammar();

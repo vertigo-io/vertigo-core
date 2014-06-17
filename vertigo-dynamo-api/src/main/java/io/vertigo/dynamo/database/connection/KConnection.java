@@ -14,7 +14,6 @@ import java.sql.SQLException;
  * resources participant à la transaction puis libére (release) les différentes ressources.
  *
  * @author pchretien, npiedeloup
- * @version $Id: KConnection.java,v 1.3 2013/10/22 12:35:47 pchretien Exp $
  */
 public final class KConnection implements KTransactionResource {
 	private final Connection jdbcConnection;

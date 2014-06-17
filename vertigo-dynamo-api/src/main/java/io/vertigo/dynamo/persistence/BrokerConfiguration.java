@@ -6,7 +6,6 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
  * Configuration du composant de persistance.
  * 
  * @author pchretien
- * @version $Id: BrokerConfiguration.java,v 1.2 2014/01/20 17:45:43 pchretien Exp $
  */
 public interface BrokerConfiguration {
 

@@ -8,7 +8,6 @@ import java.lang.annotation.Target;
 
 /**
  * @author pchretien
- * @version $Id: Field.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited

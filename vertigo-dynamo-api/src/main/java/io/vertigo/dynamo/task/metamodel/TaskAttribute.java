@@ -16,7 +16,6 @@ import io.vertigo.kernel.lang.Assertion;
  *  - obligatoire ou facultatif
  *
  * @author  fconstantin, pchretien
- * @version $Id: TaskAttribute.java,v 1.4 2014/01/20 17:45:43 pchretien Exp $
  */
 public final class TaskAttribute {
 	/** Nom de l'attribut. */
