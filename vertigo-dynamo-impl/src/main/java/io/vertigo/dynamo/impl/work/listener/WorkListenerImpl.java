@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
  * Implémentation standard du Listener de réception des événements produits par l'exécution des tachess.
  * 
  * @author pchretien
- * @version $Id: WorkListenerImpl.java,v 1.6 2013/11/15 15:33:20 pchretien Exp $
  */
 public final class WorkListenerImpl implements WorkListener {
 	/** Base de données gérant les statistiques des taches. */

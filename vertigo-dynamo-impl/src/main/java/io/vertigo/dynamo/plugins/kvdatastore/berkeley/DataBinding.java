@@ -15,7 +15,6 @@ import com.sleepycat.bind.tuple.TupleOutput;
  * Le binding est indépendant de la DtDefinition.
  *
  * @author pchretien
- * @version $Id: DataBinding.java,v 1.1 2013/01/02 13:38:30 pchretien Exp $
  */
 final class DataBinding extends TupleBinding {
 	/** {@inheritDoc} */

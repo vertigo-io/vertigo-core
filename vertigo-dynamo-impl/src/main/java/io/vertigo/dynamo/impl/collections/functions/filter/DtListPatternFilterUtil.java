@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
 
 /**
  * Parser des filtres utilisant une syntaxe définie.
- * @version $Id: DtListPatternFilterUtil.java,v 1.4 2014/01/20 17:45:43 pchretien Exp $
  */
 final class DtListPatternFilterUtil {
 

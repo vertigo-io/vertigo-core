@@ -8,7 +8,6 @@ import io.vertigo.kernel.lang.Assertion;
 /**
  * Fonction de filtre.
  * @author pchretien
- * @version $Id: FilterFunction.java,v 1.4 2014/01/20 17:45:43 pchretien Exp $
  */
 public final class FilterFunction<D extends DtObject> implements DtListFunction<D> {
 	private final DtListFilter<D> filter;

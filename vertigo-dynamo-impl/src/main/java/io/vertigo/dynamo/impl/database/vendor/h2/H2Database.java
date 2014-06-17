@@ -8,7 +8,6 @@ import io.vertigo.dynamo.database.vendor.SQLMapping;
  * Gestion de la base de données H2.
  * 
  * @author jmainaud
- * @version $Id: H2Database.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public final class H2Database implements DataBase {
 	private final SQLExceptionHandler sqlExceptionHandler = new H2SqlExceptionHandler();

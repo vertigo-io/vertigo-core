@@ -4,7 +4,6 @@ package io.vertigo.dynamo.plugins.collections.lucene;
  * Centralisation du paramétrage de l'analyseur lucene.
  * 
  * @author  pchretien
- * @version $Id: LuceneConstants.java,v 1.2 2013/07/29 11:56:57 pchretien Exp $
  */
 public interface LuceneConstants {
 	/**

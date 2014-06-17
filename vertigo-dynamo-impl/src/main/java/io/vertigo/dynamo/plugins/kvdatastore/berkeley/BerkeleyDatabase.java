@@ -23,7 +23,6 @@ import com.sleepycat.je.Transaction;
 /**
  * Objet d'accès en lecture/écriture à la base Berkeley.
  * @author pchretien
- * @version $Id: BerkeleyDatabase.java,v 1.1 2013/01/02 13:38:30 pchretien Exp $
  */
 final class BerkeleyDatabase {
 	private final KTransactionResourceId<BerkeleyResource> berkeleyResourceId = new KTransactionResourceId<>(KTransactionResourceId.Priority.TOP, "demo-berkeley");

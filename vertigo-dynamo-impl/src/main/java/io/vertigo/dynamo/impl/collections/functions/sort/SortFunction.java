@@ -14,7 +14,6 @@ import java.util.List;
 /**
  * Fonction de tri.
  * @author pchretien
- * @version $Id: SortFunction.java,v 1.4 2014/01/20 17:46:01 pchretien Exp $
  */
 public final class SortFunction<D extends DtObject> implements DtListFunction<D> {
 	private final SortState sortState;

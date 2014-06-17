@@ -19,7 +19,6 @@ import javax.inject.Inject;
 * Implémentation standard du gestionnaire des données et des accès aux données.
 *
 * @author pchretien
-* @version $Id: DataBaseManagerImpl.java,v 1.5 2013/10/22 12:24:21 pchretien Exp $
 */
 public final class DataBaseManagerImpl implements DataBaseManager, Activeable {
 	private final DataBaseListenerImpl dataBaseListener;

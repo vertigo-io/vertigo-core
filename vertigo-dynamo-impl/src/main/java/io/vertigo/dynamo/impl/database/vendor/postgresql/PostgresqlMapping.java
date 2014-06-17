@@ -13,7 +13,6 @@ import java.sql.Types;
  * Implémentation spécifique à Postgresql.
  *
  * @author pchretien
- * @version $Id: PostgresqlMapping.java,v 1.2 2014/01/20 17:46:11 pchretien Exp $
  */
 final class PostgresqlMapping implements SQLMapping {
 	private final SQLMapping defaultSQLMapping = new SQLMappingImpl();

@@ -13,7 +13,6 @@ import io.vertigo.kernel.lang.Assertion;
  *  
  *  D'autre part l'association possède son propre code.  
  * @author pchretien
- * @version $Id: AssociationOOM.java,v 1.4 2013/10/22 12:30:19 pchretien Exp $
  */
 public final class OOMAssociation {
 	private final String code;

@@ -7,7 +7,6 @@ import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 
 /**
  * @author pchretien
- * @version $Id: SearchGrammar.java,v 1.3 2014/02/03 17:29:01 pchretien Exp $
  */
 final class SearchGrammar extends GrammarProvider {
 	final Entity indexDefinition;

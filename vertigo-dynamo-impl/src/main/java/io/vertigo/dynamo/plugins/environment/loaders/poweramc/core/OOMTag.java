@@ -3,7 +3,6 @@ package io.vertigo.dynamo.plugins.environment.loaders.poweramc.core;
 /**
  *
  * @author pchretien
- * @version $Id: TagOOM.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 final class OOMTag {
 	private final OOMTag parent;

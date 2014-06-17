@@ -33,7 +33,6 @@ import javax.inject.Named;
  * Lecture des annotations présentes sur les objets métier.
  *
  * @author pchretien
- * @version $Id: AnnotationLoaderPlugin.java,v 1.9 2014/01/20 17:46:41 pchretien Exp $
  */
 public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);

@@ -10,7 +10,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Toute l'information est portée par le domain.
  * 
  * @author  pchretien
- * @version $Id: SimpleResultMetaData.java,v 1.4 2014/01/20 17:46:01 pchretien Exp $
  */
 final class SimpleResultMetaData implements ResultMetaData {
 	private final DtDefinition dtDefinition;

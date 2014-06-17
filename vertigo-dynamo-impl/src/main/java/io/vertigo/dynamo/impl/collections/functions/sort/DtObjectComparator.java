@@ -24,7 +24,6 @@ import java.util.Locale;
  * @param <D> Type de l'objet
  *
  * @author pchretien
- * @version $Id: DtObjectComparator.java,v 1.7 2014/01/20 17:46:01 pchretien Exp $
  */
 final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 	//On ne veut pas d'un comparateur sérializable !!!

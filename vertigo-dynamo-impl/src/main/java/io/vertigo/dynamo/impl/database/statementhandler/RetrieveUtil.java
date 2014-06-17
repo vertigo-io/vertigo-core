@@ -16,7 +16,6 @@ import java.sql.SQLException;
 /**
  * Centralisation du peuplement des beans.
  * @author  pchretien
- * @version $Id: RetrieveUtil.java,v 1.6 2014/01/20 17:46:01 pchretien Exp $
  */
 final class RetrieveUtil {
 

@@ -10,7 +10,6 @@ import java.util.Collection;
 /**
  * Plugin de construction et d'interrogation de l'index d'une DtList.
  * @author npiedeloup
- * @version $Id: IndexPlugin.java,v 1.3 2014/01/20 17:45:43 pchretien Exp $
  */
 public interface IndexPlugin extends Plugin {
 	/**

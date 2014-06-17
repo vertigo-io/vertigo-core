@@ -18,7 +18,6 @@ import java.util.List;
 
 /*
  * @author pchretien
- * @version $Id: DynamicDefinitionRule.java,v 1.6 2014/01/24 17:59:38 pchretien Exp $
  */
 public final class DynamicDefinitionRule extends AbstractRule<DynamicDefinition, Choice> {
 	/** Création de la définition. */

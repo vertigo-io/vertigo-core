@@ -17,7 +17,6 @@ import javax.inject.Named;
  * 
  * @see io.vertigo.dynamo.plugins.database.connection.datasource.DataSourceConnectionProviderPlugin Utiliser une DataSource
  * @deprecated NE DOIT PAS ETRE UTILISE EN PRODUCTION.
- * @version $Id: MockConnectionProviderPlugin.java,v 1.4 2013/10/22 12:34:28 pchretien Exp $
  */
 @Deprecated
 public final class MockConnectionProviderPlugin extends AbstractConnectionProviderPlugin {

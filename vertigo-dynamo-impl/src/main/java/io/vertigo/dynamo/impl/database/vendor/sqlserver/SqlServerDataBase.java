@@ -9,7 +9,6 @@ import io.vertigo.dynamo.impl.database.vendor.core.SQLMappingImpl;
  * Gestion de la base de données SqlServer.
  * 
  * @author pchretien
- * @version $Id: SqlServerDataBase.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public final class SqlServerDataBase implements DataBase {
 	private final SQLExceptionHandler sqlExceptionHandler = new SqlServerExceptionHandler();

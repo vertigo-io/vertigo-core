@@ -10,7 +10,6 @@ import io.vertigo.kernel.lang.Assertion;
 
 /**
  * @author pchretien
- * @version $Id: AbstractDynamicRegistryPlugin.java,v 1.4 2013/10/22 10:44:46 pchretien Exp $
  * @param <G> Type de Grammaire
  */
 public abstract class AbstractDynamicRegistryPlugin<G extends GrammarProvider> implements DynamicRegistryPlugin {

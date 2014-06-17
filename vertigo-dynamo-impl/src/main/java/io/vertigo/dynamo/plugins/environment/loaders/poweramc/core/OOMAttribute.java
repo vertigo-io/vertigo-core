@@ -5,7 +5,6 @@ import io.vertigo.kernel.lang.Assertion;
 /**
  * Implémentation de référence.
  * @author pchretien
- * @version $Id: AttributeOOM.java,v 1.4 2013/10/22 12:30:19 pchretien Exp $
  */
 public final class OOMAttribute {
 	private final String code;

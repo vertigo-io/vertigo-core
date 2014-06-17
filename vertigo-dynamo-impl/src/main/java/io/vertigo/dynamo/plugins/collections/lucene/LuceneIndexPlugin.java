@@ -52,7 +52,6 @@ import org.apache.lucene.search.TopDocs;
  * Plugin de d'indexation de DtList utilisant Lucene en Ram.
  * 
  * @author npiedeloup
- * @version $Id: LuceneIndexPlugin.java,v 1.7 2014/01/24 17:59:57 pchretien Exp $
  */
 public final class LuceneIndexPlugin implements IndexPlugin {
 	private final Analyzer indexAnalyser;

@@ -16,7 +16,6 @@ import java.sql.SQLException;
  * - Simple : la cible est connue on crée puis on peuple.
  * - Dynamic : la cible n'est pas connue, on crée dynamiquement un bean que l'on peuple.
  * @author  pchretien
- * @version $Id: StatementHandlerImpl.java,v 1.4 2014/01/20 17:46:01 pchretien Exp $
  */
 public final class StatementHandlerImpl implements StatementHandler {
 	/** {@inheritDoc} */

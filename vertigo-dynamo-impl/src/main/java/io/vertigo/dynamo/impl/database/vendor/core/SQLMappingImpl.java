@@ -18,7 +18,6 @@ import java.sql.Types;
  * Cette implmentation peut être redéfinie partiellement ou totalement.
  *
  * @author pchretien
- * @version $Id: SQLMappingImpl.java,v 1.2 2014/01/20 17:46:11 pchretien Exp $
  */
 public final class SQLMappingImpl implements SQLMapping {
 	private static final String TYPE_INCONNU = "Type inconnu : ";

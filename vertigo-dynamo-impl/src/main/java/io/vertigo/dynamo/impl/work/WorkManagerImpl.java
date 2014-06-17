@@ -21,7 +21,6 @@ import javax.inject.Named;
  * Implémentation de workManager.
  * 
  * @author pchretien, npiedeloup
- * @version $Id: WorkManagerImpl.java,v 1.7 2014/01/20 11:34:32 npiedeloup Exp $
  */
 public final class WorkManagerImpl implements WorkManager, Activeable {
 

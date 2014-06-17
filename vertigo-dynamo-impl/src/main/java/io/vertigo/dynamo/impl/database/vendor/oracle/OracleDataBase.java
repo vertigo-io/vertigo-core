@@ -9,7 +9,6 @@ import io.vertigo.dynamo.impl.database.vendor.core.SQLMappingImpl;
  * Gestiond de la base de données Oracle.
  * 
  * @author pchretien
- * @version $Id: OracleDataBase.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public final class OracleDataBase implements DataBase {
 	private final SQLExceptionHandler sqlExceptionHandler = new OracleExceptionHandler();

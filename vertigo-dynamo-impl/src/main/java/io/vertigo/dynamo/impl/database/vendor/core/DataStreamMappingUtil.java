@@ -19,7 +19,6 @@ import java.sql.SQLException;
  * Gestion native des blobs.
  *
  * @author pchretien
- * @version $Id: DataStreamMappingUtil.java,v 1.5 2014/01/20 17:46:11 pchretien Exp $
  */
 public final class DataStreamMappingUtil {
 	private static final int MEMORY_MAX_LENTH = 10 * 1024; //10Koi

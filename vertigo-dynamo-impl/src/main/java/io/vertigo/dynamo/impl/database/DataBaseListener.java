@@ -7,7 +7,6 @@ import io.vertigo.dynamo.impl.database.statement.StatementStats;
 * Interface de réception des  événements produits par l'exécution des taches SQL.
 *
 * @author pchretien
-* @version $Id: DataBaseListener.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
 */
 public interface DataBaseListener {
 	/**

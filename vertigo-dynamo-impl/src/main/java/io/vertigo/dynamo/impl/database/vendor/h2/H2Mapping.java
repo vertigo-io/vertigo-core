@@ -13,7 +13,6 @@ import java.sql.Types;
  * Implémentation spécifique à H2.
  * 
  * @author jmainaud
- * @version $Id: H2Mapping.java,v 1.2 2014/01/20 17:46:11 pchretien Exp $
  */
 final class H2Mapping implements SQLMapping {
 	private final SQLMapping defaultSQLMapping = new SQLMappingImpl();

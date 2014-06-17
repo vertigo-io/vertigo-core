@@ -12,7 +12,6 @@ import java.io.Serializable;
 /**
  * Filtre sur champ=valeur.
  *
- * @version $Id: DtListRangeFilter.java,v 1.6 2014/01/20 17:45:43 pchretien Exp $
  * @param <D> Type du DtObject
  * @param <C> Type du champs filtré
  */
