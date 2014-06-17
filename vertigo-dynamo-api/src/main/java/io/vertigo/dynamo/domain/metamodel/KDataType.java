@@ -16,9 +16,8 @@ import java.util.Date;
  * Ils unifient le socle autour de la notion clé de domaine.
  *
  * @author  pchretien
- * @version $Id: KDataType.java,v 1.4 2014/01/08 15:59:03 pchretien Exp $
  */
-public enum KDataType implements DataType {
+public enum KDataType {
 	/** Integer. */
 	Integer(Integer.class, true),
 	/** Double. */
@@ -64,7 +63,11 @@ public enum KDataType implements DataType {
 		this.primitive = primitive;
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * Teste si la valeur passée en paramétre est est conforme au type.
+	 * Lance une exception avec message adequat si pb.
+	 * @param value Valeur é tester
+	 */
 	public void checkValue(final Object value) {
 		//Il suffit de vérifier que la valeur passée est une instance de la classe java définie pour le type Dynamo.
 		//Le test doit être effectué car le cast est non fiable par les generics
@@ -73,7 +76,9 @@ public enum KDataType implements DataType {
 		}
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * @return Classe java encapsulé/wrappée par le type
+	 */
 	public Class<?> getJavaClass() {
 		return javaClass;
 	}
