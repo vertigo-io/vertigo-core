@@ -42,5 +42,5 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	 * @param fieldName Nom du champ
 	 * @param definition Définition
 	 */
-	void withChildDefinition(final String fieldName, final DynamicDefinition definition);
+	DynamicDefinitionBuilder withChildDefinition(final String fieldName, final DynamicDefinition definition);
 }

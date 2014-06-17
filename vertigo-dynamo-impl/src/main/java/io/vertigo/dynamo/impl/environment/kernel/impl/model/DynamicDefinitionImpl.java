@@ -154,10 +154,11 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return dynamicDefinitionKeys;
 	}
 
-	public final void withChildDefinition(final String fieldName, final DynamicDefinition definition) {
+	public final DynamicDefinitionBuilder withChildDefinition(final String fieldName, final DynamicDefinition definition) {
 		Assertion.checkNotNull(definition);
 		// ------------------------------------------------------------------
 		obtainCompositeList(fieldName).add(definition);
+		return this;
 	}
 
 	private void doAddDefinition(final String fieldName, final DynamicDefinitionKey definitionKey) {
