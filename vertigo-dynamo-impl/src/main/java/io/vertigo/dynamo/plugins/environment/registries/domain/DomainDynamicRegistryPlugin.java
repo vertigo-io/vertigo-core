@@ -415,10 +415,10 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final DynamicDefinitionKey dtObjectKey = new DynamicDefinitionKey("DtObject");
 
 		final DynamicDefinition domain = dynamicModelRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain, packageName)//
-				.addDefinition("formatter", fmtDefaultKey)//
-				.addDefinition("dataType", dtObjectKey)//
+				.withDefinition("formatter", fmtDefaultKey)//
+				.withDefinition("dataType", dtObjectKey)//
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
-				.putPropertyValue(KspProperty.TYPE, definitionName)//
+				.withPropertyValue(KspProperty.TYPE, definitionName)//
 				.build();
 
 		//On ajoute le domain crée au repository
@@ -428,10 +428,10 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 		final DynamicDefinitionKey dtListKey = new DynamicDefinitionKey("DtList");
 		final DynamicDefinition domain2 = dynamicModelRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTC", metaDefinitionDomain, packageName)//
-				.addDefinition("formatter", fmtDefaultKey)//
-				.addDefinition("dataType", dtListKey)//
+				.withDefinition("formatter", fmtDefaultKey)//
+				.withDefinition("dataType", dtListKey)//
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
-				.putPropertyValue(KspProperty.TYPE, definitionName)//
+				.withPropertyValue(KspProperty.TYPE, definitionName)//
 				.build();
 
 		//On ajoute le domain crée au repository

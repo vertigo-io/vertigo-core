@@ -76,15 +76,15 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 
 		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelrepository.createDynamicDefinitionBuilder(getDtDefinitionName(classXmi.getCode()), dtDefinitionEntity, classXmi.getPackageName())//
 				//Par d�faut les DT lues depuis le XMI sont persistantes.
-				.putPropertyValue(KspProperty.PERSISTENT, true);
+				.withPropertyValue(KspProperty.PERSISTENT, true);
 
 		for (final EAXmiAttribute attributeXmi : classXmi.getKeyAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(attributeXmi, dynamicModelrepository);
-			dtDefinitionBuilder.addChildDefinition(DomainGrammar.PRIMARY_KEY, dtField);
+			dtDefinitionBuilder.withChildDefinition(DomainGrammar.PRIMARY_KEY, dtField);
 		}
 		for (final EAXmiAttribute attributeXmi : classXmi.getFieldAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(attributeXmi, dynamicModelrepository);
-			dtDefinitionBuilder.addChildDefinition("field", dtField);
+			dtDefinitionBuilder.withChildDefinition("field", dtField);
 		}
 		return dtDefinitionBuilder.build();
 	}
@@ -93,10 +93,10 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 		final DynamicDefinitionKey domainKey = new DynamicDefinitionKey(attributeXmi.getDomain());
 
 		return dynamicModelrepository.createDynamicDefinitionBuilder(attributeXmi.getCode(), dtFieldEntity, null)//
-				.putPropertyValue(KspProperty.LABEL, attributeXmi.getLabel())//
-				.putPropertyValue(KspProperty.PERSISTENT, attributeXmi.isPersistent())//
-				.putPropertyValue(KspProperty.NOT_NULL, attributeXmi.isNotNull())//
-				.addDefinition("domain", domainKey)//
+				.withPropertyValue(KspProperty.LABEL, attributeXmi.getLabel())//
+				.withPropertyValue(KspProperty.PERSISTENT, attributeXmi.isPersistent())//
+				.withPropertyValue(KspProperty.NOT_NULL, attributeXmi.isNotNull())//
+				.withDefinition("domain", domainKey)//
 				.build();
 	}
 
@@ -114,30 +114,30 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 
 		//On crée l'association
 		final DynamicDefinitionBuilder associationDefinitionBuilder = dynamicModelrepository.createDynamicDefinitionBuilder(name, dynamicMetaDefinition, associationXmi.getPackageName())//
-				.putPropertyValue(KspProperty.NAVIGABILITY_A, associationXmi.isNavigableA())//
-				.putPropertyValue(KspProperty.NAVIGABILITY_B, associationXmi.isNavigableB())//
+				.withPropertyValue(KspProperty.NAVIGABILITY_A, associationXmi.isNavigableA())//
+				.withPropertyValue(KspProperty.NAVIGABILITY_B, associationXmi.isNavigableB())//
 				//---
-				.putPropertyValue(KspProperty.LABEL_A, associationXmi.getRoleLabelA())//
+				.withPropertyValue(KspProperty.LABEL_A, associationXmi.getRoleLabelA())//
 				//On transforme en CODE ce qui est écrit en toutes lettres.
-				.putPropertyValue(KspProperty.ROLE_A, french2Java(associationXmi.getRoleLabelA()))//
-				.putPropertyValue(KspProperty.LABEL_B, associationXmi.getRoleLabelB())//
-				.putPropertyValue(KspProperty.ROLE_B, french2Java(associationXmi.getRoleLabelB()))
+				.withPropertyValue(KspProperty.ROLE_A, french2Java(associationXmi.getRoleLabelA()))//
+				.withPropertyValue(KspProperty.LABEL_B, associationXmi.getRoleLabelB())//
+				.withPropertyValue(KspProperty.ROLE_B, french2Java(associationXmi.getRoleLabelB()))
 				//---
-				.addDefinition("dtDefinitionA", getDtDefinitionKey(associationXmi.getCodeA()))//
-				.addDefinition("dtDefinitionB", getDtDefinitionKey(associationXmi.getCodeB()));
+				.withDefinition("dtDefinitionA", getDtDefinitionKey(associationXmi.getCodeA()))//
+				.withDefinition("dtDefinitionB", getDtDefinitionKey(associationXmi.getCodeB()));
 
 		if (isAssociationNN) {
 			//Dans le cas d'une association NN il faut établir le nom de la table intermédiaire qui porte les relations
 			final String tableName = associationXmi.getCode();
-			associationDefinitionBuilder.putPropertyValue(KspProperty.TABLE_NAME, tableName);
+			associationDefinitionBuilder.withPropertyValue(KspProperty.TABLE_NAME, tableName);
 			LOGGER.trace("isAssociationNN:Code=" + associationXmi.getCode());
 		} else {
 			LOGGER.trace("!isAssociationNN:Code=" + associationXmi.getCode());
 			//Dans le cas d'une NN ses deux propriétés sont redondantes ; 
 			//elles ne font donc pas partie de la définition d'une association de type NN
-			associationDefinitionBuilder.putPropertyValue(KspProperty.MULTIPLICITY_A, associationXmi.getMultiplicityA())//
-					.putPropertyValue(KspProperty.MULTIPLICITY_B, associationXmi.getMultiplicityB())//
-					.putPropertyValue(KspProperty.FK_FIELD_NAME, buildFkFieldName(associationXmi, dynamicModelrepository));
+			associationDefinitionBuilder.withPropertyValue(KspProperty.MULTIPLICITY_A, associationXmi.getMultiplicityA())//
+					.withPropertyValue(KspProperty.MULTIPLICITY_B, associationXmi.getMultiplicityB())//
+					.withPropertyValue(KspProperty.FK_FIELD_NAME, buildFkFieldName(associationXmi, dynamicModelrepository));
 
 		}
 		return associationDefinitionBuilder.build();

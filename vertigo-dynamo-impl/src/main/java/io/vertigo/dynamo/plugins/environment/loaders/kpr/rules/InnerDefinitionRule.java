@@ -75,10 +75,10 @@ final class InnerDefinitionRule extends AbstractRule<XDefinitionEntry, List<?>> 
 			// ------------------------------------------------------------------
 			if (fieldDefinitionEntry.containsDefinition()) {
 				// On ajoute la définition par sa valeur.
-				dynamicDefinitionBuilder.addChildDefinition(fieldDefinitionEntry.getFieldName(), fieldDefinitionEntry.getDefinition());
+				dynamicDefinitionBuilder.withChildDefinition(fieldDefinitionEntry.getFieldName(), fieldDefinitionEntry.getDefinition());
 			} else {
 				// On ajoute les définitions par leur clé.
-				dynamicDefinitionBuilder.addDefinitionList(fieldDefinitionEntry.getFieldName(), toDefinitionKeyList(fieldDefinitionEntry.getDefinitionKeys()));
+				dynamicDefinitionBuilder.withDefinitions(fieldDefinitionEntry.getFieldName(), toDefinitionKeyList(fieldDefinitionEntry.getDefinitionKeys()));
 			}
 		}
 		for (final XPropertyEntry fieldPropertyEntry : definitionBody.getPropertyEntries()) {
@@ -87,7 +87,7 @@ final class InnerDefinitionRule extends AbstractRule<XDefinitionEntry, List<?>> 
 			//					fieldPropertyEntry.getProperty(), definition.getEntity().getName());
 			//			// ------------------------------------------------------------------
 			final Object value = readProperty(fieldPropertyEntry.getProperty(), fieldPropertyEntry.getPropertyValueAsString());
-			dynamicDefinitionBuilder.putPropertyValue(fieldPropertyEntry.getProperty(), value);
+			dynamicDefinitionBuilder.withPropertyValue(fieldPropertyEntry.getProperty(), value);
 		}
 	}
 

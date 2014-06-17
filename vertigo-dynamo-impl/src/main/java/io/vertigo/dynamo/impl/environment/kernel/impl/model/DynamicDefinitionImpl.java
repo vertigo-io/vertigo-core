@@ -111,7 +111,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return Collections.unmodifiableSet(properties.keySet());
 	}
 
-	public final DynamicDefinitionBuilder putPropertyValue(final EntityProperty property, final Object value) {
+	public final DynamicDefinitionBuilder withPropertyValue(final EntityProperty property, final Object value) {
 		property.getDataType().checkValue(value);
 		properties.put(property, value);
 		return this;
@@ -154,7 +154,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return dynamicDefinitionKeys;
 	}
 
-	public final void addChildDefinition(final String fieldName, final DynamicDefinition definition) {
+	public final void withChildDefinition(final String fieldName, final DynamicDefinition definition) {
 		Assertion.checkNotNull(definition);
 		// ------------------------------------------------------------------
 		obtainCompositeList(fieldName).add(definition);
@@ -166,15 +166,16 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		obtainDefinitionKeys(fieldName).add(definitionKey);
 	}
 
-	public final void addDefinitionList(final String fieldName, final List<DynamicDefinitionKey> definitionKeyList) {
-		Assertion.checkNotNull(definitionKeyList);
+	public final DynamicDefinitionBuilder withDefinitions(final String fieldName, final List<DynamicDefinitionKey> definitionKeys) {
+		Assertion.checkNotNull(definitionKeys);
 		Assertion.checkArgument(obtainDefinitionKeys(fieldName).isEmpty(), "syntaxe interdite");
 		// On vérifie que la liste est vide pour éviter les syntaxe avec multi
 		// déclarations
 		// ----------------------------------------------------------------------
-		for (final DynamicDefinitionKey definitionKey : definitionKeyList) {
+		for (final DynamicDefinitionKey definitionKey : definitionKeys) {
 			doAddDefinition(fieldName, definitionKey);
 		}
+		return this;
 	}
 
 	private List<DynamicDefinition> obtainCompositeList(final String fieldName) {
@@ -206,7 +207,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	public final DynamicDefinitionBuilder withBody(final DynamicDefinition dynamicDefinition) {
 		// 1. maj des EntityProperty
 		for (final EntityProperty property : dynamicDefinition.getProperties()) {
-			putPropertyValue(property, dynamicDefinition.getPropertyValue(property));
+			withPropertyValue(property, dynamicDefinition.getPropertyValue(property));
 		}
 
 		// 2. maj fieldNameDefinitionKeyListMap
@@ -223,7 +224,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return this;
 	}
 
-	public DynamicDefinitionBuilder addDefinition(final String fieldName, final DynamicDefinitionKey definitionKey) {
+	public DynamicDefinitionBuilder withDefinition(final String fieldName, final DynamicDefinitionKey definitionKey) {
 		// On vérifie que la liste est vide pour éviter les syntaxe avec multi
 		// déclarations
 		Assertion.checkArgument(obtainDefinitionKeys(fieldName).isEmpty(), "syntaxe interdite");
