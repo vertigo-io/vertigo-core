@@ -8,8 +8,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Métadonnée liée à la grammaire.
  *
  * @author  pchretien
- * @version $Id: KspProperty.java,v 1.4 2014/01/20 17:46:11 pchretien Exp $
- *
  */
 public enum KspProperty implements EntityProperty {
 	/**
