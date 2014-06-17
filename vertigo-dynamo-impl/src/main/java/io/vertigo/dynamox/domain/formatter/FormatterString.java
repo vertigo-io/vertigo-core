@@ -9,7 +9,6 @@ import io.vertigo.kernel.util.StringUtil;
  * Gestion des formattages de String.
  *
  * @author pchretien
- * @version $Id: FormatterString.java,v 1.3 2013/10/22 11:00:06 pchretien Exp $
  */
 public final class FormatterString extends AbstractFormatterImpl {
 	/**

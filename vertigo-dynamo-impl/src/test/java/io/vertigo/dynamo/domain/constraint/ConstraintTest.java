@@ -17,7 +17,6 @@ import org.junit.Test;
  * Test des contraintes.
  *
  * @author pchretien
- * @version $Id: ConstraintTest.java,v 1.2 2013/10/22 10:46:57 pchretien Exp $
  */
 public class ConstraintTest extends AbstractTestCaseJU4 {
 	//private ConstraintNotNull constraintNotNull;

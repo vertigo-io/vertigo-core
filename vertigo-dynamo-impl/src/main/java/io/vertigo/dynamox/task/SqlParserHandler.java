@@ -15,7 +15,6 @@ import java.util.List;
 /**
  * Cette implémentation permet de créer la requête SQL bindée ainsi que de sortir la liste des paramètres de la requête (IN, OUT, IN/OUT).
  * @author pchretien
- * @version $Id: SqlParserHandler.java,v 1.7 2014/01/24 17:59:38 pchretien Exp $
  */
 final class SqlParserHandler implements ScriptParserHandler {
 	private final TaskDefinition taskDefinition;

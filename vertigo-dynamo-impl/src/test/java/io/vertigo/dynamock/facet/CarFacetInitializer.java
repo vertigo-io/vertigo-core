@@ -17,7 +17,6 @@ import java.util.List;
 /**
  * Configuration des facettes de l'objet de test Car.
  * @author npiedeloup
- * @version $Id: CarFacetInitializer.java,v 1.3 2014/01/20 17:50:27 pchretien Exp $
  */
 public final class CarFacetInitializer {
 	public static final String FCT_DESCRIPTION_CAR = "FCT_DESCRIPTION_CAR";

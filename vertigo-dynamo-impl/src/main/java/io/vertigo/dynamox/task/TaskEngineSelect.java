@@ -31,7 +31,6 @@ import javax.inject.Inject;
  * entrée/sortie.
  *
  * @author  FCONSTANTIN
- * @version $Id: TaskEngineSelect.java,v 1.9 2014/01/24 17:59:38 pchretien Exp $
  */
 public class TaskEngineSelect extends AbstractTaskEngineSQL<KPreparedStatement> {
 

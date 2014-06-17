@@ -18,7 +18,6 @@ import java.util.StringTokenizer;
  * Exemple 2 d'arguments si les ressources sont externalisées : "TXT_OUI ; TXT_NON"
  *
  * @author pchretien
- * @version $Id: FormatterBoolean.java,v 1.3 2013/10/22 11:00:06 pchretien Exp $
  */
 public final class FormatterBoolean extends AbstractFormatterImpl {
 	/**

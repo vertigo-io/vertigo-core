@@ -19,7 +19,6 @@ import org.junit.Test;
  * Test de l'implémentation standard.
  * 
  * @author pchretien 
- * @version $Id: OOMEnvironmentManagerTest.java,v 1.3 2014/01/20 17:51:47 pchretien Exp $
  */
 public final class EAXmiEnvironmentManagerTest extends AbstractTestCaseJU4 {
 	@Test

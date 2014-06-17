@@ -5,7 +5,6 @@ import io.vertigo.dynamo.task.model.TaskEngine;
 /**
  * 
  * @author dchallas
- * $Id: TaskEngineMock.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public final class TaskEngineMock extends TaskEngine {
 	/** entier 1. */

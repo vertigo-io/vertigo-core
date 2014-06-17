@@ -17,7 +17,6 @@ import org.junit.Test;
  * Test de l'implémentation standard.
  *
  * @author pchretien
- * @version $Id: FormatterTest.java,v 1.3 2013/10/22 10:46:48 pchretien Exp $
  */
 public class FormatterTest extends AbstractTestCaseJU4 {
 	private FormatterBoolean formatterBoolean;

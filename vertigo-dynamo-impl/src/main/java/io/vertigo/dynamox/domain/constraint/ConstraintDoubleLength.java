@@ -12,7 +12,6 @@ import java.math.BigDecimal;
  * <br>
  *
  * @author pchretien
- * @version $Id: ConstraintDoubleLength.java,v 1.2 2013/10/22 12:04:44 pchretien Exp $
  */
 public final class ConstraintDoubleLength extends AbstractConstraintLength<Double> {
 	/**

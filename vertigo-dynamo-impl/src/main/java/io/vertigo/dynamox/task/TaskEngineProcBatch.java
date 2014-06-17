@@ -18,7 +18,6 @@ import javax.inject.Inject;
 
 /**
  * @author jmforhan
- * @version $Id: TaskEngineProcBatch.java,v 1.8 2014/01/24 17:59:38 pchretien Exp $
  */
 public class TaskEngineProcBatch extends TaskEngineProc {
 

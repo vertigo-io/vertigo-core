@@ -6,7 +6,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
  * Définit un filtre à appliquer sur une liste.
  *
  * @author pchretien
- * @param <D> Type du DtObject
  */
 public interface DtListFilter<D extends DtObject> {
 

@@ -33,8 +33,7 @@ import java.util.StringTokenizer;
  *  On affiche la date au format dd/MM/yyyy
  *  En saisie on autorise dd/MM/yyyy et dd/MM/yy
  *
- * @author pchretien, evernat
- * @version $Id: FormatterDate.java,v 1.5 2013/10/22 15:22:26 pchretien Exp $
+ * @author pchretien
  */
 public final class FormatterDate extends AbstractFormatterImpl {
 	/**

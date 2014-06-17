@@ -9,7 +9,6 @@ import org.junit.Test;
 /**
  * Test des codesc de cryptographie.
  * @author pchretien
- * $Id: AbstractCryptoCodecTest.java,v 1.6 2013/11/15 15:50:56 pchretien Exp $
  */
 public abstract class AbstractCryptoCodecTest extends AbstractCodecTest<byte[], byte[]> {
 

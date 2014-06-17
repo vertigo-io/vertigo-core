@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
  * http://www.w3.org/TR/html401/sgml/entities.html
  *
  * @author npiedeloup, pchretien
- * $Id: HtmlCodec.java,v 1.3 2013/11/15 15:27:29 pchretien Exp $
  */
 public final class HtmlCodec extends AbstractCodec {
 	private static final String ESCAPE_PATTERN_STRING = "&#[0-9]{2,4};";

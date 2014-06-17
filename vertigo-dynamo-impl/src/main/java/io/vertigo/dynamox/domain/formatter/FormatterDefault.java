@@ -13,7 +13,6 @@ import io.vertigo.kernel.metamodel.DefinitionReference;
  *
  *
  * @author pchretien
- * @version $Id: FormatterDefault.java,v 1.5 2013/10/22 11:00:06 pchretien Exp $
  */
 public final class FormatterDefault extends AbstractFormatterImpl {
 	private final DefinitionReference<Formatter> booleanFormatterRef;

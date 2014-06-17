@@ -26,7 +26,6 @@ import java.util.StringTokenizer;
  * 
  * 
  * @author npiedeloup
- * @version $Id: FormatterNumberLocalized.java,v 1.5 2013/10/22 11:00:06 pchretien Exp $
  */
 public class FormatterNumberLocalized extends FormatterNumber {
 

@@ -26,7 +26,6 @@ import java.util.Map.Entry;
  * <%= %> : permet d'ajouter des éléments au texte
  *
  * @author  pchretien
- * @version $Id: ScriptPreProcessor.java,v 1.4 2014/01/24 17:59:38 pchretien Exp $
  */
 final class ScriptPreProcessor {
 	private final ScriptManager scriptManager;

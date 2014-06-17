@@ -10,7 +10,6 @@ import io.vertigo.kernel.component.ComponentInitializer;
 /**
  * Configuration du manager Search.
  * @author dchallas
- * @version $Id: CollectionsManagerInitializer.java,v 1.2 2013/10/22 12:09:37 pchretien Exp $
  */
 public final class CollectionsManagerInitializer implements ComponentInitializer<CollectionsManager> {
 	/** {@inheritDoc} */

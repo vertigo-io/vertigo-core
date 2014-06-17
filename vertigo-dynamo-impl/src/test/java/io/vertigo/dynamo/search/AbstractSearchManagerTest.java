@@ -32,7 +32,6 @@ import org.junit.Test;
 
 /**
  * @author  npiedeloup
- * @version $Id: AbstractSearchManagerTest.java,v 1.5 2014/01/28 18:53:45 pchretien Exp $
  */
 public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	public static final String FCT_CAR_SUFFIX = "_CAR";

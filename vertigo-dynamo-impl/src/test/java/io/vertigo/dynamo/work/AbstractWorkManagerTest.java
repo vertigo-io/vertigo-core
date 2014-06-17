@@ -15,7 +15,6 @@ import org.junit.Test;
 
 /**
  * @author pchretien
- * $Id: AbstractWorkManagerTest.java,v 1.8 2013/11/18 13:17:14 npiedeloup Exp $
  */
 public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 	private final long warmupTime = 2000; //en fonction du mode de distribution la prise en compte d'une tache est plus ou moins longue. Pour les TU on estime à 2s

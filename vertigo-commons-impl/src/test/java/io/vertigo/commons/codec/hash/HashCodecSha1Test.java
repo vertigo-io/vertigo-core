@@ -10,7 +10,6 @@ import org.junit.Test;
 /**
  * Test l'encodeur de Hash.
  * @author pchretien
- * $Id: HashCodecSha1Test.java,v 1.4 2013/11/15 15:50:56 pchretien Exp $
  */
 public final class HashCodecSha1Test extends AbstractEncoderTest<Encoder<byte[], byte[]>, byte[], byte[]> {
 

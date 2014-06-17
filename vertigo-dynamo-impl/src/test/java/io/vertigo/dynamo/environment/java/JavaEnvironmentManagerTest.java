@@ -18,7 +18,6 @@ import org.junit.Test;
  * Test de l'implémentation standard.
  * 
  * @author dchallas
- * @version $Id: JavaEnvironmentManagerTest.java,v 1.3 2014/01/20 17:51:47 pchretien Exp $
  */
 public final class JavaEnvironmentManagerTest extends AbstractTestCaseJU4 {
 	@Test

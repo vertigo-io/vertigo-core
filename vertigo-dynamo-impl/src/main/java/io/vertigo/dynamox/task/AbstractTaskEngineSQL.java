@@ -72,7 +72,6 @@ import java.util.Map;
  *       <%}%> order by <%=1%>";
  *       
  * @author  pchretien, npiedeloup
- * @version $Id: AbstractTaskEngineSQL.java,v 1.11 2014/01/24 17:59:38 pchretien Exp $
  * @param <S> Type de Statement utilisé
  */
 public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extends TaskEngine {

@@ -12,7 +12,6 @@ import org.junit.Test;
 /**
  * Test du codec de base64.
  * @author pchretien
- * $Id: Base64CodecTest.java,v 1.5 2013/11/15 15:50:56 pchretien Exp $
  */
 public final class Base64CodecTest extends AbstractCodecTest<byte[], String> {
 	/** 

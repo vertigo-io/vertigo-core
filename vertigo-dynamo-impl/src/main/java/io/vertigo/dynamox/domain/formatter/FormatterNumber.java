@@ -25,8 +25,7 @@ import java.text.NumberFormat;
 * 
  * Exemple d'argument : #,###,##0.00
   * 
- * @author pchretien, evernat
- * @version $Id: FormatterNumber.java,v 1.5 2013/10/22 11:00:06 pchretien Exp $
+ * @author pchretien
  */
 public class FormatterNumber extends AbstractFormatterImpl {
 	/**

@@ -28,7 +28,6 @@ import org.junit.Test;
 /**
  * 
  * @author pchretien
-* @version $Id: DataBaseManagerTest.java,v 1.3 2014/01/20 17:51:47 pchretien Exp $
  */
 public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	private static final String CAMPANULACEAE = "Campanulaceae";

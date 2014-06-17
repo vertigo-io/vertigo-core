@@ -13,7 +13,6 @@ import java.util.Map;
 /**
  * Ce processor permet de remplacer le Where XXX_ID in (YYY.ROWNUM.XXX_ID).
  * @author npiedeloup
- * @version $Id: WhereInPreProcessor.java,v 1.2 2014/01/20 19:01:40 pchretien Exp $
  */
 final class WhereInPreProcessor {
 	private static final String ROWNUM = ".ROWNUM.";

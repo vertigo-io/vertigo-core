@@ -14,7 +14,6 @@ import org.junit.Test;
 
 /**
  * @author pchretien
- * $Id: ScriptManagerTest.java,v 1.2 2013/10/22 10:59:02 pchretien Exp $
  */
 public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 	@Inject

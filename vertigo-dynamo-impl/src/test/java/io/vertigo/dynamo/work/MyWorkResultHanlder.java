@@ -6,7 +6,6 @@ import io.vertigo.dynamo.work.WorkResultHandler;
  * Handler unique permettant de collecter les infos relatives à l'exécution des tests.
  * 
  * @author pchretien
- * $Id: MyWorkResultHanlder.java,v 1.3 2013/11/15 15:46:23 pchretien Exp $
  */
 public final class MyWorkResultHanlder<WR> implements WorkResultHandler<WR> {
 	private WR lastResult;
