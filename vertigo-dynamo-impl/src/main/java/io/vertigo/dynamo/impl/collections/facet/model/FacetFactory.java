@@ -24,7 +24,6 @@ import java.util.TreeMap;
  * Factory de FacetedQueryDefinition.
  * Permet de créer les définitions avant de les enregistrer dans via la registry dans le namespace.
  * @author pchretien, npiedeloup
- * @version $Id: FacetFactory.java,v 1.4 2014/01/20 17:45:43 pchretien Exp $
  */
 public final class FacetFactory {
 	private final CollectionsManager collectionManager;

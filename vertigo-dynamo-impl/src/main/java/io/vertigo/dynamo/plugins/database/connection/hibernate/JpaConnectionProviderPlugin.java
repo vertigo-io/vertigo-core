@@ -19,7 +19,6 @@ import javax.persistence.Persistence;
  * ConnectionProvider permettant la connexion à une datasource Java.
  *
  * @author pchretien, npiedeloup
- * @version $Id: DataSourceConnectionProviderPlugin.java,v 1.5 2013/10/22 12:30:57 pchretien Exp $
  */
 abstract class JpaConnectionProviderPlugin extends AbstractConnectionProviderPlugin {
 	private final KTransactionManager transactionManager;

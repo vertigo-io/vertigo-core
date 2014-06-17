@@ -31,7 +31,6 @@ import org.apache.log4j.Logger;
  * Parser d'un fichier powerAMC, OOM.
  *
  * @author pchretien
- * @version $Id: OOMLoaderPlugin.java,v 1.10 2014/01/20 17:46:41 pchretien Exp $
  */
 public final class OOMLoaderPlugin implements LoaderPlugin {
 	private static final Logger LOGGER = Logger.getLogger(OOMLoaderPlugin.class);

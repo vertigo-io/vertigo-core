@@ -7,7 +7,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Gestion des couples : propriété et valeur.
  *
  * @author pchretien
- * @version $Id: XPropertyEntry.java,v 1.4 2013/10/22 10:43:58 pchretien Exp $
  */
 public final class XPropertyEntry {
 	private final String propertyValue;

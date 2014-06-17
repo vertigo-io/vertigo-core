@@ -10,7 +10,6 @@ import java.util.List;
  * Evaluation d'un script
  * 
  * @author  pchretien
- * @version $Id: ScriptEvaluator.java,v 1.3 2013/10/22 12:26:59 pchretien Exp $
  */
 final class ScriptEvaluator {
 	private final SeparatorType separatorType;

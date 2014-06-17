@@ -12,7 +12,6 @@ import java.io.Writer;
  * Utilitaire de lecture/écriture des fichiers.
  * 
  * @author pchretien
- * @version $Id: FileUtil.java,v 1.2 2014/02/27 10:27:53 pchretien Exp $
  */
 final class FileUtil {
 	private static final String EOL = System.getProperty("line.separator");

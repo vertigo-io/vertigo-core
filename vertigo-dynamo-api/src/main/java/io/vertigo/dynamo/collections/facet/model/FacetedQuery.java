@@ -11,7 +11,6 @@ import java.util.List;
 /**
  * Requete de filtrage par facettes.
  * @author npiedeloup
- * @version $Id: FacetedQuery.java,v 1.3 2013/10/22 12:24:51 pchretien Exp $ 
  */
 public final class FacetedQuery implements Serializable {
 	private static final long serialVersionUID = -3215786603726103410L;

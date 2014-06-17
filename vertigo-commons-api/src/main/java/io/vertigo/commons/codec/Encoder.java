@@ -9,7 +9,6 @@ package io.vertigo.commons.codec;
  * C'est notamment le cas des calculs d'empreinte. 
  * 
  * @author  pchretien
- * @version $Id: Encoder.java,v 1.4 2013/11/15 15:31:39 pchretien Exp $
  * @param <S> Type Source à encoder
  * @param <T> Type cible, résultat de l'encodage
  */

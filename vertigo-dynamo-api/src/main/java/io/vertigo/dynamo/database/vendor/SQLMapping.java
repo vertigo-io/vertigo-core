@@ -11,7 +11,6 @@ import java.sql.SQLException;
  * Interface centralisant les mappings à la BDD.
  *
  * @author pchretien
- * @version $Id: SQLMapping.java,v 1.2 2014/01/20 17:45:43 pchretien Exp $
  */
 public interface SQLMapping {
 	/**

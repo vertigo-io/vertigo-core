@@ -10,7 +10,6 @@ import io.vertigo.kernel.lang.Assertion;
  * - sont type java
  * 
  * @author  pchretien
- * @version $Id: ExpressionParameter.java,v 1.4 2013/10/22 12:31:36 pchretien Exp $
  */
 public final class ExpressionParameter {
 	private final String name;

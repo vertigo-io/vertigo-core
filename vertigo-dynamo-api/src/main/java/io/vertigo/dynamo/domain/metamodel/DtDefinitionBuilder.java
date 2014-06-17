@@ -17,7 +17,6 @@ import java.util.List;
  * Le DtDefinitionsBuilder doit être flushée.
  * 
  * @author pchretien
- * @version $Id: DtDefinitionBuilder.java,v 1.5 2013/10/22 12:25:18 pchretien Exp $
  */
 public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	private static class MessageKeyImpl implements MessageKey {

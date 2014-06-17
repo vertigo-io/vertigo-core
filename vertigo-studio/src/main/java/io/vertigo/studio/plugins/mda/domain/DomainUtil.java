@@ -1,14 +1,13 @@
 package io.vertigo.studio.plugins.mda.domain;
 
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 
 /**
  * Helper.
  * 
  * @author emangin
- * @version $Id: DomainUtil.java,v 1.2 2014/01/20 17:47:58 pchretien Exp $
  */
 public final class DomainUtil {
 	/**

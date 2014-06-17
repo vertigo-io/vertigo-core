@@ -11,12 +11,10 @@ import javax.inject.Named;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 
-
 /**
  * Gestion de la connexion au serveur Solr en mode HTTP.
  * 
  * @author dchallas
- * @version $Id: CommonsHttpSolrSearchServicesPlugin.java,v 1.5 2014/01/24 18:00:03 pchretien Exp $
  */
 public final class CommonsHttpSolrSearchServicesPlugin extends AbstractSolrSearchServicesPlugin {
 	/** url du serveur solr. */

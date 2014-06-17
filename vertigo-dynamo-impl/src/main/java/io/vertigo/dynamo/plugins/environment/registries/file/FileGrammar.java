@@ -7,7 +7,6 @@ import io.vertigo.dynamo.plugins.environment.KspProperty;
 
 /**
  * @author npiedeloup
- * @version $Id: FileGrammar.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 final class FileGrammar extends GrammarProvider {
 

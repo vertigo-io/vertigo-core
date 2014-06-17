@@ -9,7 +9,6 @@ import java.io.Serializable;
  * Chainage de filtre de liste.
  * Les filtres sont evalués dans l'ordre, il est préférable de mettre les plus discriminant en premier.
  * @author pchretien
- * @version $Id: DtListChainFilter.java,v 1.3 2014/01/20 17:45:43 pchretien Exp $
  * @param <D> Type d'objet
  */
 public final class DtListChainFilter<D extends DtObject> implements DtListFilter<D>, Serializable {

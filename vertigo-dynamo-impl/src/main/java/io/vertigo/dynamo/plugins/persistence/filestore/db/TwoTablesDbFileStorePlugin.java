@@ -26,7 +26,6 @@ import javax.inject.Inject;
  * Permet de gérer le CRUD sur un fichier stocké sur deux tables (Méta données / Données).
  * 
  * @author sezratty
- * @version $Id: TwoTablesDbFileStorePlugin.java,v 1.8 2014/01/20 17:49:32 pchretien Exp $
  */
 public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 	private static final String STORE_READ_ONLY = "Le store est en readOnly";

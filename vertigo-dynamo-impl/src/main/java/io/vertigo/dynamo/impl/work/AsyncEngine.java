@@ -9,7 +9,6 @@ import java.util.concurrent.Callable;
 /**
  * Gestion des taches asynchrones définies par un Callable 
  * @author pchretien, npiedeloup
- * @version $Id: AsyncEngine.java,v 1.4 2014/01/20 11:34:32 npiedeloup Exp $
  */
 final class AsyncEngine<WR> implements WorkEngine<WR, Object> {
 	private final Callable<WR> callable;

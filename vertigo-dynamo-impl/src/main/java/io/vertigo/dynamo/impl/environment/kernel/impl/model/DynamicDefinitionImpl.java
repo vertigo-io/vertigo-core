@@ -23,7 +23,6 @@ import java.util.Set;
  * Rappelons qu'une structure est elle-même composée de sous structure grammaticales.
  *
  * @author  pchretien
- * @version $Id: DynamicDefinitionImpl.java,v 1.12 2013/10/22 12:29:17 pchretien Exp $
  */
 final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDefinition {
 	/** Type de l'objet. */

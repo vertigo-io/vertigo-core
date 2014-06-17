@@ -19,7 +19,6 @@ import java.util.List;
  * règle de composition d'une déclaration de liste de mots.
  * {mot1, mot2, mot3}
  * @author pchretien
- * @version $Id: WordListRule.java,v 1.5 2014/01/24 17:59:38 pchretien Exp $
  */
 public final class WordListRule extends AbstractRule<List<String>, Choice> {
 

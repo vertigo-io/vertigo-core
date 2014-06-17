@@ -16,7 +16,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Implémentation Standard du StoreProvider.
  * 
  * @author pchretien
- * @version $Id: BrokerConfigurationImpl.java,v 1.5 2014/01/24 17:59:38 pchretien Exp $
  */
 final class BrokerConfigurationImpl implements BrokerConfiguration {
 	private final CacheStoreConfiguration cacheStoreConfiguration;

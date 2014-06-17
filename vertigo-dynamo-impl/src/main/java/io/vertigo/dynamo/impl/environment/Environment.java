@@ -16,7 +16,6 @@ import java.util.List;
  *  Ces modes de chargement sont extensibles. 	
  *
  * @author pchretien
- * @version $Id: Environment.java,v 1.3 2013/10/22 12:30:39 pchretien Exp $
  */
 public final class Environment {
 	//	/**

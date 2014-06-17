@@ -10,7 +10,6 @@ import io.vertigo.dynamo.domain.model.URI;
  * Objet permettant de gérer les accès aux systèmes de stockage.
  * 
  * @author pchretien
- * @version $Id: Store.java,v 1.4 2014/01/20 17:45:43 pchretien Exp $
  */
 public interface Store {
 	/**

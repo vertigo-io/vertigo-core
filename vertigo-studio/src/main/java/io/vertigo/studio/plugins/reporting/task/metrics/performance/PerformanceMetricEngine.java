@@ -14,7 +14,6 @@ import io.vertigo.studio.reporting.MetricEngine;
  * Plugin de calcul du temps d'exécution d'une requête.
  * 
  * @author tchassagnette
- * @version $Id: PerformanceMetricEngine.java,v 1.6 2014/01/28 18:49:55 pchretien Exp $
  */
 public final class PerformanceMetricEngine implements MetricEngine<TaskDefinition, PerformanceMetric> {
 	private final WorkManager workManager;

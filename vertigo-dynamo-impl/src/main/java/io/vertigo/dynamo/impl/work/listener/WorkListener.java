@@ -4,7 +4,6 @@ package io.vertigo.dynamo.impl.work.listener;
  * Interface de réception des événements produits par l'exécution des taches.
  *
  * @author pchretien
- * @version $Id: WorkListener.java,v 1.3 2013/11/15 15:33:20 pchretien Exp $
  */
 public interface WorkListener {
 	/**

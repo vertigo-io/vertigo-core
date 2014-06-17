@@ -5,7 +5,6 @@ package io.vertigo.commons.parser;
  * Si elle est respectée l'index augmente sinon une erreur est déclenchée.
  *
  * @author pchretien
- * @version $Id: Parser.java,v 1.1 2013/07/29 09:44:01 pchretien Exp $
  */
 public interface Parser<P> {
 	/**

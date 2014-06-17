@@ -4,12 +4,10 @@ import io.vertigo.kernel.component.Plugin;
 
 import java.io.Serializable;
 
-
 /**
  * Plugin de gestion de cache.
  * 
  * @author pchretien
- * @version $Id: CachePlugin.java,v 1.3 2013/10/22 12:35:12 pchretien Exp $
  */
 public interface CachePlugin extends Plugin {
 	/**

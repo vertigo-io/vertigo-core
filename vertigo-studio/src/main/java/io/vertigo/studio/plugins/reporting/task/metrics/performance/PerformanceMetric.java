@@ -9,7 +9,6 @@ import java.io.StringWriter;
  * Composant d'afficahge des résultats du plugin de performance.
  *	
  * @author tchassagnette
- * @version $Id: PerformanceMetric.java,v 1.1 2013/07/11 10:04:04 npiedeloup Exp $
  */
 public final class PerformanceMetric implements Metric {
 	private final Long executionTime;

@@ -8,7 +8,6 @@ import java.util.Properties;
  * Plugin de génération de fichiers.
  * 
  * @author dchallas
- * @version $Id: GeneratorPlugin.java,v 1.3 2014/01/31 17:34:02 npiedeloup Exp $
  * @param <C> Type de configuration du générateur
  */
 public interface GeneratorPlugin<C extends Configuration> extends Plugin {

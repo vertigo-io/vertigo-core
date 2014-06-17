@@ -18,7 +18,6 @@ import io.vertigo.kernel.metamodel.Prefix;
  *  - en java directement.
  *
  * @author plepaisant
- * @version $Id: Constraint.java,v 1.2 2013/10/22 12:25:18 pchretien Exp $
  * @param <J> Type java de la propriété associée à la contrainte
  * @param <D> Type java de la valeur à contrôler
  */

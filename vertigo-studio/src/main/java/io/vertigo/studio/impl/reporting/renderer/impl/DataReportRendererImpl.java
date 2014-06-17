@@ -7,7 +7,6 @@ import io.vertigo.studio.reporting.Metric;
 
 /**
  * @author pchretien
- * @version $Id: DataReportRendererImpl.java,v 1.3 2013/10/22 10:47:33 pchretien Exp $
  */
 final class DataReportRendererImpl implements DataReportRenderer {
 	private final String rootPath;

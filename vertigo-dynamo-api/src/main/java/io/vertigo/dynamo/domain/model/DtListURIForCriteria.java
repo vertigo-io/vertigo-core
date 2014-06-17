@@ -10,7 +10,6 @@ import io.vertigo.kernel.lang.Assertion;
 /**
  * Implementation d'une liste filtré par un Criteria.
  * @author dchallas
- * @version $Id: DtListURIForCriteria.java,v 1.2 2013/11/15 17:13:52 npiedeloup Exp $
  * @param <D> Type de DtObject
  */
 public final class DtListURIForCriteria<D extends DtObject> extends DtListURI {

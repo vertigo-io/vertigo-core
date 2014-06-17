@@ -18,7 +18,6 @@ import java.util.Map;
  *  ex : marques de voiture renault, peugeot, ford 
  *  ex : villes ou départements    
  * @author pchretien, npiedeloup
- * @version $Id: Facet.java,v 1.3 2013/10/22 12:24:51 pchretien Exp $ 
  */
 public final class Facet implements Serializable {
 	private static final long serialVersionUID = -6496651592068817414L;

@@ -16,7 +16,6 @@ import java.util.Collection;
  * Gestionnaire de la manipulation des collections.
  * Tri, filtre, facettage sur les DTC. 
  * @author  pchretien
- * @version $Id: CollectionsManager.java,v 1.4 2014/01/20 17:45:23 pchretien Exp $
  */
 public interface CollectionsManager extends Manager {
 	/**

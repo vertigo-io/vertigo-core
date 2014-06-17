@@ -15,7 +15,6 @@ import javax.inject.Inject;
  * Implémentation du MDA.
  * 
  * @author pchretien, dchallas
- * @version $Id: MdaManagerImpl.java,v 1.2 2013/10/22 12:36:17 pchretien Exp $
  */
 public final class MdaManagerImpl implements MdaManager, Activeable {
 	@Inject

@@ -12,7 +12,6 @@ import javax.inject.Inject;
  * Intercepteur pour la gestion des transactions au niveau
  * de la couche service.
  * @author prahmoune
- * @version $Id: KTransactionInterceptor.java,v 1.4 2013/10/22 12:37:57 pchretien Exp $
  */
 public class KTransactionInterceptor implements Interceptor {
 	private final KTransactionManager transactionManager;

@@ -24,7 +24,6 @@ import java.util.List;
  * Tout fichier ksp commence par une entête ou est précisé le nom du pacakage.
  *
  * @author pchretien
- * @version $Id: KspRule.java,v 1.8 2014/01/24 17:59:38 pchretien Exp $
  */
 public final class KspRule extends AbstractRule<Void, List<?>> {
 	private final DynamicDefinitionRepository dynamicModelrepository;

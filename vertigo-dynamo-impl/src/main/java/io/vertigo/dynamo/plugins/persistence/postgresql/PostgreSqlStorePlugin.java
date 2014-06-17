@@ -16,7 +16,6 @@ import javax.inject.Named;
  * Implémentation d'un Store PostgreSQL.
  *
  * @author  pchretien
- * @version $Id: PostgreSqlStorePlugin.java,v 1.5 2014/01/20 18:57:19 pchretien Exp $
  */
 public final class PostgreSqlStorePlugin extends AbstractSQLStorePlugin {
 	private final String sequencePrefix;

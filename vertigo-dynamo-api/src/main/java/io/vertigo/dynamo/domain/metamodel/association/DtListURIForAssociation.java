@@ -11,7 +11,6 @@ import io.vertigo.kernel.lang.Assertion;
  * URI d'une liste définie par une association.
  *
  * @author pchretien
- * @version $Id: DtListURIForAssociation.java,v 1.5 2014/01/08 15:19:56 pchretien Exp $
  */
 public final class DtListURIForAssociation extends DtListURI {
 	private static final long serialVersionUID = 5933412183954919000L;

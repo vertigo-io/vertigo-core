@@ -9,7 +9,6 @@ import io.vertigo.kernel.util.StringUtil;
  * Génération des classes/méthodes des fileInfo.
  * 
  * @author npiedeloup
- * @version $Id: TemplateFileInfoDefinition.java,v 1.4 2014/01/28 18:49:55 pchretien Exp $
  */
 public final class TemplateFileInfoDefinition {
 	private final FileInfoDefinition fileInfoDefinition;

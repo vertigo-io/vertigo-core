@@ -26,7 +26,6 @@ import javax.inject.Inject;
  * Implémentation de TaskReportingManager.
  * 
  * @author tchassagnette
- * @version $Id: TaskReportingPlugin.java,v 1.8 2014/02/27 10:34:27 pchretien Exp $
  */
 public final class TaskReportingPlugin implements ReportingPlugin {
 	private final KTransactionManager transactionManager;

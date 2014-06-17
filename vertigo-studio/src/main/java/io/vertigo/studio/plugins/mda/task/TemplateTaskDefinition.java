@@ -13,7 +13,6 @@ import java.util.List;
  * Génération des classes/méthodes des taches de type DAO.
  * 
  * @author pchretien
- * @version $Id: TemplateTaskDefinition.java,v 1.5 2014/02/27 10:38:47 pchretien Exp $
  */
 public final class TemplateTaskDefinition {
 	private final TaskDefinition taskDefinition;

@@ -10,7 +10,6 @@ import io.vertigo.kernel.metamodel.Prefix;
  * - stringToValue remonte une exception typée, qui est interceptée et présentée en erreur utilisateur
  *
  * @author pchretien
- * @version $Id: Formatter.java,v 1.2 2013/10/22 12:25:18 pchretien Exp $
  */
 @Prefix("FMT")
 public interface Formatter extends Definition {

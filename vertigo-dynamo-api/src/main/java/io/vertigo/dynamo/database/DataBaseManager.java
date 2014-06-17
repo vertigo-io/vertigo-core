@@ -10,7 +10,6 @@ import io.vertigo.kernel.component.Manager;
 * Gestionnaire des accès aux bases de données.
 *
 * @author pchretien
-* @version $Id: DataBaseManager.java,v 1.2 2013/10/22 12:35:47 pchretien Exp $
 */
 public interface DataBaseManager extends Manager {
 	/**

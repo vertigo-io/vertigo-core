@@ -10,7 +10,6 @@ import io.vertigo.kernel.util.StringUtil;
  * - Soit les caractères rejetés.
  * 
  * @author pchretien
- * @version $Id: WordRule.java,v 1.8 2013/10/23 11:32:43 pchretien Exp $
  */
 public final class WordRule implements Rule<String> {
 	/** Mode de selection des caractères. */

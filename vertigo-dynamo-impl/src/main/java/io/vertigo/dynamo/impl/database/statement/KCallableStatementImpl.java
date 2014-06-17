@@ -14,7 +14,6 @@ import java.sql.SQLException;
  * Implémentation standard de la gestion des procédure stockées.
  *
  * @author pchretien
- * @version $Id: KCallableStatementImpl.java,v 1.4 2014/01/20 17:46:01 pchretien Exp $
  */
 public final class KCallableStatementImpl extends KPreparedStatementImpl implements KCallableStatement {
 	/**

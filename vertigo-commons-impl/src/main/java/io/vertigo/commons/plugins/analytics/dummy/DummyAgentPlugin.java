@@ -6,7 +6,6 @@ import io.vertigo.commons.impl.analytics.AnalyticsAgentPlugin;
  * Implémentation dummy de l'agent de collecte.
  * Cette implémentation ne fait RIEN.
  * @author pchretien
- * @version $Id: DummyAgentPlugin.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public final class DummyAgentPlugin implements AnalyticsAgentPlugin {
 	/** {@inheritDoc} */

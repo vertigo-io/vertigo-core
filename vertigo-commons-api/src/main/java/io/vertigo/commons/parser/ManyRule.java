@@ -11,7 +11,6 @@ import java.util.List;
  * On remonte une erreur dés qu'une seule des règles n'est pas suivie.
  * L'erreur précise le début du bloc ET et précise la cause. (C'est à dire l clause et qui n'est pas suivie).
  * @author pchretien
- * @version $Id: ManyRule.java,v 1.5 2013/10/22 12:23:44 pchretien Exp $
  */
 public final class ManyRule<R> implements Rule<List<R>> {
 	private final Rule<R> rule;

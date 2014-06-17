@@ -31,7 +31,6 @@ import java.util.List;
  *  - etc.. 
  *
  * @author pchretien
- * @version $Id: FacetDefinition.java,v 1.6 2014/01/20 17:45:23 pchretien Exp $
  */
 @Prefix("FCT")
 public final class FacetDefinition implements Definition {

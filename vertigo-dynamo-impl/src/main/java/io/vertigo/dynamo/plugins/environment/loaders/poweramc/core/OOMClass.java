@@ -9,7 +9,6 @@ import java.util.List;
 /**
  * Classe ou entité.
  * @author pchretien
- * @version $Id: ClassOOM.java,v 1.3 2013/10/22 12:30:19 pchretien Exp $
  */
 public final class OOMClass {
 	private final String code;

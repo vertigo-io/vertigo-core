@@ -15,7 +15,6 @@ import java.util.Map;
  * Tout résultat est facetté. 
  * Eventuellement il n'y a aucune facette. 
  * @author pchretien, dchallas
- * @version $Id: FacetedQueryResult.java,v 1.5 2014/01/20 17:45:23 pchretien Exp $
  * @param <R> Type de l'objet resultant de la recherche
  * @param <S> Type de l'objet source
  */

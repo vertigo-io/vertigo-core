@@ -15,7 +15,6 @@ import java.util.List;
  * <%= %> : permet d'ajouter des éléments au texte
  *
  * @author  pchretien
- * @version $Id: ScriptParserHandlerImpl.java,v 1.3 2013/10/22 12:26:59 pchretien Exp $
  */
 final class ScriptParserHandlerImpl implements ScriptParserHandler {
 	private static final String TEXT_KEY_PREFIX = "ZZYY";

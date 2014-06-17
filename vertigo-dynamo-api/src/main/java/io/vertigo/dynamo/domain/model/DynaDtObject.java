@@ -15,7 +15,6 @@ import java.util.Map;
  * Fabrication dynamique d'un DTO par sa définition.
  *
  * @author  pchretien
- * @version $Id: DynaDtObject.java,v 1.3 2013/10/22 10:42:45 pchretien Exp $
  */
 public final class DynaDtObject implements DtObject, Dynamic {
 	private static final long serialVersionUID = 1L;

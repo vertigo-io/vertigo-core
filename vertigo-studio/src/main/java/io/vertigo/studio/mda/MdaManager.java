@@ -8,7 +8,6 @@ import java.util.Properties;
 /**
  * Manager MDA.
  * @author pchretien
- * @version $Id: MdaManager.java,v 1.2 2013/10/22 10:59:11 pchretien Exp $
  */
 public interface MdaManager extends Manager {
 	/**

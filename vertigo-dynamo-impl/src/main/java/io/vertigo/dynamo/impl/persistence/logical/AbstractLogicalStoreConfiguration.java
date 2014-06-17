@@ -9,7 +9,6 @@ import java.util.Map;
 /**
  * Configuration logique des stores physiques.
  * @author pchretien, npiedeloup
- * @version $Id: AbstractLogicalStoreConfiguration.java,v 1.5 2013/10/22 12:26:32 pchretien Exp $
  */
 abstract class AbstractLogicalStoreConfiguration<D extends Definition, S> {
 	/** Store physique par défaut. */

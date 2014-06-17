@@ -14,7 +14,6 @@ import java.util.List;
  * Builder des Facettes par Range.
  *
  * @author pchretien 
- * @version $Id: FacetDefinitionByRangeBuilder.java,v 1.4 2014/01/20 17:45:23 pchretien Exp $
  */
 public final class FacetDefinitionByRangeBuilder implements Builder<FacetDefinition> {
 	final String name;

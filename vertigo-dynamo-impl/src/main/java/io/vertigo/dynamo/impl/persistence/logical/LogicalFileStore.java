@@ -11,7 +11,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Transpose en store physique les appels logiques.
  *
  * @author npiedeloup
- * @version $Id: LogicalFileStore.java,v 1.5 2014/01/20 17:49:32 pchretien Exp $
  */
 public final class LogicalFileStore implements FileStore {
 	private final LogicalFileStoreConfiguration logicalFileStoreConfiguration;

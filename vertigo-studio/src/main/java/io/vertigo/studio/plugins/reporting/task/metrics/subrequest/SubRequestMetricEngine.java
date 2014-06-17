@@ -8,7 +8,6 @@ import io.vertigo.studio.reporting.MetricEngine;
  * Plugin qui compte le nombre de ss requete dans une requete SQL.
  * 
  * @author tchassagnette
- * @version $Id: SubRequestMetricEngine.java,v 1.4 2014/01/28 18:49:55 pchretien Exp $
  */
 public final class SubRequestMetricEngine implements MetricEngine<TaskDefinition, SubRequestMetric> {
 	/** {@inheritDoc} */

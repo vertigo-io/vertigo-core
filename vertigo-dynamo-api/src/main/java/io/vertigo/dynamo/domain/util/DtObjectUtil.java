@@ -20,7 +20,6 @@ import io.vertigo.kernel.util.StringUtil;
  * Utilitaire offrant des méthodes sur  DtObject.
  *
  * @author pchretien
- * @version $Id: DtObjectUtil.java,v 1.4 2014/01/08 15:19:56 pchretien Exp $
  */
 public final class DtObjectUtil {
 	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);

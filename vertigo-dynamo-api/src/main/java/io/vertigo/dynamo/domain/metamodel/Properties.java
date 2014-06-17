@@ -13,7 +13,6 @@ import java.util.Set;
  * Permet d'ajouter des propriétés sur les concepts structurels.
  *
  * @author pchretien
- * @version $Id: Properties.java,v 1.5 2013/10/22 12:25:18 pchretien Exp $
  */
 public final class Properties implements Modifiable {
 	private final Map<Property<?>, Object> properties = new HashMap<>();

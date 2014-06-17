@@ -14,7 +14,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Méthodes utilitaires pour manipuler les propriétés (getter/setter) des JavaBeans (ie tous les types d'objets).
- * @version $Id: BeanUtil.java,v 1.5 2013/10/22 12:33:41 pchretien Exp $
  */
 public final class BeanUtil {
 	private static final Map<Class<?>, BeanInfo> BEAN_INFOS = new ConcurrentHashMap<>();
@@ -41,22 +40,6 @@ public final class BeanUtil {
 		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());
 		final Method readMethod = pd.getReadMethod();
 		if (readMethod == null) {
-			//On recherche une propriété publique.
-			/*
-			 final Collection<Field> fields = ClassUtil.getAllFields(object.getClass());
-			 for(Field field : fields){
-			if (field.getName().equals(propertyName)){
-			    //On a trouvé un champ
-			    field.setAccessible(true);
-			    try {
-				return field.get(object);
-			    } catch (Exception e) {
-				throw new KRuntimeException(e);
-			    }
-			}
-			 }
-			 */
-
 			throw new VRuntimeException("Getter non trouvé pour l'attribut \"" + propertyName + "\" sur classe \"" + object.getClass().getName() + '\"');
 		}
 		return ClassUtil.invoke(object, readMethod);

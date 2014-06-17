@@ -6,7 +6,6 @@ import io.vertigo.kernel.lang.Assertion;
 /**
  *
  * @author pchretien
- * @version $Id: NullCodec.java,v 1.5 2013/11/15 15:27:29 pchretien Exp $
  */
 final class NullCodec<S, T> implements Codec<S, T> {
 	private final Codec<S, T> delegateCodec;

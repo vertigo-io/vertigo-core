@@ -10,7 +10,6 @@ import java.lang.annotation.Target;
  * Gestion des DtDéfinitions.
  *
  * @author  pchretien, evernat
- * @version $Id: DtDefinition.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited

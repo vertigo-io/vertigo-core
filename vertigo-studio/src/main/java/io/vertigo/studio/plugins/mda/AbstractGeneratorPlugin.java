@@ -9,7 +9,6 @@ import java.util.Map;
  * Pré-ImplémGénération de la génération des fichiers.
  *  
  * @author dchallas
- * @version $Id: AbstractGeneratorPlugin.java,v 1.2 2014/01/31 17:34:02 npiedeloup Exp $
  * @param <C> Class de configuration du générateur
  */
 public abstract class AbstractGeneratorPlugin<C extends Configuration> implements GeneratorPlugin<C> {

@@ -9,7 +9,6 @@ import java.lang.reflect.Field;
  * Métadonnée liée à un champ.
  *
  * @author  pchretien
- * @version $Id: DtProperty.java,v 1.4 2013/10/22 12:25:18 pchretien Exp $
  *
  */
 public final class DtProperty {

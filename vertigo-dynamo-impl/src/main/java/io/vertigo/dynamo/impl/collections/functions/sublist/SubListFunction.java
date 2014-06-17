@@ -8,7 +8,6 @@ import io.vertigo.kernel.lang.Assertion;
 /**
  * Fonction de sous-liste.
  * @author pchretien
- * @version $Id: SubListFunction.java,v 1.5 2014/01/20 17:46:01 pchretien Exp $
  */
 public final class SubListFunction<D extends DtObject> implements DtListFunction<D> {
 	private final int start, end;

@@ -12,7 +12,6 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
  * -Tous les articles en promotion (donc actifs...)
  *
  * @author pchretien
- * @version $Id: DtListURIForMasterData.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public final class DtListURIForMasterData extends DtListURI {
 	private static final long serialVersionUID = -7808114745411163474L;

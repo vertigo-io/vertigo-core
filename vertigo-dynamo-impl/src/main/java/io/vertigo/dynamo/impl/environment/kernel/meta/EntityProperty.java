@@ -5,7 +5,6 @@ package io.vertigo.dynamo.impl.environment.kernel.meta;
  * Propriété (meta-data, aspect, attribute) d'une entity.
  *
  * @author  pchretien, npiedeloup
- * @version $Id: EntityProperty.java,v 1.4 2014/01/20 17:46:11 pchretien Exp $
  */
 public interface EntityProperty {
 	/**

@@ -1,9 +1,9 @@
 package io.vertigo.dynamo.plugins.persistence;
 
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation;
@@ -47,7 +47,6 @@ import java.util.Map;
  * - suppression d'un enregistrement il y a un et un seul enregistrement supprimé.
  *
  * @author  pchretien
- * @version $Id: AbstractSQLStorePlugin.java,v 1.10 2014/01/20 18:57:19 pchretien Exp $
  */
 public abstract class AbstractSQLStorePlugin implements StorePlugin {
 	private static final FilterCriteria<?> EMPTY_FILTER_CRITERIA = new FilterCriteriaBuilder<>().build();

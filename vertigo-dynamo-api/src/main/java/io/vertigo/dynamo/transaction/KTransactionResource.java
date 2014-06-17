@@ -9,7 +9,6 @@ package io.vertigo.dynamo.transaction;
  * - un objet java
  *
  * @author  pchretien
- * @version $Id: KTransactionResource.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public interface KTransactionResource {
 	/**

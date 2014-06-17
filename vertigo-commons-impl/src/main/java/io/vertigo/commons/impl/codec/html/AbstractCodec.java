@@ -18,7 +18,6 @@ import java.util.Map;
  * Dans le cas du HTML le caractère d'échappement est &
  *
  * @author  pchretien, npiedeloup
- * @version $Id: AbstractCodec.java,v 1.7 2013/11/15 15:27:29 pchretien Exp $
  */
 public abstract class AbstractCodec implements Codec<String, String> {
 	private final char startEscape;
@@ -197,4 +196,4 @@ public abstract class AbstractCodec implements Codec<String, String> {
 	 * @return Tableau des éléments à remplacer
 	 */
 	protected abstract String[] getCharacters();
-}
+}

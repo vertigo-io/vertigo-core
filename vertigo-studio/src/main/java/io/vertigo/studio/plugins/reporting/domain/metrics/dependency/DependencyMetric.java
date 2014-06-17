@@ -4,7 +4,6 @@ import io.vertigo.studio.reporting.Metric;
 
 /**
  * @author pchretien
- * @version $Id: DependencyMetric.java,v 1.1 2013/07/11 10:04:05 npiedeloup Exp $
  * Résultat du plugin JoinCount
  */
 public final class DependencyMetric implements Metric {

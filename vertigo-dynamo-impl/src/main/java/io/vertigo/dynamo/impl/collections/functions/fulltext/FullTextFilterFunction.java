@@ -12,7 +12,6 @@ import java.util.Collection;
 /**
  * Fonction de filtrage en full text.
  * @author npiedeloup
- * @version $Id: FullTextFilterFunction.java,v 1.4 2014/01/20 17:46:01 pchretien Exp $
  * @param <D> Type de l'objet
  */
 public final class FullTextFilterFunction<D extends DtObject> implements DtListFunction<D> {

@@ -17,7 +17,6 @@ import javax.inject.Named;
  * Implémentation de ReportingManager.
  * 
  * @author tchassagnette
- * @version $Id: ReportingManagerImpl.java,v 1.4 2013/10/22 10:47:33 pchretien Exp $
  */
 public final class ReportingManagerImpl implements ReportingManager {
 	private final String rootPath;

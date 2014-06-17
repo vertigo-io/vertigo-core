@@ -13,7 +13,6 @@ import org.junit.Test;
  * Test du codec de compresion.
  * 
  * @author pchretien
- * @version $Id: CompressionCodecTest.java,v 1.6 2013/11/15 15:50:56 pchretien Exp $
  */
 public final class CompressionCodecTest extends AbstractCodecTest<byte[], byte[]> {
 	/** {@inheritDoc} */
@@ -84,4 +83,4 @@ public final class CompressionCodecTest extends AbstractCodecTest<byte[], byte[]
 		codec.decode(s);
 		Assert.fail();
 	}
-}
+}

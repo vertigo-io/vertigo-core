@@ -8,7 +8,6 @@ import java.util.List;
 /**
  * Interface de création des définitions.
  * @author  pchretien
- * @version $Id: DynamicDefinitionBuilder.java,v 1.5 2013/10/22 12:30:28 pchretien Exp $
  */
 public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	DynamicDefinitionBuilder withPackageName(String packageName);

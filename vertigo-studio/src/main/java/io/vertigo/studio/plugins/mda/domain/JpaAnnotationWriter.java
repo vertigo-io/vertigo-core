@@ -1,8 +1,8 @@
 package io.vertigo.studio.plugins.mda.domain;
 
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 
 import java.util.ArrayList;
@@ -12,7 +12,6 @@ import java.util.List;
  * Gestion centralisée des annotations sur les objets kasper générés.
  * Cette implémentation complète les annotations standards et rajoute celles propre à JPA.
  * @author  pchretien, npiedeloup
- * @version $Id: JpaAnnotationWriter.java,v 1.4 2014/02/27 10:29:00 pchretien Exp $
  */
 final class JpaAnnotationWriter extends AnnotationWriter {
 	private final String sequencePrefix = "SEQ_";

@@ -16,7 +16,6 @@ import org.junit.Test;
  * Test du codec de sérialisation.
  * 
  * @author pchretien 
- * @version $Id: SerializationCodecTest.java,v 1.3 2013/07/16 17:11:10 pchretien Exp $
  */
 public final class SerializationCodecTest extends AbstractCodecTest<Serializable, byte[]> {
 

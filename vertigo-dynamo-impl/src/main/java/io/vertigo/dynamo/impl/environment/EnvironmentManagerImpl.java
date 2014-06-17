@@ -16,7 +16,6 @@ import javax.inject.Inject;
  * Chaque plugins permet d'enrichir la grammaire et de transposer 
  * les DynamicDefinition lues dans les NameSpaces des Managers idoines.
  * @author pchretien, npiedeloup
- * @version $Id: EnvironmentManagerImpl.java,v 1.3 2013/10/22 12:30:39 pchretien Exp $
  */
 public final class EnvironmentManagerImpl implements EnvironmentManager, Activeable {
 	@Inject

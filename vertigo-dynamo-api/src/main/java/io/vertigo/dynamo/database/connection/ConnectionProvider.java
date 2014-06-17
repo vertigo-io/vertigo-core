@@ -8,7 +8,6 @@ import java.sql.SQLException;
  * Fournisseur de connexions KConnection.
  *
  * @author pchretien
- * @version $Id: ConnectionProvider.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public interface ConnectionProvider {
 	/**

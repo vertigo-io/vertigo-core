@@ -8,7 +8,6 @@ import io.vertigo.kernel.Home;
 
 /**
  * @author pchretien
- * @version $Id: FacetDynamicRegistryPlugin.java,v 1.2 2013/10/22 12:34:28 pchretien Exp $
  */
 public final class FacetDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin<FacetGrammar> {
 	/**

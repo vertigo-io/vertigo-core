@@ -9,7 +9,6 @@ import java.util.Date;
  * Représentation d'un fichier créé à partir d'un FileSystem.
  *
  * @author npiedeloup
- * @version $Id: FSFile.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public final class FSFile extends AbstractKFile {
 	private static final long serialVersionUID = 1L;

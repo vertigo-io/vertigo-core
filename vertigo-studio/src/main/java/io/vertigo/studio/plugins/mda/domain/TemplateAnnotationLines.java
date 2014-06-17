@@ -15,7 +15,6 @@ import freemarker.template.TemplateSequenceModel;
  * Permet de construire les lignes décritants l'annotation.
  * 
  * @author dchallas
- * @version $Id: TemplateAnnotationLines.java,v 1.6 2014/02/03 17:48:13 pchretien Exp $
  */
 final class TemplateAnnotationLines implements TemplateSequenceModel {
 	private final List<String> lines;

@@ -10,7 +10,6 @@ import java.util.List;
  * Chaque objet de la grammaire possède une série d'attributs, ceux-ci sont présentés ci-dessous.
  * Il s'agit de faciliter la transposition du Modèle générique XML en un Modèle typé.
  * @author pchretien
- * @version $Id: ObjectOOM.java,v 1.4 2013/10/22 12:30:19 pchretien Exp $
  */
 final class OOMObject {
 	private static final String PROPERTY_CODE = "a:Code";

@@ -1,11 +1,11 @@
 package io.vertigo.dynamo.impl.database.statementhandler;
 
 import io.vertigo.dynamo.database.vendor.SQLMapping;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.lang.Assertion;
@@ -23,7 +23,6 @@ import java.util.Map;
 * il convient de fabriquer dynamiquement, à la volée les DT et DTO, DTC en sortie.
 *
 * @author  pchretien
-* @version $Id: DynamicResultMetaData.java,v 1.5 2014/01/20 17:46:01 pchretien Exp $
 */
 final class DynamicResultMetaData implements ResultMetaData {
 	private final boolean isDtObject;

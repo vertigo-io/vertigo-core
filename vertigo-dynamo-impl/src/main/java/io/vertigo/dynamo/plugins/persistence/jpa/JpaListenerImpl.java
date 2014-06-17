@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
  * Implémentation standard du Listener de réception des événements produits par l'exécution des tachess.
  * 
  * @author pchretien
- * @version $Id: JpaListenerImpl.java,v 1.1 2014/01/31 17:21:08 npiedeloup Exp $
  */
 final class JpaListenerImpl {
 	/** ProcessMetaData Requete SQL */

@@ -21,7 +21,6 @@ import io.vertigo.kernel.lang.Assertion;
  * -  Une tache s'exécute dans le cadre de la transaction courante.
  * -  Une tache n'est pas sérializable ; elle doit en effet posséder une durée de vie la plus courte possible.
  * @author  fconstantin, pchretien
- * @version $Id: Task.java,v 1.5 2013/10/23 12:20:10 pchretien Exp $
  */
 public final class Task {
 	/**

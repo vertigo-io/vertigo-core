@@ -10,7 +10,6 @@ import java.util.Date;
 /**
  * Gestionnaire de la notion de fichier.
  * @author npiedeloup
- * @version $Id: FileManager.java,v 1.2 2013/10/22 12:33:54 pchretien Exp $
  */
 public interface FileManager extends Manager {
 

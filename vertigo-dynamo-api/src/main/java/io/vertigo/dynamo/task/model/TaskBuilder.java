@@ -7,7 +7,6 @@ import io.vertigo.kernel.lang.Builder;
 /**
  * Builder permettant de créer une tache.
  * @author  pchretien
- * @version $Id: TaskBuilder.java,v 1.3 2013/10/22 12:31:13 pchretien Exp $
  */
 public final class TaskBuilder implements Builder<Task> {
 	/**

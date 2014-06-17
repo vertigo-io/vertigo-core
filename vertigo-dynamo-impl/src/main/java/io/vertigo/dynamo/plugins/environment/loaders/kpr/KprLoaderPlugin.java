@@ -22,7 +22,6 @@ import javax.inject.Named;
  * Un fichier KPR est un fichier qui liste l'ensemble des fichiers KSP du projet.
  *
  * @author  pchretien
- * @version $Id: KprLoaderPlugin.java,v 1.4 2013/10/22 10:45:05 pchretien Exp $
  */
 public final class KprLoaderPlugin implements LoaderPlugin {
 	private static final String KPR_EXTENSION = ".kpr";

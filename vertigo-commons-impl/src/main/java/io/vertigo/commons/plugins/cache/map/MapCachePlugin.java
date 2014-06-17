@@ -26,7 +26,6 @@ import javax.inject.Named;
  * Implémentation MapCache du plugins.
  *
  * @author npiedeloup
- * @version $Id: MapCachePlugin.java,v 1.11 2014/01/23 11:50:36 pchretien Exp $
  */
 public final class MapCachePlugin implements CachePlugin, Describable {
 	private final CodecManager codecManager;

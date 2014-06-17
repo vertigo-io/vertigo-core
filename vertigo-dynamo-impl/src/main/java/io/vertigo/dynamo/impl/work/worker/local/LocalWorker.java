@@ -9,7 +9,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Implémentation d'un pool local de {@link Worker}.
  * 
  * @author pchretien
- * @version $Id: LocalWorker.java,v 1.7 2013/11/15 15:33:20 pchretien Exp $
  */
 public final class LocalWorker implements Worker, Activeable {
 	/** paramètre du plugin définissant la taille de la queue. */

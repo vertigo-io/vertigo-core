@@ -16,7 +16,6 @@ import java.util.Map;
  * Il est possible de composer une grammaire à partir de grammaires.
  *
  * @author pchretien
- * @version $Id: Grammar.java,v 1.5 2013/10/22 12:30:49 pchretien Exp $
  */
 public final class Grammar {
 	private final Map<String, Entity> entities = new HashMap<>();

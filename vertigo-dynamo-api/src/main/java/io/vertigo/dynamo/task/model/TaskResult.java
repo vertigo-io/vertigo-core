@@ -5,7 +5,6 @@ import io.vertigo.kernel.lang.Assertion;
 /**
  * Résultat de l'exécution d'une tache.
  * @author dchallas
- * @version $Id: TaskResult.java,v 1.4 2013/10/22 12:31:13 pchretien Exp $
  */
 public final class TaskResult {
 	/**

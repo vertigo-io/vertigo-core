@@ -14,7 +14,6 @@ import java.util.List;
  * Résultat d'analyse d'une tâche.
  * 
  * @author tchassagnette
- * @version $Id: DtDefinitionReport.java,v 1.5 2014/02/27 10:36:27 pchretien Exp $
  */
 public final class DtDefinitionReport implements DataReport {
 	private final DtDefinition dtDefinition;

@@ -6,7 +6,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Utilitaire permettant de créer un nom de méthode Java à partir d'un texte libre.
  *
  * @author pchretien
- * @version $Id: OOMUtil.java,v 1.4 2013/10/22 10:44:56 pchretien Exp $
  */
 final class OOMUtil {
 	private OOMUtil() {

@@ -42,7 +42,6 @@ import javax.persistence.TypedQuery;
  * Implémentation d'un Store Jpa.
  *
  * @author  pchretien, npiedeloup
- * @version $Id: JpaStorePlugin.java,v 1.1 2014/01/31 17:21:08 npiedeloup Exp $
  */
 public final class JpaStorePlugin implements StorePlugin {
 	/**

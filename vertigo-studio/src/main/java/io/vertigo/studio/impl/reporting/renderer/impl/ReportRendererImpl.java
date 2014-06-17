@@ -9,7 +9,6 @@ import io.vertigo.studio.reporting.Report;
 
 /**
  * @author tchassagnette
- * @version $Id: ReportRendererImpl.java,v 1.4 2013/10/22 10:47:33 pchretien Exp $
  *
  */
 public final class ReportRendererImpl implements ReportRenderer {

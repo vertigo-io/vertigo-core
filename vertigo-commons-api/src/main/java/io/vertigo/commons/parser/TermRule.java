@@ -6,7 +6,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Règle vérifiant que le texte commence par la chaine précisée.
  * Sinon retourne une erreur.
  * @author pchretien
- * @version $Id: TermRule.java,v 1.3 2013/10/22 12:23:44 pchretien Exp $
  */
 public final class TermRule implements Rule<String>, Parser<String> {
 	private final String term;

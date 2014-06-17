@@ -11,7 +11,6 @@ import java.util.Map;
  * La purge des éléments trop vieux se fait lors de la lecture.
  * 
  * @author npiedeloup
- * @version $Id: MapCache.java,v 1.4 2013/10/22 12:38:24 pchretien Exp $
  */
 final class MapCache {
 	private final String name;

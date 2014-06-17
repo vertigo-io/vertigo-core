@@ -7,7 +7,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Cette règle ne plante jamais -sauf si un blanc obligatoire n'est pas présent-
  * mais permet de faire avancer l'index.
  * @author pchretien
- * @version $Id: WhiteSpaceRule.java,v 1.7 2013/10/23 11:33:20 pchretien Exp $
  */
 public final class WhiteSpaceRule implements Rule<Void>, Parser<Void> {
 	private final Rule<String> rule;

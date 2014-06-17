@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
  * Résultat de la génération.
  *
  * @author pchretien
- * @version $Id: ResultImpl.java,v 1.2 2013/10/22 12:36:17 pchretien Exp $
  */
 final class ResultImpl implements Result {
 	private final Logger logger = Logger.getLogger(getClass());

@@ -27,7 +27,6 @@ import javax.inject.Inject;
  * non SQL pour les traitements de FileInfo.
  *
  * @author pchretien, npiedeloup
- * @version $Id: DbFileStorePlugin.java,v 1.6 2014/01/20 17:49:32 pchretien Exp $
  */
 public final class DbFileStorePlugin implements FileStorePlugin {
 	private static final String STORE_READ_ONLY = "Le store est en readOnly";

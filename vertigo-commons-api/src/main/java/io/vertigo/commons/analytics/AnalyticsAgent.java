@@ -3,7 +3,6 @@ package io.vertigo.commons.analytics;
 /**
  * Agent de collecte.
  * @author pchretien
- * @version $Id: AnalyticsAgent.java,v 1.2 2013/07/29 11:42:53 pchretien Exp $
  */
 public interface AnalyticsAgent {
 	/**

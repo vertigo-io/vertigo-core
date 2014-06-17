@@ -9,7 +9,6 @@ import java.util.Properties;
  * Configuration du DomainGenerator.
  * 
  * @author dchallas
- * @version $Id: DomainConfiguration.java,v 1.1 2013/07/11 10:04:05 npiedeloup Exp $
  */
 final class DomainConfiguration extends AbstractConfiguration {
 	private final boolean generateResourcesFile;

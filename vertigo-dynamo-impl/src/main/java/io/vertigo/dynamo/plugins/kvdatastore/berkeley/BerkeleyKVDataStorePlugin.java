@@ -23,7 +23,6 @@ import com.sleepycat.je.EnvironmentConfig;
  * Implémentation d'un store BerkeleyDB.
  * 
  * @author  pchretien
- * @version $Id: BerkeleyKVDataStorePlugin.java,v 1.1 2013/01/02 13:38:30 pchretien Exp $
  */
 public final class BerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activeable {
 	private static final boolean READONLY = false;

@@ -16,7 +16,6 @@ import freemarker.template.TemplateModelException;
  * TemplateMethodModel : les params sont considérés comme des String.
  * 
  * @author  dchallas
- * @version $Id: TemplateMethodSqlOracle.java,v 1.2 2014/01/20 17:47:58 pchretien Exp $
  */
 public final class TemplateMethodSqlOracle implements TemplateMethodModel {
 

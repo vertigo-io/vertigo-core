@@ -16,7 +16,6 @@ import java.util.List;
  * Gestion centralisée des annotations sur les objets kasper générés.
  *
  * @author  pchretien
- * @version $Id: AnnotationWriter.java,v 1.8 2014/02/27 10:29:00 pchretien Exp $
  */
 class AnnotationWriter {
 	/** Chaine d'indentation. */

@@ -16,7 +16,6 @@ import java.util.List;
  * Les objets null ne sont pas autorisés.
  *
  * @author  fconstantin
- * @version $Id: DtList.java,v 1.5 2013/10/22 15:14:53 pchretien Exp $
  * @param <D> Type du DtObject
  */
 public final class DtList<D extends DtObject> extends AbstractList<D> implements Serializable {

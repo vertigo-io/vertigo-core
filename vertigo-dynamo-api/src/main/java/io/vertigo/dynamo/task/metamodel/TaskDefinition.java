@@ -18,7 +18,6 @@ import java.util.Map;
  * Définition d'une tache et de ses attributs.
  *
  * @author  fconstantin, pchretien
- * @version $Id: TaskDefinition.java,v 1.6 2014/01/20 18:57:19 pchretien Exp $
  */
 @Prefix("TK")
 public final class TaskDefinition implements Definition {

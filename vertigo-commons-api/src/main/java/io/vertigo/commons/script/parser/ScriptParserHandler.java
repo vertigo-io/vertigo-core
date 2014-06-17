@@ -11,7 +11,6 @@ package io.vertigo.commons.script.parser;
  * - une chaine de début et une de fin.
  * 
  * @author  pchretien
- * @version $Id: ScriptParserHandler.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public interface ScriptParserHandler {
 	/**
@@ -27,4 +26,4 @@ public interface ScriptParserHandler {
 	 * @param text Texte compris entre les 2 séparateurs 
 	 */
 	void onText(String text);
-}
+}

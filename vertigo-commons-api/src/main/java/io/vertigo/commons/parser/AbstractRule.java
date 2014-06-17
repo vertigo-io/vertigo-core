@@ -8,7 +8,6 @@ import io.vertigo.kernel.lang.Assertion;
  * - la gestion du résultat du parsing
  * 
  * @author pchretien
- * @version $Id: AbstractRule.java,v 1.6 2013/10/22 12:23:44 pchretien Exp $
  */
 public abstract class AbstractRule<R, M> implements Rule<R> {
 	private Rule<M> mainRule;

@@ -4,7 +4,6 @@ package io.vertigo.studio.reporting;
  * Interface décrivant un résultat de metric.
  * 
  * @author tchassagnette, pchretien
- * @version $Id: Metric.java,v 1.1 2013/07/11 10:04:05 npiedeloup Exp $
  */
 public interface Metric {
 	enum Status {

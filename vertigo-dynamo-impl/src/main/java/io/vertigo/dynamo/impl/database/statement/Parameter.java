@@ -5,7 +5,6 @@ import io.vertigo.dynamo.domain.metamodel.DataType;
 /**
  * Représentation objet d'un paramètre d'un statement.
  * @author pchretien
- * @version $Id: Parameter.java,v 1.2 2014/01/20 17:46:01 pchretien Exp $
  */
 final class Parameter {
 	private final DataType dataType;

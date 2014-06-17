@@ -13,7 +13,6 @@ import io.vertigo.kernel.util.ClassUtil;
 
 /**
  * @author pchretien
- * @version $Id: TaskDynamicRegistryPlugin.java,v 1.6 2014/01/20 17:46:41 pchretien Exp $
  */
 public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin<TaskGrammar> {
 	/**

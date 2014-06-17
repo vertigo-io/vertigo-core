@@ -4,7 +4,6 @@ import io.vertigo.kernel.component.Manager;
 
 import java.io.Serializable;
 
-
 /**
  * Gestion centralisée des mécanismes de codage/décodage.
  * Tous les codecs sont threadSafe et StateLess.
@@ -15,7 +14,6 @@ import java.io.Serializable;
  * - pour tous les autres cas null  donne null
  *
  * @author pchretien
- * @version $Id: CodecManager.java,v 1.4 2013/11/15 15:31:39 pchretien Exp $
  */
 public interface CodecManager extends Manager {
 	/**

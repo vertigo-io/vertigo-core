@@ -21,7 +21,6 @@ import java.util.List;
  * Implémentation Standard de KPrepareStatement.
  * 
  * @author pchretien
- * @version $Id: KPreparedStatementImpl.java,v 1.9 2014/01/20 17:46:01 pchretien Exp $
  */
 public class KPreparedStatementImpl implements KPreparedStatement {
 	/**

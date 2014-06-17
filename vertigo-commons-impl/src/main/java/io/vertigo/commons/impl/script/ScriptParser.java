@@ -13,7 +13,6 @@ import java.util.List;
  * Notifie le handler des paramètres trouvés.
  *
  * @author  pchretien
- * @version $Id: ScriptParser.java,v 1.4 2013/10/22 12:26:59 pchretien Exp $
  */
 final class ScriptParser {
 	/**

@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
  * Classe de gestion de la sauvegarde d'un fichier.
  * 
  * @author skerdudou
- * @version $Id: FileActionSave.java,v 1.5 2013/10/22 12:26:41 pchretien Exp $
  */
 final class FileActionSave implements FileAction {
 	private static final String EXT_NEW = "toSave";

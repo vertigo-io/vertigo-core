@@ -6,10 +6,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-
 /**
  * @author pchretien
- * @version $Id: FirstOfRule.java,v 1.6 2013/10/22 12:23:44 pchretien Exp $
  */
 public final class FirstOfRule implements Rule<Choice> {
 	private final List<Rule<?>> rules;

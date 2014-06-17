@@ -13,7 +13,6 @@ import java.security.NoSuchAlgorithmException;
  * La fonction de décodage n'existe pas.
  * 
  * @author  pchretien
- * @version $Id: HashEncoder.java,v 1.6 2013/11/15 15:27:29 pchretien Exp $
  */
 public final class HashEncoder implements Encoder<byte[], byte[]> {
 	/**

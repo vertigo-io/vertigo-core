@@ -4,12 +4,10 @@ import io.vertigo.kernel.lang.Assertion;
 
 import java.io.Serializable;
 
-
 /**
  * Filtre de liste. 
  * Construit ListFilter sous forme de chaine.
  * @author pchretien, npiedeloup
- * @version $Id: ListFilter.java,v 1.3 2013/10/22 12:37:12 pchretien Exp $
  */
 public final class ListFilter implements Serializable {
 	private static final long serialVersionUID = -4685077662421935642L;

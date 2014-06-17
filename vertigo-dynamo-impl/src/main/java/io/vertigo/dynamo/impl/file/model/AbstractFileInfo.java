@@ -10,7 +10,6 @@ import io.vertigo.kernel.metamodel.DefinitionReference;
 /**
  * Class générique de définition d'un fichier.
  * @author npiedeloup
- * @version $Id: AbstractFileInfo.java,v 1.7 2014/01/20 17:46:41 pchretien Exp $
  */
 public abstract class AbstractFileInfo implements FileInfo {
 	private static final long serialVersionUID = 1L;

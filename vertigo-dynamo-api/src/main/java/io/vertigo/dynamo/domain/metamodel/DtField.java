@@ -25,7 +25,6 @@ import io.vertigo.kernel.metamodel.DefinitionReference;
  * 	 - la définition qu'il relie (équivalent d'une Foreign Key) 	   
  *   
  * @author  fconstantin, pchretien , npiedeloup
- * @version $Id: DtField.java,v 1.7 2013/10/22 12:25:18 pchretien Exp $
  */
 public final class DtField {
 	public static final String PREFIX = "FLD_";

@@ -9,7 +9,6 @@ import java.util.Date;
 /**
  *
  * @author npiedeloup
- * @version $Id: StreamFile.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public final class StreamFile extends AbstractKFile {
 	private static final long serialVersionUID = -4565434303879706815L;

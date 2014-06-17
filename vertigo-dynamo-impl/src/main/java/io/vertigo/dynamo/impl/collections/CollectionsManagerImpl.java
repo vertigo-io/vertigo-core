@@ -38,7 +38,6 @@ import javax.inject.Inject;
 * Implémentation du gestionnaire de la manipulation des collections.
 * 
 * @author  pchretien
-* @version $Id: CollectionsManagerImpl.java,v 1.7 2014/01/20 17:45:43 pchretien Exp $
 */
 public final class CollectionsManagerImpl implements CollectionsManager {
 	//private final MasterDataManager masterDataManager;
