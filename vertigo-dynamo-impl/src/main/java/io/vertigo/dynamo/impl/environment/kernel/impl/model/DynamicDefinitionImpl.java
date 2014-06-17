@@ -31,6 +31,22 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** Nom du package. */
 	private String packageName;
+	//-----
+	//-----BODY
+	//-----
+	/**
+	 * Clé de la définition.
+	 */
+	private final DynamicDefinitionKey dynamicDefinitionKey;
+	/**
+	 * Conteneur des couples (propriétés, valeur)
+	 */
+	private final Map<EntityProperty, Object> properties = new HashMap<>();
+	/**
+	 * Map des (FieldName, definitionKeyList)
+	 */
+	private final Map<String, List<DynamicDefinitionKey>> definitionKeysByFieldName = new LinkedHashMap<>();
+	private final Map<String, List<DynamicDefinition>> definitionsByFieldName = new LinkedHashMap<>();
 
 	/**
 	 * Constructeur.
@@ -68,29 +84,6 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	}
 
 	/** {@inheritDoc} */
-	public DynamicDefinitionBuilder withPackageName(final String newPackageName) {
-		this.packageName = newPackageName;
-		return this;
-	}
-
-	//-----
-	//-----BODY
-	//-----
-	/**
-	 * Clé de la définition.
-	 */
-	private final DynamicDefinitionKey dynamicDefinitionKey;
-	/**
-	 * Conteneur des couples (propriétés, valeur)
-	 */
-	private final Map<EntityProperty, Object> properties = new HashMap<>();
-	/**
-	 * Map des (FieldName, definitionKeyList)
-	 */
-	private final Map<String, List<DynamicDefinitionKey>> definitionKeysByFieldName = new LinkedHashMap<>();
-	private final Map<String, List<DynamicDefinition>> definitionsByFieldName = new LinkedHashMap<>();
-
-	/** {@inheritDoc} */
 	public final DynamicDefinitionKey getDefinitionKey() {
 		return dynamicDefinitionKey;
 	}
@@ -111,29 +104,26 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return Collections.unmodifiableSet(properties.keySet());
 	}
 
-	public final DynamicDefinitionBuilder withPropertyValue(final EntityProperty property, final Object value) {
-		property.getPrimitiveType().checkValue(value);
-		properties.put(property, value);
-		return this;
-	}
-
 	/** {@inheritDoc} */
 	public final List<DynamicDefinitionKey> getDefinitionKeys(final String fieldName) {
 		return obtainDefinitionKeys(fieldName);
 	}
 
-	private List<DynamicDefinitionKey> obtainDefinitionKeys(final String fieldName) {
-		Assertion.checkNotNull(fieldName);
-		// ------------------------------------------------------------------
-		List<DynamicDefinitionKey> list = definitionKeysByFieldName.get(fieldName);
-		// ------------------------------------------------------------------
-		if (list == null) {
-			list = new ArrayList<>();
-			definitionKeysByFieldName.put(fieldName, list);
-		}
-		return list;
+	/** {@inheritDoc} */
+	public final List<DynamicDefinition> getChildDefinitions(final String fieldName) {
+		return obtainCompositeList(fieldName);
 	}
 
+	/** {@inheritDoc} */
+	public final List<DynamicDefinition> getAllChildDefinitions() {
+		final List<DynamicDefinition> dynamicDefinitions = new ArrayList<>();
+		for (final List<DynamicDefinition> dynamicDefinitionList : definitionsByFieldName.values()) {
+			dynamicDefinitions.addAll(dynamicDefinitionList);
+		}
+		return dynamicDefinitions;
+	}
+
+	//-------
 	/** {@inheritDoc} */
 	public final DynamicDefinitionKey getDefinitionKey(final String fieldName) {
 		Assertion.checkArgument(definitionKeysByFieldName.containsKey(fieldName), "Aucune définition déclarée pour ''{0}'' sur ''{1}'' ", fieldName, getDefinitionKey().getName());
@@ -152,6 +142,30 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 			dynamicDefinitionKeys.addAll(dynamicDefinitionKeyList);
 		}
 		return dynamicDefinitionKeys;
+	}
+
+	/** {@inheritDoc} */
+	public DynamicDefinitionBuilder withPackageName(final String newPackageName) {
+		this.packageName = newPackageName;
+		return this;
+	}
+
+	public final DynamicDefinitionBuilder withPropertyValue(final EntityProperty property, final Object value) {
+		property.getPrimitiveType().checkValue(value);
+		properties.put(property, value);
+		return this;
+	}
+
+	private List<DynamicDefinitionKey> obtainDefinitionKeys(final String fieldName) {
+		Assertion.checkNotNull(fieldName);
+		// ------------------------------------------------------------------
+		List<DynamicDefinitionKey> list = definitionKeysByFieldName.get(fieldName);
+		// ------------------------------------------------------------------
+		if (list == null) {
+			list = new ArrayList<>();
+			definitionKeysByFieldName.put(fieldName, list);
+		}
+		return list;
 	}
 
 	public final DynamicDefinitionBuilder withChildDefinition(final String fieldName, final DynamicDefinition definition) {
@@ -189,20 +203,6 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 			definitionsByFieldName.put(fieldName, list);
 		}
 		return list;
-	}
-
-	/** {@inheritDoc} */
-	public final List<DynamicDefinition> getChildDefinitions(final String fieldName) {
-		return obtainCompositeList(fieldName);
-	}
-
-	/** {@inheritDoc} */
-	public final List<DynamicDefinition> getAllChildDefinitions() {
-		final List<DynamicDefinition> dynamicDefinitions = new ArrayList<>();
-		for (final List<DynamicDefinition> dynamicDefinitionList : definitionsByFieldName.values()) {
-			dynamicDefinitions.addAll(dynamicDefinitionList);
-		}
-		return dynamicDefinitions;
 	}
 
 	public final DynamicDefinitionBuilder withBody(final DynamicDefinition dynamicDefinition) {
