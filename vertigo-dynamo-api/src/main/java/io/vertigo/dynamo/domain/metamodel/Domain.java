@@ -28,7 +28,7 @@ public final class Domain implements Definition {
 	/** Nom du domaine.*/
 	private final String name;
 	/** Type primitif. */
-	private final KDataType dataType;
+	private final DataType dataType;
 
 	/** Formatter. */
 	private final DefinitionReference<Formatter> formatterRef;
@@ -49,7 +49,7 @@ public final class Domain implements Definition {
 	 * @param dataType Type Dynamo
 	 * @param formatter Formatter du domaine
 	 */
-	public Domain(final String name, final KDataType dataType, final Formatter formatter) {
+	public Domain(final String name, final DataType dataType, final Formatter formatter) {
 		this(name, dataType, formatter, Collections.<Constraint<?, Object>> emptyList(), new Properties());
 	}
 
@@ -60,7 +60,7 @@ public final class Domain implements Definition {
 	 * @param constraintList Liste des contraintes du domaine
 	 * @param properties Map des (DtProperty, value)
 	 */
-	public Domain(final String name, final KDataType dataType, final Formatter formatter, final List<Constraint<?, Object>> constraints, final Properties properties) {
+	public Domain(final String name, final DataType dataType, final Formatter formatter, final List<Constraint<?, Object>> constraints, final Properties properties) {
 		//--Vérification des contrats-------------------------------------------
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(formatter);
@@ -109,7 +109,7 @@ public final class Domain implements Definition {
 	 *
 	 * @return Type du champ.
 	 */
-	public KDataType getDataType() {
+	public DataType getDataType() {
 		return dataType;
 	}
 

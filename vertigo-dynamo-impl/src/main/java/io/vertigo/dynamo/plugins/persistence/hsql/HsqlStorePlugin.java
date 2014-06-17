@@ -3,7 +3,7 @@ package io.vertigo.dynamo.plugins.persistence.hsql;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.plugins.persistence.AbstractSQLStorePlugin;
@@ -40,7 +40,7 @@ public final class HsqlStorePlugin extends AbstractSQLStorePlugin {
 	 * Domaine à usage interne.
 	 * Ce domaine n'est pas enregistré.
 	 */
-	private final Domain resultDomain = new Domain("DO_HSQL", KDataType.DtObject, new FormatterDefault("FMT_DEFAULT"));
+	private final Domain resultDomain = new Domain("DO_HSQL", DataType.DtObject, new FormatterDefault("FMT_DEFAULT"));
 	private final String sequencePrefix;
 
 	/**

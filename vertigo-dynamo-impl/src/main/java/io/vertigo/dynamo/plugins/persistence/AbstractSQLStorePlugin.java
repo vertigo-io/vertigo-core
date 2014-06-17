@@ -3,7 +3,7 @@ package io.vertigo.dynamo.plugins.persistence;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation;
@@ -84,7 +84,7 @@ public abstract class AbstractSQLStorePlugin implements StorePlugin {
 		Assertion.checkNotNull(workManager);
 		//---------------------------------------------------------------------
 		this.workManager = workManager;
-		integerDomain = new Domain("DO_INTEGER_SQL", KDataType.Integer, new FormatterNumber("FMT_INTEGER_SQL"));
+		integerDomain = new Domain("DO_INTEGER_SQL", DataType.Integer, new FormatterNumber("FMT_INTEGER_SQL"));
 	}
 
 	/**
@@ -526,7 +526,7 @@ public abstract class AbstractSQLStorePlugin implements StorePlugin {
 
 		final String taskName = TASK.TK_COUNT.toString() + '_' + tableName;
 
-		final Domain countDomain = new Domain("DO_COUNT", KDataType.DtObject, new FormatterNumber("FMT_COUNT"));
+		final Domain countDomain = new Domain("DO_COUNT", DataType.DtObject, new FormatterNumber("FMT_COUNT"));
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)//
 				.withEngine(TaskEngineSelect.class)//

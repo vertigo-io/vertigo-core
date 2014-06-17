@@ -5,7 +5,7 @@ import io.vertigo.dynamo.database.statement.KPreparedStatement;
 import io.vertigo.dynamo.database.statement.QueryResult;
 import io.vertigo.dynamo.database.vendor.SQLMapping;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.impl.database.DataBaseListener;
 import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
@@ -160,14 +160,14 @@ public class KPreparedStatementImpl implements KPreparedStatement {
 	 * @param index Indexe du paramètre
 	 * @param dataType Type Kapser
 	 */
-	private void registerParameter(final int index, final KDataType dataType, final boolean in, final boolean out) {
+	private void registerParameter(final int index, final DataType dataType, final boolean in, final boolean out) {
 		Assertion.checkArgument(state == State.CREATED, "L'enregistrement ne peut se faire que sur l'état STATE_CREATED");
 		final Parameter parameter = new Parameter(dataType, in, out);
 		parameters.add(index, parameter);
 	}
 
 	/** {@inheritDoc} */
-	public final void registerParameter(final int index, final KDataType dataType, final ParameterType parameterType) {
+	public final void registerParameter(final int index, final DataType dataType, final ParameterType parameterType) {
 		Assertion.checkNotNull(parameterType);
 		//---------------------------------------------------------------------
 		switch (parameterType) {
@@ -236,7 +236,7 @@ public class KPreparedStatementImpl implements KPreparedStatement {
 		Assertion.checkArgument(parameter.isIn(), "Les Setters ne peuvent se faire que sur des paramètres IN");
 
 		//On récupère le type saisi en amont par la méthode register
-		final KDataType dataType = parameter.getDataType();
+		final DataType dataType = parameter.getDataType();
 		connection.getDataBase().getSqlMapping().setValueOnStatement(statement, index + 1, dataType, o);
 		//On sauvegarde la valeur du paramètre
 		parameter.setValue(o);

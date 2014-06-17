@@ -3,7 +3,7 @@ package io.vertigo.dynamo.impl.database.statementhandler;
 import io.vertigo.dynamo.database.statement.QueryResult;
 import io.vertigo.dynamo.database.vendor.SQLMapping;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.impl.database.statement.StatementHandler;
 import io.vertigo.kernel.lang.Assertion;
 
@@ -39,9 +39,9 @@ public final class StatementHandlerImpl implements StatementHandler {
 		//Soit le DT n'est pas précisé alors le DTO ou DTC est typé de façon dynamique
 		if (domain.hasDtDefinition()) {
 			//Création des DTO, DTC typés de façon déclarative.
-			return new SimpleResultMetaData(domain.getDtDefinition(), KDataType.DtObject.equals(domain.getDataType()));
+			return new SimpleResultMetaData(domain.getDtDefinition(), DataType.DtObject.equals(domain.getDataType()));
 		}
 		//Création des DTO, DTC typés de façon dynamique.
-		return new DynamicResultMetaData(KDataType.DtObject.equals(domain.getDataType()), mapping, resultSet);
+		return new DynamicResultMetaData(DataType.DtObject.equals(domain.getDataType()), mapping, resultSet);
 	}
 }

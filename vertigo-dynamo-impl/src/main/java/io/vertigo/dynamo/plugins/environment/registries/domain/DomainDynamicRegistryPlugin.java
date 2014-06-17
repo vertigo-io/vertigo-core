@@ -7,7 +7,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Properties;
 import io.vertigo.dynamo.domain.metamodel.Property;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
@@ -156,7 +156,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final String formatterUrn = xdomain.getDefinitionKey("formatter").getName();
 		final Formatter formatter = definitionSpace.resolve(formatterUrn, Formatter.class);
 
-		final KDataType dataType = KDataType.valueOf(xdomain.getDefinitionKey("dataType").getName());
+		final DataType dataType = DataType.valueOf(xdomain.getDefinitionKey("dataType").getName());
 		final List<DynamicDefinitionKey> constraintNames = xdomain.getDefinitionKeys("constraint");
 
 		final String urn = xdomain.getDefinitionKey().getName();

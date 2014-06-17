@@ -2,7 +2,7 @@ package io.vertigo.studio.plugins.mda.domain;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 
 import java.util.ArrayList;
@@ -51,7 +51,7 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 
 	private boolean containsDataStreamField(final DtDefinition dtDefinition) {
 		for (final DtField field : dtDefinition.getFields()) {
-			if (field.isPersistent() && field.getDomain().getDataType() == KDataType.DataStream) {
+			if (field.isPersistent() && field.getDomain().getDataType() == DataType.DataStream) {
 				return true;
 			}
 		}
@@ -95,7 +95,7 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 			if (!field.isPersistent()) {
 				lines.add("@javax.persistence.Transient");
 			}
-			if (field.isPersistent() && field.getDomain().getDataType() == KDataType.DataStream) {
+			if (field.isPersistent() && field.getDomain().getDataType() == DataType.DataStream) {
 				lines.add("@org.hibernate.annotations.Type(type = \"DO_STREAM\")");
 			}
 		}

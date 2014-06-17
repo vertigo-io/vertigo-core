@@ -1,7 +1,7 @@
 package io.vertigo.dynamo.database.statement;
 
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 
 import java.sql.SQLException;
 
@@ -44,7 +44,7 @@ public interface KPreparedStatement {
 	 * @param dataType Type 
 	 * @param inOut Type du paramètre
 	 */
-	void registerParameter(final int index, final KDataType dataType, final ParameterType inOut);
+	void registerParameter(final int index, final DataType dataType, final ParameterType inOut);
 
 	//--------------------------------------------------------------------
 	//------------------Clôture des affectations et 1ere Etape -------------------------------

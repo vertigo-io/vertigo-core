@@ -1,7 +1,7 @@
 package io.vertigo.dynamox.domain.formatter;
 
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.JsonExclude;
@@ -81,12 +81,12 @@ public class FormatterNumber extends AbstractFormatterImpl {
 		return new DecimalFormat(pattern, getDecimalFormatSymbols());
 	}
 
-	private void checkType(final KDataType dataType) {
-		Assertion.checkArgument(dataType == KDataType.BigDecimal || dataType == KDataType.Double || dataType == KDataType.Integer || dataType == KDataType.Long, "FormatterNumber ne s'applique qu'aux Nombres");
+	private void checkType(final DataType dataType) {
+		Assertion.checkArgument(dataType == DataType.BigDecimal || dataType == DataType.Double || dataType == DataType.Integer || dataType == DataType.Long, "FormatterNumber ne s'applique qu'aux Nombres");
 	}
 
 	/** {@inheritDoc} */
-	public final Object stringToValue(final String strValue, final KDataType dataType) throws FormatterException {
+	public final Object stringToValue(final String strValue, final DataType dataType) throws FormatterException {
 		checkType(dataType);
 		//----------------------------------------------------------------------
 		//Pour les nombres on "trim" à droite et à gauche
@@ -171,7 +171,7 @@ public class FormatterNumber extends AbstractFormatterImpl {
 	}
 
 	/** {@inheritDoc} */
-	public final String valueToString(final Object objValue, final KDataType dataType) {
+	public final String valueToString(final Object objValue, final DataType dataType) {
 		checkType(dataType);
 		//----------------------------------------------------------------------
 		String decimalString = null;

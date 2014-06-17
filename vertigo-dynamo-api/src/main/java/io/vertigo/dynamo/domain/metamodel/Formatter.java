@@ -25,7 +25,7 @@ public interface Formatter extends Definition {
 	 * @param dataType Type
 	 * @return  chaine formattée
 	 */
-	String valueToString(Object objValue, KDataType dataType);
+	String valueToString(Object objValue, DataType dataType);
 
 	/**
 	 * Transforme une String en valeur typée.
@@ -34,5 +34,5 @@ public interface Formatter extends Definition {
 	 * @return  Valeur typée (déformattage)
 	 * @throws FormatterException Erreur de parsing
 	 */
-	Object stringToValue(String strValue, KDataType dataType) throws FormatterException;
+	Object stringToValue(String strValue, DataType dataType) throws FormatterException;
 }

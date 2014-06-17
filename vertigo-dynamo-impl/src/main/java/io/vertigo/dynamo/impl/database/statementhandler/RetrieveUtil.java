@@ -3,7 +3,7 @@ package io.vertigo.dynamo.impl.database.statementhandler;
 import io.vertigo.dynamo.database.statement.QueryResult;
 import io.vertigo.dynamo.database.vendor.SQLMapping;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.exception.VRuntimeException;
@@ -24,7 +24,7 @@ final class RetrieveUtil {
 		//Classe utilitaire, constructeir est privé.
 	}
 
-	static QueryResult retrievePrimitive(final KDataType dataType, final SQLMapping mapping, final ResultSet resultSet) throws SQLException {
+	static QueryResult retrievePrimitive(final DataType dataType, final SQLMapping mapping, final ResultSet resultSet) throws SQLException {
 		if (resultSet.next()) {
 			//On est dans le cas de récupération d'un objet, un objet a été trouvé
 			//On vérifie qu'il y en a au plus un.

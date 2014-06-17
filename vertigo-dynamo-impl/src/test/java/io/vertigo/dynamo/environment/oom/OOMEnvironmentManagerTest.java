@@ -5,7 +5,7 @@ import io.vertigo.dynamo.domain.metamodel.Constraint;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamock.domain.famille.Famille;
 import io.vertigo.dynamox.domain.constraint.ConstraintRegex;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
@@ -43,7 +43,7 @@ public final class OOMEnvironmentManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testDomain() {
 		final io.vertigo.dynamo.domain.metamodel.Domain domain = Home.getDefinitionSpace().resolve("DO_EMAIL", Domain.class);
-		Assert.assertEquals(KDataType.String, domain.getDataType());
+		Assert.assertEquals(DataType.String, domain.getDataType());
 		Assert.assertEquals(FormatterDefault.class, domain.getFormatter().getClass());
 	}
 

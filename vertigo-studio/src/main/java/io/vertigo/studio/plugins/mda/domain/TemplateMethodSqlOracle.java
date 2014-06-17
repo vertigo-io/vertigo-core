@@ -1,6 +1,6 @@
 package io.vertigo.studio.plugins.mda.domain;
 
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public final class TemplateMethodSqlOracle implements TemplateMethodModel {
 	}
 
 	private String getSqlType(final String type) {
-		final KDataType dataType = KDataType.valueOf(type);
+		final DataType dataType = DataType.valueOf(type);
 		switch (dataType) {
 			case BigDecimal:
 				return "NUMBER(10,2)";

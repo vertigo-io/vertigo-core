@@ -1,6 +1,6 @@
 package io.vertigo.dynamo.impl.database.statement;
 
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 
 /**
  * Représentation objet d'un paramètre d'un statement.
@@ -8,7 +8,7 @@ import io.vertigo.dynamo.domain.metamodel.KDataType;
  * @version $Id: Parameter.java,v 1.2 2014/01/20 17:46:01 pchretien Exp $
  */
 final class Parameter {
-	private final KDataType dataType;
+	private final DataType dataType;
 	private final boolean in;
 	private final boolean out;
 	private Object value;
@@ -19,7 +19,7 @@ final class Parameter {
 	 * @param in boolean
 	 * @param out boolean
 	 */
-	Parameter(final KDataType dataType, final boolean in, final boolean out) {
+	Parameter(final DataType dataType, final boolean in, final boolean out) {
 		this.dataType = dataType;
 		this.in = in;
 		this.out = out;
@@ -50,7 +50,7 @@ final class Parameter {
 	/**
 	 * @return Type du paramètre
 	 */
-	KDataType getDataType() {
+	DataType getDataType() {
 		return dataType;
 	}
 
