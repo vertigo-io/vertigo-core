@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
  * Exécution des works.
  * 
  * @author pchretien, npiedeloup
- * @version $Id: WorkItemExecutor.java,v 1.7 2013/11/15 15:33:20 pchretien Exp $
  * @param <WR> Type du résultat
  * @param <W> Type du work
  */

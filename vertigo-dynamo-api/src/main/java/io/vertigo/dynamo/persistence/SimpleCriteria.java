@@ -7,7 +7,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Critère de recherche simple.
  *
  * @author npiedeloup
- * @version $Id: SimpleCriteria.java,v 1.4 2014/01/20 17:45:43 pchretien Exp $
  * @param <D> Type de l'objet
  */
 public final class SimpleCriteria<D extends DtObject> implements Criteria<D> {

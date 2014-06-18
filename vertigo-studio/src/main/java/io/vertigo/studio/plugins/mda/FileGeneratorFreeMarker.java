@@ -1,9 +1,5 @@
 package io.vertigo.studio.plugins.mda;
 
-import freemarker.template.Configuration;
-import freemarker.template.ObjectWrapper;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.studio.mda.Result;
@@ -14,11 +10,15 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
 
+import freemarker.template.Configuration;
+import freemarker.template.ObjectWrapper;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+
 /**
  * Génération des fichiers avec FreeMarker.
  * 
  * @author dchallas
- * @version $Id: FileGeneratorFreeMarker.java,v 1.5 2014/01/31 17:34:02 npiedeloup Exp $
  */
 public final class FileGeneratorFreeMarker implements FileGenerator {
 

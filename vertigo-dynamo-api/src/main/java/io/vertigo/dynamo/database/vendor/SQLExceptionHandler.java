@@ -7,7 +7,6 @@ import java.sql.SQLException;
 /**
  * Handler des exceptions SQL qui peuvent survenir lors de l'exécution d'une requête.
  * @author npiedeloup
- * @version $Id: SQLExceptionHandler.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public interface SQLExceptionHandler {
 

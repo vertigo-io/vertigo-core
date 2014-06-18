@@ -31,7 +31,6 @@ import org.apache.log4j.Logger;
  * Parser d'un fichier powerAMC, OOM.
  *
  * @author pchretien
- * @version $Id: OOMLoaderPlugin.java,v 1.10 2014/01/20 17:46:41 pchretien Exp $
  */
 public final class OOMLoaderPlugin implements LoaderPlugin {
 	private static final Logger LOGGER = Logger.getLogger(OOMLoaderPlugin.class);
@@ -81,15 +80,15 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 
 		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelrepository.createDynamicDefinitionBuilder(getDtDefinitionName(classOOM.getCode()), dtDefinitionEntity, classOOM.getPackageName());
 		//Par défaut les DT lues depuis OOM sont persistantes.
-		dtDefinitionBuilder.putPropertyValue(KspProperty.PERSISTENT, true);
+		dtDefinitionBuilder.withPropertyValue(KspProperty.PERSISTENT, true);
 
 		for (final OOMAttribute attributeOOM : classOOM.getKeyAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(attributeOOM, dynamicModelrepository);
-			dtDefinitionBuilder.addChildDefinition(DomainGrammar.PRIMARY_KEY, dtField);
+			dtDefinitionBuilder.withChildDefinition(DomainGrammar.PRIMARY_KEY, dtField);
 		}
 		for (final OOMAttribute attributeOOM : classOOM.getFieldAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(attributeOOM, dynamicModelrepository);
-			dtDefinitionBuilder.addChildDefinition("field", dtField);
+			dtDefinitionBuilder.withChildDefinition("field", dtField);
 		}
 		return dtDefinitionBuilder.build();
 	}
@@ -98,10 +97,10 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 		final DynamicDefinitionKey domainKey = new DynamicDefinitionKey(attributeOOM.getDomain());
 
 		return dynamicModelrepository.createDynamicDefinitionBuilder(attributeOOM.getCode(), dtFieldEntity, null)//
-				.putPropertyValue(KspProperty.LABEL, attributeOOM.getLabel())//
-				.putPropertyValue(KspProperty.PERSISTENT, attributeOOM.isPersistent())//
-				.putPropertyValue(KspProperty.NOT_NULL, attributeOOM.isNotNull())//
-				.addDefinition("domain", domainKey)//
+				.withPropertyValue(KspProperty.LABEL, attributeOOM.getLabel())//
+				.withPropertyValue(KspProperty.PERSISTENT, attributeOOM.isPersistent())//
+				.withPropertyValue(KspProperty.NOT_NULL, attributeOOM.isNotNull())//
+				.withDefinition("domain", domainKey)//
 				.build();
 	}
 
@@ -121,30 +120,30 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 
 		//On crée l'association
 		final DynamicDefinitionBuilder associationDefinitionBuilder = dynamicModelrepository.createDynamicDefinitionBuilder(name, dynamicMetaDefinition, associationOOM.getPackageName())//
-				.putPropertyValue(KspProperty.NAVIGABILITY_A, associationOOM.isNavigableA())//
-				.putPropertyValue(KspProperty.NAVIGABILITY_B, associationOOM.isNavigableB())//
+				.withPropertyValue(KspProperty.NAVIGABILITY_A, associationOOM.isNavigableA())//
+				.withPropertyValue(KspProperty.NAVIGABILITY_B, associationOOM.isNavigableB())//
 				//---
-				.putPropertyValue(KspProperty.LABEL_A, associationOOM.getRoleLabelA())//
+				.withPropertyValue(KspProperty.LABEL_A, associationOOM.getRoleLabelA())//
 				//On transforme en CODE ce qui est écrit en toutes lettres.
-				.putPropertyValue(KspProperty.ROLE_A, OOMUtil.french2Java(associationOOM.getRoleLabelA()))//
-				.putPropertyValue(KspProperty.LABEL_B, associationOOM.getRoleLabelB())//
-				.putPropertyValue(KspProperty.ROLE_B, OOMUtil.french2Java(associationOOM.getRoleLabelB()))//
+				.withPropertyValue(KspProperty.ROLE_A, OOMUtil.french2Java(associationOOM.getRoleLabelA()))//
+				.withPropertyValue(KspProperty.LABEL_B, associationOOM.getRoleLabelB())//
+				.withPropertyValue(KspProperty.ROLE_B, OOMUtil.french2Java(associationOOM.getRoleLabelB()))//
 				//---
-				.addDefinition("dtDefinitionA", getDtDefinitionKey(associationOOM.getCodeA()))//
-				.addDefinition("dtDefinitionB", getDtDefinitionKey(associationOOM.getCodeB()));
+				.withDefinition("dtDefinitionA", getDtDefinitionKey(associationOOM.getCodeA()))//
+				.withDefinition("dtDefinitionB", getDtDefinitionKey(associationOOM.getCodeB()));
 
 		if (isAssociationNN) {
 			//Dans le cas d'une association NN il faut établir le nom de la table intermédiaire qui porte les relations
 			final String tableName = associationOOM.getCode();
-			associationDefinitionBuilder.putPropertyValue(KspProperty.TABLE_NAME, tableName);
+			associationDefinitionBuilder.withPropertyValue(KspProperty.TABLE_NAME, tableName);
 			LOGGER.trace("isAssociationNN:Code=" + associationOOM.getCode());
 		} else {
 			LOGGER.trace("!isAssociationNN:Code=" + associationOOM.getCode());
 			//Dans le cas d'une NN ses deux propriétés sont redondantes ; 
 			//elles ne font donc pas partie de la définition d'une association de type NN
-			associationDefinitionBuilder.putPropertyValue(KspProperty.MULTIPLICITY_A, associationOOM.getMultiplicityA())//
-					.putPropertyValue(KspProperty.MULTIPLICITY_B, associationOOM.getMultiplicityB())//
-					.putPropertyValue(KspProperty.FK_FIELD_NAME, buildFkFieldName(associationOOM, dynamicModelrepository));
+			associationDefinitionBuilder.withPropertyValue(KspProperty.MULTIPLICITY_A, associationOOM.getMultiplicityA())//
+					.withPropertyValue(KspProperty.MULTIPLICITY_B, associationOOM.getMultiplicityB())//
+					.withPropertyValue(KspProperty.FK_FIELD_NAME, buildFkFieldName(associationOOM, dynamicModelrepository));
 
 		}
 		return associationDefinitionBuilder.build();

@@ -11,7 +11,6 @@ import java.util.Collection;
  * Objet utilisé par FreeMarker.
  * 
  * @author pchretien
- * @version $Id: TemplateDAO.java,v 1.7 2014/02/27 10:34:13 pchretien Exp $
  */
 public final class TemplateDAO {
 	private final DtDefinition dtDefinition;

@@ -10,7 +10,6 @@ import java.util.List;
  * Groupement de Critères de type union, intersection et exclusion de groupe.
  * TODO : vérifier la profondeur des groupes et mettre une limite (genre 3)
  * @author npiedeloup
- * @version $Id: GroupCriteria.java,v 1.5 2014/01/20 17:45:43 pchretien Exp $
  * @param <D> Type de l'objet
  */
 public final class GroupCriteria<D extends DtObject> implements Criteria<D> {

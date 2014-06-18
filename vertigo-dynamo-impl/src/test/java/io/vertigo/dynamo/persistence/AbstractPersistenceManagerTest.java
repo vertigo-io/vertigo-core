@@ -51,7 +51,6 @@ import org.junit.Test;
  * Test de l'implémentation standard.
  *
  * @author pchretien
- * @version $Id: AbstractPersistenceManagerTest.java,v 1.2 2014/02/03 18:16:54 pchretien Exp $
  */
 public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4 {
 	@Inject

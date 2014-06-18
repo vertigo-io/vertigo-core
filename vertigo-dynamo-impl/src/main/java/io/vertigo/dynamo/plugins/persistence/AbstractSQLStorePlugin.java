@@ -1,9 +1,9 @@
 package io.vertigo.dynamo.plugins.persistence;
 
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation;
@@ -47,7 +47,6 @@ import java.util.Map;
  * - suppression d'un enregistrement il y a un et un seul enregistrement supprimé.
  *
  * @author  pchretien
- * @version $Id: AbstractSQLStorePlugin.java,v 1.10 2014/01/20 18:57:19 pchretien Exp $
  */
 public abstract class AbstractSQLStorePlugin implements StorePlugin {
 	private static final FilterCriteria<?> EMPTY_FILTER_CRITERIA = new FilterCriteriaBuilder<>().build();
@@ -84,7 +83,7 @@ public abstract class AbstractSQLStorePlugin implements StorePlugin {
 		Assertion.checkNotNull(workManager);
 		//---------------------------------------------------------------------
 		this.workManager = workManager;
-		integerDomain = new Domain("DO_INTEGER_SQL", KDataType.Integer, new FormatterNumber("FMT_INTEGER_SQL"));
+		integerDomain = new Domain("DO_INTEGER_SQL", DataType.Integer, new FormatterNumber("FMT_INTEGER_SQL"));
 	}
 
 	/**
@@ -526,7 +525,7 @@ public abstract class AbstractSQLStorePlugin implements StorePlugin {
 
 		final String taskName = TASK.TK_COUNT.toString() + '_' + tableName;
 
-		final Domain countDomain = new Domain("DO_COUNT", KDataType.DtObject, new FormatterNumber("FMT_COUNT"));
+		final Domain countDomain = new Domain("DO_COUNT", DataType.DtObject, new FormatterNumber("FMT_COUNT"));
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)//
 				.withEngine(TaskEngineSelect.class)//

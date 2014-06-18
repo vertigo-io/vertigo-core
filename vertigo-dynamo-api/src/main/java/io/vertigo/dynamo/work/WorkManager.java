@@ -16,7 +16,6 @@ import java.util.concurrent.Callable;
  * Dans le cas des appels synchrones de méthodes distribuées, un mécanisme resynchronise le résultat 
  * 
  * @author pchretien
- * @version $Id: WorkManager.java,v 1.5 2013/11/15 15:43:35 pchretien Exp $
  */
 public interface WorkManager extends Manager {
 	/**

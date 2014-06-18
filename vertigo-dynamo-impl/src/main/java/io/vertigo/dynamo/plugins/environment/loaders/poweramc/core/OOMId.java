@@ -6,7 +6,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Identifiant d'un objet powerAMC.
  *
  * @author pchretien
- * @version $Id: IdOOM.java,v 1.3 2013/10/22 12:30:19 pchretien Exp $
  */
 final class OOMId {
 	private final String keyValue;

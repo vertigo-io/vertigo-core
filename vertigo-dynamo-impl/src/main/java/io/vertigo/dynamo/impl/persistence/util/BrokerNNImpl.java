@@ -2,7 +2,7 @@ package io.vertigo.dynamo.impl.persistence.util;
 
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation;
@@ -28,7 +28,6 @@ import java.util.Set;
 /**
  * Gestion des tables de relations NN.
  * @author dchallas
- * @version $Id: BrokerNNImpl.java,v 1.9 2014/01/20 18:57:19 pchretien Exp $
  */
 public final class BrokerNNImpl implements BrokerNN {
 	private final Domain integerDomain;
@@ -64,7 +63,7 @@ public final class BrokerNNImpl implements BrokerNN {
 		Assertion.checkNotNull(workManager);
 		//---------------------------------------------------------------------
 		this.workManager = workManager;
-		integerDomain = new Domain("DO_INTEGER_BROKER", KDataType.Integer, new FormatterNumber("FMT_NUMBER_BROKER"));
+		integerDomain = new Domain("DO_INTEGER_BROKER", DataType.Integer, new FormatterNumber("FMT_NUMBER_BROKER"));
 	}
 
 	/** {@inheritDoc} */

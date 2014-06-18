@@ -22,7 +22,6 @@ import java.util.Properties;
  * Génération des objets relatifs au module Task. 
  *  
  * @author pchretien
- * @version $Id: TaskGeneratorPlugin.java,v 1.6 2014/02/27 10:41:10 pchretien Exp $
  */
 public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin<TaskConfiguration> {
 	/** {@inheritDoc} */

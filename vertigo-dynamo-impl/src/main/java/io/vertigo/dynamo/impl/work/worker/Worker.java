@@ -9,7 +9,6 @@ import io.vertigo.dynamo.work.WorkEngineProvider;
  * - asynchrone
  * 
  * @author pchretien, npiedeloup
- * @version $Id: Worker.java,v 1.4 2013/11/15 15:33:20 pchretien Exp $
  */
 public interface Worker {
 	/**

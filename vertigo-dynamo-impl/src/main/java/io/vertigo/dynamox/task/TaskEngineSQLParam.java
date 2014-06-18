@@ -13,7 +13,6 @@ import io.vertigo.kernel.lang.Assertion;
  * - IN OUT : le séparateur utilisé est @
  * 
  * @author pchretien
- * @version $Id: TaskEngineSQLParam.java,v 1.4 2013/10/22 12:04:16 pchretien Exp $
  */
 final class TaskEngineSQLParam {
 	/**

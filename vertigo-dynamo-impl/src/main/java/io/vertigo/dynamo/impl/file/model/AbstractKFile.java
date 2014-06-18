@@ -8,7 +8,6 @@ import java.util.Date;
 /**
  * Class générique de définition d'un fichier.
  * @author npiedeloup
- * @version $Id: AbstractKFile.java,v 1.3 2013/10/22 12:33:19 pchretien Exp $
  */
 abstract class AbstractKFile implements KFile {
 	private static final long serialVersionUID = 1L;

@@ -19,7 +19,6 @@ import java.util.Properties;
  * Génération des fichiers Java et SQL à patrir de fichiers template freemarker.
  * 
  * @author dchallas, pchretien
- * @version $Id: NameSpace2Java.java,v 1.7 2014/02/27 10:35:12 pchretien Exp $
  */
 public final class NameSpace2Java {
 

@@ -13,7 +13,6 @@ import org.codehaus.janino.ScriptEvaluator;
  * Evaluation d'une expression en se basant sur Janino.
  *
  * @author  pchretien
- * @version $Id: JaninoExpressionEvaluatorPlugin.java,v 1.3 2013/10/22 12:29:54 pchretien Exp $
  */
 public final class JaninoExpressionEvaluatorPlugin implements ExpressionEvaluatorPlugin {
 	/** {@inheritDoc} */

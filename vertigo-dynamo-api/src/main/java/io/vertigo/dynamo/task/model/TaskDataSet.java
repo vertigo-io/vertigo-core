@@ -21,7 +21,6 @@ import java.util.Map;
  * 
  *
  * @author  pchretien
- * @version $Id: TaskDataSet.java,v 1.11 2014/01/24 17:59:57 pchretien Exp $
  */
 final class TaskDataSet implements Modifiable {
 	/**

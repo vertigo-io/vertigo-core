@@ -16,7 +16,6 @@ import freemarker.template.TemplateModelException;
  * TemplateMethodModel : les params sont considérés comme des String.
  * 
  * @author  dchallas
- * @version $Id: TemplateMethodStringUtil.java,v 1.2 2013/10/22 10:47:24 pchretien Exp $
  */
 public class TemplateMethodStringUtil implements TemplateMethodModel {
 

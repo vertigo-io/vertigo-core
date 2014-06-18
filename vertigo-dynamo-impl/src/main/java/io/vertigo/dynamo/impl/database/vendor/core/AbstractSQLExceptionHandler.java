@@ -21,7 +21,6 @@ import org.apache.log4j.Logger;
  * le RessourceManager en utilisant le nom de la contrainte comme clef.
  *
  * @author npiedeloup, evernat
- * @version $Id: AbstractSQLExceptionHandler.java,v 1.4 2013/10/22 12:34:28 pchretien Exp $
  */
 public abstract class AbstractSQLExceptionHandler implements SQLExceptionHandler {
 	private final Logger logger = Logger.getLogger(getClass()); //pas static, car on est sur une class abstraite

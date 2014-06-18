@@ -6,7 +6,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Identification des ressources participant à la transaction.
  *
  * @author  pchretien
- * @version $Id: KTransactionResourceId.java,v 1.3 2013/10/22 12:31:28 pchretien Exp $
  * @param <TR> Ressource transactionnelle.
  */
 public final class KTransactionResourceId<TR extends KTransactionResource> {

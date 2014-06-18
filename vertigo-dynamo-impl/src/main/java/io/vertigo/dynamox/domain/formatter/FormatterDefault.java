@@ -2,7 +2,7 @@ package io.vertigo.dynamox.domain.formatter;
 
 import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.DefinitionReference;
@@ -13,7 +13,6 @@ import io.vertigo.kernel.metamodel.DefinitionReference;
  *
  *
  * @author pchretien
- * @version $Id: FormatterDefault.java,v 1.5 2013/10/22 11:00:06 pchretien Exp $
  */
 public final class FormatterDefault extends AbstractFormatterImpl {
 	private final DefinitionReference<Formatter> booleanFormatterRef;
@@ -55,7 +54,7 @@ public final class FormatterDefault extends AbstractFormatterImpl {
 	 * @param dataType Type 
 	 * @return Formatter simple utilisé.
 	 */
-	public Formatter getFormatter(final KDataType dataType) {
+	public Formatter getFormatter(final DataType dataType) {
 		switch (dataType) {
 			case String:
 				return stringFormatterRef.get();
@@ -74,12 +73,12 @@ public final class FormatterDefault extends AbstractFormatterImpl {
 	}
 
 	/** {@inheritDoc} */
-	public String valueToString(final Object objValue, final KDataType dataType) {
+	public String valueToString(final Object objValue, final DataType dataType) {
 		return getFormatter(dataType).valueToString(objValue, dataType);
 	}
 
 	/** {@inheritDoc} */
-	public Object stringToValue(final String strValue, final KDataType dataType) throws FormatterException {
+	public Object stringToValue(final String strValue, final DataType dataType) throws FormatterException {
 		return getFormatter(dataType).stringToValue(strValue, dataType);
 	}
 }

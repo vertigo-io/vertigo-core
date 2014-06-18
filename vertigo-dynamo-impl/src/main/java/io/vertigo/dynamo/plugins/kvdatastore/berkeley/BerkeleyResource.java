@@ -13,7 +13,6 @@ import com.sleepycat.je.Transaction;
  * Permet de créer un writer et un reader géré par la transaction porteuse de la ressource.
  *
  * @author pchretien
- * @version $Id: BerkeleyResource.java,v 1.1 2013/01/02 13:38:30 pchretien Exp $
  */
 final class BerkeleyResource implements KTransactionResource {
 	private Transaction transaction;

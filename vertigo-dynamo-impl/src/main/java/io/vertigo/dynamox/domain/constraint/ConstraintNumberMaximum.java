@@ -10,7 +10,6 @@ import io.vertigo.kernel.lang.MessageText;
  * Contrainte sur la valeur maximale d'un nombre.
  * arguments = valeur maximale.
  * @author npiedeloup
- * @version $Id: ConstraintNumberMaximum.java,v 1.3 2013/10/22 12:04:44 pchretien Exp $
  */
 public final class ConstraintNumberMaximum extends AbstractConstraintImpl<Number, Number> {
 	private double maxValue;

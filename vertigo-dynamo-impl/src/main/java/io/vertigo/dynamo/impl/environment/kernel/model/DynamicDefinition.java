@@ -12,7 +12,6 @@ import java.util.Set;
  * Rappelons qu'une structure est elle-même composée de sous structure grammaticales.
  *
  * @author  pchretien
- * @version $Id: DynamicDefinition.java,v 1.2 2013/07/31 12:13:38 pchretien Exp $
  */
 public interface DynamicDefinition {
 	/** 

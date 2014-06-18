@@ -10,7 +10,6 @@ import javax.inject.Inject;
 
 /**
  * @author pchretien
- * @version $Id: SearchDynamicRegistryPlugin.java,v 1.6 2014/02/03 17:29:01 pchretien Exp $
  */
 public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin<SearchGrammar> {
 	@Inject

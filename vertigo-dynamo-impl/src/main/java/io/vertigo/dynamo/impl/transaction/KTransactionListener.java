@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
  * Réception des  événements produits lors de l'exécution des transactions.
  * 
  * @author pchretien
- * @version $Id: KTransactionListener.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 final class KTransactionListener {
 	private static final String MS = " ms)";

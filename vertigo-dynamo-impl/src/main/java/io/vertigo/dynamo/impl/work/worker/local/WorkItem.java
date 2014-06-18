@@ -12,7 +12,6 @@ import io.vertigo.kernel.lang.Assertion;
  * - il permet d'avoir une vision de l'état du travail en cours
  * 
  * @author pchretien
- * @version $Id: WorkItem.java,v 1.6 2013/11/15 15:33:20 pchretien Exp $
  */
 public final class WorkItem<WR, W> {
 	private final W work;

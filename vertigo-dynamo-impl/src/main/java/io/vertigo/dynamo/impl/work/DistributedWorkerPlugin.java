@@ -8,7 +8,6 @@ import io.vertigo.kernel.component.Plugin;
  * Gestion des Workers distribués.
  * 
  * @author npiedeloup, pchretien
- * @version $Id: DistributedWorkerPlugin.java,v 1.5 2013/11/15 15:31:59 pchretien Exp $
  */
 public interface DistributedWorkerPlugin extends Worker, Plugin {
 

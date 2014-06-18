@@ -13,7 +13,6 @@ import org.junit.Test;
  * Test du codec de compresion.
  * 
  * @author pchretien
- * $Id: CompressedSerializationCodecTest.java,v 1.4 2013/11/15 15:50:56 pchretien Exp $
  */
 public final class CompressedSerializationCodecTest extends AbstractCodecTest<Serializable, byte[]> {
 

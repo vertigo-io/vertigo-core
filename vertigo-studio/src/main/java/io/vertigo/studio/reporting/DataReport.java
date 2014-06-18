@@ -6,7 +6,6 @@ import java.util.List;
  * Résultat d'une ligne d'analyse.
  * 
  * @author tchassagnette
- * @version $Id: DataReport.java,v 1.1 2013/07/11 10:04:05 npiedeloup Exp $
  */
 public interface DataReport {
 	/**

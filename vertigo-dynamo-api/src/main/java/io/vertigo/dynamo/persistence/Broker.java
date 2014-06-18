@@ -14,7 +14,6 @@ import io.vertigo.kernel.lang.Option;
  * Les méthodes d'accès aux données ne lancent que des erreurs techniques.
  *
  * @author  pchretien
- * @version $Id: Broker.java,v 1.4 2014/01/20 17:45:43 pchretien Exp $
  */
 public interface Broker {
 	/**

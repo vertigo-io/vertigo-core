@@ -21,7 +21,6 @@ import org.junit.Test;
  * Test de l'implémentation standard.
  *
  * @author dchallas
- * @version $Id: FileManagerTest.java,v 1.3 2013/10/22 10:48:39 pchretien Exp $
  */
 public final class FileManagerTest extends AbstractTestCaseJU4 {
 

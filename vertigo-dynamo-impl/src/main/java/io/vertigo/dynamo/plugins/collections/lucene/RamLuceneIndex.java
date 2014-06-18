@@ -23,7 +23,6 @@ import org.apache.lucene.util.Version;
  * Il ne doit aussi exister qu'un seul writer.
  *
  * @author  pchretien, npiedeloup
- * @version $Id: RamLuceneIndex.java,v 1.6 2014/01/24 17:59:57 pchretien Exp $
  */
 final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifiable {
 	private static final long serialVersionUID = -8810115927887053497L;

@@ -15,7 +15,6 @@ import io.vertigo.kernel.metamodel.Prefix;
  * L'objet d'affichage peut être simple (Ex: résultat google) alors qu'il se réfère à un index plus riche.
  *  
  * @author dchallas
- * @version $Id: IndexDefinition.java,v 1.4 2014/01/20 17:48:56 pchretien Exp $
  */
 @Prefix("IDX")
 public final class IndexDefinition implements Definition {

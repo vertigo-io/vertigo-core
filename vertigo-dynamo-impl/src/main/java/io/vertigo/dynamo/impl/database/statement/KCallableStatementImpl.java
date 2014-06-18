@@ -2,7 +2,7 @@ package io.vertigo.dynamo.impl.database.statement;
 
 import io.vertigo.dynamo.database.connection.KConnection;
 import io.vertigo.dynamo.database.statement.KCallableStatement;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.impl.database.DataBaseListener;
 import io.vertigo.kernel.lang.Assertion;
 
@@ -14,7 +14,6 @@ import java.sql.SQLException;
  * Implémentation standard de la gestion des procédure stockées.
  *
  * @author pchretien
- * @version $Id: KCallableStatementImpl.java,v 1.4 2014/01/20 17:46:01 pchretien Exp $
  */
 public final class KCallableStatementImpl extends KPreparedStatementImpl implements KCallableStatement {
 	/**
@@ -73,7 +72,7 @@ public final class KCallableStatementImpl extends KPreparedStatementImpl impleme
 		Assertion.checkArgument(parameter.isOut(), "Les Getters ne peuvent se faire que sur des paramètres OUT");
 		//---------------------------------------------------------------------
 		//On récupère le type saisi en amont par la méthode register
-		final KDataType dataType = parameter.getDataType();
+		final DataType dataType = parameter.getDataType();
 		return getConnection().getDataBase().getSqlMapping().getValueForCallableStatement(getCallableStatement(), index + 1, dataType);
 	}
 

@@ -13,7 +13,6 @@ import javax.persistence.EntityManagerFactory;
  * Gestion de la base de données Hibernate.
  * 
  * @author npiedeloup
- * @version $Id: OracleDataBase.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public final class JpaDataBase implements DataBase {
 	//This Resource must be commited AFTER the KConnection ones. The release of EntityManager close the DB Connection and KConnection can't be commited anymore

@@ -23,7 +23,6 @@ import freemarker.template.TemplateModelException;
  * TemplateMethodModelEx : les params sont considérés comme des Objets.
  * 
  * @author  dchallas
- * @version $Id: TemplateMethodAnnotations.java,v 1.6 2014/02/03 17:48:13 pchretien Exp $
  */
 public final class TemplateMethodAnnotations implements TemplateMethodModelEx {
 	private final AnnotationWriter annotationWriter;

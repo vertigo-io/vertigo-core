@@ -15,7 +15,6 @@ import javax.inject.Inject;
  * Gestion des manipulations sur des scripts.
  *
  * @author pchretien
- * @version $Id: ScriptManagerImpl.java,v 1.3 2013/10/22 12:26:59 pchretien Exp $
  */
 public final class ScriptManagerImpl implements ScriptManager {
 	/**

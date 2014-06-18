@@ -11,7 +11,6 @@ import io.vertigo.studio.plugins.mda.domain.DomainUtil;
  * Génération des classes/méthodes des taches de type DAO.
  * 
  * @author pchretien
- * @version $Id: TemplateTaskAttribute.java,v 1.5 2014/01/28 18:49:55 pchretien Exp $
  */
 public final class TemplateTaskAttribute {
 	private final TaskAttribute taskAttribute;

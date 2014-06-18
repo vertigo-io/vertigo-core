@@ -18,7 +18,6 @@ import org.junit.Test;
 /**
  * 
  * @author dchallas
- * $Id: TaskManagerTest.java,v 1.7 2014/01/20 18:58:20 pchretien Exp $
  */
 public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	@Inject

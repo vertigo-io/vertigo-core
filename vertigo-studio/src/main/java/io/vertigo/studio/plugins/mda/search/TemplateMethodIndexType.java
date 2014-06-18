@@ -16,7 +16,6 @@ import freemarker.template.TemplateModelException;
  * Récuperation du type de l'index du domain.
  * 
  * @author  dchallas
- * @version $Id: TemplateMethodIndexType.java,v 1.4 2014/01/20 17:48:13 pchretien Exp $
  */
 public final class TemplateMethodIndexType implements TemplateMethodModel {
 

@@ -10,7 +10,6 @@ import java.util.List;
  * Résultat d'une analyse.
  * 
  * @author tchassagnette
- * @version $Id: Report.java,v 1.4 2014/02/27 10:27:53 pchretien Exp $
  */
 public final class Report {
 	private final List<DataReport> dataReports;

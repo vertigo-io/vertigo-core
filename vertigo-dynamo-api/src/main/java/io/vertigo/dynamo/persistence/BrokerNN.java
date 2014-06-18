@@ -10,7 +10,6 @@ import java.util.List;
  * Gestion des relations NN.
  *
  * @author  dchallas
- * @version $Id: BrokerNN.java,v 1.4 2014/01/20 17:49:32 pchretien Exp $
  */
 public interface BrokerNN {
 	/**

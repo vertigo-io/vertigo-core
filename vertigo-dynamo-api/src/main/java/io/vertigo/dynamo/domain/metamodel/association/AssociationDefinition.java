@@ -26,7 +26,6 @@ import io.vertigo.kernel.metamodel.Prefix;
  *  Pour la relation complexe XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
  *
  * @author  jcassignol, pchretien
- * @version $Id: AssociationDefinition.java,v 1.3 2013/10/22 12:31:50 pchretien Exp $
  */
 @Prefix("A")
 public abstract class AssociationDefinition implements Definition {

@@ -19,7 +19,6 @@ import org.junit.Test;
  * Test de lecture d'un xmi AutoAssociation.
  *
  * @author pchretien
- * @version $Id: EAXmiAATest.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public class EAXmiAATest {
 	private static final Logger LOGGER = Logger.getLogger(EAXmiAATest.class);

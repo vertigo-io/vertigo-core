@@ -6,7 +6,6 @@ import java.sql.SQLException;
  * Gestion des procédure stockées.
  *
  * @author pchretien
- * @version $Id: KCallableStatement.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public interface KCallableStatement extends KPreparedStatement {
 	/**

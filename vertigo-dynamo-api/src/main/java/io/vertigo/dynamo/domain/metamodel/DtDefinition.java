@@ -17,7 +17,6 @@ import java.util.Map;
  * Définition d'un type de DT.
  *
  * @author pchretien
- * @version $Id: DtDefinition.java,v 1.7 2013/10/22 12:25:18 pchretien Exp $
  */
 @Prefix("DT")
 public final class DtDefinition implements Definition {

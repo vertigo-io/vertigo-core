@@ -11,7 +11,6 @@ import io.vertigo.dynamo.persistence.StorePlugin;
 /**
  * Class abstraite des Stores de données static et immutable.
  * @author npiedeloup
- * @version $Id: AbstractStaticStorePlugin.java,v 1.4 2014/01/20 17:49:32 pchretien Exp $
  */
 public abstract class AbstractStaticStorePlugin implements StorePlugin {
 

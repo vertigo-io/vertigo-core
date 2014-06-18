@@ -17,7 +17,6 @@ import java.util.zip.Inflater;
  * Implémentation standard ThreadSafe gérant les mécanismes permettant de compresser/décompresser un format binaire (byte[]) en un binaire.
  * 
  * @author pchretien
- * @version $Id: CompressionCodec.java,v 1.7 2013/11/15 15:27:29 pchretien Exp $
  */
 public final class CompressionCodec implements Codec<byte[], byte[]>, Describable {
 	/**

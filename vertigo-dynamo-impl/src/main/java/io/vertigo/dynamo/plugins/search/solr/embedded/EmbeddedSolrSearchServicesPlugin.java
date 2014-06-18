@@ -22,7 +22,6 @@ import org.apache.solr.core.CoreContainer;
  * Gestion de la connexion au serveur Solr en mode embarqué.
  * 
  * @author pchretien
- * @version $Id: EmbeddedSolrSearchServicesPlugin.java,v 1.8 2014/01/24 18:00:03 pchretien Exp $
  */
 public final class EmbeddedSolrSearchServicesPlugin extends AbstractSolrSearchServicesPlugin {
 	/** url du serveur solr.  */

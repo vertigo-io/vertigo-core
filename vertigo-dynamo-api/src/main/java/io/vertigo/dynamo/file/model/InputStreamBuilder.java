@@ -6,7 +6,6 @@ import java.io.InputStream;
 /**
  * Builder d'inputStream pour les données d'un FileInfo.
  * @author npiedeloup
- * @version $Id: InputStreamBuilder.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public interface InputStreamBuilder {
 	/**

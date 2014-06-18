@@ -15,7 +15,6 @@ import java.io.Serializable;
  * - sa dernière date de modification
 
  * @author npiedeloup
- * @version $Id: FileInfo.java,v 1.4 2014/01/20 17:45:43 pchretien Exp $
  */
 public interface FileInfo extends Serializable {
 	/**

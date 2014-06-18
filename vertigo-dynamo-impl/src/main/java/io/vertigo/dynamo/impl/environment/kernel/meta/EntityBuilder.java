@@ -12,7 +12,6 @@ import java.util.Set;
  * Builder des entities.
  * 
  * @author pchretien
- * @version $Id: EntityBuilder.java,v 1.4 2013/10/22 12:30:49 pchretien Exp $
  */
 public final class EntityBuilder implements Builder<Entity> {
 	/**

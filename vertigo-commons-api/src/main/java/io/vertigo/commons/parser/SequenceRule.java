@@ -7,10 +7,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-
 /**
  * @author pchretien
- * @version $Id: SequenceRule.java,v 1.6 2013/10/22 12:23:44 pchretien Exp $
  */
 public final class SequenceRule implements Rule<List<?>> {
 	private final List<Rule<?>> rules;

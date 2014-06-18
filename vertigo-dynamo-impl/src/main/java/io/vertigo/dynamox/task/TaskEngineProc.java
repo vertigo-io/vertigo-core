@@ -30,7 +30,6 @@ import javax.inject.Inject;
  * Si un paramètre out ou in/out INT_SQL_ROWCOUNT est défini, il reçoit le résultat de executeUpdate.
  *
  * @author  FCONSTANTIN
- * @version $Id: TaskEngineProc.java,v 1.6 2014/01/24 17:59:38 pchretien Exp $
  */
 public class TaskEngineProc extends AbstractTaskEngineSQL<KCallableStatement> {
 

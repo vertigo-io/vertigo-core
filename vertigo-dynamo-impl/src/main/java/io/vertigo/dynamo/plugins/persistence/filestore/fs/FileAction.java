@@ -7,7 +7,6 @@ package io.vertigo.dynamo.plugins.persistence.filestore.fs;
  * Interface d'action sur un fichier.
  * 
  * @author skerdudou
- * @version $Id: FileAction.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 interface FileAction {
 

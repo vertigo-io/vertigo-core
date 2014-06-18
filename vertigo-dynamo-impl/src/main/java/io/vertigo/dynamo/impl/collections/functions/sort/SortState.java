@@ -6,7 +6,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Gestion des ordres de tri.
  *
  * @author pchretien
- * @version $Id: SortState.java,v 1.3 2013/10/22 12:25:50 pchretien Exp $
  */
 public final class SortState {
 	/** Nom de la Colonne de tri. */

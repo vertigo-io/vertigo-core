@@ -10,7 +10,6 @@ import java.io.Serializable;
  * sérialiser de façon compressée un objet en format binaire (byte[]).
  * 
  * @author pchretien
- * @version $Id: CompressedSerializationCodec.java,v 1.5 2013/11/15 15:27:29 pchretien Exp $
  */
 public final class CompressedSerializationCodec implements Codec<Serializable, byte[]> {
 	private final Codec<Serializable, byte[]> serializationCodec;

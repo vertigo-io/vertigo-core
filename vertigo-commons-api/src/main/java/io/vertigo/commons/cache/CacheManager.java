@@ -4,7 +4,6 @@ import io.vertigo.kernel.component.Manager;
 
 import java.io.Serializable;
 
-
 /**
  * Manager des caches.
  *
@@ -12,7 +11,6 @@ import java.io.Serializable;
  * Les accès aux objets mis en cache s'effectuent par une clé. (id/uri)
  *
  * @author pchretien
- * @version $Id: CacheManager.java,v 1.3 2013/10/22 10:42:32 pchretien Exp $
  */
 public interface CacheManager extends Manager {
 	/**

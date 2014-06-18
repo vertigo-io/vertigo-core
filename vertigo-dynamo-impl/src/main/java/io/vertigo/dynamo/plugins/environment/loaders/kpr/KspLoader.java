@@ -19,7 +19,6 @@ import java.nio.charset.Charset;
  * Parser d'un fichier KSP.
  *
  * @author pchretien
- * @version $Id: KspLoader.java,v 1.6 2014/01/24 17:59:38 pchretien Exp $
  */
 final class KspLoader implements Loader {
 	private static final String CHARSET = "ISO-8859-1";

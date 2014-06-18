@@ -21,7 +21,6 @@ import io.vertigo.kernel.lang.Option;
  * Un store définit les modalités du stockage 
  * alors que le broker se concentre sur la problématique des accès aux ressources.
  * @author pchretien
- * @version $Id: BrokerImpl.java,v 1.5 2014/01/20 17:46:41 pchretien Exp $
  */
 final class BrokerImpl implements Broker {
 	/** Le store est le point d'accès unique à la base (sql, xml, fichier plat...). */

@@ -10,7 +10,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Les codes sont gérés par quatre octets. 
  * {voir wikipedia http://en.wikipedia.org/wiki/Base64#Privacy-Enhanced_Mail_.28PEM.29}
  * @author  npiedeloup
- * @version $Id: Base64Codec.java,v 1.6 2013/11/15 15:27:29 pchretien Exp $
  */
 public final class Base64Codec implements Codec<byte[], String> {
 	private static final char PADDING = '=';

@@ -2,7 +2,7 @@ package io.vertigo.dynamo.impl.database.vendor.core;
 
 import io.vertigo.dynamo.database.vendor.SQLMapping;
 import io.vertigo.dynamo.domain.metamodel.DataStream;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -18,48 +18,47 @@ import java.sql.Types;
  * Cette implmentation peut être redéfinie partiellement ou totalement.
  *
  * @author pchretien
- * @version $Id: SQLMappingImpl.java,v 1.2 2014/01/20 17:46:11 pchretien Exp $
  */
 public final class SQLMappingImpl implements SQLMapping {
 	private static final String TYPE_INCONNU = "Type inconnu : ";
 
 	/** {@inheritDoc} */
-	public KDataType getDataType(final int typeSQL) {
-		final KDataType dataType;
+	public DataType getDataType(final int typeSQL) {
+		final DataType dataType;
 		switch (typeSQL) {
 			case Types.SMALLINT:
 			case Types.TINYINT:
 			case Types.INTEGER:
 			case Types.NUMERIC:
-				dataType = KDataType.Integer;
+				dataType = DataType.Integer;
 				break;
 			case Types.CHAR:
 			case Types.VARCHAR:
 			case Types.LONGVARCHAR:
-				dataType = KDataType.String;
+				dataType = DataType.String;
 				break;
 			case Types.DATE:
 			case Types.TIME:
 			case Types.TIMESTAMP:
-				dataType = KDataType.Date;
+				dataType = DataType.Date;
 				break;
 			case Types.BIGINT:
-				dataType = KDataType.Long;
+				dataType = DataType.Long;
 				break;
 			case Types.BOOLEAN:
 			case Types.BIT:
-				dataType = KDataType.Boolean;
+				dataType = DataType.Boolean;
 				break;
 			case Types.DECIMAL:
-				dataType = KDataType.BigDecimal;
+				dataType = DataType.BigDecimal;
 				break;
 			case Types.DOUBLE:
 			case Types.FLOAT:
 			case Types.REAL:
-				dataType = KDataType.Double;
+				dataType = DataType.Double;
 				break;
 			case Types.BLOB:
-				dataType = KDataType.DataStream;
+				dataType = DataType.DataStream;
 				break;
 			default:
 				throw new IllegalArgumentException("Type SQL non géré (" + typeSQL + ')');
@@ -68,7 +67,7 @@ public final class SQLMappingImpl implements SQLMapping {
 	}
 
 	/** {@inheritDoc} */
-	public int getTypeSQL(final KDataType dataType) {
+	public int getTypeSQL(final DataType dataType) {
 		switch (dataType) {
 			case Integer:
 				return Types.INTEGER;
@@ -92,7 +91,7 @@ public final class SQLMappingImpl implements SQLMapping {
 	}
 
 	/** {@inheritDoc} */
-	public void setValueOnStatement(final java.sql.PreparedStatement statement, final int index, final KDataType dataType, final Object value) throws SQLException {
+	public void setValueOnStatement(final java.sql.PreparedStatement statement, final int index, final DataType dataType, final Object value) throws SQLException {
 		if (value == null) {
 			final int typeSQL = getTypeSQL(dataType);
 			statement.setNull(index, typeSQL);
@@ -142,7 +141,7 @@ public final class SQLMappingImpl implements SQLMapping {
 	}
 
 	/** {@inheritDoc} */
-	public Object getValueForCallableStatement(final CallableStatement callableStatement, final int index, final KDataType dataType) throws SQLException {
+	public Object getValueForCallableStatement(final CallableStatement callableStatement, final int index, final DataType dataType) throws SQLException {
 		Object o;
 		switch (dataType) {
 			case Integer:
@@ -185,7 +184,7 @@ public final class SQLMappingImpl implements SQLMapping {
 	}
 
 	/** {@inheritDoc} */
-	public Object getValueForResultSet(final ResultSet rs, final int col, final KDataType dataType) throws SQLException {
+	public Object getValueForResultSet(final ResultSet rs, final int col, final DataType dataType) throws SQLException {
 		final Object value;
 		switch (dataType) {
 			case String:

@@ -23,7 +23,6 @@ import java.util.Set;
  * Rappelons qu'une structure est elle-même composée de sous structure grammaticales.
  *
  * @author  pchretien
- * @version $Id: DynamicDefinitionImpl.java,v 1.12 2013/10/22 12:29:17 pchretien Exp $
  */
 final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDefinition {
 	/** Type de l'objet. */
@@ -31,6 +30,22 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** Nom du package. */
 	private String packageName;
+	//-----
+	//-----BODY
+	//-----
+	/**
+	 * Clé de la définition.
+	 */
+	private final DynamicDefinitionKey dynamicDefinitionKey;
+	/**
+	 * Conteneur des couples (propriétés, valeur)
+	 */
+	private final Map<EntityProperty, Object> properties = new HashMap<>();
+	/**
+	 * Map des (FieldName, definitionKeyList)
+	 */
+	private final Map<String, List<DynamicDefinitionKey>> definitionKeysByFieldName = new LinkedHashMap<>();
+	private final Map<String, List<DynamicDefinition>> definitionsByFieldName = new LinkedHashMap<>();
 
 	/**
 	 * Constructeur.
@@ -68,29 +83,6 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	}
 
 	/** {@inheritDoc} */
-	public DynamicDefinitionBuilder withPackageName(final String newPackageName) {
-		this.packageName = newPackageName;
-		return this;
-	}
-
-	//-----
-	//-----BODY
-	//-----
-	/**
-	 * Clé de la définition.
-	 */
-	private final DynamicDefinitionKey dynamicDefinitionKey;
-	/**
-	 * Conteneur des couples (propriétés, valeur)
-	 */
-	private final Map<EntityProperty, Object> properties = new HashMap<>();
-	/**
-	 * Map des (FieldName, definitionKeyList)
-	 */
-	private final Map<String, List<DynamicDefinitionKey>> definitionKeysByFieldName = new LinkedHashMap<>();
-	private final Map<String, List<DynamicDefinition>> definitionsByFieldName = new LinkedHashMap<>();
-
-	/** {@inheritDoc} */
 	public final DynamicDefinitionKey getDefinitionKey() {
 		return dynamicDefinitionKey;
 	}
@@ -111,29 +103,26 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return Collections.unmodifiableSet(properties.keySet());
 	}
 
-	public final DynamicDefinitionBuilder putPropertyValue(final EntityProperty property, final Object value) {
-		property.getDataType().checkValue(value);
-		properties.put(property, value);
-		return this;
-	}
-
 	/** {@inheritDoc} */
 	public final List<DynamicDefinitionKey> getDefinitionKeys(final String fieldName) {
 		return obtainDefinitionKeys(fieldName);
 	}
 
-	private List<DynamicDefinitionKey> obtainDefinitionKeys(final String fieldName) {
-		Assertion.checkNotNull(fieldName);
-		// ------------------------------------------------------------------
-		List<DynamicDefinitionKey> list = definitionKeysByFieldName.get(fieldName);
-		// ------------------------------------------------------------------
-		if (list == null) {
-			list = new ArrayList<>();
-			definitionKeysByFieldName.put(fieldName, list);
-		}
-		return list;
+	/** {@inheritDoc} */
+	public final List<DynamicDefinition> getChildDefinitions(final String fieldName) {
+		return obtainCompositeList(fieldName);
 	}
 
+	/** {@inheritDoc} */
+	public final List<DynamicDefinition> getAllChildDefinitions() {
+		final List<DynamicDefinition> dynamicDefinitions = new ArrayList<>();
+		for (final List<DynamicDefinition> dynamicDefinitionList : definitionsByFieldName.values()) {
+			dynamicDefinitions.addAll(dynamicDefinitionList);
+		}
+		return dynamicDefinitions;
+	}
+
+	//-------
 	/** {@inheritDoc} */
 	public final DynamicDefinitionKey getDefinitionKey(final String fieldName) {
 		Assertion.checkArgument(definitionKeysByFieldName.containsKey(fieldName), "Aucune définition déclarée pour ''{0}'' sur ''{1}'' ", fieldName, getDefinitionKey().getName());
@@ -154,10 +143,35 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return dynamicDefinitionKeys;
 	}
 
-	public final void addChildDefinition(final String fieldName, final DynamicDefinition definition) {
+	/** {@inheritDoc} */
+	public DynamicDefinitionBuilder withPackageName(final String newPackageName) {
+		this.packageName = newPackageName;
+		return this;
+	}
+
+	public final DynamicDefinitionBuilder withPropertyValue(final EntityProperty property, final Object value) {
+		property.getPrimitiveType().checkValue(value);
+		properties.put(property, value);
+		return this;
+	}
+
+	private List<DynamicDefinitionKey> obtainDefinitionKeys(final String fieldName) {
+		Assertion.checkNotNull(fieldName);
+		// ------------------------------------------------------------------
+		List<DynamicDefinitionKey> list = definitionKeysByFieldName.get(fieldName);
+		// ------------------------------------------------------------------
+		if (list == null) {
+			list = new ArrayList<>();
+			definitionKeysByFieldName.put(fieldName, list);
+		}
+		return list;
+	}
+
+	public final DynamicDefinitionBuilder withChildDefinition(final String fieldName, final DynamicDefinition definition) {
 		Assertion.checkNotNull(definition);
 		// ------------------------------------------------------------------
 		obtainCompositeList(fieldName).add(definition);
+		return this;
 	}
 
 	private void doAddDefinition(final String fieldName, final DynamicDefinitionKey definitionKey) {
@@ -166,15 +180,16 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		obtainDefinitionKeys(fieldName).add(definitionKey);
 	}
 
-	public final void addDefinitionList(final String fieldName, final List<DynamicDefinitionKey> definitionKeyList) {
-		Assertion.checkNotNull(definitionKeyList);
+	public final DynamicDefinitionBuilder withDefinitions(final String fieldName, final List<DynamicDefinitionKey> definitionKeys) {
+		Assertion.checkNotNull(definitionKeys);
 		Assertion.checkArgument(obtainDefinitionKeys(fieldName).isEmpty(), "syntaxe interdite");
 		// On vérifie que la liste est vide pour éviter les syntaxe avec multi
 		// déclarations
 		// ----------------------------------------------------------------------
-		for (final DynamicDefinitionKey definitionKey : definitionKeyList) {
+		for (final DynamicDefinitionKey definitionKey : definitionKeys) {
 			doAddDefinition(fieldName, definitionKey);
 		}
+		return this;
 	}
 
 	private List<DynamicDefinition> obtainCompositeList(final String fieldName) {
@@ -189,24 +204,10 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return list;
 	}
 
-	/** {@inheritDoc} */
-	public final List<DynamicDefinition> getChildDefinitions(final String fieldName) {
-		return obtainCompositeList(fieldName);
-	}
-
-	/** {@inheritDoc} */
-	public final List<DynamicDefinition> getAllChildDefinitions() {
-		final List<DynamicDefinition> dynamicDefinitions = new ArrayList<>();
-		for (final List<DynamicDefinition> dynamicDefinitionList : definitionsByFieldName.values()) {
-			dynamicDefinitions.addAll(dynamicDefinitionList);
-		}
-		return dynamicDefinitions;
-	}
-
 	public final DynamicDefinitionBuilder withBody(final DynamicDefinition dynamicDefinition) {
 		// 1. maj des EntityProperty
 		for (final EntityProperty property : dynamicDefinition.getProperties()) {
-			putPropertyValue(property, dynamicDefinition.getPropertyValue(property));
+			withPropertyValue(property, dynamicDefinition.getPropertyValue(property));
 		}
 
 		// 2. maj fieldNameDefinitionKeyListMap
@@ -223,7 +224,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return this;
 	}
 
-	public DynamicDefinitionBuilder addDefinition(final String fieldName, final DynamicDefinitionKey definitionKey) {
+	public DynamicDefinitionBuilder withDefinition(final String fieldName, final DynamicDefinitionKey definitionKey) {
 		// On vérifie que la liste est vide pour éviter les syntaxe avec multi
 		// déclarations
 		Assertion.checkArgument(obtainDefinitionKeys(fieldName).isEmpty(), "syntaxe interdite");
@@ -248,7 +249,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 		// 1.1.3 on vérifie les types des propriétés déclarées
 		for (final EntityProperty prop : propertySet) {
-			prop.getDataType().checkValue(getPropertyValue(prop));
+			prop.getPrimitiveType().checkValue(getPropertyValue(prop));
 		}
 
 		// 1.2 on vérifie les définitions composites (sous définitions).

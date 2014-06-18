@@ -10,7 +10,6 @@ import java.util.Properties;
  * Configuration du generateur de fichiers. 
  * 
  * @author dchallas
- * @version $Id: AbstractConfiguration.java,v 1.4 2013/10/22 12:32:35 pchretien Exp $
  */
 public class AbstractConfiguration implements Configuration {
 	/**

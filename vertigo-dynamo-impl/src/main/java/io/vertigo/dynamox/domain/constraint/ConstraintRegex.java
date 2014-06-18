@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
  * Exemple de contrainte utilisant une expression régulière.
  *
  * @author  pchretien
- * @version $Id: ConstraintRegex.java,v 1.2 2013/10/22 12:04:44 pchretien Exp $
  */
 public final class ConstraintRegex extends AbstractConstraintImpl<String, String> {
 	private Pattern pattern;

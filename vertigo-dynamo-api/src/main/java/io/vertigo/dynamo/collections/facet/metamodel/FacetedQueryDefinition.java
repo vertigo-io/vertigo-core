@@ -16,7 +16,6 @@ import java.util.Map;
  * les requêtes sont facettées.
  *
  * @author pchretien 
- * @version $Id: FacetedQueryDefinition.java,v 1.3 2013/10/22 12:24:39 pchretien Exp $
  */
 @Prefix("QRY")
 public final class FacetedQueryDefinition implements Definition {

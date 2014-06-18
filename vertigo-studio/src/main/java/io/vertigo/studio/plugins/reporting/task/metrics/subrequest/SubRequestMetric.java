@@ -6,7 +6,6 @@ import io.vertigo.studio.reporting.Metric;
  * Composant d'affichage des résultats du plugin SsRequeteCountPlugin.
  * 
  * @author tchassagnette
- * @version $Id: SubRequestMetric.java,v 1.1 2013/07/11 10:04:05 npiedeloup Exp $
  */
 public final class SubRequestMetric implements Metric {
 	private final int subRequestCount;

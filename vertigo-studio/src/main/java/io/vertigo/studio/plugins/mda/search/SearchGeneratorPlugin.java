@@ -15,7 +15,6 @@ import java.util.Properties;
  * Génération des objets relatifs au module Search. 
  *  
  * @author dchallas
- * @version $Id: SearchGeneratorPlugin.java,v 1.6 2014/02/27 10:30:06 pchretien Exp $
  */
 public final class SearchGeneratorPlugin extends AbstractGeneratorPlugin<SearchConfiguration> {
 	/** {@inheritDoc}  */

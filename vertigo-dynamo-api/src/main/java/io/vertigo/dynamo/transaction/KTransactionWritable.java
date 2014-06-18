@@ -12,7 +12,6 @@ package io.vertigo.dynamo.transaction;
  * Une transaction peut posséder (ou être) une transaction imbriquée.
  *
  * @author  pchretien
- * @version $Id: KTransactionWritable.java,v 1.2 2013/07/29 11:45:50 pchretien Exp $
  */
 public interface KTransactionWritable extends KTransaction, AutoCloseable {
 	/**

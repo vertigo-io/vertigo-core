@@ -1,14 +1,13 @@
 package io.vertigo.studio.plugins.mda.domain;
 
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
 
 /**
  * Helper.
  * 
  * @author emangin
- * @version $Id: DomainUtil.java,v 1.2 2014/01/20 17:47:58 pchretien Exp $
  */
 public final class DomainUtil {
 	/**
@@ -25,7 +24,7 @@ public final class DomainUtil {
 	 * @return String
 	 */
 	public static String buildJavaType(final Domain domain) {
-		final KDataType dataType = domain.getDataType();
+		final DataType dataType = domain.getDataType();
 		if (dataType.isPrimitive()) {
 			String javaType = dataType.getJavaClass().getName();
 

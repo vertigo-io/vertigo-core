@@ -11,7 +11,6 @@ import java.util.List;
  * - soit par un champ et une liste de clés de définition.
  * 
  * @author pchretien
- * @version $Id: XDefinitionEntry.java,v 1.4 2013/10/22 10:43:58 pchretien Exp $
  */
 public final class XDefinitionEntry {
 	/**

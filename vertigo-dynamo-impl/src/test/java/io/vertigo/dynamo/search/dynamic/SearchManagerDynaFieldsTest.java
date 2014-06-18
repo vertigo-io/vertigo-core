@@ -10,7 +10,6 @@ import java.util.Map;
 
 /**
  * @author  npiedeloup
- * @version $Id: SearchManagerDynaFieldsTest.java,v 1.2 2014/01/20 17:48:43 pchretien Exp $
  */
 public final class SearchManagerDynaFieldsTest extends AbstractSearchManagerTest {
 	//Index

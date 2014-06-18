@@ -11,7 +11,6 @@ import java.io.Serializable;
 /**
  * Configuration des données de référence.
  * @author  pchretien
- * @version $Id: MasterDataConfiguration.java,v 1.3 2014/01/20 17:45:43 pchretien Exp $
  */
 public interface MasterDataConfiguration {
 	/**

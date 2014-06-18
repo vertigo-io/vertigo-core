@@ -21,7 +21,6 @@ import java.util.List;
 /**
  * règle de déclaration d'une champ référenéant une listes de clés.
  * @author pchretien
- * @version $Id: XDefinitionEntryRule.java,v 1.6 2014/01/24 17:59:38 pchretien Exp $
  */
 public final class XDefinitionEntryRule extends AbstractRule<XDefinitionEntry, List<?>> {
 	private final List<String> fieldNames;

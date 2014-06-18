@@ -5,7 +5,6 @@ import io.vertigo.kernel.lang.Assertion;
 /**
  * Définition d'une association NN.
  * @author  jcassignol, pchretien
- * @version $Id: AssociationNNDefinition.java,v 1.3 2013/10/22 12:31:50 pchretien Exp $
  */
 public final class AssociationNNDefinition extends AssociationDefinition {
 	private final String tableName;

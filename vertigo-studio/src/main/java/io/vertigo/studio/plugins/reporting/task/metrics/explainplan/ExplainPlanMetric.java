@@ -10,7 +10,6 @@ import java.io.StringWriter;
  * Composant d'afficahge du résultat du Plugin d'exécution de l'explain plan.
  * 
  * @author tchassagnette
- * @version $Id: ExplainPlanMetric.java,v 1.3 2013/10/22 10:47:33 pchretien Exp $
  */
 public final class ExplainPlanMetric implements Metric {
 	private final String explainPlan;

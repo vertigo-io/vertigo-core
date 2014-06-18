@@ -5,7 +5,6 @@ import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRep
 /**
  * Chargement de l'environnement.
  * @author pchretien
- * @version $Id: Loader.java,v 1.2 2013/07/29 11:50:25 pchretien Exp $
  */
 public interface Loader {
 

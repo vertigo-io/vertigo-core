@@ -6,7 +6,6 @@ import io.vertigo.kernel.lang.MessageText;
  * Contrainte pour gérer la longueur des chaines de caractères.
  *
  * @author  plepaisant
- * @version $Id: ConstraintStringLength.java,v 1.2 2013/10/22 12:04:44 pchretien Exp $
  */
 public final class ConstraintStringLength extends AbstractConstraintLength<String> {
 	public ConstraintStringLength(final String name) {

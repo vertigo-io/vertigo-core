@@ -29,7 +29,6 @@ import org.junit.Test;
 /**
  * 
  * @author npiedeloup
- * $Id: TaskEngineSelectDynamicTest.java,v 1.5 2014/01/20 18:59:50 pchretien Exp $
  */
 public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Inject

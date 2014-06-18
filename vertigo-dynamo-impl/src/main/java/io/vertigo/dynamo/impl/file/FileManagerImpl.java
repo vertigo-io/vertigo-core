@@ -20,7 +20,6 @@ import javax.activation.MimetypesFileTypeMap;
 * Implémentation du gestionnaire de la définition des fichiers.
 * 
 * @author pchretien
-* @version $Id: FileManagerImpl.java,v 1.3 2013/10/22 12:33:26 pchretien Exp $
 */
 public final class FileManagerImpl implements FileManager {
 	/** {@inheritDoc} */

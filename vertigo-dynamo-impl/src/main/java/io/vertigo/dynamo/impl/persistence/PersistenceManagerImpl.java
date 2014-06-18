@@ -20,7 +20,6 @@ import javax.inject.Inject;
 * Implémentation standard du gestionnaire des données et des accès aux données.
 *
 * @author pchretien
-* @version $Id: PersistenceManagerImpl.java,v 1.5 2014/01/24 17:59:38 pchretien Exp $
 */
 public final class PersistenceManagerImpl implements PersistenceManager, Activeable {
 	@Inject

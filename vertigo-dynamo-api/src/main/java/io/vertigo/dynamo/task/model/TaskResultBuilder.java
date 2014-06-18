@@ -7,7 +7,6 @@ import io.vertigo.kernel.lang.Builder;
 /**
  * Résultat de l'execution du Task.
  * @author dchallas
- * @version $Id: TaskResultBuilder.java,v 1.3 2013/10/22 12:31:13 pchretien Exp $
  */
 final class TaskResultBuilder implements Builder<TaskResult> {
 	/**

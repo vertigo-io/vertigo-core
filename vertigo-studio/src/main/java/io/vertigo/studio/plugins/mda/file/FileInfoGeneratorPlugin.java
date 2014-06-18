@@ -16,7 +16,6 @@ import java.util.Properties;
  * Génération des objets relatifs au module File. 
  *  
  * @author npiedeloup
- * @version $Id: FileInfoGeneratorPlugin.java,v 1.5 2014/02/27 10:29:55 pchretien Exp $
  */
 public final class FileInfoGeneratorPlugin extends AbstractGeneratorPlugin<FileInfoConfiguration> {
 	/** {@inheritDoc} */

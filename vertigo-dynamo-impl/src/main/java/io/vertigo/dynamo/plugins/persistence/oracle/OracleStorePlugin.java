@@ -16,7 +16,6 @@ import javax.inject.Named;
  * Dans le cas de Oracle, la gestion des clés est assurée par des séquences.
  *
  * @author pchretien
- * @version $Id: OracleStorePlugin.java,v 1.5 2014/01/20 18:57:19 pchretien Exp $
  */
 public final class OracleStorePlugin extends AbstractSQLStorePlugin {
 	private final String sequencePrefix;

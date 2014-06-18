@@ -1,6 +1,6 @@
 package io.vertigo.dynamo.database.vendor;
 
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -11,7 +11,6 @@ import java.sql.SQLException;
  * Interface centralisant les mappings à la BDD.
  *
  * @author pchretien
- * @version $Id: SQLMapping.java,v 1.2 2014/01/20 17:45:43 pchretien Exp $
  */
 public interface SQLMapping {
 	/**
@@ -20,7 +19,7 @@ public interface SQLMapping {
 	 * @param typeSQL Type SQL
 	 * @return Type Vertigo correspondant
 	 */
-	KDataType getDataType(int typeSQL);
+	DataType getDataType(int typeSQL);
 
 	/**
 	 * Retourne le type SQL correspondant à un type.
@@ -28,7 +27,7 @@ public interface SQLMapping {
 	 * @param dataType Type primitif
 	 * @return Type SQL correspondant à un type
 	 */
-	int getTypeSQL(KDataType dataType);
+	int getTypeSQL(DataType dataType);
 
 	/**
 	 * Affecte les valeurs sur un statement.
@@ -39,7 +38,7 @@ public interface SQLMapping {
 	 * @param value Valeur à affecter sur le statement à l'index indiqué
 	 * @throws SQLException Exception sql
 	 */
-	void setValueOnStatement(PreparedStatement statement, int index, KDataType dataType, Object value) throws SQLException;
+	void setValueOnStatement(PreparedStatement statement, int index, DataType dataType, Object value) throws SQLException;
 
 	/**
 	 * Retourne la valeur typée vertigo d'un callablestatement.
@@ -50,7 +49,7 @@ public interface SQLMapping {
 	 * @return Valeur obtenue par le CallableStatement à l'indexe indiqué
 	 * @throws SQLException Exception sql
 	 */
-	Object getValueForCallableStatement(CallableStatement callableStatement, int index, KDataType dataType) throws SQLException;
+	Object getValueForCallableStatement(CallableStatement callableStatement, int index, DataType dataType) throws SQLException;
 
 	/**
 	 * Retourne la valeur typée vertigo d'un resultSet.
@@ -61,5 +60,5 @@ public interface SQLMapping {
 	 * @return Valeur typée d'un resultSet
 	 * @throws SQLException Exception sql
 	 */
-	Object getValueForResultSet(ResultSet rs, int col, KDataType dataType) throws SQLException;
+	Object getValueForResultSet(ResultSet rs, int col, DataType dataType) throws SQLException;
 }

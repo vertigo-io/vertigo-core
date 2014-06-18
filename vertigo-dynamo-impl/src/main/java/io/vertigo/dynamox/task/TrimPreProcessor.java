@@ -5,7 +5,6 @@ import io.vertigo.kernel.lang.Assertion;
 /**
  * Ce processor permet de supprimer les retours chariots en trop dans les requêtes sql dynamiques.
  * @author npiedeloup
- * @version $Id: TrimPreProcessor.java,v 1.1 2014/01/15 09:44:53 npiedeloup Exp $
  */
 final class TrimPreProcessor {
 	private final String beginSeparator;

@@ -7,7 +7,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Objet utilisé par FreeMarker.
  * 
  * @author pchretien
- * @version $Id: TemplateAssociation.java,v 1.4 2014/01/20 17:47:58 pchretien Exp $
  */
 public final class TemplateAssociation {
 	private final AssociationNode associationNode;

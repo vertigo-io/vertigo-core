@@ -21,7 +21,6 @@ import java.util.Map;
  * Les définitions doivent respecter une métagrammaire définie préalablement dans DynamicNameSpace.
  *
  * @author  pchretien
- * @version $Id: DynamicDefinitionRepository.java,v 1.11 2013/10/22 12:29:17 pchretien Exp $
  */
 public final class DynamicDefinitionRepository {
 

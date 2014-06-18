@@ -31,7 +31,6 @@ import org.junit.Test;
 
 /**
  * @author  npiedeloup
- * @version $Id: SearchManagerMultiIndexTest.java,v 1.5 2014/01/28 18:53:45 pchretien Exp $
  */
 public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 	//Index

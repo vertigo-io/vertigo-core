@@ -23,7 +23,6 @@ import java.util.List;
  * Implémentation standard de CodecManager.
  *
  * @author pchretien
- * @version $Id: CodecManagerImpl.java,v 1.7 2013/11/15 15:27:29 pchretien Exp $
  */
 public final class CodecManagerImpl implements CodecManager, Describable {
 	/** Codage/décodage HTML de String > String. */

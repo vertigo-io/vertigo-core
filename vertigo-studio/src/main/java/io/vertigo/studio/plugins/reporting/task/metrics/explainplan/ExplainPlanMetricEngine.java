@@ -27,7 +27,6 @@ import java.sql.SQLException;
  * Plugin qui va lancer la commande de calcul puis d'affichage du plan d'exécution.
  * 
  * @author tchassagnette
- * @version $Id: ExplainPlanMetricEngine.java,v 1.9 2014/02/27 10:44:12 pchretien Exp $
  */
 public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinition, ExplainPlanMetric> {
 	private int sequence;

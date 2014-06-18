@@ -16,7 +16,6 @@ import java.util.Map;
 /**
  * Configuration des listes de référence.
  * @author pchretien
- * @version $Id: MasterDataConfigurationImpl.java,v 1.7 2014/01/20 17:46:41 pchretien Exp $
  */
 final class MasterDataConfigurationImpl implements MasterDataConfiguration {
 

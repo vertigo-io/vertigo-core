@@ -11,7 +11,6 @@ import java.util.List;
  * Permet de définir les types de séparateurs utilisés dans les fichiers.
  * 
  * @author  pchretien
- * @version $Id: SeparatorType.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public enum SeparatorType {
 

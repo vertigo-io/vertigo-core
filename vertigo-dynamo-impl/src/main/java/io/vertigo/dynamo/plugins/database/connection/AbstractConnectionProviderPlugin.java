@@ -16,7 +16,6 @@ import java.util.List;
  * Classe de base des fournisseurs de connexions dynamo.
  *
  * @author pchretien
- * @version $Id: AbstractConnectionProviderPlugin.java,v 1.5 2013/11/15 14:29:55 pchretien Exp $
  */
 public abstract class AbstractConnectionProviderPlugin implements ConnectionProviderPlugin, Describable {
 	/**

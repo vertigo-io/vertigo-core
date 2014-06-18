@@ -9,7 +9,6 @@ import io.vertigo.kernel.util.StringUtil;
  * Objet utilisé par FreeMarker.
  * 
  * @author pchretien
- * @version $Id: TemplateDtField.java,v 1.4 2014/01/20 17:47:58 pchretien Exp $
  */
 public final class TemplateDtField {
 	private final DtDefinition dtDefinition;

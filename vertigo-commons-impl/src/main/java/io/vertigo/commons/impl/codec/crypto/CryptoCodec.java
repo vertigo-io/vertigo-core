@@ -18,7 +18,6 @@ import javax.crypto.KeyGenerator;
  * - Triple DES.
  * 
  * @author  alauthier, pchretien
- * @version $Id: CryptoCodec.java,v 1.7 2013/11/15 15:27:29 pchretien Exp $
  */
 public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 	/**

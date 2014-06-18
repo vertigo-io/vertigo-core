@@ -13,7 +13,6 @@ import javax.persistence.EntityTransaction;
  * des fichiers...
  *
  * @author pchretien
- * @version $Id: JpaResource.java,v 1.1 2014/01/31 17:21:08 npiedeloup Exp $
  */
 public class JpaResource implements KTransactionResource {
 	private final EntityManager em;

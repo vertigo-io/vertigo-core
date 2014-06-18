@@ -8,7 +8,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
  * Permet de créer des types de sortie dynamiques.
  * 
  * @author  pchretien
- * @version $Id: ResultMetaData.java,v 1.2 2014/01/20 17:46:01 pchretien Exp $
  */
 interface ResultMetaData {
 	DtObject createDtObject();

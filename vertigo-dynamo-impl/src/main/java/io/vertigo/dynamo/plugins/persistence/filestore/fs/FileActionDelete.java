@@ -14,7 +14,6 @@ import org.apache.log4j.Logger;
  * Classe de gestion de la sauvegarde d'un fichier.
  * 
  * @author skerdudou
- * @version $Id: FileActionDelete.java,v 1.5 2013/10/22 12:26:41 pchretien Exp $
  */
 final class FileActionDelete implements FileAction {
 	private static final Logger LOG = Logger.getLogger(FileActionDelete.class.getName());

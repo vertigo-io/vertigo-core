@@ -4,7 +4,7 @@ import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
@@ -17,7 +17,7 @@ public class DomainManagerTest {
 	@Test
 	public void createDtDefinitionTest() {
 		final Formatter formatter = new FormatterDefault("FMT_DEF");
-		final Domain domain = new Domain("DO_NAME", KDataType.String, formatter);
+		final Domain domain = new Domain("DO_NAME", DataType.String, formatter);
 
 		//@formatter:off
 		final DtDefinition dtDefinition = new DtDefinitionBuilder("DT_MOVIE")

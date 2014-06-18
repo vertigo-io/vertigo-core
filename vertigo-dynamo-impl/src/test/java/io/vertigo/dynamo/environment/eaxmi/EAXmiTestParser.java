@@ -11,7 +11,6 @@ import org.junit.Test;
  * Test de lecture d'un OOM.
  *
  * @author pchretien
- * @version $Id: TestParserOOM.java,v 1.3 2014/01/20 17:51:47 pchretien Exp $
  */
 public class EAXmiTestParser extends AbstractTestCaseJU4 {
 	@Override

@@ -7,7 +7,6 @@ import java.io.PrintStream;
  * Résultat de la génération.
  *
  * @author pchretien
- * @version $Id: Result.java,v 1.1 2013/07/11 10:04:05 npiedeloup Exp $
  */
 public interface Result {
 	/**

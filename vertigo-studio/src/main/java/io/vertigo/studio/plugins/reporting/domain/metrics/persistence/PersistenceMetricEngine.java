@@ -9,7 +9,6 @@ import io.vertigo.studio.reporting.MetricEngine;
  * Vérifier si le DT est persistant.
  *
  * @author pchretien
- * @version $Id: PersistenceMetricEngine.java,v 1.5 2014/01/28 18:49:55 pchretien Exp $
  */
 public final class PersistenceMetricEngine implements MetricEngine<DtDefinition, PersitenceMetric> {
 	private final PersistenceManager persistenceManager;

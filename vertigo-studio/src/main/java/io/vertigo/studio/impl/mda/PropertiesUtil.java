@@ -15,7 +15,6 @@ import java.util.Properties;
  * Helper de lecture d'un fichier de propriétés.
  * 
  * @author dchallas 
- * @version $Id: PropertiesUtil.java,v 1.8 2013/12/04 13:34:50 pchretien Exp $
  */
 public final class PropertiesUtil {
 

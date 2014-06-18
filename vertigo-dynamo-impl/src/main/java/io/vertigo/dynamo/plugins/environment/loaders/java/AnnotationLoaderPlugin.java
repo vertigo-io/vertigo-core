@@ -33,7 +33,6 @@ import javax.inject.Named;
  * Lecture des annotations présentes sur les objets métier.
  *
  * @author pchretien
- * @version $Id: AnnotationLoaderPlugin.java,v 1.9 2014/01/20 17:46:41 pchretien Exp $
  */
 public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);
@@ -113,7 +112,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		final String urn = DT_DEFINITION_PREFIX + SEPARATOR + StringUtil.camelToConstCase(simpleName);
 
 		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelRepository.createDynamicDefinitionBuilder(urn, dtMetaDefinition, packageName)//
-				.putPropertyValue(KspProperty.PERSISTENT, dtDefinitionAnnotation.persistent());
+				.withPropertyValue(KspProperty.PERSISTENT, dtDefinitionAnnotation.persistent());
 
 		// Le tri des champs et des méthodes par ordre alphabétique est important car classe.getMethods() retourne
 		// un ordre relativement aléatoire et la lecture des annotations peut donc changer l'ordre
@@ -150,21 +149,21 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 				final DynamicDefinition associationDefinition = dynamicModelRepository.createDynamicDefinitionBuilder(association.name(), associationMetaDefinition, packageName)//
 						// associationDefinition.
 						//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
-						.putPropertyValue(KspProperty.MULTIPLICITY_A, association.primaryMultiplicity())//
-						.putPropertyValue(KspProperty.MULTIPLICITY_B, association.foreignMultiplicity())//
+						.withPropertyValue(KspProperty.MULTIPLICITY_A, association.primaryMultiplicity())//
+						.withPropertyValue(KspProperty.MULTIPLICITY_B, association.foreignMultiplicity())//
 						// navigabilités
-						.putPropertyValue(KspProperty.NAVIGABILITY_A, association.primaryIsNavigable())//
-						.putPropertyValue(KspProperty.NAVIGABILITY_B, association.foreignIsNavigable())//
+						.withPropertyValue(KspProperty.NAVIGABILITY_A, association.primaryIsNavigable())//
+						.withPropertyValue(KspProperty.NAVIGABILITY_B, association.foreignIsNavigable())//
 						//Roles	
-						.putPropertyValue(KspProperty.ROLE_A, association.primaryRole())//
-						.putPropertyValue(KspProperty.LABEL_A, association.primaryLabel())//
-						.putPropertyValue(KspProperty.ROLE_B, association.foreignRole())//
-						.putPropertyValue(KspProperty.LABEL_B, association.foreignRole())//
+						.withPropertyValue(KspProperty.ROLE_A, association.primaryRole())//
+						.withPropertyValue(KspProperty.LABEL_A, association.primaryLabel())//
+						.withPropertyValue(KspProperty.ROLE_B, association.foreignRole())//
+						.withPropertyValue(KspProperty.LABEL_B, association.foreignRole())//
 						//---
-						.addDefinition("dtDefinitionA", primaryDtDefinitionKey)//
-						.addDefinition("dtDefinitionB", foreignDtDefinitionKey)//
+						.withDefinition("dtDefinitionA", primaryDtDefinitionKey)//
+						.withDefinition("dtDefinitionB", foreignDtDefinitionKey)//
 						//---
-						.putPropertyValue(KspProperty.FK_FIELD_NAME, association.fkFieldName())//
+						.withPropertyValue(KspProperty.FK_FIELD_NAME, association.fkFieldName())//
 						.build();
 
 				if (!dynamicModelRepository.containsDefinitionKey(associationDefinition.getDefinitionKey())) {
@@ -180,22 +179,22 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 				final DynamicDefinitionKey dtDefinitionBKey = new DynamicDefinitionKey(association.dtDefinitionB());
 
 				final DynamicDefinition associationDefinition = dynamicModelRepository.createDynamicDefinitionBuilder(association.name(), associationNNMetaDefinition, packageName)//
-				.putPropertyValue(KspProperty.TABLE_NAME, association.tableName())//
+				.withPropertyValue(KspProperty.TABLE_NAME, association.tableName())//
 
 				// associationDefinition.
 				//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
 
 				// navigabilités
-				.putPropertyValue(KspProperty.NAVIGABILITY_A, association.navigabilityA())//
-				.putPropertyValue(KspProperty.NAVIGABILITY_B, association.navigabilityB())//
+				.withPropertyValue(KspProperty.NAVIGABILITY_A, association.navigabilityA())//
+				.withPropertyValue(KspProperty.NAVIGABILITY_B, association.navigabilityB())//
 
-				.putPropertyValue(KspProperty.ROLE_A, association.roleA())//
-				.putPropertyValue(KspProperty.LABEL_A, association.labelA())//
-				.putPropertyValue(KspProperty.ROLE_B, association.roleB())//
-				.putPropertyValue(KspProperty.LABEL_B, association.labelB())//
+				.withPropertyValue(KspProperty.ROLE_A, association.roleA())//
+				.withPropertyValue(KspProperty.LABEL_A, association.labelA())//
+				.withPropertyValue(KspProperty.ROLE_B, association.roleB())//
+				.withPropertyValue(KspProperty.LABEL_B, association.labelB())//
 
-				.addDefinition("dtDefinitionA", dtDefinitionAKey)//
-				.addDefinition("dtDefinitionB", dtDefinitionBKey)//
+				.withDefinition("dtDefinitionA", dtDefinitionAKey)//
+				.withDefinition("dtDefinitionB", dtDefinitionBKey)//
 				.build();
 
 				if (!dynamicModelRepository.containsDefinitionKey(associationDefinition.getDefinitionKey())) {
@@ -234,22 +233,22 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		final FieldType type = FieldType.valueOf(field.type());
 		final DynamicDefinitionKey fieldDomainKey = new DynamicDefinitionKey(field.domain());
 		final DynamicDefinition dtField = dynamicModelrepository.createDynamicDefinitionBuilder(fieldName, dtFieldMetaDefinition, null)//
-				.addDefinition("domain", fieldDomainKey)//
-				.putPropertyValue(KspProperty.LABEL, field.label())//
-				.putPropertyValue(KspProperty.NOT_NULL, field.notNull())//
-				.putPropertyValue(KspProperty.PERSISTENT, field.persistent())//
+				.withDefinition("domain", fieldDomainKey)//
+				.withPropertyValue(KspProperty.LABEL, field.label())//
+				.withPropertyValue(KspProperty.NOT_NULL, field.notNull())//
+				.withPropertyValue(KspProperty.PERSISTENT, field.persistent())//
 				.build();
 
 		switch (type) {
 			case PRIMARY_KEY:
-				dtDefinition.addChildDefinition(DomainGrammar.PRIMARY_KEY, dtField);
+				dtDefinition.withChildDefinition(DomainGrammar.PRIMARY_KEY, dtField);
 				break;
 			case DATA:
-				dtDefinition.addChildDefinition("field", dtField);
+				dtDefinition.withChildDefinition("field", dtField);
 				break;
 			case COMPUTED:
 				//Valeurs renseignées automatiquement parce que l'on est dans le cas d'un champ calculé
-				dtDefinition.addChildDefinition("computed", dtField);
+				dtDefinition.withChildDefinition("computed", dtField);
 				break;
 			case FOREIGN_KEY:
 				//on ne fait rien puisque le champ est défini par une association.

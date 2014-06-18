@@ -1,7 +1,7 @@
 package io.vertigo.dynamox.domain.formatter;
 
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.util.StringUtil;
@@ -18,7 +18,6 @@ import java.util.StringTokenizer;
  * Exemple 2 d'arguments si les ressources sont externalisées : "TXT_OUI ; TXT_NON"
  *
  * @author pchretien
- * @version $Id: FormatterBoolean.java,v 1.3 2013/10/22 11:00:06 pchretien Exp $
  */
 public final class FormatterBoolean extends AbstractFormatterImpl {
 	/**
@@ -64,15 +63,15 @@ public final class FormatterBoolean extends AbstractFormatterImpl {
 	}
 
 	/** {@inheritDoc} */
-	public String valueToString(final Object objValue, final KDataType dataType) {
-		Assertion.checkArgument(dataType == KDataType.Boolean, "Formatter ne s'applique qu'aux booléens");
+	public String valueToString(final Object objValue, final DataType dataType) {
+		Assertion.checkArgument(dataType == DataType.Boolean, "Formatter ne s'applique qu'aux booléens");
 		//----------------------------------------------------------------------
 		return booleanToString((Boolean) objValue);
 	}
 
 	/** {@inheritDoc} */
-	public Object stringToValue(final String strValue, final KDataType dataType) throws FormatterException {
-		Assertion.checkArgument(dataType == KDataType.Boolean, "Formatter ne s'applique qu'aux booléens");
+	public Object stringToValue(final String strValue, final DataType dataType) throws FormatterException {
+		Assertion.checkArgument(dataType == DataType.Boolean, "Formatter ne s'applique qu'aux booléens");
 		//----------------------------------------------------------------------
 		final String sValue = StringUtil.isEmpty(strValue) ? null : strValue.trim();
 

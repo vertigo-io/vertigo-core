@@ -16,7 +16,6 @@ import java.util.List;
  * règle spécifiant qu'un package doit commencer par :
  * package nomdupackage;.
  * @author pchretien
- * @version $Id: PackageRule.java,v 1.4 2014/01/24 17:59:38 pchretien Exp $
  */
 public final class PackageRule extends AbstractRule<String, List<?>> {
 	@Override

@@ -36,7 +36,6 @@ import javax.inject.Named;
  * non SQL pour les traitements de FileInfo.
  * 
  * @author pchretien, npiedeloup, skerdudou
- * @version $Id: FsFileStorePlugin.java,v 1.7 2014/01/20 17:49:32 pchretien Exp $
  */
 public final class FsFileStorePlugin implements FileStorePlugin {
 	private static final String STORE_READ_ONLY = "Le store est en readOnly";
@@ -51,7 +50,6 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	 * Ces champs sont obligatoire sur les Dt associés aux fileInfoDefinitions
 	 * 
 	 * @author npiedeloup
-	 * @version $Id: FsFileStorePlugin.java,v 1.7 2014/01/20 17:49:32 pchretien Exp $
 	 */
 	private static enum DtoFields {
 		/** Champ FIL_ID */

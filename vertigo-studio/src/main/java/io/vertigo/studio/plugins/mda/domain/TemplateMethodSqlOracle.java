@@ -1,6 +1,6 @@
 package io.vertigo.studio.plugins.mda.domain;
 
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 
 import java.util.List;
 
@@ -16,7 +16,6 @@ import freemarker.template.TemplateModelException;
  * TemplateMethodModel : les params sont considérés comme des String.
  * 
  * @author  dchallas
- * @version $Id: TemplateMethodSqlOracle.java,v 1.2 2014/01/20 17:47:58 pchretien Exp $
  */
 public final class TemplateMethodSqlOracle implements TemplateMethodModel {
 
@@ -27,7 +26,7 @@ public final class TemplateMethodSqlOracle implements TemplateMethodModel {
 	}
 
 	private String getSqlType(final String type) {
-		final KDataType dataType = KDataType.valueOf(type);
+		final DataType dataType = DataType.valueOf(type);
 		switch (dataType) {
 			case BigDecimal:
 				return "NUMBER(10,2)";

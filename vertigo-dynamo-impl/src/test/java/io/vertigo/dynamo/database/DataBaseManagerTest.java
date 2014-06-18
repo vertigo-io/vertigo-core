@@ -10,7 +10,7 @@ import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -28,7 +28,6 @@ import org.junit.Test;
 /**
  * 
  * @author pchretien
-* @version $Id: DataBaseManagerTest.java,v 1.3 2014/01/20 17:51:47 pchretien Exp $
  */
 public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	private static final String CAMPANULACEAE = "Campanulaceae";
@@ -68,8 +67,8 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		final String sql = "insert into famille values (?, ?)";
 		final KCallableStatement callableStatement = dataBaseManager.createCallableStatement(connection, sql);
 		try {
-			callableStatement.registerParameter(0, KDataType.Long, KPreparedStatement.ParameterType.IN);
-			callableStatement.registerParameter(1, KDataType.String, KPreparedStatement.ParameterType.IN);
+			callableStatement.registerParameter(0, DataType.Long, KPreparedStatement.ParameterType.IN);
+			callableStatement.registerParameter(1, DataType.String, KPreparedStatement.ParameterType.IN);
 			//-------
 			callableStatement.init();
 			//-------
@@ -162,7 +161,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		//On crée les données
 		createDatas();
 		//----
-		final Domain domain = new Domain("DO_INTEGER", KDataType.Integer, new FormatterDefault("FMT_INTEGER"));
+		final Domain domain = new Domain("DO_INTEGER", DataType.Integer, new FormatterDefault("FMT_INTEGER"));
 		final QueryResult result = executeQuery(domain, "select count(*) from famille");
 		Assert.assertEquals(1, result.getSQLRowCount());
 		Assert.assertEquals(3, result.getValue());
@@ -174,7 +173,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		//On crée les données
 		createDatas();
 		//----
-		final Domain domain = new Domain("DO_LIB", KDataType.String, new FormatterDefault("FMT_INTEGER"));
+		final Domain domain = new Domain("DO_LIB", DataType.String, new FormatterDefault("FMT_INTEGER"));
 		final QueryResult result = executeQuery(domain, "select libelle from famille where fam_id=1");
 		Assert.assertEquals(1, result.getSQLRowCount());
 		Assert.assertEquals(AIZOACEAE, result.getValue());
@@ -186,7 +185,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		//On crée les données
 		createDatas();
 		//----
-		final Domain domain = new Domain("DO_TEST", KDataType.DtList, Home.getDefinitionSpace().resolve(Formatter.FMT_DEFAULT, Formatter.class));
+		final Domain domain = new Domain("DO_TEST", DataType.DtList, Home.getDefinitionSpace().resolve(Formatter.FMT_DEFAULT, Formatter.class));
 		final QueryResult result = executeQuery(domain, "select * from famille");
 		Assert.assertEquals(3, result.getSQLRowCount());
 		final DtList<DtObject> familles = (DtList<DtObject>) result.getValue();

@@ -23,7 +23,6 @@ import java.util.List;
  * Classe utilitaire pour accéder au Broker.
  * 
  * @author cgodard
- * @version $Id: DAOBroker.java,v 1.6 2014/01/20 17:49:32 pchretien Exp $
  * @param <D> Type d'objet métier.
  * @param <P> Type de la clef primaire.
  */

@@ -9,7 +9,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Attention ce moteur est avec état ; il est donc nécessaire de le recréer avant chaque utilisation.
  *
  * @author fconstantin, pchretien
- * @version $Id: TaskEngine.java,v 1.4 2014/01/20 18:57:19 pchretien Exp $
  * @see io.vertigo.dynamo.task.model.Task
  */
 public abstract class TaskEngine implements WorkEngine<TaskResult, Task> {

@@ -24,7 +24,6 @@ import org.junit.Test;
 /**
  * 
  * @author dchallas 
- * @version $Id: CollectionsManagerTest.java,v 1.5 2014/01/20 17:51:47 pchretien Exp $
  */
 public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	private static final String Ba = "Ba";

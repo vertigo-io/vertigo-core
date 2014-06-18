@@ -11,7 +11,6 @@ import java.io.OutputStream;
  * Utilitaire de gestion des fichiers et flux associés.
  * 
  * @author npiedeloup
- * @version $Id: FileUtil.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public final class FileUtil {
 	/**

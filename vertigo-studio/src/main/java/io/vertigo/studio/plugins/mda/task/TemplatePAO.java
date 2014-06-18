@@ -12,7 +12,6 @@ import java.util.Collections;
  * Objet utilisé par FreeMarker.
  * 
  * @author pchretien
- * @version $Id: TemplatePAO.java,v 1.6 2014/02/27 10:34:13 pchretien Exp $
  */
 public final class TemplatePAO {
 	private final String packageName;

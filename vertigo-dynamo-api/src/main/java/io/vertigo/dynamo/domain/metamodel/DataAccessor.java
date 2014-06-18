@@ -13,7 +13,6 @@ import io.vertigo.kernel.util.StringUtil;
  *  alors l'objet doit posséder les méthodes (setter et getter) en concordance avec le nom du champ. 
  * 
  * @author  pchretien
- * @version $Id: DataAccessor.java,v 1.3 2013/10/22 12:25:18 pchretien Exp $
  */
 public final class DataAccessor {
 	private final DtField dtField;

@@ -7,7 +7,6 @@ import io.vertigo.dynamo.file.model.FileInfo;
  * Permet de gérer les accès atomiques à n'importe quel type de stockage.
  *
  * @author  npiedeloup
- * @version $Id: FileStore.java,v 1.4 2014/01/20 17:46:41 pchretien Exp $
  */
 public interface FileStore {
 	/**

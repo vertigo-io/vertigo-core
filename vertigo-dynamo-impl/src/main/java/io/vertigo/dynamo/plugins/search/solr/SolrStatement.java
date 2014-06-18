@@ -46,7 +46,6 @@ import org.apache.solr.common.params.CommonParams;
  * Requête physique d'accès à SOLR.
  * Le driver exécute les requêtes de façon synchrone dans le contexte transactionnelle de la ressource.
  * @author pchretien
- * @version $Id: SolrStatement.java,v 1.7 2014/01/28 18:53:45 pchretien Exp $
  * @param <I> Type de l'objet contenant les champs à indexer
  * @param <R> Type de l'objet resultant de la recherche
  */

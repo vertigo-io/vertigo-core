@@ -1,11 +1,11 @@
 package io.vertigo.dynamo.impl.database.statementhandler;
 
 import io.vertigo.dynamo.database.vendor.SQLMapping;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.lang.Assertion;
@@ -23,7 +23,6 @@ import java.util.Map;
 * il convient de fabriquer dynamiquement, à la volée les DT et DTO, DTC en sortie.
 *
 * @author  pchretien
-* @version $Id: DynamicResultMetaData.java,v 1.5 2014/01/20 17:46:01 pchretien Exp $
 */
 final class DynamicResultMetaData implements ResultMetaData {
 	private final boolean isDtObject;
@@ -63,7 +62,7 @@ final class DynamicResultMetaData implements ResultMetaData {
 		final ResultSetMetaData metaData = resultSet.getMetaData();
 		String fieldName;
 		String fieldLabel;
-		KDataType localDataType;
+		DataType localDataType;
 		final SerializableDtField[] fields = new SerializableDtField[metaData.getColumnCount()];
 		for (int i = 1; i <= metaData.getColumnCount(); i++) {
 			//On passe les champs en maj pour postgreSQL et SQLServer.
@@ -87,9 +86,9 @@ final class DynamicResultMetaData implements ResultMetaData {
 		private static final long serialVersionUID = 7086269816597674149L;
 		final String name;
 		final String label;
-		final KDataType dataType;
+		final DataType dataType;
 
-		SerializableDtField(final String fieldName, final String fieldLabel, final KDataType dataType) {
+		SerializableDtField(final String fieldName, final String fieldLabel, final DataType dataType) {
 			Assertion.checkNotNull(fieldName);
 			Assertion.checkNotNull(fieldLabel);
 			Assertion.checkNotNull(dataType);
@@ -103,7 +102,7 @@ final class DynamicResultMetaData implements ResultMetaData {
 	static class SerializableDtDefinition implements Serializable {
 		private static final String DT_DYNAMIC = "DT_DYNAMIC_DTO";
 		//Map des domaines correspondants aux types primitifs
-		private static final Map<KDataType, Domain> DOMAIN_MAP = createDomainMap();
+		private static final Map<DataType, Domain> DOMAIN_MAP = createDomainMap();
 
 		private static final long serialVersionUID = -423652372994923330L;
 		private final SerializableDtField[] fields;
@@ -131,19 +130,19 @@ final class DynamicResultMetaData implements ResultMetaData {
 			return dtDefinition;
 		}
 
-		private static Map<KDataType, Domain> createDomainMap() {
-			final KDataType[] dataTypes = KDataType.values();
-			final Map<KDataType, Domain> map = new HashMap<>(dataTypes.length);
+		private static Map<DataType, Domain> createDomainMap() {
+			final DataType[] dataTypes = DataType.values();
+			final Map<DataType, Domain> map = new HashMap<>(dataTypes.length);
 			//Initialisation de la map.
 			final Formatter formatter = Home.getDefinitionSpace().resolve(Formatter.FMT_DEFAULT, Formatter.class);
-			for (final KDataType dataType : dataTypes) {
+			for (final DataType dataType : dataTypes) {
 				final Domain newDomain = new Domain("DO_DYN", dataType, formatter);
 				map.put(dataType, newDomain);
 			}
 			return map;
 		}
 
-		private static Domain getDomain(final KDataType dataType) {
+		private static Domain getDomain(final DataType dataType) {
 			final Domain domain = DOMAIN_MAP.get(dataType);
 			Assertion.checkNotNull(domain);
 			return domain;

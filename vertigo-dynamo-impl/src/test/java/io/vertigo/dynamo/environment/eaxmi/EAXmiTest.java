@@ -19,7 +19,6 @@ import org.junit.Test;
  * Test de lecture d'un xmi.
  *
  * @author pchretien
- * @version $Id: EAXmiTest.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public class EAXmiTest {
 	private static final Logger LOGGER = Logger.getLogger(EAXmiTest.class);

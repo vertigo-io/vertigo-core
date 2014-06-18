@@ -19,7 +19,6 @@ import org.apache.solr.common.SolrInputDocument;
  * Pseudo Codec : asymétrique par le fait que SOLR gère un objet différent en écriture et lecture.
  * L'objet lu ne contient pas les données indexées non stockées !
  * @author pchretien
- * @version $Id: SolrDocumentCodec.java,v 1.7 2014/01/24 18:00:03 pchretien Exp $
  */
 final class SolrDocumentCodec<I extends DtObject, R extends DtObject> {
 	public static final String FULL_RESULT = "FULL_RESULT";

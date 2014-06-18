@@ -1,7 +1,7 @@
 package io.vertigo.dynamo.database.statement;
 
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
 
 import java.sql.SQLException;
 
@@ -19,7 +19,6 @@ import java.sql.SQLException;
  * - Récupération des paramètres de sorties </li> (Pour KCallableStatement uniquement)
  *
  * @author pchretien
- * @version $Id: KPreparedStatement.java,v 1.2 2014/01/20 17:45:43 pchretien Exp $
  */
 public interface KPreparedStatement {
 	/**
@@ -44,7 +43,7 @@ public interface KPreparedStatement {
 	 * @param dataType Type 
 	 * @param inOut Type du paramètre
 	 */
-	void registerParameter(final int index, final KDataType dataType, final ParameterType inOut);
+	void registerParameter(final int index, final DataType dataType, final ParameterType inOut);
 
 	//--------------------------------------------------------------------
 	//------------------Clôture des affectations et 1ere Etape -------------------------------

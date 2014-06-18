@@ -8,7 +8,6 @@ import java.util.Properties;
 
 /**
  * @author pchretien
- * @version $Id: ReportingGoal.java,v 1.2 2013/10/22 10:47:45 pchretien Exp $
  */
 public final class ReportingGoal implements Goal {
 

@@ -1,26 +1,24 @@
 package io.vertigo.dynamo.plugins.environment;
 
-import io.vertigo.dynamo.domain.metamodel.KDataType;
 import io.vertigo.dynamo.impl.environment.kernel.meta.EntityProperty;
+import io.vertigo.dynamo.impl.environment.kernel.meta.PrimitiveType;
 import io.vertigo.kernel.lang.Assertion;
 
 /**
  * Métadonnée liée à la grammaire.
  *
  * @author  pchretien
- * @version $Id: KspProperty.java,v 1.4 2014/01/20 17:46:11 pchretien Exp $
- *
  */
 public enum KspProperty implements EntityProperty {
 	/**
 	 * Nom de la classe java implémentant un concept tel que formatter, constraint...
 	 */
-	CLASS_NAME(KDataType.String),
+	CLASS_NAME(PrimitiveType.String),
 
 	/**
 	 * Arguments initialisant la classe précédante.
 	 */
-	ARGS(KDataType.String),
+	ARGS(PrimitiveType.String),
 
 	//------------------------------
 	//----Constraint
@@ -28,7 +26,7 @@ public enum KspProperty implements EntityProperty {
 	/**
 	 * Propriété standard : message d'erreur, valeur String.
 	 */
-	MSG(KDataType.String),
+	MSG(PrimitiveType.String),
 
 	//------------------------------
 	//----Domain
@@ -36,81 +34,81 @@ public enum KspProperty implements EntityProperty {
 	/**
 	 * Propriété standard : libellé du champ, valeur String.
 	 */
-	LABEL(KDataType.String),
+	LABEL(PrimitiveType.String),
 	/**
 	 * Propriété standard : champ obligatoire, valeur Boolean.
 	 */
-	NOT_NULL(KDataType.Boolean),
+	NOT_NULL(PrimitiveType.Boolean),
 
 	/**
 	 * Propriété liée au broker : La donnée est-elle gérée en mode write par le Broker.
 	 */
-	PERSISTENT(KDataType.Boolean),
+	PERSISTENT(PrimitiveType.Boolean),
 
 	/**
 	 * Champ qui porte le trie par défaut. (Un au plus par DT)
 	 */
-	SORT_FIELD(KDataType.String),
+	SORT_FIELD(PrimitiveType.String),
 
 	/**
 	 * Champ qui porte l'affichage par défaut. (Un au plus par DT)
 	 */
-	DISPLAY_FIELD(KDataType.String),
+	DISPLAY_FIELD(PrimitiveType.String),
 
 	/**
 	 * Le DT est-il représentée par un bean ou de maniére générique(dynamique)
 	 */
-	DYNAMIC(KDataType.Boolean),
+	DYNAMIC(PrimitiveType.Boolean),
 
 	/**
 	 * Nom du champ représentant la clé étrangére dans une association simple (non NN).
 	 */
-	FK_FIELD_NAME(KDataType.String),
+	FK_FIELD_NAME(PrimitiveType.String),
 
 	/**
 	 * Cardinalité du noeud A dans une association : 1..* ou 0..* ou 1..1.
 	 */
-	MULTIPLICITY_A(KDataType.String),
+	MULTIPLICITY_A(PrimitiveType.String),
 
 	/**
 	 * Navigabilité du noeud A dans une association.
 	 */
-	NAVIGABILITY_A(KDataType.Boolean),
+	NAVIGABILITY_A(PrimitiveType.Boolean),
 
 	/**
 	 * Nom du réle du noeud A dans une association.
 	 */
-	ROLE_A(KDataType.String),
+	ROLE_A(PrimitiveType.String),
 
 	/**
 	 * Label du noeud A dans une association.
 	 */
-	LABEL_A(KDataType.String),
+	LABEL_A(PrimitiveType.String),
 
 	/**
 	 * Cardinalité du noeud B dans une association : 1..* ou 0..* ou 1..1.
 	 */
-	MULTIPLICITY_B(KDataType.String),
+	MULTIPLICITY_B(PrimitiveType.String),
 
 	/**
 	 * Navigabilité du noeud B dans une association.
 	 */
-	NAVIGABILITY_B(KDataType.Boolean),
+	NAVIGABILITY_B(PrimitiveType.Boolean),
 
 	/**
 	 * Label du noeud B dans une association.
 	 */
-	LABEL_B(KDataType.String),
+	LABEL_B(PrimitiveType.String),
 
 	/**
 	 * Nom du réle du noeud B dans une association.
 	 */
-	ROLE_B(KDataType.String),
+	ROLE_B(PrimitiveType.String),
 
 	/**
 	 * Nom de la table supportant l'association NN.
 	 */
-	TABLE_NAME(KDataType.String),
+	TABLE_NAME(PrimitiveType.String),
 
 	//------------------------------
 	//----Task
@@ -118,12 +116,12 @@ public enum KspProperty implements EntityProperty {
 	/**
 	 * Requête ou plus générallement paramètre d'une tache.
 	 */
-	REQUEST(KDataType.String),
+	REQUEST(PrimitiveType.String),
 
 	/**
 	 * Type in ou out d'un attribut de tache.
 	 */
-	IN_OUT(KDataType.String),
+	IN_OUT(PrimitiveType.String),
 
 	//------------------------------
 	//----FileInfo
@@ -131,12 +129,12 @@ public enum KspProperty implements EntityProperty {
 	/**
 	 * Racine des éléments de cette définition.
 	 */
-	ROOT(KDataType.String),
+	ROOT(PrimitiveType.String),
 
 	/**
 	 * Nom du Store utilisé pour cette définition.
 	 */
-	STORE_NAME(KDataType.String),
+	STORE_NAME(PrimitiveType.String),
 
 	//------------------------------
 	//----Mda
@@ -144,7 +142,7 @@ public enum KspProperty implements EntityProperty {
 	/**
 	 * Expression du champ computed.
 	 */
-	EXPRESSION(KDataType.String),
+	EXPRESSION(PrimitiveType.String),
 
 	//==========================================================================
 	//==========================================================================
@@ -157,40 +155,40 @@ public enum KspProperty implements EntityProperty {
 	/**
 	 * Propriété standard : longueur max du champ, valeur Integer.
 	 */
-	MAX_LENGTH(KDataType.Integer),
+	MAX_LENGTH(PrimitiveType.Integer),
 
 	/**
 	 * Propriété standard : Type des définitions.
 	 */
-	TYPE(KDataType.String),
+	TYPE(PrimitiveType.String),
 
 	/**
 	 * Proriété Regex de type String.
 	 */
-	REGEX(KDataType.String),
+	REGEX(PrimitiveType.String),
 
 	/**
 	 * Propriété de contrainte : valeur minimum, Double.
 	 * Dans le cas d'une date, cette propriété contient le timestamp de la date min.
 	 */
-	MIN_VALUE(KDataType.Double),
+	MIN_VALUE(PrimitiveType.Double),
 
 	/**
 	 * Propriété de contrainte : valeur maximum, Double.
 	 * Dans le cas d'une date, cette propriété contient le timestamp de la date max.
 	 */
-	MAX_VALUE(KDataType.Double),
+	MAX_VALUE(PrimitiveType.Double),
 
 	//----------------Style----------------------------------------------------
 	/**
 	 * Propriété standard : Unité de la valeur, valeur String.
 	 */
-	UNIT(KDataType.String),
+	UNIT(PrimitiveType.String),
 
 	/**
 	 * Propriété standard : Type de l'index. (SOLR par exemple)
 	 */
-	INDEX_TYPE(KDataType.String);
+	INDEX_TYPE(PrimitiveType.String);
 
 	//==========================================================================
 	//==========================================================================
@@ -198,23 +196,23 @@ public enum KspProperty implements EntityProperty {
 	/**
 	 * Classe java représentant la valeur de la propriété.
 	 */
-	private final KDataType dataType;
+	private final PrimitiveType primitiveType;
 
 	/**
 	 * Constructeur à partir du nom évocateur de la propriété.
 	 * @param dataType Type Dynamo
 	 */
-	private KspProperty(final KDataType dataType) {
-		Assertion.checkNotNull(dataType);
+	private KspProperty(final PrimitiveType primitiveType) {
+		Assertion.checkNotNull(primitiveType);
 		//----------------------------------------------------------------------
-		this.dataType = dataType;
+		this.primitiveType = primitiveType;
 	}
 
 	//==========================================================================
 
 	/** {@inheritDoc} */
-	public final KDataType getDataType() {
-		return dataType;
+	public final PrimitiveType getPrimitiveType() {
+		return primitiveType;
 	}
 
 	/** {@inheritDoc} */

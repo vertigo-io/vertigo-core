@@ -19,7 +19,6 @@ import java.io.Serializable;
  * - Les accolades sont ouvrantes ou fermantes pour indiquer si la valeur est comprise ou non
  * 
  * @author npiedeloup
- * @version $Id: DtListPatternFilter.java,v 1.5 2014/01/20 17:45:43 pchretien Exp $
  * @param <D> Type d'objet
  */
 public final class DtListPatternFilter<D extends DtObject> implements DtListFilter<D>, Serializable {

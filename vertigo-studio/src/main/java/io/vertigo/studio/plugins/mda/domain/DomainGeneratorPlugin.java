@@ -24,7 +24,6 @@ import javax.inject.Named;
  * Génération des objets relatifs au module Domain. 
  *  
  * @author pchretien
- * @version $Id: DomainGeneratorPlugin.java,v 1.7 2014/02/27 10:29:00 pchretien Exp $
  */
 public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainConfiguration> {
 	private final boolean generateDtResources;

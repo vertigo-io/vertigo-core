@@ -11,7 +11,6 @@ import java.math.BigDecimal;
  * </ul><br>.
  *
  * @author pchretien
- * @version $Id: ConstraintBigDecimalLength.java,v 1.2 2013/10/22 12:04:44 pchretien Exp $
  */
 public final class ConstraintBigDecimalLength extends AbstractConstraintLength<BigDecimal> {
 	/**

@@ -15,7 +15,6 @@ import java.util.Date;
  * - sa dernière date de modification
 
  * @author npiedeloup
- * @version $Id: KFile.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public interface KFile extends Serializable {
 

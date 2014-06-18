@@ -6,7 +6,6 @@ import io.vertigo.kernel.lang.MessageKey;
  * Dictionnaire des ressources.
  *
  * @author  pchretien
- * @version $Id: Resources.java,v 1.2 2013/10/22 11:00:06 pchretien Exp $
 */
 public enum Resources implements MessageKey {
 	/**

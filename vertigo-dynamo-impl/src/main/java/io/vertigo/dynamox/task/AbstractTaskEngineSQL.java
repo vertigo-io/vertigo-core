@@ -11,7 +11,7 @@ import io.vertigo.dynamo.database.statement.KPreparedStatement;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -72,7 +72,6 @@ import java.util.Map;
  *       <%}%> order by <%=1%>";
  *       
  * @author  pchretien, npiedeloup
- * @version $Id: AbstractTaskEngineSQL.java,v 1.11 2014/01/24 17:59:38 pchretien Exp $
  * @param <S> Type de Statement utilisé
  */
 public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extends TaskEngine {
@@ -323,7 +322,7 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 		ps.setValue(param.getIndex(), getValueParameter(param, rowNumber));
 	}
 
-	private KDataType getDataTypeParameter(final TaskEngineSQLParam param) {
+	private DataType getDataTypeParameter(final TaskEngineSQLParam param) {
 		final Domain domain;
 		if (param.isPrimitive()) {
 			// Paramètre primitif

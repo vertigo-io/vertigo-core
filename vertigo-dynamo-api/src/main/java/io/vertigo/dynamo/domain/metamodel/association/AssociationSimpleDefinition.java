@@ -10,7 +10,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Une relation simple est toujours asymétrique.
  *
  * @author  jcassignol, pchretien
- * @version $Id: AssociationSimpleDefinition.java,v 1.4 2013/10/22 12:31:50 pchretien Exp $
  */
 public final class AssociationSimpleDefinition extends AssociationDefinition {
 	private final AssociationNode foreignAssociationNode;

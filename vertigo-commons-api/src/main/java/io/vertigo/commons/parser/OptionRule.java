@@ -6,7 +6,6 @@ import io.vertigo.kernel.lang.Option;
 /**
  * Règle optionnelle.
  * @author pchretien
- * @version $Id: OptionRule.java,v 1.6 2013/10/22 12:23:44 pchretien Exp $
  */
 public final class OptionRule<P> implements Rule<Option<P>> {
 	private final String expression;

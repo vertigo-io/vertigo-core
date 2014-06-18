@@ -16,7 +16,6 @@ import java.util.Map;
  * Implémentation standard d'une transaction Dynamo.
  *
  * @author  pchretien
- * @version $Id: KTransactionImpl.java,v 1.6 2013/10/22 12:37:57 pchretien Exp $
  */
 public final class KTransactionImpl implements KTransactionWritable {
 	/**

@@ -11,7 +11,6 @@ import org.xml.sax.helpers.DefaultHandler;
  * Handler SAX, permettant de parser le OOM.
  *
  * @author pchretien
- * @version $Id: HandlerOOM.java,v 1.3 2013/10/22 12:30:19 pchretien Exp $
  */
 final class OOMHandler extends DefaultHandler {
 	private static final String ATTR_ID = "Id";

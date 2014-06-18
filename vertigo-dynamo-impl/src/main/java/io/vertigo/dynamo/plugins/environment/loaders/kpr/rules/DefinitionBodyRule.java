@@ -27,7 +27,6 @@ import java.util.List;
  * Une définition étant soit affectée en ligne soit référencée.
  *
  * @author pchretien
- * @version $Id: DefinitionBodyRule.java,v 1.12 2014/01/24 17:59:38 pchretien Exp $
  */
 public final class DefinitionBodyRule extends AbstractRule<XDefinitionBody, List<?>> {
 	private final DynamicDefinitionRepository dynamicModelRepository;

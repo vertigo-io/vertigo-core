@@ -13,7 +13,6 @@ import io.vertigo.kernel.lang.MessageText;
  * Si vous souhaitez flirter avec les 10^19 alors n'utilisez pas de contraintes.
  *
  * @author pchretien
- * @version $Id: ConstraintLongLength.java,v 1.3 2013/10/22 12:04:44 pchretien Exp $
  */
 public final class ConstraintLongLength extends AbstractConstraintLength<Long> {
 	/**

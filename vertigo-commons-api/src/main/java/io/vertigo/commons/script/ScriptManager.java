@@ -10,7 +10,6 @@ import java.util.List;
  * Gestion des manipulations sur des scripts.
  *
  * @author pchretien
- * @version $Id: ScriptManager.java,v 1.2 2013/10/22 12:31:36 pchretien Exp $
  */
 public interface ScriptManager extends Manager {
 	/**

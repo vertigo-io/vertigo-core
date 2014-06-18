@@ -5,7 +5,6 @@ package io.vertigo.dynamo.plugins.environment.loaders.poweramc.core;
  * Les correspondances dynamo sont précisées ci-dessous.
  *
  * @author pchretien
- * @version $Id: TypeOOM.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 enum OOMType {
 	/**

@@ -9,7 +9,6 @@ import java.sql.SQLException;
  * Handler des exceptions SQL qui peuvent survenir dans une tache.
  * Cette implémentation est adaptée pour HSQL.
  * @author dchallas
- * @version $Id: HsqlExceptionHandler.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 final class HsqlExceptionHandler extends AbstractSQLExceptionHandler {
 	/**

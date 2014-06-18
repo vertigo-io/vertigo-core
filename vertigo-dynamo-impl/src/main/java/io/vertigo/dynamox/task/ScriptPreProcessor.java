@@ -5,7 +5,7 @@ import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.script.SeparatorType;
 import io.vertigo.commons.script.parser.ScriptSeparator;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
@@ -26,7 +26,6 @@ import java.util.Map.Entry;
  * <%= %> : permet d'ajouter des éléments au texte
  *
  * @author  pchretien
- * @version $Id: ScriptPreProcessor.java,v 1.4 2014/01/24 17:59:38 pchretien Exp $
  */
 final class ScriptPreProcessor {
 	private final ScriptManager scriptManager;
@@ -63,10 +62,10 @@ final class ScriptPreProcessor {
 			if (domain.getDataType().isPrimitive()) {
 				// Pour les types primitifs
 				clazz = domain.getDataType().getJavaClass();
-			} else if (domain.getDataType() == KDataType.DtList) {
+			} else if (domain.getDataType() == DataType.DtList) {
 				// Pour les types liste
 				clazz = DtList.class;
-			} else if (domain.getDataType() == KDataType.DtObject) {
+			} else if (domain.getDataType() == DataType.DtObject) {
 				// Pour les types composites
 				if (domain.hasDtDefinition()) {
 					clazz = ClassUtil.classForName(domain.getDtDefinition().getClassCanonicalName());

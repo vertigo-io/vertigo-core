@@ -11,7 +11,6 @@ import io.vertigo.kernel.lang.Assertion;
  * -textuelle.
  *
  * @author pchretien
- * @version $Id: AbstractConstraintLength.java,v 1.3 2013/10/22 12:04:44 pchretien Exp $
  * @param <D> Type java de la valeur à contréler
  */
 abstract class AbstractConstraintLength<D> extends AbstractConstraintImpl<Integer, D> {

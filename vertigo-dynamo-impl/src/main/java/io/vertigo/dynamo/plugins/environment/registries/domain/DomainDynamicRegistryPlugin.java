@@ -2,12 +2,12 @@ package io.vertigo.dynamo.plugins.environment.registries.domain;
 
 import io.vertigo.dynamo.domain.metamodel.ComputedExpression;
 import io.vertigo.dynamo.domain.metamodel.Constraint;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
 import io.vertigo.dynamo.domain.metamodel.Properties;
 import io.vertigo.dynamo.domain.metamodel.Property;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
@@ -44,7 +44,6 @@ import org.apache.log4j.Logger;
 
 /**
  * @author pchretien
- * @version $Id: DomainDynamicRegistryPlugin.java,v 1.15 2014/01/20 17:46:41 pchretien Exp $
  */
 public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin<DomainGrammar> {
 	private static final Logger LOGGER = Logger.getLogger(DomainDynamicRegistryPlugin.class);
@@ -99,7 +98,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	 * @param xconstraint Définition de contrainte
 	 * @return DefinitionStandard Définition typée créée.
 	 */
-	private static  Constraint createConstraint(final DynamicDefinition xconstraint) {
+	private static Constraint createConstraint(final DynamicDefinition xconstraint) {
 		//On transforme la liste des paramètres (Liste de String) sous forme de tableau de String pour éviter
 		//le sous typage de List et pour se rapprocher de la syntaxe connue de Main.
 		final String args = getPropertyValueAsString(xconstraint, KspProperty.ARGS);
@@ -156,7 +155,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final String formatterUrn = xdomain.getDefinitionKey("formatter").getName();
 		final Formatter formatter = definitionSpace.resolve(formatterUrn, Formatter.class);
 
-		final KDataType dataType = KDataType.valueOf(xdomain.getDefinitionKey("dataType").getName());
+		final DataType dataType = DataType.valueOf(xdomain.getDefinitionKey("dataType").getName());
 		final List<DynamicDefinitionKey> constraintNames = xdomain.getDefinitionKeys("constraint");
 
 		final String urn = xdomain.getDefinitionKey().getName();
@@ -415,10 +414,10 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final DynamicDefinitionKey dtObjectKey = new DynamicDefinitionKey("DtObject");
 
 		final DynamicDefinition domain = dynamicModelRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain, packageName)//
-				.addDefinition("formatter", fmtDefaultKey)//
-				.addDefinition("dataType", dtObjectKey)//
+				.withDefinition("formatter", fmtDefaultKey)//
+				.withDefinition("dataType", dtObjectKey)//
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
-				.putPropertyValue(KspProperty.TYPE, definitionName)//
+				.withPropertyValue(KspProperty.TYPE, definitionName)//
 				.build();
 
 		//On ajoute le domain crée au repository
@@ -428,10 +427,10 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 		final DynamicDefinitionKey dtListKey = new DynamicDefinitionKey("DtList");
 		final DynamicDefinition domain2 = dynamicModelRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTC", metaDefinitionDomain, packageName)//
-				.addDefinition("formatter", fmtDefaultKey)//
-				.addDefinition("dataType", dtListKey)//
+				.withDefinition("formatter", fmtDefaultKey)//
+				.withDefinition("dataType", dtListKey)//
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
-				.putPropertyValue(KspProperty.TYPE, definitionName)//
+				.withPropertyValue(KspProperty.TYPE, definitionName)//
 				.build();
 
 		//On ajoute le domain crée au repository

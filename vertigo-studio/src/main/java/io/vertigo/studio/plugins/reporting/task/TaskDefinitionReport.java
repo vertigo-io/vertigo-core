@@ -13,7 +13,6 @@ import java.util.List;
  * Résultat d'analyse d'une tâche.
  * 
  * @author tchassagnette
- * @version $Id: TaskDefinitionReport.java,v 1.6 2014/02/27 10:34:27 pchretien Exp $
  */
 public final class TaskDefinitionReport implements DataReport {
 	private final TaskDefinition taskDefinition;

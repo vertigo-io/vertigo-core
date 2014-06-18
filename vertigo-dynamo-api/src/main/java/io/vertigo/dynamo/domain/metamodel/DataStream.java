@@ -7,7 +7,6 @@ import java.io.InputStream;
  * Type primitif de Flux.
  * 
  * @author  pchretien
- * @version $Id: DataStream.java,v 1.2 2013/07/29 11:43:52 pchretien Exp $
  */
 public interface DataStream {
 	/**

@@ -1,7 +1,6 @@
 package io.vertigo.commons.analytics;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.commons.analytics.AnalyticsManager;
 
 import javax.inject.Inject;
 
@@ -12,7 +11,6 @@ import org.junit.Test;
  * Cas de Test JUNIT de l'API Analytics.
  * 
  * @author pchretien, npiedeloup
- * @version $Id: AnalyticsTest.java,v 1.2 2013/10/22 10:46:21 pchretien Exp $
  */
 public final class AnalyticsManagerTest extends AbstractTestCaseJU4 {
 

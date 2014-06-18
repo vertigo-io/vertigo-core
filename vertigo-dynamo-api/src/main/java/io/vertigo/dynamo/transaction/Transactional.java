@@ -9,7 +9,6 @@ import java.lang.annotation.Target;
  * Annotation à poser sur les méthodes des implémentations des services.
  * 
  * @author prahmoune
- * @version $Id: Transactional.java,v 1.2 2013/07/18 17:29:09 npiedeloup Exp $
  */
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)

@@ -7,7 +7,6 @@ import java.util.List;
 /**
  * Exception levée lorsque la règle n'est pas respectée.
  * @author pchretien
- * @version $Id: NotFoundException.java,v 1.3 2013/08/22 14:52:32 npiedeloup Exp $
  */
 public final class NotFoundException extends Exception {
 	private static final long serialVersionUID = 6096295235950712319L;

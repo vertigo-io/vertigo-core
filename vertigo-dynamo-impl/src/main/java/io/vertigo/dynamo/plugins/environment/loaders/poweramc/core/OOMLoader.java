@@ -16,7 +16,6 @@ import javax.xml.parsers.SAXParserFactory;
  * Chargement d'un fichier OOM.
  * Seules les classes et leurs attributs ainsi que les associations sont extraites.
  * @author pchretien
- * @version $Id: LoaderOOM.java,v 1.6 2013/10/22 12:30:19 pchretien Exp $
  */
 public final class OOMLoader {
 	private final Map<OOMId, OOMObject> map;

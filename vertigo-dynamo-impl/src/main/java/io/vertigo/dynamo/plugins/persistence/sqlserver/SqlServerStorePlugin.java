@@ -17,7 +17,6 @@ import javax.inject.Inject;
  * Dans le cas de SQL Server, la gestion des clés n'est pas assurée par des séquences.
  *
  * @author  jmainaud, evernat
- * @version $Id: SqlServerStorePlugin.java,v 1.5 2014/01/20 18:57:19 pchretien Exp $
  */
 public final class SqlServerStorePlugin extends AbstractSQLStorePlugin {
 	/**

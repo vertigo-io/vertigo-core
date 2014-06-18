@@ -11,7 +11,6 @@ import java.sql.SQLException;
  * Plugin permettant de créer les résultats issus d'une requête SQL de type select.
  * 
  * @author  pchretien
- * @version $Id: StatementHandler.java,v 1.2 2014/01/20 17:46:01 pchretien Exp $
  */
 public interface StatementHandler {
 	/**

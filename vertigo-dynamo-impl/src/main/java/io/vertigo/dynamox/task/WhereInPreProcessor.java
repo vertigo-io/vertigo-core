@@ -1,7 +1,7 @@
 package io.vertigo.dynamox.task;
 
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
@@ -13,7 +13,6 @@ import java.util.Map;
 /**
  * Ce processor permet de remplacer le Where XXX_ID in (YYY.ROWNUM.XXX_ID).
  * @author npiedeloup
- * @version $Id: WhereInPreProcessor.java,v 1.2 2014/01/20 19:01:40 pchretien Exp $
  */
 final class WhereInPreProcessor {
 	private static final String ROWNUM = ".ROWNUM.";
@@ -54,7 +53,7 @@ final class WhereInPreProcessor {
 		final StringBuilder nameSearchTemp = new StringBuilder();
 		for (final TaskAttribute attribute : parameterValuesMap.keySet()) {
 			final Domain domain = attribute.getDomain();
-			if (attribute.isIn() && domain.getDataType() == KDataType.DtList) {
+			if (attribute.isIn() && domain.getDataType() == DataType.DtList) {
 				final String outParamName = attribute.getName();
 				nameSearchTemp.setLength(0);
 				nameSearchTemp.append(IN_CHAR);
@@ -89,8 +88,8 @@ final class WhereInPreProcessor {
 						//-------------------------------------------------------------------------------------------------
 						//TG : recherche parentheses + IN & NOT IN pour contraintre oracle (pas plus de 1000 elements dans clause IN)
 						query = query.replace(query.substring(indexOfFirstSpace + 1, query.indexOf(")", indexEnd) + 1), isNotIn ? "1=1" : "1=2");
-						final KDataType dataType = listObject.getDefinition().getField(fieldName).getDomain().getDataType();
-						if (dataType == KDataType.Integer || dataType == KDataType.Long) {
+						final DataType dataType = listObject.getDefinition().getField(fieldName).getDomain().getDataType();
+						if (dataType == DataType.Integer || dataType == DataType.Long) {
 							query = query.replace(strDtc, "-13371337");
 						} else {
 							query = query.replace(strDtc, "'SHOULD_NOT_MATCH'");

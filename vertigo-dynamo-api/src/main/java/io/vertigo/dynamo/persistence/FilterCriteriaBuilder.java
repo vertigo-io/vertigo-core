@@ -14,7 +14,6 @@ import java.util.Map;
  * - Soit de type préfixe (Commence par).
  *
  * @author npiedeloup
- * @version $Id: FilterCriteriaBuilder.java,v 1.2 2013/11/15 17:13:52 npiedeloup Exp $
  * @param <D> Type de l'objet
  */
 public final class FilterCriteriaBuilder<D extends DtObject> implements Builder<FilterCriteria<D>> {

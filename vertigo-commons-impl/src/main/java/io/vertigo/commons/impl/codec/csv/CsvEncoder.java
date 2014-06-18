@@ -12,7 +12,6 @@ import io.vertigo.commons.codec.Encoder;
  *	       another double quote. For example:       "aaa","b""bb","ccc"
  *
  * @author pchretien
- * $Id: CsvEncoder.java,v 1.3 2013/11/15 15:27:29 pchretien Exp $
  */
 public final class CsvEncoder implements Encoder<String, String> {
 	// caractere de remplace du caractère 13

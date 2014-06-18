@@ -18,7 +18,6 @@ import javax.inject.Inject;
  * la valeur de la clé primaire. Une tache utilisant cet engine ne traite pas les DtList.<br>
  * <br>
  * @author  jmainaud, evernat
- * @version $Id: TaskEngineInsertWithGeneratedKeys.java,v 1.5 2014/01/24 17:59:38 pchretien Exp $
  */
 public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL<KPreparedStatement> {
 

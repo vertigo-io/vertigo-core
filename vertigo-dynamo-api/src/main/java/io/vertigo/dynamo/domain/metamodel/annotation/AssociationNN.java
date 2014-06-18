@@ -10,7 +10,6 @@ import java.lang.annotation.Target;
  * Gestion des associations NN.
  *
  * @author  dchallas
- * @version $Id: AssociationNN.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited

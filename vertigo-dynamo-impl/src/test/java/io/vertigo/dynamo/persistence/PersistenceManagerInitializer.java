@@ -9,7 +9,6 @@ import io.vertigo.kernel.component.ComponentInitializer;
  * Initialisation des listes de références.
  * 
  * @author jmforhan
- * @version $Id: PersistenceManagerInitializer.java,v 1.3 2014/01/20 17:52:40 pchretien Exp $
  */
 public class PersistenceManagerInitializer implements ComponentInitializer<PersistenceManager> {
 

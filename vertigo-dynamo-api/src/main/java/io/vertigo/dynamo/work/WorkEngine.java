@@ -1,6 +1,5 @@
 package io.vertigo.dynamo.work;
 
-
 /**
  * Moteur d'exécution d'un travail.
  * Le moteur N'EST PAS THREADSAFE ; il doit donc être instancié à chaque utilisation.
@@ -9,7 +8,6 @@ package io.vertigo.dynamo.work;
  * @param <W> Type de Work (Travail)
  * @param <WR> Produit d'un work à l'issu de son exécution
  * @author   pchretien
- * @version $Id: WorkEngine.java,v 1.5 2013/11/15 15:43:35 pchretien Exp $
  */
 public interface WorkEngine<WR, W> {
 	/**

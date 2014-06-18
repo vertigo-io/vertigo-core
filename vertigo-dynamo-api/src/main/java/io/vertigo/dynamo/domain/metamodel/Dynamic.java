@@ -3,7 +3,6 @@ package io.vertigo.dynamo.domain.metamodel;
 /**
  * Permet d'accéder aux données d'un objet de façon dynamique.
  * @author  pchretien
- * @version $Id: Dynamic.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public interface Dynamic {
 	/**

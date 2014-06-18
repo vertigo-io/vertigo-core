@@ -7,7 +7,6 @@ import io.vertigo.kernel.lang.Assertion;
 * Class de statistique pour le suivi des traitements SQL.
 *
 * @author npiedeloup
-* @version $Id: StatementStatsImpl.java,v 1.3 2013/10/22 10:43:35 pchretien Exp $
 */
 final class StatementStatsImpl implements StatementStats {
 	private final KPreparedStatement statement;

@@ -16,7 +16,6 @@ import org.junit.Test;
 /**
  * 
  * @author dchallas
- * @version $Id: CacheManagerTest.java,v 1.5 2014/01/20 17:51:47 pchretien Exp $
  */
 public final class CacheManagerTest extends AbstractTestCaseJU4 {
 	private static final String KEY = "ma clé";

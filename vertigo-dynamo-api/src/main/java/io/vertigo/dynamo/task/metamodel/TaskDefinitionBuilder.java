@@ -11,7 +11,6 @@ import java.util.List;
 /** Builder des définitions de taches.
  *
  * @author  fconstantin, pchretien
- * @version $Id: TaskDefinitionBuilder.java,v 1.4 2014/01/20 17:45:43 pchretien Exp $
  */
 public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	private final List<TaskAttribute> taskAttributes = new ArrayList<>();

@@ -4,7 +4,6 @@ import io.vertigo.dynamo.impl.environment.kernel.meta.GrammarProvider;
 
 /**
  * @author npiedeloup
- * @version $Id: FacetGrammar.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 final class FacetGrammar extends GrammarProvider {
 	//

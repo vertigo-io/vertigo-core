@@ -8,7 +8,6 @@ import java.util.List;
 /**
  * Interface de création des définitions.
  * @author  pchretien
- * @version $Id: DynamicDefinitionBuilder.java,v 1.5 2013/10/22 12:30:28 pchretien Exp $
  */
 public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	DynamicDefinitionBuilder withPackageName(String packageName);
@@ -19,7 +18,7 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	 * @param property Propriété
 	 * @param value Valeur de la propriété
 	 */
-	DynamicDefinitionBuilder putPropertyValue(final EntityProperty property, final Object value);
+	DynamicDefinitionBuilder withPropertyValue(final EntityProperty property, final Object value);
 
 	/**
 	 * Ajoute une définition au champ défini par fieldName.
@@ -27,7 +26,7 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	 * @param fieldName Nom du champ
 	 * @param definitionKey Clé de la définition
 	 */
-	DynamicDefinitionBuilder addDefinition(final String fieldName, final DynamicDefinitionKey definitionKey);
+	DynamicDefinitionBuilder withDefinition(final String fieldName, final DynamicDefinitionKey definitionKey);
 
 	/**
 	 * Ajoute une liste de définitions au champ défini par fieldName.
@@ -35,12 +34,12 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	 * @param fieldName Nom du champ
 	 * @param definitionKeyList  Liste des clés de définition
 	 */
-	void addDefinitionList(final String fieldName, final List<DynamicDefinitionKey> definitionKeyList);
+	DynamicDefinitionBuilder withDefinitions(final String fieldName, final List<DynamicDefinitionKey> definitionKeys);
 
 	/**
 	 * Ajoute une définition au champ défini par fieldName.
 	 * @param fieldName Nom du champ
 	 * @param definition Définition
 	 */
-	void addChildDefinition(final String fieldName, final DynamicDefinition definition);
+	DynamicDefinitionBuilder withChildDefinition(final String fieldName, final DynamicDefinition definition);
 }

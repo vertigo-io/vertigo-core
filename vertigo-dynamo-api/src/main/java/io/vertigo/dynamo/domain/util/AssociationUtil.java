@@ -8,7 +8,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Classe utilitaire permettant de travailler sur les associations.
  *
  * @author pchretien
- * @version $Id: AssociationUtil.java,v 1.3 2013/10/22 12:33:41 pchretien Exp $
  */
 public final class AssociationUtil {
 	//	private static final Log LOG = LogFactory.getLog(AssociationHelper.class);

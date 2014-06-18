@@ -11,7 +11,6 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
  * - ALL_DT_PERSONNE.
  *
  * @author npiedeloup
- * @version $Id: DtListURIAll.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public final class DtListURIAll extends DtListURI {
 	private static final long serialVersionUID = -1227046775032730925L;

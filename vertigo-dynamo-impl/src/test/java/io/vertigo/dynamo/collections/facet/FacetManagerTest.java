@@ -26,7 +26,6 @@ import org.junit.Test;
 
 /**
  * @author  npiedeloup
- * @version $Id: FacetManagerTest.java,v 1.3 2014/01/20 17:51:47 pchretien Exp $
  */
 public final class FacetManagerTest extends AbstractTestCaseJU4 {
 	@Inject

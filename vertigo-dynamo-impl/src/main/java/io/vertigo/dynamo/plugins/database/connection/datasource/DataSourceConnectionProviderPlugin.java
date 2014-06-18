@@ -18,7 +18,6 @@ import javax.sql.DataSource;
  * ConnectionProvider permettant la connexion à une datasource Java.
  *
  * @author alauthier
- * @version $Id: DataSourceConnectionProviderPlugin.java,v 1.5 2013/10/22 12:30:57 pchretien Exp $
  */
 public final class DataSourceConnectionProviderPlugin extends AbstractConnectionProviderPlugin {
 	/**

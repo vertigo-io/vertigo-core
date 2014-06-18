@@ -9,7 +9,6 @@ import io.vertigo.kernel.metamodel.DefinitionReference;
  * Noeud d'une association.
  *
  * @author  jcassignol, pchretien
- * @version $Id: AssociationNode.java,v 1.7 2013/10/22 12:31:50 pchretien Exp $
  */
 public final class AssociationNode {
 	@JsonExclude

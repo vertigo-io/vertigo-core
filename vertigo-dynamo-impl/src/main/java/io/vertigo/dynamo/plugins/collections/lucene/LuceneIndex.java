@@ -13,7 +13,6 @@ import org.apache.lucene.index.IndexWriter;
  * Interface réprésentant un IndexLucene.
  * 
  * @author npiedeloup
- * @version $Id: LuceneIndex.java,v 1.2 2014/01/20 17:46:01 pchretien Exp $
  * @param <D> type d'objet indexé
  */
 public interface LuceneIndex<D extends DtObject> extends Serializable {

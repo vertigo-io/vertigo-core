@@ -1,6 +1,6 @@
 package io.vertigo.dynamox.domain.formatter;
 
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.util.StringUtil;
@@ -9,7 +9,6 @@ import io.vertigo.kernel.util.StringUtil;
  * Gestion des formattages de String.
  *
  * @author pchretien
- * @version $Id: FormatterString.java,v 1.3 2013/10/22 11:00:06 pchretien Exp $
  */
 public final class FormatterString extends AbstractFormatterImpl {
 	/**
@@ -57,15 +56,15 @@ public final class FormatterString extends AbstractFormatterImpl {
 	}
 
 	/** {@inheritDoc} */
-	public Object stringToValue(final String strValue, final KDataType dataType) {
-		Assertion.checkArgument(dataType == KDataType.String, "Formatter ne s'applique qu'aux Strings");
+	public Object stringToValue(final String strValue, final DataType dataType) {
+		Assertion.checkArgument(dataType == DataType.String, "Formatter ne s'applique qu'aux Strings");
 		//----------------------------------------------------------------------
 		return apply(strValue);
 	}
 
 	/** {@inheritDoc} */
-	public String valueToString(final Object objValue, final KDataType dataType) {
-		Assertion.checkArgument(dataType == KDataType.String, "Formatter ne s'applique qu'aux Strings");
+	public String valueToString(final Object objValue, final DataType dataType) {
+		Assertion.checkArgument(dataType == DataType.String, "Formatter ne s'applique qu'aux Strings");
 		//----------------------------------------------------------------------
 		final String result = apply((String) objValue);
 		if (result == null) {

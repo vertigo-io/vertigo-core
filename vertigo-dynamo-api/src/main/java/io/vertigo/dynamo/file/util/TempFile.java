@@ -6,7 +6,6 @@ import java.io.IOException;
 /**
  * Fichier temporaire supprimé automatiquement après utilisation.
  * @author npiedeloup
- * @version $Id: TempFile.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public final class TempFile extends File {
 

@@ -16,7 +16,6 @@ import java.io.Serializable;
  * Implémentation standard threadSafe des mécanismes permettant de sérialiser/ dé-sérialiser un objet.
  *
  * @author  mcrouzet, pchretien
- * @version $Id: SerializationCodec.java,v 1.6 2013/11/15 15:27:29 pchretien Exp $
  */
 public final class SerializationCodec implements Codec<Serializable, byte[]> {
 
@@ -52,4 +51,4 @@ public final class SerializationCodec implements Codec<Serializable, byte[]> {
 		}
 	}
 
-}
+}

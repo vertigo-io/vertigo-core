@@ -6,7 +6,6 @@ import io.vertigo.studio.mda.Result;
  * Interface des generateurs de fichier.
  * 
  * @author dchallas
- * @version $Id: FileGenerator.java,v 1.1 2013/07/11 10:04:04 npiedeloup Exp $
  */
 public interface FileGenerator {
 	/**

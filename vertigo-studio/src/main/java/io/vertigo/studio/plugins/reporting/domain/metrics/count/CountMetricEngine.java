@@ -10,7 +10,6 @@ import io.vertigo.studio.reporting.MetricEngine;
  * Comptage du nombre de lignes.
  *
  * @author pchretien
- * @version $Id: CountMetricEngine.java,v 1.5 2014/01/28 18:49:55 pchretien Exp $
  */
 public final class CountMetricEngine implements MetricEngine<DtDefinition, CountMetric> {
 	private final PersistenceManager persistenceManager;

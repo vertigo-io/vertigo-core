@@ -11,7 +11,6 @@ import java.util.Map;
  * Configuration des données mises en cache.
  * 
  * @author  pchretien
- * @version $Id: CacheStoreConfiguration.java,v 1.5 2014/01/24 17:59:38 pchretien Exp $
  */
 public final class CacheStoreConfiguration {
 	/* Liste des DT gérées par le cache, et si le mode de chargement unitaire ou ensembliste. */

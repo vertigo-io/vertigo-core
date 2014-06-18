@@ -11,7 +11,6 @@ import io.vertigo.kernel.util.ClassUtil;
  * Dans la plupart des cas le moyen est une classe.
  * Dans certain cs il peut s'agir du nom de la classe. 
  * @author  pchretien
- * @version $Id: WorkEngineProvider.java,v 1.4 2014/01/14 18:03:28 npiedeloup Exp $
  */
 public final class WorkEngineProvider<WR, W> {
 	private static final Injector INJECTOR = new Injector();

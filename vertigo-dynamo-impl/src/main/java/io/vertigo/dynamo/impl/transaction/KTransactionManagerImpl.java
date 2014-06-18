@@ -9,7 +9,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Implémentation standard du gestionnaire de transactions.
  *
  * @author  pchretien
- * @version $Id: KTransactionManagerImpl.java,v 1.3 2013/10/22 12:37:57 pchretien Exp $
  */
 public final class KTransactionManagerImpl implements KTransactionManager {
 	/**

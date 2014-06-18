@@ -25,7 +25,6 @@ import javax.inject.Inject;
  * Implémentation de ReportingPlugin.
  * 
  * @author pchretien
- * @version $Id: DomainReportingPlugin.java,v 1.7 2014/02/27 10:36:38 pchretien Exp $
  */
 public final class DomainReportingPlugin implements ReportingPlugin {
 	private final KTransactionManager transactionManager;

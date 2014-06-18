@@ -26,7 +26,6 @@ import org.apache.solr.client.solrj.SolrServer;
 /**
  * Gestion de la connexion au serveur Solr de manière transactionnel.
  * @author dchallas
- * @version $Id: AbstractSolrSearchServicesPlugin.java,v 1.10 2014/01/28 18:53:45 pchretien Exp $
  */
 public abstract class AbstractSolrSearchServicesPlugin implements SearchServicesPlugin, Activeable {
 	private static final IndexFieldNameResolver DEFAULT_INDEX_FIELD_NAME_RESOLVER = new IndexFieldNameResolver(Collections.<String, String> emptyMap());

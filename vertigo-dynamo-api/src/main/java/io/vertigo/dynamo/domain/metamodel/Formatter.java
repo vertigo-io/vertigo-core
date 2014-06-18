@@ -10,7 +10,6 @@ import io.vertigo.kernel.metamodel.Prefix;
  * - stringToValue remonte une exception typée, qui est interceptée et présentée en erreur utilisateur
  *
  * @author pchretien
- * @version $Id: Formatter.java,v 1.2 2013/10/22 12:25:18 pchretien Exp $
  */
 @Prefix("FMT")
 public interface Formatter extends Definition {
@@ -25,7 +24,7 @@ public interface Formatter extends Definition {
 	 * @param dataType Type
 	 * @return  chaine formattée
 	 */
-	String valueToString(Object objValue, KDataType dataType);
+	String valueToString(Object objValue, DataType dataType);
 
 	/**
 	 * Transforme une String en valeur typée.
@@ -34,5 +33,5 @@ public interface Formatter extends Definition {
 	 * @return  Valeur typée (déformattage)
 	 * @throws FormatterException Erreur de parsing
 	 */
-	Object stringToValue(String strValue, KDataType dataType) throws FormatterException;
+	Object stringToValue(String strValue, DataType dataType) throws FormatterException;
 }

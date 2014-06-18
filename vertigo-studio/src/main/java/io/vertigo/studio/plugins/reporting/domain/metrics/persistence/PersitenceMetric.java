@@ -4,7 +4,6 @@ import io.vertigo.studio.reporting.Metric;
 
 /**
  * @author pchretien
- * @version $Id: PersitenceMetric.java,v 1.1 2013/07/11 10:04:04 npiedeloup Exp $
  * Résultat du plugin JoinCount
  */
 public final class PersitenceMetric implements Metric {

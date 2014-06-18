@@ -5,7 +5,6 @@ import io.vertigo.studio.reporting.Metric;
 
 /**
  * @author pchretien
- * @version $Id: CountMetric.java,v 1.8 2013/10/22 10:47:33 pchretien Exp $
  * Résultat du plugin JoinCount
  */
 public final class CountMetric implements Metric {

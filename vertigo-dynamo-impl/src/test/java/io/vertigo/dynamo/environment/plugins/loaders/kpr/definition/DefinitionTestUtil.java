@@ -12,7 +12,6 @@ import java.util.List;
 /**
  * Helper pour les tests de regles sur les Definitions.
  * @author npiedeloup
- * @version $Id: DefinitionTestUtil.java,v 1.2 2013/07/29 09:44:01 pchretien Exp $
  */
 public final class DefinitionTestUtil implements DynamicRegistry {
 

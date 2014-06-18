@@ -1,12 +1,10 @@
 package io.vertigo.commons.cache;
 
-import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.kernel.component.ComponentInitializer;
 
 /**
  * Initialisation du manager des caches.
  * @author dchallas
- * @version $Id: CacheManagerInitializer.java,v 1.2 2013/10/22 10:46:21 pchretien Exp $
  */
 public final class CacheManagerInitializer implements ComponentInitializer<CacheManager> {
 	public static final String CONTEXT = "testCacheManager";

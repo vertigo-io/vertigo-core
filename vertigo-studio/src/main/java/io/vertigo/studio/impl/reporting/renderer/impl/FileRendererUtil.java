@@ -11,7 +11,6 @@ import java.io.IOException;
  * Classe utilitaire.
  * 
  * @author tchassagnette
- * @version $Id: FileRendererUtil.java,v 1.5 2014/02/27 10:29:29 pchretien Exp $
  */
 final class FileRendererUtil {
 

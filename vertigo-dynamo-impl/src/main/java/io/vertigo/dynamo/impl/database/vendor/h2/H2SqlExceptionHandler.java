@@ -11,7 +11,6 @@ import java.sql.SQLException;
  * Cette implémentation est adaptée pour H2.
  * 
  * @author jmainaud
- * @version $Id: H2SqlExceptionHandler.java,v 1.3 2013/10/22 12:34:28 pchretien Exp $
  */
 final class H2SqlExceptionHandler extends AbstractSQLExceptionHandler {
 

@@ -11,7 +11,6 @@ import javax.inject.Inject;
  * Manager de gestion du cache.
  *
  * @author pchretien
- * @version $Id: CacheManagerImpl.java,v 1.5 2013/10/22 12:35:12 pchretien Exp $
  */
 public final class CacheManagerImpl implements CacheManager {
 	private final CachePlugin cachePlugin;

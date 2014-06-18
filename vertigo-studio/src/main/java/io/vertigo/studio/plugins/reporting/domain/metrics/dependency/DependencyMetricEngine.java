@@ -11,7 +11,6 @@ import io.vertigo.studio.reporting.MetricEngine;
  * Comptage du nombre de champs.
  *
  * @author pchretien
- * @version $Id: DependencyMetricEngine.java,v 1.5 2014/01/28 18:49:55 pchretien Exp $
  */
 public final class DependencyMetricEngine implements MetricEngine<DtDefinition, DependencyMetric> {
 

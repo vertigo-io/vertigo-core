@@ -27,7 +27,6 @@ import javax.inject.Inject;
  * non SQL pour les traitements de FileInfo.
  *
  * @author pchretien, npiedeloup
- * @version $Id: DbFileStorePlugin.java,v 1.6 2014/01/20 17:49:32 pchretien Exp $
  */
 public final class DbFileStorePlugin implements FileStorePlugin {
 	private static final String STORE_READ_ONLY = "Le store est en readOnly";
@@ -36,7 +35,6 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 	 * Liste des champs du Dto de stockage.
 	 * Ces champs sont obligatoire sur les Dt associés aux fileInfoDefinitions
 	 * @author npiedeloup
-	 * @version $Id: DbFileStorePlugin.java,v 1.6 2014/01/20 17:49:32 pchretien Exp $
 	 */
 	private static enum DtoFields {
 		FILE_NAME, MIME_TYPE, LAST_MODIFIED, LENGTH, FILE_DATA, FIL_ID

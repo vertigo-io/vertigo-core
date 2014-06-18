@@ -15,7 +15,6 @@ import java.util.Date;
  * Classe de bouchon pour mettre des données fictives dans les requêtes.
  *
  * @author tchassagnette
- * @version $Id: TaskPopulator.java,v 1.5 2014/01/28 18:49:55 pchretien Exp $
  */
 public final class TaskPopulator {
 	private final TaskDefinition taskDefinition;

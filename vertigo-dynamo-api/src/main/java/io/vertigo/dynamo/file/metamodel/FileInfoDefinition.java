@@ -16,7 +16,6 @@ import io.vertigo.kernel.util.StringUtil;
  * Par défaut elle est chargée au (re)démarrage du serveur.
  *
  * @author  npiedeloup, pchretien
- * @version $Id: FileInfoDefinition.java,v 1.3 2013/10/22 12:33:54 pchretien Exp $
  */
 @Prefix("FI")
 public final class FileInfoDefinition implements Definition {

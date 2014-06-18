@@ -14,7 +14,6 @@ import java.math.BigInteger;
  * The configuration is like the configuration of Database's decimal (DECIMAL(M,D)).
  * Where M is the maximum of digits (the precision) and D is the number of digits to the right of the decimal point (the scale).
  * @author  mlaroche
- * @version $Id:$
  */
 public final class ConstraintBigDecimal extends AbstractConstraintImpl<String, BigDecimal> {
 

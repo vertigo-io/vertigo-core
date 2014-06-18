@@ -2,7 +2,7 @@ package io.vertigo.dynamo.impl.collections.functions.filter;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Option;
@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
 
 /**
  * Parser des filtres utilisant une syntaxe définie.
- * @version $Id: DtListPatternFilterUtil.java,v 1.4 2014/01/20 17:45:43 pchretien Exp $
  */
 final class DtListPatternFilterUtil {
 
@@ -47,7 +46,7 @@ final class DtListPatternFilterUtil {
 		//Si on trouve un pattern, on passe sur du code spécifique
 		final String fieldName = parsedFilter[1]; //attention parsedFilter[0] = filtre entier
 		final DtField dtField = dtDefinition.getField(fieldName);
-		final KDataType dataType = dtField.getDomain().getDataType();
+		final DataType dataType = dtField.getDomain().getDataType();
 
 		switch (filterPattern) {
 			case Range:
@@ -81,12 +80,12 @@ final class DtListPatternFilterUtil {
 		return Option.some(groups);
 	}
 
-	private static <D extends DtObject> DtListFilter<D> createDtListTermFilter(final String[] parsedFilter, final String fieldName, final KDataType dataType) {
+	private static <D extends DtObject> DtListFilter<D> createDtListTermFilter(final String[] parsedFilter, final String fieldName, final DataType dataType) {
 		final Option<Comparable> filterValue = convertToComparable(parsedFilter[2], dataType, false);
 		return new DtListValueFilter<>(fieldName, (Serializable) filterValue.get());
 	}
 
-	private static <D extends DtObject> DtListFilter<D> createDtListRangeFilter(final String[] parsedFilter, final String fieldName, final KDataType dataType) {
+	private static <D extends DtObject> DtListFilter<D> createDtListRangeFilter(final String[] parsedFilter, final String fieldName, final DataType dataType) {
 		final boolean isMinInclude = "[".equals(parsedFilter[2]);
 		final Option<Comparable> minValue = convertToComparable(parsedFilter[3], dataType, true);
 		final Option<Comparable> maxValue = convertToComparable(parsedFilter[4], dataType, true);
@@ -94,7 +93,7 @@ final class DtListPatternFilterUtil {
 		return new DtListRangeFilter<>(fieldName, minValue, maxValue, isMinInclude, isMaxInclude);
 	}
 
-	private static Option<Comparable> convertToComparable(final String valueToConvert, final KDataType dataType, final boolean acceptJoker) {
+	private static Option<Comparable> convertToComparable(final String valueToConvert, final DataType dataType, final boolean acceptJoker) {
 		final String stringValue = valueToConvert.trim();
 		if (acceptJoker && "*".equals(stringValue)) {
 			return Option.none();//pas de test

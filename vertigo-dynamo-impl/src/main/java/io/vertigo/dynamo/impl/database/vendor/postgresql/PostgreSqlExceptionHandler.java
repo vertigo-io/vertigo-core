@@ -11,7 +11,6 @@ import java.sql.SQLException;
  * Cette implémentation est adaptée pour PostgreSQL.
  * 
  * @author pforhan
- * @version $Id: PostgreSqlExceptionHandler.java,v 1.3 2013/10/22 10:43:22 pchretien Exp $
  */
 final class PostgreSqlExceptionHandler extends AbstractSQLExceptionHandler {
 	/**

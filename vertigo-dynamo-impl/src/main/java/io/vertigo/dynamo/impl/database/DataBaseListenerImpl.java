@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
  * Implémentation standard du Listener de réception des événements produits par l'exécution des tachess.
  * 
  * @author pchretien
- * @version $Id: DataBaseListenerImpl.java,v 1.3 2013/10/22 12:24:21 pchretien Exp $
  */
 final class DataBaseListenerImpl implements DataBaseListener {
 	/** ProcessMetaData Requete SQL */

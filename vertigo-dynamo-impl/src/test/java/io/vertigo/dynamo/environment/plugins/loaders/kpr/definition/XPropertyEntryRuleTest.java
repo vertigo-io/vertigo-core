@@ -2,9 +2,8 @@ package io.vertigo.dynamo.environment.plugins.loaders.kpr.definition;
 
 import io.vertigo.commons.parser.NotFoundException;
 import io.vertigo.commons.parser.Parser;
-import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
 import io.vertigo.dynamo.impl.environment.kernel.meta.EntityProperty;
+import io.vertigo.dynamo.impl.environment.kernel.meta.PrimitiveType;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.XPropertyEntry;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.XPropertyEntryRule;
 
@@ -26,8 +25,8 @@ public final class XPropertyEntryRuleTest {
 				return LABEL;
 			}
 
-			public DataType getDataType() {
-				return KDataType.String;
+			public PrimitiveType getPrimitiveType() {
+				return PrimitiveType.String;
 			}
 		});
 		entityProperties.add(new EntityProperty() {
@@ -35,8 +34,8 @@ public final class XPropertyEntryRuleTest {
 				return SIZE;
 			}
 
-			public DataType getDataType() {
-				return KDataType.String;
+			public PrimitiveType getPrimitiveType() {
+				return PrimitiveType.String;
 			}
 		});
 		MAIN = new XPropertyEntryRule(entityProperties);

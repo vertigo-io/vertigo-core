@@ -16,7 +16,6 @@ import java.util.List;
  * Le solver est une fonction stateless qui prend en entrée le Repository du Model et calcule en sortie la liste des définitions. 
  * 
  * @author  pchretien
- * @version $Id: DynamicSolver.java,v 1.5 2013/10/22 12:29:17 pchretien Exp $
  */
 final class DynamicSolver {
 	/**

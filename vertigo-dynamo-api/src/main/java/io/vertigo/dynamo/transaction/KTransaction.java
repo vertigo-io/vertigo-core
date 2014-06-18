@@ -8,7 +8,6 @@ package io.vertigo.dynamo.transaction;
  * - peut posséder (ou être) une transaction imbriquée.
  *
  * @author  pchretien
- * @version $Id: KTransaction.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public interface KTransaction {
 	/**

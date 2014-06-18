@@ -8,7 +8,6 @@ import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 
 /**
  * @author pchretien
- * @version $Id: TaskGrammar.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 final class TaskGrammar extends GrammarProvider {
 	static final String TASK_ATTRIBUTE = "attribute";

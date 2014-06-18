@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
  * Classe de ressource, gérant la transaction des fichiers.
  * 
  * @author skerdudou
- * @version $Id: FsTransactionResource.java,v 1.2 2014/01/20 17:49:32 pchretien Exp $
  */
 public final class FsTransactionResource implements KTransactionResource {
 

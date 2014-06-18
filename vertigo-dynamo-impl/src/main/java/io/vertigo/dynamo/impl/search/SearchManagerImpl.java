@@ -10,7 +10,6 @@ import javax.inject.Inject;
 /**
  * Implémentation standard du gestionnaire des indexes de recherche.
  * @author dchallas
- * @version $Id: SearchManagerImpl.java,v 1.4 2013/10/22 10:58:34 pchretien Exp $
  */
 public final class SearchManagerImpl implements SearchManager {
 	@Inject

@@ -8,7 +8,6 @@ import io.vertigo.dynamo.database.vendor.SQLMapping;
  * Gestiond de la base de données PostrgreSQL.
  * 
  * @author pchretien
- * @version $Id: PostgreSqlDataBase.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 public final class PostgreSqlDataBase implements DataBase {
 	private final SQLExceptionHandler sqlExceptionHandler = new PostgreSqlExceptionHandler();

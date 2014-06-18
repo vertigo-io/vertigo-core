@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit;
  * D'un coté un Dispatcher, dépile les travaux et les envoie à un pool de workers pour être exécuter.
  * 
  * @author pchretien, npiedeloup
- * @version $Id: WorkersPool.java,v 1.8 2013/11/15 15:33:20 pchretien Exp $
  */
 final class WorkersPool implements Activeable {
 	/** Pile des works à faire. */

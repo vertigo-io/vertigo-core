@@ -7,7 +7,6 @@ import io.vertigo.kernel.component.Plugin;
  * SQL ou non SQL.
  *
  * @author  pchretien
- * @version $Id: StorePlugin.java,v 1.2 2013/10/22 12:37:38 pchretien Exp $
  */
 public interface StorePlugin extends Plugin, Store {
 	//

@@ -2,7 +2,7 @@ package io.vertigo.dynamox.domain.formatter;
 
 import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
-import io.vertigo.dynamo.domain.metamodel.KDataType;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.lang.Assertion;
@@ -33,8 +33,7 @@ import java.util.StringTokenizer;
  *  On affiche la date au format dd/MM/yyyy
  *  En saisie on autorise dd/MM/yyyy et dd/MM/yy
  *
- * @author pchretien, evernat
- * @version $Id: FormatterDate.java,v 1.5 2013/10/22 15:22:26 pchretien Exp $
+ * @author pchretien
  */
 public final class FormatterDate extends AbstractFormatterImpl {
 	/**
@@ -96,15 +95,15 @@ public final class FormatterDate extends AbstractFormatterImpl {
 	}
 
 	/** {@inheritDoc} */
-	public String valueToString(final Object objValue, final KDataType dataType) {
-		Assertion.checkArgument(dataType == KDataType.Date, "Formatter ne s'applique qu'aux dates");
+	public String valueToString(final Object objValue, final DataType dataType) {
+		Assertion.checkArgument(dataType == DataType.Date, "Formatter ne s'applique qu'aux dates");
 		//----------------------------------------------------------------------
 		return dateToString((Date) objValue);
 	}
 
 	/** {@inheritDoc} */
-	public Object stringToValue(final String strValue, final KDataType dataType) throws FormatterException {
-		Assertion.checkArgument(dataType == KDataType.Date, "Formatter ne s'applique qu'aux dates");
+	public Object stringToValue(final String strValue, final DataType dataType) throws FormatterException {
+		Assertion.checkArgument(dataType == DataType.Date, "Formatter ne s'applique qu'aux dates");
 		//----------------------------------------------------------------------
 		final String sValue = StringUtil.isEmpty(strValue) ? null : strValue.trim();
 

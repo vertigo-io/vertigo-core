@@ -25,7 +25,6 @@ import io.vertigo.kernel.lang.Assertion;
  * dans le framework Dynamo ou le framework commun de l'application.
  *
  * @author  pchretien
- * @version $Id: Property.java,v 1.3 2013/10/22 12:25:18 pchretien Exp $
  */
 public final class Property<T> {
 	/**

@@ -5,7 +5,6 @@ import io.vertigo.kernel.lang.Assertion;
 /**
  * Expression d'un champs Computed.
  * @author npiedeloup
- * @version $Id: ComputedExpression.java,v 1.4 2013/10/22 12:25:18 pchretien Exp $
  */
 public final class ComputedExpression {
 	private final String javaCode;

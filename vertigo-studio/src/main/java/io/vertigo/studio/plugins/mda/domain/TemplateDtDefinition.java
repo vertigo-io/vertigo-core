@@ -16,7 +16,6 @@ import java.util.List;
  * Objet utilisé par FreeMarker.
  * 
  * @author pchretien
- * @version $Id: TemplateDtDefinition.java,v 1.5 2014/02/27 10:29:00 pchretien Exp $
  */
 public final class TemplateDtDefinition {
 	private final DtDefinition dtDefinition;

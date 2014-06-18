@@ -8,7 +8,6 @@ import io.vertigo.kernel.lang.MessageText;
  * Par nature une contrainte est une ressource partagée et non modifiable.
  *
  * @author pchretien
- * @version $Id: AbstractConstraintImpl.java,v 1.4 2013/10/22 10:45:21 pchretien Exp $
  * @param <J> Type java de la propriété associée à la contrainte
  * @param <D> Type java de la valeur à contréler
  */

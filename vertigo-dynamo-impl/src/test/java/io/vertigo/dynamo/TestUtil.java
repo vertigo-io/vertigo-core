@@ -23,7 +23,6 @@ import org.junit.Assert;
  * Utilitaire pour construire des cas de tests.
  *
  * @author npiedeloup
- * @version $Id: TestUtil.java,v 1.7 2013/10/23 12:05:35 pchretien Exp $
  */
 public final class TestUtil {
 	/**

@@ -14,7 +14,6 @@ import io.vertigo.kernel.component.Manager;
  * - Soit de créer une transaction autonome (au sein de la transaction courante).
  *
  * @author  pchretien
- * @version $Id: KTransactionManager.java,v 1.2 2013/10/22 12:31:28 pchretien Exp $
  */
 public interface KTransactionManager extends Manager {
 	/**

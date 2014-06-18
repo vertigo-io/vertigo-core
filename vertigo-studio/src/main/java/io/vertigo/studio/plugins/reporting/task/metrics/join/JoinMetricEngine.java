@@ -8,7 +8,6 @@ import io.vertigo.studio.reporting.MetricEngine;
  * Plugin qui compte le nombre de jointures déclarées dans la requête.
  *
  * @author tchassagnette
- * @version $Id: JoinMetricEngine.java,v 1.4 2014/01/28 18:49:55 pchretien Exp $
  */
 public final class JoinMetricEngine implements MetricEngine<TaskDefinition, JoinMetric> {
 	/** {@inheritDoc} */

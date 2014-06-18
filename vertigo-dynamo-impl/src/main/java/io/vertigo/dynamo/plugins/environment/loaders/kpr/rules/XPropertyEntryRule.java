@@ -32,7 +32,6 @@ import java.util.Set;
  * Exemple : maxLength:"10";
  *
  * @author pchretien
- * @version $Id: XPropertyEntryRule.java,v 1.8 2014/01/24 17:59:38 pchretien Exp $
  */
 public final class XPropertyEntryRule extends AbstractRule<XPropertyEntry, List<?>> {
 	private final Map<String, EntityProperty> entityProperties;

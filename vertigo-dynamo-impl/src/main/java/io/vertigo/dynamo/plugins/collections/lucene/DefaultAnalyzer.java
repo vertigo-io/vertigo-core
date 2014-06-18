@@ -20,7 +20,6 @@ import org.apache.lucene.util.Version;
  * Classe d'analyse des chaïnes de caractères.
  * Gestion des mots vides en français et en anglais.
  * @author  pchretien
- * @version $Id: DefaultAnalyzer.java,v 1.1 2013/07/10 15:45:32 npiedeloup Exp $
  */
 final class DefaultAnalyzer extends Analyzer implements Serializable {
 	private static final long serialVersionUID = -653059693798148193L;

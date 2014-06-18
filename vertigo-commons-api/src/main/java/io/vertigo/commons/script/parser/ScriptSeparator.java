@@ -12,7 +12,6 @@ import io.vertigo.kernel.lang.Assertion;
  *      Exemple <% et %> : XXXX<%if (1=1){%>
  *
  * @author  pchretien
- * @version $Id: ScriptSeparator.java,v 1.4 2013/10/22 12:37:18 pchretien Exp $
  */
 public final class ScriptSeparator {
 	/**
