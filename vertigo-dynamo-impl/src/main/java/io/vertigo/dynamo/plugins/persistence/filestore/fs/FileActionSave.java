@@ -43,15 +43,18 @@ final class FileActionSave implements FileAction {
 		newFile = new File(path + EXT_SEPARATOR + new Date().getTime() + EXT_SEPARATOR + EXT_NEW);
 
 		// création du fichier temporaire
-		newFile.getParentFile().mkdirs();
+		if (!newFile.getParentFile().mkdirs()) {
+			LOG.error("Can't create temp directories " + newFile.getAbsolutePath());
+			throw new VRuntimeException("Can't create temp directories");
+		}
 		try {
 			if (!newFile.createNewFile()) {
-				LOG.error("Impossible de créer le fichier temporaire " + newFile.getAbsolutePath());
-				throw new VRuntimeException("Impossible d'ajouter le fichier.");
+				LOG.error("Can't create temp file " + newFile.getAbsolutePath());
+				throw new VRuntimeException("Can't create temp file.");
 			}
 		} catch (final IOException e) {
-			LOG.error("Impossible de créer le fichier temporaire " + newFile.getAbsolutePath());
-			throw new VRuntimeException("Impossible d'ajouter le fichier.", e);
+			LOG.error("Can't save temp file " + newFile.getAbsolutePath());
+			throw new VRuntimeException("Can't save temp file.", e);
 		}
 
 		// copie des données dans le fichier temporaire. Permet de vérifier l'espace disque avant d'arriver à la phase
@@ -59,8 +62,8 @@ final class FileActionSave implements FileAction {
 		try {
 			FileUtil.copy(inputStream, newFile);
 		} catch (final IOException e) {
-			LOG.error("Impossible de copier les données du fichier uploadé dans : " + newFile.getAbsolutePath());
-			throw new VRuntimeException("Impossible d'enregistrer les données du fichier.", e);
+			LOG.error("Can't copy uploaded file to : " + newFile.getAbsolutePath());
+			throw new VRuntimeException("Can't save uploaded file.", e);
 		}
 
 		state = State.READY;
