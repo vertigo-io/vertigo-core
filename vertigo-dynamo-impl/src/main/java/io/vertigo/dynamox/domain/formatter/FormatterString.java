@@ -5,12 +5,17 @@ import io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.util.StringUtil;
 
+import java.util.Locale;
+
 /**
  * Gestion des formattages de String.
  *
  * @author pchretien
  */
 public final class FormatterString extends AbstractFormatterImpl {
+
+	private static final Locale TO_UPPER_CASE_LOCALE = Locale.FRANCE;
+
 	/**
 	 * Mode utilisé.
 	 * Pour tous les mode un "trim" à droite et à gauche est effectué.
@@ -85,10 +90,10 @@ public final class FormatterString extends AbstractFormatterImpl {
 					result = sValue;
 					break;
 				case UPPER:
-					result = sValue.toUpperCase();
+					result = sValue.toUpperCase(TO_UPPER_CASE_LOCALE);
 					break;
 				case LOWER:
-					result = sValue.toLowerCase();
+					result = sValue.toLowerCase(TO_UPPER_CASE_LOCALE);
 					break;
 				case UPPER_FIRST:
 					result = firstLetterUpper(sValue);

@@ -21,6 +21,7 @@ import io.vertigo.kernel.metamodel.DefinitionUtil;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -33,8 +34,8 @@ import org.apache.log4j.Logger;
  * @author pchretien
  */
 public final class OOMLoaderPlugin implements LoaderPlugin {
+	private static final Locale TO_UPPER_CASE_LOCALE = Locale.FRANCE;
 	private static final Logger LOGGER = Logger.getLogger(OOMLoaderPlugin.class);
-
 	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
 
@@ -196,7 +197,7 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 	}
 
 	private String getDtDefinitionName(final String code) {
-		return DT_DEFINITION_PREFIX + SEPARATOR + code.toUpperCase();
+		return DT_DEFINITION_PREFIX + SEPARATOR + code.toUpperCase(TO_UPPER_CASE_LOCALE);
 	}
 
 	private DynamicDefinitionKey getDtDefinitionKey(final String code) {

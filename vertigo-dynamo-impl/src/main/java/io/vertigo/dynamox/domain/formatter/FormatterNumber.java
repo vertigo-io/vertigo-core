@@ -1,7 +1,7 @@
 package io.vertigo.dynamox.domain.formatter;
 
-import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.JsonExclude;
@@ -130,7 +130,9 @@ public class FormatterNumber extends AbstractFormatterImpl {
 			return Integer.valueOf(sValue);
 		} catch (final NumberFormatException e) {
 			// C'est un entier trop grand
-			throw new FormatterException(Resources.DYNAMOX_NUMBER_TOO_BIG);
+			final FormatterException formatterException = new FormatterException(Resources.DYNAMOX_NUMBER_TOO_BIG);
+			formatterException.initCause(e);
+			throw formatterException;
 		}
 	}
 

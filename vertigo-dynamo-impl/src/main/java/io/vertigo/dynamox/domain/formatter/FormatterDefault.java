@@ -1,8 +1,8 @@
 package io.vertigo.dynamox.domain.formatter;
 
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.DefinitionReference;
@@ -67,6 +67,9 @@ public final class FormatterDefault extends AbstractFormatterImpl {
 			case Double:
 			case BigDecimal:
 				return numberformatterRef.get();
+			case DataStream:
+			case DtList:
+			case DtObject:
 			default:
 				throw new IllegalArgumentException(dataType + " n'est pas géré par ce formatter");
 		}
