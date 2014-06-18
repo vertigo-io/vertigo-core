@@ -5,11 +5,16 @@ package io.vertigo.dynamo.plugins.collections.lucene;
  * 
  * @author  pchretien
  */
-public interface LuceneConstants {
+public final class LuceneConstants {
+
+	private LuceneConstants() {
+		//rien
+	}
+
 	/**
 	 * Tableau des mots vides en Français et en Anglais.
 	 */
-	String[] OUR_STOP_WORDS = { //
+	public static final String[] OUR_STOP_WORDS = { //
 	//
 			"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",//
 			// Anglais
@@ -18,5 +23,8 @@ public interface LuceneConstants {
 			"et", "ou", "au", "aux", "le", "la", "les", "du", "des", "leur", "leurs", "dans", "en", "ce", "ca", "ces", "cet", "cette", "qui", "que", "quoi", "dont", "quel", "quels", "quelle", "quelles", "pour", "comme", "il", "elle", "lui", "par", "avec", "cela", "celui-ci", "celui-là", "celui", "ceux", "celles", "non", "oui", "sur", "car", "de", "donc", "dont", "elles", "est", "ils", "je", "lors", "me", "mes", "mon", "ni", "nos", "notre", "nous", "on", "sa", "se", "ses", "si", "son", "ta", "tes", "ton", "tous", "tout", "toutes", "tu", "un", "une", "unes", "uns", "voici", "voilà", "vos", "votre", "vous", "vôtre"// 
 	};
 
-	String[] ELISION_ARTICLES = { "l", "m", "t", "qu", "n", "s", "j" };
+	/**
+	 * Tableau des elisions.
+	 */
+	public static final String[] ELISION_ARTICLES = { "l", "m", "t", "qu", "n", "s", "j" };
 }
