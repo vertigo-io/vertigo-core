@@ -11,10 +11,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * Manager de chargement de l'environnement.
- * Ce manager ce paramètre par l'ajout de plugins implémentant DynamicHandler.
- * Chaque plugins permet d'enrichir la grammaire et de transposer 
- * les DynamicDefinition lues dans les NameSpaces des Managers idoines.
+ * Manager de chargement de l'environnement. Ce manager ce paramètre par l'ajout
+ * de plugins implémentant DynamicHandler. Chaque plugins permet d'enrichir la
+ * grammaire et de transposer les DynamicDefinition lues dans les NameSpaces des
+ * Managers idoines.
+ * 
  * @author pchretien, npiedeloup
  */
 public final class EnvironmentManagerImpl implements EnvironmentManager, Activeable {
@@ -25,8 +26,9 @@ public final class EnvironmentManagerImpl implements EnvironmentManager, Activea
 
 	/** {@inheritDoc} */
 	public void start() {
-		//Pour des raisons d'optimisation mémoire on ne garde pas la liste des plugins dans le manager.
-		//Car ceux ci ne sont utilisé qu'une seule fois.
+		// Pour des raisons d'optimisation mémoire on ne garde pas la liste des
+		// plugins dans le manager.
+		// Car ceux ci ne sont utilisé qu'une seule fois.
 		load();
 	}
 
@@ -36,34 +38,9 @@ public final class EnvironmentManagerImpl implements EnvironmentManager, Activea
 	}
 
 	private void load() {
-		try {
-			//Création de l'environnement.
-			final Environment environment = createEnvironment();
-			//Chargement des données.
-			environment.load();
-		} catch (final LoaderException e) {
-			throw new VRuntimeException(e);
-		}
+		// Création de l'environnement.
+		final Environment environment = new Environment(dynamicRegistryPlugins,	loaderPlugins);
+		// Chargement des données.
+		environment.load();
 	}
-
-	/**
-	 * Création d'un environnement
-	 * @return Environnement
-	 */
-	private Environment createEnvironment() {
-		final CompositeDynamicRegistry handler = new CompositeDynamicRegistry(dynamicRegistryPlugins);
-
-		//Création du repositoy des instances le la grammaire (=> model)
-		final DynamicDefinitionRepository dynamicModelRepository = new DynamicDefinitionRepository(handler);
-
-		//On enregistre les loaders 
-		final List<LoaderPlugin> envLoaderPlugins = new ArrayList<>();
-		//--Enregistrement des primitives du langage
-		envLoaderPlugins.add(new KernelLoaderPlugin());
-		envLoaderPlugins.addAll(loaderPlugins);
-
-		//Création del'environnement
-		return new Environment(dynamicModelRepository, envLoaderPlugins);
-	}
-
 }

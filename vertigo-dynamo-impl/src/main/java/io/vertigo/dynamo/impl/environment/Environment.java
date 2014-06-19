@@ -36,19 +36,27 @@ public final class Environment {
 	//		TEST 
 	//	}
 
-	private final List<LoaderPlugin> loaderPlugins;
+	private final List<Loader> loaders;
 	private final DynamicDefinitionRepository dynamicModelRepository;
 
 	/**
 	 * Constructeur.
 	 * @param dynamicModelRepository  DynamicModelRepository
 	 */
-	Environment(final DynamicDefinitionRepository dynamicModelRepository, final List<LoaderPlugin> loaderPlugins) {
-		Assertion.checkNotNull(dynamicModelRepository);
+	Environment(List<DynamicRegistryPlugin> dynamicRegistryPlugins, final List<LoaderPlugin> loaderPlugins) {
+		Assertion.checkNotNull(dynamicRegistryPlugins);
 		Assertion.checkNotNull(loaderPlugins);
 		//---------------------------------------------------------------------
-		this.dynamicModelRepository = dynamicModelRepository;
-		this.loaderPlugins = new ArrayList<>(loaderPlugins);
+		//On enregistre les loaders 
+		this.loaders = new ArrayList<>();
+		//--Enregistrement des primitives du langage
+		this.loaders.add(new KernelLoader());
+		this.loaders.addAll(loaderPlugins);
+		
+		final CompositeDynamicRegistry handler = new CompositeDynamicRegistry(dynamicRegistryPlugins);
+
+		//Création du repositoy des instances le la grammaire (=> model)
+		this.dynamicModelRepository = new DynamicDefinitionRepository(handler);
 	}
 
 	//		final NameSpace nameSpace = Home.getNameSpace();
@@ -59,11 +67,11 @@ public final class Environment {
 	//			}
 	//		}
 
-	void load() throws LoaderException {
+	void load()  {
 		//On parcourt tous les loaders
 		//On charge le Modèle dans le référentiel central
-		for (final LoaderPlugin loaderPlugin : loaderPlugins) {
-			loaderPlugin.load(dynamicModelRepository);
+		for (final Loader loader : loaders) {
+			loader.load(dynamicModelRepository);
 		}
 
 		//On résout les références

@@ -45,7 +45,7 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 	}
 
 	/** {@inheritDoc} */
-	public void load(final DynamicDefinitionRepository dynamicModelrepository) throws LoaderException {
+	public void load(final DynamicDefinitionRepository dynamicModelrepository){
 		Assertion.checkNotNull(dynamicModelrepository);
 		Assertion.checkNotNull(kprURL);
 		//----------------------------------------------------------------------
