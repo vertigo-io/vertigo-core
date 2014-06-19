@@ -15,5 +15,5 @@ public interface Loader {
 	 * @param dynamicModelRepository DynamicModelRepository
 	 * @throws LoaderException Exception lors du chargement
 	 */
-	void load(DynamicDefinitionRepository dynamicModelRepository);
+	void load(String resource, DynamicDefinitionRepository dynamicModelRepository);
 }

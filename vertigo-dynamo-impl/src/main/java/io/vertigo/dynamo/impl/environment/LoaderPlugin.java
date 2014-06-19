@@ -7,5 +7,9 @@ import io.vertigo.kernel.component.Plugin;
  * @author pchretien
  */
 public interface LoaderPlugin extends Plugin, Loader {
-	//
+	/**
+	 * Type parsed by loader. 
+	 * Examples : oom, kpr, eaxmi...
+	 */
+	String getType();
 }

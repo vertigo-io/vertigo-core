@@ -5,6 +5,7 @@ import io.vertigo.kernel.lang.Assertion;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Environnement permettant de charger le Modèle.
@@ -18,25 +19,7 @@ import java.util.List;
  * @author pchretien
  */
 public final class Environment {
-	//	/**
-	//	 * Etat de l'environnement.
-	//	 */
-	//	enum Mode {
-	//		/**
-	//		 * Lors de la génération
-	//		 */
-	//		BUILD,
-	//		/**
-	//		 * En production.
-	//		 */
-	//		RUN, 
-	//		/**
-	//		 * En test.
-	//		 */
-	//		TEST 
-	//	}
-
-	private final List<Loader> loaders;
+	private final Map<String, Loader> loaders;
 	private final DynamicDefinitionRepository dynamicModelRepository;
 
 	/**
@@ -67,8 +50,8 @@ public final class Environment {
 	//			}
 	//		}
 
-	void load()  {
-		//On parcourt tous les loaders
+	void load(String type, String resource)  {
+		loaders.get(type).load(resource, dynamicModelRepository);
 		//On charge le Modèle dans le référentiel central
 		for (final Loader loader : loaders) {
 			loader.load(dynamicModelRepository);
@@ -77,4 +60,5 @@ public final class Environment {
 		//On résout les références
 		dynamicModelRepository.solve();
 	}
+	
 }

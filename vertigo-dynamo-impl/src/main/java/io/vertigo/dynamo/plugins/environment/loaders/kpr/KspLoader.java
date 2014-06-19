@@ -21,7 +21,7 @@ import java.nio.charset.Charset;
  *
  * @author pchretien
  */
-final class KspLoader implements Loader {
+final class KspLoader  {
 	private static final String CHARSET = "ISO-8859-1";
 	private final URL kspURL;
 
@@ -35,8 +35,7 @@ final class KspLoader implements Loader {
 		this.kspURL = kspURL;
 	}
 
-	/** {@inheritDoc} */
-	public void load(final DynamicDefinitionRepository dynamicModelrepository) {
+	 void load(final DynamicDefinitionRepository dynamicModelrepository) {
 		Assertion.checkNotNull(dynamicModelrepository);
 		try {
 			final String s = parseFile();
