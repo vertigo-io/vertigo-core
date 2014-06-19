@@ -33,7 +33,7 @@ final class FileUtil {
 		try (final Writer writer = new BufferedWriter(new FileWriter(file))) {
 			writer.write(content);
 			return true;
-		} catch (final Exception e) {
+		} catch (final IOException e) {
 			return false;
 		}
 	}
