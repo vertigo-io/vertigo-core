@@ -27,30 +27,28 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 	private static final String KPR_EXTENSION = ".kpr";
 	private static final String KSP_EXTENSION = ".ksp";
 
-	private final URL kprURL;
 	private final ResourceManager resourceManager;
 
-	//revoir
 	/**
 	 * Constructeur.
 	 * @param kprFileName Adresse du fichier KPR.
 	 */
 	@Inject
 	public KprLoaderPlugin(@Named("kpr") final String kprFileName, final ResourceManager resourceManager) {
-		Assertion.checkArgNotEmpty(kprFileName);
 		Assertion.checkNotNull(resourceManager);
 		//----------------------------------------------------------------------
-		kprURL = resourceManager.resolve(kprFileName);
 		this.resourceManager = resourceManager;
 	}
 
 	/** {@inheritDoc} */
-	public void load(final DynamicDefinitionRepository dynamicModelrepository) throws LoaderException {
+	public void load(final String resource, final DynamicDefinitionRepository dynamicModelrepository){
+		Assertion.checkArgNotEmpty(resource);
 		Assertion.checkNotNull(dynamicModelrepository);
-		Assertion.checkNotNull(kprURL);
 		//----------------------------------------------------------------------
+		final URL kprURL = resourceManager.resolve(resource);
+
 		for (final URL url : getKspFiles(kprURL, resourceManager)) {
-			final Loader loader = new KspLoader(url);
+			final KspLoader loader = new KspLoader(url);
 			loader.load(dynamicModelrepository);
 		}
 	}
@@ -105,4 +103,9 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 
 		return kspFileList;
 	}
+	
+	public String getType() {
+		return "kpr";
+	}
+
 }

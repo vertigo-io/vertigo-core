@@ -5,6 +5,7 @@ import io.vertigo.kernel.lang.Assertion;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Environnement permettant de charger le Modèle.
@@ -18,37 +19,27 @@ import java.util.List;
  * @author pchretien
  */
 public final class Environment {
-	//	/**
-	//	 * Etat de l'environnement.
-	//	 */
-	//	enum Mode {
-	//		/**
-	//		 * Lors de la génération
-	//		 */
-	//		BUILD,
-	//		/**
-	//		 * En production.
-	//		 */
-	//		RUN, 
-	//		/**
-	//		 * En test.
-	//		 */
-	//		TEST 
-	//	}
-
-	private final List<LoaderPlugin> loaderPlugins;
+	private final Map<String, Loader> loaders;
 	private final DynamicDefinitionRepository dynamicModelRepository;
 
 	/**
 	 * Constructeur.
 	 * @param dynamicModelRepository  DynamicModelRepository
 	 */
-	Environment(final DynamicDefinitionRepository dynamicModelRepository, final List<LoaderPlugin> loaderPlugins) {
-		Assertion.checkNotNull(dynamicModelRepository);
+	Environment(List<DynamicRegistryPlugin> dynamicRegistryPlugins, final List<LoaderPlugin> loaderPlugins) {
+		Assertion.checkNotNull(dynamicRegistryPlugins);
 		Assertion.checkNotNull(loaderPlugins);
 		//---------------------------------------------------------------------
-		this.dynamicModelRepository = dynamicModelRepository;
-		this.loaderPlugins = new ArrayList<>(loaderPlugins);
+		//On enregistre les loaders 
+		this.loaders = new ArrayList<>();
+		//--Enregistrement des primitives du langage
+		this.loaders.add(new KernelLoader());
+		this.loaders.addAll(loaderPlugins);
+		
+		final CompositeDynamicRegistry handler = new CompositeDynamicRegistry(dynamicRegistryPlugins);
+
+		//Création du repositoy des instances le la grammaire (=> model)
+		this.dynamicModelRepository = new DynamicDefinitionRepository(handler);
 	}
 
 	//		final NameSpace nameSpace = Home.getNameSpace();
@@ -59,14 +50,15 @@ public final class Environment {
 	//			}
 	//		}
 
-	void load() throws LoaderException {
-		//On parcourt tous les loaders
+	void load(String type, String resource)  {
+		loaders.get(type).load(resource, dynamicModelRepository);
 		//On charge le Modèle dans le référentiel central
-		for (final LoaderPlugin loaderPlugin : loaderPlugins) {
-			loaderPlugin.load(dynamicModelRepository);
+		for (final Loader loader : loaders) {
+			loader.load(dynamicModelRepository);
 		}
 
 		//On résout les références
 		dynamicModelRepository.solve();
 	}
+	
 }

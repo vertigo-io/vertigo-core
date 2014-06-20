@@ -39,23 +39,22 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
 
-	private final URL powerAMCURL;
 	private final Entity dtDefinitionEntity;
 	private final Entity dtFieldEntity;
 	private final Entity associationNNEntity;
 	private final Entity associationEntity;
+	private final ResourceManager resourceManager;
 
 	/**
 	 * Constructeur.
 	 * @param oomFileName Adresse du fichier powerAMC (OOM).
 	 */
 	@Inject
-	public OOMLoaderPlugin(@Named("oom") final String oomFileName, final ResourceManager resourceManager) {
-		Assertion.checkArgNotEmpty(oomFileName);
+	public OOMLoaderPlugin(final ResourceManager resourceManager) {
 		Assertion.checkNotNull(resourceManager);
 		//----------------------------------------------------------------------
+		this.resourceManager = resourceManager;
 		final DomainGrammar domainGrammar = DomainGrammar.INSTANCE;
-		powerAMCURL = resourceManager.resolve(oomFileName);
 		dtDefinitionEntity = domainGrammar.getDtDefinitionEntity();
 		dtFieldEntity = domainGrammar.getDtFieldEntity();
 		associationNNEntity = domainGrammar.getAssociationNNEntity();
@@ -63,9 +62,12 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 	}
 
 	/** {@inheritDoc} */
-	public void load(final DynamicDefinitionRepository dynamicModelrepository) {
+	public void load(final String resource, final DynamicDefinitionRepository dynamicModelrepository) {
+		Assertion.checkArgNotEmpty(resource);
 		Assertion.checkNotNull(dynamicModelrepository);
 		//----------------------------------------------------------------------
+		final URL powerAMCURL = resourceManager.resolve(resource);
+
 		final OOMLoader loader = new OOMLoader(powerAMCURL);
 
 		for (final OOMClass classOOM : loader.getClassOOMList()) {
@@ -203,4 +205,9 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 	private DynamicDefinitionKey getDtDefinitionKey(final String code) {
 		return new DynamicDefinitionKey(getDtDefinitionName(code));
 	}
+	
+	public String getType() {
+		return "oom";
+	}
+
 }

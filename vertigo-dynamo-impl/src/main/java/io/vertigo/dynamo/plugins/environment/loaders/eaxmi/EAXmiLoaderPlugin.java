@@ -34,23 +34,21 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
 
-	private final URL xmiFileURL;
 	private final Entity dtDefinitionEntity;
 	private final Entity dtFieldEntity;
 	private final Entity associationNNEntity;
 	private final Entity associationEntity;
-
+	private final ResourceManager resourceManager;
 	/**
 	 * Constructeur.
 	 * @param oomFileName Adresse du fichier powerAMC (OOM).
 	 */
 	@Inject
-	public EAXmiLoaderPlugin(@Named("xmi") final String xmiFileName, final ResourceManager resourceManager) {
-		Assertion.checkArgNotEmpty(xmiFileName);
+	public EAXmiLoaderPlugin(final ResourceManager resourceManager) {
 		Assertion.checkNotNull(resourceManager);
 		//----------------------------------------------------------------------
+		this.resourceManager = resourceManager;
 		final DomainGrammar domainGrammar = DomainGrammar.INSTANCE;
-		xmiFileURL = resourceManager.resolve(xmiFileName);
 		dtDefinitionEntity = domainGrammar.getDtDefinitionEntity();
 		dtFieldEntity = domainGrammar.getDtFieldEntity();
 		associationNNEntity = domainGrammar.getAssociationNNEntity();
@@ -58,9 +56,11 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 	}
 
 	/** {@inheritDoc} */
-	public void load(final DynamicDefinitionRepository dynamicModelrepository) {
+	public void load(final String resource, final DynamicDefinitionRepository dynamicModelrepository) {
+		Assertion.checkArgNotEmpty(resource);
 		Assertion.checkNotNull(dynamicModelrepository);
 		//----------------------------------------------------------------------
+		final URL xmiFileURL= resourceManager.resolve(resource);
 		final EAXmiLoader loader = new EAXmiLoader(xmiFileURL);
 
 		for (final EAXmiClass classXmi : loader.getClassList()) {
@@ -276,5 +276,10 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 
 		return result;
 	}
+	
+	public String getType() {
+		return "xmi";
+	}
+
 
 }

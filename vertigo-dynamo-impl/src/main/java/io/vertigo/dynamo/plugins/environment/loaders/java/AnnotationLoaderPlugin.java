@@ -37,7 +37,6 @@ import javax.inject.Named;
 public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
-	private final Iterable<Class<?>> classes;
 
 	private final Entity dtMetaDefinition;
 	private final Entity dtFieldMetaDefinition;
@@ -50,29 +49,22 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	 * @param dtDefinitionsClassName Liste des classes java à parser.
 	 */
 	@Inject
-	public AnnotationLoaderPlugin(@Named("classes") final String dtDefinitionsClassName) {
+	public AnnotationLoaderPlugin() {
 		final DomainGrammar domainGrammar = DomainGrammar.INSTANCE;
-		classes = getClasses(dtDefinitionsClassName);
 		dtMetaDefinition = domainGrammar.getDtDefinitionEntity();
 		dtFieldMetaDefinition = domainGrammar.getDtFieldEntity();
 		associationNNMetaDefinition = domainGrammar.getAssociationNNEntity();
 		associationMetaDefinition = domainGrammar.getAssociationEntity();
 	}
 
-	// Serializable pour CC.
-	private static final class MethodComparator implements Comparator<Method>, Serializable {
-		private static final long serialVersionUID = 5490371178112498615L;
-
+	private static final class MethodComparator implements Comparator<Method> {
 		/** {@inheritDoc} */
 		public int compare(final Method m1, final Method m2) {
 			return m1.getName().compareTo(m2.getName());
 		}
 	}
 
-	// Serializable pour CC.
-	private static final class FieldComparator implements Comparator<Field>, Serializable {
-		private static final long serialVersionUID = 5046237522047589684L;
-
+	private static final class FieldComparator implements Comparator<Field> {
 		/** {@inheritDoc} */
 		public int compare(final Field f1, final Field f2) {
 			return f1.getName().compareTo(f2.getName());
@@ -87,7 +79,12 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	}
 
 	/** {@inheritDoc} */
-	public void load(final DynamicDefinitionRepository dynamicModelrepository) {
+	public void load(final String resource, final DynamicDefinitionRepository dynamicModelrepository) {
+		Assertion.checkArgNotEmpty(resource);
+		Assertion.checkNotNull(dynamicModelrepository);
+		//----------------------------------------------------------------------
+		final Iterable<Class<?>> classes = getClasses(resource);
+
 		//--Enregistrement des fichiers java annotés
 		for (final Class<?> javaClass : classes) {
 			load(javaClass, dynamicModelrepository);
@@ -290,6 +287,11 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 			}
 		}
 		throw new IllegalArgumentException(method.getName() + "ne permet pas de donner un nom unique de propriété ");
+	}
+
+	
+	public String getType() {
+		return "classes";
 	}
 
 }

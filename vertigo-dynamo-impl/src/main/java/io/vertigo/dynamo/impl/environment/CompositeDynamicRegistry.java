@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 final class CompositeDynamicRegistry implements DynamicRegistry {
-	private final List<DynamicRegistry> handlerList;
+	private final List<DynamicRegistry> dynamicRegistries;
 	private final Grammar grammar;
 
 	/**
@@ -19,14 +19,14 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 	CompositeDynamicRegistry(final List<DynamicRegistryPlugin> handlerList) {
 		Assertion.checkNotNull(handlerList);
 		//---------------------------------------------------------------------
-		this.handlerList = new ArrayList<DynamicRegistry>(handlerList);
+		this.dynamicRegistries = new ArrayList<DynamicRegistry>(handlerList);
 		//Création de la grammaire.
 		grammar = createGrammar();
 	}
 
 	private Grammar createGrammar() {
 		final List<Grammar> grammars = new ArrayList<>();
-		for (final DynamicRegistry dynamicRegistry : handlerList) {
+		for (final DynamicRegistry dynamicRegistry : dynamicRegistries) {
 			grammars.add(dynamicRegistry.getGrammar());
 		}
 		return new Grammar(grammars);
@@ -65,7 +65,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 	}
 
 	private DynamicRegistry lookUpDynamicRegistry(final DynamicDefinition xdefinition) {
-		for (final DynamicRegistry dynamicRegistry : handlerList) {
+		for (final DynamicRegistry dynamicRegistry : dynamicRegistries) {
 			//On regarde si la grammaire contient la métaDefinition.
 			if (dynamicRegistry.getGrammar().getEntities().contains(xdefinition.getEntity())) {
 				return dynamicRegistry;

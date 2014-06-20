@@ -5,13 +5,13 @@ import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRep
 import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 
-final class KernelLoaderPlugin implements LoaderPlugin {
+final class KernelLoader implements Loader {
 	private final KernelGrammar kernelGrammar;
 
 	/**
 	 * Constructeur.
 	 */
-	KernelLoaderPlugin() {
+	KernelLoader() {
 		kernelGrammar = KernelGrammar.INSTANCE;
 
 	}

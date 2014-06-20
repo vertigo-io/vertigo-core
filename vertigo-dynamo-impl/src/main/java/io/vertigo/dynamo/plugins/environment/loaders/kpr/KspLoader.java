@@ -6,6 +6,7 @@ import io.vertigo.dynamo.impl.environment.Loader;
 import io.vertigo.dynamo.impl.environment.LoaderException;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.KspRule;
+import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.util.StringUtil;
 
@@ -20,7 +21,7 @@ import java.nio.charset.Charset;
  *
  * @author pchretien
  */
-final class KspLoader implements Loader {
+final class KspLoader  {
 	private static final String CHARSET = "ISO-8859-1";
 	private final URL kspURL;
 
@@ -34,8 +35,7 @@ final class KspLoader implements Loader {
 		this.kspURL = kspURL;
 	}
 
-	/** {@inheritDoc} */
-	public void load(final DynamicDefinitionRepository dynamicModelrepository) throws LoaderException {
+	 void load(final DynamicDefinitionRepository dynamicModelrepository) {
 		Assertion.checkNotNull(dynamicModelrepository);
 		try {
 			final String s = parseFile();
@@ -43,10 +43,10 @@ final class KspLoader implements Loader {
 			rule.createParser().parse(s, 0);
 		} catch (final NotFoundException e) {
 			final String message = StringUtil.format("Echec de lecture du fichier KSP {0}\n{1}", kspURL.getFile(), e.getFullMessage());
-			throw new LoaderException(message, e);
+			throw new VRuntimeException(message, e);
 		} catch (final Exception e) {
 			final String message = StringUtil.format("Echec de lecture du fichier KSP {0}\n{1}", kspURL.getFile(), e.getMessage());
-			throw new LoaderException(message, e);
+			throw new VRuntimeException(message, e);
 		}
 	}
 
