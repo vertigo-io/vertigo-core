@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 
@@ -205,7 +204,7 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 	private DynamicDefinitionKey getDtDefinitionKey(final String code) {
 		return new DynamicDefinitionKey(getDtDefinitionName(code));
 	}
-	
+
 	public String getType() {
 		return "oom";
 	}

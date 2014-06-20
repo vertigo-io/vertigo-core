@@ -2,8 +2,6 @@ package io.vertigo.dynamo.plugins.environment.loaders.kpr;
 
 import io.vertigo.commons.parser.NotFoundException;
 import io.vertigo.commons.parser.Rule;
-import io.vertigo.dynamo.impl.environment.Loader;
-import io.vertigo.dynamo.impl.environment.LoaderException;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.KspRule;
 import io.vertigo.kernel.exception.VRuntimeException;
@@ -21,7 +19,7 @@ import java.nio.charset.Charset;
  *
  * @author pchretien
  */
-final class KspLoader  {
+final class KspLoader {
 	private static final String CHARSET = "ISO-8859-1";
 	private final URL kspURL;
 
@@ -35,7 +33,7 @@ final class KspLoader  {
 		this.kspURL = kspURL;
 	}
 
-	 void load(final DynamicDefinitionRepository dynamicModelrepository) {
+	void load(final DynamicDefinitionRepository dynamicModelrepository) {
 		Assertion.checkNotNull(dynamicModelrepository);
 		try {
 			final String s = parseFile();

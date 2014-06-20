@@ -25,6 +25,8 @@
 	</module>
 	
 	<module name="dynamo">
+		<resource type="kpr" path="io/vertigo/dynamock/executionWfileinfo.kpr"/>
+	    <resource type ="classes" path="io.vertigo.dynamock.domain.DtDefinitions"/>
 	
 		<component api="DataBaseManager" class="io.vertigo.dynamo.impl.database.DataBaseManagerImpl" >
 		 <plugin class="io.vertigo.dynamo.plugins.database.connection.hibernate.HibernateConnectionProviderPlugin">
@@ -47,12 +49,8 @@
 	    <component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl"/>
 	    
 	    <component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
-	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" >
-	            <param name="kpr" value="io/vertigo/dynamock/executionWfileinfo.kpr"/>
-	        </plugin>  
-	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" >
-	               <param name ="classes" value="io.vertigo.dynamock.domain.DtDefinitions"/>
-	        </plugin>
+	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
+	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" />
 	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
 	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
 	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />

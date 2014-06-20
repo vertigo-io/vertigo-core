@@ -24,6 +24,9 @@ import io.vertigo.kernel.di.configurator.ComponentSpaceImpl;
 import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.DefinitionSpace;
+import io.vertigo.kernel.resource.ResourceSpace;
+
+import java.util.Map;
 
 /**
  * Home : Classe d'entrée sur toutes les modules. 
@@ -61,6 +64,7 @@ public final class Home {
 
 	private final DefinitionSpace definitionSpace = new DefinitionSpace();
 	private ComponentSpace componentSpace = ComponentSpaceImpl.EMPTY;
+	private ResourceSpace resourceSpace = new ResourceSpace();
 
 	private Home() {
 		// Classe statique d'accès aux composants.
@@ -78,6 +82,7 @@ public final class Home {
 			//---
 			INSTANCE.componentSpace = new ComponentSpaceImpl(componentSpaceConfig);
 			INSTANCE.componentSpace.start();
+			INSTANCE.resourceSpace.start();
 			//	INSTANCE.jmx();
 		} catch (final Throwable t) {
 			//En cas d'erreur on essaie de fermer proprement les composants démarrés.
@@ -117,6 +122,10 @@ public final class Home {
 	//-------------------------------------------------------------------------
 	//-------------------Méthods publiques-------------------------------------
 	//-------------------------------------------------------------------------
+	public static ResourceSpace getResourceSpace() {
+		return INSTANCE.doGetResourceSpace();
+	}
+
 	public static DefinitionSpace getDefinitionSpace() {
 		return INSTANCE.doGetDefinitionSpace();
 	}
@@ -128,9 +137,11 @@ public final class Home {
 	//-------------------------------------------------------------------------
 	//-------------------Méthods privées---------------------------------------
 	//-------------------------------------------------------------------------
-	/**
-	 * @return NameSpace 
-	 */
+
+	private ResourceSpace doGetResourceSpace() {
+		return resourceSpace;
+	}
+
 	private DefinitionSpace doGetDefinitionSpace() {
 		return definitionSpace;
 	}
@@ -140,6 +151,7 @@ public final class Home {
 	 */
 	private void doStop() {
 		try {
+			resourceSpace.stop();
 			componentSpace.stop();
 			definitionSpace.stop();
 		} catch (final Throwable t) {
@@ -162,8 +174,19 @@ public final class Home {
 		//---------------------------------------------------------------------
 		state = toState;
 	}
+
 	//
 	//	public static Option<VCommandEngine> getCommandEngine() {
 	//		return INSTANCE.commandEngine;
 	//	}
+
+	public static <XLoader> void registerLoader(XLoader xLoader) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public static Map<String, String> getResources() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -25,8 +25,9 @@ import io.vertigo.kernel.lang.Builder;
 import io.vertigo.kernel.lang.Option;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 /**
  * Paramétrage de l'application.
@@ -38,6 +39,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	private final String name;
 	private final List<ComponentConfigBuilder> componentConfigBuilders = new ArrayList<>();
 	private final List<AspectConfig> aspectConfigs = new ArrayList<>();
+	private final Map<String, String> resources = new HashMap<>(); /*path, type*/
+
 	//---Rules
 	private boolean hasApi = true; //par défaut on a une api.
 	private Class<?> superClass = Manager.class; //Par défaut la super Classe est Manager
@@ -48,6 +51,20 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		//---------------------------------------------------------------------
 		this.name = name;
 		this.componentSpaceConfigBuilder = componentSpaceConfigBuilder;
+	}
+
+	/**
+	 * Ajout de resources  
+	 * @param paramName Nom du paramètre
+	 * @param paramValue Valeur du paramètre
+	 * @return
+	 */
+	public ModuleConfigBuilder withResource(final String resourceType, final String resourcePath) {
+		Assertion.checkArgNotEmpty(resourceType);
+		Assertion.checkNotNull(resourcePath);
+		//---------------------------------------------------------------------
+		resources.put(resourcePath, resourceType);
+		return this;
 	}
 
 	public ModuleConfigBuilder withAspect(final Class<?> annotationType, final Class<? extends Interceptor> implClass) {
@@ -124,7 +141,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		for (final ComponentConfigBuilder componentConfigBuilder : componentConfigBuilders) {
 			componentConfig.add(componentConfigBuilder.build());
 		}
-		final ModuleConfig moduleConfig = new ModuleConfig(name, componentConfig, aspectConfigs, moduleRules);
+		final ModuleConfig moduleConfig = new ModuleConfig(name, componentConfig, aspectConfigs, moduleRules, resources);
 		moduleConfig.checkRules();
 		return moduleConfig;
 	}

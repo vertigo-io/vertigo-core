@@ -16,7 +16,6 @@ import io.vertigo.kernel.metamodel.DefinitionUtil;
 import io.vertigo.kernel.util.ClassUtil;
 import io.vertigo.kernel.util.StringUtil;
 
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -27,7 +26,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * Lecture des annotations présentes sur les objets métier.
@@ -87,6 +85,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 		//--Enregistrement des fichiers java annotés
 		for (final Class<?> javaClass : classes) {
+			//System.out.println(">>>>javaClass " + javaClass);
 			load(javaClass, dynamicModelrepository);
 		}
 	}
@@ -176,23 +175,23 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 				final DynamicDefinitionKey dtDefinitionBKey = new DynamicDefinitionKey(association.dtDefinitionB());
 
 				final DynamicDefinition associationDefinition = dynamicModelRepository.createDynamicDefinitionBuilder(association.name(), associationNNMetaDefinition, packageName)//
-				.withPropertyValue(KspProperty.TABLE_NAME, association.tableName())//
+						.withPropertyValue(KspProperty.TABLE_NAME, association.tableName())//
 
-				// associationDefinition.
-				//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
+						// associationDefinition.
+						//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
 
-				// navigabilités
-				.withPropertyValue(KspProperty.NAVIGABILITY_A, association.navigabilityA())//
-				.withPropertyValue(KspProperty.NAVIGABILITY_B, association.navigabilityB())//
+						// navigabilités
+						.withPropertyValue(KspProperty.NAVIGABILITY_A, association.navigabilityA())//
+						.withPropertyValue(KspProperty.NAVIGABILITY_B, association.navigabilityB())//
 
-				.withPropertyValue(KspProperty.ROLE_A, association.roleA())//
-				.withPropertyValue(KspProperty.LABEL_A, association.labelA())//
-				.withPropertyValue(KspProperty.ROLE_B, association.roleB())//
-				.withPropertyValue(KspProperty.LABEL_B, association.labelB())//
+						.withPropertyValue(KspProperty.ROLE_A, association.roleA())//
+						.withPropertyValue(KspProperty.LABEL_A, association.labelA())//
+						.withPropertyValue(KspProperty.ROLE_B, association.roleB())//
+						.withPropertyValue(KspProperty.LABEL_B, association.labelB())//
 
-				.withDefinition("dtDefinitionA", dtDefinitionAKey)//
-				.withDefinition("dtDefinitionB", dtDefinitionBKey)//
-				.build();
+						.withDefinition("dtDefinitionA", dtDefinitionAKey)//
+						.withDefinition("dtDefinitionB", dtDefinitionBKey)//
+						.build();
 
 				if (!dynamicModelRepository.containsDefinitionKey(associationDefinition.getDefinitionKey())) {
 					//Les associations peuvent être déclarées sur les deux noeuds de l'association.
@@ -289,7 +288,6 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		throw new IllegalArgumentException(method.getName() + "ne permet pas de donner un nom unique de propriété ");
 	}
 
-	
 	public String getType() {
 		return "classes";
 	}

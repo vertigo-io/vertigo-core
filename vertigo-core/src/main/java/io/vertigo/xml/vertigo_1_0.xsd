@@ -31,6 +31,7 @@
 
 	<xs:complexType name="moduleType">
 		<xs:sequence>
+			<xs:element name="resource" type="resourceType" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="component" type="managerType" minOccurs="1" maxOccurs="unbounded"/>
 			<xs:element name="aspect" type="aspectType" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
@@ -54,6 +55,11 @@
 			<xs:element name="param" type="paramType" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:attribute name="class" type="xs:string" use="required"/>
+	</xs:complexType>
+	
+		<xs:complexType name="resourceType">
+	  	<xs:attribute name="type" type="xs:string" use="required"/>
+	  	<xs:attribute name="path" type="xs:string" use="required"/>
 	</xs:complexType>
 	
 	<xs:complexType name="paramType">

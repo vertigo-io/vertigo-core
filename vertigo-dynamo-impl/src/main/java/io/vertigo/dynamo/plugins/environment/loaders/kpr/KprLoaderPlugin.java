@@ -1,8 +1,6 @@
 package io.vertigo.dynamo.plugins.environment.loaders.kpr;
 
 import io.vertigo.commons.resource.ResourceManager;
-import io.vertigo.dynamo.impl.environment.Loader;
-import io.vertigo.dynamo.impl.environment.LoaderException;
 import io.vertigo.dynamo.impl.environment.LoaderPlugin;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.kernel.exception.VRuntimeException;
@@ -15,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * Parser d'un fichier KPR.
@@ -34,14 +31,14 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 	 * @param kprFileName Adresse du fichier KPR.
 	 */
 	@Inject
-	public KprLoaderPlugin(@Named("kpr") final String kprFileName, final ResourceManager resourceManager) {
+	public KprLoaderPlugin(final ResourceManager resourceManager) {
 		Assertion.checkNotNull(resourceManager);
 		//----------------------------------------------------------------------
 		this.resourceManager = resourceManager;
 	}
 
 	/** {@inheritDoc} */
-	public void load(final String resource, final DynamicDefinitionRepository dynamicModelrepository){
+	public void load(final String resource, final DynamicDefinitionRepository dynamicModelrepository) {
 		Assertion.checkArgNotEmpty(resource);
 		Assertion.checkNotNull(dynamicModelrepository);
 		//----------------------------------------------------------------------
@@ -103,7 +100,7 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 
 		return kspFileList;
 	}
-	
+
 	public String getType() {
 		return "kpr";
 	}

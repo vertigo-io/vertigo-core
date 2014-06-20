@@ -112,6 +112,8 @@ public final class DynamicDefinitionRepository {
 	public void addDefinition(final DynamicDefinition definition) {
 		Assertion.checkNotNull(definition);
 		//----------------------------------------------------------------------
+		//		if (definition.getDefinitionKey().getName().equals("DT_FAMILLE"))
+		//			throw new RuntimeException();
 		put(definition.getDefinitionKey(), definition);
 		dynamicRegistry.onNewDefinition(definition, this);
 	}

@@ -24,7 +24,7 @@ import io.vertigo.kernel.lang.JsonExclude;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+import java.util.Map;
 
 /**
  * Configuration of a module.
@@ -42,17 +42,20 @@ final class ModuleConfig {
 	private final List<AspectConfig> aspects;
 	@JsonExclude
 	private final List<ModuleRule> moduleRules;
+	private final Map<String, String> resources;/*path, type*/
 
-	ModuleConfig(final String name, final List<ComponentConfig> componentConfigs, final List<AspectConfig> aspectConfigs, final List<ModuleRule> moduleRules) {
+	ModuleConfig(final String name, final List<ComponentConfig> componentConfigs, final List<AspectConfig> aspectConfigs, final List<ModuleRule> moduleRules, final Map<String, String> resources) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(componentConfigs);
 		Assertion.checkNotNull(aspectConfigs);
 		Assertion.checkNotNull(moduleRules);
+		Assertion.checkNotNull(resources);
 		//---------------------------------------------------------------------
 		this.name = name;
 		this.components = Collections.unmodifiableList(new ArrayList<>(componentConfigs));
 		this.aspects = aspectConfigs;
 		this.moduleRules = Collections.unmodifiableList(new ArrayList<>(moduleRules));
+		this.resources = resources;
 	}
 
 	/**
@@ -77,6 +80,10 @@ final class ModuleConfig {
 		for (final ModuleRule moduleRule : moduleRules) {
 			moduleRule.chek(this);
 		}
+	}
+
+	Map<String, String> getResources() { /*path, type*/
+		return Collections.unmodifiableMap(resources);
 	}
 
 	@Override

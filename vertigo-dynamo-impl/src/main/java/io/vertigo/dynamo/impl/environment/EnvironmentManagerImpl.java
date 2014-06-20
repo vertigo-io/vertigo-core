@@ -1,11 +1,9 @@
 package io.vertigo.dynamo.impl.environment;
 
 import io.vertigo.dynamo.environment.EnvironmentManager;
-import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
-import io.vertigo.kernel.exception.VRuntimeException;
+import io.vertigo.kernel.Home;
 import io.vertigo.kernel.lang.Activeable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -26,10 +24,7 @@ public final class EnvironmentManagerImpl implements EnvironmentManager, Activea
 
 	/** {@inheritDoc} */
 	public void start() {
-		// Pour des raisons d'optimisation mémoire on ne garde pas la liste des
-		// plugins dans le manager.
-		// Car ceux ci ne sont utilisé qu'une seule fois.
-		load();
+		Home.getResourceSpace().addLoader(new Environment(dynamicRegistryPlugins, loaderPlugins));
 	}
 
 	/** {@inheritDoc} */
@@ -37,10 +32,4 @@ public final class EnvironmentManagerImpl implements EnvironmentManager, Activea
 		//
 	}
 
-	private void load() {
-		// Création de l'environnement.
-		final Environment environment = new Environment(dynamicRegistryPlugins,	loaderPlugins);
-		// Chargement des données.
-		environment.load();
-	}
 }

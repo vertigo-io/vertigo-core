@@ -36,6 +36,7 @@ import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.metamodel.DefinitionSpace;
+import io.vertigo.kernel.resource.ResourceLoader;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -105,7 +106,14 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 				Activeable.class.cast(engine).start();
 			}
 		}
+		//
+		for (ResourceLoader resourceLoader : Home.getResourceSpace().getResourceLoaders()) {
+			for (ModuleConfig moduleConfig : componentSpaceConfig.getModuleConfigs()) {
+				resourceLoader.add(moduleConfig.getResources());
+			}
+			resourceLoader.solve();
 
+		}
 		//---	
 		componentContainer.start();
 		if (!componentSpaceConfig.isSilence()) {

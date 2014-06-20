@@ -32,7 +32,6 @@ import java.util.Properties;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
-
 /** 
  * @author npiedeloup, pchretien
  */
@@ -57,7 +56,7 @@ final class XMLModulesHandler extends DefaultHandler {
 	}
 
 	enum TagName {
-		modules, module, component, plugin, param, //
+		modules, module, resource, component, plugin, param, //
 		aspect, advice, annotation
 	}
 
@@ -132,6 +131,13 @@ final class XMLModulesHandler extends DefaultHandler {
 				current = TagName.plugin;
 				final Class<? extends Plugin> pluginImplClass = ClassUtil.classForName(attrs.getValue("class"), Plugin.class);
 				pluginConfigBuilder = componentConfigBuilder.beginPlugin(pluginImplClass);
+				break;
+			case resource:
+				final String resourceType = attrs.getValue("type");
+				final String resourcePath = attrs.getValue("path");
+				if (current == TagName.module) {
+					moduleConfigBuilder.withResource(resourceType, resourcePath);
+				}
 				break;
 			case param:
 				final String paramName = attrs.getValue("name");

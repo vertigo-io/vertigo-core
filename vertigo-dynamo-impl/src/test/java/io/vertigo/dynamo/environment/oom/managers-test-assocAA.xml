@@ -13,13 +13,12 @@
 	</module>	
 
 	<module name="dynamo">
+         <resource type ="oom" path="io/vertigo/dynamo/environment/oom/data/AssociationAA.oom"/>
+         <resource type ="kpr" path="io/vertigo/dynamo/environment/oom/data/domain.kpr"/>
+
 	    <component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
-	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.poweramc.OOMLoaderPlugin" >
-	               <param name ="oom" value="io/vertigo/dynamo/environment/oom/data/AssociationAA.oom"/>
-	        </plugin>
-	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" >
-	            <param name ="kpr" value="io/vertigo/dynamo/environment/oom/data/domain.kpr"/>
-	        </plugin>  
+	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.poweramc.OOMLoaderPlugin"/>
+	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
 	 <!--   <plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" >
 	               <param name ="classes" value="io.vertigo.dynamock.domain.DtDefinitions"/>
 	        </plugin>

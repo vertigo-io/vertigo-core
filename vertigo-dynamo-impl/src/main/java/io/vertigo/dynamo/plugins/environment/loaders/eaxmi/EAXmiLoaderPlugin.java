@@ -23,7 +23,6 @@ import java.net.URL;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 
@@ -39,6 +38,7 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 	private final Entity associationNNEntity;
 	private final Entity associationEntity;
 	private final ResourceManager resourceManager;
+
 	/**
 	 * Constructeur.
 	 * @param oomFileName Adresse du fichier powerAMC (OOM).
@@ -60,7 +60,7 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 		Assertion.checkArgNotEmpty(resource);
 		Assertion.checkNotNull(dynamicModelrepository);
 		//----------------------------------------------------------------------
-		final URL xmiFileURL= resourceManager.resolve(resource);
+		final URL xmiFileURL = resourceManager.resolve(resource);
 		final EAXmiLoader loader = new EAXmiLoader(xmiFileURL);
 
 		for (final EAXmiClass classXmi : loader.getClassList()) {
@@ -276,10 +276,9 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 
 		return result;
 	}
-	
+
 	public String getType() {
 		return "xmi";
 	}
-
 
 }
