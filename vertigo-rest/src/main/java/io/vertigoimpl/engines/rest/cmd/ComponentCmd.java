@@ -27,6 +27,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -35,7 +36,7 @@ import com.sun.jersey.api.NotFoundException;
 @Path("/spaces")
 @Produces("application/json")
 public class ComponentCmd {
-	private final JsonEngine jsonEngine = new GoogleJsonEngine(); //.getComponentSpace().resolve(JsonEngine.class);
+	private final Gson jsonEngine = new Gson(); //.getComponentSpace().resolve(JsonEngine.class);
 
 	@Path("/components")
 	@GET
@@ -45,16 +46,16 @@ public class ComponentCmd {
 
 	@Path("/components/{componentId}")
 	@GET
-	public String getComponentConfig(@PathParam("componentId") String componentId) {
+	public String getComponentConfig(@PathParam("componentId") final String componentId) {
 		Assertion.checkArgNotEmpty(componentId);
 		//---------------------------------------------------------------------
-		JsonArray jsonModuleConfigs = doGetModuleConfigs();
+		final JsonArray jsonModuleConfigs = doGetModuleConfigs();
 		for (int i = 0; i < jsonModuleConfigs.size(); i++) {
-			JsonObject jsonModuleConfig = (JsonObject) jsonModuleConfigs.get(i);
-			JsonArray jsonComponentConfigs = jsonModuleConfig.get("componentConfigs").getAsJsonArray();
+			final JsonObject jsonModuleConfig = (JsonObject) jsonModuleConfigs.get(i);
+			final JsonArray jsonComponentConfigs = jsonModuleConfig.get("componentConfigs").getAsJsonArray();
 
 			for (int j = 0; j < jsonComponentConfigs.size(); j++) {
-				JsonObject jsonComponentConfig = (JsonObject) jsonComponentConfigs.get(j);
+				final JsonObject jsonComponentConfig = (JsonObject) jsonComponentConfigs.get(j);
 				if (componentId.equalsIgnoreCase(jsonComponentConfig.get("id").getAsString())) {
 					return jsonEngine.toJson(jsonComponentConfig);
 				}
@@ -70,21 +71,21 @@ public class ComponentCmd {
 	}
 
 	private JsonArray doGetModuleConfigs() {
-		String json = getComponentSpaceConfig();
-		JsonParser parser = new JsonParser();
-		JsonObject jsonObject = (JsonObject) parser.parse(json);
-		JsonArray jsonModuleConfigs = jsonObject.get("moduleConfigs").getAsJsonArray();
+		final String json = getComponentSpaceConfig();
+		final JsonParser parser = new JsonParser();
+		final JsonObject jsonObject = (JsonObject) parser.parse(json);
+		final JsonArray jsonModuleConfigs = jsonObject.get("moduleConfigs").getAsJsonArray();
 		return jsonModuleConfigs;
 	}
 
 	@Path("components/modules/{moduleName}")
 	@GET
-	public String getModuleConfig(@PathParam("moduleName") String moduleName) {
+	public String getModuleConfig(@PathParam("moduleName") final String moduleName) {
 		Assertion.checkArgNotEmpty(moduleName);
 		//---------------------------------------------------------------------
-		JsonArray jsonModuleConfigs = doGetModuleConfigs();
+		final JsonArray jsonModuleConfigs = doGetModuleConfigs();
 		for (int i = 0; i < jsonModuleConfigs.size(); i++) {
-			JsonObject jsonModuleConfig = (JsonObject) jsonModuleConfigs.get(i);
+			final JsonObject jsonModuleConfig = (JsonObject) jsonModuleConfigs.get(i);
 			if (moduleName.equalsIgnoreCase(jsonModuleConfig.get("name").getAsString())) {
 				return jsonEngine.toJson(jsonModuleConfig);
 			}
@@ -106,8 +107,8 @@ public class ComponentCmd {
 
 	@Path("/definitions/types/{definitionType}")
 	@GET
-	public String getDefinitionType(@PathParam("definitionType") String definitionType) {
-		for (Class<? extends Definition> definitionClass : Home.getDefinitionSpace().getAllTypes()) {
+	public String getDefinitionType(@PathParam("definitionType") final String definitionType) {
+		for (final Class<? extends Definition> definitionClass : Home.getDefinitionSpace().getAllTypes()) {
 			if (definitionClass.getSimpleName().equals(definitionType)) {
 				return jsonEngine.toJson(Home.getDefinitionSpace().getAll(definitionClass));
 			}
@@ -117,7 +118,7 @@ public class ComponentCmd {
 
 	@Path("/definitions/{definitionName}")
 	@GET
-	public String getDefinition(@PathParam("definitionName") String definitionName) {
+	public String getDefinition(@PathParam("definitionName") final String definitionName) {
 		return jsonEngine.toJson(Home.getDefinitionSpace().resolve(definitionName));
 	}
 }

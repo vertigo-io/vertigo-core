@@ -1,0 +1,60 @@
+package io.vertigo.dynamock.domain;
+
+/**************************************************************************************************/
+/********************************* Gestion des formatters *****************************************/
+/**************************************************************************************************/
+create Formatter FMT_DEFAULT(
+	className : "io.vertigo.dynamox.domain.formatter.FormatterDefault";
+);
+
+/**************************************************************************************************/
+/********************************* Gestion des contraintes ****************************************/
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/********************************* Gestion des domaines* ******************************************/
+/**************************************************************************************************/
+create Domain DO_TEXTE_50 (
+	dataType : String;
+	formatter : FMT_DEFAULT;
+    constraint : {CK_MAX_LENGTH_50}	
+)
+
+create Domain DO_EMAIL (
+	dataType : String
+	formatter : FMT_DEFAULT
+	constraint : {CK_EMAIL}
+)
+
+create Domain DO_DATE (
+	dataType :Date;
+	formatter : FMT_DEFAULT;
+)
+
+create Domain DO_BOOLEAN (
+	dataType :Boolean;
+	formatter : FMT_DEFAULT;
+)
+
+create Domain DO_ID (
+	dataType : Long;
+	formatter : FMT_DEFAULT;
+)
+
+create Domain DO_CODE (
+	dataType : String;
+	formatter : FMT_DEFAULT;
+)
+
+
+create Constraint CK_MAX_LENGTH_50 (
+    className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
+    args :"50"
+)
+
+create Constraint CK_EMAIL (
+	className: "io.vertigo.dynamox.domain.constraint.ConstraintRegex";
+	args : "^[_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*(\\.[a-zA-Z0-9-]{2,3})+$";
+	msg : "Le courriel n'est pas valide";
+);
+

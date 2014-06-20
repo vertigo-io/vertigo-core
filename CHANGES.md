@@ -3,6 +3,7 @@ Version history
 
 Running 0.3.1-SNAPSHOT
 ----------------------
+  * Add vertigo-rest : RESTful WebService support for HTML5 applications
   * Fix Issues #3 : add a new mandatory vertigo-studio parameter ```domain.dictionaryClassName``` 
     * To maintain compatibility add : ```domain.dictionaryClassName=DtDefinitions``` in your studio-config.properties
   * Fix Issues #2
