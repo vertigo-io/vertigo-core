@@ -15,17 +15,15 @@
 	</module>
 
 	<module name="vertigo-dynamo">
+		<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
+		<resource type="kpr" path="io/vertigo/dynamo/search/ksp/search.kpr" />
+
 		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl"
 		 initClass="io.vertigo.dynamo.search.CollectionsManagerInitializer" />
 		<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
 		<component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
-			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin">
-				<param name="kpr" value="io/vertigo/dynamock/execution.kpr" />
-			</plugin>
-
-			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin">
-				<param name="kpr" value="io/vertigo/dynamo/search/ksp/search.kpr" />
-			</plugin>
+			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin"/>
+			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin"/>
 			<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
 			<plugin class="io.vertigo.dynamo.plugins.environment.registries.search.SearchDynamicRegistryPlugin" />
 		</component>

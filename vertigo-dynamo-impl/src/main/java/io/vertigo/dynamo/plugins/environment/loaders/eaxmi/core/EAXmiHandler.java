@@ -1,6 +1,5 @@
 package io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core;
 
-
 import io.vertigo.kernel.lang.Assertion;
 
 import java.util.Map;
@@ -11,13 +10,13 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * Handler de lecture du fichier XMI généré par Enterprise Architect.
- * La méthode de lecture est directement dépendantes des extensions EA 
- * pour les informations des éléments.
+ * Handler de lecture du fichier XMI gï¿½nï¿½rï¿½ par Enterprise Architect.
+ * La mï¿½thode de lecture est directement dï¿½pendantes des extensions EA 
+ * pour les informations des ï¿½lï¿½ments.
  * @author pforhan
  *
  */
-public class EAXmiHandler extends DefaultHandler {
+public final class EAXmiHandler extends DefaultHandler {
 	private static final String ATTR_ID = "xmi:id";
 	private static final String ATTR_REF = "xmi:idref";
 	private static final String ATTR_TYPE = "xmi:type";
@@ -27,13 +26,13 @@ public class EAXmiHandler extends DefaultHandler {
 	private final Map<EAXmiId, EAXmiObject> map;
 
 	private EAXmiObject currentObject;
-	
-	// La première phase définit les objets, les attributs, les associations
-	// La deuxième phase remplit les prorpiéts des objets.
+
+	// La premiï¿½re phase dï¿½finit les objets, les attributs, les associations
+	// La deuxiï¿½me phase remplit les prorpiï¿½ts des objets.
 	private boolean phase2 = false;
-	
+
 	private final Logger log = Logger.getLogger(this.getClass());
-	
+
 	EAXmiHandler(final Map<EAXmiId, EAXmiObject> map) {
 		Assertion.checkNotNull(map);
 		//---------------------------------------------------------------------
@@ -44,40 +43,40 @@ public class EAXmiHandler extends DefaultHandler {
 	/** {@inheritDoc} */
 	@Override
 	public void startElement(final String unusedUri, final String unusedLocalName, final String name, final Attributes attributes) {
-		log.debug(" Début de tag : " + name);
+		log.debug(" Dï¿½but de tag : " + name);
 		// Type xmi du tag
 		String typeElement = attributes.getValue(ATTR_TYPE);
 		// Si le type est null, alors on se base sur le nom du tag (cas des extensions EA)
 		if (typeElement == null) {
-			typeElement = name; 
+			typeElement = name;
 		}
-		log.debug("Type : "+ typeElement);
-		
-		//Les références 
+		log.debug("Type : " + typeElement);
+
+		//Les rï¿½fï¿½rences 
 		final String ref = attributes.getValue(ATTR_REF);
-		
+
 		if (ref != null && typeElement != null && EAXmiType.isNodeByRef(typeElement)) {
 			phase2 = true;
-			log.debug("On est dans la reférence " + name + " ref : " + ref);
-			// Si le tag courant est associé à  un objet alors on ajoute à  cet objet la référence.
+			log.debug("On est dans la refï¿½rence " + name + " ref : " + ref);
+			// Si le tag courant est associï¿½ ï¿½ un objet alors on ajoute ï¿½ cet objet la rï¿½fï¿½rence.
 			final EAXmiId eaXmiId = new EAXmiId(ref);
 			if (map.containsKey(eaXmiId)) {
-				currentObject = map.get(eaXmiId);	
+				currentObject = map.get(eaXmiId);
 				log.debug("Current Object : " + currentObject.getName());
 			}
-			// On ne gère que les éléments objets qui nous intéressent	
+			// On ne gï¿½re que les ï¿½lï¿½ments objets qui nous intï¿½ressent	
 		} else if (EAXmiType.isObjet(typeElement, name)) {
 			log.debug("On est dans l'objet ");
 			final String id = attributes.getValue(ATTR_ID);
 			final String leNom = attributes.getValue(ATTR_NAME);
 			final EAXmiType type = EAXmiType.getType(typeElement);
 			final String association = attributes.getValue(ATTR_ASSOCIATION);
-			// On a un type, un id et on n'est pas dans un attribut ajouté à cause d'une association.
+			// On a un type, un id et on n'est pas dans un attribut ajoutï¿½ ï¿½ cause d'une association.
 			if (type != null && id != null && !(type.isAttribute() && association != null)) {
-				//Il existe un nouvel objet géré associé à  ce Tag
+				//Il existe un nouvel objet gï¿½rï¿½ associï¿½ ï¿½ ce Tag
 				final EAXmiId eaxmiid = new EAXmiId(id);
 				final EAXmiObject obj;
-				// Nouvelle classe ou association, on revient au package pour créer l'objet.
+				// Nouvelle classe ou association, on revient au package pour crï¿½er l'objet.
 				if (currentObject.getType() != null && currentObject.getType().isClass() && type.isClass()) {
 					obj = currentObject.getParent().createEAXmiObject(eaxmiid, type, leNom);
 				} else {
@@ -85,20 +84,20 @@ public class EAXmiHandler extends DefaultHandler {
 				}
 				map.put(eaxmiid, obj);
 				currentObject = obj;
-				
-			} 
-		// On peut être dans le cas d'un début de tag utile, on le passe pour le traiter.
+
+			}
+			// On peut ï¿½tre dans le cas d'un dï¿½but de tag utile, on le passe pour le traiter.
 		} else if (currentObject != null) {
-			currentObject.setProperty(name, "", attributes);	
+			currentObject.setProperty(name, "", attributes);
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void endElement(final String unusedUri, final String unusedLocalName, final String name) {
-		// Si c'est un attribut l'objet courant, on revient à la classe qui le contient.
+		// Si c'est un attribut l'objet courant, on revient ï¿½ la classe qui le contient.
 		if (currentObject.getType() != null && currentObject.getType().isAttribute() && !phase2) {
-					currentObject = currentObject.getParent();
+			currentObject = currentObject.getParent();
 		}
 	}
 

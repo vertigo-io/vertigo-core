@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * Loader de fichier XMI version Enterprise Architect.
  * @author pforhan
  */
-public class EAXmiLoader {
+public final class EAXmiLoader {
 	private final Map<EAXmiId, EAXmiObject> map;
 
 	private final Logger log = Logger.getLogger(this.getClass());

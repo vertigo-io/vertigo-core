@@ -26,17 +26,12 @@ import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 
-public class EAXmiLoaderPlugin implements LoaderPlugin {
-
+public final class EAXmiLoaderPlugin implements LoaderPlugin {
 	private static final Logger LOGGER = Logger.getLogger(EAXmiLoaderPlugin.class);
 
 	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
 
-	private final Entity dtDefinitionEntity;
-	private final Entity dtFieldEntity;
-	private final Entity associationNNEntity;
-	private final Entity associationEntity;
 	private final ResourceManager resourceManager;
 
 	/**
@@ -48,11 +43,6 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 		Assertion.checkNotNull(resourceManager);
 		//----------------------------------------------------------------------
 		this.resourceManager = resourceManager;
-		final DomainGrammar domainGrammar = DomainGrammar.INSTANCE;
-		dtDefinitionEntity = domainGrammar.getDtDefinitionEntity();
-		dtFieldEntity = domainGrammar.getDtFieldEntity();
-		associationNNEntity = domainGrammar.getAssociationNNEntity();
-		associationEntity = domainGrammar.getAssociationEntity();
 	}
 
 	/** {@inheritDoc} */
@@ -73,7 +63,7 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 	}
 
 	private DynamicDefinition toDynamicDefinition(final EAXmiClass classXmi, final DynamicDefinitionRepository dynamicModelrepository) {
-
+		final Entity dtDefinitionEntity = DomainGrammar.INSTANCE.getDtDefinitionEntity();
 		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelrepository.createDynamicDefinitionBuilder(getDtDefinitionName(classXmi.getCode()), dtDefinitionEntity, classXmi.getPackageName())//
 				//Par d�faut les DT lues depuis le XMI sont persistantes.
 				.withPropertyValue(KspProperty.PERSISTENT, true);
@@ -90,6 +80,7 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 	}
 
 	private DynamicDefinition toDynamicDefinition(final EAXmiAttribute attributeXmi, final DynamicDefinitionRepository dynamicModelrepository) {
+		final Entity dtFieldEntity = DomainGrammar.INSTANCE.getDtFieldEntity();
 		final DynamicDefinitionKey domainKey = new DynamicDefinitionKey(attributeXmi.getDomain());
 
 		return dynamicModelrepository.createDynamicDefinitionBuilder(attributeXmi.getCode(), dtFieldEntity, null)//
@@ -101,6 +92,9 @@ public class EAXmiLoaderPlugin implements LoaderPlugin {
 	}
 
 	private DynamicDefinition toDynamicDefinition(final EAXmiAssociation associationXmi, final DynamicDefinitionRepository dynamicModelrepository) {
+		final Entity associationEntity = DomainGrammar.INSTANCE.getAssociationEntity();
+		final Entity associationNNEntity = DomainGrammar.INSTANCE.getAssociationNNEntity();
+
 		final String name = associationXmi.getCode().toUpperCase();
 
 		//On regarde si on est dans le cas d'une association simple ou multiple
