@@ -40,8 +40,8 @@ public abstract class AbstractTestCaseJU4 extends AbstractTestCase2JU4 {
 	/**
 	 * @return fichier managers.xml (par defaut managers-test.xml)
 	 */
-	protected String getManagersXmlFileName() {
-		return "./managers-test.xml";
+	protected String[] getManagersXmlFileName() {
+		return new String[] { "./managers-test.xml" };
 	}
 
 	/**
@@ -54,13 +54,20 @@ public abstract class AbstractTestCaseJU4 extends AbstractTestCase2JU4 {
 	/** {@inheritDoc} */
 	@Override
 	protected void configMe(final ComponentSpaceConfigBuilder componentSpaceConfiguilder) {
-		componentSpaceConfiguilder.withLoader(new XMLModulesLoader(loadManagersXml(), loadProperties()));
+		for (URL url : loadManagersXml()) {
+			componentSpaceConfiguilder.withLoader(new XMLModulesLoader(url, loadProperties()));
+		}
 	}
 
-	private URL loadManagersXml() {
-		final URL url = getClass().getResource(getManagersXmlFileName());
-		Assertion.checkNotNull(url, "Configuration " + getManagersXmlFileName() + " non trouvée");
-		return url;
+	private URL[] loadManagersXml() {
+		URL[] urls = new URL[getManagersXmlFileName().length];
+		int i = 0;
+		for (String managersXmlFileName : getManagersXmlFileName()) {
+			urls[i] = getClass().getResource(managersXmlFileName);
+			Assertion.checkNotNull(urls[i], "file configuration '{0}' not found", managersXmlFileName);
+			i++;
+		}
+		return urls;
 	}
 
 	private Properties loadProperties() {

@@ -1,0 +1,7 @@
+<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
+<modules>
+	<module name="test">
+		<resource type="xmi" path="io/vertigo/dynamo/environment/eaxmi/data/demo.xml"/>
+	    <resource type="kpr" path="io/vertigo/dynamo/environment/eaxmi/data/domain.kpr"/>
+	</module>
+</modules>

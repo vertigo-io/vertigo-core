@@ -86,15 +86,15 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 		this.componentSpaceConfig = componentSpaceConfig;
 	}
 
-	/**
-	 * Enregistrement des composants et de leurs plugins.
-	 */
+	/* We are registered all the components and their plugins*/
+	/** {@inheritDoc} */
 	public void start() {
 		initLog(componentSpaceConfig.getParams());
+		//-------------------
 		for (final ModuleConfig moduleConfig : componentSpaceConfig.getModuleConfigs()) {
 			startModule(moduleConfig);
 		}
-		// --------------------------
+		// ------------------
 		if (componentSpaceConfig.getElasticaEngine().isDefined()) {
 			engines.add(componentSpaceConfig.getElasticaEngine().get());
 		}
@@ -108,25 +108,6 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 			if (engine instanceof Activeable) {
 				Activeable.class.cast(engine).start();
 			}
-		}
-		//
-		for (ModuleConfig moduleConfig : componentSpaceConfig.getModuleConfigs()) {
-			//			int resourcesToBeLoad = moduleConfig.getResourceConfigs().size();
-			//We are doing a copy of all resources, to check that they are all parsed. 
-			List<ResourceConfig> resourceConfigsToDo = new ArrayList<>(moduleConfig.getResourceConfigs());
-			for (ResourceLoader resourceLoader : Home.getResourceSpace().getResourceLoaders()) {
-				//Candidates contins all resources that can be treated by the resourceLoader
-				List<ResourceConfig> candidates = new ArrayList<>();
-				for (Iterator<ResourceConfig> it = resourceConfigsToDo.iterator(); it.hasNext();) {
-					final ResourceConfig resourceConfig = it.next();
-					if (resourceLoader.getTypes().contains(resourceConfig.getType())) {
-						candidates.add(resourceConfig);
-						it.remove();
-					}
-				}
-				resourceLoader.parse(candidates);
-			}
-			Assertion.checkArgument(resourceConfigsToDo.isEmpty(), "All resources '{1}' have not been parsed successfully : {}", resourceConfigsToDo);
 		}
 		//---	
 		componentContainer.start();
@@ -162,9 +143,27 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 		}
 	}
 
-	/**
-	 * Arret de tous les composants.
-	 */
+	private void injectResources(ModuleConfig moduleConfig) {
+		//			int resourcesToBeLoad = moduleConfig.getResourceConfigs().size();
+		//We are doing a copy of all resources, to check that they are all parsed. 
+		List<ResourceConfig> resourceConfigsToDo = new ArrayList<>(moduleConfig.getResourceConfigs());
+		for (ResourceLoader resourceLoader : Home.getResourceSpace().getResourceLoaders()) {
+			//Candidates contins all resources that can be treated by the resourceLoader
+			List<ResourceConfig> candidates = new ArrayList<>();
+			for (Iterator<ResourceConfig> it = resourceConfigsToDo.iterator(); it.hasNext();) {
+				final ResourceConfig resourceConfig = it.next();
+				if (resourceLoader.getTypes().contains(resourceConfig.getType())) {
+					candidates.add(resourceConfig);
+					it.remove();
+				}
+			}
+			resourceLoader.parse(candidates);
+		}
+		Assertion.checkArgument(resourceConfigsToDo.isEmpty(), "All resources '{1}' have not been parsed successfully : {}", resourceConfigsToDo);
+	}
+
+	/*We are stopping all the components.*/
+	/** {@inheritDoc} */
 	public void stop() {
 		componentContainer.stop();
 		//---
@@ -206,6 +205,11 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 	}
 
 	private void startModule(final ModuleConfig moduleConfig) {
+		injectComponents(moduleConfig);
+		injectResources(moduleConfig);
+	}
+
+	private void injectComponents(final ModuleConfig moduleConfig) {
 		final AopEngine aopEngine = componentSpaceConfig.getAopEngine();
 
 		final Reactor reactor = new Reactor();
@@ -248,7 +252,6 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 				registerComponent(componentConfig, aspectInitializer, aopEngine);
 			}
 		}
-
 	}
 
 	private void registerComponent(final ComponentConfig componentConfig, final AspectInitializer aspectInitializer, final AopEngine aopEngine) {
@@ -312,7 +315,7 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 		return componentContainer.resolveComponent(componentClass);
 	}
 
-	@Override
+	/** {@inheritDoc} */
 	public <T> T resolve(final String id, final Class<T> componentClass) {
 		return componentContainer.resolve(id, componentClass);
 	}

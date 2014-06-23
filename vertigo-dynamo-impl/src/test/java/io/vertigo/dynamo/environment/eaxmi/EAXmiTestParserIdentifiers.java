@@ -14,8 +14,8 @@ import org.junit.Test;
  */
 public final class EAXmiTestParserIdentifiers extends AbstractTestCaseJU4 {
 	@Override
-	protected String getManagersXmlFileName() {
-		return "./managers-test.xml";
+	protected String[] getManagersXmlFileName() {
+		return new String[] { "managers-test.xml", "resources-test.xml" };
 	}
 
 	private DtDefinition getDtDefinition(final String urn) {
