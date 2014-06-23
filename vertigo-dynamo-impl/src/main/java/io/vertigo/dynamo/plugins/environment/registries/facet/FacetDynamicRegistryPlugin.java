@@ -15,8 +15,6 @@ public final class FacetDynamicRegistryPlugin extends AbstractDynamicRegistryPlu
 	 */
 	public FacetDynamicRegistryPlugin() {
 		super(new FacetGrammar());
-		Home.getDefinitionSpace().register(FacetDefinition.class);
-		Home.getDefinitionSpace().register(FacetedQueryDefinition.class);
 	}
 
 	/** {@inheritDoc} */

@@ -14,10 +14,6 @@ import io.vertigo.kernel.component.ComponentInitializer;
 public final class CollectionsManagerInitializer implements ComponentInitializer<CollectionsManager> {
 	/** {@inheritDoc} */
 	public void init(final CollectionsManager collectionsManager) {
-		//todo A déplacer
-		Home.getDefinitionSpace().register(FacetedQueryDefinition.class);
-		Home.getDefinitionSpace().register(FacetDefinition.class);
-
 		CarFacetInitializer.initCarFacet();
 	}
 }

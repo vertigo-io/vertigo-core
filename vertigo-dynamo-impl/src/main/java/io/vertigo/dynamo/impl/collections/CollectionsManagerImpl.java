@@ -4,6 +4,8 @@ import io.vertigo.dynamo.Function;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.collections.ListFilter;
+import io.vertigo.dynamo.collections.facet.metamodel.FacetDefinition;
+import io.vertigo.dynamo.collections.facet.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.facet.model.Facet;
 import io.vertigo.dynamo.collections.facet.model.FacetedQuery;
 import io.vertigo.dynamo.collections.facet.model.FacetedQueryResult;
@@ -57,6 +59,8 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		//		Assertion.notNull(masterDataManager);
 		//		Assertion.notNull(persistenceManager);
 		//---------------------------------------------------------------------
+		Home.getDefinitionSpace().register(FacetDefinition.class);
+		Home.getDefinitionSpace().register(FacetedQueryDefinition.class);
 		//this.masterDataManager = masterDataManager;
 		//persistenceManagerManager = persistenceManager;
 	}
