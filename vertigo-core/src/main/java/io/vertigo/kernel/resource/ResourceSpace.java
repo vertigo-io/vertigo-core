@@ -21,9 +21,10 @@ package io.vertigo.kernel.resource;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Centralisation des accès aux composants et aux plugins d'un module.
@@ -31,7 +32,7 @@ import java.util.List;
  * @author pchretien
  */
 public final class ResourceSpace implements Activeable {
-	private final List<ResourceLoader> resourceLoaders = new ArrayList<>();
+	private final Map<String, ResourceLoader> resourceLoaders = new HashMap<>();
 
 	public void start() {
 		//
@@ -41,13 +42,24 @@ public final class ResourceSpace implements Activeable {
 		resourceLoaders.clear();
 	}
 
-	public List<ResourceLoader> getResourceLoaders() {
-		return Collections.unmodifiableList(resourceLoaders);
+	//	public ResourceLoader getResourceLoader(String type) {
+	//		Assertion.checkArgNotEmpty(type);
+	//		Assertion.checkArgument(resourceLoaders.containsKey(type), "this type {0} of resource is not yet defined", type);
+	//		//---------------------------------------------------------------------
+	//		return resourceLoaders.get(type);
+	//	}
+
+	public Collection<ResourceLoader> getResourceLoaders() {
+		return Collections.unmodifiableCollection(resourceLoaders.values());
 	}
 
 	public void addLoader(ResourceLoader resourceLoader) {
 		Assertion.checkNotNull(resourceLoader);
+		Assertion.checkArgument(!resourceLoader.getTypes().isEmpty(), "a loader must be able to parse at least one type of resource");
 		//---------------------------------------------------------------------
-		resourceLoaders.add(resourceLoader);
+		for (String type : resourceLoader.getTypes()) {
+			ResourceLoader previous = resourceLoaders.put(type, resourceLoader);
+			Assertion.checkArgument(previous == null, "this type {0} of resource is already defined", type);
+		}
 	}
 }

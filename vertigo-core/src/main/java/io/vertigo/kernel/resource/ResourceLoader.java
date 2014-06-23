@@ -1,9 +1,25 @@
 package io.vertigo.kernel.resource;
 
-import java.util.Map;
+import io.vertigo.kernel.di.configurator.ResourceConfig;
 
+import java.util.List;
+import java.util.Set;
+
+/**
+ * This object can parse and load resources from a certain type.
+ * All 'static' definitions should use this way to be populated.
+ *
+ * @author pchretien
+ */
 public interface ResourceLoader {
-	void add(Map<String, String> resources);
+	/**
+	 * @return Types that can be parsed.
+	 */
+	Set<String> getTypes();
 
-	void solve();
+	/**
+	 * 
+	 * @param List of resources (must be in a type managed by this loader) 
+	 */
+	void parse(List<ResourceConfig> resourceConfigs);
 }

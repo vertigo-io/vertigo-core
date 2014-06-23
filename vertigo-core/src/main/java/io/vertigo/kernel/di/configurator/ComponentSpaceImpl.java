@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,12 +108,23 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 			}
 		}
 		//
-		for (ResourceLoader resourceLoader : Home.getResourceSpace().getResourceLoaders()) {
-			for (ModuleConfig moduleConfig : componentSpaceConfig.getModuleConfigs()) {
-				resourceLoader.add(moduleConfig.getResources());
+		for (ModuleConfig moduleConfig : componentSpaceConfig.getModuleConfigs()) {
+			//			int resourcesToBeLoad = moduleConfig.getResourceConfigs().size();
+			//We are doing a copy of all resources, to check that they are all parsed. 
+			List<ResourceConfig> resourceConfigsToDo = new ArrayList<>(moduleConfig.getResourceConfigs());
+			for (ResourceLoader resourceLoader : Home.getResourceSpace().getResourceLoaders()) {
+				//Candidates contins all resources that can be treated by the resourceLoader
+				List<ResourceConfig> candidates = new ArrayList<>();
+				for (Iterator<ResourceConfig> it = resourceConfigsToDo.iterator(); it.hasNext();) {
+					final ResourceConfig resourceConfig = it.next();
+					if (resourceLoader.getTypes().contains(resourceConfig.getType())) {
+						candidates.add(resourceConfig);
+						it.remove();
+					}
+				}
+				resourceLoader.parse(candidates);
 			}
-			resourceLoader.solve();
-
+			Assertion.checkArgument(resourceConfigsToDo.isEmpty(), "All resources '{1}' have not been parsed successfully : {}", resourceConfigsToDo);
 		}
 		//---	
 		componentContainer.start();
