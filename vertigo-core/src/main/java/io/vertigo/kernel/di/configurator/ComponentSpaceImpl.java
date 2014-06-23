@@ -91,7 +91,9 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 	 */
 	public void start() {
 		initLog(componentSpaceConfig.getParams());
-		registeComponents();
+		for (final ModuleConfig moduleConfig : componentSpaceConfig.getModuleConfigs()) {
+			startModule(moduleConfig);
+		}
 		// --------------------------
 		if (componentSpaceConfig.getElasticaEngine().isDefined()) {
 			engines.add(componentSpaceConfig.getElasticaEngine().get());
@@ -203,54 +205,50 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 		}
 	}
 
-	private void registeComponents() {
+	private void startModule(final ModuleConfig moduleConfig) {
 		final AopEngine aopEngine = componentSpaceConfig.getAopEngine();
 
-		final List<String> solved = new ArrayList<>();
-		for (final ModuleConfig moduleConfig : componentSpaceConfig.getModuleConfigs()) {
-			final Reactor reactor = new Reactor();
-			//Map des composants définis par leur id
-			final Map<String, ComponentConfig> map = new HashMap<>();
-
-			for (final String id : solved) {
-				reactor.addParent(id);
-			}
-
-			for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
-				map.put(componentConfig.getId(), componentConfig);
-				//On insère une seule fois un même type de Plugin pour la résolution le plugin
-				final Set<String> pluginIds = new HashSet<>();
-				int nb = 0;
-				for (final PluginConfig pluginConfig : componentConfig.getPluginConfigs()) {
-					//Attention : il peut y avoir plusieurs plugin d'un même type
-					//On enregistre tjrs le premier Plugin de chaque type avec le nom du type de plugin
-					String pluginId = pluginConfig.getType();
-					if (pluginIds.contains(pluginId)) {
-						pluginId += "#" + nb;
-					}
-					reactor.addComponent(pluginId, pluginConfig.getImplClass(), Collections.<String> emptySet(), pluginConfig.getParams().keySet());
-					nb++;
-					pluginIds.add(pluginId);
-				}
-				//On insère les plugins puis les composants car les composants dépendent des plugins
-				//de sorte on facilite le calcul d'ordre
-				reactor.addComponent(componentConfig.getId(), componentConfig.getImplClass(), pluginIds, componentConfig.getParams().keySet());
-			}
-
-			final List<String> ids = reactor.proceed();
-			//On a récupéré la liste ordonnée des ids.
-
-			//. On initialise l'injecteur AOP
-			final AspectInitializer aspectInitializer = new AspectInitializer(moduleConfig);
-
-			for (final String id : ids) {
-				if (map.containsKey(id)) {
-					final ComponentConfig componentConfig = map.get(id);
-					registerComponent(componentConfig, aspectInitializer, aopEngine);
-				}
-			}
-			solved.addAll(ids);
+		final Reactor reactor = new Reactor();
+		for (final String id : componentContainer.keySet()) {
+			reactor.addParent(id);
 		}
+
+		//Map des composants définis par leur id
+		final Map<String, ComponentConfig> map = new HashMap<>();
+		for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
+			map.put(componentConfig.getId(), componentConfig);
+			//On insère une seule fois un même type de Plugin pour la résolution le plugin
+			final Set<String> pluginIds = new HashSet<>();
+			int nb = 0;
+			for (final PluginConfig pluginConfig : componentConfig.getPluginConfigs()) {
+				//Attention : il peut y avoir plusieurs plugin d'un même type
+				//On enregistre tjrs le premier Plugin de chaque type avec le nom du type de plugin
+				String pluginId = pluginConfig.getType();
+				if (pluginIds.contains(pluginId)) {
+					pluginId += "#" + nb;
+				}
+				reactor.addComponent(pluginId, pluginConfig.getImplClass(), Collections.<String> emptySet(), pluginConfig.getParams().keySet());
+				nb++;
+				pluginIds.add(pluginId);
+			}
+			//On insère les plugins puis les composants car les composants dépendent des plugins
+			//de sorte on facilite le calcul d'ordre
+			reactor.addComponent(componentConfig.getId(), componentConfig.getImplClass(), pluginIds, componentConfig.getParams().keySet());
+		}
+
+		final List<String> ids = reactor.proceed();
+		//On a récupéré la liste ordonnée des ids.
+
+		//. On initialise l'injecteur AOP
+		final AspectInitializer aspectInitializer = new AspectInitializer(moduleConfig);
+
+		for (final String id : ids) {
+			if (map.containsKey(id)) {
+				final ComponentConfig componentConfig = map.get(id);
+				registerComponent(componentConfig, aspectInitializer, aopEngine);
+			}
+		}
+
 	}
 
 	private void registerComponent(final ComponentConfig componentConfig, final AspectInitializer aspectInitializer, final AopEngine aopEngine) {
