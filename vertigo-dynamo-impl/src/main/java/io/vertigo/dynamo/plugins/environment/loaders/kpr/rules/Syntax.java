@@ -26,7 +26,7 @@ final class Syntax {
 	static final Rule<?> SPACES = new WhiteSpaceRule(WHITE_SPACE);
 	static final Rule<String> SEPARATOR = new TermRule(";");
 
-	static final Rule<String> ARRAY_START = new TermRule("[");
+	static final Rule<String> ARRAY_START = new TermRule("["); //like arrays in json syntax
 	static final Rule<String> ARRAY_END = new TermRule("]");
 	static final Rule<String> ARRAY_SEPARATOR = new TermRule(",");
 
@@ -40,7 +40,7 @@ final class Syntax {
 	static final Rule<String> PROPERTY_VALUE = new WordRule(false, "\"", WordRule.Mode.REJECT_ESCAPABLE); //En fait il faut autoriser tous les caractères sauf les guillemets".
 	//Il faut gérer le caractère d'évitement.
 	static final Rule<String> WORD = new WordRule(false, DELIMITERS, WordRule.Mode.REJECT, "DELIMITERS");
-	static final Rule<List<String>> WORDS = new WordListRule();
+	static final Rule<List<String>> WORDS = new WordsRule();
 
 	private Syntax() {
 		//Classe sans état

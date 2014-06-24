@@ -2,7 +2,7 @@ package io.vertigo.dynamo.environment.plugins.loaders.kpr.definition;
 
 import io.vertigo.commons.parser.NotFoundException;
 import io.vertigo.commons.parser.Parser;
-import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.WordListRule;
+import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.WordsRule;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public final class WordListRuleTest {
-	private final WordListRule wordListRule = new WordListRule();
+	private final WordsRule wordListRule = new WordsRule();
 
 	@Test
 	public void testList0() throws NotFoundException {

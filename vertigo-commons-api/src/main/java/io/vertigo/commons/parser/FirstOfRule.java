@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * On retourne la première des règles qui matche.
+ * Si on ne trouve rien on lance une erreur sur la règle pour laquelle on a le plus avancé.
  * @author pchretien
  */
 public final class FirstOfRule implements Rule<Choice> {

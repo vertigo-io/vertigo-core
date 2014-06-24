@@ -18,6 +18,7 @@ import java.util.List;
  * @author pchretien
  */
 public final class PackageRule extends AbstractRule<String, List<?>> {
+
 	@Override
 	protected Rule<List<?>> createMainRule() {
 		return new SequenceRule(//
