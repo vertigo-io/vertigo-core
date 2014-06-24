@@ -46,11 +46,11 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 	}
 
 	/** {@inheritDoc} */
-	public void load(final String resource, final DynamicDefinitionRepository dynamicModelrepository) {
-		Assertion.checkArgNotEmpty(resource);
+	public void load(final String resourcePath, final DynamicDefinitionRepository dynamicModelrepository) {
+		Assertion.checkArgNotEmpty(resourcePath);
 		Assertion.checkNotNull(dynamicModelrepository);
 		//----------------------------------------------------------------------
-		final URL xmiFileURL = resourceManager.resolve(resource);
+		final URL xmiFileURL = resourceManager.resolve(resourcePath);
 		final EAXmiLoader loader = new EAXmiLoader(xmiFileURL);
 
 		for (final EAXmiClass classXmi : loader.getClassList()) {

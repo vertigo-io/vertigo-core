@@ -38,11 +38,11 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 	}
 
 	/** {@inheritDoc} */
-	public void load(final String resource, final DynamicDefinitionRepository dynamicModelrepository) {
-		Assertion.checkArgNotEmpty(resource);
+	public void load(final String resourcePath, final DynamicDefinitionRepository dynamicModelrepository) {
+		Assertion.checkArgNotEmpty(resourcePath);
 		Assertion.checkNotNull(dynamicModelrepository);
 		//----------------------------------------------------------------------
-		final URL kprURL = resourceManager.resolve(resource);
+		final URL kprURL = resourceManager.resolve(resourcePath);
 
 		for (final URL url : getKspFiles(kprURL, resourceManager)) {
 			final KspLoader loader = new KspLoader(url);

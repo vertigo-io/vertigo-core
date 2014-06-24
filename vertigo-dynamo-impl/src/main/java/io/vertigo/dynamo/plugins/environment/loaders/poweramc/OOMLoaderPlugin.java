@@ -61,11 +61,11 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 	}
 
 	/** {@inheritDoc} */
-	public void load(final String resource, final DynamicDefinitionRepository dynamicModelrepository) {
-		Assertion.checkArgNotEmpty(resource);
+	public void load(final String resourcePath, final DynamicDefinitionRepository dynamicModelrepository) {
+		Assertion.checkArgNotEmpty(resourcePath);
 		Assertion.checkNotNull(dynamicModelrepository);
 		//----------------------------------------------------------------------
-		final URL powerAMCURL = resourceManager.resolve(resource);
+		final URL powerAMCURL = resourceManager.resolve(resourcePath);
 
 		final OOMLoader loader = new OOMLoader(powerAMCURL);
 
