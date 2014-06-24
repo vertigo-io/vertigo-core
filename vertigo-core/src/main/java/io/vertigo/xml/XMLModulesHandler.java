@@ -136,7 +136,7 @@ final class XMLModulesHandler extends DefaultHandler {
 				final String resourceType = attrs.getValue("type");
 				final String resourcePath = attrs.getValue("path");
 				if (current == TagName.module) {
-					moduleConfigBuilder.withResource(resourceType, resourcePath);
+					moduleConfigBuilder.withResource(resourceType, evalParamValue(properties, resourcePath));
 				}
 				break;
 			case param:

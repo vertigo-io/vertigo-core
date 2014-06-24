@@ -17,7 +17,7 @@ public class DefinitionRuleTest {
 		final DynamicDefinitionRule definitionRule = new DynamicDefinitionRule("create", dynamicDefinitionRepository);
 
 		final Parser<DynamicDefinition> parser = definitionRule.createParser();
-		parser.parse("create Formatter FMT_TEST ( args : \"UPPER\"; )", 0);
+		parser.parse("create Formatter FMT_TEST { args : \"UPPER\" }", 0);
 
 		Assert.assertNotNull(parser.get());
 	}
@@ -33,13 +33,13 @@ public class DefinitionRuleTest {
 		final DynamicDefinitionRule definitionRule = new DynamicDefinitionRule("create", dynamicDefinitionRepository);
 
 		final Parser<DynamicDefinition> parser = definitionRule.createParser();
-		parser.parse("create Domain DO_CODE_POSTAL ( dataType : String ;  formatter : FMT_DEFAULT; constraint : { CK_CODE_POSTAL }    ) ", 0);
+		parser.parse("create Domain DO_CODE_POSTAL { dataType : String ,  formatter:FMT_DEFAULT, constraint : [ CK_CODE_POSTAL ]   } ", 0);
 		Assert.assertNotNull(parser.get());
 	}
 
 	@Test
 	public void testTemplate() throws NotFoundException {
 		final DynamicDefinitionRule DynamicDefinitionRule = new DynamicDefinitionRule("alter", dynamicDefinitionRepository);
-		DynamicDefinitionRule.createParser().parse("alter Formatter FMT_DEFAULT (args : \"UPPER\");", 0);
+		DynamicDefinitionRule.createParser().parse("alter Formatter FMT_DEFAULT {args : \"UPPER\"}", 0);
 	}
 }

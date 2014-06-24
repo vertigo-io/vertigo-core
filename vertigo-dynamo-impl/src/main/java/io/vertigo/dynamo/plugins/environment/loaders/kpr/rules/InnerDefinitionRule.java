@@ -1,8 +1,5 @@
 package io.vertigo.dynamo.plugins.environment.loaders.kpr.rules;
 
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.Syntax.SEPARATOR;
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.Syntax.SPACES;
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.Syntax.WORD;
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.OptionRule;
 import io.vertigo.commons.parser.Rule;
@@ -41,12 +38,12 @@ final class InnerDefinitionRule extends AbstractRule<XDefinitionEntry, List<?>> 
 		final DefinitionBodyRule definitionBodyRule = new DefinitionBodyRule(dynamicModelRepository, entity);
 		return new SequenceRule(//"InnerDefinition"
 				new TermRule(entityName), //
-				SPACES,//
-				WORD,//2
-				SPACES,//
+				Syntax.SPACES,//
+				Syntax.WORD,//2
+				Syntax.SPACES,//
 				definitionBodyRule,//4
-				SPACES,//
-				new OptionRule<>(SEPARATOR)//
+				Syntax.SPACES,//
+				new OptionRule<>(Syntax.OBJECT_SEPARATOR)//
 		);
 	}
 

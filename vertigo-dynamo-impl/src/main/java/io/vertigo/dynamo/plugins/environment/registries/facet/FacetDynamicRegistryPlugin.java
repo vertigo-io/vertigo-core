@@ -1,10 +1,7 @@
 package io.vertigo.dynamo.plugins.environment.registries.facet;
 
-import io.vertigo.dynamo.collections.facet.metamodel.FacetDefinition;
-import io.vertigo.dynamo.collections.facet.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
-import io.vertigo.kernel.Home;
 
 /**
  * @author pchretien

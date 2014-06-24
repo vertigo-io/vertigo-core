@@ -26,12 +26,13 @@ final class Syntax {
 	static final Rule<?> SPACES = new WhiteSpaceRule(WHITE_SPACE);
 	static final Rule<String> SEPARATOR = new TermRule(";");
 
-	static final Rule<String> ARRAY_START = new TermRule("{");
-	static final Rule<String> ARRAY_END = new TermRule("}");
+	static final Rule<String> ARRAY_START = new TermRule("[");
+	static final Rule<String> ARRAY_END = new TermRule("]");
 	static final Rule<String> ARRAY_SEPARATOR = new TermRule(",");
 
-	static final Rule<String> OBJECT_START = new TermRule("(");
-	static final Rule<String> OBJECT_END = new TermRule(")");
+	static final Rule<String> OBJECT_START = new TermRule("{"); //like json { xxx:"rtrttr", kjjkjk:"kjkjk"}
+	static final Rule<String> OBJECT_END = new TermRule("}");
+	static final Rule<String> OBJECT_SEPARATOR = new TermRule(",");
 
 	static final Rule<String> PAIR_SEPARATOR = new TermRule(":"); //name:"bill" 
 	static final Rule<String> QUOTATION_MARK = new TermRule("\"");

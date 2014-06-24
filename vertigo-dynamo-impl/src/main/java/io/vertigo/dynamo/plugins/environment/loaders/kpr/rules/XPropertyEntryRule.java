@@ -66,7 +66,7 @@ public final class XPropertyEntryRule extends AbstractRule<XPropertyEntry, List<
 				PROPERTY_VALUE,//5
 				QUOTATION_MARK,//
 				SPACES,//
-				new OptionRule<>(Syntax.SEPARATOR)//
+				new OptionRule<>(Syntax.OBJECT_SEPARATOR)//
 		);
 	}
 

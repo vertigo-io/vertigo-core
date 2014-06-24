@@ -1,13 +1,13 @@
 package io.vertigo.dynamock.search;
 
-create Domain DO_FULL_TEXT (
+create Domain DO_FULL_TEXT {
     dataType : String
     formatter : FMT_DEFAULT  
     indexType: "text.fr"
-)
+}
 
-create Domain DO_KEYWORD (
+create Domain DO_KEYWORD {
     dataType : String
     formatter : FMT_DEFAULT  
     indexType: "string"
-)
+}

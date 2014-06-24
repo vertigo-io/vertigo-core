@@ -17,7 +17,7 @@ public final class XDefinitionEntryRuleTest {
 	public void test0() throws NotFoundException {
 		final Parser<XDefinitionEntry> parser = MAIN.createParser();
 		//---
-		final String text = "myFirstProperty : {BLEU }; non reconnu";
+		final String text = "myFirstProperty : [BLEU ], non reconnu";
 		final int end = parser.parse(text, 0);
 		final XDefinitionEntry xDefinitionEntry = parser.get();
 		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
@@ -30,7 +30,7 @@ public final class XDefinitionEntryRuleTest {
 	public void test1() throws NotFoundException {
 		final Parser<XDefinitionEntry> parser = MAIN.createParser();
 		//---
-		final String text = "myFirstProperty : {BLEU, VerT, ROUGE, T_REX }; non reconnu";
+		final String text = "myFirstProperty : [BLEU, VerT, ROUGE, T_REX ], non reconnu";
 		final int end = parser.parse(text, 0);
 		final XDefinitionEntry xDefinitionEntry = parser.get();
 		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
@@ -44,7 +44,7 @@ public final class XDefinitionEntryRuleTest {
 	public void test2() throws NotFoundException {
 		final Parser<XDefinitionEntry> parser = MAIN.createParser();
 		//---
-		final String text = "myLastProperty : { };";
+		final String text = "myLastProperty : [ ],";
 		final int end = parser.parse(text, 0);
 		final XDefinitionEntry xDefinitionEntry = parser.get();
 		Assert.assertEquals("myLastProperty", xDefinitionEntry.getFieldName());
@@ -56,7 +56,7 @@ public final class XDefinitionEntryRuleTest {
 	public void test3() throws NotFoundException {
 		final Parser<XDefinitionEntry> parser = MAIN.createParser();
 		//---
-		final String text = "myFirstProperty    :    {BLEU,VerT,    ROUGE    }";
+		final String text = "myFirstProperty    :    [BLEU,VerT,    ROUGE    ]";
 		final int end = parser.parse(text, 0);
 		final XDefinitionEntry xDefinitionEntry = parser.get();
 		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
@@ -69,8 +69,8 @@ public final class XDefinitionEntryRuleTest {
 	public void test4() throws NotFoundException {
 		final Parser<XDefinitionEntry> parser = MAIN.createParser();
 		//---
-		final String text = "myFirstProperty : BLEU;";
-		final int end = parser.parse("myFirstProperty : BLEU;", 0);
+		final String text = "myFirstProperty : BLEU,";
+		final int end = parser.parse("myFirstProperty : BLEU,", 0);
 		final XDefinitionEntry xDefinitionEntry = parser.get();
 		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
 		Assert.assertEquals(1, xDefinitionEntry.getDefinitionKeys().size());
@@ -82,7 +82,7 @@ public final class XDefinitionEntryRuleTest {
 	public void testFail1() throws NotFoundException {
 		final Parser<XDefinitionEntry> parser = MAIN.createParser();
 		//---
-		final String text = "myLastProperty : {BLEU;"; //on ne ferme pas l'accolade
+		final String text = "myLastProperty : [BLEU;"; //on ne ferme pas l'accolade
 		/*final int end =*/parser.parse(text, 0);
 		Assert.fail();
 	}

@@ -1,7 +1,6 @@
 package io.vertigo.dynamo.plugins.environment.loaders.kpr.rules;
 
 import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.Syntax.PAIR_SEPARATOR;
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.Syntax.SEPARATOR;
 import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.Syntax.SPACES;
 import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.Syntax.WORD;
 import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.Syntax.WORDS;
@@ -49,7 +48,7 @@ public final class XDefinitionEntryRule extends AbstractRule<XDefinitionEntry, L
 				SPACES,//
 				new FirstOfRule(WORD, WORDS),//4
 				SPACES,//
-				new OptionRule<>(SEPARATOR)//
+				new OptionRule<>(Syntax.OBJECT_SEPARATOR)//
 		);
 	}
 

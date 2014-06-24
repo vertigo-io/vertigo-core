@@ -45,7 +45,7 @@ public final class XPropertyEntryRuleTest {
 	public void test() throws NotFoundException {
 		final Parser<XPropertyEntry> parser = MAIN.createParser();
 		//---
-		final String text = "label   : \"BLeU\"; non reconnu";
+		final String text = "label   : \"BLeU\", non reconnu";
 		final int end = parser.parse(text, 0);
 		final XPropertyEntry propertyEntry = parser.get();
 		Assert.assertEquals(LABEL, propertyEntry.getProperty().getName());
@@ -70,7 +70,7 @@ public final class XPropertyEntryRuleTest {
 	public void test3() throws NotFoundException {
 		final Parser<XPropertyEntry> parser = MAIN.createParser();
 		//---
-		final String text = "size   : \"54\";";
+		final String text = "size   : \"54\",";
 		final int end = parser.parse(text, 0);
 		final XPropertyEntry propertyEntry = parser.get();
 		Assert.assertEquals(SIZE, propertyEntry.getProperty().getName());

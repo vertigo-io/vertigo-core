@@ -1,12 +1,12 @@
 package io.vertigo.dynamock.search;
 
-create IndexDefinition IDX_CAR (
+create IndexDefinition IDX_CAR {
     dtResult : DT_CAR
     dtIndex : DT_CAR
-)
+}
 
 
-create IndexDefinition IDX_DYNA_CAR (
+create IndexDefinition IDX_DYNA_CAR {
     dtResult : DT_CAR
     dtIndex : DT_CAR
-)
+}

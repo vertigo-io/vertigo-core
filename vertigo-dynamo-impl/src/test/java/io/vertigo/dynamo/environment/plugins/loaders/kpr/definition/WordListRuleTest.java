@@ -15,7 +15,7 @@ public final class WordListRuleTest {
 	@Test
 	public void testList0() throws NotFoundException {
 		Parser<List<String>> parser = wordListRule.createParser();
-		parser.parse("{ }", 0);
+		parser.parse("[ ]", 0);
 		final List<String> list = parser.get();
 		Assert.assertEquals(0, list.size());
 	}
@@ -23,7 +23,7 @@ public final class WordListRuleTest {
 	@Test
 	public void testList1() throws NotFoundException {
 		Parser<List<String>> parser = wordListRule.createParser();
-		parser.parse("{BLEU, VerT, ROUGE }", 0);
+		parser.parse("[BLEU, VerT, ROUGE ]", 0);
 		final List<String> list = parser.get();
 		Assert.assertEquals(3, list.size());
 		Assert.assertTrue(list.contains("BLEU"));
@@ -34,7 +34,7 @@ public final class WordListRuleTest {
 	@Test
 	public void testList2() throws NotFoundException {
 		Parser<List<String>> parser = wordListRule.createParser();
-		parser.parse("{BLEU, VERT, ROUGE }", 0);
+		parser.parse("[BLEU, VERT, ROUGE ]", 0);
 		final List<String> list = parser.get();
 		Assert.assertEquals(3, list.size());
 		Assert.assertTrue(list.contains("BLEU"));
@@ -45,7 +45,7 @@ public final class WordListRuleTest {
 	@Test(expected = Exception.class)
 	public void testList3() throws NotFoundException {
 		Parser<List<String>> parser = wordListRule.createParser();
-		parser.parse(" {BLEU  ,	VERT,   ROUGE ,  Orange,} ", 0);
+		parser.parse(" [BLEU  ,	VERT,   ROUGE ,  Orange,] ", 0);
 		final List<String> list = parser.get();
 		Assert.fail("liste :" + list);
 	}
@@ -53,7 +53,7 @@ public final class WordListRuleTest {
 	@Test(expected = Exception.class)
 	public void testList4() throws NotFoundException {
 		Parser<List<String>> parser = wordListRule.createParser();
-		parser.parse(" { , BLEU,VERT,   ROUGE ,  Violet} ", 0);
+		parser.parse(" [ , BLEU,VERT,   ROUGE ,  Violet] ", 0);
 		final List<String> list = parser.get();
 		Assert.fail("liste :" + list);
 	}
@@ -61,7 +61,7 @@ public final class WordListRuleTest {
 	@Test
 	public void testList5() throws NotFoundException {
 		Parser<List<String>> parser = wordListRule.createParser();
-		parser.parse("{BLEU }", 0);
+		parser.parse("[BLEU ]", 0);
 		final List<String> list = parser.get();
 		Assert.assertEquals(1, list.size());
 		Assert.assertTrue(list.contains("BLEU"));

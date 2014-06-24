@@ -20,9 +20,7 @@
     
     <module name="vertigo-dynamo">
 	    <component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
-	       <plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" >
-	            <param name ="kpr" value="{kpr}"/>
-	       </plugin>
+	       <plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
 	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
 	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
 	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
@@ -42,5 +40,9 @@
 	        <!-- plugin class="io.vertigo.studio.plugins.mda.search.SearchGeneratorPlugin"/  -->
 	        <plugin class="io.vertigo.studio.plugins.mda.file.FileInfoGeneratorPlugin"/>
 	    </component> 
+    </module>
+    
+    <module name="test">
+		<resource type ="kpr" path="{kpr}"/>
     </module>
 </modules>

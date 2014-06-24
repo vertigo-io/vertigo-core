@@ -18,7 +18,7 @@ public class DefinitionBodyRuleTest {
 		final Entity entity = dynamicDefinitionRepository.getGrammar().getEntity("Formatter");
 		final DefinitionBodyRule definitionBodyRule = new DefinitionBodyRule(dynamicDefinitionRepository, entity);
 		final Parser<XDefinitionBody> parser = definitionBodyRule.createParser();
-		parser.parse("( args : \"UPPER\"; )", 0);
+		parser.parse("{ args : \"UPPER\" }", 0);
 		Assert.assertEquals(0, parser.get().getDefinitionEntries().size()); //On vérifie que l'on a une et une seule propriété 
 		Assert.assertEquals(1, parser.get().getPropertyEntries().size());
 	}
@@ -34,7 +34,7 @@ public class DefinitionBodyRuleTest {
 		final Entity entity = dynamicDefinitionRepository.getGrammar().getEntity("Domain");
 		final DefinitionBodyRule definitionBodyRule = new DefinitionBodyRule(dynamicDefinitionRepository, entity);
 		final Parser<XDefinitionBody> parser = definitionBodyRule.createParser();
-		parser.parse("( dataType : String ;  formatter : FMT_DEFAULT;  constraint : { CK_CODE_POSTAL }    ) ", 0);
+		parser.parse("{ dataType : String ,  formatter : FMT_DEFAULT,  constraint : [ CK_CODE_POSTAL ]    } ", 0);
 	}
 
 	@Test
@@ -42,7 +42,7 @@ public class DefinitionBodyRuleTest {
 		final Entity entity = dynamicDefinitionRepository.getGrammar().getEntity("Domain");
 		final DefinitionBodyRule definitionBodyRule = new DefinitionBodyRule(dynamicDefinitionRepository, entity);
 		final Parser<XDefinitionBody> parser = definitionBodyRule.createParser();
-		final String testValue = "( dataType : String ;  formatter : FMT_DEFAULT;  constraint : { CK_CODE_POSTAL } ; maxLengh:\"true\"   ) ";
+		final String testValue = "{ dataType : String ,  formatter : FMT_DEFAULT,  constraint : [ CK_CODE_POSTAL ] , maxLengh:\"true\"   } ";
 		try {
 			parser.parse(testValue, 0);
 			Assert.fail();
