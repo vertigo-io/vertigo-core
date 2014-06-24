@@ -25,9 +25,7 @@ import io.vertigo.kernel.lang.Builder;
 import io.vertigo.kernel.lang.Option;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Paramétrage de l'application.
@@ -39,7 +37,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	private final String name;
 	private final List<ComponentConfigBuilder> componentConfigBuilders = new ArrayList<>();
 	private final List<AspectConfig> aspectConfigs = new ArrayList<>();
-	private final Map<String, String> resources = new HashMap<>(); /*path, type*/
+	private final List<ResourceConfig> resourceConfigs = new ArrayList<>();
 
 	//---Rules
 	private boolean hasApi = true; //par défaut on a une api.
@@ -63,7 +61,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkArgNotEmpty(resourceType);
 		Assertion.checkNotNull(resourcePath);
 		//---------------------------------------------------------------------
-		resources.put(resourcePath, resourceType);
+		resourceConfigs.add(new ResourceConfig(resourceType, resourcePath));
 		return this;
 	}
 
@@ -141,7 +139,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		for (final ComponentConfigBuilder componentConfigBuilder : componentConfigBuilders) {
 			componentConfig.add(componentConfigBuilder.build());
 		}
-		final ModuleConfig moduleConfig = new ModuleConfig(name, componentConfig, aspectConfigs, moduleRules, resources);
+		final ModuleConfig moduleConfig = new ModuleConfig(name, componentConfig, aspectConfigs, moduleRules, resourceConfigs);
 		moduleConfig.checkRules();
 		return moduleConfig;
 	}

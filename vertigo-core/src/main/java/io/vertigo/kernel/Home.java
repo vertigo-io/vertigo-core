@@ -26,8 +26,6 @@ import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.DefinitionSpace;
 import io.vertigo.kernel.resource.ResourceSpace;
 
-import java.util.Map;
-
 /**
  * Home : Classe d'entrée sur toutes les modules. 
  * Cycle de vie : 
@@ -173,20 +171,5 @@ public final class Home {
 		}
 		//---------------------------------------------------------------------
 		state = toState;
-	}
-
-	//
-	//	public static Option<VCommandEngine> getCommandEngine() {
-	//		return INSTANCE.commandEngine;
-	//	}
-
-	public static <XLoader> void registerLoader(XLoader xLoader) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public static Map<String, String> getResources() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

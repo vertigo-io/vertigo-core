@@ -32,7 +32,7 @@
 	<xs:complexType name="moduleType">
 		<xs:sequence>
 			<xs:element name="resource" type="resourceType" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="component" type="managerType" minOccurs="1" maxOccurs="unbounded"/>
+			<xs:element name="component" type="managerType" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="aspect" type="aspectType" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
  		<xs:attribute name="name" type="xs:string" use="required"/>

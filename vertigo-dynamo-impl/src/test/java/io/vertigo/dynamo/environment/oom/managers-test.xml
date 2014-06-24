@@ -14,9 +14,6 @@
 	</module>	
 	
 	<module name="dynamo">
-		<resource type ="kpr" path="io/vertigo/dynamo/environment/oom/data/domain.kpr"/>
-		<resource type ="oom" path="io/vertigo/dynamo/environment/oom/data/demo.oom"/>
-
 	    <component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
 	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.poweramc.OOMLoaderPlugin" />
 	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />

@@ -24,13 +24,13 @@ import io.vertigo.kernel.lang.JsonExclude;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Configuration of a module.
  * This config module contains 
  *  - config of components
  *  - config of plugins
+ *  - config of resources
  *  - params
  *  - rules
  * 
@@ -42,20 +42,20 @@ final class ModuleConfig {
 	private final List<AspectConfig> aspects;
 	@JsonExclude
 	private final List<ModuleRule> moduleRules;
-	private final Map<String, String> resources;/*path, type*/
+	private final List<ResourceConfig> resources;
 
-	ModuleConfig(final String name, final List<ComponentConfig> componentConfigs, final List<AspectConfig> aspectConfigs, final List<ModuleRule> moduleRules, final Map<String, String> resources) {
+	ModuleConfig(final String name, final List<ComponentConfig> componentConfigs, final List<AspectConfig> aspectConfigs, final List<ModuleRule> moduleRules, final List<ResourceConfig> resourceConfigs) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(componentConfigs);
 		Assertion.checkNotNull(aspectConfigs);
 		Assertion.checkNotNull(moduleRules);
-		Assertion.checkNotNull(resources);
+		Assertion.checkNotNull(resourceConfigs);
 		//---------------------------------------------------------------------
 		this.name = name;
 		this.components = Collections.unmodifiableList(new ArrayList<>(componentConfigs));
 		this.aspects = aspectConfigs;
 		this.moduleRules = Collections.unmodifiableList(new ArrayList<>(moduleRules));
-		this.resources = resources;
+		this.resources = Collections.unmodifiableList(new ArrayList<>(resourceConfigs));
 	}
 
 	/**
@@ -82,8 +82,8 @@ final class ModuleConfig {
 		}
 	}
 
-	Map<String, String> getResources() { /*path, type*/
-		return Collections.unmodifiableMap(resources);
+	List<ResourceConfig> getResourceConfigs() {
+		return resources;
 	}
 
 	@Override

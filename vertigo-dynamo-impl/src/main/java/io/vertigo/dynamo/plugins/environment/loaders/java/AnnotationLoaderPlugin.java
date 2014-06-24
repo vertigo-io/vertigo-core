@@ -77,11 +77,11 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	}
 
 	/** {@inheritDoc} */
-	public void load(final String resource, final DynamicDefinitionRepository dynamicModelrepository) {
-		Assertion.checkArgNotEmpty(resource);
+	public void load(final String resourcePath, final DynamicDefinitionRepository dynamicModelrepository) {
+		Assertion.checkArgNotEmpty(resourcePath);
 		Assertion.checkNotNull(dynamicModelrepository);
 		//----------------------------------------------------------------------
-		final Iterable<Class<?>> classes = getClasses(resource);
+		final Iterable<Class<?>> classes = getClasses(resourcePath);
 
 		//--Enregistrement des fichiers java annotés
 		for (final Class<?> javaClass : classes) {

@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,13 +86,15 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 		this.componentSpaceConfig = componentSpaceConfig;
 	}
 
-	/**
-	 * Enregistrement des composants et de leurs plugins.
-	 */
+	/* We are registered all the components and their plugins*/
+	/** {@inheritDoc} */
 	public void start() {
 		initLog(componentSpaceConfig.getParams());
-		registeComponents();
-		// --------------------------
+		//-------------------
+		for (final ModuleConfig moduleConfig : componentSpaceConfig.getModuleConfigs()) {
+			startModule(moduleConfig);
+		}
+		// ------------------
 		if (componentSpaceConfig.getElasticaEngine().isDefined()) {
 			engines.add(componentSpaceConfig.getElasticaEngine().get());
 		}
@@ -105,14 +108,6 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 			if (engine instanceof Activeable) {
 				Activeable.class.cast(engine).start();
 			}
-		}
-		//
-		for (ResourceLoader resourceLoader : Home.getResourceSpace().getResourceLoaders()) {
-			for (ModuleConfig moduleConfig : componentSpaceConfig.getModuleConfigs()) {
-				resourceLoader.add(moduleConfig.getResources());
-			}
-			resourceLoader.solve();
-
 		}
 		//---	
 		componentContainer.start();
@@ -148,9 +143,27 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 		}
 	}
 
-	/**
-	 * Arret de tous les composants.
-	 */
+	private void injectResources(ModuleConfig moduleConfig) {
+		//			int resourcesToBeLoad = moduleConfig.getResourceConfigs().size();
+		//We are doing a copy of all resources, to check that they are all parsed. 
+		List<ResourceConfig> resourceConfigsToDo = new ArrayList<>(moduleConfig.getResourceConfigs());
+		for (ResourceLoader resourceLoader : Home.getResourceSpace().getResourceLoaders()) {
+			//Candidates contins all resources that can be treated by the resourceLoader
+			List<ResourceConfig> candidates = new ArrayList<>();
+			for (Iterator<ResourceConfig> it = resourceConfigsToDo.iterator(); it.hasNext();) {
+				final ResourceConfig resourceConfig = it.next();
+				if (resourceLoader.getTypes().contains(resourceConfig.getType())) {
+					candidates.add(resourceConfig);
+					it.remove();
+				}
+			}
+			resourceLoader.parse(candidates);
+		}
+		Assertion.checkArgument(resourceConfigsToDo.isEmpty(), "All resources '{1}' have not been parsed successfully : {}", resourceConfigsToDo);
+	}
+
+	/*We are stopping all the components.*/
+	/** {@inheritDoc} */
 	public void stop() {
 		componentContainer.stop();
 		//---
@@ -191,53 +204,53 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 		}
 	}
 
-	private void registeComponents() {
+	private void startModule(final ModuleConfig moduleConfig) {
+		injectComponents(moduleConfig);
+		injectResources(moduleConfig);
+	}
+
+	private void injectComponents(final ModuleConfig moduleConfig) {
 		final AopEngine aopEngine = componentSpaceConfig.getAopEngine();
 
-		final List<String> solved = new ArrayList<>();
-		for (final ModuleConfig moduleConfig : componentSpaceConfig.getModuleConfigs()) {
-			final Reactor reactor = new Reactor();
-			//Map des composants définis par leur id
-			final Map<String, ComponentConfig> map = new HashMap<>();
+		final Reactor reactor = new Reactor();
+		for (final String id : componentContainer.keySet()) {
+			reactor.addParent(id);
+		}
 
-			for (final String id : solved) {
-				reactor.addParent(id);
-			}
-
-			for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
-				map.put(componentConfig.getId(), componentConfig);
-				//On insère une seule fois un même type de Plugin pour la résolution le plugin
-				final Set<String> pluginIds = new HashSet<>();
-				int nb = 0;
-				for (final PluginConfig pluginConfig : componentConfig.getPluginConfigs()) {
-					//Attention : il peut y avoir plusieurs plugin d'un même type
-					//On enregistre tjrs le premier Plugin de chaque type avec le nom du type de plugin
-					String pluginId = pluginConfig.getType();
-					if (pluginIds.contains(pluginId)) {
-						pluginId += "#" + nb;
-					}
-					reactor.addComponent(pluginId, pluginConfig.getImplClass(), Collections.<String> emptySet(), pluginConfig.getParams().keySet());
-					nb++;
-					pluginIds.add(pluginId);
+		//Map des composants définis par leur id
+		final Map<String, ComponentConfig> map = new HashMap<>();
+		for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
+			map.put(componentConfig.getId(), componentConfig);
+			//On insère une seule fois un même type de Plugin pour la résolution le plugin
+			final Set<String> pluginIds = new HashSet<>();
+			int nb = 0;
+			for (final PluginConfig pluginConfig : componentConfig.getPluginConfigs()) {
+				//Attention : il peut y avoir plusieurs plugin d'un même type
+				//On enregistre tjrs le premier Plugin de chaque type avec le nom du type de plugin
+				String pluginId = pluginConfig.getType();
+				if (pluginIds.contains(pluginId)) {
+					pluginId += "#" + nb;
 				}
-				//On insère les plugins puis les composants car les composants dépendent des plugins
-				//de sorte on facilite le calcul d'ordre
-				reactor.addComponent(componentConfig.getId(), componentConfig.getImplClass(), pluginIds, componentConfig.getParams().keySet());
+				reactor.addComponent(pluginId, pluginConfig.getImplClass(), Collections.<String> emptySet(), pluginConfig.getParams().keySet());
+				nb++;
+				pluginIds.add(pluginId);
 			}
+			//On insère les plugins puis les composants car les composants dépendent des plugins
+			//de sorte on facilite le calcul d'ordre
+			reactor.addComponent(componentConfig.getId(), componentConfig.getImplClass(), pluginIds, componentConfig.getParams().keySet());
+		}
 
-			final List<String> ids = reactor.proceed();
-			//On a récupéré la liste ordonnée des ids.
+		final List<String> ids = reactor.proceed();
+		//On a récupéré la liste ordonnée des ids.
 
-			//. On initialise l'injecteur AOP
-			final AspectInitializer aspectInitializer = new AspectInitializer(moduleConfig);
+		//. On initialise l'injecteur AOP
+		final AspectInitializer aspectInitializer = new AspectInitializer(moduleConfig);
 
-			for (final String id : ids) {
-				if (map.containsKey(id)) {
-					final ComponentConfig componentConfig = map.get(id);
-					registerComponent(componentConfig, aspectInitializer, aopEngine);
-				}
+		for (final String id : ids) {
+			if (map.containsKey(id)) {
+				final ComponentConfig componentConfig = map.get(id);
+				registerComponent(componentConfig, aspectInitializer, aopEngine);
 			}
-			solved.addAll(ids);
 		}
 	}
 
@@ -302,7 +315,7 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 		return componentContainer.resolveComponent(componentClass);
 	}
 
-	@Override
+	/** {@inheritDoc} */
 	public <T> T resolve(final String id, final Class<T> componentClass) {
 		return componentContainer.resolve(id, componentClass);
 	}

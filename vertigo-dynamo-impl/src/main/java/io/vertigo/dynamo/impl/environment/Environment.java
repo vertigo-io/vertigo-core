@@ -4,13 +4,15 @@ import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
+import io.vertigo.kernel.di.configurator.ResourceConfig;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.resource.ResourceLoader;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Environnement permettant de charger le Modèle.
@@ -24,8 +26,8 @@ import java.util.Map.Entry;
  * @author pchretien
  */
 final class Environment implements ResourceLoader {
-	private final Map<String, Loader> loaders;
-	private final DynamicDefinitionRepository dynamicModelRepository;
+	private final Map<String, Loader> loaders = new HashMap<>();
+	private final List<DynamicRegistryPlugin> dynamicRegistryPlugins;
 
 	/**
 	 * Constructeur.
@@ -35,16 +37,18 @@ final class Environment implements ResourceLoader {
 		Assertion.checkNotNull(dynamicRegistryPlugins);
 		Assertion.checkNotNull(loaderPlugins);
 		//---------------------------------------------------------------------
+		this.dynamicRegistryPlugins = dynamicRegistryPlugins;
 		//On enregistre les loaders 
-		this.loaders = new HashMap<>();
 		for (LoaderPlugin loaderPlugin : loaderPlugins) {
 			loaders.put(loaderPlugin.getType(), loaderPlugin);
 		}
+	}
 
+	public void parse(List<ResourceConfig> resourceConfigs) {
 		final CompositeDynamicRegistry handler = new CompositeDynamicRegistry(dynamicRegistryPlugins);
 
 		//Création du repositoy des instances le la grammaire (=> model)
-		this.dynamicModelRepository = new DynamicDefinitionRepository(handler);
+		final DynamicDefinitionRepository dynamicModelRepository = new DynamicDefinitionRepository(handler);
 
 		//--Enregistrement des types primitifs
 		final Entity dataTypeEntity = KernelGrammar.INSTANCE.getDataTypeEntity();
@@ -52,28 +56,15 @@ final class Environment implements ResourceLoader {
 			final DynamicDefinition definition = dynamicModelRepository.createDynamicDefinitionBuilder(type.name(), dataTypeEntity, null).build();
 			dynamicModelRepository.addDefinition(definition);
 		}
-	}
-
-	//		final NameSpace nameSpace = Home.getNameSpace();
-	//		for (final Class<? extends Definition> definitionClass : nameSpace.getDefinitionClasses()) {
-	//			System.out.println("######" + definitionClass.getSimpleName());
-	//			for (final Definition definition : nameSpace.getDefinitions(definitionClass)) {
-	//				System.out.println("     # " + definition.getName());
-	//			}
-	//		}
-
-	public void add(Map<String, String> resources) { /*path, type*/
-		for (Entry<String, String> entry : resources.entrySet()) {
-			Loader loader = loaders.get(entry.getValue());
-			if (loader != null) {
-				loader.load(entry.getKey(), dynamicModelRepository);
-			}
+		for (ResourceConfig resourceConfig : resourceConfigs) {
+			Loader loader = loaders.get(resourceConfig.getType());
+			Assertion.checkNotNull(loader, "This resource {0} can not be parse by this loader", resourceConfig);
+			loader.load(resourceConfig.getPath(), dynamicModelRepository);
 		}
-	}
-
-	public void solve() {
-		//On résout les références
 		dynamicModelRepository.solve();
 	}
 
+	public Set<String> getTypes() {
+		return Collections.unmodifiableSet(loaders.keySet());
+	}
 }

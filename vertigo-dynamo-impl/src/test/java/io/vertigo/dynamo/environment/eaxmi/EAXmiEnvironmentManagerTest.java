@@ -2,10 +2,10 @@ package io.vertigo.dynamo.environment.eaxmi;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.domain.metamodel.Constraint;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamock.domain.famille.Famille;
 import io.vertigo.dynamox.domain.constraint.ConstraintRegex;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
@@ -21,6 +21,11 @@ import org.junit.Test;
  * @author pchretien 
  */
 public final class EAXmiEnvironmentManagerTest extends AbstractTestCaseJU4 {
+	@Override
+	protected String[] getManagersXmlFileName() {
+		return new String[] { "managers-test.xml", "resources-test.xml" };
+	}
+
 	@Test
 	public void testConstraint() {
 		final Constraint<?, ?> constraint = Home.getDefinitionSpace().resolve("CK_TELEPHONE", Constraint.class);

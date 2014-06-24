@@ -11,9 +11,6 @@
 	</module>
 	
 	<module name="vertigo-commons">	    
-		<resource type="kpr" path="io/vertigo/dynamo/search/ksp/search.kpr"/>
-	    <resource type="kpr" path="io/vertigo/dynamock/execution.kpr"/>
-
 	    <component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
 
 	    <component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl" 
@@ -26,7 +23,11 @@
 	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.search.SearchDynamicRegistryPlugin" />
 	    </component> 
 	</module>
-	<module name="document">   
+	
+	<module name="document">  
+		<resource type="kpr" path="io/vertigo/dynamo/search/ksp/search.kpr"/>
+	    <resource type="kpr" path="io/vertigo/dynamock/execution.kpr"/>
+	 
 	 	<component api="SearchManager" class="io.vertigo.dynamo.impl.search.SearchManagerImpl">
 	   		<!-- <plugin class="io.vertigo.dynamo.plugins.search.solr.commonshttp.CommonsHttpSolrSearchServicesPlugin" > 
 	                <param name="solr.url" value="http://localhost:8983/solr" />

@@ -14,9 +14,6 @@
 	</module>	
 	
 	<module name="dynamo">
-		<resource type="xmi" path="io/vertigo/dynamo/environment/eaxmi/data/demo.xml"/>
-	    <resource type="kpr" path="io/vertigo/dynamo/environment/eaxmi/data/domain.kpr"/>
-
 	    <component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
 	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.eaxmi.EAXmiLoaderPlugin" />
 	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
