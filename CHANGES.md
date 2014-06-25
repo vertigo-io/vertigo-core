@@ -3,6 +3,9 @@ Version history
 
 Running 0.3.1-SNAPSHOT
 ----------------------
+  * Change ksp syntax to have a more similar json syntax.  Separator ';' is replaced by ','. Array {} is replaced by [] and  object notation () is replaced by {}
+  * Change declaration of resources is externalized. In this way, each module can declare its own resources (oom, ea, ksp, xml).     
+  * Add Enterprise Architect support
   * Add vertigo-rest : RESTful WebService support for HTML5 applications
   * Fix Issues #3 : add a new mandatory vertigo-studio parameter ```domain.dictionaryClassName``` 
     * To maintain compatibility add : ```domain.dictionaryClassName=DtDefinitions``` in your studio-config.properties
