@@ -54,11 +54,11 @@ public final class LocaleManagerTest extends AbstractTestCase2JU4 {
 	}
 
 	@Before
-	public void setup() {
+	public void setupLocale() {
 		localeManager.add("io.vertigo.commons.locale.city-guide", CityGuide.values());
 		try {
 			Thread.sleep(10);
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
