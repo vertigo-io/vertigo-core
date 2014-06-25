@@ -3,7 +3,7 @@ package io.vertigo.commons.parser;
 import io.vertigo.kernel.lang.Assertion;
 
 /**
- * Règle vérifiant que le texte commence par la chaine précisée.
+ * A single terminal succeeds if the first character of the input string matches that terminal.
  * Sinon retourne une erreur.
  * @author pchretien
  */
@@ -11,11 +11,11 @@ public final class TermRule implements Rule<String>, Parser<String> {
 	private final String term;
 
 	/**
-	 * Constructeur.
-	 * @param eval String
+	 * Constructor.
+	 * @param term Terminal
 	 */
 	public TermRule(final String term) {
-		Assertion.checkNotNull(term, "Terminal non renseigné !");
+		Assertion.checkNotNull(term, "Terminal is mandatory");
 		//---------------------------------------------------------------------
 		this.term = term;
 	}
@@ -27,7 +27,7 @@ public final class TermRule implements Rule<String>, Parser<String> {
 
 	@Override
 	public Parser<String> createParser() {
-		//Dans le cas d'un terminal Le parser est threadsafe.
+		//Parser of terminal is threadsafe.
 		return this;
 	}
 
@@ -43,7 +43,7 @@ public final class TermRule implements Rule<String>, Parser<String> {
 		if (match == start + term.length()) {
 			return match;
 		}
-		throw new NotFoundException(text, match, null, "''{0}'' attendu", term);
+		throw new NotFoundException(text, match, null, "Terminal '{0}' is expected", term);
 	}
 
 	@Override

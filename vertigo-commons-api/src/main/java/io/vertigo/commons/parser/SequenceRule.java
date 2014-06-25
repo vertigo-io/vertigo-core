@@ -8,6 +8,12 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * As wikipedia says  
+ * The sequence operator e1 e2 first invokes e1, 
+ * and if e1 succeeds, subsequently invokes e2 on the remainder of the input string left unconsumed by e1, 
+ * and returns the result. 
+ * If either e1 or e2 fails, then the sequence expression e1 e2 fails.
+ * 
  * @author pchretien
  */
 public final class SequenceRule implements Rule<List<?>> {
@@ -28,7 +34,11 @@ public final class SequenceRule implements Rule<List<?>> {
 		Assertion.checkNotNull(rules);
 		//----------------------------------------------------------------------
 		this.rules = Collections.unmodifiableList(rules);
+		expression = createExpression(rules);
+	}
 
+	/*A sequence of rules/expressions is like that : e1 e2 e3 */
+	private static String createExpression(final List<Rule<?>> rules) {
 		final StringBuilder buffer = new StringBuilder();
 		for (final Rule<?> rule : rules) {
 			if (buffer.length() > 0) {
@@ -36,7 +46,7 @@ public final class SequenceRule implements Rule<List<?>> {
 			}
 			buffer.append(rule.getExpression());
 		}
-		expression = buffer.toString();
+		return buffer.toString();
 	}
 
 	/** {@inheritDoc} */
