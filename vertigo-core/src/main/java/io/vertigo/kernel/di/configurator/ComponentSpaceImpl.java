@@ -42,7 +42,6 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -231,13 +230,13 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 				if (pluginIds.contains(pluginId)) {
 					pluginId += "#" + nb;
 				}
-				reactor.addComponent(pluginId, pluginConfig.getImplClass(), Collections.<String> emptySet(), pluginConfig.getParams().keySet());
+				reactor.addComponent(pluginId, pluginConfig.getImplClass(), pluginConfig.getParams().keySet());
 				nb++;
 				pluginIds.add(pluginId);
 			}
 			//On insère les plugins puis les composants car les composants dépendent des plugins
 			//de sorte on facilite le calcul d'ordre
-			reactor.addComponent(componentConfig.getId(), componentConfig.getImplClass(), pluginIds, componentConfig.getParams().keySet());
+			reactor.addComponent(componentConfig.getId(), componentConfig.getImplClass(), componentConfig.getParams().keySet(), pluginIds);
 		}
 
 		final List<String> ids = reactor.proceed();

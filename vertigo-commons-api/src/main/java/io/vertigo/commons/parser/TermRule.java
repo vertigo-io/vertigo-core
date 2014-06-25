@@ -3,7 +3,7 @@ package io.vertigo.commons.parser;
 import io.vertigo.kernel.lang.Assertion;
 
 /**
- * A single terminal succeeds if the first character of the input string matches that terminal.
+ * A  terminal succeeds if the first character of the input string matches that terminal.
  * Sinon retourne une erreur.
  * @author pchretien
  */

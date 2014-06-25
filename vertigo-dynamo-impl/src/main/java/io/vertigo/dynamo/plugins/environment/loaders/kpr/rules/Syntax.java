@@ -30,7 +30,7 @@ final class Syntax {
 	static final Rule<String> ARRAY_END = new TermRule("]");
 	static final Rule<String> ARRAY_SEPARATOR = new TermRule(",");
 
-	static final Rule<String> OBJECT_START = new TermRule("{"); //like json { xxx:"rtrttr", kjjkjk:"kjkjk"}
+	static final Rule<String> OBJECT_START = new TermRule("{"); //like json { name:"john doe", city:"kjkjk"}
 	static final Rule<String> OBJECT_END = new TermRule("}");
 	static final Rule<String> OBJECT_SEPARATOR = new TermRule(",");
 

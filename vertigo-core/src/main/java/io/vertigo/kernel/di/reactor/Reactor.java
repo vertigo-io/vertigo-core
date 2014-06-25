@@ -27,11 +27,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-
 /**
- * Réacteur.
- * Objet dans lequel on met en vrac des composants.
- * Puis il suffit d'appeler la méthode  'proceed'  
+ * Reactor.
+ * -add components in any order with their id, their class
+ * - add ids for components that are already existing.
+ * - then 'proceed' and you obtain an ORDERED list of components, taking account of their dependencies.  
  *   
  * @author pchretien
  */
@@ -48,11 +48,36 @@ public final class Reactor {
 		}
 	}
 
+	/**
+	 * Add a component 
+	 * @param id ID f the component
+	 * @param implClass Impl class of the component
+	 * @return Reactor
+	 */
 	public Reactor addComponent(final String id, final Class<?> implClass) {
 		return addComponent(id, implClass, Collections.<String> emptySet(), Collections.<String> emptySet());
 	}
 
-	public Reactor addComponent(final String id, final Class<?> implClass, final Set<String> pluginIds, final Set<String> params) {
+	/**
+	 * Add a component 
+	 * @param id ID f the component
+	 * @param implClass Impl class of the component
+	 * @params params List of ID of all local params - which will be automatically injected- 
+	 * @return Reactor
+	 */
+	public Reactor addComponent(final String id, final Class<?> implClass, final Set<String> params) {
+		return addComponent(id, implClass, params, Collections.<String> emptySet());
+	}
+
+	/**
+	 * Add a component 
+	 * @param id ID f the component
+	 * @param implClass Impl class of the component
+	 * @params params List of ID of all local params - which will be automatically injected- 
+	 * @params pluginIds List of plugin IDs of all local plugins, which must be resolved before the component.  
+	 * @return Reactor
+	 */
+	public Reactor addComponent(final String id, final Class<?> implClass, final Set<String> params, final Set<String> pluginIds) {
 		final DIComponentInfo diComponentInfo = new DIComponentInfo(id, implClass, pluginIds, params);
 		check(diComponentInfo.getId());
 		allComponentInfos.add(diComponentInfo.getId());
@@ -61,7 +86,9 @@ public final class Reactor {
 	}
 
 	/**
-	 * Ajout d'un comoposant identifié par son seul id.
+	 * Add a component identified by its ID.
+	 * This component is ready to be injected in other components (and it does not need to be resolved).
+	 * @param id ID of the component
 	 */
 	public Reactor addParent(final String id) {
 		check(id);
@@ -71,8 +98,8 @@ public final class Reactor {
 	}
 
 	/**
-	 * Méthode clé permettant d'activer la réaction.
-	 * @return Liste ordonnée des ids de composants, selon leur dépendances. 
+	 * Process the 'digital' reaction in a way to obtain an ordered list of components, taking account of their dependencies.
+	 * @return Ordered list of comoponent's Ids.  
 	 */
 	public List<String> proceed() {
 		//-----------------------------------------------------------------------------------------

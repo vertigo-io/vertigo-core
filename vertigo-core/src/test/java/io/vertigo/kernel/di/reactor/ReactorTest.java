@@ -25,16 +25,13 @@ import io.vertigo.kernel.di.D;
 import io.vertigo.kernel.di.DIException;
 import io.vertigo.kernel.di.E;
 import io.vertigo.kernel.di.F;
-import io.vertigo.kernel.di.reactor.Reactor;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
-
 
 /**
  * A ne dépend de personne.
@@ -129,7 +126,7 @@ public final class ReactorTest {
 		params.add("param2");
 		final List<String> list = new Reactor() //
 				.addComponent("a", A.class)//
-				.addComponent("f", F.class, Collections.<String> emptySet(), params)//
+				.addComponent("f", F.class, params)//
 				.proceed();
 		Assert.assertEquals(2, list.size());
 		Assert.assertEquals("a", list.get(0));
@@ -142,7 +139,7 @@ public final class ReactorTest {
 		final Set<String> params = new HashSet<>();
 		params.add("a");
 		final List<String> list = new Reactor() //
-				.addComponent("b", B.class, Collections.<String> emptySet(), params)//
+				.addComponent("b", B.class, params)//
 				.proceed();
 		Assert.assertEquals(1, list.size());
 		Assert.assertEquals("b", list.get(0));
