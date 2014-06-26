@@ -7,6 +7,7 @@ Running 0.3.1-SNAPSHOT
   * Change declaration of resources is externalized. In this way, each module can declare its own resources (oom, ea, ksp, xml).     
   * Add Enterprise Architect support
   * Add vertigo-rest : RESTful WebService support for HTML5 applications
+  * Change KDataType to DataType
   * Fix Issues #3 : add a new mandatory vertigo-studio parameter ```domain.dictionaryClassName``` 
     * To maintain compatibility add : ```domain.dictionaryClassName=DtDefinitions``` in your studio-config.properties
   * Fix Issues #2
