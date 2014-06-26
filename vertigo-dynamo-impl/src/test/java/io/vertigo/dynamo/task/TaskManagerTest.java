@@ -142,7 +142,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 
 	}
 
-	private TaskDefinition registerTask(final String taskDefinitionName, final String params) {
+	private static TaskDefinition registerTask(final String taskDefinitionName, final String params) {
 		final Domain doInteger = Home.getDefinitionSpace().resolve("DO_INTEGER", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskDefinitionName)//

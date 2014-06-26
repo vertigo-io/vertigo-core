@@ -1,8 +1,8 @@
 package io.vertigo.dynamo.impl.persistence.util;
 
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation;
@@ -185,7 +185,7 @@ public final class BrokerNNImpl implements BrokerNN {
 		return getSqlRowCount(taskResult);
 	}
 
-	private int getSqlRowCount(final TaskResult taskResult) {
+	private static int getSqlRowCount(final TaskResult taskResult) {
 		return taskResult.<Integer> getValue(AbstractTaskEngineSQL.SQL_ROWCOUNT).intValue();
 	}
 

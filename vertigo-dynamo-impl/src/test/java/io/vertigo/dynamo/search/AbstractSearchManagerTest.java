@@ -248,7 +248,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(true, found);
 	}
 
-	private Facet getFacetByName(final FacetedQueryResult<Car, ?> result, final String facetName) {
+	private static Facet getFacetByName(final FacetedQueryResult<Car, ?> result, final String facetName) {
 		for (final Facet facet : result.getFacets()) {
 			if (facetName.equals(facet.getDefinition().getName())) {
 				return facet;
@@ -341,7 +341,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(carDataBase.before(2000), resultFiltered.getCount());
 	}
 
-	private FacetedQuery addFacetQuery(final String facetName, final String facetValueLabel, final FacetedQueryResult<Car, ?> result) {
+	private static FacetedQuery addFacetQuery(final String facetName, final String facetValueLabel, final FacetedQueryResult<Car, ?> result) {
 		FacetValue facetValue = null; //pb d'initialisation, et assert.notNull ne suffit pas 
 		final Facet yearFacet = getFacetByName(result, facetName);
 		for (final Entry<FacetValue, Long> entry : yearFacet.getFacetValues().entrySet()) {
@@ -502,7 +502,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	//		System.out.println(">>>Facettes de type date");
 	//	}
 
-	private URI<DtObject> createURI(final long id) {
+	private static URI<DtObject> createURI(final long id) {
 		return new URI<>(DtObjectUtil.findDtDefinition(Car.class), id);
 	}
 }

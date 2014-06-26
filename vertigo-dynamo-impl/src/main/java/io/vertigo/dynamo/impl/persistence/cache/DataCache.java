@@ -39,7 +39,7 @@ final class DataCache {
 		cacheManager.addCache("dataCache", context, maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds);
 	}
 
-	private String getContext(final DtDefinition dtDefinition) {
+	private static String getContext(final DtDefinition dtDefinition) {
 		return "DataCache:" + dtDefinition.getName();
 	}
 

@@ -11,7 +11,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-
 /**
  * Formatteur multi-lingue.
  * Les séparateurs décimaux et de milliers sont des listes de char.
@@ -118,7 +117,7 @@ public class FormatterNumberLocalized extends FormatterNumber {
 		return cleanStringNumber(sValue, decimalCharUsed, groupCharUsed);
 	}
 
-	private void assertArgs(final boolean test) {
+	private static void assertArgs(final boolean test) {
 		Assertion.checkArgument(test, "Les arguments pour la construction de FormatterNumber sont invalides: format d'affichage{|séparateur de décimal}{|séparateur de millier}");
 	}
 
@@ -134,7 +133,7 @@ public class FormatterNumberLocalized extends FormatterNumber {
 		}
 	}
 
-	private char[] getAndCheckDecimalAndGroupChar(final String sValue, final char[] decimalSepChar, final char[] groupSepChar) {
+	private static char[] getAndCheckDecimalAndGroupChar(final String sValue, final char[] decimalSepChar, final char[] groupSepChar) {
 		final char[] result = { decimalSepChar[0], groupSepChar[0] };
 
 		int decimalIndex = sValue.length();

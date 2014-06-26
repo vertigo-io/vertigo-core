@@ -289,7 +289,7 @@ final class SolrStatement<I extends DtObject, R extends DtObject> {
 		return new FacetedQueryResult<>(filtersQuery, count, dtc, facetList, resultHighlights, searchQuery);
 	}
 
-	private Map<DtField, String> createHighlight(final QueryResponse queryResponse, final SolrDocument solrDocument, final DtDefinition indexDtDefinition) {
+	private static Map<DtField, String> createHighlight(final QueryResponse queryResponse, final SolrDocument solrDocument, final DtDefinition indexDtDefinition) {
 		final Map<DtField, String> highlights = new HashMap<>();
 		final Map<String, List<String>> map = queryResponse.getHighlighting().get(solrDocument.get("URI"));
 		for (final Map.Entry<String, List<String>> entry : map.entrySet()) {
@@ -328,7 +328,7 @@ final class SolrStatement<I extends DtObject, R extends DtObject> {
 		return facetList;
 	}
 
-	private Facet createTermFacet(final FacetDefinition facetDefinition, final FacetField facetField) {
+	private static Facet createTermFacet(final FacetDefinition facetDefinition, final FacetField facetField) {
 		final Map<FacetValue, Long> facetValues = new HashMap<>();
 		FacetValue facetValue;
 		for (final Count values : facetField.getValues()) {

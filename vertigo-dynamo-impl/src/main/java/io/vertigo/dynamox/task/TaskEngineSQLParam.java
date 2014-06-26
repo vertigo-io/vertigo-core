@@ -106,7 +106,7 @@ final class TaskEngineSQLParam {
 		rowNumber = dtcRowNumber;
 	}
 
-	private Integer parseDtcRowNumber(final String betweenCar, final String betweenPoints) {
+	private static Integer parseDtcRowNumber(final String betweenCar, final String betweenPoints) {
 		final Integer dtcRowNumber;
 		try {
 			dtcRowNumber = Integer.valueOf(betweenPoints);

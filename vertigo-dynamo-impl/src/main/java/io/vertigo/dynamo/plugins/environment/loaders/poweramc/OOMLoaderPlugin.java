@@ -151,7 +151,7 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 		return associationDefinitionBuilder.build();
 	}
 
-	private String buildFkFieldName(final OOMAssociation associationOOM, final DynamicDefinitionRepository dynamicModelrepository) {
+	private static String buildFkFieldName(final OOMAssociation associationOOM, final DynamicDefinitionRepository dynamicModelrepository) {
 		// Dans le cas d'une association simple, on recherche le nom de la FK
 		// recherche de code de contrainte destiné à renommer la fk selon convention du vbsript PowerAMC
 		// Cas de la relation 1-n : où le nom de la FK est redéfini.
@@ -197,11 +197,11 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 		return fkFieldName;
 	}
 
-	private String getDtDefinitionName(final String code) {
+	private static String getDtDefinitionName(final String code) {
 		return DT_DEFINITION_PREFIX + SEPARATOR + code.toUpperCase(TO_UPPER_CASE_LOCALE);
 	}
 
-	private DynamicDefinitionKey getDtDefinitionKey(final String code) {
+	private static DynamicDefinitionKey getDtDefinitionKey(final String code) {
 		return new DynamicDefinitionKey(getDtDefinitionName(code));
 	}
 

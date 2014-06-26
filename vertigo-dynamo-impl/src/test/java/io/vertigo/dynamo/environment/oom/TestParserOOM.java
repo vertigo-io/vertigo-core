@@ -25,7 +25,7 @@ public class TestParserOOM extends AbstractTestCaseJU4 {
 	 * - Navigabilité notée v 
 	 */
 
-	private AssociationDefinition getAssociationDefinition(final String urn) {
+	private static AssociationDefinition getAssociationDefinition(final String urn) {
 		return Home.getDefinitionSpace().resolve(urn, AssociationDefinition.class);
 	}
 

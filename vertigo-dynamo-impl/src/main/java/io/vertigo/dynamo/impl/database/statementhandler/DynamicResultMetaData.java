@@ -148,10 +148,6 @@ final class DynamicResultMetaData implements ResultMetaData {
 			return domain;
 		}
 	}
-
-	public boolean isPrimitive() {
-		return false;
-	}
 }
 //
 //

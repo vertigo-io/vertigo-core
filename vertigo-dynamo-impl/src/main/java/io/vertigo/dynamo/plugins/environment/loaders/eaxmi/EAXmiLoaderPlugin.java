@@ -62,7 +62,7 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 		}
 	}
 
-	private DynamicDefinition toDynamicDefinition(final EAXmiClass classXmi, final DynamicDefinitionRepository dynamicModelrepository) {
+	private static DynamicDefinition toDynamicDefinition(final EAXmiClass classXmi, final DynamicDefinitionRepository dynamicModelrepository) {
 		final Entity dtDefinitionEntity = DomainGrammar.INSTANCE.getDtDefinitionEntity();
 		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelrepository.createDynamicDefinitionBuilder(getDtDefinitionName(classXmi.getCode()), dtDefinitionEntity, classXmi.getPackageName())//
 				//Par d�faut les DT lues depuis le XMI sont persistantes.
@@ -79,7 +79,7 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 		return dtDefinitionBuilder.build();
 	}
 
-	private DynamicDefinition toDynamicDefinition(final EAXmiAttribute attributeXmi, final DynamicDefinitionRepository dynamicModelrepository) {
+	private static DynamicDefinition toDynamicDefinition(final EAXmiAttribute attributeXmi, final DynamicDefinitionRepository dynamicModelrepository) {
 		final Entity dtFieldEntity = DomainGrammar.INSTANCE.getDtFieldEntity();
 		final DynamicDefinitionKey domainKey = new DynamicDefinitionKey(attributeXmi.getDomain());
 
@@ -91,7 +91,7 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 				.build();
 	}
 
-	private DynamicDefinition toDynamicDefinition(final EAXmiAssociation associationXmi, final DynamicDefinitionRepository dynamicModelrepository) {
+	private static DynamicDefinition toDynamicDefinition(final EAXmiAssociation associationXmi, final DynamicDefinitionRepository dynamicModelrepository) {
 		final Entity associationEntity = DomainGrammar.INSTANCE.getAssociationEntity();
 		final Entity associationNNEntity = DomainGrammar.INSTANCE.getAssociationNNEntity();
 
@@ -137,7 +137,7 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 		return associationDefinitionBuilder.build();
 	}
 
-	private String buildFkFieldName(final EAXmiAssociation associationXmi, final DynamicDefinitionRepository dynamicModelrepository) {
+	private static String buildFkFieldName(final EAXmiAssociation associationXmi, final DynamicDefinitionRepository dynamicModelrepository) {
 		// Dans le cas d'une association simple, on recherche le nom de la FK
 		// recherche de code de contrainte destin� � renommer la fk selon convention du vbsript PowerAMC
 		// Cas de la relation 1-n : o� le nom de la FK est red�fini.
@@ -183,16 +183,16 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 		return fkFieldName;
 	}
 
-	private String getDtDefinitionName(final String code) {
+	private static String getDtDefinitionName(final String code) {
 		return DT_DEFINITION_PREFIX + SEPARATOR + code.toUpperCase();
 	}
 
-	private DynamicDefinitionKey getDtDefinitionKey(final String code) {
+	private static DynamicDefinitionKey getDtDefinitionKey(final String code) {
 		return new DynamicDefinitionKey(getDtDefinitionName(code));
 	}
 
 	// A sa place dans un util mais ramen� ici pour ind�pendance des plugins
-	public String french2Java(final String str) {
+	public static String french2Java(final String str) {
 		Assertion.checkNotNull(str);
 		Assertion.checkArgument(str.length() > 0, "La chaine � modifier ne doit pas �tre vide.");
 		// ----------------------------------------------------------------------

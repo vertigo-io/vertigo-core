@@ -1,8 +1,8 @@
 package io.vertigo.dynamox.domain.formatter;
 
 import io.vertigo.commons.locale.LocaleManager;
-import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.lang.Assertion;
@@ -90,7 +90,7 @@ public final class FormatterDate extends AbstractFormatterImpl {
 		}
 	}
 
-	private void assertArgs(final boolean test) {
+	private static void assertArgs(final boolean test) {
 		Assertion.checkArgument(test, "Les arguments pour la construction de FormatterDate sont invalides :format affichage;{autres formats de saisie}");
 	}
 
@@ -150,7 +150,7 @@ public final class FormatterDate extends AbstractFormatterImpl {
 	 *
 	 * Cette méthode retourne null si la chaine n'a pas pu être convertie en date
 	 */
-	private Date stringToDate(final String dateString, final MessageText dateFormat) {
+	private static Date stringToDate(final String dateString, final MessageText dateFormat) {
 		Date dateValue;
 
 		//Formateur de date on le crée à chaque fois car l'implémentation de DateFormat est non synchronisé !
@@ -202,7 +202,7 @@ public final class FormatterDate extends AbstractFormatterImpl {
 		return dateString;
 	}
 
-	private LocaleManager getLocaleManager() {
+	private static LocaleManager getLocaleManager() {
 		return Home.getComponentSpace().resolve(LocaleManager.class);
 	}
 }

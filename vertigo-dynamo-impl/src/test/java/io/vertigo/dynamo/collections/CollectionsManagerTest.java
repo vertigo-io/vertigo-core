@@ -480,7 +480,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(countEspected, result.size());
 	}
 
-	private DtList<Famille> createFamillesForRangeTest() {
+	private static DtList<Famille> createFamillesForRangeTest() {
 		final DtList<Famille> dtc = createFamilles();
 
 		final Famille mock1 = new Famille();
@@ -521,7 +521,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 * Asserts that two booleans are equal.
 	 * 
 	 */
-	private void assertEquals(final String[] expected, final String[] actual) {
+	private static void assertEquals(final String[] expected, final String[] actual) {
 		Assert.assertEquals(Arrays.toString(expected), Arrays.toString(actual));
 	}
 
@@ -533,7 +533,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		return index;
 	}
 
-	private DtList<Famille> createFamilles() {
+	private static DtList<Famille> createFamilles() {
 		final DtList<Famille> dtc = new DtList<>(Famille.class);
 		// les index sont données par ordre alpha > null à la fin >
 		final Famille mockB = new Famille();

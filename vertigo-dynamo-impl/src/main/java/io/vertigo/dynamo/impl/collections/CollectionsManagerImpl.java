@@ -66,7 +66,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	}
 
 	// Getteur sur Home car dépendance cyclique entre CollectionsManager et PersistenceManager
-	private PersistenceManager getPersistenceManager() {
+	private static PersistenceManager getPersistenceManager() {
 		return Home.getComponentSpace().resolve(PersistenceManager.class);
 	}
 

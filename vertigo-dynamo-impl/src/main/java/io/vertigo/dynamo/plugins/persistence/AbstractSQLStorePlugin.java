@@ -91,7 +91,7 @@ public abstract class AbstractSQLStorePlugin implements StorePlugin {
 	 * @param taskDefinition Definition de la tache
 	 * @return Nouvelle tache
 	 */
-	protected final TaskBuilder createTaskBuilder(final TaskDefinition taskDefinition) {
+	protected static final TaskBuilder createTaskBuilder(final TaskDefinition taskDefinition) {
 		return new TaskBuilder(taskDefinition);
 	}
 
@@ -99,7 +99,7 @@ public abstract class AbstractSQLStorePlugin implements StorePlugin {
 	 * @param uri Uri de l'objet
 	 * @return DtDefinition associée
 	 */
-	protected final DtDefinition getDtDefinition(final URI<? extends DtObject> uri) {
+	protected static final DtDefinition getDtDefinition(final URI<? extends DtObject> uri) {
 		return uri.getDefinition();
 	}
 
@@ -109,7 +109,7 @@ public abstract class AbstractSQLStorePlugin implements StorePlugin {
 	 * @param dtDefinition Définition du DT mappé
 	 * @return Nom de la table
 	 */
-	protected final String getTableName(final DtDefinition dtDefinition) {
+	protected static final String getTableName(final DtDefinition dtDefinition) {
 		return dtDefinition.getLocalName();
 	}
 
@@ -215,7 +215,7 @@ public abstract class AbstractSQLStorePlugin implements StorePlugin {
 		return getDtList(taskResult);
 	}
 
-	private <D extends DtObject> DtList<D> getDtList(final TaskResult taskResult) {
+	private static <D extends DtObject> DtList<D> getDtList(final TaskResult taskResult) {
 		return taskResult.getValue("dtc");
 	}
 
@@ -511,7 +511,7 @@ public abstract class AbstractSQLStorePlugin implements StorePlugin {
 		}
 	}
 
-	private int getSqlRowCount(final TaskResult taskResult) {
+	private static int getSqlRowCount(final TaskResult taskResult) {
 		return taskResult.<Integer> getValue(AbstractTaskEngineSQL.SQL_ROWCOUNT).intValue();
 	}
 

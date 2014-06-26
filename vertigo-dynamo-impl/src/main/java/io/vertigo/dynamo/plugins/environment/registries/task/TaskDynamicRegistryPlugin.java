@@ -37,7 +37,7 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 		return ClassUtil.classForName(taskEngineClassName, TaskEngine.class);
 	}
 
-	private TaskDefinition createTaskDefinition(final DynamicDefinition xtaskDefinition) {
+	private static TaskDefinition createTaskDefinition(final DynamicDefinition xtaskDefinition) {
 		final String taskDefinitionName = xtaskDefinition.getDefinitionKey().getName();
 		final String request = getPropertyValueAsString(xtaskDefinition, KspProperty.REQUEST);
 		Assertion.checkNotNull(taskDefinitionName);
@@ -59,7 +59,7 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 		return taskDefinitionBuilder.build();
 	}
 
-	private boolean isInValue(final String sText) {
+	private static boolean isInValue(final String sText) {
 		if ("in".equals(sText)) {
 			return true;
 		} else if ("out".equals(sText)) {

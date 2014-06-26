@@ -77,7 +77,7 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 		localeManager.add(Resources.class.getName(), Resources.values());
 	}
 
-	private PersistenceManager getPersistenceManager() {
+	private static PersistenceManager getPersistenceManager() {
 		return Home.getComponentSpace().resolve(PersistenceManager.class);
 	}
 
@@ -134,7 +134,7 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 		}
 	}
 
-	private String getStringValue(final DtObject dto, final DtField field) {
+	private static String getStringValue(final DtObject dto, final DtField field) {
 		final String stringValue;
 		if (field.getType() == DtField.FieldType.FOREIGN_KEY && getPersistenceManager().getMasterDataConfiguration().containsMasterData(field.getFkDtDefinition())) {
 			//TODO voir pour mise en cache de cette navigation

@@ -80,7 +80,7 @@ public class FormatterNumber extends AbstractFormatterImpl {
 		return new DecimalFormat(pattern, getDecimalFormatSymbols());
 	}
 
-	private void checkType(final DataType dataType) {
+	private static void checkType(final DataType dataType) {
 		Assertion.checkArgument(dataType == DataType.BigDecimal || dataType == DataType.Double || dataType == DataType.Integer || dataType == DataType.Long, "FormatterNumber ne s'applique qu'aux Nombres");
 	}
 
@@ -155,7 +155,7 @@ public class FormatterNumber extends AbstractFormatterImpl {
 	 * @param groupCharUsed caractère de millier utilisé
 	 * @return Chaine simplifiée
 	 */
-	protected final String cleanStringNumber(final String sValue, final char decimalCharUsed, final char groupCharUsed) {
+	protected static final String cleanStringNumber(final String sValue, final char decimalCharUsed, final char groupCharUsed) {
 		String result = sValue;
 		// 1 >> On supprime les blancs. (simples et insécables)
 		if (groupCharUsed == ' ' || groupCharUsed == (char) 160) {

@@ -94,7 +94,7 @@ public final class EAXmiLoader {
 		return new EAXmiClass(code, packageName, keyAttributes, fieldAttributes);
 	}
 
-	private EAXmiAttribute createDynAttribute(final EAXmiObject obj, final boolean isPK) {
+	private static EAXmiAttribute createDynAttribute(final EAXmiObject obj, final boolean isPK) {
 		final boolean notNull;
 		if (isPK) {
 			//La pk est toujours notNull

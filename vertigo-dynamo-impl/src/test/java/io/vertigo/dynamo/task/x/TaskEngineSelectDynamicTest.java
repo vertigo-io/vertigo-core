@@ -347,7 +347,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 		return famille;
 	}
 
-	private TaskDefinition registerTaskObject(final String taskDefinitionName, final String params) {
+	private static TaskDefinition registerTaskObject(final String taskDefinitionName, final String params) {
 		final Domain doFamilleList = Home.getDefinitionSpace().resolve("DO_DT_FAMILLE_DTC", Domain.class);
 		final Domain doFamille = Home.getDefinitionSpace().resolve("DO_DT_FAMILLE_DTO", Domain.class);
 
@@ -363,7 +363,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 		return taskDefinition;
 	}
 
-	private TaskDefinition registerTaskList(final String taskDefinitionName, final String params) {
+	private static TaskDefinition registerTaskList(final String taskDefinitionName, final String params) {
 		final Domain doFamilleList = Home.getDefinitionSpace().resolve("DO_DT_FAMILLE_DTC", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskDefinitionName)//

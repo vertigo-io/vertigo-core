@@ -110,7 +110,7 @@ final class SolrDocumentCodec<I extends DtObject, R extends DtObject> {
 		return solrInputDocument;
 	}
 
-	private String escapeInvalidUTF8Char(final String value) {
+	private static String escapeInvalidUTF8Char(final String value) {
 		return value.replace('\uFFFF', ' ').replace('\uFFFE', ' '); //testé comme le plus rapide pour deux cas
 	}
 }

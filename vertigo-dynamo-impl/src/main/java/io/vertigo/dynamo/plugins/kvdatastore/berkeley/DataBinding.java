@@ -27,7 +27,7 @@ final class DataBinding extends TupleBinding {
 		}
 	}
 
-	private Object doEntryToObject(final TupleInput ti) throws Exception {
+	private static Object doEntryToObject(final TupleInput ti) throws Exception {
 		final String className = ti.readString();
 		final Object bean = ClassUtil.newInstance(className);
 
@@ -68,7 +68,7 @@ final class DataBinding extends TupleBinding {
 		}
 	}
 
-	private void doObjectToEntry(final Object object, final TupleOutput to) {
+	private static void doObjectToEntry(final Object object, final TupleOutput to) {
 		to.writeString(object.getClass().getCanonicalName());
 		for (final Field field : object.getClass().getDeclaredFields()) {
 			if (Modifier.isStatic(field.getModifiers())) {

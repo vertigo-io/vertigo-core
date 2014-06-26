@@ -8,10 +8,10 @@ import io.vertigo.dynamo.database.connection.ConnectionProvider;
 import io.vertigo.dynamo.database.connection.KConnection;
 import io.vertigo.dynamo.database.statement.KCallableStatement;
 import io.vertigo.dynamo.database.statement.KPreparedStatement;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -220,7 +220,7 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 		return scriptHandler.getSql();
 	}
 
-	private ScriptManager getScriptManager() {
+	private static ScriptManager getScriptManager() {
 		return Home.getComponentSpace().resolve(ScriptManager.class);
 	}
 
@@ -417,14 +417,14 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 		return SQL_RESOURCE_ID;
 	}
 
-	private KTransactionManager getTransactionManager() {
+	private static KTransactionManager getTransactionManager() {
 		return Home.getComponentSpace().resolve(KTransactionManager.class);
 	}
 
 	/**
 	 * @return Manager de base de données
 	 */
-	protected final DataBaseManager getDataBaseManager() {
+	protected static final DataBaseManager getDataBaseManager() {
 		return Home.getComponentSpace().resolve(DataBaseManager.class);
 	}
 
@@ -442,7 +442,7 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 	 * @param sqle Exception SQL
 	 * @param statement Statement
 	 */
-	private void handleSQLException(final KConnection connection, final SQLException sqle, final KPreparedStatement statement) {
+	private static void handleSQLException(final KConnection connection, final SQLException sqle, final KPreparedStatement statement) {
 		connection.getDataBase().getSqlExceptionHandler().handleSQLException(sqle, statement);
 	}
 

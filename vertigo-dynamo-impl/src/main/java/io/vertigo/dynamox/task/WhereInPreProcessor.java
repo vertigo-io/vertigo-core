@@ -1,7 +1,7 @@
 package io.vertigo.dynamox.task;
 
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
@@ -41,7 +41,7 @@ final class WhereInPreProcessor {
 		return sqlQuery;
 	}
 
-	private boolean containsKeywords(final String sqlQuery) {
+	private static boolean containsKeywords(final String sqlQuery) {
 		//On vérifie la précense de tous les mots clés (.rownum., in, #)
 		return sqlQuery.contains(ROWNUM) && sqlQuery.contains(STR_IN) && sqlQuery.indexOf(IN_CHAR) > -1;
 	}
@@ -149,7 +149,7 @@ final class WhereInPreProcessor {
 		return query;
 	}
 
-	private int lastIndexOfIgnoreCase(final String string, final String searchString, final int fromIndex) {
+	private static int lastIndexOfIgnoreCase(final String string, final String searchString, final int fromIndex) {
 		return Math.max(string.lastIndexOf(searchString, fromIndex), string.lastIndexOf(searchString.toLowerCase(Locale.FRENCH), fromIndex));
 	}
 }

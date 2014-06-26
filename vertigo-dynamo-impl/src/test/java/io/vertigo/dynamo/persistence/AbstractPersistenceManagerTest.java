@@ -130,7 +130,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		callableStatement.executeUpdate();
 	}
 
-	private TaskDefinition registerTaskInsertCar() {
+	private static TaskDefinition registerTaskInsertCar() {
 		final Domain doCar = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTO", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_INSERT_CAR")//
@@ -146,7 +146,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		return taskDefinition;
 	}
 
-	private TaskDefinition registerTaskUpdateCar() {
+	private static TaskDefinition registerTaskUpdateCar() {
 		final Domain doCar = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTO", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_UPDATE_CAR")//
@@ -169,7 +169,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		return taskDefinition;
 	}
 
-	private TaskDefinition registerTaskLoadCar() {
+	private static TaskDefinition registerTaskLoadCar() {
 		final Domain doId = Home.getDefinitionSpace().resolve("DO_IDENTIFIANT", Domain.class);
 		final Domain doCar = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTO", Domain.class);
 
@@ -185,7 +185,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		return taskDefinition;
 	}
 
-	private TaskDefinition registerTaskLoadCarList() {
+	private static TaskDefinition registerTaskLoadCarList() {
 		final Domain doCarList = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTC", Domain.class);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_ALL_CARS")//
@@ -370,7 +370,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		}
 	}
 
-	private String secureSubString(final String read, final int index, final String searchString) {
+	private static String secureSubString(final String read, final int index, final String searchString) {
 		if (read != null && read.length() > index) {
 			return read.substring(index, Math.min(read.length() - 1, index + searchString.length()));
 		}
@@ -608,11 +608,11 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			final Car car = createNewCar(null);
 			final Car car2 = createNewCar(null);
 			nativeInsertCar(car2);
-			persistenceManager.getBroker().save(car);			
+			persistenceManager.getBroker().save(car);
 			transaction.commit();
 		}
 	}
-	
+
 	@Test(expected = IllegalStateException.class)
 	public void testTxCrudInsertTwoCommit() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
@@ -622,7 +622,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			transaction.commit();
 		}
 	}
-	
+
 	@Test
 	public void testTxCrudInsertCommitCrudSelectRollback() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {

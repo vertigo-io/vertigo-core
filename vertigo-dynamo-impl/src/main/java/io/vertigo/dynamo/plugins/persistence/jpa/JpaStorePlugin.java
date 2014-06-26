@@ -233,7 +233,7 @@ public final class JpaStorePlugin implements StorePlugin {
 		return result;
 	}
 
-	private <D extends DtObject> String createLoadAllLikeQuery(final String tableName, final FilterCriteria<D> filterCriteria) {
+	private static <D extends DtObject> String createLoadAllLikeQuery(final String tableName, final FilterCriteria<D> filterCriteria) {
 		final StringBuilder request = new StringBuilder("select t from ").append(tableName).append(" t");
 		String sep = " where ";
 		for (final String fieldName : filterCriteria.getFilterMap().keySet()) {

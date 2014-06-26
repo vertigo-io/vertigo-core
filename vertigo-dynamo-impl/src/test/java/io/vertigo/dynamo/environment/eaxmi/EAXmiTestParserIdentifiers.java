@@ -18,7 +18,7 @@ public final class EAXmiTestParserIdentifiers extends AbstractTestCaseJU4 {
 		return new String[] { "managers-test.xml", "resources-test.xml" };
 	}
 
-	private DtDefinition getDtDefinition(final String urn) {
+	private static DtDefinition getDtDefinition(final String urn) {
 		return Home.getDefinitionSpace().resolve(urn, DtDefinition.class);
 	}
 

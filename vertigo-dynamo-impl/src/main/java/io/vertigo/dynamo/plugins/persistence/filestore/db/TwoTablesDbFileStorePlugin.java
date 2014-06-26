@@ -142,7 +142,7 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 	 * @param uri URI de FileInfo
 	 * @return URI du DTO utilisé en BDD pour stocker les métadonnées.
 	 */
-	private URI<DtObject> createMetaDataURI(final URI<FileInfo> uri) {
+	private static URI<DtObject> createMetaDataURI(final URI<FileInfo> uri) {
 		Assertion.checkNotNull(uri, "uri du fichier doit être renseignée.");
 		// ---------------------------------------------------------------------
 		final FileInfoDefinition fileInfoDefinition = uri.<FileInfoDefinition> getDefinition();
@@ -157,12 +157,12 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 	 * @param fdtId Identifiant de la ligne
 	 * @return URI du DTO utilisé en BDD pour stocker les données.
 	 */
-	private URI<DtObject> createDataURI(final FileInfoDefinition fileInfoDefinition, final Object fdtId) {
+	private static URI<DtObject> createDataURI(final FileInfoDefinition fileInfoDefinition, final Object fdtId) {
 		final DtDefinition dtDefinition = getRootDtDefinition(fileInfoDefinition, 1);
 		return new URI<>(dtDefinition, fdtId);
 	}
 
-	private DtDefinition getRootDtDefinition(final FileInfoDefinition fileInfoDefinition, final int rootIndex) {
+	private static DtDefinition getRootDtDefinition(final FileInfoDefinition fileInfoDefinition, final int rootIndex) {
 		Assertion.checkNotNull(fileInfoDefinition, "Definition du fichier doit être renseignée.");
 		Assertion.checkNotNull(fileInfoDefinition.getRoot(), "Pour ce FileStore le root contient le nom des deux tables : FILE_METADATA;FILE_DATA");
 		Assertion.checkArgument(fileInfoDefinition.getRoot().contains(";"), "Pour ce FileStore le root contient le nom des deux tables : FILE_METADATA;FILE_DATA");
@@ -174,11 +174,11 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 		return Home.getDefinitionSpace().resolve(fileDataDefinitionRoot, DtDefinition.class);
 	}
 
-	private DtObject createMetadataDtObject(final FileInfoDefinition fileInfoDefinition) {
+	private static DtObject createMetadataDtObject(final FileInfoDefinition fileInfoDefinition) {
 		return DtObjectUtil.createDtObject(getRootDtDefinition(fileInfoDefinition, 0));
 	}
 
-	private DtObject createDataDtObject(final FileInfoDefinition fileInfoDefinition) {
+	private static DtObject createDataDtObject(final FileInfoDefinition fileInfoDefinition) {
 		return DtObjectUtil.createDtObject(getRootDtDefinition(fileInfoDefinition, 1));
 	}
 
@@ -203,7 +203,7 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 	 * @param field Nom du champs
 	 * @param value Valeur
 	 */
-	private void setValue(final DtObject dto, final DtoFields field, final Object value) {
+	private static void setValue(final DtObject dto, final DtoFields field, final Object value) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		final DtField dtField = dtDefinition.getField(field.name());
 		dtField.getDataAccessor().setValue(dto, value);

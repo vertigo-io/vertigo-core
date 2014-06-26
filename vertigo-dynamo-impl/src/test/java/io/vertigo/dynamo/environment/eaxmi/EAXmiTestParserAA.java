@@ -24,7 +24,7 @@ public final class EAXmiTestParserAA extends AbstractTestCaseJU4 {
 	 * - Cardinalité notée 	1 ou n
 	 * - Navigabilité notée v 
 	 */
-	private AssociationDefinition getAssociationDefinition(final String urn) {
+	private static AssociationDefinition getAssociationDefinition(final String urn) {
 		return Home.getDefinitionSpace().resolve(urn, AssociationDefinition.class);
 	}
 

@@ -201,7 +201,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	 * @param uri URI de FileInfo
 	 * @return URI du DTO utilisé en BDD pour stocker.
 	 */
-	private URI<DtObject> createDtObjectURI(final URI<FileInfo> uri) {
+	private static URI<DtObject> createDtObjectURI(final URI<FileInfo> uri) {
 		Assertion.checkNotNull(uri, "uri du fichier doit être renseignée.");
 		// ---------------------------------------------------------------------
 		final FileInfoDefinition fileInfoDefinition = uri.<FileInfoDefinition> getDefinition();
@@ -218,7 +218,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	 * @param fileInfoDefinition Definition de FileInfo
 	 * @return DTO utilisé en BDD pour stocker.
 	 */
-	private DtObject createDtObject(final FileInfoDefinition fileInfoDefinition) {
+	private static DtObject createDtObject(final FileInfoDefinition fileInfoDefinition) {
 		Assertion.checkNotNull(fileInfoDefinition, "fileInfoDefinition du fichier doit être renseignée.");
 		// ---------------------------------------------------------------------
 		final String fileDefinitionRoot = fileInfoDefinition.getRoot();
@@ -249,7 +249,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	 * @param field Nom du champs
 	 * @param value Valeur
 	 */
-	private void setValue(final DtObject dto, final DtoFields field, final Object value) {
+	private static void setValue(final DtObject dto, final DtoFields field, final Object value) {
 		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getField(field.name());
 		dtField.getDataAccessor().setValue(dto, value);
 	}
@@ -282,7 +282,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	 * 
 	 * @return Id de la Ressource Connexion FileSystem dans la transaction
 	 */
-	private KTransactionResourceId<FsTransactionResource> getKTransactionResourceId() {
+	private static KTransactionResourceId<FsTransactionResource> getKTransactionResourceId() {
 		return FS_RESOURCE_ID;
 	}
 

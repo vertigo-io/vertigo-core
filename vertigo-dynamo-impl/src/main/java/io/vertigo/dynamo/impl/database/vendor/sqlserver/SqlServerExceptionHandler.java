@@ -81,7 +81,7 @@ final class SqlServerExceptionHandler extends AbstractSQLExceptionHandler {
 		return constraintName;
 	}
 
-	private String extractConstraintName(final SQLServerVersion version, final String messageErreur) {
+	private static String extractConstraintName(final SQLServerVersion version, final String messageErreur) {
 		final int indexFin = messageErreur.indexOf(version.getEndQuote());
 		if (indexFin != -1) {
 			final int indexDebut = messageErreur.lastIndexOf(version.getStartQuote(), indexFin - 1);

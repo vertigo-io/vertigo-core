@@ -79,7 +79,7 @@ public final class CacheStore implements Store {
 		return logicalStore.<D> loadList(uri);
 	}
 
-	private boolean isMultipleAssociation(final DtListURI uri) {
+	private static boolean isMultipleAssociation(final DtListURI uri) {
 		if (uri instanceof DtListURIForAssociation) {
 			final DtListURIForAssociation uriForAssociation = (DtListURIForAssociation) uri;
 			return !uriForAssociation.getAssociationDefinition().isAssociationSimpleDefinition();
