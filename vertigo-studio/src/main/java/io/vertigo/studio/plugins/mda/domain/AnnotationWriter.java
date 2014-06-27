@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Gestion centralisée des annotations sur les objets kasper générés.
+ * Gestion centralisée des annotations sur les objets  générés.
  *
  * @author  pchretien
  */
@@ -29,7 +29,7 @@ class AnnotationWriter {
 	List<String> writeAnnotations(final DtDefinition dtDefinition) {
 		final List<String> lines = new ArrayList<>();
 
-		//Générations des annotations Kasper
+		//Générations des annotations Dynamo
 		final StringBuilder buffer;
 		//	if (!isComputed) {
 		buffer = new StringBuilder("@DtDefinition");
@@ -49,7 +49,7 @@ class AnnotationWriter {
 		final List<String> lines = new ArrayList<>();
 		final String fieldName = dtField.getName();
 
-		//Générations des annotations Kasper
+		//Générations des annotations Dynamo
 		final StringBuilder buffer;
 		//	if (!isComputed) {
 		buffer = new StringBuilder("@Field(");
@@ -84,7 +84,7 @@ class AnnotationWriter {
 	 */
 	List<String> writeAnnotations(final AssociationNode associationNode) {
 		final List<String> lines = new ArrayList<>();
-		//Générations des annotations Kasper
+		//Générations des annotations Dynamo
 		if (associationNode.getAssociationDefinition().isAssociationSimpleDefinition()) {
 			final AssociationSimpleDefinition associationSimple = associationNode.getAssociationDefinition().castAsAssociationSimpleDefinition();
 			lines.add("@io.vertigo.dynamo.domain.metamodel.annotation.Association (");

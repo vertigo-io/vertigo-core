@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Gestion centralisée des annotations sur les objets kasper générés.
+ * Gestion centralisée des annotations sur les objets générés.
  * Cette implémentation complète les annotations standards et rajoute celles propre à JPA.
  * @author  pchretien, npiedeloup
  */
