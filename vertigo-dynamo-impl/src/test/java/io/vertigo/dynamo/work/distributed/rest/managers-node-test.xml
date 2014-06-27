@@ -1,0 +1,27 @@
+<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
+<modules>
+	<module name="kasper-commons">
+	   <component api="AnalyticsManager" class="kasperimpl.analytics.AnalyticsManagerImpl" />
+	   <component api="CodecManager" class="kasperimpl.codec.CodecManagerImpl" />
+	  
+	   <component api="WorkManager" class="kasperimpl.work.WorkManagerImpl" >
+	   		<param name="workerCount" value="10" />
+	   </component>
+	   
+	   <component api="NodeManager" class="kasperimpl.node.NodeManagerImpl" >
+	            <plugin class="kasperx.work.plugins.rest.RestDistributedWorkNodePlugin">
+	            	<param name="nodeId" value="node#1-1" />
+	            	<param name="serverUrl" value="http://localhost:10998" />
+	            	<!--  On déclare la spécialisation des 10 workers du WorkManager : 5 de chaque pour les TU -->
+	            	<param name="workTypes" value="kasper.work.mock.DivideWorkEngine;kasper.work.mock.DivideWorkEngine;kasper.work.mock.DivideWorkEngine;kasper.work.mock.DivideWorkEngine;kasper.work.mock.DivideWorkEngine" />
+	            </plugin>
+	            <plugin class="kasperx.work.plugins.rest.RestDistributedWorkNodePlugin">
+	            	<param name="nodeId" value="node#1-2" />
+	            	<param name="serverUrl" value="http://localhost:10998" />
+	            	<!--  On déclare la spécialisation des 10 workers du WorkManager : 5 de chaque pour les TU -->
+	            	<param name="workTypes" value="kasper.work.mock.SlowWorkEngine;kasper.work.mock.SlowWorkEngine;kasper.work.mock.SlowWorkEngine;kasper.work.mock.SlowWorkEngine;kasper.work.mock.SlowWorkEngine" />
+	            </plugin>
+	   </component>
+	</module>
+</modules>
+

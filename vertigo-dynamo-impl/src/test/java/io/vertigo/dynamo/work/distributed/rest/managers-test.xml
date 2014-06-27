@@ -1,0 +1,16 @@
+<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
+<modules>
+	<module name="kasper-commons">
+	   <component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
+	   <component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
+	  
+	   <component api="WorkManager" class="kasperimpl.work.WorkManagerImpl" >
+	        <param name="workerCount" value="5" />
+	        <plugin class="io.vertigo.dynamox.work.plugins.rest.RestDistributedWorkerPlugin">
+	            <param name="timeoutSeconds" value="20" />
+	            <param name="workTypes" value=".work.mock.DivideWorkEngine;kasper.work.mock.SlowWorkEngine" />
+	        </plugin>
+	   </component>	   
+	</module>
+</modules>
+
