@@ -2,6 +2,7 @@ package io.vertigo.rest;
 
 import io.vertigo.kernel.exception.VUserException;
 import io.vertigo.kernel.lang.MessageText;
+import io.vertigo.security.KSecurityManager;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -13,18 +14,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.inject.Inject;
+import javax.ws.rs.core.Response;
 
 //basé sur http://www.restapitutorial.com/lessons/httpmethods.html
-//et javax.ws.rs : http://docs.oracle.com/javaee/6/api/index.html?javax/ws/rs/package-summary.html
 
-//@Path("contacts")
 public final class ContactsRestfulService implements RestfulService {
+
+	@Inject
+	private KSecurityManager securityManager;
 
 	/*private final enum Group {
 		Friends("FRD", "Friends"), //
@@ -113,6 +111,7 @@ public final class ContactsRestfulService implements RestfulService {
 		contact.setEmail(email);
 		contact.setTels(Arrays.asList(tels));
 		contacts.put(conId, contact);
+		Response.status(200).build();
 	}
 
 	private Address createAddress(final String street1, final String street2, final String city, final String postalCode, final String country) {
@@ -125,24 +124,30 @@ public final class ContactsRestfulService implements RestfulService {
 		return address;
 	}
 
-	@GET
-	@Path("contacts/search")
+	@GET("/contacts/search")
 	public List<Contact> readList(final ListCriteria listCriteria) {
 		//offset + range ?
 		//code 200
 		return new ArrayList<Contact>(contacts.values());
 	}
 
-	@GET
-	@Path("contacts")
+	@AnonymousAccessAllowed
+	@GET("/login")
+	public void login() {
+		//code 200
+		securityManager.getCurrentUserSession().get().authenticate();
+	}
+
+	@SessionLess
+	@AnonymousAccessAllowed
+	@GET("/contacts")
 	public List<Contact> readAllList() {
 		//offset + range ?
 		//code 200
 		return new ArrayList<Contact>(contacts.values());
 	}
 
-	@GET
-	@Path("contacts/{conId}")
+	@GET("/contacts/{conId}")
 	public Contact read(@PathParam("conId") final long conId) {
 		final Contact contact = contacts.get(conId);
 		if (contact == null) {
@@ -154,8 +159,7 @@ public final class ContactsRestfulService implements RestfulService {
 	}
 
 	//@POST is non-indempotent
-	@POST
-	@Path("contacts")
+	@POST("/contacts")
 	public Contact insert(final Contact contact) {
 		if (contact.getId() != null) {
 			throw new VUserException(new MessageText("Contact #" + contact.getId() + " already exist", null));
@@ -171,8 +175,7 @@ public final class ContactsRestfulService implements RestfulService {
 	}
 
 	//PUT is indempotent : ID obligatoire
-	@PUT
-	@Path("contacts/{conId}")
+	@PUT("/contacts/{conId}")
 	public Contact update(final Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
@@ -187,8 +190,7 @@ public final class ContactsRestfulService implements RestfulService {
 		}
 	}
 
-	@DELETE
-	@Path("contacts/{conId}")
+	@DELETE("/contacts/{conId}")
 	public void delete(@PathParam("conId") final long conId) {
 		if (!contacts.containsKey(conId)) {
 			//404

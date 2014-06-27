@@ -43,7 +43,7 @@ A simple data access to your sql/nosql database, including search patterns.
 * __work__ : process, shedule or distribute your task
 
 ##vertigo-rest 
-add a rest access to your application
+add a rest access to your application. Usefull for Single-Page-Application.
 
 ##vertigo-ccc
 Command & Control Center

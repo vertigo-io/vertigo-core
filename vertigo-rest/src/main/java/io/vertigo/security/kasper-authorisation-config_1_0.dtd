@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- Gestion des autorisations deKasper -->
+
+<!ELEMENT authorisation-config ( (operation | resource | permission | role)* ) >
+
+<!ELEMENT operation EMPTY >
+<!ATTLIST operation id ID #REQUIRED 
+					description CDATA #REQUIRED >
+
+<!ELEMENT resource EMPTY >
+<!ATTLIST resource id ID #REQUIRED 
+				   filter CDATA #REQUIRED
+				   description CDATA #REQUIRED >
+
+<!ELEMENT permission ( ( operation, resource )* )>
+<!ATTLIST permission id ID #IMPLIED 
+ 					 operation IDREF #IMPLIED 
+					 resource IDREF #IMPLIED 
+					 description CDATA #IMPLIED 
+					 ref IDREF #IMPLIED >
+
+<!ELEMENT role ( permission* ) >
+<!ATTLIST role name CDATA #REQUIRED 
+			   description CDATA #REQUIRED>

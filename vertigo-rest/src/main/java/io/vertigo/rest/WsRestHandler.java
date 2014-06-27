@@ -1,6 +1,7 @@
 package io.vertigo.rest;
 
 import io.vertigo.commons.impl.resource.ResourceManagerImpl;
+import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl;
@@ -12,6 +13,14 @@ import io.vertigo.kernel.Home;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.rest.EndPointDefinition.EndPointParam;
+import io.vertigo.rest.filter.CorsAllower;
+import io.vertigo.rest.handler.ExceptionHandler;
+import io.vertigo.rest.handler.SecurityHandler;
+import io.vertigo.rest.handler.SessionHandler;
+import io.vertigo.rest.handler.WsRestRoute;
+import io.vertigo.security.KSecurityManager;
+import io.vertigoimpl.commons.locale.LocaleManagerImpl;
+import io.vertigoimpl.security.KSecurityManagerImpl;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,50 +31,12 @@ import spark.Response;
 import spark.Route;
 import spark.Spark;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
+/**
+ * Main WebService Route handler.
+ * TODO : make configurable
+ * @author npiedeloup 
+ */
 public class WsRestHandler {
-	//private static final FamillesRestfulService famillesRestfulService = new FamillesRestfulService();
-
-	private static final Gson GSON = new GsonBuilder() //
-			.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") //
-			.setPrettyPrinting().create();
-
-	private static final class WsRestRoute extends Route {
-		private final EndPointDefinition endPointDefinition;
-		private final String originCORSFilter = "*";
-		private final String methodsCORSFilter = "*";
-		private final String headersCORSFilter = "*";
-
-		private WsRestRoute(final String path, final EndPointDefinition endPointDefinition) {
-			super(convertJaxRsPathToSpark(path));
-			this.endPointDefinition = endPointDefinition;
-		}
-
-		private static String convertJaxRsPathToSpark(final String path) {
-			final String newPath = path.replaceAll("(.*)\\{(.+)\\}(.*)", "$1:$2$3");
-			return newPath;
-		}
-
-		@Override
-		public Object handle(final Request request, final Response response) {
-			try {
-				response.header("Access-Control-Allow-Origin", originCORSFilter);
-				response.header("Access-Control-Request-Method", methodsCORSFilter);
-				response.header("Access-Control-Allow-Headers", headersCORSFilter);
-
-				final Object value = RestfulServicesUtil.invoke( //
-						Home.getComponentSpace().resolve(endPointDefinition.getMethod().getDeclaringClass()),//
-						endPointDefinition.getMethod(), request);
-				return GSON.toJson(value);
-			} catch (final Throwable th) {
-				System.err.println("Error " + th.getMessage());
-				th.printStackTrace(System.err);
-				throw th;
-			}
-		}
-	}
 
 	public static final class DtDefinitions implements Iterable<Class<?>> {
 		public Iterator<Class<?>> iterator() {
@@ -93,27 +64,37 @@ public class WsRestHandler {
 				.withSilence(true)//
 				//.withRestEngine(new GrizzlyRestEngine(8080))
 				.withCommandEngine(new TcpVCommandEngine(4406))//
-				.beginModule("commons").
-					beginComponent(ResourceManager.class, ResourceManagerImpl.class)
+				.beginModule("commons") //
+					.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
+						.withParam("locales", "fr")
+					.endComponent()
+					.beginComponent(ResourceManager.class, ResourceManagerImpl.class)
 						.beginPlugin( ClassPathResourceResolverPlugin.class).endPlugin()
 					.endComponent()
+					.beginComponent(KSecurityManager.class, KSecurityManagerImpl.class)//
+						.withParam("userSessionClassName", TestUserSession.class.getName())
+					.endComponent() //
 				.endModule()
 				.beginModule("dynamo").withNoAPI() //
 					.beginComponent(EnvironmentManagerImpl.class) //
 						.beginPlugin(AnnotationLoaderPlugin.class) //
-						.withParam("classes", DtDefinitions.class.getName()).endPlugin()
+							.withParam("classes", DtDefinitions.class.getName()).endPlugin()
 						.beginPlugin(KprLoaderPlugin.class) //
-						.withParam("kpr", "ksp/execution.kpr").endPlugin()
+							.withParam("kpr", "ksp/execution.kpr").endPlugin()
 						.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()						
 					.endComponent()
 				.endModule()
-				.beginModule("restCore").withNoAPI() //
-					.beginComponent(RestManager.class).endComponent()
-				.endModule()
-				.beginModule("restServices").withNoAPI().withInheritance(Object.class) //
+				.beginModule("restServices").withNoAPI().withInheritance(RestfulService.class) //
 					.beginComponent(FamillesRestfulService.class).endComponent() //
-					.beginComponent(ContactsRestfulService.class).endComponent()
+					.beginComponent(ContactsRestfulService.class).endComponent() //
 				.endModule()
+				.beginModule("restCore").withNoAPI().withInheritance(Object.class) //
+					.beginComponent(RestManager.class).endComponent() //
+					.beginComponent(ExceptionHandler.class).endComponent() //
+					.beginComponent(SecurityHandler.class).endComponent() //
+					.beginComponent(SessionHandler.class).endComponent() //
+				.endModule()
+				
 				.build();
 		// @formatter:on
 		Home.start(config);
@@ -134,6 +115,8 @@ public class WsRestHandler {
 		// Will serve all static file are under "/public" in classpath if the route isn't consumed by others routes.
 		// When using Maven, the "/public" folder is assumed to be in "/main/resources"
 		Spark.externalStaticFileLocation("d:/Projets/Projet_Kasper/SPA-Fmk/SPA-skeleton/public/");
+		//Spark.before(new IE8CompatibilityFix("8"));
+		Spark.before(new CorsAllower());
 
 		for (final EndPointDefinition endPointDefinition : endPointDefs) {
 			switch (endPointDefinition.getVerb()) {
@@ -173,4 +156,5 @@ public class WsRestHandler {
 			}
 		});
 	}
+
 }

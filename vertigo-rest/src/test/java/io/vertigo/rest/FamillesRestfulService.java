@@ -10,13 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-
 //basé sur http://www.restapitutorial.com/lessons/httpmethods.html
 //et javax.ws.rs : http://docs.oracle.com/javaee/6/api/index.html?javax/ws/rs/package-summary.html
 
@@ -45,16 +38,14 @@ public final class FamillesRestfulService implements RestfulService {
 		familles.put(famId, famille);
 	}
 
-	@GET
-	@Path("familles")
+	@GET("/familles")
 	public List<Famille> readList() {
 		//offset + range ?
 		//code 200
 		return new ArrayList<Famille>(familles.values());
 	}
 
-	@GET
-	@Path("familles/{famId}")
+	@GET("/familles/{famId}")
 	public Famille read(@PathParam("famId") final long famId) {
 		final Famille famille = familles.get(famId);
 		if (famille == null) {
@@ -66,8 +57,7 @@ public final class FamillesRestfulService implements RestfulService {
 	}
 
 	//@POST is non-indempotent
-	@POST
-	@Path("familles")
+	@POST("/familles")
 	public long insert(final Famille famille) {
 		if (famille.getFamId() != null) {
 			throw new VUserException(new MessageText("Famille n°" + famille.getFamId() + " déjà crée", null));
@@ -83,8 +73,7 @@ public final class FamillesRestfulService implements RestfulService {
 	}
 
 	//PUT is indempotent : ID obligatoire ?
-	@PUT
-	@Path("familles")
+	@PUT("/familles")
 	public void update(final Famille famille) {
 		if (famille.getLibelle() == null || famille.getLibelle().isEmpty()) {
 			//400
@@ -101,8 +90,7 @@ public final class FamillesRestfulService implements RestfulService {
 		}
 	}
 
-	@DELETE
-	@Path("familles/{famId}")
+	@DELETE("/familles/{famId}")
 	public void delete(@PathParam("famId") final long famId) {
 		if (!familles.containsKey(famId)) {
 			//404

@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * End point definition.
+ * @author npiedeloup
+ */
 @Prefix("EP_")
 public class EndPointDefinition implements Definition {
 	public final class EndPointParam {
@@ -38,9 +42,12 @@ public class EndPointDefinition implements Definition {
 	private final Verb verb;
 
 	private final Method method; //Function gérant l'exectution du EndPoint	
+	private final boolean needSession;
+	private final boolean needAuthentification;
+
 	private final List<EndPointParam> endPointParams = new ArrayList<>();
 
-	public EndPointDefinition(final String name, final Verb verb, final String path, final Method method) {
+	public EndPointDefinition(final String name, final Verb verb, final String path, final Method method, final boolean needSession, final boolean needAuthentification) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(verb);
 		Assertion.checkArgNotEmpty(path);
@@ -51,6 +58,8 @@ public class EndPointDefinition implements Definition {
 		this.path = path;
 
 		this.method = method;
+		this.needSession = needSession;
+		this.needAuthentification = needAuthentification;
 	}
 
 	public String getName() {
@@ -76,5 +85,13 @@ public class EndPointDefinition implements Definition {
 	public void addParam(final String paramName, final Class paramType) {
 		final EndPointParam endPointParam = new EndPointParam(paramName, paramType);
 		endPointParams.add(endPointParam);
+	}
+
+	public boolean isNeedSession() {
+		return needSession;
+	}
+
+	public boolean isNeedAuthentification() {
+		return needAuthentification;
 	}
 }
