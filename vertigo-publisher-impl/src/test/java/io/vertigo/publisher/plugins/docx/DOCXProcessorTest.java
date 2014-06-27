@@ -31,7 +31,7 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 	/**
 	 * Fichier de test.
 	 */
-	static final String TEST_FILE = "io/vertigo/publisher/data/test.docx";
+	static final String TEST_FILE = "io/vertigo/publisher/plugins/docx/data/test.docx";
 
 	/**
 	 * Footer d'un docx.
