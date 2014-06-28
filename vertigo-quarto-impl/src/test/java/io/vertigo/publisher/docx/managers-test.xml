@@ -1,0 +1,41 @@
+<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
+<modules>
+	<module name="vertigo-core">
+		<component api="LocaleManager" class="io.vertigoimpl.commons.locale.LocaleManagerImpl">
+			<param name="multilingual" value="false" />
+			<param name="locales" value="fr_FR" />
+		</component>
+	</module>
+
+	<module name="vertigo-commons">
+		<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
+	    	<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin"/>                               
+	    </component> 
+		<component api="WorkManager" class="io.vertigo.dynamo.impl.work.WorkManagerImpl">
+			<param name="workerCount" value="5" />
+		</component>	
+
+		<component api="ScriptManager" class="io.vertigo.commons.impl.script.ScriptManagerImpl">
+			<plugin class="io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin" />
+		</component>
+		<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
+
+		<component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
+			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin"/>
+			<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
+			<plugin class="io.vertigo.publisher.plugins.environment.registries.PublisherDynamicRegistryPlugin" />
+		</component>
+	</module>
+
+	<module name="vertigo-publisher">
+		<component api="PublisherManager" class="io.vertigo.publisher.impl.PublisherManagerImpl">
+			<plugin class="io.vertigo.publisher.plugins.docx.MergerPluginDOCX" />
+		</component>
+	</module>
+	
+	<module name="test">
+		<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
+		<resource type="kpr" path="io/vertigo/publisher/ksp/publisher.kpr" />
+	</module>
+	
+</modules>

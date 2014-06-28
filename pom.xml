@@ -45,9 +45,9 @@ limitations under the License. --><project xmlns="http://maven.apache.org/POM/4.
 		<module>vertigo-dynamo-impl</module>
 
 		<module>vertigo-studio</module>
-		<module>vertigo-publisher-api</module>
-		<module>vertigo-publisher-impl</module>
-  </modules>
+		<module>vertigo-quarto-api</module>
+		<module>vertigo-quarto-impl</module>
+	</modules>
 
 	<scm>
 		<connection>scm:git:https://github.com/vertigo-io/vertigo.git</connection>
