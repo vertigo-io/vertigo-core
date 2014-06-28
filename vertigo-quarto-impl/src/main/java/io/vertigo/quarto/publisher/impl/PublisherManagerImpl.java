@@ -79,6 +79,6 @@ public final class PublisherManagerImpl implements PublisherManager {
 		// mergeParameter.getOuputFileName()
 		//----------------------------------------------------------------------
 		final File fileToExport = mergerPlugin.execute(modelFileURL, data);
-		return fileManager.createFile(fileName, mergerPlugin.getPublisherFormat().getTypeMime(), fileToExport);
+		return fileManager.createFile(fileName, mergerPlugin.getPublisherFormat().getMimeType(), fileToExport);
 	}
 }

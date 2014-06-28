@@ -17,7 +17,7 @@ public enum PublisherFormat {
 	 * 
 	 * @return Type Mime
 	 */
-	public String getTypeMime() {
+	public String getMimeType() {
 		switch (this) {
 			case ODT:
 				return "application/vnd.oasis.opendocument.text";
