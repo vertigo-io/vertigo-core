@@ -53,38 +53,40 @@ public class DOCXNamespaceContext implements NamespaceContext {
 
 	/** {@inheritDoc} */
 	public String getPrefix(final String namespace) {
-		if ("http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas".equals(namespace)) {
+		switch (namespace){
+		case "http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas":
 			return "wpc";
-		} else if ("http://schemas.openxmlformats.org/markup-compatibility/2006".equals(namespace)) {
+		case "http://schemas.openxmlformats.org/markup-compatibility/2006":
 			return "mc";
-		} else if ("urn:schemas-microsoft-com:office:office".equals(namespace)) {
+		case "urn:schemas-microsoft-com:office:office":
 			return "o";
-		} else if ("http://schemas.openxmlformats.org/officeDocument/2006/relationships".equals(namespace)) {
+		case "http://schemas.openxmlformats.org/officeDocument/2006/relationships":
 			return "r";
-		} else if ("http://schemas.openxmlformats.org/officeDocument/2006/math".equals(namespace)) {
+		case "http://schemas.openxmlformats.org/officeDocument/2006/math":
 			return "m";
-		} else if ("urn:schemas-microsoft-com:vml".equals(namespace)) {
+		case "urn:schemas-microsoft-com:vml":
 			return "v";
-		} else if ("http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing".equals(namespace)) {
+		case "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing":
 			return "wp14";
-		} else if ("http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing".equals(namespace)) {
+		case "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing":
 			return "wp";
-		} else if ("urn:schemas-microsoft-com:office:word".equals(namespace)) {
+		case "urn:schemas-microsoft-com:office:word":
 			return "w10";
-		} else if ("http://schemas.openxmlformats.org/wordprocessingml/2006/main".equals(namespace)) {
+		case "http://schemas.openxmlformats.org/wordprocessingml/2006/main":
 			return "w";
-		} else if ("http://schemas.microsoft.com/office/word/2010/wordml".equals(namespace)) {
+		case "http://schemas.microsoft.com/office/word/2010/wordml":
 			return "w14";
-		} else if ("http://schemas.microsoft.com/office/word/2010/wordprocessingGroup".equals(namespace)) {
+		case "http://schemas.microsoft.com/office/word/2010/wordprocessingGroup":
 			return "wpg";
-		} else if ("http://schemas.microsoft.com/office/word/2010/wordprocessingInk".equals(namespace)) {
+		case "http://schemas.microsoft.com/office/word/2010/wordprocessingInk":
 			return "wpi";
-		} else if ("http://schemas.microsoft.com/office/word/2006/wordml".equals(namespace)) {
+		case "http://schemas.microsoft.com/office/word/2006/wordml":
 			return "wne";
-		} else if ("http://schemas.microsoft.com/office/word/2010/wordprocessingShape".equals(namespace)) {
+		case "http://schemas.microsoft.com/office/word/2010/wordprocessingShape":
 			return "wps";
+		default:
+			return null;
 		}
-		return null;
 	}
 
 	/** {@inheritDoc} */
