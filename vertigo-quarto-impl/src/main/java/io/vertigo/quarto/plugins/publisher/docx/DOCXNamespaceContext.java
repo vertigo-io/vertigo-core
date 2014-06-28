@@ -15,38 +15,40 @@ public class DOCXNamespaceContext implements NamespaceContext {
 
 	/** {@inheritDoc} */
 	public String getNamespaceURI(final String prefix) {
-		if ("wpc".equals(prefix)) {
-			return "http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas";
-		} else if ("mc".equals(prefix)) {
-			return "http://schemas.openxmlformats.org/markup-compatibility/2006";
-		} else if ("o".equals(prefix)) {
-			return "urn:schemas-microsoft-com:office:office";
-		} else if ("r".equals(prefix)) {
-			return "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
-		} else if ("m".equals(prefix)) {
-			return "http://schemas.openxmlformats.org/officeDocument/2006/math";
-		} else if ("v".equals(prefix)) {
-			return "urn:schemas-microsoft-com:vml";
-		} else if ("wp14".equals(prefix)) {
-			return "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing";
-		} else if ("wp".equals(prefix)) {
-			return "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing";
-		} else if ("w10".equals(prefix)) {
-			return "urn:schemas-microsoft-com:office:word";
-		} else if ("w".equals(prefix)) {
-			return "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
-		} else if ("w14".equals(prefix)) {
-			return "http://schemas.microsoft.com/office/word/2010/wordml";
-		} else if ("wpg".equals(prefix)) {
-			return "http://schemas.microsoft.com/office/word/2010/wordprocessingGroup";
-		} else if ("wpi".equals(prefix)) {
-			return "http://schemas.microsoft.com/office/word/2010/wordprocessingInk";
-		} else if ("wne".equals(prefix)) {
-			return "http://schemas.microsoft.com/office/word/2006/wordml";
-		} else if ("wps".equals(prefix)) {
-			return "http://schemas.microsoft.com/office/word/2010/wordprocessingShape";
+		switch (prefix){
+			case"wpc":
+				return "http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas";
+			case "mc":
+				return "http://schemas.openxmlformats.org/markup-compatibility/2006";
+			case "o":
+				return "urn:schemas-microsoft-com:office:office";
+			case "r":
+				return "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
+			case "m":
+				return "http://schemas.openxmlformats.org/officeDocument/2006/math";
+			case "v":
+				return "urn:schemas-microsoft-com:vml";
+			case "wp14":
+				return "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing";
+			case "wp":
+				return "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing";
+			case "w10":
+				return "urn:schemas-microsoft-com:office:word";
+			case "w":
+				return "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+			case "w14":
+				return "http://schemas.microsoft.com/office/word/2010/wordml";
+			case "wpg":
+				return "http://schemas.microsoft.com/office/word/2010/wordprocessingGroup";
+			case "wpi":
+				return "http://schemas.microsoft.com/office/word/2010/wordprocessingInk";
+			case "wne":
+				return "http://schemas.microsoft.com/office/word/2006/wordml";
+			case "wps":
+				return "http://schemas.microsoft.com/office/word/2010/wordprocessingShape";
+			default :
+				return XMLConstants.DEFAULT_NS_PREFIX;
 		}
-		return XMLConstants.DEFAULT_NS_PREFIX;
 	}
 
 	/** {@inheritDoc} */
