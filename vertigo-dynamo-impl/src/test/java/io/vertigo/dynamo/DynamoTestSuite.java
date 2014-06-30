@@ -53,6 +53,8 @@ import io.vertigo.dynamo.search.standard.SearchManagerTest;
 import io.vertigo.dynamo.task.TaskManagerTest;
 import io.vertigo.dynamo.task.x.TaskEngineSelectDynamicTest;
 import io.vertigo.dynamo.transaction.KTransactionManagerTest;
+import io.vertigo.dynamo.work.distributed.redis.RedisWorkManagerTest;
+import io.vertigo.dynamo.work.distributed.rest.DistributedWorkManagerTest;
 import io.vertigo.dynamo.work.local.WorkManagerTest;
 
 import org.junit.runner.RunWith;
@@ -109,6 +111,9 @@ import org.junit.runners.Suite.SuiteClasses;
 		SearchManagerDynaFieldsTest.class, 
 		SearchManagerMultiIndexTest.class,
 		SearchManagerTest.class,
+		//--
+		RedisWorkManagerTest.class, 
+		DistributedWorkManagerTest.class, 
 //@formatter:on
 })
 public final class DynamoTestSuite {

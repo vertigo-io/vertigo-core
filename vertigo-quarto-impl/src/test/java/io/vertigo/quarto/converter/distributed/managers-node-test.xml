@@ -1,0 +1,31 @@
+<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
+<modules>
+	<module name="kasper-commons">
+	   <component api="AnalyticsManager" class="kasperimpl.analytics.AnalyticsManagerImpl" />
+	   <component api="CodecManager" class="kasperimpl.codec.CodecManagerImpl" />
+	   <component api="FileManager" class="kasperimpl.file.FileManagerImpl" />
+	
+	   <component api="WorkManager" class="kasperimpl.work.WorkManagerImpl" >
+	   		<param name="workerCount" value="2" />
+	   </component>
+	   
+	   <component api="ConverterManager" class="kasperimpl.converter.ConverterManagerImpl" >
+		    <!-- <plugin class="kasperimpl.converter.plugins.openoffice.OpenOfficeLocalConverterPlugin">
+		    	<param name="unoport" value="8100"/>
+		    </plugin> -->
+		    <plugin class="kasperimpl.converter.plugins.openoffice.OpenOfficeRemoteConverterPlugin">
+		    	<param name="unohost" value="mrveille.dev.klee.lan.net"/>
+		    	<param name="unoport" value="8100"/>
+		    </plugin>
+	    </component>
+	    
+	   <component api="NodeManager" class="kasperimpl.node.NodeManagerImpl" >
+	            <plugin class="kasperx.work.plugins.rest.RestDistributedWorkNodePlugin">
+	            	<param name="nodeId" value="node#1-1" />
+	            	<param name="serverUrl" value="http://localhost:10001" />
+	            	<param name="workTypes" value="ConverterWork" />
+	            </plugin>
+	   </component>
+	</module>
+</modules>
+
