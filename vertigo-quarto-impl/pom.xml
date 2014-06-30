@@ -69,5 +69,32 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
+		
+		<!--Open Office dependencies-->
+		<dependency>
+			<groupId>org.openoffice</groupId>
+			<artifactId>juh</artifactId>
+			<version>3.2.1</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.openoffice</groupId>
+			<artifactId>jurt</artifactId>
+			<version>3.2.1</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.openoffice</groupId>
+			<artifactId>ridl</artifactId>
+			<version>3.2.1</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.openoffice</groupId>
+			<artifactId>unoil</artifactId>
+			<version>3.2.1</version>
+			<optional>true</optional>
+		</dependency>	
+		<!--/Open Office dependencies-->
 	</dependencies>
 </project>

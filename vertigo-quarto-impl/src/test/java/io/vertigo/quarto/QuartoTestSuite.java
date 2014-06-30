@@ -18,6 +18,8 @@
  */
 package io.vertigo.quarto;
 
+import io.vertigo.quarto.converter.distributed.ConverterManagerDistributedTest;
+import io.vertigo.quarto.converter.remote.ConverterManagerRemoteTest;
 import io.vertigo.quarto.plugins.publisher.docx.DOCXProcessorTest;
 import io.vertigo.quarto.publisher.PublisherManagerTest;
 import io.vertigo.quarto.publisher.impl.merger.processor.XMLHelperTest;
@@ -38,7 +40,10 @@ import org.junit.runners.Suite.SuiteClasses;
 		DOCXProcessorTest.class,
 		io.vertigo.quarto.publisher.docx.PublisherMergerTest.class, 
 		io.vertigo.quarto.publisher.odt.PublisherMergerTest.class, 
-		XMLHelperTest.class
+		XMLHelperTest.class, 
+		//----
+		ConverterManagerRemoteTest.class,
+		ConverterManagerDistributedTest.class	
 //@formatter:on
 })
 public final class QuartoTestSuite {
