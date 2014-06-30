@@ -122,31 +122,31 @@
 			<artifactId>gson</artifactId>
 			<version>2.2.3</version>
 		</dependency>
-		<!-- DÃ©pendances pour implÃ© REST de distributed -->
+		<!-- REST distributed impl dependency-->
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-client</artifactId>
 			<version>1.17.1</version>
-			<optional>true</optional> <!-- pour implÃ© REST de DistributedWork -->
+			<optional>true</optional> <!-- REST DistributedWork impl -->
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-server</artifactId>
 			<version>1.17.1</version>
-			<optional>true</optional> <!-- pour implÃ© REST de DistributedWork -->
+			<optional>true</optional> <!-- REST DistributedWork impl  -->
 		</dependency>
 		<dependency>
-			<groupId>com.sun.jersey</groupId> <!-- pour test de DistributedWork -->
+			<groupId>com.sun.jersey</groupId> <!-- REST DistributedWork impl  -->
 			<artifactId>jersey-grizzly2</artifactId>
 			<version>1.17.1</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- /DÃ©pendances pour implÃ© REST de distributed -->
+		<!-- /REST DistributedWork impl  -->
 		<dependency>
 		    <groupId>redis.clients</groupId>
 		    <artifactId>jedis</artifactId>
 		    <version>2.4.2</version>
-		    <optional>true</optional><!-- pour implÃ© REDIS de DistributedWork -->
+		    <optional>true</optional><!-- REDIS DistributedWork impl  -->
 		</dependency>
 		<!-- /Distributed -->
 
