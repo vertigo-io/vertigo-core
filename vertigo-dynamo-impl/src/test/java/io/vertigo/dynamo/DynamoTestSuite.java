@@ -43,6 +43,7 @@ import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.PackageRuleT
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.WordListRuleTest;
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.XDefinitionEntryRuleTest;
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.XPropertyEntryRuleTest;
+import io.vertigo.dynamo.export.ExportManagerTest;
 import io.vertigo.dynamo.file.FileManagerTest;
 import io.vertigo.dynamo.kvdatastore.KVDataStoreManagerTest;
 import io.vertigo.dynamo.persistence.direct.PersistenceManagerTest;
@@ -114,6 +115,8 @@ import org.junit.runners.Suite.SuiteClasses;
 		//--
 		RedisWorkManagerTest.class, 
 		DistributedWorkManagerTest.class, 
+		//---
+		ExportManagerTest.class,
 //@formatter:on
 })
 public final class DynamoTestSuite {
