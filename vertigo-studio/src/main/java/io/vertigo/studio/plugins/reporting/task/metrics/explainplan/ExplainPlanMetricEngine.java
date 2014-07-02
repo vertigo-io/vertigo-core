@@ -6,8 +6,10 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskEngine;
+import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.dynamo.transaction.KTransaction;
 import io.vertigo.dynamo.transaction.KTransactionManager;
+import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineSelect;
@@ -80,7 +82,9 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 		final TaskDefinition taskExplain = taskDefinitionBuilder.build();
 		try {
 			final Task currentTask = new TaskPopulator(taskExplain).populateTask();
-			workManager.process(currentTask, taskExplain.getTaskEngineProvider());
+			WorkItem<TaskResult, Task> workItem = new WorkItem<>(currentTask, taskExplain.getTaskEngineProvider());
+			workManager.process(workItem);
+			//On n'exploite pas le résultat
 			return readExplainPlan(taskDefinition, currentSequence);
 		} catch (final Exception e) {
 			throw new VRuntimeException("explainPlanElement", e);

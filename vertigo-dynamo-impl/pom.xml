@@ -247,12 +247,12 @@
 			<version>3.9</version>
 			<optional>true</optional>
 		</dependency>
-		<dependency>
+		<!-- dependency>
 			<groupId>org.odftoolkit</groupId>
 			<artifactId>odfdom-java</artifactId>
 			<version>0.7</version>
 			<optional>true</optional>
-		</dependency>
+		</dependency-->
 		<!--/exporter-->
 	</dependencies>
 </project>

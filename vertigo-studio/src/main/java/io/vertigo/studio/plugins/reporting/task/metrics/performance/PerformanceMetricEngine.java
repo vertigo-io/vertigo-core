@@ -4,6 +4,8 @@ import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskEngine;
+import io.vertigo.dynamo.task.model.TaskResult;
+import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.kernel.lang.Assertion;
@@ -48,7 +50,9 @@ public final class PerformanceMetricEngine implements MetricEngine<TaskDefinitio
 			final TaskPopulator taskPopulator = new TaskPopulator(taskDefinition);
 			final Task task = taskPopulator.populateTask();
 			final long startTime = System.currentTimeMillis();
-			workManager.process(task, taskDefinition.getTaskEngineProvider());
+			WorkItem<TaskResult, Task> workItem = new WorkItem<TaskResult, Task>(task, taskDefinition.getTaskEngineProvider()); 
+			workManager.process(workItem);
+			//on n'utilise pas le resultat
 			final long endTime = System.currentTimeMillis();
 			final long executionTime = endTime - startTime;
 			return new PerformanceMetric(executionTime);
