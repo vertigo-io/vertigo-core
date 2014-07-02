@@ -1,6 +1,7 @@
 package io.vertigo.dynamo.impl.work.worker.local;
 
 import io.vertigo.dynamo.impl.work.worker.Worker;
+import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
@@ -60,12 +61,11 @@ public final class WorkItemExecutor<WR, W> implements Runnable {
 		Assertion.checkNotNull(workItem);
 		//---------------------------------------------------------------------
 		try {
-			workItem.getWorkResultHandler().onStart();
-			final W work = workItem.getWork();
-			final WR workResult = worker.process(work, workItem.getWorkEngineProvider());
-			workItem.getWorkResultHandler().onSuccess(workResult);
+			workItem.getWorkResultHandler().get().onStart();
+			worker.process(workItem);
+			workItem.getWorkResultHandler().get().onSuccess(workItem.getResult());
 		} catch (final Throwable t) {
-			workItem.getWorkResultHandler().onFailure(t);
+			workItem.getWorkResultHandler().get().onFailure(t);
 			logError(t);
 		} finally {
 			try {

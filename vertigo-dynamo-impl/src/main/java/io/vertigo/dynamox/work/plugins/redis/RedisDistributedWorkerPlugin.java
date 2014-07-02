@@ -1,8 +1,8 @@
 package io.vertigo.dynamox.work.plugins.redis;
 
 import io.vertigo.dynamo.impl.work.DistributedWorkerPlugin;
-import io.vertigo.dynamo.impl.work.worker.local.WorkItem;
 import io.vertigo.dynamo.work.WorkEngineProvider;
+import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Activeable;
@@ -12,7 +12,6 @@ import io.vertigo.kernel.util.DateUtil;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -64,12 +63,14 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 	}
 
 	/** {@inheritDoc} */
-	public <WR, W> WR process(final W work, final WorkEngineProvider<WR, W> workEngineProvider) {
+	public <WR, W> void process(final WorkItem<WR, W> workItem) {
 		int retry = 0;
 		while (retry < 3) {
 			Jedis jedis = jedisPool.getResource();
 			try {
-				return this.<WR, W> doProcess(jedis, work, workEngineProvider);
+				this.<WR, W> doProcess(jedis, workItem);
+				//C'est bon on s'arrête 
+				return;
 			} catch (final JedisException e) {
 				jedisPool.returnBrokenResource(jedis);
 				jedis = null;
@@ -117,23 +118,21 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 
 	}
 
-	private <WR, W> WR doProcess(final Jedis jedis, final W work, final WorkEngineProvider<WR, W> workEngineProvider) {
-		final String workId = UUID.randomUUID().toString();
-
+	private <WR, W> void doProcess(final Jedis jedis, final WorkItem<WR, W> workItem) {
 		//On renseigne la demande de travaux
-		push(jedis, workId, work, workEngineProvider, true);
+		push(jedis, workItem, true);
 
 		//On attend le r�sultat
 		//final String id = jedis.brpop(timeoutSeconds, "works:done:" + workId);
-		final String id = jedis.brpoplpush("works:done:" + workId, "works:completed", timeoutSeconds);
+		final String id = jedis.brpoplpush("works:done:" + workItem.getId(), "works:completed", timeoutSeconds);
 
 		if (id == null) {
-			throw new VRuntimeException("TimeOut survenu pour work[{0}], dur�e maximale: {1}s", null, workId, timeoutSeconds);
-		} else if (!workId.toString().equals(id)) {
-			throw new IllegalStateException("Id non coh�renents attendu '" + workId + "' trouv� '" + id + "'");
+			throw new VRuntimeException("TimeOut survenu pour work[{0}], dur�e maximale: {1}s", null, workItem.getId(), timeoutSeconds);
+		} else if (!workItem.getId().equals(id)) {
+			throw new IllegalStateException("Id non coh�renents attendu '" + workItem.getId() + "' trouv� '" + id + "'");
 		}
 
-		return (WR) buildResult(jedis, workId.toString());
+		workItem.setResult((WR) buildResult(jedis, workItem.getId()));
 	}
 
 	/** {@inheritDoc} */
@@ -160,28 +159,27 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 	}
 
 	private <WR, W> void doSchedule(final Jedis jedis, final WorkItem<WR, W> workItem) {
-		final String workId = UUID.randomUUID().toString();
-		push(jedis, workId, workItem.getWork(), workItem.getWorkEngineProvider(), false);
+		push(jedis, workItem, false);
 
-		workResultHandlers.put(workId, workItem.getWorkResultHandler());
+		workResultHandlers.put(workItem.getId(), workItem.getWorkResultHandler().get());
 	}
 
-	private static <WR, W> void push(final Jedis jedis, final String workId, final W work, final WorkEngineProvider<WR, W> workEngineProvider, final boolean sync) {
+	private static <WR, W> void push(final Jedis jedis, final WorkItem<WR, W> workItem, final boolean sync) {
 		//out.println("creating work [" + workId + "] : " + work.getClass().getSimpleName());
 
 		final Map<String, String> datas = new HashMap<>();
-		datas.put("work64", RedisUtil.encode(work));
-		datas.put("provider64", RedisUtil.encode(workEngineProvider.getName()));
+		datas.put("work64", RedisUtil.encode(workItem.getWork()));
+		datas.put("provider64", RedisUtil.encode(workItem.getWorkEngineProvider().getName()));
 		datas.put("date", DateUtil.newDate().toString());
 		datas.put("sync", Boolean.toString(sync));
 
 		final Transaction tx = jedis.multi();
 
-		tx.hmset("work:" + workId, datas);
+		tx.hmset("work:" + workItem.getId(), datas);
 
 		//tx.expire("work:" + workId, 70);
 		//On publie la demande de travaux
-		tx.lpush("works:todo", workId);
+		tx.lpush("works:todo", workItem.getId());
 
 		tx.exec();
 	}

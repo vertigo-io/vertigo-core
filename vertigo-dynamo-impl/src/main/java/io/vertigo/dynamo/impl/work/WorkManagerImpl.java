@@ -4,15 +4,11 @@ import io.vertigo.dynamo.impl.work.listener.WorkListener;
 import io.vertigo.dynamo.impl.work.listener.WorkListenerImpl;
 import io.vertigo.dynamo.impl.work.worker.Worker;
 import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;
-import io.vertigo.dynamo.impl.work.worker.local.WorkItem;
-import io.vertigo.dynamo.work.WorkEngineProvider;
+import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
-import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
-
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -23,8 +19,6 @@ import javax.inject.Named;
  * @author pchretien, npiedeloup
  */
 public final class WorkManagerImpl implements WorkManager, Activeable {
-
-	private static final Object DUMMY_WORK = new Object();
 
 	private final LocalWorker localWorker;
 
@@ -55,29 +49,28 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	}
 
 	/** {@inheritDoc}   */
-	public <WR, W> WR process(final W work, final WorkEngineProvider<WR, W> workEngineProvider) {
-		Assertion.checkNotNull(work);
+	public <WR, W> void process(final WorkItem<WR, W> workItem) {
+		Assertion.checkNotNull(workItem);
 		//----------------------------------------------------------------------
 		//On délégue l'exécution synchrone et locale à un Worker.
-		workListener.onStart(workEngineProvider.getName());
+		workListener.onStart(workItem.getWorkEngineProvider().getName());
 		boolean executed = false;
 		final long start = System.currentTimeMillis();
 		try {
-			final WR workResult = resolveWorker(workEngineProvider).process(work, workEngineProvider);
+			resolveWorker(workItem).process(workItem);
 			executed = true;
-			return workResult;
 		} finally {
-			workListener.onFinish(workEngineProvider.getName(), System.currentTimeMillis() - start, executed);
+			workListener.onFinish(workItem.getWorkEngineProvider().getName(), System.currentTimeMillis() - start, executed);
 		}
 	}
 
-	private <WR, W> Worker resolveWorker(final WorkEngineProvider<WR, W> workEngineProvider) {
+	private <WR, W> Worker resolveWorker(final WorkItem<WR, W> workItem) {
 		/* 
 		 * On recherche un Worker capable d'effectuer le travail demandé.
 		 * 1- On recherche parmi les works externes 
 		 * 2- Si le travail n'est pas déclaré comme étant distribué on l'exécute localement
 		 */
-		if (distributedWorker.isDefined() && distributedWorker.get().canProcess(workEngineProvider)) {
+		if (distributedWorker.isDefined() && distributedWorker.get().canProcess(workItem.getWorkEngineProvider())) {
 			return distributedWorker.get();
 		}
 		return localWorker;
@@ -86,15 +79,9 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	}
 
 	/** {@inheritDoc} */
-	public <WR, W> void schedule(final W work, final WorkEngineProvider<WR, W> workEngineProvider, final WorkResultHandler<WR> workResultHandler) {
-		Assertion.checkNotNull(work);
+	public <WR, W> void schedule(final WorkItem<WR, W> workItem) {
+		Assertion.checkNotNull(workItem);
 		//----------------------------------------------------------------------
-		final WorkItem<WR, W> workItem = new WorkItem<>(work, workEngineProvider, workResultHandler);
-		resolveWorker(workEngineProvider).schedule(workItem);
-	}
-
-	/** {@inheritDoc} */
-	public <WR, W> void async(final Callable<WR> callable, final WorkResultHandler<WR> workResultHandler) {
-		schedule(DUMMY_WORK, new WorkEngineProvider<>(new AsyncEngine<>(callable)), workResultHandler);
+		resolveWorker(workItem).schedule(workItem);
 	}
 }
