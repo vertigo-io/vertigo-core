@@ -52,9 +52,7 @@ final class RedisDispatcherThread extends Thread {
 			jedisPool.returnBrokenResource(jedis);
 			jedis = null;
 		} finally {
-			if (jedis != null) {
-				jedisPool.returnResource(jedis);
-			}
+			jedisPool.returnResource(jedis);
 		}
 	}
 

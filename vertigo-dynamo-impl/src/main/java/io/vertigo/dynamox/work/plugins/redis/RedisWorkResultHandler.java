@@ -88,9 +88,7 @@ final class RedisWorkResultHandler<WR> implements WorkResultHandler<WR> {
 				jedisPool.returnBrokenResource(jedis);
 				jedis = null;
 			} finally {
-				if (jedis != null) {
-					jedisPool.returnResource(jedis);
-				}
+				jedisPool.returnResource(jedis);
 			}
 			System.out.println("retry");
 			retry++;

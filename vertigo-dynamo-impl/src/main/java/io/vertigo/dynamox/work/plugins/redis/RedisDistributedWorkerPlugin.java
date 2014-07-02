@@ -75,9 +75,7 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 				jedisPool.returnBrokenResource(jedis);
 				jedis = null;
 			} finally {
-				if (jedis != null) {
-					jedisPool.returnResource(jedis);
-				}
+				jedisPool.returnResource(jedis);
 			}
 			//System.out.println("retry");
 			retry++;
@@ -147,9 +145,7 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 				jedisPool.returnBrokenResource(jedis);
 				jedis = null;
 			} finally {
-				if (jedis != null) {
-					jedisPool.returnResource(jedis);
-				}
+				jedisPool.returnResource(jedis);
 			}
 			//System.out.println("retry");
 			retry++;

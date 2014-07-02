@@ -94,9 +94,7 @@ public final class RedisNodePlugin implements NodePlugin, Activeable {
 			jedisPool.returnBrokenResource(jedis);
 			jedis = null;
 		} finally {
-			if (jedis != null) {
-				jedisPool.returnResource(jedis);
-			}
+			jedisPool.returnResource(jedis);
 		}
 		return nodes;
 	}
@@ -120,9 +118,7 @@ public final class RedisNodePlugin implements NodePlugin, Activeable {
 			jedisPool.returnBrokenResource(jedis);
 			jedis = null;
 		} finally {
-			if (jedis != null) {
-				jedisPool.returnResource(jedis);
-			}
+			jedisPool.returnResource(jedis);
 		}
 	}
 }
