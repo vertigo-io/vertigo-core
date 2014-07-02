@@ -25,6 +25,7 @@ import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamo.task.model.TaskResult;
+import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamox.domain.formatter.FormatterNumber;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
@@ -298,7 +299,9 @@ public abstract class AbstractSQLStorePlugin implements StorePlugin {
 	 * @return TaskResult de la tache
 	 */
 	protected final TaskResult process(final Task task) {
-		return workManager.process(task, task.getDefinition().getTaskEngineProvider());
+		WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, task.getDefinition().getTaskEngineProvider());
+		workManager.process(workItem);
+		return workItem.getResult();
 	}
 
 	private <D extends DtObject> String createLoadAllLikeQuery(final String tableName, final FilterCriteria<D> filterCriteria, final Integer maxRows) {

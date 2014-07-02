@@ -1,8 +1,8 @@
 package io.vertigo.dynamox.work.plugins.redis;
 
 import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;
-import io.vertigo.dynamo.impl.work.worker.local.WorkItem;
 import io.vertigo.dynamo.work.WorkEngineProvider;
+import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.kernel.lang.Assertion;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;

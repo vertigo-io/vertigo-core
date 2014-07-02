@@ -12,8 +12,10 @@ import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.persistence.BrokerNN;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
+import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.task.model.TaskResult;
+import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamox.domain.formatter.FormatterNumber;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
@@ -180,8 +182,9 @@ public final class BrokerNNImpl implements BrokerNN {
 		if (targetField != null) {
 			taskBuilder.withValue(targetField.getName(), targetValue);
 		}
-		final TaskResult taskResult = workManager.process(taskBuilder.build(), taskDefinition.getTaskEngineProvider());
-
+		WorkItem<TaskResult, Task> workItem = new WorkItem<>(taskBuilder.build(), taskDefinition.getTaskEngineProvider());
+		workManager.process(workItem);
+		final TaskResult taskResult = workItem.getResult();
 		return getSqlRowCount(taskResult);
 	}
 

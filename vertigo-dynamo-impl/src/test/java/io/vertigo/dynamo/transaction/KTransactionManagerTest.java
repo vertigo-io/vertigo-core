@@ -52,13 +52,11 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testFailCreateCurrentTransaction() {
-		final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction();
-		try {
+		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 			transactionManager.createCurrentTransaction();
 		} catch (final IllegalStateException e) {
 			Assert.assertEquals("Transaction courante déjà créée", e.getMessage());
 		}
-		currentTransaction.rollback();
 	}
 
 	/**
@@ -222,24 +220,25 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 		//On crée une autre BDD.
 		final DataBaseMock secondDataBase = new DataBaseMock();
 
-		final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction();
+		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 
-		final IDataBaseMock connection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
-		final IDataBaseMock connection2 = obtainDataBaseConnection(secondDataBase, "test-memory-2");
+			final IDataBaseMock connection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
+			final IDataBaseMock connection2 = obtainDataBaseConnection(secondDataBase, "test-memory-2");
 
-		// --- modification des deux bdd
-		final String value1 = createNewData();
-		connection1.setData(value1);
-		Assert.assertEquals(value1, connection1.getData());
+			// --- modification des deux bdd
+			final String value1 = createNewData();
+			connection1.setData(value1);
+			Assert.assertEquals(value1, connection1.getData());
 
-		final String value2 = createNewData();
-		connection2.setData(value2);
-		Assert.assertEquals(value2, connection2.getData());
+			final String value2 = createNewData();
+			connection2.setData(value2);
+			Assert.assertEquals(value2, connection2.getData());
 
-		// --- test du commit
-		currentTransaction.commit();
-		Assert.assertEquals(value1, dataBase.getData());
-		Assert.assertEquals(value2, secondDataBase.getData());
+			// --- test du commit
+			currentTransaction.commit();
+			Assert.assertEquals(value1, dataBase.getData());
+			Assert.assertEquals(value2, secondDataBase.getData());
+		}
 	}
 
 	/**
@@ -250,26 +249,27 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 		//On crée une autre BDD.
 		final DataBaseMock secondDataBase = new DataBaseMock();
 
-		final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction();
+		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 
-		final IDataBaseMock connection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
-		final IDataBaseMock connection2 = obtainDataBaseConnection(secondDataBase, "test-memory-2");
+			final IDataBaseMock connection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
+			final IDataBaseMock connection2 = obtainDataBaseConnection(secondDataBase, "test-memory-2");
 
-		final String oldValue1 = dataBase.getData();
-		final String oldValue2 = secondDataBase.getData();
+			final String oldValue1 = dataBase.getData();
+			final String oldValue2 = secondDataBase.getData();
 
-		// --- modification des deux bdd
-		final String value1 = createNewData();
-		connection1.setData(value1);
-		Assert.assertEquals(value1, connection1.getData());
+			// --- modification des deux bdd
+			final String value1 = createNewData();
+			connection1.setData(value1);
+			Assert.assertEquals(value1, connection1.getData());
 
-		final String value2 = createNewData();
-		connection2.setData(value2);
-		Assert.assertEquals(value2, connection2.getData());
+			final String value2 = createNewData();
+			connection2.setData(value2);
+			Assert.assertEquals(value2, connection2.getData());
 
-		currentTransaction.rollback();
-		// --- test du rollback
-		Assert.assertEquals(oldValue1, dataBase.getData());
-		Assert.assertEquals(oldValue2, secondDataBase.getData());
+			currentTransaction.rollback();
+			// --- test du rollback
+			Assert.assertEquals(oldValue1, dataBase.getData());
+			Assert.assertEquals(oldValue2, secondDataBase.getData());
+		}
 	}
 }

@@ -2,6 +2,7 @@ package io.vertigo.quarto.plugins.converter.work;
 
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.work.WorkEngineProvider;
+import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.quarto.impl.converter.ConverterPlugin;
@@ -30,6 +31,8 @@ public final class DistributedWorkConverterPlugin implements ConverterPlugin {
 
 	/** {@inheritDoc} */
 	public KFile convertToFormat(final KFile file, final String targetFormat) {
-		return workManager.process(new ConverterWork(file, targetFormat), new WorkEngineProvider<>(ConverterWorkEngine.class));
+		WorkItem<KFileSerializable, ConverterWork> workItem = new WorkItem<>(new ConverterWork(file, targetFormat), new WorkEngineProvider<>(ConverterWorkEngine.class));
+		workManager.process(workItem);
+		return workItem.getResult();
 	}
 }

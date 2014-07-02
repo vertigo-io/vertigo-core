@@ -2,8 +2,6 @@ package io.vertigo.dynamo.work;
 
 import io.vertigo.kernel.component.Manager;
 
-import java.util.concurrent.Callable;
-
 /**
  * Gestion synchrone, asynchrone des taches à effectuer.
  * Chaque réalisation est effectuée par un {@link WorkEngine}.
@@ -25,7 +23,7 @@ public interface WorkManager extends Manager {
 	 * @param work Travail à exécuter
 	 * @return resultat
 	 */
-	<WR, W> WR process(final W work, WorkEngineProvider<WR, W> workEngineProvider);
+	<WR, W> void process(final WorkItem<WR, W> workItem);
 
 	/**
 	 * Lancement asynchrone d'un travail 'dès que possible'.
@@ -34,12 +32,5 @@ public interface WorkManager extends Manager {
 	 * @param work Travail à exécuter
 	 * @param  workResultHandler Handler permettant un callback après exécution
 	 */
-	<WR, W> void schedule(final W work, WorkEngineProvider<WR, W> workEngineProvider, WorkResultHandler<WR> workResultHandler);
-
-	/**
-	 * Lancement d'une tache de façon asynchrone à patrir d'un simple callable.
-	 * Méthode utilitaire permettant de wrapper une méthode afin de l'exécuter de façon asynchrone.
-	 * Dans ce cas l'exécution est locale 
-	 */
-	<WR, W> void async(Callable<WR> executor, WorkResultHandler<WR> workResultHandler);
+	<WR, W> void schedule(final WorkItem<WR, W> workItem);
 }

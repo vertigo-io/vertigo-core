@@ -10,6 +10,7 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.dynamo.impl.export.core.ExportDtParametersImpl;
+import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.exception.VRuntimeException;
@@ -76,11 +77,12 @@ public final class ExportManagerImpl implements ExportManager {
 	public void createExportFileASync(final Export export, final WorkResultHandler<KFile> workResultHandler) {
 		Assertion.checkNotNull(export);
 		//---------------------------------------------------------------------
-		workManager.async(new Callable<KFile>() {
+		WorkItem workItem = new WorkItem<>(new Callable<KFile>() {
 			public KFile call() {
 				return createExportFile(export);
 			}
 		}, workResultHandler);
+		workManager.schedule(workItem);
 	}
 
 	/** {@inheritDoc} */

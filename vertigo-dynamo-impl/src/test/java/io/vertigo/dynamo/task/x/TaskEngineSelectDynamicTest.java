@@ -14,6 +14,7 @@ import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamo.transaction.KTransactionWritable;
+import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamock.domain.famille.Famille;
 import io.vertigo.dynamox.task.TaskEngineSelect;
@@ -93,7 +94,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.withValue("DTO_FAMILLE", famille)//
 					.build();
 			// on suppose un appel synchrone : getResult immédiat.
-			final TaskResult result = workManager.<TaskResult, Task> process(task, taskDefinition.getTaskEngineProvider());
+			final WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, taskDefinition.getTaskEngineProvider());
+			workManager.process(workItem);
+			final TaskResult result = workItem.getResult();
 
 			final DtList<Famille> resultList = result.<DtList<Famille>> getValue("DTC_FAMILLE_OUT");
 			Assert.assertEquals(10, resultList.size());
@@ -118,7 +121,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.build();
 
 			// on suppose un appel synchrone : getResult immédiat.
-			final TaskResult result = workManager.<TaskResult, Task> process(task, taskDefinition.getTaskEngineProvider());
+			final WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, taskDefinition.getTaskEngineProvider());
+			workManager.process(workItem);
+			final TaskResult result = workItem.getResult();
 
 			final DtList<Famille> resultList = result.<DtList<Famille>> getValue("DTC_FAMILLE_OUT");
 			Assert.assertEquals(1, resultList.size());
@@ -142,7 +147,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.withValue("DTC_FAMILLE_IN", familleIds)//
 					.build();
 			// on suppose un appel synchrone : getResult immédiat.
-			final TaskResult result = workManager.<TaskResult, Task> process(task, taskDefinition.getTaskEngineProvider());
+			final WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, taskDefinition.getTaskEngineProvider());
+			workManager.process(workItem);
+			final TaskResult result = workItem.getResult();
 
 			final DtList<Famille> resultList = result.<DtList<Famille>> getValue("DTC_FAMILLE_OUT");
 			Assert.assertEquals(10, resultList.size());
@@ -168,7 +175,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.build();
 
 			// on suppose un appel synchrone : getResult immédiat.
-			final TaskResult result = workManager.<TaskResult, Task> process(task, taskDefinition.getTaskEngineProvider());
+			final WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, taskDefinition.getTaskEngineProvider());
+			workManager.process(workItem);
+			final TaskResult result = workItem.getResult();
 
 			final DtList<Famille> resultList = result.<DtList<Famille>> getValue("DTC_FAMILLE_OUT");
 			Assert.assertEquals(10, resultList.size());
@@ -194,7 +203,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.build();
 
 			// on suppose un appel synchrone : getResult immédiat.
-			final TaskResult result = workManager.<TaskResult, Task> process(task, taskDefinition.getTaskEngineProvider());
+			final WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, taskDefinition.getTaskEngineProvider());
+			workManager.process(workItem);
+			final TaskResult result = workItem.getResult();
 
 			final DtList<Famille> resultList = result.<DtList<Famille>> getValue("DTC_FAMILLE_OUT");
 			Assert.assertEquals(2, resultList.size());
@@ -219,7 +230,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.withValue("DTC_FAMILLE_IN", familleIds)//
 					.build();
 			// on suppose un appel synchrone : getResult immédiat.
-			final TaskResult result = workManager.<TaskResult, Task> process(task, taskDefinition.getTaskEngineProvider());
+			final WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, taskDefinition.getTaskEngineProvider());
+			workManager.process(workItem);
+			final TaskResult result = workItem.getResult();
 
 			final DtList<Famille> resultList = result.<DtList<Famille>> getValue("DTC_FAMILLE_OUT");
 			Assert.assertEquals(0, resultList.size());
@@ -248,7 +261,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			familleIds.add(createFamId(10001L + 7));
 			familleIds.add(createFamId(10001L + 8));
 			// on suppose un appel synchrone : getResult immédiat.
-			final TaskResult result = workManager.<TaskResult, Task> process(task, taskDefinition.getTaskEngineProvider());
+			final WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, taskDefinition.getTaskEngineProvider());
+			workManager.process(workItem);
+			final TaskResult result = workItem.getResult();
 
 			final DtList<Famille> resultList = result.<DtList<Famille>> getValue("DTC_FAMILLE_OUT");
 			Assert.assertEquals(4, resultList.size());
@@ -276,7 +291,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.build();
 
 			// on suppose un appel synchrone : getResult immédiat.
-			final TaskResult result = workManager.<TaskResult, Task> process(task, taskDefinition.getTaskEngineProvider());
+			final WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, taskDefinition.getTaskEngineProvider());
+			workManager.process(workItem);
+			final TaskResult result = workItem.getResult();
 
 			final DtList<Famille> resultList = result.<DtList<Famille>> getValue("DTC_FAMILLE_OUT");
 			Assert.assertEquals(10, resultList.size());
@@ -305,7 +322,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.build();
 
 			// on suppose un appel synchrone : getResult immédiat.
-			final TaskResult result = workManager.<TaskResult, Task> process(task, taskDefinition.getTaskEngineProvider());
+			final WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, taskDefinition.getTaskEngineProvider());
+			workManager.process(workItem);
+			final TaskResult result = workItem.getResult();
 
 			final DtList<Famille> resultList = result.<DtList<Famille>> getValue("DTC_FAMILLE_OUT");
 			Assert.assertEquals(2200, resultList.size());
@@ -334,7 +353,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.build();
 
 			// on suppose un appel synchrone : getResult immédiat.
-			final TaskResult result = workManager.<TaskResult, Task> process(task, taskDefinition.getTaskEngineProvider());
+			final WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, taskDefinition.getTaskEngineProvider());
+			workManager.process(workItem);
+			final TaskResult result = workItem.getResult();
 
 			final DtList<Famille> resultList = result.<DtList<Famille>> getValue("DTC_FAMILLE_OUT");
 			Assert.assertEquals(10 + 4500 - 2200, resultList.size());

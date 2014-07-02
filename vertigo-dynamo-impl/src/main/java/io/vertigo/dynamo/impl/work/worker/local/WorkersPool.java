@@ -1,6 +1,7 @@
 package io.vertigo.dynamo.impl.work.worker.local;
 
 import io.vertigo.dynamo.impl.work.worker.Worker;
+import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;

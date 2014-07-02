@@ -7,6 +7,7 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.task.model.TaskResult;
+import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.kernel.Home;
 
@@ -132,13 +133,14 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 				.build();
 
 		// on suppose un appel synchrone : getResult immédiat.
-		TaskResult result;
+		WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, taskDefinition.getTaskEngineProvider());
+		workManager.process(workItem);
 
-		result = workManager.<TaskResult, Task> process(task, taskDefinition.getTaskEngineProvider());
-		Assert.assertEquals(Integer.valueOf(16), result.getValue(TaskEngineMock.ATTR_OUT));
+		Assert.assertEquals(Integer.valueOf(16), workItem.getResult().getValue(TaskEngineMock.ATTR_OUT));
 
-		result = workManager.<TaskResult, Task> process(task, taskDefinition.getTaskEngineProvider());
-		Assert.assertEquals(Integer.valueOf(16), result.getValue(TaskEngineMock.ATTR_OUT));
+		WorkItem<TaskResult, Task> workItem2 = new WorkItem<>(task, taskDefinition.getTaskEngineProvider());
+		workManager.process(workItem2);
+		Assert.assertEquals(Integer.valueOf(16), workItem2.getResult().getValue(TaskEngineMock.ATTR_OUT));
 
 	}
 
@@ -173,7 +175,9 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 				.withValue(TaskEngineMock.ATTR_IN_INT_3, value3)//
 				.build();
 		// on suppose un appel synchrone : getResult immédiat
-		final TaskResult result = workManager.<TaskResult, Task> process(task, taskDefinition.getTaskEngineProvider());
+		WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, taskDefinition.getTaskEngineProvider());
+		workManager.process(workItem);
+		final TaskResult result = workItem.getResult();
 		//final WorkItem<Task, TaskResult> workItem = workManager.<Task, TaskResult> schedule(task);
 		//workManager.waitForAll(java.util.Collections.singleton(workItem), 10 * 1000);
 		//final TaskResult result = workItem.getResult();

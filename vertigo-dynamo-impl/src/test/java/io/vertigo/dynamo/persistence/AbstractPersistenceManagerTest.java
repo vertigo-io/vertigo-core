@@ -22,6 +22,7 @@ import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamo.transaction.KTransactionWritable;
+import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamock.domain.car.Car;
 import io.vertigo.dynamock.domain.car.CarDataBase;
@@ -205,7 +206,9 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		final Task task = new TaskBuilder(taskInsertCar)//
 				.withValue("DTO_CAR", car)//
 				.build();
-		final TaskResult taskResult = workManager.process(task, task.getDefinition().getTaskEngineProvider());
+		WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, task.getDefinition().getTaskEngineProvider());
+		workManager.process(workItem);
+		final TaskResult taskResult = workItem.getResult();
 		nop(taskResult);
 	}
 
@@ -215,7 +218,9 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		final Task task = new TaskBuilder(taskUpdateCar)//
 				.withValue("DTO_CAR", car)//
 				.build();
-		final TaskResult taskResult = workManager.process(task, task.getDefinition().getTaskEngineProvider());
+		WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, task.getDefinition().getTaskEngineProvider());
+		workManager.process(workItem);
+		final TaskResult taskResult = workItem.getResult();
 		nop(taskResult);
 
 	}
@@ -224,14 +229,18 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		final Task task = new TaskBuilder(taskLoadCar)//
 				.withValue("CAR_ID", carId)//
 				.build();
-		final TaskResult taskResult = workManager.process(task, task.getDefinition().getTaskEngineProvider());
+		WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, task.getDefinition().getTaskEngineProvider());
+		workManager.process(workItem);
+		final TaskResult taskResult = workItem.getResult();
 		return taskResult.<Car> getValue("DTO_CAR_OUT");
 	}
 
 	protected final DtList<Car> nativeLoadCarList() {
 		final Task task = new TaskBuilder(taskLoadCarList)//
 				.build();
-		final TaskResult taskResult = workManager.process(task, task.getDefinition().getTaskEngineProvider());
+		WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, task.getDefinition().getTaskEngineProvider());
+		workManager.process(workItem);
+		final TaskResult taskResult = workItem.getResult();
 		return taskResult.<DtList<Car>> getValue("DTC_CAR_OUT");
 	}
 

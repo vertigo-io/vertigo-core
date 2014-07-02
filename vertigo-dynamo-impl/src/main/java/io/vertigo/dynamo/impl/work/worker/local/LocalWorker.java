@@ -1,7 +1,7 @@
 package io.vertigo.dynamo.impl.work.worker.local;
 
 import io.vertigo.dynamo.impl.work.worker.Worker;
-import io.vertigo.dynamo.work.WorkEngineProvider;
+import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 
@@ -47,12 +47,10 @@ public final class LocalWorker implements Worker, Activeable {
 	}
 
 	/** {@inheritDoc} */
-	public <WR, W> WR process(final W work, final WorkEngineProvider<WR, W> workEngineProvider) {
+	public <WR, W> void process(final WorkItem<WR, W> workItem) {
 		Assertion.checkArgument(active, "le plugin n'est pas dans un état démarré");
-		Assertion.checkNotNull(work);
-		Assertion.checkNotNull(workEngineProvider);
+		Assertion.checkNotNull(workItem);
 		// ---------------------------------------------------------------------
-		return workEngineProvider.provide().process(work);
+		workItem.setResult(workItem.getWorkEngineProvider().provide().process(workItem.getWork()));
 	}
-
 }

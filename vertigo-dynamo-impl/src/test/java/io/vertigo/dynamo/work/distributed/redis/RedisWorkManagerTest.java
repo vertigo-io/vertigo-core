@@ -16,6 +16,31 @@ public class RedisWorkManagerTest extends AbstractWorkManagerTest {
 		//reset(RedisUtil.createJedisPool("kasper-redis", 6379));
 	}
 
+	//
+	//	@Test
+	//	public void ping() {
+	//		final JedisPool jedisPool = RedisUtil.createJedisPool("localhost", 6379);
+	//		final PrintStream out = System.out;
+	//		//		for (int t = 0; t < 1; t++) {
+	//		//			out.println("new thread ");
+	//		//			Thread thread = new Thread(new Runnable() {
+	//		//				public void run() {
+	//		for (int i = 0; i < 300; i++) {
+	//			try (final Jedis jedis = jedisPool.getResource()) {
+	//				//if (i == 0 || i == 100) {
+	//				out.println(" thread : " + Thread.currentThread().getId());
+	//				//	}
+	//				jedis.ping();
+	//			}
+	//		}
+	//		//				}
+	//		//			});
+	//		//
+	//		//			thread.start();
+	//		//		}
+	//		//		Thread.sleep(5000);
+	//	}
+
 	private static void reset(final JedisPool jedisPool) {
 		final Jedis jedis = jedisPool.getResource();
 		try {

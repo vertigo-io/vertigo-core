@@ -1,7 +1,6 @@
 package io.vertigo.dynamo.impl.work.worker;
 
-import io.vertigo.dynamo.impl.work.worker.local.WorkItem;
-import io.vertigo.dynamo.work.WorkEngineProvider;
+import io.vertigo.dynamo.work.WorkItem;
 
 /**
  * Interface d'un Worker threadsafe.
@@ -18,7 +17,7 @@ public interface Worker {
 	 * @param work Travail à exécuter
 	 * @return resultat
 	 */
-	<WR, W> WR process(final W work, final WorkEngineProvider<WR, W> workEngineProvider);
+	<WR, W> void process(final WorkItem<WR, W> workItem);
 
 	/**
 	 * Exécution asynchrone d'un Work.
