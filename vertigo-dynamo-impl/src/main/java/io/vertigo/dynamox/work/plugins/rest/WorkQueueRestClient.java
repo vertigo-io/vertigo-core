@@ -1,8 +1,8 @@
 package io.vertigo.dynamox.work.plugins.rest;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.dynamo.impl.work.worker.local.WorkItem;
 import io.vertigo.dynamo.work.WorkEngineProvider;
+import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;

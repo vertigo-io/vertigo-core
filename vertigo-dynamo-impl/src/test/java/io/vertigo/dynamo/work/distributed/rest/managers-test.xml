@@ -4,7 +4,7 @@
 	   <component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
 	   <component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
 	  
-	   <component api="WorkManager" class="kasperimpl.work.WorkManagerImpl" >
+	   <component api="WorkManager" class="io.vertigo.dynamo.impl.work.WorkManagerImpl" >
 	        <param name="workerCount" value="5" />
 	        <plugin class="io.vertigo.dynamox.work.plugins.rest.RestDistributedWorkerPlugin">
 	            <param name="timeoutSeconds" value="20" />

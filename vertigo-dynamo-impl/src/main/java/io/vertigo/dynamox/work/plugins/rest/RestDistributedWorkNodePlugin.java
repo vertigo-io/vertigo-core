@@ -3,10 +3,9 @@ package io.vertigo.dynamox.work.plugins.rest;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.impl.node.NodePlugin;
 import io.vertigo.dynamo.impl.work.worker.Worker;
-import io.vertigo.dynamo.impl.work.worker.local.WorkItem;
 import io.vertigo.dynamo.impl.work.worker.local.WorkItemExecutor;
 import io.vertigo.dynamo.node.Node;
-import io.vertigo.dynamo.work.WorkEngineProvider;
+import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Activeable;
@@ -71,7 +70,8 @@ public final class RestDistributedWorkNodePlugin implements NodePlugin, Activeab
 		//de plus le traitment lui m�me sera synchrone pour que l'on ne r�cup�re un autre Work qu'apr�s avoir finit le premier
 		for (final String workType : workTypes) {
 			final Callable<Void> task = new PollWorkTask(workType, workQueueClient);
-			workManager.async(task, new ReScheduleWorkResultHandler(task, 25, workManager));//Le WorkResult permet de toujours poller les workItem, m�me en cas d'erreur.
+			WorkItem workItem = new WorkItem(task, new ReScheduleWorkResultHandler(task, 25, workManager));//Le WorkResult permet de toujours poller les workItem, m�me en cas d'erreur.
+			workManager.schedule(workItem);
 			logger.info(">>>>>> PollWorksTask " + workType + " Started");
 			System.out.println(">>>>>> PollWorksTask " + workType + " Started");
 		}
@@ -125,8 +125,8 @@ public final class RestDistributedWorkNodePlugin implements NodePlugin, Activeab
 
 	private static final class LocalSyncWorker implements Worker {
 		/** {@inheritDoc} */
-		public <WR, W> WR process(final W work, final WorkEngineProvider<WR, W> workEngineProvider) {
-			return workEngineProvider.provide().process(work);
+		public <WR, W> void process(final WorkItem<WR, W> workItem) {
+			workItem.setResult(workItem.getWorkEngineProvider().provide().process(workItem.getWork()));
 		}
 
 		/** {@inheritDoc} */
@@ -168,7 +168,7 @@ public final class RestDistributedWorkNodePlugin implements NodePlugin, Activeab
 		private void reSchedule() {
 			try {
 				Thread.sleep(pauseMs);
-				workManager.async(task, this);
+				workManager.schedule(new WorkItem<>(task, this));
 			} catch (final InterruptedException e) {
 				//rien on stop
 			}

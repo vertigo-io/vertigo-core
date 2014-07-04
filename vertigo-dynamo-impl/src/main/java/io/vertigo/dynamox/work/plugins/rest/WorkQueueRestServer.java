@@ -1,7 +1,7 @@
 package io.vertigo.dynamox.work.plugins.rest;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.dynamo.impl.work.worker.local.WorkItem;
+import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.io.Serializable;
@@ -103,7 +103,7 @@ final class WorkQueueRestServer {
 		//---------------------------------------------------------------------
 		final RunningWorkInfos runningWorkInfos = runningWorkInfosMap.get(UUID.fromString(uuid));
 		Assertion.checkNotNull(runningWorkInfos, "Ce travail ({0}) n''est pas connu, ou n''est plus en cours.", uuid);
-		runningWorkInfos.getWorkItem().getWorkResultHandler().onStart();
+		runningWorkInfos.getWorkItem().getWorkResultHandler().get().onStart();
 	}
 
 	public void onSuccess(final String uuid, final String base64Result) {
@@ -114,7 +114,7 @@ final class WorkQueueRestServer {
 
 		final byte[] serializedResult = codecManager.getBase64Codec().decode(base64Result);
 		final Object result = codecManager.getCompressedSerializationCodec().decode(serializedResult);
-		runningWorkInfos.getWorkItem().getWorkResultHandler().onSuccess(result);
+		runningWorkInfos.getWorkItem().getWorkResultHandler().get().onSuccess(result);
 	}
 
 	public void onFailure(final String uuid, final String base64Result) {
@@ -125,7 +125,7 @@ final class WorkQueueRestServer {
 
 		final byte[] serializedResult = codecManager.getBase64Codec().decode(base64Result);
 		final Throwable error = (Throwable) codecManager.getCompressedSerializationCodec().decode(serializedResult);
-		runningWorkInfos.getWorkItem().getWorkResultHandler().onFailure(error);
+		runningWorkInfos.getWorkItem().getWorkResultHandler().get().onFailure(error);
 	}
 
 	public String getVersion() {
@@ -146,7 +146,7 @@ final class WorkQueueRestServer {
 			//startTime = System.currentTimeMillis();
 		}
 
-		public WorkItem getWorkItem() {
+		public WorkItem<Object, ?> getWorkItem() {
 			return workItem;
 		}
 

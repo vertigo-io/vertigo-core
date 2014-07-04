@@ -2,8 +2,8 @@ package io.vertigo.dynamox.work.plugins.rest;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.impl.work.DistributedWorkerPlugin;
-import io.vertigo.dynamo.impl.work.worker.local.WorkItem;
 import io.vertigo.dynamo.work.WorkEngineProvider;
+import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Activeable;
@@ -69,14 +69,15 @@ public final class RestDistributedWorkerPlugin implements DistributedWorkerPlugi
 	}
 
 	/** {@inheritDoc} */
-	public <WR, W> WR process(final W work, final WorkEngineProvider<WR, W> workEngineProvider) {
-		Assertion.checkNotNull(work);
+	public <WR, W> void process(final WorkItem<WR, W> workitem2) {
+		Assertion.checkNotNull(workitem2);
 		//---------------------------------------------------------------------
 		final WorkResultHandlerSync<WR> workResultHandler = new WorkResultHandlerSync<>();
-		final WorkItem<WR, W> workItem = new WorkItem<>(work, workEngineProvider, workResultHandler);
-		multipleWorkQueues.putWorkItem(obtainWorkType(workEngineProvider), workItem);
+		final WorkItem<WR, W> workItem = new WorkItem<>(workitem2.getWork(), workitem2.getWorkEngineProvider(), workResultHandler);
+		multipleWorkQueues.putWorkItem(obtainWorkType(workitem2.getWorkEngineProvider()), workItem);
 		workResultHandler.waitResult(timeoutSeconds); //on attend le r�sultat
-		return workResultHandler.getResultOrThrowError(); //retourne le r�sultat ou lance l'erreur
+		//---
+		workitem2.setResult(workResultHandler.getResultOrThrowError());//retourne le r�sultat ou lance l'erreur
 	}
 
 	/** {@inheritDoc} */
