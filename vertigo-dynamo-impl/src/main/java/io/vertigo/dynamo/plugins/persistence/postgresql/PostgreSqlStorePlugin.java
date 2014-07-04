@@ -3,8 +3,8 @@ package io.vertigo.dynamo.plugins.persistence.postgresql;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.plugins.persistence.AbstractSQLStorePlugin;
+import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.model.TaskEngine;
-import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.sqlserver.TaskEngineInsertWithGeneratedKeys;
 import io.vertigo.kernel.lang.Assertion;
@@ -26,8 +26,8 @@ public final class PostgreSqlStorePlugin extends AbstractSQLStorePlugin {
 	 * @param sequencePrefix Configuration du préfixe de la séquence
 	 */
 	@Inject
-	public PostgreSqlStorePlugin(@Named("sequencePrefix") final String sequencePrefix, final WorkManager workManager) {
-		super(workManager);
+	public PostgreSqlStorePlugin(@Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
+		super(taskManager);
 		Assertion.checkArgNotEmpty(sequencePrefix);
 		//---------------------------------------------------------------------
 		this.sequencePrefix = sequencePrefix;

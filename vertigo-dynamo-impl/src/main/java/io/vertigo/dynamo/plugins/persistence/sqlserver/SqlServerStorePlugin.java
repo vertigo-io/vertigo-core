@@ -3,8 +3,8 @@ package io.vertigo.dynamo.plugins.persistence.sqlserver;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.plugins.persistence.AbstractSQLStorePlugin;
+import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.model.TaskEngine;
-import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.sqlserver.TaskEngineInsertWithGeneratedKeys;
 import io.vertigo.kernel.lang.Assertion;
@@ -24,8 +24,8 @@ public final class SqlServerStorePlugin extends AbstractSQLStorePlugin {
 	 * @param workManager Manager des works
 	 */
 	@Inject
-	public SqlServerStorePlugin(final WorkManager workManager) {
-		super(workManager);
+	public SqlServerStorePlugin(final TaskManager taskManager) {
+		super(taskManager);
 	}
 
 	/** {@inheritDoc} */

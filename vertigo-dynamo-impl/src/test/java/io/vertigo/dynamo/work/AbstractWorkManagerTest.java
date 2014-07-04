@@ -75,7 +75,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 	public void testSchedule() {
 		final MyWorkResultHanlder<Long> workResultHanlder = new MyWorkResultHanlder<>();
 		final long start = System.currentTimeMillis();
-		for (int i = 0; i <= loop; i++) {
+		for (int i = 0; i < loop; i++) {
 			WorkItem<Long, DivideWork> workItem = new WorkItem<>(new DivideWork(10, 5), new WorkEngineProvider<>(DivideWorkEngine.class), workResultHanlder);
 			workManager.schedule(workItem);
 			if (i > 0 && i % 1000 == 0) {

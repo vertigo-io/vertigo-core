@@ -15,6 +15,7 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.file.util.FileUtil;
+import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
@@ -22,8 +23,6 @@ import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamo.transaction.KTransactionWritable;
-import io.vertigo.dynamo.work.WorkItem;
-import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamock.domain.car.Car;
 import io.vertigo.dynamock.domain.car.CarDataBase;
 import io.vertigo.dynamock.domain.famille.Famille;
@@ -63,7 +62,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	@Inject
 	private KTransactionManager transactionManager;
 	@Inject
-	private WorkManager workManager;
+	private TaskManager taskManager;
 
 	private DtDefinition dtDefinitionFamille;
 
@@ -206,9 +205,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		final Task task = new TaskBuilder(taskInsertCar)//
 				.withValue("DTO_CAR", car)//
 				.build();
-		WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, task.getDefinition().getTaskEngineProvider());
-		workManager.process(workItem);
-		final TaskResult taskResult = workItem.getResult();
+		final TaskResult taskResult = taskManager.execute(task);
 		nop(taskResult);
 	}
 
@@ -218,9 +215,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		final Task task = new TaskBuilder(taskUpdateCar)//
 				.withValue("DTO_CAR", car)//
 				.build();
-		WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, task.getDefinition().getTaskEngineProvider());
-		workManager.process(workItem);
-		final TaskResult taskResult = workItem.getResult();
+		final TaskResult taskResult = taskManager.execute(task);
 		nop(taskResult);
 
 	}
@@ -229,18 +224,14 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		final Task task = new TaskBuilder(taskLoadCar)//
 				.withValue("CAR_ID", carId)//
 				.build();
-		WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, task.getDefinition().getTaskEngineProvider());
-		workManager.process(workItem);
-		final TaskResult taskResult = workItem.getResult();
+		final TaskResult taskResult = taskManager.execute(task);
 		return taskResult.<Car> getValue("DTO_CAR_OUT");
 	}
 
 	protected final DtList<Car> nativeLoadCarList() {
 		final Task task = new TaskBuilder(taskLoadCarList)//
 				.build();
-		WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, task.getDefinition().getTaskEngineProvider());
-		workManager.process(workItem);
-		final TaskResult taskResult = workItem.getResult();
+		final TaskResult taskResult = taskManager.execute(task);
 		return taskResult.<DtList<Car>> getValue("DTC_CAR_OUT");
 	}
 

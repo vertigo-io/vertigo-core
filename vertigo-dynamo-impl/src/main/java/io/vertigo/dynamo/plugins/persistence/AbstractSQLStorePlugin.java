@@ -19,14 +19,13 @@ import io.vertigo.dynamo.persistence.Criteria;
 import io.vertigo.dynamo.persistence.FilterCriteria;
 import io.vertigo.dynamo.persistence.FilterCriteriaBuilder;
 import io.vertigo.dynamo.persistence.StorePlugin;
+import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamo.task.model.TaskResult;
-import io.vertigo.dynamo.work.WorkItem;
-import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamox.domain.formatter.FormatterNumber;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineProc;
@@ -74,16 +73,16 @@ public abstract class AbstractSQLStorePlugin implements StorePlugin {
 		TK_COUNT
 	}
 
-	private final WorkManager workManager;
+	private final TaskManager taskManager;
 
 	/**
 	 * Constructeur.
 	 * @param workManager Manager des works
 	 */
-	protected AbstractSQLStorePlugin(final WorkManager workManager) {
-		Assertion.checkNotNull(workManager);
+	protected AbstractSQLStorePlugin(final TaskManager taskManager) {
+		Assertion.checkNotNull(taskManager);
 		//---------------------------------------------------------------------
-		this.workManager = workManager;
+		this.taskManager = taskManager;
 		integerDomain = new Domain("DO_INTEGER_SQL", DataType.Integer, new FormatterNumber("FMT_INTEGER_SQL"));
 	}
 
@@ -299,9 +298,7 @@ public abstract class AbstractSQLStorePlugin implements StorePlugin {
 	 * @return TaskResult de la tache
 	 */
 	protected final TaskResult process(final Task task) {
-		WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, task.getDefinition().getTaskEngineProvider());
-		workManager.process(workItem);
-		return workItem.getResult();
+		return taskManager.execute(task);
 	}
 
 	private <D extends DtObject> String createLoadAllLikeQuery(final String tableName, final FilterCriteria<D> filterCriteria, final Integer maxRows) {

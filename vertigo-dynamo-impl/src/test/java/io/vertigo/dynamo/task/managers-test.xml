@@ -7,9 +7,8 @@
 	    <component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
 	</module>
 	
-	<module name="vertigo-commons">
-		<resource type ="kpr" path="io/vertigo/dynamock/execution.kpr"/>
-        <resource type ="classes" path="io.vertigo.dynamock.domain.DtDefinitions"/>
+	<module name="vertigo-dynamo">
+	    <component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl"/>
 
 	    <component api="WorkManager" class="io.vertigo.dynamo.impl.work.WorkManagerImpl">
 	    	<param name="workerCount" value="5" />
@@ -24,4 +23,8 @@
 	    </component>  
 	</module>
 	
+	<module name="test">
+		<resource type ="kpr" path="io/vertigo/dynamock/execution.kpr"/>
+        <resource type ="classes" path="io.vertigo.dynamock.domain.DtDefinitions"/>
+	</module>
 </modules>

@@ -7,12 +7,12 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.plugins.persistence.AbstractSQLStorePlugin;
+import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamo.task.model.TaskResult;
-import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
@@ -48,8 +48,8 @@ public final class HsqlStorePlugin extends AbstractSQLStorePlugin {
 	 * @param sequencePrefix Configuration du préfixe de la séquence
 	 */
 	@Inject
-	public HsqlStorePlugin(@Named("sequencePrefix") final String sequencePrefix, final WorkManager workManager) {
-		super(workManager);
+	public HsqlStorePlugin(@Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
+		super(taskManager);
 		Assertion.checkArgNotEmpty(sequencePrefix);
 		//---------------------------------------------------------------------
 		this.sequencePrefix = sequencePrefix;

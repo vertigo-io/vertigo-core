@@ -10,13 +10,11 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.persistence.BrokerNN;
+import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
-import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.task.model.TaskResult;
-import io.vertigo.dynamo.work.WorkItem;
-import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamox.domain.formatter.FormatterNumber;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineProc;
@@ -33,7 +31,7 @@ import java.util.Set;
  */
 public final class BrokerNNImpl implements BrokerNN {
 	private final Domain integerDomain;
-	private final WorkManager workManager;
+	private final TaskManager taskManager;
 
 	private static final class DescriptionNN {
 		final String tableName;
@@ -61,10 +59,10 @@ public final class BrokerNNImpl implements BrokerNN {
 	 * Constructeur.
 	 * @param workManager Manager des works
 	 */
-	public BrokerNNImpl(final WorkManager workManager) {
-		Assertion.checkNotNull(workManager);
+	public BrokerNNImpl(final TaskManager taskManager) {
+		Assertion.checkNotNull(taskManager);
 		//---------------------------------------------------------------------
-		this.workManager = workManager;
+		this.taskManager = taskManager;
 		integerDomain = new Domain("DO_INTEGER_BROKER", DataType.Integer, new FormatterNumber("FMT_NUMBER_BROKER"));
 	}
 
@@ -182,9 +180,8 @@ public final class BrokerNNImpl implements BrokerNN {
 		if (targetField != null) {
 			taskBuilder.withValue(targetField.getName(), targetValue);
 		}
-		WorkItem<TaskResult, Task> workItem = new WorkItem<>(taskBuilder.build(), taskDefinition.getTaskEngineProvider());
-		workManager.process(workItem);
-		final TaskResult taskResult = workItem.getResult();
+
+		final TaskResult taskResult = taskManager.execute(taskBuilder.build());
 		return getSqlRowCount(taskResult);
 	}
 

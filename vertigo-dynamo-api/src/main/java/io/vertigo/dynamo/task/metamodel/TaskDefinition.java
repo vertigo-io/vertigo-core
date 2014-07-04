@@ -1,9 +1,6 @@
 package io.vertigo.dynamo.task.metamodel;
 
-import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskEngine;
-import io.vertigo.dynamo.task.model.TaskResult;
-import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.Definition;
 import io.vertigo.kernel.metamodel.DefinitionUtil;
@@ -39,7 +36,7 @@ public final class TaskDefinition implements Definition {
 	/**
 	 * Moyen de réaliser la tache.
 	 */
-	private final WorkEngineProvider<TaskResult, Task> taskEngineProvider;
+	private final Class<? extends TaskEngine> taskEngineClass;
 
 	/**
 	 * Constructeur
@@ -57,7 +54,7 @@ public final class TaskDefinition implements Definition {
 		this.packageName = packageName;
 		this.request = request;
 		taskAttributeMap = createMap(taskAttributes);
-		this.taskEngineProvider = new WorkEngineProvider<>(taskEngineClass);
+		this.taskEngineClass = taskEngineClass;
 	}
 
 	/**
@@ -103,8 +100,8 @@ public final class TaskDefinition implements Definition {
 	 *
 	 * @return Classe réalisant l'implémentation
 	 */
-	public WorkEngineProvider<TaskResult, Task> getTaskEngineProvider() {
-		return taskEngineProvider;
+	public Class<? extends TaskEngine> getTaskEngineClass() {
+		return taskEngineClass;
 	}
 
 	/**

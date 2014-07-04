@@ -25,9 +25,6 @@
 	</module>
 	
 	<module name="dynamo">
-		<resource type="kpr" path="io/vertigo/dynamock/executionWfileinfo.kpr"/>
-	    <resource type ="classes" path="io.vertigo.dynamock.domain.DtDefinitions"/>
-	
 		<component api="DataBaseManager" class="io.vertigo.dynamo.impl.database.DataBaseManagerImpl" >
 		 <plugin class="io.vertigo.dynamo.plugins.database.connection.hibernate.HibernateConnectionProviderPlugin">
 	            <param name="dataBaseName" value="io.vertigo.dynamo.impl.database.vendor.hsql.HsqlDataBase" />
@@ -35,6 +32,9 @@
 	         </plugin>
 		</component>
 		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl"/>
+
+		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl"/>
+
 	   	<component api="WorkManager" class="io.vertigo.dynamo.impl.work.WorkManagerImpl">
 	   		<param name="workerCount" value="5" />
 	   	</component>
@@ -55,6 +55,11 @@
 	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
 	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
 	    </component> 
+    </module>
+    
+    <module name="test">
+		<resource type="kpr" path="io/vertigo/dynamock/executionWfileinfo.kpr"/>
+	    <resource type ="classes" path="io.vertigo.dynamock.domain.DtDefinitions"/>
     </module>
  </modules>
  

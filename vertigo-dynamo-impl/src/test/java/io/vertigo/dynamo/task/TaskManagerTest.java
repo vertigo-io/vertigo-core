@@ -7,8 +7,6 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.task.model.TaskResult;
-import io.vertigo.dynamo.work.WorkItem;
-import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.kernel.Home;
 
 import javax.inject.Inject;
@@ -22,7 +20,7 @@ import org.junit.Test;
  */
 public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	@Inject
-	private WorkManager workManager;
+	private TaskManager taskManager;
 
 	/**
 	 * test la description du manager.
@@ -133,14 +131,13 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 				.build();
 
 		// on suppose un appel synchrone : getResult immédiat.
-		WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, taskDefinition.getTaskEngineProvider());
-		workManager.process(workItem);
+		TaskResult taskResult;
 
-		Assert.assertEquals(Integer.valueOf(16), workItem.getResult().getValue(TaskEngineMock.ATTR_OUT));
+		taskResult = taskManager.execute(task);
+		Assert.assertEquals(Integer.valueOf(16), taskResult.getValue(TaskEngineMock.ATTR_OUT));
 
-		WorkItem<TaskResult, Task> workItem2 = new WorkItem<>(task, taskDefinition.getTaskEngineProvider());
-		workManager.process(workItem2);
-		Assert.assertEquals(Integer.valueOf(16), workItem2.getResult().getValue(TaskEngineMock.ATTR_OUT));
+		taskResult = taskManager.execute(task);
+		Assert.assertEquals(Integer.valueOf(16), taskResult.getValue(TaskEngineMock.ATTR_OUT));
 
 	}
 
@@ -175,12 +172,10 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 				.withValue(TaskEngineMock.ATTR_IN_INT_3, value3)//
 				.build();
 		// on suppose un appel synchrone : getResult immédiat
-		WorkItem<TaskResult, Task> workItem = new WorkItem<>(task, taskDefinition.getTaskEngineProvider());
-		workManager.process(workItem);
-		final TaskResult result = workItem.getResult();
+		final TaskResult taskResult = taskManager.execute(task);
 		//final WorkItem<Task, TaskResult> workItem = workManager.<Task, TaskResult> schedule(task);
 		//workManager.waitForAll(java.util.Collections.singleton(workItem), 10 * 1000);
 		//final TaskResult result = workItem.getResult();
-		return result.getValue(TaskEngineMock.ATTR_OUT);
+		return taskResult.getValue(TaskEngineMock.ATTR_OUT);
 	}
 }
