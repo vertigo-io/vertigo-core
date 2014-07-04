@@ -1,22 +1,18 @@
 package io.vertigo.studio.plugins.reporting.task.metrics.explainplan;
 
 import io.vertigo.dynamo.database.connection.KConnection;
+import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamo.task.model.TaskEngine;
-import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.dynamo.transaction.KTransaction;
 import io.vertigo.dynamo.transaction.KTransactionManager;
-import io.vertigo.dynamo.work.WorkItem;
-import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.util.ClassUtil;
 import io.vertigo.studio.plugins.reporting.task.metrics.performance.TaskPopulator;
 import io.vertigo.studio.reporting.MetricEngine;
 
@@ -33,16 +29,16 @@ import java.sql.SQLException;
 public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinition, ExplainPlanMetric> {
 	private int sequence;
 
-	private final WorkManager workManager;
+	private final TaskManager taskManager;
 
 	/**
 	 * Constructeur apr défaut.
 	 * @param workManager Manager des works
 	 */
-	public ExplainPlanMetricEngine(final WorkManager workManager) {
-		Assertion.checkNotNull(workManager);
+	public ExplainPlanMetricEngine(final TaskManager taskManager) {
+		Assertion.checkNotNull(taskManager);
 		//---------------------------------------------------------------------
-		this.workManager = workManager;
+		this.taskManager = taskManager;
 	}
 
 	/** {@inheritDoc} */
@@ -50,7 +46,7 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 		Assertion.checkNotNull(taskDefinition);
 		//---------------------------------------------------------------------
 		try {
-			if (TaskEngineSelect.class.isAssignableFrom(getTaskEngineClass(taskDefinition))) {
+			if (TaskEngineSelect.class.isAssignableFrom(taskDefinition.getTaskEngineClass())) {
 				final int currentSequence = sequence++;
 				final String explainPlan = getExplainPlanElement(taskDefinition, currentSequence);
 				return new ExplainPlanMetric(explainPlan);
@@ -69,7 +65,7 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 		//final String explainPlanRequest = "explain plan for " + taskDefinition.getRequest();
 
 		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskDefinitionName)//
-				.withEngine(getTaskEngineClass(taskDefinition))//
+				.withEngine(taskDefinition.getTaskEngineClass())//
 				.withRequest(explainPlanRequest)//
 				.withPackageName(getClass().getPackage().getName());
 		for (final TaskAttribute attribute : taskDefinition.getAttributes()) {
@@ -82,17 +78,13 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 		final TaskDefinition taskExplain = taskDefinitionBuilder.build();
 		try {
 			final Task currentTask = new TaskPopulator(taskExplain).populateTask();
-			WorkItem<TaskResult, Task> workItem = new WorkItem<>(currentTask, taskExplain.getTaskEngineProvider());
-			workManager.process(workItem);
+
+			/*TaskResult taskResult =*/taskManager.execute(currentTask);
 			//On n'exploite pas le résultat
 			return readExplainPlan(taskDefinition, currentSequence);
 		} catch (final Exception e) {
 			throw new VRuntimeException("explainPlanElement", e);
 		}
-	}
-
-	private Class<? extends TaskEngine> getTaskEngineClass(final TaskDefinition taskDefinition) {
-		return (Class<? extends TaskEngine>) ClassUtil.classForName(taskDefinition.getTaskEngineProvider().getName());
 	}
 
 	private static String truncate(final String value, final int maxSize, final String endTruncString) {

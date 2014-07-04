@@ -1,9 +1,9 @@
 package io.vertigo.studio.plugins.reporting.task;
 
+import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamo.transaction.KTransactionWritable;
-import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.studio.plugins.reporting.task.metrics.explainplan.ExplainPlanMetricEngine;
@@ -29,16 +29,16 @@ import javax.inject.Inject;
  */
 public final class TaskReportingPlugin implements ReportingPlugin {
 	private final KTransactionManager transactionManager;
-	private final WorkManager workManager;
+	private final TaskManager taskManager;
 	private final List<MetricEngine<TaskDefinition, ? extends Metric>> metricEngines;
 
 	@Inject
-	public TaskReportingPlugin(final KTransactionManager transactionManager, final WorkManager workManager) {
+	public TaskReportingPlugin(final KTransactionManager transactionManager, final TaskManager taskManager) {
 		Assertion.checkNotNull(transactionManager);
-		Assertion.checkNotNull(workManager);
+		Assertion.checkNotNull(taskManager);
 		//---------------------------------------------------------------------
 		this.transactionManager = transactionManager;
-		this.workManager = workManager;
+		this.taskManager = taskManager;
 		metricEngines = createMetricEngines();
 
 	}
@@ -67,9 +67,9 @@ public final class TaskReportingPlugin implements ReportingPlugin {
 
 	private List<MetricEngine<TaskDefinition, ? extends Metric>> createMetricEngines() {
 		final List<MetricEngine<TaskDefinition, ? extends Metric>> tmpMmetricEngines = new ArrayList<>();
-		tmpMmetricEngines.add(new PerformanceMetricEngine(workManager));
+		tmpMmetricEngines.add(new PerformanceMetricEngine(taskManager));
 		tmpMmetricEngines.add(new RequestSizeMetricEngine());
-		tmpMmetricEngines.add(new ExplainPlanMetricEngine(workManager));
+		tmpMmetricEngines.add(new ExplainPlanMetricEngine(taskManager));
 		tmpMmetricEngines.add(new JoinMetricEngine());
 		tmpMmetricEngines.add(new SubRequestMetricEngine());
 		return tmpMmetricEngines;

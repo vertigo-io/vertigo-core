@@ -50,7 +50,7 @@ public final class TaskDefinitionReport implements DataReport {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("<h1>").append(taskDefinition.getName()).append("</h1>");
 		sb.append("<h2>TaskEngine</h2>");
-		sb.append(taskDefinition.getTaskEngineProvider().getName());
+		sb.append(taskDefinition.getTaskEngineClass().getName());
 		sb.append("<h2>Requête</h2>");
 		sb.append(taskDefinition.getRequest().replaceAll("\n", "<br/>"));
 		sb.append("<h2>Exécution des plugins</h2>");
