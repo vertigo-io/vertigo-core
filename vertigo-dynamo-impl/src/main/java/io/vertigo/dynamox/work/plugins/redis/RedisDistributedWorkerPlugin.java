@@ -88,7 +88,7 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 		throw new RuntimeException("3 essais ");
 	}
 
-	private Object buildResult(final Jedis jedis, final String workId) {
+	private static Object buildResult(final Jedis jedis, final String workId) {
 		final Transaction tx = jedis.multi();
 
 		final Response<String> status = tx.hget("work:" + workId, "status");
@@ -117,9 +117,15 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 	}
 
 	private <WR, W> void doProcess(final Jedis jedis, final WorkItem<WR, W> workItem) {
-		//On renseigne la demande de travaux
+		//1. On renseigne la demande de travaux
 		push(jedis, workItem, true);
+		//2. On attend le résultat
+		WR result = waitResult(jedis, workItem);
+		//3. On affecte le résultat
+		workItem.setResult(result);
+	}
 
+	private <WR, W> WR waitResult(final Jedis jedis, final WorkItem<WR, W> workItem) {
 		//On attend le r�sultat
 		//final String id = jedis.brpop(timeoutSeconds, "works:done:" + workId);
 		final String id = jedis.brpoplpush("works:done:" + workItem.getId(), "works:completed", timeoutSeconds);
@@ -129,8 +135,7 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 		} else if (!workItem.getId().equals(id)) {
 			throw new IllegalStateException("Id non coh�renents attendu '" + workItem.getId() + "' trouv� '" + id + "'");
 		}
-
-		workItem.setResult((WR) buildResult(jedis, workItem.getId()));
+		return (WR) buildResult(jedis, workItem.getId());
 	}
 
 	/** {@inheritDoc} */
