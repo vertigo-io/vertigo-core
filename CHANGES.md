@@ -5,9 +5,12 @@ Running 0.3.1-SNAPSHOT
 ----------------------
   * Change ksp syntax to have a more similar json syntax.  Separator ';' is replaced by ','. Array {} is replaced by [] and  object notation () is replaced by {}
   * Change declaration of resources is externalized. In this way, each module can declare its own resources (oom, ea, ksp, xml).     
+  * Change KDataType to DataType
+  * Change : Tasks must be processed using TaskManager and not WorkManager. (In fact each component must be able to process sync or async its own works) 
+  * Add module quarto, which contains two components : publisher (to create new publications by merging template and data) and converter (to convert a doc, docx into a pdf for example)   
+  * Add distributed task management (by redis or http/rest)
   * Add Enterprise Architect support
   * Add vertigo-rest : RESTful WebService support for HTML5 applications
-  * Change KDataType to DataType
   * Fix Issues #3 : add a new mandatory vertigo-studio parameter ```domain.dictionaryClassName``` 
     * To maintain compatibility add : ```domain.dictionaryClassName=DtDefinitions``` in your studio-config.properties
   * Fix Issues #2
