@@ -4,14 +4,14 @@
 	    <component api="WorkManager" class="io.vertigo.dynamo.impl.work.WorkManagerImpl" >
 	            <param name="workerCount" value="5" />
 
-	            <plugin class="io.vertigo.dynamox.work.plugins.redis.RedisDistributedWorkerPlugin">
+	            <plugin class="io.vertigo.dynamo.plugins.work.redis.RedisDistributedWorkerPlugin">
 	            	<param name="host" value="localhost" />
 		            <param name="timeoutSeconds" value="10" />
 	            </plugin>
 	   </component>
 	   
 	   <component api="NodeManager" class="io.vertigo.dynamo.impl.node.NodeManagerImpl" >
-	            <plugin class="io.vertigo.dynamox.work.plugins.redis.RedisNodePlugin">
+	            <plugin class="io.vertigo.dynamo.plugins.work.redis.RedisNodePlugin">
 	            	<param name="host" value="localhost" />
 	            	<param name="nodeId" value="node#1" />
 	            </plugin>
