@@ -7,6 +7,7 @@ Running 0.3.1-SNAPSHOT
   * Change declaration of resources is externalized. In this way, each module can declare its own resources (oom, ea, ksp, xml).     
   * Change KDataType to DataType
   * Change : Tasks must be processed using TaskManager and not WorkManager. (In fact each component must be able to process sync or async its own works) 
+  * Add module persona, built to manage all concepts around a user/persona  
   * Add module quarto, which contains two components : publisher (to create new publications by merging template and data) and converter (to convert a doc, docx into a pdf for example)   
   * Add distributed task management (by redis or http/rest)
   * Add Enterprise Architect support
