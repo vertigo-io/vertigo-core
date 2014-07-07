@@ -1,7 +1,7 @@
 package io.vertigo.dynamo.work.distributed.redis;
 
+import io.vertigo.dynamo.plugins.work.redis.RedisUtil;
 import io.vertigo.dynamo.work.AbstractWorkManagerTest;
-import io.vertigo.dynamox.work.plugins.redis.RedisUtil;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 

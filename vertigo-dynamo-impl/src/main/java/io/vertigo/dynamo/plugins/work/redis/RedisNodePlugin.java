@@ -1,4 +1,4 @@
-package io.vertigo.dynamox.work.plugins.redis;
+package io.vertigo.dynamo.plugins.work.redis;
 
 import io.vertigo.dynamo.impl.node.NodePlugin;
 import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;

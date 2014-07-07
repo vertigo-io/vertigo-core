@@ -1,4 +1,4 @@
-package io.vertigo.dynamox.work.plugins.rest;
+package io.vertigo.dynamo.plugins.work.rest;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.impl.work.DistributedWorkerPlugin;

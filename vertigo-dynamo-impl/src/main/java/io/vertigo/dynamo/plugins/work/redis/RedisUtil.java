@@ -1,4 +1,4 @@
-package io.vertigo.dynamox.work.plugins.redis;
+package io.vertigo.dynamo.plugins.work.redis;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
