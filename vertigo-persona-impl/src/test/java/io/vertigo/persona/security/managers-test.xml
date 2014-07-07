@@ -15,7 +15,7 @@
 
 	<module name="vertigo-persona">
 	    <component api="KSecurityManager" class="io.vertigo.persona.impl.security.KSecurityManagerImpl">
-	        <param name="userSessionClassName" value="io.vertigo.persona.impl.security.TestUserSession" />
+	        <param name="userSessionClassName" value="io.vertigo.persona.security.TestUserSession" />
 	    </component> 
 	
 	    <component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
