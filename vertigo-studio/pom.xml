@@ -24,7 +24,13 @@
 			<artifactId>vertigo-dynamo-impl</artifactId> <!--  For reporting ExplainPlan and Performance -->
 			<version>${project.version}</version>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-persona-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+				
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-dynamo-impl</artifactId>
@@ -40,14 +46,13 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-commons-impl</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
-		
 		
 		<!-- Dépendances à des librairies spécifiques au module -->
 		<dependency>
