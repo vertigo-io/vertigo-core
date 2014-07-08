@@ -28,21 +28,9 @@ final class ClientNode {
 
 	public void start() throws IOException {
 		final StringBuilder sb = new StringBuilder();
-
 		sb.append("java -cp ");
-		//sb.append("./kasper-demo-uistruts/src/main/webapp/WEB-INF/classes");
-		sb.append("./kasper-commons/target/classes/");
-		sb.append(CP_SEP).append("./kasper-commons/target/test-classes/");
-		sb.append(CP_SEP).append("./kasper-external/lib/vertigo-starter-0.2.0-SNAPSHOT.jar");
-		sb.append(CP_SEP).append("./kasper-external/lib/javax.inject-1.jar");
-		sb.append(CP_SEP).append("./kasper-external/lib/log4j-1.2.16.jar");
-		sb.append(CP_SEP).append("./kasper-external/lib/jersey-client-1.17.1.jar");
-		sb.append(CP_SEP).append("./kasper-external/lib/jersey-server-1.17.1.jar");
-		sb.append(CP_SEP).append("./kasper-external/lib/jersey-grizzly2-1.17.1.jar");
-		sb.append(CP_SEP).append("./kasper-external/lib/jersey-core-1.17.1.jar");
-		sb.append(CP_SEP).append("./kasper-external/lib/gson-2.2.4.jar");
-		sb.append(CP_SEP).append("./kasper-external/lib/cglib-2.2.2.jar");
-		sb.append("io.vertigo.dynamo.work.distributed.rest.WorkerNodeStarter " + maxLifeTime);
+		sb.append(System.getProperty("java.class.path"));
+		sb.append(" io.vertigo.dynamo.work.distributed.rest.WorkerNodeStarter " + maxLifeTime);
 
 		nodeProcess = Runtime.getRuntime().exec(sb.toString());
 		subThreads.add(createMaxLifeTime());

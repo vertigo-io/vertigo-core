@@ -15,7 +15,6 @@ import com.sun.jersey.api.core.ResourceConfig;
 
 /**
  * @author npiedeloup
- * $Id: DistributedWorkManagerTest.java,v 1.4 2014/01/20 18:57:06 pchretien Exp $
  */
 public final class DistributedWorkManagerTest extends AbstractWorkManagerTest {
 

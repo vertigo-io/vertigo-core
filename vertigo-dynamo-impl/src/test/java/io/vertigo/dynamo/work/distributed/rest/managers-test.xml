@@ -8,7 +8,7 @@
 	        <param name="workerCount" value="5" />
 	        <plugin class="io.vertigo.dynamo.plugins.work.rest.RestDistributedWorkerPlugin">
 	            <param name="timeoutSeconds" value="20" />
-	            <param name="workTypes" value="io.vertigo.work.mock.DivideWorkEngine;io.vertigo.work.mock.SlowWorkEngine" />
+	            <param name="workTypes" value="io.vertigo.dynamo.work.mock.DivideWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine" />
 	        </plugin>
 	   </component>	   
 	</module>

@@ -51,7 +51,7 @@ public final class Starter implements Runnable {
 	 * @param args "Usage: java kasper.kernel.Starter managers.xml <conf.properties>"
 	 */
 	public static void main(final String[] args) {
-		final String usageMsg = "Usage: java kasper.kernel.Starter managers.xml <conf.properties>";
+		final String usageMsg = "Usage: java " + Starter.class.getName() + " managers.xml <conf.properties>";
 		Assertion.checkArgument(args.length >= 1 && args.length <= 2, usageMsg + " (" + args.length + ")");
 		Assertion.checkArgument(args[0].endsWith(".xml"), usageMsg + " (" + args[0] + ")");
 		Assertion.checkArgument(args.length == 1 || args[1].endsWith(".properties"), usageMsg + " (" + (args.length == 2 ? args[1] : "vide") + ")");
