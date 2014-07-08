@@ -28,9 +28,7 @@ public final class WorkItemExecutor<WR, W> implements Runnable {
 	static {
 		try {
 			threadLocalsField = Thread.class.getDeclaredField("threadLocals");
-		} catch (final SecurityException e) {
-			throw new VRuntimeException(e);
-		} catch (final NoSuchFieldException e) {
+		} catch (final SecurityException | NoSuchFieldException e) {
 			throw new VRuntimeException(e);
 		}
 		threadLocalsField.setAccessible(true);
@@ -91,9 +89,7 @@ public final class WorkItemExecutor<WR, W> implements Runnable {
 	private static void cleanThreadLocals() {
 		try {
 			threadLocalsField.set(Thread.currentThread(), null);
-		} catch (final IllegalArgumentException e) {
-			throw new VRuntimeException(e);
-		} catch (final IllegalAccessException e) {
+		} catch (final IllegalArgumentException | IllegalAccessException e) {
 			throw new VRuntimeException(e);
 		}
 	}

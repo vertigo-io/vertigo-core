@@ -47,10 +47,8 @@ final class AdvancedPageNumberEvents extends PdfPageEventHelper {
 			bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
 			cb = writer.getDirectContent();
 			template = cb.createTemplate(50, 50);
-		} catch (final DocumentException de) {
-			throw new VRuntimeException(de);
-		} catch (final IOException ioe) {
-			throw new VRuntimeException(ioe);
+		} catch (final DocumentException | IOException e) {
+			throw new VRuntimeException(e);
 		}
 	}
 

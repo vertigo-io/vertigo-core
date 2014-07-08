@@ -13,7 +13,6 @@ import java.util.List;
  * $Id: ClientNode.java,v 1.5 2014/02/27 10:25:21 pchretien Exp $
  */
 final class ClientNode {
-	private static final String CP_SEP = System.getProperty("path.separator");
 	private Process nodeProcess;
 	private final List<Thread> subThreads = new ArrayList<>();
 	private final int maxLifeTime;
@@ -77,13 +76,10 @@ final class ClientNode {
 							Thread.sleep(250);
 						}
 					}
-				} catch (final IOException e) {
-					return;
-				} catch (final InterruptedException e) {
+				} catch (final InterruptedException | IOException e) {
 					return;
 				}
 			}
 		}, "ClientNodeOutputFlusher");
 	}
-
 }

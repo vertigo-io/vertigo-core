@@ -55,12 +55,8 @@ public final class DtProperty {
 			final Property<?> property = Property.class.cast(field.get(DtProperty.class));
 			Assertion.checkNotNull(property);
 			return property;
-		} catch (final NoSuchFieldException e) {
-			throw new VRuntimeException("Propriété {0} non trouvée sur DtProperty", e, propertyName);
-		} catch (final IllegalArgumentException e) {
-			throw new VRuntimeException("Propriété {0} non trouvée sur DtProperty", e, propertyName);
-		} catch (final IllegalAccessException e) {
-			throw new VRuntimeException("Propriété {0} non trouvée sur DtProperty", e, propertyName);
+		} catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+			throw new VRuntimeException("Propriete {0} non trouvee sur DtProperty", e, propertyName);
 		}
 	}
 }
