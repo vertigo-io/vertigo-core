@@ -215,24 +215,24 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
-	/**
-	 * Test l'export ODS.
-	 */
-	@Test
-	public void testExportHandlerODS() {
-		final DtList<Famille> dtc = createDtc();
-		final ExportDtParameters dtParameter = exportManager.createExportListParameters(dtc);
-
-		final Export export = new ExportBuilder(ExportFormat.ODS, OUTPUT_PATH + "test.ods")//
-				.withExportDtParameters(dtParameter)//
-				.withAuthor("test")//
-				.build();
-
-		final KFile result = exportManager.createExportFile(export);
-		if (KEEP_OUTPUT_FILE) {
-			save(result);
-		}
-	}
+	//	/**
+	//	 * Test l'export ODS.
+	//	 */
+	//	@Test
+	//	public void testExportHandlerODS() {
+	//		final DtList<Famille> dtc = createDtc();
+	//		final ExportDtParameters dtParameter = exportManager.createExportListParameters(dtc);
+	//
+	//		final Export export = new ExportBuilder(ExportFormat.ODS, OUTPUT_PATH + "test.ods")//
+	//				.withExportDtParameters(dtParameter)//
+	//				.withAuthor("test")//
+	//				.build();
+	//
+	//		final KFile result = exportManager.createExportFile(export);
+	//		if (KEEP_OUTPUT_FILE) {
+	//			save(result);
+	//		}
+	//	}
 
 	private static DtList<Famille> createDtc() {
 		final DtList<Famille> dtc = new DtList<>(Famille.class);

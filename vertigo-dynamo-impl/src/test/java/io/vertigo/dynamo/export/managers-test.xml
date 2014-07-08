@@ -22,6 +22,7 @@
 		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.collections.lucene.LuceneIndexPlugin" />
 		</component>
+		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl"/>
 		<component api="WorkManager" class="io.vertigo.dynamo.impl.work.WorkManagerImpl">
 				<param name="workerCount" value="2" />
 		</component>
@@ -38,11 +39,11 @@
 			<plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
 		</component>
 		<component api="ExportManager" class="io.vertigo.dynamo.impl.export.ExportManagerImpl">
-			<plugin class="io.vertigo.dynamo.plugins.export.excel.ExcelExporterPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.export.ods.ODSExporterPlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.export.xls.XLSExporterPlugin" />
+			<!--  plugin class="io.vertigo.dynamo.plugins.export.ods.ODSExporterPlugin" /-->
 			<plugin class="io.vertigo.dynamo.plugins.export.csv.CSVExporterPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.export.pdfrtf.PDFExporterPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.export.pdfrtf.RTFExporterPlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.export.pdf.PDFExporterPlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.export.rtf.RTFExporterPlugin" />
 		</component>
 	</module>
 
