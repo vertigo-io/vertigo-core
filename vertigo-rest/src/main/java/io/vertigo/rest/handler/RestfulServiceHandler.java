@@ -2,6 +2,7 @@ package io.vertigo.rest.handler;
 
 import io.vertigo.kernel.Home;
 import io.vertigo.rest.EndPointDefinition;
+import io.vertigo.rest.RestfulService;
 import spark.Request;
 import spark.Response;
 
@@ -19,8 +20,8 @@ final class RestfulServiceHandler implements RouteHandler {
 
 	/** {@inheritDoc} */
 	public Object handle(final Request request, final Response response, final HandlerChain chain) {
-		final Object value = RestfulServicesUtil.invoke( //
-				Home.getComponentSpace().resolve(endPointDefinition.getMethod().getDeclaringClass()),//
+		final RestfulService service = (RestfulService) Home.getComponentSpace().resolve(endPointDefinition.getMethod().getDeclaringClass());
+		final Object value = RestfulServicesUtil.invoke(service,//
 				endPointDefinition.getMethod(), request);
 		return RestfulServicesUtil.toJson(value);
 	}

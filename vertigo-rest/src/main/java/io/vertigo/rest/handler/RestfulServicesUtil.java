@@ -121,6 +121,10 @@ final class RestfulServicesUtil {
 		}
 	}
 
+	public static Object toJson(final Object value) {
+		return GSON.toJson(value);
+	}
+
 	private static String getNamedValue(final Annotation[] annotations) {
 		for (final Annotation annotation : annotations) {
 			if (annotation instanceof PathParam) {
@@ -130,10 +134,6 @@ final class RestfulServicesUtil {
 			}
 		}
 		return null;
-	}
-
-	public static Object toJson(final Object value) {
-		return GSON.toJson(value);
 	}
 
 	public static String toJsonError(final String message) {
