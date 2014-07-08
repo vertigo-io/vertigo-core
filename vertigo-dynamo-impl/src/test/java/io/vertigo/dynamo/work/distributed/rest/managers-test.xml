@@ -6,9 +6,9 @@
 	  
 	   <component api="WorkManager" class="io.vertigo.dynamo.impl.work.WorkManagerImpl" >
 	        <param name="workerCount" value="5" />
-	        <plugin class="io.vertigo.dynamox.work.plugins.rest.RestDistributedWorkerPlugin">
+	        <plugin class="io.vertigo.dynamo.plugins.work.rest.RestDistributedWorkerPlugin">
 	            <param name="timeoutSeconds" value="20" />
-	            <param name="workTypes" value=".work.mock.DivideWorkEngine;kasper.work.mock.SlowWorkEngine" />
+	            <param name="workTypes" value="io.vertigo.work.mock.DivideWorkEngine;io.vertigo.work.mock.SlowWorkEngine" />
 	        </plugin>
 	   </component>	   
 	</module>

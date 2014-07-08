@@ -30,7 +30,7 @@ public final class DistributedWorkManagerTest extends AbstractWorkManagerTest {
 
 	protected static HttpServer startServer() throws IOException {
 		System.out.println("Starting grizzly...");
-		final ResourceConfig rc = new PackagesResourceConfig("kasperx.work.plugins.rest");
+		final ResourceConfig rc = new PackagesResourceConfig("io.vertigo.dynamo.plugins.work.rest");
 		rc.getProperties().put(ResourceConfig.PROPERTY_CONTAINER_REQUEST_FILTERS, com.sun.jersey.api.container.filter.GZIPContentEncodingFilter.class.getName());
 		rc.getProperties().put(ResourceConfig.PROPERTY_CONTAINER_RESPONSE_FILTERS, com.sun.jersey.api.container.filter.GZIPContentEncodingFilter.class.getName());
 		return GrizzlyServerFactory.createHttpServer(BASE_URI, rc);
