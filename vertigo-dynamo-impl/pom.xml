@@ -246,12 +246,14 @@
 			<version>3.9</version>
 			<optional>true</optional>
 		</dependency>
-		 <dependency>
+		 
+		 <!-- dependency>
+			Waiting update from ODSExporter from 0.7 to 0.8.7 
 			<groupId>org.odftoolkit</groupId>
 			<artifactId>odfdom-java</artifactId>
 			<version>0.8.7</version>
 			<optional>true</optional>
-		</dependency>
+		</dependency-->
 		<!--/exporter-->
 	</dependencies>
 </project>

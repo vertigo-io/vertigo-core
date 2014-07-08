@@ -30,14 +30,14 @@ import com.lowagie.text.Table;
  * @author pchretien, npiedeloup
  * @version $Id: AbstractExporterIText.java,v 1.5 2014/02/27 10:24:16 pchretien Exp $
  */
-abstract class AbstractExporterIText {
+public abstract class AbstractExporterIText {
 	private static final String CREATOR = "System";
 	private final Map<DtField, Map<Object, String>> referenceCache = new HashMap<>();
 	private final Map<DtField, Map<Object, String>> denormCache = new HashMap<>();
 
 	private final ExportHelper exportHelper;
 
-	AbstractExporterIText(final ExportHelper exportHelper) {
+	protected AbstractExporterIText(final ExportHelper exportHelper) {
 		Assertion.checkNotNull(exportHelper);
 		//---------------------------------------------------------------------
 		this.exportHelper = exportHelper;
@@ -56,7 +56,7 @@ abstract class AbstractExporterIText {
 	 * @param documentParameters param�tres du document � exporter
 	 * @param out flux de sortie
 	 */
-	void exportData(final Export documentParameters, final OutputStream out) throws DocumentException {
+	public final void exportData(final Export documentParameters, final OutputStream out) throws DocumentException {
 		// step 1: creation of a document-object
 		final boolean landscape = documentParameters.getOrientation() == Export.Orientation.Landscape;
 		final Rectangle pageSize = landscape ? PageSize.A4.rotate() : PageSize.A4;
@@ -109,7 +109,7 @@ abstract class AbstractExporterIText {
 	 * @param parameters Param�tres
 	 * @param datatable Table
 	 */
-	private void renderHeaders(final ExportDtParametersReadable parameters, final Table datatable) throws BadElementException {
+	private static void renderHeaders(final ExportDtParametersReadable parameters, final Table datatable) throws BadElementException {
 		// size of columns
 		// datatable.setWidths(headerwidths);
 		// datatable.setWidth(100f);
