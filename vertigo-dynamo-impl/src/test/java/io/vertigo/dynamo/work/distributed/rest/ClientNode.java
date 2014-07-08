@@ -42,7 +42,7 @@ final class ClientNode {
 		sb.append(CP_SEP).append("./kasper-external/lib/jersey-core-1.17.1.jar");
 		sb.append(CP_SEP).append("./kasper-external/lib/gson-2.2.4.jar");
 		sb.append(CP_SEP).append("./kasper-external/lib/cglib-2.2.2.jar");
-		sb.append(" kasper.work.distributed.rest.WorkerNodeStarter " + maxLifeTime);
+		sb.append("io.vertigo.dynamo.work.distributed.rest.WorkerNodeStarter " + maxLifeTime);
 
 		nodeProcess = Runtime.getRuntime().exec(sb.toString());
 		subThreads.add(createMaxLifeTime());

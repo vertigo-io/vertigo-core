@@ -38,7 +38,7 @@ public final class DistributedWorkManagerTest extends AbstractWorkManagerTest {
 
 	protected static ClientNode startClientNode() throws IOException {
 		System.out.println("Starting ClientNode...");
-		final ClientNode clientNode = new ClientNode(30);//dur�e de vie 30s max
+		final ClientNode clientNode = new ClientNode(30);//duree de vie 30s max
 		clientNode.start();
 		return clientNode;
 	}
