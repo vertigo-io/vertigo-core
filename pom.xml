@@ -51,7 +51,9 @@ limitations under the License. --><project xmlns="http://maven.apache.org/POM/4.
 
 		<module>vertigo-persona-api</module>
 		<module>vertigo-persona-impl</module>
-	</modules>
+    <module>vertigo-labs-api</module>
+    <module>vertigo-labs-impl</module>
+  </modules>
 
 	<scm>
 		<connection>scm:git:https://github.com/vertigo-io/vertigo.git</connection>

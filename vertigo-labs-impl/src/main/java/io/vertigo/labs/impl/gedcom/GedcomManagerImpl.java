@@ -1,0 +1,245 @@
+package io.vertigo.labs.impl.gedcom;
+
+import io.vertigo.commons.resource.ResourceManager;
+import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.kvdatastore.KVDataStoreManager;
+import io.vertigo.dynamo.transaction.KTransactionManager;
+import io.vertigo.dynamo.transaction.KTransactionWritable;
+import io.vertigo.kernel.exception.VRuntimeException;
+import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.lang.Option;
+import io.vertigo.labs.gedcom.GedcomManager;
+import io.vertigo.labs.gedcom.Individual;
+import io.vertigo.labs.geocoder.GeoCoderManager;
+import io.vertigo.labs.geocoder.GeoLocation;
+
+import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.gedcom4j.model.Family;
+import org.gedcom4j.model.IndividualEvent;
+import org.gedcom4j.parser.GedcomParser;
+
+public final class GedcomManagerImpl implements GedcomManager {
+	private final GedcomParser gp;
+	private final GeoCoderManager geoCoderManager;
+	private final KTransactionManager transactionManager;
+	private final KVDataStoreManager kvDataStoreManager;
+	private final Map<String, GeoLocation> cache = Collections.synchronizedMap(new HashMap<String, GeoLocation>());
+	private final Map<String, DtList<Individual>> children = new HashMap<>();
+
+	@Inject
+	public GedcomManagerImpl(KVDataStoreManager kvDataStoreManager, KTransactionManager transactionManager, final GeoCoderManager geoCoderManager, final ResourceManager resourceManager, @Named("gedcom") final String gedcomResource) {
+		Assertion.checkNotNull(kvDataStoreManager);
+		Assertion.checkNotNull(transactionManager);
+		Assertion.checkNotNull(geoCoderManager);
+		Assertion.checkNotNull(resourceManager);
+		Assertion.checkNotNull(gedcomResource);
+		// ---------------------------------------------------------------------
+		this.kvDataStoreManager = kvDataStoreManager;
+		this.transactionManager = transactionManager;
+		this.geoCoderManager = geoCoderManager;
+
+		URL gedcomURL = resourceManager.resolve(gedcomResource);
+		gp = new GedcomParser();
+		try {
+			gp.load(gedcomURL.getFile());
+		} catch (Exception e) {
+			throw new VRuntimeException("chargement du fichier gedcom '{0}' impossible", e, gedcomResource);
+		}
+	}
+
+	private static String buildId(org.gedcom4j.model.Individual gindividual) {
+		return gindividual.xref.toString();
+	}
+
+	public DtList<Individual> getAllIndividuals() {
+		Map<String, Individual> map = new HashMap<>();
+		DtList<Individual> individuals = new DtList<>(Individual.class);
+		for (org.gedcom4j.model.Individual gindividual : getIndividuals()) {
+			String id = buildId(gindividual);
+			Individual individual = new Individual();
+			map.put(id, individual);
+			individuals.add(individual);
+			individual.setId(id);
+
+			individual.setGivenName(gindividual.names.get(0).givenName.value);
+			individual.setSurName(gindividual.names.get(0).surname.value);
+			if (gindividual.sex != null) {
+				individual.setSex(gindividual.sex.value);
+			}
+			for (IndividualEvent individualEvent : gindividual.events) {
+
+				switch (individualEvent.type) {
+					case DEATH:
+						if (individualEvent.date != null) {
+							individual.setDeathDate(individualEvent.date.value);
+						}
+						if (individualEvent.place != null) {
+							individual.setDeathPlace(individualEvent.place.placeName);
+							individual.setLocation(buildLocation(individualEvent.place.placeName));
+						}
+
+						break;
+					case BIRTH:
+						if (individualEvent.date != null) {
+							individual.setBirthDate(individualEvent.date.value);
+						}
+						if (individualEvent.place != null) {
+							individual.setBirthPlace(individualEvent.place.placeName);
+							individual.setLocation(buildLocation(individualEvent.place.placeName));
+						}
+						break;
+					default:
+						//on ne gère qu les evts précédents
+						break;
+				}
+			}
+
+		}
+		//Relations 
+		for (org.gedcom4j.model.Individual gindividual : getIndividuals()) {
+			String id = buildId(gindividual);
+			DtList<Individual> descendants = new DtList<>(Individual.class);
+			children.put(id, descendants);
+			for (org.gedcom4j.model.Individual descendant : gindividual.getDescendants()) {
+				descendants.add(map.get(buildId(descendant)));
+			}
+		}
+		return individuals;
+	}
+
+	private GeoLocation buildLocation(String address) {
+		Assertion.checkArgNotEmpty(address);
+		//---------------------------------------------------------------------
+		String key = address.trim().toLowerCase();
+		//System.out.println("buildLocation "+key);
+		GeoLocation geoLocation;
+		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction();) {
+			geoLocation = cache.get(key);
+			if (geoLocation == null) {
+				Option<GeoLocation> storedLocation = kvDataStoreManager.getDataStore().find(key, GeoLocation.class);
+				//System.out.println("    cache "+storedLocation.isDefined());
+				if (storedLocation.isEmpty()) {
+					geoLocation = geoCoderManager.findLocation(key);
+					//-----------------
+					kvDataStoreManager.getDataStore().put(key, geoLocation);
+					transaction.commit();
+				} else {
+					geoLocation = storedLocation.get();
+				}
+			}
+		}
+		return geoLocation;
+	}
+
+	public Collection<org.gedcom4j.model.Individual> getIndividuals() {
+		return gp.gedcom.individuals.values();
+	}
+
+	public Collection<Family> getFamilies() {
+		return gp.gedcom.families.values();
+		// Submitter submitter =
+		// gp.gedcom.submitters.values().iterator().next();
+		// for (Family f : gp.gedcom.families.values()) {
+		// if (f.husband != null && f.wife != null) {
+		// System.out.println(f.husband.names.get(0).basic
+		// + " married " + f.wife.names.get(0).basic);
+		// }
+		// }
+	}
+
+	public DtList<Individual> getChildren(Individual individual) {
+		Assertion.checkNotNull(individual);
+		//---------------------------------------------------------------------
+		final String id = individual.getId();
+		return children.containsKey(id) ? children.get(id) : new DtList<Individual>(Individual.class);
+	}
+	// public findFamily(String name){
+	//
+	// }
+
+	//	public void test() {
+	//		Set<StringWithCustomTags> names = new HashSet<>();
+	//		for (org.gedcom4j.model.Individual individual : getIndividuals()) {
+	//			names.add(individual.names.get(0).givenName);
+	//		}
+	//		for (StringWithCustomTags name : names) {
+	//			System.out.println("-" + name);
+	//		}
+	//
+	//		Set<String> eventTypes = new HashSet<>();
+	//		int ff = 0;
+	//		int fhn = 0;
+	//		int fwn = 0;
+	//		int ns0 = 0, ns1 = 0, nsx = 0;
+	//		for (Family family : getFamilies()) {
+	//			/*	    if (i++ > 10)
+	//				     break;
+	//				     */
+	//			ff++;
+	//			if (family.wife == null || family.husband == null) {
+	//				if (family.wife == null)
+	//					fwn++;
+	//				if (family.husband == null)
+	//					fhn++;
+	//				if (family.husband == null && family.wife == null)
+	//					System.out.println("Family null " + family);
+	//			} else {
+	//				/*		System.out.println("Family");
+	//						System.out.println("  Husband "
+	//							+ family.husband.formattedName());
+	//						System.out.println("  Husband " + family.husband.names.size());
+	//						System.out.println("  Husband " + family.husband.names);
+	//						System.out.println("  Wife " + family.wife.formattedName());
+	//				//		System.out.println("  Wife " + family.wife.names.get(0).basic);
+	//						System.out.println("  Wife " + family.wife.names.get(0).givenName);//
+	//				//		System.out.println("  Wife " + family.wife.names.get(0).nickname);
+	//						System.out.println("  Wife " + family.wife.names.get(0).surname); //
+	//						System.out.println("  Wife " + family.wife.events); //
+	//				*/
+	//			}
+	//			if (family.wife != null) {
+	//				if (family.wife.names.size() == 0)
+	//					ns0++;
+	//				if (family.wife.names.size() == 1)
+	//					ns1++;
+	//				if (family.wife.names.size() > 1)
+	//					nsx++;
+	//				for (IndividualEvent event : family.wife.events) {
+	//					eventTypes.add(event.type.name());
+	//				}
+	//			}
+	//			if (family.husband != null) {
+	//				if (family.husband.names.size() == 0)
+	//					ns0++;
+	//				if (family.husband.names.size() == 1)
+	//					ns1++;
+	//				if (family.husband.names.size() > 1)
+	//					nsx++;
+	//				for (IndividualEvent event : family.husband.events) {
+	//					eventTypes.add(event.type.name());
+	//				}
+	//			}
+	//			for (org.gedcom4j.model.Individual child : family.children) {
+	//				for (IndividualEvent event : child.events) {
+	//					eventTypes.add(event.type.name());
+	//				}
+	//			}
+	//		}
+	//		System.out.println("Familles " + ff);
+	//		System.out.println("Familles HN" + fhn);
+	//		System.out.println("Familles WN" + fwn);
+	//		System.out.println("NS0" + ns0);
+	//		System.out.println("NS1" + ns1);
+	//		System.out.println("NSX" + nsx);
+	//		System.out.println("EventTypes" + eventTypes);
+	//
+	//	}
+}
