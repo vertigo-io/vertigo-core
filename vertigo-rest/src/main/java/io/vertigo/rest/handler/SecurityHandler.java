@@ -1,10 +1,10 @@
 package io.vertigo.rest.handler;
 
 import io.vertigo.kernel.lang.Option;
+import io.vertigo.persona.security.KSecurityManager;
+import io.vertigo.persona.security.UserSession;
 import io.vertigo.rest.exception.SessionException;
 import io.vertigo.rest.exception.VSecurityException;
-import io.vertigo.security.KSecurityManager;
-import io.vertigo.security.UserSession;
 
 import javax.inject.Inject;
 

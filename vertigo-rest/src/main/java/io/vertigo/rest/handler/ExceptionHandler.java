@@ -32,7 +32,7 @@ public final class ExceptionHandler implements RouteHandler {
 			return RestfulServicesUtil.toJsonError(e.getMessage());
 		} catch (final Throwable e) {
 			response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			e.printStackTrace();//TODO a loggers
+			e.printStackTrace();//TODO use a loggers
 			return RestfulServicesUtil.toJsonError(e.getMessage());
 		}
 	}
