@@ -39,14 +39,27 @@
 			<version>${project.version}</version>
 		</dependency>
 				
-		<!--Gedcom-->
+		<!-- Gedcom-->
 		<dependency>
 			<groupId>org.gedcom4j</groupId>
 			<artifactId>gedcom4j</artifactId>
 			<version>2.1.0</version><!-- 2.1.5 has some issues -->
 		</dependency>
-		<!--/Gedcom-->
+		<!-- /Gedcom-->
 		
+		<!-- Mail -->
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.activation</groupId>
+					<artifactId>activation</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- /Mail -->
 	</dependencies>
 		
 </project>
