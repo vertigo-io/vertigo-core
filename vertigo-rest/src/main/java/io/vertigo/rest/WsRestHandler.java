@@ -150,15 +150,17 @@ public class WsRestHandler {
 				case DELETE:
 					Spark.delete(new WsRestRoute(endPointDefinition.getPath(), endPointDefinition));
 					break;
+				default:
+					throw new UnsupportedOperationException();
 			}
 		}
 
 		Spark.get(new Route("/catalog") {
 			@Override
 			public Object handle(final Request request, final Response response) {
-				final Collection<EndPointDefinition> endPointDefs = Home.getDefinitionSpace().getAll(EndPointDefinition.class);
+				final Collection<EndPointDefinition> endPointDefCollection = Home.getDefinitionSpace().getAll(EndPointDefinition.class);
 				final StringBuilder sb = new StringBuilder();
-				for (final EndPointDefinition endPointDefinition : endPointDefs) {
+				for (final EndPointDefinition endPointDefinition : endPointDefCollection) {
 					sb.append(endPointDefinition.getVerb().name()).append("://");
 					sb.append(endPointDefinition.getPath());
 					sb.append("(");

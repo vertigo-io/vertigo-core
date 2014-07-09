@@ -53,9 +53,7 @@ public final class SecurityHandler implements RouteHandler {
 		final Option<UserSession> userSessionOption = securityManager.getCurrentUserSession();
 		if (userSessionOption.isEmpty() || !userSessionOption.get().isAuthenticated()) {
 			throw new VSecurityException("User unauthentified");
-		} else {
-			// ---------------------------------------------------------------------
-			return chain.handle(request, response);
 		}
+		return chain.handle(request, response);
 	}
 }

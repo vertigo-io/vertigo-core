@@ -34,7 +34,7 @@ import java.util.UUID;
 //@Path("familles")
 public final class FamillesRestfulService implements RestfulService {
 
-	private final Map<Long, Famille> familles = new HashMap<Long, Famille>();
+	private final Map<Long, Famille> familles = new HashMap<>();
 
 	public FamillesRestfulService() {
 		appendFamille(1L, "Martin");
@@ -60,7 +60,7 @@ public final class FamillesRestfulService implements RestfulService {
 	public List<Famille> readList() {
 		//offset + range ?
 		//code 200
-		return new ArrayList<Famille>(familles.values());
+		return new ArrayList<>(familles.values());
 	}
 
 	@GET("/familles/{famId}")

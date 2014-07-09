@@ -29,7 +29,7 @@ import java.util.List;
 
 @DtDefinition
 public final class Contact implements DtObject {
-
+	private static final long serialVersionUID = -943512490644839986L;
 	@Field(domain = "DO_ID", type = "PRIMARY_KEY", notNull = true, label = "Contact Id")
 	private Long conId;
 	@Field(domain = "DO_CODE", label = "Honorific title")
@@ -108,7 +108,7 @@ public final class Contact implements DtObject {
 	}
 
 	public void setTels(final List<String> tels) {
-		this.tels = new ArrayList<String>(tels);
+		this.tels = new ArrayList<>(tels);
 	}
 
 }

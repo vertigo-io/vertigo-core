@@ -33,7 +33,7 @@ import java.util.List;
  */
 @Prefix("EP_")
 public class EndPointDefinition implements Definition {
-	public final class EndPointParam {
+	public static final class EndPointParam {
 		private final String name;
 		private final Class<?> type;
 

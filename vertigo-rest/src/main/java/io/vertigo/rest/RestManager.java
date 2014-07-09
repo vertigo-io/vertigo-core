@@ -86,7 +86,7 @@ public class RestManager implements Manager, Activeable {
 				}
 			}
 			if (verb != null) {
-				Assertion.checkState(verb != null, "Verb must be specified on {0}", method.getName());
+				Assertion.checkNotNull(verb, "Verb must be specified on {0}", method.getName());
 				Assertion.checkArgNotEmpty(path, "Route path must be specified on {0}", method.getName());
 
 				endPointDefinition = new EndPointDefinition("EP_" + StringUtil.camelToConstCase(restFullServiceClass.getSimpleName()) + "_" + StringUtil.camelToConstCase(method.getName()), verb, path, method, needSession, needAuthentication);
