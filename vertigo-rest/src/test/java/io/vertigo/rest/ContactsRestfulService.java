@@ -160,7 +160,8 @@ public final class ContactsRestfulService implements RestfulService {
 
 	//@POST is non-indempotent
 	@POST("/contacts")
-	public Contact insert(final Contact contact) {
+	public Contact insert(//
+			final @Validate({ ContactValidator.class, MandatoryPkValidator.class }) Contact contact) {
 		if (contact.getId() != null) {
 			throw new VUserException(new MessageText("Contact #" + contact.getId() + " already exist", null));
 		}

@@ -1,6 +1,8 @@
 package io.vertigo.rest;
 
-public class Address {
+import io.vertigo.dynamo.domain.model.DtObject;
+
+public class Address implements DtObject {
 
 	private String street1;
 	private String street2;

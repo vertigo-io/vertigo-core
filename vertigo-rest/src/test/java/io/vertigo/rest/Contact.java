@@ -2,6 +2,7 @@ package io.vertigo.rest;
 
 import io.vertigo.dynamo.domain.metamodel.annotation.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.annotation.Field;
+import io.vertigo.dynamo.domain.model.DtObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 @DtDefinition
-public final class Contact {
+public final class Contact implements DtObject {
 
 	@Field(domain = "DO_ID", type = "PRIMARY_KEY", notNull = true, label = "Contact Id")
 	private Long conId;

@@ -1,7 +1,6 @@
 package io.vertigo.rest.validation;
 
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.MessageText;
 import io.vertigo.kernel.util.StringUtil;
@@ -13,20 +12,18 @@ import java.util.Map;
 
 /**
  * Liste des erreurs d'un objet métier.
- * 
  * @author pchretien, npiedeloup
- * @version $Id: UiObjectErrors.java,v 1.5 2014/02/26 17:43:46 npiedeloup Exp $
  */
-public final class UiObjectErrors {
+public final class DtObjectErrors {
 
 	private final List<MessageText> objectErrors = new ArrayList<>();
 	private final Map<DtField, List<MessageText>> fieldsErrors = new LinkedHashMap<>();
-	private final DtObject dtObject;
+	private final String contextKey;
 
 	// ==========================================================================
 
-	UiObjectErrors(final DtObject dtObject) {
-		this.dtObject = dtObject;
+	DtObjectErrors(final String contextKey) {
+		this.contextKey = contextKey;
 	}
 
 	public boolean hasError() {
@@ -65,13 +62,13 @@ public final class UiObjectErrors {
 		return StringUtil.constToCamelCase(dtField.getName(), false);
 	}
 
-	public void flushIntoAction(final UiMessageStack uiMessageStack) {
+	public void flushIntoMessageStack(final UiMessageStack uiMessageStack) {
 		for (final MessageText errorMessage : objectErrors) {
 			uiMessageStack.addGlobalMessage(UiMessageStack.Level.ERROR, errorMessage.getDisplay());
 		}
 		for (final Map.Entry<DtField, List<MessageText>> entry : fieldsErrors.entrySet()) {
 			for (final MessageText errorMessage : entry.getValue()) {
-				uiMessageStack.addFieldMessage(UiMessageStack.Level.ERROR, errorMessage.getDisplay(), dtObject, getCamelCaseFieldName(entry.getKey()));
+				uiMessageStack.addFieldMessage(UiMessageStack.Level.ERROR, errorMessage.getDisplay(), contextKey, getCamelCaseFieldName(entry.getKey()));
 				//action.addActionError("<b>" + entry.getKey().getLabel().getDisplay() + "</b> : " + errorMessage.getDisplay());
 			}
 		}
