@@ -1,6 +1,6 @@
 package io.vertigo.rest;
 
-import io.vertigo.security.UserSession;
+import io.vertigo.persona.security.UserSession;
 
 import java.util.Collections;
 import java.util.Locale;

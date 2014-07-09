@@ -12,15 +12,15 @@ import io.vertigo.engines.command.TcpVCommandEngine;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
+import io.vertigo.persona.impl.security.KSecurityManagerImpl;
+import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.rest.EndPointDefinition.EndPointParam;
 import io.vertigo.rest.filter.CorsAllower;
 import io.vertigo.rest.handler.ExceptionHandler;
 import io.vertigo.rest.handler.SecurityHandler;
 import io.vertigo.rest.handler.SessionHandler;
 import io.vertigo.rest.handler.WsRestRoute;
-import io.vertigo.security.KSecurityManager;
 import io.vertigoimpl.commons.locale.LocaleManagerImpl;
-import io.vertigoimpl.security.KSecurityManagerImpl;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -135,7 +135,7 @@ public class WsRestHandler {
 			}
 		}
 
-		Spark.get(new Route("/catalogue") {
+		Spark.get(new Route("/catalog") {
 			@Override
 			public Object handle(final Request request, final Response response) {
 				final Collection<EndPointDefinition> endPointDefs = Home.getDefinitionSpace().getAll(EndPointDefinition.class);

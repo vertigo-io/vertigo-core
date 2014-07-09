@@ -39,6 +39,19 @@
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-persona-api</artifactId>
+			<version>${project.version}</version>			
+		</dependency>
+		
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-persona-impl</artifactId> <!--  depends of SecurityManagerImpl for WsRestHandler : TODO change it-->
+			<version>${project.version}</version>			
+		</dependency>
+		
 		<!-- <dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-dynamo-impl</artifactId>
@@ -52,6 +65,8 @@
 			<artifactId>vertigo-ccc</artifactId>
 			<version>${project.version}</version>			
 		</dependency>
+		
+		
 		
 		<!-- <dependency>
 			<groupId>org.hibernate.javax.persistence</groupId>necessary for vertigo-common-tests

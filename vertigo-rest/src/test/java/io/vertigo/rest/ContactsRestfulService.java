@@ -2,7 +2,7 @@ package io.vertigo.rest;
 
 import io.vertigo.kernel.exception.VUserException;
 import io.vertigo.kernel.lang.MessageText;
-import io.vertigo.security.KSecurityManager;
+import io.vertigo.persona.security.KSecurityManager;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
