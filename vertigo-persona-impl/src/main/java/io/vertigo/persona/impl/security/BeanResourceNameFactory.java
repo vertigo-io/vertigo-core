@@ -1,21 +1,3 @@
-/**
- * vertigo - simple java starter
- *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
- * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.persona.impl.security;
 
 import io.vertigo.dynamo.domain.util.BeanUtil;
@@ -26,9 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ResourceNameFactory standard des beans sï¿½curisï¿½es.
+ * ResourceNameFactory standard des beans sécurisées.
  * @author npiedeloup
- * @version $Id: BeanResourceNameFactory.java,v 1.4 2014/01/20 17:49:32 pchretien Exp $
  */
 public final class BeanResourceNameFactory implements ResourceNameFactory {
 	private final String securityPattern;
@@ -36,8 +17,8 @@ public final class BeanResourceNameFactory implements ResourceNameFactory {
 
 	/**
 	 * Constructeur.
-	 * Prend en entrï¿½e le pattern de la chaine de resource ï¿½ produire. 
-	 * Il peut ï¿½tre paramï¿½trï¿½ avec des propriï¿½tï¿½s de l'objet avec la syntaxe : ${maPropriete}
+	 * Prend en entrée le pattern de la chaine de resource à produire. 
+	 * Il peut être paramétré avec des propriétés de l'objet avec la syntaxe : ${maPropriete}
 	 * @param securityPattern Pattern de la resource.
 	 */
 	public BeanResourceNameFactory(final String securityPattern) {
@@ -49,7 +30,7 @@ public final class BeanResourceNameFactory implements ResourceNameFactory {
 		while (nextIndex >= 0) {
 			securityPatternTokenized.add(securityPattern.substring(previousIndex, nextIndex));
 			final int endIndex = securityPattern.indexOf("}", nextIndex + "${".length());
-			Assertion.checkState(endIndex >= nextIndex, "accolade fermante non trouvï¿½e : {0} ï¿½ {1}", securityPattern, nextIndex);
+			Assertion.checkState(endIndex >= nextIndex, "accolade fermante non trouvée : {0} à {1}", securityPattern, nextIndex);
 			final String key = securityPattern.substring(nextIndex + "${".length(), endIndex);
 			securityPatternTokenized.add("$" + key);
 			previousIndex = endIndex + "}".length();
@@ -61,6 +42,7 @@ public final class BeanResourceNameFactory implements ResourceNameFactory {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String toResourceName(final Object value) {
 		final StringBuilder sb = new StringBuilder(securityPattern.length());
 		for (final String token : securityPatternTokenized) {
