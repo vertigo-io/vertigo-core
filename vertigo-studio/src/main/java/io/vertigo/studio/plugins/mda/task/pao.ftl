@@ -23,13 +23,13 @@ public final class ${pao.classSimpleName} {
 
 	/**
 	 * Constructeur.
-	 * @param workManager Manager des Works
+	 * @param taskManager Manager des Task
 	 */
 	@Inject
-	public ${pao.classSimpleName}(final WorkManager workManager) {
-		Assertion.checkNotNull(workManager);
+	public ${pao.classSimpleName}(final TaskManager taskManager) {
+		Assertion.checkNotNull(taskManager);
 		//---------------------------------------------------------------------
-		this.workManager = workManager;
+		this.taskManager = taskManager;
 	}
     <@lib.generateBody pao.taskDefinitions/>  
 }

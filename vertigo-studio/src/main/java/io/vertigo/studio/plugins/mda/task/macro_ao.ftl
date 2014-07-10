@@ -14,7 +14,7 @@
 
 	</#list>
 </#list>
-	private final WorkManager workManager;
+	private final TaskManager taskManager;
 </#macro> 
    
 <#macro generateBody taskDefinitions>
@@ -46,10 +46,10 @@
     </#list>
 				.build();
     <#if taskDefinition.out>
-		final TaskResult taskResult = workManager.process(task, task.getDefinition().getTaskEngineProvider());
+		final TaskResult taskResult = taskManager.execute(task);
 		return <#if !taskDefinition.outAttribute.notNull>Option.option(</#if>taskResult.<${taskDefinition.outAttribute.dataType}> getValue(${taskDefinition.outAttribute.constantName})<#if !taskDefinition.outAttribute.notNull>)</#if>;
     <#else>
-		workManager.process(task, task.getDefinition().getTaskEngineProvider());
+		taskManager.execute(task);
     </#if>
 	}
 

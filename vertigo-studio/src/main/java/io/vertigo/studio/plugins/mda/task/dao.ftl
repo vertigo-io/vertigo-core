@@ -34,14 +34,14 @@ public final class ${dao.classSimpleName} extends DAOBroker<${dao.dtClassCanonic
 	/**
 	 * Contructeur.
 	 * @param persistenceManager Manager de persistance
-	 * @param workManager Manager de Work
+	 * @param taskManager Manager de Task
 	 */
 	@Inject
-	public ${dao.classSimpleName}(final PersistenceManager persistenceManager, final WorkManager workManager) {
+	public ${dao.classSimpleName}(final PersistenceManager persistenceManager, final TaskManager taskManager) {
 		super(${dao.dtClassCanonicalName}.class, persistenceManager);
-		Assertion.checkNotNull(workManager);
+		Assertion.checkNotNull(taskManager);
 		//---------------------------------------------------------------------
-		this.workManager = workManager;
+		this.taskManager = taskManager;
 	}
 	<@lib.generateBody dao.taskDefinitions/>  
    	<#else>
