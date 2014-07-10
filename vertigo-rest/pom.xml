@@ -42,6 +42,12 @@
 		
 		<dependency>
 			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-ccc</artifactId>
+			<version>${project.version}</version>			
+		</dependency>
+
+		<dependency>
+			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-persona-api</artifactId>
 			<version>${project.version}</version>			
 		</dependency>
@@ -58,13 +64,13 @@
 			<version>${project.version}</version>
 			<type>test-jar</type>
 			<scope>test</scope>
-		</dependency> -->
+		</dependency> 
 		
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-ccc</artifactId>
 			<version>${project.version}</version>			
-		</dependency>
+		</dependency-->
 		
 		
 		

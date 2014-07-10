@@ -75,11 +75,13 @@ public class WsRestHandler {
 		//        <plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />     
 		//    </component>
 
-		// @formatter:off
+		// @formatter:off 
 		// Création de l'état de l'application
 		// Initialisation de l'état de l'application
+		
+		System.out.print(TestUserSession.class);
 		final ComponentSpaceConfig config = new ComponentSpaceConfigBuilder()//
-				.withSilence(true)//
+				.withSilence(false)//
 				//.withRestEngine(new GrizzlyRestEngine(8080))
 				.withCommandEngine(new TcpVCommandEngine(4406))//
 				.beginModule("commons") //
@@ -119,7 +121,7 @@ public class WsRestHandler {
 
 		//Translate EndPoint to route
 
-		final Collection<EndPointDefinition> endPointDefs = Home.getDefinitionSpace().getAll(EndPointDefinition.class);
+		final Collection<EndPointDefinition> endPointDefinitions = Home.getDefinitionSpace().getAll(EndPointDefinition.class);
 
 		//test 
 		/*Spark.get(new Route("familles") {
@@ -136,7 +138,7 @@ public class WsRestHandler {
 		//Spark.before(new IE8CompatibilityFix("8"));
 		Spark.before(new CorsAllower());
 
-		for (final EndPointDefinition endPointDefinition : endPointDefs) {
+		for (final EndPointDefinition endPointDefinition : endPointDefinitions) {
 			switch (endPointDefinition.getVerb()) {
 				case GET:
 					Spark.get(new WsRestRoute(endPointDefinition.getPath(), endPointDefinition));

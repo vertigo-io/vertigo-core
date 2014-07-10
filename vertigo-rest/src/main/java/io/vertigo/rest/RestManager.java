@@ -59,7 +59,7 @@ public class RestManager implements Manager, Activeable {
 		//nothing
 	}
 
-	private <C extends RestfulService> void instrospectEndPoints(final Class<C> restFullServiceClass) {
+	private static <C extends RestfulService> void instrospectEndPoints(final Class<C> restFullServiceClass) {
 		for (final Method method : restFullServiceClass.getMethods()) {
 			EndPointDefinition endPointDefinition;
 			Verb verb = null;
@@ -104,7 +104,7 @@ public class RestManager implements Manager, Activeable {
 		}
 	}
 
-	private final String getParamName(final Annotation[] annotations) {
+	private static String getParamName(final Annotation[] annotations) {
 		for (final Annotation annotation : annotations) {
 			if (annotation instanceof PathParam) {
 				return ":path:" + ((PathParam) annotation).value();
