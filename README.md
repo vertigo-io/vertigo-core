@@ -15,7 +15,6 @@ Build and configure your own modules with
 * a fast, simple and lightweight Dependency Injection
  
 
-
 ##vertigo-commons
 A set of common tools 
 
@@ -27,6 +26,7 @@ A set of common tools
 * __resource__ : a simple access to resource (builtin : lookup into classpath, webapp, filesystem with relative or absolute path)
 * __script__ : execute String like script (because sometimes you need to merge code and data)
 
+
 ##vertigo-dynamo
 A simple data access to your sql/nosql database, including search patterns.
   
@@ -34,16 +34,33 @@ A simple data access to your sql/nosql database, including search patterns.
 * __database__ : databases handlers (builtin : Oracle, MSSql, Postgresql, Hsql, H2, Hibernate)
 * __domain__ : top-2-bottom POJO to simplify layers communications from Database to GUI/WS
 * __environment__ : initialize your components from differents sources (builtin : powerdesigner, DSL, Java annotations)
+* __export__ : export collections and object to usefull files formats (builtin : CSV, PDF, RTF, XLS)
 * __file__ : manage file's creation
 * __kvdatastore__ : key/value datastore
+* __node__ : node of worker for distributed operations
 * __persistence__ : simple persistence layer access (builtin : route by object type, CRUD operations, NN operations, SearchServer integration)
 * __search__ : simple search api
 * __task__ : manage your tasks
 * __transaction__ : simple transaction managment 
 * __work__ : process, shedule or distribute your task
 
+
+##vertigo-persona 
+A simple managment of users, not only technical.
+
+* __security__ : userSession and security tools to check resources access (by user roles and/or datas properties)   
+
+
+##vertigo-quarto 
+Publishing managment.
+
+* __converter__ : as it says : convert your documents from one format to another
+* __publisher__ : lightweigth publisher tool. Produce documents from a user's defined template and application's datas. Templates are really easy to modified because they just are ODT or DOCX with tags.
+
+
 ##vertigo-rest 
-add a rest access to your application. Usefull for Single-Page-Application.
+Add a rest access to your application. Mainly oriented for production-ready Single-Page-Application.
+
 
 ##vertigo-ccc
 Command & Control Center
