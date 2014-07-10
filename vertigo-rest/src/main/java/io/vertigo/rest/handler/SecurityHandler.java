@@ -18,6 +18,7 @@
  */
 package io.vertigo.rest.handler;
 
+import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.persona.security.UserSession;
@@ -44,6 +45,8 @@ public final class SecurityHandler implements RouteHandler {
 	 */
 	@Inject
 	public SecurityHandler(final KSecurityManager securityManager) {
+		Assertion.checkNotNull(securityManager);
+		//---------------------------------------------------------------------
 		this.securityManager = securityManager;
 	}
 

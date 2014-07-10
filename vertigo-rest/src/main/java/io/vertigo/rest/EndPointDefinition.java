@@ -38,6 +38,9 @@ public class EndPointDefinition implements Definition {
 		private final Class<?> type;
 
 		EndPointParam(final String name, final Class<?> type) {
+			Assertion.checkArgNotEmpty(name);
+			Assertion.checkNotNull(type);
+			//-----------------------------------------------------------------
 			this.name = name;
 			this.type = type;
 		}
@@ -100,6 +103,11 @@ public class EndPointDefinition implements Definition {
 		return Collections.unmodifiableList(endPointParams);
 	}
 
+	//TODO 
+	//TODO 
+	//TODO must be immmutable, without any add,set or any methods like that
+	//TODO 
+	//TODO 
 	public void addParam(final String paramName, final Class paramType) {
 		final EndPointParam endPointParam = new EndPointParam(paramName, paramType);
 		endPointParams.add(endPointParam);

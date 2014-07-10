@@ -141,16 +141,16 @@ public class WsRestHandler {
 		for (final EndPointDefinition endPointDefinition : endPointDefinitions) {
 			switch (endPointDefinition.getVerb()) {
 				case GET:
-					Spark.get(new WsRestRoute(endPointDefinition.getPath(), endPointDefinition));
+					Spark.get(new WsRestRoute( endPointDefinition));
 					break;
 				case POST:
-					Spark.post(new WsRestRoute(endPointDefinition.getPath(), endPointDefinition));
+					Spark.post(new WsRestRoute(endPointDefinition));
 					break;
 				case PUT:
-					Spark.put(new WsRestRoute(endPointDefinition.getPath(), endPointDefinition));
+					Spark.put(new WsRestRoute(endPointDefinition));
 					break;
 				case DELETE:
-					Spark.delete(new WsRestRoute(endPointDefinition.getPath(), endPointDefinition));
+					Spark.delete(new WsRestRoute(endPointDefinition));
 					break;
 				default:
 					throw new UnsupportedOperationException();

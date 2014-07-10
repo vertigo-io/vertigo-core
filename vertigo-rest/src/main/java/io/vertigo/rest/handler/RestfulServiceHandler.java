@@ -19,6 +19,7 @@
 package io.vertigo.rest.handler;
 
 import io.vertigo.kernel.Home;
+import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.rest.EndPointDefinition;
 import io.vertigo.rest.RestfulService;
 import spark.Request;
@@ -29,10 +30,11 @@ import spark.Response;
  * @author npiedeloup
  */
 final class RestfulServiceHandler implements RouteHandler {
-
 	private final EndPointDefinition endPointDefinition;
 
-	public RestfulServiceHandler(final EndPointDefinition endPointDefinition) {
+	RestfulServiceHandler(final EndPointDefinition endPointDefinition) {
+		Assertion.checkNotNull(endPointDefinition);
+		//---------------------------------------------------------------------
 		this.endPointDefinition = endPointDefinition;
 	}
 
