@@ -18,14 +18,14 @@
  */
 package io.vertigo.rest.handler;
 
+import io.vertigo.kernel.engines.JsonEngine;
 import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.util.ClassUtil;
 import io.vertigo.rest.RestfulService.PathParam;
 import io.vertigo.rest.RestfulService.QueryParam;
-import io.vertigo.rest.util.GoogleJsonEngine;
-import io.vertigo.rest.util.JsonEngine;
+import io.vertigo.rest.engine.GoogleJsonEngine;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

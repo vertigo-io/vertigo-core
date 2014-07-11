@@ -20,7 +20,6 @@ package io.vertigo.kernel.di.configurator;
 
 import io.vertigo.kernel.engines.AopEngine;
 import io.vertigo.kernel.engines.ElasticaEngine;
-import io.vertigo.kernel.engines.RestEngine;
 import io.vertigo.kernel.engines.VCommandEngine;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.JsonExclude;
@@ -43,26 +42,22 @@ public final class ComponentSpaceConfig {
 	@JsonExclude
 	private final AopEngine aopEngine;
 	@JsonExclude
-	private final Option<RestEngine> restEngine;
-	@JsonExclude
 	private final Option<ElasticaEngine> elasticaEngine;
 	@JsonExclude
 	private final Option<VCommandEngine> commandEngine;
 
-	ComponentSpaceConfig(final Map<String, String> params, final List<ModuleConfig> moduleConfigs, final AopEngine aopEngine, final Option<ElasticaEngine> elasticaEngine, final Option<RestEngine> restEngine, final Option<VCommandEngine> commandEngine, final boolean silence) {
+	ComponentSpaceConfig(final Map<String, String> params, final List<ModuleConfig> moduleConfigs, final AopEngine aopEngine, final Option<ElasticaEngine> elasticaEngine, final Option<VCommandEngine> commandEngine, final boolean silence) {
 		Assertion.checkNotNull(params);
 		Assertion.checkNotNull(moduleConfigs);
 		//---
 		Assertion.checkNotNull(aopEngine);
 		Assertion.checkNotNull(elasticaEngine);
-		Assertion.checkNotNull(restEngine);
 		Assertion.checkNotNull(commandEngine);
 		//---------------------------------------------------------------------
 		this.params = params;
 		this.modules = Collections.unmodifiableList(new ArrayList<>(moduleConfigs));
 		this.silence = silence;
 		this.aopEngine = aopEngine;
-		this.restEngine = restEngine;
 		this.elasticaEngine = elasticaEngine;
 		this.commandEngine = commandEngine;
 	}
@@ -96,9 +91,4 @@ public final class ComponentSpaceConfig {
 	Option<ElasticaEngine> getElasticaEngine() {
 		return elasticaEngine;
 	}
-
-	Option<RestEngine> getRestEngine() {
-		return restEngine;
-	}
-
 }

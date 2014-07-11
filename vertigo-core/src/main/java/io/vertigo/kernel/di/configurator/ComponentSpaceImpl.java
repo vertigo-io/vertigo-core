@@ -97,9 +97,6 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 		if (componentSpaceConfig.getElasticaEngine().isDefined()) {
 			engines.add(componentSpaceConfig.getElasticaEngine().get());
 		}
-		if (componentSpaceConfig.getRestEngine().isDefined()) {
-			engines.add(componentSpaceConfig.getRestEngine().get());
-		}
 
 		engines.add(componentSpaceConfig.getAopEngine());
 

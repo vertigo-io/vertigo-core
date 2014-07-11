@@ -20,12 +20,12 @@ package io.vertigoimpl.engines.rest.cmd;
 
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
+import io.vertigo.kernel.engines.JsonEngine;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.Definition;
 import io.vertigo.kernel.metamodel.DefinitionSpace;
 import io.vertigo.rest.RestfulService;
-import io.vertigo.rest.util.GoogleJsonEngine;
-import io.vertigo.rest.util.JsonEngine;
+import io.vertigo.rest.engine.GoogleJsonEngine;
 
 import java.util.Collection;
 
@@ -117,7 +117,7 @@ public final class ComponentCmdRestServices implements RestfulService {
 
 	@AnonymousAccessAllowed
 	@GET("/vertigo/definitions/{definitionName}")
-	public String getDefinition(@PathParam("definitionName") final String definitionName) {
-		return jsonEngine.toJson(Home.getDefinitionSpace().resolve(definitionName));
+	public Definition getDefinition(@PathParam("definitionName") final String definitionName) {
+		return Home.getDefinitionSpace().resolve(definitionName);
 	}
 }

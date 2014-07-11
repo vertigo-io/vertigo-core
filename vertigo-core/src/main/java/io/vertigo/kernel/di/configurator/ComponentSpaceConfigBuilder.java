@@ -21,7 +21,6 @@ package io.vertigo.kernel.di.configurator;
 import io.vertigo.engines.aop.cglib.CGLIBAopEngine;
 import io.vertigo.kernel.engines.AopEngine;
 import io.vertigo.kernel.engines.ElasticaEngine;
-import io.vertigo.kernel.engines.RestEngine;
 import io.vertigo.kernel.engines.VCommandEngine;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Builder;
@@ -43,7 +42,6 @@ public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpace
 	private final Map<String, String> params = new HashMap<>(); //par défaut vide
 	private boolean silence;
 	private AopEngine aopEngine = new CGLIBAopEngine();
-	private RestEngine restEngine = null; //par défaut par de serveur 
 	private ElasticaEngine elasticaEngine = null; //par défaut pas d'elasticité.
 	private VCommandEngine commandEngine = null; // new VCommandEngineImpl(jsonEngine, VCommandEngine.DEFAULT_PORT); //Par défaut
 
@@ -81,14 +79,6 @@ public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpace
 	 */
 	public ComponentSpaceConfigBuilder withSilence(final boolean newSilence) {
 		silence = newSilence;
-		return this;
-	}
-
-	public ComponentSpaceConfigBuilder withRestEngine(final RestEngine newRestEngine) {
-		Assertion.checkNotNull(newRestEngine);
-		Assertion.checkState(restEngine == null, "restEngine is alreday completed");
-		//---------------------------------------------------------------------
-		restEngine = newRestEngine;
 		return this;
 	}
 
@@ -140,6 +130,6 @@ public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpace
 			final ModuleConfig moduleConfig = moduleConfigBuilder.build();
 			moduleConfigs.add(moduleConfig);
 		}
-		return new ComponentSpaceConfig(params, moduleConfigs, aopEngine, Option.option(elasticaEngine), Option.option(restEngine), Option.option(commandEngine), silence);
+		return new ComponentSpaceConfig(params, moduleConfigs, aopEngine, Option.option(elasticaEngine), Option.option(commandEngine), silence);
 	}
 }
