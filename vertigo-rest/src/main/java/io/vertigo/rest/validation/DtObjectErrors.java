@@ -76,7 +76,7 @@ public final class DtObjectErrors {
 		errors.add(messageText);
 	}
 
-	private final static String getCamelCaseFieldName(final DtField dtField) {
+	private static String getCamelCaseFieldName(final DtField dtField) {
 		return StringUtil.constToCamelCase(dtField.getName(), false);
 	}
 

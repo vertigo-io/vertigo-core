@@ -198,7 +198,7 @@ public abstract class AbstractSolrSearchServicesPlugin implements SearchServices
 	 * @param core Index SOLR/Lucene 
 	 * @return Serveur Solr mappant une index SOLR/Lucene
 	 */
-	private final SolrServer getSolrServer(final String core) {
+	private SolrServer getSolrServer(final String core) {
 		Assertion.checkArgNotEmpty(core);
 		//---------------------------------------------------------------------
 		final SolrServer solrServer = solrServerMap.get(core);

@@ -122,7 +122,7 @@ public final class ContactsRestfulService implements RestfulService {
 		final long conId = contacts.size() + 1;
 		final Contact contact = new Contact();
 		contact.setId(conId);
-		contact.setHonorificCode(honorific.code);
+		contact.setHonorificCode(honorific.getCode());
 		contact.setName(name);
 		contact.setFirstName(firstName);
 		contact.setBirthday(birthday);

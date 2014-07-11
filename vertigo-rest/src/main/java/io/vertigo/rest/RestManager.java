@@ -100,7 +100,7 @@ public final class RestManager implements Manager, Activeable {
 		Assertion.checkNotNull(verb, "Verb must be specified on {0}", method.getName());
 		Assertion.checkArgNotEmpty(path, "Route path must be specified on {0}", method.getName());
 
-		final Class[] paramType = method.getParameterTypes();
+		final Class<?>[] paramType = method.getParameterTypes();
 		final Annotation[][] parameterAnnotation = method.getParameterAnnotations();
 
 		List<EndPointParam> endPointParams = new ArrayList<>();

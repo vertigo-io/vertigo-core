@@ -74,7 +74,7 @@ public class DtObjectValidator<O extends DtObject> {
 		//ex: input.addError(e.getMessageText());
 	}
 
-	private final void defaultCheckMonoFieldConstraints(final O dtObject, final DtField dtField, final DtObjectErrors dtObjectErrors) {
+	private void defaultCheckMonoFieldConstraints(final O dtObject, final DtField dtField, final DtObjectErrors dtObjectErrors) {
 		final Object value = dtField.getDataAccessor().getValue(dtObject);
 		//pas d'assertion notNull, car le champs n'est pas forcément obligatoire
 		if (value == null && dtField.isNotNull()) {

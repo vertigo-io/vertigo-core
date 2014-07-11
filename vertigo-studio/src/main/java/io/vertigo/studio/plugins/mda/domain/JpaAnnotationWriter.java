@@ -149,7 +149,7 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 	 * @param dtDefinition Définition du DT mappé
 	 * @return Nom de la table
 	 */
-	private final String getTableName(final DtDefinition dtDefinition) {
+	private String getTableName(final DtDefinition dtDefinition) {
 		return dtDefinition.getLocalName();
 	}
 

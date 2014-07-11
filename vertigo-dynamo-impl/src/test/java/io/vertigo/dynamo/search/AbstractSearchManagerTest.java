@@ -92,7 +92,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	/**
 	 * @param indexDefinition Definition de l'index
 	 */
-	private final void clean(final IndexDefinition indexDefinition) {
+	private void clean(final IndexDefinition indexDefinition) {
 		final ListFilter removeQuery = new ListFilter("*:*");
 		searchManager.getSearchServices().remove(indexDefinition, removeQuery);
 	}
