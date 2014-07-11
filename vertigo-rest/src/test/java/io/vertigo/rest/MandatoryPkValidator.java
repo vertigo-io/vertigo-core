@@ -32,7 +32,7 @@ public class MandatoryPkValidator<O extends DtObject> extends DtObjectValidator<
 	protected void checkMonoFieldConstraints(final O dtObject, final DtField dtField, final DtObjectErrors dtObjectErrors) {
 		if (dtField.getType() == FieldType.PRIMARY_KEY && !dtObjectErrors.hasError(dtField)) {
 			if (DtObjectUtil.getId(dtObject) == null) {
-				dtObjectErrors.addError(dtField, new MessageText("Id is mandatory", null, null));
+				dtObjectErrors.addError(dtField, new MessageText("Id is mandatory", null));
 			}
 		}
 	}

@@ -48,7 +48,7 @@ public final class ContactsRestfulService implements RestfulService {
 		CoWorkers("CWO", "Colleagues"), Familiar("FAR", "Familiar"),
 	}*/
 
-	private static enum Honorific {
+	public static enum Honorific {
 		Mr("MR_", "Mr", "Mister"), //
 		Miss("MIS", "Miss", "Miss"), //
 		Mrs("MRS", "Mrs", "Mrs"), //
@@ -64,13 +64,14 @@ public final class ContactsRestfulService implements RestfulService {
 		Mst("MST", "Mst", "Master"); //
 
 		private final String code;
-		private final String abbreviation;
-		private final String label;
+
+		//		private final String abbreviation;
+		//		private final String label;
 
 		Honorific(final String code, final String abbreviation, final String label) {
 			this.code = code;
-			this.abbreviation = abbreviation;
-			this.label = label;
+			//			this.abbreviation = abbreviation;
+			//			this.label = label;
 		}
 
 		public String getCode() {
@@ -78,7 +79,7 @@ public final class ContactsRestfulService implements RestfulService {
 		}
 	}
 
-	private final Map<Long, Contact> contacts = new HashMap<Long, Contact>();
+	private final Map<Long, Contact> contacts = new HashMap<>();
 
 	public ContactsRestfulService() throws ParseException {
 		appendContact(Honorific.Mr, "Martin", "Jean", parseDate("19/05/1980"), //
@@ -146,7 +147,7 @@ public final class ContactsRestfulService implements RestfulService {
 	public List<Contact> readList(final ListCriteria listCriteria) {
 		//offset + range ?
 		//code 200
-		return new ArrayList<Contact>(contacts.values());
+		return new ArrayList<>(contacts.values());
 	}
 
 	@AnonymousAccessAllowed
@@ -162,7 +163,7 @@ public final class ContactsRestfulService implements RestfulService {
 	public List<Contact> readAllList() {
 		//offset + range ?
 		//code 200
-		return new ArrayList<Contact>(contacts.values());
+		return new ArrayList<>(contacts.values());
 	}
 
 	@GET("/contacts/{conId}")
@@ -200,13 +201,12 @@ public final class ContactsRestfulService implements RestfulService {
 			//400
 			throw new VUserException(new MessageText("Name is mandatory", null));
 		}
-		if (contact.getId() != null) {
-			contacts.put(contact.getId(), contact);
-			//200
-			return contact;
-		} else {
+		if (contact.getId() == null) {
 			throw new VUserException(new MessageText("Id is mandatory", null));
 		}
+		contacts.put(contact.getId(), contact);
+		//200
+		return contact;
 	}
 
 	@DELETE("/contacts/{conId}")

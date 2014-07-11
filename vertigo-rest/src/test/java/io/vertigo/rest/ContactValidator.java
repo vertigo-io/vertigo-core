@@ -37,7 +37,7 @@ public class ContactValidator extends DtObjectValidator<Contact> {
 		if ("birthday".equals(dtField.getName()) && !dtObjectErrors.hasError(dtField)) {
 			final Date birthday = dtObject.getBirthday();
 			if (DateUtil.daysBetween(birthday, new Date()) < (16 * 365)) { //if less than 16
-				dtObjectErrors.addError(dtField, new MessageText("You can't add contact younger than 16", null, null));
+				dtObjectErrors.addError(dtField, new MessageText("You can't add contact younger than 16", null));
 			}
 		}
 	}
