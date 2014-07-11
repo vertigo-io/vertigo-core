@@ -32,7 +32,6 @@ import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.persona.impl.security.KSecurityManagerImpl;
 import io.vertigo.persona.security.KSecurityManager;
-import io.vertigo.rest.EndPointDefinition.EndPointParam;
 import io.vertigo.rest.filter.CorsAllower;
 import io.vertigo.rest.handler.ExceptionHandler;
 import io.vertigo.rest.handler.SecurityHandler;
@@ -141,7 +140,7 @@ public class WsRestHandler {
 		for (final EndPointDefinition endPointDefinition : endPointDefinitions) {
 			switch (endPointDefinition.getVerb()) {
 				case GET:
-					Spark.get(new WsRestRoute( endPointDefinition));
+					Spark.get(new WsRestRoute(endPointDefinition));
 					break;
 				case POST:
 					Spark.post(new WsRestRoute(endPointDefinition));

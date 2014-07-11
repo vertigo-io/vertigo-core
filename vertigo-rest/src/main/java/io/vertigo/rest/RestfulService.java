@@ -32,7 +32,6 @@ import java.lang.annotation.Target;
  * @author npiedeloup
  */
 public interface RestfulService {
-
 	/**
 	 * Accept anonymous access.
 	 */

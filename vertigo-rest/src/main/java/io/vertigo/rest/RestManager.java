@@ -35,6 +35,8 @@ import io.vertigo.rest.RestfulService.SessionLess;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Restfull webservice manager.
@@ -61,22 +63,25 @@ public class RestManager implements Manager, Activeable {
 
 	private static <C extends RestfulService> void instrospectEndPoints(final Class<C> restFullServiceClass) {
 		for (final Method method : restFullServiceClass.getMethods()) {
-			EndPointDefinition endPointDefinition;
 			Verb verb = null;
 			String path = null;
 			boolean needSession = true;
 			boolean needAuthentication = true;
 			for (final Annotation annotation : method.getAnnotations()) {
 				if (annotation instanceof GET) {
+					Assertion.checkState(verb == null, "A verb is already specified on {0}", method.getName());
 					verb = Verb.GET;
 					path = ((GET) annotation).value();
 				} else if (annotation instanceof POST) {
+					Assertion.checkState(verb == null, "A verb is already specified on {0}", method.getName());
 					verb = Verb.POST;
 					path = ((POST) annotation).value();
 				} else if (annotation instanceof PUT) {
+					Assertion.checkState(verb == null, "A verb is already specified on {0}", method.getName());
 					verb = Verb.PUT;
 					path = ((PUT) annotation).value();
 				} else if (annotation instanceof DELETE) {
+					Assertion.checkState(verb == null, "A verb is already specified on {0}", method.getName());
 					verb = Verb.DELETE;
 					path = ((DELETE) annotation).value();
 				} else if (annotation instanceof AnonymousAccessAllowed) {
@@ -86,22 +91,27 @@ public class RestManager implements Manager, Activeable {
 				}
 			}
 			if (verb != null) {
-				Assertion.checkNotNull(verb, "Verb must be specified on {0}", method.getName());
-				Assertion.checkArgNotEmpty(path, "Route path must be specified on {0}", method.getName());
-
-				endPointDefinition = new EndPointDefinition("EP_" + StringUtil.camelToConstCase(restFullServiceClass.getSimpleName()) + "_" + StringUtil.camelToConstCase(method.getName()), verb, path, method, needSession, needAuthentication);
-				final Class[] paramType = method.getParameterTypes();
-				final Annotation[][] parameterAnnotation = method.getParameterAnnotations();
-
-				for (int i = 0; i < paramType.length; i++) {
-					final String paramName = getParamName(parameterAnnotation[i]);
-					//Assertion.checkArgNotEmpty(paramName, "Le paramName n'a pas été précisé sur {0}", method.getName());
-
-					endPointDefinition.addParam(paramName, paramType[i]);
-				}
-				Home.getDefinitionSpace().put(endPointDefinition, EndPointDefinition.class);
+				createAndRegisterEndPoint(restFullServiceClass, method, verb, path, needSession, needAuthentication);
 			}
 		}
+	}
+
+	private static <C extends RestfulService> void createAndRegisterEndPoint(final Class<C> restFullServiceClass, final Method method, Verb verb, String path, boolean needSession, boolean needAuthentication) {
+		Assertion.checkNotNull(verb, "Verb must be specified on {0}", method.getName());
+		Assertion.checkArgNotEmpty(path, "Route path must be specified on {0}", method.getName());
+
+		final Class[] paramType = method.getParameterTypes();
+		final Annotation[][] parameterAnnotation = method.getParameterAnnotations();
+
+		List<EndPointParam> endPointParams = new ArrayList<>();
+		for (int i = 0; i < paramType.length; i++) {
+			final String paramName = getParamName(parameterAnnotation[i]);
+			//Assertion.checkArgNotEmpty(paramName, "Le paramName n'a pas été précisé sur {0}", method.getName());
+			endPointParams.add(new EndPointParam(paramName, paramType[i]));
+		}
+		//---
+		final EndPointDefinition endPointDefinition = new EndPointDefinition("EP_" + StringUtil.camelToConstCase(restFullServiceClass.getSimpleName()) + "_" + StringUtil.camelToConstCase(method.getName()), verb, path, method, needSession, needAuthentication, endPointParams);
+		Home.getDefinitionSpace().put(endPointDefinition, EndPointDefinition.class);
 	}
 
 	private static String getParamName(final Annotation[] annotations) {

@@ -33,26 +33,6 @@ import java.util.List;
  */
 @Prefix("EP_")
 public class EndPointDefinition implements Definition {
-	public static final class EndPointParam {
-		private final String name;
-		private final Class<?> type;
-
-		EndPointParam(final String name, final Class<?> type) {
-			Assertion.checkArgNotEmpty(name);
-			Assertion.checkNotNull(type);
-			//-----------------------------------------------------------------
-			this.name = name;
-			this.type = type;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public Class<?> getType() {
-			return type;
-		}
-	}
 
 	public enum Verb {
 		GET, POST, PUT, DELETE,
@@ -66,13 +46,14 @@ public class EndPointDefinition implements Definition {
 	private final boolean needSession;
 	private final boolean needAuthentification;
 
-	private final List<EndPointParam> endPointParams = new ArrayList<>();
+	private final List<EndPointParam> endPointParams;
 
-	public EndPointDefinition(final String name, final Verb verb, final String path, final Method method, final boolean needSession, final boolean needAuthentification) {
+	public EndPointDefinition(final String name, final Verb verb, final String path, final Method method, final boolean needSession, final boolean needAuthentification, List<EndPointParam> endPointParams) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(verb);
 		Assertion.checkArgNotEmpty(path);
 		Assertion.checkNotNull(method);
+		Assertion.checkNotNull(endPointParams);
 		//---------------------------------------------------------------------
 		this.name = name;
 		this.verb = verb;
@@ -81,6 +62,7 @@ public class EndPointDefinition implements Definition {
 		this.method = method;
 		this.needSession = needSession;
 		this.needAuthentification = needAuthentification;
+		this.endPointParams = Collections.unmodifiableList(new ArrayList<>(endPointParams));
 	}
 
 	public String getName() {
@@ -100,17 +82,7 @@ public class EndPointDefinition implements Definition {
 	}
 
 	public List<EndPointParam> getEndPointParams() {
-		return Collections.unmodifiableList(endPointParams);
-	}
-
-	//TODO 
-	//TODO 
-	//TODO must be immmutable, without any add,set or any methods like that
-	//TODO 
-	//TODO 
-	public void addParam(final String paramName, final Class paramType) {
-		final EndPointParam endPointParam = new EndPointParam(paramName, paramType);
-		endPointParams.add(endPointParam);
+		return endPointParams;
 	}
 
 	public boolean isNeedSession() {
