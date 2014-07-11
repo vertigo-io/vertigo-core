@@ -24,6 +24,8 @@ import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.util.ClassUtil;
 import io.vertigo.rest.RestfulService.PathParam;
 import io.vertigo.rest.RestfulService.QueryParam;
+import io.vertigo.rest.util.GoogleJsonEngine;
+import io.vertigo.rest.util.JsonEngine;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -139,8 +141,10 @@ final class RestfulServicesUtil {
 		}
 	}
 
+	private static final JsonEngine jsonEngine = new GoogleJsonEngine();
+
 	public static Object toJson(final Object value) {
-		return GSON.toJson(value);
+		return jsonEngine.toJson(value);
 	}
 
 	private static String getNamedValue(final Annotation[] annotations) {

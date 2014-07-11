@@ -38,6 +38,7 @@ import io.vertigo.rest.handler.SecurityHandler;
 import io.vertigo.rest.handler.SessionHandler;
 import io.vertigo.rest.handler.WsRestRoute;
 import io.vertigoimpl.commons.locale.LocaleManagerImpl;
+import io.vertigoimpl.engines.rest.cmd.ComponentCmdRestServices;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -104,8 +105,8 @@ public final class WsRestHandler {
 					.endComponent()
 				.endModule()
 				.beginModule("restServices").withNoAPI().withInheritance(RestfulService.class) //
-				//	.beginComponent(FamillesRestfulService.class).endComponent() //
-					.beginComponent(ContactsRestfulService.class).endComponent() //
+					.beginComponent(ComponentCmdRestServices.class).endComponent() //
+					.beginComponent(ContactsRestServices.class).endComponent() //
 				.endModule()
 				.beginModule("restCore").withNoAPI().withInheritance(Object.class) //
 					.beginComponent(RestManager.class).endComponent() //
