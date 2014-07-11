@@ -23,7 +23,6 @@ package io.vertigo.rest.exception;
  * @author npiedeloup
  */
 public final class VSecurityException extends Exception {
-
 	private static final long serialVersionUID = -8681804137431091875L;
 
 	/**

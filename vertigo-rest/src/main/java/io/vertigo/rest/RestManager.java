@@ -42,7 +42,7 @@ import java.util.List;
  * Restfull webservice manager.
  * @author npiedeloup
  */
-public class RestManager implements Manager, Activeable {
+public final class RestManager implements Manager, Activeable {
 
 	public RestManager() {
 		Home.getDefinitionSpace().register(EndPointDefinition.class);

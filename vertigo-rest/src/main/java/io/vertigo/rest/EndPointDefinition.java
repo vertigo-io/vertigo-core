@@ -32,7 +32,7 @@ import java.util.List;
  * @author npiedeloup
  */
 @Prefix("EP_")
-public class EndPointDefinition implements Definition {
+public final class EndPointDefinition implements Definition {
 
 	public enum Verb {
 		GET, POST, PUT, DELETE,

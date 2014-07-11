@@ -23,7 +23,6 @@ package io.vertigo.rest.exception;
  * @author npiedeloup
  */
 public final class SessionException extends Exception {
-
 	private static final long serialVersionUID = 4871828055854233637L;
 
 	/**

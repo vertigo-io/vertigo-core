@@ -53,7 +53,7 @@ import spark.Spark;
  * TODO : make configurable
  * @author npiedeloup 
  */
-public class WsRestHandler {
+public final class WsRestHandler {
 
 	public static final class DtDefinitions implements Iterable<Class<?>> {
 		public Iterator<Class<?>> iterator() {
