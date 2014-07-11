@@ -42,7 +42,6 @@ final class Syntax {
 
 	/** règle de suppression des blancs. */
 	static final Rule<?> SPACES = new WhiteSpaceRule(WHITE_SPACE);
-	static final Rule<String> SEPARATOR = new TermRule(";");
 
 	static final Rule<String> ARRAY_START = new TermRule("["); //like arrays in json syntax
 	static final Rule<String> ARRAY_END = new TermRule("]");

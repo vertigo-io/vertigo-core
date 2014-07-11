@@ -10,11 +10,11 @@ import io.vertigo.kernel.lang.Option;
 </#if>
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.task.model.TaskResult;
-import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.impl.persistence.util.DAOBroker;
 <#else>
 import javax.inject.Inject;

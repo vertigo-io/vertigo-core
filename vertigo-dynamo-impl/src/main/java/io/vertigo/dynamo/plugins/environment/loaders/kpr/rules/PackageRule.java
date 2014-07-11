@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.kpr.rules;
 
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.Syntax.SEPARATOR;
 import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.Syntax.SPACES;
 import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.Syntax.WORD;
 import io.vertigo.commons.parser.AbstractRule;
@@ -43,8 +42,7 @@ public final class PackageRule extends AbstractRule<String, List<?>> {
 				new TermRule("package "),//après package il y a un blanc obligatoire
 				SPACES,//
 				WORD,// Nom du package 2
-				SPACES,//
-				SEPARATOR);
+				SPACES);
 	}
 
 	@Override
