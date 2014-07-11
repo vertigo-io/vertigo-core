@@ -18,7 +18,8 @@
  */
 package io.vertigo.quarto.plugins.publisher.odt;
 
-import java.text.MessageFormat;
+import io.vertigo.kernel.util.StringUtil;
+
 import java.util.Stack;
 
 import org.apache.log4j.Logger;
@@ -142,7 +143,7 @@ final class ODTCleanerUtil {
 		//Si la balise fermante n'est pas pr�sent dans la pile des balises d�j� ouvertes, c'est qu'elle a disparu lors de la fusion,
 		//on retire alors la balise fermante (corrige le nullPointer lors des pop() ).
 		if (!pileBalise.contains(currentFermante.toString())) {
-			LOGGER.warn(MessageFormat.format("La balise fermante </{0}> n''est plus ouverte dans le document g�n�r�, elle est retir� du document.", currentFermante));
+			LOGGER.warn(StringUtil.format("La balise fermante </{0}> n'est plus ouverte dans le document g�n�r�, elle est retir� du document.", currentFermante));
 		} else {
 			String lastBalise = pileBalise.pop();
 			//Tant que la balise fermante ne correspond pas � la

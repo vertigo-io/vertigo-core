@@ -18,7 +18,8 @@
  */
 package io.vertigo.commons.parser;
 
-import java.text.MessageFormat;
+import io.vertigo.kernel.util.StringUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,7 +108,7 @@ public final class NotFoundException extends Exception {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("regle : ");
 		if (commentValues != null && commentValues.length != 0) {
-			sb.append(MessageFormat.format(comment, commentValues));
+			sb.append(StringUtil.format(comment, commentValues));
 		} else {
 			sb.append(comment);
 		}
