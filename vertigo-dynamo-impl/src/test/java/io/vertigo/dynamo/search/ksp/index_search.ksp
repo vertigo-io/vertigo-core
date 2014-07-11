@@ -1,4 +1,4 @@
-package io.vertigo.dynamock.search;
+package io.vertigo.dynamock.search
 
 create IndexDefinition IDX_CAR {
     dtResult : DT_CAR

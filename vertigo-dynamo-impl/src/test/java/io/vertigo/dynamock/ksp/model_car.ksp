@@ -1,4 +1,4 @@
-package io.vertigo.dynamock.domain.car;
+package io.vertigo.dynamock.domain.car
 
 create DtDefinition DT_CAR {
 		persistent : "true",

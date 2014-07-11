@@ -1,4 +1,4 @@
-package io.vertigo.dynamock.domain.fileinfo;
+package io.vertigo.dynamock.domain.fileinfo
 
 create DtDefinition DT_KX_FILE_INFO {
 	 persistent : "true"

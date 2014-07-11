@@ -1,4 +1,4 @@
-package io.vertigo.publisher.mock;
+package io.vertigo.publisher.mock
 
 create PublisherDefinition PU_ENQUETE{ root : PN_ENQUETE }
 

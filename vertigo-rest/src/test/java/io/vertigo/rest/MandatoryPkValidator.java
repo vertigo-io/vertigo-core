@@ -26,7 +26,7 @@ import io.vertigo.kernel.lang.MessageText;
 import io.vertigo.rest.validation.DtObjectErrors;
 import io.vertigo.rest.validation.DtObjectValidator;
 
-public class MandatoryPkValidator<O extends DtObject> extends DtObjectValidator<O> {
+public final class MandatoryPkValidator<O extends DtObject> extends DtObjectValidator<O> {
 
 	@Override
 	protected void checkMonoFieldConstraints(final O dtObject, final DtField dtField, final DtObjectErrors dtObjectErrors) {

@@ -1,8 +1,8 @@
-package fr.klee.demo.domain;
+package fr.klee.demo.domain
 
 create DtDefinition DT_KX_FILE_INFO {
 	 persistent : "true";
-	 key FIL_ID {domain : DO_GED_URI; label : "Identifiant"; notNull : "true";};
+	 key FIL_ID {domain : DO_GED_URI; label : "Identifiant"; notNull : "true";}
 	 field FILE_NAME {domain : DO_GED_LABEL; label : "Nom"; notNull : "true";};
 	 field MIME_TYPE {domain : DO_GED_LABEL; label : "Type mime"; notNull : "true";};
 	 field LENGTH {domain : DO_GED_SIZE; label : "Taille"; notNull : "true";};

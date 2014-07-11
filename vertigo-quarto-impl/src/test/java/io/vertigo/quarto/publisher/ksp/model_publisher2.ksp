@@ -1,4 +1,4 @@
-package io.vertigo.publisher.mock;     
+package io.vertigo.publisher.mock  
 
 /*Pour chargement des donn�es*/
 create DtDefinition DT_VILLE {

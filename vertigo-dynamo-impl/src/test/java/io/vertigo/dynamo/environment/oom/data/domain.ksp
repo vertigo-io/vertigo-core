@@ -1,4 +1,4 @@
-package io.vertigo.dynamo.environment.data;
+package io.vertigo.dynamo.environment.data
 
 /**** Domaines utilisés dans le modèle objet ****/
 

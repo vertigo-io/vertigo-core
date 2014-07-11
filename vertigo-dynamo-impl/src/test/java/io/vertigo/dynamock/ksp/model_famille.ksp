@@ -1,4 +1,4 @@
-package io.vertigo.dynamock.domain.famille;
+package io.vertigo.dynamock.domain.famille
 
 create DtDefinition DT_FAMILLE {
 		persistent : "true"
