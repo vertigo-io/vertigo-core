@@ -28,7 +28,7 @@ import io.vertigo.kernel.component.ComponentSpace;
 import io.vertigo.kernel.component.Container;
 import io.vertigo.kernel.component.Plugin;
 import io.vertigo.kernel.di.injector.Injector;
-import io.vertigo.kernel.di.reactor.Reactor;
+import io.vertigo.kernel.di.reactor.DIReactor;
 import io.vertigo.kernel.engines.AopEngine;
 import io.vertigo.kernel.engines.VCommandEngine;
 import io.vertigo.kernel.lang.Activeable;
@@ -208,7 +208,7 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 	private void injectComponents(final ModuleConfig moduleConfig) {
 		final AopEngine aopEngine = componentSpaceConfig.getAopEngine();
 
-		final Reactor reactor = new Reactor();
+		final DIReactor reactor = new DIReactor();
 		for (final String id : componentContainer.keySet()) {
 			reactor.addParent(id);
 		}
