@@ -7,6 +7,7 @@ Running 0.3.1-SNAPSHOT
   * Change declaration of resources is externalized. In this way, each module can declare its own resources (oom, ea, ksp, xml).     
   * Change KDataType to DataType
   * Change : Tasks must be processed using TaskManager and not WorkManager. (In fact each component must be able to process sync or async its own works) 
+  * Add module labs, contains some usefull components such as mail   
   * Add module persona, built to manage all concepts around a user/persona  
   * Add module quarto, which contains two components : publisher (to create new publications by merging template and data) and converter (to convert a doc, docx into a pdf for example)   
   * Add distributed task management (by redis or http/rest)
@@ -14,6 +15,7 @@ Running 0.3.1-SNAPSHOT
   * Add vertigo-rest : RESTful WebService support for HTML5 applications
   * Fix Issues #3 : add a new mandatory vertigo-studio parameter ```domain.dictionaryClassName``` 
     * To maintain compatibility add : ```domain.dictionaryClassName=DtDefinitions``` in your studio-config.properties
+  * Add check on unused components, params during injection  
   * Fix Issues #2
 
 Release 0.3.0 - 2014/03/13
