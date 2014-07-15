@@ -19,6 +19,7 @@
 package io.vertigo.studio.plugins.mda.domain;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.studio.mda.Result;
@@ -49,6 +50,8 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 	private final boolean generateDtDefinitions;
 	private final boolean generateDtObject;
 	private final boolean generateSql;
+	private final boolean generateDrop;
+	private final String baseCible;
 
 	/**
 	 * Constructeur.
@@ -58,15 +61,25 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 	 * @param generateDtDefinitions Si on génère le fichier fournissant la liste des classes de Dt
 	 * @param generateDtObject Si on génère les classes des Dt
 	 * @param generateSql Si on génére le crebase.sql
+	 * @param generateDrop Si on génère les Drop table dans le fichier SQL
+	 * @param baseCible Type de base de données ciblé.
 	 */
 	@Inject
-	public DomainGeneratorPlugin(@Named("generateDtResources") final boolean generateDtResources, @Named("generateJpaAnnotations") final boolean generateJpaAnnotations, @Named("generateDtDefinitions") final boolean generateDtDefinitions, @Named("generateDtObject") final boolean generateDtObject, @Named("generateSql") final boolean generateSql) {
+	public DomainGeneratorPlugin(@Named("generateDtResources") final boolean generateDtResources, 
+								@Named("generateJpaAnnotations") final boolean generateJpaAnnotations, 
+								@Named("generateDtDefinitions") final boolean generateDtDefinitions, 
+								@Named("generateDtObject") final boolean generateDtObject, 
+								@Named("generateSql") final boolean generateSql, 
+								@Named("generateDrop") final boolean generateDrop,
+								@Named("baseCible") final String baseCible) {
 		// ---------------------------------------------------------------------
 		this.generateDtResources = generateDtResources;
 		this.generateJpaAnnotations = generateJpaAnnotations;
 		this.generateDtDefinitions = generateDtDefinitions;
 		this.generateDtObject = generateDtObject;
 		this.generateSql = generateSql;
+		this.generateDrop = generateDrop;
+		this.baseCible = baseCible;
 	}
 
 	/** {@inheritDoc} */
@@ -80,6 +93,10 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 
 	private Map<String, Collection<DtDefinition>> getDtDefinitionCollectionMap() {
 		return getDefinitionCollectionMap(getDtDefinitions());
+	}
+	
+	private Collection<AssociationDefinition> getAssociations() {
+		return sortAssociationsCollection(Home.getDefinitionSpace().getAll(AssociationDefinition.class));
 	}
 
 	/** {@inheritDoc} */
@@ -161,10 +178,17 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 	}
 
 	private void generateSql(final DomainConfiguration domainConfiguration, final Result result) {
+		final List<TemplateDtDefinition> list = new ArrayList<TemplateDtDefinition>(getDtDefinitions().size());
+		for (DtDefinition dtDefinition : sortAbsoluteDefinitionCollection(getDtDefinitions())) {
+			final TemplateDtDefinition templateDef = new TemplateDtDefinition(dtDefinition);
+			list.add(templateDef);
+		}
 		final Map<String, Object> mapRoot = new HashMap<>();
-		mapRoot.put("sql", new TemplateMethodSqlOracle());
-		mapRoot.put("dtDefinitions", getDtDefinitions());
-		mapRoot.put("oracle", true);
+		mapRoot.put("sql", new TemplateMethodSql());
+		mapRoot.put("dtDefinitions", list);
+		mapRoot.put("associations", getAssociations());
+		mapRoot.put("drop", generateDrop);
+		mapRoot.put("basecible", baseCible); // Ne sert actuellement à rien, le sql généré étant le même. Prévu pour le futur
 		final FileGenerator super2java = getFileGenerator(domainConfiguration, mapRoot, "crebas", "sqlgen", ".sql", "sql.ftl");
 		super2java.generateFile(result, true);
 	}
@@ -211,4 +235,46 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 		}
 		return map;
 	}
+	
+	private static Collection<DtDefinition> sortAbsoluteDefinitionCollection(final Collection<DtDefinition> definitionCollection) {
+		final List<DtDefinition> list = new ArrayList<>(definitionCollection);
+		java.util.Collections.sort(list, new Comparator<DtDefinition>() {
+			public int compare(final DtDefinition definition1, final DtDefinition definition2) {
+				return definition1.getClassSimpleName().compareTo(definition2.getClassSimpleName());
+			}
+
+			@Override
+			public boolean equals(final Object obj) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public int hashCode() {
+				throw new UnsupportedOperationException();
+			}
+		});
+		return list;
+	}
+	
+	private static Collection<AssociationDefinition> sortAssociationsCollection(final Collection<AssociationDefinition> associationCollection) {
+		final List<AssociationDefinition> list = new ArrayList<>(associationCollection);
+		java.util.Collections.sort(list, new Comparator<AssociationDefinition>() {
+			public int compare(final AssociationDefinition definition1, final AssociationDefinition definition2) {
+				return definition1.getName().compareTo(definition2.getName());
+			}
+
+			@Override
+			public boolean equals(final Object obj) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public int hashCode() {
+				throw new UnsupportedOperationException();
+			}
+		});
+		return list;
+	}
+
+	
 }

@@ -161,6 +161,11 @@ public enum KspProperty implements EntityProperty {
 	 * Expression du champ computed.
 	 */
 	EXPRESSION(PrimitiveType.String),
+	
+	/**
+	 * Type de données en base.
+	 */
+	STORE_TYPE(PrimitiveType.String),
 
 	//==========================================================================
 	//==========================================================================

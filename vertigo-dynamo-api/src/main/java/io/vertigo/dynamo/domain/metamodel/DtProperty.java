@@ -66,6 +66,12 @@ public final class DtProperty {
 	 * Propriété standard : Type de l'index. (SOLR par exemple)
 	 */
 	public static final Property<String> INDEX_TYPE = new Property<>("indexType", String.class);
+	
+	/**
+	 * Propriété standard : Type de données pour la persistence. 
+	 */
+	public static final Property<String> STORE_TYPE = new Property<>("storeType", String.class);
+	
 
 	public static Property<?> valueOf(final String propertyName) {
 		try {

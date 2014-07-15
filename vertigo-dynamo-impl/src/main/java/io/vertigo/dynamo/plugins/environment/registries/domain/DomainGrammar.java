@@ -151,6 +151,7 @@ public final class DomainGrammar extends GrammarProvider {
 				.withProperty(KspProperty.TYPE, false)//
 				.withProperty(KspProperty.UNIT, false)//
 				.withProperty(KspProperty.INDEX_TYPE, false)//
+				.withProperty(KspProperty.STORE_TYPE, false)//
 				.withAttribute("formatter", formatterEntity, false, true)//
 				.withAttribute("dataType", KernelGrammar.INSTANCE.getDataTypeEntity(), false, true)//
 				.withAttribute("constraint", constraintEntity, true, false)//

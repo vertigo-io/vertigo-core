@@ -35,6 +35,8 @@
 	            <param name="generateDtDefinitions" value="true" />
 	            <param name="generateDtObject" value="true" />
 	            <param name="generateSql" value="false" />
+	            <param name="baseCible" value="PostgreSql" />
+	            <param name="generateDrop" value="false" />
 	        </plugin>
 	        <plugin class="io.vertigo.studio.plugins.mda.task.TaskGeneratorPlugin"/>
 	        <!-- plugin class="io.vertigo.studio.plugins.mda.search.SearchGeneratorPlugin"/  -->
