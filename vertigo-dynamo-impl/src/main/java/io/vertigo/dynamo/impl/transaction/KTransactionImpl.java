@@ -37,6 +37,11 @@ import java.util.Map;
  */
 public final class KTransactionImpl implements KTransactionWritable {
 	/**
+	 * Contient la transaction du Thread courant.
+	 */
+	private static final ThreadLocal<KTransactionImpl> currentThreadLocalTransaction = new ThreadLocal<>();
+
+	/**
 	 * A la création la transaction est démarrée.
 	 */
 	private boolean transactionClosed;
@@ -76,6 +81,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 		this.transactionListener = transactionListener;
 		//La transaction démarre
 		transactionListener.onTransactionStart();
+		currentThreadLocalTransaction.set(this);
 	}
 
 	/**
@@ -351,6 +357,29 @@ public final class KTransactionImpl implements KTransactionWritable {
 	}
 
 	public void close() {
-		rollback();
+		try {
+			rollback();
+		} finally {
+			currentThreadLocalTransaction.remove();
+		}
+	}
+
+	//==========================================================================
+	//=========================PRIVATE==========================================
+	//==========================================================================
+
+	/**
+	 * Retourne la transaction courante de plus haut niveau.
+	 * - jamais closed
+	 * - peut être null
+	 * @return KTransaction
+	 */
+	static KTransactionImpl getLocalCurrentTransaction() {
+		KTransactionImpl transaction = currentThreadLocalTransaction.get();
+		//Si la transaction courante est finie on ne la retourne pas.
+		if (transaction != null && transaction.isClosed()) {
+			transaction = null;
+		}
+		return transaction;
 	}
 }
