@@ -21,15 +21,16 @@ package io.vertigo.kernel.home.componentspace;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
+import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.home.componentspace.data.BioManager;
 import io.vertigo.kernel.home.componentspace.data.BioManagerImpl;
+import io.vertigo.kernel.home.componentspace.data.DummyPlugin;
 import io.vertigo.kernel.home.componentspace.data.MathManager;
 import io.vertigo.kernel.home.componentspace.data.MathManagerImpl;
 import io.vertigo.kernel.home.componentspace.data.MathPlugin;
 
 import org.junit.Assert;
 import org.junit.Test;
-
 
 public final class ComponentSpaceTest {
 
@@ -57,6 +58,35 @@ public final class ComponentSpaceTest {
 			final int res = bioManager.add(1, 2, 3);
 			Assert.assertEquals(366, res);
 			Assert.assertTrue(bioManager.isActive());
+		} finally {
+			Home.stop();
+		}
+	}
+
+	@Test(expected = VRuntimeException.class)
+	public void testHome2() {
+		// @formatter:off
+		final ComponentSpaceConfig componentSpaceConfig = new ComponentSpaceConfigBuilder()
+			.withParam("log4j.configurationFileName", "/log4j.xml")
+			.withSilence(false)
+			.beginModule("Bio")
+				.beginComponent(BioManager.class, BioManagerImpl.class)
+					//This plugin DummyPlugin is not used By BioManager !!
+					.beginPlugin(DummyPlugin.class).endPlugin()
+				.endComponent()
+				.beginComponent(MathManager.class, MathManagerImpl.class)
+					.withParam("start", "100")
+					.beginPlugin( MathPlugin.class)
+						.withParam("factor", "20")
+					.endPlugin()
+				.endComponent()	
+			.endModule()	
+		.build();
+		// @formatter:on
+
+		Home.start(componentSpaceConfig);
+		try {
+			//
 		} finally {
 			Home.stop();
 		}
