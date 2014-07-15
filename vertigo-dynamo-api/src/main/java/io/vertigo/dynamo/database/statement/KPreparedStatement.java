@@ -38,7 +38,7 @@ import java.sql.SQLException;
  *
  * @author pchretien
  */
-public interface KPreparedStatement {
+public interface KPreparedStatement extends AutoCloseable {
 	/**
 	 * Type des paramètres.
 	 */
