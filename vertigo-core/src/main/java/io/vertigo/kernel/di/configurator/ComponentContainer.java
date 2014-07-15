@@ -95,20 +95,6 @@ final class ComponentContainer implements Container, Activeable {
 	}
 
 	/**
-	 * Récupération d'un composant d'un certain type.
-	 * @param <M> Type du composant
-	 * @param componentClass Class du composant
-	 * @return Composant correspondant au type précisé.
-	 */
-	<T> T resolveComponent(final Class<T> componentClass) {
-		final String normalizedId = StringUtil.normalize(componentClass.getSimpleName());
-		final T component = componentClass.cast(components.get(normalizedId));
-		//---------------------------------------------------------------------
-		Assertion.checkNotNull(component, "Aucun composant de type {0} enregistré parmi {1}", componentClass, Home.getComponentSpace().keySet());
-		return component;
-	}
-
-	/**
 	 * Enregistrement des plugins .
 	 * @param componentClass Classe/Interface du gestionnaire
 	 */

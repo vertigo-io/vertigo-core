@@ -36,6 +36,7 @@ import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.metamodel.DefinitionSpace;
 import io.vertigo.kernel.resource.ResourceLoader;
+import io.vertigo.kernel.util.StringUtil;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -319,7 +320,8 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 
 	/** {@inheritDoc} */
 	public <T> T resolve(final Class<T> componentClass) {
-		return componentContainer.resolveComponent(componentClass);
+		final String normalizedId = StringUtil.normalize(componentClass.getSimpleName());
+		return componentContainer.resolve(normalizedId, componentClass);
 	}
 
 	/** {@inheritDoc} */
