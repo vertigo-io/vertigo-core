@@ -25,41 +25,28 @@ import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.PackageRule;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class PackageRuleTest {
+public final class PackageRuleTest {
 	private static final PackageRule packageRule = new PackageRule();
 
 	@Test
-	public void test1() throws NotFoundException {
+	public void testExpression() throws NotFoundException {
 		Parser<String> parser = packageRule.createParser();
-		parser.parse("package io.vertigo.dynamock;", 0);
-		Assert.assertEquals("io.vertigo.dynamock", parser.get());
-	}
-
-	@Test
-	public void test2() throws NotFoundException {
-		Parser<String> parser = packageRule.createParser();
-		parser.parse("package io.vertigo.dynamock.avecpoint;", 0);
-		Assert.assertEquals("io.vertigo.dynamock.avecpoint", parser.get());
-	}
-
-	@Test
-	public void test3() throws NotFoundException {
-		Parser<String> parser = packageRule.createParser();
-		parser.parse("package io.vertigo.dynamock;", 0);
-		Assert.assertEquals("io.vertigo.dynamock", parser.get());
+		int index = parser.parse("package io.vertigo  xxxx", 0);
+		Assert.assertEquals("io.vertigo", parser.get());
+		Assert.assertEquals("package io.vertigo  ".length(), index);
 	}
 
 	@Test(expected = Exception.class)
-	public void test4() throws NotFoundException {
+	public void testMalFormedExpression() throws NotFoundException {
 		Parser<String> parser = packageRule.createParser();
-		parser.parse("packageio.vertigo.dynamock;", 0);
+		parser.parse("packageio.vertigo", 0);
 		Assert.fail("package : " + parser.get());
 	}
 
 	@Test(expected = Exception.class)
-	public void test5() throws NotFoundException {
+	public void testMalFormedExpression2() throws NotFoundException {
 		Parser<String> parser = packageRule.createParser();
-		parser.parse("package io.vertigo.dynamock io.vertigo.dynamock;", 0);
+		parser.parse("  packageio.vertigo", 0);
 		Assert.fail("package : " + parser.get());
 	}
 }
