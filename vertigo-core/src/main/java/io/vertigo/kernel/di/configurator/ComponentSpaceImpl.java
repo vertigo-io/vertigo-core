@@ -31,6 +31,7 @@ import io.vertigo.kernel.di.injector.Injector;
 import io.vertigo.kernel.di.reactor.DIReactor;
 import io.vertigo.kernel.engines.AopEngine;
 import io.vertigo.kernel.engines.VCommandEngine;
+import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
@@ -284,13 +285,29 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 	}
 
 	private Object createComponent(final ComponentConfig componentConfig) {
+		//---pluginTypes
+		Set<String> pluginTypes = new HashSet<>();
+		for (final PluginConfig pluginConfig : componentConfig.getPluginConfigs()) {
+			pluginTypes.add(pluginConfig.getType());
+		}
+		//---	
 		if (componentConfig.isElastic()) {
 			return componentSpaceConfig.getElasticaEngine().get().createProxy(componentConfig.getApiClass().get());
 		}
 		ParamsContainer paramsContainer = new ParamsContainer(componentConfig.getParams());
-		final Container container = new DualContainer(componentContainer, paramsContainer);
+		final DualContainer container = new DualContainer(componentContainer, paramsContainer);
 		//---
 		Object component = injector.newInstance(componentConfig.getImplClass(), container);
+		//--Search for unuseds plugins 
+		// We are inspecting all unused keys, and we check if we can find almost one plugin of the component.
+		for (final String key : container.getUnusedKeys()) {
+			for (final String pluginType : pluginTypes) {
+				if (key.startsWith(pluginType)) {
+					throw new VRuntimeException("plugin '{0}' on component '{1}' is not used by injection", null, container.resolve(key, Plugin.class).getClass(), componentConfig);
+				}
+			}
+		}
+		//--Search for unuseds params
 		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}'", paramsContainer.getUnusedKeys());
 		return component;
 	}
