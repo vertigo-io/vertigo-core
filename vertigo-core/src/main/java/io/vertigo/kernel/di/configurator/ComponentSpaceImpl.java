@@ -280,12 +280,7 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 	}
 
 	private ComponentInitializer<?> createComponentInitializer(final ComponentConfig componentConfig) {
-		ParamsContainer paramsContainer = new ParamsContainer(componentConfig.getParams());
-		final Container container = new DualContainer(componentContainer, paramsContainer);
-		//---
-		ComponentInitializer<?> initializer = injector.newInstance(componentConfig.getInitializerClass(), container);
-		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}'", paramsContainer.getUnusedKeys());
-		return initializer;
+		return injector.newInstance(componentConfig.getInitializerClass(), componentContainer);
 	}
 
 	private Object createComponent(final ComponentConfig componentConfig) {
