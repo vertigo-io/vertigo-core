@@ -2,44 +2,44 @@ package io.vertigo.dynamock.file
 
 
 create Formatter FMT_DEFAULT {
-     className :"io.vertigo.dynamox.domain.formatter.FormatterDefault";
-};
+     className :"io.vertigo.dynamox.domain.formatter.FormatterDefault"
+}
 
 create Formatter FMT_DATE {
-     className :"io.vertigo.dynamox.domain.formatter.FormatterDate";
-     args : "dd/MM/yyyy";
-};
+     className :"io.vertigo.dynamox.domain.formatter.FormatterDate"
+     args : "dd/MM/yyyy"
+}
 
 create FileInfo FI_FILE_INFO_STD {
-	storeName : "BddFileStore";
-	root : "KX_FILE_INFO";	
-};
+	storeName : "BddFileStore"
+	root : "KX_FILE_INFO"
+}
 
 /**************************************************************************************************/
 /* 											Gestion des domaines pour le FileInfo								  */
 /**************************************************************************************************/
 	
 create Domain DO_GED_LABEL {
-	dataType : String;
-	formatter : FMT_DEFAULT;
-};
+	dataType : String
+	formatter : FMT_DEFAULT
+}
 
 create Domain DO_GED_DATE {
-	dataType : Date;
-	formatter : FMT_DATE;
-};
+	dataType : Date
+	formatter : FMT_DATE
+}
 
 create Domain DO_GED_URI {
-	dataType : Long;
-	formatter : FMT_DEFAULT;
-};
+	dataType : Long
+	formatter : FMT_DEFAULT
+}
 
 create Domain DO_GED_SIZE {
-	dataType : Long;
-	formatter : FMT_DEFAULT;
-};
+	dataType : Long
+	formatter : FMT_DEFAULT
+}
 
 create Domain DO_GED_DATA_STREAM {
-	dataType : DataStream;
-	formatter : FMT_DEFAULT;
-};
+	dataType : DataStream
+	formatter : FMT_DEFAULT
+}

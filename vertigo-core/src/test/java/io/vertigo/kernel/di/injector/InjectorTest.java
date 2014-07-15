@@ -19,12 +19,12 @@
 package io.vertigo.kernel.di.injector;
 
 import io.vertigo.kernel.component.Container;
-import io.vertigo.kernel.component.ParamsContainer;
 import io.vertigo.kernel.di.A;
 import io.vertigo.kernel.di.B;
 import io.vertigo.kernel.di.DIException;
 import io.vertigo.kernel.di.E;
 import io.vertigo.kernel.di.F;
+import io.vertigo.kernel.di.configurator.ParamsContainer;
 import io.vertigo.kernel.di.injector.Injector;
 import io.vertigo.kernel.lang.Assertion;
 

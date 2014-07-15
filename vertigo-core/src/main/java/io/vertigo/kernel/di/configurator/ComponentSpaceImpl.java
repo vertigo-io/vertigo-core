@@ -26,7 +26,6 @@ import io.vertigo.kernel.command.VCommandExecutor;
 import io.vertigo.kernel.component.ComponentInitializer;
 import io.vertigo.kernel.component.ComponentSpace;
 import io.vertigo.kernel.component.Container;
-import io.vertigo.kernel.component.ParamsContainer;
 import io.vertigo.kernel.component.Plugin;
 import io.vertigo.kernel.di.injector.Injector;
 import io.vertigo.kernel.di.reactor.Reactor;
@@ -280,21 +279,33 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 	}
 
 	private ComponentInitializer<?> createComponentInitializer(final ComponentConfig componentConfig) {
-		final Container container = new DualContainer(componentContainer, new ParamsContainer(componentConfig.getParams()));
-		return injector.newInstance(componentConfig.getInitializerClass(), container);
+		ParamsContainer paramsContainer = new ParamsContainer(componentConfig.getParams());
+		final Container container = new DualContainer(componentContainer, paramsContainer);
+		//---
+		ComponentInitializer<?> initializer = injector.newInstance(componentConfig.getInitializerClass(), container);
+		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}'", paramsContainer.getUnusedKeys());
+		return initializer;
 	}
 
 	private Object createComponent(final ComponentConfig componentConfig) {
 		if (componentConfig.isElastic()) {
 			return componentSpaceConfig.getElasticaEngine().get().createProxy(componentConfig.getApiClass().get());
 		}
-		final Container container = new DualContainer(componentContainer, new ParamsContainer(componentConfig.getParams()));
-		return injector.newInstance(componentConfig.getImplClass(), container);
+		ParamsContainer paramsContainer = new ParamsContainer(componentConfig.getParams());
+		final Container container = new DualContainer(componentContainer, paramsContainer);
+		//---
+		Object component = injector.newInstance(componentConfig.getImplClass(), container);
+		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}'", paramsContainer.getUnusedKeys());
+		return component;
 	}
 
 	private Plugin createPlugin(final PluginConfig pluginConfig) {
-		final Container container = new DualContainer(componentContainer, new ParamsContainer(pluginConfig.getParams()));
-		return injector.newInstance(pluginConfig.getImplClass(), container);
+		ParamsContainer paramsContainer = new ParamsContainer(pluginConfig.getParams());
+		final Container container = new DualContainer(componentContainer, paramsContainer);
+		//---
+		Plugin plugin = injector.newInstance(pluginConfig.getImplClass(), container);
+		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}'", paramsContainer.getUnusedKeys());
+		return plugin;
 	}
 
 	private Map<PluginConfig, Plugin> createPlugins(final ComponentConfig componentConfig) {
