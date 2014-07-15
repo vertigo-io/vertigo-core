@@ -16,26 +16,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.kernel.component;
+package io.vertigo.kernel.di.configurator;
 
+import io.vertigo.kernel.component.Container;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * Container contenant des paramètres.
+ * This container contains params initialized with String.
+ * Method getUnusedKeys allows to identify phantom params. 
  * 
  * @author pchretien
  */
 public final class ParamsContainer implements Container {
 	private final Map<String, String> params;
+	private final Set<String> unusedKeys;
 
 	public ParamsContainer(final Map<String, String> params) {
 		Assertion.checkNotNull(params);
 		//---------------------------------------------------------------------
 		this.params = params;
+		unusedKeys = new HashSet<>(params.keySet());
 	}
 
 	/** {@inheritDoc} */
@@ -50,6 +55,7 @@ public final class ParamsContainer implements Container {
 		Assertion.checkNotNull(id);
 		Assertion.checkState(params.containsKey(id), "Le paramètre '{0}' de type '{1}' n'a pas été défini.", id, clazz.getSimpleName());
 		// ---------------------------------------------------------------------
+		unusedKeys.remove(id);
 		final Object value = getParam(params, id, clazz);
 		final Class<O> type = box(clazz);
 		Assertion.checkArgument(type.isAssignableFrom(value.getClass()), "Composant/paramètre '{0}' type '{1}' , type attendu '{2}'", id, value.getClass(), clazz);
@@ -115,5 +121,12 @@ public final class ParamsContainer implements Container {
 			throw new IllegalArgumentException(clazz + "est un type primitif non géré");
 		}
 		return clazz;
+	}
+
+	/*
+	 * @return Keys that are not used, allows to identify phantom keys during injection.
+	 */
+	Set<String> getUnusedKeys() {
+		return unusedKeys;
 	}
 }

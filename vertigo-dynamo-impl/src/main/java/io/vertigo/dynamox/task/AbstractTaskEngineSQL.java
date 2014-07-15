@@ -156,22 +156,20 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 		final String sql = prepareParams(getSqlQuery().trim());
 		checkSqlQuery(sql);
 
-		final S statement = createStatement(sql, connection);
-		//Inialise les paramètres.
-		initParameters(statement);
-		try {
-			//Initialise le statement JDBC.
-			statement.init();
-			//Execute le Statement JDBC.
-			final int sqlRowcount = doExecute(connection, statement);
-			//On positionne le nombre de lignes affectées.
-			setRowCount(sqlRowcount);
-		} catch (final SQLException sqle) {
-			//Gère les erreurs d'exécution JDBC.
-			handleSQLException(connection, sqle, statement);
-		} finally {
-			//Ferme de statement.
-			statement.close();
+		try (final S statement = createStatement(sql, connection)) {
+			//Inialise les paramètres.
+			initParameters(statement);
+			try {
+				//Initialise le statement JDBC.
+				statement.init();
+				//Execute le Statement JDBC.
+				final int sqlRowcount = doExecute(connection, statement);
+				//On positionne le nombre de lignes affectées.
+				setRowCount(sqlRowcount);
+			} catch (final SQLException sqle) {
+				//Gère les erreurs d'exécution JDBC.
+				handleSQLException(connection, sqle, statement);
+			}
 		}
 	}
 

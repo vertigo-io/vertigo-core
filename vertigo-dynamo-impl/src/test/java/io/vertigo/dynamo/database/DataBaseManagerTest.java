@@ -19,16 +19,15 @@
 package io.vertigo.dynamo.database;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.dynamo.database.DataBaseManager;
 import io.vertigo.dynamo.database.connection.KConnection;
 import io.vertigo.dynamo.database.statement.KCallableStatement;
 import io.vertigo.dynamo.database.statement.KPreparedStatement;
 import io.vertigo.dynamo.database.statement.QueryResult;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -83,8 +82,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 
 	private void insert(final KConnection connection, final long key, final String libelle) throws SQLException {
 		final String sql = "insert into famille values (?, ?)";
-		final KCallableStatement callableStatement = dataBaseManager.createCallableStatement(connection, sql);
-		try {
+		try (final KCallableStatement callableStatement = dataBaseManager.createCallableStatement(connection, sql)) {
 			callableStatement.registerParameter(0, DataType.Long, KPreparedStatement.ParameterType.IN);
 			callableStatement.registerParameter(1, DataType.String, KPreparedStatement.ParameterType.IN);
 			//-------
@@ -94,8 +92,6 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 			callableStatement.setValue(1, libelle);
 			//-------
 			callableStatement.executeUpdate();
-		} finally {
-			callableStatement.close();
 		}
 	}
 
@@ -160,14 +156,9 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 
 	private QueryResult executeQuery(final Domain domain, final String sql) throws SQLException, Exception {
 		final KConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
-		try {
-			final KPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false);
-			try {
-				preparedStatement.init();
-				return preparedStatement.executeQuery(domain);
-			} finally {
-				preparedStatement.close();
-			}
+		try (final KPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false)) {
+			preparedStatement.init();
+			return preparedStatement.executeQuery(domain);
 		} finally {
 			connection.commit();
 		}

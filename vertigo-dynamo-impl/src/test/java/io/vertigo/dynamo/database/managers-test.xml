@@ -2,7 +2,6 @@
 <modules>
 	<module name="vertigo">
 	    <component api="LocaleManager" class="io.vertigoimpl.commons.locale.LocaleManagerImpl" > 
-	         <param name="multilingual" value="false" />
 	         <param name="locales" value="fr_FR" />
 	    </component>
 	</module>

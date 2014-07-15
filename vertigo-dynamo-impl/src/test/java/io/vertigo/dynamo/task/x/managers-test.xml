@@ -5,7 +5,6 @@
 	    	<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin"/>                               
 	    </component>
 	     <component api="LocaleManager" class="io.vertigoimpl.commons.locale.LocaleManagerImpl"> 
-	         <param name="multilingual" value="false" />
 	         <param name="locales" value="fr_FR" />
 	    </component>
 	    <component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />

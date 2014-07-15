@@ -22,9 +22,9 @@ import io.vertigo.kernel.component.Container;
 import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
 
 /**
  * Super Conteneur.
@@ -34,6 +34,7 @@ import java.util.Set;
 final class DualContainer implements Container {
 	private final Container container1, container2;
 	private final Set<String> ids;
+	private final Set<String> unusedKeys;
 
 	DualContainer(final Container container1, final Container container2) {
 		Assertion.checkNotNull(container1);
@@ -45,6 +46,7 @@ final class DualContainer implements Container {
 		ids.addAll(container1.keySet());
 		ids.addAll(container2.keySet());
 		Assertion.checkArgument(ids.size() == container1.keySet().size() + container2.keySet().size(), "Ambiguité : il y a des ids en doublon");
+		unusedKeys = new HashSet<>(ids);
 	}
 
 	/** {@inheritDoc} */
@@ -59,6 +61,7 @@ final class DualContainer implements Container {
 		Assertion.checkNotNull(id);
 		Assertion.checkNotNull(clazz);
 		// ---------------------------------------------------------------------
+		unusedKeys.remove(id);
 		if (container1.contains(id)) {
 			return container1.resolve(id, clazz);
 		}
@@ -71,5 +74,9 @@ final class DualContainer implements Container {
 	/** {@inheritDoc} */
 	public Set<String> keySet() {
 		return ids;
+	}
+
+	Set<String> getUnusedKeys() {
+		return unusedKeys;
 	}
 }

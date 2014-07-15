@@ -29,13 +29,13 @@ import java.util.Set;
 
 /**
  * Reactor.
- * -add components in any order with their id, their class
+ * - add components in any order with their id, their class
  * - add ids for components that are already existing.
  * - then 'proceed' and you obtain an ORDERED list of components, taking account of their dependencies.  
  *   
  * @author pchretien
  */
-public final class Reactor {
+public final class DIReactor {
 	//Map des composants et de leurs parents
 	private final Set<String> allComponentInfos = new HashSet<>();
 	private final List<DIComponentInfo> diComponentInfos = new ArrayList<>();
@@ -54,7 +54,7 @@ public final class Reactor {
 	 * @param implClass Impl class of the component
 	 * @return Reactor
 	 */
-	public Reactor addComponent(final String id, final Class<?> implClass) {
+	public DIReactor addComponent(final String id, final Class<?> implClass) {
 		return addComponent(id, implClass, Collections.<String> emptySet(), Collections.<String> emptySet());
 	}
 
@@ -65,7 +65,7 @@ public final class Reactor {
 	 * @params params List of ID of all local params - which will be automatically injected- 
 	 * @return Reactor
 	 */
-	public Reactor addComponent(final String id, final Class<?> implClass, final Set<String> params) {
+	public DIReactor addComponent(final String id, final Class<?> implClass, final Set<String> params) {
 		return addComponent(id, implClass, params, Collections.<String> emptySet());
 	}
 
@@ -77,7 +77,7 @@ public final class Reactor {
 	 * @params pluginIds List of plugin IDs of all local plugins, which must be resolved before the component.  
 	 * @return Reactor
 	 */
-	public Reactor addComponent(final String id, final Class<?> implClass, final Set<String> params, final Set<String> pluginIds) {
+	public DIReactor addComponent(final String id, final Class<?> implClass, final Set<String> params, final Set<String> pluginIds) {
 		final DIComponentInfo diComponentInfo = new DIComponentInfo(id, implClass, pluginIds, params);
 		check(diComponentInfo.getId());
 		allComponentInfos.add(diComponentInfo.getId());
@@ -90,7 +90,7 @@ public final class Reactor {
 	 * This component is ready to be injected in other components (and it does not need to be resolved).
 	 * @param id ID of the component
 	 */
-	public Reactor addParent(final String id) {
+	public DIReactor addParent(final String id) {
 		check(id);
 		allComponentInfos.add(id);
 		parentComponentInfos.add(id);

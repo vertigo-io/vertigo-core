@@ -26,17 +26,18 @@ import io.vertigo.kernel.command.VCommandExecutor;
 import io.vertigo.kernel.component.ComponentInitializer;
 import io.vertigo.kernel.component.ComponentSpace;
 import io.vertigo.kernel.component.Container;
-import io.vertigo.kernel.component.ParamsContainer;
 import io.vertigo.kernel.component.Plugin;
 import io.vertigo.kernel.di.injector.Injector;
-import io.vertigo.kernel.di.reactor.Reactor;
+import io.vertigo.kernel.di.reactor.DIReactor;
 import io.vertigo.kernel.engines.AopEngine;
 import io.vertigo.kernel.engines.VCommandEngine;
+import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.metamodel.DefinitionSpace;
 import io.vertigo.kernel.resource.ResourceLoader;
+import io.vertigo.kernel.util.StringUtil;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -208,7 +209,7 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 	private void injectComponents(final ModuleConfig moduleConfig) {
 		final AopEngine aopEngine = componentSpaceConfig.getAopEngine();
 
-		final Reactor reactor = new Reactor();
+		final DIReactor reactor = new DIReactor();
 		for (final String id : componentContainer.keySet()) {
 			reactor.addParent(id);
 		}
@@ -280,21 +281,44 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 	}
 
 	private ComponentInitializer<?> createComponentInitializer(final ComponentConfig componentConfig) {
-		final Container container = new DualContainer(componentContainer, new ParamsContainer(componentConfig.getParams()));
-		return injector.newInstance(componentConfig.getInitializerClass(), container);
+		return injector.newInstance(componentConfig.getInitializerClass(), componentContainer);
 	}
 
 	private Object createComponent(final ComponentConfig componentConfig) {
+		//---pluginTypes
+		Set<String> pluginTypes = new HashSet<>();
+		for (final PluginConfig pluginConfig : componentConfig.getPluginConfigs()) {
+			pluginTypes.add(pluginConfig.getType());
+		}
+		//---	
 		if (componentConfig.isElastic()) {
 			return componentSpaceConfig.getElasticaEngine().get().createProxy(componentConfig.getApiClass().get());
 		}
-		final Container container = new DualContainer(componentContainer, new ParamsContainer(componentConfig.getParams()));
-		return injector.newInstance(componentConfig.getImplClass(), container);
+		ParamsContainer paramsContainer = new ParamsContainer(componentConfig.getParams());
+		final DualContainer container = new DualContainer(componentContainer, paramsContainer);
+		//---
+		Object component = injector.newInstance(componentConfig.getImplClass(), container);
+		//--Search for unuseds plugins 
+		// We are inspecting all unused keys, and we check if we can find almost one plugin of the component.
+		for (final String key : container.getUnusedKeys()) {
+			for (final String pluginType : pluginTypes) {
+				if (key.startsWith(pluginType)) {
+					throw new VRuntimeException("plugin '{0}' on component '{1}' is not used by injection", null, container.resolve(key, Plugin.class).getClass(), componentConfig);
+				}
+			}
+		}
+		//--Search for unuseds params
+		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}'", paramsContainer.getUnusedKeys());
+		return component;
 	}
 
 	private Plugin createPlugin(final PluginConfig pluginConfig) {
-		final Container container = new DualContainer(componentContainer, new ParamsContainer(pluginConfig.getParams()));
-		return injector.newInstance(pluginConfig.getImplClass(), container);
+		ParamsContainer paramsContainer = new ParamsContainer(pluginConfig.getParams());
+		final Container container = new DualContainer(componentContainer, paramsContainer);
+		//---
+		Plugin plugin = injector.newInstance(pluginConfig.getImplClass(), container);
+		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}'", paramsContainer.getUnusedKeys());
+		return plugin;
 	}
 
 	private Map<PluginConfig, Plugin> createPlugins(final ComponentConfig componentConfig) {
@@ -308,7 +332,8 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 
 	/** {@inheritDoc} */
 	public <T> T resolve(final Class<T> componentClass) {
-		return componentContainer.resolveComponent(componentClass);
+		final String normalizedId = StringUtil.normalize(componentClass.getSimpleName());
+		return componentContainer.resolve(normalizedId, componentClass);
 	}
 
 	/** {@inheritDoc} */
