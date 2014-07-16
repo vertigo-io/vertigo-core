@@ -25,7 +25,7 @@ import io.vertigo.persona.security.model.Role;
 import java.util.Set;
 
 /**
- * Gestion centralis�e des droits d'acc�s.
+ * Gestion centralisee des droits d'acces.
  *
  * @author npiedeloup
  * @version $Id: KSecurityManager.java,v 1.3 2013/10/23 11:53:43 pchretien Exp $
@@ -42,19 +42,19 @@ public interface KSecurityManager extends Manager {
 	void startCurrentUserSession(final UserSession userSession);
 
 	/**
-	 * R�initialise la session courante.
+	 * Reinitialise la session courante.
 	 */
 	void stopCurrentUserSession();
 
 	/**
-	 * R�cup�ration de la session utilisateur courante.
+	 * Recuperation de la session utilisateur courante.
 	 * @param <U> Session utilisateur
 	 * @return Session utilisateur courante.
 	 */
 	<U extends UserSession> Option<U> getCurrentUserSession();
 
 	/**
-	 * Cr�ation de nouveaux utilisateurs. 
+	 * Creation de nouveaux utilisateurs. 
 	 * @param <U> Type de l'utilisateur 
 	 * @return Nouvel utilisateur
 	 */
@@ -81,15 +81,15 @@ public interface KSecurityManager extends Manager {
 	boolean hasRole(UserSession userSession, Set<Role> authorizedRoleSet);
 
 	/**
-	 * Contr�le d'acc�s bas� sur les permissions.
+	 * Controle d'acces base sur les permissions.
 	 * 
-	 * Indique si l'utilisateur courant a la permission d'effectuer l'op�ration
-	 * donn�e sur la ressource donn�e.
+	 * Indique si l'utilisateur courant a la permission d'effectuer l'operation
+	 * donnee sur la ressource donnee.
 	 * 
 	 * @param resource la ressource
-	 * @param operation l'op�ration
-	 * @return true si l'utilisateur courant a la permission d'effectuer l'op�ration
-	 * donn�e sur la ressource donn�e
+	 * @param operation l'operation
+	 * @return true si l'utilisateur courant a la permission d'effectuer l'operation
+	 * donn�e sur la ressource donnee
 	 */
 	boolean isAuthorized(String resource, String operation);
 
