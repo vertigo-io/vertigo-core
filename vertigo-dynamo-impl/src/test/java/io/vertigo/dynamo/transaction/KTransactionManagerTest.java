@@ -73,7 +73,7 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 			transactionManager.createCurrentTransaction();
 		} catch (final IllegalStateException e) {
-			Assert.assertEquals("Transaction courante déjà créée", e.getMessage());
+			Assert.assertEquals("current transaction already created", e.getMessage());
 		}
 	}
 
