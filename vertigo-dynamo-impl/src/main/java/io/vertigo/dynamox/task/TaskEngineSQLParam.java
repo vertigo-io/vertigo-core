@@ -19,7 +19,6 @@
 package io.vertigo.dynamox.task;
 
 import io.vertigo.dynamo.database.statement.KPreparedStatement;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 /**
@@ -129,10 +128,10 @@ final class TaskEngineSQLParam {
 		try {
 			dtcRowNumber = Integer.valueOf(betweenPoints);
 		} catch (final NumberFormatException nfe) {
-			throw new VRuntimeException("Paramètre {0} incohérent : {1} n''est pas un entier.", nfe, betweenCar, betweenPoints);
+			throw new RuntimeException("Paramètre " + betweenCar + " incohérent : " + betweenPoints + " n'est pas un entier.", nfe);
 		}
 		if (dtcRowNumber == null || dtcRowNumber.intValue() < 0) {
-			throw new VRuntimeException("Paramètre {0} incohérent : {1} doit être positif ou nul.", null, betweenCar, betweenPoints);
+			throw new RuntimeException("Paramètre " + betweenCar + " incohérent : " + betweenPoints + " doit être positif ou nul.");
 		}
 		return dtcRowNumber;
 	}

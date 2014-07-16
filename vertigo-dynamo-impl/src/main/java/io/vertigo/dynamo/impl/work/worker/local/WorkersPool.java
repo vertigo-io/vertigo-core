@@ -20,7 +20,6 @@ package io.vertigo.dynamo.impl.work.worker.local;
 
 import io.vertigo.dynamo.impl.work.worker.Worker;
 import io.vertigo.dynamo.work.WorkItem;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 
@@ -91,7 +90,7 @@ final class WorkersPool implements Activeable {
 			worksQueue.put(workItem);
 		} catch (final InterruptedException e) {
 			//dans le cas d'une interruption on informe le demandeur 
-			throw new VRuntimeException("putWorkItem", e);
+			throw new RuntimeException("putWorkItem", e);
 		}
 	}
 

@@ -18,7 +18,6 @@
  */
 package io.vertigo.quarto.publisher.impl.merger.grammar;
 
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.util.StringUtil;
 import io.vertigo.quarto.publisher.model.PublisherNode;
@@ -150,7 +149,7 @@ abstract class AbstractKScriptTag {
 		final Matcher matcher = pattern.matcher(attribute);
 
 		if (!matcher.matches()) {
-			throw new VRuntimeException("attribut \"{0}\" mal form� (ne respect pas le format {1})", null, attribute, regEexpFormat);
+			throw new RuntimeException(StringUtil.format("attribut \'{0}\' mal forme (ne respect pas le format {1})", attribute, regEexpFormat));
 		}
 
 		nbGroup = matcher.groupCount();

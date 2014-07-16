@@ -18,7 +18,6 @@
  */
 package io.vertigo.quarto.plugins.publisher.docx;
 
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.quarto.publisher.impl.merger.processor.MergerProcessor;
 import io.vertigo.quarto.publisher.model.PublisherData;
 
@@ -62,7 +61,7 @@ final class DOCXCleanerProcessor implements MergerProcessor {
 			return DOCXUtil.renderXML(xmlDoc);
 
 		} catch (final XPathExpressionException e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		}
 	}
 

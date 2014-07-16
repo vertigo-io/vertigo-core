@@ -21,7 +21,6 @@ package io.vertigo.kernel;
 import io.vertigo.kernel.component.ComponentSpace;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
 import io.vertigo.kernel.di.configurator.ComponentSpaceImpl;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.DefinitionSpace;
 import io.vertigo.kernel.resource.ResourceSpace;
@@ -90,7 +89,7 @@ public final class Home {
 			// ---------------------------------------------------------------------
 			// L'arrét s'est bien déroulé.
 			INSTANCE.change(State.stopping, State.INACTIVE);
-			throw new VRuntimeException("Erreur lors de la phase de démarrage", t);
+			throw new RuntimeException("an error occured when starting", t);
 		}
 		INSTANCE.change(State.starting, State.ACTIVE);
 		//---
@@ -155,7 +154,7 @@ public final class Home {
 		} catch (final Throwable t) {
 			//Quel que soit l'état, on part en échec de l'arrét.
 			state = State.FAIL;
-			throw new VRuntimeException("Erreur lors de l'arrét", t);
+			throw new RuntimeException("an error occured when stopping", t);
 		}
 	}
 

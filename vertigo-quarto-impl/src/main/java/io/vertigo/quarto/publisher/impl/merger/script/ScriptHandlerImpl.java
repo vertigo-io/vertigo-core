@@ -20,7 +20,6 @@ package io.vertigo.quarto.publisher.impl.merger.script;
 
 import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.util.Stack;
@@ -96,7 +95,7 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 			}
 		}
 		//Cas de malformation des balises
-		throw new VRuntimeException("bloc {0} mal form� : balise de fin manquante", null, tagName);
+		throw new RuntimeException("bloc " + tagName + " mal forme : balise de fin manquante");
 	}
 
 	/**
@@ -172,10 +171,8 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 	private ScriptTag createTagHandler(final ScriptTagDefinition tagDefinition) {
 		try {
 			return tagDefinition.getClassTag().newInstance();
-		} catch (final InstantiationException e) {
-			throw new VRuntimeException("Probl�me � l'initialisation du tag personalis� : " + tagDefinition.getName(), e);
-		} catch (final IllegalAccessException e) {
-			throw new VRuntimeException("Probl�me � l'initialisation du tag personalis� : " + tagDefinition.getName(), e);
+		} catch (final InstantiationException | IllegalAccessException e) {
+			throw new RuntimeException("Probleme a l'initialisation du tag personalise : " + tagDefinition.getName(), e);
 		}
 	}
 

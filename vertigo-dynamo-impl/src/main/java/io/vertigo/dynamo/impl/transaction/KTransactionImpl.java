@@ -22,7 +22,6 @@ import io.vertigo.dynamo.transaction.KTransaction;
 import io.vertigo.dynamo.transaction.KTransactionResource;
 import io.vertigo.dynamo.transaction.KTransactionResourceId;
 import io.vertigo.dynamo.transaction.KTransactionWritable;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.util.ArrayList;
@@ -347,13 +346,10 @@ public final class KTransactionImpl implements KTransactionWritable {
 		if (error instanceof Error) {
 			throw (Error) error;
 		}
-		if (error instanceof VRuntimeException) {
-			throw (VRuntimeException) error;
-		}
 		if (error instanceof RuntimeException) {
 			throw (RuntimeException) error;
 		}
-		throw new VRuntimeException("Transaction", error);
+		throw new RuntimeException("Transaction", error);
 	}
 
 	public void close() {

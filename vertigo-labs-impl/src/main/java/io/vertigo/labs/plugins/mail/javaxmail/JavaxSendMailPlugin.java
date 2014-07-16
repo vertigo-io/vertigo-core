@@ -22,7 +22,6 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.kernel.component.ComponentInfo;
 import io.vertigo.kernel.component.Describable;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.exception.VUserException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.MessageKey;
@@ -142,7 +141,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		} catch (final MessagingException e) {
 			throw createMailException(Resources.KASPER_MAIL_SERVER_TIMEOUT, e);
 		} catch (final UnsupportedEncodingException e) {
-			throw new VRuntimeException("Probl�me d'encodage lors de l'envoi du mail", e, mailHost, mailStoreProtocol);
+			throw new RuntimeException("Probleme d'encodage lors de l'envoi du mail", e);
 		}
 	}
 
@@ -241,7 +240,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 			bodyFile.setFileName(kFile.getFileName());
 			return bodyFile;
 		} catch (final IOException e) {
-			throw new VRuntimeException("Erreur de lecture des pi�ces jointes", null, "");
+			throw new RuntimeException("Erreur de lecture des pieces jointes");
 		}
 	}
 

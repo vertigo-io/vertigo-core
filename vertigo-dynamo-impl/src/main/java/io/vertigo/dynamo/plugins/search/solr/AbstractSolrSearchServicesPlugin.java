@@ -29,7 +29,6 @@ import io.vertigo.dynamo.search.SearchServicesPlugin;
 import io.vertigo.dynamo.search.metamodel.IndexDefinition;
 import io.vertigo.dynamo.search.model.Index;
 import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 
@@ -133,7 +132,7 @@ public abstract class AbstractSolrSearchServicesPlugin implements SearchServices
 		try {
 			getSolrServer(indexDefinition.getName()).commit();
 		} catch (final Exception e) {
-			throw new VRuntimeException("Erreur lors du commit solr", e);
+			throw new RuntimeException("Erreur lors du commit solr", e);
 		}
 	}
 
@@ -163,7 +162,7 @@ public abstract class AbstractSolrSearchServicesPlugin implements SearchServices
 		try {
 			getSolrServer(indexDefinition.getName()).optimize(true, true, 32); //32 files : empirique
 		} catch (final Exception e) {
-			throw new VRuntimeException("Erreur lors de l'optimize solr", e);
+			throw new RuntimeException("Erreur lors de l'optimize solr", e);
 		}
 	}
 

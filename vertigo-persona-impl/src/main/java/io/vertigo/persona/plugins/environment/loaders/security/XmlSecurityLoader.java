@@ -20,7 +20,6 @@ package io.vertigo.persona.plugins.environment.loaders.security;
 
 import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.kernel.Home;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.persona.security.model.Operation;
 import io.vertigo.persona.security.model.Permission;
@@ -152,7 +151,7 @@ final class XmlSecurityLoader {
 			builder.setEntityResolver(entityResolver);
 			return builder.build(url.openStream());
 		} catch (final Exception e) {
-			throw new VRuntimeException("Erreur durant la lecture du fichier XML {0}", e, url);
+			throw new RuntimeException("Erreur durant la lecture du fichier XML " + url, e);
 		}
 	}
 

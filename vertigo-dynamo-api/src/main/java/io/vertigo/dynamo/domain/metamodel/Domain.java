@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.domain.metamodel;
 
 import io.vertigo.kernel.Home;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.Definition;
 import io.vertigo.kernel.metamodel.DefinitionReference;
@@ -194,9 +193,9 @@ public final class Domain implements Definition {
 		if (dtDefinitionName == null) {
 			//On fournit un message d'erreur explicite
 			if (getDataType().isPrimitive()) {
-				throw new VRuntimeException("Le domain " + getName() + " n'est ni un DTO ni une DTC");
+				throw new RuntimeException("Le domain " + getName() + " n'est ni un DTO ni une DTC");
 			}
-			throw new VRuntimeException("Le domain " + getName() + " est un DTO/DTC mais typé de façon dynamique donc sans DtDefinition.");
+			throw new RuntimeException("Le domain " + getName() + " est un DTO/DTC mais typé de façon dynamique donc sans DtDefinition.");
 		}
 		return Home.getDefinitionSpace().resolve(dtDefinitionName, DtDefinition.class);
 	}

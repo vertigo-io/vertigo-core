@@ -43,7 +43,6 @@ import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaResource;
 import io.vertigo.dynamo.transaction.KTransaction;
 import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamo.work.WorkManager;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.util.ClassUtil;
 import io.vertigo.kernel.util.StringUtil;
@@ -388,7 +387,7 @@ public final class JpaStorePlugin implements StorePlugin {
 		try {
 			final Object dto = loadWithoutClear(uri);
 			if (dto == null) {
-				throw new VRuntimeException("Aucune ligne supprimée");
+				throw new RuntimeException("Aucune ligne supprimée");
 			}
 			em.remove(dto);
 			em.flush();

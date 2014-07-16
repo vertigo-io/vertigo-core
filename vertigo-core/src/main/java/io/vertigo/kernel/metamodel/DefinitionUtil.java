@@ -18,7 +18,6 @@
  */
 package io.vertigo.kernel.metamodel;
 
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 /**
@@ -36,7 +35,7 @@ public final class DefinitionUtil {
 		//---------------------------------------------------------------------
 		final Prefix prefix = definitionClass.getAnnotation(Prefix.class);
 		if (prefix == null) {
-			throw new VRuntimeException("Annotation  '@Prefix' non trouvée sur " + definitionClass.getName());
+			throw new RuntimeException("Annotation  '@Prefix' non trouvée sur " + definitionClass.getName());
 		}
 		Assertion.checkArgNotEmpty(prefix.value());
 		return prefix.value();

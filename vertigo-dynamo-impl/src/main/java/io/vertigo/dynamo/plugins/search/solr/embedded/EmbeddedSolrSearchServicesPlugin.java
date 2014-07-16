@@ -22,7 +22,6 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.dynamo.plugins.search.solr.AbstractSolrSearchServicesPlugin;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.io.File;
@@ -97,7 +96,7 @@ public final class EmbeddedSolrSearchServicesPlugin extends AbstractSolrSearchSe
 			//System.out.println("Solr Data In: " + home.getAbsolutePath() + "\\#CORE_NAME#\\data\\index\\");
 			return container;
 		} catch (final Exception e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		}
 	}
 }

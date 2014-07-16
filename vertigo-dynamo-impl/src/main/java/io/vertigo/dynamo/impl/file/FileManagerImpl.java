@@ -25,7 +25,6 @@ import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.dynamo.impl.file.model.FSFile;
 import io.vertigo.dynamo.impl.file.model.StreamFile;
-import io.vertigo.kernel.exception.VRuntimeException;
 
 import java.io.File;
 import java.io.IOException;
@@ -76,7 +75,7 @@ public final class FileManagerImpl implements FileManager {
 		try {
 			return doCreateTempFile(fileInfo);
 		} catch (final IOException e) {
-			throw new VRuntimeException("Impossible de créer un fichier temporaire pour le FileInfo " + fileInfo.getFileName(), e);
+			throw new RuntimeException("Impossible de créer un fichier temporaire pour le FileInfo " + fileInfo.getFileName(), e);
 		}
 	}
 

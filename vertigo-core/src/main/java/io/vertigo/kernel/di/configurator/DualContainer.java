@@ -19,7 +19,6 @@
 package io.vertigo.kernel.di.configurator;
 
 import io.vertigo.kernel.component.Container;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.util.HashSet;
@@ -68,7 +67,7 @@ final class DualContainer implements Container {
 		if (container2.contains(id)) {
 			return container2.resolve(id, clazz);
 		}
-		throw new VRuntimeException("component info with id '" + id + "' not found.");
+		throw new RuntimeException("component info with id '" + id + "' not found.");
 	}
 
 	/** {@inheritDoc} */
