@@ -20,7 +20,6 @@ package io.vertigo.ccc.console;
 
 import io.vertigo.kernel.command.VCommand;
 import io.vertigo.kernel.command.VResponse;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.awt.BorderLayout;
@@ -285,7 +284,7 @@ public final class VConsole {
 					args.put(inputText.substring(idx + 2, idx2).trim(), inputText.substring(idx2 + 1, idx3).trim());
 
 				} else {
-					throw new VRuntimeException("syntax error on command : {0}", null, commandName);
+					throw new RuntimeException("syntax error on command : " + commandName);
 				}
 				idx = inputText.indexOf("--", idx3);
 			}

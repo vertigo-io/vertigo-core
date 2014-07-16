@@ -21,7 +21,6 @@ package io.vertigo.engines.command.tcp;
 import io.vertigo.kernel.command.VCommand;
 import io.vertigo.kernel.command.VCommandHandler;
 import io.vertigo.kernel.command.VResponse;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.io.IOException;
@@ -128,7 +127,7 @@ final class VProtocol {
 			//	System.out.println("$sendCommand : " + command + " / KO");
 			return VResponse.createResponseWithError(response.substring(1));
 		}
-		throw new VRuntimeException("malformed protocol");
+		throw new RuntimeException("malformed protocol");
 	}
 
 	//server side
