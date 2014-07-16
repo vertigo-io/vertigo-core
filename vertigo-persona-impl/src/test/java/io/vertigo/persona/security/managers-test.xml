@@ -18,9 +18,7 @@
 	    </component> 
 	
 	    <component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
-	     	<plugin class="io.vertigo.persona.impl.environment.plugins.registries.security.SecurityDynamicRegistryPlugin">
-	     		<param name="url" value="io/vertigo/persona/security/basic-auth-config.xml" />            
-	     	</plugin>
+	     	<plugin class="io.vertigo.persona.plugins.environment.loaders.security.SecurityLoaderPlugin"/>
 	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
 	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />			
 	    </component>
@@ -28,6 +26,7 @@
 
 	<module name="test">
 		<resource type="kpr" path="io/vertigo/dynamock/execution.kpr"/>
+   		<resource type="security" path="io/vertigo/persona/security/basic-auth-config.xml" />            
 	</module>
 
 </modules>
