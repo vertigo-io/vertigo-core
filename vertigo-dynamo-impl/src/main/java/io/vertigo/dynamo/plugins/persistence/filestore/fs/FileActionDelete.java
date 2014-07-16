@@ -21,7 +21,6 @@
  */
 package io.vertigo.dynamo.plugins.persistence.filestore.fs;
 
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.io.File;
@@ -51,11 +50,11 @@ final class FileActionDelete implements FileAction {
 
 		if (!file.exists()) {
 			LOG.error("Impossible de trouver le fichier pour suppression : " + file.getAbsolutePath());
-			throw new VRuntimeException("Impossible de trouver le fichier à supprimer.");
+			throw new RuntimeException("Impossible de trouver le fichier à supprimer.");
 		}
 		if (!file.canWrite()) {
 			LOG.error("Impossible de supprimer le fichier : " + file.getAbsolutePath());
-			throw new VRuntimeException("Impossible de supprimer le fichier.");
+			throw new RuntimeException("Impossible de supprimer le fichier.");
 		}
 
 		state = State.READY;
@@ -69,7 +68,7 @@ final class FileActionDelete implements FileAction {
 		if (!file.delete()) {
 			LOG.fatal("Impossible de supprimer le fichier " + file.getAbsolutePath());
 			state = State.ERROR;
-			throw new VRuntimeException("Erreur fatale : Impossible de supprimer le fichier.");
+			throw new RuntimeException("Erreur fatale : Impossible de supprimer le fichier.");
 		}
 
 		state = State.PROCESSED;

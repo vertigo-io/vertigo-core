@@ -18,7 +18,6 @@
  */
 package io.vertigo.kernel.util;
 
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 
@@ -27,7 +26,6 @@ import java.lang.reflect.Method;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-
 
 /**
  * @author prahmoune
@@ -75,7 +73,7 @@ public final class DILifeCycleUtil {
 		for (final Method method : clazz.getMethods()) {
 			if (method.isAnnotationPresent(annotation)) {
 				if (method.getParameterTypes().length > 0) {
-					throw new VRuntimeException("Life cycle method '" + method + "' should not have any parameters");
+					throw new RuntimeException("Life cycle method '" + method + "' should not have any parameters");
 				}
 				return method;
 			}

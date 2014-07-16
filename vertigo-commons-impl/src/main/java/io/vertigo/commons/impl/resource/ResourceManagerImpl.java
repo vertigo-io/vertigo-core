@@ -19,7 +19,6 @@
 package io.vertigo.commons.impl.resource;
 
 import io.vertigo.commons.resource.ResourceManager;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Option;
 
 import java.net.URL;
@@ -51,6 +50,6 @@ public final class ResourceManagerImpl implements ResourceManager {
 			}
 		}
 		//On n'a pas trouvé de resolver permettant de lire la ressource.
-		throw new VRuntimeException("Ressource '{0}' non trouvée", null, resource);
+		throw new RuntimeException("Ressource '" + resource + "' non trouvée");
 	}
 }

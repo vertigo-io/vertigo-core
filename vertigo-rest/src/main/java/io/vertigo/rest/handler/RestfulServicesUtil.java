@@ -19,7 +19,6 @@
 package io.vertigo.rest.handler;
 
 import io.vertigo.kernel.engines.JsonEngine;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.util.ClassUtil;
@@ -60,7 +59,7 @@ final class RestfulServicesUtil {
 	public static Object invoke(final Object instance, final String methodName, final Request request) {
 		final Option<Method> actionMethod = findMethodByName(instance.getClass(), methodName);
 		if (actionMethod.isEmpty()) {
-			throw new VRuntimeException("Method " + methodName + " not found on " + instance.getClass().getName());
+			throw new RuntimeException("Method " + methodName + " not found on " + instance.getClass().getName());
 		}
 		actionMethod.get().setAccessible(true); //la méthode peut être protected
 		return invoke(instance, actionMethod.get(), request);

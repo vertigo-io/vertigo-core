@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.kvdatastore.berkeley;
 
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.util.ClassUtil;
 
 import java.lang.reflect.Field;
@@ -41,7 +40,7 @@ final class DataBinding extends TupleBinding {
 		try {
 			return doEntryToObject(ti);
 		} catch (final Exception e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -82,7 +81,7 @@ final class DataBinding extends TupleBinding {
 		try {
 			doObjectToEntry(object, to);
 		} catch (final Exception e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		}
 	}
 

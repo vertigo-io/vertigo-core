@@ -22,7 +22,6 @@ import io.vertigo.commons.parser.NotFoundException;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.KspRule;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.util.StringUtil;
 
@@ -59,10 +58,10 @@ final class KspLoader {
 			rule.createParser().parse(s, 0);
 		} catch (final NotFoundException e) {
 			final String message = StringUtil.format("Echec de lecture du fichier KSP {0}\n{1}", kspURL.getFile(), e.getFullMessage());
-			throw new VRuntimeException(message, e);
+			throw new RuntimeException(message, e);
 		} catch (final Exception e) {
 			final String message = StringUtil.format("Echec de lecture du fichier KSP {0}\n{1}", kspURL.getFile(), e.getMessage());
-			throw new VRuntimeException(message, e);
+			throw new RuntimeException(message, e);
 		}
 	}
 

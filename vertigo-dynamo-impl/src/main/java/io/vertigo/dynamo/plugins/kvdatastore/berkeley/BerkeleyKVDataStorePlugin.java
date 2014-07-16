@@ -20,7 +20,6 @@ package io.vertigo.dynamo.plugins.kvdatastore.berkeley;
 
 import io.vertigo.dynamo.impl.kvdatastore.KVDataStorePlugin;
 import io.vertigo.dynamo.transaction.KTransactionManager;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
@@ -77,7 +76,7 @@ public final class BerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activ
 			doStart(READONLY);
 			berkeleyDatabase = new BerkeleyDatabase(database, transactionManager);
 		} catch (final DatabaseException e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -110,7 +109,7 @@ public final class BerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activ
 		try {
 			doStop();
 		} catch (final DatabaseException e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		}
 	}
 

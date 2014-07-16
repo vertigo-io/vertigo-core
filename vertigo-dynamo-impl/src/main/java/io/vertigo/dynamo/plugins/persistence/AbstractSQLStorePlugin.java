@@ -49,7 +49,6 @@ import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.kernel.Home;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.Definition;
 import io.vertigo.kernel.metamodel.DefinitionUtil;
@@ -395,7 +394,7 @@ public abstract class AbstractSQLStorePlugin implements StorePlugin {
 		final boolean insert = DtObjectUtil.getId(dto) == null;
 		final boolean saved = put(dto, insert);
 		if (!saved) {
-			throw new VRuntimeException(insert ? "Aucune ligne insérée" : "Aucune ligne modifiée", null);
+			throw new RuntimeException(insert ? "Aucune ligne insérée" : "Aucune ligne modifiée");
 		}
 	}
 
@@ -408,7 +407,7 @@ public abstract class AbstractSQLStorePlugin implements StorePlugin {
 			saved = put(dto, true);
 		}
 		if (!saved) {
-			throw new VRuntimeException("Aucune ligne répliquée", null);
+			throw new RuntimeException("Aucune ligne répliquée");
 		}
 	}
 
@@ -483,7 +482,7 @@ public abstract class AbstractSQLStorePlugin implements StorePlugin {
 
 		final int sqlRowCount = getSqlRowCount(taskResult);
 		if (sqlRowCount > 1) {
-			throw new VRuntimeException(insert ? "Plus de 1 ligne a été insérée" : "Plus de 1 ligne a été modifiée", null);
+			throw new RuntimeException(insert ? "Plus de 1 ligne a été insérée" : "Plus de 1 ligne a été modifiée");
 		}
 		return sqlRowCount != 0; // true si "1 ligne sauvée", false si "Aucune ligne sauvée"
 	}
@@ -523,9 +522,9 @@ public abstract class AbstractSQLStorePlugin implements StorePlugin {
 
 		final int sqlRowCount = getSqlRowCount(taskResult);
 		if (sqlRowCount > 1) {
-			throw new VRuntimeException("Plus de 1 ligne a été supprimée", null);
+			throw new RuntimeException("Plus de 1 ligne a été supprimée");
 		} else if (sqlRowCount == 0) {
-			throw new VRuntimeException("Aucune ligne supprimée", null);
+			throw new RuntimeException("Aucune ligne supprimée");
 		}
 	}
 

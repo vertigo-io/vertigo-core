@@ -24,7 +24,6 @@ import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkResultHandler;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.quarto.publisher.PublisherManager;
 import io.vertigo.quarto.publisher.model.PublisherData;
@@ -87,8 +86,8 @@ public final class PublisherManagerImpl implements PublisherManager {
 		try {
 			return generateFile(fileName, modelFileURL, data);
 		} catch (final IOException e) {
-			final String msg = "La g�n�ration du fichier a �chou�.<!-- " + e.getMessage() + "--> pour le fichier " + fileName;
-			throw new VRuntimeException(msg, e);
+			final String msg = "La generation du fichier a echoue.<!-- " + e.getMessage() + "--> pour le fichier " + fileName;
+			throw new RuntimeException(msg, e);
 		}
 	}
 

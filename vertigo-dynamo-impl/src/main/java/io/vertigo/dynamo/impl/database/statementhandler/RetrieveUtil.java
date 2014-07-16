@@ -20,11 +20,10 @@ package io.vertigo.dynamo.impl.database.statementhandler;
 
 import io.vertigo.dynamo.database.statement.QueryResult;
 import io.vertigo.dynamo.database.vendor.SQLMapping;
-import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.sql.ResultSet;
@@ -140,7 +139,7 @@ final class RetrieveUtil {
 		return res;
 	}
 
-	private static VRuntimeException createTooManyRowsException() {
-		return new VRuntimeException("load TooManyRows");
+	private static RuntimeException createTooManyRowsException() {
+		return new RuntimeException("load TooManyRows");
 	}
 }

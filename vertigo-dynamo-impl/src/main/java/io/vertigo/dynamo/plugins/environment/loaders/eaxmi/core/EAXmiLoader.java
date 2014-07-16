@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core;
 
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.util.StringUtil;
 
@@ -53,7 +52,7 @@ public final class EAXmiLoader {
 		try {
 			SAXParserFactory.newInstance().newSAXParser().parse(xmiFileURL.openStream(), handler);
 		} catch (final Exception e) {
-			throw new VRuntimeException("erreur lors de la lecture du fichier xmi : " + xmiFileURL, e);
+			throw new RuntimeException("erreur lors de la lecture du fichier xmi : " + xmiFileURL, e);
 		}
 	}
 

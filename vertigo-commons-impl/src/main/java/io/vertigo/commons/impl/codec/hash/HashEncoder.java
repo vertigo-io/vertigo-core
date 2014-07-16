@@ -19,7 +19,6 @@
 package io.vertigo.commons.impl.codec.hash;
 
 import io.vertigo.commons.codec.Encoder;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.security.MessageDigest;
@@ -85,7 +84,7 @@ public final class HashEncoder implements Encoder<byte[], byte[]> {
 		try {
 			digest = MessageDigest.getInstance(hash.getAlgoName());
 		} catch (final NoSuchAlgorithmException e) {
-			throw new VRuntimeException(hash.getAlgoName(), e);
+			throw new RuntimeException(hash.getAlgoName(), e);
 		}
 		digest.update(data);
 		return digest.digest();

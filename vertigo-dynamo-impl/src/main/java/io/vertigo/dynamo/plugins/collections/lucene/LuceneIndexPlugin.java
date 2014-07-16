@@ -30,7 +30,6 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.collections.IndexPlugin;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.kernel.Home;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.exception.VUserException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.MessageText;
@@ -266,7 +265,7 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 			final LuceneIndex<D> index = indexList(dtc, false);
 			return this.<D> getCollection(keywords, searchedFields, maxRows, boostedField, index);
 		} catch (final IOException e) {
-			throw new VRuntimeException("Erreur d'indexation", e);
+			throw new RuntimeException("Erreur d'indexation", e);
 		}
 	}
 }

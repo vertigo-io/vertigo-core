@@ -31,7 +31,6 @@ import io.vertigo.kernel.di.injector.Injector;
 import io.vertigo.kernel.di.reactor.DIReactor;
 import io.vertigo.kernel.engines.AopEngine;
 import io.vertigo.kernel.engines.VCommandEngine;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
@@ -303,7 +302,7 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 		for (final String key : container.getUnusedKeys()) {
 			for (final String pluginType : pluginTypes) {
 				if (key.startsWith(pluginType)) {
-					throw new VRuntimeException("plugin '{0}' on component '{1}' is not used by injection", null, container.resolve(key, Plugin.class).getClass(), componentConfig);
+					throw new RuntimeException(StringUtil.format("plugin '{0}' on component '{1}' is not used by injection", container.resolve(key, Plugin.class).getClass(), componentConfig));
 				}
 			}
 		}

@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.poweramc.core;
 
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.util.StringUtil;
 
@@ -50,7 +49,7 @@ public final class OOMLoader {
 		try {
 			SAXParserFactory.newInstance().newSAXParser().parse(powerAMCURL.openStream(), handler);
 		} catch (final Exception e) {
-			throw new VRuntimeException("erreur lors de la lecture du fichier oom : " + powerAMCURL, e);
+			throw new RuntimeException("erreur lors de la lecture du fichier oom : " + powerAMCURL, e);
 		}
 	}
 

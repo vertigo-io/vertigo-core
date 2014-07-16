@@ -18,7 +18,6 @@
  */
 package io.vertigo.quarto.publisher.impl.merger.script;
 
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 /**
@@ -82,7 +81,7 @@ public final class ScriptTagContent {
 	 */
 	private void checkAttribute() {
 		if (!hasAttribute()) {
-			throw new VRuntimeException("tag malform� : le tag {0} doit avoir un attribut", null, getScriptTagDefinition().getName());
+			throw new RuntimeException("tag malforme : le tag " + getScriptTagDefinition().getName() + " doit avoir un attribut");
 		}
 	}
 

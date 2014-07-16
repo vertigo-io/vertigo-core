@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.lang.reflect.Field;
@@ -66,12 +65,11 @@ public final class DtProperty {
 	 * Propriété standard : Type de l'index. (SOLR par exemple)
 	 */
 	public static final Property<String> INDEX_TYPE = new Property<>("indexType", String.class);
-	
+
 	/**
 	 * Propriété standard : Type de données pour la persistence. 
 	 */
 	public static final Property<String> STORE_TYPE = new Property<>("storeType", String.class);
-	
 
 	public static Property<?> valueOf(final String propertyName) {
 		try {
@@ -80,7 +78,7 @@ public final class DtProperty {
 			Assertion.checkNotNull(property);
 			return property;
 		} catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-			throw new VRuntimeException("Propriete {0} non trouvee sur DtProperty", e, propertyName);
+			throw new RuntimeException("Propriete " + propertyName + " non trouvee sur DtProperty", e);
 		}
 	}
 }

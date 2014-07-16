@@ -20,7 +20,6 @@ package io.vertigo.commons.impl.script;
 
 import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.util.List;
@@ -104,7 +103,7 @@ final class ScriptParser {
 				//on le remet donc dans la requete
 				scriptHandler.onText(String.valueOf(separator.getSeparator()));
 			} else {
-				throw new VRuntimeException("Le paramètre est vide");
+				throw new RuntimeException("Le paramètre est vide");
 			}
 		} else {
 			scriptHandler.onExpression(script.substring(beginCar, endCar), separator);

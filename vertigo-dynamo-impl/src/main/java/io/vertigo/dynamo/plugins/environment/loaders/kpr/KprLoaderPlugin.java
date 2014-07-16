@@ -21,7 +21,6 @@ package io.vertigo.dynamo.plugins.environment.loaders.kpr;
 import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.dynamo.impl.environment.LoaderPlugin;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.io.BufferedReader;
@@ -77,7 +76,7 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 		try {
 			return doGetKspFiles(kprURL, resourceManager);
 		} catch (final Exception e) {
-			throw new VRuntimeException("Echec de lecture du fichier KPR " + kprURL.getFile(), e);
+			throw new RuntimeException("Echec de lecture du fichier KPR " + kprURL.getFile(), e);
 		}
 
 	}
@@ -109,7 +108,7 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 						//ksp
 						kspFileList.add(url);
 					} else {
-						throw new VRuntimeException("Type de fichier inconnu : {0}", null, fileName);
+						throw new RuntimeException("Type de fichier inconnu : " + fileName);
 					}
 				}
 				line = reader.readLine();

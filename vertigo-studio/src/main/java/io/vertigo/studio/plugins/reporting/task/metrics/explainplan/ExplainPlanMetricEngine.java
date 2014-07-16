@@ -29,7 +29,6 @@ import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.kernel.Home;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.studio.plugins.reporting.task.metrics.performance.TaskPopulator;
 import io.vertigo.studio.reporting.MetricEngine;
@@ -101,7 +100,7 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 			//On n'exploite pas le résultat
 			return readExplainPlan(taskDefinition, currentSequence);
 		} catch (final Exception e) {
-			throw new VRuntimeException("explainPlanElement", e);
+			throw new RuntimeException("explainPlanElement", e);
 		}
 	}
 
@@ -142,7 +141,7 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 			}
 
 		} catch (final SQLException e) {
-			throw new VRuntimeException("doGetExplainPlan", e);
+			throw new RuntimeException("doGetExplainPlan", e);
 		}
 	}
 

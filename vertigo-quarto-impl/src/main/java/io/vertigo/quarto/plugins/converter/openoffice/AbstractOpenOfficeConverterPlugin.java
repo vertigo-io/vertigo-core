@@ -21,7 +21,6 @@ package io.vertigo.quarto.plugins.converter.openoffice;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.file.util.TempFile;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.quarto.impl.converter.ConverterPlugin;
 
@@ -90,7 +89,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 		try {
 			targetFile = doConvertToFormat(inputFile, targetFormat);
 		} catch (final Exception e) {
-			throw new VRuntimeException("Erreur de conversion du document au format " + targetFormat.name(), e);
+			throw new RuntimeException("Erreur de conversion du document au format " + targetFormat.name(), e);
 		}
 		return fileManager.createFile(targetFile);
 	}

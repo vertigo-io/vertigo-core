@@ -21,7 +21,6 @@ package io.vertigo.commons.codec.serialization;
 import io.vertigo.commons.codec.AbstractCodecTest;
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.kernel.exception.VRuntimeException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -73,7 +72,7 @@ public final class SerializationCodecTest extends AbstractCodecTest<Serializable
 
 	/** {@inheritDoc} */
 	@Override
-	@Test(expected = VRuntimeException.class)
+	@Test(expected = RuntimeException.class)
 	public void testFailDecode() throws Exception {
 		// object ne correspondant pas à une classe;
 		final byte[] s = "qdfsdf".getBytes();

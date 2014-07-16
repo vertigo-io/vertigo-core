@@ -19,10 +19,10 @@
 package io.vertigo.commons.impl.config;
 
 import io.vertigo.commons.config.ConfigManager;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.util.ClassUtil;
+import io.vertigo.kernel.util.StringUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
@@ -181,7 +181,7 @@ public final class ConfigManagerImpl implements ConfigManager {
 
 	private static boolean toBoolean(final String config, final String property, final String value) {
 		if (!(TRUE.equalsIgnoreCase(value) || FALSE.equalsIgnoreCase(value))) {
-			throw new VRuntimeException("La propriété '{0}:{1}' n'est pas convertible en 'boolean' : {2}", null, config, property, value);
+			throw new RuntimeException(StringUtil.format("La propriété '{0}:{1}' n'est pas convertible en 'boolean' : {2}", config, property, value));
 		}
 		return Boolean.parseBoolean(value);
 	}
@@ -190,7 +190,7 @@ public final class ConfigManagerImpl implements ConfigManager {
 		try {
 			return Integer.parseInt(value);
 		} catch (final NumberFormatException e) {
-			throw new VRuntimeException("La propriété '{0}:{1}'  n'est pas convertible en 'int' : {2}", e, config, property, value);
+			throw new RuntimeException(StringUtil.format("La propriété '{0}:{1}'  n'est pas convertible en 'int' : {2}", config, property, value), e);
 		}
 	}
 }

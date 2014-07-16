@@ -21,7 +21,6 @@ package io.vertigo.dynamo.impl.work.worker.local;
 import io.vertigo.dynamo.impl.work.worker.Worker;
 import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.lang.reflect.Field;
@@ -47,7 +46,7 @@ public final class WorkItemExecutor<WR, W> implements Runnable {
 		try {
 			threadLocalsField = Thread.class.getDeclaredField("threadLocals");
 		} catch (final SecurityException | NoSuchFieldException e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		}
 		threadLocalsField.setAccessible(true);
 	}
@@ -87,7 +86,7 @@ public final class WorkItemExecutor<WR, W> implements Runnable {
 			try {
 				//Vide le threadLocal
 				cleanThreadLocals();
-			} catch (final VRuntimeException e) {
+			} catch (final RuntimeException e) {
 				//Ce n'est pas une cause de rejet du Work, on ne fait que logger
 				logError(e);
 			}
@@ -108,7 +107,7 @@ public final class WorkItemExecutor<WR, W> implements Runnable {
 		try {
 			threadLocalsField.set(Thread.currentThread(), null);
 		} catch (final IllegalArgumentException | IllegalAccessException e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		}
 	}
 }

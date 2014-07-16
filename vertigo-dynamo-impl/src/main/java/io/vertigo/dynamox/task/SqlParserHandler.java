@@ -24,7 +24,6 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamox.task.TaskEngineSQLParam.InOutType;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.util.Collections;
@@ -96,7 +95,7 @@ final class SqlParserHandler implements ScriptParserHandler {
 		//On vérifie la cohérence du Parmètre fourni
 		//On vérifie que l'attribut existe
 		if (!taskDefinition.containsAttribute(param.getAttributeName())) {
-			throw new VRuntimeException("L''attribut {0} n''existe pas sur le service {1}", null, param.getAttributeName(), taskDefinition.getName());
+			throw new RuntimeException("L'attribut " + param.getAttributeName() + " n'existe pas sur le service" + taskDefinition.getName());
 		}
 		//======================================================================
 		if (param.getFieldName() != null) {

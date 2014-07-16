@@ -22,7 +22,6 @@ import io.vertigo.commons.codec.AbstractCodecTest;
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.codec.compression.CompressionCodec;
-import io.vertigo.kernel.exception.VRuntimeException;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -90,7 +89,7 @@ public final class CompressionCodecTest extends AbstractCodecTest<byte[], byte[]
 
 	/** {@inheritDoc} */
 	@Override
-	@Test(expected = VRuntimeException.class)
+	@Test(expected = RuntimeException.class)
 	public void testFailDecode() throws Exception {
 		// object avec prefix ne correspondant pas à une classe;
 		final byte[] s = "COMPqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdf".getBytes();

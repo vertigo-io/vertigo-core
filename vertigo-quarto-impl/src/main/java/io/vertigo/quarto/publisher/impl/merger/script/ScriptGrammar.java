@@ -18,8 +18,8 @@
  */
 package io.vertigo.quarto.publisher.impl.merger.script;
 
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.util.StringUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -100,6 +100,6 @@ public final class ScriptGrammar {
 				return new ScriptTagContent(getDefinition(key), attribute);
 			}
 		}
-		throw new VRuntimeException("{0} n''appartient pas � la grammaire : {1}", null, value, orderedParsingTagList);
+		throw new RuntimeException(StringUtil.format("{0} n'appartient pas a la grammaire : {1}", value, orderedParsingTagList));
 	}
 }

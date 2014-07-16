@@ -19,7 +19,6 @@
 package io.vertigo.commons.impl.codec.base64;
 
 import io.vertigo.commons.codec.Codec;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 /**
@@ -55,11 +54,11 @@ public final class Base64Codec implements Codec<byte[], String> {
 			return new byte[0];
 		}
 		if (length % 4 != 0) {
-			throw new VRuntimeException("Données transmises malformées");
+			throw new RuntimeException("Données transmises malformées");
 		}
 		for (int i = 0; i < coded.length(); i++) {
 			if (coded.charAt(i) != PADDING && DECODE_TABLE[coded.charAt(i)] == -1) {
-				throw new VRuntimeException("Données transmises malformées");
+				throw new RuntimeException("Données transmises malformées");
 			}
 		}
 		// ----

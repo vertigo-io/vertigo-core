@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.plugins.work.rest;
 
 import io.vertigo.dynamo.work.WorkItem;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.util.HashMap;
@@ -69,7 +68,7 @@ final class MultipleWorkQueues {
 			obtainWorkQueue(workType, workQueueMap).put(workItem);
 		} catch (final InterruptedException e) {
 			//dans le cas d'une interruption on interdit d'empiler de nouveaux Works 
-			throw new VRuntimeException("putWorkItem", e);
+			throw new RuntimeException("putWorkItem", e);
 		}
 	}
 

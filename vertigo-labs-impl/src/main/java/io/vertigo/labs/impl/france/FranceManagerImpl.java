@@ -18,7 +18,6 @@
  */
 package io.vertigo.labs.impl.france;
 
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.labs.france.Departement;
 import io.vertigo.labs.france.FranceManager;
@@ -45,7 +44,7 @@ public final class FranceManagerImpl implements FranceManager {
 			regions = Collections.unmodifiableMap(loadRegions());
 			departements = Collections.unmodifiableMap(loadDepartements());
 		} catch (IOException e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		}
 	}
 

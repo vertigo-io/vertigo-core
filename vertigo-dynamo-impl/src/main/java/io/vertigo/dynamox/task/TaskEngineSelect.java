@@ -23,7 +23,6 @@ import io.vertigo.dynamo.database.connection.KConnection;
 import io.vertigo.dynamo.database.statement.KPreparedStatement;
 import io.vertigo.dynamo.database.statement.QueryResult;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.sql.SQLException;
@@ -79,7 +78,7 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL<KPreparedStatement> 
 			}
 		}
 		if (foundedAttribute == null) {
-			throw new VRuntimeException("TaskEngineSelect doit affecter au moins UN DtObject ou DtList!", null);
+			throw new RuntimeException("TaskEngineSelect doit affecter au moins UN DtObject ou DtList!");
 		}
 		return foundedAttribute;
 

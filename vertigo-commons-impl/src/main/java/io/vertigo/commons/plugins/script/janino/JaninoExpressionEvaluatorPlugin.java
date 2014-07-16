@@ -20,7 +20,6 @@ package io.vertigo.commons.plugins.script.janino;
 
 import io.vertigo.commons.impl.script.ExpressionEvaluatorPlugin;
 import io.vertigo.commons.script.ExpressionParameter;
-import io.vertigo.kernel.exception.VRuntimeException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -58,7 +57,7 @@ public final class JaninoExpressionEvaluatorPlugin implements ExpressionEvaluato
 		try {
 			scriptEvaluator = new ScriptEvaluator(expression, type, parameterNames, parameterTypes);
 		} catch (final Exception ex) {
-			throw new VRuntimeException("Erreur durant la construction du preprocessing de texte dynamique dans \n" + expression + '\n', ex);
+			throw new RuntimeException("Erreur durant la construction du preprocessing de texte dynamique dans \n" + expression + '\n', ex);
 		}
 
 		//2. Phase d'évaluation du script
@@ -75,7 +74,7 @@ public final class JaninoExpressionEvaluatorPlugin implements ExpressionEvaluato
 			if (t instanceof Error) {
 				throw (Error) t;
 			}
-			throw new VRuntimeException("Erreur durant l'évaluation du script", t);
+			throw new RuntimeException("Erreur durant l'évaluation du script", t);
 		}
 	}
 }

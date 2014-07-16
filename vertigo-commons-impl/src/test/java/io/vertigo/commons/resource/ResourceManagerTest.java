@@ -22,7 +22,6 @@ import io.vertigo.AbstractTestCase2JU4;
 import io.vertigo.commons.impl.resource.ResourceManagerImpl;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
-import io.vertigo.kernel.exception.VRuntimeException;
 
 import java.net.URL;
 
@@ -56,7 +55,7 @@ public final class ResourceManagerTest extends AbstractTestCase2JU4 {
 
 	}
 
-	@Test(expected = VRuntimeException.class)
+	@Test(expected = RuntimeException.class)
 	public void testEmptyResource() {
 		resourceManager.resolve("nothing");
 	}

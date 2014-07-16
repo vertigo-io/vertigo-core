@@ -22,7 +22,6 @@ import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.commons.locale.LocaleProvider;
 import io.vertigo.kernel.component.ComponentInfo;
 import io.vertigo.kernel.component.Describable;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.MessageKey;
@@ -153,7 +152,7 @@ public final class LocaleManagerImpl implements LocaleManager, Activeable, Descr
 					//Si on est en mode override on autorise des chargements partiels de dictionnaire
 					continue;
 				}
-				throw new VRuntimeException("le dictionnaire pour la locale '{0}' n'est pas renseigné", e, locale);
+				throw new RuntimeException("le dictionnaire pour la locale '" + locale + "' n'est pas renseigné", e);
 			}
 			//On a trouvé un dictionnaire 
 			check(resourceBundle, enums, override);

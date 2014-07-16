@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.plugins.kvdatastore.berkeley;
 
 import io.vertigo.dynamo.transaction.KTransactionResource;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import com.sleepycat.je.Database;
@@ -45,7 +44,7 @@ final class BerkeleyResource implements KTransactionResource {
 		try {
 			transaction = database.getEnvironment().beginTransaction(null, null);
 		} catch (final DatabaseException e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		}
 	}
 

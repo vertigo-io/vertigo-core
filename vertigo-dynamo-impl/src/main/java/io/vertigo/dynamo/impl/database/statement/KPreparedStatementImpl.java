@@ -22,10 +22,9 @@ import io.vertigo.dynamo.database.connection.KConnection;
 import io.vertigo.dynamo.database.statement.KPreparedStatement;
 import io.vertigo.dynamo.database.statement.QueryResult;
 import io.vertigo.dynamo.database.vendor.SQLMapping;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.impl.database.DataBaseListener;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.sql.PreparedStatement;
@@ -163,7 +162,7 @@ public class KPreparedStatementImpl implements KPreparedStatement {
 		try {
 			statement.close();
 		} catch (final SQLException e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		}
 	}
 

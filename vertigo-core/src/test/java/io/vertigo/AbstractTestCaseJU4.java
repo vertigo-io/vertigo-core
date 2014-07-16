@@ -19,7 +19,6 @@
 package io.vertigo;
 
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.xml.XMLModulesLoader;
@@ -81,7 +80,7 @@ public abstract class AbstractTestCaseJU4 extends AbstractTestCase2JU4 {
 			}
 			return properties;
 		} catch (final IOException e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		}
 	}
 

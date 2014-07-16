@@ -23,7 +23,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.kvdatastore.KVDataStoreManager;
 import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamo.transaction.KTransactionWritable;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.labs.gedcom.GedcomManager;
@@ -69,7 +68,7 @@ public final class GedcomManagerImpl implements GedcomManager {
 		try {
 			gp.load(gedcomURL.getFile());
 		} catch (Exception e) {
-			throw new VRuntimeException("chargement du fichier gedcom '{0}' impossible", e, gedcomResource);
+			throw new RuntimeException("chargement du fichier gedcom '" + gedcomResource + "' impossible", e);
 		}
 	}
 

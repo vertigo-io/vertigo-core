@@ -21,7 +21,6 @@ package io.vertigo.dynamo.plugins.kvdatastore.berkeley;
 import io.vertigo.dynamo.transaction.KTransaction;
 import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamo.transaction.KTransactionResourceId;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 
@@ -87,14 +86,14 @@ final class BerkeleyDatabase {
 		try {
 			status = database.get(getCurrentBerkeleyTransaction(), idEntry, dataEntry, LockMode.DEFAULT);
 		} catch (final DatabaseException e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		}
 		if (status == OperationStatus.NOTFOUND) {
 			//Si on n'a rien trouvé 
 			return Option.none();
 		}
 		if (!OperationStatus.SUCCESS.equals(status)) {
-			throw new VRuntimeException("find a échouée");
+			throw new RuntimeException("find a échouée");
 		}
 		return Option.some(clazz.cast(dataBinding.entryToObject(dataEntry)));
 	}
@@ -113,10 +112,10 @@ final class BerkeleyDatabase {
 		try {
 			status = database.put(getCurrentBerkeleyTransaction(), idEntry, dataEntry);
 		} catch (final DatabaseException e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		}
 		if (!OperationStatus.SUCCESS.equals(status)) {
-			throw new VRuntimeException("put a échouée");
+			throw new RuntimeException("put a échouée");
 		}
 	}
 
@@ -146,7 +145,7 @@ final class BerkeleyDatabase {
 				cursor.close();
 			}
 		} catch (final DatabaseException e) {
-			throw new VRuntimeException("findAll a échouée");
+			throw new RuntimeException("findAll a échouée");
 		}
 	}
 
@@ -176,10 +175,10 @@ final class BerkeleyDatabase {
 		try {
 			status = database.delete(getCurrentBerkeleyTransaction(), idEntry);
 		} catch (final DatabaseException e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		}
 		if (!OperationStatus.SUCCESS.equals(status)) {
-			throw new VRuntimeException("delete a échouée");
+			throw new RuntimeException("delete a échouée");
 		}
 	}
 

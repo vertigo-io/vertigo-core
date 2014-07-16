@@ -27,7 +27,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.persistence.Broker;
 import io.vertigo.dynamo.persistence.PersistenceManager;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.text.Collator;
@@ -157,7 +156,7 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 					dto = broker.get(uri);
 				} catch (final Exception e) {
 					//Il ne peut pas y avoir d'exception typée dans un comparateur.
-					throw new VRuntimeException(e);
+					throw new RuntimeException(e);
 				}
 				return mdFieldSort.getDataAccessor().getValue(dto);
 			}

@@ -18,9 +18,9 @@
  */
 package io.vertigoimpl.engines.elastica.redis;
 
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.util.DateUtil;
+import io.vertigo.kernel.util.StringUtil;
 
 import java.util.UUID;
 
@@ -62,7 +62,7 @@ public final class ZClientWork /*implements Runnable*/{
 			return doProcess(jedis, work, timeoutSeconds);
 		} catch (final Exception e) {
 			jedisPool.returnBrokenResource(jedis);
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		} finally {
 			jedisPool.returnResource(jedis);
 		}
@@ -75,7 +75,7 @@ public final class ZClientWork /*implements Runnable*/{
 		//On attend le résultat
 		final String workId = jedis.brpoplpush("works:done:" + id, "works:completed", timeoutSeconds);
 		if (workId == null) {
-			throw new VRuntimeException("TimeOut survenu pour {0}, durée maximale: {1}", null, id, timeoutSeconds);
+			throw new RuntimeException(StringUtil.format("TimeOut survenu pour {0}, durée maximale: {1}", id, timeoutSeconds));
 		}
 		if (!workId.equals(id)) {
 			throw new IllegalStateException("Id non cohérenents attendu '" + id + "' trouvé '" + workId + "'");
@@ -87,7 +87,7 @@ public final class ZClientWork /*implements Runnable*/{
 		if (t instanceof RuntimeException) {
 			return t;
 		}
-		throw new VRuntimeException(t);
+		throw new RuntimeException(t);
 	}
 
 	private String publish(final Jedis jedis, final ZMethod method, final boolean sync) {

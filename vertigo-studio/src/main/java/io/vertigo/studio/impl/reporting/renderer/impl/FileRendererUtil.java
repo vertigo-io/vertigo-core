@@ -18,7 +18,6 @@
  */
 package io.vertigo.studio.impl.reporting.renderer.impl;
 
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.io.File;
@@ -62,7 +61,7 @@ final class FileRendererUtil {
 			}
 			//System.out.println("writing" + file.getCanonicalPath());
 		} catch (final IOException e) {
-			throw new VRuntimeException("Erreur IO", e);
+			throw new RuntimeException("Erreur IO", e);
 		}
 	}
 }

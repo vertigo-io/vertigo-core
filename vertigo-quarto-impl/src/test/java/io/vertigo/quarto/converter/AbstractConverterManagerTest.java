@@ -23,7 +23,6 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.file.util.TempFile;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.io.File;
@@ -189,7 +188,7 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 			FileUtil.copy(in, file);
 			return fileManager.createFile(file);
 		} catch (final IOException e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		}
 	}
 }

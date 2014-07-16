@@ -24,8 +24,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.kernel.Home;
-import io.vertigo.kernel.exception.VRuntimeException;
-import io.vertigo.quarto.publisher.PublisherManager;
 import io.vertigo.quarto.publisher.metamodel.PublisherDataDefinition;
 import io.vertigo.quarto.publisher.mock.Address;
 import io.vertigo.quarto.publisher.mock.Enquete;
@@ -313,7 +311,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 		try {
 			FileUtil.copy(result.createInputStream(), new File(result.getFileName()));
 		} catch (final IOException e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		}
 	}
 }

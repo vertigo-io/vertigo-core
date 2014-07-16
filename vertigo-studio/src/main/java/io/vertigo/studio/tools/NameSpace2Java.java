@@ -20,7 +20,6 @@ package io.vertigo.studio.tools;
 
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.util.ClassUtil;
 import io.vertigo.studio.impl.mda.PropertiesUtil;
@@ -90,7 +89,7 @@ public final class NameSpace2Java {
 		try {
 			return doCreateParameters(fileName);
 		} catch (final IOException e) {
-			throw new VRuntimeException("Impossible de récupérer le fichier de configuration.", e);
+			throw new RuntimeException("Impossible de récupérer le fichier de configuration.", e);
 		}
 	}
 

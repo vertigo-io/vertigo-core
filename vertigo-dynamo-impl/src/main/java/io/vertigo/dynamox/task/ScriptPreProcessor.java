@@ -27,7 +27,6 @@ import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.util.ClassUtil;
 import io.vertigo.kernel.util.StringUtil;
@@ -92,7 +91,7 @@ final class ScriptPreProcessor {
 					clazz = DtObject.class;
 				}
 			} else {
-				throw new VRuntimeException("Type de paramètre non géré {0}:{1}", null, taskAttribute.getName(), domain.getName());
+				throw new RuntimeException("Type de paramètre non géré " + taskAttribute.getName() + ":" + domain.getName());
 			}
 			scriptEvaluatorParameter = new ExpressionParameter(StringUtil.constToCamelCase(taskAttribute.getName(), false), clazz, entry.getValue());
 			tmpParameters.add(scriptEvaluatorParameter);

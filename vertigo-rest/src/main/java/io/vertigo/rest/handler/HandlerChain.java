@@ -18,7 +18,6 @@
  */
 package io.vertigo.rest.handler;
 
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.rest.exception.SessionException;
 import io.vertigo.rest.exception.VSecurityException;
@@ -72,7 +71,7 @@ final class HandlerChain {
 			return nextHandler.handle(request, response, new HandlerChain(this));
 			//System.out.println("<<< after doFilter " + nextHandler);
 		}
-		throw new VRuntimeException("Last routeHandler haven't send response body");
+		throw new RuntimeException("Last routeHandler haven't send response body");
 	}
 
 	/**
