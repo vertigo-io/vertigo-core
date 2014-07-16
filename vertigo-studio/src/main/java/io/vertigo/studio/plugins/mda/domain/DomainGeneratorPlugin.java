@@ -65,13 +65,14 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 	 * @param baseCible Type de base de données ciblé.
 	 */
 	@Inject
-	public DomainGeneratorPlugin(@Named("generateDtResources") final boolean generateDtResources, 
-								@Named("generateJpaAnnotations") final boolean generateJpaAnnotations, 
-								@Named("generateDtDefinitions") final boolean generateDtDefinitions, 
-								@Named("generateDtObject") final boolean generateDtObject, 
-								@Named("generateSql") final boolean generateSql, 
-								@Named("generateDrop") final boolean generateDrop,
-								@Named("baseCible") final String baseCible) {
+	public DomainGeneratorPlugin(//
+			@Named("generateDtResources") final boolean generateDtResources,//
+			@Named("generateJpaAnnotations") final boolean generateJpaAnnotations,//
+			@Named("generateDtDefinitions") final boolean generateDtDefinitions, //
+			@Named("generateDtObject") final boolean generateDtObject, //
+			@Named("generateSql") final boolean generateSql, //
+			@Named("generateDrop") final boolean generateDrop, //
+			@Named("baseCible") final String baseCible) {
 		// ---------------------------------------------------------------------
 		this.generateDtResources = generateDtResources;
 		this.generateJpaAnnotations = generateJpaAnnotations;
@@ -94,7 +95,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 	private Map<String, Collection<DtDefinition>> getDtDefinitionCollectionMap() {
 		return getDefinitionCollectionMap(getDtDefinitions());
 	}
-	
+
 	private Collection<AssociationDefinition> getAssociations() {
 		return sortAssociationsCollection(Home.getDefinitionSpace().getAll(AssociationDefinition.class));
 	}
@@ -178,7 +179,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 	}
 
 	private void generateSql(final DomainConfiguration domainConfiguration, final Result result) {
-		final List<TemplateDtDefinition> list = new ArrayList<TemplateDtDefinition>(getDtDefinitions().size());
+		final List<TemplateDtDefinition> list = new ArrayList<>(getDtDefinitions().size());
 		for (DtDefinition dtDefinition : sortAbsoluteDefinitionCollection(getDtDefinitions())) {
 			final TemplateDtDefinition templateDef = new TemplateDtDefinition(dtDefinition);
 			list.add(templateDef);
@@ -235,7 +236,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 		}
 		return map;
 	}
-	
+
 	private static Collection<DtDefinition> sortAbsoluteDefinitionCollection(final Collection<DtDefinition> definitionCollection) {
 		final List<DtDefinition> list = new ArrayList<>(definitionCollection);
 		java.util.Collections.sort(list, new Comparator<DtDefinition>() {
@@ -255,7 +256,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 		});
 		return list;
 	}
-	
+
 	private static Collection<AssociationDefinition> sortAssociationsCollection(final Collection<AssociationDefinition> associationCollection) {
 		final List<AssociationDefinition> list = new ArrayList<>(associationCollection);
 		java.util.Collections.sort(list, new Comparator<AssociationDefinition>() {
@@ -276,5 +277,4 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 		return list;
 	}
 
-	
 }
