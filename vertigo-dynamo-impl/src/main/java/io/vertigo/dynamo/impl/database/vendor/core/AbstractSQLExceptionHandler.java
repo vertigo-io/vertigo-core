@@ -21,11 +21,11 @@ package io.vertigo.dynamo.impl.database.vendor.core;
 import io.vertigo.dynamo.database.statement.KPreparedStatement;
 import io.vertigo.dynamo.database.vendor.SQLExceptionHandler;
 import io.vertigo.dynamo.impl.database.Resources;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.exception.VUserException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.MessageKey;
 import io.vertigo.kernel.lang.MessageText;
+import io.vertigo.kernel.util.StringUtil;
 
 import java.sql.SQLException;
 
@@ -113,6 +113,6 @@ public abstract class AbstractSQLExceptionHandler implements SQLExceptionHandler
 
 	protected void handleOtherSQLException(final SQLException sqle, final KPreparedStatement statement) {
 		final int errCode = sqle.getErrorCode();
-		throw new VRuntimeException("[Erreur SQL] {0} : {1}", sqle, errCode, statement != null ? statement.toString() : null);
+		throw new RuntimeException(StringUtil.format("[Erreur SQL] {0} : {1}", errCode, statement != null ? statement.toString() : null), sqle);
 	}
 }

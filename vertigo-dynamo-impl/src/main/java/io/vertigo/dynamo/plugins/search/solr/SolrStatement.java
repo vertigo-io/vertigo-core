@@ -34,7 +34,6 @@ import io.vertigo.dynamo.search.IndexFieldNameResolver;
 import io.vertigo.dynamo.search.metamodel.IndexDefinition;
 import io.vertigo.dynamo.search.model.Index;
 import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.MessageText;
 
@@ -100,14 +99,14 @@ final class SolrStatement<I extends DtObject, R extends DtObject> {
 			}
 			/*UpdateResponse updateResponse =*/solrServer.add(solrInputDocuments);
 		} catch (final SolrServerException e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		} catch (final IOException e) {
 			handleIOException(e);
 		}
 	}
 
 	private static void handleIOException(final IOException e) {
-		throw new VRuntimeException("Serveur Solr indisponible", e);
+		throw new RuntimeException("Serveur Solr indisponible", e);
 	}
 
 	/**
@@ -119,7 +118,7 @@ final class SolrStatement<I extends DtObject, R extends DtObject> {
 			final SolrInputDocument solrInputDocument = solrDocumentCodec.index2SolrInputDocument(index, indexFieldNameResolver);
 			solrServer.add(solrInputDocument);
 		} catch (final SolrServerException e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		} catch (final IOException e) {
 			handleIOException(e);
 		}
@@ -137,7 +136,7 @@ final class SolrStatement<I extends DtObject, R extends DtObject> {
 			final String stringQuery = translateToSolr(query, indexFieldNameResolver);
 			solrServer.deleteByQuery(stringQuery);
 		} catch (final SolrServerException e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		} catch (final IOException e) {
 			handleIOException(e);
 		}
@@ -154,7 +153,7 @@ final class SolrStatement<I extends DtObject, R extends DtObject> {
 		try {
 			solrServer.deleteById(uri.toURN());
 		} catch (final SolrServerException e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		} catch (final IOException e) {
 			handleIOException(e);
 		}
@@ -283,7 +282,7 @@ final class SolrStatement<I extends DtObject, R extends DtObject> {
 		try {
 			queryResponse = solrServer.query(solrQuery);
 		} catch (final SolrServerException e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		}
 		return queryResponse;
 	}

@@ -20,7 +20,6 @@ package io.vertigo.dynamox.domain.constraint;
 
 import io.vertigo.dynamo.domain.metamodel.Property;
 import io.vertigo.dynamo.impl.domain.metamodel.AbstractConstraintImpl;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.MessageText;
 
@@ -58,12 +57,12 @@ public final class ConstraintBigDecimal extends AbstractConstraintImpl<String, B
 		try {
 			maxPrecision = Integer.parseInt(beforeAfter[0]);
 		} catch (final NumberFormatException e) {
-			throw new VRuntimeException("Le nombre de chiffre n'est pas un entier");
+			throw new RuntimeException("Le nombre de chiffre n'est pas un entier");
 		}
 		try {
 			maxScale = Integer.parseInt(beforeAfter[1]);
 		} catch (final NumberFormatException e) {
-			throw new VRuntimeException("Le nombre de chiffre après la virgule n'est pas un entier");
+			throw new RuntimeException("Le nombre de chiffre après la virgule n'est pas un entier");
 		}
 		// ---
 		Assertion.checkNotNull(maxPrecision, "Le nombre de chiffre ne peut pas être null");

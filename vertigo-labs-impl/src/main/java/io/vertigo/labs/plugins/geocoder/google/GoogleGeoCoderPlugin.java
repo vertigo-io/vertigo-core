@@ -18,7 +18,6 @@
  */
 package io.vertigo.labs.plugins.geocoder.google;
 
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.labs.geocoder.GeoLocation;
@@ -99,7 +98,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		try {
 			return doCreateConnection(url);
 		} catch (final IOException e) {
-			throw new VRuntimeException("Erreur de connexion au service (HTTP)", e);
+			throw new RuntimeException("Erreur de connexion au service (HTTP)", e);
 		}
 	}
 
@@ -129,14 +128,14 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		try {
 			urlString = GEOCODE_REQUEST_PREFIX + "?address=" + URLEncoder.encode(address, "UTF-8") + "&sensor=false";
 		} catch (final UnsupportedEncodingException e) {
-			throw new VRuntimeException("Erreur lors de l'encodage de l'adresse", e);
+			throw new RuntimeException("Erreur lors de l'encodage de l'adresse", e);
 		}
 
 		final URL url;
 		try {
 			url = new URL(urlString);
 		} catch (final MalformedURLException e) {
-			throw new VRuntimeException("Erreur lors de la cr�ation de l'URL", e);
+			throw new RuntimeException("Erreur lors de la creation de l'URL", e);
 		}
 
 		final HttpURLConnection connection = createConnection(url);
@@ -148,11 +147,11 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 			// Lecture des r�sultats sous forme XML
 			return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(geocoderResultInputSource);
 		} catch (final IOException e) {
-			throw new VRuntimeException("Erreur de connexion au service", e);
+			throw new RuntimeException("Erreur de connexion au service", e);
 		} catch (final SAXException e) {
-			throw new VRuntimeException("Erreur lors de la r�cuperation des r�sultats de la requ�te", e);
+			throw new RuntimeException("Erreur lors de la r�cuperation des r�sultats de la requ�te", e);
 		} catch (final ParserConfigurationException e) {
-			throw new VRuntimeException("Erreur de configuration du parseur XML", e);
+			throw new RuntimeException("Erreur de configuration du parseur XML", e);
 		} finally {
 			connection.disconnect();
 		}
@@ -174,7 +173,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		try {
 			return (NodeList) xpath.evaluate(xPathString, xml, XPathConstants.NODESET);
 		} catch (final XPathExpressionException ex) {
-			throw new VRuntimeException("Erreur lors du Parsing XML", ex);
+			throw new RuntimeException("Erreur lors du Parsing XML", ex);
 		}
 	}
 
@@ -193,7 +192,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		try {
 			return (Node) xpath.evaluate(xPathString, xml, XPathConstants.NODE);
 		} catch (final XPathExpressionException ex) {
-			throw new VRuntimeException("Erreur lors du Parsing XML", ex);
+			throw new RuntimeException("Erreur lors du Parsing XML", ex);
 		}
 	}
 
@@ -220,7 +219,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		//---------------------------------------------------------------------------
 		final Document geocoderResultDocument = geoCode(address);
 		if (geocoderResultDocument == null) {
-			throw new VRuntimeException("Pas de r�ponse du service");
+			throw new RuntimeException("Pas de r�ponse du service");
 		}
 		//---------------------------------------------------------------------
 		// 0- V�rification du status 

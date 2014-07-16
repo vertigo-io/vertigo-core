@@ -36,7 +36,6 @@ import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.dynamox.domain.formatter.FormatterNumber;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineProc;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.util.HashSet;
@@ -148,9 +147,9 @@ public final class BrokerNNImpl implements BrokerNN {
 		final String request = String.format("insert into %s (%s, %s) values (#%s#, #%s#)", nn.tableName, sourceFieldName, targetFieldName, sourceFieldName, targetFieldName);
 		final int sqlRowCount = processNN(taskName, request, nn.sourceField, nn.sourceValue, nn.targetField, targetValue);
 		if (sqlRowCount > 1) {
-			throw new VRuntimeException("Plus de 1 ligne a été insérée", null);
+			throw new RuntimeException("Plus de 1 ligne a été insérée");
 		} else if (sqlRowCount == 0) {
-			throw new VRuntimeException("Aucune ligne insérée", null);
+			throw new RuntimeException("Aucune ligne insérée");
 		}
 	}
 
@@ -169,9 +168,9 @@ public final class BrokerNNImpl implements BrokerNN {
 				nn.tableName, sourceFieldName, sourceFieldName, targetFieldName, targetFieldName);
 		final int sqlRowCount = processNN(taskName, request, nn.sourceField, nn.sourceValue, nn.targetField, targetValue);
 		if (sqlRowCount > 1) {
-			throw new VRuntimeException("Plus de 1 ligne a été supprimée", null);
+			throw new RuntimeException("Plus de 1 ligne a été supprimée");
 		} else if (sqlRowCount == 0) {
-			throw new VRuntimeException("Aucune ligne supprimée", null);
+			throw new RuntimeException("Aucune ligne supprimée");
 		}
 	}
 

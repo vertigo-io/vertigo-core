@@ -26,7 +26,6 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamock.domain.famille.Famille;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.MessageText;
 
 import java.io.File;
@@ -282,7 +281,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		try {
 			FileUtil.copy(result.createInputStream(), new File(result.getFileName()));
 		} catch (final IOException e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		}
 	}
 }

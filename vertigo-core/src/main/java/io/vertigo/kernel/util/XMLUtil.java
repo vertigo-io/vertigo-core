@@ -18,7 +18,6 @@
  */
 package io.vertigo.kernel.util;
 
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.io.IOException;
@@ -30,7 +29,6 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import org.xml.sax.SAXException;
-
 
 /**
  * XSD Validation.
@@ -61,10 +59,10 @@ public final class XMLUtil {
 			try {
 				validator.validate(streamSource);
 			} catch (final SAXException e) {
-				throw new VRuntimeException("'{0}' non valide", e, xml.toString());
+				throw new RuntimeException("'" + xml.toString() + "' non valide", e);
 			}
 		} catch (final SAXException | IOException e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		}
 	}
 }

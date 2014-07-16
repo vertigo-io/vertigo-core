@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.work;
 
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.util.concurrent.Callable;
@@ -40,7 +39,7 @@ final class AsyncEngine<WR, W> implements WorkEngine<WR, W> {
 		try {
 			return callable.call();
 		} catch (final Exception e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		}
 	}
 }

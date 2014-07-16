@@ -25,7 +25,6 @@ import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.kernel.component.ComponentInfo;
 import io.vertigo.kernel.component.Describable;
 import io.vertigo.kernel.component.Manager;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.io.File;
@@ -66,7 +65,7 @@ public final class TestUtil {
 				return fileManager.createFile(file);
 			}
 		} catch (final IOException e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -81,7 +80,7 @@ public final class TestUtil {
 		try {
 			return new File(fileURL.toURI());
 		} catch (final URISyntaxException e) {
-			throw new VRuntimeException(e);
+			throw new RuntimeException(e);
 		}
 	}
 

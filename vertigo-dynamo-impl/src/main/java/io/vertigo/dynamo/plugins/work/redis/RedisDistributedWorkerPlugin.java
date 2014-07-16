@@ -22,7 +22,6 @@ import io.vertigo.dynamo.impl.work.DistributedWorkerPlugin;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkResultHandler;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.util.DateUtil;
@@ -130,7 +129,7 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 		if (t instanceof RuntimeException) {
 			throw RuntimeException.class.cast(t);
 		}
-		throw new VRuntimeException(t);
+		throw new RuntimeException(t);
 
 	}
 
@@ -149,7 +148,7 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 		final String id = jedis.brpoplpush("works:done:" + workItem.getId(), "works:completed", timeoutSeconds);
 
 		if (id == null) {
-			throw new VRuntimeException("TimeOut survenu pour work[{0}], dur�e maximale: {1}s", null, workItem.getId(), timeoutSeconds);
+			throw new RuntimeException("TimeOut survenu pour work[" + workItem.getId() + "], duree maximale: " + timeoutSeconds + " s");
 		} else if (!workItem.getId().equals(id)) {
 			throw new IllegalStateException("Id non coh�renents attendu '" + workItem.getId() + "' trouv� '" + id + "'");
 		}

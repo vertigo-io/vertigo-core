@@ -20,7 +20,6 @@ package io.vertigo.dynamo.impl.database.vendor.h2;
 
 import io.vertigo.dynamo.database.statement.KPreparedStatement;
 import io.vertigo.dynamo.impl.database.vendor.core.AbstractSQLExceptionHandler;
-import io.vertigo.kernel.exception.VRuntimeException;
 
 import java.sql.SQLException;
 
@@ -84,7 +83,7 @@ final class H2SqlExceptionHandler extends AbstractSQLExceptionHandler {
 	@Override
 	protected void handleOtherSQLException(final SQLException sqle, final KPreparedStatement statement) {
 		final int errCode = sqle.getErrorCode();
-		throw new VRuntimeException("[Erreur SQL](" + errCode + ") : " + sqle.getMessage() + '\n' + statement, sqle);
+		throw new RuntimeException("[Erreur SQL](" + errCode + ") : " + sqle.getMessage() + '\n' + statement, sqle);
 	}
 
 	/** {@inheritDoc} */

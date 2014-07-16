@@ -18,8 +18,8 @@
  */
 package io.vertigo.kernel.di.configurator;
 
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.util.StringUtil;
 
 /**
  * Rule : all components of a module must respect this rule.
@@ -40,7 +40,7 @@ final class APIModuleRule implements ModuleRule {
 	public void chek(final ModuleConfig moduleConfig) {
 		for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
 			if (componentConfig.getApiClass().isEmpty()) {
-				throw new VRuntimeException("api rule : all components of module '{0}' must have an api. Component '{1}' doesn't respect this rule.", null, moduleConfig, componentConfig);
+				throw new RuntimeException("api rule : all components of module '" + moduleConfig + "' must have an api. Component '" + componentConfig + "' doesn't respect this rule.");
 			}
 		}
 	}
@@ -71,7 +71,7 @@ final class InheritanceModuleRule implements ModuleRule {
 				clazz = componentConfig.getImplClass();
 			}
 			if (!superClass.isAssignableFrom(clazz)) {
-				throw new VRuntimeException("Inheritance rule : all components of module '{0}' must inherit class : '{2}'. Component '{1}' doesn't respect this rule.", null, moduleConfig, componentConfig, superClass.getSimpleName());
+				throw new RuntimeException(StringUtil.format("Inheritance rule : all components of module '{0}' must inherit class : '{2}'. Component '{1}' doesn't respect this rule.", moduleConfig, componentConfig, superClass.getSimpleName()));
 			}
 		}
 	}

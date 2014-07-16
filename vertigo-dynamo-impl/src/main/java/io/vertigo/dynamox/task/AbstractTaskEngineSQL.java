@@ -40,7 +40,6 @@ import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamo.transaction.KTransactionResourceId;
 import io.vertigo.dynamox.task.TaskEngineSQLParam.InOutType;
 import io.vertigo.kernel.Home;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.sql.SQLException;
@@ -419,7 +418,7 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 			try {
 				connection = getConnectionProvider().obtainConnection();
 			} catch (final SQLException e) {
-				throw new VRuntimeException("Obtention de connexion impossible", e);
+				throw new RuntimeException("Obtention de connexion impossible", e);
 			}
 			transaction.addResource(getKTransactionResourceId(), connection);
 		}

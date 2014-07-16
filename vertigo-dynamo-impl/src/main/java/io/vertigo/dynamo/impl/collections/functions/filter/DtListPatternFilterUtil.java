@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamo.impl.collections.functions.filter;
 
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Option;
+import io.vertigo.kernel.util.StringUtil;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -72,7 +72,7 @@ final class DtListPatternFilterUtil {
 			case Term:
 				return createDtListTermFilter(parsedFilter, fieldName, dataType);
 			default:
-				throw new VRuntimeException("La chaine de filtrage: {0} , ne respecte pas la syntaxe {1}.", null, parsedFilter[0], filterPattern.getPattern().pattern());
+				throw new RuntimeException(StringUtil.format("La chaine de filtrage: {0} , ne respecte pas la syntaxe {1}.", parsedFilter[0], filterPattern.getPattern().pattern()));
 		}
 	}
 
@@ -142,7 +142,7 @@ final class DtListPatternFilterUtil {
 			case DtObject:
 			case DtList:
 			default:
-				throw new VRuntimeException("Type de données non comparable : " + dataType.name());
+				throw new RuntimeException("Type de données non comparable : " + dataType.name());
 		}
 		return Option.some(result);
 	}

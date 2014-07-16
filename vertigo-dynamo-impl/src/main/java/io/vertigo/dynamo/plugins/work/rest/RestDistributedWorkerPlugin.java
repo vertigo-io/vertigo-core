@@ -23,7 +23,6 @@ import io.vertigo.dynamo.impl.work.DistributedWorkerPlugin;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkResultHandler;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 
@@ -129,13 +128,13 @@ public final class RestDistributedWorkerPlugin implements DistributedWorkerPlugi
 				try {
 					wait(waitTimeoutSeconds * 1000); //attend un notify
 				} catch (final InterruptedException e) {
-					throw new VRuntimeException("Arret demand� : on stop le travail en cours");
+					throw new RuntimeException("Arret demand� : on stop le travail en cours");
 				}
 				if (!finished) {
 					if (!started) {
-						error = new VRuntimeException("Timeout : le traitement n'a pas �t� pris en charge en " + waitTimeoutSeconds + "s");
+						error = new RuntimeException("Timeout : le traitement n'a pas �t� pris en charge en " + waitTimeoutSeconds + "s");
 					} else {
-						error = new VRuntimeException("Timeout : le traitement ne s'est pas termin� en " + waitTimeoutSeconds + "s");
+						error = new RuntimeException("Timeout : le traitement ne s'est pas termin� en " + waitTimeoutSeconds + "s");
 					}
 					//TODO : si timeout retirer de la file, ou d�sactiver le handler
 				}
@@ -170,7 +169,7 @@ public final class RestDistributedWorkerPlugin implements DistributedWorkerPlugi
 				if (error instanceof RuntimeException) {
 					throw RuntimeException.class.cast(error);
 				}
-				throw new VRuntimeException(error);
+				throw new RuntimeException(error);
 			}
 			return result;
 		}

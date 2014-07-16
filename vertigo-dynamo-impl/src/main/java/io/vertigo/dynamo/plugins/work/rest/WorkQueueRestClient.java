@@ -22,7 +22,6 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkResultHandler;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.io.Serializable;
@@ -179,7 +178,7 @@ final class WorkQueueRestClient {
 		if (status.getFamily() == Family.SUCCESSFUL) {
 			return;
 		}
-		throw new VRuntimeException("Une erreur est survenue : " + status.getStatusCode() + " " + status.getReasonPhrase());
+		throw new RuntimeException("Une erreur est survenue : " + status.getStatusCode() + " " + status.getReasonPhrase());
 	}
 
 }

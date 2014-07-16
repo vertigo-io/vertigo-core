@@ -20,7 +20,6 @@ package io.vertigo.dynamo.impl.environment.kernel.impl.model;
 
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
-import io.vertigo.kernel.exception.VRuntimeException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,7 +45,7 @@ final class DynamicSolver {
 
 		final Collection<DynamicDefinitionKey> orphanCollection = definitionModelRepository.getOrphanDefinitionKeys();
 		if (!orphanCollection.isEmpty()) {
-			throw new VRuntimeException(" Les clés suivantes " + orphanCollection + " sont orphelines");
+			throw new RuntimeException(" Les clés suivantes " + orphanCollection + " sont orphelines");
 		}
 		//----------------------------------------------------------------------
 		final Collection<DynamicDefinition> coll = new ArrayList<>(definitionModelRepository.getDefinitions());
@@ -66,7 +65,7 @@ final class DynamicSolver {
 			}
 			//Si la liste n'a pas diminuée c'est que l'on a fini de résoudre ce qui peut l'être.
 			if (size == coll.size()) {
-				throw new VRuntimeException(" Les références " + coll + " ne peuvent être résolues");
+				throw new RuntimeException(" Les références " + coll + " ne peuvent être résolues");
 			}
 			size = coll.size();
 		}

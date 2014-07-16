@@ -31,7 +31,6 @@ import io.vertigo.dynamo.impl.export.core.ExportDtParametersImpl;
 import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkResultHandler;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.io.File;
@@ -88,7 +87,7 @@ public final class ExportManagerImpl implements ExportManager {
 				return exporterPlugin;
 			}
 		}
-		throw new VRuntimeException("aucun plugin trouv� pour le format {0}", null, exportFormat);
+		throw new RuntimeException("aucun plugin trouve pour le format " + exportFormat);
 	}
 
 	/** {@inheritDoc} */
@@ -112,7 +111,7 @@ public final class ExportManagerImpl implements ExportManager {
 		} catch (final Exception e) {
 			//Quelle que soit l'exception on l'encapsule pour pr�ciser le nom du fichier.
 			final String msg = "La g�n�ration du fichier a �chou�.<!-- " + e.getMessage() + "--> pour le fichier " + export.getFileName();
-			throw new VRuntimeException(msg, e);
+			throw new RuntimeException(msg, e);
 		}
 	}
 

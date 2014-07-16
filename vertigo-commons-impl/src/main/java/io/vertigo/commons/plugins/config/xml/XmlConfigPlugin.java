@@ -21,9 +21,9 @@ package io.vertigo.commons.plugins.config.xml;
 import io.vertigo.commons.config.ConfigManager;
 import io.vertigo.commons.impl.config.ConfigPlugin;
 import io.vertigo.commons.resource.ResourceManager;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
+import io.vertigo.kernel.util.StringUtil;
 import io.vertigo.kernel.util.XMLUtil;
 
 import java.io.BufferedInputStream;
@@ -81,11 +81,11 @@ public final class XmlConfigPlugin implements ConfigPlugin { /*implements Loader
 		try {
 			return doReadXML(configURL);
 		} catch (final ParserConfigurationException pce) {
-			throw new VRuntimeException("Erreur de configuration du parseur (fichier {0}), lors de l'appel à newSAXParser()", pce, configURL.getPath());
+			throw new RuntimeException(StringUtil.format("Erreur de configuration du parseur (fichier {0}), lors de l'appel à newSAXParser()", configURL.getPath()), pce);
 		} catch (final SAXException se) {
-			throw new VRuntimeException("Erreur de parsing (fichier {0}), lors de l'appel à parse()", se, configURL.getPath());
+			throw new RuntimeException(StringUtil.format("Erreur de parsing (fichier {0}), lors de l'appel à parse()", configURL.getPath()), se);
 		} catch (final IOException ioe) {
-			throw new VRuntimeException("Erreur d'entrée/sortie (fichier {0}), lors de l'appel à parse()", ioe, configURL.getPath());
+			throw new RuntimeException(StringUtil.format("Erreur d'entrée/sortie (fichier {0}), lors de l'appel à parse()", configURL.getPath()), ioe);
 		}
 	}
 
