@@ -21,7 +21,6 @@ package io.vertigo.dynamo.impl.environment;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.dynamo.impl.environment.kernel.meta.Grammar;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.util.ArrayList;
@@ -78,7 +77,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 			dynamicRegistry.onDefinition(xdefinition);
 		} catch (final Throwable e) {
 			//on catch tout (notament les assertions) car c'est ici qu'on indique l'URI de la définition posant problème
-			throw new VRuntimeException("Erreur dans le traitement de " + xdefinition.getDefinitionKey().getName(), e);
+			throw new RuntimeException("Erreur dans le traitement de " + xdefinition.getDefinitionKey().getName(), e);
 		}
 	}
 

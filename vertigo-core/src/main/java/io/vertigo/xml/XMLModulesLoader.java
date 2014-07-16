@@ -19,7 +19,6 @@
 package io.vertigo.xml;
 
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Loader;
 import io.vertigo.kernel.util.XMLUtil;
@@ -34,7 +33,6 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
-
 
 /**
  * Parser XML du paramétrage de l'application.
@@ -64,11 +62,11 @@ public final class XMLModulesLoader implements Loader<ComponentSpaceConfigBuilde
 		try {
 			doLoad(componentSpaceConfigBuilder);
 		} catch (final ParserConfigurationException pce) {
-			throw new VRuntimeException("Erreur de configuration du parseur (fichier {0}), lors de l'appel à newSAXParser()", pce, managersURL.getPath());
+			throw new RuntimeException("Erreur de configuration du parseur (fichier " + managersURL.getPath() + "), lors de l'appel à newSAXParser()", pce);
 		} catch (final SAXException se) {
-			throw new VRuntimeException("Erreur de parsing (fichier {0}), lors de l'appel à parse()", se, managersURL.getPath());
+			throw new RuntimeException("Erreur de parsing (fichier " + managersURL.getPath() + "), lors de l'appel à parse()", se);
 		} catch (final IOException ioe) {
-			throw new VRuntimeException("Erreur d'entrée/sortie (fichier {0}), lors de l'appel à parse()", ioe, managersURL.getPath());
+			throw new RuntimeException("Erreur d'entrée/sortie (fichier " + managersURL.getPath() + "), lors de l'appel à parse()", ioe);
 		}
 	}
 

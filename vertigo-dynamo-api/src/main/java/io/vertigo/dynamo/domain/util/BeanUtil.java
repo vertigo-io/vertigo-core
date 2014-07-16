@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.domain.util;
 
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.util.ClassUtil;
 
@@ -58,7 +57,7 @@ public final class BeanUtil {
 		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());
 		final Method readMethod = pd.getReadMethod();
 		if (readMethod == null) {
-			throw new VRuntimeException("Getter non trouvé pour l'attribut \"" + propertyName + "\" sur classe \"" + object.getClass().getName() + '\"');
+			throw new RuntimeException("Getter non trouvé pour l'attribut \"" + propertyName + "\" sur classe \"" + object.getClass().getName() + '\"');
 		}
 		return ClassUtil.invoke(object, readMethod);
 	}
@@ -78,7 +77,7 @@ public final class BeanUtil {
 		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());
 		final Method writeMethod = pd.getWriteMethod();
 		if (writeMethod == null) {
-			throw new VRuntimeException("Setter non trouvé pour l'attribut \"" + propertyName + "\" sur classe \"" + object.getClass().getName() + '\"');
+			throw new RuntimeException("Setter non trouvé pour l'attribut \"" + propertyName + "\" sur classe \"" + object.getClass().getName() + '\"');
 		}
 		ClassUtil.invoke(object, writeMethod, value);
 	}
@@ -119,14 +118,14 @@ public final class BeanUtil {
 				return propertyDescriptor;
 			}
 		}
-		throw new VRuntimeException("Aucune méthode trouvée pour l'attribut \"" + propertyName + "\" sur classe \"" + beanClass.getName() + '\"');
+		throw new RuntimeException("Aucune méthode trouvée pour l'attribut \"" + propertyName + "\" sur classe \"" + beanClass.getName() + '\"');
 	}
 
 	private static PropertyDescriptor[] getPropertyDescriptors(final Class<?> beanClass) {
 		try {
 			return getBeanInfo(beanClass).getPropertyDescriptors();
 		} catch (final IntrospectionException e) {
-			throw new VRuntimeException("Erreur d'introspection des propriétés sur la classe " + beanClass, e);
+			throw new RuntimeException("Erreur d'introspection des propriétés sur la classe " + beanClass, e);
 		}
 	}
 }

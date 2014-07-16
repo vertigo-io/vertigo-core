@@ -18,7 +18,6 @@
  */
 package io.vertigo.kernel.util;
 
-import io.vertigo.kernel.exception.VRuntimeException;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.lang.annotation.Annotation;
@@ -102,9 +101,9 @@ public final class ClassUtil {
 		} catch (final InvocationTargetException e) {
 			throw handle(e, "Erreur lors de l'appel au constructeur de la classe: {0} ", constructor.getDeclaringClass());
 		} catch (final java.lang.IllegalAccessException e) {
-			throw new VRuntimeException("accès final impossible à la classe : {0}", e, constructor.getDeclaringClass().getName());
+			throw new RuntimeException("accès final impossible à la classe :" + constructor.getDeclaringClass().getName(), e);
 		} catch (final Exception e) {
-			throw new VRuntimeException("Instanciation impossible de la classe : {0}", e, constructor.getDeclaringClass().getName());
+			throw new RuntimeException("Instanciation impossible de la classe : " + constructor.getDeclaringClass().getName(), e);
 		}
 	}
 
@@ -116,7 +115,7 @@ public final class ClassUtil {
 		//		if (t instanceof Error) {
 		//			return (Error) t;
 		//		}
-		return new VRuntimeException(msg, e, params);
+		return new RuntimeException(StringUtil.format(msg, params), e);
 
 	}
 
@@ -144,9 +143,9 @@ public final class ClassUtil {
 		} catch (final NoSuchMethodException e) {
 			if (parameterTypes.length == 0) {
 				//Dans le cas des constructeur vide (sans paramètre), on lance un message plus simple.
-				throw new VRuntimeException("Aucun constructeur vide trouvé sur {0} ", e, clazz.getSimpleName());
+				throw new RuntimeException("Aucun constructeur vide trouvé sur " + clazz.getSimpleName(), e);
 			}
-			throw new VRuntimeException("Aucun constructeur trouvé sur {0} avec la signature {1}", e, clazz.getSimpleName(), parameterTypes);
+			throw new RuntimeException("Aucun constructeur trouvé sur " + clazz.getSimpleName() + " avec la signature " + parameterTypes, e);
 		}
 	}
 
@@ -162,7 +161,7 @@ public final class ClassUtil {
 		try {
 			return Class.forName(javaClassName);
 		} catch (final ClassNotFoundException e) {
-			throw new VRuntimeException("Impossible de trouver la classe : {0}", e, javaClassName);
+			throw new RuntimeException("Impossible de trouver la classe : " + javaClassName, e);
 		}
 	}
 
@@ -181,7 +180,7 @@ public final class ClassUtil {
 		try {
 			return Class.forName(javaClassName).asSubclass(type);
 		} catch (final ClassNotFoundException e) {
-			throw new VRuntimeException("Impossible de trouver la classe : {0}", e, javaClassName);
+			throw new RuntimeException("Impossible de trouver la classe : " + javaClassName, e);
 		}
 	}
 
@@ -200,7 +199,7 @@ public final class ClassUtil {
 		try {
 			return method.invoke(instance, args);
 		} catch (final IllegalAccessException e) {
-			throw new VRuntimeException("accès impossible à la méthode : {0} de {1}", e, method.getName(), method.getDeclaringClass().getName());
+			throw new RuntimeException("accès impossible à la méthode : " + method.getName() + " de " + method.getDeclaringClass().getName(), e);
 		} catch (final InvocationTargetException e) {
 			throw handle(e, "Erreur lors de l'appel de la méthode : {0} de {1}", method.getName(), method.getDeclaringClass().getName());
 		}
@@ -221,7 +220,7 @@ public final class ClassUtil {
 			field.setAccessible(true);
 			field.set(instance, value);
 		} catch (final IllegalAccessException e) {
-			throw new VRuntimeException("accès impossible au champ : {0} de {1}", e, field.getName(), field.getDeclaringClass().getName());
+			throw new RuntimeException("accès impossible au champ : " + field.getName() + " de " + field.getDeclaringClass().getName(), e);
 		}
 	}
 
@@ -240,7 +239,7 @@ public final class ClassUtil {
 			field.setAccessible(true);
 			return field.get(instance);
 		} catch (final IllegalAccessException e) {
-			throw new VRuntimeException("accès impossible au champ : {0} de {1}", e, field.getName(), field.getDeclaringClass().getName());
+			throw new RuntimeException("accès impossible au champ : " + field.getName() + " de " + field.getDeclaringClass().getName(), e);
 		}
 	}
 
@@ -259,7 +258,7 @@ public final class ClassUtil {
 		try {
 			return clazz.getMethod(methodName, parameterTypes);
 		} catch (final NoSuchMethodException e) {
-			throw new VRuntimeException("Méthode {0} non trouvée sur {1}", e, methodName, clazz.getName());
+			throw new RuntimeException("Méthode " + methodName + " non trouvée sur " + clazz.getName(), e);
 		}
 	}
 
