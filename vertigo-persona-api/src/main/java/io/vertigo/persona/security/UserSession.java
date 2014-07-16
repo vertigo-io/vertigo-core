@@ -78,10 +78,11 @@ public abstract class UserSession implements Serializable {
 	 *
 	 * @param role Role e ajouter.
 	 */
-	public final void addRole(final Role role) {
+	public final UserSession addRole(final Role role) {
 		Assertion.checkNotNull(role);
 		// ----------------------------------------------------------------------
 		roles.add(new DefinitionReference<>(role));
+		return this;
 	}
 
 	/**

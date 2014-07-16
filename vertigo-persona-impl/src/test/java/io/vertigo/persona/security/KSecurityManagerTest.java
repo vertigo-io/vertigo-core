@@ -24,8 +24,6 @@ import io.vertigo.dynamock.domain.famille.Famille;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.persona.impl.security.BeanResourceNameFactory;
-import io.vertigo.persona.security.KSecurityManager;
-import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.model.Permission;
 import io.vertigo.persona.security.model.Role;
 
@@ -116,9 +114,9 @@ public final class KSecurityManagerTest extends AbstractTestCaseJU4 {
 		Home.getDefinitionSpace().put(manager, Role.class);
 		Home.getDefinitionSpace().put(secretary, Role.class);
 
-		final UserSession userSession = securityManager.createUserSession();
-		userSession.addRole(admin);
-		userSession.addRole(manager);
+		final UserSession userSession = securityManager.createUserSession()//
+				.addRole(admin)//
+				.addRole(manager);
 		try {
 			securityManager.startCurrentUserSession(userSession);
 
@@ -143,9 +141,9 @@ public final class KSecurityManagerTest extends AbstractTestCaseJU4 {
 		final Role reader = getRole("R_READER");
 		final Role writer = getRole("R_WRITER");
 
-		final UserSession userSession = securityManager.createUserSession();
-		userSession.addRole(reader);
-		userSession.addRole(writer);
+		final UserSession userSession = securityManager.createUserSession()//
+				.addRole(reader)//
+				.addRole(writer);
 		try {
 			securityManager.startCurrentUserSession(userSession);
 			final boolean authorized = securityManager.isAuthorized("not", "authorized");
@@ -160,9 +158,9 @@ public final class KSecurityManagerTest extends AbstractTestCaseJU4 {
 		final Role reader = getRole("R_READER");
 		final Role writer = getRole("R_WRITER");
 
-		final UserSession userSession = securityManager.createUserSession();
-		userSession.addRole(reader);
-		userSession.addRole(writer);
+		final UserSession userSession = securityManager.createUserSession()//
+				.addRole(reader)//
+				.addRole(writer);
 		try {
 			securityManager.startCurrentUserSession(userSession);
 			final boolean canread = securityManager.isAuthorized("/products/12", "OP_READ");
@@ -178,8 +176,8 @@ public final class KSecurityManagerTest extends AbstractTestCaseJU4 {
 	public void testNoWriterRole() {
 		final Role reader = getRole("R_READER");
 
-		final UserSession userSession = securityManager.createUserSession();
-		userSession.addRole(reader);
+		final UserSession userSession = securityManager.createUserSession()//
+				.addRole(reader);
 		try {
 			securityManager.startCurrentUserSession(userSession);
 			final boolean canread = securityManager.isAuthorized("/products/12", "OP_READ");
@@ -202,8 +200,8 @@ public final class KSecurityManagerTest extends AbstractTestCaseJU4 {
 
 		//Test toutes familles
 		final Role readAllFamillies = getRole("R_ALL_FAMILLES");
-		final UserSession userSession = securityManager.createUserSession();
-		userSession.addRole(readAllFamillies);
+		final UserSession userSession = securityManager.createUserSession()//
+				.addRole(readAllFamillies);
 		try {
 			securityManager.startCurrentUserSession(userSession);
 			final boolean canRead12 = securityManager.isAuthorized(Famille.class.getSimpleName(), famille12, "OP_READ");
@@ -226,8 +224,8 @@ public final class KSecurityManagerTest extends AbstractTestCaseJU4 {
 
 		//Test ma famille
 		final Role readMyFamilly = getRole("R_MY_FAMILLE");
-		final UserSession userSession = securityManager.createUserSession();
-		userSession.addRole(readMyFamilly);
+		final UserSession userSession = securityManager.createUserSession()//
+				.addRole(readMyFamilly);
 		try {
 			securityManager.startCurrentUserSession(userSession);
 			final boolean canRead12 = securityManager.isAuthorized(Famille.class.getSimpleName(), famille12, "OP_READ");
