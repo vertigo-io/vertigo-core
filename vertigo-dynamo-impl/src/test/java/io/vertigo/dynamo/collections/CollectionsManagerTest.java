@@ -20,7 +20,6 @@ package io.vertigo.dynamo.collections;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.Function;
-import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -59,7 +58,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testDescription() {
-		TestUtil.testDescription(collectionsManager);
+		testDescription(collectionsManager);
 	}
 
 	/**

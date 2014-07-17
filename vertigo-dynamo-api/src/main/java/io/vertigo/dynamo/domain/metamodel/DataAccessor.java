@@ -19,8 +19,8 @@
 package io.vertigo.dynamo.domain.metamodel;
 
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.util.BeanUtil;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.util.BeanUtil;
 import io.vertigo.kernel.util.StringUtil;
 
 /**

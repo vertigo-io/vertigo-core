@@ -19,8 +19,6 @@
 package io.vertigo.persona.security;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.dynamo.TestUtil;
-import io.vertigo.dynamock.domain.famille.Famille;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.persona.impl.security.BeanResourceNameFactory;
@@ -247,7 +245,7 @@ public final class KSecurityManagerTest extends AbstractTestCaseJU4 {
 		Home.getDefinitionSpace().put(user, Role.class);
 		Home.getDefinitionSpace().put(manager, Role.class);
 		Home.getDefinitionSpace().put(secretary, Role.class);
-		TestUtil.testDescription(securityManager);
+		testDescription(securityManager);
 	}
 
 	private Role getRole(final String name) {
@@ -257,5 +255,14 @@ public final class KSecurityManagerTest extends AbstractTestCaseJU4 {
 	private static Role createRole(final String name) {
 		final String description = name;
 		return new Role(name, description, Collections.<Permission> emptyList());
+	}
+
+	public static final class Famille {
+		long id;
+		String name;
+
+		public void setFamId(long id) {
+			this.id = id;
+		}
 	}
 }

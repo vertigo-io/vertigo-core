@@ -18,6 +18,9 @@
  */
 package io.vertigo;
 
+import io.vertigo.kernel.component.ComponentInfo;
+import io.vertigo.kernel.component.Describable;
+import io.vertigo.kernel.component.Manager;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
@@ -27,7 +30,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.Properties;
+
+import org.junit.Assert;
 
 /**
  * Charge l'environnement de test par defaut.
@@ -100,6 +106,19 @@ public abstract class AbstractTestCaseJU4 extends AbstractTestCase2JU4 {
 			final URL url = getClass().getResource(fileName);
 			Assertion.checkNotNull(url, "Impossible de récupérer le fichier [" + fileName + "]");
 			return url;
+		}
+	}
+
+	/**
+	 * Utilitaire.
+	 * @param manager managerDescription
+	 */
+	protected static final void testDescription(final Manager manager) {
+		if (manager instanceof Describable) {
+			final List<ComponentInfo> componentInfos = Describable.class.cast(manager).getInfos();
+			for (final ComponentInfo componentInfo : componentInfos) {
+				Assert.assertNotNull(componentInfo);
+			}
 		}
 	}
 }

@@ -1,7 +1,7 @@
 package io.vertigo.persona.impl.security;
 
-import io.vertigo.dynamo.domain.util.BeanUtil;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.util.BeanUtil;
 import io.vertigo.persona.security.ResourceNameFactory;
 
 import java.util.ArrayList;

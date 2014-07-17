@@ -22,9 +22,6 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.file.util.TempFile;
-import io.vertigo.kernel.component.ComponentInfo;
-import io.vertigo.kernel.component.Describable;
-import io.vertigo.kernel.component.Manager;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.io.File;
@@ -32,9 +29,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.List;
-
-import org.junit.Assert;
 
 /**
  * Utilitaire pour construire des cas de tests.
@@ -84,16 +78,4 @@ public final class TestUtil {
 		}
 	}
 
-	/**
-	 * Utilitaire.
-	 * @param manager managerDescription
-	 */
-	public static final void testDescription(final Manager manager) {
-		if (manager instanceof Describable) {
-			final List<ComponentInfo> componentInfos = Describable.class.cast(manager).getInfos();
-			for (final ComponentInfo componentInfo : componentInfos) {
-				Assert.assertNotNull(componentInfo);
-			}
-		}
-	}
 }
