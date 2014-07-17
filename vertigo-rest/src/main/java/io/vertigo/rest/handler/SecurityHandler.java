@@ -51,12 +51,12 @@ public final class SecurityHandler implements RouteHandler {
 	}
 
 	/** {@inheritDoc} */
-	public Object handle(final Request request, final Response response, final HandlerChain chain) throws VSecurityException, SessionException {
+	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
 		// 2. Check user is authentified
 		final Option<UserSession> userSessionOption = securityManager.getCurrentUserSession();
 		if (userSessionOption.isEmpty() || !userSessionOption.get().isAuthenticated()) {
 			throw new VSecurityException("User unauthentified");
 		}
-		return chain.handle(request, response);
+		return chain.handle(request, response, routeContext);
 	}
 }

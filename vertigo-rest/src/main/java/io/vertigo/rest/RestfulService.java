@@ -32,6 +32,13 @@ import java.lang.annotation.Target;
  * @author npiedeloup
  */
 public interface RestfulService {
+
+	@Target({ ElementType.METHOD })
+	@Retention(RetentionPolicy.RUNTIME)
+	public @interface Doc {
+		String value();
+	}
+
 	/**
 	 * Accept anonymous access.
 	 */
@@ -106,6 +113,28 @@ public interface RestfulService {
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface Validate {
 		Class<? extends DtObjectValidator>[] value();
+	}
+
+	@Target({ ElementType.PARAMETER, ElementType.METHOD })
+	@Retention(RetentionPolicy.RUNTIME)
+	public @interface ExcludedFields {
+		String[] value();
+	}
+
+	@Target({ ElementType.PARAMETER, ElementType.METHOD })
+	@Retention(RetentionPolicy.RUNTIME)
+	public @interface IncludedFields {
+		String[] value();
+	}
+
+	@Target({ ElementType.PARAMETER, ElementType.METHOD })
+	@Retention(RetentionPolicy.RUNTIME)
+	public @interface AccessTokenProtected {
+	}
+
+	@Target({ ElementType.PARAMETER })
+	@Retention(RetentionPolicy.RUNTIME)
+	public @interface OneTimeTokenProtected {
 	}
 
 	//	@Target({ ElementType.PARAMETER })

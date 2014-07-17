@@ -1,27 +1,142 @@
 package io.vertigo.rest;
 
+import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.rest.validation.DtObjectValidator;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
 * @author npiedeloup
 */
 public final class EndPointParam {
-	private final String name;
-	private final Class<?> type;
 
-	public EndPointParam(final String name, final Class<?> type) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(type);
-		//-----------------------------------------------------------------
-		this.name = name;
-		this.type = type;
+	/**
+	 * Parameter's source types.
+	 */
+	public static enum RestParamType {
+		Query, Path, Body
 	}
 
+	private final RestParamType paramType;
+	private final String name;
+	private final Class<?> type;
+	private final String fullName;
+	private final List<String> excludedFields;
+	private final boolean needAccessToken;
+	private final boolean consumeAccessToken;
+	private final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses;
+
+	/**
+	 * @param paramType Parameter's source type
+	 * @param type Parameter class
+	 * @param excludedFields List of excluded fieldNames
+	 * @param needAccessToken if access token mandatory
+	 * @param consumeAccessToken if access token is consume (one time token)
+	 * @param dtObjectValidatorClasses list of validator classes (order is keep)
+	 */
+	public EndPointParam(final RestParamType paramType, final Class<?> type, final List<String> excludedFields, final boolean needAccessToken, final boolean consumeAccessToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
+		this(":" + paramType.name() + ":", paramType, null, type, excludedFields, needAccessToken, consumeAccessToken, dtObjectValidatorClasses);
+		Assertion.checkArgument(paramType == RestParamType.Body, "Name is mandatory, for this parameter type : {0}", paramType.name());
+	}
+
+	/**
+	 * @param paramType Parameter type
+	 * @param name Parameter name
+	 * @param type Parameter class
+	 * @param excludedFields List of excluded fieldNames
+	 * @param needAccessToken if access token mandatory
+	 * @param consumeAccessToken if access token is consume (one time token)
+	 * @param dtObjectValidatorClasses List of validator classes (order is keep)
+	 */
+	public EndPointParam(final RestParamType paramType, final String name, final Class<?> type, final List<String> excludedFields, final boolean needAccessToken, final boolean consumeAccessToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
+		this(":" + paramType.name() + ":" + name, paramType, name, type, excludedFields, needAccessToken, consumeAccessToken, dtObjectValidatorClasses);
+		Assertion.checkArgument(paramType != RestParamType.Body, "Body parameter have no name");
+		Assertion.checkArgNotEmpty(name);
+	}
+
+	private EndPointParam(final String fullName, final RestParamType paramType, final String name, final Class<?> type, final List<String> excludedFields, final boolean needAccessToken, final boolean consumeAccessToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
+		Assertion.checkNotNull(paramType);
+		Assertion.checkNotNull(type);
+		Assertion.checkNotNull(excludedFields);
+		Assertion.checkNotNull(dtObjectValidatorClasses);
+		Assertion.checkArgument(dtObjectValidatorClasses.isEmpty() || DtObject.class.isAssignableFrom(type), "Validators aren't supported for {0}", type.getSimpleName());
+		//-----------------------------------------------------------------
+		this.paramType = paramType;
+		this.type = type;
+		this.name = name;
+		this.fullName = fullName;
+		this.excludedFields = new ArrayList<>(excludedFields);
+		this.needAccessToken = needAccessToken;
+		this.consumeAccessToken = consumeAccessToken;
+		this.dtObjectValidatorClasses = Collections.unmodifiableList(new ArrayList<>(dtObjectValidatorClasses));
+	}
+
+	/**
+	 * @return Parameter's source type
+	 */
+	public RestParamType getParamType() {
+		return paramType;
+	}
+
+	/**
+	 * @return Full name of this param.
+	 */
+	public String getFullName() {
+		return fullName;
+	}
+
+	/**
+	 * @return Parameter name in source
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * @return Parameter class
+	 */
 	public Class<?> getType() {
 		return type;
+	}
+
+	/**
+	 * @return List of excluded fieldNames
+	 */
+	public List<String> getExcludedFields() {
+		return excludedFields;
+	}
+
+	/**
+	 * @return if access token mandatory
+	 */
+	public boolean isNeedAccessToken() {
+		return needAccessToken;
+	}
+
+	/**
+	 * @return if access token is consume (one time token)
+	 */
+	public boolean isConsumeAccessToken() {
+		return consumeAccessToken;
+	}
+
+	/**
+	 * @return List of validator classes (order is keep)
+	 */
+	public List<Class<? extends DtObjectValidator>> getDtObjectValidatorClasses() {
+		return dtObjectValidatorClasses;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder();
+		sb.append(type.getSimpleName());
+		sb.append(" ");
+		sb.append(fullName);
+		return sb.toString();
 	}
 }

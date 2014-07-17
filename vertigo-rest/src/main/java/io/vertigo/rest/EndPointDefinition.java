@@ -46,14 +46,21 @@ public final class EndPointDefinition implements Definition {
 	private final boolean needSession;
 	private final boolean needAuthentification;
 
-	private final List<EndPointParam> endPointParams;
+	private final boolean accessTokenProtected;
+	private final List<String> excludedFields;
 
-	public EndPointDefinition(final String name, final Verb verb, final String path, final Method method, final boolean needSession, final boolean needAuthentification, List<EndPointParam> endPointParams) {
+	private final List<EndPointParam> endPointParams;
+	private final String doc;
+
+	public EndPointDefinition(final String name, final Verb verb, final String path, final Method method, final boolean needSession, final boolean needAuthentification, final boolean accessTokenProtected, final List<String> excludedFields, final List<EndPointParam> endPointParams, final String doc) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(verb);
 		Assertion.checkArgNotEmpty(path);
 		Assertion.checkNotNull(method);
+		Assertion.checkNotNull(excludedFields);
 		Assertion.checkNotNull(endPointParams);
+
+		Assertion.checkArgNotEmpty(doc);
 		//---------------------------------------------------------------------
 		this.name = name;
 		this.verb = verb;
@@ -62,7 +69,11 @@ public final class EndPointDefinition implements Definition {
 		this.method = method;
 		this.needSession = needSession;
 		this.needAuthentification = needAuthentification;
+		this.accessTokenProtected = accessTokenProtected;
+		this.excludedFields = Collections.unmodifiableList(new ArrayList<>(excludedFields));
 		this.endPointParams = Collections.unmodifiableList(new ArrayList<>(endPointParams));
+
+		this.doc = doc;
 	}
 
 	public String getName() {
@@ -91,5 +102,17 @@ public final class EndPointDefinition implements Definition {
 
 	public boolean isNeedAuthentification() {
 		return needAuthentification;
+	}
+
+	public boolean isAccessTokenProtected() {
+		return accessTokenProtected;
+	}
+
+	public List<String> getExcludedFields() {
+		return excludedFields;
+	}
+
+	public String getDoc() {
+		return doc;
 	}
 }

@@ -167,9 +167,7 @@ public final class WsRestHandler {
 					sb.append(endPointDefinition.getPath());
 					sb.append("(");
 					for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
-						sb.append(endPointParam.getType().getSimpleName());
-						sb.append(" ");
-						sb.append(endPointParam.getName());
+						sb.append(endPointParam);
 					}
 					sb.append(")");
 					sb.append("\n");

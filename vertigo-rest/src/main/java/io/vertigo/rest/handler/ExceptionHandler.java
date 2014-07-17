@@ -19,8 +19,12 @@
 package io.vertigo.rest.handler;
 
 import io.vertigo.kernel.exception.VUserException;
+import io.vertigo.rest.engine.GoogleJsonEngine;
+import io.vertigo.rest.engine.JsonEngine;
 import io.vertigo.rest.exception.SessionException;
 import io.vertigo.rest.exception.VSecurityException;
+import io.vertigo.rest.validation.UiMessageStack;
+import io.vertigo.rest.validation.ValidationUserException;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -32,26 +36,30 @@ import spark.Response;
  * @author npiedeloup
  */
 public final class ExceptionHandler implements RouteHandler {
+	private static final JsonEngine jsonWriterEngine = new GoogleJsonEngine();
 
 	/** {@inheritDoc} */
-	public Object handle(final Request request, final Response response, final HandlerChain chain) {
+	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) {
 		try {
-			response.type("application/json;charset=UTF-8");
-
-			return chain.handle(request, response);
+			return chain.handle(request, response, routeContext);
+		} catch (final ValidationUserException e) {
+			response.status(HttpServletResponse.SC_BAD_REQUEST);
+			final UiMessageStack uiMessageStack = routeContext.getUiMessageStack();
+			e.flushToUiMessageStack(uiMessageStack);
+			return jsonWriterEngine.toJson(uiMessageStack);
 		} catch (final VUserException e) {
 			response.status(HttpServletResponse.SC_BAD_REQUEST);
-			return RestfulServicesUtil.toJsonError(e.getMessage());
+			return jsonWriterEngine.toJsonError(e);
 		} catch (final SessionException e) {
 			response.status(HttpServletResponse.SC_UNAUTHORIZED);
-			return RestfulServicesUtil.toJsonError(e.getMessage());
+			return jsonWriterEngine.toJsonError(e);
 		} catch (final VSecurityException e) {
 			response.status(HttpServletResponse.SC_FORBIDDEN);
-			return RestfulServicesUtil.toJsonError(e.getMessage());
+			return jsonWriterEngine.toJsonError(e);
 		} catch (final Throwable e) {
 			response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			e.printStackTrace();//TODO use a loggers
-			return RestfulServicesUtil.toJsonError(e.getMessage());
+			return jsonWriterEngine.toJsonError(e);
 		}
 	}
 }

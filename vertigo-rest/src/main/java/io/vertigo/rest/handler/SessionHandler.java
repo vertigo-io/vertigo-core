@@ -55,14 +55,14 @@ public final class SessionHandler implements RouteHandler {
 	}
 
 	/** {@inheritDoc} */
-	public Object handle(final Request request, final Response response, final HandlerChain chain) throws SessionException, VSecurityException {
+	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
 		final Session session = request.session(true); //obtain session (create if needed)
 		final UserSession user = obtainUserSession(session);
 		try {
 			// Bind userSession to SecurityManager
 			securityManager.startCurrentUserSession(user);
 
-			return chain.handle(request, response);
+			return chain.handle(request, response, routeContext);
 		} catch (final VSecurityException e) {
 			if (!session.isNew()) {
 				//If session was just created, we translate securityException as a Session expiration.

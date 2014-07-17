@@ -18,27 +18,25 @@
  */
 package io.vertigo.rest.validation;
 
-import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.kernel.exception.VUserException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.MessageText;
-import io.vertigo.kernel.util.StringUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public final class ValidationUserException extends VUserException {
 	private static final long serialVersionUID = 7214302356640340103L;
 
 	private static final MessageText VALIDATE_ERROR_MESSAGE_TEXT = new MessageText("Il y a des erreurs, vous devez corriger votre saisie :", null);
 
-	private final List<UiError> uiErrors = new ArrayList<>();
+	private final boolean oneField;
+	private final DtObject dto;
+	private final String fieldName;
 
-	ValidationUserException(final List<UiError> uiErrors) {
+	public ValidationUserException() {
 		super(VALIDATE_ERROR_MESSAGE_TEXT);
-		this.uiErrors.addAll(uiErrors);
+		oneField = false;
+		dto = null;
+		fieldName = null;
 	}
 
 	public ValidationUserException(final MessageText messageText, final DtObject dto, final String fieldName) {
@@ -46,16 +44,15 @@ public final class ValidationUserException extends VUserException {
 		Assertion.checkNotNull(dto, "L'objet est obligatoire");
 		Assertion.checkArgNotEmpty(fieldName, "Le champs est obligatoire");
 		//---------------------------------------------------------------------
-		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getField(StringUtil.camelToConstCase(fieldName));
-		uiErrors.add(new UiError(dto, dtField, messageText));
+		oneField = true;
+		this.dto = dto;
+		this.fieldName = fieldName;
 	}
 
-	public List<UiError> getUiErrors() {
-		return uiErrors;
+	public void flushToUiMessageStack(final UiMessageStack uiMessageStack) {
+		if (oneField) {
+			uiMessageStack.error(getMessage(), dto, fieldName);
+		} //else : already in UiMessageStack
 	}
 
-	/*	private DtField getDtField(final DtObject dto, final String fieldName) {
-			return DtObjectUtil.findDtDefinition(dto).getField(StringUtil.camelToConstCase(fieldName));
-		}
-	*/
 }

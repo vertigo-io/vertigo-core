@@ -18,10 +18,8 @@
  */
 package io.vertigo.rest.validation;
 
-import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.MessageText;
-import io.vertigo.kernel.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -35,30 +33,25 @@ import java.util.Map;
 public final class DtObjectErrors {
 
 	private final List<MessageText> objectErrors = new ArrayList<>();
-	private final Map<DtField, List<MessageText>> fieldsErrors = new LinkedHashMap<>();
-	private final String contextKey;
+	private final Map<String, List<MessageText>> fieldsErrors = new LinkedHashMap<>();
 
 	// ==========================================================================
-
-	DtObjectErrors(final String contextKey) {
-		this.contextKey = contextKey;
-	}
 
 	public boolean hasError() {
 		return !objectErrors.isEmpty() || !fieldsErrors.isEmpty();
 	}
 
-	public boolean hasError(final DtField dtField) {
-		return fieldsErrors.containsKey(dtField);
+	public boolean hasError(final String fieldName) {
+		return fieldsErrors.containsKey(fieldName);
 	}
 
-	void clearErrors(final DtField dtField) {
-		Assertion.checkNotNull(dtField);
+	void clearErrors(final String fieldName) {
+		Assertion.checkNotNull(fieldName);
 		//---------------------------------------------------------------------
-		fieldsErrors.remove(dtField);
+		fieldsErrors.remove(fieldName);
 	}
 
-	void clearErrors() {
+	public void clearErrors() {
 		objectErrors.clear();
 		fieldsErrors.clear();
 	}
@@ -67,26 +60,22 @@ public final class DtObjectErrors {
 		objectErrors.add(messageText);
 	}
 
-	public void addError(final DtField dtField, final MessageText messageText) {
-		List<MessageText> errors = fieldsErrors.get(dtField);
+	public void addError(final String fieldName, final MessageText messageText) {
+		List<MessageText> errors = fieldsErrors.get(fieldName);
 		if (errors == null) {
 			errors = new ArrayList<>();
-			fieldsErrors.put(dtField, errors);
+			fieldsErrors.put(fieldName, errors);
 		}
 		errors.add(messageText);
 	}
 
-	private static String getCamelCaseFieldName(final DtField dtField) {
-		return StringUtil.constToCamelCase(dtField.getName(), false);
-	}
-
-	public void flushIntoMessageStack(final UiMessageStack uiMessageStack) {
+	public void flushIntoMessageStack(final String contextKey, final UiMessageStack uiMessageStack) {
 		for (final MessageText errorMessage : objectErrors) {
 			uiMessageStack.addGlobalMessage(UiMessageStack.Level.ERROR, errorMessage.getDisplay());
 		}
-		for (final Map.Entry<DtField, List<MessageText>> entry : fieldsErrors.entrySet()) {
+		for (final Map.Entry<String, List<MessageText>> entry : fieldsErrors.entrySet()) {
 			for (final MessageText errorMessage : entry.getValue()) {
-				uiMessageStack.addFieldMessage(UiMessageStack.Level.ERROR, errorMessage.getDisplay(), contextKey, getCamelCaseFieldName(entry.getKey()));
+				uiMessageStack.addFieldMessage(UiMessageStack.Level.ERROR, errorMessage.getDisplay(), contextKey, entry.getKey());
 				//action.addActionError("<b>" + entry.getKey().getLabel().getDisplay() + "</b> : " + errorMessage.getDisplay());
 			}
 		}

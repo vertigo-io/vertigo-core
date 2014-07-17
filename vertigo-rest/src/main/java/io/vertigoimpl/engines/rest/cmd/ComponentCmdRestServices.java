@@ -20,12 +20,12 @@ package io.vertigoimpl.engines.rest.cmd;
 
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
-import io.vertigo.kernel.engines.JsonEngine;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.Definition;
 import io.vertigo.kernel.metamodel.DefinitionSpace;
 import io.vertigo.rest.RestfulService;
 import io.vertigo.rest.engine.GoogleJsonEngine;
+import io.vertigo.rest.engine.JsonEngine;
 
 import java.util.Collection;
 

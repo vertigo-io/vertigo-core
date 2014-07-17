@@ -20,18 +20,23 @@ package io.vertigo.rest.handler;
 
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.util.ClassUtil;
 import io.vertigo.rest.EndPointDefinition;
+import io.vertigo.rest.EndPointParam;
 import io.vertigo.rest.RestfulService;
 import spark.Request;
 import spark.Response;
 
 /**
- * Exceptions handler. Convert exception to response.
+ * RestfulServiceHandler : call service method.
  * @author npiedeloup
  */
 final class RestfulServiceHandler implements RouteHandler {
 	private final EndPointDefinition endPointDefinition;
 
+	/**
+	 * @param endPointDefinition EndPointDefinition
+	 */
 	RestfulServiceHandler(final EndPointDefinition endPointDefinition) {
 		Assertion.checkNotNull(endPointDefinition);
 		//---------------------------------------------------------------------
@@ -39,10 +44,21 @@ final class RestfulServiceHandler implements RouteHandler {
 	}
 
 	/** {@inheritDoc} */
-	public Object handle(final Request request, final Response response, final HandlerChain chain) {
+	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) {
+		response.type("application/json;charset=UTF-8");
+
+		final Object[] serviceArgs = makeArgs(routeContext);
 		final RestfulService service = (RestfulService) Home.getComponentSpace().resolve(endPointDefinition.getMethod().getDeclaringClass());
-		final Object value = RestfulServicesUtil.invoke(service,//
-				endPointDefinition.getMethod(), request);
-		return RestfulServicesUtil.toJson(value);
+		return ClassUtil.invoke(service, endPointDefinition.getMethod(), serviceArgs);
+	}
+
+	private Object[] makeArgs(final RouteContext routeContext) {
+		final Object[] serviceArgs = new Object[endPointDefinition.getEndPointParams().size()];
+		int i = 0;
+		for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
+			serviceArgs[i] = routeContext.getParamValue(endPointParam);
+			i++;
+		}
+		return serviceArgs;
 	}
 }

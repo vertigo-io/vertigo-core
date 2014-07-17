@@ -21,6 +21,7 @@ package io.vertigo.rest.handler;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.di.injector.Injector;
 import io.vertigo.rest.EndPointDefinition;
+import io.vertigo.rest.security.UiSecurityTokenManager;
 
 import javax.inject.Inject;
 
@@ -40,6 +41,8 @@ public final class WsRestRoute extends Route {
 	private SessionHandler sessionHandler;
 	@Inject
 	private SecurityHandler securityHandler;
+	@Inject
+	private UiSecurityTokenManager uiSecurityTokenManager;
 
 	private final HandlerChain handlerChain = new HandlerChain();
 
@@ -55,6 +58,8 @@ public final class WsRestRoute extends Route {
 		if (endPointDefinition.isNeedAuthentification()) {
 			handlerChain.addHandler(securityHandler);
 		}
+		handlerChain.addHandler(new JsonConverterHandler(uiSecurityTokenManager, endPointDefinition));
+		handlerChain.addHandler(new ValidatorHandler(endPointDefinition));
 		handlerChain.addHandler(new RestfulServiceHandler(endPointDefinition));
 	}
 
@@ -66,7 +71,7 @@ public final class WsRestRoute extends Route {
 	@Override
 	public Object handle(final Request request, final Response response) {
 		try {
-			return handlerChain.handle(request, response);
+			return handlerChain.handle(request, response, new RouteContext(request));
 		} catch (final Throwable th) {
 			System.err.println("Error " + th.getMessage());
 			th.printStackTrace(System.err);

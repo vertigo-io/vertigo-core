@@ -39,5 +39,5 @@ public interface RouteHandler {
 	 * @throws SessionException Session expired exception
 	 * @throws VSecurityException Security exception
 	 */
-	Object handle(final Request request, final Response response, final HandlerChain chain) throws SessionException, VSecurityException;
+	Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException;
 }

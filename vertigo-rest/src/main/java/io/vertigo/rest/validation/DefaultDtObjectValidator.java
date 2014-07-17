@@ -16,25 +16,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.rest;
+package io.vertigo.rest.validation;
 
+import io.vertigo.dynamo.domain.metamodel.ConstraintException;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.kernel.lang.MessageText;
-import io.vertigo.rest.validation.AbstractDtObjectValidator;
-import io.vertigo.rest.validation.DtObjectErrors;
 
-public final class MandatoryPkValidator<O extends DtObject> extends AbstractDtObjectValidator<O> {
+/**
+ * Default DtObject validation : check domain's constraints on modified fields.
+ * @author npiedeloup
+ * @param <O> Type d'objet
+ */
+public final class DefaultDtObjectValidator<O extends DtObject> extends AbstractDtObjectValidator<O> {
 
 	/** {@inheritDoc} */
 	@Override
 	protected void checkMonoFieldConstraints(final O dtObject, final DtField dtField, final DtObjectErrors dtObjectErrors) {
-		final String camelCaseFieldName = getCamelCaseFieldName(dtField);
-		if (dtField.getType() == FieldType.PRIMARY_KEY && !dtObjectErrors.hasError(camelCaseFieldName)) {
-			if (DtObjectUtil.getId(dtObject) == null) {
-				dtObjectErrors.addError(camelCaseFieldName, new MessageText("Id is mandatory", null));
+		final Object value = dtField.getDataAccessor().getValue(dtObject);
+		//pas d'assertion notNull, car le champs n'est pas forcément obligatoire
+		if (value == null && dtField.isNotNull()) {
+			dtObjectErrors.addError(getCamelCaseFieldName(dtField), new MessageText("Le champ doit être renseigné", null));
+		} else {
+			try {
+				// Le typage est OK
+				// Si non null, on vérifie la validité de la valeur par rapport au champ/domaine.
+				dtField.getDomain().checkValue(value);
+			} catch (final ConstraintException e) {
+				// Erreur lors du check de la valeur,
+				// la valeur est toutefois correctement typée.
+				dtObjectErrors.addError(getCamelCaseFieldName(dtField), e.getMessageText());
 			}
 		}
 	}

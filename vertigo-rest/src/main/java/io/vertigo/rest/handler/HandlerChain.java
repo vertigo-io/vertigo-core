@@ -63,12 +63,12 @@ final class HandlerChain {
 	 * @param request spark.Request
 	 * @param response spark.Response
 	 */
-	Object handle(final Request request, final Response response) throws VSecurityException, SessionException {
+	Object handle(final Request request, final Response response, final RouteContext routeContext) throws VSecurityException, SessionException {
 		isLock = true;
 		if (offset < handlerList.size()) {
 			final RouteHandler nextHandler = handlerList.get(offset);
 			//System.out.println(">>> before doFilter " + nextHandler);
-			return nextHandler.handle(request, response, new HandlerChain(this));
+			return nextHandler.handle(request, response, routeContext, new HandlerChain(this));
 			//System.out.println("<<< after doFilter " + nextHandler);
 		}
 		throw new RuntimeException("Last routeHandler haven't send response body");

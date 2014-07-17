@@ -19,7 +19,7 @@
 package io.vertigo.rest.validation;
 
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.kernel.lang.Assertion;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +35,7 @@ public final class UiMessageStack {
 	private final List<String> globalErrorMessages = new ArrayList<>();
 	private final List<String> globalWarningMessages = new ArrayList<>();
 	private final List<String> globalInfoMessages = new ArrayList<>();
+	private final List<String> globalSuccessMessages = new ArrayList<>();
 
 	private final Map<String, List<String>> fieldErrorMessages = new HashMap<>();
 	private final Map<String, List<String>> fieldWarningMessages = new HashMap<>();
@@ -50,14 +51,20 @@ public final class UiMessageStack {
 		/** Warning. */
 		WARNING,
 		/** Info. */
-		INFO;
+		INFO,
+		/** Success. */
+		SUCCESS;
 	}
+
+	private final UiContextResolver uiContextResolver;
 
 	/**
 	 * Constructor.
 	 */
-	public UiMessageStack() {
-		//nothing
+	public UiMessageStack(final UiContextResolver uiContextResolver) {
+		Assertion.checkNotNull(uiContextResolver);
+		//---------------------------------------------------------------------
+		this.uiContextResolver = uiContextResolver;
 	}
 
 	/**
@@ -75,6 +82,9 @@ public final class UiMessageStack {
 				break;
 			case INFO:
 				globalInfoMessages.add(message);
+				break;
+			case SUCCESS:
+				globalSuccessMessages.add(message);
 				break;
 			default:
 				throw new UnsupportedOperationException("Unknowned level");
@@ -100,6 +110,13 @@ public final class UiMessageStack {
 	 */
 	public final void info(final String message) {
 		addGlobalMessage(Level.INFO, message);
+	}
+
+	/**
+	 * @param message Message d'info
+	 */
+	public final void success(final String message) {
+		addGlobalMessage(Level.SUCCESS, message);
 	}
 
 	/**
@@ -130,7 +147,7 @@ public final class UiMessageStack {
 	}
 
 	public final void addFieldMessage(final Level level, final String message, final DtObject dto, final String fieldName) {
-		addFieldMessage(level, message, DtObjectUtil.findDtDefinition(dto).getClassSimpleName(), fieldName);
+		addFieldMessage(level, message, uiContextResolver.resolveContextKey(dto), fieldName);
 	}
 
 	public final void addFieldMessage(final Level level, final String message, final String contextKey, final String fieldName) {
@@ -148,7 +165,7 @@ public final class UiMessageStack {
 			default:
 				throw new UnsupportedOperationException("Unknowned level");
 		}
-		final String fieldKey = contextKey + "." + fieldName;
+		final String fieldKey = (!contextKey.isEmpty() ? (contextKey + ".") : "") + fieldName;
 		List<String> messages = fieldMessageMap.get(fieldKey);
 		if (messages == null) {
 			messages = new ArrayList<>();
@@ -157,6 +174,9 @@ public final class UiMessageStack {
 		messages.add(message);
 	}
 
+	/**
+	 * @return if there are errors in this stack.
+	 */
 	public boolean hasErrors() {
 		return !globalErrorMessages.isEmpty() || !fieldErrorMessages.isEmpty();
 	}
