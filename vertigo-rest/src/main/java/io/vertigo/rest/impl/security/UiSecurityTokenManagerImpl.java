@@ -27,7 +27,7 @@ public final class UiSecurityTokenManagerImpl implements UiSecurityTokenManager 
 	//private final Map<String, Map<String, Object>> tokenMap = new HashMap<>();
 
 	@Inject
-	UiSecurityTokenManagerImpl(final KSecurityManager securityManager, final UiSecurityTokenCachePlugin uiSecurityTokenCachePlugin) {
+	public UiSecurityTokenManagerImpl(final KSecurityManager securityManager, final UiSecurityTokenCachePlugin uiSecurityTokenCachePlugin) {
 		Assertion.checkNotNull(securityManager);
 		//Assertion.checkArgument(timeoutSeconds >= 1 && timeoutSeconds <= 172800, "Security token Timeout ({0}), should be set in seconds, positive and less than 2 days", timeoutSeconds);
 		//---------------------------------------------------------------------

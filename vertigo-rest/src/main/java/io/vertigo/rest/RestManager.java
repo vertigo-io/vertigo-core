@@ -155,7 +155,7 @@ public final class RestManager implements Manager, Activeable {
 	private static EndPointParam buildEndPointParam(final Annotation[] annotations, final Class<?> paramType) {
 		RestParamType restParamType = RestParamType.Body; //default
 		String restParamName = null;
-		List<Class<? extends DtObjectValidator>> validatorClasses = null;
+		List<Class<? extends DtObjectValidator>> validatorClasses = Collections.emptyList();
 		String[] includedFields = null;
 		String[] excludedFields = null;
 		boolean accessTokenProtected = false;

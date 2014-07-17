@@ -37,6 +37,9 @@ import io.vertigo.rest.handler.ExceptionHandler;
 import io.vertigo.rest.handler.SecurityHandler;
 import io.vertigo.rest.handler.SessionHandler;
 import io.vertigo.rest.handler.WsRestRoute;
+import io.vertigo.rest.impl.security.UiSecurityTokenManagerImpl;
+import io.vertigo.rest.plugins.security.memory.MemoryUiSecurityTokenCachePlugin;
+import io.vertigo.rest.security.UiSecurityTokenManager;
 import io.vertigoimpl.commons.locale.LocaleManagerImpl;
 import io.vertigoimpl.engines.rest.cmd.ComponentCmdRestServices;
 
@@ -97,12 +100,12 @@ public final class WsRestHandler {
 				.endModule()
 				.beginModule("dynamo").withNoAPI() //
 					.beginComponent(EnvironmentManagerImpl.class) //
-						.beginPlugin(AnnotationLoaderPlugin.class) //
-							.withParam("classes", DtDefinitions.class.getName()).endPlugin()
-						.beginPlugin(KprLoaderPlugin.class) //
-							.withParam("kpr", "ksp/execution.kpr").endPlugin()
-						.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()						
+						.beginPlugin(AnnotationLoaderPlugin.class).endPlugin() //
+						.beginPlugin(KprLoaderPlugin.class).endPlugin() //
+						.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()	//					
 					.endComponent()
+					.withResource("classes", DtDefinitions.class.getName())
+					.withResource("kpr", "ksp/execution.kpr")
 				.endModule()
 				.beginModule("restServices").withNoAPI().withInheritance(RestfulService.class) //
 					.beginComponent(ComponentCmdRestServices.class).endComponent() //
@@ -113,6 +116,11 @@ public final class WsRestHandler {
 					.beginComponent(ExceptionHandler.class).endComponent() //
 					.beginComponent(SecurityHandler.class).endComponent() //
 					.beginComponent(SessionHandler.class).endComponent() //
+					.beginComponent(UiSecurityTokenManager.class, UiSecurityTokenManagerImpl.class)
+						.beginPlugin(MemoryUiSecurityTokenCachePlugin.class)
+							.withParam("timeToLiveSeconds", "30")
+						.endPlugin()
+					.endComponent() //					
 				.endModule()
 				
 				.build();
@@ -176,5 +184,4 @@ public final class WsRestHandler {
 			}
 		});
 	}
-
 }

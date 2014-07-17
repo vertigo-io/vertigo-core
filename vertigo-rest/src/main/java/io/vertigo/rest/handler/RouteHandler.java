@@ -34,6 +34,7 @@ public interface RouteHandler {
 	 * 
 	 * @param request spark.Request
 	 * @param response spark.Response
+	 * @param routeContext Context of this request
 	 * @param chain current HandlerChain.
 	 * @return Response body
 	 * @throws SessionException Session expired exception

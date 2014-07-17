@@ -59,8 +59,7 @@ public final class EndPointDefinition implements Definition {
 		Assertion.checkNotNull(method);
 		Assertion.checkNotNull(excludedFields);
 		Assertion.checkNotNull(endPointParams);
-
-		Assertion.checkArgNotEmpty(doc);
+		Assertion.checkNotNull(doc); //doc can be empty
 		//---------------------------------------------------------------------
 		this.name = name;
 		this.verb = verb;
