@@ -27,14 +27,13 @@ import java.util.Map;
 public final class TestUserSession extends UserSession {
 	private static final long serialVersionUID = 1L;
 
+	/** {@inheritDoc} */
 	@Override
 	public Locale getLocale() {
 		return Locale.FRANCE;
 	}
 
-	/**
-	 * @return Liste des cles de securite et leur valeur.
-	 */
+	/** {@inheritDoc} */
 	@Override
 	public Map<String, String> getSecurityKeys() {
 		return Collections.singletonMap("famId", "12");
