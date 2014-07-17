@@ -40,7 +40,7 @@ public final class DefinitionSpace implements Activeable {
 	/**
 	 * Liste des objets indexés par Class (le type) et identifiant.
 	 */
-	private final Map<Class<? extends Definition>, Map<String, Definition>> definitions = new LinkedHashMap<>();
+	private final Map<Class<? extends Definition>, Map<String, Definition>> definitions = new HashMap<>();
 	@JsonExclude
 	private final Map<String, Definition> allObjects = new LinkedHashMap<>(); //byId
 
@@ -52,7 +52,7 @@ public final class DefinitionSpace implements Activeable {
 		Assertion.checkNotNull(clazz);
 		Assertion.checkArgument(!definitions.containsKey(clazz), "Type '{0}' deja enregistré", clazz.getName());
 		//---------------------------------------------------------------------
-		definitions.put(clazz, new HashMap<String, Definition>());
+		definitions.put(clazz, new LinkedHashMap<String, Definition>());
 	}
 
 	/**
