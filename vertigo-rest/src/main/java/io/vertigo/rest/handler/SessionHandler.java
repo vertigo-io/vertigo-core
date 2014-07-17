@@ -64,7 +64,7 @@ public final class SessionHandler implements RouteHandler {
 
 			return chain.handle(request, response, routeContext);
 		} catch (final VSecurityException e) {
-			if (!session.isNew()) {
+			if (session.isNew()) {
 				//If session was just created, we translate securityException as a Session expiration.
 				throw (SessionException) new SessionException("Session has expired").initCause(e);
 			}

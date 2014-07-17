@@ -28,9 +28,6 @@ import io.vertigo.rest.engine.UiObject;
 import io.vertigo.rest.exception.SessionException;
 import io.vertigo.rest.exception.VSecurityException;
 import io.vertigo.rest.security.UiSecurityTokenManager;
-
-import java.util.Date;
-
 import spark.Request;
 import spark.Response;
 
@@ -83,17 +80,18 @@ final class JsonConverterHandler implements RouteHandler {
 		final Class<?> paramClass = endPointParam.getType();
 		if (json == null) {
 			return null;
-		} else if (String.class.isAssignableFrom(paramClass)) {
+		} /*else if (String.class.isAssignableFrom(paramClass)) {
 			return json;
-		} else if (Integer.class.isAssignableFrom(paramClass)) {
+			} else if (Integer.class.isAssignableFrom(paramClass)) {
 			return Integer.valueOf(json);
-		} else if (Long.class.isAssignableFrom(paramClass)) {
+			} else if (Long.class.isAssignableFrom(paramClass)) {
 			return Long.valueOf(json);
-		} else if (Date.class.isAssignableFrom(paramClass)) {
+			} else if (Date.class.isAssignableFrom(paramClass)) {
 			return jsonReaderEngine.fromJson(json, paramClass);
-		} else {
+			} else {
 			throw new RuntimeException("Unsupported type " + paramClass.getSimpleName());
-		}
+			}*/
+		return jsonReaderEngine.fromJson(json, paramClass);
 	}
 
 	private static Object readValue(final String json, final EndPointParam endPointParam, final UiSecurityTokenManager uiSecurityTokenManager) throws VSecurityException {
@@ -156,6 +154,7 @@ final class JsonConverterHandler implements RouteHandler {
 				throw new RuntimeException("Return type can't be protected :" + (value != null ? value.getClass().getSimpleName() : "null"));
 			}
 		}
-		return jsonWriterEngine.toJson(value, endPointDefinition.getExcludedFields());
+		//If value is null (and no exception occured), we tell client it's OK
+		return jsonWriterEngine.toJson(value != null ? value : "OK", endPointDefinition.getExcludedFields());
 	}
 }

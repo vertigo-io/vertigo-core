@@ -19,11 +19,19 @@
 package io.vertigo.rest.handler;
 
 import io.vertigo.kernel.Home;
+import io.vertigo.kernel.exception.VUserException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.util.ClassUtil;
 import io.vertigo.rest.EndPointDefinition;
 import io.vertigo.rest.EndPointParam;
 import io.vertigo.rest.RestfulService;
+import io.vertigo.rest.exception.SessionException;
+import io.vertigo.rest.exception.VSecurityException;
+import io.vertigo.rest.validation.ValidationUserException;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import spark.Request;
 import spark.Response;
 
@@ -44,12 +52,40 @@ final class RestfulServiceHandler implements RouteHandler {
 	}
 
 	/** {@inheritDoc} */
-	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) {
+	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
 		response.type("application/json;charset=UTF-8");
 
 		final Object[] serviceArgs = makeArgs(routeContext);
-		final RestfulService service = (RestfulService) Home.getComponentSpace().resolve(endPointDefinition.getMethod().getDeclaringClass());
-		return ClassUtil.invoke(service, endPointDefinition.getMethod(), serviceArgs);
+		final Method method = endPointDefinition.getMethod();
+		final RestfulService service = (RestfulService) Home.getComponentSpace().resolve(method.getDeclaringClass());
+
+		/*try {
+			return endPointDefinition.getMethod().invoke(service, serviceArgs);
+		} catch (final IllegalAccessException e) {
+			throw new RuntimeException("Can't access method : " + method.getName() + " of " + method.getDeclaringClass().getName(), e);
+		} catch (final InvocationTargetException e) {
+			throw handle(e, "Erreur lors de l'appel de la méthode : {0} de {1}", method.getName(), method.getDeclaringClass().getName());
+			//throw handle(e, "Erreur lors de l'appel de la méthode : {0} de {1}", method.getName(), method.getDeclaringClass().getName());
+		}*/
+
+		try {
+			return ClassUtil.invoke(service, method, serviceArgs);
+		} catch (final RuntimeException e) {
+			final Throwable cause = e.getCause();
+			if (cause instanceof InvocationTargetException) {
+				final Throwable targetException = ((InvocationTargetException) cause).getTargetException();
+				if (targetException instanceof ValidationUserException) {
+					throw (ValidationUserException) targetException;
+				} else if (targetException instanceof VUserException) {
+					throw (VUserException) targetException;
+				} else if (targetException instanceof SessionException) {
+					throw (SessionException) targetException;
+				} else if (targetException instanceof VSecurityException) {
+					throw (VSecurityException) targetException;
+				}
+			}
+			throw e;
+		}
 	}
 
 	private Object[] makeArgs(final RouteContext routeContext) {

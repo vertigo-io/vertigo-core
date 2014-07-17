@@ -110,6 +110,7 @@ public final class WsRestHandler {
 				.beginModule("restServices").withNoAPI().withInheritance(RestfulService.class) //
 					.beginComponent(ComponentCmdRestServices.class).endComponent() //
 					.beginComponent(ContactsRestServices.class).endComponent() //
+					.beginComponent(TesterRestServices.class).endComponent() //
 				.endModule()
 				.beginModule("restCore").withNoAPI().withInheritance(Object.class) //
 					.beginComponent(RestManager.class).endComponent() //
@@ -171,6 +172,7 @@ public final class WsRestHandler {
 				final Collection<EndPointDefinition> endPointDefCollection = Home.getDefinitionSpace().getAll(EndPointDefinition.class);
 				final StringBuilder sb = new StringBuilder();
 				for (final EndPointDefinition endPointDefinition : endPointDefCollection) {
+					final String doc = endPointDefinition.getDoc();
 					sb.append(endPointDefinition.getVerb().name()).append("://");
 					sb.append(endPointDefinition.getPath());
 					sb.append("(");
@@ -178,6 +180,11 @@ public final class WsRestHandler {
 						sb.append(endPointParam);
 					}
 					sb.append(")");
+					if (!doc.isEmpty()) {
+						sb.append(" /*");
+						sb.append(endPointDefinition.getDoc());
+						sb.append("*/");
+					}
 					sb.append("\n");
 				}
 				return sb.toString();

@@ -52,7 +52,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 	/** {@inheritDoc} */
 	@Override
 	public String toJsonError(final Throwable th) {
-		return "{ globalErrorMessages:[\"" + th.getMessage() + "\"]}"; //TODO +stack;
+		return "{globalErrorMessages:[\"" + th.getMessage() + "\"]}"; //TODO +stack;
 	}
 
 	private void excludeFields(final JsonElement jsonElement, final List<String> excludedFields) {
