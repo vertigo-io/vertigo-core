@@ -31,7 +31,7 @@ import io.vertigo.kernel.metamodel.Prefix;
 @Prefix("PRM_")
 public final class Permission implements Definition {
 	private final String name;
-	private final Operation operation;
+	private final String operation;
 	private final Resource resource;
 
 	/**
@@ -41,7 +41,7 @@ public final class Permission implements Definition {
 	 * @param operation Op�ration
 	 * @param resource Ressource
 	 */
-	public Permission(final String name, final Operation operation, final Resource resource) {
+	public Permission(final String name, final String operation, final Resource resource) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(operation);
 		Assertion.checkNotNull(resource);
@@ -59,9 +59,9 @@ public final class Permission implements Definition {
 	}
 
 	/**	 
-	 * @return Op�ration
+	 * @return Operation
 	 */
-	public Operation getOperation() {
+	public String getOperation() {
 		return operation;
 	}
 

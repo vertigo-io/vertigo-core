@@ -2,22 +2,17 @@
 <!DOCTYPE authorisation-config PUBLIC "-//Vertigo//DTD Authorisation Config 1.0//EN"
                               "http://www.kleegroup.com/dtd/authorisation-config_1_0.dtd"> 
 <authorisation-config>	
-	
-	<!--  Opérations -->
-	<operation id="OP_READ" description="Lire"/>
-	<operation id="OP_WRITE" description="Ecrire"/>
-	
 	<!--  Ressources -->	
 	<resource id="RSR_ALL_PRODUCTS" filter="/products/.*" description="Liste des produits"/>
 	<resource id="RSR_ALL_FAMILLES" filter="/famille/.*" description="Liste des familles"/>
 	<resource id="RSR_MY_FAMILLE" filter="/famille/${famId}" description="Ma famille"/>
 	
 	<!--  Permissions -->	
-	<permission id="PRM_READ_ALL_PRODUCTS" operation="OP_READ" resource="RSR_ALL_PRODUCTS" description="Lire tous les produits"/>		
-	<permission id="PRM_WRITE_ALL_PRODUCTS" operation="OP_WRITE" resource="RSR_ALL_PRODUCTS" description="Créer/Modifier un produit"/>				
+	<permission id="PRM_READ_ALL_PRODUCTS" operation="READ" resource="RSR_ALL_PRODUCTS" description="Lire tous les produits"/>		
+	<permission id="PRM_WRITE_ALL_PRODUCTS" operation="WRITE" resource="RSR_ALL_PRODUCTS" description="Créer/Modifier un produit"/>				
 	
-	<permission id="PRM_READ_ALL_FAMILLES" operation="OP_READ" resource="RSR_ALL_FAMILLES" description="Lire toutes les familles"/>		
-	<permission id="PRM_READ_MY_FAMILLE" operation="OP_READ" resource="RSR_MY_FAMILLE" description="Lire ma famille"/>		
+	<permission id="PRM_READ_ALL_FAMILLES" operation="READ" resource="RSR_ALL_FAMILLES" description="Lire toutes les familles"/>		
+	<permission id="PRM_READ_MY_FAMILLE" operation="READ" resource="RSR_MY_FAMILLE" description="Lire ma famille"/>		
 	
 	<!-- Roles -->
 	<role name="R_READER" description="Lecteur de l'application">	  	   
@@ -31,9 +26,10 @@
   	
   	<role name="R_ALL_FAMILLES" description="Administeur de l'application">
   		<permission ref="PRM_READ_ALL_FAMILLES"/>		
-	
   	</role>
+
   	<role name="R_MY_FAMILLE" description="Lecteur de l'application">	  	   
+  		<!--permission type="read" filter="/product/*"  -->
   		<permission ref="PRM_READ_MY_FAMILLE"/>
   	</role>
 </authorisation-config>

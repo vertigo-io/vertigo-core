@@ -161,9 +161,9 @@ public final class KSecurityManagerTest extends AbstractTestCaseJU4 {
 				.addRole(writer);
 		try {
 			securityManager.startCurrentUserSession(userSession);
-			final boolean canread = securityManager.isAuthorized("/products/12", "OP_READ");
+			final boolean canread = securityManager.isAuthorized("/products/12", "READ");
 			Assert.assertTrue(canread);
-			final boolean canwrite = securityManager.isAuthorized("/products/12", "OP_WRITE");
+			final boolean canwrite = securityManager.isAuthorized("/products/12", "WRITE");
 			Assert.assertTrue(canwrite);
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -178,9 +178,9 @@ public final class KSecurityManagerTest extends AbstractTestCaseJU4 {
 				.addRole(reader);
 		try {
 			securityManager.startCurrentUserSession(userSession);
-			final boolean canread = securityManager.isAuthorized("/products/12", "OP_READ");
+			final boolean canread = securityManager.isAuthorized("/products/12", "READ");
 			Assert.assertTrue(canread);
-			final boolean cannotwrite = securityManager.isAuthorized("/products/12", "OP_WRITE");
+			final boolean cannotwrite = securityManager.isAuthorized("/products/12", "WRITE");
 			Assert.assertFalse(cannotwrite);
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -202,9 +202,9 @@ public final class KSecurityManagerTest extends AbstractTestCaseJU4 {
 				.addRole(readAllFamillies);
 		try {
 			securityManager.startCurrentUserSession(userSession);
-			final boolean canRead12 = securityManager.isAuthorized(Famille.class.getSimpleName(), famille12, "OP_READ");
+			final boolean canRead12 = securityManager.isAuthorized(Famille.class.getSimpleName(), famille12, "READ");
 			Assert.assertTrue(canRead12);
-			final boolean canRead13 = securityManager.isAuthorized(Famille.class.getSimpleName(), famille13, "OP_READ");
+			final boolean canRead13 = securityManager.isAuthorized(Famille.class.getSimpleName(), famille13, "READ");
 			Assert.assertTrue(canRead13);
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -226,9 +226,9 @@ public final class KSecurityManagerTest extends AbstractTestCaseJU4 {
 				.addRole(readMyFamilly);
 		try {
 			securityManager.startCurrentUserSession(userSession);
-			final boolean canRead12 = securityManager.isAuthorized(Famille.class.getSimpleName(), famille12, "OP_READ");
+			final boolean canRead12 = securityManager.isAuthorized(Famille.class.getSimpleName(), famille12, "READ");
 			Assert.assertTrue(canRead12);
-			final boolean canRead13 = securityManager.isAuthorized(Famille.class.getSimpleName(), famille13, "OP_READ");
+			final boolean canRead13 = securityManager.isAuthorized(Famille.class.getSimpleName(), famille13, "READ");
 			Assert.assertFalse(canRead13);
 		} finally {
 			securityManager.stopCurrentUserSession();

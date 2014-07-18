@@ -174,7 +174,7 @@ public final class KSecurityManagerImpl implements KSecurityManager, Activeable 
 		final String filter = permission.getResource().getFilter();
 		final String personalFilter = applySecurityKeys(filter, securityKeys);
 		final Pattern p = Pattern.compile(personalFilter);
-		return p.matcher(resource).matches() && permission.getOperation().getName().matches(operation);
+		return p.matcher(resource).matches() && permission.getOperation().matches(operation);
 	}
 
 	private static String applySecurityKeys(final String filter, final Map<String, String> securityKeys) {

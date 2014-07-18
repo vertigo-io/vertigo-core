@@ -21,7 +21,6 @@ package io.vertigo.persona.plugins.environment.loaders.security;
 import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.persona.security.model.Operation;
 import io.vertigo.persona.security.model.Permission;
 import io.vertigo.persona.security.model.Resource;
 import io.vertigo.persona.security.model.Role;
@@ -46,10 +45,6 @@ import org.xml.sax.SAXException;
  * Un exemple de fichier:
  * 
  * <authorisation-config>	
- *	
- *	<!--  Op�rations -->
- *	<operation id="read" description="Lire"/>
- *	<operation id="write" description="Ecrire"/>
  *	
  *	<!--  Ressources -->	
  *	<resource id="all_products" filter="/products/.*" description="Liste des produits"/>
@@ -98,12 +93,6 @@ final class XmlSecurityLoader {
 	void load() {
 		final Element root = XmlSecurityLoader.create(authURL, "/io/vertigo/persona/security/authorisation-config_1_0.dtd");
 
-		// Operations
-		final List<Element> opeElementList = root.getChildren(OPERATION_KEY);
-		for (final Element opeElement : opeElementList) {
-			final Operation operation = createOperation(opeElement);
-			Home.getDefinitionSpace().put(operation, Operation.class);
-		}
 		// Ressources
 		final List<Element> rscElementList = root.getChildren(RESOURCE_KEY);
 		for (final Element resourceElement : rscElementList) {
@@ -155,17 +144,6 @@ final class XmlSecurityLoader {
 		}
 	}
 
-	private static Operation createOperation(final Element opeElement) {
-		Assertion.checkNotNull(opeElement);
-		// ---------------------------------------------------------------------
-		final String id = opeElement.getAttributeValue(ID_KEY);
-		Assertion.checkArgNotEmpty(id);
-		// ---------------------------------------------------------------------
-		final String description = opeElement.getAttributeValue(DESCRIPTION_KEY);
-		Assertion.checkArgNotEmpty(description);
-		return new Operation(id, description);
-	}
-
 	private static Resource createResource(final Element rscElement) {
 		Assertion.checkNotNull(rscElement);
 		// ---------------------------------------------------------------------
@@ -183,8 +161,7 @@ final class XmlSecurityLoader {
 		// ---------------------------------------------------------------------
 		final String id = permElement.getAttributeValue(ID_KEY);
 		// ---------------------------------------------------------------------
-		final String operationRef = permElement.getAttributeValue(OPERATION_KEY);
-		final Operation operation = Home.getDefinitionSpace().resolve(operationRef, Operation.class);
+		final String operation = permElement.getAttributeValue(OPERATION_KEY);
 		// ---------------------------------------------------------------------
 		final String resourceRef = permElement.getAttributeValue(RESOURCE_KEY);
 		final Resource resource = Home.getDefinitionSpace().resolve(resourceRef, Resource.class);
