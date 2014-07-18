@@ -2,21 +2,12 @@
 
 <!-- Gestion des autorisations de vertigo-persona-->
 
-<!ELEMENT authorisation-config ( (operation | resource | permission | role)* ) >
+<!ELEMENT authorisation-config ( (permission | role)* ) >
 
-<!ELEMENT operation EMPTY >
-<!ATTLIST operation id ID #REQUIRED 
-					description CDATA #REQUIRED >
-
-<!ELEMENT resource EMPTY >
-<!ATTLIST resource id ID #REQUIRED 
-				   filter CDATA #REQUIRED
-				   description CDATA #REQUIRED >
-
-<!ELEMENT permission ( ( operation, resource )* )>
+<!ELEMENT permission EMPTY>
 <!ATTLIST permission id ID #IMPLIED 
- 					 operation IDREF #IMPLIED 
-					 resource IDREF #IMPLIED 
+ 					 operation CDATA #IMPLIED 
+					 filter CDATA #IMPLIED 
 					 description CDATA #IMPLIED 
 					 ref IDREF #IMPLIED >
 
