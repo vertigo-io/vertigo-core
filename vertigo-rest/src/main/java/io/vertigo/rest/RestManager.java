@@ -30,18 +30,22 @@ import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.util.StringUtil;
 import io.vertigo.rest.EndPointDefinition.Verb;
 import io.vertigo.rest.EndPointParam.RestParamType;
-import io.vertigo.rest.RestfulService.AccessTokenProtected;
+import io.vertigo.rest.RestfulService.AccessTokenConsume;
+import io.vertigo.rest.RestfulService.AccessTokenMandatory;
+import io.vertigo.rest.RestfulService.AccessTokenPublish;
 import io.vertigo.rest.RestfulService.AnonymousAccessAllowed;
 import io.vertigo.rest.RestfulService.DELETE;
 import io.vertigo.rest.RestfulService.Doc;
 import io.vertigo.rest.RestfulService.ExcludedFields;
 import io.vertigo.rest.RestfulService.GET;
 import io.vertigo.rest.RestfulService.IncludedFields;
-import io.vertigo.rest.RestfulService.OneTimeTokenProtected;
 import io.vertigo.rest.RestfulService.POST;
 import io.vertigo.rest.RestfulService.PUT;
 import io.vertigo.rest.RestfulService.PathParam;
 import io.vertigo.rest.RestfulService.QueryParam;
+import io.vertigo.rest.RestfulService.ServerSideConsume;
+import io.vertigo.rest.RestfulService.ServerSideRead;
+import io.vertigo.rest.RestfulService.ServerSideSave;
 import io.vertigo.rest.RestfulService.SessionLess;
 import io.vertigo.rest.RestfulService.Validate;
 import io.vertigo.rest.validation.DtObjectValidator;
@@ -92,7 +96,10 @@ public final class RestManager implements Manager, Activeable {
 		boolean needAuthentication = true;
 		String[] includedFields = null;
 		String[] excludedFields = null;
-		boolean accessTokenProtected = false;
+		boolean accessTokenPublish = false;
+		boolean accessTokenMandatory = false;
+		boolean accessTokenConsume = false;
+		boolean serverSideSave = false;
 		String doc = "";
 		for (final Annotation annotation : method.getAnnotations()) {
 			if (annotation instanceof GET) {
@@ -119,8 +126,15 @@ public final class RestManager implements Manager, Activeable {
 				excludedFields = ((ExcludedFields) annotation).value();
 			} else if (annotation instanceof IncludedFields) {
 				includedFields = ((IncludedFields) annotation).value();
-			} else if (annotation instanceof AccessTokenProtected) {
-				accessTokenProtected = true;
+			} else if (annotation instanceof AccessTokenPublish) {
+				accessTokenPublish = true;
+			} else if (annotation instanceof AccessTokenMandatory) {
+				accessTokenMandatory = true;
+			} else if (annotation instanceof AccessTokenConsume) {
+				accessTokenMandatory = true;
+				accessTokenConsume = true;
+			} else if (annotation instanceof ServerSideSave) {
+				serverSideSave = true;
 			} else if (annotation instanceof Doc) {
 				doc = ((Doc) annotation).value();
 			}
@@ -138,13 +152,19 @@ public final class RestManager implements Manager, Activeable {
 				endPointParams.add(endPointParam);
 			}
 			//---
-			final EndPointDefinition endPointDefinition = new EndPointDefinition("EP_" + StringUtil.camelToConstCase(restFullServiceClass.getSimpleName()) + "_" + StringUtil.camelToConstCase(method.getName()), //
+			final EndPointDefinition endPointDefinition = new EndPointDefinition(//
+					//"EP_" + StringUtil.camelToConstCase(restFullServiceClass.getSimpleName()) + "_" + StringUtil.camelToConstCase(method.getName()), //
+					"EP_" + verb + "_" + StringUtil.camelToConstCase(path.replaceAll("[//{}]", "_")), //
 					verb, //
 					path, //
 					method, //
 					needSession, //
 					needAuthentication, //
-					accessTokenProtected, computeExcludedFields(includedFields, excludedFields, method.getReturnType()), //
+					accessTokenPublish,//
+					accessTokenMandatory,//
+					accessTokenConsume,//
+					serverSideSave, //
+					computeExcludedFields(includedFields, excludedFields, method.getReturnType()), //
 					endPointParams, //
 					doc);
 			return Option.some(endPointDefinition);
@@ -158,8 +178,8 @@ public final class RestManager implements Manager, Activeable {
 		List<Class<? extends DtObjectValidator>> validatorClasses = Collections.emptyList();
 		String[] includedFields = null;
 		String[] excludedFields = null;
-		boolean accessTokenProtected = false;
-		boolean accessTokenConsumed = false;
+		boolean needServerSideToken = false;
+		boolean consumeServerSideToken = false;
 		for (final Annotation annotation : annotations) {
 			if (annotation instanceof PathParam) {
 				restParamType = RestParamType.Path;
@@ -173,11 +193,11 @@ public final class RestManager implements Manager, Activeable {
 				excludedFields = ((ExcludedFields) annotation).value();
 			} else if (annotation instanceof IncludedFields) {
 				includedFields = ((IncludedFields) annotation).value();
-			} else if (annotation instanceof AccessTokenProtected) {
-				accessTokenProtected = true;
-			} else if (annotation instanceof OneTimeTokenProtected) {
-				accessTokenProtected = true;
-				accessTokenConsumed = true;
+			} else if (annotation instanceof ServerSideRead) {
+				needServerSideToken = true;
+			} else if (annotation instanceof ServerSideConsume) {
+				needServerSideToken = true;
+				consumeServerSideToken = true;
 			}
 			//	else if (annotation instanceof BodyParam) {
 			//	}
@@ -188,14 +208,14 @@ public final class RestManager implements Manager, Activeable {
 		if (restParamType == RestParamType.Body) {
 			return new EndPointParam(restParamType, paramType, //
 					computeExcludedFields(includedFields, excludedFields, paramType), //
-					accessTokenProtected, //
-					accessTokenConsumed, //
+					needServerSideToken, //
+					consumeServerSideToken, //
 					validatorClasses);
 		} else {
 			return new EndPointParam(restParamType, restParamName, paramType, //
 					computeExcludedFields(includedFields, excludedFields, paramType), //
-					accessTokenProtected, //
-					accessTokenConsumed, //
+					needServerSideToken, //
+					consumeServerSideToken, //
 					validatorClasses);
 		}
 

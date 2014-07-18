@@ -145,7 +145,7 @@ public final class TesterRestServices implements RestfulService {
 	}
 
 	@AnonymousAccessAllowed
-	@GET("/login")
+	@GET("/test/login")
 	public void login() {
 		//code 200
 		securityManager.getCurrentUserSession().get().authenticate();
@@ -187,9 +187,27 @@ public final class TesterRestServices implements RestfulService {
 		return contact;
 	}
 
+	@GET("/test/grantAccess/")
+	@AccessTokenPublish
+	public void testAccessToken() {
+		//access token publish
+	}
+
+	@GET("/test/limitedAccess/{conId}")
+	@AccessTokenMandatory
+	public Contact testAccessToken(@PathParam("conId") final long conId) {
+		return testRead(conId);
+	}
+
+	@GET("/test/oneTimeAccess/{conId}")
+	@AccessTokenConsume
+	public Contact testAccessTokenConsume(@PathParam("conId") final long conId) {
+		return testRead(conId);
+	}
+
 	@GET("/test/filtered/{conId}")
 	@ExcludedFields({ "birthday", "email" })
-	@AccessTokenProtected
+	@ServerSideSave
 	public Contact testFilteredRead(@PathParam("conId") final long conId) {
 		final Contact contact = contacts.get(conId);
 		if (contact == null) {
@@ -234,10 +252,10 @@ public final class TesterRestServices implements RestfulService {
 	//PUT is indempotent : ID obligatoire
 	@PUT("/test/filtered/{conId}")
 	@ExcludedFields({ "conId", "name" })
-	@AccessTokenProtected
+	@ServerSideSave
 	public Contact filteredUpdate(//
 			final @Validate({ ContactValidator.class, MandatoryPkValidator.class })//
-			@AccessTokenProtected//
+			@ServerSideRead//
 			Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400

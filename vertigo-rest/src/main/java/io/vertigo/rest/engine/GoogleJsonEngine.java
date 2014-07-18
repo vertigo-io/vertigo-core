@@ -31,7 +31,7 @@ import com.google.gson.JsonSerializer;
  * @author pchretien, npiedeloup
  */
 public final class GoogleJsonEngine implements JsonEngine {
-	private static final String TOKEN_ID_FIELDNAME = "x-access-token";
+	private static final String SERVER_SIDE_TOKEN_FIELDNAME = "clientId";
 	private final Gson gson = createGson();
 
 	/** {@inheritDoc} */
@@ -69,7 +69,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 	public String toJsonWithTokenId(final Object data, final String tokenId, final List<String> excludedFields) {
 		final JsonElement jsonElement = gson.toJsonTree(data);
 		excludeFields(jsonElement, excludedFields);
-		jsonElement.getAsJsonObject().addProperty(TOKEN_ID_FIELDNAME, tokenId);
+		jsonElement.getAsJsonObject().addProperty(SERVER_SIDE_TOKEN_FIELDNAME, tokenId);
 		return gson.toJson(jsonElement);
 	}
 
@@ -111,13 +111,13 @@ public final class GoogleJsonEngine implements JsonEngine {
 			final UiObject<DtObject> uiObject = new UiObject(dtoClass);
 			final JsonObject jsonObject = json.getAsJsonObject();
 			final DtObject inputDto = context.deserialize(jsonObject, dtoClass);
-			if (jsonObject.has(TOKEN_ID_FIELDNAME)) {
-				uiObject.setAccessTokenKey(jsonObject.get(TOKEN_ID_FIELDNAME).getAsString());
+			if (jsonObject.has(SERVER_SIDE_TOKEN_FIELDNAME)) {
+				uiObject.setServerSideToken(jsonObject.get(SERVER_SIDE_TOKEN_FIELDNAME).getAsString());
 			}
 			final Set<String> modifiedFields = new HashSet<>();
 			for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
 				final String fieldName = entry.getKey();
-				if (!TOKEN_ID_FIELDNAME.equals(fieldName)) {
+				if (!SERVER_SIDE_TOKEN_FIELDNAME.equals(fieldName)) {
 					modifiedFields.add(fieldName);
 				}
 			}

@@ -114,13 +114,13 @@ final class JsonConverterHandler implements RouteHandler {
 			uiObject.setInputKey("");
 			checkUnauthorizedFieldModifications(uiObject, endPointParam);
 
-			if (endPointParam.isNeedAccessToken()) {
-				final String accessToken = uiObject.getAccessTokenKey();
+			if (endPointParam.isNeedServerSideToken()) {
+				final String accessToken = uiObject.getServerSideToken();
 				if (accessToken == null) {
 					throw new VSecurityException(ACCESS_TOKEN_MANDATORY); //same message for no AccessToken or bad AccessToken
 				}
 				final DtObject serverSideObject;
-				if (endPointParam.isConsumeAccessToken()) {
+				if (endPointParam.isConsumeServerSideToken()) {
 					serverSideObject = uiSecurityTokenManager.getAndRemove(accessToken); //TODO if exception : token is consume ?
 				} else {
 					serverSideObject = uiSecurityTokenManager.get(accessToken);
@@ -147,7 +147,7 @@ final class JsonConverterHandler implements RouteHandler {
 	}
 
 	private static String writeValue(final Object value, final EndPointDefinition endPointDefinition, final UiSecurityTokenManager uiSecurityTokenManager) {
-		if (endPointDefinition.isAccessTokenProtected()) {
+		if (endPointDefinition.isServerSideSave()) {
 			if (UiContext.class.isInstance(value)) {
 				throw new RuntimeException("Not implemented yet");
 				//} else if (UiList.class.isInstance(value)) {

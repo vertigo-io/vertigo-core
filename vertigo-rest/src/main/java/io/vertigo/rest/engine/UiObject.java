@@ -52,7 +52,7 @@ public final class UiObject<D extends DtObject> implements Serializable {
 	 * DtObject dont on gère le buffer d'input.
 	 */
 	private D serverSideDto;
-	private String accessTokenKey;
+	private String serverSideToken;
 
 	private transient DtObjectErrors dtObjectErrors;
 
@@ -76,17 +76,17 @@ public final class UiObject<D extends DtObject> implements Serializable {
 	// ==========================================================================
 
 	/**
-	 * @return Security Token Key, null if none
+	 * @return Server Side Token , null if none
 	 */
-	public final String getAccessTokenKey() {
-		return accessTokenKey;
+	public final String getServerSideToken() {
+		return serverSideToken;
 	}
 
 	/**
-	 * @param accessTokenKey Security Token Key
+	 * @param serverSideToken Server Side Token
 	 */
-	public final void setAccessTokenKey(final String accessTokenKey) {
-		this.accessTokenKey = accessTokenKey;
+	public final void setServerSideToken(final String serverSideToken) {
+		this.serverSideToken = serverSideToken;
 	}
 
 	/**

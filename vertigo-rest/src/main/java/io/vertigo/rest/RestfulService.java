@@ -127,14 +127,34 @@ public interface RestfulService {
 		String[] value();
 	}
 
-	@Target({ ElementType.PARAMETER, ElementType.METHOD })
+	@Target({ ElementType.METHOD })
 	@Retention(RetentionPolicy.RUNTIME)
-	public @interface AccessTokenProtected {
+	public @interface AccessTokenPublish {
+	}
+
+	@Target({ ElementType.METHOD })
+	@Retention(RetentionPolicy.RUNTIME)
+	public @interface AccessTokenMandatory {
+	}
+
+	@Target({ ElementType.METHOD })
+	@Retention(RetentionPolicy.RUNTIME)
+	public @interface AccessTokenConsume {
+	}
+
+	@Target({ ElementType.METHOD })
+	@Retention(RetentionPolicy.RUNTIME)
+	public @interface ServerSideSave {
 	}
 
 	@Target({ ElementType.PARAMETER })
 	@Retention(RetentionPolicy.RUNTIME)
-	public @interface OneTimeTokenProtected {
+	public @interface ServerSideRead {
+	}
+
+	@Target({ ElementType.PARAMETER })
+	@Retention(RetentionPolicy.RUNTIME)
+	public @interface ServerSideConsume {
 	}
 
 	//	@Target({ ElementType.PARAMETER })

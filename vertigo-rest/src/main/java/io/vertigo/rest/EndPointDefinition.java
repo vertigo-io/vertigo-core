@@ -46,13 +46,17 @@ public final class EndPointDefinition implements Definition {
 	private final boolean needSession;
 	private final boolean needAuthentification;
 
-	private final boolean accessTokenProtected;
+	private final boolean accessTokenPublish;
+	private final boolean accessTokenMandatory;
+	private final boolean accessTokenConsume;
+	private final boolean serverSideSave;
+
 	private final List<String> excludedFields;
 
 	private final List<EndPointParam> endPointParams;
 	private final String doc;
 
-	public EndPointDefinition(final String name, final Verb verb, final String path, final Method method, final boolean needSession, final boolean needAuthentification, final boolean accessTokenProtected, final List<String> excludedFields, final List<EndPointParam> endPointParams, final String doc) {
+	public EndPointDefinition(final String name, final Verb verb, final String path, final Method method, final boolean needSession, final boolean needAuthentification, final boolean accessTokenPublish, final boolean accessTokenMandatory, final boolean accessTokenConsume, final boolean serverSideSave, final List<String> excludedFields, final List<EndPointParam> endPointParams, final String doc) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(verb);
 		Assertion.checkArgNotEmpty(path);
@@ -60,6 +64,8 @@ public final class EndPointDefinition implements Definition {
 		Assertion.checkNotNull(excludedFields);
 		Assertion.checkNotNull(endPointParams);
 		Assertion.checkNotNull(doc); //doc can be empty
+		Assertion.checkArgument(!accessTokenConsume || accessTokenMandatory, "AccessToken mandatory for accessTokenConsume ({0})", name);
+		Assertion.checkArgument(!serverSideSave || needSession, "Session mandatory for serverSideState ({0})", name);
 		//---------------------------------------------------------------------
 		this.name = name;
 		this.verb = verb;
@@ -68,7 +74,12 @@ public final class EndPointDefinition implements Definition {
 		this.method = method;
 		this.needSession = needSession;
 		this.needAuthentification = needAuthentification;
-		this.accessTokenProtected = accessTokenProtected;
+
+		this.accessTokenPublish = accessTokenPublish;
+		this.accessTokenMandatory = accessTokenMandatory;
+		this.accessTokenConsume = accessTokenConsume;
+		this.serverSideSave = serverSideSave;
+
 		this.excludedFields = Collections.unmodifiableList(new ArrayList<>(excludedFields));
 		this.endPointParams = Collections.unmodifiableList(new ArrayList<>(endPointParams));
 
@@ -103,8 +114,20 @@ public final class EndPointDefinition implements Definition {
 		return needAuthentification;
 	}
 
-	public boolean isAccessTokenProtected() {
-		return accessTokenProtected;
+	public boolean isAccessTokenPublish() {
+		return accessTokenPublish;
+	}
+
+	public boolean isAccessTokenMandatory() {
+		return accessTokenMandatory;
+	}
+
+	public boolean isAccessTokenConsume() {
+		return accessTokenConsume;
+	}
+
+	public boolean isServerSideSave() {
+		return serverSideSave;
 	}
 
 	public List<String> getExcludedFields() {

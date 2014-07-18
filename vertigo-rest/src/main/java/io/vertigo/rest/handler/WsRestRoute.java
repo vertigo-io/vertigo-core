@@ -58,6 +58,7 @@ public final class WsRestRoute extends Route {
 		if (endPointDefinition.isNeedAuthentification()) {
 			handlerChain.addHandler(securityHandler);
 		}
+		handlerChain.addHandler(new AccessTokenHandler(uiSecurityTokenManager, endPointDefinition));
 		handlerChain.addHandler(new JsonConverterHandler(uiSecurityTokenManager, endPointDefinition));
 		handlerChain.addHandler(new ValidatorHandler(endPointDefinition));
 		handlerChain.addHandler(new RestfulServiceHandler(endPointDefinition));

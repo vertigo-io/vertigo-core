@@ -25,20 +25,20 @@ public final class EndPointParam {
 	private final Class<?> type;
 	private final String fullName;
 	private final List<String> excludedFields;
-	private final boolean needAccessToken;
-	private final boolean consumeAccessToken;
+	private final boolean needServerSideToken;
+	private final boolean consumeServerSideToken;
 	private final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses;
 
 	/**
 	 * @param paramType Parameter's source type
 	 * @param type Parameter class
 	 * @param excludedFields List of excluded fieldNames
-	 * @param needAccessToken if access token mandatory
-	 * @param consumeAccessToken if access token is consume (one time token)
+	 * @param needServerSideToken if access token mandatory
+	 * @param consumeServerSideToken if access token is consume (one time token)
 	 * @param dtObjectValidatorClasses list of validator classes (order is keep)
 	 */
-	public EndPointParam(final RestParamType paramType, final Class<?> type, final List<String> excludedFields, final boolean needAccessToken, final boolean consumeAccessToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
-		this(":" + paramType.name() + ":", paramType, null, type, excludedFields, needAccessToken, consumeAccessToken, dtObjectValidatorClasses);
+	public EndPointParam(final RestParamType paramType, final Class<?> type, final List<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
+		this(":" + paramType.name() + ":", paramType, null, type, excludedFields, needServerSideToken, consumeServerSideToken, dtObjectValidatorClasses);
 		Assertion.checkArgument(paramType == RestParamType.Body, "Name is mandatory, for this parameter type : {0}", paramType.name());
 	}
 
@@ -47,17 +47,17 @@ public final class EndPointParam {
 	 * @param name Parameter name
 	 * @param type Parameter class
 	 * @param excludedFields List of excluded fieldNames
-	 * @param needAccessToken if access token mandatory
-	 * @param consumeAccessToken if access token is consume (one time token)
+	 * @param needServerSideToken if access token mandatory
+	 * @param consumeServerSideToken if access token is consume (one time token)
 	 * @param dtObjectValidatorClasses List of validator classes (order is keep)
 	 */
-	public EndPointParam(final RestParamType paramType, final String name, final Class<?> type, final List<String> excludedFields, final boolean needAccessToken, final boolean consumeAccessToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
-		this(":" + paramType.name() + ":" + name, paramType, name, type, excludedFields, needAccessToken, consumeAccessToken, dtObjectValidatorClasses);
+	public EndPointParam(final RestParamType paramType, final String name, final Class<?> type, final List<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
+		this(":" + paramType.name() + ":" + name, paramType, name, type, excludedFields, needServerSideToken, consumeServerSideToken, dtObjectValidatorClasses);
 		Assertion.checkArgument(paramType != RestParamType.Body, "Body parameter have no name");
 		Assertion.checkArgNotEmpty(name);
 	}
 
-	private EndPointParam(final String fullName, final RestParamType paramType, final String name, final Class<?> type, final List<String> excludedFields, final boolean needAccessToken, final boolean consumeAccessToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
+	private EndPointParam(final String fullName, final RestParamType paramType, final String name, final Class<?> type, final List<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
 		Assertion.checkNotNull(paramType);
 		Assertion.checkNotNull(type);
 		Assertion.checkNotNull(excludedFields);
@@ -69,8 +69,8 @@ public final class EndPointParam {
 		this.name = name;
 		this.fullName = fullName;
 		this.excludedFields = new ArrayList<>(excludedFields);
-		this.needAccessToken = needAccessToken;
-		this.consumeAccessToken = consumeAccessToken;
+		this.needServerSideToken = needServerSideToken;
+		this.consumeServerSideToken = consumeServerSideToken;
 		this.dtObjectValidatorClasses = Collections.unmodifiableList(new ArrayList<>(dtObjectValidatorClasses));
 	}
 
@@ -112,15 +112,15 @@ public final class EndPointParam {
 	/**
 	 * @return if access token mandatory
 	 */
-	public boolean isNeedAccessToken() {
-		return needAccessToken;
+	public boolean isNeedServerSideToken() {
+		return needServerSideToken;
 	}
 
 	/**
 	 * @return if access token is consume (one time token)
 	 */
-	public boolean isConsumeAccessToken() {
-		return consumeAccessToken;
+	public boolean isConsumeServerSideToken() {
+		return consumeServerSideToken;
 	}
 
 	/**
