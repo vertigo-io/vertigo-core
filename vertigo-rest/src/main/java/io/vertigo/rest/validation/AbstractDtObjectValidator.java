@@ -39,8 +39,7 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	@Override
 	public void validate(final O dtObject, final Set<String> modifiedFieldNameSet, final DtObjectErrors dtObjectErrors) {
 		for (final String fieldName : modifiedFieldNameSet) {
-			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtObject);
-			final DtField dtField = dtDefinition.getField(fieldName);
+			final DtField dtField =getDtField(fieldName, dtObject);
 			checkMonoFieldConstraints(dtObject, dtField, dtObjectErrors);
 		}
 		checkMultiFieldConstraints(dtObject, modifiedFieldNameSet, dtObjectErrors);
