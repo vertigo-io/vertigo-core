@@ -32,30 +32,30 @@ import io.vertigo.kernel.metamodel.Prefix;
 public final class Permission implements Definition {
 	private final String name;
 	private final String operation;
-	private final Resource resource;
+	private final String filter;
 
 	/**
 	 * Constructeur.
 	 * 
 	 * @param name Nom de la permission
-	 * @param operation Op�ration
+	 * @param operation Operation
 	 * @param resource Ressource
 	 */
-	public Permission(final String name, final String operation, final Resource resource) {
+	public Permission(final String name, final String operation, final String filter) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(operation);
-		Assertion.checkNotNull(resource);
+		Assertion.checkArgNotEmpty(filter);
 		// ---------------------------------------------------------------------
 		this.name = name;
 		this.operation = operation;
-		this.resource = resource;
+		this.filter = filter;
 	}
 
 	/**
-	 * @return Ressource
+	 * @return Filter used to check permission
 	 */
-	public Resource getResource() {
-		return resource;
+	public String getFilter() {
+		return filter;
 	}
 
 	/**	 

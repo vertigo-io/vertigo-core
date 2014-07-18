@@ -24,7 +24,6 @@ import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRep
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.persona.security.model.Permission;
-import io.vertigo.persona.security.model.Resource;
 import io.vertigo.persona.security.model.Role;
 
 import javax.inject.Inject;
@@ -46,7 +45,6 @@ public final class SecurityLoaderPlugin implements LoaderPlugin {
 		//super(SecurityGrammar.INSTANCE);
 		Home.getDefinitionSpace().register(Role.class);
 		Home.getDefinitionSpace().register(Permission.class);
-		Home.getDefinitionSpace().register(Resource.class);
 		this.resourceManager = resourceManager;
 
 	}
