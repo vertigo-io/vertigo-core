@@ -26,7 +26,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * @author pchretien, npiedeloup
@@ -52,7 +51,8 @@ public final class GoogleJsonEngine implements JsonEngine {
 	/** {@inheritDoc} */
 	@Override
 	public String toJsonError(final Throwable th) {
-		return "{globalErrorMessages:[\"" + th.getMessage() + "\"]}"; //TODO +stack;
+		final String exceptionMessage = th.getMessage() != null ? th.getMessage() : th.getClass().getSimpleName();
+		return "{globalErrorMessages:[\"" + exceptionMessage + "\"]}"; //TODO +stack;
 	}
 
 	private void excludeFields(final JsonElement jsonElement, final List<String> excludedFields) {
@@ -82,7 +82,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 	/** {@inheritDoc} */
 	@Override
 	public <D extends DtObject> UiObject<D> uiObjectFromJson(final String json, final Class<D> paramClass) {
-		final Type[] typeArguments = {paramClass};
+		final Type[] typeArguments = { paramClass };
 		final Type typeOfDest = new ParameterizedType() {
 
 			@Override
@@ -107,7 +107,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 
 		public UiObject<?> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
 			final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
-			final Class dtoClass = (Class)typeParameters[0]; // Id has only one parameterized type T
+			final Class dtoClass = (Class) typeParameters[0]; // Id has only one parameterized type T
 			final UiObject<DtObject> uiObject = new UiObject(dtoClass);
 			final JsonObject jsonObject = json.getAsJsonObject();
 			final DtObject inputDto = context.deserialize(jsonObject, dtoClass);

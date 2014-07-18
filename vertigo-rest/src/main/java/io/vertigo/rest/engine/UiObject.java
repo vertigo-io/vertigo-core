@@ -15,6 +15,7 @@ import io.vertigo.rest.validation.UiMessageStack;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -190,6 +191,7 @@ public final class UiObject<D extends DtObject> implements Serializable {
 		Assertion.checkNotNull(inputDto, "inputDto is mandatory");
 		Assertion.checkNotNull(modifiedFields, "modifiedFields is mandatory");
 		//---------------------------------------------------------------------
+		final Set<String> updatedModifiedFields = new HashSet<>(modifiedFields);
 		for (final String camelField : modifiedFields) {
 			//Si le champs n'a pas d'erreur
 			//On regarde pour vider le buffer
@@ -203,10 +205,11 @@ public final class UiObject<D extends DtObject> implements Serializable {
 				if (dataType.equals(dtField.getDataAccessor().getValue(serverSideDto), dtField.getDataAccessor().getValue(inputDto))) {
 					// Si la valeur saisie est identique à la valeur d'origine
 					// alors on purge le buffer de saisie.
-					modifiedFields.remove(camelField);
+					updatedModifiedFields.remove(camelField);
 				}
 			}
 		}
+		modifiedFields = Collections.unmodifiableSet(new LinkedHashSet<>(updatedModifiedFields));
 	}
 
 	private DtField getDtField(final String camelField) {

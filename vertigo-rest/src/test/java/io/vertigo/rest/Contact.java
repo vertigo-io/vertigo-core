@@ -47,11 +47,11 @@ public final class Contact implements DtObject {
 	private List<String> tels;
 	private Address address;
 
-	public Long getId() {
+	public Long getConId() {
 		return conId;
 	}
 
-	public void setId(final Long conId) {
+	public void setConId(final Long conId) {
 		this.conId = conId;
 	}
 

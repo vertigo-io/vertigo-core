@@ -122,7 +122,7 @@ public final class TesterRestServices implements RestfulService {
 	private void appendContact(final Honorific honorific, final String name, final String firstName, final Date birthday, final Address address, final String email, final String... tels) {
 		final long conId = contacts.size() + 1;
 		final Contact contact = new Contact();
-		contact.setId(conId);
+		contact.setConId(conId);
 		contact.setHonorificCode(honorific.getCode());
 		contact.setName(name);
 		contact.setFirstName(firstName);
@@ -204,14 +204,14 @@ public final class TesterRestServices implements RestfulService {
 	@POST("/test")
 	public Contact testPost(//
 			final @Validate({ ContactValidator.class, MandatoryPkValidator.class }) Contact contact) {
-		if (contact.getId() != null) {
-			throw new VUserException(new MessageText("Contact #" + contact.getId() + " already exist", null));
+		if (contact.getConId() != null) {
+			throw new VUserException(new MessageText("Contact #" + contact.getConId() + " already exist", null));
 		}
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			throw new VUserException(new MessageText("Name is mandatory", null));
 		}
 		final long nextId = getNextId();
-		contact.setId(nextId);
+		contact.setConId(nextId);
 		contacts.put(nextId, contact);
 		//code 201 + location header : GET route
 		return contact;
@@ -226,7 +226,7 @@ public final class TesterRestServices implements RestfulService {
 			throw new VUserException(new MessageText("Name is mandatory", null));
 		}
 
-		contacts.put(contact.getId(), contact);
+		contacts.put(contact.getConId(), contact);
 		//200
 		return contact;
 	}
@@ -234,6 +234,7 @@ public final class TesterRestServices implements RestfulService {
 	//PUT is indempotent : ID obligatoire
 	@PUT("/test/filtered/{conId}")
 	@ExcludedFields({ "conId", "name" })
+	@AccessTokenProtected
 	public Contact filteredUpdate(//
 			final @Validate({ ContactValidator.class, MandatoryPkValidator.class })//
 			@AccessTokenProtected//
@@ -243,7 +244,7 @@ public final class TesterRestServices implements RestfulService {
 			throw new VUserException(new MessageText("Name is mandatory", null));
 		}
 
-		contacts.put(contact.getId(), contact);
+		contacts.put(contact.getConId(), contact);
 		//200
 		return contact;
 	}

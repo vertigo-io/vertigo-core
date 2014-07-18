@@ -119,7 +119,7 @@ public final class WsRestHandler {
 					.beginComponent(SessionHandler.class).endComponent() //
 					.beginComponent(UiSecurityTokenManager.class, UiSecurityTokenManagerImpl.class)
 						.beginPlugin(MemoryUiSecurityTokenCachePlugin.class)
-							.withParam("timeToLiveSeconds", "30")
+							.withParam("timeToLiveSeconds", "120")
 						.endPlugin()
 					.endComponent() //					
 				.endModule()
