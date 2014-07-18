@@ -82,8 +82,24 @@ public final class GoogleJsonEngine implements JsonEngine {
 	/** {@inheritDoc} */
 	@Override
 	public <D extends DtObject> UiObject<D> uiObjectFromJson(final String json, final Class<D> paramClass) {
-		final Type typeOfDest = new TypeToken<UiObject<D>>() {
-		}.getType();
+		final Type[] typeArguments = {paramClass};
+		final Type typeOfDest = new ParameterizedType() {
+
+			@Override
+			public Type[] getActualTypeArguments() {
+				return typeArguments;
+			}
+
+			@Override
+			public Type getOwnerType() {
+				return null;
+			}
+
+			@Override
+			public Type getRawType() {
+				return UiObject.class;
+			}
+		};
 		return gson.fromJson(json, typeOfDest);
 	}
 
@@ -91,10 +107,10 @@ public final class GoogleJsonEngine implements JsonEngine {
 
 		public UiObject<?> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
 			final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
-			final Type dtoType = typeParameters[0]; // Id has only one parameterized type T
-			final UiObject<DtObject> uiObject = new UiObject(dtoType.getClass());
+			final Class dtoClass = (Class)typeParameters[0]; // Id has only one parameterized type T
+			final UiObject<DtObject> uiObject = new UiObject(dtoClass);
 			final JsonObject jsonObject = json.getAsJsonObject();
-			final DtObject inputDto = context.deserialize(jsonObject, dtoType.getClass());
+			final DtObject inputDto = context.deserialize(jsonObject, dtoClass);
 			if (jsonObject.has(TOKEN_ID_FIELDNAME)) {
 				uiObject.setAccessTokenKey(jsonObject.get(TOKEN_ID_FIELDNAME).getAsString());
 			}
