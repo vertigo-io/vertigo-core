@@ -66,6 +66,7 @@ public final class EndPointDefinition implements Definition {
 		Assertion.checkNotNull(doc); //doc can be empty
 		Assertion.checkArgument(!accessTokenConsume || accessTokenMandatory, "AccessToken mandatory for accessTokenConsume ({0})", name);
 		Assertion.checkArgument(!serverSideSave || needSession, "Session mandatory for serverSideState ({0})", name);
+		Assertion.checkArgument(!serverSideSave || !Void.TYPE.equals(method.getReturnType()), "Return object mandatory for serverSideState ({0})", name);
 		//---------------------------------------------------------------------
 		this.name = name;
 		this.verb = verb;
