@@ -18,6 +18,7 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -56,7 +57,12 @@ public final class GoogleJsonEngine implements JsonEngine {
 	}
 
 	private void excludeFields(final JsonElement jsonElement, final List<String> excludedFields) {
-		if (jsonElement.isJsonObject()) {
+		if (jsonElement.isJsonArray()) {
+			final JsonArray jsonArray = jsonElement.getAsJsonArray();
+			for (final JsonElement jsonSubElement : jsonArray) {
+				excludeFields(jsonSubElement, excludedFields);
+			}
+		} else if (jsonElement.isJsonObject()) {
 			final JsonObject jsonObject = jsonElement.getAsJsonObject();
 			for (final String excludedField : excludedFields) {
 				jsonObject.remove(excludedField);

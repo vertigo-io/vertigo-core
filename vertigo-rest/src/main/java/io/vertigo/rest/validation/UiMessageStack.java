@@ -20,6 +20,7 @@ package io.vertigo.rest.validation;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.lang.JsonExclude;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,19 +28,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Class d'enregistrement des messages. 
+ * Class d'enregistrement des messages.
  * @author npiedeloup
  */
 public final class UiMessageStack {
 
-	private final List<String> globalErrorMessages = new ArrayList<>();
-	private final List<String> globalWarningMessages = new ArrayList<>();
-	private final List<String> globalInfoMessages = new ArrayList<>();
-	private final List<String> globalSuccessMessages = new ArrayList<>();
+	private final List<String> globalErrors = new ArrayList<>();
+	private final List<String> globalWarnings = new ArrayList<>();
+	private final List<String> globalInfos = new ArrayList<>();
+	private final List<String> globalSuccess = new ArrayList<>();
 
-	private final Map<String, List<String>> fieldErrorMessages = new HashMap<>();
-	private final Map<String, List<String>> fieldWarningMessages = new HashMap<>();
-	private final Map<String, List<String>> fieldInfoMessages = new HashMap<>();
+	private final Map<String, List<String>> fieldErrors = new HashMap<>();
+	private final Map<String, List<String>> fieldWarnings = new HashMap<>();
+	private final Map<String, List<String>> fieldInfos = new HashMap<>();
 
 	/**
 	 * Niveau du message.
@@ -56,6 +57,7 @@ public final class UiMessageStack {
 		SUCCESS;
 	}
 
+	@JsonExclude
 	private final UiContextResolver uiContextResolver;
 
 	/**
@@ -75,16 +77,16 @@ public final class UiMessageStack {
 	public final void addGlobalMessage(final Level level, final String message) {
 		switch (level) {
 			case ERROR:
-				globalErrorMessages.add(message);
+				globalErrors.add(message);
 				break;
 			case WARNING:
-				globalWarningMessages.add(message);
+				globalWarnings.add(message);
 				break;
 			case INFO:
-				globalInfoMessages.add(message);
+				globalInfos.add(message);
 				break;
 			case SUCCESS:
-				globalSuccessMessages.add(message);
+				globalSuccess.add(message);
 				break;
 			default:
 				throw new UnsupportedOperationException("Unknowned level");
@@ -154,13 +156,13 @@ public final class UiMessageStack {
 		final Map<String, List<String>> fieldMessageMap;
 		switch (level) {
 			case ERROR:
-				fieldMessageMap = fieldErrorMessages;
+				fieldMessageMap = fieldErrors;
 				break;
 			case WARNING:
-				fieldMessageMap = fieldWarningMessages;
+				fieldMessageMap = fieldWarnings;
 				break;
 			case INFO:
-				fieldMessageMap = fieldInfoMessages;
+				fieldMessageMap = fieldInfos;
 				break;
 			default:
 				throw new UnsupportedOperationException("Unknowned level");
@@ -178,7 +180,7 @@ public final class UiMessageStack {
 	 * @return if there are errors in this stack.
 	 */
 	public boolean hasErrors() {
-		return !globalErrorMessages.isEmpty() || !fieldErrorMessages.isEmpty();
+		return !globalErrors.isEmpty() || !fieldErrors.isEmpty();
 	}
 
 }
