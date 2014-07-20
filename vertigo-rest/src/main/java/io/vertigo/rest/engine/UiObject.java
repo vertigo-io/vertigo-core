@@ -61,12 +61,18 @@ public final class UiObject<D extends DtObject> implements Serializable {
 	// ==========================================================================
 	/**
 	 * Constructor.
-	 * @param dtoClass Object class buffered
+	 * @param inputDto partial object translated from input
+	 * @param modifiedFields modified fieldNames
 	 */
-	public UiObject(final Class<D> dtoClass) {
-		Assertion.checkNotNull(dtoClass);
-		// -------------------------------------------------------------------------
-		this.dtDefinitionRef = new DefinitionReference<>(DtObjectUtil.findDtDefinition(dtoClass));
+	public UiObject(D inputDto, Set<String> modifiedFields) {
+		Assertion.checkNotNull(inputDto, "inputObject can't be null");
+		Assertion.checkNotNull(modifiedFields, "modifiedFields can't be null");
+		Assertion.checkArgument(!modifiedFields.isEmpty(), "modifiedFields can't be empty");
+		//-------------------------------------------------------------------------------
+		this.inputDto = inputDto;
+		this.modifiedFields = Collections.unmodifiableSet(new LinkedHashSet<>(modifiedFields));
+		
+		this.dtDefinitionRef = new DefinitionReference<>(DtObjectUtil.findDtDefinition(inputDto));
 		for (final DtField dtField : getDtDefinition().getFields()) {
 			camel2ConstIndex.put(StringUtil.constToCamelCase(dtField.getName(), false), dtField.getName());
 			const2CamelIndex.put(dtField.getName(), StringUtil.constToCamelCase(dtField.getName(), false));
@@ -96,19 +102,6 @@ public final class UiObject<D extends DtObject> implements Serializable {
 		Assertion.checkNotNull(serverSideDto, "ServerSideObject can't be null");
 		//-------------------------------------------------------------------------------
 		this.serverSideDto = serverSideDto;
-	}
-
-	/**
-	 * @param inputDto partial object translated from input
-	 * @param modifiedFields modified fieldNames
-	 */
-	public final void setInputObject(final D inputDto, final Set<String> modifiedFields) {
-		Assertion.checkNotNull(inputDto, "inputObject can't be null");
-		Assertion.checkNotNull(modifiedFields, "modifiedFields can't be null");
-		Assertion.checkArgument(!modifiedFields.isEmpty(), "modifiedFields can't be empty");
-		//-------------------------------------------------------------------------------
-		this.inputDto = inputDto;
-		this.modifiedFields = Collections.unmodifiableSet(new LinkedHashSet<>(modifiedFields));
 	}
 
 	/**

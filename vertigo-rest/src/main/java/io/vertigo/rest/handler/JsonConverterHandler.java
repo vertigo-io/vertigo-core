@@ -29,7 +29,9 @@ import io.vertigo.rest.exception.SessionException;
 import io.vertigo.rest.exception.VSecurityException;
 import io.vertigo.rest.security.UiSecurityTokenManager;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 
 import spark.Request;
 import spark.Response;
@@ -76,7 +78,7 @@ final class JsonConverterHandler implements RouteHandler {
 			routeContext.setParamValue(endPointParam, value);
 		}
 		final Object result = chain.handle(request, response, routeContext);
-		return writeValue(result, endPointDefinition, uiSecurityTokenManager);
+		return writeValue(result, endPointDefinition, uiSecurityTokenManager, "OK");
 	}
 
 	private static Object readPrimitiveValue(final String json, final EndPointParam endPointParam) {
@@ -146,10 +148,19 @@ final class JsonConverterHandler implements RouteHandler {
 		}
 	}
 
-	private static String writeValue(final Object value, final EndPointDefinition endPointDefinition, final UiSecurityTokenManager uiSecurityTokenManager) {
+	private static String writeValue(final Object value, final EndPointDefinition endPointDefinition, final UiSecurityTokenManager uiSecurityTokenManager, String nullValue) {
 		if (endPointDefinition.isServerSideSave()) {
 			if (UiContext.class.isInstance(value)) {
-				throw new RuntimeException("Not implemented yet");
+				StringBuilder sb = new StringBuilder();
+				sb.append("{");
+				String sep = "";
+				for(Map.Entry<String, Serializable> entry : ((UiContext)value).entrySet()) {
+					sb.append(sep);
+					sb.append("\"").append(entry.getKey()).append("\":\"").append(writeValue(entry.getValue(), endPointDefinition, uiSecurityTokenManager, "")).append("\"");
+					sep = ", ";
+				}
+				sb.append("}");
+				return sb.toString();
 				//} else if (UiList.class.isInstance(value)) {
 				//	throw new RuntimeException("Not implemented yet");
 			} else if (DtObject.class.isInstance(value)) {
@@ -160,6 +171,6 @@ final class JsonConverterHandler implements RouteHandler {
 			}
 		}
 		//If value is null (and no exception occured), we tell client it's OK
-		return jsonWriterEngine.toJson(value != null ? value : "OK", endPointDefinition.getExcludedFields());
+		return jsonWriterEngine.toJson(value != null ? value : nullValue, endPointDefinition.getExcludedFields());
 	}
 }

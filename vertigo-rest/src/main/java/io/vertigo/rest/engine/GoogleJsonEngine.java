@@ -2,12 +2,15 @@ package io.vertigo.rest.engine;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.component.ComponentInfo;
+import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.JsonExclude;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.metamodel.DefinitionReference;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,13 +35,14 @@ import com.google.gson.JsonSerializer;
  * @author pchretien, npiedeloup
  */
 public final class GoogleJsonEngine implements JsonEngine {
+	private static final String LIST_COUNT_FIELDNAME = "count";
 	private static final String SERVER_SIDE_TOKEN_FIELDNAME = "clientId";
 	private final Gson gson = createGson();
 
 	/** {@inheritDoc} */
 	@Override
 	public String toJson(final Object data) {
-		return gson.toJson(data);
+		return toJson(data, Collections.<String>emptyList());
 	}
 
 	/** {@inheritDoc} */
@@ -46,14 +50,50 @@ public final class GoogleJsonEngine implements JsonEngine {
 	public String toJson(final Object data, final List<String> excludedFields) {
 		final JsonElement jsonElement = gson.toJsonTree(data);
 		excludeFields(jsonElement, excludedFields);
-		return gson.toJson(jsonElement);
+		String result = gson.toJson(jsonElement);
+		if(data instanceof List) {
+			JsonListWithMeta jsonListWithMeta = new JsonListWithMeta(result);
+			jsonListWithMeta.addMeta(LIST_COUNT_FIELDNAME, ((List<?>)data).size());
+			result = gson.toJson(jsonListWithMeta);
+		}
+		
+		return result;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public String toJsonError(final Throwable th) {
-		final String exceptionMessage = th.getMessage() != null ? th.getMessage() : th.getClass().getSimpleName();
-		return "{globalErrorMessages:[\"" + exceptionMessage + "\"]}"; //TODO +stack;
+	public String toJsonWithTokenId(final Object data, final String tokenId, final List<String> excludedFields) {
+		final JsonElement jsonElement = gson.toJsonTree(data);
+		excludeFields(jsonElement, excludedFields);
+		String result;
+		if(data instanceof List) {
+			String listJson = gson.toJson(jsonElement);
+			JsonListWithMeta jsonListWithMeta = new JsonListWithMeta(listJson);
+			jsonListWithMeta.addMeta(LIST_COUNT_FIELDNAME, ((List<?>)data).size());
+			jsonListWithMeta.addMeta(SERVER_SIDE_TOKEN_FIELDNAME, tokenId);
+			result = gson.toJson(jsonListWithMeta);
+		}  else {
+			jsonElement.getAsJsonObject().addProperty(SERVER_SIDE_TOKEN_FIELDNAME, tokenId);
+			result = gson.toJson(jsonElement);
+		}
+		return result;
+	}
+
+	private class JsonListWithMeta {
+		private final Map<String, Object> metas = new HashMap<>();
+		private final String listValue;
+		
+		
+		JsonListWithMeta(String listValue) {
+			Assertion.checkArgNotEmpty(listValue);
+			//-----------------------------------------------------------------
+			this.listValue = listValue;
+		}
+		
+		void addMeta(String key, Object value) {
+			metas.put(key, value);
+		}
+		
 	}
 
 	private void excludeFields(final JsonElement jsonElement, final List<String> excludedFields) {
@@ -72,11 +112,9 @@ public final class GoogleJsonEngine implements JsonEngine {
 
 	/** {@inheritDoc} */
 	@Override
-	public String toJsonWithTokenId(final Object data, final String tokenId, final List<String> excludedFields) {
-		final JsonElement jsonElement = gson.toJsonTree(data);
-		excludeFields(jsonElement, excludedFields);
-		jsonElement.getAsJsonObject().addProperty(SERVER_SIDE_TOKEN_FIELDNAME, tokenId);
-		return gson.toJson(jsonElement);
+	public String toJsonError(final Throwable th) {
+		final String exceptionMessage = th.getMessage() != null ? th.getMessage() : th.getClass().getSimpleName();
+		return "{globalErrorMessages:[\"" + exceptionMessage + "\"]}"; //TODO +stack;
 	}
 
 	/** {@inheritDoc} */
@@ -108,18 +146,15 @@ public final class GoogleJsonEngine implements JsonEngine {
 		};
 		return gson.fromJson(json, typeOfDest);
 	}
-
+	
 	static class UiObjectDeserializer implements JsonDeserializer<UiObject<?>> {
 
 		public UiObject<?> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
 			final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
 			final Class dtoClass = (Class) typeParameters[0]; // Id has only one parameterized type T
-			final UiObject<DtObject> uiObject = new UiObject(dtoClass);
 			final JsonObject jsonObject = json.getAsJsonObject();
 			final DtObject inputDto = context.deserialize(jsonObject, dtoClass);
-			if (jsonObject.has(SERVER_SIDE_TOKEN_FIELDNAME)) {
-				uiObject.setServerSideToken(jsonObject.get(SERVER_SIDE_TOKEN_FIELDNAME).getAsString());
-			}
+			
 			final Set<String> modifiedFields = new HashSet<>();
 			for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
 				final String fieldName = entry.getKey();
@@ -127,10 +162,60 @@ public final class GoogleJsonEngine implements JsonEngine {
 					modifiedFields.add(fieldName);
 				}
 			}
-			uiObject.setInputObject(inputDto, modifiedFields);
+			final UiObject<DtObject> uiObject = new UiObject(inputDto, modifiedFields);
+			if (jsonObject.has(SERVER_SIDE_TOKEN_FIELDNAME)) {
+				uiObject.setServerSideToken(jsonObject.get(SERVER_SIDE_TOKEN_FIELDNAME).getAsString());
+			}
 			return uiObject;
 		}
 	}
+	
+	/** {@inheritDoc} */
+	public <D extends DtObject> UiList<D> uiListFromJson(final String json, final Class<D> paramClass) {
+		final Type[] typeArguments = { paramClass };
+		final Type typeOfDest = new ParameterizedType() {
+
+			@Override
+			public Type[] getActualTypeArguments() {
+				return typeArguments;
+			}
+
+			@Override
+			public Type getOwnerType() {
+				return null;
+			}
+
+			@Override
+			public Type getRawType() {
+				return UiList.class;
+			}
+		};
+		return gson.fromJson(json, typeOfDest);
+	}
+	static class UiListDeserializer implements JsonDeserializer<UiList<?>> {
+
+		public UiList<?> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
+			final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
+			final Class dtoClass = (Class) typeParameters[0]; // Id has only one parameterized type T
+			final JsonObject jsonObject = json.getAsJsonObject();
+			final DtObject inputDto = context.deserialize(jsonObject, dtoClass);
+			
+			final Set<String> modifiedFields = new HashSet<>();
+			for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+				final String fieldName = entry.getKey();
+				if (!SERVER_SIDE_TOKEN_FIELDNAME.equals(fieldName)) {
+					modifiedFields.add(fieldName);
+				}
+			}
+			final UiList<DtObject> uiList = new UiList(dtoClass);
+			if (jsonObject.has(SERVER_SIDE_TOKEN_FIELDNAME)) {
+				uiObject.setServerSideToken(jsonObject.get(SERVER_SIDE_TOKEN_FIELDNAME).getAsString());
+			}
+			return uiObject;
+		}
+	}
+
+	
 
 	private static Gson createGson() {
 		return new GsonBuilder()//
