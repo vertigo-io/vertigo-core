@@ -82,6 +82,8 @@ final class RestfulServiceHandler implements RouteHandler {
 					throw (SessionException) targetException;
 				} else if (targetException instanceof VSecurityException) {
 					throw (VSecurityException) targetException;
+				} else if (targetException instanceof RuntimeException) {
+					throw (RuntimeException) targetException;
 				}
 			}
 			throw e;

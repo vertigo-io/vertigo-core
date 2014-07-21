@@ -2,7 +2,6 @@ package io.vertigo.rest.engine;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.component.ComponentInfo;
-import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.JsonExclude;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.metamodel.DefinitionReference;
@@ -10,7 +9,6 @@ import io.vertigo.kernel.metamodel.DefinitionReference;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -35,14 +33,13 @@ import com.google.gson.JsonSerializer;
  * @author pchretien, npiedeloup
  */
 public final class GoogleJsonEngine implements JsonEngine {
-	private static final String LIST_COUNT_FIELDNAME = "count";
 	private static final String SERVER_SIDE_TOKEN_FIELDNAME = "clientId";
 	private final Gson gson = createGson();
 
 	/** {@inheritDoc} */
 	@Override
 	public String toJson(final Object data) {
-		return toJson(data, Collections.<String>emptyList());
+		return toJson(data, Collections.<String> emptyList());
 	}
 
 	/** {@inheritDoc} */
@@ -59,10 +56,10 @@ public final class GoogleJsonEngine implements JsonEngine {
 		final JsonElement jsonElement = gson.toJsonTree(data);
 		excludeFields(jsonElement, excludedFields);
 		jsonElement.getAsJsonObject().addProperty(SERVER_SIDE_TOKEN_FIELDNAME, tokenId);
-			return gson.toJson(jsonElement);
+		return gson.toJson(jsonElement);
 	}
 
-		private void excludeFields(final JsonElement jsonElement, final List<String> excludedFields) {
+	private void excludeFields(final JsonElement jsonElement, final List<String> excludedFields) {
 		if (jsonElement.isJsonArray()) {
 			final JsonArray jsonArray = jsonElement.getAsJsonArray();
 			for (final JsonElement jsonSubElement : jsonArray) {
@@ -112,7 +109,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 		};
 		return gson.fromJson(json, typeOfDest);
 	}
-	
+
 	static class UiObjectDeserializer implements JsonDeserializer<UiObject<?>> {
 
 		public UiObject<?> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
@@ -120,7 +117,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 			final Class dtoClass = (Class) typeParameters[0]; // Id has only one parameterized type T
 			final JsonObject jsonObject = json.getAsJsonObject();
 			final DtObject inputDto = context.deserialize(jsonObject, dtoClass);
-			
+
 			final Set<String> modifiedFields = new HashSet<>();
 			for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
 				final String fieldName = entry.getKey();
@@ -135,7 +132,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 			return uiObject;
 		}
 	}
-	
+
 	/** {@inheritDoc} */
 	public <D extends DtObject> UiList<D> uiListFromJson(final String json, final Class<D> paramClass) {
 		final Type[] typeArguments = { paramClass };
@@ -158,6 +155,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 		};
 		return gson.fromJson(json, typeOfDest);
 	}
+
 	static class UiListDeserializer implements JsonDeserializer<UiList<?>> {
 
 		public UiList<?> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
@@ -165,7 +163,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 			final Class dtoClass = (Class) typeParameters[0]; // Id has only one parameterized type T
 			final JsonObject jsonObject = json.getAsJsonObject();
 			final DtObject inputDto = context.deserialize(jsonObject, dtoClass);
-			
+
 			final Set<String> modifiedFields = new HashSet<>();
 			for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
 				final String fieldName = entry.getKey();
@@ -180,8 +178,6 @@ public final class GoogleJsonEngine implements JsonEngine {
 			return uiList;
 		}
 	}
-
-	
 
 	private static Gson createGson() {
 		return new GsonBuilder()//

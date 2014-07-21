@@ -22,6 +22,8 @@ import io.vertigo.commons.impl.resource.ResourceManagerImpl;
 import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.commons.resource.ResourceManager;
+import io.vertigo.dynamo.collections.CollectionsManager;
+import io.vertigo.dynamo.impl.collections.CollectionsManagerImpl;
 import io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
@@ -99,6 +101,7 @@ public final class WsRestHandler {
 					.endComponent() //
 				.endModule()
 				.beginModule("dynamo").withNoAPI() //
+					.beginComponent(CollectionsManager.class, CollectionsManagerImpl.class).endComponent() //
 					.beginComponent(EnvironmentManagerImpl.class) //
 						.beginPlugin(AnnotationLoaderPlugin.class).endPlugin() //
 						.beginPlugin(KprLoaderPlugin.class).endPlugin() //

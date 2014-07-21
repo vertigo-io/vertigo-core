@@ -18,19 +18,11 @@
  */
 package io.vertigo.rest.handler;
 
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.util.ClassUtil;
 import io.vertigo.rest.EndPointDefinition;
-import io.vertigo.rest.EndPointParam;
-import io.vertigo.rest.engine.UiObject;
 import io.vertigo.rest.exception.SessionException;
 import io.vertigo.rest.exception.VSecurityException;
-import io.vertigo.rest.validation.DtObjectValidator;
-import io.vertigo.rest.validation.UiMessageStack;
-import io.vertigo.rest.validation.ValidationUserException;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,27 +45,26 @@ final class PaginatorAndSortHandler implements RouteHandler {
 
 	/** {@inheritDoc}  */
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
-		Object result = chain.handle(request, response, routeContext);
-		if(result instanceof List) {
-			
+		final Object result = chain.handle(request, response, routeContext);
+		if (result instanceof List) {
+
 		}
 		return result;
 	}
 
 	private class ListWithMeta {
 		private final Map<String, Object> metas = new HashMap<>();
-		private final String listValue;
-		
-		
-		ListWithMeta(String listValue) {
-			Assertion.checkArgNotEmpty(listValue);
+		private final String value;
+
+		ListWithMeta(final String value) {
+			Assertion.checkArgNotEmpty(value);
 			//-----------------------------------------------------------------
-			this.listValue = listValue;
+			this.value = value;
 		}
-		
-		void addMeta(String key, Object value) {
+
+		void addMeta(final String key, final Object value) {
 			metas.put(key, value);
 		}
-		
+
 	}
 }

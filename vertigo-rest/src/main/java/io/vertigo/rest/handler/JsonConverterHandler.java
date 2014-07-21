@@ -25,7 +25,6 @@ import io.vertigo.rest.EndPointDefinition;
 import io.vertigo.rest.EndPointParam;
 import io.vertigo.rest.engine.GoogleJsonEngine;
 import io.vertigo.rest.engine.UiContext;
-import io.vertigo.rest.engine.UiList;
 import io.vertigo.rest.engine.UiObject;
 import io.vertigo.rest.exception.SessionException;
 import io.vertigo.rest.exception.VSecurityException;
@@ -33,7 +32,10 @@ import io.vertigo.rest.security.UiSecurityTokenManager;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import spark.Request;
 import spark.Response;
@@ -80,7 +82,14 @@ final class JsonConverterHandler implements RouteHandler {
 			routeContext.setParamValue(endPointParam, value);
 		}
 		final Object result = chain.handle(request, response, routeContext);
-		return writeValue(result, endPointDefinition, uiSecurityTokenManager, "OK");
+		if (result != null) {
+			if (result instanceof List) {
+				response.header("x-total-count", String.valueOf(((List) result).size()));
+			}
+			return writeValue(result, endPointDefinition, uiSecurityTokenManager);
+		}
+		response.status(HttpServletResponse.SC_NO_CONTENT);
+		return "";
 	}
 
 	private static Object readPrimitiveValue(final String json, final EndPointParam endPointParam) {
@@ -132,7 +141,7 @@ final class JsonConverterHandler implements RouteHandler {
 				if (serverSideObject == null) {
 					throw new VSecurityException(ACCESS_TOKEN_MANDATORY); //same message for no AccessToken or bad AccessToken
 				}
-				uiObject.setServerSideObject((DtObject)serverSideObject);
+				uiObject.setServerSideObject((DtObject) serverSideObject);
 			}
 			return uiObject;
 		} else if (UiContext.class.isAssignableFrom(paramClass)) {
@@ -150,15 +159,17 @@ final class JsonConverterHandler implements RouteHandler {
 		}
 	}
 
-	private static String writeValue(final Object value, final EndPointDefinition endPointDefinition, final UiSecurityTokenManager uiSecurityTokenManager, String nullValue) {
+	private static String writeValue(final Object value, final EndPointDefinition endPointDefinition, final UiSecurityTokenManager uiSecurityTokenManager) {
+		Assertion.checkNotNull(value);
+		//---------------------------------------------------------------------
 		if (endPointDefinition.isServerSideSave()) {
 			if (UiContext.class.isInstance(value)) {
-				StringBuilder sb = new StringBuilder();
+				final StringBuilder sb = new StringBuilder();
 				sb.append("{");
 				String sep = "";
-				for(Map.Entry<String, Serializable> entry : ((UiContext)value).entrySet()) {
+				for (final Map.Entry<String, Serializable> entry : ((UiContext) value).entrySet()) {
 					sb.append(sep);
-					sb.append("\"").append(entry.getKey()).append("\":\"").append(writeValue(entry.getValue(), endPointDefinition, uiSecurityTokenManager, "")).append("\"");
+					sb.append("\"").append(entry.getKey()).append("\":\"").append(writeValue(entry.getValue(), endPointDefinition, uiSecurityTokenManager)).append("\"");
 					sep = ", ";
 				}
 				sb.append("}");
@@ -173,7 +184,6 @@ final class JsonConverterHandler implements RouteHandler {
 				throw new RuntimeException("Return type can't be protected :" + (value != null ? value.getClass().getSimpleName() : "null"));
 			}
 		}
-		//If value is null (and no exception occured), we tell client it's OK
-		return jsonWriterEngine.toJson(value != null ? value : nullValue, endPointDefinition.getExcludedFields());
+		return jsonWriterEngine.toJson(value, endPointDefinition.getExcludedFields());
 	}
 }

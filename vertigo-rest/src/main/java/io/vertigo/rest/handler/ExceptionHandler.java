@@ -31,30 +31,38 @@ import javax.servlet.http.HttpServletResponse;
 import spark.Request;
 import spark.Response;
 
+import com.google.gson.JsonSyntaxException;
+
 /**
  * Exceptions handler. Convert exception to response.
  * @author npiedeloup
  */
 public final class ExceptionHandler implements RouteHandler {
 	private static final JsonEngine jsonWriterEngine = new GoogleJsonEngine();
+	private static final int SC_UNPROCESSABLE_ENTITY = 422; //server understands the content syntaxe but not semanticly
 
 	/** {@inheritDoc} */
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) {
 		try {
 			return chain.handle(request, response, routeContext);
 		} catch (final ValidationUserException e) {
-			response.status(HttpServletResponse.SC_BAD_REQUEST);
+			//response.status(HttpServletResponse.SC_BAD_REQUEST);
+			response.status(SC_UNPROCESSABLE_ENTITY);
 			final UiMessageStack uiMessageStack = routeContext.getUiMessageStack();
 			e.flushToUiMessageStack(uiMessageStack);
 			return jsonWriterEngine.toJson(uiMessageStack);
 		} catch (final VUserException e) {
-			response.status(HttpServletResponse.SC_BAD_REQUEST);
+			//response.status(HttpServletResponse.SC_BAD_REQUEST);
+			response.status(SC_UNPROCESSABLE_ENTITY);
 			return jsonWriterEngine.toJsonError(e);
 		} catch (final SessionException e) {
 			response.status(HttpServletResponse.SC_UNAUTHORIZED);
 			return jsonWriterEngine.toJsonError(e);
 		} catch (final VSecurityException e) {
 			response.status(HttpServletResponse.SC_FORBIDDEN);
+			return jsonWriterEngine.toJsonError(e);
+		} catch (final JsonSyntaxException e) {
+			response.status(HttpServletResponse.SC_BAD_REQUEST);
 			return jsonWriterEngine.toJsonError(e);
 		} catch (final Throwable e) {
 			response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

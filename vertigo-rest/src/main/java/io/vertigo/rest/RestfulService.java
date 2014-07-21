@@ -157,10 +157,15 @@ public interface RestfulService {
 	public @interface ServerSideConsume {
 	}
 
-	//	@Target({ ElementType.PARAMETER })
-	//	@Retention(RetentionPolicy.RUNTIME)
-	//	public @interface BodyParam {
-	//		//rien
-	//	}
+	@Target({ ElementType.METHOD })
+	@Retention(RetentionPolicy.RUNTIME)
+	public @interface AutoSortAndPagination {
+	}
+
+	@Target({ ElementType.PARAMETER })
+	@Retention(RetentionPolicy.RUNTIME)
+	public @interface InnerBodyParam { //Only if mutiple Body Params
+		String value();
+	}
 
 }

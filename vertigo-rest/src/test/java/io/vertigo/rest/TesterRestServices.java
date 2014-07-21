@@ -18,9 +18,23 @@
  */
 package io.vertigo.rest;
 
+import io.vertigo.dynamo.collections.CollectionsManager;
+import io.vertigo.dynamo.collections.DtListFunction;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.impl.collections.functions.filter.DtListChainFilter;
+import io.vertigo.dynamo.impl.collections.functions.filter.DtListFilter;
+import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
+import io.vertigo.dynamo.impl.collections.functions.filter.DtListValueFilter;
+import io.vertigo.dynamo.impl.collections.functions.filter.FilterFunction;
 import io.vertigo.kernel.exception.VUserException;
 import io.vertigo.kernel.lang.MessageText;
+import io.vertigo.kernel.lang.Option;
 import io.vertigo.persona.security.KSecurityManager;
+import io.vertigo.rest.engine.UiListState;
 import io.vertigo.rest.exception.VSecurityException;
 
 import java.text.ParseException;
@@ -29,8 +43,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -42,6 +58,8 @@ public final class TesterRestServices implements RestfulService {
 
 	@Inject
 	private KSecurityManager securityManager;
+	@Inject
+	private CollectionsManager collectionsManager;
 
 	/*private final enum Group {
 		Friends("FRD", "Friends"), //
@@ -237,7 +255,7 @@ public final class TesterRestServices implements RestfulService {
 
 	//PUT is indempotent : ID obligatoire
 	@PUT("/test/{conId}")
-	public Contact update(//
+	public Contact testUpdate(//
 			final @Validate({ ContactValidator.class, MandatoryPkValidator.class }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
@@ -279,6 +297,80 @@ public final class TesterRestServices implements RestfulService {
 		}
 		//200
 		contacts.remove(conId);
+	}
+
+	@GET("/test/search")
+	public List<Contact> testSearch(final ContactCriteria contact) {
+		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
+		final DtList<Contact> result = filterFunction.apply((DtList<Contact>) contacts.values());
+		//offset + range ?
+		//code 200
+		return result;
+	}
+
+	@GET("/test/searchPagined")
+	public List<Contact> testSearchServicePagined(final ContactCriteria contact, final UiListState uiListState) {
+		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
+		final DtList<Contact> result = filterFunction.apply((DtList<Contact>) contacts.values());
+
+		//offset + range ?
+		//code 200
+		return applySortAndPagination(result, uiListState);
+	}
+
+	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final UiListState uiListState) {
+		final DtListFunction<D> sortFunction = collectionsManager.createSort(uiListState.getSortFieldName(), uiListState.isSortDesc(), true, true);
+		final DtListFunction<D> filterFunction = collectionsManager.createFilterSubList(uiListState.getSkip(), uiListState.getSkip() + uiListState.getTop());
+		final DtList<D> sortedDtc = sortFunction.apply(filterFunction.apply(unFilteredList));
+		return sortedDtc;
+	}
+
+	@AutoSortAndPagination
+	@GET("/test/searchAutoPagined")
+	public List<Contact> testSearchServiceAutoPagined(final ContactCriteria contact) {
+		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
+		final DtList<Contact> result = filterFunction.apply((DtList<Contact>) contacts.values());
+		//offset + range ?
+		//code 200
+		return result;
+	}
+
+	/*@GET("/test/searchFacet")
+	public FacetedQueryResult<DtObject, ContactCriteria> testSearchServiceFaceted(final ContactCriteria contact) {
+		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
+		final DtList<Contact> result = filterFunction.apply((DtList<Contact>) contacts.values());
+		
+		//offset + range ?
+		//code 200
+		return result;
+	}*/
+
+	private static <C extends DtObject, O extends DtObject> DtListFunction<O> createDtListFunction(final C criteria, final Class<O> resultClass) {
+		final List<DtListFilter<O>> filters = new ArrayList<>();
+		final DtDefinition criteriaDefinition = DtObjectUtil.findDtDefinition(criteria);
+		final DtDefinition resultDefinition = DtObjectUtil.findDtDefinition(resultClass);
+		final Set<String> alreadyAddedField = new HashSet<>();
+		for (final DtField field : criteriaDefinition.getFields()) {
+			final String fieldName = field.getName();
+			if (!alreadyAddedField.contains(fieldName)) { //when we consume two fields at once (min;max)
+				final Object value = field.getDataAccessor().getValue(criteria);
+				if (value != null) {
+					if (fieldName.endsWith("_MIN") || fieldName.endsWith("_MAX")) {
+						final String filteredField = fieldName.substring(0, fieldName.length() - "_MIN".length());
+						final DtField resultDtField = resultDefinition.getField(filteredField);
+						final DtField minField = fieldName.endsWith("_MIN") ? field : criteriaDefinition.getField(filteredField + "_MIN");
+						final DtField maxField = fieldName.endsWith("_MAX") ? field : criteriaDefinition.getField(filteredField + "_MAX");
+						final Comparable minValue = (Comparable) minField.getDataAccessor().getValue(criteria);
+						final Comparable maxValue = (Comparable) maxField.getDataAccessor().getValue(criteria);
+						filters.add(new DtListRangeFilter<O, Comparable>(resultDtField.getName(), Option.<Comparable> option(minValue), Option.<Comparable> option(maxValue), true, false));
+					} else {
+						filters.add(new DtListValueFilter<O>(field.getName(), (String) value));
+					}
+				}
+			}
+			//si null, alors on ne filtre pas
+		}
+		return new FilterFunction<>(new DtListChainFilter(filters.toArray(new DtListFilter[filters.size()])));
 	}
 
 	private long getNextId() {
