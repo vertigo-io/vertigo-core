@@ -18,6 +18,8 @@
  */
 package io.vertigo.rest.handler;
 
+import java.io.Serializable;
+
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.rest.EndPointDefinition;
@@ -56,7 +58,7 @@ final class AccessTokenHandler implements RouteHandler {
 			if (accessTokenKey == null) {
 				throw new VSecurityException(INVALID_ACCESS_TOKEN_MSG); //same message for no AccessToken or bad AccessToken
 			}
-			final DtObject tokenData = uiSecurityTokenManager.get(accessTokenKey);
+			final Serializable tokenData = uiSecurityTokenManager.get(accessTokenKey);
 			if (tokenData == null) {
 				throw new VSecurityException(INVALID_ACCESS_TOKEN_MSG); //same message for no AccessToken or bad AccessToken
 			}

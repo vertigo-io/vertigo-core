@@ -18,12 +18,14 @@
  */
 package io.vertigo.rest.handler;
 
+import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.rest.EndPointDefinition;
 import io.vertigo.rest.EndPointParam;
 import io.vertigo.rest.engine.GoogleJsonEngine;
 import io.vertigo.rest.engine.UiContext;
+import io.vertigo.rest.engine.UiList;
 import io.vertigo.rest.engine.UiObject;
 import io.vertigo.rest.exception.SessionException;
 import io.vertigo.rest.exception.VSecurityException;
@@ -121,7 +123,7 @@ final class JsonConverterHandler implements RouteHandler {
 				if (accessToken == null) {
 					throw new VSecurityException(ACCESS_TOKEN_MANDATORY); //same message for no AccessToken or bad AccessToken
 				}
-				final DtObject serverSideObject;
+				final Serializable serverSideObject;
 				if (endPointParam.isConsumeServerSideToken()) {
 					serverSideObject = uiSecurityTokenManager.getAndRemove(accessToken); //TODO if exception : token is consume ?
 				} else {
@@ -130,7 +132,7 @@ final class JsonConverterHandler implements RouteHandler {
 				if (serverSideObject == null) {
 					throw new VSecurityException(ACCESS_TOKEN_MANDATORY); //same message for no AccessToken or bad AccessToken
 				}
-				uiObject.setServerSideObject(serverSideObject);
+				uiObject.setServerSideObject((DtObject)serverSideObject);
 			}
 			return uiObject;
 		} else if (UiContext.class.isAssignableFrom(paramClass)) {
@@ -161,8 +163,9 @@ final class JsonConverterHandler implements RouteHandler {
 				}
 				sb.append("}");
 				return sb.toString();
-				//} else if (UiList.class.isInstance(value)) {
-				//	throw new RuntimeException("Not implemented yet");
+			} else if (DtList.class.isInstance(value)) {
+				final String tokenId = uiSecurityTokenManager.put((DtList) value);
+				return jsonWriterEngine.toJsonWithTokenId(value, tokenId, endPointDefinition.getExcludedFields());
 			} else if (DtObject.class.isInstance(value)) {
 				final String tokenId = uiSecurityTokenManager.put((DtObject) value);
 				return jsonWriterEngine.toJsonWithTokenId(value, tokenId, endPointDefinition.getExcludedFields());

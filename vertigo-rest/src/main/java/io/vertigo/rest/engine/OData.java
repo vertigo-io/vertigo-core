@@ -11,14 +11,16 @@ public class OData<O extends DtObject> {
 	private final String orderBy;
 	private final String format;
 	private final long inlineCount;
+	private final long totalCount;
 	
-	OData(O filter, long top, long skip,String orderBy, String format, long inlineCount) {
+	public OData(O filter, long top, long skip,String orderBy, String format, long inlineCount, long totalCount) {
 		this.filter = filter;
 		this.top = top;
 		this.skip = skip;
 		this.orderBy = orderBy;
 		this.format = format;
 		this.inlineCount = inlineCount;
+		this.totalCount = totalCount;
 	}
 	
 	
@@ -39,6 +41,9 @@ public class OData<O extends DtObject> {
 	}
 	public long getInlineCount() {
 		return inlineCount;
+	}
+	public long getTotalCount() {
+		return totalCount;
 	}
 	
 	

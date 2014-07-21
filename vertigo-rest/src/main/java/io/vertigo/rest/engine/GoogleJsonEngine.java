@@ -50,14 +50,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 	public String toJson(final Object data, final List<String> excludedFields) {
 		final JsonElement jsonElement = gson.toJsonTree(data);
 		excludeFields(jsonElement, excludedFields);
-		String result = gson.toJson(jsonElement);
-		if(data instanceof List) {
-			JsonListWithMeta jsonListWithMeta = new JsonListWithMeta(result);
-			jsonListWithMeta.addMeta(LIST_COUNT_FIELDNAME, ((List<?>)data).size());
-			result = gson.toJson(jsonListWithMeta);
-		}
-		
-		return result;
+		return gson.toJson(jsonElement);
 	}
 
 	/** {@inheritDoc} */
@@ -65,38 +58,11 @@ public final class GoogleJsonEngine implements JsonEngine {
 	public String toJsonWithTokenId(final Object data, final String tokenId, final List<String> excludedFields) {
 		final JsonElement jsonElement = gson.toJsonTree(data);
 		excludeFields(jsonElement, excludedFields);
-		String result;
-		if(data instanceof List) {
-			String listJson = gson.toJson(jsonElement);
-			JsonListWithMeta jsonListWithMeta = new JsonListWithMeta(listJson);
-			jsonListWithMeta.addMeta(LIST_COUNT_FIELDNAME, ((List<?>)data).size());
-			jsonListWithMeta.addMeta(SERVER_SIDE_TOKEN_FIELDNAME, tokenId);
-			result = gson.toJson(jsonListWithMeta);
-		}  else {
-			jsonElement.getAsJsonObject().addProperty(SERVER_SIDE_TOKEN_FIELDNAME, tokenId);
-			result = gson.toJson(jsonElement);
-		}
-		return result;
+		jsonElement.getAsJsonObject().addProperty(SERVER_SIDE_TOKEN_FIELDNAME, tokenId);
+			return gson.toJson(jsonElement);
 	}
 
-	private class JsonListWithMeta {
-		private final Map<String, Object> metas = new HashMap<>();
-		private final String listValue;
-		
-		
-		JsonListWithMeta(String listValue) {
-			Assertion.checkArgNotEmpty(listValue);
-			//-----------------------------------------------------------------
-			this.listValue = listValue;
-		}
-		
-		void addMeta(String key, Object value) {
-			metas.put(key, value);
-		}
-		
-	}
-
-	private void excludeFields(final JsonElement jsonElement, final List<String> excludedFields) {
+		private void excludeFields(final JsonElement jsonElement, final List<String> excludedFields) {
 		if (jsonElement.isJsonArray()) {
 			final JsonArray jsonArray = jsonElement.getAsJsonArray();
 			for (final JsonElement jsonSubElement : jsonArray) {
@@ -209,9 +175,9 @@ public final class GoogleJsonEngine implements JsonEngine {
 			}
 			final UiList<DtObject> uiList = new UiList(dtoClass);
 			if (jsonObject.has(SERVER_SIDE_TOKEN_FIELDNAME)) {
-				uiObject.setServerSideToken(jsonObject.get(SERVER_SIDE_TOKEN_FIELDNAME).getAsString());
+				uiList.setServerSideToken(jsonObject.get(SERVER_SIDE_TOKEN_FIELDNAME).getAsString());
 			}
-			return uiObject;
+			return uiList;
 		}
 	}
 
