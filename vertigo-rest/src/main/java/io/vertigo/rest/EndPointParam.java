@@ -17,7 +17,7 @@ public final class EndPointParam {
 	 * Parameter's source types.
 	 */
 	public static enum RestParamType {
-		Query, Path, Body
+		Query, Path, Body, MultiPartBody
 	}
 
 	private final RestParamType paramType;

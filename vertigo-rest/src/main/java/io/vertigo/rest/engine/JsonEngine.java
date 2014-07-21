@@ -3,6 +3,7 @@ package io.vertigo.rest.engine;
 import io.vertigo.dynamo.domain.model.DtObject;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Convert Object to Json, and json to Object.
@@ -66,5 +67,7 @@ public interface JsonEngine {
 	 * @return UiObject filled with a DtObject partially filled and the accessTOken if present 
 	 */
 	<D extends DtObject> UiObject<D> uiObjectFromJson(String json, Class<D> paramClass);
+
+	UiContext uiContextFromJson(String json, Map<String, Class<?>> paramClasses);
 
 }

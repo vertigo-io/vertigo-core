@@ -23,6 +23,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.rest.EndPointDefinition;
 import io.vertigo.rest.EndPointParam;
+import io.vertigo.rest.EndPointParam.RestParamType;
 import io.vertigo.rest.engine.GoogleJsonEngine;
 import io.vertigo.rest.engine.UiContext;
 import io.vertigo.rest.engine.UiObject;
@@ -31,9 +32,12 @@ import io.vertigo.rest.exception.VSecurityException;
 import io.vertigo.rest.security.UiSecurityTokenManager;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -64,11 +68,17 @@ final class JsonConverterHandler implements RouteHandler {
 
 	/** {@inheritDoc}  */
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
+		final UiContext multiPartBodyParsed =  readMultiPartValue(request.body(), endPointDefinition.getEndPointParams(), uiSecurityTokenManager);
+		
 		for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
 			final Object value;
 			switch (endPointParam.getParamType()) {
 				case Body:
 					value = readValue(request.body(), endPointParam, uiSecurityTokenManager);
+					break;
+				case MultiPartBody:
+					value = multiPartBodyParsed.get(endPointParam.getName());
+					//value = readValue(request.body(), endPointParam.getName(), endPointParam, uiSecurityTokenManager);
 					break;
 				case Path:
 					value = readPrimitiveValue(request.params(endPointParam.getName()), endPointParam);
@@ -80,7 +90,10 @@ final class JsonConverterHandler implements RouteHandler {
 					throw new IllegalArgumentException("RestParamType : " + endPointParam.getParamType());
 			}
 			routeContext.setParamValue(endPointParam, value);
+			
 		}
+		
+		
 		final Object result = chain.handle(request, response, routeContext);
 		if (result != null) {
 			if (result instanceof List) {
@@ -90,6 +103,34 @@ final class JsonConverterHandler implements RouteHandler {
 		}
 		response.status(HttpServletResponse.SC_NO_CONTENT);
 		return "";
+	}
+
+
+	private static UiContext readMultiPartValue(String jsonBody, List<EndPointParam> endPointParams, UiSecurityTokenManager uiSecurityTokenManager) throws VSecurityException {
+		final List<EndPointParam> multiPartEndPointParams = new ArrayList<>();
+		final Map<String, Class<?>> multiPartBodyParams = new HashMap<>();
+		for (final EndPointParam endPointParam : endPointParams) {
+			if( endPointParam.getParamType() == RestParamType.MultiPartBody) {
+				multiPartEndPointParams.add(endPointParam);
+				multiPartBodyParams.put(endPointParam.getName(), endPointParam.getType());
+			}
+		}
+		if(!multiPartBodyParams.isEmpty()) {
+			UiContext uiContext = jsonReaderEngine.uiContextFromJson(jsonBody, multiPartBodyParams);
+			for(EndPointParam endPointParam : multiPartEndPointParams) {
+				Serializable value = uiContext.get(endPointParam.getName());
+				if(value instanceof UiObject) {
+					postReadUiObject((UiObject<DtObject>) value, endPointParam.getName(), endPointParam, uiSecurityTokenManager);
+				}
+			}			
+			return uiContext;			
+		}
+		return null;
+	}
+
+	private UiContext readMultiPartValue(String jsonBody, Map<String, Class<?>> multiPartBodyParams, UiSecurityTokenManager uiSecurityTokenManager2) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	private static Object readPrimitiveValue(final String json, final EndPointParam endPointParam) {
@@ -124,30 +165,35 @@ final class JsonConverterHandler implements RouteHandler {
 			return Long.valueOf(json);
 		} else if (DtObject.class.isAssignableFrom(paramClass)) {
 			final UiObject<DtObject> uiObject = jsonReaderEngine.<DtObject> uiObjectFromJson(json, (Class<DtObject>) paramClass);
-			uiObject.setInputKey("");
-			checkUnauthorizedFieldModifications(uiObject, endPointParam);
-
-			if (endPointParam.isNeedServerSideToken()) {
-				final String accessToken = uiObject.getServerSideToken();
-				if (accessToken == null) {
-					throw new VSecurityException(ACCESS_TOKEN_MANDATORY); //same message for no AccessToken or bad AccessToken
-				}
-				final Serializable serverSideObject;
-				if (endPointParam.isConsumeServerSideToken()) {
-					serverSideObject = uiSecurityTokenManager.getAndRemove(accessToken); //TODO if exception : token is consume ?
-				} else {
-					serverSideObject = uiSecurityTokenManager.get(accessToken);
-				}
-				if (serverSideObject == null) {
-					throw new VSecurityException(ACCESS_TOKEN_MANDATORY); //same message for no AccessToken or bad AccessToken
-				}
-				uiObject.setServerSideObject((DtObject) serverSideObject);
-			}
+			postReadUiObject(uiObject, "", endPointParam, uiSecurityTokenManager);
 			return uiObject;
 		} else if (UiContext.class.isAssignableFrom(paramClass)) {
 			throw new RuntimeException("Not implemented yet");
 		} else {
 			return jsonReaderEngine.fromJson(json, paramClass);
+		}
+	}
+
+	private static void postReadUiObject(final UiObject<DtObject> uiObject, final String inputKey, final EndPointParam endPointParam, 	final UiSecurityTokenManager uiSecurityTokenManager)
+			throws VSecurityException {
+		uiObject.setInputKey(inputKey);
+		checkUnauthorizedFieldModifications(uiObject, endPointParam);
+
+		if (endPointParam.isNeedServerSideToken()) {
+			final String accessToken = uiObject.getServerSideToken();
+			if (accessToken == null) {
+				throw new VSecurityException(ACCESS_TOKEN_MANDATORY); //same message for no AccessToken or bad AccessToken
+			}
+			final Serializable serverSideObject;
+			if (endPointParam.isConsumeServerSideToken()) {
+				serverSideObject = uiSecurityTokenManager.getAndRemove(accessToken); //TODO if exception : token is consume ?
+			} else {
+				serverSideObject = uiSecurityTokenManager.get(accessToken);
+			}
+			if (serverSideObject == null) {
+				throw new VSecurityException(ACCESS_TOKEN_MANDATORY); //same message for no AccessToken or bad AccessToken
+			}
+			uiObject.setServerSideObject((DtObject) serverSideObject);
 		}
 	}
 

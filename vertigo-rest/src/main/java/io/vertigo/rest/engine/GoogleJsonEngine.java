@@ -6,6 +6,7 @@ import io.vertigo.kernel.lang.JsonExclude;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.metamodel.DefinitionReference;
 
+import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -25,6 +26,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
@@ -89,6 +91,36 @@ public final class GoogleJsonEngine implements JsonEngine {
 	/** {@inheritDoc} */
 	@Override
 	public <D extends DtObject> UiObject<D> uiObjectFromJson(final String json, final Class<D> paramClass) {
+		final Type typeOfDest = createUiObjectType(paramClass);
+		return gson.fromJson(json, typeOfDest);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public UiContext uiContextFromJson(final String json, final Map<String, Class<?>> paramClasses) {
+		final UiContext result = new UiContext();
+		JsonElement jsonElement = new JsonParser().parse(json);
+		JsonObject jsonObject = jsonElement.getAsJsonObject();
+		for(Entry<String, Class<?>> entry : paramClasses.entrySet()) {
+			final String key = entry.getKey();
+			final Class<?> paramClass = entry.getValue();
+			JsonElement jsonSubElement = jsonObject.get(key);
+			
+			final Serializable value;
+			if(DtObject.class.isAssignableFrom(paramClass)) {
+				final Type typeOfDest = createUiObjectType(paramClass);
+				value = gson.fromJson(jsonSubElement, typeOfDest);
+			} else {
+				value = (Serializable) gson.fromJson(jsonSubElement, paramClass);
+			}
+			result.put(key, value);
+		}
+		return result;
+	}
+
+	
+	
+	private Type createUiObjectType(final Class<?> paramClass) {
 		final Type[] typeArguments = { paramClass };
 		final Type typeOfDest = new ParameterizedType() {
 
@@ -107,16 +139,15 @@ public final class GoogleJsonEngine implements JsonEngine {
 				return UiObject.class;
 			}
 		};
-		return gson.fromJson(json, typeOfDest);
+		return typeOfDest;
 	}
 
-	static class UiObjectDeserializer implements JsonDeserializer<UiObject<?>> {
-
-		public UiObject<?> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
+	static class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer<UiObject<D>> {
+		public UiObject<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
 			final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
-			final Class dtoClass = (Class) typeParameters[0]; // Id has only one parameterized type T
+			final Class<D> dtoClass = (Class<D>) typeParameters[0]; // Id has only one parameterized type T
 			final JsonObject jsonObject = json.getAsJsonObject();
-			final DtObject inputDto = context.deserialize(jsonObject, dtoClass);
+			final D inputDto = context.deserialize(jsonObject, dtoClass);
 
 			final Set<String> modifiedFields = new HashSet<>();
 			for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
@@ -125,7 +156,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					modifiedFields.add(fieldName);
 				}
 			}
-			final UiObject<DtObject> uiObject = new UiObject(inputDto, modifiedFields);
+			final UiObject<D> uiObject = new UiObject<>(inputDto, modifiedFields);
 			if (jsonObject.has(SERVER_SIDE_TOKEN_FIELDNAME)) {
 				uiObject.setServerSideToken(jsonObject.get(SERVER_SIDE_TOKEN_FIELDNAME).getAsString());
 			}
@@ -184,7 +215,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 				.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") //
 				.setPrettyPrinting()//
 				//.serializeNulls()//On veut voir les null
-				.registerTypeAdapter(UiObject.class, new UiObjectDeserializer())//
+				.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<DtObject>())//
 				.registerTypeAdapter(ComponentInfo.class, new JsonSerializer<ComponentInfo>() {
 					@Override
 					public JsonElement serialize(final ComponentInfo componentInfo, final Type typeOfSrc, final JsonSerializationContext context) {

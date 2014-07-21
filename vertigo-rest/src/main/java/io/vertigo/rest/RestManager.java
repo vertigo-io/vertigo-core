@@ -39,6 +39,7 @@ import io.vertigo.rest.RestfulService.Doc;
 import io.vertigo.rest.RestfulService.ExcludedFields;
 import io.vertigo.rest.RestfulService.GET;
 import io.vertigo.rest.RestfulService.IncludedFields;
+import io.vertigo.rest.RestfulService.InnerBodyParam;
 import io.vertigo.rest.RestfulService.POST;
 import io.vertigo.rest.RestfulService.PUT;
 import io.vertigo.rest.RestfulService.PathParam;
@@ -187,6 +188,9 @@ public final class RestManager implements Manager, Activeable {
 			} else if (annotation instanceof QueryParam) {
 				restParamType = RestParamType.Query;
 				restParamName = ((QueryParam) annotation).value();
+			} else if (annotation instanceof InnerBodyParam) {
+				restParamType = RestParamType.MultiPartBody;
+				restParamName = ((InnerBodyParam) annotation).value();
 			} else if (annotation instanceof Validate) {
 				validatorClasses = Arrays.asList(((Validate) annotation).value());
 			} else if (annotation instanceof ExcludedFields) {
@@ -199,8 +203,7 @@ public final class RestManager implements Manager, Activeable {
 				needServerSideToken = true;
 				consumeServerSideToken = true;
 			}
-			//	else if (annotation instanceof BodyParam) {
-			//	}
+			//	
 		}
 
 		//if no annotation : take request body
