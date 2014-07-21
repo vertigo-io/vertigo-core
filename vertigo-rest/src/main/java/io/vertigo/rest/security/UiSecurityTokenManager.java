@@ -1,5 +1,7 @@
 package io.vertigo.rest.security;
 
+import java.io.Serializable;
+
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.component.Manager;
 
@@ -11,26 +13,23 @@ public interface UiSecurityTokenManager extends Manager {
 
 	/**
 	 * Store object and return unique key.
-	 * @param <D> Object type
 	 * @param data Object to store
 	 * @return unique key of this object
 	 */
-	<D extends DtObject> String put(D data);
+	 String put(Serializable data);
 
 	/**
 	 * Get object by key.
-	 * @param <D> Object type
 	 * @param key key of this object
 	 * @return Object store or null if unknown
 	 */
-	<D extends DtObject> D get(String key);
+	Serializable get(String key);
 
 	/**
 	 * Get and remove object by key.
-	 * @param <D> Object type
 	 * @param key key of this object
 	 * @return Object store or null if unknown
 	 */
-	<D extends DtObject> D getAndRemove(String key);
+	Serializable getAndRemove(String key);
 
 }

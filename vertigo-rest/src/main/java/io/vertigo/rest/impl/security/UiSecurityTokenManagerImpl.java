@@ -7,6 +7,7 @@ import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.rest.security.UiSecurityTokenManager;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -41,7 +42,7 @@ public final class UiSecurityTokenManagerImpl implements UiSecurityTokenManager 
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> String put(final D data) {
+	public String put(final Serializable data) {
 		Assertion.checkNotNull(data, "Data is mandatory");
 		//---------------------------------------------------------------------
 		final String objectUUID = UUID.randomUUID().toString();
@@ -52,19 +53,19 @@ public final class UiSecurityTokenManagerImpl implements UiSecurityTokenManager 
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> D get(final String objectUUID) {
+	public Serializable get(final String objectUUID) {
 		Assertion.checkArgNotEmpty(objectUUID, "Security key is mandatory");
 		//---------------------------------------------------------------------
 		final String tokenKey = makeTokenKey(objectUUID);
-		return (D) uiSecurityTokenCachePlugin.get(tokenKey);
+		return uiSecurityTokenCachePlugin.get(tokenKey);
 	}
 
 	/** {@inheritDoc} */
-	public <D extends DtObject> D getAndRemove(final String objectUUID) {
+	public Serializable getAndRemove(final String objectUUID) {
 		Assertion.checkArgNotEmpty(objectUUID, "Security key is mandatory");
 		//---------------------------------------------------------------------
 		final String tokenKey = makeTokenKey(objectUUID);
-		return (D) uiSecurityTokenCachePlugin.getAndRemove(tokenKey);
+		return uiSecurityTokenCachePlugin.getAndRemove(tokenKey);
 	}
 
 	private String makeTokenKey(final String objectUUID) {

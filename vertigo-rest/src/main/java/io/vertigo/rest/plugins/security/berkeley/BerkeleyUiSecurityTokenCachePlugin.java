@@ -7,6 +7,7 @@ import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.rest.impl.security.UiSecurityTokenCachePlugin;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -78,7 +79,7 @@ public final class BerkeleyUiSecurityTokenCachePlugin implements Activeable, UiS
 
 	/** {@inheritDoc} */
 	@Override
-	public void put(final String key, final DtObject data) {
+	public void put(final String key, final Serializable data) {
 		Assertion.checkNotNull(data);
 		//---------------------------------------------------------------------
 		//totalPuts++;
@@ -111,7 +112,7 @@ public final class BerkeleyUiSecurityTokenCachePlugin implements Activeable, UiS
 
 	/** {@inheritDoc} */
 	@Override
-	public DtObject get(final String key) {
+	public Serializable get(final String key) {
 		//totalCalls++;
 		try {
 			final DatabaseEntry theKey = new DatabaseEntry();
@@ -122,7 +123,7 @@ public final class BerkeleyUiSecurityTokenCachePlugin implements Activeable, UiS
 				final CacheValue cacheValue = readCacheValueSafely(theKey, theData);
 				if (cacheValue != null && !isTooOld(cacheValue)) { //null si erreur de lecture
 					//totalHits++;
-					return (DtObject) cacheValue.getValue();
+					return  cacheValue.getValue();
 				}
 				cacheDatas.delete(null, theKey);
 			}
@@ -133,7 +134,7 @@ public final class BerkeleyUiSecurityTokenCachePlugin implements Activeable, UiS
 	}
 
 	/** {@inheritDoc} */
-	public DtObject getAndRemove(final String key) {
+	public Serializable getAndRemove(final String key) {
 		try {
 			final DatabaseEntry theKey = new DatabaseEntry();
 			keyBinding.objectToEntry(key, theKey);

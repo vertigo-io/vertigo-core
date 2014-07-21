@@ -5,6 +5,7 @@ import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.rest.impl.security.UiSecurityTokenCachePlugin;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -43,7 +44,7 @@ public final class MemoryUiSecurityTokenCachePlugin implements Activeable, UiSec
 
 	/** {@inheritDoc} */
 	@Override
-	public void put(final String key, final DtObject data) {
+	public void put(final String key, final Serializable data) {
 		Assertion.checkNotNull(data);
 		//---------------------------------------------------------------------
 		final CacheValue cacheValue = new CacheValue(data);
@@ -53,10 +54,10 @@ public final class MemoryUiSecurityTokenCachePlugin implements Activeable, UiSec
 
 	/** {@inheritDoc} */
 	@Override
-	public DtObject get(final String key) {
+	public Serializable get(final String key) {
 		final CacheValue cacheValue = cacheDatas.get(key);
 		if (cacheValue != null && !isTooOld(cacheValue)) {
-			return (DtObject) cacheValue.getValue();
+			return (Serializable) cacheValue.getValue();
 		}
 		cacheDatas.remove(key);
 		return null; //key expired : return null
@@ -67,8 +68,8 @@ public final class MemoryUiSecurityTokenCachePlugin implements Activeable, UiSec
 	}
 
 	/** {@inheritDoc} */
-	public DtObject getAndRemove(final String key) {
-		final DtObject result;
+	public Serializable getAndRemove(final String key) {
+		final Serializable result;
 		synchronized (cacheDatas) {
 			result = get(key);
 			cacheDatas.remove(key);
