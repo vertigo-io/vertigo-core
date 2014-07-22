@@ -28,8 +28,8 @@ import io.vertigo.kernel.util.ClassUtil;
 import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.persona.security.ResourceNameFactory;
 import io.vertigo.persona.security.UserSession;
-import io.vertigo.persona.security.model.Permission;
-import io.vertigo.persona.security.model.Role;
+import io.vertigo.persona.security.metamodel.Permission;
+import io.vertigo.persona.security.metamodel.Role;
 
 import java.util.HashMap;
 import java.util.Locale;

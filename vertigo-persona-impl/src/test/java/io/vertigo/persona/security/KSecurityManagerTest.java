@@ -22,8 +22,8 @@ import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.persona.impl.security.BeanResourceNameFactory;
-import io.vertigo.persona.security.model.Permission;
-import io.vertigo.persona.security.model.Role;
+import io.vertigo.persona.security.metamodel.Permission;
+import io.vertigo.persona.security.metamodel.Role;
 
 import java.util.Collections;
 import java.util.HashSet;

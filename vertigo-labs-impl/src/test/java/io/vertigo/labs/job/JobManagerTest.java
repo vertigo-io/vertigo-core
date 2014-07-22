@@ -21,8 +21,7 @@ package io.vertigo.labs.job;
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.lang.DateBuilder;
-import io.vertigo.labs.job.JobDefinition;
-import io.vertigo.labs.job.JobManager;
+import io.vertigo.labs.job.metamodel.JobDefinition;
 
 import java.util.Date;
 
