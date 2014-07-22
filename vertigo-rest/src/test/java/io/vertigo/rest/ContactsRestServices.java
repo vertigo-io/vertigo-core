@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
-import javax.ws.rs.core.Response;
 
 //basé sur http://www.restapitutorial.com/lessons/httpmethods.html
 
@@ -130,7 +129,6 @@ public final class ContactsRestServices implements RestfulService {
 		contact.setEmail(email);
 		contact.setTels(Arrays.asList(tels));
 		contacts.put(conId, contact);
-		Response.status(200).build();
 	}
 
 	private Address createAddress(final String street1, final String street2, final String city, final String postalCode, final String country) {

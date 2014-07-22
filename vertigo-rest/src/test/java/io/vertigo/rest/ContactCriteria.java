@@ -24,7 +24,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
 
 import java.util.Date;
 
-@DtDefinition
+@DtDefinition(persistent = false)
 public final class ContactCriteria implements DtObject {
 
 	//mandatory

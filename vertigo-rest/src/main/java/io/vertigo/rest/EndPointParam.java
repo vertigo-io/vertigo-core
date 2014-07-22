@@ -3,6 +3,7 @@ package io.vertigo.rest;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.rest.validation.DtObjectValidator;
+import io.vertigo.rest.validation.UiMessageStack;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,7 +18,22 @@ public final class EndPointParam {
 	 * Parameter's source types.
 	 */
 	public static enum RestParamType {
-		Query, Path, Body, MultiPartBody
+		Query, Path, Body, MultiPartBody, Implicit
+	}
+
+	public static enum ImplicitParam {
+		UiMessageStack(UiMessageStack.class);
+
+		private Class<?> implicitType;
+
+		ImplicitParam(final Class<?> implicitType) {
+			this.implicitType = implicitType;
+		}
+
+		public Class<?> getImplicitType() {
+			return implicitType;
+		}
+
 	}
 
 	private final RestParamType paramType;
@@ -54,7 +70,17 @@ public final class EndPointParam {
 	public EndPointParam(final RestParamType paramType, final String name, final Class<?> type, final List<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
 		this(":" + paramType.name() + ":" + name, paramType, name, type, excludedFields, needServerSideToken, consumeServerSideToken, dtObjectValidatorClasses);
 		Assertion.checkArgument(paramType != RestParamType.Body, "Body parameter have no name");
+		Assertion.checkArgument(paramType != RestParamType.Implicit || isImplicitParam(name), "When ImplicitParam, name ({1}) must be one of {0}", ImplicitParam.values(), name);
 		Assertion.checkArgNotEmpty(name);
+	}
+
+	private static boolean isImplicitParam(final String testedName) {
+		for (final ImplicitParam existingParam : ImplicitParam.values()) {
+			if (existingParam.name().equals(testedName)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private EndPointParam(final String fullName, final RestParamType paramType, final String name, final Class<?> type, final List<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {

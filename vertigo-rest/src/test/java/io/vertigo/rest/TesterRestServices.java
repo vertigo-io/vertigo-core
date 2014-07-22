@@ -43,6 +43,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,7 +53,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.inject.Inject;
-import javax.ws.rs.core.Response;
 
 //basé sur http://www.restapitutorial.com/lessons/httpmethods.html
 
@@ -151,7 +151,6 @@ public final class TesterRestServices implements RestfulService {
 		contact.setEmail(email);
 		contact.setTels(Arrays.asList(tels));
 		contacts.put(conId, contact);
-		Response.status(200).build();
 	}
 
 	private Address createAddress(final String street1, final String street2, final String city, final String postalCode, final String country) {
@@ -356,36 +355,37 @@ public final class TesterRestServices implements RestfulService {
 	}
 
 	@POST("/test/search")
+	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
 	public List<Contact> testSearch(final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
-		final DtList<Contact> result = filterFunction.apply((DtList<Contact>) contacts.values());
+		final DtList<Contact> fullList = asDtList(contacts.values(), Contact.class);
+		final DtList<Contact> result = filterFunction.apply(fullList);
 		//offset + range ?
 		//code 200
 		return result;
 	}
 
 	@POST("/test/searchPagined")
-	public List<Contact> testSearchServicePagined(final ContactCriteria contact, final UiListState uiListState) {
+	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
+	public List<Contact> testSearchServicePagined(//
+			@InnerBodyParam("criteria") final ContactCriteria contact, //
+			@InnerBodyParam("listState") final UiListState uiListState) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
-		final DtList<Contact> result = filterFunction.apply((DtList<Contact>) contacts.values());
+		final DtList<Contact> fullList = asDtList(contacts.values(), Contact.class);
+		final DtList<Contact> result = filterFunction.apply(fullList);
 
 		//offset + range ?
 		//code 200
 		return applySortAndPagination(result, uiListState);
 	}
 
-	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final UiListState uiListState) {
-		final DtListFunction<D> sortFunction = collectionsManager.createSort(uiListState.getSortFieldName(), uiListState.isSortDesc(), true, true);
-		final DtListFunction<D> filterFunction = collectionsManager.createFilterSubList(uiListState.getSkip(), uiListState.getSkip() + uiListState.getTop());
-		final DtList<D> sortedDtc = sortFunction.apply(filterFunction.apply(unFilteredList));
-		return sortedDtc;
-	}
-
 	@AutoSortAndPagination
 	@POST("/test/searchAutoPagined")
+	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
 	public List<Contact> testSearchServiceAutoPagined(final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
-		final DtList<Contact> result = filterFunction.apply((DtList<Contact>) contacts.values());
+		final DtList<Contact> fullList = asDtList(contacts.values(), Contact.class);
+		final DtList<Contact> result = filterFunction.apply(fullList);
 		//offset + range ?
 		//code 200
 		return result;
@@ -400,6 +400,35 @@ public final class TesterRestServices implements RestfulService {
 		//code 200
 		return result;
 	}*/
+
+	private <D extends DtObject> DtList<D> asDtList(final Collection<D> values, final Class<D> dtObjectClass) {
+		final DtList<D> result = new DtList<>(dtObjectClass);
+		for (final D element : values) {
+			result.add(element);
+		}
+		return result;
+	}
+
+	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final UiListState uiListState) {
+		final DtList<D> sortedList;
+		if (uiListState.getSortFieldName() != null) {
+			final DtListFunction<D> sortFunction = collectionsManager.createSort(uiListState.getSortFieldName(), uiListState.isSortDesc(), true, true);
+			sortedList = sortFunction.apply(unFilteredList);
+		} else {
+			sortedList = unFilteredList;
+		}
+		final DtList<D> filteredList;
+		if (uiListState.getTop() > 0) {
+			final int listSize = sortedList.size();
+			final int usedSkip = Math.min(uiListState.getSkip(), listSize);
+			final int usedTop = Math.min(usedSkip + uiListState.getTop(), listSize);
+			final DtListFunction<D> filterFunction = collectionsManager.createFilterSubList(usedSkip, usedTop);
+			filteredList = filterFunction.apply(sortedList);
+		} else {
+			filteredList = sortedList;
+		}
+		return filteredList;
+	}
 
 	private static <C extends DtObject, O extends DtObject> DtListFunction<O> createDtListFunction(final C criteria, final Class<O> resultClass) {
 		final List<DtListFilter<O>> filters = new ArrayList<>();

@@ -29,6 +29,7 @@ import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.util.StringUtil;
 import io.vertigo.rest.EndPointDefinition.Verb;
+import io.vertigo.rest.EndPointParam.ImplicitParam;
 import io.vertigo.rest.EndPointParam.RestParamType;
 import io.vertigo.rest.RestfulService.AccessTokenConsume;
 import io.vertigo.rest.RestfulService.AccessTokenMandatory;
@@ -203,11 +204,13 @@ public final class RestManager implements Manager {
 				needServerSideToken = true;
 				consumeServerSideToken = true;
 			}
-			//	
 		}
 
 		if (DtObject.class.isAssignableFrom(paramType)) {
 			validatorClasses.add(0, DefaultDtObjectValidator.class);
+		} else if (ImplicitParam.UiMessageStack.getImplicitType().equals(paramType)) {
+			restParamType = RestParamType.Implicit;
+			restParamName = ImplicitParam.UiMessageStack.name();
 		}
 
 		//if no annotation : take request body

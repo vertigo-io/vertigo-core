@@ -32,6 +32,8 @@ import io.vertigo.rest.validation.ValidationUserException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import javax.servlet.http.HttpServletResponse;
+
 import spark.Request;
 import spark.Response;
 
@@ -59,15 +61,9 @@ final class RestfulServiceHandler implements RouteHandler {
 		final Method method = endPointDefinition.getMethod();
 		final RestfulService service = (RestfulService) Home.getComponentSpace().resolve(method.getDeclaringClass());
 
-		/*try {
-			return endPointDefinition.getMethod().invoke(service, serviceArgs);
-		} catch (final IllegalAccessException e) {
-			throw new RuntimeException("Can't access method : " + method.getName() + " of " + method.getDeclaringClass().getName(), e);
-		} catch (final InvocationTargetException e) {
-			throw handle(e, "Erreur lors de l'appel de la méthode : {0} de {1}", method.getName(), method.getDeclaringClass().getName());
-			//throw handle(e, "Erreur lors de l'appel de la méthode : {0} de {1}", method.getName(), method.getDeclaringClass().getName());
-		}*/
-
+		if (method.getName().startsWith("create")) { //by convention, if method start with 'create', we return http 201 status code (if ok)
+			response.status(HttpServletResponse.SC_CREATED);
+		}
 		try {
 			return ClassUtil.invoke(service, method, serviceArgs);
 		} catch (final RuntimeException e) {

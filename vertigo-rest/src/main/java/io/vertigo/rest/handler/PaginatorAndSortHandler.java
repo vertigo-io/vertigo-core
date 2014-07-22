@@ -18,14 +18,18 @@
  */
 package io.vertigo.rest.handler;
 
+import io.vertigo.dynamo.collections.CollectionsManager;
+import io.vertigo.dynamo.collections.DtListFunction;
+import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.rest.EndPointDefinition;
+import io.vertigo.kernel.lang.Option;
+import io.vertigo.rest.engine.UiListState;
 import io.vertigo.rest.exception.SessionException;
 import io.vertigo.rest.exception.VSecurityException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import spark.Request;
 import spark.Response;
@@ -35,20 +39,57 @@ import spark.Response;
  * @author npiedeloup
  */
 final class PaginatorAndSortHandler implements RouteHandler {
-	private final EndPointDefinition endPointDefinition;
+	private static final long DEFAULT_RESULT_PER_PAGE = 20;
+	private final CollectionsManager collectionsManager;
+	private final long resultPerPage;
 
-	PaginatorAndSortHandler(final EndPointDefinition endPointDefinition) {
-		Assertion.checkNotNull(endPointDefinition);
+	/**
+	 * Constructor.
+	 * @param windowSeconds the time windows use to limit calls rate
+	 * @param limitValue the rate limit ceiling value
+	 * @param securityManager Security Manager
+	 */
+	@Inject
+	public PaginatorAndSortHandler(@Named("resultPerPage") final Option<Long> resultPerPage, final CollectionsManager collectionsManager) {
+		Assertion.checkNotNull(collectionsManager);
 		//---------------------------------------------------------------------
-		this.endPointDefinition = endPointDefinition;
+		this.collectionsManager = collectionsManager;
+		this.resultPerPage = resultPerPage.getOrElse(DEFAULT_RESULT_PER_PAGE);
 	}
 
 	/** {@inheritDoc}  */
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
 		final Object result = chain.handle(request, response, routeContext);
-		if (result instanceof List) {
+		Assertion.checkArgument(result instanceof DtList, "sort and pagination only supports DtList");
 
+		if (result instanceof DtList) {
+			final UiListState uiListState = readUiListState(request);
+			final DtList<?> filteredList = applySortAndPagination((DtList) result, uiListState);
+			return filteredList;
 		}
 		return result;
 	}
+
+	private UiListState readUiListState(final Request request) {
+		return null;
+	}
+
+	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final UiListState uiListState) {
+		final DtList<D> sortedList;
+		if (uiListState.getSortFieldName() != null) {
+			final DtListFunction<D> sortFunction = collectionsManager.createSort(uiListState.getSortFieldName(), uiListState.isSortDesc(), true, true);
+			sortedList = sortFunction.apply(unFilteredList);
+		} else {
+			sortedList = unFilteredList;
+		}
+		final DtList<D> filteredList;
+		if (uiListState.getTop() > 0) {
+			final DtListFunction<D> filterFunction = collectionsManager.createFilterSubList(uiListState.getSkip(), uiListState.getSkip() + uiListState.getTop());
+			filteredList = filterFunction.apply(sortedList);
+		} else {
+			filteredList = sortedList;
+		}
+		return filteredList;
+	}
+
 }

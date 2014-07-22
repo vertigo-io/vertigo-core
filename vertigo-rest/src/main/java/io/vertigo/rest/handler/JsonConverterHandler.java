@@ -23,6 +23,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.rest.EndPointDefinition;
 import io.vertigo.rest.EndPointParam;
+import io.vertigo.rest.EndPointParam.ImplicitParam;
 import io.vertigo.rest.EndPointParam.RestParamType;
 import io.vertigo.rest.engine.GoogleJsonEngine;
 import io.vertigo.rest.engine.UiContext;
@@ -84,6 +85,15 @@ final class JsonConverterHandler implements RouteHandler {
 				case Query:
 					value = readPrimitiveValue(request.queryParams(endPointParam.getName()), endPointParam);
 					break;
+				case Implicit:
+					switch (ImplicitParam.valueOf(endPointParam.getName())) {
+						case UiMessageStack:
+							value = routeContext.getUiMessageStack();
+							break;
+						default:
+							throw new IllegalArgumentException("ImplicitParam : " + endPointParam.getName());
+					}
+					break;
 				default:
 					throw new IllegalArgumentException("RestParamType : " + endPointParam.getParamType());
 			}
@@ -106,7 +116,7 @@ final class JsonConverterHandler implements RouteHandler {
 		final List<EndPointParam> multiPartEndPointParams = new ArrayList<>();
 		final Map<String, Class<?>> multiPartBodyParams = new HashMap<>();
 		for (final EndPointParam endPointParam : endPointParams) {
-			if (endPointParam.getParamType() == RestParamType.MultiPartBody) {
+			if (endPointParam.getParamType() == RestParamType.MultiPartBody || endPointParam.getParamType() == RestParamType.Implicit) {
 				multiPartEndPointParams.add(endPointParam);
 				multiPartBodyParams.put(endPointParam.getName(), endPointParam.getType());
 			}
@@ -156,7 +166,9 @@ final class JsonConverterHandler implements RouteHandler {
 			return Long.valueOf(json);
 		} else if (DtObject.class.isAssignableFrom(paramClass)) {
 			final UiObject<DtObject> uiObject = jsonReaderEngine.<DtObject> uiObjectFromJson(json, (Class<DtObject>) paramClass);
-			postReadUiObject(uiObject, "", endPointParam, uiSecurityTokenManager);
+			if (uiObject != null) {
+				postReadUiObject(uiObject, "", endPointParam, uiSecurityTokenManager);
+			}
 			return uiObject;
 		} else if (UiContext.class.isAssignableFrom(paramClass)) {
 			throw new RuntimeException("Unsupported type UiContext (use @InnerBodyParams instead).");

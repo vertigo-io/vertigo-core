@@ -61,7 +61,7 @@ public final class WsRestHandler {
 	public static final class DtDefinitions implements Iterable<Class<?>> {
 		public Iterator<Class<?>> iterator() {
 			return Arrays.asList(new Class<?>[] { //
-					Contact.class, //
+					Contact.class, ContactCriteria.class //
 					}).iterator();
 		}
 	}
@@ -118,9 +118,7 @@ public final class WsRestHandler {
 					.beginComponent(ExceptionHandler.class).endComponent() //
 					.beginComponent(SecurityHandler.class).endComponent() //
 					.beginComponent(SessionHandler.class).endComponent() //
-					.beginComponent(RateLimitingHandler.class)
-						.withParam("limitValue", "10")//
-					.endComponent() //
+					.beginComponent(RateLimitingHandler.class).endComponent() //
 					.beginComponent(UiSecurityTokenManager.class, UiSecurityTokenManagerImpl.class)
 						.beginPlugin(MemoryUiSecurityTokenCachePlugin.class)
 							.withParam("timeToLiveSeconds", "120")
