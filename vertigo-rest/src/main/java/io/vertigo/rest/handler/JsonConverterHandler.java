@@ -37,7 +37,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -68,8 +67,7 @@ final class JsonConverterHandler implements RouteHandler {
 
 	/** {@inheritDoc}  */
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
-		final UiContext multiPartBodyParsed =  readMultiPartValue(request.body(), endPointDefinition.getEndPointParams(), uiSecurityTokenManager);
-		
+		final UiContext multiPartBodyParsed = readMultiPartValue(request.body(), endPointDefinition.getEndPointParams(), uiSecurityTokenManager);
 		for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
 			final Object value;
 			switch (endPointParam.getParamType()) {
@@ -89,11 +87,10 @@ final class JsonConverterHandler implements RouteHandler {
 				default:
 					throw new IllegalArgumentException("RestParamType : " + endPointParam.getParamType());
 			}
+			Assertion.checkNotNull(value, "RestParam not found : {0}", endPointParam);
 			routeContext.setParamValue(endPointParam, value);
-			
 		}
-		
-		
+
 		final Object result = chain.handle(request, response, routeContext);
 		if (result != null) {
 			if (result instanceof List) {
@@ -105,25 +102,24 @@ final class JsonConverterHandler implements RouteHandler {
 		return "";
 	}
 
-
-	private static UiContext readMultiPartValue(String jsonBody, List<EndPointParam> endPointParams, UiSecurityTokenManager uiSecurityTokenManager) throws VSecurityException {
+	private static UiContext readMultiPartValue(final String jsonBody, final List<EndPointParam> endPointParams, final UiSecurityTokenManager uiSecurityTokenManager) throws VSecurityException {
 		final List<EndPointParam> multiPartEndPointParams = new ArrayList<>();
 		final Map<String, Class<?>> multiPartBodyParams = new HashMap<>();
 		for (final EndPointParam endPointParam : endPointParams) {
-			if( endPointParam.getParamType() == RestParamType.MultiPartBody) {
+			if (endPointParam.getParamType() == RestParamType.MultiPartBody) {
 				multiPartEndPointParams.add(endPointParam);
 				multiPartBodyParams.put(endPointParam.getName(), endPointParam.getType());
 			}
 		}
-		if(!multiPartBodyParams.isEmpty()) {
-			UiContext uiContext = jsonReaderEngine.uiContextFromJson(jsonBody, multiPartBodyParams);
-			for(EndPointParam endPointParam : multiPartEndPointParams) {
-				Serializable value = uiContext.get(endPointParam.getName());
-				if(value instanceof UiObject) {
+		if (!multiPartBodyParams.isEmpty()) {
+			final UiContext uiContext = jsonReaderEngine.uiContextFromJson(jsonBody, multiPartBodyParams);
+			for (final EndPointParam endPointParam : multiPartEndPointParams) {
+				final Serializable value = uiContext.get(endPointParam.getName());
+				if (value instanceof UiObject) {
 					postReadUiObject((UiObject<DtObject>) value, endPointParam.getName(), endPointParam, uiSecurityTokenManager);
 				}
-			}			
-			return uiContext;			
+			}
+			return uiContext;
 		}
 		return null;
 	}
@@ -163,14 +159,13 @@ final class JsonConverterHandler implements RouteHandler {
 			postReadUiObject(uiObject, "", endPointParam, uiSecurityTokenManager);
 			return uiObject;
 		} else if (UiContext.class.isAssignableFrom(paramClass)) {
-			throw new RuntimeException("Not implemented yet");
+			throw new RuntimeException("Unsupported type UiContext (use @InnerBodyParams instead).");
 		} else {
 			return jsonReaderEngine.fromJson(json, paramClass);
 		}
 	}
 
-	private static void postReadUiObject(final UiObject<DtObject> uiObject, final String inputKey, final EndPointParam endPointParam, 	final UiSecurityTokenManager uiSecurityTokenManager)
-			throws VSecurityException {
+	private static void postReadUiObject(final UiObject<DtObject> uiObject, final String inputKey, final EndPointParam endPointParam, final UiSecurityTokenManager uiSecurityTokenManager) throws VSecurityException {
 		uiObject.setInputKey(inputKey);
 		checkUnauthorizedFieldModifications(uiObject, endPointParam);
 
@@ -211,7 +206,7 @@ final class JsonConverterHandler implements RouteHandler {
 				for (final Map.Entry<String, Serializable> entry : ((UiContext) value).entrySet()) {
 					sb.append(sep);
 					String encodedValue;
-					if(entry.getValue() instanceof DtList || entry.getValue() instanceof DtObject) {
+					if (entry.getValue() instanceof DtList || entry.getValue() instanceof DtObject) {
 						encodedValue = writeValue(entry.getValue(), endPointDefinition, uiSecurityTokenManager);
 					} else {
 						encodedValue = jsonWriterEngine.toJson(entry.getValue());

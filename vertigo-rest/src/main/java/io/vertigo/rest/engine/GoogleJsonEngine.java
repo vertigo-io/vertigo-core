@@ -56,14 +56,18 @@ public final class GoogleJsonEngine implements JsonEngine {
 	/** {@inheritDoc} */
 	@Override
 	public String toJsonWithTokenId(final Object data, final String tokenId, final List<String> excludedFields) {
-		if(data instanceof List) {
-			UiListWithMeta uiList = new UiListWithMeta((List)data);
-			uiList.addMeta(SERVER_SIDE_TOKEN_FIELDNAME, tokenId);
-			return gson.toJson(uiList);
+		if (data instanceof List) {
+			final JsonObject jsonObject = new JsonObject();
+			final JsonElement jsonElement = gson.toJsonTree(data);
+			excludeFields(jsonElement, excludedFields);
+			jsonObject.add("value", jsonElement);
+			jsonObject.addProperty(SERVER_SIDE_TOKEN_FIELDNAME, tokenId);
+			return gson.toJson(jsonObject);
 		} else {
-		final JsonElement jsonElement = gson.toJsonTree(data);
-		jsonElement.getAsJsonObject().addProperty(SERVER_SIDE_TOKEN_FIELDNAME, tokenId);
-		return gson.toJson(jsonElement);
+			final JsonElement jsonElement = gson.toJsonTree(data);
+			excludeFields(jsonElement, excludedFields);
+			jsonElement.getAsJsonObject().addProperty(SERVER_SIDE_TOKEN_FIELDNAME, tokenId);
+			return gson.toJson(jsonElement);
 		}
 	}
 
@@ -106,30 +110,28 @@ public final class GoogleJsonEngine implements JsonEngine {
 	public UiContext uiContextFromJson(final String json, final Map<String, Class<?>> paramClasses) {
 		final UiContext result = new UiContext();
 		try {
-		JsonElement jsonElement = new JsonParser().parse(json);
-		JsonObject jsonObject = jsonElement.getAsJsonObject();
-		for(Entry<String, Class<?>> entry : paramClasses.entrySet()) {
-			final String key = entry.getKey();
-			final Class<?> paramClass = entry.getValue();
-			JsonElement jsonSubElement = jsonObject.get(key);
-			
-			final Serializable value;
-			if(DtObject.class.isAssignableFrom(paramClass)) {
-				final Type typeOfDest = createUiObjectType(paramClass);
-				value = gson.fromJson(jsonSubElement, typeOfDest);
-			} else {
-				value = (Serializable) gson.fromJson(jsonSubElement, paramClass);
+			final JsonElement jsonElement = new JsonParser().parse(json);
+			final JsonObject jsonObject = jsonElement.getAsJsonObject();
+			for (final Entry<String, Class<?>> entry : paramClasses.entrySet()) {
+				final String key = entry.getKey();
+				final Class<?> paramClass = entry.getValue();
+				final JsonElement jsonSubElement = jsonObject.get(key);
+
+				final Serializable value;
+				if (DtObject.class.isAssignableFrom(paramClass)) {
+					final Type typeOfDest = createUiObjectType(paramClass);
+					value = gson.fromJson(jsonSubElement, typeOfDest);
+				} else {
+					value = (Serializable) gson.fromJson(jsonSubElement, paramClass);
+				}
+				result.put(key, value);
 			}
-			result.put(key, value);
-		}
-		return result;
-		} catch (IllegalStateException e) {
-			throw new JsonSyntaxException("JsonObject expected",e);
+			return result;
+		} catch (final IllegalStateException e) {
+			throw new JsonSyntaxException("JsonObject expected", e);
 		}
 	}
 
-	
-	
 	private Type createUiObjectType(final Class<?> paramClass) {
 		final Type[] typeArguments = { paramClass };
 		final Type typeOfDest = new ParameterizedType() {
