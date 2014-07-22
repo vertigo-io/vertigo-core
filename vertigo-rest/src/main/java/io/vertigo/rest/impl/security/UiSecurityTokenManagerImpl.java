@@ -1,6 +1,5 @@
 package io.vertigo.rest.impl.security;
 
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.persona.security.KSecurityManager;

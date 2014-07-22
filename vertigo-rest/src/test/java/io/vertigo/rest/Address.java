@@ -21,6 +21,7 @@ package io.vertigo.rest;
 import io.vertigo.dynamo.domain.model.DtObject;
 
 public final class Address implements DtObject {
+	private static final long serialVersionUID = 8922834274442256496L;
 	private String street1;
 	private String street2;
 	private String city;

@@ -39,9 +39,10 @@ import spark.Response;
  * @author npiedeloup
  */
 final class PaginatorAndSortHandler implements RouteHandler {
-	private static final long DEFAULT_RESULT_PER_PAGE = 20;
+	//private static final long DEFAULT_RESULT_PER_PAGE = 20;
 	private final CollectionsManager collectionsManager;
-	private final long resultPerPage;
+
+	//private final long resultPerPage;
 
 	/**
 	 * Constructor.
@@ -54,7 +55,7 @@ final class PaginatorAndSortHandler implements RouteHandler {
 		Assertion.checkNotNull(collectionsManager);
 		//---------------------------------------------------------------------
 		this.collectionsManager = collectionsManager;
-		this.resultPerPage = resultPerPage.getOrElse(DEFAULT_RESULT_PER_PAGE);
+		//this.resultPerPage = resultPerPage.getOrElse(DEFAULT_RESULT_PER_PAGE);
 	}
 
 	/** {@inheritDoc}  */

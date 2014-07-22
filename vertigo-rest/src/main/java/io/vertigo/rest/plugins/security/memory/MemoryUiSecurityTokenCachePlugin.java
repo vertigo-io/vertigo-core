@@ -1,6 +1,5 @@
 package io.vertigo.rest.plugins.security.memory;
 
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.rest.impl.security.UiSecurityTokenCachePlugin;
@@ -57,7 +56,7 @@ public final class MemoryUiSecurityTokenCachePlugin implements Activeable, UiSec
 	public Serializable get(final String key) {
 		final CacheValue cacheValue = cacheDatas.get(key);
 		if (cacheValue != null && !isTooOld(cacheValue)) {
-			return (Serializable) cacheValue.getValue();
+			return cacheValue.getValue();
 		}
 		cacheDatas.remove(key);
 		return null; //key expired : return null

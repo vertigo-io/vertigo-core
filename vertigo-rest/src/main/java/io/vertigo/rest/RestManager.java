@@ -18,11 +18,7 @@
  */
 package io.vertigo.rest;
 
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.component.Manager;
 import io.vertigo.kernel.lang.Assertion;
@@ -32,6 +28,7 @@ import io.vertigo.rest.RestfulService.AccessTokenConsume;
 import io.vertigo.rest.RestfulService.AccessTokenMandatory;
 import io.vertigo.rest.RestfulService.AccessTokenPublish;
 import io.vertigo.rest.RestfulService.AnonymousAccessAllowed;
+import io.vertigo.rest.RestfulService.AutoSortAndPagination;
 import io.vertigo.rest.RestfulService.DELETE;
 import io.vertigo.rest.RestfulService.Doc;
 import io.vertigo.rest.RestfulService.ExcludedFields;
@@ -48,8 +45,8 @@ import io.vertigo.rest.RestfulService.ServerSideSave;
 import io.vertigo.rest.RestfulService.SessionLess;
 import io.vertigo.rest.RestfulService.Validate;
 import io.vertigo.rest.metamodel.EndPointDefinition;
-import io.vertigo.rest.metamodel.EndPointParam;
 import io.vertigo.rest.metamodel.EndPointDefinition.Verb;
+import io.vertigo.rest.metamodel.EndPointParam;
 import io.vertigo.rest.metamodel.EndPointParam.ImplicitParam;
 import io.vertigo.rest.metamodel.EndPointParam.RestParamType;
 import io.vertigo.rest.validation.DefaultDtObjectValidator;
@@ -59,7 +56,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -68,6 +64,9 @@ import java.util.List;
  */
 public final class RestManager implements Manager {
 
+	/**
+	 * Constructor.
+	 */
 	public RestManager() {
 		Home.getDefinitionSpace().register(EndPointDefinition.class);
 	}
@@ -104,6 +103,7 @@ public final class RestManager implements Manager {
 		boolean accessTokenMandatory = false;
 		boolean accessTokenConsume = false;
 		boolean serverSideSave = false;
+		boolean autoSortAndPagination = false;
 		String doc = "";
 		for (final Annotation annotation : method.getAnnotations()) {
 			if (annotation instanceof GET) {
@@ -139,6 +139,9 @@ public final class RestManager implements Manager {
 				accessTokenConsume = true;
 			} else if (annotation instanceof ServerSideSave) {
 				serverSideSave = true;
+			} else if (annotation instanceof AutoSortAndPagination) {
+				serverSideSave = true;
+				autoSortAndPagination = true;
 			} else if (annotation instanceof Doc) {
 				doc = ((Doc) annotation).value();
 			}
@@ -167,8 +170,10 @@ public final class RestManager implements Manager {
 					accessTokenPublish,//
 					accessTokenMandatory,//
 					accessTokenConsume,//
-					serverSideSave, //
-					computeExcludedFields(includedFields, excludedFields, method.getReturnType()), //
+					serverSideSave,//
+					autoSortAndPagination,//
+					Arrays.asList(includedFields), //
+					Arrays.asList(excludedFields), //
 					endPointParams, //
 					doc);
 			return Option.some(endPointDefinition);
@@ -219,35 +224,35 @@ public final class RestManager implements Manager {
 
 		if (restParamType == RestParamType.Body) {
 			return new EndPointParam(restParamType, paramType, //
-					computeExcludedFields(includedFields, excludedFields, paramType), //
-					needServerSideToken, //
-					consumeServerSideToken, //
-					validatorClasses);
-		} else {
-			return new EndPointParam(restParamType, restParamName, paramType, //
-					computeExcludedFields(includedFields, excludedFields, paramType), //
+					Arrays.asList(includedFields), //
+					Arrays.asList(excludedFields), //
 					needServerSideToken, //
 					consumeServerSideToken, //
 					validatorClasses);
 		}
-
+		return new EndPointParam(restParamType, restParamName, paramType, //
+				Arrays.asList(includedFields), //
+				Arrays.asList(excludedFields), //
+				needServerSideToken, //
+				consumeServerSideToken, //
+				validatorClasses);
 	}
-
-	private static List<String> computeExcludedFields(final String[] includedFields, final String[] excludedFields, final Class<?> paramType) {
-		Assertion.checkArgument(includedFields == null || excludedFields == null, "Can't resolve excludedFields of {0}, if both includedFields and excludedFields are set", paramType.getSimpleName());
-		if (includedFields == null && excludedFields == null) {
-			return Collections.emptyList();
-		} else if (includedFields == null) {
-			return Arrays.asList(excludedFields);
-		}
-
-		Assertion.checkState(DtObject.class.isAssignableFrom(paramType) || DtList.class.isAssignableFrom(paramType), "IncludeFields must be on DtObject or DtList ({0})", paramType.getSimpleName());
-		final Class<? extends DtObject> dtObjectType = (Class<? extends DtObject>) paramType;
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtObjectType);
-		for (final DtField dtField : dtDefinition.getFields()) {
-			final String fieldName = StringUtil.constToCamelCase(dtField.getName(), false);
-			//TODO extract 
-		}
-		return Collections.emptyList();
-	}
+	//
+	//	private static List<String> computeExcludedFields(final String[] includedFields, final String[] excludedFields, final Class<?> paramType) {
+	//		Assertion.checkArgument(includedFields == null || excludedFields == null, "Can't resolve excludedFields of {0}, if both includedFields and excludedFields are set", paramType.getSimpleName());
+	//		if (includedFields == null && excludedFields == null) {
+	//			return Collections.emptyList();
+	//		} else if (includedFields == null) {
+	//			return Arrays.asList(excludedFields);
+	//		}
+	//
+	//		Assertion.checkState(DtObject.class.isAssignableFrom(paramType) || DtList.class.isAssignableFrom(paramType), "IncludeFields must be on DtObject or DtList ({0})", paramType.getSimpleName());
+	//		final Class<? extends DtObject> dtObjectType = (Class<? extends DtObject>) paramType;
+	//		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtObjectType);
+	//		for (final DtField dtField : dtDefinition.getFields()) {
+	//			final String fieldName = StringUtil.constToCamelCase(dtField.getName(), false);
+	//			//TODO extract 
+	//		}
+	//		return Collections.emptyList();
+	//	}
 }

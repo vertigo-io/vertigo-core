@@ -50,17 +50,20 @@ public final class EndPointDefinition implements Definition {
 	private final boolean accessTokenMandatory;
 	private final boolean accessTokenConsume;
 	private final boolean serverSideSave;
+	private final boolean autoSortAndPagination;
 
+	private final List<String> includedFields;
 	private final List<String> excludedFields;
 
 	private final List<EndPointParam> endPointParams;
 	private final String doc;
 
-	public EndPointDefinition(final String name, final Verb verb, final String path, final Method method, final boolean needSession, final boolean needAuthentification, final boolean accessTokenPublish, final boolean accessTokenMandatory, final boolean accessTokenConsume, final boolean serverSideSave, final List<String> excludedFields, final List<EndPointParam> endPointParams, final String doc) {
+	public EndPointDefinition(final String name, final Verb verb, final String path, final Method method, final boolean needSession, final boolean needAuthentification, final boolean accessTokenPublish, final boolean accessTokenMandatory, final boolean accessTokenConsume, final boolean serverSideSave, final boolean autoSortAndPagination, final List<String> includedFields, final List<String> excludedFields, final List<EndPointParam> endPointParams, final String doc) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(verb);
 		Assertion.checkArgNotEmpty(path);
 		Assertion.checkNotNull(method);
+		Assertion.checkNotNull(includedFields);
 		Assertion.checkNotNull(excludedFields);
 		Assertion.checkNotNull(endPointParams);
 		Assertion.checkNotNull(doc); //doc can be empty
@@ -80,7 +83,9 @@ public final class EndPointDefinition implements Definition {
 		this.accessTokenMandatory = accessTokenMandatory;
 		this.accessTokenConsume = accessTokenConsume;
 		this.serverSideSave = serverSideSave;
+		this.autoSortAndPagination = autoSortAndPagination;
 
+		this.includedFields = Collections.unmodifiableList(new ArrayList<>(includedFields));
 		this.excludedFields = Collections.unmodifiableList(new ArrayList<>(excludedFields));
 		this.endPointParams = Collections.unmodifiableList(new ArrayList<>(endPointParams));
 
@@ -129,6 +134,14 @@ public final class EndPointDefinition implements Definition {
 
 	public boolean isServerSideSave() {
 		return serverSideSave;
+	}
+
+	public boolean isAutoSortAndPagination() {
+		return autoSortAndPagination;
+	}
+
+	public List<String> getIncludedFields() {
+		return includedFields;
 	}
 
 	public List<String> getExcludedFields() {

@@ -41,7 +41,7 @@ public interface JsonEngine {
 	/**
 	 * Convert object to Json but excluded fields. 
 	 * @param data Object
-	 * @param tokenId token to include in Json (as a x-access-token field)
+	 * @param tokenId token to include in Json (as a serverSideToken field)
 	 * @param excludedFields List of fields to exclude
 	 * @return Json string
 	 */
@@ -68,6 +68,14 @@ public interface JsonEngine {
 	 */
 	<D extends DtObject> UiObject<D> uiObjectFromJson(String json, Class<D> paramClass);
 
+	/**
+	 * Specific convertion Json to UiContext.
+	 * UiContext is used as a buffer from client input.
+	 * @param <D> Object type
+	 * @param json Json string
+	 * @param paramClass Object class
+	 * @return UiContext filled with a DtObject partially filled and the accessTOken if present 
+	 */
 	UiContext uiContextFromJson(String json, Map<String, Class<?>> paramClasses);
 
 }

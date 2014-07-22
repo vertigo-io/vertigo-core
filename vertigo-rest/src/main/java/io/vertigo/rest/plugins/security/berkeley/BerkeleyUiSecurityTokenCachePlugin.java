@@ -1,7 +1,6 @@
 package io.vertigo.rest.plugins.security.berkeley;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.rest.impl.security.UiSecurityTokenCachePlugin;
@@ -123,7 +122,7 @@ public final class BerkeleyUiSecurityTokenCachePlugin implements Activeable, UiS
 				final CacheValue cacheValue = readCacheValueSafely(theKey, theData);
 				if (cacheValue != null && !isTooOld(cacheValue)) { //null si erreur de lecture
 					//totalHits++;
-					return  cacheValue.getValue();
+					return cacheValue.getValue();
 				}
 				cacheDatas.delete(null, theKey);
 			}
@@ -145,7 +144,7 @@ public final class BerkeleyUiSecurityTokenCachePlugin implements Activeable, UiS
 				cacheDatas.delete(null, theKey);
 				if (cacheValue != null && !isTooOld(cacheValue)) { //null si erreur de lecture
 					//totalHits++;
-					return (DtObject) cacheValue.getValue();
+					return cacheValue.getValue();
 				}
 			}
 		} catch (final DatabaseException e) {

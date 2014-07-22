@@ -64,12 +64,11 @@ public final class GoogleJsonEngine implements JsonEngine {
 			jsonObject.add(LIST_VALUE_FIELDNAME, jsonElement);
 			jsonObject.addProperty(SERVER_SIDE_TOKEN_FIELDNAME, tokenId);
 			return gson.toJson(jsonObject);
-		} else {
-			final JsonElement jsonElement = gson.toJsonTree(data);
-			excludeFields(jsonElement, excludedFields);
-			jsonElement.getAsJsonObject().addProperty(SERVER_SIDE_TOKEN_FIELDNAME, tokenId);
-			return gson.toJson(jsonElement);
 		}
+		final JsonElement jsonElement = gson.toJsonTree(data);
+		excludeFields(jsonElement, excludedFields);
+		jsonElement.getAsJsonObject().addProperty(SERVER_SIDE_TOKEN_FIELDNAME, tokenId);
+		return gson.toJson(jsonElement);
 	}
 
 	private void excludeFields(final JsonElement jsonElement, final List<String> excludedFields) {
@@ -84,6 +83,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 				jsonObject.remove(excludedField);
 			}
 		}
+		//else Primitive : no exclude
 	}
 
 	/** {@inheritDoc} */
@@ -200,35 +200,36 @@ public final class GoogleJsonEngine implements JsonEngine {
 		return gson.fromJson(json, typeOfDest);
 	}
 
-	static class UiListDeserializer implements JsonDeserializer<UiList<?>> {
-
-		public UiList<?> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
-			final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
-			final Class dtoClass = (Class) typeParameters[0]; // Id has only one parameterized type T
-			final JsonObject jsonObject = json.getAsJsonObject();
-			final DtObject inputDto = context.deserialize(jsonObject, dtoClass);
-
-			final Set<String> modifiedFields = new HashSet<>();
-			for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
-				final String fieldName = entry.getKey();
-				if (!SERVER_SIDE_TOKEN_FIELDNAME.equals(fieldName)) {
-					modifiedFields.add(fieldName);
-				}
-			}
-			final UiList<DtObject> uiList = new UiList(dtoClass);
-			if (jsonObject.has(SERVER_SIDE_TOKEN_FIELDNAME)) {
-				uiList.setServerSideToken(jsonObject.get(SERVER_SIDE_TOKEN_FIELDNAME).getAsString());
-			}
-			return uiList;
-		}
-	}
+	//	 TODO
+	// static class UiListDeserializer implements JsonDeserializer<UiList<?>> {
+	//
+	//		public UiList<?> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
+	//			final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
+	//			final Class dtoClass = (Class) typeParameters[0]; // Id has only one parameterized type T
+	//			final JsonObject jsonObject = json.getAsJsonObject();
+	//			final DtObject inputDto = context.deserialize(jsonObject, dtoClass);
+	//
+	//			final Set<String> modifiedFields = new HashSet<>();
+	//			for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+	//				final String fieldName = entry.getKey();
+	//				if (!SERVER_SIDE_TOKEN_FIELDNAME.equals(fieldName)) {
+	//					modifiedFields.add(fieldName);
+	//				}
+	//			}
+	//			final UiList<DtObject> uiList = new UiList(dtoClass);
+	//			if (jsonObject.has(SERVER_SIDE_TOKEN_FIELDNAME)) {
+	//				uiList.setServerSideToken(jsonObject.get(SERVER_SIDE_TOKEN_FIELDNAME).getAsString());
+	//			}
+	//			return uiList;
+	//		}
+	//	}
 
 	private static Gson createGson() {
 		return new GsonBuilder()//
 				.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") //
 				.setPrettyPrinting()//
 				//.serializeNulls()//On veut voir les null
-				.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<DtObject>())//
+				.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())//
 				.registerTypeAdapter(ComponentInfo.class, new JsonSerializer<ComponentInfo>() {
 					@Override
 					public JsonElement serialize(final ComponentInfo componentInfo, final Type typeOfSrc, final JsonSerializationContext context) {

@@ -1,5 +1,4 @@
 /**
- * vertigo - simple java starter
  *
  * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
@@ -18,7 +17,6 @@
  */
 package io.vertigo.rest.validation;
 
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -39,7 +37,7 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	@Override
 	public void validate(final O dtObject, final Set<String> modifiedFieldNameSet, final DtObjectErrors dtObjectErrors) {
 		for (final String fieldName : modifiedFieldNameSet) {
-			final DtField dtField =getDtField(fieldName, dtObject);
+			final DtField dtField = getDtField(fieldName, dtObject);
 			checkMonoFieldConstraints(dtObject, dtField, dtObjectErrors);
 		}
 		checkMultiFieldConstraints(dtObject, modifiedFieldNameSet, dtObjectErrors);

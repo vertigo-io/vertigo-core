@@ -1,9 +1,8 @@
 package io.vertigo.rest.impl.security;
 
-import java.io.Serializable;
-
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.component.Plugin;
+
+import java.io.Serializable;
 
 /**
  * Cache plugin.
@@ -37,5 +36,5 @@ public interface UiSecurityTokenCachePlugin extends Plugin {
 	 * @param key data key
 	 * @return data value
 	 */
-	Serializable  getAndRemove(String key);
+	Serializable getAndRemove(String key);
 }

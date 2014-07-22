@@ -1,9 +1,8 @@
 package io.vertigo.rest.security;
 
-import java.io.Serializable;
-
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.component.Manager;
+
+import java.io.Serializable;
 
 /**
  * Manager of Security Access Token.
@@ -16,7 +15,7 @@ public interface UiSecurityTokenManager extends Manager {
 	 * @param data Object to store
 	 * @return unique key of this object
 	 */
-	 String put(Serializable data);
+	String put(Serializable data);
 
 	/**
 	 * Get object by key.

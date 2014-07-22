@@ -27,6 +27,8 @@ import java.util.Date;
 @DtDefinition(persistent = false)
 public final class ContactCriteria implements DtObject {
 
+	private static final long serialVersionUID = 6839427455017031471L;
+
 	//mandatory
 	@Field(domain = "DO_TEXTE_50", label = "Name")
 	private String name;

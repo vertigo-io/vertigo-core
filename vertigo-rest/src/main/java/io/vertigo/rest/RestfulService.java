@@ -130,36 +130,43 @@ public interface RestfulService {
 	@Target({ ElementType.METHOD })
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface AccessTokenPublish {
+		//empty
 	}
 
 	@Target({ ElementType.METHOD })
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface AccessTokenMandatory {
+		//empty
 	}
 
 	@Target({ ElementType.METHOD })
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface AccessTokenConsume {
+		//empty
 	}
 
 	@Target({ ElementType.METHOD })
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface ServerSideSave {
+		//empty
 	}
 
 	@Target({ ElementType.PARAMETER })
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface ServerSideRead {
+		//empty
 	}
 
 	@Target({ ElementType.PARAMETER })
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface ServerSideConsume {
+		//empty
 	}
 
 	@Target({ ElementType.METHOD })
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface AutoSortAndPagination {
+		//empty
 	}
 
 	@Target({ ElementType.PARAMETER })

@@ -303,12 +303,12 @@ public final class TesterRestServices implements RestfulService {
 	@Doc("Test ws-rest multipart body with objects. Send a body with an object of to field : contactFrom, contactTo. Each one should be an json of Contact.")
 	@POST("/test/multipart")
 	public List<Contact> testMultiPartBodyObject(@InnerBodyParam("contactFrom") final Contact contactFrom, @InnerBodyParam("contactTo") final Contact contactTo) {
-		final List<Contact> contacts = new ArrayList<Contact>(2);
-		contacts.add(contactFrom);
-		contacts.add(contactTo);
+		final List<Contact> result = new ArrayList<>(2);
+		result.add(contactFrom);
+		result.add(contactTo);
 		//offset + range ?
 		//code 200
-		return contacts;
+		return result;
 	}
 
 	@Doc("Test ws-rest multipart body with primitives. Send a body with an object of to field : contactId1, contactId2. Each one should be an json of long.")
@@ -346,17 +346,17 @@ public final class TesterRestServices implements RestfulService {
 	public List<Contact> testMultiPartBodyClientId(//
 			@InnerBodyParam("contactFrom") @ServerSideRead final Contact contactFrom, //
 			@InnerBodyParam("contactTo") @ServerSideRead final Contact contactTo) {
-		final List<Contact> contacts = new ArrayList<Contact>(2);
-		contacts.add(contactFrom);
-		contacts.add(contactTo);
+		final List<Contact> result = new ArrayList<>(2);
+		result.add(contactFrom);
+		result.add(contactTo);
 		//offset + range ?
 		//code 200
-		return contacts;
+		return result;
 	}
 
 	@POST("/test/search")
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
-	public List<Contact> testSearch(final ContactCriteria contact) {
+	public List<Contact> testSearch(@ExcludedFields({ "conId", "email", "birthday", "address", "tels" }) final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
 		final DtList<Contact> fullList = asDtList(contacts.values(), Contact.class);
 		final DtList<Contact> result = filterFunction.apply(fullList);
