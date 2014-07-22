@@ -35,6 +35,7 @@ import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.persona.impl.security.KSecurityManagerImpl;
 import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.rest.handler.ExceptionHandler;
+import io.vertigo.rest.handler.RateLimitingHandler;
 import io.vertigo.rest.handler.SecurityHandler;
 import io.vertigo.rest.handler.SessionHandler;
 import io.vertigo.rest.impl.catalog.CatalogRestServices;
@@ -117,6 +118,9 @@ public final class WsRestHandler {
 					.beginComponent(ExceptionHandler.class).endComponent() //
 					.beginComponent(SecurityHandler.class).endComponent() //
 					.beginComponent(SessionHandler.class).endComponent() //
+					.beginComponent(RateLimitingHandler.class)
+						.withParam("limitValue", "10")//
+					.endComponent() //
 					.beginComponent(UiSecurityTokenManager.class, UiSecurityTokenManagerImpl.class)
 						.beginPlugin(MemoryUiSecurityTokenCachePlugin.class)
 							.withParam("timeToLiveSeconds", "120")

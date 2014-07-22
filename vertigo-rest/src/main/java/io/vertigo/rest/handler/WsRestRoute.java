@@ -42,6 +42,8 @@ public final class WsRestRoute extends Route {
 	@Inject
 	private SecurityHandler securityHandler;
 	@Inject
+	private RateLimitingHandler rateLimitingHandler;
+	@Inject
 	private UiSecurityTokenManager uiSecurityTokenManager;
 
 	private final HandlerChain handlerChain = new HandlerChain();
@@ -55,6 +57,7 @@ public final class WsRestRoute extends Route {
 		if (endPointDefinition.isNeedSession()) {
 			handlerChain.addHandler(sessionHandler);
 		}
+		handlerChain.addHandler(rateLimitingHandler);
 		if (endPointDefinition.isNeedAuthentification()) {
 			handlerChain.addHandler(securityHandler);
 		}
