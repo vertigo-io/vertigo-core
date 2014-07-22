@@ -379,6 +379,20 @@ public final class TesterRestServices implements RestfulService {
 		return applySortAndPagination(result, uiListState);
 	}
 
+	@POST("/test/searchQueryPagined")
+	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
+	public List<Contact> testSearchServiceQueryPagined(//
+			final ContactCriteria contact, //
+			final UiListState uiListState) {
+		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
+		final DtList<Contact> fullList = asDtList(contacts.values(), Contact.class);
+		final DtList<Contact> result = filterFunction.apply(fullList);
+
+		//offset + range ?
+		//code 200
+		return applySortAndPagination(result, uiListState);
+	}
+
 	@AutoSortAndPagination
 	@POST("/test/searchAutoPagined")
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })

@@ -56,6 +56,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -172,8 +173,8 @@ public final class RestManager implements Manager {
 					accessTokenConsume,//
 					serverSideSave,//
 					autoSortAndPagination,//
-					Arrays.asList(includedFields), //
-					Arrays.asList(excludedFields), //
+					asList(includedFields), //
+					asList(excludedFields), //
 					endPointParams, //
 					doc);
 			return Option.some(endPointDefinition);
@@ -218,24 +219,34 @@ public final class RestManager implements Manager {
 		} else if (ImplicitParam.UiMessageStack.getImplicitType().equals(paramType)) {
 			restParamType = RestParamType.Implicit;
 			restParamName = ImplicitParam.UiMessageStack.name();
+		} else if (ImplicitParam.UiListState.getImplicitType().equals(paramType)) {
+			restParamType = RestParamType.Implicit;
+			restParamName = ImplicitParam.UiListState.name();
 		}
 
 		//if no annotation : take request body
 
 		if (restParamType == RestParamType.Body) {
 			return new EndPointParam(restParamType, paramType, //
-					Arrays.asList(includedFields), //
-					Arrays.asList(excludedFields), //
+					asList(includedFields), //
+					asList(excludedFields), //
 					needServerSideToken, //
 					consumeServerSideToken, //
 					validatorClasses);
 		}
 		return new EndPointParam(restParamType, restParamName, paramType, //
-				Arrays.asList(includedFields), //
-				Arrays.asList(excludedFields), //
+				asList(includedFields), //
+				asList(excludedFields), //
 				needServerSideToken, //
 				consumeServerSideToken, //
 				validatorClasses);
+	}
+
+	private static List<String> asList(final String[] fields) {
+		if (fields == null) {
+			return Collections.emptyList();
+		}
+		return Arrays.asList(fields);
 	}
 	//
 	//	private static List<String> computeExcludedFields(final String[] includedFields, final String[] excludedFields, final Class<?> paramType) {

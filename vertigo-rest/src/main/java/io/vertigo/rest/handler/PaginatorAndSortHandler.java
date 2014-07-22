@@ -60,6 +60,9 @@ final class PaginatorAndSortHandler implements RouteHandler {
 
 	/** {@inheritDoc}  */
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
+		//comes with only Criteria in body
+		//UiListState must be in query
+
 		final Object result = chain.handle(request, response, routeContext);
 		Assertion.checkArgument(result instanceof DtList, "sort and pagination only supports DtList");
 

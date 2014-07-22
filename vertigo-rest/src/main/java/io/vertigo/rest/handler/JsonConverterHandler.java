@@ -23,6 +23,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.rest.engine.GoogleJsonEngine;
 import io.vertigo.rest.engine.UiContext;
+import io.vertigo.rest.engine.UiListState;
 import io.vertigo.rest.engine.UiObject;
 import io.vertigo.rest.exception.SessionException;
 import io.vertigo.rest.exception.VSecurityException;
@@ -41,6 +42,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import spark.QueryParamsMap;
 import spark.Request;
 import spark.Response;
 
@@ -89,6 +91,9 @@ final class JsonConverterHandler implements RouteHandler {
 					switch (ImplicitParam.valueOf(endPointParam.getName())) {
 						case UiMessageStack:
 							value = routeContext.getUiMessageStack();
+							break;
+						case UiListState:
+							value = readValue(request.queryMap(), endPointParam, uiSecurityTokenManager);
 							break;
 						default:
 							throw new IllegalArgumentException("ImplicitParam : " + endPointParam.getName());
@@ -152,6 +157,19 @@ final class JsonConverterHandler implements RouteHandler {
 			throw new RuntimeException("Unsupported type " + paramClass.getSimpleName());
 		}
 		//return jsonReaderEngine.fromJson(json, paramClass);
+	}
+
+	private Object readValue(final QueryParamsMap queryMap, final EndPointParam endPointParam, final UiSecurityTokenManager uiSecurityTokenManager2) {
+		final Class<?> paramClass = endPointParam.getType();
+		if (UiListState.class.isAssignableFrom(paramClass)) {
+			final QueryParamsMap top = queryMap.get("top");
+			final QueryParamsMap skip = queryMap.get("skip");
+			final QueryParamsMap sortFieldName = queryMap.get("sortFieldName");
+			final QueryParamsMap sortDesc = queryMap.get("sortDesc");
+			final UiListState uiListState = new UiListState(top.hasValue() ? top.integerValue() : 20, skip.hasValue() ? skip.integerValue() : 0, sortFieldName.value(), sortDesc.hasValue() ? sortDesc.booleanValue() : true);
+			return uiListState;
+		}
+		return null;
 	}
 
 	private static Object readValue(final String json, final EndPointParam endPointParam, final UiSecurityTokenManager uiSecurityTokenManager) throws VSecurityException {

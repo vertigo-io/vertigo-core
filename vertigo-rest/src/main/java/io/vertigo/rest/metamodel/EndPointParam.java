@@ -2,6 +2,7 @@ package io.vertigo.rest.metamodel;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.rest.engine.UiListState;
 import io.vertigo.rest.validation.DtObjectValidator;
 import io.vertigo.rest.validation.UiMessageStack;
 
@@ -32,7 +33,8 @@ public final class EndPointParam {
 	}
 
 	public static enum ImplicitParam {
-		UiMessageStack(UiMessageStack.class);
+		UiMessageStack(UiMessageStack.class), //
+		UiListState(UiListState.class);
 
 		private Class<?> implicitType;
 
