@@ -37,7 +37,7 @@ import com.google.gson.JsonSyntaxException;
  */
 public final class GoogleJsonEngine implements JsonEngine {
 	private static final String LIST_VALUE_FIELDNAME = "value";
-	private static final String SERVER_SIDE_TOKEN_FIELDNAME = "clientId";
+	private static final String SERVER_SIDE_TOKEN_FIELDNAME = "serverId";
 	private final Gson gson = createGson();
 
 	/** {@inheritDoc} */

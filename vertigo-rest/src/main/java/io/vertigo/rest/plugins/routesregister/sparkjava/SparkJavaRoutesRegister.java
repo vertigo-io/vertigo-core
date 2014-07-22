@@ -1,10 +1,10 @@
 package io.vertigo.rest.plugins.routesregister.sparkjava;
 
 import io.vertigo.kernel.Home;
-import io.vertigo.rest.EndPointDefinition;
 import io.vertigo.rest.RestManager;
 import io.vertigo.rest.filter.CorsAllower;
 import io.vertigo.rest.handler.WsRestRoute;
+import io.vertigo.rest.metamodel.EndPointDefinition;
 
 import java.util.Collection;
 

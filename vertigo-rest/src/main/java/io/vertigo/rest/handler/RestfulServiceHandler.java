@@ -22,11 +22,11 @@ import io.vertigo.kernel.Home;
 import io.vertigo.kernel.exception.VUserException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.util.ClassUtil;
-import io.vertigo.rest.EndPointDefinition;
-import io.vertigo.rest.EndPointParam;
 import io.vertigo.rest.RestfulService;
 import io.vertigo.rest.exception.SessionException;
 import io.vertigo.rest.exception.VSecurityException;
+import io.vertigo.rest.metamodel.EndPointDefinition;
+import io.vertigo.rest.metamodel.EndPointParam;
 import io.vertigo.rest.validation.ValidationUserException;
 
 import java.lang.reflect.InvocationTargetException;

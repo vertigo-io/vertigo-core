@@ -1,8 +1,8 @@
 package io.vertigo.rest.handler;
 
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.rest.EndPointParam;
 import io.vertigo.rest.engine.UiObject;
+import io.vertigo.rest.metamodel.EndPointParam;
 import io.vertigo.rest.validation.UiContextResolver;
 import io.vertigo.rest.validation.UiMessageStack;
 import spark.Request;

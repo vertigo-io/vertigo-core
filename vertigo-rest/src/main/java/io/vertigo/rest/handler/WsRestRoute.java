@@ -20,7 +20,7 @@ package io.vertigo.rest.handler;
 
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.di.injector.Injector;
-import io.vertigo.rest.EndPointDefinition;
+import io.vertigo.rest.metamodel.EndPointDefinition;
 import io.vertigo.rest.security.UiSecurityTokenManager;
 
 import javax.inject.Inject;

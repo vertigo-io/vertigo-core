@@ -22,9 +22,9 @@ import java.io.Serializable;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.rest.EndPointDefinition;
 import io.vertigo.rest.exception.SessionException;
 import io.vertigo.rest.exception.VSecurityException;
+import io.vertigo.rest.metamodel.EndPointDefinition;
 import io.vertigo.rest.security.UiSecurityTokenManager;
 import spark.Request;
 import spark.Response;

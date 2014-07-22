@@ -1,15 +1,5 @@
 package io.vertigo.rest.engine;
 
-import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -23,6 +13,16 @@ import io.vertigo.rest.validation.DtObjectErrors;
 import io.vertigo.rest.validation.DtObjectValidator;
 import io.vertigo.rest.validation.UiMessageStack;
 
+import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public final class UiList<D extends DtObject> extends AbstractList<UiObject<D>> {
 	private static final long serialVersionUID = 5475819598230056558L;
 
@@ -34,7 +34,7 @@ public final class UiList<D extends DtObject> extends AbstractList<UiObject<D>> 
 
 	/** Référence vers la Définition. */
 	private final DefinitionReference<DtDefinition> dtDefinitionRef;
-		
+
 	//server side
 	private final Map<Integer, UiObject<D>> uiObjectByIndex = new HashMap<>();
 	private List<D> serverSideDtList;
@@ -42,15 +42,15 @@ public final class UiList<D extends DtObject> extends AbstractList<UiObject<D>> 
 
 	//search
 	private OData filterMetaData;
-	
+
 	//input
-	private List<UiObject<D>> collCreates = new ArrayList<>();
-	private List<UiObject<D>> collUpdates = new ArrayList<>();
-	private List<UiObject<D>> collDeletes = new ArrayList<>();
+	private final List<UiObject<D>> collCreates = new ArrayList<>();
+	private final List<UiObject<D>> collUpdates = new ArrayList<>();
+	private final List<UiObject<D>> collDeletes = new ArrayList<>();
 	private List<D> inputDtList;
-	
+
 	private String inputKey;
-	
+
 	// =========================================================================
 	// ========================CONSTRUCTEUR=====================================
 	// ==========================================================================
@@ -104,6 +104,7 @@ public final class UiList<D extends DtObject> extends AbstractList<UiObject<D>> 
 		//-------------------------------------------------------------------------------
 		this.collCreates.add(inputCreate);
 	}
+
 	/**
 	 * @param inputDto partial object translated from input
 	 * @param modifiedFields modified fieldNames
@@ -115,6 +116,7 @@ public final class UiList<D extends DtObject> extends AbstractList<UiObject<D>> 
 		//-------------------------------------------------------------------------------
 		this.collUpdates.add(inputUpdate);
 	}
+
 	/**
 	 * @param inputDto partial object translated from input
 	 * @param modifiedFields modified fieldNames
@@ -247,7 +249,7 @@ public final class UiList<D extends DtObject> extends AbstractList<UiObject<D>> 
 		//---------------------------------------------------------------------
 		return modifiedFields.contains(const2CamelIndex.get(dtField.getName()));
 	}
-	
+
 	/**
 	 * Constructeur.
 	 * @param dtList Liste à encapsuler
@@ -269,6 +271,7 @@ public final class UiList<D extends DtObject> extends AbstractList<UiObject<D>> 
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final UiObject<D> get(final int index) {
 		UiObject<D> element = uiObjectByIndex.get(index);
 		if (element == null) {
@@ -280,10 +283,11 @@ public final class UiList<D extends DtObject> extends AbstractList<UiObject<D>> 
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final int size() {
 		return obtainDtList().size();
 	}
-	
+
 	/**
 	 * Vérifie les UiObjects de la liste, met à jour les objets métiers et retourne la liste.
 	 * @param validator Validateur à utilisé, peut-être spécifique à l'objet.

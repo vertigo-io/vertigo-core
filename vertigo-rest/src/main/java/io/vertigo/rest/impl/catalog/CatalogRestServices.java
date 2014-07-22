@@ -19,9 +19,9 @@
 package io.vertigo.rest.impl.catalog;
 
 import io.vertigo.kernel.Home;
-import io.vertigo.rest.EndPointDefinition;
-import io.vertigo.rest.EndPointParam;
 import io.vertigo.rest.RestfulService;
+import io.vertigo.rest.metamodel.EndPointDefinition;
+import io.vertigo.rest.metamodel.EndPointParam;
 
 import java.util.ArrayList;
 import java.util.Collection;

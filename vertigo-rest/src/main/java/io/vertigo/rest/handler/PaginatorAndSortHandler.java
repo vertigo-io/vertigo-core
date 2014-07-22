@@ -62,12 +62,9 @@ final class PaginatorAndSortHandler implements RouteHandler {
 		final Object result = chain.handle(request, response, routeContext);
 		Assertion.checkArgument(result instanceof DtList, "sort and pagination only supports DtList");
 
-		if (result instanceof DtList) {
-			final UiListState uiListState = readUiListState(request);
-			final DtList<?> filteredList = applySortAndPagination((DtList) result, uiListState);
-			return filteredList;
-		}
-		return result;
+		final UiListState uiListState = readUiListState(request);
+		final DtList<?> filteredList = applySortAndPagination((DtList) result, uiListState);
+		return filteredList;
 	}
 
 	private UiListState readUiListState(final Request request) {
