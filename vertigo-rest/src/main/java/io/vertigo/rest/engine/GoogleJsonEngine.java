@@ -36,6 +36,7 @@ import com.google.gson.JsonSyntaxException;
  * @author pchretien, npiedeloup
  */
 public final class GoogleJsonEngine implements JsonEngine {
+	private static final String LIST_VALUE_FIELDNAME = "value";
 	private static final String SERVER_SIDE_TOKEN_FIELDNAME = "clientId";
 	private final Gson gson = createGson();
 
@@ -60,7 +61,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 			final JsonObject jsonObject = new JsonObject();
 			final JsonElement jsonElement = gson.toJsonTree(data);
 			excludeFields(jsonElement, excludedFields);
-			jsonObject.add("value", jsonElement);
+			jsonObject.add(LIST_VALUE_FIELDNAME, jsonElement);
 			jsonObject.addProperty(SERVER_SIDE_TOKEN_FIELDNAME, tokenId);
 			return gson.toJson(jsonObject);
 		} else {

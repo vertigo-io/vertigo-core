@@ -200,6 +200,7 @@ final class JsonConverterHandler implements RouteHandler {
 		//---------------------------------------------------------------------
 		if (endPointDefinition.isServerSideSave()) {
 			if (UiContext.class.isInstance(value)) {
+
 				final StringBuilder sb = new StringBuilder();
 				sb.append("{");
 				String sep = "";

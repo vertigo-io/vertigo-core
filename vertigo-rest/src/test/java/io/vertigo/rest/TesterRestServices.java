@@ -314,6 +314,7 @@ public final class TesterRestServices implements RestfulService {
 
 	@Doc("Test ws-rest multipart body with primitives. Send a body with an object of to field : contactId1, contactId2. Each one should be an json of long.")
 	@ServerSideSave
+	@ExcludedFields({ "address", "tels" })
 	@POST("/test/multipartLong")
 	public DtList<Contact> testMultiPartBodyLong(@InnerBodyParam("contactId1") final long contactIdFrom, @InnerBodyParam("contactId2") final long contactIdTo) {
 		final DtList<Contact> result = new DtList<>(Contact.class);
