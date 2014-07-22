@@ -25,7 +25,9 @@ import io.vertigo.kernel.metamodel.Prefix;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * End point definition.
@@ -52,13 +54,13 @@ public final class EndPointDefinition implements Definition {
 	private final boolean serverSideSave;
 	private final boolean autoSortAndPagination;
 
-	private final List<String> includedFields;
-	private final List<String> excludedFields;
+	private final Set<String> includedFields;
+	private final Set<String> excludedFields;
 
 	private final List<EndPointParam> endPointParams;
 	private final String doc;
 
-	public EndPointDefinition(final String name, final Verb verb, final String path, final Method method, final boolean needSession, final boolean needAuthentification, final boolean accessTokenPublish, final boolean accessTokenMandatory, final boolean accessTokenConsume, final boolean serverSideSave, final boolean autoSortAndPagination, final List<String> includedFields, final List<String> excludedFields, final List<EndPointParam> endPointParams, final String doc) {
+	public EndPointDefinition(final String name, final Verb verb, final String path, final Method method, final boolean needSession, final boolean needAuthentification, final boolean accessTokenPublish, final boolean accessTokenMandatory, final boolean accessTokenConsume, final boolean serverSideSave, final boolean autoSortAndPagination, final Set<String> includedFields, final Set<String> excludedFields, final List<EndPointParam> endPointParams, final String doc) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(verb);
 		Assertion.checkArgNotEmpty(path);
@@ -85,8 +87,8 @@ public final class EndPointDefinition implements Definition {
 		this.serverSideSave = serverSideSave;
 		this.autoSortAndPagination = autoSortAndPagination;
 
-		this.includedFields = Collections.unmodifiableList(new ArrayList<>(includedFields));
-		this.excludedFields = Collections.unmodifiableList(new ArrayList<>(excludedFields));
+		this.includedFields = Collections.unmodifiableSet(new LinkedHashSet<>(includedFields));
+		this.excludedFields = Collections.unmodifiableSet(new LinkedHashSet<>(excludedFields));
 		this.endPointParams = Collections.unmodifiableList(new ArrayList<>(endPointParams));
 
 		this.doc = doc;
@@ -140,11 +142,11 @@ public final class EndPointDefinition implements Definition {
 		return autoSortAndPagination;
 	}
 
-	public List<String> getIncludedFields() {
+	public Set<String> getIncludedFields() {
 		return includedFields;
 	}
 
-	public List<String> getExcludedFields() {
+	public Set<String> getExcludedFields() {
 		return excludedFields;
 	}
 

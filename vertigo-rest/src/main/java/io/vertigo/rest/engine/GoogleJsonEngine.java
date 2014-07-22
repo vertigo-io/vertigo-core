@@ -43,45 +43,58 @@ public final class GoogleJsonEngine implements JsonEngine {
 	/** {@inheritDoc} */
 	@Override
 	public String toJson(final Object data) {
-		return toJson(data, Collections.<String> emptyList());
+		return toJson(data, Collections.<String> emptySet(), Collections.<String> emptySet());
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public String toJson(final Object data, final List<String> excludedFields) {
+	public String toJson(final Object data, final Set<String> includedFields, final Set<String> excludedFields) {
 		final JsonElement jsonElement = gson.toJsonTree(data);
-		excludeFields(jsonElement, excludedFields);
+		filterFields(jsonElement, includedFields, excludedFields);
 		return gson.toJson(jsonElement);
 	}
 
-	/** {@inheritDoc} */
+	/** {@inheritDoc} 
+	 * @param excludedFields */
 	@Override
-	public String toJsonWithTokenId(final Object data, final String tokenId, final List<String> excludedFields) {
+	public String toJsonWithTokenId(final Object data, final String tokenId, final Set<String> includedFields, Set<String> excludedFields) {
 		if (data instanceof List) {
 			final JsonObject jsonObject = new JsonObject();
 			final JsonElement jsonElement = gson.toJsonTree(data);
-			excludeFields(jsonElement, excludedFields);
+			filterFields(jsonElement, includedFields, excludedFields);
 			jsonObject.add(LIST_VALUE_FIELDNAME, jsonElement);
 			jsonObject.addProperty(SERVER_SIDE_TOKEN_FIELDNAME, tokenId);
 			return gson.toJson(jsonObject);
 		}
 		final JsonElement jsonElement = gson.toJsonTree(data);
-		excludeFields(jsonElement, excludedFields);
+		filterFields(jsonElement, includedFields, excludedFields);
 		jsonElement.getAsJsonObject().addProperty(SERVER_SIDE_TOKEN_FIELDNAME, tokenId);
 		return gson.toJson(jsonElement);
 	}
 
-	private void excludeFields(final JsonElement jsonElement, final List<String> excludedFields) {
+	private void filterFields(final JsonElement jsonElement, final Set<String> includedFields, final Set<String> excludedFields) {
 		if (jsonElement.isJsonArray()) {
 			final JsonArray jsonArray = jsonElement.getAsJsonArray();
 			for (final JsonElement jsonSubElement : jsonArray) {
-				excludeFields(jsonSubElement, excludedFields);
+				filterFields(jsonSubElement, includedFields, excludedFields);
 			}
 		} else if (jsonElement.isJsonObject()) {
 			final JsonObject jsonObject = jsonElement.getAsJsonObject();
 			for (final String excludedField : excludedFields) {
 				jsonObject.remove(excludedField);
 			}
+			if(!includedFields.isEmpty()) {
+				final Set<String> notIncludedFields = new HashSet<>();
+				for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+					if(!includedFields.contains(entry.getKey())) {
+						notIncludedFields.add(entry.getKey());
+					}
+				}
+				for (final String notIncludedField : notIncludedFields) {
+					jsonObject.remove(notIncludedField);
+				}
+			}
+			
 		}
 		//else Primitive : no exclude
 	}

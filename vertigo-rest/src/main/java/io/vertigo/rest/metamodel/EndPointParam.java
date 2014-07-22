@@ -8,7 +8,9 @@ import io.vertigo.rest.validation.UiMessageStack;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * EndPoint param infos : 
@@ -52,8 +54,8 @@ public final class EndPointParam {
 	private final String name;
 	private final Class<?> type;
 	private final String fullName;
-	private final List<String> includedFields;
-	private final List<String> excludedFields;
+	private final Set<String> includedFields;
+	private final Set<String> excludedFields;
 	private final boolean needServerSideToken;
 	private final boolean consumeServerSideToken;
 	private final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses;
@@ -67,7 +69,7 @@ public final class EndPointParam {
 	 * @param consumeServerSideToken if access token is consume (one time token)
 	 * @param dtObjectValidatorClasses list of validator classes (order is keep)
 	 */
-	public EndPointParam(final RestParamType paramType, final Class<?> type, final List<String> includedFields, final List<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
+	public EndPointParam(final RestParamType paramType, final Class<?> type, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
 		this(":" + paramType.name() + ":", paramType, null, type, includedFields, excludedFields, needServerSideToken, consumeServerSideToken, dtObjectValidatorClasses);
 		Assertion.checkArgument(paramType == RestParamType.Body, "Name is mandatory, for this parameter type : {0}", paramType.name());
 	}
@@ -81,7 +83,7 @@ public final class EndPointParam {
 	 * @param consumeServerSideToken if access token is consume (one time token)
 	 * @param dtObjectValidatorClasses List of validator classes (order is keep)
 	 */
-	public EndPointParam(final RestParamType paramType, final String name, final Class<?> type, final List<String> includedFields, final List<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
+	public EndPointParam(final RestParamType paramType, final String name, final Class<?> type, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
 		this(":" + paramType.name() + ":" + name, paramType, name, type, includedFields, excludedFields, needServerSideToken, consumeServerSideToken, dtObjectValidatorClasses);
 		Assertion.checkArgument(paramType != RestParamType.Body, "Body parameter have no name");
 		Assertion.checkArgument(paramType != RestParamType.Implicit || isImplicitParam(name), "When ImplicitParam, name ({1}) must be one of {0}", ImplicitParam.values(), name);
@@ -97,7 +99,7 @@ public final class EndPointParam {
 		return false;
 	}
 
-	private EndPointParam(final String fullName, final RestParamType paramType, final String name, final Class<?> type, final List<String> includedFields, final List<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
+	private EndPointParam(final String fullName, final RestParamType paramType, final String name, final Class<?> type, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
 		Assertion.checkNotNull(paramType);
 		Assertion.checkNotNull(type);
 		Assertion.checkNotNull(includedFields);
@@ -109,8 +111,8 @@ public final class EndPointParam {
 		this.type = type;
 		this.name = name;
 		this.fullName = fullName;
-		this.includedFields = Collections.unmodifiableList(new ArrayList<>(includedFields));
-		this.excludedFields = Collections.unmodifiableList(new ArrayList<>(excludedFields));
+		this.includedFields = Collections.unmodifiableSet(new LinkedHashSet<>(includedFields));
+		this.excludedFields = Collections.unmodifiableSet(new LinkedHashSet<>(excludedFields));
 		this.needServerSideToken = needServerSideToken;
 		this.consumeServerSideToken = consumeServerSideToken;
 		this.dtObjectValidatorClasses = Collections.unmodifiableList(new ArrayList<>(dtObjectValidatorClasses));
@@ -147,14 +149,14 @@ public final class EndPointParam {
 	/**
 	 * @return List of included fieldNames
 	 */
-	public List<String> getIncludedFields() {
+	public Set<String> getIncludedFields() {
 		return includedFields;
 	}
 
 	/**
 	 * @return List of excluded fieldNames
 	 */
-	public List<String> getExcludedFields() {
+	public Set<String> getExcludedFields() {
 		return excludedFields;
 	}
 

@@ -218,6 +218,13 @@ public final class UiObject<D extends DtObject> implements Serializable {
 		//---------------------------------------------------------------------
 		return modifiedFields.contains(fieldName);
 	}
+	
+	/**
+	 * @return All modified fieldNames (camel)
+	 */
+	public Set<String> getModifiedFields() {
+		return modifiedFields;
+	}
 
 	private boolean isModified(final DtField dtField) {
 		Assertion.checkNotNull(dtField);

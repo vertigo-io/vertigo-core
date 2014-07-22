@@ -2,8 +2,8 @@ package io.vertigo.rest.engine;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Convert Object to Json, and json to Object.
@@ -26,10 +26,11 @@ public interface JsonEngine {
 	/**
 	 * Convert object to Json but excluded fields. 
 	 * @param data Object 
-	 * @param excludedFields List of fields to exclude
+	 * @param excludedFields Set of fields to include (empty means all fields include)
+	 * @param excludedFields Set of fields to exclude
 	 * @return Json string
 	 */
-	String toJson(Object data, List<String> excludedFields);
+	String toJson(Object data, final Set<String> includedFields, Set<String> excludedFields);
 
 	/**
 	 * Convert Exception to Json
@@ -42,10 +43,11 @@ public interface JsonEngine {
 	 * Convert object to Json but excluded fields. 
 	 * @param data Object
 	 * @param tokenId token to include in Json (as a serverSideToken field)
-	 * @param excludedFields List of fields to exclude
+	 * @param excludedFields Set of fields to include (empty means all fields include)
+	 * @param excludedFields Set of fields to exclude
 	 * @return Json string
 	 */
-	String toJsonWithTokenId(Object data, String tokenId, List<String> excludedFields);
+	String toJsonWithTokenId(Object data, String tokenId, final Set<String> includedFields, Set<String> excludedFields);
 
 	/**
 	 * Standard convert Json to object.

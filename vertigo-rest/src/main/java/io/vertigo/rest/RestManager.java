@@ -57,7 +57,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Restfull webservice manager.
@@ -173,8 +175,8 @@ public final class RestManager implements Manager {
 					accessTokenConsume,//
 					serverSideSave,//
 					autoSortAndPagination,//
-					asList(includedFields), //
-					asList(excludedFields), //
+					asSet(includedFields), //
+					asSet(excludedFields), //
 					endPointParams, //
 					doc);
 			return Option.some(endPointDefinition);
@@ -228,25 +230,25 @@ public final class RestManager implements Manager {
 
 		if (restParamType == RestParamType.Body) {
 			return new EndPointParam(restParamType, paramType, //
-					asList(includedFields), //
-					asList(excludedFields), //
+					asSet(includedFields), //
+					asSet(excludedFields), //
 					needServerSideToken, //
 					consumeServerSideToken, //
 					validatorClasses);
 		}
 		return new EndPointParam(restParamType, restParamName, paramType, //
-				asList(includedFields), //
-				asList(excludedFields), //
+				asSet(includedFields), //
+				asSet(excludedFields), //
 				needServerSideToken, //
 				consumeServerSideToken, //
 				validatorClasses);
 	}
 
-	private static List<String> asList(final String[] fields) {
+	private static Set<String> asSet(final String[] fields) {
 		if (fields == null) {
-			return Collections.emptyList();
+			return Collections.emptySet();
 		}
-		return Arrays.asList(fields);
+		return new LinkedHashSet<String>(Arrays.asList(fields));
 	}
 	//
 	//	private static List<String> computeExcludedFields(final String[] includedFields, final String[] excludedFields, final Class<?> paramType) {

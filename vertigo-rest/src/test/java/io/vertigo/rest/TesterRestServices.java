@@ -381,9 +381,7 @@ public final class TesterRestServices implements RestfulService {
 
 	@POST("/test/searchQueryPagined")
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
-	public List<Contact> testSearchServiceQueryPagined(//
-			final ContactCriteria contact, //
-			final UiListState uiListState) {
+	public List<Contact> testSearchServiceQueryPagined(final ContactCriteria contact, final UiListState uiListState) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
 		final DtList<Contact> fullList = asDtList(contacts.values(), Contact.class);
 		final DtList<Contact> result = filterFunction.apply(fullList);
