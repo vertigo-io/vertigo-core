@@ -63,6 +63,7 @@ public final class ExceptionHandler implements RouteHandler {
 			return jsonWriterEngine.toJsonError(e);
 		} catch (final JsonSyntaxException e) {
 			response.status(HttpServletResponse.SC_BAD_REQUEST);
+			e.printStackTrace();//TODO use a loggers
 			return jsonWriterEngine.toJsonError(e);
 		} catch (final Throwable e) {
 			response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

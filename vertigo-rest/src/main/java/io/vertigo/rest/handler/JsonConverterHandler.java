@@ -49,7 +49,7 @@ import spark.Response;
  * @author npiedeloup
  */
 final class JsonConverterHandler implements RouteHandler {
-	private static final String ACCESS_TOKEN_MANDATORY = "AccessToken mandatory";
+	private static final String SERVER_SIDE_MANDATORY = "AccessToken mandatory";
 	private static final String FORBIDDEN_OPERATION_FIELD_MODIFICATION = "Can't modify field:";
 
 	private static final GoogleJsonEngine jsonWriterEngine = new GoogleJsonEngine();
@@ -128,11 +128,6 @@ final class JsonConverterHandler implements RouteHandler {
 		return null;
 	}
 
-	private UiContext readMultiPartValue(String jsonBody, Map<String, Class<?>> multiPartBodyParams, UiSecurityTokenManager uiSecurityTokenManager2) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	private static Object readPrimitiveValue(final String json, final EndPointParam endPointParam) {
 		final Class<?> paramClass = endPointParam.getType();
 		if (json == null) {
@@ -182,7 +177,7 @@ final class JsonConverterHandler implements RouteHandler {
 		if (endPointParam.isNeedServerSideToken()) {
 			final String accessToken = uiObject.getServerSideToken();
 			if (accessToken == null) {
-				throw new VSecurityException(ACCESS_TOKEN_MANDATORY); //same message for no AccessToken or bad AccessToken
+				throw new VSecurityException(SERVER_SIDE_MANDATORY); //same message for no AccessToken or bad AccessToken
 			}
 			final Serializable serverSideObject;
 			if (endPointParam.isConsumeServerSideToken()) {
@@ -191,7 +186,7 @@ final class JsonConverterHandler implements RouteHandler {
 				serverSideObject = uiSecurityTokenManager.get(accessToken);
 			}
 			if (serverSideObject == null) {
-				throw new VSecurityException(ACCESS_TOKEN_MANDATORY); //same message for no AccessToken or bad AccessToken
+				throw new VSecurityException(SERVER_SIDE_MANDATORY); //same message for no AccessToken or bad AccessToken
 			}
 			uiObject.setServerSideObject((DtObject) serverSideObject);
 		}
@@ -215,7 +210,13 @@ final class JsonConverterHandler implements RouteHandler {
 				String sep = "";
 				for (final Map.Entry<String, Serializable> entry : ((UiContext) value).entrySet()) {
 					sb.append(sep);
-					sb.append("\"").append(entry.getKey()).append("\":\"").append(writeValue(entry.getValue(), endPointDefinition, uiSecurityTokenManager)).append("\"");
+					String encodedValue;
+					if(entry.getValue() instanceof DtList || entry.getValue() instanceof DtObject) {
+						encodedValue = writeValue(entry.getValue(), endPointDefinition, uiSecurityTokenManager);
+					} else {
+						encodedValue = jsonWriterEngine.toJson(entry.getValue());
+					}
+					sb.append("\"").append(entry.getKey()).append("\":").append(encodedValue).append("");
 					sep = ", ";
 				}
 				sb.append("}");
@@ -227,7 +228,7 @@ final class JsonConverterHandler implements RouteHandler {
 				final String tokenId = uiSecurityTokenManager.put((DtObject) value);
 				return jsonWriterEngine.toJsonWithTokenId(value, tokenId, endPointDefinition.getExcludedFields());
 			} else {
-				throw new RuntimeException("Return type can't be protected :" + (value != null ? value.getClass().getSimpleName() : "null"));
+				throw new RuntimeException("Return type can't be ServerSide :" + (value != null ? value.getClass().getSimpleName() : "null"));
 			}
 		}
 		return jsonWriterEngine.toJson(value, endPointDefinition.getExcludedFields());

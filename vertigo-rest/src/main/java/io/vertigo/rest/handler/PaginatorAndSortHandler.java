@@ -51,20 +51,4 @@ final class PaginatorAndSortHandler implements RouteHandler {
 		}
 		return result;
 	}
-
-	private class ListWithMeta {
-		private final Map<String, Object> metas = new HashMap<>();
-		private final String value;
-
-		ListWithMeta(final String value) {
-			Assertion.checkArgNotEmpty(value);
-			//-----------------------------------------------------------------
-			this.value = value;
-		}
-
-		void addMeta(final String key, final Object value) {
-			metas.put(key, value);
-		}
-
-	}
 }

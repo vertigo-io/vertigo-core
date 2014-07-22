@@ -49,6 +49,7 @@ import io.vertigo.rest.RestfulService.ServerSideRead;
 import io.vertigo.rest.RestfulService.ServerSideSave;
 import io.vertigo.rest.RestfulService.SessionLess;
 import io.vertigo.rest.RestfulService.Validate;
+import io.vertigo.rest.validation.DefaultDtObjectValidator;
 import io.vertigo.rest.validation.DtObjectValidator;
 
 import java.lang.annotation.Annotation;
@@ -63,7 +64,7 @@ import java.util.List;
  * @author npiedeloup
  */
 public final class RestManager implements Manager, Activeable {
-
+	
 	public RestManager() {
 		Home.getDefinitionSpace().register(EndPointDefinition.class);
 	}
@@ -176,7 +177,7 @@ public final class RestManager implements Manager, Activeable {
 	private static EndPointParam buildEndPointParam(final Annotation[] annotations, final Class<?> paramType) {
 		RestParamType restParamType = RestParamType.Body; //default
 		String restParamName = null;
-		List<Class<? extends DtObjectValidator>> validatorClasses = Collections.emptyList();
+		List<Class<? extends DtObjectValidator>> validatorClasses = new ArrayList<>();
 		String[] includedFields = null;
 		String[] excludedFields = null;
 		boolean needServerSideToken = false;
@@ -192,7 +193,7 @@ public final class RestManager implements Manager, Activeable {
 				restParamType = RestParamType.MultiPartBody;
 				restParamName = ((InnerBodyParam) annotation).value();
 			} else if (annotation instanceof Validate) {
-				validatorClasses = Arrays.asList(((Validate) annotation).value());
+				validatorClasses.addAll(Arrays.asList(((Validate) annotation).value()));
 			} else if (annotation instanceof ExcludedFields) {
 				excludedFields = ((ExcludedFields) annotation).value();
 			} else if (annotation instanceof IncludedFields) {
@@ -204,6 +205,10 @@ public final class RestManager implements Manager, Activeable {
 				consumeServerSideToken = true;
 			}
 			//	
+		}
+		
+		if(DtObject.class.isAssignableFrom(paramType)) {
+			validatorClasses.add(0, DefaultDtObjectValidator.class);
 		}
 
 		//if no annotation : take request body

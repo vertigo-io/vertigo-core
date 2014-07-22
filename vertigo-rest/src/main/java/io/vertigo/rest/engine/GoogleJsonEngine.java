@@ -30,6 +30,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.google.gson.JsonSyntaxException;
 
 /**
  * @author pchretien, npiedeloup
@@ -55,10 +56,15 @@ public final class GoogleJsonEngine implements JsonEngine {
 	/** {@inheritDoc} */
 	@Override
 	public String toJsonWithTokenId(final Object data, final String tokenId, final List<String> excludedFields) {
+		if(data instanceof List) {
+			UiListWithMeta uiList = new UiListWithMeta((List)data);
+			uiList.addMeta(SERVER_SIDE_TOKEN_FIELDNAME, tokenId);
+			return gson.toJson(uiList);
+		} else {
 		final JsonElement jsonElement = gson.toJsonTree(data);
-		excludeFields(jsonElement, excludedFields);
 		jsonElement.getAsJsonObject().addProperty(SERVER_SIDE_TOKEN_FIELDNAME, tokenId);
 		return gson.toJson(jsonElement);
+		}
 	}
 
 	private void excludeFields(final JsonElement jsonElement, final List<String> excludedFields) {
@@ -99,6 +105,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 	@Override
 	public UiContext uiContextFromJson(final String json, final Map<String, Class<?>> paramClasses) {
 		final UiContext result = new UiContext();
+		try {
 		JsonElement jsonElement = new JsonParser().parse(json);
 		JsonObject jsonObject = jsonElement.getAsJsonObject();
 		for(Entry<String, Class<?>> entry : paramClasses.entrySet()) {
@@ -116,6 +123,9 @@ public final class GoogleJsonEngine implements JsonEngine {
 			result.put(key, value);
 		}
 		return result;
+		} catch (IllegalStateException e) {
+			throw new JsonSyntaxException("JsonObject expected",e);
+		}
 	}
 
 	

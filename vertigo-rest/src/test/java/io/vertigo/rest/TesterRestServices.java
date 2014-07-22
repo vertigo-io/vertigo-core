@@ -33,7 +33,9 @@ import io.vertigo.dynamo.impl.collections.functions.filter.FilterFunction;
 import io.vertigo.kernel.exception.VUserException;
 import io.vertigo.kernel.lang.MessageText;
 import io.vertigo.kernel.lang.Option;
+import io.vertigo.kernel.util.DateUtil;
 import io.vertigo.persona.security.KSecurityManager;
+import io.vertigo.rest.engine.UiContext;
 import io.vertigo.rest.engine.UiListState;
 import io.vertigo.rest.exception.VSecurityException;
 
@@ -50,6 +52,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.inject.Inject;
+import javax.servlet.annotation.MultipartConfig;
 import javax.ws.rs.core.Response;
 
 //basé sur http://www.restapitutorial.com/lessons/httpmethods.html
@@ -299,7 +302,61 @@ public final class TesterRestServices implements RestfulService {
 		contacts.remove(conId);
 	}
 
-	@GET("/test/search")
+	@Doc("Test ws-rest multipart body with objects. Send a body with an object of to field : contactFrom, contactTo. Each one should be an json of Contact.")
+	@POST("/test/multipart")
+	public List<Contact> testMultiPartBodyObject(@InnerBodyParam("contactFrom")  final Contact contactFrom, @InnerBodyParam("contactTo")  final Contact contactTo) {
+		List<Contact> contacts = new ArrayList<Contact>(2);
+		contacts.add(contactFrom);
+		contacts.add(contactTo);
+		//offset + range ?
+		//code 200
+		return contacts;
+	}
+	
+	@Doc("Test ws-rest multipart body with primitives. Send a body with an object of to field : contactId1, contactId2. Each one should be an json of long.")
+	@ServerSideSave
+	@POST("/test/multipartLong")
+	public DtList<Contact> testMultiPartBodyLong(@InnerBodyParam("contactId1")  final long contactIdFrom, @InnerBodyParam("contactId2")  final long contactIdTo) {
+		final DtList<Contact> result = new DtList<>(Contact.class);
+		result.add(contacts.get(contactIdFrom));
+		result.add(contacts.get(contactIdTo));
+		//offset + range ?
+		//code 200
+		return result;
+	}
+	
+	@Doc("Test ws-rest returning UiContext. Send a body with an object of to field : contactId1, contactId2. Each one should be an json of long. You get partial Contacts with clientId in each one")
+	@ServerSideSave
+	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
+	@POST("/test/uiContext")
+	public UiContext testMultiPartBody(@InnerBodyParam("contactId1")  final long contactIdFrom, @InnerBodyParam("contactId2")  final long contactIdTo) {
+		UiContext uiContext = new UiContext();
+		uiContext.put("contactFrom", contacts.get(contactIdFrom));
+		uiContext.put("contactTo", contacts.get(contactIdTo));
+		uiContext.put("testLong", 12);
+		uiContext.put("testString", "the String test");
+		uiContext.put("testDate", DateUtil.newDate());
+		uiContext.put("testEscapedString", "the EscapedString \",} test");
+		//offset + range ?
+		//code 200
+		return uiContext;
+	}
+	
+	@Doc("Test ws-rest multipart body with serverSide objects. Send a body with an object of to field : contactFrom, contactTo. Each one should be an partial json of Contact with clientId.")
+	@POST("/test/multipartServerClient")
+	public List<Contact> testMultiPartBodyClientId(//
+			@InnerBodyParam("contactFrom")  @ServerSideRead	final Contact contactFrom, //
+			@InnerBodyParam("contactTo")  @ServerSideRead	final Contact contactTo) {
+		List<Contact> contacts = new ArrayList<Contact>(2);
+		contacts.add(contactFrom);
+		contacts.add(contactTo);
+		//offset + range ?
+		//code 200
+		return contacts;
+	}
+	
+	
+	@POST("/test/search")
 	public List<Contact> testSearch(final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
 		final DtList<Contact> result = filterFunction.apply((DtList<Contact>) contacts.values());
@@ -308,7 +365,7 @@ public final class TesterRestServices implements RestfulService {
 		return result;
 	}
 
-	@GET("/test/searchPagined")
+	@POST("/test/searchPagined")
 	public List<Contact> testSearchServicePagined(final ContactCriteria contact, final UiListState uiListState) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
 		final DtList<Contact> result = filterFunction.apply((DtList<Contact>) contacts.values());
@@ -326,7 +383,7 @@ public final class TesterRestServices implements RestfulService {
 	}
 
 	@AutoSortAndPagination
-	@GET("/test/searchAutoPagined")
+	@POST("/test/searchAutoPagined")
 	public List<Contact> testSearchServiceAutoPagined(final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
 		final DtList<Contact> result = filterFunction.apply((DtList<Contact>) contacts.values());
@@ -381,3 +438,4 @@ public final class TesterRestServices implements RestfulService {
 		return nextId;
 	}
 }
+

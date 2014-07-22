@@ -178,9 +178,10 @@ public final class WsRestHandler {
 					final String doc = endPointDefinition.getDoc();
 					sb.append(endPointDefinition.getVerb().name()).append("://");
 					sb.append(endPointDefinition.getPath());
-					sb.append("(");
+					sb.append(" (");
 					for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
 						sb.append(endPointParam);
+						sb.append(" ");
 					}
 					sb.append(")");
 					if (!doc.isEmpty()) {
