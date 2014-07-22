@@ -19,9 +19,9 @@
 package io.vertigo.labs.job;
 
 import io.vertigo.kernel.component.Plugin;
+import io.vertigo.labs.job.metamodel.JobDefinition;
 
 import java.util.Date;
-
 
 /**
  * Plugin de lancement des Jobs.

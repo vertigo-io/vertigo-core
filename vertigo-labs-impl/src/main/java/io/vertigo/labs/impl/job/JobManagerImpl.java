@@ -23,16 +23,15 @@ import io.vertigo.kernel.Home;
 import io.vertigo.kernel.di.injector.Injector;
 import io.vertigo.kernel.exception.VUserException;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.labs.job.JobDefinition;
 import io.vertigo.labs.job.JobManager;
 import io.vertigo.labs.job.SchedulerPlugin;
+import io.vertigo.labs.job.metamodel.JobDefinition;
 
 import java.util.Date;
 
 import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
-
 
 /**
  * Impl�mentation g�n�rique de JobManager.

@@ -20,9 +20,9 @@ package io.vertigo.labs.plugins.job.basic;
 
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.labs.job.JobDefinition;
 import io.vertigo.labs.job.JobManager;
 import io.vertigo.labs.job.SchedulerPlugin;
+import io.vertigo.labs.job.metamodel.JobDefinition;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

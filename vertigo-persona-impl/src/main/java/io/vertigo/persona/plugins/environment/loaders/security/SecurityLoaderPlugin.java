@@ -23,8 +23,8 @@ import io.vertigo.dynamo.impl.environment.LoaderPlugin;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.persona.security.model.Permission;
-import io.vertigo.persona.security.model.Role;
+import io.vertigo.persona.security.metamodel.Permission;
+import io.vertigo.persona.security.metamodel.Role;
 
 import javax.inject.Inject;
 
