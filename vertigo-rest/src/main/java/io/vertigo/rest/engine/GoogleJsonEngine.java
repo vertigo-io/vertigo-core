@@ -177,8 +177,9 @@ public final class GoogleJsonEngine implements JsonEngine {
 		}
 	}
 
-	/** {@inheritDoc} */
-	public <D extends DtObject> UiList<D> uiListFromJson(final String json, final Class<D> paramClass) {
+	/*  {@inheritDoc} 
+	 *  TODO
+	 *  public <D extends DtObject> UiList<D> uiListFromJson(final String json, final Class<D> paramClass) {
 		final Type[] typeArguments = { paramClass };
 		final Type typeOfDest = new ParameterizedType() {
 
@@ -198,7 +199,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 			}
 		};
 		return gson.fromJson(json, typeOfDest);
-	}
+	}*/
 
 	//	 TODO
 	// static class UiListDeserializer implements JsonDeserializer<UiList<?>> {
