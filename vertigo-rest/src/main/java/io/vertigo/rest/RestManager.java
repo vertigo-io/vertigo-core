@@ -20,11 +20,11 @@ package io.vertigo.rest;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.component.Manager;
-import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.util.StringUtil;
@@ -63,23 +63,22 @@ import java.util.List;
  * Restfull webservice manager.
  * @author npiedeloup
  */
-public final class RestManager implements Manager, Activeable {
-	
+public final class RestManager implements Manager {
+
 	public RestManager() {
 		Home.getDefinitionSpace().register(EndPointDefinition.class);
 	}
 
-	public void start() {
+	/**
+	 * Scan and register ResfulServices as EndPointDefinitions.
+	 */
+	public void scanAndRegisterRestfulServices() {
 		for (final String componentId : Home.getComponentSpace().keySet()) {
 			final Object component = Home.getComponentSpace().resolve(componentId, Object.class);
 			if (component instanceof RestfulService) {
 				instrospectEndPoints(((RestfulService) component).getClass());
 			}
 		}
-	}
-
-	public void stop() {
-		//nothing
 	}
 
 	private static <C extends RestfulService> void instrospectEndPoints(final Class<C> restFullServiceClass) {
@@ -177,7 +176,7 @@ public final class RestManager implements Manager, Activeable {
 	private static EndPointParam buildEndPointParam(final Annotation[] annotations, final Class<?> paramType) {
 		RestParamType restParamType = RestParamType.Body; //default
 		String restParamName = null;
-		List<Class<? extends DtObjectValidator>> validatorClasses = new ArrayList<>();
+		final List<Class<? extends DtObjectValidator>> validatorClasses = new ArrayList<>();
 		String[] includedFields = null;
 		String[] excludedFields = null;
 		boolean needServerSideToken = false;
@@ -206,8 +205,8 @@ public final class RestManager implements Manager, Activeable {
 			}
 			//	
 		}
-		
-		if(DtObject.class.isAssignableFrom(paramType)) {
+
+		if (DtObject.class.isAssignableFrom(paramType)) {
 			validatorClasses.add(0, DefaultDtObjectValidator.class);
 		}
 
@@ -237,7 +236,7 @@ public final class RestManager implements Manager, Activeable {
 			return Arrays.asList(excludedFields);
 		}
 
-		Assertion.checkState(DtObject.class.isAssignableFrom(paramType), "IncludeFields must be on DtObject ({0})", paramType.getSimpleName());
+		Assertion.checkState(DtObject.class.isAssignableFrom(paramType) || DtList.class.isAssignableFrom(paramType), "IncludeFields must be on DtObject or DtList ({0})", paramType.getSimpleName());
 		final Class<? extends DtObject> dtObjectType = (Class<? extends DtObject>) paramType;
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtObjectType);
 		for (final DtField dtField : dtDefinition.getFields()) {

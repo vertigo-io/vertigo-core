@@ -34,24 +34,20 @@ import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.persona.impl.security.KSecurityManagerImpl;
 import io.vertigo.persona.security.KSecurityManager;
-import io.vertigo.rest.filter.CorsAllower;
 import io.vertigo.rest.handler.ExceptionHandler;
 import io.vertigo.rest.handler.SecurityHandler;
 import io.vertigo.rest.handler.SessionHandler;
-import io.vertigo.rest.handler.WsRestRoute;
+import io.vertigo.rest.impl.catalog.CatalogRestServices;
 import io.vertigo.rest.impl.security.UiSecurityTokenManagerImpl;
+import io.vertigo.rest.plugins.routesregister.sparkjava.SparkJavaRoutesRegister;
 import io.vertigo.rest.plugins.security.memory.MemoryUiSecurityTokenCachePlugin;
 import io.vertigo.rest.security.UiSecurityTokenManager;
 import io.vertigoimpl.commons.locale.LocaleManagerImpl;
 import io.vertigoimpl.engines.rest.cmd.ComponentCmdRestServices;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
 
-import spark.Request;
-import spark.Response;
-import spark.Route;
 import spark.Spark;
 
 /**
@@ -117,6 +113,7 @@ public final class WsRestHandler {
 				.endModule()
 				.beginModule("restCore").withNoAPI().withInheritance(Object.class) //
 					.beginComponent(RestManager.class).endComponent() //
+					.beginComponent(CatalogRestServices.class).endComponent() //
 					.beginComponent(ExceptionHandler.class).endComponent() //
 					.beginComponent(SecurityHandler.class).endComponent() //
 					.beginComponent(SessionHandler.class).endComponent() //
@@ -131,10 +128,6 @@ public final class WsRestHandler {
 		// @formatter:on
 		Home.start(config);
 
-		//Translate EndPoint to route
-
-		final Collection<EndPointDefinition> endPointDefinitions = Home.getDefinitionSpace().getAll(EndPointDefinition.class);
-
 		//test 
 		/*Spark.get(new Route("familles") {
 			@Override
@@ -148,51 +141,8 @@ public final class WsRestHandler {
 		// When using Maven, the "/public" folder is assumed to be in "/main/resources"
 		Spark.externalStaticFileLocation("d:/Projets/Projet_Kasper/SPA-Fmk/SPA-skeleton/public/");
 		//Spark.before(new IE8CompatibilityFix("8"));
-		Spark.before(new CorsAllower());
-
-		for (final EndPointDefinition endPointDefinition : endPointDefinitions) {
-			switch (endPointDefinition.getVerb()) {
-				case GET:
-					Spark.get(new WsRestRoute(endPointDefinition));
-					break;
-				case POST:
-					Spark.post(new WsRestRoute(endPointDefinition));
-					break;
-				case PUT:
-					Spark.put(new WsRestRoute(endPointDefinition));
-					break;
-				case DELETE:
-					Spark.delete(new WsRestRoute(endPointDefinition));
-					break;
-				default:
-					throw new UnsupportedOperationException();
-			}
-		}
-
-		Spark.get(new Route("/catalog") {
-			@Override
-			public Object handle(final Request request, final Response response) {
-				final Collection<EndPointDefinition> endPointDefCollection = Home.getDefinitionSpace().getAll(EndPointDefinition.class);
-				final StringBuilder sb = new StringBuilder();
-				for (final EndPointDefinition endPointDefinition : endPointDefCollection) {
-					final String doc = endPointDefinition.getDoc();
-					sb.append(endPointDefinition.getVerb().name()).append("://");
-					sb.append(endPointDefinition.getPath());
-					sb.append(" (");
-					for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
-						sb.append(endPointParam);
-						sb.append(" ");
-					}
-					sb.append(")");
-					if (!doc.isEmpty()) {
-						sb.append(" /*");
-						sb.append(endPointDefinition.getDoc());
-						sb.append("*/");
-					}
-					sb.append("\n");
-				}
-				return sb.toString();
-			}
-		});
+		//Spark.before(new CorsAllower());
+		//Translate EndPoint to route
+		new SparkJavaRoutesRegister().init();
 	}
 }
