@@ -20,12 +20,9 @@ package io.vertigo.dynamo.impl.work;
 
 import io.vertigo.dynamo.impl.work.listener.WorkListener;
 import io.vertigo.dynamo.impl.work.listener.WorkListenerImpl;
-import io.vertigo.dynamo.impl.work.worker.Worker;
-import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;
 import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.kernel.lang.Activeable;
-import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 
 import javax.inject.Inject;
@@ -37,69 +34,36 @@ import javax.inject.Named;
  * @author pchretien, npiedeloup
  */
 public final class WorkManagerImpl implements WorkManager, Activeable {
-
-	private final LocalWorker localWorker;
-
-	@Inject
-	private Option<DistributedWorkerPlugin> distributedWorker;
-	private final WorkListener workListener;
+	private final WCoordinator coordinator;
 
 	/**
 	 * Constructeur.
 	 * @param analyticsManager Manager de la performance applicative
 	 */
 	@Inject
-	public WorkManagerImpl(final @Named("workerCount") int workerCount/*, final AnalyticsManager analyticsManager*/) {
-		workListener = new WorkListenerImpl(/*analyticsManager*/);
-		localWorker = new LocalWorker(workerCount);
+	public WorkManagerImpl(final @Named("workerCount") int workerCount, Option<DistributedWorkerPlugin> distributedWorker) {
+		final WorkListener workListener = new WorkListenerImpl(/*analyticsManager*/);
+		coordinator = new WCoordinatorImpl(workerCount, workListener, distributedWorker);
 	}
 
 	/** {@inheritDoc} */
 	public void start() {
-		//localWorker n'étant pas un plugin 
+		//coordinator n'étant pas un plugin 
 		//il faut le démarrer et l'arréter explicitement.
-		localWorker.start();
+		coordinator.start();
 	}
 
 	/** {@inheritDoc} */
 	public void stop() {
-		localWorker.stop();
+		coordinator.stop();
 	}
 
-	/** {@inheritDoc}   */
-	public <WR, W> void process(final WorkItem<WR, W> workItem) {
-		Assertion.checkNotNull(workItem);
-		//----------------------------------------------------------------------
-		//On délégue l'exécution synchrone et locale à un Worker.
-		workListener.onStart(workItem.getWorkEngineProvider().getName());
-		boolean executed = false;
-		final long start = System.currentTimeMillis();
-		try {
-			resolveWorker(workItem).process(workItem);
-			executed = true;
-		} finally {
-			workListener.onFinish(workItem.getWorkEngineProvider().getName(), System.currentTimeMillis() - start, executed);
-		}
+	public <WR, W> void process(WorkItem<WR, W> workItem) {
+		coordinator.process(workItem);
 	}
 
-	private <WR, W> Worker resolveWorker(final WorkItem<WR, W> workItem) {
-		/* 
-		 * On recherche un Worker capable d'effectuer le travail demandé.
-		 * 1- On recherche parmi les works externes 
-		 * 2- Si le travail n'est pas déclaré comme étant distribué on l'exécute localement
-		 */
-		if (distributedWorker.isDefined() && distributedWorker.get().canProcess(workItem.getWorkEngineProvider())) {
-			return distributedWorker.get();
-		}
-		return localWorker;
-		//Gestion de la stratégie de distribution des works
-		//		return distributedWorkerPlugin.isDefined() && distributedWorkerPlugin.get().getWorkFamily().equalsIgnoreCase(work.getWorkFamily());
+	public <WR, W> void schedule(WorkItem<WR, W> workItem) {
+		coordinator.schedule(workItem);
 	}
 
-	/** {@inheritDoc} */
-	public <WR, W> void schedule(final WorkItem<WR, W> workItem) {
-		Assertion.checkNotNull(workItem);
-		//----------------------------------------------------------------------
-		resolveWorker(workItem).schedule(workItem);
-	}
 }
