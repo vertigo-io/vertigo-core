@@ -1,27 +1,12 @@
-/**
- * vertigo - simple java starter
- *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
- * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo;
 
+import io.vertigo.kernel.Home;
 import io.vertigo.kernel.component.ComponentInfo;
+import io.vertigo.kernel.component.Container;
 import io.vertigo.kernel.component.Describable;
 import io.vertigo.kernel.component.Manager;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
+import io.vertigo.kernel.di.injector.Injector;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.xml.XMLModulesLoader;
@@ -33,41 +18,191 @@ import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 
 /**
- * Charge l'environnement de test par defaut.
- * @author pchretien
+ * Classe parente de tous les TNR associés à vertigo.
+ *
+ * @author jmforhan
  */
-@Deprecated
-public abstract class AbstractTestCaseJU4 extends AbstractTestCase2JU4 {
+public abstract class AbstractTestCaseJU4 {
+	private static boolean homeStarted;
 
 	/**
+	 * Affecte homeStarted.
+	 *
+	 * @param homeStarted la valeur homeStarted à affecter
+	 */
+	private static synchronized void setHomeStarted(final boolean homeStarted) {
+		AbstractTestCaseJU4.homeStarted = homeStarted;
+	}
+
+	/**
+	 * Récupère la valeur de homeStarted.
+	 *
+	 * @return valeur de homeStarted
+	 */
+	private static synchronized boolean isHomeStarted() {
+		return homeStarted;
+	}
+
+	/**
+	 * Doit-on s'assurer que le Home est réinitialisé avant le début de chaque test?
+	 * Par défaut, return true.
+	 *
+	 * @return booléen
+	 */
+	protected boolean cleanHomeForTest() {
+		return true;
+	}
+
+	/**
+	 * Méthode ne faisant rien.
+	 *
+	 * @param o object
+	 */
+	protected final void nop(final Object o) {
+		// rien
+	}
+
+	/**
+	 * Set up de l'environnement de test.
+	 *
+	 * @throws Exception exception
+	 */
+	@Before
+	public final void setUp() throws Exception {
+		// Création de l'état de l'application
+		// Initialisation de l'état de l'application
+		if (cleanHomeForTest() && isHomeStarted()) {
+			stopHome();
+		}
+		if (!isHomeStarted()) {
+			startHome();
+		}
+		// On injecte les managers sur la classe de test.
+		final Injector injector = new Injector();
+		injector.injectMembers(this, getContainer());
+		doSetUp();
+	}
+
+	private void startHome() {
+		// Création de l'état de l'application
+		// Initialisation de l'état de l'application
+		final ComponentSpaceConfigBuilder componentSpaceConfigBuilder = new ComponentSpaceConfigBuilder().withSilence(true);
+		// final ComponentSpaceConfigBuilder componentSpaceConfigBuilder = new
+		// ComponentSpaceConfigBuilder().withRestEngine(new GrizzlyRestEngine(8086)).withSilence(true);
+		configMe(componentSpaceConfigBuilder);
+		Home.start(componentSpaceConfigBuilder.build());
+		setHomeStarted(true);
+	}
+
+	private void stopHome() {
+		Home.stop();
+		setHomeStarted(false);
+	}
+
+	/**
+	 * Tear down de l'environnement de test.
+	 *
+	 * @throws Exception Exception
+	 */
+	@After
+	public final void tearDown() throws Exception {
+		try {
+			doTearDown();
+		} finally {
+			if (cleanHomeForTest()) {
+				stopHome();
+			}
+		}
+		doAfterTearDown();
+	}
+
+	/**
+	 * Initialisation du test pour implé spécifique.
+	 *
+	 * @throws Exception Erreur
+	 */
+	protected void doSetUp() throws Exception {
+		// pour implé spécifique
+	}
+
+	/**
+	 * Finalisation du test pour implé spécifique.
+	 *
+	 * @throws Exception Erreur
+	 */
+	protected void doTearDown() throws Exception {
+		// pour implé spécifique
+	}
+
+	/**
+	 * Finalisation du test pour implé spécifique après le tear down.
+	 *
+	 * @throws Exception Erreur
+	 */
+	protected void doAfterTearDown() throws Exception {
+		// pour implé spécifique
+	}
+
+	/**
+	 * Fournit le container utilisé pour l'injection.
+	 *
+	 * @return Container de l'injection
+	 */
+	private Container getContainer() {
+		return Home.getComponentSpace();
+	}
+
+	/**
+	 * Tableau des fichiers managers.xml a prendre en compte.
+	 *
 	 * @return fichier managers.xml (par defaut managers-test.xml)
 	 */
 	protected String[] getManagersXmlFileName() {
-		return new String[] { "./managers-test.xml" };
+		return new String[] { "./managers-test.xml", };
 	}
 
 	/**
+	 * Fichier de propriétés de paramétrage des managers.
+	 *
 	 * @return fichier properties de paramétrage des managers (par defaut Option.none())
 	 */
 	protected Option<String> getPropertiesFileName() {
-		return Option.none(); //par défaut pas de properties
+		return Option.none(); // par défaut pas de properties
 	}
 
-	/** {@inheritDoc} */
-	@Override
+	/**
+	* Utilitaire.
+	* @param manager Manager
+	*/
+	protected static final void testDescription(final Manager manager) {
+		if (manager instanceof Describable) {
+			final List<ComponentInfo> componentInfos = Describable.class.cast(manager).getInfos();
+			for (final ComponentInfo componentInfo : componentInfos) {
+				Assert.assertNotNull(componentInfo);
+			}
+		}
+	}
+
+	/**
+	 * Configuration des tests.
+	 *
+	 * @param componentSpaceConfiguilder builder
+	 */
 	protected void configMe(final ComponentSpaceConfigBuilder componentSpaceConfiguilder) {
-		for (URL url : loadManagersXml()) {
+		for (final URL url : loadManagersXml()) {
 			componentSpaceConfiguilder.withLoader(new XMLModulesLoader(url, loadProperties()));
 		}
 	}
 
 	private URL[] loadManagersXml() {
-		URL[] urls = new URL[getManagersXmlFileName().length];
+		final URL[] urls = new URL[getManagersXmlFileName().length];
 		int i = 0;
-		for (String managersXmlFileName : getManagersXmlFileName()) {
+		for (final String managersXmlFileName : getManagersXmlFileName()) {
 			urls[i] = getClass().getResource(managersXmlFileName);
 			Assertion.checkNotNull(urls[i], "file configuration '{0}' not found", managersXmlFileName);
 			i++;
@@ -92,33 +227,21 @@ public abstract class AbstractTestCaseJU4 extends AbstractTestCase2JU4 {
 
 	/**
 	 * Retourne l'URL correspondant au nom du fichier dans le classPath.
-	 * 
+	 *
 	 * @param fileName Nom du fichier
 	 * @return URN non null
 	 */
 	private URL createURL(final String fileName) {
 		Assertion.checkArgNotEmpty(fileName);
-		//---------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 		try {
 			return new URL(fileName);
 		} catch (final MalformedURLException e) {
-			//Si fileName non trouvé, on recherche dans le classPath 
+			// Si fileName non trouvé, on recherche dans le classPath
 			final URL url = getClass().getResource(fileName);
 			Assertion.checkNotNull(url, "Impossible de récupérer le fichier [" + fileName + "]");
 			return url;
 		}
 	}
 
-	/**
-	 * Utilitaire.
-	 * @param manager managerDescription
-	 */
-	protected static final void testDescription(final Manager manager) {
-		if (manager instanceof Describable) {
-			final List<ComponentInfo> componentInfos = Describable.class.cast(manager).getInfos();
-			for (final ComponentInfo componentInfo : componentInfos) {
-				Assert.assertNotNull(componentInfo);
-			}
-		}
-	}
 }

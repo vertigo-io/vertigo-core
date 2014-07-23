@@ -18,7 +18,7 @@
  */
 package io.vertigo.kernel.home.componentspace;
 
-import io.vertigo.AbstractTestCase2JU4;
+import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.kernel.home.componentspace.data.BioManager;
 import io.vertigo.kernel.home.componentspace.data.BioManagerImpl;
@@ -31,8 +31,7 @@ import javax.inject.Inject;
 import org.junit.Assert;
 import org.junit.Test;
 
-
-public final class ComponentSpace2Test extends AbstractTestCase2JU4 {
+public final class ComponentSpace2Test extends AbstractTestCaseJU4 {
 	@Inject
 	private BioManager bioManager;
 

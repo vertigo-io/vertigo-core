@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.resource;
 
-import io.vertigo.AbstractTestCase2JU4;
+import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.impl.resource.ResourceManagerImpl;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
@@ -33,7 +33,7 @@ import org.junit.Test;
 /**
  * @author pchretien
  */
-public final class ResourceManagerTest extends AbstractTestCase2JU4 {
+public final class ResourceManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private ResourceManager resourceManager;
 

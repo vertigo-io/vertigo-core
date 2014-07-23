@@ -18,7 +18,7 @@
  */
 package io.vertigo.kernel.home.definitionspace;
 
-import io.vertigo.AbstractTestCase2JU4;
+import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.kernel.metamodel.Definition;
@@ -35,7 +35,7 @@ import java.io.ObjectOutputStream;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class DefinitionSpaceTest extends AbstractTestCase2JU4 {
+public class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 
 	@Override
 	protected void configMe(final ComponentSpaceConfigBuilder componentSpaceConfiguilder) {

@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.config.properties;
 
-import io.vertigo.AbstractTestCase2JU4;
+import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.config.ConfigManager;
 import io.vertigo.commons.config.ServerConfig;
 import io.vertigo.commons.impl.config.ConfigManagerImpl;
@@ -36,7 +36,7 @@ import org.junit.Test;
 /**
  * @author pchretien
  */
-public final class PropertiesConfigManagerTest extends AbstractTestCase2JU4 {
+public final class PropertiesConfigManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private ConfigManager configManager;
 
