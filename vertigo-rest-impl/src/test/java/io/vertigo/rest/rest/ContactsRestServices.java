@@ -16,12 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.rest;
+package io.vertigo.rest.rest;
 
 import io.vertigo.kernel.exception.VUserException;
 import io.vertigo.kernel.lang.MessageText;
 import io.vertigo.persona.security.KSecurityManager;
-import io.vertigo.rest.rest.RestfulService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

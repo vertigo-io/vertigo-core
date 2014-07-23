@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.rest;
+package io.vertigo.rest.rest;
 
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.DtListFunction;
@@ -41,10 +41,9 @@ import io.vertigo.kernel.lang.MessageText;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.util.DateUtil;
 import io.vertigo.persona.security.KSecurityManager;
-import io.vertigo.rest.rest.RestfulService;
 import io.vertigo.rest.rest.engine.UiContext;
-import io.vertigo.rest.rest.engine.UiListState;
 import io.vertigo.rest.rest.exception.VSecurityException;
+import io.vertigo.rest.rest.metamodel.UiListState;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

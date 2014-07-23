@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.rest;
+package io.vertigo.rest.rest;
 
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.codec.CodecManager;
@@ -51,14 +51,13 @@ import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.persona.impl.security.KSecurityManagerImpl;
 import io.vertigo.persona.security.KSecurityManager;
+import io.vertigo.rest.impl.rest.RestManagerImpl;
 import io.vertigo.rest.impl.rest.catalog.CatalogRestServices;
 import io.vertigo.rest.impl.rest.handler.RateLimitingHandler;
-import io.vertigo.rest.impl.rest.security.UiSecurityTokenManagerImpl;
+import io.vertigo.rest.impl.security.UiSecurityTokenManagerImpl;
 import io.vertigo.rest.plugins.rest.instrospector.annotations.AnnotationsEndPointIntrospectorPlugin;
 import io.vertigo.rest.plugins.rest.routesregister.sparkjava.SparkJavaRoutesRegister;
 import io.vertigo.rest.plugins.rest.security.memory.MemoryUiSecurityTokenCachePlugin;
-import io.vertigo.rest.rest.RestManager;
-import io.vertigo.rest.rest.RestfulService;
 import io.vertigo.rest.security.UiSecurityTokenManager;
 import io.vertigoimpl.commons.locale.LocaleManagerImpl;
 import io.vertigoimpl.engines.rest.cmd.ComponentCmdRestServices;
@@ -147,7 +146,7 @@ public final class WsRestHandler {
 					.beginComponent(TesterRestServices.class).endComponent() //
 				.endModule()
 				.beginModule("restCore").withNoAPI().withInheritance(Object.class) //
-					.beginComponent(RestManager.class)
+					.beginComponent(RestManager.class, RestManagerImpl.class)
 						.beginPlugin(AnnotationsEndPointIntrospectorPlugin.class).endPlugin() //
 					.endComponent() //
 					.beginComponent(CatalogRestServices.class).endComponent() //

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.rest;
+package io.vertigo.rest.rest;
 
 import io.vertigo.dynamo.domain.metamodel.annotation.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.annotation.Field;
