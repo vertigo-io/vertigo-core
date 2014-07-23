@@ -29,9 +29,11 @@ import io.vertigo.rest.rest.RestfulService.SessionLess;
 import io.vertigo.rest.rest.RestfulService.Validate;
 import io.vertigo.rest.rest.metamodel.EndPointDefinition;
 import io.vertigo.rest.rest.metamodel.EndPointDefinition.Verb;
+import io.vertigo.rest.rest.metamodel.EndPointDefinitionBuilder;
 import io.vertigo.rest.rest.metamodel.EndPointParam;
 import io.vertigo.rest.rest.metamodel.EndPointParam.ImplicitParam;
 import io.vertigo.rest.rest.metamodel.EndPointParam.RestParamType;
+import io.vertigo.rest.rest.metamodel.EndPointParamBuilder;
 import io.vertigo.rest.rest.validation.DefaultDtObjectValidator;
 import io.vertigo.rest.rest.validation.DtObjectValidator;
 
@@ -62,183 +64,87 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 	}
 
 	private static <C extends RestfulService> Option<EndPointDefinition> buildEndPoint(final Method method, final Class<C> restFullServiceClass) {
-		Verb verb = null;
-		String path = null;
-		final String acceptType = "application/json"; //default
-		boolean needSession = true;
-		boolean sessionInvalidate = false;
-		boolean needAuthentication = true;
-		String[] includedFields = null;
-		String[] excludedFields = null;
-		boolean accessTokenPublish = false;
-		boolean accessTokenMandatory = false;
-		boolean accessTokenConsume = false;
-		boolean serverSideSave = false;
-		boolean autoSortAndPagination = false;
-		String doc = "";
+		final EndPointDefinitionBuilder builder = new EndPointDefinitionBuilder(method);
+		
 		for (final Annotation annotation : method.getAnnotations()) {
 			if (annotation instanceof GET) {
-				Assertion.checkState(verb == null, "A verb is already specified on {0}", method.getName());
-				verb = Verb.GET;
-				path = ((GET) annotation).value();
+				builder.with(Verb.GET, ((GET) annotation).value());				
 			} else if (annotation instanceof POST) {
-				Assertion.checkState(verb == null, "A verb is already specified on {0}", method.getName());
-				verb = Verb.POST;
-				path = ((POST) annotation).value();
+				builder.with(Verb.POST, ((POST) annotation).value());
 			} else if (annotation instanceof PUT) {
-				Assertion.checkState(verb == null, "A verb is already specified on {0}", method.getName());
-				verb = Verb.PUT;
-				path = ((PUT) annotation).value();
+				builder.with(Verb.PUT, ((PUT) annotation).value());
 			} else if (annotation instanceof DELETE) {
-				Assertion.checkState(verb == null, "A verb is already specified on {0}", method.getName());
-				verb = Verb.DELETE;
-				path = ((DELETE) annotation).value();
+				builder.with(Verb.DELETE, ((DELETE) annotation).value());
 			} else if (annotation instanceof AnonymousAccessAllowed) {
-				needAuthentication = false;
+				builder.withNeedAuthentication(false);
 			} else if (annotation instanceof SessionLess) {
-				needSession = false;
+				builder.withNeedSession(false);
 			} else if (annotation instanceof SessionInvalidate) {
-				sessionInvalidate = true;
+				builder.withSessionInvalidate(true);
 			} else if (annotation instanceof ExcludedFields) {
-				excludedFields = ((ExcludedFields) annotation).value();
+				builder.withExcludedFields(((ExcludedFields) annotation).value());
 			} else if (annotation instanceof IncludedFields) {
-				includedFields = ((IncludedFields) annotation).value();
+				builder.withIncludedFields(((IncludedFields) annotation).value());
 			} else if (annotation instanceof AccessTokenPublish) {
-				accessTokenPublish = true;
+				builder.withAccessTokenPublish(true);
 			} else if (annotation instanceof AccessTokenMandatory) {
-				accessTokenMandatory = true;
+				builder.withAccessTokenMandatory(true);
 			} else if (annotation instanceof AccessTokenConsume) {
-				accessTokenMandatory = true;
-				accessTokenConsume = true;
+				builder.withAccessTokenMandatory(true);
+				builder.withAccessTokenConsume(true);
 			} else if (annotation instanceof ServerSideSave) {
-				serverSideSave = true;
+				builder.withServerSideSave(true);
 			} else if (annotation instanceof AutoSortAndPagination) {
-				serverSideSave = true;
-				autoSortAndPagination = true;
+				builder.withServerSideSave(true);
+				builder.withAutoSortAndPagination(true);
 			} else if (annotation instanceof Doc) {
-				doc = ((Doc) annotation).value();
+				builder.withDoc(((Doc) annotation).value());
 			}
 		}
-		if (verb != null) {
-			Assertion.checkArgNotEmpty(path, "Route path must be specified on {0}", method.getName());
-			//-----------------------------------------------------------------
+		if (builder.hasVerb()) {
 			final Class<?>[] paramType = method.getParameterTypes();
 			final Annotation[][] parameterAnnotation = method.getParameterAnnotations();
 
-			final List<EndPointParam> endPointParams = new ArrayList<>();
 			for (int i = 0; i < paramType.length; i++) {
 				final EndPointParam endPointParam = buildEndPointParam(parameterAnnotation[i], paramType[i]);
-				//Assertion.checkArgNotEmpty(paramName, "Le paramName n'a pas été précisé sur {0}", method.getName());
-				endPointParams.add(endPointParam);
+				builder.withEndPointParam(endPointParam);
 			}
 			//---
-			final EndPointDefinition endPointDefinition = new EndPointDefinition(//
-					//"EP_" + StringUtil.camelToConstCase(restFullServiceClass.getSimpleName()) + "_" + StringUtil.camelToConstCase(method.getName()), //
-					"EP_" + verb + "_" + StringUtil.camelToConstCase(path.replaceAll("[//{}]", "_")), //
-					verb, //
-					path, //
-					acceptType, //
-					method, //
-					needSession, //
-					sessionInvalidate, //
-					needAuthentication, //
-					accessTokenPublish,//
-					accessTokenMandatory,//
-					accessTokenConsume,//
-					serverSideSave,//
-					autoSortAndPagination,//
-					asSet(includedFields), //
-					asSet(excludedFields), //
-					endPointParams, //
-					doc);
-			return Option.some(endPointDefinition);
+			return Option.some(builder.build());
 		}
 		return Option.none();
 	}
 
 	private static EndPointParam buildEndPointParam(final Annotation[] annotations, final Class<?> paramType) {
-		RestParamType restParamType = RestParamType.Body; //default
-		String restParamName = null;
-		final List<Class<? extends DtObjectValidator>> validatorClasses = new ArrayList<>();
-		String[] includedFields = null;
-		String[] excludedFields = null;
-		boolean needServerSideToken = false;
-		boolean consumeServerSideToken = false;
+		EndPointParamBuilder builder = new EndPointParamBuilder(paramType);
+		if (DtObject.class.isAssignableFrom(paramType)) {
+			builder.withValidatorClasses(DefaultDtObjectValidator.class);
+		} else if (ImplicitParam.UiMessageStack.getImplicitType().equals(paramType)) {
+			builder.with(RestParamType.Implicit, ImplicitParam.UiMessageStack.name());
+		} else if (ImplicitParam.UiListState.getImplicitType().equals(paramType)) {
+			builder.with(RestParamType.Implicit, ImplicitParam.UiListState.name());
+		}
+		
 		for (final Annotation annotation : annotations) {
 			if (annotation instanceof PathParam) {
-				restParamType = RestParamType.Path;
-				restParamName = ((PathParam) annotation).value();
+				builder.with(RestParamType.Path, ((PathParam) annotation).value());
 			} else if (annotation instanceof QueryParam) {
-				restParamType = RestParamType.Query;
-				restParamName = ((QueryParam) annotation).value();
+				builder.with(RestParamType.Query, ((QueryParam) annotation).value());
 			} else if (annotation instanceof InnerBodyParam) {
-				restParamType = RestParamType.MultiPartBody;
-				restParamName = ((InnerBodyParam) annotation).value();
+				builder.with(RestParamType.MultiPartBody, ((InnerBodyParam) annotation).value());				
 			} else if (annotation instanceof Validate) {
-				validatorClasses.addAll(Arrays.asList(((Validate) annotation).value()));
+				builder.withValidatorClasses(((Validate) annotation).value());					
 			} else if (annotation instanceof ExcludedFields) {
-				excludedFields = ((ExcludedFields) annotation).value();
+				builder.withExcludedFields(((ExcludedFields) annotation).value());	
 			} else if (annotation instanceof IncludedFields) {
-				includedFields = ((IncludedFields) annotation).value();
+				builder.withIncludedFields(((IncludedFields) annotation).value());	
 			} else if (annotation instanceof ServerSideRead) {
-				needServerSideToken = true;
+				builder.withNeedServerSideToken(true);	
 			} else if (annotation instanceof ServerSideConsume) {
-				needServerSideToken = true;
-				consumeServerSideToken = true;
+				builder.withNeedServerSideToken(true);	
+				builder.withConsumeServerSideToken(true);
 			}
-		}
-
-		if (DtObject.class.isAssignableFrom(paramType)) {
-			validatorClasses.add(0, DefaultDtObjectValidator.class);
-		} else if (ImplicitParam.UiMessageStack.getImplicitType().equals(paramType)) {
-			restParamType = RestParamType.Implicit;
-			restParamName = ImplicitParam.UiMessageStack.name();
-		} else if (ImplicitParam.UiListState.getImplicitType().equals(paramType)) {
-			restParamType = RestParamType.Implicit;
-			restParamName = ImplicitParam.UiListState.name();
-		}
-
-		//if no annotation : take request body
-
-		if (restParamType == RestParamType.Body) {
-			return new EndPointParam(restParamType, paramType, //
-					asSet(includedFields), //
-					asSet(excludedFields), //
-					needServerSideToken, //
-					consumeServerSideToken, //
-					validatorClasses);
-		}
-		return new EndPointParam(restParamType, restParamName, paramType, //
-				asSet(includedFields), //
-				asSet(excludedFields), //
-				needServerSideToken, //
-				consumeServerSideToken, //
-				validatorClasses);
+		}		
+		return builder.build();		
 	}
-
-	private static Set<String> asSet(final String[] fields) {
-		if (fields == null) {
-			return Collections.emptySet();
-		}
-		return new LinkedHashSet<>(Arrays.asList(fields));
-	}
-	//
-	//	private static List<String> computeExcludedFields(final String[] includedFields, final String[] excludedFields, final Class<?> paramType) {
-	//		Assertion.checkArgument(includedFields == null || excludedFields == null, "Can't resolve excludedFields of {0}, if both includedFields and excludedFields are set", paramType.getSimpleName());
-	//		if (includedFields == null && excludedFields == null) {
-	//			return Collections.emptyList();
-	//		} else if (includedFields == null) {
-	//			return Arrays.asList(excludedFields);
-	//		}
-	//
-	//		Assertion.checkState(DtObject.class.isAssignableFrom(paramType) || DtList.class.isAssignableFrom(paramType), "IncludeFields must be on DtObject or DtList ({0})", paramType.getSimpleName());
-	//		final Class<? extends DtObject> dtObjectType = (Class<? extends DtObject>) paramType;
-	//		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtObjectType);
-	//		for (final DtField dtField : dtDefinition.getFields()) {
-	//			final String fieldName = StringUtil.constToCamelCase(dtField.getName(), false);
-	//			//TODO extract 
-	//		}
-	//		return Collections.emptyList();
-	//	}
-
 }
