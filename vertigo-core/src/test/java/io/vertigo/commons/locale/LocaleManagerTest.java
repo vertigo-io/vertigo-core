@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.locale;
 
-import io.vertigo.AbstractTestCase2JU4;
+import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.kernel.lang.MessageKey;
 import io.vertigo.kernel.lang.MessageText;
@@ -36,7 +36,7 @@ import org.junit.Test;
 /**
  * @author pchretien
  */
-public final class LocaleManagerTest extends AbstractTestCase2JU4 {
+public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private LocaleManager localeManager;
 

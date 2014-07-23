@@ -18,7 +18,7 @@
  */
 package io.vertigo.kernel.component;
 
-import io.vertigo.AbstractTestCase2JU4;
+import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.component.mock.A;
 import io.vertigo.kernel.component.mock.B;
@@ -30,8 +30,7 @@ import io.vertigo.kernel.component.mock.MyException;
 import org.junit.Assert;
 import org.junit.Test;
 
-
-public abstract class AbstractAspectTestCase extends AbstractTestCase2JU4 {
+public abstract class AbstractAspectTestCase extends AbstractTestCaseJU4 {
 	private A a;
 	private B b;
 	private C c;

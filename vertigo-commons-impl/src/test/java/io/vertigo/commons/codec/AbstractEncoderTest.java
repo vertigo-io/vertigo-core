@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.codec;
 
-import io.vertigo.AbstractTestCase2JU4;
+import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 
@@ -31,7 +31,7 @@ import org.junit.Assert;
  * @param <S> Type Source à encoder
  * @param <T> Type cible, résultat de l'encodage
  */
-public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends AbstractTestCase2JU4 {
+public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends AbstractTestCaseJU4 {
 	protected static final String TEXT = "Les sanglots longs des violons de l'automne blessent mon coeur d'une langueur monotone.";
 	protected C codec;
 
