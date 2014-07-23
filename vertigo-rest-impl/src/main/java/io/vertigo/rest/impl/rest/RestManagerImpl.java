@@ -25,6 +25,9 @@ import io.vertigo.rest.rest.RestManager;
 import io.vertigo.rest.rest.RestfulService;
 import io.vertigo.rest.rest.metamodel.EndPointDefinition;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -52,14 +55,29 @@ public final class RestManagerImpl implements RestManager {
 	 * Scan and register ResfulServices as EndPointDefinitions.
 	 */
 	public void scanAndRegisterRestfulServices() {
+		final List<EndPointDefinition> allEndPointDefinitions = new ArrayList<>();
+
+		//1- We introspect all RestfulService class
 		for (final String componentId : Home.getComponentSpace().keySet()) {
 			final Object component = Home.getComponentSpace().resolve(componentId, Object.class);
 			if (component instanceof RestfulService) {
 				final List<EndPointDefinition> endPointDefinitions = endPointIntrospectorPlugin.instrospectEndPoint(((RestfulService) component).getClass());
-				for (final EndPointDefinition endPointDefinition : endPointDefinitions) {
-					Home.getDefinitionSpace().put(endPointDefinition, EndPointDefinition.class);
-				}
+				allEndPointDefinitions.addAll(endPointDefinitions);
 			}
+		}
+
+		//2- We sort by path, parameterized path should be after strict path
+		Collections.sort(allEndPointDefinitions, new Comparator<EndPointDefinition>() {
+
+			public int compare(final EndPointDefinition endPointDefinition1, final EndPointDefinition endPointDefinition2) {
+				return endPointDefinition1.getPath().compareTo(endPointDefinition2.getPath());
+			}
+
+		});
+
+		//3- We register EndPoint Definition in this order
+		for (final EndPointDefinition endPointDefinition : allEndPointDefinitions) {
+			Home.getDefinitionSpace().put(endPointDefinition, EndPointDefinition.class);
 		}
 	}
 
