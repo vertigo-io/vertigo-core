@@ -51,11 +51,17 @@ public final class WsRestRoute extends Route {
 	private final HandlerChain handlerChain = new HandlerChain();
 	private final JsonEngine jsonEngine = new GoogleJsonEngine();
 
+	/**
+	 * @param endPointDefinition EndPoint Definition
+	 */
 	public WsRestRoute(final EndPointDefinition endPointDefinition) {
 		super(convertJaxRsPathToSpark(endPointDefinition.getPath()), endPointDefinition.getAcceptType());
 		new Injector().injectMembers(this, Home.getComponentSpace());
 
 		handlerChain.addHandler(new ExceptionHandler(jsonEngine));
+		if (endPointDefinition.isSessionInvalidate()) {
+			handlerChain.addHandler(new SessionInvalidateHandler());
+		}
 		if (endPointDefinition.isNeedSession()) {
 			handlerChain.addHandler(new SessionHandler(securityManager));
 		}
@@ -75,12 +81,13 @@ public final class WsRestRoute extends Route {
 		return newPath;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object handle(final Request request, final Response response) {
 		try {
 			return handlerChain.handle(request, response, new RouteContext(request));
 		} catch (final Throwable th) {
-			System.err.println("Error " + th.getMessage());
+			System.err.println("Error " + th.getMessage()); //Use Logger
 			th.printStackTrace(System.err);
 			return th.getMessage();
 		}

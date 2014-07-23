@@ -45,8 +45,9 @@ public final class EndPointDefinition implements Definition {
 	private final Verb verb;
 	private final String acceptType;
 
-	private final Method method; //Function gÃ©rant l'exectution du EndPoint	
+	private final Method method; //Function gérant l'exectution du EndPoint	
 	private final boolean needSession;
+	private final boolean sessionInvalidate;
 	private final boolean needAuthentification;
 
 	private final boolean accessTokenPublish;
@@ -61,7 +62,7 @@ public final class EndPointDefinition implements Definition {
 	private final List<EndPointParam> endPointParams;
 	private final String doc;
 
-	public EndPointDefinition(final String name, final Verb verb, final String path, final String acceptType, final Method method, final boolean needSession, final boolean needAuthentification, final boolean accessTokenPublish, final boolean accessTokenMandatory, final boolean accessTokenConsume, final boolean serverSideSave, final boolean autoSortAndPagination, final Set<String> includedFields, final Set<String> excludedFields, final List<EndPointParam> endPointParams, final String doc) {
+	public EndPointDefinition(final String name, final Verb verb, final String path, final String acceptType, final Method method, final boolean needSession, final boolean sessionInvalidate, final boolean needAuthentification, final boolean accessTokenPublish, final boolean accessTokenMandatory, final boolean accessTokenConsume, final boolean serverSideSave, final boolean autoSortAndPagination, final Set<String> includedFields, final Set<String> excludedFields, final List<EndPointParam> endPointParams, final String doc) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(verb);
 		Assertion.checkArgNotEmpty(path);
@@ -82,6 +83,7 @@ public final class EndPointDefinition implements Definition {
 
 		this.method = method;
 		this.needSession = needSession;
+		this.sessionInvalidate = sessionInvalidate;
 		this.needAuthentification = needAuthentification;
 
 		this.accessTokenPublish = accessTokenPublish;
@@ -123,6 +125,10 @@ public final class EndPointDefinition implements Definition {
 
 	public boolean isNeedSession() {
 		return needSession;
+	}
+
+	public boolean isSessionInvalidate() {
+		return sessionInvalidate;
 	}
 
 	public boolean isNeedAuthentification() {

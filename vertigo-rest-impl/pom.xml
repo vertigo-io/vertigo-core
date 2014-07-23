@@ -66,8 +66,9 @@
 		
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-persona-impl</artifactId> <!--  depends of SecurityManagerImpl for WsRestHandler : TODO change it-->
-			<version>${project.version}</version>			
+			<artifactId>vertigo-persona-impl</artifactId> <!--  depends of SecurityManagerImpl for WsRestHandler -->
+			<version>${project.version}</version>	
+			<scope>test</scope>		
 		</dependency>
 		
 		<!-- <dependency>

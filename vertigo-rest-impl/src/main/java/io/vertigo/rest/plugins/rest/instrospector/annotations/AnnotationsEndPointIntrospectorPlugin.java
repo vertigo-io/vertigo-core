@@ -24,11 +24,12 @@ import io.vertigo.rest.rest.RestfulService.QueryParam;
 import io.vertigo.rest.rest.RestfulService.ServerSideConsume;
 import io.vertigo.rest.rest.RestfulService.ServerSideRead;
 import io.vertigo.rest.rest.RestfulService.ServerSideSave;
+import io.vertigo.rest.rest.RestfulService.SessionInvalidate;
 import io.vertigo.rest.rest.RestfulService.SessionLess;
 import io.vertigo.rest.rest.RestfulService.Validate;
 import io.vertigo.rest.rest.metamodel.EndPointDefinition;
-import io.vertigo.rest.rest.metamodel.EndPointParam;
 import io.vertigo.rest.rest.metamodel.EndPointDefinition.Verb;
+import io.vertigo.rest.rest.metamodel.EndPointParam;
 import io.vertigo.rest.rest.metamodel.EndPointParam.ImplicitParam;
 import io.vertigo.rest.rest.metamodel.EndPointParam.RestParamType;
 import io.vertigo.rest.rest.validation.DefaultDtObjectValidator;
@@ -61,8 +62,9 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 	private static <C extends RestfulService> Option<EndPointDefinition> buildEndPoint(final Method method, final Class<C> restFullServiceClass) {
 		Verb verb = null;
 		String path = null;
-		final String acceptType = "application/type"; //default
+		final String acceptType = "application/json"; //default
 		boolean needSession = true;
+		boolean sessionInvalidate = false;
 		boolean needAuthentication = true;
 		String[] includedFields = null;
 		String[] excludedFields = null;
@@ -93,6 +95,8 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 				needAuthentication = false;
 			} else if (annotation instanceof SessionLess) {
 				needSession = false;
+			} else if (annotation instanceof SessionInvalidate) {
+				sessionInvalidate = true;
 			} else if (annotation instanceof ExcludedFields) {
 				excludedFields = ((ExcludedFields) annotation).value();
 			} else if (annotation instanceof IncludedFields) {
@@ -134,6 +138,7 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 					acceptType, //
 					method, //
 					needSession, //
+					sessionInvalidate, //
 					needAuthentication, //
 					accessTokenPublish,//
 					accessTokenMandatory,//

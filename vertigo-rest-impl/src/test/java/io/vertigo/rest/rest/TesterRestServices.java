@@ -178,6 +178,12 @@ public final class TesterRestServices implements RestfulService {
 		securityManager.getCurrentUserSession().get().authenticate();
 	}
 
+	@SessionInvalidate
+	@GET("/test/logout")
+	public void logout() {
+		//code 200
+	}
+
 	@SessionLess
 	@AnonymousAccessAllowed
 	@GET("/test/anonymousTest")

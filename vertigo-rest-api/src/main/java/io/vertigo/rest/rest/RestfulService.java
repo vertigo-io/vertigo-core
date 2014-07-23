@@ -57,6 +57,16 @@ public interface RestfulService {
 		//
 	}
 
+	/**
+	 * Invalidate session (so logout).
+	 * (done AFTER request, so there is a session created)
+	 */
+	@Target({ ElementType.METHOD })
+	@Retention(RetentionPolicy.RUNTIME)
+	public @interface SessionInvalidate {
+		//
+	}
+
 	@Target({ ElementType.METHOD })
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface GET {
