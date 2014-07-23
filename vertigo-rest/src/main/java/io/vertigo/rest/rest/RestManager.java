@@ -32,7 +32,6 @@ import javax.inject.Inject;
  * @author npiedeloup
  */
 public final class RestManager implements Manager {
-
 	private final EndPointIntrospectorPlugin endPointIntrospectorPlugin;
 
 	/**

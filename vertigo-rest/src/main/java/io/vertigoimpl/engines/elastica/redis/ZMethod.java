@@ -24,7 +24,6 @@ import io.vertigo.kernel.util.ClassUtil;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
-
 public final class ZMethod implements Serializable {
 	private static final long serialVersionUID = -8895268815245300635L;
 

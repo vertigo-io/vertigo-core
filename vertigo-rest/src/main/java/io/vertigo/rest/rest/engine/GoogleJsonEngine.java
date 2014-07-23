@@ -83,10 +83,10 @@ public final class GoogleJsonEngine implements JsonEngine {
 			for (final String excludedField : excludedFields) {
 				jsonObject.remove(excludedField);
 			}
-			if(!includedFields.isEmpty()) {
+			if (!includedFields.isEmpty()) {
 				final Set<String> notIncludedFields = new HashSet<>();
 				for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
-					if(!includedFields.contains(entry.getKey())) {
+					if (!includedFields.contains(entry.getKey())) {
 						notIncludedFields.add(entry.getKey());
 					}
 				}
@@ -94,7 +94,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					jsonObject.remove(notIncludedField);
 				}
 			}
-			
+
 		}
 		//else Primitive : no exclude
 	}
