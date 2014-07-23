@@ -270,12 +270,28 @@ public final class TesterRestServices implements RestfulService {
 
 	//PUT is indempotent : ID obligatoire
 	@PUT("/test/filtered/{conId}")
-	@ExcludedFields({ "conId", "name" })
 	@ServerSideSave
-	public Contact filteredUpdate(//
+	public Contact filteredUpdateByExclude(//
 			final @Validate({ ContactValidator.class, MandatoryPkValidator.class })//
 			@ServerSideRead//
-			Contact contact) {
+			@ExcludedFields({ "conId", "name" }) Contact contact) {
+		if (contact.getName() == null || contact.getName().isEmpty()) {
+			//400
+			throw new VUserException(new MessageText("Name is mandatory", null));
+		}
+
+		contacts.put(contact.getConId(), contact);
+		//200
+		return contact;
+	}
+
+	//PUT is indempotent : ID obligatoire
+	@PUT("/test/filtered2/{conId}")
+	@ServerSideSave
+	public Contact filteredUpdateByInclude(//
+			final @Validate({ ContactValidator.class, MandatoryPkValidator.class })//
+			@ServerSideRead//
+			@IncludedFields({ "firstName", "email" }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
 			throw new VUserException(new MessageText("Name is mandatory", null));
@@ -356,7 +372,8 @@ public final class TesterRestServices implements RestfulService {
 
 	@POST("/test/search")
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
-	public List<Contact> testSearch(@ExcludedFields({ "conId", "email", "birthday", "address", "tels" }) final ContactCriteria contact) {
+	public List<Contact> testSearch(//
+			@ExcludedFields({ "conId", "email", "birthday", "address", "tels" }) final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
 		final DtList<Contact> fullList = asDtList(contacts.values(), Contact.class);
 		final DtList<Contact> result = filterFunction.apply(fullList);

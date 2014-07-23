@@ -12,6 +12,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import spark.Request;
+import spark.Response;
+
 /**
  * EndPoint param infos : 
  * - source type (query, path, body, innerBody or implicit)
@@ -36,7 +39,9 @@ public final class EndPointParam {
 
 	public static enum ImplicitParam {
 		UiMessageStack(UiMessageStack.class), //
-		UiListState(UiListState.class);
+		UiListState(UiListState.class), //
+		Response(Response.class), //
+		Request(Request.class);
 
 		private Class<?> implicitType;
 

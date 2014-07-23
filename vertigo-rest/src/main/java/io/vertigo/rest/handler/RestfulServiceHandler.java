@@ -55,8 +55,6 @@ final class RestfulServiceHandler implements RouteHandler {
 
 	/** {@inheritDoc} */
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
-		response.type("application/json;charset=UTF-8");
-
 		final Object[] serviceArgs = makeArgs(routeContext);
 		final Method method = endPointDefinition.getMethod();
 		final RestfulService service = (RestfulService) Home.getComponentSpace().resolve(method.getDeclaringClass());

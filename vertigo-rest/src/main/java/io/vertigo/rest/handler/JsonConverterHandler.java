@@ -54,7 +54,7 @@ import spark.Response;
  * @author npiedeloup
  */
 final class JsonConverterHandler implements RouteHandler {
-	private static final String SERVER_SIDE_MANDATORY = "AccessToken mandatory";
+	private static final String SERVER_SIDE_MANDATORY = "ServerSideToken mandatory";
 	private static final String FORBIDDEN_OPERATION_FIELD_MODIFICATION = "Can't modify field:";
 
 	private static final GoogleJsonEngine jsonWriterEngine = new GoogleJsonEngine();
@@ -98,6 +98,12 @@ final class JsonConverterHandler implements RouteHandler {
 						case UiListState:
 							value = readQueryValue(request.queryMap(), endPointParam, uiSecurityTokenManager);
 							break;
+						case Request:
+							value = request;
+							break;
+						case Response:
+							value = response;
+							break;
 						default:
 							throw new IllegalArgumentException("ImplicitParam : " + endPointParam.getName());
 					}
@@ -110,14 +116,22 @@ final class JsonConverterHandler implements RouteHandler {
 		}
 
 		final Object result = chain.handle(request, response, routeContext);
+		setHeadersFromResultType(result, response);
+		if (result != null) {
+			return writeValue(result, endPointDefinition, uiSecurityTokenManager);
+		}
+		return ""; //jetty understand null as 404 not found
+	}
+
+	private void setHeadersFromResultType(final Object result, final Response response) {
+		response.type("application/json;charset=UTF-8");
 		if (result != null) {
 			if (result instanceof List) {
 				response.header("x-total-count", String.valueOf(((List) result).size()));
 			}
-			return writeValue(result, endPointDefinition, uiSecurityTokenManager);
+		} else {
+			response.status(HttpServletResponse.SC_NO_CONTENT);
 		}
-		response.status(HttpServletResponse.SC_NO_CONTENT);
-		return "";
 	}
 
 	private static UiContext readMultiPartValue(final String jsonBody, final List<EndPointParam> endPointParams, final UiSecurityTokenManager uiSecurityTokenManager) throws VSecurityException {
@@ -260,9 +274,11 @@ final class JsonConverterHandler implements RouteHandler {
 			}
 		}
 		final Set<String> includedFields = endPointParam.getIncludedFields();
-		for (final String modifiedField : uiObject.getModifiedFields()) {
-			if (!includedFields.contains(modifiedField)) {
-				throw new VSecurityException(FORBIDDEN_OPERATION_FIELD_MODIFICATION + modifiedField);
+		if (!includedFields.isEmpty()) {
+			for (final String modifiedField : uiObject.getModifiedFields()) {
+				if (!includedFields.contains(modifiedField)) {
+					throw new VSecurityException(FORBIDDEN_OPERATION_FIELD_MODIFICATION + modifiedField);
+				}
 			}
 		}
 	}
@@ -273,6 +289,7 @@ final class JsonConverterHandler implements RouteHandler {
 		if (endPointDefinition.isServerSideSave()) {
 			if (UiContext.class.isInstance(value)) {
 
+				//TODO build json in jsonWriterEngine 
 				final StringBuilder sb = new StringBuilder();
 				sb.append("{");
 				String sep = "";
