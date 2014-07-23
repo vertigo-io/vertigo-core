@@ -31,7 +31,6 @@ import java.util.Map;
  * @author pchretien, npiedeloup
  */
 public final class DtObjectErrors {
-
 	private final List<MessageText> objectErrors = new ArrayList<>();
 	private final Map<String, List<MessageText>> fieldsErrors = new LinkedHashMap<>();
 

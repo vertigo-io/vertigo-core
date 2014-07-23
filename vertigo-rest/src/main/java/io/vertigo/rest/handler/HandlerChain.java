@@ -33,15 +33,15 @@ import spark.Response;
  * @author npiedeloup
  */
 final class HandlerChain {
-	private final List<RouteHandler> handlerList;
+	private final List<RouteHandler> handlers;
 	private final int offset;
 	private boolean isLock;
 
 	/**
 	 * Constructor.
 	 */
-	public HandlerChain() {
-		handlerList = new ArrayList<>();
+	HandlerChain() {
+		handlers = new ArrayList<>();
 		offset = 0;
 	}
 
@@ -52,7 +52,7 @@ final class HandlerChain {
 	private HandlerChain(final HandlerChain previous) {
 		Assertion.checkState(previous.offset < 50, "HandlerChain go through 50 handlers. Force halt : infinit loop suspected.");
 		//---------------------------------------------------------------------
-		handlerList = previous.handlerList;
+		handlers = previous.handlers;
 		offset = previous.offset + 1; //on avance
 		isLock = true;
 	}
@@ -65,8 +65,8 @@ final class HandlerChain {
 	 */
 	Object handle(final Request request, final Response response, final RouteContext routeContext) throws VSecurityException, SessionException {
 		isLock = true;
-		if (offset < handlerList.size()) {
-			final RouteHandler nextHandler = handlerList.get(offset);
+		if (offset < handlers.size()) {
+			final RouteHandler nextHandler = handlers.get(offset);
 			//System.out.println(">>> before doFilter " + nextHandler);
 			return nextHandler.handle(request, response, routeContext, new HandlerChain(this));
 			//System.out.println("<<< after doFilter " + nextHandler);
@@ -78,12 +78,12 @@ final class HandlerChain {
 	 * Add an handler to this chain (only during init phase).
 	 * @param newHandler Handler to add
 	 */
-	public void addHandler(final RouteHandler newHandler) {
+	void addHandler(final RouteHandler newHandler) {
 		Assertion.checkNotNull(newHandler);
 		Assertion.checkState(!isLock, "Can't add handler to a already used chain");
 		//---------------------------------------------------------------------	
 		//System.out.println("+++ addHandler " + newHandler);
-		handlerList.add(newHandler);
+		handlers.add(newHandler);
 	}
 
 }

@@ -74,7 +74,7 @@ public final class UiMessageStack {
 	 * @param level Niveau de message
 	 * @param message Message
 	 */
-	public final void addGlobalMessage(final Level level, final String message) {
+	public void addGlobalMessage(final Level level, final String message) {
 		switch (level) {
 			case ERROR:
 				globalErrors.add(message);
@@ -96,28 +96,28 @@ public final class UiMessageStack {
 	/**
 	 * @param message Message d'erreur
 	 */
-	public final void error(final String message) {
+	public void error(final String message) {
 		addGlobalMessage(Level.ERROR, message);
 	}
 
 	/**
 	 * @param message Message d'alerte
 	 */
-	public final void warning(final String message) {
+	public void warning(final String message) {
 		addGlobalMessage(Level.WARNING, message);
 	}
 
 	/**
 	 * @param message Message d'info
 	 */
-	public final void info(final String message) {
+	public void info(final String message) {
 		addGlobalMessage(Level.INFO, message);
 	}
 
 	/**
 	 * @param message Message d'info
 	 */
-	public final void success(final String message) {
+	public void success(final String message) {
 		addGlobalMessage(Level.SUCCESS, message);
 	}
 
@@ -126,7 +126,7 @@ public final class UiMessageStack {
 	 * @param dto Objet portant les erreurs
 	 * @param fieldName Champ portant l'erreur
 	 */
-	public final void error(final String message, final DtObject dto, final String fieldName) {
+	public void error(final String message, final DtObject dto, final String fieldName) {
 		addFieldMessage(Level.ERROR, message, dto, fieldName);
 	}
 
@@ -135,7 +135,7 @@ public final class UiMessageStack {
 	 * @param dto Objet portant les erreurs
 	 * @param fieldName Champ portant l'erreur
 	 */
-	public final void warning(final String message, final DtObject dto, final String fieldName) {
+	public void warning(final String message, final DtObject dto, final String fieldName) {
 		addFieldMessage(Level.WARNING, message, dto, fieldName);
 	}
 
@@ -144,15 +144,15 @@ public final class UiMessageStack {
 	 * @param dto Objet portant les erreurs
 	 * @param fieldName Champ portant l'erreur
 	 */
-	public final void info(final String message, final DtObject dto, final String fieldName) {
+	public void info(final String message, final DtObject dto, final String fieldName) {
 		addFieldMessage(Level.INFO, message, dto, fieldName);
 	}
 
-	public final void addFieldMessage(final Level level, final String message, final DtObject dto, final String fieldName) {
+	public void addFieldMessage(final Level level, final String message, final DtObject dto, final String fieldName) {
 		addFieldMessage(level, message, uiContextResolver.resolveContextKey(dto), fieldName);
 	}
 
-	public final void addFieldMessage(final Level level, final String message, final String contextKey, final String fieldName) {
+	public void addFieldMessage(final Level level, final String message, final String contextKey, final String fieldName) {
 		final Map<String, List<String>> fieldMessageMap;
 		switch (level) {
 			case ERROR:
@@ -183,5 +183,4 @@ public final class UiMessageStack {
 	public boolean hasErrors() {
 		return !globalErrors.isEmpty() || !fieldErrors.isEmpty();
 	}
-
 }
