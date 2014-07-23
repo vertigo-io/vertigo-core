@@ -37,8 +37,6 @@ limitations under the License. --><project xmlns="http://maven.apache.org/POM/4.
 		<module>vertigo-parent</module>
 		<module>vertigo-core</module>
 		
-		<module>vertigo-rest</module>
-		
 		<module>vertigo-commons-api</module>
 		<module>vertigo-commons-impl</module>
 		
@@ -54,10 +52,13 @@ limitations under the License. --><project xmlns="http://maven.apache.org/POM/4.
 	    <module>vertigo-labs-api</module>
     	<module>vertigo-labs-impl</module>
 
+		<module>vertigo-rest-api</module>
+		<module>vertigo-rest-impl</module>
+
 		<module>vertigo-studio</module>
 
 		<module>vertigo-ccc</module>
-  </modules>
+	</modules>
 
 	<scm>
 		<connection>scm:git:https://github.com/vertigo-io/vertigo.git</connection>

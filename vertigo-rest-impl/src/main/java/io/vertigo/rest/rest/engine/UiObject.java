@@ -1,20 +1,18 @@
-package io.vertigo.rest.engine;
+package io.vertigo.rest.rest.engine;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.DefinitionReference;
 import io.vertigo.kernel.util.StringUtil;
-import io.vertigo.rest.validation.DtObjectErrors;
-import io.vertigo.rest.validation.DtObjectValidator;
-import io.vertigo.rest.validation.UiMessageStack;
+import io.vertigo.rest.rest.validation.DtObjectErrors;
+import io.vertigo.rest.rest.validation.DtObjectValidator;
+import io.vertigo.rest.rest.validation.UiMessageStack;
 
-import java.util.AbstractList;
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,43 +21,57 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public final class UiList<D extends DtObject> extends AbstractList<UiObject<D>> {
+/**
+ * UiObject is used as an Input buffer from client.
+ * It managed to : 
+ * - merge a serverSideObject and an inputBufferObject
+ * - check validators
+ * - return merged Object
+ * 
+ * @author pchretien, npiedeloup
+ * @param <D> Type de DtObject représenté par cet Input
+ */
+public final class UiObject<D extends DtObject> implements Serializable {
+	private static final long serialVersionUID = -4639050257543017072L;
+
 	/**
-	* Index de transformation des propriétés CamelCase en champs du Dt en const
-	*/
+	 * Index de transformation des propriétés CamelCase en champs du Dt en const
+	 */
 	private final Map<String, String> camel2ConstIndex = new HashMap<>();
 	private final Map<String, String> const2CamelIndex = new HashMap<>();
 
 	/** Référence vers la Définition. */
 	private final DefinitionReference<DtDefinition> dtDefinitionRef;
 
-	//server side
-	private final Map<Integer, UiObject<D>> uiObjectByIndex = new HashMap<>();
-	private List<D> serverSideDtList;
+	private String inputKey;
+	private D inputDto;
+	private Set<String> modifiedFields; //modified fieldNames in camelCase
+
+	/**
+	 * DtObject dont on gère le buffer d'input.
+	 */
+	private D serverSideDto;
 	private String serverSideToken;
 
-	//search
-	private OData filterMetaData;
-
-	//input
-	private final List<UiObject<D>> collCreates = new ArrayList<>();
-	private final List<UiObject<D>> collUpdates = new ArrayList<>();
-	private final List<UiObject<D>> collDeletes = new ArrayList<>();
-	private List<D> inputDtList;
-
-	private String inputKey;
+	private transient DtObjectErrors dtObjectErrors;
 
 	// =========================================================================
 	// ========================CONSTRUCTEUR=====================================
 	// ==========================================================================
 	/**
 	 * Constructor.
-	 * @param dtoClass Object class buffered
+	 * @param inputDto partial object translated from input
+	 * @param modifiedFields modified fieldNames
 	 */
-	public UiList(final Class<D> dtListClass) {
-		Assertion.checkNotNull(dtListClass);
-		// -------------------------------------------------------------------------
-		this.dtDefinitionRef = new DefinitionReference<>(DtObjectUtil.findDtDefinition(dtListClass));
+	public UiObject(D inputDto, Set<String> modifiedFields) {
+		Assertion.checkNotNull(inputDto, "inputObject can't be null");
+		Assertion.checkNotNull(modifiedFields, "modifiedFields can't be null");
+		Assertion.checkArgument(!modifiedFields.isEmpty(), "modifiedFields can't be empty");
+		//-------------------------------------------------------------------------------
+		this.inputDto = inputDto;
+		this.modifiedFields = Collections.unmodifiableSet(new LinkedHashSet<>(modifiedFields));
+
+		this.dtDefinitionRef = new DefinitionReference<>(DtObjectUtil.findDtDefinition(inputDto));
 		for (final DtField dtField : getDtDefinition().getFields()) {
 			camel2ConstIndex.put(StringUtil.constToCamelCase(dtField.getName(), false), dtField.getName());
 			const2CamelIndex.put(dtField.getName(), StringUtil.constToCamelCase(dtField.getName(), false));
@@ -83,48 +95,12 @@ public final class UiList<D extends DtObject> extends AbstractList<UiObject<D>> 
 	}
 
 	/**
-	 * @param serverSideDtList List keep server side
+	 * @param serverSideDto Object keep server side
 	 */
-	public final void setServerSideList(final DtList<D> serverSideDtList) {
-		Assertion.checkNotNull(serverSideDtList, "serverSideDtList can't be null");
+	public final void setServerSideObject(final D serverSideDto) {
+		Assertion.checkNotNull(serverSideDto, "ServerSideObject can't be null");
 		//-------------------------------------------------------------------------------
-		this.serverSideDtList = serverSideDtList;
-	}
-
-	/**
-	 * @param inputDto partial object translated from input
-	 * @param modifiedFields modified fieldNames
-	 */
-	public final void addInputCreate(final UiObject<D> inputCreate, final Set<String> modifiedFields) {
-		Assertion.checkNotNull(inputCreate, "inputObject can't be null");
-		Assertion.checkNotNull(modifiedFields, "modifiedFields can't be null");
-		Assertion.checkArgument(!modifiedFields.isEmpty(), "modifiedFields can't be empty");
-		//-------------------------------------------------------------------------------
-		this.collCreates.add(inputCreate);
-	}
-
-	/**
-	 * @param inputDto partial object translated from input
-	 * @param modifiedFields modified fieldNames
-	 */
-	public final void addInputUpdate(final UiObject<D> inputUpdate, final Set<String> modifiedFields) {
-		Assertion.checkNotNull(inputUpdate, "inputObject can't be null");
-		Assertion.checkNotNull(modifiedFields, "modifiedFields can't be null");
-		Assertion.checkArgument(!modifiedFields.isEmpty(), "modifiedFields can't be empty");
-		//-------------------------------------------------------------------------------
-		this.collUpdates.add(inputUpdate);
-	}
-
-	/**
-	 * @param inputDto partial object translated from input
-	 * @param modifiedFields modified fieldNames
-	 */
-	public final void addInputDelete(final UiObject<D> inputDelete, final Set<String> modifiedFields) {
-		Assertion.checkNotNull(inputDelete, "inputObject can't be null");
-		Assertion.checkNotNull(modifiedFields, "modifiedFields can't be null");
-		Assertion.checkArgument(!modifiedFields.isEmpty(), "modifiedFields can't be empty");
-		//-------------------------------------------------------------------------------
-		this.collDeletes.add(inputDelete);
+		this.serverSideDto = serverSideDto;
 	}
 
 	/**
@@ -242,101 +218,23 @@ public final class UiList<D extends DtObject> extends AbstractList<UiObject<D>> 
 		return modifiedFields.contains(fieldName);
 	}
 
+	/**
+	 * @return All modified fieldNames (camel)
+	 */
+	public Set<String> getModifiedFields() {
+		return modifiedFields;
+	}
+
 	private boolean isModified(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
 		//---------------------------------------------------------------------
 		return modifiedFields.contains(const2CamelIndex.get(dtField.getName()));
 	}
 
-	/**
-	 * Constructeur.
-	 * @param dtList Liste à encapsuler
-	 */
-	public UiList(final DtList<D> dtList) {
-		super(dtList.getDefinition());
-		// -------------------------------------------------------------------------
-		this.dtList = dtList;
-		if (dtList.size() < 1000) {
-			initUiObjectByIdIndex();
-		}
-	}
-
-	// ==========================================================================
-
-	/** {@inheritDoc} */
-	protected DtList<D> obtainDtList() {
-		return dtList;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public final UiObject<D> get(final int index) {
-		UiObject<D> element = uiObjectByIndex.get(index);
-		if (element == null) {
-			element = new UiObject<>(obtainDtList().get(index));
-			uiObjectByIndex.put(index, element);
-			Assertion.checkState(uiObjectByIndex.size() < 1000, "Trop d'élément dans le buffer uiObjectByIndex de la liste de {0}", getDtDefinition().getName());
-		}
-		return element;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public final int size() {
-		return obtainDtList().size();
-	}
-
-	/**
-	 * Vérifie les UiObjects de la liste, met à jour les objets métiers et retourne la liste.
-	 * @param validator Validateur à utilisé, peut-être spécifique à l'objet.
-	 * @param uiMessageStack Pile des messages qui sera mise à jour
-	 * @return Liste métier validée.
-	 */
-	public DtList<D> validate(final UiObjectValidator<D> validator, final UiMessageStack uiMessageStack) {
-		check(validator, uiMessageStack);
-		return flush();
-	}
-
-	/**
-	 * @param validator
-	 * @param action
-	 * @param contextKey
-	 */
-	/**
-	 * Vérifie les UiObjects de la liste et remplis la pile d'erreur.
-	 * @param validator Validateur à utilisé
-	 * @param uiMessageStack Pile des messages qui sera mise à jour
-	 */
-	public void check(final UiObjectValidator<D> validator, final UiMessageStack uiMessageStack) {
-		//1. check Error => KUserException
-		//on valide les éléments internes
-		for (final UiObject<D> uiObject : getUiObjectBuffer()) {
-			uiObject.check(validator, uiMessageStack);
-		}
-	}
-
-	/**
-	 * @return met à jour les objets métiers et retourne la liste.
-	 */
-	public DtList<D> flush() {
-		//1. check Error => KUserException
-		//on valide les éléments internes
-		for (final UiObject<D> dtoInput : getUiObjectBuffer()) {
-			dtoInput.flush();
-		}
-		clearUiObjectBuffer(); //on purge le buffer
-		return dtList;
-	}
-
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder("uiList(" + dtList.size() + " element(s)");
-		for (int i = 0; i < Math.min(dtList.size(), 50); i++) {
-			sb.append("; ");
-			sb.append(get(i));
-		}
-		sb.append(")");
-		return sb.toString();
+		return "uiObject(modified:" + modifiedFields + " over dto:" + serverSideDto.toString() + ")";
 	}
+
 }
