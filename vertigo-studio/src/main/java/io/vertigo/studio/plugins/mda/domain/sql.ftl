@@ -52,7 +52,7 @@ create table ${dtDefinition.dtDefinition.localName}
 <#if field.dtField.persistent>
 <#if field.display?has_content>
 comment on column ${dtDefinition.dtDefinition.localName}.${field.name} is
-'${field.display}';
+'${field.display?replace("'","''")}';
 
 </#if>
 <#if "FOREIGN_KEY" == field.dtField.type >
