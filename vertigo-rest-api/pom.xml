@@ -11,7 +11,7 @@
 
 	<artifactId>vertigo-rest-api</artifactId>
 	<packaging>jar</packaging>
-	<name>vertigo-rest</name>
+	<name>vertigo-rest-api</name>
 
 	<dependencies>
 		<dependency>
