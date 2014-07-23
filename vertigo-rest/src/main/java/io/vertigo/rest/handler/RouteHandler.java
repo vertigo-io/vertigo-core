@@ -20,10 +20,6 @@ package io.vertigo.rest.handler;
 
 import io.vertigo.rest.exception.SessionException;
 import io.vertigo.rest.exception.VSecurityException;
-import io.vertigo.rest.handler.RouteContext;
-
-import javax.jws.HandlerChain;
-
 import spark.Request;
 import spark.Response;
 
