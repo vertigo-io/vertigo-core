@@ -30,7 +30,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-
 /**
  * @author prahmoune
  */
@@ -183,7 +182,14 @@ public final class DIAnnotationUtil {
 		Assertion.checkNotNull(constructor);
 		//---------------------------------------------------------------------
 		final String named = getNamedValue(constructor.getParameterAnnotations()[i]);
-		return named != null ? named : getId(constructor.getParameterTypes()[i]);
+
+		final Class<?> implClass;
+		if (Option.class.isAssignableFrom(constructor.getParameterTypes()[i])) {
+			implClass = ClassUtil.getGeneric(constructor, i);
+		} else {
+			implClass = constructor.getParameterTypes()[i];
+		}
+		return named != null ? named : getId(implClass);
 	}
 
 	private static String getNamedValue(final Annotation[] annotations) {

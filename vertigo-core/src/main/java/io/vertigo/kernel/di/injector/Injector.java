@@ -35,7 +35,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-
 /**
  * Injection des dépendances. 
  * 
@@ -100,7 +99,8 @@ public final class Injector {
 	//On récupère pour le paramètre i du constructeur l'objet à injecter
 	private static Object getInjected(final Container container, final Constructor<?> constructor, final int i) {
 		final String id = DIAnnotationUtil.buildId(constructor, i);
-		//------------
+		//----------
+		// Options
 		final boolean optionalParameter = DIAnnotationUtil.isOptional(constructor, i);
 		if (optionalParameter) {
 			if (container.contains(id)) {
@@ -108,6 +108,7 @@ public final class Injector {
 			}
 			return Option.none();
 		}
+		//----------
 		final Object value = container.resolve(id, constructor.getParameterTypes()[i]);
 		Assertion.checkNotNull(value);
 		//------------
@@ -117,7 +118,8 @@ public final class Injector {
 	//On récupère pour le champ 'field' l'objet à injecter
 	private static Object getInjected(final Container container, final Field field) {
 		final String id = DIAnnotationUtil.buildId(field);
-		//Gestion des Options
+		//----------
+		// Options
 		final boolean optionalField = DIAnnotationUtil.isOptional(field);
 		if (optionalField) {
 			if (container.contains(id)) {
@@ -125,6 +127,7 @@ public final class Injector {
 			}
 			return Option.none();
 		}
+		//----------
 		//Injection des listes de plugins 
 		final boolean pluginsField = DIAnnotationUtil.hasPlugins(field);
 		if (pluginsField) {
@@ -139,6 +142,7 @@ public final class Injector {
 			}
 			return Collections.unmodifiableList(list);
 		}
+		//----------
 		final Object value = container.resolve(id, field.getType());
 		Assertion.checkNotNull(value);
 		//------------
