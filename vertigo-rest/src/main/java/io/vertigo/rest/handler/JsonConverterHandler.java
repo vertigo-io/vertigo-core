@@ -21,7 +21,6 @@ package io.vertigo.rest.handler;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.util.BeanUtil;
 import io.vertigo.rest.engine.GoogleJsonEngine;
 import io.vertigo.rest.engine.UiContext;
 import io.vertigo.rest.engine.UiListState;
@@ -35,7 +34,6 @@ import io.vertigo.rest.metamodel.EndPointParam.RestParamType;
 import io.vertigo.rest.security.UiSecurityTokenManager;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,8 +42,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
-
-import com.google.gson.internal.UnsafeAllocator;
 
 import spark.QueryParamsMap;
 import spark.Request;
@@ -188,26 +184,26 @@ final class JsonConverterHandler implements RouteHandler {
 		return null;
 	}
 
-	private static <D> D parseQueryParam(QueryParamsMap queryMap, String paramName, Class<D> paramType, D defaultValue) {
+	private static <D> D parseQueryParam(final QueryParamsMap queryMap, final String paramName, final Class<D> paramType, final D defaultValue) {
 		final QueryParamsMap value = queryMap.get(paramName);
-		if(value.hasValue()) {
-			final Object result; 
-			if(Boolean.class.equals(paramType)) {
-				result =  value.booleanValue();
-			} else if(Double.class.equals(paramType)) {
-				result =   value.doubleValue();
-			} else if(Float.class.equals(paramType)) {
-				result =   value.floatValue();
-			} else if(Integer.class.equals(paramType)) {
-				result =   value.integerValue();
-			} else if(Long.class.equals(paramType)) {
-				result =  value.longValue();
-			} else if(String.class.equals(paramType)) {
-				result =   value.value();
+		if (value.hasValue()) {
+			final Object result;
+			if (Boolean.class.equals(paramType)) {
+				result = value.booleanValue();
+			} else if (Double.class.equals(paramType)) {
+				result = value.doubleValue();
+			} else if (Float.class.equals(paramType)) {
+				result = value.floatValue();
+			} else if (Integer.class.equals(paramType)) {
+				result = value.integerValue();
+			} else if (Long.class.equals(paramType)) {
+				result = value.longValue();
+			} else if (String.class.equals(paramType)) {
+				result = value.value();
 			} else {
-				throw new IllegalArgumentException("property type not supported in query : "+paramType.getSimpleName()+" ("+paramName+")");
+				throw new IllegalArgumentException("property type not supported in query : " + paramType.getSimpleName() + " (" + paramName + ")");
 			}
-			return (D)result;
+			return (D) result;
 		}
 		return defaultValue;
 	}
@@ -265,7 +261,7 @@ final class JsonConverterHandler implements RouteHandler {
 		}
 		final Set<String> includedFields = endPointParam.getIncludedFields();
 		for (final String modifiedField : uiObject.getModifiedFields()) {
-			if(!includedFields.contains(modifiedField)) {
+			if (!includedFields.contains(modifiedField)) {
 				throw new VSecurityException(FORBIDDEN_OPERATION_FIELD_MODIFICATION + modifiedField);
 			}
 		}

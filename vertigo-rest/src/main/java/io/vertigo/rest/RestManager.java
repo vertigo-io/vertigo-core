@@ -248,7 +248,7 @@ public final class RestManager implements Manager {
 		if (fields == null) {
 			return Collections.emptySet();
 		}
-		return new LinkedHashSet<String>(Arrays.asList(fields));
+		return new LinkedHashSet<>(Arrays.asList(fields));
 	}
 	//
 	//	private static List<String> computeExcludedFields(final String[] includedFields, final String[] excludedFields, final Class<?> paramType) {
