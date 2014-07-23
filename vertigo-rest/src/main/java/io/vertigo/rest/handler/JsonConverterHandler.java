@@ -21,7 +21,7 @@ package io.vertigo.rest.handler;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.rest.engine.GoogleJsonEngine;
+import io.vertigo.rest.engine.JsonEngine;
 import io.vertigo.rest.engine.UiContext;
 import io.vertigo.rest.engine.UiListState;
 import io.vertigo.rest.engine.UiObject;
@@ -57,28 +57,32 @@ final class JsonConverterHandler implements RouteHandler {
 	private static final String SERVER_SIDE_MANDATORY = "ServerSideToken mandatory";
 	private static final String FORBIDDEN_OPERATION_FIELD_MODIFICATION = "Can't modify field:";
 
-	private static final GoogleJsonEngine jsonWriterEngine = new GoogleJsonEngine();
-	private static final GoogleJsonEngine jsonReaderEngine = jsonWriterEngine;
+	private final JsonEngine jsonWriterEngine;
+	private final JsonEngine jsonReaderEngine;
 
 	private final UiSecurityTokenManager uiSecurityTokenManager;
 	private final EndPointDefinition endPointDefinition;
 
-	JsonConverterHandler(final UiSecurityTokenManager uiSecurityTokenManager, final EndPointDefinition endPointDefinition) {
+	JsonConverterHandler(final UiSecurityTokenManager uiSecurityTokenManager, final EndPointDefinition endPointDefinition, final JsonEngine jsonWriterEngine, final JsonEngine jsonReaderEngine) {
 		Assertion.checkNotNull(uiSecurityTokenManager);
 		Assertion.checkNotNull(endPointDefinition);
+		Assertion.checkNotNull(jsonWriterEngine);
+		Assertion.checkNotNull(jsonReaderEngine);
 		//---------------------------------------------------------------------
 		this.uiSecurityTokenManager = uiSecurityTokenManager;
 		this.endPointDefinition = endPointDefinition;
+		this.jsonWriterEngine = jsonWriterEngine;
+		this.jsonReaderEngine = jsonReaderEngine;
 	}
 
 	/** {@inheritDoc}  */
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
-		final UiContext multiPartBodyParsed = readMultiPartValue(request.body(), endPointDefinition.getEndPointParams(), uiSecurityTokenManager);
+		final UiContext multiPartBodyParsed = readMultiPartValue(request.body(), endPointDefinition.getEndPointParams());
 		for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
 			final Object value;
 			switch (endPointParam.getParamType()) {
 				case Body:
-					value = readValue(request.body(), endPointParam, uiSecurityTokenManager);
+					value = readValue(request.body(), endPointParam);
 					break;
 				case MultiPartBody:
 					value = multiPartBodyParsed.get(endPointParam.getName());
@@ -118,7 +122,7 @@ final class JsonConverterHandler implements RouteHandler {
 		final Object result = chain.handle(request, response, routeContext);
 		setHeadersFromResultType(result, response);
 		if (result != null) {
-			return writeValue(result, endPointDefinition, uiSecurityTokenManager);
+			return writeValue(result);
 		}
 		return ""; //jetty understand null as 404 not found
 	}
@@ -134,7 +138,7 @@ final class JsonConverterHandler implements RouteHandler {
 		}
 	}
 
-	private static UiContext readMultiPartValue(final String jsonBody, final List<EndPointParam> endPointParams, final UiSecurityTokenManager uiSecurityTokenManager) throws VSecurityException {
+	private UiContext readMultiPartValue(final String jsonBody, final List<EndPointParam> endPointParams) throws VSecurityException {
 		final List<EndPointParam> multiPartEndPointParams = new ArrayList<>();
 		final Map<String, Class<?>> multiPartBodyParams = new HashMap<>();
 		for (final EndPointParam endPointParam : endPointParams) {
@@ -156,7 +160,7 @@ final class JsonConverterHandler implements RouteHandler {
 		return null;
 	}
 
-	private static Object readPrimitiveValue(final String json, final EndPointParam endPointParam) {
+	private Object readPrimitiveValue(final String json, final EndPointParam endPointParam) {
 		final Class<?> paramClass = endPointParam.getType();
 		if (json == null) {
 			return null;
@@ -222,7 +226,7 @@ final class JsonConverterHandler implements RouteHandler {
 		return defaultValue;
 	}
 
-	private static Object readValue(final String json, final EndPointParam endPointParam, final UiSecurityTokenManager uiSecurityTokenManager) throws VSecurityException {
+	private Object readValue(final String json, final EndPointParam endPointParam) throws VSecurityException {
 		final Class<?> paramClass = endPointParam.getType();
 		if (json == null) {
 			return null;
@@ -283,12 +287,11 @@ final class JsonConverterHandler implements RouteHandler {
 		}
 	}
 
-	private static String writeValue(final Object value, final EndPointDefinition endPointDefinition, final UiSecurityTokenManager uiSecurityTokenManager) {
+	private String writeValue(final Object value) {
 		Assertion.checkNotNull(value);
 		//---------------------------------------------------------------------
 		if (endPointDefinition.isServerSideSave()) {
 			if (UiContext.class.isInstance(value)) {
-
 				//TODO build json in jsonWriterEngine 
 				final StringBuilder sb = new StringBuilder();
 				sb.append("{");
@@ -297,7 +300,7 @@ final class JsonConverterHandler implements RouteHandler {
 					sb.append(sep);
 					String encodedValue;
 					if (entry.getValue() instanceof DtList || entry.getValue() instanceof DtObject) {
-						encodedValue = writeValue(entry.getValue(), endPointDefinition, uiSecurityTokenManager);
+						encodedValue = writeValue(entry.getValue());
 					} else {
 						encodedValue = jsonWriterEngine.toJson(entry.getValue());
 					}

@@ -25,6 +25,12 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.export.Export;
+import io.vertigo.dynamo.export.ExportBuilder;
+import io.vertigo.dynamo.export.ExportDtParameters;
+import io.vertigo.dynamo.export.ExportFormat;
+import io.vertigo.dynamo.export.ExportManager;
+import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListChainFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
@@ -62,6 +68,8 @@ public final class TesterRestServices implements RestfulService {
 	private KSecurityManager securityManager;
 	@Inject
 	private CollectionsManager collectionsManager;
+	@Inject
+	private ExportManager exportManager;
 
 	/*private final enum Group {
 		Friends("FRD", "Friends"), //
@@ -204,6 +212,36 @@ public final class TesterRestServices implements RestfulService {
 		}
 		//200
 		return contact;
+	}
+
+	@GET("/test/export/pdf/")
+	public KFile testExportContacts() {
+		final DtList<Contact> fullList = asDtList(contacts.values(), Contact.class);
+		final ExportDtParameters dtParameter = exportManager.createExportListParameters(fullList);
+
+		final Export export = new ExportBuilder(ExportFormat.PDF, "contacts")//
+				.withExportDtParameters(dtParameter)//
+				.withAuthor("vertigo-test")//
+				.build();
+
+		final KFile result = exportManager.createExportFile(export);
+		//200
+		return result;
+	}
+
+	@GET("/test/export/pdf/{conId}")
+	public KFile testExportContact(@PathParam("conId") final long conId) {
+		final Contact contact = contacts.get(conId);
+		final ExportDtParameters dtParameter = exportManager.createExportObjectParameters(contact);
+
+		final Export export = new ExportBuilder(ExportFormat.PDF, "contact" + conId + ".pdf")//
+				.withExportDtParameters(dtParameter)//
+				.withAuthor("vertigo-test")//
+				.build();
+
+		final KFile result = exportManager.createExportFile(export);
+		//200
+		return result;
 	}
 
 	@GET("/test/grantAccess/")

@@ -19,7 +19,7 @@
 package io.vertigo.rest.handler;
 
 import io.vertigo.kernel.exception.VUserException;
-import io.vertigo.rest.engine.GoogleJsonEngine;
+import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.rest.engine.JsonEngine;
 import io.vertigo.rest.exception.SessionException;
 import io.vertigo.rest.exception.TooManyRequestException;
@@ -39,9 +39,15 @@ import com.google.gson.JsonSyntaxException;
  * @author npiedeloup
  */
 public final class ExceptionHandler implements RouteHandler {
-	private static final JsonEngine jsonWriterEngine = new GoogleJsonEngine();
+	private final JsonEngine jsonWriterEngine;
 	private static final int SC_UNPROCESSABLE_ENTITY = 422; //server understands the content syntaxe but not semanticly
 	private static final int SC_TOO_MANY_REQUEST = 429; //RFC 6585 : TooManyRequest in time window
+
+	ExceptionHandler(final JsonEngine jsonWriterEngine) {
+		Assertion.checkNotNull(jsonWriterEngine);
+		//---------------------------------------------------------------------
+		this.jsonWriterEngine = jsonWriterEngine;
+	}
 
 	/** {@inheritDoc} */
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) {

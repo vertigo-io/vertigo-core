@@ -23,9 +23,6 @@ import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.rest.exception.SessionException;
 import io.vertigo.rest.exception.VSecurityException;
-
-import javax.inject.Inject;
-
 import spark.Request;
 import spark.Response;
 import spark.Session;
@@ -47,7 +44,6 @@ public final class SessionHandler implements RouteHandler {
 	 * Constructor.
 	 * @param securityManager Security Manager
 	 */
-	@Inject
 	public SessionHandler(final KSecurityManager securityManager) {
 		Assertion.checkNotNull(securityManager);
 		//---------------------------------------------------------------------

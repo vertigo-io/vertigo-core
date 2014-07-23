@@ -18,28 +18,43 @@
  */
 package io.vertigo.rest;
 
+import io.vertigo.commons.cache.CacheManager;
+import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.commons.impl.cache.CacheManagerImpl;
+import io.vertigo.commons.impl.codec.CodecManagerImpl;
 import io.vertigo.commons.impl.resource.ResourceManagerImpl;
 import io.vertigo.commons.locale.LocaleManager;
+import io.vertigo.commons.plugins.cache.map.MapCachePlugin;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
+import io.vertigo.dynamo.export.ExportManager;
+import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.impl.collections.CollectionsManagerImpl;
 import io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl;
+import io.vertigo.dynamo.impl.export.ExportManagerImpl;
+import io.vertigo.dynamo.impl.file.FileManagerImpl;
+import io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl;
+import io.vertigo.dynamo.impl.task.TaskManagerImpl;
+import io.vertigo.dynamo.impl.work.WorkManagerImpl;
+import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
+import io.vertigo.dynamo.plugins.export.pdf.PDFExporterPlugin;
+import io.vertigo.dynamo.plugins.persistence.postgresql.PostgreSqlStorePlugin;
+import io.vertigo.dynamo.task.TaskManager;
+import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.engines.command.TcpVCommandEngine;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.persona.impl.security.KSecurityManagerImpl;
 import io.vertigo.persona.security.KSecurityManager;
-import io.vertigo.rest.handler.ExceptionHandler;
 import io.vertigo.rest.handler.RateLimitingHandler;
-import io.vertigo.rest.handler.SecurityHandler;
-import io.vertigo.rest.handler.SessionHandler;
 import io.vertigo.rest.impl.catalog.CatalogRestServices;
 import io.vertigo.rest.impl.security.UiSecurityTokenManagerImpl;
+import io.vertigo.rest.plugins.instrospector.annotations.AnnotationsEndPointIntrospectorPlugin;
 import io.vertigo.rest.plugins.routesregister.sparkjava.SparkJavaRoutesRegister;
 import io.vertigo.rest.plugins.security.memory.MemoryUiSecurityTokenCachePlugin;
 import io.vertigo.rest.security.UiSecurityTokenManager;
@@ -98,7 +113,24 @@ public final class WsRestHandler {
 					.endComponent() //
 				.endModule()
 				.beginModule("dynamo").withNoAPI() //
+					.beginComponent(CodecManager.class, CodecManagerImpl.class).endComponent() //
 					.beginComponent(CollectionsManager.class, CollectionsManagerImpl.class).endComponent() //
+					.beginComponent(FileManager.class, FileManagerImpl.class).endComponent() //
+					.beginComponent(PersistenceManager.class, PersistenceManagerImpl.class)
+						.beginPlugin(PostgreSqlStorePlugin.class) //
+							.withParam("sequencePrefix","SEQ_") //
+						.endPlugin() //
+					.endComponent() //
+					.beginComponent(CacheManager.class, CacheManagerImpl.class)
+						.beginPlugin( MapCachePlugin.class).endPlugin()
+					.endComponent() //
+					.beginComponent(TaskManager.class, TaskManagerImpl.class).endComponent() //
+					.beginComponent(WorkManager.class, WorkManagerImpl.class)
+						.withParam("workerCount", "2") //
+					.endComponent() //
+					.beginComponent(ExportManager.class, ExportManagerImpl.class)//
+						.beginPlugin(PDFExporterPlugin.class).endPlugin() //
+					.endComponent() //
 					.beginComponent(EnvironmentManagerImpl.class) //
 						.beginPlugin(AnnotationLoaderPlugin.class).endPlugin() //
 						.beginPlugin(KprLoaderPlugin.class).endPlugin() //
@@ -113,11 +145,10 @@ public final class WsRestHandler {
 					.beginComponent(TesterRestServices.class).endComponent() //
 				.endModule()
 				.beginModule("restCore").withNoAPI().withInheritance(Object.class) //
-					.beginComponent(RestManager.class).endComponent() //
+					.beginComponent(RestManager.class)
+						.beginPlugin(AnnotationsEndPointIntrospectorPlugin.class).endPlugin() //
+					.endComponent() //
 					.beginComponent(CatalogRestServices.class).endComponent() //
-					.beginComponent(ExceptionHandler.class).endComponent() //
-					.beginComponent(SecurityHandler.class).endComponent() //
-					.beginComponent(SessionHandler.class).endComponent() //
 					.beginComponent(RateLimitingHandler.class).endComponent() //
 					.beginComponent(UiSecurityTokenManager.class, UiSecurityTokenManagerImpl.class)
 						.beginPlugin(MemoryUiSecurityTokenCachePlugin.class)

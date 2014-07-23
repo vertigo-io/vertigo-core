@@ -43,6 +43,7 @@ public final class EndPointDefinition implements Definition {
 	private final String name;
 	private final String path;
 	private final Verb verb;
+	private final String acceptType;
 
 	private final Method method; //Function gérant l'exectution du EndPoint	
 	private final boolean needSession;
@@ -60,10 +61,11 @@ public final class EndPointDefinition implements Definition {
 	private final List<EndPointParam> endPointParams;
 	private final String doc;
 
-	public EndPointDefinition(final String name, final Verb verb, final String path, final Method method, final boolean needSession, final boolean needAuthentification, final boolean accessTokenPublish, final boolean accessTokenMandatory, final boolean accessTokenConsume, final boolean serverSideSave, final boolean autoSortAndPagination, final Set<String> includedFields, final Set<String> excludedFields, final List<EndPointParam> endPointParams, final String doc) {
+	public EndPointDefinition(final String name, final Verb verb, final String path, final String acceptType, final Method method, final boolean needSession, final boolean needAuthentification, final boolean accessTokenPublish, final boolean accessTokenMandatory, final boolean accessTokenConsume, final boolean serverSideSave, final boolean autoSortAndPagination, final Set<String> includedFields, final Set<String> excludedFields, final List<EndPointParam> endPointParams, final String doc) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(verb);
 		Assertion.checkArgNotEmpty(path);
+		Assertion.checkArgNotEmpty(acceptType);
 		Assertion.checkNotNull(method);
 		Assertion.checkNotNull(includedFields);
 		Assertion.checkNotNull(excludedFields);
@@ -76,6 +78,7 @@ public final class EndPointDefinition implements Definition {
 		this.name = name;
 		this.verb = verb;
 		this.path = path;
+		this.acceptType = acceptType;
 
 		this.method = method;
 		this.needSession = needSession;
@@ -104,6 +107,10 @@ public final class EndPointDefinition implements Definition {
 
 	public Verb getVerb() {
 		return verb;
+	}
+
+	public String getAcceptType() {
+		return acceptType;
 	}
 
 	public Method getMethod() {
@@ -153,4 +160,5 @@ public final class EndPointDefinition implements Definition {
 	public String getDoc() {
 		return doc;
 	}
+
 }

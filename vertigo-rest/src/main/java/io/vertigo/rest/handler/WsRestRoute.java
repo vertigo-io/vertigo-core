@@ -20,6 +20,9 @@ package io.vertigo.rest.handler;
 
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.di.injector.Injector;
+import io.vertigo.persona.security.KSecurityManager;
+import io.vertigo.rest.engine.GoogleJsonEngine;
+import io.vertigo.rest.engine.JsonEngine;
 import io.vertigo.rest.metamodel.EndPointDefinition;
 import io.vertigo.rest.security.UiSecurityTokenManager;
 
@@ -35,34 +38,34 @@ import spark.Route;
  */
 public final class WsRestRoute extends Route {
 
-	@Inject
-	private ExceptionHandler exceptionHandler;
-	@Inject
-	private SessionHandler sessionHandler;
-	@Inject
-	private SecurityHandler securityHandler;
+	//	private ExceptionHandler exceptionHandler;
+	//	private SessionHandler sessionHandler;
+	//	private SecurityHandler securityHandler;
 	@Inject
 	private RateLimitingHandler rateLimitingHandler;
+	@Inject
+	private KSecurityManager securityManager;
 	@Inject
 	private UiSecurityTokenManager uiSecurityTokenManager;
 
 	private final HandlerChain handlerChain = new HandlerChain();
+	private final JsonEngine jsonEngine = new GoogleJsonEngine();
 
 	public WsRestRoute(final EndPointDefinition endPointDefinition) {
-		super(convertJaxRsPathToSpark(endPointDefinition.getPath()));
-
+		super(convertJaxRsPathToSpark(endPointDefinition.getPath()), endPointDefinition.getAcceptType());
 		new Injector().injectMembers(this, Home.getComponentSpace());
 
-		handlerChain.addHandler(exceptionHandler);
+		handlerChain.addHandler(new ExceptionHandler(jsonEngine));
 		if (endPointDefinition.isNeedSession()) {
-			handlerChain.addHandler(sessionHandler);
+			handlerChain.addHandler(new SessionHandler(securityManager));
 		}
 		handlerChain.addHandler(rateLimitingHandler);
 		if (endPointDefinition.isNeedAuthentification()) {
-			handlerChain.addHandler(securityHandler);
+			handlerChain.addHandler(new SecurityHandler(securityManager));
 		}
 		handlerChain.addHandler(new AccessTokenHandler(uiSecurityTokenManager, endPointDefinition));
-		handlerChain.addHandler(new JsonConverterHandler(uiSecurityTokenManager, endPointDefinition));
+		handlerChain.addHandler(new JsonConverterHandler(uiSecurityTokenManager, endPointDefinition, jsonEngine, jsonEngine));
+		handlerChain.addHandler(new KFileHandler());
 		handlerChain.addHandler(new ValidatorHandler(endPointDefinition));
 		handlerChain.addHandler(new RestfulServiceHandler(endPointDefinition));
 	}
