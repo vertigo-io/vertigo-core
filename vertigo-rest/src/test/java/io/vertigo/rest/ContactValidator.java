@@ -21,8 +21,8 @@ package io.vertigo.rest;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.kernel.lang.MessageText;
 import io.vertigo.kernel.util.DateUtil;
-import io.vertigo.rest.validation.AbstractDtObjectValidator;
-import io.vertigo.rest.validation.DtObjectErrors;
+import io.vertigo.rest.rest.validation.AbstractDtObjectValidator;
+import io.vertigo.rest.rest.validation.DtObjectErrors;
 
 import java.util.Date;
 

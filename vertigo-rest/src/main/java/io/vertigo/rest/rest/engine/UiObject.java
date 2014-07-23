@@ -1,4 +1,4 @@
-package io.vertigo.rest.engine;
+package io.vertigo.rest.rest.engine;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -8,9 +8,9 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.DefinitionReference;
 import io.vertigo.kernel.util.StringUtil;
-import io.vertigo.rest.validation.DtObjectErrors;
-import io.vertigo.rest.validation.DtObjectValidator;
-import io.vertigo.rest.validation.UiMessageStack;
+import io.vertigo.rest.rest.validation.DtObjectErrors;
+import io.vertigo.rest.rest.validation.DtObjectValidator;
+import io.vertigo.rest.rest.validation.UiMessageStack;
 
 import java.io.Serializable;
 import java.util.Collections;

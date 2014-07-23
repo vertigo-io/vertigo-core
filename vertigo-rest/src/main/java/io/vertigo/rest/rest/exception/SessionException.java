@@ -16,21 +16,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.rest.exception;
+package io.vertigo.rest.rest.exception;
 
 /**
- * Security exception.
+ * Exception for expired session.
  * @author npiedeloup
  */
-public final class VSecurityException extends Exception {
-	private static final long serialVersionUID = -8681804137431091875L;
+public final class SessionException extends Exception {
+	private static final long serialVersionUID = 4871828055854233637L;
 
 	/**
 	 * Constructor.
 	 * @param message Error message
 	 */
-	public VSecurityException(final String message) {
+	public SessionException(final String message) {
 		super(message);
 	}
-
 }

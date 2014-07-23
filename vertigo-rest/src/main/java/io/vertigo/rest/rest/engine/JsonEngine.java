@@ -1,4 +1,4 @@
-package io.vertigo.rest.engine;
+package io.vertigo.rest.rest.engine;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 

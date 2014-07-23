@@ -41,9 +41,10 @@ import io.vertigo.kernel.lang.MessageText;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.util.DateUtil;
 import io.vertigo.persona.security.KSecurityManager;
-import io.vertigo.rest.engine.UiContext;
-import io.vertigo.rest.engine.UiListState;
-import io.vertigo.rest.exception.VSecurityException;
+import io.vertigo.rest.rest.RestfulService;
+import io.vertigo.rest.rest.engine.UiContext;
+import io.vertigo.rest.rest.engine.UiListState;
+import io.vertigo.rest.rest.exception.VSecurityException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

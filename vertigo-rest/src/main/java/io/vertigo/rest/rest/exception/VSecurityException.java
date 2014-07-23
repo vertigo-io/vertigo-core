@@ -16,20 +16,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.rest.exception;
+package io.vertigo.rest.rest.exception;
 
 /**
- * Rate limit exceeded exception.
+ * Security exception.
  * @author npiedeloup
  */
-public final class TooManyRequestException extends RuntimeException {
-	private static final long serialVersionUID = 4871828055854233637L;
+public final class VSecurityException extends Exception {
+	private static final long serialVersionUID = -8681804137431091875L;
 
 	/**
 	 * Constructor.
 	 * @param message Error message
 	 */
-	public TooManyRequestException(final String message) {
+	public VSecurityException(final String message) {
 		super(message);
 	}
+
 }

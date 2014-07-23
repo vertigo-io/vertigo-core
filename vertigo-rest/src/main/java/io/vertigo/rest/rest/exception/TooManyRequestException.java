@@ -16,20 +16,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.rest.exception;
+package io.vertigo.rest.rest.exception;
 
 /**
- * Exception for expired session.
+ * Rate limit exceeded exception.
  * @author npiedeloup
  */
-public final class SessionException extends Exception {
+public final class TooManyRequestException extends RuntimeException {
 	private static final long serialVersionUID = 4871828055854233637L;
 
 	/**
 	 * Constructor.
 	 * @param message Error message
 	 */
-	public SessionException(final String message) {
+	public TooManyRequestException(final String message) {
 		super(message);
 	}
 }
