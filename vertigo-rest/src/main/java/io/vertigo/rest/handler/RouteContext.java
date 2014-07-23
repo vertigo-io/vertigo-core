@@ -7,6 +7,9 @@ import io.vertigo.rest.validation.UiContextResolver;
 import io.vertigo.rest.validation.UiMessageStack;
 import spark.Request;
 
+/**
+* @author npiedeloup 
+*/
 public final class RouteContext {
 	private static final String UI_MESSAGE_STACK = "UiMessageStack";
 

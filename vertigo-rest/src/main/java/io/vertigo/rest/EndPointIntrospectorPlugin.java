@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * RestfulServices endPoint introspector.
- * @author npiedeloup (23 juil. 2014 10:40:37)
+ * @author npiedeloup
  */
 public interface EndPointIntrospectorPlugin extends Plugin {
 

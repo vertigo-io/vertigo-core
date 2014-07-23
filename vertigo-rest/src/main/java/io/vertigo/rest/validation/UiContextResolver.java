@@ -5,6 +5,9 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+* @author npiedeloup 
+*/
 public final class UiContextResolver {
 	private final Map<DtObject, String> dtObjectDictionary = new HashMap<>();
 

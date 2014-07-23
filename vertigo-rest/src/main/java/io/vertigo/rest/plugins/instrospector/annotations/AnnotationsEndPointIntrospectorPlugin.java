@@ -43,6 +43,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+* @author npiedeloup 
+*/
 public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntrospectorPlugin {
 	public List<EndPointDefinition> instrospectEndPoint(final Class<? extends RestfulService> restfulServiceClass) {
 		final List<EndPointDefinition> endPointDefinitions = new ArrayList<>();

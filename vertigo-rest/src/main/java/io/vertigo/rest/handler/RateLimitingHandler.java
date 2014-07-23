@@ -64,7 +64,7 @@ public final class RateLimitingHandler implements Activeable, RouteHandler {
 	 * @param securityManager Security Manager
 	 */
 	@Inject
-	public RateLimitingHandler(@Named("windowSeconds") final Option<Long> windowSeconds, @Named("limitValue") final Option<Long> limitValue, final KSecurityManager securityManager) {
+	public RateLimitingHandler(final KSecurityManager securityManager, @Named("windowSeconds") final Option<Long> windowSeconds, @Named("limitValue") final Option<Long> limitValue) {
 		Assertion.checkNotNull(securityManager);
 		//---------------------------------------------------------------------
 		this.securityManager = securityManager;
@@ -93,6 +93,11 @@ public final class RateLimitingHandler implements Activeable, RouteHandler {
 
 	/** {@inheritDoc}  */
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
+		Assertion.checkNotNull(request);
+		Assertion.checkNotNull(response);
+		Assertion.checkNotNull(routeContext);
+		Assertion.checkNotNull(chain);
+		//---------------------------------------------------------------------
 		final String userKey = obtainUserKey(request, securityManager.getCurrentUserSession());
 		response.header(RATE_LIMIT_LIMIT, String.valueOf(limitValue));
 		response.header(RATE_LIMIT_RESET, String.valueOf(windowSeconds - (System.currentTimeMillis() - lastRateLimitResetTime) / 1000));

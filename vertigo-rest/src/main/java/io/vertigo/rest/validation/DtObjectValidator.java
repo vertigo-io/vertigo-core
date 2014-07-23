@@ -7,7 +7,7 @@ import java.util.Set;
 /**
  * Validator of DtObject.
  * Could check an object, for a modified fields set and append detected errors in an DtObjectErrors.
- * @author npiedeloup (17 juil. 2014 11:05:47)
+ * @author npiedeloup
  * @param <O> Type of DtObject
  */
 public interface DtObjectValidator<O extends DtObject> {

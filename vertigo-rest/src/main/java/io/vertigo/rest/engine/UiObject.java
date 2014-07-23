@@ -32,7 +32,6 @@ import java.util.Set;
  * @param <D> Type de DtObject représenté par cet Input
  */
 public final class UiObject<D extends DtObject> implements Serializable {
-
 	private static final long serialVersionUID = -4639050257543017072L;
 
 	/**
@@ -71,7 +70,7 @@ public final class UiObject<D extends DtObject> implements Serializable {
 		//-------------------------------------------------------------------------------
 		this.inputDto = inputDto;
 		this.modifiedFields = Collections.unmodifiableSet(new LinkedHashSet<>(modifiedFields));
-		
+
 		this.dtDefinitionRef = new DefinitionReference<>(DtObjectUtil.findDtDefinition(inputDto));
 		for (final DtField dtField : getDtDefinition().getFields()) {
 			camel2ConstIndex.put(StringUtil.constToCamelCase(dtField.getName(), false), dtField.getName());
@@ -218,7 +217,7 @@ public final class UiObject<D extends DtObject> implements Serializable {
 		//---------------------------------------------------------------------
 		return modifiedFields.contains(fieldName);
 	}
-	
+
 	/**
 	 * @return All modified fieldNames (camel)
 	 */

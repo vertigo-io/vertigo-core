@@ -15,7 +15,7 @@ import spark.servlet.SparkApplication;
  * Application class, use to register Spark-java route.
  * Could be embedded in Tomcat Server (see http://www.sparkjava.com/readme.html#title19)
  * 
- * @author npiedeloup (22 juil. 2014 11:26:46)
+ * @author npiedeloup
  */
 public final class SparkJavaRoutesRegister implements SparkApplication {
 

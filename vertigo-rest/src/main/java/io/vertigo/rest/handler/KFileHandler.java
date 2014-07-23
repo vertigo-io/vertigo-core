@@ -31,7 +31,6 @@ import spark.Request;
 import spark.Response;
 
 /**
- * Auto paginator and Sort handler.
  * @author npiedeloup
  */
 final class KFileHandler implements RouteHandler {
@@ -96,8 +95,8 @@ final class KFileHandler implements RouteHandler {
 			return "attachment;filename=" + file;
 		}
 		final int length = file.length();
-		final StringBuilder sb = new StringBuilder(length + length / 4);
-		sb.append("attachment;filename*=\"");
+		final StringBuilder sb = new StringBuilder(length + length / 4)//
+				.append("attachment;filename*=\"");
 		char c;
 		for (int i = 0; i < length; i++) {
 			c = file.charAt(i);

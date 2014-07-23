@@ -23,6 +23,9 @@ import io.vertigo.kernel.exception.VUserException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.MessageText;
 
+/**
+* @author npiedeloup 
+*/
 public final class ValidationUserException extends VUserException {
 	private static final long serialVersionUID = 7214302356640340103L;
 
