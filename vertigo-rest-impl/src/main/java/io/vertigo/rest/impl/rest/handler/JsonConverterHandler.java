@@ -28,9 +28,9 @@ import io.vertigo.rest.rest.exception.SessionException;
 import io.vertigo.rest.rest.exception.VSecurityException;
 import io.vertigo.rest.rest.metamodel.EndPointDefinition;
 import io.vertigo.rest.rest.metamodel.EndPointParam;
-import io.vertigo.rest.rest.metamodel.UiListState;
 import io.vertigo.rest.rest.metamodel.EndPointParam.ImplicitParam;
 import io.vertigo.rest.rest.metamodel.EndPointParam.RestParamType;
+import io.vertigo.rest.rest.metamodel.UiListState;
 import io.vertigo.rest.security.UiSecurityTokenManager;
 
 import java.io.Serializable;
