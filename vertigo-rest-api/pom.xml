@@ -24,20 +24,6 @@
 			<artifactId>vertigo-dynamo-api</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
-		</dependency>
-
-		<!-- to remove -->		
-		<!-- to remove -->		
-		<!-- to remove -->		
-		<!-- to remove -->		
-		<!-- to remove -->		
-		<!-- to remove -->		
-		<!-- to remove -->		
-		<!-- to remove -->		
-		<dependency>
-			<groupId>com.sparkjava</groupId>
-			<artifactId>spark-core</artifactId>
-			<version>1.1.1</version>
-		</dependency>
+		</dependency>		
 	</dependencies>
 </project>

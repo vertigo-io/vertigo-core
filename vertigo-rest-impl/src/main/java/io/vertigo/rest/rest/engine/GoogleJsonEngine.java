@@ -54,10 +54,9 @@ public final class GoogleJsonEngine implements JsonEngine {
 		return gson.toJson(jsonElement);
 	}
 
-	/** {@inheritDoc} 
-	 * @param excludedFields */
+	/** {@inheritDoc} */
 	@Override
-	public String toJsonWithTokenId(final Object data, final String tokenId, final Set<String> includedFields, Set<String> excludedFields) {
+	public String toJsonWithTokenId(final Object data, final String tokenId, final Set<String> includedFields, final Set<String> excludedFields) {
 		if (data instanceof List) {
 			final JsonObject jsonObject = new JsonObject();
 			final JsonElement jsonElement = gson.toJsonTree(data);

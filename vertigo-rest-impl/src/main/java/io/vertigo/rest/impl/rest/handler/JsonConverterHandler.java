@@ -86,7 +86,6 @@ final class JsonConverterHandler implements RouteHandler {
 					break;
 				case MultiPartBody:
 					value = multiPartBodyParsed.get(endPointParam.getName());
-					//value = readValue(request.body(), endPointParam.getName(), endPointParam, uiSecurityTokenManager);
 					break;
 				case Path:
 					value = readPrimitiveValue(request.params(endPointParam.getName()), endPointParam);
@@ -102,12 +101,12 @@ final class JsonConverterHandler implements RouteHandler {
 						case UiListState:
 							value = readQueryValue(request.queryMap(), endPointParam, uiSecurityTokenManager);
 							break;
-						case Request:
+						/*case Request:
 							value = request;
 							break;
 						case Response:
 							value = response;
-							break;
+							break;*/
 						default:
 							throw new IllegalArgumentException("ImplicitParam : " + endPointParam.getName());
 					}
