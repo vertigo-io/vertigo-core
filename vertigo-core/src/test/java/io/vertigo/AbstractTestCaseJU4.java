@@ -24,13 +24,16 @@ import org.junit.Before;
 public abstract class AbstractTestCaseJU4 {
 	private static boolean homeStarted;
 
-	/**
-	 * Affecte homeStarted.
-	 *
-	 * @param homeStarted la valeur homeStarted à affecter
-	 */
-	private static synchronized void setHomeStarted(final boolean homeStarted) {
-		AbstractTestCaseJU4.homeStarted = homeStarted;
+	private synchronized void startHome() {
+		final ComponentSpaceConfigBuilder componentSpaceConfigBuilder = new ComponentSpaceConfigBuilder();
+		configMe(componentSpaceConfigBuilder);
+		Home.start(componentSpaceConfigBuilder.build());
+		homeStarted = true;
+	}
+
+	private synchronized void stopHome() {
+		Home.stop();
+		homeStarted = false;
 	}
 
 	/**
@@ -80,18 +83,6 @@ public abstract class AbstractTestCaseJU4 {
 		final Injector injector = new Injector();
 		injector.injectMembers(this, getContainer());
 		doSetUp();
-	}
-
-	private void startHome() {
-		final ComponentSpaceConfigBuilder componentSpaceConfigBuilder = new ComponentSpaceConfigBuilder();
-		configMe(componentSpaceConfigBuilder);
-		Home.start(componentSpaceConfigBuilder.build());
-		setHomeStarted(true);
-	}
-
-	private void stopHome() {
-		Home.stop();
-		setHomeStarted(false);
 	}
 
 	/**
