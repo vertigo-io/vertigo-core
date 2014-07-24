@@ -174,13 +174,13 @@ public abstract class AbstractTestCaseJU4 {
 	 * @param componentSpaceConfigBuilder builder
 	 */
 	protected void configMe(final ComponentSpaceConfigBuilder componentSpaceConfigBuilder) {
-		final AppBuilder builder = new AppBuilder() //
+		final AppBuilder appBuilder = new AppBuilder() //
 				.withSilence(true) //
 				.withComponentSpaceConfigBuilder(componentSpaceConfigBuilder) //
 				.withXmlFileNames(getClass(), getManagersXmlFileName()); //
 		if (getPropertiesFileName().isDefined()) {
-			builder.withEnvParams(getClass(), getPropertiesFileName().get());
+			appBuilder.withEnvParams(getClass(), getPropertiesFileName().get());
 		}
-		builder.flushToBuilder();
+		appBuilder.flushToBuilder();
 	}
 }
