@@ -26,8 +26,8 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	private boolean needSession = true;
 	private boolean sessionInvalidate;
 	private boolean needAuthentication = true;
-	private Set<String> includedFields;
-	private Set<String> excludedFields;
+	private Set<String> includedFields = new LinkedHashSet<>();
+	private Set<String> excludedFields = new LinkedHashSet<>();;
 	private boolean accessTokenPublish;
 	private boolean accessTokenMandatory;
 	private boolean accessTokenConsume;
@@ -67,11 +67,11 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 				doc);
 	}
 
-	public void with(Verb verb, String path) {
-		Assertion.checkState(verb == null, "A verb is already specified on {0}", method.getName());
-		Assertion.checkArgNotEmpty(path, "Route path must be specified on {0}", method.getName());
-		this.verb = verb;
-		this.path = path;
+	public void with(Verb newVerb, String newPath) {
+		Assertion.checkState(verb == null, "A verb is already specified on {0} ({1})", method.getName(), verb);
+		Assertion.checkArgNotEmpty(newPath, "Route path must be specified on {0}", method.getName());
+		this.verb = newVerb;
+		this.path = newPath;
 	}
 
 	public boolean hasVerb() {
@@ -95,11 +95,11 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	}
 
 	public void withExcludedFields(String[] excludedFields) {
-		this.excludedFields = asSet(excludedFields);
+		this.excludedFields.addAll(Arrays.asList(excludedFields));
 	}
 
 	public void withIncludedFields(String[] includedFields) {
-		this.includedFields = asSet(includedFields);
+		this.includedFields.addAll(Arrays.asList(includedFields));
 	}
 
 	public void withAccessTokenPublish(boolean accessTokenPublish) {
@@ -124,12 +124,5 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 
 	public void withEndPointParam(EndPointParam endPointParam) {
 		endPointParams.add(endPointParam);
-	}
-
-	private static Set<String> asSet(final String[] fields) {
-		if (fields == null) {
-			return Collections.emptySet();
-		}
-		return new LinkedHashSet<>(Arrays.asList(fields));
 	}
 }

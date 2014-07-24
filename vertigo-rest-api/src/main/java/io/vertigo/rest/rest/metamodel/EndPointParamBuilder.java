@@ -8,6 +8,7 @@ import io.vertigo.rest.rest.validation.DtObjectValidator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,8 +23,8 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 	private RestParamType restParamType = RestParamType.Body; //default;
 	private String restParamName;
 	private final List<Class<? extends DtObjectValidator>> validatorClasses = new ArrayList<>();
-	private Set<String> includedFields;
-	private Set<String> excludedFields;
+	private Set<String> includedFields = new LinkedHashSet<>();
+	private Set<String> excludedFields = new LinkedHashSet<>();
 	private boolean needServerSideToken;
 	private boolean consumeServerSideToken;
 
@@ -70,11 +71,11 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 	}
 
 	public void withExcludedFields(String[] excludedFields) {
-		this.excludedFields = asSet(excludedFields);
+		this.excludedFields.addAll(Arrays.asList(excludedFields));
 	}
 
 	public void withIncludedFields(String[] includedFields) {
-		this.includedFields = asSet(includedFields);
+		this.includedFields.addAll(Arrays.asList(includedFields));
 	}
 
 	public void withNeedServerSideToken(boolean needServerSideToken) {
@@ -83,12 +84,5 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 
 	public void withConsumeServerSideToken(boolean consumeServerSideToken) {
 		this.consumeServerSideToken = consumeServerSideToken;
-	}
-
-	private static Set<String> asSet(final String[] fields) {
-		if (fields == null) {
-			return Collections.emptySet();
-		}
-		return new LinkedHashSet<>(Arrays.asList(fields));
 	}
 }
