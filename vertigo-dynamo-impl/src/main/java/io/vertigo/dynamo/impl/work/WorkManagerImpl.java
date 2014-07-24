@@ -20,6 +20,7 @@ package io.vertigo.dynamo.impl.work;
 
 import io.vertigo.dynamo.impl.work.listener.WorkListener;
 import io.vertigo.dynamo.impl.work.listener.WorkListenerImpl;
+import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.kernel.lang.Activeable;
@@ -58,12 +59,14 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		coordinator.stop();
 	}
 
-	public <WR, W> void process(WorkItem<WR, W> workItem) {
-		coordinator.process(workItem);
-	}
-
 	public <WR, W> void schedule(WorkItem<WR, W> workItem) {
 		coordinator.schedule(workItem);
 	}
 
+	/** {@inheritDoc} */
+	public <WR, W> WR process(W work, WorkEngineProvider<WR, W> workEngineProvider) {
+		WorkItem<WR, W> workItem = new WorkItem<>(work, workEngineProvider);
+		coordinator.process(workItem);
+		return workItem.getResult();
+	}
 }
