@@ -21,7 +21,6 @@ import org.apache.log4j.Logger;
  * Purge is garantee Timer et passe toutes les minutes.
  *
  * @author pchretien, npiedeloup
- * @version $Id: BerkeleyContextCachePlugin.java,v 1.6 2014/03/05 11:23:17 npiedeloup Exp $
  */
 public final class MemoryUiSecurityTokenCachePlugin implements Activeable, UiSecurityTokenCachePlugin {
 

@@ -29,26 +29,26 @@ import java.util.Set;
  * - return merged Object
  * 
  * @author pchretien, npiedeloup
- * @param <D> Type de DtObject repr√©sent√© par cet Input
+ * @param <D> DtObject type
  */
 public final class UiObject<D extends DtObject> implements Serializable {
 	private static final long serialVersionUID = -4639050257543017072L;
 
 	/**
-	 * Index de transformation des propri√©t√©s CamelCase en champs du Dt en const
+	 * Index de transformation des propriÈtÈs CamelCase en champs du Dt en const
 	 */
 	private final Map<String, String> camel2ConstIndex = new HashMap<>();
 	private final Map<String, String> const2CamelIndex = new HashMap<>();
 
-	/** R√©f√©rence vers la D√©finition. */
+	/** RÈfÈrence vers la Èfinition. */
 	private final DefinitionReference<DtDefinition> dtDefinitionRef;
 
 	private String inputKey;
-	private D inputDto;
+	private final D inputDto;
 	private Set<String> modifiedFields; //modified fieldNames in camelCase
 
 	/**
-	 * DtObject dont on g√®re le buffer d'input.
+	 * DtObject dont on gËre le buffer d'input.
 	 */
 	private D serverSideDto;
 	private String serverSideToken;
@@ -63,7 +63,7 @@ public final class UiObject<D extends DtObject> implements Serializable {
 	 * @param inputDto partial object translated from input
 	 * @param modifiedFields modified fieldNames
 	 */
-	public UiObject(D inputDto, Set<String> modifiedFields) {
+	public UiObject(final D inputDto, final Set<String> modifiedFields) {
 		Assertion.checkNotNull(inputDto, "inputObject can't be null");
 		Assertion.checkNotNull(modifiedFields, "modifiedFields can't be null");
 		Assertion.checkArgument(!modifiedFields.isEmpty(), "modifiedFields can't be empty");

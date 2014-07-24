@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 /**
  * @author npiedeloup
- * @version $Id: CacheValue.java,v 1.1 2013/09/23 16:25:27 npiedeloup Exp $
  */
 final class CacheValue {
 	private final long createTime;
