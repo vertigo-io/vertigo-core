@@ -45,7 +45,7 @@ public final class WorkItem<WR, W> {
 		//---------------------------------------------------------------------
 		this.work = null;
 		this.workResultHandler = Option.some(workResultHandler);
-		this.workEngineProvider = new WorkEngineProvider<>(new AsyncEngine<WR, W>(callable));
+		this.workEngineProvider = new WorkEngineProvider<>(new CallableEngine<WR, W>(callable));
 	}
 
 	/**
