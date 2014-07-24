@@ -142,7 +142,7 @@ public final class ContactsRestServices implements RestfulService {
 	}
 
 	@GET("/contacts/search")
-	public List<Contact> readList(final ListCriteria listCriteria) {
+	public List<Contact> readList(final ContactCriteria listCriteria) {
 		//offset + range ?
 		//code 200
 		return new ArrayList<>(contacts.values());
