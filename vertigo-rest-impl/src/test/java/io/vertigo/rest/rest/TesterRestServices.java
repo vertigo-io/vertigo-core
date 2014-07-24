@@ -200,6 +200,20 @@ public final class TesterRestServices implements RestfulService {
 		return new ArrayList<>(contacts.values());
 	}
 
+	@Doc("send param type='Confirm' or type = 'Contact' \n Return 'OK' or 'Contact'")
+	@GET("/test/twoResult")
+	public UiContext testTwoResult(@QueryParam("type") final String type) {
+		final UiContext result = new UiContext();
+		if ("Confirm".equals(type)) {
+			result.put("message", "Are you sure");
+		} else {
+			result.put("contact", contacts.get(1));
+		}
+		//offset + range ?
+		//code 200
+		return result;
+	}
+
 	@Doc("Use passPhrase : RtFM")
 	@GET("/test/docTest/{passPhrase}")
 	public List<Contact> docTest(@PathParam("passPhrase") final String passPhrase) throws VSecurityException {
