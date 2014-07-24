@@ -39,6 +39,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
@@ -99,7 +100,7 @@ final class JsonConverterHandler implements RouteHandler {
 							value = routeContext.getUiMessageStack();
 							break;
 						case UiListState:
-							value = readQueryValue(request.queryMap(), endPointParam, uiSecurityTokenManager);
+							value = readQueryValue(request.queryMap(), endPointParam);
 							break;
 						/*case Request:
 							value = request;
@@ -179,18 +180,17 @@ final class JsonConverterHandler implements RouteHandler {
 		//return jsonReaderEngine.fromJson(json, paramClass);
 	}
 
-	private <D> D readQueryValue(final QueryParamsMap queryMap, final EndPointParam endPointParam, final UiSecurityTokenManager uiSecurityTokenManager2) {
+	private <D> D readQueryValue(final QueryParamsMap queryMap, final EndPointParam endPointParam) throws VSecurityException {
 		final Class<D> paramClass = (Class<D>) endPointParam.getType();
-		/* As it says : UnSafe.
-		 * final D object = UnsafeAllocator.create().newInstance(paramClass);
-		for(Field objectField : paramClass.getDeclaredFields()) {
-			Object paramValue = parseQueryParam(queryMap, objectField.getName(), objectField.getType(), null);
-			if(paramValue != null) {
-				objectField.setAccessible(true);
-				objectField.set(object, paramValue);
-			}
-		}*/
-		if (UiListState.class.isAssignableFrom(paramClass)) {
+		final Map<String, Object> queryParams = new HashMap<>();
+		for(Entry<String, String[]> entry : queryMap.toMap().entrySet()) {
+			String[] value = entry.getValue();
+			Object simplerValue = value.length==0?null:value.length==1?value[0]:value;
+			queryParams.put(entry.getKey(), simplerValue);
+		}
+		final String queryParamsAsJson = jsonWriterEngine.toJson(queryParams);	
+		return (D) readValue(queryParamsAsJson, endPointParam);
+		/*if (UiListState.class.isAssignableFrom(paramClass)) {
 			final int top = parseQueryParam(queryMap, "top", Integer.class, 20);
 			final int skip = parseQueryParam(queryMap, "skip", Integer.class, 0);
 			final String sortFieldName = parseQueryParam(queryMap, "sortFieldName", String.class, null);
@@ -198,7 +198,7 @@ final class JsonConverterHandler implements RouteHandler {
 			final D uiListState = (D) new UiListState(top, skip, sortFieldName, sortDesc);
 			return uiListState;
 		}
-		return null;
+		return null;*/
 	}
 
 	private static <D> D parseQueryParam(final QueryParamsMap queryMap, final String paramName, final Class<D> paramType, final D defaultValue) {
