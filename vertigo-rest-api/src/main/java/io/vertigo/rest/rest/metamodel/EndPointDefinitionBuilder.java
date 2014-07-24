@@ -2,11 +2,7 @@ package io.vertigo.rest.rest.metamodel;
 
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Builder;
-import io.vertigo.kernel.lang.MessageKey;
-import io.vertigo.kernel.lang.MessageText;
-import io.vertigo.kernel.metamodel.DefinitionUtil;
 import io.vertigo.kernel.util.StringUtil;
-import io.vertigo.rest.rest.RestfulService.GET;
 import io.vertigo.rest.rest.metamodel.EndPointDefinition.Verb;
 
 import java.lang.reflect.Method;
@@ -23,25 +19,22 @@ import java.util.Set;
  * @author npiedeloup
  */
 public final class EndPointDefinitionBuilder implements Builder<EndPointDefinition> {
-	
-	private EndPointDefinition endPointDefinition;
 	private final Method method;
-	private Verb verb = null;
-	private String path = null;
+	private Verb verb;
+	private String path;
 	private final String acceptType = "application/json"; //default
 	private boolean needSession = true;
-	private boolean sessionInvalidate = false;
+	private boolean sessionInvalidate;
 	private boolean needAuthentication = true;
-	private Set<String> includedFields = null;
-	private Set<String> excludedFields = null;
-	private boolean accessTokenPublish = false;
-	private boolean accessTokenMandatory = false;
-	private boolean accessTokenConsume = false;
-	private boolean serverSideSave = false;
-	private boolean autoSortAndPagination = false;
+	private Set<String> includedFields;
+	private Set<String> excludedFields;
+	private boolean accessTokenPublish;
+	private boolean accessTokenMandatory;
+	private boolean accessTokenConsume;
+	private boolean serverSideSave;
+	private boolean autoSortAndPagination;
 	private String doc = "";
 	private final List<EndPointParam> endPointParams = new ArrayList<>();
-	
 
 	/**
 	 * Constructeur.
@@ -53,9 +46,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	}
 
 	public EndPointDefinition build() {
-		Assertion.checkState(endPointDefinition == null, "Build already done");
-		//-----------------------------------------------------------------
-		endPointDefinition = new EndPointDefinition(//
+		return new EndPointDefinition(//
 				//"EP_" + StringUtil.camelToConstCase(restFullServiceClass.getSimpleName()) + "_" + StringUtil.camelToConstCase(method.getName()), //
 				"EP_" + verb + "_" + StringUtil.camelToConstCase(path.replaceAll("[//{}]", "_")), //
 				verb, //
@@ -74,16 +65,15 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 				excludedFields, //
 				endPointParams, //
 				doc);
-		return endPointDefinition;
 	}
-	
+
 	public void with(Verb verb, String path) {
 		Assertion.checkState(verb == null, "A verb is already specified on {0}", method.getName());
 		Assertion.checkArgNotEmpty(path, "Route path must be specified on {0}", method.getName());
 		this.verb = verb;
 		this.path = path;
 	}
-	
+
 	public boolean hasVerb() {
 		return verb != null;
 	}
@@ -117,7 +107,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	}
 
 	public void withAccessTokenMandatory(boolean accessTokenMandatory) {
-		this.accessTokenMandatory =accessTokenMandatory;
+		this.accessTokenMandatory = accessTokenMandatory;
 	}
 
 	public void withServerSideSave(boolean serverSideSave) {
@@ -131,7 +121,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	public void withDoc(String doc) {
 		this.doc = doc;
 	}
-	
+
 	public void withEndPointParam(EndPointParam endPointParam) {
 		endPointParams.add(endPointParam);
 	}
