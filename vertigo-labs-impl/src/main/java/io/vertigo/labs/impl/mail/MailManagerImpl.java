@@ -19,7 +19,6 @@
 package io.vertigo.labs.impl.mail;
 
 import io.vertigo.commons.locale.LocaleManager;
-import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Assertion;
@@ -69,13 +68,11 @@ public final class MailManagerImpl implements MailManager {
 	public void sendMailASync(final Mail mail, final WorkResultHandler<Date> workResultHandler) {
 		Assertion.checkNotNull(mail);
 		//---------------------------------------------------------------------
-		WorkItem<Date, ?> workItem = new WorkItem<>(new Callable<Date>() {
+		workManager.schedule(new Callable<Date>() {
 			public Date call() {
 				sendMail(mail);
 				return new Date();
 			}
 		}, workResultHandler);
-		workManager.schedule(workItem);
 	}
-
 }

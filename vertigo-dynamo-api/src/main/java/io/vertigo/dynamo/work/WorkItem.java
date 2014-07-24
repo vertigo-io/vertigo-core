@@ -39,17 +39,9 @@ public final class WorkItem<WR, W> {
 
 	//	private Status status = Status.Waiting;
 
-	public WorkItem(final Callable<WR> callable, final WorkResultHandler<WR> workResultHandler) {
-		Assertion.checkNotNull(callable);
-		Assertion.checkNotNull(workResultHandler);
-		//---------------------------------------------------------------------
-		this.work = null;
-		this.workResultHandler = Option.some(workResultHandler);
-		this.workEngineProvider = new WorkEngineProvider<>(new CallableEngine<WR, W>(callable));
-	}
-
 	/**
-	 * Constructeur.
+	 * Constructor. 
+	 * This workItem is used to define a synchronous work. 
 	 * @param work Travail dont on représente l'état.
 	 */
 	public WorkItem(final W work, final WorkEngineProvider<WR, W> workEngineProvider) {
@@ -59,6 +51,15 @@ public final class WorkItem<WR, W> {
 		this.work = work;
 		this.workResultHandler = Option.none();
 		this.workEngineProvider = workEngineProvider;
+	}
+
+	public WorkItem(final Callable<WR> callable, final WorkResultHandler<WR> workResultHandler) {
+		Assertion.checkNotNull(callable);
+		Assertion.checkNotNull(workResultHandler);
+		//---------------------------------------------------------------------
+		this.work = null;
+		this.workResultHandler = Option.some(workResultHandler);
+		this.workEngineProvider = new WorkEngineProvider<>(new CallableEngine<WR, W>(callable));
 	}
 
 	/**

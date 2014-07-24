@@ -19,7 +19,6 @@
 package io.vertigo.quarto.impl.converter;
 
 import io.vertigo.dynamo.file.model.KFile;
-import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Assertion;
@@ -65,12 +64,11 @@ public final class ConverterManagerImpl implements ConverterManager {
 		Assertion.checkNotNull(inputFile);
 		Assertion.checkArgNotEmpty(format);
 		// ---------------------------------------------------------------------
-		WorkItem<KFile, ?> workItem = new WorkItem<>(new Callable<KFile>() {
+		workManager.schedule(new Callable<KFile>() {
 			public KFile call() {
 				return convert(inputFile, format);
 			}
 		}, workResultHandler);
-		workManager.schedule(workItem);
 	}
 
 	/** {@inheritDoc} */

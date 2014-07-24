@@ -21,7 +21,6 @@ package io.vertigo.quarto.publisher.impl;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.KFile;
-import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Assertion;
@@ -69,12 +68,11 @@ public final class PublisherManagerImpl implements PublisherManager {
 		Assertion.checkNotNull(modelFileURL);
 		Assertion.checkNotNull(data);
 		//---------------------------------------------------------------------
-		WorkItem<KFile, ?> workItem = new WorkItem<>(new Callable<KFile>() {
+		workManager.schedule(new Callable<KFile>() {
 			public KFile call() {
 				return publish(fileName, modelFileURL, data);
 			}
 		}, workResultHandler);
-		workManager.schedule(workItem);
 	}
 
 	/** {@inheritDoc} */
