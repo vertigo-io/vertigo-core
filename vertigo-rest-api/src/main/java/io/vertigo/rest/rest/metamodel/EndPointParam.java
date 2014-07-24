@@ -68,7 +68,7 @@ public final class EndPointParam {
 	 * @param consumeServerSideToken if access token is consume (one time token)
 	 * @param dtObjectValidatorClasses list of validator classes (order is keep)
 	 */
-	public EndPointParam(final RestParamType paramType, final Class<?> type, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
+	EndPointParam(final RestParamType paramType, final Class<?> type, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
 		this(":" + paramType.name() + ":", paramType, null, type, includedFields, excludedFields, needServerSideToken, consumeServerSideToken, dtObjectValidatorClasses);
 		Assertion.checkArgument(paramType == RestParamType.Body, "Name is mandatory, for this parameter type : {0}", paramType.name());
 	}
@@ -82,7 +82,7 @@ public final class EndPointParam {
 	 * @param consumeServerSideToken if access token is consume (one time token)
 	 * @param dtObjectValidatorClasses List of validator classes (order is keep)
 	 */
-	public EndPointParam(final RestParamType paramType, final String name, final Class<?> type, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
+	EndPointParam(final RestParamType paramType, final String name, final Class<?> type, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
 		this(":" + paramType.name() + ":" + name, paramType, name, type, includedFields, excludedFields, needServerSideToken, consumeServerSideToken, dtObjectValidatorClasses);
 		Assertion.checkArgument(paramType != RestParamType.Body, "Body parameter have no name");
 		Assertion.checkArgument(paramType != RestParamType.Implicit || isImplicitParam(name), "When ImplicitParam, name ({1}) must be one of {0}", ImplicitParam.values(), name);
