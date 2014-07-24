@@ -24,6 +24,7 @@ import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.util.ClassUtil;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +40,10 @@ public final class CGLIBAopEngine implements AopEngine {
 	public Object create(final Object instance, final Map<Method, List<Interceptor>> interceptors) {
 		Assertion.checkNotNull(instance);
 		Assertion.checkNotNull(interceptors);
+		//check : witgh cglib all methods have to bo non-final 
+		for (Method method : interceptors.keySet()) {
+			Assertion.checkArgument(!Modifier.isFinal(method.getModifiers()), "due to cglib method '" + method.getName() + "' on '" + instance.getClass().getName() + "' can not be markedf as final");
+		}
 		//---------------------------------------------------------------------
 		final Enhancer enhancer = new Enhancer();
 		enhancer.setCallback(createCallBack(instance, interceptors));

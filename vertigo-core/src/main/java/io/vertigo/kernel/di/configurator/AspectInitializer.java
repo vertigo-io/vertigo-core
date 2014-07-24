@@ -26,12 +26,10 @@ import io.vertigo.kernel.lang.Assertion;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 /**
  * Classe permettant d'injecter les intercepteurs sur les points d'exécutions définis dans les aspects.
@@ -101,12 +99,16 @@ final class AspectInitializer {
 
 	private static Collection<Method> getMatchingMethods(final Class<?> annotationType, final Class<?> implClass) {
 		final Collection<Method> methods = new ArrayList<>();
-
 		// aspect au niveau classe
 		for (final Annotation annotation : implClass.getAnnotations()) {
 			if (annotation.annotationType().equals(annotationType)) {
-				// annotation trouvée, il faut ajouter toutes les méthodes de la classe.
-				methods.addAll(Arrays.asList(implClass.getMethods()));
+				for (Method method : implClass.getMethods()) {
+					// annotation trouvée, il faut ajouter toutes les méthodes de la classe.
+					if (!Object.class.equals(method.getDeclaringClass())) {
+						//On ne veut pas des méthodes de Object
+						methods.add(method);
+					}
+				}
 			}
 		}
 
@@ -118,7 +120,6 @@ final class AspectInitializer {
 				}
 			}
 		}
-
 		return methods;
 	}
 }
