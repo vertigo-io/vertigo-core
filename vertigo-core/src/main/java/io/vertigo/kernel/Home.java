@@ -61,7 +61,7 @@ public final class Home {
 
 	private final DefinitionSpace definitionSpace = new DefinitionSpace();
 	private ComponentSpace componentSpace = ComponentSpaceImpl.EMPTY;
-	private ResourceSpace resourceSpace = new ResourceSpace();
+	private final ResourceSpace resourceSpace = new ResourceSpace();
 
 	private Home() {
 		// Classe statique d'accès aux composants.
@@ -69,6 +69,7 @@ public final class Home {
 
 	/**
 	 * Démarrage de l'application.
+	 * @param componentSpaceConfig ComponentSpaceConfig
 	 */
 	public static void start(final ComponentSpaceConfig componentSpaceConfig) {
 		Assertion.checkNotNull(componentSpaceConfig);
@@ -119,14 +120,23 @@ public final class Home {
 	//-------------------------------------------------------------------------
 	//-------------------Méthods publiques-------------------------------------
 	//-------------------------------------------------------------------------
+	/**
+	 * @return ResourceSpace contains application's Resources
+	 */
 	public static ResourceSpace getResourceSpace() {
 		return INSTANCE.doGetResourceSpace();
 	}
 
+	/**
+	 * @return DefinitionSpace contains application's Definitions
+	 */
 	public static DefinitionSpace getDefinitionSpace() {
 		return INSTANCE.doGetDefinitionSpace();
 	}
 
+	/**
+	 * @return ComponentSpace contains application's Components
+	 */
 	public static ComponentSpace getComponentSpace() {
 		return INSTANCE.doGetComponentSpace();
 	}

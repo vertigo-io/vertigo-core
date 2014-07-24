@@ -163,6 +163,16 @@ public final class DtDefinition implements Definition {
 	}
 
 	/**
+	 * Retourne le champ correspondant SOUS CONDITION qu'il existe sinon assertion.
+	 *
+	 * @param fieldName Nom du champ
+	 * @return Champ correspondant
+	 */
+	public DtField getField(final DtFieldName fieldName) {
+		return getField(fieldName.name());
+	}
+
+	/**
 	 * @return Collection des champs.
 	 */
 	public List<DtField> getFields() {

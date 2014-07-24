@@ -32,7 +32,6 @@ import com.sleepycat.je.Transaction;
  * La purge est assurée par un Timer et passe toutes les Math.min(5 min, timeToLiveSeconds).
  *
  * @author pchretien, npiedeloup
- * @version $Id: BerkeleyContextCachePlugin.java,v 1.6 2014/03/05 11:23:17 npiedeloup Exp $
  */
 public final class BerkeleyUiSecurityTokenCachePlugin implements Activeable, UiSecurityTokenCachePlugin {
 	private static final String USER_HOME = "user.home";

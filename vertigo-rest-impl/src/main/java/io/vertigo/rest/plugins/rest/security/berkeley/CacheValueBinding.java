@@ -10,7 +10,6 @@ import com.sleepycat.bind.tuple.TupleOutput;
 
 /**
  * @author npiedeloup
- * @version $Id: CacheValueBinding.java,v 1.2 2013/11/15 17:14:36 npiedeloup Exp $
  */
 final class CacheValueBinding extends TupleBinding<CacheValue> {
 	private static final String PREFIX = "CacheValue:";

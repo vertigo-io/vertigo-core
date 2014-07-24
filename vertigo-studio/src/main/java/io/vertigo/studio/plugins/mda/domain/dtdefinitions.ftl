@@ -2,20 +2,12 @@ package ${packageName};
 
 import java.util.Arrays;
 import java.util.Iterator;
+import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 
 /**
  * Attention cette classe est générée automatiquement !
  */
 public final class ${classSimpleName} implements Iterable<Class<?>> {
-	/**
-	 * Nom de champs de DT (marqueur)
-	 */ 
-	public interface DtFieldName {
-		
-		/** @return nom du champ (const case) */
-		String name();
-	}
-	
 	/**
 	 * Enumération des DtDefinitions.
 	 */

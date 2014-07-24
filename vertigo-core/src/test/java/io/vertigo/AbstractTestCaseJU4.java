@@ -1,5 +1,6 @@
 package io.vertigo;
 
+import io.vertigo.kernel.AppBuilder;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.component.ComponentInfo;
 import io.vertigo.kernel.component.Container;
@@ -7,16 +8,9 @@ import io.vertigo.kernel.component.Describable;
 import io.vertigo.kernel.component.Manager;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.kernel.di.injector.Injector;
-import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
-import io.vertigo.xml.XMLModulesLoader;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
-import java.util.Properties;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -89,11 +83,7 @@ public abstract class AbstractTestCaseJU4 {
 	}
 
 	private void startHome() {
-		// Création de l'état de l'application
-		// Initialisation de l'état de l'application
-		final ComponentSpaceConfigBuilder componentSpaceConfigBuilder = new ComponentSpaceConfigBuilder().withSilence(true);
-		// final ComponentSpaceConfigBuilder componentSpaceConfigBuilder = new
-		// ComponentSpaceConfigBuilder().withRestEngine(new GrizzlyRestEngine(8086)).withSilence(true);
+		final ComponentSpaceConfigBuilder componentSpaceConfigBuilder = new ComponentSpaceConfigBuilder();
 		configMe(componentSpaceConfigBuilder);
 		Home.start(componentSpaceConfigBuilder.build());
 		setHomeStarted(true);
@@ -190,58 +180,16 @@ public abstract class AbstractTestCaseJU4 {
 
 	/**
 	 * Configuration des tests.
-	 *
-	 * @param componentSpaceConfiguilder builder
+	 * @param componentSpaceConfigBuilder builder
 	 */
-	protected void configMe(final ComponentSpaceConfigBuilder componentSpaceConfiguilder) {
-		for (final URL url : loadManagersXml()) {
-			componentSpaceConfiguilder.withLoader(new XMLModulesLoader(url, loadProperties()));
+	protected void configMe(final ComponentSpaceConfigBuilder componentSpaceConfigBuilder) {
+		final AppBuilder builder = new AppBuilder() //
+				.withSilence(true) //
+				.withComponentSpaceConfigBuilder(componentSpaceConfigBuilder) //
+				.withXmlFileNames(getClass(), getManagersXmlFileName()); //
+		if (getPropertiesFileName().isDefined()) {
+			builder.withEnvParams(getClass(), getPropertiesFileName().get());
 		}
+		builder.flushToBuilder();
 	}
-
-	private URL[] loadManagersXml() {
-		final URL[] urls = new URL[getManagersXmlFileName().length];
-		int i = 0;
-		for (final String managersXmlFileName : getManagersXmlFileName()) {
-			urls[i] = getClass().getResource(managersXmlFileName);
-			Assertion.checkNotNull(urls[i], "file configuration '{0}' not found", managersXmlFileName);
-			i++;
-		}
-		return urls;
-	}
-
-	private Properties loadProperties() {
-		try {
-			final Option<String> propertiesName = getPropertiesFileName();
-			final Properties properties = new Properties();
-			if (propertiesName.isDefined()) {
-				try (final InputStream in = createURL(propertiesName.get()).openStream()) {
-					properties.load(in);
-				}
-			}
-			return properties;
-		} catch (final IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	/**
-	 * Retourne l'URL correspondant au nom du fichier dans le classPath.
-	 *
-	 * @param fileName Nom du fichier
-	 * @return URN non null
-	 */
-	private URL createURL(final String fileName) {
-		Assertion.checkArgNotEmpty(fileName);
-		// ---------------------------------------------------------------------
-		try {
-			return new URL(fileName);
-		} catch (final MalformedURLException e) {
-			// Si fileName non trouvé, on recherche dans le classPath
-			final URL url = getClass().getResource(fileName);
-			Assertion.checkNotNull(url, "Impossible de récupérer le fichier [" + fileName + "]");
-			return url;
-		}
-	}
-
 }

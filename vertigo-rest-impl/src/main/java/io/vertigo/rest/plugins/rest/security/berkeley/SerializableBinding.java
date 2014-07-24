@@ -11,7 +11,6 @@ import com.sleepycat.bind.tuple.TupleOutput;
 
 /**
  * @author npiedeloup
- * @version $Id: SerializableBinding.java,v 1.3 2014/01/29 10:21:01 pchretien Exp $
  */
 final class SerializableBinding extends TupleBinding<Serializable> {
 	private static final String PREFIX = "Serializable:";
