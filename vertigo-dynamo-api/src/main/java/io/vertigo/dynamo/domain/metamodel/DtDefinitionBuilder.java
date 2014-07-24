@@ -68,10 +68,10 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		dtDefinitionName = name;
 	}
 
-	public DtDefinitionBuilder withPackageName(final String newPackageName) {
+	public DtDefinitionBuilder withPackageName(final String packageName) {
 		//packageName peut être null
 		//---------------------------------------------------------------------
-		packageName = newPackageName;
+		this.packageName = packageName;
 		return this;
 	}
 

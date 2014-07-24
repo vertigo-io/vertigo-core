@@ -25,7 +25,6 @@ import io.vertigo.kernel.lang.Builder;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
  * Paramétrage de l'application.
  * 
@@ -45,10 +44,10 @@ public final class PluginConfigBuilder implements Builder<PluginConfig> {
 		this.componentConfigBuilder = componentConfigBuilder;
 	}
 
-	PluginConfigBuilder withInheritedParams(final Map<String, String> newInheritedParams) {
-		Assertion.checkNotNull(newInheritedParams);
+	PluginConfigBuilder withInheritedParams(final Map<String, String> inheritedParams) {
+		Assertion.checkNotNull(inheritedParams);
 		//---------------------------------------------------------------------
-		inheritedParams.putAll(newInheritedParams);
+		this.inheritedParams.putAll(inheritedParams);
 		return this;
 	}
 

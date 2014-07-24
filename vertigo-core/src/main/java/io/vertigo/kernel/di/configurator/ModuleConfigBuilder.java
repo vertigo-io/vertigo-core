@@ -75,10 +75,10 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		return this;
 	}
 
-	public ModuleConfigBuilder withInheritance(final Class<?> newSuperClass) {
-		Assertion.checkNotNull(newSuperClass);
+	public ModuleConfigBuilder withInheritance(final Class<?> superClass) {
+		Assertion.checkNotNull(superClass);
 		//---------------------------------------------------------------------
-		superClass = newSuperClass;
+		this.superClass = superClass;
 		return this;
 	}
 

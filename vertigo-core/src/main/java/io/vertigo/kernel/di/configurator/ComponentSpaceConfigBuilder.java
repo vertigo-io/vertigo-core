@@ -74,33 +74,33 @@ public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpace
 
 	/**
 	 * Permet de définir un démarrage silencieux. (Sans retour console)
-	 * @param newSilence Si le mode est silencieux 
+	 * @param silence Si le mode est silencieux 
 	 * @return Builder
 	 */
-	public ComponentSpaceConfigBuilder withSilence(final boolean newSilence) {
-		silence = newSilence;
+	public ComponentSpaceConfigBuilder withSilence(final boolean silence) {
+		this.silence = silence;
 		return this;
 	}
 
-	public ComponentSpaceConfigBuilder withCommandEngine(final VCommandEngine newCommandEngine) {
-		Assertion.checkNotNull(newCommandEngine);
+	public ComponentSpaceConfigBuilder withCommandEngine(final VCommandEngine commandEngine) {
+		Assertion.checkNotNull(commandEngine);
 		//---------------------------------------------------------------------
-		commandEngine = newCommandEngine;
+		this.commandEngine = commandEngine;
 		return this;
 	}
 
-	public ComponentSpaceConfigBuilder withElasticaEngine(final ElasticaEngine newElasticaEngine) {
-		Assertion.checkNotNull(newElasticaEngine);
-		Assertion.checkState(elasticaEngine == null, "elasticaEngine is alreday completed");
+	public ComponentSpaceConfigBuilder withElasticaEngine(final ElasticaEngine elasticaEngine) {
+		Assertion.checkNotNull(elasticaEngine);
+		Assertion.checkState(this.elasticaEngine == null, "elasticaEngine is alreday completed");
 		//---------------------------------------------------------------------
-		elasticaEngine = newElasticaEngine;
+		this.elasticaEngine = elasticaEngine;
 		return this;
 	}
 
-	public ComponentSpaceConfigBuilder withAopEngine(final AopEngine newAopEngine) {
-		Assertion.checkNotNull(newAopEngine);
+	public ComponentSpaceConfigBuilder withAopEngine(final AopEngine aopEngine) {
+		Assertion.checkNotNull(aopEngine);
 		//---------------------------------------------------------------------
-		aopEngine = newAopEngine;
+		this.aopEngine = aopEngine;
 		return this;
 	}
 

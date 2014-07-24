@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * Paramétrage de l'application.
  * 
@@ -57,10 +56,10 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 		this.elastic = elastic;
 	}
 
-	public ComponentConfigBuilder withInitializer(final Class<? extends ComponentInitializer<?>> newManagerInitialierClass) {
-		Assertion.checkNotNull(newManagerInitialierClass);
+	public ComponentConfigBuilder withInitializer(final Class<? extends ComponentInitializer<?>> managerInitialierClass) {
+		Assertion.checkNotNull(managerInitialierClass);
 		//---------------------------------------------------------------------
-		managerInitializerClass = newManagerInitialierClass;
+		this.managerInitializerClass = managerInitialierClass;
 		return this;
 	}
 

@@ -50,9 +50,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 	public void testProcess() {
 		final long start = System.currentTimeMillis();
 		for (int i = 0; i < loop; i++) {
-			final WorkItem<Long, DivideWork> workItem = new WorkItem<>(new DivideWork(10, 5), new WorkEngineProvider<>(DivideWorkEngine.class));
-			workManager.process(workItem);
-			final long div = workItem.getResult();
+			final long div = workManager.process(new DivideWork(10, 5), new WorkEngineProvider<>(DivideWorkEngine.class));
 			Assert.assertEquals(2L, div);
 			if (i > 0 && i % 1000 == 0) {
 				final long elapsed = System.currentTimeMillis() - start;
@@ -69,9 +67,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 	@Test(expected = NullPointerException.class)
 	public void testProcessWithNull() {
 		final DivideWork work = null;
-		final WorkItem<Long, DivideWork> workItem = new WorkItem<>(work, new WorkEngineProvider<>(DivideWorkEngine.class));
-		workManager.process(workItem);
-		final Object div = workItem.getResult();
+		final Object div = workManager.process(work, new WorkEngineProvider<>(DivideWorkEngine.class));
 		nop(div);
 	}
 
@@ -80,9 +76,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test(expected = ArithmeticException.class)
 	public void testProcessWithError() {
-		final WorkItem<Long, DivideWork> workItem = new WorkItem<>(new DivideWork(10, 0), new WorkEngineProvider<>(DivideWorkEngine.class));
-		workManager.process(workItem);
-		final long div = workItem.getResult();
+		final long div = workManager.process(new DivideWork(10, 0), new WorkEngineProvider<>(DivideWorkEngine.class));
 		nop(div);
 	}
 

@@ -41,7 +41,7 @@ public interface WorkManager extends Manager {
 	 * @param work Travail à exécuter
 	 * @return resultat
 	 */
-	<WR, W> void process(final WorkItem<WR, W> workItem);
+	<WR, W> WR process(final W work, final WorkEngineProvider<WR, W> workEngineProvider);
 
 	/**
 	 * Lancement asynchrone d'un travail 'dès que possible'.

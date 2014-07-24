@@ -52,39 +52,39 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	/**
 	 * Initialise une définition de tache.
 	 *
-	 * @param newTaskEngineClass Classe réalisant l'implémentation
+	 * @param taskEngineClass Classe réalisant l'implémentation
 	 */
-	public TaskDefinitionBuilder withEngine(final Class<? extends TaskEngine> newTaskEngineClass) {
-		Assertion.checkNotNull(newTaskEngineClass);
+	public TaskDefinitionBuilder withEngine(final Class<? extends TaskEngine> taskEngineClass) {
+		Assertion.checkNotNull(taskEngineClass);
 		//Il est important de refaire le test car les test de cast ne sont pas fiable avec les generics
-		if (newTaskEngineClass.isAssignableFrom(TaskEngine.class)) {
+		if (taskEngineClass.isAssignableFrom(TaskEngine.class)) {
 			throw new ClassCastException("La classe doit être une sous classe de ServiceProvider");
 		}
 		//---------------------------------------------------------------------
-		taskEngineClass = newTaskEngineClass;
+		this.taskEngineClass = taskEngineClass;
 		return this;
 	}
 
 	/**
-	 * @param newRequest Chaine de configuration de la tache
+	 * @param request Chaine de configuration de la tache
 	 */
-	public TaskDefinitionBuilder withRequest(final String newRequest) {
-		Assertion.checkNotNull(newRequest);
+	public TaskDefinitionBuilder withRequest(final String request) {
+		Assertion.checkNotNull(request);
 		//---------------------------------------------------------------------
 		//Pour unifier la saisie de la request sous un environnement unix ou dos
 		// et pour éviter la disparité de gestion des retours chariot
 		//par certains drivers de base de données.
-		request = newRequest.replace("\r", "");
+		this.request = request.replace("\r", "");
 		return this;
 	}
 
 	/**
-	 * @param newPackageName Nom du package
+	 * @param packageName Nom du package
 	 */
-	public TaskDefinitionBuilder withPackageName(final String newPackageName) {
+	public TaskDefinitionBuilder withPackageName(final String packageName) {
 		//packageName peut être null
 		//---------------------------------------------------------------------
-		packageName = newPackageName;
+		this.packageName = packageName;
 		return this;
 	}
 

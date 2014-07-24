@@ -34,7 +34,7 @@ import java.util.List;
 public class MailBuilder implements Builder<Mail> {
 	private String subject;
 	private String replyTo;
-	private String fromAddress;
+	private String from;
 	private String textContent;
 	private String htmlContent;
 
@@ -47,11 +47,11 @@ public class MailBuilder implements Builder<Mail> {
 	 * @param newSubject Sujet du mail 
 	 * @return MailBuilder
 	 */
-	public MailBuilder withSubject(final String newSubject) {
-		Assertion.checkState(subject == null, "subject is already completed");
-		Assertion.checkArgNotEmpty(newSubject);
+	public MailBuilder withSubject(final String subject) {
+		Assertion.checkArgNotEmpty(subject);
+		Assertion.checkState(this.subject == null, "subject is already completed");
 		//---------------------------------------------------------------------
-		subject = newSubject;
+		this.subject = subject;
 		return this;
 	}
 
@@ -60,10 +60,10 @@ public class MailBuilder implements Builder<Mail> {
 	 * @return MailBuilder
 	 */
 	public MailBuilder from(final String from) {
-		Assertion.checkState(fromAddress == null, "from is already completed");
+		Assertion.checkState(this.from == null, "from is already completed");
 		Assertion.checkArgNotEmpty(from);
 		//---------------------------------------------------------------------
-		fromAddress = from;
+		this.from = from;
 		return this;
 	}
 
@@ -155,6 +155,6 @@ public class MailBuilder implements Builder<Mail> {
 	public Mail build() {
 		Assertion.checkArgument(!toAddresses.isEmpty(), "aucun destinataire");
 		//---------------------------------------------------------------------
-		return new Mail(subject, replyTo, fromAddress, toAddresses, ccAddresses, textContent, htmlContent, attachments);
+		return new Mail(subject, replyTo, from, toAddresses, ccAddresses, textContent, htmlContent, attachments);
 	}
 }
