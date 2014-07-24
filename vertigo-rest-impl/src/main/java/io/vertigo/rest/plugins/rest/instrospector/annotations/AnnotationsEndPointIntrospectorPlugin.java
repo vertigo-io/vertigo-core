@@ -1,9 +1,7 @@
 package io.vertigo.rest.plugins.rest.instrospector.annotations;
 
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
-import io.vertigo.kernel.util.StringUtil;
 import io.vertigo.rest.rest.EndPointIntrospectorPlugin;
 import io.vertigo.rest.rest.RestfulService;
 import io.vertigo.rest.rest.RestfulService.AccessTokenConsume;
@@ -35,16 +33,11 @@ import io.vertigo.rest.rest.metamodel.EndPointParam.ImplicitParam;
 import io.vertigo.rest.rest.metamodel.EndPointParam.RestParamType;
 import io.vertigo.rest.rest.metamodel.EndPointParamBuilder;
 import io.vertigo.rest.rest.validation.DefaultDtObjectValidator;
-import io.vertigo.rest.rest.validation.DtObjectValidator;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
 * @author npiedeloup 
@@ -65,10 +58,10 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 
 	private static <C extends RestfulService> Option<EndPointDefinition> buildEndPoint(final Method method, final Class<C> restFullServiceClass) {
 		final EndPointDefinitionBuilder builder = new EndPointDefinitionBuilder(method);
-		
+
 		for (final Annotation annotation : method.getAnnotations()) {
 			if (annotation instanceof GET) {
-				builder.with(Verb.GET, ((GET) annotation).value());				
+				builder.with(Verb.GET, ((GET) annotation).value());
 			} else if (annotation instanceof POST) {
 				builder.with(Verb.POST, ((POST) annotation).value());
 			} else if (annotation instanceof PUT) {
@@ -124,27 +117,27 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 		} else if (ImplicitParam.UiListState.getImplicitType().equals(paramType)) {
 			builder.with(RestParamType.Implicit, ImplicitParam.UiListState.name());
 		}
-		
+
 		for (final Annotation annotation : annotations) {
 			if (annotation instanceof PathParam) {
 				builder.with(RestParamType.Path, ((PathParam) annotation).value());
 			} else if (annotation instanceof QueryParam) {
 				builder.with(RestParamType.Query, ((QueryParam) annotation).value());
 			} else if (annotation instanceof InnerBodyParam) {
-				builder.with(RestParamType.MultiPartBody, ((InnerBodyParam) annotation).value());				
+				builder.with(RestParamType.MultiPartBody, ((InnerBodyParam) annotation).value());
 			} else if (annotation instanceof Validate) {
-				builder.withValidatorClasses(((Validate) annotation).value());					
+				builder.withValidatorClasses(((Validate) annotation).value());
 			} else if (annotation instanceof ExcludedFields) {
-				builder.withExcludedFields(((ExcludedFields) annotation).value());	
+				builder.withExcludedFields(((ExcludedFields) annotation).value());
 			} else if (annotation instanceof IncludedFields) {
-				builder.withIncludedFields(((IncludedFields) annotation).value());	
+				builder.withIncludedFields(((IncludedFields) annotation).value());
 			} else if (annotation instanceof ServerSideRead) {
-				builder.withNeedServerSideToken(true);	
+				builder.withNeedServerSideToken(true);
 			} else if (annotation instanceof ServerSideConsume) {
-				builder.withNeedServerSideToken(true);	
+				builder.withNeedServerSideToken(true);
 				builder.withConsumeServerSideToken(true);
 			}
-		}		
-		return builder.build();		
+		}
+		return builder.build();
 	}
 }
