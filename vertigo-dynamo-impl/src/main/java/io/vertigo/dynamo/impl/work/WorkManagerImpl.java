@@ -21,7 +21,6 @@ package io.vertigo.dynamo.impl.work;
 import io.vertigo.dynamo.impl.work.listener.WorkListener;
 import io.vertigo.dynamo.impl.work.listener.WorkListenerImpl;
 import io.vertigo.dynamo.work.WorkEngineProvider;
-import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Activeable;

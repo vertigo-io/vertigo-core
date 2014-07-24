@@ -19,8 +19,8 @@
 package io.vertigo.dynamo.plugins.work.redis;
 
 import io.vertigo.dynamo.impl.work.DistributedWorkerPlugin;
+import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.work.WorkEngineProvider;
-import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;

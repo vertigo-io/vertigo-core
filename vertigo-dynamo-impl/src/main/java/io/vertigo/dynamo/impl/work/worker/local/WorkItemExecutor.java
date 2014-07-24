@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.impl.work.worker.local;
 
+import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.impl.work.worker.Worker;
-import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.kernel.lang.Assertion;
 

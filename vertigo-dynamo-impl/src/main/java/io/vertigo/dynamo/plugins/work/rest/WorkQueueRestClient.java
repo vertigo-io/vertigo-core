@@ -19,8 +19,8 @@
 package io.vertigo.dynamo.plugins.work.rest;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.work.WorkEngineProvider;
-import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Assertion;
 

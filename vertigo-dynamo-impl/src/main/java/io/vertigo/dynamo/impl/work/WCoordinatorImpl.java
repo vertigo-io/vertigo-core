@@ -3,7 +3,6 @@ package io.vertigo.dynamo.impl.work;
 import io.vertigo.dynamo.impl.work.listener.WorkListener;
 import io.vertigo.dynamo.impl.work.worker.Worker;
 import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;
-import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 

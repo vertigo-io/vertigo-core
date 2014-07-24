@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.impl.work.worker;
 
-import io.vertigo.dynamo.work.WorkItem;
+import io.vertigo.dynamo.impl.work.WorkItem;
 
 /**
  * Interface d'un Worker threadsafe.

@@ -18,20 +18,29 @@
  */
 package io.vertigo.dynamo.impl.work;
 
-import io.vertigo.kernel.lang.Activeable;
+import io.vertigo.dynamo.work.WorkEngine;
+import io.vertigo.kernel.lang.Assertion;
+
+import java.util.concurrent.Callable;
 
 /**
- * Coordinates the work performed by the workers.
- * 
+ * Gestion des taches synchrone ou asynchrones définies par un Callable 
  * @author pchretien, npiedeloup
  */
-public interface WCoordinator extends Activeable {
-	/**
-	 * Exécute un workItem.
-	 * @param <W> Type de Work (Travail)
-	 * @param <WR> Produit d'un work à l'issu de son exécution
-	 * @param workItem Travail à exécuter
-	 */
-	<WR, W> void execute(final WorkItem<WR, W> workItem);
+final class CallableEngine<WR, W> implements WorkEngine<WR, W> {
+	private final Callable<WR> callable;
 
+	CallableEngine(final Callable<WR> callable) {
+		Assertion.checkNotNull(callable);
+		//-----------------------------------------------------------------
+		this.callable = callable;
+	}
+
+	public WR process(final W dummy) {
+		try {
+			return callable.call();
+		} catch (final Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

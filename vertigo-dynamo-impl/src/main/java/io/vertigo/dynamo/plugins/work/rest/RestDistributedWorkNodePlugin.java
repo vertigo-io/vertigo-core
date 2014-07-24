@@ -20,10 +20,10 @@ package io.vertigo.dynamo.plugins.work.rest;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.impl.node.NodePlugin;
+import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.impl.work.worker.Worker;
 import io.vertigo.dynamo.impl.work.worker.local.WorkItemExecutor;
 import io.vertigo.dynamo.node.Node;
-import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Activeable;
