@@ -34,7 +34,20 @@ final class WCoordinatorImpl implements WCoordinator {
 	}
 
 	/** {@inheritDoc}   */
-	public <WR, W> void process(final WorkItem<WR, W> workItem) {
+	public <WR, W> void execute(final WorkItem<WR, W> workItem) {
+		switch (workItem.getExec()) {
+			case sync:
+				this.process(workItem);
+				break;
+			case async:
+				this.schedule(workItem);
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown type of execution :" + workItem.getExec());
+		}
+	}
+
+	private <WR, W> void process(final WorkItem<WR, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		//----------------------------------------------------------------------
 		//On délégue l'exécution synchrone et locale à un Worker.
@@ -63,8 +76,7 @@ final class WCoordinatorImpl implements WCoordinator {
 		//		return distributedWorkerPlugin.isDefined() && distributedWorkerPlugin.get().getWorkFamily().equalsIgnoreCase(work.getWorkFamily());
 	}
 
-	/** {@inheritDoc} */
-	public <WR, W> void schedule(final WorkItem<WR, W> workItem) {
+	private <WR, W> void schedule(final WorkItem<WR, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		//----------------------------------------------------------------------
 		resolveWorker(workItem).schedule(workItem);

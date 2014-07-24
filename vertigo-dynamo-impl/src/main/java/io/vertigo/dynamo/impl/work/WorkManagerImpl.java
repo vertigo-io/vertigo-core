@@ -23,8 +23,11 @@ import io.vertigo.dynamo.impl.work.listener.WorkListenerImpl;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.dynamo.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
+import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Option;
+
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -59,14 +62,20 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		coordinator.stop();
 	}
 
-	public <WR, W> void schedule(WorkItem<WR, W> workItem) {
-		coordinator.schedule(workItem);
-	}
-
 	/** {@inheritDoc} */
 	public <WR, W> WR process(W work, WorkEngineProvider<WR, W> workEngineProvider) {
 		WorkItem<WR, W> workItem = new WorkItem<>(work, workEngineProvider);
-		coordinator.process(workItem);
+		coordinator.execute(workItem);
 		return workItem.getResult();
+	}
+
+	public <WR, W> void schedule(W work, WorkEngineProvider<WR, W> workEngineProvider, WorkResultHandler<WR> workResultHandler) {
+		WorkItem<WR, W> workItem = new WorkItem<>(work, workEngineProvider, workResultHandler);
+		coordinator.execute(workItem);
+	}
+
+	public <WR, W> void schedule(Callable<WR> callable, WorkResultHandler<WR> workResultHandler) {
+		WorkItem<WR, W> workItem = new WorkItem<>(callable, workResultHandler);
+		coordinator.execute(workItem);
 	}
 }

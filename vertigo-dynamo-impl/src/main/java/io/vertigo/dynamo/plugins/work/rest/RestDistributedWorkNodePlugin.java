@@ -88,8 +88,7 @@ public final class RestDistributedWorkNodePlugin implements NodePlugin, Activeab
 		//de plus le traitment lui m�me sera synchrone pour que l'on ne r�cup�re un autre Work qu'apr�s avoir finit le premier
 		for (final String workType : workTypes) {
 			final Callable<Void> task = new PollWorkTask(workType, workQueueClient);
-			WorkItem workItem = new WorkItem(task, new ReScheduleWorkResultHandler(task, 25, workManager));//Le WorkResult permet de toujours poller les workItem, m�me en cas d'erreur.
-			workManager.schedule(workItem);
+			workManager.schedule(task, new ReScheduleWorkResultHandler(task, 25, workManager));//Le WorkResult permet de toujours poller les workItem, m�me en cas d'erreur.
 			logger.info(">>>>>> PollWorksTask " + workType + " Started");
 			System.out.println(">>>>>> PollWorksTask " + workType + " Started");
 		}
@@ -186,7 +185,7 @@ public final class RestDistributedWorkNodePlugin implements NodePlugin, Activeab
 		private void reSchedule() {
 			try {
 				Thread.sleep(pauseMs);
-				workManager.schedule(new WorkItem<>(task, this));
+				workManager.schedule(task, this);
 			} catch (final InterruptedException e) {
 				//rien on stop
 			}

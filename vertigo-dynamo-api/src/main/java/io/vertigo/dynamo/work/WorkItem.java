@@ -25,6 +25,10 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 public final class WorkItem<WR, W> {
+	public enum Exec {
+		sync, async
+	}
+
 	//private static final Object DUMMY_WORK = new Object();
 
 	//	private static enum Status {
@@ -34,6 +38,7 @@ public final class WorkItem<WR, W> {
 	private final W work;
 	private final Option<WorkResultHandler<WR>> workResultHandler;
 	private final WorkEngineProvider<WR, W> workEngineProvider;
+	private final Exec exec;
 	private WR result;
 	final String id = UUID.randomUUID().toString();
 
@@ -51,6 +56,7 @@ public final class WorkItem<WR, W> {
 		this.work = work;
 		this.workResultHandler = Option.none();
 		this.workEngineProvider = workEngineProvider;
+		this.exec = Exec.sync;
 	}
 
 	public WorkItem(final Callable<WR> callable, final WorkResultHandler<WR> workResultHandler) {
@@ -60,6 +66,7 @@ public final class WorkItem<WR, W> {
 		this.work = null;
 		this.workResultHandler = Option.some(workResultHandler);
 		this.workEngineProvider = new WorkEngineProvider<>(new CallableEngine<WR, W>(callable));
+		this.exec = Exec.async;
 	}
 
 	/**
@@ -74,10 +81,15 @@ public final class WorkItem<WR, W> {
 		this.work = work;
 		this.workResultHandler = Option.some(workResultHandler);
 		this.workEngineProvider = workEngineProvider;
+		this.exec = Exec.async;
 	}
 
 	public String getId() {
 		return id;
+	}
+
+	public Exec getExec() {
+		return exec;
 	}
 
 	/**
@@ -104,9 +116,9 @@ public final class WorkItem<WR, W> {
 		return result;
 	}
 
-	public synchronized void setResult(WR newResult) {
-		Assertion.checkNotNull(newResult);
+	public synchronized void setResult(WR result) {
+		Assertion.checkNotNull(result);
 		//---------------------------------------------------------------------
-		this.result = newResult;
+		this.result = result;
 	}
 }
