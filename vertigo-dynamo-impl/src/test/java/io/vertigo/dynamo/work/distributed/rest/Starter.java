@@ -18,17 +18,11 @@
  */
 package io.vertigo.dynamo.work.distributed.rest;
 
+import io.vertigo.kernel.AppBuilder;
 import io.vertigo.kernel.Home;
-import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
-import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
-import io.vertigo.xml.XMLModulesLoader;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -104,17 +98,13 @@ public final class Starter implements Runnable {
 	public final void start() {
 		// Cr�ation de l'�tat de l'application
 		// Initialisation de l'�tat de l'application
-		final URL xmlURL = createURL(managersXmlFileName, relativeRootClass);
-		final Properties properties = new Properties();
-		if (defaultProperties.isDefined()) {
-			properties.putAll(defaultProperties.get());
-		}
-		appendFileProperties(properties, propertiesFileName, relativeRootClass);
-		final ComponentSpaceConfig componentSpaceConfig = new ComponentSpaceConfigBuilder() //
+		//final URL xmlURL = createURL(managersXmlFileName, relativeRootClass);
+		final AppBuilder builder = new AppBuilder() //
 				.withSilence(SILENCE) //
-				.withLoader(new XMLModulesLoader(xmlURL, properties)) //
-				.build();
-		Home.start(componentSpaceConfig);
+				.withXmlFileNames(relativeRootClass, managersXmlFileName) //
+				.withEnvParams(defaultProperties) //
+				.withEnvParams(relativeRootClass, propertiesFileName);
+		Home.start(builder.build());
 		started = true;
 	}
 
@@ -126,63 +116,5 @@ public final class Starter implements Runnable {
 			Home.stop();
 			started = false;
 		}
-	}
-
-	/**
-	 * Charge le fichier properties.
-	 * Par defaut vide, mais il peut-�tre surcharg�.
-	 * @param relativeRootClass Racine du chemin relatif, le cas ech�ant
-	 */
-	private static final void appendFileProperties(final Properties properties, final Option<String> propertiesFileName, final Class<?> relativeRootClass) {
-		//---------------------------------------------------------------------
-		if (propertiesFileName.isDefined()) {
-			final String fileName = translateFileName(propertiesFileName.get(), relativeRootClass);
-			try {
-				try (final InputStream in = createURL(fileName, relativeRootClass).openStream()) {
-					properties.load(in);
-				}
-			} catch (final IOException e) {
-				throw new IllegalArgumentException("Impossible de charger le fichier de configuration des tests : " + fileName, e);
-			}
-		}
-	}
-
-	/**
-	 * Transforme le chemin vers un fichier local au test en une URL absolue.
-	 * @param fileName Path du fichier : soit en absolu (commence par /), soit en relatif � la racine
-	 * @param relativeRootClass Racine du chemin relatif, le cas ech�ant
-	 * @return URL du fichier
-	 */
-	private static final URL createURL(final String fileName, final Class<?> relativeRootClass) {
-		Assertion.checkArgNotEmpty(fileName);
-		//---------------------------------------------------------------------
-		final String absoluteFileName = translateFileName(fileName, relativeRootClass);
-		try {
-			return new URL(absoluteFileName);
-		} catch (final MalformedURLException e) {
-			//Si fileName non trouv�, on recherche dans le classPath 
-			final URL url = relativeRootClass.getResource(absoluteFileName);
-			Assertion.checkNotNull(url, "Impossible de r�cup�rer le fichier [" + absoluteFileName + "]");
-			return url;
-		}
-	}
-
-	private static final String translateFileName(final String fileName, final Class<?> relativeRootClass) {
-		Assertion.checkArgNotEmpty(fileName);
-		//---------------------------------------------------------------------
-		if (fileName.startsWith(".")) {
-			//soit en relatif
-			return "/" + getRelativePath(relativeRootClass) + "/" + fileName.replace("./", "");
-		}
-
-		//soit en absolu		
-		if (fileName.startsWith("/")) {
-			return fileName;
-		}
-		return "/" + fileName;
-	}
-
-	private static final String getRelativePath(final Class<?> relativeRootClass) {
-		return relativeRootClass.getPackage().getName().replace('.', '/');
 	}
 }

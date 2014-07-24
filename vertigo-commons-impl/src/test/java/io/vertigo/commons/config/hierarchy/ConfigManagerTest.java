@@ -41,9 +41,9 @@ public final class ConfigManagerTest extends AbstractTestCaseJU4 {
 	private ConfigManager configManager;
 
 	@Override
-	protected void configMe(final ComponentSpaceConfigBuilder componentSpaceConfiguilder) {
+	protected void configMe(final ComponentSpaceConfigBuilder componentSpaceConfigBuilder) {
 		// @formatter:off
-		componentSpaceConfiguilder
+		componentSpaceConfigBuilder
 		.beginModule("commons").
 			beginComponent(ResourceManager.class, ResourceManagerImpl.class)
 				.beginPlugin( ClassPathResourceResolverPlugin.class).endPlugin()
