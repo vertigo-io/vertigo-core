@@ -97,7 +97,6 @@ public final class WsRestHandler {
 		// Création de l'état de l'application
 		// Initialisation de l'état de l'application
 		
-		System.out.print(TestUserSession.class);
 		final ComponentSpaceConfig config = new ComponentSpaceConfigBuilder()//
 				.withSilence(false)//
 				//.withRestEngine(new GrizzlyRestEngine(8080))
