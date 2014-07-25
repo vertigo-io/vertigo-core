@@ -52,7 +52,7 @@ public final class GedcomManagerImpl implements GedcomManager {
 	private final Map<String, DtList<Individual>> children = new HashMap<>();
 
 	@Inject
-	public GedcomManagerImpl(KVDataStoreManager kvDataStoreManager, KTransactionManager transactionManager, final GeoCoderManager geoCoderManager, final ResourceManager resourceManager, @Named("gedcom") final String gedcomResource) {
+	public GedcomManagerImpl(final KVDataStoreManager kvDataStoreManager, final KTransactionManager transactionManager, final GeoCoderManager geoCoderManager, final ResourceManager resourceManager, @Named("gedcom") final String gedcomResource) {
 		Assertion.checkNotNull(kvDataStoreManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(geoCoderManager);
@@ -63,25 +63,25 @@ public final class GedcomManagerImpl implements GedcomManager {
 		this.transactionManager = transactionManager;
 		this.geoCoderManager = geoCoderManager;
 
-		URL gedcomURL = resourceManager.resolve(gedcomResource);
+		final URL gedcomURL = resourceManager.resolve(gedcomResource);
 		gp = new GedcomParser();
 		try {
 			gp.load(gedcomURL.getFile());
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new RuntimeException("chargement du fichier gedcom '" + gedcomResource + "' impossible", e);
 		}
 	}
 
-	private static String buildId(org.gedcom4j.model.Individual gindividual) {
+	private static String buildId(final org.gedcom4j.model.Individual gindividual) {
 		return gindividual.xref.toString();
 	}
 
 	public DtList<Individual> getAllIndividuals() {
-		Map<String, Individual> map = new HashMap<>();
-		DtList<Individual> individuals = new DtList<>(Individual.class);
-		for (org.gedcom4j.model.Individual gindividual : getIndividuals()) {
-			String id = buildId(gindividual);
-			Individual individual = new Individual();
+		final Map<String, Individual> map = new HashMap<>();
+		final DtList<Individual> individuals = new DtList<>(Individual.class);
+		for (final org.gedcom4j.model.Individual gindividual : getIndividuals()) {
+			final String id = buildId(gindividual);
+			final Individual individual = new Individual();
 			map.put(id, individual);
 			individuals.add(individual);
 			individual.setId(id);
@@ -91,7 +91,7 @@ public final class GedcomManagerImpl implements GedcomManager {
 			if (gindividual.sex != null) {
 				individual.setSex(gindividual.sex.value);
 			}
-			for (IndividualEvent individualEvent : gindividual.events) {
+			for (final IndividualEvent individualEvent : gindividual.events) {
 
 				switch (individualEvent.type) {
 					case DEATH:
@@ -113,35 +113,57 @@ public final class GedcomManagerImpl implements GedcomManager {
 							individual.setLocation(buildLocation(individualEvent.place.placeName));
 						}
 						break;
+					case ADOPTION:
+					case ARRIVAL:
+					case BAPTISM:
+					case BAR_MITZVAH:
+					case BAS_MITZVAH:
+					case BLESSING:
+					case BURIAL:
+					case CENSUS:
+					case CHRISTENING:
+					case CHRISTENING_ADULT:
+					case CONFIRMATION:
+					case CREMATION:
+					case EMIGRATION:
+					case EVENT:
+					case FIRST_COMMUNION:
+					case GRADUATION:
+					case IMMIGRATION:
+					case NATURALIZATION:
+					case ORDINATION:
+					case PROBATE:
+					case RETIREMENT:
+					case WILL:
 					default:
-						//on ne gÃ¨re qu les evts prÃ©cÃ©dents
+						//on ne gère que les evts précédents
 						break;
 				}
 			}
 
 		}
 		//Relations 
-		for (org.gedcom4j.model.Individual gindividual : getIndividuals()) {
-			String id = buildId(gindividual);
-			DtList<Individual> descendants = new DtList<>(Individual.class);
+		for (final org.gedcom4j.model.Individual gindividual : getIndividuals()) {
+			final String id = buildId(gindividual);
+			final DtList<Individual> descendants = new DtList<>(Individual.class);
 			children.put(id, descendants);
-			for (org.gedcom4j.model.Individual descendant : gindividual.getDescendants()) {
+			for (final org.gedcom4j.model.Individual descendant : gindividual.getDescendants()) {
 				descendants.add(map.get(buildId(descendant)));
 			}
 		}
 		return individuals;
 	}
 
-	private GeoLocation buildLocation(String address) {
+	private GeoLocation buildLocation(final String address) {
 		Assertion.checkArgNotEmpty(address);
 		//---------------------------------------------------------------------
-		String key = address.trim().toLowerCase();
+		final String key = address.trim().toLowerCase();
 		//System.out.println("buildLocation "+key);
 		GeoLocation geoLocation;
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction();) {
 			geoLocation = cache.get(key);
 			if (geoLocation == null) {
-				Option<GeoLocation> storedLocation = kvDataStoreManager.getDataStore().find(key, GeoLocation.class);
+				final Option<GeoLocation> storedLocation = kvDataStoreManager.getDataStore().find(key, GeoLocation.class);
 				//System.out.println("    cache "+storedLocation.isDefined());
 				if (storedLocation.isEmpty()) {
 					geoLocation = geoCoderManager.findLocation(key);
@@ -172,7 +194,7 @@ public final class GedcomManagerImpl implements GedcomManager {
 		// }
 	}
 
-	public DtList<Individual> getChildren(Individual individual) {
+	public DtList<Individual> getChildren(final Individual individual) {
 		Assertion.checkNotNull(individual);
 		//---------------------------------------------------------------------
 		final String id = individual.getId();

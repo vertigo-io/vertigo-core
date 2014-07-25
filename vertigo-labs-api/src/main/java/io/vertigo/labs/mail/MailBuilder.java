@@ -26,63 +26,63 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Builder de Mail.
- * Les m�thodes multivalu�es sont not�es en varargs (...) et peuvent �tre appel�es plusieurs fois.
+ * EMail Builder.
+ * Multiple value params are in varargs (Type...) and can be call multiple times.
  * @author pchretien, npiedeloup
- * @version $Id: MailBuilder.java,v 1.8 2014/02/27 10:32:49 pchretien Exp $
  */
 public class MailBuilder implements Builder<Mail> {
-	private String subject;
-	private String replyTo;
-	private String from;
-	private String textContent;
-	private String htmlContent;
+	private String mySubject;
+	private String myReplyTo;
+	private String myFrom;
+	private String myTextContent;
+	private String myHtmlContent;
 
-	private final List<String> toAddresses = new ArrayList<>();
-	private final List<String> ccAddresses = new ArrayList<>();
-	private final List<KFile> attachments = new ArrayList<>();
+	private final List<String> myToAddresses = new ArrayList<>();
+	private final List<String> myCcAddresses = new ArrayList<>();
+	private final List<KFile> myAttachments = new ArrayList<>();
 
 	/**
-	 * D�finit le sujet du mail.
-	 * @param newSubject Sujet du mail 
+	 * Set subject.
+	 * @param subject mail subject 
 	 * @return MailBuilder
 	 */
 	public MailBuilder withSubject(final String subject) {
 		Assertion.checkArgNotEmpty(subject);
-		Assertion.checkState(this.subject == null, "subject is already completed");
+		Assertion.checkState(mySubject == null, "subject is already completed");
 		//---------------------------------------------------------------------
-		this.subject = subject;
+		mySubject = subject;
 		return this;
 	}
 
 	/**
-	 * @param from Emetteur du mail
+	 * Set sender.
+	 * @param from Mail sender
 	 * @return MailBuilder
 	 */
 	public MailBuilder from(final String from) {
-		Assertion.checkState(this.from == null, "from is already completed");
+		Assertion.checkState(myFrom == null, "from is already completed");
 		Assertion.checkArgNotEmpty(from);
 		//---------------------------------------------------------------------
-		this.from = from;
+		myFrom = from;
 		return this;
 	}
 
 	/**
-	 * Fixe une adresse email de retour.
-	 * @param newReplyTo Destinataire du mail de retour
+	 * Set receiver of return mail (response or delivery fail)
+	 * @param newReplyTo Receiver of return mail (response or delivery fail)
 	 * @return MailBuilder
 	 */
 	public MailBuilder replyTo(final String newReplyTo) {
-		Assertion.checkState(replyTo == null, "replyTo is already completed");
+		Assertion.checkState(myReplyTo == null, "replyTo is already completed");
 		Assertion.checkArgNotEmpty(newReplyTo);
 		//---------------------------------------------------------------------
-		replyTo = newReplyTo;
+		myReplyTo = newReplyTo;
 		return this;
 	}
 
 	/**
-	 * Ajoute une adresse en destination.
-	 * @param addresses Adresses email
+	 * Add a receiver.
+	 * @param addresses Mail addresses (one or more)
 	 * @return MailBuilder
 	 */
 	public MailBuilder to(final String... addresses) {
@@ -90,14 +90,14 @@ public class MailBuilder implements Builder<Mail> {
 		//---------------------------------------------------------------------
 		for (final String address : addresses) {
 			Assertion.checkArgNotEmpty(address);
-			toAddresses.add(address);
+			myToAddresses.add(address);
 		}
 		return this;
 	}
 
 	/**
-	 * Ajoute une adresse en copie.
-	 * @param addresses Adresses email
+	 * Add a copy receiver.
+	 * @param addresses Mail addresses (one or more)
 	 * @return MailBuilder
 	 */
 	public MailBuilder cc(final String... addresses) {
@@ -105,40 +105,40 @@ public class MailBuilder implements Builder<Mail> {
 		//---------------------------------------------------------------------
 		for (final String address : addresses) {
 			Assertion.checkArgNotEmpty(address);
-			ccAddresses.add(address);
+			myCcAddresses.add(address);
 		}
 		return this;
 	}
 
 	/**
-	 * D�finit le contenu text du mail.
-	 * @param newTextContent Contenu text 
+	 * Set mail content at text format.
+	 * @param newTextContent Text content 
 	 * @return MailBuilder
 	 */
 	public MailBuilder withTextContent(final String newTextContent) {
-		Assertion.checkState(textContent == null, "textContent is already completed");
+		Assertion.checkState(myTextContent == null, "textContent is already completed");
 		Assertion.checkArgNotEmpty(newTextContent);
 		//---------------------------------------------------------------------
-		textContent = newTextContent;
+		myTextContent = newTextContent;
 		return this;
 	}
 
 	/** 
-	 * D�finit le contenu Html du mail.
-	 * @param newHtmlContent Contenu Html 
+	 * Set mail content at html format.
+	 * @param newHtmlContent Html content
 	 * @return MailBuilder
 	 */
 	public MailBuilder withHtmlContent(final String newHtmlContent) {
-		Assertion.checkState(htmlContent == null, "htmlContent is already completed");
+		Assertion.checkState(myHtmlContent == null, "htmlContent is already completed");
 		Assertion.checkArgNotEmpty(newHtmlContent);
 		//---------------------------------------------------------------------
-		htmlContent = newHtmlContent;
+		myHtmlContent = newHtmlContent;
 		return this;
 	}
 
 	/**
-	 * Ajoute une pi�ce jointe au mail.
-	 * @param files File � ajouter
+	 * Add a attachment file.
+	 * @param files Files to attach (one or more)
 	 * @return MailBuilder
 	 */
 	public MailBuilder withAttachments(final KFile... files) {
@@ -146,15 +146,15 @@ public class MailBuilder implements Builder<Mail> {
 		//---------------------------------------------------------------------
 		for (final KFile attachment : files) {
 			Assertion.checkNotNull(attachment);
-			attachments.add(attachment);
+			myAttachments.add(attachment);
 		}
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	public Mail build() {
-		Assertion.checkArgument(!toAddresses.isEmpty(), "aucun destinataire");
+		Assertion.checkArgument(!myToAddresses.isEmpty(), "No receiver defined");
 		//---------------------------------------------------------------------
-		return new Mail(subject, replyTo, from, toAddresses, ccAddresses, textContent, htmlContent, attachments);
+		return new Mail(mySubject, myReplyTo, myFrom, myToAddresses, myCcAddresses, myTextContent, myHtmlContent, myAttachments);
 	}
 }
