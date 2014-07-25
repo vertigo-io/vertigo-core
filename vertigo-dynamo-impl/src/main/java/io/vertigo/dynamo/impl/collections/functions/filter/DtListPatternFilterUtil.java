@@ -22,12 +22,12 @@ import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.util.StringUtil;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,6 +61,10 @@ final class DtListPatternFilterUtil {
 	}
 
 	static <D extends DtObject> DtListFilter<D> createDtListFilterForPattern(final FilterPattern filterPattern, final String[] parsedFilter, final DtDefinition dtDefinition) {
+		Assertion.checkNotNull(filterPattern);
+		Assertion.checkNotNull(parsedFilter);
+		Assertion.checkNotNull(dtDefinition);
+		//----------------------------------------------------------------------
 		//Si on trouve un pattern, on passe sur du code spécifique
 		final String fieldName = parsedFilter[1]; //attention parsedFilter[0] = filtre entier
 		final DtField dtField = dtDefinition.getField(fieldName);
@@ -83,6 +87,9 @@ final class DtListPatternFilterUtil {
 	 * ensuite dépend du pattern
 	 **/
 	static Option<String[]> parseFilter(final String filterString, final Pattern parsingPattern) {
+		Assertion.checkNotNull(filterString);
+		Assertion.checkNotNull(parsingPattern);
+		//----------------------------------------------------------------------
 		final String[] groups;
 		int nbGroup = 0;
 		final Matcher matcher = parsingPattern.matcher(filterString);
@@ -116,6 +123,7 @@ final class DtListPatternFilterUtil {
 		if (acceptJoker && "*".equals(stringValue)) {
 			return Option.none();//pas de test
 		}
+		//--
 		final Comparable result;
 		switch (dataType) {
 			case Integer:
@@ -131,7 +139,7 @@ final class DtListPatternFilterUtil {
 				result = Double.valueOf(stringValue);
 				break;
 			case Date:
-				result = DateQueryParser.parseDateQuery(stringValue);
+				result = DateQueryParserUtil.parseDateQuery(stringValue);
 				break;
 			case String:
 				result = stringValue;
