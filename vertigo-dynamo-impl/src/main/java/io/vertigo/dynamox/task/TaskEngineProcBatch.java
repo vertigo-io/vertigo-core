@@ -79,6 +79,7 @@ public class TaskEngineProcBatch extends TaskEngineProc {
 				case INOUT:
 					setParameter(statement, param, rowNumber);
 					break;
+				case OUT:
 				default:
 					// On ne fait rien
 					break;

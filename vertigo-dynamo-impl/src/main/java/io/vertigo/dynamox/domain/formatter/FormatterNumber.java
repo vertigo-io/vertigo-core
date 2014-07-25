@@ -130,8 +130,15 @@ public class FormatterNumber extends AbstractFormatterImpl {
 					return toInteger(sValue);
 				case Long:
 					return Long.valueOf(sValue);
+				case Boolean:
+				case DataStream:
+				case Date:
+				case DtList:
+				case DtObject:
+				case String:
+					throw new RuntimeException("Type unsupported" + dataType);
 				default:
-					throw new IllegalAccessError();
+					throw new IllegalArgumentException("Type unknown : " + dataType);
 			}
 		} catch (final NumberFormatException e) {
 			// cas des erreurs sur les formats de nombre
@@ -212,8 +219,15 @@ public class FormatterNumber extends AbstractFormatterImpl {
 						decimalString = createNumberFormat().format(objValue);
 					}
 					break;
+				case Boolean:
+				case DataStream:
+				case Date:
+				case DtList:
+				case DtObject:
+				case String:
+					throw new RuntimeException("Type unsupported" + dataType);
 				default:
-					throw new IllegalAccessError();
+					throw new IllegalArgumentException("Type unknown : " + dataType);
 			}
 		}
 		return decimalString;

@@ -256,6 +256,7 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 				case INOUT:
 					setOutParameter(cs, param);
 					break;
+				case IN:
 				default:
 					//On ne calcule rien
 					break;
@@ -312,6 +313,7 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 					final Integer rowNumber = param.isList() ? param.getRowNumber() : null;
 					setParameter(statement, param, rowNumber);
 					break;
+				case OUT:
 				default:
 					//On ne fait rien
 					break;
