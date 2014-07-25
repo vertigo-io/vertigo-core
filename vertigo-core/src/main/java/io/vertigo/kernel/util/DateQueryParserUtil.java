@@ -17,8 +17,12 @@ import java.util.regex.Pattern;
  *  NOW+DAY //you can omit 1
  * NOW-DAY //you can omit 1 
  * NOW+1DAY
- * NOW-12MONTH
- * NOW-2YEAR
+ * +DAY   // now is omitted
+ * +1DAY
+ * +2DAYS
+ * NOW-12MONTHS
+ * NOW-2YEARS
+ * NOW-2YEAR  
  * "06/12/2003", "dd/MM/yyyy"
  * 
  * @author mlaroche
@@ -34,7 +38,12 @@ final class DateQueryParserUtil {
 		units.put("MONTH", Calendar.MONTH);
 		units.put("DAY", Calendar.DAY_OF_YEAR);
 		units.put("HOUR", Calendar.HOUR_OF_DAY);
-		units.put("MINUTE", Calendar.MINUTE);
+		units.put("MINUTES", Calendar.MINUTE);
+		units.put("YEARS", Calendar.YEAR);
+		units.put("MONTHS", Calendar.MONTH);
+		units.put("DAYS", Calendar.DAY_OF_YEAR);
+		units.put("HOURS", Calendar.HOUR_OF_DAY);
+		units.put("MINUTES", Calendar.MINUTE);
 		return units;
 	}
 
@@ -50,11 +59,19 @@ final class DateQueryParserUtil {
 		Assertion.checkArgNotEmpty(dateQuery);
 		Assertion.checkArgNotEmpty(datePattern, "you must define a valid datePattern such as dd/MM/yyyy or MM/dd/yy");
 		// ---
-		final Calendar calendar = new GregorianCalendar();
 		if (NOW.equals(dateQuery)) {
 			//today is gonna be the day 
-		} else if (dateQuery.startsWith(NOW)) {
-			final Integer index = NOW.length();
+			return new Date();
+		}
+		char first = dateQuery.charAt(0);
+		if (first == '+' || first == '-' || dateQuery.startsWith(NOW)) {
+			final int index;
+			if (first == '+' || first == '-') {
+				//when NOW is omitted
+				index = 0;
+			} else {
+				index = NOW.length();
+			}
 			//---
 			final char operator = dateQuery.charAt(index);
 			final int sign;
@@ -85,17 +102,20 @@ final class DateQueryParserUtil {
 					throw new RuntimeException("unit '" + calendarUnit + "' is not allowed. You must use a unit among : " + CALENDAR_UNITS.keySet());
 				}
 			}
+			final Calendar calendar = new GregorianCalendar();
 			calendar.add(CALENDAR_UNITS.get(calendarUnit), unitCount);
-		} else {
-			//We are expecting a date respectig pattern 
-			final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(datePattern);
-			try {
-				calendar.setTime(simpleDateFormat.parse(dateQuery));
-			} catch (final ParseException e) {
-				throw new RuntimeException("La date " + dateQuery + " ne respecte pas le pattern : " + simpleDateFormat.toPattern().toString());
-			}
+			return calendar.getTime();
 		}
 
-		return calendar.getTime();
+		//We are expecting a date respectig pattern 
+		final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(datePattern);
+		try {
+			final Calendar calendar = new GregorianCalendar();
+			calendar.setTime(simpleDateFormat.parse(dateQuery));
+			return calendar.getTime();
+		} catch (final ParseException e) {
+			throw new RuntimeException("La date " + dateQuery + " ne respecte pas le pattern : " + simpleDateFormat.toPattern().toString());
+		}
+
 	}
 }
