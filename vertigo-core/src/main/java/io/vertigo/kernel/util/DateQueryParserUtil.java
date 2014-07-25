@@ -84,11 +84,11 @@ final class DateQueryParserUtil {
 			} else if ('-' == operator) {
 				sign = -1;
 			} else {
-				throw new RuntimeException();
+				throw new RuntimeException("a valid operator (+ or -) is expected :'"+operator+"' on "+dateQuery);
 			}
 			//---
 			//21DAYS
-			String operand = dateQuery.substring(index + 1);
+			final String operand = dateQuery.substring(index + 1);
 			//NOW+21DAY or NOW-12MONTH 
 			final Matcher matcher = PATTERN.matcher(operand);
 			Assertion.checkState(matcher.matches(), "Le second operande ne respecte pas le pattern {0}", PATTERN.toString());

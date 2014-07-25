@@ -121,8 +121,8 @@ public final class DateUtil {
 	 * Retourne la date correspondant à l'expression passée en parametre.
 	 * La syntaxe est de type NOW((+/-)eeeUNIT) ou une date au format dd/MM/yy
 	 * examples :
-	 * you can use plural DAYS or DAY 
-	 * NOW can be omitted 
+	 * - you can use plural DAYS or DAY 
+	 * - NOW can be omitted 
 	 * NOW+1DAY 
 	 * NOW-1DAY 
 	 * -1DAY //you can omit NOW
