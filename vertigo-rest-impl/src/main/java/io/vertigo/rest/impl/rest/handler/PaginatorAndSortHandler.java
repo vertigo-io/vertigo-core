@@ -82,6 +82,7 @@ final class PaginatorAndSortHandler implements RouteHandler {
 			serverSideToken = uiSecurityTokenManager.put(fullList);
 		}
 		response.header("listServerToken", serverSideToken);
+		response.header("x-total-count", String.valueOf(fullList.size())); //TODO total count should be list meta
 		final DtList<?> filteredList = applySortAndPagination(fullList, uiListState);
 		return filteredList;
 	}

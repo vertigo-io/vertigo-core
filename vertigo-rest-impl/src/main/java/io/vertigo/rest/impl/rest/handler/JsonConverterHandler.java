@@ -30,7 +30,6 @@ import io.vertigo.rest.rest.metamodel.EndPointDefinition;
 import io.vertigo.rest.rest.metamodel.EndPointParam;
 import io.vertigo.rest.rest.metamodel.EndPointParam.ImplicitParam;
 import io.vertigo.rest.rest.metamodel.EndPointParam.RestParamType;
-import io.vertigo.rest.rest.metamodel.UiListState;
 import io.vertigo.rest.security.UiSecurityTokenManager;
 
 import java.io.Serializable;
@@ -129,11 +128,7 @@ final class JsonConverterHandler implements RouteHandler {
 
 	private void setHeadersFromResultType(final Object result, final Response response) {
 		response.type("application/json;charset=UTF-8");
-		if (result != null) {
-			if (result instanceof List) {
-				response.header("x-total-count", String.valueOf(((List) result).size()));
-			}
-		} else {
+		if (result == null) {
 			response.status(HttpServletResponse.SC_NO_CONTENT);
 		}
 	}
@@ -181,48 +176,15 @@ final class JsonConverterHandler implements RouteHandler {
 	}
 
 	private <D> D readQueryValue(final QueryParamsMap queryMap, final EndPointParam endPointParam) throws VSecurityException {
-		final Class<D> paramClass = (Class<D>) endPointParam.getType();
+		//final Class<D> paramClass = (Class<D>) endPointParam.getType();
 		final Map<String, Object> queryParams = new HashMap<>();
-		for(Entry<String, String[]> entry : queryMap.toMap().entrySet()) {
-			String[] value = entry.getValue();
-			Object simplerValue = value.length==0?null:value.length==1?value[0]:value;
+		for (final Entry<String, String[]> entry : queryMap.toMap().entrySet()) {
+			final String[] value = entry.getValue();
+			final Object simplerValue = value.length == 0 ? null : value.length == 1 ? value[0] : value;
 			queryParams.put(entry.getKey(), simplerValue);
 		}
-		final String queryParamsAsJson = jsonWriterEngine.toJson(queryParams);	
+		final String queryParamsAsJson = jsonWriterEngine.toJson(queryParams);
 		return (D) readValue(queryParamsAsJson, endPointParam);
-		/*if (UiListState.class.isAssignableFrom(paramClass)) {
-			final int top = parseQueryParam(queryMap, "top", Integer.class, 20);
-			final int skip = parseQueryParam(queryMap, "skip", Integer.class, 0);
-			final String sortFieldName = parseQueryParam(queryMap, "sortFieldName", String.class, null);
-			final boolean sortDesc = parseQueryParam(queryMap, "sortDesc", Boolean.class, true);
-			final D uiListState = (D) new UiListState(top, skip, sortFieldName, sortDesc);
-			return uiListState;
-		}
-		return null;*/
-	}
-
-	private static <D> D parseQueryParam(final QueryParamsMap queryMap, final String paramName, final Class<D> paramType, final D defaultValue) {
-		final QueryParamsMap value = queryMap.get(paramName);
-		if (value.hasValue()) {
-			final Object result;
-			if (Boolean.class.equals(paramType)) {
-				result = value.booleanValue();
-			} else if (Double.class.equals(paramType)) {
-				result = value.doubleValue();
-			} else if (Float.class.equals(paramType)) {
-				result = value.floatValue();
-			} else if (Integer.class.equals(paramType)) {
-				result = value.integerValue();
-			} else if (Long.class.equals(paramType)) {
-				result = value.longValue();
-			} else if (String.class.equals(paramType)) {
-				result = value.value();
-			} else {
-				throw new IllegalArgumentException("property type not supported in query : " + paramType.getSimpleName() + " (" + paramName + ")");
-			}
-			return (D) result;
-		}
-		return defaultValue;
 	}
 
 	private Object readValue(final String json, final EndPointParam endPointParam) throws VSecurityException {
