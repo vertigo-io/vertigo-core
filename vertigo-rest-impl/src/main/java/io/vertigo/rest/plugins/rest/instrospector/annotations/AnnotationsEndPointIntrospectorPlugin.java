@@ -18,6 +18,7 @@ import io.vertigo.rest.rest.RestfulService.InnerBodyParam;
 import io.vertigo.rest.rest.RestfulService.POST;
 import io.vertigo.rest.rest.RestfulService.PUT;
 import io.vertigo.rest.rest.RestfulService.PathParam;
+import io.vertigo.rest.rest.RestfulService.PathPrefix;
 import io.vertigo.rest.rest.RestfulService.QueryParam;
 import io.vertigo.rest.rest.RestfulService.ServerSideConsume;
 import io.vertigo.rest.rest.RestfulService.ServerSideRead;
@@ -58,7 +59,10 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 
 	private static <C extends RestfulService> Option<EndPointDefinition> buildEndPoint(final Method method, final Class<C> restFullServiceClass) {
 		final EndPointDefinitionBuilder builder = new EndPointDefinitionBuilder(method);
-
+		final PathPrefix pathPrefix = method.getDeclaringClass().getAnnotation(PathPrefix.class);
+		if (pathPrefix != null) {
+			builder.withPathPrefix(pathPrefix.value());
+		}
 		for (final Annotation annotation : method.getAnnotations()) {
 			if (annotation instanceof GET) {
 				builder.with(Verb.GET, ((GET) annotation).value());

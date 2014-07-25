@@ -33,6 +33,18 @@ import java.lang.annotation.Target;
  */
 public interface RestfulService {
 
+	/**
+	 * Path prefix.
+	 */
+	@Target({ ElementType.TYPE })
+	@Retention(RetentionPolicy.RUNTIME)
+	public @interface PathPrefix {
+		String value();
+	}
+
+	/**
+	 * Documentation.
+	 */
 	@Target({ ElementType.METHOD })
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface Doc {

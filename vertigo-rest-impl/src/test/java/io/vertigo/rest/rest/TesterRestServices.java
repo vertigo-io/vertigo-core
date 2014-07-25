@@ -41,6 +41,7 @@ import io.vertigo.kernel.lang.MessageText;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.util.DateUtil;
 import io.vertigo.persona.security.KSecurityManager;
+import io.vertigo.rest.rest.RestfulService.PathPrefix;
 import io.vertigo.rest.rest.engine.UiContext;
 import io.vertigo.rest.rest.exception.VSecurityException;
 import io.vertigo.rest.rest.metamodel.UiListState;
@@ -60,8 +61,9 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
-//basÃ© sur http://www.restapitutorial.com/lessons/httpmethods.html
+//basé sur http://www.restapitutorial.com/lessons/httpmethods.html
 
+@PathPrefix("/test")
 public final class TesterRestServices implements RestfulService {
 
 	@Inject
@@ -172,28 +174,28 @@ public final class TesterRestServices implements RestfulService {
 	}
 
 	@AnonymousAccessAllowed
-	@GET("/test/login")
+	@GET("/login")
 	public void login() {
 		//code 200
 		securityManager.getCurrentUserSession().get().authenticate();
 	}
 
 	@SessionInvalidate
-	@GET("/test/logout")
+	@GET("/logout")
 	public void logout() {
 		//code 200
 	}
 
 	@SessionLess
 	@AnonymousAccessAllowed
-	@GET("/test/anonymousTest")
+	@GET("/anonymousTest")
 	public List<Contact> anonymousTest() {
 		//offset + range ?
 		//code 200
 		return new ArrayList<>(contacts.values());
 	}
 
-	@GET("/test/authentifiedTest")
+	@GET("/authentifiedTest")
 	public List<Contact> authentifiedTest() {
 		//offset + range ?
 		//code 200
@@ -201,7 +203,7 @@ public final class TesterRestServices implements RestfulService {
 	}
 
 	@Doc("send param type='Confirm' or type = 'Contact' \n Return 'OK' or 'Contact'")
-	@GET("/test/twoResult")
+	@GET("/twoResult")
 	public UiContext testTwoResult(@QueryParam("type") final String type) {
 		final UiContext result = new UiContext();
 		if ("Confirm".equals(type)) {
@@ -215,7 +217,7 @@ public final class TesterRestServices implements RestfulService {
 	}
 
 	@Doc("Use passPhrase : RtFM")
-	@GET("/test/docTest/{passPhrase}")
+	@GET("/docTest/{passPhrase}")
 	public List<Contact> docTest(@PathParam("passPhrase") final String passPhrase) throws VSecurityException {
 		if (!"RtFM".equals(passPhrase)) {
 			throw new VSecurityException("Bad passPhrase, check the doc in /catalog");
@@ -223,7 +225,7 @@ public final class TesterRestServices implements RestfulService {
 		return new ArrayList<>(contacts.values());
 	}
 
-	@GET("/test/{conId}")
+	@GET("/{conId}")
 	public Contact testRead(@PathParam("conId") final long conId) {
 		final Contact contact = contacts.get(conId);
 		if (contact == null) {
@@ -234,7 +236,7 @@ public final class TesterRestServices implements RestfulService {
 		return contact;
 	}
 
-	@GET("/test/export/pdf/")
+	@GET("/export/pdf/")
 	public KFile testExportContacts() {
 		final DtList<Contact> fullList = asDtList(contacts.values(), Contact.class);
 		final ExportDtParameters dtParameter = exportManager.createExportListParameters(fullList);
@@ -249,7 +251,7 @@ public final class TesterRestServices implements RestfulService {
 		return result;
 	}
 
-	@GET("/test/export/pdf/{conId}")
+	@GET("/export/pdf/{conId}")
 	public KFile testExportContact(@PathParam("conId") final long conId) {
 		final Contact contact = contacts.get(conId);
 		final ExportDtParameters dtParameter = exportManager.createExportObjectParameters(contact);
@@ -264,25 +266,25 @@ public final class TesterRestServices implements RestfulService {
 		return result;
 	}
 
-	@GET("/test/grantAccess/")
+	@GET("/grantAccess/")
 	@AccessTokenPublish
 	public void testAccessToken() {
 		//access token publish
 	}
 
-	@GET("/test/limitedAccess/{conId}")
+	@GET("/limitedAccess/{conId}")
 	@AccessTokenMandatory
 	public Contact testAccessToken(@PathParam("conId") final long conId) {
 		return testRead(conId);
 	}
 
-	@GET("/test/oneTimeAccess/{conId}")
+	@GET("/oneTimeAccess/{conId}")
 	@AccessTokenConsume
 	public Contact testAccessTokenConsume(@PathParam("conId") final long conId) {
 		return testRead(conId);
 	}
 
-	@GET("/test/filtered/{conId}")
+	@GET("/filtered/{conId}")
 	@ExcludedFields({ "birthday", "email" })
 	@ServerSideSave
 	public Contact testFilteredRead(@PathParam("conId") final long conId) {
@@ -313,7 +315,7 @@ public final class TesterRestServices implements RestfulService {
 	}
 
 	//PUT is indempotent : ID obligatoire
-	@PUT("/test/{conId}")
+	@PUT("/{conId}")
 	public Contact testUpdate(//
 			final @Validate({ ContactValidator.class, MandatoryPkValidator.class }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
@@ -327,7 +329,7 @@ public final class TesterRestServices implements RestfulService {
 	}
 
 	//PUT is indempotent : ID obligatoire
-	@PUT("/test/filtered/{conId}")
+	@PUT("/filtered/{conId}")
 	@ServerSideSave
 	public Contact filteredUpdateByExclude(//
 			final @Validate({ ContactValidator.class, MandatoryPkValidator.class })//
@@ -344,7 +346,7 @@ public final class TesterRestServices implements RestfulService {
 	}
 
 	//PUT is indempotent : ID obligatoire
-	@PUT("/test/filtered2/{conId}")
+	@PUT("/filtered2/{conId}")
 	@ServerSideSave
 	public Contact filteredUpdateByInclude(//
 			final @Validate({ ContactValidator.class, MandatoryPkValidator.class })//
@@ -360,7 +362,7 @@ public final class TesterRestServices implements RestfulService {
 		return contact;
 	}
 
-	@DELETE("/test/{conId}")
+	@DELETE("/{conId}")
 	public void delete(@PathParam("conId") final long conId) {
 		if (!contacts.containsKey(conId)) {
 			//404
@@ -375,7 +377,7 @@ public final class TesterRestServices implements RestfulService {
 	}
 
 	@Doc("Test ws-rest multipart body with objects. Send a body with an object of to field : contactFrom, contactTo. Each one should be an json of Contact.")
-	@POST("/test/multipart")
+	@POST("/multipart")
 	public List<Contact> testMultiPartBodyObject(@InnerBodyParam("contactFrom") final Contact contactFrom, @InnerBodyParam("contactTo") final Contact contactTo) {
 		final List<Contact> result = new ArrayList<>(2);
 		result.add(contactFrom);
@@ -388,7 +390,7 @@ public final class TesterRestServices implements RestfulService {
 	@Doc("Test ws-rest multipart body with primitives. Send a body with an object of to field : contactId1, contactId2. Each one should be an json of long.")
 	@ServerSideSave
 	@ExcludedFields({ "address", "tels" })
-	@POST("/test/multipartLong")
+	@POST("/multipartLong")
 	public DtList<Contact> testMultiPartBodyLong(@InnerBodyParam("contactId1") final long contactIdFrom, @InnerBodyParam("contactId2") final long contactIdTo) {
 		final DtList<Contact> result = new DtList<>(Contact.class);
 		result.add(contacts.get(contactIdFrom));
@@ -401,7 +403,7 @@ public final class TesterRestServices implements RestfulService {
 	@Doc("Test ws-rest returning UiContext. Send a body with an object of to field : contactId1, contactId2. Each one should be an json of long. You get partial Contacts with clientId in each one")
 	@ServerSideSave
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
-	@POST("/test/uiContext")
+	@POST("/uiContext")
 	public UiContext testMultiPartBody(@InnerBodyParam("contactId1") final long contactIdFrom, @InnerBodyParam("contactId2") final long contactIdTo) {
 		final UiContext uiContext = new UiContext();
 		uiContext.put("contactFrom", contacts.get(contactIdFrom));
@@ -416,7 +418,7 @@ public final class TesterRestServices implements RestfulService {
 	}
 
 	@Doc("Test ws-rest multipart body with serverSide objects. Send a body with an object of to field : contactFrom, contactTo. Each one should be an partial json of Contact with clientId.")
-	@POST("/test/multipartServerClient")
+	@POST("/multipartServerClient")
 	public List<Contact> testMultiPartBodyClientId(//
 			@InnerBodyParam("contactFrom") @ServerSideRead final Contact contactFrom, //
 			@InnerBodyParam("contactTo") @ServerSideRead final Contact contactTo) {
@@ -428,7 +430,7 @@ public final class TesterRestServices implements RestfulService {
 		return result;
 	}
 
-	@POST("/test/search")
+	@POST("/search")
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
 	public List<Contact> testSearch(//
 			@ExcludedFields({ "conId", "email", "birthday", "address", "tels" }) final ContactCriteria contact) {
@@ -440,7 +442,7 @@ public final class TesterRestServices implements RestfulService {
 		return result;
 	}
 
-	@POST("/test/searchPagined")
+	@POST("/searchPagined")
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
 	public List<Contact> testSearchServicePagined(//
 			@InnerBodyParam("criteria") final ContactCriteria contact, //
@@ -454,7 +456,7 @@ public final class TesterRestServices implements RestfulService {
 		return applySortAndPagination(result, uiListState);
 	}
 
-	@POST("/test/searchQueryPagined")
+	@POST("/searchQueryPagined")
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
 	public List<Contact> testSearchServiceQueryPagined(final ContactCriteria contact, final UiListState uiListState) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
@@ -467,7 +469,7 @@ public final class TesterRestServices implements RestfulService {
 	}
 
 	@AutoSortAndPagination
-	@POST("/test/searchAutoPagined")
+	@POST("/searchAutoPagined")
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
 	public List<Contact> testSearchServiceAutoPagined(final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
@@ -478,7 +480,7 @@ public final class TesterRestServices implements RestfulService {
 		return result;
 	}
 
-	/*@GET("/test/searchFacet")
+	/*@GET("/searchFacet")
 	public FacetedQueryResult<DtObject, ContactCriteria> testSearchServiceFaceted(final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
 		final DtList<Contact> result = filterFunction.apply((DtList<Contact>) contacts.values());

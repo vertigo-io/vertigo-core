@@ -22,6 +22,7 @@ import java.util.Set;
 public final class EndPointDefinitionBuilder implements Builder<EndPointDefinition> {
 	private final Method myMethod;
 	private Verb myVerb;
+	private String myPathPrefix;
 	private String myPath;
 	private final String myAcceptType = "application/json"; //default
 	private boolean myNeedSession = true;
@@ -47,11 +48,12 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	}
 
 	public EndPointDefinition build() {
+		final String usedPath = myPathPrefix + myPath;
 		return new EndPointDefinition(//
 				//"EP_" + StringUtil.camelToConstCase(restFullServiceClass.getSimpleName()) + "_" + StringUtil.camelToConstCase(method.getName()), //
-				"EP_" + myVerb + "_" + StringUtil.camelToConstCase(myPath.replaceAll("[//{}]", "_")), //
+				"EP_" + myVerb + "_" + StringUtil.camelToConstCase(usedPath.replaceAll("[//{}]", "_")), //
 				myVerb, //
-				myPath, //
+				usedPath, //
 				myAcceptType, //
 				myMethod, //
 				myNeedSession, //
@@ -68,9 +70,18 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 				myDoc);
 	}
 
+	public void withPathPrefix(final String pathPrefix) {
+		Assertion.checkArgNotEmpty(pathPrefix, "Route pathPrefix must be specified on {0}", myMethod.getName());
+		Assertion.checkArgument(pathPrefix.startsWith("/"), "Route pathPrefix must starts with / (on {0})", myMethod.getName());
+		//---------------------------------------------------------------------
+		myPathPrefix = pathPrefix;
+	}
+
 	public void with(final Verb verb, final String path) {
 		Assertion.checkState(myVerb == null, "A verb is already specified on {0} ({1})", myMethod.getName(), myVerb);
 		Assertion.checkArgNotEmpty(path, "Route path must be specified on {0}", myMethod.getName());
+		Assertion.checkArgument(path.startsWith("/"), "Route path must starts with / (on {0})", myMethod.getName());
+		//---------------------------------------------------------------------
 		myVerb = verb;
 		myPath = path;
 	}
