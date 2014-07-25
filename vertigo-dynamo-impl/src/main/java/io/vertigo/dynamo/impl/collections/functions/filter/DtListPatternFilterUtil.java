@@ -131,8 +131,7 @@ final class DtListPatternFilterUtil {
 				result = Double.valueOf(stringValue);
 				break;
 			case Date:
-				result = new Date();
-				//TODO syntaxe complexe à parser
+				result = DateQueryParser.parseDateQuery(stringValue);
 				break;
 			case String:
 				result = stringValue;
