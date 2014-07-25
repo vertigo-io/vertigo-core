@@ -16,60 +16,77 @@ import java.util.regex.Pattern;
  * @author mlaroche
  */
 public final class DateQueryParserUtil {
-	private static final Map<String, Integer> CALENDAR_UNITS = makeUnitsMap();
-	private static final String DATE_PATTERN = "dd/MM/yy";
-	private final static Pattern pattern = Pattern.compile("([0-9]{1,})([A-Z]{1,})");
+	private static final Map<String, Integer> CALENDAR_UNITS = createCalendarUnits();
+	private final static Pattern PATTERN = Pattern.compile("([0-9]{1,})([A-Z]{1,})");
 	private final static String NOW = "NOW";
 
-	private static Map<String, Integer> makeUnitsMap() {
+	private static Map<String, Integer> createCalendarUnits() {
 		final Map<String, Integer> units = new HashMap<>(5);
 		units.put("YEAR", Calendar.YEAR);
 		units.put("MONTH", Calendar.MONTH);
 		units.put("DAY", Calendar.DAY_OF_YEAR);
 		units.put("HOUR", Calendar.HOUR_OF_DAY);
 		units.put("MINUTE", Calendar.MINUTE);
-
 		return units;
 	}
 
 	/**
 	 * Retourne la date correspondant à l'expression passée en parametre.
-	 * La syntaxe est de type NOW((+/-)eeeUNIT) ou une date au format dd/MM/yy 
+	 * La syntaxe est de type NOW((+/-)eeeUNIT) ou une date au format dd/MM/yy
+	 * examples :
+	 * NOW+DAY //you can omit 1
+	 * NOW-DAY //you can omit 1 
+	 * NOW+1DAY
+	 * NOW-12MONTH
+	 * NOW-2YEAR
+	 * "06/12/2003", "dd/MM/yyyy"
+	 * 
 	 * @param stringValue
-	 * @return
+	 * @return date
 	 */
-	public static Date parseDateQuery(final String stringValue) {
+	public static Date parseDateQuery(final String stringValue, String datePattern) {
+		Assertion.checkArgNotEmpty(stringValue);
+		Assertion.checkArgNotEmpty(datePattern, "you must define a valid datePattern such as dd/MM/yyyy or MM/dd/yy");
 		// ---
 		final Calendar calendar = new GregorianCalendar();
 		if (NOW.equals(stringValue)) {
 			//today is gonna be the day 
 		} else if (stringValue.startsWith(NOW)) {
-			final Integer index = stringValue.indexOf(NOW) + NOW.length();
-			final String operator = stringValue.substring(index, index + 1);
-			String secondOperand = stringValue.substring(index + 1);
-			Integer multiplicator = 1;
-			if (!CALENDAR_UNITS.containsKey(secondOperand)) {
-				final Matcher matcher = pattern.matcher(secondOperand);
-				Assertion.checkState(matcher.matches(), "Le second operande ne respecte pas le pattern {0}", pattern.toString());
-				//---
-				multiplicator = Integer.valueOf(matcher.group(1));
-				secondOperand = matcher.group(2);
-			}
-			if (!CALENDAR_UNITS.containsKey(secondOperand)) {
-				throw new RuntimeException("L'unité " + secondOperand + " n'est pas correcte");
-			}
-			// ---
-			if ("+".equals(operator)) {
-				//Nothing to do
-			} else if ("-".equals(operator)) {
-				multiplicator = 0 - multiplicator;
+			final Integer index = NOW.length();
+			//---
+			final char operator = stringValue.charAt(index);
+			final int sign;
+			if ('+' == operator) {
+				sign = 1;
+			} else if ('-' == operator) {
+				sign = -1;
 			} else {
 				throw new RuntimeException();
 			}
-			calendar.add(CALENDAR_UNITS.get(secondOperand), multiplicator);
+			//---
+			String operand = stringValue.substring(index + 1);
+			final String calendarUnit;
+			final int unitCount;
+			if (CALENDAR_UNITS.containsKey(operand)) {
+				//NOW+DAY or NOW-MONTH without any number between NOW and calendar Unit. 
+				unitCount = sign * 1;
+				calendarUnit = operand;
+			} else {
+				//NOW+21DAY or NOW-12MONTH 
+				final Matcher matcher = PATTERN.matcher(operand);
+				Assertion.checkState(matcher.matches(), "Le second operande ne respecte pas le pattern {0}", PATTERN.toString());
+				//---
+				unitCount = sign * Integer.valueOf(matcher.group(1));
+				calendarUnit = matcher.group(2);
+				//We check that we have found a real unit Calendar and not 'NOW+15DAL'
+				if (!CALENDAR_UNITS.containsKey(calendarUnit)) {
+					throw new RuntimeException("unit '" + calendarUnit + "' is not allowed. You must use a unit among : " + CALENDAR_UNITS.keySet());
+				}
+			}
+			calendar.add(CALENDAR_UNITS.get(calendarUnit), unitCount);
 		} else {
 			//We are expecting a date respectig pattern 
-			final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_PATTERN);
+			final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(datePattern);
 			try {
 				calendar.setTime(simpleDateFormat.parse(stringValue));
 			} catch (final ParseException e) {

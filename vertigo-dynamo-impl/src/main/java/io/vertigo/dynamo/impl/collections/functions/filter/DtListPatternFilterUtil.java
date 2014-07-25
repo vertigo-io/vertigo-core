@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
  * Parser des filtres utilisant une syntaxe définie.
  */
 final class DtListPatternFilterUtil {
+	private static final String DATE_PATTERN = "dd/MM/yy";
 
 	public static enum FilterPattern {
 		/** range. */
@@ -139,7 +140,7 @@ final class DtListPatternFilterUtil {
 				result = Double.valueOf(stringValue);
 				break;
 			case Date:
-				result = DateQueryParserUtil.parseDateQuery(stringValue);
+				result = DateQueryParserUtil.parseDateQuery(stringValue, DATE_PATTERN);
 				break;
 			case String:
 				result = stringValue;
