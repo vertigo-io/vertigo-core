@@ -123,9 +123,9 @@ public final class DateUtil {
 	 * examples :
 	 * you can use plural DAYS or DAY 
 	 * NOW can be omitted 
-	 * NOW+DAY //you can omit 1
-	 * NOW-DAY //you can omit 1 
-	 * -DAY //you can omit 1 
+	 * NOW+1DAY 
+	 * NOW-1DAY 
+	 * -1DAY //you can omit NOW
 	 * NOW+1DAY
 	 * NOW-12MONTH is equivalent to -12MONTHS
 	 * NOW-2YEAR 

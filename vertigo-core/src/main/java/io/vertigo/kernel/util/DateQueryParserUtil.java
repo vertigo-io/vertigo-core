@@ -14,10 +14,7 @@ import java.util.regex.Pattern;
 
 /**
  * Implements parsing of a date expression.
- *  NOW+DAY //you can omit 1
- * NOW-DAY //you can omit 1 
  * NOW+1DAY
- * +DAY   // now is omitted
  * +1DAY
  * +2DAYS
  * NOW-12MONTHS
@@ -34,11 +31,18 @@ final class DateQueryParserUtil {
 
 	private static Map<String, Integer> createCalendarUnits() {
 		final Map<String, Integer> units = new HashMap<>(5);
+//		units.put("y", Calendar.YEAR);
+//		units.put("M", Calendar.MONTH);
+//		units.put("d", Calendar.DAY_OF_YEAR);
+//		units.put("h", Calendar.HOUR_OF_DAY);
+//		units.put("m", Calendar.MINUTE);
+		//---
 		units.put("YEAR", Calendar.YEAR);
 		units.put("MONTH", Calendar.MONTH);
 		units.put("DAY", Calendar.DAY_OF_YEAR);
 		units.put("HOUR", Calendar.HOUR_OF_DAY);
 		units.put("MINUTES", Calendar.MINUTE);
+		//---
 		units.put("YEARS", Calendar.YEAR);
 		units.put("MONTHS", Calendar.MONTH);
 		units.put("DAYS", Calendar.DAY_OF_YEAR);
@@ -83,25 +87,19 @@ final class DateQueryParserUtil {
 				throw new RuntimeException();
 			}
 			//---
+			//21DAYS
 			String operand = dateQuery.substring(index + 1);
-			final String calendarUnit;
-			final int unitCount;
-			if (CALENDAR_UNITS.containsKey(operand)) {
-				//NOW+DAY or NOW-MONTH without any number between NOW and calendar Unit. 
-				unitCount = sign * 1;
-				calendarUnit = operand;
-			} else {
-				//NOW+21DAY or NOW-12MONTH 
-				final Matcher matcher = PATTERN.matcher(operand);
-				Assertion.checkState(matcher.matches(), "Le second operande ne respecte pas le pattern {0}", PATTERN.toString());
-				//---
-				unitCount = sign * Integer.valueOf(matcher.group(1));
-				calendarUnit = matcher.group(2);
-				//We check that we have found a real unit Calendar and not 'NOW+15DAL'
-				if (!CALENDAR_UNITS.containsKey(calendarUnit)) {
-					throw new RuntimeException("unit '" + calendarUnit + "' is not allowed. You must use a unit among : " + CALENDAR_UNITS.keySet());
-				}
+			//NOW+21DAY or NOW-12MONTH 
+			final Matcher matcher = PATTERN.matcher(operand);
+			Assertion.checkState(matcher.matches(), "Le second operande ne respecte pas le pattern {0}", PATTERN.toString());
+			//---
+			final int unitCount= sign * Integer.valueOf(matcher.group(1));
+			final String calendarUnit = matcher.group(2);
+			//We check that we have found a real unit Calendar and not 'NOW+15DAL'
+			if (!CALENDAR_UNITS.containsKey(calendarUnit)) {
+				throw new RuntimeException("unit '" + calendarUnit + "' is not allowed. You must use a unit among : " + CALENDAR_UNITS.keySet());
 			}
+			//---
 			final Calendar calendar = new GregorianCalendar();
 			calendar.add(CALENDAR_UNITS.get(calendarUnit), unitCount);
 			return calendar.getTime();

@@ -20,29 +20,36 @@ public final class DateQueryParserUtilTest {
 
 	/** Test le keyword NOW avec une erreur. */
 	@Test(expected = Exception.class)
-	public void testWithError() {
+	public void testWithError0() {
 		DateUtil.parse("NOW+", DATE_PATTERN);
+	}
+
+	/** Test le keyword NOW avec une erreur. */
+	@Test(expected = Exception.class)
+	public void testWith1() {
+		//an explicit  number must be defined
+		DateUtil.parse("NOW+DAY", DATE_PATTERN);
 	}
 
 	/** Test le keyword NOW avec une erreur. */
 	@Test(expected = Exception.class)
 	public void testWith2() {
 		//Day must be in upperCase : DAY
-		DateUtil.parse("NOW+Day", DATE_PATTERN);
+		DateUtil.parse("NOW+1Day", DATE_PATTERN);
 	}
 
 	/** Test le keyword NOW avec une erreur. */
 	@Test(expected = Exception.class)
 	public void testWithError3() {
 		//DAL is not a calendar unit
-		DateUtil.parse("NOW+DAL", DATE_PATTERN);
+		DateUtil.parse("NOW+1DAL", DATE_PATTERN);
 	}
 
 	/** Test le keyword NOW avec une erreur. */
 	@Test(expected = Exception.class)
 	public void testWithError4() {
 		//DAYST is not a calendar unit even if DAYS is valid
-		DateUtil.parse("NOW+DAYST", DATE_PATTERN);
+		DateUtil.parse("NOW+1DAYST", DATE_PATTERN);
 	}
 
 	/**
@@ -60,12 +67,11 @@ public final class DateQueryParserUtilTest {
 	@Test
 	public void testAddDay() {
 		Date expectedDate = new DateBuilder(new Date()).addDays(1).toDateTime();
-		assertEquals(expectedDate, "NOW+DAY");
-		assertEquals(expectedDate, "NOW+DAYS");
-		assertEquals(expectedDate, "+DAY");
-		assertEquals(expectedDate, "+DAYS");
+		assertEquals(expectedDate, "NOW+1DAY");
+		assertEquals(expectedDate, "NOW+1DAYS");
 		assertEquals(expectedDate, "+1DAY");
 		assertEquals(expectedDate, "+1DAYS");
+		assertEquals(expectedDate, "+1DAY");
 	}
 
 	/**
@@ -126,7 +132,7 @@ public final class DateQueryParserUtilTest {
 		assertEquals(expectedDate, "+50HOUR");
 		assertEquals(expectedDate, "NOW+50HOURS");
 		assertEquals(expectedDate, "+50HOURS");
-	}
+		}
 
 	/**
 	 * Teste le parsing d'une date fixe.
