@@ -35,12 +35,12 @@ public final class UiObject<D extends DtObject> implements Serializable {
 	private static final long serialVersionUID = -4639050257543017072L;
 
 	/**
-	 * Index de transformation des propri�t�s CamelCase en champs du Dt en const
+	 * Index de transformation des propriétés CamelCase en champs du Dt en const
 	 */
 	private final Map<String, String> camel2ConstIndex = new HashMap<>();
 	private final Map<String, String> const2CamelIndex = new HashMap<>();
 
-	/** R�f�rence vers la �finition. */
+	/** Référence vers la éfinition. */
 	private final DefinitionReference<DtDefinition> dtDefinitionRef;
 
 	private String inputKey;
@@ -48,7 +48,7 @@ public final class UiObject<D extends DtObject> implements Serializable {
 	private Set<String> modifiedFields; //modified fieldNames in camelCase
 
 	/**
-	 * DtObject dont on g�re le buffer d'input.
+	 * DtObject dont on gère le buffer d'input.
 	 */
 	private D serverSideDto;
 	private String serverSideToken;
@@ -118,7 +118,7 @@ public final class UiObject<D extends DtObject> implements Serializable {
 	}
 
 	/**
-	 * @return DtDefinition de l'objet métier
+	 * @return DtDefinition de l'objet mÃ©tier
 	 */
 	public final DtDefinition getDtDefinition() {
 		return dtDefinitionRef.get();
@@ -146,10 +146,10 @@ public final class UiObject<D extends DtObject> implements Serializable {
 	}
 
 	/**
-	 * Merge et Valide l'objet d'IHM et place les erreurs rencontrées dans la stack.
-	 * @param dtObjectValidators Validateurs à utiliser, peut-être spécifique à l'objet.
-	 * @param uiMessageStack Pile des messages qui sera mise à jour
-	 * @return Objet métier mis à jour
+	 * Merge et Valide l'objet d'IHM et place les erreurs rencontrÃ©es dans la stack.
+	 * @param dtObjectValidators Validateurs Ã  utiliser, peut-Ãªtre spÃ©cifique Ã  l'objet.
+	 * @param uiMessageStack Pile des messages qui sera mise Ã  jour
+	 * @return Objet mÃ©tier mis Ã  jour
 	 */
 	public D mergeAndCheckInput(final List<DtObjectValidator<D>> dtObjectValidators, final UiMessageStack uiMessageStack) {
 		Assertion.checkNotNull(dtObjectValidators);
@@ -174,9 +174,9 @@ public final class UiObject<D extends DtObject> implements Serializable {
 	}
 
 	/**
-	 * Mise à jour des données typées.
-	 * Verifie si la valeur correspond à une modification.
-	 * Si oui, la valeur est gardée, sinon la saisie de l'utilisateur est vidée. 
+	 * Mise Ã  jour des donnÃ©es typÃ©es.
+	 * Verifie si la valeur correspond Ã  une modification.
+	 * Si oui, la valeur est gardÃ©e, sinon la saisie de l'utilisateur est vidÃ©e. 
 	 */
 	private void compactModifiedSet() {
 		Assertion.checkNotNull(serverSideDto, "serverSideDto is mandatory");
@@ -189,13 +189,13 @@ public final class UiObject<D extends DtObject> implements Serializable {
 			//On regarde pour vider le buffer
 			if (!dtObjectErrors.hasError(camelField)) {
 				// ======================================================================
-				// ======================Mise à jour différentielle du BUFFER============
+				// ======================Mise Ã  jour diffÃ©rentielle du BUFFER============
 				// ======================================================================
 				final DtField dtField = getDtField(camelField);
 				final DataType dataType = dtField.getDomain().getDataType();
-				// égalité entre la valeur d'origine et la valeur saisie.
+				// Ã©galitÃ© entre la valeur d'origine et la valeur saisie.
 				if (dataType.equals(dtField.getDataAccessor().getValue(serverSideDto), dtField.getDataAccessor().getValue(inputDto))) {
-					// Si la valeur saisie est identique à la valeur d'origine
+					// Si la valeur saisie est identique Ã  la valeur d'origine
 					// alors on purge le buffer de saisie.
 					updatedModifiedFields.remove(camelField);
 				}
@@ -210,7 +210,7 @@ public final class UiObject<D extends DtObject> implements Serializable {
 
 	/**
 	 * @param fieldName Champs
-	 * @return Si le champs à été modifié dans le UiObject
+	 * @return Si le champs Ã  Ã©tÃ© modifiÃ© dans le UiObject
 	 */
 	public boolean isModified(final String fieldName) {
 		Assertion.checkArgNotEmpty(fieldName);

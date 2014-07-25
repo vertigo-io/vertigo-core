@@ -11,7 +11,7 @@ import java.net.URL;
 import javax.servlet.ServletContext;
 
 /**
- * Résolution des URL liées à la servlet.
+ * RÃ©solution des URL liÃ©es Ã  la servlet.
  * @author prahmoune
  */
 public final class ServletResourceResolverPlugin implements ResourceResolverPlugin {

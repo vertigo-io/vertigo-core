@@ -24,7 +24,7 @@ final class HomeServletStarter {
 
 	private static final String EXTERNAL_PROPERTIES_PARAM_NAME = "external-properties";
 
-	/** clés dans le fichier Web.xml */
+	/** clÃ©s dans le fichier Web.xml */
 
 	/** Servlet listener */
 	private final ServletListener servletListener = new ServletListener();
@@ -38,22 +38,22 @@ final class HomeServletStarter {
 		try {
 			// Initialisation du web context de l'application (porteur des singletons applicatifs)
 			ServletResourceResolverPlugin.setServletContext(servletContext);
-			// Création de l'état de l'application
-			// Lecture des paramètres de configuration
+			// CrÃ©ation de l'Ã©tat de l'application
+			// Lecture des paramÃ¨tres de configuration
 			final Properties conf = createProperties(servletContext);
 			WebAppContextConfigPlugin.setInitConfig(conf);
 
 			final ComponentSpaceConfig componentSpaceConfig = new AppBuilder() //
 					.withSilence(true)//
 					.withEnvParams(conf).build();
-			// Initialisation de l'état de l'application
+			// Initialisation de l'Ã©tat de l'application
 			Home.start(componentSpaceConfig);
 
 			servletListener.onServletStart(getClass().getName());
 		} catch (final Throwable t) {
 			LOG.error(t.getMessage(), t);
 			t.printStackTrace();
-			throw new RuntimeException("Problème d'initialisation de l'application", t);
+			throw new RuntimeException("ProblÃ¨me d'initialisation de l'application", t);
 		} finally {
 			if (LOG.isInfoEnabled()) {
 				LOG.info("Temps d'initialisation du listener " + (System.currentTimeMillis() - start));
@@ -62,21 +62,21 @@ final class HomeServletStarter {
 	}
 
 	/**
-	 * Création des propriétés à partir des différents fichiers de configuration. - Web XML - Fichier externe défini par
-	 * la valeur de la propriété système : external-properties
+	 * CrÃ©ation des propriÃ©tÃ©s Ã  partir des diffÃ©rents fichiers de configuration. - Web XML - Fichier externe dÃ©fini par
+	 * la valeur de la propriÃ©tÃ© systÃ¨me : external-properties
 	 * 
 	 * @return Properties
 	 */
 	private static Properties createProperties(final ServletContext servletContext) {
 		// ======================================================================
-		// ===Conversion en Properties du fichier de paramétrage de la servlet===
+		// ===Conversion en Properties du fichier de paramÃ©trage de la servlet===
 		// ======================================================================
 		final Properties servletParams = new Properties();
 		String name;
 
 		/*
-		 * On récupère les paramètres du context (web.xml ou fichier tomcat par exemple) Ces paramètres peuvent
-		 * surcharger les paramètres de la servlet de façon à créer un paramétrage adhoc de développement par exemple.
+		 * On rÃ©cupÃ¨re les paramÃ¨tres du context (web.xml ou fichier tomcat par exemple) Ces paramÃ¨tres peuvent
+		 * surcharger les paramÃ¨tres de la servlet de faÃ§on Ã  crÃ©er un paramÃ©trage adhoc de dÃ©veloppement par exemple.
 		 */
 		for (final Enumeration<String> enumeration = servletContext.getInitParameterNames(); enumeration.hasMoreElements();) {
 			name = enumeration.nextElement();
@@ -84,8 +84,8 @@ final class HomeServletStarter {
 		}
 
 		/*
-		 * On récupère les paramètres du fichier de configuration externe (-Dexternal-properties). Ces paramètres
-		 * peuvent surcharger les paramètres de la servlet de façon à créer un paramétrage adhoc de développement par
+		 * On rÃ©cupÃ¨re les paramÃ¨tres du fichier de configuration externe (-Dexternal-properties). Ces paramÃ¨tres
+		 * peuvent surcharger les paramÃ¨tres de la servlet de faÃ§on Ã  crÃ©er un paramÃ©trage adhoc de dÃ©veloppement par
 		 * exemple.
 		 */
 		final String externalPropertiesFileName = System.getProperty(EXTERNAL_PROPERTIES_PARAM_NAME);

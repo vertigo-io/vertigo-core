@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * Plugin d'accès à la configuration de la WebApp.
+ * Plugin d'accÃ¨s Ã  la configuration de la WebApp.
  * @author npiedeloup
  */
 public final class WebAppContextConfigPlugin implements ConfigPlugin {

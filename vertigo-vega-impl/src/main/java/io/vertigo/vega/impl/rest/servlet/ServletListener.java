@@ -3,13 +3,13 @@ package io.vertigo.vega.impl.rest.servlet;
 import org.apache.log4j.Logger;
 
 /**
- * Implémentation du listener des événements produits par la servlet.
+ * ImplÃ©mentation du listener des Ã©vÃ©nements produits par la servlet.
  * @author pchretien
  */
 final class ServletListener {
 
 	/**
-	 * Mécanisme de log racine
+	 * MÃ©canisme de log racine
 	 */
 	private final Logger generalLog;
 
@@ -23,7 +23,7 @@ final class ServletListener {
 	// --------------------------------------------------------------------------
 
 	/**
-	 * Evénement remonté lors du démarrage de la servlet.
+	 * EvÃ©nement remontÃ© lors du dÃ©marrage de la servlet.
 	 * @param servletName Nom de la servlet
 	 */
 	public void onServletStart(final String servletName) {
@@ -33,7 +33,7 @@ final class ServletListener {
 	}
 
 	/**
-	 * Evénement remonté lors de l'arrêt de la servlet.
+	 * EvÃ©nement remontÃ© lors de l'arrÃªt de la servlet.
 	 * @param servletName Nom de la servlet
 	 */
 	public void onServletDestroy(final String servletName) {
