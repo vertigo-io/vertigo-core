@@ -23,7 +23,6 @@
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-dynamo-api</artifactId>
 			<version>${project.version}</version>
-			<scope>test</scope>
 		</dependency>		
 	</dependencies>
 </project>
