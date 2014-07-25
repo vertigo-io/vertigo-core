@@ -7,9 +7,7 @@ import io.vertigo.rest.rest.validation.DtObjectValidator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -19,99 +17,99 @@ import java.util.Set;
  * @author npiedeloup
  */
 public final class EndPointParamBuilder implements Builder<EndPointParam> {
-	private final Class<?> paramType;
-	private RestParamType restParamType = RestParamType.Body; // default;
-	private String restParamName;
-	private final List<Class<? extends DtObjectValidator>> validatorClasses = new ArrayList<>();
-	private Set<String> includedFields = new LinkedHashSet<>();
-	private Set<String> excludedFields = new LinkedHashSet<>();
-	private boolean needServerSideToken;
-	private boolean consumeServerSideToken;
+	private final Class<?> myParamClass;
+	private RestParamType myRestParamType = RestParamType.Body; // default;
+	private String myRestParamName;
+	private final List<Class<? extends DtObjectValidator>> myValidatorClasses = new ArrayList<>();
+	private final Set<String> myIncludedFields = new HashSet<>();
+	private final Set<String> myExcludedFields = new HashSet<>();
+	private boolean myNeedServerSideToken;
+	private boolean myConsumeServerSideToken;
 
 	/**
 	 * Constructeur.
+	 * @param paramClass param class
 	 */
-	public EndPointParamBuilder(final Class<?> paramType) {
-		Assertion.checkNotNull(paramType);
+	public EndPointParamBuilder(final Class<?> paramClass) {
+		Assertion.checkNotNull(paramClass);
 		// ---------------------------------------------------------------------
-		this.paramType = paramType;
-	}
-
-	public EndPointParam build() {
-		if (restParamType == RestParamType.Body) {
-			return new EndPointParam(restParamType, paramType, //
-					includedFields, //
-					excludedFields, //
-					needServerSideToken, //
-					consumeServerSideToken, //
-					validatorClasses);
-		}
-		return new EndPointParam(restParamType, restParamName, paramType, //
-				includedFields, //
-				excludedFields, //
-				needServerSideToken, //
-				consumeServerSideToken, //
-				validatorClasses);
+		myParamClass = paramClass;
 	}
 
 	/**
-	 * @param restParamType
-	 * @param restParamName
-	 * @return this builder
+	 * @param restParamType paramType
+	 * @param restParamName paramName
+	 * @return Builder
 	 */
-	public EndPointParamBuilder with(RestParamType restParamType,String restParamName) {
+	public EndPointParamBuilder with(final RestParamType restParamType, final String restParamName) {
 		Assertion.checkNotNull(restParamType);
 		Assertion.checkArgNotEmpty(restParamName);
 		// ---------------------------------------------------------------------
-		this.restParamType = restParamType;
-		this.restParamName = restParamName;
+		myRestParamType = restParamType;
+		myRestParamName = restParamName;
 		return this;
 	}
 
-
 	/**
 	 * @param validatorClasses List of validator to check
-	 * @return this builder
+	 * @return Builder
 	 */
-	public EndPointParamBuilder withValidatorClasses(
-			Class<? extends DtObjectValidator>... validatorClasses) {
-		this.validatorClasses.addAll(Arrays.asList(validatorClasses));
+	public EndPointParamBuilder withValidatorClasses(final Class<? extends DtObjectValidator>... validatorClasses) {
+		myValidatorClasses.addAll(Arrays.asList(validatorClasses));
 		return this;
 	}
 
 	/**
 	 * @param excludedFields List of exluded fields
-	 * @return this builder
+	 * @return Builder
 	 */
-	public EndPointParamBuilder withExcludedFields(String[] excludedFields) {
-		this.excludedFields.addAll(Arrays.asList(excludedFields));
+	public EndPointParamBuilder withExcludedFields(final String... excludedFields) {
+		myExcludedFields.addAll(Arrays.asList(excludedFields));
 		return this;
 	}
 
 	/**
 	 * @param includedFields list of included fields (empty means all fields included)
-	 * @return
+	 * @return Builder
 	 */
-	public EndPointParamBuilder withIncludedFields(String[] includedFields) {
-		this.includedFields.addAll(Arrays.asList(includedFields));
+	public EndPointParamBuilder withIncludedFields(final String... includedFields) {
+		myIncludedFields.addAll(Arrays.asList(includedFields));
 		return this;
 	}
 
 	/**
 	 * @param needServerSideToken is serverSide token is needed and used
-	 * @return
+	 * @return Builder
 	 */
-	public EndPointParamBuilder withNeedServerSideToken(boolean needServerSideToken) {
-		this.needServerSideToken = needServerSideToken;
+	public EndPointParamBuilder withNeedServerSideToken(final boolean needServerSideToken) {
+		myNeedServerSideToken = needServerSideToken;
 		return this;
 	}
 
 	/**
 	 * @param consumeServerSideToken if serverSide token is consume
-	 * @return this builder
+	 * @return Builder
 	 */
-	public EndPointParamBuilder withConsumeServerSideToken(boolean consumeServerSideToken) {
-		this.consumeServerSideToken = consumeServerSideToken;
+	public EndPointParamBuilder withConsumeServerSideToken(final boolean consumeServerSideToken) {
+		myConsumeServerSideToken = consumeServerSideToken;
 		return this;
+	}
+
+	/** {@inheritDoc} */
+	public EndPointParam build() {
+		if (myRestParamType == RestParamType.Body) {
+			return new EndPointParam(myRestParamType, myParamClass, //
+					myIncludedFields, //
+					myExcludedFields, //
+					myNeedServerSideToken, //
+					myConsumeServerSideToken, //
+					myValidatorClasses);
+		}
+		return new EndPointParam(myRestParamType, myRestParamName, myParamClass, //
+				myIncludedFields, //
+				myExcludedFields, //
+				myNeedServerSideToken, //
+				myConsumeServerSideToken, //
+				myValidatorClasses);
 	}
 }

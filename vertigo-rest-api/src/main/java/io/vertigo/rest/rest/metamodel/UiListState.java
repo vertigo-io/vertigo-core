@@ -1,5 +1,7 @@
 package io.vertigo.rest.rest.metamodel;
 
+import io.vertigo.kernel.lang.Assertion;
+
 import java.io.Serializable;
 
 /**
@@ -24,6 +26,9 @@ public final class UiListState implements Serializable {
 	 * @param listServerToken reference the previous serverToken of the list
 	 */
 	public UiListState(final int top, final int skip, final String sortFieldName, final boolean sortDesc, final String listServerToken) {
+		Assertion.checkArgument(top > 0, "Top must be positive ({0})", top);
+		Assertion.checkArgument(skip > 0, "Top must be positive ({0})", top);
+		//---------------------------------------------------------------------
 		this.top = top;
 		this.skip = skip;
 		this.sortFieldName = sortFieldName;

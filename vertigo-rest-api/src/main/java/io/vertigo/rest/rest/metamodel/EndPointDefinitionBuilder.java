@@ -20,22 +20,22 @@ import java.util.Set;
  * @author npiedeloup
  */
 public final class EndPointDefinitionBuilder implements Builder<EndPointDefinition> {
-	private final Method method;
-	private Verb verb;
-	private String path;
-	private final String acceptType = "application/json"; //default
-	private boolean needSession = true;
-	private boolean sessionInvalidate;
-	private boolean needAuthentication = true;
-	private final Set<String> includedFields = new LinkedHashSet<>();
-	private final Set<String> excludedFields = new LinkedHashSet<>();
-	private boolean accessTokenPublish;
-	private boolean accessTokenMandatory;
-	private boolean accessTokenConsume;
-	private boolean serverSideSave;
-	private boolean autoSortAndPagination;
-	private String doc = "";
-	private final List<EndPointParam> endPointParams = new ArrayList<>();
+	private final Method myMethod;
+	private Verb myVerb;
+	private String myPath;
+	private final String myAcceptType = "application/json"; //default
+	private boolean myNeedSession = true;
+	private boolean mySessionInvalidate;
+	private boolean myNeedAuthentication = true;
+	private final Set<String> myIncludedFields = new LinkedHashSet<>();
+	private final Set<String> myExcludedFields = new LinkedHashSet<>();
+	private boolean myAccessTokenPublish;
+	private boolean myAccessTokenMandatory;
+	private boolean myAccessTokenConsume;
+	private boolean myServerSideSave;
+	private boolean myAutoSortAndPagination;
+	private String myDoc = "";
+	private final List<EndPointParam> myEndPointParams = new ArrayList<>();
 
 	/**
 	 * Constructeur.
@@ -43,80 +43,80 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	public EndPointDefinitionBuilder(final Method method) {
 		Assertion.checkNotNull(method);
 		//---------------------------------------------------------------------
-		this.method = method;
+		myMethod = method;
 	}
 
 	public EndPointDefinition build() {
 		return new EndPointDefinition(//
 				//"EP_" + StringUtil.camelToConstCase(restFullServiceClass.getSimpleName()) + "_" + StringUtil.camelToConstCase(method.getName()), //
-				"EP_" + verb + "_" + StringUtil.camelToConstCase(path.replaceAll("[//{}]", "_")), //
-				verb, //
-				path, //
-				acceptType, //
-				method, //
-				needSession, //
-				sessionInvalidate, //
-				needAuthentication, //
-				accessTokenPublish,//
-				accessTokenMandatory,//
-				accessTokenConsume,//
-				serverSideSave,//
-				autoSortAndPagination,//
-				includedFields, //
-				excludedFields, //
-				endPointParams, //
-				doc);
+				"EP_" + myVerb + "_" + StringUtil.camelToConstCase(myPath.replaceAll("[//{}]", "_")), //
+				myVerb, //
+				myPath, //
+				myAcceptType, //
+				myMethod, //
+				myNeedSession, //
+				mySessionInvalidate, //
+				myNeedAuthentication, //
+				myAccessTokenPublish,//
+				myAccessTokenMandatory,//
+				myAccessTokenConsume,//
+				myServerSideSave,//
+				myAutoSortAndPagination,//
+				myIncludedFields, //
+				myExcludedFields, //
+				myEndPointParams, //
+				myDoc);
 	}
 
-	public void with(final Verb newVerb, final String newPath) {
-		Assertion.checkState(verb == null, "A verb is already specified on {0} ({1})", method.getName(), verb);
-		Assertion.checkArgNotEmpty(newPath, "Route path must be specified on {0}", method.getName());
-		verb = newVerb;
-		path = newPath;
+	public void with(final Verb verb, final String path) {
+		Assertion.checkState(myVerb == null, "A verb is already specified on {0} ({1})", myMethod.getName(), myVerb);
+		Assertion.checkArgNotEmpty(path, "Route path must be specified on {0}", myMethod.getName());
+		myVerb = verb;
+		myPath = path;
 	}
 
 	public boolean hasVerb() {
-		return verb != null;
+		return myVerb != null;
 	}
 
 	public void withAccessTokenConsume(final boolean accessTokenConsume) {
-		this.accessTokenConsume = accessTokenConsume;
+		myAccessTokenConsume = accessTokenConsume;
 	}
 
 	public void withNeedAuthentication(final boolean needAuthentication) {
-		this.needAuthentication = needAuthentication;
+		myNeedAuthentication = needAuthentication;
 	}
 
 	public void withNeedSession(final boolean needSession) {
-		this.needSession = needSession;
+		myNeedSession = needSession;
 	}
 
 	public void withSessionInvalidate(final boolean sessionInvalidate) {
-		this.sessionInvalidate = sessionInvalidate;
+		mySessionInvalidate = sessionInvalidate;
 	}
 
-	public void withExcludedFields(final String[] excludedFields) {
-		this.excludedFields.addAll(Arrays.asList(excludedFields));
+	public void withExcludedFields(final String... excludedFields) {
+		myExcludedFields.addAll(Arrays.asList(excludedFields));
 	}
 
-	public void withIncludedFields(final String[] includedFields) {
-		this.includedFields.addAll(Arrays.asList(includedFields));
+	public void withIncludedFields(final String... includedFields) {
+		myIncludedFields.addAll(Arrays.asList(includedFields));
 	}
 
 	public void withAccessTokenPublish(final boolean accessTokenPublish) {
-		this.accessTokenPublish = accessTokenPublish;
+		myAccessTokenPublish = accessTokenPublish;
 	}
 
 	public void withAccessTokenMandatory(final boolean accessTokenMandatory) {
-		this.accessTokenMandatory = accessTokenMandatory;
+		myAccessTokenMandatory = accessTokenMandatory;
 	}
 
 	public void withServerSideSave(final boolean serverSideSave) {
-		this.serverSideSave = serverSideSave;
+		myServerSideSave = serverSideSave;
 	}
 
 	public void withAutoSortAndPagination(final boolean autoSortAndPagination) {
-		this.autoSortAndPagination = autoSortAndPagination;
+		myAutoSortAndPagination = autoSortAndPagination;
 
 		//autoSortAndPagination must keep the list serverSide but not the input one, its the full one, so we don't use serverSideSave marker
 		//autoSortAndPagination use a Implicit UiListState, this one must be show in API, so we add it to endPointParams
@@ -128,10 +128,10 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	}
 
 	public void withDoc(final String doc) {
-		this.doc = doc;
+		myDoc = doc;
 	}
 
 	public void withEndPointParam(final EndPointParam endPointParam) {
-		endPointParams.add(endPointParam);
+		myEndPointParams.add(endPointParam);
 	}
 }

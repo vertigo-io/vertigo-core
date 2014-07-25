@@ -108,7 +108,7 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 	}
 
 	private static EndPointParam buildEndPointParam(final Annotation[] annotations, final Class<?> paramType) {
-		EndPointParamBuilder builder = new EndPointParamBuilder(paramType);
+		final EndPointParamBuilder builder = new EndPointParamBuilder(paramType);
 		if (DtObject.class.isAssignableFrom(paramType)) {
 			builder.withValidatorClasses(DefaultDtObjectValidator.class);
 		} else if (ImplicitParam.UiMessageStack.getImplicitType().equals(paramType)) {

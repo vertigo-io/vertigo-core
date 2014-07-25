@@ -23,17 +23,12 @@ import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.Option;
 import io.vertigo.rest.rest.exception.SessionException;
 import io.vertigo.rest.rest.exception.VSecurityException;
 import io.vertigo.rest.rest.metamodel.EndPointDefinition;
 import io.vertigo.rest.rest.metamodel.EndPointParam;
 import io.vertigo.rest.rest.metamodel.UiListState;
 import io.vertigo.rest.security.UiSecurityTokenManager;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import spark.Request;
 import spark.Response;
 
@@ -42,18 +37,17 @@ import spark.Response;
  * @author npiedeloup
  */
 final class PaginatorAndSortHandler implements RouteHandler {
-	//private static final long DEFAULT_RESULT_PER_PAGE = 20;
+	private static final int DEFAULT_RESULT_PER_PAGE = 20;
 
 	private final UiSecurityTokenManager uiSecurityTokenManager;
 	private final CollectionsManager collectionsManager;
 	private final EndPointDefinition endPointDefinition;
 
-
 	/**
 	 * Constructor.
-	 * @param windowSeconds the time windows use to limit calls rate
-	 * @param limitValue the rate limit ceiling value
-	 * @param securityManager Security Manager
+	 * @param endPointDefinition endpoint definition
+	 * @param collectionsManager collections manager
+	 * @param uiSecurityTokenManager token manager
 	 */
 	public PaginatorAndSortHandler(final EndPointDefinition endPointDefinition, final CollectionsManager collectionsManager, final UiSecurityTokenManager uiSecurityTokenManager) {
 		Assertion.checkNotNull(collectionsManager);
@@ -66,21 +60,25 @@ final class PaginatorAndSortHandler implements RouteHandler {
 
 	/** {@inheritDoc}  */
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
-		//comes with only Criteria in body
+		//Criteria in body (and only criteria)
 		//UiListState must be in query
 		//serverToken in UiListState
-		String jsonCriteria = request.body(); 
-		EndPointParam uiListEndPointParams = getUiListStateEndPointParams(endPointDefinition);
-		UiListState uiListState = (UiListState) routeContext.getParamValue(uiListEndPointParams);
+
+		final EndPointParam uiListEndPointParams = lookupEndPointParam(endPointDefinition, UiListState.class);
+		Assertion.checkNotNull(uiListEndPointParams, "sort and pagination need a UiListState endpointParams. It should have been added by EndPointParamBuilder.");
+
+		final UiListState parsedUiListState = (UiListState) routeContext.getParamValue(uiListEndPointParams);
+		final UiListState uiListState = checkAndEnsureDefaultValue(parsedUiListState);
+
 		String serverSideToken = uiListState.getListServerToken();
 		DtList<?> fullList = null;
-		if(serverSideToken != null) {
+		if (serverSideToken != null) {
 			fullList = (DtList<?>) uiSecurityTokenManager.get(uiListState.getListServerToken());
 		}
-		if(fullList == null) {
+		if (fullList == null) {
 			final Object result = chain.handle(request, response, routeContext);
 			Assertion.checkArgument(result instanceof DtList, "sort and pagination only supports DtList");
-			fullList = (DtList<?>)result;
+			fullList = (DtList<?>) result;
 			serverSideToken = uiSecurityTokenManager.put(fullList);
 		}
 		response.header("listServerToken", serverSideToken);
@@ -88,13 +86,25 @@ final class PaginatorAndSortHandler implements RouteHandler {
 		return filteredList;
 	}
 
-	private EndPointParam getUiListStateEndPointParams(
-			EndPointDefinition endPointDefinition2) {
-		// TODO Auto-generated method stub
-		return null;
+	private UiListState checkAndEnsureDefaultValue(final UiListState parsedUiListState) {
+		if (parsedUiListState.getTop() == 0) {//check if parsedUiListState, is just not initalized
+			return new UiListState(DEFAULT_RESULT_PER_PAGE, 0, null, true, null);
+		}
+		return parsedUiListState;
 	}
 
-	private UiListState readUiListState(final Request request) {
+	/**
+	 * Lookup for a parameter of the asked type, return the first found.
+	 * @param endPointDefinition EndPoint definition
+	 * @param paramType Type asked
+	 * @return first EndPointParam of this type, null if not found
+	 */
+	private static EndPointParam lookupEndPointParam(final EndPointDefinition endPointDefinition, final Class<UiListState> paramType) {
+		for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
+			if (paramType.equals(endPointParam.getType())) {
+				return endPointParam;
+			}
+		}
 		return null;
 	}
 
