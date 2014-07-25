@@ -40,7 +40,6 @@ import java.io.Serializable;
  * @param <D> Type d'objet
  */
 public final class DtListPatternFilter<D extends DtObject> implements DtListFilter<D>, Serializable {
-
 	private static final long serialVersionUID = 6282972172196740177L;
 
 	private final FilterPattern filterPattern;
