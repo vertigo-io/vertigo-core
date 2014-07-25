@@ -23,9 +23,9 @@ import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.Definition;
 import io.vertigo.kernel.metamodel.DefinitionSpace;
-import io.vertigo.rest.rest.RestfulService;
-import io.vertigo.rest.rest.engine.GoogleJsonEngine;
-import io.vertigo.rest.rest.engine.JsonEngine;
+import io.vertigo.vega.rest.RestfulService;
+import io.vertigo.vega.rest.engine.GoogleJsonEngine;
+import io.vertigo.vega.rest.engine.JsonEngine;
 
 import java.util.Collection;
 
