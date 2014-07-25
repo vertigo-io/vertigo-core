@@ -181,6 +181,6 @@ public abstract class AbstractTestCaseJU4 {
 		if (getPropertiesFileName().isDefined()) {
 			appBuilder.withEnvParams(getClass(), getPropertiesFileName().get());
 		}
-		appBuilder.flushToBuilder();
+		appBuilder.toComponentSpaceConfigBuilder();
 	}
 }

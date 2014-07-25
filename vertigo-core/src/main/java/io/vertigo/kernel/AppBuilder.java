@@ -161,7 +161,7 @@ public final class AppBuilder {
 	 * Update the 'already set' componentSpaceConfigBuilder and return it.
 	 * @return ComponentSpaceConfigBuilder 
 	 */
-	public ComponentSpaceConfigBuilder flushToBuilder() {
+	public ComponentSpaceConfigBuilder toComponentSpaceConfigBuilder() {
 		Assertion.checkState(componentSpaceConfigBuilder != null, "componentSpaceConfigBuilder was not set, use build instead");
 		//---------------------------------------------------------------------
 		componentSpaceConfigBuilder.withSilence(silence); //
@@ -170,7 +170,7 @@ public final class AppBuilder {
 			final String xmlFileNames = envParams.getProperty("applicationConfiguration");
 			Assertion.checkNotNull(xmlFileNames, "'applicationConfiguration' property not found in EnvironmentParams");
 			final String[] xmlFileNamesSplit = xmlFileNames.split(";");
-			withXmlFileNames(Object.class, xmlFileNamesSplit);
+			withXmlFileNames(getClass(), xmlFileNamesSplit);
 		}
 		//---------------------------------------------------------------------
 		//2- We load XML with Loaders to componentSpaceConfigBuilder
@@ -193,7 +193,7 @@ public final class AppBuilder {
 		if (componentSpaceConfigBuilder == null) {
 			withComponentSpaceConfigBuilder(new ComponentSpaceConfigBuilder());
 		}
-		return flushToBuilder().build();
+		return toComponentSpaceConfigBuilder().build();
 	}
 
 	/**
