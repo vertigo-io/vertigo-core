@@ -14,7 +14,9 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.vertigo</groupId>
@@ -36,10 +38,10 @@ limitations under the License. --><project xmlns="http://maven.apache.org/POM/4.
 	<modules>
 		<module>vertigo-parent</module>
 		<module>vertigo-core</module>
-		
+
 		<module>vertigo-commons-api</module>
 		<module>vertigo-commons-impl</module>
-		
+
 		<module>vertigo-dynamo-api</module>
 		<module>vertigo-dynamo-impl</module>
 
@@ -49,8 +51,8 @@ limitations under the License. --><project xmlns="http://maven.apache.org/POM/4.
 		<module>vertigo-persona-api</module>
 		<module>vertigo-persona-impl</module>
 
-	  	<module>vertigo-labs-api</module>
-    	<module>vertigo-labs-impl</module>
+		<module>vertigo-labs-api</module>
+		<module>vertigo-labs-impl</module>
 
 		<module>vertigo-vega-api</module>
 		<module>vertigo-vega-impl</module>
@@ -58,6 +60,8 @@ limitations under the License. --><project xmlns="http://maven.apache.org/POM/4.
 		<module>vertigo-studio</module>
 
 		<module>vertigo-ccc</module>
+		
+		<module>vertigo-bundle</module>
 	</modules>
 
 	<scm>
