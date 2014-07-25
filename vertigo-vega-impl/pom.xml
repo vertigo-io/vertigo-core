@@ -22,7 +22,7 @@
 		
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-rest-api</artifactId>
+			<artifactId>vertigo-vega-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
