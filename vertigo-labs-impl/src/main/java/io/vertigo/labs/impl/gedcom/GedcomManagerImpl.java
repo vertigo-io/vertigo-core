@@ -136,7 +136,7 @@ public final class GedcomManagerImpl implements GedcomManager {
 					case RETIREMENT:
 					case WILL:
 					default:
-						//on ne gère que les evts précédents
+						//on ne gÃ¨re que les evts prÃ©cÃ©dents
 						break;
 				}
 			}
