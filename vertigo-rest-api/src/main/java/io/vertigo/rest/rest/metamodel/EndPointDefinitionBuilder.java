@@ -4,6 +4,8 @@ import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Builder;
 import io.vertigo.kernel.util.StringUtil;
 import io.vertigo.rest.rest.metamodel.EndPointDefinition.Verb;
+import io.vertigo.rest.rest.metamodel.EndPointParam.ImplicitParam;
+import io.vertigo.rest.rest.metamodel.EndPointParam.RestParamType;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -116,6 +118,14 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 
 	public void withAutoSortAndPagination(boolean autoSortAndPagination) {
 		this.autoSortAndPagination = autoSortAndPagination;
+
+		//autoSortAndPagination must keep the list serverSide but not the input one, its the full one, so we don't use serverSideSave marker
+		//autoSortAndPagination use a Implicit UiListState, this one must be show in API, so we add it to endPointParams
+		//autoSortAndPaginationHandler will use it
+		if(autoSortAndPagination) {
+			withEndPointParam(new EndPointParamBuilder(UiListState.class) //
+			.with(RestParamType.Implicit, ImplicitParam.UiListState.name()).build());
+		}
 	}
 
 	public void withDoc(String doc) {

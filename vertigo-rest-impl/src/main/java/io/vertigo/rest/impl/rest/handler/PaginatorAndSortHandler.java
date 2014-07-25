@@ -26,7 +26,10 @@ import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.rest.rest.exception.SessionException;
 import io.vertigo.rest.rest.exception.VSecurityException;
+import io.vertigo.rest.rest.metamodel.EndPointDefinition;
+import io.vertigo.rest.rest.metamodel.EndPointParam;
 import io.vertigo.rest.rest.metamodel.UiListState;
+import io.vertigo.rest.security.UiSecurityTokenManager;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -40,9 +43,11 @@ import spark.Response;
  */
 final class PaginatorAndSortHandler implements RouteHandler {
 	//private static final long DEFAULT_RESULT_PER_PAGE = 20;
-	private final CollectionsManager collectionsManager;
 
-	//private final long resultPerPage;
+	private final UiSecurityTokenManager uiSecurityTokenManager;
+	private final CollectionsManager collectionsManager;
+	private final EndPointDefinition endPointDefinition;
+
 
 	/**
 	 * Constructor.
@@ -50,26 +55,43 @@ final class PaginatorAndSortHandler implements RouteHandler {
 	 * @param limitValue the rate limit ceiling value
 	 * @param securityManager Security Manager
 	 */
-	@Inject
-	public PaginatorAndSortHandler(@Named("resultPerPage") final Option<Long> resultPerPage, final CollectionsManager collectionsManager) {
+	public PaginatorAndSortHandler(final EndPointDefinition endPointDefinition, final CollectionsManager collectionsManager, final UiSecurityTokenManager uiSecurityTokenManager) {
 		Assertion.checkNotNull(collectionsManager);
+		Assertion.checkNotNull(uiSecurityTokenManager);
 		//---------------------------------------------------------------------
+		this.endPointDefinition = endPointDefinition;
 		this.collectionsManager = collectionsManager;
-		//this.resultPerPage = resultPerPage.getOrElse(DEFAULT_RESULT_PER_PAGE);
+		this.uiSecurityTokenManager = uiSecurityTokenManager;
 	}
 
 	/** {@inheritDoc}  */
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
 		//comes with only Criteria in body
 		//UiListState must be in query
-		//clientId in ??
-
-		final Object result = chain.handle(request, response, routeContext);
-		Assertion.checkArgument(result instanceof DtList, "sort and pagination only supports DtList");
-
-		final UiListState uiListState = readUiListState(request);
-		final DtList<?> filteredList = applySortAndPagination((DtList) result, uiListState);
+		//serverToken in UiListState
+		String jsonCriteria = request.body(); 
+		EndPointParam uiListEndPointParams = getUiListStateEndPointParams(endPointDefinition);
+		UiListState uiListState = (UiListState) routeContext.getParamValue(uiListEndPointParams);
+		String serverSideToken = uiListState.getListServerToken();
+		DtList<?> fullList = null;
+		if(serverSideToken != null) {
+			fullList = (DtList<?>) uiSecurityTokenManager.get(uiListState.getListServerToken());
+		}
+		if(fullList == null) {
+			final Object result = chain.handle(request, response, routeContext);
+			Assertion.checkArgument(result instanceof DtList, "sort and pagination only supports DtList");
+			fullList = (DtList<?>)result;
+			serverSideToken = uiSecurityTokenManager.put(fullList);
+		}
+		response.header("listServerToken", serverSideToken);
+		final DtList<?> filteredList = applySortAndPagination(fullList, uiListState);
 		return filteredList;
+	}
+
+	private EndPointParam getUiListStateEndPointParams(
+			EndPointDefinition endPointDefinition2) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	private UiListState readUiListState(final Request request) {

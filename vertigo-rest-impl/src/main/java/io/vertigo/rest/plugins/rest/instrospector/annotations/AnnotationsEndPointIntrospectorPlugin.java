@@ -88,7 +88,6 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 			} else if (annotation instanceof ServerSideSave) {
 				builder.withServerSideSave(true);
 			} else if (annotation instanceof AutoSortAndPagination) {
-				builder.withServerSideSave(true);
 				builder.withAutoSortAndPagination(true);
 			} else if (annotation instanceof Doc) {
 				builder.withDoc(((Doc) annotation).value());

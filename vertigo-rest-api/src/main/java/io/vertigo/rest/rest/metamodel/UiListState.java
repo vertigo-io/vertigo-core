@@ -13,17 +13,22 @@ public final class UiListState implements Serializable {
 	private final String sortFieldName;
 	private final boolean sortDesc;
 
+	//reference the previous serverToken of the list. Use to sort and paginate a snapshot of list. 
+	private final String listServerToken;
+
 	/**
 	 * @param top max returning elements
 	 * @param skip elements to skip
 	 * @param sortFieldName sort fieldName
 	 * @param sortDesc desc or asc order
+	 * @param listServerToken reference the previous serverToken of the list
 	 */
-	public UiListState(final int top, final int skip, final String sortFieldName, final boolean sortDesc) {
+	public UiListState(final int top, final int skip, final String sortFieldName, final boolean sortDesc, final String listServerToken) {
 		this.top = top;
 		this.skip = skip;
 		this.sortFieldName = sortFieldName;
 		this.sortDesc = sortDesc;
+		this.listServerToken = listServerToken;
 	}
 
 	/**
@@ -52,6 +57,13 @@ public final class UiListState implements Serializable {
 	 */
 	public boolean isSortDesc() {
 		return sortDesc;
+	}
+
+	/**
+	 * @return serverToken
+	 */
+	public String getListServerToken() {
+		return listServerToken;
 	}
 
 }
