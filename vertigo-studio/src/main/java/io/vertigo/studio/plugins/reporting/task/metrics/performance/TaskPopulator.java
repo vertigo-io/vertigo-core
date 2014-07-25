@@ -92,7 +92,9 @@ public final class TaskPopulator {
 				case DtList:
 					value = new DtList(attribute.getDomain().getDtDefinition());
 					break;
+				case DataStream:
 				default:
+					//we do nothing
 					break;
 
 			}

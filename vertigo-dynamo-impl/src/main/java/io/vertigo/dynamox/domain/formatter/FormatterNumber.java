@@ -136,7 +136,7 @@ public class FormatterNumber extends AbstractFormatterImpl {
 				case DtList:
 				case DtObject:
 				case String:
-					throw new RuntimeException("Type unsupported" + dataType);
+					throw new RuntimeException("Type unsupported : " + dataType);
 				default:
 					throw new IllegalArgumentException("Type unknown : " + dataType);
 			}

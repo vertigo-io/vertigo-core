@@ -72,9 +72,17 @@ public final class DomainUtil {
 				return dtoClassCanonicalName;
 			case DtList:
 				return io.vertigo.dynamo.domain.model.DtList.class.getCanonicalName() + '<' + dtoClassCanonicalName + '>';
+			case BigDecimal:
+			case Boolean:
+			case DataStream:
+			case Date:
+			case Double:
+			case Integer:
+			case Long:
+			case String:
+				throw new RuntimeException("Type unsupported : " + dataType);
 			default:
-				throw new IllegalStateException();
+				throw new IllegalArgumentException("Type unknown : " + dataType);
 		}
 	}
-
 }

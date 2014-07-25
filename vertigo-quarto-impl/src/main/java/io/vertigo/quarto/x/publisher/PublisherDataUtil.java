@@ -133,8 +133,10 @@ public final class PublisherDataUtil {
 						publisherDataNode.setNode(fieldName, elementPublisherDataNode);
 					}
 					break;
+				case Image:
+					throw new RuntimeException("Type unsupported : " + publisherField.getFieldType());
 				default:
-					throw new IllegalArgumentException("Type non g�r� : " + publisherField.getFieldType());
+					throw new IllegalArgumentException("Type unknown : " + publisherField.getFieldType());
 			}
 			//} else {
 			//	Assertion.precondition(!(value instanceof Boolean), "Le champ {0} du DT {1} est un Boolean, et il ne doit pas �tre null", fieldName, dtDefinition.toURN());
