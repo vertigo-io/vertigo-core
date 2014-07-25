@@ -27,6 +27,7 @@ import io.vertigo.kernel.home.componentspace.ComponentSpaceTest;
 import io.vertigo.kernel.home.definitionspace.DefinitionSpaceTest;
 import io.vertigo.kernel.lang.AssertionTest;
 import io.vertigo.kernel.util.ClassUtilTest;
+import io.vertigo.kernel.util.DateQueryParserUtilTest;
 import io.vertigo.kernel.util.DateUtilTest;
 import io.vertigo.kernel.util.StringUtilTest;
 import io.vertigo.xml.XmlComponentsTest;
@@ -57,6 +58,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	AssertionTest.class,
 	ClassUtilTest.class,
 	DateUtilTest.class,
+	DateQueryParserUtilTest.class,
 	StringUtilTest.class,
 	//---
 	CGLIBAspectContainerTest.class, 

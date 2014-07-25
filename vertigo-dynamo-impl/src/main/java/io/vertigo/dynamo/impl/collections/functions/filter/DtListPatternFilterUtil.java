@@ -24,6 +24,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
+import io.vertigo.kernel.util.DateUtil;
 import io.vertigo.kernel.util.StringUtil;
 
 import java.io.Serializable;
@@ -140,7 +141,7 @@ final class DtListPatternFilterUtil {
 				result = Double.valueOf(stringValue);
 				break;
 			case Date:
-				result = DateQueryParserUtil.parseDateQuery(stringValue, DATE_PATTERN);
+				result = DateUtil.parse(stringValue, DATE_PATTERN);
 				break;
 			case String:
 				result = stringValue;

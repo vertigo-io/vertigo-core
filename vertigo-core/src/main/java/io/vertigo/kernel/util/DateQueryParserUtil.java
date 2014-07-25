@@ -1,4 +1,4 @@
-package io.vertigo.dynamo.impl.collections.functions.filter;
+package io.vertigo.kernel.util;
 
 import io.vertigo.kernel.lang.Assertion;
 
@@ -13,9 +13,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Implements parsing of a date expression.
+ *  NOW+DAY //you can omit 1
+ * NOW-DAY //you can omit 1 
+ * NOW+1DAY
+ * NOW-12MONTH
+ * NOW-2YEAR
+ * "06/12/2003", "dd/MM/yyyy"
+ * 
  * @author mlaroche
  */
-public final class DateQueryParserUtil {
+final class DateQueryParserUtil {
 	private static final Map<String, Integer> CALENDAR_UNITS = createCalendarUnits();
 	private final static Pattern PATTERN = Pattern.compile("([0-9]{1,})([A-Z]{1,})");
 	private final static String NOW = "NOW";
@@ -33,28 +41,22 @@ public final class DateQueryParserUtil {
 	/**
 	 * Retourne la date correspondant à l'expression passée en parametre.
 	 * La syntaxe est de type NOW((+/-)eeeUNIT) ou une date au format dd/MM/yy
-	 * examples :
-	 * NOW+DAY //you can omit 1
-	 * NOW-DAY //you can omit 1 
-	 * NOW+1DAY
-	 * NOW-12MONTH
-	 * NOW-2YEAR
-	 * "06/12/2003", "dd/MM/yyyy"
 	 * 
-	 * @param stringValue
+	 * @param dateQuery Expression
+	 * @param datePattern Pattern used to define a date (dd/MM/YYYY)
 	 * @return date
 	 */
-	public static Date parseDateQuery(final String stringValue, String datePattern) {
-		Assertion.checkArgNotEmpty(stringValue);
+	static Date parse(final String dateQuery, String datePattern) {
+		Assertion.checkArgNotEmpty(dateQuery);
 		Assertion.checkArgNotEmpty(datePattern, "you must define a valid datePattern such as dd/MM/yyyy or MM/dd/yy");
 		// ---
 		final Calendar calendar = new GregorianCalendar();
-		if (NOW.equals(stringValue)) {
+		if (NOW.equals(dateQuery)) {
 			//today is gonna be the day 
-		} else if (stringValue.startsWith(NOW)) {
+		} else if (dateQuery.startsWith(NOW)) {
 			final Integer index = NOW.length();
 			//---
-			final char operator = stringValue.charAt(index);
+			final char operator = dateQuery.charAt(index);
 			final int sign;
 			if ('+' == operator) {
 				sign = 1;
@@ -64,7 +66,7 @@ public final class DateQueryParserUtil {
 				throw new RuntimeException();
 			}
 			//---
-			String operand = stringValue.substring(index + 1);
+			String operand = dateQuery.substring(index + 1);
 			final String calendarUnit;
 			final int unitCount;
 			if (CALENDAR_UNITS.containsKey(operand)) {
@@ -88,9 +90,9 @@ public final class DateQueryParserUtil {
 			//We are expecting a date respectig pattern 
 			final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(datePattern);
 			try {
-				calendar.setTime(simpleDateFormat.parse(stringValue));
+				calendar.setTime(simpleDateFormat.parse(dateQuery));
 			} catch (final ParseException e) {
-				throw new RuntimeException("La date " + stringValue + " ne respecte pas le pattern : " + simpleDateFormat.toPattern().toString());
+				throw new RuntimeException("La date " + dateQuery + " ne respecte pas le pattern : " + simpleDateFormat.toPattern().toString());
 			}
 		}
 

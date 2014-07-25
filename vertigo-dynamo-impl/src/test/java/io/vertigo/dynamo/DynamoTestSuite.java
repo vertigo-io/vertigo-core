@@ -20,7 +20,6 @@ package io.vertigo.dynamo;
 
 import io.vertigo.dynamo.collections.CollectionsManagerTest;
 import io.vertigo.dynamo.collections.facet.FacetManagerTest;
-import io.vertigo.dynamo.collections.functions.filter.DateQueryParserUtilTest;
 import io.vertigo.dynamo.database.DataBaseManagerTest;
 import io.vertigo.dynamo.domain.DomainManagerTest;
 import io.vertigo.dynamo.domain.constraint.ConstraintTest;
@@ -87,7 +86,6 @@ import org.junit.runners.Suite.SuiteClasses;
 		//--collections
 		CollectionsManagerTest.class, 
 		FacetManagerTest.class,
-		DateQueryParserUtilTest.class,
 		//--database
 		DataBaseManagerTest.class,
 		//--domain

@@ -24,7 +24,6 @@ import io.vertigo.kernel.lang.DateBuilder;
 import java.util.Calendar;
 import java.util.Date;
 
-
 /**
  * Utilitaire concernant les dates.
  * 
@@ -116,5 +115,23 @@ public final class DateUtil {
 		final Calendar calendar = Calendar.getInstance();
 		calendar.setTime(dateToCheck);
 		Assertion.checkArgument(calendar.get(Calendar.HOUR_OF_DAY) == 0 && calendar.get(Calendar.MINUTE) == 0 && calendar.get(Calendar.SECOND) == 0 && calendar.get(Calendar.MILLISECOND) == 0, "Cet objet n'est pas une Date mais une DateTime ({0}).", dateToCheck);
+	}
+
+	/**
+	 * Retourne la date correspondant à l'expression passée en parametre.
+	 * La syntaxe est de type NOW((+/-)eeeUNIT) ou une date au format dd/MM/yy
+	 * examples :
+	 * NOW+DAY //you can omit 1
+	 * NOW-DAY //you can omit 1 
+	 * NOW+1DAY
+	 * NOW-12MONTH
+	 * NOW-2YEAR
+	 * "06/12/2003", "dd/MM/yyyy"
+	 * 
+	 * @param dateQuery
+	 * @return date
+	 */
+	public static Date parse(final String dateQuery, String datePattern) {
+		return DateQueryParserUtil.parse(dateQuery, datePattern);
 	}
 }
