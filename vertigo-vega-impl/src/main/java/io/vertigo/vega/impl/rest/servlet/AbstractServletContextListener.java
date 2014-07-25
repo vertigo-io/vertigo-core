@@ -10,7 +10,7 @@ import javax.servlet.ServletContextListener;
 public abstract class AbstractServletContextListener implements ServletContextListener {
 
 	/** Servlet listener */
-	private final HomeServlerStarter servlerHomeStarter = new HomeServlerStarter();
+	private final HomeServletStarter servlerHomeStarter = new HomeServletStarter();
 
 	/** {@inheritDoc} */
 	public final void contextInitialized(final ServletContextEvent servletContextEvent) {
