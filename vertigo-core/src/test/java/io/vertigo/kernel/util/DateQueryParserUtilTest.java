@@ -12,20 +12,10 @@ public final class DateQueryParserUtilTest {
 	private static final String DATE_PATTERN = "dd/MM/yy";
 	private static final Long DIFF_MS = 5 * 1000L;
 
-	private static void assertEquals(Date expectedDate, Date compareDate) {
+	private static void assertEquals(Date expectedDate, String query) {
+		Date compareDate = DateUtil.parse(query, DATE_PATTERN);
 		long deltaInMillis = Math.abs(expectedDate.getTime() - compareDate.getTime());
-		Assert.assertTrue("expected " + expectedDate + " and find " + compareDate, deltaInMillis < DIFF_MS);
-	}
-
-	/**
-	 * Test le keyword NOW.
-	 */
-	@Test
-	public void testNow() {
-		Date expectedDate = DateUtil.newDateTime();
-		Date parsedDate = DateUtil.parse("NOW", DATE_PATTERN);
-		//---
-		assertEquals(expectedDate, parsedDate);
+		Assert.assertTrue("expects " + expectedDate + " and finds " + compareDate, deltaInMillis < DIFF_MS);
 	}
 
 	/** Test le keyword NOW avec une erreur. */
@@ -36,23 +26,32 @@ public final class DateQueryParserUtilTest {
 
 	/** Test le keyword NOW avec une erreur. */
 	@Test(expected = Exception.class)
-	public void testWithErrorDay() {
+	public void testWith2() {
 		//Day must be in upperCase : DAY
 		DateUtil.parse("NOW+Day", DATE_PATTERN);
 	}
 
 	/** Test le keyword NOW avec une erreur. */
 	@Test(expected = Exception.class)
-	public void testWithError2() {
+	public void testWithError3() {
 		//DAL is not a calendar unit
 		DateUtil.parse("NOW+DAL", DATE_PATTERN);
 	}
 
 	/** Test le keyword NOW avec une erreur. */
 	@Test(expected = Exception.class)
-	public void testWithError3() {
-		//DAYS is not allowed, use DAY without plural 
-		DateUtil.parse("NOW+DAYS", DATE_PATTERN);
+	public void testWithError4() {
+		//DAYST is not a calendar unit even if DAYS is valid
+		DateUtil.parse("NOW+DAYST", DATE_PATTERN);
+	}
+
+	/**
+	 * Test le keyword NOW.
+	 */
+	@Test
+	public void testNow() {
+		Date expectedDate = new Date();
+		assertEquals(expectedDate, "NOW");
 	}
 
 	/**
@@ -61,9 +60,12 @@ public final class DateQueryParserUtilTest {
 	@Test
 	public void testAddDay() {
 		Date expectedDate = new DateBuilder(new Date()).addDays(1).toDateTime();
-		Date parsedDate = DateUtil.parse("NOW+DAY", DATE_PATTERN);
-		//---
-		assertEquals(expectedDate, parsedDate);
+		assertEquals(expectedDate, "NOW+DAY");
+		assertEquals(expectedDate, "NOW+DAYS");
+		assertEquals(expectedDate, "+DAY");
+		assertEquals(expectedDate, "+DAYS");
+		assertEquals(expectedDate, "+1DAY");
+		assertEquals(expectedDate, "+1DAYS");
 	}
 
 	/**
@@ -72,9 +74,10 @@ public final class DateQueryParserUtilTest {
 	@Test
 	public void testAddDays() {
 		Date expectedDate = new DateBuilder(new Date()).addDays(2).toDateTime();
-		Date parsedDate = DateUtil.parse("NOW+2DAY", DATE_PATTERN);
-		//---
-		assertEquals(expectedDate, parsedDate);
+		assertEquals(expectedDate, "NOW+2DAY");
+		assertEquals(expectedDate, "+2DAY");
+		assertEquals(expectedDate, "NOW+2DAYS");
+		assertEquals(expectedDate, "+2DAYS");
 	}
 
 	/**
@@ -83,9 +86,10 @@ public final class DateQueryParserUtilTest {
 	@Test
 	public void testRemoveDays() {
 		Date expectedDate = new DateBuilder(new Date()).addDays(-12).toDateTime();
-		Date parsedDate = DateUtil.parse("NOW-12DAY", DATE_PATTERN);
-		//---
-		assertEquals(expectedDate, parsedDate);
+		assertEquals(expectedDate, "NOW-12DAY");
+		assertEquals(expectedDate, "-12DAY");
+		assertEquals(expectedDate, "NOW-12DAYS");
+		assertEquals(expectedDate, "-12DAYS");
 	}
 
 	/**
@@ -94,9 +98,10 @@ public final class DateQueryParserUtilTest {
 	@Test
 	public void testAddMonths() {
 		Date expectedDate = new DateBuilder(new Date()).addMonths(3).toDateTime();
-		Date parsedDate = DateUtil.parse("NOW+3MONTH", DATE_PATTERN);
-		//---
-		assertEquals(expectedDate, parsedDate);
+		assertEquals(expectedDate, "NOW+3MONTH");
+		assertEquals(expectedDate, "+3MONTH");
+		assertEquals(expectedDate, "NOW+3MONTHS");
+		assertEquals(expectedDate, "+3MONTHS");
 	}
 
 	/**
@@ -105,9 +110,10 @@ public final class DateQueryParserUtilTest {
 	@Test
 	public void testAddYears() {
 		Date expectedDate = new DateBuilder(new Date()).addYears(5).toDateTime();
-		Date parsedDate = DateUtil.parse("NOW+5YEAR", DATE_PATTERN);
-		//---
-		assertEquals(expectedDate, parsedDate);
+		assertEquals(expectedDate, "NOW+5YEAR");
+		assertEquals(expectedDate, "+5YEAR");
+		assertEquals(expectedDate, "NOW+5YEARS");
+		assertEquals(expectedDate, "+5YEARS");
 	}
 
 	/**
@@ -116,9 +122,10 @@ public final class DateQueryParserUtilTest {
 	@Test
 	public void testAddHours() {
 		Date expectedDate = new DateBuilder(new Date()).addHours(50).toDateTime();
-		Date parsedDate = DateUtil.parse("NOW+50HOUR", DATE_PATTERN);
-		//---
-		assertEquals(expectedDate, parsedDate);
+		assertEquals(expectedDate, "NOW+50HOUR");
+		assertEquals(expectedDate, "+50HOUR");
+		assertEquals(expectedDate, "NOW+50HOURS");
+		assertEquals(expectedDate, "+50HOURS");
 	}
 
 	/**
@@ -127,9 +134,6 @@ public final class DateQueryParserUtilTest {
 	@Test
 	public void testFixedDate() {
 		Date expectedDate = new GregorianCalendar(2014, 4, 25).getTime();
-		Date parsedDate = DateUtil.parse("25/05/14", DATE_PATTERN);
-		//---
-		assertEquals(expectedDate, parsedDate);
-
+		assertEquals(expectedDate, "25/05/14");
 	}
 }
