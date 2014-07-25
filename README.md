@@ -58,8 +58,10 @@ Publishing managment.
 * __publisher__ : lightweigth publisher tool. Produce documents from a user's defined template and application's datas. Templates are really easy to modified because they just are ODT or DOCX with tags.
 
 
-##vertigo-rest 
-Add a rest access to your application. Mainly oriented for production-ready Single-Page-Application.
+##vertigo-vega
+Push your apps to others.
+
+* __rest__ : Add a rest access to your application. Mainly oriented for production-ready Single-Page-Application. And production's security ready.
 
 
 ##vertigo-ccc
