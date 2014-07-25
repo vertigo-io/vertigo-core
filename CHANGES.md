@@ -4,8 +4,12 @@ Version history
 Running 0.4.1-SNAPSHOT
 ----------------------
 
+ more to come :)
+
+
 Release 0.4.0 - 2014/07/25
 --------------------------
+The most notable changes in Vertigo 0.4.0 over previous releases are:  
   * Change ksp syntax to have a more similar json syntax.  Separator ';' is replaced by ','. Array {} is replaced by [] and  object notation () is replaced by {}
   * Change declaration of resources is externalized. In this way, each module can declare its own resources (oom, ea, ksp, xml).     
   * Change KDataType to DataType
