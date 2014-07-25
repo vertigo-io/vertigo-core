@@ -49,11 +49,11 @@ limitations under the License. --><project xmlns="http://maven.apache.org/POM/4.
 		<module>vertigo-persona-api</module>
 		<module>vertigo-persona-impl</module>
 
-	  <module>vertigo-labs-api</module>
-    <module>vertigo-labs-impl</module>
+	  	<module>vertigo-labs-api</module>
+    	<module>vertigo-labs-impl</module>
 
-		<module>vertigo-rest-api</module>
-		<module>vertigo-rest-impl</module>
+		<module>vertigo-vega-api</module>
+		<module>vertigo-vega-impl</module>
 
 		<module>vertigo-studio</module>
 
@@ -61,10 +61,10 @@ limitations under the License. --><project xmlns="http://maven.apache.org/POM/4.
 	</modules>
 
 	<scm>
-		<connection>scm:git:https://github.com/vertigo-io/vertigo.git</connection>
-		<developerConnection>scm:git:https://github.com/vertigo-io/vertigo.git</developerConnection>
-		<url>scm:git:https://github.com/vertigo-io/vertigo.git</url>
-		<tag>vertigo-0.2.0</tag>
+		<connection>scm:git:https://github.com/KleeGroup/vertigo.git</connection>
+		<developerConnection>scm:git:https://github.com/KleeGroup/vertigo.git</developerConnection>
+		<url>scm:git:https://github.com/KleeGroup/vertigo.git</url>
+		<tag>vertigo-0.3.1</tag>
 	</scm>
 
 	<build>

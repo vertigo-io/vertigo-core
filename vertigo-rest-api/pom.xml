@@ -9,9 +9,9 @@
 		<relativePath>../vertigo-parent</relativePath>
 	</parent>
 
-	<artifactId>vertigo-rest-api</artifactId>
+	<artifactId>vertigo-vega-api</artifactId>
 	<packaging>jar</packaging>
-	<name>vertigo-rest-api</name>
+	<name>vertigo-vega-api</name>
 
 	<dependencies>
 		<dependency>
