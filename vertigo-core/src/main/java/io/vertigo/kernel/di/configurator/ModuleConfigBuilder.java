@@ -33,22 +33,22 @@ import java.util.List;
  * @author npiedeloup, pchretien
  */
 public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
-	private final ComponentSpaceConfigBuilder componentSpaceConfigBuilder;
-	private final String name;
-	private final List<ComponentConfigBuilder> componentConfigBuilders = new ArrayList<>();
-	private final List<AspectConfig> aspectConfigs = new ArrayList<>();
-	private final List<ResourceConfig> resourceConfigs = new ArrayList<>();
+	private final ComponentSpaceConfigBuilder myComponentSpaceConfigBuilder;
+	private final String myName;
+	private final List<ComponentConfigBuilder> myComponentConfigBuilders = new ArrayList<>();
+	private final List<AspectConfig> myAspectConfigs = new ArrayList<>();
+	private final List<ResourceConfig> myResourceConfigs = new ArrayList<>();
 
 	//---Rules
-	private boolean hasApi = true; //par défaut on a une api.
-	private Class<?> superClass = Manager.class; //Par défaut la super Classe est Manager
+	private boolean myHasApi = true; //par défaut on a une api.
+	private Class<?> mySuperClass = Manager.class; //Par défaut la super Classe est Manager
 
 	ModuleConfigBuilder(final ComponentSpaceConfigBuilder componentSpaceConfigBuilder, final String name) {
 		Assertion.checkNotNull(componentSpaceConfigBuilder);
 		Assertion.checkArgNotEmpty(name);
 		//---------------------------------------------------------------------
-		this.name = name;
-		this.componentSpaceConfigBuilder = componentSpaceConfigBuilder;
+		myName = name;
+		myComponentSpaceConfigBuilder = componentSpaceConfigBuilder;
 	}
 
 	/**
@@ -61,24 +61,24 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkArgNotEmpty(resourceType);
 		Assertion.checkNotNull(resourcePath);
 		//---------------------------------------------------------------------
-		resourceConfigs.add(new ResourceConfig(resourceType, resourcePath));
+		myResourceConfigs.add(new ResourceConfig(resourceType, resourcePath));
 		return this;
 	}
 
 	public ModuleConfigBuilder withAspect(final Class<?> annotationType, final Class<? extends Interceptor> implClass) {
-		aspectConfigs.add(new AspectConfig(annotationType, implClass));
+		myAspectConfigs.add(new AspectConfig(annotationType, implClass));
 		return this;
 	}
 
 	public ModuleConfigBuilder withNoAPI() {
-		hasApi = false;
+		myHasApi = false;
 		return this;
 	}
 
 	public ModuleConfigBuilder withInheritance(final Class<?> superClass) {
 		Assertion.checkNotNull(superClass);
 		//---------------------------------------------------------------------
-		this.superClass = superClass;
+		mySuperClass = superClass;
 		return this;
 	}
 
@@ -118,28 +118,32 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	*/
 	private ComponentConfigBuilder doBeginComponent(final Option<Class<?>> apiClass, final Class<?> implClass, final boolean elastic) {
 		final ComponentConfigBuilder componentConfigBuilder = new ComponentConfigBuilder(this, apiClass, implClass, elastic);
-		componentConfigBuilders.add(componentConfigBuilder);
+		myComponentConfigBuilders.add(componentConfigBuilder);
 		return componentConfigBuilder;
 	}
 
+	/**
+	 * Mark end of current module.
+	 * @return Builder
+	 */
 	public ComponentSpaceConfigBuilder endModule() {
-		return componentSpaceConfigBuilder;
+		return myComponentSpaceConfigBuilder;
 	}
 
 	/** {@inheritDoc} */
 	public ModuleConfig build() {
 		final List<ModuleRule> moduleRules = new ArrayList<>();
 		//Mise à jour des règles. 
-		if (hasApi) {
+		if (myHasApi) {
 			moduleRules.add(new APIModuleRule());
 		}
-		moduleRules.add(new InheritanceModuleRule(superClass));
+		moduleRules.add(new InheritanceModuleRule(mySuperClass));
 		//-----
 		final List<ComponentConfig> componentConfig = new ArrayList<>();
-		for (final ComponentConfigBuilder componentConfigBuilder : componentConfigBuilders) {
+		for (final ComponentConfigBuilder componentConfigBuilder : myComponentConfigBuilders) {
 			componentConfig.add(componentConfigBuilder.build());
 		}
-		final ModuleConfig moduleConfig = new ModuleConfig(name, componentConfig, aspectConfigs, moduleRules, resourceConfigs);
+		final ModuleConfig moduleConfig = new ModuleConfig(myName, componentConfig, myAspectConfigs, moduleRules, myResourceConfigs);
 		moduleConfig.checkRules();
 		return moduleConfig;
 	}

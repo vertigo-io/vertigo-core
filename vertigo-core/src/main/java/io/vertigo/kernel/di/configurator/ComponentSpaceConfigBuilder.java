@@ -38,12 +38,12 @@ import java.util.Map;
  * @author npiedeloup, pchretien
  */
 public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpaceConfig> {
-	private final List<ModuleConfigBuilder> moduleConfigBuilders = new ArrayList<>();
-	private final Map<String, String> params = new HashMap<>(); //par défaut vide
-	private boolean silence;
-	private AopEngine aopEngine = new CGLIBAopEngine();
-	private ElasticaEngine elasticaEngine = null; //par défaut pas d'elasticité.
-	private VCommandEngine commandEngine = null; // new VCommandEngineImpl(jsonEngine, VCommandEngine.DEFAULT_PORT); //Par défaut
+	private final List<ModuleConfigBuilder> myModuleConfigBuilders = new ArrayList<>();
+	private final Map<String, String> myParams = new HashMap<>(); //par défaut vide
+	private boolean mySilence;
+	private AopEngine myAopEngine = new CGLIBAopEngine();
+	private ElasticaEngine myElasticaEngine = null; //par défaut pas d'elasticité.
+	private VCommandEngine myCommandEngine = null; // new VCommandEngineImpl(jsonEngine, VCommandEngine.DEFAULT_PORT); //Par défaut
 
 	//=========================================================================
 	//==================Paramétrage général====================================
@@ -58,7 +58,7 @@ public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpace
 		Assertion.checkArgNotEmpty(paramName);
 		Assertion.checkNotNull(paramValue);
 		//---------------------------------------------------------------------
-		params.put(paramName, paramValue);
+		myParams.put(paramName, paramValue);
 		return this;
 	}
 
@@ -78,29 +78,29 @@ public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpace
 	 * @return Builder
 	 */
 	public ComponentSpaceConfigBuilder withSilence(final boolean silence) {
-		this.silence = silence;
+		this.mySilence = silence;
 		return this;
 	}
 
 	public ComponentSpaceConfigBuilder withCommandEngine(final VCommandEngine commandEngine) {
 		Assertion.checkNotNull(commandEngine);
 		//---------------------------------------------------------------------
-		this.commandEngine = commandEngine;
+		this.myCommandEngine = commandEngine;
 		return this;
 	}
 
 	public ComponentSpaceConfigBuilder withElasticaEngine(final ElasticaEngine elasticaEngine) {
 		Assertion.checkNotNull(elasticaEngine);
-		Assertion.checkState(this.elasticaEngine == null, "elasticaEngine is alreday completed");
+		Assertion.checkState(this.myElasticaEngine == null, "elasticaEngine is alreday completed");
 		//---------------------------------------------------------------------
-		this.elasticaEngine = elasticaEngine;
+		this.myElasticaEngine = elasticaEngine;
 		return this;
 	}
 
 	public ComponentSpaceConfigBuilder withAopEngine(final AopEngine aopEngine) {
 		Assertion.checkNotNull(aopEngine);
 		//---------------------------------------------------------------------
-		this.aopEngine = aopEngine;
+		this.myAopEngine = aopEngine;
 		return this;
 	}
 
@@ -115,7 +115,7 @@ public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpace
 	public ModuleConfigBuilder beginModule(final String name) {
 		//On remet à null le plugin et le composant courant
 		final ModuleConfigBuilder moduleConfigBuilder = new ModuleConfigBuilder(this, name);
-		moduleConfigBuilders.add(moduleConfigBuilder);
+		myModuleConfigBuilders.add(moduleConfigBuilder);
 		return moduleConfigBuilder;
 	}
 
@@ -126,10 +126,10 @@ public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpace
 	/** {@inheritDoc} */
 	public ComponentSpaceConfig build() {
 		final List<ModuleConfig> moduleConfigs = new ArrayList<>();
-		for (final ModuleConfigBuilder moduleConfigBuilder : moduleConfigBuilders) {
+		for (final ModuleConfigBuilder moduleConfigBuilder : myModuleConfigBuilders) {
 			final ModuleConfig moduleConfig = moduleConfigBuilder.build();
 			moduleConfigs.add(moduleConfig);
 		}
-		return new ComponentSpaceConfig(params, moduleConfigs, aopEngine, Option.option(elasticaEngine), Option.option(commandEngine), silence);
+		return new ComponentSpaceConfig(myParams, moduleConfigs, myAopEngine, Option.option(myElasticaEngine), Option.option(myCommandEngine), mySilence);
 	}
 }

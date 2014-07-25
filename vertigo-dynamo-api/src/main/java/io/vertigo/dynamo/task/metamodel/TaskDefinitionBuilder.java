@@ -31,12 +31,12 @@ import java.util.List;
  * @author  fconstantin, pchretien
  */
 public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
-	private final List<TaskAttribute> taskAttributes = new ArrayList<>();
+	private final List<TaskAttribute> myTaskAttributes = new ArrayList<>();
 
-	private final String taskDefinitionName;
-	private Class<? extends TaskEngine> taskEngineClass;
-	private String request;
-	private String packageName;
+	private final String myTaskDefinitionName;
+	private Class<? extends TaskEngine> myTaskEngineClass;
+	private String myRequest;
+	private String myPackageName;
 
 	/**
 	 * Construction du builder.
@@ -46,7 +46,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	public TaskDefinitionBuilder(final String taskDefinitionName) {
 		Assertion.checkNotNull(taskDefinitionName);
 		//----------------------------------------------------------------------
-		this.taskDefinitionName = taskDefinitionName;
+		this.myTaskDefinitionName = taskDefinitionName;
 	}
 
 	/**
@@ -61,7 +61,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 			throw new ClassCastException("La classe doit être une sous classe de ServiceProvider");
 		}
 		//---------------------------------------------------------------------
-		this.taskEngineClass = taskEngineClass;
+		this.myTaskEngineClass = taskEngineClass;
 		return this;
 	}
 
@@ -74,7 +74,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 		//Pour unifier la saisie de la request sous un environnement unix ou dos
 		// et pour éviter la disparité de gestion des retours chariot
 		//par certains drivers de base de données.
-		this.request = request.replace("\r", "");
+		this.myRequest = request.replace("\r", "");
 		return this;
 	}
 
@@ -84,7 +84,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	public TaskDefinitionBuilder withPackageName(final String packageName) {
 		//packageName peut être null
 		//---------------------------------------------------------------------
-		this.packageName = packageName;
+		this.myPackageName = packageName;
 		return this;
 	}
 
@@ -101,12 +101,12 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 		Assertion.checkNotNull(domain);
 		//----------------------------------------------------------------------
 		final TaskAttribute taskAttribute = new TaskAttribute(attributeName, domain, notNull, in);
-		taskAttributes.add(taskAttribute);
+		myTaskAttributes.add(taskAttribute);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	public TaskDefinition build() {
-		return new TaskDefinition(taskDefinitionName, packageName, taskEngineClass, request, taskAttributes);
+		return new TaskDefinition(myTaskDefinitionName, myPackageName, myTaskEngineClass, myRequest, myTaskAttributes);
 	}
 }

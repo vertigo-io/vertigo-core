@@ -10,7 +10,6 @@ import io.vertigo.rest.rest.metamodel.EndPointParam.RestParamType;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,8 +27,8 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	private boolean needSession = true;
 	private boolean sessionInvalidate;
 	private boolean needAuthentication = true;
-	private Set<String> includedFields = new LinkedHashSet<>();
-	private Set<String> excludedFields = new LinkedHashSet<>();;
+	private final Set<String> includedFields = new LinkedHashSet<>();
+	private final Set<String> excludedFields = new LinkedHashSet<>();
 	private boolean accessTokenPublish;
 	private boolean accessTokenMandatory;
 	private boolean accessTokenConsume;
@@ -69,70 +68,70 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 				doc);
 	}
 
-	public void with(Verb newVerb, String newPath) {
+	public void with(final Verb newVerb, final String newPath) {
 		Assertion.checkState(verb == null, "A verb is already specified on {0} ({1})", method.getName(), verb);
 		Assertion.checkArgNotEmpty(newPath, "Route path must be specified on {0}", method.getName());
-		this.verb = newVerb;
-		this.path = newPath;
+		verb = newVerb;
+		path = newPath;
 	}
 
 	public boolean hasVerb() {
 		return verb != null;
 	}
 
-	public void withAccessTokenConsume(boolean accessTokenConsume) {
+	public void withAccessTokenConsume(final boolean accessTokenConsume) {
 		this.accessTokenConsume = accessTokenConsume;
 	}
 
-	public void withNeedAuthentication(boolean needAuthentication) {
+	public void withNeedAuthentication(final boolean needAuthentication) {
 		this.needAuthentication = needAuthentication;
 	}
 
-	public void withNeedSession(boolean needSession) {
+	public void withNeedSession(final boolean needSession) {
 		this.needSession = needSession;
 	}
 
-	public void withSessionInvalidate(boolean sessionInvalidate) {
+	public void withSessionInvalidate(final boolean sessionInvalidate) {
 		this.sessionInvalidate = sessionInvalidate;
 	}
 
-	public void withExcludedFields(String[] excludedFields) {
+	public void withExcludedFields(final String[] excludedFields) {
 		this.excludedFields.addAll(Arrays.asList(excludedFields));
 	}
 
-	public void withIncludedFields(String[] includedFields) {
+	public void withIncludedFields(final String[] includedFields) {
 		this.includedFields.addAll(Arrays.asList(includedFields));
 	}
 
-	public void withAccessTokenPublish(boolean accessTokenPublish) {
+	public void withAccessTokenPublish(final boolean accessTokenPublish) {
 		this.accessTokenPublish = accessTokenPublish;
 	}
 
-	public void withAccessTokenMandatory(boolean accessTokenMandatory) {
+	public void withAccessTokenMandatory(final boolean accessTokenMandatory) {
 		this.accessTokenMandatory = accessTokenMandatory;
 	}
 
-	public void withServerSideSave(boolean serverSideSave) {
+	public void withServerSideSave(final boolean serverSideSave) {
 		this.serverSideSave = serverSideSave;
 	}
 
-	public void withAutoSortAndPagination(boolean autoSortAndPagination) {
+	public void withAutoSortAndPagination(final boolean autoSortAndPagination) {
 		this.autoSortAndPagination = autoSortAndPagination;
 
 		//autoSortAndPagination must keep the list serverSide but not the input one, its the full one, so we don't use serverSideSave marker
 		//autoSortAndPagination use a Implicit UiListState, this one must be show in API, so we add it to endPointParams
 		//autoSortAndPaginationHandler will use it
-		if(autoSortAndPagination) {
+		if (autoSortAndPagination) {
 			withEndPointParam(new EndPointParamBuilder(UiListState.class) //
-			.with(RestParamType.Implicit, ImplicitParam.UiListState.name()).build());
+					.with(RestParamType.Implicit, ImplicitParam.UiListState.name()).build());
 		}
 	}
 
-	public void withDoc(String doc) {
+	public void withDoc(final String doc) {
 		this.doc = doc;
 	}
 
-	public void withEndPointParam(EndPointParam endPointParam) {
+	public void withEndPointParam(final EndPointParam endPointParam) {
 		endPointParams.add(endPointParam);
 	}
 }

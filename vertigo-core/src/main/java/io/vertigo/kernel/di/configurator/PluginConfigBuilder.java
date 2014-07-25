@@ -31,23 +31,23 @@ import java.util.Map;
  * @author npiedeloup, pchretien
  */
 public final class PluginConfigBuilder implements Builder<PluginConfig> {
-	private final Class<? extends Plugin> pluginImplClass;
-	private final Map<String, String> params = new HashMap<>();
-	private final Map<String, String> inheritedParams = new HashMap<>();
-	private final ComponentConfigBuilder componentConfigBuilder;
+	private final Class<? extends Plugin> myPluginImplClass;
+	private final Map<String, String> myParams = new HashMap<>();
+	private final Map<String, String> myInheritedParams = new HashMap<>();
+	private final ComponentConfigBuilder myComponentConfigBuilder;
 
 	PluginConfigBuilder(final ComponentConfigBuilder componentConfigBuilder, final Class<? extends Plugin> pluginImplClass) {
 		Assertion.checkNotNull(componentConfigBuilder);
 		Assertion.checkNotNull(pluginImplClass);
 		//---------------------------------------------------------------------
-		this.pluginImplClass = pluginImplClass;
-		this.componentConfigBuilder = componentConfigBuilder;
+		this.myPluginImplClass = pluginImplClass;
+		this.myComponentConfigBuilder = componentConfigBuilder;
 	}
 
 	PluginConfigBuilder withInheritedParams(final Map<String, String> inheritedParams) {
 		Assertion.checkNotNull(inheritedParams);
 		//---------------------------------------------------------------------
-		this.inheritedParams.putAll(inheritedParams);
+		this.myInheritedParams.putAll(inheritedParams);
 		return this;
 	}
 
@@ -55,16 +55,16 @@ public final class PluginConfigBuilder implements Builder<PluginConfig> {
 		Assertion.checkArgNotEmpty(paramName, "Parameter must not be empty");
 		Assertion.checkNotNull(paramValue, "parameter '{0}' is required ", paramName);
 		//---------------------------------------------------------------------
-		params.put(paramName, paramValue);
+		myParams.put(paramName, paramValue);
 		return this;
 	}
 
 	public ComponentConfigBuilder endPlugin() {
-		return componentConfigBuilder;
+		return myComponentConfigBuilder;
 	}
 
 	/** {@inheritDoc} */
 	public PluginConfig build() {
-		return new PluginConfig(pluginImplClass, params);
+		return new PluginConfig(myPluginImplClass, myParams);
 	}
 }

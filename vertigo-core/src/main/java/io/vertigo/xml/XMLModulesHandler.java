@@ -86,6 +86,11 @@ final class XMLModulesHandler extends DefaultHandler {
 				annotationImplClassStr = null;
 				adviceImplClassStr = null;
 				break;
+			case advice: //non géré
+			case annotation: //non géré
+			case modules: //non géré
+			case param: //non géré
+			case resource: //non géré
 			default:
 		}
 	}
@@ -157,6 +162,7 @@ final class XMLModulesHandler extends DefaultHandler {
 			case advice:
 				adviceImplClassStr = attrs.getValue("class");
 				break;
+			case modules: //non géré
 			default:
 		}
 	}
