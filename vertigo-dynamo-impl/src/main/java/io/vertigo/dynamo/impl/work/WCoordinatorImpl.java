@@ -34,34 +34,31 @@ final class WCoordinatorImpl implements WCoordinator {
 
 	/** {@inheritDoc}   */
 	public <WR, W> void execute(final WorkItem<WR, W> workItem) {
+		final Worker worker = resolveWorker(workItem);
 		switch (workItem.getExec()) {
-			case sync:
-				this.process(workItem);
-				break;
 			case async:
-				this.schedule(workItem);
+				worker.schedule(workItem);
+				break;
+			case sync:
+				workListener.onStart(workItem.getWorkEngineProvider().getName());
+				boolean executed = false;
+				final long start = System.currentTimeMillis();
+				try {
+					worker.process(workItem);
+					executed = true;
+				} finally {
+					workListener.onFinish(workItem.getWorkEngineProvider().getName(), System.currentTimeMillis() - start, executed);
+				}
 				break;
 			default:
 				throw new IllegalArgumentException("Unknown type of execution :" + workItem.getExec());
 		}
 	}
 
-	private <WR, W> void process(final WorkItem<WR, W> workItem) {
-		Assertion.checkNotNull(workItem);
-		//----------------------------------------------------------------------
-		//On délégue l'exécution synchrone et locale à un Worker.
-		workListener.onStart(workItem.getWorkEngineProvider().getName());
-		boolean executed = false;
-		final long start = System.currentTimeMillis();
-		try {
-			resolveWorker(workItem).process(workItem);
-			executed = true;
-		} finally {
-			workListener.onFinish(workItem.getWorkEngineProvider().getName(), System.currentTimeMillis() - start, executed);
-		}
-	}
 
 	private <WR, W> Worker resolveWorker(final WorkItem<WR, W> workItem) {
+		Assertion.checkNotNull(workItem);
+		//----------------------------------------------------------------------
 		/* 
 		 * On recherche un Worker capable d'effectuer le travail demandé.
 		 * 1- On recherche parmi les works externes 
@@ -75,9 +72,4 @@ final class WCoordinatorImpl implements WCoordinator {
 		//		return distributedWorkerPlugin.isDefined() && distributedWorkerPlugin.get().getWorkFamily().equalsIgnoreCase(work.getWorkFamily());
 	}
 
-	private <WR, W> void schedule(final WorkItem<WR, W> workItem) {
-		Assertion.checkNotNull(workItem);
-		//----------------------------------------------------------------------
-		resolveWorker(workItem).schedule(workItem);
-	}
 }
