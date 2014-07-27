@@ -78,6 +78,9 @@ Model Driven  Architecture
 
 Tools to generate sources, sql, multilingual properties...
 
+##vertigo-bundle
+A bundle of all these modules
+
 
 ##vertigo-parent
 just the parent pom
