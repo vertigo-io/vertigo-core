@@ -3,7 +3,7 @@
 	<module name="dynamo">
 	   <component api="KTransactionManager" class="io.vertigo.dynamo.impl.transaction.KTransactionManagerImpl"/>
 	   <component api="KVDataStoreManager" class="io.vertigo.dynamo.impl.kvdatastore.KVDataStoreManagerImpl" >
-	        <plugin class="io.vertigo.dynamo.plugins.kvdatastore.berkeley.BerkeleyKVDataStorePlugin">
+	        <plugin class="io.vertigo.dynamo.plugins.kvdatastore.txberkeley.BerkeleyKVDataStorePlugin">
       			<param name="fileName" value="d:/dynamo-tmp" />            
       			<param name="inMemory" value="true" />            
 	        </plugin> 

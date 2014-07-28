@@ -88,7 +88,7 @@ public final class TraitManagerImpl implements TraitManager {
 		Assertion.checkArgNotEmpty(traitType);
 		//---------------------------------------------------------------------
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			kvDataStoreManager.delete(traitType + ":" + subjectId);
+			kvDataStoreManager.remove(traitType + ":" + subjectId);
 			transaction.commit();
 		}
 	}

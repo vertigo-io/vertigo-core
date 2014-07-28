@@ -27,7 +27,7 @@ public interface KVDataStorePlugin extends Plugin {
 
 	void put(String id, Object objet);
 
-	<C> void delete(String id);
+	void remove(String id);
 
 	<C> Option<C> find(String id, Class<C> clazz);
 

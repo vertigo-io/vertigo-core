@@ -27,7 +27,7 @@ public interface KVDataStoreManager extends Manager {
 
 	void put(String id, Object objet);
 
-	<C> void delete(String id);
+	<C> void remove(String id);
 
 	<C> Option<C> find(String id, Class<C> clazz);
 

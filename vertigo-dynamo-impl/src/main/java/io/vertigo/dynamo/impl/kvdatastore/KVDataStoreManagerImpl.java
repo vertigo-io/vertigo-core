@@ -40,8 +40,8 @@ public class KVDataStoreManagerImpl implements KVDataStoreManager {
 		kvDataStorePlugin.put(id, objet);
 	}
 
-	public <C> void delete(final String id) {
-		kvDataStorePlugin.delete(id);
+	public <C> void remove(final String id) {
+		kvDataStorePlugin.remove(id);
 	}
 
 	public <C> Option<C> find(final String id, final Class<C> clazz) {
