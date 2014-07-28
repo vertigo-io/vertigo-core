@@ -19,7 +19,17 @@
 package io.vertigo.dynamo.kvdatastore;
 
 import io.vertigo.kernel.component.Manager;
+import io.vertigo.kernel.lang.Option;
+
+import java.util.List;
 
 public interface KVDataStoreManager extends Manager {
-	KVDataStore getDataStore();
+
+	void put(String id, Object objet);
+
+	<C> void delete(String id);
+
+	<C> Option<C> find(String id, Class<C> clazz);
+
+	<C> List<C> findAll(int skip, Integer limit, Class<C> clazz);
 }

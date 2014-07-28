@@ -18,9 +18,11 @@
  */
 package io.vertigo.dynamo.impl.kvdatastore;
 
-import io.vertigo.dynamo.kvdatastore.KVDataStore;
 import io.vertigo.dynamo.kvdatastore.KVDataStoreManager;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.lang.Option;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -28,15 +30,26 @@ public class KVDataStoreManagerImpl implements KVDataStoreManager {
 	private final KVDataStorePlugin kvDataStorePlugin;
 
 	@Inject
-	public KVDataStoreManagerImpl(KVDataStorePlugin kvDataStorePlugin) {
+	public KVDataStoreManagerImpl(final KVDataStorePlugin kvDataStorePlugin) {
 		Assertion.checkNotNull(kvDataStorePlugin);
 		//---------------------------------------------------------------------
 		this.kvDataStorePlugin = kvDataStorePlugin;
 	}
 
-	@Override
-	public KVDataStore getDataStore() {
-		return kvDataStorePlugin;
+	public void put(final String id, final Object objet) {
+		kvDataStorePlugin.put(id, objet);
+	}
+
+	public <C> void delete(final String id) {
+		kvDataStorePlugin.delete(id);
+	}
+
+	public <C> Option<C> find(final String id, final Class<C> clazz) {
+		return kvDataStorePlugin.find(id, clazz);
+	}
+
+	public <C> List<C> findAll(final int skip, final Integer limit, final Class<C> clazz) {
+		return kvDataStorePlugin.findAll(skip, limit, clazz);
 	}
 
 }

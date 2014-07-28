@@ -163,12 +163,12 @@ public final class GedcomManagerImpl implements GedcomManager {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction();) {
 			geoLocation = cache.get(key);
 			if (geoLocation == null) {
-				final Option<GeoLocation> storedLocation = kvDataStoreManager.getDataStore().find(key, GeoLocation.class);
+				final Option<GeoLocation> storedLocation = kvDataStoreManager.find(key, GeoLocation.class);
 				//System.out.println("    cache "+storedLocation.isDefined());
 				if (storedLocation.isEmpty()) {
 					geoLocation = geoCoderManager.findLocation(key);
 					//-----------------
-					kvDataStoreManager.getDataStore().put(key, geoLocation);
+					kvDataStoreManager.put(key, geoLocation);
 					transaction.commit();
 				} else {
 					geoLocation = storedLocation.get();

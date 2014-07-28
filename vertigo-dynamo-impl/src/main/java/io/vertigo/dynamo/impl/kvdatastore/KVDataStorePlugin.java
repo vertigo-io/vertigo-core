@@ -18,9 +18,18 @@
  */
 package io.vertigo.dynamo.impl.kvdatastore;
 
-import io.vertigo.dynamo.kvdatastore.KVDataStore;
 import io.vertigo.kernel.component.Plugin;
+import io.vertigo.kernel.lang.Option;
 
-public interface KVDataStorePlugin extends KVDataStore, Plugin {
-	//
+import java.util.List;
+
+public interface KVDataStorePlugin extends Plugin {
+
+	void put(String id, Object objet);
+
+	<C> void delete(String id);
+
+	<C> Option<C> find(String id, Class<C> clazz);
+
+	<C> List<C> findAll(int skip, Integer limit, Class<C> clazz);
 }
