@@ -48,7 +48,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	}
 
 	public EndPointDefinition build() {
-		final String usedPath = myPathPrefix + myPath;
+		final String usedPath = myPathPrefix != null ? myPathPrefix + myPath : myPath;
 		return new EndPointDefinition(//
 				//"EP_" + StringUtil.camelToConstCase(restFullServiceClass.getSimpleName()) + "_" + StringUtil.camelToConstCase(method.getName()), //
 				"EP_" + myVerb + "_" + StringUtil.camelToConstCase(usedPath.replaceAll("[//{}]", "_")), //
