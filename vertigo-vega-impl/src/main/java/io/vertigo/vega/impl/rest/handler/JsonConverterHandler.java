@@ -21,6 +21,7 @@ package io.vertigo.vega.impl.rest.handler;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.lang.Option;
 import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.vega.rest.engine.UiContext;
 import io.vertigo.vega.rest.engine.UiObject;
@@ -219,16 +220,16 @@ final class JsonConverterHandler implements RouteHandler {
 			if (accessToken == null) {
 				throw new VSecurityException(SERVER_SIDE_MANDATORY); //same message for no ServerSideToken or bad ServerSideToken
 			}
-			final Serializable serverSideObject;
+			final Option<Serializable> serverSideObject;
 			if (endPointParam.isConsumeServerSideToken()) {
 				serverSideObject = uiSecurityTokenManager.getAndRemove(accessToken); //TODO if exception : token is consume ?
 			} else {
 				serverSideObject = uiSecurityTokenManager.get(accessToken);
 			}
-			if (serverSideObject == null) {
+			if (serverSideObject.isEmpty()) {
 				throw new VSecurityException(SERVER_SIDE_MANDATORY); //same message for no ServerSideToken or bad ServerSideToken
 			}
-			uiObject.setServerSideObject((DtObject) serverSideObject);
+			uiObject.setServerSideObject((DtObject) serverSideObject.get());
 		}
 	}
 

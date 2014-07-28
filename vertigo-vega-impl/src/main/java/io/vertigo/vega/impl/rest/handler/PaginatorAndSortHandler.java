@@ -23,6 +23,7 @@ import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.lang.Option;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
@@ -71,11 +72,14 @@ final class PaginatorAndSortHandler implements RouteHandler {
 		final UiListState uiListState = checkAndEnsureDefaultValue(parsedUiListState);
 
 		String serverSideToken = uiListState.getListServerToken();
-		DtList<?> fullList = null;
+		Option<DtList<?>> fullListOption = Option.none();
 		if (serverSideToken != null) {
-			fullList = (DtList<?>) uiSecurityTokenManager.get(uiListState.getListServerToken());
+			fullListOption = uiSecurityTokenManager.<DtList<?>> get(uiListState.getListServerToken());
 		}
-		if (fullList == null) {
+		final DtList<?> fullList;
+		if (fullListOption.isDefined()) {
+			fullList = fullListOption.get();
+		} else {
 			final Object result = chain.handle(request, response, routeContext);
 			Assertion.checkArgument(result instanceof DtList, "sort and pagination only supports DtList");
 			fullList = (DtList<?>) result;

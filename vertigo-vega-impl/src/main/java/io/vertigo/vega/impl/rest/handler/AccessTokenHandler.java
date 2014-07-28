@@ -18,14 +18,16 @@
  */
 package io.vertigo.vega.impl.rest.handler;
 
-import java.io.Serializable;
-
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.lang.Option;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.security.UiSecurityTokenManager;
+
+import java.io.Serializable;
+
 import spark.Request;
 import spark.Response;
 
@@ -58,8 +60,8 @@ final class AccessTokenHandler implements RouteHandler {
 			if (accessTokenKey == null) {
 				throw new VSecurityException(INVALID_ACCESS_TOKEN_MSG); //same message for no AccessToken or bad AccessToken
 			}
-			final Serializable tokenData = uiSecurityTokenManager.get(accessTokenKey);
-			if (tokenData == null) {
+			final Option<Serializable> tokenData = uiSecurityTokenManager.get(accessTokenKey);
+			if (tokenData.isEmpty()) {
 				throw new VSecurityException(INVALID_ACCESS_TOKEN_MSG); //same message for no AccessToken or bad AccessToken
 			}
 		} else {

@@ -34,14 +34,17 @@ import io.vertigo.dynamo.impl.collections.CollectionsManagerImpl;
 import io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl;
 import io.vertigo.dynamo.impl.export.ExportManagerImpl;
 import io.vertigo.dynamo.impl.file.FileManagerImpl;
+import io.vertigo.dynamo.impl.kvdatastore.KVDataStoreManagerImpl;
 import io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl;
 import io.vertigo.dynamo.impl.task.TaskManagerImpl;
 import io.vertigo.dynamo.impl.work.WorkManagerImpl;
+import io.vertigo.dynamo.kvdatastore.KVDataStoreManager;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
 import io.vertigo.dynamo.plugins.export.pdf.PDFExporterPlugin;
+import io.vertigo.dynamo.plugins.kvdatastore.delayedmemory.DelayedMemoryKVDataStorePlugin;
 import io.vertigo.dynamo.plugins.persistence.postgresql.PostgreSqlStorePlugin;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.work.WorkManager;
@@ -57,9 +60,6 @@ import io.vertigo.vega.impl.rest.handler.RateLimitingHandler;
 import io.vertigo.vega.impl.security.UiSecurityTokenManagerImpl;
 import io.vertigo.vega.plugins.rest.instrospector.annotations.AnnotationsEndPointIntrospectorPlugin;
 import io.vertigo.vega.plugins.rest.routesregister.sparkjava.SparkJavaRoutesRegister;
-import io.vertigo.vega.plugins.rest.security.memory.MemoryUiSecurityTokenCachePlugin;
-import io.vertigo.vega.rest.RestManager;
-import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.security.UiSecurityTokenManager;
 import io.vertigoimpl.commons.locale.LocaleManagerImpl;
 import io.vertigoimpl.engines.rest.cmd.ComponentCmdRestServices;
@@ -118,6 +118,11 @@ public final class WsRestHandler {
 					.beginComponent(CodecManager.class, CodecManagerImpl.class).endComponent() //
 					.beginComponent(CollectionsManager.class, CollectionsManagerImpl.class).endComponent() //
 					.beginComponent(FileManager.class, FileManagerImpl.class).endComponent() //
+					.beginComponent(KVDataStoreManager.class, KVDataStoreManagerImpl.class)
+						.beginPlugin(DelayedMemoryKVDataStorePlugin.class)
+							.withParam("timeToLiveSeconds", "120")
+						.endPlugin()
+					.endComponent() //
 					.beginComponent(PersistenceManager.class, PersistenceManagerImpl.class)
 						.beginPlugin(PostgreSqlStorePlugin.class) //
 							.withParam("sequencePrefix","SEQ_") //
@@ -152,11 +157,7 @@ public final class WsRestHandler {
 					.endComponent() //
 					.beginComponent(CatalogRestServices.class).endComponent() //
 					.beginComponent(RateLimitingHandler.class).endComponent() //
-					.beginComponent(UiSecurityTokenManager.class, UiSecurityTokenManagerImpl.class)
-						.beginPlugin(MemoryUiSecurityTokenCachePlugin.class)
-							.withParam("timeToLiveSeconds", "120")
-						.endPlugin()
-					.endComponent() //					
+					.beginComponent(UiSecurityTokenManager.class, UiSecurityTokenManagerImpl.class).endComponent() //					
 				.endModule()
 				
 				.build();

@@ -19,6 +19,7 @@
 package io.vertigo.vega.security;
 
 import io.vertigo.kernel.component.Manager;
+import io.vertigo.kernel.lang.Option;
 
 import java.io.Serializable;
 
@@ -33,20 +34,20 @@ public interface UiSecurityTokenManager extends Manager {
 	 * @param data Object to store
 	 * @return unique key of this object
 	 */
-	String put(Serializable data);
+	<D extends Serializable> String put(D data);
 
 	/**
 	 * Get object by key.
 	 * @param key key of this object
-	 * @return Object store or null if unknown
+	 * @return Object store
 	 */
-	Serializable get(String key);
+	<D extends Serializable> Option<D> get(String key);
 
 	/**
 	 * Get and remove object by key.
 	 * @param key key of this object
 	 * @return Object store or null if unknown
 	 */
-	Serializable getAndRemove(String key);
+	<D extends Serializable> Option<D> getAndRemove(String key);
 
 }
