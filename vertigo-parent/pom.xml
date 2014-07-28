@@ -126,6 +126,9 @@ limitations under the License. -->
 				<version>2.5</version>
 				<configuration>
 					<header>license.txt</header>
+                    <includes>
+                        <include>**/*.java</include>
+                    </includes>
 				</configuration>
 				<!-- executions> <execution> <phase>package</phase> <goals> <goal>license</goal> 
 					</goals> </execution> </executions -->
