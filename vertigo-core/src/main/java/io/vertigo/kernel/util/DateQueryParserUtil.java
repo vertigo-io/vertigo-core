@@ -32,46 +32,38 @@ import java.util.regex.Pattern;
 
 /**
  * Implements parsing of a date expression.
- * NOW+1DAY
- * +1DAY
- * +2DAYS
- * NOW-12MONTHS
- * NOW-2YEARS
- * NOW-2YEAR  
+ * y=year, M=month, w=week
+ * d=day, h=hour, m=minute, s= second
+ * Mind the UpperCase : 'M'onth and 'm'inute !
+ * now+1d
+ * now-6d
+ * now+2w
+ * now-12M
+ * now-2y
  * "06/12/2003", "dd/MM/yyyy"
  * 
  * @author mlaroche
  */
 final class DateQueryParserUtil {
 	private static final Map<String, Integer> CALENDAR_UNITS = createCalendarUnits();
-	private final static Pattern PATTERN = Pattern.compile("([0-9]{1,})([A-Z]{1,})");
-	private final static String NOW = "NOW";
+	private final static Pattern PATTERN = Pattern.compile("([0-9]{1,})([y,M, w,d,h,m,s]{1})");
+	private final static String NOW = "now";
 
 	private static Map<String, Integer> createCalendarUnits() {
 		final Map<String, Integer> units = new HashMap<>(5);
-//		units.put("y", Calendar.YEAR);
-//		units.put("M", Calendar.MONTH);
-//		units.put("d", Calendar.DAY_OF_YEAR);
-//		units.put("h", Calendar.HOUR_OF_DAY);
-//		units.put("m", Calendar.MINUTE);
-		//---
-		units.put("YEAR", Calendar.YEAR);
-		units.put("MONTH", Calendar.MONTH);
-		units.put("DAY", Calendar.DAY_OF_YEAR);
-		units.put("HOUR", Calendar.HOUR_OF_DAY);
-		units.put("MINUTES", Calendar.MINUTE);
-		//---
-		units.put("YEARS", Calendar.YEAR);
-		units.put("MONTHS", Calendar.MONTH);
-		units.put("DAYS", Calendar.DAY_OF_YEAR);
-		units.put("HOURS", Calendar.HOUR_OF_DAY);
-		units.put("MINUTES", Calendar.MINUTE);
+		units.put("y", Calendar.YEAR);
+		units.put("M", Calendar.MONTH);
+		units.put("w", Calendar.WEEK_OF_YEAR);
+		units.put("d", Calendar.DAY_OF_YEAR);
+		units.put("h", Calendar.HOUR_OF_DAY);
+		units.put("m", Calendar.MINUTE);
+		units.put("s", Calendar.SECOND);
 		return units;
 	}
 
 	/**
 	 * Retourne la date correspondant à l'expression passée en parametre.
-	 * La syntaxe est de type NOW((+/-)eeeUNIT) ou une date au format dd/MM/yy
+	 * La syntaxe est de type now((+/-)eeeUNIT) ou une date au format dd/MM/yy
 	 * 
 	 * @param dateQuery Expression
 	 * @param datePattern Pattern used to define a date (dd/MM/YYYY)
@@ -85,16 +77,8 @@ final class DateQueryParserUtil {
 			//today is gonna be the day 
 			return new Date();
 		}
-		char first = dateQuery.charAt(0);
-		if (first == '+' || first == '-' || dateQuery.startsWith(NOW)) {
-			final int index;
-			if (first == '+' || first == '-') {
-				//when NOW is omitted
-				index = 0;
-			} else {
-				index = NOW.length();
-			}
-			//---
+		if (dateQuery.startsWith(NOW)) {
+			final int index = NOW.length();
 			final char operator = dateQuery.charAt(index);
 			final int sign;
 			if ('+' == operator) {
@@ -102,16 +86,16 @@ final class DateQueryParserUtil {
 			} else if ('-' == operator) {
 				sign = -1;
 			} else {
-				throw new RuntimeException("a valid operator (+ or -) is expected :'"+operator+"' on "+dateQuery);
+				throw new RuntimeException("a valid operator (+ or -) is expected :'" + operator + "' on " + dateQuery);
 			}
 			//---
-			//21DAYS
+			//operand = 21d
 			final String operand = dateQuery.substring(index + 1);
 			//NOW+21DAY or NOW-12MONTH 
 			final Matcher matcher = PATTERN.matcher(operand);
 			Assertion.checkState(matcher.matches(), "Le second operande ne respecte pas le pattern {0}", PATTERN.toString());
 			//---
-			final int unitCount= sign * Integer.valueOf(matcher.group(1));
+			final int unitCount = sign * Integer.valueOf(matcher.group(1));
 			final String calendarUnit = matcher.group(2);
 			//We check that we have found a real unit Calendar and not 'NOW+15DAL'
 			if (!CALENDAR_UNITS.containsKey(calendarUnit)) {

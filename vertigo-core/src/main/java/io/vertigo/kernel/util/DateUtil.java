@@ -119,16 +119,15 @@ public final class DateUtil {
 
 	/**
 	 * Retourne la date correspondant à l'expression passée en parametre.
-	 * La syntaxe est de type NOW((+/-)eeeUNIT) ou une date au format dd/MM/yy
-	 * examples :
-	 * - you can use plural DAYS or DAY 
-	 * - NOW can be omitted 
-	 * NOW+1DAY 
-	 * NOW-1DAY 
-	 * -1DAY //you can omit NOW
-	 * NOW+1DAY
-	 * NOW-12MONTH is equivalent to -12MONTHS
-	 * NOW-2YEAR 
+	 * Implements parsing of a date expression.
+	 * y=year, M=month, w=week
+	 * d=day, h=hour, m=minute, s= second
+	 * Mind the UpperCase : 'M'onth and 'm'inute !
+	 * now+1d
+	 * now-6d
+	 * now+2w
+	 * now-12M
+	 * now-2y
 	 * "06/12/2003", "dd/MM/yyyy"
 	 * 
 	 * @param dateQuery
