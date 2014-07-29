@@ -23,6 +23,7 @@ import io.vertigo.kernel.component.cglib.CGLIBAspectContainerTest;
 import io.vertigo.kernel.di.injector.InjectorTest;
 import io.vertigo.kernel.di.reactor.ReactorTest;
 import io.vertigo.kernel.home.componentspace.ComponentSpace2Test;
+import io.vertigo.kernel.home.componentspace.ComponentSpace3Test;
 import io.vertigo.kernel.home.componentspace.ComponentSpaceTest;
 import io.vertigo.kernel.home.definitionspace.DefinitionSpaceTest;
 import io.vertigo.kernel.lang.AssertionTest;
@@ -51,6 +52,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	DefinitionSpaceTest.class,
 	ComponentSpaceTest.class,
 	ComponentSpace2Test.class,
+	ComponentSpace3Test.class,
 	XmlHomeTest.class,
 	XmlComponentsTest.class,
 	InjectorTest.class,
