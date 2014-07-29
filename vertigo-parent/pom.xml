@@ -61,12 +61,6 @@ limitations under the License. -->
 					<exclude>*.java</exclude>
 				</excludes>
 			</resource>
-			<resource>
-				<directory>src/doc/docco</directory>
-				<excludes>
-					<exclude>*.java</exclude>
-				</excludes>
-			</resource>
 		</resources>
 
 		<testResources>
