@@ -46,6 +46,7 @@ public final class TxBerkeleyKVDataStorePlugin implements KVDataStorePlugin, Act
 
 	//	private final KTransactionResourceId<LuceneResource> luceneResourceId = new KTransactionResourceId<LuceneResource>(KTransactionResourceId.Priority.NORMAL, "demo-lucene");
 	//	private final Directory directory;
+	private final String storeName;
 	private final KTransactionManager transactionManager;
 	private final File dbFile;
 	private final boolean inMemory;
@@ -60,14 +61,21 @@ public final class TxBerkeleyKVDataStorePlugin implements KVDataStorePlugin, Act
 	 * @param transactionManager Manager des transactions
 	 */
 	@Inject
-	public TxBerkeleyKVDataStorePlugin(@Named("fileName") final String dbFileName /*, final LuceneDB luceneDb*/, @Named("inMemory") final boolean inMemory, final KTransactionManager transactionManager) {
+	public TxBerkeleyKVDataStorePlugin(final @Named("storeName") String storeName, @Named("fileName") final String dbFileName /*, final LuceneDB luceneDb*/, @Named("inMemory") final boolean inMemory, final KTransactionManager transactionManager) {
+		Assertion.checkArgNotEmpty(storeName);
 		Assertion.checkArgNotEmpty(dbFileName);
 		Assertion.checkNotNull(transactionManager);
-		//		Assertion.notNull(luceneDb);
-		//--------------------------------------------------------------------------
+		//---------------------------------------------------------------------
+		this.storeName = storeName;
 		dbFile = new File(dbFileName);
 		this.transactionManager = transactionManager;
 		this.inMemory = inMemory;
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public String getStoreName() {
+		return storeName;
 	}
 
 	/** {@inheritDoc} */

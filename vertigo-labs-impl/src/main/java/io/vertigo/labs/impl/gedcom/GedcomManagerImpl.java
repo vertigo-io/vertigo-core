@@ -44,6 +44,7 @@ import org.gedcom4j.model.IndividualEvent;
 import org.gedcom4j.parser.GedcomParser;
 
 public final class GedcomManagerImpl implements GedcomManager {
+	private final String storeName;
 	private final GedcomParser gp;
 	private final GeoCoderManager geoCoderManager;
 	private final KTransactionManager transactionManager;
@@ -52,13 +53,15 @@ public final class GedcomManagerImpl implements GedcomManager {
 	private final Map<String, DtList<Individual>> children = new HashMap<>();
 
 	@Inject
-	public GedcomManagerImpl(final KVDataStoreManager kvDataStoreManager, final KTransactionManager transactionManager, final GeoCoderManager geoCoderManager, final ResourceManager resourceManager, @Named("gedcom") final String gedcomResource) {
+	public GedcomManagerImpl(@Named("storeName") final String storeName, final KVDataStoreManager kvDataStoreManager, final KTransactionManager transactionManager, final GeoCoderManager geoCoderManager, final ResourceManager resourceManager, @Named("gedcom") final String gedcomResource) {
+		Assertion.checkArgNotEmpty(storeName);
 		Assertion.checkNotNull(kvDataStoreManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(geoCoderManager);
 		Assertion.checkNotNull(resourceManager);
 		Assertion.checkNotNull(gedcomResource);
 		// ---------------------------------------------------------------------
+		this.storeName = storeName;
 		this.kvDataStoreManager = kvDataStoreManager;
 		this.transactionManager = transactionManager;
 		this.geoCoderManager = geoCoderManager;
@@ -163,12 +166,12 @@ public final class GedcomManagerImpl implements GedcomManager {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction();) {
 			geoLocation = cache.get(key);
 			if (geoLocation == null) {
-				final Option<GeoLocation> storedLocation = kvDataStoreManager.find(key, GeoLocation.class);
+				final Option<GeoLocation> storedLocation = kvDataStoreManager.find(storeName, key, GeoLocation.class);
 				//System.out.println("    cache "+storedLocation.isDefined());
 				if (storedLocation.isEmpty()) {
 					geoLocation = geoCoderManager.findLocation(key);
 					//-----------------
-					kvDataStoreManager.put(key, geoLocation);
+					kvDataStoreManager.put(storeName, key, geoLocation);
 					transaction.commit();
 				} else {
 					geoLocation = storedLocation.get();

@@ -29,14 +29,17 @@ import io.vertigo.labs.trait.TraitManager;
 import javax.inject.Inject;
 
 public final class TraitManagerImpl implements TraitManager {
+	private final String storeName;
 	private final KVDataStoreManager kvDataStoreManager;
 	private final KTransactionManager transactionManager;
 
 	@Inject
-	public TraitManagerImpl(final KVDataStoreManager kvDataStoreManager, final KTransactionManager transactionManager) {
+	public TraitManagerImpl(final String storeName, final KVDataStoreManager kvDataStoreManager, final KTransactionManager transactionManager) {
+		Assertion.checkArgNotEmpty(storeName);
 		Assertion.checkNotNull(kvDataStoreManager);
 		Assertion.checkNotNull(transactionManager);
 		//---------------------------------------------------------------------s
+		this.storeName = storeName;
 		this.kvDataStoreManager = kvDataStoreManager;
 		this.transactionManager = transactionManager;
 	}
@@ -69,7 +72,7 @@ public final class TraitManagerImpl implements TraitManager {
 		Assertion.checkArgNotEmpty(traitType);
 		//---------------------------------------------------------------------
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			kvDataStoreManager.put(traitType + ":" + subjectId, trait);
+			kvDataStoreManager.put(storeName, traitType + ":" + subjectId, trait);
 			transaction.commit();
 		}
 	}
@@ -79,7 +82,7 @@ public final class TraitManagerImpl implements TraitManager {
 		Assertion.checkArgNotEmpty(traitType);
 		//---------------------------------------------------------------------
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			return kvDataStoreManager.find(traitType + ":" + subjectId, clazz);
+			return kvDataStoreManager.find(storeName,traitType + ":" + subjectId, clazz);
 		}
 	}
 
@@ -88,7 +91,7 @@ public final class TraitManagerImpl implements TraitManager {
 		Assertion.checkArgNotEmpty(traitType);
 		//---------------------------------------------------------------------
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			kvDataStoreManager.remove(traitType + ":" + subjectId);
+			kvDataStoreManager.remove(storeName,traitType + ":" + subjectId);
 			transaction.commit();
 		}
 	}

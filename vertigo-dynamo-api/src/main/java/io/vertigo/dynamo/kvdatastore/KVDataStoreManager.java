@@ -25,11 +25,11 @@ import java.util.List;
 
 public interface KVDataStoreManager extends Manager {
 
-	void put(String id, Object objet);
+	void put(String storeName,String id, Object objet);
 
-	<C> void remove(String id);
+	void remove(String storeName,String id);
 
-	<C> Option<C> find(String id, Class<C> clazz);
+	<C> Option<C> find(String storeName,String id, Class<C> clazz);
 
-	<C> List<C> findAll(int skip, Integer limit, Class<C> clazz);
+	<C> List<C> findAll(String storeName,int skip, Integer limit, Class<C> clazz);
 }

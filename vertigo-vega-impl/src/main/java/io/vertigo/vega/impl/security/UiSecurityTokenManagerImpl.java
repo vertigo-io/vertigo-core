@@ -29,6 +29,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * Ui data security token.
@@ -38,15 +39,18 @@ import javax.inject.Inject;
  */
 public final class UiSecurityTokenManagerImpl implements UiSecurityTokenManager {
 
+	private final String storeName;
 	private final KSecurityManager securityManager;
 	/** Object token, by */
 	private final KVDataStoreManager kvDataStoreManager;
 
 	@Inject
-	public UiSecurityTokenManagerImpl(final KSecurityManager securityManager, final KVDataStoreManager kvDataStoreManager) {
+	public UiSecurityTokenManagerImpl(@Named("storeName")final String storeName, final KSecurityManager securityManager, final KVDataStoreManager kvDataStoreManager) {
+		Assertion.checkArgNotEmpty(storeName);
 		Assertion.checkNotNull(securityManager);
 		Assertion.checkNotNull(kvDataStoreManager);
 		//---------------------------------------------------------------------
+		this.storeName = storeName;
 		this.securityManager = securityManager;
 		this.kvDataStoreManager = kvDataStoreManager;
 	}
@@ -62,7 +66,7 @@ public final class UiSecurityTokenManagerImpl implements UiSecurityTokenManager 
 		//---------------------------------------------------------------------
 		final String objectUUID = UUID.randomUUID().toString();
 		final String tokenKey = makeTokenKey(objectUUID);
-		kvDataStoreManager.put(tokenKey, data);
+		kvDataStoreManager.put(storeName, tokenKey, data);
 		return objectUUID; //We only return the object part.
 	}
 
@@ -72,7 +76,7 @@ public final class UiSecurityTokenManagerImpl implements UiSecurityTokenManager 
 		Assertion.checkArgNotEmpty(objectUUID, "Security key is mandatory");
 		//---------------------------------------------------------------------
 		final String tokenKey = makeTokenKey(objectUUID);
-		return kvDataStoreManager.find(tokenKey, Serializable.class);
+		return kvDataStoreManager.find(storeName, tokenKey, Serializable.class);
 	}
 
 	/** {@inheritDoc} */
@@ -80,9 +84,9 @@ public final class UiSecurityTokenManagerImpl implements UiSecurityTokenManager 
 		Assertion.checkArgNotEmpty(objectUUID, "Security key is mandatory");
 		//---------------------------------------------------------------------
 		final String tokenKey = makeTokenKey(objectUUID);
-		final Option<Serializable> result = kvDataStoreManager.find(tokenKey, Serializable.class);
+		final Option<Serializable> result = kvDataStoreManager.find(storeName, tokenKey, Serializable.class);
 		if (result.isDefined()) {
-			kvDataStoreManager.remove(tokenKey);
+			kvDataStoreManager.remove(storeName, tokenKey);
 		}
 		return result;
 	}

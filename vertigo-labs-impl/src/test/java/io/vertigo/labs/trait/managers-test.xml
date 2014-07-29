@@ -9,7 +9,7 @@
 		</component>
 		
 		<component api="KVDataStoreManager" class="io.vertigo.dynamo.impl.kvdatastore.KVDataStoreManagerImpl" >
-	        <plugin class="io.vertigo.dynamo.plugins.kvdatastore.txberkeley.BerkeleyKVDataStorePlugin">
+	        <plugin class="io.vertigo.dynamo.plugins.kvdatastore.txberkeley.TxBerkeleyKVDataStorePlugin">
       			<param name="inMemory" value="false" />            
       			<param name="fileName" value="d:/berkeleyDB-gedcom" />            
 	        </plugin>
