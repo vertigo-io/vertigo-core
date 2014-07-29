@@ -18,11 +18,15 @@
  */
 package io.vertigo.vega.rest.engine;
 
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.kernel.component.ComponentInfo;
 import io.vertigo.kernel.lang.JsonExclude;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.metamodel.DefinitionReference;
+import io.vertigo.kernel.util.StringUtil;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
@@ -191,11 +195,12 @@ public final class GoogleJsonEngine implements JsonEngine {
 			final Class<D> dtoClass = (Class<D>) typeParameters[0]; // Id has only one parameterized type T
 			final JsonObject jsonObject = json.getAsJsonObject();
 			final D inputDto = context.deserialize(jsonObject, dtoClass);
-
+			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtoClass);
+			final Set<String> dtFields = getDtFieldNameList(dtDefinition);
 			final Set<String> modifiedFields = new HashSet<>();
 			for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
 				final String fieldName = entry.getKey();
-				if (!SERVER_SIDE_TOKEN_FIELDNAME.equals(fieldName)) {
+				if (dtFields.contains(fieldName)) { //we only keep fields of this dtObject
 					modifiedFields.add(fieldName);
 				}
 			}
@@ -205,6 +210,14 @@ public final class GoogleJsonEngine implements JsonEngine {
 			}
 			return uiObject;
 		}
+	}
+
+	static Set<String> getDtFieldNameList(final DtDefinition dtDefinition) {
+		final Set<String> dtFieldNames = new HashSet<>();
+		for (final DtField dtField : dtDefinition.getFields()) {
+			dtFieldNames.add(StringUtil.constToCamelCase(dtField.getName(), false));
+		}
+		return dtFieldNames;
 	}
 
 	/*  {@inheritDoc} 
