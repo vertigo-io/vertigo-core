@@ -29,6 +29,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.MessageText;
+import io.vertigo.kernel.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -111,7 +112,11 @@ public final class FacetFactory {
 			facetValue = facetFilterIndex.get(value);
 			if (facetValue == null) {
 				final String valueAsString = dtField.getDomain().getFormatter().valueToString(value, dtField.getDomain().getDataType());
-				final MessageText label = new MessageText(valueAsString, null);
+				String stringLabel = valueAsString;
+				if (StringUtil.isEmpty(valueAsString)) {
+					stringLabel = "<aucun>";
+				}
+				final MessageText label = new MessageText(stringLabel, null);
 				//on garde la syntaxe Solr pour l'instant
 				final ListFilter listFilter = new ListFilter(dtField.getName() + ":\"" + valueAsString + "\"");
 				facetValue = new FacetValue(listFilter, label);

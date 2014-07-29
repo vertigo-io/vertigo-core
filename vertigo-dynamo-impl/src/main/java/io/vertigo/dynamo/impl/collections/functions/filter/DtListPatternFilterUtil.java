@@ -109,7 +109,7 @@ final class DtListPatternFilterUtil {
 
 	private static <D extends DtObject> DtListFilter<D> createDtListTermFilter(final String[] parsedFilter, final String fieldName, final DataType dataType) {
 		final Option<Comparable> filterValue = convertToComparable(parsedFilter[2], dataType, false);
-		return new DtListValueFilter<>(fieldName, (Serializable) filterValue.get());
+		return new DtListValueFilter<>(fieldName, (Serializable) filterValue.getOrElse(null));
 	}
 
 	private static <D extends DtObject> DtListFilter<D> createDtListRangeFilter(final String[] parsedFilter, final String fieldName, final DataType dataType) {
@@ -122,7 +122,7 @@ final class DtListPatternFilterUtil {
 
 	private static Option<Comparable> convertToComparable(final String valueToConvert, final DataType dataType, final boolean acceptJoker) {
 		final String stringValue = valueToConvert.trim();
-		if (acceptJoker && "*".equals(stringValue)) {
+		if (acceptJoker && "*".equals(stringValue) || "".equals(stringValue)) {
 			return Option.none();//pas de test
 		}
 		//--
