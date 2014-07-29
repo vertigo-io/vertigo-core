@@ -108,6 +108,20 @@ public final class Injector {
 			}
 			return Option.none();
 		}
+		//Injection des listes de plugins 
+		final boolean pluginsField = DIAnnotationUtil.hasPlugins(constructor, i);
+		if (pluginsField) {
+			final String pluginType = DIAnnotationUtil.buildId(ClassUtil.getGeneric(constructor, i));
+			//on récupère la liste des plugin du type concerné
+			final List<Plugin> list = new ArrayList<>();
+			for (final String pluginId : container.keySet()) {
+				//On prend tous les plugins du type concerné
+				if (pluginId.startsWith(pluginType)) {
+					list.add(container.resolve(pluginId, Plugin.class));
+				}
+			}
+			return Collections.unmodifiableList(list);
+		}
 		//----------
 		final Object value = container.resolve(id, constructor.getParameterTypes()[i]);
 		Assertion.checkNotNull(value);

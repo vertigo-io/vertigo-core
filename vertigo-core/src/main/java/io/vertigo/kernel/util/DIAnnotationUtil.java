@@ -86,6 +86,24 @@ public final class DIAnnotationUtil {
 	}
 
 	/**
+	 * Indique Indique si le i-éme paramètre du constructeur est une liste de plugins.
+	 * @param constructor Constructeur testé
+	 * @param i indice du paramètre
+	 * @return Si le i-éme paramètre du contructeur une liste de plugins.
+	 */
+	public static boolean hasPlugins(final Constructor<?> constructor, final int i) {
+		Assertion.checkNotNull(constructor);
+		//---------------------------------------------------------------------
+		if (List.class.isAssignableFrom(constructor.getParameterTypes()[i])) {
+			if (!Plugin.class.isAssignableFrom(ClassUtil.getGeneric(constructor, i))) {
+				throw new IllegalStateException("Only plugins can be injected in list");
+			}
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Indique si le champ du composant correspond à une liste de plugins.
 	 * @param field Champ du composant
 	 * @return Si ce champ est optionnel.
@@ -105,13 +123,13 @@ public final class DIAnnotationUtil {
 	/**
 	 * @return Création de l'identifiant du composant
 	 */
-	public static String buildId(Option<Class<?>> apiClass, Class<?> implClass) {
+	public static String buildId(final Option<Class<?>> apiClass, final Class<?> implClass) {
 		Assertion.checkNotNull(apiClass);
 		Assertion.checkNotNull(implClass);
 		//---------------------------------------------------------------------
 		if (apiClass.isDefined()) {
 			//if en api is defined, api muust define id 
-			String id = buildId(apiClass.get());
+			final String id = buildId(apiClass.get());
 			if (implClass.isAnnotationPresent(Named.class)) {
 				//if an api is defined and an annotation is found on implementation then we have to check the consistency
 				final Named named = implClass.getAnnotation(Named.class);
@@ -186,6 +204,10 @@ public final class DIAnnotationUtil {
 		final Class<?> implClass;
 		if (Option.class.isAssignableFrom(constructor.getParameterTypes()[i])) {
 			implClass = ClassUtil.getGeneric(constructor, i);
+		} else if (List.class.isAssignableFrom(constructor.getParameterTypes()[i])) {
+			implClass = ClassUtil.getGeneric(constructor, i);
+			Assertion.checkArgument(Plugin.class.isAssignableFrom(implClass), "Only plugins can be injected in list");
+			Assertion.checkState(named == null, "List of plugins can not be named");
 		} else {
 			implClass = constructor.getParameterTypes()[i];
 		}
