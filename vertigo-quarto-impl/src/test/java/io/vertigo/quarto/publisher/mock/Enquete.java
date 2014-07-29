@@ -24,18 +24,18 @@ import io.vertigo.dynamo.domain.model.DtObject;
  * Attention cette classe est g�n�r�e automatiquement !
  * Objet de donn�es AbstractEnquete
  */
-@io.vertigo.dynamo.domain.metamodel.annotation.DtDefinition(persistent = false)
+@io.vertigo.dynamo.domain.stereotype.DtDefinition(persistent = false)
 public final class Enquete implements DtObject {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@io.vertigo.dynamo.domain.metamodel.annotation.Field(domain = "DO_BOOLEAN", label = "Termin�e?")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_BOOLEAN", label = "Termin�e?")
 	private Boolean enqueteTerminee;
-	@io.vertigo.dynamo.domain.metamodel.annotation.Field(domain = "DO_STRING", label = "Code")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Code")
 	private String codeEnquete;
-	@io.vertigo.dynamo.domain.metamodel.annotation.Field(domain = "DO_STRING", label = "Sexe")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Sexe")
 	private String fait;
-	@io.vertigo.dynamo.domain.metamodel.annotation.Field(domain = "DO_BOOLEAN", label = "Sexe")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_BOOLEAN", label = "Sexe")
 	private Boolean siGrave;
 
 	/**

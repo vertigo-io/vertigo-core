@@ -26,6 +26,9 @@ import io.vertigo.kernel.metamodel.DefinitionSpace;
 import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.engine.GoogleJsonEngine;
 import io.vertigo.vega.rest.engine.JsonEngine;
+import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
+import io.vertigo.vega.rest.stereotype.GET;
+import io.vertigo.vega.rest.stereotype.PathParam;
 
 import java.util.Collection;
 

@@ -112,14 +112,14 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		Assertion.checkNotNull(dynamicModelrepository);
 		//----------------------------------------------------------------------
 		for (final Annotation annotation : clazz.getAnnotations()) {
-			if (annotation instanceof io.vertigo.dynamo.domain.metamodel.annotation.DtDefinition) {
-				parseDtDefinition((io.vertigo.dynamo.domain.metamodel.annotation.DtDefinition) annotation, clazz, dynamicModelrepository);
+			if (annotation instanceof io.vertigo.dynamo.domain.stereotype.DtDefinition) {
+				parseDtDefinition((io.vertigo.dynamo.domain.stereotype.DtDefinition) annotation, clazz, dynamicModelrepository);
 				break;
 			}
 		}
 	}
 
-	private void parseDtDefinition(final io.vertigo.dynamo.domain.metamodel.annotation.DtDefinition dtDefinitionAnnotation, final Class<?> clazz, final DynamicDefinitionRepository dynamicModelRepository) {
+	private void parseDtDefinition(final io.vertigo.dynamo.domain.stereotype.DtDefinition dtDefinitionAnnotation, final Class<?> clazz, final DynamicDefinitionRepository dynamicModelRepository) {
 		final String simpleName = clazz.getSimpleName();
 		final String packageName = clazz.getPackage().getName();
 
@@ -153,8 +153,8 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 	private void parseAssociationDefinition(final DynamicDefinitionRepository dynamicModelRepository, final Method method, final String packageName) {
 		for (final Annotation annotation : method.getAnnotations()) {
-			if (annotation instanceof io.vertigo.dynamo.domain.metamodel.annotation.Association) {
-				final io.vertigo.dynamo.domain.metamodel.annotation.Association association = (io.vertigo.dynamo.domain.metamodel.annotation.Association) annotation;
+			if (annotation instanceof io.vertigo.dynamo.domain.stereotype.Association) {
+				final io.vertigo.dynamo.domain.stereotype.Association association = (io.vertigo.dynamo.domain.stereotype.Association) annotation;
 				//============================================================
 				//Attention pamc inverse dans oom les déclarations des objets !!
 				final DynamicDefinitionKey primaryDtDefinitionKey = new DynamicDefinitionKey(association.primaryDtDefinitionName());
@@ -184,8 +184,8 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 					//Les associations peuvent être déclarées sur les deux noeuds de l'association.
 					dynamicModelRepository.addDefinition(associationDefinition);
 				}
-			} else if (annotation instanceof io.vertigo.dynamo.domain.metamodel.annotation.AssociationNN) {
-				final io.vertigo.dynamo.domain.metamodel.annotation.AssociationNN association = (io.vertigo.dynamo.domain.metamodel.annotation.AssociationNN) annotation;
+			} else if (annotation instanceof io.vertigo.dynamo.domain.stereotype.AssociationNN) {
+				final io.vertigo.dynamo.domain.stereotype.AssociationNN association = (io.vertigo.dynamo.domain.stereotype.AssociationNN) annotation;
 				//============================================================
 
 				//Attention pamc inverse dans oom les déclarations des objets !!
@@ -221,20 +221,20 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 	private void parseFieldAnnotations(final DynamicDefinitionRepository dynamicModelrepository, final Field field, final DynamicDefinitionBuilder dtDefinition) {
 		for (final Annotation annotation : field.getAnnotations()) {
-			if (annotation instanceof io.vertigo.dynamo.domain.metamodel.annotation.Field) {
+			if (annotation instanceof io.vertigo.dynamo.domain.stereotype.Field) {
 				//Le nom est automatiquement déduit du nom du champ
 				final String fieldName = createFieldName(field);
-				parseAnnotation(dynamicModelrepository, fieldName, dtDefinition, io.vertigo.dynamo.domain.metamodel.annotation.Field.class.cast(annotation));
+				parseAnnotation(dynamicModelrepository, fieldName, dtDefinition, io.vertigo.dynamo.domain.stereotype.Field.class.cast(annotation));
 			}
 		}
 	}
 
 	private void parseMethodAnnotations(final DynamicDefinitionRepository dynamicModelrepository, final Method method, final DynamicDefinitionBuilder dtDefinition) {
 		for (final Annotation annotation : method.getAnnotations()) {
-			if (annotation instanceof io.vertigo.dynamo.domain.metamodel.annotation.Field) {
+			if (annotation instanceof io.vertigo.dynamo.domain.stereotype.Field) {
 				//Le nom est automatiquement déduit du nom de la méthode
 				final String fieldName = createFieldName(method);
-				parseAnnotation(dynamicModelrepository, fieldName, dtDefinition, io.vertigo.dynamo.domain.metamodel.annotation.Field.class.cast(annotation));
+				parseAnnotation(dynamicModelrepository, fieldName, dtDefinition, io.vertigo.dynamo.domain.stereotype.Field.class.cast(annotation));
 			}
 		}
 	}
@@ -242,7 +242,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	/*
 	 * Centralisation du parsing des annotations liées à un champ.
 	 */
-	private void parseAnnotation(final DynamicDefinitionRepository dynamicModelrepository, final String fieldName, final DynamicDefinitionBuilder dtDefinition, final io.vertigo.dynamo.domain.metamodel.annotation.Field field) {
+	private void parseAnnotation(final DynamicDefinitionRepository dynamicModelrepository, final String fieldName, final DynamicDefinitionBuilder dtDefinition, final io.vertigo.dynamo.domain.stereotype.Field field) {
 		//Si on trouve un domaine on est dans un objet dynamo.
 		final FieldType type = FieldType.valueOf(field.type());
 		final DynamicDefinitionKey fieldDomainKey = new DynamicDefinitionKey(field.domain());

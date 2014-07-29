@@ -22,6 +22,9 @@ import io.vertigo.kernel.Home;
 import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
+import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
+import io.vertigo.vega.rest.stereotype.GET;
+import io.vertigo.vega.rest.stereotype.SessionLess;
 
 import java.util.ArrayList;
 import java.util.Collection;

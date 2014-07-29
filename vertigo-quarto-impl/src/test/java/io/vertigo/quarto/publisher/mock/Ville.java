@@ -24,14 +24,14 @@ import io.vertigo.dynamo.domain.model.DtObject;
  * Attention cette classe est g�n�r�e automatiquement !
  * Objet de donn�es AbstractVille
  */
-@io.vertigo.dynamo.domain.metamodel.annotation.DtDefinition(persistent = false)
+@io.vertigo.dynamo.domain.stereotype.DtDefinition(persistent = false)
 public final class Ville implements DtObject {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@io.vertigo.dynamo.domain.metamodel.annotation.Field(domain = "DO_STRING", label = "Nom")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Nom")
 	private String nom;
-	@io.vertigo.dynamo.domain.metamodel.annotation.Field(domain = "DO_STRING", label = "Code postal")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Code postal")
 	private String codePostal;
 
 	/**

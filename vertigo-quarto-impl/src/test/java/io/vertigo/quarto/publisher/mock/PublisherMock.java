@@ -26,40 +26,40 @@ import java.util.Date;
  * Attention cette classe est g�n�r�e automatiquement !
  * Objet de donn�es AbstractPublisherMock
  */
-@io.vertigo.dynamo.domain.metamodel.annotation.DtDefinition(persistent = false)
+@io.vertigo.dynamo.domain.stereotype.DtDefinition(persistent = false)
 public final class PublisherMock implements DtObject {
 	/**
 	 * SerialVersionUID.
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@io.vertigo.dynamo.domain.metamodel.annotation.Field(domain = "DO_STRING", label = "Titre")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Titre")
 	private String titre;
-	@io.vertigo.dynamo.domain.metamodel.annotation.Field(domain = "DO_STRING", label = "Nom")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Nom")
 	private String nom;
-	@io.vertigo.dynamo.domain.metamodel.annotation.Field(domain = "DO_STRING", label = "Pr�nom")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Pr�nom")
 	private String prenom;
-	@io.vertigo.dynamo.domain.metamodel.annotation.Field(domain = "DO_STRING", label = "Adresse (multi ligne)")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Adresse (multi ligne)")
 	private String address;
-	@io.vertigo.dynamo.domain.metamodel.annotation.Field(domain = "DO_STRING", label = "Commentaire (multi paragraphe)")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Commentaire (multi paragraphe)")
 	private String commentaire;
-	@io.vertigo.dynamo.domain.metamodel.annotation.Field(domain = "DO_BOOLEAN", label = "booleen 1")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_BOOLEAN", label = "booleen 1")
 	private Boolean boolean1;
-	@io.vertigo.dynamo.domain.metamodel.annotation.Field(domain = "DO_BOOLEAN", label = "booleen 2")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_BOOLEAN", label = "booleen 2")
 	private Boolean boolean2;
-	@io.vertigo.dynamo.domain.metamodel.annotation.Field(domain = "DO_BOOLEAN", label = "booleen 3")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_BOOLEAN", label = "booleen 3")
 	private Boolean boolean3;
-	@io.vertigo.dynamo.domain.metamodel.annotation.Field(domain = "DO_STRING", label = "Test champs inutilis�")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Test champs inutilis�")
 	private String testDummy;
-	@io.vertigo.dynamo.domain.metamodel.annotation.Field(domain = "DO_LONG", label = "Test long")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_LONG", label = "Test long")
 	private Long testLong;
-	@io.vertigo.dynamo.domain.metamodel.annotation.Field(domain = "DO_DOUBLE", label = "Test double")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_DOUBLE", label = "Test double")
 	private Double testDouble;
-	@io.vertigo.dynamo.domain.metamodel.annotation.Field(domain = "DO_INTEGER", label = "Test integer")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_INTEGER", label = "Test integer")
 	private Integer testInteger;
-	@io.vertigo.dynamo.domain.metamodel.annotation.Field(domain = "DO_DATE", label = "Test date")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_DATE", label = "Test date")
 	private Date testDate;
-	@io.vertigo.dynamo.domain.metamodel.annotation.Field(domain = "DO_DT_PUBLISHER_MOCK_DTC", label = "Test list")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_DT_PUBLISHER_MOCK_DTC", label = "Test list")
 	private io.vertigo.dynamo.domain.model.DtList<io.vertigo.quarto.publisher.mock.PublisherMock> dtcTest;
 
 	/**

@@ -18,13 +18,13 @@
  */
 package io.vertigo.dynamock.domain.famille;
 
-import io.vertigo.dynamo.domain.metamodel.annotation.Association;
-import io.vertigo.dynamo.domain.metamodel.annotation.AssociationNN;
-import io.vertigo.dynamo.domain.metamodel.annotation.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.annotation.Field;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.stereotype.Association;
+import io.vertigo.dynamo.domain.stereotype.AssociationNN;
+import io.vertigo.dynamo.domain.stereotype.DtDefinition;
+import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamock.domain.car.Car;

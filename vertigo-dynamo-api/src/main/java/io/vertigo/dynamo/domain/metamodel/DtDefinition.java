@@ -22,7 +22,7 @@ import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.metamodel.Definition;
 import io.vertigo.kernel.metamodel.DefinitionUtil;
-import io.vertigo.kernel.metamodel.Prefix;
+import io.vertigo.kernel.stereotype.Prefix;
 import io.vertigo.kernel.util.StringUtil;
 
 import java.util.ArrayList;

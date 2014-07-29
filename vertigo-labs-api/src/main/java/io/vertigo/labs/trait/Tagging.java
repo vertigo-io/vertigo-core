@@ -18,8 +18,8 @@
  */
 package io.vertigo.labs.trait;
 
-import io.vertigo.dynamo.domain.metamodel.annotation.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.annotation.Field;
+import io.vertigo.dynamo.domain.stereotype.DtDefinition;
+import io.vertigo.dynamo.domain.stereotype.Field;
 
 @DtDefinition(persistent = false)
 public final class Tagging implements Trait {

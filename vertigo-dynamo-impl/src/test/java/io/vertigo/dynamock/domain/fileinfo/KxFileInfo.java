@@ -19,9 +19,9 @@
 package io.vertigo.dynamock.domain.fileinfo;
 
 import io.vertigo.dynamo.domain.metamodel.DataStream;
-import io.vertigo.dynamo.domain.metamodel.annotation.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.annotation.Field;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.stereotype.DtDefinition;
+import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.plugins.database.connection.hibernate.DataStreamType;
 

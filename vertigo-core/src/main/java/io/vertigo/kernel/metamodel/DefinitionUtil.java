@@ -19,6 +19,7 @@
 package io.vertigo.kernel.metamodel;
 
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.stereotype.Prefix;
 
 /**
  * Utilitaire concernant les Definitions.

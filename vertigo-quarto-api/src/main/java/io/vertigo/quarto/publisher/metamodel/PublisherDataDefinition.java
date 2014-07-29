@@ -20,7 +20,7 @@ package io.vertigo.quarto.publisher.metamodel;
 
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.Definition;
-import io.vertigo.kernel.metamodel.Prefix;
+import io.vertigo.kernel.stereotype.Prefix;
 
 /**
  * D�finition d'un mod�le d'�dition.

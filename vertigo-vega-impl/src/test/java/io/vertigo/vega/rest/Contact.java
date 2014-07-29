@@ -18,9 +18,9 @@
  */
 package io.vertigo.vega.rest;
 
-import io.vertigo.dynamo.domain.metamodel.annotation.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.annotation.Field;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.stereotype.DtDefinition;
+import io.vertigo.dynamo.domain.stereotype.Field;
 
 import java.util.ArrayList;
 import java.util.Collections;

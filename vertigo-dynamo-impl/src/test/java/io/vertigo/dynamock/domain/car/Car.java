@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamock.domain.car;
 
-import io.vertigo.dynamo.domain.metamodel.annotation.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.annotation.Field;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.stereotype.DtDefinition;
+import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 /**

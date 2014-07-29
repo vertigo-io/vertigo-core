@@ -21,7 +21,14 @@ package io.vertigo.vega.rest;
 import io.vertigo.kernel.exception.VUserException;
 import io.vertigo.kernel.lang.MessageText;
 import io.vertigo.persona.security.KSecurityManager;
-import io.vertigo.vega.rest.RestfulService;
+import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
+import io.vertigo.vega.rest.stereotype.DELETE;
+import io.vertigo.vega.rest.stereotype.GET;
+import io.vertigo.vega.rest.stereotype.POST;
+import io.vertigo.vega.rest.stereotype.PUT;
+import io.vertigo.vega.rest.stereotype.PathParam;
+import io.vertigo.vega.rest.stereotype.SessionLess;
+import io.vertigo.vega.rest.stereotype.Validate;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

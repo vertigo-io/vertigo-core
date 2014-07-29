@@ -24,7 +24,7 @@ import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.kernel.metamodel.Definition;
 import io.vertigo.kernel.metamodel.DefinitionReference;
 import io.vertigo.kernel.metamodel.DefinitionUtil;
-import io.vertigo.kernel.metamodel.Prefix;
+import io.vertigo.kernel.stereotype.Prefix;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

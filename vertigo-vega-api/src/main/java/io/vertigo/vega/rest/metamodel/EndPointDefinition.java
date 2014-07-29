@@ -20,7 +20,7 @@ package io.vertigo.vega.rest.metamodel;
 
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.Definition;
-import io.vertigo.kernel.metamodel.Prefix;
+import io.vertigo.kernel.stereotype.Prefix;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

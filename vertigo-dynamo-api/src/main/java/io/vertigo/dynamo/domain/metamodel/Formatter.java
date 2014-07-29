@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.domain.metamodel;
 
 import io.vertigo.kernel.metamodel.Definition;
-import io.vertigo.kernel.metamodel.Prefix;
+import io.vertigo.kernel.stereotype.Prefix;
 
 /**
  * Permet de définir des formats particuliers d'affichages et de saisie.

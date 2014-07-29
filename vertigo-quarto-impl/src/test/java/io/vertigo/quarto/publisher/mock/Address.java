@@ -24,14 +24,14 @@ import io.vertigo.dynamo.domain.model.DtObject;
  * Attention cette classe est g�n�r�e automatiquement !
  * Objet de donn�es AbstractAddress
  */
-@io.vertigo.dynamo.domain.metamodel.annotation.DtDefinition(persistent = false)
+@io.vertigo.dynamo.domain.stereotype.DtDefinition(persistent = false)
 public final class Address implements DtObject {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@io.vertigo.dynamo.domain.metamodel.annotation.Field(domain = "DO_STRING", label = "Rue")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Rue")
 	private String rue;
-	@io.vertigo.dynamo.domain.metamodel.annotation.Field(domain = "DO_DT_VILLE_DTO", label = "Ville")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_DT_VILLE_DTO", label = "Ville")
 	private io.vertigo.quarto.publisher.mock.Ville ville;
 
 	/**

@@ -23,7 +23,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.MessageText;
 import io.vertigo.kernel.metamodel.Definition;
-import io.vertigo.kernel.metamodel.Prefix;
+import io.vertigo.kernel.stereotype.Prefix;
 
 import java.util.Collections;
 import java.util.List;
