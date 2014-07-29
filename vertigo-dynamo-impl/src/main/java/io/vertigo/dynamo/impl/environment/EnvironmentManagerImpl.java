@@ -20,7 +20,7 @@ package io.vertigo.dynamo.impl.environment;
 
 import io.vertigo.dynamo.environment.EnvironmentManager;
 import io.vertigo.kernel.Home;
-import io.vertigo.kernel.lang.Activeable;
+import io.vertigo.kernel.lang.Assertion;
 
 import java.util.List;
 
@@ -34,20 +34,13 @@ import javax.inject.Inject;
  * 
  * @author pchretien, npiedeloup
  */
-public final class EnvironmentManagerImpl implements EnvironmentManager, Activeable {
-	@Inject
-	private List<LoaderPlugin> loaderPlugins;
-	@Inject
-	private List<DynamicRegistryPlugin> dynamicRegistryPlugins;
+public final class EnvironmentManagerImpl implements EnvironmentManager{
 
-	/** {@inheritDoc} */
-	public void start() {
+	@Inject
+	public EnvironmentManagerImpl(final List<LoaderPlugin> loaderPlugins, List<DynamicRegistryPlugin> dynamicRegistryPlugins){
+		Assertion.checkNotNull(loaderPlugins);
+		Assertion.checkNotNull(dynamicRegistryPlugins);
+		//---------------------------------------------------------------------
 		Home.getResourceSpace().addLoader(new Environment(dynamicRegistryPlugins, loaderPlugins));
 	}
-
-	/** {@inheritDoc} */
-	public void stop() {
-		//
-	}
-
 }
