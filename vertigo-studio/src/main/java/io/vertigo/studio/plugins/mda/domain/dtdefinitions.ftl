@@ -8,6 +8,7 @@ import io.vertigo.dynamo.domain.metamodel.DtFieldName;
  * Attention cette classe est générée automatiquement !
  */
 public final class ${classSimpleName} implements Iterable<Class<?>> {
+	
 	/**
 	 * Enumération des DtDefinitions.
 	 */
@@ -16,13 +17,17 @@ public final class ${classSimpleName} implements Iterable<Class<?>> {
 			/** Objet de données ${dtDefinition.classSimpleName}. */
 			${dtDefinition.classSimpleName}(${dtDefinition.classCanonicalName}.class), //
 </#list>
-	;
+		;
+		
 		private final Class<?> clazz;
-		private Definitions(Class<?> clazz) {
+		private Definitions(final Class<?> clazz) {
 			this.clazz = clazz;
 		}
 		
-		/** @return Class d'implémentation de l'objet */
+		/** 
+		  * Classe associée.
+		  * @return Class d'implémentation de l'objet 
+		  */
 		public Class<?> getDtClass() {
 			return clazz;
 		}
@@ -42,21 +47,25 @@ public final class ${classSimpleName} implements Iterable<Class<?>> {
 </#list>
 	    
     /** {@inheritDoc} */
+    @Override
     public Iterator<Class<?>> iterator() {
         return new Iterator<Class<?>>() {
             private Iterator<Definitions> it = Arrays.asList(Definitions.values()).iterator();
 
             /** {@inheritDoc} */
+            @Override
             public boolean hasNext() {
 				return it.hasNext();
             }
 
             /** {@inheritDoc} */
+            @Override
             public Class<?> next() {
             	return it.next().getDtClass();
             }
 
             /** {@inheritDoc} */
+            @Override
             public void remove() {
             	//unsupported
             }
