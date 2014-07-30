@@ -29,7 +29,7 @@ import io.vertigo.dynamo.impl.persistence.logical.LogicalFileStore;
 import io.vertigo.dynamo.impl.persistence.logical.LogicalStore;
 import io.vertigo.dynamo.persistence.Broker;
 import io.vertigo.dynamo.persistence.Criteria;
-import io.vertigo.dynamo.persistence.Store;
+import io.vertigo.dynamo.persistence.DataStore;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 
@@ -42,7 +42,7 @@ import io.vertigo.kernel.lang.Option;
  */
 final class BrokerImpl implements Broker {
 	/** Le store est le point d'accès unique à la base (sql, xml, fichier plat...). */
-	private final Store store; //Jamais null
+	private final DataStore store; //Jamais null
 	private final FileStore fileStore; //Jamais null
 
 	/**
@@ -56,7 +56,7 @@ final class BrokerImpl implements Broker {
 		//On vérouille la configuration.
 		//brokerConfiguration.lock();
 		//On crée la pile de Store.
-		final Store logicalStore = new LogicalStore(brokerConfiguration.getLogicalStoreConfiguration(), this);
+		final DataStore logicalStore = new LogicalStore(brokerConfiguration.getLogicalStoreConfiguration(), this);
 		store = new CacheStore(logicalStore, brokerConfiguration.getCacheStoreConfiguration());
 		fileStore = new LogicalFileStore(brokerConfiguration.getLogicalFileStoreConfiguration());
 	}

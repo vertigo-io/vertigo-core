@@ -27,7 +27,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.persistence.Criteria;
-import io.vertigo.dynamo.persistence.Store;
+import io.vertigo.dynamo.persistence.DataStore;
 import io.vertigo.kernel.lang.Assertion;
 
 /**
@@ -35,8 +35,8 @@ import io.vertigo.kernel.lang.Assertion;
  * 
  * @author  pchretien
  */
-public final class CacheStore implements Store {
-	private final Store logicalStore;
+public final class CacheStore implements DataStore {
+	private final DataStore logicalStore;
 	private final CacheStoreConfiguration cacheStoreConfiguration;
 
 	/**
@@ -44,7 +44,7 @@ public final class CacheStore implements Store {
 	 * @param logicalStore Store logique
 	 * @param cacheStoreConfiguration Configuration du cache
 	 */
-	public CacheStore(final Store logicalStore, final CacheStoreConfiguration cacheStoreConfiguration) {
+	public CacheStore(final DataStore logicalStore, final CacheStoreConfiguration cacheStoreConfiguration) {
 		Assertion.checkNotNull(cacheStoreConfiguration);
 		Assertion.checkNotNull(logicalStore);
 		//---------------------------------------------------------------------

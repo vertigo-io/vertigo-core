@@ -26,6 +26,6 @@ import io.vertigo.kernel.component.Plugin;
  *
  * @author  pchretien
  */
-public interface StorePlugin extends Plugin, Store {
+public interface StorePlugin extends Plugin, DataStore {
 	//
 }

@@ -29,7 +29,7 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.persistence.Broker;
 import io.vertigo.dynamo.persistence.Criteria;
-import io.vertigo.dynamo.persistence.Store;
+import io.vertigo.dynamo.persistence.DataStore;
 import io.vertigo.kernel.lang.Assertion;
 
 /**
@@ -38,7 +38,7 @@ import io.vertigo.kernel.lang.Assertion;
  *
  * @author  pchretien
  */
-public final class LogicalStore implements Store {
+public final class LogicalStore implements DataStore {
 	private final LogicalStoreConfiguration logicalStoreConfiguration;
 	private final Broker broker;
 
@@ -59,7 +59,7 @@ public final class LogicalStore implements Store {
 		return uri.getDefinition();
 	}
 
-	private Store getPhysicalStore(final DtDefinition dtDefinition) {
+	private DataStore getPhysicalStore(final DtDefinition dtDefinition) {
 		return logicalStoreConfiguration.getPhysicalStore(dtDefinition);
 	}
 
