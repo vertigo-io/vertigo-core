@@ -19,63 +19,45 @@
 package io.vertigo.dynamo.impl.kvdatastore;
 
 import io.vertigo.dynamo.kvdatastore.KVDataStoreManager;
-import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
-public final class KVDataStoreManagerImpl implements KVDataStoreManager, Activeable {
-	@Inject
-	private List<KVDataStorePlugin> kvDataStorePlugins;
-	private final Map<String, KVDataStorePlugin> kvDataStorePluginBinding = new HashMap<>();
+public final class KVDataStoreManagerImpl implements KVDataStoreManager {
+	private final Map<String, KVDataStorePlugin> kvDataStorePluginBinding;
 
 	@Inject
-	public KVDataStoreManagerImpl() {
-		//nothing here
-		//must wait starting time, for register kvDataStorePlugins
-	}
-
-	@Override
-	public void start() {
-		for(KVDataStorePlugin kvDataStorePlugin : kvDataStorePlugins) {
-			registerKVDataStore(kvDataStorePlugin.getStoreName(), kvDataStorePlugin);
+	public KVDataStoreManagerImpl(final List<KVDataStorePlugin> kvDataStorePlugins) {
+		Assertion.checkNotNull(kvDataStorePlugins);
+		//---------------------------------------------------------------------
+		Map<String, KVDataStorePlugin> map = new HashMap<>();
+		for (KVDataStorePlugin kvDataStorePlugin : kvDataStorePlugins) {
+			map.put(kvDataStorePlugin.getStoreName(), kvDataStorePlugin);
 		}
+		kvDataStorePluginBinding = Collections.unmodifiableMap(map);
 	}
 
-	@Override
-	public void stop() {
-		kvDataStorePluginBinding.clear();
-	}
-
-	public void put(String storeName,final String id, final Object objet) {
+	public void put(String storeName, final String id, final Object objet) {
 		getKVDataStorePlugin(storeName).put(id, objet);
 	}
 
-	public void remove(String storeName,final String id) {
+	public void remove(String storeName, final String id) {
 		getKVDataStorePlugin(storeName).remove(id);
 	}
 
-
-	public <C> Option<C> find(String storeName,final String id, final Class<C> clazz) {
+	public <C> Option<C> find(String storeName, final String id, final Class<C> clazz) {
 		return getKVDataStorePlugin(storeName).find(id, clazz);
 	}
 
-	public <C> List<C> findAll(String storeName,final int skip, final Integer limit, final Class<C> clazz) {
+	public <C> List<C> findAll(String storeName, final int skip, final Integer limit, final Class<C> clazz) {
 		return getKVDataStorePlugin(storeName).findAll(skip, limit, clazz);
 	}
-	
-	private void registerKVDataStore(String storeName, KVDataStorePlugin kvDataStorePlugin) {
-		Assertion.checkArgNotEmpty(storeName);
-		Assertion.checkNotNull(kvDataStorePlugin);
-		//---------------------------------------------------------------------
-		kvDataStorePluginBinding.put(storeName, kvDataStorePlugin);
-	}
-	
 
 	private KVDataStorePlugin getKVDataStorePlugin(String storeName) {
 		KVDataStorePlugin kvDataStorePlugin = kvDataStorePluginBinding.get(storeName);

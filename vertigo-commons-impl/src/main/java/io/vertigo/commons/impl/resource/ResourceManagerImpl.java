@@ -19,6 +19,7 @@
 package io.vertigo.commons.impl.resource;
 
 import io.vertigo.commons.resource.ResourceManager;
+import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 
 import java.net.URL;
@@ -38,8 +39,14 @@ import javax.inject.Inject;
  * @author pchretien
  */
 public final class ResourceManagerImpl implements ResourceManager {
+	private final List<ResourceResolverPlugin> resourceResolverPlugins;
+
 	@Inject
-	private List<ResourceResolverPlugin> resourceResolverPlugins;
+	public ResourceManagerImpl(final List<ResourceResolverPlugin> resourceResolverPlugins) {
+		Assertion.checkNotNull(resourceResolverPlugins);
+		//---------------------------------------------------------------------
+		this.resourceResolverPlugins = resourceResolverPlugins;
+	}
 
 	/** {@inheritDoc} */
 	public URL resolve(final String resource) {

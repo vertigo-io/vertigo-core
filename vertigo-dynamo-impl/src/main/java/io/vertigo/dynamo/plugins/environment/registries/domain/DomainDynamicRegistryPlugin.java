@@ -56,8 +56,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import org.apache.log4j.Logger;
 
 /**
@@ -73,7 +71,6 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	/**
 	 * Constructeur.
 	 */
-	@Inject
 	public DomainDynamicRegistryPlugin() {
 		super(DomainGrammar.INSTANCE);
 		definitionSpace = Home.getDefinitionSpace();

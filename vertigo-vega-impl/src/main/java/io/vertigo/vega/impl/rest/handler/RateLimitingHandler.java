@@ -66,6 +66,8 @@ public final class RateLimitingHandler implements Activeable, RouteHandler {
 	@Inject
 	public RateLimitingHandler(final KSecurityManager securityManager, @Named("windowSeconds") final Option<Long> windowSeconds, @Named("limitValue") final Option<Long> limitValue) {
 		Assertion.checkNotNull(securityManager);
+		Assertion.checkNotNull(limitValue);
+		Assertion.checkNotNull(windowSeconds);
 		//---------------------------------------------------------------------
 		this.securityManager = securityManager;
 		this.limitValue = limitValue.getOrElse(DEFAULT_LIMIT_VALUE);

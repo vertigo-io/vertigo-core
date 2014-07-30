@@ -38,18 +38,19 @@ import javax.inject.Named;
  */
 public final class ReportingManagerImpl implements ReportingManager {
 	private final String rootPath;
-	@Inject
-	private List<ReportingPlugin> reportingPlugins;
+	private final List<ReportingPlugin> reportingPlugins;
 
 	/**
 	 * @param rootPath Racine de stockage des raports
 	 */
 	@Inject
-	public ReportingManagerImpl(@Named("rootPath") final String rootPath) {
+	public ReportingManagerImpl(@Named("rootPath") final String rootPath, List<ReportingPlugin> reportingPlugins) {
 		Assertion.checkArgNotEmpty(rootPath);
 		Assertion.checkArgument(rootPath.endsWith("/"), "le path doit se terminer par un /");
+		Assertion.checkNotNull(reportingPlugins);
 		//---------------------------------------------------------------------
 		this.rootPath = rootPath;
+		this.reportingPlugins = reportingPlugins;
 	}
 
 	/** {@inheritDoc} */

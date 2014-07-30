@@ -19,6 +19,7 @@
 package io.vertigo.studio.impl.mda;
 
 import io.vertigo.kernel.lang.Activeable;
+import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.studio.mda.Configuration;
 import io.vertigo.studio.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaManager;
@@ -35,8 +36,14 @@ import javax.inject.Inject;
  * @author pchretien, dchallas
  */
 public final class MdaManagerImpl implements MdaManager, Activeable {
+	private final List<GeneratorPlugin<Configuration>> generatorPlugins;
+
 	@Inject
-	private List<GeneratorPlugin<Configuration>> generatorPlugins;
+	public MdaManagerImpl(final List<GeneratorPlugin<Configuration>> generatorPlugins) {
+		Assertion.checkNotNull(generatorPlugins);
+		//---------------------------------------------------------------------
+		this.generatorPlugins = generatorPlugins;
+	}
 
 	/** {@inheritDoc} */
 	public void start() {

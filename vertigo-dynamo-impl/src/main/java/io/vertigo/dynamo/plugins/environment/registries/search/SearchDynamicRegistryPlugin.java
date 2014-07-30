@@ -24,13 +24,11 @@ import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryP
 import io.vertigo.dynamo.search.metamodel.IndexDefinition;
 import io.vertigo.kernel.Home;
 
-import javax.inject.Inject;
-
 /**
  * @author pchretien
  */
 public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin<SearchGrammar> {
-	@Inject
+
 	public SearchDynamicRegistryPlugin() {
 		super(new SearchGrammar());
 		Home.getDefinitionSpace().register(IndexDefinition.class);

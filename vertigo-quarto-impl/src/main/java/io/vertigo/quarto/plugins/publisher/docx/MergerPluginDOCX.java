@@ -57,6 +57,8 @@ public final class MergerPluginDOCX implements MergerPlugin {
 	 */
 	@Inject
 	public MergerPluginDOCX(final ScriptManager scriptManager) {
+		Assertion.checkNotNull(scriptManager);
+		//---------------------------------------------------------------------
 		mergerProcessors = createMergerProcessors(scriptManager, ScriptGrammarUtil.createScriptGrammar());
 	}
 

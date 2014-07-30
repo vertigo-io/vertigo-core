@@ -42,7 +42,7 @@ import javax.inject.Inject;
  */
 public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin<PublisherGrammar> {
 	private final Map<String, PublisherNodeDefinitionBuilder> publisherDefinitionMap = new HashMap<>();
-	private final Set<String> unusedNodeSet = new HashSet<>();
+	private final Set<String> unusedNodes = new HashSet<>();
 
 	/**
 	 * Constructeur.
@@ -118,13 +118,13 @@ public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistr
 
 		//		System.out.println("Add " + publisherDataNodeName);
 		publisherDefinitionMap.put(publisherDataNodeName, publisherDataNodeDefinitionBuilder);
-		unusedNodeSet.add(publisherDataNodeName);
+		unusedNodes.add(publisherDataNodeName);
 	}
 
 	private PublisherNodeDefinitionBuilder getNodeDefinitionBuilder(final String name, final String fieldName, final String parentNodeName) {
 		final PublisherNodeDefinitionBuilder publisherNodeDefinitionBuilder = publisherDefinitionMap.get(name);
 		Assertion.checkNotNull(publisherNodeDefinitionBuilder, "Le PublisherNode {0} est introuvable pour le field {1} de {2}.", name, fieldName, parentNodeName);
-		unusedNodeSet.remove(name);
+		unusedNodes.remove(name);
 		//		System.out.println("ref " + name + "  in " + parentNodeName + "." + fieldName);
 
 		return publisherNodeDefinitionBuilder;

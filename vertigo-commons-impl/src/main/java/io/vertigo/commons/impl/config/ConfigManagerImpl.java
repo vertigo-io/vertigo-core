@@ -41,11 +41,17 @@ import javax.inject.Inject;
  * @author prahmoune
  */
 public final class ConfigManagerImpl implements ConfigManager {
-	@Inject
-	private List<ConfigPlugin> configPlugins;
+	private final List<ConfigPlugin> configPlugins;
 	private static final char CONFIG_PATH_SEPARATOR = '.';
 	private static final String TRUE = "true";
 	private static final String FALSE = "false";
+
+	@Inject
+	public ConfigManagerImpl(final List<ConfigPlugin> configPlugins) {
+		Assertion.checkNotNull(configPlugins);
+		//---------------------------------------------------------------------
+		this.configPlugins = configPlugins;
+	}
 
 	private static void checkPath(final String configPath) {
 		Assertion.checkArgNotEmpty(configPath);

@@ -99,7 +99,6 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	 */
 	@Inject
 	public FsFileStorePlugin(final KTransactionManager transactionManager, final FileManager fileManager, @Named("path") final String path) {
-		super();
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkNotNull(path);

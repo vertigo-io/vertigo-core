@@ -43,8 +43,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.inject.Inject;
-
 /**
  * Lecture des annotations présentes sur les objets métier.
  *
@@ -64,7 +62,6 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	 * Constructeur.
 	 * @param dtDefinitionsClassName Liste des classes java à parser.
 	 */
-	@Inject
 	public AnnotationLoaderPlugin() {
 		final DomainGrammar domainGrammar = DomainGrammar.INSTANCE;
 		dtDefinitionEntity = domainGrammar.getDtDefinitionEntity();
