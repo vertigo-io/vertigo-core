@@ -23,8 +23,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -51,22 +49,6 @@ final class FileUtil {
 	 *
 	 * @param file Fichier.
 	 * @param content Contenu à écrire
-	 * @return Si l'écriture s'est bien passée
-	 */
-	static boolean writeFile(final File file, final String content) {
-		try (final Writer writer = new BufferedWriter(new FileWriter(file))) {
-			writer.write(content);
-			return true;
-		} catch (final IOException e) {
-			return false;
-		}
-	}
-
-	/**
-	 * Ecriture d'un fichier.
-	 *
-	 * @param file Fichier.
-	 * @param content Contenu à écrire
 	 * @param encoding encoding du fichier à écrire
 	 * @return Si l'écriture s'est bien passée
 	 */
@@ -83,29 +65,6 @@ final class FileUtil {
 	 * Lecture d'un fichier.
 	 *
 	 * @param file Fichier
-	 * @return Contenu
-	 * @throws IOException Erreur d'entrée/sortie
-	 */
-	static String readContentFile(final File file) throws IOException {
-		if (!file.exists()) {
-			return null;
-		}
-		final StringBuilder currentContent = new StringBuilder();
-		try (final BufferedReader myReader = new BufferedReader(new FileReader(file))) {
-			String line = myReader.readLine();
-			while (line != null) {
-				currentContent.append(line);
-				currentContent.append(EOL);
-				line = myReader.readLine();
-			}
-		}
-		return currentContent.toString();
-	}
-
-	/**
-	 * Lecture d'un fichier.
-	 *
-	 * @param file Fichier
 	 * @param encoding encoding du fichier à lire
 	 * @return Contenu
 	 * @throws IOException Erreur d'entrée/sortie
@@ -115,8 +74,7 @@ final class FileUtil {
 			return null;
 		}
 		final StringBuilder currentContent = new StringBuilder();
-		try (final BufferedReader myReader = new BufferedReader(new InputStreamReader(new FileInputStream(file),
-				encoding))) {
+		try (final BufferedReader myReader = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding))) {
 			String line = myReader.readLine();
 			while (line != null) {
 				currentContent.append(line);
