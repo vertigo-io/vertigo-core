@@ -38,14 +38,14 @@ final class SqlParserHandler implements ScriptParserHandler {
 	/** Requête SQL fabriquée lors du parsing. */
 	private final StringBuilder sql;
 	/** Liste des paramètres. */
-	private final List<TaskEngineSQLParam> paramList;
+	private final List<TaskEngineSQLParam> params;
 
 	SqlParserHandler(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//-----------------------------------------------------------------
 		this.taskDefinition = taskDefinition;
 		sql = new StringBuilder();
-		paramList = new java.util.ArrayList<>();
+		params = new java.util.ArrayList<>();
 	}
 
 	/** {@inheritDoc} */
@@ -104,15 +104,15 @@ final class SqlParserHandler implements ScriptParserHandler {
 		}
 
 		//Ajout dans la liste et maj de l'index.
-		param.setIndex(paramList.size());
-		paramList.add(param);
+		param.setIndex(params.size());
+		params.add(param);
 	}
 
 	/**
 	 * @return Liste des paramètres.
 	 */
 	List<TaskEngineSQLParam> getParams() {
-		return Collections.unmodifiableList(paramList);
+		return Collections.unmodifiableList(params);
 	}
 
 	/**

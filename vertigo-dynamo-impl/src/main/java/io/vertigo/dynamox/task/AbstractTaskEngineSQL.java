@@ -106,7 +106,7 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 	/**
 	 * Liste des séparateurs utilisés dans le traitement des requêtes KSP.
 	 */
-	private static final List<ScriptSeparator> SQL_SEPARATOR_LIST = createSqlSeparators();
+	private static final List<ScriptSeparator> SQL_SEPARATORS = createSqlSeparators();
 
 	private final ScriptManager scriptManager;
 
@@ -230,7 +230,7 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 		Assertion.checkState(params == null, "La query a déjà été préparée !");
 		//----------------------------------------------------------------------
 		final SqlParserHandler scriptHandler = new SqlParserHandler(getTaskDefinition());
-		getScriptManager().parse(query, scriptHandler, SQL_SEPARATOR_LIST);
+		getScriptManager().parse(query, scriptHandler, SQL_SEPARATORS);
 		params = scriptHandler.getParams();
 		return scriptHandler.getSql();
 	}

@@ -38,13 +38,13 @@ import org.apache.log4j.Logger;
 public final class FsTransactionResource implements KTransactionResource {
 
 	private static final Logger LOG = Logger.getLogger(FsTransactionResource.class.getName());
-	private final List<FileAction> fileActionList = new ArrayList<>();
+	private final List<FileAction> fileActions = new ArrayList<>();
 
 	/** {@inheritDoc} */
 	public void commit() throws Exception {
 		Exception firstException = null;
 		// on effectue les actions, on essaie d'en faire le maximum quelque soit les erreurs
-		for (final FileAction fileAction : fileActionList) {
+		for (final FileAction fileAction : fileActions) {
 			try {
 				fileAction.process();
 			} catch (final Exception e) {
@@ -68,10 +68,10 @@ public final class FsTransactionResource implements KTransactionResource {
 
 	/** {@inheritDoc} */
 	public void release() {
-		for (final FileAction fileAction : fileActionList) {
+		for (final FileAction fileAction : fileActions) {
 			fileAction.clean();
 		}
-		fileActionList.clear();
+		fileActions.clear();
 	}
 
 	/**
@@ -81,7 +81,7 @@ public final class FsTransactionResource implements KTransactionResource {
 	 * @param path le chemin de destination du fichier
 	 */
 	void saveFile(final InputStream inputStream, final String path) {
-		fileActionList.add(new FileActionSave(inputStream, path));
+		fileActions.add(new FileActionSave(inputStream, path));
 	}
 
 	/**
@@ -94,15 +94,15 @@ public final class FsTransactionResource implements KTransactionResource {
 		final File file = new File(path);
 		final String absPath = file.getAbsolutePath();
 		boolean found = false;
-		for (int i = fileActionList.size() - 1; i >= 0; i--) {
-			final FileAction act = fileActionList.get(i);
+		for (int i = fileActions.size() - 1; i >= 0; i--) {
+			final FileAction act = fileActions.get(i);
 			if (act instanceof FileActionSave && absPath.equals(act.getAbsolutePath())) {
 				found = true;
-				fileActionList.remove(i);
+				fileActions.remove(i);
 			}
 		}
 		if (!found) {
-			fileActionList.add(new FileActionDelete(path));
+			fileActions.add(new FileActionDelete(path));
 		}
 	}
 }

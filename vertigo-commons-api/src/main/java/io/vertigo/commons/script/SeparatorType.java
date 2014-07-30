@@ -54,17 +54,17 @@ public enum SeparatorType {
 	 * Fin d'une balise d'évaluation classique.
 	 */
 	public static final String END_SEPARATOR_CLASSIC = "%>";
-	private final List<ScriptSeparator> separatorList;
+	private final List<ScriptSeparator> separators;
 
 	private SeparatorType(final String startExpression, final String endExpression) {
-		separatorList = new ArrayList<>(1);
-		separatorList.add(new ScriptSeparator(startExpression, endExpression));
+		separators = new ArrayList<>(1);
+		separators.add(new ScriptSeparator(startExpression, endExpression));
 	}
 
 	/**
 	 * @return Liste des ScriptSeparator pour ce SeparatorType.
 	 */
 	public List<ScriptSeparator> getSeparators() {
-		return Collections.unmodifiableList(separatorList);
+		return Collections.unmodifiableList(separators);
 	}
 }

@@ -56,7 +56,7 @@ public final class ScriptGrammar {
 
 	private static final String END_PREFIX = "end";
 	private final Map<String, ScriptTagDefinition> tagDefinitionBySyntax = new HashMap<>();
-	private final List<String> orderedParsingTagList = new ArrayList<>();
+	private final List<String> orderedParsingTags = new ArrayList<>();
 
 	/**
 	 * Permet d'engegistrer un tag KScript suppl�mentaire dans la grammaire.
@@ -69,10 +69,10 @@ public final class ScriptGrammar {
 		if (hasBody) {
 			tagDefinitionBySyntax.put(END_PREFIX + name.trim(), new ScriptTagDefinition(name, classTag, Boolean.FALSE));
 		}
-		orderedParsingTagList.clear();
-		orderedParsingTagList.addAll(tagDefinitionBySyntax.keySet());
+		orderedParsingTags.clear();
+		orderedParsingTags.addAll(tagDefinitionBySyntax.keySet());
 		//On tri pour que les tag les plus long soient test� en premier, ainsi il n'y a pas de pb de recouvrement
-		Collections.sort(orderedParsingTagList, new StringLengthComparator());
+		Collections.sort(orderedParsingTags, new StringLengthComparator());
 	}
 
 	/**
@@ -90,7 +90,7 @@ public final class ScriptGrammar {
 		Assertion.checkNotNull(tagValue);
 		// ---------------------------------------------------------------------
 		final String value = tagValue.trim();
-		for (final String key : orderedParsingTagList) {
+		for (final String key : orderedParsingTags) {
 			if (value.startsWith(key)) {
 				String attribute = value.substring(key.length()).trim();
 				attribute = attribute.replace("  ", " ");//On retire les espaces superflux pour eviter des pb de parsing
@@ -100,6 +100,6 @@ public final class ScriptGrammar {
 				return new ScriptTagContent(getDefinition(key), attribute);
 			}
 		}
-		throw new RuntimeException(StringUtil.format("{0} n'appartient pas a la grammaire : {1}", value, orderedParsingTagList));
+		throw new RuntimeException(StringUtil.format("{0} n'appartient pas a la grammaire : {1}", value, orderedParsingTags));
 	}
 }

@@ -48,7 +48,7 @@ final class ScriptParserHandlerImpl implements ScriptParserHandler {
 	 */
 	private boolean isDynamic; //implicite = false;
 
-	private final List<String> textList = new ArrayList<>();
+	private final List<String> texts = new ArrayList<>();
 	private final List<ExpressionParameter> parameters;
 
 	/**
@@ -100,8 +100,8 @@ final class ScriptParserHandlerImpl implements ScriptParserHandler {
 	}
 
 	private void appendEncodedText(final StringBuilder sb, final String text) {
-		final int key = textList.size();
-		textList.add(text);
+		final int key = texts.size();
+		texts.add(text);
 		sb.append(TEXT_KEY_PREFIX).append(key).append(TEXT_KEY_SUFFIX);
 	}
 
@@ -115,7 +115,7 @@ final class ScriptParserHandlerImpl implements ScriptParserHandler {
 			final String key = text.substring(keyStart, keyEnd);
 
 			retour.append(text.substring(textStart, textEnd));
-			retour.append(textList.get(Integer.parseInt(key)));
+			retour.append(texts.get(Integer.parseInt(key)));
 			textStart = keyEnd + TEXT_KEY_SUFFIX.length();
 		}
 		// Dernier morceau
