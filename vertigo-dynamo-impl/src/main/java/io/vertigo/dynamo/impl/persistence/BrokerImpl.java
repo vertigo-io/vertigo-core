@@ -24,9 +24,9 @@ import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.model.FileInfo;
-import io.vertigo.dynamo.impl.persistence.cache.CacheStore;
+import io.vertigo.dynamo.impl.persistence.cache.CacheDataStore;
 import io.vertigo.dynamo.impl.persistence.logical.LogicalFileStore;
-import io.vertigo.dynamo.impl.persistence.logical.LogicalStore;
+import io.vertigo.dynamo.impl.persistence.logical.LogicalDataStore;
 import io.vertigo.dynamo.persistence.Broker;
 import io.vertigo.dynamo.persistence.Criteria;
 import io.vertigo.dynamo.persistence.DataStore;
@@ -56,8 +56,8 @@ final class BrokerImpl implements Broker {
 		//On vérouille la configuration.
 		//brokerConfiguration.lock();
 		//On crée la pile de Store.
-		final DataStore logicalStore = new LogicalStore(brokerConfiguration.getLogicalStoreConfiguration(), this);
-		store = new CacheStore(logicalStore, brokerConfiguration.getCacheStoreConfiguration());
+		final DataStore logicalStore = new LogicalDataStore(brokerConfiguration.getLogicalStoreConfiguration(), this);
+		store = new CacheDataStore(logicalStore, brokerConfiguration.getCacheStoreConfiguration());
 		fileStore = new LogicalFileStore(brokerConfiguration.getLogicalFileStoreConfiguration());
 	}
 

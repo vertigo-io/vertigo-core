@@ -22,7 +22,7 @@ import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
-import io.vertigo.dynamo.impl.persistence.cache.CacheStoreConfiguration;
+import io.vertigo.dynamo.impl.persistence.cache.CacheDataStoreConfiguration;
 import io.vertigo.dynamo.impl.persistence.logical.LogicalFileStoreConfiguration;
 import io.vertigo.dynamo.impl.persistence.logical.LogicalStoreConfiguration;
 import io.vertigo.dynamo.persistence.BrokerConfiguration;
@@ -36,7 +36,7 @@ import io.vertigo.kernel.lang.Assertion;
  * @author pchretien
  */
 final class BrokerConfigurationImpl implements BrokerConfiguration {
-	private final CacheStoreConfiguration cacheStoreConfiguration;
+	private final CacheDataStoreConfiguration cacheStoreConfiguration;
 	private final LogicalStoreConfiguration logicalStoreConfiguration;
 	private final LogicalFileStoreConfiguration logicalFileStoreConfiguration;
 
@@ -48,7 +48,7 @@ final class BrokerConfigurationImpl implements BrokerConfiguration {
 	BrokerConfigurationImpl(final CacheManager cacheManager, final PersistenceManager persistenceManager, final CollectionsManager collectionsManager) {
 		Assertion.checkNotNull(persistenceManager);
 		//---------------------------------------------------------------------
-		cacheStoreConfiguration = new CacheStoreConfiguration(cacheManager);
+		cacheStoreConfiguration = new CacheDataStoreConfiguration(cacheManager);
 		logicalStoreConfiguration = new LogicalStoreConfiguration(persistenceManager, collectionsManager);
 		logicalFileStoreConfiguration = new LogicalFileStoreConfiguration();
 	}
@@ -73,7 +73,7 @@ final class BrokerConfigurationImpl implements BrokerConfiguration {
 		cacheStoreConfiguration.registerCacheable(dtDefinition, timeToLiveInSeconds, isReloadedByList);
 	}
 
-	CacheStoreConfiguration getCacheStoreConfiguration() {
+	CacheDataStoreConfiguration getCacheStoreConfiguration() {
 		return cacheStoreConfiguration;
 	}
 
