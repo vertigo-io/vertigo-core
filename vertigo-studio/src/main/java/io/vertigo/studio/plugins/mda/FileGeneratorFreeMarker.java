@@ -34,7 +34,7 @@ import freemarker.template.TemplateException;
 
 /**
  * Génération des fichiers avec FreeMarker.
- * 
+ *
  * @author dchallas
  */
 public final class FileGeneratorFreeMarker implements FileGenerator {
@@ -44,39 +44,39 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 	 * Doit être renseigné dans le fichier properties [targetDir]
 	 */
 	private final String targetDir;
-
 	/**
-	 * Répertoire des fichiers TOUJOURS générés 
+	 * Répertoire des fichiers TOUJOURS générés
 	 * Doit être renseigné dans le fichier properties [targetDir]
 	 */
 	private final String targetGenDir;
-
 	private final Configuration configuration;
-
 	private final Map<String, Object> mapRoot;
 	private final String classSimpleName;
 	private final String packageName;
 	private final String fileExtention;
-
 	private final String templateName;
+	private final String encoding;
 
 	/**
 	 * Constructeur.
+	 *
 	 * @param parameters Paramètres de génération des fichiers java
 	 * @param mapRoot context
 	 * @param classSimpleName className
-	 * @param packageName Nom du package 
+	 * @param packageName Nom du package
 	 * @param fileExtention Extension du ficher (sql, java...)
 	 * @param templateName Nom du template
 	 */
-	public FileGeneratorFreeMarker(final AbstractConfiguration parameters, final Map<String, Object> mapRoot, final String classSimpleName, final String packageName, final String fileExtention, final String templateName) {
+	public FileGeneratorFreeMarker(final AbstractConfiguration parameters, final Map<String, Object> mapRoot,
+			final String classSimpleName, final String packageName, final String fileExtention,
+			final String templateName) {
 		Assertion.checkNotNull(parameters);
 		Assertion.checkNotNull(mapRoot);
 		Assertion.checkNotNull(classSimpleName);
 		Assertion.checkNotNull(packageName);
 		Assertion.checkNotNull(fileExtention);
 		Assertion.checkNotNull(templateName);
-		//---------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 		this.mapRoot = mapRoot;
 		this.classSimpleName = classSimpleName;
 		this.packageName = packageName;
@@ -85,13 +85,14 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 		configuration = initConfiguration(parameters.getClass());
 		targetDir = parameters.getTargetDir();
 		targetGenDir = parameters.getTargetGenDir();
+		encoding = parameters.getEncoding();
 	}
 
 	/**
 	 * @param referenceClass Class de référence du template
 	 * @return Configuration de FreeMarker
 	 */
-	private Configuration initConfiguration(Class<?> referenceClass) {
+	private Configuration initConfiguration(final Class<?> referenceClass) {
 		final Configuration config = new Configuration();
 		config.setSharedVariable("constToCamelCase", new TemplateMethodStringUtil());
 		setTemplateLoading(config, referenceClass);
@@ -99,11 +100,12 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 		return config;
 	}
 
-	private void setTemplateLoading(final Configuration config, Class<?> referenceClass) {
+	private void setTemplateLoading(final Configuration config, final Class<?> referenceClass) {
 		config.setClassForTemplateLoading(referenceClass, "");
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void generateFile(final Result result, final boolean override) {
 		final File file = new File(getFileName(override));
 		if (override || !file.exists()) {
@@ -122,7 +124,6 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 	private String getFileName(final boolean override) {
 		final String finalTargetDir = override ? targetGenDir : targetDir;
 		final String currentPath = finalTargetDir + package2directory(packageName);
-
 		return currentPath + '/' + classSimpleName + fileExtention;
 	}
 
@@ -134,31 +135,32 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 		// deja ouvert en ecriture il y a pb, on ne peut pas lire le code
 		// deja existant
 		final String content = buildContentFile();
-
 		// pour optimisation de l'écriture et de la compilation,
 		// on vérifie qu'on ne réécrit pas exactement la même chose que ce
 		// qu'il y a déjà
-		final String currentContent = FileUtil.readContentFile(file2create);
+		final String currentContent = FileUtil.readContentFile(file2create, encoding);
 		if (content.equals(currentContent)) {
-			//Les deux fichiers sont identiques
+			// Les deux fichiers sont identiques
 			result.addIdenticalFile(file2create);
 		} else {
-			//Si le contenu est différent on réécrit le fichier.
-			final boolean success = FileUtil.writeFile(file2create, content);
+			// Si le contenu est différent on réécrit le fichier.
+			final boolean success = FileUtil.writeFile(file2create, content, encoding);
 			result.addFileWritten(file2create, success);
 		}
 	}
 
 	/**
 	 * Crée le contenu d'un fichier.
+	 *
 	 * @return Contenu du fichier
 	 */
 	private String buildContentFile() throws IOException, TemplateException {
 		// Si le fichier existe on le remplace par le fichier créé.
 		// Si le fichier n'existe pas on en crée un.
-		final StringWriter writer = new StringWriter(); //Il est inutile de fermer une StringWriter.
-		//Génération du contenu du fichier.
-		final Template template = configuration.getTemplate(templateName);
+		final StringWriter writer = new StringWriter(); // Il est inutile de fermer une StringWriter.
+		// Génération du contenu du fichier.
+		// Vertigo étant en UTF-8, les fichiers ftl doivent être lu en UTF-8
+		final Template template = configuration.getTemplate(templateName, "UTF-8");
 		template.process(mapRoot, writer);
 		return writer.toString();
 	}

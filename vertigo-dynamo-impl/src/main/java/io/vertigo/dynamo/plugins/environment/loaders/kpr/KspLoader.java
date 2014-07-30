@@ -37,19 +37,28 @@ import java.nio.charset.Charset;
  * @author pchretien
  */
 final class KspLoader {
-	private static final String CHARSET = "ISO-8859-1";
+
+	private final String charset;
 	private final URL kspURL;
 
 	/**
 	 * Constructeur.
+	 *
 	 * @param kspURL URL du fichier KSP.
+	 * @param charset charset d'encoding du fihcier KSP à lire
 	 */
-	KspLoader(final URL kspURL) {
+	KspLoader(final URL kspURL, final String charset) {
 		Assertion.checkNotNull(kspURL);
-		//----------------------------------------------------------------------
+		// ----------------------------------------------------------------------
 		this.kspURL = kspURL;
+		this.charset = charset;
 	}
 
+	/**
+	 * Chargement et analyse du fichier.
+	 *
+	 * @param dynamicModelrepository DynamicDefinitionRepository
+	 */
 	void load(final DynamicDefinitionRepository dynamicModelrepository) {
 		Assertion.checkNotNull(dynamicModelrepository);
 		try {
@@ -57,21 +66,25 @@ final class KspLoader {
 			final Rule<Void> rule = new KspRule(dynamicModelrepository);
 			rule.createParser().parse(s, 0);
 		} catch (final NotFoundException e) {
-			final String message = StringUtil.format("Echec de lecture du fichier KSP {0}\n{1}", kspURL.getFile(), e.getFullMessage());
+			final String message = StringUtil.format("Echec de lecture du fichier KSP {0}\n{1}", kspURL.getFile(),
+					e.getFullMessage());
 			throw new RuntimeException(message, e);
 		} catch (final Exception e) {
-			final String message = StringUtil.format("Echec de lecture du fichier KSP {0}\n{1}", kspURL.getFile(), e.getMessage());
+			final String message = StringUtil.format("Echec de lecture du fichier KSP {0}\n{1}", kspURL.getFile(),
+					e.getMessage());
 			throw new RuntimeException(message, e);
 		}
 	}
 
 	/**
-	 * Transforme un fichier en une chaine de caractère parsable.
+	 * Transforme un fichier en une chaine de caractÃ¨re parsable.
+	 *
 	 * @return String Chaine parsable correspondant au fichier.
-	 * @throws IOException Erreur d'entrée/sortie
+	 * @throws IOException Erreur d'entrÃ©e/sortie
 	 */
 	private String parseFile() throws IOException {
-		try (final BufferedReader reader = new BufferedReader(new InputStreamReader(kspURL.openStream(), Charset.forName(CHARSET)))) {
+		try (final BufferedReader reader = new BufferedReader(new InputStreamReader(kspURL.openStream(),
+				Charset.forName(charset)))) {
 			final StringBuilder buff = new StringBuilder();
 			String line = reader.readLine();
 			while (line != null) {

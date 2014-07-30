@@ -21,17 +21,22 @@ package io.vertigo.studio.plugins.mda;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 /**
  * Utilitaire de lecture/écriture des fichiers.
- * 
+ *
  * @author pchretien
  */
 final class FileUtil {
+
 	private static final String EOL = System.getProperty("line.separator");
 
 	/**
@@ -43,8 +48,9 @@ final class FileUtil {
 
 	/**
 	 * Ecriture d'un fichier.
+	 *
 	 * @param file Fichier.
-	 * @param content Contenu à écrire 
+	 * @param content Contenu à écrire
 	 * @return Si l'écriture s'est bien passée
 	 */
 	static boolean writeFile(final File file, final String content) {
@@ -57,7 +63,25 @@ final class FileUtil {
 	}
 
 	/**
+	 * Ecriture d'un fichier.
+	 *
+	 * @param file Fichier.
+	 * @param content Contenu à écrire
+	 * @param encoding encoding du fichier à écrire
+	 * @return Si l'écriture s'est bien passée
+	 */
+	static boolean writeFile(final File file, final String content, final String encoding) {
+		try (final Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), encoding))) {
+			writer.write(content);
+			return true;
+		} catch (final IOException e) {
+			return false;
+		}
+	}
+
+	/**
 	 * Lecture d'un fichier.
+	 *
 	 * @param file Fichier
 	 * @return Contenu
 	 * @throws IOException Erreur d'entrée/sortie
@@ -68,6 +92,31 @@ final class FileUtil {
 		}
 		final StringBuilder currentContent = new StringBuilder();
 		try (final BufferedReader myReader = new BufferedReader(new FileReader(file))) {
+			String line = myReader.readLine();
+			while (line != null) {
+				currentContent.append(line);
+				currentContent.append(EOL);
+				line = myReader.readLine();
+			}
+		}
+		return currentContent.toString();
+	}
+
+	/**
+	 * Lecture d'un fichier.
+	 *
+	 * @param file Fichier
+	 * @param encoding encoding du fichier à lire
+	 * @return Contenu
+	 * @throws IOException Erreur d'entrée/sortie
+	 */
+	static String readContentFile(final File file, final String encoding) throws IOException {
+		if (!file.exists()) {
+			return null;
+		}
+		final StringBuilder currentContent = new StringBuilder();
+		try (final BufferedReader myReader = new BufferedReader(new InputStreamReader(new FileInputStream(file),
+				encoding))) {
 			String line = myReader.readLine();
 			while (line != null) {
 				currentContent.append(line);

@@ -22,6 +22,7 @@ import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.dynamo.impl.environment.LoaderPlugin;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.lang.Option;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -30,45 +31,51 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * Parser d'un fichier KPR.
  * Un fichier KPR est un fichier qui liste l'ensemble des fichiers KSP du projet.
  *
- * @author  pchretien
+ * @author pchretien
  */
 public final class KprLoaderPlugin implements LoaderPlugin {
+
 	private static final String KPR_EXTENSION = ".kpr";
 	private static final String KSP_EXTENSION = ".ksp";
-
 	private final ResourceManager resourceManager;
+	private final String charset;
 
 	/**
 	 * Constructeur.
-	 * @param kprFileName Adresse du fichier KPR.
+	 *
+	 * @param resourceManager manager de ressources
+	 * @param encoding encoding des KSP
 	 */
 	@Inject
-	public KprLoaderPlugin(final ResourceManager resourceManager) {
+	public KprLoaderPlugin(final ResourceManager resourceManager, @Named("encoding") final Option<String> encoding) {
 		Assertion.checkNotNull(resourceManager);
-		//----------------------------------------------------------------------
+		// ----------------------------------------------------------------------
 		this.resourceManager = resourceManager;
+		charset = encoding.getOrElse("ISO-8859-1");
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void load(final String resourcePath, final DynamicDefinitionRepository dynamicModelrepository) {
 		Assertion.checkArgNotEmpty(resourcePath);
 		Assertion.checkNotNull(dynamicModelrepository);
-		//----------------------------------------------------------------------
+		// ----------------------------------------------------------------------
 		final URL kprURL = resourceManager.resolve(resourcePath);
-
 		for (final URL url : getKspFiles(kprURL, resourceManager)) {
-			final KspLoader loader = new KspLoader(url);
+			final KspLoader loader = new KspLoader(url, charset);
 			loader.load(dynamicModelrepository);
 		}
 	}
 
 	/**
-	 * récupère la liste des fichiers KSP correspondant à un KPR.
+	 * rÃ©cupÃ¨re la liste des fichiers KSP correspondant Ã  un KPR.
+	 *
 	 * @param kprURL fichier KPR
 	 * @return List liste des fichiers KSP.
 	 */
@@ -78,14 +85,13 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 		} catch (final Exception e) {
 			throw new RuntimeException("Echec de lecture du fichier KPR " + kprURL.getFile(), e);
 		}
-
 	}
 
 	private static List<URL> doGetKspFiles(final URL kprURL, final ResourceManager resourceManager) throws Exception {
 		final List<URL> kspFileList = new ArrayList<>();
 		try (final BufferedReader reader = new BufferedReader(new InputStreamReader(kprURL.openStream()))) {
 			String line = reader.readLine();
-			//-----------------------------------
+			// -----------------------------------
 			String path = kprURL.getPath();
 			path = path.substring(0, path.lastIndexOf('/'));
 			while (line != null) {
@@ -102,10 +108,10 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 						url = new URL(kprURL.getProtocol() + ':' + path + '/' + fileName);
 					}
 					if (fileName.endsWith(KPR_EXTENSION)) {
-						//kpr
+						// kpr
 						kspFileList.addAll(getKspFiles(url, resourceManager));
 					} else if (fileName.endsWith(KSP_EXTENSION)) {
-						//ksp
+						// ksp
 						kspFileList.add(url);
 					} else {
 						throw new RuntimeException("Type de fichier inconnu : " + fileName);
@@ -114,12 +120,14 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 				line = reader.readLine();
 			}
 		}
-
 		return kspFileList;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String getType() {
 		return "kpr";
 	}
-
 }

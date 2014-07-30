@@ -13,6 +13,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 ${annotation}
 </#list>
 public final class ${dtDefinition.classSimpleName} implements DtObject {
+
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
@@ -38,7 +39,7 @@ public final class ${dtDefinition.classSimpleName} implements DtObject {
 	<#list annotations(dtField.dtField, dtField.dtDefinition) as annotation>
 	${annotation}
 	</#list>
-	public final ${dtField.javaType} get${dtField.nameLowerCase}() {
+	public ${dtField.javaType} get${dtField.nameLowerCase}() {
 		return ${dtField.nameLowerCase?uncap_first};
 	}
 
@@ -47,7 +48,7 @@ public final class ${dtDefinition.classSimpleName} implements DtObject {
 	 * Définit la valeur de la propriété '${dtField.display}'.
 	 * @param ${dtField.nameLowerCase?uncap_first} ${dtField.javaType} <#if dtField.notNull><b>Obligatoire</b></#if>
 	 */
-	public final void set${dtField.nameLowerCase}(final ${dtField.javaType} ${dtField.nameLowerCase?uncap_first}) {
+	public void set${dtField.nameLowerCase}(final ${dtField.javaType} ${dtField.nameLowerCase?uncap_first}) {
 		this.${dtField.nameLowerCase?uncap_first} = ${dtField.nameLowerCase?uncap_first};
 	}
 
@@ -61,7 +62,7 @@ public final class ${dtDefinition.classSimpleName} implements DtObject {
 	<#list annotations(dtField.dtField, dtField.dtDefinition) as annotation>
 	${annotation}
 	</#list>
-	public final ${dtField.javaType} get${dtField.nameLowerCase}() {
+	public ${dtField.javaType} get${dtField.nameLowerCase}() {
 		${dtField.javaCode}
 	}
 
@@ -77,7 +78,7 @@ public final class ${dtDefinition.classSimpleName} implements DtObject {
     ${annotation}
 	</#list>
 	<#if association.multiple>
-	public final io.vertigo.dynamo.domain.model.DtList<${association.returnType}> get${association.role?cap_first}List() {
+	public io.vertigo.dynamo.domain.model.DtList<${association.returnType}> get${association.role?cap_first}List() {
 //		return this.<${association.returnType}> getList(get${association.role?cap_first}ListURI());
 		final io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation fkDtListURI = get${association.role?cap_first}DtListURI();
 		io.vertigo.kernel.lang.Assertion.checkNotNull(fkDtListURI);
@@ -96,16 +97,24 @@ public final class ${dtDefinition.classSimpleName} implements DtObject {
 	<#list annotations(association.associationNode) as annotation>
     ${annotation}
 	</#list>
-	public final io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation get${association.role?cap_first}DtListURI() {
+	public io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation get${association.role?cap_first}DtListURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createDtListURI(this, "${association.urn}", "${association.role}");
 	}
 	<#else>
-	public final ${association.returnType} get${association.role?cap_first}() {
+	public ${association.returnType} get${association.role?cap_first}() {
 		final io.vertigo.dynamo.domain.model.URI<${association.returnType}> fkURI = get${association.role?cap_first}URI();
 		if (fkURI == null) {
 			return null;
 		}
-		//On est toujours dans un mode lazy.
+		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
+		if (${association.role?uncap_first} != null) {
+			// On s'assure que l'objet correspond à la bonne clé
+			final io.vertigo.dynamo.domain.model.URI<${association.returnType}> uri;
+			uri = new io.vertigo.dynamo.domain.model.URI<>(io.vertigo.dynamo.domain.util.DtObjectUtil.findDtDefinition(${association.role?uncap_first}), io.vertigo.dynamo.domain.util.DtObjectUtil.getId(${association.role?uncap_first}));
+			if (!fkURI.toURN().equals(uri.toURN())) {
+				${association.role?uncap_first} = null;
+			}
+		}		
 		if (${association.role?uncap_first} == null) {
 			${association.role?uncap_first} = io.vertigo.kernel.Home.getComponentSpace().resolve(io.vertigo.dynamo.persistence.PersistenceManager.class).getBroker().get(fkURI);
 		}
@@ -119,7 +128,7 @@ public final class ${dtDefinition.classSimpleName} implements DtObject {
 	<#list annotations(association.associationNode) as annotation>
     ${annotation}
 	</#list>
-	public final io.vertigo.dynamo.domain.model.URI<${association.returnType}> get${association.role?cap_first}URI() {
+	public io.vertigo.dynamo.domain.model.URI<${association.returnType}> get${association.role?cap_first}URI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "${association.urn}", ${association.returnType}.class);
 	}
 	</#if>
