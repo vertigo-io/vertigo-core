@@ -104,7 +104,7 @@ public final class OOMLoader {
 
 		final List<OOMAttribute> keyAttributes = new ArrayList<>();
 		final List<OOMAttribute> fieldAttributes = new ArrayList<>();
-		for (final OOMObject child : obj.getChildList()) {
+		for (final OOMObject child : obj.getChildren()) {
 			if (child.getType() == OOMType.Attribute) {
 				if (pkList.contains(child.getId())) {
 					final OOMAttribute attributeOOm = createDynAttribute(child, true);

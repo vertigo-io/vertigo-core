@@ -73,7 +73,7 @@ final class EAXmiObject {
 	private final EAXmiId id;
 	private final EAXmiObject parent;
 	private final EAXmiType type;
-	private final List<EAXmiObject> childList = new ArrayList<>();
+	private final List<EAXmiObject> children = new ArrayList<>();
 
 	//Donn�es sp�cifiques
 	private String name;
@@ -134,12 +134,12 @@ final class EAXmiObject {
 		if (leNom != null) {
 			created.setName(leNom);
 		}
-		childList.add(created);
+		children.add(created);
 		return created;
 	}
 
 	List<EAXmiObject> getChildren() {
-		return childList;
+		return children;
 	}
 
 	EAXmiType getType() {

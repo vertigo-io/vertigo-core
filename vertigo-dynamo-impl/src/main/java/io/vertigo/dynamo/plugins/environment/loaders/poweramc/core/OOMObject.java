@@ -49,7 +49,7 @@ final class OOMObject {
 	private final OOMId id;
 	private final OOMObject parent;
 	private final OOMType type;
-	private final List<OOMObject> childList = new ArrayList<>();
+	private final List<OOMObject> children = new ArrayList<>();
 	private final List<OOMId> refList = new ArrayList<>();
 
 	//Données spécifiques
@@ -102,7 +102,7 @@ final class OOMObject {
 
 	OOMObject createObjectOOM(final OOMId newId, final OOMType newType) {
 		final OOMObject created = new OOMObject(this, newId, newType);
-		childList.add(created);
+		children.add(created);
 		return created;
 	}
 
@@ -110,8 +110,8 @@ final class OOMObject {
 		return refList;
 	}
 
-	List<OOMObject> getChildList() {
-		return childList;
+	List<OOMObject> getChildren() {
+		return children;
 	}
 
 	OOMType getType() {
