@@ -26,7 +26,7 @@ import io.vertigo.dynamo.persistence.BrokerConfiguration;
 import io.vertigo.dynamo.persistence.BrokerNN;
 import io.vertigo.dynamo.persistence.MasterDataConfiguration;
 import io.vertigo.dynamo.persistence.PersistenceManager;
-import io.vertigo.dynamo.persistence.StorePlugin;
+import io.vertigo.dynamo.persistence.DataStorePlugin;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
@@ -51,7 +51,7 @@ public final class PersistenceManagerImpl implements PersistenceManager {
 	 * @param collectionsManager Manager de gestion des collections
 	 */
 	@Inject
-	public PersistenceManagerImpl(final TaskManager taskManager, final CacheManager cacheManager, final CollectionsManager collectionsManager, final Option<FileStorePlugin> fileStorePlugin, final StorePlugin defaultStorePlugin) {
+	public PersistenceManagerImpl(final TaskManager taskManager, final CacheManager cacheManager, final CollectionsManager collectionsManager, final Option<FileStorePlugin> fileStorePlugin, final DataStorePlugin defaultStorePlugin) {
 		Assertion.checkNotNull(taskManager);
 		Assertion.checkNotNull(cacheManager);
 		Assertion.checkNotNull(collectionsManager);

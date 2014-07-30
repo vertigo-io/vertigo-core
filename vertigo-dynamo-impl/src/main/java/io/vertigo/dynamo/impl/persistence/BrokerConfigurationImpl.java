@@ -27,7 +27,7 @@ import io.vertigo.dynamo.impl.persistence.logical.LogicalFileStoreConfiguration;
 import io.vertigo.dynamo.impl.persistence.logical.LogicalStoreConfiguration;
 import io.vertigo.dynamo.persistence.BrokerConfiguration;
 import io.vertigo.dynamo.persistence.PersistenceManager;
-import io.vertigo.dynamo.persistence.StorePlugin;
+import io.vertigo.dynamo.persistence.DataStorePlugin;
 import io.vertigo.kernel.lang.Assertion;
 
 /**
@@ -85,7 +85,7 @@ final class BrokerConfigurationImpl implements BrokerConfiguration {
 		return logicalFileStoreConfiguration;
 	}
 
-	public void register(final DtDefinition dtDefinition, final StorePlugin specificStore) {
+	public void register(final DtDefinition dtDefinition, final DataStorePlugin specificStore) {
 		getLogicalStoreConfiguration().register(dtDefinition, specificStore);
 	}
 }
