@@ -20,8 +20,8 @@ package io.vertigo.dynamo.plugins.search.solr;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.collections.ListFilter;
-import io.vertigo.dynamo.collections.facet.model.FacetedQuery;
-import io.vertigo.dynamo.collections.facet.model.FacetedQueryResult;
+import io.vertigo.dynamo.collections.model.FacetedQuery;
+import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.search.IndexFieldNameResolver;

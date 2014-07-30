@@ -20,10 +20,10 @@ package io.vertigo.dynamo.impl.collections.facet.model;
 
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.ListFilter;
-import io.vertigo.dynamo.collections.facet.metamodel.FacetDefinition;
-import io.vertigo.dynamo.collections.facet.metamodel.FacetedQueryDefinition;
-import io.vertigo.dynamo.collections.facet.model.Facet;
-import io.vertigo.dynamo.collections.facet.model.FacetValue;
+import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
+import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
+import io.vertigo.dynamo.collections.model.Facet;
+import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;

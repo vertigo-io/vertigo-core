@@ -19,8 +19,8 @@
 package io.vertigo.dynamo.collections;
 
 import io.vertigo.dynamo.Function;
-import io.vertigo.dynamo.collections.facet.model.FacetedQuery;
-import io.vertigo.dynamo.collections.facet.model.FacetedQueryResult;
+import io.vertigo.dynamo.collections.model.FacetedQuery;
+import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
