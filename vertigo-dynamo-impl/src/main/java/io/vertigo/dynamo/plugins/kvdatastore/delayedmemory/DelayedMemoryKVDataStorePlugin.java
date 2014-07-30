@@ -45,7 +45,7 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin, 
 
 	private final Logger logger = Logger.getLogger(getClass());
 
-	private final String storeName;
+	private final String dataStoreName;
 	private Timer purgeTimer;
 	private final long timeToLiveSeconds;
 	private final DelayQueue<DelayedKey> timeoutQueue = new DelayQueue<>();
@@ -56,17 +56,17 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin, 
 	 * @param timeToLiveSeconds life time of elements (seconde)
 	 */
 	@Inject
-	public DelayedMemoryKVDataStorePlugin(final @Named("dataStoreName") String storeName, final @Named("timeToLiveSeconds") int timeToLiveSeconds) {
-		Assertion.checkArgNotEmpty(storeName);
+	public DelayedMemoryKVDataStorePlugin(final @Named("dataStoreName") String dataStoreName, final @Named("timeToLiveSeconds") int timeToLiveSeconds) {
+		Assertion.checkArgNotEmpty(dataStoreName);
 		//---------------------------------------------------------------------
-		this.storeName = storeName;
+		this.dataStoreName = dataStoreName;
 		this.timeToLiveSeconds = timeToLiveSeconds;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public String getDataStoreName() {
-		return storeName;
+		return dataStoreName;
 	}
 
 	/** {@inheritDoc} */

@@ -63,7 +63,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	private final TupleBinding<CacheValue> cacheValueBinding;
 	private final TupleBinding<String> keyBinding = TupleBinding.getPrimitiveBinding(String.class);
 
-	private final String storeName;
+	private final String dataStoreName;
 	private Timer purgeTimer;
 	private final long timeToLiveSeconds;
 	private Database cacheDatas;
@@ -78,11 +78,11 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	 * @param timeToLiveSeconds Durée de vie des éléments en seconde
 	 */
 	@Inject
-	public DelayedBerkeleyKVDataStorePlugin(final CodecManager codecManager, final @Named("dataStoreName") String storeName, final @Named("cachePath") String cachePath, final @Named("timeToLiveSeconds") int timeToLiveSeconds) {
+	public DelayedBerkeleyKVDataStorePlugin(final CodecManager codecManager, final @Named("dataStoreName") String dataStoreName, final @Named("cachePath") String cachePath, final @Named("timeToLiveSeconds") int timeToLiveSeconds) {
 		Assertion.checkNotNull(codecManager);
-		Assertion.checkArgNotEmpty(storeName);
+		Assertion.checkArgNotEmpty(dataStoreName);
 		//---------------------------------------------------------------------
-		this.storeName = storeName;
+		this.dataStoreName = dataStoreName;
 		this.timeToLiveSeconds = timeToLiveSeconds;
 		final String translatedCachePath = translatePath(cachePath);
 		myCacheEnvPath = new File(translatedCachePath);
@@ -102,7 +102,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	/** {@inheritDoc} */
 	@Override
 	public String getDataStoreName() {
-		return storeName;
+		return dataStoreName;
 	}
 
 	/** {@inheritDoc} */
