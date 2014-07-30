@@ -41,7 +41,7 @@ import org.apache.lucene.util.Version;
  */
 final class DefaultAnalyzer extends Analyzer implements Serializable {
 	private static final long serialVersionUID = -653059693798148193L;
-	private CharArraySet stopSet;
+	private CharArraySet stopWords;
 
 	/**
 	 * Constructeur.
@@ -53,7 +53,7 @@ final class DefaultAnalyzer extends Analyzer implements Serializable {
 
 	/** Builds an analyzer with the given stop words. */
 	private DefaultAnalyzer(final String[] stopWords) {
-		stopSet = StopFilter.makeStopSet(Version.LUCENE_40, stopWords);
+		this.stopWords = StopFilter.makeStopSet(Version.LUCENE_40, stopWords);
 	}
 
 	/**
@@ -71,7 +71,7 @@ final class DefaultAnalyzer extends Analyzer implements Serializable {
 		final CharArraySet elisionSet = new CharArraySet(Version.LUCENE_40, Arrays.asList(LuceneConstants.ELISION_ARTICLES), true);
 		TokenStream filter = new ElisionFilter(source, elisionSet);
 		/* on retire article adjectif */
-		filter = new StopFilter(Version.LUCENE_40, filter, stopSet);
+		filter = new StopFilter(Version.LUCENE_40, filter, stopWords);
 		/* on retire les accents */
 		filter = new ASCIIFoldingFilter(filter);
 		/* on met en minuscule */
@@ -80,13 +80,13 @@ final class DefaultAnalyzer extends Analyzer implements Serializable {
 	}
 
 	private void writeObject(final java.io.ObjectOutputStream out) throws IOException {
-		final boolean useStopWord = !stopSet.isEmpty();
+		final boolean useStopWord = !stopWords.isEmpty();
 		out.writeBoolean(useStopWord);
 	}
 
 	private void readObject(final java.io.ObjectInputStream in) throws IOException {
 		final boolean useStopWord = in.readBoolean();
-		stopSet = StopFilter.makeStopSet(Version.LUCENE_40, useStopWord ? LuceneConstants.OUR_STOP_WORDS : new String[0]);
+		stopWords = StopFilter.makeStopSet(Version.LUCENE_40, useStopWord ? LuceneConstants.OUR_STOP_WORDS : new String[0]);
 	}
 
 }
