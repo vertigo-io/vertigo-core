@@ -33,8 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.inject.Inject;
-
 /**
  * DynamicRegistry de PublisherManager.
  * @author npiedeloup
@@ -47,7 +45,6 @@ public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistr
 	/**
 	 * Constructeur.
 	 */
-	@Inject
 	public PublisherDynamicRegistryPlugin() {
 		super(new PublisherGrammar());
 		Home.getDefinitionSpace().register(PublisherDataDefinition.class);

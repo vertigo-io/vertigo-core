@@ -30,8 +30,14 @@ import javax.inject.Inject;
  * @author dchallas
  */
 public final class SearchManagerImpl implements SearchManager {
+	private final Option<SearchServicesPlugin> searchServicesPlugin;
+
 	@Inject
-	private Option<SearchServicesPlugin> searchServicesPlugin;
+	public SearchManagerImpl(Option<SearchServicesPlugin> searchServicesPlugin) {
+		Assertion.checkNotNull(searchServicesPlugin);
+		//---------------------------------------------------------------------
+		this.searchServicesPlugin = searchServicesPlugin;
+	}
 
 	/** {@inheritDoc} */
 	public SearchServicesPlugin getSearchServices() {

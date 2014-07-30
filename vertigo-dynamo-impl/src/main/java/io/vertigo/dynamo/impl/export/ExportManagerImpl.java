@@ -34,6 +34,7 @@ import io.vertigo.kernel.lang.Assertion;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -48,19 +49,20 @@ import javax.inject.Inject;
 public final class ExportManagerImpl implements ExportManager {
 	private final WorkManager workManager;
 	private final FileManager fileManager;
-	@Inject
-	private List<ExporterPlugin> exporterPlugins;
+	private final List<ExporterPlugin> exporterPlugins;
 
 	/**
 	 * Constructeur.
 	 */
 	@Inject
-	public ExportManagerImpl(final WorkManager workManager, final FileManager fileManager) {
+	public ExportManagerImpl(final WorkManager workManager, final FileManager fileManager, final List<ExporterPlugin> exporterPlugins) {
 		Assertion.checkNotNull(workManager);
 		Assertion.checkNotNull(fileManager);
+		Assertion.checkNotNull(exporterPlugins);
 		//---------------------------------------------------------------------
 		this.workManager = workManager;
 		this.fileManager = fileManager;
+		this.exporterPlugins = Collections.unmodifiableList(exporterPlugins);
 	}
 
 	/** {@inheritDoc} */

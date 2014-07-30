@@ -62,8 +62,7 @@ import javax.inject.Inject;
 public final class CollectionsManagerImpl implements CollectionsManager {
 	//private final MasterDataManager masterDataManager;
 	//private final PersistenceManager persistenceManagerManager;
-	@Inject
-	private Option<IndexPlugin> indexPlugin;
+	private final Option<IndexPlugin> indexPlugin;
 
 	private final Function<?, ?> identityFunction = new IdentityFunction();
 
@@ -72,7 +71,11 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	/**
 	 * Constructeur. 
 	 */
-	public CollectionsManagerImpl() {
+	@Inject
+	public CollectionsManagerImpl(final Option<IndexPlugin> indexPlugin) {
+		Assertion.checkNotNull(indexPlugin);
+		//---------------------------------------------------------------------
+		this.indexPlugin = indexPlugin;
 		facetFactory = new FacetFactory(this);
 		//		Assertion.notNull(masterDataManager);
 		//		Assertion.notNull(persistenceManager);

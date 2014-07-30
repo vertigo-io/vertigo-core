@@ -18,8 +18,10 @@
  */
 package io.vertigo.commons.impl.analytics;
 
+import io.vertigo.commons.analytics.AnalyticsAgent;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.plugins.analytics.dummy.DummyAgentPlugin;
+import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 
 import javax.inject.Inject;
@@ -30,13 +32,17 @@ import javax.inject.Inject;
  * @author pchretien
  */
 public final class AnalyticsManagerImpl implements AnalyticsManager {
-	@Inject
-	private Option<AnalyticsAgentPlugin> agentPlugin;
+	private final AnalyticsAgent analyticsAgent;
 
-	private final AnalyticsAgentPlugin defaultAgentPlugin = new DummyAgentPlugin();
+	@Inject
+	public AnalyticsManagerImpl(final Option<AnalyticsAgentPlugin> agentPlugin) {
+		Assertion.checkNotNull(agentPlugin);
+		//---------------------------------------------------------------------
+		this.analyticsAgent = agentPlugin.getOrElse(new DummyAgentPlugin());
+	}
 
 	/** {@inheritDoc} */
-	public AnalyticsAgentPlugin getAgent() {
-		return agentPlugin.getOrElse(defaultAgentPlugin);
+	public AnalyticsAgent getAgent() {
+		return analyticsAgent;
 	}
 }

@@ -70,7 +70,6 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 	 */
 	@Inject
 	public DbFileStorePlugin(final FileManager fileManager) {
-		super();
 		Assertion.checkNotNull(fileManager);
 		//---------------------------------------------------------------------
 		readOnly = false;

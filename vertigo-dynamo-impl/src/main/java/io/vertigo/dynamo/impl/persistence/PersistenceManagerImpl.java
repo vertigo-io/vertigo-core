@@ -28,7 +28,6 @@ import io.vertigo.dynamo.persistence.MasterDataConfiguration;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.persistence.StorePlugin;
 import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 
@@ -39,17 +38,11 @@ import javax.inject.Inject;
 *
 * @author pchretien
 */
-public final class PersistenceManagerImpl implements PersistenceManager, Activeable {
-	@Inject
-	private Option<FileStorePlugin> fileStorePlugin;
-
-	@Inject
-	private StorePlugin defaultStorePlugin;
-
+public final class PersistenceManagerImpl implements PersistenceManager {
 	private final MasterDataConfiguration masterDataConfiguration;
 	private final BrokerConfigurationImpl brokerConfiguration;
 	/** Broker des objets métier et des listes. */
-	private Broker broker;
+	private final Broker broker;
 	private final BrokerNN brokerNN;
 
 	/**
@@ -58,22 +51,17 @@ public final class PersistenceManagerImpl implements PersistenceManager, Activea
 	 * @param collectionsManager Manager de gestion des collections
 	 */
 	@Inject
-	public PersistenceManagerImpl(final TaskManager taskManager, final CacheManager cacheManager, final CollectionsManager collectionsManager) {
-		super();
+	public PersistenceManagerImpl(final TaskManager taskManager, final CacheManager cacheManager, final CollectionsManager collectionsManager, final Option<FileStorePlugin> fileStorePlugin, final StorePlugin defaultStorePlugin) {
+		Assertion.checkNotNull(taskManager);
+		Assertion.checkNotNull(cacheManager);
 		Assertion.checkNotNull(collectionsManager);
+		Assertion.checkNotNull(fileStorePlugin);
+		Assertion.checkNotNull(defaultStorePlugin);
 		//---------------------------------------------------------------------
 		masterDataConfiguration = new MasterDataConfigurationImpl(collectionsManager);
 		brokerConfiguration = new BrokerConfigurationImpl(cacheManager, this, collectionsManager);
 		brokerNN = new BrokerNNImpl(taskManager);
-	}
-
-	/** {@inheritDoc} */
-	public MasterDataConfiguration getMasterDataConfiguration() {
-		return masterDataConfiguration;
-	}
-
-	/** {@inheritDoc} */
-	public void start() {
+		//---
 		//On enregistre le plugin de gestion des fichiers : facultatif
 		if (fileStorePlugin.isDefined()) {
 			brokerConfiguration.getLogicalFileStoreConfiguration().registerDefaultPhysicalStore(fileStorePlugin.get());
@@ -84,8 +72,8 @@ public final class PersistenceManagerImpl implements PersistenceManager, Activea
 	}
 
 	/** {@inheritDoc} */
-	public void stop() {
-		//
+	public MasterDataConfiguration getMasterDataConfiguration() {
+		return masterDataConfiguration;
 	}
 
 	//	/**
