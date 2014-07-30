@@ -296,10 +296,10 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	}
 
 	private Environment createDbEnv() throws DatabaseException {
-		final EnvironmentConfig myEnvConfig = new EnvironmentConfig();
-		myEnvConfig.setReadOnly(false);
-		myEnvConfig.setAllowCreate(true);
-		myEnvConfig.setTransactional(true);
+		final EnvironmentConfig myEnvConfig = new EnvironmentConfig()//
+				.setReadOnly(false)//
+				.setAllowCreate(true)//
+				.setTransactional(true);
 		//we limit cache usage to 20% of global memory.
 		myEnvConfig.setCachePercent(20);
 		// Open the environment
@@ -307,17 +307,15 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	}
 
 	private Database createDb() {
-		final DatabaseConfig myDbConfig = new DatabaseConfig();
-		myDbConfig.setReadOnly(false);
-		myDbConfig.setAllowCreate(true);
-		myDbConfig.setTransactional(true);
-		final Database db;
+		final DatabaseConfig myDbConfig = new DatabaseConfig()//
+				.setReadOnly(false)//
+				.setAllowCreate(true)//
+				.setTransactional(true);
 		try {
-			db = myEnv.openDatabase(null, "KVDataStorePlugin", myDbConfig);
+			return myEnv.openDatabase(null, "KVDataStorePlugin", myDbConfig);
 		} catch (final DatabaseException e) {
 			throw new RuntimeException(e);
 		}
-		return db;
 	}
 
 }
