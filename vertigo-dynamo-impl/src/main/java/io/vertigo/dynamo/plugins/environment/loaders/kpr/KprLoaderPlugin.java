@@ -55,6 +55,7 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 	@Inject
 	public KprLoaderPlugin(final ResourceManager resourceManager, @Named("encoding") final Option<String> encoding) {
 		Assertion.checkNotNull(resourceManager);
+		Assertion.checkNotNull(encoding);
 		// ----------------------------------------------------------------------
 		this.resourceManager = resourceManager;
 		charset = encoding.getOrElse("ISO-8859-1");

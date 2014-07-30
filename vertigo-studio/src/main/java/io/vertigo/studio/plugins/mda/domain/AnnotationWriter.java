@@ -89,9 +89,7 @@ class AnnotationWriter {
 			buffer.append("persistent = false, ");
 		}
 		// On vérifie que le nom du champ (constante) est transformable en nom de méthode et réciproquement.
-		Assertion.checkArgument(
-				fieldName.equals(StringUtil.camelToConstCase(StringUtil.constToCamelCase(fieldName, true))),
-				"le nom {0} n''est pas transformable en nom de méthode", fieldName);
+		Assertion.checkArgument(fieldName.equals(StringUtil.camelToConstCase(StringUtil.constToCamelCase(fieldName, true))), "le nom {0} n''est pas transformable en nom de méthode", fieldName);
 		buffer.append("label = \"" + dtField.getLabel().getDisplay() + "\"");
 		// on place le label a la fin, car il ne faut pas de ','
 		buffer.append(")");
@@ -109,22 +107,19 @@ class AnnotationWriter {
 		final List<String> lines = new ArrayList<>();
 		// Générations des annotations Dynamo
 		if (associationNode.getAssociationDefinition().isAssociationSimpleDefinition()) {
-			final AssociationSimpleDefinition associationSimple = associationNode.getAssociationDefinition()
-					.castAsAssociationSimpleDefinition();
-			lines.add("@" + Association.class.getCanonicalName() + " (");
+			final AssociationSimpleDefinition associationSimple = associationNode.getAssociationDefinition().castAsAssociationSimpleDefinition();
 			final AssociationNode primaryNode = associationSimple.getPrimaryAssociationNode();
 			final AssociationNode foreignNode = associationSimple.getForeignAssociationNode();
+			lines.add("@" + Association.class.getCanonicalName() + " (");
 			lines.add(INDENT + "name = \"" + associationSimple.getName() + "\",");
 			lines.add(INDENT + "fkFieldName = \"" + associationSimple.getFKField().getName() + "\",");
 			lines.add(INDENT + "primaryDtDefinitionName = \"" + primaryNode.getDtDefinition().getName() + "\",");
 			lines.add(INDENT + "primaryIsNavigable = " + primaryNode.isNavigable() + ',');
-			final String primaryMultiplicity = AssociationUtil.getMultiplicity(primaryNode.isNotNull(),
-					primaryNode.isMultiple());
+			final String primaryMultiplicity = AssociationUtil.getMultiplicity(primaryNode.isNotNull(), primaryNode.isMultiple());
 			lines.add(INDENT + "primaryRole = \"" + primaryNode.getRole() + "\",");
 			lines.add(INDENT + "primaryLabel = \"" + primaryNode.getLabel() + "\",");
 			lines.add(INDENT + "primaryMultiplicity = \"" + primaryMultiplicity + "\",");
-			final String foreignMultiplipicity = AssociationUtil.getMultiplicity(foreignNode.isNotNull(),
-					foreignNode.isMultiple());
+			final String foreignMultiplipicity = AssociationUtil.getMultiplicity(foreignNode.isNotNull(), foreignNode.isMultiple());
 			lines.add(INDENT + "foreignDtDefinitionName = \"" + foreignNode.getDtDefinition().getName() + "\",");
 			lines.add(INDENT + "foreignIsNavigable = " + foreignNode.isNavigable() + ',');
 			lines.add(INDENT + "foreignRole = \"" + foreignNode.getRole() + "\",");
@@ -132,11 +127,10 @@ class AnnotationWriter {
 			lines.add(INDENT + "foreignMultiplicity = \"" + foreignMultiplipicity + "\"");
 			lines.add(")");
 		} else {
-			lines.add("@io.vertigo.dynamo.domain.metamodel.annotation.AssociationNN (");
-			final AssociationNNDefinition associationNN = associationNode.getAssociationDefinition()
-					.castAsAssociationNNDefinition();
+			final AssociationNNDefinition associationNN = associationNode.getAssociationDefinition().castAsAssociationNNDefinition();
 			final AssociationNode nodeA = associationNN.getAssociationNodeA();
 			final AssociationNode nodeB = associationNN.getAssociationNodeB();
+			lines.add("@io.vertigo.dynamo.domain.metamodel.annotation.AssociationNN (");
 			lines.add(INDENT + "name = \"" + associationNN.getName() + "\",");
 			lines.add(INDENT + "tableName = \"" + associationNN.getTableName() + "\",");
 			lines.add(INDENT + "dtDefinitionA = \"" + nodeA.getDtDefinition().getName() + "\",");
