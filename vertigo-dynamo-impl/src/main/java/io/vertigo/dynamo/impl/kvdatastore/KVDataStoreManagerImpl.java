@@ -29,6 +29,9 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+/**
+ * @author npiedeloup, pchretien
+ */
 public final class KVDataStoreManagerImpl implements KVDataStoreManager {
 	private final Map<String, KVDataStorePlugin> kvDataStorePluginBinding;
 
@@ -36,33 +39,33 @@ public final class KVDataStoreManagerImpl implements KVDataStoreManager {
 	public KVDataStoreManagerImpl(final List<KVDataStorePlugin> kvDataStorePlugins) {
 		Assertion.checkNotNull(kvDataStorePlugins);
 		//---------------------------------------------------------------------
-		Map<String, KVDataStorePlugin> map = new HashMap<>();
-		for (KVDataStorePlugin kvDataStorePlugin : kvDataStorePlugins) {
-			map.put(kvDataStorePlugin.getStoreName(), kvDataStorePlugin);
+		final Map<String, KVDataStorePlugin> map = new HashMap<>();
+		for (final KVDataStorePlugin kvDataStorePlugin : kvDataStorePlugins) {
+			map.put(kvDataStorePlugin.getDataStoreName(), kvDataStorePlugin);
 		}
 		kvDataStorePluginBinding = Collections.unmodifiableMap(map);
 	}
 
-	public void put(String storeName, final String id, final Object objet) {
-		getKVDataStorePlugin(storeName).put(id, objet);
+	public void put(final String dataStoreName, final String id, final Object objet) {
+		getKVDataStorePlugin(dataStoreName).put(id, objet);
 	}
 
-	public void remove(String storeName, final String id) {
-		getKVDataStorePlugin(storeName).remove(id);
+	public void remove(final String dataStoreName, final String id) {
+		getKVDataStorePlugin(dataStoreName).remove(id);
 	}
 
-	public <C> Option<C> find(String storeName, final String id, final Class<C> clazz) {
-		return getKVDataStorePlugin(storeName).find(id, clazz);
+	public <C> Option<C> find(final String dataStoreName, final String id, final Class<C> clazz) {
+		return getKVDataStorePlugin(dataStoreName).find(id, clazz);
 	}
 
-	public <C> List<C> findAll(String storeName, final int skip, final Integer limit, final Class<C> clazz) {
-		return getKVDataStorePlugin(storeName).findAll(skip, limit, clazz);
+	public <C> List<C> findAll(final String dataStoreName, final int skip, final Integer limit, final Class<C> clazz) {
+		return getKVDataStorePlugin(dataStoreName).findAll(skip, limit, clazz);
 	}
 
-	private KVDataStorePlugin getKVDataStorePlugin(String storeName) {
-		KVDataStorePlugin kvDataStorePlugin = kvDataStorePluginBinding.get(storeName);
+	private KVDataStorePlugin getKVDataStorePlugin(final String dataStoreName) {
+		final KVDataStorePlugin kvDataStorePlugin = kvDataStorePluginBinding.get(dataStoreName);
 		//---------------------------------------------------------------------
-		Assertion.checkNotNull(kvDataStorePlugin, "No KVDataStorePlugin bind to this name : {0}. Registered storeNames : ({1})", storeName, kvDataStorePluginBinding.keySet());
+		Assertion.checkNotNull(kvDataStorePlugin, "No KVDataStorePlugin bind to this name : {0}. Registered dataStoreNames : ({1})", dataStoreName, kvDataStorePluginBinding.keySet());
 		//---------------------------------------------------------------------
 		return kvDataStorePlugin;
 	}

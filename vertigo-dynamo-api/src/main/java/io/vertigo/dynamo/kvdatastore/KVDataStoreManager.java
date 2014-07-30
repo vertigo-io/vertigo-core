@@ -23,13 +23,20 @@ import io.vertigo.kernel.lang.Option;
 
 import java.util.List;
 
+/**
+ * key value storage.
+ * 
+ * DataStores are defined by their name and must be defined as plugins.
+ * 
+ * @author pchretien
+ */
 public interface KVDataStoreManager extends Manager {
 
-	void put(String storeName,String id, Object objet);
+	void put(String dataStoreName, String id, Object objet);
 
-	void remove(String storeName,String id);
+	void remove(String dataStoreName, String id);
 
-	<C> Option<C> find(String storeName,String id, Class<C> clazz);
+	<C> Option<C> find(String dataStoreName, String id, Class<C> clazz);
 
-	<C> List<C> findAll(String storeName,int skip, Integer limit, Class<C> clazz);
+	<C> List<C> findAll(String dataStoreName, int skip, Integer limit, Class<C> clazz);
 }

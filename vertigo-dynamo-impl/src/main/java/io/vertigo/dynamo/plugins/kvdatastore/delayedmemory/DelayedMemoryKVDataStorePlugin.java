@@ -56,7 +56,7 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin, 
 	 * @param timeToLiveSeconds life time of elements (seconde)
 	 */
 	@Inject
-	public DelayedMemoryKVDataStorePlugin(final @Named("storeName") String storeName, final @Named("timeToLiveSeconds") int timeToLiveSeconds) {
+	public DelayedMemoryKVDataStorePlugin(final @Named("dataStoreName") String storeName, final @Named("timeToLiveSeconds") int timeToLiveSeconds) {
 		Assertion.checkArgNotEmpty(storeName);
 		//---------------------------------------------------------------------
 		this.storeName = storeName;
@@ -65,10 +65,10 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin, 
 
 	/** {@inheritDoc} */
 	@Override
-	public String getStoreName() {
+	public String getDataStoreName() {
 		return storeName;
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public void put(final String key, final Object data) {

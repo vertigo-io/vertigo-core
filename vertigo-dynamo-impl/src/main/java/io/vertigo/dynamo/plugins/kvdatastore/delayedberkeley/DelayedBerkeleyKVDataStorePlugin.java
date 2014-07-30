@@ -78,7 +78,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	 * @param timeToLiveSeconds Durée de vie des éléments en seconde
 	 */
 	@Inject
-	public DelayedBerkeleyKVDataStorePlugin(final CodecManager codecManager, final @Named("storeName") String storeName, final @Named("cachePath") String cachePath, final @Named("timeToLiveSeconds") int timeToLiveSeconds) {
+	public DelayedBerkeleyKVDataStorePlugin(final CodecManager codecManager, final @Named("dataStoreName") String storeName, final @Named("cachePath") String cachePath, final @Named("timeToLiveSeconds") int timeToLiveSeconds) {
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkArgNotEmpty(storeName);
 		//---------------------------------------------------------------------
@@ -101,7 +101,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 
 	/** {@inheritDoc} */
 	@Override
-	public String getStoreName() {
+	public String getDataStoreName() {
 		return storeName;
 	}
 

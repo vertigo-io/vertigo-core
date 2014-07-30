@@ -25,7 +25,7 @@ import java.util.List;
 
 public interface KVDataStorePlugin extends Plugin {
 
-	String getStoreName();
+	String getDataStoreName();
 	
 	void put(String id, Object objet);
 

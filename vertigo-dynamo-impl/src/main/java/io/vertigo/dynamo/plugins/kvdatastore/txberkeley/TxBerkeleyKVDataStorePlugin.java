@@ -61,7 +61,7 @@ public final class TxBerkeleyKVDataStorePlugin implements KVDataStorePlugin, Act
 	 * @param transactionManager Manager des transactions
 	 */
 	@Inject
-	public TxBerkeleyKVDataStorePlugin(final @Named("storeName") String storeName, @Named("fileName") final String dbFileName /*, final LuceneDB luceneDb*/, @Named("inMemory") final boolean inMemory, final KTransactionManager transactionManager) {
+	public TxBerkeleyKVDataStorePlugin(final @Named("dataStoreName") String storeName, @Named("fileName") final String dbFileName /*, final LuceneDB luceneDb*/, @Named("inMemory") final boolean inMemory, final KTransactionManager transactionManager) {
 		Assertion.checkArgNotEmpty(storeName);
 		Assertion.checkArgNotEmpty(dbFileName);
 		Assertion.checkNotNull(transactionManager);
@@ -74,7 +74,7 @@ public final class TxBerkeleyKVDataStorePlugin implements KVDataStorePlugin, Act
 
 	/** {@inheritDoc} */
 	@Override
-	public String getStoreName() {
+	public String getDataStoreName() {
 		return storeName;
 	}
 
