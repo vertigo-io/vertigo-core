@@ -41,8 +41,7 @@ import javax.inject.Inject;
  * @version $Id: PublisherManagerImpl.java,v 1.8 2014/01/28 18:53:45 pchretien Exp $
  */
 public final class PublisherManagerImpl implements PublisherManager {
-	@Inject
-	private MergerPlugin mergerPlugin;
+	private final MergerPlugin mergerPlugin;
 	private final FileManager fileManager;
 	private final WorkManager workManager;
 
@@ -53,13 +52,15 @@ public final class PublisherManagerImpl implements PublisherManager {
 	 * @param fileManager Manager des fichiers
 	 */
 	@Inject
-	public PublisherManagerImpl(final WorkManager workManager, final ScriptManager scriptManager, final FileManager fileManager) {
+	public PublisherManagerImpl(final WorkManager workManager, final ScriptManager scriptManager, final FileManager fileManager, MergerPlugin mergerPlugin) {
 		Assertion.checkNotNull(workManager);
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkNotNull(scriptManager);
+		Assertion.checkNotNull(mergerPlugin);
 		//---------------------------------------------------------------------
 		this.workManager = workManager;
 		this.fileManager = fileManager;
+		this.mergerPlugin = mergerPlugin;
 	}
 
 	/** {@inheritDoc} */
