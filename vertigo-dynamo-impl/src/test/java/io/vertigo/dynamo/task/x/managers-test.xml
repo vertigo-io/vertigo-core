@@ -45,7 +45,7 @@
 	   	
 		<component api="PersistenceManager" class="io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl" 
 			initClass ="io.vertigo.dynamo.persistence.PersistenceManagerInitializer">
-	        <plugin class="io.vertigo.dynamo.plugins.persistence.hsql.HsqlStorePlugin">
+	        <plugin class="io.vertigo.dynamo.plugins.persistence.hsql.HsqlDataStorePlugin">
 	            <param name="sequencePrefix" value="SEQ_" />
 	        </plugin>
 	        <plugin class="io.vertigo.dynamo.plugins.persistence.filestore.db.DbFileStorePlugin" />

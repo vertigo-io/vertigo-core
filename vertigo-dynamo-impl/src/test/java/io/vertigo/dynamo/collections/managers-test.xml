@@ -29,7 +29,7 @@
 	    </component>
 	    
 	    <component api="PersistenceManager" class="io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl">
-	        <plugin class="io.vertigo.dynamo.plugins.persistence.oracle.OracleStorePlugin">
+	        <plugin class="io.vertigo.dynamo.plugins.persistence.oracle.OracleDataStorePlugin">
 	            <param name="sequencePrefix" value="SEQ_" />
 	        </plugin>
 	    </component>
