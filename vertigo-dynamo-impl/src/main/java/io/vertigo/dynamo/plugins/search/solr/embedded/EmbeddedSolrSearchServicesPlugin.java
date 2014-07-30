@@ -22,7 +22,6 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.dynamo.plugins.search.solr.AbstractSolrSearchServicesPlugin;
-import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.io.File;
@@ -41,11 +40,11 @@ import org.apache.solr.core.CoreContainer;
  * 
  * @author pchretien
  */
-public final class EmbeddedSolrSearchServicesPlugin extends AbstractSolrSearchServicesPlugin implements Activeable {
+public final class EmbeddedSolrSearchServicesPlugin extends AbstractSolrSearchServicesPlugin {
 	/** url du serveur solr.  */
 	private final URL solrHomeURL;
 	/** Conteneur multi coeurs - c'est à dire multi index*/
-	private CoreContainer container;
+	private final CoreContainer coreContainer;
 
 	/**
 	 * Constructeur
@@ -57,29 +56,23 @@ public final class EmbeddedSolrSearchServicesPlugin extends AbstractSolrSearchSe
 	 */
 	@Inject
 	public EmbeddedSolrSearchServicesPlugin(@Named("home") final String solrHome, @Named("cores") final String cores, @Named("rowsPerQuery") final int rowsPerQuery, final CodecManager codecManager, final LocaleManager localeManager, final ResourceManager resourceManager) {
-		super(cores.split(","), rowsPerQuery, codecManager);
+		super(cores, rowsPerQuery, codecManager);
 		Assertion.checkArgNotEmpty(solrHome);
-		Assertion.checkNotNull(cores);
 		// ---------------------------------------------------------------------
 		solrHomeURL = resourceManager.resolve(solrHome);
-	}
-
-	/** {@inheritDoc} */
-	public void start() {
-		//Création du conteneur multi core
-		container = createCoreContainer(solrHomeURL);
+		coreContainer = createCoreContainer(solrHomeURL);
 	}
 
 	/** {@inheritDoc} */
 	public void stop() {
-		container.shutdown();
+		coreContainer.shutdown();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	protected SolrServer createSolrServer(final String core) {
-		Assertion.checkArgument(container.getCoreNames().contains(core), "core {0} non reconnu lors du démarrage du container", core);
-		return new EmbeddedSolrServer(container, core);
+		Assertion.checkArgument(coreContainer.getCoreNames().contains(core), "core {0} non reconnu lors du démarrage du container", core);
+		return new EmbeddedSolrServer(coreContainer, core);
 	}
 
 	private static CoreContainer createCoreContainer(final URL solrHomeURL) {

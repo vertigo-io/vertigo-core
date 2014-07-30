@@ -29,6 +29,7 @@ import io.vertigo.dynamo.search.SearchServicesPlugin;
 import io.vertigo.dynamo.search.metamodel.IndexDefinition;
 import io.vertigo.dynamo.search.model.Index;
 import io.vertigo.dynamo.search.model.SearchQuery;
+import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.util.Collection;
@@ -42,34 +43,41 @@ import org.apache.solr.client.solrj.SolrServer;
  * Gestion de la connexion au serveur Solr de manière transactionnel.
  * @author dchallas
  */
-public abstract class AbstractSolrSearchServicesPlugin implements SearchServicesPlugin {
+public abstract class AbstractSolrSearchServicesPlugin implements SearchServicesPlugin, Activeable {
 	private static final IndexFieldNameResolver DEFAULT_INDEX_FIELD_NAME_RESOLVER = new IndexFieldNameResolver(Collections.<String, String> emptyMap());
 
 	private final CodecManager codecManager;
-	private final Map<String, SolrServer> solrServerMap;
-	private final Map<String, IndexFieldNameResolver> indexFieldNameResolverMap;
+	private final Map<String, SolrServer> solrServers;
+	private final Map<String, IndexFieldNameResolver> indexFieldNameResolvers;
 	private final int rowsPerQuery;
+	private final String cores;
 
 	/**
 	 * Constructeur.
-	 * @param cores Nom des noyeau Solr
-	 * @param rowsPerQuery Nombre de ligne
+	 * @param cores Nom des noyeaux Solr
+	 * @param rowsPerQuery Nombre de lignes
 	 * @param codecManager Manager de codec
 	 */
-	protected AbstractSolrSearchServicesPlugin(final String[] cores, final int rowsPerQuery, final CodecManager codecManager) {
-		Assertion.checkNotNull(cores);
+	protected AbstractSolrSearchServicesPlugin(final String cores, final int rowsPerQuery, final CodecManager codecManager) {
+		Assertion.checkArgNotEmpty(cores);
 		Assertion.checkNotNull(codecManager);
 		//---------------------------------------------------------------------
 		this.rowsPerQuery = rowsPerQuery;
 		this.codecManager = codecManager;
-		solrServerMap = new HashMap<>();
-		indexFieldNameResolverMap = new HashMap<>();
+		solrServers = new HashMap<>();
+		indexFieldNameResolvers = new HashMap<>();
 		//------
+		this.cores = cores;
+
+	}
+
+	/** {@inheritDoc} */
+	public final void start() {
 		//SOLR appelle constitue un server par indexe/Core
-		for (final String splitedCore : cores) {
+		for (final String splitedCore : cores.split(",")) {
 			//on trim pour le cas, car le split peut avoir laisser des espaces
 			final String core = splitedCore.trim();
-			solrServerMap.put(core, createSolrServer(core));
+			solrServers.put(core, createSolrServer(core));
 		}
 	}
 
@@ -87,7 +95,7 @@ public abstract class AbstractSolrSearchServicesPlugin implements SearchServices
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkNotNull(indexFieldNameResolver);
 		//---------------------------------------------------------------------
-		indexFieldNameResolverMap.put(indexDefinition.getName(), indexFieldNameResolver);
+		indexFieldNameResolvers.put(indexDefinition.getName(), indexFieldNameResolver);
 	}
 
 	/**
@@ -98,7 +106,7 @@ public abstract class AbstractSolrSearchServicesPlugin implements SearchServices
 	protected final IndexFieldNameResolver obtainIndexFieldNameResolver(final IndexDefinition indexDefinition) {
 		Assertion.checkNotNull(indexDefinition);
 		//---------------------------------------------------------------------
-		final IndexFieldNameResolver indexFieldNameResolver = indexFieldNameResolverMap.get(indexDefinition.getName());
+		final IndexFieldNameResolver indexFieldNameResolver = indexFieldNameResolvers.get(indexDefinition.getName());
 		return indexFieldNameResolver != null ? indexFieldNameResolver : DEFAULT_INDEX_FIELD_NAME_RESOLVER;
 	}
 
@@ -183,7 +191,7 @@ public abstract class AbstractSolrSearchServicesPlugin implements SearchServices
 	private SolrServer getSolrServer(final String core) {
 		Assertion.checkArgNotEmpty(core);
 		//---------------------------------------------------------------------
-		final SolrServer solrServer = solrServerMap.get(core);
+		final SolrServer solrServer = solrServers.get(core);
 		Assertion.checkNotNull(solrServer, "Aucun solrServer trouvé pour le core {0}", core);
 		return solrServer;
 	}

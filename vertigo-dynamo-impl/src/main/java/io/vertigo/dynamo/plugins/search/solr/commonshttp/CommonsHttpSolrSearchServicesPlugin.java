@@ -47,9 +47,8 @@ public final class CommonsHttpSolrSearchServicesPlugin extends AbstractSolrSearc
 	 */
 	@Inject
 	public CommonsHttpSolrSearchServicesPlugin(@Named("solr.url") final String serverURL, @Named("cores") final String cores, @Named("rowsPerQuery") final int rowsPerQuery, final CodecManager codecManager, final LocaleManager localeManager) {
-		super(cores.split(","), rowsPerQuery, codecManager);
+		super(cores, rowsPerQuery, codecManager);
 		Assertion.checkNotNull(serverURL, "Il faut définir l'url du serveur Solr.");
-		Assertion.checkNotNull(cores);
 		// ---------------------------------------------------------------------
 		this.serverURL = serverURL;
 	}
@@ -58,5 +57,9 @@ public final class CommonsHttpSolrSearchServicesPlugin extends AbstractSolrSearc
 	@Override
 	protected SolrServer createSolrServer(final String core) {
 		return new HttpSolrServer(serverURL + '/' + core);
+	}
+
+	public void stop() {
+		// nada
 	}
 }
