@@ -22,7 +22,6 @@ import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.commons.locale.LocaleProvider;
 import io.vertigo.kernel.component.ComponentInfo;
 import io.vertigo.kernel.component.Describable;
-import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.MessageKey;
 
@@ -49,14 +48,14 @@ import org.apache.log4j.Logger;
  *
  * @author  pchretien
  */
-public final class LocaleManagerImpl implements LocaleManager, Activeable, Describable {
+public final class LocaleManagerImpl implements LocaleManager, Describable {
 	private final Logger generalLog = Logger.getLogger(LocaleManager.class);
 
 	/**
 	 * Set des clés non trouvées pour ne pas les reloguer.
 	 * On synchronise car il s'agit d'une ressource partagée modifiées par tous les threads.
 	 */
-	private final Set<String> notFoundKeySet = java.util.Collections.synchronizedSet(new HashSet<String>());
+	private final Set<String> notFoundKeys = java.util.Collections.synchronizedSet(new HashSet<String>());
 
 	//Bundle pour la locale par défaut.
 	private final Map<Locale, Map<String, String>> dictionaries = new HashMap<>();
@@ -111,16 +110,6 @@ public final class LocaleManagerImpl implements LocaleManager, Activeable, Descr
 		for (final Locale locale : this.locales) {
 			dictionaries.put(locale, new HashMap<String, String>());
 		}
-	}
-
-	/** {@inheritDoc} */
-	public void start() {
-		//RAS
-	}
-
-	/** {@inheritDoc} */
-	public void stop() {
-		dictionaries.clear();
 	}
 
 	/** {@inheritDoc} */
@@ -238,13 +227,13 @@ public final class LocaleManagerImpl implements LocaleManager, Activeable, Descr
 	}
 
 	private void onResourceNotFound(final String key) {
-		if (!notFoundKeySet.contains(key)) {
+		if (!notFoundKeys.contains(key)) {
 			//	Si la ressource n'est pas présente alors
 			//  - on loggue le fait que la ressource n'a pas été trouvée
 			//  - on stocke la clé pour éviter de reloguer
 			//et on continue les traitements
 			logResourceNotFound(key);
-			notFoundKeySet.add(key);
+			notFoundKeys.add(key);
 		}
 	}
 
