@@ -231,7 +231,7 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 		//----------------------------------------------------------------------
 		final SqlParserHandler scriptHandler = new SqlParserHandler(getTaskDefinition());
 		getScriptManager().parse(query, scriptHandler, SQL_SEPARATOR_LIST);
-		params = scriptHandler.getParamList();
+		params = scriptHandler.getParams();
 		return scriptHandler.getSql();
 	}
 

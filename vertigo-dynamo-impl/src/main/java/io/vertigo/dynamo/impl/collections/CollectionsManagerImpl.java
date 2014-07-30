@@ -90,7 +90,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 
 	/** {@inheritDoc} */
 	public <D extends DtObject> DtListFunction<D> createFilter(final String keywords, final int maxRows, final Collection<DtField> searchedFields) {
-		Assertion.checkArgument(indexPlugin.isDefined(), "Aucun plugin de collectionsIndexerPlugin déclaré");
+		Assertion.checkArgument(indexPlugin.isDefined(), "An IndexPlugin is required to use this method");
 		//---------------------------------------------------------------------
 		return new FullTextFilterFunction<>(keywords, maxRows, searchedFields, indexPlugin.get());
 	}

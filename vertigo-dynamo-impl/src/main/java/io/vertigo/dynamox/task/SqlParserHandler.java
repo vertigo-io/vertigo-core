@@ -111,7 +111,7 @@ final class SqlParserHandler implements ScriptParserHandler {
 	/**
 	 * @return Liste des paramètres.
 	 */
-	List<TaskEngineSQLParam> getParamList() {
+	List<TaskEngineSQLParam> getParams() {
 		return Collections.unmodifiableList(paramList);
 	}
 

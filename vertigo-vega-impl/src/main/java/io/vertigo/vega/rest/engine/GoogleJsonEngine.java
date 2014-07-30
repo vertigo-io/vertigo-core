@@ -196,7 +196,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 			final JsonObject jsonObject = json.getAsJsonObject();
 			final D inputDto = context.deserialize(jsonObject, dtoClass);
 			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtoClass);
-			final Set<String> dtFields = getDtFieldNameList(dtDefinition);
+			final Set<String> dtFields = getFieldNames(dtDefinition);
 			final Set<String> modifiedFields = new HashSet<>();
 			for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
 				final String fieldName = entry.getKey();
@@ -212,7 +212,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 		}
 	}
 
-	static Set<String> getDtFieldNameList(final DtDefinition dtDefinition) {
+	static Set<String> getFieldNames(final DtDefinition dtDefinition) {
 		final Set<String> dtFieldNames = new HashSet<>();
 		for (final DtField dtField : dtDefinition.getFields()) {
 			dtFieldNames.add(StringUtil.constToCamelCase(dtField.getName(), false));

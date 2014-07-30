@@ -93,7 +93,7 @@ final class InnerDefinitionRule extends AbstractRule<XDefinitionEntry, List<?>> 
 				dynamicDefinitionBuilder.withChildDefinition(fieldDefinitionEntry.getFieldName(), fieldDefinitionEntry.getDefinition());
 			} else {
 				// On ajoute les définitions par leur clé.
-				dynamicDefinitionBuilder.withDefinitions(fieldDefinitionEntry.getFieldName(), toDefinitionKeyList(fieldDefinitionEntry.getDefinitionKeys()));
+				dynamicDefinitionBuilder.withDefinitions(fieldDefinitionEntry.getFieldName(), toDefinitionKeys(fieldDefinitionEntry.getDefinitionKeys()));
 			}
 		}
 		for (final XPropertyEntry fieldPropertyEntry : definitionBody.getPropertyEntries()) {
@@ -124,7 +124,7 @@ final class InnerDefinitionRule extends AbstractRule<XDefinitionEntry, List<?>> 
 		return property.getPrimitiveType().cast(stringValue);
 	}
 
-	private static List<DynamicDefinitionKey> toDefinitionKeyList(final List<String> list) {
+	private static List<DynamicDefinitionKey> toDefinitionKeys(final List<String> list) {
 		final List<DynamicDefinitionKey> definitionKeyList = new ArrayList<>();
 		for (final String item : list) {
 			definitionKeyList.add(new DynamicDefinitionKey(item));

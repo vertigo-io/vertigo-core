@@ -54,7 +54,7 @@ public final class SerializationCodecTest extends AbstractCodecTest<Serializable
 	@Override
 	@Test
 	public void testEncode() {
-		for (final Serializable value : createObjectList()) {
+		for (final Serializable value : createObjects()) {
 			final byte[] serializedValue = codec.encode(value);
 			Assert.assertEquals(value, codec.decode(serializedValue));
 		}
@@ -64,7 +64,7 @@ public final class SerializationCodecTest extends AbstractCodecTest<Serializable
 	@Override
 	@Test
 	public void testDecode() throws Exception {
-		for (final Serializable value : createObjectList()) {
+		for (final Serializable value : createObjects()) {
 			final byte[] serializedValue = codec.encode(value);
 			Assert.assertEquals(value, codec.decode(serializedValue));
 		}
@@ -83,7 +83,7 @@ public final class SerializationCodecTest extends AbstractCodecTest<Serializable
 	// =========================== Données de tests
 	// ==============================
 	// ===========================================================================
-	private List<Serializable> createObjectList() {
+	private List<Serializable> createObjects() {
 		final List<Serializable> valueList = new ArrayList<>();
 		valueList.add(Integer.valueOf(54)); // Test d'un entier
 		valueList.add(""); // Test d'une chaine vide

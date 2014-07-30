@@ -49,11 +49,11 @@ public class EAXmiAATest {
 
 		final EAXmiLoader loader = new EAXmiLoader(xmiURL);
 		map = new HashMap<>();
-		for (final EAXmiAssociation association : loader.getAssociationList()) {
+		for (final EAXmiAssociation association : loader.getAssociations()) {
 			map.put(association.getCode(), association);
 			LOGGER.trace("> code = " + association.getCode());
 		}
-		LOGGER.trace(">> nb ass.=" + loader.getAssociationList().size());
+		LOGGER.trace(">> nb ass.=" + loader.getAssociations().size());
 
 	}
 

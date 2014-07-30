@@ -60,7 +60,7 @@ public final class EAXmiLoader {
 	 * R�cup�ration des classes d�clar�es dans le XMI.
 	 * @return Liste des classes
 	 */
-	public List<EAXmiClass> getClassList() {
+	public List<EAXmiClass> getClasses() {
 		final List<EAXmiClass> list = new ArrayList<>();
 		for (final EAXmiObject obj : map.values()) {
 			log.debug("classe : " + obj.toString());
@@ -76,7 +76,7 @@ public final class EAXmiLoader {
 	 * R�cup�ration des associations d�clar�es dans le XMI.
 	 * @return Liste des associations
 	 */
-	public List<EAXmiAssociation> getAssociationList() {
+	public List<EAXmiAssociation> getAssociations() {
 		final List<EAXmiAssociation> list = new ArrayList<>();
 		for (final EAXmiObject obj : map.values()) {
 			if (obj.getType() == EAXmiType.Association) {
@@ -97,7 +97,7 @@ public final class EAXmiLoader {
 
 		final List<EAXmiAttribute> keyAttributes = new ArrayList<>();
 		final List<EAXmiAttribute> fieldAttributes = new ArrayList<>();
-		for (final EAXmiObject child : obj.getChildList()) {
+		for (final EAXmiObject child : obj.getChildren()) {
 			if (child.getType() == EAXmiType.Attribute) {
 				log.debug("Attribut = " + child.getName() + " isId = " + Boolean.toString(child.getIsId()));
 				if (child.getIsId()) {

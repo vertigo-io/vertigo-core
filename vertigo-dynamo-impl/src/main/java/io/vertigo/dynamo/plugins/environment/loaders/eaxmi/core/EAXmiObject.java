@@ -138,7 +138,7 @@ final class EAXmiObject {
 		return created;
 	}
 
-	List<EAXmiObject> getChildList() {
+	List<EAXmiObject> getChildren() {
 		return childList;
 	}
 

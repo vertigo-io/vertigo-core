@@ -55,29 +55,29 @@ public final class FacetDefinition implements Definition {
 	private final String name;
 	private final DtField dtField;
 	private final MessageText label;
-	private final List<FacetValue> facetRangeList;
+	private final List<FacetValue> facetValues;
 	private final boolean rangeFacet;
 
 	/**
 	 * Constructeur.
 	 * @param dtField Champ de l'index facetté
 	 * @param label Libellé de la facette
-	 * @param facetRangeList Liste des segments pour les facettes segmentées 
-	 * @param rangeFacet Si facette segmentée
+	 * @param facetValues Liste des segments pour les facettes segmentées 
+	 * @param hasFacetValues Si facette segmentée
 	 */
-	private FacetDefinition(final String name, final DtField dtField, final MessageText label, final List<FacetValue> facetRangeList, final boolean rangeFacet) {
+	private FacetDefinition(final String name, final DtField dtField, final MessageText label, final List<FacetValue> facetValues, final boolean hasFacetValues) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(dtField);
 		Assertion.checkNotNull(label);
-		Assertion.checkNotNull(facetRangeList);
-		Assertion.checkArgument(!rangeFacet || !facetRangeList.isEmpty(), "Les FacetDefinition de type ''term'' doivent fournir une liste des segments vide (inutilisée)");
-		Assertion.checkArgument(rangeFacet || facetRangeList.isEmpty(), "Les FacetDefinition de type ''range'' doivent fournir la liste des segments non vide (FacetRange)");
+		Assertion.checkNotNull(facetValues);
+		Assertion.checkArgument(!hasFacetValues || !facetValues.isEmpty(), "Les FacetDefinition de type 'term' doivent fournir une liste des segments vide");
+		Assertion.checkArgument(hasFacetValues || facetValues.isEmpty(), "Les FacetDefinition de type 'range' doivent fournir la liste des segments non vides (FacetValues)");
 		//-----------------------------------------------------------------
 		this.name = name;
 		this.dtField = dtField;
 		this.label = label;
-		this.facetRangeList = Collections.unmodifiableList(facetRangeList);
-		this.rangeFacet = rangeFacet;
+		this.facetValues = Collections.unmodifiableList(facetValues);
+		this.rangeFacet = hasFacetValues;
 	}
 
 	static FacetDefinition createFacetDefinitionByRange(final String name, final DtField dtField, final MessageText label, final List<FacetValue> facetRanges) {
@@ -109,7 +109,7 @@ public final class FacetDefinition implements Definition {
 	public List<FacetValue> getFacetRanges() {
 		Assertion.checkArgument(rangeFacet, "Cette facette ({0}) n'est pas segmentée.", getName());
 		//---------------------------------------------------------------------
-		return facetRangeList;
+		return facetValues;
 	}
 
 	/**

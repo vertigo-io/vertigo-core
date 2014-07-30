@@ -122,7 +122,7 @@ public class ExportXlsHelper<R extends DtObject> {
 		final ExportDtParameters exportObjectParameters = exportManager.createExportObjectParameters(criterion);
 
 		// exportObjectParameters.setMetaData(PublisherMetaData.TITLE, tabName);
-		for (final DtField dtField : getExportCriterionFieldList(criterion, criterionExcludedColumnNameList)) {
+		for (final DtField dtField : getExportCriterionFields(criterion, criterionExcludedColumnNameList)) {
 			exportObjectParameters.addExportField(dtField);
 		}
 
@@ -150,7 +150,7 @@ public class ExportXlsHelper<R extends DtObject> {
 	 * @param criterionExcludedColumnNameList Liste des noms de champs � NE PAS exporter
 	 * @return Liste des DtField � exporter
 	 */
-	private List<DtField> getExportCriterionFieldList(final DtObject dto, final List<String> criterionExcludedColumnNameList) {
+	private List<DtField> getExportCriterionFields(final DtObject dto, final List<String> criterionExcludedColumnNameList) {
 		final List<DtField> exportColumnList = new ArrayList<>();
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		addFieldToExcludedExportColumnNameList(dtDefinition, criterionExcludedColumnNameList);

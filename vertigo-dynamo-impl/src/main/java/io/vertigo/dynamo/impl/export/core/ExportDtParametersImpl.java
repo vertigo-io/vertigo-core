@@ -43,7 +43,7 @@ public final class ExportDtParametersImpl implements ExportDtParameters, ExportD
 	/**
 	 * List des champs � exporter
 	 */
-	private final List<ExportField> exportFieldList = new ArrayList<>();
+	private final List<ExportField> exportFields = new ArrayList<>();
 
 	/**
 	 * Objet � exporter. 
@@ -107,15 +107,15 @@ public final class ExportDtParametersImpl implements ExportDtParameters, ExportD
 	/** {@inheritDoc} */
 	public List<ExportField> getExportFields() {
 		// si la liste des colonnes est vide alors par convention on les prend toutes.
-		if (exportFieldList.isEmpty()) {
+		if (exportFields.isEmpty()) {
 			final Collection<DtField> fieldCollection = dtDefinition.getFields();
 			final List<ExportField> defaultExportFieldList = new ArrayList<>(fieldCollection.size());
 			for (final DtField dtField : fieldCollection) {
 				defaultExportFieldList.add(new ExportField(dtField));
 			}
-			exportFieldList.addAll(defaultExportFieldList);
+			exportFields.addAll(defaultExportFieldList);
 		}
-		return java.util.Collections.unmodifiableList(exportFieldList);
+		return java.util.Collections.unmodifiableList(exportFields);
 	}
 
 	/** {@inheritDoc} */
@@ -140,7 +140,7 @@ public final class ExportDtParametersImpl implements ExportDtParameters, ExportD
 		if (overridedLabel != null) { // si on surcharge le label
 			exportField.setLabel(overridedLabel);
 		}
-		exportFieldList.add(exportField);
+		exportFields.add(exportField);
 	}
 
 	/** {@inheritDoc} */
@@ -155,7 +155,7 @@ public final class ExportDtParametersImpl implements ExportDtParameters, ExportD
 		if (overridedLabel != null) { // si on surcharge le label
 			exportField.setLabel(overridedLabel);
 		}
-		exportFieldList.add(exportField);
+		exportFields.add(exportField);
 	}
 
 	/**

@@ -112,9 +112,11 @@ public final class FacetFactory {
 			facetValue = facetFilterIndex.get(value);
 			if (facetValue == null) {
 				final String valueAsString = dtField.getDomain().getFormatter().valueToString(value, dtField.getDomain().getDataType());
-				String stringLabel = valueAsString;
+				final String stringLabel;
 				if (StringUtil.isEmpty(valueAsString)) {
-					stringLabel = "<aucun>";
+					stringLabel = "<==no label==>";
+				} else {
+					stringLabel = valueAsString;
 				}
 				final MessageText label = new MessageText(stringLabel, null);
 				//on garde la syntaxe Solr pour l'instant

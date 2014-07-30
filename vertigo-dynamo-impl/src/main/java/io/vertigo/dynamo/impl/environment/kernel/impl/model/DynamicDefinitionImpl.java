@@ -128,7 +128,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	public final List<DynamicDefinition> getChildDefinitions(final String fieldName) {
-		return obtainCompositeList(fieldName);
+		return obtainComposites(fieldName);
 	}
 
 	/** {@inheritDoc} */
@@ -188,7 +188,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	public final DynamicDefinitionBuilder withChildDefinition(final String fieldName, final DynamicDefinition definition) {
 		Assertion.checkNotNull(definition);
 		// ------------------------------------------------------------------
-		obtainCompositeList(fieldName).add(definition);
+		obtainComposites(fieldName).add(definition);
 		return this;
 	}
 
@@ -210,7 +210,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return this;
 	}
 
-	private List<DynamicDefinition> obtainCompositeList(final String fieldName) {
+	private List<DynamicDefinition> obtainComposites(final String fieldName) {
 		Assertion.checkNotNull(fieldName);
 		// ------------------------------------------------------------------
 		List<DynamicDefinition> list = definitionsByFieldName.get(fieldName);
@@ -237,7 +237,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 		// 3.
 		for (final Entry<String, List<DynamicDefinition>> entry : other.definitionsByFieldName.entrySet()) {
-			obtainCompositeList(entry.getKey()).addAll(entry.getValue());
+			obtainComposites(entry.getKey()).addAll(entry.getValue());
 		}
 		return this;
 	}
