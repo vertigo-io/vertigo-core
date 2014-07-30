@@ -93,10 +93,10 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	}
 
 	private static String translatePath(final String path) {
-		String translatedPath = path.replaceAll(USER_HOME, System.getProperty(USER_HOME).replace('\\', '/'));
-		translatedPath = translatedPath.replaceAll(USER_DIR, System.getProperty(USER_DIR).replace('\\', '/'));
-		translatedPath = translatedPath.replaceAll(JAVA_IO_TMPDIR, System.getProperty(JAVA_IO_TMPDIR).replace('\\', '/'));
-		return translatedPath;
+		return path//
+				.replaceAll(USER_HOME, System.getProperty(USER_HOME).replace('\\', '/'))//
+				.replaceAll(USER_DIR, System.getProperty(USER_DIR).replace('\\', '/'))//
+				.replaceAll(JAVA_IO_TMPDIR, System.getProperty(JAVA_IO_TMPDIR).replace('\\', '/'));
 	}
 
 	/** {@inheritDoc} */
@@ -141,7 +141,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 
 	/** {@inheritDoc} */
 	@Override
-	public <C> Option<C> find(String key, Class<C> clazz) {
+	public <C> Option<C> find(final String key, final Class<C> clazz) {
 		//totalCalls++;
 		try {
 			final DatabaseEntry theKey = new DatabaseEntry();
@@ -150,9 +150,9 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 			final OperationStatus status = cacheDatas.get(null, theKey, theData, null);
 			if (OperationStatus.SUCCESS.equals(status)) {
 				final CacheValue cacheValue = readCacheValueSafely(theKey, theData);
-				if(cacheValue == null || isTooOld(cacheValue)) {//null if read error
+				if (cacheValue == null || isTooOld(cacheValue)) {//null if read error
 					cacheDatas.delete(null, theKey); //if corrupt (null) or too old, we delete it					
-				} else { 
+				} else {
 					return Option.some(clazz.cast(cacheValue.getValue()));
 				}
 			}
@@ -162,10 +162,9 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 		return Option.none();
 	}
 
-
 	/** {@inheritDoc} */
 	@Override
-	public <C> List<C> findAll(int skip, Integer limit, Class<C> clazz) {
+	public <C> List<C> findAll(final int skip, final Integer limit, final Class<C> clazz) {
 		final DatabaseEntry theKey = new DatabaseEntry();
 		final DatabaseEntry theData = new DatabaseEntry();
 		final List<C> list = new ArrayList<>();
@@ -175,9 +174,9 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 				int find = 0;
 				while ((limit == null || find < limit + skip) && cursor.getNext(theKey, theData, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
 					final CacheValue cacheValue = cacheValueBinding.entryToObject(theData);
-					if(cacheValue == null || isTooOld(cacheValue)) {//null if read error
+					if (cacheValue == null || isTooOld(cacheValue)) {//null if read error
 						cursor.delete(); //if corrupt (null) or too old, we delete it
-					} else { 
+					} else {
 						final Serializable value = cacheValue.getValue();
 						if (clazz.isInstance(value)) { //we only count asked class objects
 							find++;
@@ -187,7 +186,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 						}
 						//totalHits++;
 					}
-							
+
 				}
 				return list;
 			} finally {
@@ -197,13 +196,13 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 			throw new RuntimeException("findAll failed");
 		}
 	}
-	
+
 	/** {@inheritDoc} */
 	public void remove(final String key) {
 		try {
 			final DatabaseEntry theKey = new DatabaseEntry();
 			keyBinding.objectToEntry(key, theKey);
-			cacheDatas.delete(null, theKey);	
+			cacheDatas.delete(null, theKey);
 		} catch (final DatabaseException e) {
 			throw new RuntimeException(e);
 		}
@@ -291,7 +290,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 				// Finally, close the environment.
 				myEnv.close();
 			} catch (final DatabaseException dbe) {
-				logger.error("Error closing "+getClass().getSimpleName()+": " + dbe.toString(), dbe);
+				logger.error("Error closing " + getClass().getSimpleName() + ": " + dbe.toString(), dbe);
 			}
 		}
 	}
@@ -320,6 +319,5 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 		}
 		return db;
 	}
-
 
 }
