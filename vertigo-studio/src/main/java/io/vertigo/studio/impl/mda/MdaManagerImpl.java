@@ -18,7 +18,6 @@
  */
 package io.vertigo.studio.impl.mda;
 
-import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.studio.mda.Configuration;
 import io.vertigo.studio.mda.GeneratorPlugin;
@@ -35,37 +34,14 @@ import javax.inject.Inject;
  * 
  * @author pchretien, dchallas
  */
-public final class MdaManagerImpl implements MdaManager, Activeable {
+public final class MdaManagerImpl implements MdaManager {
 	private final List<GeneratorPlugin<Configuration>> generatorPlugins;
 
 	@Inject
 	public MdaManagerImpl(final List<GeneratorPlugin<Configuration>> generatorPlugins) {
 		Assertion.checkNotNull(generatorPlugins);
 		//---------------------------------------------------------------------
-		this.generatorPlugins = generatorPlugins;
-	}
-
-	/** {@inheritDoc} */
-	public void start() {
-		//Pour des raisons d'optimisation mémoire on ne garde pas la liste des plugins dans le manager.
-		//Car ceux ci ne sont utilisé qu'une seule fois.
-		//En revanche on test au démarrage la présence des class des plugins. (et on ne s'occupe pas du resultat)
-		//getGeneratorPlugins();
-	}
-
-	/** {@inheritDoc} */
-	public void stop() {
-		//
-	}
-
-	/** {@inheritDoc} */
-	public List<GeneratorPlugin<Configuration>> getGeneratorPlugins() {
-		//		final List<GeneratorPlugin<Configuration>> generatorPlugins = new ArrayList<GeneratorPlugin<Configuration>>();
-		//		for (final Plugin plugin : Home.getContainer().getPlugins(MdaManager.class)) {
-		//			Assertion.precondition(plugin instanceof GeneratorPlugin, "Les plugins doivent tous être des GeneratorPlugin ({0})", plugin.getClass().getName());
-		//			generatorPlugins.add((GeneratorPlugin<Configuration>) plugin);
-		//		}
-		return java.util.Collections.unmodifiableList(generatorPlugins);
+		this.generatorPlugins = java.util.Collections.unmodifiableList(generatorPlugins);
 	}
 
 	/** {@inheritDoc} */
@@ -73,7 +49,7 @@ public final class MdaManagerImpl implements MdaManager, Activeable {
 		//Création d'un objet listant les résultats
 		final Result result = new ResultImpl();
 		//Génèration des objets issus de la modélisation
-		for (final GeneratorPlugin<Configuration> generatorPlugin : getGeneratorPlugins()) {
+		for (final GeneratorPlugin<Configuration> generatorPlugin : generatorPlugins) {
 			final Configuration c = generatorPlugin.createConfiguration(properties);
 			generatorPlugin.generate(c, result);
 		}
