@@ -40,8 +40,8 @@ import java.util.Properties;
  */
 public final class AppBuilder {
 	private ComponentSpaceConfigBuilder componentSpaceConfigBuilder;
-	private boolean silence;
-	private final Properties envParams = new Properties();
+	private boolean mySilence;
+	private final Properties myEnvParams = new Properties();
 	private final List<URL> xmlUrls = new ArrayList<>();
 
 	/**
@@ -80,7 +80,7 @@ public final class AppBuilder {
 	 * @return this builder
 	 */
 	public AppBuilder withSilence(final boolean newSilence) {
-		silence = newSilence;
+		mySilence = newSilence;
 		return this;
 	}
 
@@ -97,11 +97,13 @@ public final class AppBuilder {
 
 	/**
 	 * Append EnvParams.
-	 * @param newEnvParams envParams
+	 * @param envParams envParams
 	 * @return this builder
 	 */
-	public AppBuilder withEnvParams(final Properties newEnvParams) {
-		envParams.putAll(newEnvParams);
+	public AppBuilder withEnvParams(final Properties envParams) {
+		Assertion.checkNotNull(envParams);
+		//---------------------------------------------------------------------
+		myEnvParams.putAll(envParams);
 		return this;
 	}
 
@@ -111,8 +113,10 @@ public final class AppBuilder {
 	 * @return this builder
 	 */
 	public AppBuilder withEnvParams(final Option<Properties> optionEnvParams) {
+		Assertion.checkNotNull(optionEnvParams);
+		//---------------------------------------------------------------------
 		if (optionEnvParams.isDefined()) {
-			envParams.putAll(optionEnvParams.get());
+			myEnvParams.putAll(optionEnvParams.get());
 		}
 		return this;
 	}
@@ -125,7 +129,7 @@ public final class AppBuilder {
 	 */
 	public AppBuilder withEnvParams(final Class<?> relativeRootClass, final Option<String> optionEnvParams) {
 		if (optionEnvParams.isDefined()) {
-			envParams.putAll(loadProperties(optionEnvParams.get(), relativeRootClass));
+			myEnvParams.putAll(loadProperties(optionEnvParams.get(), relativeRootClass));
 		}
 		return this;
 	}
@@ -138,7 +142,7 @@ public final class AppBuilder {
 	 */
 	public AppBuilder withEnvParams(final Class<?> relativeRootClass, final String... newEnvParams) {
 		for (final String newEnvParam : newEnvParams) {
-			envParams.putAll(loadProperties(newEnvParam, relativeRootClass));
+			myEnvParams.putAll(loadProperties(newEnvParam, relativeRootClass));
 		}
 		return this;
 	}
@@ -164,10 +168,10 @@ public final class AppBuilder {
 	public ComponentSpaceConfigBuilder toComponentSpaceConfigBuilder() {
 		Assertion.checkState(componentSpaceConfigBuilder != null, "componentSpaceConfigBuilder was not set, use build instead");
 		//---------------------------------------------------------------------
-		componentSpaceConfigBuilder.withSilence(silence); //
+		componentSpaceConfigBuilder.withSilence(mySilence); //
 		//1- if no xmlUrls we check if a property reference files
 		if (xmlUrls.isEmpty()) {
-			final String xmlFileNames = envParams.getProperty("applicationConfiguration");
+			final String xmlFileNames = myEnvParams.getProperty("applicationConfiguration");
 			Assertion.checkNotNull(xmlFileNames, "'applicationConfiguration' property not found in EnvironmentParams");
 			final String[] xmlFileNamesSplit = xmlFileNames.split(";");
 			withXmlFileNames(getClass(), xmlFileNamesSplit);
@@ -177,7 +181,7 @@ public final class AppBuilder {
 		Assertion.checkArgument(!xmlUrls.isEmpty(), "We need at least one Xml file");
 		final List<XMLModulesLoader> moduleLoaders = new ArrayList<>();
 		for (final URL xmlUrl : xmlUrls) {
-			moduleLoaders.add(new XMLModulesLoader(xmlUrl, envParams));
+			moduleLoaders.add(new XMLModulesLoader(xmlUrl, myEnvParams));
 		}
 		//.withRestEngine(new GrizzlyRestEngine(8086));
 		for (final XMLModulesLoader modulesLoader : moduleLoaders) {
@@ -204,7 +208,7 @@ public final class AppBuilder {
 		//1- build
 		//2- start
 		//3- return autoCloseable to stop Home
-		return new App(envParams, build());
+		return new App(myEnvParams, build());
 	}
 
 	private static Properties loadProperties(final String propertiesName, final Class<?> relativePathBase) {
