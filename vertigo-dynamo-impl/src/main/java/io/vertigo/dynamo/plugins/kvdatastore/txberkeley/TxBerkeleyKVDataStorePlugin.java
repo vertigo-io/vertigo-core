@@ -71,7 +71,7 @@ public final class TxBerkeleyKVDataStorePlugin implements KVDataStorePlugin, Act
 		this.transactionManager = transactionManager;
 		this.inMemory = inMemory;
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public String getStoreName() {
@@ -95,19 +95,18 @@ public final class TxBerkeleyKVDataStorePlugin implements KVDataStorePlugin, Act
 	 */
 	private void doStart(final boolean readOnly) throws DatabaseException {
 
-		final EnvironmentConfig environmentConfig = new EnvironmentConfig();
-		if (inMemory) {
-			environmentConfig.setConfigParam(EnvironmentConfig.LOG_MEM_ONLY, "true");
-		}
-		environmentConfig.setReadOnly(readOnly);
-		environmentConfig.setAllowCreate(!readOnly);
-		environmentConfig.setTransactional(!readOnly);
+		final EnvironmentConfig environmentConfig = new EnvironmentConfig()//
+				.setConfigParam(EnvironmentConfig.LOG_MEM_ONLY, inMemory ? "true" : "false")//
+				.setReadOnly(readOnly)//
+				.setAllowCreate(!readOnly)//
+				.setTransactional(!readOnly);//
+
 		environment = new Environment(dbFile, environmentConfig);
 
-		final DatabaseConfig databaseConfig = new DatabaseConfig();
-		databaseConfig.setReadOnly(readOnly);
-		databaseConfig.setAllowCreate(!readOnly);
-		databaseConfig.setTransactional(!readOnly);
+		final DatabaseConfig databaseConfig = new DatabaseConfig()//
+				.setReadOnly(readOnly)//
+				.setAllowCreate(!readOnly)//
+				.setTransactional(!readOnly);
 
 		database = environment.openDatabase(null, "MyDB", databaseConfig);
 	}
