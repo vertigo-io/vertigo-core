@@ -42,8 +42,8 @@ import io.vertigo.kernel.lang.Option;
  */
 final class BrokerImpl implements Broker {
 	/** Le store est le point d'accès unique à la base (sql, xml, fichier plat...). */
-	private final DataStore store; //Jamais null
-	private final FileStore fileStore; //Jamais null
+	private final DataStore dataStore;
+	private final FileStore fileStore;
 
 	/**
 	 * Constructeur. 
@@ -56,8 +56,8 @@ final class BrokerImpl implements Broker {
 		//On vérouille la configuration.
 		//brokerConfiguration.lock();
 		//On crée la pile de Store.
-		final DataStore logicalStore = new LogicalDataStore(brokerConfiguration.getLogicalStoreConfiguration(), this);
-		store = new CacheDataStore(logicalStore, brokerConfiguration.getCacheStoreConfiguration());
+		final DataStore logicalDataStore = new LogicalDataStore(brokerConfiguration.getLogicalStoreConfiguration(), this);
+		dataStore = new CacheDataStore(logicalDataStore, brokerConfiguration.getCacheStoreConfiguration());
 		fileStore = new LogicalFileStore(brokerConfiguration.getLogicalFileStoreConfiguration());
 	}
 
@@ -68,7 +68,7 @@ final class BrokerImpl implements Broker {
 	public void save(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//----------------------------------------------------------------------
-		store.put(dto);
+		dataStore.put(dto);
 
 	}
 
@@ -83,14 +83,14 @@ final class BrokerImpl implements Broker {
 	public void merge(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//----------------------------------------------------------------------
-		store.merge(dto);
+		dataStore.merge(dto);
 	}
 
 	/** {@inheritDoc} */
 	public void delete(final URI<? extends DtObject> uri) {
 		Assertion.checkNotNull(uri);
 		//----------------------------------------------------------------------
-		store.remove(uri);
+		dataStore.remove(uri);
 	}
 
 	/** {@inheritDoc} */
@@ -107,7 +107,7 @@ final class BrokerImpl implements Broker {
 	public <D extends DtObject> Option<D> getOption(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
 		//----------------------------------------------------------------------
-		final D dto = store.<D> load(uri);
+		final D dto = dataStore.<D> load(uri);
 		//----------------------------------------------------------------------
 		return Option.option(dto);
 	}
@@ -118,7 +118,7 @@ final class BrokerImpl implements Broker {
 		//----------------------------------------------------------------------
 		//on ne reutilise pas le getOption volontairement 
 		//car c'est ici le cas le plus courant, et on l'optimise au maximum
-		final D dto = store.<D> load(uri);
+		final D dto = dataStore.<D> load(uri);
 		//----------------------------------------------------------------------
 		Assertion.checkNotNull(dto, "L''objet {0} n''a pas été trouvé", uri);
 		return dto;
@@ -138,7 +138,7 @@ final class BrokerImpl implements Broker {
 	public <D extends DtObject> DtList<D> getList(final DtListURI uri) {
 		Assertion.checkNotNull(uri);
 		//----------------------------------------------------------------------
-		final DtList<D> dtc = store.loadList(uri);
+		final DtList<D> dtc = dataStore.loadList(uri);
 		//----------------------------------------------------------------------
 		Assertion.checkNotNull(dtc);
 		return dtc;
@@ -147,7 +147,7 @@ final class BrokerImpl implements Broker {
 	/** {@inheritDoc} */
 	@Deprecated
 	public <D extends DtObject> DtList<D> getList(final DtDefinition dtDefinition, final Criteria<D> criteria, final Integer maxRows) {
-		final DtList<D> dtc = store.loadList(dtDefinition, criteria, maxRows);
+		final DtList<D> dtc = dataStore.loadList(dtDefinition, criteria, maxRows);
 		//----------------------------------------------------------------------
 		Assertion.checkNotNull(dtc);
 		return dtc;
@@ -155,6 +155,6 @@ final class BrokerImpl implements Broker {
 
 	/** {@inheritDoc} */
 	public int count(final DtDefinition dtDefinition) {
-		return store.count(dtDefinition);
+		return dataStore.count(dtDefinition);
 	}
 }
