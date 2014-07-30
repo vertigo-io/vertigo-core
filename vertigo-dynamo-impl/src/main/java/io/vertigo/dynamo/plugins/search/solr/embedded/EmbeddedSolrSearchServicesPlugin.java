@@ -22,6 +22,7 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.dynamo.plugins.search.solr.AbstractSolrSearchServicesPlugin;
+import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.io.File;
@@ -40,7 +41,7 @@ import org.apache.solr.core.CoreContainer;
  * 
  * @author pchretien
  */
-public final class EmbeddedSolrSearchServicesPlugin extends AbstractSolrSearchServicesPlugin {
+public final class EmbeddedSolrSearchServicesPlugin extends AbstractSolrSearchServicesPlugin implements Activeable {
 	/** url du serveur solr.  */
 	private final URL solrHomeURL;
 	/** Conteneur multi coeurs - c'est à dire multi index*/
@@ -64,15 +65,13 @@ public final class EmbeddedSolrSearchServicesPlugin extends AbstractSolrSearchSe
 	}
 
 	/** {@inheritDoc} */
-	@Override
-	protected void doStart() {
+	public void start() {
 		//Création du conteneur multi core
 		container = createCoreContainer(solrHomeURL);
 	}
 
 	/** {@inheritDoc} */
-	@Override
-	protected void doStop() {
+	public void stop() {
 		container.shutdown();
 	}
 

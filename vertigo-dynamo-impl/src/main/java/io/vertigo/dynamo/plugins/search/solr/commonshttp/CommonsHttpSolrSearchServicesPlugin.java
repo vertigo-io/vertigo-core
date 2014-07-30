@@ -56,18 +56,6 @@ public final class CommonsHttpSolrSearchServicesPlugin extends AbstractSolrSearc
 
 	/** {@inheritDoc} */
 	@Override
-	protected void doStart() {
-		//ras
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	protected void doStop() {
-		//ras
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	protected SolrServer createSolrServer(final String core) {
 		return new HttpSolrServer(serverURL + '/' + core);
 	}

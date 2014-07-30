@@ -28,7 +28,6 @@ import io.vertigo.dynamo.impl.database.statement.KCallableStatementImpl;
 import io.vertigo.dynamo.impl.database.statement.KPreparedStatementImpl;
 import io.vertigo.dynamo.impl.database.statement.StatementHandler;
 import io.vertigo.dynamo.impl.database.statementhandler.StatementHandlerImpl;
-import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 
 import javax.inject.Inject;
@@ -38,11 +37,10 @@ import javax.inject.Inject;
 *
 * @author pchretien
 */
-public final class DataBaseManagerImpl implements DataBaseManager, Activeable {
+public final class DataBaseManagerImpl implements DataBaseManager {
 	private final DataBaseListenerImpl dataBaseListener;
 	private final StatementHandler statementHandler;
 	private final ConnectionProviderPlugin connectionProviderPlugin;
-	private final LocaleManager localeManager;
 
 	/**
 	 * Constructeur.
@@ -57,18 +55,8 @@ public final class DataBaseManagerImpl implements DataBaseManager, Activeable {
 		//---------------------------------------------------------------------
 		dataBaseListener = new DataBaseListenerImpl(analyticsManager);
 		statementHandler = new StatementHandlerImpl();
-		this.localeManager = localeManager;
 		this.connectionProviderPlugin = connectionProviderPlugin;
-	}
-
-	/** {@inheritDoc} */
-	public void start() {
 		localeManager.add("io.vertigo.dynamo.impl.database.DataBase", io.vertigo.dynamo.impl.database.Resources.values());
-	}
-
-	/** {@inheritDoc} */
-	public void stop() {
-		//
 	}
 
 	/** {@inheritDoc} */

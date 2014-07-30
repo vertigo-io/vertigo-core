@@ -29,10 +29,8 @@ import io.vertigo.dynamo.search.SearchServicesPlugin;
 import io.vertigo.dynamo.search.metamodel.IndexDefinition;
 import io.vertigo.dynamo.search.model.Index;
 import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -44,13 +42,12 @@ import org.apache.solr.client.solrj.SolrServer;
  * Gestion de la connexion au serveur Solr de manière transactionnel.
  * @author dchallas
  */
-public abstract class AbstractSolrSearchServicesPlugin implements SearchServicesPlugin, Activeable {
+public abstract class AbstractSolrSearchServicesPlugin implements SearchServicesPlugin {
 	private static final IndexFieldNameResolver DEFAULT_INDEX_FIELD_NAME_RESOLVER = new IndexFieldNameResolver(Collections.<String, String> emptyMap());
 
 	private final CodecManager codecManager;
 	private final Map<String, SolrServer> solrServerMap;
 	private final Map<String, IndexFieldNameResolver> indexFieldNameResolverMap;
-	private final String[] cores;
 	private final int rowsPerQuery;
 
 	/**
@@ -63,22 +60,11 @@ public abstract class AbstractSolrSearchServicesPlugin implements SearchServices
 		Assertion.checkNotNull(cores);
 		Assertion.checkNotNull(codecManager);
 		//---------------------------------------------------------------------
-		this.cores = Arrays.copyOf(cores, cores.length);
 		this.rowsPerQuery = rowsPerQuery;
 		this.codecManager = codecManager;
 		solrServerMap = new HashMap<>();
 		indexFieldNameResolverMap = new HashMap<>();
-	}
-
-	protected abstract void doStart();
-
-	protected abstract void doStop();
-
-	protected abstract SolrServer createSolrServer(String core);
-
-	/** {@inheritDoc} */
-	public final void start() {
-		doStart();
+		//------
 		//SOLR appelle constitue un server par indexe/Core
 		for (final String splitedCore : cores) {
 			//on trim pour le cas, car le split peut avoir laisser des espaces
@@ -87,10 +73,7 @@ public abstract class AbstractSolrSearchServicesPlugin implements SearchServices
 		}
 	}
 
-	/** {@inheritDoc} */
-	public final void stop() {
-		doStop();
-	}
+	protected abstract SolrServer createSolrServer(String core);
 
 	private <I extends DtObject, R extends DtObject> SolrStatement<I, R> createSolrStatement(final IndexDefinition indexDefinition) {
 		Assertion.checkNotNull(indexDefinition);
