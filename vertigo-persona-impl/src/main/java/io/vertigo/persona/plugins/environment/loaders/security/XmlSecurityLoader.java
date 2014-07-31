@@ -39,8 +39,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- * Plugin XML chargeant la registry � partir d'un fichier XML
- * La d�finition du fichier XML est d�crite dans le fichier authorisation-config_1_0.dtd
+ * Plugin XML chargeant la registry à partir d'un fichier XML
+ * La définition du fichier XML est décrite dans le fichier authorisation-config_1_0.dtd
  * Un exemple de fichier:
  * 
  * <authorisation-config>	
@@ -50,7 +50,7 @@ import org.xml.sax.SAXException;
  *	
  *	<!--  Permissions -->	
  *	<permission id="read_all_products" operation="read" resource="all_products" description="Lire tous les produits"/>		
- *	<permission id="write_all_products" operation="write" resource="all_products" description="Cr�er/Modifier un produit"/>				
+ *	<permission id="write_all_products" operation="write" resource="all_products" description="Créer/Modifier un produit"/>				
  *	
  *	<!-- Roles -->
  *	<role name="reader" description="Lecteur de l'application">	  	   

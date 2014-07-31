@@ -36,7 +36,7 @@ import java.util.UUID;
  * <ul>
  * <li>est authentifie ou non,</li>
  * <li>possede une liste de roles (prealablement enregistres dans la RoleRegistry),</li>
- * <li>poss�de une liste d'attributs serialisables</li>.
+ * <li>possède une liste d'attributs serialisables</li>.
  * </ul>
  *
  * @author alauthier, pchretien
@@ -129,16 +129,16 @@ public abstract class UserSession implements Serializable {
 
 	/**
 	 * Indique si l'utilisateur est authentifie.
-	 * L'authentification est act�e par l'appel de la m�thode <code>authenticate()</code>
+	 * L'authentification est actée par l'appel de la méthode <code>authenticate()</code>
 	 *
-	 * @return boolean Si l'utilisateur s'est authentifi�.
+	 * @return boolean Si l'utilisateur s'est authentifié.
 	 */
 	public final boolean isAuthenticated() {
 		return authenticated;
 	}
 
 	/**
-	 * M�thode permettant d'indiquer que l'utilisateur est authentifi�.
+	 * Méthode permettant d'indiquer que l'utilisateur est authentifié.
 	 */
 	public final void authenticate() {
 		authenticated = true;
@@ -146,14 +146,14 @@ public abstract class UserSession implements Serializable {
 
 	/**
 	 * Gestion multilingue.
-	 * Local associ�e � l'utilisateur.
-	 * @return Locale associ�e � l'utilisateur.
+	 * Local associée à l'utilisateur.
+	 * @return Locale associée à l'utilisateur.
 	 */
 	public abstract Locale getLocale();
 
 	/**
-	 * Gestion de la s�curit�.
-	 * @return Liste des cl�s de s�curit� et leur valeur.
+	 * Gestion de la sécurité.
+	 * @return Liste des clés de sécurité et leur valeur.
 	 */
 	public Map<String, String> getSecurityKeys() {
 		return Collections.emptyMap();

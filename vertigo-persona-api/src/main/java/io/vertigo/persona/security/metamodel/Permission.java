@@ -23,7 +23,7 @@ import io.vertigo.kernel.metamodel.Definition;
 import io.vertigo.kernel.stereotype.Prefix;
 
 /**
- * Une permission est l'association d'une op�ration et d'une ressource.
+ * Une permission est l'association d'une opération et d'une ressource.
  * 
  * @author prahmoune
  * @version $Id: Permission.java,v 1.3 2013/10/22 12:35:39 pchretien Exp $ 

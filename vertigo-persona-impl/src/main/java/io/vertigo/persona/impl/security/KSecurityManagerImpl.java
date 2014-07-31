@@ -100,7 +100,7 @@ public final class KSecurityManagerImpl implements KSecurityManager, Activeable 
 	/** {@inheritDoc} */
 	public void startCurrentUserSession(final UserSession user) {
 		Assertion.checkNotNull(user);
-		//On verifie que la UserSession precedante a bien �te retiree (securite et memoire).
+		//On verifie que la UserSession precedante a bien été retiree (securite et memoire).
 		if (USER_SESSION_THREAD_LOCAL.get() != null) {
 			throw new IllegalStateException("UserSession deje creee, verifier l'utilisation du stopCurrentUserSession dans un block finally ");
 		}
@@ -143,8 +143,8 @@ public final class KSecurityManagerImpl implements KSecurityManager, Activeable 
 
 	/** {@inheritDoc} */
 	public boolean isAuthorized(final String resource, final String operation) {
-		// Note: il s'agit d'une implementation na�ve non optimisee,
-		// r�alis�e pour valider le mod�le
+		// Note: il s'agit d'une implementation naïve non optimisee,
+		// réalisée pour valider le modèle
 		final Option<UserSession> userSessionOption = getCurrentUserSession();
 
 		if (userSessionOption.isEmpty()) {
@@ -184,7 +184,7 @@ public final class KSecurityManagerImpl implements KSecurityManager, Activeable 
 		while (nextIndex >= 0) {
 			personalFilter.append(filter.substring(previousIndex, nextIndex));
 			final int endIndex = filter.indexOf("}", nextIndex + "${".length());
-			Assertion.checkState(endIndex >= nextIndex, "missing \\} : {0} � {1}", filter, nextIndex);
+			Assertion.checkState(endIndex >= nextIndex, "missing \\} : {0} à {1}", filter, nextIndex);
 			final String key = filter.substring(nextIndex + "${".length(), endIndex);
 			final String securityValue = securityKeys.get(key); //peut etre null, ce qui donnera /null/
 			personalFilter.append(securityValue);
@@ -200,7 +200,7 @@ public final class KSecurityManagerImpl implements KSecurityManager, Activeable 
 	/** {@inheritDoc} */
 	public boolean isAuthorized(final String resourceType, final Object resource, final String operation) {
 		final ResourceNameFactory resourceNameFactory = resourceNameFactories.get(resourceType);
-		Assertion.checkNotNull(resourceNameFactory, "Ce type de resource : {0}, ne poss�de pas de ResourceNameFactory.", resourceType);
+		Assertion.checkNotNull(resourceNameFactory, "Ce type de resource : {0}, ne possède pas de ResourceNameFactory.", resourceType);
 		final String resourceName = resourceNameFactory.toResourceName(resource);
 		return isAuthorized(resourceName, operation);
 	}

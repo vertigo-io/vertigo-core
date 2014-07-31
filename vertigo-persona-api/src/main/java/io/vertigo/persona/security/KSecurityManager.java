@@ -61,22 +61,22 @@ public interface KSecurityManager extends Manager {
 	<U extends UserSession> U createUserSession();
 
 	/**
-	 * Contr�le d'acc�s bas� sur les r�les.
+	 * Contrôle d'accès basé sur les rôles.
 	 * 
-	 * L'utilisateur dispose-t-il des droits n�cessaires.
+	 * L'utilisateur dispose-t-il des droits nécessaires.
 	 * <br/>
 	 * <ul>
-	 * <li>Si la liste des r�les autoris�s est vide, on consid�re que l'objet n'est pas soumis � autorisation et donc l'acc�s est accord�.</li>
-	 * <li>Si la liste contient au moins un �l�ment alors l'objet est s�curis� et il est n�cessaire que
-	 * l'utilisateur dispose d'au moins un des r�les autoris�s pour que l'acc�s soit accord�.</li>
+	 * <li>Si la liste des rôles autorisés est vide, on considère que l'objet n'est pas soumis à autorisation et donc l'accès est accordé.</li>
+	 * <li>Si la liste contient au moins un élément alors l'objet est sécurisé et il est nécessaire que
+	 * l'utilisateur dispose d'au moins un des rôles autorisés pour que l'accès soit accordé.</li>
 	 * </ul>
 	 *
-	 * La fonction d'acc�s autorise la session utilisateur <code>null</code> : il faut alors que la liste des droits soit vide.
+	 * La fonction d'accès autorise la session utilisateur <code>null</code> : il faut alors que la liste des droits soit vide.
 	 *
 	 * @param userSession Session utilisateur. (non null)
-	 * @param authorizedRoleSet Set des roles autoris�s. (non null)
+	 * @param authorizedRoleSet Set des roles autorisés. (non null)
 	 *
-	 * @return Si les droits de l'utilisateur lui permettent un acc�s.
+	 * @return Si les droits de l'utilisateur lui permettent un accès.
 	 */
 	boolean hasRole(UserSession userSession, Set<Role> authorizedRoleSet);
 
@@ -89,27 +89,27 @@ public interface KSecurityManager extends Manager {
 	 * @param resource la ressource
 	 * @param operation l'operation
 	 * @return true si l'utilisateur courant a la permission d'effectuer l'operation
-	 * donn�e sur la ressource donnee
+	 * donnée sur la ressource donnee
 	 */
 	boolean isAuthorized(String resource, String operation);
 
 	/**
-	 * Contr�le d'acc�s bas� sur les permissions.
+	 * Contrôle d'accès basé sur les permissions.
 	 * 
-	 * Indique si l'utilisateur courant a la permission d'effectuer l'op�ration
-	 * donn�e sur la ressource donn�e.
+	 * Indique si l'utilisateur courant a la permission d'effectuer l'opération
+	 * donnée sur la ressource donnée.
 	 * @param resourceType Type de la resource
 	 * @param resource la ressource
-	 * @param operation l'op�ration
-	 * @return true si l'utilisateur courant a la permission d'effectuer l'op�ration
-	 * donn�e sur la ressource donn�e
+	 * @param operation l'opération
+	 * @return true si l'utilisateur courant a la permission d'effectuer l'opération
+	 * donnée sur la ressource donnée
 	 */
 	boolean isAuthorized(String resourceType, Object resource, String operation);
 
 	/**
-	 * Enregistre une ResourceNameFactory sp�cifique pour un type donn�e.
+	 * Enregistre une ResourceNameFactory spécifique pour un type donnée.
 	 * @param resourceType Type de la resource
-	 * @param resourceNameFactory ResourceNameFactory sp�cifique
+	 * @param resourceNameFactory ResourceNameFactory spécifique
 	 */
 	void registerResourceNameFactory(final String resourceType, final ResourceNameFactory resourceNameFactory);
 }

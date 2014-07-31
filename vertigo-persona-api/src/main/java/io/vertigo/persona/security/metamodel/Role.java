@@ -26,8 +26,8 @@ import java.util.List;
 
 
 /**
- * Un r�le est la r�union d'un ensemble de permissions. 
- * Un utilisateur peut avoir  plusieurs r�les.
+ * Un rôle est la réunion d'un ensemble de permissions. 
+ * Un utilisateur peut avoir  plusieurs rôles.
  * 
  * @author prahmoune
  * @version $Id: Role.java,v 1.3 2013/10/22 12:35:39 pchretien Exp $ 
@@ -41,9 +41,9 @@ public final class Role implements Definition {
 	/**
 	 * Constructeur.
 	 * 
-	 * @param name Nom du r�le
-	 * @param description Description du r�le
-	 * @param permissions Liste des permissions associ�es au r�le
+	 * @param name Nom du rôle
+	 * @param description Description du rôle
+	 * @param permissions Liste des permissions associées au rôle
 	 */
 	public Role(final String name, final String description, final List<Permission> permissions) {
 		Assertion.checkArgNotEmpty(name);
@@ -70,7 +70,7 @@ public final class Role implements Definition {
 	}
 
 	/**
-	 * @return Nom du r�le
+	 * @return Nom du rôle
 	 */
 	public String getName() {
 		return name;

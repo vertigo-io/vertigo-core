@@ -35,8 +35,8 @@ public final class BeanResourceNameFactory implements ResourceNameFactory {
 
 	/**
 	 * Constructeur.
-	 * Prend en entr�e le pattern de la chaine de resource � produire. 
-	 * Il peut �tre param�tr� avec des propri�t�s de l'objet avec la syntaxe : ${maPropriete}
+	 * Prend en entrée le pattern de la chaine de resource à produire. 
+	 * Il peut être paramétré avec des propriétés de l'objet avec la syntaxe : ${maPropriete}
 	 * @param securityPattern Pattern de la resource.
 	 */
 	public BeanResourceNameFactory(final String securityPattern) {
