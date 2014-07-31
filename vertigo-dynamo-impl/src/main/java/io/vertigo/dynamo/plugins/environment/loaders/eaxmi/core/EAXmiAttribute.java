@@ -36,7 +36,7 @@ public final class EAXmiAttribute {
 		Assertion.checkArgNotEmpty(code);
 		Assertion.checkArgNotEmpty(label);
 		Assertion.checkArgNotEmpty(code);
-		Assertion.checkArgNotEmpty(domain, "Le domain du champ '{0}' a �t� oubli�.", label);
+		Assertion.checkArgNotEmpty(domain, "Le domain du champ '{0}' a été oublié.", label);
 		//----------------------------------------------------------------------
 		this.code = code;
 		this.label = label;
@@ -52,7 +52,7 @@ public final class EAXmiAttribute {
 	}
 
 	/**
-	 * @return Libell�.
+	 * @return Libellé.
 	 */
 	public String getLabel() {
 		return label;
@@ -62,7 +62,7 @@ public final class EAXmiAttribute {
 	 * @return Si l'attribut est persistent.
 	 */
 	public boolean isPersistent() {
-		// L'information de persistence ne peut pas �tre d�duite du Xmi, tous les champs sont d�clar�s persistent de facto
+		// L'information de persistence ne peut pas être déduite du Xmi, tous les champs sont déclarés persistent de facto
 		return true;
 	}
 

@@ -22,23 +22,23 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Interface que doivent impl�menter les contr�leurs poss�dant une action d'export.
+ * Interface que doivent implémenter les contrôleurs possédant une action d'export.
  * 
  * @version $Id: ListExporter.java,v 1.1 2013/07/10 15:46:44 npiedeloup Exp $
  */
 public interface ListExporter {
 
 	/**
-	 * Retourne le nom du fichier r�sultat de l'export.
+	 * Retourne le nom du fichier résultat de l'export.
 	 * 
-	 * @return nom du fichier r�sultat de l'export
+	 * @return nom du fichier résultat de l'export
 	 */
 	String getFileNameToExport();
 
 	/**
-	 * Retourne le nom du document r�sultat de l'export.<br/>
+	 * Retourne le nom du document résultat de l'export.<br/>
 	 * 
-	 * @return nom du document r�sultat de l'export
+	 * @return nom du document résultat de l'export
 	 */
 	String getDocumentTitle();
 

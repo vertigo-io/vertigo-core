@@ -45,12 +45,12 @@ import java.util.Map;
  */
 final class CSVExporter {
 	/**
-	 * S�parateur csv : par d�faut ";".
+	 * Séparateur csv : par défaut ";".
 	 */
 	private static final String SEPARATOR = ";";
 
 	/**
-	 * Caract�re de fin de ligne
+	 * Caractère de fin de ligne
 	 */
 	private static final String END_LINE = "" + (char) 13 + (char) 10;
 
@@ -77,9 +77,9 @@ final class CSVExporter {
 	}
 
 	/**
-	 * M�thode principale qui g�re l'export d'un tableau vers un fichier CVS.
-	 * On ajoute le BOM UTF8 si le fichier est g�n�r� en UTF-8 pour une bonne ouverture dans Excel.
-	 * @param documentParameters Param�tres du document � exporter
+	 * Méthode principale qui gère l'export d'un tableau vers un fichier CVS.
+	 * On ajoute le BOM UTF8 si le fichier est généré en UTF-8 pour une bonne ouverture dans Excel.
+	 * @param documentParameters Paramètres du document à exporter
 	 * @param out Flux de sortie
 	 * @throws IOException Exception d'ecriture
 	 */
@@ -101,10 +101,10 @@ final class CSVExporter {
 	}
 
 	/**
-	 * R�alise l'export des donn�es d'en-t�te.
+	 * Réalise l'export des données d'en-tête.
 	 * @param parameters de cet export
-	 * @param out Le flux d'�criture des donn�es export�es.
-	 * @throws IOException Exception lors de l'�criture dans le flux.
+	 * @param out Le flux d'écriture des données exportées.
+	 * @throws IOException Exception lors de l'écriture dans le flux.
 	 */
 	private void exportHeader(final ExportDtParametersReadable parameters, final Writer out) throws IOException {
 		final String title = parameters.getTitle();
@@ -123,10 +123,10 @@ final class CSVExporter {
 	}
 
 	/**
-	 * R�alise l'export des donn�es de contenu.
+	 * Réalise l'export des données de contenu.
 	 * @param parameters de cet export
-	 * @param out Le flux d'�criture des donn�es export�es.
-	 * @throws IOException Exception lors de l'�criture dans le flux.
+	 * @param out Le flux d'écriture des données exportées.
+	 * @throws IOException Exception lors de l'écriture dans le flux.
 	 */
 	private void exportData(final ExportDtParametersReadable parameters, final Writer out) throws IOException {
 		// Parcours des DTO de la DTC
@@ -147,7 +147,7 @@ final class CSVExporter {
 			out.write(sep);
 			sValue = exportHelper.getText(referenceCache, denormCache, dto, exportColumn);
 			// si toutes les colonnes de cette ligne sont vides,
-			// on n'obtient pas une ligne correctement format�e ...
+			// on n'obtient pas une ligne correctement formatée ...
 			if ("".equals(sValue)) {
 				sValue = " ";
 			}
@@ -162,10 +162,10 @@ final class CSVExporter {
 	}
 
 	/**
-	 * Encode la cha�ne export�e en csv.
+	 * Encode la chaîne exportée en csv.
 	 *
-	 * @param str La cha�ne � encoder.
-	 * @return La cha�ne encod�e.
+	 * @param str La chaîne à encoder.
+	 * @return La chaîne encodée.
 	 */
 	private String encodeString(final String str) {
 		return '\"' + csvEncoder.encode(str) + '\"';
@@ -173,10 +173,10 @@ final class CSVExporter {
 	}
 
 	/**
-	 * Encode la cha�ne export�e en csv.
+	 * Encode la chaîne exportée en csv.
 	 *
-	 * @param str La cha�ne � encoder.
-	 * @return La cha�ne encod�e.
+	 * @param str La chaîne à encoder.
+	 * @return La chaîne encodée.
 	 */
 	private String encodeNumber(final String str) {
 		return encodeString(str).replace('.', ',');

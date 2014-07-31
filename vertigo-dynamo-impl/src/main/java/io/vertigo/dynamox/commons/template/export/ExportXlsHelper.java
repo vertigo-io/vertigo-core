@@ -46,7 +46,7 @@ public class ExportXlsHelper<R extends DtObject> {
 	/**
 	 * Constructeur.
 	 * 
-	 * @param fileName nom du fichier r�sultat de l'export
+	 * @param fileName nom du fichier résultat de l'export
 	 * @param title titre de la feuille principale de l'export
 	 */
 	public ExportXlsHelper(final ExportManager exportManager, final String fileName, final String title) {
@@ -130,9 +130,9 @@ public class ExportXlsHelper<R extends DtObject> {
 	}
 
 	/**
-	 * Traduit la liste des champs � exporter en liste de DtField.
-	 * @param list Liste � exporter
-	 * @param collectionColumnNameList Liste des noms de champs � exporter
+	 * Traduit la liste des champs à exporter en liste de DtField.
+	 * @param list Liste à exporter
+	 * @param collectionColumnNameList Liste des noms de champs à exporter
 	 * @return Liste des DtField correspondant
 	 */
 	private List<DtField> getExportColumnList(final DtList<R> list, final List<String> collectionColumnNameList) {
@@ -145,10 +145,10 @@ public class ExportXlsHelper<R extends DtObject> {
 	}
 
 	/**
-	 * D�termine la liste des champs du crit�re � exporter en liste de DtField.
-	 * @param dto DtObject � exporter
-	 * @param criterionExcludedColumnNameList Liste des noms de champs � NE PAS exporter
-	 * @return Liste des DtField � exporter
+	 * Détermine la liste des champs du critère à exporter en liste de DtField.
+	 * @param dto DtObject à exporter
+	 * @param criterionExcludedColumnNameList Liste des noms de champs à NE PAS exporter
+	 * @return Liste des DtField à exporter
 	 */
 	private List<DtField> getExportCriterionFields(final DtObject dto, final List<String> criterionExcludedColumnNameList) {
 		final List<DtField> exportColumnList = new ArrayList<>();

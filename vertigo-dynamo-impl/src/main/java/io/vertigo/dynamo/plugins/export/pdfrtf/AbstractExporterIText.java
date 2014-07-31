@@ -69,9 +69,9 @@ public abstract class AbstractExporterIText {
 	protected abstract void createWriter(final Document document, final OutputStream out) throws DocumentException;
 
 	/**
-	 * M�thode principale qui g�re l'export d'un tableau vers un fichier ODS.
+	 * Méthode principale qui gère l'export d'un tableau vers un fichier ODS.
 	 * 
-	 * @param documentParameters param�tres du document � exporter
+	 * @param documentParameters paramètres du document à exporter
 	 * @param out flux de sortie
 	 */
 	public final void exportData(final Export documentParameters, final OutputStream out) throws DocumentException {
@@ -97,7 +97,7 @@ public abstract class AbstractExporterIText {
 		document.addCreator(CREATOR);
 		document.open();
 		try {
-			// pour ajouter l'ouverture automatique de la bo�te de dialogue imprimer
+			// pour ajouter l'ouverture automatique de la boîte de dialogue imprimer
 			// (print(false) pour imprimer directement)
 			// ((PdfWriter) writer).addJavaScript("this.print(true);", false);
 
@@ -124,7 +124,7 @@ public abstract class AbstractExporterIText {
 
 	/**
 	 * Effectue le rendu des headers.
-	 * @param parameters Param�tres
+	 * @param parameters Paramètres
 	 * @param datatable Table
 	 */
 	private static void renderHeaders(final ExportDtParametersReadable parameters, final Table datatable) throws BadElementException {
@@ -147,7 +147,7 @@ public abstract class AbstractExporterIText {
 
 	/**
 	 * Effectue le rendu de la liste.
-	 * @param parameters Param�tres
+	 * @param parameters Paramètres
 	 * @param datatable Table
 	 */
 	private void renderList(final ExportDtParametersReadable parameters, final Table datatable) throws BadElementException {

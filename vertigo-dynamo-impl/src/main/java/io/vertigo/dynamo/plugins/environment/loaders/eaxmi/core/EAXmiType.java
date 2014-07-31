@@ -19,28 +19,28 @@
 package io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core;
 
 /**
- * Type d'objets du XMI g�r�.
+ * Type d'objets du XMI géré.
  * @author pforhan
  */
 public enum EAXmiType {
 	/**
-	 * Objet Xmi d�crivant un Package >>Package.
+	 * Objet Xmi décrivant un Package >>Package.
 	 */
 	Package("uml:Package"),
 	/**
-	 * Objet Xmi d�crivant une Classe >> DtDefinition.
+	 * Objet Xmi décrivant une Classe >> DtDefinition.
 	 */
 	Class("uml:Class"),
 	/**
-	 * Objet Xmi d�crivant un Attibut d'une Classe >> DtField.
+	 * Objet Xmi décrivant un Attibut d'une Classe >> DtField.
 	 */
 	Attribute("uml:Property"),
 	/**
-	 * Objet Xmi d�crivant une Association >> Association.
+	 * Objet Xmi décrivant une Association >> Association.
 	 */
 	Association("uml:Association"),
 	/**
-	 * Tag Xmi pour un �l�ment � traiter.
+	 * Tag Xmi pour un élément à traiter.
 	 */
 	PackageElement("packageElement"),
 	/**
@@ -81,7 +81,7 @@ public enum EAXmiType {
 		} else if (Connector.getCode().equals(name)) {
 			type = Association;
 		} else {
-			//rien trouv�
+			//rien trouvé
 			type = null;
 		}
 		return type;

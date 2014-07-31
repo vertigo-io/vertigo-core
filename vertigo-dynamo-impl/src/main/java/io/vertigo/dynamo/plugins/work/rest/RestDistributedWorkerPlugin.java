@@ -34,7 +34,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * Ex�cution synchrone et distante des Works avec un transfert par WS REST.
+ * Exécution synchrone et distante des Works avec un transfert par WS REST.
  * 
  * @author npiedeloup, pchretien
  * @version $Id: RestDistributedWorkerPlugin.java,v 1.13 2014/02/27 10:31:19 pchretien Exp $
@@ -48,7 +48,7 @@ public final class RestDistributedWorkerPlugin implements DistributedWorkerPlugi
 	/**
 	 * Constructeur.
 	 * @param timeoutSeconds Timeout des travaux en attente de traitement
-	 * @param workTypesAsString Liste des types de work distribu�s (s�parateur ;)
+	 * @param workTypesAsString Liste des types de work distribués (séparateur ;)
 	 * @param codecManager Manager d'encodage/decodage
 	 */
 	@Inject
@@ -64,7 +64,7 @@ public final class RestDistributedWorkerPlugin implements DistributedWorkerPlugi
 	}
 
 	/**
-	 * @return Serveur REST de la WorkQueue. (appell�e par l'impl� Jersey)
+	 * @return Serveur REST de la WorkQueue. (appelée par l'implé Jersey)
 	 */
 	public WorkQueueRestServer getWorkQueueRestServer() {
 		return workQueueRestServer;
@@ -92,9 +92,9 @@ public final class RestDistributedWorkerPlugin implements DistributedWorkerPlugi
 		final WorkResultHandlerSync<WR> workResultHandler = new WorkResultHandlerSync<>();
 		final WorkItem<WR, W> workItem = new WorkItem<>(workitem2.getWork(), workitem2.getWorkEngineProvider(), workResultHandler);
 		multipleWorkQueues.putWorkItem(obtainWorkType(workitem2.getWorkEngineProvider()), workItem);
-		workResultHandler.waitResult(timeoutSeconds); //on attend le r�sultat
+		workResultHandler.waitResult(timeoutSeconds); //on attend le résultat
 		//---
-		workitem2.setResult(workResultHandler.getResultOrThrowError());//retourne le r�sultat ou lance l'erreur
+		workitem2.setResult(workResultHandler.getResultOrThrowError());//retourne le résultat ou lance l'erreur
 	}
 
 	/** {@inheritDoc} */
@@ -128,15 +128,15 @@ public final class RestDistributedWorkerPlugin implements DistributedWorkerPlugi
 				try {
 					wait(waitTimeoutSeconds * 1000); //attend un notify
 				} catch (final InterruptedException e) {
-					throw new RuntimeException("Arret demand� : on stop le travail en cours");
+					throw new RuntimeException("Arret demandé : on stop le travail en cours");
 				}
 				if (!finished) {
 					if (!started) {
-						error = new RuntimeException("Timeout : le traitement n'a pas �t� pris en charge en " + waitTimeoutSeconds + "s");
+						error = new RuntimeException("Timeout : le traitement n'a pas été pris en charge en " + waitTimeoutSeconds + "s");
 					} else {
-						error = new RuntimeException("Timeout : le traitement ne s'est pas termin� en " + waitTimeoutSeconds + "s");
+						error = new RuntimeException("Timeout : le traitement ne s'est pas terminé en " + waitTimeoutSeconds + "s");
 					}
-					//TODO : si timeout retirer de la file, ou d�sactiver le handler
+					//TODO : si timeout retirer de la file, ou désactiver le handler
 				}
 			}
 		}
@@ -146,19 +146,19 @@ public final class RestDistributedWorkerPlugin implements DistributedWorkerPlugi
 			this.result = newResult;
 			finished = true;
 			error = null; //si on a eut une erreur avant, ou un timeout : on reset l'erreur
-			notifyAll(); //d�bloque le wait
+			notifyAll(); //débloque le wait
 		}
 
 		/** {@inheritDoc} */
 		public synchronized void onFailure(final Throwable newError) {
 			this.error = newError;
 			finished = true;
-			notifyAll(); //d�bloque le wait
+			notifyAll(); //débloque le wait
 		}
 
 		/**
-		 * Retourne le r�sultat ou lance l'erreur re�u le cas echant.
-		 * @return r�sultat
+		 * Retourne le résultat ou lance l'erreur reçu le cas echant.
+		 * @return résultat
 		 */
 		public WR getResultOrThrowError() {
 			if (error != null) {

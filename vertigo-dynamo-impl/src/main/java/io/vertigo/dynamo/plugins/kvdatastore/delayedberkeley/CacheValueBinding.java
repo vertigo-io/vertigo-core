@@ -46,7 +46,7 @@ final class CacheValueBinding extends TupleBinding<CacheValue> {
 	@Override
 	public CacheValue entryToObject(final TupleInput ti) {
 		final String prefix = ti.readString();
-		Assertion.checkArgument(PREFIX.equals(prefix), "L'entr�e n'est pas du bon type {0}", prefix);
+		Assertion.checkArgument(PREFIX.equals(prefix), "L'entrée n'est pas du bon type {0}", prefix);
 		final long createTime = ti.readLong();
 		final Serializable value = serializableBinding.entryToObject(ti);
 		return new CacheValue(value, createTime);

@@ -40,11 +40,11 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 
 /**
- * Impl�mentation de DistributedWorkManager, pour l'execution de travaux par des Workers distant.
- * Cette impl�mentation repr�sente la partie client qui se d�ploie en ferme.
- * 1- contacte la partie serveur pour r�cup�rer les travaux qu'elle sait g�rer, 
+ * Implémentation de DistributedWorkManager, pour l'execution de travaux par des Workers distant.
+ * Cette implémentation représente la partie client qui se déploie en ferme.
+ * 1- contacte la partie serveur pour récupérer les travaux qu'elle sait gérer, 
  * 2- execute la tache en synchrone exclusivement
- * 3- retourne le r�sultat au serveur
+ * 3- retourne le résultat au serveur
  * 
  * @author npiedeloup, pchretien
  * @version $Id: RestDistributedWorkNodePlugin.java,v 1.12 2014/02/03 17:28:45 pchretien Exp $
@@ -64,7 +64,7 @@ public final class RestDistributedWorkNodePlugin implements NodePlugin, Activeab
 	/**
 	 * Constructeur.
 	 * @param nodeId Identifiant du noeud
-	 * @param workTypes Types de travail g�r�s
+	 * @param workTypes Types de travail gérés
 	 * @param serverUrl Url du serveur
 	 * @param workManager Manager des works
 	 * @param codecManager Manager d'encodage/decodage
@@ -84,11 +84,11 @@ public final class RestDistributedWorkNodePlugin implements NodePlugin, Activeab
 
 	/** {@inheritDoc} */
 	public void start() {
-		//1 pooler par type, pour �viter que l'attente lors du poll pour une file vide p�nalise les autres
-		//de plus le traitment lui m�me sera synchrone pour que l'on ne r�cup�re un autre Work qu'apr�s avoir finit le premier
+		//1 pooler par type, pour éviter que l'attente lors du poll pour une file vide pénalise les autres
+		//de plus le traitment lui même sera synchrone pour que l'on ne récupère un autre Work qu'après avoir finit le premier
 		for (final String workType : workTypes) {
 			final Callable<Void> task = new PollWorkTask(workType, workQueueClient);
-			workManager.schedule(task, new ReScheduleWorkResultHandler(task, 25, workManager));//Le WorkResult permet de toujours poller les workItem, m�me en cas d'erreur.
+			workManager.schedule(task, new ReScheduleWorkResultHandler(task, 25, workManager));//Le WorkResult permet de toujours poller les workItem, même en cas d'erreur.
 			logger.info(">>>>>> PollWorksTask " + workType + " Started");
 			System.out.println(">>>>>> PollWorksTask " + workType + " Started");
 		}
@@ -100,12 +100,12 @@ public final class RestDistributedWorkNodePlugin implements NodePlugin, Activeab
 	}
 
 	//-------------------------------------------------------------------------
-	// Methodes appelant la workQueue distribu�e.
+	// Methodes appelant la workQueue distribuée.
 	// TODO: utiliser un plugin
 	//-------------------------------------------------------------------------
 
 	/**
-	 * Tache runnable permettant l'ex�cution d'un travail.
+	 * Tache runnable permettant l'exécution d'un travail.
 	 * @author npiedeloup
 	 * @version $Id: RestDistributedWorkNodePlugin.java,v 1.12 2014/02/03 17:28:45 pchretien Exp $
 	 */
@@ -132,7 +132,7 @@ public final class RestDistributedWorkNodePlugin implements NodePlugin, Activeab
 			final WorkItem nextWorkItem = workQueueClient.pollWorkItem(workType);
 			if (nextWorkItem != null) {
 				//On rerentre dans le WorkItemExecutor pour traiter le travail
-				//Le workResultHandler sait d�j� r�pondre au serveur pour l'avancement du traitement
+				//Le workResultHandler sait déjà répondre au serveur pour l'avancement du traitement
 				final WorkItemExecutor workItemExecutor = new WorkItemExecutor(localSyncWorker, nextWorkItem);
 				workItemExecutor.run();
 			}
@@ -148,7 +148,7 @@ public final class RestDistributedWorkNodePlugin implements NodePlugin, Activeab
 
 		/** {@inheritDoc} */
 		public <WR, W> void schedule(final WorkItem<WR, W> workItem) {
-			throw new UnsupportedOperationException("Non g�r�, uniquement synchrone");
+			throw new UnsupportedOperationException("Non géré, uniquement synchrone");
 		}
 	}
 
@@ -159,7 +159,7 @@ public final class RestDistributedWorkNodePlugin implements NodePlugin, Activeab
 
 		public ReScheduleWorkResultHandler(final Callable<Void> task, final long pauseMs, final WorkManager workManager) {
 			Assertion.checkNotNull(task);
-			Assertion.checkArgument(pauseMs >= 0 && pauseMs < 1000000, "La pause est exprim� en millisecond et est >=0 et < 1000000");
+			Assertion.checkArgument(pauseMs >= 0 && pauseMs < 1000000, "La pause est exprimé en millisecond et est >=0 et < 1000000");
 			Assertion.checkNotNull(workManager);
 			//-----------------------------------------------------------------
 			this.task = task;

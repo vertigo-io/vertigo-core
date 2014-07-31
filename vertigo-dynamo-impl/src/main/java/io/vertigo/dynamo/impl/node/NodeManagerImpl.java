@@ -30,7 +30,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * Impl�mentation de NodeManager, pour l'execution de travaux par des Workers distant.
+ * Implémentation de NodeManager, pour l'execution de travaux par des Workers distant.
  * 
  * 
  * @author npiedeloup, pchretien

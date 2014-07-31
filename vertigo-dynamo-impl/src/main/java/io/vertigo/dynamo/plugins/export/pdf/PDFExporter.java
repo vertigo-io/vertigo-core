@@ -29,7 +29,7 @@ import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * Export PDF avec iText.
- * Configur� par ExportParametersPDF.
+ * Configuré par ExportParametersPDF.
  *
  * @author evernat
  * @version $Id: PDFExporter.java,v 1.1 2013/07/10 15:46:44 npiedeloup Exp $

@@ -57,7 +57,7 @@ public final class EAXmiAssociation {
 		this.code = code;
 		this.packageName = packageName;
 
-		// On g�e le cas du 1 tout seul.
+		// On gère le cas du 1 tout seul.
 		if ("1".equals(multiplicityA)) {
 			this.multiplicityA = "1..1";
 		} else {
@@ -81,9 +81,9 @@ public final class EAXmiAssociation {
 
 	/**
 	 * Formatage du code : AAA_YYY_{CODE NAME}
-	 * AAA = Trois premi�re lettre du code de A
-	 * BBB = Trois premi�re lettre du code de B
-	 * Le nom d�fini par l'utilisateur est facultatif.
+	 * AAA = Trois première lettre du code de A
+	 * BBB = Trois première lettre du code de B
+	 * Le nom défini par l'utilisateur est facultatif.
 	 * 
 	 * @return Code de l'association
 	 */
@@ -92,8 +92,8 @@ public final class EAXmiAssociation {
 	}
 
 	/**
-	 * Le code suivant est d�duit du code.  
-	 * @return Nom de l'association d�fini par l'utilisateur. (Peut �tre null)
+	 * Le code suivant est déduit du code.  
+	 * @return Nom de l'association défini par l'utilisateur. (Peut être null)
 	 */
 	public String getCodeName() {
 		if (code.length() > 8 && code.charAt(3) == '_' && code.charAt(7) == '_') {
@@ -110,56 +110,56 @@ public final class EAXmiAssociation {
 	}
 
 	/**
-	 * @return Multiplicit� de A.
+	 * @return Multiplicité de A.
 	 */
 	public String getMultiplicityA() {
 		return multiplicityA;
 	}
 
 	/**
-	 * @return Multiplicit� de B.
+	 * @return Multiplicité de B.
 	 */
 	public String getMultiplicityB() {
 		return multiplicityB;
 	}
 
 	/**
-	 * @return Navigabilit� de A.
+	 * @return Navigabilité de A.
 	 */
 	public boolean isNavigableA() {
 		return navigabilityA;
 	}
 
 	/**
-	 * @return Navigabilit� de B.
+	 * @return Navigabilité de B.
 	 */
 	public boolean isNavigableB() {
 		return navigabilityB;
 	}
 
 	/**
-	 * @return Libell� du noeud A.
+	 * @return Libellé du noeud A.
 	 */
 	public String getRoleLabelA() {
 		return roleLabelA;
 	}
 
 	/**
-	 * @return Libell� du noeud B.
+	 * @return Libellé du noeud B.
 	 */
 	public String getRoleLabelB() {
 		return roleLabelB;
 	}
 
 	/**
-	 * @return Code de l'entit� A participant � l'association
+	 * @return Code de l'entité A participant à l'association
 	 */
 	public String getCodeA() {
 		return codeA;
 	}
 
 	/**
-	 * @return Code de l'entit� B participant � l'association.
+	 * @return Code de l'entité B participant à l'association.
 	 */
 	public String getCodeB() {
 		return codeB;

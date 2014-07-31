@@ -28,19 +28,19 @@ import org.xml.sax.Attributes;
 
 /**
  * Objets de l'arbre Xmi.
- * Les extensions correspondent � Enterprise Architect.
+ * Les extensions correspondent à Enterprise Architect.
  * @author pforhan
  */
 final class EAXmiObject {
-	// Propri�t�s des attributs
+	// Propriétés des attributs
 	private static final String PROPERTY_NAME = "name";
-	//Le libell� est dans une des deux propri�t�s suivantes s'il a �t� d�fini.
+	//Le libellé est dans une des deux propriétés suivantes s'il a été défini.
 	// Style est prioritaire sur documentation.
 	private static final String PROPERTY_COMMENT = "documentation";
 	private static final String PROPERTY_ALIAS = "style";
 	// Nom de la variable qui contient la valeur dans les attributs
 	private static final String PROPERTY_ALIAS_NAME = "value";
-	//D�finition du domaine
+	//Définition du domaine
 	private static final String PROPERTY_DOMAIN = "properties";
 	private static final String PROPERTY_DOMAIN_NAME = "type";
 
@@ -57,7 +57,7 @@ final class EAXmiObject {
 	// On stocke les ids, les noms des classes seront misesp lus tard.
 	private static final String PROPERTY_CLASSE_NAME = "xmi:idref";
 
-	// On �vite de chercher les libell�s/multiplicit� dans les extr�mit�s, on prend plut�t le r�sum�
+	// On évite de chercher les libellés/multiplicité dans les extrémités, on prend plutôt le résumé
 	private static final String PROPERTY_ROLE_MULTIPLICITY = "labels";
 	private static final String PROPERTY_ROLE_A_MULTIPLICITY = "lb";
 	private static final String PROPERTY_ROLE_B_MULTIPLICITY = "rb";
@@ -75,7 +75,7 @@ final class EAXmiObject {
 	private final EAXmiType type;
 	private final List<EAXmiObject> children = new ArrayList<>();
 
-	//Donn�es sp�cifiques
+	//Données spécifiques
 	private String name;
 
 	//=========Gestion des attributes============================
@@ -129,7 +129,7 @@ final class EAXmiObject {
 	}
 
 	EAXmiObject createEAXmiObject(final EAXmiId newId, final EAXmiType newType, final String leNom) {
-		log.debug("Le p�re : " + name + " le fils " + leNom + " Le Type " + newType.name().toString());
+		log.debug("Le père : " + name + " le fils " + leNom + " Le Type " + newType.name().toString());
 		final EAXmiObject created = new EAXmiObject(this, newId, newType);
 		if (leNom != null) {
 			created.setName(leNom);
@@ -181,14 +181,14 @@ final class EAXmiObject {
 	//================================ASSOCIATIONS==============================
 
 	/**
-	 * @return Libell� du role du noeud A, null si non defini
+	 * @return Libellé du role du noeud A, null si non defini
 	 */
 	String getRoleALabel() {
 		return roleALabel;
 	}
 
 	/**
-	 * @return Libell� du role du noeud B, null si non defini
+	 * @return Libellé du role du noeud B, null si non defini
 	 */
 	String getRoleBLabel() {
 		return roleBLabel;
@@ -209,14 +209,14 @@ final class EAXmiObject {
 	}
 
 	/**
-	 * @return Navigabilit� du noeud A
+	 * @return Navigabilité du noeud A
 	 */
 	Boolean getRoleANavigability() {
 		return roleANavigability;
 	}
 
 	/**
-	 * @return Navigabilit� du noeud B
+	 * @return Navigabilité du noeud B
 	 */
 	Boolean getRoleBNavigability() {
 		return roleBNavigability;
@@ -244,7 +244,7 @@ final class EAXmiObject {
 		return classB;
 	}
 
-	// Gestion des propri�t�s
+	// Gestion des propriétés
 
 	void setProperty(final String propertyName, final String propertyValue, final Attributes attributs) {
 		Assertion.checkNotNull(propertyName);
@@ -257,11 +257,11 @@ final class EAXmiObject {
 			label = attributs.getValue(PROPERTY_ALIAS_NAME);
 		} else if (PROPERTY_DOMAIN.equals(propertyName)) {
 			manageDomain(attributs);
-			// M�me nom pour le domaine et les navigabilit�
+			// Même nom pour le domaine et les navigabilité
 			manageNavigabilite(attributs);
 		} else if (PROPERTY_ID.equals(propertyName)) {
 			// On peut se retrouver en fin de fichier avec des xrefs qui reviennent.
-			// On ne mets � jour que si on ne l'a pas fait.
+			// On ne mets à jour que si on ne l'a pas fait.
 			final String valeur = attributs.getValue(PROPERTY_ALIAS_NAME);
 			isId = (valeur != null && valeur.contains(PROPERTY_ID_NAME));
 		} else if (PROPERTY_MULTIPLICITY.equals(propertyName)) {
@@ -281,7 +281,7 @@ final class EAXmiObject {
 				classB = new EAXmiId(valeur);
 			}
 		}
-		//On ne tient pas compte des autres propri�t�s
+		//On ne tient pas compte des autres propriétés
 	}
 
 	private void manageNavigabilite(final Attributes attributs) {
@@ -344,7 +344,7 @@ final class EAXmiObject {
 		if (getType() == EAXmiType.Package) {
 			return getName();
 		}
-		// On remonte la hi�rarchie pour trouver le pacakge.
+		// On remonte la hiérarchie pour trouver le pacakge.
 		return getParent().getPackageName();
 
 	}

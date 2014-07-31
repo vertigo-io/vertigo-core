@@ -30,7 +30,7 @@ import java.util.Properties;
 public final class WorkerNodeStarter {
 
 	/**
-	 * Lance l'environnement et attend ind�finiment.
+	 * Lance l'environnement et attend indéfiniment.
 	 * @param args "Usage: java vertigo.kernel.Starter managers.xml <conf.properties>"
 	 */
 	public static void main(final String[] args) {

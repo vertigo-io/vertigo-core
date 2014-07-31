@@ -63,7 +63,7 @@ final class XLSExporter {
 
 	private final Map<DtField, Map<Object, String>> referenceCache = new HashMap<>();
 	private final Map<DtField, Map<Object, String>> denormCache = new HashMap<>();
-	private boolean isRepeatHeaderSet; // initialis� � false
+	private boolean isRepeatHeaderSet; // initialisé à false
 
 	private final Map<DataType, HSSFCellStyle> evenHssfStyleCache = new HashMap<>();
 	private final Map<DataType, HSSFCellStyle> oddHssfStyleCache = new HashMap<>();
@@ -120,8 +120,8 @@ final class XLSExporter {
 	}
 
 	/**
-	 * R�alise l'export des donn�es de contenu et de la ligne d'en-t�te.
-	 * @param parameters Param�tre de cet export
+	 * Réalise l'export des données de contenu et de la ligne d'en-tête.
+	 * @param parameters Paramètre de cet export
 	 * @param workbook Document excel
 	 * @param sheet Feuille Excel
 	 * @param forceLandscape Indique si le parametrage force un affichage en paysage
@@ -148,7 +148,7 @@ final class XLSExporter {
 		}
 		/** @todo ne serait-il pas plus simple d'utiliser sheet.autoSizeColumn(i); de poi 3.0.1 ? */
 
-		// note: il ne semble pas simple de mettre title et author dans les propri�t�s du document
+		// note: il ne semble pas simple de mettre title et author dans les propriétés du document
 		final String title = parameters.getTitle();
 		if (title != null) {
 			final HSSFHeader header = sheet.getHeader();
@@ -160,7 +160,7 @@ final class XLSExporter {
 			sheet.getPrintSetup().setLandscape(true);
 		}
 
-		// On d�finit le footer
+		// On définit le footer
 		final HSSFFooter footer = sheet.getFooter();
 		footer.setRight("Page " + HeaderFooter.page() + " / " + HeaderFooter.numPages());
 	}
@@ -174,7 +174,7 @@ final class XLSExporter {
 		evenHssfStyleCache.put(DataType.Boolean, evenCellStyle);
 		evenHssfStyleCache.put(DataType.String, evenCellStyle);
 
-		// Nombre sans d�cimal
+		// Nombre sans décimal
 		final HSSFCellStyle oddLongCellStyle = createRowCellStyle(workbook, true);
 		final HSSFCellStyle evenLongCellStyle = createRowCellStyle(workbook, true);
 		oddLongCellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("#,##0"));
@@ -184,7 +184,7 @@ final class XLSExporter {
 		evenHssfStyleCache.put(DataType.Long, evenLongCellStyle);
 		evenHssfStyleCache.put(DataType.Integer, evenLongCellStyle);
 
-		// Nombre a d�cimal
+		// Nombre a décimal
 		final HSSFCellStyle oddDoubleCellStyle = createRowCellStyle(workbook, true);
 		final HSSFCellStyle evenDoubleCellStyle = createRowCellStyle(workbook, true);
 		oddDoubleCellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("#,##0.00"));
@@ -222,8 +222,8 @@ final class XLSExporter {
 			updateMaxWidthPerColumn(displayedLabel, 1.2, cellIndex, maxWidthPerColumn); // +20% pour les majuscules
 			cellIndex++;
 		}
-		// il faut indiquer l'indice de la feuille sur laquelle on applique cette propri�t�, c'est toujours la derniere du document Excel, fonc i = max-1
-		// TODO probleme quand on set cette property plus de deux fois � regler. Solution de d�panage utilis�e ci dessous
+		// il faut indiquer l'indice de la feuille sur laquelle on applique cette propriété, c'est toujours la derniere du document Excel, fonc i = max-1
+		// TODO probleme quand on set cette property plus de deux fois à regler. Solution de dépannage utilisée ci dessous
 		if (!isRepeatHeaderSet) {
 			// workbook.setRepeatingRowsAndColumns(workbook.getSheetIndex(sheet.toString()), -1, -1, 0, 0);
 			workbook.setRepeatingRowsAndColumns(getSheetIndex(workbook, sheet), -1, -1, 0, 0);
@@ -253,7 +253,7 @@ final class XLSExporter {
 				return i;
 			}
 		}
-		throw new InvalidParameterException("HSSFSheet non trouv� dans le HSSFWorkbook.");
+		throw new InvalidParameterException("HSSFSheet non trouvé dans le HSSFWorkbook.");
 	}
 
 	private void exportObject(final ExportDtParametersReadable parameters, final HSSFWorkbook workbook, final HSSFSheet sheet, final Map<Integer, Double> maxWidthPerColumn) {
@@ -310,11 +310,11 @@ final class XLSExporter {
 				cell.setCellValue(bValue.booleanValue() ? "Oui" : "Non");
 			} else if (value instanceof Date) {
 				final Date dateValue = (Date) value;
-				// sans ce style "date" les dates appara�traient au format "nombre"
+				// sans ce style "date" les dates apparaîtraient au format "nombre"
 				cell.setCellValue(dateValue);
-				stringValueForColumnWidth = "DD/MM/YYYY"; // ceci ne sert que pour d�terminer la taille de la cellule, on a pas besoin de la vrai valeur
+				stringValueForColumnWidth = "DD/MM/YYYY"; // ceci ne sert que pour déterminer la taille de la cellule, on a pas besoin de la vrai valeur
 			} else {
-				throw new UnsupportedOperationException("Type " + type + " non g�r� en export Excel");
+				throw new UnsupportedOperationException("Type " + type + " non géré en export Excel");
 			}
 			updateMaxWidthPerColumn(stringValueForColumnWidth, 1, cellIndex, maxWidthPerColumn); // +20% pour les majuscules
 		}
@@ -330,9 +330,9 @@ final class XLSExporter {
 	}
 
 	/**
-	 * M�thode principale qui g�re l'export d'un tableau vers un fichier ODS.
+	 * Méthode principale qui gère l'export d'un tableau vers un fichier ODS.
 	 * 
-	 * @param documentParameters Param�tres du document � exporter
+	 * @param documentParameters Paramètres du document à exporter
 	 * @param out Flux de sortie
 	 */
 	void exportData(final Export documentParameters, final OutputStream out) throws IOException {

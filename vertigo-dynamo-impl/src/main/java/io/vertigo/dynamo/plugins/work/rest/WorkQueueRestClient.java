@@ -42,7 +42,7 @@ import com.sun.jersey.api.client.ClientResponse.Status;
 import com.sun.jersey.api.client.WebResource;
 
 /**
- * Plugin g�rant l'api de distributedWorkQueueManager en REST avec jersey.
+ * Plugin gérant l'api de distributedWorkQueueManager en REST avec jersey.
  * Pour la partie appel webService voir http://ghads.wordpress.com/2008/09/24/calling-a-rest-webservice-from-java-without-libs/
  *
  * @author npiedeloup
@@ -72,11 +72,11 @@ final class WorkQueueRestClient {
 	}
 
 	public WorkItem<?, Object> pollWorkItem(final String workType) {
-		//call methode distante, passe le workItem � started
+		//call methode distante, passe le workItem à started
 		try {
 			final String jsonResult;
 			lockByWorkType.putIfAbsent(workType, new Object());
-			//Cette tache est synchronized sur le workType, pour �viter de surcharger le serveur en demandes multiple
+			//Cette tache est synchronized sur le workType, pour éviter de surcharger le serveur en demandes multiple
 			synchronized (lockByWorkType.get(workType)) {
 				final WebResource remoteWebResource = locatorClient.resource(serverUrl + "/pollWork/" + workType + "?nodeUID=" + nodeUID);
 				final ClientResponse response = remoteWebResource.get(ClientResponse.class);
@@ -92,15 +92,15 @@ final class WorkQueueRestClient {
 				return new WorkItem<>(work, new WorkEngineProvider(workType), new CallbackWorkResultHandler(uuid, this));
 			}
 			LOG.info("pollWork(" + workType + ") : no Work");
-			//pas de travaux : inutil d'attendre le poll attend d�j� 1s cot� serveur				
+			//pas de travaux : inutil d'attendre le poll attend déjà 1s coté serveur				
 		} catch (final ClientHandlerException c) {
 			LOG.warn("[pollWork] Erreur de connexion au serveur " + serverUrl + "/pollWork/" + workType + " (" + c.getMessage() + ")");
 			//En cas d'erreur on attend quelques secondes, pour attendre que le serveur revienne
 			try {
 				lockByWorkType.putIfAbsent(serverUrl, new Object());
 				//En cas d'absence du serveur, 
-				//ce synchronized permet d'�taler les appels au serveur de chaque worker : le premier attendra 2s, le second 2+2s, le troisi�me : 4+2s, etc..
-				//d�s le retour du serveur, on r�cup�re un worker toute les 2s
+				//ce synchronized permet d'étaler les appels au serveur de chaque worker : le premier attendra 2s, le second 2+2s, le troisième : 4+2s, etc..
+				//dés le retour du serveur, on récupère un worker toute les 2s
 				synchronized (lockByWorkType.get(serverUrl)) {
 					Thread.sleep(2000); //on veut bien un sleep
 				}
@@ -108,7 +108,7 @@ final class WorkQueueRestClient {
 				//rien on retourne
 			}
 		} catch (final Exception c) {
-			LOG.warn("[pollWork] Erreur de traitement de l'acc�s au serveur " + serverUrl + "/pollWork/" + workType + " (" + c.getMessage() + ")", c);
+			LOG.warn("[pollWork] Erreur de traitement de l'accès au serveur " + serverUrl + "/pollWork/" + workType + " (" + c.getMessage() + ")", c);
 		}
 		return null;
 	}

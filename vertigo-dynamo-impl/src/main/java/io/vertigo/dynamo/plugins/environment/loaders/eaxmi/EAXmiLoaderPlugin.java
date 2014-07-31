@@ -83,7 +83,7 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 	private static DynamicDefinition toDynamicDefinition(final EAXmiClass classXmi, final DynamicDefinitionRepository dynamicModelrepository) {
 		final Entity dtDefinitionEntity = DomainGrammar.INSTANCE.getDtDefinitionEntity();
 		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelrepository.createDynamicDefinitionBuilder(getDtDefinitionName(classXmi.getCode()), dtDefinitionEntity, classXmi.getPackageName())//
-				//Par d�faut les DT lues depuis le XMI sont persistantes.
+				//Par défaut les DT lues depuis le XMI sont persistantes.
 				.withPropertyValue(KspProperty.PERSISTENT, true);
 
 		for (final EAXmiAttribute attributeXmi : classXmi.getKeyAttributes()) {
@@ -157,8 +157,8 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 
 	private static String buildFkFieldName(final EAXmiAssociation associationXmi, final DynamicDefinitionRepository dynamicModelrepository) {
 		// Dans le cas d'une association simple, on recherche le nom de la FK
-		// recherche de code de contrainte destin� � renommer la fk selon convention du vbsript PowerAMC
-		// Cas de la relation 1-n : o� le nom de la FK est red�fini.
+		// recherche de code de contrainte destiné à renommer la fk selon convention du vbsript PowerAMC
+		// Cas de la relation 1-n : où le nom de la FK est redéfini.
 		// Exemple : DOS_UTI_LIQUIDATION (relation entre dossier et utilisateur : FK >> UTILISATEUR_ID_LIQUIDATION)
 		final DynamicDefinition dtDefinitionA = dynamicModelrepository.getDefinition(getDtDefinitionKey(associationXmi.getCodeA()));
 		final DynamicDefinition dtDefinitionB = dynamicModelrepository.getDefinition(getDtDefinitionKey(associationXmi.getCodeB()));
@@ -166,28 +166,28 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 		final DynamicDefinition foreignDefinition = AssociationUtil.isAPrimaryNode(associationXmi.getMultiplicityA(), associationXmi.getMultiplicityB()) ? dtDefinitionA : dtDefinitionB;
 		final List<DynamicDefinition> primaryKeyList = foreignDefinition.getChildDefinitions(DomainGrammar.PRIMARY_KEY);
 		if (primaryKeyList.isEmpty()) {
-			throw new IllegalArgumentException("Pour l'association '" + associationXmi.getCode() + "' aucune cl� primaire sur la d�finition '" + foreignDefinition.getDefinitionKey().getName() + "'");
+			throw new IllegalArgumentException("Pour l'association '" + associationXmi.getCode() + "' aucune clé primaire sur la définition '" + foreignDefinition.getDefinitionKey().getName() + "'");
 		}
 		if (primaryKeyList.size() > 1) {
-			throw new IllegalArgumentException("Pour l'association '" + associationXmi.getCode() + "' cl� multiple non g�r� sur '" + foreignDefinition.getDefinitionKey().getName() + "'");
+			throw new IllegalArgumentException("Pour l'association '" + associationXmi.getCode() + "' clé multiple non géré sur '" + foreignDefinition.getDefinitionKey().getName() + "'");
 		}
 		if (dtDefinitionA.getDefinitionKey().getName().equals(dtDefinitionB.getDefinitionKey().getName()) && associationXmi.getCodeName() == null) {
-			throw new IllegalArgumentException("Pour l'association '" + associationXmi.getCode() + "' le nom de la cl� est obligatoire (AutoJointure) '" + foreignDefinition.getDefinitionKey().getName() + "'");
+			throw new IllegalArgumentException("Pour l'association '" + associationXmi.getCode() + "' le nom de la clé est obligatoire (AutoJointure) '" + foreignDefinition.getDefinitionKey().getName() + "'");
 		}
 
-		//On r�cup�re le nom de LA cl� primaire . 
+		//On récupère le nom de LA clé primaire . 
 		final String pkFieldName = primaryKeyList.get(0).getDefinitionKey().getName();
 
-		//Par d�faut le nom de la cl� �trang�re est constitu�e de la cl� primaire r�f�renc�e.
+		//Par défaut le nom de la clé étrangère est constituée de la clé primaire référencée.
 		String fkFieldName = pkFieldName;
 
-		//Si l'association poss�de une nom d�fini par l'utilisateur, alors on l'ajoute � la FK avec un s�parateur.
+		//Si l'association possède une nom défini par l'utilisateur, alors on l'ajoute à la FK avec un séparateur.
 		if (associationXmi.getCodeName() != null) {
-			//On construit le nom de la cl� �trang�re. 
+			//On construit le nom de la clé étrangère. 
 			fkFieldName = fkFieldName + '_' + associationXmi.getCodeName();
 		}
 
-		//On raccourci le nom de la cl� �trang�re. 
+		//On raccourci le nom de la clé étrangère. 
 		if (fkFieldName.length() > 30) { // 30 est le max de dynamo (et de Oracle)
 			fkFieldName = fkFieldName.substring(0, 30);
 			while (fkFieldName.endsWith("_")) {
@@ -197,7 +197,7 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 		}
 		LOGGER.trace(KspProperty.FK_FIELD_NAME + "=" + fkFieldName);
 		//-----------------------------------------------------------------
-		Assertion.checkNotNull(fkFieldName, "La cl� primaire n''a pas pu �tre d�finie pour l'association '{0}'", associationXmi.getCode());
+		Assertion.checkNotNull(fkFieldName, "La clé primaire n''a pas pu être définie pour l'association '{0}'", associationXmi.getCode());
 		return fkFieldName;
 	}
 
@@ -209,10 +209,10 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 		return new DynamicDefinitionKey(getDtDefinitionName(code));
 	}
 
-	// A sa place dans un util mais ramen� ici pour ind�pendance des plugins
+	// A sa place dans un util mais ramené ici pour indépendance des plugins
 	public static String french2Java(final String str) {
 		Assertion.checkNotNull(str);
-		Assertion.checkArgument(str.length() > 0, "La chaine � modifier ne doit pas �tre vide.");
+		Assertion.checkArgument(str.length() > 0, "La chaine à modifier ne doit pas être vide.");
 		// ----------------------------------------------------------------------
 		final StringBuilder suffix = new StringBuilder();
 		int i = 1;
@@ -223,7 +223,7 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 		final int length = str.length();
 		while (i < length) {
 			c = str.charAt(i);
-			//On consid�re blanc, et ' comme des s�parateurs de mots.
+			//On considère blanc, et ' comme des séparateurs de mots.
 			if (c == ' ' || c == '\'') {
 				if (i + 1 < length) {
 					c = replaceAccent(str.charAt(i + 1));
@@ -232,7 +232,7 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 					}
 					i += 2;
 				} else {
-					i++; // �vitons boucle infinie
+					i++; // évitons boucle infinie
 				}
 			} else {
 				c = replaceAccent(c);
@@ -246,10 +246,10 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 	}
 
 	/**
-	 * Remplacement de caract�res accentu�s par leurs �quivalents non accentu�s
-	 * (par ex: accents dans r�les)
-	 * @param c caract�re accentu� � traiter
-	 * @return caract�re trait� (sans accent)
+	 * Remplacement de caractères accentués par leurs équivalents non accentués
+	 * (par ex: accents dans rôles)
+	 * @param c caractère accentué à traiter
+	 * @return caractère traité (sans accent)
 	 */
 	private static char replaceAccent(final char c) {
 		char result;

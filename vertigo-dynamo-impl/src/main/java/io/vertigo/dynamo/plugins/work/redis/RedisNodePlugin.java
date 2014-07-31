@@ -39,8 +39,8 @@ import com.google.gson.GsonBuilder;
 
 /**
  * NodePlugin 
- * Ce plugin permet d'ex�cuter des travaux en mode distribu�.
- * REDIS est utilis� comme plateforme d'�changes.
+ * Ce plugin permet d'exécuter des travaux en mode distribué.
+ * REDIS est utilisé comme plateforme d'échanges.
  * 
  * @author pchretien
  * $Id: RedisNodePlugin.java,v 1.9 2014/06/26 12:30:08 npiedeloup Exp $

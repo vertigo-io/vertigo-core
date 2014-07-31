@@ -28,36 +28,36 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Queue partag�e sur une seule JVM.
- * La r�cup�ration des donn�es est effective toutes les secondes.
+ * Queue partagée sur une seule JVM.
+ * La récupération des données est effective toutes les secondes.
  * 
  * @author pchretien
  * @version $Id: MultipleWorkQueues.java,v 1.10 2014/02/27 10:31:19 pchretien Exp $
  */
 final class MultipleWorkQueues {
-	//pas besoin de synchronized la map, car le obtain est le seul acc�s et est synchronized
+	//pas besoin de synchronized la map, car le obtain est le seul accès et est synchronized
 	private final Map<String, BlockingQueue<WorkItem<?, ?>>> workQueueMap = new HashMap<>();
 
 	/**
-	 * R�cup�ration du travail � effectuer.
+	 * Récupération du travail à effectuer.
 	 * @return Prochain WorkItem ou null
 	 */
 	public WorkItem<?, ?> pollWorkItem(final String workType) {
 		try {
-			//take attend qu'un �l�ment soit disponible toutes les secondes.
-			//Poll attend (1s) qu'un �l�ment soit disponible et sinon renvoit null
+			//take attend qu'un élément soit disponible toutes les secondes.
+			//Poll attend (1s) qu'un élément soit disponible et sinon renvoit null
 			final WorkItem<?, ?> workItem = obtainWorkQueue(workType, workQueueMap).poll(1, TimeUnit.SECONDS);
 			return workItem;
 		} catch (final InterruptedException e) {
-			//dans le cas d'une interruption on arr�te de d�piler 
+			//dans le cas d'une interruption on arrête de dépiler 
 			return null;
 		}
 	}
 
 	/**
-	 * Ajoute un travail � faire.
-	 * @param <WR> Type du r�sultat
-	 * @param <W> Travail � effectu�
+	 * Ajoute un travail à faire.
+	 * @param <WR> Type du résultat
+	 * @param <W> Travail à effectué
 	 * @param workType Type du travail
 	 * @param workItem Work et WorkResultHandler
 	 */

@@ -36,7 +36,7 @@ import javax.inject.Inject;
 import org.junit.Test;
 
 /**
- * Test de l'impl�mentation standard.
+ * Test de l'implémentation standard.
  * 
  * @author dchallas
  * @version $Id: ExportManagerTest.java,v 1.6 2014/02/27 10:27:31 pchretien Exp $
@@ -44,7 +44,7 @@ import org.junit.Test;
 public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private ExportManager exportManager;
-	//R�pertoire de test
+	//Répertoire de test
 	private static String OUTPUT_PATH = "c:/tmp/";
 	private static final boolean KEEP_OUTPUT_FILE = false;
 
@@ -84,7 +84,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test l'export CSV d'un champs donn�e.
+	 * Test l'export CSV d'un champs donnée.
 	 */
 	@Test
 	public void testExportField() {
@@ -105,7 +105,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test l'export CSV d'un champs avec label surcharg�.
+	 * Test l'export CSV d'un champs avec label surchargé.
 	 */
 	@Test
 	public void testExportFieldOverrideLabel() {
@@ -127,7 +127,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test l'export CSV d'un champs avec une d�normalisation de sa valeur.
+	 * Test l'export CSV d'un champs avec une dénormalisation de sa valeur.
 	 */
 	@Test
 	public void testExportFieldDenorm() {
@@ -152,7 +152,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test l'export CSV d'un champs avec une d�normalisation de sa valeur, et surcharge du label.
+	 * Test l'export CSV d'un champs avec une dénormalisation de sa valeur, et surcharge du label.
 	 */
 	@Test
 	public void testExportFieldDenormOverrideLabel() {
@@ -253,7 +253,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 
 	private static DtList<Famille> createDtc() {
 		final DtList<Famille> dtc = new DtList<>(Famille.class);
-		// les index sont donn�es par ordre alpha > null � la fin >
+		// les index sont données par ordre alpha > null à la fin >
 		final Famille mockB = new Famille();
 		mockB.setFamId(1L);
 		mockB.setLibelle("Ba");

@@ -61,12 +61,12 @@ public final class DistributedWorkManagerTest extends AbstractWorkManagerTest {
 	}
 
 	/**
-	 * Initialisation du test pour impl� sp�cifique.
+	 * Initialisation du test pour implé spécifique.
 	 * @throws Exception Erreur
 	 */
 	@Override
 	protected void doSetUp() throws Exception {
-		//pour �viter le m�canisme d'attente du client lorsque le serveur est absend, on d�marre le serveur puis le client
+		//pour éviter le mécanisme d'attente du client lorsque le serveur est absend, on démarre le serveur puis le client
 		httpServer = startServer();
 		Thread.sleep(500);
 		clientNode = startClientNode();
@@ -75,7 +75,7 @@ public final class DistributedWorkManagerTest extends AbstractWorkManagerTest {
 	}
 
 	/**
-	 * Finalisation du test pour impl� sp�cifique.
+	 * Finalisation du test pour implé spécifique.
 	 * @throws Exception Erreur
 	 */
 	@Override

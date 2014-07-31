@@ -41,13 +41,13 @@ import java.util.List;
  */
 public final class ExportDtParametersImpl implements ExportDtParameters, ExportDtParametersReadable {
 	/**
-	 * List des champs � exporter
+	 * List des champs à exporter
 	 */
 	private final List<ExportField> exportFields = new ArrayList<>();
 
 	/**
-	 * Objet � exporter. 
-	 * dto XOR dtc est renseign�. 
+	 * Objet à exporter. 
+	 * dto XOR dtc est renseigné. 
 	 */
 	private final DtObject dto;
 	private final DtList<?> dtc;
@@ -57,7 +57,7 @@ public final class ExportDtParametersImpl implements ExportDtParameters, ExportD
 
 	/**
 	 * Constructeur.
-	 * @param dto DTO � exporter
+	 * @param dto DTO à exporter
 	 */
 	public ExportDtParametersImpl(final DtObject dto) {
 		Assertion.checkNotNull(dto);
@@ -69,7 +69,7 @@ public final class ExportDtParametersImpl implements ExportDtParameters, ExportD
 
 	/**
 	 * Constructeur.
-	 * @param dtc DTC � exporter
+	 * @param dtc DTC à exporter
 	 */
 	public ExportDtParametersImpl(final DtList<?> dtc) {
 		Assertion.checkNotNull(dtc);
@@ -131,10 +131,10 @@ public final class ExportDtParametersImpl implements ExportDtParameters, ExportD
 	/** {@inheritDoc} */
 	public void addExportField(final DtField exportfield, final MessageText overridedLabel) {
 		Assertion.checkNotNull(exportfield);
-		// On v�rifie que la colonne est bien dans la d�finition de la DTC
-		Assertion.checkArgument(dtDefinition.getFields().contains(exportfield), "Le champ " + exportfield.getName() + " n'est pas dans la liste � exporter");
-		// On ne v�rifie pas que les champs ne sont plac�s qu'une fois
-		// car pour des raisons diverses ils peuvent l'�tre plusieurs fois.
+		// On vérifie que la colonne est bien dans la définition de la DTC
+		Assertion.checkArgument(dtDefinition.getFields().contains(exportfield), "Le champ " + exportfield.getName() + " n'est pas dans la liste à exporter");
+		// On ne vérifie pas que les champs ne sont placés qu'une fois
+		// car pour des raisons diverses ils peuvent l'être plusieurs fois.
 		// ----------------------------------------------------------------------
 		final ExportField exportField = new ExportField(exportfield);
 		if (overridedLabel != null) { // si on surcharge le label
@@ -146,10 +146,10 @@ public final class ExportDtParametersImpl implements ExportDtParameters, ExportD
 	/** {@inheritDoc} */
 	public void addExportDenormField(final DtField exportfield, final DtList<?> list, final DtField displayfield, final MessageText overridedLabel) {
 		Assertion.checkNotNull(exportfield);
-		// On v�rifie que la colonne est bien dans la d�finition de la DTC
-		Assertion.checkArgument(dtDefinition.getFields().contains(exportfield), "Le champ " + exportfield.getName() + " n'est pas dans la liste � exporter");
-		// On ne v�rifie pas que les champs ne sont plac�s qu'une fois
-		// car pour des raisons diverses ils peuvent l'�tre plusieurs fois.
+		// On vérifie que la colonne est bien dans la définition de la DTC
+		Assertion.checkArgument(dtDefinition.getFields().contains(exportfield), "Le champ " + exportfield.getName() + " n'est pas dans la liste à exporter");
+		// On ne vérifie pas que les champs ne sont placés qu'une fois
+		// car pour des raisons diverses ils peuvent l'être plusieurs fois.
 		// ----------------------------------------------------------------------
 		final ExportDenormField exportField = new ExportDenormField(exportfield, list, displayfield);
 		if (overridedLabel != null) { // si on surcharge le label
@@ -162,8 +162,8 @@ public final class ExportDtParametersImpl implements ExportDtParameters, ExportD
 	 * @param title Titre de cet objet/liste
 	 */
 	public void setTitle(final String title) {
-		Assertion.checkState(title == null, "Titre deja renseign�");
-		Assertion.checkArgNotEmpty(title, "Titre doit �tre non vide");
+		Assertion.checkState(title == null, "Titre deja renseigné");
+		Assertion.checkArgNotEmpty(title, "Titre doit être non vide");
 		// ---------------------------------------------------------------------
 		this.title = title;
 	}

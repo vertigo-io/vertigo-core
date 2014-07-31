@@ -21,7 +21,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 
 /**
  * Handler d'export ODS avec ODFDOM v0.7.
- * La version 0.8.7 d'ODFDOM genere un ods qui est lu par Excel mais avec une alerte (voir ODSExporter.java v 1.6 pour compatibilit� avec odfdom-java 0.8.7).
+ * La version 0.8.7 d'ODFDOM genere un ods qui est lu par Excel mais avec une alerte (voir ODSExporter.java v 1.6 pour compatibilité avec odfdom-java 0.8.7).
  * 
  * @author oboitel, npiedeloup
  * @version $Id: ODSExporter.java,v 1.7 2014/06/26 12:31:45 npiedeloup Exp $
@@ -45,7 +45,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 //	private static enum ExportDataType {
 //		/** Type Date. */
 //		DATE,
-//		/** Type num�rique. */
+//		/** Type numérique. */
 //		NUMBER,
 //		/** Type chaine. */
 //		STRING
@@ -64,9 +64,9 @@ package io.vertigo.dynamo.plugins.export.ods;
 //	}
 //
 //	/**
-//	 * M�thode principale qui g�re l'export d'un tableau vers un fichier ODS.
+//	 * Méthode principale qui gère l'export d'un tableau vers un fichier ODS.
 //	 * 
-//	 * @param documentParameters Param�tres du document � exporter
+//	 * @param documentParameters Paramètres du document à exporter
 //	 * @param out Flux de sortie
 //	 * @throws Exception Erreur d'export
 //	 */
@@ -77,34 +77,34 @@ package io.vertigo.dynamo.plugins.export.ods;
 //		final OdfOfficeSpreadsheet officeSpreadsheet = document.getContentRoot();
 //		cleanOutDocument(officeSpreadsheet);
 //
-//		// On initialise les style qui seront appliqu� dans le document
+//		// On initialise les style qui seront appliqué dans le document
 //		final OdfFileDom contentDom = document.getContentDom();
 //		initDefaultStyle(contentDom);
 //
-//		// Pour chaque �l�ment � exporter
+//		// Pour chaque élément à exporter
 //		final List<ExportDtParametersReadable> parametersList = documentParameters.getReportDataParameters();
 //		for (int i = 0; i < parametersList.size(); i++) {
 //			final ExportDtParametersImpl parameters = (ExportDtParametersImpl) parametersList.get(i);
 //
-//			// On cr�e une feuille
+//			// On crée une feuille
 //			//final OdfTable table = new OdfTable(contentDom);
 //			final OdfTable table = (OdfTable) OdfElementFactory.newOdfElement(contentDom, TableTableElement.ELEMENT_NAME);
 //
-//			// On initialise le titre de la feuille (feuille r�capitulant la valeur des crit�res ou feuille du tableau de donn�es)
+//			// On initialise le titre de la feuille (feuille récapitulant la valeur des critères ou feuille du tableau de données)
 //			final String title;
 //			if (parameters.hasDtObject()) {
 //				//continue;
-//				title = "Crit�res de recherche";
+//				title = "Critères de recherche";
 //			} else {
 //				title = documentParameters.getTitle();
 //			}
 //
 //			table.setTableNameAttribute(title);
 //
-//			// On exporte les donn�es
+//			// On exporte les données
 //			exportData(parameters, table, contentDom);
 //
-//			// On ajoute la feuille cr�� au document
+//			// On ajoute la feuille créé au document
 //			officeSpreadsheet.appendChild(table);
 //		}
 //
@@ -113,7 +113,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 //	}
 //
 //	/**
-//	 * Permet de supprimer toutes les feuilles pr�existantes dans un document ODS vierge.
+//	 * Permet de supprimer toutes les feuilles préexistantes dans un document ODS vierge.
 //	 * @param sheet Document ODS
 //	 */
 //	private static void cleanOutDocument(final OdfOfficeSpreadsheet sheet) {
@@ -127,10 +127,10 @@ package io.vertigo.dynamo.plugins.export.ods;
 //	}
 //
 //	/**
-//	 * Retourne le style associ� � une cl� donn�e.
+//	 * Retourne le style associé à une clé donnée.
 //	 * 
-//	 * @param styleType Cl� du style recherch�
-//	 * @return Style associ� � la cl� donn�e en entr�e
+//	 * @param styleType Clé du style recherché
+//	 * @return Style associé à la clé donnée en entrée
 //	 */
 //	private String getStyle(final String styleType) {
 //		Assertion.checkArgument(styleMap.containsKey(styleType), "");
@@ -139,7 +139,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 //	}
 //
 //	/**
-//	 * Cr�ation des styles applicables aux cellules du document.
+//	 * Création des styles applicables aux cellules du document.
 //	 * 
 //	 * @param contentDom Contenu du fichier ODS
 //	 */
@@ -156,10 +156,10 @@ package io.vertigo.dynamo.plugins.export.ods;
 //	}
 //
 //	/**
-//	 * Cr�ation du style des noms des crit�res de recherche.
+//	 * Création du style des noms des critères de recherche.
 //	 * 
 //	 * @param contentDom Contenu du fichier ODS
-//	 * @return Style des noms des crit�res de recherche
+//	 * @return Style des noms des critères de recherche
 //	 */
 //	private static OdfStyle createCritereLabelCellStyle(final OdfFileDom contentDom) {
 //		final OdfStyle style = contentDom.getAutomaticStyles().newStyle(OdfStyleFamily.TableCell);
@@ -182,10 +182,10 @@ package io.vertigo.dynamo.plugins.export.ods;
 //	}
 //
 //	/**
-//	 * Cr�ation du style des valeurs des crit�res de recherche.
+//	 * Création du style des valeurs des critères de recherche.
 //	 * 
 //	 * @param contentDom Contenu du fichier ODS
-//	 * @return Style des valeurs des crit�res de recherche
+//	 * @return Style des valeurs des critères de recherche
 //	 */
 //	private static OdfStyle createCritereValueCellStyle(final OdfFileDom contentDom, final ExportDataType type) {
 //		final OdfStyle style = contentDom.getAutomaticStyles().newStyle(OdfStyleFamily.TableCell);
@@ -198,7 +198,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 //
 //		switch (type) {
 //			case DATE:
-//				// TODO : v�rifier que cela marche ! Si oui le g�n�raliser pour corriger les erreurs de Fat Code
+//				// TODO : vérifier que cela marche ! Si oui le généraliser pour corriger les erreurs de Fat Code
 //				// final OdfNumberDateStyle dateStyle = new OdfNumberDateStyle(contentDom, "dd/MM/yyyy", "numberDateStyle", null);
 //				final OdfNumberDateStyle dateStyle = (OdfNumberDateStyle) OdfElementFactory.newOdfElement(contentDom, NumberDateStyleElement.ELEMENT_NAME);
 //				dateStyle.buildFromFormat("dd/MM/yyyy");
@@ -220,10 +220,10 @@ package io.vertigo.dynamo.plugins.export.ods;
 //	}
 //
 //	/**
-//	 * Cr�ation du style des ent�tes de colonne.
+//	 * Création du style des entêtes de colonne.
 //	 * 
 //	 * @param contentDom Contenu du fichier ODS
-//	 * @return Style des ent�tes de colonne
+//	 * @return Style des entêtes de colonne
 //	 */
 //	private static OdfStyle createListHeaderCellStyle(final OdfFileDom contentDom) {
 //		final OdfStyle style = contentDom.getAutomaticStyles().newStyle(OdfStyleFamily.TableCell);
@@ -249,20 +249,20 @@ package io.vertigo.dynamo.plugins.export.ods;
 //	}
 //
 //	/**
-//	 * Cr�ation du style des cellules de donn�es.
+//	 * Création du style des cellules de données.
 //	 * 
 //	 * @param contentDom Contenu du fichier ODS
 //	 * @param type {@link DataType}
-//	 * @return Style des cellules de donn�es
+//	 * @return Style des cellules de données
 //	 */
 //	private static OdfStyle createListRowCellStyle(final OdfFileDom contentDom, final ExportDataType type) {
 //		return createCritereValueCellStyle(contentDom, type);
 //	}
 //
 //	/**
-//	 * Exporte un �l�ment.
+//	 * Exporte un élément.
 //	 * 
-//	 * @param parameters Param�tres de l'�l�ment � exporter
+//	 * @param parameters Paramètres de l'élément à exporter
 //	 * @param table Feuille dans laquelle l'export se fait
 //	 * @param contentDom Contenu du fichier ODS.
 //	 */
@@ -271,10 +271,10 @@ package io.vertigo.dynamo.plugins.export.ods;
 //		final Map<Short, Double> maxWidthPerColumn = new HashMap<>();
 //
 //		if (parameters.hasDtObject()) {
-//			// c'est un crit�re � afficher
+//			// c'est un critère à afficher
 //			exportObject(parameters, table, contentDom, maxWidthPerColumn);
 //		} else {
-//			// c'est un tableau � afficher
+//			// c'est un tableau à afficher
 //			exportList(parameters, table, contentDom, maxWidthPerColumn);
 //		}
 //
@@ -285,7 +285,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 //	 * Permet de fixer la taille des colonnes en fonction de leur contenu.
 //	 * 
 //	 * @param table Feuille en cours
-//	 * @param maxWidthPerColumn Map donnant pour chaque colonne la longueur � appliquer � la colonne
+//	 * @param maxWidthPerColumn Map donnant pour chaque colonne la longueur à appliquer à la colonne
 //	 */
 //	private static void setColumnWiths(final OdfTable table, final Map<Short, Double> maxWidthPerColumn) {
 //		OdfTableColumn column;
@@ -303,7 +303,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 //	/**
 //	 * Convertit la taille des colonnes en cm pour open office.
 //	 * 
-//	 * @param length Taille en pixels � convertir en centim�tres
+//	 * @param length Taille en pixels à convertir en centimètres
 //	 * @return Chaine de caracteres indiquant la taille de la colonne
 //	 */
 //	private static String getcolumnlength(final double length) {
@@ -321,15 +321,15 @@ package io.vertigo.dynamo.plugins.export.ods;
 //	}
 //
 //	/**
-//	 * Exporte un �l�ment de type liste (tableau de donn�e).
+//	 * Exporte un élément de type liste (tableau de donnée).
 //	 * 
-//	 * @param parameters Param�tres de l'�l�ment � exporter
-//	 * @param table Feuille dans laquelle est r�alis� l'export
+//	 * @param parameters Paramètres de l'élément à exporter
+//	 * @param table Feuille dans laquelle est réalisé l'export
 //	 * @param contentDom Contenu du document ODS.
 //	 * @param maxWidthPerColumn Map des longueurs de colonnes
 //	 */
 //	private void exportList(final ExportDtParametersImpl parameters, final OdfTable table, final OdfFileDom contentDom, final Map<Short, Double> maxWidthPerColumn) {
-//		// On cr�� la ligne d'ent�te
+//		// On créé la ligne d'entête
 //		//final OdfTableRow headerRow = new OdfTableRow(contentDom);
 //		final OdfTableRow headerRow = (OdfTableRow) OdfElementFactory.newOdfElement(contentDom, TableTableRowElement.ELEMENT_NAME);
 //		short cellIndex = 0;
@@ -347,7 +347,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 //		}
 //		table.appendRow(headerRow);
 //
-//		// On insert toutes les donn�es du tableau
+//		// On insert toutes les données du tableau
 //		for (final DtObject dto : parameters.getDtList()) {
 //			//final OdfTableRow row = new OdfTableRow(contentDom);
 //			final OdfTableRow row = (OdfTableRow) OdfElementFactory.newOdfElement(contentDom, TableTableRowElement.ELEMENT_NAME);
@@ -369,10 +369,10 @@ package io.vertigo.dynamo.plugins.export.ods;
 //	}
 //
 //	/**
-//	 * Exporte un �l�ment de type objet (crit�res de recherche).
+//	 * Exporte un élément de type objet (critères de recherche).
 //	 * 
-//	 * @param parameters Param�tres de l'�l�ment � exporter
-//	 * @param table Feuille dans laquelle est r�alis� l'export
+//	 * @param parameters Paramètres de l'élément à exporter
+//	 * @param table Feuille dans laquelle est réalisé l'export
 //	 * @param contentDom Contenu du document ODS.
 //	 * @param maxWidthPerColumn Map des longueurs de colonnes
 //	 */
@@ -386,7 +386,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 //			//final OdfTableRow row = new OdfTableRow(contentDom);
 //			final OdfTableRow row = (OdfTableRow) OdfElementFactory.newOdfElement(contentDom, TableTableRowElement.ELEMENT_NAME);
 //
-//			// On ins�re le libell� du crit�re
+//			// On insère le libellé du critère
 //			//final OdfTableCell cell = new OdfTableCell(contentDom);
 //			final OdfTableCell cell = (OdfTableCell) OdfElementFactory.newOdfElement(contentDom, TableTableCellElement.ELEMENT_NAME);
 //			final String label = exportColumn.getLabel().getDisplay();
@@ -396,8 +396,8 @@ package io.vertigo.dynamo.plugins.export.ods;
 //			row.appendCell(cell);
 //			updateMaxWidthPerColumn(label, 1.2, (short) 0, maxWidthPerColumn);
 //
-//			// On ins�re la valeur du crit�re
-//			// TODO Revoir l'affichage de la valeur d'un crit�re liste de r�f�rence qui ne fonctionne pas (cgodard)
+//			// On insère la valeur du critère
+//			// TODO Revoir l'affichage de la valeur d'un critère liste de référence qui ne fonctionne pas (cgodard)
 //			final DtField field = exportColumn.getDtField();
 //			//final OdfTableCell valueCell = new OdfTableCell(contentDom);
 //			final OdfTableCell valueCell = (OdfTableCell) OdfElementFactory.newOdfElement(contentDom, TableTableCellElement.ELEMENT_NAME);
@@ -410,14 +410,14 @@ package io.vertigo.dynamo.plugins.export.ods;
 //	}
 //
 //	/**
-//	 * Ins�re une valeur dans une cellule.
+//	 * Insère une valeur dans une cellule.
 //	 * 
-//	 * @param value Valeur � ins�rer
-//	 * @param cell Cellule dans laquelle ins�rer la valeur
-//	 * @param type Type de la valeur � ins�rer
+//	 * @param value Valeur à insérer
+//	 * @param cell Cellule dans laquelle insérer la valeur
+//	 * @param type Type de la valeur à insérer
 //	 * @param cellIndex Index de la cellule
 //	 * @param maxWidthPerColumn Map des longueurs des colonnes
-//	 * @param style Style associ� � la cellule
+//	 * @param style Style associé à la cellule
 //	 * @param dateStyle Style pour une date
 //	 * @param numberStyle Style pour un nombre
 //	 */
@@ -461,10 +461,10 @@ package io.vertigo.dynamo.plugins.export.ods;
 //				cell.setOfficeDateValueAttribute(dateToString(dateValue, "yyyy-MM-dd"));
 //				cell.setTableStyleNameAttribute(getStyle(dateStyle));
 //
-//				stringValueForColumnWidth = "DD/MM/YYYY"; // ceci ne sert que pour d�terminer la taille de la cellule, on a pas besoin de la vrai valeur
+//				stringValueForColumnWidth = "DD/MM/YYYY"; // ceci ne sert que pour déterminer la taille de la cellule, on a pas besoin de la vrai valeur
 //
 //			} else {
-//				throw new UnsupportedOperationException("Type " + type + " non g�r� en export Excel");
+//				throw new UnsupportedOperationException("Type " + type + " non géré en export Excel");
 //			}
 //
 //			if (maxWidthPerColumn != null) {
@@ -482,10 +482,10 @@ package io.vertigo.dynamo.plugins.export.ods;
 //	}
 //
 //	/**
-//	 * Met � jour la longueur d'une colonne en fonction de son contenu.
+//	 * Met à jour la longueur d'une colonne en fonction de son contenu.
 //	 * 
-//	 * @param value Valeur ins�r�e dans la colonne
-//	 * @param textSizeCoeff Coefficient � appliquer sur la longueur de la valeur: longueur cellule = longueur valeur * textSizeCoeff + 2
+//	 * @param value Valeur insérée dans la colonne
+//	 * @param textSizeCoeff Coefficient à appliquer sur la longueur de la valeur: longueur cellule = longueur valeur * textSizeCoeff + 2
 //	 * @param cellIndex Index de la colonne
 //	 * @param maxWidthPerColumn Map des longueurs des colonnes
 //	 */

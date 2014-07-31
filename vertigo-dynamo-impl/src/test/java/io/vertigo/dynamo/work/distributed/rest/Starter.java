@@ -26,7 +26,7 @@ import io.vertigo.kernel.lang.Option;
 import java.util.Properties;
 
 /**
- * Charge et d�marre un environnement.
+ * Charge et démarre un environnement.
  * @author pchretien, npiedeloup
  */
 public final class Starter implements Runnable {
@@ -40,10 +40,10 @@ public final class Starter implements Runnable {
 
 	/**
 	 * @param managersXmlFileName Fichier managers.xml
-	 * @param propertiesFileName Fichier de propri�t�s
-	 * @param relativeRootClass Racine du chemin relatif, le cas ech�ant
-	 * @param defaultProperties Propri�t�s par d�faut (pouvant �tre r�cup�r� de la ligne de commande par exemple)
-	 * @param timeToWait Temps d'attente, 0 signifie illimit�
+	 * @param propertiesFileName Fichier de propriétés
+	 * @param relativeRootClass Racine du chemin relatif, le cas échéant
+	 * @param defaultProperties Propriétés par défaut (pouvant être récupéré de la ligne de commande par exemple)
+	 * @param timeToWait Temps d'attente, 0 signifie illimité
 	 */
 	public Starter(final String managersXmlFileName, final Option<String> propertiesFileName, final Class<?> relativeRootClass, final Option<Properties> defaultProperties, final long timeToWait) {
 		Assertion.checkNotNull(managersXmlFileName);
@@ -59,7 +59,7 @@ public final class Starter implements Runnable {
 	}
 
 	/**
-	 * Lance l'environnement et attend ind�finiment.
+	 * Lance l'environnement et attend indéfiniment.
 	 * @param args "Usage: java kasper.kernel.Starter managers.xml <conf.properties>"
 	 */
 	public static void main(final String[] args) {
@@ -81,7 +81,7 @@ public final class Starter implements Runnable {
 
 			final Object lock = new Object();
 			synchronized (lock) {
-				lock.wait(timeToWait * 1000); //on attend le temps demand� et 0 => illimit�
+				lock.wait(timeToWait * 1000); //on attend le temps demandé et 0 => illimité
 			}
 		} catch (final InterruptedException e) {
 			//rien arret normal
@@ -93,11 +93,11 @@ public final class Starter implements Runnable {
 	}
 
 	/**
-	 * D�marre l'application.
+	 * Démarre l'application.
 	 */
 	public final void start() {
-		// Cr�ation de l'�tat de l'application
-		// Initialisation de l'�tat de l'application
+		// Création de l'état de l'application
+		// Initialisation de l'état de l'application
 		//final URL xmlURL = createURL(managersXmlFileName, relativeRootClass);
 		final AppBuilder builder = new AppBuilder() //
 				.withSilence(SILENCE) //

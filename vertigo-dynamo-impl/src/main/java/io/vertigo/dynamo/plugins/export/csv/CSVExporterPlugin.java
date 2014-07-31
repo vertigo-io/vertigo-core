@@ -43,7 +43,7 @@ public final class CSVExporterPlugin implements ExporterPlugin {
 
 	/**
 	 * Constructeur.
-	 * @param codecManager Manager des m�canismes de codage/d�codage. 
+	 * @param codecManager Manager des mécanismes de codage/décodage. 
 	 */
 	@Inject
 	public CSVExporterPlugin(final PersistenceManager persistenceManager, final CodecManager codecManager) {

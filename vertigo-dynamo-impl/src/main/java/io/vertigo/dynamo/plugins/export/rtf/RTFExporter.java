@@ -38,13 +38,13 @@ import com.lowagie.text.rtf.headerfooter.RtfHeaderFooter;
 
 /**
  * Handler d'export RTF avec iText.
- * Configur� par ExportParametersRTF.
+ * Configuré par ExportParametersRTF.
  *
  * @author evernat
  * @version $Id: RTFExporter.java,v 1.1 2013/07/10 15:46:44 npiedeloup Exp $
  */
 final class RTFExporter extends AbstractExporterIText {
-	// l'impl�mentation de ExportHandlerRTF est majoritairement commune avec ExportHandlerPDF
+	// l'implémentation de ExportHandlerRTF est majoritairement commune avec ExportHandlerPDF
 
 	RTFExporter(final ExportHelper exportHelper) {
 		super(exportHelper);

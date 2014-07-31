@@ -41,7 +41,7 @@ import redis.clients.jedis.exceptions.JedisException;
 
 /**
  * Ce plugin permet de distribuer des travaux.
- * REDIS est utilis� comme plateforme d'�changes.
+ * REDIS est utilisé comme plateforme d'échanges.
  * 
  * @author pchretien
  * $Id: RedisDistributedWorkerPlugin.java,v 1.11 2014/06/26 12:30:08 npiedeloup Exp $
@@ -50,7 +50,7 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 	private final int timeoutSeconds;
 	private final JedisPool jedisPool;
 	/*
-	 *La map est n�cessairement synchronis�e. 
+	 *La map est nécessairement synchronisée. 
 	 */
 	private final Map<String, WorkResultHandler> workResultHandlers = Collections.synchronizedMap(new HashMap<String, WorkResultHandler>());
 	private final Thread redisListenerThread;
@@ -116,7 +116,7 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 
 		tx.exec();
 		if ("ok".equals(status.get())) {
-			//Seul cas ou on remonte un r�sultat
+			//Seul cas ou on remonte un résultat
 			return RedisUtil.decode(result.get());
 		}
 
@@ -143,14 +143,14 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 	}
 
 	private <WR, W> WR waitResult(final Jedis jedis, final WorkItem<WR, W> workItem) {
-		//On attend le r�sultat
+		//On attend le résultat
 		//final String id = jedis.brpop(timeoutSeconds, "works:done:" + workId);
 		final String id = jedis.brpoplpush("works:done:" + workItem.getId(), "works:completed", timeoutSeconds);
 
 		if (id == null) {
 			throw new RuntimeException("TimeOut survenu pour work[" + workItem.getId() + "], duree maximale: " + timeoutSeconds + " s");
 		} else if (!workItem.getId().equals(id)) {
-			throw new IllegalStateException("Id non coh�renents attendu '" + workItem.getId() + "' trouv� '" + id + "'");
+			throw new IllegalStateException("Id non cohérents attendu '" + workItem.getId() + "' trouvé '" + id + "'");
 		}
 		return (WR) buildResult(jedis, workItem.getId());
 	}

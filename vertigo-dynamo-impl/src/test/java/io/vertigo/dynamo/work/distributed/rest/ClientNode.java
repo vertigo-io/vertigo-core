@@ -37,7 +37,7 @@ final class ClientNode {
 
 	/**
 	 * Constructeur.
-	 * @param maxLifeTime Dur�e de vie max en seconde
+	 * @param maxLifeTime Durée de vie max en seconde
 	 */
 	ClientNode(final int maxLifeTime) {
 		this.maxLifeTime = maxLifeTime;

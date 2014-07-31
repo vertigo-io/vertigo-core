@@ -47,24 +47,24 @@ public final class ExportHelper {
 	}
 
 	/**
-	 * Retourne le text d'un champs du DTO en utilisant le formateur du domaine, ou l'�l�ment issu de la liste de REF si il y a une d�normalisation � faire.
-	 * @param referenceCache Cache des �l�ments de r�f�rence (cl�-libell�), peut �tre vide la premiere fois il sera remplit automatiquement (utilis� pour les champs issus d'association avec une liste de ref)
-	 * @param denormCache Cache des colonnes d�normalis�es par field, peut �tre vide la premiere fois il sera remplit automatiquement (utilis� en cas de d�norm sp�cifique)
-	 * @param dto Objet m�tier
+	 * Retourne le text d'un champs du DTO en utilisant le formateur du domaine, ou l'élément issu de la liste de REF si il y a une dénormalisation à faire.
+	 * @param referenceCache Cache des éléments de référence (clé-libellé), peut être vide la premiere fois il sera remplit automatiquement (utilisé pour les champs issus d'association avec une liste de ref)
+	 * @param denormCache Cache des colonnes dénormalisées par field, peut être vide la premiere fois il sera remplit automatiquement (utilisé en cas de dénorm spécifique)
+	 * @param dto Objet métier
 	 * @param exportColumn Information de la colonne a exporter.
-	 * @return Valeur d'affichage de la colonne de l'objet m�tier
+	 * @return Valeur d'affichage de la colonne de l'objet métier
 	 */
 	public String getText(final Map<DtField, Map<Object, String>> referenceCache, final Map<DtField, Map<Object, String>> denormCache, final DtObject dto, final ExportField exportColumn) {
 		return (String) getValue(true, referenceCache, denormCache, dto, exportColumn);
 	}
 
 	/**
-	 * Retourne la valeur d'un champs du DTO, ou l'�l�ment issu de la liste de REF si il y a une d�normalisation � faire.
-	 * @param referenceCache Cache des �l�ments de r�f�rence (cl�-libell�), peut �tre vide la premiere fois il sera remplit automatiquement (utilis� pour les champs issus d'association avec une liste de ref)
-	 * @param denormCache Cache des colonnes d�normalis�es par field, peut �tre vide la premiere fois il sera remplit automatiquement (utilis� en cas de d�norm sp�cifique)
-	 * @param dto Objet m�tier
+	 * Retourne la valeur d'un champs du DTO, ou l'élément issu de la liste de REF si il y a une dénormalisation à faire.
+	 * @param referenceCache Cache des éléments de référence (clé-libellé), peut être vide la premiere fois il sera remplit automatiquement (utilisé pour les champs issus d'association avec une liste de ref)
+	 * @param denormCache Cache des colonnes dénormalisées par field, peut être vide la premiere fois il sera remplit automatiquement (utilisé en cas de dénorm spécifique)
+	 * @param dto Objet métier
 	 * @param exportColumn Information de la colonne a exporter.
-	 * @return Valeur typ�e de la colonne de l'objet m�tier
+	 * @return Valeur typée de la colonne de l'objet métier
 	 */
 	public Object getValue(final Map<DtField, Map<Object, String>> referenceCache, final Map<DtField, Map<Object, String>> denormCache, final DtObject dto, final ExportField exportColumn) {
 		return getValue(false, referenceCache, denormCache, dto, exportColumn);
@@ -103,8 +103,8 @@ public final class ExportHelper {
 	}
 
 	private Map<Object, String> createReferentielIndex(final DtField dtField) {
-		//TODO ceci est un copier/coller de KSelectionListBean (qui resemble plus � un helper des MasterData qu'a un bean)
-		//La collection n'est pas pr�cis� alors on va la chercher dans le repository du r�f�rentiel
+		//TODO ceci est un copier/coller de KSelectionListBean (qui resemble plus à un helper des MasterData qu'a un bean)
+		//La collection n'est pas précisé alors on va la chercher dans le repository du référentiel
 		final DtListURIForMasterData mdlUri = persistenceManager.getMasterDataConfiguration().getDtListURIForMasterData(dtField.getFkDtDefinition());
 		final DtList<DtObject> valueList = persistenceManager.getBroker().getList(mdlUri);
 		final DtField dtFieldDisplay = mdlUri.getDtDefinition().getDisplayField().get();

@@ -26,7 +26,7 @@ import java.io.OutputStream;
 
 /**
  * Plugin de l'export.
- * Les param�tres qui lui sont associ�s permettent d'agir sur le resultat de l'export.
+ * Les paramètres qui lui sont associés permettent d'agir sur le resultat de l'export.
  * Le plugin accepte toutes les exceptions afin de centraliser leur gestion en un seul endroit.
  *
  * @author pchretien, npiedeloup
@@ -34,17 +34,17 @@ import java.io.OutputStream;
  */
 public interface ExporterPlugin extends Plugin {
 	/**
-	 * R�alise l'export des donn�es de contenu.
-	 * @param metaParameters param�tres de cet export
-	 * @param out Le flux d'�criture des donn�es export�es.
-	 * @throws Exception Exception g�n�rique en cas d'erreur lors de l'export
+	 * Réalise l'export des données de contenu.
+	 * @param metaParameters paramètres de cet export
+	 * @param out Le flux d'écriture des données exportées.
+	 * @throws Exception Exception générique en cas d'erreur lors de l'export
 	 */
 	void exportData(final Export metaParameters, final OutputStream out) throws Exception;
 
 	/**
-	 * Type de Format accept� � l'export
+	 * Type de Format accepté à l'export
 	 * @param exportFormat
-	 * @return si le format pr�cis� est pris en compte par le plugin
+	 * @return si le format précisé est pris en compte par le plugin
 	 */
 	boolean accept(ExportFormat exportFormat);
 

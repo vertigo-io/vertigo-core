@@ -57,7 +57,7 @@ public final class EAXmiLoader {
 	}
 
 	/**
-	 * R�cup�ration des classes d�clar�es dans le XMI.
+	 * Récupération des classes déclarées dans le XMI.
 	 * @return Liste des classes
 	 */
 	public List<EAXmiClass> getClasses() {
@@ -73,7 +73,7 @@ public final class EAXmiLoader {
 	}
 
 	/**
-	 * R�cup�ration des associations d�clar�es dans le XMI.
+	 * Récupération des associations déclarées dans le XMI.
 	 * @return Liste des associations
 	 */
 	public List<EAXmiAssociation> getAssociations() {
@@ -129,34 +129,34 @@ public final class EAXmiLoader {
 	 * @return Association 
 	 */
 	private EAXmiAssociation buildDynAssociation(final EAXmiObject obj) {
-		log.debug("Cr�er association :" + obj.getName());
+		log.debug("Créer association :" + obj.getName());
 		final String code = obj.getName().toUpperCase();
 		final String packageName = obj.getParent().getPackageName();
 
 		final String multiplicityA = obj.getRoleAMultiplicity();
 		final String multiplicityB = obj.getRoleBMultiplicity();
 
-		//On recherche les objets r�f�renc�s par l'association.
+		//On recherche les objets référencés par l'association.
 		EAXmiObject objectB = map.get(obj.getClassB());
 		EAXmiObject objectA = map.get(obj.getClassA());
 
 		if (objectA == null || objectB == null) {
 			throw new IllegalArgumentException("Noeuds de l'association introuvables");
 		}
-		//Si les roles ne sont pas renseign�s ont prend le nom de la table en CamelCase.
+		//Si les roles ne sont pas renseignés ont prend le nom de la table en CamelCase.
 		final String roleLabelA = obj.getRoleALabel() != null ? obj.getRoleALabel() : StringUtil.constToCamelCase(objectA.getName(), true);
 		final String roleLabelB = obj.getRoleBLabel() != null ? obj.getRoleBLabel() : StringUtil.constToCamelCase(objectB.getName(), true);
-		// Si il n'existe pas de libelle pour un role donn� alors on utilise le nom de l'objet r�f�renc�.
-		//Le code du role est d�duit du libell�.
+		// Si il n'existe pas de libelle pour un role donné alors on utilise le nom de l'objet référencé.
+		//Le code du role est déduit du libellé.
 
-		//Attention pamc inverse dans oom les d�clarations des objets !!
+		//Attention pamc inverse dans oom les déclarations des objets !!
 		final String codeA = objectA.getName().toUpperCase();
 		final String codeB = objectB.getName().toUpperCase();
 
 		// associationDefinition.
 		//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
 
-		// navigabilit�s sont optionnelles; elles sont d�duites de la multiplicit�s quand elles ne sont pas renseignées
+		// navigabilités sont optionnelles; elles sont déduites de la multiplicités quand elles ne sont pas renseignées
 		final boolean navigabilityA = obj.getRoleANavigability() == null ? false : obj.getRoleANavigability();
 		final boolean navigabilityB = obj.getRoleBNavigability() == null ? true : obj.getRoleBNavigability();
 		return new EAXmiAssociation(code, packageName, multiplicityA, multiplicityB, roleLabelA, roleLabelB, codeA, codeB, navigabilityA, navigabilityB);

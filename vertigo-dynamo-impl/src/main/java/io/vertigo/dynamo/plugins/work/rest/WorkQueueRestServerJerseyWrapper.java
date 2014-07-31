@@ -33,7 +33,7 @@ import javax.ws.rs.core.MediaType;
 import com.sun.jersey.spi.resource.Singleton;
 
 /**
- * WorkQueue distribu�e - partie serveur en REST.
+ * WorkQueue distribuée - partie serveur en REST.
  * @author npiedeloup
  * @version $Id: WorkQueueRestServerJerseyWrapper.java,v 1.6 2014/02/03 17:28:45 pchretien Exp $
  */

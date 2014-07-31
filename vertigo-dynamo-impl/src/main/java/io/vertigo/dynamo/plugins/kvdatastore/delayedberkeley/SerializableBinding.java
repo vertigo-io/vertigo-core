@@ -46,7 +46,7 @@ final class SerializableBinding extends TupleBinding<Serializable> {
 	@Override
 	public Serializable entryToObject(final TupleInput ti) {
 		final String prefix = ti.readString();
-		Assertion.checkArgument(PREFIX.equals(prefix), "L'entr�e n'est pas du bon type {0}", prefix);
+		Assertion.checkArgument(PREFIX.equals(prefix), "L'entrée n'est pas du bon type {0}", prefix);
 		try {
 			final int size = ti.readInt();
 			final byte[] buffer = new byte[size];

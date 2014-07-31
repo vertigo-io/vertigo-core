@@ -51,7 +51,7 @@ final class RedisListenerThread extends Thread {
 			//				while (retry < 3) {
 			Jedis jedis = jedisPool.getResource();
 			try {
-				//On attend le r�sultat (par tranches de 1s)
+				//On attend le résultat (par tranches de 1s)
 				final int waitTimeSeconds = 1;
 
 				final String workId = jedis.brpoplpush("works:done", "works:completed", waitTimeSeconds);

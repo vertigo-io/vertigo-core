@@ -37,14 +37,14 @@ import org.apache.log4j.Logger;
 import com.google.gson.Gson;
 
 /**
- * WorkQueue distribu�e - partie serveur en REST.
+ * WorkQueue distribuée - partie serveur en REST.
  * @author npiedeloup
  * @version $Id: WorkQueueRestServer.java,v 1.12 2014/02/27 10:31:19 pchretien Exp $
  */
 final class WorkQueueRestServer {
 	private static final Logger LOG = Logger.getLogger(WorkQueueRestServer.class);
 
-	//On conserve l'�tat des work en cours, afin de pouvoir les relancer si besoin (avec un autre uuid)
+	//On conserve l'état des work en cours, afin de pouvoir les relancer si besoin (avec un autre uuid)
 	private final ConcurrentMap<UUID, RunningWorkInfos> runningWorkInfosMap = new ConcurrentHashMap<>();
 	private final ConcurrentMap<String, NodeState> knownNodes = new ConcurrentHashMap<>();
 	private final Set<String> activeWorkTypes = Collections.synchronizedSet(new HashSet<String>());
@@ -56,7 +56,7 @@ final class WorkQueueRestServer {
 	/**
 	 * Constructeur.
 	 * @param multipleWorkQueues MultipleWorkQueues
-	 * @param nodeTimeOut Timeout avant de consid�rer un noeud comme mort
+	 * @param nodeTimeOut Timeout avant de considérer un noeud comme mort
 	 * @param codecManager Manager de codec
 	 */
 	public WorkQueueRestServer(final MultipleWorkQueues multipleWorkQueues, final long nodeTimeOut, final CodecManager codecManager) {
@@ -68,10 +68,10 @@ final class WorkQueueRestServer {
 	}
 
 	/**
-	 * D�marrage du serveur.
+	 * Démarrage du serveur.
 	 */
 	public void start() {
-		//On lance le d�mon qui d�tecte les noeuds morts
+		//On lance le démon qui détecte les noeuds morts
 		checkTimeOutTimer.scheduleAtFixedRate(new DeadNodeDetectorTask(multipleWorkQueues, nodeTimeOut, knownNodes, runningWorkInfosMap), 10 * 1000, 10 * 1000);
 	}
 
@@ -84,9 +84,9 @@ final class WorkQueueRestServer {
 
 	/**
 	 * Signalement de vie d'un node, avec le type de work qu'il annonce. 
-	 * Le type de work annonc�, vient compl�ter les pr�c�dents.
+	 * Le type de work annoncé, vient compléter les précédents.
 	 * @param nodeUID UID du node
-	 * @param nodeWorkType Type de work trait�
+	 * @param nodeWorkType Type de work traité
 	 */
 	private void touchNode(final String nodeUID, final String nodeWorkType) {
 		final NodeState nodeState = knownNodes.putIfAbsent(nodeUID, new NodeState(nodeUID, nodeWorkType));
@@ -198,15 +198,15 @@ final class WorkQueueRestServer {
 		@Override
 		public void run() {
 			final Set<String> deadNodes = new HashSet<>();
-			//Comme d�fini dans le contrat de la ConcurrentMap : l'iterator est weakly consistent : et ne lance pas de ConcurrentModificationException  
+			//Comme défini dans le contrat de la ConcurrentMap : l'iterator est weakly consistent : et ne lance pas de ConcurrentModificationException  
 			for (final NodeState nodeState : knownNodes.values()) {
-				//sans signe de vie depuis deadNodeTimeout, on consid�re le noeud comme mort
+				//sans signe de vie depuis deadNodeTimeout, on considère le noeud comme mort
 				if (System.currentTimeMillis() - nodeState.getLastSeenTime() > deadNodeTimeout) {
 					deadNodes.add(nodeState.getNodeUID());
 				}
 			}
 			if (!deadNodes.isEmpty()) {
-				LOG.info("Noeuds arr�t�s : " + deadNodes);
+				LOG.info("Noeuds arrêtés : " + deadNodes);
 				for (final RunningWorkInfos runningWorkInfos : runningWorkInfosMap.values()) {
 					if (deadNodes.contains(runningWorkInfos.getNodeUID())) {
 						multipleWorkQueues.putWorkItem(runningWorkInfos.getWorkType(), runningWorkInfos.getWorkItem());

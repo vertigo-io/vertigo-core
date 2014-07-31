@@ -62,7 +62,7 @@ final class RedisDispatcherThread extends Thread {
 			if (workId != null) {
 				execute(workId, jedis);
 			} else {
-				//Cel� signifie que l'a rien re�u pendant 10s
+				//Cela signifie que l'a rien reçu pendant 10s
 				//out.println(" Worker [" + id + "]waiting....");
 			}
 			return;

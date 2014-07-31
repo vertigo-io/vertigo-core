@@ -23,8 +23,8 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.export.ExportField;
 
 /**
- * D�finition d'une colonne de type d�normalisation � exporter.
- * On pr�sice la liste et le champs a utiliser comme libell� � afficher � la place de l'id de la liste de l'export.
+ * Définition d'une colonne de type dénormalisation à exporter.
+ * On précise la liste et le champs a utiliser comme libellé à afficher à la place de l'id de la liste de l'export.
  *
  * @author pchretien, npiedeloup
  * @version $Id: ExportDenormField.java,v 1.2 2014/01/20 17:49:10 pchretien Exp $
@@ -36,9 +36,9 @@ final class ExportDenormField extends ExportField {
 
 	/**
 	 * Constructeur.
-	 * @param dtField Champ � exporter
-	 * @param list Liste de �lements d�norm�s
-	 * @param displayField Champs d�norm�
+	 * @param dtField Champ à exporter
+	 * @param list Liste de éléments dénormés
+	 * @param displayField Champs dénormé
 	 */
 	ExportDenormField(final DtField dtField, final DtList<?> list, final DtField displayField) {
 		super(dtField);
@@ -47,21 +47,21 @@ final class ExportDenormField extends ExportField {
 	}
 
 	/**
-	 * @return DtList<?> liste contenant les �l�ments d�norm�s.
+	 * @return DtList<?> liste contenant les éléments dénormés.
 	 */
 	DtList<?> getDenormList() {
 		return list;
 	}
 
 	/**
-	 * @return DtField repr�sentant le display de la liste de d�norm.
+	 * @return DtField représentant le display de la liste de dénorm.
 	 */
 	DtField getDisplayField() {
 		return displayField;
 	}
 
 	/**
-	 * @return DtField repr�sentant la cl� de la liste de d�norm. (par d�faut la key du DT)
+	 * @return DtField représentant la clé de la liste de dénorm. (par défaut la key du DT)
 	 */
 	DtField getKeyField() {
 		if (keyField == null) {
@@ -73,7 +73,7 @@ final class ExportDenormField extends ExportField {
 	//--------------------------------------------------------------------------
 
 	//	/**
-	//	 * @param keyField repr�sentant la cl� de la liste de d�norm. (util seulement si diff�rent de la key du DT)
+	//	 * @param keyField représentant la clé de la liste de dénorm. (util seulement si différent de la key du DT)
 	//	 */
 	//	void setKeyField(final DtField keyField) {
 	//		this.keyField = keyField;

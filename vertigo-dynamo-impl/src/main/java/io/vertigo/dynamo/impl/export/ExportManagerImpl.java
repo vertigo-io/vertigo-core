@@ -41,7 +41,7 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 /**
- * Impl�mentation standard du manager des exports.
+ * Implémentation standard du manager des exports.
  *
  * @author pchretien, npiedeloup
  * @version $Id: ExportManagerImpl.java,v 1.8 2014/02/27 10:23:30 pchretien Exp $
@@ -76,9 +76,9 @@ public final class ExportManagerImpl implements ExportManager {
 	}
 
 	/**
-	 * R�cup�re le plugin d'export associ� au format.
-	 * @param exportFormat Format d'export souhait� 
-	 * @return Plugin d'export associ� au format
+	 * Récupère le plugin d'export associé au format.
+	 * @param exportFormat Format d'export souhaité 
+	 * @return Plugin d'export associé au format
 	 */
 	private ExporterPlugin getExporterPlugin(final ExportFormat exportFormat) {
 		Assertion.checkNotNull(exportFormat);
@@ -109,17 +109,17 @@ public final class ExportManagerImpl implements ExportManager {
 		try {
 			return generateFile(export);
 		} catch (final Exception e) {
-			//Quelle que soit l'exception on l'encapsule pour pr�ciser le nom du fichier.
-			final String msg = "La g�n�ration du fichier a �chou�.<!-- " + e.getMessage() + "--> pour le fichier " + export.getFileName();
+			//Quelle que soit l'exception on l'encapsule pour préciser le nom du fichier.
+			final String msg = "La génération du fichier a échoué.<!-- " + e.getMessage() + "--> pour le fichier " + export.getFileName();
 			throw new RuntimeException(msg, e);
 		}
 	}
 
 	/**
-	 * Ecrire dans un fichier temporaire en passant par le writer le donn�es (CSV, XML, DOC,...).
-	 * @return Fichier temporaire g�n�r�
-	 * @param export Param�tres de l'export
-	 * @throws Exception Exception lors de la cr�ation du fichier
+	 * Ecrire dans un fichier temporaire en passant par le writer le données (CSV, XML, DOC,...).
+	 * @return Fichier temporaire généré
+	 * @param export Paramètres de l'export
+	 * @throws Exception Exception lors de la création du fichier
 	 */
 	private KFile generateFile(final Export export) throws Exception {
 		final ExporterPlugin exporterPlugin = getExporterPlugin(export.getFormat());
