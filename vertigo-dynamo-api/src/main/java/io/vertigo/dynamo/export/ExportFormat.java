@@ -20,7 +20,7 @@ package io.vertigo.dynamo.export;
 
 
 /**
- * Formats de sortie support�s par le manager d'�dition.
+ * Formats de sortie supportés par le manager d'édition.
  * @author pchretien, npiedeloup
  * @version $Id: ExportFormat.java,v 1.1 2013/07/10 15:46:44 npiedeloup Exp $
  */
@@ -55,14 +55,14 @@ public enum ExportFormat {
 
 	/**
 	 * Constructeur.
-	 * @param typeMime Type mime associ�
+	 * @param typeMime Type mime associé
 	 */
 	private ExportFormat(final String typeMime) {
 		this.typeMime = typeMime;
 	}
 
 	/**
-	 * @return Type mime associ�
+	 * @return Type mime associé
 	 */
 	public String getTypeMime() {
 		return typeMime;

@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Donn�es � exporter.
+ * Données à exporter.
  * @author pchretien
  * @version $Id: Export.java,v 1.5 2014/02/27 10:23:30 pchretien Exp $
  */
@@ -54,7 +54,7 @@ public final class Export {
 	 */
 	Export(final ExportFormat format, final String fileName, final String title, final String author, final Export.Orientation orientation, final List<ExportDtParametersReadable> exportDtParameters) {
 		Assertion.checkNotNull(format);
-		Assertion.checkArgNotEmpty(fileName, "FileName doit �tre non vide");
+		Assertion.checkArgNotEmpty(fileName, "FileName doit être non vide");
 		//Assertion.notNull(title);
 		//Assertion.notNull(author);
 		Assertion.checkNotNull(orientation);
@@ -97,14 +97,14 @@ public final class Export {
 	}
 
 	/**
-	 * @return Orientation du document (mode portrait si non renseign�)
+	 * @return Orientation du document (mode portrait si non renseigné)
 	 */
 	public Orientation getOrientation() {
 		return orientation;
 	}
 
 	/**
-	 * @return Liste des param�tres de donn�es � exporter
+	 * @return Liste des paramètres de données à exporter
 	 */
 	public List<ExportDtParametersReadable> getReportDataParameters() {
 		return exportDtParameters;

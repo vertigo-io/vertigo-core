@@ -22,8 +22,8 @@ import io.vertigo.kernel.lang.Assertion;
 
 /**
  * Node.
- * Un noeud poss�de 
- *  - un �tat variable (actif/inactif)
+ * Un noeud possède 
+ *  - un état variable (actif/inactif)
  *  - une configuration (uid / ip) 
  * 
  * @author npiedeloup, pchretien
