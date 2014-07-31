@@ -56,12 +56,12 @@ public final class FranceManagerImpl implements FranceManager {
 			String line;
 			boolean first = true;
 			while ((line = reader.readLine()) != null) {
-				//On laisse la premi�re ligne
+				//On laisse la première ligne
 				if (first) {
 					first = false;
 				} else {
 					String[] tokens = line.split("\t");
-					Assertion.checkArgument(tokens.length == 5, "txt mal form�");
+					Assertion.checkArgument(tokens.length == 5, "txt mal formé");
 					String code = tokens[0];
 					String label = tokens[4];
 					Region region = new Region(code, label);
@@ -80,12 +80,12 @@ public final class FranceManagerImpl implements FranceManager {
 			String line;
 			boolean first = true;
 			while ((line = reader.readLine()) != null) {
-				//On laisse la premi�re ligne
+				//On laisse la première ligne
 				if (first) {
 					first = false;
 				} else {
 					String[] tokens = line.split("\t");
-					Assertion.checkArgument(tokens.length == 6, "txt mal form� pour la ligne {0}, tokens:{1}", line, tokens.length);
+					Assertion.checkArgument(tokens.length == 6, "txt mal formé pour la ligne {0}, tokens:{1}", line, tokens.length);
 					String code = tokens[1];
 					String label = tokens[5];
 					String codeRegion = tokens[0];

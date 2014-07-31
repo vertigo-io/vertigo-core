@@ -31,7 +31,7 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 /**
- * Impl�mentation standard de la gestion centralis�e des droits d'acc�s.
+ * Implémentation standard de la gestion centralisée des droits d'accès.
  *
  * @author npiedeloup
  * @version $Id: MailManagerImpl.java,v 1.6 2014/07/04 13:11:22 pchretien Exp $
@@ -42,7 +42,7 @@ public final class MailManagerImpl implements MailManager {
 
 	/** 
 	 * Constructeur.
-	 * @param localeManager Manager des messages localis�s
+	 * @param localeManager Manager des messages localisés
 	 * @param sendMailPlugin Plugin d'envoi de mail
 	 */
 	@Inject

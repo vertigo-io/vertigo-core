@@ -36,7 +36,7 @@ import java.io.InputStream;
  */
 public final class TestUtil {
 	/**
-	 * Constructeur priv� pour class utilitaire
+	 * Constructeur privé pour class utilitaire
 	 *
 	 */
 	private TestUtil() {
@@ -44,14 +44,14 @@ public final class TestUtil {
 	}
 
 	/**
-	 * Cr�e un KFile relativement d'un class de base.
+	 * Crée un KFile relativement d'un class de base.
 	 * @param fileName Nom/path du fichier
 	 * @param baseClass Class de base pour le chemin relatif 
 	 * @return KFile
 	 */
 	public static KFile createKFile(final FileManager fileManager, final String fileName, final Class<?> baseClass) {
 		try (final InputStream in = baseClass.getResourceAsStream(fileName)) {
-			Assertion.checkNotNull(in, "fichier non trouv� : {0}", fileName);
+			Assertion.checkNotNull(in, "fichier non trouvé : {0}", fileName);
 			final File file = new TempFile("tmp", '.' + FileUtil.getFileExtension(fileName));
 			FileUtil.copy(in, file);
 			return fileManager.createFile(file);

@@ -31,7 +31,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test de l'impl�mentation standard.
+ * Test de l'implémentation standard.
  *
  * @author pchretien
  * @version $Id: JobManagerTest.java,v 1.3 2013/10/23 12:07:07 pchretien Exp $
@@ -60,15 +60,15 @@ public class JobManagerTest extends AbstractTestCaseJU4 {
 		Home.getDefinitionSpace().put(jobDefinition, JobDefinition.class);
 
 		jobManager.scheduleNow(jobDefinition);
-		//Le traitement m�tier n'a pas encore �t� effectu�, on le v�rifie
+		//Le traitement métier n'a pas encore été effectué, on le vérifie
 		Assert.assertEquals(0, TestJob.getCount());
 
-		//Le traitement m�tier doit avoir �t� effectu�, on le v�rifie
+		//Le traitement métier doit avoir été effectué, on le vérifie
 		Thread.sleep(500);
 		Assert.assertEquals(1, TestJob.getCount());
 
 		Thread.sleep(2500);
-		//On v�rifie qu'il n'a pas d'autre ex�cution
+		//On vérifie qu'il n'a pas d'autre exécution
 		Assert.assertEquals(1, TestJob.getCount());
 	}
 
@@ -79,14 +79,14 @@ public class JobManagerTest extends AbstractTestCaseJU4 {
 
 		final Date date = new DateBuilder(new Date()).addSeconds(1).build();
 		jobManager.scheduleAtDate(jobDefinition, date);
-		//Le traitement m�tier n'a pas encore �t� effectu�, on le v�rifie
+		//Le traitement métier n'a pas encore été effectué, on le vérifie
 		Assert.assertEquals(0, TestJob.getCount());
 
 		Thread.sleep(1500);
 		Assert.assertEquals(1, TestJob.getCount());
 
 		Thread.sleep(1500);
-		//On v�rifie qu'il n'a pas d'autre ex�cution
+		//On vérifie qu'il n'a pas d'autre exécution
 		Assert.assertEquals(1, TestJob.getCount());
 	}
 
@@ -96,7 +96,7 @@ public class JobManagerTest extends AbstractTestCaseJU4 {
 		Home.getDefinitionSpace().put(jobDefinition, JobDefinition.class);
 
 		jobManager.scheduleEverySecondInterval(jobDefinition, 1);
-		//Le traitement m�tier n'a pas encore �t� effectu�, on le v�rifie
+		//Le traitement métier n'a pas encore été effectué, on le vérifie
 		Assert.assertEquals(0, TestJob.getCount());
 
 		Thread.sleep(1500);
@@ -111,14 +111,14 @@ public class JobManagerTest extends AbstractTestCaseJU4 {
 	//		final Date date = new DateBuilder(new Date()).addSeconds(1).build();
 	//		final TestJob testJob = new TestJob();
 	//		jobManager.scheduleEveryDayAtHour("jb", testJob, date);
-	//		//Le traitement m�tier n'a pas encore �t� effectu�, on le v�rifie
+	//		//Le traitement métier n'a pas encore été effectué, on le vérifie
 	//		Assert.assertEquals(0, testJob.getCount());
 	//
 	//		Thread.sleep(1500);
 	//		Assert.assertEquals(1, testJob.getCount());
 	//
 	//		Thread.sleep(1500);
-	//		//On v�rifie qu'il n'a pas d'autre ex�cution
+	//		//On vérifie qu'il n'a pas d'autre exécution
 	//		Assert.assertEquals(1, testJob.getCount());
 	//	}
 

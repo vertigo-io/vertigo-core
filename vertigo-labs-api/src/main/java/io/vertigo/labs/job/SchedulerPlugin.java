@@ -30,28 +30,28 @@ import java.util.Date;
  */
 public interface SchedulerPlugin extends Plugin {
 	/**
-	 * Programme un job pour ex�cution � une fr�quence donn�e en secondes.
-	 * @param periodInSecond Fr�quence d'ex�cution en secondes
+	 * Programme un job pour exécution à une fréquence donnée en secondes.
+	 * @param periodInSecond Fréquence d'exécution en secondes
 	 */
 	void scheduleEverySecondInterval(final JobManager jobManager, final JobDefinition jobDefinition, int periodInSecond);
 
 	/**
-	 * Programme un job pour ex�cution chaque jour � heure fixe.
-	 * <br/>Si il y a besoin de programmer un job pour ex�cution � jour fixe dans la semaine
-	 * ou dans le mois, il peut �tre programm� un job chaque puis conditioner l'ex�cution selon la
+	 * Programme un job pour exécution chaque jour à heure fixe.
+	 * <br/>Si il y a besoin de programmer un job pour exécution à jour fixe dans la semaine
+	 * ou dans le mois, il peut être programmé un job chaque puis conditioner l'exécution selon la
 	 * date courante en utilisant la classe Calendar.
-	 * @param hour Heure fixe d'ex�cution
+	 * @param hour Heure fixe d'exécution
 	 */
 	void scheduleEveryDayAtHour(final JobManager jobManager, final JobDefinition jobDefinition, int hour);
 
 	/**
-	 * Programme un job pour une seul ex�cution � une date donn�e.
-	 * @param date Date d'ex�cution
+	 * Programme un job pour une seul exécution à une date donnée.
+	 * @param date Date d'exécution
 	 */
 	void scheduleAtDate(final JobManager jobManager, final JobDefinition jobDefinition, Date date);
 
 	/**
-	 * Programme un job pour une seul ex�cution imm�diate.
+	 * Programme un job pour une seul exécution immédiate.
 	 */
 	void scheduleNow(final JobManager jobManager, final JobDefinition jobDefinition);
 }

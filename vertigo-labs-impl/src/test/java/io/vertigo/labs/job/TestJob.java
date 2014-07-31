@@ -24,7 +24,7 @@ public final class TestJob implements Runnable {
 
 	public void run() {
 		try {
-			//On simule une attente qui correspond � un traitement m�tier de 100 ms
+			//On simule une attente qui correspond à un traitement métier de 100 ms
 			Thread.sleep(100);
 		} catch (final InterruptedException e) {
 			throw new RuntimeException(e);

@@ -58,11 +58,11 @@ import org.xml.sax.SAXException;
  * 
  */
 public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
-	// D�but de la requ�te http
+	// Début de la requête http
 	private static final String GEOCODE_REQUEST_PREFIX = "http://maps.google.com/maps/api/geocode/xml";
-	// Expression XPath permettant de r�cup�rer la latitude, la longitude et
-	// l'adresse format�e de
-	// l'adresse � g�olocaliser
+	// Expression XPath permettant de récupérer la latitude, la longitude et
+	// l'adresse formatée de
+	// l'adresse à géolocaliser
 	private static final String XPATH_LATITUDE = "//result//geometry//location//lat";
 	private static final String XPATH_LONGITUDE = "//result//geometry//location//lng";
 	//	private static final String XPATH_FORMATTED_ADDRESS = "//formatted_address";
@@ -73,13 +73,13 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 	private final XPathFactory xPathFactory = XPathFactory.newInstance();
 
 	//	/**
-	//	 * M�thode d''initialisation de l'API.
+	//	 * Méthode d''initialisation de l'API.
 	//	 */
 	@Inject
 	public GoogleGeoCoderPlugin(final @Named("proxyHost") Option<String> proxyHost, @Named("proxyPort") final Option<String> proxyPort) {
 		Assertion.checkNotNull(proxyHost);
 		Assertion.checkNotNull(proxyPort);
-		Assertion.checkArgument((proxyHost.isDefined() && proxyPort.isDefined()) || (proxyHost.isEmpty() && proxyPort.isEmpty()), "les deux param�tres host et port doivent �tre tous les deux remplis ou vides");
+		Assertion.checkArgument((proxyHost.isDefined() && proxyPort.isDefined()) || (proxyHost.isEmpty() && proxyPort.isEmpty()), "les deux paramètres host et port doivent être tous les deux remplis ou vides");
 		//-----------------------------------------------------------------------
 		if (proxyHost.isDefined()) {
 			proxy = Option.some(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost.get(), Integer.parseInt(proxyPort.get()))));
@@ -89,10 +89,10 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 	}
 
 	/**
-	 * R�cup�ration d'une connexion.
+	 * Récupération d'une connexion.
 	 * 
 	 * @param url type URL
-	 * @return type Document contenant les r�sultats de la requ�te
+	 * @return type Document contenant les résultats de la requête
 	 */
 	private HttpURLConnection createConnection(final URL url) {
 		try {
@@ -116,9 +116,9 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 	}
 
 	/**
-	 * M�thode de connexion au service Google.
+	 * Méthode de connexion au service Google.
 	 * 
-	 * @param address Cha�ne de caract�res contenant l'adresse � geocoder
+	 * @param address Chaîne de caractères contenant l'adresse à geocoder
 	 * @return Document
 	 */
 	private Document geoCode(final String address) {
@@ -140,16 +140,16 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 
 		final HttpURLConnection connection = createConnection(url);
 		try {
-			// Connexion et r�cup�ration des r�sultats
+			// Connexion et récupération des résultats
 			connection.connect();
 			final InputSource geocoderResultInputSource = new InputSource(connection.getInputStream());
 
-			// Lecture des r�sultats sous forme XML
+			// Lecture des résultats sous forme XML
 			return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(geocoderResultInputSource);
 		} catch (final IOException e) {
 			throw new RuntimeException("Erreur de connexion au service", e);
 		} catch (final SAXException e) {
-			throw new RuntimeException("Erreur lors de la r�cuperation des r�sultats de la requ�te", e);
+			throw new RuntimeException("Erreur lors de la récupération des résultats de la requête", e);
 		} catch (final ParserConfigurationException e) {
 			throw new RuntimeException("Erreur de configuration du parseur XML", e);
 		} finally {
@@ -160,9 +160,9 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 	/**
 	 * Parseur XML avec l'expression XPath.
 	 * 
-	 * @param xml : le document XML r�cup�r� depuis Google Geocoder
+	 * @param xml : le document XML récupéré depuis Google Geocoder
 	 * @param xPathString : l'expression XPath permettant de parser le XML 
-	 * @return NodeList contenant les donn�es du fichier XML
+	 * @return NodeList contenant les données du fichier XML
 	 */
 	private NodeList findNodes(final Document xml, final String xPathString) {
 		Assertion.checkNotNull(xml);
@@ -180,9 +180,9 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 	/**
 	* Parseur XML avec l'expression XPath.
 	* 
-	* @param xml : le document XML r�cup�r� depuis Google Geocoder
+	* @param xml : le document XML récupéré depuis Google Geocoder
 	* @param xPathString : l'expression XPath permettant de parser le XML 
-	* @return Node contenant les donn�es du fichier XML
+	* @return Node contenant les données du fichier XML
 	*/
 	private Node findNode(final Document xml, final String xPathString) {
 		Assertion.checkNotNull(xml);
@@ -219,10 +219,10 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		//---------------------------------------------------------------------------
 		final Document geocoderResultDocument = geoCode(address);
 		if (geocoderResultDocument == null) {
-			throw new RuntimeException("Pas de r�ponse du service");
+			throw new RuntimeException("Pas de réponse du service");
 		}
 		//---------------------------------------------------------------------
-		// 0- V�rification du status 
+		// 0- Vérification du status 
 		final Node StatusNode = findNode(geocoderResultDocument, XPATH_STATUS);
 		if (!"OK".equals(StatusNode.getTextContent().trim())) {
 			return GeoLocation.UNDEFINED;
@@ -235,7 +235,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		//		final Node accuracyNode = findNode(geocoderResultDocument, XPATH_ACCURACY);
 		final NodeList addressNodes = findNodes(geocoderResultDocument, XPATH_ADDRESSES);
 		//---------------------------------------------------------------------
-		// 2- Typage des donn�es
+		// 2- Typage des données
 		//		System.out.println(">>address : " + address);
 		//		System.out.println(">>>>>> : " + toString(geocoderResultDocument));
 		//		System.out.println(">>longitudeNode : " + longitudeNode);
@@ -294,7 +294,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 			}
 		}
 		//---------------------------------------------------------------------
-		// 3- Cr�ation du r�sultat :  GeoLocation
+		// 3- Création du résultat :  GeoLocation
 		System.out.println(">>address : " + address);
 		System.out.println("		>>level1 : " + level1);
 		System.out.println("		>>level2 : " + level2);

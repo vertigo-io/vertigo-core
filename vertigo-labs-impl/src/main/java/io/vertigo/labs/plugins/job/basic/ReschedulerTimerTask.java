@@ -37,7 +37,7 @@ final class ReschedulerTimerTask extends TimerTask {
 	/**
 	 * Constructeur.
 	 * @param jobManager Manager des job
-	 * @param jobDefinition D�finition du job � reprogrammer
+	 * @param jobDefinition Définition du job à reprogrammer
 	 * @param hour Heure du prochaine lancement
 	 */
 	ReschedulerTimerTask(final JobManager jobManager, final JobDefinition jobDefinition, final int hour) {
@@ -52,10 +52,10 @@ final class ReschedulerTimerTask extends TimerTask {
 	/** {@inheritDoc} */
 	@Override
 	public void run() {
-		// pour un job s'ex�cutant tous les jours, on schedule chaque jour
-		// pour �viter que l'ex�cution se d�cale d'une heure lors des changements d'heure �t�-hiver
+		// pour un job s'exécutant tous les jours, on schedule chaque jour
+		// pour éviter que l'exécution se décale d'une heure lors des changements d'heure été-hiver
 
-		// On rappel le scheduleEveryDayAtHour qui reprogrammera � la fois la prochaine task du Job et celle du ReschedulerTimerTask.
+		// On rappel le scheduleEveryDayAtHour qui reprogrammera à la fois la prochaine task du Job et celle du ReschedulerTimerTask.
 		jobManager.scheduleEveryDayAtHour(jobDefinition, hour);
 	}
 }

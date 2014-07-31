@@ -28,7 +28,7 @@ create Domain DO_POIDS  {
 create Domain DO_MONTANT {
     dataType : BigDecimal
     formatter : FMT_DEFAULT
-    unit : "�"
+    unit : "à"
 }
 create Domain DO_OUI_NON {
     dataType : Boolean
@@ -36,7 +36,7 @@ create Domain DO_OUI_NON {
 }
 	
 /*
-TODO Analyser l'int�r�t d'un formatter sp�cifique pour les dur�es
+TODO Analyser l'intérêt d'un formatter spécifique pour les durées
 */
 create Domain DO_DUREE {
 	dataType : Date
@@ -148,8 +148,8 @@ create Formatter FMT_ACTIF_INACTIF {
 
 
 /*
-Formatage avec deux chiffres maximum apr�s la virgule.
-Pas d'affichage de 0 apr�s virgule si pas n�cessaire (ex: 100 sera affich� sous la forme 100 et 100.00)
+Formatage avec deux chiffres maximum après la virgule.
+Pas d'affichage de 0 après virgule si pas nécessaire (ex: 100 sera affiché sous la forme 100 et 100.00)
 */
 create Formatter FMT_TAUX {
 	 className :"io.vertigo.dynamox.domain.formatter.FormatterNumber"
@@ -210,7 +210,7 @@ create Constraint CK_MAX_VALUE_100 {
 }
 
 /*
-Prise en compte uniquement des codes postaux fran�ais.
+Prise en compte uniquement des codes postaux français.
 */
 create Constraint CK_CODE_POSTAL  {
 	className: "io.vertigo.dynamox.domain.constraint.ConstraintRegex"
@@ -218,7 +218,7 @@ create Constraint CK_CODE_POSTAL  {
 }
 
 /*
-Prise en compte uniquement du format de dur�e HH:MM.
+Prise en compte uniquement du format de durée HH:MM.
 */ 
 create Constraint CK_DUREE {
 	className: "io.vertigo.dynamox.domain.constraint.ConstraintRegex"
@@ -232,8 +232,8 @@ create Constraint CK_EMAIL {
 }
 
 /*
-Prise en compte des num�ros de t�l�phones fran�ais sans le pr�fixe international.
-Prise en compte des num�ros de t�l�phones fixes (num�ros commen�ant par 01, 02, 03, 04, 05, 08 ou 09) et protables (num�ros commen�ant par 06 ou 07).
+Prise en compte des numéros de téléphones français sans le préfixe international.
+Prise en compte des numéros de téléphones fixes (numéros commençant par 01, 02, 03, 04, 05, 08 ou 09) et protables (numéros commençant par 06 ou 07).
 */
 create Constraint CK_TELEPHONE {
 	className: "io.vertigo.dynamox.domain.constraint.ConstraintRegex"

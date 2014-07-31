@@ -29,8 +29,8 @@ public interface GeoCoderManager extends Manager {
 	/**
 	 * Geocoding d'une adresse.
 	 * 
-	 * @param address Chaine de caract�res repr�sentant une adresse.
-	 * @return Liste des emplacements (latitude ; longitude) correspondant � l'adresse recherch�e.
+	 * @param address Chaine de caractères représentant une adresse.
+	 * @return Liste des emplacements (latitude ; longitude) correspondant à l'adresse recherchée.
 	 */
 	GeoLocation findLocation(String address);
 
@@ -39,7 +39,7 @@ public interface GeoCoderManager extends Manager {
 	 *  
 	 * @param geoLocation1 Premier point
 	 * @param geoLocation2 Second point
-	 * @return Distance exprim�es en km.
+	 * @return Distance exprimées en km.
 	 */
 	double distanceKm(final GeoLocation geoLocation1, final GeoLocation geoLocation2);
 }

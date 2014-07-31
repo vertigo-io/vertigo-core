@@ -29,7 +29,7 @@ import io.vertigo.labs.mail.Mail;
 public interface SendMailPlugin extends Plugin {
 	/**
 	 * Envoyer un mail.
-	 * @param mail Mail � envoyer
+	 * @param mail Mail à envoyer
 	 */
 	void sendMail(Mail mail);
 }

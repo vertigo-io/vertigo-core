@@ -56,7 +56,7 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
 
 /**
- * Plugin de gestion des mails, pour l'impl�mentation du jdk.
+ * Plugin de gestion des mails, pour l'implémentation du jdk.
  * @author npiedeloup
  * @version $Id: JavaxSendMailPlugin.java,v 1.10 2014/01/28 18:49:55 pchretien Exp $
  */
@@ -67,16 +67,16 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 	private final String mailHost;
 	private final boolean developmentMode;
 	private final String developmentMailTo;
-	/** Compteur de mails envoy�s. */
+	/** Compteur de mails envoyés. */
 	private int mailSent = 0;
 
 	/**
-	 * Cr�e le plugin d'envoie de mail.
+	 * Crée le plugin d'envoie de mail.
 	 * @param fileManager Manager de gestion des fichiers
-	 * @param mailStoreProtocol Protocole utilis�
+	 * @param mailStoreProtocol Protocole utilisé
 	 * @param mailHost Serveur de mail
-	 * @param developmentMode Indique s'il le mode developpement est activ� (surcharge des emails destinataires)
-	 * @param developmentMailTo Email destinataire forc� pour d�veloppement
+	 * @param developmentMode Indique s'il le mode developpement est activé (surcharge des emails destinataires)
+	 * @param developmentMailTo Email destinataire forcé pour développement
 	 */
 	@Inject
 	public JavaxSendMailPlugin(final FileManager fileManager, @Named("storeProtocol") final String mailStoreProtocol, @Named("host") final String mailHost, @Named("developmentMode") final boolean developmentMode, @Named("developmentMailTo") final String developmentMailTo) {
@@ -189,7 +189,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 
 	private void setDestAddress(final List<String> addressList, final Message message, final Message.RecipientType type) throws MessagingException {
 		Assertion.checkNotNull(addressList);
-		Assertion.checkArgument(!addressList.isEmpty(), "La liste des destinataires ne doit pas �tre vide");
+		Assertion.checkArgument(!addressList.isEmpty(), "La liste des destinataires ne doit pas être vide");
 		Assertion.checkNotNull(message);
 		//---------------------------------------------------------------------
 		final InternetAddress[] addresses = new InternetAddress[addressList.size()];

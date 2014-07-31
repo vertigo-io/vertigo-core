@@ -21,14 +21,14 @@ package io.vertigo.labs.geocoder;
 import io.vertigo.kernel.lang.Assertion;
 
 /**
- * Objet permettant de d�finir un emplacement par ses coordonn�es.
+ * Objet permettant de définir un emplacement par ses coordonnées.
  * @author spoitrenaud
  */
 public final class GeoLocation {
 	public static final GeoLocation UNDEFINED = new GeoLocation();
 	private final String countryCode;
-	private final String level1;//r�gion  
-	private final String level2; //d�partement
+	private final String level1;//région  
+	private final String level2; //département
 	private final String locality;
 
 	private final double latitude;
@@ -38,7 +38,7 @@ public final class GeoLocation {
 
 	/**
 	 * Constructeur public
-	 * Notamment utilis� pour la d�s�rialisation.
+	 * Notamment utilisé pour la désérialisation.
 	 */
 	public GeoLocation() {
 		latitude = Float.NaN;
@@ -70,7 +70,7 @@ public final class GeoLocation {
 	}
 
 	/**
-	 * @return Latitude du r�sultat
+	 * @return Latitude du résultat
 	 */
 	public double getLatitude() {
 		Assertion.checkArgument(!Double.isNaN(latitude), "Utiliser isUndefined");
@@ -79,7 +79,7 @@ public final class GeoLocation {
 	}
 
 	/**
-	 * @return Longitude du r�sultat
+	 * @return Longitude du résultat
 	 */
 	public double getLongitude() {
 		Assertion.checkArgument(!Double.isNaN(longitude), "Utiliser isUndefined");

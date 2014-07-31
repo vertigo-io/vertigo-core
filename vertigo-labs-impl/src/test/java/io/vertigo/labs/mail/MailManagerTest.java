@@ -33,7 +33,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test de l'impl�mentation standard.
+ * Test de l'implémentation standard.
  * 
  * @author npiedeloup
  * @version $Id: MailManagerTest.java,v 1.8 2014/01/28 18:53:45 pchretien Exp $
@@ -58,7 +58,7 @@ public final class MailManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Cr�e un mail simple.
+	 * Crée un mail simple.
 	 */
 	@Test
 	public void testSimpliestCreateMail() {
@@ -295,7 +295,7 @@ public final class MailManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	//	/**
-	//	 * Test l'emetteur par d�faut.
+	//	 * Test l'emetteur par défaut.
 	//	 */
 	//	@Test
 	//	public void testDefaultFrom() {
@@ -347,7 +347,7 @@ public final class MailManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test l'envoi d'un mail avec un To erron�.
+	 * Test l'envoi d'un mail avec un To erroné.
 	 */
 	@Test(expected = NullPointerException.class)
 	public void testSendMailWithBadTo() {
@@ -361,7 +361,7 @@ public final class MailManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test l'envoi d'un mail avec un From erron�.
+	 * Test l'envoi d'un mail avec un From erroné.
 	 */
 	@Test(expected = VUserException.class)
 	public void testSendMailWithBadFrom() {
@@ -376,7 +376,7 @@ public final class MailManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test l'envoi d'un mail avec un ReplyTo erron�.
+	 * Test l'envoi d'un mail avec un ReplyTo erroné.
 	 */
 	@Test(expected = NullPointerException.class)
 	public void testSendMailWithBadReplyTo() {
@@ -391,7 +391,7 @@ public final class MailManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test l'envoi d'un mail avec un To erron�.
+	 * Test l'envoi d'un mail avec un To erroné.
 	 */
 	@Test(expected = NullPointerException.class)
 	public void testSendMailWithBadAddTo() {
@@ -406,7 +406,7 @@ public final class MailManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test l'envoi d'un mail avec un Cc erron�.
+	 * Test l'envoi d'un mail avec un Cc erroné.
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testSendMailWithBadCc() {
@@ -452,7 +452,7 @@ public final class MailManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test l'envoi d'un mail avec un replyTo diff�rent du From.
+	 * Test l'envoi d'un mail avec un replyTo différent du From.
 	 */
 	@Test
 	public void testSendMailDifferentReplyTo() {

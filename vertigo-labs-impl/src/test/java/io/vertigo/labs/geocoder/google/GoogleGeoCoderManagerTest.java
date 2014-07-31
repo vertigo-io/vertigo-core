@@ -35,32 +35,32 @@ public class GoogleGeoCoderManagerTest extends AbstractTestCaseJU4 {
 	private GeoCoderManager geoCoderManager;
 
 	/**
-	 * Test de g�olocalisation d'une cha�ne null.
+	 * Test de géolocalisation d'une chaîne null.
 	 */
 	@Test(expected = NullPointerException.class)
 	public final void testNull() {
-		// On v�rifie que la g�olocalisation d'une addresse n'existant pas retourne une liste vide
+		// On vérifie que la géolocalisation d'une addresse n'existant pas retourne une liste vide
 		GeoLocation geoLocation = geoCoderManager.findLocation(null);
 		Assert.assertTrue(geoLocation.isUndefined());
 	}
 
 	/**
-	 * Test de g�olocalisation d'une cha�ne vide.
+	 * Test de géolocalisation d'une chaîne vide.
 	 */
 	public final void testEmpty() {
-		// On v�rifie que la g�olocalisation d'une addresse n'existant pas
+		// On vérifie que la géolocalisation d'une addresse n'existant pas
 		// retourne une liste vide
 		GeoLocation geoLocation = geoCoderManager.findLocation("");
 		Assert.assertTrue(geoLocation.isUndefined());
 	}
 
 	/**
-	 * Test de geolocalisation d'une adresse retournant un seul r�sultat.
+	 * Test de geolocalisation d'une adresse retournant un seul résultat.
 	 * Test avec un accent.
 	 */
 	@Test
 	public final void testEtain() {
-		// G�olocalisation
+		// Géolocalisation
 		String address = "étain,55400,Meuse,Lorraine,FRANCE";
 		final GeoLocation geoLocation = geoCoderManager.findLocation(address);
 		AssertNear(geoLocation, 49.213506, 5.63623222988, 2);
@@ -71,17 +71,17 @@ public class GoogleGeoCoderManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test de geolocalisation d'une adresse retournant un seul r�sultat.
+	 * Test de geolocalisation d'une adresse retournant un seul résultat.
 	 */
 	@Test
 	public final void testOneResult() {
-		// G�olocalisation
+		// Géolocalisation
 		final GeoLocation geoLocation = geoCoderManager.findLocation("4, rue du vieux lavoir, 91190, Saint-Aubin");
 		AssertNear(geoLocation, 48.713709, 2.138841, 0.1);
 	}
 
 	/**
-	 * Test de g�olocalisation d'une adresse retournant un seul r�sultat.
+	 * Test de géolocalisation d'une adresse retournant un seul résultat.
 	 */
 	@Test
 	public final void testOneResult2() {
@@ -107,11 +107,11 @@ public class GoogleGeoCoderManagerTest extends AbstractTestCaseJU4 {
 	//-------------------------------------------------------------------------
 
 	/**
-	 * Test de g�olocalisation d'une adresse retournant plusieurs r�sultats.
+	 * Test de géolocalisation d'une adresse retournant plusieurs résultats.
 	 */
 	@Test
 	public final void testManyResults() {
-		// G�olocalisation
+		// Géolocalisation
 		final GeoLocation coordinates = geoCoderManager.findLocation("brussels");
 		AssertNear(coordinates, 50.84807, 4.349427, 2);
 	}
@@ -122,13 +122,13 @@ public class GoogleGeoCoderManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * M�thode permettant de v�rifier qu'un r�sultat se situe bien dans un perim�tre donn�.
+	 * Méthode permettant de vérifier qu'un résultat se situe bien dans un périmètre donné.
 	 *  
-	 * @param geoCoord le r�sultat � v�rifier
-	 * @param lat la latitude du centre du p�rim�tre
-	 * @param lon la longitude du centre du p�rim�tre
+	 * @param geoCoord le résultat à vérifier
+	 * @param lat la latitude du centre du périmètre
+	 * @param lon la longitude du centre du périmètre
 	 * @param distanceMax le rayon du cercle en km
-	 * @return True si le point recherch� est dans le p�rim�tre consid�r�
+	 * @return True si le point recherché est dans le périmètre considéré
 	 */
 	private boolean near(final GeoLocation geoLocation, final double latitude, final double longitude, final double distanceMax) {
 		GeoLocation geoLocation2 = new GeoLocation(latitude, longitude);

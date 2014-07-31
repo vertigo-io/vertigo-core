@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 /**
- * Attention cette classe est g�n�r�e automatiquement !
+ * Attention cette classe est générée automatiquement !
  */
 public final class DtDefinitions implements Iterable<Class<?>> {
 	public Iterator<Class<?>> iterator() {

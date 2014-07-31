@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Message � envoyer par mail.
+ * Message à envoyer par mail.
  * Les adresses email respectent le format RFC822.
  * Eles sont de la forme 
  *  - "user@host.domain" 
@@ -38,7 +38,7 @@ public final class Mail {
 	private final String subject;
 	private final String fromAddress;
 	/**
-	 * on autorise le null, car le protocol SMTP assure d�j� la strat�gie de choix d'email de retour. 
+	 * on autorise le null, car le protocol SMTP assure déjà la stratégie de choix d'email de retour. 
 	 */
 	private final String replyTo;
 	private final String textContent;
@@ -49,7 +49,7 @@ public final class Mail {
 	private final List<KFile> attachments;
 
 	/**
-	 * Constructeur utilis� par le Builder.
+	 * Constructeur utilisé par le Builder.
 	 * @param subject Sujet du mail;
 	 * @param replyTo Addresse de retour
 	 * @param fromAddress Addresse de l'emetteur
@@ -57,12 +57,12 @@ public final class Mail {
 	 * @param ccAddresses Addresses en copie
 	 * @param textContent Contenu text
 	 * @param htmlContent Contenu html
-	 * @param attachments Liste des pi�ces jointes
+	 * @param attachments Liste des pièces jointes
 	 */
 	Mail(final String subject, final String replyTo, final String fromAddress, final List<String> toAddresses, final List<String> ccAddresses, final String textContent, final String htmlContent, final List<KFile> attachments) {
 		Assertion.checkArgNotEmpty(subject, "Sujet du mail obligatoire");
 		//Assertion.notEmpty(replyTo);
-		Assertion.checkArgNotEmpty(fromAddress, "Adresse email de l'�metteur obligatoire");
+		Assertion.checkArgNotEmpty(fromAddress, "Adresse email de l'émetteur obligatoire");
 		Assertion.checkNotNull(toAddresses);
 		Assertion.checkArgument(!toAddresses.isEmpty(), "Le mail doit avoir au moins un destinataire.");
 		Assertion.checkNotNull(ccAddresses);
@@ -80,14 +80,14 @@ public final class Mail {
 	}
 
 	/**
-	 * @return Adresse mail de l'�metteur
+	 * @return Adresse mail de l'émetteur
 	 */
 	public String getFrom() {
 		return fromAddress;
 	}
 
 	/**
-	 * @return Adresse mail de retour de mail (null, si non fix�e)
+	 * @return Adresse mail de retour de mail (null, si non fixée)
 	 */
 	public String getReplyTo() {
 		return replyTo;
@@ -129,7 +129,7 @@ public final class Mail {
 	}
 
 	/**
-	 * @return Liste des pi�ces jointes
+	 * @return Liste des pièces jointes
 	 */
 	public List<KFile> getAttachments() {
 		return attachments;

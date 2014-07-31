@@ -32,7 +32,7 @@ public final class Individual implements DtObject {
 	private String id;
 	@Field(domain = "DO_LIBELLE", notNull = true, label = "Name")
 	private String name;
-	@Field(domain = "DO_LIBELLE", notNull = true, label = "Pr�noms")
+	@Field(domain = "DO_LIBELLE", notNull = true, label = "Prénoms")
 	private String givenName;
 	@Field(domain = "DO_LIBELLE", notNull = true, label = "Nom de famille")
 	private String surName;
@@ -41,9 +41,9 @@ public final class Individual implements DtObject {
 	@Field(domain = "DO_LIBELLE", notNull = true, label = "Lieu de Naissance")
 	private String birthPlace;
 
-	@Field(domain = "DO_LIBELLE", notNull = true, label = "Date de d�c�s")
+	@Field(domain = "DO_LIBELLE", notNull = true, label = "Date de décès")
 	private String deathDate;
-	@Field(domain = "DO_LIBELLE", notNull = true, label = "Lieu de d�c�s")
+	@Field(domain = "DO_LIBELLE", notNull = true, label = "Lieu de décès")
 	private String deathPlace;
 
 	@Field(domain = "DO_CODE", notNull = true, label = "Sexe")
@@ -116,12 +116,12 @@ public final class Individual implements DtObject {
 		return location;
 	}
 
-	@Field(domain = "DO_CODE", type = "COMPUTED", notNull = true, label = "D�partement")
+	@Field(domain = "DO_CODE", type = "COMPUTED", notNull = true, label = "Département")
 	public String getDepartement() {
 		return location == null ? null : location.getLevel2();
 	}
 
-	//	@Field(domain = "DO_CODE", type = "COMPUTED", notNull = true, label = "D�partement")
+	//	@Field(domain = "DO_CODE", type = "COMPUTED", notNull = true, label = "Département")
 	//	public String getDepartement() {
 	//		return location == null ? null : location.getLevel1() + '/' + location.getLevel2();
 	//	}

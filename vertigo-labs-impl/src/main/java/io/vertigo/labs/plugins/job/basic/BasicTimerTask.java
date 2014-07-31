@@ -25,7 +25,7 @@ import io.vertigo.labs.job.metamodel.JobDefinition;
 import java.util.TimerTask;
 
 /**
- * Timer permettant l'ex�cution d'un Job.
+ * Timer permettant l'exécution d'un Job.
  * @author npiedeloup
  * @version $Id: BasicTimerTask.java,v 1.3 2013/10/22 10:55:50 pchretien Exp $
  */

@@ -34,16 +34,16 @@ import javax.inject.Inject;
 import org.apache.log4j.Logger;
 
 /**
- * Impl�mentation g�n�rique de JobManager.
- * Attention, cette impl�mentation n'est pas transactionnelle ; la gestion des transaction doit rester � la charge des services.
+ * Implémentation générique de JobManager.
+ * Attention, cette implémentation n'est pas transactionnelle ; la gestion des transaction doit rester à la charge des services.
  * 
- * Les jobs sont instanci�s, y sont inject�s les composants m�tiers et les managers.
+ * Les jobs sont instanciés, y sont injectés les composants métiers et les managers.
  * 
  * @author evernat, pchretien
  * @version $Id: JobManagerImpl.java,v 1.5 2014/01/28 18:49:55 pchretien Exp $
  */
 public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
-	/** Type de process g�rant les statistiques des jobs. */
+	/** Type de process gérant les statistiques des jobs. */
 	private static final String PROCESS_TYPE = "JOB";
 
 	/** Mesures des exceptions utilisateur. */
@@ -66,10 +66,10 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 		//---------------------------------------------------------------------
 		this.analyticsManager = analyticsManager;
 		this.schedulerPlugin = schedulerPlugin;
-		//A d�placer
-		//A d�placer
-		//A d�placer
-		//A d�placer
+		//A déplacer
+		//A déplacer
+		//A déplacer
+		//A déplacer
 		Home.getDefinitionSpace().register(JobDefinition.class);
 	}
 
@@ -80,8 +80,8 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 			doExecute(jobDefinition);
 		} catch (final Throwable throwable) {
 			// On catche throwable et pas seulement exception pour que le timer
-			// ne s'arr�te pas en cas d'Assertion ou de OutOfMemoryError :
-			// Aucune exception ou erreur ne doit �tre lanc�e par la m�thode doExecute
+			// ne s'arrête pas en cas d'Assertion ou de OutOfMemoryError :
+			// Aucune exception ou erreur ne doit être lancée par la méthode doExecute
 			getLogger(jobDefinition.getName()).warn(throwable.toString(), throwable);
 
 			if (isUserException(throwable)) {
@@ -95,18 +95,18 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 	}
 
 	/**
-	 * Gestion transactionnelle de l'ex�cution d'un Job.
+	 * Gestion transactionnelle de l'exécution d'un Job.
 	 */
 	private void doExecute(final JobDefinition jobDefinition) {
 		final Runnable job = injector.newInstance(jobDefinition.getJobClass(), Home.getComponentSpace());
 
 		final long start = System.currentTimeMillis();
-		getLogger(jobDefinition.getName()).info("Ex�cution du job " + jobDefinition.getName());
+		getLogger(jobDefinition.getName()).info("Exécution du job " + jobDefinition.getName());
 		try {
 			job.run();
 		} finally {
 			final long end = System.currentTimeMillis();
-			getLogger(jobDefinition.getName()).info("Job " + jobDefinition.getName() + " ex�cut� en " + (end - start) + " ms");
+			getLogger(jobDefinition.getName()).info("Job " + jobDefinition.getName() + " exécuté en " + (end - start) + " ms");
 		}
 	}
 

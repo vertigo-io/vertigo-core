@@ -33,7 +33,7 @@ public enum Resources implements MessageKey {
 	KASPER_MAIL_ADRESS_MAIL_INVALID,
 
 	/**
-	 * Le serveur mail {0}:{1} ne r�pond pas.
+	 * Le serveur mail {0}:{1} ne répond pas.
 	 */
 	KASPER_MAIL_SERVER_TIMEOUT,
 
