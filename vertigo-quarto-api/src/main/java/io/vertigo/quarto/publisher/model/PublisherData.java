@@ -22,7 +22,7 @@ import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.quarto.publisher.metamodel.PublisherDataDefinition;
 
 /**
- * Donn�es � fusionner.
+ * Données à fusionner.
  *
  * @author npiedeloup
  * @version $Id: PublisherData.java,v 1.3 2013/10/22 12:07:11 pchretien Exp $
@@ -33,7 +33,7 @@ public final class PublisherData {
 
 	/**
 	 * Constructeur.
-	 * @param dataDefinition Definition des donn�es de publication
+	 * @param dataDefinition Definition des données de publication
 	 */
 	public PublisherData(final PublisherDataDefinition dataDefinition) {
 		Assertion.checkNotNull(dataDefinition);
@@ -43,7 +43,7 @@ public final class PublisherData {
 	}
 
 	/**
-	 * @return D�finition des donn�es.
+	 * @return Définition des données.
 	 */
 	public PublisherDataDefinition getDefinition() {
 		return publisherDataDefinition;

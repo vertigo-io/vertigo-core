@@ -33,14 +33,14 @@ public final class ScriptTagContent {
 
 	ScriptTagContent(final ScriptTagDefinition definition, final String attribute) {
 		Assertion.checkNotNull(definition);
-		Assertion.checkArgument(attribute == null || attribute.length() > 0, "Les attributs doivent faire plus de 1 caract�re");
+		Assertion.checkArgument(attribute == null || attribute.length() > 0, "Les attributs doivent faire plus de 1 caractère");
 		//---------------------------------------------------------------------
 		this.definition = definition;
 		this.attribute = attribute;
 	}
 
 	/**
-	 * Si aucun attribut une exception est retourn�e.
+	 * Si aucun attribut une exception est retournée.
 	 * @return Atribut du tag
 	 */
 	public String getAttribute() {
@@ -77,7 +77,7 @@ public final class ScriptTagContent {
 	}
 
 	/**
-	 * V�rifie que le Tag poss�de un attribut sinon lance une exception.
+	 * Vérifie que le Tag possède un attribut sinon lance une exception.
 	 */
 	private void checkAttribute() {
 		if (!hasAttribute()) {

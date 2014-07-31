@@ -36,7 +36,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * Cleaner de xml de fichier DOCX.
- * Ce processor effectue plusieurs op�rations de rectification du XML d'un fichier DOCX.
+ * Ce processor effectue plusieurs opérations de rectification du XML d'un fichier DOCX.
  * - 1. Nettoyage du XML en fermant les balises
  * - 2. Suppression des balises de script
  * 
@@ -67,7 +67,7 @@ final class DOCXCleanerProcessor implements MergerProcessor {
 
 	/**
 	 * Transforme les \n en plusieurs lignes dans le docx.
-	 * NB: visibilit� package n�cessaire pour les tests!.
+	 * NB: visibilité package nécessaire pour les tests!.
 	 * ex :
 	 * <w:p>
 	 * <w:pPr>
@@ -77,9 +77,9 @@ final class DOCXCleanerProcessor implements MergerProcessor {
 	 * <w:r>test\ntest\ntest<w:r>
 	 * <w:r>out<w:r>
 	 * < /w:p>
-	 * Doit se transformer en 3 balises <w:p>, la premi�re contenant le in et un test, la deuxi�me un test, la troisi�me
+	 * Doit se transformer en 3 balises <w:p>, la première contenant le in et un test, la deuxième un test, la troisième
 	 * un test et le out. La balise de style
-	 * <w:pPr> doit �tre conserv�e dans les 3 nouveaux paragraphes.
+	 * <w:pPr> doit être conservée dans les 3 nouveaux paragraphes.
 	 * @param xmlDoc Document source
 	 * @param xpath Moteur Xpath
 	 * @throws XPathExpressionException Erreur Xpath
@@ -90,7 +90,7 @@ final class DOCXCleanerProcessor implements MergerProcessor {
 		Node node;
 		String[] lines;
 
-		for (int i = 0; i < nodeList.getLength(); i++) { // pour chaque r�sultat
+		for (int i = 0; i < nodeList.getLength(); i++) { // pour chaque résultat
 			node = nodeList.item(i);
 
 			lines = getNodeTextContent(node);
@@ -134,13 +134,13 @@ final class DOCXCleanerProcessor implements MergerProcessor {
 		}
 		removeNodes(removeNodes);
 
-		for (int j = 1; j < lines.length; j++) { // pour chaque �l�ment de la ligne splitt�e.
+		for (int j = 1; j < lines.length; j++) { // pour chaque élément de la ligne splittée.
 			line = lines[j];
 			// copie du w:p englobant sans ses fils.
 			paragraphClone = node.getParentNode().cloneNode(false);
 			rowClone = node.cloneNode(true);
 			rowClone.getLastChild().setTextContent(line);
-			if (DOCXUtil.STYLE_NODE.equals(node.getParentNode().getFirstChild().getNodeName())) { // pr�sence
+			if (DOCXUtil.STYLE_NODE.equals(node.getParentNode().getFirstChild().getNodeName())) { // présence
 																									// d'un
 																									// noeud
 				// de
@@ -156,7 +156,7 @@ final class DOCXCleanerProcessor implements MergerProcessor {
 			}
 			currentPar = currentPar.getNextSibling();
 		}
-		// ajout des noeuds sauvegard�s au dernier �l�ment.
+		// ajout des noeuds sauvegardés au dernier élément.
 		if (lines.length > 1) {
 			for (final Node bufferNode : bufferNodes) {
 				currentPar.appendChild(bufferNode);
@@ -171,7 +171,7 @@ final class DOCXCleanerProcessor implements MergerProcessor {
 	}
 
 	/**
-	 * Enl�ve les tags d'expression rest�s vides apr�s traitement.
+	 * Enlève les tags d'expression restés vides après traitement.
 	 * @param xmlDoc Document source
 	 * @param xpath Moteur Xpath
 	 * @throws XPathExpressionException Erreur Xpath

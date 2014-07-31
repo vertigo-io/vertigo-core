@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
 
 /**
  * Classe de nettoyage d'une arborescence XML.
- * Gestion du cas ou il y a des balises ouvertes non ferm�es.
+ * Gestion du cas ou il y a des balises ouvertes non fermées.
  *
  * @author brenard
  * @version $Id: ODTCleanerUtil.java,v 1.2 2014/02/27 10:40:19 pchretien Exp $
@@ -36,18 +36,18 @@ final class ODTCleanerUtil {
 	private static final Logger LOGGER = Logger.getLogger(ODTCleanerUtil.class);
 
 	/**
-	 * Constructeur priv� pour classe utilitaire.
+	 * Constructeur privé pour classe utilitaire.
 	 */
 	private ODTCleanerUtil() {
 		//RAS
 	}
 
 	/**
-	 * Corrige le contenu qui est une arborescence XML pour g�rer le cas
-	 * ou il y a des balises ouvertes non ferm�es.
+	 * Corrige le contenu qui est une arborescence XML pour gérer le cas
+	 * ou il y a des balises ouvertes non fermées.
 	 *
 	 * @param xmlContent Arborescence XML.
-	 * @return Arborescence nettoy�e.
+	 * @return Arborescence nettoyée.
 	 */
 	static String clean(final String xmlContent) {
 		final StringBuilder contentClean = new StringBuilder();
@@ -91,7 +91,7 @@ final class ODTCleanerUtil {
 
 			// On ajoute le contenu courant que dans le cas ou l'on ne traite pas de
 			// balise fermante. En effet si la balise fermante courante ne correspond
-			// pas � le derni�re balise ouvrante alors il faut inserer la bonne avant
+			// pas à le dernière balise ouvrante alors il faut inserer la bonne avant
 			// de mettre la balise fermante courante.
 			if (!baliseFermanteEnCours) {
 				contentClean.append(current);
@@ -104,7 +104,7 @@ final class ODTCleanerUtil {
 				baliseOuvranteEnCours = false;
 			}
 
-			// Si on rencontre un de ces caract�res alors on connait le nom de la balise
+			// Si on rencontre un de ces caractères alors on connait le nom de la balise
 			// ouvrante
 			if (baliseOuvrante && (current == '/' || current == ' ' || current == '>')) {
 				baliseOuvrante = false;
@@ -121,7 +121,7 @@ final class ODTCleanerUtil {
 			}
 
 			// Lorsque l'on a atteind la fin de la balise fermante alors on regarde
-			// si elle correspond bien � la derni�re balise ouvrante
+			// si elle correspond bien à la dernière balise ouvrante
 			if (baliseFermante && current == '>') {
 				fermeBalisesOuvertes(contentClean, pileBalise, currentFermante);
 				currentFermante.setLength(0);
@@ -140,13 +140,13 @@ final class ODTCleanerUtil {
 	}
 
 	private static void fermeBalisesOuvertes(final StringBuilder contentClean, final Stack<String> pileBalise, final StringBuilder currentFermante) {
-		//Si la balise fermante n'est pas pr�sent dans la pile des balises d�j� ouvertes, c'est qu'elle a disparu lors de la fusion,
+		//Si la balise fermante n'est pas présent dans la pile des balises déjà ouvertes, c'est qu'elle a disparu lors de la fusion,
 		//on retire alors la balise fermante (corrige le nullPointer lors des pop() ).
 		if (!pileBalise.contains(currentFermante.toString())) {
-			LOGGER.warn(StringUtil.format("La balise fermante </{0}> n'est plus ouverte dans le document g�n�r�, elle est retir� du document.", currentFermante));
+			LOGGER.warn(StringUtil.format("La balise fermante </{0}> n'est plus ouverte dans le document généré, elle est retiré du document.", currentFermante));
 		} else {
 			String lastBalise = pileBalise.pop();
-			//Tant que la balise fermante ne correspond pas � la
+			//Tant que la balise fermante ne correspond pas à la
 			// balise ouvrante alors on ferme les balises ouvrantes
 			while (currentFermante.length() != lastBalise.length() && currentFermante.indexOf(lastBalise) != 0) {
 				contentClean.append("</").append(lastBalise).append('>');

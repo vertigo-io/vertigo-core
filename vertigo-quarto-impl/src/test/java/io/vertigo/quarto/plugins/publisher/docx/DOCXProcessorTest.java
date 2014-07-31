@@ -40,7 +40,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Tests sur l'impl�mentation du plugin DOCX.
+ * Tests sur l'implémentation du plugin DOCX.
  * 
  * @author adufranne
  * @version $Id: DOCXProcessorTest.java,v 1.2 2013/10/22 10:49:13 pchretien Exp $
@@ -82,7 +82,7 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * Extraction puis rechargement d'un DOCX.
-	 * Permet de tester l'acc�s aux fichiers dans le docx.
+	 * Permet de tester l'accès aux fichiers dans le docx.
 	 */
 	@Test
 	public void testExtractionReecritureDOCX() {
@@ -93,16 +93,16 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 			final URL modelFileURL = resourceManager.resolve(TEST_FILE);
 
 			docxFile = new ZipFile(modelFileURL.getFile());
-			fichiers = DOCXUtil.extractDOCXContents(docxFile); // m�thode test�e.
+			fichiers = DOCXUtil.extractDOCXContents(docxFile); // méthode testée.
 
 		} catch (final IOException e) {
-			Assert.fail("impossible de lire le mod�le " + TEST_FILE);
+			Assert.fail("impossible de lire le modèle " + TEST_FILE);
 		}
 
 		try {
 			DOCXUtil.createDOCX(docxFile, fichiers);
 		} catch (final IOException e) {
-			Assert.fail("impossible de r��crire le fichier " + TEST_FILE);
+			Assert.fail("impossible de réécrire le fichier " + TEST_FILE);
 		}
 
 	}
@@ -110,7 +110,7 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 	/**
 	 * Test de factoristion des tags multiples .
 	 * 
-	 * @throws XPathExpressionException xpath mal form�e.
+	 * @throws XPathExpressionException xpath mal formée.
 	 */
 	@Test
 	public void testFactorMultipleTags() throws XPathExpressionException {
@@ -126,9 +126,9 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * Test de nettoyage des tags .
-	 * Doit laisser les tags words inchang�s et supprimer les separate des tags .
+	 * Doit laisser les tags words inchangés et supprimer les separate des tags .
 	 * 
-	 * @throws XPathExpressionException xpath mal form�e.
+	 * @throws XPathExpressionException xpath mal formée.
 	 */
 	@Test
 	public void testCleanNotBESTags() throws XPathExpressionException {
@@ -144,9 +144,9 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test des passages � la ligne.
+	 * Test des passages à la ligne.
 	 * 
-	 * @throws XPathExpressionException si le xpath est mal form�.
+	 * @throws XPathExpressionException si le xpath est mal formé.
 	 */
 	@Test
 	public void testHandleCarriageReturn() throws XPathExpressionException {
@@ -194,13 +194,13 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 		final NodeList nodeList = (NodeList) xpath.evaluate(DOCXUtil.XPATH_TAG_NODES, xmlDoc, XPathConstants.NODESET);
 		Node node;
 		String content;
-		// on v�rifie le contenu de chaque noeud.
+		// on vérifie le contenu de chaque noeud.
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			node = nodeList.item(i);
 			content = node.getLastChild().getTextContent();
 			Assert.assertEquals(results[i], content);
 		}
-		// v�rifier l'int�grit� du docx.
+		// vérifier l'intégrité du docx.
 		DOCXUtil.renderXML(xmlDoc);
 	}
 

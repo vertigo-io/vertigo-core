@@ -25,14 +25,14 @@ import java.util.regex.Pattern;
 
 
 /**
- * D�finition de la structure d'un champ d'un noeud du mod�le d'�dition.
- * Tous les champs sont nomm�s et typ�s.
+ * Définition de la structure d'un champ d'un noeud du modèle d'édition.
+ * Tous les champs sont nommés et typés.
  * @author npiedeloup
  * @version $Id: PublisherField.java,v 1.4 2013/10/22 10:50:52 pchretien Exp $
  */
 public final class PublisherField {
 	/**
-	 * Expression r�guli�re v�rifi�e par les noms des champs. 
+	 * Expression régulière vérifiée par les noms des champs. 
 	 */
 	private static final Pattern REGEX_FIELD_NAME = Pattern.compile("[A-Z][A-Z0-9_]{2,59}");
 
@@ -42,10 +42,10 @@ public final class PublisherField {
 	private final Option<PublisherNodeDefinition> nodeDefinition;
 
 	/**
-	 * Constructeur pour les champs composites (noeud de l'arbre de d�finition).
+	 * Constructeur pour les champs composites (noeud de l'arbre de définition).
 	 * @param name Nom du champ
 	 * @param fieldType Type du champ
-	 * @param publisherDataNodeDefinition D�finition du noeud sous-jacent
+	 * @param publisherDataNodeDefinition Définition du noeud sous-jacent
 	 */
 	PublisherField(final String name, final PublisherFieldType fieldType, final PublisherNodeDefinition publisherDataNodeDefinition) {
 		Assertion.checkArgNotEmpty(name);

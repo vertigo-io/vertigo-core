@@ -72,7 +72,7 @@ final class DOCXReverseInputProcessor implements MergerProcessor {
 			// nettoyage des noeuds de type KSP.
 			cleanNotWordBESTags(xmlDoc, xpath);
 
-			// conversion des tags mal formatt�s en tags valides.
+			// conversion des tags mal formatés en tags valides.
 			convertWrongFormattedTags(xmlDoc, xpath);
 
 			// rendu du xml final
@@ -84,8 +84,8 @@ final class DOCXReverseInputProcessor implements MergerProcessor {
 
 	/**
 	 * Adaptation de la syntaxe utilisateur vers la syntaxe KSP.
-	 * les <# #> sont rajout�s si ils sont manquants.
-	 * NB: visibilit� package n�cessaire pour les tests!.
+	 * les <# #> sont rajoutés si ils sont manquants.
+	 * NB: visibilité package nécessaire pour les tests!.
 	 * @param xmlDoc Document source
 	 * @param xpath Moteur Xpath
 	 * @throws XPathExpressionException Erreur Xpath
@@ -107,7 +107,7 @@ final class DOCXReverseInputProcessor implements MergerProcessor {
 		if (m.matches()) {
 			tagContent = m.group(1).trim();
 		}
-		// ne pas changer les champs personnalis�s de word.
+		// ne pas changer les champs personnalisés de word.
 		if (DOCXUtil.isWordTag(tagContent)) {
 			return tag;
 		}
@@ -115,8 +115,8 @@ final class DOCXReverseInputProcessor implements MergerProcessor {
 	}
 
 	/**
-	 * M�thode de suppression de tags.
-	 * Supprime l'ensemble des r�sultats de la requ�te xpath.
+	 * Méthode de suppression de tags.
+	 * Supprime l'ensemble des résultats de la requête xpath.
 	 * 
 	 * @param xpathExpr
 	 * @param xmlDoc Document source
@@ -135,18 +135,18 @@ final class DOCXReverseInputProcessor implements MergerProcessor {
 
 	/**
 	 * Nettoyage des tags KSP.
-	 * *IMPORTANT* : On suppose que les tags multiples sont factoris�s.
+	 * *IMPORTANT* : On suppose que les tags multiples sont factorisés.
 	 * On passe sur tous les noeuds begin, en allant jusque au noeud end.
 	 * Si le champ n'est pas un champ word, on supprime le begin, le end,
 	 * le separate.
-	 * NB: visibilit� package n�cessaire pour les tests!.
+	 * NB: visibilité package nécessaire pour les tests!.
 	 * @param xmlDoc Document source
 	 * @param xpath Moteur Xpath
 	 * @throws XPathExpressionException Erreur Xpath
 	 */
 	private void cleanNotWordBESTags(final Document xmlDoc, final XPath xpath) throws XPathExpressionException {
-		String controlContent = null; // valeur de controle pour v�rifier que le champ n'est pas WORD.
-		final List<Node> removeNodes = new ArrayList<>(); // liste des noeuds � supprimer
+		String controlContent = null; // valeur de controle pour vérifier que le champ n'est pas WORD.
+		final List<Node> removeNodes = new ArrayList<>(); // liste des noeuds à supprimer
 		Node currentNode; // noeud en cours de traitement.
 		Node controlNode;
 		Node node;
@@ -214,7 +214,7 @@ final class DOCXReverseInputProcessor implements MergerProcessor {
 	}
 
 	/**
-	 * M�thode de factorisation des tags "multiples" pr�sents dans le docx.
+	 * Méthode de factorisation des tags "multiples" présents dans le docx.
 	 * @param xmlDoc Document source
 	 * @param xpath Moteur Xpath
 	 * @throws XPathExpressionException Erreur Xpath
@@ -257,7 +257,7 @@ final class DOCXReverseInputProcessor implements MergerProcessor {
 					factor = false;
 				}
 			}
-			if (firstValidNode == null) { // aucune factorisation n'a pu �tre faite.
+			if (firstValidNode == null) { // aucune factorisation n'a pu être faite.
 				continue;
 			}
 			firstValidNode.getLastChild().setTextContent(builder.toString().trim());

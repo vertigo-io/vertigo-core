@@ -51,7 +51,7 @@ public final class MergerPluginDOCX implements MergerPlugin {
 	private final List<MergerProcessor> mergerProcessors;
 
 	/**
-	 * Constructeur avec ODTScriptGrammar par d�fault.
+	 * Constructeur avec ODTScriptGrammar par défaut.
 	 * 
 	 * @param scriptManager le script manager.
 	 */
@@ -72,13 +72,13 @@ public final class MergerPluginDOCX implements MergerPlugin {
 		// Extraction des variables.
 		localMergerProcessors.add(new DOCXReverseInputProcessor());
 
-		// �quilibrage de l'arbre xml.
+		// équilibrage de l'arbre xml.
 		localMergerProcessors.add(new GrammarXMLBalancerProcessor());
 
 		// kscript <##> => jsp <%%>.
 		localMergerProcessors.add(new GrammarEvaluatorProcessor(scriptManager, scriptGrammar));
 
-		// Traitement Janino (TEXT balis� en java + Donn�es => TEXT).
+		// Traitement Janino (TEXT balisé en java + Données => TEXT).
 		localMergerProcessors.add(new MergerScriptEvaluatorProcessor(scriptManager, new DOCXValueEncoder()));
 
 		// Post traitements (TEXT => XML(DOCX)).
@@ -89,8 +89,8 @@ public final class MergerPluginDOCX implements MergerPlugin {
 	/**
 	 * Effectue la fusion.
 	 * 
-	 * @return Fichier r�sultat de la fusion
-	 * @throws IOException Exception syst�me
+	 * @return Fichier résultat de la fusion
+	 * @throws IOException Exception système
 	 */
 	public File execute(final URL modelFileURL, final PublisherData data) throws IOException {
 		Assertion.checkNotNull(modelFileURL);
@@ -108,14 +108,14 @@ public final class MergerPluginDOCX implements MergerPlugin {
 	/**
 	 * Effectue le traitement.
 	 * 
-	 * @param modelFile Fichier model, ce fichier n'est pas modifi�.
-	 * @param publisherData Parametres des donn�es � fusionner
-	 * @return Fichier d'entr�e modifi� par le sous-processor
+	 * @param modelFile Fichier model, ce fichier n'est pas modifié.
+	 * @param publisherData Parametres des données à fusionner
+	 * @return Fichier d'entrée modifié par le sous-processor
 	 */
 	private File doExecute(final File modelFile, final PublisherData publisherData) throws IOException {
 		try (final ZipFile docxFile = new ZipFile(modelFile)) {
 			final Map<String, String> xmlContents = DOCXUtil.extractDOCXContents(docxFile);
-			// Phase 1 : Ex�cution, chaque String est trait�e dans l'ordre des processeurs.
+			// Phase 1 : Exécution, chaque String est traitée dans l'ordre des processeurs.
 			for (final MergerProcessor currentMergerProcessor : mergerProcessors) {
 				// On passe le traitement sur les fichiers de Docx
 				for (final Entry<String, String> xmlContent : xmlContents.entrySet()) {
@@ -124,7 +124,7 @@ public final class MergerPluginDOCX implements MergerPlugin {
 				}
 			}
 
-			// Phase 2 : Reconstruction, le Fichier Docx est recompos� � partir des fichiers trait�s
+			// Phase 2 : Reconstruction, le Fichier Docx est recomposé à partir des fichiers traités
 			return DOCXUtil.createDOCX(docxFile, xmlContents);
 		}
 	}

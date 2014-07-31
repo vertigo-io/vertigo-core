@@ -45,7 +45,7 @@ public final class OOoFileInputStream implements XInputStream, XSeekable {
 	}
 
 	/**
-	 * Constructeur prenant en param�tre un chemin vers un fichier.
+	 * Constructeur prenant en paramètre un chemin vers un fichier.
 	 * @param filePath Chemin vers le fichier.
 	 * @throws FileNotFoundException Fichier introuvable
 	 */

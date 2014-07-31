@@ -21,8 +21,8 @@ package io.vertigo.quarto.publisher.mock;
 import io.vertigo.dynamo.domain.model.DtObject;
 
 /**
- * Attention cette classe est g�n�r�e automatiquement !
- * Objet de donn�es AbstractAddress
+ * Attention cette classe est générée automatiquement !
+ * Objet de données AbstractAddress
  */
 @io.vertigo.dynamo.domain.stereotype.DtDefinition(persistent = false)
 public final class Address implements DtObject {
@@ -36,7 +36,7 @@ public final class Address implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'Rue'. 
+	 * Récupère la valeur de la propriété 'Rue'. 
 	 * @return String rue 
 	 */
 	public final String getRue() {
@@ -45,7 +45,7 @@ public final class Address implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'Rue'.
+	 * Définit la valeur de la propriété 'Rue'.
 	 * @param rue String 
 	 */
 	public final void setRue(final String rue) {
@@ -54,7 +54,7 @@ public final class Address implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'Ville'. 
+	 * Récupère la valeur de la propriété 'Ville'. 
 	 * @return io.vertigo.publisher.mock.Ville ville 
 	 */
 	public final io.vertigo.quarto.publisher.mock.Ville getVille() {
@@ -63,7 +63,7 @@ public final class Address implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'Ville'.
+	 * Définit la valeur de la propriété 'Ville'.
 	 * @param ville io.vertigo.publisher.mock.Ville 
 	 */
 	public final void setVille(final io.vertigo.quarto.publisher.mock.Ville ville) {

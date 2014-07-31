@@ -29,9 +29,9 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 /**
- * Impl�mentation standard du manager des conversions de documents.
+ * Implémentation standard du manager des conversions de documents.
  * 
- * Conversions accept�s entre formats : 
+ * Conversions acceptés entre formats : 
  *  - ODT 
  *  - DOC 
  *  - RTF 
@@ -51,7 +51,7 @@ public final class ConverterManagerImpl implements ConverterManager {
 	 */
 	@Inject
 	public ConverterManagerImpl(final WorkManager workManager, final ConverterPlugin converterPlugin) {
-		// La connexion au serveur openOffice est instanci�e lors du start
+		// La connexion au serveur openOffice est instanciée lors du start
 		Assertion.checkNotNull(workManager);
 		Assertion.checkNotNull(converterPlugin);
 		//---------------------------------------------------------------------

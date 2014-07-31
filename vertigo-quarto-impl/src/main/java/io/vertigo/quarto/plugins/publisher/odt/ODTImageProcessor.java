@@ -69,12 +69,12 @@ final class ODTImageProcessor implements MergerProcessor {
 			final KFile imageFileInfo = publisherData.getRootNode().getImage(imageCode);
 			newImagesMap.put(imageFileName, imageFileInfo);
 
-			//on copie le d�but (avant le tag image)
+			//on copie le début (avant le tag image)
 			xmlOutput.append(xmlInput, offset, imageMatcher.start());
 
 			final Dimension newImageDimension = computeNewImageDimension(getImageSize(imageFileInfo), imageMatcher.group(IMAGE_WIDTH_GROUP), imageMatcher.group(IMAGE_HEIGHT_GROUP));
 
-			//puis les diff�rentes info du tag image
+			//puis les différentes info du tag image
 			xmlOutput.append(imageMatcher.group(DUMMY1_GROUP));
 			xmlOutput.append(imageMatcher.group(IMAGE_CODE_GROUP));
 			xmlOutput.append(imageMatcher.group(DUMMY2_GROUP));
@@ -100,17 +100,17 @@ final class ODTImageProcessor implements MergerProcessor {
 		final double resultWidth;
 		final double resultHeight;
 
-		if (Math.abs(initialRatio - newRatio) < .000001) { //FindBugs : pr�f�r� � initialRatio == newRatio
+		if (Math.abs(initialRatio - newRatio) < .000001) { //FindBugs : préféré à initialRatio == newRatio
 			resultWidth = imageWidth;
 			resultHeight = imageHeight;
 		} else if (newRatio > initialRatio) {
 			//on garde la largeur
 			resultWidth = imageWidth;
-			resultHeight = Math.round(imageWidth * 1000 / newRatio) / 1000d; //round 3 chiffres apr�s la virgule
+			resultHeight = Math.round(imageWidth * 1000 / newRatio) / 1000d; //round 3 chiffres après la virgule
 		} else {
 			//on garde la hauteur
 			resultHeight = imageHeight;
-			resultWidth = Math.round(imageHeight * 1000 * newRatio) / 1000d; //round 3 chiffres apr�s la virgule
+			resultWidth = Math.round(imageHeight * 1000 * newRatio) / 1000d; //round 3 chiffres après la virgule
 		}
 
 		//System.out.println("Resize image:("+imageSize.width+","+imageSize.height+") from:("+imageWidth+","+imageHeight+") ratio:"+initialRatio+" to ("+resultWidth+","+resultHeight+") ratio:"+newRatio);
@@ -119,7 +119,7 @@ final class ODTImageProcessor implements MergerProcessor {
 	}
 
 	/**
-	 * @return Map des nouveaux fichiers images, avec le path du fichier en cl�, et le nouveau FileInfo en value.
+	 * @return Map des nouveaux fichiers images, avec le path du fichier en clé, et le nouveau FileInfo en value.
 	 */
 	public Map<String, KFile> getNewImageMap() {
 		return Collections.unmodifiableMap(newImagesMap);

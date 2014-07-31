@@ -21,7 +21,7 @@ package io.vertigo.quarto.publisher.mock;
 import io.vertigo.kernel.lang.MessageKey;
 
 /**
- * Attention cette classe est g�n�r�e automatiquement !
+ * Attention cette classe est générée automatiquement !
  * Resources du module io.vertigo.publisher.mock
  */
 public enum DtResources implements MessageKey {
@@ -42,7 +42,7 @@ public enum DtResources implements MessageKey {
 	/** ENQUETE.
 	/***********************************************************
 	/**
-	 * Termin�e?.
+	 * Terminée?.
 	 */
 	FLD_ENQUETE$ENQUETE_TERMINEE,
 	/**
@@ -102,7 +102,7 @@ public enum DtResources implements MessageKey {
 	 */
 	FLD_PUBLISHER_MOCK$NOM,
 	/**
-	 * Pr�nom.
+	 * Prénom.
 	 */
 	FLD_PUBLISHER_MOCK$PRENOM,
 	/**
@@ -126,7 +126,7 @@ public enum DtResources implements MessageKey {
 	 */
 	FLD_PUBLISHER_MOCK$BOOLEAN_3,
 	/**
-	 * Test champs inutilis�.
+	 * Test champs inutilisé.
 	 */
 	FLD_PUBLISHER_MOCK$TEST_DUMMY,
 	/**

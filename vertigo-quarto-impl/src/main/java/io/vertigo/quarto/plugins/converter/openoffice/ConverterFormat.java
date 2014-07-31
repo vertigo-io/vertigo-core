@@ -21,7 +21,7 @@ package io.vertigo.quarto.plugins.converter.openoffice;
 import io.vertigo.kernel.lang.Assertion;
 
 /**
- * Formats de sortie support�s par Open Office.
+ * Formats de sortie supportés par Open Office.
  * @author pchretien, npiedeloup
  * @version $Id: ConverterFormat.java,v 1.4 2013/10/22 12:08:56 pchretien Exp $
  */
@@ -52,7 +52,7 @@ enum ConverterFormat {
 	 */
 	PDF("application/pdf"),
 
-	//Types non g�r�s
+	//Types non gérés
 	// Document Word XML.
 	//DOCX("application/vnd.openxmlformats-officedocument.wordprocessingml.document"),
 
@@ -64,27 +64,27 @@ enum ConverterFormat {
 
 	/**
 	 * Constructeur.
-	 * @param typeMime Type mime associ�
+	 * @param typeMime Type mime associé
 	 */
 	private ConverterFormat(final String typeMime) {
 		this.typeMime = typeMime;
 	}
 
 	/**
-	 * @return Type mime associ�
+	 * @return Type mime associé
 	 */
 	String getTypeMime() {
 		return typeMime;
 	}
 
 	/**
-	 * R�cup�re le Format associ� � ce code de format.
-	 * @param sFormat code de format (non null et doit �tre en majuscule)
-	 * @return Format associ�.
+	 * Récupère le Format associé à ce code de format.
+	 * @param sFormat code de format (non null et doit être en majuscule)
+	 * @return Format associé.
 	 */
 	static ConverterFormat find(final String sFormat) {
 		Assertion.checkNotNull(sFormat);
-		Assertion.checkArgument(sFormat.equals(sFormat.trim().toUpperCase()), "Le format doit �tre en majuscule, et sans espace");
+		Assertion.checkArgument(sFormat.equals(sFormat.trim().toUpperCase()), "Le format doit être en majuscule, et sans espace");
 		// ---------------------------------------------------------------------
 		final ConverterFormat format = valueOf(sFormat);
 		return format;

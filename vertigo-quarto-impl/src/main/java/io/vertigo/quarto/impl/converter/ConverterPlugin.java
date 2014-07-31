@@ -30,8 +30,8 @@ import io.vertigo.kernel.component.Plugin;
 public interface ConverterPlugin extends Plugin {
 	/**
 	 * Retourne le fichier converti
-	 * L'appel � l'OOO distant est synchroniz�, car il supporte mal les converssions concurrentes.
-	 * @param file Fichier � convertir
+	 * L'appel à l'OOO distant est synchronisé, car il supporte mal les converssions concurrentes.
+	 * @param file Fichier à convertir
 	 * @param targetFormat Type de document de sortie ODT,RTF,DOC,CSV,PDF
 	 * @return Fichier converti
 	 */

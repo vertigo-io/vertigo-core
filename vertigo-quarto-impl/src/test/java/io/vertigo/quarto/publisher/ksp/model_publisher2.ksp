@@ -1,6 +1,6 @@
 package io.vertigo.publisher.mock  
 
-/*Pour chargement des donn�es*/
+/*Pour chargement des données*/
 create DtDefinition DT_VILLE {
 		persistent : "false"
   field NOM {domain : DO_STRING      label : "Nom"      notNull : "false"}
@@ -29,7 +29,7 @@ create DtDefinition DT_MIS_EN_CAUSE {
 
 create DtDefinition DT_ENQUETE {
 		persistent : "false"
-  field ENQUETE_TERMINEE {domain : DO_BOOLEAN      label : "Termin�e?"      notNull : "false"}
+  field ENQUETE_TERMINEE {domain : DO_BOOLEAN      label : "Terminée?"      notNull : "false"}
   field CODE_ENQUETE {domain : DO_STRING      label : "Code"      notNull : "false"}
   field FAIT {domain : DO_STRING      label : "Sexe"      notNull : "false"}
   field SI_GRAVE {domain : DO_BOOLEAN      label : "Sexe"      notNull : "false"}
@@ -39,13 +39,13 @@ create DtDefinition DT_PUBLISHER_MOCK {
 	persistent : "false"
 	field TITRE { domain : DO_STRING      label : "Titre"      notNull : "false"}
 	field NOM { domain : DO_STRING      label : "Nom"      notNull : "false"}
-	field PRENOM { domain : DO_STRING      label : "Pr�nom"      notNull : "false"}
+	field PRENOM { domain : DO_STRING      label : "Prénom"      notNull : "false"}
 	field ADDRESS { domain : DO_STRING      label : "Adresse {multi ligne}"      notNull : "false"}
 	field COMMENTAIRE { domain : DO_STRING      label : "Commentaire {multi paragraphe}"      notNull : "false"}
 	field BOOLEAN_1 { domain : DO_BOOLEAN      label : "booleen 1"      notNull : "false"}
 	field BOOLEAN_2 { domain : DO_BOOLEAN      label : "booleen 2"      notNull : "false"}
 	field BOOLEAN_3 { domain : DO_BOOLEAN      label : "booleen 3"      notNull : "false"}
-	field TEST_DUMMY { domain : DO_STRING      label : "Test champs inutilis�"      notNull : "false"}
+	field TEST_DUMMY { domain : DO_STRING      label : "Test champs inutilisé"      notNull : "false"}
 	field TEST_LONG { domain : DO_LONG      label : "Test long"      notNull : "false"}
 	field TEST_DOUBLE { domain : DO_DOUBLE      label : "Test double"      notNull : "false"}
 	field TEST_INTEGER { domain : DO_INTEGER      label : "Test integer"      notNull : "false"}

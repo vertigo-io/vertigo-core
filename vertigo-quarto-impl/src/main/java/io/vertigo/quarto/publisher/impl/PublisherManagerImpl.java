@@ -35,7 +35,7 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 /**
- * Impl�mentation standard du manager des �ditions.
+ * Implémentation standard du manager des éditions.
  *
  * @author pchretien, npiedeloup
  * @version $Id: PublisherManagerImpl.java,v 1.8 2014/01/28 18:53:45 pchretien Exp $
@@ -91,9 +91,9 @@ public final class PublisherManagerImpl implements PublisherManager {
 	}
 
 	private KFile generateFile(final String fileName, final URL modelFileURL, final PublisherData data) throws IOException {
-		// attention : pour ce generateFile le File retourn� n'a pas le nom de fichier donn� dans
-		// mergeParameter.getOuputFileName() car on utilise cette m�thode notamment dans send
-		// ci-dessus pour plusieurs utilisateurs simultan�ment avec probablement le m�me
+		// attention : pour ce generateFile le File retourné n'a pas le nom de fichier donné dans
+		// mergeParameter.getOuputFileName() car on utilise cette méthode notamment dans send
+		// ci-dessus pour plusieurs utilisateurs simultanément avec probablement le même
 		// mergeParameter.getOuputFileName()
 		//----------------------------------------------------------------------
 		final File fileToExport = mergerPlugin.execute(modelFileURL, data);

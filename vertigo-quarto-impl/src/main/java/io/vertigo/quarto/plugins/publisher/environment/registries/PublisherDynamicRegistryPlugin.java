@@ -60,7 +60,7 @@ public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistr
 		} else if (metaDefinition.equals(getGrammarProvider().getPublisherNodeDefiniton())) {
 			createPublisherNodeDefinition(xdefinition);
 		} else {
-			throw new IllegalArgumentException("Type de d�finition non g�r�e: " + xdefinition.getDefinitionKey().getName());
+			throw new IllegalArgumentException("Type de définition non gérée: " + xdefinition.getDefinitionKey().getName());
 		}
 	}
 
@@ -76,26 +76,26 @@ public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistr
 		final PublisherNodeDefinitionBuilder publisherDataNodeDefinitionBuilder = new PublisherNodeDefinitionBuilder();
 		final String publisherDataNodeName = xpublisherNodeDefinition.getDefinitionKey().getName();
 
-		//D�claration des champs string
+		//Déclaration des champs string
 		final List<DynamicDefinition> stringFieldList = xpublisherNodeDefinition.getChildDefinitions(PublisherGrammar.STRING_FIELD);
 		for (final DynamicDefinition field : stringFieldList) {
 			final String fieldName = field.getDefinitionKey().getName();
 			publisherDataNodeDefinitionBuilder.withStringField(fieldName);
 		}
 
-		//D�claration des champs boolean
+		//Déclaration des champs boolean
 		final List<DynamicDefinition> booleanFieldList = xpublisherNodeDefinition.getChildDefinitions(PublisherGrammar.BOOLEAN_FIELD);
 		for (final DynamicDefinition field : booleanFieldList) {
 			publisherDataNodeDefinitionBuilder.withBooleanField(field.getDefinitionKey().getName());
 		}
 
-		//D�claration des champs images
+		//Déclaration des champs images
 		final List<DynamicDefinition> imageFieldList = xpublisherNodeDefinition.getChildDefinitions(PublisherGrammar.IMAGE_FIELD);
 		for (final DynamicDefinition field : imageFieldList) {
 			publisherDataNodeDefinitionBuilder.withImageField(field.getDefinitionKey().getName());
 		}
 
-		//D�claration des champs data
+		//Déclaration des champs data
 		final List<DynamicDefinition> dataFieldList = xpublisherNodeDefinition.getChildDefinitions(PublisherGrammar.DATA_FIELD);
 		for (final DynamicDefinition field : dataFieldList) {
 			final String fieldName = field.getDefinitionKey().getName();
@@ -104,7 +104,7 @@ public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistr
 			publisherDataNodeDefinitionBuilder.withNodeField(fieldName, publisherNode.build());
 		}
 
-		//D�claration des champs list
+		//Déclaration des champs list
 		final List<DynamicDefinition> listFieldList = xpublisherNodeDefinition.getChildDefinitions(PublisherGrammar.LIST_FIELD);
 		for (final DynamicDefinition field : listFieldList) {
 			final String fieldName = field.getDefinitionKey().getName();

@@ -49,7 +49,7 @@ public final class KFileSerializable implements KFile {
 	 */
 	protected KFileSerializable(final KFile kfile) {
 		Assertion.checkNotNull(kfile);
-		Assertion.checkArgument(!(kfile instanceof KFileSerializable), "Le fichier {0} est d�j� encapsuler dans KFileSerializable", kfile.getFileName());
+		Assertion.checkArgument(!(kfile instanceof KFileSerializable), "Le fichier {0} est déjà encapsuler dans KFileSerializable", kfile.getFileName());
 		//---------------------------------------------------------------------
 		file = kfile;
 	}
@@ -100,7 +100,7 @@ public final class KFileSerializable implements KFile {
 		try (final OutputStream out = new FileOutputStream(tempFile)) {
 			copyStream(stream, out);
 		}
-		//new FSFile cr�e une d�pendance � FileManager du module Commons : le FSFile est tr�s simple mais on �vite un copier/coller
+		//new FSFile crée une dépendance à FileManager du module Commons : le FSFile est très simple mais on évite un copier/coller
 		return new FSFile(fileName, mimeType, tempFile);
 	}
 

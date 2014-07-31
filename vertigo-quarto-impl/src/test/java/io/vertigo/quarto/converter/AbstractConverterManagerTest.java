@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 
 /**
- * Test de l'impl�mentation standard.
+ * Test de l'implémentation standard.
  * 
  * @author npiedeloup
  * @version $Id: AbstractConverterManagerTest.java,v 1.8 2014/06/27 12:21:39 pchretien Exp $
@@ -62,7 +62,7 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 	@Override
 	protected void doTearDown() throws Exception {
 		if (resultFile != null) {
-			resultFile = null; //Les fichiers temporaires �tant en WeakRef, cela supprime le fichier
+			resultFile = null; //Les fichiers temporaires étant en WeakRef, cela supprime le fichier
 		}
 	}
 
@@ -183,7 +183,7 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 
 	private static KFile createKFile(final FileManager fileManager, final String fileName, final Class<?> baseClass) {
 		try (final InputStream in = baseClass.getResourceAsStream(fileName)) {
-			Assertion.checkNotNull(in, "fichier non trouv� : {0}", fileName);
+			Assertion.checkNotNull(in, "fichier non trouvé : {0}", fileName);
 			final File file = new TempFile("tmp", '.' + FileUtil.getFileExtension(fileName));
 			FileUtil.copy(in, file);
 			return fileManager.createFile(file);

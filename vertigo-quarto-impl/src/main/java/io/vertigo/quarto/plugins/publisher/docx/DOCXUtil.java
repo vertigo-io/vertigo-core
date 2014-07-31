@@ -60,10 +60,10 @@ import org.xml.sax.SAXException;
  * @version $Id: DOCXUtil.java,v 1.5 2014/02/27 10:39:24 pchretien Exp $
  */
 final class DOCXUtil {
-	/** Prefix des fichiers temporaires g�n�r�s. */
+	/** Prefix des fichiers temporaires générés. */
 	private static final String TEMP_FILE_PREFIX = "krep";
 
-	/** Suffix des fichiers temporaires g�n�r�s. */
+	/** Suffix des fichiers temporaires générés. */
 	private static final String TEMP_FILE_SUFFIX = ".docx";
 
 	/**
@@ -71,45 +71,45 @@ final class DOCXUtil {
 	 */
 	public static final String STYLE_NODE = "w:pPr";
 	/**
-	 * Pattern matchant un �l�ment.
+	 * Pattern matchant un élément.
 	 */
 	public static final String PATTERN_KSP = "^\\s*(var|loop|if|ifnot|endloop|endvar|endif|endifnot|=|block|endblock).*";
 
 	/**
-	 * Requ�te XPATH retournant tous les noeuds de type "begin" et "end".
+	 * Requête XPATH retournant tous les noeuds de type "begin" et "end".
 	 */
 	public static final String XPATH_CLEAN = "//w:r[w:fldChar[@w:fldCharType=\"begin\" or @w:fldCharType=\"end\"]]";
 	/**
-	 * Requ�te XPATH retournant tous les bookmarks.
+	 * Requête XPATH retournant tous les bookmarks.
 	 */
 	public static final String XPATH_CLEAN_BOOKMARKS = "//w:bookmarkEnd | //w:bookmarkStart";
 	/**
-	 * Requ�te XPATH retournant tous les noeuds de type "begin".
+	 * Requête XPATH retournant tous les noeuds de type "begin".
 	 */
 	public static final String XPATH_BEGIN = "//w:r[w:fldChar[@w:fldCharType=\"begin\"]]";
 	/**
-	 * Requ�te XPATH pour enlever les separate.
+	 * Requête XPATH pour enlever les separate.
 	 */
 	public static final String XPATH_SEPARATE = "//w:r[w:fldChar[@w:fldCharType=\"separate\"]]";
 
 	/**
-	 * Retrouver tous les tags ins�r�s.
+	 * Retrouver tous les tags insérés.
 	 */
 	public static final String XPATH_TAG_NODES = "//w:r[w:instrText]";
 	/**
-	 * Nom du fichier XML g�rant les contenus pour les docx.
+	 * Nom du fichier XML gérant les contenus pour les docx.
 	 */
 	static final String DOCUMENT_XML_DOCX = "word/document.xml";
 	/**
-	 * Nom du fichier XML g�rant les styles pour les docx.
+	 * Nom du fichier XML gérant les styles pour les docx.
 	 */
 	static final String STYLES_XML_DOCX = "word/styles.xml";
 	/**
-	 * Nom des fichiers XML g�rant les headers pour un docx.
+	 * Nom des fichiers XML gérant les headers pour un docx.
 	 */
 	static final String HEADERS_XML_DOCX = "word/header\\d+\\.xml";
 	/**
-	 * Nom des fichiers XML g�rant les headers pour un docx.
+	 * Nom des fichiers XML gérant les headers pour un docx.
 	 */
 	static final String FOOTERS_XML_DOCX = "word/footer\\d+\\.xml";
 	/**
@@ -118,7 +118,7 @@ final class DOCXUtil {
 	static final String KSP_WRAPPING_TAG = "\\s*<#(.*)#>\\s*";
 
 	/**
-	 * Enum pour les types de noeuds g�r�s.
+	 * Enum pour les types de noeuds gérés.
 	 * 
 	 * @author adufranne
 	 * @version $Id: DOCXUtil.java,v 1.5 2014/02/27 10:39:24 pchretien Exp $
@@ -159,17 +159,17 @@ final class DOCXUtil {
 	}
 
 	/**
-	 * Constructeur priv� pour classe utilitaire
+	 * Constructeur privé pour classe utilitaire
 	 */
 	private DOCXUtil() {
 		super();
 	}
 
 	/**
-	 * Indique si le contenu d'un noeud appartient � la grammaire KSP.
+	 * Indique si le contenu d'un noeud appartient à la grammaire KSP.
 	 * 
 	 * @param content le contenu du noeud.
-	 * @return un bool�en.
+	 * @return un booléen.
 	 */
 	public static boolean isWordTag(final String content) {
 		final Pattern p = Pattern.compile(PATTERN_KSP);
@@ -178,15 +178,15 @@ final class DOCXUtil {
 	}
 
 	/**
-	 * Extrait les fichiers � modifier d'un docx.
+	 * Extrait les fichiers à modifier d'un docx.
 	 * -document
 	 * -styles
 	 * -footers
 	 * -headers
 	 * 
 	 * @param docxFile ZipFile fichier source
-	 * @return une map contenant les noms et les fichiers associ�s au format texte.
-	 * @throws IOException Si une exception d'entr�e sortie a lieu
+	 * @return une map contenant les noms et les fichiers associés au format texte.
+	 * @throws IOException Si une exception d'entrée sortie a lieu
 	 */
 	public static Map<String, String> extractDOCXContents(final ZipFile docxFile) throws IOException {
 		final Map<String, String> xmlContents = new HashMap<>();
@@ -209,11 +209,11 @@ final class DOCXUtil {
 	}
 
 	/**
-	 * Cr�e le fichier content.xml d'un fichier odt par le contenu provenant d'une fusion.
+	 * Crée le fichier content.xml d'un fichier odt par le contenu provenant d'une fusion.
 	 * 
 	 * @param docxFile ZipFile d'origine
-	 * @param newXmlContents Map contenant tous les fichiers qui ont �t� modifi�s.
-	 * @return File le document Docx cr��.
+	 * @param newXmlContents Map contenant tous les fichiers qui ont été modifiés.
+	 * @return File le document Docx créé.
 	 * @throws IOException Si une IOException a lieu
 	 */
 	public static File createDOCX(final ZipFile docxFile, final Map<String, String> newXmlContents) throws IOException {
@@ -236,10 +236,10 @@ final class DOCXUtil {
 	}
 
 	/**
-	 * M�thode transformant le Document de travail en String xml.
+	 * Méthode transformant le Document de travail en String xml.
 	 * 
-	 * @param xmlDocument le Document � formater.
-	 * @return String le xml formatt�.
+	 * @param xmlDocument le Document à formater.
+	 * @return String le xml formaté.
 	 */
 	public static String renderXML(final Document xmlDocument) {
 		final DOMSource domSource = new DOMSource(xmlDocument);
@@ -260,10 +260,10 @@ final class DOCXUtil {
 	}
 
 	/**
-	 * M�thode de chargement d'un Document DOM � partir d'un fichier XML.
+	 * Méthode de chargement d'un Document DOM à partir d'un fichier XML.
 	 * 
-	 * @param xmlInput la String repr�sentant le fichier XML � traiter.
-	 * @return le Document r�sultant.
+	 * @param xmlInput la String représentant le fichier XML à traiter.
+	 * @return le Document résultant.
 	 */
 	public static Document loadDOM(final String xmlInput) {
 		final DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
@@ -278,9 +278,9 @@ final class DOCXUtil {
 	}
 
 	/**
-	 * M�thode de chargement d'un objet XPath compatible DOCX.
+	 * Méthode de chargement d'un objet XPath compatible DOCX.
 	 * 
-	 * @return l'objet Xpath g�n�r�.
+	 * @return l'objet Xpath généré.
 	 */
 	public static XPath loadXPath() {
 		XPath xpath;

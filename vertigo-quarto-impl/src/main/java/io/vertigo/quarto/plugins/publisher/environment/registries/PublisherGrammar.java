@@ -30,7 +30,7 @@ import io.vertigo.dynamo.impl.environment.kernel.meta.GrammarProvider;
  */
 final class PublisherGrammar extends GrammarProvider {
 	/**
-	 * Cl� des FIELD_DEFINITION de type PK utilis�s dans les DT_DEFINITION. 
+	 * Clé des FIELD_DEFINITION de type PK utilisés dans les DT_DEFINITION. 
 	 */
 	static final String STRING_FIELD = "stringField";
 	static final String BOOLEAN_FIELD = "booleanField";
@@ -44,25 +44,25 @@ final class PublisherGrammar extends GrammarProvider {
 	private static final String NODE_DATA_FIELD_META_DEFINITION = "NodeField";
 	//public static final String NODE_TYPE_META_DEFINITION = "type";
 
-	/**D�finition d'un DT.*/
+	/**Définition d'un DT.*/
 	private final Entity publisherDefinition;
-	/**D�finition d'un domain.*/
+	/**Définition d'un domain.*/
 	private final Entity nodeDefinition;
 
-	/**D�finition des champs.*/
+	/**Définition des champs.*/
 	private final Entity fieldDefinition;
-	/**D�finition des champs typ�s.*/
+	/**Définition des champs typés.*/
 	private final Entity dataFieldDefinition;
 
 	/**
-	 * Initialisation des m�tadonn�es permettant de d�crire le m�tamod�le de Dynamo.
+	 * Initialisation des métadonnées permettant de décrire le métamodèle de Dynamo.
 	 */
 	PublisherGrammar() {
 		//--
 		fieldDefinition = new EntityBuilder(NODE_FIELD_META_DEFINITION).build();
 		//--
 		//On a une relation circulaire 
-		//On conserve donc une r�f�rence sur le builder
+		//On conserve donc une référence sur le builder
 		final EntityBuilder builder = new EntityBuilder(NODE_DEFINITION_META_DEFINITION);
 		dataFieldDefinition = createDataFieldDefinitionEntity(builder.build());
 		nodeDefinition = createNodeDefinitionEntity(builder, dataFieldDefinition, fieldDefinition);
@@ -98,28 +98,28 @@ final class PublisherGrammar extends GrammarProvider {
 	}
 
 	/**
-	 * @return D�finition d'une edition.
+	 * @return Définition d'une edition.
 	 */
 	Entity getPublisherDefinition() {
 		return publisherDefinition;
 	}
 
 	/**
-	 * @return D�finition d'un PublisherNode
+	 * @return Définition d'un PublisherNode
 	 */
 	Entity getPublisherNodeDefiniton() {
 		return nodeDefinition;
 	}
 
 	/**
-	 * @return D�finition des champs d'un PublisherNode
+	 * @return Définition des champs d'un PublisherNode
 	 */
 	public Entity getFieldDefinition() {
 		return fieldDefinition;
 	}
 
 	/**
-	 * @return D�finition des champs data d'un PublisherNode
+	 * @return Définition des champs data d'un PublisherNode
 	 */
 	public Entity getDataFieldDefinition() {
 		return dataFieldDefinition;

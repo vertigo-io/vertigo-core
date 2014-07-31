@@ -26,15 +26,15 @@ package io.vertigo.quarto.publisher.impl.merger.script;
  */
 public interface ScriptTag {
 	/**
-	 * @param content tag �valu�
-	 * @param context Context d'�valuation
+	 * @param content tag évalué
+	 * @param context Context d'évaluation
 	 * @return Contenu a substituer au tag
 	 */
 	String renderOpen(ScriptTagContent content, ScriptContext context);
 
 	/**
-	 * @param content tag �valu�
-	 * @param context Context d'�valuation
+	 * @param content tag évalué
+	 * @param context Context d'évaluation
 	 * @return Contenu a substituer au tag
 	 */
 	String renderClose(ScriptTagContent content, ScriptContext context);

@@ -22,11 +22,11 @@ import io.vertigo.quarto.publisher.impl.merger.script.ScriptGrammar;
 import io.vertigo.quarto.publisher.impl.merger.script.ScriptTag;
 
 /**
- * Grammaire des �ditions.
+ * Grammaire des éditions.
  * Offre un langage simple et de haut niveau permettant d'utiliser une syntaxe non java
- * afin par exemple de constituer des �ditions.
+ * afin par exemple de constituer des éditions.
  *
- * Une grammaire est constitu�e de mots cl�s (Keyword) en nombre fini.
+ * Une grammaire est constituée de mots clés (Keyword) en nombre fini.
  *
  * @author oboitel, pchretien
  * @version $Id: ScriptGrammarUtil.java,v 1.1 2013/07/11 13:24:48 npiedeloup Exp $
@@ -34,7 +34,7 @@ import io.vertigo.quarto.publisher.impl.merger.script.ScriptTag;
 public final class ScriptGrammarUtil {
 
 	/*
-	 * Mots cl�s de la grammaire de base.
+	 * Mots clés de la grammaire de base.
 	 */
 	private static enum Keyword {
 		/**
@@ -95,15 +95,15 @@ public final class ScriptGrammarUtil {
 	}
 
 	private ScriptGrammarUtil() {
-		// Class utilitaire sans �tat
+		// Class utilitaire sans état
 	}
 
 	/**
-	 * @return ScriptGrammar initialis�.
+	 * @return ScriptGrammar initialisé.
 	 */
 	public static ScriptGrammar createScriptGrammar() {
 		final ScriptGrammar scriptGrammar = new ScriptGrammar();
-		//On enregistre tous les mots cl�s.
+		//On enregistre tous les mots clés.
 		for (final Keyword keyword : Keyword.values()) {
 			registerScriptTag(scriptGrammar, keyword);
 		}

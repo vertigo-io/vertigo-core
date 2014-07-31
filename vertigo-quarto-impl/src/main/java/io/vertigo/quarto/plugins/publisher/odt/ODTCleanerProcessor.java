@@ -23,7 +23,7 @@ import io.vertigo.quarto.publisher.model.PublisherData;
 
 /**
  * Cleaner de xml de fichier ODT.
- * Ce processor effectue plusieurs op�rations de rectification du XML d'un fichier ODT.
+ * Ce processor effectue plusieurs opérations de rectification du XML d'un fichier ODT.
  * - 1. Nettoyage du XML en fermant les balises
  * - 2. Suppression des balises de script
  * @author npiedeloup
@@ -37,7 +37,7 @@ final class ODTCleanerProcessor implements MergerProcessor {
 	public String execute(final String xmlInput, final PublisherData publisherData) {
 		String xmlOutput;
 		/*
-		 * Malgr� le preprocessor qui replace les balises, on laisse le cleaner car il peut etre n�cessaire pour ceux n'utilisant que les balises <% et pas <#
+		 * Malgré le preprocessor qui replace les balises, on laisse le cleaner car il peut etre nécessaire pour ceux n'utilisant que les balises <% et pas <#
 		 */
 		// 1. Nettoyage du XML en fermant les balises
 		xmlOutput = ODTCleanerUtil.clean(xmlInput);
@@ -45,8 +45,8 @@ final class ODTCleanerProcessor implements MergerProcessor {
 		// 2. Suppression des balises de script
 		xmlOutput = ODTTagRemoverUtil.removeTag(xmlOutput, SCRIPT_TAG, false);
 
-		// On peut retirer les balises text-input, car les \n sont encod�s en <text:line-break/>
-		// il r�agit tr�s mal avec la justification totale, mais de la m�me fa�on que la balise text-input
+		// On peut retirer les balises text-input, car les \n sont encodés en <text:line-break/>
+		// il réagit très mal avec la justification totale, mais de la même façon que la balise text-input
 		xmlOutput = ODTTagRemoverUtil.removeTag(xmlOutput, INPUT_TAG, true);
 
 		return xmlOutput;

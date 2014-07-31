@@ -55,11 +55,11 @@ import com.sun.star.uno.UnoRuntime;
 import com.sun.star.uno.XComponentContext;
 
 /**
- * API de connexion � OpenOffice repris de JodConverter 2.2.0 (LGPL = utilisable pour logiciel propri�taire)
+ * API de connexion à OpenOffice repris de JodConverter 2.2.0 (LGPL = utilisable pour logiciel propriétaire)
  * (http://www.artofsolving.com/opensource/jodconverter).
- * La diff�rence est la suppression de la d�pendance au logger d'origine, pour pointer sur log4j.
+ * La différence est la suppression de la dépendance au logger d'origine, pour pointer sur log4j.
  * 
- * Cet utilitaire de connexion � OpenOffice n'est pas Multi-Thread !!
+ * Cet utilitaire de connexion à OpenOffice n'est pas Multi-Thread !!
  * 
  * @author npiedeloup
  * @version $Id: AbstractOpenOfficeConnection.java,v 1.1 2013/07/10 15:45:43 npiedeloup Exp $
@@ -72,8 +72,8 @@ abstract class AbstractOpenOfficeConnection implements OpenOfficeConnection, XEv
 	private XComponent bridgeComponent;
 	private XMultiComponentFactory serviceManager;
 	private XComponentContext componentContext;
-	private boolean connected; // initialis� � false
-	private boolean expectingDisconnection; // initialis� � false
+	private boolean connected; // initialisé à false
+	private boolean expectingDisconnection; // initialisé à false
 
 	/**
 	 * Constructeur.
@@ -97,7 +97,7 @@ abstract class AbstractOpenOfficeConnection implements OpenOfficeConnection, XEv
 			final XBridge bridge = bridgeFactory.createBridge("", "urp", connection, null);
 			bridgeComponent = UnoRuntime.queryInterface(XComponent.class, bridge);
 			bridgeComponent.addEventListener(this);
-			//TODO : attention : Dej� observ� le queryInterface attend ind�finiment sans timeout ce qui bloque le thread et tout autre converssion (car synchronized)
+			//TODO : attention : Déjà observé le queryInterface attend indéfiniment sans timeout ce qui bloque le thread et tout autre converssion (car synchronized)
 			serviceManager = UnoRuntime.queryInterface(XMultiComponentFactory.class, bridge.getInstance("StarOffice.ServiceManager"));
 			final XPropertySet properties = UnoRuntime.queryInterface(XPropertySet.class, serviceManager);
 			componentContext = UnoRuntime.queryInterface(XComponentContext.class, properties.getPropertyValue("DefaultContext"));

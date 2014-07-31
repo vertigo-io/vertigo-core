@@ -20,7 +20,7 @@ package io.vertigo.quarto.publisher.impl.merger.processor;
 
 /**
  * Represente une balise XML pour faciliter les traitements des processor.
- * Contient le tag entier, son nom, sa position dans le XMl d'ou il est tir�,
+ * Contient le tag entier, son nom, sa position dans le XMl d'ou il est tiré,
  * si c'est une balise ouvrante et si il contenait un body.
  * @author npiedeloup
  * @version $Id: TagXML.java,v 1.1 2013/07/11 13:24:48 npiedeloup Exp $
@@ -35,7 +35,7 @@ public final class TagXML {
 	/**
 	 * Constructeur.
 	 * @param fullTag Tag complet
-	 * @param index index de sa position dans le XML d'ou il est tir�
+	 * @param index index de sa position dans le XML d'ou il est tiré
 	 */
 	TagXML(final String fullTag, final int index) {
 		this.fullTag = fullTag;
@@ -60,7 +60,7 @@ public final class TagXML {
 	}
 
 	/**
-	 * @return index de la position du tag dans le XML d'ou il est tir�
+	 * @return index de la position du tag dans le XML d'ou il est tiré
 	 */
 	public int getIndex() {
 		return index;

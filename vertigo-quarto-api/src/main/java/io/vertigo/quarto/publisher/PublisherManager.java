@@ -26,28 +26,28 @@ import io.vertigo.quarto.publisher.model.PublisherData;
 import java.net.URL;
 
 /**
- * Gestionnaire centralis� des �ditions.
- * Le choix du type d'�dition est fait par l'appelant qui fournit les param�tres adapt�s � son besoin.
+ * Gestionnaire centralisé des éditions.
+ * Le choix du type d'édition est fait par l'appelant qui fournit les paramètres adaptés à son besoin.
  *
  * @author pchretien, npiedeloup
  * @version $Id: PublisherManager.java,v 1.4 2014/01/28 18:53:45 pchretien Exp $
  */
 public interface PublisherManager extends Manager {
 	/** 
-	 * Cr�ation d'une nouvelle �dition.
-	 * @param fileName Nom du document � g�n�rer (! pas son emplacement de stockage !)
+	 * Création d'une nouvelle édition.
+	 * @param fileName Nom du document à générer (! pas son emplacement de stockage !)
 	 * @param modelFileURL Chemin vers le fichier model
-	 * @param data Donn�es � fusionner avec le model
-	 * @return Tache permettant la production d'un document au format pass� en param�tre
+	 * @param data Données à fusionner avec le model
+	 * @return Tache permettant la production d'un document au format passé en paramètre
 	 */
 	KFile publish(String fileName, URL modelFileURL, PublisherData data);
 
 	/** 
-	 * Cr�ation asynchrone d'une nouvelle �dition.
-	 * @param fileName Nom du document � g�n�rer (! pas son emplacement de stockage !)
+	 * Création asynchrone d'une nouvelle édition.
+	 * @param fileName Nom du document à générer (! pas son emplacement de stockage !)
 	 * @param modelFileURL Chemin vers le fichier model
-	 * @param data Donn�es � fusionner avec le model
-	 * @param Handler permettant de notifier l'ex�cution de publisher
+	 * @param data Données à fusionner avec le model
+	 * @param Handler permettant de notifier l'exécution de publisher
 	 */
 	void publishASync(final String fileName, final URL modelFileURL, final PublisherData data, final WorkResultHandler<KFile> workResultHandler);
 }

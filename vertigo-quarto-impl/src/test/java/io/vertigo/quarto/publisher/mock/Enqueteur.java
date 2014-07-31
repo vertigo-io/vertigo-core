@@ -21,8 +21,8 @@ package io.vertigo.quarto.publisher.mock;
 import io.vertigo.dynamo.domain.model.DtObject;
 
 /**
- * Attention cette classe est g�n�r�e automatiquement !
- * Objet de donn�es AbstractEnqueteur
+ * Attention cette classe est générée automatiquement !
+ * Objet de données AbstractEnqueteur
  */
 @io.vertigo.dynamo.domain.stereotype.DtDefinition(persistent = false)
 public final class Enqueteur implements DtObject {
@@ -38,7 +38,7 @@ public final class Enqueteur implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'Nom'. 
+	 * Récupère la valeur de la propriété 'Nom'. 
 	 * @return String nom 
 	 */
 	public final String getNom() {
@@ -47,7 +47,7 @@ public final class Enqueteur implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'Nom'.
+	 * Définit la valeur de la propriété 'Nom'.
 	 * @param nom String 
 	 */
 	public final void setNom(final String nom) {
@@ -56,7 +56,7 @@ public final class Enqueteur implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'Prenom'. 
+	 * Récupère la valeur de la propriété 'Prenom'. 
 	 * @return String prenom 
 	 */
 	public final String getPrenom() {
@@ -65,7 +65,7 @@ public final class Enqueteur implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'Prenom'.
+	 * Définit la valeur de la propriété 'Prenom'.
 	 * @param prenom String 
 	 */
 	public final void setPrenom(final String prenom) {

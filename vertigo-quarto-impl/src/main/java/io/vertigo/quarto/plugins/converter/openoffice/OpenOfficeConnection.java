@@ -42,7 +42,7 @@ import com.sun.star.ucb.XSimpleFileAccess;
 /**
  * A UNO remote protocol connection to a listening OpenOffice.org instance.
  *
- * API de connexion � OpenOffice repris de JodConverter 2.2.0 (http://www.artofsolving.com/opensource/jodconverter)
+ * API de connexion à OpenOffice repris de JodConverter 2.2.0 (http://www.artofsolving.com/opensource/jodconverter)
  *
  * @author npiedeloup
  * @version $Id: OpenOfficeConnection.java,v 1.1 2013/07/10 15:45:43 npiedeloup Exp $
@@ -50,13 +50,13 @@ import com.sun.star.ucb.XSimpleFileAccess;
 interface OpenOfficeConnection {
 
 	/**
-	 * Ouvre la connexion � OpenOffice.
+	 * Ouvre la connexion à OpenOffice.
 	 * @throws ConnectException e
 	 */
 	void connect() throws ConnectException;
 
 	/**
-	 * Ferme la connexion � OpenOffice.
+	 * Ferme la connexion à OpenOffice.
 	 */
 	void disconnect();
 

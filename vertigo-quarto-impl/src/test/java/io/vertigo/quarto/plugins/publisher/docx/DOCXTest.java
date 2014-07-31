@@ -23,7 +23,7 @@ import io.vertigo.quarto.plugins.publisher.docx.DOCXReverseInputProcessor;
 
 /**
  * Classe pour les tests.
- * Publie les visibilit�s packages.
+ * Publie les visibilités packages.
  * 
  * @author adufranne
  * @version $Id: DOCXTest.java,v 1.1 2013/07/11 13:25:42 npiedeloup Exp $
@@ -35,7 +35,7 @@ public final class DOCXTest {
 	}
 
 	/**
-	 * Teste le retour � la ligne pour les docx.
+	 * Teste le retour à la ligne pour les docx.
 	 * 
 	 * @param content le docx format texte.
 	 * @return le xml
@@ -47,7 +47,7 @@ public final class DOCXTest {
 
 	/**
 	 * Adaptation de la syntaxe utilisateur vers la syntaxe KSP.
-	 * les <# #> sont rajout�s si ils sont manquants.
+	 * les <# #> sont rajoutés si ils sont manquants.
 	 * 
 	 * @param content le xml.
 	 * @return le xml.
@@ -59,7 +59,7 @@ public final class DOCXTest {
 	}
 
 	/**
-	 * Publication de la m�thode de nettoyage des tags pour les tests.
+	 * Publication de la méthode de nettoyage des tags pour les tests.
 	 * 
 	 * @param content le xml.
 	 * @return le xml.
@@ -70,7 +70,7 @@ public final class DOCXTest {
 	}
 
 	/**
-	 * Publication de la m�thode de factorisation des tags multiples pour les tests.
+	 * Publication de la méthode de factorisation des tags multiples pour les tests.
 	 * 
 	 * @param content le xml.
 	 * @return le xml.

@@ -26,10 +26,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * D�finition d'un noeud dans une structure PublisherDataDefinition.
+ * Définition d'un noeud dans une structure PublisherDataDefinition.
  * Un noeud contient des champs.
- * Les champs peuvent �tre :
- * - soit simples (valu�s) et de type Boolean, String ou Image 
+ * Les champs peuvent être :
+ * - soit simples (valués) et de type Boolean, String ou Image 
  * - soit un autre noeud 
  * - soit une liste de noeuds
  *
@@ -49,7 +49,7 @@ public final class PublisherNodeDefinition {
 	}
 
 	private void registerField(final PublisherField publisherField) {
-		Assertion.checkArgument(!publisherFieldMap.containsKey(publisherField.getName()), "Le champ {0} est d�j� d�clar�.", publisherField.getName());
+		Assertion.checkArgument(!publisherFieldMap.containsKey(publisherField.getName()), "Le champ {0} est déjà déclaré.", publisherField.getName());
 		//---------------------------------------------------------------------
 		publisherFieldMap.put(publisherField.getName(), publisherField);
 	}
@@ -63,7 +63,7 @@ public final class PublisherNodeDefinition {
 	public PublisherField getField(final String fieldName) {
 		final PublisherField field = publisherFieldMap.get(fieldName);
 		//---------------------------------------------------------------------
-		Assertion.checkNotNull(field, "Le champ {0} n''est pas dans la d�finition de ce noeud, champs disponibles [{1}]", fieldName, publisherFieldMap.keySet());
+		Assertion.checkNotNull(field, "Le champ {0} n''est pas dans la définition de ce noeud, champs disponibles [{1}]", fieldName, publisherFieldMap.keySet());
 		return field;
 	}
 

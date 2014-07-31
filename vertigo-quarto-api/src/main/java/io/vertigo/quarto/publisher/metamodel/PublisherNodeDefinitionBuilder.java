@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Builder de la d�finition d'un mod�le de noeud d'�dition.
- * Un noeud d'edition compose l'arbre des des donn�es d'une �dition.
+ * Builder de la définition d'un modèle de noeud d'édition.
+ * Un noeud d'edition compose l'arbre des des données d'une édition.
  *
  * @author npiedeloup, pchretien
  * @version $Id: PublisherNodeDefinitionBuilder.java,v 1.3 2014/02/27 10:32:26 pchretien Exp $
@@ -34,7 +34,7 @@ public final class PublisherNodeDefinitionBuilder implements Builder<PublisherNo
 	private final List<PublisherField> publisherFields = new ArrayList<>();
 
 	/**
-	 * Ajoute un champ bool�en.
+	 * Ajoute un champ booléen.
 	 * @param fieldName Nom du champ
 	 */
 	public PublisherNodeDefinitionBuilder withBooleanField(final String fieldName) {
@@ -60,16 +60,16 @@ public final class PublisherNodeDefinitionBuilder implements Builder<PublisherNo
 	/**
 	 * Ajoute un champ Data (autre noeud).
 	 * @param fieldName Nom du champ
-	 * @param nodeDefinition D�finition du noeud
+	 * @param nodeDefinition Définition du noeud
 	 */
 	public PublisherNodeDefinitionBuilder withNodeField(final String fieldName, final PublisherNodeDefinition nodeDefinition) {
 		return registerField(fieldName, PublisherFieldType.Node, nodeDefinition);
 	}
 
 	/**
-	 * Ajoute un champ List (liste compos�e de noeud).
+	 * Ajoute un champ List (liste composée de noeud).
 	 * @param fieldName Nom du champ
-	 * @param nodeDefinition D�finition des �l�ments de la liste
+	 * @param nodeDefinition Définition des éléments de la liste
 	 */
 	public PublisherNodeDefinitionBuilder withListField(final String fieldName, final PublisherNodeDefinition nodeDefinition) {
 		return registerField(fieldName, PublisherFieldType.List, nodeDefinition);

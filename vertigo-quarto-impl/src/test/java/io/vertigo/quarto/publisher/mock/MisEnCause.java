@@ -21,8 +21,8 @@ package io.vertigo.quarto.publisher.mock;
 import io.vertigo.dynamo.domain.model.DtObject;
 
 /**
- * Attention cette classe est g�n�r�e automatiquement !
- * Objet de donn�es AbstractMisEnCause
+ * Attention cette classe est générée automatiquement !
+ * Objet de données AbstractMisEnCause
  */
 @io.vertigo.dynamo.domain.stereotype.DtDefinition(persistent = false)
 public final class MisEnCause implements DtObject {
@@ -39,7 +39,7 @@ public final class MisEnCause implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'Sexe'. 
+	 * Récupère la valeur de la propriété 'Sexe'. 
 	 * @return Boolean siHomme 
 	 */
 	public final Boolean getSiHomme() {
@@ -48,7 +48,7 @@ public final class MisEnCause implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'Sexe'.
+	 * Définit la valeur de la propriété 'Sexe'.
 	 * @param siHomme Boolean 
 	 */
 	public final void setSiHomme(final Boolean siHomme) {
@@ -57,7 +57,7 @@ public final class MisEnCause implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'Nom'. 
+	 * Récupère la valeur de la propriété 'Nom'. 
 	 * @return String nom 
 	 */
 	public final String getNom() {
@@ -66,7 +66,7 @@ public final class MisEnCause implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'Nom'.
+	 * Définit la valeur de la propriété 'Nom'.
 	 * @param nom String 
 	 */
 	public final void setNom(final String nom) {
@@ -75,7 +75,7 @@ public final class MisEnCause implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'Prenom'. 
+	 * Récupère la valeur de la propriété 'Prenom'. 
 	 * @return String prenom 
 	 */
 	public final String getPrenom() {
@@ -84,7 +84,7 @@ public final class MisEnCause implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'Prenom'.
+	 * Définit la valeur de la propriété 'Prenom'.
 	 * @param prenom String 
 	 */
 	public final void setPrenom(final String prenom) {
@@ -93,7 +93,7 @@ public final class MisEnCause implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'Addresses connues'. 
+	 * Récupère la valeur de la propriété 'Addresses connues'. 
 	 * @return DtList<io.vertigo.publisher.mock.Address> adressesConnues 
 	 */
 	public final io.vertigo.dynamo.domain.model.DtList<io.vertigo.quarto.publisher.mock.Address> getAdressesConnues() {
@@ -102,7 +102,7 @@ public final class MisEnCause implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'Addresses connues'.
+	 * Définit la valeur de la propriété 'Addresses connues'.
 	 * @param adressesConnues DtList<io.vertigo.publisher.mock.Address> 
 	 */
 	public final void setAdressesConnues(final io.vertigo.dynamo.domain.model.DtList<io.vertigo.quarto.publisher.mock.Address> adressesConnues) {

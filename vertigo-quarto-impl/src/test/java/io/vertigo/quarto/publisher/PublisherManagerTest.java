@@ -33,7 +33,7 @@ import org.junit.Test;
 
 
 /**
- * Test de l'impl�mentation standard.
+ * Test de l'implémentation standard.
  * 
  * @author npiedeloup
  * @version $Id: PublisherManagerTest.java,v 1.3 2013/10/22 10:49:13 pchretien Exp $
@@ -47,7 +47,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Cr�er une D�finition simple avec 1 bool, 1 string.
+	 * Créer une Définition simple avec 1 bool, 1 string.
 	 */
 	@Test
 	public final void testDefinitionSimple() {
@@ -115,7 +115,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test l'enregistrement de deux d�finitions avec le m�me nom.
+	 * Test l'enregistrement de deux définitions avec le même nom.
 	 */
 	@Test
 	public final void testDefinitionDoubleRegister() {
@@ -169,7 +169,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test l'enregistrement de deux d�finitions avec le m�me nom.
+	 * Test l'enregistrement de deux définitions avec le même nom.
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public final void testDefinitionFieldDoubleRegister() {
@@ -181,7 +181,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test l'enregistrement de deux d�finitions avec le m�me nom.
+	 * Test l'enregistrement de deux définitions avec le même nom.
 	 */
 	@Test
 	public final void testDefinitionInfinitLoopRegister() {
@@ -200,14 +200,14 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 
 			final PublisherData publisherData = createPublisherData("PU_TEST_1_BIS");
 			log.trace(asString(publisherData.getDefinition()));
-			Assert.fail("Il est possible de cr�er une structure cyclique.");
+			Assert.fail("Il est possible de créer une structure cyclique.");
 		} catch (final IllegalArgumentException a) {
 			// succes
 		}
 	}
 
 	/**
-	 * Cr�e une D�finition simple avec 1 bool, 1 string et un sous objet.
+	 * Crée une Définition simple avec 1 bool, 1 string et un sous objet.
 	 */
 	@Test
 	public final void testDefinitionWithData() {
@@ -229,7 +229,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Cr�er une D�finition avec 1 bool, 1 string et un sous objet et une liste
+	 * Créer une Définition avec 1 bool, 1 string et un sous objet et une liste
 	 * d'objets.
 	 */
 	@Test
@@ -259,7 +259,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Cr�er une D�finition avec 1 bool, 1 string, un sous objet, une liste
+	 * Créer une Définition avec 1 bool, 1 string, un sous objet, une liste
 	 * d'objets et une image.
 	 */
 	@Test
@@ -290,8 +290,8 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Cr�e une D�finition hierarchique avec 1 bool, 1 string et un sous objet.
-	 * contenant � et une liste d�objets contenant �
+	 * Crée une Définition hierarchique avec 1 bool, 1 string et un sous objet.
+	 * contenant à et une liste d’objets contenant à
 	 */
 	@Test
 	public final void testDefinitionWithHierachy() {
@@ -332,7 +332,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Cr�e une D�finition hierarchique complexe sur le model des enquetes.
+	 * Crée une Définition hierarchique complexe sur le model des enquetes.
 	 */
 	@Test
 	public final void testDefinitionEnquete() {
@@ -379,7 +379,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	private static final String ENQUETE_DEF = "=== PU_TEST_ENQUETE =====================================\nBoolean:ENQUETE_TERMINEE\nString:CODE_ENQUETE\nNode:ENQUETEUR\n    String:NOM\n    String:PRENOM\n    Node:ADRESSE_RATACHEMENT\n        String:RUE\n        Node:VILLE\n            String:NOM\n            String:CODE_POSTAL\nList:MIS_EN_CAUSE\n    Boolean:SI_HOMME\n    String:NOM\n    String:PRENOM\n    List:ADRESSES_CONNUES\n        String:RUE\n        Node:VILLE\n            String:NOM\n            String:CODE_POSTAL\nString:FAIT\nBoolean:SI_GRAVE\n------------------------------------------------------------------------------";
 
 	/**
-	 * Cr�er une D�finition hierarchique complexe sur le model des enquetes
+	 * Créer une Définition hierarchique complexe sur le model des enquetes
 	 */
 	@Test
 	public final void testKspDefinitionEnquete() {

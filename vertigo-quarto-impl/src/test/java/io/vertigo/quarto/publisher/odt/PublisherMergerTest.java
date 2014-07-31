@@ -21,7 +21,7 @@ package io.vertigo.quarto.publisher.odt;
 import io.vertigo.quarto.publisher.AbstractPublisherMergerTest;
 
 /**
- * Test de l'impl�mentation standard.
+ * Test de l'implémentation standard.
  * 
  * @author npiedeloup
  * @version $Id: PublisherMergerTest.java,v 1.1 2013/07/11 13:25:42 npiedeloup Exp $

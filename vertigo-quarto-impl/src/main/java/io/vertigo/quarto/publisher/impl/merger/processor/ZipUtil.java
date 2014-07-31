@@ -47,7 +47,7 @@ public final class ZipUtil {
 	private static final int BUFFER_SIZE = 8 * 1024;
 
 	/**
-	 * Constructeur priv� pour classe utilitaire
+	 * Constructeur privé pour classe utilitaire
 	 */
 	private ZipUtil() {
 		super();
@@ -57,15 +57,15 @@ public final class ZipUtil {
 	 * Lecture d'un fichier du fichier ODT.
 	 *
 	 * @param odtFile ZipFile Fichier source
-	 * @param entryName Nom de l'entr�e � extraire
-	 * @return String le contenu du fichier sous forme de chaine encod�e avec ENCODER
-	 * @throws IOException Si une exception d'entr�e-sortie de fichier a lieu
+	 * @param entryName Nom de l'entrée à extraire
+	 * @return String le contenu du fichier sous forme de chaine encodée avec ENCODER
+	 * @throws IOException Si une exception d'entrée-sortie de fichier a lieu
 	 */
 	public static String readEntry(final ZipFile odtFile, final String entryName) throws IOException {
 		Assertion.checkNotNull(odtFile);
 		Assertion.checkArgNotEmpty(entryName);
 		final ZipEntry zipEntry = odtFile.getEntry(entryName);
-		Assertion.checkNotNull(zipEntry, "Le mod�le {0} ne contient pas {1}, v�rifier que le mod�le est un document valide et du bon type.", odtFile.getName(), entryName);
+		Assertion.checkNotNull(zipEntry, "Le modèle {0} ne contient pas {1}, vérifier que le modèle est un document valide et du bon type.", odtFile.getName(), entryName);
 		//---------------------------------------------------------------------
 		final StringBuilder resultat = new StringBuilder();
 
@@ -80,12 +80,12 @@ public final class ZipUtil {
 	}
 
 	/**
-	 * Ecriture d'une entry dans le fichier Zip � partir de son contenu et de son nom sous formes de chaine.
+	 * Ecriture d'une entry dans le fichier Zip à partir de son contenu et de son nom sous formes de chaine.
 	 * .
-	 * @param outputZipFile ZipOutputStream Fichier � modifier
-	 * @param entryContent Contenu de l'entry � ins�rer
+	 * @param outputZipFile ZipOutputStream Fichier à modifier
+	 * @param entryContent Contenu de l'entry à insérer
 	 * @param entryName Nom de l'entry
-	 * @throws IOException Si une exception d'entr�e sortie a lieu
+	 * @throws IOException Si une exception d'entrée sortie a lieu
 	 */
 	public static void writeEntry(final ZipOutputStream outputZipFile, final String entryContent, final String entryName) throws IOException {
 		final ZipEntry content = new ZipEntry(entryName);
@@ -96,24 +96,24 @@ public final class ZipUtil {
 	}
 
 	/**
-	 * Ecriture d'une entry dans le fichier Zip � partir de son contenu et de son nom sous formes de chaine.
+	 * Ecriture d'une entry dans le fichier Zip à partir de son contenu et de son nom sous formes de chaine.
 	 * .
-	 * @param outputZipFile ZipOutputStream Fichier � modifier
-	 * @param entryContent Flux de l'entry � ins�rer
+	 * @param outputZipFile ZipOutputStream Fichier à modifier
+	 * @param entryContent Flux de l'entry à insérer
 	 * @param entryName Nom de l'entry
-	 * @throws IOException Si une exception d'entr�e sortie a lieu
+	 * @throws IOException Si une exception d'entrée sortie a lieu
 	 */
 	public static void writeEntry(final ZipOutputStream outputZipFile, final InputStream entryContent, final String entryName) throws IOException {
 		writeEntry(outputZipFile, entryContent, new ZipEntry(entryName));
 	}
 
 	/**
-	 * Ecriture d'une entry dans le fichier Zip � partir de son contenu et de son nom sous formes de chaine.
+	 * Ecriture d'une entry dans le fichier Zip à partir de son contenu et de son nom sous formes de chaine.
 	 * .
-	 * @param outputOdtFile ZipOutputStream Fichier � modifier
-	 * @param entryContent Flux de l'entry � ins�rer
+	 * @param outputOdtFile ZipOutputStream Fichier à modifier
+	 * @param entryContent Flux de l'entry à insérer
 	 * @param zipEntry ZipEntry
-	 * @throws IOException Si une exception d'entr�e sortie a lieu
+	 * @throws IOException Si une exception d'entrée sortie a lieu
 	 */
 	public static void writeEntry(final ZipOutputStream outputOdtFile, final InputStream entryContent, final ZipEntry zipEntry) throws IOException {
 		outputOdtFile.putNextEntry(zipEntry);

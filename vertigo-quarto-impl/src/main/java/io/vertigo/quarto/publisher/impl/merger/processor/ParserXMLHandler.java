@@ -25,17 +25,17 @@ package io.vertigo.quarto.publisher.impl.merger.processor;
  */
 public interface ParserXMLHandler {
 	/**
-	 * Appell� sur un tag sans body.
+	 * Appelé sur un tag sans body.
 	 * @param tagXML Extrait du tag XML complet
-	 * @param output Flux d'ecriture, il contient tout jusqu'au caract�re pr�c�dant le tag lui m�me
+	 * @param output Flux d'ecriture, il contient tout jusqu'au caractère précédant le tag lui même
 	 */
 	void onNoBodyEndTag(final String tagXML, final StringBuilder output);
 
 	/**
-	 * Appell� sur un tag sans body.
+	 * Appelé sur un tag sans body.
 	 * @param tagXML Extrait du tag XML complet (ie : avec son Body)
 	 * @param bodyContent Body du tag
-	 * @param output Flux d'ecriture, il contient tout jusqu'au caract�re pr�c�dant le tag lui m�me
+	 * @param output Flux d'ecriture, il contient tout jusqu'au caractère précédant le tag lui même
 	 */
 	void onBodyEndTag(final String tagXML, final String bodyContent, final StringBuilder output);
 

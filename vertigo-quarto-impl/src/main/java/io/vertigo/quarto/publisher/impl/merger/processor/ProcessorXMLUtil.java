@@ -33,14 +33,14 @@ import java.util.regex.Pattern;
  */
 public final class ProcessorXMLUtil {
 	/**
-	 * Constructeur priv� pour classe utilitaire
+	 * Constructeur privé pour classe utilitaire
 	 */
 	private ProcessorXMLUtil() {
 		//RAS
 	}
 
 	/**
-	 * Retourne la pile des Tags pr�sents dans le xml pass� en parametre.
+	 * Retourne la pile des Tags présents dans le xml passé en parametre.
 	 * Cette pile retourne les balises completes (ie: avec les attributs)
 	 * @param content contenu XML
 	 * @return pile des tag XML
@@ -118,9 +118,9 @@ public final class ProcessorXMLUtil {
 
 	/**
 	 * Recupere la pile des tags qui ne sont pas ouvert et ceux qui ne sont pas
-	 * ferm�s correctement dans le XML pass� en parametre.
+	 * fermés correctement dans le XML passé en parametre.
 	 * @param content Extrait d'un XML correct.
-	 * @return Pile des tags mal ouverts ou mal ferm�s
+	 * @return Pile des tags mal ouverts ou mal fermés
 	 */
 	static Stack<TagXML> extractUnbalancedTag(final char[] content) {
 		// en jdk 1.6, il est un peu plus performant (synchronizeds) de faire :
@@ -144,17 +144,17 @@ public final class ProcessorXMLUtil {
 	}
 
 	/**
-	 * Retourne les tags qui posent probl�me si l'on cherche � supprimer ou r�peter ce bloc XML.
-	 * Ils s'agit donc des tags qui ne sont pas correctement ferm�s ou correctement ouverts,
-	 * sauf si ils sont sans effets sur l'arbre XML. Un tag qui est ferm� puis ouvert au m�me niveau dans l'arbre XML,
-	 * peut etre supprim� ou multipli� sans compromettre l'int�grit� XML.
+	 * Retourne les tags qui posent problème si l'on cherche à supprimer ou répéter ce bloc XML.
+	 * Ils s'agit donc des tags qui ne sont pas correctement fermés ou correctement ouverts,
+	 * sauf si ils sont sans effets sur l'arbre XML. Un tag qui est fermé puis ouvert au même niveau dans l'arbre XML,
+	 * peut etre supprimé ou multiplié sans compromettre l'intégrité XML.
 	 * @param content extrait de XML
 	 * @return Pile des tagXML perturbant la repetition de l'extrait XML
 	 */
 	public static Stack<TagXML> extractUnrepeatableTag(final char[] content) {
 		final Stack<TagXML> openedTagStack = extractUnbalancedTag(content);
 
-		//On retire les elements centraux sym�trique : </b></c></l><l><c><r> : on retire les c et l
+		//On retire les elements centraux symétrique : </b></c></l><l><c><r> : on retire les c et l
 		TagXML tag;
 		final Stack<TagXML> closeTagStack = new Stack<>();
 		for (final Iterator<TagXML> it = openedTagStack.iterator(); it.hasNext();) {
@@ -180,7 +180,7 @@ public final class ProcessorXMLUtil {
 
 	/**
 	 * @param content contenu XML
-	 * @return la position du premier body de tag trouv� dans le XML pass� en param�tre
+	 * @return la position du premier body de tag trouvé dans le XML passé en paramètre
 	 */
 	public static int getFirstBodyIndex(final String content) {
 		if (content.charAt(0) != '<') {
@@ -188,12 +188,12 @@ public final class ProcessorXMLUtil {
 		}
 
 		int endTagIndex = content.indexOf('>', 0);
-		Assertion.checkState(endTagIndex != -1, "Une balise est mal ferm�e (manque le >) : {0}", content);
+		Assertion.checkState(endTagIndex != -1, "Une balise est mal fermée (manque le >) : {0}", content);
 		int beginTagIndex = content.indexOf('<', endTagIndex);
 
 		while (beginTagIndex == endTagIndex + 1) {
 			endTagIndex = content.indexOf('>', beginTagIndex);
-			Assertion.checkState(endTagIndex != -1, "Une balise est mal ferm�e (manque le >) : {0}", content.substring(beginTagIndex));
+			Assertion.checkState(endTagIndex != -1, "Une balise est mal fermée (manque le >) : {0}", content.substring(beginTagIndex));
 			beginTagIndex = content.indexOf('<', endTagIndex);
 		}
 
@@ -206,7 +206,7 @@ public final class ProcessorXMLUtil {
 
 	/**
 	 * @param content contenu XML
-	 * @return la position de fin du dernier body de tag trouv� dans le XML pass� en param�tre
+	 * @return la position de fin du dernier body de tag trouvé dans le XML passé en paramètre
 	 */
 	public static int getLastBodyEndIndex(final String content) {
 		final int lastIndex = content.length() - 1;
@@ -243,7 +243,7 @@ public final class ProcessorXMLUtil {
 		int indexBodyMatch = nextMatch(bodyMatcher);
 
 		while (index < xmlContent.length()) {
-			//Assertion.invariant(indexNoBodyMatch == indexBodyMatch && indexBodyMatch != -1, "Cas non pr�vu : {0} == {1}", bodyMatcher.group(), noBodyMatcher.group());
+			//Assertion.invariant(indexNoBodyMatch == indexBodyMatch && indexBodyMatch != -1, "Cas non prévu : {0} == {1}", bodyMatcher.group(), noBodyMatcher.group());
 			//System.out.println("noBody length:" + (indexNoBodyMatch > 0 ? noBodyMatcher.end() - noBodyMatcher.start() : ""));
 			//System.out.println("body length:" + (indexBodyMatch > 0 ? bodyMatcher.end() - bodyMatcher.start() : ""));
 
@@ -261,7 +261,7 @@ public final class ProcessorXMLUtil {
 				handler.onBodyEndTag(bodyMatcher.group(), bodyMatcher.group(1), cleanContent);
 				indexBodyMatch = nextMatch(bodyMatcher);
 			} else {
-				throw new IllegalStateException("Cas non pr�vu : " + bodyMatcher.group() + "==" + noBodyMatcher.group());
+				throw new IllegalStateException("Cas non prévu : " + bodyMatcher.group() + "==" + noBodyMatcher.group());
 			}
 		}
 		return cleanContent;

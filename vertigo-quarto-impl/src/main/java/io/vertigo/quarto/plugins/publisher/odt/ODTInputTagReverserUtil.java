@@ -23,7 +23,7 @@ import io.vertigo.quarto.publisher.impl.merger.processor.ProcessorXMLUtil;
 
 /**
  * Classe de nettoyage d'une arborescence XML.
- * Gestion du cas ou il y a des balises ouvertes non ferm�es.
+ * Gestion du cas ou il y a des balises ouvertes non fermées.
  *
  * @author brenard
  * @version $Id: ODTInputTagReverserUtil.java,v 1.1 2013/07/11 13:24:48 npiedeloup Exp $
@@ -33,7 +33,7 @@ final class ODTInputTagReverserUtil {
 	private static final String DESCRIPTION_ATTRIBUTE = "text:description";
 
 	/**
-	 * Constructeur priv� pour classe utilitaire
+	 * Constructeur privé pour classe utilitaire
 	 */
 	private ODTInputTagReverserUtil() {
 		super();
@@ -44,7 +44,7 @@ final class ODTInputTagReverserUtil {
 	 * text:description de la balise text:text-input avec son contenu.
 	 *
 	 * @param xmlContent Arborescence XML.
-	 * @return Arborescence corrig�e.
+	 * @return Arborescence corrigée.
 	 */
 	static String reverseInputTag(final String xmlContent) {
 		final StringBuilder contentClean = ProcessorXMLUtil.parseXMLContent(xmlContent, INPUT_TAG, new TagInverser());

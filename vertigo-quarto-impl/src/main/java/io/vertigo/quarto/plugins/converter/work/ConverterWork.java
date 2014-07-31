@@ -23,8 +23,8 @@ import io.vertigo.kernel.lang.Assertion;
 
 /**
  * Travail de conversion.
- * Poss�de :
- * - le fichier � convertir
+ * Possède :
+ * - le fichier à convertir
  * - le format destination
  * 
  * @author npiedeloup
@@ -36,7 +36,7 @@ final class ConverterWork {
 
 	/**
 	 * Constructeur.
-	 * @param file fichier � convertir
+	 * @param file fichier à convertir
 	 * @param targetFormat format destination
 	 */
 	ConverterWork(final KFile file, final String targetFormat) {
@@ -53,7 +53,7 @@ final class ConverterWork {
 	}
 
 	/**
-	 * @return fichier � convertir
+	 * @return fichier à convertir
 	 */
 	KFile getInputFile() {
 		return file;

@@ -36,14 +36,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Classe de r�cup�ration des donn�es pour les editions.
+ * Classe de récupération des données pour les editions.
  * @version $Id: PublisherDataUtil.java,v 1.8 2014/06/26 12:32:39 npiedeloup Exp $
  *
  * @author oboitel, npiedeloup
  */
 public final class PublisherDataUtil {
 	/**
-	 * Constructeur priv� pour class utilitaire.
+	 * Constructeur privé pour class utilitaire.
 	 */
 	private PublisherDataUtil() {
 		//rien
@@ -80,8 +80,8 @@ public final class PublisherDataUtil {
 	}
 
 	/**
-	 * Peuple un publisherDataNode � partir de champs du Dto qui correspondent.
-	 * @param dto Objet de donn�es
+	 * Peuple un publisherDataNode à partir de champs du Dto qui correspondent.
+	 * @param dto Objet de données
 	 * @param publisherDataNode PublisherDataNode
 	 */
 	public static void populateData(final DtObject dto, final PublisherNode publisherDataNode) {
@@ -102,7 +102,7 @@ public final class PublisherDataUtil {
 			nbMappedField++;
 			switch (publisherField.getFieldType()) {
 				case Boolean:
-					Assertion.checkArgument(value instanceof Boolean, "Le champ {0} du DT {1} doit �tre un Boolean (non null)", fieldName, dtDefinition.getName());
+					Assertion.checkArgument(value instanceof Boolean, "Le champ {0} du DT {1} doit être un Boolean (non null)", fieldName, dtDefinition.getName());
 					publisherDataNode.setBoolean(fieldName, (Boolean) value);
 					break;
 				case String:
@@ -111,8 +111,8 @@ public final class PublisherDataUtil {
 					break;
 				case List:
 					if (value != null) { //on autorise les listes null et on la traite comme vide 
-						//car la composition d'objet m�tier n'est pas obligatoire 
-						//et le champ sera peut �tre peupl� plus tard
+						//car la composition d'objet métier n'est pas obligatoire 
+						//et le champ sera peut être peuplé plus tard
 						final DtList<?> dtc = (DtList<?>) value;
 						final List<PublisherNode> publisherNodes = new ArrayList<>();
 						for (final DtObject element : dtc) {
@@ -125,8 +125,8 @@ public final class PublisherDataUtil {
 					break;
 				case Node:
 					if (value != null) { //on autorise les objet null, 
-						//car la composition d'objet m�tier n'est pas obligatoire
-						//et le champ sera peut �tre peupl� plus tard
+						//car la composition d'objet métier n'est pas obligatoire
+						//et le champ sera peut être peuplé plus tard
 						final DtObject element = (DtObject) value;
 						final PublisherNode elementPublisherDataNode = publisherDataNode.createNode(fieldName);
 						populateData(element, elementPublisherDataNode);
@@ -139,19 +139,19 @@ public final class PublisherDataUtil {
 					throw new IllegalArgumentException("Type unknown : " + publisherField.getFieldType());
 			}
 			//} else {
-			//	Assertion.precondition(!(value instanceof Boolean), "Le champ {0} du DT {1} est un Boolean, et il ne doit pas �tre null", fieldName, dtDefinition.toURN());
+			//	Assertion.precondition(!(value instanceof Boolean), "Le champ {0} du DT {1} est un Boolean, et il ne doit pas être null", fieldName, dtDefinition.toURN());
 			//-----------------------------------------------------------
 			//	value = ""; //un champ null apparait comme vide
 			//}
 		}
-		Assertion.checkState(nbMappedField > 0, "Aucun champ du Dt ne correspond � ceux du PublisherNode, v�rifier vos d�finitions. ({0}:{1}) et ({2}:{3})", "PN", pnDefinition.getFields(), dtDefinition.getName(), dtFieldNames);
+		Assertion.checkState(nbMappedField > 0, "Aucun champ du Dt ne correspond à ceux du PublisherNode, vérifier vos définitions. ({0}:{1}) et ({2}:{3})", "PN", pnDefinition.getFields(), dtDefinition.getName(), dtFieldNames);
 	}
 
 	/**
-	 * G�re le rendu d'un champs de type String.
+	 * Gére le rendu d'un champs de type String.
 	 * @param dto l'objet sur lequel porte le champs
-	 * @param dtField le champs � rendre
-	 * @return la chaine de caract�re correspondant au rendu du champs
+	 * @param dtField le champs à rendre
+	 * @return la chaine de caractère correspondant au rendu du champs
 	 */
 	public static String renderStringField(final DtObject dto, final DtField dtField) {
 		final String unit = dtField.getDomain().getProperties().getValue(DtProperty.UNIT);
@@ -172,14 +172,14 @@ public final class PublisherDataUtil {
 	//-------------------------------------------------------------------------
 	//-------------------------------------------------------------------------
 	//-------------------------------------------------------------------------
-	//- G�n�ration de PublisherNode en KSP � partir des DtDefinitions
+	//- Génération de PublisherNode en KSP à partir des DtDefinitions
 	//-------------------------------------------------------------------------
 	//-------------------------------------------------------------------------
 	//-------------------------------------------------------------------------
 
 	/**
-	 * M�thode utilitaire pour g�n�rer une proposition de d�finition de PublisherNode, pour des DtDefinitions.
-	 * @param dtDefinitions DtDefinition � utiliser.
+	 * Méthode utilitaire pour générer une proposition de définition de PublisherNode, pour des DtDefinitions.
+	 * @param dtDefinitions DtDefinition à utiliser.
 	 * @return Proposition de PublisherNode.
 	 */
 	public static String generatePublisherNodeDefinitionAsKsp(final String... dtDefinitions) {
@@ -242,7 +242,7 @@ public final class PublisherDataUtil {
 	//						publisherDataNode.setData(fieldName, elementPublisherDataNode);
 	//						break;
 	//					default:
-	//						throw new IllegalArgumentException("Type non g�r� : " + publisherField.getType());
+	//						throw new IllegalArgumentException("Type non géré : " + publisherField.getType());
 	//				}
 	//			}
 	//		}

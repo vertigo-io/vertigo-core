@@ -29,7 +29,7 @@ import com.sun.star.io.IOException;
 import com.sun.star.io.XOutputStream;
 
 /**
- * Impl�mentation d'une OutpuStream sp�cifique pour les appels distants de OpenOffice.
+ * Implémentation d'une OutpuStream spécifique pour les appels distants de OpenOffice.
  * @author tchassagnette
  * @version $Id: OOoFileOutputStream.java,v 1.3 2013/10/22 12:23:19 pchretien Exp $
  */

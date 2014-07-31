@@ -42,23 +42,23 @@ import java.util.zip.ZipOutputStream;
 final class ODTUtil {
 
 	/**
-	 * Nom du fichier XML g�rant les contenus.
+	 * Nom du fichier XML gérant les contenus.
 	 */
 	static final String CONTENT_XML = "content.xml";
 
 	/**
-	 * Nom du fichier XML g�rant les styles.
+	 * Nom du fichier XML gérant les styles.
 	 */
 	static final String STYLES_XML = "styles.xml";
 
-	/** Prefix des fichiers temporaires g�n�r�s. */
+	/** Prefix des fichiers temporaires générés. */
 	private static final String TEMP_FILE_PREFIX = "krep";
 
-	/** Suffix des fichiers temporaires g�n�r�s. */
+	/** Suffix des fichiers temporaires générés. */
 	private static final String TEMP_FILE_SUFFIX = ".odt";
 
 	/**
-	 * Constructeur priv� pour classe utilitaire
+	 * Constructeur privé pour classe utilitaire
 	 */
 	private ODTUtil() {
 		super();
@@ -69,7 +69,7 @@ final class ODTUtil {
 	 * .
 	 * @param odtFile ZipFile fichier source
 	 * @return String contenant le fichier content.xml sous forme de chaine
-	 * @throws IOException Si une exception d'entr�e sortie a lieu
+	 * @throws IOException Si une exception d'entrée sortie a lieu
 	 */
 	static String extractContent(final ZipFile odtFile) throws IOException {
 		return ZipUtil.readEntry(odtFile, CONTENT_XML);
@@ -80,19 +80,19 @@ final class ODTUtil {
 	 * .
 	 * @param odtFile ZipFile fichier source
 	 * @return String contenant le fichier styles.xml sous forme de chaine
-	 * @throws IOException Si une exception d'entr�e sortie a lieu
+	 * @throws IOException Si une exception d'entrée sortie a lieu
 	 */
 	static String extractStyles(final ZipFile odtFile) throws IOException {
 		return ZipUtil.readEntry(odtFile, STYLES_XML);
 	}
 
 	/**
-	 * Cr�e le fichier content.xml d'un fichier odt par le contenu provenant d'une fusion.
+	 * Crée le fichier content.xml d'un fichier odt par le contenu provenant d'une fusion.
 	 * @param odtFile ZipFile d'origine
-	 * @param contentXml Contenu du content.xml � remplacer
-	 * @param stylesXml Contenu du styles.xml � remplacer
-	 * @param newImagesMap Fichiers images � remplacer
-	 * @return Fichier fusionn�
+	 * @param contentXml Contenu du content.xml à remplacer
+	 * @param stylesXml Contenu du styles.xml à remplacer
+	 * @param newImagesMap Fichiers images à remplacer
+	 * @return Fichier fusionné
 	 * @throws IOException Si une IOException a lieu
 	 */
 	static File createODT(final ZipFile odtFile, final String contentXml, final String stylesXml, final Map<String, KFile> newImagesMap) throws IOException {
@@ -122,11 +122,11 @@ final class ODTUtil {
 	}
 
 	/**
-	 * Teste si un tag est pr�sent dans le tableau de caract�res content � la position index :
-	 * �quivalent � : tag.equals(new String(content, index, tag.length())).
-	 * @param content Tableau de caract�res
-	 * @param index Index o� commenc� la v�rification dans content
-	 * @param tag Texte � v�rifier
+	 * Teste si un tag est présent dans le tableau de caractères content à la position index :
+	 * équivalent à : tag.equals(new String(content, index, tag.length())).
+	 * @param content Tableau de caractères
+	 * @param index Index où commencé la vérification dans content
+	 * @param tag Texte à vérifier
 	 * @return boolean
 	 */
 	public static boolean regionMatches(final char[] content, final int index, final String tag) {

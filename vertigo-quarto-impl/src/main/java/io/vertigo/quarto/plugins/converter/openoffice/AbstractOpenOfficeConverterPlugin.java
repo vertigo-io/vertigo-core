@@ -41,12 +41,12 @@ import com.sun.star.uno.UnoRuntime;
 import com.sun.star.util.XRefreshable;
 
 /**
- * Conversion des fichiers � partir de OpenOffice.
+ * Conversion des fichiers à partir de OpenOffice.
  * @author npiedeloup
  * @version $Id: AbstractOpenOfficeConverterPlugin.java,v 1.8 2014/02/27 10:24:53 pchretien Exp $
  */
 abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
-	/** Le port par d�faut pour acc�der � OpenOffice est 8100. */
+	/** Le port par défaut pour accéder à OpenOffice est 8100. */
 	public static final int DEFAULT_UNO_PORT = 8100;
 
 	private static final Logger LOGGER = Logger.getLogger(AbstractOpenOfficeConverterPlugin.class);
@@ -81,8 +81,8 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 	private KFile convertToFormat(final KFile file, final ConverterFormat targetFormat) {
 		Assertion.checkNotNull(file);
 		Assertion.checkNotNull(targetFormat);
-		// si le format de sortie est celui d'entr�e la convertion est inutile
-		Assertion.checkArgument(!targetFormat.getTypeMime().equals(file.getMimeType()), "Le format de sortie est identique � celui d'entr�e ; la conversion est inutile");
+		// si le format de sortie est celui d'entrée la convertion est inutile
+		Assertion.checkArgument(!targetFormat.getTypeMime().equals(file.getMimeType()), "Le format de sortie est identique à celui d'entrée ; la conversion est inutile");
 		// ---------------------------------------------------------------------
 		final File inputFile = fileManager.obtainReadOnlyFile(file);
 		final File targetFile;
@@ -94,19 +94,19 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 		return fileManager.createFile(targetFile);
 	}
 
-	// On synchronize sur le plugin car OpenOffice supporte mal les acc�s concurrents.
+	// On synchronize sur le plugin car OpenOffice supporte mal les accès concurrents.
 	private synchronized File doConvertToFormat(final File inputFile, final ConverterFormat targetFormat) throws Exception {
 		final OpenOfficeConnection openOfficeConnection = connectOpenOffice();
 		try {
-			Assertion.checkArgument(inputFile.exists(), "Le document � convertir n''existe pas : {0}", inputFile.getAbsolutePath());
+			Assertion.checkArgument(inputFile.exists(), "Le document à convertir n''existe pas : {0}", inputFile.getAbsolutePath());
 			final XComponent xDoc = loadDocument(inputFile, openOfficeConnection);
 			try {
 				refreshDocument(xDoc);
-				LOGGER.debug("Document source charg�");
+				LOGGER.debug("Document source chargé");
 
 				final File targetFile = new TempFile("edition", '.' + targetFormat.name());
 				storeDocument(targetFile, xDoc, targetFormat, openOfficeConnection);
-				LOGGER.debug("Conversion r�ussie");
+				LOGGER.debug("Conversion réussie");
 				return targetFile;
 			} finally {
 				xDoc.dispose();
@@ -121,7 +121,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 	 * @param outputFile Fichier de sortie
 	 * @param xDoc Document OpenOffice source
 	 * @param targetFormat Format de sortie
-	 * @param openOfficeConnection Connection � OpenOffice
+	 * @param openOfficeConnection Connection à OpenOffice
 	 * @throws Exception Erreur de traitement
 	 */
 	protected abstract void storeDocument(final File outputFile, final XComponent xDoc, final ConverterFormat targetFormat, final OpenOfficeConnection openOfficeConnection) throws Exception;
@@ -129,7 +129,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 	/**
 	 * Lecture d'un docuement.
 	 * @param inputFile Fichier source
-	 * @param openOfficeConnection  Connection � OpenOffice
+	 * @param openOfficeConnection  Connection à OpenOffice
 	 * @return Document OpenOffice
 	 * @throws Exception Erreur de traitement
 	 */
@@ -141,19 +141,19 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("connecting to OpenOffice.org on  " + unoHost + ":" + unoPort);
 			}
-			openOfficeConnection.connect(); //Attention d�j� observ� : connection ne s'�tablissant pas et pas de timeout
+			openOfficeConnection.connect(); //Attention déjà observé : connection ne s'établissant pas et pas de timeout
 		} catch (final ConnectException connectException) {
-			//On pr�cise les causes possibles de l'erreur.
+			//On précise les causes possibles de l'erreur.
 			final StringBuilder sb = new StringBuilder();
 			sb.append("Dans le fichier OOoBasePath\\Basis\\share\\registry\\data\\org\\openoffice\\Setup.xcu.\n");
-			sb.append("Juste apr�s cette ligne-ci : <node oor:name=\"Office\">\n");
+			sb.append("Juste après cette ligne-ci : <node oor:name=\"Office\">\n");
 			sb.append("Il faut ajouter les lignes suivantes :\n");
 			sb.append("<prop oor:name=\"ooSetupConnectionURL\" oor:type=\"xs:string\">\n");
 			sb.append("<value>socket,host=localhost,port=").append(unoPort).append(";urp;</value>\n");
 			sb.append("</prop>\n");
 			sb.append("Ensuite, il faut lancer OpenOffice... et l'agent OpenOffice si il tourne.");
 
-			throw new IOException("Impossible de se connecter � OpenOffice, v�rifier qu'il est bien en �coute sur le port " + unoPort + ".\n\n" + sb.toString(), connectException);
+			throw new IOException("Impossible de se connecter à OpenOffice, vérifier qu'il est bien en écoute sur le port " + unoPort + ".\n\n" + sb.toString(), connectException);
 		}
 		return openOfficeConnection;
 	}
@@ -167,7 +167,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 
 	private PropertyValue[] getFileProperties(final ConverterFormat docType, final XOutputStream outputStream, final XInputStream inputStream) {
 		Assertion.checkNotNull(docType, "Le type du format de sortie est obligatoire");
-		Assertion.checkArgument(outputStream == null || inputStream == null, "Les properties pointent soit un fichier local, soit un flux d'entr�e, soit un flux de sortie");
+		Assertion.checkArgument(outputStream == null || inputStream == null, "Les properties pointent soit un fichier local, soit un flux d'entrée, soit un flux de sortie");
 		final List<PropertyValue> fileProps = new ArrayList<>(3);
 
 		PropertyValue fileProp = new PropertyValue();
@@ -226,10 +226,10 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 
 	/**
 	 * @param docType Format de conversion
-	 * @return filterName g�r� par OpenOffice pour lui pr�ciser le format de conversion
+	 * @return filterName géré par OpenOffice pour lui préciser le format de conversion
 	 */
 	protected final String getFilterNameFromExtension(final ConverterFormat docType) {
-		//Liste des filterName g�r� par OpenOffice.
+		//Liste des filterName géré par OpenOffice.
 		//la liste est dans :
 		//OO 3.3 "OpenOffice.org 3\Basis\share\registry\modules\org\openoffice\TypeDetection\Filter\fcfg_writer_filters.xcu" 
 		//OO 3.4 "OpenOffice.org 3\Basis\share\registry\writer.xcd" 
@@ -249,7 +249,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 				//			case CSV:
 				//				return "Text - txt - csv (StarCalc)";
 			default:
-				throw new InvalidParameterException("Type de document non g�r� : " + docType);
+				throw new InvalidParameterException("Type de document non géré : " + docType);
 		}
 	}
 

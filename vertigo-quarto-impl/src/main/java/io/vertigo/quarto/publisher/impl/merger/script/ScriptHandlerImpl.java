@@ -26,10 +26,10 @@ import java.util.Stack;
 
 /**
  * Evaluation d'une grammaire de haut niveau.
- * Elle est d�finie par les tags suivants :
+ * Elle est définie par les tags suivants :
  * - for
  * - if
- * - = (�criture directe d'un champ)
+ * - = (écriture directe d'un champ)
  *
  * @author oboitel
  * @version $Id: ScriptHandlerImpl.java,v 1.7 2014/02/27 10:33:07 pchretien Exp $
@@ -42,7 +42,7 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 	 */
 	private final Stack<TagStackEntry> blockStack = new Stack<>();
 
-	private boolean isGrammarClosed; // initialis� � false
+	private boolean isGrammarClosed; // initialisé à false
 
 	private final ScriptGrammar scriptGrammar;
 	private final ScriptContext scriptContext;
@@ -80,10 +80,10 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 	}
 
 	/**
-	 * Fermeture d'un bloc d�fini par un mot cl� de la grammaire.
-	 * On verifie qu'un bloc a bien �t� ouvert et que tous ses blocs internes sont bien ferm�s.
-	 * @param tagName nom du tag � d�piler
-	 * @return Handler du tag pour ce tag (m�me instance que pour l'ouverture)
+	 * Fermeture d'un bloc défini par un mot clé de la grammaire.
+	 * On verifie qu'un bloc a bien été ouvert et que tous ses blocs internes sont bien fermés.
+	 * @param tagName nom du tag à dépiler
+	 * @return Handler du tag pour ce tag (même instance que pour l'ouverture)
 	 */
 	private ScriptTag closeBlock(final String tagName) {
 		Assertion.checkNotNull(tagName);
@@ -99,7 +99,7 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 	}
 
 	/**
-	 * Ouverture d'un nouveau bloc d�fini par un mot cl� de la grammaire.
+	 * Ouverture d'un nouveau bloc défini par un mot clé de la grammaire.
 	 * exemple : FOR, IF
 	 * @param tagName nom du tag
 	 * @param tagHandler instance du handler de tag
@@ -116,7 +116,7 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 	// ==========================================================================
 	/*
 	 * parse un Tag pour trouver son type et ses attributs ces deux informations
-	 * sont ensuite stock�es dans un objet de type TagContent
+	 * sont ensuite stockées dans un objet de type TagContent
 	 */
 
 	/** {@inheritDoc} */
@@ -127,7 +127,7 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 	/** {@inheritDoc} */
 	public void onExpression(final String expression, final ScriptSeparator separator) {
 		if (isGrammarClosed) {
-			throw new IllegalStateException("l'�valuateur de grammaire ne peut pas �tre r�utilis� car il a �t� ferm�");
+			throw new IllegalStateException("l'évaluateur de grammaire ne peut pas être réutilisé car il a été fermé");
 		}
 
 		if (expression == null) {
@@ -149,11 +149,11 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 			//ouvert et fermant
 			result = tagHandler.renderOpen(tagContent, scriptContext) + tagHandler.renderClose(tagContent, scriptContext);
 		} else if (open.booleanValue()) {
-			//On push l'instance du handler de tag, pour r�utiliser la m�me instance lors de la fermeture
+			//On push l'instance du handler de tag, pour réutiliser la même instance lors de la fermeture
 			tagHandler = createTagHandler(tagContent.getScriptTagDefinition());
 			openBlock(tagContent.getScriptTagDefinition().getName(), tagHandler);
 			result = tagHandler.renderOpen(tagContent, scriptContext);
-		} else { //si fermeture, on pop l'instance du handler utilis� lors de l'ouverture
+		} else { //si fermeture, on pop l'instance du handler utilisé lors de l'ouverture
 			tagHandler = closeBlock(tagContent.getScriptTagDefinition().getName());
 			result = tagHandler.renderClose(tagContent, scriptContext);
 		}
@@ -162,7 +162,7 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 
 	public String result() {
 		if (!blockStack.isEmpty()) {
-			throw new IllegalStateException("tous les blocs d'instructions doivent �tre ferm�s");
+			throw new IllegalStateException("tous les blocs d'instructions doivent être fermés");
 		}
 		isGrammarClosed = true;
 		return evaluatedScript.toString();
@@ -178,7 +178,7 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 
 	private static class ScriptContextimpl implements ScriptContext {
 		/*
-		 * Stocker les variables d�clar�es par la grammaire.
+		 * Stocker les variables déclarées par la grammaire.
 		 */
 		private final Stack<String> variableNames = new Stack<>();
 

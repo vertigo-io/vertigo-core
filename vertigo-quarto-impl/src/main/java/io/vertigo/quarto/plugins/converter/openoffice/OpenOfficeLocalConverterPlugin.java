@@ -35,7 +35,7 @@ import com.sun.star.ucb.XFileIdentifierConverter;
 import com.sun.star.uno.UnoRuntime;
 
 /**
- * Conversion des fichiers � partir de OpenOffice.
+ * Conversion des fichiers à partir de OpenOffice.
  * @author npiedeloup
  * @version $Id: OpenOfficeLocalConverterPlugin.java,v 1.4 2014/01/28 18:49:24 pchretien Exp $
  */
@@ -81,7 +81,7 @@ public final class OpenOfficeLocalConverterPlugin extends AbstractOpenOfficeConv
 			LOGGER.debug("Openning document... " + inputUrl);
 		}
 		final XComponent xDoc = openOfficeConnection.getDesktop().loadComponentFromURL(inputUrl, "_blank", 0, loadProps);
-		Assertion.checkNotNull(xDoc, "Le document n''a pas �t� charg� : {0}", inputUrl);
+		Assertion.checkNotNull(xDoc, "Le document n''a pas été chargé : {0}", inputUrl);
 
 		return xDoc;
 	}

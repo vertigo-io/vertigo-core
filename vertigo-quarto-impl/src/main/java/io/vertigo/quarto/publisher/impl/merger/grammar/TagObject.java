@@ -26,14 +26,14 @@ import io.vertigo.quarto.publisher.impl.merger.script.ScriptTagContent;
  * @author pchretien, npiedeloup
  * @version $Id: TagObject.java,v 1.3 2013/10/22 10:49:59 pchretien Exp $
  */
-//public car instanci� dynamiquement
+//public car instancié dynamiquement
 public final class TagObject extends AbstractKScriptTag implements ScriptTag {
 	private static final String OBJECT_CALL = "\\{ {1} {2} = ({1}) {0}; ";
 	private static final String OBJECT_ATTRIBUTE = "^([0-9a-zA-Z_]+) *= *([0-9a-zA-Z_]+(\\.[0-9a-zA-Z_]+)*)";
 
 	/** {@inheritDoc} */
 	public String renderOpen(final ScriptTagContent tag, final ScriptContext context) {
-		// Renvoie un tableau de trois elements d'apr�s l'expression reguliere
+		// Renvoie un tableau de trois elements d'après l'expression reguliere
 		final String[] parsing = parseAttribute(tag.getAttribute(), OBJECT_ATTRIBUTE);
 
 		// le tag est dans le bon format

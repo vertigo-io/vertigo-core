@@ -23,8 +23,8 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import java.util.Date;
 
 /**
- * Attention cette classe est g�n�r�e automatiquement !
- * Objet de donn�es AbstractPublisherMock
+ * Attention cette classe est générée automatiquement !
+ * Objet de données AbstractPublisherMock
  */
 @io.vertigo.dynamo.domain.stereotype.DtDefinition(persistent = false)
 public final class PublisherMock implements DtObject {
@@ -37,7 +37,7 @@ public final class PublisherMock implements DtObject {
 	private String titre;
 	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Nom")
 	private String nom;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Pr�nom")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Prénom")
 	private String prenom;
 	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Adresse (multi ligne)")
 	private String address;
@@ -49,7 +49,7 @@ public final class PublisherMock implements DtObject {
 	private Boolean boolean2;
 	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_BOOLEAN", label = "booleen 3")
 	private Boolean boolean3;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Test champs inutilis�")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Test champs inutilisé")
 	private String testDummy;
 	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_LONG", label = "Test long")
 	private Long testLong;
@@ -64,7 +64,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'Titre'. 
+	 * Récupère la valeur de la propriété 'Titre'. 
 	 * @return String titre 
 	 */
 	public final String getTitre() {
@@ -73,7 +73,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'Titre'.
+	 * Définit la valeur de la propriété 'Titre'.
 	 * @param titre String 
 	 */
 	public final void setTitre(final String titre) {
@@ -82,7 +82,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'Nom'. 
+	 * Récupère la valeur de la propriété 'Nom'. 
 	 * @return String nom 
 	 */
 	public final String getNom() {
@@ -91,7 +91,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'Nom'.
+	 * Définit la valeur de la propriété 'Nom'.
 	 * @param nom String 
 	 */
 	public final void setNom(final String nom) {
@@ -100,7 +100,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'Pr�nom'. 
+	 * Récupère la valeur de la propriété 'Prénom'. 
 	 * @return String prenom 
 	 */
 	public final String getPrenom() {
@@ -109,7 +109,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'Pr�nom'.
+	 * Définit la valeur de la propriété 'Prénom'.
 	 * @param prenom String 
 	 */
 	public final void setPrenom(final String prenom) {
@@ -118,7 +118,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'Adresse (multi ligne)'. 
+	 * Récupère la valeur de la propriété 'Adresse (multi ligne)'. 
 	 * @return String address 
 	 */
 	public final String getAddress() {
@@ -127,7 +127,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'Adresse (multi ligne)'.
+	 * Définit la valeur de la propriété 'Adresse (multi ligne)'.
 	 * @param address String 
 	 */
 	public final void setAddress(final String address) {
@@ -136,7 +136,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'Commentaire (multi paragraphe)'. 
+	 * Récupère la valeur de la propriété 'Commentaire (multi paragraphe)'. 
 	 * @return String commentaire 
 	 */
 	public final String getCommentaire() {
@@ -145,7 +145,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'Commentaire (multi paragraphe)'.
+	 * Définit la valeur de la propriété 'Commentaire (multi paragraphe)'.
 	 * @param commentaire String 
 	 */
 	public final void setCommentaire(final String commentaire) {
@@ -154,7 +154,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'booleen 1'. 
+	 * Récupère la valeur de la propriété 'booleen 1'. 
 	 * @return Boolean boolean1 
 	 */
 	public final Boolean getBoolean1() {
@@ -163,7 +163,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'booleen 1'.
+	 * Définit la valeur de la propriété 'booleen 1'.
 	 * @param boolean1 Boolean 
 	 */
 	public final void setBoolean1(final Boolean boolean1) {
@@ -172,7 +172,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'booleen 2'. 
+	 * Récupère la valeur de la propriété 'booleen 2'. 
 	 * @return Boolean boolean2 
 	 */
 	public final Boolean getBoolean2() {
@@ -181,7 +181,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'booleen 2'.
+	 * Définit la valeur de la propriété 'booleen 2'.
 	 * @param boolean2 Boolean 
 	 */
 	public final void setBoolean2(final Boolean boolean2) {
@@ -190,7 +190,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'booleen 3'. 
+	 * Récupère la valeur de la propriété 'booleen 3'. 
 	 * @return Boolean boolean3 
 	 */
 	public final Boolean getBoolean3() {
@@ -199,7 +199,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'booleen 3'.
+	 * Définit la valeur de la propriété 'booleen 3'.
 	 * @param boolean3 Boolean 
 	 */
 	public final void setBoolean3(final Boolean boolean3) {
@@ -208,7 +208,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'Test champs inutilis�'. 
+	 * Récupère la valeur de la propriété 'Test champs inutilisé'. 
 	 * @return String testDummy 
 	 */
 	public final String getTestDummy() {
@@ -217,7 +217,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'Test champs inutilis�'.
+	 * Définit la valeur de la propriété 'Test champs inutilisé'.
 	 * @param testDummy String 
 	 */
 	public final void setTestDummy(final String testDummy) {
@@ -226,7 +226,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'Test long'. 
+	 * Récupère la valeur de la propriété 'Test long'. 
 	 * @return Long testLong 
 	 */
 	public final Long getTestLong() {
@@ -235,7 +235,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'Test long'.
+	 * Définit la valeur de la propriété 'Test long'.
 	 * @param testLong Long 
 	 */
 	public final void setTestLong(final Long testLong) {
@@ -244,7 +244,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'Test double'. 
+	 * Récupère la valeur de la propriété 'Test double'. 
 	 * @return Double testDouble 
 	 */
 	public final Double getTestDouble() {
@@ -253,7 +253,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'Test double'.
+	 * Définit la valeur de la propriété 'Test double'.
 	 * @param testDouble Double 
 	 */
 	public final void setTestDouble(final Double testDouble) {
@@ -262,7 +262,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'Test integer'. 
+	 * Récupère la valeur de la propriété 'Test integer'. 
 	 * @return Integer testInteger 
 	 */
 	public final Integer getTestInteger() {
@@ -271,7 +271,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'Test integer'.
+	 * Définit la valeur de la propriété 'Test integer'.
 	 * @param testInteger Integer 
 	 */
 	public final void setTestInteger(final Integer testInteger) {
@@ -280,7 +280,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'Test date'. 
+	 * Récupère la valeur de la propriété 'Test date'. 
 	 * @return java.util.Date testDate 
 	 */
 	public final java.util.Date getTestDate() {
@@ -289,7 +289,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'Test date'.
+	 * Définit la valeur de la propriété 'Test date'.
 	 * @param testDate java.util.Date 
 	 */
 	public final void setTestDate(final java.util.Date testDate) {
@@ -298,7 +298,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'Test list'. 
+	 * Récupère la valeur de la propriété 'Test list'. 
 	 * @return DtList<io.vertigo.publisher.mock.PublisherMock> dtcTest 
 	 */
 	public final io.vertigo.dynamo.domain.model.DtList<io.vertigo.quarto.publisher.mock.PublisherMock> getDtcTest() {
@@ -307,7 +307,7 @@ public final class PublisherMock implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'Test list'.
+	 * Définit la valeur de la propriété 'Test list'.
 	 * @param dtcTest DtList<io.vertigo.publisher.mock.PublisherMock> 
 	 */
 	public final void setDtcTest(final io.vertigo.dynamo.domain.model.DtList<io.vertigo.quarto.publisher.mock.PublisherMock> dtcTest) {

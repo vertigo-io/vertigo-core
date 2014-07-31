@@ -34,12 +34,12 @@
 package io.vertigo.quarto.plugins.converter.openoffice;
 
 /**
- * Impl�mentation de connexion � OpenOffice en mode Socket (mode le plus simple).
+ * Implémentation de connexion à OpenOffice en mode Socket (mode le plus simple).
  * <p>
  * <b>Attention</b> Il faut configurer OpenOffice pour qu'il accepte cette connexion.
  * Soit en modifiant le fichier de conf :
  * <code>OOoBasePath\share\registry\data\org\openoffice\Setup.xcu</code>
- * Juste apr�s cette ligne-ci : <code><node oor:name=\"Office\"></code>
+ * Juste après cette ligne-ci : <code><node oor:name=\"Office\"></code>
  * Il faut ajouter les lignes suivantes :
  * <code><prop oor:name=\"ooSetupConnectionURL\" oor:type=\"xs:string\">
  * <value>socket,host=localhost,port=8100;urp;</value>
@@ -55,9 +55,9 @@ package io.vertigo.quarto.plugins.converter.openoffice;
  */
 final class SocketOpenOfficeConnection extends AbstractOpenOfficeConnection {
 	/**
-	 * Constructeur utilisant des param�tres de connexion sp�cifiques.
-	 * @param host sp�cifique
-	 * @param port sp�cifique
+	 * Constructeur utilisant des paramètres de connexion spécifiques.
+	 * @param host spécifique
+	 * @param port spécifique
 	 */
 	SocketOpenOfficeConnection(final String host, final int port) {
 		super("socket,host=" + host + ",port=" + port + ",tcpNoDelay=1");

@@ -48,14 +48,14 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test de l'impl�mentation standard.
+ * Test de l'implémentation standard.
  * 
  * @author npiedeloup
  * @version $Id: AbstractPublisherMergerTest.java,v 1.8 2014/02/27 10:25:49 pchretien Exp $
  */
 public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 	private static final boolean KEEP_OUTPUT_FILE = false;
-	//R�pertoire de test
+	//Répertoire de test
 	private static String OUTPUT_PATH = "c:/tmp/";
 
 	private static final String DATA_PACKAGE = "io/vertigo/quarto/publisher/data/";
@@ -66,7 +66,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 	private ResourceManager resourceManager;
 
 	/**
-	 * @return Extension du model utilis�
+	 * @return Extension du model utilisé
 	 */
 	protected abstract String getExtension();
 
@@ -111,7 +111,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelError." + getExtension());
 		final KFile result = publisherManager.publish(OUTPUT_PATH + "testFusionError." + getExtension(), modelFileURL, publisherData);
 		nop(result);
-		Assert.fail("La fusion ne doit pas �tre possible quand le mod�le contient une erreur");
+		Assert.fail("La fusion ne doit pas être possible quand le modèle contient une erreur");
 	}
 
 	@Test

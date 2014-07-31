@@ -35,17 +35,17 @@ import java.net.URL;
 public interface MergerPlugin extends Plugin {
 
 	/**
-	 * Point d'entr�e du plugin.
+	 * Point d'entrée du plugin.
 	 * 
 	 * @param modelFileURL Chemin vers le fichier model
-	 * @param data Donn�es � fusionner avec le model
-	 * @return le File g�n�r�.
-	 * @throws IOException en cas d'erreur de lecture ou d'�criture.
+	 * @param data Données à fusionner avec le model
+	 * @return le File généré.
+	 * @throws IOException en cas d'erreur de lecture ou d'écriture.
 	 */
 	File execute(final URL modelFileURL, final PublisherData data) throws IOException;
 
 	/**
-	 * @return Type de format g�r� par ce plugin
+	 * @return Type de format géré par ce plugin
 	 */
 	PublisherFormat getPublisherFormat();
 

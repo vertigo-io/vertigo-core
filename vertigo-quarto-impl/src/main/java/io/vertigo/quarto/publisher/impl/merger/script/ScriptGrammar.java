@@ -30,11 +30,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Grammaire des �ditions.
+ * Grammaire des éditions.
  * Offre un langage simple et de haut niveau permettant d'utiliser une syntaxe non java
- * afin par exemple de constituer des �ditions.
+ * afin par exemple de constituer des éditions.
  *
- * Une grammaire est constitu�e de mots cl�s (Keyword) en nombre fini.
+ * Une grammaire est constituée de mots clés (Keyword) en nombre fini.
  *
  * @author oboitel, pchretien
  * @version $Id: ScriptGrammar.java,v 1.5 2014/02/27 10:33:07 pchretien Exp $
@@ -45,7 +45,7 @@ public final class ScriptGrammar {
 		private static final long serialVersionUID = -4771988169106042448L;
 
 		StringLengthComparator() {
-			//pour visibilit�
+			//pour visibilité
 		}
 
 		/** {@inheritDoc} */
@@ -59,10 +59,10 @@ public final class ScriptGrammar {
 	private final List<String> orderedParsingTags = new ArrayList<>();
 
 	/**
-	 * Permet d'engegistrer un tag KScript suppl�mentaire dans la grammaire.
+	 * Permet d'engegistrer un tag KScript supplémentaire dans la grammaire.
 	 * @param name name nom du tag (nom de la balise)
-	 * @param classTag class du Handler pour g�rer le tag
-	 * @param hasBody indique si ce tag poss�de un body ou non
+	 * @param classTag class du Handler pour gérer le tag
+	 * @param hasBody indique si ce tag possède un body ou non
 	 */
 	public void registerScriptTag(final String name, final Class<? extends ScriptTag> classTag, final boolean hasBody) {
 		tagDefinitionBySyntax.put(name, new ScriptTagDefinition(name, classTag, hasBody ? Boolean.TRUE : null));
@@ -71,14 +71,14 @@ public final class ScriptGrammar {
 		}
 		orderedParsingTags.clear();
 		orderedParsingTags.addAll(tagDefinitionBySyntax.keySet());
-		//On tri pour que les tag les plus long soient test� en premier, ainsi il n'y a pas de pb de recouvrement
+		//On tri pour que les tag les plus long soient testé en premier, ainsi il n'y a pas de pb de recouvrement
 		Collections.sort(orderedParsingTags, new StringLengthComparator());
 	}
 
 	/**
-	 * R�cup�rer un mot cl� de la grammaire � partir d'une chaine de caract�res.
-	 * @param str Chaine repr�sentant un mot cl� de la grammaire
-	 * @return Mot cl� de la grammaire
+	 * Récupérer un mot clé de la grammaire à partir d'une chaine de caractères.
+	 * @param str Chaine représentant un mot clé de la grammaire
+	 * @return Mot clé de la grammaire
 	 */
 	private ScriptTagDefinition getDefinition(final String str) {
 		Assertion.checkNotNull(str);

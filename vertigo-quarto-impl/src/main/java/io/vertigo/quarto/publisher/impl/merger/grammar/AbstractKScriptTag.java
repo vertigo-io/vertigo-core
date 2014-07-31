@@ -26,7 +26,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Classe abstraite repr�sentant un KScriptTag.
+ * Classe abstraite représentant un KScriptTag.
  * 
  * @author pchretien, npiedeloup
  * @version $Id: AbstractKScriptTag.java,v 1.4 2013/10/22 10:49:59 pchretien Exp $
@@ -53,7 +53,7 @@ abstract class AbstractKScriptTag {
 	/**
 	 * Ajouter l'appel de la methode getStringValue sur un fieldPath.
 	 *
-	 * @param fieldPath fieldPath du champ recherch�
+	 * @param fieldPath fieldPath du champ recherché
 	 * @param currentVariableName nom de la variable local courante
 	 * @return Appel de la methode report
 	 */
@@ -64,7 +64,7 @@ abstract class AbstractKScriptTag {
 	/**
 	 * Ajouter l'appel de la methode getBooleanValue sur un fieldPath.
 	 *
-	 * @param fieldPath fieldPath du champ recherch�
+	 * @param fieldPath fieldPath du champ recherché
 	 * @param currentVariableName nom de la variable local courante
 	 * @return Appel de la methode report
 	 */
@@ -73,10 +73,10 @@ abstract class AbstractKScriptTag {
 	}
 
 	/**
-	 * Ajouter du test equals d'un fieldPath et d'une valeur fixe du mod�le.
+	 * Ajouter du test equals d'un fieldPath et d'une valeur fixe du modèle.
 	 * 
 	 * @param fieldPath Chemin du champ.
-	 * @param value Valeur � tester.
+	 * @param value Valeur à tester.
 	 * @param currentVariableName Nom de la variable courante
 	 * @return Code java resultant.
 	 */
@@ -110,32 +110,32 @@ abstract class AbstractKScriptTag {
 	}
 
 	/**
-	 * @return Class d'acc�s aux donn�es.
+	 * @return Class d'accès aux données.
 	 */
 	protected final Class<?> getDataAccessorClass() {
 		return PublisherNode.class;
 	}
 
 	/**
-	 * Injecte les donn�es dans la chaine de caractere de rendu d'un tag.
+	 * Injecte les données dans la chaine de caractere de rendu d'un tag.
 	 *
-	 * @param tagRepresentation la chaine represantant un tag donn�
-	 * @param datas Donn�es sous forme de chaines de caractere
-	 * @return Tag java repr�sent� sous forme de chaine de caractere
+	 * @param tagRepresentation la chaine represantant un tag donné
+	 * @param datas Données sous forme de chaines de caractere
+	 * @return Tag java représenté sous forme de chaine de caractere
 	 */
 	protected final String getTagRepresentation(final String tagRepresentation, final String[] datas) {
 		return START_BLOC_JSP + StringUtil.format(tagRepresentation, (Object[]) datas) + END_BLOC_JSP;
 	}
 
 	/**
-	 * Permet de v�rifier le format d'un attribut de tag et de le parser.
+	 * Permet de vérifier le format d'un attribut de tag et de le parser.
 	 *
 	 * @param attribute l'attribut d'un tag
 	 * @param regEexpFormat le format dans lequel il doit etre ecrit
 	 * @return la list des groupe de l'expression reguliere(chaine entre
 	 *         parentheses dans l'expression reguliere) ou null si cela ne
 	 *         matche pas le format. la premiere case du tableau correspond
-	 *         toujours a la chaine � l'attribut lui m�me
+	 *         toujours a la chaine à l'attribut lui même
 	 */
 	protected final String[] parseAttribute(final String attribute, final String regEexpFormat) {
 		Assertion.checkNotNull(attribute);

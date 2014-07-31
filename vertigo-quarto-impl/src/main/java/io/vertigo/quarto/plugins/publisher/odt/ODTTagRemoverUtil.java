@@ -30,7 +30,7 @@ import io.vertigo.quarto.publisher.impl.merger.processor.ProcessorXMLUtil;
  */
 final class ODTTagRemoverUtil {
 	/**
-	 * Constructeur priv� pour classe utilitaire
+	 * Constructeur privé pour classe utilitaire
 	 */
 	private ODTTagRemoverUtil() {
 		//RAS
@@ -40,8 +40,8 @@ final class ODTTagRemoverUtil {
 	 * Corrige le contenu qui est une arborescence XML pour supprimer la balise et son contenu.
 	 *
 	 * @param xmlContent Arborescence XML.
-	 * @param tag Balise � supprimer.
-	 * @return Arborescence corrig�e.
+	 * @param tag Balise à supprimer.
+	 * @return Arborescence corrigée.
 	 */
 	public static String removeTag(final String xmlContent, final String tag) {
 		return removeTag(xmlContent, tag, false);
@@ -51,9 +51,9 @@ final class ODTTagRemoverUtil {
 	 * Corrige le contenu qui est une arborescence XML pour supprimer la balise.
 	 *
 	 * @param xmlContent Arborescence XML.
-	 * @param tag Balise � supprimer.
-	 * @param keepBody Indique si le body doit etre conserv� lors de la suppression du tag
-	 * @return Arborescence corrig�e.
+	 * @param tag Balise à supprimer.
+	 * @param keepBody Indique si le body doit etre conservé lors de la suppression du tag
+	 * @return Arborescence corrigée.
 	 */
 	public static String removeTag(final String xmlContent, final String tag, final boolean keepBody) {
 		final StringBuilder contentClean = ProcessorXMLUtil.parseXMLContent(xmlContent, tag, new TagRemover(keepBody));

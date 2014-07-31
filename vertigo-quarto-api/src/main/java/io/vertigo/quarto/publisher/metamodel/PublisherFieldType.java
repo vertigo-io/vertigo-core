@@ -75,7 +75,7 @@ public enum PublisherFieldType {
 				if (!(value instanceof List<?>)) {
 					return false;
 				}
-				//on teste le contenu de la liste, pas la liste elle m�me
+				//on teste le contenu de la liste, pas la liste elle même
 				for (final Object object : (List<?>) value) {
 					if (!PublisherFieldType.Node.checkValue(object)) {
 						return false;

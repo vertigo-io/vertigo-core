@@ -32,12 +32,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Conteneur de donn�es utilis� par Publisher au sein d'un PublisherData.
+ * Conteneur de données utilisé par Publisher au sein d'un PublisherData.
  *
- * Impl�mentation d'un noeud dans une structure PublisherData.
+ * Implémentation d'un noeud dans une structure PublisherData.
  * Un noeud contient des champs.
- * Les champs peuvent �tre :
- * - soit simple (valu�s) et de type Boolean, String ou Image 
+ * Les champs peuvent être :
+ * - soit simple (valués) et de type Boolean, String ou Image 
  * - soit un autre noeud, 
  * - soit une liste de noeud.
  *
@@ -54,7 +54,7 @@ public final class PublisherNode implements Serializable {
 		Assertion.checkNotNull(nodeDefinition);
 		//---------------------------------------------------------------------
 		this.nodeDefinition = nodeDefinition;
-		//On initialise toutes les champs de type liste � vide.
+		//On initialise toutes les champs de type liste à vide.
 		for (final PublisherField field : getNodeDefinition().getFields()) {
 			if (field.getFieldType() == PublisherFieldType.List) {
 				dataMap.put(field.getName(), Collections.emptyList());
@@ -81,7 +81,7 @@ public final class PublisherNode implements Serializable {
 	}
 
 	/**
-	 * Cr�e un PublisherNodeData pour un champs donn�e.
+	 * Crée un PublisherNodeData pour un champs donnée.
 	 * @param fieldName Nom du champ.
 	 * @return PublisherNodeDataWritable pour ce champ.
 	 */
@@ -95,45 +95,45 @@ public final class PublisherNode implements Serializable {
 	//------------------------GetValue-----------------------------------------
 	//-------------------------------------------------------------------------
 	/**
-	 * R�cup�re une valeur affichable.
+	 * Récupère une valeur affichable.
 	 * @param fieldName Nom du champ 
-	 * @return Chaine � afficher pour le champ
+	 * @return Chaine à afficher pour le champ
 	 */
 	public String getString(final String fieldName) {
 		return getValue(fieldName, PublisherFieldType.String, String.class);
 	}
 
 	/**
-	 * R�cup�re une valeur bool�enne.
+	 * Récupère une valeur booléenne.
 	 * @param fieldName Nom du champ 
-	 * @return Valeur bool�enne du champ
+	 * @return Valeur booléenne du champ
 	 */
 	public boolean getBoolean(final String fieldName) {
 		return getValue(fieldName, PublisherFieldType.Boolean, Boolean.class);
 	}
 
 	/**
-	 * Permet de r�cup�rer un champs de type objet.
+	 * Permet de récupérer un champs de type objet.
 	 * @param fieldName Nom du champ 
-	 * @return PublisherDataNode port� par ce champ
+	 * @return PublisherDataNode porté par ce champ
 	 */
 	public PublisherNode getNode(final String fieldName) {
 		return getValue(fieldName, PublisherFieldType.Node, PublisherNode.class);
 	}
 
 	/**
-	 * Permet de r�cup�rer un champs de type image.
+	 * Permet de récupérer un champs de type image.
 	 * @param fieldName Code de l'image
-	 * @return Image port�e par ce champ
+	 * @return Image portée par ce champ
 	 */
 	public KFile getImage(final String fieldName) {
 		return getValue(fieldName, PublisherFieldType.Image, KFile.class);
 	}
 
 	/**
-	 * R�cup�re la liste des noeuds d'un champlistes.
+	 * Récupère la liste des noeuds d'un champlistes.
 	 * @param fieldName Nom du champ 
-	 * @return Liste de PublisherDataNode port�e par ce champ
+	 * @return Liste de PublisherDataNode portée par ce champ
 	 */
 	public List<PublisherNode> getNodes(final String fieldName) {
 		return getValue(fieldName, PublisherFieldType.List, List.class);
@@ -157,7 +157,7 @@ public final class PublisherNode implements Serializable {
 			node = getNode(nodeName);
 		} catch (final NullPointerException e) {//on catch juste pour reformuler l'erreur
 			if (e.getMessage().contains("est obligatoire")) {
-				Assertion.checkNotNull(null, "L'objet {0} utilis� pour le champs {1} est null. Dans votre mod�le vous devez tester l'existance de cet objet.", nodeName, fieldPath);
+				Assertion.checkNotNull(null, "L'objet {0} utilisé pour le champs {1} est null. Dans votre modèle vous devez tester l'existance de cet objet.", nodeName, fieldPath);
 			}
 			throw e;
 		}
@@ -170,16 +170,16 @@ public final class PublisherNode implements Serializable {
 	/**
 	 * Fixe une valeur affichable.
 	 * @param fieldName Nom du champ 
-	 * @param value Chaine � afficher pour le champ
+	 * @param value Chaine à afficher pour le champ
 	 */
 	public void setString(final String fieldName, final String value) {
 		setValue(fieldName, PublisherFieldType.String, value);
 	}
 
 	/**
-	 * Fixe une valeur bool�enne.
+	 * Fixe une valeur booléenne.
 	 * @param fieldName Nom du champ 
-	 * @param value Valeur bool�enne du champ
+	 * @param value Valeur booléenne du champ
 	 */
 	public void setBoolean(final String fieldName, final boolean value) {
 		setValue(fieldName, PublisherFieldType.Boolean, value);
@@ -195,8 +195,8 @@ public final class PublisherNode implements Serializable {
 	}
 
 	/** 
-	 * Param�trage d'une image pr�sente dans le mod�le. 
-	 * @param fieldName Code de l'image, tel qu'on le retrouve dans le mod�le
+	 * Paramétrage d'une image présente dans le modèle. 
+	 * @param fieldName Code de l'image, tel qu'on le retrouve dans le modèle
 	 * @param image Fichier image
 	 */
 	public void setImage(final String fieldName, final KFile image) {
@@ -204,9 +204,9 @@ public final class PublisherNode implements Serializable {
 	}
 
 	/**
-	 * Ajoute un �l�ment dans une liste.
+	 * Ajoute un élément dans une liste.
 	 * @param fieldName Nom du champ 
-	 * @param nodes Element � ajouter dans la liste du champ
+	 * @param nodes Element à ajouter dans la liste du champ
 	 */
 	public void setNodes(final String fieldName, final List<PublisherNode> nodes) {
 		setValue(fieldName, PublisherFieldType.List, nodes);
@@ -225,8 +225,8 @@ public final class PublisherNode implements Serializable {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		//surcharge de toString pour aider au d�buggage.
-		//Notament pour v�rifier l'affectation correct des champs.
+		//surcharge de toString pour aider au débuggage.
+		//Notament pour vérifier l'affectation correct des champs.
 		return toString("");
 	}
 

@@ -21,15 +21,15 @@ package io.vertigo.quarto.publisher.mock;
 import io.vertigo.dynamo.domain.model.DtObject;
 
 /**
- * Attention cette classe est g�n�r�e automatiquement !
- * Objet de donn�es AbstractEnquete
+ * Attention cette classe est générée automatiquement !
+ * Objet de données AbstractEnquete
  */
 @io.vertigo.dynamo.domain.stereotype.DtDefinition(persistent = false)
 public final class Enquete implements DtObject {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_BOOLEAN", label = "Termin�e?")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_BOOLEAN", label = "Terminée?")
 	private Boolean enqueteTerminee;
 	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Code")
 	private String codeEnquete;
@@ -40,7 +40,7 @@ public final class Enquete implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'Termin�e?'. 
+	 * Récupère la valeur de la propriété 'Terminée?'. 
 	 * @return Boolean enqueteTerminee 
 	 */
 	public final Boolean getEnqueteTerminee() {
@@ -49,7 +49,7 @@ public final class Enquete implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'Termin�e?'.
+	 * Définit la valeur de la propriété 'Terminée?'.
 	 * @param enqueteTerminee Boolean 
 	 */
 	public final void setEnqueteTerminee(final Boolean enqueteTerminee) {
@@ -58,7 +58,7 @@ public final class Enquete implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'Code'. 
+	 * Récupère la valeur de la propriété 'Code'. 
 	 * @return String codeEnquete 
 	 */
 	public final String getCodeEnquete() {
@@ -67,7 +67,7 @@ public final class Enquete implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'Code'.
+	 * Définit la valeur de la propriété 'Code'.
 	 * @param codeEnquete String 
 	 */
 	public final void setCodeEnquete(final String codeEnquete) {
@@ -76,7 +76,7 @@ public final class Enquete implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'Sexe'. 
+	 * Récupère la valeur de la propriété 'Sexe'. 
 	 * @return String fait 
 	 */
 	public final String getFait() {
@@ -85,7 +85,7 @@ public final class Enquete implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'Sexe'.
+	 * Définit la valeur de la propriété 'Sexe'.
 	 * @param fait String 
 	 */
 	public final void setFait(final String fait) {
@@ -94,7 +94,7 @@ public final class Enquete implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * R�cup�re la valeur de la propri�t� 'Sexe'. 
+	 * Récupère la valeur de la propriété 'Sexe'. 
 	 * @return Boolean siGrave 
 	 */
 	public final Boolean getSiGrave() {
@@ -103,7 +103,7 @@ public final class Enquete implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * D�finit la valeur de la propri�t� 'Sexe'.
+	 * Définit la valeur de la propriété 'Sexe'.
 	 * @param siGrave Boolean 
 	 */
 	public final void setSiGrave(final Boolean siGrave) {

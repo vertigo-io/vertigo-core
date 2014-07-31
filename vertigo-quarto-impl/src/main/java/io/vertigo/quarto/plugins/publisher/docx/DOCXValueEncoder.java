@@ -22,7 +22,7 @@ import io.vertigo.commons.codec.Encoder;
 import io.vertigo.kernel.util.StringUtil;
 
 /**
- * Impl�mentation de l'encodage des donn�es dans un fichier ODT.
+ * Implémentation de l'encodage des données dans un fichier ODT.
  * 
  * @author npiedeloup
  * @version $Id: DOCXValueEncoder.java,v 1.4 2014/01/24 17:59:57 pchretien Exp $
@@ -41,7 +41,7 @@ public final class DOCXValueEncoder implements Encoder<String, String> {
 		StringUtil.replace(result, "\t", "<w:tab/>");
 		StringUtil.replace(result, String.valueOf((char) 128), String.valueOf((char) 8364));
 
-		//on remet les &#xxxx; non encod�
+		//on remet les &#xxxx; non encodé
 		final String strResult = result.toString();
 		return strResult.replaceAll("&amp;#([0-9]{2,4});", "&#$1;");
 	}

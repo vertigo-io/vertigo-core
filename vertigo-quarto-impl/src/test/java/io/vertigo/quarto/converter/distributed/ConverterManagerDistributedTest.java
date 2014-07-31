@@ -32,7 +32,7 @@ import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.api.core.ResourceConfig;
 
 /**
- * Test de l'impl�mentation avec le plugin OpenOfficeRemoteConverterPlugin.
+ * Test de l'implémentation avec le plugin OpenOfficeRemoteConverterPlugin.
  * 
  * @author npiedeloup
  * @version $Id: ConverterManagerDistributedTest.java,v 1.2 2014/06/26 12:30:48 npiedeloup Exp $
@@ -48,7 +48,7 @@ public final class ConverterManagerDistributedTest extends AbstractConverterMana
 	private ClientNode clientNode;
 
 	private static URI getBaseURI() {
-		return UriBuilder.fromUri("http://0.0.0.0/").port(10001).build(); //0.0.0.0 permet d'indiquer que l'url est accessible depuis l'interface r�seau exterieur : localhost n'est acc�ssible qu'en loopback.
+		return UriBuilder.fromUri("http://0.0.0.0/").port(10001).build(); //0.0.0.0 permet d'indiquer que l'url est accessible depuis l'interface réseau exterieur : localhost n'est accessible qu'en loopback.
 	}
 
 	public static final URI BASE_URI = getBaseURI();
@@ -63,19 +63,19 @@ public final class ConverterManagerDistributedTest extends AbstractConverterMana
 
 	protected static ClientNode startClientNode() throws IOException {
 		System.out.println("Starting ClientNode...");
-		final ClientNode clientNode = new ClientNode(2 * 60);//dur�e de vie 2 min max
+		final ClientNode clientNode = new ClientNode(2 * 60);//durée de vie 2 min max
 		clientNode.start();
 		return clientNode;
 	}
 
 	/**
-	 * Initialisation du test pour impl� sp�cifique.
+	 * Initialisation du test pour implé spécifique.
 	 * @throws Exception Erreur
 	 */
 	@Override
 	protected void doSetUp() throws Exception {
 		super.doSetUp();
-		//pour �viter le m�canisme d'attente du client lorsque le serveur est absend, on d�marre le serveur puis le client
+		//pour éviter le mécanisme d'attente du client lorsque le serveur est absend, on démarre le serveur puis le client
 		httpServer = startServer();
 		Thread.sleep(500);
 		clientNode = startClientNode();
@@ -83,7 +83,7 @@ public final class ConverterManagerDistributedTest extends AbstractConverterMana
 	}
 
 	/**
-	 * Finalisation du test pour impl� sp�cifique.
+	 * Finalisation du test pour implé spécifique.
 	 * @throws Exception Erreur
 	 */
 	@Override

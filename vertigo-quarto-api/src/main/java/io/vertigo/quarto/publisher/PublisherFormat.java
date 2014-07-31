@@ -19,7 +19,7 @@
 package io.vertigo.quarto.publisher;
 
 /**
- * Formats de sortie support�s.
+ * Formats de sortie supportés.
  * 
  * @author pchretien, npiedeloup
  * @version $Id: PublisherFormat.java,v 1.1 2013/07/11 13:24:48 npiedeloup Exp $
@@ -31,7 +31,7 @@ public enum PublisherFormat {
 	DOCX;
 
 	/**
-	 * Mimetypes des diff�rents formats g�r�s.
+	 * Mimetypes des différents formats gérés.
 	 * 
 	 * @return Type Mime
 	 */

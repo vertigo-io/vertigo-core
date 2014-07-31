@@ -23,15 +23,15 @@ import io.vertigo.kernel.metamodel.Definition;
 import io.vertigo.kernel.stereotype.Prefix;
 
 /**
- * D�finition d'un mod�le d'�dition.
- * Un mod�le d'�dition est un arbre de donn�es.
+ * Définition d'un modèle d'édition.
+ * Un modèle d'édition est un arbre de données.
  *
  * @author npiedeloup, pchretien
  * @version $Id: PublisherDataDefinition.java,v 1.3 2013/10/22 10:50:53 pchretien Exp $
  */
 @Prefix("PU")
 public final class PublisherDataDefinition implements Definition {
-	/** Nom de la d�finition. */
+	/** Nom de la définition. */
 	private final String name;
 	private final PublisherNodeDefinition rootNodeDefinition;
 
@@ -44,7 +44,7 @@ public final class PublisherDataDefinition implements Definition {
 	}
 
 	/**
-	 * @return D�finition du noeud racine
+	 * @return Définition du noeud racine
 	 */
 	public PublisherNodeDefinition getRootNodeDefinition() {
 		return rootNodeDefinition;
