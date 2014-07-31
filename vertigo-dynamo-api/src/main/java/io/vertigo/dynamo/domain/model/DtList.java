@@ -21,12 +21,17 @@ package io.vertigo.dynamo.domain.model;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.metamodel.DefinitionReference;
 
 import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Classe de stockage des listes.
@@ -46,6 +51,9 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 
 	/** List des dto contenus. */
 	private final List<D> dtObjects = new ArrayList<>();
+
+	/** List des dto contenus. */
+	private final Map<String, Serializable> metaDatas = new LinkedHashMap<>();
 
 	/**
 	 * Constructeur.
@@ -157,5 +165,52 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 		} else {
 			throw new IllegalAccessError("URI déjà fixée");
 		}
+	}
+
+	//==========================================================================
+	//================================ Metadatas management ====================
+	//==========================================================================
+
+	// There is no all MetaData with values getter. 
+	// Developers should always knows which metadata they needs. It's intended use.
+	//
+	/**
+	 * @return MetaData names (only not null ones)
+	 */
+	public Set<String> getMetaDataNames() {
+		return Collections.unmodifiableSet(metaDatas.keySet());
+	}
+
+	/**
+	 * @param metaDataName MetaData name
+	 * @param metaDataClass MetaData value class
+	 * @param <O> MetaData value type
+	 * @return MetaData value
+	 */
+	public <O extends Serializable> Option<O> getMetaData(final String metaDataName, final Class<O> metaDataClass) {
+		Assertion.checkArgNotEmpty(metaDataName);
+		//---------------------------------------------------------------------
+		final Object value = metaDatas.get(metaDataName);
+		if (value == null) {
+			return Option.none();
+		}
+		return Option.some(metaDataClass.cast(value));
+	}
+
+	/**
+	 * Set a metaData on this list. If value is null, the metadata is remove.
+	 * <b>WARN</b>
+	 * <b>Developers must ensure</b> this metaData keep coherent with current list datas, <b>all the time</b>.
+	 * <b>WARN</b>
+	 * @param metaDataName MetaData name
+	 * @param value MetaData value
+	 */
+	public void setMetaData(final String metaDataName, final Serializable value) {
+		Assertion.checkArgNotEmpty(metaDataName);
+		//---------------------------------------------------------------------
+		if (value == null) {
+			metaDatas.remove(metaDataName);
+		}
+		metaDatas.put(metaDataName, value);
 	}
 }
