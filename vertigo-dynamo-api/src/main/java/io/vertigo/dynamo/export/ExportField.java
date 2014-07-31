@@ -23,7 +23,7 @@ import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.MessageText;
 
 /**
- * D�finition d'une colonne � exporter.
+ * Définition d'une colonne à exporter.
  *
  * @author pchretien, npiedeloup
  * @version $Id: ExportField.java,v 1.4 2014/01/20 17:49:10 pchretien Exp $
@@ -51,14 +51,14 @@ public class ExportField {
 	 * @return Label du dtField
 	 */
 	public final MessageText getLabel() {
-		//Selon que le label est surcharg� ou non 
+		//Selon que le label est surchargé ou non 
 		return label != null ? label : dtField.getLabel();
 	}
 
 	//--------------------------------------------------------------------------
 
 	/**
-	 * Gestion d'un libell� surchargeant celui du DT.
+	 * Gestion d'un libellé surchargeant celui du DT.
 	 * @param label de la colonne
 	 */
 	public final void setLabel(final MessageText label) {

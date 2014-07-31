@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Builder des donn�es � exporter.
+ * Builder des données à exporter.
  * @author pchretien, npiedeloup
  * @version $Id: ExportBuilder.java,v 1.6 2014/02/27 10:23:30 pchretien Exp $
  */
@@ -36,7 +36,7 @@ public final class ExportBuilder implements Builder<Export> {
 	private final ExportFormat format;
 	private final String fileName;
 
-	// Variables � affecter par des SETTERS
+	// Variables à affecter par des SETTERS
 	private String title;
 	private String author;
 	private Export.Orientation orientation = Orientation.Portait;
@@ -48,7 +48,7 @@ public final class ExportBuilder implements Builder<Export> {
 	 */
 	public ExportBuilder(final ExportFormat format, final String fileName) {
 		Assertion.checkNotNull(format);
-		Assertion.checkArgNotEmpty(fileName, "FileName doit �tre non vide");
+		Assertion.checkArgNotEmpty(fileName, "FileName doit être non vide");
 		// ----------------------------------------------------------------------
 		this.format = format;
 		this.fileName = fileName;
@@ -58,8 +58,8 @@ public final class ExportBuilder implements Builder<Export> {
 	 * @param newTitle Titre du document (Facultatif)
 	 */
 	public ExportBuilder withTitle(final String newTitle) {
-		Assertion.checkState(title == null, "Titre deja renseign�");
-		Assertion.checkArgNotEmpty(newTitle, "Titre doit �tre non vide");
+		Assertion.checkState(title == null, "Titre deja renseigné");
+		Assertion.checkArgNotEmpty(newTitle, "Titre doit être non vide");
 		// ---------------------------------------------------------------------
 		title = newTitle;
 		return this;
@@ -69,15 +69,15 @@ public final class ExportBuilder implements Builder<Export> {
 	 * @param newAuthor Auteur du document (Facultatif)
 	 */
 	public ExportBuilder withAuthor(final String newAuthor) {
-		Assertion.checkState(author == null, "Auteur deja renseign�");
-		Assertion.checkArgNotEmpty(newAuthor, "Auteur doit �tre non vide");
+		Assertion.checkState(author == null, "Auteur deja renseigné");
+		Assertion.checkArgNotEmpty(newAuthor, "Auteur doit être non vide");
 		// ---------------------------------------------------------------------
 		author = newAuthor;
 		return this;
 	}
 
 	/**
-	 * @param newOrientation Orientation du document (Facultatif, mode portrait par d�faut)
+	 * @param newOrientation Orientation du document (Facultatif, mode portrait par défaut)
 	 */
 	public ExportBuilder withOrientation(final Orientation newOrientation) {
 		Assertion.checkNotNull(newOrientation);
@@ -87,13 +87,13 @@ public final class ExportBuilder implements Builder<Export> {
 	}
 
 	/**
-	 * @param dtParameter parametre de donn�es(DTO ou DTC) � ajouter � ce document.
+	 * @param dtParameter parametre de données(DTO ou DTC) à ajouter à ce document.
 	 */
 	public ExportBuilder withExportDtParameters(final ExportDtParameters dtParameter) {
 		Assertion.checkNotNull(dtParameter);
-		Assertion.checkArgument(dtParameter instanceof ExportDtParametersReadable, "Le param�tre doit avoir une interface de consultation");
+		Assertion.checkArgument(dtParameter instanceof ExportDtParametersReadable, "Le paramètre doit avoir une interface de consultation");
 		//---------------------------------------------------------------------
-		// On est obligatoirement dans une impl�mentation standard (homog�n�it�)
+		// On est obligatoirement dans une implémentation standard (homogénéité)
 		exportDtParameters.add((ExportDtParametersReadable) dtParameter);
 		return this;
 	}

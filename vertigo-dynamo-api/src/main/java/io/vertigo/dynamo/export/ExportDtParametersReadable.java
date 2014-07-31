@@ -38,22 +38,22 @@ public interface ExportDtParametersReadable {
 	String getTitle();
 
 	/**
-	 * @return Liste des informations sur les Fields � exporter
+	 * @return Liste des informations sur les Fields à exporter
 	 */
 	List<ExportField> getExportFields();
 
 	/**
-	 * @return Donn�es sous forme d'un DTO, ceci est un cast donc il y a l�v� d'une assertion si ce n'est pas un DTO
+	 * @return Données sous forme d'un DTO, ceci est un cast donc il y a levé d'une assertion si ce n'est pas un DTO
 	 */
 	DtObject getDtObject();
 
 	/**
-	 * @return Donn�es sous forme d'une DTC, ceci est un cast donc il y a l�v� d'une assertion si ce n'est pas une DTC
+	 * @return Données sous forme d'une DTC, ceci est un cast donc il y a levé d'une assertion si ce n'est pas une DTC
 	 */
 	DtList<?> getDtList();
 
 	/**
-	 * Le param�tre contient soit un DTO, soit une DTC.
+	 * Le paramètre contient soit un DTO, soit une DTC.
 	 * @return boolean true, si il contient un DTO
 	 */
 	boolean hasDtObject();
