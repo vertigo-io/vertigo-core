@@ -45,7 +45,7 @@ public final class EndPointDefinition implements Definition {
 	private final Verb verb;
 	private final String acceptType;
 
-	private final Method method; //Function g�rant l'exectution du EndPoint	
+	private final Method method; //method use to handle this endpoint	
 	private final boolean needSession;
 	private final boolean sessionInvalidate;
 	private final boolean needAuthentification;
