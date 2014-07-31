@@ -23,7 +23,7 @@ import io.vertigo.studio.plugins.mda.AbstractConfiguration;
 import java.util.Properties;
 
 /**
- * Configuration du Security Generator.
+ * Security Generator configuration.
  * 
  * @author dchallas
  * @version $Id: SecurityConfiguration.java,v 1.2 2014/03/07 09:31:19 pchretien Exp $
@@ -31,13 +31,16 @@ import java.util.Properties;
 final class SecurityConfiguration extends AbstractConfiguration {
 
 	/**
-	 * Constructeur.
-	 * @param properties propri�tes
+	 * Constructor.
+	 * @param properties properties
 	 */
 	SecurityConfiguration(final Properties properties) {
 		super(properties);
 	}
 
+	/**
+	 * @return Package use
+	 */
 	String getSecurityPackage() {
 		return getProjectPackageName() + ".security";
 	}
