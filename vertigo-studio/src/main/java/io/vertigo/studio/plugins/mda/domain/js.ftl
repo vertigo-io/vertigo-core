@@ -4,11 +4,11 @@
 
 module.exports={
 	<#list dtDefinitions as dtDefinition>
-	'${dtDefinition.name}': {
-		<#list dtDefinition.fields as dtField>
-			'${dtField.nameLowerCase}':{
-				domain: "${dtField.domain}",
-				required: "${dtField.required}"
+	"${dtDefinition.classSimpleNameCamelCase}": {
+		<#list dtDefinition.dtFields as dtField>
+			"${dtField.nameCamelCase}":{
+				domain: "${dtField.dtField.domain.name}",
+				required: ${dtField.notNull?string('true','false')}
 			},			
 		</#list>	
 	},

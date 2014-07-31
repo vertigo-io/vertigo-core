@@ -25,6 +25,7 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -100,6 +101,10 @@ public final class TemplateDtDefinition {
 	 */
 	public String getClassSimpleName() {
 		return dtDefinition.getClassSimpleName();
+	}
+	
+	public String getClassSimpleNameCamelCase() {
+		return StringUtil.constToCamelCase(dtDefinition.getClassSimpleName(), false);
 	}
 
 	/**

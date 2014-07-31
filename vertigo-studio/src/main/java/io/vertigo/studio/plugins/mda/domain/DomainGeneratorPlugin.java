@@ -48,6 +48,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 	private final boolean generateDtResources;
 	private final boolean generateJpaAnnotations;
 	private final boolean generateDtDefinitions;
+	private final boolean generateJsDtDefinitions;
 	private final boolean generateDtObject;
 	private final boolean generateSql;
 	private final boolean generateDrop;
@@ -60,6 +61,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 	 * @param generateJpaAnnotations Si on ajoute les annotations JPA 
 	 * @param generateDtDefinitions Si on génère le fichier fournissant la liste des classes de Dt
 	 * @param generateDtObject Si on génère les classes des Dt
+	 * @param generateJsDtDefinitions Si on génère les classes JS.
 	 * @param generateSql Si on génére le crebase.sql
 	 * @param generateDrop Si on génère les Drop table dans le fichier SQL
 	 * @param baseCible Type de base de données ciblé.
@@ -69,6 +71,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 			@Named("generateDtResources") final boolean generateDtResources,//
 			@Named("generateJpaAnnotations") final boolean generateJpaAnnotations,//
 			@Named("generateDtDefinitions") final boolean generateDtDefinitions, //
+			@Named("generateJsDtDefinitions") final boolean generateJsDtDefinitions,//
 			@Named("generateDtObject") final boolean generateDtObject, //
 			@Named("generateSql") final boolean generateSql, //
 			@Named("generateDrop") final boolean generateDrop, //
@@ -77,6 +80,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 		this.generateDtResources = generateDtResources;
 		this.generateJpaAnnotations = generateJpaAnnotations;
 		this.generateDtDefinitions = generateDtDefinitions;
+		this.generateJsDtDefinitions = generateJsDtDefinitions;
 		this.generateDtObject = generateDtObject;
 		this.generateSql = generateSql;
 		this.generateDrop = generateDrop;
@@ -113,6 +117,12 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 		if (generateDtDefinitions) {
 			generateDtDefinitions(domainConfiguration, result);
 		}
+		
+		/* Génération des fichiers javascripts référençant toutes les définitions. */
+		if(generateJsDtDefinitions){
+			generateJsDtDefinitions(domainConfiguration, result);
+		}
+		
 		/* Générations des DTO. */
 		if (generateDtObject) {
 			generateDtObjects(domainConfiguration, result);
@@ -130,6 +140,24 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 		mapRoot.put("dtDefinitions", getDtDefinitions());
 
 		final FileGenerator super2java = getFileGenerator(domainConfiguration, mapRoot, domainConfiguration.getDomainDictionaryClassName(), domainConfiguration.getDomainPackage(), ".java", "dtdefinitions.ftl");
+		super2java.generateFile(result, true);
+
+	}
+	
+
+	private void generateJsDtDefinitions(final DomainConfiguration domainConfiguration, final Result result) {
+
+		List<TemplateDtDefinition> dtDefinitions = new ArrayList<>();
+		for(DtDefinition dtDefinition : getDtDefinitions()) {
+			dtDefinitions.add(new TemplateDtDefinition(dtDefinition));
+		}
+		
+		final Map<String, Object> mapRoot = new HashMap<>();
+		mapRoot.put("packageName", domainConfiguration.getDomainPackage());
+		mapRoot.put("classSimpleName", domainConfiguration.getDomainDictionaryClassName());
+		mapRoot.put("dtDefinitions", dtDefinitions);
+
+		final FileGenerator super2java = getFileGenerator(domainConfiguration, mapRoot, domainConfiguration.getDomainDictionaryClassName(), domainConfiguration.getDomainPackage(), ".js", "js.ftl");
 		super2java.generateFile(result, true);
 
 	}

@@ -75,6 +75,10 @@ public final class TemplateDtField {
 	public String getNameLowerCase() {
 		return StringUtil.constToCamelCase(dtField.getName(), true);
 	}
+	
+	public String getNameCamelCase() {
+		return StringUtil.constToCamelCase(dtField.getName(), false);
+	}
 
 	/**
 	 * @return Type du champ (
