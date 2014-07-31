@@ -1,6 +1,0 @@
-<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
-<modules>
-	<module name="vertigo-labs">
-	   <component api="FranceManager" class="io.vertigo.labs.impl.france.FranceManagerImpl"/>
-	</module>
-</modules>

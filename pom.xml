@@ -43,9 +43,9 @@ limitations under the License. -->
 
 		<module>vertigo-persona-api</module>
 		<module>vertigo-persona-impl</module>
-
-		<module>vertigo-labs-api</module>
-		<module>vertigo-labs-impl</module>
+		
+		<module>vertigo-tempo-api</module>
+		<module>vertigo-tempo-impl</module>
 
 		<module>vertigo-vega-api</module>
 		<module>vertigo-vega-impl</module>

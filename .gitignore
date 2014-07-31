@@ -8,3 +8,5 @@ docco/
 vertigo-release/
 mvn-release.txt
 *.bak
+**/abak
+**/ubak
