@@ -64,6 +64,13 @@ Push your apps to others.
 * __rest__ : Add a rest access to your application. Mainly oriented for production-ready Single-Page-Application. And production's security ready.
 
 
+##vertigo-tempo
+Manage, execute and supervize background operations and communications.
+
+* __jobs__ : Schedule jobs to execute in background, at fixed rate or one time.
+* __mail__ : Send mails with simple api. Activate true email only in production, not while testing or coding.
+
+
 ##vertigo-ccc
 Command & Control Center
 
