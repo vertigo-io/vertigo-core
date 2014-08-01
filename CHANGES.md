@@ -1,10 +1,33 @@
 Version history
 ===============
 
-Running 0.4.1-SNAPSHOT
+Running 0.4.3-SNAPSHOT
 ----------------------
-
  more to come :)
+
+Release 0.4.2 - 2014/08/01
+--------------------------
+* Refact vertigo-bundle : Add tempo and remove studio and labs
+* Add metadatas support in DtList
+* Add JsDtDefinitionGenerato in vertigo-studio for **Focus** (HTML5-SPA) applications
+* Add file encoding parameter of generated files in vertigo-studio
+* Fix file encoding template of loaders in vertigo-studio
+* Add vertigo-tempo : Manage background operations and communications
+* Merge collections.facet to collections
+* Move back Transactional annotations from stereotype package
+* Rename XxxStorePlugins as XxxDataStorePlugins
+* Some refactoring by using List<Plugin> contructor injection
+* Some minor internal renames
+
+
+Release 0.4.1 - 2014/07/29
+--------------------------
+* Add Multi KvDataStore support
+* Add List injection support in constructor
+* Change DateQueryParser use elacticSearch syntax instead of Solr ones
+* Move almost all annotations to a stereotype package
+* Fix missing PathPrefix bug in Vega/rest component
+* Fix nullValue in facetByTerm
 
 
 Release 0.4.0 - 2014/07/25
