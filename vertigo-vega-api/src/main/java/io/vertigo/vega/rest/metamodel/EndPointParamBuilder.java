@@ -37,7 +37,7 @@ import java.util.Set;
 public final class EndPointParamBuilder implements Builder<EndPointParam> {
 	private final Class<?> myParamClass;
 	private RestParamType myRestParamType = RestParamType.Body; // default;
-	private String myRestParamName;
+	private String myRestParamName = "[1]"; //default body Name
 	private final List<Class<? extends DtObjectValidator>> myValidatorClasses = new ArrayList<>();
 	private final Set<String> myIncludedFields = new HashSet<>();
 	private final Set<String> myExcludedFields = new HashSet<>();
@@ -115,14 +115,6 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 
 	/** {@inheritDoc} */
 	public EndPointParam build() {
-		if (myRestParamType == RestParamType.Body) {
-			return new EndPointParam(myRestParamType, myParamClass, //
-					myIncludedFields, //
-					myExcludedFields, //
-					myNeedServerSideToken, //
-					myConsumeServerSideToken, //
-					myValidatorClasses);
-		}
 		return new EndPointParam(myRestParamType, myRestParamName, myParamClass, //
 				myIncludedFields, //
 				myExcludedFields, //

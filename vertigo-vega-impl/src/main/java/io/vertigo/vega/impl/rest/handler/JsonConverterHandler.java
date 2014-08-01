@@ -31,6 +31,7 @@ import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
 import io.vertigo.vega.rest.metamodel.EndPointParam.ImplicitParam;
 import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
+import io.vertigo.vega.rest.metamodel.UiListState;
 import io.vertigo.vega.security.UiSecurityTokenManager;
 
 import java.io.Serializable;
@@ -89,19 +90,19 @@ final class JsonConverterHandler implements RouteHandler {
 					value = multiPartBodyParsed.get(endPointParam.getName());
 					break;
 				case Path:
-					value = readPrimitiveValue(request.params(endPointParam.getName()), endPointParam);
+					value = readPrimitiveValue(request.params(endPointParam.getName()), endPointParam.getType());
 					break;
 				case Query:
-					value = readPrimitiveValue(request.queryParams(endPointParam.getName()), endPointParam);
+					value = readQueryValue(request.queryMap(), endPointParam);
 					break;
 				case Implicit:
 					switch (ImplicitParam.valueOf(endPointParam.getName())) {
 						case UiMessageStack:
 							value = routeContext.getUiMessageStack();
 							break;
-						case UiListState:
+						/*case UiListState:
 							value = readQueryValue(request.queryMap(), endPointParam);
-							break;
+							break;*/
 						/*case Request:
 							value = request;
 							break;
@@ -128,7 +129,17 @@ final class JsonConverterHandler implements RouteHandler {
 	}
 
 	private void setHeadersFromResultType(final Object result, final Response response) {
-		response.type("application/json;charset=UTF-8");
+		if (result instanceof List) {
+			if (result instanceof DtList && !((DtList) result).getMetaDataNames().isEmpty()) {
+				response.type("application/json+list+meta;charset=UTF-8");
+			} else {
+				response.type("application/json+list;charset=UTF-8");
+			}
+		} else if (result instanceof DtObject) {
+			response.type("application/json+" + result.getClass().getSimpleName() + ";charset=UTF-8");
+		} else {
+			response.type("application/json;charset=UTF-8");
+		}
 		if (result == null) {
 			response.status(HttpServletResponse.SC_NO_CONTENT);
 		}
@@ -156,36 +167,45 @@ final class JsonConverterHandler implements RouteHandler {
 		return null;
 	}
 
-	private Object readPrimitiveValue(final String json, final EndPointParam endPointParam) {
-		final Class<?> paramClass = endPointParam.getType();
+	private <D> D readPrimitiveValue(final String json, final Class<D> paramClass) {
 		if (json == null) {
 			return null;
 		} else if (paramClass.isPrimitive()) {
 			return jsonReaderEngine.fromJson(json, paramClass);
 		} else if (String.class.isAssignableFrom(paramClass)) {
-			return json;
+			return paramClass.cast(json);
 		} else if (Integer.class.isAssignableFrom(paramClass)) {
-			return Integer.valueOf(json);
+			return paramClass.cast(Integer.valueOf(json));
 		} else if (Long.class.isAssignableFrom(paramClass)) {
-			return Long.valueOf(json);
+			return paramClass.cast(Long.valueOf(json));
 		} else if (Date.class.isAssignableFrom(paramClass)) {
-			return jsonReaderEngine.fromJson(json, paramClass);
+			return paramClass.cast(jsonReaderEngine.fromJson(json, paramClass));
 		} else {
 			throw new RuntimeException("Unsupported type " + paramClass.getSimpleName());
 		}
-		//return jsonReaderEngine.fromJson(json, paramClass);
 	}
 
 	private <D> D readQueryValue(final QueryParamsMap queryMap, final EndPointParam endPointParam) throws VSecurityException {
-		//final Class<D> paramClass = (Class<D>) endPointParam.getType();
+		final Class<D> paramClass = (Class<D>) endPointParam.getType();
+		final String paramName = endPointParam.getName();
+		if (queryMap == null) {
+			return null;
+		}
+		if (UiListState.class.isAssignableFrom(paramClass) //
+				|| DtObject.class.isAssignableFrom(paramClass)) {
+			return (D) readValue(convertToJson(queryMap), endPointParam);
+		}
+		return readPrimitiveValue(queryMap.get(paramName).value(), paramClass);
+	}
+
+	private String convertToJson(final QueryParamsMap queryMap) {
 		final Map<String, Object> queryParams = new HashMap<>();
 		for (final Entry<String, String[]> entry : queryMap.toMap().entrySet()) {
 			final String[] value = entry.getValue();
 			final Object simplerValue = value.length == 0 ? null : value.length == 1 ? value[0] : value;
 			queryParams.put(entry.getKey(), simplerValue);
 		}
-		final String queryParamsAsJson = jsonWriterEngine.toJson(queryParams);
-		return (D) readValue(queryParamsAsJson, endPointParam);
+		return jsonWriterEngine.toJson(queryParams);
 	}
 
 	private Object readValue(final String json, final EndPointParam endPointParam) throws VSecurityException {

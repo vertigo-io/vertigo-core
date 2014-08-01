@@ -29,6 +29,7 @@ import io.vertigo.vega.rest.metamodel.EndPointParam;
 import io.vertigo.vega.rest.metamodel.EndPointParam.ImplicitParam;
 import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
 import io.vertigo.vega.rest.metamodel.EndPointParamBuilder;
+import io.vertigo.vega.rest.metamodel.UiListState;
 import io.vertigo.vega.rest.stereotype.AccessTokenConsume;
 import io.vertigo.vega.rest.stereotype.AccessTokenMandatory;
 import io.vertigo.vega.rest.stereotype.AccessTokenPublish;
@@ -135,8 +136,8 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 			builder.withValidatorClasses(DefaultDtObjectValidator.class);
 		} else if (ImplicitParam.UiMessageStack.getImplicitType().equals(paramType)) {
 			builder.with(RestParamType.Implicit, ImplicitParam.UiMessageStack.name());
-		} else if (ImplicitParam.UiListState.getImplicitType().equals(paramType)) {
-			builder.with(RestParamType.Implicit, ImplicitParam.UiListState.name());
+		} else if (UiListState.class.equals(paramType)) {
+			builder.with(RestParamType.Body, "listState"); //UiListState don't need to be named, it will be retrieve from body
 		}
 
 		for (final Annotation annotation : annotations) {

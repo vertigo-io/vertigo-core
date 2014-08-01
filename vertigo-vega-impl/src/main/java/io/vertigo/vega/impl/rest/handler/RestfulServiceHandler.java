@@ -27,6 +27,7 @@ import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
+import io.vertigo.vega.rest.metamodel.UiListState;
 import io.vertigo.vega.rest.validation.ValidationUserException;
 
 import java.lang.reflect.InvocationTargetException;
@@ -85,6 +86,17 @@ final class RestfulServiceHandler implements RouteHandler {
 	}
 
 	private Object[] makeArgs(final RouteContext routeContext) {
+		if (endPointDefinition.isAutoSortAndPagination()) {
+			final Object[] serviceArgs = new Object[endPointDefinition.getEndPointParams().size() - 1];
+			int i = 0;
+			for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
+				if (!endPointParam.getType().isAssignableFrom(UiListState.class)) {
+					serviceArgs[i] = routeContext.getParamValue(endPointParam);
+					i++;
+				}
+			}
+			return serviceArgs;
+		}
 		final Object[] serviceArgs = new Object[endPointDefinition.getEndPointParams().size()];
 		int i = 0;
 		for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {

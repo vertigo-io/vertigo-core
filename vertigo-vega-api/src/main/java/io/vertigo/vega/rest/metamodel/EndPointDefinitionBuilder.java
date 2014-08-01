@@ -22,7 +22,6 @@ import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Builder;
 import io.vertigo.kernel.util.StringUtil;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition.Verb;
-import io.vertigo.vega.rest.metamodel.EndPointParam.ImplicitParam;
 import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
 
 import java.lang.reflect.Method;
@@ -152,7 +151,8 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 		//autoSortAndPaginationHandler will use it
 		if (autoSortAndPagination) {
 			withEndPointParam(new EndPointParamBuilder(UiListState.class) //
-					.with(RestParamType.Implicit, ImplicitParam.UiListState.name()).build());
+					.with(RestParamType.Body, "listState") // We declare ListState in body, it will merge with other EndPointParams
+					.build());
 		}
 	}
 

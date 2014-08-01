@@ -53,7 +53,8 @@ public final class EndPointParam {
 
 	public static enum ImplicitParam {
 		UiMessageStack(UiMessageStack.class), //
-		UiListState(UiListState.class); //
+		//UiListState(UiListState.class), //
+		; //
 
 		private Class<?> implicitType;
 
@@ -78,20 +79,6 @@ public final class EndPointParam {
 	private final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses;
 
 	/**
-	 * @param paramType Parameter's source type
-	 * @param type Parameter class
-	 * @param includedFields List of included fieldNames
-	 * @param excludedFields List of excluded fieldNames
-	 * @param needServerSideToken if access token mandatory
-	 * @param consumeServerSideToken if access token is consume (one time token)
-	 * @param dtObjectValidatorClasses list of validator classes (order is keep)
-	 */
-	EndPointParam(final RestParamType paramType, final Class<?> type, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
-		this(":" + paramType.name() + ":", paramType, null, type, includedFields, excludedFields, needServerSideToken, consumeServerSideToken, dtObjectValidatorClasses);
-		Assertion.checkArgument(paramType == RestParamType.Body, "Name is mandatory, for this parameter type : {0}", paramType.name());
-	}
-
-	/**
 	 * @param paramType Parameter type
 	 * @param name Parameter name
 	 * @param type Parameter class
@@ -102,7 +89,6 @@ public final class EndPointParam {
 	 */
 	EndPointParam(final RestParamType paramType, final String name, final Class<?> type, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
 		this(":" + paramType.name() + ":" + name, paramType, name, type, includedFields, excludedFields, needServerSideToken, consumeServerSideToken, dtObjectValidatorClasses);
-		Assertion.checkArgument(paramType != RestParamType.Body, "Body parameter have no name");
 		Assertion.checkArgument(paramType != RestParamType.Implicit || isImplicitParam(name), "When ImplicitParam, name ({1}) must be one of {0}", ImplicitParam.values(), name);
 		Assertion.checkArgNotEmpty(name);
 	}
