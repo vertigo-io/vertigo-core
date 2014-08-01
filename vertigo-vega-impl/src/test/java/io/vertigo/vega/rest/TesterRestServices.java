@@ -65,6 +65,8 @@ import io.vertigo.vega.rest.stereotype.ServerSideSave;
 import io.vertigo.vega.rest.stereotype.SessionInvalidate;
 import io.vertigo.vega.rest.stereotype.SessionLess;
 import io.vertigo.vega.rest.stereotype.Validate;
+import io.vertigo.vega.rest.validation.UiMessageStack;
+import io.vertigo.vega.rest.validation.ValidationUserException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -81,7 +83,7 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
-//basé sur http://www.restapitutorial.com/lessons/httpmethods.html
+//basï¿½ sur http://www.restapitutorial.com/lessons/httpmethods.html
 
 @PathPrefix("/test")
 public final class TesterRestServices implements RestfulService {
@@ -498,6 +500,17 @@ public final class TesterRestServices implements RestfulService {
 		//offset + range ?
 		//code 200
 		return result;
+	}
+
+	@POST("/uiMessage")
+	public UiMessageStack testUiMessage(final Contact contact, final UiMessageStack uiMessageStack) {
+		uiMessageStack.success("Your message have been received");
+		uiMessageStack.info("We can complete messageStack : globaly or field by field");
+		uiMessageStack.warning("This field must be read twice !!", contact, "birthday");
+		if (uiMessageStack.hasErrors()) {
+			throw new ValidationUserException();
+		}
+		return uiMessageStack;
 	}
 
 	/*@GET("/searchFacet")

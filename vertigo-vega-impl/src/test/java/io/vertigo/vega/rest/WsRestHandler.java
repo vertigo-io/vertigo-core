@@ -120,7 +120,7 @@ public final class WsRestHandler {
 					.beginComponent(FileManager.class, FileManagerImpl.class).endComponent() //
 					.beginComponent(KVDataStoreManager.class, KVDataStoreManagerImpl.class)
 						.beginPlugin(DelayedMemoryKVDataStorePlugin.class)
-							.withParam("storeName", "UiSecurityStore")
+							.withParam("dataStoreName", "UiSecurityStore")
 							.withParam("timeToLiveSeconds", "120")
 						.endPlugin()
 					.endComponent() //
