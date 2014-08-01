@@ -23,19 +23,19 @@
 		
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-dynamo-impl</artifactId>
+			<artifactId>vertigo-commons-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-dynamo-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 				
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-tempo-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-commons-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 				
