@@ -21,7 +21,7 @@ limitations under the License. -->
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-parent</artifactId>
 		<version>0.4.2-SNAPSHOT</version>
-		<relativePath>../vertigo-parent</relativePath>
+		<relativePath>./vertigo-parent</relativePath>
 	</parent>
 	
 	<artifactId>vertigo-reactor</artifactId>
