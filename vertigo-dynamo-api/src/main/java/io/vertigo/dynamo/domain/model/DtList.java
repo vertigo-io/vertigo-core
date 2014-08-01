@@ -27,9 +27,11 @@ import io.vertigo.kernel.metamodel.DefinitionReference;
 import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Classe de stockage des listes.
@@ -172,6 +174,14 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	// There is no all MetaData with values getter. 
 	// Developers should always knows which metadata they needs. It's intended use.
 	//
+
+	/**
+	 * @return MetaData names (only not null ones)
+	 */
+	public Set<String> getMetaDataNames() {
+		return Collections.unmodifiableSet(metaDatas.keySet());
+	}
+
 	/**
 	 * @param metaDataName MetaData name
 	 * @return if this metadata is known and not null
