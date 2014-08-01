@@ -41,13 +41,7 @@
 			<artifactId>vertigo-dynamo-impl</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-studio</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		
+				
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-persona-api</artifactId>
@@ -83,12 +77,12 @@
 		
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-labs-api</artifactId>
+			<artifactId>vertigo-tempo-api</artifactId>
 			<version>${project.version}</version>			
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-labs-impl</artifactId>
+			<artifactId>vertigo-tempo-impl</artifactId>
 			<version>${project.version}</version>			
 		</dependency>
 		
