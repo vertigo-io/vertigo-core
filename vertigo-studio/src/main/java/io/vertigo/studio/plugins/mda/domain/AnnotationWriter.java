@@ -24,6 +24,7 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.dynamo.domain.stereotype.Association;
+import io.vertigo.dynamo.domain.stereotype.AssociationNN;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.util.StringUtil;
@@ -130,7 +131,7 @@ class AnnotationWriter {
 			final AssociationNNDefinition associationNN = associationNode.getAssociationDefinition().castAsAssociationNNDefinition();
 			final AssociationNode nodeA = associationNN.getAssociationNodeA();
 			final AssociationNode nodeB = associationNN.getAssociationNodeB();
-			lines.add("@io.vertigo.dynamo.domain.metamodel.annotation.AssociationNN (");
+			lines.add("@" + AssociationNN.class.getCanonicalName() + " (");
 			lines.add(INDENT + "name = \"" + associationNN.getName() + "\",");
 			lines.add(INDENT + "tableName = \"" + associationNN.getTableName() + "\",");
 			lines.add(INDENT + "dtDefinitionA = \"" + nodeA.getDtDefinition().getName() + "\",");
