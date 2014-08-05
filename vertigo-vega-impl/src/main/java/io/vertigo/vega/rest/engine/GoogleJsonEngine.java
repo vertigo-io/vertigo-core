@@ -124,7 +124,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 	@Override
 	public String toJsonError(final Throwable th) {
 		final String exceptionMessage = th.getMessage() != null ? th.getMessage() : th.getClass().getSimpleName();
-		return "{globalErrorMessages:[\"" + exceptionMessage + "\"]}"; //TODO +stack;
+		return "{\"globalErrorMessages\":[\"" + exceptionMessage + "\"]}"; //TODO +stack;
 	}
 
 	/** {@inheritDoc} */

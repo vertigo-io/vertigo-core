@@ -54,14 +54,13 @@ public final class ExceptionHandler implements RouteHandler {
 		try {
 			return chain.handle(request, response, routeContext);
 		} catch (final ValidationUserException e) {
-			//response.status(HttpServletResponse.SC_BAD_REQUEST);
-			response.status(SC_UNPROCESSABLE_ENTITY);
 			final UiMessageStack uiMessageStack = routeContext.getUiMessageStack();
 			e.flushToUiMessageStack(uiMessageStack);
-			response.type("application/json;charset=UTF-8");
-			return jsonWriterEngine.toJson(uiMessageStack);
+			return sendJsonUiMessageStack(SC_UNPROCESSABLE_ENTITY, uiMessageStack, response);
 		} catch (final VUserException e) {
-			return sendJsonError(SC_UNPROCESSABLE_ENTITY, e, response);
+			final UiMessageStack uiMessageStack = routeContext.getUiMessageStack();
+			uiMessageStack.error(e.getMessage()); //With UserException only message is important
+			return sendJsonUiMessageStack(SC_UNPROCESSABLE_ENTITY, uiMessageStack, response);
 		} catch (final SessionException e) {
 			return sendJsonError(HttpServletResponse.SC_UNAUTHORIZED, e, response);
 		} catch (final VSecurityException e) {
@@ -77,9 +76,15 @@ public final class ExceptionHandler implements RouteHandler {
 		}
 	}
 
+	private Object sendJsonUiMessageStack(final int statusCode, final UiMessageStack uiMessageStack, final Response response) {
+		response.status(statusCode);
+		response.type("application/json;charset=UTF-8");
+		return jsonWriterEngine.toJson(uiMessageStack);
+	}
+
 	private Object sendJsonError(final int statusCode, final Throwable e, final Response response) {
 		response.status(statusCode);
-		response.type("application/json+error;charset=UTF-8");
+		response.type("application/json;charset=UTF-8");
 		return jsonWriterEngine.toJsonError(e);
 	}
 }
