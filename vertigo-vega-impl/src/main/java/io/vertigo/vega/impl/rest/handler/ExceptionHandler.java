@@ -58,28 +58,28 @@ public final class ExceptionHandler implements RouteHandler {
 			response.status(SC_UNPROCESSABLE_ENTITY);
 			final UiMessageStack uiMessageStack = routeContext.getUiMessageStack();
 			e.flushToUiMessageStack(uiMessageStack);
+			response.type("application/json;charset=UTF-8");
 			return jsonWriterEngine.toJson(uiMessageStack);
 		} catch (final VUserException e) {
-			//response.status(HttpServletResponse.SC_BAD_REQUEST);
-			response.status(SC_UNPROCESSABLE_ENTITY);
-			return jsonWriterEngine.toJsonError(e);
+			return sendJsonError(SC_UNPROCESSABLE_ENTITY, e, response);
 		} catch (final SessionException e) {
-			response.status(HttpServletResponse.SC_UNAUTHORIZED);
-			return jsonWriterEngine.toJsonError(e);
+			return sendJsonError(HttpServletResponse.SC_UNAUTHORIZED, e, response);
 		} catch (final VSecurityException e) {
-			response.status(HttpServletResponse.SC_FORBIDDEN);
-			return jsonWriterEngine.toJsonError(e);
+			return sendJsonError(HttpServletResponse.SC_FORBIDDEN, e, response);
 		} catch (final JsonSyntaxException e) {
-			response.status(HttpServletResponse.SC_BAD_REQUEST);
 			e.printStackTrace();//TODO use a loggers
-			return jsonWriterEngine.toJsonError(e);
+			return sendJsonError(HttpServletResponse.SC_BAD_REQUEST, e, response);
 		} catch (final TooManyRequestException e) {
-			response.status(SC_TOO_MANY_REQUEST);
-			return jsonWriterEngine.toJsonError(e);
+			return sendJsonError(SC_TOO_MANY_REQUEST, e, response);
 		} catch (final Throwable e) {
-			response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			e.printStackTrace();//TODO use a loggers
-			return jsonWriterEngine.toJsonError(e);
+			return sendJsonError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e, response);
 		}
+	}
+
+	private Object sendJsonError(final int statusCode, final Throwable e, final Response response) {
+		response.status(statusCode);
+		response.type("application/json+error;charset=UTF-8");
+		return jsonWriterEngine.toJsonError(e);
 	}
 }
