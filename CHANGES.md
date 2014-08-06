@@ -1,9 +1,16 @@
 Version history
 ===============
 
-Running 0.4.3-SNAPSHOT
+Running 0.4.4-SNAPSHOT
 ----------------------
  more to come :)
+
+Release 0.4.3 - 2014/08/06
+--------------------------
+* Fix Vega #5 error mimeType and Json syntaxe
+* Fix Studio annotationNN package
+* Fix Vega autoPagination support
+* Fix tempo dependencies
 
 Release 0.4.2 - 2014/08/01
 --------------------------
