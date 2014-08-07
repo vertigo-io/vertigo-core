@@ -90,4 +90,33 @@ public final class ComponentSpaceTest {
 			Home.stop();
 		}
 	}
+
+	@Test
+	public void testHome3() {
+		// @formatter:off
+		final ComponentSpaceConfig componentSpaceConfig = new ComponentSpaceConfigBuilder()
+			.withParam("log4j.configurationFileName", "/log4j.xml")
+			.withSilence(false)			
+			.beginModule("Bio-core")
+				.beginComponent(MathManager.class, MathManagerImpl.class)
+					.withParam("start", "100")
+					.beginPlugin( MathPlugin.class)
+						.withParam("factor", "20")
+					.endPlugin()
+				.endComponent()	
+			.endModule()
+			.beginModule("Bio-spe") //This module depends of Bio-core module
+				.beginComponent(BioManager.class, BioManagerImpl.class)					
+				.endComponent()				
+			.endModule()			
+		.build();
+		// @formatter:on
+
+		Home.start(componentSpaceConfig);
+		try {
+			//
+		} finally {
+			Home.stop();
+		}
+	}
 }

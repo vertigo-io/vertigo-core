@@ -43,6 +43,7 @@ import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.PackageRuleT
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.WordListRuleTest;
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.XDefinitionEntryRuleTest;
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.XPropertyEntryRuleTest;
+import io.vertigo.dynamo.environment.splittedmodules.SplittedModulesEnvironmentManagerTest;
 import io.vertigo.dynamo.export.ExportManagerTest;
 import io.vertigo.dynamo.file.FileManagerTest;
 import io.vertigo.dynamo.kvdatastore.KVDataStoreManagerTest;
@@ -77,7 +78,7 @@ import org.junit.runners.Suite.SuiteClasses;
 		//--OOM
 		OOMAATest.class, OOMEnvironmentManagerTest.class, OOMTest.class, TestParserOOM.class, TestParserOOMAA.class, TestParserOOMIdentifiers.class,
 		EAXmiAATest.class, EAXmiEnvironmentManagerTest.class, EAXmiTest.class, EAXmiTestParser.class, EAXmiTestParserAA.class, EAXmiTestParserIdentifiers.class,
-
+		SplittedModulesEnvironmentManagerTest.class,
 		//--
 
 		//@formatter:on
