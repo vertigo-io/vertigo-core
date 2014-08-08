@@ -94,6 +94,14 @@ public final class DefinitionSpace implements Activeable {
 	}
 
 	/**
+	 * @param id  Objet recherché 
+	 * @return Si un objet avec l'identifiant est déjà enregistré.
+	 */
+	public boolean containsKey(final String id) {
+		return allObjects.containsKey(id);
+	}
+
+	/**
 	 * Cette méthode ne doit être appelée que si l'objet est déjà enregistré.
 	 * @param id Identifiant de l'objet
 	 * @param clazz type de l'object

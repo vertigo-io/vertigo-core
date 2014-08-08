@@ -20,6 +20,7 @@ package io.vertigo.dynamo.impl.environment.kernel.impl.model;
 
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
+import io.vertigo.kernel.Home;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -73,13 +74,17 @@ final class DynamicSolver {
 	}
 
 	private boolean isSolved(final DynamicDefinitionRepository definitionModelRepository, final List<DynamicDefinition> orderedList, final DynamicDefinition xdef) {
-		//Une définition est résolue ssi toutes ses sous definitions sont résolues
+		//A definition is solved if all its sub definitions have been solved
 
-		//On vérifie que toutes les références sont connues
+		//We check all references were known
 		for (final DynamicDefinitionKey dynamicDefinitionKey : xdef.getAllDefinitionKeys()) {
-			final DynamicDefinition subDefinition = definitionModelRepository.getDefinition(dynamicDefinitionKey);
-			if (!orderedList.contains(subDefinition)) {
-				return false;
+			//reference should be already solved in a previous resources module : then continue
+			if (!Home.getDefinitionSpace().containsKey(dynamicDefinitionKey.getName())) {
+				//or references should be in currently parsed resources 
+				final DynamicDefinition subDefinition = definitionModelRepository.getDefinition(dynamicDefinitionKey);
+				if (!orderedList.contains(subDefinition)) {
+					return false;
+				}
 			}
 		}
 
