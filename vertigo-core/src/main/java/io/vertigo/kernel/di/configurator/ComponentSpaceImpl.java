@@ -77,9 +77,9 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 	private final ComponentContainer componentContainer = new ComponentContainer();
 	private final Injector injector = new Injector();
 
-	private List<Engine> engines = new ArrayList<>();
+	private final List<Engine> engines = new ArrayList<>();
 
-	public ComponentSpaceImpl(ComponentSpaceConfig componentSpaceConfig) {
+	public ComponentSpaceImpl(final ComponentSpaceConfig componentSpaceConfig) {
 		Assertion.checkNotNull(componentSpaceConfig);
 		//---------------------------------------------------------------------
 		this.componentSpaceConfig = componentSpaceConfig;
@@ -100,7 +100,7 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 
 		engines.add(componentSpaceConfig.getAopEngine());
 
-		for (Engine engine : engines) {
+		for (final Engine engine : engines) {
 			if (engine instanceof Activeable) {
 				Activeable.class.cast(engine).start();
 			}
@@ -123,14 +123,14 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 			//
 			//		if (componentSpaceConfig.getCommandEngine().isDefined()) {
 			commandEngine.registerCommandExecutor("config", new VCommandExecutor<ComponentSpaceConfig>() {
-				public ComponentSpaceConfig exec(VCommand command) {
+				public ComponentSpaceConfig exec(final VCommand command) {
 					return componentSpaceConfig;
 				}
 			});
 
 			commandEngine.registerCommandExecutor("definitions", new VCommandExecutor<DefinitionSpace>() {
 				/** {@inheritDoc} */
-				public DefinitionSpace exec(VCommand command) {
+				public DefinitionSpace exec(final VCommand command) {
 					Assertion.checkNotNull(command);
 					//---------------------------------------------------------------------
 					return Home.getDefinitionSpace();
@@ -139,14 +139,14 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 		}
 	}
 
-	private void injectResources(ModuleConfig moduleConfig) {
+	private void injectResources(final ModuleConfig moduleConfig) {
 		//			int resourcesToBeLoad = moduleConfig.getResourceConfigs().size();
 		//We are doing a copy of all resources, to check that they are all parsed. 
-		List<ResourceConfig> resourceConfigsToDo = new ArrayList<>(moduleConfig.getResourceConfigs());
-		for (ResourceLoader resourceLoader : Home.getResourceSpace().getResourceLoaders()) {
+		final List<ResourceConfig> resourceConfigsToDo = new ArrayList<>(moduleConfig.getResourceConfigs());
+		for (final ResourceLoader resourceLoader : Home.getResourceSpace().getResourceLoaders()) {
 			//Candidates contins all resources that can be treated by the resourceLoader
-			List<ResourceConfig> candidates = new ArrayList<>();
-			for (Iterator<ResourceConfig> it = resourceConfigsToDo.iterator(); it.hasNext();) {
+			final List<ResourceConfig> candidates = new ArrayList<>();
+			for (final Iterator<ResourceConfig> it = resourceConfigsToDo.iterator(); it.hasNext();) {
 				final ResourceConfig resourceConfig = it.next();
 				if (resourceLoader.getTypes().contains(resourceConfig.getType())) {
 					candidates.add(resourceConfig);
@@ -163,10 +163,10 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 	public void stop() {
 		componentContainer.stop();
 		//---
-		List<Engine> reverseEngines = new ArrayList<>(engines);
+		final List<Engine> reverseEngines = new ArrayList<>(engines);
 		java.util.Collections.reverse(reverseEngines);
 
-		for (Engine engine : reverseEngines) {
+		for (final Engine engine : reverseEngines) {
 			if (engine instanceof Activeable) {
 				Activeable.class.cast(engine).stop();
 			}
@@ -285,7 +285,7 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 
 	private Object createComponent(final ComponentConfig componentConfig) {
 		//---pluginTypes
-		Set<String> pluginTypes = new HashSet<>();
+		final Set<String> pluginTypes = new HashSet<>();
 		for (final PluginConfig pluginConfig : componentConfig.getPluginConfigs()) {
 			pluginTypes.add(pluginConfig.getType());
 		}
@@ -293,10 +293,10 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 		if (componentConfig.isElastic()) {
 			return componentSpaceConfig.getElasticaEngine().get().createProxy(componentConfig.getApiClass().get());
 		}
-		ParamsContainer paramsContainer = new ParamsContainer(componentConfig.getParams());
+		final ParamsContainer paramsContainer = new ParamsContainer(componentConfig.getParams());
 		final DualContainer container = new DualContainer(componentContainer, paramsContainer);
 		//---
-		Object component = injector.newInstance(componentConfig.getImplClass(), container);
+		final Object component = injector.newInstance(componentConfig.getImplClass(), container);
 		//--Search for unuseds plugins 
 		// We are inspecting all unused keys, and we check if we can find almost one plugin of the component.
 		for (final String key : container.getUnusedKeys()) {
@@ -312,10 +312,10 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 	}
 
 	private Plugin createPlugin(final PluginConfig pluginConfig) {
-		ParamsContainer paramsContainer = new ParamsContainer(pluginConfig.getParams());
+		final ParamsContainer paramsContainer = new ParamsContainer(pluginConfig.getParams());
 		final Container container = new DualContainer(componentContainer, paramsContainer);
 		//---
-		Plugin plugin = injector.newInstance(pluginConfig.getImplClass(), container);
+		final Plugin plugin = injector.newInstance(pluginConfig.getImplClass(), container);
 		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}'", paramsContainer.getUnusedKeys());
 		return plugin;
 	}

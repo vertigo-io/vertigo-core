@@ -51,18 +51,18 @@ final class Environment implements ResourceLoader {
 	 * Constructeur.
 	 * @param dynamicModelRepository  DynamicModelRepository
 	 */
-	Environment(List<DynamicRegistryPlugin> dynamicRegistryPlugins, final List<LoaderPlugin> loaderPlugins) {
+	Environment(final List<DynamicRegistryPlugin> dynamicRegistryPlugins, final List<LoaderPlugin> loaderPlugins) {
 		Assertion.checkNotNull(dynamicRegistryPlugins);
 		Assertion.checkNotNull(loaderPlugins);
 		//---------------------------------------------------------------------
 		this.dynamicRegistryPlugins = dynamicRegistryPlugins;
 		//On enregistre les loaders 
-		for (LoaderPlugin loaderPlugin : loaderPlugins) {
+		for (final LoaderPlugin loaderPlugin : loaderPlugins) {
 			loaders.put(loaderPlugin.getType(), loaderPlugin);
 		}
 	}
 
-	public void parse(List<ResourceConfig> resourceConfigs) {
+	public void parse(final List<ResourceConfig> resourceConfigs) {
 		final CompositeDynamicRegistry handler = new CompositeDynamicRegistry(dynamicRegistryPlugins);
 
 		//Création du repositoy des instances le la grammaire (=> model)
@@ -74,8 +74,8 @@ final class Environment implements ResourceLoader {
 			final DynamicDefinition definition = dynamicModelRepository.createDynamicDefinitionBuilder(type.name(), dataTypeEntity, null).build();
 			dynamicModelRepository.addDefinition(definition);
 		}
-		for (ResourceConfig resourceConfig : resourceConfigs) {
-			Loader loader = loaders.get(resourceConfig.getType());
+		for (final ResourceConfig resourceConfig : resourceConfigs) {
+			final Loader loader = loaders.get(resourceConfig.getType());
 			Assertion.checkNotNull(loader, "This resource {0} can not be parse by this loader", resourceConfig);
 			loader.load(resourceConfig.getPath(), dynamicModelRepository);
 		}
