@@ -513,6 +513,14 @@ public final class TesterRestServices implements RestfulService {
 		return uiMessageStack;
 	}
 
+	@POST("/uploadFile")
+	public KFile testUploadFile(final @QueryParam("upfile") KFile inputFile, //
+			final @QueryParam("id") Integer id, //
+			final @QueryParam("note") String note) {
+
+		return inputFile;
+	}
+
 	/*@GET("/searchFacet")
 	public FacetedQueryResult<DtObject, ContactCriteria> testSearchServiceFaceted(final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);

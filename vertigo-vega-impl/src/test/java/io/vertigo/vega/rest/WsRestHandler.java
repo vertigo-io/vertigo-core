@@ -56,6 +56,7 @@ import io.vertigo.persona.impl.security.KSecurityManagerImpl;
 import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.vega.impl.rest.RestManagerImpl;
 import io.vertigo.vega.impl.rest.catalog.CatalogRestServices;
+import io.vertigo.vega.impl.rest.filter.JettyMultipartConfig;
 import io.vertigo.vega.impl.rest.handler.RateLimitingHandler;
 import io.vertigo.vega.impl.security.UiSecurityTokenManagerImpl;
 import io.vertigo.vega.plugins.rest.instrospector.annotations.AnnotationsEndPointIntrospectorPlugin;
@@ -179,9 +180,13 @@ public final class WsRestHandler {
 		// Will serve all static file are under "/public" in classpath if the route isn't consumed by others routes.
 		// When using Maven, the "/public" folder is assumed to be in "/main/resources"
 		Spark.externalStaticFileLocation("d:/Projets/Projet_Kasper/SPA-Fmk/SPA-skeleton/public/");
+		Spark.externalStaticFileLocation("D:/@GitHub/vertigo/vertigo-vega-impl/src/test/resources/");
 		//Spark.before(new IE8CompatibilityFix("8"));
 		//Spark.before(new CorsAllower());
 		//Translate EndPoint to route
+
+		Spark.before(new JettyMultipartConfig("/tmp"));
+
 		new SparkJavaRoutesRegister().init();
 	}
 }

@@ -82,47 +82,57 @@ final class JsonConverterHandler implements RouteHandler {
 		final UiContext multiPartBodyParsed = readMultiPartValue(request.body(), endPointDefinition.getEndPointParams());
 		for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
 			final Object value;
-			switch (endPointParam.getParamType()) {
-				case Body:
-					value = readValue(request.body(), endPointParam);
-					break;
-				case MultiPartBody:
-					value = multiPartBodyParsed.get(endPointParam.getName());
-					break;
-				case Path:
-					value = readPrimitiveValue(request.params(endPointParam.getName()), endPointParam.getType());
-					break;
-				case Query:
-					value = readQueryValue(request.queryMap(), endPointParam);
-					break;
-				case Implicit:
-					switch (ImplicitParam.valueOf(endPointParam.getName())) {
-						case UiMessageStack:
-							value = routeContext.getUiMessageStack();
-							break;
-						/*case UiListState:
-							value = readQueryValue(request.queryMap(), endPointParam);
-							break;*/
-						/*case Request:
-							value = request;
-							break;
-						case Response:
-							value = response;
-							break;*/
-						default:
-							throw new IllegalArgumentException("ImplicitParam : " + endPointParam.getName());
-					}
-					break;
-				default:
-					throw new IllegalArgumentException("RestParamType : " + endPointParam.getParamType());
+			if (KFileHelper.isKFileParam(endPointParam)) {
+				value = KFileHelper.readKFileParam(request, endPointParam);
+			} else {
+				switch (endPointParam.getParamType()) {
+					case Body:
+						value = readValue(request.body(), endPointParam);
+						break;
+					case MultiPartBody:
+						value = multiPartBodyParsed.get(endPointParam.getName());
+						break;
+					case Path:
+						value = readPrimitiveValue(request.params(endPointParam.getName()), endPointParam.getType());
+						break;
+					case Query:
+						value = readQueryValue(request.queryMap(), endPointParam);
+						break;
+					case Implicit:
+						switch (ImplicitParam.valueOf(endPointParam.getName())) {
+							case UiMessageStack:
+								value = routeContext.getUiMessageStack();
+								break;
+							/*case UiListState:
+								value = readQueryValue(request.queryMap(), endPointParam);
+								break;*/
+							/*case Request:
+								value = request;
+								break;
+							case Response:
+								value = response;
+								break;*/
+							default:
+								throw new IllegalArgumentException("ImplicitParam : " + endPointParam.getName());
+						}
+						break;
+					default:
+						throw new IllegalArgumentException("RestParamType : " + endPointParam.getFullName());
+				}
 			}
 			Assertion.checkNotNull(value, "RestParam not found : {0}", endPointParam);
 			routeContext.setParamValue(endPointParam, value);
 		}
 
 		final Object result = chain.handle(request, response, routeContext);
-		setHeadersFromResultType(result, response);
-		if (result != null) {
+		if (KFileHelper.isKFileResult(result)) {
+			KFileHelper.sendKFile(result, request, response);
+			return null; // response already send
+		}
+		if (result == null) {
+			response.status(HttpServletResponse.SC_NO_CONTENT);
+		} else {
+			setHeadersFromResultType(result, response);
 			return writeValue(result);
 		}
 		return ""; //jetty understand null as 404 not found
@@ -139,9 +149,6 @@ final class JsonConverterHandler implements RouteHandler {
 			response.type("application/json+" + result.getClass().getSimpleName() + ";charset=UTF-8");
 		} else {
 			response.type("application/json;charset=UTF-8");
-		}
-		if (result == null) {
-			response.status(HttpServletResponse.SC_NO_CONTENT);
 		}
 	}
 

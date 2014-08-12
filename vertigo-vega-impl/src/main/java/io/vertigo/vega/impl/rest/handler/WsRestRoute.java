@@ -71,7 +71,6 @@ public final class WsRestRoute extends Route {
 		}
 		handlerChain.addHandler(new AccessTokenHandler(uiSecurityTokenManager, endPointDefinition));
 		handlerChain.addHandler(new JsonConverterHandler(uiSecurityTokenManager, endPointDefinition, jsonEngine, jsonEngine));
-		handlerChain.addHandler(new KFileHandler());
 		handlerChain.addHandler(new ValidatorHandler(endPointDefinition));
 		handlerChain.addHandler(new RestfulServiceHandler(endPointDefinition));
 	}
