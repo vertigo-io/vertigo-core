@@ -146,7 +146,7 @@ final class JsonConverterHandler implements RouteHandler {
 				response.type("application/json+list;charset=UTF-8");
 			}
 		} else if (result instanceof DtObject) {
-			response.type("application/json+" + result.getClass().getSimpleName() + ";charset=UTF-8");
+			response.type("application/json+entity:" + result.getClass().getSimpleName() + ";charset=UTF-8");
 		} else {
 			response.type("application/json;charset=UTF-8");
 		}
