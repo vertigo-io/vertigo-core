@@ -25,7 +25,6 @@ import io.vertigo.kernel.lang.Option;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-
 /**
  * Résolution des URL par le standard java.net.URL.
  * 

@@ -23,7 +23,6 @@ import io.vertigo.kernel.lang.Option;
 
 import java.util.regex.Pattern;
 
-
 /**
  * Définition de la structure d'un champ d'un noeud du modèle d'édition.
  * Tous les champs sont nommés et typés.

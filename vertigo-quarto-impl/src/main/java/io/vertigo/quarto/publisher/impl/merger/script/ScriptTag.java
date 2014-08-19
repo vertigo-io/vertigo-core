@@ -18,7 +18,6 @@
  */
 package io.vertigo.quarto.publisher.impl.merger.script;
 
-
 /**
  * Tag KScript.
  * @author pchretien, npiedeloup

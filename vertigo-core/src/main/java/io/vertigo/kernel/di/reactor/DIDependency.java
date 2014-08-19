@@ -24,7 +24,6 @@ import io.vertigo.kernel.util.DIAnnotationUtil;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
-
 /**
  * Une dépendance est identifiée par son id et son caractère optionnel.
  * Un composant possède une liste de dépendances.

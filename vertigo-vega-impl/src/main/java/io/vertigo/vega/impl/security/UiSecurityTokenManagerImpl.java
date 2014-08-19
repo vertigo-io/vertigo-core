@@ -45,7 +45,7 @@ public final class UiSecurityTokenManagerImpl implements UiSecurityTokenManager 
 	private final KVDataStoreManager kvDataStoreManager;
 
 	@Inject
-	public UiSecurityTokenManagerImpl(@Named("storeName")final String storeName, final KSecurityManager securityManager, final KVDataStoreManager kvDataStoreManager) {
+	public UiSecurityTokenManagerImpl(@Named("storeName") final String storeName, final KSecurityManager securityManager, final KVDataStoreManager kvDataStoreManager) {
 		Assertion.checkArgNotEmpty(storeName);
 		Assertion.checkNotNull(securityManager);
 		Assertion.checkNotNull(kvDataStoreManager);

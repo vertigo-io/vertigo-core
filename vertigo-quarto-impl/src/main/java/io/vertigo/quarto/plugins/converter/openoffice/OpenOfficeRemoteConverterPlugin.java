@@ -58,8 +58,7 @@ public final class OpenOfficeRemoteConverterPlugin extends AbstractOpenOfficeCon
 
 	/** {@inheritDoc} */
 	@Override
-	protected void storeDocument(final File outputFile, final XComponent xDoc, final ConverterFormat targetFormat, final OpenOfficeConnection openOfficeConnection)
-			throws Exception {
+	protected void storeDocument(final File outputFile, final XComponent xDoc, final ConverterFormat targetFormat, final OpenOfficeConnection openOfficeConnection) throws Exception {
 		final XStorable xStorable = UnoRuntime.queryInterface(XStorable.class, xDoc);
 		final XOutputStream outputStream = new OOoFileOutputStream(outputFile);
 		try {

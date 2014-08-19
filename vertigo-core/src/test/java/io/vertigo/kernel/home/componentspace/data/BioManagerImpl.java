@@ -22,7 +22,6 @@ import io.vertigo.kernel.lang.Activeable;
 
 import javax.inject.Inject;
 
-
 public final class BioManagerImpl implements BioManager, Activeable {
 	private boolean active = false;
 	@Inject

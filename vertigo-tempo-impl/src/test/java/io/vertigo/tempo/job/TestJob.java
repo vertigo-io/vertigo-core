@@ -18,7 +18,6 @@
  */
 package io.vertigo.tempo.job;
 
-
 public final class TestJob implements Runnable {
 	private static int count = 0;
 

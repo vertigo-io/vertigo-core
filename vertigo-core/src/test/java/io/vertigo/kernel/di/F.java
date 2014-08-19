@@ -24,7 +24,6 @@ import io.vertigo.kernel.lang.Option;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-
 public final class F {
 	@Inject
 	@Named("a")

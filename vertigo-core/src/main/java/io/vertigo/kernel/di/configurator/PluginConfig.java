@@ -29,7 +29,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
  * Paramétrage d'un plugin :
  * - Type du plugin

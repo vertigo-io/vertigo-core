@@ -26,7 +26,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Locale;
 
-
 /**
  * Texte pouvant être externalisé dans un fichier de ressources,
  * en fonction du paramétrage de l'application.

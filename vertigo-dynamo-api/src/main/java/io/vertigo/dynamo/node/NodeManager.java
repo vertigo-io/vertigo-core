@@ -22,7 +22,6 @@ import io.vertigo.kernel.component.Manager;
 
 import java.util.List;
 
-
 /**
  * Gestion des Nodes distribués .
  * Ce manager possède des nodes sous la forme de plugins qui permettent de 

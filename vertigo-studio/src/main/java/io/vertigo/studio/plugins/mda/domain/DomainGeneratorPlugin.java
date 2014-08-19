@@ -117,12 +117,12 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 		if (generateDtDefinitions) {
 			generateDtDefinitions(domainConfiguration, result);
 		}
-		
+
 		/* Génération des fichiers javascripts référençant toutes les définitions. */
-		if(generateJsDtDefinitions){
+		if (generateJsDtDefinitions) {
 			generateJsDtDefinitions(domainConfiguration, result);
 		}
-		
+
 		/* Générations des DTO. */
 		if (generateDtObject) {
 			generateDtObjects(domainConfiguration, result);
@@ -143,15 +143,14 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 		super2java.generateFile(result, true);
 
 	}
-	
 
 	private void generateJsDtDefinitions(final DomainConfiguration domainConfiguration, final Result result) {
 
 		List<TemplateDtDefinition> dtDefinitions = new ArrayList<>();
-		for(DtDefinition dtDefinition : getDtDefinitions()) {
+		for (DtDefinition dtDefinition : getDtDefinitions()) {
 			dtDefinitions.add(new TemplateDtDefinition(dtDefinition));
 		}
-		
+
 		final Map<String, Object> mapRoot = new HashMap<>();
 		mapRoot.put("packageName", domainConfiguration.getDomainPackage());
 		mapRoot.put("classSimpleName", domainConfiguration.getDomainDictionaryClassName());

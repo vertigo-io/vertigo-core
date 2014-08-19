@@ -263,7 +263,7 @@ public final class KSecurityManagerTest extends AbstractTestCaseJU4 {
 		public void setFamId(long id) {
 			this.id = id;
 		}
-		
+
 		public long getFamId() {
 			return id;
 		}

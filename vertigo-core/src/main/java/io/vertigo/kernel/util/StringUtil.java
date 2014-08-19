@@ -22,7 +22,6 @@ import io.vertigo.kernel.lang.Assertion;
 
 import java.text.MessageFormat;
 
-
 /**
  * Classe utilitaire proposant des méthodes de manipulation sur les String.
  *
@@ -177,7 +176,7 @@ public final class StringUtil {
 					}
 				}
 			} else if (Character.isUpperCase(c)) {
-				if (!upperCase || (upperCase && i==1)) {
+				if (!upperCase || (upperCase && i == 1)) {
 					//upperCase = true;
 					result.append('_');
 				}

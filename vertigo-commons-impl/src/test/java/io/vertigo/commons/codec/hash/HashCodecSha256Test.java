@@ -55,4 +55,4 @@ public final class HashCodecSha256Test extends AbstractEncoderTest<Encoder<byte[
 		//256 bits attendus soit 32 Octets
 		Assert.assertEquals(32, codec.encode(TEXT.getBytes()).length);
 	}
-}
+}

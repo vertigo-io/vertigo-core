@@ -23,7 +23,6 @@ import io.vertigo.kernel.component.Plugin;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-
 public class MathPlugin implements Plugin {
 	@Inject
 	@Named("factor")

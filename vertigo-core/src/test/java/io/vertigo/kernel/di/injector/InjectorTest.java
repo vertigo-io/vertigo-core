@@ -36,7 +36,6 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
-
 /**
  * Voir sur reactor pour l'arbre des dépendances des objets A==>F.  
  * @author pchretien

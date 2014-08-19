@@ -73,7 +73,6 @@ final class WCoordinatorImpl implements WCoordinator {
 		}
 	}
 
-
 	private <WR, W> Worker resolveWorker(final WorkItem<WR, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		//----------------------------------------------------------------------

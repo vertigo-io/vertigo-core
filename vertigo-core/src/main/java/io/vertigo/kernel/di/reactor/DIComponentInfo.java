@@ -31,7 +31,6 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-
 /**
  * Modèle d'un composant.
  * Un composant est défini par ses dépendances externes.

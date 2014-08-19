@@ -25,7 +25,6 @@ import io.vertigo.xml.XMLModulesLoader;
 
 import java.util.Properties;
 
-
 /**
  * @author pchretien
  */

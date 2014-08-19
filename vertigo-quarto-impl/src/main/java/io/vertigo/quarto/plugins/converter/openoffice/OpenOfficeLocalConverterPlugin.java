@@ -55,8 +55,7 @@ public final class OpenOfficeLocalConverterPlugin extends AbstractOpenOfficeConv
 
 	/** {@inheritDoc} */
 	@Override
-	protected void storeDocument(final File outputFile, final XComponent xDoc, final ConverterFormat targetFormat, final OpenOfficeConnection openOfficeConnection)
-			throws Exception {
+	protected void storeDocument(final File outputFile, final XComponent xDoc, final ConverterFormat targetFormat, final OpenOfficeConnection openOfficeConnection) throws Exception {
 		final XFileIdentifierConverter fileContentProvider = openOfficeConnection.getFileContentProvider();
 		final String outputUrl = fileContentProvider.getFileURLFromSystemPath("", outputFile.getAbsolutePath());
 		final PropertyValue[] storeProps = getFileProperties(targetFormat);

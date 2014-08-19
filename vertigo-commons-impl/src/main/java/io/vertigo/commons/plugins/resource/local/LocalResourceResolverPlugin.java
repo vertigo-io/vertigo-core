@@ -26,7 +26,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-
 /**
  * Résolution des URL liées à l'emplacement local.
  * 

@@ -102,7 +102,7 @@ public final class TemplateDtDefinition {
 	public String getClassSimpleName() {
 		return dtDefinition.getClassSimpleName();
 	}
-	
+
 	public String getClassSimpleNameCamelCase() {
 		return StringUtil.constToCamelCase(dtDefinition.getClassSimpleName(), false);
 	}

@@ -410,4 +410,4 @@ public final class HtmlCodec extends AbstractCodec {
 		}
 		return true; //on encode	
 	}
-}
+}

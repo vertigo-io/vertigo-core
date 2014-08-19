@@ -22,7 +22,6 @@ import io.vertigo.kernel.component.Manager;
 
 import java.net.URL;
 
-
 /**
  * Selecteurs de ressources. 
  * Les ressources sont identifiées par une URL. 

@@ -34,10 +34,10 @@ import javax.inject.Inject;
  * 
  * @author pchretien, npiedeloup
  */
-public final class EnvironmentManagerImpl implements EnvironmentManager{
+public final class EnvironmentManagerImpl implements EnvironmentManager {
 
 	@Inject
-	public EnvironmentManagerImpl(final List<LoaderPlugin> loaderPlugins, List<DynamicRegistryPlugin> dynamicRegistryPlugins){
+	public EnvironmentManagerImpl(final List<LoaderPlugin> loaderPlugins, List<DynamicRegistryPlugin> dynamicRegistryPlugins) {
 		Assertion.checkNotNull(loaderPlugins);
 		Assertion.checkNotNull(dynamicRegistryPlugins);
 		//---------------------------------------------------------------------

@@ -22,7 +22,6 @@ import io.vertigo.kernel.lang.Activeable;
 
 import javax.inject.Named;
 
-
 /**
  * @author prahmoune
  */

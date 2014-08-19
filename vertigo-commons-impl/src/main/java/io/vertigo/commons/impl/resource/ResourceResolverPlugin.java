@@ -23,7 +23,6 @@ import io.vertigo.kernel.lang.Option;
 
 import java.net.URL;
 
-
 /**
  * Résout une ressource en fournissant son URL.
  * @author prahmoune

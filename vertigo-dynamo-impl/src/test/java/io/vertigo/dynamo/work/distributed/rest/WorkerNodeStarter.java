@@ -22,7 +22,6 @@ import io.vertigo.kernel.lang.Option;
 
 import java.util.Properties;
 
-
 /**
  * @author npiedeloup
  * $Id: WorkerNodeStarter.java,v 1.4 2013/11/15 15:29:20 pchretien Exp $

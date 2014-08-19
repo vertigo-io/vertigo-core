@@ -24,7 +24,6 @@ import io.vertigo.kernel.lang.MessageText;
 
 import java.util.Locale;
 
-
 /**
  * Toute application gérée par kapser est multilingue ou plus précisémment multidictionnaires.
  * 

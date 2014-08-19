@@ -67,12 +67,10 @@ final class KspLoader {
 			final Rule<Void> rule = new KspRule(dynamicModelrepository);
 			rule.createParser().parse(s, 0);
 		} catch (final NotFoundException e) {
-			final String message = StringUtil.format("Echec de lecture du fichier KSP {0}\n{1}", kspURL.getFile(),
-					e.getFullMessage());
+			final String message = StringUtil.format("Echec de lecture du fichier KSP {0}\n{1}", kspURL.getFile(), e.getFullMessage());
 			throw new RuntimeException(message, e);
 		} catch (final Exception e) {
-			final String message = StringUtil.format("Echec de lecture du fichier KSP {0}\n{1}", kspURL.getFile(),
-					e.getMessage());
+			final String message = StringUtil.format("Echec de lecture du fichier KSP {0}\n{1}", kspURL.getFile(), e.getMessage());
 			throw new RuntimeException(message, e);
 		}
 	}
@@ -84,8 +82,7 @@ final class KspLoader {
 	 * @throws IOException Erreur d'entrÃ©e/sortie
 	 */
 	private String parseFile() throws IOException {
-		try (final BufferedReader reader = new BufferedReader(new InputStreamReader(kspURL.openStream(),
-				Charset.forName(charset)))) {
+		try (final BufferedReader reader = new BufferedReader(new InputStreamReader(kspURL.openStream(), Charset.forName(charset)))) {
 			final StringBuilder buff = new StringBuilder();
 			String line = reader.readLine();
 			while (line != null) {

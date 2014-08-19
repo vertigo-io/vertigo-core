@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.export.ods;
 
-
 /**
  * Plugin d'export ODS.
  *

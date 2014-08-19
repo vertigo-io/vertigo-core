@@ -27,7 +27,6 @@ import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
 
-
 /**
 * Test de l'utilitaitre de manipulation des dates.
 *

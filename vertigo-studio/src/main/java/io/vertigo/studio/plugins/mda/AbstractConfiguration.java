@@ -58,16 +58,12 @@ public class AbstractConfiguration implements Configuration {
 	protected AbstractConfiguration(final Properties properties) {
 		Assertion.checkNotNull(properties);
 		// ---------------------------------------------------------------------
-		targetDir = getPropertyNotNull(properties, "targetDir",
-				"Le repertoire des fichiers generes [targetDir] doit etre renseigné !");
+		targetDir = getPropertyNotNull(properties, "targetDir", "Le repertoire des fichiers generes [targetDir] doit etre renseigné !");
 		Assertion.checkState(targetDir.endsWith("/"), "Le chemin doit finir par '/'.");
-		targetGenDir = getPropertyNotNull(properties, "targetGenDir",
-				"Le repertoire des fichiers generes [targetGenDir] doit etre renseigné !");
+		targetGenDir = getPropertyNotNull(properties, "targetGenDir", "Le repertoire des fichiers generes [targetGenDir] doit etre renseigné !");
 		Assertion.checkState(targetGenDir.endsWith("/"), "Le chemin doit finir par '/'.");
-		projectPackageName = getPropertyNotNull(properties, "project.packagename",
-				"le package racine du projet doit être renseigne ! [project.packagename]");
-		encoding = getPropertyNotNull(properties, "encoding",
-				"l'encoding des fichiers gérénés [encoding] doit etre renseigné !");
+		projectPackageName = getPropertyNotNull(properties, "project.packagename", "le package racine du projet doit être renseigne ! [project.packagename]");
+		encoding = getPropertyNotNull(properties, "encoding", "l'encoding des fichiers gérénés [encoding] doit etre renseigné !");
 	}
 
 	/**

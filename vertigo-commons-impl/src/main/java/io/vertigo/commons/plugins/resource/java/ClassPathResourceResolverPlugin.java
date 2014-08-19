@@ -24,7 +24,6 @@ import io.vertigo.kernel.lang.Option;
 
 import java.net.URL;
 
-
 /**
  * Résolution des URL liées au classPath.
  * Cette résolution est en absolue.

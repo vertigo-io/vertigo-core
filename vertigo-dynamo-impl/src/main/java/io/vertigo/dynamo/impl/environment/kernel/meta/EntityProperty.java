@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.impl.environment.kernel.meta;
 
-
 /**
  * Propriété (meta-data, aspect, attribute) d'une entity.
  *

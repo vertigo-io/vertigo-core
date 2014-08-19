@@ -23,7 +23,6 @@ import io.vertigo.kernel.component.mock.aop.TenMore;
 
 import javax.inject.Named;
 
-
 /**
  * @author prahmoune
  */

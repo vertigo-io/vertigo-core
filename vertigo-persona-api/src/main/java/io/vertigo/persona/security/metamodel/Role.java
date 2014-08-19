@@ -24,7 +24,6 @@ import io.vertigo.kernel.stereotype.Prefix;
 
 import java.util.List;
 
-
 /**
  * Un rôle est la réunion d'un ensemble de permissions. 
  * Un utilisateur peut avoir  plusieurs rôles.

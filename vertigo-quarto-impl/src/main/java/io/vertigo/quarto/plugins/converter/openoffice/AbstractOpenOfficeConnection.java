@@ -89,11 +89,9 @@ abstract class AbstractOpenOfficeConnection implements OpenOfficeConnection, XEv
 		try {
 			final XComponentContext localContext = Bootstrap.createInitialComponentContext(null);
 			final XMultiComponentFactory localServiceManager = localContext.getServiceManager();
-			final XConnector connector = UnoRuntime.queryInterface(XConnector.class,
-					localServiceManager.createInstanceWithContext("com.sun.star.connection.Connector", localContext));
+			final XConnector connector = UnoRuntime.queryInterface(XConnector.class, localServiceManager.createInstanceWithContext("com.sun.star.connection.Connector", localContext));
 			final XConnection connection = connector.connect(connectionString);
-			final XBridgeFactory bridgeFactory = UnoRuntime.queryInterface(XBridgeFactory.class,
-					localServiceManager.createInstanceWithContext("com.sun.star.bridge.BridgeFactory", localContext));
+			final XBridgeFactory bridgeFactory = UnoRuntime.queryInterface(XBridgeFactory.class, localServiceManager.createInstanceWithContext("com.sun.star.bridge.BridgeFactory", localContext));
 			final XBridge bridge = bridgeFactory.createBridge("", "urp", connection, null);
 			bridgeComponent = UnoRuntime.queryInterface(XComponent.class, bridge);
 			bridgeComponent.addEventListener(this);

@@ -22,7 +22,6 @@ import io.vertigo.kernel.lang.Option;
 
 import javax.inject.Inject;
 
-
 public final class E {
 	@Inject
 	private Option<B> b;

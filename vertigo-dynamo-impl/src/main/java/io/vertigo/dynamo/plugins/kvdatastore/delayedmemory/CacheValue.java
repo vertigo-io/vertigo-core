@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.kvdatastore.delayedmemory;
 
-
 /**
  * Keep value, with it's createTime.
  * @author npiedeloup

@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.export;
 
-
 /**
  * Formats de sortie supportés par le manager d'édition.
  * @author pchretien, npiedeloup
