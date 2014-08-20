@@ -90,8 +90,8 @@ public final class WorkItem<WR, W> {
 		return id;
 	}
 
-	public Exec getExec() {
-		return exec;
+	public boolean isSync() {
+		return exec == Exec.sync;
 	}
 
 	/**
@@ -118,7 +118,7 @@ public final class WorkItem<WR, W> {
 		return result;
 	}
 
-	public synchronized void setResult(WR result) {
+	public synchronized void setResult(final WR result) {
 		Assertion.checkNotNull(result);
 		//---------------------------------------------------------------------
 		this.result = result;

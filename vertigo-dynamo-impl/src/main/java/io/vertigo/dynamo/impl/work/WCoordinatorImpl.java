@@ -29,7 +29,7 @@ final class WCoordinatorImpl implements WCoordinator {
 	private final Option<DistributedWorkerPlugin> distributedWorker;
 	private final LocalWorker localWorker;
 
-	WCoordinatorImpl(int workerCount, WorkListener workListener, Option<DistributedWorkerPlugin> distributedWorker) {
+	WCoordinatorImpl(final int workerCount, final WorkListener workListener, final Option<DistributedWorkerPlugin> distributedWorker) {
 		Assertion.checkNotNull(workListener);
 		Assertion.checkNotNull(distributedWorker);
 		//-----------------------------------------------------------------
@@ -53,23 +53,19 @@ final class WCoordinatorImpl implements WCoordinator {
 	/** {@inheritDoc}   */
 	public <WR, W> void execute(final WorkItem<WR, W> workItem) {
 		final Worker worker = resolveWorker(workItem);
-		switch (workItem.getExec()) {
-			case async:
-				worker.schedule(workItem);
-				break;
-			case sync:
-				workListener.onStart(workItem.getWorkEngineProvider().getName());
-				boolean executed = false;
-				final long start = System.currentTimeMillis();
-				try {
-					worker.process(workItem);
-					executed = true;
-				} finally {
-					workListener.onFinish(workItem.getWorkEngineProvider().getName(), System.currentTimeMillis() - start, executed);
-				}
-				break;
-			default:
-				throw new IllegalArgumentException("Unknown type of execution :" + workItem.getExec());
+		//---
+		if (workItem.isSync()) {
+			workListener.onStart(workItem.getWorkEngineProvider().getName());
+			boolean executed = false;
+			final long start = System.currentTimeMillis();
+			try {
+				worker.process(workItem);
+				executed = true;
+			} finally {
+				workListener.onFinish(workItem.getWorkEngineProvider().getName(), System.currentTimeMillis() - start, executed);
+			}
+		} else {
+			worker.schedule(workItem);
 		}
 	}
 

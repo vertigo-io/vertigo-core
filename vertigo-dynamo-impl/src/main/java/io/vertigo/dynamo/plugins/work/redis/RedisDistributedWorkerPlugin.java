@@ -189,7 +189,7 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 		datas.put("work64", RedisUtil.encode(workItem.getWork()));
 		datas.put("provider64", RedisUtil.encode(workItem.getWorkEngineProvider().getName()));
 		datas.put("date", DateUtil.newDate().toString());
-		datas.put("sync", Boolean.toString(workItem.getExec() == WorkItem.Exec.sync));
+		datas.put("sync", Boolean.toString(workItem.isSync()));
 
 		final Transaction tx = jedis.multi();
 
