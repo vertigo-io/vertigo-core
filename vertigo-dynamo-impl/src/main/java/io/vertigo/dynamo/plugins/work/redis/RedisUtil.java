@@ -20,6 +20,7 @@ package io.vertigo.dynamo.plugins.work.redis;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
+import io.vertigo.kernel.lang.Option;
 
 import java.io.Serializable;
 
@@ -32,13 +33,19 @@ import redis.clients.jedis.JedisPoolConfig;
  * $Id: RedisUtil.java,v 1.7 2014/06/26 12:30:08 npiedeloup Exp $
  */
 public final class RedisUtil {
+	private static final int timeout = 2000;
 	private static final CodecManager codecManager = new CodecManagerImpl();
 
-	public static JedisPool createJedisPool(final String redisHost, final int port) {
+	public static JedisPool createJedisPool(final String redisHost, final int port, final Option<String> password) {
 		final JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 		//jedisPoolConfig.setMaxActive(10);
-		final JedisPool jedisPool = new JedisPool(jedisPoolConfig, redisHost, port);
-
+		final JedisPool jedisPool; 
+		if (password.isDefined()){
+			jedisPool= new JedisPool(jedisPoolConfig, redisHost, port, timeout, password.get());
+		}else{
+			jedisPool= new JedisPool(jedisPoolConfig, redisHost, port,timeout);
+		}
+		
 		//test
 		final Jedis jedis = jedisPool.getResource();
 		try {

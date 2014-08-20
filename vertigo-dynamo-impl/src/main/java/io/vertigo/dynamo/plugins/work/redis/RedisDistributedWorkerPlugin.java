@@ -24,6 +24,7 @@ import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.util.DateUtil;
 
 import java.util.Collections;
@@ -56,10 +57,10 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 	private final Thread redisListenerThread;
 
 	@Inject
-	public RedisDistributedWorkerPlugin(final @Named("host") String redisHost, final @Named("timeoutSeconds") int timeoutSeconds) {
+	public RedisDistributedWorkerPlugin(final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> password,final @Named("timeoutSeconds") int timeoutSeconds) {
 		Assertion.checkArgNotEmpty(redisHost);
 		//---------------------------------------------------------------------
-		jedisPool = RedisUtil.createJedisPool(redisHost, 6379);
+		jedisPool = RedisUtil.createJedisPool(redisHost, redisPort, password);
 		this.timeoutSeconds = timeoutSeconds;
 		redisListenerThread = new RedisListenerThread(jedisPool, workResultHandlers);
 	}

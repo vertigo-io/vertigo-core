@@ -23,6 +23,7 @@ import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;
 import io.vertigo.dynamo.node.Node;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.lang.Option;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,12 +53,12 @@ public final class RedisNodePlugin implements NodePlugin, Activeable {
 	private final String nodeId;
 
 	@Inject
-	public RedisNodePlugin(final @Named("nodeId") String nodeId, final @Named("host") String redisHost) {
+	public RedisNodePlugin(final @Named("nodeId") String nodeId, final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> password) {
 		Assertion.checkArgNotEmpty(nodeId);
 		Assertion.checkArgNotEmpty(redisHost);
 		//---------------------------------------------------------------------
 		this.nodeId = nodeId;
-		jedisPool = RedisUtil.createJedisPool(redisHost, 6379);
+		jedisPool = RedisUtil.createJedisPool(redisHost, redisPort, password);
 		dispatcherThread = new RedisDispatcherThread(nodeId, jedisPool, localWorker);
 		//System.out.println("RedisNodePlugin");
 	}

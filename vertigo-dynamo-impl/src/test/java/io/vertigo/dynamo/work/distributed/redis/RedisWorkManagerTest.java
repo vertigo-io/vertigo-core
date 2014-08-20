@@ -20,6 +20,7 @@ package io.vertigo.dynamo.work.distributed.redis;
 
 import io.vertigo.dynamo.plugins.work.redis.RedisUtil;
 import io.vertigo.dynamo.work.AbstractWorkManagerTest;
+import io.vertigo.kernel.lang.Option;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -30,7 +31,7 @@ import redis.clients.jedis.JedisPool;
 public class RedisWorkManagerTest extends AbstractWorkManagerTest {
 	@Override
 	protected void doSetUp() throws Exception {
-		reset(RedisUtil.createJedisPool("localhost", 6379));
+		reset(RedisUtil.createJedisPool("pub-redis-15190.us-east-1-3.4.ec2.garantiadata.com", 15190, Option.some("kleegroup")));
 		//reset(RedisUtil.createJedisPool("kasper-redis", 6379));
 	}
 
