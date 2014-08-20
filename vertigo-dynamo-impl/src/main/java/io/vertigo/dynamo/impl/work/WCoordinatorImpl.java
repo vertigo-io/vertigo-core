@@ -54,18 +54,14 @@ final class WCoordinatorImpl implements WCoordinator {
 	public <WR, W> void execute(final WorkItem<WR, W> workItem) {
 		final Worker worker = resolveWorker(workItem);
 		//---
-		if (workItem.isSync()) {
-			workListener.onStart(workItem.getWorkEngineProvider().getName());
-			boolean executed = false;
-			final long start = System.currentTimeMillis();
-			try {
-				worker.process(workItem);
-				executed = true;
-			} finally {
-				workListener.onFinish(workItem.getWorkEngineProvider().getName(), System.currentTimeMillis() - start, executed);
-			}
-		} else {
-			worker.schedule(workItem);
+		workListener.onStart(workItem.getWorkEngineProvider().getName());
+		boolean executed = false;
+		final long start = System.currentTimeMillis();
+		try {
+			worker.execute(workItem);
+			executed = true;
+		} finally {
+			workListener.onFinish(workItem.getWorkEngineProvider().getName(), System.currentTimeMillis() - start, executed);
 		}
 	}
 

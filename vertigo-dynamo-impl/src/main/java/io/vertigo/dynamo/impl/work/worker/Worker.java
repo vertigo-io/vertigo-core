@@ -35,16 +35,5 @@ public interface Worker {
 	 * @param work Travail à exécuter
 	 * @return resultat
 	 */
-	<WR, W> void process(final WorkItem<WR, W> workItem);
-
-	/**
-	 * Exécution asynchrone d'un Work.
-	 * - Si le traitement déclenche une exception le status est porté par WorkItem.
-	 * - Si l'exécution asynchrone déclenche une exception, cela signifie qu'il est impossible de programmer le Work pour son exécution.
-	 * @param <W> Type de Work (Travail)
-	 * @param <WR> Produit d'un work à l'issu de son exécution
-	 * @param work Tache, Work à exécuter
-	 * @param  workResultHandler Handler permettant un callback après exécution
-	 */
-	<WR, W> void schedule(final WorkItem<WR, W> workItem);
+	<WR, W> void execute(final WorkItem<WR, W> workItem);
 }

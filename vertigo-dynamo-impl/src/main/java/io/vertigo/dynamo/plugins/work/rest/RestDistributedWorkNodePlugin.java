@@ -112,7 +112,6 @@ public final class RestDistributedWorkNodePlugin implements NodePlugin, Activeab
 	private static final class PollWorkTask implements Callable<Void> {
 		private final WorkQueueRestClient workQueueClient;
 		private final String workType;
-		private final Worker localSyncWorker = new LocalSyncWorker();
 
 		/**
 		 * Constructeur.
@@ -133,24 +132,13 @@ public final class RestDistributedWorkNodePlugin implements NodePlugin, Activeab
 			if (nextWorkItem != null) {
 				//On rerentre dans le WorkItemExecutor pour traiter le travail
 				//Le workResultHandler sait déjà répondre au serveur pour l'avancement du traitement
-				final WorkItemExecutor workItemExecutor = new WorkItemExecutor(localSyncWorker, nextWorkItem);
+				final WorkItemExecutor workItemExecutor = new WorkItemExecutor(nextWorkItem);
 				workItemExecutor.run();
 			}
 			return null;
 		}
 	}
 
-	private static final class LocalSyncWorker implements Worker {
-		/** {@inheritDoc} */
-		public <WR, W> void process(final WorkItem<WR, W> workItem) {
-			workItem.setResult(workItem.getWorkEngineProvider().provide().process(workItem.getWork()));
-		}
-
-		/** {@inheritDoc} */
-		public <WR, W> void schedule(final WorkItem<WR, W> workItem) {
-			throw new UnsupportedOperationException("Non géré, uniquement synchrone");
-		}
-	}
 
 	private static final class ReScheduleWorkResultHandler implements WorkResultHandler<Void> {
 		private final Callable<Void> task;

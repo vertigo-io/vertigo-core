@@ -51,7 +51,6 @@ public final class WorkItemExecutor<WR, W> implements Runnable {
 		threadLocalsField.setAccessible(true);
 	}
 
-	private final Worker worker;
 	private final WorkItem<WR, W> workItem;
 	private final Logger logger = Logger.getLogger(WorkManager.class); //même logger que le WorkListenerImpl
 
@@ -59,12 +58,10 @@ public final class WorkItemExecutor<WR, W> implements Runnable {
 	 * Constructeur.
 	 * @param workItem WorkItem à traiter
 	 */
-	public WorkItemExecutor(final Worker worker, final WorkItem<WR, W> workItem) {
-		Assertion.checkNotNull(worker);
+	public WorkItemExecutor(final WorkItem<WR, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		//-----------------------------------------------------------------
 		this.workItem = workItem;
-		this.worker = worker;
 	}
 
 	/** {@inheritDoc} */
@@ -77,7 +74,7 @@ public final class WorkItemExecutor<WR, W> implements Runnable {
 		//---------------------------------------------------------------------
 		try {
 			workItem.getWorkResultHandler().get().onStart();
-			worker.process(workItem);
+			LocalWorker.executeNow(workItem);
 			workItem.getWorkResultHandler().get().onSuccess(workItem.getResult());
 		} catch (final Throwable t) {
 			workItem.getWorkResultHandler().get().onFailure(t);

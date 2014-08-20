@@ -81,14 +81,20 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 	}
 
 	/** {@inheritDoc} */
-	public <WR, W> void process(final WorkItem<WR, W> workItem) {
+	public <WR, W> void execute(final WorkItem<WR, W> workItem) {
 		int retry = 0;
 		while (retry < 3) {
 			Jedis jedis = jedisPool.getResource();
 			try {
-				this.<WR, W> doProcess(jedis, workItem);
+				//---
+				if (workItem.isSync()){
+					this.<WR, W> doProcess(jedis, workItem);
+				}else{
+					this.<WR, W> doSchedule(jedis, workItem);
+				}
 				//C'est bon on s'arrête 
 				return;
+				//---
 			} catch (final JedisException e) {
 				jedisPool.returnBrokenResource(jedis);
 				jedis = null;
@@ -134,6 +140,12 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 
 	}
 
+	private <WR, W> void doSchedule(final Jedis jedis, final WorkItem<WR, W> workItem) {
+		putWorkItem(jedis, workItem);
+
+		workResultHandlers.put(workItem.getId(), workItem.getWorkResultHandler().get());
+	}
+
 	private <WR, W> void doProcess(final Jedis jedis, final WorkItem<WR, W> workItem) {
 		//1. On renseigne la demande de travaux
 		putWorkItem(jedis, workItem);
@@ -154,33 +166,6 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 			throw new IllegalStateException("Id non cohérents attendu '" + workItem.getId() + "' trouvé '" + id + "'");
 		}
 		return (WR) buildResult(jedis, workItem.getId());
-	}
-
-	/** {@inheritDoc} */
-	public <WR, W> void schedule(final WorkItem<WR, W> workItem) {
-		int retry = 0;
-		while (retry < 3) {
-			Jedis jedis = jedisPool.getResource();
-			try {
-				doSchedule(jedis, workItem);
-				return;
-			} catch (final JedisException e) {
-				jedisPool.returnBrokenResource(jedis);
-				jedis = null;
-			} finally {
-				jedisPool.returnResource(jedis);
-			}
-			//System.out.println("retry");
-			retry++;
-		}
-		throw new RuntimeException("3 essais ");
-
-	}
-
-	private <WR, W> void doSchedule(final Jedis jedis, final WorkItem<WR, W> workItem) {
-		putWorkItem(jedis, workItem);
-
-		workResultHandlers.put(workItem.getId(), workItem.getWorkResultHandler().get());
 	}
 
 	private static <WR, W> void putWorkItem(final Jedis jedis, final WorkItem<WR, W> workItem) {

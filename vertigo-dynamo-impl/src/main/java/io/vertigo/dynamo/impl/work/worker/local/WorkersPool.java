@@ -96,7 +96,7 @@ final class WorkersPool implements Activeable {
 
 	private void executeWorkItem(final WorkItem<?, ?> workItem) {
 		//On donne au pool d'éxécution une tache à accomplir.
-		workers.execute(new WorkItemExecutor<>(worker, workItem));
+		workers.execute(new WorkItemExecutor<>(workItem));
 	}
 
 	/**

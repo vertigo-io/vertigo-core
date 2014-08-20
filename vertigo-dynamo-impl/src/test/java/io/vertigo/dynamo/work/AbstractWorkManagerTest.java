@@ -36,7 +36,7 @@ import org.junit.Test;
  */
 public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 	private final long warmupTime = 200; //en fonction du mode de distribution la prise en compte d'une tache est plus ou moins longue. Pour les TU on estime à 2s
-	private final int loop = 100;
+	private final int loop = 10;
 	private static final int WORKER_COUNT = 5; //Doit correspondre au workerCount déclaré dans managers.xlm
 
 	@Inject

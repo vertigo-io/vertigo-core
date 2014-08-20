@@ -76,7 +76,7 @@ final class RedisDispatcherThread extends Thread {
 
 	private <WR, W> void execute(final String workId, final Jedis jedis) {
 		WorkItem<WR, W> workItem = getWorkItem(workId, jedis);
-		localWorker.schedule(workItem);
+		localWorker.execute(workItem);
 	}
 
 	private <W, WR> WorkItem<WR, W> getWorkItem(final String workId, final Jedis jedis) {
