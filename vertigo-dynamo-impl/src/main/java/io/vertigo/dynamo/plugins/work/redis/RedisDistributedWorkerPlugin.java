@@ -135,9 +135,9 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 
 	private <WR, W> void doProcess(final Jedis jedis, final WorkItem<WR, W> workItem) {
 		//1. On renseigne la demande de travaux
-		push(jedis, workItem, true);
+		putWorkItem(jedis, workItem);
 		//2. On attend le résultat
-		WR result = waitResult(jedis, workItem);
+		final WR result = waitResult(jedis, workItem);
 		//3. On affecte le résultat
 		workItem.setResult(result);
 	}
@@ -177,19 +177,19 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 	}
 
 	private <WR, W> void doSchedule(final Jedis jedis, final WorkItem<WR, W> workItem) {
-		push(jedis, workItem, false);
+		putWorkItem(jedis, workItem);
 
 		workResultHandlers.put(workItem.getId(), workItem.getWorkResultHandler().get());
 	}
 
-	private static <WR, W> void push(final Jedis jedis, final WorkItem<WR, W> workItem, final boolean sync) {
+	private static <WR, W> void putWorkItem(final Jedis jedis, final WorkItem<WR, W> workItem) {
 		//out.println("creating work [" + workId + "] : " + work.getClass().getSimpleName());
 
 		final Map<String, String> datas = new HashMap<>();
 		datas.put("work64", RedisUtil.encode(workItem.getWork()));
 		datas.put("provider64", RedisUtil.encode(workItem.getWorkEngineProvider().getName()));
 		datas.put("date", DateUtil.newDate().toString());
-		datas.put("sync", Boolean.toString(sync));
+		datas.put("sync", Boolean.toString(workItem.getExec() == WorkItem.Exec.sync));
 
 		final Transaction tx = jedis.multi();
 
