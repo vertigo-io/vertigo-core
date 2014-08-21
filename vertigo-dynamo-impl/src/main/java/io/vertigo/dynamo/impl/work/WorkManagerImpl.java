@@ -26,6 +26,7 @@ import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Option;
 
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -63,9 +64,12 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		coordinator.stop();
 	}
 
+	private static String createWorkId(){
+		return UUID.randomUUID().toString();
+	}
 	/** {@inheritDoc} */
 	public <WR, W> WR process(final W work, final WorkEngineProvider<WR, W> workEngineProvider) {
-		final WorkItem<WR, W> workItem = new WorkItem<>(work, workEngineProvider);
+		final WorkItem<WR, W> workItem = new WorkItem<>(createWorkId(), work, workEngineProvider);
 		final Future<WR> result = coordinator.execute(workItem, Option.<WorkResultHandler<WR>> none());
 		try {
 			return result.get();
@@ -80,14 +84,14 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	}
 
 	public <WR, W> void schedule(final W work, final WorkEngineProvider<WR, W> workEngineProvider, final WorkResultHandler<WR> workResultHandler) {
-		final WorkItem<WR, W> workItem = new WorkItem<>(work, workEngineProvider);
+		final WorkItem<WR, W> workItem = new WorkItem<>(createWorkId(), work, workEngineProvider);
 		coordinator.execute(workItem, Option.some(workResultHandler));
 	}
 
 	public <WR, W> void schedule(final Callable<WR> callable, final WorkResultHandler<WR> workResultHandler) {
 		final WorkEngineProvider<WR, W> workEngineProvider = new WorkEngineProvider<>(new CallableEngine<WR, W>(callable));
 
-		final WorkItem<WR, W> workItem = new WorkItem<>(null, workEngineProvider);
+		final WorkItem<WR, W> workItem = new WorkItem<>(createWorkId(), null, workEngineProvider);
 		coordinator.execute(workItem, Option.some(workResultHandler));
 	}
 }

@@ -21,9 +21,10 @@ public final class RedisDBUtil {
 		//out.println("creating work [" + workId + "] : " + work.getClass().getSimpleName());
 
 		final Map<String, String> datas = new HashMap<>();
+		datas.put("id", workItem.getId());
 		datas.put("work64", encode(workItem.getWork()));
 		datas.put("provider64", encode(workItem.getWorkEngineProvider().getName()));
-		datas.put("date", DateUtil.newDate().toString());
+		datas.put("x-date", DateUtil.newDate().toString());
 
 		final Transaction tx = jedis.multi();
 
@@ -40,15 +41,16 @@ public final class RedisDBUtil {
 		//		datas.put("work64", RedisUtil.encode(work));
 		//		datas.put("provider64", RedisUtil.encode(workEngineProvider.getName()));
 		final Transaction tx = jedis.multi();
-
+		final Response<String> sid = tx.hget("work:" + workId, "id");
 		final Response<String> swork = tx.hget("work:" + workId, "work64");
 		final Response<String> sname = tx.hget("work:" + workId, "provider64");
 		tx.exec();
 
+		final String id = sid.get();
 		final W work = (W) decode(swork.get());
 		final String name = (String) decode(sname.get());
 		final WorkEngineProvider<WR, W> workEngineProvider = new WorkEngineProvider<>(name);
-		return new WorkItem<>(work, workEngineProvider);
+		return new WorkItem<>(id, work, workEngineProvider);
 	}
 
 	static <WR> WR readSuccess(final Jedis jedis, final String workId) {

@@ -21,23 +21,21 @@ package io.vertigo.dynamo.impl.work;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.kernel.lang.Assertion;
 
-import java.util.UUID;
-import java.util.concurrent.Callable;
-
 public final class WorkItem<WR, W> {
 	private final W work;
 	private final WorkEngineProvider<WR, W> workEngineProvider;
-	private final String id = UUID.randomUUID().toString();
+	private final String id;
 
 	/**
 	 * Constructor. 
 	 * This workItem is used to define a synchronous work. 
 	 * @param work Travail dont on représente l'état.
 	 */
-	public WorkItem(final W work, final WorkEngineProvider<WR, W> workEngineProvider) {
-		//Assertion.checkNotNull(work);
+	public WorkItem(final String id, final W work, final WorkEngineProvider<WR, W> workEngineProvider) {
+		Assertion.checkNotNull(id);
 		Assertion.checkNotNull(workEngineProvider);
 		//---------------------------------------------------------------------
+		this.id = id;
 		this.work = work;
 		this.workEngineProvider = workEngineProvider;
 	}
