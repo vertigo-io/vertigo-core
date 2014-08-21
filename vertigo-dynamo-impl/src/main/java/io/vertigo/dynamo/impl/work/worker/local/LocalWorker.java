@@ -20,8 +20,10 @@ package io.vertigo.dynamo.impl.work.worker.local;
 
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.impl.work.worker.Worker;
+import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.lang.Option;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -80,9 +82,9 @@ public final class LocalWorker implements Worker, Activeable {
 	 * WorkItem contient à la fois le Work et le callback.  
 	 * @param workItem WorkItem
 	 */
-	public <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem) {
+	public <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
 		Assertion.checkNotNull(workItem);
 		//-------------------------------------------------------------------
-		return workers.submit(new WorkItemExecutor<>(workItem));
+		return workers.submit(new WorkItemExecutor<>(workItem, workResultHandler));
 	}
 }

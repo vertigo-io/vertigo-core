@@ -18,7 +18,9 @@
  */
 package io.vertigo.dynamo.impl.work;
 
+import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Activeable;
+import io.vertigo.kernel.lang.Option;
 
 import java.util.concurrent.Future;
 
@@ -34,6 +36,6 @@ public interface WCoordinator extends Activeable {
 	 * @param <WR> Produit d'un work à l'issu de son exécution
 	 * @param workItem Travail à exécuter
 	 */
-	<WR, W> Future<WR> execute(final WorkItem<WR, W> workItem);
+	<WR, W> Future<WR> execute(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler);
 
 }

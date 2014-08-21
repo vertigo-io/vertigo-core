@@ -19,6 +19,8 @@
 package io.vertigo.dynamo.impl.work.worker;
 
 import io.vertigo.dynamo.impl.work.WorkItem;
+import io.vertigo.dynamo.work.WorkResultHandler;
+import io.vertigo.kernel.lang.Option;
 
 import java.util.concurrent.Future;
 
@@ -37,5 +39,5 @@ public interface Worker {
 	 * @param work Travail à exécuter
 	 * @return resultats
 	 */
-	<WR, W> Future<WR> submit(final WorkItem<WR, W> workItem);
+	<WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler);
 }

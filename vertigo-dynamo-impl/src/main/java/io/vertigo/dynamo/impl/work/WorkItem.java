@@ -19,18 +19,15 @@
 package io.vertigo.dynamo.impl.work;
 
 import io.vertigo.dynamo.work.WorkEngineProvider;
-import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.Option;
 
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
 public final class WorkItem<WR, W> {
 	private final W work;
-	private final Option<WorkResultHandler<WR>> workResultHandler;
 	private final WorkEngineProvider<WR, W> workEngineProvider;
-	final String id = UUID.randomUUID().toString();
+	private final String id = UUID.randomUUID().toString();
 
 	/**
 	 * Constructor. 
@@ -42,31 +39,14 @@ public final class WorkItem<WR, W> {
 		Assertion.checkNotNull(workEngineProvider);
 		//---------------------------------------------------------------------
 		this.work = work;
-		this.workResultHandler = Option.none();
 		this.workEngineProvider = workEngineProvider;
 	}
 
-	public WorkItem(final Callable<WR> callable, final WorkResultHandler<WR> workResultHandler) {
+	public WorkItem(final Callable<WR> callable) {
 		Assertion.checkNotNull(callable);
-		Assertion.checkNotNull(workResultHandler);
 		//---------------------------------------------------------------------
 		this.work = null;
-		this.workResultHandler = Option.some(workResultHandler);
 		this.workEngineProvider = new WorkEngineProvider<>(new CallableEngine<WR, W>(callable));
-	}
-
-	/**
-	 * Constructeur.
-	 * @param work Travail dont on représente l'état.
-	 */
-	public WorkItem(final W work, final WorkEngineProvider<WR, W> workEngineProvider, final WorkResultHandler<WR> workResultHandler) {
-		Assertion.checkNotNull(work);
-		Assertion.checkNotNull(workEngineProvider);
-		Assertion.checkNotNull(workResultHandler);
-		//---------------------------------------------------------------------
-		this.work = work;
-		this.workResultHandler = Option.some(workResultHandler);
-		this.workEngineProvider = workEngineProvider;
 	}
 
 	public String getId() {
@@ -79,14 +59,6 @@ public final class WorkItem<WR, W> {
 	 */
 	public W getWork() {
 		return work;
-	}
-
-	/**
-	 * Permet de récupérer le WorkResultHandler traitant les resultats de l'éxecution. 
-	 * @return le work
-	 */
-	public Option<WorkResultHandler<WR>> getWorkResultHandler() {
-		return workResultHandler;
 	}
 
 	public WorkEngineProvider<WR, W> getWorkEngineProvider() {

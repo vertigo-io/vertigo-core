@@ -66,7 +66,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	/** {@inheritDoc} */
 	public <WR, W> WR process(final W work, final WorkEngineProvider<WR, W> workEngineProvider) {
 		final WorkItem<WR, W> workItem = new WorkItem<>(work, workEngineProvider);
-		final Future<WR> result = coordinator.execute(workItem);
+		final Future<WR> result = coordinator.execute(workItem, Option.<WorkResultHandler<WR>> none());
 		try {
 			return result.get();
 		} catch (final ExecutionException e) {
@@ -80,12 +80,12 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	}
 
 	public <WR, W> void schedule(final W work, final WorkEngineProvider<WR, W> workEngineProvider, final WorkResultHandler<WR> workResultHandler) {
-		final WorkItem<WR, W> workItem = new WorkItem<>(work, workEngineProvider, workResultHandler);
-		coordinator.execute(workItem);
+		final WorkItem<WR, W> workItem = new WorkItem<>(work, workEngineProvider);
+		coordinator.execute(workItem, Option.some(workResultHandler));
 	}
 
 	public <WR, W> void schedule(final Callable<WR> callable, final WorkResultHandler<WR> workResultHandler) {
-		final WorkItem<WR, W> workItem = new WorkItem<>(callable, workResultHandler);
-		coordinator.execute(workItem);
+		final WorkItem<WR, W> workItem = new WorkItem<>(callable);
+		coordinator.execute(workItem, Option.some(workResultHandler));
 	}
 }

@@ -20,7 +20,9 @@ package io.vertigo.dynamo.impl.work.worker.local;
 
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
+import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.lang.Option;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.Callable;
@@ -52,16 +54,19 @@ final class WorkItemExecutor<WR, W> implements Callable<WR> {
 	}
 
 	private final WorkItem<WR, W> workItem;
+	private final Option<WorkResultHandler<WR>> workResultHandler;
 	private final Logger logger = Logger.getLogger(WorkManager.class); //même logger que le WorkListenerImpl
 
 	/**
 	 * Constructeur.
 	 * @param workItem WorkItem à traiter
 	 */
-	WorkItemExecutor(final WorkItem<WR, W> workItem) {
+	WorkItemExecutor(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
 		Assertion.checkNotNull(workItem);
+		Assertion.checkNotNull(workResultHandler);
 		//-----------------------------------------------------------------
 		this.workItem = workItem;
+		this.workResultHandler = workResultHandler;
 	}
 
 	private static <WR, W> WR executeNow(final WorkItem<WR, W> workItem) {
@@ -74,19 +79,19 @@ final class WorkItemExecutor<WR, W> implements Callable<WR> {
 	public WR call() {
 		final WR result;
 		try {
-			if (workItem.getWorkResultHandler().isDefined()) {
-				workItem.getWorkResultHandler().get().onStart();
+			if (workResultHandler.isDefined()) {
+				workResultHandler.get().onStart();
 			}
 			//---
 			result = executeNow(workItem);
 			//---
-			if (workItem.getWorkResultHandler().isDefined()) {
-				workItem.getWorkResultHandler().get().onSuccess(result);
+			if (workResultHandler.isDefined()) {
+				workResultHandler.get().onSuccess(result);
 			}
 			return result;
 		} catch (final Throwable t) {
-			if (workItem.getWorkResultHandler().isDefined()) {
-				workItem.getWorkResultHandler().get().onFailure(t);
+			if (workResultHandler.isDefined()) {
+				workResultHandler.get().onFailure(t);
 			}
 			logError(t);
 			if (t instanceof RuntimeException) {
