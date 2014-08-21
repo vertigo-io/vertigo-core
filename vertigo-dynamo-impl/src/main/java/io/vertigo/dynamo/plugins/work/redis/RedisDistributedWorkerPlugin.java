@@ -144,7 +144,7 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 	private <WR, W> void doSchedule(final Jedis jedis, final WorkItem<WR, W> workItem) {
 		//1. On renseigne la demande de travaux
 		putWorkItem(jedis, workItem);
-		//2. On attend les notifs
+		//2. On attend les notifs sur un thread séparé pour rendre la main
 		redisListenerThread.putworkItem(workItem);
 	}
 
@@ -197,6 +197,7 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 		datas.put("work64", RedisUtil.encode(workItem.getWork()));
 		datas.put("provider64", RedisUtil.encode(workItem.getWorkEngineProvider().getName()));
 		datas.put("date", DateUtil.newDate().toString());
+		datas.put("sync", Boolean.toString(workItem.isSync()));
 
 		final Transaction tx = jedis.multi();
 

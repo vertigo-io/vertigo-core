@@ -23,15 +23,18 @@ import io.vertigo.dynamo.impl.work.worker.Worker;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 /**
  * Implémentation d'un pool local de {@link Worker}.
  * 
  * @author pchretien
  */
 public final class LocalWorker implements Worker, Activeable {
-	/** paramètre du plugin définissant la taille de la queue. */
-	private final WorkersPool workersPool;
-	private boolean active;
+	/** Pool de workers qui wrappent sur l'implémentation générique.*/
+	private final ExecutorService workers;
 
 	/**
 	 * Constructeur.
@@ -41,26 +44,44 @@ public final class LocalWorker implements Worker, Activeable {
 	public LocalWorker(final int workerCount) {
 		Assertion.checkArgument(workerCount >= 1, "At least one thread must be allowed to process asynchronous jobs.");
 		// ---------------------------------------------------------------------
-		workersPool = new WorkersPool(workerCount);
+		Assertion.checkArgument(workerCount >= 1, "Il faut définir au moins un thread pour gérer les traitements asynchrones.");
+		//---------------------------------------------------------------------
+		workers = Executors.newFixedThreadPool(workerCount);
 	}
 
 	/** {@inheritDoc} */
 	public void start() {
-		workersPool.start();
-		active = true;
+		//
 	}
 
 	/** {@inheritDoc} */
 	public void stop() {
-		active = false;
-		workersPool.stop();
+		//Shutdown in two phases (see doc)
+		workers.shutdown();
+		try {
+			// Wait a while for existing tasks to terminate
+			if (!workers.awaitTermination(60, TimeUnit.SECONDS)) {
+				workers.shutdownNow(); // Cancel currently executing tasks
+				// Wait a while for tasks to respond to being cancelled
+				if (!workers.awaitTermination(60, TimeUnit.SECONDS))
+					System.err.println("Pool did not terminate");
+			}
+		} catch (final InterruptedException ie) {
+			// (Re-)Cancel if current thread also interrupted
+			workers.shutdownNow();
+			// Preserve interrupt status
+			Thread.currentThread().interrupt();
+		}
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * Work devant être exécuté
+	 * WorkItem contient à la fois le Work et le callback.  
+	 * @param workItem WorkItem
+	 */
 	public <WR, W> void execute(final WorkItem<WR, W> workItem) {
-		Assertion.checkArgument(active, "plugin is not yet started");
 		Assertion.checkNotNull(workItem);
-		// ---------------------------------------------------------------------
-		workersPool.putWorkItem(workItem);
+		//-------------------------------------------------------------------
+		workItem.setResult(workers.submit(new WorkItemExecutor<>(workItem)));
 	}
 }
