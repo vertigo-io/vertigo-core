@@ -72,9 +72,9 @@ final class RedisListenerThread extends Thread {
 					if (workResultHandler != null) {
 						//Que faire sinon 
 						if ("ok".equals(jedis.hget("work:" + workId, "status"))) {
-							workResultHandler.onSuccess(RedisUtil.decode(jedis.hget("work:" + workId, "result")));
+							workResultHandler.onSuccess(RedisDBUtil.readSuccess(jedis, workId));
 						} else {
-							final Throwable t = (Throwable) RedisUtil.decode(jedis.hget("work:" + workId, "error"));
+							final Throwable t = RedisDBUtil.readFailure(jedis, workId);
 							workResultHandler.onFailure(t);
 						}
 						//et on détruit le work (ou bien on l'archive ???

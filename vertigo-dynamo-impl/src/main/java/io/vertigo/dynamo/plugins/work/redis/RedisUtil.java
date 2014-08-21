@@ -18,12 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.work.redis;
 
-import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.impl.codec.CodecManagerImpl;
 import io.vertigo.kernel.lang.Option;
-
-import java.io.Serializable;
-
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -34,7 +29,6 @@ import redis.clients.jedis.JedisPoolConfig;
  */
 public final class RedisUtil {
 	private static final int timeout = 2000;
-	private static final CodecManager codecManager = new CodecManagerImpl();
 
 	public static JedisPool createJedisPool(final String redisHost, final int port, final Option<String> password) {
 		final JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
@@ -55,11 +49,4 @@ public final class RedisUtil {
 		return jedisPool;
 	}
 
-	static String encode(final Object toEncode) {
-		return codecManager.getBase64Codec().encode(codecManager.getSerializationCodec().encode((Serializable) toEncode));
-	}
-
-	static Object decode(final String encoded) {
-		return codecManager.getSerializationCodec().decode(codecManager.getBase64Codec().decode(encoded));
-	}
 }
