@@ -23,17 +23,18 @@ import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.Callable;
 
 import org.apache.log4j.Logger;
 
 /**
- * Exécution des works.
+ * Exécution d'un work.
  * 
  * @author pchretien, npiedeloup
  * @param <WR> Type du résultat
  * @param <W> Type du work
  */
-public final class WorkItemExecutor<WR, W> implements Runnable {
+final class WorkItemExecutor<WR, W> implements Callable<WR> {
 
 	/**
 	 * Pour vider les threadLocal entre deux utilisations du Thread dans le pool,
@@ -57,21 +58,41 @@ public final class WorkItemExecutor<WR, W> implements Runnable {
 	 * Constructeur.
 	 * @param workItem WorkItem à traiter
 	 */
-	public WorkItemExecutor(final WorkItem<WR, W> workItem) {
+	WorkItemExecutor(final WorkItem<WR, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		//-----------------------------------------------------------------
 		this.workItem = workItem;
 	}
 
+	private static <WR, W> WR executeNow(final WorkItem<WR, W> workItem) {
+		Assertion.checkNotNull(workItem);
+		// ---------------------------------------------------------------------
+		return workItem.getWorkEngineProvider().provide().process(workItem.getWork());
+	}
+
 	/** {@inheritDoc} */
-	public void run() {
+	public WR call() {
+		final WR result;
 		try {
-			workItem.getWorkResultHandler().get().onStart();
-			LocalWorker.executeNow(workItem);
-			workItem.getWorkResultHandler().get().onSuccess(workItem.getResult());
+			if (workItem.getWorkResultHandler().isDefined()) {
+				workItem.getWorkResultHandler().get().onStart();
+			}
+			//---
+			result = executeNow(workItem);
+			//---
+			if (workItem.getWorkResultHandler().isDefined()) {
+				workItem.getWorkResultHandler().get().onSuccess(result);
+			}
+			return result;
 		} catch (final Throwable t) {
-			workItem.getWorkResultHandler().get().onFailure(t);
+			if (workItem.getWorkResultHandler().isDefined()) {
+				workItem.getWorkResultHandler().get().onFailure(t);
+			}
 			logError(t);
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException) t;
+			}
+			throw new RuntimeException(t);
 		} finally {
 			try {
 				//Vide le threadLocal

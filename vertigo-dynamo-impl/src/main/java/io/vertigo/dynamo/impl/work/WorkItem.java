@@ -25,6 +25,7 @@ import io.vertigo.kernel.lang.Option;
 
 import java.util.UUID;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 public final class WorkItem<WR, W> {
 	public enum Exec {
@@ -41,7 +42,7 @@ public final class WorkItem<WR, W> {
 	private final Option<WorkResultHandler<WR>> workResultHandler;
 	private final WorkEngineProvider<WR, W> workEngineProvider;
 	private final Exec exec;
-	private WR result;
+	private Future<WR> result;
 	final String id = UUID.randomUUID().toString();
 
 	//	private Status status = Status.Waiting;
@@ -114,11 +115,11 @@ public final class WorkItem<WR, W> {
 		return workEngineProvider;
 	}
 
-	public synchronized WR getResult() {
+	public synchronized Future<WR> getResult() {
 		return result;
 	}
 
-	public synchronized void setResult(final WR result) {
+	public synchronized void setResult(final Future<WR> result) {
 		Assertion.checkNotNull(result);
 		//---------------------------------------------------------------------
 		this.result = result;

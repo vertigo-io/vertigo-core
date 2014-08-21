@@ -21,15 +21,17 @@ package io.vertigo.dynamo.plugins.work.redis;
 import io.vertigo.dynamo.impl.work.DistributedWorkerPlugin;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.work.WorkEngineProvider;
-import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.util.DateUtil;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -53,16 +55,15 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 	/*
 	 *La map est nécessairement synchronisée. 
 	 */
-	private final Map<String, WorkResultHandler> workResultHandlers = Collections.synchronizedMap(new HashMap<String, WorkResultHandler>());
-	private final Thread redisListenerThread;
+	private final RedisListenerThread redisListenerThread;
 
 	@Inject
-	public RedisDistributedWorkerPlugin(final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> password,final @Named("timeoutSeconds") int timeoutSeconds) {
+	public RedisDistributedWorkerPlugin(final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> password, final @Named("timeoutSeconds") int timeoutSeconds) {
 		Assertion.checkArgNotEmpty(redisHost);
 		//---------------------------------------------------------------------
 		jedisPool = RedisUtil.createJedisPool(redisHost, redisPort, password);
 		this.timeoutSeconds = timeoutSeconds;
-		redisListenerThread = new RedisListenerThread(jedisPool, workResultHandlers);
+		redisListenerThread = new RedisListenerThread(jedisPool);
 	}
 
 	/** {@inheritDoc} */
@@ -87,9 +88,9 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 			Jedis jedis = jedisPool.getResource();
 			try {
 				//---
-				if (workItem.isSync()){
+				if (workItem.isSync()) {
 					this.<WR, W> doProcess(jedis, workItem);
-				}else{
+				} else {
 					this.<WR, W> doSchedule(jedis, workItem);
 				}
 				//C'est bon on s'arrête 
@@ -141,9 +142,10 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 	}
 
 	private <WR, W> void doSchedule(final Jedis jedis, final WorkItem<WR, W> workItem) {
+		//1. On renseigne la demande de travaux
 		putWorkItem(jedis, workItem);
-
-		workResultHandlers.put(workItem.getId(), workItem.getWorkResultHandler().get());
+		//2. On attend les notifs
+		redisListenerThread.putworkItem(workItem);
 	}
 
 	private <WR, W> void doProcess(final Jedis jedis, final WorkItem<WR, W> workItem) {
@@ -152,7 +154,27 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 		//2. On attend le résultat
 		final WR result = waitResult(jedis, workItem);
 		//3. On affecte le résultat
-		workItem.setResult(result);
+		workItem.setResult(new Future<WR>() {
+			public boolean cancel(final boolean mayInterruptIfRunning) {
+				return false;
+			}
+
+			public boolean isCancelled() {
+				return false;
+			}
+
+			public boolean isDone() {
+				return false;
+			}
+
+			public WR get() throws InterruptedException, ExecutionException {
+				return result;
+			}
+
+			public WR get(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+				return result;
+			}
+		});
 	}
 
 	private <WR, W> WR waitResult(final Jedis jedis, final WorkItem<WR, W> workItem) {
@@ -175,7 +197,6 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 		datas.put("work64", RedisUtil.encode(workItem.getWork()));
 		datas.put("provider64", RedisUtil.encode(workItem.getWorkEngineProvider().getName()));
 		datas.put("date", DateUtil.newDate().toString());
-		datas.put("sync", Boolean.toString(workItem.isSync()));
 
 		final Transaction tx = jedis.multi();
 

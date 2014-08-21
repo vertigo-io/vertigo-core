@@ -18,9 +18,12 @@
  */
 package io.vertigo.dynamo.plugins.work.redis;
 
+import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Assertion;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import redis.clients.jedis.Jedis;
@@ -33,14 +36,19 @@ import redis.clients.jedis.exceptions.JedisException;
  */
 final class RedisListenerThread extends Thread {
 	private final JedisPool jedisPool;
-	private final Map<String, WorkResultHandler> workResultHandlers;
+	private final Map<String, WorkItem> workItems = Collections.synchronizedMap(new HashMap<String, WorkItem>());
 
-	RedisListenerThread(final JedisPool jedisPool, final Map<String, WorkResultHandler> workResultHandlers) {
+	RedisListenerThread(final JedisPool jedisPool) {
 		Assertion.checkNotNull(jedisPool);
-		Assertion.checkNotNull(workResultHandlers);
+		Assertion.checkNotNull(workItems);
 		//-----------------------------------------------------------------
 		this.jedisPool = jedisPool;
-		this.workResultHandlers = workResultHandlers;
+	}
+
+	<WR, W> void putworkItem(final WorkItem<WR, W> workItem) {
+		Assertion.checkNotNull(workItem);
+		//---------------------------------------------------------------------
+		workItems.put(workItem.getId(), workItem);
 	}
 
 	/** {@inheritDoc} */
@@ -56,8 +64,9 @@ final class RedisListenerThread extends Thread {
 
 				final String workId = jedis.brpoplpush("works:done", "works:completed", waitTimeSeconds);
 				if (workId != null) {
-					final WorkResultHandler workResultHandler = workResultHandlers.get(workId);
-					if (workResultHandler != null) {
+					final WorkItem<?, ?> workItem = workItems.get(workId);
+					if (workItem != null) {
+						final WorkResultHandler workResultHandler = workItem.getWorkResultHandler().get();
 						//Que faire sinon 
 						if ("ok".equals(jedis.hget("work:" + workId, "status"))) {
 							workResultHandler.onSuccess(RedisUtil.decode(jedis.hget("work:" + workId, "result")));

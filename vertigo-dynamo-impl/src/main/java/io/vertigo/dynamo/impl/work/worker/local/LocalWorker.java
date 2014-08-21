@@ -61,17 +61,6 @@ public final class LocalWorker implements Worker, Activeable {
 		Assertion.checkArgument(active, "plugin is not yet started");
 		Assertion.checkNotNull(workItem);
 		// ---------------------------------------------------------------------
-		if (workItem.isSync()) {
-			executeNow(workItem);
-		} else {
-			System.out.println(">>>put");
-			workersPool.putWorkItem(workItem);
-		}
-	}
-
-	public static <WR, W> void executeNow(final WorkItem<WR, W> workItem) {
-		Assertion.checkNotNull(workItem);
-		// ---------------------------------------------------------------------
-		workItem.setResult(workItem.getWorkEngineProvider().provide().process(workItem.getWork()));
+		workersPool.putWorkItem(workItem);
 	}
 }

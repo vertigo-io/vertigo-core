@@ -50,24 +50,7 @@ final class RedisWorkResultHandler<WR> implements WorkResultHandler<WR> {
 
 	/** {@inheritDoc} */
 	public void onStart() {
-		//			int retry = 0;
-		//			while (retry < 3) {
-		//				Jedis jedis = jedisPool.getResource();
-		//				try {
-		//					jedis.hset("work:" + workId, "status", "started");
-		//					return;
-		//				} catch (final JedisException e) {
-		//					jedisPool.returnBrokenResource(jedis);
-		//					jedis = null;
-		//				} finally {
-		//					if (jedis != null) {
-		//						jedisPool.returnResource(jedis);
-		//					}
-		//				}
-		//				System.out.println("retry");
-		//				retry++;
-		//			}
-		//			throw new RuntimeException("3 essais ");
+		//
 	}
 
 	/** {@inheritDoc} */

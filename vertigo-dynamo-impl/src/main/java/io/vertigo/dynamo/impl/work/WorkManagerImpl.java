@@ -27,6 +27,7 @@ import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Option;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -44,7 +45,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	 * @param analyticsManager Manager de la performance applicative
 	 */
 	@Inject
-	public WorkManagerImpl(final @Named("workerCount") int workerCount, Option<DistributedWorkerPlugin> distributedWorker) {
+	public WorkManagerImpl(final @Named("workerCount") int workerCount, final Option<DistributedWorkerPlugin> distributedWorker) {
 		final WorkListener workListener = new WorkListenerImpl(/*analyticsManager*/);
 		coordinator = new WCoordinatorImpl(workerCount, workListener, distributedWorker);
 	}
@@ -62,19 +63,28 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	}
 
 	/** {@inheritDoc} */
-	public <WR, W> WR process(W work, WorkEngineProvider<WR, W> workEngineProvider) {
-		WorkItem<WR, W> workItem = new WorkItem<>(work, workEngineProvider);
+	public <WR, W> WR process(final W work, final WorkEngineProvider<WR, W> workEngineProvider) {
+		final WorkItem<WR, W> workItem = new WorkItem<>(work, workEngineProvider);
 		coordinator.execute(workItem);
-		return workItem.getResult();
+		try {
+			return workItem.getResult().get();
+		} catch (final ExecutionException e) {
+			if (e.getCause() instanceof RuntimeException) {
+				throw (RuntimeException) e.getCause();
+			}
+			throw new RuntimeException(e.getCause());
+		} catch (final InterruptedException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
-	public <WR, W> void schedule(W work, WorkEngineProvider<WR, W> workEngineProvider, WorkResultHandler<WR> workResultHandler) {
-		WorkItem<WR, W> workItem = new WorkItem<>(work, workEngineProvider, workResultHandler);
+	public <WR, W> void schedule(final W work, final WorkEngineProvider<WR, W> workEngineProvider, final WorkResultHandler<WR> workResultHandler) {
+		final WorkItem<WR, W> workItem = new WorkItem<>(work, workEngineProvider, workResultHandler);
 		coordinator.execute(workItem);
 	}
 
-	public <WR, W> void schedule(Callable<WR> callable, WorkResultHandler<WR> workResultHandler) {
-		WorkItem<WR, W> workItem = new WorkItem<>(callable, workResultHandler);
+	public <WR, W> void schedule(final Callable<WR> callable, final WorkResultHandler<WR> workResultHandler) {
+		final WorkItem<WR, W> workItem = new WorkItem<>(callable, workResultHandler);
 		coordinator.execute(workItem);
 	}
 }

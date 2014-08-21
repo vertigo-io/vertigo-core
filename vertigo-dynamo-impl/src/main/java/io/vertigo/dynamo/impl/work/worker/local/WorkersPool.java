@@ -82,6 +82,6 @@ final class WorkersPool implements Activeable {
 	<WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		//-------------------------------------------------------------------
-		workers.execute(new WorkItemExecutor<>(workItem));
+		workItem.setResult(workers.submit(new WorkItemExecutor<>(workItem)));
 	}
 }
