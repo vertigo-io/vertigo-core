@@ -26,7 +26,6 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;
-import redis.clients.jedis.exceptions.JedisException;
 
 /**
  * @author pchretien
@@ -56,8 +55,7 @@ final class RedisDispatcherThread extends Thread {
 	}
 
 	private void doRun() {
-		Jedis jedis = jedisPool.getResource();
-		try {
+		try (Jedis jedis = jedisPool.getResource()) {
 			final String workId = jedis.brpoplpush("works:todo", "works:in progress", 1);
 			if (workId != null) {
 				execute(workId, jedis);
@@ -65,12 +63,6 @@ final class RedisDispatcherThread extends Thread {
 				//Cela signifie que l'a rien reçu pendant 10s
 				//out.println(" Worker [" + id + "]waiting....");
 			}
-			return;
-		} catch (final JedisException e) {
-			jedisPool.returnBrokenResource(jedis);
-			jedis = null;
-		} finally {
-			jedisPool.returnResource(jedis);
 		}
 	}
 

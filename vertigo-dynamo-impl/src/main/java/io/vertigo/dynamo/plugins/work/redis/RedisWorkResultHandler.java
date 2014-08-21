@@ -27,7 +27,6 @@ import java.util.Map;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Transaction;
-import redis.clients.jedis.exceptions.JedisException;
 
 /**
  * @author pchretien
@@ -70,31 +69,17 @@ final class RedisWorkResultHandler<WR> implements WorkResultHandler<WR> {
 	}
 
 	private void exec(final Map<String, String> datas) {
-		int retry = 0;
-		while (retry < 3) {
-			Jedis jedis = jedisPool.getResource();
-			try {
-				final Transaction tx = jedis.multi();
-				tx.hmset("work:" + workId, datas);
-				tx.lrem("works:in progress", 0, workId);
-				if (sync) {
-					tx.lpush("works:done:" + workId, workId);
-				} else {
-					//mettre en id de client
-					tx.lpush("works:done", workId);
-				}
-				tx.exec();
-				return;
-			} catch (final JedisException e) {
-				jedisPool.returnBrokenResource(jedis);
-				jedis = null;
-			} finally {
-				jedisPool.returnResource(jedis);
+		try (Jedis jedis = jedisPool.getResource()) {
+			final Transaction tx = jedis.multi();
+			tx.hmset("work:" + workId, datas);
+			tx.lrem("works:in progress", 0, workId);
+			if (sync) {
+				tx.lpush("works:done:" + workId, workId);
+			} else {
+				//mettre en id de client
+				tx.lpush("works:done", workId);
 			}
-			System.out.println("retry");
-			retry++;
+			tx.exec();
 		}
-		throw new RuntimeException("3 essais ");
-
 	}
 }

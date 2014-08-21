@@ -36,7 +36,6 @@ import javax.inject.Named;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Transaction;
-import redis.clients.jedis.exceptions.JedisException;
 
 /**
  * Ce plugin permet de distribuer des travaux.
@@ -75,36 +74,21 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 		} catch (final InterruptedException e) {
 			//On ne fait rien
 		}
+		//--- 
+		jedisPool.destroy(); //see doc :https://github.com/xetorthio/jedis/wiki/Getting-started
 	}
 
 	/** {@inheritDoc} */
 	public <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem) {
-		int retry = 0;
-		while (retry < 3) {
-			Jedis jedis = jedisPool.getResource();
-			try {
-				return this.<WR, W> doSubmit(jedis, workItem);
-			} catch (final JedisException e) {
-				jedisPool.returnBrokenResource(jedis);
-				jedis = null;
-			} finally {
-				jedisPool.returnResource(jedis);
-			}
-			//System.out.println("retry");
-			retry++;
-			try {
-				Thread.sleep(1000);
-			} catch (final InterruptedException e) {
-				//
-			}
+		try (Jedis jedis = jedisPool.getResource()) {
+			return this.<WR, W> doSubmit(jedis, workItem);
 		}
-		throw new RuntimeException("3 essais ");
 	}
 
 	private <WR, W> Future<WR> doSubmit(final Jedis jedis, final WorkItem<WR, W> workItem) {
-		//1. On renseigne la demande de travaux
+		//1. On renseigne la demande de travaux sur le server redis
 		putWorkItem(jedis, workItem);
-		//2. On attend les notifs sur un thread séparé pour rendre la main
+		//2. On attend les notifs sur un thread séparé, la main est rendue de suite 
 		return redisListenerThread.putworkItem(workItem);
 	}
 

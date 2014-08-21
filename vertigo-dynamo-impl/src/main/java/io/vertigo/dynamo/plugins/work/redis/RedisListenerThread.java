@@ -29,7 +29,6 @@ import java.util.concurrent.Future;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.exceptions.JedisException;
 
 /**
  * @author pchretien
@@ -64,8 +63,7 @@ final class RedisListenerThread extends Thread {
 		while (!isInterrupted()) {
 			//				int retry = 0;
 			//				while (retry < 3) {
-			Jedis jedis = jedisPool.getResource();
-			try {
+			try (Jedis jedis = jedisPool.getResource()) {
 				//On attend le résultat (par tranches de 1s)
 				final int waitTimeSeconds = 1;
 
@@ -86,19 +84,7 @@ final class RedisListenerThread extends Thread {
 						jedis.del("work:" + workId);
 					}
 				}
-
-			} catch (final JedisException e) {
-				jedisPool.returnBrokenResource(jedis);
-				jedis = null;
-			} finally {
-				jedisPool.returnResource(jedis);
 			}
-			//throw new RuntimeException("redisListener");
-
-			//					System.out.println("retry");
-			//					retry++;
-			//				}
-			//				throw new RuntimeException("3 essais ");
 		}
 	}
 }

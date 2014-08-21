@@ -33,7 +33,6 @@ import javax.inject.Named;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.exceptions.JedisException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -101,21 +100,16 @@ public final class RedisNodePlugin implements NodePlugin, Activeable {
 
 	/** {@inheritDoc} */
 	public List<Node> getNodes() {
-		final List<Node> nodes = new ArrayList<>();
-		Jedis jedis = jedisPool.getResource();
-		try {
+		try (Jedis jedis = jedisPool.getResource()) {
+			final List<Node> nodes = new ArrayList<>();
+
 			final List<String> nodeKeys = jedis.lrange("nodes", -1, -1);
 			for (final String nodeKey : nodeKeys) {
 				final String json = jedis.hget(nodeKey, "json");
 				nodes.add(toNode(json));
 			}
-		} catch (final JedisException e) {
-			jedisPool.returnBrokenResource(jedis);
-			jedis = null;
-		} finally {
-			jedisPool.returnResource(jedis);
+			return nodes;
 		}
-		return nodes;
 	}
 
 	private Node toNode(final String json) {
@@ -129,15 +123,9 @@ public final class RedisNodePlugin implements NodePlugin, Activeable {
 	private void register(final Node node) {
 		Assertion.checkNotNull(node);
 		//---------------------------------------------------------------------
-		Jedis jedis = jedisPool.getResource();
-		try {
+		try (Jedis jedis = jedisPool.getResource()) {
 			jedis.lpush("nodes", node.getUID());
 			jedis.hset("node:" + node.getUID(), "json", toJson(node));
-		} catch (final JedisException e) {
-			jedisPool.returnBrokenResource(jedis);
-			jedis = null;
-		} finally {
-			jedisPool.returnResource(jedis);
 		}
 	}
 }

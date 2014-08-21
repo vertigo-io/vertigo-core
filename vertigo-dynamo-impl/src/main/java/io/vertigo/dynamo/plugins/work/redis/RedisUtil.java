@@ -39,21 +39,18 @@ public final class RedisUtil {
 	public static JedisPool createJedisPool(final String redisHost, final int port, final Option<String> password) {
 		final JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 		//jedisPoolConfig.setMaxActive(10);
-		final JedisPool jedisPool; 
-		if (password.isDefined()){
-			jedisPool= new JedisPool(jedisPoolConfig, redisHost, port, timeout, password.get());
-		}else{
-			jedisPool= new JedisPool(jedisPoolConfig, redisHost, port,timeout);
+		final JedisPool jedisPool;
+		if (password.isDefined()) {
+			jedisPool = new JedisPool(jedisPoolConfig, redisHost, port, timeout, password.get());
+		} else {
+			jedisPool = new JedisPool(jedisPoolConfig, redisHost, port, timeout);
 		}
-		
+
 		//test
-		final Jedis jedis = jedisPool.getResource();
-		try {
+		try (Jedis jedis = jedisPool.getResource()) {
 			//final String ping = jedis.ping();
 			jedis.ping();
 			//System.out.println(" ping=" + ping);
-		} finally {
-			jedisPool.returnResource(jedis);
 		}
 		return jedisPool;
 	}
