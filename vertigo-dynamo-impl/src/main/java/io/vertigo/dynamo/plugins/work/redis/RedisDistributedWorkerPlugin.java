@@ -62,7 +62,8 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 	public void start() {
 		redisListenerThread.start();
 	}
-
+	
+	
 	/** {@inheritDoc} */
 	public void stop() {
 		redisListenerThread.interrupt();

@@ -21,10 +21,10 @@ package io.vertigo.dynamo.impl.work.worker.local;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.impl.work.worker.Worker;
 import io.vertigo.dynamo.work.WorkResultHandler;
-import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 
+import java.io.Closeable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  * 
  * @author pchretien
  */
-public final class LocalWorker implements Worker, Activeable {
+public final class LocalWorker implements Worker, Closeable {
 	/** Pool de workers qui wrappent sur l'implémentation générique.*/
 	private final ExecutorService workers;
 
@@ -53,12 +53,7 @@ public final class LocalWorker implements Worker, Activeable {
 	}
 
 	/** {@inheritDoc} */
-	public void start() {
-		//
-	}
-
-	/** {@inheritDoc} */
-	public void stop() {
+	public void close() {
 		//Shutdown in two phases (see doc)
 		workers.shutdown();
 		try {

@@ -20,6 +20,7 @@ package io.vertigo.dynamo.impl.work;
 
 import io.vertigo.dynamo.impl.work.listener.WorkListener;
 import io.vertigo.dynamo.impl.work.listener.WorkListenerImpl;
+import io.vertigo.dynamo.impl.work.worker.Worker;
 import io.vertigo.dynamo.work.WorkEngine;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.dynamo.work.WorkManager;
@@ -51,19 +52,18 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	@Inject
 	public WorkManagerImpl(final @Named("workerCount") int workerCount, final Option<DistributedWorkerPlugin> distributedWorker) {
 		final WorkListener workListener = new WorkListenerImpl(/*analyticsManager*/);
-		coordinator = new WCoordinatorImpl(workerCount, workListener, distributedWorker);
+		coordinator = new WCoordinator(workerCount, workListener, distributedWorker);
 	}
 
 	/** {@inheritDoc} */
 	public void start() {
 		//coordinator n'étant pas un plugin 
 		//il faut le démarrer et l'arréter explicitement.
-		coordinator.start();
 	}
 
 	/** {@inheritDoc} */
 	public void stop() {
-		coordinator.stop();
+		coordinator.close();
 	}
 
 	private static String createWorkId(){

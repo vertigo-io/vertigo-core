@@ -31,9 +31,9 @@ import java.util.concurrent.Future;
  * 
  * @author pchretien, npiedeloup
  */
-public interface Worker {
+public interface Worker  {
 	/**
-	 * Exécution d'un travail de façon synchrone.
+	 * Exécution d'un travail de façon asynchrone.
 	 * @param <W> Type de Work (Travail)
 	 * @param <WR> Produit d'un work à l'issu de son exécution
 	 * @param work Travail à exécuter

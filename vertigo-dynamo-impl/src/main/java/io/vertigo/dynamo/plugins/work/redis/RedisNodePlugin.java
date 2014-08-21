@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.plugins.work.redis;
 
 import io.vertigo.dynamo.impl.node.NodePlugin;
+import io.vertigo.dynamo.impl.work.worker.Worker;
 import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;
 import io.vertigo.dynamo.node.Node;
 import io.vertigo.kernel.lang.Activeable;
@@ -69,7 +70,6 @@ public final class RedisNodePlugin implements NodePlugin, Activeable {
 		//On enregistre le node
 		register(new Node(nodeId, true));
 
-		localWorker.start();
 		dispatcherThread.start();
 	}
 
@@ -81,7 +81,7 @@ public final class RedisNodePlugin implements NodePlugin, Activeable {
 		} catch (final InterruptedException e) {
 			//On ne fait rien
 		}
-		localWorker.stop();
+		localWorker.close();
 		register(new Node(nodeId, false));
 	}
 

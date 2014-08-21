@@ -18,10 +18,14 @@
  */
 package io.vertigo.dynamo.impl.work;
 
+import io.vertigo.dynamo.impl.work.listener.WorkListener;
+import io.vertigo.dynamo.impl.work.worker.Worker;
+import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;
 import io.vertigo.dynamo.work.WorkResultHandler;
-import io.vertigo.kernel.lang.Activeable;
+import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 
+import java.io.Closeable;
 import java.util.concurrent.Future;
 
 /**
@@ -29,13 +33,55 @@ import java.util.concurrent.Future;
  * 
  * @author pchretien, npiedeloup
  */
-public interface WCoordinator extends Activeable {
-	/**
-	 * Exécute un workItem.
-	 * @param <W> Type de Work (Travail)
-	 * @param <WR> Produit d'un work à l'issu de son exécution
-	 * @param workItem Travail à exécuter
-	 */
-	<WR, W> Future<WR> execute(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler);
+final class WCoordinator implements Worker, Closeable{
+	private final WorkListener workListener;
+	private final Option<DistributedWorkerPlugin> distributedWorker;
+	private final LocalWorker localWorker;
 
+	WCoordinator(final int workerCount, final WorkListener workListener, final Option<DistributedWorkerPlugin> distributedWorker) {
+		Assertion.checkNotNull(workListener);
+		Assertion.checkNotNull(distributedWorker);
+		//-----------------------------------------------------------------
+		localWorker = new LocalWorker(workerCount);
+		this.workListener = workListener;
+		this.distributedWorker = distributedWorker;
+	}
+
+
+	/** {@inheritDoc} */
+	public void close() {
+		localWorker.close();
+	}
+
+	/** {@inheritDoc}   */
+	public <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
+		final Worker worker = resolveWorker(workItem);
+		//---
+		workListener.onStart(workItem.getWorkEngineProvider().getName());
+		boolean executed = false;
+		final long start = System.currentTimeMillis();
+		try {
+			final Future<WR> future = worker.submit(workItem, workResultHandler);
+			executed = true;
+			return future;
+		} finally {
+			workListener.onFinish(workItem.getWorkEngineProvider().getName(), System.currentTimeMillis() - start, executed);
+		}
+	}
+
+	private <WR, W> Worker resolveWorker(final WorkItem<WR, W> workItem) {
+		Assertion.checkNotNull(workItem);
+		//----------------------------------------------------------------------
+		/* 
+		 * On recherche un Worker capable d'effectuer le travail demandé.
+		 * 1- On recherche parmi les works externes 
+		 * 2- Si le travail n'est pas déclaré comme étant distribué on l'exécute localement
+		 */
+		if (distributedWorker.isDefined() && distributedWorker.get().canProcess(workItem.getWorkEngineProvider())) {
+			return distributedWorker.get();
+		}
+		return localWorker;
+		//Gestion de la stratégie de distribution des works
+		//		return distributedWorkerPlugin.isDefined() && distributedWorkerPlugin.get().getWorkFamily().equalsIgnoreCase(work.getWorkFamily());
+	}
 }
