@@ -21,6 +21,7 @@ package io.vertigo.dynamo.plugins.work.redis;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.lang.Option;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -44,12 +45,12 @@ final class RedisListenerThread extends Thread {
 		this.jedisPool = jedisPool;
 	}
 
-	<WR, W> Future<WR> putworkItem(final WorkItem<WR, W> workItem) {
+	<WR, W> Future<WR> putworkItem(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
 		Assertion.checkNotNull(workItem);
 		//---------------------------------------------------------------------
 		final WFuture<WR> future;
-		if (workItem.getWorkResultHandler().isDefined()) {
-			future = new WFuture<>(workItem.getWorkResultHandler().get());
+		if (workResultHandler.isDefined()) {
+			future = new WFuture<>(workResultHandler.get());
 		} else {
 			future = new WFuture<>();
 		}
@@ -61,8 +62,6 @@ final class RedisListenerThread extends Thread {
 	@Override
 	public void run() {
 		while (!isInterrupted()) {
-			//				int retry = 0;
-			//				while (retry < 3) {
 			try (Jedis jedis = jedisPool.getResource()) {
 				//On attend le résultat (par tranches de 1s)
 				final int waitTimeSeconds = 1;
@@ -78,9 +77,7 @@ final class RedisListenerThread extends Thread {
 							final Throwable t = (Throwable) RedisUtil.decode(jedis.hget("work:" + workId, "error"));
 							workResultHandler.onFailure(t);
 						}
-						//ZZZZZZZZZZZZZZZZZZZZ
-						//ZZZZZZZZZZZZZZZZZZZZ
-						//ZZZZZZZZZZZZZZZZZZZZ
+						//et on détruit le work (ou bien on l'archive ???
 						jedis.del("work:" + workId);
 					}
 				}

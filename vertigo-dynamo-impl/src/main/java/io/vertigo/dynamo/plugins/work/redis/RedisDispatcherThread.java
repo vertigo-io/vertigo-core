@@ -20,12 +20,11 @@ package io.vertigo.dynamo.plugins.work.redis;
 
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;
-import io.vertigo.dynamo.work.WorkEngineProvider;
+import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.lang.Option;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.Response;
-import redis.clients.jedis.Transaction;
 
 /**
  * @author pchretien
@@ -59,32 +58,16 @@ final class RedisDispatcherThread extends Thread {
 			final String workId = jedis.brpoplpush("works:todo", "works:in progress", 1);
 			if (workId != null) {
 				execute(workId, jedis);
-			} else {
-				//Cela signifie que l'a rien reçu pendant 10s
-				//out.println(" Worker [" + id + "]waiting....");
 			}
+			//Cela signifie que l'a rien reçu pendant le brpop
 		}
 	}
 
 	private <WR, W> void execute(final String workId, final Jedis jedis) {
-		final WorkItem<WR, W> workItem = getWorkItem(workId, jedis);
-		localWorker.submit(workItem);
+		final WorkItem<WR, W> workItem = RedisDBUtil.readWorkItem(jedis, workId);
+		final Option<WorkResultHandler<WR>> workResultHandler = Option.<WorkResultHandler<WR>> some(new RedisWorkResultHandler<WR>(workId, jedisPool));
+		//---Et on fait executer par le workerLocal
+		localWorker.submit(workItem, workResultHandler);
 	}
 
-	private <W, WR> WorkItem<WR, W> getWorkItem(final String workId, final Jedis jedis) {
-		//		datas.put("work64", RedisUtil.encode(work));
-		//		datas.put("provider64", RedisUtil.encode(workEngineProvider.getName()));
-		final Transaction tx = jedis.multi();
-
-		final Response<String> swork = tx.hget("work:" + workId, "work64");
-		final Response<String> sname = tx.hget("work:" + workId, "provider64");
-		final Response<String> ssync = tx.hget("work:" + workId, "sync");
-		tx.exec();
-
-		final W work = (W) RedisUtil.decode(swork.get());
-		final String name = (String) RedisUtil.decode(sname.get());
-		final WorkEngineProvider<WR, W> workEngineProvider = new WorkEngineProvider<>(name);
-		final boolean sync = "true".equals(ssync.get());
-		return new WorkItem<>(work, workEngineProvider, new RedisWorkResultHandler<WR>(workId, jedisPool, sync));
-	}
 }

@@ -20,13 +20,8 @@ package io.vertigo.dynamo.plugins.work.redis;
 
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Assertion;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.Transaction;
 
 /**
  * @author pchretien
@@ -35,15 +30,13 @@ import redis.clients.jedis.Transaction;
 final class RedisWorkResultHandler<WR> implements WorkResultHandler<WR> {
 	private final JedisPool jedisPool;
 	private final String workId;
-	private final boolean sync;
 
-	RedisWorkResultHandler(final String workId, final JedisPool jedisPool, final boolean sync) {
+	RedisWorkResultHandler(final String workId, final JedisPool jedisPool) {
 		Assertion.checkNotNull(workId);
 		Assertion.checkNotNull(jedisPool);
 		//---------------------------------------------------------------------
 		this.jedisPool = jedisPool;
 		this.workId = workId;
-		this.sync = sync;
 
 	}
 
@@ -54,32 +47,15 @@ final class RedisWorkResultHandler<WR> implements WorkResultHandler<WR> {
 
 	/** {@inheritDoc} */
 	public void onSuccess(final WR result) {
-		final Map<String, String> datas = new HashMap<>();
-		datas.put("result", RedisUtil.encode(result));
-		datas.put("status", "ok");
-		exec(datas);
+		try (Jedis jedis = jedisPool.getResource()) {
+			RedisDBUtil.writeSuccess(jedis, workId, result);
+		}
 	}
 
 	/** {@inheritDoc} */
 	public void onFailure(final Throwable t) {
-		final Map<String, String> datas = new HashMap<>();
-		datas.put("error", RedisUtil.encode(t));
-		datas.put("status", "ko");
-		exec(datas);
-	}
-
-	private void exec(final Map<String, String> datas) {
 		try (Jedis jedis = jedisPool.getResource()) {
-			final Transaction tx = jedis.multi();
-			tx.hmset("work:" + workId, datas);
-			tx.lrem("works:in progress", 0, workId);
-			if (sync) {
-				tx.lpush("works:done:" + workId, workId);
-			} else {
-				//mettre en id de client
-				tx.lpush("works:done", workId);
-			}
-			tx.exec();
+			RedisDBUtil.writeFailure(jedis, workId, t);
 		}
 	}
 }

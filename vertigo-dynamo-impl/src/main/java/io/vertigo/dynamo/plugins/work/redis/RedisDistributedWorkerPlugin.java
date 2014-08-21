@@ -21,13 +21,11 @@ package io.vertigo.dynamo.plugins.work.redis;
 import io.vertigo.dynamo.impl.work.DistributedWorkerPlugin;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.work.WorkEngineProvider;
+import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
-import io.vertigo.kernel.util.DateUtil;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Future;
 
 import javax.inject.Inject;
@@ -35,7 +33,6 @@ import javax.inject.Named;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.Transaction;
 
 /**
  * Ce plugin permet de distribuer des travaux.
@@ -79,36 +76,13 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 	}
 
 	/** {@inheritDoc} */
-	public <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem) {
+	public <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
 		try (Jedis jedis = jedisPool.getResource()) {
-			return this.<WR, W> doSubmit(jedis, workItem);
+			//1. On renseigne la demande de travaux sur le server redis
+			RedisDBUtil.writeWorkItem(jedis, workItem);
+			//2. On attend les notifs sur un thread séparé, la main est rendue de suite 
+			return redisListenerThread.putworkItem(workItem, workResultHandler);
 		}
-	}
-
-	private <WR, W> Future<WR> doSubmit(final Jedis jedis, final WorkItem<WR, W> workItem) {
-		//1. On renseigne la demande de travaux sur le server redis
-		putWorkItem(jedis, workItem);
-		//2. On attend les notifs sur un thread séparé, la main est rendue de suite 
-		return redisListenerThread.putworkItem(workItem);
-	}
-
-	private static <WR, W> void putWorkItem(final Jedis jedis, final WorkItem<WR, W> workItem) {
-		//out.println("creating work [" + workId + "] : " + work.getClass().getSimpleName());
-
-		final Map<String, String> datas = new HashMap<>();
-		datas.put("work64", RedisUtil.encode(workItem.getWork()));
-		datas.put("provider64", RedisUtil.encode(workItem.getWorkEngineProvider().getName()));
-		datas.put("date", DateUtil.newDate().toString());
-
-		final Transaction tx = jedis.multi();
-
-		tx.hmset("work:" + workItem.getId(), datas);
-
-		//tx.expire("work:" + workId, 70);
-		//On publie la demande de travaux
-		tx.lpush("works:todo", workItem.getId());
-
-		tx.exec();
 	}
 
 	public <WR, W> boolean canProcess(final WorkEngineProvider<WR, W> workEngineProvider) {
