@@ -24,6 +24,8 @@ import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 
+import java.util.concurrent.Future;
+
 final class WCoordinatorImpl implements WCoordinator {
 	private final WorkListener workListener;
 	private final Option<DistributedWorkerPlugin> distributedWorker;
@@ -51,15 +53,16 @@ final class WCoordinatorImpl implements WCoordinator {
 	}
 
 	/** {@inheritDoc}   */
-	public <WR, W> void execute(final WorkItem<WR, W> workItem) {
+	public <WR, W> Future<WR> execute(final WorkItem<WR, W> workItem) {
 		final Worker worker = resolveWorker(workItem);
 		//---
 		workListener.onStart(workItem.getWorkEngineProvider().getName());
 		boolean executed = false;
 		final long start = System.currentTimeMillis();
 		try {
-			worker.execute(workItem);
+			final Future<WR> future = worker.submit(workItem);
 			executed = true;
+			return future;
 		} finally {
 			workListener.onFinish(workItem.getWorkEngineProvider().getName(), System.currentTimeMillis() - start, executed);
 		}

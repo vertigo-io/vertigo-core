@@ -25,6 +25,7 @@ import io.vertigo.kernel.lang.Assertion;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -36,19 +37,25 @@ import redis.clients.jedis.exceptions.JedisException;
  */
 final class RedisListenerThread extends Thread {
 	private final JedisPool jedisPool;
-	private final Map<String, WorkItem> workItems = Collections.synchronizedMap(new HashMap<String, WorkItem>());
+	private final Map<String, WorkResultHandler> workResultHandlers = Collections.synchronizedMap(new HashMap<String, WorkResultHandler>());
 
 	RedisListenerThread(final JedisPool jedisPool) {
 		Assertion.checkNotNull(jedisPool);
-		Assertion.checkNotNull(workItems);
 		//-----------------------------------------------------------------
 		this.jedisPool = jedisPool;
 	}
 
-	<WR, W> void putworkItem(final WorkItem<WR, W> workItem) {
+	<WR, W> Future<WR> putworkItem(final WorkItem<WR, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		//---------------------------------------------------------------------
-		workItems.put(workItem.getId(), workItem);
+		final WFuture<WR> future;
+		if (workItem.getWorkResultHandler().isDefined()) {
+			future = new WFuture<>(workItem.getWorkResultHandler().get());
+		} else {
+			future = new WFuture<>();
+		}
+		workResultHandlers.put(workItem.getId(), future);
+		return future;
 	}
 
 	/** {@inheritDoc} */
@@ -64,9 +71,8 @@ final class RedisListenerThread extends Thread {
 
 				final String workId = jedis.brpoplpush("works:done", "works:completed", waitTimeSeconds);
 				if (workId != null) {
-					final WorkItem<?, ?> workItem = workItems.get(workId);
-					if (workItem != null) {
-						final WorkResultHandler workResultHandler = workItem.getWorkResultHandler().get();
+					final WorkResultHandler workResultHandler = workResultHandlers.get(workId);
+					if (workResultHandler != null) {
 						//Que faire sinon 
 						if ("ok".equals(jedis.hget("work:" + workId, "status"))) {
 							workResultHandler.onSuccess(RedisUtil.decode(jedis.hget("work:" + workId, "result")));

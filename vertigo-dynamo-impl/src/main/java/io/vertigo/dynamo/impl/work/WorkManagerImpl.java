@@ -28,6 +28,7 @@ import io.vertigo.kernel.lang.Option;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -65,9 +66,9 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	/** {@inheritDoc} */
 	public <WR, W> WR process(final W work, final WorkEngineProvider<WR, W> workEngineProvider) {
 		final WorkItem<WR, W> workItem = new WorkItem<>(work, workEngineProvider);
-		coordinator.execute(workItem);
+		final Future<WR> result = coordinator.execute(workItem);
 		try {
-			return workItem.getResult().get();
+			return result.get();
 		} catch (final ExecutionException e) {
 			if (e.getCause() instanceof RuntimeException) {
 				throw (RuntimeException) e.getCause();

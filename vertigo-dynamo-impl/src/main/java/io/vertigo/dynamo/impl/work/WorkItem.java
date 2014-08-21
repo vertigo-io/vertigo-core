@@ -25,27 +25,12 @@ import io.vertigo.kernel.lang.Option;
 
 import java.util.UUID;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
 
 public final class WorkItem<WR, W> {
-	public enum Exec {
-		sync, async
-	}
-
-	//private static final Object DUMMY_WORK = new Object();
-
-	//	private static enum Status {
-	//		Waiting, InProgress, Succeeded, Failed
-	//	}
-
 	private final W work;
 	private final Option<WorkResultHandler<WR>> workResultHandler;
 	private final WorkEngineProvider<WR, W> workEngineProvider;
-	private final Exec exec;
-	private Future<WR> result;
 	final String id = UUID.randomUUID().toString();
-
-	//	private Status status = Status.Waiting;
 
 	/**
 	 * Constructor. 
@@ -59,7 +44,6 @@ public final class WorkItem<WR, W> {
 		this.work = work;
 		this.workResultHandler = Option.none();
 		this.workEngineProvider = workEngineProvider;
-		this.exec = Exec.sync;
 	}
 
 	public WorkItem(final Callable<WR> callable, final WorkResultHandler<WR> workResultHandler) {
@@ -69,7 +53,6 @@ public final class WorkItem<WR, W> {
 		this.work = null;
 		this.workResultHandler = Option.some(workResultHandler);
 		this.workEngineProvider = new WorkEngineProvider<>(new CallableEngine<WR, W>(callable));
-		this.exec = Exec.async;
 	}
 
 	/**
@@ -84,15 +67,10 @@ public final class WorkItem<WR, W> {
 		this.work = work;
 		this.workResultHandler = Option.some(workResultHandler);
 		this.workEngineProvider = workEngineProvider;
-		this.exec = Exec.async;
 	}
 
 	public String getId() {
 		return id;
-	}
-
-	public boolean isSync() {
-		return exec == Exec.sync;
 	}
 
 	/**
@@ -113,15 +91,5 @@ public final class WorkItem<WR, W> {
 
 	public WorkEngineProvider<WR, W> getWorkEngineProvider() {
 		return workEngineProvider;
-	}
-
-	public synchronized Future<WR> getResult() {
-		return result;
-	}
-
-	public synchronized void setResult(final Future<WR> result) {
-		Assertion.checkNotNull(result);
-		//---------------------------------------------------------------------
-		this.result = result;
 	}
 }

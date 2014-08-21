@@ -25,6 +25,7 @@ import io.vertigo.kernel.lang.Assertion;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -79,9 +80,9 @@ public final class LocalWorker implements Worker, Activeable {
 	 * WorkItem contient à la fois le Work et le callback.  
 	 * @param workItem WorkItem
 	 */
-	public <WR, W> void execute(final WorkItem<WR, W> workItem) {
+	public <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		//-------------------------------------------------------------------
-		workItem.setResult(workers.submit(new WorkItemExecutor<>(workItem)));
+		return workers.submit(new WorkItemExecutor<>(workItem));
 	}
 }

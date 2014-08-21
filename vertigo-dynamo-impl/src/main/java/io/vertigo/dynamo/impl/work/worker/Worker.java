@@ -20,6 +20,8 @@ package io.vertigo.dynamo.impl.work.worker;
 
 import io.vertigo.dynamo.impl.work.WorkItem;
 
+import java.util.concurrent.Future;
+
 /**
  * Interface d'un Worker threadsafe.
  * Permet d'exécuter un travail de façona * - synchrone
@@ -33,7 +35,7 @@ public interface Worker {
 	 * @param <W> Type de Work (Travail)
 	 * @param <WR> Produit d'un work à l'issu de son exécution
 	 * @param work Travail à exécuter
-	 * @return resultat
+	 * @return resultats
 	 */
-	<WR, W> void execute(final WorkItem<WR, W> workItem);
+	<WR, W> Future<WR> submit(final WorkItem<WR, W> workItem);
 }

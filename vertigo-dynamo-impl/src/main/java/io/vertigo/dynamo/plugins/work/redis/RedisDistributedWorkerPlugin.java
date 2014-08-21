@@ -28,17 +28,13 @@ import io.vertigo.kernel.util.DateUtil;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;
 import redis.clients.jedis.exceptions.JedisException;
 
@@ -50,7 +46,7 @@ import redis.clients.jedis.exceptions.JedisException;
  * $Id: RedisDistributedWorkerPlugin.java,v 1.11 2014/06/26 12:30:08 npiedeloup Exp $
  */
 public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlugin, Activeable {
-	private final int timeoutSeconds;
+	//	private final int timeoutSeconds;
 	private final JedisPool jedisPool;
 	/*
 	 *La map est nécessairement synchronisée. 
@@ -62,7 +58,7 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 		Assertion.checkArgNotEmpty(redisHost);
 		//---------------------------------------------------------------------
 		jedisPool = RedisUtil.createJedisPool(redisHost, redisPort, password);
-		this.timeoutSeconds = timeoutSeconds;
+		//		this.timeoutSeconds = timeoutSeconds;
 		redisListenerThread = new RedisListenerThread(jedisPool);
 	}
 
@@ -82,20 +78,12 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 	}
 
 	/** {@inheritDoc} */
-	public <WR, W> void execute(final WorkItem<WR, W> workItem) {
+	public <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem) {
 		int retry = 0;
 		while (retry < 3) {
 			Jedis jedis = jedisPool.getResource();
 			try {
-				//---
-				if (workItem.isSync()) {
-					this.<WR, W> doProcess(jedis, workItem);
-				} else {
-					this.<WR, W> doSchedule(jedis, workItem);
-				}
-				//C'est bon on s'arrête 
-				return;
-				//---
+				return this.<WR, W> doSubmit(jedis, workItem);
 			} catch (final JedisException e) {
 				jedisPool.returnBrokenResource(jedis);
 				jedis = null;
@@ -113,81 +101,11 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 		throw new RuntimeException("3 essais ");
 	}
 
-	private static Object buildResult(final Jedis jedis, final String workId) {
-		final Transaction tx = jedis.multi();
-
-		final Response<String> status = tx.hget("work:" + workId, "status");
-		final Response<String> result = tx.hget("work:" + workId, "result");
-		final Response<String> error = tx.hget("work:" + workId, "error");
-		tx.lrem("works:completed", 0, workId);
-		tx.del("work:" + workId);
-
-		tx.exec();
-		if ("ok".equals(status.get())) {
-			//Seul cas ou on remonte un résultat
-			return RedisUtil.decode(result.get());
-		}
-
-		final Throwable t = (Throwable) RedisUtil.decode(error.get());
-
-		//si il ya une erreur 
-		if (t instanceof Error) {
-			throw Error.class.cast(t);
-		}
-		if (t instanceof RuntimeException) {
-			throw RuntimeException.class.cast(t);
-		}
-		throw new RuntimeException(t);
-
-	}
-
-	private <WR, W> void doSchedule(final Jedis jedis, final WorkItem<WR, W> workItem) {
+	private <WR, W> Future<WR> doSubmit(final Jedis jedis, final WorkItem<WR, W> workItem) {
 		//1. On renseigne la demande de travaux
 		putWorkItem(jedis, workItem);
 		//2. On attend les notifs sur un thread séparé pour rendre la main
-		redisListenerThread.putworkItem(workItem);
-	}
-
-	private <WR, W> void doProcess(final Jedis jedis, final WorkItem<WR, W> workItem) {
-		//1. On renseigne la demande de travaux
-		putWorkItem(jedis, workItem);
-		//2. On attend le résultat
-		final WR result = waitResult(jedis, workItem);
-		//3. On affecte le résultat
-		workItem.setResult(new Future<WR>() {
-			public boolean cancel(final boolean mayInterruptIfRunning) {
-				return false;
-			}
-
-			public boolean isCancelled() {
-				return false;
-			}
-
-			public boolean isDone() {
-				return false;
-			}
-
-			public WR get() throws InterruptedException, ExecutionException {
-				return result;
-			}
-
-			public WR get(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-				return result;
-			}
-		});
-	}
-
-	private <WR, W> WR waitResult(final Jedis jedis, final WorkItem<WR, W> workItem) {
-		//On attend le résultat
-		//final String id = jedis.brpop(timeoutSeconds, "works:done:" + workId);
-		final String id = jedis.brpoplpush("works:done:" + workItem.getId(), "works:completed", timeoutSeconds);
-
-		if (id == null) {
-			throw new RuntimeException("TimeOut survenu pour work[" + workItem.getId() + "], duree maximale: " + timeoutSeconds + " s");
-		} else if (!workItem.getId().equals(id)) {
-			throw new IllegalStateException("Id non cohérents attendu '" + workItem.getId() + "' trouvé '" + id + "'");
-		}
-		return (WR) buildResult(jedis, workItem.getId());
+		return redisListenerThread.putworkItem(workItem);
 	}
 
 	private static <WR, W> void putWorkItem(final Jedis jedis, final WorkItem<WR, W> workItem) {
@@ -197,7 +115,6 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 		datas.put("work64", RedisUtil.encode(workItem.getWork()));
 		datas.put("provider64", RedisUtil.encode(workItem.getWorkEngineProvider().getName()));
 		datas.put("date", DateUtil.newDate().toString());
-		datas.put("sync", Boolean.toString(workItem.isSync()));
 
 		final Transaction tx = jedis.multi();
 
@@ -213,5 +130,4 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 	public <WR, W> boolean canProcess(final WorkEngineProvider<WR, W> workEngineProvider) {
 		return true;
 	}
-
 }

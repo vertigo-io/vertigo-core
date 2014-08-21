@@ -20,6 +20,8 @@ package io.vertigo.dynamo.impl.work;
 
 import io.vertigo.kernel.lang.Activeable;
 
+import java.util.concurrent.Future;
+
 /**
  * Coordinates the work performed by the workers.
  * 
@@ -32,6 +34,6 @@ public interface WCoordinator extends Activeable {
 	 * @param <WR> Produit d'un work à l'issu de son exécution
 	 * @param workItem Travail à exécuter
 	 */
-	<WR, W> void execute(final WorkItem<WR, W> workItem);
+	<WR, W> Future<WR> execute(final WorkItem<WR, W> workItem);
 
 }
