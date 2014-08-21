@@ -75,7 +75,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		Assertion.checkNotNull(workEngineProvider);
 		//---------------------------------------------------------------------
 		final WorkItem<WR, W> workItem = new WorkItem<>(createWorkId(), work, workEngineProvider);
-		final Future<WR> result = coordinator.execute(workItem, Option.<WorkResultHandler<WR>> none());
+		final Future<WR> result = coordinator.submit(workItem, Option.<WorkResultHandler<WR>> none());
 		try {
 			return result.get();
 		} catch (final ExecutionException e) {
@@ -94,7 +94,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		Assertion.checkNotNull(workResultHandler);
 		//---------------------------------------------------------------------
 		final WorkItem<WR, W> workItem = new WorkItem<>(createWorkId(), work, workEngineProvider);
-		coordinator.execute(workItem, Option.some(workResultHandler));
+		coordinator.submit(workItem, Option.some(workResultHandler));
 	}
 
 	public <WR, W> void schedule(final Callable<WR> callable, final WorkResultHandler<WR> workResultHandler) {
@@ -112,6 +112,6 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		});
 
 		final WorkItem<WR, W> workItem = new WorkItem<>(createWorkId(), null, workEngineProvider);
-		coordinator.execute(workItem, Option.some(workResultHandler));
+		coordinator.submit(workItem, Option.some(workResultHandler));
 	}
 }
