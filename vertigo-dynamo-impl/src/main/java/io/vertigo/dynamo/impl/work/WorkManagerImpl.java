@@ -85,7 +85,9 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	}
 
 	public <WR, W> void schedule(final Callable<WR> callable, final WorkResultHandler<WR> workResultHandler) {
-		final WorkItem<WR, W> workItem = new WorkItem<>(callable);
+		final WorkEngineProvider<WR, W> workEngineProvider = new WorkEngineProvider<>(new CallableEngine<WR, W>(callable));
+
+		final WorkItem<WR, W> workItem = new WorkItem<>(null, workEngineProvider);
 		coordinator.execute(workItem, Option.some(workResultHandler));
 	}
 }

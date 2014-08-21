@@ -35,18 +35,11 @@ public final class WorkItem<WR, W> {
 	 * @param work Travail dont on représente l'état.
 	 */
 	public WorkItem(final W work, final WorkEngineProvider<WR, W> workEngineProvider) {
-		Assertion.checkNotNull(work);
+		//Assertion.checkNotNull(work);
 		Assertion.checkNotNull(workEngineProvider);
 		//---------------------------------------------------------------------
 		this.work = work;
 		this.workEngineProvider = workEngineProvider;
-	}
-
-	public WorkItem(final Callable<WR> callable) {
-		Assertion.checkNotNull(callable);
-		//---------------------------------------------------------------------
-		this.work = null;
-		this.workEngineProvider = new WorkEngineProvider<>(new CallableEngine<WR, W>(callable));
 	}
 
 	public String getId() {
