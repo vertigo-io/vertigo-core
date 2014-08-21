@@ -33,6 +33,7 @@ public final class WorkItem<WR, W> {
 	 */
 	public WorkItem(final String id, final W work, final WorkEngineProvider<WR, W> workEngineProvider) {
 		Assertion.checkNotNull(id);
+		//work can be null
 		Assertion.checkNotNull(workEngineProvider);
 		//---------------------------------------------------------------------
 		this.id = id;

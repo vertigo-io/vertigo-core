@@ -24,6 +24,7 @@ import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Activeable;
+import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 
 import java.util.UUID;
@@ -69,6 +70,9 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	}
 	/** {@inheritDoc} */
 	public <WR, W> WR process(final W work, final WorkEngineProvider<WR, W> workEngineProvider) {
+		Assertion.checkNotNull(work);
+		Assertion.checkNotNull(workEngineProvider);
+		//---------------------------------------------------------------------
 		final WorkItem<WR, W> workItem = new WorkItem<>(createWorkId(), work, workEngineProvider);
 		final Future<WR> result = coordinator.execute(workItem, Option.<WorkResultHandler<WR>> none());
 		try {
@@ -84,11 +88,18 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	}
 
 	public <WR, W> void schedule(final W work, final WorkEngineProvider<WR, W> workEngineProvider, final WorkResultHandler<WR> workResultHandler) {
+		Assertion.checkNotNull(work);
+		Assertion.checkNotNull(workEngineProvider);
+		Assertion.checkNotNull(workResultHandler);
+		//---------------------------------------------------------------------
 		final WorkItem<WR, W> workItem = new WorkItem<>(createWorkId(), work, workEngineProvider);
 		coordinator.execute(workItem, Option.some(workResultHandler));
 	}
 
 	public <WR, W> void schedule(final Callable<WR> callable, final WorkResultHandler<WR> workResultHandler) {
+		Assertion.checkNotNull(callable);
+		Assertion.checkNotNull(workResultHandler);
+		//---------------------------------------------------------------------
 		final WorkEngineProvider<WR, W> workEngineProvider = new WorkEngineProvider<>(new CallableEngine<WR, W>(callable));
 
 		final WorkItem<WR, W> workItem = new WorkItem<>(createWorkId(), null, workEngineProvider);
