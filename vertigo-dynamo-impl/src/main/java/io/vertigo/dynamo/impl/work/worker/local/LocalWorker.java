@@ -41,7 +41,7 @@ public final class LocalWorker implements Worker, Activeable {
 	public LocalWorker(final int workerCount) {
 		Assertion.checkArgument(workerCount >= 1, "At least one thread must be allowed to process asynchronous jobs.");
 		// ---------------------------------------------------------------------
-		workersPool = new WorkersPool(this, workerCount);
+		workersPool = new WorkersPool(workerCount);
 	}
 
 	/** {@inheritDoc} */
@@ -61,15 +61,15 @@ public final class LocalWorker implements Worker, Activeable {
 		Assertion.checkArgument(active, "plugin is not yet started");
 		Assertion.checkNotNull(workItem);
 		// ---------------------------------------------------------------------
-		if (workItem.isSync()){
+		if (workItem.isSync()) {
 			executeNow(workItem);
-		}else{
+		} else {
+			System.out.println(">>>put");
 			workersPool.putWorkItem(workItem);
 		}
 	}
 
-	
-	public static <WR, W> void executeNow(final WorkItem<WR, W> workItem){
+	public static <WR, W> void executeNow(final WorkItem<WR, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		// ---------------------------------------------------------------------
 		workItem.setResult(workItem.getWorkEngineProvider().provide().process(workItem.getWork()));

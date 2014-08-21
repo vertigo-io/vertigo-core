@@ -31,7 +31,8 @@ import redis.clients.jedis.JedisPool;
 public class RedisWorkManagerTest extends AbstractWorkManagerTest {
 	@Override
 	protected void doSetUp() throws Exception {
-		reset(RedisUtil.createJedisPool("pub-redis-15190.us-east-1-3.4.ec2.garantiadata.com", 15190, Option.some("kleegroup")));
+		reset(RedisUtil.createJedisPool("localhost", 6379, Option.<String> none()));
+		//		reset(RedisUtil.createJedisPool("pub-redis-15190.us-east-1-3.4.ec2.garantiadata.com", 15190, Option.some("kleegroup")));
 		//reset(RedisUtil.createJedisPool("kasper-redis", 6379));
 	}
 

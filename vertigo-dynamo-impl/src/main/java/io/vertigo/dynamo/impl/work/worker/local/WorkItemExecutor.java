@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.impl.work.worker.local;
 
 import io.vertigo.dynamo.impl.work.WorkItem;
-import io.vertigo.dynamo.impl.work.worker.Worker;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.kernel.lang.Assertion;
 
@@ -66,12 +65,6 @@ public final class WorkItemExecutor<WR, W> implements Runnable {
 
 	/** {@inheritDoc} */
 	public void run() {
-		doExecute();
-	}
-
-	private void doExecute() {
-		Assertion.checkNotNull(workItem);
-		//---------------------------------------------------------------------
 		try {
 			workItem.getWorkResultHandler().get().onStart();
 			LocalWorker.executeNow(workItem);
