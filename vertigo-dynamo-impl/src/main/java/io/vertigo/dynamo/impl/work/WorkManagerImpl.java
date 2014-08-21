@@ -20,6 +20,7 @@ package io.vertigo.dynamo.impl.work;
 
 import io.vertigo.dynamo.impl.work.listener.WorkListener;
 import io.vertigo.dynamo.impl.work.listener.WorkListenerImpl;
+import io.vertigo.dynamo.work.WorkEngine;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkResultHandler;
@@ -100,7 +101,15 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		Assertion.checkNotNull(callable);
 		Assertion.checkNotNull(workResultHandler);
 		//---------------------------------------------------------------------
-		final WorkEngineProvider<WR, W> workEngineProvider = new WorkEngineProvider<>(new CallableEngine<WR, W>(callable));
+		final WorkEngineProvider<WR, W> workEngineProvider = new WorkEngineProvider<>(new WorkEngine<WR,W>() {
+				public WR process(final W dummy) {
+					try {
+						return callable.call();
+					} catch (final Exception e) {
+						throw new RuntimeException(e);
+					}
+			}
+		});
 
 		final WorkItem<WR, W> workItem = new WorkItem<>(createWorkId(), null, workEngineProvider);
 		coordinator.execute(workItem, Option.some(workResultHandler));
