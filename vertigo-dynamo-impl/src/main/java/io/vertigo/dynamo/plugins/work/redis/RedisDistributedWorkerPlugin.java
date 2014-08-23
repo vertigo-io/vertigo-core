@@ -43,7 +43,7 @@ import redis.clients.jedis.JedisPool;
  */
 public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlugin, Activeable {
 	//	private final int timeoutSeconds;
-	private final JedisPool jedisPool;
+	private final RedisDB redisDB;
 	/*
 	 *La map est nécessairement synchronisée. 
 	 */
@@ -53,9 +53,9 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 	public RedisDistributedWorkerPlugin(final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> password, final @Named("timeoutSeconds") int timeoutSeconds) {
 		Assertion.checkArgNotEmpty(redisHost);
 		//---------------------------------------------------------------------
-		jedisPool = RedisUtil.createJedisPool(redisHost, redisPort, password);
+		redisDB = new RedisDB(redisHost, redisPort, password);
 		//		this.timeoutSeconds = timeoutSeconds;
-		redisListenerThread = new RedisListenerThread(jedisPool);
+		redisListenerThread = new RedisListenerThread(redisDB);
 	}
 
 	/** {@inheritDoc} */
@@ -73,17 +73,15 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 			//On ne fait rien
 		}
 		//--- 
-		jedisPool.destroy(); //see doc :https://github.com/xetorthio/jedis/wiki/Getting-started
+		redisDB.destroy(); //see doc :https://github.com/xetorthio/jedis/wiki/Getting-started
 	}
 
 	/** {@inheritDoc} */
 	public <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
-		try (Jedis jedis = jedisPool.getResource()) {
-			//1. On renseigne la demande de travaux sur le server redis
-			RedisDBUtil.writeWorkItem(jedis, workItem);
-			//2. On attend les notifs sur un thread séparé, la main est rendue de suite 
-			return redisListenerThread.putworkItem(workItem, workResultHandler);
-		}
+		//1. On renseigne la demande de travaux sur le server redis
+		redisDB.writeWorkItem( workItem);
+		//2. On attend les notifs sur un thread séparé, la main est rendue de suite 
+		return redisListenerThread.putworkItem(workItem, workResultHandler);
 	}
 
 	public <WR, W> boolean canProcess(final WorkEngineProvider<WR, W> workEngineProvider) {

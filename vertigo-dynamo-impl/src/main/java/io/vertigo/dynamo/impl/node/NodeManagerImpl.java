@@ -38,21 +38,21 @@ import javax.inject.Inject;
  */
 
 public final class NodeManagerImpl implements NodeManager {
-	private final List<Node> nodes;
+//	private final List<Node> nodes;
 
 	@Inject
 	public NodeManagerImpl(final List<NodePlugin> nodePlugins) {
 		Assertion.checkNotNull(nodePlugins);
 		//---------------------------------------------------------------------
-		final List<Node> tmpNodes = new ArrayList<>();
-		for (final Plugin plugin : nodePlugins) {
-			tmpNodes.addAll(NodePlugin.class.cast(plugin).getNodes());
-		}
-		this.nodes = Collections.unmodifiableList(tmpNodes);
+//		final List<Node> tmpNodes = new ArrayList<>();
+//		for (final Plugin plugin : nodePlugins) {
+//			tmpNodes.addAll(NodePlugin.class.cast(plugin).getNodes());
+//		}
+//		this.nodes = Collections.unmodifiableList(tmpNodes);
 	}
 
 	/** {@inheritDoc} */
 	public List<Node> getNodes() {
-		return nodes;
+		return null ; //nodes;
 	}
 }

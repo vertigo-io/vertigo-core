@@ -31,16 +31,16 @@ import redis.clients.jedis.JedisPool;
  * $Id: RedisDispatcherThread.java,v 1.8 2014/02/03 17:28:45 pchretien Exp $
  */
 final class RedisDispatcherThread extends Thread {
-	private final JedisPool jedisPool;
+	private final RedisDB redisDB;
 	//	private final String nodeId;
 	private final LocalWorker localWorker;
 
-	RedisDispatcherThread(final String nodeId, final JedisPool jedisPool, final LocalWorker localWorker) {
+	RedisDispatcherThread(final String nodeId, final RedisDB redisDB, final LocalWorker localWorker) {
 		Assertion.checkArgNotEmpty(nodeId);
-		Assertion.checkNotNull(jedisPool);
+		Assertion.checkNotNull(redisDB);
 		Assertion.checkNotNull(localWorker);
 		//-----------------------------------------------------------------
-		this.jedisPool = jedisPool;
+		this.redisDB = redisDB;
 		//	this.nodeId = nodeId;
 		this.localWorker = localWorker;
 	}
@@ -53,21 +53,16 @@ final class RedisDispatcherThread extends Thread {
 		}
 	}
 
-	private void doRun() {
-		try (Jedis jedis = jedisPool.getResource()) {
-			final String workId = jedis.brpoplpush("works:todo", "works:in progress", 1);
-			if (workId != null) {
-				execute(workId, jedis);
-			}
-			//Cela signifie que l'a rien reçu pendant le brpop
-		}
-	}
 
-	private <WR, W> void execute(final String workId, final Jedis jedis) {
-		final WorkItem<WR, W> workItem = RedisDBUtil.readWorkItem(jedis, workId);
-		final Option<WorkResultHandler<WR>> workResultHandler = Option.<WorkResultHandler<WR>> some(new RedisWorkResultHandler<WR>(workId, jedisPool));
-		//---Et on fait executer par le workerLocal
-		localWorker.submit(workItem, workResultHandler);
+	private static final int TIMEOUT_IN_SECONDS=1;
+	private <WR,W> void doRun() {
+		final WorkItem<WR,W> workItem = redisDB.nextWorkItemTodo( TIMEOUT_IN_SECONDS);
+		if (workItem !=null){
+			final Option<WorkResultHandler<WR>> workResultHandler = Option.<WorkResultHandler<WR>> some(new RedisWorkResultHandler<WR>(workItem.getId(), redisDB));
+			//---Et on fait executer par le workerLocalredisDB
+			localWorker.submit(workItem, workResultHandler);
+		}
+		//if workitem is null, that's mean there is no workitem available;
 	}
 
 }

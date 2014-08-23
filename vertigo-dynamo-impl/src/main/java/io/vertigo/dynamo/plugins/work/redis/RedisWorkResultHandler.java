@@ -28,14 +28,14 @@ import redis.clients.jedis.JedisPool;
  * $Id: RedisWorkResultHandler.java,v 1.7 2014/02/27 10:31:38 pchretien Exp $
  */
 final class RedisWorkResultHandler<WR> implements WorkResultHandler<WR> {
-	private final JedisPool jedisPool;
+	private final RedisDB redisDB;
 	private final String workId;
 
-	RedisWorkResultHandler(final String workId, final JedisPool jedisPool) {
+	RedisWorkResultHandler(final String workId, final RedisDB redisDB) {
 		Assertion.checkNotNull(workId);
-		Assertion.checkNotNull(jedisPool);
+		Assertion.checkNotNull(redisDB);
 		//---------------------------------------------------------------------
-		this.jedisPool = jedisPool;
+		this.redisDB = redisDB;
 		this.workId = workId;
 
 	}
@@ -47,15 +47,11 @@ final class RedisWorkResultHandler<WR> implements WorkResultHandler<WR> {
 
 	/** {@inheritDoc} */
 	public void onSuccess(final WR result) {
-		try (Jedis jedis = jedisPool.getResource()) {
-			RedisDBUtil.writeSuccess(jedis, workId, result);
-		}
+		redisDB.writeSuccess(workId, result);
 	}
 
 	/** {@inheritDoc} */
 	public void onFailure(final Throwable t) {
-		try (Jedis jedis = jedisPool.getResource()) {
-			RedisDBUtil.writeFailure(jedis, workId, t);
-		}
+		redisDB.writeFailure(workId, t);
 	}
 }

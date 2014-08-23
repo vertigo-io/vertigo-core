@@ -47,7 +47,7 @@ import com.google.gson.GsonBuilder;
  * $Id: RedisNodePlugin.java,v 1.9 2014/06/26 12:30:08 npiedeloup Exp $
  */
 public final class RedisNodePlugin implements NodePlugin, Activeable {
-	private final JedisPool jedisPool;
+	private final RedisDB redisDB;
 	private final LocalWorker localWorker = new LocalWorker(/*workersCount*/5);
 	private final Thread dispatcherThread;
 	private final String nodeId;
@@ -58,8 +58,8 @@ public final class RedisNodePlugin implements NodePlugin, Activeable {
 		Assertion.checkArgNotEmpty(redisHost);
 		//---------------------------------------------------------------------
 		this.nodeId = nodeId;
-		jedisPool = RedisUtil.createJedisPool(redisHost, redisPort, password);
-		dispatcherThread = new RedisDispatcherThread(nodeId, jedisPool, localWorker);
+		redisDB = new RedisDB(redisHost, redisPort, password);
+		dispatcherThread = new RedisDispatcherThread(nodeId, redisDB, localWorker);
 		//System.out.println("RedisNodePlugin");
 	}
 
@@ -68,7 +68,7 @@ public final class RedisNodePlugin implements NodePlugin, Activeable {
 		//System.out.println("start node");
 
 		//On enregistre le node
-		register(new Node(nodeId, true));
+		redisDB.registerNode( new Node(nodeId, true));
 
 		dispatcherThread.start();
 	}
@@ -82,7 +82,7 @@ public final class RedisNodePlugin implements NodePlugin, Activeable {
 			//On ne fait rien
 		}
 		localWorker.close();
-		register(new Node(nodeId, false));
+		redisDB.registerNode(new Node(nodeId, false));
 	}
 
 	//------------------------------------
@@ -90,42 +90,10 @@ public final class RedisNodePlugin implements NodePlugin, Activeable {
 	//------------------------------------
 	//------------------------------------
 
-	private final Gson gson = createGson();
-
-	private static Gson createGson() {
-		return new GsonBuilder()//
-				//.setPrettyPrinting()//
-				.create();
-	}
 
 	/** {@inheritDoc} */
 	public List<Node> getNodes() {
-		try (Jedis jedis = jedisPool.getResource()) {
-			final List<Node> nodes = new ArrayList<>();
-
-			final List<String> nodeKeys = jedis.lrange("nodes", -1, -1);
-			for (final String nodeKey : nodeKeys) {
-				final String json = jedis.hget(nodeKey, "json");
-				nodes.add(toNode(json));
-			}
-			return nodes;
-		}
+		return redisDB.getNodes();
 	}
 
-	private Node toNode(final String json) {
-		return gson.fromJson(json, Node.class);
-	}
-
-	private String toJson(final Node node) {
-		return gson.toJson(node);
-	}
-
-	private void register(final Node node) {
-		Assertion.checkNotNull(node);
-		//---------------------------------------------------------------------
-		try (Jedis jedis = jedisPool.getResource()) {
-			jedis.lpush("nodes", node.getUID());
-			jedis.hset("node:" + node.getUID(), "json", toJson(node));
-		}
-	}
 }

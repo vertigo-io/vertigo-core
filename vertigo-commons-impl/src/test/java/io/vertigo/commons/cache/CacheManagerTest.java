@@ -196,7 +196,7 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 			try {
 				th.join();
 			} catch (final InterruptedException e) {
-				e.printStackTrace();
+				//
 			}
 		}
 		cacheManager.clear(CONTEXT);
@@ -214,13 +214,13 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 		}
 
 		public void run() {
-			while (System.currentTimeMillis() < deathTime) {
+			while (!Thread.interrupted() && System.currentTimeMillis() < deathTime) {
 				final String key = "ma clé[" + Math.round(Math.random() * nbRow) + "]";
 				lCacheManager.get(CONTEXT, key); //on test juste le get
 				try {
 					Thread.sleep(10); //on rend juste la main
 				} catch (final InterruptedException e) {
-					//rien					
+					Thread.interrupted();
 				}
 			}
 		}

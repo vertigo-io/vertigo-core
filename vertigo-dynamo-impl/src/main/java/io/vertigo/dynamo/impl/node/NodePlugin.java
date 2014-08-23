@@ -18,10 +18,7 @@
  */
 package io.vertigo.dynamo.impl.node;
 
-import io.vertigo.dynamo.node.Node;
 import io.vertigo.kernel.component.Plugin;
-
-import java.util.List;
 
 /**
  * NodePlugin
@@ -31,5 +28,5 @@ public interface NodePlugin extends Plugin {
 	/**
 	 * @return Liste des noeuds
 	 */
-	List<Node> getNodes();
+	//List<Node> getNodes();
 }

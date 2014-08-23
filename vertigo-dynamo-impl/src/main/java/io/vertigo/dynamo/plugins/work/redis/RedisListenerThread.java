@@ -36,13 +36,13 @@ import redis.clients.jedis.JedisPool;
  * $Id: RedisListenerThread.java,v 1.6 2014/01/20 18:56:18 pchretien Exp $
  */
 final class RedisListenerThread extends Thread {
-	private final JedisPool jedisPool;
+	private final RedisDB redisDB;
 	private final Map<String, WorkResultHandler> workResultHandlers = Collections.synchronizedMap(new HashMap<String, WorkResultHandler>());
 
-	RedisListenerThread(final JedisPool jedisPool) {
-		Assertion.checkNotNull(jedisPool);
+	RedisListenerThread(final RedisDB redisDB) {
+		Assertion.checkNotNull(redisDB);
 		//-----------------------------------------------------------------
-		this.jedisPool = jedisPool;
+		this.redisDB = redisDB;
 	}
 
 	<WR, W> Future<WR> putworkItem(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
@@ -62,23 +62,17 @@ final class RedisListenerThread extends Thread {
 	@Override
 	public void run() {
 		while (!isInterrupted()) {
-			try (Jedis jedis = jedisPool.getResource()) {
-				//On attend le résultat (par tranches de 1s)
-				final int waitTimeSeconds = 1;
-
-				final String workId = jedis.brpoplpush("works:done", "works:completed", waitTimeSeconds);
-				if (workId != null) {
-					final WorkResultHandler workResultHandler = workResultHandlers.get(workId);
-					if (workResultHandler != null) {
-						//Que faire sinon 
-						if ("ok".equals(jedis.hget("work:" + workId, "status"))) {
-							workResultHandler.onSuccess(RedisDBUtil.readSuccess(jedis, workId));
-						} else {
-							final Throwable t = RedisDBUtil.readFailure(jedis, workId);
-							workResultHandler.onFailure(t);
-						}
-						//et on détruit le work (ou bien on l'archive ???
-						jedis.del("work:" + workId);
+			//On attend le résultat (par tranches de 1s)
+			final int waitTimeSeconds = 1;
+			RedisResult result = redisDB.nextResult(waitTimeSeconds);
+			if (result != null){
+				final WorkResultHandler workResultHandler = workResultHandlers.get(result.getWorkId());
+				if (workResultHandler != null) {
+					//Que faire sinon 
+					if (result.hasError()){
+						workResultHandler.onFailure(result.getError());
+					}else{
+						workResultHandler.onSuccess(result.getResult());
 					}
 				}
 			}
