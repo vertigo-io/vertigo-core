@@ -47,11 +47,8 @@ final class RedisDB {
 	}
 	
 	private void reset() {
-		final Jedis jedis = jedisPool.getResource();
-		try {
+		try (final Jedis jedis = jedisPool.getResource()){
 			jedis.flushAll();
-		} finally {
-			jedisPool.returnResource(jedis);
 		}
 	}
 
