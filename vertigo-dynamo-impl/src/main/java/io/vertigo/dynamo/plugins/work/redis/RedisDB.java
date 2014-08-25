@@ -19,7 +19,6 @@ import java.util.Map;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;
 
 import com.google.gson.Gson;
@@ -47,9 +46,7 @@ public final class RedisDB implements Activeable {
 
 		//test
 		try (Jedis jedis = jedisPool.getResource()) {
-			//final String ping = jedis.ping();
 			jedis.ping();
-			//System.out.println(" ping=" + ping);
 		}
 	}
 
@@ -72,8 +69,8 @@ public final class RedisDB implements Activeable {
 
 	private static Gson createGson() {
 		return new GsonBuilder()//
-				//.setPrettyPrinting()//
-				.create();
+		//.setPrettyPrinting()//
+		.create();
 	}
 
 	private static final CodecManager codecManager = new CodecManagerImpl();
@@ -86,7 +83,6 @@ public final class RedisDB implements Activeable {
 			//out.println("creating work [" + workId + "] : " + work.getClass().getSimpleName());
 
 			final Map<String, String> datas = new HashMap<>();
-			datas.put("id", workItem.getId());
 			datas.put("work64", encode(workItem.getWork()));
 			datas.put("provider64", encode(workItem.getWorkEngineProvider().getName()));
 			datas.put("x-date", DateUtil.newDate().toString());
@@ -103,107 +99,56 @@ public final class RedisDB implements Activeable {
 		}
 	}
 
-	private static <W, WR> WorkItem<WR, W> readWorkItem(final Jedis jedis, final String workId) {
-		//		datas.put("work64", RedisUtil.encode(work));
-		//		datas.put("provider64", RedisUtil.encode(workEngineProvider.getName()));
-		final Transaction tx = jedis.multi();
-		final Response<String> sid = tx.hget("work:" + workId, "id");
-		final Response<String> swork = tx.hget("work:" + workId, "work64");
-		final Response<String> sname = tx.hget("work:" + workId, "provider64");
-		tx.exec();
-
-		final String id = sid.get();
-		final W work = (W) decode(swork.get());
-		final String name = (String) decode(sname.get());
-		final WorkEngineProvider<WR, W> workEngineProvider = new WorkEngineProvider<>(name);
-		return new WorkItem<>(id, work, workEngineProvider);
-	}
-
 	<WR, W> WorkItem<WR, W> pollWorkItem(final String workType, final int timeoutInSeconds) {
 		Assertion.checkNotNull(workType);
 		//---------------------------------------------------------------------
 		try (Jedis jedis = jedisPool.getResource()) {
 			final String workId = jedis.brpoplpush("works:todo:" + workType, "works:in progress", timeoutInSeconds);
-			if (workId != null) {
-				return readWorkItem(jedis, workId);
+			if (workId == null) {
+				return null;
 			}
-			return null;
+			final Map<String, String> hash = jedis.hgetAll("work:" + workId);
+			final W work = (W) decode(hash.get("work64"));
+			final String name = (String) decode(hash.get("provider64"));
+			final WorkEngineProvider<WR, W> workEngineProvider = new WorkEngineProvider<>(name);
+			return new WorkItem<>(workId, work, workEngineProvider);
 		}
 	}
 
-	private <WR> WR readSuccess(final Jedis jedis, final String workId) {
-		return (WR) decode(jedis.hget("work:" + workId, "result"));
-	}
-
-	private Throwable readFailure(final Jedis jedis, final String workId) {
-		return (Throwable) decode(jedis.hget("work:" + workId, "error"));
-	}
 
 	<WR> void putResult(final WResult<WR> result) {
 		Assertion.checkNotNull(result);
 		//---------------------------------------------------------------------
 		final Map<String, String> datas = new HashMap<>();
-		if (result.hasSucceeded()) {
-			datas.put("result", encode(result.getResult()));
-			datas.put("status", "ok");
-		} else {
-			datas.put("error", encode(result.getError()));
-			datas.put("status", "ko");
-		}
 		try (Jedis jedis = jedisPool.getResource()) {
+			if (result.hasSucceeded()) {
+				datas.put("result", encode(result.getResult()));
+				datas.put("status", "ok");
+			} else {
+				datas.put("error", encode(result.getError()));
+				datas.put("status", "ko");
+			}
 			final Transaction tx = jedis.multi();
 			tx.hmset("work:" + result.getWorkId(), datas);
 			tx.lrem("works:in progress", 0, result.getWorkId());
 			tx.lpush("works:done", result.getWorkId());
 			tx.exec();
 		}
-
-	}
-
-	//	<WR> void writeResult(final String workId, final boolean succeeded, final WR result, final Throwable t) {
-	//		Assertion.checkArgument(succeeded && result != null, "a result is required");
-	//		Assertion.checkArgument(succeeded && t == null, "an error is not accepted when operation has succeeded");
-	//		Assertion.checkArgument(!succeeded && t != null, "an error is required");
-	//		Assertion.checkArgument(!succeeded && result == null, "a result  is not accepted when operation has failed");
-	//		//---------------------------------------------------------------------
-	//		try (Jedis jedis = jedisPool.getResource()) {
-	//			final Map<String, String> datas = new HashMap<>();
-	//			datas.put("result", encode(result));
-	//			if (succeeded) {
-	//				datas.put("result", encode(result));
-	//				datas.put("status", "ok");
-	//			} else {
-	//				datas.put("error", encode(t));
-	//				datas.put("status", "ok");
-	//			}
-	//			exec(jedis, workId, datas);
-	//		}
-
-	private static String encode(final Object toEncode) {
-		return codecManager.getBase64Codec().encode(codecManager.getSerializationCodec().encode((Serializable) toEncode));
-	}
-
-	private static Object decode(final String encoded) {
-		return codecManager.getSerializationCodec().decode(codecManager.getBase64Codec().decode(encoded));
 	}
 
 	<WR> WResult<WR> pollResult(final int waitTimeSeconds) {
-		try (Jedis jedis = jedisPool.getResource()) {
+		try (final Jedis jedis = jedisPool.getResource()) {
 			final String workId = jedis.brpoplpush("works:done", "works:completed", waitTimeSeconds);
-			final WResult<WR> result;
 			if (workId == null) {
-				result = null;
-			} else {
-				if ("ok".equals(jedis.hget("work:" + workId, "status"))) {
-					result = new WResult<>(workId, true, this.<WR> readSuccess(jedis, workId), null);
-				} else {
-					final Throwable t = readFailure(jedis, workId);
-					result = new WResult<>(workId, false, null, t);
-				}
-				//et on détruit le work (ou bien on l'archive ???
-				jedis.del("work:" + workId);
+				return  null;
 			}
-			return result;
+			final Map<String, String> hash = jedis.hgetAll("work:" + workId);
+			final boolean succeeded = "ok".equals(hash.get("status"));
+			final WR value = (WR) decode(hash.get("result"));
+			final Throwable error = (Throwable) decode(jedis.hget("work:" + workId, "error"));
+			//et on détruit le work (ou bien on l'archive ???
+			jedis.del("work:" + workId);
+			return new WResult<>(workId, succeeded, value, error);
 		}
 	}
 
@@ -229,6 +174,14 @@ public final class RedisDB implements Activeable {
 		}
 	}
 
+	private static String encode(final Object toEncode) {
+		return codecManager.getBase64Codec().encode(codecManager.getSerializationCodec().encode((Serializable) toEncode));
+	}
+
+	private static Object decode(final String encoded) {
+		return codecManager.getSerializationCodec().decode(codecManager.getBase64Codec().decode(encoded));
+	}
+
 	private static Node toNode(final String json) {
 		return gson.fromJson(json, Node.class);
 	}
@@ -237,3 +190,5 @@ public final class RedisDB implements Activeable {
 		return gson.toJson(node);
 	}
 }
+
+
