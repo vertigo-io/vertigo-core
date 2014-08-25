@@ -76,12 +76,19 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 	/** {@inheritDoc} */
 	public <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
 		//1. On renseigne la demande de travaux sur le server redis
-		redisDB.writeWorkItem(workItem);
+		final String workType = obtainWorkType(workItem);
+		redisDB.putWorkItem(workType, workItem);
 		//2. On attend les notifs sur un thread séparé, la main est rendue de suite 
 		return redisListenerThread.putworkItem(workItem, workResultHandler);
 	}
 
 	public <WR, W> boolean canProcess(final WorkEngineProvider<WR, W> workEngineProvider) {
 		return true;
+	}
+
+	private static <WR, W> String obtainWorkType(final WorkItem<WR, W> workItem) {
+		//		System.out.println(">>>>" + workItem.getWorkEngineProvider().getName());
+		//		return workItem.getWorkEngineProvider().getName();
+		return "toto";
 	}
 }

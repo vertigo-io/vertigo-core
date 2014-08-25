@@ -21,6 +21,7 @@
 	            	<param name="password" value="kleegroup" /-->
 	            	<param name="host" value="localhost" />
 	            	<param name="port" value="6379" />
+	            	<param name="workType" value="toto" />
 
 	            	<param name="nodeId" value="node#1" />
 	            </plugin>

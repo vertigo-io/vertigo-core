@@ -61,7 +61,7 @@ final class RedisListenerThread extends Thread {
 		while (!isInterrupted()) {
 			//On attend le résultat (par tranches de 1s)
 			final int waitTimeSeconds = 1;
-			final WResult result = redisDB.nextResult(waitTimeSeconds);
+			final WResult result = redisDB.pollResult(waitTimeSeconds);
 			if (result != null) {
 				final WorkResultHandler workResultHandler = workResultHandlers.get(result.getWorkId());
 				if (workResultHandler != null) {

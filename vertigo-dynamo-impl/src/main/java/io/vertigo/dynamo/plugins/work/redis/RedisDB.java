@@ -78,7 +78,10 @@ public final class RedisDB implements Activeable {
 
 	private static final CodecManager codecManager = new CodecManagerImpl();
 
-	<WR, W> void writeWorkItem(final WorkItem<WR, W> workItem) {
+	<WR, W> void putWorkItem(final String workType, final WorkItem<WR, W> workItem) {
+		Assertion.checkNotNull(workType);
+		Assertion.checkNotNull(workItem);
+		//---------------------------------------------------------------------
 		try (Jedis jedis = jedisPool.getResource()) {
 			//out.println("creating work [" + workId + "] : " + work.getClass().getSimpleName());
 
@@ -94,7 +97,7 @@ public final class RedisDB implements Activeable {
 
 			//tx.expire("work:" + workId, 70);
 			//On publie la demande de travaux
-			tx.lpush("works:todo", workItem.getId());
+			tx.lpush("works:todo:" + workType, workItem.getId());
 
 			tx.exec();
 		}
@@ -116,9 +119,11 @@ public final class RedisDB implements Activeable {
 		return new WorkItem<>(id, work, workEngineProvider);
 	}
 
-	<WR, W> WorkItem<WR, W> nextWorkItemTodo(final int timeoutInSeconds) {
+	<WR, W> WorkItem<WR, W> pollWorkItem(final String workType, final int timeoutInSeconds) {
+		Assertion.checkNotNull(workType);
+		//---------------------------------------------------------------------
 		try (Jedis jedis = jedisPool.getResource()) {
-			final String workId = jedis.brpoplpush("works:todo", "works:in progress", timeoutInSeconds);
+			final String workId = jedis.brpoplpush("works:todo:" + workType, "works:in progress", timeoutInSeconds);
 			if (workId != null) {
 				return readWorkItem(jedis, workId);
 			}
@@ -134,7 +139,7 @@ public final class RedisDB implements Activeable {
 		return (Throwable) decode(jedis.hget("work:" + workId, "error"));
 	}
 
-	<WR> void writeResult(final String workId, final boolean succeeded, final WR result, final Throwable error) {
+	<WR> void putResult(final String workId, final boolean succeeded, final WR result, final Throwable error) {
 		if (succeeded) {
 			Assertion.checkArgument(result != null, "when succeeded,  a result is required");
 			Assertion.checkArgument(error == null, "when succeeded, an error is not accepted");
@@ -188,7 +193,7 @@ public final class RedisDB implements Activeable {
 		return codecManager.getSerializationCodec().decode(codecManager.getBase64Codec().decode(encoded));
 	}
 
-	<WR> WResult<WR> nextResult(final int waitTimeSeconds) {
+	<WR> WResult<WR> pollResult(final int waitTimeSeconds) {
 		try (Jedis jedis = jedisPool.getResource()) {
 			final String workId = jedis.brpoplpush("works:done", "works:completed", waitTimeSeconds);
 			final WResult<WR> result;

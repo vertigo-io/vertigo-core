@@ -45,13 +45,14 @@ public final class RedisNodePlugin implements NodePlugin, Activeable {
 	private final String nodeId;
 
 	@Inject
-	public RedisNodePlugin(final @Named("nodeId") String nodeId, final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> password) {
+	public RedisNodePlugin(final @Named("nodeId") String nodeId, final @Named("workType") String workType, final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> password) {
 		Assertion.checkArgNotEmpty(nodeId);
 		Assertion.checkArgNotEmpty(redisHost);
+		Assertion.checkArgNotEmpty(workType);
 		//---------------------------------------------------------------------
 		this.nodeId = nodeId;
 		redisDB = new RedisDB(redisHost, redisPort, password);
-		dispatcherThread = new RedisDispatcherThread(nodeId, redisDB, localWorker);
+		dispatcherThread = new RedisDispatcherThread(nodeId, workType, redisDB, localWorker);
 		//System.out.println("RedisNodePlugin");
 	}
 

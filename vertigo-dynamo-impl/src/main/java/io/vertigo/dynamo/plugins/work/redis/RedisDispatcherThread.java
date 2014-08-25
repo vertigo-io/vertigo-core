@@ -32,14 +32,17 @@ final class RedisDispatcherThread extends Thread {
 	private final RedisDB redisDB;
 	//	private final String nodeId;
 	private final LocalWorker localWorker;
+	private final String workType;
 
-	RedisDispatcherThread(final String nodeId, final RedisDB redisDB, final LocalWorker localWorker) {
+	RedisDispatcherThread(final String nodeId, final String workType, final RedisDB redisDB, final LocalWorker localWorker) {
 		Assertion.checkArgNotEmpty(nodeId);
+		Assertion.checkArgNotEmpty(workType);
 		Assertion.checkNotNull(redisDB);
 		Assertion.checkNotNull(localWorker);
 		//-----------------------------------------------------------------
 		this.redisDB = redisDB;
 		//	this.nodeId = nodeId;
+		this.workType = workType;
 		this.localWorker = localWorker;
 	}
 
@@ -54,7 +57,7 @@ final class RedisDispatcherThread extends Thread {
 	private static final int TIMEOUT_IN_SECONDS = 1;
 
 	private <WR, W> void doRun() {
-		final WorkItem<WR, W> workItem = redisDB.nextWorkItemTodo(TIMEOUT_IN_SECONDS);
+		final WorkItem<WR, W> workItem = redisDB.pollWorkItem(workType, TIMEOUT_IN_SECONDS);
 		if (workItem != null) {
 			final Option<WorkResultHandler<WR>> workResultHandler = Option.<WorkResultHandler<WR>> some(new RedisWorkResultHandler<WR>(workItem.getId(), redisDB));
 			//---Et on fait executer par le workerLocalredisDB
