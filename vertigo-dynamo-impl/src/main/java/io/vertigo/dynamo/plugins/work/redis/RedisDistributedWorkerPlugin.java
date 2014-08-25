@@ -79,7 +79,7 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 		final String workType = obtainWorkType(workItem);
 		redisDB.putWorkItem(workType, workItem);
 		//2. On attend les notifs sur un thread séparé, la main est rendue de suite 
-		return redisListenerThread.putworkItem(workItem, workResultHandler);
+		return redisListenerThread.getFuture(workItem, workResultHandler);
 	}
 
 	public <WR, W> boolean canProcess(final WorkEngineProvider<WR, W> workEngineProvider) {

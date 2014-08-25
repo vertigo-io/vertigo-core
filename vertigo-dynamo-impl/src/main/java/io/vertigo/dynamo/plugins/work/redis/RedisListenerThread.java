@@ -42,7 +42,7 @@ final class RedisListenerThread extends Thread {
 		this.redisDB = redisDB;
 	}
 
-	<WR, W> Future<WR> putworkItem(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
+	<WR, W> Future<WR> getFuture(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
 		Assertion.checkNotNull(workItem);
 		//---------------------------------------------------------------------
 		final WFuture<WR> future;

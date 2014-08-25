@@ -59,7 +59,16 @@ final class RedisDispatcherThread extends Thread {
 	private <WR, W> void doRun() {
 		final WorkItem<WR, W> workItem = redisDB.pollWorkItem(workType, TIMEOUT_IN_SECONDS);
 		if (workItem != null) {
-			final Option<WorkResultHandler<WR>> workResultHandler = Option.<WorkResultHandler<WR>> some(new RedisWorkResultHandler<WR>(workItem.getId(), redisDB));
+
+			final Option<WorkResultHandler<WR>> workResultHandler = Option.<WorkResultHandler<WR>> some(new WorkResultHandler<WR>(){
+				public void onStart() {
+					// TODO Auto-generated method stub
+				}
+
+				public void onDone(final boolean succeeded, final WR result, final Throwable error) {
+					redisDB.putResult(new WResult(workItem.getId(), succeeded, result, error));
+				}
+			});
 			//---Et on fait executer par le workerLocalredisDB
 			localWorker.submit(workItem, workResultHandler);
 		}
