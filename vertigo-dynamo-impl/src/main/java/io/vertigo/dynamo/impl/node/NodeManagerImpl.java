@@ -20,11 +20,8 @@ package io.vertigo.dynamo.impl.node;
 
 import io.vertigo.dynamo.node.Node;
 import io.vertigo.dynamo.node.NodeManager;
-import io.vertigo.kernel.component.Plugin;
 import io.vertigo.kernel.lang.Assertion;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -38,21 +35,21 @@ import javax.inject.Inject;
  */
 
 public final class NodeManagerImpl implements NodeManager {
-//	private final List<Node> nodes;
+	//	private final List<Node> nodes;
 
 	@Inject
 	public NodeManagerImpl(final List<NodePlugin> nodePlugins) {
 		Assertion.checkNotNull(nodePlugins);
 		//---------------------------------------------------------------------
-//		final List<Node> tmpNodes = new ArrayList<>();
-//		for (final Plugin plugin : nodePlugins) {
-//			tmpNodes.addAll(NodePlugin.class.cast(plugin).getNodes());
-//		}
-//		this.nodes = Collections.unmodifiableList(tmpNodes);
+		//		final List<Node> tmpNodes = new ArrayList<>();
+		//		for (final Plugin plugin : nodePlugins) {
+		//			tmpNodes.addAll(NodePlugin.class.cast(plugin).getNodes());
+		//		}
+		//		this.nodes = Collections.unmodifiableList(tmpNodes);
 	}
 
 	/** {@inheritDoc} */
 	public List<Node> getNodes() {
-		return null ; //nodes;
+		return null; //nodes;
 	}
 }

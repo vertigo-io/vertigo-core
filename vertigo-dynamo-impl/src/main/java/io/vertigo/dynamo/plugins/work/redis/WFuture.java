@@ -48,33 +48,31 @@ public final class WFuture<WR> implements Future<WR>, WorkResultHandler<WR> {
 	//		countDownLatch.countDown();
 	//	}
 
-	public void onSuccess(final WR result) {
-		Assertion.checkNotNull(result);
+	public void onDone(final boolean succeeded, final WR result, final Throwable error) {
+		if (succeeded) {
+			Assertion.checkArgument(result != null, "when succeeded,  a result is required");
+			Assertion.checkArgument(error == null, "when succeeded, an error is not accepted");
+		} else {
+			Assertion.checkArgument(error != null, "when failed, an error is required");
+			Assertion.checkArgument(result == null, "when failed, a result is not accepted");
+		}
 		//---------------------------------------------------------------------
 		if (done.compareAndSet(false, true)) {
-			myResult = result;
+			if (succeeded) {
+				myResult = result;
+			} else {
+				myError = error;
+			}
 			countDownLatch.countDown();
 		}
 		if (redirect != null) {
-			redirect.onSuccess(result);
+			redirect.onDone(succeeded, result, error);
 		}
 	}
 
 	public void onStart() {
 		if (redirect != null) {
 			redirect.onStart();
-		}
-	}
-
-	public void onFailure(final Throwable error) {
-		Assertion.checkNotNull(error);
-		//---------------------------------------------------------------------
-		if (done.compareAndSet(false, true)) {
-			myError = error;
-			countDownLatch.countDown();
-		}
-		if (redirect != null) {
-			redirect.onFailure(error);
 		}
 	}
 

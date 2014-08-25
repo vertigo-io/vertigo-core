@@ -134,22 +134,31 @@ public final class RedisDB implements Activeable {
 		return (Throwable) decode(jedis.hget("work:" + workId, "error"));
 	}
 
-	<WR> void writeSuccess(final String workId, final WR result) {
-		try (Jedis jedis = jedisPool.getResource()) {
-			final Map<String, String> datas = new HashMap<>();
+	<WR> void writeResult(final String workId, final boolean succeeded, final WR result, final Throwable error) {
+		if (succeeded) {
+			Assertion.checkArgument(result != null, "when succeeded,  a result is required");
+			Assertion.checkArgument(error == null, "when succeeded, an error is not accepted");
+		} else {
+			Assertion.checkArgument(error != null, "when failed, an error is required");
+			Assertion.checkArgument(result == null, "when failed, a result is not accepted");
+		}
+		//---------------------------------------------------------------------
+		final Map<String, String> datas = new HashMap<>();
+		if (succeeded) {
 			datas.put("result", encode(result));
 			datas.put("status", "ok");
-			exec(jedis, workId, datas);
-		}
-	}
-
-	void writeFailure(final String workId, final Throwable t) {
-		try (Jedis jedis = jedisPool.getResource()) {
-			final Map<String, String> datas = new HashMap<>();
-			datas.put("error", encode(t));
+		} else {
+			datas.put("error", encode(error));
 			datas.put("status", "ko");
-			exec(jedis, workId, datas);
 		}
+		try (Jedis jedis = jedisPool.getResource()) {
+			final Transaction tx = jedis.multi();
+			tx.hmset("work:" + workId, datas);
+			tx.lrem("works:in progress", 0, workId);
+			tx.lpush("works:done", workId);
+			tx.exec();
+		}
+
 	}
 
 	//	<WR> void writeResult(final String workId, final boolean succeeded, final WR result, final Throwable t) {
@@ -170,13 +179,6 @@ public final class RedisDB implements Activeable {
 	//			}
 	//			exec(jedis, workId, datas);
 	//		}
-	private static void exec(final Jedis jedis, final String workId, final Map<String, String> datas) {
-		final Transaction tx = jedis.multi();
-		tx.hmset("work:" + workId, datas);
-		tx.lrem("works:in progress", 0, workId);
-		tx.lpush("works:done", workId);
-		tx.exec();
-	}
 
 	private static String encode(final Object toEncode) {
 		return codecManager.getBase64Codec().encode(codecManager.getSerializationCodec().encode((Serializable) toEncode));
@@ -186,18 +188,18 @@ public final class RedisDB implements Activeable {
 		return codecManager.getSerializationCodec().decode(codecManager.getBase64Codec().decode(encoded));
 	}
 
-	<WR> RedisResult<WR> nextResult(final int waitTimeSeconds) {
+	<WR> WResult<WR> nextResult(final int waitTimeSeconds) {
 		try (Jedis jedis = jedisPool.getResource()) {
 			final String workId = jedis.brpoplpush("works:done", "works:completed", waitTimeSeconds);
-			final RedisResult<WR> result;
+			final WResult<WR> result;
 			if (workId == null) {
 				result = null;
 			} else {
 				if ("ok".equals(jedis.hget("work:" + workId, "status"))) {
-					result = new RedisResult<>(workId, this.<WR> readSuccess(jedis, workId), null);
+					result = new WResult<>(workId, this.<WR> readSuccess(jedis, workId), null);
 				} else {
 					final Throwable t = readFailure(jedis, workId);
-					result = new RedisResult<>(workId, null, t);
+					result = new WResult<>(workId, null, t);
 				}
 				//et on détruit le work (ou bien on l'archive ???
 				jedis.del("work:" + workId);

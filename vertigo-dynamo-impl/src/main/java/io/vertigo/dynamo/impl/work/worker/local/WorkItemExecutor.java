@@ -86,12 +86,12 @@ final class WorkItemExecutor<WR, W> implements Callable<WR> {
 			result = executeNow(workItem);
 			//---
 			if (workResultHandler.isDefined()) {
-				workResultHandler.get().onSuccess(result);
+				workResultHandler.get().onDone(true, result, null);
 			}
 			return result;
 		} catch (final Throwable t) {
 			if (workResultHandler.isDefined()) {
-				workResultHandler.get().onFailure(t);
+				workResultHandler.get().onDone(false, null, t);
 			}
 			logError(t);
 			if (t instanceof RuntimeException) {

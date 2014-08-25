@@ -18,8 +18,6 @@
  */
 package io.vertigo.dynamo.work;
 
-import io.vertigo.dynamo.work.WorkResultHandler;
-
 /**
  * Handler unique permettant de collecter les infos relatives à l'exécution des tests.
  * 
@@ -29,8 +27,8 @@ public final class MyWorkResultHanlder<WR> implements WorkResultHandler<WR> {
 	private WR lastResult;
 	private Throwable lastError;
 	//compteurs 
-	private int succeeded;
-	private int failed;
+	private int succeededCount;
+	private int failedCount;
 	private final long start = System.currentTimeMillis();
 
 	public synchronized void onStart() {
@@ -45,29 +43,27 @@ public final class MyWorkResultHanlder<WR> implements WorkResultHandler<WR> {
 		return lastError;
 	}
 
-	public synchronized void onSuccess(final WR newResult) {
-		//System.out.println("onSuccess");
-		lastResult = newResult;
-		succeeded++;
-		fire();
-	}
-
-	public synchronized void onFailure(final Throwable newError) {
-		//System.out.println("onFailure");
-		lastError = newError;
-		failed++;
+	public synchronized void onDone(final boolean succeeded, final WR result, final Throwable error) {
+		if (succeeded) {
+			//System.out.println("onSuccess");
+			lastResult = result;
+			succeededCount++;
+		} else {
+			lastError = error;
+			failedCount++;
+		}
 		fire();
 	}
 
 	private void fire() {
-		if (failed + succeeded > 0 && (failed + succeeded) % 1000 == 0) {
+		if (failedCount + succeededCount > 0 && (failedCount + succeededCount) % 1000 == 0) {
 			final long elapsed = System.currentTimeMillis() - start;
-			System.out.println(">executed> " + toString() + " in " + 1000 * elapsed / (failed + succeeded) + " ms/1000exec");
+			System.out.println(">executed> " + toString() + " in " + 1000 * elapsed / (failedCount + succeededCount) + " ms/1000exec");
 		}
 	}
 
 	private synchronized boolean isFinished(final int expected, final long timeoutMs) {
-		return failed + succeeded < expected && System.currentTimeMillis() - start < timeoutMs;
+		return failedCount + succeededCount < expected && System.currentTimeMillis() - start < timeoutMs;
 	}
 
 	public boolean waitFinish(final int expected, final long timeoutMs) {
@@ -78,12 +74,12 @@ public final class MyWorkResultHanlder<WR> implements WorkResultHandler<WR> {
 				break;//on quitte
 			}
 		}
-		return failed + succeeded == expected;
+		return failedCount + succeededCount == expected;
 	}
 
 	@Override
 	public synchronized String toString() {
-		return "{success : " + succeeded + " , fail : " + failed + " }";
+		return "{success : " + succeededCount + " , fail : " + failedCount + " }";
 
 	}
 }

@@ -31,21 +31,9 @@ public interface WorkResultHandler<WR> {
 	void onStart();
 
 	/**
-	 * Exécution terminée avec succès.
-	 * @param result Résultat de l'excution 
-	 */
-	void onSuccess(final WR result);
-
-	/**
-	 * Exécution terminée par la survenue d'une exception
-	 * @param error  Exception
-	 */
-	void onFailure(final Throwable error);
-
-	/**
 	 * Exécution terminée .
 	 * @param result Résultat de l'excution (null si echec)
 	 * @param error  Exception (null si succès)
 	 */
-	//void onDone(final boolean succeeded, final WR result, final Throwable error);
+	void onDone(final boolean succeeded, final WR result, final Throwable error);
 }

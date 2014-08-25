@@ -20,7 +20,6 @@ package io.vertigo.dynamo.impl.work;
 
 import io.vertigo.dynamo.impl.work.listener.WorkListener;
 import io.vertigo.dynamo.impl.work.listener.WorkListenerImpl;
-import io.vertigo.dynamo.impl.work.worker.Worker;
 import io.vertigo.dynamo.work.WorkEngine;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.dynamo.work.WorkManager;
@@ -66,9 +65,10 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		coordinator.close();
 	}
 
-	private static String createWorkId(){
+	private static String createWorkId() {
 		return UUID.randomUUID().toString();
 	}
+
 	/** {@inheritDoc} */
 	public <WR, W> WR process(final W work, final WorkEngineProvider<WR, W> workEngineProvider) {
 		Assertion.checkNotNull(work);
@@ -101,13 +101,13 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		Assertion.checkNotNull(callable);
 		Assertion.checkNotNull(workResultHandler);
 		//---------------------------------------------------------------------
-		final WorkEngineProvider<WR, W> workEngineProvider = new WorkEngineProvider<>(new WorkEngine<WR,W>() {
-				public WR process(final W dummy) {
-					try {
-						return callable.call();
-					} catch (final Exception e) {
-						throw new RuntimeException(e);
-					}
+		final WorkEngineProvider<WR, W> workEngineProvider = new WorkEngineProvider<>(new WorkEngine<WR, W>() {
+			public WR process(final W dummy) {
+				try {
+					return callable.call();
+				} catch (final Exception e) {
+					throw new RuntimeException(e);
+				}
 			}
 		});
 

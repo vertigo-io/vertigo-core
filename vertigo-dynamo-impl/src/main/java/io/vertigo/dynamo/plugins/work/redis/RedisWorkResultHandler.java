@@ -44,12 +44,7 @@ final class RedisWorkResultHandler<WR> implements WorkResultHandler<WR> {
 	}
 
 	/** {@inheritDoc} */
-	public void onSuccess(final WR result) {
-		redisDB.writeSuccess(workId, result);
-	}
-
-	/** {@inheritDoc} */
-	public void onFailure(final Throwable t) {
-		redisDB.writeFailure(workId, t);
+	public void onDone(final boolean succeded, final WR result, final Throwable t) {
+		redisDB.writeResult(workId, succeded, result, t);
 	}
 }

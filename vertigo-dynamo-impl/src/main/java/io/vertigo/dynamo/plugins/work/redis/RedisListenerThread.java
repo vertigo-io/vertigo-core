@@ -61,16 +61,12 @@ final class RedisListenerThread extends Thread {
 		while (!isInterrupted()) {
 			//On attend le résultat (par tranches de 1s)
 			final int waitTimeSeconds = 1;
-			final RedisResult result = redisDB.nextResult(waitTimeSeconds);
+			final WResult result = redisDB.nextResult(waitTimeSeconds);
 			if (result != null) {
 				final WorkResultHandler workResultHandler = workResultHandlers.get(result.getWorkId());
 				if (workResultHandler != null) {
 					//Que faire sinon 
-					if (result.hasError()) {
-						workResultHandler.onFailure(result.getError());
-					} else {
-						workResultHandler.onSuccess(result.getResult());
-					}
+					workResultHandler.onDone(result.hasSucceeded(), result.getResult(), result.getError());
 				}
 			}
 		}
