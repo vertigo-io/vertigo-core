@@ -23,8 +23,6 @@ import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
 
 /**
  * @author pchretien
@@ -53,11 +51,11 @@ final class RedisDispatcherThread extends Thread {
 		}
 	}
 
+	private static final int TIMEOUT_IN_SECONDS = 1;
 
-	private static final int TIMEOUT_IN_SECONDS=1;
-	private <WR,W> void doRun() {
-		final WorkItem<WR,W> workItem = redisDB.nextWorkItemTodo( TIMEOUT_IN_SECONDS);
-		if (workItem !=null){
+	private <WR, W> void doRun() {
+		final WorkItem<WR, W> workItem = redisDB.nextWorkItemTodo(TIMEOUT_IN_SECONDS);
+		if (workItem != null) {
 			final Option<WorkResultHandler<WR>> workResultHandler = Option.<WorkResultHandler<WR>> some(new RedisWorkResultHandler<WR>(workItem.getId(), redisDB));
 			//---Et on fait executer par le workerLocalredisDB
 			localWorker.submit(workItem, workResultHandler);

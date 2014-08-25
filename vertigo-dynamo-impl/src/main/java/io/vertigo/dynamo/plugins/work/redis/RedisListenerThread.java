@@ -28,9 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
 
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-
 /**
  * @author pchretien
  * $Id: RedisListenerThread.java,v 1.6 2014/01/20 18:56:18 pchretien Exp $
@@ -64,14 +61,14 @@ final class RedisListenerThread extends Thread {
 		while (!isInterrupted()) {
 			//On attend le résultat (par tranches de 1s)
 			final int waitTimeSeconds = 1;
-			RedisResult result = redisDB.nextResult(waitTimeSeconds);
-			if (result != null){
+			final RedisResult result = redisDB.nextResult(waitTimeSeconds);
+			if (result != null) {
 				final WorkResultHandler workResultHandler = workResultHandlers.get(result.getWorkId());
 				if (workResultHandler != null) {
 					//Que faire sinon 
-					if (result.hasError()){
+					if (result.hasError()) {
 						workResultHandler.onFailure(result.getError());
-					}else{
+					} else {
 						workResultHandler.onSuccess(result.getResult());
 					}
 				}

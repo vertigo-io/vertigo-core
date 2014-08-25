@@ -19,24 +19,16 @@
 package io.vertigo.dynamo.plugins.work.redis;
 
 import io.vertigo.dynamo.impl.node.NodePlugin;
-import io.vertigo.dynamo.impl.work.worker.Worker;
 import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;
 import io.vertigo.dynamo.node.Node;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 /**
  * NodePlugin 
@@ -68,7 +60,7 @@ public final class RedisNodePlugin implements NodePlugin, Activeable {
 		//System.out.println("start node");
 
 		//On enregistre le node
-		redisDB.registerNode( new Node(nodeId, true));
+		redisDB.registerNode(new Node(nodeId, true));
 
 		dispatcherThread.start();
 	}
@@ -89,7 +81,6 @@ public final class RedisNodePlugin implements NodePlugin, Activeable {
 	//------------------------------------
 	//------------------------------------
 	//------------------------------------
-
 
 	/** {@inheritDoc} */
 	public List<Node> getNodes() {

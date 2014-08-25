@@ -20,8 +20,6 @@ package io.vertigo.dynamo.plugins.work.redis;
 
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Assertion;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
 
 /**
  * @author pchretien

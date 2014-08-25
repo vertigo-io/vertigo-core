@@ -31,9 +31,6 @@ import java.util.concurrent.Future;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-
 /**
  * Ce plugin permet de distribuer des travaux.
  * REDIS est utilisé comme plateforme d'échanges.
@@ -62,8 +59,7 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 	public void start() {
 		redisListenerThread.start();
 	}
-	
-	
+
 	/** {@inheritDoc} */
 	public void stop() {
 		redisListenerThread.interrupt();
@@ -79,7 +75,7 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 	/** {@inheritDoc} */
 	public <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
 		//1. On renseigne la demande de travaux sur le server redis
-		redisDB.writeWorkItem( workItem);
+		redisDB.writeWorkItem(workItem);
 		//2. On attend les notifs sur un thread séparé, la main est rendue de suite 
 		return redisListenerThread.putworkItem(workItem, workResultHandler);
 	}

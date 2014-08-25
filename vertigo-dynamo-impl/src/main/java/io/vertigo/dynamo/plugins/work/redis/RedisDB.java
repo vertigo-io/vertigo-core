@@ -15,15 +15,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+/**
+ * @author pchretien
+ * $Id: RedisDispatcherThread.java,v 1.8 2014/02/03 17:28:45 pchretien Exp $
+ */
 final class RedisDB {
 	private static final int timeout = 2000;
 	private final JedisPool jedisPool;
@@ -45,9 +49,9 @@ final class RedisDB {
 		}
 		reset();
 	}
-	
+
 	private void reset() {
-		try (final Jedis jedis = jedisPool.getResource()){
+		try (final Jedis jedis = jedisPool.getResource()) {
 			jedis.flushAll();
 		}
 	}
@@ -59,28 +63,29 @@ final class RedisDB {
 				//.setPrettyPrinting()//
 				.create();
 	}
+
 	private static final CodecManager codecManager = new CodecManagerImpl();
 
 	<WR, W> void writeWorkItem(final WorkItem<WR, W> workItem) {
 		try (Jedis jedis = jedisPool.getResource()) {
 			//out.println("creating work [" + workId + "] : " + work.getClass().getSimpleName());
-	
+
 			final Map<String, String> datas = new HashMap<>();
 			datas.put("id", workItem.getId());
 			datas.put("work64", encode(workItem.getWork()));
 			datas.put("provider64", encode(workItem.getWorkEngineProvider().getName()));
 			datas.put("x-date", DateUtil.newDate().toString());
-	
+
 			final Transaction tx = jedis.multi();
-	
+
 			tx.hmset("work:" + workItem.getId(), datas);
-	
+
 			//tx.expire("work:" + workId, 70);
 			//On publie la demande de travaux
 			tx.lpush("works:todo", workItem.getId());
-	
+
 			tx.exec();
-		}	
+		}
 	}
 
 	private static <W, WR> WorkItem<WR, W> readWorkItem(final Jedis jedis, final String workId) {
@@ -99,21 +104,21 @@ final class RedisDB {
 		return new WorkItem<>(id, work, workEngineProvider);
 	}
 
-	<WR, W> WorkItem<WR,W> nextWorkItemTodo( int timeoutInSeconds){
+	<WR, W> WorkItem<WR, W> nextWorkItemTodo(final int timeoutInSeconds) {
 		try (Jedis jedis = jedisPool.getResource()) {
 			final String workId = jedis.brpoplpush("works:todo", "works:in progress", timeoutInSeconds);
 			if (workId != null) {
-				return  readWorkItem(jedis, workId);
+				return readWorkItem(jedis, workId);
 			}
 			return null;
 		}
 	}
-	
-	private  <WR> WR readSuccess(final Jedis jedis, final String workId) {
+
+	private <WR> WR readSuccess(final Jedis jedis, final String workId) {
 		return (WR) decode(jedis.hget("work:" + workId, "result"));
 	}
 
-	private   Throwable readFailure(final Jedis jedis, final String workId) {
+	private Throwable readFailure(final Jedis jedis, final String workId) {
 		return (Throwable) decode(jedis.hget("work:" + workId, "error"));
 	}
 
@@ -150,26 +155,27 @@ final class RedisDB {
 	private static Object decode(final String encoded) {
 		return codecManager.getSerializationCodec().decode(codecManager.getBase64Codec().decode(encoded));
 	}
-	
-	<WR> RedisResult<WR> nextResult(int waitTimeSeconds){
+
+	<WR> RedisResult<WR> nextResult(final int waitTimeSeconds) {
 		try (Jedis jedis = jedisPool.getResource()) {
 			final String workId = jedis.brpoplpush("works:done", "works:completed", waitTimeSeconds);
-			final RedisResult<WR >result;
+			final RedisResult<WR> result;
 			if (workId == null) {
 				result = null;
-			}else{
+			} else {
 				if ("ok".equals(jedis.hget("work:" + workId, "status"))) {
-					result = new RedisResult<WR>(workId, this.<WR>readSuccess(jedis, workId), null);
-				}else{
+					result = new RedisResult<>(workId, this.<WR> readSuccess(jedis, workId), null);
+				} else {
 					final Throwable t = readFailure(jedis, workId);
-					result = new RedisResult<WR>(workId, null, t);
-				}	
+					result = new RedisResult<>(workId, null, t);
+				}
 				//et on détruit le work (ou bien on l'archive ???
 				jedis.del("work:" + workId);
-			}	
-			return result; 
-		}	
+			}
+			return result;
+		}
 	}
+
 	void registerNode(final Node node) {
 		Assertion.checkNotNull(node);
 		//---------------------------------------------------------------------
@@ -191,12 +197,12 @@ final class RedisDB {
 			return nodes;
 		}
 	}
-	
-	private static  Node toNode(final String json) {
+
+	private static Node toNode(final String json) {
 		return gson.fromJson(json, Node.class);
 	}
 
-	private static  String toJson(final Node node) {
+	private static String toJson(final Node node) {
 		return gson.toJson(node);
 	}
 
