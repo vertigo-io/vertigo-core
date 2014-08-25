@@ -43,9 +43,9 @@ public interface WorkResultHandler<WR> {
 	void onFailure(final Throwable error);
 
 	/**
-	 * Exécution interrompue par un timeout
-	 * 
-	 * @param timeoutInSeconds TimeoutIn Seconds exprimé en secondes
+	 * Exécution terminée .
+	 * @param result Résultat de l'excution (null si echec)
+	 * @param error  Exception (null si succès)
 	 */
-	//void onTimeout(final int timeoutInSeconds);
+	//void onDone(final boolean succeeded, final WR result, final Throwable error);
 }

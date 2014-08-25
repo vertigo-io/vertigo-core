@@ -57,6 +57,7 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 
 	/** {@inheritDoc} */
 	public void start() {
+		redisDB.start();
 		redisListenerThread.start();
 	}
 
@@ -69,7 +70,7 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 			//On ne fait rien
 		}
 		//--- 
-		redisDB.destroy(); //see doc :https://github.com/xetorthio/jedis/wiki/Getting-started
+		redisDB.stop();
 	}
 
 	/** {@inheritDoc} */

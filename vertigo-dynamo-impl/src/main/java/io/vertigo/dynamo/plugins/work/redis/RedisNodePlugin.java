@@ -58,7 +58,7 @@ public final class RedisNodePlugin implements NodePlugin, Activeable {
 	/** {@inheritDoc} */
 	public void start() {
 		//System.out.println("start node");
-
+		redisDB.start();
 		//On enregistre le node
 		redisDB.registerNode(new Node(nodeId, true));
 
@@ -75,6 +75,7 @@ public final class RedisNodePlugin implements NodePlugin, Activeable {
 		}
 		localWorker.close();
 		redisDB.registerNode(new Node(nodeId, false));
+		redisDB.stop();
 	}
 
 	//------------------------------------

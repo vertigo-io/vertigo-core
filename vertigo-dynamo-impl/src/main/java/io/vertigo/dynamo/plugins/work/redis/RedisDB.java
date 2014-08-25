@@ -5,6 +5,7 @@ import io.vertigo.commons.impl.codec.CodecManagerImpl;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.node.Node;
 import io.vertigo.dynamo.work.WorkEngineProvider;
+import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.util.DateUtil;
@@ -28,11 +29,14 @@ import com.google.gson.GsonBuilder;
  * @author pchretien
  * $Id: RedisDispatcherThread.java,v 1.8 2014/02/03 17:28:45 pchretien Exp $
  */
-final class RedisDB {
+public final class RedisDB implements Activeable {
 	private static final int timeout = 2000;
 	private final JedisPool jedisPool;
 
-	RedisDB(final String redisHost, final int port, final Option<String> password) {
+	public RedisDB(final String redisHost, final int port, final Option<String> password) {
+		Assertion.checkArgNotEmpty(redisHost);
+		Assertion.checkNotNull(password);
+		//---------------------------------------------------------------------
 		final JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 		//jedisPoolConfig.setMaxActive(10);
 		if (password.isDefined()) {
@@ -47,10 +51,18 @@ final class RedisDB {
 			jedis.ping();
 			//System.out.println(" ping=" + ping);
 		}
-		reset();
 	}
 
-	private void reset() {
+	public void start() {
+		//
+	}
+
+	public void stop() {
+		//see doc :https://github.com/xetorthio/jedis/wiki/Getting-started
+		jedisPool.destroy();
+	}
+
+	public void reset() {
 		try (final Jedis jedis = jedisPool.getResource()) {
 			jedis.flushAll();
 		}
@@ -140,6 +152,24 @@ final class RedisDB {
 		}
 	}
 
+	//	<WR> void writeResult(final String workId, final boolean succeeded, final WR result, final Throwable t) {
+	//		Assertion.checkArgument(succeeded && result != null, "a result is required");
+	//		Assertion.checkArgument(succeeded && t == null, "an error is not accepted when operation has succeeded");
+	//		Assertion.checkArgument(!succeeded && t != null, "an error is required");
+	//		Assertion.checkArgument(!succeeded && result == null, "a result  is not accepted when operation has failed");
+	//		//---------------------------------------------------------------------
+	//		try (Jedis jedis = jedisPool.getResource()) {
+	//			final Map<String, String> datas = new HashMap<>();
+	//			datas.put("result", encode(result));
+	//			if (succeeded) {
+	//				datas.put("result", encode(result));
+	//				datas.put("status", "ok");
+	//			} else {
+	//				datas.put("error", encode(t));
+	//				datas.put("status", "ok");
+	//			}
+	//			exec(jedis, workId, datas);
+	//		}
 	private static void exec(final Jedis jedis, final String workId, final Map<String, String> datas) {
 		final Transaction tx = jedis.multi();
 		tx.hmset("work:" + workId, datas);
@@ -204,9 +234,5 @@ final class RedisDB {
 
 	private static String toJson(final Node node) {
 		return gson.toJson(node);
-	}
-
-	public void destroy() {
-		jedisPool.destroy();
 	}
 }

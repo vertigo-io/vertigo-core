@@ -18,12 +18,20 @@
  */
 package io.vertigo.dynamo.work.distributed.redis;
 
+import io.vertigo.dynamo.plugins.work.redis.RedisDB;
 import io.vertigo.dynamo.work.AbstractWorkManagerTest;
+import io.vertigo.kernel.lang.Option;
 
 /**
  * @author pchretien
  * $Id: RedisWorkManagerTest.java,v 1.4 2014/01/20 18:57:06 pchretien Exp $
  */
 public class RedisWorkManagerTest extends AbstractWorkManagerTest {
-//
+	@Override
+	protected void doSetUp() throws Exception {
+		final RedisDB redisDB = new RedisDB("localhost", 6379, Option.<String> none());
+		redisDB.start();
+		redisDB.reset();
+		redisDB.stop();
+	}
 }
