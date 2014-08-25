@@ -139,28 +139,22 @@ public final class RedisDB implements Activeable {
 		return (Throwable) decode(jedis.hget("work:" + workId, "error"));
 	}
 
-	<WR> void putResult(final String workId, final boolean succeeded, final WR result, final Throwable error) {
-		if (succeeded) {
-			Assertion.checkArgument(result != null, "when succeeded,  a result is required");
-			Assertion.checkArgument(error == null, "when succeeded, an error is not accepted");
-		} else {
-			Assertion.checkArgument(error != null, "when failed, an error is required");
-			Assertion.checkArgument(result == null, "when failed, a result is not accepted");
-		}
+	<WR> void putResult(final WResult<WR> result) {
+		Assertion.checkNotNull(result);
 		//---------------------------------------------------------------------
 		final Map<String, String> datas = new HashMap<>();
-		if (succeeded) {
-			datas.put("result", encode(result));
+		if (result.hasSucceeded()) {
+			datas.put("result", encode(result.getResult()));
 			datas.put("status", "ok");
 		} else {
-			datas.put("error", encode(error));
+			datas.put("error", encode(result.getError()));
 			datas.put("status", "ko");
 		}
 		try (Jedis jedis = jedisPool.getResource()) {
 			final Transaction tx = jedis.multi();
-			tx.hmset("work:" + workId, datas);
-			tx.lrem("works:in progress", 0, workId);
-			tx.lpush("works:done", workId);
+			tx.hmset("work:" + result.getWorkId(), datas);
+			tx.lrem("works:in progress", 0, result.getWorkId());
+			tx.lpush("works:done", result.getWorkId());
 			tx.exec();
 		}
 
@@ -201,10 +195,10 @@ public final class RedisDB implements Activeable {
 				result = null;
 			} else {
 				if ("ok".equals(jedis.hget("work:" + workId, "status"))) {
-					result = new WResult<>(workId, this.<WR> readSuccess(jedis, workId), null);
+					result = new WResult<>(workId, true, this.<WR> readSuccess(jedis, workId), null);
 				} else {
 					final Throwable t = readFailure(jedis, workId);
-					result = new WResult<>(workId, null, t);
+					result = new WResult<>(workId, false, null, t);
 				}
 				//et on détruit le work (ou bien on l'archive ???
 				jedis.del("work:" + workId);

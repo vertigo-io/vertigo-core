@@ -11,9 +11,15 @@ public final class WResult<WR> {
 	private final Throwable error;
 	private final WR result;
 
-	WResult(final String workId, final WR result, final Throwable error) {
+	WResult(final String workId, final boolean succeeded, final WR result, final Throwable error) {
 		Assertion.checkArgNotEmpty(workId);
-		Assertion.checkArgument(error != null ^ result != null, "error xor result is required not null. error:{0} , result:{1}", error, result);
+		if (succeeded) {
+			Assertion.checkArgument(result != null, "when succeeded,  a result is required");
+			Assertion.checkArgument(error == null, "when succeeded, an error is not accepted");
+		} else {
+			Assertion.checkArgument(error != null, "when failed, an error is required");
+			Assertion.checkArgument(result == null, "when failed, a result is not accepted");
+		}
 		//---------------------------------------------------------------------
 		this.workId = workId;
 		this.error = error;
