@@ -23,12 +23,15 @@ drop table ${dtDefinition.dtDefinition.localName} cascade;
 --   Sequences                                      
 -- ============================================================
 <#list dtDefinitions as dtDefinition>
+<#if dtDefinition.dtDefinition.persistent>
 create sequence SEQ_${dtDefinition.dtDefinition.localName}
 	start with 1000 cache 20; 
 
+</#if>
 </#list>
 
 <#list dtDefinitions as dtDefinition>
+<#if dtDefinition.dtDefinition.persistent>
 -- ============================================================
 --   Table : ${dtDefinition.dtDefinition.localName}                                        
 -- ============================================================
@@ -61,9 +64,11 @@ create index <#if (dtDefinition.dtDefinition.localName?length >5)>${dtDefinition
 </#if>
 </#if>
 </#list>
+</#if>
 </#list>
 
 <#list associations as associationDefinition>
+<#if associationDefinition.getAssociationNodeA().getDtDefinition().isPersistent() && associationDefinition.getAssociationNodeB().getDtDefinition().isPersistent()>
 <#if associationDefinition.isAssociationSimpleDefinition()>
 alter table ${associationDefinition.getForeignAssociationNode().getDtDefinition().localName}
 	add constraint FK_${associationDefinition.getName()?substring(2)} foreign key (${associationDefinition.getFKField().name})
@@ -87,5 +92,6 @@ create index ${associationDefinition.getName()?substring(2)}_${associationDefini
 create index ${associationDefinition.getName()?substring(2)}_${associationDefinition.getAssociationNodeB().getDtDefinition().localName}_FK on ${associationDefinition.getTableName()} (${associationDefinition.getAssociationNodeB().getDtDefinition().getIdField().get().name} asc);
 </#if>
 
+</#if>
 </#list>
 
