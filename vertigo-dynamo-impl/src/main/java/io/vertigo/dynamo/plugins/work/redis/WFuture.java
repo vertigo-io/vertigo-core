@@ -23,30 +23,14 @@ public final class WFuture<WR> implements Future<WR>, WorkResultHandler<WR> {
 	private final WorkResultHandler<WR> redirect;
 
 	public WFuture(final WorkResultHandler<WR> redirect) {
+		Assertion.checkNotNull(redirect);
+		//---------------------------------------------------------------------
 		this.redirect = redirect;
 	}
 
 	public WFuture() {
 		redirect = null;
 	}
-
-	//	public WFuture(final WR result) {
-	//		Assertion.checkNotNull(result);
-	//		//---------------------------------------------------------------------
-	//		this.myResult = result;
-	//		this.myError = null;
-	//		done.set(true);
-	//		countDownLatch.countDown();
-	//	}
-	//
-	//	public WFuture(final Throwable error) {
-	//		Assertion.checkNotNull(error);
-	//		//---------------------------------------------------------------------
-	//		this.myResult = null;
-	//		this.myError = error;
-	//		done.set(true);
-	//		countDownLatch.countDown();
-	//	}
 
 	public void onDone(final boolean succeeded, final WR result, final Throwable error) {
 		if (succeeded) {
