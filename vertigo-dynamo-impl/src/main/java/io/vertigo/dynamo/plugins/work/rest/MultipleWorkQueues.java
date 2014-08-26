@@ -42,11 +42,11 @@ final class MultipleWorkQueues {
 	 * Récupération du travail à effectuer.
 	 * @return Prochain WorkItem ou null
 	 */
-	public WorkItem<?, ?> pollWorkItem(final String workType) {
+	public WorkItem<?, ?> pollWorkItem(final String workType, final int timeoutInSeconds) {
 		try {
 			//take attend qu'un élément soit disponible toutes les secondes.
 			//Poll attend (1s) qu'un élément soit disponible et sinon renvoit null
-			final WorkItem<?, ?> workItem = obtainWorkQueue(workType, workQueueMap).poll(1, TimeUnit.SECONDS);
+			final WorkItem<?, ?> workItem = obtainWorkQueue(workType).poll(timeoutInSeconds, TimeUnit.SECONDS);
 			return workItem;
 		} catch (final InterruptedException e) {
 			//dans le cas d'une interruption on arrête de dépiler 
@@ -65,20 +65,19 @@ final class MultipleWorkQueues {
 		Assertion.checkNotNull(workItem);
 		//-------------------------------------------------------------------
 		try {
-			obtainWorkQueue(workType, workQueueMap).put(workItem);
+			obtainWorkQueue(workType).put(workItem);
 		} catch (final InterruptedException e) {
 			//dans le cas d'une interruption on interdit d'empiler de nouveaux Works 
 			throw new RuntimeException("putWorkItem", e);
 		}
 	}
 
-	private synchronized BlockingQueue<WorkItem<?, ?>> obtainWorkQueue(final String workType, final Map<String, BlockingQueue<WorkItem<?, ?>>> queueMap) {
-		BlockingQueue<WorkItem<?, ?>> workQueue = queueMap.get(workType);
+	private synchronized BlockingQueue<WorkItem<?, ?>> obtainWorkQueue(final String workType) {
+		BlockingQueue<WorkItem<?, ?>> workQueue = workQueueMap.get(workType);
 		if (workQueue == null) {
 			workQueue = new LinkedBlockingQueue<>();
-			queueMap.put(workType, workQueue);
+			workQueueMap.put(workType, workQueue);
 		}
 		return workQueue;
 	}
-
 }
