@@ -65,7 +65,7 @@ public final class WorkQueueRestServerJerseyWrapper {
 	@Consumes(MediaType.TEXT_PLAIN)
 	public void onSuccess(@PathParam("uuid") final String uuid, final String base64Result) {
 		//---------------------------------------------------------------------
-		getWorkQueueRestServer().onSuccess(uuid, base64Result);
+		getWorkQueueRestServer().onDone(true, uuid, base64Result);
 	}
 
 	@POST
@@ -73,7 +73,7 @@ public final class WorkQueueRestServerJerseyWrapper {
 	@Consumes(MediaType.TEXT_PLAIN)
 	public void onFailure(@PathParam("uuid") final String uuid, final String base64Result) {
 		//---------------------------------------------------------------------
-		getWorkQueueRestServer().onFailure(uuid, base64Result);
+		getWorkQueueRestServer().onDone(false, uuid, base64Result);
 	}
 
 	@GET

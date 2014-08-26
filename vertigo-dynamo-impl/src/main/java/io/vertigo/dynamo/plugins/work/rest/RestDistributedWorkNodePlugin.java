@@ -21,8 +21,6 @@ package io.vertigo.dynamo.plugins.work.rest;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.impl.node.NodePlugin;
 import io.vertigo.dynamo.impl.work.WorkItem;
-import io.vertigo.dynamo.impl.work.worker.Worker;
-import io.vertigo.dynamo.impl.work.worker.local.WorkItemExecutor;
 import io.vertigo.dynamo.node.Node;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkResultHandler;
@@ -139,7 +137,6 @@ public final class RestDistributedWorkNodePlugin implements NodePlugin, Activeab
 		}
 	}
 
-
 	private static final class ReScheduleWorkResultHandler implements WorkResultHandler<Void> {
 		private final Callable<Void> task;
 		private final long pauseMs;
@@ -161,12 +158,7 @@ public final class RestDistributedWorkNodePlugin implements NodePlugin, Activeab
 		}
 
 		/** {@inheritDoc} */
-		public void onSuccess(final Void result) {
-			reSchedule();
-		}
-
-		/** {@inheritDoc} */
-		public void onFailure(final Throwable error) {
+		public void onDone(final boolean suceeded, final Void result, final Throwable error) {
 			reSchedule();
 		}
 

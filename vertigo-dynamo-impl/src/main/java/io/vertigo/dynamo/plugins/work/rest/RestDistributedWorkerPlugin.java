@@ -91,7 +91,9 @@ public final class RestDistributedWorkerPlugin implements DistributedWorkerPlugi
 		//---------------------------------------------------------------------
 		final WorkResultHandlerSync<WR> workResultHandler = new WorkResultHandlerSync<>();
 		final WorkItem<WR, W> workItem = new WorkItem<>(workitem2.getWork(), workitem2.getWorkEngineProvider(), workResultHandler);
-		multipleWorkQueues.putWorkItem(obtainWorkType(workitem2.getWorkEngineProvider()), workItem);
+
+		final String workType = obtainWorkType(workitem2);
+		multipleWorkQueues.putWorkItem(workType, workItem);
 		workResultHandler.waitResult(timeoutSeconds); //on attend le résultat
 		//---
 		workitem2.setResult(workResultHandler.getResultOrThrowError());//retourne le résultat ou lance l'erreur
@@ -101,11 +103,16 @@ public final class RestDistributedWorkerPlugin implements DistributedWorkerPlugi
 	public <WR, W> void schedule(final WorkItem<WR, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		//---------------------------------------------------------------------
-		multipleWorkQueues.putWorkItem(obtainWorkType(workItem.getWorkEngineProvider()), workItem);
+		final String workType = obtainWorkType(workItem);
+		multipleWorkQueues.putWorkItem(workType, workItem);
 	}
 
-	private <WR, W> String obtainWorkType(final WorkEngineProvider<WR, W> workEngineProvider) {
+	private <WR, W> String obtainWorkType(final WorkEngineProvider workEngineProvider) {
 		return workEngineProvider.getName();
+	}
+
+	private <WR, W> String obtainWorkType(final WorkItem<WR, W> workitem) {
+		return obtainWorkType(workitem.getWorkEngineProvider());
 	}
 
 	private static final class WorkResultHandlerSync<WR> implements WorkResultHandler<WR> {
@@ -142,16 +149,13 @@ public final class RestDistributedWorkerPlugin implements DistributedWorkerPlugi
 		}
 
 		/** {@inheritDoc} */
-		public synchronized void onSuccess(final WR newResult) {
-			this.result = newResult;
-			finished = true;
-			error = null; //si on a eut une erreur avant, ou un timeout : on reset l'erreur
-			notifyAll(); //débloque le wait
-		}
-
-		/** {@inheritDoc} */
-		public synchronized void onFailure(final Throwable newError) {
-			this.error = newError;
+		public synchronized void onDone(final boolean succeeded, final WR newResult, final Throwable newError) {
+			if (succeeded) {
+				this.result = newResult;
+				error = null; //si on a eut une erreur avant, ou un timeout : on reset l'erreur
+			} else {
+				this.error = newError;
+			}
 			finished = true;
 			notifyAll(); //débloque le wait
 		}

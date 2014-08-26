@@ -89,7 +89,7 @@ final class WorkQueueRestClient {
 				final byte[] serializedResult = codecManager.getBase64Codec().decode(result[1]);
 				final Object work = codecManager.getCompressedSerializationCodec().decode(serializedResult);
 				LOG.info("pollWork(" + workType + ") : 1 Work");
-				return new WorkItem<>(work, new WorkEngineProvider(workType), new CallbackWorkResultHandler(uuid, this));
+				return new WorkItem<>(uuid, work, new WorkEngineProvider(workType), new CallbackWorkResultHandler(uuid, this));
 			}
 			LOG.info("pollWork(" + workType + ") : no Work");
 			//pas de travaux : inutil d'attendre le poll attend déjà 1s coté serveur				
@@ -126,14 +126,13 @@ final class WorkQueueRestClient {
 			workQueueRestClient.sendOnStart(uuid);
 		}
 
-		public void onSuccess(final Object result) {
-			workQueueRestClient.sendOnSuccess(uuid, result);
+		public void onDone(final boolean succeeded, final Object result, final Throwable error) {
+			if (succeeded) {
+				workQueueRestClient.sendOnSuccess(uuid, result);
+			} else {
+				workQueueRestClient.sendOnFailure(uuid, error);
+			}
 		}
-
-		public void onFailure(final Throwable error) {
-			workQueueRestClient.sendOnFailure(uuid, error);
-		}
-
 	}
 
 	private void sendOnStart(final String uuid) {
