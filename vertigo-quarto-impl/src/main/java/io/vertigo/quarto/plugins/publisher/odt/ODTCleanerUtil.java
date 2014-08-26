@@ -29,7 +29,6 @@ import org.apache.log4j.Logger;
  * Gestion du cas ou il y a des balises ouvertes non fermées.
  *
  * @author brenard
- * @version $Id: ODTCleanerUtil.java,v 1.2 2014/02/27 10:40:19 pchretien Exp $
  */
 final class ODTCleanerUtil {
 

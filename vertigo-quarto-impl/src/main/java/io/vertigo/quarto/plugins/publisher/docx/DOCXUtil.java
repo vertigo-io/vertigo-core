@@ -57,7 +57,6 @@ import org.xml.sax.SAXException;
  * Classe d'utilitaires pour les fichiers de type DOCX.
  * 
  * @author adufranne
- * @version $Id: DOCXUtil.java,v 1.5 2014/02/27 10:39:24 pchretien Exp $
  */
 final class DOCXUtil {
 	/** Prefix des fichiers temporaires générés. */
@@ -121,7 +120,6 @@ final class DOCXUtil {
 	 * Enum pour les types de noeuds gérés.
 	 * 
 	 * @author adufranne
-	 * @version $Id: DOCXUtil.java,v 1.5 2014/02/27 10:39:24 pchretien Exp $
 	 */
 	public enum DOCXNode {
 		/**
@@ -270,7 +268,7 @@ final class DOCXUtil {
 		domFactory.setNamespaceAware(true);
 
 		try (final StringReader reader = new StringReader(xmlInput)) {
-			DocumentBuilder builder = domFactory.newDocumentBuilder();
+			final DocumentBuilder builder = domFactory.newDocumentBuilder();
 			return builder.parse(new InputSource(reader));
 		} catch (final ParserConfigurationException | SAXException | IOException e) {
 			throw new RuntimeException("Erreur de chargement du fichier XML", e);

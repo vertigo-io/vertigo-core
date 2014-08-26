@@ -61,11 +61,10 @@ import org.apache.log4j.Logger;
  * savoir s'il est préférable de s'arrêter promptement sans attendre la fin du job.
  *
  * @author evernat
- * @version $Id: BasicSchedulerPlugin.java,v 1.5 2014/02/27 10:27:31 pchretien Exp $
  */
 public final class BasicSchedulerPlugin implements SchedulerPlugin, Activeable {
 	/**
-	 * Pool de timers permettant l'exécution des Jobs. 
+	 * Pool de timers permettant l'exécution des Jobs.
 	 */
 	private final TimerPool timerPool = new TimerPool();
 	private boolean active;
@@ -202,8 +201,8 @@ public final class BasicSchedulerPlugin implements SchedulerPlugin, Activeable {
 		//		}
 
 		synchronized Timer getTimer(final String jobName) {
-			//Synchronized car appelée lors de la programation des Timers, 
-			//la plupart sont programmés dans lors de l'initialisation, 
+			//Synchronized car appelée lors de la programation des Timers,
+			//la plupart sont programmés dans lors de l'initialisation,
 			//mais il est possible de programmer sur des evenements métiers.
 			//Utilisé QUE lors des programmations, pas à l'exec.
 			Timer timer = timerMap.get(jobName);

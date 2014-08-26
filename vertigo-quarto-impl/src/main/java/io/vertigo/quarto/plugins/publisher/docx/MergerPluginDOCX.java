@@ -45,7 +45,6 @@ import javax.inject.Inject;
  * Gestionnaire des fusions de documents Docx.
  * 
  * @author adufranne
- * @version $Id: MergerPluginDOCX.java,v 1.6 2014/02/27 10:37:48 pchretien Exp $
  */
 public final class MergerPluginDOCX implements MergerPlugin {
 	private final List<MergerProcessor> mergerProcessors;

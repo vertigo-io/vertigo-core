@@ -29,7 +29,6 @@ import io.vertigo.quarto.publisher.impl.merger.script.ScriptTag;
  * Une grammaire est constituée de mots clés (Keyword) en nombre fini.
  *
  * @author oboitel, pchretien
- * @version $Id: ScriptGrammarUtil.java,v 1.1 2013/07/11 13:24:48 npiedeloup Exp $
  */
 public final class ScriptGrammarUtil {
 

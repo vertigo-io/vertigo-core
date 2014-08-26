@@ -18,15 +18,12 @@
  */
 package io.vertigo.quarto.plugins.publisher.docx;
 
-import io.vertigo.quarto.plugins.publisher.docx.DOCXCleanerProcessor;
-import io.vertigo.quarto.plugins.publisher.docx.DOCXReverseInputProcessor;
 
 /**
  * Classe pour les tests.
  * Publie les visibilités packages.
  * 
  * @author adufranne
- * @version $Id: DOCXTest.java,v 1.1 2013/07/11 13:25:42 npiedeloup Exp $
  */
 public final class DOCXTest {
 

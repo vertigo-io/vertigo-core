@@ -62,7 +62,6 @@ import com.sun.star.uno.XComponentContext;
  * Cet utilitaire de connexion à OpenOffice n'est pas Multi-Thread !!
  * 
  * @author npiedeloup
- * @version $Id: AbstractOpenOfficeConnection.java,v 1.1 2013/07/10 15:45:43 npiedeloup Exp $
  */
 abstract class AbstractOpenOfficeConnection implements OpenOfficeConnection, XEventListener {
 

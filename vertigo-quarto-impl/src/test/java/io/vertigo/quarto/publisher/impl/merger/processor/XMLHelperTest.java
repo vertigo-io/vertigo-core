@@ -18,10 +18,6 @@
  */
 package io.vertigo.quarto.publisher.impl.merger.processor;
 
-import io.vertigo.quarto.publisher.impl.merger.processor.GrammarXMLBalancerProcessor;
-import io.vertigo.quarto.publisher.impl.merger.processor.ProcessorXMLUtil;
-import io.vertigo.quarto.publisher.impl.merger.processor.TagXML;
-
 import java.util.Stack;
 
 import junit.framework.TestCase;
@@ -33,7 +29,6 @@ import org.apache.log4j.Logger;
  *
  *
  * @author npiedeloup
- * @version $Id: XMLHelperTest.java,v 1.1 2013/07/11 13:25:42 npiedeloup Exp $
  */
 public final class XMLHelperTest extends TestCase {
 	/** Logger. */

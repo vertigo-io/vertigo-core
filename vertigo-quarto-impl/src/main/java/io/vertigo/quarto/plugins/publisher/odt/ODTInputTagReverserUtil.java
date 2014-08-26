@@ -26,7 +26,6 @@ import io.vertigo.quarto.publisher.impl.merger.processor.ProcessorXMLUtil;
  * Gestion du cas ou il y a des balises ouvertes non fermées.
  *
  * @author brenard
- * @version $Id: ODTInputTagReverserUtil.java,v 1.1 2013/07/11 13:24:48 npiedeloup Exp $
  */
 final class ODTInputTagReverserUtil {
 	private static final String INPUT_TAG = "text:text-input";
@@ -72,14 +71,14 @@ final class ODTInputTagReverserUtil {
 			final int indexDebutBody = tagToInverse.indexOf(bodyContent, indexFinAttribut);
 
 			return new StringBuilder(tagToInverse.length())//
-					.append(tagToInverse.substring(0, indexAttribut))//
-					.append(DESCRIPTION_ATTRIBUTE)//
-					.append("=\"")//
-					.append(bodyContent)//
-					.append("\">")//
-					.append(valueAttribut)//
-					.append(tagToInverse.substring(indexDebutBody + bodyContent.length()))//
-					.toString();//
+			.append(tagToInverse.substring(0, indexAttribut))//
+			.append(DESCRIPTION_ATTRIBUTE)//
+			.append("=\"")//
+			.append(bodyContent)//
+			.append("\">")//
+			.append(valueAttribut)//
+			.append(tagToInverse.substring(indexDebutBody + bodyContent.length()))//
+			.toString();//
 		}
 		return "";
 	}

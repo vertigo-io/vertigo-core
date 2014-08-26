@@ -30,7 +30,6 @@ import java.util.Set;
  * - liste des types de work pris en charge
  * - date du dernier signe de vie
  * @author npiedeloup
- * @version $Id: NodeState.java,v 1.5 2013/11/15 15:33:20 pchretien Exp $
  */
 final class NodeState {
 
@@ -39,7 +38,7 @@ final class NodeState {
 	private long lastSeen;
 
 	/**
-	 * Constructeur. 
+	 * Constructeur.
 	 * @param nodeUID id du noeud
 	 * @param nodeWorkType type de work pris en charge (cumulatif)
 	 */

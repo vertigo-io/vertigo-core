@@ -32,7 +32,6 @@ import java.io.InputStream;
  * Utilitaire pour construire des cas de tests.
  *
  * @author npiedeloup
- * @version $Id: TestUtil.java,v 1.8 2014/02/27 10:26:39 pchretien Exp $
  */
 public final class TestUtil {
 	/**
@@ -46,7 +45,7 @@ public final class TestUtil {
 	/**
 	 * Crée un KFile relativement d'un class de base.
 	 * @param fileName Nom/path du fichier
-	 * @param baseClass Class de base pour le chemin relatif 
+	 * @param baseClass Class de base pour le chemin relatif
 	 * @return KFile
 	 */
 	public static KFile createKFile(final FileManager fileManager, final String fileName, final Class<?> baseClass) {

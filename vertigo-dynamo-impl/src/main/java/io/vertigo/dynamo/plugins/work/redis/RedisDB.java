@@ -27,7 +27,6 @@ import com.google.gson.GsonBuilder;
 
 /**
  * @author pchretien
- * $Id: RedisDispatcherThread.java,v 1.8 2014/02/03 17:28:45 pchretien Exp $
  */
 public final class RedisDB implements Activeable {
 	private static final int timeout = 2000;

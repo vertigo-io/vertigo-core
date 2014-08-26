@@ -38,7 +38,6 @@ import java.util.concurrent.TimeUnit;
  * La récupération des données est effective toutes les secondes.
  * 
  * @author pchretien
- * @version $Id: MultipleWorkQueues.java,v 1.10 2014/02/27 10:31:19 pchretien Exp $
  */
 final class RestQueue {
 	//pas besoin de synchronized la map, car le obtain est le seul accès et est synchronized
@@ -68,7 +67,7 @@ final class RestQueue {
 	void setResult(final WResult result) {
 		final WorkResultHandler workResultHandler = workResultHandlers.remove(result.getWorkId());
 		if (workResultHandler != null) {
-			//Que faire sinon 
+			//Que faire sinon
 			workResultHandler.onDone(result.hasSucceeded(), result.getResult(), result.getError());
 		}
 	}
@@ -86,7 +85,7 @@ final class RestQueue {
 			final WorkItem<?, ?> workItem = obtainWorkQueue(workType).poll(timeoutInSeconds, TimeUnit.SECONDS);
 			return workItem;
 		} catch (final InterruptedException e) {
-			//dans le cas d'une interruption on arrête de dépiler 
+			//dans le cas d'une interruption on arrête de dépiler
 			return null;
 		}
 	}
@@ -104,7 +103,7 @@ final class RestQueue {
 		try {
 			obtainWorkQueue(workType).put(workItem);
 		} catch (final InterruptedException e) {
-			//dans le cas d'une interruption on interdit d'empiler de nouveaux Works 
+			//dans le cas d'une interruption on interdit d'empiler de nouveaux Works
 			throw new RuntimeException("putWorkItem", e);
 		}
 	}

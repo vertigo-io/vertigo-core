@@ -27,7 +27,6 @@ import io.vertigo.kernel.lang.Option;
 
 /**
  * @author pchretien
- * $Id: RedisDispatcherThread.java,v 1.8 2014/02/03 17:28:45 pchretien Exp $
  */
 final class RedisDispatcherThread extends Thread {
 	private final RedisDB redisDB;

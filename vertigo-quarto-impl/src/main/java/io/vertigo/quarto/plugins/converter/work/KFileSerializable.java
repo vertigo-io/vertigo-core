@@ -36,7 +36,6 @@ import java.util.Date;
 /**
  * Class d'encapsulation pour rendre un KFile Serializable.
  * @author npiedeloup
- * @version $Id: KFileSerializable.java,v 1.7 2014/02/27 10:24:53 pchretien Exp $
  */
 public final class KFileSerializable implements KFile {
 

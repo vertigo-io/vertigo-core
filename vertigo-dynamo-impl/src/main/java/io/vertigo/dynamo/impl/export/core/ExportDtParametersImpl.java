@@ -37,7 +37,6 @@ import java.util.List;
  * Implementation standard de ExportDtParameters.
  *
  * @author pchretien, npiedeloup
- * @version $Id: ExportDtParametersImpl.java,v 1.7 2014/02/27 10:23:30 pchretien Exp $
  */
 public final class ExportDtParametersImpl implements ExportDtParameters, ExportDtParametersReadable {
 	/**
@@ -46,8 +45,8 @@ public final class ExportDtParametersImpl implements ExportDtParameters, ExportD
 	private final List<ExportField> exportFields = new ArrayList<>();
 
 	/**
-	 * Objet à exporter. 
-	 * dto XOR dtc est renseigné. 
+	 * Objet à exporter.
+	 * dto XOR dtc est renseigné.
 	 */
 	private final DtObject dto;
 	private final DtList<?> dtc;

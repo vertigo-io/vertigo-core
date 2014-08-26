@@ -34,7 +34,6 @@ import java.util.Date;
  * du thread d'appel et sont transactionnelles dans leurs threads pour chaque exécution.
  *
  * @author evernat
- * @version $Id: JobManager.java,v 1.2 2013/10/22 10:55:30 pchretien Exp $
  */
 public interface JobManager extends Manager {
 	/**

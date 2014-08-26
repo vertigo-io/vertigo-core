@@ -29,7 +29,6 @@ import java.util.regex.Pattern;
  * Classe utilitaire pour une arborescence XML.
  *
  * @author npiedeloup
- * @version $Id: ProcessorXMLUtil.java,v 1.4 2014/02/27 10:32:26 pchretien Exp $
  */
 public final class ProcessorXMLUtil {
 	/**

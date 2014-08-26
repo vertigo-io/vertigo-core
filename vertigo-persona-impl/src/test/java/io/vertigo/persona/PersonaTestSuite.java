@@ -28,7 +28,6 @@ import org.junit.runners.Suite.SuiteClasses;
  * Test de l'implementation standard.
  *
  * @author pchretien
- * @version $Id: CommonsTestSuite.java,v 1.15 2014/06/30 12:21:52 pchretien Exp $
  */
 @RunWith(Suite.class)
 @SuiteClasses({ KSecurityManagerTest.class })

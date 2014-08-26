@@ -27,7 +27,6 @@ import io.vertigo.quarto.publisher.model.PublisherData;
  * - 1. Nettoyage du XML en fermant les balises
  * - 2. Suppression des balises de script
  * @author npiedeloup
- * @version $Id: ODTCleanerProcessor.java,v 1.1 2013/07/11 13:24:48 npiedeloup Exp $
  */
 final class ODTCleanerProcessor implements MergerProcessor {
 	private static final String SCRIPT_TAG = "text:script";

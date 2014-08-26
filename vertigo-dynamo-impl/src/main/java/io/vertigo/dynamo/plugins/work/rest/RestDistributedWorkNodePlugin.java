@@ -43,12 +43,11 @@ import org.apache.log4j.Logger;
 /**
  * Implémentation de DistributedWorkManager, pour l'execution de travaux par des Workers distant.
  * Cette implémentation représente la partie client qui se déploie en ferme.
- * 1- contacte la partie serveur pour récupérer les travaux qu'elle sait gérer, 
+ * 1- contacte la partie serveur pour récupérer les travaux qu'elle sait gérer,
  * 2- execute la tache en synchrone exclusivement
  * 3- retourne le résultat au serveur
  * 
  * @author npiedeloup, pchretien
- * @version $Id: RestDistributedWorkNodePlugin.java,v 1.12 2014/02/03 17:28:45 pchretien Exp $
  */
 public final class RestDistributedWorkNodePlugin implements NodePlugin, Activeable {
 
@@ -108,7 +107,6 @@ public final class RestDistributedWorkNodePlugin implements NodePlugin, Activeab
 	/**
 	 * Tache runnable permettant l'exécution d'un travail.
 	 * @author npiedeloup
-	 * @version $Id: RestDistributedWorkNodePlugin.java,v 1.12 2014/02/03 17:28:45 pchretien Exp $
 	 */
 	private static final class PollWorkTask<WR> implements Callable<Void> {
 		private final WorkQueueRestClient workQueueClient;

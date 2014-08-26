@@ -28,7 +28,6 @@ import java.util.List;
  * Un noeud d'edition compose l'arbre des des données d'une édition.
  *
  * @author npiedeloup, pchretien
- * @version $Id: PublisherNodeDefinitionBuilder.java,v 1.3 2014/02/27 10:32:26 pchretien Exp $
  */
 public final class PublisherNodeDefinitionBuilder implements Builder<PublisherNodeDefinition> {
 	private final List<PublisherField> publisherFields = new ArrayList<>();

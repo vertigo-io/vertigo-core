@@ -31,10 +31,9 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Generation des objets relatifs au module Securite. 
- *  
+ * Generation des objets relatifs au module Securite.
+ * 
  * @author pchretien
- * @version $Id: SecurityGeneratorPlugin.java,v 1.6 2014/03/10 13:41:43 npiedeloup Exp $
  */
 public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin<SecurityConfiguration> {
 	/** {@inheritDoc}  */

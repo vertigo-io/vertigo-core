@@ -26,7 +26,6 @@ import io.vertigo.quarto.publisher.impl.merger.processor.ProcessorXMLUtil;
  * Gestion de la suppression d'une balise.
  *
  * @author brenard
- * @version $Id: ODTTagRemoverUtil.java,v 1.1 2013/07/11 13:24:48 npiedeloup Exp $
  */
 final class ODTTagRemoverUtil {
 	/**

@@ -31,9 +31,7 @@ import javax.inject.Inject;
  * 
  * 
  * @author npiedeloup, pchretien
- * @version $Id: NodeManagerImpl.java,v 1.5 2014/02/27 10:33:55 pchretien Exp $
  */
-
 public final class NodeManagerImpl implements NodeManager {
 	//	private final List<Node> nodes;
 

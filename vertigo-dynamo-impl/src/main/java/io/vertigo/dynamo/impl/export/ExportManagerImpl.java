@@ -44,7 +44,6 @@ import javax.inject.Inject;
  * Implémentation standard du manager des exports.
  *
  * @author pchretien, npiedeloup
- * @version $Id: ExportManagerImpl.java,v 1.8 2014/02/27 10:23:30 pchretien Exp $
  */
 public final class ExportManagerImpl implements ExportManager {
 	private final WorkManager workManager;
@@ -77,7 +76,7 @@ public final class ExportManagerImpl implements ExportManager {
 
 	/**
 	 * Récupère le plugin d'export associé au format.
-	 * @param exportFormat Format d'export souhaité 
+	 * @param exportFormat Format d'export souhaité
 	 * @return Plugin d'export associé au format
 	 */
 	private ExporterPlugin getExporterPlugin(final ExportFormat exportFormat) {

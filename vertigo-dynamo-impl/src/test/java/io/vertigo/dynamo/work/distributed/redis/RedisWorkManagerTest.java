@@ -24,7 +24,6 @@ import io.vertigo.kernel.lang.Option;
 
 /**
  * @author pchretien
- * $Id: RedisWorkManagerTest.java,v 1.4 2014/01/20 18:57:06 pchretien Exp $
  */
 public class RedisWorkManagerTest extends AbstractWorkManagerTest {
 	@Override

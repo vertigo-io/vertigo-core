@@ -27,11 +27,10 @@ import java.util.regex.Pattern;
  * Définition de la structure d'un champ d'un noeud du modèle d'édition.
  * Tous les champs sont nommés et typés.
  * @author npiedeloup
- * @version $Id: PublisherField.java,v 1.4 2013/10/22 10:50:52 pchretien Exp $
  */
 public final class PublisherField {
 	/**
-	 * Expression régulière vérifiée par les noms des champs. 
+	 * Expression régulière vérifiée par les noms des champs.
 	 */
 	private static final Pattern REGEX_FIELD_NAME = Pattern.compile("[A-Z][A-Z0-9_]{2,59}");
 

@@ -37,7 +37,6 @@ import java.util.Map;
  * Une grammaire est constituée de mots clés (Keyword) en nombre fini.
  *
  * @author oboitel, pchretien
- * @version $Id: ScriptGrammar.java,v 1.5 2014/02/27 10:33:07 pchretien Exp $
  */
 public final class ScriptGrammar {
 	// Serializable pour CC.

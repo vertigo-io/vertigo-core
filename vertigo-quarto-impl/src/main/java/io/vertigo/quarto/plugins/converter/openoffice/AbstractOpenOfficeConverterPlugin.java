@@ -43,7 +43,6 @@ import com.sun.star.util.XRefreshable;
 /**
  * Conversion des fichiers à partir de OpenOffice.
  * @author npiedeloup
- * @version $Id: AbstractOpenOfficeConverterPlugin.java,v 1.8 2014/02/27 10:24:53 pchretien Exp $
  */
 abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 	/** Le port par défaut pour accéder à OpenOffice est 8100. */
@@ -231,25 +230,25 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 	protected final String getFilterNameFromExtension(final ConverterFormat docType) {
 		//Liste des filterName géré par OpenOffice.
 		//la liste est dans :
-		//OO 3.3 "OpenOffice.org 3\Basis\share\registry\modules\org\openoffice\TypeDetection\Filter\fcfg_writer_filters.xcu" 
-		//OO 3.4 "OpenOffice.org 3\Basis\share\registry\writer.xcd" 
+		//OO 3.3 "OpenOffice.org 3\Basis\share\registry\modules\org\openoffice\TypeDetection\Filter\fcfg_writer_filters.xcu"
+		//OO 3.4 "OpenOffice.org 3\Basis\share\registry\writer.xcd"
 		switch (docType) {
-			case PDF:
-				return "writer_pdf_Export";
-			case RTF:
-				return "Rich Text Format";
-			case DOC:
-				return "MS Word 97";
-			case ODT:
-				return "Open Document Format";
-			case TXT:
-				return "Text";
-				//			case DOCX:
-				//				return "MS Word 2007 XML";
-				//			case CSV:
-				//				return "Text - txt - csv (StarCalc)";
-			default:
-				throw new InvalidParameterException("Type de document non géré : " + docType);
+		case PDF:
+			return "writer_pdf_Export";
+		case RTF:
+			return "Rich Text Format";
+		case DOC:
+			return "MS Word 97";
+		case ODT:
+			return "Open Document Format";
+		case TXT:
+			return "Text";
+			//			case DOCX:
+			//				return "MS Word 2007 XML";
+			//			case CSV:
+			//				return "Text - txt - csv (StarCalc)";
+		default:
+			throw new InvalidParameterException("Type de document non géré : " + docType);
 		}
 	}
 

@@ -25,7 +25,6 @@ import io.vertigo.quarto.publisher.impl.merger.script.ScriptTagContent;
 
 /**
  * @author pchretien, npiedeloup
- * @version $Id: TagBlock.java,v 1.2 2013/10/22 10:49:59 pchretien Exp $
  */
 //public car instancié dynamiquement
 public final class TagBlock extends AbstractKScriptTag implements ScriptTag {

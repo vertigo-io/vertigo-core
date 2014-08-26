@@ -21,7 +21,6 @@ package io.vertigo.dynamo.export;
 /**
  * Formats de sortie supportés par le manager d'édition.
  * @author pchretien, npiedeloup
- * @version $Id: ExportFormat.java,v 1.1 2013/07/10 15:46:44 npiedeloup Exp $
  */
 public enum ExportFormat {
 

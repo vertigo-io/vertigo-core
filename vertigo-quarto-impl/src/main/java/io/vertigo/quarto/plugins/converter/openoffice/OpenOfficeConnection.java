@@ -45,7 +45,6 @@ import com.sun.star.ucb.XSimpleFileAccess;
  * API de connexion à OpenOffice repris de JodConverter 2.2.0 (http://www.artofsolving.com/opensource/jodconverter)
  *
  * @author npiedeloup
- * @version $Id: OpenOfficeConnection.java,v 1.1 2013/07/10 15:45:43 npiedeloup Exp $
  */
 interface OpenOfficeConnection {
 

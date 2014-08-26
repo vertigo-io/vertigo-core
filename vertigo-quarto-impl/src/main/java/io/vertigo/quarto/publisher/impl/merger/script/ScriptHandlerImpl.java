@@ -32,7 +32,6 @@ import java.util.Stack;
  * - = (écriture directe d'un champ)
  *
  * @author oboitel
- * @version $Id: ScriptHandlerImpl.java,v 1.7 2014/02/27 10:33:07 pchretien Exp $
  */
 public final class ScriptHandlerImpl implements ScriptParserHandler {
 	private final StringBuilder evaluatedScript = new StringBuilder();

@@ -25,7 +25,6 @@ import io.vertigo.quarto.publisher.metamodel.PublisherDataDefinition;
  * Données à fusionner.
  *
  * @author npiedeloup
- * @version $Id: PublisherData.java,v 1.3 2013/10/22 12:07:11 pchretien Exp $
  */
 public final class PublisherData {
 	private final PublisherDataDefinition publisherDataDefinition;

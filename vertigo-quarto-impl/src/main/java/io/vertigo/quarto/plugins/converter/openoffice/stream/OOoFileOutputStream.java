@@ -30,7 +30,6 @@ import com.sun.star.io.XOutputStream;
 /**
  * Implémentation d'une OutpuStream spécifique pour les appels distants de OpenOffice.
  * @author tchassagnette
- * @version $Id: OOoFileOutputStream.java,v 1.3 2013/10/22 12:23:19 pchretien Exp $
  */
 public final class OOoFileOutputStream implements XOutputStream {
 	private final FileOutputStream fileOutputStream;

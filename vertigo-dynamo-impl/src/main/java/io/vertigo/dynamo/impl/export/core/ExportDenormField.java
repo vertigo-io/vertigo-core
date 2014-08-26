@@ -27,7 +27,6 @@ import io.vertigo.dynamo.export.ExportField;
  * On précise la liste et le champs a utiliser comme libellé à afficher à la place de l'id de la liste de l'export.
  *
  * @author pchretien, npiedeloup
- * @version $Id: ExportDenormField.java,v 1.2 2014/01/20 17:49:10 pchretien Exp $
  */
 final class ExportDenormField extends ExportField {
 	private final DtList<?> list;

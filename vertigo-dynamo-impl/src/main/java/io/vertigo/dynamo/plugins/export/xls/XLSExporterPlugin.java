@@ -33,7 +33,6 @@ import javax.inject.Inject;
  * Plugin d'export Excel.
  *
  * @author pchretien, npiedeloup
- * @version $Id: ExcelExporterPlugin.java,v 1.2 2014/01/28 18:49:44 pchretien Exp $
  */
 public final class XLSExporterPlugin implements ExporterPlugin {
 	private final ExportHelper exportHelper;

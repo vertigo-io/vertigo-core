@@ -27,7 +27,6 @@ import io.vertigo.kernel.stereotype.Prefix;
  * Un modèle d'édition est un arbre de données.
  *
  * @author npiedeloup, pchretien
- * @version $Id: PublisherDataDefinition.java,v 1.3 2013/10/22 10:50:53 pchretien Exp $
  */
 @Prefix("PU")
 public final class PublisherDataDefinition implements Definition {

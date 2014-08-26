@@ -28,7 +28,6 @@ import java.util.List;
 
 /**
  * @author npiedeloup
- * $Id: ClientNode.java,v 1.2 2014/02/27 10:20:10 pchretien Exp $
  */
 final class ClientNode {
 	private static final String CP_SEP = System.getProperty("path.separator");

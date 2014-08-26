@@ -32,7 +32,6 @@ import java.util.concurrent.Future;
 
 /**
  * @author pchretien
- * $Id: RedisListenerThread.java,v 1.6 2014/01/20 18:56:18 pchretien Exp $
  */
 final class RedisQueue implements Runnable {
 	private final RedisDB redisDB;
@@ -48,7 +47,7 @@ final class RedisQueue implements Runnable {
 	<WR, W> Future<WR> submit(final String workType, final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
 		//1. On renseigne la demande de travaux sur le server redis
 		putWorkItem(workType, workItem);
-		//2. On attend les notifs sur un thread séparé, la main est rendue de suite 
+		//2. On attend les notifs sur un thread séparé, la main est rendue de suite
 		return createFuture(workItem.getId(), workResultHandler);
 	}
 
@@ -68,7 +67,7 @@ final class RedisQueue implements Runnable {
 	private void setResult(final WResult result) {
 		final WorkResultHandler workResultHandler = workResultHandlers.remove(result.getWorkId());
 		if (workResultHandler != null) {
-			//Que faire sinon 
+			//Que faire sinon
 			workResultHandler.onDone(result.hasSucceeded(), result.getResult(), result.getError());
 		}
 	}

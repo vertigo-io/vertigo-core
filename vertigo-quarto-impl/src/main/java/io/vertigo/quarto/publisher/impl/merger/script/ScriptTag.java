@@ -21,7 +21,6 @@ package io.vertigo.quarto.publisher.impl.merger.script;
 /**
  * Tag KScript.
  * @author pchretien, npiedeloup
- * @version $Id: ScriptTag.java,v 1.1 2013/07/11 13:24:48 npiedeloup Exp $
  */
 public interface ScriptTag {
 	/**

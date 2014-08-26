@@ -23,10 +23,9 @@ import io.vertigo.kernel.metamodel.Definition;
 import io.vertigo.kernel.stereotype.Prefix;
 
 /**
- * JobDefinition décrit le travail qu'il faut exécuter. 
+ * JobDefinition décrit le travail qu'il faut exécuter.
  * La tache à exécuter oit étendre Runnable.
  * @author pchretien
- * @version $Id: JobDefinition.java,v 1.3 2013/10/22 10:55:30 pchretien Exp $
  */
 @Prefix("JB")
 public final class JobDefinition implements Definition {

@@ -22,12 +22,11 @@ import io.vertigo.kernel.lang.Assertion;
 
 /**
  * Node.
- * Un noeud possède 
+ * Un noeud possède
  *  - un état variable (actif/inactif)
- *  - une configuration (uid / ip) 
+ *  - une configuration (uid / ip)
  * 
  * @author npiedeloup, pchretien
- * @version $Id: Node.java,v 1.5 2013/11/15 15:31:33 pchretien Exp $
  */
 public final class Node {
 	private final String uid;

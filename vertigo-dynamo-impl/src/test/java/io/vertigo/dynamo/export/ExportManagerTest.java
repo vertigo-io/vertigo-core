@@ -39,7 +39,6 @@ import org.junit.Test;
  * Test de l'implémentation standard.
  * 
  * @author dchallas
- * @version $Id: ExportManagerTest.java,v 1.6 2014/02/27 10:27:31 pchretien Exp $
  */
 public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	@Inject
@@ -57,8 +56,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		final ExportDtParameters dtParameter = exportManager.createExportListParameters(dtc);
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test.csv")//
-				.withExportDtParameters(dtParameter)//
-				.build();
+		.withExportDtParameters(dtParameter)//
+		.build();
 		final KFile result = exportManager.createExportFile(export);
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
@@ -75,8 +74,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		final ExportDtParameters dtParameter = exportManager.createExportObjectParameters(famille);
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test2.csv")//
-				.withExportDtParameters(dtParameter)//
-				.build();
+		.withExportDtParameters(dtParameter)//
+		.build();
 		final KFile result = exportManager.createExportFile(export);
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
@@ -96,8 +95,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		dtParameter.addExportField(dtField);
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test3.csv")//
-				.withExportDtParameters(dtParameter)//
-				.build();
+		.withExportDtParameters(dtParameter)//
+		.build();
 		final KFile result = exportManager.createExportFile(export);
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
@@ -118,8 +117,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		dtParameter.addExportField(dtField, new MessageText("test", null));
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test3.csv")//
-				.withExportDtParameters(dtParameter)//
-				.build();
+		.withExportDtParameters(dtParameter)//
+		.build();
 		final KFile result = exportManager.createExportFile(export);
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
@@ -142,8 +141,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		dtParameter.addExportDenormField(dtFieldKey, list, dtFieldLabel);
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test4.csv")//
-				.withExportDtParameters(dtParameter)//
-				.build();
+		.withExportDtParameters(dtParameter)//
+		.build();
 
 		final KFile result = exportManager.createExportFile(export);
 		if (KEEP_OUTPUT_FILE) {
@@ -167,8 +166,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		dtParameter.addExportDenormField(dtFieldKey, list, dtFieldLabel, new MessageText("test", null));
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test5.csv")//
-				.withExportDtParameters(dtParameter)//
-				.build();
+		.withExportDtParameters(dtParameter)//
+		.build();
 
 		final KFile result = exportManager.createExportFile(export);
 		if (KEEP_OUTPUT_FILE) {
@@ -185,8 +184,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		final ExportDtParameters dtParameter = exportManager.createExportListParameters(dtc);
 
 		final Export export = new ExportBuilder(ExportFormat.XLS, OUTPUT_PATH + "test.xls")//
-				.withExportDtParameters(dtParameter)//
-				.build();
+		.withExportDtParameters(dtParameter)//
+		.build();
 
 		final KFile result = exportManager.createExportFile(export);
 		if (KEEP_OUTPUT_FILE) {
@@ -203,10 +202,10 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		final ExportDtParameters dtParameter = exportManager.createExportListParameters(dtc);
 
 		final Export export = new ExportBuilder(ExportFormat.RTF, OUTPUT_PATH + "test.rtf")//
-				.withAuthor("test")//
-				.withTitle("test title")//
-				.withExportDtParameters(dtParameter)//
-				.build();
+		.withAuthor("test")//
+		.withTitle("test title")//
+		.withExportDtParameters(dtParameter)//
+		.build();
 
 		final KFile result = exportManager.createExportFile(export);
 		if (KEEP_OUTPUT_FILE) {

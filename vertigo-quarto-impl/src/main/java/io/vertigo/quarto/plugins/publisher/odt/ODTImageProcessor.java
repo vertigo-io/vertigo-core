@@ -37,7 +37,6 @@ import javax.imageio.ImageIO;
 /**
  * Inversion des textInput dans le fichier ODT.
  * @author npiedeloup
- * @version $Id: ODTImageProcessor.java,v 1.3 2014/02/27 10:40:19 pchretien Exp $
  */
 final class ODTImageProcessor implements MergerProcessor {
 	//private static final String IMAGE_TAG = "(<draw:frame .*draw:name=\")&lt;#image ([A-Z_]+)#&gt;(\".*><draw:image xlink:href=\")(Pictures/[0-9A-F\\.a-z]+)(\".*/></draw:frame>)";;

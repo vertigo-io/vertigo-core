@@ -13,7 +13,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author pchretien
- * $Id: RedisDispatcherThread.java,v 1.8 2014/02/03 17:28:45 pchretien Exp $
  */
 public final class WFuture<WR> implements Future<WR>, WorkResultHandler<WR> {
 	private final AtomicBoolean done = new AtomicBoolean(false);

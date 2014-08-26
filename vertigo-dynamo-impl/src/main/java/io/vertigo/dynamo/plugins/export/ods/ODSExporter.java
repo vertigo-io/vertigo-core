@@ -23,7 +23,6 @@ package io.vertigo.dynamo.plugins.export.ods;
  * La version 0.8.7 d'ODFDOM genere un ods qui est lu par Excel mais avec une alerte (voir ODSExporter.java v 1.6 pour compatibilité avec odfdom-java 0.8.7).
  * 
  * @author oboitel, npiedeloup
- * @version $Id: ODSExporter.java,v 1.7 2014/06/26 12:31:45 npiedeloup Exp $
  */
 //final class ODSExporter {
 //	private static final String CRITERE_LABEL_CELL_STYLE = "CRITERE_LABEL_CELL_STYLE";
@@ -64,7 +63,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 //
 //	/**
 //	 * Méthode principale qui gère l'export d'un tableau vers un fichier ODS.
-//	 * 
+//	 *
 //	 * @param documentParameters Paramètres du document à exporter
 //	 * @param out Flux de sortie
 //	 * @throws Exception Erreur d'export
@@ -127,7 +126,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 //
 //	/**
 //	 * Retourne le style associé à une clé donnée.
-//	 * 
+//	 *
 //	 * @param styleType Clé du style recherché
 //	 * @return Style associé à la clé donnée en entrée
 //	 */
@@ -139,7 +138,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 //
 //	/**
 //	 * Création des styles applicables aux cellules du document.
-//	 * 
+//	 *
 //	 * @param contentDom Contenu du fichier ODS
 //	 */
 //	private void initDefaultStyle(final OdfFileDom contentDom) {
@@ -156,7 +155,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 //
 //	/**
 //	 * Création du style des noms des critères de recherche.
-//	 * 
+//	 *
 //	 * @param contentDom Contenu du fichier ODS
 //	 * @return Style des noms des critères de recherche
 //	 */
@@ -182,7 +181,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 //
 //	/**
 //	 * Création du style des valeurs des critères de recherche.
-//	 * 
+//	 *
 //	 * @param contentDom Contenu du fichier ODS
 //	 * @return Style des valeurs des critères de recherche
 //	 */
@@ -220,7 +219,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 //
 //	/**
 //	 * Création du style des entêtes de colonne.
-//	 * 
+//	 *
 //	 * @param contentDom Contenu du fichier ODS
 //	 * @return Style des entêtes de colonne
 //	 */
@@ -249,7 +248,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 //
 //	/**
 //	 * Création du style des cellules de données.
-//	 * 
+//	 *
 //	 * @param contentDom Contenu du fichier ODS
 //	 * @param type {@link DataType}
 //	 * @return Style des cellules de données
@@ -260,7 +259,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 //
 //	/**
 //	 * Exporte un élément.
-//	 * 
+//	 *
 //	 * @param parameters Paramètres de l'élément à exporter
 //	 * @param table Feuille dans laquelle l'export se fait
 //	 * @param contentDom Contenu du fichier ODS.
@@ -282,7 +281,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 //
 //	/**
 //	 * Permet de fixer la taille des colonnes en fonction de leur contenu.
-//	 * 
+//	 *
 //	 * @param table Feuille en cours
 //	 * @param maxWidthPerColumn Map donnant pour chaque colonne la longueur à appliquer à la colonne
 //	 */
@@ -301,7 +300,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 //
 //	/**
 //	 * Convertit la taille des colonnes en cm pour open office.
-//	 * 
+//	 *
 //	 * @param length Taille en pixels à convertir en centimètres
 //	 * @return Chaine de caracteres indiquant la taille de la colonne
 //	 */
@@ -321,7 +320,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 //
 //	/**
 //	 * Exporte un élément de type liste (tableau de donnée).
-//	 * 
+//	 *
 //	 * @param parameters Paramètres de l'élément à exporter
 //	 * @param table Feuille dans laquelle est réalisé l'export
 //	 * @param contentDom Contenu du document ODS.
@@ -369,7 +368,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 //
 //	/**
 //	 * Exporte un élément de type objet (critères de recherche).
-//	 * 
+//	 *
 //	 * @param parameters Paramètres de l'élément à exporter
 //	 * @param table Feuille dans laquelle est réalisé l'export
 //	 * @param contentDom Contenu du document ODS.
@@ -410,7 +409,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 //
 //	/**
 //	 * Insère une valeur dans une cellule.
-//	 * 
+//	 *
 //	 * @param value Valeur à insérer
 //	 * @param cell Cellule dans laquelle insérer la valeur
 //	 * @param type Type de la valeur à insérer
@@ -482,7 +481,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 //
 //	/**
 //	 * Met à jour la longueur d'une colonne en fonction de son contenu.
-//	 * 
+//	 *
 //	 * @param value Valeur insérée dans la colonne
 //	 * @param textSizeCoeff Coefficient à appliquer sur la longueur de la valeur: longueur cellule = longueur valeur * textSizeCoeff + 2
 //	 * @param cellIndex Index de la colonne

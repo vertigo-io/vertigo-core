@@ -25,7 +25,6 @@ import io.vertigo.kernel.component.Plugin;
  * Plugin de Conversion des fichiers.
  * 
  * @author npiedeloup
- * @version $Id: ConverterPlugin.java,v 1.3 2014/01/28 18:49:24 pchretien Exp $
  */
 public interface ConverterPlugin extends Plugin {
 	/**

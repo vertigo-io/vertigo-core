@@ -36,13 +36,12 @@ import javax.inject.Named;
  * REDIS est utilisé comme plateforme d'échanges.
  * 
  * @author pchretien
- * $Id: RedisDistributedWorkerPlugin.java,v 1.11 2014/06/26 12:30:08 npiedeloup Exp $
  */
 public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlugin, Activeable {
 	//	private final int timeoutSeconds;
 	private final RedisDB redisDB;
 	/*
-	 *La map est nécessairement synchronisée. 
+	 *La map est nécessairement synchronisée.
 	 */
 	private final RedisQueue redisQueue;
 	private final Thread redisQueueWatcher;
@@ -71,7 +70,7 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 		} catch (final InterruptedException e) {
 			//On ne fait rien
 		}
-		//--- 
+		//---
 		redisDB.stop();
 	}
 

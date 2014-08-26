@@ -29,12 +29,11 @@ import java.util.Map;
  * Définition d'un noeud dans une structure PublisherDataDefinition.
  * Un noeud contient des champs.
  * Les champs peuvent être :
- * - soit simples (valués) et de type Boolean, String ou Image 
- * - soit un autre noeud 
+ * - soit simples (valués) et de type Boolean, String ou Image
+ * - soit un autre noeud
  * - soit une liste de noeuds
  *
  * @author npiedeloup, pchretien
- * @version $Id: PublisherNodeDefinition.java,v 1.5 2014/02/27 10:32:26 pchretien Exp $
  */
 public final class PublisherNodeDefinition {
 	private final Map<String, PublisherField> publisherFieldMap;

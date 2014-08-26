@@ -21,7 +21,6 @@ package io.vertigo.quarto.publisher.impl.merger.script;
 /**
  * Definition d'un Tag KScript.
  * @author pchretien, npiedeloup
- * @version $Id: ScriptTagDefinition.java,v 1.1 2013/07/11 13:24:48 npiedeloup Exp $
  */
 final class ScriptTagDefinition {
 	private final String name;

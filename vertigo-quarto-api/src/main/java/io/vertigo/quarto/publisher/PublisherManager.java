@@ -30,10 +30,9 @@ import java.net.URL;
  * Le choix du type d'édition est fait par l'appelant qui fournit les paramètres adaptés à son besoin.
  *
  * @author pchretien, npiedeloup
- * @version $Id: PublisherManager.java,v 1.4 2014/01/28 18:53:45 pchretien Exp $
  */
 public interface PublisherManager extends Manager {
-	/** 
+	/**
 	 * Création d'une nouvelle édition.
 	 * @param fileName Nom du document à générer (! pas son emplacement de stockage !)
 	 * @param modelFileURL Chemin vers le fichier model
@@ -42,7 +41,7 @@ public interface PublisherManager extends Manager {
 	 */
 	KFile publish(String fileName, URL modelFileURL, PublisherData data);
 
-	/** 
+	/**
 	 * Création asynchrone d'une nouvelle édition.
 	 * @param fileName Nom du document à générer (! pas son emplacement de stockage !)
 	 * @param modelFileURL Chemin vers le fichier model

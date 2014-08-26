@@ -37,7 +37,6 @@ import java.util.zip.ZipOutputStream;
  * Classe d'utilitaires pour les fichiers de type ODT.
  *
  * @author pforhan
- * @version $Id: ODTUtil.java,v 1.3 2014/02/27 10:40:50 pchretien Exp $
  */
 final class ODTUtil {
 

@@ -37,12 +37,11 @@ import java.util.Map;
  * Implémentation d'un noeud dans une structure PublisherData.
  * Un noeud contient des champs.
  * Les champs peuvent être :
- * - soit simple (valués) et de type Boolean, String ou Image 
- * - soit un autre noeud, 
+ * - soit simple (valués) et de type Boolean, String ou Image
+ * - soit un autre noeud,
  * - soit une liste de noeud.
  *
  * @author npiedeloup, pchretien
- * @version $Id: PublisherNode.java,v 1.7 2014/02/27 10:32:26 pchretien Exp $
  */
 public final class PublisherNode implements Serializable {
 	private static final long serialVersionUID = 2174855665059480516L;
@@ -96,7 +95,7 @@ public final class PublisherNode implements Serializable {
 	//-------------------------------------------------------------------------
 	/**
 	 * Récupère une valeur affichable.
-	 * @param fieldName Nom du champ 
+	 * @param fieldName Nom du champ
 	 * @return Chaine à afficher pour le champ
 	 */
 	public String getString(final String fieldName) {
@@ -105,7 +104,7 @@ public final class PublisherNode implements Serializable {
 
 	/**
 	 * Récupère une valeur booléenne.
-	 * @param fieldName Nom du champ 
+	 * @param fieldName Nom du champ
 	 * @return Valeur booléenne du champ
 	 */
 	public boolean getBoolean(final String fieldName) {
@@ -114,7 +113,7 @@ public final class PublisherNode implements Serializable {
 
 	/**
 	 * Permet de récupérer un champs de type objet.
-	 * @param fieldName Nom du champ 
+	 * @param fieldName Nom du champ
 	 * @return PublisherDataNode porté par ce champ
 	 */
 	public PublisherNode getNode(final String fieldName) {
@@ -132,7 +131,7 @@ public final class PublisherNode implements Serializable {
 
 	/**
 	 * Récupère la liste des noeuds d'un champlistes.
-	 * @param fieldName Nom du champ 
+	 * @param fieldName Nom du champ
 	 * @return Liste de PublisherDataNode portée par ce champ
 	 */
 	public List<PublisherNode> getNodes(final String fieldName) {
@@ -169,7 +168,7 @@ public final class PublisherNode implements Serializable {
 	//-------------------------------------------------------------------------
 	/**
 	 * Fixe une valeur affichable.
-	 * @param fieldName Nom du champ 
+	 * @param fieldName Nom du champ
 	 * @param value Chaine à afficher pour le champ
 	 */
 	public void setString(final String fieldName, final String value) {
@@ -178,7 +177,7 @@ public final class PublisherNode implements Serializable {
 
 	/**
 	 * Fixe une valeur booléenne.
-	 * @param fieldName Nom du champ 
+	 * @param fieldName Nom du champ
 	 * @param value Valeur booléenne du champ
 	 */
 	public void setBoolean(final String fieldName, final boolean value) {
@@ -187,15 +186,15 @@ public final class PublisherNode implements Serializable {
 
 	/**
 	 * Fixe un champ de type objet.
-	 * @param fieldName Nom du champ 
+	 * @param fieldName Nom du champ
 	 * @param node Noeud
 	 */
 	public void setNode(final String fieldName, final PublisherNode node) {
 		setValue(fieldName, PublisherFieldType.Node, node);
 	}
 
-	/** 
-	 * Paramétrage d'une image présente dans le modèle. 
+	/**
+	 * Paramétrage d'une image présente dans le modèle.
 	 * @param fieldName Code de l'image, tel qu'on le retrouve dans le modèle
 	 * @param image Fichier image
 	 */
@@ -205,7 +204,7 @@ public final class PublisherNode implements Serializable {
 
 	/**
 	 * Ajoute un élément dans une liste.
-	 * @param fieldName Nom du champ 
+	 * @param fieldName Nom du champ
 	 * @param nodes Element à ajouter dans la liste du champ
 	 */
 	public void setNodes(final String fieldName, final List<PublisherNode> nodes) {

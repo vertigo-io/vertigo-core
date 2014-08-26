@@ -30,7 +30,6 @@ import javax.inject.Inject;
  * Plugin de Conversion des fichiers par un work (pour la distribution).
  * 
  * @author npiedeloup
- * @version $Id: DistributedWorkConverterPlugin.java,v 1.6 2014/01/28 18:49:24 pchretien Exp $
  */
 public final class DistributedWorkConverterPlugin implements ConverterPlugin {
 	private final WorkManager workManager;

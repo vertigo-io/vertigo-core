@@ -44,7 +44,6 @@ import javax.inject.Named;
  * Implementation standard de la gestion centralisee des droits d'acces.
  *
  * @author npiedeloup
- * @version $Id: KSecurityManagerImpl.java,v 1.9 2014/02/27 10:33:46 pchretien Exp $
  */
 public final class KSecurityManagerImpl implements KSecurityManager, Activeable {
 	/**
@@ -58,7 +57,7 @@ public final class KSecurityManagerImpl implements KSecurityManager, Activeable 
 	private final String userSessionClassName;
 	private final Map<String, ResourceNameFactory> resourceNameFactories = new HashMap<>();
 
-	/** 
+	/**
 	 * Constructeur.
 	 * Les deux namespace ne sont pas types pour eviter des couplages forts (notamment sur UI).
 	 * @param localeManager Manager des messages localises

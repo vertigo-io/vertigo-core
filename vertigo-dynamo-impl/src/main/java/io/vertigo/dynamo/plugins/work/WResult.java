@@ -4,7 +4,6 @@ import io.vertigo.kernel.lang.Assertion;
 
 /**
  * @author pchretien
- * $Id: RedisDispatcherThread.java,v 1.8 2014/02/03 17:28:45 pchretien Exp $
  */
 public final class WResult<WR> {
 	private final String workId;

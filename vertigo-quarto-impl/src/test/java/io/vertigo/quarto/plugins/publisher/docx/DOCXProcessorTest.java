@@ -20,7 +20,6 @@ package io.vertigo.quarto.plugins.publisher.docx;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.resource.ResourceManager;
-import io.vertigo.quarto.plugins.publisher.docx.DOCXUtil;
 
 import java.io.IOException;
 import java.net.URL;
@@ -43,7 +42,6 @@ import org.w3c.dom.NodeList;
  * Tests sur l'implémentation du plugin DOCX.
  * 
  * @author adufranne
- * @version $Id: DOCXProcessorTest.java,v 1.2 2013/10/22 10:49:13 pchretien Exp $
  */
 public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 

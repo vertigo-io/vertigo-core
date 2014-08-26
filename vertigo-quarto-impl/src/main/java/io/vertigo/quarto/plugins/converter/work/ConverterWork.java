@@ -28,7 +28,6 @@ import io.vertigo.kernel.lang.Assertion;
  * - le format destination
  * 
  * @author npiedeloup
- * @version $Id: ConverterWork.java,v 1.5 2014/01/28 18:49:24 pchretien Exp $
  */
 final class ConverterWork {
 	private final KFileSerializable file;

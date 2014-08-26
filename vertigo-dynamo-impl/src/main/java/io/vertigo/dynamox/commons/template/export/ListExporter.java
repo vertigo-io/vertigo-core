@@ -24,7 +24,6 @@ import java.util.Map;
 /**
  * Interface que doivent implémenter les contrôleurs possédant une action d'export.
  * 
- * @version $Id: ListExporter.java,v 1.1 2013/07/10 15:46:44 npiedeloup Exp $
  */
 public interface ListExporter {
 

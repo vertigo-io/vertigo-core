@@ -25,7 +25,6 @@ import java.util.Properties;
 
 /**
  * @author npiedeloup
- * $Id: WorkerNodeStarter.java,v 1.2 2013/10/22 10:54:08 pchretien Exp $
  */
 public final class WorkerNodeStarter {
 

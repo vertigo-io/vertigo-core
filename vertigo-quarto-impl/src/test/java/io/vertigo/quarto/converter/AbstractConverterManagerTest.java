@@ -38,7 +38,6 @@ import org.junit.Test;
  * Test de l'implémentation standard.
  * 
  * @author npiedeloup
- * @version $Id: AbstractConverterManagerTest.java,v 1.8 2014/06/27 12:21:39 pchretien Exp $
  */
 public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 	/** Logger. */
@@ -68,7 +67,7 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * Converssion de Odt vers Odt.
-	 * Liste des formats dans io.vertigo.quarto.plugins.converter.openoffice.ConverterFormat		
+	 * Liste des formats dans io.vertigo.quarto.plugins.converter.openoffice.ConverterFormat
 	 */
 	@Test
 	public void testConvertOdt2Odt() {
@@ -79,7 +78,7 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Converssion de Odt vers Doc. 
+	 * Converssion de Odt vers Doc.
 	 */
 	@Test
 	public void testConvertOdt2Doc() {
@@ -90,7 +89,7 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Converssion de Odt vers Rtf. 
+	 * Converssion de Odt vers Rtf.
 	 */
 	@Test
 	public void testConvertOdt2Rtf() {
@@ -101,7 +100,7 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Converssion de Odt vers Pdf. 
+	 * Converssion de Odt vers Pdf.
 	 */
 	@Test
 	public void testConvertOdt2Pdf() {
@@ -112,7 +111,7 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Converssion de Odt vers Txt. 
+	 * Converssion de Odt vers Txt.
 	 */
 	@Test
 	public void testConvertOdt2Txt() {
@@ -134,7 +133,7 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Converssion de Txt vers Doc. 
+	 * Converssion de Txt vers Doc.
 	 */
 	@Test
 	public void testConvertTxt2Doc() {
@@ -145,7 +144,7 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Converssion de Txt vers Rtf. 
+	 * Converssion de Txt vers Rtf.
 	 */
 	@Test
 	public void testConvertTxt2Rtf() {
@@ -156,7 +155,7 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Converssion de Txt vers Pdf. 
+	 * Converssion de Txt vers Pdf.
 	 */
 	@Test
 	public void testConvertTxt2Pdf() {
@@ -167,7 +166,7 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Converssion de Txt vers Pdf. 
+	 * Converssion de Txt vers Pdf.
 	 */
 	@Test
 	public void testConvertTxt2Txt() {

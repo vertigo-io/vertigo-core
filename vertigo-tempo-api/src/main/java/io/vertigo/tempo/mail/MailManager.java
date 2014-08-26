@@ -27,7 +27,6 @@ import java.util.Date;
  * Gestionnaire centralisé des mails.
  *
  * @author npiedeloup
- * @version $Id: MailManager.java,v 1.3 2014/01/20 18:56:41 pchretien Exp $
  */
 public interface MailManager extends Manager {
 	/**
@@ -37,9 +36,9 @@ public interface MailManager extends Manager {
 	void sendMail(Mail mail);
 
 	/**
-	* Envoyer un mail de façon asynchrone.
-	* @param mail Mail à envoyer
-	* param HandlerResultat de l'envoi du mail
-	*/
+	 * Envoyer un mail de façon asynchrone.
+	 * @param mail Mail à envoyer
+	 * param HandlerResultat de l'envoi du mail
+	 */
 	void sendMailASync(Mail mail, final WorkResultHandler<Date> workResultHandler);
 }

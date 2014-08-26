@@ -56,7 +56,6 @@ import org.apache.poi.ss.usermodel.PrintSetup;
  * Export avec POI.
  *
  * @author pchretien, npiedeloup
- * @version $Id: ExcelExporter.java,v 1.6 2014/06/26 12:31:45 npiedeloup Exp $
  */
 final class XLSExporter {
 	private static final int MAX_COLUMN_WIDTH = 50;

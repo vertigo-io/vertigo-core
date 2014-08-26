@@ -46,7 +46,6 @@ import com.lowagie.text.Table;
 
 /**
  * @author pchretien, npiedeloup
- * @version $Id: AbstractExporterIText.java,v 1.5 2014/02/27 10:24:16 pchretien Exp $
  */
 public abstract class AbstractExporterIText {
 	private static final String CREATOR = "System";

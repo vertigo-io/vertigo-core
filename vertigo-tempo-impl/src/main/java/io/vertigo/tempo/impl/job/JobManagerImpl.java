@@ -40,7 +40,6 @@ import org.apache.log4j.Logger;
  * Les jobs sont instanciés, y sont injectés les composants métiers et les managers.
  * 
  * @author evernat, pchretien
- * @version $Id: JobManagerImpl.java,v 1.5 2014/01/28 18:49:55 pchretien Exp $
  */
 public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 	/** Type de process gérant les statistiques des jobs. */

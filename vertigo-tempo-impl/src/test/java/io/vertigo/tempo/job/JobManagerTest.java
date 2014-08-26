@@ -34,7 +34,6 @@ import org.junit.Test;
  * Test de l'implémentation standard.
  *
  * @author pchretien
- * @version $Id: JobManagerTest.java,v 1.3 2013/10/23 12:07:07 pchretien Exp $
  */
 public class JobManagerTest extends AbstractTestCaseJU4 {
 	@Inject

@@ -35,7 +35,6 @@ import javax.inject.Inject;
  * Plugin d'export CSV.
  *
  * @author pchretien, npiedeloup
- * @version $Id: CSVExporterPlugin.java,v 1.6 2014/01/28 18:49:44 pchretien Exp $
  */
 public final class CSVExporterPlugin implements ExporterPlugin {
 	private final CodecManager codecManager;
@@ -43,7 +42,7 @@ public final class CSVExporterPlugin implements ExporterPlugin {
 
 	/**
 	 * Constructeur.
-	 * @param codecManager Manager des mécanismes de codage/décodage. 
+	 * @param codecManager Manager des mécanismes de codage/décodage.
 	 */
 	@Inject
 	public CSVExporterPlugin(final PersistenceManager persistenceManager, final CodecManager codecManager) {

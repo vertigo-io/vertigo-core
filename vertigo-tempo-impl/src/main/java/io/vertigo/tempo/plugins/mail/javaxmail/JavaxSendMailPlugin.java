@@ -58,7 +58,6 @@ import javax.mail.internet.MimeUtility;
 /**
  * Plugin de gestion des mails, pour l'implémentation du jdk.
  * @author npiedeloup
- * @version $Id: JavaxSendMailPlugin.java,v 1.10 2014/01/28 18:49:55 pchretien Exp $
  */
 public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 	private static final String CHARSET_USED = "ISO-8859-1";
@@ -137,7 +136,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 			}
 
 			Transport.send(message);
-			mailSent++; //on ne synchronize pas pour des stats peu importantes		
+			mailSent++; //on ne synchronize pas pour des stats peu importantes
 		} catch (final MessagingException e) {
 			throw createMailException(Resources.KASPER_MAIL_SERVER_TIMEOUT, e);
 		} catch (final UnsupportedEncodingException e) {

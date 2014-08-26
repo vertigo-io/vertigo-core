@@ -30,16 +30,15 @@ import javax.inject.Inject;
 
 /**
  * @author pchretien
- * @version $Id: SecurityDynamicRegistryPlugin.java,v 1.4 2014/02/03 17:29:01 pchretien Exp $
  */
 public final class SecurityLoaderPlugin implements LoaderPlugin {
 	private final ResourceManager resourceManager;
 
-	/**	
+	/**
 	 * Constructeur
 	 */
 	@Inject
-	public SecurityLoaderPlugin(ResourceManager resourceManager) {
+	public SecurityLoaderPlugin(final ResourceManager resourceManager) {
 		Assertion.checkNotNull(resourceManager);
 		//---------------------------------------------------------------------
 		//super(SecurityGrammar.INSTANCE);
@@ -50,7 +49,7 @@ public final class SecurityLoaderPlugin implements LoaderPlugin {
 	}
 
 	/** {@inheritDoc} */
-	public void load(String resourcePath, DynamicDefinitionRepository dynamicModelRepository) {
+	public void load(final String resourcePath, final DynamicDefinitionRepository dynamicModelRepository) {
 		final XmlSecurityLoader xmlSecurityLoader = new XmlSecurityLoader(resourceManager, resourcePath);
 		xmlSecurityLoader.load();
 	}

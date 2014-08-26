@@ -39,7 +39,6 @@ import javax.inject.Named;
  * Exécution synchrone et distante des Works avec un transfert par WS REST.
  * 
  * @author npiedeloup, pchretien
- * @version $Id: RestDistributedWorkerPlugin.java,v 1.13 2014/02/27 10:31:19 pchretien Exp $
  */
 public final class RestDistributedWorkerPlugin implements DistributedWorkerPlugin, Activeable {
 	//	private final long timeoutSeconds;
@@ -174,7 +173,7 @@ public final class RestDistributedWorkerPlugin implements DistributedWorkerPlugi
 	//		 */
 	//		public WR getResultOrThrowError() {
 	//			if (error != null) {
-	//				//si il ya une erreur 
+	//				//si il ya une erreur
 	//				if (error instanceof Error) {
 	//					throw Error.class.cast(error);
 	//				}

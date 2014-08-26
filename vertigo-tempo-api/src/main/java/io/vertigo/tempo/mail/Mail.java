@@ -27,18 +27,17 @@ import java.util.List;
 /**
  * Message à envoyer par mail.
  * Les adresses email respectent le format RFC822.
- * Eles sont de la forme 
- *  - "user@host.domain" 
- *  ou 
+ * Eles sont de la forme
+ *  - "user@host.domain"
+ *  ou
  *  - "Personal Name <user@host.domain>"
  * @author npiedeloup
- * @version $Id: Mail.java,v 1.6 2014/01/28 18:49:55 pchretien Exp $
  */
 public final class Mail {
 	private final String subject;
 	private final String fromAddress;
 	/**
-	 * on autorise le null, car le protocol SMTP assure déjà la stratégie de choix d'email de retour. 
+	 * on autorise le null, car le protocol SMTP assure déjà la stratégie de choix d'email de retour.
 	 */
 	private final String replyTo;
 	private final String textContent;

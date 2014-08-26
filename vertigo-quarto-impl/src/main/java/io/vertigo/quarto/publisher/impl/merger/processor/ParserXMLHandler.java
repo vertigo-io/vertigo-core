@@ -21,7 +21,6 @@ package io.vertigo.quarto.publisher.impl.merger.processor;
 /**
  * Handler du parsing XML.
  * @author npiedeloup
- * @version $Id: ParserXMLHandler.java,v 1.1 2013/07/11 13:24:48 npiedeloup Exp $
  */
 public interface ParserXMLHandler {
 	/**

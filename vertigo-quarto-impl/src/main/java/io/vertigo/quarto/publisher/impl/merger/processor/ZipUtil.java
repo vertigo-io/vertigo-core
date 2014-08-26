@@ -32,7 +32,6 @@ import java.util.zip.ZipOutputStream;
  * Classe d'utilitaires pour les fichiers de type Zip.
  *
  * @author pforhan
- * @version $Id: ZipUtil.java,v 1.4 2014/02/27 10:32:26 pchretien Exp $
  */
 public final class ZipUtil {
 

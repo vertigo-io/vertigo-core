@@ -34,7 +34,6 @@ import com.lowagie.text.DocumentException;
  * Plugin d'export PDF.
  *
  * @author pchretien, npiedeloup
- * @version $Id: RTFExporterPlugin.java,v 1.2 2014/01/28 18:49:44 pchretien Exp $
  */
 public final class RTFExporterPlugin implements ExporterPlugin {
 	private final ExportHelper exportHelper;

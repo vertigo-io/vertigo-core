@@ -31,12 +31,11 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * NodePlugin 
+ * NodePlugin
  * Ce plugin permet d'exécuter des travaux en mode distribué.
  * REDIS est utilisé comme plateforme d'échanges.
  * 
  * @author pchretien
- * $Id: RedisNodePlugin.java,v 1.9 2014/06/26 12:30:08 npiedeloup Exp $
  */
 public final class RedisNodePlugin implements NodePlugin, Activeable {
 	private final RedisDB redisDB;

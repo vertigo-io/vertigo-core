@@ -27,7 +27,6 @@ import java.util.List;
  * Interface de consultation des ExportDtParameters.
  *
  * @author npiedeloup
- * @version $Id: ExportDtParametersReadable.java,v 1.2 2014/01/20 17:49:10 pchretien Exp $
  */
 public interface ExportDtParametersReadable {
 

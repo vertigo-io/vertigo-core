@@ -24,7 +24,6 @@ import io.vertigo.quarto.publisher.impl.merger.script.ScriptTagContent;
 
 /**
  * @author pchretien, npiedeloup
- * @version $Id: TagEncodedField.java,v 1.1 2013/07/11 13:24:48 npiedeloup Exp $
  */
 //public car instancié dynamiquement
 public final class TagEncodedField extends AbstractKScriptTag implements ScriptTag {

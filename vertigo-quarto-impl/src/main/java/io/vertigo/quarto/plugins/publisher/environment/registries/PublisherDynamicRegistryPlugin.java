@@ -36,7 +36,6 @@ import java.util.Set;
 /**
  * DynamicRegistry de PublisherManager.
  * @author npiedeloup
- * @version $Id: PublisherDynamicRegistryPlugin.java,v 1.7 2014/02/27 10:32:26 pchretien Exp $
  */
 public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin<PublisherGrammar> {
 	private final Map<String, PublisherNodeDefinitionBuilder> publisherDefinitionMap = new HashMap<>();

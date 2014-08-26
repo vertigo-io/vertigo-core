@@ -25,7 +25,6 @@ import io.vertigo.kernel.util.StringUtil;
  * Implémentation de l'encodage des données dans un fichier ODT.
  * 
  * @author npiedeloup
- * @version $Id: DOCXValueEncoder.java,v 1.4 2014/01/24 17:59:57 pchretien Exp $
  */
 public final class DOCXValueEncoder implements Encoder<String, String> {
 

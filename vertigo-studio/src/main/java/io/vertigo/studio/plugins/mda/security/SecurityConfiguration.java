@@ -26,7 +26,6 @@ import java.util.Properties;
  * Security Generator configuration.
  * 
  * @author dchallas
- * @version $Id: SecurityConfiguration.java,v 1.2 2014/03/07 09:31:19 pchretien Exp $
  */
 final class SecurityConfiguration extends AbstractConfiguration {
 

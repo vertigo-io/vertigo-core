@@ -43,26 +43,25 @@ import org.xml.sax.SAXException;
  * La définition du fichier XML est décrite dans le fichier authorisation-config_1_0.dtd
  * Un exemple de fichier:
  * 
- * <authorisation-config>	
+ * <authorisation-config>
  *	
- *	<!--  Ressources -->	
+ *	<!--  Ressources -->
  *	<resource id="all_products" filter="/products/.*" description="Liste des produits"/>
  *	
- *	<!--  Permissions -->	
- *	<permission id="read_all_products" operation="read" resource="all_products" description="Lire tous les produits"/>		
- *	<permission id="write_all_products" operation="write" resource="all_products" description="Créer/Modifier un produit"/>				
+ *	<!--  Permissions -->
+ *	<permission id="read_all_products" operation="read" resource="all_products" description="Lire tous les produits"/>
+ *	<permission id="write_all_products" operation="write" resource="all_products" description="Créer/Modifier un produit"/>
  *	
  *	<!-- Roles -->
- *	<role name="reader" description="Lecteur de l'application">	  	   
+ *	<role name="reader" description="Lecteur de l'application">
  * 		<permission ref="read_all_products"/>
  *  	</role>
- *  	<role name="writer" description="Ecrivain de l'application">	  	   
+ *  	<role name="writer" description="Ecrivain de l'application">
  *  		<permission ref="read_all_products"/>
  *  		<permission ref="write_all_products"/>
  *  	</role>
  * </authorisation-config>
  * @author prahmoune
- * @version $Id: XmlSecurityLoader.java,v 1.5 2014/02/27 10:34:47 pchretien Exp $
  */
 final class XmlSecurityLoader {
 	private static final String OPERATION_KEY = "operation";

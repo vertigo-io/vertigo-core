@@ -34,7 +34,6 @@ import java.util.Stack;
  * de rectifier (avec plus ou moins de scc�s) un XML corrompu.
  *
  * @author npiedeloup
- * @version $Id: GrammarXMLBalancerProcessor.java,v 1.3 2013/10/22 12:06:52 pchretien Exp $
  */
 public final class GrammarXMLBalancerProcessor implements MergerProcessor {
 

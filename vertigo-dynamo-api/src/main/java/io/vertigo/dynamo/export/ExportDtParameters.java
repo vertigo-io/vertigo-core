@@ -27,7 +27,6 @@ import io.vertigo.kernel.lang.MessageText;
  * La particularité est que l'on fournit la liste des colonnes du DT a exporter,
  * avec éventuellement des paramètres d'affichage particulier pour une colonne.
  * @author npiedeloup
- * @version $Id: ExportDtParameters.java,v 1.3 2014/01/20 17:49:10 pchretien Exp $
  */
 public interface ExportDtParameters {
 	/**

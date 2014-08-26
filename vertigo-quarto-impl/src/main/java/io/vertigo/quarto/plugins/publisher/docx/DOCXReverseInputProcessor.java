@@ -38,7 +38,6 @@ import org.w3c.dom.NodeList;
  * Mise en forme des tags et suppression des champs inutiles dans le document DOCX.
  * 
  * @author adufranne
- * @version $Id: DOCXReverseInputProcessor.java,v 1.4 2014/02/27 10:39:01 pchretien Exp $
  */
 final class DOCXReverseInputProcessor implements MergerProcessor {
 

@@ -46,7 +46,6 @@ import com.sun.jersey.api.client.WebResource;
  * Pour la partie appel webService voir http://ghads.wordpress.com/2008/09/24/calling-a-rest-webservice-from-java-without-libs/
  *
  * @author npiedeloup
- * @version $Id: WorkQueueRestClient.java,v 1.12 2014/02/27 10:31:19 pchretien Exp $
  */
 final class WorkQueueRestClient {
 	private static final Logger LOG = Logger.getLogger(WorkQueueRestClient.class);
@@ -93,13 +92,13 @@ final class WorkQueueRestClient {
 				//				return new WorkItem(uuid, work, new WorkEngineProvider(workType), new CallbackWorkResultHandler(uuid, this));
 			}
 			LOG.info("pollWork(" + workType + ") : no Work");
-			//pas de travaux : inutil d'attendre le poll attend déjà 1s coté serveur				
+			//pas de travaux : inutil d'attendre le poll attend déjà 1s coté serveur
 		} catch (final ClientHandlerException c) {
 			LOG.warn("[pollWork] Erreur de connexion au serveur " + serverUrl + "/pollWork/" + workType + " (" + c.getMessage() + ")");
 			//En cas d'erreur on attend quelques secondes, pour attendre que le serveur revienne
 			try {
 				lockByWorkType.putIfAbsent(serverUrl, new Object());
-				//En cas d'absence du serveur, 
+				//En cas d'absence du serveur,
 				//ce synchronized permet d'étaler les appels au serveur de chaque worker : le premier attendra 2s, le second 2+2s, le troisième : 4+2s, etc..
 				//dés le retour du serveur, on récupère un worker toute les 2s
 				synchronized (lockByWorkType.get(serverUrl)) {

@@ -25,12 +25,11 @@ import io.vertigo.kernel.component.Manager;
 /**
  * Gestionnaire centralisé des conversions de documents.
  * 
- * Exemple : 
- *  - doc-->pdf 
+ * Exemple :
+ *  - doc-->pdf
  *  - odt-->doc
  * 
  * @author pchretien, npiedeloup
- * @version $Id: ConverterManager.java,v 1.4 2014/01/28 18:49:24 pchretien Exp $
  */
 public interface ConverterManager extends Manager {
 	/**

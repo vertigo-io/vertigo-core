@@ -38,7 +38,6 @@ import com.google.gson.Gson;
 /**
  * WorkQueue distribuée - partie serveur en REST.
  * @author npiedeloup
- * @version $Id: WorkQueueRestServer.java,v 1.12 2014/02/27 10:31:19 pchretien Exp $
  */
 final class WorkQueueRestServer {
 	private static final Logger LOG = Logger.getLogger(WorkQueueRestServer.class);
@@ -83,7 +82,7 @@ final class WorkQueueRestServer {
 	}
 
 	/**
-	 * Signalement de vie d'un node, avec le type de work qu'il annonce. 
+	 * Signalement de vie d'un node, avec le type de work qu'il annonce.
 	 * Le type de work annoncé, vient compléter les précédents.
 	 * @param nodeUID UID du node
 	 * @param nodeWorkType Type de work traité
@@ -194,7 +193,7 @@ final class WorkQueueRestServer {
 	//		@Override
 	//		public void run() {
 	//			final Set<String> deadNodes = new HashSet<>();
-	//			//Comme défini dans le contrat de la ConcurrentMap : l'iterator est weakly consistent : et ne lance pas de ConcurrentModificationException  
+	//			//Comme défini dans le contrat de la ConcurrentMap : l'iterator est weakly consistent : et ne lance pas de ConcurrentModificationException
 	//			for (final NodeState nodeState : knownNodes.values()) {
 	//				//sans signe de vie depuis deadNodeTimeout, on considère le noeud comme mort
 	//				if (System.currentTimeMillis() - nodeState.getLastSeenTime() > deadNodeTimeout) {

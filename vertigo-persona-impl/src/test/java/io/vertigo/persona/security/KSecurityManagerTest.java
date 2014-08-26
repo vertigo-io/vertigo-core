@@ -37,7 +37,6 @@ import org.junit.Test;
 
 /**
  * @author pchretien
- * $Id: KSecurityManagerTest.java,v 1.6 2014/02/27 10:25:32 pchretien Exp $
  */
 public final class KSecurityManagerTest extends AbstractTestCaseJU4 {
 	@Inject
@@ -260,7 +259,7 @@ public final class KSecurityManagerTest extends AbstractTestCaseJU4 {
 	public static final class Famille {
 		private long id;
 
-		public void setFamId(long id) {
+		public void setFamId(final long id) {
 			this.id = id;
 		}
 

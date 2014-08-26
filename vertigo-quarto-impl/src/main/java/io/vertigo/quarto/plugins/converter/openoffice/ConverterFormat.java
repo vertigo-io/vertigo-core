@@ -23,7 +23,6 @@ import io.vertigo.kernel.lang.Assertion;
 /**
  * Formats de sortie supportés par Open Office.
  * @author pchretien, npiedeloup
- * @version $Id: ConverterFormat.java,v 1.4 2013/10/22 12:08:56 pchretien Exp $
  */
 enum ConverterFormat {
 

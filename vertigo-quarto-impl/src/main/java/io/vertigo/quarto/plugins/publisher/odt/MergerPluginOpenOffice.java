@@ -43,7 +43,6 @@ import javax.inject.Inject;
  * Gestionnaire des fusions de documents OpenOffice.
  * 
  * @author npiedeloup
- * @version $Id: MergerPluginOpenOffice.java,v 1.7 2014/02/27 10:39:42 pchretien Exp $
  */
 public final class MergerPluginOpenOffice implements MergerPlugin {
 	private final List<MergerProcessor> mergerProcessors;
@@ -100,7 +99,7 @@ public final class MergerPluginOpenOffice implements MergerPlugin {
 	 * Effectue le traitement.
 	 * 
 	 * @param modelFile Fichier model, ce fichier n'est pas modifié.
-	 * @param publisherData Parametres des données à fusionner 
+	 * @param publisherData Parametres des données à fusionner
 	 * @return Fichier d'entrée modifié par le sous-processor
 	 */
 	private File doExecute(final File modelFile, final PublisherData publisherData) throws IOException {

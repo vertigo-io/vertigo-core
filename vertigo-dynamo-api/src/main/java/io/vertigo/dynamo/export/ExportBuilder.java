@@ -28,7 +28,6 @@ import java.util.List;
 /**
  * Builder des données à exporter.
  * @author pchretien, npiedeloup
- * @version $Id: ExportBuilder.java,v 1.6 2014/02/27 10:23:30 pchretien Exp $
  */
 public final class ExportBuilder implements Builder<Export> {
 	private final List<ExportDtParametersReadable> exportDtParameters = new ArrayList<>();

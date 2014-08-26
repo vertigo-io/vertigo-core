@@ -37,7 +37,6 @@ import java.util.List;
 
 /**
  * Classe de récupération des données pour les editions.
- * @version $Id: PublisherDataUtil.java,v 1.8 2014/06/26 12:32:39 npiedeloup Exp $
  *
  * @author oboitel, npiedeloup
  */
@@ -101,42 +100,42 @@ public final class PublisherDataUtil {
 			final Object value = dtField.getDataAccessor().getValue(dto);
 			nbMappedField++;
 			switch (publisherField.getFieldType()) {
-				case Boolean:
-					Assertion.checkArgument(value instanceof Boolean, "Le champ {0} du DT {1} doit être un Boolean (non null)", fieldName, dtDefinition.getName());
-					publisherDataNode.setBoolean(fieldName, (Boolean) value);
-					break;
-				case String:
-					final String renderedField = value != null ? renderStringField(dto, dtField) : "";//un champ null apparait comme vide
-					publisherDataNode.setString(fieldName, renderedField);
-					break;
-				case List:
-					if (value != null) { //on autorise les listes null et on la traite comme vide 
-						//car la composition d'objet métier n'est pas obligatoire 
-						//et le champ sera peut être peuplé plus tard
-						final DtList<?> dtc = (DtList<?>) value;
-						final List<PublisherNode> publisherNodes = new ArrayList<>();
-						for (final DtObject element : dtc) {
-							final PublisherNode publisherNode = publisherDataNode.createNode(fieldName);
-							populateData(element, publisherNode);
-							publisherNodes.add(publisherNode);
-						}
-						publisherDataNode.setNodes(fieldName, publisherNodes);
+			case Boolean:
+				Assertion.checkArgument(value instanceof Boolean, "Le champ {0} du DT {1} doit être un Boolean (non null)", fieldName, dtDefinition.getName());
+				publisherDataNode.setBoolean(fieldName, (Boolean) value);
+				break;
+			case String:
+				final String renderedField = value != null ? renderStringField(dto, dtField) : "";//un champ null apparait comme vide
+				publisherDataNode.setString(fieldName, renderedField);
+				break;
+			case List:
+				if (value != null) { //on autorise les listes null et on la traite comme vide
+					//car la composition d'objet métier n'est pas obligatoire
+					//et le champ sera peut être peuplé plus tard
+					final DtList<?> dtc = (DtList<?>) value;
+					final List<PublisherNode> publisherNodes = new ArrayList<>();
+					for (final DtObject element : dtc) {
+						final PublisherNode publisherNode = publisherDataNode.createNode(fieldName);
+						populateData(element, publisherNode);
+						publisherNodes.add(publisherNode);
 					}
-					break;
-				case Node:
-					if (value != null) { //on autorise les objet null, 
-						//car la composition d'objet métier n'est pas obligatoire
-						//et le champ sera peut être peuplé plus tard
-						final DtObject element = (DtObject) value;
-						final PublisherNode elementPublisherDataNode = publisherDataNode.createNode(fieldName);
-						populateData(element, elementPublisherDataNode);
-						publisherDataNode.setNode(fieldName, elementPublisherDataNode);
-					}
-					break;
-				case Image:
-					throw new RuntimeException("Type unsupported : " + publisherField.getFieldType());
-				default:
-					throw new IllegalArgumentException("Type unknown : " + publisherField.getFieldType());
+					publisherDataNode.setNodes(fieldName, publisherNodes);
+				}
+				break;
+			case Node:
+				if (value != null) { //on autorise les objet null,
+					//car la composition d'objet métier n'est pas obligatoire
+					//et le champ sera peut être peuplé plus tard
+					final DtObject element = (DtObject) value;
+					final PublisherNode elementPublisherDataNode = publisherDataNode.createNode(fieldName);
+					populateData(element, elementPublisherDataNode);
+					publisherDataNode.setNode(fieldName, elementPublisherDataNode);
+				}
+				break;
+			case Image:
+				throw new RuntimeException("Type unsupported : " + publisherField.getFieldType());
+			default:
+				throw new IllegalArgumentException("Type unknown : " + publisherField.getFieldType());
 			}
 			//} else {
 			//	Assertion.precondition(!(value instanceof Boolean), "Le champ {0} du DT {1} est un Boolean, et il ne doit pas être null", fieldName, dtDefinition.toURN());

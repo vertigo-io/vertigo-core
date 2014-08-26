@@ -27,7 +27,6 @@ import java.io.IOException;
  * Ce processor à une entrée et une sortie de meme type,
  * la sortie est issus d'un traitement prenant une entrée et les parametres du merger.
  * @author npiedeloup
- * @version $Id: MergerProcessor.java,v 1.1 2013/07/11 13:24:48 npiedeloup Exp $
  */
 public interface MergerProcessor {
 	/**

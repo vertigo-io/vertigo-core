@@ -28,7 +28,6 @@ import java.util.Set;
  * Gestion centralisee des droits d'acces.
  *
  * @author npiedeloup
- * @version $Id: KSecurityManager.java,v 1.3 2013/10/23 11:53:43 pchretien Exp $
  */
 public interface KSecurityManager extends Manager {
 	//-------------------------------------------------------------------------
@@ -54,8 +53,8 @@ public interface KSecurityManager extends Manager {
 	<U extends UserSession> Option<U> getCurrentUserSession();
 
 	/**
-	 * Creation de nouveaux utilisateurs. 
-	 * @param <U> Type de l'utilisateur 
+	 * Creation de nouveaux utilisateurs.
+	 * @param <U> Type de l'utilisateur
 	 * @return Nouvel utilisateur
 	 */
 	<U extends UserSession> U createUserSession();

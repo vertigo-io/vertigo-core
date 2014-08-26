@@ -25,11 +25,10 @@ import io.vertigo.kernel.stereotype.Prefix;
 import java.util.List;
 
 /**
- * Un rôle est la réunion d'un ensemble de permissions. 
+ * Un rôle est la réunion d'un ensemble de permissions.
  * Un utilisateur peut avoir  plusieurs rôles.
  * 
  * @author prahmoune
- * @version $Id: Role.java,v 1.3 2013/10/22 12:35:39 pchretien Exp $ 
  */
 @Prefix("R_")
 public final class Role implements Definition {

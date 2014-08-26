@@ -32,7 +32,6 @@ import java.util.Map;
 /**
  * Classe utilitaire pour export.
  * @author pchretien, evernat
- * @version $Id: ExportHelper.java,v 1.6 2014/02/27 10:23:30 pchretien Exp $
  */
 public final class ExportHelper {
 	private final PersistenceManager persistenceManager;

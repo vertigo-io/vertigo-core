@@ -26,11 +26,10 @@ import io.vertigo.dynamo.impl.environment.kernel.meta.GrammarProvider;
  * Grammaire de publisher.
  * 
  * @author npiedeloup
- * @version $Id: PublisherGrammar.java,v 1.3 2014/02/03 17:29:01 pchretien Exp $
  */
 final class PublisherGrammar extends GrammarProvider {
 	/**
-	 * Clé des FIELD_DEFINITION de type PK utilisés dans les DT_DEFINITION. 
+	 * Clé des FIELD_DEFINITION de type PK utilisés dans les DT_DEFINITION.
 	 */
 	static final String STRING_FIELD = "stringField";
 	static final String BOOLEAN_FIELD = "booleanField";
@@ -61,7 +60,7 @@ final class PublisherGrammar extends GrammarProvider {
 		//--
 		fieldDefinition = new EntityBuilder(NODE_FIELD_META_DEFINITION).build();
 		//--
-		//On a une relation circulaire 
+		//On a une relation circulaire
 		//On conserve donc une référence sur le builder
 		final EntityBuilder builder = new EntityBuilder(NODE_DEFINITION_META_DEFINITION);
 		dataFieldDefinition = createDataFieldDefinitionEntity(builder.build());
@@ -77,8 +76,8 @@ final class PublisherGrammar extends GrammarProvider {
 
 	private static Entity createDataFieldDefinitionEntity(final Entity nodeDefinition) {
 		return new EntityBuilder(NODE_DATA_FIELD_META_DEFINITION)//
-				.withAttribute("type", nodeDefinition, false, true)//
-				.build();
+		.withAttribute("type", nodeDefinition, false, true)//
+		.build();
 	}
 
 	private static Entity createNodeDefinitionEntity(final EntityBuilder builder, final Entity dataFieldDefinition, final Entity fieldDefinition) {
@@ -93,8 +92,8 @@ final class PublisherGrammar extends GrammarProvider {
 
 	private static Entity createPublisherDefinitionEntity(final Entity nodeDefinition) {
 		return new EntityBuilder(PUB_DEFINITION_META_DEFINITION)//
-				.withAttribute("root", nodeDefinition, false, true)//
-				.build();
+		.withAttribute("root", nodeDefinition, false, true)//
+		.build();
 	}
 
 	/**

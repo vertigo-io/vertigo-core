@@ -29,7 +29,6 @@ import io.vertigo.kernel.component.Manager;
  * Le choix du type de report est fait par l'appelant qui fournit les paramètres adaptés à son besoin.
  *
  * @author pchretien, npiedeloup
- * @version $Id: ExportManager.java,v 1.5 2014/01/28 18:49:44 pchretien Exp $
  */
 public interface ExportManager extends Manager {
 	/**

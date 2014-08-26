@@ -30,7 +30,6 @@ import com.sun.star.io.XSeekable;
  * InputStream de lecture de fichier pour l'envoyer vers le serveur OpenOffice.
  * 
  * @author tchassagnette
- * @version $Id: OOoFileInputStream.java,v 1.2 2014/01/13 13:42:44 npiedeloup Exp $
  */
 public final class OOoFileInputStream implements XInputStream, XSeekable {
 	private final RandomAccessFile randomAccessFile;

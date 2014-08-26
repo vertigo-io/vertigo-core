@@ -23,7 +23,6 @@ package io.vertigo.quarto.publisher.impl.merger.processor;
  * Contient le tag entier, son nom, sa position dans le XMl d'ou il est tiré,
  * si c'est une balise ouvrante et si il contenait un body.
  * @author npiedeloup
- * @version $Id: TagXML.java,v 1.1 2013/07/11 13:24:48 npiedeloup Exp $
  */
 public final class TagXML {
 	private final String fullTag;

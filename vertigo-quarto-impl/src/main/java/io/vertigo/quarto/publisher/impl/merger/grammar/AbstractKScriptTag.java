@@ -29,7 +29,6 @@ import java.util.regex.Pattern;
  * Classe abstraite représentant un KScriptTag.
  * 
  * @author pchretien, npiedeloup
- * @version $Id: AbstractKScriptTag.java,v 1.4 2013/10/22 10:49:59 pchretien Exp $
  */
 abstract class AbstractKScriptTag {
 	/**
@@ -45,9 +44,9 @@ abstract class AbstractKScriptTag {
 	 */
 	protected static final String FIELD_PATH_CALL = "^([0-9a-zA-Z_]+(?:\\.[0-9a-zA-Z_]+)*)";
 	/**
-	* FIELD_PATH_CALL_CONDITIONAL.
-	* ADU - 20120529 : modification du pattern pour acceptation espaces et accents.
-	*/
+	 * FIELD_PATH_CALL_CONDITIONAL.
+	 * ADU - 20120529 : modification du pattern pour acceptation espaces et accents.
+	 */
 	protected static final String FIELD_PATH_CALL_EQUALS_CONDITION = "^([0-9a-zA-Z_]+(?:\\.[0-9a-zA-Z_]+)*)=(\\&quot;|\")(.*)(\\&quot;|\")";
 
 	/**

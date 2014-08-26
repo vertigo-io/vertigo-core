@@ -30,7 +30,6 @@ import java.net.URL;
  * Merger Plugin pour la fusion de documents.
  * 
  * @author adufranne
- * @version $Id: MergerPlugin.java,v 1.2 2013/10/22 12:07:11 pchretien Exp $
  */
 public interface MergerPlugin extends Plugin {
 

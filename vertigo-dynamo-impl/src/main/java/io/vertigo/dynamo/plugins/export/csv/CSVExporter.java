@@ -41,7 +41,6 @@ import java.util.Map;
  * Export avec ETAT.
  * 
  * @author pchretien, npiedeloup
- * @version $Id: CSVExporter.java,v 1.8 2014/06/26 12:31:45 npiedeloup Exp $
  */
 final class CSVExporter {
 	/**

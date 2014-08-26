@@ -34,13 +34,12 @@ import javax.inject.Inject;
  * Implémentation standard de la gestion centralisée des droits d'accès.
  *
  * @author npiedeloup
- * @version $Id: MailManagerImpl.java,v 1.6 2014/07/04 13:11:22 pchretien Exp $
  */
 public final class MailManagerImpl implements MailManager {
 	private final WorkManager workManager;
 	private final SendMailPlugin sendMailPlugin;
 
-	/** 
+	/**
 	 * Constructeur.
 	 * @param localeManager Manager des messages localisés
 	 * @param sendMailPlugin Plugin d'envoi de mail

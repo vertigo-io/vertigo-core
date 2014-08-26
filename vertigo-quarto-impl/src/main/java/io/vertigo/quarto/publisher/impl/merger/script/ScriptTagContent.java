@@ -24,7 +24,6 @@ import io.vertigo.kernel.lang.Assertion;
  * Stocke le contenu d'un tag de la grammaire ODT
  * en distiguant son type et un attribut.
  * @author oboitel
- * @version $Id: ScriptTagContent.java,v 1.5 2013/10/22 10:49:47 pchretien Exp $
  */
 public final class ScriptTagContent {
 	private final ScriptTagDefinition definition;

@@ -34,7 +34,6 @@ import java.util.List;
  * Processor String2String qui 'evalue la chaine d'entrée comme un script java.
  * Les balises reconnues sont <% %> et <%= %>
  * @author npiedeloup
- * @version $Id: MergerScriptEvaluatorProcessor.java,v 1.6 2014/02/27 10:32:26 pchretien Exp $
  */
 public final class MergerScriptEvaluatorProcessor implements MergerProcessor {
 	public static final String DATA = "data";

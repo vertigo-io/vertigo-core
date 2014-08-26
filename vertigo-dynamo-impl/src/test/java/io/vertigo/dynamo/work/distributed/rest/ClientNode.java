@@ -28,7 +28,6 @@ import java.util.List;
 
 /**
  * @author npiedeloup
- * $Id: ClientNode.java,v 1.5 2014/02/27 10:25:21 pchretien Exp $
  */
 final class ClientNode {
 	private Process nodeProcess;

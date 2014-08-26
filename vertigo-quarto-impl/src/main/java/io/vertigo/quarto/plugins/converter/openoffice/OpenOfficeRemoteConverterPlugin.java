@@ -40,7 +40,6 @@ import com.sun.star.uno.UnoRuntime;
 /**
  * Conversion des fichiers à partir de OpenOffice.
  * @author npiedeloup
- * @version $Id: OpenOfficeRemoteConverterPlugin.java,v 1.4 2014/01/28 18:49:24 pchretien Exp $
  */
 public final class OpenOfficeRemoteConverterPlugin extends AbstractOpenOfficeConverterPlugin {
 	private static final Logger LOGGER = Logger.getLogger(OpenOfficeRemoteConverterPlugin.class);

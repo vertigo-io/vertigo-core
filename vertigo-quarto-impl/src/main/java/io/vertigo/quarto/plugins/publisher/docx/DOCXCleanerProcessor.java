@@ -41,7 +41,6 @@ import org.w3c.dom.NodeList;
  * - 2. Suppression des balises de script
  * 
  * @author adufranne
- * @version $Id: DOCXCleanerProcessor.java,v 1.4 2014/02/27 10:39:01 pchretien Exp $
  */
 final class DOCXCleanerProcessor implements MergerProcessor {
 
@@ -141,8 +140,8 @@ final class DOCXCleanerProcessor implements MergerProcessor {
 			rowClone = node.cloneNode(true);
 			rowClone.getLastChild().setTextContent(line);
 			if (DOCXUtil.STYLE_NODE.equals(node.getParentNode().getFirstChild().getNodeName())) { // présence
-																									// d'un
-																									// noeud
+				// d'un
+				// noeud
 				// de
 				// style
 				styleNodeClone = node.getParentNode().getFirstChild().cloneNode(true);

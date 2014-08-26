@@ -30,7 +30,6 @@ import java.io.OutputStream;
  * Le plugin accepte toutes les exceptions afin de centraliser leur gestion en un seul endroit.
  *
  * @author pchretien, npiedeloup
- * @version $Id: ExporterPlugin.java,v 1.2 2013/10/22 12:08:28 pchretien Exp $
  */
 public interface ExporterPlugin extends Plugin {
 	/**

@@ -26,7 +26,6 @@ import java.util.List;
 /**
  * Données à exporter.
  * @author pchretien
- * @version $Id: Export.java,v 1.5 2014/02/27 10:23:30 pchretien Exp $
  */
 public final class Export {
 	/**

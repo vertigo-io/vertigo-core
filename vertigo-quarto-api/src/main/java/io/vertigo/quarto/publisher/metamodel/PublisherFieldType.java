@@ -28,12 +28,11 @@ import java.util.List;
  * Type des champs.
  *
  * @author npiedeloup, pchretien
- * @version $Id: PublisherFieldType.java,v 1.4 2014/01/28 18:53:45 pchretien Exp $
  */
 public enum PublisherFieldType {
 	/**
 	 * Champ de type chaine.
-	 * Primitif. 
+	 * Primitif.
 	 */
 	String,
 
@@ -59,35 +58,35 @@ public enum PublisherFieldType {
 	Image;
 
 	/**
-	 * Validation du type d'une valeur. 
-	 * @param value Valeur 
-	 * @return Si la valeur correspond au type du champ. 
+	 * Validation du type d'une valeur.
+	 * @param value Valeur
+	 * @return Si la valeur correspond au type du champ.
 	 */
 	public boolean checkValue(final Object value) {
 		Assertion.checkNotNull(value, "La valeur du champ est obligatoire.");
 		//---------------------------------------------------------------------
 		switch (this) {
-			case Boolean:
-				return value instanceof Boolean;
-			case Node:
-				return value instanceof PublisherNode;
-			case List:
-				if (!(value instanceof List<?>)) {
+		case Boolean:
+			return value instanceof Boolean;
+		case Node:
+			return value instanceof PublisherNode;
+		case List:
+			if (!(value instanceof List<?>)) {
+				return false;
+			}
+			//on teste le contenu de la liste, pas la liste elle même
+			for (final Object object : (List<?>) value) {
+				if (!PublisherFieldType.Node.checkValue(object)) {
 					return false;
 				}
-				//on teste le contenu de la liste, pas la liste elle même
-				for (final Object object : (List<?>) value) {
-					if (!PublisherFieldType.Node.checkValue(object)) {
-						return false;
-					}
-				}
-				return true;
-			case Image:
-				return value instanceof KFile;
-			case String:
-				return value instanceof String;
-			default:
-				throw new UnsupportedOperationException();
+			}
+			return true;
+		case Image:
+			return value instanceof KFile;
+		case String:
+			return value instanceof String;
+		default:
+			throw new UnsupportedOperationException();
 		}
 	}
 }

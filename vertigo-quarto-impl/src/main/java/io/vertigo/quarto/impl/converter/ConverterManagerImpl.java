@@ -31,15 +31,14 @@ import javax.inject.Inject;
 /**
  * Implémentation standard du manager des conversions de documents.
  * 
- * Conversions acceptés entre formats : 
- *  - ODT 
- *  - DOC 
- *  - RTF 
- *  - CSV 
- *  - PDF 
+ * Conversions acceptés entre formats :
+ *  - ODT
+ *  - DOC
+ *  - RTF
+ *  - CSV
+ *  - PDF
  * 
  * @author pchretien, npiedeloup
- * @version $Id: ConverterManagerImpl.java,v 1.5 2014/01/28 18:49:24 pchretien Exp $
  */
 public final class ConverterManagerImpl implements ConverterManager {
 	private final WorkManager workManager;

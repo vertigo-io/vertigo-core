@@ -22,7 +22,6 @@ package io.vertigo.quarto.publisher;
  * Formats de sortie supportés.
  * 
  * @author pchretien, npiedeloup
- * @version $Id: PublisherFormat.java,v 1.1 2013/07/11 13:24:48 npiedeloup Exp $
  */
 public enum PublisherFormat {
 	/** OpenOffice Text. */
@@ -37,12 +36,12 @@ public enum PublisherFormat {
 	 */
 	public String getMimeType() {
 		switch (this) {
-			case ODT:
-				return "application/vnd.oasis.opendocument.text";
-			case DOCX:
-				return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-			default:
-				throw new IllegalArgumentException("Format " + this + "non reconnu");
+		case ODT:
+			return "application/vnd.oasis.opendocument.text";
+		case DOCX:
+			return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+		default:
+			throw new IllegalArgumentException("Format " + this + "non reconnu");
 		}
 	}
 }

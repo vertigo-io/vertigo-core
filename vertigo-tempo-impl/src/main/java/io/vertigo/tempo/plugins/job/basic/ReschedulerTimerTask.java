@@ -27,7 +27,6 @@ import java.util.TimerTask;
 /**
  * Timer permettant de reprogrammer un job.
  * @author npiedeloup
- * @version $Id: ReschedulerTimerTask.java,v 1.3 2013/10/22 10:55:50 pchretien Exp $
  */
 final class ReschedulerTimerTask extends TimerTask {
 	private final JobManager jobManager;

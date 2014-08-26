@@ -51,7 +51,6 @@ package io.vertigo.quarto.plugins.converter.openoffice;
  * <p>
  * Repris de JodConverter 2.2.0 (http://www.artofsolving.com/opensource/jodconverter)
  * @author npiedeloup
- * @version $Id: SocketOpenOfficeConnection.java,v 1.1 2013/07/10 15:45:43 npiedeloup Exp $
  */
 final class SocketOpenOfficeConnection extends AbstractOpenOfficeConnection {
 	/**

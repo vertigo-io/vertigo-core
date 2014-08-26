@@ -24,7 +24,6 @@ import io.vertigo.quarto.publisher.impl.merger.script.ScriptTagContent;
 
 /**
  * @author pchretien, npiedeloup
- * @version $Id: AbstractTagIf.java,v 1.1 2013/07/11 13:24:48 npiedeloup Exp $
  */
 abstract class AbstractTagIf extends AbstractKScriptTag implements ScriptTag {
 	private static final String CALL_IF = "if({0}) \\{ ";

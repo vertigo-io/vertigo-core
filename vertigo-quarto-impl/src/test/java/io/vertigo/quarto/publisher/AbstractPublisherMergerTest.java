@@ -51,7 +51,6 @@ import org.junit.Test;
  * Test de l'implémentation standard.
  * 
  * @author npiedeloup
- * @version $Id: AbstractPublisherMergerTest.java,v 1.8 2014/02/27 10:25:49 pchretien Exp $
  */
 public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 	private static final boolean KEEP_OUTPUT_FILE = false;

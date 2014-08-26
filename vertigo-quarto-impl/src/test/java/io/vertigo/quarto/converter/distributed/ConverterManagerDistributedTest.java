@@ -35,7 +35,6 @@ import com.sun.jersey.api.core.ResourceConfig;
  * Test de l'implémentation avec le plugin OpenOfficeRemoteConverterPlugin.
  * 
  * @author npiedeloup
- * @version $Id: ConverterManagerDistributedTest.java,v 1.2 2014/06/26 12:30:48 npiedeloup Exp $
  */
 public final class ConverterManagerDistributedTest extends AbstractConverterManagerTest {
 	/** {@inheritDoc} */

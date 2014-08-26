@@ -40,7 +40,6 @@ import java.util.UUID;
  * </ul>
  *
  * @author alauthier, pchretien
- * @version $Id: UserSession.java,v 1.5 2014/02/27 10:38:22 pchretien Exp $
  */
 public abstract class UserSession implements Serializable {
 	/**
@@ -109,7 +108,7 @@ public abstract class UserSession implements Serializable {
 	}
 
 	/**
-	 * Retrait de tous les roles possedes par l'utilisateur. 
+	 * Retrait de tous les roles possedes par l'utilisateur.
 	 * Attention, cela signifie qu'il n'a plus aucun droit.
 	 */
 	public final void clearRoles() {
