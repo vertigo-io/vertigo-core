@@ -43,7 +43,7 @@ import javax.inject.Named;
 public final class RestDistributedWorkerPlugin implements DistributedWorkerPlugin, Activeable {
 	//	private final long timeoutSeconds;
 	private final Set<String> workTypes;
-	private final RestQueue multipleWorkQueues;
+	private final RestQueue restQueue;
 	private final WorkQueueRestServer workQueueRestServer;
 
 	/**
@@ -60,8 +60,8 @@ public final class RestDistributedWorkerPlugin implements DistributedWorkerPlugi
 		//	this.timeoutSeconds = timeoutSeconds;
 		final String[] workTypesArray = workTypesAsString.split(";");//
 		workTypes = new HashSet<>(Arrays.asList(workTypesArray));
-		multipleWorkQueues = new RestQueue();
-		workQueueRestServer = new WorkQueueRestServer(multipleWorkQueues, 20 * 1000, codecManager);
+		restQueue = new RestQueue();
+		workQueueRestServer = new WorkQueueRestServer(restQueue, 20 * 1000, codecManager);
 	}
 
 	/**
@@ -89,7 +89,7 @@ public final class RestDistributedWorkerPlugin implements DistributedWorkerPlugi
 	/** {@inheritDoc} */
 	public <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
 		final String workType = obtainWorkType(workItem);
-		return multipleWorkQueues.submit(workType, workItem, workResultHandler);
+		return restQueue.submit(workType, workItem, workResultHandler);
 	}
 
 	//	/** {@inheritDoc} */

@@ -47,7 +47,7 @@ final class WorkQueueRestServer {
 	private final ConcurrentMap<String, NodeState> knownNodes = new ConcurrentHashMap<>();
 	private final Set<String> activeWorkTypes = Collections.synchronizedSet(new HashSet<String>());
 	private final Timer checkTimeOutTimer = new Timer("WorkQueueRestServerTimeoutCheck", true);
-	private final RestQueue multipleWorkQueues;
+	private final RestQueue restQueue;
 	private final CodecManager codecManager;
 
 	//	private final long nodeTimeOut;
@@ -61,7 +61,7 @@ final class WorkQueueRestServer {
 	public WorkQueueRestServer(final RestQueue multipleWorkQueues, final long nodeTimeOut, final CodecManager codecManager) {
 		Assertion.checkNotNull(multipleWorkQueues);
 		//---------------------------------------------------------------------
-		this.multipleWorkQueues = multipleWorkQueues;
+		this.restQueue = multipleWorkQueues;
 		//	this.nodeTimeOut = nodeTimeOut;
 		this.codecManager = codecManager;
 	}
@@ -98,7 +98,7 @@ final class WorkQueueRestServer {
 	public String pollWork(final String workType, final String nodeId) {
 		//---------------------------------------------------------------------
 		touchNode(nodeId, workType);
-		final WorkItem workItem = multipleWorkQueues.pollWorkItem(workType, 10);
+		final WorkItem workItem = restQueue.pollWorkItem(workType, 10);
 		final String json;
 		if (workItem != null) {
 			//			final UUID uuid = UUID.randomUUID();
@@ -133,7 +133,7 @@ final class WorkQueueRestServer {
 		final Object value = codecManager.getCompressedSerializationCodec().decode(serializedResult);
 		final Object result = success ? value : null;
 		final Throwable error = (Throwable) (success ? null : value);
-		multipleWorkQueues.setResult(new WResult(uuid, success, result, error));
+		restQueue.setResult(new WResult(uuid, success, result, error));
 		//		runningWorkInfos.getWorkResultHandler().onDone(success, result, error);
 	}
 

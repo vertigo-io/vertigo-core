@@ -148,28 +148,26 @@ final class WorkQueueRestClient {
 
 	private void sendOnSuccess(final String uuid, final Object result) {
 		//call methode distante
-		final WebResource remoteWebResource = locatorClient.resource(serverUrl + "/event/success/" + uuid);
+		final String address =serverUrl + "/event/success/";
+		sendValue(uuid, address, result);
+	}
+
+	private void sendValue(final String uuid, final String address, final Object value) {
+		final WebResource remoteWebResource = locatorClient.resource( address + uuid);
 		try {
-			final byte[] serializedResult = codecManager.getCompressedSerializationCodec().encode((Serializable) result);
+			final byte[] serializedResult = codecManager.getCompressedSerializationCodec().encode((Serializable) value);
 			final String jsonResult = codecManager.getBase64Codec().encode(serializedResult);
 			final ClientResponse response = remoteWebResource.accept(MediaType.TEXT_PLAIN).post(ClientResponse.class, jsonResult);
 			checkResponseStatus(response);
 		} catch (final Exception c) {
-			LOG.warn("[onSuccess] Erreur de connexion au serveur " + remoteWebResource.getURI() + " (" + c.getMessage() + ")");
+			LOG.warn("["+address+"] Erreur de connexion au serveur " + remoteWebResource.getURI() + " (" + c.getMessage() + ")");
 		}
 	}
 
 	private void sendOnFailure(final String uuid, final Throwable error) {
 		//call methode distante
-		final WebResource remoteWebResource = locatorClient.resource(serverUrl + "/event/failure/" + uuid);
-		try {
-			final byte[] serializedResult = codecManager.getCompressedSerializationCodec().encode(error);
-			final String jsonResult = codecManager.getBase64Codec().encode(serializedResult);
-			final ClientResponse response = remoteWebResource.accept(MediaType.TEXT_PLAIN).post(ClientResponse.class, jsonResult);
-			checkResponseStatus(response);
-		} catch (final Exception c) {
-			LOG.warn("[onFailure] Erreur de connexion au serveur " + remoteWebResource.getURI() + " (" + c.getMessage() + ")");
-		}
+		final String address =serverUrl + "/event/success/";
+		sendValue(uuid, address, error);
 	}
 
 	private void checkResponseStatus(final ClientResponse response) {
