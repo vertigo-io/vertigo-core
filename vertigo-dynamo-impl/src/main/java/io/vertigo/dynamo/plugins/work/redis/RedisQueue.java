@@ -32,7 +32,7 @@ import java.util.concurrent.Future;
  * @author pchretien
  * $Id: RedisListenerThread.java,v 1.6 2014/01/20 18:56:18 pchretien Exp $
  */
-final class RedisQueue extends Thread {
+final class RedisQueue implements Runnable {
 	private final RedisDB redisDB;
 	private final Map<String, WorkResultHandler> workResultHandlers = Collections.synchronizedMap(new HashMap<String, WorkResultHandler>());
 
@@ -48,10 +48,6 @@ final class RedisQueue extends Thread {
 		putWorkItem(workType, workItem);
 		//2. On attend les notifs sur un thread séparé, la main est rendue de suite 
 		return createFuture(workItem.getId(), workResultHandler);
-	}
-
-	private <WR, W> void putWorkItem(final String workType, final WorkItem<WR, W> workItem) {
-		redisDB.putWorkItem(workType, workItem);
 	}
 
 	private <WR, W> Future<WR> createFuture(final String workId, final Option<WorkResultHandler<WR>> workResultHandler) {
@@ -78,9 +74,8 @@ final class RedisQueue extends Thread {
 	//------------/A unifier avec restQueue
 
 	/** {@inheritDoc} */
-	@Override
 	public void run() {
-		while (!isInterrupted()) {
+		while (!Thread.interrupted()) {
 			//On attend le résultat (par tranches de 1s)
 			final int waitTimeSeconds = 1;
 			final WResult result = pollResult(waitTimeSeconds);
@@ -90,7 +85,11 @@ final class RedisQueue extends Thread {
 		}
 	}
 
-	WResult<Object> pollResult(final int waitTimeSeconds) {
+	private <WR, W> void putWorkItem(final String workType, final WorkItem<WR, W> workItem) {
+		redisDB.putWorkItem(workType, workItem);
+	}
+
+	private WResult<Object> pollResult(final int waitTimeSeconds) {
 		return redisDB.pollResult(waitTimeSeconds);
 	}
 

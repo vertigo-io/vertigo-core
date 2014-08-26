@@ -45,6 +45,7 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 	 *La map est nécessairement synchronisée. 
 	 */
 	private final RedisQueue redisQueue;
+	private final Thread redisQueueWatcher;
 
 	@Inject
 	public RedisDistributedWorkerPlugin(final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> password, final @Named("timeoutSeconds") int timeoutSeconds) {
@@ -53,19 +54,20 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 		redisDB = new RedisDB(redisHost, redisPort, password);
 		//		this.timeoutSeconds = timeoutSeconds;
 		redisQueue = new RedisQueue(redisDB);
+		redisQueueWatcher = new Thread(redisQueue);
 	}
 
 	/** {@inheritDoc} */
 	public void start() {
 		redisDB.start();
-		redisQueue.start();
+		redisQueueWatcher.start();
 	}
 
 	/** {@inheritDoc} */
 	public void stop() {
-		redisQueue.interrupt();
+		redisQueueWatcher.interrupt();
 		try {
-			redisQueue.join();
+			redisQueueWatcher.join();
 		} catch (final InterruptedException e) {
 			//On ne fait rien
 		}
