@@ -52,10 +52,6 @@ public final class MyWorkResultHanlder<WR> implements WorkResultHandler<WR> {
 			lastError = error;
 			failedCount++;
 		}
-		fire();
-	}
-
-	private void fire() {
 		if (failedCount + succeededCount > 0 && (failedCount + succeededCount) % 1000 == 0) {
 			final long elapsed = System.currentTimeMillis() - start;
 			System.out.println(">executed> " + toString() + " in " + 1000 * elapsed / (failedCount + succeededCount) + " ms/1000exec");

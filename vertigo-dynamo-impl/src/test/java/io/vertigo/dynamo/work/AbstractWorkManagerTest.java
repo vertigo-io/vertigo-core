@@ -127,7 +127,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 		// -que l'erreur remontée est bien une ArithmeticException
 		//- que l'exception est contenue dans le handler
 		Assert.assertEquals(null, workResultHanlder.getLastResult());
-		Assert.assertTrue(workResultHanlder.getLastThrowable() instanceof ArithmeticException);
+		Assert.assertEquals(ArithmeticException.class, workResultHanlder.getLastThrowable().getClass());
 		Assert.assertEquals(true, finished);
 	}
 

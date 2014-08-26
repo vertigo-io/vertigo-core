@@ -42,19 +42,20 @@ final class RedisQueue extends Thread {
 		this.redisDB = redisDB;
 	}
 
+	//------------A unifier avec restQueue
 	<WR, W> Future<WR> submit(final String workType, final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
 		//1. On renseigne la demande de travaux sur le server redis
 		putWorkItem(workType, workItem);
 		//2. On attend les notifs sur un thread séparé, la main est rendue de suite 
-		return getFuture(workItem, workResultHandler);
+		return createFuture(workItem.getId(), workResultHandler);
 	}
 
 	private <WR, W> void putWorkItem(final String workType, final WorkItem<WR, W> workItem) {
 		redisDB.putWorkItem(workType, workItem);
 	}
 
-	private <WR, W> Future<WR> getFuture(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
-		Assertion.checkNotNull(workItem);
+	private <WR, W> Future<WR> createFuture(final String workId, final Option<WorkResultHandler<WR>> workResultHandler) {
+		Assertion.checkNotNull(workId);
 		//---------------------------------------------------------------------
 		final WFuture<WR> future;
 		if (workResultHandler.isDefined()) {
@@ -62,7 +63,7 @@ final class RedisQueue extends Thread {
 		} else {
 			future = new WFuture<>();
 		}
-		workResultHandlers.put(workItem.getId(), future);
+		workResultHandlers.put(workId, future);
 		return future;
 	}
 
@@ -74,17 +75,23 @@ final class RedisQueue extends Thread {
 		}
 	}
 
+	//------------/A unifier avec restQueue
+
 	/** {@inheritDoc} */
 	@Override
 	public void run() {
 		while (!isInterrupted()) {
 			//On attend le résultat (par tranches de 1s)
 			final int waitTimeSeconds = 1;
-			final WResult result = redisDB.pollResult(waitTimeSeconds);
+			final WResult result = pollResult(waitTimeSeconds);
 			if (result != null) {
 				setResult(result);
 			}
 		}
+	}
+
+	WResult<Object> pollResult(final int waitTimeSeconds) {
+		return redisDB.pollResult(waitTimeSeconds);
 	}
 
 }

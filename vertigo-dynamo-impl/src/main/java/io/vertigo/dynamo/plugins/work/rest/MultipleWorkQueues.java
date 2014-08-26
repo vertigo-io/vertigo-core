@@ -49,11 +49,11 @@ final class MultipleWorkQueues {
 
 	<WR, W> Future<WR> submit(final String workType, final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
 		putWorkItem(workType, workItem);
-		return getFuture(workItem, workResultHandler);
+		return createFuture(workItem.getId(), workResultHandler);
 	}
 
-	private <WR, W> Future<WR> getFuture(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
-		Assertion.checkNotNull(workItem);
+	private <WR, W> Future<WR> createFuture(final String workId, final Option<WorkResultHandler<WR>> workResultHandler) {
+		Assertion.checkNotNull(workId);
 		//---------------------------------------------------------------------
 		final WFuture<WR> future;
 		if (workResultHandler.isDefined()) {
@@ -61,7 +61,7 @@ final class MultipleWorkQueues {
 		} else {
 			future = new WFuture<>();
 		}
-		workResultHandlers.put(workItem.getId(), future);
+		workResultHandlers.put(workId, future);
 		return future;
 	}
 
