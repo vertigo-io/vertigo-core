@@ -20,7 +20,7 @@ package io.vertigo.dynamo.plugins.work.rest;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.impl.work.WorkItem;
-import io.vertigo.dynamo.work.WorkResultHandler;
+import io.vertigo.dynamo.plugins.work.redis.WResult;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.io.Serializable;
@@ -28,8 +28,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -46,13 +44,14 @@ final class WorkQueueRestServer {
 	private static final Logger LOG = Logger.getLogger(WorkQueueRestServer.class);
 
 	//On conserve l'état des work en cours, afin de pouvoir les relancer si besoin (avec un autre uuid)
-	private final ConcurrentMap<UUID, RunningWorkInfos> runningWorkInfosMap = new ConcurrentHashMap<>();
+	//	private final ConcurrentMap<UUID, RunningWorkInfos> runningWorkInfosMap = new ConcurrentHashMap<>();
 	private final ConcurrentMap<String, NodeState> knownNodes = new ConcurrentHashMap<>();
 	private final Set<String> activeWorkTypes = Collections.synchronizedSet(new HashSet<String>());
 	private final Timer checkTimeOutTimer = new Timer("WorkQueueRestServerTimeoutCheck", true);
 	private final MultipleWorkQueues multipleWorkQueues;
 	private final CodecManager codecManager;
-	private final long nodeTimeOut;
+
+	//	private final long nodeTimeOut;
 
 	/**
 	 * Constructeur.
@@ -64,7 +63,7 @@ final class WorkQueueRestServer {
 		Assertion.checkNotNull(multipleWorkQueues);
 		//---------------------------------------------------------------------
 		this.multipleWorkQueues = multipleWorkQueues;
-		this.nodeTimeOut = nodeTimeOut;
+		//	this.nodeTimeOut = nodeTimeOut;
 		this.codecManager = codecManager;
 	}
 
@@ -73,7 +72,7 @@ final class WorkQueueRestServer {
 	 */
 	public void start() {
 		//On lance le démon qui détecte les noeuds morts
-		checkTimeOutTimer.scheduleAtFixedRate(new DeadNodeDetectorTask(multipleWorkQueues, nodeTimeOut, knownNodes, runningWorkInfosMap), 10 * 1000, 10 * 1000);
+		//checkTimeOutTimer.scheduleAtFixedRate(new DeadNodeDetectorTask(multipleWorkQueues, nodeTimeOut, knownNodes, runningWorkInfosMap), 10 * 1000, 10 * 1000);
 	}
 
 	/**
@@ -103,11 +102,11 @@ final class WorkQueueRestServer {
 		final WorkItem workItem = multipleWorkQueues.pollWorkItem(workType, 10);
 		final String json;
 		if (workItem != null) {
-			final UUID uuid = UUID.randomUUID();
-			runningWorkInfosMap.put(uuid, new RunningWorkInfos(workType, workItem, nodeId));
+			//			final UUID uuid = UUID.randomUUID();
+			//			runningWorkInfosMap.put(uuid, new RunningWorkInfos(workType, workItem, nodeId));
 			final byte[] serializedWorkItem = codecManager.getCompressedSerializationCodec().encode((Serializable) workItem.getWork());
 			final String base64WorkItem = codecManager.getBase64Codec().encode(serializedWorkItem);
-			final String[] sendPack = { uuid.toString(), base64WorkItem };
+			final String[] sendPack = { workItem.getId(), base64WorkItem };
 			json = new Gson().toJson(sendPack, String[].class);
 			LOG.info("pollWork(" + workType + ") : 1 Work");
 		} else {
@@ -120,95 +119,96 @@ final class WorkQueueRestServer {
 	public void onStart(final String uuid) {
 		LOG.info("onStart(" + uuid + ")");
 		//---------------------------------------------------------------------
-		final RunningWorkInfos runningWorkInfos = runningWorkInfosMap.get(UUID.fromString(uuid));
-		Assertion.checkNotNull(runningWorkInfos, "Ce travail ({0}) n''est pas connu, ou n''est plus en cours.", uuid);
-		runningWorkInfos.getWorkResultHandler().onStart();
+		//	final RunningWorkInfos runningWorkInfos = runningWorkInfosMap.get(UUID.fromString(uuid));
+		//		Assertion.checkNotNull(runningWorkInfos, "Ce travail ({0}) n''est pas connu, ou n''est plus en cours.", uuid);
+		//		runningWorkInfos.getWorkResultHandler().onStart();
 	}
 
 	public void onDone(final boolean success, final String uuid, final String base64Result) {
 		LOG.info("onDone " + success + " : (" + uuid + ")");
 		//---------------------------------------------------------------------
-		final RunningWorkInfos runningWorkInfos = runningWorkInfosMap.remove(UUID.fromString(uuid));
-		Assertion.checkNotNull(runningWorkInfos, "Ce travail ({0}) n''est pas connu, ou n''est plus en cours.", uuid);
+		//		final RunningWorkInfos runningWorkInfos = runningWorkInfosMap.remove(UUID.fromString(uuid));
+		//		Assertion.checkNotNull(runningWorkInfos, "Ce travail ({0}) n''est pas connu, ou n''est plus en cours.", uuid);
 
 		final byte[] serializedResult = codecManager.getBase64Codec().decode(base64Result);
 		final Object value = codecManager.getCompressedSerializationCodec().decode(serializedResult);
 		final Object result = success ? value : null;
 		final Throwable error = (Throwable) (success ? null : value);
-		runningWorkInfos.getWorkResultHandler().onDone(success, result, error);
+		multipleWorkQueues.setResult(new WResult(uuid, success, result, error));
+		//		runningWorkInfos.getWorkResultHandler().onDone(success, result, error);
 	}
 
 	public String getVersion() {
 		return "1.0.0";
 	}
 
-	private static class RunningWorkInfos {
-		private final String workType;
-		private final WorkItem workItem;
-		private final String nodeUID;
+	//	private static class RunningWorkInfos {
+	//		private final String workType;
+	//		private final WorkItem workItem;
+	//		private final String nodeUID;
+	//
+	//		//private final long startTime;
+	//
+	//		public RunningWorkInfos(final String workType, final WorkItem workItem, final String nodeUID) {
+	//			this.workType = workType;
+	//			this.workItem = workItem;
+	//			this.nodeUID = nodeUID;
+	//			//startTime = System.currentTimeMillis();
+	//		}
+	//
+	//		public WorkResultHandler getWorkResultHandler() {
+	//			return null;
+	//		}
+	//
+	//		public WorkItem<Object, ?> getWorkItem() {
+	//			return workItem;
+	//		}
+	//
+	//		public String getWorkType() {
+	//			return workType;
+	//		}
+	//
+	//		public String getNodeUID() {
+	//			return nodeUID;
+	//		}
+	//
+	//		//		public long getStartTime() {
+	//		//			return startTime;
+	//		//		}
+	//	}
 
-		//private final long startTime;
-
-		public RunningWorkInfos(final String workType, final WorkItem workItem, final String nodeUID) {
-			this.workType = workType;
-			this.workItem = workItem;
-			this.nodeUID = nodeUID;
-			//startTime = System.currentTimeMillis();
-		}
-
-		public WorkResultHandler getWorkResultHandler() {
-			return null;
-		}
-
-		public WorkItem<Object, ?> getWorkItem() {
-			return workItem;
-		}
-
-		public String getWorkType() {
-			return workType;
-		}
-
-		public String getNodeUID() {
-			return nodeUID;
-		}
-
-		//		public long getStartTime() {
-		//			return startTime;
-		//		}
-	}
-
-	private static class DeadNodeDetectorTask extends TimerTask {
-		private final long deadNodeTimeout;
-		private final ConcurrentMap<UUID, RunningWorkInfos> runningWorkInfosMap;
-		private final ConcurrentMap<String, NodeState> knownNodes;
-		private final MultipleWorkQueues multipleWorkQueues;
-
-		public DeadNodeDetectorTask(final MultipleWorkQueues multipleWorkQueues, final long deadNodeTimeout, final ConcurrentMap<String, NodeState> knownNodes, final ConcurrentMap<UUID, RunningWorkInfos> runningWorkInfosMap) {
-			this.deadNodeTimeout = deadNodeTimeout;
-			this.runningWorkInfosMap = runningWorkInfosMap;
-			this.knownNodes = knownNodes;
-			this.multipleWorkQueues = multipleWorkQueues;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public void run() {
-			final Set<String> deadNodes = new HashSet<>();
-			//Comme défini dans le contrat de la ConcurrentMap : l'iterator est weakly consistent : et ne lance pas de ConcurrentModificationException  
-			for (final NodeState nodeState : knownNodes.values()) {
-				//sans signe de vie depuis deadNodeTimeout, on considère le noeud comme mort
-				if (System.currentTimeMillis() - nodeState.getLastSeenTime() > deadNodeTimeout) {
-					deadNodes.add(nodeState.getNodeUID());
-				}
-			}
-			if (!deadNodes.isEmpty()) {
-				LOG.info("Noeuds arrêtés : " + deadNodes);
-				for (final RunningWorkInfos runningWorkInfos : runningWorkInfosMap.values()) {
-					if (deadNodes.contains(runningWorkInfos.getNodeUID())) {
-						multipleWorkQueues.putWorkItem(runningWorkInfos.getWorkType(), runningWorkInfos.getWorkItem());
-					}
-				}
-			}
-		}
-	}
+	//	private static class DeadNodeDetectorTask extends TimerTask {
+	//		private final long deadNodeTimeout;
+	//		private final ConcurrentMap<UUID, RunningWorkInfos> runningWorkInfosMap;
+	//		private final ConcurrentMap<String, NodeState> knownNodes;
+	//		private final MultipleWorkQueues multipleWorkQueues;
+	//
+	//		public DeadNodeDetectorTask(final MultipleWorkQueues multipleWorkQueues, final long deadNodeTimeout, final ConcurrentMap<String, NodeState> knownNodes, final ConcurrentMap<UUID, RunningWorkInfos> runningWorkInfosMap) {
+	//			this.deadNodeTimeout = deadNodeTimeout;
+	//			this.runningWorkInfosMap = runningWorkInfosMap;
+	//			this.knownNodes = knownNodes;
+	//			this.multipleWorkQueues = multipleWorkQueues;
+	//		}
+	//
+	//		/** {@inheritDoc} */
+	//		@Override
+	//		public void run() {
+	//			final Set<String> deadNodes = new HashSet<>();
+	//			//Comme défini dans le contrat de la ConcurrentMap : l'iterator est weakly consistent : et ne lance pas de ConcurrentModificationException  
+	//			for (final NodeState nodeState : knownNodes.values()) {
+	//				//sans signe de vie depuis deadNodeTimeout, on considère le noeud comme mort
+	//				if (System.currentTimeMillis() - nodeState.getLastSeenTime() > deadNodeTimeout) {
+	//					deadNodes.add(nodeState.getNodeUID());
+	//				}
+	//			}
+	//			if (!deadNodes.isEmpty()) {
+	//				LOG.info("Noeuds arrêtés : " + deadNodes);
+	//				for (final RunningWorkInfos runningWorkInfos : runningWorkInfosMap.values()) {
+	//					if (deadNodes.contains(runningWorkInfos.getNodeUID())) {
+	//						multipleWorkQueues.putWorkItem(runningWorkInfos.getWorkType(), runningWorkInfos.getWorkItem());
+	//					}
+	//				}
+	//			}
+	//		}
+	//	}
 }

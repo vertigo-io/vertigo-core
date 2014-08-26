@@ -21,11 +21,14 @@ package io.vertigo.dynamo.plugins.work.rest;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.impl.node.NodePlugin;
 import io.vertigo.dynamo.impl.work.WorkItem;
+import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;
 import io.vertigo.dynamo.node.Node;
+import io.vertigo.dynamo.plugins.work.rest.WorkQueueRestClient.CallbackWorkResultHandler;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.lang.Option;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -107,7 +110,7 @@ public final class RestDistributedWorkNodePlugin implements NodePlugin, Activeab
 	 * @author npiedeloup
 	 * @version $Id: RestDistributedWorkNodePlugin.java,v 1.12 2014/02/03 17:28:45 pchretien Exp $
 	 */
-	private static final class PollWorkTask implements Callable<Void> {
+	private static final class PollWorkTask<WR> implements Callable<Void> {
 		private final WorkQueueRestClient workQueueClient;
 		private final String workType;
 
@@ -128,10 +131,12 @@ public final class RestDistributedWorkNodePlugin implements NodePlugin, Activeab
 		public Void call() throws Exception {
 			final WorkItem nextWorkItem = workQueueClient.pollWorkItem(workType);
 			if (nextWorkItem != null) {
+				final WorkResultHandler<WR> callable = new CallbackWorkResultHandler<>(nextWorkItem.getId(), workQueueClient);
+				new LocalWorker(2).submit(nextWorkItem, Option.some(callable));
 				//On rerentre dans le WorkItemExecutor pour traiter le travail
 				//Le workResultHandler sait déjà répondre au serveur pour l'avancement du traitement
-				final WorkItemExecutor workItemExecutor = new WorkItemExecutor(nextWorkItem);
-				workItemExecutor.run();
+				//				final WorkItemExecutor workItemExecutor = new WorkItemExecutor(nextWorkItem);
+				//				workItemExecutor.run();
 			}
 			return null;
 		}

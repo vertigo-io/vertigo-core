@@ -19,11 +19,17 @@
 package io.vertigo.dynamo.plugins.work.rest;
 
 import io.vertigo.dynamo.impl.work.WorkItem;
+import io.vertigo.dynamo.plugins.work.redis.WFuture;
+import io.vertigo.dynamo.plugins.work.redis.WResult;
+import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.lang.Option;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -37,6 +43,37 @@ import java.util.concurrent.TimeUnit;
 final class MultipleWorkQueues {
 	//pas besoin de synchronized la map, car le obtain est le seul accès et est synchronized
 	private final Map<String, BlockingQueue<WorkItem<?, ?>>> workQueueMap = new HashMap<>();
+
+	//-------------A unifier avec RedisQueue
+	private final Map<String, WorkResultHandler> workResultHandlers = Collections.synchronizedMap(new HashMap<String, WorkResultHandler>());
+
+	<WR, W> Future<WR> submit(final String workType, final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
+		putWorkItem(workType, workItem);
+		return getFuture(workItem, workResultHandler);
+	}
+
+	private <WR, W> Future<WR> getFuture(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
+		Assertion.checkNotNull(workItem);
+		//---------------------------------------------------------------------
+		final WFuture<WR> future;
+		if (workResultHandler.isDefined()) {
+			future = new WFuture<>(workResultHandler.get());
+		} else {
+			future = new WFuture<>();
+		}
+		workResultHandlers.put(workItem.getId(), future);
+		return future;
+	}
+
+	void setResult(final WResult result) {
+		final WorkResultHandler workResultHandler = workResultHandlers.remove(result.getWorkId());
+		if (workResultHandler != null) {
+			//Que faire sinon 
+			workResultHandler.onDone(result.hasSucceeded(), result.getResult(), result.getError());
+		}
+	}
+
+	//-------------/A unifier avec RedisQueue
 
 	/**
 	 * Récupération du travail à effectuer.
@@ -61,7 +98,7 @@ final class MultipleWorkQueues {
 	 * @param workType Type du travail
 	 * @param workItem Work et WorkResultHandler
 	 */
-	public <WR, W> void putWorkItem(final String workType, final WorkItem<WR, W> workItem) {
+	private <WR, W> void putWorkItem(final String workType, final WorkItem<WR, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		//-------------------------------------------------------------------
 		try {

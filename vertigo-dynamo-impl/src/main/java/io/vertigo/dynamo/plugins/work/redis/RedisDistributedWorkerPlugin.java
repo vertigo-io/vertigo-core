@@ -44,7 +44,7 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 	/*
 	 *La map est nécessairement synchronisée. 
 	 */
-	private final RedisListenerThread redisListenerThread;
+	private final RedisQueue redisQueue;
 
 	@Inject
 	public RedisDistributedWorkerPlugin(final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> password, final @Named("timeoutSeconds") int timeoutSeconds) {
@@ -52,20 +52,20 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 		//---------------------------------------------------------------------
 		redisDB = new RedisDB(redisHost, redisPort, password);
 		//		this.timeoutSeconds = timeoutSeconds;
-		redisListenerThread = new RedisListenerThread(redisDB);
+		redisQueue = new RedisQueue(redisDB);
 	}
 
 	/** {@inheritDoc} */
 	public void start() {
 		redisDB.start();
-		redisListenerThread.start();
+		redisQueue.start();
 	}
 
 	/** {@inheritDoc} */
 	public void stop() {
-		redisListenerThread.interrupt();
+		redisQueue.interrupt();
 		try {
-			redisListenerThread.join();
+			redisQueue.join();
 		} catch (final InterruptedException e) {
 			//On ne fait rien
 		}
@@ -75,11 +75,8 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 
 	/** {@inheritDoc} */
 	public <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
-		//1. On renseigne la demande de travaux sur le server redis
 		final String workType = obtainWorkType(workItem);
-		redisDB.putWorkItem(workType, workItem);
-		//2. On attend les notifs sur un thread séparé, la main est rendue de suite 
-		return redisListenerThread.getFuture(workItem, workResultHandler);
+		return redisQueue.submit(workType, workItem, workResultHandler);
 	}
 
 	public <WR, W> boolean canProcess(final WorkEngineProvider<WR, W> workEngineProvider) {

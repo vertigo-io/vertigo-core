@@ -25,10 +25,12 @@ import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.kernel.lang.Option;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Future;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -40,7 +42,7 @@ import javax.inject.Named;
  * @version $Id: RestDistributedWorkerPlugin.java,v 1.13 2014/02/27 10:31:19 pchretien Exp $
  */
 public final class RestDistributedWorkerPlugin implements DistributedWorkerPlugin, Activeable {
-	private final long timeoutSeconds;
+	//	private final long timeoutSeconds;
 	private final Set<String> workTypes;
 	private final MultipleWorkQueues multipleWorkQueues;
 	private final WorkQueueRestServer workQueueRestServer;
@@ -56,7 +58,7 @@ public final class RestDistributedWorkerPlugin implements DistributedWorkerPlugi
 		Assertion.checkArgument(timeoutSeconds < 10000, "Le timeout s'exprime en seconde.");
 		Assertion.checkArgNotEmpty(workTypesAsString);
 		//---------------------------------------------------------------------
-		this.timeoutSeconds = timeoutSeconds;
+		//	this.timeoutSeconds = timeoutSeconds;
 		final String[] workTypesArray = workTypesAsString.split(";");//
 		workTypes = new HashSet<>(Arrays.asList(workTypesArray));
 		multipleWorkQueues = new MultipleWorkQueues();
@@ -86,26 +88,32 @@ public final class RestDistributedWorkerPlugin implements DistributedWorkerPlugi
 	}
 
 	/** {@inheritDoc} */
-	public <WR, W> void process(final WorkItem<WR, W> workitem2) {
-		Assertion.checkNotNull(workitem2);
-		//---------------------------------------------------------------------
-		final WorkResultHandlerSync<WR> workResultHandler = new WorkResultHandlerSync<>();
-		final WorkItem<WR, W> workItem = new WorkItem<>(workitem2.getWork(), workitem2.getWorkEngineProvider(), workResultHandler);
-
-		final String workType = obtainWorkType(workitem2);
-		multipleWorkQueues.putWorkItem(workType, workItem);
-		workResultHandler.waitResult(timeoutSeconds); //on attend le résultat
-		//---
-		workitem2.setResult(workResultHandler.getResultOrThrowError());//retourne le résultat ou lance l'erreur
-	}
-
-	/** {@inheritDoc} */
-	public <WR, W> void schedule(final WorkItem<WR, W> workItem) {
-		Assertion.checkNotNull(workItem);
-		//---------------------------------------------------------------------
+	public <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
 		final String workType = obtainWorkType(workItem);
-		multipleWorkQueues.putWorkItem(workType, workItem);
+		return multipleWorkQueues.submit(workType, workItem, workResultHandler);
 	}
+
+	//	/** {@inheritDoc} */
+	//	public <WR, W> void process(final WorkItem<WR, W> workitem2) {
+	//		Assertion.checkNotNull(workitem2);
+	//		//---------------------------------------------------------------------
+	//		final WorkResultHandlerSync<WR> workResultHandler = new WorkResultHandlerSync<>();
+	//		final WorkItem<WR, W> workItem = new WorkItem<>(workitem2.getWork(), workitem2.getWorkEngineProvider(), workResultHandler);
+	//
+	//		final String workType = obtainWorkType(workitem2);
+	//		multipleWorkQueues.putWorkItem(workType, workItem);
+	//		workResultHandler.waitResult(timeoutSeconds); //on attend le résultat
+	//		//---
+	//		workitem2.setResult(workResultHandler.getResultOrThrowError());//retourne le résultat ou lance l'erreur
+	//	}
+	//
+	//	/** {@inheritDoc} */
+	//	public <WR, W> void schedule(final WorkItem<WR, W> workItem) {
+	//		Assertion.checkNotNull(workItem);
+	//		//---------------------------------------------------------------------
+	//		final String workType = obtainWorkType(workItem);
+	//		multipleWorkQueues.putWorkItem(workType, workItem);
+	//	}
 
 	private <WR, W> String obtainWorkType(final WorkEngineProvider workEngineProvider) {
 		return workEngineProvider.getName();
@@ -115,68 +123,68 @@ public final class RestDistributedWorkerPlugin implements DistributedWorkerPlugi
 		return obtainWorkType(workitem.getWorkEngineProvider());
 	}
 
-	private static final class WorkResultHandlerSync<WR> implements WorkResultHandler<WR> {
-		private boolean started = false;
-		private boolean finished = false;
-		private WR result;
-		private Throwable error;
-
-		/** {@inheritDoc} */
-		public void onStart() {
-			started = true;
-		}
-
-		/**
-		 * Attend la fin de ce Work.
-		 * @param waitTimeoutSeconds temps maximum d'attente en seconde
-		 */
-		public synchronized void waitResult(final long waitTimeoutSeconds) {
-			if (!finished) {
-				try {
-					wait(waitTimeoutSeconds * 1000); //attend un notify
-				} catch (final InterruptedException e) {
-					throw new RuntimeException("Arret demandé : on stop le travail en cours");
-				}
-				if (!finished) {
-					if (!started) {
-						error = new RuntimeException("Timeout : le traitement n'a pas été pris en charge en " + waitTimeoutSeconds + "s");
-					} else {
-						error = new RuntimeException("Timeout : le traitement ne s'est pas terminé en " + waitTimeoutSeconds + "s");
-					}
-					//TODO : si timeout retirer de la file, ou désactiver le handler
-				}
-			}
-		}
-
-		/** {@inheritDoc} */
-		public synchronized void onDone(final boolean succeeded, final WR newResult, final Throwable newError) {
-			if (succeeded) {
-				this.result = newResult;
-				error = null; //si on a eut une erreur avant, ou un timeout : on reset l'erreur
-			} else {
-				this.error = newError;
-			}
-			finished = true;
-			notifyAll(); //débloque le wait
-		}
-
-		/**
-		 * Retourne le résultat ou lance l'erreur reçu le cas echant.
-		 * @return résultat
-		 */
-		public WR getResultOrThrowError() {
-			if (error != null) {
-				//si il ya une erreur 
-				if (error instanceof Error) {
-					throw Error.class.cast(error);
-				}
-				if (error instanceof RuntimeException) {
-					throw RuntimeException.class.cast(error);
-				}
-				throw new RuntimeException(error);
-			}
-			return result;
-		}
-	}
+	//	private static final class WorkResultHandlerSync<WR> implements WorkResultHandler<WR> {
+	//		private boolean started = false;
+	//		private boolean finished = false;
+	//		private WR result;
+	//		private Throwable error;
+	//
+	//		/** {@inheritDoc} */
+	//		public void onStart() {
+	//			started = true;
+	//		}
+	//
+	//		/**
+	//		 * Attend la fin de ce Work.
+	//		 * @param waitTimeoutSeconds temps maximum d'attente en seconde
+	//		 */
+	//		public synchronized void waitResult(final long waitTimeoutSeconds) {
+	//			if (!finished) {
+	//				try {
+	//					wait(waitTimeoutSeconds * 1000); //attend un notify
+	//				} catch (final InterruptedException e) {
+	//					throw new RuntimeException("Arret demandé : on stop le travail en cours");
+	//				}
+	//				if (!finished) {
+	//					if (!started) {
+	//						error = new RuntimeException("Timeout : le traitement n'a pas été pris en charge en " + waitTimeoutSeconds + "s");
+	//					} else {
+	//						error = new RuntimeException("Timeout : le traitement ne s'est pas terminé en " + waitTimeoutSeconds + "s");
+	//					}
+	//					//TODO : si timeout retirer de la file, ou désactiver le handler
+	//				}
+	//			}
+	//		}
+	//
+	//		/** {@inheritDoc} */
+	//		public synchronized void onDone(final boolean succeeded, final WR newResult, final Throwable newError) {
+	//			if (succeeded) {
+	//				this.result = newResult;
+	//				error = null; //si on a eut une erreur avant, ou un timeout : on reset l'erreur
+	//			} else {
+	//				this.error = newError;
+	//			}
+	//			finished = true;
+	//			notifyAll(); //débloque le wait
+	//		}
+	//
+	//		/**
+	//		 * Retourne le résultat ou lance l'erreur reçu le cas echant.
+	//		 * @return résultat
+	//		 */
+	//		public WR getResultOrThrowError() {
+	//			if (error != null) {
+	//				//si il ya une erreur 
+	//				if (error instanceof Error) {
+	//					throw Error.class.cast(error);
+	//				}
+	//				if (error instanceof RuntimeException) {
+	//					throw RuntimeException.class.cast(error);
+	//				}
+	//				throw new RuntimeException(error);
+	//			}
+	//			return result;
+	//		}
+	//	}
 
 }

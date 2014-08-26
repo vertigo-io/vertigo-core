@@ -34,14 +34,14 @@ public final class TaskManagerImpl implements TaskManager {
 	private final WorkManager workManager;
 
 	@Inject
-	public TaskManagerImpl(WorkManager workManager) {
+	public TaskManagerImpl(final WorkManager workManager) {
 		Assertion.checkNotNull(workManager);
 		//---------------------------------------------------------------------
 		this.workManager = workManager;
 	}
 
 	/** {@inheritDoc} */
-	public TaskResult execute(Task task) {
+	public TaskResult execute(final Task task) {
 		return workManager.process(task, new WorkEngineProvider<>(task.getDefinition().getTaskEngineClass()));
 	}
 }

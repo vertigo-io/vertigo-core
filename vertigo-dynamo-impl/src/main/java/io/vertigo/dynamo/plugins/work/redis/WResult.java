@@ -11,7 +11,7 @@ public final class WResult<WR> {
 	private final Throwable error;
 	private final WR result;
 
-	WResult(final String workId, final boolean succeeded, final WR result, final Throwable error) {
+	public WResult(final String workId, final boolean succeeded, final WR result, final Throwable error) {
 		Assertion.checkArgNotEmpty(workId);
 		if (succeeded) {
 			Assertion.checkArgument(result != null, "when succeeded,  a result is required");
