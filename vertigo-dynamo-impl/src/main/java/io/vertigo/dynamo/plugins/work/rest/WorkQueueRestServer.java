@@ -20,7 +20,7 @@ package io.vertigo.dynamo.plugins.work.rest;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.impl.work.WorkItem;
-import io.vertigo.dynamo.plugins.work.redis.WResult;
+import io.vertigo.dynamo.plugins.work.WResult;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.io.Serializable;
@@ -48,7 +48,7 @@ final class WorkQueueRestServer {
 	private final ConcurrentMap<String, NodeState> knownNodes = new ConcurrentHashMap<>();
 	private final Set<String> activeWorkTypes = Collections.synchronizedSet(new HashSet<String>());
 	private final Timer checkTimeOutTimer = new Timer("WorkQueueRestServerTimeoutCheck", true);
-	private final MultipleWorkQueues multipleWorkQueues;
+	private final RestQueue multipleWorkQueues;
 	private final CodecManager codecManager;
 
 	//	private final long nodeTimeOut;
@@ -59,7 +59,7 @@ final class WorkQueueRestServer {
 	 * @param nodeTimeOut Timeout avant de considérer un noeud comme mort
 	 * @param codecManager Manager de codec
 	 */
-	public WorkQueueRestServer(final MultipleWorkQueues multipleWorkQueues, final long nodeTimeOut, final CodecManager codecManager) {
+	public WorkQueueRestServer(final RestQueue multipleWorkQueues, final long nodeTimeOut, final CodecManager codecManager) {
 		Assertion.checkNotNull(multipleWorkQueues);
 		//---------------------------------------------------------------------
 		this.multipleWorkQueues = multipleWorkQueues;

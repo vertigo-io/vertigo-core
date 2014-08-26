@@ -44,7 +44,7 @@ import javax.inject.Named;
 public final class RestDistributedWorkerPlugin implements DistributedWorkerPlugin, Activeable {
 	//	private final long timeoutSeconds;
 	private final Set<String> workTypes;
-	private final MultipleWorkQueues multipleWorkQueues;
+	private final RestQueue multipleWorkQueues;
 	private final WorkQueueRestServer workQueueRestServer;
 
 	/**
@@ -61,7 +61,7 @@ public final class RestDistributedWorkerPlugin implements DistributedWorkerPlugi
 		//	this.timeoutSeconds = timeoutSeconds;
 		final String[] workTypesArray = workTypesAsString.split(";");//
 		workTypes = new HashSet<>(Arrays.asList(workTypesArray));
-		multipleWorkQueues = new MultipleWorkQueues();
+		multipleWorkQueues = new RestQueue();
 		workQueueRestServer = new WorkQueueRestServer(multipleWorkQueues, 20 * 1000, codecManager);
 	}
 

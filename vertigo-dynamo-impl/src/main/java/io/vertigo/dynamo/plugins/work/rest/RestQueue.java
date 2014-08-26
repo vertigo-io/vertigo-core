@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.work.redis;
+package io.vertigo.dynamo.plugins.work.rest;
 
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.plugins.work.WFuture;
@@ -28,27 +28,27 @@ import io.vertigo.kernel.lang.Option;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
+ * Queue partagée sur une seule JVM.
+ * La récupération des données est effective toutes les secondes.
+ * 
  * @author pchretien
- * $Id: RedisListenerThread.java,v 1.6 2014/01/20 18:56:18 pchretien Exp $
+ * @version $Id: MultipleWorkQueues.java,v 1.10 2014/02/27 10:31:19 pchretien Exp $
  */
-final class RedisQueue implements Runnable {
-	private final RedisDB redisDB;
+final class RestQueue {
+	//pas besoin de synchronized la map, car le obtain est le seul accès et est synchronized
+	private final Map<String, BlockingQueue<WorkItem<?, ?>>> workQueueMap = new HashMap<>();
+
+	//-------------A unifier avec RedisQueue
 	private final Map<String, WorkResultHandler> workResultHandlers = Collections.synchronizedMap(new HashMap<String, WorkResultHandler>());
 
-	RedisQueue(final RedisDB redisDB) {
-		Assertion.checkNotNull(redisDB);
-		//-----------------------------------------------------------------
-		this.redisDB = redisDB;
-	}
-
-	//------------A unifier avec restQueue
 	<WR, W> Future<WR> submit(final String workType, final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
-		//1. On renseigne la demande de travaux sur le server redis
 		putWorkItem(workType, workItem);
-		//2. On attend les notifs sur un thread séparé, la main est rendue de suite 
 		return createFuture(workItem.getId(), workResultHandler);
 	}
 
@@ -65,7 +65,7 @@ final class RedisQueue implements Runnable {
 		return future;
 	}
 
-	private void setResult(final WResult result) {
+	void setResult(final WResult result) {
 		final WorkResultHandler workResultHandler = workResultHandlers.remove(result.getWorkId());
 		if (workResultHandler != null) {
 			//Que faire sinon 
@@ -73,26 +73,48 @@ final class RedisQueue implements Runnable {
 		}
 	}
 
-	//------------/A unifier avec restQueue
+	//-------------/A unifier avec RedisQueue
 
-	/** {@inheritDoc} */
-	public void run() {
-		while (!Thread.interrupted()) {
-			//On attend le résultat (par tranches de 1s)
-			final int waitTimeSeconds = 1;
-			final WResult result = pollResult(waitTimeSeconds);
-			if (result != null) {
-				setResult(result);
-			}
+	/**
+	 * Récupération du travail à effectuer.
+	 * @return Prochain WorkItem ou null
+	 */
+	public WorkItem<?, ?> pollWorkItem(final String workType, final int timeoutInSeconds) {
+		try {
+			//take attend qu'un élément soit disponible toutes les secondes.
+			//Poll attend (1s) qu'un élément soit disponible et sinon renvoit null
+			final WorkItem<?, ?> workItem = obtainWorkQueue(workType).poll(timeoutInSeconds, TimeUnit.SECONDS);
+			return workItem;
+		} catch (final InterruptedException e) {
+			//dans le cas d'une interruption on arrête de dépiler 
+			return null;
 		}
 	}
 
+	/**
+	 * Ajoute un travail à faire.
+	 * @param <WR> Type du résultat
+	 * @param <W> Travail à effectué
+	 * @param workType Type du travail
+	 * @param workItem Work et WorkResultHandler
+	 */
 	private <WR, W> void putWorkItem(final String workType, final WorkItem<WR, W> workItem) {
-		redisDB.putWorkItem(workType, workItem);
+		Assertion.checkNotNull(workItem);
+		//-------------------------------------------------------------------
+		try {
+			obtainWorkQueue(workType).put(workItem);
+		} catch (final InterruptedException e) {
+			//dans le cas d'une interruption on interdit d'empiler de nouveaux Works 
+			throw new RuntimeException("putWorkItem", e);
+		}
 	}
 
-	private WResult<Object> pollResult(final int waitTimeSeconds) {
-		return redisDB.pollResult(waitTimeSeconds);
+	private synchronized BlockingQueue<WorkItem<?, ?>> obtainWorkQueue(final String workType) {
+		BlockingQueue<WorkItem<?, ?>> workQueue = workQueueMap.get(workType);
+		if (workQueue == null) {
+			workQueue = new LinkedBlockingQueue<>();
+			workQueueMap.put(workType, workQueue);
+		}
+		return workQueue;
 	}
-
 }
