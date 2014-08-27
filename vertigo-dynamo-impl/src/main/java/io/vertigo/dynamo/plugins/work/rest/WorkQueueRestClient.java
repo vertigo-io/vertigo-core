@@ -127,11 +127,7 @@ final class WorkQueueRestClient {
 		}
 
 		public void onDone(final boolean succeeded, final WR result, final Throwable error) {
-			if (succeeded) {
-				workQueueRestClient.sendOnSuccess(uuid, result);
-			} else {
-				workQueueRestClient.sendOnFailure(uuid, error);
-			}
+			workQueueRestClient.sendDone(uuid, succeeded, result, error);
 		}
 	}
 
@@ -146,31 +142,33 @@ final class WorkQueueRestClient {
 		}
 	}
 
-	private void sendOnSuccess(final String uuid, final Object result) {
+	private void sendDone(final String uuid, final boolean succeeded, final Object result, final Throwable error) {
+		final String address;
+		final Object value;
+		if (succeeded) {
+			address = serverUrl + "/event/success/";
+			value = result;
+		} else {
+			address = serverUrl + "/event/success/";
+			value = error;
+		}
 		//call methode distante
-		final String address =serverUrl + "/event/success/";
-		sendValue(uuid, address, result);
+		sendValue(uuid, address, value);
 	}
 
 	private void sendValue(final String uuid, final String address, final Object value) {
-		final WebResource remoteWebResource = locatorClient.resource( address + uuid);
+		final WebResource remoteWebResource = locatorClient.resource(address + uuid);
 		try {
 			final byte[] serializedResult = codecManager.getCompressedSerializationCodec().encode((Serializable) value);
 			final String jsonResult = codecManager.getBase64Codec().encode(serializedResult);
 			final ClientResponse response = remoteWebResource.accept(MediaType.TEXT_PLAIN).post(ClientResponse.class, jsonResult);
 			checkResponseStatus(response);
 		} catch (final Exception c) {
-			LOG.warn("["+address+"] Erreur de connexion au serveur " + remoteWebResource.getURI() + " (" + c.getMessage() + ")");
+			LOG.warn("[" + address + "] Erreur de connexion au serveur " + remoteWebResource.getURI() + " (" + c.getMessage() + ")");
 		}
 	}
 
-	private void sendOnFailure(final String uuid, final Throwable error) {
-		//call methode distante
-		final String address =serverUrl + "/event/success/";
-		sendValue(uuid, address, error);
-	}
-
-	private void checkResponseStatus(final ClientResponse response) {
+	private static void checkResponseStatus(final ClientResponse response) {
 		final Status status = response.getClientResponseStatus();
 		if (status.getFamily() == Family.SUCCESSFUL) {
 			return;
