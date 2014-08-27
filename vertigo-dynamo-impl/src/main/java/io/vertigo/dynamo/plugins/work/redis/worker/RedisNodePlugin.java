@@ -59,7 +59,7 @@ public final class RedisNodePlugin implements NodePlugin, Activeable {
 		this.workTypes = Arrays.asList(workTypes.trim().split(";"));
 		//---
 		for (final String workType : this.workTypes) {
-			dispatcherThreads.add(new Thread(new RedisDispatcherThread(nodeId, workType, redisDB, localWorker)));
+			dispatcherThreads.add(new Thread(new RedisDispatcher(nodeId, workType, redisDB, localWorker)));
 		}
 	}
 
