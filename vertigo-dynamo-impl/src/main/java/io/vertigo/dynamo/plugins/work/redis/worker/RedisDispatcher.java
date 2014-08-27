@@ -30,6 +30,11 @@ import io.vertigo.kernel.lang.Option;
  * @author pchretien
  */
 final class RedisDispatcher implements Runnable {
+	//A unifier avec PollWoorkTask
+	//A unifier avec PollWoorkTask
+	//A unifier avec PollWoorkTask
+	//A unifier avec PollWoorkTask
+	//A unifier avec PollWoorkTask
 	private final RedisDB redisDB;
 	//	private final String nodeId;
 	private final LocalWorker localWorker;

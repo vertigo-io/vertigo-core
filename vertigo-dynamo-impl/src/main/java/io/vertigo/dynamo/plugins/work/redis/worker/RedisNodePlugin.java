@@ -70,8 +70,8 @@ public final class RedisNodePlugin implements NodePlugin, Activeable {
 		//On enregistre le node
 		redisDB.registerNode(new Node(nodeId, true));
 
-		for (final Thread thread : dispatcherThreads) {
-			thread.start();
+		for (final Thread dispatcherThread : dispatcherThreads) {
+			dispatcherThread.start();
 		}
 	}
 

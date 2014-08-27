@@ -150,10 +150,9 @@ final class WorkQueueRestClient {
 
 	private static void checkResponseStatus(final ClientResponse response) {
 		final Status status = response.getClientResponseStatus();
-		if (status.getFamily() == Family.SUCCESSFUL) {
-			return;
+		if (status.getFamily() != Family.SUCCESSFUL) {
+			throw new RuntimeException("Une erreur est survenue : " + status.getStatusCode() + " " + status.getReasonPhrase());
 		}
-		throw new RuntimeException("Une erreur est survenue : " + status.getStatusCode() + " " + status.getReasonPhrase());
 	}
 
 }

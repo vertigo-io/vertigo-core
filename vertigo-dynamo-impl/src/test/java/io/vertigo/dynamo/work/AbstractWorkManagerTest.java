@@ -123,7 +123,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 		workManager.schedule(new DivideWork(10, 0), new WorkEngineProvider<>(DivideWorkEngine.class), workResultHanlder);
 
 		final boolean finished = workResultHanlder.waitFinish(1, warmupTime);
-		//On vérifie plusieurs  choses 
+		//On vérifie plusieurs  choses
 		// -que l'erreur remontée est bien une ArithmeticException
 		//- que l'exception est contenue dans le handler
 		Assert.assertEquals(null, workResultHanlder.getLastResult());

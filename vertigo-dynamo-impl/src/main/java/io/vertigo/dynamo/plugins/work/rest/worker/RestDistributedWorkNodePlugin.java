@@ -20,15 +20,16 @@ package io.vertigo.dynamo.plugins.work.rest.worker;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.impl.node.NodePlugin;
+import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;
 import io.vertigo.dynamo.node.Node;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -50,11 +51,13 @@ public final class RestDistributedWorkNodePlugin implements NodePlugin, Activeab
 	final Logger logger = Logger.getLogger(RestDistributedWorkNodePlugin.class);
 
 	private final List<String> workTypes;
+	private final LocalWorker localWorker = new LocalWorker(/*workersCount*/5);
 
 	private final WorkManager workManager;
 	private final WorkQueueRestClient workQueueClient; //devrait etre un plugin
 
 	private final String nodeId;
+	private final List<Thread> dispatcherThreads = new ArrayList<>();
 
 	/**
 	 * Constructeur.
@@ -75,23 +78,33 @@ public final class RestDistributedWorkNodePlugin implements NodePlugin, Activeab
 		this.workTypes = Arrays.asList(workTypes.trim().split(";"));
 		this.workManager = workManager;
 		workQueueClient = new WorkQueueRestClient(nodeId, serverUrl + "/workQueue", codecManager);
+		//---
+		for (final String workType : this.workTypes) {
+			dispatcherThreads.add(new Thread(new PollWorkTask<>( workType, workQueueClient, localWorker)));
+		}
 	}
 
 	/** {@inheritDoc} */
 	public void start() {
 		//1 pooler par type, pour éviter que l'attente lors du poll pour une file vide pénalise les autres
-		//de plus le traitment lui même sera synchrone pour que l'on ne récupère un autre Work qu'après avoir finit le premier
-		for (final String workType : workTypes) {
-			final Callable<Void> task = new PollWorkTask(workType, workQueueClient);
-			workManager.schedule(task, new ReScheduleWorkResultHandler(task, 25, workManager));//Le WorkResult permet de toujours poller les workItem, même en cas d'erreur.
-			logger.info(">>>>>> PollWorksTask " + workType + " Started");
-			System.out.println(">>>>>> PollWorksTask " + workType + " Started");
+		for (final Thread dispatcherThread : dispatcherThreads) {
+			dispatcherThread.start();
 		}
 	}
 
 	/** {@inheritDoc} */
 	public void stop() {
-		//rien
+		for (final Thread dispatcherThread : dispatcherThreads) {
+			dispatcherThread.interrupt();
+		}
+		for (final Thread dispatcherThread : dispatcherThreads) {
+			try {
+				dispatcherThread.join();
+			} catch (final InterruptedException e) {
+				//On ne fait rien
+			}
+		}
+		localWorker.close();
 	}
 
 	//-------------------------------------------------------------------------

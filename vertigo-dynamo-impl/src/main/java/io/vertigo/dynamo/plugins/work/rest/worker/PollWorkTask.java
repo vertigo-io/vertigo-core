@@ -6,32 +6,45 @@ import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 
-import java.util.concurrent.Callable;
-
 /**
  * Tache runnable permettant l'exécution d'un travail.
  * @author npiedeloup
  */
-final class PollWorkTask<WR> implements Callable<Void> {
+final class PollWorkTask<WR> implements Runnable {
+	//A unifier avec RedisDispatcher
+	//A unifier avec RedisDispatcher
+	//A unifier avec RedisDispatcher
+	//A unifier avec RedisDispatcher
 	private final WorkQueueRestClient workQueueClient;
 	private final String workType;
-	private final LocalWorker localWorker = new LocalWorker(2);
-
+	private final LocalWorker localWorker;
 	/**
 	 * Constructeur.
 	 * @param workType Type de work
 	 * @param workQueueClient Client REST
 	 */
-	PollWorkTask(final String workType, final WorkQueueRestClient workQueueClient) {
+	PollWorkTask(final String workType, final WorkQueueRestClient workQueueClient,  final LocalWorker localWorker) {
 		Assertion.checkArgNotEmpty(workType);
 		Assertion.checkNotNull(workQueueClient);
+		Assertion.checkNotNull(localWorker);
 		//---------------------------------------------------------------------
 		this.workType = workType;
 		this.workQueueClient = workQueueClient;
+		this.localWorker = localWorker;
 	}
 
 	/** {@inheritDoc} */
-	public Void call() throws Exception {
+	public void run() {
+		while (!Thread.interrupted()) {
+			doRun();
+			try {
+				Thread.sleep(10);
+			} catch (final InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+		}
+	}
+	private <WR, W> void doRun() {
 		final WorkItem workItem = workQueueClient.pollWorkItem(workType);
 		if (workItem != null) {
 			final Option<WorkResultHandler<WR>> workResultHandler = Option.<WorkResultHandler<WR>> some(new WorkResultHandler<WR>() {
@@ -49,6 +62,5 @@ final class PollWorkTask<WR> implements Callable<Void> {
 			//				final WorkItemExecutor workItemExecutor = new WorkItemExecutor(nextWorkItem);
 			//				workItemExecutor.run();
 		}
-		return null;
 	}
 }
