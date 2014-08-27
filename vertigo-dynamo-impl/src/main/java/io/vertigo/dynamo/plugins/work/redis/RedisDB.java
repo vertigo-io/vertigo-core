@@ -69,13 +69,13 @@ public final class RedisDB implements Activeable {
 
 	private static Gson createGson() {
 		return new GsonBuilder()//
-		//.setPrettyPrinting()//
-		.create();
+				//.setPrettyPrinting()//
+				.create();
 	}
 
 	private static final CodecManager codecManager = new CodecManagerImpl();
 
-	<WR, W> void putWorkItem(final String workType, final WorkItem<WR, W> workItem) {
+	public <WR, W> void putWorkItem(final String workType, final WorkItem<WR, W> workItem) {
 		Assertion.checkNotNull(workType);
 		Assertion.checkNotNull(workItem);
 		//---------------------------------------------------------------------
@@ -99,7 +99,7 @@ public final class RedisDB implements Activeable {
 		}
 	}
 
-	<WR, W> WorkItem<WR, W> pollWorkItem(final String workType, final int timeoutInSeconds) {
+	public <WR, W> WorkItem<WR, W> pollWorkItem(final String workType, final int timeoutInSeconds) {
 		Assertion.checkNotNull(workType);
 		//---------------------------------------------------------------------
 		try (Jedis jedis = jedisPool.getResource()) {
@@ -115,8 +115,7 @@ public final class RedisDB implements Activeable {
 		}
 	}
 
-
-	<WR> void putResult(final WResult<WR> result) {
+	public <WR> void putResult(final WResult<WR> result) {
 		Assertion.checkNotNull(result);
 		//---------------------------------------------------------------------
 		final Map<String, String> datas = new HashMap<>();
@@ -136,11 +135,11 @@ public final class RedisDB implements Activeable {
 		}
 	}
 
-	<WR> WResult<WR> pollResult(final int waitTimeSeconds) {
+	public <WR> WResult<WR> pollResult(final int waitTimeSeconds) {
 		try (final Jedis jedis = jedisPool.getResource()) {
 			final String workId = jedis.brpoplpush("works:done", "works:completed", waitTimeSeconds);
 			if (workId == null) {
-				return  null;
+				return null;
 			}
 			final Map<String, String> hash = jedis.hgetAll("work:" + workId);
 			final boolean succeeded = "ok".equals(hash.get("status"));
@@ -152,7 +151,7 @@ public final class RedisDB implements Activeable {
 		}
 	}
 
-	void registerNode(final Node node) {
+	public void registerNode(final Node node) {
 		Assertion.checkNotNull(node);
 		//---------------------------------------------------------------------
 		try (Jedis jedis = jedisPool.getResource()) {
@@ -161,7 +160,7 @@ public final class RedisDB implements Activeable {
 		}
 	}
 
-	List<Node> getNodes() {
+	public List<Node> getNodes() {
 		try (Jedis jedis = jedisPool.getResource()) {
 			final List<Node> nodes = new ArrayList<>();
 
@@ -190,5 +189,3 @@ public final class RedisDB implements Activeable {
 		return gson.toJson(node);
 	}
 }
-
-
