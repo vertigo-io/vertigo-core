@@ -16,60 +16,77 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.work.redis.worker;
+package io.vertigo.dynamo.plugins.work.rest.worker;
 
+import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.impl.node.NodePlugin;
 import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;
 import io.vertigo.dynamo.node.Node;
-import io.vertigo.dynamo.plugins.work.redis.RedisDB;
+import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.Option;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-/**
- * NodePlugin
- * Ce plugin permet d'exécuter des travaux en mode distribué.
- * REDIS est utilisé comme plateforme d'échanges.
- * 
- * @author pchretien
- */
-public final class RedisNodePlugin implements NodePlugin, Activeable {
-	private final RedisDB redisDB;
-	private final LocalWorker localWorker = new LocalWorker(/*workersCount*/5);
-	private final List<Thread> dispatcherThreads = new ArrayList<>();
-	private final String nodeId;
-	private final List<String> workTypes;
+import org.apache.log4j.Logger;
 
+/**
+ * Implémentation de DistributedWorkManager, pour l'execution de travaux par des Workers distant.
+ * Cette implémentation représente la partie client qui se déploie en ferme.
+ * 1- contacte la partie serveur pour récupérer les travaux qu'elle sait gérer,
+ * 2- execute la tache en synchrone exclusivement
+ * 3- retourne le résultat au serveur
+ * 
+ * @author npiedeloup, pchretien
+ */
+public final class RestNodePlugin implements NodePlugin, Activeable {
+
+	/** Log du workerNode. */
+	final Logger logger = Logger.getLogger(RestNodePlugin.class);
+
+	private final List<String> workTypes;
+	private final LocalWorker localWorker = new LocalWorker(/*workersCount*/5);
+
+	private final WorkManager workManager;
+	private final WorkQueueRestClient workQueueClient; //devrait etre un plugin
+
+	private final String nodeId;
+	private final List<Thread> dispatcherThreads = new ArrayList<>();
+
+	/**
+	 * Constructeur.
+	 * @param nodeId Identifiant du noeud
+	 * @param workTypes Types de travail gérés
+	 * @param serverUrl Url du serveur
+	 * @param workManager Manager des works
+	 * @param codecManager Manager d'encodage/decodage
+	 */
 	@Inject
-	public RedisNodePlugin(final @Named("nodeId") String nodeId, final @Named("workTypes") String workTypes, final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> password) {
+	public RestNodePlugin(@Named("nodeId") final String nodeId, @Named("workTypes") final String workTypes, @Named("serverUrl") final String serverUrl, final WorkManager workManager, final CodecManager codecManager) {
 		Assertion.checkArgNotEmpty(nodeId);
-		Assertion.checkArgNotEmpty(redisHost);
 		Assertion.checkArgNotEmpty(workTypes);
+		Assertion.checkArgNotEmpty(serverUrl);
+		Assertion.checkNotNull(workManager);
 		//---------------------------------------------------------------------
 		this.nodeId = nodeId;
-		redisDB = new RedisDB(redisHost, redisPort, password);
-		//System.out.println("RedisNodePlugin");
 		this.workTypes = Arrays.asList(workTypes.trim().split(";"));
+		this.workManager = workManager;
+		workQueueClient = new WorkQueueRestClient(nodeId, serverUrl + "/workQueue", codecManager);
 		//---
 		for (final String workType : this.workTypes) {
-			dispatcherThreads.add(new Thread(new RedisWorker(nodeId, workType, redisDB, localWorker)));
+			dispatcherThreads.add(new Thread(new RestWorker<>( workType, workQueueClient, localWorker)));
 		}
 	}
 
 	/** {@inheritDoc} */
 	public void start() {
-		//System.out.println("start node");
-		redisDB.start();
-		//On enregistre le node
-		redisDB.registerNode(new Node(nodeId, true));
-
+		//1 pooler par type, pour éviter que l'attente lors du poll pour une file vide pénalise les autres
 		for (final Thread dispatcherThread : dispatcherThreads) {
 			dispatcherThread.start();
 		}
@@ -88,18 +105,15 @@ public final class RedisNodePlugin implements NodePlugin, Activeable {
 			}
 		}
 		localWorker.close();
-		redisDB.registerNode(new Node(nodeId, false));
-		redisDB.stop();
 	}
 
-	//------------------------------------
-	//------------------------------------
-	//------------------------------------
-	//------------------------------------
+	//-------------------------------------------------------------------------
+	// Methodes appelant la workQueue distribuée.
+	// TODO: utiliser un plugin
+	//-------------------------------------------------------------------------
 
 	/** {@inheritDoc} */
 	public List<Node> getNodes() {
-		return redisDB.getNodes();
+		return Collections.singletonList(new Node(nodeId, true));
 	}
-
 }
