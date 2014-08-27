@@ -20,15 +20,10 @@ package io.vertigo.dynamo.plugins.work.rest.worker;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.impl.node.NodePlugin;
-import io.vertigo.dynamo.impl.work.WorkItem;
-import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;
 import io.vertigo.dynamo.node.Node;
-import io.vertigo.dynamo.plugins.work.rest.worker.WorkQueueRestClient.CallbackWorkResultHandler;
 import io.vertigo.dynamo.work.WorkManager;
-import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.Option;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -103,77 +98,6 @@ public final class RestDistributedWorkNodePlugin implements NodePlugin, Activeab
 	// Methodes appelant la workQueue distribuée.
 	// TODO: utiliser un plugin
 	//-------------------------------------------------------------------------
-
-	/**
-	 * Tache runnable permettant l'exécution d'un travail.
-	 * @author npiedeloup
-	 */
-	private static final class PollWorkTask<WR> implements Callable<Void> {
-		private final WorkQueueRestClient workQueueClient;
-		private final String workType;
-
-		/**
-		 * Constructeur.
-		 * @param workType Type de work
-		 * @param workQueueClient Client REST
-		 */
-		public PollWorkTask(final String workType, final WorkQueueRestClient workQueueClient) {
-			Assertion.checkArgNotEmpty(workType);
-			Assertion.checkNotNull(workQueueClient);
-			//---------------------------------------------------------------------
-			this.workType = workType;
-			this.workQueueClient = workQueueClient;
-		}
-
-		/** {@inheritDoc} */
-		public Void call() throws Exception {
-			final WorkItem nextWorkItem = workQueueClient.pollWorkItem(workType);
-			if (nextWorkItem != null) {
-				final WorkResultHandler<WR> callable = new CallbackWorkResultHandler<>(nextWorkItem.getId(), workQueueClient);
-				new LocalWorker(2).submit(nextWorkItem, Option.some(callable));
-				//On rerentre dans le WorkItemExecutor pour traiter le travail
-				//Le workResultHandler sait déjà répondre au serveur pour l'avancement du traitement
-				//				final WorkItemExecutor workItemExecutor = new WorkItemExecutor(nextWorkItem);
-				//				workItemExecutor.run();
-			}
-			return null;
-		}
-	}
-
-	private static final class ReScheduleWorkResultHandler implements WorkResultHandler<Void> {
-		private final Callable<Void> task;
-		private final long pauseMs;
-		private final WorkManager workManager;
-
-		public ReScheduleWorkResultHandler(final Callable<Void> task, final long pauseMs, final WorkManager workManager) {
-			Assertion.checkNotNull(task);
-			Assertion.checkArgument(pauseMs >= 0 && pauseMs < 1000000, "La pause est exprimé en millisecond et est >=0 et < 1000000");
-			Assertion.checkNotNull(workManager);
-			//-----------------------------------------------------------------
-			this.task = task;
-			this.pauseMs = pauseMs;
-			this.workManager = workManager;
-		}
-
-		/** {@inheritDoc} */
-		public void onStart() {
-			//rien
-		}
-
-		/** {@inheritDoc} */
-		public void onDone(final boolean suceeded, final Void result, final Throwable error) {
-			reSchedule();
-		}
-
-		private void reSchedule() {
-			try {
-				Thread.sleep(pauseMs);
-				workManager.schedule(task, this);
-			} catch (final InterruptedException e) {
-				//rien on stop
-			}
-		}
-	}
 
 	/** {@inheritDoc} */
 	public List<Node> getNodes() {

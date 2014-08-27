@@ -21,14 +21,12 @@ package io.vertigo.dynamo.plugins.work.rest.worker;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.work.WorkEngineProvider;
-import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.inject.Named;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status.Family;
 
@@ -58,7 +56,7 @@ final class WorkQueueRestClient {
 	/**
 	 * Constructeur.
 	 */
-	public WorkQueueRestClient(@Named("nodeUID") final String nodeUID, @Named("serverUrl") final String serverUrl, final CodecManager codecManager) {
+	public WorkQueueRestClient(final String nodeUID, final String serverUrl, final CodecManager codecManager) {
 		Assertion.checkArgNotEmpty(nodeUID);
 		Assertion.checkArgNotEmpty(serverUrl);
 		Assertion.checkNotNull(codecManager);
@@ -113,27 +111,9 @@ final class WorkQueueRestClient {
 		return null;
 	}
 
-	public static class CallbackWorkResultHandler<WR> implements WorkResultHandler<WR> {
-		private final WorkQueueRestClient workQueueRestClient;
-		private final String uuid;
-
-		public CallbackWorkResultHandler(final String uuid, final WorkQueueRestClient workQueueRestClient) {
-			this.uuid = uuid;
-			this.workQueueRestClient = workQueueRestClient;
-		}
-
-		public void onStart() {
-			workQueueRestClient.sendOnStart(uuid);
-		}
-
-		public void onDone(final boolean succeeded, final WR result, final Throwable error) {
-			workQueueRestClient.sendDone(uuid, succeeded, result, error);
-		}
-	}
-
-	private void sendOnStart(final String uuid) {
+	void sendOnStart(final String workId) {
 		//call methode distante
-		final WebResource remoteWebResource = locatorClient.resource(serverUrl + "/event/start/" + uuid);
+		final WebResource remoteWebResource = locatorClient.resource(serverUrl + "/event/start/" + workId);
 		try {
 			final ClientResponse response = remoteWebResource.accept(MediaType.TEXT_PLAIN).post(ClientResponse.class);
 			checkResponseStatus(response);
@@ -142,7 +122,7 @@ final class WorkQueueRestClient {
 		}
 	}
 
-	private void sendDone(final String uuid, final boolean succeeded, final Object result, final Throwable error) {
+	void sendOnDone(final String workId, final boolean succeeded, final Object result, final Throwable error) {
 		final String address;
 		final Object value;
 		if (succeeded) {
@@ -153,7 +133,7 @@ final class WorkQueueRestClient {
 			value = error;
 		}
 		//call methode distante
-		sendValue(uuid, address, value);
+		sendValue(workId, address, value);
 	}
 
 	private void sendValue(final String uuid, final String address, final Object value) {
