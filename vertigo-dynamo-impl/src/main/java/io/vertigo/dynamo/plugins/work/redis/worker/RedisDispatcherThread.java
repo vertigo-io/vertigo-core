@@ -29,11 +29,12 @@ import io.vertigo.kernel.lang.Option;
 /**
  * @author pchretien
  */
-final class RedisDispatcherThread extends Thread {
+final class RedisDispatcherThread implements Runnable {
 	private final RedisDB redisDB;
 	//	private final String nodeId;
 	private final LocalWorker localWorker;
 	private final String workType;
+	private static final int TIMEOUT_IN_SECONDS = 1;
 
 	RedisDispatcherThread(final String nodeId, final String workType, final RedisDB redisDB, final LocalWorker localWorker) {
 		Assertion.checkArgNotEmpty(nodeId);
@@ -50,18 +51,16 @@ final class RedisDispatcherThread extends Thread {
 	/** {@inheritDoc} */
 	@Override
 	public void run() {
-		while (!isInterrupted()) {
+		while (!Thread.interrupted()) {
 			doRun();
 		}
 	}
-
-	private static final int TIMEOUT_IN_SECONDS = 1;
 
 	private <WR, W> void doRun() {
 		final WorkItem<WR, W> workItem = redisDB.pollWorkItem(workType, TIMEOUT_IN_SECONDS);
 		if (workItem != null) {
 
-			final Option<WorkResultHandler<WR>> workResultHandler = Option.<WorkResultHandler<WR>> some(new WorkResultHandler<WR>(){
+			final Option<WorkResultHandler<WR>> workResultHandler = Option.<WorkResultHandler<WR>> some(new WorkResultHandler<WR>() {
 				public void onStart() {
 					// TODO Auto-generated method stub
 				}

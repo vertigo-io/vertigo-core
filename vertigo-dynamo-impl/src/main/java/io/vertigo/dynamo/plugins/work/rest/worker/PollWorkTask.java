@@ -9,9 +9,9 @@ import io.vertigo.kernel.lang.Option;
 import java.util.concurrent.Callable;
 
 /**
-	 * Tache runnable permettant l'exécution d'un travail.
-	 * @author npiedeloup
-	 */
+ * Tache runnable permettant l'exécution d'un travail.
+ * @author npiedeloup
+ */
 final class PollWorkTask<WR> implements Callable<Void> {
 	private final WorkQueueRestClient workQueueClient;
 	private final String workType;

@@ -16,15 +16,20 @@
 	   
 	   <component api="NodeManager" class="io.vertigo.dynamo.impl.node.NodeManagerImpl" >
 	            <plugin class="io.vertigo.dynamo.plugins.work.redis.worker.RedisNodePlugin">
+	            	<param name="nodeId" value="node#1-1" />
 	            	<!--param name="host" value="pub-redis-15190.us-east-1-3.4.ec2.garantiadata.com" />
 	            	<param name="port" value="15190" />
 	            	<param name="password" value="kleegroup" /-->
 	            	<param name="host" value="localhost" />
 	            	<param name="port" value="6379" />
-	            	<param name="workType" value="toto" />
-
-	            	<param name="nodeId" value="node#1" />
+	            	<param name="workTypes" value="io.vertigo.dynamo.work.mock.ThreadLocalWorkEngine;io.vertigo.dynamo.work.mock.DivideWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine " />
 	            </plugin>
+	            <!-- plugin class="io.vertigo.dynamo.plugins.work.redis.worker.RedisNodePlugin">
+	            	<param name="nodeId" value="node#1-2" />
+	            	<param name="host" value="localhost" />
+	            	<param name="port" value="6379" />
+	            	<param name="workTypes" value="io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine" />
+	            </plugin-->
 	   </component>
 	</module>
 </modules>

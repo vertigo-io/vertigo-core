@@ -88,6 +88,6 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 	private static <WR, W> String obtainWorkType(final WorkItem<WR, W> workItem) {
 		//		System.out.println(">>>>" + workItem.getWorkEngineProvider().getName());
 		//		return workItem.getWorkEngineProvider().getName();
-		return "toto";
+		return workItem.getWorkEngineProvider().getName();
 	}
 }

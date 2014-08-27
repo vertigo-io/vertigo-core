@@ -26,6 +26,8 @@ import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -41,19 +43,24 @@ import javax.inject.Named;
 public final class RedisNodePlugin implements NodePlugin, Activeable {
 	private final RedisDB redisDB;
 	private final LocalWorker localWorker = new LocalWorker(/*workersCount*/5);
-	private final Thread dispatcherThread;
+	private final List<Thread> dispatcherThreads = new ArrayList<>();
 	private final String nodeId;
+	private final List<String> workTypes;
 
 	@Inject
-	public RedisNodePlugin(final @Named("nodeId") String nodeId, final @Named("workType") String workType, final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> password) {
+	public RedisNodePlugin(final @Named("nodeId") String nodeId, final @Named("workTypes") String workTypes, final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> password) {
 		Assertion.checkArgNotEmpty(nodeId);
 		Assertion.checkArgNotEmpty(redisHost);
-		Assertion.checkArgNotEmpty(workType);
+		Assertion.checkArgNotEmpty(workTypes);
 		//---------------------------------------------------------------------
 		this.nodeId = nodeId;
 		redisDB = new RedisDB(redisHost, redisPort, password);
-		dispatcherThread = new RedisDispatcherThread(nodeId, workType, redisDB, localWorker);
 		//System.out.println("RedisNodePlugin");
+		this.workTypes = Arrays.asList(workTypes.trim().split(";"));
+		//---
+		for (final String workType : this.workTypes) {
+			dispatcherThreads.add(new Thread(new RedisDispatcherThread(nodeId, workType, redisDB, localWorker)));
+		}
 	}
 
 	/** {@inheritDoc} */
@@ -63,16 +70,22 @@ public final class RedisNodePlugin implements NodePlugin, Activeable {
 		//On enregistre le node
 		redisDB.registerNode(new Node(nodeId, true));
 
-		dispatcherThread.start();
+		for (final Thread thread : dispatcherThreads) {
+			thread.start();
+		}
 	}
 
 	/** {@inheritDoc} */
 	public void stop() {
-		dispatcherThread.interrupt();
-		try {
-			dispatcherThread.join();
-		} catch (final InterruptedException e) {
-			//On ne fait rien
+		for (final Thread dispatcherThread : dispatcherThreads) {
+			dispatcherThread.interrupt();
+		}
+		for (final Thread dispatcherThread : dispatcherThreads) {
+			try {
+				dispatcherThread.join();
+			} catch (final InterruptedException e) {
+				//On ne fait rien
+			}
 		}
 		localWorker.close();
 		redisDB.registerNode(new Node(nodeId, false));
