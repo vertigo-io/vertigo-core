@@ -21,6 +21,7 @@ package io.vertigo.dynamo.plugins.work.rest.master;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.impl.work.MasterPlugin;
 import io.vertigo.dynamo.impl.work.WorkItem;
+import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.util.Arrays;
@@ -64,12 +65,7 @@ public final class RestMasterPlugin implements MasterPlugin {
 		return workQueueRestServer;
 	}
 
-	public <WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {
-		getWorkQueueRestServer().putWorkItem(workItem);
-
-	}
-
-	public <WR> void registerCallback(final WCallback callback) {
-		getWorkQueueRestServer().registerCallback(callback);
+	public <WR, W> void putWorkItem(final WorkItem<WR, W> workItem, final WorkResultHandler<WR> workResultHandler) {
+		getWorkQueueRestServer().putWorkItem(workItem, workResultHandler);
 	}
 }

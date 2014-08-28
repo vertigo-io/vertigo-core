@@ -19,9 +19,9 @@
 package io.vertigo.dynamo.plugins.work.rest.master;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.dynamo.impl.work.MasterPlugin.WCallback;
 import io.vertigo.dynamo.impl.work.WResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
+import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.io.Serializable;
@@ -47,6 +47,7 @@ import com.google.gson.Gson;
 final class WorkQueueRestServer {
 	//pas besoin de synchronized la map, car le obtain est le seul accès et est synchronized
 	private final Map<String, BlockingQueue<WorkItem<?, ?>>> workQueueMap = new HashMap<>();
+	private final Map<String, WorkResultHandler> workResultHandlers = Collections.synchronizedMap(new HashMap<String, WorkResultHandler>());
 
 	private static final Logger LOG = Logger.getLogger(WorkQueueRestServer.class);
 
@@ -56,7 +57,6 @@ final class WorkQueueRestServer {
 	private final Set<String> activeWorkTypes = Collections.synchronizedSet(new HashSet<String>());
 	//	private final Timer checkTimeOutTimer = new Timer("WorkQueueRestServerTimeoutCheck", true);
 	private final CodecManager codecManager;
-	private WCallback myCallback;
 
 	//	private final long nodeTimeOut;
 
@@ -71,10 +71,6 @@ final class WorkQueueRestServer {
 		//---------------------------------------------------------------------
 		//	this.nodeTimeOut = nodeTimeOut;
 		this.codecManager = codecManager;
-	}
-
-	public <WR> void registerCallback(final WCallback callback) {
-		myCallback = callback;
 	}
 
 	//
@@ -92,6 +88,13 @@ final class WorkQueueRestServer {
 	//	public void stop() {
 	//		checkTimeOutTimer.cancel();
 	//	}
+	private void setResult(final WResult result) {
+		final WorkResultHandler workResultHandler = workResultHandlers.remove(result.getWorkId());
+		if (workResultHandler != null) {
+			//Que faire sinon
+			workResultHandler.onDone(result.hasSucceeded(), result.getResult(), result.getError());
+		}
+	}
 
 	/**
 	 * Signalement de vie d'un node, avec le type de work qu'il annonce.
@@ -145,7 +148,7 @@ final class WorkQueueRestServer {
 		final Object value = codecManager.getCompressedSerializationCodec().decode(serializedResult);
 		final Object result = success ? value : null;
 		final Throwable error = (Throwable) (success ? null : value);
-		myCallback.setResult(new WResult(uuid, success, result, error));
+		setResult(new WResult(uuid, success, result, error));
 		//		runningWorkInfos.getWorkResultHandler().onDone(success, result, error);
 	}
 
@@ -165,6 +168,11 @@ final class WorkQueueRestServer {
 		}
 	}
 
+	<WR, W> void putWorkItem(final WorkItem<WR, W> workItem, final WorkResultHandler<WR> workResultHandler) {
+		putWorkItem(workItem);
+		workResultHandlers.put(workItem.getId(), workResultHandler);
+	}
+
 	/**
 	 * Ajoute un travail à faire.
 	 * @param <WR> Type du résultat
@@ -172,7 +180,7 @@ final class WorkQueueRestServer {
 	 * @param workType Type du travail
 	 * @param workItem Work et WorkResultHandler
 	 */
-	<WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {
+	private <WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		//-------------------------------------------------------------------
 		try {

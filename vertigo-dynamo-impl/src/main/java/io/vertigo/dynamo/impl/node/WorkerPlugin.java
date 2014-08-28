@@ -29,8 +29,17 @@ import java.util.List;
  * @author pchretien
  */
 public interface WorkerPlugin extends Plugin {
+	/**
+	 * @return Types of work, that can be done by this worker.
+	 */
 	List<String> getWorkTypes();
 
+	/**
+	 * Polling workitem. 
+	 * @param workType 
+	 * @param timeoutInSeconds
+	 * @return Workitem or null (if timeout)
+	 */
 	<WR, W> WorkItem<WR, W> pollWorkItem(final String workType, final int timeoutInSeconds);
 
 	<WR> void putResult(final WResult<WR> result);

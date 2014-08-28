@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.work;
 
+import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.component.Plugin;
 
 import java.util.List;
@@ -28,13 +29,7 @@ import java.util.List;
  * @author npiedeloup, pchretien
  */
 public interface MasterPlugin extends Plugin {
-	<WR, W> void putWorkItem(final WorkItem<WR, W> workItem);
-
-	<WR> void registerCallback(final WCallback callback);
+	<WR, W> void putWorkItem(final WorkItem<WR, W> workItem, WorkResultHandler<WR> workResultHandler);
 
 	List<String> acceptedWorkTypes();
-
-	public interface WCallback {
-		void setResult(final WResult result);
-	}
 }

@@ -22,12 +22,16 @@ import io.vertigo.dynamo.impl.work.MasterPlugin;
 import io.vertigo.dynamo.impl.work.WResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.plugins.work.redis.RedisDB;
+import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -41,8 +45,8 @@ import javax.inject.Named;
 public final class RedisMasterPlugin implements MasterPlugin, Activeable {
 	private final RedisDB redisDB;
 	private Thread redisWatcher;
-	private WCallback myCallback;
 	private final List<String> distributedWorkTypes;
+	private final Map<String, WorkResultHandler> workResultHandlers = Collections.synchronizedMap(new HashMap<String, WorkResultHandler>());
 
 	@Inject
 	public RedisMasterPlugin(final @Named("distributedWorkTypes") String distributedWorkTypes, final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> password, final @Named("timeoutSeconds") int timeoutSeconds) {
@@ -59,6 +63,14 @@ public final class RedisMasterPlugin implements MasterPlugin, Activeable {
 		return distributedWorkTypes;
 	}
 
+	private void setResult(final WResult result) {
+		final WorkResultHandler workResultHandler = workResultHandlers.remove(result.getWorkId());
+		if (workResultHandler != null) {
+			//Que faire sinon
+			workResultHandler.onDone(result.hasSucceeded(), result.getResult(), result.getError());
+		}
+	}
+
 	private Thread createWatcher() {
 		return new Thread() {
 			/** {@inheritDoc} */
@@ -69,7 +81,7 @@ public final class RedisMasterPlugin implements MasterPlugin, Activeable {
 					final int waitTimeSeconds = 1;
 					final WResult result = pollResult(waitTimeSeconds);
 					if (result != null) {
-						myCallback.setResult(result);
+						setResult(result);
 					}
 				}
 			}
@@ -99,15 +111,12 @@ public final class RedisMasterPlugin implements MasterPlugin, Activeable {
 	}
 
 	/** {@inheritDoc} */
-	public <WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {
+	public <WR, W> void putWorkItem(final WorkItem<WR, W> workItem, final WorkResultHandler<WR> workResultHandler) {
 		redisDB.putWorkItem(workItem);
+		workResultHandlers.put(workItem.getId(), workResultHandler);
 	}
 
 	private WResult<Object> pollResult(final int waitTimeSeconds) {
 		return redisDB.pollResult(waitTimeSeconds);
-	}
-
-	public <WR> void registerCallback(final WCallback callback) {
-		this.myCallback = callback;
 	}
 }
