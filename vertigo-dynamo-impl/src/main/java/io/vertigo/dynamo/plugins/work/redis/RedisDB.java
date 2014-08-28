@@ -2,9 +2,9 @@ package io.vertigo.dynamo.plugins.work.redis;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
+import io.vertigo.dynamo.impl.work.WResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.node.Node;
-import io.vertigo.dynamo.plugins.work.WResult;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
@@ -69,8 +69,8 @@ public final class RedisDB implements Activeable {
 
 	private static Gson createGson() {
 		return new GsonBuilder()//
-		//.setPrettyPrinting()//
-		.create();
+				//.setPrettyPrinting()//
+				.create();
 	}
 
 	private static final CodecManager codecManager = new CodecManagerImpl();
@@ -79,8 +79,7 @@ public final class RedisDB implements Activeable {
 		//Todo
 	}
 
-	public <WR, W> void putWorkItem(final String workType, final WorkItem<WR, W> workItem) {
-		Assertion.checkNotNull(workType);
+	public <WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		//---------------------------------------------------------------------
 		try (Jedis jedis = jedisPool.getResource()) {
@@ -88,7 +87,7 @@ public final class RedisDB implements Activeable {
 
 			final Map<String, String> datas = new HashMap<>();
 			datas.put("work64", encode(workItem.getWork()));
-			datas.put("provider64", encode(workItem.getWorkEngineProvider().getName()));
+			datas.put("provider64", encode(workItem.getWorkType()));
 			datas.put("x-date", DateUtil.newDate().toString());
 
 			final Transaction tx = jedis.multi();
@@ -97,7 +96,7 @@ public final class RedisDB implements Activeable {
 
 			//tx.expire("work:" + workId, 70);
 			//On publie la demande de travaux
-			tx.lpush("works:todo:" + workType, workItem.getId());
+			tx.lpush("works:todo:" + workItem.getWorkType(), workItem.getId());
 
 			tx.exec();
 		}

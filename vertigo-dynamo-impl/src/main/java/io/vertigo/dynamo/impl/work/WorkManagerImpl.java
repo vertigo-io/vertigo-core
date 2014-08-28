@@ -49,9 +49,9 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	 * @param analyticsManager Manager de la performance applicative
 	 */
 	@Inject
-	public WorkManagerImpl(final @Named("workerCount") int workerCount, final Option<DistributedWorkerPlugin> distributedWorker) {
+	public WorkManagerImpl(final @Named("workerCount") int workerCount, final Option<MasterPlugin> masterPlugin) {
 		final WorkListener workListener = new WorkListenerImpl(/*analyticsManager*/);
-		coordinator = new WCoordinator(workerCount, workListener, distributedWorker);
+		coordinator = new WCoordinator(workerCount, workListener, masterPlugin);
 	}
 
 	/** {@inheritDoc} */

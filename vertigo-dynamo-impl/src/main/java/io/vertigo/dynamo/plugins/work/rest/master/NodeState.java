@@ -32,7 +32,6 @@ import java.util.Set;
  * @author npiedeloup
  */
 final class NodeState {
-
 	private final String nodeUID;
 	private final Set<String> nodeWorkTypes = Collections.synchronizedSet(new HashSet<String>());
 	private long lastSeen;

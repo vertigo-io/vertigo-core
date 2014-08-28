@@ -1,25 +1,10 @@
-/**
- * vertigo - simple java starter
- *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
- * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package io.vertigo.dynamo.plugins.work.master;
+package io.vertigo.dynamo.impl.work.worker.distributed;
 
+import io.vertigo.dynamo.impl.work.MasterPlugin;
+import io.vertigo.dynamo.impl.work.MasterPlugin.WCallback;
+import io.vertigo.dynamo.impl.work.WResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
-import io.vertigo.dynamo.plugins.work.WResult;
+import io.vertigo.dynamo.impl.work.worker.Worker;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
@@ -32,12 +17,21 @@ import java.util.concurrent.Future;
 /**
  * @author pchretien
  */
-public abstract class WQueue {
+public final class DistributedWorker implements Worker, WCallback {
+	private final MasterPlugin masterPlugin;
 	private final Map<String, WorkResultHandler> workResultHandlers = Collections.synchronizedMap(new HashMap<String, WorkResultHandler>());
 
-	public final <WR, W>  Future<WR>  submit(final String workType, final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
+	public DistributedWorker(final MasterPlugin masterPlugin) {
+		Assertion.checkNotNull(masterPlugin);
+		//---------------------------------------------------------------------
+		this.masterPlugin = masterPlugin;
+		masterPlugin.registerCallback(this);
+	}
+
+	/** {@inheritDoc} */
+	public <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
 		//1. On renseigne la demande de travaux sur le server redis
-		putWorkItem(workType, workItem);
+		masterPlugin.putWorkItem(workItem);
 		//2. On attend les notifs sur un thread séparé, la main est rendue de suite
 		return createFuture(workItem.getId(), workResultHandler);
 	}
@@ -55,6 +49,7 @@ public abstract class WQueue {
 		return future;
 	}
 
+	/** {@inheritDoc} */
 	public final void setResult(final WResult result) {
 		final WorkResultHandler workResultHandler = workResultHandlers.remove(result.getWorkId());
 		if (workResultHandler != null) {
@@ -63,7 +58,12 @@ public abstract class WQueue {
 		}
 	}
 
-	protected abstract <WR, W> void putWorkItem(final String workType, final WorkItem<WR, W> workItem) ;
-
-	public abstract <WR, W> WorkItem<WR, W> pollWorkItem(final String workType, final int timeoutInSeconds) ;
+	/**
+	 * Indique si ce type de work peut-être distribué.
+	 * @param work Travail à effectuer
+	 * @return si ce type de work peut-être distribué.
+	 */
+	public <WR, W> boolean accept(final WorkItem<WR, W> workItem) {
+		return masterPlugin.acceptedWorkTypes().contains(workItem.getWorkType());
+	}
 }

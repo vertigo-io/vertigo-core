@@ -20,6 +20,7 @@ package io.vertigo.dynamo.impl.work;
 
 import io.vertigo.dynamo.impl.work.listener.WorkListener;
 import io.vertigo.dynamo.impl.work.worker.Worker;
+import io.vertigo.dynamo.impl.work.worker.distributed.DistributedWorker;
 import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Assertion;
@@ -33,20 +34,20 @@ import java.util.concurrent.Future;
  * 
  * @author pchretien, npiedeloup
  */
-final class WCoordinator implements Worker, Closeable{
+final class WCoordinator implements Closeable {
 	private final WorkListener workListener;
-	private final Option<DistributedWorkerPlugin> distributedWorker;
+	//There is always ONE LocalWorker, but distributedWorker is optionnal
 	private final LocalWorker localWorker;
+	private final Option<DistributedWorker> distributedWorker;
 
-	WCoordinator(final int workerCount, final WorkListener workListener, final Option<DistributedWorkerPlugin> distributedWorker) {
+	WCoordinator(final int workerCount, final WorkListener workListener, final Option<MasterPlugin> masterPlugin) {
 		Assertion.checkNotNull(workListener);
-		Assertion.checkNotNull(distributedWorker);
+		Assertion.checkNotNull(masterPlugin);
 		//-----------------------------------------------------------------
 		localWorker = new LocalWorker(workerCount);
 		this.workListener = workListener;
-		this.distributedWorker = distributedWorker;
+		distributedWorker = masterPlugin.isDefined() ? Option.some(new DistributedWorker(masterPlugin.get())) : Option.<DistributedWorker> none();
 	}
-
 
 	/** {@inheritDoc} */
 	public void close() {
@@ -57,7 +58,7 @@ final class WCoordinator implements Worker, Closeable{
 	public <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
 		final Worker worker = resolveWorker(workItem);
 		//---
-		workListener.onStart(workItem.getWorkEngineProvider().getName());
+		workListener.onStart(workItem.getWorkType());
 		boolean executed = false;
 		final long start = System.currentTimeMillis();
 		try {
@@ -65,7 +66,7 @@ final class WCoordinator implements Worker, Closeable{
 			executed = true;
 			return future;
 		} finally {
-			workListener.onFinish(workItem.getWorkEngineProvider().getName(), System.currentTimeMillis() - start, executed);
+			workListener.onFinish(workItem.getWorkType(), System.currentTimeMillis() - start, executed);
 		}
 	}
 
@@ -77,7 +78,7 @@ final class WCoordinator implements Worker, Closeable{
 		 * 1- On recherche parmi les works externes 
 		 * 2- Si le travail n'est pas déclaré comme étant distribué on l'exécute localement
 		 */
-		if (distributedWorker.isDefined() && distributedWorker.get().canProcess(workItem.getWorkEngineProvider())) {
+		if (distributedWorker.isDefined() && distributedWorker.get().accept(workItem)) {
 			return distributedWorker.get();
 		}
 		return localWorker;

@@ -53,6 +53,10 @@ public final class WorkItem<WR, W> {
 		return work;
 	}
 
+	public String getWorkType() {
+		return getWorkEngineProvider().getName();
+	}
+
 	public WorkEngineProvider<WR, W> getWorkEngineProvider() {
 		return workEngineProvider;
 	}

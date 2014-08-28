@@ -36,18 +36,18 @@ import javax.inject.Inject;
  * @author npiedeloup, pchretien
  */
 public final class NodeManagerImpl implements NodeManager, Activeable {
-	private final List<NodePlugin> nodePlugins;
+	private final List<WorkerPlugin> nodePlugins;
 	private final List<Thread> dispatcherThreads = new ArrayList<>();
 	private final LocalWorker localWorker = new LocalWorker(/*workersCount*/5);
 	//private final String nodeId;
 
 	@Inject
-	public NodeManagerImpl(final List<NodePlugin> nodePlugins) {
+	public NodeManagerImpl(final List<WorkerPlugin> nodePlugins) {
 		Assertion.checkNotNull(nodePlugins);
 		//---------------------------------------------------------------------
 		this.nodePlugins = nodePlugins;
 		//---
-		for (final NodePlugin nodePlugin : this.nodePlugins) {
+		for (final WorkerPlugin nodePlugin : this.nodePlugins) {
 			for (final String workType : nodePlugin.getWorkTypes()){
 				final WWorker worker = new WWorker(workType, localWorker, nodePlugin);
 				dispatcherThreads.add(new Thread(worker));

@@ -19,17 +19,22 @@
 package io.vertigo.dynamo.plugins.work.rest.master;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.dynamo.impl.work.MasterPlugin.WCallback;
+import io.vertigo.dynamo.impl.work.WResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
-import io.vertigo.dynamo.plugins.work.WResult;
-import io.vertigo.dynamo.plugins.work.master.WQueue;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
@@ -40,6 +45,9 @@ import com.google.gson.Gson;
  * @author npiedeloup
  */
 final class WorkQueueRestServer {
+	//pas besoin de synchronized la map, car le obtain est le seul accès et est synchronized
+	private final Map<String, BlockingQueue<WorkItem<?, ?>>> workQueueMap = new HashMap<>();
+
 	private static final Logger LOG = Logger.getLogger(WorkQueueRestServer.class);
 
 	//On conserve l'état des work en cours, afin de pouvoir les relancer si besoin (avec un autre uuid)
@@ -47,8 +55,8 @@ final class WorkQueueRestServer {
 	private final ConcurrentMap<String, NodeState> knownNodes = new ConcurrentHashMap<>();
 	private final Set<String> activeWorkTypes = Collections.synchronizedSet(new HashSet<String>());
 	//	private final Timer checkTimeOutTimer = new Timer("WorkQueueRestServerTimeoutCheck", true);
-	private final WQueue queue;
 	private final CodecManager codecManager;
+	private WCallback myCallback;
 
 	//	private final long nodeTimeOut;
 
@@ -58,13 +66,17 @@ final class WorkQueueRestServer {
 	 * @param nodeTimeOut Timeout avant de considérer un noeud comme mort
 	 * @param codecManager Manager de codec
 	 */
-	public WorkQueueRestServer(final WQueue queue, final long nodeTimeOut, final CodecManager codecManager) {
-		Assertion.checkNotNull(queue);
+	public WorkQueueRestServer(final long nodeTimeOut, final CodecManager codecManager) {
+		Assertion.checkNotNull(codecManager);
 		//---------------------------------------------------------------------
-		this.queue = queue;
 		//	this.nodeTimeOut = nodeTimeOut;
 		this.codecManager = codecManager;
 	}
+
+	public <WR> void registerCallback(final WCallback callback) {
+		myCallback = callback;
+	}
+
 	//
 	//	/**
 	//	 * Démarrage du serveur.
@@ -95,10 +107,10 @@ final class WorkQueueRestServer {
 		activeWorkTypes.add(nodeWorkType);
 	}
 
-	public String pollWork(final String workType, final String nodeId) {
+	String pollWork(final String workType, final String nodeId) {
 		//---------------------------------------------------------------------
 		touchNode(nodeId, workType);
-		final WorkItem workItem = queue.pollWorkItem(workType, 10);
+		final WorkItem workItem = pollWorkItem(workType, 10);
 		final String json;
 		if (workItem != null) {
 			//			final UUID uuid = UUID.randomUUID();
@@ -115,15 +127,15 @@ final class WorkQueueRestServer {
 		return json;
 	}
 
-	public void onStart(final String uuid) {
-		LOG.info("onStart(" + uuid + ")");
+	void onStart(final String workId) {
+		LOG.info("onStart(" + workId + ")");
 		//---------------------------------------------------------------------
 		//	final RunningWorkInfos runningWorkInfos = runningWorkInfosMap.get(UUID.fromString(uuid));
 		//		Assertion.checkNotNull(runningWorkInfos, "Ce travail ({0}) n''est pas connu, ou n''est plus en cours.", uuid);
 		//		runningWorkInfos.getWorkResultHandler().onStart();
 	}
 
-	public void onDone(final boolean success, final String uuid, final String base64Result) {
+	void onDone(final boolean success, final String uuid, final String base64Result) {
 		LOG.info("onDone " + success + " : (" + uuid + ")");
 		//---------------------------------------------------------------------
 		//		final RunningWorkInfos runningWorkInfos = runningWorkInfosMap.remove(UUID.fromString(uuid));
@@ -133,11 +145,50 @@ final class WorkQueueRestServer {
 		final Object value = codecManager.getCompressedSerializationCodec().decode(serializedResult);
 		final Object result = success ? value : null;
 		final Throwable error = (Throwable) (success ? null : value);
-		queue.setResult(new WResult(uuid, success, result, error));
+		myCallback.setResult(new WResult(uuid, success, result, error));
 		//		runningWorkInfos.getWorkResultHandler().onDone(success, result, error);
 	}
 
-	public String getVersion() {
+	String getVersion() {
 		return "1.0.0";
+	}
+
+	private WorkItem<?, ?> pollWorkItem(final String workType, final int timeoutInSeconds) {
+		try {
+			//take attend qu'un élément soit disponible toutes les secondes.
+			//Poll attend (1s) qu'un élément soit disponible et sinon renvoit null
+			final WorkItem<?, ?> workItem = obtainWorkQueue(workType).poll(timeoutInSeconds, TimeUnit.SECONDS);
+			return workItem;
+		} catch (final InterruptedException e) {
+			//dans le cas d'une interruption on arrête de dépiler
+			return null;
+		}
+	}
+
+	/**
+	 * Ajoute un travail à faire.
+	 * @param <WR> Type du résultat
+	 * @param <W> Travail à effectué
+	 * @param workType Type du travail
+	 * @param workItem Work et WorkResultHandler
+	 */
+	<WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {
+		Assertion.checkNotNull(workItem);
+		//-------------------------------------------------------------------
+		try {
+			obtainWorkQueue(workItem.getWorkType()).put(workItem);
+		} catch (final InterruptedException e) {
+			//dans le cas d'une interruption on interdit d'empiler de nouveaux Works
+			throw new RuntimeException("putWorkItem", e);
+		}
+	}
+
+	private synchronized BlockingQueue<WorkItem<?, ?>> obtainWorkQueue(final String workType) {
+		BlockingQueue<WorkItem<?, ?>> workQueue = workQueueMap.get(workType);
+		if (workQueue == null) {
+			workQueue = new LinkedBlockingQueue<>();
+			workQueueMap.put(workType, workQueue);
+		}
+		return workQueue;
 	}
 }

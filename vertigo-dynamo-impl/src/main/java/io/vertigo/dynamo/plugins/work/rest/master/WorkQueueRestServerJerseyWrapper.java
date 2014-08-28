@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.work.rest.master;
 
-import io.vertigo.dynamo.impl.work.DistributedWorkerPlugin;
+import io.vertigo.dynamo.impl.work.MasterPlugin;
 import io.vertigo.kernel.Home;
 
 import javax.ws.rs.Consumes;
@@ -41,8 +41,8 @@ import com.sun.jersey.spi.resource.Singleton;
 public final class WorkQueueRestServerJerseyWrapper {
 
 	private WorkQueueRestServer getWorkQueueRestServer() {
-		final RestDistributedWorkerPlugin distributedWorkerPlugin = (RestDistributedWorkerPlugin) Home.getComponentSpace().resolve("distributedWorkerPlugin", DistributedWorkerPlugin.class);
-		return distributedWorkerPlugin.getWorkQueueRestServer();
+		final RestMasterPlugin masterPlugin = (RestMasterPlugin) Home.getComponentSpace().resolve("masterPlugin", MasterPlugin.class);
+		return masterPlugin.getWorkQueueRestServer();
 	}
 
 	@GET
