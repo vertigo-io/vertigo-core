@@ -28,7 +28,7 @@ import io.vertigo.kernel.lang.Assertion;
 public final class MyWorkResultHanlder<WR> implements WorkResultHandler<WR> {
 	private WR lastResult;
 	private Throwable lastError;
-	//compteurs 
+	//compteurs
 	private int succeededCount;
 	private int failedCount;
 	private final long start = System.currentTimeMillis();
@@ -48,12 +48,12 @@ public final class MyWorkResultHanlder<WR> implements WorkResultHandler<WR> {
 	public synchronized void onDone(final WR result, final Throwable error) {
 		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
 		//---------------------------------------------------------------------
+		lastResult = result;
+		lastError = error;
 		if (error == null) {
 			//System.out.println("onSuccess");
-			lastResult = result;
 			succeededCount++;
 		} else {
-			lastError = error;
 			failedCount++;
 		}
 		if (failedCount + succeededCount > 0 && (failedCount + succeededCount) % 1000 == 0) {
