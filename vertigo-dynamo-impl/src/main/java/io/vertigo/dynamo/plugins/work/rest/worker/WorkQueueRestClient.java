@@ -20,6 +20,7 @@ package io.vertigo.dynamo.plugins.work.rest.worker;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.impl.work.WorkItem;
+import io.vertigo.dynamo.plugins.work.WResult;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.kernel.lang.Assertion;
 
@@ -40,7 +41,7 @@ import com.sun.jersey.api.client.ClientResponse.Status;
 import com.sun.jersey.api.client.WebResource;
 
 /**
- * Plugin gérant l'api de distributedWorkQueueManager en REST avec jersey.
+ * api de distributedWorkQueueManager en REST avec jersey.
  * Pour la partie appel webService voir http://ghads.wordpress.com/2008/09/24/calling-a-rest-webservice-from-java-without-libs/
  *
  * @author npiedeloup
@@ -56,7 +57,7 @@ final class WorkQueueRestClient {
 	/**
 	 * Constructeur.
 	 */
-	public WorkQueueRestClient(final String nodeUID, final String serverUrl, final CodecManager codecManager) {
+	WorkQueueRestClient(final String nodeUID, final String serverUrl, final CodecManager codecManager) {
 		Assertion.checkArgNotEmpty(nodeUID);
 		Assertion.checkArgNotEmpty(serverUrl);
 		Assertion.checkNotNull(codecManager);
@@ -68,7 +69,7 @@ final class WorkQueueRestClient {
 		locatorClient.addFilter(new com.sun.jersey.api.client.filter.GZIPContentEncodingFilter());
 	}
 
-	public WorkItem<?, Object> pollWorkItem(final String workType) {
+	<WR, W> WorkItem<WR, W> pollWorkItem(final String workType, final int timeoutInSeconds) {
 		//call methode distante, passe le workItem à started
 		try {
 			final String jsonResult;
@@ -111,7 +112,7 @@ final class WorkQueueRestClient {
 		return null;
 	}
 
-	void sendOnStart(final String workId) {
+	void putStart(final String workId) {
 		//call methode distante
 		final WebResource remoteWebResource = locatorClient.resource(serverUrl + "/event/start/" + workId);
 		try {
@@ -122,18 +123,18 @@ final class WorkQueueRestClient {
 		}
 	}
 
-	void sendOnDone(final String workId, final boolean succeeded, final Object result, final Throwable error) {
+	<WR> void putResult(final WResult<WR> result) {
 		final String address;
 		final Object value;
-		if (succeeded) {
+		if (result.hasSucceeded()) {
 			address = serverUrl + "/event/success/";
-			value = result;
+			value = result.getResult();
 		} else {
 			address = serverUrl + "/event/success/";
-			value = error;
+			value = result.getError();
 		}
 		//call methode distante
-		sendValue(workId, address, value);
+		sendValue(result.getWorkId(), address, value);
 	}
 
 	private void sendValue(final String uuid, final String address, final Object value) {
@@ -154,5 +155,4 @@ final class WorkQueueRestClient {
 			throw new RuntimeException("Une erreur est survenue : " + status.getStatusCode() + " " + status.getReasonPhrase());
 		}
 	}
-
 }

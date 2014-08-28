@@ -18,10 +18,13 @@
  */
 package io.vertigo.dynamo.impl.node;
 
+import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;
 import io.vertigo.dynamo.node.Node;
 import io.vertigo.dynamo.node.NodeManager;
+import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -32,22 +35,69 @@ import javax.inject.Inject;
  * 
  * @author npiedeloup, pchretien
  */
-public final class NodeManagerImpl implements NodeManager {
-	//	private final List<Node> nodes;
+public final class NodeManagerImpl implements NodeManager, Activeable {
+	private final List<NodePlugin> nodePlugins;
+	private final List<Thread> dispatcherThreads = new ArrayList<>();
+	private final LocalWorker localWorker = new LocalWorker(/*workersCount*/5);
+	//private final String nodeId;
 
 	@Inject
 	public NodeManagerImpl(final List<NodePlugin> nodePlugins) {
 		Assertion.checkNotNull(nodePlugins);
 		//---------------------------------------------------------------------
-		//		final List<Node> tmpNodes = new ArrayList<>();
-		//		for (final Plugin plugin : nodePlugins) {
-		//			tmpNodes.addAll(NodePlugin.class.cast(plugin).getNodes());
-		//		}
-		//		this.nodes = Collections.unmodifiableList(tmpNodes);
+		this.nodePlugins = nodePlugins;
+		//---
+		for (final NodePlugin nodePlugin : this.nodePlugins) {
+			for (final String workType : nodePlugin.getWorkTypes()){
+				final WWorker worker = new WWorker(workType, localWorker, nodePlugin);
+				dispatcherThreads.add(new Thread(worker));
+			}
+		}
 	}
 
 	/** {@inheritDoc} */
 	public List<Node> getNodes() {
 		return null; //nodes;
+	}
+
+
+
+
+	//	private final List<String> workTypes;
+	//
+	//	@Inject
+	//	public WNodePlugin(final String nodeId, final String workTypes) {
+	//		Assertion.checkArgNotEmpty(nodeId);
+	//		Assertion.checkArgNotEmpty(workTypes);
+	//		//---------------------------------------------------------------------
+	//		this.nodeId = nodeId;
+	//		this.workTypes = Arrays.asList(workTypes.trim().split(";"));
+	//	}
+
+
+	//	public String getNodeId() {
+	//		return nodeId;
+	//	}
+
+	/** {@inheritDoc} */
+	public final void start() {
+		for (final Thread dispatcherThread : dispatcherThreads) {
+			dispatcherThread.start();
+		}
+	}
+
+	/** {@inheritDoc} */
+	public final void stop() {
+		for (final Thread dispatcherThread : dispatcherThreads) {
+			dispatcherThread.interrupt();
+		}
+		for (final Thread dispatcherThread : dispatcherThreads) {
+			try {
+				dispatcherThread.join();
+			} catch (final InterruptedException e) {
+				//On ne fait rien
+			}
+		}
+		localWorker.close();
 	}
 }

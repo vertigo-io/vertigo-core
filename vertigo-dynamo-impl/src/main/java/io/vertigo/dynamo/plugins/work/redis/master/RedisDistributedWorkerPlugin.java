@@ -20,6 +20,7 @@ package io.vertigo.dynamo.plugins.work.redis.master;
 
 import io.vertigo.dynamo.impl.work.DistributedWorkerPlugin;
 import io.vertigo.dynamo.impl.work.WorkItem;
+import io.vertigo.dynamo.plugins.work.master.WQueue;
 import io.vertigo.dynamo.plugins.work.redis.RedisDB;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.dynamo.work.WorkResultHandler;
@@ -39,12 +40,11 @@ import javax.inject.Named;
  * @author pchretien
  */
 public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlugin, Activeable {
-	//	private final int timeoutSeconds;
 	private final RedisDB redisDB;
 	/*
 	 *La map est nécessairement synchronisée.
 	 */
-	private final RedisQueue redisQueue;
+	private final WQueue queue;
 	private final Thread redisQueueWatcher;
 
 	@Inject
@@ -53,8 +53,9 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 		//---------------------------------------------------------------------
 		redisDB = new RedisDB(redisHost, redisPort, password);
 		//		this.timeoutSeconds = timeoutSeconds;
-		redisQueue = new RedisQueue(redisDB);
+		final RedisQueue redisQueue = new RedisQueue(redisDB);
 		redisQueueWatcher = new Thread(redisQueue);
+		queue=redisQueue;
 	}
 
 	/** {@inheritDoc} */
@@ -78,7 +79,7 @@ public final class RedisDistributedWorkerPlugin implements DistributedWorkerPlug
 	/** {@inheritDoc} */
 	public <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
 		final String workType = obtainWorkType(workItem);
-		return redisQueue.submit(workType, workItem, workResultHandler);
+		return queue.submit(workType, workItem, workResultHandler);
 	}
 
 	public <WR, W> boolean canProcess(final WorkEngineProvider<WR, W> workEngineProvider) {

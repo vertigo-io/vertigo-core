@@ -69,11 +69,15 @@ public final class RedisDB implements Activeable {
 
 	private static Gson createGson() {
 		return new GsonBuilder()//
-				//.setPrettyPrinting()//
-				.create();
+		//.setPrettyPrinting()//
+		.create();
 	}
 
 	private static final CodecManager codecManager = new CodecManagerImpl();
+
+	public void putStart(final String workId) {
+		//Todo
+	}
 
 	public <WR, W> void putWorkItem(final String workType, final WorkItem<WR, W> workItem) {
 		Assertion.checkNotNull(workType);

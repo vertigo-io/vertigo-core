@@ -20,15 +20,13 @@ package io.vertigo.dynamo.plugins.work.rest.worker;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.impl.node.NodePlugin;
-import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;
+import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.node.Node;
+import io.vertigo.dynamo.plugins.work.WResult;
 import io.vertigo.dynamo.work.WorkManager;
-import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -45,19 +43,11 @@ import org.apache.log4j.Logger;
  * 
  * @author npiedeloup, pchretien
  */
-public final class RestNodePlugin implements NodePlugin, Activeable {
-
-	/** Log du workerNode. */
-	final Logger logger = Logger.getLogger(RestNodePlugin.class);
-
+public final class RestNodePlugin  implements NodePlugin {
 	private final List<String> workTypes;
-	private final LocalWorker localWorker = new LocalWorker(/*workersCount*/5);
-
-	private final WorkManager workManager;
+	/** Log du workerNode. */
+	private final Logger logger = Logger.getLogger(RestNodePlugin.class);
 	private final WorkQueueRestClient workQueueClient; //devrait etre un plugin
-
-	private final String nodeId;
-	private final List<Thread> dispatcherThreads = new ArrayList<>();
 
 	/**
 	 * Constructeur.
@@ -69,51 +59,34 @@ public final class RestNodePlugin implements NodePlugin, Activeable {
 	 */
 	@Inject
 	public RestNodePlugin(@Named("nodeId") final String nodeId, @Named("workTypes") final String workTypes, @Named("serverUrl") final String serverUrl, final WorkManager workManager, final CodecManager codecManager) {
-		Assertion.checkArgNotEmpty(nodeId);
 		Assertion.checkArgNotEmpty(workTypes);
 		Assertion.checkArgNotEmpty(serverUrl);
-		Assertion.checkNotNull(workManager);
 		//---------------------------------------------------------------------
-		this.nodeId = nodeId;
 		this.workTypes = Arrays.asList(workTypes.trim().split(";"));
-		this.workManager = workManager;
 		workQueueClient = new WorkQueueRestClient(nodeId, serverUrl + "/workQueue", codecManager);
-		//---
-		for (final String workType : this.workTypes) {
-			dispatcherThreads.add(new Thread(new RestWorker<>( workType, workQueueClient, localWorker)));
-		}
 	}
 
-	/** {@inheritDoc} */
-	public void start() {
-		//1 pooler par type, pour éviter que l'attente lors du poll pour une file vide pénalise les autres
-		for (final Thread dispatcherThread : dispatcherThreads) {
-			dispatcherThread.start();
-		}
+	public List<String> getWorkTypes() {
+		return workTypes;
 	}
-
-	/** {@inheritDoc} */
-	public void stop() {
-		for (final Thread dispatcherThread : dispatcherThreads) {
-			dispatcherThread.interrupt();
-		}
-		for (final Thread dispatcherThread : dispatcherThreads) {
-			try {
-				dispatcherThread.join();
-			} catch (final InterruptedException e) {
-				//On ne fait rien
-			}
-		}
-		localWorker.close();
-	}
-
-	//-------------------------------------------------------------------------
-	// Methodes appelant la workQueue distribuée.
-	// TODO: utiliser un plugin
-	//-------------------------------------------------------------------------
 
 	/** {@inheritDoc} */
 	public List<Node> getNodes() {
-		return Collections.singletonList(new Node(nodeId, true));
+		return null; //Collections.singletonList(new Node(getNodeId(), true));
+	}
+
+	@Override
+	public <WR, W> WorkItem<WR, W> pollWorkItem(final String workType,final int timeoutInSeconds) {
+		return workQueueClient.pollWorkItem(workType, timeoutInSeconds);
+	}
+
+	@Override
+	public <WR> void putResult(final WResult<WR> result) {
+		workQueueClient.putResult(result);
+	}
+
+	@Override
+	public void putStart(final String workId) {
+		workQueueClient.putStart(workId);
 	}
 }

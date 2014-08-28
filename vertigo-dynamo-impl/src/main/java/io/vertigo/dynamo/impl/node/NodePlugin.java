@@ -18,15 +18,19 @@
  */
 package io.vertigo.dynamo.impl.node;
 
+import io.vertigo.dynamo.impl.work.WorkItem;
+import io.vertigo.dynamo.plugins.work.WResult;
 import io.vertigo.kernel.component.Plugin;
+
+import java.util.List;
 
 /**
  * NodePlugin
  * @author pchretien
  */
 public interface NodePlugin extends Plugin {
-	/**
-	 * @return Liste des noeuds
-	 */
-	//List<Node> getNodes();
+	List<String> getWorkTypes();
+	<WR,W> WorkItem<WR, W> pollWorkItem(final String workType, final int timeoutInSeconds);
+	<WR> void  putResult(final WResult<WR> result);
+	void  putStart(final String workId);
 }

@@ -21,13 +21,13 @@ package io.vertigo.dynamo.plugins.work.rest.master;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.plugins.work.WResult;
+import io.vertigo.dynamo.plugins.work.master.WQueue;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -46,40 +46,40 @@ final class WorkQueueRestServer {
 	//	private final ConcurrentMap<UUID, RunningWorkInfos> runningWorkInfosMap = new ConcurrentHashMap<>();
 	private final ConcurrentMap<String, NodeState> knownNodes = new ConcurrentHashMap<>();
 	private final Set<String> activeWorkTypes = Collections.synchronizedSet(new HashSet<String>());
-	private final Timer checkTimeOutTimer = new Timer("WorkQueueRestServerTimeoutCheck", true);
-	private final RestQueue restQueue;
+	//	private final Timer checkTimeOutTimer = new Timer("WorkQueueRestServerTimeoutCheck", true);
+	private final WQueue queue;
 	private final CodecManager codecManager;
 
 	//	private final long nodeTimeOut;
 
 	/**
 	 * Constructeur.
-	 * @param multipleWorkQueues MultipleWorkQueues
+	 * @param queue MultipleWorkQueues
 	 * @param nodeTimeOut Timeout avant de considérer un noeud comme mort
 	 * @param codecManager Manager de codec
 	 */
-	public WorkQueueRestServer(final RestQueue multipleWorkQueues, final long nodeTimeOut, final CodecManager codecManager) {
-		Assertion.checkNotNull(multipleWorkQueues);
+	public WorkQueueRestServer(final WQueue queue, final long nodeTimeOut, final CodecManager codecManager) {
+		Assertion.checkNotNull(queue);
 		//---------------------------------------------------------------------
-		this.restQueue = multipleWorkQueues;
+		this.queue = queue;
 		//	this.nodeTimeOut = nodeTimeOut;
 		this.codecManager = codecManager;
 	}
-
-	/**
-	 * Démarrage du serveur.
-	 */
-	public void start() {
-		//On lance le démon qui détecte les noeuds morts
-		//checkTimeOutTimer.scheduleAtFixedRate(new DeadNodeDetectorTask(multipleWorkQueues, nodeTimeOut, knownNodes, runningWorkInfosMap), 10 * 1000, 10 * 1000);
-	}
-
-	/**
-	 * Arret du serveur.
-	 */
-	public void stop() {
-		checkTimeOutTimer.cancel();
-	}
+	//
+	//	/**
+	//	 * Démarrage du serveur.
+	//	 */
+	//	public void start() {
+	//		//On lance le démon qui détecte les noeuds morts
+	//		//checkTimeOutTimer.scheduleAtFixedRate(new DeadNodeDetectorTask(multipleWorkQueues, nodeTimeOut, knownNodes, runningWorkInfosMap), 10 * 1000, 10 * 1000);
+	//	}
+	//
+	//	/**
+	//	 * Arret du serveur.
+	//	 */
+	//	public void stop() {
+	//		checkTimeOutTimer.cancel();
+	//	}
 
 	/**
 	 * Signalement de vie d'un node, avec le type de work qu'il annonce.
@@ -98,7 +98,7 @@ final class WorkQueueRestServer {
 	public String pollWork(final String workType, final String nodeId) {
 		//---------------------------------------------------------------------
 		touchNode(nodeId, workType);
-		final WorkItem workItem = restQueue.pollWorkItem(workType, 10);
+		final WorkItem workItem = queue.pollWorkItem(workType, 10);
 		final String json;
 		if (workItem != null) {
 			//			final UUID uuid = UUID.randomUUID();
@@ -133,81 +133,11 @@ final class WorkQueueRestServer {
 		final Object value = codecManager.getCompressedSerializationCodec().decode(serializedResult);
 		final Object result = success ? value : null;
 		final Throwable error = (Throwable) (success ? null : value);
-		restQueue.setResult(new WResult(uuid, success, result, error));
+		queue.setResult(new WResult(uuid, success, result, error));
 		//		runningWorkInfos.getWorkResultHandler().onDone(success, result, error);
 	}
 
 	public String getVersion() {
 		return "1.0.0";
 	}
-
-	//	private static class RunningWorkInfos {
-	//		private final String workType;
-	//		private final WorkItem workItem;
-	//		private final String nodeUID;
-	//
-	//		//private final long startTime;
-	//
-	//		public RunningWorkInfos(final String workType, final WorkItem workItem, final String nodeUID) {
-	//			this.workType = workType;
-	//			this.workItem = workItem;
-	//			this.nodeUID = nodeUID;
-	//			//startTime = System.currentTimeMillis();
-	//		}
-	//
-	//		public WorkResultHandler getWorkResultHandler() {
-	//			return null;
-	//		}
-	//
-	//		public WorkItem<Object, ?> getWorkItem() {
-	//			return workItem;
-	//		}
-	//
-	//		public String getWorkType() {
-	//			return workType;
-	//		}
-	//
-	//		public String getNodeUID() {
-	//			return nodeUID;
-	//		}
-	//
-	//		//		public long getStartTime() {
-	//		//			return startTime;
-	//		//		}
-	//	}
-
-	//	private static class DeadNodeDetectorTask extends TimerTask {
-	//		private final long deadNodeTimeout;
-	//		private final ConcurrentMap<UUID, RunningWorkInfos> runningWorkInfosMap;
-	//		private final ConcurrentMap<String, NodeState> knownNodes;
-	//		private final MultipleWorkQueues multipleWorkQueues;
-	//
-	//		public DeadNodeDetectorTask(final MultipleWorkQueues multipleWorkQueues, final long deadNodeTimeout, final ConcurrentMap<String, NodeState> knownNodes, final ConcurrentMap<UUID, RunningWorkInfos> runningWorkInfosMap) {
-	//			this.deadNodeTimeout = deadNodeTimeout;
-	//			this.runningWorkInfosMap = runningWorkInfosMap;
-	//			this.knownNodes = knownNodes;
-	//			this.multipleWorkQueues = multipleWorkQueues;
-	//		}
-	//
-	//		/** {@inheritDoc} */
-	//		@Override
-	//		public void run() {
-	//			final Set<String> deadNodes = new HashSet<>();
-	//			//Comme défini dans le contrat de la ConcurrentMap : l'iterator est weakly consistent : et ne lance pas de ConcurrentModificationException
-	//			for (final NodeState nodeState : knownNodes.values()) {
-	//				//sans signe de vie depuis deadNodeTimeout, on considère le noeud comme mort
-	//				if (System.currentTimeMillis() - nodeState.getLastSeenTime() > deadNodeTimeout) {
-	//					deadNodes.add(nodeState.getNodeUID());
-	//				}
-	//			}
-	//			if (!deadNodes.isEmpty()) {
-	//				LOG.info("Noeuds arrêtés : " + deadNodes);
-	//				for (final RunningWorkInfos runningWorkInfos : runningWorkInfosMap.values()) {
-	//					if (deadNodes.contains(runningWorkInfos.getNodeUID())) {
-	//						multipleWorkQueues.putWorkItem(runningWorkInfos.getWorkType(), runningWorkInfos.getWorkItem());
-	//					}
-	//				}
-	//			}
-	//		}
-	//	}
 }

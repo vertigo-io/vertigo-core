@@ -19,14 +19,14 @@
 package io.vertigo.dynamo.plugins.work.redis.worker;
 
 import io.vertigo.dynamo.impl.node.NodePlugin;
-import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;
+import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.node.Node;
+import io.vertigo.dynamo.plugins.work.WResult;
 import io.vertigo.dynamo.plugins.work.redis.RedisDB;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,26 +41,20 @@ import javax.inject.Named;
  * @author pchretien
  */
 public final class RedisNodePlugin implements NodePlugin, Activeable {
-	private final RedisDB redisDB;
-	private final LocalWorker localWorker = new LocalWorker(/*workersCount*/5);
-	private final List<Thread> dispatcherThreads = new ArrayList<>();
-	private final String nodeId;
 	private final List<String> workTypes;
+	private final RedisDB redisDB;
 
 	@Inject
-	public RedisNodePlugin(final @Named("nodeId") String nodeId, final @Named("workTypes") String workTypes, final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> password) {
-		Assertion.checkArgNotEmpty(nodeId);
-		Assertion.checkArgNotEmpty(redisHost);
+	public RedisNodePlugin(@Named("nodeId") final String nodeId,final @Named("workTypes") String workTypes, final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> password) {
 		Assertion.checkArgNotEmpty(workTypes);
+		Assertion.checkArgNotEmpty(redisHost);
 		//---------------------------------------------------------------------
-		this.nodeId = nodeId;
-		redisDB = new RedisDB(redisHost, redisPort, password);
-		//System.out.println("RedisNodePlugin");
 		this.workTypes = Arrays.asList(workTypes.trim().split(";"));
-		//---
-		for (final String workType : this.workTypes) {
-			dispatcherThreads.add(new Thread(new RedisWorker(nodeId, workType, redisDB, localWorker)));
-		}
+		redisDB = new RedisDB(redisHost, redisPort, password);
+	}
+
+	public List<String> getWorkTypes() {
+		return workTypes;
 	}
 
 	/** {@inheritDoc} */
@@ -68,38 +62,35 @@ public final class RedisNodePlugin implements NodePlugin, Activeable {
 		//System.out.println("start node");
 		redisDB.start();
 		//On enregistre le node
-		redisDB.registerNode(new Node(nodeId, true));
-
-		for (final Thread dispatcherThread : dispatcherThreads) {
-			dispatcherThread.start();
-		}
+		//redisDB.registerNode(new Node(getNodeId(), true));
 	}
 
 	/** {@inheritDoc} */
 	public void stop() {
-		for (final Thread dispatcherThread : dispatcherThreads) {
-			dispatcherThread.interrupt();
-		}
-		for (final Thread dispatcherThread : dispatcherThreads) {
-			try {
-				dispatcherThread.join();
-			} catch (final InterruptedException e) {
-				//On ne fait rien
-			}
-		}
-		localWorker.close();
-		redisDB.registerNode(new Node(nodeId, false));
+		//redisDB.registerNode(new Node(getNodeId(), false));
 		redisDB.stop();
 	}
 
-	//------------------------------------
-	//------------------------------------
-	//------------------------------------
-	//------------------------------------
 
 	/** {@inheritDoc} */
 	public List<Node> getNodes() {
 		return redisDB.getNodes();
 	}
 
+
+	public <WR, W> WorkItem<WR, W> pollWorkItem(final String workType,	final int timeoutInSeconds) {
+		return redisDB.pollWorkItem(workType, timeoutInSeconds);
+	}
+
+
+	@Override
+	public <WR> void putResult(final WResult<WR> result) {
+		redisDB.putResult(result);
+	}
+
+
+	@Override
+	public void putStart(final String workId) {
+		redisDB.putStart(workId);
+	}
 }
