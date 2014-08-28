@@ -20,6 +20,9 @@ package io.vertigo.dynamo.impl.work;
 
 import io.vertigo.dynamo.impl.work.listener.WorkListener;
 import io.vertigo.dynamo.impl.work.listener.WorkListenerImpl;
+import io.vertigo.dynamo.impl.work.worker.Worker;
+import io.vertigo.dynamo.impl.work.worker.distributed.DistributedWorker;
+import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;
 import io.vertigo.dynamo.work.WorkEngine;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.dynamo.work.WorkManager;
@@ -42,7 +45,10 @@ import javax.inject.Named;
  * @author pchretien, npiedeloup
  */
 public final class WorkManagerImpl implements WorkManager, Activeable {
-	private final WCoordinator coordinator;
+	private final WorkListener workListener;
+	//There is always ONE LocalWorker, but distributedWorker is optionnal
+	private final LocalWorker localWorker;
+	private final Option<DistributedWorker> distributedWorker;
 
 	/**
 	 * Constructeur.
@@ -50,8 +56,11 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	 */
 	@Inject
 	public WorkManagerImpl(final @Named("workerCount") int workerCount, final Option<MasterPlugin> masterPlugin) {
-		final WorkListener workListener = new WorkListenerImpl(/*analyticsManager*/);
-		coordinator = new WCoordinator(workerCount, workListener, masterPlugin);
+		Assertion.checkNotNull(masterPlugin);
+		//-----------------------------------------------------------------
+		workListener = new WorkListenerImpl(/*analyticsManager*/);
+		localWorker = new LocalWorker(workerCount);
+		distributedWorker = masterPlugin.isDefined() ? Option.some(new DistributedWorker(masterPlugin.get())) : Option.<DistributedWorker> none();
 	}
 
 	/** {@inheritDoc} */
@@ -62,7 +71,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 
 	/** {@inheritDoc} */
 	public void stop() {
-		coordinator.close();
+		localWorker.close();
 	}
 
 	private static String createWorkId() {
@@ -75,7 +84,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		Assertion.checkNotNull(workEngineProvider);
 		//---------------------------------------------------------------------
 		final WorkItem<WR, W> workItem = new WorkItem<>(createWorkId(), work, workEngineProvider);
-		final Future<WR> result = coordinator.submit(workItem, Option.<WorkResultHandler<WR>> none());
+		final Future<WR> result = submit(workItem, Option.<WorkResultHandler<WR>> none());
 		try {
 			return result.get();
 		} catch (final ExecutionException e) {
@@ -94,7 +103,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		Assertion.checkNotNull(workResultHandler);
 		//---------------------------------------------------------------------
 		final WorkItem<WR, W> workItem = new WorkItem<>(createWorkId(), work, workEngineProvider);
-		coordinator.submit(workItem, Option.some(workResultHandler));
+		submit(workItem, Option.some(workResultHandler));
 	}
 
 	public <WR, W> void schedule(final Callable<WR> callable, final WorkResultHandler<WR> workResultHandler) {
@@ -112,6 +121,37 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		});
 
 		final WorkItem<WR, W> workItem = new WorkItem<>(createWorkId(), null, workEngineProvider);
-		coordinator.submit(workItem, Option.some(workResultHandler));
+		submit(workItem, Option.some(workResultHandler));
+	}
+
+	//-------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
+	private <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
+		final Worker worker = resolveWorker(workItem);
+		//---
+		workListener.onStart(workItem.getWorkType());
+		boolean executed = false;
+		final long start = System.currentTimeMillis();
+		try {
+			final Future<WR> future = worker.submit(workItem, workResultHandler);
+			executed = true;
+			return future;
+		} finally {
+			workListener.onFinish(workItem.getWorkType(), System.currentTimeMillis() - start, executed);
+		}
+	}
+
+	private <WR, W> Worker resolveWorker(final WorkItem<WR, W> workItem) {
+		Assertion.checkNotNull(workItem);
+		//----------------------------------------------------------------------
+		/* 
+		 * On recherche un Worker capable d'effectuer le travail demandé.
+		 * 1- On recherche parmi les works externes 
+		 * 2- Si le travail n'est pas déclaré comme étant distribué on l'exécute localement
+		 */
+		if (distributedWorker.isDefined() && distributedWorker.get().accept(workItem)) {
+			return distributedWorker.get();
+		}
+		return localWorker;
 	}
 }
