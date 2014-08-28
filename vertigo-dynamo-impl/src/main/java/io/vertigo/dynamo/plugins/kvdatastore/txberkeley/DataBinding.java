@@ -33,7 +33,7 @@ import com.sleepycat.bind.tuple.TupleOutput;
  *
  * @author pchretien
  */
-final class DataBinding extends TupleBinding {
+final class DataBinding extends TupleBinding<Object> {
 	/** {@inheritDoc} */
 	@Override
 	public Object entryToObject(final TupleInput ti) {

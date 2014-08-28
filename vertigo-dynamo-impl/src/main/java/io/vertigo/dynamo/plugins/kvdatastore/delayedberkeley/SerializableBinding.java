@@ -37,8 +37,9 @@ final class SerializableBinding extends TupleBinding<Serializable> {
 	/**
 	 * @param codec codec de serialization
 	 */
-	public SerializableBinding(final Codec<Serializable, byte[]> codec) {
+	SerializableBinding(final Codec<Serializable, byte[]> codec) {
 		Assertion.checkNotNull(codec);
+		//---------------------------------------------------------------------
 		this.codec = codec;
 	}
 
@@ -47,6 +48,7 @@ final class SerializableBinding extends TupleBinding<Serializable> {
 	public Serializable entryToObject(final TupleInput ti) {
 		final String prefix = ti.readString();
 		Assertion.checkArgument(PREFIX.equals(prefix), "L'entrée n'est pas du bon type {0}", prefix);
+		//---------------------------------------------------------------------
 		try {
 			final int size = ti.readInt();
 			final byte[] buffer = new byte[size];
