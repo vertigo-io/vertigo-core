@@ -130,7 +130,7 @@ final class WorkQueueRestClient {
 			address = serverUrl + "/event/success/";
 			value = result.getResult();
 		} else {
-			address = serverUrl + "/event/success/";
+			address = serverUrl + "/event/failure/";
 			value = result.getError();
 		}
 		//call methode distante

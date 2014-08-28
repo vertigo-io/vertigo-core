@@ -92,7 +92,7 @@ final class WorkQueueRestServer {
 		final WorkResultHandler workResultHandler = workResultHandlers.remove(result.getWorkId());
 		if (workResultHandler != null) {
 			//Que faire sinon
-			workResultHandler.onDone(result.hasSucceeded(), result.getResult(), result.getError());
+			workResultHandler.onDone(result.getResult(), result.getError());
 		}
 	}
 
@@ -138,8 +138,8 @@ final class WorkQueueRestServer {
 		//		runningWorkInfos.getWorkResultHandler().onStart();
 	}
 
-	void onDone(final boolean success, final String uuid, final String base64Result) {
-		LOG.info("onDone " + success + " : (" + uuid + ")");
+	void onDone(final boolean success, final String workId, final String base64Result) {
+		LOG.info("onDone " + success + " : (" + workId + ")");
 		//---------------------------------------------------------------------
 		//		final RunningWorkInfos runningWorkInfos = runningWorkInfosMap.remove(UUID.fromString(uuid));
 		//		Assertion.checkNotNull(runningWorkInfos, "Ce travail ({0}) n''est pas connu, ou n''est plus en cours.", uuid);
@@ -148,7 +148,7 @@ final class WorkQueueRestServer {
 		final Object value = codecManager.getCompressedSerializationCodec().decode(serializedResult);
 		final Object result = success ? value : null;
 		final Throwable error = (Throwable) (success ? null : value);
-		setResult(new WResult(uuid, success, result, error));
+		setResult(new WResult(workId, result, error));
 		//		runningWorkInfos.getWorkResultHandler().onDone(success, result, error);
 	}
 

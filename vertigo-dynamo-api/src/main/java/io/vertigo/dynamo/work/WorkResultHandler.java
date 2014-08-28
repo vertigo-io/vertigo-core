@@ -35,5 +35,5 @@ public interface WorkResultHandler<WR> {
 	 * @param result Résultat de l'excution (null si echec)
 	 * @param error  Exception (null si succès)
 	 */
-	void onDone(final boolean succeeded, final WR result, final Throwable error);
+	void onDone(final WR result, final Throwable error);
 }

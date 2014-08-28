@@ -67,7 +67,7 @@ public final class RedisMasterPlugin implements MasterPlugin, Activeable {
 		final WorkResultHandler workResultHandler = workResultHandlers.remove(result.getWorkId());
 		if (workResultHandler != null) {
 			//Que faire sinon
-			workResultHandler.onDone(result.hasSucceeded(), result.getResult(), result.getError());
+			workResultHandler.onDone(result.getResult(), result.getError());
 		}
 	}
 

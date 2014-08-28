@@ -145,12 +145,12 @@ public final class RedisDB implements Activeable {
 				return null;
 			}
 			final Map<String, String> hash = jedis.hgetAll("work:" + workId);
-			final boolean succeeded = "ok".equals(hash.get("status"));
+			//final boolean succeeded = "ok".equals(hash.get("status"));
 			final WR value = (WR) decode(hash.get("result"));
 			final Throwable error = (Throwable) decode(jedis.hget("work:" + workId, "error"));
 			//et on détruit le work (ou bien on l'archive ???
 			jedis.del("work:" + workId);
-			return new WResult<>(workId, succeeded, value, error);
+			return new WResult<>(workId, value, error);
 		}
 	}
 

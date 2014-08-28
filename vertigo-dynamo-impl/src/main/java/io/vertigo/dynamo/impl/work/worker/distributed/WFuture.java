@@ -31,25 +31,17 @@ final class WFuture<WR> implements Future<WR>, WorkResultHandler<WR> {
 		redirect = null;
 	}
 
-	public void onDone(final boolean succeeded, final WR result, final Throwable error) {
-		if (succeeded) {
-			Assertion.checkArgument(result != null, "when succeeded,  a result is required");
-			Assertion.checkArgument(error == null, "when succeeded, an error is not accepted");
-		} else {
-			Assertion.checkArgument(error != null, "when failed, an error is required");
-			Assertion.checkArgument(result == null, "when failed, a result is not accepted");
-		}
+	public void onDone(final WR result, final Throwable error) {
+		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
+		//---------------------------------------------------------------------
 		//---------------------------------------------------------------------
 		if (done.compareAndSet(false, true)) {
-			if (succeeded) {
-				myResult = result;
-			} else {
-				myError = error;
-			}
+			myResult = result;
+			myError = error;
 			countDownLatch.countDown();
 		}
 		if (redirect != null) {
-			redirect.onDone(succeeded, result, error);
+			redirect.onDone(result, error);
 		}
 	}
 

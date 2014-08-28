@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.work;
 
+import io.vertigo.kernel.lang.Assertion;
+
 /**
  * Handler unique permettant de collecter les infos relatives à l'exécution des tests.
  * 
@@ -43,8 +45,10 @@ public final class MyWorkResultHanlder<WR> implements WorkResultHandler<WR> {
 		return lastError;
 	}
 
-	public synchronized void onDone(final boolean succeeded, final WR result, final Throwable error) {
-		if (succeeded) {
+	public synchronized void onDone(final WR result, final Throwable error) {
+		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
+		//---------------------------------------------------------------------
+		if (error == null) {
 			//System.out.println("onSuccess");
 			lastResult = result;
 			succeededCount++;
