@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.plugins.work.rest.worker;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.dynamo.impl.work.WResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.kernel.lang.Assertion;
@@ -123,18 +122,21 @@ final class WorkQueueRestClient {
 		}
 	}
 
-	<WR> void putResult(final WResult<WR> result) {
+	<WR> void putResult(final String workId, final WR result, final Throwable error) {
+		Assertion.checkArgNotEmpty(workId);
+		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
+		//---------------------------------------------------------------------		
 		final String address;
 		final Object value;
-		if (result.hasSucceeded()) {
+		if (error == null) {
 			address = serverUrl + "/event/success/";
-			value = result.getResult();
+			value = result;
 		} else {
 			address = serverUrl + "/event/failure/";
-			value = result.getError();
+			value = error;
 		}
 		//call methode distante
-		sendValue(result.getWorkId(), address, value);
+		sendValue(workId, address, value);
 	}
 
 	private void sendValue(final String uuid, final String address, final Object value) {

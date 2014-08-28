@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.impl.node;
 
-import io.vertigo.dynamo.impl.work.WResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.kernel.component.Plugin;
 
@@ -42,7 +41,7 @@ public interface WorkerPlugin extends Plugin {
 	 */
 	<WR, W> WorkItem<WR, W> pollWorkItem(final String workType, final int timeoutInSeconds);
 
-	<WR> void putResult(final WResult<WR> result);
+	<WR> void putResult(final String workId, WR result, Throwable error);
 
 	void putStart(final String workId);
 }

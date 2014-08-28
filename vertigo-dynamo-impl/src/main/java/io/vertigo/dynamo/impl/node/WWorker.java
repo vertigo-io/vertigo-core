@@ -1,6 +1,5 @@
 package io.vertigo.dynamo.impl.node;
 
-import io.vertigo.dynamo.impl.work.WResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;
 import io.vertigo.dynamo.work.WorkResultHandler;
@@ -43,7 +42,7 @@ final class WWorker implements Runnable {
 				}
 
 				public void onDone(final WR result, final Throwable error) {
-					workerPlugin.putResult(new WResult(workItem.getId(), result, error));
+					workerPlugin.putResult(workItem.getId(), result, error);
 				}
 			});
 			//---Et on fait executer par le workerLocalredisDB

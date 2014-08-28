@@ -20,7 +20,6 @@ package io.vertigo.dynamo.plugins.work.rest.worker;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.impl.node.WorkerPlugin;
-import io.vertigo.dynamo.impl.work.WResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.node.Node;
 import io.vertigo.dynamo.work.WorkManager;
@@ -78,8 +77,8 @@ public final class RestWorkerPlugin implements WorkerPlugin {
 	}
 
 	/** {@inheritDoc} */
-	public <WR> void putResult(final WResult<WR> result) {
-		workQueueClient.putResult(result);
+	public <WR> void putResult(final String workId, final WR result, final Throwable error) {
+		workQueueClient.putResult(workId, result, error);
 	}
 
 	/** {@inheritDoc} */

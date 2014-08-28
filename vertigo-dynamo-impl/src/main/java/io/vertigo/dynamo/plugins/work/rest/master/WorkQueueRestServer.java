@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.plugins.work.rest.master;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.dynamo.impl.work.WResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Assertion;
@@ -88,11 +87,14 @@ final class WorkQueueRestServer {
 	//	public void stop() {
 	//		checkTimeOutTimer.cancel();
 	//	}
-	private void setResult(final WResult result) {
-		final WorkResultHandler workResultHandler = workResultHandlers.remove(result.getWorkId());
+	private <WR> void setResult(final String workId, final WR result, final Throwable error) {
+		Assertion.checkArgNotEmpty(workId);
+		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
+		//---------------------------------------------------------------------		
+		final WorkResultHandler workResultHandler = workResultHandlers.remove(workId);
 		if (workResultHandler != null) {
 			//Que faire sinon
-			workResultHandler.onDone(result.getResult(), result.getError());
+			workResultHandler.onDone(result, error);
 		}
 	}
 
@@ -148,7 +150,7 @@ final class WorkQueueRestServer {
 		final Object value = codecManager.getCompressedSerializationCodec().decode(serializedResult);
 		final Object result = success ? value : null;
 		final Throwable error = (Throwable) (success ? null : value);
-		setResult(new WResult(workId, result, error));
+		setResult(workId, result, error);
 		//		runningWorkInfos.getWorkResultHandler().onDone(success, result, error);
 	}
 

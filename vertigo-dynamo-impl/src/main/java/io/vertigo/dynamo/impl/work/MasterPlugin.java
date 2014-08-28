@@ -24,7 +24,9 @@ import io.vertigo.kernel.component.Plugin;
 import java.util.List;
 
 /**
- * Gestion des Workers distribués.
+ * Master-Worker pattern.
+ * The master dispatch the works.
+ * The workers execute all the works. 
  * 
  * @author npiedeloup, pchretien
  */

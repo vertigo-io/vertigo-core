@@ -2,7 +2,6 @@ package io.vertigo.dynamo.plugins.work.redis;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
-import io.vertigo.dynamo.impl.work.WResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.node.Node;
 import io.vertigo.dynamo.work.WorkEngineProvider;
@@ -118,27 +117,28 @@ public final class RedisDB implements Activeable {
 		}
 	}
 
-	public <WR> void putResult(final WResult<WR> result) {
-		Assertion.checkNotNull(result);
-		//---------------------------------------------------------------------
+	public <WR> void putResult(final String workId, final WR result, final Throwable error) {
+		Assertion.checkArgNotEmpty(workId);
+		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
+		//---------------------------------------------------------------------		
 		final Map<String, String> datas = new HashMap<>();
 		try (Jedis jedis = jedisPool.getResource()) {
-			if (result.hasSucceeded()) {
-				datas.put("result", encode(result.getResult()));
+			if (error == null) {
+				datas.put("result", encode(result));
 				datas.put("status", "ok");
 			} else {
-				datas.put("error", encode(result.getError()));
+				datas.put("error", encode(error));
 				datas.put("status", "ko");
 			}
 			final Transaction tx = jedis.multi();
-			tx.hmset("work:" + result.getWorkId(), datas);
-			tx.lrem("works:in progress", 0, result.getWorkId());
-			tx.lpush("works:done", result.getWorkId());
+			tx.hmset("work:" + workId, datas);
+			tx.lrem("works:in progress", 0, workId);
+			tx.lpush("works:done", workId);
 			tx.exec();
 		}
 	}
 
-	public <WR> WResult<WR> pollResult(final int waitTimeSeconds) {
+	public <WR> RedisResult<WR> pollResult(final int waitTimeSeconds) {
 		try (final Jedis jedis = jedisPool.getResource()) {
 			final String workId = jedis.brpoplpush("works:done", "works:completed", waitTimeSeconds);
 			if (workId == null) {
@@ -150,7 +150,7 @@ public final class RedisDB implements Activeable {
 			final Throwable error = (Throwable) decode(jedis.hget("work:" + workId, "error"));
 			//et on détruit le work (ou bien on l'archive ???
 			jedis.del("work:" + workId);
-			return new WResult<>(workId, value, error);
+			return new RedisResult<>(workId, value, error);
 		}
 	}
 
@@ -191,4 +191,23 @@ public final class RedisDB implements Activeable {
 	private static String toJson(final Node node) {
 		return gson.toJson(node);
 	}
+
+	/**
+	 * @author pchretien
+	 */
+	public static final class RedisResult<WR> {
+		public final String workId;
+		public final Throwable error;
+		public final WR result;
+
+		private RedisResult(final String workId, final WR result, final Throwable error) {
+			Assertion.checkArgNotEmpty(workId);
+			Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
+			//---------------------------------------------------------------------
+			this.workId = workId;
+			this.error = error;
+			this.result = result;
+		}
+	}
+
 }

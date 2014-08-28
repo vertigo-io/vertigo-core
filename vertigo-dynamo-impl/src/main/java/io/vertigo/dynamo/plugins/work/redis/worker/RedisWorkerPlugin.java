@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.plugins.work.redis.worker;
 
 import io.vertigo.dynamo.impl.node.WorkerPlugin;
-import io.vertigo.dynamo.impl.work.WResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.node.Node;
 import io.vertigo.dynamo.plugins.work.redis.RedisDB;
@@ -82,8 +81,8 @@ public final class RedisWorkerPlugin implements WorkerPlugin, Activeable {
 	}
 
 	/** {@inheritDoc} */
-	public <WR> void putResult(final WResult<WR> result) {
-		redisDB.putResult(result);
+	public <WR> void putResult(final String workId, final WR result, final Throwable error) {
+		redisDB.putResult(workId, result, error);
 	}
 
 	/** {@inheritDoc} */

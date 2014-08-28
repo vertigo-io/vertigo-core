@@ -19,9 +19,9 @@
 package io.vertigo.dynamo.plugins.work.redis.master;
 
 import io.vertigo.dynamo.impl.work.MasterPlugin;
-import io.vertigo.dynamo.impl.work.WResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.plugins.work.redis.RedisDB;
+import io.vertigo.dynamo.plugins.work.redis.RedisDB.RedisResult;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
@@ -63,11 +63,14 @@ public final class RedisMasterPlugin implements MasterPlugin, Activeable {
 		return distributedWorkTypes;
 	}
 
-	private void setResult(final WResult result) {
-		final WorkResultHandler workResultHandler = workResultHandlers.remove(result.getWorkId());
+	private <WR> void setResult(final String workId, final WR result, final Throwable error) {
+		Assertion.checkArgNotEmpty(workId);
+		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
+		//---------------------------------------------------------------------		
+		final WorkResultHandler workResultHandler = workResultHandlers.remove(workId);
 		if (workResultHandler != null) {
 			//Que faire sinon
-			workResultHandler.onDone(result.getResult(), result.getError());
+			workResultHandler.onDone(result, error);
 		}
 	}
 
@@ -79,9 +82,9 @@ public final class RedisMasterPlugin implements MasterPlugin, Activeable {
 				while (!Thread.interrupted()) {
 					//On attend le résultat (par tranches de 1s)
 					final int waitTimeSeconds = 1;
-					final WResult result = pollResult(waitTimeSeconds);
-					if (result != null) {
-						setResult(result);
+					final RedisResult redisResult = redisDB.pollResult(waitTimeSeconds);
+					if (redisResult != null) {
+						setResult(redisResult.workId, redisResult.result, redisResult.error);
 					}
 				}
 			}
@@ -114,9 +117,5 @@ public final class RedisMasterPlugin implements MasterPlugin, Activeable {
 	public <WR, W> void putWorkItem(final WorkItem<WR, W> workItem, final WorkResultHandler<WR> workResultHandler) {
 		redisDB.putWorkItem(workItem);
 		workResultHandlers.put(workItem.getId(), workResultHandler);
-	}
-
-	private WResult<Object> pollResult(final int waitTimeSeconds) {
-		return redisDB.pollResult(waitTimeSeconds);
 	}
 }
