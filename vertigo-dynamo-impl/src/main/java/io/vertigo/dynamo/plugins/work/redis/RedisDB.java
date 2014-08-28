@@ -21,9 +21,6 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Transaction;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 /**
  * @author pchretien
  */
@@ -62,14 +59,6 @@ public final class RedisDB implements Activeable {
 		try (final Jedis jedis = jedisPool.getResource()) {
 			jedis.flushAll();
 		}
-	}
-
-	private static final Gson gson = createGson();
-
-	private static Gson createGson() {
-		return new GsonBuilder()//
-				//.setPrettyPrinting()//
-				.create();
 	}
 
 	private static final CodecManager codecManager = new CodecManagerImpl();
@@ -120,7 +109,7 @@ public final class RedisDB implements Activeable {
 	public <WR> void putResult(final String workId, final WR result, final Throwable error) {
 		Assertion.checkArgNotEmpty(workId);
 		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
-		//---------------------------------------------------------------------		
+		//---------------------------------------------------------------------
 		final Map<String, String> datas = new HashMap<>();
 		try (Jedis jedis = jedisPool.getResource()) {
 			if (error == null) {
@@ -159,7 +148,10 @@ public final class RedisDB implements Activeable {
 		//---------------------------------------------------------------------
 		try (Jedis jedis = jedisPool.getResource()) {
 			jedis.lpush("nodes", node.getUID());
-			jedis.hset("node:" + node.getUID(), "json", toJson(node));
+			final Map<String, String> hash = new HashMap<>();
+			hash.put("id", node.getUID());
+			hash.put("active", node.isActive()?"true":"false");
+			jedis.hmset("node:" + node.getUID(), hash);
 		}
 	}
 
@@ -167,10 +159,10 @@ public final class RedisDB implements Activeable {
 		try (Jedis jedis = jedisPool.getResource()) {
 			final List<Node> nodes = new ArrayList<>();
 
-			final List<String> nodeKeys = jedis.lrange("nodes", -1, -1);
-			for (final String nodeKey : nodeKeys) {
-				final String json = jedis.hget(nodeKey, "json");
-				nodes.add(toNode(json));
+			final List<String> nodeIds= jedis.lrange("nodes", -1, -1);
+			for (final String nodeId : nodeIds) {
+				final Map<String, String> hash = jedis.hgetAll(nodeId);
+				nodes.add(new Node(hash.get("id"), Boolean.valueOf(hash.get("active"))));
 			}
 			return nodes;
 		}
@@ -184,13 +176,6 @@ public final class RedisDB implements Activeable {
 		return codecManager.getSerializationCodec().decode(codecManager.getBase64Codec().decode(encoded));
 	}
 
-	private static Node toNode(final String json) {
-		return gson.fromJson(json, Node.class);
-	}
-
-	private static String toJson(final Node node) {
-		return gson.toJson(node);
-	}
 
 	/**
 	 * @author pchretien
