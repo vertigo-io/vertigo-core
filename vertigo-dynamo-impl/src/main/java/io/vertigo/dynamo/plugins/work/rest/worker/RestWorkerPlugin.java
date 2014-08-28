@@ -42,7 +42,7 @@ import javax.inject.Named;
  */
 public final class RestWorkerPlugin implements WorkerPlugin {
 	private final List<String> workTypes;
-	private final WorkQueueRestClient workQueueClient; //devrait etre un plugin
+	private final RestQueueClient workQueueClient; //devrait etre un plugin
 
 	/**
 	 * Constructeur.
@@ -58,7 +58,7 @@ public final class RestWorkerPlugin implements WorkerPlugin {
 		Assertion.checkArgNotEmpty(serverUrl);
 		//---------------------------------------------------------------------
 		this.workTypes = Arrays.asList(workTypes.trim().split(";"));
-		workQueueClient = new WorkQueueRestClient(nodeId, serverUrl + "/workQueue", codecManager);
+		workQueueClient = new RestQueueClient(nodeId, serverUrl + "/workQueue", codecManager);
 	}
 
 	/** {@inheritDoc} */

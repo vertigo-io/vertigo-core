@@ -37,7 +37,7 @@ import javax.inject.Named;
  */
 public final class RestMasterPlugin implements MasterPlugin {
 	//	private final long timeoutSeconds;
-	private final WorkQueueRestServer workQueueRestServer;
+	private final RestQueueServer workQueueRestServer;
 	private final List<String> distributedWorkTypes;
 
 	/**
@@ -53,7 +53,7 @@ public final class RestMasterPlugin implements MasterPlugin {
 		//---------------------------------------------------------------------
 		//	this.timeoutSeconds = timeoutSeconds;
 		this.distributedWorkTypes = Arrays.asList(distributedWorkTypes.split(";"));
-		workQueueRestServer = new WorkQueueRestServer(20 * 1000, codecManager);
+		workQueueRestServer = new RestQueueServer(20 * 1000, codecManager);
 	}
 
 	/** {@inheritDoc} */
@@ -61,7 +61,7 @@ public final class RestMasterPlugin implements MasterPlugin {
 		return distributedWorkTypes;
 	}
 
-	WorkQueueRestServer getWorkQueueRestServer() {
+	RestQueueServer getWorkQueueRestServer() {
 		return workQueueRestServer;
 	}
 
