@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.impl.node;
 
-import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;
+import io.vertigo.dynamo.impl.work.worker.local.LocalCoordinator;
 import io.vertigo.dynamo.node.Node;
 import io.vertigo.dynamo.node.NodeManager;
 import io.vertigo.kernel.lang.Activeable;
@@ -38,7 +38,7 @@ import javax.inject.Inject;
 public final class NodeManagerImpl implements NodeManager, Activeable {
 	private final List<WorkerPlugin> nodePlugins;
 	private final List<Thread> dispatcherThreads = new ArrayList<>();
-	private final LocalWorker localWorker = new LocalWorker(/*workersCount*/5);
+	private final LocalCoordinator localWorker = new LocalCoordinator(/*workersCount*/5);
 	//private final String nodeId;
 
 	@Inject

@@ -20,9 +20,9 @@ package io.vertigo.dynamo.impl.work;
 
 import io.vertigo.dynamo.impl.work.listener.WorkListener;
 import io.vertigo.dynamo.impl.work.listener.WorkListenerImpl;
-import io.vertigo.dynamo.impl.work.worker.Worker;
-import io.vertigo.dynamo.impl.work.worker.distributed.DistributedWorker;
-import io.vertigo.dynamo.impl.work.worker.local.LocalWorker;
+import io.vertigo.dynamo.impl.work.worker.Coordinator;
+import io.vertigo.dynamo.impl.work.worker.distributed.DistributedCoordinator;
+import io.vertigo.dynamo.impl.work.worker.local.LocalCoordinator;
 import io.vertigo.dynamo.work.WorkEngine;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.dynamo.work.WorkManager;
@@ -47,8 +47,8 @@ import javax.inject.Named;
 public final class WorkManagerImpl implements WorkManager, Activeable {
 	private final WorkListener workListener;
 	//There is always ONE LocalWorker, but distributedWorker is optionnal
-	private final LocalWorker localWorker;
-	private final Option<DistributedWorker> distributedWorker;
+	private final LocalCoordinator localCoordinator;
+	private final Option<DistributedCoordinator> distributedCoordinator;
 
 	/**
 	 * Constructeur.
@@ -59,8 +59,8 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		Assertion.checkNotNull(masterPlugin);
 		//-----------------------------------------------------------------
 		workListener = new WorkListenerImpl(/*analyticsManager*/);
-		localWorker = new LocalWorker(workerCount);
-		distributedWorker = masterPlugin.isDefined() ? Option.some(new DistributedWorker(masterPlugin.get())) : Option.<DistributedWorker> none();
+		localCoordinator = new LocalCoordinator(workerCount);
+		distributedCoordinator = masterPlugin.isDefined() ? Option.some(new DistributedCoordinator(masterPlugin.get())) : Option.<DistributedCoordinator> none();
 	}
 
 	/** {@inheritDoc} */
@@ -71,7 +71,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 
 	/** {@inheritDoc} */
 	public void stop() {
-		localWorker.close();
+		localCoordinator.close();
 	}
 
 	private static String createWorkId() {
@@ -127,13 +127,13 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	//-------------------------------------------------------------------------
 	//-------------------------------------------------------------------------
 	private <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
-		final Worker worker = resolveWorker(workItem);
+		final Coordinator coordinator = resolveCoordinator(workItem);
 		//---
 		workListener.onStart(workItem.getWorkType());
 		boolean executed = false;
 		final long start = System.currentTimeMillis();
 		try {
-			final Future<WR> future = worker.submit(workItem, workResultHandler);
+			final Future<WR> future = coordinator.submit(workItem, workResultHandler);
 			executed = true;
 			return future;
 		} finally {
@@ -141,7 +141,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		}
 	}
 
-	private <WR, W> Worker resolveWorker(final WorkItem<WR, W> workItem) {
+	private <WR, W> Coordinator resolveCoordinator(final WorkItem<WR, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		//----------------------------------------------------------------------
 		/* 
@@ -149,9 +149,9 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		 * 1- On recherche parmi les works externes 
 		 * 2- Si le travail n'est pas déclaré comme étant distribué on l'exécute localement
 		 */
-		if (distributedWorker.isDefined() && distributedWorker.get().accept(workItem)) {
-			return distributedWorker.get();
+		if (distributedCoordinator.isDefined() && distributedCoordinator.get().accept(workItem)) {
+			return distributedCoordinator.get();
 		}
-		return localWorker;
+		return localCoordinator;
 	}
 }

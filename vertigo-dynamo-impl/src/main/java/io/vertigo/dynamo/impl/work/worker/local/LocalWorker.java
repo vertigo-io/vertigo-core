@@ -19,67 +19,111 @@
 package io.vertigo.dynamo.impl.work.worker.local;
 
 import io.vertigo.dynamo.impl.work.WorkItem;
-import io.vertigo.dynamo.impl.work.worker.Worker;
+import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 
-import java.io.Closeable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import java.lang.reflect.Field;
+import java.util.concurrent.Callable;
+
+import org.apache.log4j.Logger;
 
 /**
- * Implémentation d'un pool local de {@link Worker}.
+ * Exécution d'un work.
  * 
- * @author pchretien
+ * @author pchretien, npiedeloup
+ * @param <WR> Type du résultat
+ * @param <W> Type du work
  */
-public final class LocalWorker implements Worker, Closeable {
-	/** Pool de workers qui wrappent sur l'implémentation générique.*/
-	private final ExecutorService workers;
+final class LocalWorker<WR, W> implements Callable<WR> {
+
+	/**
+	 * Pour vider les threadLocal entre deux utilisations du Thread dans le pool,
+	 * on garde un accès débridé au field threadLocals de Thread.
+	 * On fait le choix de ne pas vider inheritedThreadLocal qui est moins utilisé.
+	 */
+	private static final Field threadLocalsField;
+	static {
+		try {
+			threadLocalsField = Thread.class.getDeclaredField("threadLocals");
+		} catch (final SecurityException | NoSuchFieldException e) {
+			throw new RuntimeException(e);
+		}
+		threadLocalsField.setAccessible(true);
+	}
+
+	private final WorkItem<WR, W> workItem;
+	private final Option<WorkResultHandler<WR>> workResultHandler;
+	private final Logger logger = Logger.getLogger(WorkManager.class); //même logger que le WorkListenerImpl
 
 	/**
 	 * Constructeur.
-	 * 
-	 * @param workerCount paramètres d'initialisation du pool
+	 * @param workItem WorkItem à traiter
 	 */
-	public LocalWorker(final int workerCount) {
-		Assertion.checkArgument(workerCount >= 1, "At least one thread must be allowed to process asynchronous jobs.");
+	LocalWorker(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
+		Assertion.checkNotNull(workItem);
+		Assertion.checkNotNull(workResultHandler);
+		//-----------------------------------------------------------------
+		this.workItem = workItem;
+		this.workResultHandler = workResultHandler;
+	}
+
+	private static <WR, W> WR executeNow(final WorkItem<WR, W> workItem) {
+		Assertion.checkNotNull(workItem);
 		// ---------------------------------------------------------------------
-		Assertion.checkArgument(workerCount >= 1, "Il faut définir au moins un thread pour gérer les traitements asynchrones.");
-		//---------------------------------------------------------------------
-		workers = Executors.newFixedThreadPool(workerCount);
+		return workItem.getWorkEngineProvider().provide().process(workItem.getWork());
 	}
 
 	/** {@inheritDoc} */
-	public void close() {
-		//Shutdown in two phases (see doc)
-		workers.shutdown();
+	public WR call() {
+		final WR result;
 		try {
-			// Wait a while for existing tasks to terminate
-			if (!workers.awaitTermination(60, TimeUnit.SECONDS)) {
-				workers.shutdownNow(); // Cancel currently executing tasks
-				// Wait a while for tasks to respond to being cancelled
-				if (!workers.awaitTermination(60, TimeUnit.SECONDS))
-					System.err.println("Pool did not terminate");
+			if (workResultHandler.isDefined()) {
+				workResultHandler.get().onStart();
 			}
-		} catch (final InterruptedException ie) {
-			// (Re-)Cancel if current thread also interrupted
-			workers.shutdownNow();
-			// Preserve interrupt status
-			Thread.currentThread().interrupt();
+			//---
+			result = executeNow(workItem);
+			//---
+			if (workResultHandler.isDefined()) {
+				workResultHandler.get().onDone(result, null);
+			}
+			return result;
+		} catch (final Throwable t) {
+			if (workResultHandler.isDefined()) {
+				workResultHandler.get().onDone(null, t);
+			}
+			logError(t);
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException) t;
+			}
+			throw new RuntimeException(t);
+		} finally {
+			try {
+				//Vide le threadLocal
+				cleanThreadLocals();
+			} catch (final RuntimeException e) {
+				//Ce n'est pas une cause de rejet du Work, on ne fait que logger
+				logError(e);
+			}
 		}
 	}
 
+	private void logError(final Throwable e) {
+		logger.error("Erreur de la tache de type : " + workItem.getWorkEngineProvider().getName(), e);
+	}
+
 	/**
-	 * Work devant être exécuté
-	 * WorkItem contient à la fois le Work et le callback.  
-	 * @param workItem WorkItem
+	 * Vide le threadLocal du thread avant de le remettre dans le pool.
+	 * Ceci protège contre les WorkEngine utilsant un ThreadLocal sans le vider. 
+	 * Ces workEngine peuvent poser des problémes de fuites mémoires (Ex: le FastDateParser de Talend)
+	 * Voir aussi: http://weblogs.java.net/blog/jjviana/archive/2010/06/10/threadlocal-thread-pool-bad-idea-or-dealing-apparent-glassfish-memor
 	 */
-	public <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
-		Assertion.checkNotNull(workItem);
-		//-------------------------------------------------------------------
-		return workers.submit(new WorkItemExecutor<>(workItem, workResultHandler));
+	private static void cleanThreadLocals() {
+		try {
+			threadLocalsField.set(Thread.currentThread(), null);
+		} catch (final IllegalArgumentException | IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
