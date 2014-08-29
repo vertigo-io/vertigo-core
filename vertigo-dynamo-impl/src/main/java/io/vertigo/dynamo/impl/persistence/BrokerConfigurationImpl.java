@@ -26,8 +26,8 @@ import io.vertigo.dynamo.impl.persistence.cache.CacheDataStoreConfiguration;
 import io.vertigo.dynamo.impl.persistence.logical.LogicalFileStoreConfiguration;
 import io.vertigo.dynamo.impl.persistence.logical.LogicalStoreConfiguration;
 import io.vertigo.dynamo.persistence.BrokerConfiguration;
-import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.persistence.DataStorePlugin;
+import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.kernel.lang.Assertion;
 
 /**
@@ -46,7 +46,9 @@ final class BrokerConfigurationImpl implements BrokerConfiguration {
 	 * @param cacheManager Manager de gestion du cache
 	 */
 	BrokerConfigurationImpl(final CacheManager cacheManager, final PersistenceManager persistenceManager, final CollectionsManager collectionsManager) {
+		Assertion.checkNotNull(cacheManager);
 		Assertion.checkNotNull(persistenceManager);
+		Assertion.checkNotNull(collectionsManager);
 		//---------------------------------------------------------------------
 		cacheStoreConfiguration = new CacheDataStoreConfiguration(cacheManager);
 		logicalStoreConfiguration = new LogicalStoreConfiguration(persistenceManager, collectionsManager);

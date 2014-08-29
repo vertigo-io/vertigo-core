@@ -49,7 +49,7 @@ public final class ZipUtil {
 	 * Constructeur privé pour classe utilitaire
 	 */
 	private ZipUtil() {
-		super();
+		//
 	}
 
 	/**

@@ -104,13 +104,8 @@ public final class ScriptGrammarUtil {
 		final ScriptGrammar scriptGrammar = new ScriptGrammar();
 		//On enregistre tous les mots clés.
 		for (final Keyword keyword : Keyword.values()) {
-			registerScriptTag(scriptGrammar, keyword);
+			scriptGrammar.registerScriptTag(keyword.getSyntax(), keyword.getTagClass(), keyword.hasBody());
 		}
 		return scriptGrammar;
 	}
-
-	private static void registerScriptTag(final ScriptGrammar scriptGrammar, final Keyword keyword) {
-		scriptGrammar.registerScriptTag(keyword.getSyntax(), keyword.getTagClass(), keyword.hasBody());
-	}
-
 }
