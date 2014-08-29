@@ -24,6 +24,8 @@ import io.vertigo.dynamo.database.DataBaseManager;
 import io.vertigo.dynamo.database.connection.KConnection;
 import io.vertigo.dynamo.database.statement.KCallableStatement;
 import io.vertigo.dynamo.database.statement.KPreparedStatement;
+import io.vertigo.dynamo.impl.database.listener.DataBaseListener;
+import io.vertigo.dynamo.impl.database.listener.DataBaseListenerImpl;
 import io.vertigo.dynamo.impl.database.statement.KCallableStatementImpl;
 import io.vertigo.dynamo.impl.database.statement.KPreparedStatementImpl;
 import io.vertigo.dynamo.impl.database.statement.StatementHandler;
@@ -38,7 +40,7 @@ import javax.inject.Inject;
 * @author pchretien
 */
 public final class DataBaseManagerImpl implements DataBaseManager {
-	private final DataBaseListenerImpl dataBaseListener;
+	private final DataBaseListener dataBaseListener;
 	private final StatementHandler statementHandler;
 	private final ConnectionProviderPlugin connectionProviderPlugin;
 

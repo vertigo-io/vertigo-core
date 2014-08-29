@@ -24,7 +24,7 @@ import io.vertigo.dynamo.database.statement.QueryResult;
 import io.vertigo.dynamo.database.vendor.SQLMapping;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.impl.database.DataBaseListener;
+import io.vertigo.dynamo.impl.database.listener.DataBaseListener;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.sql.PreparedStatement;
