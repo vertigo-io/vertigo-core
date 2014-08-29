@@ -30,7 +30,7 @@ import java.util.List;
  * @author pchretien, npiedeloup
  */
 public final class ExportBuilder implements Builder<Export> {
-	private final List<ExportDtParametersReadable> exportDtParameters = new ArrayList<>();
+	private final List<ExportDtParameters> exportDtParameters = new ArrayList<>();
 
 	private final ExportFormat format;
 	private final String fileName;
@@ -90,10 +90,9 @@ public final class ExportBuilder implements Builder<Export> {
 	 */
 	public ExportBuilder withExportDtParameters(final ExportDtParameters dtParameter) {
 		Assertion.checkNotNull(dtParameter);
-		Assertion.checkArgument(dtParameter instanceof ExportDtParametersReadable, "Le paramètre doit avoir une interface de consultation");
 		//---------------------------------------------------------------------
 		// On est obligatoirement dans une implémentation standard (homogénéité)
-		exportDtParameters.add((ExportDtParametersReadable) dtParameter);
+		exportDtParameters.add(dtParameter);
 		return this;
 	}
 

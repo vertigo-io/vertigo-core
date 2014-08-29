@@ -21,7 +21,7 @@ package io.vertigo.dynamo.plugins.export.pdfrtf;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.export.Export;
-import io.vertigo.dynamo.export.ExportDtParametersReadable;
+import io.vertigo.dynamo.export.ExportDtParameters;
 import io.vertigo.dynamo.export.ExportField;
 import io.vertigo.dynamo.impl.export.core.ExportHelper;
 import io.vertigo.kernel.lang.Assertion;
@@ -100,7 +100,7 @@ public abstract class AbstractExporterIText {
 			// (print(false) pour imprimer directement)
 			// ((PdfWriter) writer).addJavaScript("this.print(true);", false);
 
-			for (final ExportDtParametersReadable parameters : documentParameters.getReportDataParameters()) {
+			for (final ExportDtParameters parameters : documentParameters.getReportDataParameters()) {
 				// table
 				final Table datatable = new Table(parameters.getExportFields().size());
 				datatable.setCellsFitPage(true);
@@ -126,7 +126,7 @@ public abstract class AbstractExporterIText {
 	 * @param parameters Paramètres
 	 * @param datatable Table
 	 */
-	private static void renderHeaders(final ExportDtParametersReadable parameters, final Table datatable) throws BadElementException {
+	private static void renderHeaders(final ExportDtParameters parameters, final Table datatable) throws BadElementException {
 		// size of columns
 		// datatable.setWidths(headerwidths);
 		// datatable.setWidth(100f);
@@ -149,7 +149,7 @@ public abstract class AbstractExporterIText {
 	 * @param parameters Paramètres
 	 * @param datatable Table
 	 */
-	private void renderList(final ExportDtParametersReadable parameters, final Table datatable) throws BadElementException {
+	private void renderList(final ExportDtParameters parameters, final Table datatable) throws BadElementException {
 		// data rows
 		final Font font = FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL);
 		final Font whiteFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL);

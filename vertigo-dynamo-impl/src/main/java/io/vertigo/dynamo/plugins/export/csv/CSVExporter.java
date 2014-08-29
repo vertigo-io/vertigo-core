@@ -24,7 +24,7 @@ import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.export.Export;
-import io.vertigo.dynamo.export.ExportDtParametersReadable;
+import io.vertigo.dynamo.export.ExportDtParameters;
 import io.vertigo.dynamo.export.ExportField;
 import io.vertigo.dynamo.impl.export.core.ExportHelper;
 import io.vertigo.kernel.lang.Assertion;
@@ -88,7 +88,7 @@ final class CSVExporter {
 			// on met le BOM UTF-8 afin d'avoir des ouvertures correctes avec excel
 			writer.append('\uFEFF');
 			final boolean isMultiData = documentParameters.getReportDataParameters().size() > 1;
-			for (final ExportDtParametersReadable resourceParams : documentParameters.getReportDataParameters()) {
+			for (final ExportDtParameters resourceParams : documentParameters.getReportDataParameters()) {
 				exportHeader(resourceParams, writer);
 				exportData(resourceParams, writer);
 				if (isMultiData) {
@@ -105,7 +105,7 @@ final class CSVExporter {
 	 * @param out Le flux d'écriture des données exportées.
 	 * @throws IOException Exception lors de l'écriture dans le flux.
 	 */
-	private void exportHeader(final ExportDtParametersReadable parameters, final Writer out) throws IOException {
+	private void exportHeader(final ExportDtParameters parameters, final Writer out) throws IOException {
 		final String title = parameters.getTitle();
 		if (title != null) {
 			out.write(encodeString(title));
@@ -127,7 +127,7 @@ final class CSVExporter {
 	 * @param out Le flux d'écriture des données exportées.
 	 * @throws IOException Exception lors de l'écriture dans le flux.
 	 */
-	private void exportData(final ExportDtParametersReadable parameters, final Writer out) throws IOException {
+	private void exportData(final ExportDtParameters parameters, final Writer out) throws IOException {
 		// Parcours des DTO de la DTC
 		if (parameters.hasDtObject()) {
 			exportLine(parameters.getDtObject(), parameters, out);
@@ -138,7 +138,7 @@ final class CSVExporter {
 		}
 	}
 
-	private void exportLine(final DtObject dto, final ExportDtParametersReadable parameters, final Writer out) throws IOException {
+	private void exportLine(final DtObject dto, final ExportDtParameters parameters, final Writer out) throws IOException {
 		String sep = "";
 		String sValue;
 		for (final ExportField exportColumn : parameters.getExportFields()) {

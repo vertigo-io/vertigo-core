@@ -261,12 +261,13 @@ public final class TesterRestServices implements RestfulService {
 	@GET("/export/pdf/")
 	public KFile testExportContacts() {
 		final DtList<Contact> fullList = asDtList(contacts.values(), Contact.class);
-		final ExportDtParameters dtParameter = exportManager.createExportListParameters(fullList);
+		final ExportDtParameters dtParameter = exportManager.createExportListParameters(fullList)//
+				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.PDF, "contacts")//
-				.withExportDtParameters(dtParameter)//
-				.withAuthor("vertigo-test")//
-				.build();
+		.withExportDtParameters(dtParameter)//
+		.withAuthor("vertigo-test")//
+		.build();
 
 		final KFile result = exportManager.createExportFile(export);
 		//200
@@ -276,12 +277,13 @@ public final class TesterRestServices implements RestfulService {
 	@GET("/export/pdf/{conId}")
 	public KFile testExportContact(@PathParam("conId") final long conId) {
 		final Contact contact = contacts.get(conId);
-		final ExportDtParameters dtParameter = exportManager.createExportObjectParameters(contact);
+		final ExportDtParameters dtParameter = exportManager.createExportObjectParameters(contact)//
+				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.PDF, "contact" + conId + ".pdf")//
-				.withExportDtParameters(dtParameter)//
-				.withAuthor("vertigo-test")//
-				.build();
+		.withExportDtParameters(dtParameter)//
+		.withAuthor("vertigo-test")//
+		.build();
 
 		final KFile result = exportManager.createExportFile(export);
 		//200
@@ -525,7 +527,7 @@ public final class TesterRestServices implements RestfulService {
 	public FacetedQueryResult<DtObject, ContactCriteria> testSearchServiceFaceted(final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
 		final DtList<Contact> result = filterFunction.apply((DtList<Contact>) contacts.values());
-		
+
 		//offset + range ?
 		//code 200
 		return result;

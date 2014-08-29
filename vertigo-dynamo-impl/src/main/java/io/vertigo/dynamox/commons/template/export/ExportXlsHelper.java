@@ -24,7 +24,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.export.ExportBuilder;
-import io.vertigo.dynamo.export.ExportDtParameters;
+import io.vertigo.dynamo.export.ExportDtParametersBuilder;
 import io.vertigo.dynamo.export.ExportFormat;
 import io.vertigo.dynamo.export.ExportManager;
 import io.vertigo.kernel.lang.Assertion;
@@ -55,7 +55,7 @@ public class ExportXlsHelper<R extends DtObject> {
 		//---------------------------------------------------------------------
 		this.exportManager = exportManager;
 		exportBuilder = new ExportBuilder(ExportFormat.XLS, fileName)//
-				.withTitle(title);
+		.withTitle(title);
 	}
 
 	/**
@@ -90,9 +90,9 @@ public class ExportXlsHelper<R extends DtObject> {
 
 		// --------------------------------------------
 
-		final ExportDtParameters exportListParameters = exportManager.createExportListParameters(
+		final ExportDtParametersBuilder exportListParameters = exportManager.createExportListParameters(
 
-		dtcToExport);
+				dtcToExport);
 
 		// exportListParameters.setMetaData(PublisherMetaData.TITLE, tabName);
 		for (final DtField dtField : getExportColumnList(dtcToExport, collectionColumnNameList)) {
@@ -104,7 +104,7 @@ public class ExportXlsHelper<R extends DtObject> {
 				exportListParameters.addExportField(dtField, null);
 			}
 		}
-		exportBuilder.withExportDtParameters(exportListParameters);
+		exportBuilder.withExportDtParameters(exportListParameters.build());
 	}
 
 	/**
@@ -119,14 +119,14 @@ public class ExportXlsHelper<R extends DtObject> {
 
 		// --------------------------------------------
 
-		final ExportDtParameters exportObjectParameters = exportManager.createExportObjectParameters(criterion);
+		final ExportDtParametersBuilder exportObjectParameters = exportManager.createExportObjectParameters(criterion);
 
 		// exportObjectParameters.setMetaData(PublisherMetaData.TITLE, tabName);
 		for (final DtField dtField : getExportCriterionFields(criterion, criterionExcludedColumnNameList)) {
 			exportObjectParameters.addExportField(dtField);
 		}
 
-		exportBuilder.withExportDtParameters(exportObjectParameters);
+		exportBuilder.withExportDtParameters(exportObjectParameters.build());
 	}
 
 	/**

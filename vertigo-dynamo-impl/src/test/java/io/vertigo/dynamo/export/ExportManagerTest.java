@@ -53,7 +53,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testExportHandlerCSV() {
 		final DtList<Famille> dtc = createDtc();
-		final ExportDtParameters dtParameter = exportManager.createExportListParameters(dtc);
+		final ExportDtParameters dtParameter = exportManager.createExportListParameters(dtc)//
+				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test.csv")//
 		.withExportDtParameters(dtParameter)//
@@ -71,7 +72,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	public void testExportObject() {
 		final Famille famille = new Famille();
 		famille.setLibelle("Test");
-		final ExportDtParameters dtParameter = exportManager.createExportObjectParameters(famille);
+		final ExportDtParameters dtParameter = exportManager.createExportObjectParameters(famille)//
+				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test2.csv")//
 		.withExportDtParameters(dtParameter)//
@@ -91,12 +93,15 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		final DtDefinition dtFamille = DtObjectUtil.findDtDefinition(Famille.class);
 		final DtField dtField = dtFamille.getField("LIBELLE");
 		famille.setLibelle("Test");
-		final ExportDtParameters dtParameter = exportManager.createExportObjectParameters(famille);
-		dtParameter.addExportField(dtField);
+
+		final ExportDtParameters dtParameter = exportManager.createExportObjectParameters(famille)//
+				.addExportField(dtField)//
+				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test3.csv")//
 		.withExportDtParameters(dtParameter)//
 		.build();
+
 		final KFile result = exportManager.createExportFile(export);
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
@@ -113,8 +118,9 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 
 		final DtField dtField = dtFamille.getField("LIBELLE");
 		famille.setLibelle("Test");
-		final ExportDtParameters dtParameter = exportManager.createExportObjectParameters(famille);
-		dtParameter.addExportField(dtField, new MessageText("test", null));
+		final ExportDtParameters dtParameter = exportManager.createExportObjectParameters(famille)//
+				.addExportField(dtField, new MessageText("test", null))//
+				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test3.csv")//
 		.withExportDtParameters(dtParameter)//
@@ -137,8 +143,9 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		final DtField dtFieldKey = dtFamille.getField("FAM_ID");
 		final DtField dtFieldLabel = dtFamille.getField("LIBELLE");
 		famille.setLibelle("Test");
-		final ExportDtParameters dtParameter = exportManager.createExportObjectParameters(famille);
-		dtParameter.addExportDenormField(dtFieldKey, list, dtFieldLabel);
+		final ExportDtParameters dtParameter = exportManager.createExportObjectParameters(famille)//
+				.addExportDenormField(dtFieldKey, list, dtFieldLabel)//
+				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test4.csv")//
 		.withExportDtParameters(dtParameter)//
@@ -162,8 +169,9 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		final DtField dtFieldKey = dtFamille.getField("FAM_ID");
 		final DtField dtFieldLabel = dtFamille.getField("LIBELLE");
 		famille.setLibelle("Test");
-		final ExportDtParameters dtParameter = exportManager.createExportObjectParameters(famille);
-		dtParameter.addExportDenormField(dtFieldKey, list, dtFieldLabel, new MessageText("test", null));
+		final ExportDtParameters dtParameter = exportManager.createExportObjectParameters(famille)//
+				.addExportDenormField(dtFieldKey, list, dtFieldLabel, new MessageText("test", null))//
+				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test5.csv")//
 		.withExportDtParameters(dtParameter)//
@@ -181,7 +189,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testExportHandlerExcel() {
 		final DtList<Famille> dtc = createDtc();
-		final ExportDtParameters dtParameter = exportManager.createExportListParameters(dtc);
+		final ExportDtParameters dtParameter = exportManager.createExportListParameters(dtc)//
+				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.XLS, OUTPUT_PATH + "test.xls")//
 		.withExportDtParameters(dtParameter)//
@@ -199,7 +208,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testExportHandlerRTF() {
 		final DtList<Famille> dtc = createDtc();
-		final ExportDtParameters dtParameter = exportManager.createExportListParameters(dtc);
+		final ExportDtParameters dtParameter = exportManager.createExportListParameters(dtc)//
+				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.RTF, OUTPUT_PATH + "test.rtf")//
 		.withAuthor("test")//
@@ -219,7 +229,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testExportHandlerPDF() {
 		final DtList<Famille> dtc = createDtc();
-		final ExportDtParameters dtParameter = exportManager.createExportListParameters(dtc);
+		final ExportDtParameters dtParameter = exportManager.createExportListParameters(dtc)//
+				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.PDF, OUTPUT_PATH + "test.pdf").withExportDtParameters(dtParameter)//
 				.withAuthor("test")//

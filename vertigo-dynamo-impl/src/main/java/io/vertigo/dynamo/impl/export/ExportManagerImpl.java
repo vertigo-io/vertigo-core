@@ -21,13 +21,13 @@ package io.vertigo.dynamo.impl.export;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.export.Export;
-import io.vertigo.dynamo.export.ExportDtParameters;
+import io.vertigo.dynamo.export.ExportDtParametersBuilder;
 import io.vertigo.dynamo.export.ExportFormat;
 import io.vertigo.dynamo.export.ExportManager;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.file.util.TempFile;
-import io.vertigo.dynamo.impl.export.core.ExportDtParametersImpl;
+import io.vertigo.dynamo.impl.export.core.ExportDtParametersBuilderImpl;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.kernel.lang.Assertion;
@@ -65,13 +65,13 @@ public final class ExportManagerImpl implements ExportManager {
 	}
 
 	/** {@inheritDoc} */
-	public ExportDtParameters createExportObjectParameters(final DtObject dto) {
-		return new ExportDtParametersImpl(dto);
+	public ExportDtParametersBuilder createExportObjectParameters(final DtObject dto) {
+		return new ExportDtParametersBuilderImpl(dto);
 	}
 
 	/** {@inheritDoc} */
-	public ExportDtParameters createExportListParameters(final DtList<?> dtc) {
-		return new ExportDtParametersImpl(dtc);
+	public ExportDtParametersBuilder createExportListParameters(final DtList<?> dtc) {
+		return new ExportDtParametersBuilderImpl(dtc);
 	}
 
 	/**

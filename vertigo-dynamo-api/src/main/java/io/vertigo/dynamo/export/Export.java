@@ -38,7 +38,7 @@ public final class Export {
 		Portait;
 	}
 
-	private final List<ExportDtParametersReadable> exportDtParameters;
+	private final List<ExportDtParameters> exportDtParameters;
 
 	private final ExportFormat format;
 	private final String fileName;
@@ -51,7 +51,7 @@ public final class Export {
 	 * @param format type du format de sortie. Ceci configurera le Handler de traitement de l'edition
 	 * @param fileName nom du fichier de sortie.
 	 */
-	Export(final ExportFormat format, final String fileName, final String title, final String author, final Export.Orientation orientation, final List<ExportDtParametersReadable> exportDtParameters) {
+	Export(final ExportFormat format, final String fileName, final String title, final String author, final Export.Orientation orientation, final List<ExportDtParameters> exportDtParameters) {
 		Assertion.checkNotNull(format);
 		Assertion.checkArgNotEmpty(fileName, "FileName doit être non vide");
 		//Assertion.notNull(title);
@@ -105,7 +105,7 @@ public final class Export {
 	/**
 	 * @return Liste des paramètres de données à exporter
 	 */
-	public List<ExportDtParametersReadable> getReportDataParameters() {
+	public List<ExportDtParameters> getReportDataParameters() {
 		return exportDtParameters;
 	}
 }
