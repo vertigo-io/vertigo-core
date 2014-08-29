@@ -18,30 +18,38 @@
  */
 package io.vertigo.dynamo.impl.task;
 
+import io.vertigo.dynamo.impl.task.listener.TaskListener;
+import io.vertigo.dynamo.impl.task.listener.TaskListenerImpl;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.model.Task;
+import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamo.task.model.TaskResult;
-import io.vertigo.dynamo.work.WorkEngineProvider;
-import io.vertigo.dynamo.work.WorkManager;
-import io.vertigo.kernel.lang.Assertion;
-
-import javax.inject.Inject;
+import io.vertigo.kernel.Home;
+import io.vertigo.kernel.di.injector.Injector;
 
 /**
  * @author  pchretien
  */
 public final class TaskManagerImpl implements TaskManager {
-	private final WorkManager workManager;
+	private static final Injector INJECTOR = new Injector();
+	private final TaskListener taskListener;
 
-	@Inject
-	public TaskManagerImpl(final WorkManager workManager) {
-		Assertion.checkNotNull(workManager);
-		//---------------------------------------------------------------------
-		this.workManager = workManager;
+	public TaskManagerImpl() {
+		this.taskListener = new TaskListenerImpl();
 	}
 
 	/** {@inheritDoc} */
 	public TaskResult execute(final Task task) {
-		return workManager.process(task, new WorkEngineProvider<>(task.getDefinition().getTaskEngineClass()));
+		taskListener.onStart(task.getDefinition().getName());
+		boolean executed = false;
+		final long start = System.currentTimeMillis();
+		try {
+			final TaskEngine taskEngine = INJECTOR.newInstance(task.getDefinition().getTaskEngineClass(), Home.getComponentSpace());
+			final TaskResult taskResult = taskEngine.process(task);
+			executed = true;
+			return taskResult;
+		} finally {
+			taskListener.onFinish(task.getDefinition().getName(), System.currentTimeMillis() - start, executed);
+		}
 	}
 }
