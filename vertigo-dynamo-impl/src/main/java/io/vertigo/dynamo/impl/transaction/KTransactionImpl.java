@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.transaction;
 
+import io.vertigo.dynamo.impl.transaction.listener.KTransactionListener;
 import io.vertigo.dynamo.transaction.KTransaction;
 import io.vertigo.dynamo.transaction.KTransactionResource;
 import io.vertigo.dynamo.transaction.KTransactionResourceId;

@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.impl.transaction;
 
+import io.vertigo.dynamo.impl.transaction.listener.KTransactionListener;
+import io.vertigo.dynamo.impl.transaction.listener.KTransactionListenerImpl;
 import io.vertigo.dynamo.transaction.KTransaction;
 import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamo.transaction.KTransactionWritable;
@@ -29,7 +31,7 @@ import io.vertigo.kernel.lang.Assertion;
  * @author  pchretien
  */
 public final class KTransactionManagerImpl implements KTransactionManager {
-	private final KTransactionListener transactionListener = new KTransactionListener();
+	private final KTransactionListener transactionListener = new KTransactionListenerImpl();
 
 	/** {@inheritDoc} */
 	public KTransaction getCurrentTransaction() {
