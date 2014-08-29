@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.task.model;
 
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamo.work.WorkEngine;
 import io.vertigo.kernel.lang.Assertion;
 
 /**
@@ -29,7 +28,7 @@ import io.vertigo.kernel.lang.Assertion;
  * @author fconstantin, pchretien
  * @see io.vertigo.dynamo.task.model.Task
  */
-public abstract class TaskEngine implements WorkEngine<TaskResult, Task> {
+public abstract class TaskEngine {
 	private Task input;
 	private TaskResultBuilder output;
 
@@ -43,7 +42,14 @@ public abstract class TaskEngine implements WorkEngine<TaskResult, Task> {
 	 */
 	protected abstract void execute();
 
-	/** {@inheritDoc} */
+	/**
+	 * Exécute le travail.
+	 * Le travail s'exécute dans la transaction courante si elle existe.
+	 *  - Le moteur n'est pas responsable de de créer une transaction.
+	 *  - En revanche si une telle transaction existe elle est utilisée.
+	 * @param work paramétrage du WorkEngine
+	 * @return WorkResult contenant les résultats
+	 */
 	public final TaskResult process(final Task task) {
 		Assertion.checkNotNull(task);
 		//-----------------------------------------------------------------------------------
