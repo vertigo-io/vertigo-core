@@ -69,14 +69,14 @@ public class MailBuilder implements Builder<Mail> {
 
 	/**
 	 * Set receiver of return mail (response or delivery fail)
-	 * @param newReplyTo Receiver of return mail (response or delivery fail)
+	 * @param replyTo Receiver of return mail (response or delivery fail)
 	 * @return MailBuilder
 	 */
-	public MailBuilder replyTo(final String newReplyTo) {
+	public MailBuilder replyTo(final String replyTo) {
 		Assertion.checkState(myReplyTo == null, "replyTo is already completed");
-		Assertion.checkArgNotEmpty(newReplyTo);
+		Assertion.checkArgNotEmpty(replyTo);
 		//---------------------------------------------------------------------
-		myReplyTo = newReplyTo;
+		myReplyTo = replyTo;
 		return this;
 	}
 
@@ -112,27 +112,27 @@ public class MailBuilder implements Builder<Mail> {
 
 	/**
 	 * Set mail content at text format.
-	 * @param newTextContent Text content 
+	 * @param textContent Text content 
 	 * @return MailBuilder
 	 */
-	public MailBuilder withTextContent(final String newTextContent) {
+	public MailBuilder withTextContent(final String textContent) {
 		Assertion.checkState(myTextContent == null, "textContent is already completed");
-		Assertion.checkArgNotEmpty(newTextContent);
+		Assertion.checkArgNotEmpty(textContent);
 		//---------------------------------------------------------------------
-		myTextContent = newTextContent;
+		myTextContent = textContent;
 		return this;
 	}
 
 	/** 
 	 * Set mail content at html format.
-	 * @param newHtmlContent Html content
+	 * @param htmlContent Html content
 	 * @return MailBuilder
 	 */
-	public MailBuilder withHtmlContent(final String newHtmlContent) {
+	public MailBuilder withHtmlContent(final String htmlContent) {
 		Assertion.checkState(myHtmlContent == null, "htmlContent is already completed");
-		Assertion.checkArgNotEmpty(newHtmlContent);
+		Assertion.checkArgNotEmpty(htmlContent);
 		//---------------------------------------------------------------------
-		myHtmlContent = newHtmlContent;
+		myHtmlContent = htmlContent;
 		return this;
 	}
 

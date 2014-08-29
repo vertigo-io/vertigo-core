@@ -46,7 +46,7 @@ import com.sun.star.ucb.XSimpleFileAccess;
  *
  * @author npiedeloup
  */
-interface OpenOfficeConnection {
+interface OpenOfficeConnection extends AutoCloseable {
 
 	/**
 	 * Ouvre la connexion à OpenOffice.
@@ -57,7 +57,7 @@ interface OpenOfficeConnection {
 	/**
 	 * Ferme la connexion à OpenOffice.
 	 */
-	void disconnect();
+	void close();
 
 	/**
 	 * @return the com.sun.star.frame.Desktop service

@@ -110,7 +110,7 @@ abstract class AbstractOpenOfficeConnection implements OpenOfficeConnection, XEv
 	}
 
 	/** {@inheritDoc} */
-	public final void disconnect() {
+	public final void close() {
 		logger.debug("disconnecting");
 		expectingDisconnection = true;
 		bridgeComponent.dispose();

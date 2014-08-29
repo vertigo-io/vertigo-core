@@ -95,8 +95,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 
 	// On synchronize sur le plugin car OpenOffice supporte mal les accès concurrents.
 	private synchronized File doConvertToFormat(final File inputFile, final ConverterFormat targetFormat) throws Exception {
-		final OpenOfficeConnection openOfficeConnection = connectOpenOffice();
-		try {
+		try (final OpenOfficeConnection openOfficeConnection = connectOpenOffice()) {
 			Assertion.checkArgument(inputFile.exists(), "Le document à convertir n''existe pas : {0}", inputFile.getAbsolutePath());
 			final XComponent xDoc = loadDocument(inputFile, openOfficeConnection);
 			try {
@@ -110,8 +109,6 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 			} finally {
 				xDoc.dispose();
 			}
-		} finally {
-			openOfficeConnection.disconnect();
 		}
 	}
 
@@ -233,22 +230,22 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 		//OO 3.3 "OpenOffice.org 3\Basis\share\registry\modules\org\openoffice\TypeDetection\Filter\fcfg_writer_filters.xcu"
 		//OO 3.4 "OpenOffice.org 3\Basis\share\registry\writer.xcd"
 		switch (docType) {
-		case PDF:
-			return "writer_pdf_Export";
-		case RTF:
-			return "Rich Text Format";
-		case DOC:
-			return "MS Word 97";
-		case ODT:
-			return "Open Document Format";
-		case TXT:
-			return "Text";
-			//			case DOCX:
-			//				return "MS Word 2007 XML";
-			//			case CSV:
-			//				return "Text - txt - csv (StarCalc)";
-		default:
-			throw new InvalidParameterException("Type de document non géré : " + docType);
+			case PDF:
+				return "writer_pdf_Export";
+			case RTF:
+				return "Rich Text Format";
+			case DOC:
+				return "MS Word 97";
+			case ODT:
+				return "Open Document Format";
+			case TXT:
+				return "Text";
+				//			case DOCX:
+				//				return "MS Word 2007 XML";
+				//			case CSV:
+				//				return "Text - txt - csv (StarCalc)";
+			default:
+				throw new InvalidParameterException("Type de document non géré : " + docType);
 		}
 	}
 

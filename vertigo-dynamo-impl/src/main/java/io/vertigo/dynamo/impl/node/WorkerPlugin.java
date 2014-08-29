@@ -41,6 +41,12 @@ public interface WorkerPlugin extends Plugin {
 	 */
 	<WR, W> WorkItem<WR, W> pollWorkItem(final String workType, final int timeoutInSeconds);
 
+	/**
+	 * Send result or error if execution failed
+	 * @param workId WorkId
+	 * @param result Result (not null if execution succeeded) 
+	 * @param error Error ( not null if execution failed)
+	 */
 	<WR> void putResult(final String workId, WR result, Throwable error);
 
 	void putStart(final String workId);
