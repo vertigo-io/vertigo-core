@@ -36,6 +36,8 @@ public class ExportField {
 	 * @param dtField DtField
 	 */
 	public ExportField(final DtField dtField) {
+		Assertion.checkNotNull(dtField);
+		//---------------------------------------------------------------------
 		this.dtField = dtField;
 	}
 

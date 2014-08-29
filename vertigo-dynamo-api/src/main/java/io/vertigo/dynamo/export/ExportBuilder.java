@@ -36,9 +36,9 @@ public final class ExportBuilder implements Builder<Export> {
 	private final String fileName;
 
 	// Variables à affecter par des SETTERS
-	private String title;
-	private String author;
-	private Export.Orientation orientation = Orientation.Portait;
+	private String myTitle;
+	private String myAuthor;
+	private Export.Orientation myOrientation = Orientation.Portait;
 
 	/**
 	 * Constructeur.
@@ -54,34 +54,34 @@ public final class ExportBuilder implements Builder<Export> {
 	}
 
 	/**
-	 * @param newTitle Titre du document (Facultatif)
+	 * @param title Titre du document (Facultatif)
 	 */
-	public ExportBuilder withTitle(final String newTitle) {
-		Assertion.checkState(title == null, "Titre deja renseigné");
-		Assertion.checkArgNotEmpty(newTitle, "Titre doit être non vide");
+	public ExportBuilder withTitle(final String title) {
+		Assertion.checkState(myTitle == null, "Titre deja renseigné");
+		Assertion.checkArgNotEmpty(title, "Titre doit être non vide");
 		// ---------------------------------------------------------------------
-		title = newTitle;
+		myTitle = title;
 		return this;
 	}
 
 	/**
-	 * @param newAuthor Auteur du document (Facultatif)
+	 * @param author Auteur du document (Facultatif)
 	 */
-	public ExportBuilder withAuthor(final String newAuthor) {
-		Assertion.checkState(author == null, "Auteur deja renseigné");
-		Assertion.checkArgNotEmpty(newAuthor, "Auteur doit être non vide");
+	public ExportBuilder withAuthor(final String author) {
+		Assertion.checkState(myAuthor == null, "Auteur deja renseigné");
+		Assertion.checkArgNotEmpty(author, "Auteur doit être non vide");
 		// ---------------------------------------------------------------------
-		author = newAuthor;
+		myAuthor = author;
 		return this;
 	}
 
 	/**
-	 * @param newOrientation Orientation du document (Facultatif, mode portrait par défaut)
+	 * @param orientation Orientation du document (Facultatif, mode portrait par défaut)
 	 */
-	public ExportBuilder withOrientation(final Orientation newOrientation) {
-		Assertion.checkNotNull(newOrientation);
+	public ExportBuilder withOrientation(final Orientation orientation) {
+		Assertion.checkNotNull(orientation);
 		// ---------------------------------------------------------------------
-		orientation = newOrientation;
+		myOrientation = orientation;
 		return this;
 	}
 
@@ -91,13 +91,12 @@ public final class ExportBuilder implements Builder<Export> {
 	public ExportBuilder withExportDtParameters(final ExportDtParameters dtParameter) {
 		Assertion.checkNotNull(dtParameter);
 		//---------------------------------------------------------------------
-		// On est obligatoirement dans une implémentation standard (homogénéité)
 		exportDtParameters.add(dtParameter);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	public Export build() {
-		return new Export(format, fileName, title, author, orientation, exportDtParameters);
+		return new Export(format, fileName, myTitle, myAuthor, myOrientation, exportDtParameters);
 	}
 }

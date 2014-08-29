@@ -34,11 +34,11 @@ import java.io.OutputStream;
 public interface ExporterPlugin extends Plugin {
 	/**
 	 * Réalise l'export des données de contenu.
-	 * @param metaParameters paramètres de cet export
+	 * @param export paramètres de cet export
 	 * @param out Le flux d'écriture des données exportées.
 	 * @throws Exception Exception générique en cas d'erreur lors de l'export
 	 */
-	void exportData(final Export metaParameters, final OutputStream out) throws Exception;
+	void exportData(final Export export, final OutputStream out) throws Exception;
 
 	/**
 	 * Type de Format accepté à l'export
