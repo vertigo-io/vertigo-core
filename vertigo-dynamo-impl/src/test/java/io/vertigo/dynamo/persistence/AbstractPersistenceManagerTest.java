@@ -87,7 +87,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	private TaskDefinition taskLoadCar;
 	private TaskDefinition taskInsertCar;
 	private TaskDefinition taskUpdateCar;
-	private TaskDefinition taskLoadCarList;
+	private TaskDefinition taskLoadCars;
 
 	private long initialDbCarSize = 0;
 
@@ -127,7 +127,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		taskLoadCar = registerTaskLoadCar();
 		taskInsertCar = registerTaskInsertCar();
 		taskUpdateCar = registerTaskUpdateCar();
-		taskLoadCarList = registerTaskLoadCarList();
+		taskLoadCars = registerTaskLoadCarList();
 	}
 
 	@Override
@@ -247,7 +247,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	}
 
 	protected final DtList<Car> nativeLoadCarList() {
-		final Task task = new TaskBuilder(taskLoadCarList)//
+		final Task task = new TaskBuilder(taskLoadCars)//
 				.build();
 		final TaskResult taskResult = taskManager.execute(task);
 		return taskResult.<DtList<Car>> getValue("DTC_CAR_OUT");
