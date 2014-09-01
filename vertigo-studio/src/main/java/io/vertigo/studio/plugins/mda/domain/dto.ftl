@@ -80,6 +80,10 @@ public final class ${dtDefinition.classSimpleName} implements DtObject {
 	<#if association.multiple>
 	public io.vertigo.dynamo.domain.model.DtList<${association.returnType}> get${association.role?cap_first}List() {
 //		return this.<${association.returnType}> getList(get${association.role?cap_first}ListURI());
+		// On doit avoir une clé primaire renseignée. Si ce n'est pas le cas, on renvoie une liste vide
+		if (io.vertigo.dynamo.domain.util.DtObjectUtil.getId(this) == null) {
+			return new io.vertigo.dynamo.domain.model.DtList<>(${association.returnType}.class);
+		}
 		final io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation fkDtListURI = get${association.role?cap_first}DtListURI();
 		io.vertigo.kernel.lang.Assertion.checkNotNull(fkDtListURI);
 		//---------------------------------------------------------------------
