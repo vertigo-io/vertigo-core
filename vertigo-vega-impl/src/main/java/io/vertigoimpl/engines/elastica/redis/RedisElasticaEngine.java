@@ -28,7 +28,6 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 /**
- *
  * @author pchretien
  */
 public final class RedisElasticaEngine implements ElasticaEngine, Activeable {
@@ -38,7 +37,7 @@ public final class RedisElasticaEngine implements ElasticaEngine, Activeable {
 
 	private static JedisPool createJedisPool() {
 		final JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-		jedisPoolConfig.setMaxActive(20);
+		//	jedisPoolConfig.setMaxActive(20);
 		return new JedisPool(jedisPoolConfig, HOST);
 	}
 
@@ -58,13 +57,13 @@ public final class RedisElasticaEngine implements ElasticaEngine, Activeable {
 		master.cancelled = true;
 		try {
 			master.join(100);
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			//
 		}
 	}
 
 	public <F> F createProxy(final Class<F> facadeClass) {
-		final InvocationHandler proxy = new RedisInvocationHandler<>(jedisPool, facadeClass);
+		final InvocationHandler proxy = new RedisInvocationHandler(jedisPool, facadeClass);
 		return (F) Proxy.newProxyInstance(proxy.getClass().getClassLoader(), new Class[] { facadeClass }, proxy);
 	}
 

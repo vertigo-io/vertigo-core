@@ -62,8 +62,7 @@ public final class ZWorker /*implements Runnable*/{
 	}
 
 	private void doRun(final int time) {
-		final Jedis jedis = jedisPool.getResource();
-		try {
+		try (final Jedis jedis = jedisPool.getResource()) {
 			final String workId = jedis.brpoplpush("works:todo", "works:doing", 10);
 			//System.out.println("todo.size : " + jedis.llen("works:todo"));
 			if (workId != null) {
@@ -72,8 +71,6 @@ public final class ZWorker /*implements Runnable*/{
 			} else {
 				//out.println(" Worker [" + id + "]waiting....");
 			}
-		} finally {
-			jedisPool.returnResource(jedis);
 		}
 	}
 }

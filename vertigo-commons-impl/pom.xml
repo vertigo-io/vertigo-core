@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>janino</groupId>
 			<artifactId>janino</artifactId>
-			<version>2.5.10</version>
+			<version>2.5.15</version>
 			<optional>true</optional><!-- pour JaninoExpressionEvaluatorPlugin -->
 		</dependency>
 	</dependencies>

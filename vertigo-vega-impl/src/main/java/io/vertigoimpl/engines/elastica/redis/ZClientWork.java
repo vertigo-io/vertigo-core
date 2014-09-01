@@ -57,14 +57,8 @@ public final class ZClientWork /*implements Runnable*/{
 	//	}
 
 	public Object process(final ZMethod work, final int timeoutSeconds) {
-		final Jedis jedis = jedisPool.getResource();
-		try {
+		try (final Jedis jedis = jedisPool.getResource()) {
 			return doProcess(jedis, work, timeoutSeconds);
-		} catch (final Exception e) {
-			jedisPool.returnBrokenResource(jedis);
-			throw new RuntimeException(e);
-		} finally {
-			jedisPool.returnResource(jedis);
 		}
 	}
 
