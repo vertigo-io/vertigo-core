@@ -142,9 +142,11 @@ public final class CacheDataStore implements DataStore {
 
 	/* On notifie la mise à jour du cache, celui-ci est donc vidé. */
 	private void clearCache(final DtDefinition dtDefinition) {
-		if (cacheDataStoreConfiguration.isCacheable(dtDefinition)) {
-			cacheDataStoreConfiguration.getDataCache().clear(dtDefinition);
-		}
+		// On ne vérifie pas que la definition est cachable, Lucene utilise le même cache
+		// A changer si on gère lucene différemment
+		//	if (cacheDataStoreConfiguration.isCacheable(dtDefinition)) {
+				cacheDataStoreConfiguration.getDataCache().clear(dtDefinition);
+		//	}
 	}
 
 	/** {@inheritDoc} */
