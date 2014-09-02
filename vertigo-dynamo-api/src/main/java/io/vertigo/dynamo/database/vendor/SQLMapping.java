@@ -30,7 +30,7 @@ import java.sql.SQLException;
  *
  * @author pchretien
  */
-public interface SQLMapping {
+public interface SqlMapping {
 	/**
 	 * Retourne le type correspondant à un type sql.
 	 *

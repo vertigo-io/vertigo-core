@@ -21,7 +21,7 @@ package io.vertigo.dynamo.impl.database.statement;
 import io.vertigo.dynamo.database.connection.KConnection;
 import io.vertigo.dynamo.database.statement.KPreparedStatement;
 import io.vertigo.dynamo.database.statement.QueryResult;
-import io.vertigo.dynamo.database.vendor.SQLMapping;
+import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.impl.database.listener.DataBaseListener;
@@ -270,7 +270,7 @@ public class KPreparedStatementImpl implements KPreparedStatement {
 		beginExecution();
 		try {
 			// ResultSet JDBC
-			final SQLMapping mapping = connection.getDataBase().getSqlMapping();
+			final SqlMapping mapping = connection.getDataBase().getSqlMapping();
 			final QueryResult result;
 			try (final ResultSet resultSet = statement.executeQuery()) {
 				//Le Handler a la responsabilité de créer les données.
@@ -436,7 +436,7 @@ public class KPreparedStatementImpl implements KPreparedStatement {
 			if (!next) {
 				throw new SQLException("GeneratedKeys empty", "02000", 100);
 			}
-			final SQLMapping mapping = connection.getDataBase().getSqlMapping();
+			final SqlMapping mapping = connection.getDataBase().getSqlMapping();
 			final int pkRsCol = rs.findColumn(columnName);
 			final Object key = mapping.getValueForResultSet(rs, pkRsCol, domain.getDataType()); //attention le pkRsCol correspond au n° de column dans le RETURNING
 			if (rs.wasNull()) {

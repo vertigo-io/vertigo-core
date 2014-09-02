@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.plugins.database.connection.mock;
 
 import io.vertigo.dynamo.database.connection.KConnection;
-import io.vertigo.dynamo.database.vendor.DataBase;
+import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.plugins.database.connection.AbstractConnectionProviderPlugin;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.util.ClassUtil;
@@ -49,7 +49,7 @@ public final class MockConnectionProviderPlugin extends AbstractConnectionProvid
 	 */
 	@Inject
 	public MockConnectionProviderPlugin(@Named("dataBaseClass") final String dataBaseClass, @Named("jdbcDriver") final String jdbcDriver, @Named("jdbcUrl") final String jdbcUrl) {
-		super(ClassUtil.newInstance(dataBaseClass, DataBase.class));
+		super(ClassUtil.newInstance(dataBaseClass, SqlDataBase.class));
 
 		Assertion.checkNotNull(jdbcUrl);
 		Assertion.checkNotNull(jdbcDriver);

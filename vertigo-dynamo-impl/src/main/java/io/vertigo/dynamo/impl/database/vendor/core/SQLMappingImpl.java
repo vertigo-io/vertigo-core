@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.core;
 
-import io.vertigo.dynamo.database.vendor.SQLMapping;
+import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.dynamo.domain.metamodel.DataStream;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 
@@ -37,7 +37,7 @@ import java.sql.Types;
  *
  * @author pchretien
  */
-public final class SQLMappingImpl implements SQLMapping {
+public final class SQLMappingImpl implements SqlMapping {
 	private static final String TYPE_UNSUPPORTED = "Type unsupported : ";
 	private static final String TYPE_INCONNU = "Type unknown : ";
 

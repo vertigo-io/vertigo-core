@@ -20,7 +20,7 @@ package io.vertigo.dynamo.plugins.persistence.jpa;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.dynamo.database.DataBaseManager;
-import io.vertigo.dynamo.database.vendor.DataBase;
+import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
@@ -93,7 +93,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	private JpaResource obtainJpaResource() {
-		final DataBase dataBase = dataBaseManager.getConnectionProvider().getDataBase();
+		final SqlDataBase dataBase = dataBaseManager.getConnectionProvider().getDataBase();
 		Assertion.checkState(dataBase instanceof JpaDataBase, "DataBase must be a JpaDataBase (current:{0}).", dataBase.getClass());
 		return ((JpaDataBase) dataBase).obtainJpaResource(getCurrentTransaction());
 	}

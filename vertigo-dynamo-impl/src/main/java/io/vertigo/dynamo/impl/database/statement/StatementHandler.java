@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.impl.database.statement;
 
 import io.vertigo.dynamo.database.statement.QueryResult;
-import io.vertigo.dynamo.database.vendor.SQLMapping;
+import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 
 import java.sql.ResultSet;
@@ -39,5 +39,5 @@ public interface StatementHandler {
 	 * @return Résultat de la requête.
 	 * @throws SQLException Exception SQL
 	 */
-	QueryResult retrieveData(final Domain domain, final SQLMapping mapping, final ResultSet resultSet) throws SQLException;
+	QueryResult retrieveData(final Domain domain, final SqlMapping mapping, final ResultSet resultSet) throws SQLException;
 }

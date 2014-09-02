@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.plugins.database.connection.hibernate;
 
 import io.vertigo.dynamo.database.connection.KConnection;
-import io.vertigo.dynamo.database.vendor.DataBase;
+import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.plugins.database.connection.AbstractConnectionProviderPlugin;
 import io.vertigo.dynamo.transaction.KTransaction;
 import io.vertigo.dynamo.transaction.KTransactionManager;
@@ -69,7 +69,7 @@ abstract class JpaConnectionProviderPlugin extends AbstractConnectionProviderPlu
 
 	/** récupère la ressource JPA de la transaction et la créé si nécessaire. */
 	private JpaResource obtainJpaResource() {
-		final DataBase dataBase = getDataBase();
+		final SqlDataBase dataBase = getDataBase();
 		Assertion.checkState(dataBase instanceof JpaDataBase, "DataBase must be a JpaDataBase (current:{0}).", dataBase.getClass());
 		return ((JpaDataBase) dataBase).obtainJpaResource(getCurrentTransaction());
 	}
@@ -79,7 +79,7 @@ abstract class JpaConnectionProviderPlugin extends AbstractConnectionProviderPlu
 		return transactionManager.getCurrentTransaction();
 	}
 
-	private static DataBase createDataBase(final String dataBaseName) {
-		return ClassUtil.newInstance(dataBaseName, DataBase.class);
+	private static SqlDataBase createDataBase(final String dataBaseName) {
+		return ClassUtil.newInstance(dataBaseName, SqlDataBase.class);
 	}
 }

@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.impl.database.statementhandler;
 
-import io.vertigo.dynamo.database.vendor.SQLMapping;
+import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -49,7 +49,7 @@ final class DynamicResultMetaData implements ResultMetaData {
 	/**
 	 * Constructeur.
 	 */
-	DynamicResultMetaData(final boolean isDtObject, final SQLMapping mapping, final ResultSet resultSet) throws SQLException {
+	DynamicResultMetaData(final boolean isDtObject, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
 		Assertion.checkNotNull(mapping);
 		Assertion.checkNotNull(resultSet);
 		//-----------------------------------------------------------------
@@ -76,7 +76,7 @@ final class DynamicResultMetaData implements ResultMetaData {
 	//==============Construction de SerializableDtDefinition===================
 	//=========================================================================
 
-	private static SerializableDtDefinition createSerializableDtDefinition(final SQLMapping mapping, final ResultSet resultSet) throws SQLException {
+	private static SerializableDtDefinition createSerializableDtDefinition(final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
 		final ResultSetMetaData metaData = resultSet.getMetaData();
 		String fieldName;
 		String fieldLabel;

@@ -18,26 +18,26 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.h2;
 
-import io.vertigo.dynamo.database.vendor.DataBase;
-import io.vertigo.dynamo.database.vendor.SQLExceptionHandler;
-import io.vertigo.dynamo.database.vendor.SQLMapping;
+import io.vertigo.dynamo.database.vendor.SqlDataBase;
+import io.vertigo.dynamo.database.vendor.SqlExceptionHandler;
+import io.vertigo.dynamo.database.vendor.SqlMapping;
 
 /**
  * Gestion de la base de données H2.
  * 
  * @author jmainaud
  */
-public final class H2Database implements DataBase {
-	private final SQLExceptionHandler sqlExceptionHandler = new H2SqlExceptionHandler();
-	private final SQLMapping sqlMapping = new H2Mapping();
+public final class H2Database implements SqlDataBase {
+	private final SqlExceptionHandler sqlExceptionHandler = new H2SqlExceptionHandler();
+	private final SqlMapping sqlMapping = new H2Mapping();
 
 	/** {@inheritDoc} */
-	public SQLExceptionHandler getSqlExceptionHandler() {
+	public SqlExceptionHandler getSqlExceptionHandler() {
 		return sqlExceptionHandler;
 	}
 
 	/** {@inheritDoc} */
-	public SQLMapping getSqlMapping() {
+	public SqlMapping getSqlMapping() {
 		return sqlMapping;
 	}
 }

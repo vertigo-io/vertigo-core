@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.impl.database.statementhandler;
 
 import io.vertigo.dynamo.database.statement.QueryResult;
-import io.vertigo.dynamo.database.vendor.SQLMapping;
+import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.impl.database.statement.StatementHandler;
@@ -37,7 +37,7 @@ import java.sql.SQLException;
  */
 public final class StatementHandlerImpl implements StatementHandler {
 	/** {@inheritDoc} */
-	public QueryResult retrieveData(final Domain domain, final SQLMapping mapping, final ResultSet resultSet) throws SQLException {
+	public QueryResult retrieveData(final Domain domain, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
 		if (domain.getDataType().isPrimitive()) {
 			return RetrieveUtil.retrievePrimitive(domain.getDataType(), mapping, resultSet);
 		}
@@ -48,7 +48,7 @@ public final class StatementHandlerImpl implements StatementHandler {
 	/*
 	 * Création du gestionnaire des types de sortie des preparedStatement.
 	 */
-	private static ResultMetaData createResultMetaData(final Domain domain, final SQLMapping mapping, final ResultSet resultSet) throws SQLException {
+	private static ResultMetaData createResultMetaData(final Domain domain, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
 		Assertion.checkArgument(!domain.getDataType().isPrimitive(), "le type de retour n''est ni un DTO ni une DTC");
 		//---------------------------------------------------------------------
 		//Il y a deux cas

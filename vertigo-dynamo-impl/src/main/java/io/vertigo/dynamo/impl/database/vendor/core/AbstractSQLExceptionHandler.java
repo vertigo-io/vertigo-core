@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.impl.database.vendor.core;
 
 import io.vertigo.dynamo.database.statement.KPreparedStatement;
-import io.vertigo.dynamo.database.vendor.SQLExceptionHandler;
+import io.vertigo.dynamo.database.vendor.SqlExceptionHandler;
 import io.vertigo.dynamo.impl.database.Resources;
 import io.vertigo.kernel.exception.VUserException;
 import io.vertigo.kernel.lang.Assertion;
@@ -40,7 +40,7 @@ import org.apache.log4j.Logger;
  *
  * @author npiedeloup, evernat
  */
-public abstract class AbstractSQLExceptionHandler implements SQLExceptionHandler {
+public abstract class AbstractSQLExceptionHandler implements SqlExceptionHandler {
 	private final Logger logger = Logger.getLogger(getClass()); //pas static, car on est sur une class abstraite
 
 	/**

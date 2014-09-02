@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.database.connection;
 
-import io.vertigo.dynamo.database.vendor.DataBase;
+import io.vertigo.dynamo.database.vendor.SqlDataBase;
 
 import java.sql.SQLException;
 
@@ -39,5 +39,5 @@ public interface ConnectionProvider {
 	/**
 	 * @return Type de base de données
 	 */
-	DataBase getDataBase();
+	SqlDataBase getDataBase();
 }

@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.database.connection.hibernate;
 
-import io.vertigo.dynamo.database.vendor.DataBase;
-import io.vertigo.dynamo.database.vendor.SQLExceptionHandler;
-import io.vertigo.dynamo.database.vendor.SQLMapping;
+import io.vertigo.dynamo.database.vendor.SqlDataBase;
+import io.vertigo.dynamo.database.vendor.SqlExceptionHandler;
+import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.dynamo.transaction.KTransaction;
 import io.vertigo.dynamo.transaction.KTransactionResourceId;
 import io.vertigo.kernel.lang.Assertion;
@@ -32,11 +32,11 @@ import javax.persistence.EntityManagerFactory;
  * 
  * @author npiedeloup
  */
-public final class JpaDataBase implements DataBase {
+public final class JpaDataBase implements SqlDataBase {
 	//This Resource must be commited AFTER the KConnection ones. The release of EntityManager close the DB Connection and KConnection can't be commited anymore
 	private static final KTransactionResourceId<JpaResource> JPA_RESOURCE_ID = new KTransactionResourceId<>(KTransactionResourceId.Priority.NORMAL, "Jpa");
 
-	private final DataBase innerDataBase;
+	private final SqlDataBase innerDataBase;
 	private final EntityManagerFactory entityManagerFactory;
 
 	/**
@@ -44,7 +44,7 @@ public final class JpaDataBase implements DataBase {
 	 * @param innerDataBase Base sous jacente
 	 * @param entityManagerFactory entityManagerFactory
 	 */
-	JpaDataBase(final DataBase innerDataBase, final EntityManagerFactory entityManagerFactory) {
+	JpaDataBase(final SqlDataBase innerDataBase, final EntityManagerFactory entityManagerFactory) {
 		Assertion.checkNotNull(innerDataBase);
 		Assertion.checkNotNull(entityManagerFactory);
 		//---------------------------------------------------------------------
@@ -53,12 +53,12 @@ public final class JpaDataBase implements DataBase {
 	}
 
 	/** {@inheritDoc} */
-	public SQLExceptionHandler getSqlExceptionHandler() {
+	public SqlExceptionHandler getSqlExceptionHandler() {
 		return innerDataBase.getSqlExceptionHandler();
 	}
 
 	/** {@inheritDoc} */
-	public SQLMapping getSqlMapping() {
+	public SqlMapping getSqlMapping() {
 		return innerDataBase.getSqlMapping();
 	}
 

@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.database.connection;
 
-import io.vertigo.dynamo.database.vendor.DataBase;
+import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.transaction.KTransactionResource;
 import io.vertigo.kernel.lang.Assertion;
 
@@ -35,7 +35,7 @@ import java.sql.SQLException;
  */
 public final class KConnection implements KTransactionResource {
 	private final Connection jdbcConnection;
-	private final DataBase dataBase;
+	private final SqlDataBase dataBase;
 	private final boolean closeable;
 
 	/**
@@ -46,7 +46,7 @@ public final class KConnection implements KTransactionResource {
 	 * @param closeable Si cette connection peut-être fermée
 	 * @throws SQLException Exception sql
 	 */
-	public KConnection(final Connection jdbcConnection, final DataBase dataBase, final boolean closeable) throws SQLException {
+	public KConnection(final Connection jdbcConnection, final SqlDataBase dataBase, final boolean closeable) throws SQLException {
 		Assertion.checkNotNull(jdbcConnection);
 		Assertion.checkNotNull(dataBase);
 		//----------------------------------------------------------------------
@@ -69,7 +69,7 @@ public final class KConnection implements KTransactionResource {
 	/**
 	 * @return Base de données dont est issue la connexion.
 	 */
-	public DataBase getDataBase() {
+	public SqlDataBase getDataBase() {
 		return dataBase;
 	}
 

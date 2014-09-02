@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.sqlserver;
 
-import io.vertigo.dynamo.database.vendor.DataBase;
-import io.vertigo.dynamo.database.vendor.SQLExceptionHandler;
-import io.vertigo.dynamo.database.vendor.SQLMapping;
+import io.vertigo.dynamo.database.vendor.SqlDataBase;
+import io.vertigo.dynamo.database.vendor.SqlExceptionHandler;
+import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.dynamo.impl.database.vendor.core.SQLMappingImpl;
 
 /**
@@ -28,17 +28,17 @@ import io.vertigo.dynamo.impl.database.vendor.core.SQLMappingImpl;
  * 
  * @author pchretien
  */
-public final class SqlServerDataBase implements DataBase {
-	private final SQLExceptionHandler sqlExceptionHandler = new SqlServerExceptionHandler();
-	private final SQLMapping sqlMapping = new SQLMappingImpl();
+public final class SqlServerDataBase implements SqlDataBase {
+	private final SqlExceptionHandler sqlExceptionHandler = new SqlServerExceptionHandler();
+	private final SqlMapping sqlMapping = new SQLMappingImpl();
 
 	/** {@inheritDoc} */
-	public SQLExceptionHandler getSqlExceptionHandler() {
+	public SqlExceptionHandler getSqlExceptionHandler() {
 		return sqlExceptionHandler;
 	}
 
 	/** {@inheritDoc} */
-	public SQLMapping getSqlMapping() {
+	public SqlMapping getSqlMapping() {
 		return sqlMapping;
 	}
 }

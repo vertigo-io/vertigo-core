@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.impl.database.statementhandler;
 
 import io.vertigo.dynamo.database.statement.QueryResult;
-import io.vertigo.dynamo.database.vendor.SQLMapping;
+import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -40,7 +40,7 @@ final class RetrieveUtil {
 		//Classe utilitaire, constructeir est privé.
 	}
 
-	static QueryResult retrievePrimitive(final DataType dataType, final SQLMapping mapping, final ResultSet resultSet) throws SQLException {
+	static QueryResult retrievePrimitive(final DataType dataType, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
 		if (resultSet.next()) {
 			//On est dans le cas de récupération d'un objet, un objet a été trouvé
 			//On vérifie qu'il y en a au plus un.
@@ -53,24 +53,24 @@ final class RetrieveUtil {
 		return new QueryResult(null, 0);
 	}
 
-	static QueryResult retrieveData(final ResultMetaData resultMetaData, final SQLMapping mapping, final ResultSet resultSet) throws SQLException {
+	static QueryResult retrieveData(final ResultMetaData resultMetaData, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
 		if (resultMetaData.isDtObject()) {
 			return retrieveDtObject(resultMetaData, mapping, resultSet);
 		}
 		return retrieveDtList(resultMetaData, mapping, resultSet);
 	}
 
-	private static QueryResult retrieveDtObject(final ResultMetaData resultMetaData, final SQLMapping mapping, final ResultSet resultSet) throws SQLException {
+	private static QueryResult retrieveDtObject(final ResultMetaData resultMetaData, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
 		final DtObject dto = doRetrieveDtObject(mapping, resultSet, resultMetaData);
 		return new QueryResult(dto, dto != null ? 1 : 0);
 	}
 
-	private static QueryResult retrieveDtList(final ResultMetaData resultMetaData, final SQLMapping mapping, final ResultSet resultSet) throws SQLException {
+	private static QueryResult retrieveDtList(final ResultMetaData resultMetaData, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
 		final DtList<DtObject> dtc = doRetrieveDtList(mapping, resultSet, resultMetaData);
 		return new QueryResult(dtc, dtc.size());
 	}
 
-	private static DtList<DtObject> doRetrieveDtList(final SQLMapping mapping, final ResultSet resultSet, final ResultMetaData resultMetaData) throws SQLException {
+	private static DtList<DtObject> doRetrieveDtList(final SqlMapping mapping, final ResultSet resultSet, final ResultMetaData resultMetaData) throws SQLException {
 		final DtField[] fields = findFields(resultMetaData, resultSet.getMetaData());
 
 		DtObject dto;
@@ -85,7 +85,7 @@ final class RetrieveUtil {
 		return dtc;
 	}
 
-	private static DtObject doRetrieveDtObject(final SQLMapping mapping, final ResultSet resultset, final ResultMetaData resultMetaData) throws SQLException {
+	private static DtObject doRetrieveDtObject(final SqlMapping mapping, final ResultSet resultset, final ResultMetaData resultMetaData) throws SQLException {
 		final DtField[] fields = findFields(resultMetaData, resultset.getMetaData());
 
 		if (resultset.next()) {
@@ -104,7 +104,7 @@ final class RetrieveUtil {
 
 	}
 
-	private static void readDtObject(final SQLMapping mapping, final ResultSet resultSet, final DtObject dto, final DtField[] fields) throws SQLException {
+	private static void readDtObject(final SqlMapping mapping, final ResultSet resultSet, final DtObject dto, final DtField[] fields) throws SQLException {
 		Object value;
 		for (int i = 0; i < fields.length; i++) {
 			value = mapping.getValueForResultSet(resultSet, i + 1, fields[i].getDomain().getDataType());

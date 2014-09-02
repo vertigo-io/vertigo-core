@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.plugins.database.connection;
 
 import io.vertigo.dynamo.database.connection.KConnection;
-import io.vertigo.dynamo.database.vendor.DataBase;
+import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.impl.database.ConnectionProviderPlugin;
 import io.vertigo.kernel.component.ComponentInfo;
 import io.vertigo.kernel.component.Describable;
@@ -39,13 +39,13 @@ public abstract class AbstractConnectionProviderPlugin implements ConnectionProv
 	/**
 	 * Base de données utilisée
 	 */
-	private final DataBase dataBase;
+	private final SqlDataBase dataBase;
 
 	/**
 	 * Constructeur.
 	 * @param dataBase Type de base de données
 	 */
-	protected AbstractConnectionProviderPlugin(final DataBase dataBase) {
+	protected AbstractConnectionProviderPlugin(final SqlDataBase dataBase) {
 		Assertion.checkNotNull(dataBase);
 		Assertion.checkNotNull(dataBase.getSqlMapping());
 		Assertion.checkNotNull(dataBase.getSqlExceptionHandler());
@@ -55,7 +55,7 @@ public abstract class AbstractConnectionProviderPlugin implements ConnectionProv
 
 	//----------------------GESTION DU CONNECTION PROVIDER----------------------
 	/** {@inheritDoc} */
-	public final DataBase getDataBase() {
+	public final SqlDataBase getDataBase() {
 		return dataBase;
 	}
 

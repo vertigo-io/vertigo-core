@@ -18,26 +18,26 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.postgresql;
 
-import io.vertigo.dynamo.database.vendor.DataBase;
-import io.vertigo.dynamo.database.vendor.SQLExceptionHandler;
-import io.vertigo.dynamo.database.vendor.SQLMapping;
+import io.vertigo.dynamo.database.vendor.SqlDataBase;
+import io.vertigo.dynamo.database.vendor.SqlExceptionHandler;
+import io.vertigo.dynamo.database.vendor.SqlMapping;
 
 /**
  * Gestiond de la base de données PostrgreSQL.
  * 
  * @author pchretien
  */
-public final class PostgreSqlDataBase implements DataBase {
-	private final SQLExceptionHandler sqlExceptionHandler = new PostgreSqlExceptionHandler();
-	private final SQLMapping sqlMapping = new PostgresqlMapping();
+public final class PostgreSqlDataBase implements SqlDataBase {
+	private final SqlExceptionHandler sqlExceptionHandler = new PostgreSqlExceptionHandler();
+	private final SqlMapping sqlMapping = new PostgresqlMapping();
 
 	/** {@inheritDoc} */
-	public SQLExceptionHandler getSqlExceptionHandler() {
+	public SqlExceptionHandler getSqlExceptionHandler() {
 		return sqlExceptionHandler;
 	}
 
 	/** {@inheritDoc} */
-	public SQLMapping getSqlMapping() {
+	public SqlMapping getSqlMapping() {
 		return sqlMapping;
 	}
 }
