@@ -126,7 +126,11 @@ public final class MapCachePlugin implements CachePlugin, Describable {
 
 	/** {@inheritDoc} */
 	public void clear(final String context) {
-		getMapCache(context).removeAll();
+		//Dans le cas de clear 
+		final MapCache mapCache = cachesPerContext.get(context);
+		if (mapCache != null) {
+			mapCache.removeAll();
+		}
 	}
 
 	private void putElement(final String context, final Serializable key, final Serializable value) {
