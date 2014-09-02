@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamo.impl.file.model;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.metamodel.DefinitionReference;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.KFile;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.metamodel.DefinitionReference;
 
 /**
  * Class générique de définition d'un fichier.

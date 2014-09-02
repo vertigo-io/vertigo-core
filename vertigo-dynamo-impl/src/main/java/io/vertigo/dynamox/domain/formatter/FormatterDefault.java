@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamox.domain.formatter;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.metamodel.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.metamodel.DefinitionReference;
 
 /**
  * Implémentation par défaut des formatters.

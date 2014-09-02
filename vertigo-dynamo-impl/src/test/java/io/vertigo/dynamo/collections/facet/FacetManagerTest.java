@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.collections.facet;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.core.Home;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
@@ -30,7 +31,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamock.domain.car.Car;
 import io.vertigo.dynamock.domain.car.CarDataBase;
 import io.vertigo.dynamock.facet.CarFacetInitializer;
-import io.vertigo.kernel.Home;
 
 import java.util.ArrayList;
 import java.util.Collections;

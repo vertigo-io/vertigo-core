@@ -19,12 +19,12 @@
 package io.vertigo.dynamo.plugins.work.redis.worker;
 
 import io.vertigo.core.lang.Activeable;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.impl.node.WorkerPlugin;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.node.Node;
 import io.vertigo.dynamo.plugins.work.redis.RedisDB;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.util.Arrays;
 import java.util.List;

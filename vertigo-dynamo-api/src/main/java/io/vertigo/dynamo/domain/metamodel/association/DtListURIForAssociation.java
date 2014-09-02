@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamo.domain.metamodel.association;
 
+import io.vertigo.core.Home;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.lang.Assertion;
 
 /**
  * URI d'une liste définie par une association.

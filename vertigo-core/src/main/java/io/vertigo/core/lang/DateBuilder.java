@@ -18,8 +18,6 @@
  */
 package io.vertigo.core.lang;
 
-import io.vertigo.kernel.lang.Assertion;
-
 import java.util.Calendar;
 import java.util.Date;
 

@@ -20,10 +20,10 @@ package io.vertigo.quarto.publisher;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.resource.ResourceManager;
+import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.file.util.FileUtil;
-import io.vertigo.kernel.Home;
 import io.vertigo.quarto.publisher.metamodel.PublisherDataDefinition;
 import io.vertigo.quarto.publisher.mock.Address;
 import io.vertigo.quarto.publisher.mock.Enquete;

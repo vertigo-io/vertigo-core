@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.task.model;
 
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Résultat de l'exécution d'une tache.

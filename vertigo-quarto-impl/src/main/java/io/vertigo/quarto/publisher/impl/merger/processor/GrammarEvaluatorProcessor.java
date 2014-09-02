@@ -20,7 +20,7 @@ package io.vertigo.quarto.publisher.impl.merger.processor;
 
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.script.SeparatorType;
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.quarto.publisher.impl.merger.script.ScriptGrammar;
 import io.vertigo.quarto.publisher.impl.merger.script.ScriptHandlerImpl;
 import io.vertigo.quarto.publisher.model.PublisherData;

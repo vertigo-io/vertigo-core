@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.impl.domain.metamodel;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
-import io.vertigo.kernel.lang.Assertion;
 
 /**
  * Implémentation standard des formatters.

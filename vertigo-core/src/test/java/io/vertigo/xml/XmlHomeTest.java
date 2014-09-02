@@ -18,10 +18,10 @@
  */
 package io.vertigo.xml;
 
+import io.vertigo.core.Home;
 import io.vertigo.core.di.configurator.ComponentSpaceConfig;
 import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.home.componentspace.data.BioManager;
+import io.vertigo.core.home.componentspace.data.BioManager;
 import io.vertigo.xml.XMLModulesLoader;
 
 import java.util.Properties;

@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.task;
 
+import io.vertigo.core.Home;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.dynamo.impl.task.listener.TaskListener;
 import io.vertigo.dynamo.impl.task.listener.TaskListenerImpl;
@@ -25,7 +26,6 @@ import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamo.task.model.TaskResult;
-import io.vertigo.kernel.Home;
 
 /**
  * @author  pchretien

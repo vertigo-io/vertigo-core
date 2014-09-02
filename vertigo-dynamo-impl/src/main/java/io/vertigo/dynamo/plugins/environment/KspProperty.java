@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.environment;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.impl.environment.kernel.meta.EntityProperty;
 import io.vertigo.dynamo.impl.environment.kernel.meta.PrimitiveType;
-import io.vertigo.kernel.lang.Assertion;
 
 /**
  * Métadonnée liée à la grammaire.

@@ -21,8 +21,8 @@ package io.vertigo.commons.impl.analytics;
 import io.vertigo.commons.analytics.AnalyticsAgent;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.plugins.analytics.dummy.DummyAgentPlugin;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
-import io.vertigo.kernel.lang.Assertion;
 
 import javax.inject.Inject;
 

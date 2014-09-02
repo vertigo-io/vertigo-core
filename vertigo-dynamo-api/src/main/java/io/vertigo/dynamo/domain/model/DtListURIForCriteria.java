@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamo.domain.model;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.persistence.Criteria;
 import io.vertigo.dynamo.persistence.FilterCriteriaBuilder;
-import io.vertigo.kernel.lang.Assertion;
 
 /**
  * Implementation d'une liste filtré par un Criteria.

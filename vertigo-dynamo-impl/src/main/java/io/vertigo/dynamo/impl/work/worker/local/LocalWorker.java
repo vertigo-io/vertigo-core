@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.impl.work.worker.local;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkResultHandler;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.Callable;

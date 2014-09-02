@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.persistence;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.util.ArrayList;
 import java.util.List;

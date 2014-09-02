@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.task.metamodel;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.kernel.lang.Assertion;
 
 /**
  * Attribut d'une tache.

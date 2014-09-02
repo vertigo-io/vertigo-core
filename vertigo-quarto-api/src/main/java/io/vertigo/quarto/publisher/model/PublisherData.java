@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.publisher.model;
 
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.quarto.publisher.metamodel.PublisherDataDefinition;
 
 /**

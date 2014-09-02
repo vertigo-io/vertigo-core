@@ -20,6 +20,7 @@ package io.vertigo.dynamo.plugins.search.solr;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Activeable;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
@@ -30,7 +31,6 @@ import io.vertigo.dynamo.search.SearchServicesPlugin;
 import io.vertigo.dynamo.search.metamodel.IndexDefinition;
 import io.vertigo.dynamo.search.model.Index;
 import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.util.Collection;
 import java.util.Collections;

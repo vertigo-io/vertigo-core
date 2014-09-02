@@ -18,8 +18,8 @@
  */
 package io.vertigo.vega.rest.metamodel;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.vega.rest.validation.DtObjectValidator;
 import io.vertigo.vega.rest.validation.UiMessageStack;
 

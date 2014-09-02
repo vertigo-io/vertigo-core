@@ -20,7 +20,7 @@ package io.vertigo.ccc.console;
 
 import io.vertigo.core.command.VCommand;
 import io.vertigo.core.command.VResponse;
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

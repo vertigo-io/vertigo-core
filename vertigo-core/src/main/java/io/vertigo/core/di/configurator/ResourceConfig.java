@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.di.configurator;
 
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * A resource is defined by 

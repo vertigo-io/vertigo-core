@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.impl.collections.functions.sort;
 
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Gestion des ordres de tri.

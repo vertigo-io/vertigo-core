@@ -19,7 +19,7 @@
 package io.vertigo.quarto.publisher;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.kernel.Home;
+import io.vertigo.core.Home;
 import io.vertigo.quarto.publisher.metamodel.PublisherDataDefinition;
 import io.vertigo.quarto.publisher.metamodel.PublisherField;
 import io.vertigo.quarto.publisher.metamodel.PublisherNodeDefinition;

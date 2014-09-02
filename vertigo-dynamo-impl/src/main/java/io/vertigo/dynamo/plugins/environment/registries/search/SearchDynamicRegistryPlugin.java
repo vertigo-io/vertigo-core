@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.search;
 
+import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 import io.vertigo.dynamo.search.metamodel.IndexDefinition;
-import io.vertigo.kernel.Home;
 
 /**
  * @author pchretien

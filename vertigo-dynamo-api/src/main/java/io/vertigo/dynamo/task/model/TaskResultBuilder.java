@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.task.model;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.kernel.lang.Assertion;
 
 /**
  * Résultat de l'execution du Task.

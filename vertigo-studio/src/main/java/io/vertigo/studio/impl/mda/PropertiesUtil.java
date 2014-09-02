@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.impl.mda;
 
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 import java.util.Properties;
 

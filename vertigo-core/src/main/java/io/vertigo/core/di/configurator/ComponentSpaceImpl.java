@@ -18,6 +18,8 @@
  */
 package io.vertigo.core.di.configurator;
 
+import io.vertigo.core.Engine;
+import io.vertigo.core.Home;
 import io.vertigo.core.aop.Interceptor;
 import io.vertigo.core.command.VCommand;
 import io.vertigo.core.command.VCommandExecutor;
@@ -27,16 +29,14 @@ import io.vertigo.core.component.Container;
 import io.vertigo.core.component.Plugin;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.core.di.reactor.DIReactor;
+import io.vertigo.core.engines.AopEngine;
+import io.vertigo.core.engines.VCommandEngine;
 import io.vertigo.core.lang.Activeable;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
-import io.vertigo.kernel.Engine;
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.engines.AopEngine;
-import io.vertigo.kernel.engines.VCommandEngine;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.metamodel.DefinitionSpace;
-import io.vertigo.kernel.resource.ResourceLoader;
-import io.vertigo.kernel.util.StringUtil;
+import io.vertigo.core.metamodel.DefinitionSpace;
+import io.vertigo.core.resource.ResourceLoader;
+import io.vertigo.core.util.StringUtil;
 
 import java.io.File;
 import java.lang.reflect.Method;

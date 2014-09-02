@@ -19,7 +19,7 @@
 package io.vertigo.commons.impl.codec.hash;
 
 import io.vertigo.commons.codec.Encoder;
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

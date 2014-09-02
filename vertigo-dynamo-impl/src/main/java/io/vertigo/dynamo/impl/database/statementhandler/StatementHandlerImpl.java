@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamo.impl.database.statementhandler;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.database.statement.QueryResult;
 import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.impl.database.statement.StatementHandler;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

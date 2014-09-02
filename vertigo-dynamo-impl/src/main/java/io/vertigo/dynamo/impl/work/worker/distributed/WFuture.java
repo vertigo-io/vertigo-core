@@ -1,7 +1,7 @@
 package io.vertigo.dynamo.impl.work.worker.distributed;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.work.WorkResultHandler;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;

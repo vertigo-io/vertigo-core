@@ -19,8 +19,8 @@
 package io.vertigo.commons.impl.codec.html;
 
 import io.vertigo.commons.codec.Codec;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.util.StringUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.StringUtil;
 
 import java.util.Arrays;
 import java.util.HashMap;

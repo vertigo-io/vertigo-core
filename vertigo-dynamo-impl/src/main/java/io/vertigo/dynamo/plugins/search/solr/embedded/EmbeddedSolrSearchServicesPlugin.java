@@ -21,8 +21,8 @@ package io.vertigo.dynamo.plugins.search.solr.embedded;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.commons.resource.ResourceManager;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.plugins.search.solr.AbstractSolrSearchServicesPlugin;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.io.File;
 import java.net.URL;

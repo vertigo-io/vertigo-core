@@ -18,10 +18,10 @@
  */
 package io.vertigo.studio.plugins.mda.file;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.metamodel.DefinitionUtil;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.metamodel.DefinitionUtil;
-import io.vertigo.kernel.util.StringUtil;
 
 /**
  * Génération des classes/méthodes des fileInfo.

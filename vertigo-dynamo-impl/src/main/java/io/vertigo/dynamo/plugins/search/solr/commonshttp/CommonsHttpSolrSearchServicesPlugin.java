@@ -20,8 +20,8 @@ package io.vertigo.dynamo.plugins.search.solr.commonshttp;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.locale.LocaleManager;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.plugins.search.solr.AbstractSolrSearchServicesPlugin;
-import io.vertigo.kernel.lang.Assertion;
 
 import javax.inject.Inject;
 import javax.inject.Named;

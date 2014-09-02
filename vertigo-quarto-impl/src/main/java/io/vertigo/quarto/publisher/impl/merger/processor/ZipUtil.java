@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.publisher.impl.merger.processor;
 
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 import java.io.IOException;
 import java.io.InputStream;

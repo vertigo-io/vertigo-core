@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.command;
 
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 import java.util.Collections;
 import java.util.Map;

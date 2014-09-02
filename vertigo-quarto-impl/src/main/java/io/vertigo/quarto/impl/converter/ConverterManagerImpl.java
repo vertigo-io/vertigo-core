@@ -18,10 +18,10 @@
  */
 package io.vertigo.quarto.impl.converter;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkResultHandler;
-import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.quarto.converter.ConverterManager;
 
 import java.util.concurrent.Callable;

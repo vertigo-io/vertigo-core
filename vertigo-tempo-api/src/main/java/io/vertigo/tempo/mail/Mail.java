@@ -18,8 +18,8 @@
  */
 package io.vertigo.tempo.mail;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.file.model.KFile;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.util.Collections;
 import java.util.List;

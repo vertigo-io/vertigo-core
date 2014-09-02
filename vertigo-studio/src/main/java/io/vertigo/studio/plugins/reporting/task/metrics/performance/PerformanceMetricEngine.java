@@ -18,12 +18,12 @@
  */
 package io.vertigo.studio.plugins.reporting.task.metrics.performance;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamox.task.TaskEngineSelect;
-import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.studio.reporting.MetricEngine;
 
 /**

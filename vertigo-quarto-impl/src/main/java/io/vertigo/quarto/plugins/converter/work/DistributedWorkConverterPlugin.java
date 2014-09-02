@@ -18,10 +18,10 @@
  */
 package io.vertigo.quarto.plugins.converter.work;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.dynamo.work.WorkManager;
-import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.quarto.impl.converter.ConverterPlugin;
 
 import javax.inject.Inject;

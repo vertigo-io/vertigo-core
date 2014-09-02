@@ -20,7 +20,7 @@ package io.vertigo.engines.command.samples;
 
 import io.vertigo.core.command.VCommand;
 import io.vertigo.core.command.VCommandExecutor;
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 public final class VPingCommandExecutor implements VCommandExecutor<String> {
 	public String exec(VCommand command) {

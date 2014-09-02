@@ -18,8 +18,8 @@
  */
 package io.vertigo.persona.security;
 
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.metamodel.DefinitionReference;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.metamodel.DefinitionReference;
 import io.vertigo.persona.security.metamodel.Role;
 
 import java.io.Serializable;

@@ -16,18 +16,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.kernel.lang;
+package io.vertigo.core.home.componentspace.data;
 
-import java.io.Serializable;
+import javax.inject.Inject;
+import javax.inject.Named;
 
-/**
-* Clé d'un message externalisée.
-*
-* @author  pchretien, npiedeloup
-*/
-public interface MessageKey extends Serializable {
-	/**
-	 * @return nom de la clé.
-	 */
-	String name();
+public final class MathManagerImpl implements MathManager {
+	@Inject
+	private MathPlugin mathPlugin;
+	@Inject
+	@Named("start")
+	private int start;
+
+	public int add(int a, int b) {
+		return start + mathPlugin.add(a, b);
+	}
+
 }

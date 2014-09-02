@@ -18,11 +18,11 @@
  */
 package io.vertigo.engines.command.samples;
 
+import io.vertigo.core.Home;
 import io.vertigo.core.command.VCommand;
 import io.vertigo.core.command.VCommandExecutor;
 import io.vertigo.core.component.ComponentInfo;
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

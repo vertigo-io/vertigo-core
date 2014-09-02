@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.plugins.converter.openoffice;
 
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Formats de sortie supportés par Open Office.

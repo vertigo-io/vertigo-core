@@ -20,9 +20,9 @@ package io.vertigo.dynamo.impl.transaction;
 
 import io.vertigo.core.aop.Interceptor;
 import io.vertigo.core.aop.MethodInvocation;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamo.transaction.KTransactionWritable;
-import io.vertigo.kernel.lang.Assertion;
 
 import javax.inject.Inject;
 

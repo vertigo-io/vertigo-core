@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.impl.environment.kernel.model;
 
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Clé d'une definition.

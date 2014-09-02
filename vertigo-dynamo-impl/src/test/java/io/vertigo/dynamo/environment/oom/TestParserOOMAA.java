@@ -19,8 +19,8 @@
 package io.vertigo.dynamo.environment.oom;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
-import io.vertigo.kernel.Home;
 
 import org.junit.Assert;
 import org.junit.Test;

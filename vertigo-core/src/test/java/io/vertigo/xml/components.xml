@@ -23,21 +23,21 @@
 	<module name ="components" api="false" inheritance="java.lang.Object">
 			
 		<!-- Components declaration -->
-		<component class="io.vertigo.kernel.component.mock.ComputerImpl" />
-		<component class="io.vertigo.kernel.component.mock.A" />
-		<component class="io.vertigo.kernel.component.mock.BImpl" />
-		<component class="io.vertigo.kernel.component.mock.C" />
-		<component class="io.vertigo.kernel.component.mock.F" />
+		<component class="io.vertigo.core.component.mock.ComputerImpl" />
+		<component class="io.vertigo.core.component.mock.A" />
+		<component class="io.vertigo.core.component.mock.BImpl" />
+		<component class="io.vertigo.core.component.mock.C" />
+		<component class="io.vertigo.core.component.mock.F" />
 	
 		<!-- Aspects declaration -->
 		<aspect>
-			<annotation class="io.vertigo.kernel.component.mock.aop.OneMore" />
-			<advice class="io.vertigo.kernel.component.mock.aop.OneMoreInterceptor" />
+			<annotation class="io.vertigo.core.component.mock.aop.OneMore" />
+			<advice class="io.vertigo.core.component.mock.aop.OneMoreInterceptor" />
 		</aspect>
 		
 		<aspect>
-			<annotation  class="io.vertigo.kernel.component.mock.aop.TenMore" />
-			<advice class="io.vertigo.kernel.component.mock.aop.TenMoreInterceptor"/>
+			<annotation  class="io.vertigo.core.component.mock.aop.TenMore" />
+			<advice class="io.vertigo.core.component.mock.aop.TenMoreInterceptor"/>
 		</aspect>
 	</module>
 </modules>

@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.transaction.database;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.transaction.KTransactionResource;
-import io.vertigo.kernel.lang.Assertion;
 
 /**
  * 

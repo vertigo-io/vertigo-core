@@ -18,10 +18,10 @@
  */
 package io.vertigo.studio.tools;
 
-import io.vertigo.kernel.AppBuilder;
-import io.vertigo.kernel.AppBuilder.App;
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.util.ClassUtil;
+import io.vertigo.core.AppBuilder;
+import io.vertigo.core.Home;
+import io.vertigo.core.AppBuilder.App;
+import io.vertigo.core.util.ClassUtil;
 import io.vertigo.studio.tools.generate.GenerateGoal;
 
 import java.util.ArrayList;

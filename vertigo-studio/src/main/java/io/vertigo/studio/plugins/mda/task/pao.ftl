@@ -4,10 +4,10 @@ package ${pao.packageName};
 import javax.inject.Inject;
 
 <#if pao.options >
-import io.vertigo.kernel.lang.Option;
+import io.vertigo.core.lang.Option;
 </#if>
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.Home;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;

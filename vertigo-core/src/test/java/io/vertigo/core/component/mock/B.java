@@ -16,21 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.kernel.lang;
+package io.vertigo.core.component.mock;
+
+import io.vertigo.core.lang.Activeable;
 
 /**
- * Comportement transverse permettant de décrire des objets modifiables devenant non modifiable.
- *  
- * @author pchretien
+ * @author prahmoune
  */
-public interface Modifiable {
-	/**
-	 * Rend l'objet non modifiable, non mutable.
-	 */
-	void makeUnmodifiable();
+public interface B extends Activeable {
+	boolean isInitialized();
 
-	/**
-	 * @return Si l'objet peut être modifiée.
-	 */
-	boolean isModifiable();
+	boolean isFinalized();
+
+	void throwMyException() throws MyException;
 }

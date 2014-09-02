@@ -16,32 +16,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.kernel.lang;
+package io.vertigo.core.home.componentspace.data;
 
-/**
- * Interface assurant le cycle de vie des composants (Optionnelle). 
- * Comportement transverse permettant de démarrer et d'arréter des services.
- * Les annotations JSR #250 sont préférées.
- * 
- * @javax.annotation.PostConstruct et @javax.annotation.PreDestroy. 
- * Ex: public class MyComponent {
- * 	@PostConstruct 
- * 	public void init() { }
- * 	@PreDestroy 
- * 	public void destroy() { } 
- * }
- * @author pchretien, prahmoune
- */
-public interface Activeable {
-	/**
-	 * Called when component is starting.
-	 * == postConstruct
-	 */
-	void start();
+import io.vertigo.core.lang.Activeable;
 
-	/**
-	 * Called when component is stopped.
-	 * == preDestroy
-	 */
-	void stop();
+import javax.inject.Inject;
+
+public final class BioManagerImpl implements BioManager, Activeable {
+	private boolean active = false;
+	@Inject
+	private MathManager mathManager;
+
+	public int add(final int... all) {
+		int res = 0;
+		for (final int a : all) {
+			res = mathManager.add(res, a);
+		}
+		return res;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void start() {
+		active = true;
+	}
+
+	public void stop() {
+		//
+	}
+
 }

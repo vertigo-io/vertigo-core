@@ -30,7 +30,7 @@ public final class WorkerNodeStarter {
 
 	/**
 	 * Lance l'environnement et attend indéfiniment.
-	 * @param args "Usage: java vertigo.kernel.Starter managers.xml <conf.properties>"
+	 * @param args "Usage: java vertigo.core.Starter managers.xml <conf.properties>"
 	 */
 	public static void main(final String[] args) {
 		final Starter starter = new Starter("./managers-node-test.xml", Option.<String> none(), WorkerNodeStarter.class, Option.<Properties> none(), args.length == 1 ? Long.parseLong(args[0]) * 1000L : 5 * 60 * 1000L);

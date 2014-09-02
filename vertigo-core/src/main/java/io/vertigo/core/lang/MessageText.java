@@ -19,9 +19,8 @@
 package io.vertigo.core.lang;
 
 import io.vertigo.commons.locale.LocaleManager;
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.util.StringUtil;
+import io.vertigo.core.Home;
+import io.vertigo.core.util.StringUtil;
 
 import java.io.Serializable;
 import java.util.Arrays;

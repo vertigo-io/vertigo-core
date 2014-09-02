@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.rest.metamodel;
 
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 import java.io.Serializable;
 

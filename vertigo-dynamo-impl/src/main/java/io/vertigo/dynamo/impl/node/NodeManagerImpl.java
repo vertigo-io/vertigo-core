@@ -19,10 +19,10 @@
 package io.vertigo.dynamo.impl.node;
 
 import io.vertigo.core.lang.Activeable;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.impl.work.worker.local.LocalCoordinator;
 import io.vertigo.dynamo.node.Node;
 import io.vertigo.dynamo.node.NodeManager;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.util.ArrayList;
 import java.util.List;

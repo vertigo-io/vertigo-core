@@ -21,8 +21,8 @@
  */
 package io.vertigo.dynamo.plugins.persistence.filestore.fs;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.file.util.FileUtil;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.io.File;
 import java.io.IOException;

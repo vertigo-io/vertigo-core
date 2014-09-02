@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core;
 
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.util.StringUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.StringUtil;
 
 import java.net.URL;
 import java.util.ArrayList;

@@ -18,8 +18,8 @@
  */
 package io.vertigoimpl.engines.elastica.redis;
 
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.util.ClassUtil;
+import io.vertigo.core.Home;
+import io.vertigo.core.util.ClassUtil;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;

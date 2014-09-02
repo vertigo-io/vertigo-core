@@ -113,11 +113,11 @@ public final class Famille implements DtObject {
 	public final DtList<Car> getVoituresFamilleList() {
 		//		return this.<.domain.car.Car> getList(getVoituresFamilleListURI());
 		final DtListURIForAssociation fkDtListURI = getVoituresFamilleDtListURI();
-		io.vertigo.kernel.lang.Assertion.checkNotNull(fkDtListURI);
+		io.vertigo.core.lang.Assertion.checkNotNull(fkDtListURI);
 		//---------------------------------------------------------------------
 		//On est toujours dans un mode lazy.
 		if (voituresFamille == null) {
-			voituresFamille = io.vertigo.kernel.Home.getComponentSpace().resolve(PersistenceManager.class).getBroker().getList(fkDtListURI);
+			voituresFamille = io.vertigo.core.Home.getComponentSpace().resolve(PersistenceManager.class).getBroker().getList(fkDtListURI);
 		}
 		return voituresFamille;
 	}
@@ -140,11 +140,11 @@ public final class Famille implements DtObject {
 	public final DtList<Car> getVoituresLocationList() {
 		//		return this.<.domain.car.Car> getList(getVoituresLocationListURI());
 		final DtListURIForAssociation fkDtListURI = getVoituresLocationDtListURI();
-		io.vertigo.kernel.lang.Assertion.checkNotNull(fkDtListURI);
+		io.vertigo.core.lang.Assertion.checkNotNull(fkDtListURI);
 		//---------------------------------------------------------------------
 		//On est toujours dans un mode lazy.
 		if (voituresLocation == null) {
-			voituresLocation = io.vertigo.kernel.Home.getComponentSpace().resolve(PersistenceManager.class).getBroker().getList(fkDtListURI);
+			voituresLocation = io.vertigo.core.Home.getComponentSpace().resolve(PersistenceManager.class).getBroker().getList(fkDtListURI);
 		}
 		return voituresLocation;
 	}

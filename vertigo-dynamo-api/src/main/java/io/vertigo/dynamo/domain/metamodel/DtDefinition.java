@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.metamodel.Definition;
-import io.vertigo.kernel.metamodel.DefinitionUtil;
-import io.vertigo.kernel.stereotype.Prefix;
-import io.vertigo.kernel.util.StringUtil;
+import io.vertigo.core.metamodel.Definition;
+import io.vertigo.core.metamodel.DefinitionUtil;
+import io.vertigo.core.stereotype.Prefix;
+import io.vertigo.core.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;

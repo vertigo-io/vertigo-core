@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.plugins.collections.lucene;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Modifiable;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.io.IOException;
 import java.util.HashMap;

@@ -18,8 +18,8 @@
  */
 package io.vertigo.studio.plugins.mda.domain;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
-import io.vertigo.kernel.lang.Assertion;
 
 /**
  * Objet utilisé par FreeMarker.

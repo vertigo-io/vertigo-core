@@ -20,10 +20,10 @@ package io.vertigo.dynamo.plugins.database.connection;
 
 import io.vertigo.core.component.ComponentInfo;
 import io.vertigo.core.component.Describable;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.database.connection.KConnection;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.impl.database.ConnectionProviderPlugin;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;

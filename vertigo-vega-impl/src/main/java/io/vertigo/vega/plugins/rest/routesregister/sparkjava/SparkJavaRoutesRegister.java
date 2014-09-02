@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.plugins.rest.routesregister.sparkjava;
 
-import io.vertigo.kernel.Home;
+import io.vertigo.core.Home;
 import io.vertigo.vega.impl.rest.filter.CorsAllower;
 import io.vertigo.vega.impl.rest.handler.WsRestRoute;
 import io.vertigo.vega.rest.RestManager;

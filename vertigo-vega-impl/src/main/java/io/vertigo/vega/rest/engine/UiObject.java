@@ -18,14 +18,14 @@
  */
 package io.vertigo.vega.rest.engine;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.metamodel.DefinitionReference;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.metamodel.DefinitionReference;
-import io.vertigo.kernel.util.StringUtil;
 import io.vertigo.vega.rest.validation.DtObjectErrors;
 import io.vertigo.vega.rest.validation.DtObjectValidator;
 import io.vertigo.vega.rest.validation.UiMessageStack;

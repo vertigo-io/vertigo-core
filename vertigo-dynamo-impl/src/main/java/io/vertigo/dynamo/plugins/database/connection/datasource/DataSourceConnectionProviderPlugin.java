@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.plugins.database.connection.datasource;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.ClassUtil;
 import io.vertigo.dynamo.database.connection.KConnection;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.plugins.database.connection.AbstractConnectionProviderPlugin;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.util.ClassUtil;
 
 import java.sql.SQLException;
 

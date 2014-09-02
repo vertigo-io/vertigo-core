@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.impl.collections;
 
+import io.vertigo.core.Home;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.Function;
 import io.vertigo.dynamo.collections.CollectionsManager;
@@ -43,8 +45,6 @@ import io.vertigo.dynamo.impl.collections.functions.sort.SortFunction;
 import io.vertigo.dynamo.impl.collections.functions.sort.SortState;
 import io.vertigo.dynamo.impl.collections.functions.sublist.SubListFunction;
 import io.vertigo.dynamo.persistence.PersistenceManager;
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.io.Serializable;
 import java.util.Collection;

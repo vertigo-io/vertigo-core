@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.impl.database.statementhandler;
 
+import io.vertigo.core.Home;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -25,8 +27,6 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.io.Serializable;
 import java.sql.ResultSet;

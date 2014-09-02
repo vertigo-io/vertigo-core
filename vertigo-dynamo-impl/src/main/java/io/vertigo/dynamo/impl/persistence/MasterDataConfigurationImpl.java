@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.persistence;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.Function;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -25,7 +26,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.persistence.MasterDataConfiguration;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.io.Serializable;
 import java.util.HashMap;

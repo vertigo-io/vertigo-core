@@ -18,13 +18,13 @@
  */
 package io.vertigo.dynamo.plugins.export.pdfrtf;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.export.Export;
 import io.vertigo.dynamo.export.ExportDtParameters;
 import io.vertigo.dynamo.export.ExportField;
 import io.vertigo.dynamo.impl.export.core.ExportHelper;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.awt.Color;
 import java.io.OutputStream;

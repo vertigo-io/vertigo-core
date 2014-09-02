@@ -20,12 +20,12 @@ package io.vertigo.tempo.plugins.mail.javaxmail;
 
 import io.vertigo.core.component.ComponentInfo;
 import io.vertigo.core.component.Describable;
+import io.vertigo.core.exception.VUserException;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.MessageKey;
 import io.vertigo.core.lang.MessageText;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.KFile;
-import io.vertigo.kernel.exception.VUserException;
-import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.tempo.impl.mail.Resources;
 import io.vertigo.tempo.impl.mail.SendMailPlugin;
 import io.vertigo.tempo.mail.Mail;

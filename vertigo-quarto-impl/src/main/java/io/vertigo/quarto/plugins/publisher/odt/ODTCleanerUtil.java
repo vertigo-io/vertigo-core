@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.plugins.publisher.odt;
 
-import io.vertigo.kernel.util.StringUtil;
+import io.vertigo.core.util.StringUtil;
 
 import java.util.Stack;
 

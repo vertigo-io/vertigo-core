@@ -18,8 +18,8 @@
  */
 package io.vertigo.quarto.publisher.impl.merger.grammar;
 
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.util.StringUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.quarto.publisher.model.PublisherNode;
 
 import java.util.regex.Matcher;

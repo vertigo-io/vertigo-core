@@ -19,8 +19,8 @@
 package io.vertigo.commons.plugins.resource.local;
 
 import io.vertigo.commons.impl.resource.ResourceResolverPlugin;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.io.File;
 import java.net.MalformedURLException;

@@ -19,8 +19,8 @@
 package io.vertigo.vega.rest;
 
 import io.vertigo.core.lang.MessageText;
+import io.vertigo.core.util.DateUtil;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.kernel.util.DateUtil;
 import io.vertigo.vega.rest.validation.AbstractDtObjectValidator;
 import io.vertigo.vega.rest.validation.DtObjectErrors;
 

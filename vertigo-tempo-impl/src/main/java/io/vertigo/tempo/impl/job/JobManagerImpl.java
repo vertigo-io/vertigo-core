@@ -19,10 +19,10 @@
 package io.vertigo.tempo.impl.job;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.core.Home;
 import io.vertigo.core.di.injector.Injector;
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.exception.VUserException;
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.exception.VUserException;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.tempo.job.JobManager;
 import io.vertigo.tempo.job.SchedulerPlugin;
 import io.vertigo.tempo.job.metamodel.JobDefinition;

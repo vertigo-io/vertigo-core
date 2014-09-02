@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.file;
 
+import io.vertigo.core.Home;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
-import io.vertigo.kernel.Home;
 
 /**
  * @author pchretien

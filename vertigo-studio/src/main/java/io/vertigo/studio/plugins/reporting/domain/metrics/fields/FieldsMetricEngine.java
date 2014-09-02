@@ -18,8 +18,8 @@
  */
 package io.vertigo.studio.plugins.reporting.domain.metrics.fields;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.studio.reporting.MetricEngine;
 
 /**

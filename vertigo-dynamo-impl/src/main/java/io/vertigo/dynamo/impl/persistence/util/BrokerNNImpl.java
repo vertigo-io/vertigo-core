@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.persistence.util;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -36,7 +37,6 @@ import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.dynamox.domain.formatter.FormatterNumber;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineProc;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.util.HashSet;
 import java.util.List;

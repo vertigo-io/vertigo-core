@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.task.x;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.core.Home;
 import io.vertigo.dynamo.database.DataBaseManager;
 import io.vertigo.dynamo.database.connection.KConnection;
 import io.vertigo.dynamo.database.statement.KCallableStatement;
@@ -35,7 +36,6 @@ import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamo.transaction.KTransactionWritable;
 import io.vertigo.dynamock.domain.famille.Famille;
 import io.vertigo.dynamox.task.TaskEngineSelect;
-import io.vertigo.kernel.Home;
 
 import java.sql.SQLException;
 

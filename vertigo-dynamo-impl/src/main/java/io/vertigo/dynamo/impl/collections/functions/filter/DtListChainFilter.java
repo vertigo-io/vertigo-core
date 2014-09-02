@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.impl.collections.functions.filter;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.io.Serializable;
 

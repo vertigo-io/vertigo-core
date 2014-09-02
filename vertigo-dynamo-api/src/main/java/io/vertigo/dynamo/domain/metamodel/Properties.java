@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.lang.Modifiable;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.util.HashMap;
 import java.util.Map;

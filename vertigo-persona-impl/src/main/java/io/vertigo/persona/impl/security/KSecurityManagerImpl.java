@@ -20,11 +20,11 @@ package io.vertigo.persona.impl.security;
 
 import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.commons.locale.LocaleProvider;
+import io.vertigo.core.Home;
 import io.vertigo.core.lang.Activeable;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.util.ClassUtil;
+import io.vertigo.core.util.ClassUtil;
 import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.persona.security.ResourceNameFactory;
 import io.vertigo.persona.security.UserSession;

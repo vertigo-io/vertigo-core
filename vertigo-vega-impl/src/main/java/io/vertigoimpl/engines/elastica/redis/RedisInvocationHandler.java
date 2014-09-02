@@ -18,7 +18,7 @@
  */
 package io.vertigoimpl.engines.elastica.redis;
 
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

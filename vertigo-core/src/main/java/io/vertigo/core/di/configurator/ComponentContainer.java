@@ -18,17 +18,17 @@
  */
 package io.vertigo.core.di.configurator;
 
+import io.vertigo.core.Home;
+import io.vertigo.core.Logo;
 import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.core.component.Container;
 import io.vertigo.core.component.Plugin;
 import io.vertigo.core.lang.Activeable;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.Logo;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.util.ClassUtil;
-import io.vertigo.kernel.util.DILifeCycleUtil;
-import io.vertigo.kernel.util.StringUtil;
+import io.vertigo.core.util.ClassUtil;
+import io.vertigo.core.util.DILifeCycleUtil;
+import io.vertigo.core.util.StringUtil;
 
 import java.io.PrintStream;
 import java.lang.reflect.Method;

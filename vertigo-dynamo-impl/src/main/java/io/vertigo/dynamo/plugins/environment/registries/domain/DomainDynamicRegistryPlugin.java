@@ -18,7 +18,13 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.domain;
 
+import io.vertigo.core.Home;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.MessageText;
+import io.vertigo.core.metamodel.Definition;
+import io.vertigo.core.metamodel.DefinitionSpace;
+import io.vertigo.core.metamodel.DefinitionUtil;
+import io.vertigo.core.util.ClassUtil;
 import io.vertigo.dynamo.domain.metamodel.ComputedExpression;
 import io.vertigo.dynamo.domain.metamodel.Constraint;
 import io.vertigo.dynamo.domain.metamodel.DataType;
@@ -43,12 +49,6 @@ import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.metamodel.Definition;
-import io.vertigo.kernel.metamodel.DefinitionSpace;
-import io.vertigo.kernel.metamodel.DefinitionUtil;
-import io.vertigo.kernel.util.ClassUtil;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;

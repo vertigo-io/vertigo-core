@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.task.metamodel;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.task.model.TaskEngine;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.util.ArrayList;
 import java.util.List;

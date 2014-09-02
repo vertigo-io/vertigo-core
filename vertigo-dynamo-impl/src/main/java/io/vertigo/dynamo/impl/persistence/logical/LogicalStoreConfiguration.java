@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.impl.persistence.logical;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.persistence.DataStorePlugin;
-import io.vertigo.kernel.lang.Assertion;
 
 /**
  * Configuration logique des stores physiques.

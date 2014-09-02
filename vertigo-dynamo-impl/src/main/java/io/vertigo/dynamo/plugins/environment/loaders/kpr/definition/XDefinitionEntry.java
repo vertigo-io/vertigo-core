@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.kpr.definition;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.util.List;
 

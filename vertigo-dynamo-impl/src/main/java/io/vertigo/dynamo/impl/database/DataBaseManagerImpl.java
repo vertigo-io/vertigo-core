@@ -20,6 +20,7 @@ package io.vertigo.dynamo.impl.database;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.locale.LocaleManager;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.database.DataBaseManager;
 import io.vertigo.dynamo.database.connection.KConnection;
 import io.vertigo.dynamo.database.statement.KCallableStatement;
@@ -30,7 +31,6 @@ import io.vertigo.dynamo.impl.database.statement.KCallableStatementImpl;
 import io.vertigo.dynamo.impl.database.statement.KPreparedStatementImpl;
 import io.vertigo.dynamo.impl.database.statement.StatementHandler;
 import io.vertigo.dynamo.impl.database.statementhandler.StatementHandlerImpl;
-import io.vertigo.kernel.lang.Assertion;
 
 import javax.inject.Inject;
 

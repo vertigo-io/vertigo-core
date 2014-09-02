@@ -18,10 +18,10 @@
  */
 package io.vertigo.core.di.configurator;
 
+import io.vertigo.core.Home;
 import io.vertigo.core.aop.Interceptor;
 import io.vertigo.core.di.injector.Injector;
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

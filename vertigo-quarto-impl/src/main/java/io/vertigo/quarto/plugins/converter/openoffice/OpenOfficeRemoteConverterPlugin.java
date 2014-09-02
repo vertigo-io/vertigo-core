@@ -18,8 +18,8 @@
  */
 package io.vertigo.quarto.plugins.converter.openoffice;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.quarto.plugins.converter.openoffice.stream.OOoFileInputStream;
 import io.vertigo.quarto.plugins.converter.openoffice.stream.OOoFileOutputStream;
 

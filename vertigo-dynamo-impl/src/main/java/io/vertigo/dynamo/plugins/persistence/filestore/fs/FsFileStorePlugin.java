@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.persistence.filestore.fs;
 
+import io.vertigo.core.Home;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -34,8 +36,6 @@ import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.transaction.KTransaction;
 import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamo.transaction.KTransactionResourceId;
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.io.File;
 import java.io.FileInputStream;

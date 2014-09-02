@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.BeanUtil;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.util.BeanUtil;
-import io.vertigo.kernel.util.StringUtil;
 
 /**
  * Permet d'accéder aux données d'un objet par son champ.

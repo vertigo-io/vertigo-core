@@ -16,17 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.kernel.lang;
+package io.vertigo.core.home.componentspace.data;
 
-/**
- * Builder permettant de construire par étapes un objet.
- * 
- * @author pchretien
- * @param <T> Type de l'objet créé.
- */
-public interface Builder<T> {
-	/**
-	 * @return Objet créé
-	 */
-	T build();
+import io.vertigo.core.component.Manager;
+
+public interface FunctionManager extends Manager {
+
+	int compute(String functionName, int x);
+
+	int computeAll(int x);
 }

@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.tools.reporting;
 
-import io.vertigo.kernel.Home;
+import io.vertigo.core.Home;
 import io.vertigo.studio.reporting.ReportingManager;
 import io.vertigo.studio.tools.Goal;
 

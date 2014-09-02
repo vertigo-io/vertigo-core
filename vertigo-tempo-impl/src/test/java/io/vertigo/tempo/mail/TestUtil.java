@@ -18,11 +18,11 @@
  */
 package io.vertigo.tempo.mail;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.file.util.TempFile;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.io.File;
 import java.io.IOException;

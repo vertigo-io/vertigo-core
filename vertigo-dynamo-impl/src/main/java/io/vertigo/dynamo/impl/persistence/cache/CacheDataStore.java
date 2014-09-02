@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.persistence.cache;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -28,7 +29,6 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.persistence.Criteria;
 import io.vertigo.dynamo.persistence.DataStore;
-import io.vertigo.kernel.lang.Assertion;
 
 /**
  * Gestion des données mises en cache.

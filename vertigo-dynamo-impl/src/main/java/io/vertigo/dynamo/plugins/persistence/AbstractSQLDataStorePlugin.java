@@ -18,6 +18,10 @@
  */
 package io.vertigo.dynamo.plugins.persistence;
 
+import io.vertigo.core.Home;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.metamodel.Definition;
+import io.vertigo.core.metamodel.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -48,10 +52,6 @@ import io.vertigo.dynamox.domain.formatter.FormatterNumber;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.metamodel.Definition;
-import io.vertigo.kernel.metamodel.DefinitionUtil;
 
 import java.util.HashMap;
 import java.util.Map;

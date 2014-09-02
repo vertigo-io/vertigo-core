@@ -19,8 +19,8 @@
 package io.vertigo.vega.plugins.rest.servlet;
 
 import io.vertigo.commons.impl.config.ConfigPlugin;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.util.Properties;
 

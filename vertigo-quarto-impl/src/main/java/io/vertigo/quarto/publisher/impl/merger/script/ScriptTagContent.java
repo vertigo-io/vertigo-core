@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.publisher.impl.merger.script;
 
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Stocke le contenu d'un tag de la grammaire ODT

@@ -18,9 +18,9 @@
  */
 package io.vertigo.studio.plugins.mda.search;
 
+import io.vertigo.core.Home;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.search.metamodel.IndexDefinition;
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.studio.mda.Result;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
 import io.vertigo.studio.plugins.mda.FileGenerator;

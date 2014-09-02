@@ -18,13 +18,13 @@
  */
 package io.vertigo.dynamo.impl.export.core;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.export.ExportField;
 import io.vertigo.dynamo.persistence.PersistenceManager;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.util.HashMap;
 import java.util.Map;

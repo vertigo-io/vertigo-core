@@ -18,10 +18,10 @@
  */
 package io.vertigo.vega.impl.rest.handler;
 
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.exception.VUserException;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.util.ClassUtil;
+import io.vertigo.core.Home;
+import io.vertigo.core.exception.VUserException;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.ClassUtil;
 import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;

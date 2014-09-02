@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.impl.database.statement;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.database.statement.KPreparedStatement;
-import io.vertigo.kernel.lang.Assertion;
 
 /**
 * Class de statistique pour le suivi des traitements SQL.

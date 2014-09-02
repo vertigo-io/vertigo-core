@@ -18,8 +18,8 @@
  */
 package io.vertigo.core.di.configurator;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.JsonExclude;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.util.ArrayList;
 import java.util.Collections;

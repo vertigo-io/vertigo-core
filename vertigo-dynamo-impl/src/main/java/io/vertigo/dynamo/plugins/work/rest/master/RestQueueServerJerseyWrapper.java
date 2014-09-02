@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.work.rest.master;
 
+import io.vertigo.core.Home;
 import io.vertigo.dynamo.impl.work.MasterPlugin;
-import io.vertigo.kernel.Home;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;

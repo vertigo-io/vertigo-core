@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.impl.collections.functions.sort;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.persistence.PersistenceManager;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -18,9 +18,9 @@
  */
 package io.vertigo.tempo.job.metamodel;
 
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.metamodel.Definition;
-import io.vertigo.kernel.stereotype.Prefix;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.metamodel.Definition;
+import io.vertigo.core.stereotype.Prefix;
 
 /**
  * JobDefinition décrit le travail qu'il faut exécuter.

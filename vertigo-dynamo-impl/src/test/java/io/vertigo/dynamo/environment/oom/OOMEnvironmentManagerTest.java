@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.environment.oom;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.Constraint;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -28,7 +29,6 @@ import io.vertigo.dynamock.domain.famille.Famille;
 import io.vertigo.dynamox.domain.constraint.ConstraintRegex;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
 import io.vertigo.dynamox.domain.formatter.FormatterNumber;
-import io.vertigo.kernel.Home;
 
 import org.junit.Assert;
 import org.junit.Test;

@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.work.distributed.rest;
 
+import io.vertigo.core.AppBuilder;
+import io.vertigo.core.Home;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
-import io.vertigo.kernel.AppBuilder;
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.util.Properties;
 

@@ -19,10 +19,10 @@
 package io.vertigo.dynamo.plugins.kvdatastore.txberkeley;
 
 import io.vertigo.core.lang.Activeable;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.impl.kvdatastore.KVDataStorePlugin;
 import io.vertigo.dynamo.transaction.KTransactionManager;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.io.File;
 import java.util.List;

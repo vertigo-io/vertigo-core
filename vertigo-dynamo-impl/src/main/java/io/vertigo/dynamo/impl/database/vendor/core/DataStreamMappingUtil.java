@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.core;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DataStream;
 import io.vertigo.dynamo.file.util.TempFile;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

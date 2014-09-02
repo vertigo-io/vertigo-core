@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.search.multiindex;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.core.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
@@ -36,7 +37,6 @@ import io.vertigo.dynamo.search.model.Index;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.dynamock.domain.car.Car;
 import io.vertigo.dynamock.domain.car.CarDataBase;
-import io.vertigo.kernel.Home;
 
 import java.util.Collections;
 import java.util.HashMap;

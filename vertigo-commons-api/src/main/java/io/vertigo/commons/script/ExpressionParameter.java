@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.script;
 
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Paramètre.

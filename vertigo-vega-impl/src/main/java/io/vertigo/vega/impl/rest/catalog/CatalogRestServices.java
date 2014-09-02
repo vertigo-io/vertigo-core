@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.impl.rest.catalog;
 
-import io.vertigo.kernel.Home;
+import io.vertigo.core.Home;
 import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.rest.metamodel.EndPointParam;

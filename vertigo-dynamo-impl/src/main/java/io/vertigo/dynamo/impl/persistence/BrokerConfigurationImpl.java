@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.impl.persistence;
 
 import io.vertigo.commons.cache.CacheManager;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
@@ -28,7 +29,6 @@ import io.vertigo.dynamo.impl.persistence.logical.LogicalStoreConfiguration;
 import io.vertigo.dynamo.persistence.BrokerConfiguration;
 import io.vertigo.dynamo.persistence.DataStorePlugin;
 import io.vertigo.dynamo.persistence.PersistenceManager;
-import io.vertigo.kernel.lang.Assertion;
 
 /**
  * Implémentation Standard du StoreProvider.

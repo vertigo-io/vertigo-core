@@ -18,9 +18,9 @@
  */
 package io.vertigo.studio.plugins.reporting.domain.metrics.persistence;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.persistence.PersistenceManager;
-import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.studio.reporting.MetricEngine;
 
 /**

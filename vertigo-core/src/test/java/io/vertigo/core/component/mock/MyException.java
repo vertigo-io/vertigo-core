@@ -16,12 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.kernel.lang;
+package io.vertigo.core.component.mock;
 
 /**
- * Permet de charger (peupler) un objet de type C.
- * @author pchretien
+ * @author prahmoune
  */
-public interface Loader<C> {
-	void load(C config);
+public class MyException extends Exception {
+
+	private static final long serialVersionUID = 5924343359294722683L;
+
+	public MyException() {
+		super();
+	}
 }

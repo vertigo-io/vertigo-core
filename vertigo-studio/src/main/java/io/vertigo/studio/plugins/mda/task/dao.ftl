@@ -4,11 +4,11 @@ package ${dao.packageName};
 <#if !dao.taskDefinitions.empty >
 import javax.inject.Inject;
 
-import io.vertigo.kernel.Home;
+import io.vertigo.core.Home;
 <#if dao.options >
-import io.vertigo.kernel.lang.Option;
+import io.vertigo.core.lang.Option;
 </#if>
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;

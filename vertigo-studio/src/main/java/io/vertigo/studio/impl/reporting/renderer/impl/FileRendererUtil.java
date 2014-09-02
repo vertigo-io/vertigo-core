@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.impl.reporting.renderer.impl;
 
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 import java.io.File;
 import java.io.FileWriter;

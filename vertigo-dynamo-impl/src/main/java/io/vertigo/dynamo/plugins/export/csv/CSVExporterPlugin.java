@@ -19,12 +19,12 @@
 package io.vertigo.dynamo.plugins.export.csv;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.export.Export;
 import io.vertigo.dynamo.export.ExportFormat;
 import io.vertigo.dynamo.impl.export.ExporterPlugin;
 import io.vertigo.dynamo.impl.export.core.ExportHelper;
 import io.vertigo.dynamo.persistence.PersistenceManager;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.io.IOException;
 import java.io.OutputStream;

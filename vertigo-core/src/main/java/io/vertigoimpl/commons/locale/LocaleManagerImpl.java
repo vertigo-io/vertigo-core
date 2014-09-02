@@ -22,8 +22,8 @@ import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.commons.locale.LocaleProvider;
 import io.vertigo.core.component.ComponentInfo;
 import io.vertigo.core.component.Describable;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.MessageKey;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.util.ArrayList;
 import java.util.Collections;

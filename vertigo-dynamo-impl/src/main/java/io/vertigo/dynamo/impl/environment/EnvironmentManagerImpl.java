@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.impl.environment;
 
+import io.vertigo.core.Home;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.environment.EnvironmentManager;
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.util.List;
 

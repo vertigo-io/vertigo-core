@@ -18,9 +18,9 @@
  */
 package io.vertigo.studio.plugins.mda.task;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -99,7 +99,7 @@ public final class TemplateDAO {
 	}
 
 	/**
-	 * @return Si ce dao utilise au moins une option : vertigo.kernel.lang.Option
+	 * @return Si ce dao utilise au moins une option : vertigo.core.lang.Option
 	 */
 	public boolean isOptions() {
 		return hasOptions;

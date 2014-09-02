@@ -19,18 +19,18 @@
 package io.vertigo;
 
 import io.vertigo.commons.locale.LocaleManagerTest;
-import io.vertigo.kernel.component.cglib.CGLIBAspectContainerTest;
-import io.vertigo.kernel.di.injector.InjectorTest;
-import io.vertigo.kernel.di.reactor.ReactorTest;
-import io.vertigo.kernel.home.componentspace.ComponentSpace2Test;
-import io.vertigo.kernel.home.componentspace.ComponentSpace3Test;
-import io.vertigo.kernel.home.componentspace.ComponentSpaceTest;
-import io.vertigo.kernel.home.definitionspace.DefinitionSpaceTest;
-import io.vertigo.kernel.lang.AssertionTest;
-import io.vertigo.kernel.util.ClassUtilTest;
-import io.vertigo.kernel.util.DateQueryParserUtilTest;
-import io.vertigo.kernel.util.DateUtilTest;
-import io.vertigo.kernel.util.StringUtilTest;
+import io.vertigo.core.component.cglib.CGLIBAspectContainerTest;
+import io.vertigo.core.di.injector.InjectorTest;
+import io.vertigo.core.di.reactor.ReactorTest;
+import io.vertigo.core.home.componentspace.ComponentSpace2Test;
+import io.vertigo.core.home.componentspace.ComponentSpace3Test;
+import io.vertigo.core.home.componentspace.ComponentSpaceTest;
+import io.vertigo.core.home.definitionspace.DefinitionSpaceTest;
+import io.vertigo.core.lang.AssertionTest;
+import io.vertigo.core.util.ClassUtilTest;
+import io.vertigo.core.util.DateQueryParserUtilTest;
+import io.vertigo.core.util.DateUtilTest;
+import io.vertigo.core.util.StringUtilTest;
 import io.vertigo.xml.XmlComponentsTest;
 import io.vertigo.xml.XmlHomeTest;
 
@@ -48,7 +48,7 @@ import org.junit.runners.Suite.SuiteClasses;
 //@formatter:off
 	//LocaleManager
 	LocaleManagerTest.class,
-	//Kernel
+	//core
 	DefinitionSpaceTest.class,
 	ComponentSpaceTest.class,
 	ComponentSpace2Test.class,

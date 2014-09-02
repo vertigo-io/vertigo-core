@@ -18,11 +18,11 @@
  */
 package io.vertigo.studio.plugins.reporting.domain.metrics.dependency;
 
+import io.vertigo.core.Home;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.studio.reporting.MetricEngine;
 
 /**

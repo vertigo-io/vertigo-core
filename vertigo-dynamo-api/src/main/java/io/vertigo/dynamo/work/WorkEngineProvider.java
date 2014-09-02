@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.work;
 
+import io.vertigo.core.Home;
 import io.vertigo.core.di.injector.Injector;
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.util.ClassUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.ClassUtil;
 
 /**
  * Provider des taches.

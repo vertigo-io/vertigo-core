@@ -18,9 +18,9 @@
  */
 package io.vertigo.quarto.publisher.metamodel;
 
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.metamodel.Definition;
-import io.vertigo.kernel.stereotype.Prefix;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.metamodel.Definition;
+import io.vertigo.core.stereotype.Prefix;
 
 /**
  * Définition d'un modèle d'édition.

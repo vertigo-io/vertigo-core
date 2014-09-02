@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.export;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.dynamo.export.Export.Orientation;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.util.ArrayList;
 import java.util.List;

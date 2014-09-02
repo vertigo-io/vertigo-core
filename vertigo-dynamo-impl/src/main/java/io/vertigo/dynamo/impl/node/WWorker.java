@@ -1,10 +1,10 @@
 package io.vertigo.dynamo.impl.node;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.impl.work.worker.local.LocalCoordinator;
 import io.vertigo.dynamo.work.WorkResultHandler;
-import io.vertigo.kernel.lang.Assertion;
 
 final class WWorker implements Runnable {
 	private static final int TIMEOUT_IN_SECONDS = 1;

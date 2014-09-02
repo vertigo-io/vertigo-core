@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.impl.database.statement;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.database.connection.KConnection;
 import io.vertigo.dynamo.database.statement.KCallableStatement;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.impl.database.listener.DataBaseListener;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -68,7 +68,7 @@ public final class KCallableStatementImpl extends KPreparedStatementImpl impleme
 		for (int i = 0; i < getParameters().size(); i++) {
 			parameter = getParameter(i);
 			if (parameter.isOut()) {
-				getCallableStatement().registerOutParameter(i + 1, getConnection().getDataBase().getSqlMapping().getTypeSQL(parameter.getDataType()));
+				getCallableStatement().registerOutParameter(i + 1, getConnection().getDataBase().getSqlMapping().getSqlType(parameter.getDataType()));
 			}
 		}
 	}

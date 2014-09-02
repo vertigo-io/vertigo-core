@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.impl.persistence;
 
 import io.vertigo.commons.cache.CacheManager;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.impl.persistence.util.BrokerNNImpl;
@@ -29,7 +30,6 @@ import io.vertigo.dynamo.persistence.MasterDataConfiguration;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.persistence.DataStorePlugin;
 import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.kernel.lang.Assertion;
 
 import javax.inject.Inject;
 

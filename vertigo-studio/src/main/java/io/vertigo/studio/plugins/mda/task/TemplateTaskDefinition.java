@@ -18,10 +18,10 @@
  */
 package io.vertigo.studio.plugins.mda.task;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -112,7 +112,7 @@ public final class TemplateTaskDefinition {
 	}
 
 	/**
-	 * @return Si cette task utilise vertigo.kernel.lang.Option
+	 * @return Si cette task utilise vertigo.core.lang.Option
 	 */
 	public boolean hasOptions() {
 		return hasOptions;

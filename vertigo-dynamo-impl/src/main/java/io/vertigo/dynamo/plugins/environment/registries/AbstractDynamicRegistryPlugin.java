@@ -18,13 +18,13 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.impl.environment.DynamicRegistryPlugin;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.dynamo.impl.environment.kernel.meta.EntityProperty;
 import io.vertigo.dynamo.impl.environment.kernel.meta.Grammar;
 import io.vertigo.dynamo.impl.environment.kernel.meta.GrammarProvider;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
-import io.vertigo.kernel.lang.Assertion;
 
 /**
  * @author pchretien

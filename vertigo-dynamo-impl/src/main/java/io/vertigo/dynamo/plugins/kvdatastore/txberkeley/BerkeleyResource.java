@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.kvdatastore.txberkeley;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.transaction.KTransactionResource;
-import io.vertigo.kernel.lang.Assertion;
 
 import com.sleepycat.je.Database;
 import com.sleepycat.je.DatabaseException;

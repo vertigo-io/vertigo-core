@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.domain.metamodel.association;
 
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Définition d'une association NN.

@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.impl.reporting;
 
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.studio.impl.reporting.renderer.ReportRenderer;
 import io.vertigo.studio.impl.reporting.renderer.impl.ReportRendererImpl;
 import io.vertigo.studio.reporting.Report;

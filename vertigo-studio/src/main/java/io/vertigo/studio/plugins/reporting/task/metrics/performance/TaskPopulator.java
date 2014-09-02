@@ -18,13 +18,13 @@
  */
 package io.vertigo.studio.plugins.reporting.task.metrics.performance;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.math.BigDecimal;
 import java.util.Date;

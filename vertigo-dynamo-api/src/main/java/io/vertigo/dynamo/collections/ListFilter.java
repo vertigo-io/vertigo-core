@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.collections;
 
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 import java.io.Serializable;
 

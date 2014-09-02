@@ -19,6 +19,9 @@
 package io.vertigo.dynamo.plugins.persistence.jpa;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.ClassUtil;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.database.DataBaseManager;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -43,9 +46,6 @@ import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaResource;
 import io.vertigo.dynamo.transaction.KTransaction;
 import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamo.work.WorkManager;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.util.ClassUtil;
-import io.vertigo.kernel.util.StringUtil;
 
 import java.util.List;
 import java.util.Map;

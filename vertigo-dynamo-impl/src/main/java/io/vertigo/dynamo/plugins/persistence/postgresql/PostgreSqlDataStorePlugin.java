@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.persistence.postgresql;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.plugins.persistence.AbstractSQLDataStorePlugin;
@@ -25,7 +26,6 @@ import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.sqlserver.TaskEngineInsertWithGeneratedKeys;
-import io.vertigo.kernel.lang.Assertion;
 
 import javax.inject.Inject;
 import javax.inject.Named;

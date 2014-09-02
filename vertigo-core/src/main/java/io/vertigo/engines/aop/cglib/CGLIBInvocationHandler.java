@@ -20,8 +20,8 @@ package io.vertigo.engines.aop.cglib;
 
 import io.vertigo.core.aop.Interceptor;
 import io.vertigo.core.aop.MethodInvocation;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.util.ClassUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.ClassUtil;
 
 import java.lang.reflect.Method;
 import java.util.List;

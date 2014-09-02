@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.impl.environment.kernel.impl.model;
 
+import io.vertigo.core.Home;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
-import io.vertigo.kernel.Home;
 
 import java.util.ArrayList;
 import java.util.Collection;

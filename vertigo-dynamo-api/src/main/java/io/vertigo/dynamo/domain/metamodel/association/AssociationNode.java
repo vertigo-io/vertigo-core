@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.domain.metamodel.association;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.JsonExclude;
+import io.vertigo.core.metamodel.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.metamodel.DefinitionReference;
 
 /**
  * Noeud d'une association.

@@ -16,19 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.kernel.lang;
+package io.vertigo.core.resource;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import io.vertigo.core.di.configurator.ResourceConfig;
+
+import java.util.List;
+import java.util.Set;
 
 /**
- * Json Exclusion 
+ * This object can parse and load resources from a certain type.
+ * All 'static' definitions should use this way to be populated.
+ *
  * @author pchretien
  */
-@Target({ ElementType.FIELD, ElementType.TYPE })
-@Retention(RetentionPolicy.RUNTIME)
-public @interface JsonExclude {
-	//
+public interface ResourceLoader {
+	/**
+	 * @return Types that can be parsed.
+	 */
+	Set<String> getTypes();
+
+	/**
+	 * 
+	 * @param List of resources (must be in a type managed by this loader) 
+	 */
+	void parse(List<ResourceConfig> resourceConfigs);
 }

@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.impl.persistence.logical;
 
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.metamodel.Definition;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.metamodel.Definition;
 
 import java.util.HashMap;
 import java.util.Map;

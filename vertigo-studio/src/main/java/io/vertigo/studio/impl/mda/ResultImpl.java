@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.impl.mda;
 
-import io.vertigo.kernel.util.StringUtil;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.studio.mda.Result;
 
 import java.io.File;

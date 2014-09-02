@@ -18,6 +18,11 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.java;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.metamodel.Definition;
+import io.vertigo.core.metamodel.DefinitionUtil;
+import io.vertigo.core.util.ClassUtil;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.impl.environment.LoaderPlugin;
@@ -28,11 +33,6 @@ import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionBuilder;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.metamodel.Definition;
-import io.vertigo.kernel.metamodel.DefinitionUtil;
-import io.vertigo.kernel.util.ClassUtil;
-import io.vertigo.kernel.util.StringUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

@@ -18,6 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.task;
 
+import io.vertigo.core.Home;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.ClassUtil;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
@@ -25,9 +28,6 @@ import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryP
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.TaskEngine;
-import io.vertigo.kernel.Home;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.util.ClassUtil;
 
 /**
  * @author pchretien

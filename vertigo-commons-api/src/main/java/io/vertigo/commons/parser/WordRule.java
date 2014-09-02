@@ -18,8 +18,8 @@
  */
 package io.vertigo.commons.parser;
 
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.util.StringUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.StringUtil;
 
 /**
  * Règle a état permettant de récupérer un mot. 

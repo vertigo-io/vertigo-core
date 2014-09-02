@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.persistence.hsql;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -34,7 +35,6 @@ import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
-import io.vertigo.kernel.lang.Assertion;
 
 import javax.inject.Inject;
 import javax.inject.Named;

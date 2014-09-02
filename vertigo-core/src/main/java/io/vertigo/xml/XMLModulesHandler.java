@@ -24,8 +24,8 @@ import io.vertigo.core.di.configurator.ComponentConfigBuilder;
 import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.core.di.configurator.ModuleConfigBuilder;
 import io.vertigo.core.di.configurator.PluginConfigBuilder;
-import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.util.ClassUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.ClassUtil;
 
 import java.util.Properties;
 

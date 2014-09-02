@@ -19,8 +19,8 @@
 package io.vertigo.dynamo.domain.metamodel;
 
 import io.vertigo.core.lang.MessageText;
-import io.vertigo.kernel.metamodel.Definition;
-import io.vertigo.kernel.stereotype.Prefix;
+import io.vertigo.core.metamodel.Definition;
+import io.vertigo.core.stereotype.Prefix;
 
 /**
  * Interface de base pour la définition de contrainte

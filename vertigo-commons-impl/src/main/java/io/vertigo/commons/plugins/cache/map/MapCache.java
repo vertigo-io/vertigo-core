@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.plugins.cache.map;
 
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 import java.io.Serializable;
 import java.util.HashMap;

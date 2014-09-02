@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.kpr.rules;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.XDefinitionEntry;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.XPropertyEntry;
-import io.vertigo.kernel.lang.Assertion;
 
 import java.util.List;
 

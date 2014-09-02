@@ -19,7 +19,7 @@
 package io.vertigo.commons.impl.codec.serialization;
 
 import io.vertigo.commons.codec.Codec;
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

@@ -19,7 +19,7 @@
 package io.vertigo.core.di.configurator;
 
 import io.vertigo.core.aop.Interceptor;
-import io.vertigo.kernel.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Définition d'un aspect. 
