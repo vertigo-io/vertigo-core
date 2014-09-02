@@ -18,7 +18,7 @@
  */
 package io.vertigo.kernel.di.injector;
 
-import io.vertigo.kernel.component.Container;
+import io.vertigo.core.component.Container;
 import io.vertigo.kernel.di.A;
 import io.vertigo.kernel.di.B;
 import io.vertigo.kernel.di.DIException;

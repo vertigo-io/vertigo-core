@@ -18,9 +18,9 @@
  */
 package io.vertigo.quarto.converter;
 
+import io.vertigo.core.component.Manager;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.work.WorkResultHandler;
-import io.vertigo.kernel.component.Manager;
 
 /**
  * Gestionnaire centralisé des conversions de documents.

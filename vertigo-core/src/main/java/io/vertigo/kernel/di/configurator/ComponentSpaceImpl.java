@@ -18,15 +18,15 @@
  */
 package io.vertigo.kernel.di.configurator;
 
+import io.vertigo.core.aop.Interceptor;
+import io.vertigo.core.command.VCommand;
+import io.vertigo.core.command.VCommandExecutor;
+import io.vertigo.core.component.ComponentInitializer;
+import io.vertigo.core.component.ComponentSpace;
+import io.vertigo.core.component.Container;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.kernel.Engine;
 import io.vertigo.kernel.Home;
-import io.vertigo.kernel.aop.Interceptor;
-import io.vertigo.kernel.command.VCommand;
-import io.vertigo.kernel.command.VCommandExecutor;
-import io.vertigo.kernel.component.ComponentInitializer;
-import io.vertigo.kernel.component.ComponentSpace;
-import io.vertigo.kernel.component.Container;
-import io.vertigo.kernel.component.Plugin;
 import io.vertigo.kernel.di.injector.Injector;
 import io.vertigo.kernel.di.reactor.DIReactor;
 import io.vertigo.kernel.engines.AopEngine;

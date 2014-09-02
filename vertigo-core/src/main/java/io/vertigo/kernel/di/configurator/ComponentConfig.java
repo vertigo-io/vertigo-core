@@ -18,7 +18,7 @@
  */
 package io.vertigo.kernel.di.configurator;
 
-import io.vertigo.kernel.component.ComponentInitializer;
+import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.util.DIAnnotationUtil;

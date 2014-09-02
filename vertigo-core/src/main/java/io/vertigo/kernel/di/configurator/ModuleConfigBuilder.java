@@ -18,8 +18,8 @@
  */
 package io.vertigo.kernel.di.configurator;
 
-import io.vertigo.kernel.aop.Interceptor;
-import io.vertigo.kernel.component.Manager;
+import io.vertigo.core.aop.Interceptor;
+import io.vertigo.core.component.Manager;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Builder;
 import io.vertigo.kernel.lang.Option;

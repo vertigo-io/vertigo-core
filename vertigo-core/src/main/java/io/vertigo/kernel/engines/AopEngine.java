@@ -18,8 +18,8 @@
  */
 package io.vertigo.kernel.engines;
 
+import io.vertigo.core.aop.Interceptor;
 import io.vertigo.kernel.Engine;
-import io.vertigo.kernel.aop.Interceptor;
 
 import java.lang.reflect.Method;
 import java.util.List;

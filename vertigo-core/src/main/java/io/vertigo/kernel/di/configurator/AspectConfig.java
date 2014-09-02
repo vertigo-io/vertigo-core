@@ -18,7 +18,7 @@
  */
 package io.vertigo.kernel.di.configurator;
 
-import io.vertigo.kernel.aop.Interceptor;
+import io.vertigo.core.aop.Interceptor;
 import io.vertigo.kernel.lang.Assertion;
 
 /**

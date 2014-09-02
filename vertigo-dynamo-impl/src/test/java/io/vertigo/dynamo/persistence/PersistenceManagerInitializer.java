@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.persistence;
 
+import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamock.domain.car.Car;
-import io.vertigo.kernel.component.ComponentInitializer;
 
 /**
  * Initialisation des listes de références.

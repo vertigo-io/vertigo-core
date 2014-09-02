@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.transaction;
 
-import io.vertigo.kernel.component.Manager;
+import io.vertigo.core.component.Manager;
 
 /**
  * Gestionnaire de transactions.

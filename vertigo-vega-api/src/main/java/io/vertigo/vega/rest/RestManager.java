@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.rest;
 
-import io.vertigo.kernel.component.Manager;
+import io.vertigo.core.component.Manager;
 
 /**
  * Restful webservice manager.

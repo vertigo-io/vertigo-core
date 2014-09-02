@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.locale;
 
-import io.vertigo.kernel.component.Manager;
+import io.vertigo.core.component.Manager;
 import io.vertigo.kernel.lang.MessageKey;
 import io.vertigo.kernel.lang.MessageText;
 

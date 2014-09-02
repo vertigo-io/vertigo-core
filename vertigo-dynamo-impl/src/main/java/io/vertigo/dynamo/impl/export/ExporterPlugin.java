@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.impl.export;
 
+import io.vertigo.core.component.Plugin;
 import io.vertigo.dynamo.export.Export;
 import io.vertigo.dynamo.export.ExportFormat;
-import io.vertigo.kernel.component.Plugin;
 
 import java.io.OutputStream;
 

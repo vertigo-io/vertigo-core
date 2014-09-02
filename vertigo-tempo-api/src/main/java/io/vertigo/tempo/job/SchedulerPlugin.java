@@ -18,7 +18,7 @@
  */
 package io.vertigo.tempo.job;
 
-import io.vertigo.kernel.component.Plugin;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.tempo.job.metamodel.JobDefinition;
 
 import java.util.Date;

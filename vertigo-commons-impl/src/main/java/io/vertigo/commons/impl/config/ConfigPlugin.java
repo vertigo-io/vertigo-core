@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.impl.config;
 
-import io.vertigo.kernel.component.Plugin;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.kernel.lang.Option;
 
 /**

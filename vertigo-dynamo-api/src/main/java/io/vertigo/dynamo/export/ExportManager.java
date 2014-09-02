@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.export;
 
+import io.vertigo.core.component.Manager;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.work.WorkResultHandler;
-import io.vertigo.kernel.component.Manager;
 
 /**
  * Gestionnaire centralisé des éditions de données.

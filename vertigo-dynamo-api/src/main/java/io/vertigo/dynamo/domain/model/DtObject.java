@@ -21,8 +21,8 @@ package io.vertigo.dynamo.domain.model;
 import java.io.Serializable;
 
 /**
- * Interface d'objet métier.
- *
+ * Interface to have a marker on all business objects.
+ * 
  * @author  fconstantin, pchretien
  */
 public interface DtObject extends Serializable {

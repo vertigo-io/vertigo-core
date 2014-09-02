@@ -30,8 +30,8 @@ import io.vertigo.commons.impl.codec.hash.HashEncoder;
 import io.vertigo.commons.impl.codec.hex.HexEncoder;
 import io.vertigo.commons.impl.codec.html.HtmlCodec;
 import io.vertigo.commons.impl.codec.serialization.SerializationCodec;
-import io.vertigo.kernel.component.ComponentInfo;
-import io.vertigo.kernel.component.Describable;
+import io.vertigo.core.component.ComponentInfo;
+import io.vertigo.core.component.Describable;
 
 import java.io.Serializable;
 import java.util.ArrayList;

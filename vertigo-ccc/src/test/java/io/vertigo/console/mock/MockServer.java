@@ -18,10 +18,10 @@
  */
 package io.vertigo.console.mock;
 
+import io.vertigo.core.command.VCommand;
+import io.vertigo.core.command.VCommandHandler;
+import io.vertigo.core.command.VResponse;
 import io.vertigo.engines.command.tcp.VServer;
-import io.vertigo.kernel.command.VCommand;
-import io.vertigo.kernel.command.VCommandHandler;
-import io.vertigo.kernel.command.VResponse;
 
 import java.util.Date;
 

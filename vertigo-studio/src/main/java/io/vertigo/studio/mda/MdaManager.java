@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.mda;
 
-import io.vertigo.kernel.component.Manager;
+import io.vertigo.core.component.Manager;
 
 import java.util.Properties;
 

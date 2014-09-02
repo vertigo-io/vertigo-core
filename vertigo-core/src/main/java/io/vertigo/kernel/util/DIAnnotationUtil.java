@@ -18,7 +18,7 @@
  */
 package io.vertigo.kernel.util;
 
-import io.vertigo.kernel.component.Plugin;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 

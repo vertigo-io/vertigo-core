@@ -18,7 +18,7 @@
  */
 package io.vertigo.kernel.home.componentspace.data;
 
-import io.vertigo.kernel.component.Manager;
+import io.vertigo.core.component.Manager;
 
 public interface FunctionManager extends Manager {
 

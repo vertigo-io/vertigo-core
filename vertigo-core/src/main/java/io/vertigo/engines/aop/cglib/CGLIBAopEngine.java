@@ -18,7 +18,7 @@
  */
 package io.vertigo.engines.aop.cglib;
 
-import io.vertigo.kernel.aop.Interceptor;
+import io.vertigo.core.aop.Interceptor;
 import io.vertigo.kernel.engines.AopEngine;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.util.ClassUtil;

@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.impl.work;
 
+import io.vertigo.core.component.Plugin;
 import io.vertigo.dynamo.work.WorkResultHandler;
-import io.vertigo.kernel.component.Plugin;
 
 import java.util.List;
 

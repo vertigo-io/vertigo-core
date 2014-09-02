@@ -18,8 +18,8 @@
  */
 package io.vertigo.kernel.di.configurator;
 
+import io.vertigo.core.aop.Interceptor;
 import io.vertigo.kernel.Home;
-import io.vertigo.kernel.aop.Interceptor;
 import io.vertigo.kernel.di.injector.Injector;
 import io.vertigo.kernel.lang.Assertion;
 

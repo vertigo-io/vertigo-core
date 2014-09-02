@@ -18,8 +18,8 @@
  */
 package io.vertigo.kernel.di.configurator;
 
-import io.vertigo.kernel.component.ComponentInitializer;
-import io.vertigo.kernel.component.Plugin;
+import io.vertigo.core.component.ComponentInitializer;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Builder;
 import io.vertigo.kernel.lang.Option;

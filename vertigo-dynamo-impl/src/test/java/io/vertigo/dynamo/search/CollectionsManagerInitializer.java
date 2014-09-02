@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.search;
 
+import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamock.facet.CarFacetInitializer;
-import io.vertigo.kernel.component.ComponentInitializer;
 
 /**
  * Configuration du manager Search.

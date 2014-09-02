@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.security;
 
-import io.vertigo.kernel.component.Manager;
+import io.vertigo.core.component.Manager;
 import io.vertigo.kernel.lang.Option;
 
 import java.io.Serializable;

@@ -19,7 +19,7 @@
 package io.vertigo.commons.impl.analytics;
 
 import io.vertigo.commons.analytics.AnalyticsAgent;
-import io.vertigo.kernel.component.Plugin;
+import io.vertigo.core.component.Plugin;
 
 /**
  * Agent de collecte.

@@ -18,8 +18,8 @@
  */
 package io.vertigo.xml;
 
-import io.vertigo.kernel.aop.Interceptor;
-import io.vertigo.kernel.component.Plugin;
+import io.vertigo.core.aop.Interceptor;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.kernel.di.configurator.ComponentConfigBuilder;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.kernel.di.configurator.ModuleConfigBuilder;

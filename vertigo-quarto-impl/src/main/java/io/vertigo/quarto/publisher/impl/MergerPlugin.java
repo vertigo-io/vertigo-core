@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.publisher.impl;
 
-import io.vertigo.kernel.component.Plugin;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.quarto.publisher.PublisherFormat;
 import io.vertigo.quarto.publisher.model.PublisherData;
 

@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.analytics;
 
-import io.vertigo.kernel.component.Manager;
+import io.vertigo.core.component.Manager;
 
 /**
  * Accès centralisé à toutes les fonctions Analytiques.

@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.database;
 
+import io.vertigo.core.component.Manager;
 import io.vertigo.dynamo.database.connection.ConnectionProvider;
 import io.vertigo.dynamo.database.connection.KConnection;
 import io.vertigo.dynamo.database.statement.KCallableStatement;
 import io.vertigo.dynamo.database.statement.KPreparedStatement;
-import io.vertigo.kernel.component.Manager;
 
 /**
 * Gestionnaire des accès aux bases de données.

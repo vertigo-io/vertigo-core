@@ -18,12 +18,12 @@
  */
 package io.vertigo;
 
+import io.vertigo.core.component.ComponentInfo;
+import io.vertigo.core.component.Container;
+import io.vertigo.core.component.Describable;
+import io.vertigo.core.component.Manager;
 import io.vertigo.kernel.AppBuilder;
 import io.vertigo.kernel.Home;
-import io.vertigo.kernel.component.ComponentInfo;
-import io.vertigo.kernel.component.Container;
-import io.vertigo.kernel.component.Describable;
-import io.vertigo.kernel.component.Manager;
 import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.kernel.di.injector.Injector;
 import io.vertigo.kernel.lang.Option;

@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.impl.resource;
 
-import io.vertigo.kernel.component.Plugin;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.kernel.lang.Option;
 
 import java.net.URL;

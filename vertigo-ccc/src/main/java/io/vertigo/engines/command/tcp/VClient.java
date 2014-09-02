@@ -18,8 +18,8 @@
  */
 package io.vertigo.engines.command.tcp;
 
-import io.vertigo.kernel.command.VCommand;
-import io.vertigo.kernel.command.VResponse;
+import io.vertigo.core.command.VCommand;
+import io.vertigo.core.command.VResponse;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.io.IOException;

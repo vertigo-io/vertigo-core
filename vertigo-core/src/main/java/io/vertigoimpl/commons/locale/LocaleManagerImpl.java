@@ -20,8 +20,8 @@ package io.vertigoimpl.commons.locale;
 
 import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.commons.locale.LocaleProvider;
-import io.vertigo.kernel.component.ComponentInfo;
-import io.vertigo.kernel.component.Describable;
+import io.vertigo.core.component.ComponentInfo;
+import io.vertigo.core.component.Describable;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.MessageKey;
 

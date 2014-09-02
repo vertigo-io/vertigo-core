@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.impl.collections;
 
+import io.vertigo.core.component.Plugin;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.kernel.component.Plugin;
 
 import java.util.Collection;
 

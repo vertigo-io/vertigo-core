@@ -18,8 +18,8 @@
  */
 package io.vertigo.engines.command.samples;
 
-import io.vertigo.kernel.command.VCommand;
-import io.vertigo.kernel.command.VCommandExecutor;
+import io.vertigo.core.command.VCommand;
+import io.vertigo.core.command.VCommandExecutor;
 import io.vertigo.kernel.lang.Assertion;
 
 public final class VPingCommandExecutor implements VCommandExecutor<String> {

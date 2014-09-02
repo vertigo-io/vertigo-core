@@ -18,9 +18,9 @@
  */
 package io.vertigo.engines.command.tcp;
 
-import io.vertigo.kernel.command.VCommand;
-import io.vertigo.kernel.command.VCommandHandler;
-import io.vertigo.kernel.command.VResponse;
+import io.vertigo.core.command.VCommand;
+import io.vertigo.core.command.VCommandHandler;
+import io.vertigo.core.command.VResponse;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;

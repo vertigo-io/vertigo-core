@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.environment;
 
-import io.vertigo.kernel.component.Manager;
+import io.vertigo.core.component.Manager;
 
 /**
  * Manager de gestion de l'environnement applicatif.

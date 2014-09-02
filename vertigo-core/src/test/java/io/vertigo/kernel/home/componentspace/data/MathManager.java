@@ -18,7 +18,7 @@
  */
 package io.vertigo.kernel.home.componentspace.data;
 
-import io.vertigo.kernel.component.Manager;
+import io.vertigo.core.component.Manager;
 
 public interface MathManager extends Manager {
 	int add(int a, int b);

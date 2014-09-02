@@ -18,7 +18,7 @@
  */
 package io.vertigo.kernel.home.componentspace.data;
 
-import io.vertigo.kernel.component.Plugin;
+import io.vertigo.core.component.Plugin;
 
 public class DummyPlugin implements Plugin {
 

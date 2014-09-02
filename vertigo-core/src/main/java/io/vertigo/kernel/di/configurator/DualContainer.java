@@ -18,7 +18,7 @@
  */
 package io.vertigo.kernel.di.configurator;
 
-import io.vertigo.kernel.component.Container;
+import io.vertigo.core.component.Container;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.util.HashSet;

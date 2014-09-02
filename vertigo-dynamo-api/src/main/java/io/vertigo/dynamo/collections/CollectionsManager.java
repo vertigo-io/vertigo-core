@@ -18,13 +18,13 @@
  */
 package io.vertigo.dynamo.collections;
 
+import io.vertigo.core.component.Manager;
 import io.vertigo.dynamo.Function;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.kernel.component.Manager;
 import io.vertigo.kernel.lang.Option;
 
 import java.io.Serializable;

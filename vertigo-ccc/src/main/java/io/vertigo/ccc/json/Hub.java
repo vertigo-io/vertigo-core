@@ -20,8 +20,8 @@ package io.vertigo.ccc.json;
 
 import static spark.Spark.get;
 import io.vertigo.ccc.console.VConsoleHandler;
-import io.vertigo.kernel.command.VCommand;
-import io.vertigo.kernel.command.VResponse;
+import io.vertigo.core.command.VCommand;
+import io.vertigo.core.command.VResponse;
 
 import java.util.HashMap;
 import java.util.Map;

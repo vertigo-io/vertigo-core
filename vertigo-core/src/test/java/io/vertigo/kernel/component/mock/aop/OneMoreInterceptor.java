@@ -18,8 +18,8 @@
  */
 package io.vertigo.kernel.component.mock.aop;
 
-import io.vertigo.kernel.aop.Interceptor;
-import io.vertigo.kernel.aop.MethodInvocation;
+import io.vertigo.core.aop.Interceptor;
+import io.vertigo.core.aop.MethodInvocation;
 
 /**
  * @author pchretien
