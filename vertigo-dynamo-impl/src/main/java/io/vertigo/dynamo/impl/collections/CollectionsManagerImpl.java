@@ -73,62 +73,6 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 
 
 	//	/** {@inheritDoc} */
-	//	public <D extends DtObject> DtListFunction<D> createFilter(final String keywords, final int maxRows, final Collection<DtField> searchedFields) {
-	//		Assertion.checkArgument(indexPlugin.isDefined(), "An IndexPlugin is required to use this method");
-	//		//---------------------------------------------------------------------
-	//		return new FullTextFilterFunction<>(keywords, maxRows, searchedFields, indexPlugin.get());
-	//	}
-	//
-	//	/** {@inheritDoc} */
-	//	public <D extends DtObject> DtListFunction<D> createSort(final String fieldName, final boolean desc, final boolean nullLast, final boolean ignoreCase) {
-	//		final SortState sortState = new SortState(fieldName, desc, nullLast, ignoreCase);
-	//		return new SortFunction<>(sortState, getPersistenceManager());
-	//	}
-	//
-	//	/** {@inheritDoc} */
-	//	public <D extends DtObject> DtListFunction<D> createFilterByValue(final String fieldName, final Serializable value) {
-	//		final DtListFilter<D> filter = new DtListValueFilter<>(fieldName, value);
-	//		return new FilterFunction<>(filter);
-	//	}
-	//
-	//	/** {@inheritDoc} */
-	//	public <D extends DtObject> DtListFunction<D> createFilterByTwoValues(final String fieldName1, final Serializable value1, final String fieldName2, final Serializable value2) {
-	//		final DtListFilter<D> filter1 = new DtListValueFilter<>(fieldName1, value1);
-	//		final DtListFilter<D> filter2 = new DtListValueFilter<>(fieldName2, value2);
-	//		final DtListFilter<D> filter = new DtListChainFilter<>(filter1, filter2);
-	//		return new FilterFunction<>(filter);
-	//	}
-	//
-	//	/** {@inheritDoc} */
-	//	public <D extends DtObject> DtListFunction<D> createFilter(final ListFilter listFilter) {
-	//		final DtListFilter<D> filter = new DtListPatternFilter<>(listFilter.getFilterValue());
-	//		return new FilterFunction<>(filter);
-	//	}
-	//
-	//	/** {@inheritDoc} */
-	//	public <D extends DtObject, C extends Comparable<?>> DtListFunction<D> createFilterByRange(final String fieldName, final Option<C> min, final Option<C> max) {
-	//		final DtListFilter<D> filter = new DtListRangeFilter<>(fieldName, min, max, true, true);
-	//		return new FilterFunction<>(filter);
-	//	}
-	//
-	//	/** {@inheritDoc} */
-	//	public <D extends DtObject> DtListFunction<D> createFilterSubList(final int start, final int end) {
-	//		return new SubListFunction<>(start, end);
-	//	}
-	//
-	//	/** {@inheritDoc} */
-	//	public <D extends DtObject> DtListFunction<D> createIdentity() {
-	//		return (DtListFunction<D>) identityFunction;
-	//	}
-	//
-	//	private static final class IdentityFunction<D extends DtObject> implements DtListFunction<D> {
-	//		/** {@inheritDoc} */
-	//		public  DtList<D> apply(final DtList<D> list) {
-	//			return list;
-	//		}
-	//	}
-
-	//	/** {@inheritDoc} */
 	//	public <D extends DtObject> List<Cluster<D>> cluster(final DtList<D> dtc, final DtField TitleDtField, final DtField SummaryDtField) {
 	//		final List<Cluster<D>> clusterList = new ArrayList<Cluster<D>>();
 	//		final String title;

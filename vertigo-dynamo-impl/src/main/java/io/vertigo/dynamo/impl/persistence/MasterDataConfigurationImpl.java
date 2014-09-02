@@ -77,7 +77,8 @@ final class MasterDataConfigurationImpl implements MasterDataConfiguration {
 		Assertion.checkNotNull(fieldName2);
 		//----------------------------------------------------------------------
 		final DtListProcessor dtListFilter = collectionsManager.createDtListProcessor()//
-				.filterByTwoValues(fieldName1, value1, fieldName2, value2);
+				.filterByValue(fieldName1, value1)//
+				.filterByValue(fieldName2, value2);
 		register(uri, dtListFilter);
 	}
 

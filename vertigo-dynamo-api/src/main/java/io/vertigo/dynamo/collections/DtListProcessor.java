@@ -8,7 +8,20 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import java.io.Serializable;
 import java.util.Collection;
 
+
+/**
+ * Processor that can be composed OF filters or sorters
+ * and be applied on a list
+ * @author pchretien
+ */
 public interface DtListProcessor {
+	/**
+	 * Add a function
+	 * @param listFunction
+	 * @return
+	 */
+	DtListProcessor with(DtListFunction listFunction);
+
 	/**
 	 * Création d'un tri de colonne.
 	 * @param fieldName Nom du champ concerné par le tri
@@ -70,5 +83,13 @@ public interface DtListProcessor {
 	 */
 	DtListProcessor filterSubList(final int start, final int end);
 
+
+	//=========================================================================
+	//=========================================================================
+	/**
+	 * Apply composed functions to list
+	 * @param input List ( will be unchanged)
+	 * @return a new List
+	 */
 	<D extends DtObject> DtList<D> apply(final DtList<D> input);
 }

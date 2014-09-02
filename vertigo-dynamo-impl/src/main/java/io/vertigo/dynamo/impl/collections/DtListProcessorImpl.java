@@ -48,8 +48,14 @@ final class DtListProcessorImpl implements DtListProcessor {
 		Assertion.checkNotNull(listFunction);
 		//---------------------------------------------------------------------
 		final DtListFunction[] list = Arrays.copyOf(listFunctions, listFunctions.length+1);
+		//adding a new listFunction
 		list[listFunctions.length]=listFunction;
 		return new DtListProcessorImpl(list,  indexPlugin);
+	}
+
+	/** {@inheritDoc} */
+	public DtListProcessor with(final DtListFunction listFunction) {
+		return createNew(listFunction);
 	}
 
 	/** {@inheritDoc} */
@@ -70,14 +76,6 @@ final class DtListProcessorImpl implements DtListProcessor {
 		final DtListFilter filter = new DtListValueFilter(fieldName, value);
 		return createNew(new FilterFunction(filter));
 	}
-	//
-	//	/** {@inheritDoc} */
-	//	public DtListProcessor filterByTwoValues(final String fieldName1, final Serializable value1, final String fieldName2, final Serializable value2) {
-	//		final DtListFilter filter1 = new DtListValueFilter<>(fieldName1, value1);
-	//		final DtListFilter filter2 = new DtListValueFilter<>(fieldName2, value2);
-	//		final DtListFilter filter = new DtListChainFilter<>(filter1, filter2);
-	//		return createNew(new FilterFunction<>(filter));
-	//	}
 
 	/** {@inheritDoc} */
 	public DtListProcessor filter(final ListFilter listFilter) {

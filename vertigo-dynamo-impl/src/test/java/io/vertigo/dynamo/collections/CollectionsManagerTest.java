@@ -474,6 +474,29 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertNotNull(filter);
 	}
 
+	@Test
+	public void testWithDtListFunction() {
+		final DtList<Famille> result =
+				collectionsManager.createDtListProcessor()//
+				.with(new DtListFunction<Famille>() {
+
+					/** {@inheritDoc} */
+					public DtList<Famille> apply(final DtList<Famille> input) {
+						final DtList<Famille> result = new DtList<>(Famille.class);
+						for (final Famille family : input){
+							if (family.getFamId()==3L){
+								result.add(family);
+							}
+						}
+						return result;
+					}
+				})
+				.apply(createFamillesForRangeTest());
+		Assert.assertEquals(1L, result.size());
+	}
+
+
+
 	/**
 	 * @see CollectionsManager#createFilter
 	 */
