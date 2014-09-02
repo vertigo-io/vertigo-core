@@ -19,8 +19,8 @@
 package io.vertigo.tempo.impl.job;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.core.di.injector.Injector;
 import io.vertigo.kernel.Home;
-import io.vertigo.kernel.di.injector.Injector;
 import io.vertigo.kernel.exception.VUserException;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.tempo.job.JobManager;

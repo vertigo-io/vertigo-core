@@ -18,8 +18,8 @@
  */
 package io.vertigoimpl.engines.rest.cmd;
 
+import io.vertigo.core.di.configurator.ComponentSpaceConfig;
 import io.vertigo.kernel.Home;
-import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.Definition;
 import io.vertigo.kernel.metamodel.DefinitionSpace;

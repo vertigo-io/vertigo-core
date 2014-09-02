@@ -18,6 +18,7 @@
  */
 package io.vertigo.kernel.component;
 
+import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.kernel.component.mock.A;
 import io.vertigo.kernel.component.mock.B;
 import io.vertigo.kernel.component.mock.BImpl;
@@ -29,7 +30,6 @@ import io.vertigo.kernel.component.mock.aop.OneMore;
 import io.vertigo.kernel.component.mock.aop.OneMoreInterceptor;
 import io.vertigo.kernel.component.mock.aop.TenMore;
 import io.vertigo.kernel.component.mock.aop.TenMoreInterceptor;
-import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.kernel.engines.AopEngine;
 import io.vertigo.kernel.lang.Assertion;
 

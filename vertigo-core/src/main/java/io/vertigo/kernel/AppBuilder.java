@@ -18,8 +18,8 @@
  */
 package io.vertigo.kernel;
 
-import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
-import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
+import io.vertigo.core.di.configurator.ComponentSpaceConfig;
+import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.lang.Option;
 import io.vertigo.xml.XMLModulesLoader;

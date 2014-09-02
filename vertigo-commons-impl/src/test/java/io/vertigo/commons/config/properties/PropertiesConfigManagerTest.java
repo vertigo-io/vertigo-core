@@ -26,7 +26,7 @@ import io.vertigo.commons.impl.resource.ResourceManagerImpl;
 import io.vertigo.commons.plugins.config.properties.PropertiesConfigPlugin;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.commons.resource.ResourceManager;
-import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
+import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
 
 import javax.inject.Inject;
 

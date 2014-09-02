@@ -20,10 +20,10 @@ package io.vertigo.xml;
 
 import io.vertigo.core.aop.Interceptor;
 import io.vertigo.core.component.Plugin;
-import io.vertigo.kernel.di.configurator.ComponentConfigBuilder;
-import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
-import io.vertigo.kernel.di.configurator.ModuleConfigBuilder;
-import io.vertigo.kernel.di.configurator.PluginConfigBuilder;
+import io.vertigo.core.di.configurator.ComponentConfigBuilder;
+import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
+import io.vertigo.core.di.configurator.ModuleConfigBuilder;
+import io.vertigo.core.di.configurator.PluginConfigBuilder;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.util.ClassUtil;
 

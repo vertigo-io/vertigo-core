@@ -18,9 +18,9 @@
  */
 package io.vertigo.kernel.home.componentspace;
 
+import io.vertigo.core.di.configurator.ComponentSpaceConfig;
+import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.kernel.Home;
-import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
-import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.kernel.home.componentspace.data.FunctionManager;
 import io.vertigo.kernel.home.componentspace.data.FunctionManager1Impl;
 import io.vertigo.kernel.home.componentspace.data.FunctionManager2Impl;

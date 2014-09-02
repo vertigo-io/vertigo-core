@@ -16,28 +16,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.kernel.resource;
+package io.vertigo.core.di.configurator;
 
-import io.vertigo.core.di.configurator.ResourceConfig;
-
-import java.util.List;
-import java.util.Set;
+import io.vertigo.kernel.lang.Assertion;
 
 /**
- * This object can parse and load resources from a certain type.
- * All 'static' definitions should use this way to be populated.
- *
+ * A resource is defined by 
+ * - a type 
+ * - a path
+ * A resource can be a file, a blob or a simple java class.
+ * A resource is used to configure a module.  
+ * 
  * @author pchretien
  */
-public interface ResourceLoader {
-	/**
-	 * @return Types that can be parsed.
-	 */
-	Set<String> getTypes();
+public final class ResourceConfig {
+	private final String type;
+	private final String path;
 
-	/**
-	 * 
-	 * @param List of resources (must be in a type managed by this loader) 
-	 */
-	void parse(List<ResourceConfig> resourceConfigs);
+	ResourceConfig(String type, String path) {
+		Assertion.checkArgNotEmpty(type);
+		Assertion.checkArgNotEmpty(path);
+		//---------------------------------------------------------------------
+		this.type = type;
+		this.path = path;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	@Override
+	public String toString() {
+		return "{ type: " + type + ", path: " + path + " }";
+	}
 }

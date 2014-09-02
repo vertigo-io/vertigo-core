@@ -18,8 +18,8 @@
  */
 package io.vertigo.vega.impl.rest.handler;
 
+import io.vertigo.core.di.injector.Injector;
 import io.vertigo.kernel.Home;
-import io.vertigo.kernel.di.injector.Injector;
 import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.vega.rest.engine.GoogleJsonEngine;
 import io.vertigo.vega.rest.engine.JsonEngine;

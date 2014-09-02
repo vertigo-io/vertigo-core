@@ -18,9 +18,9 @@
  */
 package io.vertigo.vega.impl.rest.servlet;
 
+import io.vertigo.core.di.configurator.ComponentSpaceConfig;
 import io.vertigo.kernel.AppBuilder;
 import io.vertigo.kernel.Home;
-import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
 import io.vertigo.vega.plugins.rest.servlet.ServletResourceResolverPlugin;
 import io.vertigo.vega.plugins.rest.servlet.WebAppContextConfigPlugin;
 

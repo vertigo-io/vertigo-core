@@ -19,8 +19,8 @@
 package io.vertigo.kernel;
 
 import io.vertigo.core.component.ComponentSpace;
-import io.vertigo.kernel.di.configurator.ComponentSpaceConfig;
-import io.vertigo.kernel.di.configurator.ComponentSpaceImpl;
+import io.vertigo.core.di.configurator.ComponentSpaceConfig;
+import io.vertigo.core.di.configurator.ComponentSpaceImpl;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.metamodel.DefinitionSpace;
 import io.vertigo.kernel.resource.ResourceSpace;

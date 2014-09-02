@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.work;
 
+import io.vertigo.core.di.injector.Injector;
 import io.vertigo.kernel.Home;
-import io.vertigo.kernel.di.injector.Injector;
 import io.vertigo.kernel.lang.Assertion;
 import io.vertigo.kernel.util.ClassUtil;
 

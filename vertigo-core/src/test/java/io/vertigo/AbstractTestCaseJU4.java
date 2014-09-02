@@ -22,10 +22,10 @@ import io.vertigo.core.component.ComponentInfo;
 import io.vertigo.core.component.Container;
 import io.vertigo.core.component.Describable;
 import io.vertigo.core.component.Manager;
+import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
+import io.vertigo.core.di.injector.Injector;
 import io.vertigo.kernel.AppBuilder;
 import io.vertigo.kernel.Home;
-import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
-import io.vertigo.kernel.di.injector.Injector;
 import io.vertigo.kernel.lang.Option;
 
 import java.util.List;

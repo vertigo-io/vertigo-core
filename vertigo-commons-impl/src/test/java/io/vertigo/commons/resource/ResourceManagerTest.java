@@ -21,7 +21,7 @@ package io.vertigo.commons.resource;
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.impl.resource.ResourceManagerImpl;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
-import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
+import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
 
 import java.net.URL;
 

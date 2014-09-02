@@ -19,7 +19,7 @@
 package io.vertigo.kernel.home.componentspace;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
+import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.kernel.home.componentspace.data.BioManager;
 import io.vertigo.kernel.home.componentspace.data.BioManagerImpl;
 import io.vertigo.kernel.home.componentspace.data.MathManager;

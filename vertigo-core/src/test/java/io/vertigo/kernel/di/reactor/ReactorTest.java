@@ -18,11 +18,12 @@
  */
 package io.vertigo.kernel.di.reactor;
 
+import io.vertigo.core.di.DIException;
+import io.vertigo.core.di.reactor.DIReactor;
 import io.vertigo.kernel.di.A;
 import io.vertigo.kernel.di.B;
 import io.vertigo.kernel.di.C;
 import io.vertigo.kernel.di.D;
-import io.vertigo.kernel.di.DIException;
 import io.vertigo.kernel.di.E;
 import io.vertigo.kernel.di.F;
 

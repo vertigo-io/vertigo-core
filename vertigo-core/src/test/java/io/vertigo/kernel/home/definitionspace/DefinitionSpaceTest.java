@@ -19,8 +19,8 @@
 package io.vertigo.kernel.home.definitionspace;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.kernel.Home;
-import io.vertigo.kernel.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.kernel.metamodel.Definition;
 import io.vertigo.kernel.metamodel.DefinitionReference;
 import io.vertigo.kernel.metamodel.DefinitionUtil;
