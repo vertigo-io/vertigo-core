@@ -20,7 +20,6 @@ package io.vertigo.dynamo.collections;
 
 import io.vertigo.core.component.Manager;
 import io.vertigo.core.lang.Option;
-import io.vertigo.dynamo.Function;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -32,7 +31,7 @@ import java.util.Collection;
 
 /**
  * Gestionnaire de la manipulation des collections.
- * Tri, filtre, facettage sur les DTC. 
+ * Tri, filtre, facettage sur les DTC.
  * @author  pchretien
  */
 public interface CollectionsManager extends Manager {
@@ -42,7 +41,7 @@ public interface CollectionsManager extends Manager {
 	 * @param desc Si tri descendant
 	 * @param nullLast Si les objets Null sont en derniers
 	 * @param ignoreCase Si on ignore la casse
-	 * @return Etat du tri 
+	 * @return Etat du tri
 	 * @param <D> Type du DtObject
 	 */
 	<D extends DtObject> DtListFunction<D> createSort(final String fieldName, final boolean desc, final boolean nullLast, final boolean ignoreCase);
@@ -81,8 +80,8 @@ public interface CollectionsManager extends Manager {
 	/**
 	 * Constructeur d'un filtre de range.
 	 * @param fieldName Nom du champ
-	 * @param min Valeur minimale 
-	 * @param max Valeur maximale 
+	 * @param min Valeur minimale
+	 * @param max Valeur maximale
 	 * @return Filtre
 	 * @param <D> Type du DtObject
 	 * @param <C> Type des bornes
@@ -114,7 +113,7 @@ public interface CollectionsManager extends Manager {
 	 * Le facettage s'effectue en deux temps :
 	 *  - Filtrage de la liste
 	 *  - Facettage proprement dit
-	 * @param dtList Liste à facetter 
+	 * @param dtList Liste à facetter
 	 * @param facetedQuery Requete à appliquer (filtrage)
 	 * @param <R> Type de l'objet de la liste
 	 * @return Résultat correspondant à la requête
@@ -126,6 +125,6 @@ public interface CollectionsManager extends Manager {
 	 * @param <E> Type d'objet
 	 * @return Fonction identité : input = out
 	 */
-	<E> Function<E, E> createIdentity();
+	<D extends DtObject> DtListFunction<D> createIdentity();
 
 }

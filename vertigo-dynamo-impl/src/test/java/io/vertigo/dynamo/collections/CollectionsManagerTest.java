@@ -20,7 +20,6 @@ package io.vertigo.dynamo.collections;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.lang.Option;
-import io.vertigo.dynamo.Function;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -40,7 +39,7 @@ import org.junit.Test;
 
 /**
  * 
- * @author dchallas 
+ * @author dchallas
  */
 public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	private static final String Ba = "Ba";
@@ -66,7 +65,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testCreateSortState() {
-		final Function<DtList<DtObject>, DtList<DtObject>> sortStateAsc = collectionsManager.createSort("LIBELLE", false, true, true);
+		final DtListFunction<DtObject> sortStateAsc = collectionsManager.createSort("LIBELLE", false, true, true);
 		Assert.assertNotNull(sortStateAsc);
 	}
 
@@ -83,7 +82,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 			mocka.setLibelle(String.valueOf(i % 100));
 			dtc.add(mocka);
 		}
-		final Function<DtList<Famille>, DtList<Famille>> sortState = collectionsManager.createSort("LIBELLE", false, true, true);
+		final DtListFunction<Famille> sortState = collectionsManager.createSort("LIBELLE", false, true, true);
 		final DtList<Famille> sortedDtc = sortState.apply(dtc);
 		nop(sortedDtc);
 
@@ -171,7 +170,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testCreateValueFilter() {
-		final Function<DtList<Famille>, DtList<Famille>> filter = collectionsManager.createFilterByValue("LIBELLE", "a");
+		final DtListFunction<Famille> filter = collectionsManager.createFilterByValue("LIBELLE", "a");
 		Assert.assertNotNull(filter);
 	}
 
@@ -180,7 +179,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testCreateTwoValuesFilter() {
-		final Function<DtList<Famille>, DtList<Famille>> filter = collectionsManager.createFilterByTwoValues("LIBELLE", "a", "FAM_ID", 1L);
+		final DtListFunction<Famille> filter = collectionsManager.createFilterByTwoValues("LIBELLE", "a", "FAM_ID", 1L);
 		Assert.assertNotNull(filter);
 	}
 
@@ -291,7 +290,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testFilterFullTextBigList() {
-		final Function<DtList<Famille>, DtList<Famille>> filter = collectionsManager.createFilter("a", 2000, dtDefinitionFamille.getFields());
+		final DtListFunction<Famille> filter = collectionsManager.createFilter("a", 2000, dtDefinitionFamille.getFields());
 		Assert.assertNotNull(filter);
 		final DtList<Famille> bigFamillyList = new DtList<>(Famille.class);
 		for (int i = 0; i < 50000; i++) {
@@ -358,8 +357,8 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		final DtList<Famille> dtc = createFamilles();
 		final String[] indexDtc = indexId(dtc);
 
-		final Function<DtList<Famille>, DtList<Famille>> filter = collectionsManager.createFilterByValue("LIBELLE", "aaa");
-		final Function<DtList<Famille>, DtList<Famille>> sortState = collectionsManager.createSort("LIBELLE", false, true, true);
+		final DtListFunction<Famille> filter = collectionsManager.createFilterByValue("LIBELLE", "aaa");
+		final DtListFunction<Famille> sortState = collectionsManager.createSort("LIBELLE", false, true, true);
 		final int sizeDtc = dtc.size();
 
 		DtList<Famille> sortDtc, filterDtc, subList;
@@ -409,7 +408,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testCreateFilterForValue() {
-		final Function<DtList<Famille>, DtList<Famille>> filter = collectionsManager.createFilter(new ListFilter("LIBELLE" + ":\"aaa\""));
+		final DtListFunction<Famille> filter = collectionsManager.createFilter(new ListFilter("LIBELLE" + ":\"aaa\""));
 		Assert.assertNotNull(filter);
 	}
 
@@ -437,7 +436,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testCreateFilterByRange() {
-		final Function<DtList<Famille>, DtList<Famille>> filter = collectionsManager.createFilterByRange("LIBELLE", Option.option("a"), Option.option("b"));
+		final DtListFunction<Famille> filter = collectionsManager.createFilterByRange("LIBELLE", Option.option("a"), Option.option("b"));
 		Assert.assertNotNull(filter);
 	}
 
@@ -446,7 +445,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testCreateFilter() {
-		final Function<DtList<Famille>, DtList<Famille>> filter = collectionsManager.createFilter(new ListFilter("LIBELLE" + ":[a TO b]"));
+		final DtListFunction<Famille> filter = collectionsManager.createFilter(new ListFilter("LIBELLE" + ":[a TO b]"));
 		Assert.assertNotNull(filter);
 	}
 
@@ -491,7 +490,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private void testRangeFilter(final String filterString, final int countEspected) {
-		final Function<DtList<Famille>, DtList<Famille>> filter = collectionsManager.createFilter(new ListFilter(filterString));
+		final DtListFunction<Famille> filter = collectionsManager.createFilter(new ListFilter(filterString));
 		Assert.assertNotNull(filter);
 		final DtList<Famille> result = filter.apply(createFamillesForRangeTest());
 		Assert.assertEquals(countEspected, result.size());

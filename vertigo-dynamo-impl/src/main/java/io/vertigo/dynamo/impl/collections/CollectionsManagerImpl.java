@@ -21,7 +21,6 @@ package io.vertigo.dynamo.impl.collections;
 import io.vertigo.core.Home;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
-import io.vertigo.dynamo.Function;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -55,21 +54,21 @@ import java.util.Map;
 import javax.inject.Inject;
 
 /**
-* Implémentation du gestionnaire de la manipulation des collections.
-* 
-* @author  pchretien
-*/
+ * Implémentation du gestionnaire de la manipulation des collections.
+ * 
+ * @author  pchretien
+ */
 public final class CollectionsManagerImpl implements CollectionsManager {
 	//private final MasterDataManager masterDataManager;
 	//private final PersistenceManager persistenceManagerManager;
 	private final Option<IndexPlugin> indexPlugin;
 
-	private final Function<?, ?> identityFunction = new IdentityFunction();
+	private final DtListFunction<?> identityFunction = new IdentityFunction<>();
 
 	private final FacetFactory facetFactory;
 
 	/**
-	 * Constructeur. 
+	 * Constructeur.
 	 */
 	@Inject
 	public CollectionsManagerImpl(final Option<IndexPlugin> indexPlugin) {
@@ -136,14 +135,14 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	}
 
 	/** {@inheritDoc} */
-	public <E> Function<E, E> createIdentity() {
-		return (Function<E, E>) identityFunction;
+	public <D extends DtObject> DtListFunction<D> createIdentity() {
+		return (DtListFunction<D>) identityFunction;
 	}
 
-	private static final class IdentityFunction implements Function<Object, Object> {
+	private static final class IdentityFunction<D extends DtObject> implements DtListFunction<D> {
 		/** {@inheritDoc} */
-		public Object apply(final Object o) {
-			return o;
+		public  DtList<D> apply(final DtList<D> list) {
+			return list;
 		}
 	}
 

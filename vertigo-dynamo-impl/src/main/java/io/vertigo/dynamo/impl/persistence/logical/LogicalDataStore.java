@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.impl.persistence.logical;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.Function;
+import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
@@ -80,10 +80,10 @@ public final class LogicalDataStore implements DataStore {
 		final DtList<D> unFilteredDtc = broker.<D> getList(new DtListURIAll(uri.getDtDefinition()));
 
 		//Composition.
-		final Function<DtList<D>, DtList<D>> filterFunction = logicalStoreConfiguration.getPersistenceManager().getMasterDataConfiguration().<D> getFilter(uri);
-		final Function<DtList<D>, DtList<D>> sortFunction = logicalStoreConfiguration.getCollectionsManager().createSort(uri.getDtDefinition().getSortField().get().getName(), false, true, true);
-		//On compose les fonctions 
-		//1.on filtre 
+		final DtListFunction<D> filterFunction = logicalStoreConfiguration.getPersistenceManager().getMasterDataConfiguration().<D> getFilter(uri);
+		final DtListFunction<D> sortFunction = logicalStoreConfiguration.getCollectionsManager().createSort(uri.getDtDefinition().getSortField().get().getName(), false, true, true);
+		//On compose les fonctions
+		//1.on filtre
 		//2.on trie
 		final DtList<D> sortedDtc = sortFunction.apply(filterFunction.apply(unFilteredDtc));
 		sortedDtc.setURI(uri);

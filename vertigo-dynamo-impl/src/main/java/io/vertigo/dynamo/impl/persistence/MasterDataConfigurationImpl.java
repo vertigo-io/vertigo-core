@@ -19,10 +19,9 @@
 package io.vertigo.dynamo.impl.persistence;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.Function;
 import io.vertigo.dynamo.collections.CollectionsManager;
+import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.persistence.MasterDataConfiguration;
@@ -40,12 +39,12 @@ final class MasterDataConfigurationImpl implements MasterDataConfiguration {
 	/**
 	 * Fonction de DtList acceptant tout (pour rester not null).
 	 */
-	private final Function<?, ?> identityFunction;
+	private final DtListFunction<?> identityFunction;
 
 	/** CollectionsManager.*/
 	private final CollectionsManager collectionsManager;
 
-	private final Map<DtListURIForMasterData, Function<DtList, DtList>> mdlUriFilterMap = new HashMap<>();
+	private final Map<DtListURIForMasterData, DtListFunction<?>> mdlUriFilterMap = new HashMap<>();
 	private final Map<DtDefinition, DtListURIForMasterData> defaultMdlMap2 = new HashMap<>();
 
 	/**
@@ -65,7 +64,7 @@ final class MasterDataConfigurationImpl implements MasterDataConfiguration {
 		Assertion.checkNotNull(uri);
 		Assertion.checkNotNull(fieldName);
 		//----------------------------------------------------------------------
-		final Function<?, ?> dtListFilter = collectionsManager.createFilterByValue(fieldName, value);
+		final DtListFunction<?> dtListFilter = collectionsManager.createFilterByValue(fieldName, value);
 		register(uri, dtListFilter);
 	}
 
@@ -76,7 +75,7 @@ final class MasterDataConfigurationImpl implements MasterDataConfiguration {
 		Assertion.checkNotNull(fieldName1);
 		Assertion.checkNotNull(fieldName2);
 		//----------------------------------------------------------------------
-		final Function<?, ?> dtListFilter = collectionsManager.createFilterByTwoValues(fieldName1, value1, fieldName2, value2);
+		final DtListFunction<?> dtListFilter = collectionsManager.createFilterByTwoValues(fieldName1, value1, fieldName2, value2);
 		register(uri, dtListFilter);
 	}
 
@@ -88,7 +87,7 @@ final class MasterDataConfigurationImpl implements MasterDataConfiguration {
 		register(uri, identityFunction);
 	}
 
-	private void register(final DtListURIForMasterData uri, final Function dtListFilter) {
+	private void register(final DtListURIForMasterData uri, final DtListFunction dtListFilter) {
 		Assertion.checkNotNull(uri);
 		Assertion.checkArgument(!mdlUriFilterMap.containsKey(uri), "Il existe deja une liste de référence enregistrée {0}.", uri);
 		//Criteria peut être null
@@ -121,10 +120,10 @@ final class MasterDataConfigurationImpl implements MasterDataConfiguration {
 	}
 
 	/** {@inheritDoc} */
-	public <D extends DtObject> Function<DtList<D>, DtList<D>> getFilter(final DtListURIForMasterData uri) {
+	public <D extends DtObject> DtListFunction<D> getFilter(final DtListURIForMasterData uri) {
 		Assertion.checkNotNull(uri);
 		//---------------------------------------------------------------------
-		final Function<DtList, DtList> function = mdlUriFilterMap.get(uri);
-		return (Function<DtList<D>, DtList<D>>) (function != null ? function : identityFunction);
+		final DtListFunction function = mdlUriFilterMap.get(uri);
+		return function != null ? function : identityFunction;
 	}
 }
