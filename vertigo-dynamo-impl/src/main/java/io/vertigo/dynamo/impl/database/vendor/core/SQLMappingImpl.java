@@ -86,7 +86,7 @@ public final class SQLMappingImpl implements SqlMapping {
 	}
 
 	/** {@inheritDoc} */
-	public int getTypeSQL(final DataType dataType) {
+	public int getSqlType(final DataType dataType) {
 		switch (dataType) {
 			case Integer:
 				return Types.INTEGER;
@@ -115,7 +115,7 @@ public final class SQLMappingImpl implements SqlMapping {
 	/** {@inheritDoc} */
 	public void setValueOnStatement(final java.sql.PreparedStatement statement, final int index, final DataType dataType, final Object value) throws SQLException {
 		if (value == null) {
-			final int typeSQL = getTypeSQL(dataType);
+			final int typeSQL = getSqlType(dataType);
 			statement.setNull(index, typeSQL);
 		} else {
 			switch (dataType) {

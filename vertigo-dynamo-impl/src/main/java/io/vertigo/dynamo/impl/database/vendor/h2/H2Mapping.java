@@ -36,11 +36,11 @@ final class H2Mapping implements SqlMapping {
 	private final SqlMapping defaultSQLMapping = new SQLMappingImpl();
 
 	/** {@inheritDoc} */
-	public int getTypeSQL(final DataType dataType) {
+	public int getSqlType(final DataType dataType) {
 		if (dataType == DataType.Boolean) {
 			return Types.BOOLEAN;
 		}
-		return defaultSQLMapping.getTypeSQL(dataType);
+		return defaultSQLMapping.getSqlType(dataType);
 	}
 
 	/** {@inheritDoc} */

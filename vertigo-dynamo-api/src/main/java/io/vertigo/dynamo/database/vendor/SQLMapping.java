@@ -32,20 +32,20 @@ import java.sql.SQLException;
  */
 public interface SqlMapping {
 	/**
-	 * Retourne le type correspondant à un type sql.
+	 * Retourne le type vertigo 'DataType' correspondant à un type sql.
 	 *
-	 * @param typeSQL Type SQL
+	 * @param sqlType Type SQL
 	 * @return Type Vertigo correspondant
 	 */
-	DataType getDataType(int typeSQL);
+	DataType getDataType(int sqlType);
 
 	/**
-	 * Retourne le type SQL correspondant à un type.
+	 * Retourne le type SQL correspondant à un type vertigo 'DataType'.
 	 *
-	 * @param dataType Type primitif
+	 * @param dataType Type Vertigo primitif
 	 * @return Type SQL correspondant à un type
 	 */
-	int getTypeSQL(DataType dataType);
+	int getSqlType(DataType dataType);
 
 	/**
 	 * Affecte les valeurs sur un statement.
