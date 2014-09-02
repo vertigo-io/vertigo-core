@@ -18,7 +18,7 @@
  */
 package io.vertigo.kernel.exception;
 
-import io.vertigo.kernel.lang.MessageText;
+import io.vertigo.core.lang.MessageText;
 
 /**
  * Root Class for all user exceptions.

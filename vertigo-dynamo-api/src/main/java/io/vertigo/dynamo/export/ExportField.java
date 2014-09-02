@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.export;
 
+import io.vertigo.core.lang.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.MessageText;
 
 /**
  * Définition d'une colonne à exporter.

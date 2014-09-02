@@ -18,8 +18,8 @@
  */
 package io.vertigo.kernel.di;
 
+import io.vertigo.core.lang.Option;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.Option;
 
 import javax.inject.Inject;
 import javax.inject.Named;

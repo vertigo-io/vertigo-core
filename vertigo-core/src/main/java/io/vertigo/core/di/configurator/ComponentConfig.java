@@ -19,8 +19,8 @@
 package io.vertigo.core.di.configurator;
 
 import io.vertigo.core.component.ComponentInitializer;
+import io.vertigo.core.lang.Option;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.util.DIAnnotationUtil;
 
 import java.util.ArrayList;

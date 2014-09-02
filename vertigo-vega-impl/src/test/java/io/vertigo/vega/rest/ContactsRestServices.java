@@ -18,8 +18,8 @@
  */
 package io.vertigo.vega.rest;
 
+import io.vertigo.core.lang.MessageText;
 import io.vertigo.kernel.exception.VUserException;
-import io.vertigo.kernel.lang.MessageText;
 import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.rest.stereotype.DELETE;

@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamox.domain.constraint;
 
+import io.vertigo.core.lang.MessageText;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.MessageText;
 
 /**
  * Contrainte vérifiant que l'objet est : <ul>

@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.search.solr;
 
+import io.vertigo.core.lang.MessageText;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
@@ -35,7 +36,6 @@ import io.vertigo.dynamo.search.metamodel.IndexDefinition;
 import io.vertigo.dynamo.search.model.Index;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.MessageText;
 
 import java.io.IOException;
 import java.util.ArrayList;

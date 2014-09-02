@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamox.domain.constraint;
 
+import io.vertigo.core.lang.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.metamodel.Property;
 import io.vertigo.dynamo.impl.domain.metamodel.AbstractConstraintImpl;
-import io.vertigo.kernel.lang.MessageText;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
-import io.vertigo.kernel.lang.MessageText;
+import io.vertigo.core.lang.MessageText;
 
 /**
  * Exception lancée en cas d'échec de vérification des contraintes.

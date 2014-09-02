@@ -18,6 +18,8 @@
  */
 package io.vertigo.vega.rest;
 
+import io.vertigo.core.lang.MessageText;
+import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -37,8 +39,6 @@ import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListValueFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.FilterFunction;
 import io.vertigo.kernel.exception.VUserException;
-import io.vertigo.kernel.lang.MessageText;
-import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.util.DateUtil;
 import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.vega.rest.engine.UiContext;

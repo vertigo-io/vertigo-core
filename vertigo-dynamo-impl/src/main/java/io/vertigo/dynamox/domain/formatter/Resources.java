@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamox.domain.formatter;
 
-import io.vertigo.kernel.lang.MessageKey;
+import io.vertigo.core.lang.MessageKey;
 
 /**
  * Dictionnaire des ressources.

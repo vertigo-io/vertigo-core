@@ -19,12 +19,12 @@
 package io.vertigo.vega.rest.engine;
 
 import io.vertigo.core.component.ComponentInfo;
+import io.vertigo.core.lang.JsonExclude;
+import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.kernel.lang.JsonExclude;
-import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.metamodel.DefinitionReference;
 import io.vertigo.kernel.util.StringUtil;
 

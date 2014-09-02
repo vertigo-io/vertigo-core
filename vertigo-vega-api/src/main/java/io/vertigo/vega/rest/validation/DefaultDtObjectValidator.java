@@ -18,10 +18,10 @@
  */
 package io.vertigo.vega.rest.validation;
 
+import io.vertigo.core.lang.MessageText;
 import io.vertigo.dynamo.domain.metamodel.ConstraintException;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.kernel.lang.MessageText;
 
 /**
  * Default DtObject validation : check domain's constraints on modified fields.

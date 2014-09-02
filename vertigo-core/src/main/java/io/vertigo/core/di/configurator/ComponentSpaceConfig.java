@@ -18,12 +18,12 @@
  */
 package io.vertigo.core.di.configurator;
 
+import io.vertigo.core.lang.JsonExclude;
+import io.vertigo.core.lang.Option;
 import io.vertigo.kernel.engines.AopEngine;
 import io.vertigo.kernel.engines.ElasticaEngine;
 import io.vertigo.kernel.engines.VCommandEngine;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.JsonExclude;
-import io.vertigo.kernel.lang.Option;
 
 import java.util.ArrayList;
 import java.util.Collections;

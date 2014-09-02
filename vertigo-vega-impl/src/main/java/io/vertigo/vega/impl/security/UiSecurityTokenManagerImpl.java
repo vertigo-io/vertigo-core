@@ -18,9 +18,9 @@
  */
 package io.vertigo.vega.impl.security;
 
+import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.kvdatastore.KVDataStoreManager;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.Option;
 import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.vega.security.UiSecurityTokenManager;

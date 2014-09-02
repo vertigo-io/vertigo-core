@@ -18,8 +18,8 @@
  */
 package io.vertigo.vega.rest.metamodel;
 
+import io.vertigo.core.lang.Builder;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.Builder;
 import io.vertigo.kernel.util.StringUtil;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition.Verb;
 import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;

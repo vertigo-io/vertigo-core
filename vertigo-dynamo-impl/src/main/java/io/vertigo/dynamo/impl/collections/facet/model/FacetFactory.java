@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.collections.facet.model;
 
+import io.vertigo.core.lang.MessageText;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
@@ -28,7 +29,6 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.MessageText;
 import io.vertigo.kernel.util.StringUtil;
 
 import java.util.ArrayList;

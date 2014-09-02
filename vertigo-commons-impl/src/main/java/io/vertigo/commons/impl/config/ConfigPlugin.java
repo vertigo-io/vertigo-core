@@ -19,7 +19,7 @@
 package io.vertigo.commons.impl.config;
 
 import io.vertigo.core.component.Plugin;
-import io.vertigo.kernel.lang.Option;
+import io.vertigo.core.lang.Option;
 
 /**
  * Interface d'un plugin de gestion de configuration applicative. 

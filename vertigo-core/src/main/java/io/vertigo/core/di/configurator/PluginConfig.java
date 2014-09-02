@@ -19,8 +19,8 @@
 package io.vertigo.core.di.configurator;
 
 import io.vertigo.core.component.Plugin;
+import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.JsonExclude;
 import io.vertigo.kernel.util.ClassUtil;
 import io.vertigo.kernel.util.DIAnnotationUtil;
 import io.vertigo.kernel.util.StringUtil;

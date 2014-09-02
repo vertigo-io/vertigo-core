@@ -16,41 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.kernel.di.configurator;
+package io.vertigo.core.lang;
 
-import io.vertigo.kernel.lang.Assertion;
+import java.io.Serializable;
 
 /**
- * A resource is defined by 
- * - a type 
- * - a path
- * A resource can be a file, a blob or a simple java class.
- * A resource is used to configure a module.  
- * 
- * @author pchretien
- */
-public final class ResourceConfig {
-	private final String type;
-	private final String path;
-
-	ResourceConfig(String type, String path) {
-		Assertion.checkArgNotEmpty(type);
-		Assertion.checkArgNotEmpty(path);
-		//---------------------------------------------------------------------
-		this.type = type;
-		this.path = path;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public String getPath() {
-		return path;
-	}
-
-	@Override
-	public String toString() {
-		return "{ type: " + type + ", path: " + path + " }";
-	}
+* Clé d'un message externalisée.
+*
+* @author  pchretien, npiedeloup
+*/
+public interface MessageKey extends Serializable {
+	/**
+	 * @return nom de la clé.
+	 */
+	String name();
 }

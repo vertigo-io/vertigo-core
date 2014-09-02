@@ -19,9 +19,9 @@
 package io.vertigo.dynamox.domain.formatter;
 
 import io.vertigo.commons.locale.LocaleManager;
+import io.vertigo.core.lang.MessageText;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.MessageText;
 
 import java.text.DecimalFormatSymbols;
 import java.util.HashMap;

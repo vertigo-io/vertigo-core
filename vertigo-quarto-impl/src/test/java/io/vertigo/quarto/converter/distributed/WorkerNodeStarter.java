@@ -18,8 +18,8 @@
  */
 package io.vertigo.quarto.converter.distributed;
 
+import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.work.distributed.rest.Starter;
-import io.vertigo.kernel.lang.Option;
 
 import java.util.Properties;
 

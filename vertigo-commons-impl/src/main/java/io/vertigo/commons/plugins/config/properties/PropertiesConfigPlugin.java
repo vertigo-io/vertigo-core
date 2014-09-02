@@ -20,8 +20,8 @@ package io.vertigo.commons.plugins.config.properties;
 
 import io.vertigo.commons.impl.config.ConfigPlugin;
 import io.vertigo.commons.resource.ResourceManager;
+import io.vertigo.core.lang.Option;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.Option;
 
 import java.io.IOException;
 import java.io.InputStream;

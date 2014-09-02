@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.export.core;
 
+import io.vertigo.core.lang.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -27,7 +28,6 @@ import io.vertigo.dynamo.export.ExportDtParameters;
 import io.vertigo.dynamo.export.ExportDtParametersBuilder;
 import io.vertigo.dynamo.export.ExportField;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.MessageText;
 
 import java.util.ArrayList;
 import java.util.Collection;

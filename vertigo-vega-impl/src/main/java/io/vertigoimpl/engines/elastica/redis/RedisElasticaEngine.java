@@ -18,8 +18,8 @@
  */
 package io.vertigoimpl.engines.elastica.redis;
 
+import io.vertigo.core.lang.Activeable;
 import io.vertigo.kernel.engines.ElasticaEngine;
-import io.vertigo.kernel.lang.Activeable;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;

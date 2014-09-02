@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamox.domain.constraint;
 
+import io.vertigo.core.lang.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.metamodel.Property;
 import io.vertigo.dynamo.impl.domain.metamodel.AbstractConstraintImpl;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.MessageText;
 
 /**
  * Contrainte sur la valeur minimale d'un nombre.

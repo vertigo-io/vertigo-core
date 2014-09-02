@@ -16,22 +16,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.kernel.di;
+package io.vertigo.core.lang;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Exception générique aux services relatifs à la DI.
- * Cette exception est de type runtime, elle sert à valider le bon fonctionnement du moteur dans les tests.
- * 
+ * Json Exclusion 
  * @author pchretien
  */
-public final class DIException extends RuntimeException {
-	private static final long serialVersionUID = 1L;
-
-	public DIException(final String message) {
-		super(message);
-	}
-
-	public DIException(final String message, final Throwable t) {
-		super(message, t);
-	}
+@Target({ ElementType.FIELD, ElementType.TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface JsonExclude {
+	//
 }

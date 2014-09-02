@@ -20,6 +20,7 @@ package io.vertigo.dynamo.plugins.collections.lucene;
 
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.locale.LocaleManager;
+import io.vertigo.core.lang.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -32,7 +33,6 @@ import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.exception.VUserException;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.MessageText;
 import io.vertigo.kernel.util.StringUtil;
 
 import java.io.IOException;

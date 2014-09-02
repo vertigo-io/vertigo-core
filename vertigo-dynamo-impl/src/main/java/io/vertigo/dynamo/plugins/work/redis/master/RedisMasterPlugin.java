@@ -18,14 +18,14 @@
  */
 package io.vertigo.dynamo.plugins.work.redis.master;
 
+import io.vertigo.core.lang.Activeable;
+import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.impl.work.MasterPlugin;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.plugins.work.redis.RedisDB;
 import io.vertigo.dynamo.plugins.work.redis.RedisDB.RedisResult;
 import io.vertigo.dynamo.work.WorkResultHandler;
-import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.Option;
 
 import java.util.Arrays;
 import java.util.Collections;

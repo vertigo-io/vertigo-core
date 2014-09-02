@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.impl.kvdatastore;
 
+import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.kvdatastore.KVDataStoreManager;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.Option;
 
 import java.util.Collections;
 import java.util.HashMap;

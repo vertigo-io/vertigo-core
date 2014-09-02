@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.collections;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.Function;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -26,7 +27,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamock.domain.famille.Famille;
-import io.vertigo.kernel.lang.Option;
 
 import java.util.ArrayList;
 import java.util.Arrays;

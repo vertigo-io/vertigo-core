@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.collections.lucene;
 
-import io.vertigo.kernel.lang.MessageKey;
+import io.vertigo.core.lang.MessageKey;
 
 /**
  * Dictionnaire des ressources.

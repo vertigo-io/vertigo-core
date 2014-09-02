@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.impl.search;
 
+import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.SearchServicesPlugin;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.Option;
 
 import javax.inject.Inject;
 

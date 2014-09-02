@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.export;
 
+import io.vertigo.core.lang.Builder;
+import io.vertigo.core.lang.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.kernel.lang.Builder;
-import io.vertigo.kernel.lang.MessageText;
 
 /**
  * Parametre d'export pour les données de type DT.

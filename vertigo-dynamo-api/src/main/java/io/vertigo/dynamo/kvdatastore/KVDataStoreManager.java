@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.kvdatastore;
 
 import io.vertigo.core.component.Manager;
-import io.vertigo.kernel.lang.Option;
+import io.vertigo.core.lang.Option;
 
 import java.util.List;
 

@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.task.model;
 
+import io.vertigo.core.lang.Modifiable;
 import io.vertigo.dynamo.domain.metamodel.ConstraintException;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.Modifiable;
 
 import java.io.Serializable;
 import java.util.HashMap;

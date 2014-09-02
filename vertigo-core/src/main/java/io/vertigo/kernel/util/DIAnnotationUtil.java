@@ -19,8 +19,8 @@
 package io.vertigo.kernel.util;
 
 import io.vertigo.core.component.Plugin;
+import io.vertigo.core.lang.Option;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.Option;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;

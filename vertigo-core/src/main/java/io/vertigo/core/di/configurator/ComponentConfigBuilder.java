@@ -20,9 +20,9 @@ package io.vertigo.core.di.configurator;
 
 import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.core.component.Plugin;
+import io.vertigo.core.lang.Builder;
+import io.vertigo.core.lang.Option;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.Builder;
-import io.vertigo.kernel.lang.Option;
 
 import java.util.ArrayList;
 import java.util.HashMap;

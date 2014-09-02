@@ -18,9 +18,9 @@
  */
 package io.vertigo.vega.rest.validation;
 
+import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.JsonExclude;
 
 import java.util.ArrayList;
 import java.util.HashMap;

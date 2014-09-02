@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.impl.database;
 
-import io.vertigo.kernel.lang.MessageKey;
+import io.vertigo.core.lang.MessageKey;
 
 /**
  * 

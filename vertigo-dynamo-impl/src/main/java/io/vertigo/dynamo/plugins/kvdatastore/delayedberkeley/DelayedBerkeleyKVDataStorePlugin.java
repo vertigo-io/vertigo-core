@@ -19,10 +19,10 @@
 package io.vertigo.dynamo.plugins.kvdatastore.delayedberkeley;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.core.lang.Activeable;
+import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.impl.kvdatastore.KVDataStorePlugin;
-import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.Option;
 
 import java.io.File;
 import java.io.Serializable;

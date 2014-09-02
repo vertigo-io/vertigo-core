@@ -21,8 +21,8 @@ package io.vertigo.core.di.injector;
 import io.vertigo.core.component.Container;
 import io.vertigo.core.component.Plugin;
 import io.vertigo.core.di.DIException;
+import io.vertigo.core.lang.Option;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.util.ClassUtil;
 import io.vertigo.kernel.util.DIAnnotationUtil;
 

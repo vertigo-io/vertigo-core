@@ -18,7 +18,7 @@
  */
 package io.vertigo.kernel.home.componentspace.data;
 
-import io.vertigo.kernel.lang.Activeable;
+import io.vertigo.core.lang.Activeable;
 
 import javax.inject.Inject;
 

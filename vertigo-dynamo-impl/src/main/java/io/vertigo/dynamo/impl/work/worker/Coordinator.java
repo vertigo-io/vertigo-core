@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.impl.work.worker;
 
+import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.work.WorkResultHandler;
-import io.vertigo.kernel.lang.Option;
 
 import java.util.concurrent.Future;
 

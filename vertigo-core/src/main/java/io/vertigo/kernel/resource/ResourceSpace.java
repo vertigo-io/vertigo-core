@@ -18,7 +18,7 @@
  */
 package io.vertigo.kernel.resource;
 
-import io.vertigo.kernel.lang.Activeable;
+import io.vertigo.core.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.util.Collection;

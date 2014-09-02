@@ -18,8 +18,8 @@
  */
 package io.vertigo.vega.rest.validation;
 
+import io.vertigo.core.lang.MessageText;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.MessageText;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

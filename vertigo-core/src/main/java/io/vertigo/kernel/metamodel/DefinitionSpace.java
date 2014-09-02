@@ -18,9 +18,9 @@
  */
 package io.vertigo.kernel.metamodel;
 
-import io.vertigo.kernel.lang.Activeable;
+import io.vertigo.core.lang.Activeable;
+import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.JsonExclude;
 
 import java.util.Collection;
 import java.util.Collections;

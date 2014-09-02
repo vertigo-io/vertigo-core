@@ -18,13 +18,13 @@
  */
 package io.vertigo.dynamo.persistence;
 
+import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.model.FileInfo;
-import io.vertigo.kernel.lang.Option;
 
 /**
  * Un objet est automatiquement géré par le broker.

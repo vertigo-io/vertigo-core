@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.domain.model;
 
+import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.metamodel.DefinitionReference;
 
 import java.io.Serializable;

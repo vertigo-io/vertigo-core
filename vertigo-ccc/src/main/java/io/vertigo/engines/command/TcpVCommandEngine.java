@@ -22,13 +22,13 @@ import io.vertigo.core.command.VCommand;
 import io.vertigo.core.command.VCommandExecutor;
 import io.vertigo.core.command.VResponse;
 import io.vertigo.core.component.Describable;
+import io.vertigo.core.lang.Activeable;
 import io.vertigo.engines.command.samples.VDescribableCommandExecutor;
 import io.vertigo.engines.command.samples.VPingCommandExecutor;
 import io.vertigo.engines.command.samples.VSystemCommandExecutor;
 import io.vertigo.engines.command.tcp.VServer;
 import io.vertigo.kernel.Home;
 import io.vertigo.kernel.engines.VCommandEngine;
-import io.vertigo.kernel.lang.Activeable;
 import io.vertigo.kernel.lang.Assertion;
 
 import java.util.LinkedHashMap;

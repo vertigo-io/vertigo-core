@@ -21,8 +21,8 @@ package io.vertigo.commons.plugins.config.xml;
 import io.vertigo.commons.config.ConfigManager;
 import io.vertigo.commons.impl.config.ConfigPlugin;
 import io.vertigo.commons.resource.ResourceManager;
+import io.vertigo.core.lang.Option;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.Option;
 import io.vertigo.kernel.util.StringUtil;
 import io.vertigo.kernel.util.XMLUtil;
 

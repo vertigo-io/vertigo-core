@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamo.collections.metamodel;
 
+import io.vertigo.core.lang.Builder;
+import io.vertigo.core.lang.MessageText;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.Builder;
-import io.vertigo.kernel.lang.MessageText;
 
 import java.util.ArrayList;
 import java.util.List;

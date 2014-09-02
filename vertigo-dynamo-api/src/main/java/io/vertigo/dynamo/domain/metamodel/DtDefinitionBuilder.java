@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
+import io.vertigo.core.lang.Builder;
+import io.vertigo.core.lang.MessageKey;
+import io.vertigo.core.lang.MessageText;
 import io.vertigo.kernel.lang.Assertion;
-import io.vertigo.kernel.lang.Builder;
-import io.vertigo.kernel.lang.MessageKey;
-import io.vertigo.kernel.lang.MessageText;
 import io.vertigo.kernel.metamodel.DefinitionUtil;
 
 import java.util.ArrayList;
