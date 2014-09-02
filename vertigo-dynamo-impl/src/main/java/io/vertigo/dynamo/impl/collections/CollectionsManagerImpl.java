@@ -22,7 +22,7 @@ import io.vertigo.core.Home;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.collections.CollectionsManager;
-import io.vertigo.dynamo.collections.DtListFunction;
+import io.vertigo.dynamo.collections.DtListProcessor;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
@@ -33,20 +33,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.impl.collections.facet.model.FacetFactory;
-import io.vertigo.dynamo.impl.collections.functions.filter.DtListChainFilter;
-import io.vertigo.dynamo.impl.collections.functions.filter.DtListFilter;
-import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilter;
-import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
-import io.vertigo.dynamo.impl.collections.functions.filter.DtListValueFilter;
-import io.vertigo.dynamo.impl.collections.functions.filter.FilterFunction;
-import io.vertigo.dynamo.impl.collections.functions.fulltext.FullTextFilterFunction;
-import io.vertigo.dynamo.impl.collections.functions.sort.SortFunction;
-import io.vertigo.dynamo.impl.collections.functions.sort.SortState;
-import io.vertigo.dynamo.impl.collections.functions.sublist.SubListFunction;
-import io.vertigo.dynamo.persistence.PersistenceManager;
 
-import java.io.Serializable;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -63,10 +50,8 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	//private final PersistenceManager persistenceManagerManager;
 	private final Option<IndexPlugin> indexPlugin;
 
-	private final DtListFunction<?> identityFunction = new IdentityFunction<>();
-
 	private final FacetFactory facetFactory;
-
+	private final DtListProcessor listProcessor ;
 	/**
 	 * Constructeur.
 	 */
@@ -76,6 +61,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		//---------------------------------------------------------------------
 		this.indexPlugin = indexPlugin;
 		facetFactory = new FacetFactory(this);
+		listProcessor= new DtListProcessorImpl( indexPlugin);
 		//		Assertion.notNull(masterDataManager);
 		//		Assertion.notNull(persistenceManager);
 		//---------------------------------------------------------------------
@@ -85,66 +71,62 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		//persistenceManagerManager = persistenceManager;
 	}
 
-	// Getteur sur Home car dépendance cyclique entre CollectionsManager et PersistenceManager
-	private static PersistenceManager getPersistenceManager() {
-		return Home.getComponentSpace().resolve(PersistenceManager.class);
-	}
 
-	/** {@inheritDoc} */
-	public <D extends DtObject> DtListFunction<D> createFilter(final String keywords, final int maxRows, final Collection<DtField> searchedFields) {
-		Assertion.checkArgument(indexPlugin.isDefined(), "An IndexPlugin is required to use this method");
-		//---------------------------------------------------------------------
-		return new FullTextFilterFunction<>(keywords, maxRows, searchedFields, indexPlugin.get());
-	}
-
-	/** {@inheritDoc} */
-	public <D extends DtObject> DtListFunction<D> createSort(final String fieldName, final boolean desc, final boolean nullLast, final boolean ignoreCase) {
-		final SortState sortState = new SortState(fieldName, desc, nullLast, ignoreCase);
-		return new SortFunction<>(sortState, getPersistenceManager());
-	}
-
-	/** {@inheritDoc} */
-	public <D extends DtObject> DtListFunction<D> createFilterByValue(final String fieldName, final Serializable value) {
-		final DtListFilter<D> filter = new DtListValueFilter<>(fieldName, value);
-		return new FilterFunction<>(filter);
-	}
-
-	/** {@inheritDoc} */
-	public <D extends DtObject> DtListFunction<D> createFilterByTwoValues(final String fieldName1, final Serializable value1, final String fieldName2, final Serializable value2) {
-		final DtListFilter<D> filter1 = new DtListValueFilter<>(fieldName1, value1);
-		final DtListFilter<D> filter2 = new DtListValueFilter<>(fieldName2, value2);
-		final DtListFilter<D> filter = new DtListChainFilter<>(filter1, filter2);
-		return new FilterFunction<>(filter);
-	}
-
-	/** {@inheritDoc} */
-	public <D extends DtObject> DtListFunction<D> createFilter(final ListFilter listFilter) {
-		final DtListFilter<D> filter = new DtListPatternFilter<>(listFilter.getFilterValue());
-		return new FilterFunction<>(filter);
-	}
-
-	/** {@inheritDoc} */
-	public <D extends DtObject, C extends Comparable<?>> DtListFunction<D> createFilterByRange(final String fieldName, final Option<C> min, final Option<C> max) {
-		final DtListFilter<D> filter = new DtListRangeFilter<>(fieldName, min, max, true, true);
-		return new FilterFunction<>(filter);
-	}
-
-	/** {@inheritDoc} */
-	public <D extends DtObject> DtListFunction<D> createFilterSubList(final int start, final int end) {
-		return new SubListFunction<>(start, end);
-	}
-
-	/** {@inheritDoc} */
-	public <D extends DtObject> DtListFunction<D> createIdentity() {
-		return (DtListFunction<D>) identityFunction;
-	}
-
-	private static final class IdentityFunction<D extends DtObject> implements DtListFunction<D> {
-		/** {@inheritDoc} */
-		public  DtList<D> apply(final DtList<D> list) {
-			return list;
-		}
-	}
+	//	/** {@inheritDoc} */
+	//	public <D extends DtObject> DtListFunction<D> createFilter(final String keywords, final int maxRows, final Collection<DtField> searchedFields) {
+	//		Assertion.checkArgument(indexPlugin.isDefined(), "An IndexPlugin is required to use this method");
+	//		//---------------------------------------------------------------------
+	//		return new FullTextFilterFunction<>(keywords, maxRows, searchedFields, indexPlugin.get());
+	//	}
+	//
+	//	/** {@inheritDoc} */
+	//	public <D extends DtObject> DtListFunction<D> createSort(final String fieldName, final boolean desc, final boolean nullLast, final boolean ignoreCase) {
+	//		final SortState sortState = new SortState(fieldName, desc, nullLast, ignoreCase);
+	//		return new SortFunction<>(sortState, getPersistenceManager());
+	//	}
+	//
+	//	/** {@inheritDoc} */
+	//	public <D extends DtObject> DtListFunction<D> createFilterByValue(final String fieldName, final Serializable value) {
+	//		final DtListFilter<D> filter = new DtListValueFilter<>(fieldName, value);
+	//		return new FilterFunction<>(filter);
+	//	}
+	//
+	//	/** {@inheritDoc} */
+	//	public <D extends DtObject> DtListFunction<D> createFilterByTwoValues(final String fieldName1, final Serializable value1, final String fieldName2, final Serializable value2) {
+	//		final DtListFilter<D> filter1 = new DtListValueFilter<>(fieldName1, value1);
+	//		final DtListFilter<D> filter2 = new DtListValueFilter<>(fieldName2, value2);
+	//		final DtListFilter<D> filter = new DtListChainFilter<>(filter1, filter2);
+	//		return new FilterFunction<>(filter);
+	//	}
+	//
+	//	/** {@inheritDoc} */
+	//	public <D extends DtObject> DtListFunction<D> createFilter(final ListFilter listFilter) {
+	//		final DtListFilter<D> filter = new DtListPatternFilter<>(listFilter.getFilterValue());
+	//		return new FilterFunction<>(filter);
+	//	}
+	//
+	//	/** {@inheritDoc} */
+	//	public <D extends DtObject, C extends Comparable<?>> DtListFunction<D> createFilterByRange(final String fieldName, final Option<C> min, final Option<C> max) {
+	//		final DtListFilter<D> filter = new DtListRangeFilter<>(fieldName, min, max, true, true);
+	//		return new FilterFunction<>(filter);
+	//	}
+	//
+	//	/** {@inheritDoc} */
+	//	public <D extends DtObject> DtListFunction<D> createFilterSubList(final int start, final int end) {
+	//		return new SubListFunction<>(start, end);
+	//	}
+	//
+	//	/** {@inheritDoc} */
+	//	public <D extends DtObject> DtListFunction<D> createIdentity() {
+	//		return (DtListFunction<D>) identityFunction;
+	//	}
+	//
+	//	private static final class IdentityFunction<D extends DtObject> implements DtListFunction<D> {
+	//		/** {@inheritDoc} */
+	//		public  DtList<D> apply(final DtList<D> list) {
+	//			return list;
+	//		}
+	//	}
 
 	//	/** {@inheritDoc} */
 	//	public <D extends DtObject> List<Cluster<D>> cluster(final DtList<D> dtc, final DtField TitleDtField, final DtField SummaryDtField) {
@@ -189,9 +171,15 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		final List<ListFilter> listFilters = facetedQuery.getListFilters();
 		DtList<D> filteredDtList = dtList;
 		for (final ListFilter listFilter : listFilters) {
-			filteredDtList = this.<D> createFilter(listFilter)//;
+			filteredDtList = this.createDtListProcessor()//
+					.filter(listFilter)//
 					.apply(filteredDtList);
 		}
 		return filteredDtList;
+	}
+
+	/** {@inheritDoc} */
+	public DtListProcessor createDtListProcessor() {
+		return listProcessor;
 	}
 }

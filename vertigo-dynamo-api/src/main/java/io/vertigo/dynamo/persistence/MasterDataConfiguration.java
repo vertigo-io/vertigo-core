@@ -18,10 +18,9 @@
  */
 package io.vertigo.dynamo.persistence;
 
-import io.vertigo.dynamo.collections.DtListFunction;
+import io.vertigo.dynamo.collections.DtListProcessor;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
-import io.vertigo.dynamo.domain.model.DtObject;
 
 import java.io.Serializable;
 
@@ -76,5 +75,5 @@ public interface MasterDataConfiguration {
 	 * @param uri URI de la liste
 	 * @return Fonction à appliquer sur la liste (par rapport à la liste complète).
 	 */
-	<D extends DtObject> DtListFunction<D> getFilter(final DtListURIForMasterData uri);
+	DtListProcessor getFilter(final DtListURIForMasterData uri);
 }

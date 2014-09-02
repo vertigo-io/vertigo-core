@@ -56,7 +56,7 @@ public final class FacetFactory {
 	/**
 	 * Création d'une liste de facettes à partir d'une liste.
 	 * @param facetedQueryDefinition Requête
-	 * @param dtList Liste 
+	 * @param dtList Liste
 	 * @return Liste des facettes.
 	 */
 	public List<Facet> createFacets(final FacetedQueryDefinition facetedQueryDefinition, final DtList<?> dtList) {
@@ -73,13 +73,13 @@ public final class FacetFactory {
 
 	private <D extends DtObject> DtList<D> apply(final ListFilter listFilter, final DtList<D> fullDtList) {
 		//on délégue à CollectionsManager les méthodes de requête de filtrage.
-		return collectionManager.<D> createFilter(listFilter)//
+		return collectionManager.createDtListProcessor().filter(listFilter)//
 				.apply(fullDtList);
 	}
 
 	private Facet createFacet(final FacetDefinition facetDefinition, final DtList<?> dtList) {
 		if (facetDefinition.isRangeFacet()) {
-			//Cas des facettes par 'range' 
+			//Cas des facettes par 'range'
 			return createFacetRange(facetDefinition, dtList);
 		}
 		//Cas des facettes par 'term'
@@ -99,7 +99,7 @@ public final class FacetFactory {
 	}
 
 	private static Facet createTermFacet(final FacetDefinition facetDefinition, final DtList<?> dtList) {
-		//Cas des facettes par Term 
+		//Cas des facettes par Term
 		final DtField dtField = facetDefinition.getDtField();
 		//on garde un index pour incrémenter le facetFilter pour chaque Term
 		final Map<Object, FacetValue> facetFilterIndex = new HashMap<>();

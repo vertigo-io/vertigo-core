@@ -21,7 +21,6 @@ package io.vertigo.vega.impl.rest.handler;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.collections.CollectionsManager;
-import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.vega.rest.exception.SessionException;
@@ -117,15 +116,17 @@ final class PaginatorAndSortHandler implements RouteHandler {
 	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final UiListState uiListState) {
 		final DtList<D> sortedList;
 		if (uiListState.getSortFieldName() != null) {
-			final DtListFunction<D> sortFunction = collectionsManager.createSort(uiListState.getSortFieldName(), uiListState.isSortDesc(), true, true);
-			sortedList = sortFunction.apply(unFilteredList);
+			sortedList = collectionsManager.createDtListProcessor()//
+					.sort(uiListState.getSortFieldName(), uiListState.isSortDesc(), true, true)//
+					.apply(unFilteredList);
 		} else {
 			sortedList = unFilteredList;
 		}
 		final DtList<D> filteredList;
 		if (uiListState.getTop() > 0) {
-			final DtListFunction<D> filterFunction = collectionsManager.createFilterSubList(uiListState.getSkip(), uiListState.getSkip() + uiListState.getTop());
-			filteredList = filterFunction.apply(sortedList);
+			filteredList = collectionsManager.createDtListProcessor()//
+					.filterSubList(uiListState.getSkip(), uiListState.getSkip() + uiListState.getTop())//
+					.apply(sortedList);
 		} else {
 			filteredList = sortedList;
 		}

@@ -544,8 +544,9 @@ public final class TesterRestServices implements RestfulService {
 	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final UiListState uiListState) {
 		final DtList<D> sortedList;
 		if (uiListState.getSortFieldName() != null) {
-			final DtListFunction<D> sortFunction = collectionsManager.createSort(uiListState.getSortFieldName(), uiListState.isSortDesc(), true, true);
-			sortedList = sortFunction.apply(unFilteredList);
+			sortedList= collectionsManager.createDtListProcessor()//
+					.sort(uiListState.getSortFieldName(), uiListState.isSortDesc(), true, true)//
+					.apply(unFilteredList);
 		} else {
 			sortedList = unFilteredList;
 		}
@@ -554,8 +555,9 @@ public final class TesterRestServices implements RestfulService {
 			final int listSize = sortedList.size();
 			final int usedSkip = Math.min(uiListState.getSkip(), listSize);
 			final int usedTop = Math.min(usedSkip + uiListState.getTop(), listSize);
-			final DtListFunction<D> filterFunction = collectionsManager.createFilterSubList(usedSkip, usedTop);
-			filteredList = filterFunction.apply(sortedList);
+			filteredList = collectionsManager.createDtListProcessor()//
+					.filterSubList(usedSkip, usedTop)//
+					.apply(sortedList);
 		} else {
 			filteredList = sortedList;
 		}

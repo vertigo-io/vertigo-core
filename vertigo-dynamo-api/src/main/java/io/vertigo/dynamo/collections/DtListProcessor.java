@@ -15,7 +15,7 @@ public interface DtListProcessor {
 	 * @param desc Si tri descendant
 	 * @param nullLast Si les objets Null sont en derniers
 	 * @param ignoreCase Si on ignore la casse
-	 * @return Etat du tri 
+	 * @return Etat du tri
 	 * @param <D> Type du DtObject
 	 */
 	DtListProcessor sort(final String fieldName, final boolean desc, final boolean nullLast, final boolean ignoreCase);
@@ -41,21 +41,10 @@ public interface DtListProcessor {
 	DtListProcessor filterByValue(final String fieldName, final Serializable value);
 
 	/**
-	 * Constructeur d'un filtre champ1 = valeur1 ET champ2 = valeur2.
-	 * @param fieldName1 Nom du premier champ
-	 * @param value1 Valeur du premier champ
-	 * @param fieldName2 Nom du deuxième champ
-	 * @param value2 Valeur du deuxième champ
-	 * @return Filtre
-	 * @param <D> Type du DtObject
-	 */
-	DtListProcessor filterByTwoValues(final String fieldName1, final Serializable value1, final String fieldName2, final Serializable value2);
-
-	/**
 	 * Constructeur d'un filtre de range.
 	 * @param fieldName Nom du champ
-	 * @param min Valeur minimale 
-	 * @param max Valeur maximale 
+	 * @param min Valeur minimale
+	 * @param max Valeur maximale
 	 * @return Filtre
 	 * @param <D> Type du DtObject
 	 * @param <C> Type des bornes
