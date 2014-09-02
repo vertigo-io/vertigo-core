@@ -42,7 +42,6 @@ final class TaskResultBuilder implements Builder<TaskResult> {
 	TaskResultBuilder(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//----------------------------------------------------------------------
-		//Création du conteneur des paramètres du service
 		dataSet = new TaskDataSet(taskDefinition, false);
 	}
 

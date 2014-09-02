@@ -49,7 +49,7 @@ public final class TaskDefinition implements Definition {
 	private final String request;
 
 	/** Map des (Nom, TaskAttribute) définissant les attributs de tache. */
-	private final Map<String, TaskAttribute> taskAttributeMap;
+	private final Map<String, TaskAttribute> taskAttributes;
 
 	/**
 	 * Moyen de réaliser la tache.
@@ -63,15 +63,15 @@ public final class TaskDefinition implements Definition {
 	 */
 	TaskDefinition(final String name, final String packageName, final Class<? extends TaskEngine> taskEngineClass, final String request, final List<TaskAttribute> taskAttributes) {
 		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(taskEngineClass, "La class du TaskEngine est obligatoire");
-		Assertion.checkNotNull(request, "La request est obligatoire");
+		Assertion.checkNotNull(taskEngineClass, "a taskEngineClass is required");
+		Assertion.checkNotNull(request, "a request is required");
 		Assertion.checkNotNull(taskAttributes);
 		//----------------------------------------------------------------------
 		this.name = name;
 		localName = DefinitionUtil.getLocalName(name, TaskDefinition.class);
 		this.packageName = packageName;
 		this.request = request;
-		taskAttributeMap = createMap(taskAttributes);
+		this.taskAttributes = createMap(taskAttributes);
 		this.taskEngineClass = taskEngineClass;
 	}
 
@@ -99,7 +99,7 @@ public final class TaskDefinition implements Definition {
 	public TaskAttribute getAttribute(final String attributeName) {
 		Assertion.checkNotNull(attributeName);
 		//----------------------------------------------------------------------
-		final TaskAttribute taskAttribute = taskAttributeMap.get(attributeName);
+		final TaskAttribute taskAttribute = taskAttributes.get(attributeName);
 		Assertion.checkNotNull(taskAttribute, "nom d''attribut :{0} non trouvé pour le service :{1}", attributeName, this);
 		return taskAttribute;
 	}
@@ -110,7 +110,7 @@ public final class TaskDefinition implements Definition {
 	 * @return Si l'attribut fait partie de l'API de la tache
 	 */
 	public boolean containsAttribute(final String attributeName) {
-		return taskAttributeMap.containsKey(attributeName);
+		return taskAttributes.containsKey(attributeName);
 	}
 
 	/**
@@ -139,7 +139,7 @@ public final class TaskDefinition implements Definition {
 	 * @return Liste des attributs de la tache
 	 */
 	public Collection<TaskAttribute> getAttributes() {
-		return taskAttributeMap.values();
+		return taskAttributes.values();
 	}
 
 	/**

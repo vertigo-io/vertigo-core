@@ -23,7 +23,8 @@ import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import java.sql.SQLException;
 
 /**
- * Fournisseur de connexions KConnection.
+ * Provides connections 'KConnection'.
+ * This provider is defined for a particular database. 
  *
  * @author pchretien
  */

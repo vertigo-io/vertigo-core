@@ -23,8 +23,17 @@ import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.kernel.component.Manager;
 
 /**
+ * Manages the execution of local (transactional) tasks.
  * @author pchretien
  */
 public interface TaskManager extends Manager {
+	/**
+	 * Execution of a task. 
+	 * This execution is done in the current thread.
+	 * So this execution can be transactional.
+	 * 
+	 * @param task Task 
+	 * @return TaskResult 
+	 */
 	TaskResult execute(Task task);
 }
