@@ -44,7 +44,7 @@ final class DtListProcessorImpl implements DtListProcessor {
 		this.indexPlugin = indexPlugin;
 	}
 
-	private DtListProcessorImpl createNew(final DtListFunction listFunction){
+	private DtListProcessorImpl createNewDtListProcessor(final DtListFunction listFunction){
 		Assertion.checkNotNull(listFunction);
 		//---------------------------------------------------------------------
 		final DtListFunction[] list = Arrays.copyOf(listFunctions, listFunctions.length+1);
@@ -54,44 +54,44 @@ final class DtListProcessorImpl implements DtListProcessor {
 	}
 
 	/** {@inheritDoc} */
-	public DtListProcessor with(final DtListFunction listFunction) {
-		return createNew(listFunction);
+	public DtListProcessor add(final DtListFunction listFunction) {
+		return createNewDtListProcessor(listFunction);
 	}
 
 	/** {@inheritDoc} */
 	public DtListProcessor filter(final String keywords, final int maxRows, final Collection<DtField> searchedFields) {
 		Assertion.checkArgument(indexPlugin.isDefined(), "An IndexPlugin is required to use this method");
 		//---------------------------------------------------------------------
-		return createNew(new FullTextFilterFunction<>(keywords, maxRows, searchedFields, indexPlugin.get()));
+		return add(new FullTextFilterFunction<>(keywords, maxRows, searchedFields, indexPlugin.get()));
 	}
 
 	/** {@inheritDoc} */
 	public DtListProcessor sort(final String fieldName, final boolean desc, final boolean nullLast, final boolean ignoreCase) {
 		final SortState sortState = new SortState(fieldName, desc, nullLast, ignoreCase);
-		return createNew(new SortFunction<>(sortState, getPersistenceManager()));
+		return add(new SortFunction<>(sortState, getPersistenceManager()));
 	}
 
 	/** {@inheritDoc} */
 	public DtListProcessor filterByValue(final String fieldName, final Serializable value) {
 		final DtListFilter filter = new DtListValueFilter(fieldName, value);
-		return createNew(new FilterFunction(filter));
+		return add(new FilterFunction(filter));
 	}
 
 	/** {@inheritDoc} */
 	public DtListProcessor filter(final ListFilter listFilter) {
 		final DtListFilter filter = new DtListPatternFilter<>(listFilter.getFilterValue());
-		return createNew(new FilterFunction<>(filter));
+		return add(new FilterFunction<>(filter));
 	}
 
 	/** {@inheritDoc} */
 	public DtListProcessor filterSubList(final int start, final int end) {
-		return createNew(new SubListFunction<>(start, end));
+		return add(new SubListFunction<>(start, end));
 	}
 
 	/** {@inheritDoc} */
 	public <C extends Comparable<?>> DtListProcessor filterByRange(final String fieldName, final Option<C> min, final Option<C> max) {
 		final DtListFilter filter = new DtListRangeFilter(fieldName, min, max, true, true);
-		return createNew(new FilterFunction<>(filter));
+		return add(new FilterFunction<>(filter));
 	}
 
 	/** {@inheritDoc} */
