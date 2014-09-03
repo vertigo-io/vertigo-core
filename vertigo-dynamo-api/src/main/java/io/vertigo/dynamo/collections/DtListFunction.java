@@ -22,13 +22,15 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 
 /**
- * Fonction de transformation d'une liste en liste.
+ * Transform a list(input) into another list(output).
+ * Sort, filter are kinds of that function.
+ * 
  * @author  pchretien
  */
-public interface DtListFunction<D extends DtObject> {
+public interface DtListFunction<D extends DtObject>{
 	/**
-	 * @param input Paramètre d'entrée
-	 * @return Calcul de la fonction
+	 * @param input List
+	 * @return List output
 	 */
 	DtList<D> apply(final DtList<D> input);
 }
