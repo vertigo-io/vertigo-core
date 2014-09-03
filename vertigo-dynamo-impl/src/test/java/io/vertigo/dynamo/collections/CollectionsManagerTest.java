@@ -478,7 +478,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	public void testWithDtListFunction() {
 		final DtList<Famille> result =
 				collectionsManager.createDtListProcessor()//
-				.with(new DtListFunction<Famille>() {
+				.add(new DtListFunction<Famille>() {
 
 					/** {@inheritDoc} */
 					public DtList<Famille> apply(final DtList<Famille> input) {
