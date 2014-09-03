@@ -25,18 +25,19 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 
 /**
- * Gestionnaire de la manipulation des collections.
- * Tri, filtre, facettage sur les DTC.
+ * Some tools on collections/lists to allow
+ *  - sort
+ *  - filter
+ *  - facets.
  * @author  pchretien
  */
 public interface CollectionsManager extends Manager {
 	/**
-	 * Filter or sort a list via a listProcessor, that can be chained.
+	 * Filter or sort a list via a listProcessor, can be composed of filters or sorters.
 	 * @return
 	 */
 	DtListProcessor createDtListProcessor();
 
-	//	//=======================Gestion des facettes==============================
 	/**
 	 * Facettage d'une liste selon une requete.
 	 * Le facettage s'effectue en deux temps :

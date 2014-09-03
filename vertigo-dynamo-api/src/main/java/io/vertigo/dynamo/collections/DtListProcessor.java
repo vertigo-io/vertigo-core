@@ -10,17 +10,17 @@ import java.util.Collection;
 
 
 /**
- * Processor that can be composed OF filters or sorters
+ * Processor that can be composed of filters or sorters
  * and be applied on a list
  * @author pchretien
  */
 public interface DtListProcessor {
 	/**
-	 * Add a function
+	 * Add any function that transform a list into an another list
 	 * @param listFunction
 	 * @return
 	 */
-	DtListProcessor with(DtListFunction listFunction);
+	DtListProcessor add(DtListFunction listFunction);
 
 	/**
 	 * Création d'un tri de colonne.
