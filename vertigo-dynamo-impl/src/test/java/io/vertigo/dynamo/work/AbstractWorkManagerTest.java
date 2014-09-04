@@ -35,82 +35,60 @@ import org.junit.Test;
  * @author pchretien
  */
 public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
-	private final long warmupTime = 200; //en fonction du mode de distribution la prise en compte d'une tache est plus ou moins longue. Pour les TU on estime à 2s
-	private final int loop = 10;
+	private final long warmupTime = 1000; //en fonction du mode de distribution la prise en compte d'une tache est plus ou moins longue. Pour les TU on estime à 2s
 	private static final int WORKER_COUNT = 5; //Doit correspondre au workerCount déclaré dans managers.xlm
 
 	@Inject
 	private WorkManager workManager;
 
-	/**
-	 * Teste l'exécution synchrone d'une tache.(Division)
-	 * On effectue l'opération n fois.
-	 */
+	//=========================================================================
+	//===========================PROCESS=======================================
+	//=========================================================================
 	@Test
 	public void testProcess() {
-		final long start = System.currentTimeMillis();
-		for (int i = 0; i < loop; i++) {
-			final long div = workManager.process(new DivideWork(10, 5), new WorkEngineProvider<>(DivideWorkEngine.class));
-			Assert.assertEquals(2L, div);
-			if (i > 0 && i % 1000 == 0) {
-				final long elapsed = System.currentTimeMillis() - start;
-				System.out.println(">>processed : " + i + " in " + 1000 * elapsed / i + " ms/1000exec");
-			}
-		}
-		final long elapsed = System.currentTimeMillis() - start;
-		System.out.println("Process " + loop + ">>>>>> in " + elapsed + " ms");
+		final DivideWork work = new DivideWork(10, 5);
+		final long div = workManager.process(work, new WorkEngineProvider<>(DivideWorkEngine.class));
+		Assert.assertEquals(10L/5L, div);
 	}
 
-	/**
-	 * Teste l'exécution synchrone d'une tache.(Division)
-	 */
 	@Test(expected = NullPointerException.class)
 	public void testProcessWithNull() {
 		final DivideWork work = null;
-		final Object div = workManager.process(work, new WorkEngineProvider<>(DivideWorkEngine.class));
+		final long div = workManager.process(work, new WorkEngineProvider<>(DivideWorkEngine.class));
 		nop(div);
 	}
 
-	/**
-	 * Teste l'exécution synchrone d'une tache avec erreur. (Division par 0)
-	 */
 	@Test(expected = ArithmeticException.class)
 	public void testProcessWithError() {
-		final long div = workManager.process(new DivideWork(10, 0), new WorkEngineProvider<>(DivideWorkEngine.class));
+		final DivideWork work = new DivideWork(10, 0);
+		final long div = workManager.process(work, new WorkEngineProvider<>(DivideWorkEngine.class));
 		nop(div);
 	}
 
+	//=========================================================================
+	//===========================SCHEDULE======================================
+	//=========================================================================
+
 	/**
-	 * Teste l'exécution asynchrone d'une tache.
+	 * test of 2 async executions
 	 */
 	@Test
 	public void testSchedule() {
+		final DivideWork work = new DivideWork(10, 5);
 		final MyWorkResultHanlder<Long> workResultHanlder = new MyWorkResultHanlder<>();
-		final long start = System.currentTimeMillis();
-		for (int i = 0; i < loop; i++) {
-			workManager.schedule(new DivideWork(10, 5), new WorkEngineProvider<>(DivideWorkEngine.class), workResultHanlder);
-			if (i > 0 && i % 1000 == 0) {
-				final long elapsed = System.currentTimeMillis() - start;
-				System.out.println(">sending>" + i + " in " + 1000 * elapsed / i + " ms/1000exec");
-			}
-		}
-		final boolean finished = workResultHanlder.waitFinish(loop, 20 * 1000); //20s de timeout, le test prend normalement 2s
-		Assert.assertEquals("résultat : " + workResultHanlder, true, finished);
+		workManager.schedule(work, new WorkEngineProvider<>(DivideWorkEngine.class), workResultHanlder);
+		workManager.schedule(work, new WorkEngineProvider<>(DivideWorkEngine.class), workResultHanlder);
+		//---
+		final boolean finished = workResultHanlder.waitFinish(2, warmupTime);
+		Assert.assertEquals(true, finished);
 		Assert.assertEquals(2, workResultHanlder.getLastResult().intValue());
-
-		//		final long elapsed = System.currentTimeMillis() - start;
-		//		System.out.println("testSchedule>>>>>> in " + elapsed + " ms");
-		//		System.out.println(workResultHanlder);
+		Assert.assertEquals(null, workResultHanlder.getLastThrowable());
 	}
 
-	/**
-	 * Teste l'exécution asynchrone d'une tache.
-	 */
 	@Test(expected = NullPointerException.class)
 	public void testScheduleWithNull() {
 		final DivideWork work = null;
 		final MyWorkResultHanlder<Long> workResultHanlder = new MyWorkResultHanlder<>();
-		//ON va déclencher une assertion
 		workManager.schedule(work, new WorkEngineProvider<>(DivideWorkEngine.class), workResultHanlder);
 	}
 
@@ -119,17 +97,22 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testScheduleError() {
+		final DivideWork work = new DivideWork(10, 0);
 		final MyWorkResultHanlder<Long> workResultHanlder = new MyWorkResultHanlder<>();
-		workManager.schedule(new DivideWork(10, 0), new WorkEngineProvider<>(DivideWorkEngine.class), workResultHanlder);
+		workManager.schedule(work, new WorkEngineProvider<>(DivideWorkEngine.class), workResultHanlder);
 
 		final boolean finished = workResultHanlder.waitFinish(1, warmupTime);
 		//On vérifie plusieurs  choses
 		// -que l'erreur remontée est bien une ArithmeticException
 		//- que l'exception est contenue dans le handler
+		Assert.assertEquals(true, finished);
 		Assert.assertEquals(null, workResultHanlder.getLastResult());
 		Assert.assertEquals(ArithmeticException.class, workResultHanlder.getLastThrowable().getClass());
-		Assert.assertEquals(true, finished);
 	}
+
+	//=========================================================================
+	//=========================================================================
+	//=========================================================================
 
 	/**
 	 * Teste l'exécution asynchrone de plusieurs taches.
