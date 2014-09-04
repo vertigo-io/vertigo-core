@@ -35,7 +35,7 @@ import org.junit.Test;
  * @author pchretien
  */
 public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
-	private final long warmupTime = 1000; //en fonction du mode de distribution la prise en compte d'une tache est plus ou moins longue. Pour les TU on estime à 2s
+	private final long warmupTime = 400; //en fonction du mode de distribution la prise en compte d'une tache est plus ou moins longue. Pour les TU on estime à 2s
 	private static final int WORKER_COUNT = 5; //Doit correspondre au workerCount déclaré dans managers.xlm
 
 	@Inject
@@ -110,6 +110,20 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(ArithmeticException.class, workResultHanlder.getLastThrowable().getClass());
 	}
 
+	/**
+	 * Teste l'exécution asynchrone d'une tache avec une durée de timeOut trop courte.
+	 */
+	@Test
+	public void testScheduleWithTimeOut() {
+		final int workTime = 5 * 1000; //5s temps d'exécution d'un work
+		final MyWorkResultHanlder<Boolean> workResultHanlder = new MyWorkResultHanlder<>();
+		final SlowWork work = new SlowWork(workTime);
+		workManager.schedule(work, new WorkEngineProvider<>(SlowWorkEngine.class), workResultHanlder);
+		final boolean finished = workResultHanlder.waitFinish(1, workTime - 1000);
+		//---------------------------------------------------------------------
+		//We are expecting a time out if we are waiting less than execution's time.
+		Assert.assertEquals(false, finished);
+	}
 	//=========================================================================
 	//=========================================================================
 	//=========================================================================
@@ -131,25 +145,6 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 		//---------------------------------------------------------------------
 		Assert.assertEquals(true, finished);
 
-	}
-
-	/**
-	 * Teste l'exécution asynchrone d'une tache avec une durée de timeOut trop courte.
-	 */
-	@Test
-	public void testWaitForAllWithTimeOut() {
-		final int workTime = 5 * 1000; //5s temps d'exécution d'un work
-		final MyWorkResultHanlder<Boolean> workResultHanlder = new MyWorkResultHanlder<>();
-		final long time = System.currentTimeMillis();
-		createWorkItems(WORKER_COUNT * 2, workTime, workResultHanlder);
-		final boolean finished = workResultHanlder.waitFinish(WORKER_COUNT * 2, 2 * workTime - 1000);
-		System.out.println("finished:" + finished + " in " + (System.currentTimeMillis() - time) + " ms");
-		//On estime que la durée max n'excéde pas le workTime + 500ms
-		//---------------------------------------------------------------------
-		Assert.assertEquals("résultat : " + workResultHanlder, false, finished);
-		//		for (final WorkItem<Boolean> workItem : workItems) {
-		//			assertTrue("WorkItem " + workItems.indexOf(workItem) + " non terminé ", workItem.getStatus() == Status.Completed);
-		//		}
 	}
 
 	/**
