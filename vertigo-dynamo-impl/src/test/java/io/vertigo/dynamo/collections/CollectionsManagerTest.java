@@ -213,7 +213,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	public void testFilterTwoValues() {
 		final DtList<Famille> result = collectionsManager.createDtListProcessor()//
 				.filterByValue("LIBELLE", "aaa")//
-				.filterByValue( "FAM_ID", 13L)//
+				.filterByValue("FAM_ID", 13L)//
 				.apply(createFamillesForRangeTest());
 		Assert.assertEquals(1, result.size());
 	}
@@ -341,7 +341,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private DtList<Famille> subList(final DtList<Famille> dtc, final int start, final int end) {
-		return  collectionsManager.createDtListProcessor()//
+		return collectionsManager.createDtListProcessor()//
 				.filterSubList(start, end)//
 				.apply(dtc);
 	}
@@ -475,27 +475,23 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	@Test
-	public void testWithDtListFunction() {
-		final DtList<Famille> result =
-				collectionsManager.createDtListProcessor()//
+	public void testaddDtListFunction() {
+		final DtList<Famille> familles = collectionsManager.createDtListProcessor()//
 				.add(new DtListFunction<Famille>() {
 
 					/** {@inheritDoc} */
 					public DtList<Famille> apply(final DtList<Famille> input) {
 						final DtList<Famille> result = new DtList<>(Famille.class);
-						for (final Famille family : input){
-							if (family.getFamId()==3L){
+						for (final Famille family : input) {
+							if (family.getFamId() != null && family.getFamId() == 3L) {
 								result.add(family);
 							}
 						}
 						return result;
 					}
-				})
-				.apply(createFamillesForRangeTest());
-		Assert.assertEquals(1L, result.size());
+				}).apply(createFamillesForRangeTest());
+		Assert.assertEquals(1L, familles.size());
 	}
-
-
 
 	/**
 	 * @see CollectionsManager#createFilter

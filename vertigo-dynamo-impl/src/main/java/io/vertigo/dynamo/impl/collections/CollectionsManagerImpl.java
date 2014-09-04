@@ -48,10 +48,11 @@ import javax.inject.Inject;
 public final class CollectionsManagerImpl implements CollectionsManager {
 	//private final MasterDataManager masterDataManager;
 	//private final PersistenceManager persistenceManagerManager;
-	private final Option<IndexPlugin> indexPlugin;
+	//private final Option<IndexPlugin> indexPlugin;
 
 	private final FacetFactory facetFactory;
-	private final DtListProcessor listProcessor ;
+	private final DtListProcessor listProcessor;
+
 	/**
 	 * Constructeur.
 	 */
@@ -59,9 +60,9 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	public CollectionsManagerImpl(final Option<IndexPlugin> indexPlugin) {
 		Assertion.checkNotNull(indexPlugin);
 		//---------------------------------------------------------------------
-		this.indexPlugin = indexPlugin;
+		//	this.indexPlugin = indexPlugin;
 		facetFactory = new FacetFactory(this);
-		listProcessor= new DtListProcessorImpl( indexPlugin);
+		listProcessor = new DtListProcessorImpl(indexPlugin);
 		//		Assertion.notNull(masterDataManager);
 		//		Assertion.notNull(persistenceManager);
 		//---------------------------------------------------------------------
@@ -70,7 +71,6 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		//this.masterDataManager = masterDataManager;
 		//persistenceManagerManager = persistenceManager;
 	}
-
 
 	//	/** {@inheritDoc} */
 	//	public <D extends DtObject> List<Cluster<D>> cluster(final DtList<D> dtc, final DtField TitleDtField, final DtField SummaryDtField) {
