@@ -26,16 +26,18 @@ import java.util.concurrent.Callable;
  * Gestion synchrone, asynchrone des taches à effectuer.
  * Chaque réalisation est effectuée par un {@link WorkEngine}.
  * 
- * Les exécutions peuvent être 
+ * Les exécutions peuvent être
  *  - locales ou distribuées (par configuration)
  *  - synchrones ou asynchrones (selon la méthode appelée)
  * 
  * Toutes les exécutions distribuées sont techniquement réalisées de façon asynchrones.
- * Dans le cas des appels synchrones de méthodes distribuées, un mécanisme resynchronise le résultat 
+ * Dans le cas des appels synchrones de méthodes distribuées, un mécanisme resynchronise le résultat
  * 
  * @author pchretien
  */
 public interface WorkManager extends Manager {
+	<WR, W> WorkProcessor<WR,W> createProcessor (final WorkEngineProvider<WR, W> workEngineProvider);
+
 	/**
 	 * Exécution d'un travail de façon synchrone.
 	 * @param <W> Type de Work (Travail)

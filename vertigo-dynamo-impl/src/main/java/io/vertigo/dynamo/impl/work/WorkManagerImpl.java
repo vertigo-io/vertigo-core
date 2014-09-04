@@ -29,6 +29,7 @@ import io.vertigo.dynamo.impl.work.worker.local.LocalCoordinator;
 import io.vertigo.dynamo.work.WorkEngine;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.dynamo.work.WorkManager;
+import io.vertigo.dynamo.work.WorkProcessor;
 import io.vertigo.dynamo.work.WorkResultHandler;
 
 import java.util.UUID;
@@ -65,7 +66,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 
 	/** {@inheritDoc} */
 	public void start() {
-		//coordinator n'étant pas un plugin 
+		//coordinator n'étant pas un plugin
 		//il faut le démarrer et l'arréter explicitement.
 	}
 
@@ -76,6 +77,13 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 
 	private static String createWorkId() {
 		return UUID.randomUUID().toString();
+	}
+
+
+
+	/** {@inheritDoc} */
+	public <WR, W> WorkProcessor<WR, W> createProcessor(final WorkEngineProvider<WR, W> workEngineProvider) {
+		return new WorkProcessorImpl<>(this, workEngineProvider);
 	}
 
 	/** {@inheritDoc} */
@@ -144,9 +152,9 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	private <WR, W> Coordinator resolveCoordinator(final WorkItem<WR, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		//----------------------------------------------------------------------
-		/* 
+		/*
 		 * On recherche un Worker capable d'effectuer le travail demandé.
-		 * 1- On recherche parmi les works externes 
+		 * 1- On recherche parmi les works externes
 		 * 2- Si le travail n'est pas déclaré comme étant distribué on l'exécute localement
 		 */
 		if (distributedCoordinator.isDefined() && distributedCoordinator.get().accept(workItem)) {

@@ -50,6 +50,35 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 		final long div = workManager.process(work, new WorkEngineProvider<>(DivideWorkEngine.class));
 		Assert.assertEquals(10L/5L, div);
 	}
+	@Test
+	public void testProcessor() {
+		final DivideWork work = new DivideWork(10, 5);
+		final long result = workManager//
+				.createProcessor(new WorkEngineProvider<>(LengthWorkEngine.class))//
+				.add(new WorkEngineProvider<>(SquareWorkEngine.class))
+				.add(new WorkEngineProvider<>(SquareWorkEngine.class))
+				.exec("aa");
+		Assert.assertEquals(2*2*2*2L, result);
+	}
+	public static final class LengthWorkEngine implements WorkEngine<Long, String> {
+		/** {@inheritDoc} */
+		public Long process(final String work) {
+			return work.length()*1L;
+		}
+	}
+
+	public static final class SquareWorkEngine implements WorkEngine<Long, Long> {
+		/** {@inheritDoc} */
+		public Long process(final Long work) {
+			return work.longValue()*work.longValue();
+		}
+	}
+	//	public final class SquareWorkEngine implements WorkEngine<Long, Long> {
+	//		/** {@inheritDoc} */
+	//		public Long process(final Long work) {
+	//			return work.longValue()*work.longValue();
+	//		}
+	//	}
 
 	@Test(expected = NullPointerException.class)
 	public void testProcessWithNull() {
