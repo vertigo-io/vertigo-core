@@ -1,6 +1,7 @@
 package io.vertigo.dynamo.impl.work;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.dynamo.work.WorkEngine;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkProcessor;
@@ -29,14 +30,19 @@ final class WorkProcessorImpl<WR,W> implements WorkProcessor<WR, W>{
 	}
 
 	/** {@inheritDoc} */
-	public <WR1> WorkProcessor<WR1, W> add(final WorkEngineProvider<WR1, WR> workEngineProvider) {
+	public <WR1> WorkProcessor<WR1, W> then(final WorkEngineProvider<WR1, WR> workEngineProvider) {
 		Assertion.checkNotNull(workEngineProvider);
 		//-----------------------------------------------------------------
 		final WorkEngineProvider[] list= Arrays.copyOf(workEngineProviders, workEngineProviders.length+1);
 		list[workEngineProviders.length]=workEngineProvider;
 		return new WorkProcessorImpl<>(workManager, list);
 	}
-
+	/** {@inheritDoc} */
+	public <WR1> WorkProcessor<WR1, W> then(final Class<? extends WorkEngine<WR1, WR>> clazz){
+		Assertion.checkNotNull(clazz);
+		//-----------------------------------------------------------------
+		return then(new WorkEngineProvider<>(clazz));
+	}
 	/** {@inheritDoc} */
 	public WR exec(final W input) {
 		Object result = input;

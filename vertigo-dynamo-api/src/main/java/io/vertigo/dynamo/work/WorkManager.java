@@ -63,5 +63,5 @@ public interface WorkManager extends Manager {
 	 * @param work Travail à exécuter
 	 * @param  workResultHandler Handler permettant un callback après exécution
 	 */
-	<WR, W> void schedule(final Callable<WR> callable, final WorkResultHandler<WR> workResultHandler);
+	<WR> void schedule(final Callable<WR> callable, final WorkResultHandler<WR> workResultHandler);
 }

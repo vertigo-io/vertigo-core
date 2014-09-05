@@ -114,12 +114,12 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		submit(workItem, Option.some(workResultHandler));
 	}
 
-	public <WR, W> void schedule(final Callable<WR> callable, final WorkResultHandler<WR> workResultHandler) {
+	public <WR> void schedule(final Callable<WR> callable, final WorkResultHandler<WR> workResultHandler) {
 		Assertion.checkNotNull(callable);
 		Assertion.checkNotNull(workResultHandler);
 		//---------------------------------------------------------------------
-		final WorkEngineProvider<WR, W> workEngineProvider = new WorkEngineProvider<>(new WorkEngine<WR, W>() {
-			public WR process(final W dummy) {
+		final WorkEngineProvider<WR, Void> workEngineProvider = new WorkEngineProvider<>(new WorkEngine<WR, Void>() {
+			public WR process(final Void dummy) {
 				try {
 					return callable.call();
 				} catch (final Exception e) {
@@ -128,7 +128,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 			}
 		});
 
-		final WorkItem<WR, W> workItem = new WorkItem<>(createWorkId(), null, workEngineProvider);
+		final WorkItem<WR, Void> workItem = new WorkItem<>(createWorkId(), null, workEngineProvider);
 		submit(workItem, Option.some(workResultHandler));
 	}
 
