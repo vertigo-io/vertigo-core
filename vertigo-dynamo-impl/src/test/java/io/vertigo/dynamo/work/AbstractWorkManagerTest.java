@@ -56,7 +56,9 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 		//	final DivideWork work = new DivideWork(10, 5);
 		final long result = workManager//
 				.createProcessor(new WorkEngineProvider<>(LengthWorkEngine.class))//
-				.add(new WorkEngineProvider<>(SquareWorkEngine.class)).add(new WorkEngineProvider<>(SquareWorkEngine.class)).exec("aa");
+				.then(SquareWorkEngine.class)//
+				.then(SquareWorkEngine.class)//
+				.exec("aa");
 		Assert.assertEquals(2 * 2 * 2 * 2L, result);
 	}
 
