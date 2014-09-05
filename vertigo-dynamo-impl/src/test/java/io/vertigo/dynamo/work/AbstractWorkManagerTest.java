@@ -35,7 +35,7 @@ import org.junit.Test;
  * @author pchretien
  */
 public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
-	private final long warmupTime = 400; //en fonction du mode de distribution la prise en compte d'une tache est plus ou moins longue. Pour les TU on estime à 2s
+	private final long warmupTime = 2000; //en fonction du mode de distribution la prise en compte d'une tache est plus ou moins longue. Pour les TU on estime à 2s
 	private static final int WORKER_COUNT = 5; //Doit correspondre au workerCount déclaré dans managers.xlm
 
 	@Inject
@@ -48,31 +48,32 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 	public void testProcess() {
 		final DivideWork work = new DivideWork(10, 5);
 		final long div = workManager.process(work, new WorkEngineProvider<>(DivideWorkEngine.class));
-		Assert.assertEquals(10L/5L, div);
+		Assert.assertEquals(10L / 5L, div);
 	}
+
 	@Test
 	public void testProcessor() {
-		final DivideWork work = new DivideWork(10, 5);
+		//	final DivideWork work = new DivideWork(10, 5);
 		final long result = workManager//
 				.createProcessor(new WorkEngineProvider<>(LengthWorkEngine.class))//
-				.add(new WorkEngineProvider<>(SquareWorkEngine.class))
-				.add(new WorkEngineProvider<>(SquareWorkEngine.class))
-				.exec("aa");
-		Assert.assertEquals(2*2*2*2L, result);
+				.add(new WorkEngineProvider<>(SquareWorkEngine.class)).add(new WorkEngineProvider<>(SquareWorkEngine.class)).exec("aa");
+		Assert.assertEquals(2 * 2 * 2 * 2L, result);
 	}
+
 	public static final class LengthWorkEngine implements WorkEngine<Long, String> {
 		/** {@inheritDoc} */
 		public Long process(final String work) {
-			return work.length()*1L;
+			return work.length() * 1L;
 		}
 	}
 
 	public static final class SquareWorkEngine implements WorkEngine<Long, Long> {
 		/** {@inheritDoc} */
 		public Long process(final Long work) {
-			return work.longValue()*work.longValue();
+			return work.longValue() * work.longValue();
 		}
 	}
+
 	//	public final class SquareWorkEngine implements WorkEngine<Long, Long> {
 	//		/** {@inheritDoc} */
 	//		public Long process(final Long work) {
@@ -153,6 +154,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 		//We are expecting a time out if we are waiting less than execution's time.
 		Assert.assertEquals(false, finished);
 	}
+
 	//=========================================================================
 	//=========================================================================
 	//=========================================================================
