@@ -42,7 +42,7 @@ import javax.inject.Named;
  */
 public final class RestWorkerPlugin implements WorkerPlugin {
 	private final List<String> workTypes;
-	private final RestQueueClient workQueueClient; //devrait etre un plugin
+	private final RestQueueClient restQueueClient; //devrait etre un plugin
 
 	/**
 	 * Constructeur.
@@ -58,7 +58,7 @@ public final class RestWorkerPlugin implements WorkerPlugin {
 		Assertion.checkArgNotEmpty(serverUrl);
 		//---------------------------------------------------------------------
 		this.workTypes = Arrays.asList(workTypes.trim().split(";"));
-		workQueueClient = new RestQueueClient(nodeId, serverUrl + "/workQueue", codecManager);
+		restQueueClient = new RestQueueClient(nodeId, serverUrl + "/workQueue", codecManager);
 	}
 
 	/** {@inheritDoc} */
@@ -73,16 +73,16 @@ public final class RestWorkerPlugin implements WorkerPlugin {
 
 	/** {@inheritDoc} */
 	public <WR, W> WorkItem<WR, W> pollWorkItem(final String workType, final int timeoutInSeconds) {
-		return workQueueClient.pollWorkItem(workType, timeoutInSeconds);
+		return restQueueClient.pollWorkItem(workType, timeoutInSeconds);
 	}
 
 	/** {@inheritDoc} */
 	public <WR> void putResult(final String workId, final WR result, final Throwable error) {
-		workQueueClient.putResult(workId, result, error);
+		restQueueClient.putResult(workId, result, error);
 	}
 
 	/** {@inheritDoc} */
 	public void putStart(final String workId) {
-		workQueueClient.putStart(workId);
+		restQueueClient.putStart(workId);
 	}
 }
