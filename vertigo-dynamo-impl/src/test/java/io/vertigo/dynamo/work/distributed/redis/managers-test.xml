@@ -1,6 +1,8 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <modules>
 	<module name="dynamo">
+	   <component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
+
 	    <component api="WorkManager" class="io.vertigo.dynamo.impl.work.WorkManagerImpl" >
 	            <param name="workerCount" value="5" />
 	            	<!-- ThreadLocal n'est pas executé en distribué -->

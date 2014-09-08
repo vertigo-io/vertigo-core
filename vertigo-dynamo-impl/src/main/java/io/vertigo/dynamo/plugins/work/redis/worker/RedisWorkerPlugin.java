@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.work.redis.worker;
 
+import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Activeable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
@@ -44,12 +45,13 @@ public final class RedisWorkerPlugin implements WorkerPlugin, Activeable {
 	private final RedisDB redisDB;
 
 	@Inject
-	public RedisWorkerPlugin(@Named("nodeId") final String nodeId, final @Named("workTypes") String workTypes, final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> password) {
+	public RedisWorkerPlugin(final CodecManager codecManager, @Named("nodeId") final String nodeId, final @Named("workTypes") String workTypes, final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> password) {
+		Assertion.checkNotNull(codecManager);
 		Assertion.checkArgNotEmpty(workTypes);
 		Assertion.checkArgNotEmpty(redisHost);
 		//---------------------------------------------------------------------
 		this.workTypes = Arrays.asList(workTypes.trim().split(";"));
-		redisDB = new RedisDB(redisHost, redisPort, password);
+		redisDB = new RedisDB(codecManager, redisHost, redisPort, password);
 	}
 
 	/** {@inheritDoc} */

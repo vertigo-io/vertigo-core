@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.work.redis.master;
 
+import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Activeable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
@@ -49,12 +50,13 @@ public final class RedisMasterPlugin implements MasterPlugin, Activeable {
 	private final Map<String, WorkResultHandler> workResultHandlers = Collections.synchronizedMap(new HashMap<String, WorkResultHandler>());
 
 	@Inject
-	public RedisMasterPlugin(final @Named("distributedWorkTypes") String distributedWorkTypes, final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> password, final @Named("timeoutSeconds") int timeoutSeconds) {
+	public RedisMasterPlugin(final CodecManager codecManager, final @Named("distributedWorkTypes") String distributedWorkTypes, final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> password, final @Named("timeoutSeconds") int timeoutSeconds) {
+		Assertion.checkNotNull(codecManager);
 		Assertion.checkArgNotEmpty(distributedWorkTypes);
 		Assertion.checkArgNotEmpty(redisHost);
 		//---------------------------------------------------------------------
 		this.distributedWorkTypes = Arrays.asList(distributedWorkTypes.split(";"));
-		redisDB = new RedisDB(redisHost, redisPort, password);
+		redisDB = new RedisDB(codecManager, redisHost, redisPort, password);
 		//		this.timeoutSeconds = timeoutSeconds;
 	}
 
@@ -66,7 +68,7 @@ public final class RedisMasterPlugin implements MasterPlugin, Activeable {
 	private <WR> void setResult(final String workId, final WR result, final Throwable error) {
 		Assertion.checkArgNotEmpty(workId);
 		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
-		//---------------------------------------------------------------------		
+		//---------------------------------------------------------------------
 		final WorkResultHandler workResultHandler = workResultHandlers.remove(workId);
 		if (workResultHandler != null) {
 			//Que faire sinon
@@ -74,6 +76,9 @@ public final class RedisMasterPlugin implements MasterPlugin, Activeable {
 		}
 	}
 
+	private RedisResult pollResult  (final int waitTimeSeconds){
+		return  redisDB.pollResult(waitTimeSeconds);
+	}
 	private Thread createWatcher() {
 		return new Thread() {
 			/** {@inheritDoc} */
@@ -82,7 +87,7 @@ public final class RedisMasterPlugin implements MasterPlugin, Activeable {
 				while (!Thread.interrupted()) {
 					//On attend le résultat (par tranches de 1s)
 					final int waitTimeSeconds = 1;
-					final RedisResult redisResult = redisDB.pollResult(waitTimeSeconds);
+					final RedisResult redisResult= pollResult(waitTimeSeconds);
 					if (redisResult != null) {
 						setResult(redisResult.workId, redisResult.result, redisResult.error);
 					}

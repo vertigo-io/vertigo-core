@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.work.distributed.redis;
 
+import io.vertigo.commons.impl.codec.CodecManagerImpl;
 import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.plugins.work.redis.RedisDB;
 import io.vertigo.dynamo.work.AbstractWorkManagerTest;
@@ -28,7 +29,7 @@ import io.vertigo.dynamo.work.AbstractWorkManagerTest;
 public class RedisWorkManagerTest extends AbstractWorkManagerTest {
 	@Override
 	protected void doSetUp() throws Exception {
-		final RedisDB redisDB = new RedisDB("localhost", 6379, Option.<String> none());
+		final RedisDB redisDB = new RedisDB(new CodecManagerImpl(), "localhost", 6379, Option.<String> none());
 		redisDB.start();
 		redisDB.reset();
 		redisDB.stop();

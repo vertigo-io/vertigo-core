@@ -1,7 +1,6 @@
 package io.vertigo.dynamo.plugins.work.redis;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.impl.codec.CodecManagerImpl;
 import io.vertigo.core.lang.Activeable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
@@ -27,11 +26,13 @@ import redis.clients.jedis.Transaction;
 public final class RedisDB implements Activeable {
 	private static final int timeout = 2000;
 	private final JedisPool jedisPool;
-
-	public RedisDB(final String redisHost, final int port, final Option<String> password) {
+	private final CodecManager codecManager;
+	public RedisDB(final CodecManager codecManager, final String redisHost, final int port, final Option<String> password) {
+		Assertion.checkNotNull(codecManager);
 		Assertion.checkArgNotEmpty(redisHost);
 		Assertion.checkNotNull(password);
 		//---------------------------------------------------------------------
+		this.codecManager = codecManager;
 		final JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 		//jedisPoolConfig.setMaxActive(10);
 		if (password.isDefined()) {
@@ -60,8 +61,6 @@ public final class RedisDB implements Activeable {
 			jedis.flushAll();
 		}
 	}
-
-	private static final CodecManager codecManager = new CodecManagerImpl();
 
 	public void putStart(final String workId) {
 		//Todo
@@ -168,11 +167,11 @@ public final class RedisDB implements Activeable {
 		}
 	}
 
-	private static String encode(final Object toEncode) {
+	private String encode(final Object toEncode) {
 		return codecManager.getBase64Codec().encode(codecManager.getSerializationCodec().encode((Serializable) toEncode));
 	}
 
-	private static Object decode(final String encoded) {
+	private Object decode(final String encoded) {
 		return codecManager.getSerializationCodec().decode(codecManager.getBase64Codec().decode(encoded));
 	}
 
