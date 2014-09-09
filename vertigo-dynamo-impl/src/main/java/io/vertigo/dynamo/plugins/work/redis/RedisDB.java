@@ -7,6 +7,7 @@ import io.vertigo.core.lang.Option;
 import io.vertigo.core.util.DateUtil;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.node.Node;
+import io.vertigo.dynamo.plugins.work.WResult;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 
 import java.io.Serializable;
@@ -27,6 +28,7 @@ public final class RedisDB implements Activeable {
 	private static final int timeout = 2000;
 	private final JedisPool jedisPool;
 	private final CodecManager codecManager;
+
 	public RedisDB(final CodecManager codecManager, final String redisHost, final int port, final Option<String> password) {
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkArgNotEmpty(redisHost);
@@ -126,7 +128,7 @@ public final class RedisDB implements Activeable {
 		}
 	}
 
-	public <WR> RedisResult<WR> pollResult(final int waitTimeSeconds) {
+	public <WR> WResult<WR> pollResult(final int waitTimeSeconds) {
 		try (final Jedis jedis = jedisPool.getResource()) {
 			final String workId = jedis.brpoplpush("works:done", "works:completed", waitTimeSeconds);
 			if (workId == null) {
@@ -138,7 +140,7 @@ public final class RedisDB implements Activeable {
 			final Throwable error = (Throwable) decode(jedis.hget("work:" + workId, "error"));
 			//et on détruit le work (ou bien on l'archive ???
 			jedis.del("work:" + workId);
-			return new RedisResult<>(workId, value, error);
+			return new WResult<>(workId, value, error);
 		}
 	}
 
@@ -149,7 +151,7 @@ public final class RedisDB implements Activeable {
 			jedis.lpush("nodes", node.getUID());
 			final Map<String, String> hash = new HashMap<>();
 			hash.put("id", node.getUID());
-			hash.put("active", node.isActive()?"true":"false");
+			hash.put("active", node.isActive() ? "true" : "false");
 			jedis.hmset("node:" + node.getUID(), hash);
 		}
 	}
@@ -158,7 +160,7 @@ public final class RedisDB implements Activeable {
 		try (Jedis jedis = jedisPool.getResource()) {
 			final List<Node> nodes = new ArrayList<>();
 
-			final List<String> nodeIds= jedis.lrange("nodes", -1, -1);
+			final List<String> nodeIds = jedis.lrange("nodes", -1, -1);
 			for (final String nodeId : nodeIds) {
 				final Map<String, String> hash = jedis.hgetAll(nodeId);
 				nodes.add(new Node(hash.get("id"), Boolean.valueOf(hash.get("active"))));
@@ -173,25 +175,6 @@ public final class RedisDB implements Activeable {
 
 	private Object decode(final String encoded) {
 		return codecManager.getSerializationCodec().decode(codecManager.getBase64Codec().decode(encoded));
-	}
-
-
-	/**
-	 * @author pchretien
-	 */
-	public static final class RedisResult<WR> {
-		public final String workId;
-		public final Throwable error;
-		public final WR result;
-
-		private RedisResult(final String workId, final WR result, final Throwable error) {
-			Assertion.checkArgNotEmpty(workId);
-			Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
-			//---------------------------------------------------------------------
-			this.workId = workId;
-			this.error = error;
-			this.result = result;
-		}
 	}
 
 }

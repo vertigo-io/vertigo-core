@@ -21,7 +21,7 @@ package io.vertigo.dynamo.plugins.work.rest.master;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.impl.work.WorkItem;
-import io.vertigo.dynamo.work.WorkResultHandler;
+import io.vertigo.dynamo.plugins.work.WResult;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -46,7 +46,6 @@ import com.google.gson.Gson;
 final class RestQueueServer {
 	//pas besoin de synchronized la map, car le obtain est le seul accès et est synchronized
 	private final Map<String, BlockingQueue<WorkItem<?, ?>>> workQueueMap = new HashMap<>();
-	private final Map<String, WorkResultHandler> workResultHandlers = Collections.synchronizedMap(new HashMap<String, WorkResultHandler>());
 
 	private static final Logger LOG = Logger.getLogger(RestQueueServer.class);
 
@@ -56,6 +55,7 @@ final class RestQueueServer {
 	private final Set<String> activeWorkTypes = Collections.synchronizedSet(new HashSet<String>());
 	//	private final Timer checkTimeOutTimer = new Timer("WorkQueueRestServerTimeoutCheck", true);
 	private final CodecManager codecManager;
+	private final BlockingQueue<WResult> resultQueue = new LinkedBlockingQueue<>();
 
 	//	private final long nodeTimeOut;
 
@@ -87,16 +87,6 @@ final class RestQueueServer {
 	//	public void stop() {
 	//		checkTimeOutTimer.cancel();
 	//	}
-	private <WR> void setResult(final String workId, final WR result, final Throwable error) {
-		Assertion.checkArgNotEmpty(workId);
-		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
-		//---------------------------------------------------------------------		
-		final WorkResultHandler workResultHandler = workResultHandlers.remove(workId);
-		if (workResultHandler != null) {
-			//Que faire sinon
-			workResultHandler.onDone(result, error);
-		}
-	}
 
 	/**
 	 * Signalement de vie d'un node, avec le type de work qu'il annonce.
@@ -150,8 +140,17 @@ final class RestQueueServer {
 		final Object value = codecManager.getCompressedSerializationCodec().decode(serializedResult);
 		final Object result = success ? value : null;
 		final Throwable error = (Throwable) (success ? null : value);
-		setResult(workId, result, error);
+		resultQueue.add(new WResult(workId, result, error));
 		//		runningWorkInfos.getWorkResultHandler().onDone(success, result, error);
+	}
+
+	WResult pollResult(final int waitTimeSeconds) {
+		try {
+			return resultQueue.poll(waitTimeSeconds, TimeUnit.SECONDS);
+		} catch (final InterruptedException e) {
+			Thread.currentThread().interrupt();
+			return null;
+		}
 	}
 
 	String getVersion() {
@@ -170,11 +169,6 @@ final class RestQueueServer {
 		}
 	}
 
-	<WR, W> void putWorkItem(final WorkItem<WR, W> workItem, final WorkResultHandler<WR> workResultHandler) {
-		putWorkItem(workItem);
-		workResultHandlers.put(workItem.getId(), workResultHandler);
-	}
-
 	/**
 	 * Ajoute un travail à faire.
 	 * @param <WR> Type du résultat
@@ -182,7 +176,7 @@ final class RestQueueServer {
 	 * @param workType Type du travail
 	 * @param workItem Work et WorkResultHandler
 	 */
-	private <WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {
+	<WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		//-------------------------------------------------------------------
 		try {

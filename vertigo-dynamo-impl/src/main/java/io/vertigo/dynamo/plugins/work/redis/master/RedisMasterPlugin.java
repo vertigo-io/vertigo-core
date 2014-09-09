@@ -19,20 +19,12 @@
 package io.vertigo.dynamo.plugins.work.redis.master;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.core.lang.Activeable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
-import io.vertigo.dynamo.impl.work.MasterPlugin;
 import io.vertigo.dynamo.impl.work.WorkItem;
+import io.vertigo.dynamo.plugins.work.AbstractMasterPlugin;
+import io.vertigo.dynamo.plugins.work.WResult;
 import io.vertigo.dynamo.plugins.work.redis.RedisDB;
-import io.vertigo.dynamo.plugins.work.redis.RedisDB.RedisResult;
-import io.vertigo.dynamo.work.WorkResultHandler;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -43,84 +35,39 @@ import javax.inject.Named;
  * 
  * @author pchretien
  */
-public final class RedisMasterPlugin implements MasterPlugin, Activeable {
+public final class RedisMasterPlugin extends AbstractMasterPlugin {
 	private final RedisDB redisDB;
-	private Thread redisWatcher;
-	private final List<String> distributedWorkTypes;
-	private final Map<String, WorkResultHandler> workResultHandlers = Collections.synchronizedMap(new HashMap<String, WorkResultHandler>());
 
 	@Inject
 	public RedisMasterPlugin(final CodecManager codecManager, final @Named("distributedWorkTypes") String distributedWorkTypes, final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> password, final @Named("timeoutSeconds") int timeoutSeconds) {
+		super(distributedWorkTypes);
 		Assertion.checkNotNull(codecManager);
-		Assertion.checkArgNotEmpty(distributedWorkTypes);
 		Assertion.checkArgNotEmpty(redisHost);
 		//---------------------------------------------------------------------
-		this.distributedWorkTypes = Arrays.asList(distributedWorkTypes.split(";"));
 		redisDB = new RedisDB(codecManager, redisHost, redisPort, password);
 		//		this.timeoutSeconds = timeoutSeconds;
 	}
 
 	/** {@inheritDoc} */
-	public List<String> acceptedWorkTypes() {
-		return distributedWorkTypes;
-	}
-
-	private <WR> void setResult(final String workId, final WR result, final Throwable error) {
-		Assertion.checkArgNotEmpty(workId);
-		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
-		//---------------------------------------------------------------------
-		final WorkResultHandler workResultHandler = workResultHandlers.remove(workId);
-		if (workResultHandler != null) {
-			//Que faire sinon
-			workResultHandler.onDone(result, error);
-		}
-	}
-
-	private RedisResult pollResult  (final int waitTimeSeconds){
-		return  redisDB.pollResult(waitTimeSeconds);
-	}
-	private Thread createWatcher() {
-		return new Thread() {
-			/** {@inheritDoc} */
-			@Override
-			public void run() {
-				while (!Thread.interrupted()) {
-					//On attend le résultat (par tranches de 1s)
-					final int waitTimeSeconds = 1;
-					final RedisResult redisResult= pollResult(waitTimeSeconds);
-					if (redisResult != null) {
-						setResult(redisResult.workId, redisResult.result, redisResult.error);
-					}
-				}
-			}
-		};
+	public WResult pollResult(final int waitTimeSeconds) {
+		return redisDB.pollResult(waitTimeSeconds);
 	}
 
 	/** {@inheritDoc} */
-	public void start() {
-		redisWatcher = createWatcher();
-
+	@Override
+	protected void doStart() {
 		redisDB.start();
-		redisWatcher.start();
 	}
 
 	/** {@inheritDoc} */
-	public void stop() {
-		if (redisWatcher != null) {
-			redisWatcher.interrupt();
-			try {
-				redisWatcher.join();
-			} catch (final InterruptedException e) {
-				//On ne fait rien
-			}
-		}
-		//---
+	@Override
+	protected void doStop() {
 		redisDB.stop();
 	}
 
 	/** {@inheritDoc} */
-	public <WR, W> void putWorkItem(final WorkItem<WR, W> workItem, final WorkResultHandler<WR> workResultHandler) {
+	@Override
+	protected <WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {
 		redisDB.putWorkItem(workItem);
-		workResultHandlers.put(workItem.getId(), workResultHandler);
 	}
 }

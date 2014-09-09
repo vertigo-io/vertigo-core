@@ -20,12 +20,9 @@ package io.vertigo.dynamo.plugins.work.rest.master;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.impl.work.MasterPlugin;
 import io.vertigo.dynamo.impl.work.WorkItem;
-import io.vertigo.dynamo.work.WorkResultHandler;
-
-import java.util.Arrays;
-import java.util.List;
+import io.vertigo.dynamo.plugins.work.AbstractMasterPlugin;
+import io.vertigo.dynamo.plugins.work.WResult;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -35,10 +32,8 @@ import javax.inject.Named;
  * 
  * @author npiedeloup, pchretien
  */
-public final class RestMasterPlugin implements MasterPlugin {
-	//	private final long timeoutSeconds;
+public final class RestMasterPlugin extends AbstractMasterPlugin {
 	private final RestQueueServer workQueueRestServer;
-	private final List<String> distributedWorkTypes;
 
 	/**
 	 * Constructeur.
@@ -48,24 +43,35 @@ public final class RestMasterPlugin implements MasterPlugin {
 	 */
 	@Inject
 	public RestMasterPlugin(final @Named("distributedWorkTypes") String distributedWorkTypes, @Named("timeoutSeconds") final long timeoutSeconds, final CodecManager codecManager) {
-		Assertion.checkArgNotEmpty(distributedWorkTypes);
+		super(distributedWorkTypes);
 		Assertion.checkArgument(timeoutSeconds < 10000, "Le timeout s'exprime en seconde.");
 		//---------------------------------------------------------------------
 		//	this.timeoutSeconds = timeoutSeconds;
-		this.distributedWorkTypes = Arrays.asList(distributedWorkTypes.split(";"));
 		workQueueRestServer = new RestQueueServer(20 * 1000, codecManager);
-	}
-
-	/** {@inheritDoc} */
-	public List<String> acceptedWorkTypes() {
-		return distributedWorkTypes;
 	}
 
 	RestQueueServer getWorkQueueRestServer() {
 		return workQueueRestServer;
 	}
 
-	public <WR, W> void putWorkItem(final WorkItem<WR, W> workItem, final WorkResultHandler<WR> workResultHandler) {
-		getWorkQueueRestServer().putWorkItem(workItem, workResultHandler);
+	/** {@inheritDoc} */
+	public WResult pollResult(final int waitTimeSeconds) {
+		return getWorkQueueRestServer().pollResult(waitTimeSeconds);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {
+		getWorkQueueRestServer().putWorkItem(workItem);
+	}
+
+	@Override
+	protected void doStart() {
+		//
+	}
+
+	@Override
+	protected void doStop() {
+		//
 	}
 }
