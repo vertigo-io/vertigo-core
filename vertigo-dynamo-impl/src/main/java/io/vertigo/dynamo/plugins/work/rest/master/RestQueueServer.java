@@ -20,8 +20,8 @@ package io.vertigo.dynamo.plugins.work.rest.master;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.dynamo.impl.work.WorkResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
-import io.vertigo.dynamo.plugins.work.WResult;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -55,7 +55,7 @@ final class RestQueueServer {
 	private final Set<String> activeWorkTypes = Collections.synchronizedSet(new HashSet<String>());
 	//	private final Timer checkTimeOutTimer = new Timer("WorkQueueRestServerTimeoutCheck", true);
 	private final CodecManager codecManager;
-	private final BlockingQueue<WResult> resultQueue = new LinkedBlockingQueue<>();
+	private final BlockingQueue<WorkResult> resultQueue = new LinkedBlockingQueue<>();
 
 	//	private final long nodeTimeOut;
 
@@ -140,11 +140,11 @@ final class RestQueueServer {
 		final Object value = codecManager.getCompressedSerializationCodec().decode(serializedResult);
 		final Object result = success ? value : null;
 		final Throwable error = (Throwable) (success ? null : value);
-		resultQueue.add(new WResult(workId, result, error));
+		resultQueue.add(new WorkResult(workId, result, error));
 		//		runningWorkInfos.getWorkResultHandler().onDone(success, result, error);
 	}
 
-	WResult pollResult(final int waitTimeSeconds) {
+	WorkResult pollResult(final int waitTimeSeconds) {
 		try {
 			return resultQueue.poll(waitTimeSeconds, TimeUnit.SECONDS);
 		} catch (final InterruptedException e) {

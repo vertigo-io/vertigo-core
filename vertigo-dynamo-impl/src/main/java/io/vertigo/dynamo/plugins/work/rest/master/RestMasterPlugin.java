@@ -21,8 +21,8 @@ package io.vertigo.dynamo.plugins.work.rest.master;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.impl.work.MasterPlugin;
+import io.vertigo.dynamo.impl.work.WorkResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
-import io.vertigo.dynamo.plugins.work.WResult;
 
 import java.util.Arrays;
 import java.util.List;
@@ -65,7 +65,7 @@ public final class RestMasterPlugin implements MasterPlugin {
 	}
 
 	/** {@inheritDoc} */
-	public WResult pollResult(final int waitTimeSeconds) {
+	public WorkResult pollResult(final int waitTimeSeconds) {
 		return getWorkQueueRestServer().pollResult(waitTimeSeconds);
 	}
 

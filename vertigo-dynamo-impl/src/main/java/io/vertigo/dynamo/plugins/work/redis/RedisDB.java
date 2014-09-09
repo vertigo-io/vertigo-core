@@ -5,9 +5,9 @@ import io.vertigo.core.lang.Activeable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
 import io.vertigo.core.util.DateUtil;
+import io.vertigo.dynamo.impl.work.WorkResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.node.Node;
-import io.vertigo.dynamo.plugins.work.WResult;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 
 import java.io.Serializable;
@@ -128,7 +128,7 @@ public final class RedisDB implements Activeable {
 		}
 	}
 
-	public <WR> WResult<WR> pollResult(final int waitTimeSeconds) {
+	public <WR> WorkResult<WR> pollResult(final int waitTimeSeconds) {
 		try (final Jedis jedis = jedisPool.getResource()) {
 			final String workId = jedis.brpoplpush("works:done", "works:completed", waitTimeSeconds);
 			if (workId == null) {
@@ -140,7 +140,7 @@ public final class RedisDB implements Activeable {
 			final Throwable error = (Throwable) decode(jedis.hget("work:" + workId, "error"));
 			//et on détruit le work (ou bien on l'archive ???
 			jedis.del("work:" + workId);
-			return new WResult<>(workId, value, error);
+			return new WorkResult<>(workId, value, error);
 		}
 	}
 

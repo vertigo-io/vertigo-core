@@ -23,8 +23,8 @@ import io.vertigo.core.lang.Activeable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.impl.work.MasterPlugin;
+import io.vertigo.dynamo.impl.work.WorkResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
-import io.vertigo.dynamo.plugins.work.WResult;
 import io.vertigo.dynamo.plugins.work.redis.RedisDB;
 
 import java.util.Arrays;
@@ -71,7 +71,7 @@ public final class RedisMasterPlugin implements MasterPlugin, Activeable {
 	}
 
 	/** {@inheritDoc} */
-	public WResult pollResult(final int waitTimeSeconds) {
+	public WorkResult pollResult(final int waitTimeSeconds) {
 		return redisDB.pollResult(waitTimeSeconds);
 	}
 
