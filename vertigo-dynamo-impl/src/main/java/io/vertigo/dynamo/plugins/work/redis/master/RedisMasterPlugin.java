@@ -19,12 +19,16 @@
 package io.vertigo.dynamo.plugins.work.redis.master;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.core.lang.Activeable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
+import io.vertigo.dynamo.impl.work.MasterPlugin;
 import io.vertigo.dynamo.impl.work.WorkItem;
-import io.vertigo.dynamo.plugins.work.AbstractMasterPlugin;
 import io.vertigo.dynamo.plugins.work.WResult;
 import io.vertigo.dynamo.plugins.work.redis.RedisDB;
+
+import java.util.Arrays;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -35,17 +39,35 @@ import javax.inject.Named;
  * 
  * @author pchretien
  */
-public final class RedisMasterPlugin extends AbstractMasterPlugin {
+public final class RedisMasterPlugin implements MasterPlugin, Activeable {
 	private final RedisDB redisDB;
+	private final List<String> distributedWorkTypes;
 
 	@Inject
 	public RedisMasterPlugin(final CodecManager codecManager, final @Named("distributedWorkTypes") String distributedWorkTypes, final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> password, final @Named("timeoutSeconds") int timeoutSeconds) {
-		super(distributedWorkTypes);
+		Assertion.checkArgNotEmpty(distributedWorkTypes);
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkArgNotEmpty(redisHost);
 		//---------------------------------------------------------------------
+		this.distributedWorkTypes = Arrays.asList(distributedWorkTypes.split(";"));
 		redisDB = new RedisDB(codecManager, redisHost, redisPort, password);
 		//		this.timeoutSeconds = timeoutSeconds;
+	}
+
+	/** {@inheritDoc} */
+	public void start() {
+		redisDB.start();
+	}
+
+	/** {@inheritDoc} */
+	public void stop() {
+		redisDB.stop();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<String> acceptedWorkTypes() {
+		return distributedWorkTypes;
 	}
 
 	/** {@inheritDoc} */
@@ -54,20 +76,7 @@ public final class RedisMasterPlugin extends AbstractMasterPlugin {
 	}
 
 	/** {@inheritDoc} */
-	@Override
-	protected void doStart() {
-		redisDB.start();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	protected void doStop() {
-		redisDB.stop();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	protected <WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {
+	public <WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {
 		redisDB.putWorkItem(workItem);
 	}
 }

@@ -68,18 +68,22 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	public void start() {
 		//coordinator n'étant pas un plugin
 		//il faut le démarrer et l'arréter explicitement.
+		if (distributedCoordinator.isDefined()) {
+			distributedCoordinator.get().start();
+		}
 	}
 
 	/** {@inheritDoc} */
 	public void stop() {
+		if (distributedCoordinator.isDefined()) {
+			distributedCoordinator.get().stop();
+		}
 		localCoordinator.close();
 	}
 
 	private static String createWorkId() {
 		return UUID.randomUUID().toString();
 	}
-
-
 
 	/** {@inheritDoc} */
 	public <WR, W> WorkProcessor<WR, W> createProcessor(final WorkEngineProvider<WR, W> workEngineProvider) {

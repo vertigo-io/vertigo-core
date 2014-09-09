@@ -20,7 +20,6 @@ package io.vertigo.dynamo.impl.work;
 
 import io.vertigo.core.component.Plugin;
 import io.vertigo.dynamo.plugins.work.WResult;
-import io.vertigo.dynamo.work.WorkResultHandler;
 
 import java.util.List;
 
@@ -32,7 +31,7 @@ import java.util.List;
  * @author npiedeloup, pchretien
  */
 public interface MasterPlugin extends Plugin {
-	<WR, W> void putWorkItem(final WorkItem<WR, W> workItem, WorkResultHandler<WR> workResultHandler);
+	<WR, W> void putWorkItem(final WorkItem<WR, W> workItem);
 
 	WResult pollResult(final int waitTimeSeconds);
 
