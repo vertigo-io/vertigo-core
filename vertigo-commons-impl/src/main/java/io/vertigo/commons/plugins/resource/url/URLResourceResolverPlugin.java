@@ -22,6 +22,8 @@ import io.vertigo.commons.impl.resource.ResourceResolverPlugin;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -37,9 +39,18 @@ public final class URLResourceResolverPlugin implements ResourceResolverPlugin {
 		Assertion.checkNotNull(resource);
 		// ---------------------------------------------------------------------
 		try {
-			return Option.some(new URL(resource));
+			final URL url = new URL(resource);
+			return checkUrlAvailable(url) ? Option.some(url) : Option.<URL> none();
 		} catch (final MalformedURLException e) {
 			return Option.none();
+		}
+	}
+
+	private boolean checkUrlAvailable(final URL url) {
+		try (InputStream is = url.openStream()) {
+			return is.read() > 0;
+		} catch (final IOException e) {
+			return false;
 		}
 	}
 }
