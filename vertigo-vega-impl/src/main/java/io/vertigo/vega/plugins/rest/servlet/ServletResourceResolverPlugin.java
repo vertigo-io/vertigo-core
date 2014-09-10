@@ -61,7 +61,7 @@ public final class ServletResourceResolverPlugin implements ResourceResolverPlug
 		// ---------------------------------------------------------------------
 		// 2. On recherche dans le context de la webapp
 		try {
-			return Option.some(servletContext.getResource(resource));
+			return Option.option(servletContext.getResource(resource)); //null if not found
 		} catch (final MalformedURLException e) {
 			return Option.none();
 		}
