@@ -50,6 +50,8 @@ limitations under the License. -->
 		<module>vertigo-vega-api</module>
 		<module>vertigo-vega-impl</module>
 
+		<module>vertigo-struts2</module>
+		
 		<module>vertigo-studio</module>
 
 		<module>vertigo-ccc</module>

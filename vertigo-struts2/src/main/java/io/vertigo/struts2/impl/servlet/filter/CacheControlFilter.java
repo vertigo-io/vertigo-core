@@ -1,0 +1,80 @@
+package io.vertigo.struts2.impl.servlet.filter;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Implémentation de javax.servlet.Filter utilisée pour contr�ler la mise en cache dans le navigateur client.
+ * <br>Note : Une "limitation de la sécurité" de MSIE 5.5 (bug non présent dans Firefox) n'accepte
+ * ni Cache-Control=no-cache, ni Pragma=no-cache en SSL sur les t�l�chargements de fichiers pdf, doc, xls, xml :
+ * remplacer Cache-Control=no-cache par max-age=1.
+ * @author Emeric Vernat
+ */
+public final class CacheControlFilter extends AbstractFilter {
+
+	private Map<String, String> headers;
+
+	/** {@inheritDoc} */
+	@Override
+	public void doInit() {
+		final FilterConfig filterConfig = getFilterConfig();
+		if (filterConfig != null) {
+			final Map<String, String> tmp = new HashMap<>();
+			String name;
+			String value;
+			for (final Enumeration en = filterConfig.getInitParameterNames(); en.hasMoreElements();) {
+				name = (String) en.nextElement();
+				if (!EXCLUDE_PATTERN_PARAM_NAME.equals(name)) {
+					value = filterConfig.getInitParameter(name);
+					tmp.put(name, value);
+				}
+			}
+			headers = Collections.unmodifiableMap(tmp);
+		}
+	}
+
+	/**
+	 * La méthode doMyFilter est appelée par le container chaque fois qu'une paire requête/réponse passe à travers
+	 * la chaîne suite à une requête d'un client pour une ressource au bout de la chaîne.
+	 * L'instance de FilterChain pass�e dans cette méthode permet au filtre de passer la requête et la réponse
+	 * à l'entité suivante dans la chaîne.
+	 *
+	 * Cette implémentation ajoute en headers http les paramètres d'initialisation définit dans la configuration
+	 * du filtre (voir configuration de la webapp). Typiquement, cela permet d'ajouter des headers pour contr�ler
+	 * la mise en cache sur le navigateur client en fonction du type de contenu demandé. Par exemple :
+	 * "Cache-Control: no-cache" ou "Cache-Control: max-age=3600" suivant l'instance de filtre.
+	 *
+	 * @param req javax.servlet.ServletRequest
+	 * @param res javax.servlet.ServletResponse
+	 * @param chain javax.servlet.FilterChain
+	 * @throws java.io.IOException   Si une erreur d'entrée/sortie survient
+	 * @throws javax.servlet.ServletException   Si une erreur de servlet survient
+	 */
+	@Override
+	public void doMyFilter(final ServletRequest req, final ServletResponse res, final FilterChain chain) throws IOException, ServletException {
+		if (!(req instanceof HttpServletRequest) || !(res instanceof HttpServletResponse) || headers.isEmpty() || "POST".equals(((HttpServletRequest) req).getMethod())) {
+			chain.doFilter(req, res);
+			return;
+		}
+
+		final HttpServletRequest httpRequest = (HttpServletRequest) req;
+		final HttpServletResponse httpResponse = (HttpServletResponse) res;
+
+		for (final Map.Entry entry : headers.entrySet()) {
+			httpResponse.setHeader((String) entry.getKey(), (String) entry.getValue());
+		}
+
+		chain.doFilter(httpRequest, httpResponse);
+	}
+}

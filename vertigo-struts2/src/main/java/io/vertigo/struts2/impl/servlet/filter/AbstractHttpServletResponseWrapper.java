@@ -1,0 +1,173 @@
+package io.vertigo.struts2.impl.servlet.filter;
+
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Implémentation de HttpServletResponseWrapper pour éviter warnings à la compilation.
+ * @author Emeric Vernat
+ */
+abstract class AbstractHttpServletResponseWrapper extends javax.servlet.http.HttpServletResponseWrapper {
+	private ServletOutputStream stream;
+	private PrintWriter writer;
+	private final HttpServletResponse response;
+	private int status;
+
+	/**
+	 * Constructeur.
+	 * @param response javax.servlet.HttpServletResponse
+	 */
+	protected AbstractHttpServletResponseWrapper(final HttpServletResponse response) {
+		super(response);
+		this.response = response;
+	}
+
+	protected final ServletOutputStream getStream() {
+		return stream;
+	}
+
+	protected final void close() throws IOException {
+		if (writer != null) {
+			writer.close();
+		} else if (stream != null) {
+			stream.close();
+		}
+	}
+
+	/**
+	 * Surcharge de addHeader pour fixer le header même si la réponse est incluse (contrairement à tomcat).
+	 * @param name String
+	 * @param value String
+	 */
+	@Override
+	public final void addHeader(final String name, final String value) {
+		// nécessaire pour header gzip du filtre de compression
+		response.addHeader(name, value);
+	}
+
+	/**
+	 * Surcharge de setHeader pour fixer le header même si la réponse est incluse (contrairement à tomcat).
+	 * @param name String
+	 * @param value String
+	 */
+	@Override
+	public final void setHeader(final String name, final String value) {
+		response.setHeader(name, value);
+	}
+
+	/**
+	 * Retourne le status définit par setStatus ou sendError.
+	 * @return int
+	 */
+	public final int getStatus() {
+		return status;
+	}
+
+	/**
+	 * Définit le status de la réponse http (SC_OK, SC_NOT_FOUND, SC_INTERNAL_SERVER_ERROR ...).
+	 * @param status int
+	 */
+	@Override
+	public final void setStatus(final int status) {
+		super.setStatus(status);
+		this.status = status;
+	}
+
+	/**
+	 * Envoie une erreur comme réponse http (SC_OK, SC_NOT_FOUND, SC_INTERNAL_SERVER_ERROR ...).
+	 * @param error int
+	 * @throws IOException   Exception d'entrée/sortie
+	 */
+	@Override
+	public final void sendError(final int error) throws IOException {
+		super.sendError(error);
+		status = error;
+	}
+
+	/**
+	 * Crée et retourne un ServletOutputStream pour �crire le contenu dans la response associée.
+	 * @return javax.servlet.ServletOutputStream
+	 * @throws java.io.IOException   Erreur d'entrée/sortie
+	 */
+	public abstract ServletOutputStream createOutputStream() throws IOException;
+
+	/**
+	 * Retourne le servlet output stream associé avec cette response.
+	 * @return javax.servlet.ServletOutputStream
+	 * @throws java.io.IOException   Erreur d'entrée/sortie
+	 */
+	@Override
+	public final ServletOutputStream getOutputStream() throws IOException {
+		if (writer != null) {
+			throw new IllegalStateException("getWriter() has already been called for this response");
+		}
+
+		if (stream == null) {
+			stream = createOutputStream();
+		}
+		return stream;
+	}
+
+	/**
+	 * Retourne le writer associé avec cette response.
+	 * @return java.io.PrintWriter
+	 * @throws java.io.IOException   Erreur d'entrée/sortie
+	 */
+	@Override
+	public final PrintWriter getWriter() throws IOException {
+		if (stream != null) {
+			throw new IllegalStateException("getOutputStream() has already been called for this response");
+		}
+		if (writer == null) {
+			final ServletOutputStream outputStream = getOutputStream();
+			final String charEnc = getResponse().getCharacterEncoding();
+			// HttpServletResponse.getCharacterEncoding() shouldn't return null
+			// according the spec, so feel free to remove that "if"
+			final PrintWriter result;
+			if (charEnc != null) {
+				result = new PrintWriter(new OutputStreamWriter(outputStream, charEnc));
+			} else {
+				result = new PrintWriter(outputStream);
+			}
+			writer = result;
+		}
+		return writer;
+	}
+
+	/**
+	 * Flushe le buffer et commite la response.
+	 * @throws java.io.IOException   Erreur d'entrée/sortie
+	 */
+	@Override
+	public final void flushBuffer() throws IOException {
+		if (writer != null) { //NOPMD
+			writer.flush();
+		} else if (stream != null) {
+			stream.flush();
+		}
+	}
+
+	/**
+	 * Définit la longueur du corps du contenu dans la réponse.
+	 * Dans les servlets http, cette méthode définit le Content-Length dans les headers HTTP.
+	 * @param length int
+	 */
+	@Override
+	public void setContentLength(final int length) {
+		getResponse().setContentLength(length);
+	}
+
+	/**
+	 * Définit le type du contenu dans la réponse.
+	 * Dans les servlets http, cette méthode définit le Content-Type dans les headers HTTP.
+	 * @param type String
+	 */
+	@Override
+	public final void setContentType(final String type) {
+		getResponse().setContentType(type);
+	}
+}
