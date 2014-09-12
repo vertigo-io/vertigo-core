@@ -63,6 +63,9 @@ Push your apps to others.
 
 * __rest__ : Add a rest access to your application. Mainly oriented for production-ready Single-Page-Application. And production's security ready.
 
+##vertigo-struts2
+Bridge to use vertigo for Struts2 applications.
+
 
 ##vertigo-tempo
 Manage, execute and supervize background operations and communications.
