@@ -146,8 +146,8 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 
 	private void generateJsDtDefinitions(final DomainConfiguration domainConfiguration, final Result result) {
 
-		List<TemplateDtDefinition> dtDefinitions = new ArrayList<>();
-		for (DtDefinition dtDefinition : getDtDefinitions()) {
+		final List<TemplateDtDefinition> dtDefinitions = new ArrayList<>();
+		for (final DtDefinition dtDefinition : getDtDefinitions()) {
 			dtDefinitions.add(new TemplateDtDefinition(dtDefinition));
 		}
 
@@ -207,7 +207,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 
 	private void generateSql(final DomainConfiguration domainConfiguration, final Result result) {
 		final List<TemplateDtDefinition> list = new ArrayList<>(getDtDefinitions().size());
-		for (DtDefinition dtDefinition : sortAbsoluteDefinitionCollection(getDtDefinitions())) {
+		for (final DtDefinition dtDefinition : sortAbsoluteDefinitionCollection(getDtDefinitions())) {
 			final TemplateDtDefinition templateDef = new TemplateDtDefinition(dtDefinition);
 			list.add(templateDef);
 		}
@@ -217,6 +217,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 		mapRoot.put("associations", getAssociations());
 		mapRoot.put("drop", generateDrop);
 		mapRoot.put("basecible", baseCible); // Ne sert actuellement à rien, le sql généré étant le même. Prévu pour le futur
+		mapRoot.put("truncateNames", baseCible == "Oracle"); // Oracle limite le nom des entités (index) à 30 charactères. Il faut alors tronquer les noms composés.
 		final FileGenerator super2java = getFileGenerator(domainConfiguration, mapRoot, "crebas", "sqlgen", ".sql", "sql.ftl");
 		super2java.generateFile(result, true);
 	}
