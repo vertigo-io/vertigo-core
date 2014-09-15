@@ -21,8 +21,8 @@ package io.vertigo.dynamo.plugins.work.rest.master;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.impl.work.MasterPlugin;
-import io.vertigo.dynamo.impl.work.WorkResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
+import io.vertigo.dynamo.impl.work.WorkResult;
 
 import java.util.Arrays;
 import java.util.List;
@@ -52,7 +52,7 @@ public final class RestMasterPlugin implements MasterPlugin {
 		//---------------------------------------------------------------------
 		this.distributedWorkTypes = Arrays.asList(distributedWorkTypes.split(";"));
 		//	this.timeoutSeconds = timeoutSeconds;
-		restQueueRestServer = new RestQueueServer(20 * 1000, codecManager);
+		restQueueRestServer = new RestQueueServer(20, codecManager, 5);
 	}
 
 	/** {@inheritDoc} */

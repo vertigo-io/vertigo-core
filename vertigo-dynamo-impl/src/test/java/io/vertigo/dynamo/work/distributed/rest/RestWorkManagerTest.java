@@ -70,7 +70,6 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 		httpServer = startServer();
 		Thread.sleep(500);
 		clientNode = startClientNode();
-
 		System.out.println(String.format("Jersey app started with WADL available at " + "%sapplication.wadl", BASE_URI));
 	}
 
@@ -80,16 +79,20 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 	 */
 	@Override
 	protected void doTearDown() throws Exception {
-		Thread.sleep(1000);
-		if (clientNode != null) {
-			System.out.println("Stoping ClientNode...");
-			clientNode.stop();
-		}
-		Thread.sleep(250);
 		if (httpServer != null) {
-			System.out.println("Stoping grizzly...");
-			httpServer.stop();
+			System.out.println("Stopping grizzly...");
+			httpServer.stop(); //TODO this stop don't interrupt handler threads. check with an 2.3.x grizzly version 
+			httpServer = null;
+			/*for (final Thread thread : Thread.getAllStackTraces().keySet()) {
+				if (thread.getName().contains("Grizzly")) {
+					thread.interrupt();
+				}
+			}*/
 		}
-
+		if (clientNode != null) {
+			System.out.println("Stopping ClientNode...");
+			clientNode.stop();
+			clientNode = null;
+		}
 	}
 }

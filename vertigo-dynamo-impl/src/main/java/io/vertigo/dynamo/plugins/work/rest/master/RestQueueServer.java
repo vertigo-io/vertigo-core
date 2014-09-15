@@ -20,8 +20,8 @@ package io.vertigo.dynamo.plugins.work.rest.master;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.impl.work.WorkResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
+import io.vertigo.dynamo.impl.work.WorkResult;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -58,17 +58,20 @@ final class RestQueueServer {
 	private final BlockingQueue<WorkResult> resultQueue = new LinkedBlockingQueue<>();
 
 	//	private final long nodeTimeOut;
+	private final int pullTimeoutSec;
 
 	/**
 	 * Constructeur.
 	 * @param queue MultipleWorkQueues
-	 * @param nodeTimeOut Timeout avant de considérer un noeud comme mort
+	 * @param nodeTimeOutSec Timeout (secondes) avant de considérer un noeud comme mort
 	 * @param codecManager Manager de codec
+	 * @param pullTimeoutSec Timeout (secondes) utilisé lors des long pull
 	 */
-	public RestQueueServer(final long nodeTimeOut, final CodecManager codecManager) {
+	public RestQueueServer(final int nodeTimeOutSec, final CodecManager codecManager, final int pullTimeoutSec) {
 		Assertion.checkNotNull(codecManager);
 		//---------------------------------------------------------------------
 		//	this.nodeTimeOut = nodeTimeOut;
+		this.pullTimeoutSec = pullTimeoutSec;
 		this.codecManager = codecManager;
 	}
 
@@ -105,7 +108,7 @@ final class RestQueueServer {
 	String pollWork(final String workType, final String nodeId) {
 		//---------------------------------------------------------------------
 		touchNode(nodeId, workType);
-		final WorkItem workItem = pollWorkItem(workType, 10);
+		final WorkItem workItem = pollWorkItem(workType, pullTimeoutSec);
 		final String json;
 		if (workItem != null) {
 			//			final UUID uuid = UUID.randomUUID();
@@ -157,11 +160,11 @@ final class RestQueueServer {
 		return "1.0.0";
 	}
 
-	private WorkItem<?, ?> pollWorkItem(final String workType, final int timeoutInSeconds) {
+	private WorkItem<?, ?> pollWorkItem(final String workType, final int pullTimeoutInSeconds) {
 		try {
 			//take attend qu'un élément soit disponible toutes les secondes.
 			//Poll attend (1s) qu'un élément soit disponible et sinon renvoit null
-			final WorkItem<?, ?> workItem = obtainWorkQueue(workType).poll(timeoutInSeconds, TimeUnit.SECONDS);
+			final WorkItem<?, ?> workItem = obtainWorkQueue(workType).poll(pullTimeoutInSeconds, TimeUnit.SECONDS);
 			return workItem;
 		} catch (final InterruptedException e) {
 			//dans le cas d'une interruption on arrête de dépiler

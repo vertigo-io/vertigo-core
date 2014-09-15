@@ -73,7 +73,8 @@ final class ClientNode {
 
 	public void stop() throws InterruptedException {
 		nodeProcess.destroy();
-		Thread.sleep(250);
+		nodeProcess.waitFor();
+		System.out.println("ClientNode stopped");
 		for (final Thread subThread : subThreads) {
 			subThread.interrupt();
 		}

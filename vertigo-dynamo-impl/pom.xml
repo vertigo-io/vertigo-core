@@ -70,13 +70,13 @@
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
-			<version>4.9.0</version>
+			<version>4.10.0</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-analyzers-common</artifactId>
-			<version>4.9.0</version>
+			<version>4.10.0</version>
 			<optional>true</optional>
 		</dependency>
 
@@ -90,13 +90,13 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>4.3.1.Final</version>
+			<version>4.3.6.Final</version>
 			<optional>true</optional> <!-- HibernateConnectionProviderPlugin -->
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-			<version>4.3.1.Final</version>
+			<version>4.3.6.Final</version>
 			<scope>test</scope>
 		</dependency>
 		<!--script -->
@@ -111,7 +111,7 @@
 		<dependency>
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-solrj</artifactId>
-			<version>4.9.0</version>
+			<version>4.10.0</version>
 			<optional>true</optional><!-- plugins.solr -->
 		</dependency>
 		<!-- Because solr does not manage her own dependencies properly -->
@@ -132,22 +132,22 @@
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-client</artifactId>
-			<version>1.17.1</version>
+			<version>1.18.1</version>
 			<optional>true</optional> <!-- REST DistributedWork impl -->
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-server</artifactId>
-			<version>1.17.1</version>
+			<version>1.18.1</version>
 			<optional>true</optional> <!-- REST DistributedWork impl  -->
 		</dependency>
 		<dependency>
-			<groupId>com.sun.jersey</groupId> <!-- REST DistributedWork impl  -->
-			<artifactId>jersey-grizzly2</artifactId>
-			<version>1.17.1</version>
+			<groupId>com.sun.jersey</groupId> 
+			<artifactId>jersey-grizzly2</artifactId> <!-- REST DistributedWork test  -->
+			<version>1.18.1</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- /REST DistributedWork impl  -->
+		<!-- REST DistributedWork test  -->
 		<dependency>
 		    <groupId>redis.clients</groupId>
 		    <artifactId>jedis</artifactId>
@@ -160,7 +160,7 @@
 			<!--Embedded Server for tests -->
 			<artifactId>solr-core</artifactId>
 			<groupId>org.apache.solr</groupId>
-			<version>4.9.0</version>
+			<version>4.10.0</version>
 			<optional>true</optional><!-- EmbeddedSolrSearchServicesPlugin -->
 			<exclusions>
 				<exclusion>
@@ -179,23 +179,23 @@
 			</exclusions>
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-compress</artifactId>
-			<version>1.5</version> <!-- solr-core 4.6.0 depends on 1.4.1. Tika depends on 1.5 : we unified versions -->
-			<optional>true</optional><!-- EmbeddedSolrSearchServicesPlugin -->
-		</dependency>
+			<version>1.5</version> solr-core 4.6.0 depends on 1.4.1. Tika depends on 1.5 : we unified versions
+			<optional>true</optional>EmbeddedSolrSearchServicesPlugin
+		</dependency> -->
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId><!-- solr-core 4.6.0 depends on 1.6.1. Ehcache 2.7.2 depends on 1.6.6 : we unified versions -->
+			<artifactId>slf4j-api</artifactId>solr-core 4.10.0 depends on 1.6.1. Ehcache 2.8.3 depends on 1.6.6 : we unified versions
 			<version>1.6.6</version>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
 			<optional>true</optional><!-- EmbeddedSolrSearchServicesPlugin -->
 		</dependency>
 		
@@ -211,7 +211,7 @@
 		<dependency>
 			<groupId>com.lowagie</groupId>
 			<artifactId>itext</artifactId>
-			<version>4.2.0</version> <!-- dernière version en license LGPL/MPL -->
+			<version>4.2.1</version> <!-- dernière version en license LGPL/MPL -->
 			<optional>true</optional>
 			<exclusions>
 				<!-- BouncyCastle est utilisé pour ouvrir les pdf sécurisés Donc non utilisé pour les générations. -->
@@ -258,7 +258,7 @@
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
-			<version>3.9</version>
+			<version>3.10.1</version>
 			<optional>true</optional>
 		</dependency>
 		 
