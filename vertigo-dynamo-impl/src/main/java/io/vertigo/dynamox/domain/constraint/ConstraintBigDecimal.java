@@ -30,7 +30,8 @@ import java.math.BigInteger;
  * Manage BigDecimal's constraints.
  * The configuration is like the configuration of Database's decimal (DECIMAL(M,D)).
  * Where M is the maximum of digits (the precision) and D is the number of digits to the right of the decimal point (the scale).
- * @author  mlaroche
+ * The maximum number of digits to the left of the decimal point is check too and must be less than M-D.
+ * @author mlaroche
  */
 public final class ConstraintBigDecimal extends AbstractConstraintImpl<String, BigDecimal> {
 
@@ -79,7 +80,7 @@ public final class ConstraintBigDecimal extends AbstractConstraintImpl<String, B
 		final BigDecimal noZero = value.stripTrailingZeros();
 		final int scale = noZero.scale();
 		final int precision = noZero.precision();
-		if (scale > maxScale || precision > maxPrecision) {
+		if (scale > maxScale || (precision - scale) > (maxPrecision - maxScale)) {
 			return false;
 		}
 		return true;

@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.domain.constraint;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.dynamox.domain.constraint.ConstraintBigDecimal;
 import io.vertigo.dynamox.domain.constraint.ConstraintBigDecimalLength;
 import io.vertigo.dynamox.domain.constraint.ConstraintDoubleLength;
 import io.vertigo.dynamox.domain.constraint.ConstraintIntegerLength;
@@ -39,6 +40,7 @@ import org.junit.Test;
 public class ConstraintTest extends AbstractTestCaseJU4 {
 	//private ConstraintNotNull constraintNotNull;
 
+	private ConstraintBigDecimal constraintBigDecimal;
 	private ConstraintBigDecimalLength constraintBigDecimalLength;
 	private ConstraintDoubleLength constraintDoubleLength;
 	private ConstraintIntegerLength constraintIntegerLength;
@@ -53,6 +55,9 @@ public class ConstraintTest extends AbstractTestCaseJU4 {
 	public void doSetUp() {
 		//		constraintNotNull = new ConstraintNotNull();
 		//		constraintNotNull.initParameters(null);
+
+		constraintBigDecimal = new ConstraintBigDecimal("CK_BIG_5_2");
+		constraintBigDecimal.initParameters("5,2"); //xxx,xx
 
 		constraintBigDecimalLength = new ConstraintBigDecimalLength("CK_BIG");
 		constraintBigDecimalLength.initParameters("3"); //10^3
@@ -75,10 +80,18 @@ public class ConstraintTest extends AbstractTestCaseJU4 {
 	}
 
 	private void testBDTrue(final BigDecimal value) {
-		Assert.assertTrue(constraintBigDecimalLength.checkConstraint(value));
+		Assert.assertTrue(constraintBigDecimal.checkConstraint(value));
 	}
 
 	private void testBDFalse(final BigDecimal value) {
+		Assert.assertFalse(constraintBigDecimal.checkConstraint(value));
+	}
+
+	private void testBDLengthTrue(final BigDecimal value) {
+		Assert.assertTrue(constraintBigDecimalLength.checkConstraint(value));
+	}
+
+	private void testBDLengthFalse(final BigDecimal value) {
 		Assert.assertFalse(constraintBigDecimalLength.checkConstraint(value));
 	}
 
@@ -127,10 +140,10 @@ public class ConstraintTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test de constraintBigDecimalLength.
+	 * Test de constraintBigDecimal.
 	 */
 	@Test
-	public void testConstraintBigDecimalLength() {
+	public void testConstraintBigDecimal() {
 		BigDecimal bd;
 
 		testBDTrue(null);
@@ -139,17 +152,63 @@ public class ConstraintTest extends AbstractTestCaseJU4 {
 		testBDTrue(bd);
 		testBDTrue(bd.negate());
 
+		bd = new BigDecimal("123.4");
+		testBDTrue(bd);
+		testBDTrue(bd.negate());
+
+		bd = new BigDecimal("1.23");
+		testBDTrue(bd);
+		testBDTrue(bd.negate());
+
+		bd = new BigDecimal("12.34");
+		testBDTrue(bd);
+		testBDTrue(bd.negate());
+
+		bd = new BigDecimal("123.45");
+		testBDTrue(bd);
+		testBDTrue(bd.negate());
+
 		bd = new BigDecimal(1234);
 		testBDFalse(bd);
 		testBDFalse(bd.negate());
 
-		bd = new BigDecimal(1000);
+		bd = new BigDecimal("1234.56");
 		testBDFalse(bd);
 		testBDFalse(bd.negate());
 
+		bd = new BigDecimal("1.234");
+		testBDFalse(bd);
+		testBDFalse(bd.negate());
+
+		bd = new BigDecimal("123.234");
+		testBDFalse(bd);
+		testBDFalse(bd.negate());
+	}
+
+	/**
+	 * Test de constraintBigDecimalLength.
+	 */
+	@Test
+	public void testConstraintBigDecimalLength() {
+		BigDecimal bd;
+
+		testBDLengthTrue(null);
+
+		bd = new BigDecimal(123);
+		testBDLengthTrue(bd);
+		testBDLengthTrue(bd.negate());
+
+		bd = new BigDecimal(1234);
+		testBDLengthFalse(bd);
+		testBDLengthFalse(bd.negate());
+
+		bd = new BigDecimal(1000);
+		testBDLengthFalse(bd);
+		testBDLengthFalse(bd.negate());
+
 		bd = new BigDecimal("999.9999");
-		testBDTrue(bd);
-		testBDTrue(bd.negate());
+		testBDLengthTrue(bd);
+		testBDLengthTrue(bd.negate());
 	}
 
 	/**
