@@ -1,9 +1,22 @@
 Version history
 ===============
 
-Running 0.4.4-SNAPSHOT
+Running 0.5.1-SNAPSHOT
 ----------------------
  more to come :)
+ 
+Release 0.5.0 - 2014/09/16
+--------------------------
+* Add Struts2 module
+* Add Studio Sql generation 
+* Add Vega fileUpload support
+* Refact WorkManager Api(Future), Distributed
+* Refact CollectionManager Api(DtListProcessor)
+* Rename io.vertigo.kernel to io.vertigo.core
+* Fix CacheManager clear conditions
+* Fix Vega #6 change mime type for json entity
+* Fix Vega multiPath params support
+* Update dependencies
 
 Release 0.4.3 - 2014/08/06
 --------------------------
