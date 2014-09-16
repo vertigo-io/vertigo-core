@@ -20,7 +20,6 @@ package io.vertigo.vega.rest.metamodel;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition.Verb;
 import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
 
@@ -66,9 +65,11 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 
 	public EndPointDefinition build() {
 		final String usedPath = myPathPrefix != null ? myPathPrefix + myPath : myPath;
+		final String normalizedPath = usedPath.replaceAll("\\{.*\\}", "_").replaceAll("[//]", "_");
+
 		return new EndPointDefinition(//
 				//"EP_" + StringUtil.camelToConstCase(restFullServiceClass.getSimpleName()) + "_" + StringUtil.camelToConstCase(method.getName()), //
-				"EP_" + myVerb + "_" + StringUtil.camelToConstCase(usedPath.replaceAll("[//{}]", "_")), //
+				"EP_" + myVerb + "_" + normalizedPath.toUpperCase(), //
 				myVerb, //
 				usedPath, //
 				myAcceptType, //

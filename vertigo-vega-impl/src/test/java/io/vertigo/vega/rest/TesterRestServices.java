@@ -265,9 +265,9 @@ public final class TesterRestServices implements RestfulService {
 				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.PDF, "contacts")//
-		.withExportDtParameters(dtParameter)//
-		.withAuthor("vertigo-test")//
-		.build();
+				.withExportDtParameters(dtParameter)//
+				.withAuthor("vertigo-test")//
+				.build();
 
 		final KFile result = exportManager.createExportFile(export);
 		//200
@@ -281,9 +281,9 @@ public final class TesterRestServices implements RestfulService {
 				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.PDF, "contact" + conId + ".pdf")//
-		.withExportDtParameters(dtParameter)//
-		.withAuthor("vertigo-test")//
-		.build();
+				.withExportDtParameters(dtParameter)//
+				.withAuthor("vertigo-test")//
+				.build();
 
 		final KFile result = exportManager.createExportFile(export);
 		//200
@@ -441,6 +441,20 @@ public final class TesterRestServices implements RestfulService {
 		return uiContext;
 	}
 
+	@Doc("Test ws-rest with multiple path params.")
+	@ExcludedFields({ "address", "tels" })
+	@POST("/multiPath/from/{conIdFrom}/to/{conIdTo}")
+	public DtList<Contact> testMultiPathParam(//
+			@PathParam("conIdFrom") final long contactIdFrom, //
+			@PathParam("conIdTo") final long contactIdTo) {
+		final DtList<Contact> result = new DtList<>(Contact.class);
+		result.add(contacts.get(contactIdFrom));
+		result.add(contacts.get(contactIdTo));
+		//offset + range ?
+		//code 200
+		return result;
+	}
+
 	@Doc("Test ws-rest multipart body with serverSide objects. Send a body with an object of to field : contactFrom, contactTo. Each one should be an partial json of Contact with clientId.")
 	@POST("/multipartServerClient")
 	public List<Contact> testMultiPartBodyClientId(//
@@ -544,7 +558,7 @@ public final class TesterRestServices implements RestfulService {
 	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final UiListState uiListState) {
 		final DtList<D> sortedList;
 		if (uiListState.getSortFieldName() != null) {
-			sortedList= collectionsManager.createDtListProcessor()//
+			sortedList = collectionsManager.createDtListProcessor()//
 					.sort(uiListState.getSortFieldName(), uiListState.isSortDesc(), true, true)//
 					.apply(unFilteredList);
 		} else {

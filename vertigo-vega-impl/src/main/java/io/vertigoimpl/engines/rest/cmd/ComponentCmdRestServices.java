@@ -35,7 +35,6 @@ import java.util.Collection;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.sun.jersey.api.NotFoundException;
 
 public final class ComponentCmdRestServices implements RestfulService {
 	private final JsonEngine jsonEngine = new GoogleJsonEngine();
@@ -63,7 +62,7 @@ public final class ComponentCmdRestServices implements RestfulService {
 				}
 			}
 		}
-		throw new NotFoundException();
+		throw new RuntimeException("NotFoundException");
 	}
 
 	@AnonymousAccessAllowed
@@ -92,7 +91,7 @@ public final class ComponentCmdRestServices implements RestfulService {
 				return jsonEngine.toJson(jsonModuleConfig);
 			}
 		}
-		throw new NotFoundException();
+		throw new RuntimeException("NotFoundException");
 	}
 
 	@AnonymousAccessAllowed
@@ -115,7 +114,7 @@ public final class ComponentCmdRestServices implements RestfulService {
 				return jsonEngine.toJson(Home.getDefinitionSpace().getAll(definitionClass));
 			}
 		}
-		throw new NotFoundException();
+		throw new RuntimeException("NotFoundException");
 	}
 
 	@AnonymousAccessAllowed
