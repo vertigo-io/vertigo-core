@@ -4,7 +4,9 @@ Version history
 Running 0.5.1-SNAPSHOT
 ----------------------
 * Fix #7 ConstraintBigDecimal 
- more to come :)
+* Add Vega DtListDelta support (compatibility with **Focus** project)
+ 
+more to come :)
  
 Release 0.5.0 - 2014/09/16
 --------------------------
