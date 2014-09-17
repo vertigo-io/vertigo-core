@@ -1,13 +1,16 @@
 Version history
 ===============
 
-Running 0.5.1-SNAPSHOT
+Running 0.5.2-SNAPSHOT
 ----------------------
+
+more to come :)
+
+Release 0.5.1 - 2014/09/17
+--------------------------
 * Fix #7 ConstraintBigDecimal 
 * Add Vega DtListDelta support (compatibility with **Focus** project)
- 
-more to come :)
- 
+
 Release 0.5.0 - 2014/09/16
 --------------------------
 * Add Struts2 module
