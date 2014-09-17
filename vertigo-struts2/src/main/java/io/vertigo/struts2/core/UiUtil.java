@@ -64,7 +64,7 @@ public final class UiUtil implements Serializable {
 	 */
 	public final String formatBoolean(final String fieldPath, final Boolean value) {
 		final Formatter formatter;
-		if (!fieldPath.contains(".")) {
+		if (!fieldPath.contains(".")) { //cas des ContextRef sans domain
 			formatter = Home.getDefinitionSpace().resolve("DO_OUI_NON", Domain.class).getFormatter();
 		} else {
 			formatter = getDtField(fieldPath).getDomain().getFormatter();
