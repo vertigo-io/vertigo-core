@@ -144,6 +144,33 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
+	 * Test des nullable.
+	 * @throws Exception erreur
+	 */
+	@Test
+	public void testNullable() {
+		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			final String TK_NULLABLE_TEST = "TK_NULLABLE_TEST";
+			registerTaskWithNullableIn(TK_NULLABLE_TEST, "select * from FAMILLE fam where fam.FAM_ID = #PARAM_1#<%if(param2!=null) {%> OR fam.FAM_ID = #PARAM_2#+2 <%}%><%if(param3!=null) {%> OR fam.FAM_ID = #PARAM_3#+3<%}%>");
+			final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(TK_NULLABLE_TEST, TaskDefinition.class);
+
+			final Task task = new TaskBuilder(taskDefinition)//
+					.withValue("PARAM_1", 10002)//
+					.withValue("PARAM_2", null)//
+					.withValue("PARAM_3", 10002)//
+					.build();
+
+			// on suppose un appel synchrone : getResult immédiat.
+			final TaskResult result = taskManager.execute(task);
+
+			final DtList<Famille> resultList = result.<DtList<Famille>> getValue("DTC_FAMILLE_OUT");
+			Assert.assertEquals(2, resultList.size());
+			Assert.assertEquals(10002L, resultList.get(0).getFamId().longValue());
+			Assert.assertEquals(10002L + 3, resultList.get(1).getFamId().longValue());
+		}
+	}
+
+	/**
 	 * Test des scripts.
 	 * @throws Exception erreur
 	 */
@@ -362,6 +389,24 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 		final Famille famille = new Famille();
 		famille.setFamId(id);
 		return famille;
+	}
+
+	private static TaskDefinition registerTaskWithNullableIn(final String taskDefinitionName, final String params) {
+		final Domain doInteger = Home.getDefinitionSpace().resolve("DO_INTEGER", Domain.class);
+		final Domain doFamilleList = Home.getDefinitionSpace().resolve("DO_DT_FAMILLE_DTC", Domain.class);
+
+		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskDefinitionName)//
+				.withEngine(TaskEngineSelect.class)//
+				.withRequest(params)//
+				.withPackageName(TaskEngineSelect.class.getPackage().getName())//
+				.withAttribute("PARAM_1", doInteger, true, true)//
+				.withAttribute("PARAM_2", doInteger, false, true)//
+				.withAttribute("PARAM_3", doInteger, false, true)//
+				.withAttribute("DTC_FAMILLE_OUT", doFamilleList, true, false)//
+				.build();
+
+		Home.getDefinitionSpace().put(taskDefinition, TaskDefinition.class);
+		return taskDefinition;
 	}
 
 	private static TaskDefinition registerTaskObject(final String taskDefinitionName, final String params) {
