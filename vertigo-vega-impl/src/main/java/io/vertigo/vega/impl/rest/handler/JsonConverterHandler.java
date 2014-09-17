@@ -24,9 +24,11 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.vega.rest.engine.UiContext;
+import io.vertigo.vega.rest.engine.UiListDelta;
 import io.vertigo.vega.rest.engine.UiObject;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
+import io.vertigo.vega.rest.metamodel.DtListDelta;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
 import io.vertigo.vega.rest.metamodel.EndPointParam.ImplicitParam;
@@ -35,6 +37,7 @@ import io.vertigo.vega.rest.metamodel.UiListState;
 import io.vertigo.vega.security.UiSecurityTokenManager;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -154,11 +157,11 @@ final class JsonConverterHandler implements RouteHandler {
 
 	private UiContext readMultiPartValue(final String jsonBody, final List<EndPointParam> endPointParams) throws VSecurityException {
 		final List<EndPointParam> multiPartEndPointParams = new ArrayList<>();
-		final Map<String, Class<?>> multiPartBodyParams = new HashMap<>();
+		final Map<String, Type> multiPartBodyParams = new HashMap<>();
 		for (final EndPointParam endPointParam : endPointParams) {
 			if (endPointParam.getParamType() == RestParamType.MultiPartBody || endPointParam.getParamType() == RestParamType.Implicit) {
 				multiPartEndPointParams.add(endPointParam);
-				multiPartBodyParams.put(endPointParam.getName(), endPointParam.getType());
+				multiPartBodyParams.put(endPointParam.getName(), endPointParam.getGenericType());
 			}
 		}
 		if (!multiPartBodyParams.isEmpty()) {
@@ -167,6 +170,8 @@ final class JsonConverterHandler implements RouteHandler {
 				final Serializable value = uiContext.get(endPointParam.getName());
 				if (value instanceof UiObject) {
 					postReadUiObject((UiObject<DtObject>) value, endPointParam.getName(), endPointParam, uiSecurityTokenManager);
+				} else if (value instanceof UiListDelta) {
+					postReadUiListDelta((UiListDelta<DtObject>) value, endPointParam.getName(), endPointParam, uiSecurityTokenManager);
 				}
 			}
 			return uiContext;
@@ -217,6 +222,7 @@ final class JsonConverterHandler implements RouteHandler {
 
 	private Object readValue(final String json, final EndPointParam endPointParam) throws VSecurityException {
 		final Class<?> paramClass = endPointParam.getType();
+		final Type paramGenericType = endPointParam.getGenericType();
 		if (json == null) {
 			return null;
 		} else if (String.class.isAssignableFrom(paramClass)) {
@@ -226,11 +232,17 @@ final class JsonConverterHandler implements RouteHandler {
 		} else if (Long.class.isAssignableFrom(paramClass)) {
 			return Long.valueOf(json);
 		} else if (DtObject.class.isAssignableFrom(paramClass)) {
-			final UiObject<DtObject> uiObject = jsonReaderEngine.<DtObject> uiObjectFromJson(json, (Class<DtObject>) paramClass);
+			final UiObject<DtObject> uiObject = jsonReaderEngine.<DtObject> uiObjectFromJson(json, paramGenericType);
 			if (uiObject != null) {
 				postReadUiObject(uiObject, "", endPointParam, uiSecurityTokenManager);
 			}
 			return uiObject;
+		} else if (DtListDelta.class.isAssignableFrom(paramClass)) {
+			final UiListDelta<DtObject> uiListDelta = jsonReaderEngine.<DtObject> uiListDeltaFromJson(json, paramGenericType);
+			if (uiListDelta != null) {
+				postReadUiListDelta(uiListDelta, "", endPointParam, uiSecurityTokenManager);
+			}
+			return uiListDelta;
 		} else if (UiContext.class.isAssignableFrom(paramClass)) {
 			throw new RuntimeException("Unsupported type UiContext (use @InnerBodyParams instead).");
 		} else {
@@ -257,6 +269,22 @@ final class JsonConverterHandler implements RouteHandler {
 				throw new VSecurityException(SERVER_SIDE_MANDATORY); //same message for no ServerSideToken or bad ServerSideToken
 			}
 			uiObject.setServerSideObject((DtObject) serverSideObject.get());
+		}
+	}
+
+	private static void postReadUiListDelta(final UiListDelta<DtObject> uiListDelta, final String inputKey, final EndPointParam endPointParam, final UiSecurityTokenManager uiSecurityTokenManager) throws VSecurityException {
+		final String prefix = inputKey.length() > 0 ? inputKey + "." : "";
+		for (final Map.Entry<String, UiObject<DtObject>> entry : uiListDelta.getCreatesMap().entrySet()) {
+			final String uiObjectInputKey = prefix + entry.getKey();
+			postReadUiObject(entry.getValue(), uiObjectInputKey, endPointParam, uiSecurityTokenManager);
+		}
+		for (final Map.Entry<String, UiObject<DtObject>> entry : uiListDelta.getUpdatesMap().entrySet()) {
+			final String uiObjectInputKey = prefix + entry.getKey();
+			postReadUiObject(entry.getValue(), uiObjectInputKey, endPointParam, uiSecurityTokenManager);
+		}
+		for (final Map.Entry<String, UiObject<DtObject>> entry : uiListDelta.getDeletesMap().entrySet()) {
+			final String uiObjectInputKey = prefix + entry.getKey();
+			postReadUiObject(entry.getValue(), uiObjectInputKey, endPointParam, uiSecurityTokenManager);
 		}
 	}
 

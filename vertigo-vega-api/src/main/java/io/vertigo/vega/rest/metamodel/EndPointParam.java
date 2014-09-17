@@ -19,10 +19,14 @@
 package io.vertigo.vega.rest.metamodel;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.vega.rest.EndPointTypeHelper;
 import io.vertigo.vega.rest.validation.DtObjectValidator;
 import io.vertigo.vega.rest.validation.UiMessageStack;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -70,7 +74,7 @@ public final class EndPointParam {
 
 	private final RestParamType paramType;
 	private final String name;
-	private final Class<?> type;
+	private final Type type;
 	private final String fullName;
 	private final Set<String> includedFields;
 	private final Set<String> excludedFields;
@@ -82,12 +86,13 @@ public final class EndPointParam {
 	 * @param paramType Parameter type
 	 * @param name Parameter name
 	 * @param type Parameter class
+	 * @param genericType Parameter generic class if defined
 	 * @param excludedFields List of excluded fieldNames
 	 * @param needServerSideToken if access token mandatory
 	 * @param consumeServerSideToken if access token is consume (one time token)
 	 * @param dtObjectValidatorClasses List of validator classes (order is keep)
 	 */
-	EndPointParam(final RestParamType paramType, final String name, final Class<?> type, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
+	EndPointParam(final RestParamType paramType, final String name, final Type type, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
 		this(":" + paramType.name() + ":" + name, paramType, name, type, includedFields, excludedFields, needServerSideToken, consumeServerSideToken, dtObjectValidatorClasses);
 		Assertion.checkArgument(paramType != RestParamType.Implicit || isImplicitParam(name), "When ImplicitParam, name ({1}) must be one of {0}", ImplicitParam.values(), name);
 		Assertion.checkArgNotEmpty(name);
@@ -102,13 +107,16 @@ public final class EndPointParam {
 		return false;
 	}
 
-	private EndPointParam(final String fullName, final RestParamType paramType, final String name, final Class<?> type, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
+	private EndPointParam(final String fullName, final RestParamType paramType, final String name, final Type type, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
 		Assertion.checkNotNull(paramType);
 		Assertion.checkNotNull(type);
 		Assertion.checkNotNull(includedFields);
 		Assertion.checkNotNull(excludedFields);
 		Assertion.checkNotNull(dtObjectValidatorClasses);
-		Assertion.checkArgument(dtObjectValidatorClasses.isEmpty() || DtObject.class.isAssignableFrom(type), "Validators aren't supported for {0}", type.getSimpleName());
+		Assertion.checkArgument(dtObjectValidatorClasses.isEmpty() //
+				|| EndPointTypeHelper.isAssignableFrom(DtObject.class, type) //
+				|| EndPointTypeHelper.isAssignableFrom(DtList.class, type) //
+				|| EndPointTypeHelper.isAssignableFrom(DtListDelta.class, type), "Validators aren't supported for {0}", type);
 		//-----------------------------------------------------------------
 		this.paramType = paramType;
 		this.type = type;
@@ -146,8 +154,25 @@ public final class EndPointParam {
 	 * @return Parameter class
 	 */
 	public Class<?> getType() {
+		if (type instanceof ParameterizedType) {
+			return (Class<?>) ((ParameterizedType) type).getRawType();
+		}
+		return (Class<?>) type;
+	}
+
+	/**
+	 * @return generics Type
+	 */
+	public Type getGenericType() {
 		return type;
 	}
+
+	//	/**
+	//	 * @return Parameter generics class param
+	//	 */
+	//	public Class<?> getGenericsType() {
+	//		return genericType;
+	//	}
 
 	/**
 	 * @return List of included fieldNames
@@ -188,7 +213,7 @@ public final class EndPointParam {
 	@Override
 	public String toString() {
 		return new StringBuilder()//
-				.append(type.getSimpleName())//
+				.append(type)//
 				.append(" ")//
 				.append(fullName)//
 				.toString();

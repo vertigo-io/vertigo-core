@@ -23,6 +23,7 @@ import io.vertigo.core.lang.Builder;
 import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
 import io.vertigo.vega.rest.validation.DtObjectValidator;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -35,7 +36,7 @@ import java.util.Set;
  * @author npiedeloup
  */
 public final class EndPointParamBuilder implements Builder<EndPointParam> {
-	private final Class<?> myParamClass;
+	private final Type myParamType;
 	private RestParamType myRestParamType = RestParamType.Body; // default;
 	private String myRestParamName = "[1]"; //default body Name
 	private final List<Class<? extends DtObjectValidator>> myValidatorClasses = new ArrayList<>();
@@ -46,12 +47,12 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 
 	/**
 	 * Constructeur.
-	 * @param paramClass param class
+	 * @param paramType param type
 	 */
-	public EndPointParamBuilder(final Class<?> paramClass) {
-		Assertion.checkNotNull(paramClass);
+	public EndPointParamBuilder(final Type paramType) {
+		Assertion.checkNotNull(paramType);
 		// ---------------------------------------------------------------------
-		myParamClass = paramClass;
+		myParamType = paramType;
 	}
 
 	/**
@@ -115,7 +116,7 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 
 	/** {@inheritDoc} */
 	public EndPointParam build() {
-		return new EndPointParam(myRestParamType, myRestParamName, myParamClass, //
+		return new EndPointParam(myRestParamType, myRestParamName, myParamType, //
 				myIncludedFields, //
 				myExcludedFields, //
 				myNeedServerSideToken, //

@@ -43,6 +43,7 @@ import io.vertigo.dynamo.impl.collections.functions.filter.FilterFunction;
 import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.vega.rest.engine.UiContext;
 import io.vertigo.vega.rest.exception.VSecurityException;
+import io.vertigo.vega.rest.metamodel.DtListDelta;
 import io.vertigo.vega.rest.metamodel.UiListState;
 import io.vertigo.vega.rest.stereotype.AccessTokenConsume;
 import io.vertigo.vega.rest.stereotype.AccessTokenMandatory;
@@ -535,6 +536,11 @@ public final class TesterRestServices implements RestfulService {
 			final @QueryParam("note") String note) {
 
 		return inputFile;
+	}
+
+	@POST("/saveListDelta")
+	public String saveListDelta(final DtListDelta<Contact> myList) {
+		return "OK : add " + myList.getCreated().size() + " contacts, update " + myList.getUpdated().size() + " contacts, removed " + myList.getDeleted().size();
 	}
 
 	/*@GET("/searchFacet")

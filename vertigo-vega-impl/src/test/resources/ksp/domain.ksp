@@ -54,7 +54,7 @@ create Constraint CK_MAX_LENGTH_50 {
 
 create Constraint CK_EMAIL {
 	className: "io.vertigo.dynamox.domain.constraint.ConstraintRegex",
-	args : "^[_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*(\\.[a-zA-Z0-9-][2,3])+$",
+	args : "^[_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*(\\.[a-zA-Z0-9-]{2,3})+$",
 	msg : "Le courriel n'est pas valide",
 }
 

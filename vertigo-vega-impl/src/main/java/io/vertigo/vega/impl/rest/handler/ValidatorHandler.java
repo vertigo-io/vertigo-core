@@ -20,10 +20,13 @@ package io.vertigo.vega.impl.rest.handler;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.ClassUtil;
+import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.vega.rest.engine.UiListDelta;
 import io.vertigo.vega.rest.engine.UiObject;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
+import io.vertigo.vega.rest.metamodel.DtListDelta;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
 import io.vertigo.vega.rest.validation.DtObjectValidator;
@@ -31,7 +34,9 @@ import io.vertigo.vega.rest.validation.UiMessageStack;
 import io.vertigo.vega.rest.validation.ValidationUserException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import spark.Request;
 import spark.Response;
@@ -60,6 +65,17 @@ final class ValidatorHandler implements RouteHandler {
 				//Only authorized fields have already been checked (JsonConverterHandler)
 				final DtObject updatedDto = uiObject.mergeAndCheckInput(dtObjectValidators, uiMessageStack);
 				routeContext.registerUpdatedDto(endPointParam, uiObject.getInputKey(), updatedDto);
+			} else if (value instanceof UiListDelta) {
+				final UiListDelta<DtObject> uiListDelta = (UiListDelta<DtObject>) value;
+				final List<DtObjectValidator<DtObject>> dtObjectValidators = obtainDtObjectValidators(endPointParam);
+				final Map<String, DtObject> contextKeyMap = new HashMap<>();
+
+				//Only authorized fields have already been checked (JsonConverterHandler)
+				final DtList<DtObject> dtListCreates = mergeAndCheckInput(uiListDelta.getObjectType(), uiListDelta.getCreatesMap(), "collCreates", dtObjectValidators, uiMessageStack, contextKeyMap);
+				final DtList<DtObject> dtListUpdates = mergeAndCheckInput(uiListDelta.getObjectType(), uiListDelta.getUpdatesMap(), "collUpdates", dtObjectValidators, uiMessageStack, contextKeyMap);
+				final DtList<DtObject> dtListDeletes = mergeAndCheckInput(uiListDelta.getObjectType(), uiListDelta.getDeletesMap(), "collDeletes", dtObjectValidators, uiMessageStack, contextKeyMap);
+				final DtListDelta<DtObject> dtListDelta = new DtListDelta<>(dtListCreates, dtListUpdates, dtListDeletes);
+				routeContext.registerUpdatedDtListDelta(endPointParam, dtListDelta, contextKeyMap);
 			}
 		}
 		if (uiMessageStack.hasErrors()) {
@@ -75,5 +91,16 @@ final class ValidatorHandler implements RouteHandler {
 			dtObjectValidators.add(ClassUtil.newInstance(dtObjectValidatorClass));
 		}
 		return dtObjectValidators;
+	}
+
+	private <D extends DtObject> DtList<D> mergeAndCheckInput(final Class<D> objectType, final Map<String, UiObject<D>> uiObjectMap, final String listName, final List<DtObjectValidator<D>> dtObjectValidators, final UiMessageStack uiMessageStack, final Map<String, DtObject> contextKeyMap) {
+		final DtList<D> dtList = new DtList<>(objectType);
+		for (final Map.Entry<String, UiObject<D>> entry : uiObjectMap.entrySet()) {
+			//entry.getValue().setInputKey(inputKey + "." + listName + "." + entry.getKey());
+			final D dto = entry.getValue().mergeAndCheckInput(dtObjectValidators, uiMessageStack);
+			dtList.add(dto);
+			contextKeyMap.put(entry.getValue().getInputKey(), dto);
+		}
+		return dtList;
 	}
 }

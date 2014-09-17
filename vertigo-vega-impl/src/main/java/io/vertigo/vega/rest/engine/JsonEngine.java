@@ -20,6 +20,7 @@ package io.vertigo.vega.rest.engine;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 
@@ -72,10 +73,10 @@ public interface JsonEngine {
 	 * While converting accept missing object fields and unknown object fields (and then just forgot json value) 
 	 * @param <D> Object type
 	 * @param json Json string
-	 * @param paramClass Object class
+	 * @param paramType Object type
 	 * @return Object filled with json typed data 
 	 */
-	<D extends Object> D fromJson(String json, Class<D> paramClass);
+	<D extends Object> D fromJson(String json, Type paramType);
 
 	/**
 	 * Specific convertion Json to UiObject.
@@ -83,19 +84,27 @@ public interface JsonEngine {
 	 * While converting accept missing object fields and unknown object fields (and then just forgot json value) 
 	 * @param <D> Object type
 	 * @param json Json string
-	 * @param paramClass Object class
+	 * @param paramType Object type
 	 * @return UiObject filled with a DtObject partially filled and the accessTOken if present 
 	 */
-	<D extends DtObject> UiObject<D> uiObjectFromJson(String json, Class<D> paramClass);
+	<D extends DtObject> UiObject<D> uiObjectFromJson(String json, Type paramType);
 
 	/**
 	 * Specific convertion Json to UiContext.
-	 * UiContext is used as a buffer from client input.
-	 * @param <D> Object type
+	 * UiContext is used as a buffer from client input
 	 * @param json Json string
-	 * @param paramClass Object class
+	 * @param paramTypes Objects type
 	 * @return UiContext filled with a DtObject partially filled and the accessTOken if present 
 	 */
-	UiContext uiContextFromJson(String json, Map<String, Class<?>> paramClasses);
+	UiContext uiContextFromJson(String json, Map<String, Type> paramTypes);
+
+	/**
+	 * Specific convertion Json to UiListDelta.
+	 * @param <D> Object type
+	 * @param json Json string
+	 * @param paramType Object type
+	 * @return UiListDelta filled with created/updated/deleted DtObjects list partially filled and the accessTOken if present 
+	 */
+	<D extends DtObject> UiListDelta<D> uiListDeltaFromJson(String json, Type paramType);
 
 }

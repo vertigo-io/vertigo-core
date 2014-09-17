@@ -27,11 +27,14 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.vega.rest.EndPointTypeHelper;
+import io.vertigo.vega.rest.metamodel.DtListDelta;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -129,35 +132,46 @@ public final class GoogleJsonEngine implements JsonEngine {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends Object> D fromJson(final String json, final Class<D> paramClass) {
-		return gson.fromJson(json, paramClass);
+	public <D extends Object> D fromJson(final String json, final Type paramType) {
+		return gson.fromJson(json, paramType);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> UiObject<D> uiObjectFromJson(final String json, final Class<D> paramClass) {
-		final Type typeOfDest = createUiObjectType(paramClass);
+	public <D extends DtObject> UiObject<D> uiObjectFromJson(final String json, final Type paramType) {
+		final Type typeOfDest = createParameterizedType(UiObject.class, paramType);
+		return gson.fromJson(json, typeOfDest);
+	}
+
+	/** {@inheritDoc} */
+	public <D extends DtObject> UiListDelta<D> uiListDeltaFromJson(final String json, final Type paramType) {
+		final Class<DtObject> dtoClass = (Class<DtObject>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that DtListDelta has one parameterized type
+		final Type typeOfDest = createParameterizedType(UiListDelta.class, dtoClass);
 		return gson.fromJson(json, typeOfDest);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public UiContext uiContextFromJson(final String json, final Map<String, Class<?>> paramClasses) {
+	public UiContext uiContextFromJson(final String json, final Map<String, Type> paramTypes) {
 		final UiContext result = new UiContext();
 		try {
 			final JsonElement jsonElement = new JsonParser().parse(json);
 			final JsonObject jsonObject = jsonElement.getAsJsonObject();
-			for (final Entry<String, Class<?>> entry : paramClasses.entrySet()) {
+			for (final Entry<String, Type> entry : paramTypes.entrySet()) {
 				final String key = entry.getKey();
-				final Class<?> paramClass = entry.getValue();
+				final Type paramType = entry.getValue();
 				final JsonElement jsonSubElement = jsonObject.get(key);
 
 				final Serializable value;
-				if (DtObject.class.isAssignableFrom(paramClass)) {
-					final Type typeOfDest = createUiObjectType(paramClass);
+				if (EndPointTypeHelper.isAssignableFrom(DtObject.class, paramType)) {
+					final Type typeOfDest = createParameterizedType(UiObject.class, paramType);
+					value = gson.fromJson(jsonSubElement, typeOfDest);
+				} else if (EndPointTypeHelper.isAssignableFrom(DtListDelta.class, paramType)) {
+					final Class<DtObject> dtoClass = (Class<DtObject>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that DtListDelta has one parameterized type
+					final Type typeOfDest = createParameterizedType(UiListDelta.class, dtoClass);
 					value = gson.fromJson(jsonSubElement, typeOfDest);
 				} else {
-					value = (Serializable) gson.fromJson(jsonSubElement, paramClass);
+					value = (Serializable) gson.fromJson(jsonSubElement, paramType);
 				}
 				result.put(key, value);
 			}
@@ -167,8 +181,8 @@ public final class GoogleJsonEngine implements JsonEngine {
 		}
 	}
 
-	private Type createUiObjectType(final Class<?> paramClass) {
-		final Type[] typeArguments = { paramClass };
+	private static Type createParameterizedType(final Class<?> rawClass, final Type paramType) {
+		final Type[] typeArguments = { paramType };
 		final Type typeOfDest = new ParameterizedType() {
 
 			@Override
@@ -183,7 +197,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 
 			@Override
 			public Type getRawType() {
-				return UiObject.class;
+				return rawClass;
 			}
 		};
 		return typeOfDest;
@@ -244,6 +258,33 @@ public final class GoogleJsonEngine implements JsonEngine {
 		return gson.fromJson(json, typeOfDest);
 	}*/
 
+	static class UiListDeltaDeserializer<D extends DtObject> implements JsonDeserializer<UiListDelta<D>> {
+		public UiListDelta<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
+			final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
+			final Class<D> dtoClass = (Class<D>) typeParameters[0]; // Id has only one parameterized type T
+			final Type uiObjectType = createParameterizedType(UiObject.class, dtoClass);
+			final JsonObject jsonObject = json.getAsJsonObject();
+
+			final Map<String, UiObject<D>> collCreates = parseUiObjectMap(jsonObject, "collCreates", uiObjectType, context);
+			final Map<String, UiObject<D>> collUpdates = parseUiObjectMap(jsonObject, "collUpdates", uiObjectType, context);
+			final Map<String, UiObject<D>> collDeletes = parseUiObjectMap(jsonObject, "collDeletes", uiObjectType, context);
+
+			final UiListDelta<D> uiListDelta = new UiListDelta<>(dtoClass, collCreates, collUpdates, collDeletes);
+			return uiListDelta;
+		}
+
+		private Map<String, UiObject<D>> parseUiObjectMap(final JsonObject jsonObject, final String propertyName, final Type uiObjectType, final JsonDeserializationContext context) {
+			final Map<String, UiObject<D>> uiObjectMap = new HashMap<>();
+			final JsonObject jsonUiObjectMap = jsonObject.getAsJsonObject(propertyName);
+			for (final Entry<String, JsonElement> entry : jsonUiObjectMap.entrySet()) {
+				final String entryName = entry.getKey();
+				final UiObject<D> inputDto = context.deserialize(entry.getValue(), uiObjectType);
+				uiObjectMap.put(entryName, inputDto);
+			}
+			return uiObjectMap;
+		}
+	}
+
 	//	 TODO
 	// static class UiListDeserializer implements JsonDeserializer<UiList<?>> {
 	//
@@ -274,6 +315,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 				.setPrettyPrinting()//
 				//.serializeNulls()//On veut voir les null
 				.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())//
+				.registerTypeAdapter(UiListDelta.class, new UiListDeltaDeserializer<>())//
 				.registerTypeAdapter(ComponentInfo.class, new JsonSerializer<ComponentInfo>() {
 					@Override
 					public JsonElement serialize(final ComponentInfo componentInfo, final Type typeOfSrc, final JsonSerializationContext context) {
@@ -341,5 +383,4 @@ public final class GoogleJsonEngine implements JsonEngine {
 					}
 				}).create();
 	}
-
 }

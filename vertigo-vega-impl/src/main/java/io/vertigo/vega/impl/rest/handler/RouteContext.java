@@ -19,10 +19,15 @@
 package io.vertigo.vega.impl.rest.handler;
 
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.vega.rest.engine.UiListDelta;
 import io.vertigo.vega.rest.engine.UiObject;
+import io.vertigo.vega.rest.metamodel.DtListDelta;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
 import io.vertigo.vega.rest.validation.UiContextResolver;
 import io.vertigo.vega.rest.validation.UiMessageStack;
+
+import java.util.Map;
+
 import spark.Request;
 
 /**
@@ -62,4 +67,16 @@ public final class RouteContext {
 		request.attribute(endPointParam.getFullName(), updatedDto);
 	}
 
+	public void registerUiListDelta(final EndPointParam endPointParam, final UiObject uiObject) {
+		request.attribute(endPointParam.getFullName(), uiObject);
+	}
+
+	public void registerUpdatedDtListDelta(final EndPointParam endPointParam, final DtListDelta dtListDelta, final Map<String, DtObject> contextKeyMap) {
+		final UiListDelta<?> uiListDelta = (UiListDelta<?>) request.attribute(endPointParam.getFullName());
+		for (final Map.Entry<String, DtObject> entry : contextKeyMap.entrySet()) {
+			uiContextResolver.register(entry.getKey(), entry.getValue());
+		}
+		request.attribute(endPointParam.getFullName() + "-input", uiListDelta);
+		request.attribute(endPointParam.getFullName(), dtListDelta);
+	}
 }

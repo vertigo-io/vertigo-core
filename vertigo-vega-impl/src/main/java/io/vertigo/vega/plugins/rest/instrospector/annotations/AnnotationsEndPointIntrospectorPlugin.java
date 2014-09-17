@@ -21,7 +21,9 @@ package io.vertigo.vega.plugins.rest.instrospector.annotations;
 import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.vega.rest.EndPointIntrospectorPlugin;
+import io.vertigo.vega.rest.EndPointTypeHelper;
 import io.vertigo.vega.rest.RestfulService;
+import io.vertigo.vega.rest.metamodel.DtListDelta;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition.Verb;
 import io.vertigo.vega.rest.metamodel.EndPointDefinitionBuilder;
@@ -56,6 +58,7 @@ import io.vertigo.vega.rest.validation.DefaultDtObjectValidator;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,7 +120,7 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 			}
 		}
 		if (builder.hasVerb()) {
-			final Class<?>[] paramType = method.getParameterTypes();
+			final Type[] paramType = method.getGenericParameterTypes();
 			final Annotation[][] parameterAnnotation = method.getParameterAnnotations();
 
 			for (int i = 0; i < paramType.length; i++) {
@@ -130,9 +133,11 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 		return Option.none();
 	}
 
-	private static EndPointParam buildEndPointParam(final Annotation[] annotations, final Class<?> paramType) {
+	private static EndPointParam buildEndPointParam(final Annotation[] annotations, final Type paramType) {
 		final EndPointParamBuilder builder = new EndPointParamBuilder(paramType);
-		if (DtObject.class.isAssignableFrom(paramType)) {
+		if (EndPointTypeHelper.isAssignableFrom(DtObject.class, paramType)) {
+			builder.withValidatorClasses(DefaultDtObjectValidator.class);
+		} else if (EndPointTypeHelper.isAssignableFrom(DtListDelta.class, paramType)) {
 			builder.withValidatorClasses(DefaultDtObjectValidator.class);
 		} else if (ImplicitParam.UiMessageStack.getImplicitType().equals(paramType)) {
 			builder.with(RestParamType.Implicit, ImplicitParam.UiMessageStack.name());
@@ -162,4 +167,5 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 		}
 		return builder.build();
 	}
+
 }
