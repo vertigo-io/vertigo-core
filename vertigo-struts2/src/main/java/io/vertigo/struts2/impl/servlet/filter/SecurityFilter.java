@@ -43,9 +43,9 @@ import javax.servlet.http.HttpSession;
 public final class SecurityFilter extends AbstractFilter {
 
 	/**
-	 * Nom de l'objet KUserSession dans la session J2EE
+	 * Nom de l'objet Session dans la session J2EE
 	 */
-	private static final String USER_SESSION = "kasper.controller.Session";
+	private static final String USER_SESSION = "io.vertigo.Session";
 
 	private static final String NO_AUTHENTIFICATION_PATTERN_PARAM_NAME = "url-no-authentification";
 
