@@ -24,7 +24,7 @@ limitations under the License. -->
 	<name>vertigo-parent</name>
 	<packaging>pom</packaging>
 	<description>Vertigo is a simple java project starter</description>
-	<url>http://vertigo.io</url>
+	<url>https://github.com/KleeGroup/vertigo</url>
 
 	<licenses>
 		<license>
@@ -33,6 +33,13 @@ limitations under the License. -->
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+	
+	<scm>
+		<connection>scm:git:https://github.com/KleeGroup/vertigo.git</connection>
+		<developerConnection>scm:git:https://github.com/KleeGroup/vertigo.git</developerConnection>
+		<url>scm:git:https://github.com/KleeGroup/vertigo.git</url>
+		<tag>vertigo-0.5.1</tag>
+	</scm>
 
 	<developers>
 		<developer>
@@ -160,6 +167,20 @@ limitations under the License. -->
 				</executions>
 			</plugin>
 			<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-gpg-plugin</artifactId>
+				<version>1.5</version>
+		        <executions>
+		          <execution>
+		            <id>sign-artifacts</id>
+		            <phase>verify</phase>
+		            <goals>
+		              <goal>sign</goal>
+		            </goals>
+		          </execution>
+		        </executions>
+	      	</plugin>
+			<plugin>
 				<!-- explicitly define maven-deploy-plugin after other to force exec order -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
@@ -176,20 +197,19 @@ limitations under the License. -->
 			</plugin>
 		</plugins>
 	</build>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>atlassian-public</id>
-			<url>https://maven.atlassian.com/content/groups/public/</url>
-			<releases>
-				<checksumPolicy>fail</checksumPolicy>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<checksumPolicy>fail</checksumPolicy>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
+	
+	<distributionManagement>
+	  <repository>
+		<id>sonatype-nexus-staging</id>
+		<name>Sonatype Nexus release repository</name>
+		<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+	  </repository>	  
+	  <snapshotRepository>
+	     <id>nexus</id>
+	     <name>Internal Releases</name>
+	     <url>http://kleegroup-nexus:8080/nexus/content/repositories/snapshots/</url>
+	  </snapshotRepository>
+	</distributionManagement>
 
 	<dependencies>
 		<dependency>

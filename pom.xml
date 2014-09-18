@@ -59,13 +59,6 @@ limitations under the License. -->
 		<module>vertigo-bundle</module>
 	</modules>
 
-	<scm>
-		<connection>scm:git:https://github.com/KleeGroup/vertigo.git</connection>
-		<developerConnection>scm:git:https://github.com/KleeGroup/vertigo.git</developerConnection>
-		<url>scm:git:https://github.com/KleeGroup/vertigo.git</url>
-		<tag>vertigo-0.4.0</tag>
-	</scm>
-
 	<build>
 		<plugins>
 			<plugin>
