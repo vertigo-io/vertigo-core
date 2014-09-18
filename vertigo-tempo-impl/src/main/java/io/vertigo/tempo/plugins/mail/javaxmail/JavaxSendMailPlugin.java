@@ -138,7 +138,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 			Transport.send(message);
 			mailSent++; //on ne synchronize pas pour des stats peu importantes
 		} catch (final MessagingException e) {
-			throw createMailException(Resources.KASPER_MAIL_SERVER_TIMEOUT, e);
+			throw createMailException(Resources.TEMPO_MAIL_SERVER_TIMEOUT, e);
 		} catch (final UnsupportedEncodingException e) {
 			throw new RuntimeException("Probleme d'encodage lors de l'envoi du mail", e);
 		}
@@ -153,7 +153,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 			message.setFrom(createInternetAddress(from));
 		} catch (final AddressException e) {
 			//on catch ici, pour pouvoir indiquer l'adresse qui pose pb
-			throw createMailException(Resources.KASPER_MAIL_ADRESS_MAIL_INVALID, e, from);
+			throw createMailException(Resources.TEMPO_MAIL_ADRESS_MAIL_INVALID, e, from);
 		}
 	}
 
@@ -166,7 +166,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 			message.setReplyTo(replyToArray);
 		} catch (final AddressException e) {
 			//on catch ici, pour pouvoir indiquer l'adresse qui pose pb
-			throw createMailException(Resources.KASPER_MAIL_ADRESS_MAIL_INVALID, e, replyTo);
+			throw createMailException(Resources.TEMPO_MAIL_ADRESS_MAIL_INVALID, e, replyTo);
 		}
 	}
 
@@ -201,7 +201,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 				}
 			} catch (final AddressException e) {
 				//on catch ici, pour pouvoir indiquer l'adresse qui pose pb
-				throw createMailException(Resources.KASPER_MAIL_ADRESS_MAIL_INVALID, e, addressList.get(i));
+				throw createMailException(Resources.TEMPO_MAIL_ADRESS_MAIL_INVALID, e, addressList.get(i));
 			}
 		}
 		message.setRecipients(type, addresses);

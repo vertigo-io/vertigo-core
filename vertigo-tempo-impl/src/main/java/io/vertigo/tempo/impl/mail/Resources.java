@@ -29,11 +29,11 @@ public enum Resources implements MessageKey {
 	/**
 	 * L''adresse email {0} n''est pas correct.
 	 */
-	KASPER_MAIL_ADRESS_MAIL_INVALID,
+	TEMPO_MAIL_ADRESS_MAIL_INVALID,
 
 	/**
 	 * Le serveur mail {0}:{1} ne répond pas.
 	 */
-	KASPER_MAIL_SERVER_TIMEOUT,
+	TEMPO_MAIL_SERVER_TIMEOUT,
 
 }
