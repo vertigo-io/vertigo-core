@@ -28,6 +28,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.opensymphony.xwork2.ActionContext;
 
@@ -47,6 +48,14 @@ public final class UiUtil implements Serializable {
 		final ActionContext actionContext = ActionContext.getContext();
 		final KActionContext kActionContext = ((AbstractActionSupport) actionContext.getActionInvocation().getAction()).getModel();
 		return kActionContext.findKey(uiObject);
+	}
+
+	/**
+	* @param uiObject Object du context
+	* @return index de l'objet dans sa liste
+	*/
+	public final int indexOf(final List<?> uiList, final UiObject<?> uiObject) {
+		return uiList.indexOf(uiObject);
 	}
 
 	/**
