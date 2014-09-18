@@ -17,5 +17,11 @@
 <#if parameters.cssClass?? >
  ${parameters.cssClass?html}<#rt/>
 </#if>
-">${util.formatBoolean(parameters.name,parameters.nameValue!false)}<#rt/>
+"><#rt/>
+<#assign itemValue = stack.findValue(parameters.name)?default('')/>
+<#if itemValue?is_enumerable && parameters.fieldValue?? >
+	${util.formatBoolean(parameters.name,itemValue?seq_contains(parameters.fieldValue?html)!false)}<#rt/>	
+<#else>
+	${util.formatBoolean(parameters.name,parameters.nameValue!false)}<#rt/>
+</#if>
 </span><#rt/>

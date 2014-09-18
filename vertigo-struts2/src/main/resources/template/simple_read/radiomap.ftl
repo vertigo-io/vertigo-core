@@ -19,12 +19,14 @@
 ><#t/>
 <#if parameters.headerKey?? && parameters.headerValue?? && tag.contains(parameters.nameValue, parameters.headerKey) == true>
  ${parameters.headerValue?html}<#t/>
-</#if>
+<#else>
 <#if parameters.nameValue?? && parameters.nameValue!='' >
 <#if parameters.list.getById??>
-<#assign uiObject = parameters.list.getById(parameters.listKey, parameters.nameValue) />
+<#assign paramListKey = parameters.listKey!util.getIdField(parameters.list) />
+<#assign paramListValue = parameters.listValue!util.getDisplayField(parameters.list) />
+<#assign uiObject = parameters.list.getById(paramListKey, parameters.nameValue) />
 <#if uiObject??>
- ${uiObject[parameters.listValue]?html?replace("\n", "<br/>")}<#t/>
+ ${uiObject[paramListValue]?html?replace("\n", "<br/>")}<#t/>
 </#if>
 <#else><#-- si pas de getById : liste ou map brute -->
 <#list parameters.list as entry>
@@ -32,6 +34,7 @@
  ${entry.value?html?replace("\n", "<br/>")}<#t/>
 </#if>
 </#list>
+</#if>
 </#if>
 </#if>
 </span><#t/>
