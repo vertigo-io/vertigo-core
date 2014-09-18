@@ -36,9 +36,9 @@ import com.opensymphony.xwork2.config.entities.ActionConfig;
 /**
  * Gestion du passage de paramètres aux Actions.
  * A ajouter dans le struts.xml :
- * <bean type="com.opensymphony.xwork2.UnknownHandler" name="handler" class="kasperimpl.ui.struts.unknownhandler.InjectParamsToActionMethodHandler"/>
+ * <bean type="com.opensymphony.xwork2.UnknownHandler" name="handler" class="io.vertigo.struts2.impl.unknownhandler.InjectParamsToActionMethodHandler"/>
  * 
- * Pour en d�clarer plusieurs rechercher "Stacking Unknown Handlers".
+ * Pour en déclarer plusieurs rechercher "Stacking Unknown Handlers".
  * @see "http://struts.apache.org/release/2.3.x/docs/unknown-handlers.html"
  * 
  * @author npiedeloup
