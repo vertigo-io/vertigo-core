@@ -88,33 +88,7 @@ public final class ContextListModifiable<O extends DtObject> {
 	/**
 	 * @return List des objets d'IHM. Peut contenir des erreurs.
 	 */
-	public UiList<O> getUiList() {
-		return action.getModel().getUiList(contextKey);
-	}
-
-	private UiListModifiable<O> getUiListModifiable() {
+	public UiListModifiable<O> getUiListModifiable() {
 		return action.getModel().getUiListModifiable(contextKey);
 	}
-
-	/**
-	 * @return List des objets supprim�s
-	 */
-	public DtList<O> getRemovedList() {
-		return getUiListModifiable().getRemovedList();
-	}
-
-	/**
-	 * @return List des objets ajoutés
-	 */
-	public DtList<O> getAddedList() {
-		return getUiListModifiable().getAddedList();
-	}
-
-	/**
-	 * @return List des objets modifiés
-	 */
-	public DtList<O> getModifiedList() {
-		return getUiListModifiable().getModifiedList();
-	}
-
 }

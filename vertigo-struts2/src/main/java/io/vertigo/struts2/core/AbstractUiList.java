@@ -43,7 +43,7 @@ import java.util.Map;
  * @author npiedeloup
  * @param <D> Type d'objet
  */
-abstract class AbstractUiList<D extends DtObject> extends AbstractList<UiObject<D>> implements Serializable {
+public abstract class AbstractUiList<D extends DtObject> extends AbstractList<UiObject<D>> implements Serializable {
 	private static final long serialVersionUID = 5475819598230056558L;
 
 	/**
@@ -80,7 +80,7 @@ abstract class AbstractUiList<D extends DtObject> extends AbstractList<UiObject<
 
 	/**
 	 * Initialize l'index des UiObjects par Id.
-	 * Attention : n�cessite la DtList (appel obtainDtList).
+	 * Attention : nécessite la DtList (appel obtainDtList).
 	 */
 	protected final void initUiObjectByIdIndex() {
 		if (camelIdFieldName != null) {
@@ -90,7 +90,7 @@ abstract class AbstractUiList<D extends DtObject> extends AbstractList<UiObject<
 
 	/**
 	 * Initialize l'index des UiObjects par Clé.
-	 * Attention : n�cessite la DtList (appel obtainDtList).
+	 * Attention : nécessite la DtList (appel obtainDtList).
 	 * @param keyFieldName Nom du champs à indexer
 	 */
 	public final void initUiObjectByKeyIndex(final String keyFieldName) {

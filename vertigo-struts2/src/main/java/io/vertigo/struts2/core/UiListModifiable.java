@@ -38,7 +38,7 @@ import java.util.Map;
  * @author npiedeloup
  * @param <D> Type d'objet
  */
-final class UiListModifiable<D extends DtObject> extends AbstractList<UiObject<D>> implements UiList<D>, Serializable {
+public final class UiListModifiable<D extends DtObject> extends AbstractList<UiObject<D>> implements UiList<D>, Serializable {
 
 	private static final long serialVersionUID = -8398542301760300787L;
 
