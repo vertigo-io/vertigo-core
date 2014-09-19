@@ -59,6 +59,8 @@ public final class WsRestRoute extends Route {
 		new Injector().injectMembers(this, Home.getComponentSpace());
 
 		handlerChain.addHandler(new ExceptionHandler(jsonEngine));
+		handlerChain.addHandler(new MultipartHandler());
+
 		if (endPointDefinition.isSessionInvalidate()) {
 			handlerChain.addHandler(new SessionInvalidateHandler());
 		}
@@ -91,4 +93,5 @@ public final class WsRestRoute extends Route {
 			return th.getMessage();
 		}
 	}
+
 }

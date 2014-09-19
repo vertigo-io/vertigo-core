@@ -18,6 +18,8 @@
  */
 package io.vertigo.vega.impl.rest.filter;
 
+import io.vertigo.vega.impl.rest.multipart.ApacheMultipartHelper;
+
 import javax.servlet.MultipartConfigElement;
 
 import spark.Filter;
@@ -25,22 +27,24 @@ import spark.Request;
 import spark.Response;
 
 /**
- * Filter to configure MultipartConfigElement for Jetty Request.
+ * Filter to configure MultipartConfigElement when Servlet 3.0 getPart don't work.
  * @author npiedeloup
  */
-public final class JettyMultipartConfig extends Filter {
-	private static final String JETTY_CONFIG_ATTRIBUTE = org.eclipse.jetty.server.Request.__MULTIPART_CONFIG_ELEMENT;//"org.eclipse.multipartConfig";
+public final class VegaMultipartConfig extends Filter {
+	private static final String CONFIG_ATTRIBUTE = ApacheMultipartHelper.MULTIPART_CONFIG_ELEMENT;
 	private final MultipartConfigElement multipartConfigElement;
 
-	public JettyMultipartConfig(final String tempPath) {
+	/**
+	 * @param tempPath Temp Path
+	 */
+	public VegaMultipartConfig(final String tempPath) {
 		multipartConfigElement = new MultipartConfigElement(tempPath, 30 * 1024 * 1024L, 5 * 30 * 1024 * 1024L, 50 * 1024);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void handle(final Request request, final Response response) {
-		request.raw().setAttribute(JETTY_CONFIG_ATTRIBUTE, multipartConfigElement);
-
+		request.raw().setAttribute(CONFIG_ATTRIBUTE, multipartConfigElement);
 	}
 
 }
