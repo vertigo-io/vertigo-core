@@ -28,6 +28,8 @@ import io.vertigo.vega.security.UiSecurityTokenManager;
 
 import javax.inject.Inject;
 
+import org.apache.log4j.Logger;
+
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -38,6 +40,7 @@ import spark.Route;
  */
 public final class WsRestRoute extends Route {
 
+	private final Logger logger = Logger.getLogger(getClass());
 	//	private ExceptionHandler exceptionHandler;
 	//	private SessionHandler sessionHandler;
 	//	private SecurityHandler securityHandler;
@@ -59,7 +62,6 @@ public final class WsRestRoute extends Route {
 		new Injector().injectMembers(this, Home.getComponentSpace());
 
 		handlerChain.addHandler(new ExceptionHandler(jsonEngine));
-		handlerChain.addHandler(new MultipartHandler());
 
 		if (endPointDefinition.isSessionInvalidate()) {
 			handlerChain.addHandler(new SessionInvalidateHandler());
@@ -88,8 +90,7 @@ public final class WsRestRoute extends Route {
 		try {
 			return handlerChain.handle(request, response, new RouteContext(request));
 		} catch (final Throwable th) {
-			System.err.println("Error " + th.getMessage()); //Use Logger
-			th.printStackTrace(System.err);
+			logger.error(th);
 			return th.getMessage();
 		}
 	}

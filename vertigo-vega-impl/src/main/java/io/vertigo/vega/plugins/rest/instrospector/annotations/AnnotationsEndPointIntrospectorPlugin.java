@@ -151,7 +151,7 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 			} else if (annotation instanceof QueryParam) {
 				builder.with(RestParamType.Query, ((QueryParam) annotation).value());
 			} else if (annotation instanceof InnerBodyParam) {
-				builder.with(RestParamType.MultiPartBody, ((InnerBodyParam) annotation).value());
+				builder.with(RestParamType.InnerBody, ((InnerBodyParam) annotation).value());
 			} else if (annotation instanceof Validate) {
 				builder.withValidatorClasses(((Validate) annotation).value());
 			} else if (annotation instanceof ExcludedFields) {

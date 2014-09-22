@@ -82,7 +82,7 @@ final class JsonConverterHandler implements RouteHandler {
 
 	/** {@inheritDoc}  */
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
-		final UiContext multiPartBodyParsed = readMultiPartValue(request.body(), endPointDefinition.getEndPointParams());
+		UiContext innerBodyParsed = null; //we can't read body at first : because if it's a multipart request call body() disabled getParts() access.
 		for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
 			final Object value;
 			if (KFileHelper.isKFileParam(endPointParam)) {
@@ -92,8 +92,11 @@ final class JsonConverterHandler implements RouteHandler {
 					case Body:
 						value = readValue(request.body(), endPointParam);
 						break;
-					case MultiPartBody:
-						value = multiPartBodyParsed.get(endPointParam.getName());
+					case InnerBody:
+						if (innerBodyParsed == null) {
+							innerBodyParsed = readInnerBodyValue(request.body(), endPointDefinition.getEndPointParams());
+						}
+						value = innerBodyParsed.get(endPointParam.getName());
 						break;
 					case Path:
 						value = readPrimitiveValue(request.params(endPointParam.getName()), endPointParam.getType());
@@ -155,18 +158,18 @@ final class JsonConverterHandler implements RouteHandler {
 		}
 	}
 
-	private UiContext readMultiPartValue(final String jsonBody, final List<EndPointParam> endPointParams) throws VSecurityException {
-		final List<EndPointParam> multiPartEndPointParams = new ArrayList<>();
-		final Map<String, Type> multiPartBodyParams = new HashMap<>();
+	private UiContext readInnerBodyValue(final String jsonBody, final List<EndPointParam> endPointParams) throws VSecurityException {
+		final List<EndPointParam> innerBodyEndPointParams = new ArrayList<>();
+		final Map<String, Type> innerBodyParams = new HashMap<>();
 		for (final EndPointParam endPointParam : endPointParams) {
-			if (endPointParam.getParamType() == RestParamType.MultiPartBody || endPointParam.getParamType() == RestParamType.Implicit) {
-				multiPartEndPointParams.add(endPointParam);
-				multiPartBodyParams.put(endPointParam.getName(), endPointParam.getGenericType());
+			if (endPointParam.getParamType() == RestParamType.InnerBody || endPointParam.getParamType() == RestParamType.Implicit) {
+				innerBodyEndPointParams.add(endPointParam);
+				innerBodyParams.put(endPointParam.getName(), endPointParam.getGenericType());
 			}
 		}
-		if (!multiPartBodyParams.isEmpty()) {
-			final UiContext uiContext = jsonReaderEngine.uiContextFromJson(jsonBody, multiPartBodyParams);
-			for (final EndPointParam endPointParam : multiPartEndPointParams) {
+		if (!innerBodyParams.isEmpty()) {
+			final UiContext uiContext = jsonReaderEngine.uiContextFromJson(jsonBody, innerBodyParams);
+			for (final EndPointParam endPointParam : innerBodyEndPointParams) {
 				final Serializable value = uiContext.get(endPointParam.getName());
 				if (value instanceof UiObject) {
 					postReadUiObject((UiObject<DtObject>) value, endPointParam.getName(), endPointParam, uiSecurityTokenManager);
@@ -338,4 +341,5 @@ final class JsonConverterHandler implements RouteHandler {
 		}
 		return jsonWriterEngine.toJson(value, endPointDefinition.getIncludedFields(), endPointDefinition.getExcludedFields());
 	}
+
 }

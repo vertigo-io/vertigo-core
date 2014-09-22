@@ -56,7 +56,7 @@ import io.vertigo.persona.impl.security.KSecurityManagerImpl;
 import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.vega.impl.rest.RestManagerImpl;
 import io.vertigo.vega.impl.rest.catalog.CatalogRestServices;
-import io.vertigo.vega.impl.rest.filter.VegaMultipartConfig;
+import io.vertigo.vega.impl.rest.filter.JettyMultipartConfig;
 import io.vertigo.vega.impl.rest.handler.RateLimitingHandler;
 import io.vertigo.vega.impl.security.UiSecurityTokenManagerImpl;
 import io.vertigo.vega.plugins.rest.instrospector.annotations.AnnotationsEndPointIntrospectorPlugin;
@@ -185,8 +185,8 @@ public final class WsRestHandler {
 		//Spark.before(new CorsAllower());
 		//Translate EndPoint to route
 		final String tempDir = System.getProperty("java.io.tmpdir");
-		//Spark.before(new JettyMultipartConfig(tempDir));
-		Spark.before(new VegaMultipartConfig(tempDir));
+		Spark.before(new JettyMultipartConfig(tempDir));
+		//Spark.before(new VegaMultipartConfig(tempDir));
 
 		new SparkJavaRoutesRegister().init();
 	}

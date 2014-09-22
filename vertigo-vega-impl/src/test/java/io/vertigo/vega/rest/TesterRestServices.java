@@ -402,8 +402,8 @@ public final class TesterRestServices implements RestfulService {
 	}
 
 	@Doc("Test ws-rest multipart body with objects. Send a body with an object of to field : contactFrom, contactTo. Each one should be an json of Contact.")
-	@POST("/multipart")
-	public List<Contact> testMultiPartBodyObject(@InnerBodyParam("contactFrom") final Contact contactFrom, @InnerBodyParam("contactTo") final Contact contactTo) {
+	@POST("/innerbody")
+	public List<Contact> testInnerBodyObject(@InnerBodyParam("contactFrom") final Contact contactFrom, @InnerBodyParam("contactTo") final Contact contactTo) {
 		final List<Contact> result = new ArrayList<>(2);
 		result.add(contactFrom);
 		result.add(contactTo);
@@ -415,8 +415,8 @@ public final class TesterRestServices implements RestfulService {
 	@Doc("Test ws-rest multipart body with primitives. Send a body with an object of to field : contactId1, contactId2. Each one should be an json of long.")
 	@ServerSideSave
 	@ExcludedFields({ "address", "tels" })
-	@POST("/multipartLong")
-	public DtList<Contact> testMultiPartBodyLong(@InnerBodyParam("contactId1") final long contactIdFrom, @InnerBodyParam("contactId2") final long contactIdTo) {
+	@POST("/innerLong")
+	public DtList<Contact> testInnerBodyLong(@InnerBodyParam("contactId1") final long contactIdFrom, @InnerBodyParam("contactId2") final long contactIdTo) {
 		final DtList<Contact> result = new DtList<>(Contact.class);
 		result.add(contacts.get(contactIdFrom));
 		result.add(contacts.get(contactIdTo));
@@ -429,7 +429,7 @@ public final class TesterRestServices implements RestfulService {
 	@ServerSideSave
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
 	@POST("/uiContext")
-	public UiContext testMultiPartBody(@InnerBodyParam("contactId1") final long contactIdFrom, @InnerBodyParam("contactId2") final long contactIdTo) {
+	public UiContext testInnerBody(@InnerBodyParam("contactId1") final long contactIdFrom, @InnerBodyParam("contactId2") final long contactIdTo) {
 		final UiContext uiContext = new UiContext();
 		uiContext.put("contactFrom", contacts.get(contactIdFrom));
 		uiContext.put("contactTo", contacts.get(contactIdTo));
@@ -457,8 +457,8 @@ public final class TesterRestServices implements RestfulService {
 	}
 
 	@Doc("Test ws-rest multipart body with serverSide objects. Send a body with an object of to field : contactFrom, contactTo. Each one should be an partial json of Contact with clientId.")
-	@POST("/multipartServerClient")
-	public List<Contact> testMultiPartBodyClientId(//
+	@POST("/innerBodyServerClient")
+	public List<Contact> testInnerBodyClientId(//
 			@InnerBodyParam("contactFrom") @ServerSideRead final Contact contactFrom, //
 			@InnerBodyParam("contactTo") @ServerSideRead final Contact contactTo) {
 		final List<Contact> result = new ArrayList<>(2);

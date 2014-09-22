@@ -45,6 +45,11 @@ final class KFileHelper {
 		//nothing
 	}
 
+	static boolean isMultipartRequest(final Request request) {
+		final String contentType = request.contentType();
+		return "POST".equalsIgnoreCase(request.raw().getMethod()) && contentType != null && contentType.startsWith("multipart/form-data");
+	}
+
 	static boolean isKFileParam(final EndPointParam endPointParam) {
 		return KFile.class.isAssignableFrom(endPointParam.getType());
 	}
@@ -54,11 +59,11 @@ final class KFileHelper {
 			case Query:
 				return readQueryFile(request, endPointParam);
 			case Body:
-			case MultiPartBody:
+			case InnerBody:
 			case Path:
 			case Implicit:
 			default:
-				throw new IllegalArgumentException("Files are only read from a Multipart Form parameter (RestParamType.Query) : " + endPointParam.getFullName());
+				throw new IllegalArgumentException("Files are only read from a Multipart Form parameter (use @QueryParam) : " + endPointParam.getFullName());
 		}
 	}
 
@@ -165,9 +170,7 @@ final class KFileHelper {
 	}
 
 	private static KFile createKFile(final Part file) {
-		//final String fileName = Home.getComponentSpace().resolve(CodecManager.class).getHtmlCodec().decode(file.getName());
-		final String fileName = file.getName(); //TODO : check if encoded fileName ?
-
+		final String fileName = getSubmittedFileName(file);
 		String mimeType = file.getContentType();
 		if (mimeType == null) {
 			mimeType = "application/octet-stream";
@@ -178,6 +181,21 @@ final class KFileHelper {
 				return file.getInputStream();
 			}
 		});
+	}
+
+	private static String getSubmittedFileName(final Part filePart) {
+		//final String fileName = Home.getComponentSpace().resolve(CodecManager.class).getHtmlCodec().decode(file.getName());
+		//TODO : check if encoded fileName ?
+		final String header = filePart.getHeader("content-disposition");
+		if (header == null) {
+			return null;
+		}
+		for (final String headerPart : header.split(";")) {
+			if (headerPart.trim().startsWith("filename")) {
+				return headerPart.substring(headerPart.indexOf('=') + 1).trim().replace("\"", "");
+			}
+		}
+		return null;
 	}
 
 }
