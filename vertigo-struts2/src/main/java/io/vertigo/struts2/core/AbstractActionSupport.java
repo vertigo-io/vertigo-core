@@ -24,7 +24,7 @@ import io.vertigo.core.di.injector.Injector;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.struts2.context.ContextCacheManager;
 import io.vertigo.struts2.exception.ExpiredContextException;
-import io.vertigo.struts2.exception.KSecurityException;
+import io.vertigo.struts2.exception.VSecurityException;
 
 import java.io.IOException;
 import java.lang.annotation.ElementType;
@@ -94,12 +94,12 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 
 	/** {@inheritDoc} */
 	@Override
-	public final void prepare() throws ExpiredContextException, KSecurityException {
+	public final void prepare() throws ExpiredContextException, VSecurityException {
 		final HttpServletRequest request = ServletActionContext.getRequest();
 		prepareContext(request);
 	}
 
-	private void prepareContext(final HttpServletRequest request) throws ExpiredContextException, KSecurityException {
+	private void prepareContext(final HttpServletRequest request) throws ExpiredContextException, VSecurityException {
 		final String ctxId = request.getParameter(KActionContext.CTX);
 		if ("POST".equals(request.getMethod()) || (ctxId != null && acceptCtxQueryParam())) {
 			if (ctxId == null) {
@@ -143,9 +143,9 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	 * final RequestContainerWrapper container = new RequestContainerWrapper(ServletActionContext.getRequest());
 	 * MethodUtil.invoke(this, "initContext", container);
 	 * </code>
-	 * @throws KSecurityException Si erreur de sécurité
+	 * @throws VSecurityException Si erreur de sécurité
 	 */
-	protected abstract void initContext() throws KSecurityException;
+	protected abstract void initContext() throws VSecurityException;
 
 	/**
 	 * Preinitialisation du context, pour ajouter les composants standard.
