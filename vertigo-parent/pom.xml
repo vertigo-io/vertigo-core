@@ -179,7 +179,7 @@ limitations under the License. -->
 		            </goals>
 		          </execution>
 		        </executions>
-	      	</plugin>
+	      	</plugin>	      	
 			<plugin>
 				<!-- explicitly define maven-deploy-plugin after other to force exec order -->
 				<groupId>org.apache.maven.plugins</groupId>
@@ -195,20 +195,31 @@ limitations under the License. -->
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
+					<useReleaseProfile>false</useReleaseProfile>
+					<releaseProfiles>release</releaseProfiles>
+					<goals>deploy</goals>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	
 	<distributionManagement>
-	  <repository>
-		<id>sonatype-nexus-staging</id>
-		<name>Sonatype Nexus release repository</name>
+	  <!-- <repository>
+		<id>ossrh</id>
+		<name>OSSRH Releases</name>
 		<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-	  </repository>	  
+	  </repository>
 	  <snapshotRepository>
-	     <id>nexus</id>
-	     <name>Internal Releases</name>
-	     <url>http://kleegroup-nexus:8080/nexus/content/repositories/snapshots/</url>
-	  </snapshotRepository>
+	     <id>ossrh</id>
+	     <name>OSSRH Snapshot</name>
+	     <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+	  </snapshotRepository> -->
 	</distributionManagement>
 
 	<dependencies>
