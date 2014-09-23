@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.vertigo</groupId>
@@ -7,14 +8,18 @@
 		<version>0.5.2</version>
 		<relativePath>../vertigo-parent</relativePath>
 	</parent>
-	
+
 	<description>Bundle of Vertigo : A simple java project starter</description>
 	<url>http://vertigo.io</url>
-  
+
 	<artifactId>vertigo-bundle</artifactId>
 	<packaging>jar</packaging>
 	<name>vertigo-bundle</name>
-	
+
+	<properties>
+		<gen-src-dir>${basedir}/src/main/java</gen-src-dir>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>io.vertigo</groupId>
@@ -41,99 +46,467 @@
 			<artifactId>vertigo-dynamo-impl</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-				
+
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-persona-api</artifactId>
-			<version>${project.version}</version>			
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-persona-impl</artifactId>
-			<version>${project.version}</version>			
+			<version>${project.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-quarto-api</artifactId>
-			<version>${project.version}</version>			
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-quarto-impl</artifactId>
-			<version>${project.version}</version>			
+			<version>${project.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-vega-api</artifactId>
-			<version>${project.version}</version>			
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-vega-impl</artifactId>
-			<version>${project.version}</version>			
+			<version>${project.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-tempo-api</artifactId>
-			<version>${project.version}</version>			
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-tempo-impl</artifactId>
-			<version>${project.version}</version>			
+			<version>${project.version}</version>
+		</dependency>
+
+<!-- Dependencies for compilation -->
+
+		<!-- kvdatastore -->
+		<dependency>
+			<groupId>com.sleepycat</groupId>
+			<artifactId>je</artifactId>
+			<version>5.0.73</version>
+		</dependency>
+
+		<!-- CollectionsManager/LuceneIndexPlugin -->
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+			<version>4.10.0</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-analyzers-common</artifactId>
+			<version>4.10.0</version>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId><!-- no official version, but Hibernate publish this jar which contains only the API -->
+			<artifactId>hibernate-jpa-2.1-api</artifactId>
+			<version>1.0.0.Final</version>
+			<optional>true</optional> <!-- HibernateStorePlugin -->
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>4.3.6.Final</version>
+			<optional>true</optional> <!-- HibernateConnectionProviderPlugin -->
+		</dependency>
+
+		<!-- Search -->
+		<dependency>
+			<groupId>org.apache.solr</groupId>
+			<artifactId>solr-solrj</artifactId>
+			<version>4.10.0</version>
+			<optional>true</optional><!-- plugins.solr -->
+		</dependency>
+		<!-- Because solr does not manage her own dependencies properly -->
+
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.3</version>
+		</dependency>
+
+		<!-- Distributed -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.3</version>
+		</dependency>
+		<!-- REST distributed impl dependency-->
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>1.18.1</version>
+			<optional>true</optional> <!-- REST DistributedWork impl -->
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>1.18.1</version>
+			<optional>true</optional> <!-- REST DistributedWork impl  -->
+		</dependency>
+		<!-- REST DistributedWork test  -->
+		<dependency>
+		    <groupId>redis.clients</groupId>
+		    <artifactId>jedis</artifactId>
+   			 <version>2.5.2</version>
+		    <optional>true</optional><!-- REDIS DistributedWork impl  -->
+		</dependency>
+		<!-- /Distributed -->
+
+		<dependency>
+			<!--Embedded Server for tests -->
+			<artifactId>solr-core</artifactId>
+			<groupId>org.apache.solr</groupId>
+			<version>4.10.0</version>
+			<optional>true</optional><!-- EmbeddedSolrSearchServicesPlugin -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.hadoop</groupId>
+  					<artifactId>hadoop-annotations</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>woodstox</groupId>
+					<artifactId>wstx-asl</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>antlr</groupId>
+					<artifactId>antlr</artifactId>
+				</exclusion>
+				<!-- exclusion> <groupId>commons-fileupload</groupId> <artifactId>commons-fileupload</artifactId> </exclusion -->
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+			<optional>true</optional><!-- EmbeddedSolrSearchServicesPlugin -->
 		</dependency>
 		
+		<!--FileManager-->
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<!-- /FileManager-->
+
+		<!--exporter-->
+		<dependency>
+			<groupId>com.lowagie</groupId>
+			<artifactId>itext</artifactId>
+			<version>4.2.1</version> <!-- dernière version en license LGPL/MPL -->
+			<optional>true</optional>
+			<exclusions>
+				<!-- BouncyCastle est utilisé pour ouvrir les pdf sécurisés Donc non utilisé pour les générations. -->
+				<exclusion>
+					<groupId>bouncycastle</groupId>
+					<artifactId>bcmail-jdk14</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>bouncycastle</groupId>
+					<artifactId>bcprov-jdk14</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>bouncycastle</groupId>
+					<artifactId>bctsp-jdk14</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>xml-apis</groupId>
+			<artifactId>xml-apis</artifactId>
+			<version>1.3.04</version> <!-- com.lowagie 4.2.0 contient la 1.0.b2 qui est incompatible avec le jdk 7 (sur Node) -->
+			<optional>true</optional>			
+		</dependency>
+		<dependency>
+			<groupId>com.lowagie</groupId>
+			<artifactId>itext-rtf</artifactId>
+			<version>2.1.7</version>
+			<optional>true</optional>
+			<exclusions>
+				<exclusion>
+					<groupId>bouncycastle</groupId>
+					<artifactId>bcmail-jdk14</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>bouncycastle</groupId>
+					<artifactId>bcprov-jdk14</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>bouncycastle</groupId>
+					<artifactId>bctsp-jdk14</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.10.1</version>
+			<optional>true</optional>
+		</dependency>
+<!--Open Office dependencies-->
+		<dependency>
+			<groupId>org.openoffice</groupId>
+			<artifactId>juh</artifactId>
+			<version>3.2.1</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.openoffice</groupId>
+			<artifactId>jurt</artifactId>
+			<version>3.2.1</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.openoffice</groupId>
+			<artifactId>ridl</artifactId>
+			<version>3.2.1</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.openoffice</groupId>
+			<artifactId>unoil</artifactId>
+			<version>3.2.1</version>
+			<optional>true</optional>
+		</dependency>	
 	</dependencies>
-	
+
 	<build>
-    <plugins>
-    	<!-- plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>2.3</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <artifactSet>
-              	 <includes>
-                  <include>io.vertigo:vertigo-core:jar:</include>
-                  <include>io.vertigo:vertigo-commons-api:jar:</include>
-                </includes>
-              </artifactSet>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin -->
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <version>2.4</version>
-            <configuration>
-  							<appendAssemblyId>false</appendAssemblyId>
-                <descriptors>
-                    <descriptor>./bundleAssembly.xml</descriptor>
-                </descriptors>
-                <archive>
-                </archive>
-            </configuration>
-            <executions>
-                <execution>
-                    <id>make-assembly</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>single</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-    </plugins>
-  </build>
-		
+		<resources>
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>${gen-src-dir}</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.3</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<!-- want to unpack sources from individual modules -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>io.vertigo</groupId>
+									<artifactId>vertigo-core</artifactId>
+									<version>${project.version}</version>
+									<type>jar</type>
+									<classifier>sources</classifier>
+									<overWrite>false</overWrite>
+									<outputDirectory>${gen-src-dir}</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>io.vertigo</groupId>
+									<artifactId>vertigo-commons-api</artifactId>
+									<version>${project.version}</version>
+									<type>jar</type>
+									<classifier>sources</classifier>
+									<overWrite>false</overWrite>
+									<outputDirectory>${gen-src-dir}</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>io.vertigo</groupId>
+									<artifactId>vertigo-commons-impl</artifactId>
+									<version>${project.version}</version>
+									<type>jar</type>
+									<classifier>sources</classifier>
+									<overWrite>false</overWrite>
+									<outputDirectory>${gen-src-dir}</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>io.vertigo</groupId>
+									<artifactId>vertigo-dynamo-api</artifactId>
+									<version>${project.version}</version>
+									<type>jar</type>
+									<classifier>sources</classifier>
+									<overWrite>false</overWrite>
+									<outputDirectory>${gen-src-dir}</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>io.vertigo</groupId>
+									<artifactId>vertigo-dynamo-impl</artifactId>
+									<version>${project.version}</version>
+									<type>jar</type>
+									<classifier>sources</classifier>
+									<overWrite>false</overWrite>
+									<outputDirectory>${gen-src-dir}</outputDirectory>
+								</artifactItem>
+
+								<artifactItem>
+									<groupId>io.vertigo</groupId>
+									<artifactId>vertigo-persona-api</artifactId>
+									<version>${project.version}</version>
+									<type>jar</type>
+									<classifier>sources</classifier>
+									<overWrite>false</overWrite>
+									<outputDirectory>${gen-src-dir}</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>io.vertigo</groupId>
+									<artifactId>vertigo-persona-impl</artifactId>
+									<version>${project.version}</version>
+									<type>jar</type>
+									<classifier>sources</classifier>
+									<overWrite>false</overWrite>
+									<outputDirectory>${gen-src-dir}</outputDirectory>
+								</artifactItem>
+
+								<artifactItem>
+									<groupId>io.vertigo</groupId>
+									<artifactId>vertigo-quarto-api</artifactId>
+									<version>${project.version}</version>
+									<type>jar</type>
+									<classifier>sources</classifier>
+									<overWrite>false</overWrite>
+									<outputDirectory>${gen-src-dir}</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>io.vertigo</groupId>
+									<artifactId>vertigo-quarto-impl</artifactId>
+									<version>${project.version}</version>
+									<type>jar</type>
+									<classifier>sources</classifier>
+									<overWrite>false</overWrite>
+									<outputDirectory>${gen-src-dir}</outputDirectory>
+								</artifactItem>
+
+								<artifactItem>
+									<groupId>io.vertigo</groupId>
+									<artifactId>vertigo-vega-api</artifactId>
+									<version>${project.version}</version>
+									<type>jar</type>
+									<classifier>sources</classifier>
+									<overWrite>false</overWrite>
+									<outputDirectory>${gen-src-dir}</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>io.vertigo</groupId>
+									<artifactId>vertigo-vega-impl</artifactId>
+									<version>${project.version}</version>
+									<type>jar</type>
+									<classifier>sources</classifier>
+									<overWrite>false</overWrite>
+									<outputDirectory>${gen-src-dir}</outputDirectory>
+								</artifactItem>
+
+								<artifactItem>
+									<groupId>io.vertigo</groupId>
+									<artifactId>vertigo-tempo-api</artifactId>
+									<version>${project.version}</version>
+									<type>jar</type>
+									<classifier>sources</classifier>
+									<overWrite>false</overWrite>
+									<outputDirectory>${gen-src-dir}</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>io.vertigo</groupId>
+									<artifactId>vertigo-tempo-impl</artifactId>
+									<version>${project.version}</version>
+									<type>jar</type>
+									<classifier>sources</classifier>
+									<overWrite>false</overWrite>
+									<outputDirectory>${gen-src-dir}</outputDirectory>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<id>add-test-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>src-test</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.3.7</version>
+				<configuration>
+					<instructions>
+						<Export-Package>
+							io.vertigo.*
+						</Export-Package>
+					</instructions>
+					<unpackBundle>true</unpackBundle>
+				</configuration>
+			</plugin>
+			<plugin>
+				<!-- remove the generated src dir -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>src</directory>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>
