@@ -1,10 +1,20 @@
 Version history
 ===============
 
-Running 0.5.2-SNAPSHOT
+Running 0.5.3-SNAPSHOT
 ----------------------
 
 more to come :)
+
+
+Release 0.5.2 - 2014/09/23
+--------------------------
+* Some pom update for MavenCentral Release :)
+* Fix Vega fileUpload support (with Servlet 3.0 API)
+* Fix struts2 .ftl for readonly checkbox, select, radiomap
+* Fix UiList usage
+* Renames somes const
+* Fix .properties charset (ISO-8859-1)
 
 Release 0.5.1 - 2014/09/17
 --------------------------
