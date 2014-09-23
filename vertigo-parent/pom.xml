@@ -167,19 +167,16 @@ limitations under the License. -->
 				</executions>
 			</plugin>
 			<plugin>
-		        <groupId>org.apache.maven.plugins</groupId>
-		        <artifactId>maven-gpg-plugin</artifactId>
-				<version>1.5</version>
-		        <executions>
-		          <execution>
-		            <id>sign-artifacts</id>
-		            <phase>verify</phase>
-		            <goals>
-		              <goal>sign</goal>
-		            </goals>
-		          </execution>
-		        </executions>
-	      	</plugin>	      	
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
+					<useReleaseProfile>false</useReleaseProfile>
+					<releaseProfiles>release</releaseProfiles>
+					<goals>deploy</goals>
+				</configuration>
+			</plugin>      	
 			<plugin>
 				<!-- explicitly define maven-deploy-plugin after other to force exec order -->
 				<groupId>org.apache.maven.plugins</groupId>
@@ -195,22 +192,40 @@ limitations under the License. -->
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5</version>
-				<configuration>
-					<autoVersionSubmodules>true</autoVersionSubmodules>
-					<useReleaseProfile>false</useReleaseProfile>
-					<releaseProfiles>release</releaseProfiles>
-					<goals>deploy</goals>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
-	
+	<profiles>
+		<profile>
+			<id>release</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.5</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			 </build>
+		</profile>
+	</profiles>
+
 	<distributionManagement>
-	  <!-- <repository>
+	  <repository>
 		<id>ossrh</id>
 		<name>OSSRH Releases</name>
 		<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
@@ -219,7 +234,7 @@ limitations under the License. -->
 	     <id>ossrh</id>
 	     <name>OSSRH Snapshot</name>
 	     <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-	  </snapshotRepository> -->
+	  </snapshotRepository>
 	</distributionManagement>
 
 	<dependencies>
