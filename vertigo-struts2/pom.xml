@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -13,6 +14,30 @@
 	<packaging>jar</packaging>
 	<name>vertigo-struts2</name>
 
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>FTL override</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<phase>package</phase>
+						<configuration>
+							<finalName>ftl-tags-${project.build.finalName}</finalName>
+							<classifier>ftl</classifier>
+							<includes>
+								<include>**/*.ftl</include>
+							</includes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 	<dependencies>
 		<dependency>
 			<groupId>io.vertigo</groupId>
@@ -29,43 +54,44 @@
 			<artifactId>vertigo-persona-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-commons-impl</artifactId><!--  for ResourceResolverPlugin -->
+			<artifactId>vertigo-commons-impl</artifactId><!-- for ResourceResolverPlugin -->
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-dynamo-impl</artifactId> <!--  for io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl and io.vertigo.dynamox.domain.formatter.Resources -->
+			<artifactId>vertigo-dynamo-impl</artifactId> <!-- for io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl and 
+				io.vertigo.dynamox.domain.formatter.Resources -->
 			<version>${project.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<!-- Struts 2 -->
 		<dependency>
 			<groupId>org.apache.struts</groupId>
 			<artifactId>struts2-core</artifactId>
 			<version>2.3.16.3</version>
 		</dependency>
-		
+
 		<!-- Struts 2 Ajax -->
 		<dependency>
 			<groupId>com.jgeppert.struts2.jquery</groupId>
 			<artifactId>struts2-jquery-plugin</artifactId>
 			<version>3.7.1</version>
 			<exclusions>
-		        <exclusion>
-		          <groupId>org.apache.velocity</groupId>
-		          <artifactId>velocity</artifactId>
-		        </exclusion>
-		      </exclusions> 
+				<exclusion>
+					<groupId>org.apache.velocity</groupId>
+					<artifactId>velocity</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- Struts 2 + Spring plugins -->
 		<dependency>
@@ -78,7 +104,7 @@
 			<artifactId>jsr311-api</artifactId>
 			<version>1.1.1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>asm</groupId>
 			<artifactId>asm-commons</artifactId>
@@ -94,6 +120,6 @@
 			<artifactId>je</artifactId>
 			<optional>true</optional><!-- pour BerkeleyCachePlugin -->
 			<version>5.0.73</version>
-		</dependency>	
+		</dependency>
 	</dependencies>
 </project>
