@@ -61,8 +61,6 @@ import com.google.gson.JsonSyntaxException;
  * @author pchretien, npiedeloup
  */
 public final class GoogleJsonEngine implements JsonEngine {
-	private static final String LIST_VALUE_FIELDNAME = "value";
-	private static final String SERVER_SIDE_TOKEN_FIELDNAME = "serverToken";
 	private final Gson gson = createGson();
 
 	/** {@inheritDoc} */

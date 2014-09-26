@@ -39,8 +39,8 @@ final class AccessTokenHandler implements RouteHandler {
 	private static final DtObject TOKEN_DATA = new DtObject() {
 		private static final long serialVersionUID = 1L;
 	};
-	private static final String HEADER_ACCESS_TOKEN = "x-access-token";
-	private static final String INVALID_ACCESS_TOKEN_MSG = "Invalid access token";
+	public static final String HEADER_ACCESS_TOKEN = "x-access-token";
+	private static final String INVALID_ACCESS_TOKEN_MSG = "Invalid access token"; //Todo make a resource.properties
 	private final UiSecurityTokenManager uiSecurityTokenManager;
 	private final EndPointDefinition endPointDefinition;
 

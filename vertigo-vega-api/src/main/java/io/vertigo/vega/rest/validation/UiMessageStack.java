@@ -58,7 +58,7 @@ public final class UiMessageStack {
 	}
 
 	@JsonExclude
-	private final UiContextResolver uiContextResolver;
+	private transient final UiContextResolver uiContextResolver;
 
 	/**
 	 * Constructor.

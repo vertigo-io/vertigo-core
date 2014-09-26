@@ -56,6 +56,7 @@ import io.vertigo.persona.impl.security.KSecurityManagerImpl;
 import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.vega.impl.rest.RestManagerImpl;
 import io.vertigo.vega.impl.rest.catalog.CatalogRestServices;
+import io.vertigo.vega.impl.rest.catalog.SwaggerRestServices;
 import io.vertigo.vega.impl.rest.filter.JettyMultipartConfig;
 import io.vertigo.vega.impl.rest.handler.RateLimitingHandler;
 import io.vertigo.vega.impl.security.UiSecurityTokenManagerImpl;
@@ -157,6 +158,7 @@ public final class WsRestHandler {
 					.beginComponent(RestManager.class, RestManagerImpl.class)
 						.beginPlugin(AnnotationsEndPointIntrospectorPlugin.class).endPlugin() //
 					.endComponent() //
+					.beginComponent(SwaggerRestServices.class).endComponent() //
 					.beginComponent(CatalogRestServices.class).endComponent() //
 					.beginComponent(RateLimitingHandler.class).endComponent() //
 					.beginComponent(UiSecurityTokenManager.class, UiSecurityTokenManagerImpl.class)

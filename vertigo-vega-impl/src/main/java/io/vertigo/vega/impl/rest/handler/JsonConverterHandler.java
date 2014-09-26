@@ -112,12 +112,12 @@ final class JsonConverterHandler implements RouteHandler {
 							/*case UiListState:
 								value = readQueryValue(request.queryMap(), endPointParam);
 								break;*/
-							/*case Request:
-								value = request;
-								break;
-							case Response:
-								value = response;
-								break;*/
+							//							case Request:
+							//								value = request;
+							//								break;
+							//							case Response:
+							//								value = response;
+							//								break;
 							default:
 								throw new IllegalArgumentException("ImplicitParam : " + endPointParam.getName());
 						}
@@ -208,17 +208,20 @@ final class JsonConverterHandler implements RouteHandler {
 		}
 		if (UiListState.class.isAssignableFrom(paramClass) //
 				|| DtObject.class.isAssignableFrom(paramClass)) {
-			return (D) readValue(convertToJson(queryMap), endPointParam);
+			return (D) readValue(convertToJson(queryMap, endPointParam.getName()), endPointParam);
 		}
 		return readPrimitiveValue(queryMap.get(paramName).value(), paramClass);
 	}
 
-	private String convertToJson(final QueryParamsMap queryMap) {
+	private String convertToJson(final QueryParamsMap queryMap, final String queryPrefix) {
+		final String checkedQueryPrefix = queryPrefix.isEmpty() ? "" : queryPrefix + ".";
 		final Map<String, Object> queryParams = new HashMap<>();
 		for (final Entry<String, String[]> entry : queryMap.toMap().entrySet()) {
-			final String[] value = entry.getValue();
-			final Object simplerValue = value.length == 0 ? null : value.length == 1 ? value[0] : value;
-			queryParams.put(entry.getKey(), simplerValue);
+			if (entry.getKey().startsWith(checkedQueryPrefix)) {
+				final String[] value = entry.getValue();
+				final Object simplerValue = value.length == 0 ? null : value.length == 1 ? value[0] : value;
+				queryParams.put(entry.getKey().substring(checkedQueryPrefix.length()), simplerValue);
+			}
 		}
 		return jsonWriterEngine.toJson(queryParams);
 	}
