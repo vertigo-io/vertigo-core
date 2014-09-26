@@ -19,14 +19,13 @@
 package io.vertigo.dynamo.task.model;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Modifiable;
 import io.vertigo.dynamo.domain.metamodel.ConstraintException;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Conteneur de données permettant l'exécution d'une tache.
@@ -39,7 +38,7 @@ import java.util.Map;
  *
  * @author  pchretien
  */
-final class TaskDataSet implements Modifiable {
+final class TaskDataSet {
 	/**
 	 * Définition de la tache.
 	 */
@@ -49,38 +48,33 @@ final class TaskDataSet implements Modifiable {
 	 */
 	private final Map<TaskAttribute, Object> taskAttributes = new HashMap<>();
 
-	private boolean modifiable = true;
-
-	private final boolean isIn;
+	private final boolean in;
 
 	/**
 	 * Constructeur
 	 * @param taskDefinition Définition de la tache dont on représente le conteneur de données
 	 */
-	TaskDataSet(final TaskDefinition taskDefinition, final boolean isIn) {
+	TaskDataSet(final TaskDefinition taskDefinition, final boolean in, final Map<String, Object> params) {
 		Assertion.checkNotNull(taskDefinition);
+		Assertion.checkNotNull(params);
 		//----------------------------------------------------------------------
 		this.taskDefinition = taskDefinition;
-		this.isIn = isIn;
-	}
-
-	/**
-	 * Permet de tester les paramètres null avant et après l'exécution de la requête.
-	 */
-	private void check() {
-		//On vérifie que tous les champs in not null sont renseignés
-		for (final TaskAttribute taskAttribute : getTaskDefinition().getAttributes()) {
-			// si before, on vérifie uniquement les paramétres en entrée
-			// si after, on vérifie uniquement les paramétres en sortie
-			if (isIn && taskAttribute.isIn() || !isIn && !taskAttribute.isIn()) {
-				//  on vérifie que seuls les paramètres obligatoires sont non nuls
+		this.in = in;
+		//---
+		for (final Entry<String, Object> entry : params.entrySet()){
+			final TaskAttribute taskAttribute = getTaskDefinition().getAttribute(entry.getKey());
+			Assertion.checkArgument(taskAttribute.isIn()^!in, "only taskAttributes where  in='{0}' are allowed", in);
+			taskAttributes.put(taskAttribute, entry.getValue());
+		}
+		//---
+		for (final TaskAttribute taskAttribute : taskDefinition.getAttributes()){
+			if (taskAttribute.isIn()^!in){ //on ne prend que les attributes correspondant au mode.
 				final Object value = taskAttributes.get(taskAttribute);
-				if (taskAttribute.isNotNull()) {
-					Assertion.checkNotNull(value, "Attribut task {0} ne doit pas etre null (cf. paramétrage task)", taskAttribute.getName());
-				}
+				checkAttribute(taskAttribute, value);
 			}
 		}
 	}
+
 
 	/**
 	 * Vérifie la cohérence des arguments d'un Attribute
@@ -88,9 +82,12 @@ final class TaskDataSet implements Modifiable {
 	 * @param attributeName Nom de l'attribut de tache
 	 * @param value Object primitif ou DtObject ou bien DtList
 	 */
-	private void checkAttribute(final TaskAttribute taskAttribute, final Object value) {
+	private static void checkAttribute(final TaskAttribute taskAttribute, final Object value) {
 		Assertion.checkNotNull(taskAttribute);
 		//---------------------------------------------------------------------
+		if (taskAttribute.isNotNull()) {
+			Assertion.checkNotNull(value, "Attribut task {0} ne doit pas etre null (cf. paramétrage task)", taskAttribute.getName());
+		}
 		try {
 			taskAttribute.getDomain().checkValue(value);
 		} catch (final ConstraintException e) {
@@ -108,32 +105,15 @@ final class TaskDataSet implements Modifiable {
 	 */
 	<V> V getValue(final String attributeName) {
 		// on préfère centraliser le cast ici plutot que dans les classes générées.
-		Assertion.checkArgument(!modifiable, "Le dataSet est modifiable ; seuls les setters sont autorisés.");
 		//L'idée est d'interdire de lire une valeur d'un dataSet alors que celui-ci n'est pas encore totalement initialisé.
 		//---------------------------------------------------------------------
 		final TaskAttribute taskAttribute= getTaskDefinition().getAttribute(attributeName);
-		final V value = (V) taskAttributes.get(taskAttribute);
-		checkAttribute(taskAttribute, value);
-		return value;
+		Assertion.checkArgument(taskAttribute.isIn()^!in, "only taskAttributes where  in='{0}' are allowed", in);
+		return (V) taskAttributes.get(taskAttribute);
 	}
 
 	/**
-	 * Setter Générique
-	 * Garantit que la valeur passée est conforme au contrat de l'attribut du service
-	 *
-	 * @param attributeName Nom du champ modifié.
-	 * @param o Nouvelle valeur du champ.
-	 */
-	void setValue(final String attributeName, final Object o) {
-		Assertion.checkArgument(modifiable, "Le dataSet n''est pas modifiable.");
-		final TaskAttribute taskAttribute = getTaskDefinition().getAttribute(attributeName);
-		checkAttribute(taskAttribute, o);
-		//---------------------------------------------------------------------
-		taskAttributes.put(taskAttribute, Serializable.class.cast(o));
-	}
-
-	/**
-	 * @return ID de la Définition de la tache
+	 * @return Définition de la tache
 	 */
 	TaskDefinition getTaskDefinition() {
 		return taskDefinition;
@@ -142,20 +122,6 @@ final class TaskDataSet implements Modifiable {
 	/** {@inheritDoc}*/
 	@Override
 	public String toString() {
-		//Représentation textuelle des paramètres
 		return taskAttributes.toString();
-	}
-
-	/** {@inheritDoc} */
-	public boolean isModifiable() {
-		return modifiable;
-	}
-
-	/** {@inheritDoc} */
-	public void makeUnmodifiable() {
-		Assertion.checkArgument(modifiable, "Les données sont déjà non modifiables.");
-		check();
-		//----------------------------------------------------------------------
-		modifiable = false;
 	}
 }

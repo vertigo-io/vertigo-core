@@ -18,11 +18,12 @@
  */
 package io.vertigo.dynamo.task.model;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 
+import java.util.Map;
+
 /**
- * Gestion des taches. 
+ * Gestion des taches.
  * 
  * Les taches sont implémentés par les classes dérivées de {@link io.vertigo.dynamo.task.model.TaskEngine}
  * 
@@ -47,16 +48,13 @@ public final class Task {
 	private final TaskDataSet dataSet;
 
 	/**
-	 * Constructeur. 
+	 * Constructeur.
 	 * Le constructeur est protégé, il est nécessaire de passer par le Builder.
 	 *
 	 * @param dataSet Données de la tache.
 	 */
-	Task(final TaskDataSet dataSet) {
-		Assertion.checkNotNull(dataSet);
-		Assertion.checkArgument(!dataSet.isModifiable(), "dataset must be immutable");
-		//----------------------------------------------------------------------
-		this.dataSet = dataSet;
+	Task(final TaskDefinition taskDefinition, final Map<String, Object> params) {
+		this.dataSet = 	new TaskDataSet(taskDefinition, true, params);
 	}
 
 	/**

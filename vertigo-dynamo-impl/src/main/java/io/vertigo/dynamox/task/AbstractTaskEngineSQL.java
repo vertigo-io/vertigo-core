@@ -87,7 +87,7 @@ import java.util.Map;
  *       <%if (dtoProduitCritere.getPrdLibelle()!=null) {%>
  *               Where PRD_LIBELLE like #DTO_PRODUIT_CRITERE.PRD_LIBELLE#||'%%'
  *       <%}%> order by <%=1%>";
- *       
+ * 
  * @author  pchretien, npiedeloup
  * @param <S> Type de Statement utilisé
  */
@@ -144,7 +144,7 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 
 	/**
 	 * Vérification de la syntaxe sql.
-	 * @param sql Syntaxe sql de la requête 
+	 * @param sql Syntaxe sql de la requête
 	 */
 	protected abstract void checkSqlQuery(String sql);
 
@@ -179,13 +179,13 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 	 * @return Chaine de configuration
 	 */
 	protected String getSqlQuery() {
-		//On ajoute dans la requête SQL le nom de la tache utilisée 
+		//On ajoute dans la requête SQL le nom de la tache utilisée
 		return preProcessQuery(new StringBuilder()//
-				.append("/* TaskEngine : ")//
-				.append(getTaskDefinition().getName())//
-				.append(" */\n")//
-				.append(getTaskDefinition().getRequest())//
-				.toString());
+		.append("/* TaskEngine : ")//
+		.append(getTaskDefinition().getName())//
+		.append(" */\n")//
+		.append(getTaskDefinition().getRequest())//
+		.toString());
 	}
 
 	/**
@@ -205,7 +205,9 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 		final Collection<TaskAttribute> attributes = getTaskDefinition().getAttributes();
 		final Map<TaskAttribute, Object> parameterValuesMap = new HashMap<>(attributes.size());
 		for (final TaskAttribute taskAttribute : attributes) {
-			parameterValuesMap.put(taskAttribute, getValue(taskAttribute.getName()));
+			if (taskAttribute.isIn()) {
+				parameterValuesMap.put(taskAttribute, getValue(taskAttribute.getName()));
+			}
 		}
 		//---------------------------------------------------------------------
 		final ScriptPreProcessor scriptPreProcessor = new ScriptPreProcessor(scriptManager, parameterValuesMap, SeparatorType.CLASSIC);
@@ -252,14 +254,14 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 		//----------------------------------------------------------------------
 		for (final TaskEngineSQLParam param : params) {
 			switch (param.getType()) {
-				case OUT:
-				case INOUT:
-					setOutParameter(cs, param);
-					break;
-				case IN:
-				default:
-					//On ne calcule rien
-					break;
+			case OUT:
+			case INOUT:
+				setOutParameter(cs, param);
+				break;
+			case IN:
+			default:
+				//On ne calcule rien
+				break;
 			}
 		}
 	}
@@ -308,15 +310,15 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 		//----------------------------------------------------------------------
 		for (final TaskEngineSQLParam param : params) {
 			switch (param.getType()) {
-				case IN:
-				case INOUT:
-					final Integer rowNumber = param.isList() ? param.getRowNumber() : null;
-					setParameter(statement, param, rowNumber);
-					break;
-				case OUT:
-				default:
-					//On ne fait rien
-					break;
+			case IN:
+			case INOUT:
+				final Integer rowNumber = param.isList() ? param.getRowNumber() : null;
+				setParameter(statement, param, rowNumber);
+				break;
+			case OUT:
+			default:
+				//On ne fait rien
+				break;
 			}
 		}
 	}
@@ -428,7 +430,7 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 	}
 
 	/**
-	 * @return Id de la Ressource Connexion SQL dans la transaction 
+	 * @return Id de la Ressource Connexion SQL dans la transaction
 	 */
 	protected KTransactionResourceId<KConnection> getKTransactionResourceId() {
 		return SQL_RESOURCE_ID;
@@ -445,7 +447,7 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 		return Home.getComponentSpace().resolve(DataBaseManager.class);
 	}
 
-	/**	
+	/**
 	 * Il est possible de surcharger la configuration SQL d'un service.
 	 * @return Configuration SQL.
 	 */

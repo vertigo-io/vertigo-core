@@ -22,6 +22,9 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Builder permettant de créer une tache.
  * @author  pchretien
@@ -30,8 +33,8 @@ public final class TaskBuilder implements Builder<Task> {
 	/**
 	 * Conteneur des données et de l'état du service
 	 */
-	private final TaskDataSet dataSet;
-
+	private final Map<String, Object> params = new HashMap<>();
+	private final TaskDefinition taskDefinition;
 	/**
 	 * Initialise la tache.
 	 * Le constructeur est invoqué par la Factory.
@@ -43,8 +46,7 @@ public final class TaskBuilder implements Builder<Task> {
 	public TaskBuilder(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//----------------------------------------------------------------------
-		//Création du conteneur des paramètres du service
-		dataSet = new TaskDataSet(taskDefinition, true);
+		this.taskDefinition = taskDefinition;
 	}
 
 	/**
@@ -53,14 +55,13 @@ public final class TaskBuilder implements Builder<Task> {
 	 * @param attributeName Nom du paramètre
 	 * @param o Valeur
 	 */
-	public TaskBuilder withValue(final String attributeName, final Object o) {
-		dataSet.setValue(attributeName, o);
+	public TaskBuilder withValue(final String attributeName, final Object value) {
+		params.put(attributeName, value);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	public Task build() {
-		dataSet.makeUnmodifiable();
-		return new Task(dataSet);
+		return new Task(taskDefinition, params);
 	}
 }

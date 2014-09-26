@@ -22,15 +22,17 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Résultat de l'execution du Task.
  * @author dchallas
  */
 final class TaskResultBuilder implements Builder<TaskResult> {
-	/**
-	 * Conteneur des données et de l'état du service
-	 */
-	private final TaskDataSet dataSet;
+	private final Map<String, Object> params = new HashMap<>();
+	private final TaskDefinition taskDefinition;
+
 
 	/**
 	 * Initialise la tache.
@@ -42,7 +44,7 @@ final class TaskResultBuilder implements Builder<TaskResult> {
 	TaskResultBuilder(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//----------------------------------------------------------------------
-		dataSet = new TaskDataSet(taskDefinition, false);
+		this.taskDefinition = taskDefinition;
 	}
 
 	/**
@@ -52,15 +54,14 @@ final class TaskResultBuilder implements Builder<TaskResult> {
 	 * @param attributeName Nom du paramètre
 	 * @param o Valeur
 	 */
-	TaskResultBuilder withValue(final String attributeName, final Object o) {
-		dataSet.setValue(attributeName, o);
+	TaskResultBuilder withValue(final String attributeName, final Object value) {
+		params.put(attributeName, value);
 		return this;
 	}
 
 	@Override
 	public TaskResult build() {
-		dataSet.makeUnmodifiable();
-		return new TaskResult(dataSet);
+		return new TaskResult(taskDefinition, params);
 	}
 
 }
