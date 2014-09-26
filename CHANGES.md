@@ -3,7 +3,7 @@ Version history
 
 Running 0.5.3-SNAPSHOT
 ----------------------
-
+* Add Vega support to Swagger Api viewer (see http://swagger.io/)
 more to come :)
 
 
