@@ -41,13 +41,13 @@ import java.util.Map;
  */
 final class TaskDataSet implements Modifiable {
 	/**
-	 * Définition de la tache. 
+	 * Définition de la tache.
 	 */
 	private final TaskDefinition taskDefinition;
 	/**
 	 * Map conservant les paramètres d'entrée et de sortie de la tache.
 	 */
-	private final Map<String, Object> params = new HashMap<>();
+	private final Map<TaskAttribute, Object> taskAttributes = new HashMap<>();
 
 	private boolean modifiable = true;
 
@@ -65,18 +65,18 @@ final class TaskDataSet implements Modifiable {
 	}
 
 	/**
-	* Permet de tester les paramètres null avant et après l'exécution de la requête.
-	*/
+	 * Permet de tester les paramètres null avant et après l'exécution de la requête.
+	 */
 	private void check() {
 		//On vérifie que tous les champs in not null sont renseignés
-		for (final TaskAttribute attribute : getTaskDefinition().getAttributes()) {
+		for (final TaskAttribute taskAttribute : getTaskDefinition().getAttributes()) {
 			// si before, on vérifie uniquement les paramétres en entrée
 			// si after, on vérifie uniquement les paramétres en sortie
-			if (isIn && attribute.isIn() || !isIn && !attribute.isIn()) {
+			if (isIn && taskAttribute.isIn() || !isIn && !taskAttribute.isIn()) {
 				//  on vérifie que seuls les paramètres obligatoires sont non nuls
-				final Object value = params.get(attribute.getName());
-				if (attribute.isNotNull()) {
-					Assertion.checkNotNull(value, "Attribut task {0} ne doit pas etre null (cf. paramétrage task)", attribute.getName());
+				final Object value = taskAttributes.get(taskAttribute);
+				if (taskAttribute.isNotNull()) {
+					Assertion.checkNotNull(value, "Attribut task {0} ne doit pas etre null (cf. paramétrage task)", taskAttribute.getName());
 				}
 			}
 		}
@@ -87,16 +87,12 @@ final class TaskDataSet implements Modifiable {
 	 * Vérifie que l'objet est cohérent avec le type défini sur l'attribut.
 	 * @param attributeName Nom de l'attribut de tache
 	 * @param value Object primitif ou DtObject ou bien DtList
-	 * @param getter Si on gette la donnée correspondant à l'attribut
 	 */
-	private void checkAttribute(final String attributeName, final Object value, final boolean getter) {
-		Assertion.checkNotNull(attributeName);
+	private void checkAttribute(final TaskAttribute taskAttribute, final Object value) {
+		Assertion.checkNotNull(taskAttribute);
 		//---------------------------------------------------------------------
-		//On récupère la définition de l'attribut de tache correspondant au nom
-		final TaskAttribute attribut = getTaskDefinition().getAttribute(attributeName);
-
 		try {
-			attribut.getDomain().checkValue(value);
+			taskAttribute.getDomain().checkValue(value);
 		} catch (final ConstraintException e) {
 			//On retransforme en Runtime pour conserver une API sur les getters et setters.
 			throw new RuntimeException(e);
@@ -115,8 +111,9 @@ final class TaskDataSet implements Modifiable {
 		Assertion.checkArgument(!modifiable, "Le dataSet est modifiable ; seuls les setters sont autorisés.");
 		//L'idée est d'interdire de lire une valeur d'un dataSet alors que celui-ci n'est pas encore totalement initialisé.
 		//---------------------------------------------------------------------
-		final V value = (V) params.get(attributeName);
-		checkAttribute(attributeName, value, true);
+		final TaskAttribute taskAttribute= getTaskDefinition().getAttribute(attributeName);
+		final V value = (V) taskAttributes.get(taskAttribute);
+		checkAttribute(taskAttribute, value);
 		return value;
 	}
 
@@ -129,9 +126,10 @@ final class TaskDataSet implements Modifiable {
 	 */
 	void setValue(final String attributeName, final Object o) {
 		Assertion.checkArgument(modifiable, "Le dataSet n''est pas modifiable.");
-		checkAttribute(attributeName, o, false);
+		final TaskAttribute taskAttribute = getTaskDefinition().getAttribute(attributeName);
+		checkAttribute(taskAttribute, o);
 		//---------------------------------------------------------------------
-		params.put(attributeName, Serializable.class.cast(o));
+		taskAttributes.put(taskAttribute, Serializable.class.cast(o));
 	}
 
 	/**
@@ -145,7 +143,7 @@ final class TaskDataSet implements Modifiable {
 	@Override
 	public String toString() {
 		//Représentation textuelle des paramètres
-		return params.toString();
+		return taskAttributes.toString();
 	}
 
 	/** {@inheritDoc} */
