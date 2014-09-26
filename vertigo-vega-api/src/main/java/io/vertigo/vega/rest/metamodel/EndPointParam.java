@@ -58,6 +58,8 @@ public final class EndPointParam {
 	public static enum ImplicitParam {
 		UiMessageStack(UiMessageStack.class), //
 		//UiListState(UiListState.class), //
+		//Request(Request.class), //
+		//Response(Response.class), //
 		; //
 
 		private Class<?> implicitType;
@@ -95,7 +97,8 @@ public final class EndPointParam {
 	EndPointParam(final RestParamType paramType, final String name, final Type type, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
 		this(":" + paramType.name() + ":" + name, paramType, name, type, includedFields, excludedFields, needServerSideToken, consumeServerSideToken, dtObjectValidatorClasses);
 		Assertion.checkArgument(paramType != RestParamType.Implicit || isImplicitParam(name), "When ImplicitParam, name ({1}) must be one of {0}", ImplicitParam.values(), name);
-		Assertion.checkArgNotEmpty(name);
+		Assertion.checkNotNull(name);
+		Assertion.checkArgument(!name.isEmpty() || (EndPointTypeHelper.isAssignableFrom(UiListState.class, type) || EndPointTypeHelper.isAssignableFrom(DtObject.class, type)), "Only DtObject and UiListState can be map from Query parameters");
 	}
 
 	private static boolean isImplicitParam(final String testedName) {
