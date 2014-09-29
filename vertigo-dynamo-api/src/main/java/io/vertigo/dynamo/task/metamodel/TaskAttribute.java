@@ -109,6 +109,6 @@ public final class TaskAttribute {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return name + " : domain=" + domain + ", in=" + in + ", notnull=" + notNull;
+		return "{ name : "+ name + ", domain :" + domain + ", in :" + in + ", notnull :" + notNull+ "]";
 	}
 }
