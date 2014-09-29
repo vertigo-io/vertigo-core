@@ -186,7 +186,7 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 			throw new IllegalArgumentException("Pour l'association '" + associationOOM.getCode() + "' clé multiple non géré sur '" + foreignDefinition.getDefinitionKey().getName() + "'");
 		}
 		if (dtDefinitionA.getDefinitionKey().getName().equals(dtDefinitionB.getDefinitionKey().getName()) && associationOOM.getCodeName() == null) {
-			throw new IllegalArgumentException("Pour l'association '" + associationOOM.getCode() + "' le nom de la clé est obligatoire (AutoJointure) '" + foreignDefinition.getDefinitionKey().getName() + "'");
+			throw new IllegalArgumentException("Pour l'association '" + associationOOM.getCode() + "' le nom de la clé est obligatoire (AutoJointure) '" + foreignDefinition.getDefinitionKey().getName() + "'. Ce nom est déduis du code l'association, le code doit être composé ainsi : {Trigramme Table1}_{Trigramme Table2}_{Code association}. Par exemple : DOS_UTI_EMMETEUR, DOS_UTI_DESTINATAIRE, DOS_DOS_PARENT, ...");
 		}
 
 		//On récupère le nom de LA clé primaire . 
