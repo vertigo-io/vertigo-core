@@ -18,13 +18,28 @@
  */
 package io.vertigo.vega.rest.stereotype;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Bind the value of a field of an json object passed in http body, to the annotated parameter.
+ * Exemple : 
+ * {
+ *  myFirst : 120,
+ *  mySecond : { comment:"It's a trap !" }
+ * }
+ * 
+ * Can be map to :
+ * void myService(@InnerBodyParam("myFirst") long myFirstValue, @InnerBodyParam("mySecond") Comment comment)
+ * 
+ * @author npiedeloup
+ */
 @Target({ ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
 public @interface InnerBodyParam { //Only if mutiple Body Params
 	String value();
 }

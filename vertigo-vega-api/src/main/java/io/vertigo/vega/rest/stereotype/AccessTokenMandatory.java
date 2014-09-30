@@ -18,13 +18,20 @@
  */
 package io.vertigo.vega.rest.stereotype;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Annotation that may be use to limit access to service.
+ * An header access token must be send, it can be reuse after that.
+ * @author npiedeloup
+ */
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
 public @interface AccessTokenMandatory {
 	//empty
 }

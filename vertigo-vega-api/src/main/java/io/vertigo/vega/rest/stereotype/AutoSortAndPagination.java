@@ -18,13 +18,20 @@
  */
 package io.vertigo.vega.rest.stereotype;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Annotation that may be use to add an auto sort and pagination behaviors to this service.
+ * Client side must be aware of these behaviors.
+ * @author npiedeloup
+ */
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
 public @interface AutoSortAndPagination {
 	//empty
 }

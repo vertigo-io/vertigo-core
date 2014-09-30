@@ -18,13 +18,26 @@
  */
 package io.vertigo.vega.rest.stereotype;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Bind the value of a path sub-element to the annotated parameter.
+ * Exemple : 
+ * http://localhost:8080/test/contact/12
+ * 
+ * Can be map to :
+ * @GET("/test/contact/{contactId}")
+ * void myService(@PathParam("contactId") long contactId)
+ * 
+ * @author npiedeloup
+ */
 @Target({ ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
 public @interface PathParam {
 	String value();
 }

@@ -18,13 +18,20 @@
  */
 package io.vertigo.vega.rest.stereotype;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Indicates that the annotated method responds to HTTP GET requests.
+ * Inspirated from jax-rs api, but merged with Path for simplicity.
+ * @author npiedeloup
+ */
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
 public @interface GET {
 	/**
 	 * Defines a URI template for the resource class or method, must not include matrix parameters.
