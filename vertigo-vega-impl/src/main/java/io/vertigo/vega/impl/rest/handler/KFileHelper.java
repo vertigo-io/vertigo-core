@@ -18,10 +18,11 @@
  */
 package io.vertigo.vega.impl.rest.handler;
 
+import io.vertigo.core.Home;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.KFile;
-import io.vertigo.dynamo.impl.file.model.StreamFile;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
 
 import java.io.IOException;
@@ -175,8 +176,8 @@ final class KFileHelper {
 		if (mimeType == null) {
 			mimeType = "application/octet-stream";
 		}
-		//TODO use FileManager instead
-		return new StreamFile(fileName, mimeType, new Date(), file.getSize(), new InputStreamBuilder() {
+		final FileManager fileManager = Home.getComponentSpace().resolve(FileManager.class);
+		return fileManager.createFile(fileName, mimeType, new Date(), file.getSize(), new InputStreamBuilder() {
 			public InputStream createInputStream() throws IOException {
 				return file.getInputStream();
 			}

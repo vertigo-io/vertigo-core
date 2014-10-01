@@ -18,6 +18,7 @@
  */
 package io.vertigo.vega.rest;
 
+import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.core.exception.VUserException;
 import io.vertigo.core.lang.MessageText;
 import io.vertigo.core.lang.Option;
@@ -34,6 +35,7 @@ import io.vertigo.dynamo.export.ExportBuilder;
 import io.vertigo.dynamo.export.ExportDtParameters;
 import io.vertigo.dynamo.export.ExportFormat;
 import io.vertigo.dynamo.export.ExportManager;
+import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListChainFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListFilter;
@@ -69,6 +71,9 @@ import io.vertigo.vega.rest.stereotype.Validate;
 import io.vertigo.vega.rest.validation.UiMessageStack;
 import io.vertigo.vega.rest.validation.ValidationUserException;
 
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -83,6 +88,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
 
 //bas� sur http://www.restapitutorial.com/lessons/httpmethods.html
 
@@ -95,6 +101,10 @@ public final class TesterRestServices implements RestfulService {
 	private CollectionsManager collectionsManager;
 	@Inject
 	private ExportManager exportManager;
+	@Inject
+	private ResourceManager resourcetManager;
+	@Inject
+	private FileManager fileManager;
 
 	/*private final enum Group {
 		Friends("FRD", "Friends"), //
@@ -537,6 +547,33 @@ public final class TesterRestServices implements RestfulService {
 			final @QueryParam("note") String note) {
 
 		return inputFile;
+	}
+
+	@GET("/downloadFile")
+	public KFile testDownloadFile(final @QueryParam("id") Integer id) {
+		final URL imageUrl = resourcetManager.resolve("npi2loup.png");
+		final File imageFile = asFile(imageUrl);
+		final KFile imageKFile = fileManager.createFile("image" + id + ".png", "image/png", imageFile);
+		return imageKFile;
+	}
+
+	@GET("/downloadNotModifiedFile")
+	public KFile testDownloadNotModifiedFile(final @QueryParam("id") Integer id, final HttpServletResponse response) {
+		if (Math.random() > 0.5) {
+			response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+			return null;
+		}
+		return testDownloadFile(id);
+	}
+
+	private File asFile(final URL url) {
+		File f;
+		try {
+			f = new File(url.toURI());
+		} catch (final URISyntaxException e) {
+			f = new File(url.getPath());
+		}
+		return f;
 	}
 
 	@POST("/saveListDelta")

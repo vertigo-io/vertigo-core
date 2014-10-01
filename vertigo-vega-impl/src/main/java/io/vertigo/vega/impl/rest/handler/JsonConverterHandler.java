@@ -109,15 +109,21 @@ final class JsonConverterHandler implements RouteHandler {
 							case UiMessageStack:
 								value = routeContext.getUiMessageStack();
 								break;
+							case Request:
+								value = request.raw();
+								break;
+							case Response:
+								value = response.raw();
+								break;
 							/*case UiListState:
 								value = readQueryValue(request.queryMap(), endPointParam);
 								break;*/
-							//							case Request:
-							//								value = request;
-							//								break;
-							//							case Response:
-							//								value = response;
-							//								break;
+							//		case Request:
+							//			value = request;
+							//			break;
+							//		case Response:
+							//			value = response;
+							//			break;
 							default:
 								throw new IllegalArgumentException("ImplicitParam : " + endPointParam.getName());
 						}
@@ -133,6 +139,8 @@ final class JsonConverterHandler implements RouteHandler {
 		final Object result = chain.handle(request, response, routeContext);
 		if (KFileHelper.isKFileResult(result)) {
 			KFileHelper.sendKFile(result, request, response);
+			return null; // response already send
+		} else if (result instanceof HttpServletResponse) {
 			return null; // response already send
 		}
 		if (result == null) {

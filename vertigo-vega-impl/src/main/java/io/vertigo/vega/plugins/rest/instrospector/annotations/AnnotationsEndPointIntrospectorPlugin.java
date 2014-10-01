@@ -139,33 +139,50 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 			builder.withValidatorClasses(DefaultDtObjectValidator.class);
 		} else if (EndPointTypeHelper.isAssignableFrom(DtListDelta.class, paramType)) {
 			builder.withValidatorClasses(DefaultDtObjectValidator.class);
-		} else if (ImplicitParam.UiMessageStack.getImplicitType().equals(paramType)) {
-			builder.with(RestParamType.Implicit, ImplicitParam.UiMessageStack.name());
+		} else if (isImplicitParam(paramType)) {
+			builder.with(RestParamType.Implicit, getImplicitParam(paramType).name());
 		} else if (UiListState.class.equals(paramType)) {
 			builder.with(RestParamType.Body, "listState"); //UiListState don't need to be named, it will be retrieve from body
-		}
-
-		for (final Annotation annotation : annotations) {
-			if (annotation instanceof PathParam) {
-				builder.with(RestParamType.Path, ((PathParam) annotation).value());
-			} else if (annotation instanceof QueryParam) {
-				builder.with(RestParamType.Query, ((QueryParam) annotation).value());
-			} else if (annotation instanceof InnerBodyParam) {
-				builder.with(RestParamType.InnerBody, ((InnerBodyParam) annotation).value());
-			} else if (annotation instanceof Validate) {
-				builder.withValidatorClasses(((Validate) annotation).value());
-			} else if (annotation instanceof ExcludedFields) {
-				builder.withExcludedFields(((ExcludedFields) annotation).value());
-			} else if (annotation instanceof IncludedFields) {
-				builder.withIncludedFields(((IncludedFields) annotation).value());
-			} else if (annotation instanceof ServerSideRead) {
-				builder.withNeedServerSideToken(true);
-			} else if (annotation instanceof ServerSideConsume) {
-				builder.withNeedServerSideToken(true);
-				builder.withConsumeServerSideToken(true);
+		} else {
+			for (final Annotation annotation : annotations) {
+				if (annotation instanceof PathParam) {
+					builder.with(RestParamType.Path, ((PathParam) annotation).value());
+				} else if (annotation instanceof QueryParam) {
+					builder.with(RestParamType.Query, ((QueryParam) annotation).value());
+				} else if (annotation instanceof InnerBodyParam) {
+					builder.with(RestParamType.InnerBody, ((InnerBodyParam) annotation).value());
+				} else if (annotation instanceof Validate) {
+					builder.withValidatorClasses(((Validate) annotation).value());
+				} else if (annotation instanceof ExcludedFields) {
+					builder.withExcludedFields(((ExcludedFields) annotation).value());
+				} else if (annotation instanceof IncludedFields) {
+					builder.withIncludedFields(((IncludedFields) annotation).value());
+				} else if (annotation instanceof ServerSideRead) {
+					builder.withNeedServerSideToken(true);
+				} else if (annotation instanceof ServerSideConsume) {
+					builder.withNeedServerSideToken(true);
+					builder.withConsumeServerSideToken(true);
+				}
 			}
 		}
 		return builder.build();
 	}
 
+	private static ImplicitParam getImplicitParam(final Type paramType) {
+		for (final ImplicitParam implicitParam : ImplicitParam.values()) {
+			if (implicitParam.getImplicitType().equals(paramType)) {
+				return implicitParam;
+			}
+		}
+		return null;
+	}
+
+	private static final boolean isImplicitParam(final Type paramType) {
+		for (final ImplicitParam implicitParam : ImplicitParam.values()) {
+			if (implicitParam.getImplicitType().equals(paramType)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

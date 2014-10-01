@@ -33,6 +33,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * EndPoint param infos : 
  * - source type (query, path, body, innerBody or implicit)
@@ -58,8 +61,8 @@ public final class EndPointParam {
 	public static enum ImplicitParam {
 		UiMessageStack(UiMessageStack.class), //
 		//UiListState(UiListState.class), //
-		//Request(Request.class), //
-		//Response(Response.class), //
+		Request(HttpServletRequest.class), //
+		Response(HttpServletResponse.class), //
 		; //
 
 		private Class<?> implicitType;
