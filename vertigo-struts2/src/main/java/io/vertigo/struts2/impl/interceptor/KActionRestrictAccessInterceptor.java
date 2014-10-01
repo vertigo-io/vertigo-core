@@ -20,12 +20,12 @@ package io.vertigo.struts2.impl.interceptor;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
+import io.vertigo.struts2.core.GET;
 import io.vertigo.struts2.impl.MethodUtil;
 
 import java.lang.reflect.Method;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
 
 import org.apache.struts2.ServletActionContext;
 
