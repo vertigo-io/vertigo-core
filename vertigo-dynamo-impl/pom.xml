@@ -175,6 +175,10 @@
 					<groupId>antlr</groupId>
 					<artifactId>antlr</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty.orbit</groupId>
+					<artifactId>javax.servlet</artifactId>
+				</exclusion>
 				<!-- exclusion> <groupId>commons-fileupload</groupId> <artifactId>commons-fileupload</artifactId> </exclusion -->
 			</exclusions>
 		</dependency>
