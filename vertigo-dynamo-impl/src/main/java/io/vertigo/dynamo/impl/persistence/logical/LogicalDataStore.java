@@ -74,6 +74,7 @@ public final class LogicalDataStore implements DataStore {
 
 	private <D extends DtObject> DtList<D> loadMDList(final DtListURIForMasterData uri) {
 		Assertion.checkNotNull(uri);
+		Assertion.checkArgument(uri.getDtDefinition().getSortField().isDefined(), "Sortfield on definition {0} wasn't set. It's mandatory for MasterDataList.", uri.getDtDefinition().getName());
 		//---------------------------------------------------------------------
 		//On cherche la liste complete (URIAll n'est pas une DtListURIForMasterData pour ne pas boucler)
 		final DtList<D> unFilteredDtc = broker.<D> getList(new DtListURIAll(uri.getDtDefinition()));
@@ -82,7 +83,7 @@ public final class LogicalDataStore implements DataStore {
 		//On compose les fonctions
 		//1.on filtre
 		//2.on trie
-		final DtList<D> sortedDtc  = logicalStoreConfiguration.getPersistenceManager().getMasterDataConfiguration().getFilter(uri)//
+		final DtList<D> sortedDtc = logicalStoreConfiguration.getPersistenceManager().getMasterDataConfiguration().getFilter(uri)//
 				.sort(uri.getDtDefinition().getSortField().get().getName(), false, true, true)//
 				.apply(unFilteredDtc);
 		sortedDtc.setURI(uri);
