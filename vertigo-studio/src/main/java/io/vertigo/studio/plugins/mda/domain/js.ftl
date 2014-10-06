@@ -1,7 +1,7 @@
-// ******************************************************************************** //
-// **** SCRIPT GENERE, NE PAS MODIFIER MANUELLLEMENT ********** //
-// ******************************************************************************** //
-
+/**
+ * These metadatas are generated automatically.
+ * @type {Object}
+ */
 module.exports={
 	<#list dtDefinitions as dtDefinition>
 	"${dtDefinition.classSimpleNameCamelCase}": {
