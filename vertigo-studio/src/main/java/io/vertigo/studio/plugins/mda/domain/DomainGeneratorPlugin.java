@@ -46,6 +46,7 @@ import javax.inject.Named;
  */
 public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainConfiguration> {
 	private final boolean generateDtResources;
+	private final boolean generateDtResourcesJS;
 	private final boolean generateJpaAnnotations;
 	private final boolean generateDtDefinitions;
 	private final boolean generateJsDtDefinitions;
@@ -69,6 +70,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 	@Inject
 	public DomainGeneratorPlugin(//
 			@Named("generateDtResources") final boolean generateDtResources,//
+			@Named("generateDtResourcesJS") final boolean generateDtResourcesJS,//
 			@Named("generateJpaAnnotations") final boolean generateJpaAnnotations,//
 			@Named("generateDtDefinitions") final boolean generateDtDefinitions, //
 			@Named("generateJsDtDefinitions") final boolean generateJsDtDefinitions,//
@@ -78,6 +80,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 			@Named("baseCible") final String baseCible) {
 		// ---------------------------------------------------------------------
 		this.generateDtResources = generateDtResources;
+		this.generateDtResourcesJS = generateDtResourcesJS;
 		this.generateJpaAnnotations = generateJpaAnnotations;
 		this.generateDtDefinitions = generateDtDefinitions;
 		this.generateJsDtDefinitions = generateJsDtDefinitions;
@@ -113,6 +116,12 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 		if (generateDtResources) {
 			generateDtResources(domainConfiguration, result);
 		}
+
+		/* Génération des ressources afférentes au DT mais pour la partie JS.*/
+		if(generateDtResourcesJS){
+			generateDtResourcesJS(domainConfiguration, result);
+		}
+
 		/* Génération de la lgeneratee référençant toutes des définitions. */
 		if (generateDtDefinitions) {
 			generateDtDefinitions(domainConfiguration, result);
@@ -203,6 +212,41 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 				dtDefinitions2ResourceProperties.generateFile(result, true);
 			}
 		}
+	}
+
+	/**
+	 * Génère les ressources JS pour les traductions.
+	 * @param domainConfiguration Configuration du domaine.
+	 * @param result Fichier dans lequel est généré.
+	 */
+	private void generateDtResourcesJS(DomainConfiguration domainConfiguration, final Result result){
+				/**
+				 * Génération des ressources afférentes au DT.
+				 */
+				for (final Entry<String, Collection<DtDefinition>> entry : getDtDefinitionCollectionMap().entrySet()) {
+					String simpleClassName = entry.getClass().getName()+".generated";
+					
+					final List<TemplateDtDefinition> dtDefinitions = new ArrayList<>();
+					for (final DtDefinition dtDefinition : getDtDefinitions()) {
+						dtDefinitions.add(new TemplateDtDefinition(dtDefinition));
+						simpleClassName =  (new TemplateDtDefinition(dtDefinition)).getClassSimpleNameCamelCase();
+					}
+						
+					final Collection<DtDefinition> dtDefinitionCollection = entry.getValue();
+					Assertion.checkNotNull(dtDefinitionCollection);
+					final String packageName = entry.getKey();
+
+					if (domainConfiguration.isResourcesFileGenerated()) {
+
+						final Map<String, Object> mapRoot = new HashMap<>();
+						mapRoot.put("packageName", packageName);
+						mapRoot.put("simpleClassName", simpleClassName);
+						mapRoot.put("dtDefinitions", dtDefinitions);
+
+						final FileGenerator dtDefinitions2ResourceEnum = getFileGenerator(domainConfiguration, mapRoot,simpleClassName, packageName, ".js", "propertiesJS.ftl");
+						dtDefinitions2ResourceEnum.generateFile(result, true);
+					}
+				}
 	}
 
 	private void generateSql(final DomainConfiguration domainConfiguration, final Result result) {
