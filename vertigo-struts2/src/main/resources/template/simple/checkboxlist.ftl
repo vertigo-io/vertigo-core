@@ -5,18 +5,31 @@
 -->
 <#assign itemCount = 0/>
 <#if parameters.list??>
+<#assign paramListKey = parameters.listKey!util.getIdField(parameters.list) />
+<#assign paramListValue = parameters.listValue!util.getDisplayField(parameters.list) />
 <@s.iterator value="parameters.list">
     <#assign itemCount = itemCount + 1/>
-    <#if parameters.listKey??>
-        <#assign itemKey = stack.findValue(parameters.listKey)/>
+    <#if paramListKey??>
+            <#if stack.findValue(paramListKey)??>
+              <#assign itemKey = stack.findValue(paramListKey)/>
+              <#assign itemKeyStr = stack.findString(paramListKey)/>
+            <#else>
+              <#assign itemKey = ''/>
+              <#assign itemKeyStr = ''/>
+            </#if>
         <#else>
             <#assign itemKey = stack.findValue('top')/>
-    </#if>
-    <#if parameters.listValue??>
-        <#assign itemValue = stack.findString(parameters.listValue)?default("")/>
+            <#assign itemKeyStr = stack.findString('top')>
+        </#if>
+        <#if paramListValue??>
+            <#if stack.findString(paramListValue)??>
+              <#assign itemValue = stack.findString(paramListValue)/>
+            <#else>
+              <#assign itemValue = ''/>
+            </#if>
         <#else>
             <#assign itemValue = stack.findString('top')/>
-    </#if>
+        </#if>
     <#if parameters.listCssClass??>
         <#if stack.findString(parameters.listCssClass)??>
           <#assign itemCssClass= stack.findString(parameters.listCssClass)/>

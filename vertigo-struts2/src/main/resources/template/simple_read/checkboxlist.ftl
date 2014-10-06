@@ -3,54 +3,44 @@
  * $Id: checkboxlist.ftl,v 1.1 2014/02/26 17:49:02 npiedeloup Exp $
  */
 -->
-<#assign itemCount = 0/>
-<#if parameters.list??>
-<@s.iterator value="parameters.list">
-    <#assign itemCount = itemCount + 1/>
-    <#if parameters.listKey??>
-        <#assign itemKey = stack.findValue(parameters.listKey)/>
-        <#else>
-            <#assign itemKey = stack.findValue('top')/>
-    </#if>
-    <#if parameters.listValue??>
-        <#assign itemValue = stack.findString(parameters.listValue)?default("")/>
-        <#else>
-            <#assign itemValue = stack.findString('top')/>
-    </#if>
-    <#if parameters.listCssClass??>
-        <#if stack.findString(parameters.listCssClass)??>
-          <#assign itemCssClass= stack.findString(parameters.listCssClass)/>
-        <#else>
-          <#assign itemCssClass = ''/>
-        </#if>
-    </#if>
-    <#if parameters.listCssStyle??>
-        <#if stack.findString(parameters.listCssStyle)??>
-          <#assign itemCssStyle= stack.findString(parameters.listCssStyle)/>
-        <#else>
-          <#assign itemCssStyle = ''/>
-        </#if>
-    </#if>
-    <#if parameters.listTitle??>
-        <#if stack.findString(parameters.listTitle)??>
-          <#assign itemTitle= stack.findString(parameters.listTitle)/>
-        <#else>
-          <#assign itemTitle = ''/>
-        </#if>
-    </#if>
-    <#assign itemKeyStr=itemKey.toString() />
-    <#if tag.contains(parameters.nameValue, itemKey)>
-  	<span
+<#if parameters.nameValue?? && parameters.nameValue?has_content >
+	<#assign itemCount = 0/>
+	<#list parameters.nameValue as selectedValue>
+		<#assign itemCount = itemCount + 1/>
+		<span<#rt/>
 		<#if parameters.id??>
-		 id="${parameters.id?html}"<#rt/>
+		 id="${parameters.id?html}-${itemCount?html}"<#rt/>
 		</#if>
-		 class="checkbox-checked<#rt/>
-		<#if parameters.cssClass?? >
-		 ${parameters.cssClass?html}<#rt/>
+		<#if parameters.title??>
+		 title="${parameters.title?html}"<#rt/>
 		</#if>
-		">${itemValue}<#rt/>
-		</span><#rt/>
+		<#assign previousCssClass = appendedCssClass!''/>
+		<#assign appendedCssClass = previousCssClass +' checkbox-checked'/>
+		<#include "/${parameters.templateDir}/simple/css.ftl" /><#rt/>
+		<#assign appendedCssClass = previousCssClass/>
+		<#include "/${parameters.templateDir}/simple/scripting-events.ftl" /><#rt/>
+		<#include "/${parameters.templateDir}/simple/common-attributes.ftl" /><#rt/>
+		<#include "/${parameters.templateDir}/simple/dynamic-attributes.ftl" /><#rt/>
+		><#t/>
+		<#if selectedValue?? && selectedValue!='' >
+			<#if parameters.list.getById??>
+				<#assign paramListKey = parameters.listKey!util.getIdField(parameters.list) />
+				<#assign paramListValue = parameters.listValue!util.getDisplayField(parameters.list) />
+				<#assign uiObject = parameters.list.getById(parameters.listKey, selectedValue) />
+				<#if uiObject??>
+				 ${uiObject[parameters.listValue]?html?replace("\n", "<br/>")}<#t/>
+				</#if>
+			<#else> <#-- si pas de getById : liste ou map brute -->
+				<#list parameters.list as entry>
+					<#if entry.key = selectedValue>
+					 ${entry.value?html?replace("\n", "<br/>")}<#t/>
+					</#if>
+				</#list>
+			</#if>
+		</#if>
+		</span><#t/>
 		<br/>
-	</#if>
-</@s.iterator>
+	</#list>
 </#if>
+
+
