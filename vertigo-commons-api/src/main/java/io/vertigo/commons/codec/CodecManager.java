@@ -67,6 +67,7 @@ public interface CodecManager extends Manager {
 
 	/**
 	 * Le codage base 64 proposé autorise l'utilisation dans les URL en restreignant certains caractères.
+	 * Attention : A utiliser sur la totalité des données ou sur un multiple de 3 octets (un buffer de 1024 NE MARCHE PAS)
 	 * @return Codec Base 64.
 	 */
 	Codec<byte[], String> getBase64Codec();
