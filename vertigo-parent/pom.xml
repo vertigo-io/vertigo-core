@@ -202,10 +202,15 @@ limitations under the License. -->
 		<name>OSSRH Releases</name>
 		<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 	  </repository>
-	  <snapshotRepository>
+	  <!-- snapshotRepository>
 	     <id>ossrh</id>
 	     <name>OSSRH Snapshot</name>
 	     <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+	  </snapshotRepository -->
+	  <snapshotRepository>
+	     <id>klee-nexus</id>
+	     <name>KleeGoup nexus Snapshots</name>
+	     <url>http://kleegroup-nexus:8080/nexus/content/repositories/snapshots/</url>
 	  </snapshotRepository>
 	</distributionManagement>
 
