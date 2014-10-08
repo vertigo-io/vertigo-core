@@ -40,7 +40,7 @@ public final class EntityBuilder implements Builder<Entity> {
 	/**
 	 * Liste de TOUTES les définitions (composites et références) acceptées.
 	 */
-	private final Set<Attribute> attributes;
+	private final Set<EntityAttribute> attributes;
 	/**
 	 * Map permettant de savoir si une propriété est obligatoire, facultative (Property, Boolean)
 	 * Set des propriétés autorisées pour la définition
@@ -75,7 +75,7 @@ public final class EntityBuilder implements Builder<Entity> {
 		Assertion.checkNotNull(entity);
 		//On vérifie que le nom du champ n'est pas déjà utilisé.
 		//----------------------------------------------------------------------
-		final Attribute metaFieldDefinition = new Attribute(fieldName, entity, multiple, notNull);
+		final EntityAttribute metaFieldDefinition = new EntityAttribute(fieldName, entity, multiple, notNull);
 		//----------------------------------------------------------------------
 		attributes.add(metaFieldDefinition);
 		return this;

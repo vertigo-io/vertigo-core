@@ -144,7 +144,7 @@ public final class DomainGrammar extends GrammarProvider {
 				.withProperty(KspProperty.MSG, false)//
 				.build();
 	}
-
+ 
 	private static Entity createDomainEntity(final Entity formatterEntity, final Entity constraintEntity) {
 		return new EntityBuilder("Domain")//
 				.withProperty(KspProperty.MAX_LENGTH, false)//

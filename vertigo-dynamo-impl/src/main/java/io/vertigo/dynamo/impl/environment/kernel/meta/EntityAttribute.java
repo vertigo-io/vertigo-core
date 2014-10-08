@@ -21,35 +21,58 @@ package io.vertigo.dynamo.impl.environment.kernel.meta;
 import io.vertigo.core.lang.Assertion;
 
 /**
- * Propriété (meta-data, aspect, attribute) d'une entity.
- *
- * @author  pchretien, npiedeloup
+ * Attribut d'une entité.
+ * 
+ * @author pchretien
  */
-public final class EntityProperty {
+public final class EntityAttribute {
 	private final String name;
-	private final EntityPropertyType primitiveType;
+	private final boolean multiple;
+	private final boolean notNull;
+	private final Entity entity;
 
-	public EntityProperty(final String name, final EntityPropertyType primitiveType) {
+	/**
+	 * Constructeur.
+	 * @param name Nom
+	 * @param entity Entité / Méta-définition parente (composition ou référence)
+	 * @param multiple Si multiple
+	 * @param notNull Si not null
+	 */
+	EntityAttribute(final String name, final Entity entity, final boolean multiple, final boolean notNull) {
 		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(primitiveType);
-		//---------------------------------------------------------------------
+		Assertion.checkNotNull(entity);
+		//----------------------------------------------------------------------
 		this.name = name;
-		this.primitiveType = primitiveType;
+		this.multiple = multiple;
+		this.notNull = notNull;
+		this.entity = entity;
 	}
 
 	/**
-	 * @return Nom de la propriété (Const)
+	 * @return Nom
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * Toute propriété dynamo est déclarée dans un type primitif .
-	 * Ceci permet de gérer au mieux l'utilisation des propriétés dans la grammaire.
-	 * @return Type primitif utilisé pour déclarer la valuer de la propriété.
+	 * @return Si multiple
 	 */
-	public EntityPropertyType getPrimitiveType() {
-		return primitiveType;
+	public boolean isMultiple() {
+		return multiple;
+	}
+
+	/**
+	 * @return Si not null
+	 */
+	public boolean isNotNull() {
+		return notNull;
+	}
+
+	/**
+	 * @return Entité référencée. (composition ou référence)
+	 */
+	public Entity getEntity() {
+		return entity;
 	}
 }

@@ -18,25 +18,24 @@
  */
 package io.vertigo.dynamo.plugins.environment;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.impl.environment.kernel.meta.EntityProperty;
-import io.vertigo.dynamo.impl.environment.kernel.meta.PrimitiveType;
+import io.vertigo.dynamo.impl.environment.kernel.meta.EntityPropertyType;
 
 /**
  * Métadonnée liée à la grammaire.
  *
  * @author  pchretien
  */
-public enum KspProperty implements EntityProperty {
+public class KspProperty {
 	/**
 	 * Nom de la classe java implémentant un concept tel que formatter, constraint...
 	 */
-	CLASS_NAME(PrimitiveType.String),
+	public static final EntityProperty CLASS_NAME = new EntityProperty("CLASS_NAME", EntityPropertyType.String);
 
 	/**
 	 * Arguments initialisant la classe précédante.
 	 */
-	ARGS(PrimitiveType.String),
+	public static final EntityProperty ARGS = new EntityProperty("ARGS", EntityPropertyType.String);
 
 	//------------------------------
 	//----Constraint
@@ -44,7 +43,7 @@ public enum KspProperty implements EntityProperty {
 	/**
 	 * Propriété standard : message d'erreur, valeur String.
 	 */
-	MSG(PrimitiveType.String),
+	public static final EntityProperty MSG = new EntityProperty("MSG", EntityPropertyType.String);
 
 	//------------------------------
 	//----Domain
@@ -52,81 +51,81 @@ public enum KspProperty implements EntityProperty {
 	/**
 	 * Propriété standard : libellé du champ, valeur String.
 	 */
-	LABEL(PrimitiveType.String),
+	public static final EntityProperty LABEL = new EntityProperty("LABEL", EntityPropertyType.String);
 	/**
 	 * Propriété standard : champ obligatoire, valeur Boolean.
 	 */
-	NOT_NULL(PrimitiveType.Boolean),
+	public static final EntityProperty NOT_NULL = new EntityProperty("NOT_NULL", EntityPropertyType.Boolean);
 
 	/**
 	 * Propriété liée au broker : La donnée est-elle gérée en mode write par le Broker.
 	 */
-	PERSISTENT(PrimitiveType.Boolean),
+	public static final EntityProperty PERSISTENT = new EntityProperty("PERSISTENT", EntityPropertyType.Boolean);
 
 	/**
 	 * Champ qui porte le trie par défaut. (Un au plus par DT)
 	 */
-	SORT_FIELD(PrimitiveType.String),
+	public static final EntityProperty SORT_FIELD = new EntityProperty("SORT_FIELD", EntityPropertyType.String);
 
 	/**
 	 * Champ qui porte l'affichage par défaut. (Un au plus par DT)
 	 */
-	DISPLAY_FIELD(PrimitiveType.String),
+	public static final EntityProperty DISPLAY_FIELD = new EntityProperty("DISPLAY_FIELD", EntityPropertyType.String);
 
 	/**
 	 * Le DT est-il représentée par un bean ou de maniére générique(dynamique)
 	 */
-	DYNAMIC(PrimitiveType.Boolean),
+	public static final EntityProperty DYNAMIC = new EntityProperty("DYNAMIC", EntityPropertyType.Boolean);
 
 	/**
 	 * Nom du champ représentant la clé étrangére dans une association simple (non NN).
 	 */
-	FK_FIELD_NAME(PrimitiveType.String),
+	public static final EntityProperty FK_FIELD_NAME = new EntityProperty("FK_FIELD_NAME", EntityPropertyType.String);
 
 	/**
 	 * Cardinalité du noeud A dans une association : 1..* ou 0..* ou 1..1.
 	 */
-	MULTIPLICITY_A(PrimitiveType.String),
+	public static final EntityProperty MULTIPLICITY_A = new EntityProperty("MULTIPLICITY_A", EntityPropertyType.String);
 
 	/**
 	 * Navigabilité du noeud A dans une association.
 	 */
-	NAVIGABILITY_A(PrimitiveType.Boolean),
+	public static final EntityProperty NAVIGABILITY_A = new EntityProperty("NAVIGABILITY_A", EntityPropertyType.Boolean);
 
 	/**
 	 * Nom du réle du noeud A dans une association.
 	 */
-	ROLE_A(PrimitiveType.String),
+	public static final EntityProperty ROLE_A = new EntityProperty("ROLE_A", EntityPropertyType.String);
 
 	/**
 	 * Label du noeud A dans une association.
 	 */
-	LABEL_A(PrimitiveType.String),
+	public static final EntityProperty LABEL_A = new EntityProperty("LABEL_A", EntityPropertyType.String);
 
 	/**
 	 * Cardinalité du noeud B dans une association : 1..* ou 0..* ou 1..1.
 	 */
-	MULTIPLICITY_B(PrimitiveType.String),
+	public static final EntityProperty MULTIPLICITY_B = new EntityProperty("MULTIPLICITY_B", EntityPropertyType.String);
 
 	/**
 	 * Navigabilité du noeud B dans une association.
 	 */
-	NAVIGABILITY_B(PrimitiveType.Boolean),
+	public static final EntityProperty NAVIGABILITY_B = new EntityProperty("NAVIGABILITY_B", EntityPropertyType.Boolean);
 
 	/**
 	 * Label du noeud B dans une association.
 	 */
-	LABEL_B(PrimitiveType.String),
+	public static final EntityProperty LABEL_B = new EntityProperty("LABEL_B", EntityPropertyType.String);
 
 	/**
 	 * Nom du réle du noeud B dans une association.
 	 */
-	ROLE_B(PrimitiveType.String),
+	public static final EntityProperty ROLE_B = new EntityProperty("ROLE_B", EntityPropertyType.String);
 
 	/**
 	 * Nom de la table supportant l'association NN.
 	 */
-	TABLE_NAME(PrimitiveType.String),
+	public static final EntityProperty TABLE_NAME = new EntityProperty("TABLE_NAME", EntityPropertyType.String);
 
 	//------------------------------
 	//----Task
@@ -134,12 +133,12 @@ public enum KspProperty implements EntityProperty {
 	/**
 	 * Requête ou plus générallement paramètre d'une tache.
 	 */
-	REQUEST(PrimitiveType.String),
+	public static final EntityProperty REQUEST = new EntityProperty("REQUEST", EntityPropertyType.String);
 
 	/**
 	 * Type in ou out d'un attribut de tache.
 	 */
-	IN_OUT(PrimitiveType.String),
+	public static final EntityProperty IN_OUT = new EntityProperty("IN_OUT", EntityPropertyType.String);
 
 	//------------------------------
 	//----FileInfo
@@ -147,12 +146,12 @@ public enum KspProperty implements EntityProperty {
 	/**
 	 * Racine des éléments de cette définition.
 	 */
-	ROOT(PrimitiveType.String),
+	public static final EntityProperty ROOT = new EntityProperty("ROOT", EntityPropertyType.String);
 
 	/**
 	 * Nom du Store utilisé pour cette définition.
 	 */
-	STORE_NAME(PrimitiveType.String),
+	public static final EntityProperty STORE_NAME = new EntityProperty("STORE_NAME", EntityPropertyType.String);
 
 	//------------------------------
 	//----Mda
@@ -160,12 +159,12 @@ public enum KspProperty implements EntityProperty {
 	/**
 	 * Expression du champ computed.
 	 */
-	EXPRESSION(PrimitiveType.String),
+	public static final EntityProperty EXPRESSION = new EntityProperty("EXPRESSION", EntityPropertyType.String);
 
 	/**
 	 * Type de données en base.
 	 */
-	STORE_TYPE(PrimitiveType.String),
+	public static final EntityProperty STORE_TYPE = new EntityProperty("STORE_TYPE", EntityPropertyType.String);
 
 	//==========================================================================
 	//==========================================================================
@@ -178,68 +177,38 @@ public enum KspProperty implements EntityProperty {
 	/**
 	 * Propriété standard : longueur max du champ, valeur Integer.
 	 */
-	MAX_LENGTH(PrimitiveType.Integer),
+	public static final EntityProperty MAX_LENGTH = new EntityProperty("MAX_LENGTH", EntityPropertyType.Integer);
 
 	/**
 	 * Propriété standard : Type des définitions.
 	 */
-	TYPE(PrimitiveType.String),
+	public static final EntityProperty TYPE = new EntityProperty("TYPE", EntityPropertyType.String);
 
 	/**
 	 * Proriété Regex de type String.
 	 */
-	REGEX(PrimitiveType.String),
+	public static final EntityProperty REGEX = new EntityProperty("REGEX", EntityPropertyType.String);
 
 	/**
 	 * Propriété de contrainte : valeur minimum, Double.
 	 * Dans le cas d'une date, cette propriété contient le timestamp de la date min.
 	 */
-	MIN_VALUE(PrimitiveType.Double),
+	public static final EntityProperty MIN_VALUE = new EntityProperty("MIN_VALUE", EntityPropertyType.Double);
 
 	/**
 	 * Propriété de contrainte : valeur maximum, Double.
 	 * Dans le cas d'une date, cette propriété contient le timestamp de la date max.
 	 */
-	MAX_VALUE(PrimitiveType.Double),
+	public static final EntityProperty MAX_VALUE = new EntityProperty("MAX_VALUE", EntityPropertyType.Double);
 
 	//----------------Style----------------------------------------------------
 	/**
 	 * Propriété standard : Unité de la valeur, valeur String.
 	 */
-	UNIT(PrimitiveType.String),
+	public static final EntityProperty UNIT = new EntityProperty("UNIT", EntityPropertyType.String);
 
 	/**
 	 * Propriété standard : Type de l'index. (SOLR par exemple)
 	 */
-	INDEX_TYPE(PrimitiveType.String);
-
-	//==========================================================================
-	//==========================================================================
-
-	/**
-	 * Classe java représentant la valeur de la propriété.
-	 */
-	private final PrimitiveType primitiveType;
-
-	/**
-	 * Constructeur à partir du nom évocateur de la propriété.
-	 * @param dataType Type Dynamo
-	 */
-	private KspProperty(final PrimitiveType primitiveType) {
-		Assertion.checkNotNull(primitiveType);
-		//----------------------------------------------------------------------
-		this.primitiveType = primitiveType;
-	}
-
-	//==========================================================================
-
-	/** {@inheritDoc} */
-	public final PrimitiveType getPrimitiveType() {
-		return primitiveType;
-	}
-
-	/** {@inheritDoc} */
-	public final String getName() {
-		return toString();
-	}
+	public static final EntityProperty INDEX_TYPE = new EntityProperty("INDEX_TYPE", EntityPropertyType.String);
 }

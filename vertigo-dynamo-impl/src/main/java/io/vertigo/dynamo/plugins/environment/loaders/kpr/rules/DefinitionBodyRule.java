@@ -29,7 +29,7 @@ import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
-import io.vertigo.dynamo.impl.environment.kernel.meta.Attribute;
+import io.vertigo.dynamo.impl.environment.kernel.meta.EntityAttribute;
 import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.XDefinitionEntry;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.XPropertyEntry;
@@ -74,7 +74,7 @@ public final class DefinitionBodyRule extends AbstractRule<XDefinitionBody, List
 
 		final List<Rule<?>> innerDefinitionRules = new ArrayList<>();
 
-		for (final Attribute attribute : entity.getAttributes()) {
+		for (final EntityAttribute attribute : entity.getAttributes()) {
 			final String attributeName = attribute.getName();
 			attributeNames.add(attributeName);
 			innerDefinitionRules.add(new InnerDefinitionRule(dynamicModelRepository, attributeName, attribute.getEntity()));

@@ -44,7 +44,7 @@ public final class Entity {
 	/**
 	 * Liste de TOUTES les définitions (composites et références) acceptées.
 	 */
-	private final Set<Attribute> attributes;
+	private final Set<EntityAttribute> attributes;
 	/**
 	 * Map permettant de savoir si une propriété est obligatoire, facultative (Property, Boolean)
 	 * Set des propriétés autorisées pour la définition
@@ -58,7 +58,7 @@ public final class Entity {
 	 * (Exemple : Classe Service).
 	 * @param name Classe représentant l'instance métaDéfinition
 	 */
-	Entity(final String name, final Set<Attribute> attributes, final Map<EntityProperty, Boolean> properties) {
+	Entity(final String name, final Set<EntityAttribute> attributes, final Map<EntityProperty, Boolean> properties) {
 		Assertion.checkNotNull(name);
 		Assertion.checkNotNull(attributes);
 		Assertion.checkNotNull(properties);
@@ -96,7 +96,7 @@ public final class Entity {
 	/**
 	 * @return Set des attributs de l'entité
 	 */
-	public Set<Attribute> getAttributes() {
+	public Set<EntityAttribute> getAttributes() {
 		return attributes;
 	}
 }

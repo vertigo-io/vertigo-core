@@ -21,7 +21,7 @@ package io.vertigo.dynamo.environment.plugins.loaders.kpr.definition;
 import io.vertigo.commons.parser.NotFoundException;
 import io.vertigo.commons.parser.Parser;
 import io.vertigo.dynamo.impl.environment.kernel.meta.EntityProperty;
-import io.vertigo.dynamo.impl.environment.kernel.meta.PrimitiveType;
+import io.vertigo.dynamo.impl.environment.kernel.meta.EntityPropertyType;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.XPropertyEntry;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.XPropertyEntryRule;
 
@@ -38,24 +38,8 @@ public final class XPropertyEntryRuleTest {
 	private static XPropertyEntryRule MAIN;
 	static {
 		final Set<EntityProperty> entityProperties = new HashSet<>();
-		entityProperties.add(new EntityProperty() {
-			public String getName() {
-				return LABEL;
-			}
-
-			public PrimitiveType getPrimitiveType() {
-				return PrimitiveType.String;
-			}
-		});
-		entityProperties.add(new EntityProperty() {
-			public String getName() {
-				return SIZE;
-			}
-
-			public PrimitiveType getPrimitiveType() {
-				return PrimitiveType.String;
-			}
-		});
+		entityProperties.add(new EntityProperty(LABEL, EntityPropertyType.String));
+		entityProperties.add(new EntityProperty(SIZE, EntityPropertyType.String));
 		MAIN = new XPropertyEntryRule(entityProperties);
 	}
 
