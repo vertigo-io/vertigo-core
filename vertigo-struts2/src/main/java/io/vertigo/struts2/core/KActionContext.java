@@ -24,6 +24,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -38,8 +39,8 @@ public final class KActionContext extends HashMap<String, Serializable> {
 
 	//Index UiObject et DtObject vers clé de context.
 	private final Map<Serializable, String> reverseUiObjectIndex = new HashMap<>();
-	//Index UiList et DtList vers clé de context.
-	private final Map<UiList<?>, String> reverseUiListIndex = new HashMap<>();
+	//Index UiList et DtList vers clé de context. //identity HashMap because two empty list aren't the same
+	private final Map<UiList<?>, String> reverseUiListIndex = new IdentityHashMap<>();
 	private boolean unmodifiable; //initialisé à false
 
 	/**
