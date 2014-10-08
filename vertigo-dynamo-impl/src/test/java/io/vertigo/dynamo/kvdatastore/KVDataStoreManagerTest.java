@@ -99,7 +99,7 @@ public class KVDataStoreManagerTest extends AbstractTestCaseJU4 {
 			Assert.assertTrue(search.isDefined());
 			Assert.assertEquals("Hortensia", search.get().getName());
 
-			Assert.assertEquals(10d, search.get().getPrice(), 0); //"Price must be excatly 10", 
+			Assert.assertEquals(10d, search.get().getPrice(), 0); //"Price must be excatly 10",
 		}
 	}
 }

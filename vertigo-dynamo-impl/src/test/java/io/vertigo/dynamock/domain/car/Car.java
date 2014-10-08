@@ -46,7 +46,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : PRIMARY_KEY.
-	 * récupère la valeur de la propriété 'identifiant de la voiture'. 
+	 * récupère la valeur de la propriété 'identifiant de la voiture'.
 	 * @return Long id <b>Obligatoire</b>
 	 */
 	@javax.persistence.Id
@@ -69,7 +69,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * récupère la valeur de la propriété 'Constructeur'. 
+	 * récupère la valeur de la propriété 'Constructeur'.
 	 * @return String make <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "MAKE")
@@ -89,7 +89,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * récupère la valeur de la propriété 'Modéle'. 
+	 * récupère la valeur de la propriété 'Modéle'.
 	 * @return String model <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "MODEL")
@@ -109,7 +109,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * récupère la valeur de la propriété 'Descriptif'. 
+	 * récupère la valeur de la propriété 'Descriptif'.
 	 * @return String description <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "DESCRIPTION")
@@ -129,7 +129,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * récupère la valeur de la propriété 'Année'. 
+	 * récupère la valeur de la propriété 'Année'.
 	 * @return Integer year <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "YEAR")
@@ -149,7 +149,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * récupère la valeur de la propriété 'Kilométrage'. 
+	 * récupère la valeur de la propriété 'Kilométrage'.
 	 * @return Integer kilo <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "KILO")
@@ -169,7 +169,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * récupère la valeur de la propriété 'Prix'. 
+	 * récupère la valeur de la propriété 'Prix'.
 	 * @return Integer price <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "PRICE")
@@ -189,7 +189,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * récupère la valeur de la propriété 'Type de moteur'. 
+	 * récupère la valeur de la propriété 'Type de moteur'.
 	 * @return String motorType <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "MOTOR_TYPE")
@@ -209,7 +209,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : FOREIGN_KEY.
-	 * récupère la valeur de la propriété 'Famille'. 
+	 * récupère la valeur de la propriété 'Famille'.
 	 * @return Long famId <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "FAM_ID")

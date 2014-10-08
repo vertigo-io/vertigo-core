@@ -28,7 +28,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class DefinitionRuleTest {
-	private final DynamicDefinitionRepository dynamicDefinitionRepository = DefinitionTestUtil.createDynamicDefinitionRepository();
+	private final DynamicDefinitionRepository dynamicDefinitionRepository = DynamicRegistryMock.createDynamicDefinitionRepository();
 
 	@Test
 	public void test1() throws NotFoundException {
