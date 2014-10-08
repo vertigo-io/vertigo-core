@@ -56,6 +56,7 @@ import io.vertigo.vega.rest.stereotype.DELETE;
 import io.vertigo.vega.rest.stereotype.Doc;
 import io.vertigo.vega.rest.stereotype.ExcludedFields;
 import io.vertigo.vega.rest.stereotype.GET;
+import io.vertigo.vega.rest.stereotype.HeaderParam;
 import io.vertigo.vega.rest.stereotype.IncludedFields;
 import io.vertigo.vega.rest.stereotype.InnerBodyParam;
 import io.vertigo.vega.rest.stereotype.POST;
@@ -579,6 +580,15 @@ public final class TesterRestServices implements RestfulService {
 	@POST("/saveListDelta")
 	public String saveListDelta(final DtListDelta<Contact> myList) {
 		return "OK : add " + myList.getCreated().size() + " contacts, update " + myList.getUpdated().size() + " contacts, removed " + myList.getDeleted().size();
+	}
+
+	@GET("/headerParams")
+	@Doc("Just send x-test-param:\"i'ts fine\"")
+	public String testHeaderParams(final @HeaderParam("x-test-param") String testParam) {
+		if (!"i'ts fine".equals(testParam)) {
+			throw new VUserException(new MessageText("Bad param value. Read doc.", null));
+		}
+		return "OK";
 	}
 
 	/*@GET("/searchFacet")

@@ -41,6 +41,7 @@ import io.vertigo.vega.rest.stereotype.DELETE;
 import io.vertigo.vega.rest.stereotype.Doc;
 import io.vertigo.vega.rest.stereotype.ExcludedFields;
 import io.vertigo.vega.rest.stereotype.GET;
+import io.vertigo.vega.rest.stereotype.HeaderParam;
 import io.vertigo.vega.rest.stereotype.IncludedFields;
 import io.vertigo.vega.rest.stereotype.InnerBodyParam;
 import io.vertigo.vega.rest.stereotype.POST;
@@ -149,6 +150,8 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 					builder.with(RestParamType.Path, ((PathParam) annotation).value());
 				} else if (annotation instanceof QueryParam) {
 					builder.with(RestParamType.Query, ((QueryParam) annotation).value());
+				} else if (annotation instanceof HeaderParam) {
+					builder.with(RestParamType.Header, ((HeaderParam) annotation).value());
 				} else if (annotation instanceof InnerBodyParam) {
 					builder.with(RestParamType.InnerBody, ((InnerBodyParam) annotation).value());
 				} else if (annotation instanceof Validate) {

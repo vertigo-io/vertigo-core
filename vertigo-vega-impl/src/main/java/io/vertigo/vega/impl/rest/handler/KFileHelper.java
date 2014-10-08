@@ -60,6 +60,7 @@ final class KFileHelper {
 			case Query:
 				return readQueryFile(request, endPointParam);
 			case Body:
+			case Header:
 			case InnerBody:
 			case Path:
 			case Implicit:

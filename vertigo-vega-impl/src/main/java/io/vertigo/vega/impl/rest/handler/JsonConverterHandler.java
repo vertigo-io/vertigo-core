@@ -104,6 +104,9 @@ final class JsonConverterHandler implements RouteHandler {
 					case Query:
 						value = readQueryValue(request.queryMap(), endPointParam);
 						break;
+					case Header:
+						value = readPrimitiveValue(request.headers(endPointParam.getName()), endPointParam.getType());
+						break;
 					case Implicit:
 						switch (ImplicitParam.valueOf(endPointParam.getName())) {
 							case UiMessageStack:

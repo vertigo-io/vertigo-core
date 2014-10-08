@@ -55,7 +55,7 @@ public final class EndPointParam {
 	 * Parameter's source types.
 	 */
 	public static enum RestParamType {
-		Query, Path, Body, InnerBody, Implicit
+		Query, Path, Header, Body, InnerBody, Implicit
 	}
 
 	public static enum ImplicitParam {
