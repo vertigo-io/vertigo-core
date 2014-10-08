@@ -25,19 +25,33 @@ import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DefinitionBodyRule;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.XDefinitionBody;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 public class DefinitionBodyRuleTest {
 	private final DynamicDefinitionRepository dynamicDefinitionRepository = DynamicRegistryMock.createDynamicDefinitionRepository();
 
+	private static Entity find(final List<Entity> entities, final String entityName) {
+		for (final Entity entity : entities) {
+			if (entity.getName().equals(entityName)) {
+				return entity;
+			}
+		}
+		throw new RuntimeException("not found " + entityName);
+	}
+
 	@Test
 	public void test1() throws NotFoundException {
-		final Entity entity = dynamicDefinitionRepository.getGrammar().getEntity("Formatter");
+		final List<Entity> entities = dynamicDefinitionRepository.getGrammar().getEntities();
+
+		final Entity entity = find(entities, "Formatter");
+
 		final DefinitionBodyRule definitionBodyRule = new DefinitionBodyRule(dynamicDefinitionRepository, entity);
 		final Parser<XDefinitionBody> parser = definitionBodyRule.createParser();
 		parser.parse("{ args : \"UPPER\" }", 0);
-		Assert.assertEquals(0, parser.get().getDefinitionEntries().size()); //On vérifie que l'on a une et une seule propriété 
+		Assert.assertEquals(0, parser.get().getDefinitionEntries().size()); //On vérifie que l'on a une et une seule propriété
 		Assert.assertEquals(1, parser.get().getPropertyEntries().size());
 	}
 
@@ -49,7 +63,8 @@ public class DefinitionBodyRuleTest {
 	//		)
 	@Test
 	public void test2() throws NotFoundException {
-		final Entity entity = dynamicDefinitionRepository.getGrammar().getEntity("Domain");
+		final List<Entity> entities = dynamicDefinitionRepository.getGrammar().getEntities();
+		final Entity entity = find(entities, "Domain");
 		final DefinitionBodyRule definitionBodyRule = new DefinitionBodyRule(dynamicDefinitionRepository, entity);
 		final Parser<XDefinitionBody> parser = definitionBodyRule.createParser();
 		parser.parse("{ dataType : String ,  formatter : FMT_DEFAULT,  constraint : [ CK_CODE_POSTAL ]    } ", 0);
@@ -57,7 +72,8 @@ public class DefinitionBodyRuleTest {
 
 	@Test
 	public void testError() {
-		final Entity entity = dynamicDefinitionRepository.getGrammar().getEntity("Domain");
+		final List<Entity> entities = dynamicDefinitionRepository.getGrammar().getEntities();
+		final Entity entity = find(entities, "Domain");
 		final DefinitionBodyRule definitionBodyRule = new DefinitionBodyRule(dynamicDefinitionRepository, entity);
 		final Parser<XDefinitionBody> parser = definitionBodyRule.createParser();
 		final String testValue = "{ dataType : String ,  formatter : FMT_DEFAULT,  constraint : [ CK_CODE_POSTAL ] , maxLengh:\"true\"   } ";

@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * Une grammaire est composée d'entités et de propriétés.
  * Les entités sont une composition d'entités et de propriétés.
- * 
+ *
  * Il est possible de composer une grammaire à partir de grammaires.
  *
  * @author pchretien
@@ -75,29 +75,6 @@ public final class Grammar {
 		//---------------------------------------------------------------------
 		final String propertyName = StringUtil.constToCamelCase(property.getName(), false);
 		return properties.put(propertyName, property);
-	}
-
-	/**
-	 * Récupération d'une propriété par son nom.
-	 * @param propertyName Nom de la propriété
-	 * @return Propriété trouvée (NotNull)
-	 */
-	public EntityProperty getProperty(final String propertyName) {
-		final EntityProperty property = properties.get(propertyName);
-		//---------------------------------------------------------------------
-		Assertion.checkNotNull(property, "propriété non trouvée '{0}' parmi : {1}", propertyName, properties);
-		return property;
-	}
-
-	/**
-	 * @return Entité.
-	 */
-	public Entity getEntity(final String name) {
-		Assertion.checkArgNotEmpty(name);
-		//---------------------------------------------------------------------
-		final Entity entity = entities.get(name);
-		Assertion.checkNotNull(entity, "entity {0} not found", name);
-		return entity;
 	}
 
 	/**
