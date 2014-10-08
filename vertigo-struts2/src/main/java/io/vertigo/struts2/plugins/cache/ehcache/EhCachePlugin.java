@@ -135,7 +135,11 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void clear(final String context) {
-		getEHCache(context).removeAll();
+		final Ehcache ehCache = manager.getCache(context);
+		if (ehCache != null) {
+			ehCache.removeAll();
+		}
+		
 	}
 
 	private void putEH(final String context, final Object key, final Serializable serialized) {
