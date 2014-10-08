@@ -54,11 +54,11 @@ public final class EndPointTypeHelper {
 	 * @param type Type to test (must be a Class or ParameterizedType)
 	 * @return Is testedType assignable from parentClass ?
 	 */
-	public static Class castAsClass(final Type type) {
+	public static Class<?> castAsClass(final Type type) {
 		if (type instanceof Class) {
 			return ((Class<?>) type);
 		} else if (type instanceof ParameterizedType) {
-			return (Class) ((ParameterizedType) type).getRawType();
+			return (Class<?>) ((ParameterizedType) type).getRawType();
 		}
 		throw new IllegalArgumentException("Parameters Type must be Class or ParameterizedType, unsupported type:" + type);
 	}

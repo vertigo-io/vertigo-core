@@ -183,7 +183,7 @@ public final class SwaggerRestServices implements RestfulService {
 
 	private Map<String, Object> createSchemaObject(final Type type) {
 		final Map<String, Object> schema = new LinkedHashMap<>();
-		final Class<Object> objectClass = EndPointTypeHelper.castAsClass(type);
+		final Class<?> objectClass = EndPointTypeHelper.castAsClass(type);
 		final String[] typeAndFormat = toSwaggerType(objectClass);
 		schema.put("type", typeAndFormat[0]);
 		if (typeAndFormat[1] != null) {
@@ -212,7 +212,8 @@ public final class SwaggerRestServices implements RestfulService {
 			if (!definitions.containsKey(objectName)) {
 				final Map<String, Object> definition = new LinkedHashMap<>();
 				if (DtObject.class.isAssignableFrom(objectClass)) {
-					appendPropertiesDtObject(definition, (Class<? extends DtObject>) objectClass);
+					final Class<? extends DtObject> dtClass = (Class<? extends DtObject>) objectClass;
+					appendPropertiesDtObject(definition, dtClass);
 				} else {
 					appendPropertiesObject(definition, objectClass, parameterClass);
 				}
@@ -242,7 +243,7 @@ public final class SwaggerRestServices implements RestfulService {
 	}
 
 	private void appendPropertiesObject(final Map<String, Object> entity, final Type type, final Class<? extends Object> parameterClass) {
-		final Class<Object> objectClass = EndPointTypeHelper.castAsClass(type);
+		final Class<?> objectClass = EndPointTypeHelper.castAsClass(type);
 		//can't be a primitive nor array nor DtListDelta
 		final Map<String, Object> properties = new LinkedHashMap<>();
 		final List<String> enums = new ArrayList<>(); //mandatory fields
@@ -335,6 +336,10 @@ public final class SwaggerRestServices implements RestfulService {
 				break;
 			case Query:
 				inValue = endPointDefinition.getVerb() == Verb.GET ? "query" : "formData";
+				nameValue = endPointParams.getName();
+				break;
+			case Header:
+				inValue = "header";
 				nameValue = endPointParams.getName();
 				break;
 			default:
