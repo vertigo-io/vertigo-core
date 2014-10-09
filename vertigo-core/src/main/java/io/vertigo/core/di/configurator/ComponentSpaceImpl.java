@@ -56,18 +56,18 @@ import org.apache.log4j.xml.DOMConfigurator;
 
 /**
  * Centralisation des accès aux composants et aux plugins.
- * 
- * Les composants et leur initializers sont instanciés par injection 
+ *
+ * Les composants et leur initializers sont instanciés par injection
  *  - des paramètres déclarés sur le scope composant.
- *  - des autres composants 
- * 
- * Les plugins sont instanciés par injection 
+ *  - des autres composants
+ *
+ * Les plugins sont instanciés par injection
  *  - des paramètres déclarés sur le scope plugin.
  *  - des autres composants
- * 
+ *
  * Donc un plugin ne peut pas être injecté dans un plugin, il ne peut être injecté que dans LE composant pour lequel il est prévu.
  * En revanche les composants (à ne pas réaliser de dépendances cycliques) peuvent être injecter dans les composants, les plugins et les initializers.
- * 
+ *
  * @author pchretien
  */
 public final class ComponentSpaceImpl implements ComponentSpace {
@@ -105,7 +105,7 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 				Activeable.class.cast(engine).start();
 			}
 		}
-		//---	
+		//---
 		componentContainer.start();
 		if (!componentSpaceConfig.isSilence()) {
 			//Si on n'est pas en mode silencieux on affiche les infos
@@ -141,7 +141,7 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 
 	private void injectResources(final ModuleConfig moduleConfig) {
 		//			int resourcesToBeLoad = moduleConfig.getResourceConfigs().size();
-		//We are doing a copy of all resources, to check that they are all parsed. 
+		//We are doing a copy of all resources, to check that they are all parsed.
 		final List<ResourceConfig> resourceConfigsToDo = new ArrayList<>(moduleConfig.getResourceConfigs());
 		for (final ResourceLoader resourceLoader : Home.getResourceSpace().getResourceLoaders()) {
 			//Candidates contins all resources that can be treated by the resourceLoader
@@ -155,7 +155,7 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 			}
 			resourceLoader.parse(candidates);
 		}
-		Assertion.checkArgument(resourceConfigsToDo.isEmpty(), "All resources '{1}' have not been parsed successfully : {}", resourceConfigsToDo);
+		Assertion.checkArgument(resourceConfigsToDo.isEmpty(), "All resources '{0}' have not been parsed successfully ", resourceConfigsToDo);
 	}
 
 	/*We are stopping all the components.*/
@@ -266,7 +266,7 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 		// 3. On crée le composant
 		final Object instance = createComponent(componentConfig);
 
-		//4. AOP, on aopise le composant 
+		//4. AOP, on aopise le composant
 		final Map<Method, List<Interceptor>> joinPoints = aspectInitializer.createJoinPoints(componentConfig);
 		Object reference;
 		if (!joinPoints.isEmpty()) {
@@ -289,7 +289,7 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 		for (final PluginConfig pluginConfig : componentConfig.getPluginConfigs()) {
 			pluginTypes.add(pluginConfig.getType());
 		}
-		//---	
+		//---
 		if (componentConfig.isElastic()) {
 			return componentSpaceConfig.getElasticaEngine().get().createProxy(componentConfig.getApiClass().get());
 		}
@@ -297,7 +297,7 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 		final DualContainer container = new DualContainer(componentContainer, paramsContainer);
 		//---
 		final Object component = injector.newInstance(componentConfig.getImplClass(), container);
-		//--Search for unuseds plugins 
+		//--Search for unuseds plugins
 		// We are inspecting all unused keys, and we check if we can find almost one plugin of the component.
 		for (final String key : container.getUnusedKeys()) {
 			for (final String pluginType : pluginTypes) {

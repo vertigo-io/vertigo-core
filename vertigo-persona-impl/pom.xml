@@ -26,30 +26,18 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
-		
-				
+
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-dynamo-api</artifactId>
+			<artifactId>vertigo-commons-impl</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-dynamo-impl</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-dynamo-impl</artifactId>
-			<version>${project.version}</version>
-			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
-		
+			
 		<!--persona-security-->
 		<dependency>
 			<groupId>jdom</groupId>
-			<artifactId>jdom</artifactId> <!-- pour SecurityDynamicRegistryPlugin et son XmlSecurityLoader -->
+			<artifactId>jdom</artifactId> <!-- XmlSecurityLoader -->
 			<version>1.0</version>
 		</dependency>
 		<!--/persona-security-->
