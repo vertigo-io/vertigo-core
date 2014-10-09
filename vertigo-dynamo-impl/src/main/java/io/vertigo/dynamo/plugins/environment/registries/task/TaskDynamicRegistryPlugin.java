@@ -32,18 +32,18 @@ import io.vertigo.dynamo.task.model.TaskEngine;
 /**
  * @author pchretien
  */
-public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin<TaskGrammar> {
+public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin {
 	/**
 	 * Constructeur.
 	 */
 	public TaskDynamicRegistryPlugin() {
-		super(new TaskGrammar());
+		super(TaskGrammar.GRAMMAR);
 		Home.getDefinitionSpace().register(TaskDefinition.class);
 	}
 
 	/** {@inheritDoc} */
 	public void onDefinition(final DynamicDefinition xdefinition) {
-		if (getGrammarProvider().taskDefinition.equals(xdefinition.getEntity())) {
+		if (TaskGrammar.TASK_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
 			//Seuls les taches sont gérées.
 			final TaskDefinition definition = createTaskDefinition(xdefinition);
 			Home.getDefinitionSpace().put(definition, TaskDefinition.class);
@@ -61,9 +61,9 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 		Assertion.checkNotNull(taskDefinitionName);
 		final Class<? extends TaskEngine> taskEngineClass = getTaskEngineClass(xtaskDefinition);
 		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskDefinitionName)//
-				.withEngine(taskEngineClass)//
-				.withRequest(request)//
-				.withPackageName(xtaskDefinition.getPackageName());
+		.withEngine(taskEngineClass)//
+		.withRequest(request)//
+		.withPackageName(xtaskDefinition.getPackageName());
 		for (final DynamicDefinition xtaskAttribute : xtaskDefinition.getChildDefinitions(TaskGrammar.TASK_ATTRIBUTE)) {
 			final String attributeName = xtaskAttribute.getDefinitionKey().getName();
 			Assertion.checkNotNull(attributeName);

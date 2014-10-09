@@ -71,11 +71,10 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 		Assertion.checkNotNull(resourceManager);
 		//----------------------------------------------------------------------
 		this.resourceManager = resourceManager;
-		final DomainGrammar domainGrammar = DomainGrammar.INSTANCE;
-		dtDefinitionEntity = domainGrammar.getDtDefinitionEntity();
-		dtFieldEntity = domainGrammar.getDtFieldEntity();
-		associationNNEntity = domainGrammar.getAssociationNNEntity();
-		associationEntity = domainGrammar.getAssociationEntity();
+		dtDefinitionEntity = DomainGrammar.DT_DEFINITION_ENTITY;
+		dtFieldEntity = DomainGrammar.DT_FIELD_ENTITY;
+		associationNNEntity = DomainGrammar.ASSOCIATION_NN_ENTITY;
+		associationEntity = DomainGrammar.ASSOCIATION_ENTITY;
 	}
 
 	/** {@inheritDoc} */
@@ -159,11 +158,11 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 			LOGGER.trace("isAssociationNN:Code=" + associationOOM.getCode());
 		} else {
 			LOGGER.trace("!isAssociationNN:Code=" + associationOOM.getCode());
-			//Dans le cas d'une NN ses deux propriétés sont redondantes ; 
+			//Dans le cas d'une NN ses deux propriétés sont redondantes ;
 			//elles ne font donc pas partie de la définition d'une association de type NN
 			associationDefinitionBuilder.withPropertyValue(KspProperty.MULTIPLICITY_A, associationOOM.getMultiplicityA())//
-					.withPropertyValue(KspProperty.MULTIPLICITY_B, associationOOM.getMultiplicityB())//
-					.withPropertyValue(KspProperty.FK_FIELD_NAME, buildFkFieldName(associationOOM, dynamicModelrepository));
+			.withPropertyValue(KspProperty.MULTIPLICITY_B, associationOOM.getMultiplicityB())//
+			.withPropertyValue(KspProperty.FK_FIELD_NAME, buildFkFieldName(associationOOM, dynamicModelrepository));
 
 		}
 		return associationDefinitionBuilder.build();
@@ -189,7 +188,7 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 			throw new IllegalArgumentException("Pour l'association '" + associationOOM.getCode() + "' le nom de la clé est obligatoire (AutoJointure) '" + foreignDefinition.getDefinitionKey().getName() + "'. Ce nom est déduis du code l'association, le code doit être composé ainsi : {Trigramme Table1}_{Trigramme Table2}_{Code association}. Par exemple : DOS_UTI_EMMETEUR, DOS_UTI_DESTINATAIRE, DOS_DOS_PARENT, ...");
 		}
 
-		//On récupère le nom de LA clé primaire . 
+		//On récupère le nom de LA clé primaire .
 		final String pkFieldName = primaryKeyList.get(0).getDefinitionKey().getName();
 
 		//Par défaut le nom de la clé étrangére est constituée de la clé primaire référencée.
@@ -197,11 +196,11 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 
 		//Si l'association possède une nom défini par l'utilisateur, alors on l'ajoute à la FK avec un séparateur.
 		if (associationOOM.getCodeName() != null) {
-			//On construit le nom de la clé étrangére. 
+			//On construit le nom de la clé étrangére.
 			fkFieldName = fkFieldName + '_' + associationOOM.getCodeName();
 		}
 
-		//On raccourci le nom de la clé étrangére. 
+		//On raccourci le nom de la clé étrangére.
 		if (fkFieldName.length() > 30) { // 30 est le max de dynamo (et de Oracle)
 			fkFieldName = fkFieldName.substring(0, 30);
 			while (fkFieldName.endsWith("_")) {

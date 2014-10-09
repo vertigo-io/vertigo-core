@@ -24,12 +24,12 @@ import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryP
 /**
  * @author pchretien
  */
-public final class FacetDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin<FacetGrammar> {
+public final class FacetDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin {
 	/**
 	 * Constructeur.
 	 */
 	public FacetDynamicRegistryPlugin() {
-		super(new FacetGrammar());
+		super(FacetGrammar.GRAMMAR);
 	}
 
 	/** {@inheritDoc} */

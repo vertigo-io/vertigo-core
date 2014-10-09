@@ -20,28 +20,23 @@ package io.vertigo.dynamo.plugins.environment.registries.search;
 
 import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
 import io.vertigo.dynamo.impl.environment.kernel.meta.EntityBuilder;
-import io.vertigo.dynamo.impl.environment.kernel.meta.GrammarProvider;
+import io.vertigo.dynamo.impl.environment.kernel.meta.Grammar;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 
 /**
  * @author pchretien
  */
-final class SearchGrammar extends GrammarProvider {
-	final Entity indexDefinition;
+final class SearchGrammar {
+	public static final Entity INDEX_DEFINITION_ENTITY;
+	public static final Grammar GRAMMAR;
 
-	/**
-	 * Initialisation des métadonnées permet tant de décrire le métamodèle de dynamo.
-	 */
-	SearchGrammar() {
-		indexDefinition = createIndexDefinitionEntity(DomainGrammar.INSTANCE.getDtDefinitionEntity());
-		//---------------------------------------------------------------------	
-		getGrammar().registerEntity(indexDefinition);
+	static {
+		INDEX_DEFINITION_ENTITY = new EntityBuilder("IndexDefinition")//
+		.withAttribute("dtIndex", DomainGrammar.DT_DEFINITION_ENTITY, false, true)//
+		.withAttribute("dtResult", DomainGrammar.DT_DEFINITION_ENTITY, false, true)//s
+		.build();
+
+		GRAMMAR = new Grammar(INDEX_DEFINITION_ENTITY);
 	}
 
-	private static Entity createIndexDefinitionEntity(final Entity dtDefinition) {
-		return new EntityBuilder("IndexDefinition")//
-				.withAttribute("dtIndex", dtDefinition, false, true)//
-				.withAttribute("dtResult", dtDefinition, false, true)//s
-				.build();
-	}
 }

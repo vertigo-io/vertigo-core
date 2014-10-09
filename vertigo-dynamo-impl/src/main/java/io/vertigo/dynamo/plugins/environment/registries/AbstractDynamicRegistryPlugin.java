@@ -23,33 +23,27 @@ import io.vertigo.dynamo.impl.environment.DynamicRegistryPlugin;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.dynamo.impl.environment.kernel.meta.EntityProperty;
 import io.vertigo.dynamo.impl.environment.kernel.meta.Grammar;
-import io.vertigo.dynamo.impl.environment.kernel.meta.GrammarProvider;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 
 /**
  * @author pchretien
  * @param <G> Type de Grammaire
  */
-public abstract class AbstractDynamicRegistryPlugin<G extends GrammarProvider> implements DynamicRegistryPlugin {
-	private final G grammarProvider;
+public abstract class AbstractDynamicRegistryPlugin implements DynamicRegistryPlugin {
+	private final Grammar grammar;
 
 	/**
 	 * Constructeur.
 	 * @param grammarProvider Grammaire
 	 */
-	protected AbstractDynamicRegistryPlugin(final G grammarProvider) {
-		Assertion.checkNotNull(grammarProvider);
+	protected AbstractDynamicRegistryPlugin(final Grammar grammar) {
+		Assertion.checkNotNull(grammar);
 		//---------------------------------------------------------------------
-		this.grammarProvider = grammarProvider;
+		this.grammar = grammar;
 	}
 
-	/** {@inheritDoc} */
-	public final Grammar getGrammar() {
-		return grammarProvider.getGrammar();
-	}
-
-	public final G getGrammarProvider() {
-		return grammarProvider;
+	public Grammar getGrammar() {
+		return grammar;
 	}
 
 	/** {@inheritDoc} */

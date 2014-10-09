@@ -39,7 +39,7 @@ import java.util.Set;
  * - par lecture des annotations java présentes sur les beans,
  * - par lecture de fichiers ksp regoupés dans un projet kpr,
  * - ....
- *  Ces modes de chargement sont extensibles. 	
+ *  Ces modes de chargement sont extensibles.
  *
  * @author pchretien
  */
@@ -56,7 +56,7 @@ final class Environment implements ResourceLoader {
 		Assertion.checkNotNull(loaderPlugins);
 		//---------------------------------------------------------------------
 		this.dynamicRegistryPlugins = dynamicRegistryPlugins;
-		//On enregistre les loaders 
+		//On enregistre les loaders
 		for (final LoaderPlugin loaderPlugin : loaderPlugins) {
 			loaders.put(loaderPlugin.getType(), loaderPlugin);
 		}
@@ -69,7 +69,7 @@ final class Environment implements ResourceLoader {
 		final DynamicDefinitionRepository dynamicModelRepository = new DynamicDefinitionRepository(handler);
 
 		//--Enregistrement des types primitifs
-		final Entity dataTypeEntity = KernelGrammar.INSTANCE.getDataTypeEntity();
+		final Entity dataTypeEntity = KernelGrammar.getDataTypeEntity();
 		for (final DataType type : DataType.values()) {
 			final DynamicDefinition definition = dynamicModelRepository.createDynamicDefinitionBuilder(type.name(), dataTypeEntity, null).build();
 			dynamicModelRepository.addDefinition(definition);

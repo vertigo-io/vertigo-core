@@ -27,19 +27,19 @@ import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryP
 /**
  * @author pchretien
  */
-public final class FileDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin<FileGrammar> {
+public final class FileDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin {
 
 	/**
 	 * Constructeur.
 	 */
 	public FileDynamicRegistryPlugin() {
-		super(new FileGrammar());
+		super(FileGrammar.GRAMMAR);
 		Home.getDefinitionSpace().register(FileInfoDefinition.class);
 	}
 
 	/** {@inheritDoc} */
 	public void onDefinition(final DynamicDefinition xdefinition) {
-		if (getGrammarProvider().fileInfoDefinition.equals(xdefinition.getEntity())) {
+		if (FileGrammar.FILE_INFO_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
 			//Seuls les taches sont gérées.
 			final FileInfoDefinition definition = createFileDefinition(xdefinition);
 			Home.getDefinitionSpace().put(definition, FileInfoDefinition.class);

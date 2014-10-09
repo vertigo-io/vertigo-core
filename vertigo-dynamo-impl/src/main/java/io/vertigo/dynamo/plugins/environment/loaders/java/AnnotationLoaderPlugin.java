@@ -27,7 +27,6 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.impl.environment.LoaderPlugin;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
-import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionBuilder;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
@@ -51,24 +50,6 @@ import java.util.List;
 public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
-
-	private final Entity dtDefinitionEntity;
-	private final Entity dtFieldEntity;
-
-	private final Entity associationNNEntity;
-	private final Entity associationMetaDefinition;
-
-	/**
-	 * Constructeur.
-	 * @param dtDefinitionsClassName Liste des classes java à parser.
-	 */
-	public AnnotationLoaderPlugin() {
-		final DomainGrammar domainGrammar = DomainGrammar.INSTANCE;
-		dtDefinitionEntity = domainGrammar.getDtDefinitionEntity();
-		dtFieldEntity = domainGrammar.getDtFieldEntity();
-		associationNNEntity = domainGrammar.getAssociationNNEntity();
-		associationMetaDefinition = domainGrammar.getAssociationEntity();
-	}
 
 	private static final class MethodComparator implements Comparator<Method> {
 		/** {@inheritDoc} */
@@ -122,7 +103,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 		final String urn = DT_DEFINITION_PREFIX + SEPARATOR + StringUtil.camelToConstCase(simpleName);
 
-		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelRepository.createDynamicDefinitionBuilder(urn, dtDefinitionEntity, packageName)//
+		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelRepository.createDynamicDefinitionBuilder(urn, DomainGrammar.DT_DEFINITION_ENTITY, packageName)//
 				.withPropertyValue(KspProperty.PERSISTENT, dtDefinitionAnnotation.persistent());
 
 		// Le tri des champs et des méthodes par ordre alphabétique est important car classe.getMethods() retourne
@@ -157,7 +138,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 				final DynamicDefinitionKey primaryDtDefinitionKey = new DynamicDefinitionKey(association.primaryDtDefinitionName());
 				final DynamicDefinitionKey foreignDtDefinitionKey = new DynamicDefinitionKey(association.foreignDtDefinitionName());
 
-				final DynamicDefinition associationDefinition = dynamicModelRepository.createDynamicDefinitionBuilder(association.name(), associationMetaDefinition, packageName)//
+				final DynamicDefinition associationDefinition = dynamicModelRepository.createDynamicDefinitionBuilder(association.name(), DomainGrammar.ASSOCIATION_ENTITY, packageName)//
 						// associationDefinition.
 						//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
 						.withPropertyValue(KspProperty.MULTIPLICITY_A, association.primaryMultiplicity())//
@@ -165,7 +146,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 						// navigabilités
 						.withPropertyValue(KspProperty.NAVIGABILITY_A, association.primaryIsNavigable())//
 						.withPropertyValue(KspProperty.NAVIGABILITY_B, association.foreignIsNavigable())//
-						//Roles	
+						//Roles
 						.withPropertyValue(KspProperty.ROLE_A, association.primaryRole())//
 						.withPropertyValue(KspProperty.LABEL_A, association.primaryLabel())//
 						.withPropertyValue(KspProperty.ROLE_B, association.foreignRole())//
@@ -189,7 +170,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 				final DynamicDefinitionKey dtDefinitionAKey = new DynamicDefinitionKey(association.dtDefinitionA());
 				final DynamicDefinitionKey dtDefinitionBKey = new DynamicDefinitionKey(association.dtDefinitionB());
 
-				final DynamicDefinition associationDefinition = dynamicModelRepository.createDynamicDefinitionBuilder(association.name(), associationNNEntity, packageName)//
+				final DynamicDefinition associationDefinition = dynamicModelRepository.createDynamicDefinitionBuilder(association.name(), DomainGrammar.ASSOCIATION_NN_ENTITY, packageName)//
 						.withPropertyValue(KspProperty.TABLE_NAME, association.tableName())//
 
 						// associationDefinition.
@@ -243,7 +224,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		//Si on trouve un domaine on est dans un objet dynamo.
 		final FieldType type = FieldType.valueOf(field.type());
 		final DynamicDefinitionKey fieldDomainKey = new DynamicDefinitionKey(field.domain());
-		final DynamicDefinition dtField = dynamicModelrepository.createDynamicDefinitionBuilder(fieldName, dtFieldEntity, null)//
+		final DynamicDefinition dtField = dynamicModelrepository.createDynamicDefinitionBuilder(fieldName, DomainGrammar.DT_FIELD_ENTITY, null)//
 				.withDefinition("domain", fieldDomainKey)//
 				.withPropertyValue(KspProperty.LABEL, field.label())//
 				.withPropertyValue(KspProperty.NOT_NULL, field.notNull())//
@@ -271,7 +252,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 	/**
 	 * Génération du nom du champ (Sous forme de constante) à partir du nom du champ.
-	 * @param field champ 
+	 * @param field champ
 	 * @return Constante représentant le nom du champ
 	 */
 	private static String createFieldName(final Field field) {

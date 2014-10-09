@@ -20,14 +20,14 @@ package io.vertigo.quarto.plugins.publisher.environment.registries;
 
 import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
 import io.vertigo.dynamo.impl.environment.kernel.meta.EntityBuilder;
-import io.vertigo.dynamo.impl.environment.kernel.meta.GrammarProvider;
+import io.vertigo.dynamo.impl.environment.kernel.meta.Grammar;
 
 /**
  * Grammaire de publisher.
- * 
+ *
  * @author npiedeloup
  */
-final class PublisherGrammar extends GrammarProvider {
+final class PublisherGrammar {
 	/**
 	 * Clé des FIELD_DEFINITION de type PK utilisés dans les DT_DEFINITION.
 	 */
@@ -44,83 +44,46 @@ final class PublisherGrammar extends GrammarProvider {
 	//public static final String NODE_TYPE_META_DEFINITION = "type";
 
 	/**Définition d'un DT.*/
-	private final Entity publisherDefinition;
+	static final Entity publisherDefinition;
 	/**Définition d'un domain.*/
-	private final Entity nodeDefinition;
+	static final Entity publisherNodeDefinition;
 
 	/**Définition des champs.*/
-	private final Entity fieldDefinition;
+	private static final Entity publisherFieldDefinition;
 	/**Définition des champs typés.*/
-	private final Entity dataFieldDefinition;
+	private static final Entity publisherDataFieldDefinition;
 
+	static final Grammar grammar;
 	/**
 	 * Initialisation des métadonnées permettant de décrire le métamodèle de Dynamo.
 	 */
-	PublisherGrammar() {
-		//--
-		fieldDefinition = new EntityBuilder(NODE_FIELD_META_DEFINITION).build();
-		//--
+	static {
 		//On a une relation circulaire
 		//On conserve donc une référence sur le builder
 		final EntityBuilder builder = new EntityBuilder(NODE_DEFINITION_META_DEFINITION);
-		dataFieldDefinition = createDataFieldDefinitionEntity(builder.build());
-		nodeDefinition = createNodeDefinitionEntity(builder, dataFieldDefinition, fieldDefinition);
-		//--
-		publisherDefinition = createPublisherDefinitionEntity(nodeDefinition);
-		//---------------------------------------------------------------------
-		getGrammar().registerEntity(publisherDefinition);
-		getGrammar().registerEntity(nodeDefinition);
-		getGrammar().registerEntity(fieldDefinition);
-		getGrammar().registerEntity(dataFieldDefinition);
-	}
+		publisherFieldDefinition = new EntityBuilder(NODE_FIELD_META_DEFINITION).build();
 
-	private static Entity createDataFieldDefinitionEntity(final Entity nodeDefinition) {
-		return new EntityBuilder(NODE_DATA_FIELD_META_DEFINITION)//
-		.withAttribute("type", nodeDefinition, false, true)//
+		publisherDataFieldDefinition = new EntityBuilder(NODE_DATA_FIELD_META_DEFINITION)//
+		.withAttribute("type", builder.build(), false, true)//
 		.build();
-	}
 
-	private static Entity createNodeDefinitionEntity(final EntityBuilder builder, final Entity dataFieldDefinition, final Entity fieldDefinition) {
-		return builder//
-				.withAttribute(STRING_FIELD, fieldDefinition, true, false) //Multiple, facultative
-				.withAttribute(BOOLEAN_FIELD, fieldDefinition, true, false) //Multiple, facultative
-				.withAttribute(IMAGE_FIELD, fieldDefinition, true, false) //Multiple, facultative
-				.withAttribute(DATA_FIELD, dataFieldDefinition, true, false) //Multiple, facultative
-				.withAttribute(LIST_FIELD, dataFieldDefinition, true, false) //Multiple, facultative
+		publisherNodeDefinition = builder//
+				.withAttribute(STRING_FIELD, publisherFieldDefinition, true, false) //Multiple, facultative
+				.withAttribute(BOOLEAN_FIELD, publisherFieldDefinition, true, false) //Multiple, facultative
+				.withAttribute(IMAGE_FIELD, publisherFieldDefinition, true, false) //Multiple, facultative
+				.withAttribute(DATA_FIELD, publisherDataFieldDefinition, true, false) //Multiple, facultative
+				.withAttribute(LIST_FIELD, publisherDataFieldDefinition, true, false) //Multiple, facultative
 				.build();
-	}
 
-	private static Entity createPublisherDefinitionEntity(final Entity nodeDefinition) {
-		return new EntityBuilder(PUB_DEFINITION_META_DEFINITION)//
-		.withAttribute("root", nodeDefinition, false, true)//
+		//--
+		publisherDefinition = new EntityBuilder(PUB_DEFINITION_META_DEFINITION)//
+		.withAttribute("root", publisherNodeDefinition, false, true)//
 		.build();
+		//---------------------------------------------------------------------
+		grammar = new Grammar(publisherDefinition, //
+				publisherNodeDefinition, //
+				publisherFieldDefinition, //
+				publisherDataFieldDefinition);
 	}
 
-	/**
-	 * @return Définition d'une edition.
-	 */
-	Entity getPublisherDefinition() {
-		return publisherDefinition;
-	}
-
-	/**
-	 * @return Définition d'un PublisherNode
-	 */
-	Entity getPublisherNodeDefiniton() {
-		return nodeDefinition;
-	}
-
-	/**
-	 * @return Définition des champs d'un PublisherNode
-	 */
-	public Entity getFieldDefinition() {
-		return fieldDefinition;
-	}
-
-	/**
-	 * @return Définition des champs data d'un PublisherNode
-	 */
-	public Entity getDataFieldDefinition() {
-		return dataFieldDefinition;
-	}
 }

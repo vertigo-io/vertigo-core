@@ -20,6 +20,7 @@ package io.vertigo.dynamo.impl.environment;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
+import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
 import io.vertigo.dynamo.impl.environment.kernel.meta.Grammar;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 
@@ -42,11 +43,11 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 	}
 
 	private Grammar createGrammar() {
-		final List<Grammar> grammars = new ArrayList<>();
+		final List<Entity> entities = new ArrayList<>();
 		for (final DynamicRegistry dynamicRegistry : dynamicRegistries) {
-			grammars.add(dynamicRegistry.getGrammar());
+			entities.addAll(dynamicRegistry.getGrammar().getEntities());
 		}
-		return new Grammar(grammars);
+		return new Grammar(entities);
 	}
 
 	/** {@inheritDoc} */
@@ -57,7 +58,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 	/** {@inheritDoc} */
 	public void onNewDefinition(final DynamicDefinition xdefinition, final DynamicDefinitionRepository dynamicModelrepository) {
 		//Les entités du noyaux ne sont pas à gérer per des managers spécifiques.
-		if (KernelGrammar.INSTANCE.getGrammar().getEntities().contains(xdefinition.getEntity())) {
+		if (KernelGrammar.grammar.getEntities().contains(xdefinition.getEntity())) {
 			return;
 		}
 		final DynamicRegistry dynamicRegistry = lookUpDynamicRegistry(xdefinition);
@@ -67,7 +68,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 	/** {@inheritDoc} */
 	public void onDefinition(final DynamicDefinition xdefinition) {
 		//Les entités du noyaux ne sont pas à gérer per des managers spécifiques.
-		if (KernelGrammar.INSTANCE.getGrammar().getEntities().contains(xdefinition.getEntity())) {
+		if (KernelGrammar.grammar.getEntities().contains(xdefinition.getEntity())) {
 			return;
 		}
 		try {

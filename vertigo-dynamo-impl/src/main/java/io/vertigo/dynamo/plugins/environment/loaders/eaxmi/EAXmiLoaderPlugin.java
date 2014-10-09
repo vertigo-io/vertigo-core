@@ -81,7 +81,7 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 	}
 
 	private static DynamicDefinition toDynamicDefinition(final EAXmiClass classXmi, final DynamicDefinitionRepository dynamicModelrepository) {
-		final Entity dtDefinitionEntity = DomainGrammar.INSTANCE.getDtDefinitionEntity();
+		final Entity dtDefinitionEntity = DomainGrammar.DT_DEFINITION_ENTITY;
 		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelrepository.createDynamicDefinitionBuilder(getDtDefinitionName(classXmi.getCode()), dtDefinitionEntity, classXmi.getPackageName())//
 				//Par défaut les DT lues depuis le XMI sont persistantes.
 				.withPropertyValue(KspProperty.PERSISTENT, true);
@@ -98,7 +98,7 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 	}
 
 	private static DynamicDefinition toDynamicDefinition(final EAXmiAttribute attributeXmi, final DynamicDefinitionRepository dynamicModelrepository) {
-		final Entity dtFieldEntity = DomainGrammar.INSTANCE.getDtFieldEntity();
+		final Entity dtFieldEntity = DomainGrammar.DT_FIELD_ENTITY;
 		final DynamicDefinitionKey domainKey = new DynamicDefinitionKey(attributeXmi.getDomain());
 
 		return dynamicModelrepository.createDynamicDefinitionBuilder(attributeXmi.getCode(), dtFieldEntity, null)//
@@ -110,8 +110,8 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 	}
 
 	private static DynamicDefinition toDynamicDefinition(final EAXmiAssociation associationXmi, final DynamicDefinitionRepository dynamicModelrepository) {
-		final Entity associationEntity = DomainGrammar.INSTANCE.getAssociationEntity();
-		final Entity associationNNEntity = DomainGrammar.INSTANCE.getAssociationNNEntity();
+		final Entity associationEntity = DomainGrammar.ASSOCIATION_ENTITY;
+		final Entity associationNNEntity = DomainGrammar.ASSOCIATION_NN_ENTITY;
 
 		final String name = associationXmi.getCode().toUpperCase();
 
@@ -145,7 +145,7 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 			LOGGER.trace("isAssociationNN:Code=" + associationXmi.getCode());
 		} else {
 			LOGGER.trace("!isAssociationNN:Code=" + associationXmi.getCode());
-			//Dans le cas d'une NN ses deux propriétés sont redondantes ; 
+			//Dans le cas d'une NN ses deux propriétés sont redondantes ;
 			//elles ne font donc pas partie de la définition d'une association de type NN
 			associationDefinitionBuilder.withPropertyValue(KspProperty.MULTIPLICITY_A, associationXmi.getMultiplicityA())//
 					.withPropertyValue(KspProperty.MULTIPLICITY_B, associationXmi.getMultiplicityB())//
@@ -175,7 +175,7 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 			throw new IllegalArgumentException("Pour l'association '" + associationXmi.getCode() + "' le nom de la clé est obligatoire (AutoJointure) '" + foreignDefinition.getDefinitionKey().getName() + "'");
 		}
 
-		//On récupère le nom de LA clé primaire . 
+		//On récupère le nom de LA clé primaire .
 		final String pkFieldName = primaryKeyList.get(0).getDefinitionKey().getName();
 
 		//Par défaut le nom de la clé étrangère est constituée de la clé primaire référencée.
@@ -183,11 +183,11 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 
 		//Si l'association possède une nom défini par l'utilisateur, alors on l'ajoute à la FK avec un séparateur.
 		if (associationXmi.getCodeName() != null) {
-			//On construit le nom de la clé étrangère. 
+			//On construit le nom de la clé étrangère.
 			fkFieldName = fkFieldName + '_' + associationXmi.getCodeName();
 		}
 
-		//On raccourci le nom de la clé étrangère. 
+		//On raccourci le nom de la clé étrangère.
 		if (fkFieldName.length() > 30) { // 30 est le max de dynamo (et de Oracle)
 			fkFieldName = fkFieldName.substring(0, 30);
 			while (fkFieldName.endsWith("_")) {

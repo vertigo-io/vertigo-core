@@ -61,7 +61,7 @@ import org.apache.log4j.Logger;
 /**
  * @author pchretien
  */
-public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin<DomainGrammar> {
+public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin {
 	private static final Logger LOGGER = Logger.getLogger(DomainDynamicRegistryPlugin.class);
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
 	private static final String ASSOCIATION_DEFINITION_PREFIX = DefinitionUtil.getPrefix(AssociationDefinition.class);
@@ -72,7 +72,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	 * Constructeur.
 	 */
 	public DomainDynamicRegistryPlugin() {
-		super(DomainGrammar.INSTANCE);
+		super(DomainGrammar.GRAMMAR);
 		definitionSpace = Home.getDefinitionSpace();
 		definitionSpace.register(DtDefinition.class);
 		definitionSpace.register(Domain.class);
@@ -84,22 +84,22 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	/** {@inheritDoc} */
 	public void onDefinition(final DynamicDefinition xdefinition) {
 		final Entity metaDefinition = xdefinition.getEntity();
-		if (metaDefinition.equals(getGrammarProvider().getDomainEntity())) {
+		if (metaDefinition.equals(DomainGrammar.DOMAIN_ENTITY)) {
 			final Domain definition = createDomain(xdefinition);
 			definitionSpace.put(definition, Domain.class);
-		} else if (metaDefinition.equals(getGrammarProvider().getDtDefinitionEntity())) {
+		} else if (metaDefinition.equals(DomainGrammar.DT_DEFINITION_ENTITY)) {
 			final DtDefinition dtDefinition = createDtDefinition(xdefinition);
 			definitionSpace.put(dtDefinition, DtDefinition.class);
-		} else if (metaDefinition.equals(getGrammarProvider().getAssociationEntity())) {
+		} else if (metaDefinition.equals(DomainGrammar.ASSOCIATION_ENTITY)) {
 			final AssociationDefinition definition = createAssociationSimpleDefinition(xdefinition);
 			definitionSpace.put(definition, AssociationDefinition.class);
-		} else if (metaDefinition.equals(getGrammarProvider().getAssociationNNEntity())) {
+		} else if (metaDefinition.equals(DomainGrammar.ASSOCIATION_NN_ENTITY)) {
 			final AssociationDefinition definition = createAssociationNNDefinition(xdefinition);
 			definitionSpace.put(definition, AssociationDefinition.class);
-		} else if (metaDefinition.equals(getGrammarProvider().getConstraintEntity())) {
+		} else if (metaDefinition.equals(DomainGrammar.CONSTAINT_ENTITY)) {
 			final Constraint definition = createConstraint(xdefinition);
 			definitionSpace.put(definition, Constraint.class);
-		} else if (metaDefinition.equals(getGrammarProvider().getFormatterEntity())) {
+		} else if (metaDefinition.equals(DomainGrammar.FORMATTER_ENTITY)) {
 			final Formatter definition = createFormatter(xdefinition);
 			definitionSpace.put(definition, Formatter.class);
 		} else {
@@ -197,9 +197,9 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		//----------------------------------------------------------------------
 		final String dtDefinitionName = xdtDefinition.getDefinitionKey().getName();
 		final DtDefinitionBuilder dtDefinitionBuilder = new DtDefinitionBuilder(dtDefinitionName)//
-				.withPackageName(xdtDefinition.getPackageName())//
-				.withPersistent(persistent)//
-				.withDynamic(dynamic);
+		.withPackageName(xdtDefinition.getPackageName())//
+		.withPersistent(persistent)//
+		.withDynamic(dynamic);
 		//On enregistre les Builder pour pouvoir les mettre à jour sur les associations.
 		Assertion.checkArgument(!dtDefinitionBuilders.containsKey(dtDefinitionName), "Definition '{0}' déjà enregistrée", dtDefinitionName);
 		dtDefinitionBuilders.put(dtDefinitionName, dtDefinitionBuilder);
@@ -228,7 +228,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final boolean displayNotEmpty = displayFieldName != null && dtDefinition.getDisplayField().isDefined();
 
 		Assertion.checkState(displayEmpty || displayNotEmpty, "Champ d'affichage {0} inconnu", displayFieldName);
-		//--Vérification OK 
+		//--Vérification OK
 		return dtDefinition;
 	}
 
@@ -376,7 +376,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		//Relation 1-n ou 1-1
 		final String urn = fixAssociationName(xassociation.getDefinitionKey().getName());
 		final AssociationSimpleDefinition associationSimpleDefinition = AssociationSimpleDefinition.createAssociationSimpleDefinition(urn, fkFieldName, //
-				dtDefinitionA, navigabilityA, roleA, labelA, AssociationUtil.isMultiple(multiplicityA), AssociationUtil.isNotNull(multiplicityA), // 
+				dtDefinitionA, navigabilityA, roleA, labelA, AssociationUtil.isMultiple(multiplicityA), AssociationUtil.isNotNull(multiplicityA), //
 				dtDefinitionB, navigabilityB, roleB, labelB, AssociationUtil.isMultiple(multiplicityB), AssociationUtil.isNotNull(multiplicityB));
 
 		final AssociationNode primaryAssociationNode = associationSimpleDefinition.getPrimaryAssociationNode();
@@ -411,7 +411,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	/** {@inheritDoc} */
 	@Override
 	public void onNewDefinition(final DynamicDefinition xdefinition, final DynamicDefinitionRepository dynamicModelrepository) {
-		if (xdefinition.getEntity().equals(getGrammarProvider().getDtDefinitionEntity())) {
+		if (xdefinition.getEntity().equals(DomainGrammar.DT_DEFINITION_ENTITY)) {
 			//Dans le cas des DT on ajoute les domaines
 			registerxxxxDomain(xdefinition.getDefinitionKey().getName(), xdefinition.getPackageName(), dynamicModelrepository);
 		}
@@ -424,7 +424,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		//C'est le constructeur de DtDomainStandard qui vérifie la cohérence des données passées.
 		//Notamment la validité de la liste des contraintes et la nullité du formatter
 
-		final Entity metaDefinitionDomain = getGrammarProvider().getDomainEntity();
+		final Entity metaDefinitionDomain = DomainGrammar.DOMAIN_ENTITY;
 		final DynamicDefinitionKey fmtDefaultKey = new DynamicDefinitionKey(Formatter.FMT_DEFAULT);
 		final DynamicDefinitionKey dtObjectKey = new DynamicDefinitionKey("DtObject");
 

@@ -45,7 +45,7 @@ public final class DynamicRegistryMock implements DynamicRegistry {
 	}
 
 	public Grammar getGrammar() {
-		return DomainGrammar.INSTANCE.getGrammar();
+		return DomainGrammar.GRAMMAR;
 	}
 
 	private final List<DynamicDefinition> dynamicDefinitions = new ArrayList<>();

@@ -37,7 +37,7 @@ import java.util.Set;
  * DynamicRegistry de PublisherManager.
  * @author npiedeloup
  */
-public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin<PublisherGrammar> {
+public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin {
 	private final Map<String, PublisherNodeDefinitionBuilder> publisherDefinitionMap = new HashMap<>();
 	private final Set<String> unusedNodes = new HashSet<>();
 
@@ -45,7 +45,7 @@ public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistr
 	 * Constructeur.
 	 */
 	public PublisherDynamicRegistryPlugin() {
-		super(new PublisherGrammar());
+		super(PublisherGrammar.grammar);
 		Home.getDefinitionSpace().register(PublisherDataDefinition.class);
 	}
 
@@ -53,10 +53,10 @@ public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistr
 	public void onDefinition(final DynamicDefinition xdefinition) {
 		final Entity metaDefinition = xdefinition.getEntity();
 
-		if (metaDefinition.equals(getGrammarProvider().getPublisherDefinition())) {
+		if (metaDefinition.equals(PublisherGrammar.publisherDefinition)) {
 			final PublisherDataDefinition definition = createPublisherDataDefinition(xdefinition);
 			Home.getDefinitionSpace().put(definition, PublisherDataDefinition.class);
-		} else if (metaDefinition.equals(getGrammarProvider().getPublisherNodeDefiniton())) {
+		} else if (metaDefinition.equals(PublisherGrammar.publisherNodeDefinition)) {
 			createPublisherNodeDefinition(xdefinition);
 		} else {
 			throw new IllegalArgumentException("Type de définition non gérée: " + xdefinition.getDefinitionKey().getName());

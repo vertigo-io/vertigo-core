@@ -20,35 +20,26 @@ package io.vertigo.dynamo.impl.environment;
 
 import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
 import io.vertigo.dynamo.impl.environment.kernel.meta.EntityBuilder;
-import io.vertigo.dynamo.impl.environment.kernel.meta.GrammarProvider;
+import io.vertigo.dynamo.impl.environment.kernel.meta.Grammar;
 
 /**
  * @author pchretien
  */
-public final class KernelGrammar extends GrammarProvider {
-	public static final KernelGrammar INSTANCE = new KernelGrammar();
-
+public final class KernelGrammar {
 	/** Mot-clé des MetaDefinitions de DataType. */
 	private static final String DATA_TYPE_META_DEFINITION = "DataType";
 
 	/**Type Primitif.*/
-	private final Entity dataTypeEntiy;
+	private static final Entity DATA_TYPE_ENTITY = new EntityBuilder(DATA_TYPE_META_DEFINITION).build();
+
+	public static final Grammar grammar = new Grammar(DATA_TYPE_ENTITY);
 
 	/**Définition d'un champ de DT.*/
 
 	/**
-	 * Initialisation des métadonnées permettant de décrire le métamodèle .
-	 */
-	private KernelGrammar() {
-		dataTypeEntiy = new EntityBuilder(DATA_TYPE_META_DEFINITION).build();
-		//---------------------------------------------------------------------
-		getGrammar().registerEntity(dataTypeEntiy);
-	}
-
-	/**
 	 * @return Type primitif.
 	 */
-	public Entity getDataTypeEntity() {
-		return dataTypeEntiy;
+	public static Entity getDataTypeEntity() {
+		return DATA_TYPE_ENTITY;
 	}
 }

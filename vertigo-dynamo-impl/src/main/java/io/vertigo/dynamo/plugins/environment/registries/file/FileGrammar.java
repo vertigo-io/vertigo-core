@@ -20,30 +20,24 @@ package io.vertigo.dynamo.plugins.environment.registries.file;
 
 import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
 import io.vertigo.dynamo.impl.environment.kernel.meta.EntityBuilder;
-import io.vertigo.dynamo.impl.environment.kernel.meta.GrammarProvider;
+import io.vertigo.dynamo.impl.environment.kernel.meta.Grammar;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 
 /**
  * @author npiedeloup
  */
-final class FileGrammar extends GrammarProvider {
+final class FileGrammar {
 
 	/**Définition de tache.*/
-	final Entity fileInfoDefinition;
+	public static final Entity FILE_INFO_DEFINITION_ENTITY;
 
-	/**
-	 * Constructeur.
-	 * Initialisation des métadonnées permettant de décrire le métamodèle de Dynamo.
-	 */
-	FileGrammar() {
-		fileInfoDefinition = createFileInfoDefinitionEntity();
-		getGrammar().registerEntity(fileInfoDefinition);
-	}
+	public static final Grammar GRAMMAR;
 
-	private static Entity createFileInfoDefinitionEntity() {
-		return new EntityBuilder("FileInfo")//
+	static {
+		FILE_INFO_DEFINITION_ENTITY = new EntityBuilder("FileInfo")//
 				.withProperty(KspProperty.STORE_NAME, true)//
 				.withProperty(KspProperty.ROOT, true)//
 				.build();
+		GRAMMAR = new Grammar(FILE_INFO_DEFINITION_ENTITY);
 	}
 }

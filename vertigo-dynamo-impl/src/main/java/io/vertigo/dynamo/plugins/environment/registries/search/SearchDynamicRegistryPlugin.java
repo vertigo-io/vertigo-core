@@ -27,16 +27,16 @@ import io.vertigo.dynamo.search.metamodel.IndexDefinition;
 /**
  * @author pchretien
  */
-public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin<SearchGrammar> {
+public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin {
 
 	public SearchDynamicRegistryPlugin() {
-		super(new SearchGrammar());
+		super(SearchGrammar.GRAMMAR);
 		Home.getDefinitionSpace().register(IndexDefinition.class);
 	}
 
 	/** {@inheritDoc} */
 	public void onDefinition(final DynamicDefinition xdefinition) {
-		if (getGrammarProvider().indexDefinition.equals(xdefinition.getEntity())) {
+		if (SearchGrammar.INDEX_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
 			// Seuls les controllers sont gérés.
 			final IndexDefinition indexDefinition = createIndexDefinition(xdefinition);
 			Home.getDefinitionSpace().put(indexDefinition, IndexDefinition.class);
