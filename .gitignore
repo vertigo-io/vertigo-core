@@ -3,6 +3,7 @@ trash/
 target/
 docco/
 .classpath
+.gitignore
 .project
 .settings/
 vertigo-release/
