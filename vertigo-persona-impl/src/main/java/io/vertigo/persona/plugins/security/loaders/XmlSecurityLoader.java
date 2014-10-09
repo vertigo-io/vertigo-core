@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.persona.plugins.environment.loaders.security;
+package io.vertigo.persona.plugins.security.loaders;
 
 import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.core.Home;

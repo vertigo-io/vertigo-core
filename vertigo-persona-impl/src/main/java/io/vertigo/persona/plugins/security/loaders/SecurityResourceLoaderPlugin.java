@@ -16,46 +16,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.persona.plugins.environment.loaders.security;
+package io.vertigo.persona.plugins.security.loaders;
 
 import io.vertigo.commons.resource.ResourceManager;
-import io.vertigo.core.Home;
+import io.vertigo.core.component.Plugin;
+import io.vertigo.core.di.configurator.ResourceConfig;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.impl.environment.LoaderPlugin;
-import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
-import io.vertigo.persona.security.metamodel.Permission;
-import io.vertigo.persona.security.metamodel.Role;
+import io.vertigo.core.resource.ResourceLoader;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
 /**
  * @author pchretien
  */
-public final class SecurityLoaderPlugin implements LoaderPlugin {
+public final class SecurityResourceLoaderPlugin implements ResourceLoader, Plugin {
 	private final ResourceManager resourceManager;
 
 	/**
 	 * Constructeur
 	 */
 	@Inject
-	public SecurityLoaderPlugin(final ResourceManager resourceManager) {
+	public SecurityResourceLoaderPlugin(final ResourceManager resourceManager) {
 		Assertion.checkNotNull(resourceManager);
 		//---------------------------------------------------------------------
-		//super(SecurityGrammar.INSTANCE);
-		Home.getDefinitionSpace().register(Role.class);
-		Home.getDefinitionSpace().register(Permission.class);
 		this.resourceManager = resourceManager;
 
 	}
 
 	/** {@inheritDoc} */
-	public void load(final String resourcePath, final DynamicDefinitionRepository dynamicModelRepository) {
-		final XmlSecurityLoader xmlSecurityLoader = new XmlSecurityLoader(resourceManager, resourcePath);
-		xmlSecurityLoader.load();
+	public Set<String> getTypes() {
+		return Collections.singleton("security");
 	}
 
 	/** {@inheritDoc} */
-	public String getType() {
-		return "security";
+	public void parse(final List<ResourceConfig> resourceConfigs) {
+		for (final ResourceConfig resourceConfig : resourceConfigs) {
+			final XmlSecurityLoader xmlSecurityLoader = new XmlSecurityLoader(resourceManager, resourceConfig.getPath());
+			xmlSecurityLoader.load();
+		}
 	}
 }

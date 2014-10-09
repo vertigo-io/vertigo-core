@@ -25,7 +25,7 @@ import io.vertigo.core.lang.Activeable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.persona.plugins.security.loader.SecurityLoaderPlugin;
+import io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin;
 import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.persona.security.ResourceNameFactory;
 import io.vertigo.persona.security.UserSession;
@@ -65,7 +65,7 @@ public final class KSecurityManagerImpl implements KSecurityManager, Activeable 
 	 * @param userSessionClassName ClassName de l'objet de session utilisateur
 	 */
 	@Inject
-	public KSecurityManagerImpl(final SecurityLoaderPlugin securityLoaderPlugin, final LocaleManager localeManager, @Named("userSessionClassName") final String userSessionClassName) {
+	public KSecurityManagerImpl(final SecurityResourceLoaderPlugin securityLoaderPlugin, final LocaleManager localeManager, @Named("userSessionClassName") final String userSessionClassName) {
 		Assertion.checkNotNull(securityLoaderPlugin);
 		Assertion.checkNotNull(localeManager);
 		Assertion.checkArgNotEmpty(userSessionClassName);

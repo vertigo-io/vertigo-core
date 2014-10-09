@@ -13,7 +13,7 @@
 
 	    <component api="KSecurityManager" class="io.vertigo.persona.impl.security.KSecurityManagerImpl">
 	        <param name="userSessionClassName" value="io.vertigo.persona.security.TestUserSession" />
-	     	<plugin class="io.vertigo.persona.plugins.security.loader.SecurityLoaderPlugin"/>
+	     	<plugin class="io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin"/>
 	    </component> 
 	</module>
 
