@@ -22,7 +22,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
-import io.vertigo.dynamo.plugins.database.connection.AbstractConnectionProviderPlugin;
+import io.vertigo.dynamo.plugins.database.connection.AbstractSqlConnectionProviderPlugin;
 
 import java.sql.SQLException;
 
@@ -36,7 +36,7 @@ import javax.sql.DataSource;
  *
  * @author alauthier
  */
-public final class DataSourceConnectionProviderPlugin extends AbstractConnectionProviderPlugin {
+public final class DataSourceConnectionProviderPlugin extends AbstractSqlConnectionProviderPlugin {
 	/**
 	 * DataSource
 	 */

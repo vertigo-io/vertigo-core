@@ -16,29 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.database.connection;
+package io.vertigo.dynamo.impl.database;
 
-import io.vertigo.dynamo.database.vendor.SqlDataBase;
-
-import java.sql.SQLException;
+import io.vertigo.core.component.Plugin;
+import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
 
 /**
- * Provides connections 'KConnection'.
- * This provider is defined for a particular database. 
- *
- * @author pchretien
- */
-public interface ConnectionProvider {
-	/**
-	 * Retourne une connexion.
-	 *
-	 * @return Connexion
-	 * @throws SQLException Exception sql
-	 */
-	KConnection obtainConnection() throws SQLException;
-
-	/**
-	 * @return Type de base de données
-	 */
-	SqlDataBase getDataBase();
+* Plugin du provider de connexions.
+*
+* @author pchretien
+*/
+public interface SqlConnectionProviderPlugin extends SqlConnectionProvider, Plugin {
+	//
 }

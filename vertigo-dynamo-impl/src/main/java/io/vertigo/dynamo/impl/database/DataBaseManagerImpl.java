@@ -42,7 +42,7 @@ import javax.inject.Inject;
 public final class DataBaseManagerImpl implements DataBaseManager {
 	private final SqlDataBaseListener dataBaseListener;
 	private final SqlStatementHandler statementHandler;
-	private final ConnectionProviderPlugin connectionProviderPlugin;
+	private final SqlConnectionProviderPlugin connectionProviderPlugin;
 
 	/**
 	 * Constructeur.
@@ -50,7 +50,7 @@ public final class DataBaseManagerImpl implements DataBaseManager {
 	 * @param analyticsManager Manager de la performance applicative
 	 */
 	@Inject
-	public DataBaseManagerImpl(final LocaleManager localeManager, final AnalyticsManager analyticsManager, final ConnectionProviderPlugin connectionProviderPlugin) {
+	public DataBaseManagerImpl(final LocaleManager localeManager, final AnalyticsManager analyticsManager, final SqlConnectionProviderPlugin connectionProviderPlugin) {
 		Assertion.checkNotNull(localeManager);
 		Assertion.checkNotNull(analyticsManager);
 		Assertion.checkNotNull(connectionProviderPlugin);
@@ -62,7 +62,7 @@ public final class DataBaseManagerImpl implements DataBaseManager {
 	}
 
 	/** {@inheritDoc} */
-	public ConnectionProviderPlugin getConnectionProvider() {
+	public SqlConnectionProviderPlugin getConnectionProvider() {
 		return connectionProviderPlugin;
 	}
 

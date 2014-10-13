@@ -22,7 +22,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
-import io.vertigo.dynamo.plugins.database.connection.AbstractConnectionProviderPlugin;
+import io.vertigo.dynamo.plugins.database.connection.AbstractSqlConnectionProviderPlugin;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -37,7 +37,7 @@ import javax.inject.Named;
  * @deprecated NE DOIT PAS ETRE UTILISE EN PRODUCTION.
  */
 @Deprecated
-public final class MockConnectionProviderPlugin extends AbstractConnectionProviderPlugin {
+public final class MockConnectionProviderPlugin extends AbstractSqlConnectionProviderPlugin {
 	/** Url Jdbc. */
 	private final String jdbcUrl;
 

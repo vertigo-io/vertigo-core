@@ -22,7 +22,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
-import io.vertigo.dynamo.plugins.database.connection.AbstractConnectionProviderPlugin;
+import io.vertigo.dynamo.plugins.database.connection.AbstractSqlConnectionProviderPlugin;
 import io.vertigo.dynamo.transaction.KTransaction;
 import io.vertigo.dynamo.transaction.KTransactionManager;
 
@@ -38,7 +38,7 @@ import javax.persistence.Persistence;
  *
  * @author pchretien, npiedeloup
  */
-abstract class JpaConnectionProviderPlugin extends AbstractConnectionProviderPlugin {
+abstract class JpaConnectionProviderPlugin extends AbstractSqlConnectionProviderPlugin {
 	private final KTransactionManager transactionManager;
 
 	/**
