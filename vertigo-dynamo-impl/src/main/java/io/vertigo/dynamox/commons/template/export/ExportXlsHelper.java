@@ -67,23 +67,23 @@ public class ExportXlsHelper<R extends DtObject> {
 	 * 
 	 * @param dtcToExport
 	 *            the objects collection to be exported
-	 * @param collectionColumnNameList
+	 * @param collectionColumnNames
 	 *            list of the columns taht must be exported in the collection
 	 * @param criterion
 	 *            search criterion if exists
-	 * @param criterionExcludedColumnNameList
+	 * @param criterionExcludedColumnNames
 	 *            list of the criteria that must be excluded for the export
 	 * @param specificLabelMap
 	 *            map of the column names to be used instead of the default
 	 *            label associated with the field
 	 */
-	public final void prepareExport(final DtList<R> dtcToExport, final List<String> collectionColumnNameList, final DtObject criterion, final List<String> criterionExcludedColumnNameList, final Map<String, String> specificLabelMap) {
+	public final void prepareExport(final DtList<R> dtcToExport, final List<String> collectionColumnNames, final DtObject criterion, final List<String> criterionExcludedColumnNames, final Map<String, String> specificLabelMap) {
 
-		addDtList(dtcToExport, collectionColumnNameList, specificLabelMap);
+		addDtList(dtcToExport, collectionColumnNames, specificLabelMap);
 
 		// We add a criteria page if exists
 		if (criterion != null) {
-			addDtObject(criterion, criterionExcludedColumnNameList);
+			addDtObject(criterion, criterionExcludedColumnNames);
 		}
 	}
 
