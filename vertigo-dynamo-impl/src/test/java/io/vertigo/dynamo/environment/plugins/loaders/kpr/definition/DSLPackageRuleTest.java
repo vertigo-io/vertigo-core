@@ -25,7 +25,7 @@ import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLPackageRule;
 import org.junit.Assert;
 import org.junit.Test;
 
-public final class DSLPackageRuleTest {
+public final class DslPackageRuleTest {
 	private static final DSLPackageRule packageRule = new DSLPackageRule();
 
 	@Test

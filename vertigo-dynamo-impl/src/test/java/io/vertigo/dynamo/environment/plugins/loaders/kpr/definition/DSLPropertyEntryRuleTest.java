@@ -31,7 +31,7 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
-public final class DSLPropertyEntryRuleTest {
+public final class DslPropertyEntryRuleTest {
 	private static final String LABEL = "LABEL";
 	private static final String SIZE = "SIZE";
 

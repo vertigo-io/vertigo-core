@@ -37,12 +37,12 @@ import io.vertigo.dynamo.environment.oom.OOMTest;
 import io.vertigo.dynamo.environment.oom.OOMParserTest;
 import io.vertigo.dynamo.environment.oom.OOMParserAATest;
 import io.vertigo.dynamo.environment.oom.OOMParserIdentifiersTest;
-import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DSLDefinitionBodyRuleTest;
-import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DSLDefinitionRuleTest;
-import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DSLPackageRuleTest;
-import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DSLWordListRuleTest;
-import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DSLDefinitionEntryRuleTest;
-import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DSLPropertyEntryRuleTest;
+import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslDefinitionBodyRuleTest;
+import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslDefinitionRuleTest;
+import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslPackageRuleTest;
+import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslWordListRuleTest;
+import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslDefinitionEntryRuleTest;
+import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslPropertyEntryRuleTest;
 import io.vertigo.dynamo.environment.splittedmodules.SplittedModulesEnvironmentManagerTest;
 import io.vertigo.dynamo.export.ExportManagerTest;
 import io.vertigo.dynamo.file.FileManagerTest;
@@ -108,7 +108,7 @@ import org.junit.runners.Suite.SuiteClasses;
 		//RedisWorkManagerTest.class, DistributedWorkManagerTest.class, //REST
 		
 		//Rule
-		DSLDefinitionRuleTest.class, DSLPackageRuleTest.class, DSLDefinitionBodyRuleTest.class, DSLWordListRuleTest.class, DSLPropertyEntryRuleTest.class, DSLDefinitionEntryRuleTest.class,
+		DslDefinitionRuleTest.class, DslPackageRuleTest.class, DslDefinitionBodyRuleTest.class, DslWordListRuleTest.class, DslPropertyEntryRuleTest.class, DslDefinitionEntryRuleTest.class,
 		
 		//Search
 		SearchManagerDynaFieldsTest.class, 

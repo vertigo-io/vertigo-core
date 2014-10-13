@@ -30,8 +30,8 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class DSLDefinitionBodyRuleTest {
-	private final DynamicDefinitionRepository dynamicDefinitionRepository = DSLDynamicRegistryMock.createDynamicDefinitionRepository();
+public class DslDefinitionBodyRuleTest {
+	private final DynamicDefinitionRepository dynamicDefinitionRepository = DslDynamicRegistryMock.createDynamicDefinitionRepository();
 
 	private static Entity find(final List<Entity> entities, final String entityName) {
 		for (final Entity entity : entities) {

@@ -31,9 +31,9 @@ import java.util.List;
  * Mock pour les tests de regles sur les Definitions.
  * @author npiedeloup
  */
-public final class DSLDynamicRegistryMock implements DynamicRegistry {
+public final class DslDynamicRegistryMock implements DynamicRegistry {
 
-	private DSLDynamicRegistryMock() {
+	private DslDynamicRegistryMock() {
 		//constructeur private
 	}
 
@@ -41,7 +41,7 @@ public final class DSLDynamicRegistryMock implements DynamicRegistry {
 	 * @return DynamicDefinitionRepository bouchon pour test
 	 */
 	public static DynamicDefinitionRepository createDynamicDefinitionRepository() {
-		return new DynamicDefinitionRepository(new DSLDynamicRegistryMock());
+		return new DynamicDefinitionRepository(new DslDynamicRegistryMock());
 	}
 
 	public Grammar getGrammar() {

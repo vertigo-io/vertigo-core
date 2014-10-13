@@ -28,7 +28,7 @@ import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Test;
 
-public final class DSLDefinitionEntryRuleTest {
+public final class DslDefinitionEntryRuleTest {
 	private static final DSLDefinitionEntryRule MAIN = new DSLDefinitionEntryRule(Arrays.asList(new String[] { "myFirstProperty", "myLastProperty" }));
 
 	@Test
