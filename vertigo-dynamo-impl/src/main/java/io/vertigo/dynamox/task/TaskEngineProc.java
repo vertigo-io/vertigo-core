@@ -20,8 +20,8 @@ package io.vertigo.dynamox.task;
 
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.database.connection.KConnection;
-import io.vertigo.dynamo.database.statement.KCallableStatement;
+import io.vertigo.dynamo.database.connection.SqlConnection;
+import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 
 import java.sql.SQLException;
 
@@ -49,7 +49,7 @@ import javax.inject.Inject;
  *
  * @author  FCONSTANTIN
  */
-public class TaskEngineProc extends AbstractTaskEngineSQL<KCallableStatement> {
+public class TaskEngineProc extends AbstractTaskEngineSQL<SqlCallableStatement> {
 
 	/**
 	 * Constructeur.
@@ -70,7 +70,7 @@ public class TaskEngineProc extends AbstractTaskEngineSQL<KCallableStatement> {
 
 	/** {@inheritDoc} */
 	@Override
-	protected int doExecute(final KConnection connection, final KCallableStatement statement) throws SQLException {
+	protected int doExecute(final SqlConnection connection, final SqlCallableStatement statement) throws SQLException {
 		setParameters(statement);
 		final int sqlRowcount = statement.executeUpdate();
 		setOutParameter(statement);
@@ -79,7 +79,7 @@ public class TaskEngineProc extends AbstractTaskEngineSQL<KCallableStatement> {
 
 	/** {@inheritDoc} */
 	@Override
-	protected final KCallableStatement createStatement(final String procName, final KConnection connection) {
+	protected final SqlCallableStatement createStatement(final String procName, final SqlConnection connection) {
 		return getDataBaseManager().createCallableStatement(connection, procName);
 	}
 }

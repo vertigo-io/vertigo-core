@@ -16,29 +16,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.database.vendor.oracle;
+package io.vertigo.dynamo.database.statement;
 
-import io.vertigo.dynamo.database.vendor.SqlDataBase;
-import io.vertigo.dynamo.database.vendor.SqlExceptionHandler;
-import io.vertigo.dynamo.database.vendor.SqlMapping;
-import io.vertigo.dynamo.impl.database.vendor.core.SqlMappingImpl;
+import java.sql.SQLException;
 
 /**
- * Gestiond de la base de données Oracle.
- * 
+ * Gestion des procédure stockées.
+ *
  * @author pchretien
  */
-public final class OracleDataBase implements SqlDataBase {
-	private final SqlExceptionHandler sqlExceptionHandler = new OracleExceptionHandler();
-	private final SqlMapping sqlMapping = new SqlMappingImpl();
-
-	/** {@inheritDoc} */
-	public SqlExceptionHandler getSqlExceptionHandler() {
-		return sqlExceptionHandler;
-	}
-
-	/** {@inheritDoc} */
-	public SqlMapping getSqlMapping() {
-		return sqlMapping;
-	}
+public interface SqlCallableStatement extends SqlPreparedStatement {
+	/**
+	 * Getter générique.
+	 * @param index Index du paramètre dans la requête SQL
+	 * @throws SQLException Exception sql
+	 * @return  Valeur du paramètre indexé
+	 */
+	Object getValue(final int index) throws SQLException;
 }

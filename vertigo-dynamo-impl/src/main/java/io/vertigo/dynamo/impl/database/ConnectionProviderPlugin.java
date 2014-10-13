@@ -19,13 +19,13 @@
 package io.vertigo.dynamo.impl.database;
 
 import io.vertigo.core.component.Plugin;
-import io.vertigo.dynamo.database.connection.ConnectionProvider;
+import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
 
 /**
 * Plugin du provider de connexions.
 *
 * @author pchretien
 */
-public interface ConnectionProviderPlugin extends ConnectionProvider, Plugin {
+public interface ConnectionProviderPlugin extends SqlConnectionProvider, Plugin {
 	//
 }

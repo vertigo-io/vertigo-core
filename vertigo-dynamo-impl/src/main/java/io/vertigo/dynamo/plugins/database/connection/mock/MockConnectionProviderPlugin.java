@@ -20,7 +20,7 @@ package io.vertigo.dynamo.plugins.database.connection.mock;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.dynamo.database.connection.KConnection;
+import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.plugins.database.connection.AbstractConnectionProviderPlugin;
 
@@ -60,8 +60,8 @@ public final class MockConnectionProviderPlugin extends AbstractConnectionProvid
 	}
 
 	/** {@inheritDoc} */
-	public KConnection obtainConnection() throws SQLException {
+	public SqlConnection obtainConnection() throws SQLException {
 		//Dans le pseudo pool on crée systématiquement une connexion
-		return new KConnection(DriverManager.getConnection(jdbcUrl), getDataBase(), true);
+		return new SqlConnection(DriverManager.getConnection(jdbcUrl), getDataBase(), true);
 	}
 }

@@ -22,15 +22,15 @@ import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.database.DataBaseManager;
-import io.vertigo.dynamo.database.connection.KConnection;
-import io.vertigo.dynamo.database.statement.KCallableStatement;
-import io.vertigo.dynamo.database.statement.KPreparedStatement;
-import io.vertigo.dynamo.impl.database.listener.DataBaseListener;
-import io.vertigo.dynamo.impl.database.listener.DataBaseListenerImpl;
-import io.vertigo.dynamo.impl.database.statement.KCallableStatementImpl;
-import io.vertigo.dynamo.impl.database.statement.KPreparedStatementImpl;
-import io.vertigo.dynamo.impl.database.statement.StatementHandler;
-import io.vertigo.dynamo.impl.database.statementhandler.StatementHandlerImpl;
+import io.vertigo.dynamo.database.connection.SqlConnection;
+import io.vertigo.dynamo.database.statement.SqlCallableStatement;
+import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
+import io.vertigo.dynamo.impl.database.listener.SqlDataBaseListener;
+import io.vertigo.dynamo.impl.database.listener.SqlDataBaseListenerImpl;
+import io.vertigo.dynamo.impl.database.statement.SqlCallableStatementImpl;
+import io.vertigo.dynamo.impl.database.statement.SqlPreparedStatementImpl;
+import io.vertigo.dynamo.impl.database.statement.SqlStatementHandler;
+import io.vertigo.dynamo.impl.database.statementhandler.SqlStatementHandlerImpl;
 
 import javax.inject.Inject;
 
@@ -40,8 +40,8 @@ import javax.inject.Inject;
 * @author pchretien
 */
 public final class DataBaseManagerImpl implements DataBaseManager {
-	private final DataBaseListener dataBaseListener;
-	private final StatementHandler statementHandler;
+	private final SqlDataBaseListener dataBaseListener;
+	private final SqlStatementHandler statementHandler;
 	private final ConnectionProviderPlugin connectionProviderPlugin;
 
 	/**
@@ -55,8 +55,8 @@ public final class DataBaseManagerImpl implements DataBaseManager {
 		Assertion.checkNotNull(analyticsManager);
 		Assertion.checkNotNull(connectionProviderPlugin);
 		//---------------------------------------------------------------------
-		dataBaseListener = new DataBaseListenerImpl(analyticsManager);
-		statementHandler = new StatementHandlerImpl();
+		dataBaseListener = new SqlDataBaseListenerImpl(analyticsManager);
+		statementHandler = new SqlStatementHandlerImpl();
 		this.connectionProviderPlugin = connectionProviderPlugin;
 		localeManager.add("io.vertigo.dynamo.impl.database.DataBase", io.vertigo.dynamo.impl.database.Resources.values());
 	}
@@ -67,13 +67,13 @@ public final class DataBaseManagerImpl implements DataBaseManager {
 	}
 
 	/** {@inheritDoc} */
-	public KCallableStatement createCallableStatement(final KConnection connection, final String procName) {
-		return new KCallableStatementImpl(statementHandler, dataBaseListener, connection, procName);
+	public SqlCallableStatement createCallableStatement(final SqlConnection connection, final String procName) {
+		return new SqlCallableStatementImpl(statementHandler, dataBaseListener, connection, procName);
 	}
 
 	/** {@inheritDoc} */
-	public KPreparedStatement createPreparedStatement(final KConnection connection, final String sql, final boolean returnGeneratedKeys) {
-		return new KPreparedStatementImpl(statementHandler, dataBaseListener, connection, sql, returnGeneratedKeys);
+	public SqlPreparedStatement createPreparedStatement(final SqlConnection connection, final String sql, final boolean returnGeneratedKeys) {
+		return new SqlPreparedStatementImpl(statementHandler, dataBaseListener, connection, sql, returnGeneratedKeys);
 
 	}
 }

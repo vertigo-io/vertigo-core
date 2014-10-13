@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.hsql;
 
-import io.vertigo.dynamo.database.statement.KPreparedStatement;
-import io.vertigo.dynamo.impl.database.vendor.core.AbstractSQLExceptionHandler;
+import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
+import io.vertigo.dynamo.impl.database.vendor.core.AbstractSqlExceptionHandler;
 
 import java.sql.SQLException;
 
@@ -28,7 +28,7 @@ import java.sql.SQLException;
  * Cette implémentation est adaptée pour HSQL.
  * @author dchallas
  */
-final class HsqlExceptionHandler extends AbstractSQLExceptionHandler {
+final class HsqlExceptionHandler extends AbstractSqlExceptionHandler {
 	/**
 	 * Constructeur.
 	 */
@@ -37,7 +37,7 @@ final class HsqlExceptionHandler extends AbstractSQLExceptionHandler {
 	}
 
 	/** {@inheritDoc} */
-	public void handleSQLException(final SQLException sqle, final KPreparedStatement statement) {
+	public void handleSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 		// Message d'erreur par défaut
 		handleOtherSQLException(sqle, statement);
 		// voir les codes dans org.hsqldb.Trace

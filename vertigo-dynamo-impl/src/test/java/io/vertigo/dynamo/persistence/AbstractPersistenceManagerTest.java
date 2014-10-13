@@ -23,8 +23,8 @@ import io.vertigo.core.Home;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.database.DataBaseManager;
-import io.vertigo.dynamo.database.connection.KConnection;
-import io.vertigo.dynamo.database.statement.KCallableStatement;
+import io.vertigo.dynamo.database.connection.SqlConnection;
+import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -97,7 +97,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 
 		//A chaque test on recrée la table famille
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final KConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
+			final SqlConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
 			execCallableStatement(connection, "create table famille(fam_id BIGINT , LIBELLE varchar(255));");
 			execCallableStatement(connection, "create sequence SEQ_FAMILLE start with 10001 increment by 1");
 
@@ -135,15 +135,15 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		if (dataBaseManager != null) {
 			try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 				//A chaque fin de test on arréte la base.
-				final KConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
+				final SqlConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
 				execCallableStatement(connection, "shutdown;");
 				transaction.commit();
 			}
 		}
 	}
 
-	private void execCallableStatement(final KConnection connection, final String sql) throws SQLException {
-		final KCallableStatement callableStatement = dataBaseManager.createCallableStatement(connection, sql);
+	private void execCallableStatement(final SqlConnection connection, final String sql) throws SQLException {
+		final SqlCallableStatement callableStatement = dataBaseManager.createCallableStatement(connection, sql);
 		callableStatement.init();
 		callableStatement.executeUpdate();
 	}
@@ -253,7 +253,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		return taskResult.<DtList<Car>> getValue("DTC_CAR_OUT");
 	}
 
-	protected final List<Map<String, String>> execPreparedStatement(final KConnection connection, final String sql) throws SQLException {
+	protected final List<Map<String, String>> execPreparedStatement(final SqlConnection connection, final String sql) throws SQLException {
 
 		final PreparedStatement preparedStatement = connection.getJdbcConnection().prepareStatement(sql);
 		final List<Map<String, String>> result = new ArrayList<>();

@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.oracle;
 
-import io.vertigo.dynamo.database.statement.KPreparedStatement;
-import io.vertigo.dynamo.impl.database.vendor.core.AbstractSQLExceptionHandler;
+import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
+import io.vertigo.dynamo.impl.database.vendor.core.AbstractSqlExceptionHandler;
 
 import java.sql.SQLException;
 
@@ -29,7 +29,7 @@ import java.sql.SQLException;
  * 
  * @author npiedeloup
  */
-final class OracleExceptionHandler extends AbstractSQLExceptionHandler {
+final class OracleExceptionHandler extends AbstractSqlExceptionHandler {
 	/**
 	 * Constructeur.
 	 */
@@ -38,7 +38,7 @@ final class OracleExceptionHandler extends AbstractSQLExceptionHandler {
 	}
 
 	/** {@inheritDoc} */
-	public void handleSQLException(final SQLException sqle, final KPreparedStatement statement) {
+	public void handleSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 		final int errCode = sqle.getErrorCode();
 		if (errCode >= 20000 && errCode < 30000) {
 			// Erreur utilisateur

@@ -16,29 +16,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.database.vendor.oracle;
-
-import io.vertigo.dynamo.database.vendor.SqlDataBase;
-import io.vertigo.dynamo.database.vendor.SqlExceptionHandler;
-import io.vertigo.dynamo.database.vendor.SqlMapping;
-import io.vertigo.dynamo.impl.database.vendor.core.SqlMappingImpl;
+package io.vertigo.dynamo.database.statement;
 
 /**
- * Gestiond de la base de données Oracle.
- * 
+ * Résultat d'un select.
  * @author pchretien
  */
-public final class OracleDataBase implements SqlDataBase {
-	private final SqlExceptionHandler sqlExceptionHandler = new OracleExceptionHandler();
-	private final SqlMapping sqlMapping = new SqlMappingImpl();
+public final class SqlQueryResult {
+	private final Object value;
+	private final int sqlRowCount;
 
-	/** {@inheritDoc} */
-	public SqlExceptionHandler getSqlExceptionHandler() {
-		return sqlExceptionHandler;
+	public SqlQueryResult(final Object value, final int sqlRowCount) {
+		this.value = value; //Peut être null
+		this.sqlRowCount = sqlRowCount;
 	}
 
-	/** {@inheritDoc} */
-	public SqlMapping getSqlMapping() {
-		return sqlMapping;
+	/**
+	 * @return Objet ou liste résultat 
+	 */
+	public Object getValue() {
+		return value;
+	}
+
+	/**
+	 * @return Nombre de ligne lues en base.
+	 */
+	public int getSQLRowCount() {
+		return sqlRowCount;
 	}
 }

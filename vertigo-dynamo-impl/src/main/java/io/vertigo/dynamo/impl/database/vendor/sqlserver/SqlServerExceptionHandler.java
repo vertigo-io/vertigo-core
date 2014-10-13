@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.sqlserver;
 
-import io.vertigo.dynamo.database.statement.KPreparedStatement;
-import io.vertigo.dynamo.impl.database.vendor.core.AbstractSQLExceptionHandler;
+import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
+import io.vertigo.dynamo.impl.database.vendor.core.AbstractSqlExceptionHandler;
 
 import java.sql.SQLException;
 
@@ -29,7 +29,7 @@ import java.sql.SQLException;
  *
  * @author jmainaud, npiedeloup
  */
-final class SqlServerExceptionHandler extends AbstractSQLExceptionHandler {
+final class SqlServerExceptionHandler extends AbstractSqlExceptionHandler {
 
 	private enum SQLServerVersion {
 		PostSQLServer2008("«\u00A0", "\u00A0»."), // \u00A0 : no-break-space (ne part pas avec un trim)
@@ -61,7 +61,7 @@ final class SqlServerExceptionHandler extends AbstractSQLExceptionHandler {
 	}
 
 	/** {@inheritDoc} */
-	public void handleSQLException(final SQLException sqle, final KPreparedStatement statement) {
+	public void handleSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 
 		final int codeErreur = sqle.getErrorCode();
 

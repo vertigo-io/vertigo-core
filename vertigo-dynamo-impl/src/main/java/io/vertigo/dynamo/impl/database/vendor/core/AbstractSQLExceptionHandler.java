@@ -23,7 +23,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.MessageKey;
 import io.vertigo.core.lang.MessageText;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.dynamo.database.statement.KPreparedStatement;
+import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.database.vendor.SqlExceptionHandler;
 import io.vertigo.dynamo.impl.database.Resources;
 
@@ -40,7 +40,7 @@ import org.apache.log4j.Logger;
  *
  * @author npiedeloup, evernat
  */
-public abstract class AbstractSQLExceptionHandler implements SqlExceptionHandler {
+public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler {
 	private final Logger logger = Logger.getLogger(getClass()); //pas static, car on est sur une class abstraite
 
 	/**
@@ -111,7 +111,7 @@ public abstract class AbstractSQLExceptionHandler implements SqlExceptionHandler
 		handleConstraintSQLException(sqle, Resources.DYNAMO_SQL_CONSTRAINT_ALREADY_REGISTRED);
 	}
 
-	protected void handleOtherSQLException(final SQLException sqle, final KPreparedStatement statement) {
+	protected void handleOtherSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 		final int errCode = sqle.getErrorCode();
 		throw new RuntimeException(StringUtil.format("[Erreur SQL] {0} : {1}", errCode, statement != null ? statement.toString() : null), sqle);
 	}

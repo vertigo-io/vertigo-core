@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.postgresql;
 
-import io.vertigo.dynamo.database.statement.KPreparedStatement;
-import io.vertigo.dynamo.impl.database.vendor.core.AbstractSQLExceptionHandler;
+import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
+import io.vertigo.dynamo.impl.database.vendor.core.AbstractSqlExceptionHandler;
 
 import java.sql.SQLException;
 
@@ -29,7 +29,7 @@ import java.sql.SQLException;
  * 
  * @author pforhan
  */
-final class PostgreSqlExceptionHandler extends AbstractSQLExceptionHandler {
+final class PostgreSqlExceptionHandler extends AbstractSqlExceptionHandler {
 	/**
 	 * Constructeur.
 	 */
@@ -42,7 +42,7 @@ final class PostgreSqlExceptionHandler extends AbstractSQLExceptionHandler {
 	 * @param sqle Exception Sql
 	 * @param statement Requête en erreur.
 	 */
-	public void handleSQLException(final SQLException sqle, final KPreparedStatement statement) {
+	public void handleSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 		final String errCode = sqle.getSQLState();
 		final String code = errCode.substring(0, 2);
 		if ("22001".equals(errCode) || "22003".equals(errCode)) {
@@ -65,7 +65,7 @@ final class PostgreSqlExceptionHandler extends AbstractSQLExceptionHandler {
 
 	/** {@inheritDoc} */
 	@Override
-	protected void handleOtherSQLException(final SQLException sqle, final KPreparedStatement statement) {
+	protected void handleOtherSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 		final String errCode = sqle.getSQLState();
 		throw new RuntimeException("[Erreur SQL](" + errCode + ") : " + statement, sqle);
 	}

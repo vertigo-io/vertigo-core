@@ -21,7 +21,7 @@ package io.vertigo.dynamo.impl.database.vendor.hsql;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.database.vendor.SqlExceptionHandler;
 import io.vertigo.dynamo.database.vendor.SqlMapping;
-import io.vertigo.dynamo.impl.database.vendor.core.SQLMappingImpl;
+import io.vertigo.dynamo.impl.database.vendor.core.SqlMappingImpl;
 
 /**
  * Gestion de la base de données HSQL.
@@ -30,7 +30,7 @@ import io.vertigo.dynamo.impl.database.vendor.core.SQLMappingImpl;
  */
 public final class HsqlDataBase implements SqlDataBase {
 	private final SqlExceptionHandler sqlExceptionHandler = new HsqlExceptionHandler();
-	private final SqlMapping sqlMapping = new SQLMappingImpl();
+	private final SqlMapping sqlMapping = new SqlMappingImpl();
 
 	/** {@inheritDoc} */
 	public SqlExceptionHandler getSqlExceptionHandler() {

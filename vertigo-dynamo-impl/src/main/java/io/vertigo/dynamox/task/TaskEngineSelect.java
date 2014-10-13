@@ -20,9 +20,9 @@ package io.vertigo.dynamox.task;
 
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.database.connection.KConnection;
-import io.vertigo.dynamo.database.statement.KPreparedStatement;
-import io.vertigo.dynamo.database.statement.QueryResult;
+import io.vertigo.dynamo.database.connection.SqlConnection;
+import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
+import io.vertigo.dynamo.database.statement.SqlQueryResult;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 
 import java.sql.SQLException;
@@ -49,7 +49,7 @@ import javax.inject.Inject;
  *
  * @author  FCONSTANTIN
  */
-public class TaskEngineSelect extends AbstractTaskEngineSQL<KPreparedStatement> {
+public class TaskEngineSelect extends AbstractTaskEngineSQL<SqlPreparedStatement> {
 
 	/**
 	 * Constructeur.
@@ -86,18 +86,18 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL<KPreparedStatement> 
 
 	/** {@inheritDoc} */
 	@Override
-	protected int doExecute(final KConnection connection, final KPreparedStatement statement) throws SQLException {
+	protected int doExecute(final SqlConnection connection, final SqlPreparedStatement statement) throws SQLException {
 		setParameters(statement);
 		final TaskAttribute outAttribute = getOutTaskAttribute();
 
-		final QueryResult result = statement.executeQuery(outAttribute.getDomain());
+		final SqlQueryResult result = statement.executeQuery(outAttribute.getDomain());
 		setValue(outAttribute.getName(), result.getValue());
 		return result.getSQLRowCount();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	protected final KPreparedStatement createStatement(final String sql, final KConnection connection) {
+	protected final SqlPreparedStatement createStatement(final String sql, final SqlConnection connection) {
 		return getDataBaseManager().createPreparedStatement(connection, sql, false);
 	}
 }

@@ -16,29 +16,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.database.vendor.oracle;
+package io.vertigo.dynamo.database.connection;
 
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
-import io.vertigo.dynamo.database.vendor.SqlExceptionHandler;
-import io.vertigo.dynamo.database.vendor.SqlMapping;
-import io.vertigo.dynamo.impl.database.vendor.core.SqlMappingImpl;
+
+import java.sql.SQLException;
 
 /**
- * Gestiond de la base de données Oracle.
- * 
+ * Provides connections 'KConnection'.
+ * This provider is defined for a particular database. 
+ *
  * @author pchretien
  */
-public final class OracleDataBase implements SqlDataBase {
-	private final SqlExceptionHandler sqlExceptionHandler = new OracleExceptionHandler();
-	private final SqlMapping sqlMapping = new SqlMappingImpl();
+public interface SqlConnectionProvider {
+	/**
+	 * Retourne une connexion.
+	 *
+	 * @return Connexion
+	 * @throws SQLException Exception sql
+	 */
+	SqlConnection obtainConnection() throws SQLException;
 
-	/** {@inheritDoc} */
-	public SqlExceptionHandler getSqlExceptionHandler() {
-		return sqlExceptionHandler;
-	}
-
-	/** {@inheritDoc} */
-	public SqlMapping getSqlMapping() {
-		return sqlMapping;
-	}
+	/**
+	 * @return Type de base de données
+	 */
+	SqlDataBase getDataBase();
 }

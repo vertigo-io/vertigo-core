@@ -21,7 +21,7 @@ package io.vertigo.dynamo.plugins.database.connection;
 import io.vertigo.core.component.ComponentInfo;
 import io.vertigo.core.component.Describable;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.database.connection.KConnection;
+import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.impl.database.ConnectionProviderPlugin;
 
@@ -64,7 +64,7 @@ public abstract class AbstractConnectionProviderPlugin implements ConnectionProv
 		final List<ComponentInfo> componentInfos = new ArrayList<>();
 		try {
 			// 
-			final KConnection connection = obtainConnection();
+			final SqlConnection connection = obtainConnection();
 			final Connection jdbcConnection = connection.getJdbcConnection();//NOPMD
 			try {
 				final DatabaseMetaData metaData = jdbcConnection.getMetaData();

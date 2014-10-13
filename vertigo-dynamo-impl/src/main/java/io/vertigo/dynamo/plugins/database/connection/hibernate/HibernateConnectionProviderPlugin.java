@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.database.connection.hibernate;
 
-import io.vertigo.dynamo.database.connection.KConnection;
+import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.transaction.KTransactionManager;
 
 import java.sql.Connection;
@@ -50,12 +50,12 @@ public final class HibernateConnectionProviderPlugin extends JpaConnectionProvid
 
 	/** {@inheritDoc} */
 	@Override
-	public KConnection obtainWrappedConnection(final EntityManager em) {
+	public SqlConnection obtainWrappedConnection(final EntityManager em) {
 		//preconisation StackOverFlow to get current jpa connection
 		final Session session = em.unwrap(Session.class);
-		return session.doReturningWork(new ReturningWork<KConnection>() {
-			public KConnection execute(final Connection connection) throws SQLException {
-				return new KConnection(connection, getDataBase(), false);
+		return session.doReturningWork(new ReturningWork<SqlConnection>() {
+			public SqlConnection execute(final Connection connection) throws SQLException {
+				return new SqlConnection(connection, getDataBase(), false);
 			}
 		});
 	}

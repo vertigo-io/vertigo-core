@@ -24,10 +24,10 @@ import io.vertigo.commons.script.parser.ScriptSeparator;
 import io.vertigo.core.Home;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.database.DataBaseManager;
-import io.vertigo.dynamo.database.connection.ConnectionProvider;
-import io.vertigo.dynamo.database.connection.KConnection;
-import io.vertigo.dynamo.database.statement.KCallableStatement;
-import io.vertigo.dynamo.database.statement.KPreparedStatement;
+import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
+import io.vertigo.dynamo.database.connection.SqlConnection;
+import io.vertigo.dynamo.database.statement.SqlCallableStatement;
+import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -91,11 +91,11 @@ import java.util.Map;
  * @author  pchretien, npiedeloup
  * @param <S> Type de Statement utilisé
  */
-public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extends TaskEngine {
+public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> extends TaskEngine {
 	/**
 	 * Identifiant de ressource SQL par défaut.
 	 */
-	public static final KTransactionResourceId<KConnection> SQL_RESOURCE_ID = new KTransactionResourceId<>(KTransactionResourceId.Priority.TOP, "Sql");
+	public static final KTransactionResourceId<SqlConnection> SQL_RESOURCE_ID = new KTransactionResourceId<>(KTransactionResourceId.Priority.TOP, "Sql");
 
 	/**
 	 * Nom de l'attribut recevant le nombre de lignes affectées par un Statement.
@@ -140,7 +140,7 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 	 * @return Nombre de lignes affectées (Insert/ Update / Delete)
 	 * @throws SQLException Erreur sql
 	 */
-	protected abstract int doExecute(final KConnection connection, final S statement) throws SQLException;
+	protected abstract int doExecute(final SqlConnection connection, final S statement) throws SQLException;
 
 	/**
 	 * Vérification de la syntaxe sql.
@@ -151,7 +151,7 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 	/** {@inheritDoc} */
 	@Override
 	public void execute() {
-		final KConnection connection = obtainConnection();
+		final SqlConnection connection = obtainConnection();
 		final String sql = prepareParams(getSqlQuery().trim());
 		checkSqlQuery(sql);
 
@@ -249,7 +249,7 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 	 *
 	 * @param cs CallableStatement
 	 * @throws SQLException Si erreur */
-	protected final void setOutParameter(final KCallableStatement cs) throws SQLException {
+	protected final void setOutParameter(final SqlCallableStatement cs) throws SQLException {
 		Assertion.checkNotNull(cs); //KCallableStatement doit être renseigné
 		//----------------------------------------------------------------------
 		for (final TaskEngineSQLParam param : params) {
@@ -273,7 +273,7 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 	 * @param param Paramètre traité
 	 * @throws SQLException Si erreur avec la base
 	 */
-	private void setOutParameter(final KCallableStatement cs, final TaskEngineSQLParam param) throws SQLException {
+	private void setOutParameter(final SqlCallableStatement cs, final TaskEngineSQLParam param) throws SQLException {
 		final Object value = cs.getValue(param.getIndex());
 		setValueParameter(param, value);
 	}
@@ -286,13 +286,13 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 	 * @param connection Connexion vers la base de données
 	 * @return Statement StatementSQL
 	 */
-	protected abstract S createStatement(String sql, KConnection connection);
+	protected abstract S createStatement(String sql, SqlConnection connection);
 
 	/**
 	 * Initialise les paramètres en entrée du statement
 	 * @param statement Statement
 	 */
-	private void initParameters(final KPreparedStatement statement) {
+	private void initParameters(final SqlPreparedStatement statement) {
 		for (final TaskEngineSQLParam param : params) {
 			statement.registerParameter(param.getIndex(), getDataTypeParameter(param), param.getType());
 		}
@@ -305,7 +305,7 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 	 * @param statement de type KPreparedStatement, KCallableStatement...
 	 * @throws SQLException En cas d'erreur dans la configuration
 	 */
-	protected final void setParameters(final KPreparedStatement statement) throws SQLException {
+	protected final void setParameters(final SqlPreparedStatement statement) throws SQLException {
 		Assertion.checkNotNull(statement);
 		//----------------------------------------------------------------------
 		for (final TaskEngineSQLParam param : params) {
@@ -337,7 +337,7 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 	 * @param rowNumber Ligne des données d'entrée.
 	 * @throws SQLException Erreur sql
 	 */
-	protected final void setParameter(final KPreparedStatement ps, final TaskEngineSQLParam param, final Integer rowNumber) throws SQLException {
+	protected final void setParameter(final SqlPreparedStatement ps, final TaskEngineSQLParam param, final Integer rowNumber) throws SQLException {
 		ps.setValue(param.getIndex(), getValueParameter(param, rowNumber));
 	}
 
@@ -413,9 +413,9 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 	 * Retourne la connexion SQL de cette transaction en la demandant au pool de connexion si nécessaire.
 	 * @return Connexion SQL
 	 */
-	private KConnection obtainConnection() {
+	private SqlConnection obtainConnection() {
 		final KTransaction transaction = getTransactionManager().getCurrentTransaction();
-		KConnection connection = transaction.getResource(getKTransactionResourceId());
+		SqlConnection connection = transaction.getResource(getKTransactionResourceId());
 		if (connection == null) {
 			// On récupère une connexion du pool
 			// Utilise le provider de connexion déclaré sur le Container.
@@ -432,7 +432,7 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 	/**
 	 * @return Id de la Ressource Connexion SQL dans la transaction
 	 */
-	protected KTransactionResourceId<KConnection> getKTransactionResourceId() {
+	protected KTransactionResourceId<SqlConnection> getKTransactionResourceId() {
 		return SQL_RESOURCE_ID;
 	}
 
@@ -451,7 +451,7 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 	 * Il est possible de surcharger la configuration SQL d'un service.
 	 * @return Configuration SQL.
 	 */
-	protected ConnectionProvider getConnectionProvider() {
+	protected SqlConnectionProvider getConnectionProvider() {
 		return getDataBaseManager().getConnectionProvider();
 	}
 
@@ -461,7 +461,7 @@ public abstract class AbstractTaskEngineSQL<S extends KPreparedStatement> extend
 	 * @param sqle Exception SQL
 	 * @param statement Statement
 	 */
-	private static void handleSQLException(final KConnection connection, final SQLException sqle, final KPreparedStatement statement) {
+	private static void handleSQLException(final SqlConnection connection, final SQLException sqle, final SqlPreparedStatement statement) {
 		connection.getDataBase().getSqlExceptionHandler().handleSQLException(sqle, statement);
 	}
 

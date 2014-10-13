@@ -16,29 +16,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.database.vendor.oracle;
+package io.vertigo.dynamo.impl.database.statement;
 
-import io.vertigo.dynamo.database.vendor.SqlDataBase;
-import io.vertigo.dynamo.database.vendor.SqlExceptionHandler;
-import io.vertigo.dynamo.database.vendor.SqlMapping;
-import io.vertigo.dynamo.impl.database.vendor.core.SqlMappingImpl;
+import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 
 /**
- * Gestiond de la base de données Oracle.
- * 
- * @author pchretien
- */
-public final class OracleDataBase implements SqlDataBase {
-	private final SqlExceptionHandler sqlExceptionHandler = new OracleExceptionHandler();
-	private final SqlMapping sqlMapping = new SqlMappingImpl();
+* Interface de statistiques pour le suivi des traitements SQL.
+*
+* @author npiedeloup
+*/
+public interface SqlStatementStats {
+	/**
+	 * @return preparedStatement Statement
+	 */
+	SqlPreparedStatement getPreparedStatement();
 
-	/** {@inheritDoc} */
-	public SqlExceptionHandler getSqlExceptionHandler() {
-		return sqlExceptionHandler;
-	}
+	/**
+	 * @return elapsedTime Temps d'exécution en ms
+	 */
+	long getElapsedTime();
 
-	/** {@inheritDoc} */
-	public SqlMapping getSqlMapping() {
-		return sqlMapping;
-	}
+	/**
+	 * @return Nombre de lignes affectées (update, insert, delete), null si sans objet
+	 */
+	Long getNbModifiedRow();
+
+	/**
+	 * @return Nombre de lignes récupérées (select), null si sans objet
+	 */
+	Long getNbSelectedRow();
+
+	/**
+	 * @return success Si l'exécution a réussi
+	 */
+	boolean isSuccess();
 }

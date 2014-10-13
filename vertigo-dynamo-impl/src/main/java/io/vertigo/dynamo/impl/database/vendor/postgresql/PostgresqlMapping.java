@@ -20,7 +20,7 @@ package io.vertigo.dynamo.impl.database.vendor.postgresql;
 
 import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.impl.database.vendor.core.SQLMappingImpl;
+import io.vertigo.dynamo.impl.database.vendor.core.SqlMappingImpl;
 
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
@@ -33,7 +33,7 @@ import java.sql.Types;
  * @author pchretien
  */
 final class PostgresqlMapping implements SqlMapping {
-	private final SqlMapping defaultSQLMapping = new SQLMappingImpl();
+	private final SqlMapping defaultSQLMapping = new SqlMappingImpl();
 
 	/** {@inheritDoc} */
 	public int getSqlType(final DataType dataType) {

@@ -37,7 +37,7 @@ import java.sql.Types;
  *
  * @author pchretien
  */
-public final class SQLMappingImpl implements SqlMapping {
+public final class SqlMappingImpl implements SqlMapping {
 	private static final String TYPE_UNSUPPORTED = "Type unsupported : ";
 	private static final String TYPE_INCONNU = "Type unknown : ";
 
@@ -263,7 +263,7 @@ public final class SQLMappingImpl implements SqlMapping {
 				value = timestamp == null ? null : new java.util.Date(timestamp.getTime());
 				break;
 			case DataStream:
-				value = DataStreamMappingUtil.getDataStream(rs, col);
+				value = SqlDataStreamMappingUtil.getDataStream(rs, col);
 				break;
 			case DtList:
 			case DtObject:

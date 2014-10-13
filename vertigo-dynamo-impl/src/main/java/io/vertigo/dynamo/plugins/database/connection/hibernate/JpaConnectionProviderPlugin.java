@@ -20,7 +20,7 @@ package io.vertigo.dynamo.plugins.database.connection.hibernate;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.dynamo.database.connection.KConnection;
+import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.plugins.database.connection.AbstractConnectionProviderPlugin;
 import io.vertigo.dynamo.transaction.KTransaction;
@@ -55,7 +55,7 @@ abstract class JpaConnectionProviderPlugin extends AbstractConnectionProviderPlu
 	}
 
 	/** {@inheritDoc} */
-	public final KConnection obtainConnection() throws SQLException {
+	public final SqlConnection obtainConnection() throws SQLException {
 		final EntityManager em = obtainJpaResource().getEntityManager();
 		return obtainWrappedConnection(em);
 	}
@@ -65,7 +65,7 @@ abstract class JpaConnectionProviderPlugin extends AbstractConnectionProviderPlu
 	 * @return KConnection sous jacente
 	 * @throws SQLException Exception sql
 	 */
-	protected abstract KConnection obtainWrappedConnection(final EntityManager em) throws SQLException;
+	protected abstract SqlConnection obtainWrappedConnection(final EntityManager em) throws SQLException;
 
 	/** récupère la ressource JPA de la transaction et la créé si nécessaire. */
 	private JpaResource obtainJpaResource() {

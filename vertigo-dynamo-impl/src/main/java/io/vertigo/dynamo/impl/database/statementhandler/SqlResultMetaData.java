@@ -16,29 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.database.vendor.oracle;
+package io.vertigo.dynamo.impl.database.statementhandler;
 
-import io.vertigo.dynamo.database.vendor.SqlDataBase;
-import io.vertigo.dynamo.database.vendor.SqlExceptionHandler;
-import io.vertigo.dynamo.database.vendor.SqlMapping;
-import io.vertigo.dynamo.impl.database.vendor.core.SqlMappingImpl;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.model.DtObject;
 
 /**
- * Gestiond de la base de données Oracle.
+ * Type de sortie du prepareStatement.
+ * Permet de créer des types de sortie dynamiques.
  * 
- * @author pchretien
+ * @author  pchretien
  */
-public final class OracleDataBase implements SqlDataBase {
-	private final SqlExceptionHandler sqlExceptionHandler = new OracleExceptionHandler();
-	private final SqlMapping sqlMapping = new SqlMappingImpl();
+interface SqlResultMetaData {
+	DtObject createDtObject();
 
-	/** {@inheritDoc} */
-	public SqlExceptionHandler getSqlExceptionHandler() {
-		return sqlExceptionHandler;
-	}
+	/***
+	 * Récupération de la DtDefinition du type de retour du PrepareStatement.
+	 * @return DtDefinition du type de retour du PrepareStatement
+	 */
+	DtDefinition getDtDefinition();
 
-	/** {@inheritDoc} */
-	public SqlMapping getSqlMapping() {
-		return sqlMapping;
-	}
+	/***
+	 * @return Si le type de sortie est un DTO.
+	 */
+	boolean isDtObject();
 }

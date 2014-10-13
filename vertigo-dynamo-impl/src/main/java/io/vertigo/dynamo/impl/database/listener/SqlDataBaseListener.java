@@ -16,29 +16,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.database.vendor.oracle;
+package io.vertigo.dynamo.impl.database.listener;
 
-import io.vertigo.dynamo.database.vendor.SqlDataBase;
-import io.vertigo.dynamo.database.vendor.SqlExceptionHandler;
-import io.vertigo.dynamo.database.vendor.SqlMapping;
-import io.vertigo.dynamo.impl.database.vendor.core.SqlMappingImpl;
+import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
+import io.vertigo.dynamo.impl.database.statement.SqlStatementStats;
 
 /**
- * Gestiond de la base de données Oracle.
- * 
- * @author pchretien
- */
-public final class OracleDataBase implements SqlDataBase {
-	private final SqlExceptionHandler sqlExceptionHandler = new OracleExceptionHandler();
-	private final SqlMapping sqlMapping = new SqlMappingImpl();
+* Interface de réception des  événements produits par l'exécution des taches SQL.
+*
+* @author pchretien
+*/
+public interface SqlDataBaseListener {
+	/**
+	 * Enregistre le début d'exécution d'un PreparedStatement.
+	 * @param preparedStatement Statement
+	 */
+	void onPreparedStatementStart(SqlPreparedStatement preparedStatement);
 
-	/** {@inheritDoc} */
-	public SqlExceptionHandler getSqlExceptionHandler() {
-		return sqlExceptionHandler;
-	}
-
-	/** {@inheritDoc} */
-	public SqlMapping getSqlMapping() {
-		return sqlMapping;
-	}
+	/**
+	 * Enregistre la fin d'une exécution de PreparedStatement avec le temps d'exécution en ms et son statut (OK/KO).
+	 * @param statementStats Informations sur l'éxécution
+	 */
+	void onPreparedStatementFinish(SqlStatementStats statementStats);
 }

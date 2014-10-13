@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.h2;
 
-import io.vertigo.dynamo.database.statement.KPreparedStatement;
-import io.vertigo.dynamo.impl.database.vendor.core.AbstractSQLExceptionHandler;
+import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
+import io.vertigo.dynamo.impl.database.vendor.core.AbstractSqlExceptionHandler;
 
 import java.sql.SQLException;
 
@@ -29,7 +29,7 @@ import java.sql.SQLException;
  * 
  * @author jmainaud
  */
-final class H2SqlExceptionHandler extends AbstractSQLExceptionHandler {
+final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
 
 	/** Champ DUPLICATE_KEY_1. */
 	private static final int DUPLICATE_KEY_1 = 23001;
@@ -55,7 +55,7 @@ final class H2SqlExceptionHandler extends AbstractSQLExceptionHandler {
 	 * @param sqle Exception Sql
 	 * @param statement Requête en erreur.
 	 */
-	public void handleSQLException(final SQLException sqle, final KPreparedStatement statement) {
+	public void handleSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 		final int errCode = sqle.getErrorCode();
 		switch (errCode) {
 			case VALUE_TOO_LONG_2:
@@ -81,7 +81,7 @@ final class H2SqlExceptionHandler extends AbstractSQLExceptionHandler {
 
 	/** {@inheritDoc} */
 	@Override
-	protected void handleOtherSQLException(final SQLException sqle, final KPreparedStatement statement) {
+	protected void handleOtherSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 		final int errCode = sqle.getErrorCode();
 		throw new RuntimeException("[Erreur SQL](" + errCode + ") : " + sqle.getMessage() + '\n' + statement, sqle);
 	}

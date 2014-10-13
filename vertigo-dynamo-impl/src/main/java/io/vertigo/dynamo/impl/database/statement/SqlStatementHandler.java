@@ -16,29 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.database.vendor.oracle;
+package io.vertigo.dynamo.impl.database.statement;
 
-import io.vertigo.dynamo.database.vendor.SqlDataBase;
-import io.vertigo.dynamo.database.vendor.SqlExceptionHandler;
+import io.vertigo.dynamo.database.statement.SqlQueryResult;
 import io.vertigo.dynamo.database.vendor.SqlMapping;
-import io.vertigo.dynamo.impl.database.vendor.core.SqlMappingImpl;
+import io.vertigo.dynamo.domain.metamodel.Domain;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
- * Gestiond de la base de données Oracle.
+ * Plugin permettant de créer les résultats issus d'une requête SQL de type select.
  * 
- * @author pchretien
+ * @author  pchretien
  */
-public final class OracleDataBase implements SqlDataBase {
-	private final SqlExceptionHandler sqlExceptionHandler = new OracleExceptionHandler();
-	private final SqlMapping sqlMapping = new SqlMappingImpl();
-
-	/** {@inheritDoc} */
-	public SqlExceptionHandler getSqlExceptionHandler() {
-		return sqlExceptionHandler;
-	}
-
-	/** {@inheritDoc} */
-	public SqlMapping getSqlMapping() {
-		return sqlMapping;
-	}
+public interface SqlStatementHandler {
+	/**
+	 * Création du résultat issu d'un resultSet.
+	 * @param domain Domain résultat
+	 * @param mapping Mapping SQL
+	 * @param resultSet ResultSet comprenant résultat et Metadonnées permettant le cas échéant de créer dynamiquement un type dynamiquement.
+	 * @return Résultat de la requête.
+	 * @throws SQLException Exception SQL
+	 */
+	SqlQueryResult retrieveData(final Domain domain, final SqlMapping mapping, final ResultSet resultSet) throws SQLException;
 }

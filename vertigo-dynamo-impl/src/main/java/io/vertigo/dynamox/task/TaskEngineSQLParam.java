@@ -19,7 +19,7 @@
 package io.vertigo.dynamox.task;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.database.statement.KPreparedStatement;
+import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 
 /**
  * Paramètres créés par l'analyseur et utilisés par le Handler. 
@@ -62,14 +62,14 @@ final class TaskEngineSQLParam {
 		 * @param separator Séparateur
 		 * @return Type de paramètre SQL
 		 */
-		static KPreparedStatement.ParameterType getType(final char separator) {
+		static SqlPreparedStatement.ParameterType getType(final char separator) {
 			switch (separator) {
 				case '#':
-					return KPreparedStatement.ParameterType.IN;
+					return SqlPreparedStatement.ParameterType.IN;
 				case '%':
-					return KPreparedStatement.ParameterType.OUT;
+					return SqlPreparedStatement.ParameterType.OUT;
 				case '@':
-					return KPreparedStatement.ParameterType.INOUT;
+					return SqlPreparedStatement.ParameterType.INOUT;
 				default:
 					throw new IllegalArgumentException(separator + " non reconnu");
 			}
@@ -81,7 +81,7 @@ final class TaskEngineSQLParam {
 	private final String attributeName;
 	private final String fieldName;
 	private final Integer rowNumber;
-	private final KPreparedStatement.ParameterType inOut;
+	private final SqlPreparedStatement.ParameterType inOut;
 	private int index = -1;
 
 	/**
@@ -90,7 +90,7 @@ final class TaskEngineSQLParam {
 	 * @param betweenCar String
 	 * @param inOut Type du Parametre
 	 */
-	TaskEngineSQLParam(final String betweenCar, final KPreparedStatement.ParameterType inOut) {
+	TaskEngineSQLParam(final String betweenCar, final SqlPreparedStatement.ParameterType inOut) {
 		String newAttributeName = betweenCar;
 		String newfieldName = null;
 		Integer dtcRowNumber = null;
@@ -189,7 +189,7 @@ final class TaskEngineSQLParam {
 	/**
 	 * @return Type du paramètre
 	 */
-	KPreparedStatement.ParameterType getType() {
+	SqlPreparedStatement.ParameterType getType() {
 		return inOut;
 	}
 

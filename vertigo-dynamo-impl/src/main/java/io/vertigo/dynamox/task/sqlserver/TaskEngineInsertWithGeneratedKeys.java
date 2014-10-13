@@ -19,8 +19,8 @@
 package io.vertigo.dynamox.task.sqlserver;
 
 import io.vertigo.commons.script.ScriptManager;
-import io.vertigo.dynamo.database.connection.KConnection;
-import io.vertigo.dynamo.database.statement.KPreparedStatement;
+import io.vertigo.dynamo.database.connection.SqlConnection;
+import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -37,7 +37,7 @@ import javax.inject.Inject;
  * <br>
  * @author  jmainaud, evernat
  */
-public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL<KPreparedStatement> {
+public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL<SqlPreparedStatement> {
 
 	/**
 	 * Constructeur.
@@ -56,7 +56,7 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL<KPr
 
 	/** {@inheritDoc} */
 	@Override
-	public int doExecute(final KConnection connection, final KPreparedStatement statement) throws SQLException {
+	public int doExecute(final SqlConnection connection, final SqlPreparedStatement statement) throws SQLException {
 		setParameters(statement);
 		final int sqlRowcount = statement.executeUpdate();
 
@@ -73,7 +73,7 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL<KPr
 
 	/** {@inheritDoc} */
 	@Override
-	protected final KPreparedStatement createStatement(final String sql, final KConnection connection) {
+	protected final SqlPreparedStatement createStatement(final String sql, final SqlConnection connection) {
 		final boolean generatedKeys = true;
 		return getDataBaseManager().createPreparedStatement(connection, sql, generatedKeys);
 	}

@@ -20,10 +20,10 @@ package io.vertigo.dynamo.database;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
-import io.vertigo.dynamo.database.connection.KConnection;
-import io.vertigo.dynamo.database.statement.KCallableStatement;
-import io.vertigo.dynamo.database.statement.KPreparedStatement;
-import io.vertigo.dynamo.database.statement.QueryResult;
+import io.vertigo.dynamo.database.connection.SqlConnection;
+import io.vertigo.dynamo.database.statement.SqlCallableStatement;
+import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
+import io.vertigo.dynamo.database.statement.SqlQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -56,35 +56,35 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	@Override
 	protected void doSetUp() throws Exception {
 		//A chaque test on recrée la table famille
-		final KConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
+		final SqlConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
 		execCallableStatement(connection, "create table famille(fam_id BIGINT , LIBELLE varchar(255));");
 	}
 
 	@Override
 	protected void doTearDown() throws Exception {
 		//A chaque fin de test on arrête la base.
-		final KConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
+		final SqlConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
 		execCallableStatement(connection, "shutdown;");
 	}
 
 	@Test
 	public void testConnection() throws Exception {
-		final KConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
+		final SqlConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
 		Assert.assertNotNull(connection);
 		connection.commit();
 	}
 
-	private void execCallableStatement(final KConnection connection, final String sql) throws SQLException {
-		final KCallableStatement callableStatement = dataBaseManager.createCallableStatement(connection, sql);
+	private void execCallableStatement(final SqlConnection connection, final String sql) throws SQLException {
+		final SqlCallableStatement callableStatement = dataBaseManager.createCallableStatement(connection, sql);
 		callableStatement.init();
 		callableStatement.executeUpdate();
 	}
 
-	private void insert(final KConnection connection, final long key, final String libelle) throws SQLException {
+	private void insert(final SqlConnection connection, final long key, final String libelle) throws SQLException {
 		final String sql = "insert into famille values (?, ?)";
-		try (final KCallableStatement callableStatement = dataBaseManager.createCallableStatement(connection, sql)) {
-			callableStatement.registerParameter(0, DataType.Long, KPreparedStatement.ParameterType.IN);
-			callableStatement.registerParameter(1, DataType.String, KPreparedStatement.ParameterType.IN);
+		try (final SqlCallableStatement callableStatement = dataBaseManager.createCallableStatement(connection, sql)) {
+			callableStatement.registerParameter(0, DataType.Long, SqlPreparedStatement.ParameterType.IN);
+			callableStatement.registerParameter(1, DataType.String, SqlPreparedStatement.ParameterType.IN);
 			//-------
 			callableStatement.init();
 			//-------
@@ -96,7 +96,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	public void createDatas() throws Exception {
-		final KConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
+		final SqlConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
 		try {
 			execCallableStatement(connection, "insert into famille values (1, 'Aizoaceae')");
 			//-----
@@ -121,7 +121,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		createDatas();
 		//----
 		final Domain domain = Home.getDefinitionSpace().resolve("DO_DT_FAMILLE_DTC", Domain.class);
-		final QueryResult result = executeQuery(domain, "select * from famille");
+		final SqlQueryResult result = executeQuery(domain, "select * from famille");
 
 		//On vérifie que l'on a bien les 3 familles
 		Assert.assertEquals(3, result.getSQLRowCount());
@@ -148,15 +148,15 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		createDatas();
 		//----
 		final Domain domain = Home.getDefinitionSpace().resolve("DO_DT_FAMILLE_DTO", Domain.class);
-		final QueryResult result = executeQuery(domain, "select * from famille where fam_id=1");
+		final SqlQueryResult result = executeQuery(domain, "select * from famille where fam_id=1");
 		Assert.assertEquals(1, result.getSQLRowCount());
 		final Famille famille = (Famille) result.getValue();
 		Assert.assertEquals(AIZOACEAE, famille.getLibelle());
 	}
 
-	private QueryResult executeQuery(final Domain domain, final String sql) throws SQLException, Exception {
-		final KConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
-		try (final KPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false)) {
+	private SqlQueryResult executeQuery(final Domain domain, final String sql) throws SQLException, Exception {
+		final SqlConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
+		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, false)) {
 			preparedStatement.init();
 			return preparedStatement.executeQuery(domain);
 		} finally {
@@ -171,7 +171,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		createDatas();
 		//----
 		final Domain domain = new Domain("DO_INTEGER", DataType.Integer, new FormatterDefault("FMT_INTEGER"));
-		final QueryResult result = executeQuery(domain, "select count(*) from famille");
+		final SqlQueryResult result = executeQuery(domain, "select count(*) from famille");
 		Assert.assertEquals(1, result.getSQLRowCount());
 		Assert.assertEquals(3, result.getValue());
 	}
@@ -183,7 +183,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		createDatas();
 		//----
 		final Domain domain = new Domain("DO_LIB", DataType.String, new FormatterDefault("FMT_INTEGER"));
-		final QueryResult result = executeQuery(domain, "select libelle from famille where fam_id=1");
+		final SqlQueryResult result = executeQuery(domain, "select libelle from famille where fam_id=1");
 		Assert.assertEquals(1, result.getSQLRowCount());
 		Assert.assertEquals(AIZOACEAE, result.getValue());
 	}
@@ -195,7 +195,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		createDatas();
 		//----
 		final Domain domain = new Domain("DO_TEST", DataType.DtList, Home.getDefinitionSpace().resolve(Formatter.FMT_DEFAULT, Formatter.class));
-		final QueryResult result = executeQuery(domain, "select * from famille");
+		final SqlQueryResult result = executeQuery(domain, "select * from famille");
 		Assert.assertEquals(3, result.getSQLRowCount());
 		final DtList<DtObject> familles = (DtList<DtObject>) result.getValue();
 		Assert.assertEquals(3, familles.size());

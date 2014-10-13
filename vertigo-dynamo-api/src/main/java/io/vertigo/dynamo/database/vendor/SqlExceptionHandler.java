@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.database.vendor;
 
-import io.vertigo.dynamo.database.statement.KPreparedStatement;
+import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 
 import java.sql.SQLException;
 
@@ -34,5 +34,5 @@ public interface SqlExceptionHandler {
 	 * @param sqle Exception survenue
 	 * @param statement Statement SQL (i.e. requête SQL)
 	 */
-	void handleSQLException(SQLException sqle, KPreparedStatement statement);
+	void handleSQLException(SQLException sqle, SqlPreparedStatement statement);
 }

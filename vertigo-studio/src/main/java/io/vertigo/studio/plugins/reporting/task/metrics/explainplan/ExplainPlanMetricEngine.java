@@ -20,7 +20,7 @@ package io.vertigo.studio.plugins.reporting.task.metrics.explainplan;
 
 import io.vertigo.core.Home;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.database.connection.KConnection;
+import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
@@ -130,7 +130,7 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 		final StringBuilder sb = new StringBuilder();
 		final String sql = "SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY('PLAN_TABLE', 'PLAN_" + currentSequence + "'))";
 		//final String sql = "SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY())";
-		final KConnection kConnection = getCurrentConnection();
+		final SqlConnection kConnection = getCurrentConnection();
 		final Connection connection = kConnection.getJdbcConnection();
 		try (final PreparedStatement statement = connection.prepareStatement(sql)) {
 			try (final ResultSet resultSet = statement.executeQuery()) {
@@ -149,7 +149,7 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 	 * Retourne la connexion SQL de cette transaction en la demandant au pool de connexion si nécessaire.
 	 * @return Connexion SQL
 	 */
-	private KConnection getCurrentConnection() {
+	private SqlConnection getCurrentConnection() {
 		final KTransaction transaction = Home.getComponentSpace().resolve(KTransactionManager.class).getCurrentTransaction();
 		return transaction.getResource(AbstractTaskEngineSQL.SQL_RESOURCE_ID);
 	}

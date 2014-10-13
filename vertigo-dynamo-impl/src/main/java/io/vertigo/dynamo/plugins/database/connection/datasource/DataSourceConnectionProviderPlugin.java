@@ -20,7 +20,7 @@ package io.vertigo.dynamo.plugins.database.connection.datasource;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.dynamo.database.connection.KConnection;
+import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.plugins.database.connection.AbstractConnectionProviderPlugin;
 
@@ -62,9 +62,9 @@ public final class DataSourceConnectionProviderPlugin extends AbstractConnection
 	}
 
 	/** {@inheritDoc} */
-	public KConnection obtainConnection() throws SQLException {
+	public SqlConnection obtainConnection() throws SQLException {
 		final java.sql.Connection connection = dataSource.getConnection();
-		return new KConnection(connection, getDataBase(), true);
+		return new SqlConnection(connection, getDataBase(), true);
 	}
 
 	private static SqlDataBase createDataBase(final String dataBaseName) {

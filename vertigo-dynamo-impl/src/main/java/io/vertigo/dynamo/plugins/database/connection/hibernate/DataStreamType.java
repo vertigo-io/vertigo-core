@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.plugins.database.connection.hibernate;
 
 import io.vertigo.dynamo.domain.metamodel.DataStream;
-import io.vertigo.dynamo.impl.database.vendor.core.DataStreamMappingUtil;
+import io.vertigo.dynamo.impl.database.vendor.core.SqlDataStreamMappingUtil;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -75,7 +75,7 @@ public final class DataStreamType implements UserType {
 		//Cf io.vertigo.dynamo.impl.database.vendor.core.SQLMappingImpl
 		final String columnName = names[0];
 		final int index = rs.findColumn(columnName);
-		final DataStream value = DataStreamMappingUtil.getDataStream(rs, index);
+		final DataStream value = SqlDataStreamMappingUtil.getDataStream(rs, index);
 		return value;
 	}
 

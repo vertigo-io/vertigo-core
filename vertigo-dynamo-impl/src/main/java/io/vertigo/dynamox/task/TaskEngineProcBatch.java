@@ -23,9 +23,9 @@ package io.vertigo.dynamox.task;
 
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.database.connection.KConnection;
-import io.vertigo.dynamo.database.statement.KCallableStatement;
-import io.vertigo.dynamo.database.statement.KPreparedStatement;
+import io.vertigo.dynamo.database.connection.SqlConnection;
+import io.vertigo.dynamo.database.statement.SqlCallableStatement;
+import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
@@ -50,7 +50,7 @@ public class TaskEngineProcBatch extends TaskEngineProc {
 
 	/** {@inheritDoc} */
 	@Override
-	public int doExecute(final KConnection connection, final KCallableStatement statement) throws SQLException {
+	public int doExecute(final SqlConnection connection, final SqlCallableStatement statement) throws SQLException {
 		// on alimente le batch.
 		// La taille du batch est déduite de la taille de la collection en entrée.
 		final int batchSize = getBatchSize();
@@ -70,7 +70,7 @@ public class TaskEngineProcBatch extends TaskEngineProc {
 	 * @param rowNumber ligne de DTC à prendre en compte
 	 * @throws SQLException En cas d'erreur dans la configuration
 	 */
-	private void setBatchParameters(final KPreparedStatement statement, final int rowNumber) throws SQLException {
+	private void setBatchParameters(final SqlPreparedStatement statement, final int rowNumber) throws SQLException {
 		Assertion.checkNotNull(statement);
 		// ----------------------------------------------------------------------
 		for (final TaskEngineSQLParam param : getParams()) {
