@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.kvdatastore.txberkeley;
+package io.vertigo.dynamo.plugins.kvdatastore.berkeley;
 
 import io.vertigo.core.lang.Activeable;
 import io.vertigo.core.lang.Assertion;
@@ -41,7 +41,7 @@ import com.sleepycat.je.EnvironmentConfig;
  * 
  * @author  pchretien
  */
-public final class TxBerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activeable {
+public final class BerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activeable {
 	private static final boolean READONLY = false;
 
 	//	private final KTransactionResourceId<LuceneResource> luceneResourceId = new KTransactionResourceId<LuceneResource>(KTransactionResourceId.Priority.NORMAL, "demo-lucene");
@@ -61,7 +61,7 @@ public final class TxBerkeleyKVDataStorePlugin implements KVDataStorePlugin, Act
 	 * @param transactionManager Manager des transactions
 	 */
 	@Inject
-	public TxBerkeleyKVDataStorePlugin(final @Named("dataStoreName") String dataStoreName, @Named("fileName") final String dbFileName /*, final LuceneDB luceneDb*/, @Named("inMemory") final boolean inMemory, final KTransactionManager transactionManager) {
+	public BerkeleyKVDataStorePlugin(final @Named("dataStoreName") String dataStoreName, @Named("fileName") final String dbFileName /*, final LuceneDB luceneDb*/, @Named("inMemory") final boolean inMemory, final KTransactionManager transactionManager) {
 		Assertion.checkArgNotEmpty(dataStoreName);
 		Assertion.checkArgNotEmpty(dbFileName);
 		Assertion.checkNotNull(transactionManager);

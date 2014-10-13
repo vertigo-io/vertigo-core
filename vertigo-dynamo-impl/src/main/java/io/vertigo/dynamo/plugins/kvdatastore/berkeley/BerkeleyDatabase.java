@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.kvdatastore.txberkeley;
+package io.vertigo.dynamo.plugins.kvdatastore.berkeley;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
@@ -43,7 +43,7 @@ import com.sleepycat.je.Transaction;
  */
 final class BerkeleyDatabase {
 	private final KTransactionResourceId<BerkeleyResource> berkeleyResourceId = new KTransactionResourceId<>(KTransactionResourceId.Priority.TOP, "demo-berkeley");
-	private static final TupleBinding dataBinding = new DataBinding();
+	private static final TupleBinding dataBinding = new BerkeleyDataBinding();
 	private static final EntryBinding keyBinding = TupleBinding.getPrimitiveBinding(String.class);
 	private final KTransactionManager transactionManager;
 	private final Database database;

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.kvdatastore.txberkeley;
+package io.vertigo.dynamo.plugins.kvdatastore.berkeley;
 
 import io.vertigo.core.util.ClassUtil;
 
@@ -33,7 +33,7 @@ import com.sleepycat.bind.tuple.TupleOutput;
  *
  * @author pchretien
  */
-final class DataBinding extends TupleBinding<Object> {
+final class BerkeleyDataBinding extends TupleBinding<Object> {
 	/** {@inheritDoc} */
 	@Override
 	public Object entryToObject(final TupleInput ti) {

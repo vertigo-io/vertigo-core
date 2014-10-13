@@ -30,7 +30,7 @@ import org.junit.Test;
  *
  * @author pchretien
  */
-public class TestParserOOM extends AbstractTestCaseJU4 {
+public class OOMParserTest extends AbstractTestCaseJU4 {
 	@Override
 	protected String[] getManagersXmlFileName() {
 		return new String[] { "managers-test.xml", "resources-test-assoc.xml" };

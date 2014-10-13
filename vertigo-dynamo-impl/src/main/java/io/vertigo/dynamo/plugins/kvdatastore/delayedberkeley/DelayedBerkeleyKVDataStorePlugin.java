@@ -73,7 +73,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 
 	/**
 	 * Constructeur.
-	 * @param codecManager Manager des mécanismes de codage/décodage. 
+	 * @param codecManager Manager des mécanismes de codage/décodage.
 	 * @param cachePath Chemin de stockage
 	 * @param timeToLiveSeconds Durée de vie des éléments en seconde
 	 */
@@ -119,7 +119,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 				final DatabaseEntry theKey = new DatabaseEntry();
 				keyBinding.objectToEntry(key, theKey);
 				final DatabaseEntry theData = new DatabaseEntry();
-				cacheValueBinding.objectToEntry(new CacheValue((Serializable) data), theData);
+				cacheValueBinding.objectToEntry(new CacheValue((Serializable) data, System.currentTimeMillis()), theData);
 
 				final OperationStatus status = cacheDatas.put(transaction, theKey, theData);
 				if (!OperationStatus.SUCCESS.equals(status)) {
@@ -151,7 +151,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 			if (OperationStatus.SUCCESS.equals(status)) {
 				final CacheValue cacheValue = readCacheValueSafely(theKey, theData);
 				if (cacheValue == null || isTooOld(cacheValue)) {//null if read error
-					cacheDatas.delete(null, theKey); //if corrupt (null) or too old, we delete it					
+					cacheDatas.delete(null, theKey); //if corrupt (null) or too old, we delete it
 				} else {
 					return Option.some(clazz.cast(cacheValue.getValue()));
 				}
@@ -297,9 +297,9 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 
 	private Environment createDbEnv() throws DatabaseException {
 		final EnvironmentConfig myEnvConfig = new EnvironmentConfig()//
-				.setReadOnly(false)//
-				.setAllowCreate(true)//
-				.setTransactional(true);
+		.setReadOnly(false)//
+		.setAllowCreate(true)//
+		.setTransactional(true);
 		//we limit cache usage to 20% of global memory.
 		myEnvConfig.setCachePercent(20);
 		// Open the environment
@@ -308,9 +308,9 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 
 	private Database createDb() {
 		final DatabaseConfig myDbConfig = new DatabaseConfig()//
-				.setReadOnly(false)//
-				.setAllowCreate(true)//
-				.setTransactional(true);
+		.setReadOnly(false)//
+		.setAllowCreate(true)//
+		.setTransactional(true);
 		try {
 			return myEnv.openDatabase(null, "KVDataStorePlugin", myDbConfig);
 		} catch (final DatabaseException e) {

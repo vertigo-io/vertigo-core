@@ -27,7 +27,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-public final class WordListRuleTest {
+public final class DSLWordListRuleTest {
 	private final DSLWordsRule wordListRule = new DSLWordsRule();
 
 	@Test
