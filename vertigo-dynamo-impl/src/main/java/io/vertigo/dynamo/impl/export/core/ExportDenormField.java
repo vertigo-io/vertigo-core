@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.export.core;
 
+import io.vertigo.core.lang.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.export.ExportField;
@@ -30,7 +31,7 @@ import io.vertigo.dynamo.export.ExportField;
  */
 final class ExportDenormField extends ExportField {
 	private final DtList<?> list;
-	private DtField keyField;
+	private final DtField keyField;
 	private final DtField displayField;
 
 	/**
@@ -39,9 +40,10 @@ final class ExportDenormField extends ExportField {
 	 * @param list Liste de éléments dénormés
 	 * @param displayField Champs dénormé
 	 */
-	ExportDenormField(final DtField dtField, final DtList<?> list, final DtField displayField) {
-		super(dtField);
+	ExportDenormField(final DtField dtField, final MessageText label, final DtList<?> list, final DtField displayField) {
+		super(dtField, label);
 		this.list = list;
+		this.keyField = list.getDefinition().getIdField().get();
 		this.displayField = displayField;
 	}
 
@@ -60,12 +62,10 @@ final class ExportDenormField extends ExportField {
 	}
 
 	/**
-	 * @return DtField représentant la clé de la liste de dénorm. (par défaut la key du DT)
+	 * @return DtField représentant la clé de la liste de dénorm.
+	 * (par défaut la key du DT)
 	 */
 	DtField getKeyField() {
-		if (keyField == null) {
-			keyField = list.getDefinition().getIdField().get();
-		}
 		return keyField;
 	}
 

@@ -35,7 +35,7 @@ import java.util.Map;
 
 /**
  * Helper pour les editions xls.
- * 
+ *
  * @author kleegroup
  * @param <R> Type d'objet pour la liste
  */
@@ -45,7 +45,7 @@ public class ExportXlsHelper<R extends DtObject> {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param fileName nom du fichier résultat de l'export
 	 * @param title titre de la feuille principale de l'export
 	 */
@@ -55,12 +55,12 @@ public class ExportXlsHelper<R extends DtObject> {
 		//---------------------------------------------------------------------
 		this.exportManager = exportManager;
 		exportBuilder = new ExportBuilder(ExportFormat.XLS, fileName)//
-		.withTitle(title);
+				.withTitle(title);
 	}
 
 	/**
 	 * Prepare the export generation. If the screen allows 2 exports, then one must use 2 actions
-	 * 
+	 *
 	 * @param dtcToExport the objects collection to be exported
 	 * @param collectionColumnNameList list of the columns taht must be exported in the collection
 	 * @param criterion search criterion if exists
@@ -79,7 +79,7 @@ public class ExportXlsHelper<R extends DtObject> {
 
 	/**
 	 * Add a DTC to the export.
-	 * 
+	 *
 	 * @param dtcToExport collection to be exported
 	 * @param collectionColumnNameList names of the columns that must be exported
 	 * @param specificLabelMap map of the column names to be used instead of the default label associated with the field
@@ -90,18 +90,16 @@ public class ExportXlsHelper<R extends DtObject> {
 
 		// --------------------------------------------
 
-		final ExportDtParametersBuilder exportListParameters = exportManager.createExportListParameters(
-
-				dtcToExport);
+		final ExportDtParametersBuilder exportListParameters = exportManager.createExportListParameters(dtcToExport, null);
 
 		// exportListParameters.setMetaData(PublisherMetaData.TITLE, tabName);
 		for (final DtField dtField : getExportColumnList(dtcToExport, collectionColumnNameList)) {
 			if (specificLabelMap == null) {
-				exportListParameters.addExportField(dtField);
+				exportListParameters.withField(dtField);
 			} else {
 				// final String label = specificLabelMap.get(field.getName());
 				// TODO exportListParameters.addExportField(field, label);
-				exportListParameters.addExportField(dtField, null);
+				exportListParameters.withField(dtField, null);
 			}
 		}
 		exportBuilder.withExportDtParameters(exportListParameters.build());
@@ -109,7 +107,7 @@ public class ExportXlsHelper<R extends DtObject> {
 
 	/**
 	 * Add a criterion to the export.
-	 * 
+	 *
 	 * @param criterion criterion object to be exported
 	 * @param criterionExcludedColumnNameList names of the columns to be excluded
 	 */
@@ -119,11 +117,11 @@ public class ExportXlsHelper<R extends DtObject> {
 
 		// --------------------------------------------
 
-		final ExportDtParametersBuilder exportObjectParameters = exportManager.createExportObjectParameters(criterion);
+		final ExportDtParametersBuilder exportObjectParameters = exportManager.createExportObjectParameters(criterion, null);
 
 		// exportObjectParameters.setMetaData(PublisherMetaData.TITLE, tabName);
 		for (final DtField dtField : getExportCriterionFields(criterion, criterionExcludedColumnNameList)) {
-			exportObjectParameters.addExportField(dtField);
+			exportObjectParameters.withField(dtField);
 		}
 
 		exportBuilder.withExportDtParameters(exportObjectParameters.build());

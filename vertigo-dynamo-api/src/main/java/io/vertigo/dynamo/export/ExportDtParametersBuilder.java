@@ -34,13 +34,13 @@ public interface ExportDtParametersBuilder extends  Builder<ExportDtParameters> 
 	 * Ajoute un champs du Dt dans l'export, le label de la colonne sera celui indiqué dans le DT pour ce champs.
 	 * @param exportfield ajout d'un champs du Dt à exporter
 	 */
-	ExportDtParametersBuilder addExportField(final DtField exportfield);
+	ExportDtParametersBuilder withField(final DtField exportfield);
 
 	/**
 	 * @param exportfield ajout d'un champs du Dt à exporter
 	 * @param label nom spécifique à utiliser dans l'export, null si l'on souhaite utiliser celui indiqué dans le DT pour ce champs
 	 */
-	ExportDtParametersBuilder addExportField(final DtField exportfield, final MessageText label);
+	ExportDtParametersBuilder withField(final DtField exportfield, final MessageText label);
 
 	/**
 	 * Ajoute un champs du Dt dans l'export, le label de la colonne sera celui indiqué dans le DT pour ce champs.
@@ -48,7 +48,7 @@ public interface ExportDtParametersBuilder extends  Builder<ExportDtParameters> 
 	 * @param list Liste des éléments dénormés
 	 * @param displayfield Field du libellé à utiliser.
 	 */
-	ExportDtParametersBuilder addExportDenormField(final DtField exportfield, final DtList<?> list, final DtField displayfield);
+	ExportDtParametersBuilder withField(final DtField exportfield, final DtList<?> list, final DtField displayfield);
 
 	/**
 	 * @param exportfield ajout d'un champs du Dt à exporter
@@ -56,6 +56,6 @@ public interface ExportDtParametersBuilder extends  Builder<ExportDtParameters> 
 	 * @param displayfield Field du libellé à utiliser.
 	 * @param label nom spécifique à utiliser dans l'export, null si l'on souhaite utiliser celui indiqué dans le DT pour ce champs
 	 */
-	ExportDtParametersBuilder addExportDenormField(final DtField exportfield, final DtList<?> list, final DtField displayfield, final MessageText label);
+	ExportDtParametersBuilder withField(final DtField exportfield, final DtList<?> list, final DtField displayfield, final MessageText label);
 
 }

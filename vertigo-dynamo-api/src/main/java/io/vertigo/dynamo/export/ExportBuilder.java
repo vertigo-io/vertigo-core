@@ -57,9 +57,6 @@ public final class ExportBuilder implements Builder<Export> {
 	 * @param title Titre du document (Facultatif)
 	 */
 	public ExportBuilder withTitle(final String title) {
-		Assertion.checkState(myTitle == null, "Titre deja renseigné");
-		Assertion.checkArgNotEmpty(title, "Titre doit être non vide");
-		// ---------------------------------------------------------------------
 		myTitle = title;
 		return this;
 	}
@@ -68,9 +65,6 @@ public final class ExportBuilder implements Builder<Export> {
 	 * @param author Auteur du document (Facultatif)
 	 */
 	public ExportBuilder withAuthor(final String author) {
-		Assertion.checkState(myAuthor == null, "Auteur deja renseigné");
-		Assertion.checkArgNotEmpty(author, "Auteur doit être non vide");
-		// ---------------------------------------------------------------------
 		myAuthor = author;
 		return this;
 	}
@@ -79,8 +73,6 @@ public final class ExportBuilder implements Builder<Export> {
 	 * @param orientation Orientation du document (Facultatif, mode portrait par défaut)
 	 */
 	public ExportBuilder withOrientation(final Orientation orientation) {
-		Assertion.checkNotNull(orientation);
-		// ---------------------------------------------------------------------
 		myOrientation = orientation;
 		return this;
 	}

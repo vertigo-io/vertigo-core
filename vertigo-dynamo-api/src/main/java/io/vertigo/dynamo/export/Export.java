@@ -53,7 +53,7 @@ public final class Export {
 	 */
 	Export(final ExportFormat format, final String fileName, final String title, final String author, final Export.Orientation orientation, final List<ExportDtParameters> exportDtParameters) {
 		Assertion.checkNotNull(format);
-		Assertion.checkArgNotEmpty(fileName, "FileName doit être non vide");
+		Assertion.checkArgNotEmpty(fileName, "a fileName is required");
 		//Assertion.notNull(title);
 		//Assertion.notNull(author);
 		Assertion.checkNotNull(orientation);

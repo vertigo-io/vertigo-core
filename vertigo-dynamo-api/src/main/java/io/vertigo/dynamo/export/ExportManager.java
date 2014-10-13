@@ -35,13 +35,13 @@ public interface ExportManager extends Manager {
 	 * @param dto DTO à exporter
 	 * @return Parametre d'export pour une donnée de type DtObject
 	 */
-	ExportDtParametersBuilder createExportObjectParameters(DtObject dto);
+	ExportDtParametersBuilder createExportObjectParameters(DtObject dto, final String title);
 
 	/**
 	 * @param dtc DTC à exporter
 	 * @return Parametre d'export pour une donnée de type DtList
 	 */
-	ExportDtParametersBuilder createExportListParameters(DtList<?> dtc);
+	ExportDtParametersBuilder createExportListParameters(DtList<?> dtc, final String title);
 
 	/**
 	 * Création du fichier d'export

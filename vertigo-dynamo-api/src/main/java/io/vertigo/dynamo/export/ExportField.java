@@ -29,16 +29,18 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
  */
 public class ExportField {
 	private final DtField dtField;
-	private MessageText label;
+	private final MessageText label;
 
 	/**
 	 * Constructeur.
 	 * @param dtField DtField
 	 */
-	public ExportField(final DtField dtField) {
+	public ExportField(final DtField dtField, final MessageText label) {
 		Assertion.checkNotNull(dtField);
+		//label may be null
 		//---------------------------------------------------------------------
 		this.dtField = dtField;
+		this.label = label;
 	}
 
 	/**
@@ -55,17 +57,4 @@ public class ExportField {
 		//Selon que le label est surchargé ou non
 		return label != null ? label : dtField.getLabel();
 	}
-
-	//--------------------------------------------------------------------------
-
-	/**
-	 * Gestion d'un libellé surchargeant celui du DT.
-	 * @param label de la colonne
-	 */
-	public final void setLabel(final MessageText label) {
-		Assertion.checkNotNull(label);
-		//---------------------------------------------------------------------
-		this.label = label;
-	}
-
 }

@@ -38,7 +38,7 @@ import java.util.List;
  *
  * @author pchretien, npiedeloup
  */
-public final class ExportDtParametersBuilderImpl implements ExportDtParametersBuilder{
+public final class ExportDtParametersBuilderImpl implements ExportDtParametersBuilder {
 	/**
 	 * List des champs à exporter
 	 */
@@ -52,17 +52,19 @@ public final class ExportDtParametersBuilderImpl implements ExportDtParametersBu
 	private final DtList<?> dtc;
 	private final DtDefinition dtDefinition;
 
-	private String title;
+	private final String title;
 
 	/**
 	 * Constructeur.
 	 * @param dto DTO à exporter
 	 */
-	public ExportDtParametersBuilderImpl(final DtObject dto) {
+	public ExportDtParametersBuilderImpl(final DtObject dto, final String title) {
 		Assertion.checkNotNull(dto);
+		//title may be null
 		//---------------------------------------------------------------------
 		this.dto = dto;
 		dtc = null;
+		this.title = title;
 		dtDefinition = DtObjectUtil.findDtDefinition(dto);
 	}
 
@@ -70,111 +72,64 @@ public final class ExportDtParametersBuilderImpl implements ExportDtParametersBu
 	 * Constructeur.
 	 * @param dtc DTC à exporter
 	 */
-	public ExportDtParametersBuilderImpl(final DtList<?> dtc) {
+	public ExportDtParametersBuilderImpl(final DtList<?> dtc, final String title) {
 		Assertion.checkNotNull(dtc);
+		//title may be null
 		//---------------------------------------------------------------------
 		this.dtc = dtc;
 		dto = null;
+		this.title = title;
 		dtDefinition = dtc.getDefinition();
 	}
 
 	/** {@inheritDoc} */
-	public ExportDtParametersBuilder addExportField(final DtField exportfield) {
-		addExportField(exportfield, null);
+	public ExportDtParametersBuilder withField(final DtField exportfield) {
+		withField(exportfield, null);
 		return this;
 	}
 
 	/** {@inheritDoc} */
-	public ExportDtParametersBuilder addExportDenormField(final DtField exportfield, final DtList<?> list, final DtField displayfield) {
-		addExportDenormField(exportfield, list, displayfield, null);
+	public ExportDtParametersBuilder withField(final DtField exportfield, final DtList<?> list, final DtField displayfield) {
+		withField(exportfield, list, displayfield, null);
 		return this;
 	}
 
 	/** {@inheritDoc} */
-	public ExportDtParametersBuilder addExportField(final DtField exportfield, final MessageText overridedLabel) {
+	public ExportDtParametersBuilder withField(final DtField exportfield, final MessageText overridedLabel) {
 		Assertion.checkNotNull(exportfield);
 		// On vérifie que la colonne est bien dans la définition de la DTC
 		Assertion.checkArgument(dtDefinition.getFields().contains(exportfield), "Le champ " + exportfield.getName() + " n'est pas dans la liste à exporter");
 		// On ne vérifie pas que les champs ne sont placés qu'une fois
 		// car pour des raisons diverses ils peuvent l'être plusieurs fois.
 		// ----------------------------------------------------------------------
-		final ExportField exportField = new ExportField(exportfield);
-		if (overridedLabel != null) { // si on surcharge le label
-			exportField.setLabel(overridedLabel);
-		}
+		final ExportField exportField = new ExportField(exportfield, overridedLabel);
 		exportFields.add(exportField);
 		return this;
 	}
 
 	/** {@inheritDoc} */
-	public ExportDtParametersBuilder addExportDenormField(final DtField exportfield, final DtList<?> list, final DtField displayfield, final MessageText overridedLabel) {
+	public ExportDtParametersBuilder withField(final DtField exportfield, final DtList<?> list, final DtField displayfield, final MessageText overridedLabel) {
 		Assertion.checkNotNull(exportfield);
 		// On vérifie que la colonne est bien dans la définition de la DTC
 		Assertion.checkArgument(dtDefinition.getFields().contains(exportfield), "Le champ " + exportfield.getName() + " n'est pas dans la liste à exporter");
 		// On ne vérifie pas que les champs ne sont placés qu'une fois
 		// car pour des raisons diverses ils peuvent l'être plusieurs fois.
 		// ----------------------------------------------------------------------
-		final ExportDenormField exportField = new ExportDenormField(exportfield, list, displayfield);
-		if (overridedLabel != null) { // si on surcharge le label
-			exportField.setLabel(overridedLabel);
-		}
+		final ExportField exportField = new ExportDenormField(exportfield, overridedLabel, list, displayfield);
 		exportFields.add(exportField);
 		return this;
 	}
 
-	/**
-	 * @param title Titre de cet objet/liste
-	 */
-	public void setTitle(final String title) {
-		Assertion.checkState(title == null, "Titre deja renseigné");
-		Assertion.checkArgNotEmpty(title, "Titre doit être non vide");
-		// ---------------------------------------------------------------------
-		this.title = title;
-	}
-
 	/** {@inheritDoc} */
-	public ExportDtParameters build(){
-		return new ExportDtParameters() {
-
-			// NULL
-			/** {@inheritDoc} */
-			public String getTitle() {
-				return title;
+	public ExportDtParameters build() {
+		if (exportFields.isEmpty()) {
+			// si la liste des colonnes est vide alors par convention on les prend toutes.
+			final Collection<DtField> fields = dtDefinition.getFields();
+			for (final DtField dtField : fields) {
+				exportFields.add(new ExportField(dtField, null));
 			}
+		}
+		return new ExportDtParameters(title, exportFields, dto, dtc);
 
-			/** {@inheritDoc} */
-			public boolean hasDtObject() {
-				return dto != null;
-			}
-
-			/** {@inheritDoc} */
-			public DtObject getDtObject() {
-				Assertion.checkNotNull(dto);
-				//---------------------------------------------------------------------
-				return dto;
-			}
-
-			/** {@inheritDoc} */
-			public DtList<?> getDtList() {
-				Assertion.checkNotNull(dtc);
-				//---------------------------------------------------------------------
-				return dtc;
-			}
-
-			/** {@inheritDoc} */
-			public List<ExportField> getExportFields() {
-				if (exportFields.isEmpty()) {
-					// si la liste des colonnes est vide alors par convention on les prend toutes.
-					final Collection<DtField> fields= dtDefinition.getFields();
-					final List<ExportField> defaultExportFieldList = new ArrayList<>(fields.size());
-					for (final DtField dtField : fields) {
-						defaultExportFieldList.add(new ExportField(dtField));
-					}
-					exportFields.addAll(defaultExportFieldList);
-				}
-				return java.util.Collections.unmodifiableList(exportFields);
-			}
-
-		};
 	}
 }

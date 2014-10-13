@@ -65,13 +65,13 @@ public final class ExportManagerImpl implements ExportManager {
 	}
 
 	/** {@inheritDoc} */
-	public ExportDtParametersBuilder createExportObjectParameters(final DtObject dto) {
-		return new ExportDtParametersBuilderImpl(dto);
+	public ExportDtParametersBuilder createExportObjectParameters(final DtObject dto, final String title) {
+		return new ExportDtParametersBuilderImpl(dto, title);
 	}
 
 	/** {@inheritDoc} */
-	public ExportDtParametersBuilder createExportListParameters(final DtList<?> dtc) {
-		return new ExportDtParametersBuilderImpl(dtc);
+	public ExportDtParametersBuilder createExportListParameters(final DtList<?> dtc, final String title) {
+		return new ExportDtParametersBuilderImpl(dtc, title);
 	}
 
 	/**
