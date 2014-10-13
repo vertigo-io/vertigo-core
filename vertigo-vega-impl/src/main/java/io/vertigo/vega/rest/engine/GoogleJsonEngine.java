@@ -232,7 +232,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 		return dtFieldNames;
 	}
 
-	/*  {@inheritDoc} 
+	/*  {@inheritDoc}
 	 *  TODO
 	 *  public <D extends DtObject> UiList<D> uiListFromJson(final String json, final Class<D> paramClass) {
 		final Type[] typeArguments = { paramClass };
@@ -274,10 +274,12 @@ public final class GoogleJsonEngine implements JsonEngine {
 		private Map<String, UiObject<D>> parseUiObjectMap(final JsonObject jsonObject, final String propertyName, final Type uiObjectType, final JsonDeserializationContext context) {
 			final Map<String, UiObject<D>> uiObjectMap = new HashMap<>();
 			final JsonObject jsonUiObjectMap = jsonObject.getAsJsonObject(propertyName);
-			for (final Entry<String, JsonElement> entry : jsonUiObjectMap.entrySet()) {
-				final String entryName = entry.getKey();
-				final UiObject<D> inputDto = context.deserialize(entry.getValue(), uiObjectType);
-				uiObjectMap.put(entryName, inputDto);
+			if (jsonUiObjectMap != null) {
+				for (final Entry<String, JsonElement> entry : jsonUiObjectMap.entrySet()) {
+					final String entryName = entry.getKey();
+					final UiObject<D> inputDto = context.deserialize(entry.getValue(), uiObjectType);
+					uiObjectMap.put(entryName, inputDto);
+				}
 			}
 			return uiObjectMap;
 		}
@@ -309,76 +311,76 @@ public final class GoogleJsonEngine implements JsonEngine {
 
 	private static Gson createGson() {
 		return new GsonBuilder()//
-				.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") //
-				.setPrettyPrinting()//
-				//.serializeNulls()//On veut voir les null
-				.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())//
-				.registerTypeAdapter(UiListDelta.class, new UiListDeltaDeserializer<>())//
-				.registerTypeAdapter(ComponentInfo.class, new JsonSerializer<ComponentInfo>() {
-					@Override
-					public JsonElement serialize(final ComponentInfo componentInfo, final Type typeOfSrc, final JsonSerializationContext context) {
-						final JsonObject jsonObject = new JsonObject();
-						jsonObject.add(componentInfo.getTitle(), context.serialize(componentInfo.getValue()));
-						return jsonObject;
-					}
-				})//	
-				.registerTypeAdapter(List.class, new JsonSerializer<List>() {
+		.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") //
+		.setPrettyPrinting()//
+		//.serializeNulls()//On veut voir les null
+		.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())//
+		.registerTypeAdapter(UiListDelta.class, new UiListDeltaDeserializer<>())//
+		.registerTypeAdapter(ComponentInfo.class, new JsonSerializer<ComponentInfo>() {
+			@Override
+			public JsonElement serialize(final ComponentInfo componentInfo, final Type typeOfSrc, final JsonSerializationContext context) {
+				final JsonObject jsonObject = new JsonObject();
+				jsonObject.add(componentInfo.getTitle(), context.serialize(componentInfo.getValue()));
+				return jsonObject;
+			}
+		})//
+		.registerTypeAdapter(List.class, new JsonSerializer<List>() {
 
-					@Override
-					public JsonElement serialize(final List src, final Type typeOfSrc, final JsonSerializationContext context) {
-						if (src.isEmpty()) {
-							return null;
-						}
-						return context.serialize(src);
-					}
-				})//	
-				.registerTypeAdapter(Map.class, new JsonSerializer<Map>() {
+			@Override
+			public JsonElement serialize(final List src, final Type typeOfSrc, final JsonSerializationContext context) {
+				if (src.isEmpty()) {
+					return null;
+				}
+				return context.serialize(src);
+			}
+		})//
+		.registerTypeAdapter(Map.class, new JsonSerializer<Map>() {
 
-					@Override
-					public JsonElement serialize(final Map src, final Type typeOfSrc, final JsonSerializationContext context) {
-						if (src.isEmpty()) {
-							return null;
-						}
-						return context.serialize(src);
-					}
-				})//
-				.registerTypeAdapter(DefinitionReference.class, new JsonSerializer<DefinitionReference>() {
+			@Override
+			public JsonElement serialize(final Map src, final Type typeOfSrc, final JsonSerializationContext context) {
+				if (src.isEmpty()) {
+					return null;
+				}
+				return context.serialize(src);
+			}
+		})//
+		.registerTypeAdapter(DefinitionReference.class, new JsonSerializer<DefinitionReference>() {
 
-					@Override
-					public JsonElement serialize(final DefinitionReference src, final Type typeOfSrc, final JsonSerializationContext context) {
-						return context.serialize(src.get().getName());
-					}
-				})//
-				.registerTypeAdapter(Option.class, new JsonSerializer<Option>() {
+			@Override
+			public JsonElement serialize(final DefinitionReference src, final Type typeOfSrc, final JsonSerializationContext context) {
+				return context.serialize(src.get().getName());
+			}
+		})//
+		.registerTypeAdapter(Option.class, new JsonSerializer<Option>() {
 
-					@Override
-					public JsonElement serialize(final Option src, final Type typeOfSrc, final JsonSerializationContext context) {
-						if (src.isDefined()) {
-							return context.serialize(src.get());
-						}
-						return null; //rien
-					}
-				})//			
-				.registerTypeAdapter(Class.class, new JsonSerializer<Class>() {
+			@Override
+			public JsonElement serialize(final Option src, final Type typeOfSrc, final JsonSerializationContext context) {
+				if (src.isDefined()) {
+					return context.serialize(src.get());
+				}
+				return null; //rien
+			}
+		})//
+		.registerTypeAdapter(Class.class, new JsonSerializer<Class>() {
 
-					@Override
-					public JsonElement serialize(final Class src, final Type typeOfSrc, final JsonSerializationContext context) {
-						return new JsonPrimitive(src.getName());
-					}
-				})//
-				.addSerializationExclusionStrategy(new ExclusionStrategy() {
-					@Override
-					public boolean shouldSkipField(final FieldAttributes arg0) {
-						if (arg0.getAnnotation(JsonExclude.class) != null) {
-							return true;
-						}
-						return false;
-					}
+			@Override
+			public JsonElement serialize(final Class src, final Type typeOfSrc, final JsonSerializationContext context) {
+				return new JsonPrimitive(src.getName());
+			}
+		})//
+		.addSerializationExclusionStrategy(new ExclusionStrategy() {
+			@Override
+			public boolean shouldSkipField(final FieldAttributes arg0) {
+				if (arg0.getAnnotation(JsonExclude.class) != null) {
+					return true;
+				}
+				return false;
+			}
 
-					@Override
-					public boolean shouldSkipClass(final Class<?> arg0) {
-						return false;
-					}
-				}).create();
+			@Override
+			public boolean shouldSkipClass(final Class<?> arg0) {
+				return false;
+			}
+		}).create();
 	}
 }
