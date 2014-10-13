@@ -33,12 +33,14 @@ import io.vertigo.dynamo.work.WorkResultHandler;
 public interface ExportManager extends Manager {
 	/**
 	 * @param dto DTO à exporter
+	 * @param title Titre de l'objet
 	 * @return Parametre d'export pour une donnée de type DtObject
 	 */
 	ExportDtParametersBuilder createExportObjectParameters(DtObject dto, final String title);
 
 	/**
 	 * @param dtc DTC à exporter
+	 * @param title Titre de la liste
 	 * @return Parametre d'export pour une donnée de type DtList
 	 */
 	ExportDtParametersBuilder createExportListParameters(DtList<?> dtc, final String title);
@@ -46,12 +48,14 @@ public interface ExportManager extends Manager {
 	/**
 	 * Création du fichier d'export
 	 * @param export Expotr à envoyer
+	 * @return Fichier
 	 */
 	KFile createExportFile(final Export export);
 
 	/**
 	 * Création asynchrone du fichier d'export
 	 * @param export Expotr à envoyer
+	 * @param workResultHandler Handler du resultat
 	 */
 	void createExportFileASync(final Export export, final WorkResultHandler<KFile> workResultHandler);
 }

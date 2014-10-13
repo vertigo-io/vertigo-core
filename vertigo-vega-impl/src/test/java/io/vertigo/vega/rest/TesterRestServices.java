@@ -273,13 +273,13 @@ public final class TesterRestServices implements RestfulService {
 	@GET("/export/pdf/")
 	public KFile testExportContacts() {
 		final DtList<Contact> fullList = asDtList(contacts.values(), Contact.class);
-		final ExportDtParameters dtParameter = exportManager.createExportListParameters(fullList)//
+		final ExportDtParameters dtParameter = exportManager.createExportListParameters(fullList, "Contacts")//
 				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.PDF, "contacts")//
-				.withExportDtParameters(dtParameter)//
-				.withAuthor("vertigo-test")//
-				.build();
+		.withExportDtParameters(dtParameter)//
+		.withAuthor("vertigo-test")//
+		.build();
 
 		final KFile result = exportManager.createExportFile(export);
 		//200
@@ -289,13 +289,13 @@ public final class TesterRestServices implements RestfulService {
 	@GET("/export/pdf/{conId}")
 	public KFile testExportContact(@PathParam("conId") final long conId) {
 		final Contact contact = contacts.get(conId);
-		final ExportDtParameters dtParameter = exportManager.createExportObjectParameters(contact)//
+		final ExportDtParameters dtParameter = exportManager.createExportObjectParameters(contact, "Contacts")//
 				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.PDF, "contact" + conId + ".pdf")//
-				.withExportDtParameters(dtParameter)//
-				.withAuthor("vertigo-test")//
-				.build();
+		.withExportDtParameters(dtParameter)//
+		.withAuthor("vertigo-test")//
+		.build();
 
 		final KFile result = exportManager.createExportFile(export);
 		//200
