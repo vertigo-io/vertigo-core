@@ -21,7 +21,6 @@ package io.vertigo.dynamo.file.model;
 /**
  * @author npiedeloup
  */
-@Deprecated
 public interface KFile extends VFile {
 	/**
 	 * @return Type mime du fichier
