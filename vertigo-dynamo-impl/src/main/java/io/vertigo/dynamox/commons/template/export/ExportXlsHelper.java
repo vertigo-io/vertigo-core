@@ -25,9 +25,9 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.export.ExportBuilder;
-import io.vertigo.dynamo.export.ExportDtParametersBuilder;
 import io.vertigo.dynamo.export.ExportFormat;
 import io.vertigo.dynamo.export.ExportManager;
+import io.vertigo.dynamo.export.ExportSheetBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +35,10 @@ import java.util.Map;
 
 /**
  * Helper pour les editions xls.
- *
+ * 
  * @author kleegroup
- * @param <R> Type d'objet pour la liste
+ * @param <R>
+ *            Type d'objet pour la liste
  */
 public class ExportXlsHelper<R extends DtObject> {
 	private final ExportManager exportManager;
@@ -45,27 +46,36 @@ public class ExportXlsHelper<R extends DtObject> {
 
 	/**
 	 * Constructeur.
-	 *
-	 * @param fileName nom du fichier résultat de l'export
-	 * @param title titre de la feuille principale de l'export
+	 * 
+	 * @param fileName
+	 *            nom du fichier résultat de l'export
+	 * @param title
+	 *            titre de la feuille principale de l'export
 	 */
 	public ExportXlsHelper(final ExportManager exportManager, final String fileName, final String title) {
 		Assertion.checkNotNull(exportManager);
 		Assertion.checkNotNull(fileName);
-		//---------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 		this.exportManager = exportManager;
 		exportBuilder = new ExportBuilder(ExportFormat.XLS, fileName)//
 				.withTitle(title);
 	}
 
 	/**
-	 * Prepare the export generation. If the screen allows 2 exports, then one must use 2 actions
-	 *
-	 * @param dtcToExport the objects collection to be exported
-	 * @param collectionColumnNameList list of the columns taht must be exported in the collection
-	 * @param criterion search criterion if exists
-	 * @param criterionExcludedColumnNameList list of the criteria that must be excluded for the export
-	 * @param specificLabelMap map of the column names to be used instead of the default label associated with the field
+	 * Prepare the export generation. If the screen allows 2 exports, then one
+	 * must use 2 actions
+	 * 
+	 * @param dtcToExport
+	 *            the objects collection to be exported
+	 * @param collectionColumnNameList
+	 *            list of the columns taht must be exported in the collection
+	 * @param criterion
+	 *            search criterion if exists
+	 * @param criterionExcludedColumnNameList
+	 *            list of the criteria that must be excluded for the export
+	 * @param specificLabelMap
+	 *            map of the column names to be used instead of the default
+	 *            label associated with the field
 	 */
 	public final void prepareExport(final DtList<R> dtcToExport, final List<String> collectionColumnNameList, final DtObject criterion, final List<String> criterionExcludedColumnNameList, final Map<String, String> specificLabelMap) {
 
@@ -79,10 +89,14 @@ public class ExportXlsHelper<R extends DtObject> {
 
 	/**
 	 * Add a DTC to the export.
-	 *
-	 * @param dtcToExport collection to be exported
-	 * @param collectionColumnNameList names of the columns that must be exported
-	 * @param specificLabelMap map of the column names to be used instead of the default label associated with the field
+	 * 
+	 * @param dtcToExport
+	 *            collection to be exported
+	 * @param collectionColumnNameList
+	 *            names of the columns that must be exported
+	 * @param specificLabelMap
+	 *            map of the column names to be used instead of the default
+	 *            label associated with the field
 	 */
 	public final void addDtList(final DtList<R> dtcToExport, final List<String> collectionColumnNameList, final Map<String, String> specificLabelMap) {
 		Assertion.checkArgument(dtcToExport != null && dtcToExport.size() > 0, "The list of the objects to be exported must exist and not be empty");
@@ -90,75 +104,83 @@ public class ExportXlsHelper<R extends DtObject> {
 
 		// --------------------------------------------
 
-		final ExportDtParametersBuilder exportListParameters = exportManager.createExportListParameters(dtcToExport, null);
+		final ExportSheetBuilder exportSheetBuilder = exportManager.createExportSheetBuilder(dtcToExport, null);
 
 		// exportListParameters.setMetaData(PublisherMetaData.TITLE, tabName);
 		for (final DtField dtField : getExportColumnList(dtcToExport, collectionColumnNameList)) {
 			if (specificLabelMap == null) {
-				exportListParameters.withField(dtField);
+				exportSheetBuilder.withField(dtField);
 			} else {
 				// final String label = specificLabelMap.get(field.getName());
 				// TODO exportListParameters.addExportField(field, label);
-				exportListParameters.withField(dtField, null);
+				exportSheetBuilder.withField(dtField, null);
 			}
 		}
-		exportBuilder.withExportDtParameters(exportListParameters.build());
+		exportBuilder.withSheet(exportSheetBuilder.build());
 	}
 
 	/**
 	 * Add a criterion to the export.
-	 *
-	 * @param criterion criterion object to be exported
-	 * @param criterionExcludedColumnNameList names of the columns to be excluded
+	 * 
+	 * @param criterion
+	 *            criterion object to be exported
+	 * @param criterionExcludedColumnNames
+	 *            names of the columns to be excluded
 	 */
-	public final void addDtObject(final DtObject criterion, final List<String> criterionExcludedColumnNameList) {
+	public final void addDtObject(final DtObject criterion, final List<String> criterionExcludedColumnNames) {
 		Assertion.checkNotNull(criterion);
-		Assertion.checkArgument(criterionExcludedColumnNameList != null, "The list of the columns to be excluded must exist");
+		Assertion.checkArgument(criterionExcludedColumnNames != null, "The list of the columns to be excluded must exist");
 
 		// --------------------------------------------
 
-		final ExportDtParametersBuilder exportObjectParameters = exportManager.createExportObjectParameters(criterion, null);
+		final ExportSheetBuilder exportSheet = exportManager.createExportSheetBuilder(criterion, null);
 
 		// exportObjectParameters.setMetaData(PublisherMetaData.TITLE, tabName);
-		for (final DtField dtField : getExportCriterionFields(criterion, criterionExcludedColumnNameList)) {
-			exportObjectParameters.withField(dtField);
+		for (final DtField dtField : getExportCriterionFields(criterion, criterionExcludedColumnNames)) {
+			exportSheet.withField(dtField);
 		}
 
-		exportBuilder.withExportDtParameters(exportObjectParameters.build());
+		exportBuilder.withSheet(exportSheet.build());
 	}
 
 	/**
 	 * Traduit la liste des champs à exporter en liste de DtField.
-	 * @param list Liste à exporter
-	 * @param collectionColumnNameList Liste des noms de champs à exporter
+	 * 
+	 * @param list
+	 *            Liste à exporter
+	 * @param collectionColumnNames
+	 *            Liste des noms de champs à exporter
 	 * @return Liste des DtField correspondant
 	 */
-	private List<DtField> getExportColumnList(final DtList<R> list, final List<String> collectionColumnNameList) {
-		final List<DtField> exportColumnList = new ArrayList<>();
+	private List<DtField> getExportColumnList(final DtList<R> list, final List<String> collectionColumnNames) {
+		final List<DtField> exportColumns = new ArrayList<>();
 
-		for (final String field : collectionColumnNameList) {
-			exportColumnList.add(list.getDefinition().getField(field));
+		for (final String field : collectionColumnNames) {
+			exportColumns.add(list.getDefinition().getField(field));
 		}
-		return exportColumnList;
+		return exportColumns;
 	}
 
 	/**
 	 * Détermine la liste des champs du critère à exporter en liste de DtField.
-	 * @param dto DtObject à exporter
-	 * @param criterionExcludedColumnNameList Liste des noms de champs à NE PAS exporter
+	 * 
+	 * @param dto
+	 *            DtObject à exporter
+	 * @param criterionExcludedColumnNameList
+	 *            Liste des noms de champs à NE PAS exporter
 	 * @return Liste des DtField à exporter
 	 */
 	private List<DtField> getExportCriterionFields(final DtObject dto, final List<String> criterionExcludedColumnNameList) {
-		final List<DtField> exportColumnList = new ArrayList<>();
+		final List<DtField> exportColumns = new ArrayList<>();
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		addFieldToExcludedExportColumnNameList(dtDefinition, criterionExcludedColumnNameList);
 
 		for (final DtField dtField : dtDefinition.getFields()) {
 			if (!criterionExcludedColumnNameList.contains(dtField.getName())) {
-				exportColumnList.add(dtField);
+				exportColumns.add(dtField);
 			}
 		}
-		return exportColumnList;
+		return exportColumns;
 	}
 
 	private void addFieldToExcludedExportColumnNameList(final DtDefinition definition, final List<String> criterionExcludedColumnNameList) {

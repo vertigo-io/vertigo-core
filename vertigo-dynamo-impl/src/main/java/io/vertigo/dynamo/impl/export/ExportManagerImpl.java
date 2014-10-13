@@ -22,7 +22,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.export.Export;
-import io.vertigo.dynamo.export.ExportDtParametersBuilder;
+import io.vertigo.dynamo.export.ExportSheetBuilder;
 import io.vertigo.dynamo.export.ExportFormat;
 import io.vertigo.dynamo.export.ExportManager;
 import io.vertigo.dynamo.file.FileManager;
@@ -65,12 +65,12 @@ public final class ExportManagerImpl implements ExportManager {
 	}
 
 	/** {@inheritDoc} */
-	public ExportDtParametersBuilder createExportObjectParameters(final DtObject dto, final String title) {
+	public ExportSheetBuilder createExportSheetBuilder(final DtObject dto, final String title) {
 		return new ExportDtParametersBuilderImpl(dto, title);
 	}
 
 	/** {@inheritDoc} */
-	public ExportDtParametersBuilder createExportListParameters(final DtList<?> dtc, final String title) {
+	public ExportSheetBuilder createExportSheetBuilder(final DtList<?> dtc, final String title) {
 		return new ExportDtParametersBuilderImpl(dtc, title);
 	}
 

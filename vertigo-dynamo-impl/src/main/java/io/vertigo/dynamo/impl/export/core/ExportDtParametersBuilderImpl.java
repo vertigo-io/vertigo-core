@@ -25,8 +25,8 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.export.ExportDtParameters;
-import io.vertigo.dynamo.export.ExportDtParametersBuilder;
+import io.vertigo.dynamo.export.ExportSheet;
+import io.vertigo.dynamo.export.ExportSheetBuilder;
 import io.vertigo.dynamo.export.ExportField;
 
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ import java.util.List;
  *
  * @author pchretien, npiedeloup
  */
-public final class ExportDtParametersBuilderImpl implements ExportDtParametersBuilder {
+public final class ExportDtParametersBuilderImpl implements ExportSheetBuilder {
 	/**
 	 * List des champs à exporter
 	 */
@@ -83,19 +83,19 @@ public final class ExportDtParametersBuilderImpl implements ExportDtParametersBu
 	}
 
 	/** {@inheritDoc} */
-	public ExportDtParametersBuilder withField(final DtField exportfield) {
+	public ExportSheetBuilder withField(final DtField exportfield) {
 		withField(exportfield, null);
 		return this;
 	}
 
 	/** {@inheritDoc} */
-	public ExportDtParametersBuilder withField(final DtField exportfield, final DtList<?> list, final DtField displayfield) {
+	public ExportSheetBuilder withField(final DtField exportfield, final DtList<?> list, final DtField displayfield) {
 		withField(exportfield, list, displayfield, null);
 		return this;
 	}
 
 	/** {@inheritDoc} */
-	public ExportDtParametersBuilder withField(final DtField exportfield, final MessageText overridedLabel) {
+	public ExportSheetBuilder withField(final DtField exportfield, final MessageText overridedLabel) {
 		Assertion.checkNotNull(exportfield);
 		// On vérifie que la colonne est bien dans la définition de la DTC
 		Assertion.checkArgument(dtDefinition.getFields().contains(exportfield), "Le champ " + exportfield.getName() + " n'est pas dans la liste à exporter");
@@ -108,7 +108,7 @@ public final class ExportDtParametersBuilderImpl implements ExportDtParametersBu
 	}
 
 	/** {@inheritDoc} */
-	public ExportDtParametersBuilder withField(final DtField exportfield, final DtList<?> list, final DtField displayfield, final MessageText overridedLabel) {
+	public ExportSheetBuilder withField(final DtField exportfield, final DtList<?> list, final DtField displayfield, final MessageText overridedLabel) {
 		Assertion.checkNotNull(exportfield);
 		// On vérifie que la colonne est bien dans la définition de la DTC
 		Assertion.checkArgument(dtDefinition.getFields().contains(exportfield), "Le champ " + exportfield.getName() + " n'est pas dans la liste à exporter");
@@ -121,7 +121,7 @@ public final class ExportDtParametersBuilderImpl implements ExportDtParametersBu
 	}
 
 	/** {@inheritDoc} */
-	public ExportDtParameters build() {
+	public ExportSheet build() {
 		if (exportFields.isEmpty()) {
 			// si la liste des colonnes est vide alors par convention on les prend toutes.
 			final Collection<DtField> fields = dtDefinition.getFields();
@@ -129,7 +129,7 @@ public final class ExportDtParametersBuilderImpl implements ExportDtParametersBu
 				exportFields.add(new ExportField(dtField, null));
 			}
 		}
-		return new ExportDtParameters(title, exportFields, dto, dtc);
+		return new ExportSheet(title, exportFields, dto, dtc);
 
 	}
 }

@@ -24,7 +24,7 @@ import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.export.Export;
-import io.vertigo.dynamo.export.ExportDtParameters;
+import io.vertigo.dynamo.export.ExportSheet;
 import io.vertigo.dynamo.export.ExportField;
 import io.vertigo.dynamo.impl.export.core.ExportHelper;
 
@@ -125,7 +125,7 @@ final class XLSExporter {
 	 * @param sheet Feuille Excel
 	 * @param forceLandscape Indique si le parametrage force un affichage en paysage
 	 */
-	private void exportData(final ExportDtParameters parameters, final HSSFWorkbook workbook, final HSSFSheet sheet, final boolean forceLandscape) {
+	private void exportData(final ExportSheet parameters, final HSSFWorkbook workbook, final HSSFSheet sheet, final boolean forceLandscape) {
 		initHssfStyle(workbook);
 
 		// Column width
@@ -203,7 +203,7 @@ final class XLSExporter {
 
 	}
 
-	private void exportList(final ExportDtParameters parameters, final HSSFWorkbook workbook, final HSSFSheet sheet, final Map<Integer, Double> maxWidthPerColumn) {
+	private void exportList(final ExportSheet parameters, final HSSFWorkbook workbook, final HSSFSheet sheet, final Map<Integer, Double> maxWidthPerColumn) {
 		// final HSSFCellStyle oddRowCellStyle = createRowCellStyle(workbook, true, false); //impair
 		// final HSSFCellStyle evenRowCellStyle = createRowCellStyle(workbook, false, false); //pair
 		// final HSSFCellStyle oddDateRowCellStyle = createRowCellStyle(workbook, true, true); //impair
@@ -255,7 +255,7 @@ final class XLSExporter {
 		throw new InvalidParameterException("HSSFSheet non trouvé dans le HSSFWorkbook.");
 	}
 
-	private void exportObject(final ExportDtParameters parameters, final HSSFWorkbook workbook, final HSSFSheet sheet, final Map<Integer, Double> maxWidthPerColumn) {
+	private void exportObject(final ExportSheet parameters, final HSSFWorkbook workbook, final HSSFSheet sheet, final Map<Integer, Double> maxWidthPerColumn) {
 		// final HSSFCellStyle oddRowCellStyle = createRowCellStyle(workbook, true, false); //impair
 		// final HSSFCellStyle oddDateRowCellStyle = createRowCellStyle(workbook, true, true); //impair
 
@@ -340,10 +340,10 @@ final class XLSExporter {
 			final boolean forceLandscape = Export.Orientation.Landscape == documentParameters.getOrientation();
 
 			final HSSFWorkbook workbook = new HSSFWorkbook();
-			for (final ExportDtParameters parameters : documentParameters.getReportDataParameters()) {
-				final String title = parameters.getTitle();
+			for (final ExportSheet exportSheet : documentParameters.getSheets()) {
+				final String title = exportSheet.getTitle();
 				final HSSFSheet sheet = title == null ? workbook.createSheet() : workbook.createSheet(title);
-				exportData(parameters, workbook, sheet, forceLandscape);
+				exportData(exportSheet, workbook, sheet, forceLandscape);
 
 			}
 			workbook.write(out);

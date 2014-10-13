@@ -38,7 +38,7 @@ public final class Export {
 		Portait;
 	}
 
-	private final List<ExportDtParameters> exportDtParameters;
+	private final List<ExportSheet> sheets;
 
 	private final ExportFormat format;
 	private final String fileName;
@@ -51,20 +51,20 @@ public final class Export {
 	 * @param format type du format de sortie. Ceci configurera le Handler de traitement de l'edition
 	 * @param fileName nom du fichier de sortie.
 	 */
-	Export(final ExportFormat format, final String fileName, final String title, final String author, final Export.Orientation orientation, final List<ExportDtParameters> exportDtParameters) {
+	Export(final ExportFormat format, final String fileName, final String title, final String author, final Export.Orientation orientation, final List<ExportSheet> sheets) {
 		Assertion.checkNotNull(format);
 		Assertion.checkArgNotEmpty(fileName, "a fileName is required");
 		//Assertion.notNull(title);
 		//Assertion.notNull(author);
 		Assertion.checkNotNull(orientation);
-		Assertion.checkNotNull(exportDtParameters);
+		Assertion.checkNotNull(sheets);
 		// ----------------------------------------------------------------------
 		this.format = format;
 		this.fileName = fileName;
 		this.title = title;
 		this.orientation = orientation;
 		this.author = author;
-		this.exportDtParameters = new ArrayList<>(exportDtParameters);
+		this.sheets = new ArrayList<>(sheets);
 	}
 
 	/**
@@ -105,7 +105,7 @@ public final class Export {
 	/**
 	 * @return Liste des paramètres de données à exporter
 	 */
-	public List<ExportDtParameters> getReportDataParameters() {
-		return exportDtParameters;
+	public List<ExportSheet> getSheets() {
+		return sheets;
 	}
 }

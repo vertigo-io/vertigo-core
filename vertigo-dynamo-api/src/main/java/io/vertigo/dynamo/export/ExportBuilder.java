@@ -30,7 +30,7 @@ import java.util.List;
  * @author pchretien, npiedeloup
  */
 public final class ExportBuilder implements Builder<Export> {
-	private final List<ExportDtParameters> exportDtParameters = new ArrayList<>();
+	private final List<ExportSheet> sheets = new ArrayList<>();
 
 	private final ExportFormat format;
 	private final String fileName;
@@ -78,17 +78,17 @@ public final class ExportBuilder implements Builder<Export> {
 	}
 
 	/**
-	 * @param dtParameter parametre de données(DTO ou DTC) à ajouter à ce document.
+	 * @param sheet parametre de données(DTO ou DTC) à ajouter à ce document.
 	 */
-	public ExportBuilder withExportDtParameters(final ExportDtParameters dtParameter) {
-		Assertion.checkNotNull(dtParameter);
+	public ExportBuilder withSheet(final ExportSheet sheet) {
+		Assertion.checkNotNull(sheet);
 		//---------------------------------------------------------------------
-		exportDtParameters.add(dtParameter);
+		sheets.add(sheet);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	public Export build() {
-		return new Export(format, fileName, myTitle, myAuthor, myOrientation, exportDtParameters);
+		return new Export(format, fileName, myTitle, myAuthor, myOrientation, sheets);
 	}
 }

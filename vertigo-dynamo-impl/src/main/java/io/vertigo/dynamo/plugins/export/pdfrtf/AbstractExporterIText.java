@@ -22,7 +22,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.export.Export;
-import io.vertigo.dynamo.export.ExportDtParameters;
+import io.vertigo.dynamo.export.ExportSheet;
 import io.vertigo.dynamo.export.ExportField;
 import io.vertigo.dynamo.impl.export.core.ExportHelper;
 
@@ -70,19 +70,19 @@ public abstract class AbstractExporterIText {
 	/**
 	 * Méthode principale qui gère l'export d'un tableau vers un fichier ODS.
 	 * 
-	 * @param documentParameters paramètres du document à exporter
+	 * @param export paramètres du document à exporter
 	 * @param out flux de sortie
 	 */
-	public final void exportData(final Export documentParameters, final OutputStream out) throws DocumentException {
+	public final void exportData(final Export export, final OutputStream out) throws DocumentException {
 		// step 1: creation of a document-object
-		final boolean landscape = documentParameters.getOrientation() == Export.Orientation.Landscape;
+		final boolean landscape = export.getOrientation() == Export.Orientation.Landscape;
 		final Rectangle pageSize = landscape ? PageSize.A4.rotate() : PageSize.A4;
 		final Document document = new Document(pageSize, 20, 20, 50, 50); // left, right, top, bottom
 		// step 2: we create a writer that listens to the document and directs a PDF-stream to out
 		createWriter(document, out);
 
 		// we add some meta information to the document, and we open it
-		final String title = documentParameters.getTitle();
+		final String title = export.getTitle();
 		if (title != null) {
 			final HeaderFooter header = new HeaderFooter(new Phrase(title), false);
 			header.setAlignment(Element.ALIGN_LEFT);
@@ -91,7 +91,7 @@ public abstract class AbstractExporterIText {
 			document.addTitle(title);
 		}
 
-		final String author = documentParameters.getAuthor();
+		final String author = export.getAuthor();
 		document.addAuthor(author);
 		document.addCreator(CREATOR);
 		document.open();
@@ -100,18 +100,18 @@ public abstract class AbstractExporterIText {
 			// (print(false) pour imprimer directement)
 			// ((PdfWriter) writer).addJavaScript("this.print(true);", false);
 
-			for (final ExportDtParameters parameters : documentParameters.getReportDataParameters()) {
+			for (final ExportSheet exportSheet : export.getSheets()) {
 				// table
-				final Table datatable = new Table(parameters.getExportFields().size());
+				final Table datatable = new Table(exportSheet.getExportFields().size());
 				datatable.setCellsFitPage(true);
 				datatable.setPadding(4);
 				datatable.setSpacing(0);
 
 				// headers
-				renderHeaders(parameters, datatable);
+				renderHeaders(exportSheet, datatable);
 
 				// data rows
-				renderList(parameters, datatable);
+				renderList(exportSheet, datatable);
 
 				document.add(datatable);
 			}
@@ -126,7 +126,7 @@ public abstract class AbstractExporterIText {
 	 * @param parameters Paramètres
 	 * @param datatable Table
 	 */
-	private static void renderHeaders(final ExportDtParameters parameters, final Table datatable) throws BadElementException {
+	private static void renderHeaders(final ExportSheet parameters, final Table datatable) throws BadElementException {
 		// size of columns
 		// datatable.setWidths(headerwidths);
 		// datatable.setWidth(100f);
@@ -149,7 +149,7 @@ public abstract class AbstractExporterIText {
 	 * @param parameters Paramètres
 	 * @param datatable Table
 	 */
-	private void renderList(final ExportDtParameters parameters, final Table datatable) throws BadElementException {
+	private void renderList(final ExportSheet parameters, final Table datatable) throws BadElementException {
 		// data rows
 		final Font font = FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL);
 		final Font whiteFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL);

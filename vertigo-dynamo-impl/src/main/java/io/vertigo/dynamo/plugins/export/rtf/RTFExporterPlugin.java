@@ -44,8 +44,8 @@ public final class RTFExporterPlugin implements ExporterPlugin {
 	}
 
 	/** {@inheritDoc}*/
-	public void exportData(final Export exportWork, final OutputStream out) throws DocumentException {
-		new RTFExporter(exportHelper).exportData(exportWork, out);
+	public void exportData(final Export export, final OutputStream out) throws DocumentException {
+		new RTFExporter(exportHelper).exportData(export, out);
 	}
 
 	/** {@inheritDoc}*/
