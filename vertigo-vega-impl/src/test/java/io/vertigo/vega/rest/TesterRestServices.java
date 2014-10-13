@@ -32,7 +32,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.export.Export;
 import io.vertigo.dynamo.export.ExportBuilder;
-import io.vertigo.dynamo.export.ExportDtParameters;
+import io.vertigo.dynamo.export.ExportSheet;
 import io.vertigo.dynamo.export.ExportFormat;
 import io.vertigo.dynamo.export.ExportManager;
 import io.vertigo.dynamo.file.FileManager;
@@ -273,7 +273,7 @@ public final class TesterRestServices implements RestfulService {
 	@GET("/export/pdf/")
 	public KFile testExportContacts() {
 		final DtList<Contact> fullList = asDtList(contacts.values(), Contact.class);
-		final ExportDtParameters dtParameter = exportManager.createExportListParameters(fullList, "Contacts")//
+		final ExportSheet dtParameter = exportManager.createExportSheetBuilder(fullList, "Contacts")//
 				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.PDF, "contacts")//
@@ -289,7 +289,7 @@ public final class TesterRestServices implements RestfulService {
 	@GET("/export/pdf/{conId}")
 	public KFile testExportContact(@PathParam("conId") final long conId) {
 		final Contact contact = contacts.get(conId);
-		final ExportDtParameters dtParameter = exportManager.createExportObjectParameters(contact, "Contacts")//
+		final ExportSheet dtParameter = exportManager.createExportSheetBuilder(contact, "Contacts")//
 				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.PDF, "contact" + conId + ".pdf")//

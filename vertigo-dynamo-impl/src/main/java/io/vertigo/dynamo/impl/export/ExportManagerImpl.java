@@ -22,13 +22,13 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.export.Export;
-import io.vertigo.dynamo.export.ExportSheetBuilder;
 import io.vertigo.dynamo.export.ExportFormat;
 import io.vertigo.dynamo.export.ExportManager;
+import io.vertigo.dynamo.export.ExportSheetBuilder;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.file.util.TempFile;
-import io.vertigo.dynamo.impl.export.core.ExportDtParametersBuilderImpl;
+import io.vertigo.dynamo.impl.export.core.ExportSheetBuilderImpl;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkResultHandler;
 
@@ -42,7 +42,7 @@ import javax.inject.Inject;
 
 /**
  * Implémentation standard du manager des exports.
- *
+ * 
  * @author pchretien, npiedeloup
  */
 public final class ExportManagerImpl implements ExportManager {
@@ -58,7 +58,7 @@ public final class ExportManagerImpl implements ExportManager {
 		Assertion.checkNotNull(workManager);
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkNotNull(exporterPlugins);
-		//---------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 		this.workManager = workManager;
 		this.fileManager = fileManager;
 		this.exporterPlugins = Collections.unmodifiableList(exporterPlugins);
@@ -66,22 +66,24 @@ public final class ExportManagerImpl implements ExportManager {
 
 	/** {@inheritDoc} */
 	public ExportSheetBuilder createExportSheetBuilder(final DtObject dto, final String title) {
-		return new ExportDtParametersBuilderImpl(dto, title);
+		return new ExportSheetBuilderImpl(dto, title);
 	}
 
 	/** {@inheritDoc} */
 	public ExportSheetBuilder createExportSheetBuilder(final DtList<?> dtc, final String title) {
-		return new ExportDtParametersBuilderImpl(dtc, title);
+		return new ExportSheetBuilderImpl(dtc, title);
 	}
 
 	/**
 	 * Récupère le plugin d'export associé au format.
-	 * @param exportFormat Format d'export souhaité
+	 * 
+	 * @param exportFormat
+	 *            Format d'export souhaité
 	 * @return Plugin d'export associé au format
 	 */
 	private ExporterPlugin getExporterPlugin(final ExportFormat exportFormat) {
 		Assertion.checkNotNull(exportFormat);
-		//---------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 		for (final ExporterPlugin exporterPlugin : exporterPlugins) {
 			if (exporterPlugin.accept(exportFormat)) {
 				return exporterPlugin;
@@ -93,7 +95,7 @@ public final class ExportManagerImpl implements ExportManager {
 	/** {@inheritDoc} */
 	public void createExportFileASync(final Export export, final WorkResultHandler<KFile> workResultHandler) {
 		Assertion.checkNotNull(export);
-		//---------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 		workManager.schedule(new Callable<KFile>() {
 			public KFile call() {
 				return createExportFile(export);
@@ -104,21 +106,26 @@ public final class ExportManagerImpl implements ExportManager {
 	/** {@inheritDoc} */
 	public KFile createExportFile(final Export export) {
 		Assertion.checkNotNull(export);
-		//---------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 		try {
 			return generateFile(export);
 		} catch (final Exception e) {
-			//Quelle que soit l'exception on l'encapsule pour préciser le nom du fichier.
+			// Quelle que soit l'exception on l'encapsule pour préciser le nom
+			// du fichier.
 			final String msg = "La génération du fichier a échoué.<!-- " + e.getMessage() + "--> pour le fichier " + export.getFileName();
 			throw new RuntimeException(msg, e);
 		}
 	}
 
 	/**
-	 * Ecrire dans un fichier temporaire en passant par le writer le données (CSV, XML, DOC,...).
+	 * Ecrire dans un fichier temporaire en passant par le writer le données
+	 * (CSV, XML, DOC,...).
+	 * 
 	 * @return Fichier temporaire généré
-	 * @param export Paramètres de l'export
-	 * @throws Exception Exception lors de la création du fichier
+	 * @param export
+	 *            Paramètres de l'export
+	 * @throws Exception
+	 *             Exception lors de la création du fichier
 	 */
 	private KFile generateFile(final Export export) throws Exception {
 		final ExporterPlugin exporterPlugin = getExporterPlugin(export.getFormat());
