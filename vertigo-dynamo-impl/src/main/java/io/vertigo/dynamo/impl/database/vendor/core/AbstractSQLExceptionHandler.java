@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 
 /**
  * Handler abstrait des exceptions SQL qui peuvent survenir dans un service.
- * Cette classe est abstraite et doit être concretisée par une sous-classe. 
+ * Cette classe est abstraite et doit être concretisée par une sous-classe.
  * Dans le cas d'une contrainte d'intégrité référentiel ou d'unicité, le message de
  * l'erreur utilisateur doit être specialisé en l'ajoutant comme ressource dans
  * le RessourceManager en utilisant le nom de la contrainte comme clef.
@@ -73,7 +73,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 
 	/**
 	 * Traite l'exception lié à la contrainte d'intégrité.
-	 * Et lance une KUserException avec le message par défaut passé en paramètre et une MessageKey basé sur le nom de la contrainte. 
+	 * Et lance une KUserException avec le message par défaut passé en paramètre et une MessageKey basé sur le nom de la contrainte.
 	 * @param sqle Exception SQL
 	 * @param defaultMsg Message par defaut
 	 */
@@ -95,7 +95,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 			}
 		};
 
-		//On récupère ici le message externalisé par défaut : Resources.DYNAMO_SQL_CONSTRAINT_IMPOSSIBLE_TO_DELETE ou Resources.DYNAMO_SQL_CONSTRAINT_ALREADY_REGISTRED) 
+		//On récupère ici le message externalisé par défaut : Resources.DYNAMO_SQL_CONSTRAINT_IMPOSSIBLE_TO_DELETE ou Resources.DYNAMO_SQL_CONSTRAINT_ALREADY_REGISTRED)
 		final String defaultConstraintMsg = new MessageText(defaultMsg).getDisplay();
 		final MessageText userContraintMessageText = new MessageText(defaultConstraintMsg, constraintKey);
 		final VUserException constraintException = new VUserException(userContraintMessageText);
