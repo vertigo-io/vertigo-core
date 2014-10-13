@@ -27,10 +27,6 @@ final class CacheValue {
 	private final long createTime;
 	private final Serializable value;
 
-	CacheValue(final Serializable value) {
-		this(value, System.currentTimeMillis());
-	}
-
 	CacheValue(final Serializable value, final long createTime) {
 		this.value = value;
 		this.createTime = createTime;

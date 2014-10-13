@@ -34,15 +34,15 @@ import io.vertigo.dynamo.environment.java.JavaEnvironmentManagerTest;
 import io.vertigo.dynamo.environment.oom.OOMAATest;
 import io.vertigo.dynamo.environment.oom.OOMEnvironmentManagerTest;
 import io.vertigo.dynamo.environment.oom.OOMTest;
-import io.vertigo.dynamo.environment.oom.TestParserOOM;
-import io.vertigo.dynamo.environment.oom.TestParserOOMAA;
-import io.vertigo.dynamo.environment.oom.TestParserOOMIdentifiers;
-import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DefinitionBodyRuleTest;
-import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DefinitionRuleTest;
-import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.PackageRuleTest;
-import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.WordListRuleTest;
-import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.XDefinitionEntryRuleTest;
-import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.XPropertyEntryRuleTest;
+import io.vertigo.dynamo.environment.oom.OOMParserTest;
+import io.vertigo.dynamo.environment.oom.OOMParserAATest;
+import io.vertigo.dynamo.environment.oom.OOMParserIdentifiersTest;
+import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DSLDefinitionBodyRuleTest;
+import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DSLDefinitionRuleTest;
+import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DSLPackageRuleTest;
+import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DSLWordListRuleTest;
+import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DSLDefinitionEntryRuleTest;
+import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DSLPropertyEntryRuleTest;
 import io.vertigo.dynamo.environment.splittedmodules.SplittedModulesEnvironmentManagerTest;
 import io.vertigo.dynamo.export.ExportManagerTest;
 import io.vertigo.dynamo.file.FileManagerTest;
@@ -76,7 +76,7 @@ import org.junit.runners.Suite.SuiteClasses;
 		//--
 		JavaEnvironmentManagerTest.class,
 		//--OOM
-		OOMAATest.class, OOMEnvironmentManagerTest.class, OOMTest.class, TestParserOOM.class, TestParserOOMAA.class, TestParserOOMIdentifiers.class,
+		OOMAATest.class, OOMEnvironmentManagerTest.class, OOMTest.class, OOMParserTest.class, OOMParserAATest.class, OOMParserIdentifiersTest.class,
 		EAXmiAATest.class, EAXmiEnvironmentManagerTest.class, EAXmiTest.class, EAXmiTestParser.class, EAXmiTestParserAA.class, EAXmiTestParserIdentifiers.class,
 		SplittedModulesEnvironmentManagerTest.class,
 		//--
@@ -108,7 +108,7 @@ import org.junit.runners.Suite.SuiteClasses;
 		//RedisWorkManagerTest.class, DistributedWorkManagerTest.class, //REST
 		
 		//Rule
-		DefinitionRuleTest.class, PackageRuleTest.class, DefinitionBodyRuleTest.class, WordListRuleTest.class, XPropertyEntryRuleTest.class, XDefinitionEntryRuleTest.class,
+		DSLDefinitionRuleTest.class, DSLPackageRuleTest.class, DSLDefinitionBodyRuleTest.class, DSLWordListRuleTest.class, DSLPropertyEntryRuleTest.class, DSLDefinitionEntryRuleTest.class,
 		
 		//Search
 		SearchManagerDynaFieldsTest.class, 
