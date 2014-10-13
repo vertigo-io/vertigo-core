@@ -420,7 +420,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	/*
 	 * Construction des deux domaines relatif à un DT : DO_DT_XXX_DTO et DO_DT_XXX_DTC
 	 */
-	private void registerxxxxDomain(final String definitionName, final String packageName, final DynamicDefinitionRepository dynamicModelRepository) {
+	private static void registerxxxxDomain(final String definitionName, final String packageName, final DynamicDefinitionRepository dynamicModelRepository) {
 		//C'est le constructeur de DtDomainStandard qui vérifie la cohérence des données passées.
 		//Notamment la validité de la liste des contraintes et la nullité du formatter
 

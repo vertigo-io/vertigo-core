@@ -25,7 +25,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.plugins.persistence.AbstractSQLDataStorePlugin;
+import io.vertigo.dynamo.plugins.persistence.AbstractSqlDataStorePlugin;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
@@ -45,7 +45,7 @@ import javax.inject.Named;
  *
  * @author  pchretien
  */
-public final class HsqlDataStorePlugin extends AbstractSQLDataStorePlugin {
+public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 	private static final String DTO_SEQUENCE = "DTO_SEQUENCE";
 	private static final String SEQUENCE_FIELD = "SEQUENCE";
 	/**

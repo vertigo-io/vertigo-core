@@ -86,7 +86,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		}
 	}
 
-	private void load(final Class<?> clazz, final DynamicDefinitionRepository dynamicModelrepository) {
+	private static void load(final Class<?> clazz, final DynamicDefinitionRepository dynamicModelrepository) {
 		Assertion.checkNotNull(dynamicModelrepository);
 		//----------------------------------------------------------------------
 		for (final Annotation annotation : clazz.getAnnotations()) {
@@ -97,7 +97,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		}
 	}
 
-	private void parseDtDefinition(final io.vertigo.dynamo.domain.stereotype.DtDefinition dtDefinitionAnnotation, final Class<?> clazz, final DynamicDefinitionRepository dynamicModelRepository) {
+	private static void parseDtDefinition(final io.vertigo.dynamo.domain.stereotype.DtDefinition dtDefinitionAnnotation, final Class<?> clazz, final DynamicDefinitionRepository dynamicModelRepository) {
 		final String simpleName = clazz.getSimpleName();
 		final String packageName = clazz.getPackage().getName();
 
@@ -129,7 +129,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		dynamicModelRepository.addDefinition(dtDefinition);
 	}
 
-	private void parseAssociationDefinition(final DynamicDefinitionRepository dynamicModelRepository, final Method method, final String packageName) {
+	private static void parseAssociationDefinition(final DynamicDefinitionRepository dynamicModelRepository, final Method method, final String packageName) {
 		for (final Annotation annotation : method.getAnnotations()) {
 			if (annotation instanceof io.vertigo.dynamo.domain.stereotype.Association) {
 				final io.vertigo.dynamo.domain.stereotype.Association association = (io.vertigo.dynamo.domain.stereotype.Association) annotation;
@@ -197,7 +197,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		}
 	}
 
-	private void parseFieldAnnotations(final DynamicDefinitionRepository dynamicModelrepository, final Field field, final DynamicDefinitionBuilder dtDefinition) {
+	private static void parseFieldAnnotations(final DynamicDefinitionRepository dynamicModelrepository, final Field field, final DynamicDefinitionBuilder dtDefinition) {
 		for (final Annotation annotation : field.getAnnotations()) {
 			if (annotation instanceof io.vertigo.dynamo.domain.stereotype.Field) {
 				//Le nom est automatiquement déduit du nom du champ
@@ -207,7 +207,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		}
 	}
 
-	private void parseMethodAnnotations(final DynamicDefinitionRepository dynamicModelrepository, final Method method, final DynamicDefinitionBuilder dtDefinition) {
+	private static void parseMethodAnnotations(final DynamicDefinitionRepository dynamicModelrepository, final Method method, final DynamicDefinitionBuilder dtDefinition) {
 		for (final Annotation annotation : method.getAnnotations()) {
 			if (annotation instanceof io.vertigo.dynamo.domain.stereotype.Field) {
 				//Le nom est automatiquement déduit du nom de la méthode
@@ -220,7 +220,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	/*
 	 * Centralisation du parsing des annotations liées à un champ.
 	 */
-	private void parseAnnotation(final DynamicDefinitionRepository dynamicModelrepository, final String fieldName, final DynamicDefinitionBuilder dtDefinition, final io.vertigo.dynamo.domain.stereotype.Field field) {
+	private static void parseAnnotation(final DynamicDefinitionRepository dynamicModelrepository, final String fieldName, final DynamicDefinitionBuilder dtDefinition, final io.vertigo.dynamo.domain.stereotype.Field field) {
 		//Si on trouve un domaine on est dans un objet dynamo.
 		final FieldType type = FieldType.valueOf(field.type());
 		final DynamicDefinitionKey fieldDomainKey = new DynamicDefinitionKey(field.domain());
@@ -232,21 +232,21 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 				.build();
 
 		switch (type) {
-			case PRIMARY_KEY:
-				dtDefinition.withChildDefinition(DomainGrammar.PRIMARY_KEY, dtField);
-				break;
-			case DATA:
-				dtDefinition.withChildDefinition("field", dtField);
-				break;
-			case COMPUTED:
-				//Valeurs renseignées automatiquement parce que l'on est dans le cas d'un champ calculé
-				dtDefinition.withChildDefinition("computed", dtField);
-				break;
-			case FOREIGN_KEY:
-				//on ne fait rien puisque le champ est défini par une association.
-				break;
-			default:
-				throw new IllegalArgumentException("case " + type + " not implemented");
+		case PRIMARY_KEY:
+			dtDefinition.withChildDefinition(DomainGrammar.PRIMARY_KEY, dtField);
+			break;
+		case DATA:
+			dtDefinition.withChildDefinition("field", dtField);
+			break;
+		case COMPUTED:
+			//Valeurs renseignées automatiquement parce que l'on est dans le cas d'un champ calculé
+			dtDefinition.withChildDefinition("computed", dtField);
+			break;
+		case FOREIGN_KEY:
+			//on ne fait rien puisque le champ est défini par une association.
+			break;
+		default:
+			throw new IllegalArgumentException("case " + type + " not implemented");
 		}
 	}
 

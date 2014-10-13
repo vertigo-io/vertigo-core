@@ -251,9 +251,8 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	 * @param field Nom du champs
 	 * @return Valeur typé du champ
 	 */
-	// non static pour le typage du generic O
 	@SuppressWarnings("unchecked")
-	private <O> O getValue(final DtObject dto, final DtoFields field) {
+	private static <O> O getValue(final DtObject dto, final DtoFields field) {
 		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getField(field.name());
 		return (O) dtField.getDataAccessor().getValue(dto);
 	}

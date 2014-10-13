@@ -206,8 +206,7 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 	 * @param field Nom du champs
 	 * @return Valeur typé du champ
 	 */
-	// non static pour le typage du generic O
-	private <O> O getValue(final DtObject dto, final DtoFields field) {
+	private static <O> O getValue(final DtObject dto, final DtoFields field) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		final DtField dtField = dtDefinition.getField(field.name());
 		return (O) dtField.getDataAccessor().getValue(dto);

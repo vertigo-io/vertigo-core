@@ -21,7 +21,7 @@ package io.vertigo.dynamo.plugins.persistence.postgresql;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.plugins.persistence.AbstractSQLDataStorePlugin;
+import io.vertigo.dynamo.plugins.persistence.AbstractSqlDataStorePlugin;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamox.task.TaskEngineProc;
@@ -35,7 +35,7 @@ import javax.inject.Named;
  *
  * @author  pchretien
  */
-public final class PostgreSqlDataStorePlugin extends AbstractSQLDataStorePlugin {
+public final class PostgreSqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 	private final String sequencePrefix;
 
 	/**

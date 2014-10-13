@@ -22,7 +22,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.plugins.persistence.AbstractSQLDataStorePlugin;
+import io.vertigo.dynamo.plugins.persistence.AbstractSqlDataStorePlugin;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamox.task.TaskEngineProc;
@@ -36,7 +36,7 @@ import javax.inject.Inject;
  *
  * @author  jmainaud, evernat
  */
-public final class SqlServerDataStorePlugin extends AbstractSQLDataStorePlugin {
+public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 	/**
 	 * Constructeur.
 	 * @param workManager Manager des works

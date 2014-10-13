@@ -156,7 +156,7 @@ public final class DynamicDefinitionRepository {
 	 * @param entity Entité
 	 * @return Nouvelle Définition
 	 */
-	public DynamicDefinitionBuilder createDynamicDefinitionBuilder(final String keyName, final Entity entity, final String packageName) {
+	public static DynamicDefinitionBuilder createDynamicDefinitionBuilder(final String keyName, final Entity entity, final String packageName) {
 		final DynamicDefinitionKey dynamicDefinitionKey = new DynamicDefinitionKey(keyName);
 		return new DynamicDefinitionImpl(dynamicDefinitionKey, entity).withPackageName(packageName);
 	}

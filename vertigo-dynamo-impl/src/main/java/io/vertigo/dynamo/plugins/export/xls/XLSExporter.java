@@ -75,7 +75,7 @@ final class XLSExporter {
 		this.exportHelper = exportHelper;
 	}
 
-	private HSSFCellStyle createHeaderCellStyle(final HSSFWorkbook workbook) {
+	private static HSSFCellStyle createHeaderCellStyle(final HSSFWorkbook workbook) {
 		final HSSFCellStyle cellStyle = workbook.createCellStyle();
 		final HSSFFont font = workbook.createFont();
 		font.setFontHeightInPoints((short) 10);
@@ -95,7 +95,7 @@ final class XLSExporter {
 		return cellStyle;
 	}
 
-	private HSSFCellStyle createRowCellStyle(final HSSFWorkbook workbook, final boolean odd) {
+	private static HSSFCellStyle createRowCellStyle(final HSSFWorkbook workbook, final boolean odd) {
 		final HSSFCellStyle cellStyle = workbook.createCellStyle();
 		final HSSFFont font = workbook.createFont();
 		font.setFontHeightInPoints((short) 10);
@@ -246,7 +246,7 @@ final class XLSExporter {
 		}
 	}
 
-	private int getSheetIndex(final HSSFWorkbook workbook, final HSSFSheet sheet) {
+	private static int getSheetIndex(final HSSFWorkbook workbook, final HSSFSheet sheet) {
 		for (int i = workbook.getNumberOfSheets() - 1; i >= 0; i--) {
 			if (sheet.equals(workbook.getSheetAt(i))) {
 				return i;
@@ -281,7 +281,7 @@ final class XLSExporter {
 
 	}
 
-	private void putValueInCell(final Object value, final HSSFCell cell, final Map<DataType, HSSFCellStyle> rowCellStyle, final int cellIndex, final Map<Integer, Double> maxWidthPerColumn, final DataType type) {
+	private static void putValueInCell(final Object value, final HSSFCell cell, final Map<DataType, HSSFCellStyle> rowCellStyle, final int cellIndex, final Map<Integer, Double> maxWidthPerColumn, final DataType type) {
 		String stringValueForColumnWidth;
 		cell.setCellStyle(rowCellStyle.get(type));
 		if (value != null) {
@@ -319,7 +319,7 @@ final class XLSExporter {
 		}
 	}
 
-	private void updateMaxWidthPerColumn(final String value, final double textSizeCoeff, final int cellIndex, final Map<Integer, Double> maxWidthPerColumn) {
+	private static void updateMaxWidthPerColumn(final String value, final double textSizeCoeff, final int cellIndex, final Map<Integer, Double> maxWidthPerColumn) {
 		// Calcul de la largeur des colonnes
 		final double newLenght = value != null ? value.length() * textSizeCoeff + 2 : 0; // +textSizeCoeff% pour les majuscules,et +2 pour les marges
 		final Double oldLenght = maxWidthPerColumn.get(cellIndex);
