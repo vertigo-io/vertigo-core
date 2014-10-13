@@ -25,9 +25,9 @@ import java.util.List;
 
 /**
  * key value storage.
- * 
+ *
  * DataStores are defined by their name and must be defined as plugins.
- * 
+ *
  * @author pchretien
  */
 public interface KVDataStoreManager extends Manager {

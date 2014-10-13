@@ -23,6 +23,11 @@ import io.vertigo.core.lang.Option;
 
 import java.util.List;
 
+/**
+ * This plugin defines the strategy used to store a 'collection' of objects, identified by their name.
+ *
+ * @author pchretien
+ */
 public interface KVDataStorePlugin extends Plugin {
 
 	String getDataStoreName();
