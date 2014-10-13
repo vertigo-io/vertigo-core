@@ -58,17 +58,17 @@ public final class ConstraintBigDecimal extends AbstractConstraintImpl<String, B
 		try {
 			maxPrecision = Integer.parseInt(beforeAfter[0]);
 		} catch (final NumberFormatException e) {
-			throw new RuntimeException(args + "is not an integer", e);
+			throw new RuntimeException(args + " : first part is a not an integer", e);
 		}
 		try {
 			maxScale = Integer.parseInt(beforeAfter[1]);
 		} catch (final NumberFormatException e) {
-			throw new RuntimeException("Le nombre de chiffre après la virgule n'est pas un entier");
+			throw new RuntimeException(args + " : second part is a not an integer", e);
 		}
 		// ---
-		Assertion.checkNotNull(maxPrecision, "Le nombre de chiffre ne peut pas être null");
-		Assertion.checkNotNull(maxScale, "Le nombre de chiffre après la virgule ne peut pas être null");
-		Assertion.checkArgument(maxScale <= maxPrecision, "Le nombre de chiffre après la virgule doit être inférieur au nombre de chiffre total");
+		Assertion.checkNotNull(maxPrecision, "Le nombre de chiffres ne peut pas être null");
+		Assertion.checkNotNull(maxScale, "Le nombre de chiffres après la virgule ne peut pas être null");
+		Assertion.checkArgument(maxScale <= maxPrecision, "Le nombre de chiffres après la virgule doit être inférieur au nombre total de chiffres");
 	}
 
 	/** {@inheritDoc} */
