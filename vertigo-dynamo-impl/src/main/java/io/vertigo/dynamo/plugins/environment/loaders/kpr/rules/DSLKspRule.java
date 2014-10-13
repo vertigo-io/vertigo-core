@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.kpr.rules;
 
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLSyntaxRules.SPACES;
+import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.SPACES;
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
 import io.vertigo.commons.parser.FirstOfRule;
@@ -43,14 +43,14 @@ import java.util.List;
  *
  * @author pchretien
  */
-public final class DSLKspRule extends AbstractRule<Void, List<?>> {
+public final class DslKspRule extends AbstractRule<Void, List<?>> {
 	private final DynamicDefinitionRepository dynamicModelrepository;
 
 	/**
 	 * Constructeur.
 	 * @param dynamicModelrepository Grammaire
 	 */
-	public DSLKspRule(final DynamicDefinitionRepository dynamicModelrepository) {
+	public DslKspRule(final DynamicDefinitionRepository dynamicModelrepository) {
 		super();
 		Assertion.checkNotNull(dynamicModelrepository);
 		//----------------------------------------------------------------------
@@ -60,8 +60,8 @@ public final class DSLKspRule extends AbstractRule<Void, List<?>> {
 
 	@Override
 	protected Rule<List<?>> createMainRule() {
-		final Rule<DynamicDefinition> definitionRule = new DSLDynamicDefinitionRule("create", dynamicModelrepository);
-		final Rule<DynamicDefinition> templateRule = new DSLDynamicDefinitionRule("alter", dynamicModelrepository);
+		final Rule<DynamicDefinition> definitionRule = new DslDynamicDefinitionRule("create", dynamicModelrepository);
+		final Rule<DynamicDefinition> templateRule = new DslDynamicDefinitionRule("alter", dynamicModelrepository);
 		final Rule<Choice> firstOfRule = new FirstOfRule(//"definition or template")
 				definitionRule, //0
 				templateRule //1 
@@ -69,7 +69,7 @@ public final class DSLKspRule extends AbstractRule<Void, List<?>> {
 		final Rule<List<Choice>> manyRule = new ManyRule<>(firstOfRule, true, true);
 		return new SequenceRule(//
 				SPACES,//
-				new DSLPackageRule(),//1
+				new DslPackageRule(),//1
 				SPACES, //
 				manyRule); //3
 	}

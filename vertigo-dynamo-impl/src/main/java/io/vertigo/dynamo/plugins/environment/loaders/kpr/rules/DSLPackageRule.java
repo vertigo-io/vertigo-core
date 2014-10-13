@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.kpr.rules;
 
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLSyntaxRules.SPACES;
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLSyntaxRules.WORD;
+import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.SPACES;
+import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.WORD;
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
@@ -34,7 +34,7 @@ import java.util.List;
  * package nomdupackage;.
  * @author pchretien
  */
-public final class DSLPackageRule extends AbstractRule<String, List<?>> {
+public final class DslPackageRule extends AbstractRule<String, List<?>> {
 
 	@Override
 	protected Rule<List<?>> createMainRule() {

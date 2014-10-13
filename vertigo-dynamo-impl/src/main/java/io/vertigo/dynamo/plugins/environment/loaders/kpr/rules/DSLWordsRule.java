@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.kpr.rules;
 
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLSyntaxRules.ARRAY_END;
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLSyntaxRules.ARRAY_SEPARATOR;
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLSyntaxRules.ARRAY_START;
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLSyntaxRules.SPACES;
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLSyntaxRules.WORD;
+import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.ARRAY_END;
+import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.ARRAY_SEPARATOR;
+import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.ARRAY_START;
+import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.SPACES;
+import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.WORD;
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
 import io.vertigo.commons.parser.FirstOfRule;
@@ -38,7 +38,7 @@ import java.util.List;
  * {mot1, mot2, mot3}
  * @author pchretien
  */
-public final class DSLWordsRule extends AbstractRule<List<String>, Choice> {
+public final class DslWordsRule extends AbstractRule<List<String>, Choice> {
 
 	// 	{ } 
 	private static final Rule<List<?>> EMPTY_LIST = new SequenceRule(//Liste vide

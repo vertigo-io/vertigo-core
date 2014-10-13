@@ -32,7 +32,7 @@ import java.util.List;
  * 
  * @author pchretien
  */
-final class DSLSyntaxRules {
+final class DslSyntaxRules {
 	/** Liste des caractères réservés. */
 	private static final String RESERVED = "\"=();[]/,{}:";
 	/** Liste des caractères blancs. */
@@ -57,9 +57,9 @@ final class DSLSyntaxRules {
 	static final Rule<String> PROPERTY_VALUE = new WordRule(false, "\"", WordRule.Mode.REJECT_ESCAPABLE); //En fait il faut autoriser tous les caractères sauf les guillemets".
 	//Il faut gérer le caractère d'évitement.
 	static final Rule<String> WORD = new WordRule(false, DELIMITERS, WordRule.Mode.REJECT, "DELIMITERS");
-	static final Rule<List<String>> WORDS = new DSLWordsRule();
+	static final Rule<List<String>> WORDS = new DslWordsRule();
 
-	private DSLSyntaxRules() {
+	private DslSyntaxRules() {
 		//Classe sans état
 	}
 

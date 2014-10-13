@@ -22,11 +22,11 @@ import io.vertigo.core.lang.Assertion;
 
 import java.util.List;
 
-public final class DSLDefinitionBody {
-	private final List<DSLDefinitionEntry> definitionEntries;
-	private final List<DSLPropertyEntry> propertyEntries;
+public final class DslDefinitionBody {
+	private final List<DslDefinitionEntry> definitionEntries;
+	private final List<DslPropertyEntry> propertyEntries;
 
-	public DSLDefinitionBody(final List<DSLDefinitionEntry> definitionEntries, final List<DSLPropertyEntry> propertyEntries) {
+	public DslDefinitionBody(final List<DslDefinitionEntry> definitionEntries, final List<DslPropertyEntry> propertyEntries) {
 		Assertion.checkNotNull(definitionEntries);
 		Assertion.checkNotNull(propertyEntries);
 		//---------------------------------------------------------------------
@@ -34,11 +34,11 @@ public final class DSLDefinitionBody {
 		this.propertyEntries = propertyEntries;
 	}
 
-	public List<DSLPropertyEntry> getPropertyEntries() {
+	public List<DslPropertyEntry> getPropertyEntries() {
 		return propertyEntries;
 	}
 
-	public List<DSLDefinitionEntry> getDefinitionEntries() {
+	public List<DslDefinitionEntry> getDefinitionEntries() {
 		return definitionEntries;
 	}
 }

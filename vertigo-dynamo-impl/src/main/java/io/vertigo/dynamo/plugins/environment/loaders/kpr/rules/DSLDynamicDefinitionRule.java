@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.kpr.rules;
 
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLSyntaxRules.SPACES;
+import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.SPACES;
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
 import io.vertigo.commons.parser.FirstOfRule;
@@ -29,7 +29,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
-import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DSLDefinitionEntry;
+import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ import java.util.List;
 /*
  * @author pchretien
  */
-public final class DSLDynamicDefinitionRule extends AbstractRule<DynamicDefinition, Choice> {
+public final class DslDynamicDefinitionRule extends AbstractRule<DynamicDefinition, Choice> {
 	/** Création de la définition. */
 	private final DynamicDefinitionRepository dynamicModelRepository;
 	private final String operation;
@@ -48,7 +48,7 @@ public final class DSLDynamicDefinitionRule extends AbstractRule<DynamicDefiniti
 	 * @param packageName Nom du package
 	 * @param dynamicModelRepository DynamicModelRepository
 	 */
-	public DSLDynamicDefinitionRule(final String operation, final DynamicDefinitionRepository dynamicModelRepository) {
+	public DslDynamicDefinitionRule(final String operation, final DynamicDefinitionRepository dynamicModelRepository) {
 		Assertion.checkArgNotEmpty(operation);
 		Assertion.checkNotNull(dynamicModelRepository);
 		// ----------------------------------------------------------------------
@@ -56,7 +56,7 @@ public final class DSLDynamicDefinitionRule extends AbstractRule<DynamicDefiniti
 		this.dynamicModelRepository = dynamicModelRepository;
 	}
 
-	private Rule<List<?>> createRule(final DSLInnerDefinitionRule definitionRule) {
+	private Rule<List<?>> createRule(final DslInnerDefinitionRule definitionRule) {
 		// Création de la règle de déclaration d'une nouvelle definition.
 		return new SequenceRule(//Definition
 				new TermRule(operation),// alter ou create
@@ -70,7 +70,7 @@ public final class DSLDynamicDefinitionRule extends AbstractRule<DynamicDefiniti
 	protected Rule<Choice> createMainRule() {
 		final List<Rule<?>> rules = new ArrayList<>();//"Definition")
 		for (final Entity entity : dynamicModelRepository.getGrammar().getEntities()) {
-			final DSLInnerDefinitionRule definitionRule = new DSLInnerDefinitionRule(dynamicModelRepository, entity.getName(), entity);
+			final DslInnerDefinitionRule definitionRule = new DslInnerDefinitionRule(dynamicModelRepository, entity.getName(), entity);
 			rules.add(createRule(definitionRule));
 		}
 		return new FirstOfRule(rules);
@@ -78,7 +78,7 @@ public final class DSLDynamicDefinitionRule extends AbstractRule<DynamicDefiniti
 
 	@Override
 	protected DynamicDefinition handle(final Choice parsing) {
-		final DSLDefinitionEntry xDefinitionEntry = (DSLDefinitionEntry) ((List) parsing.getResult()).get(2);
+		final DslDefinitionEntry xDefinitionEntry = (DslDefinitionEntry) ((List) parsing.getResult()).get(2);
 		return xDefinitionEntry.getDefinition();
 	}
 }

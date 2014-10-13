@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.kpr.rules;
 
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLSyntaxRules.PAIR_SEPARATOR;
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLSyntaxRules.SPACES;
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLSyntaxRules.WORD;
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLSyntaxRules.WORDS;
+import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.PAIR_SEPARATOR;
+import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.SPACES;
+import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.WORD;
+import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.WORDS;
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
 import io.vertigo.commons.parser.FirstOfRule;
@@ -30,7 +30,7 @@ import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
 import io.vertigo.commons.parser.TermRule;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DSLDefinitionEntry;
+import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,13 +39,13 @@ import java.util.List;
  * règle de déclaration d'une champ référenéant une listes de clés.
  * @author pchretien
  */
-public final class DSLDefinitionEntryRule extends AbstractRule<DSLDefinitionEntry, List<?>> {
+public final class DslDefinitionEntryRule extends AbstractRule<DslDefinitionEntry, List<?>> {
 	private final List<String> fieldNames;
 
 	/**
 	 * Constructeur.
 	 */
-	public DSLDefinitionEntryRule(final List<String> fieldNames) {
+	public DslDefinitionEntryRule(final List<String> fieldNames) {
 		Assertion.checkNotNull(fieldNames);
 		//----------------------------------------------------------------------
 		this.fieldNames = fieldNames;
@@ -66,12 +66,12 @@ public final class DSLDefinitionEntryRule extends AbstractRule<DSLDefinitionEntr
 				SPACES,//
 				new FirstOfRule(WORD, WORDS),//4
 				SPACES,//
-				new OptionRule<>(DSLSyntaxRules.OBJECT_SEPARATOR)//
+				new OptionRule<>(DslSyntaxRules.OBJECT_SEPARATOR)//
 		);
 	}
 
 	@Override
-	protected DSLDefinitionEntry handle(final List<?> parsing) {
+	protected DslDefinitionEntry handle(final List<?> parsing) {
 		final String fieldName = (String) ((Choice) parsing.get(0)).getResult();
 		final List<String> definitionKeys;
 
@@ -89,6 +89,6 @@ public final class DSLDefinitionEntryRule extends AbstractRule<DSLDefinitionEntr
 			default:
 				throw new IllegalStateException();
 		}
-		return new DSLDefinitionEntry(fieldName, definitionKeys);
+		return new DslDefinitionEntry(fieldName, definitionKeys);
 	}
 }

@@ -29,19 +29,19 @@ import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
 import io.vertigo.dynamo.impl.environment.kernel.meta.EntityProperty;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionBuilder;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
-import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DSLDefinitionBody;
-import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DSLDefinitionEntry;
-import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DSLPropertyEntry;
+import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionBody;
+import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
+import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
 
 import java.util.ArrayList;
 import java.util.List;
 
-final class DSLInnerDefinitionRule extends AbstractRule<DSLDefinitionEntry, List<?>> {
+final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List<?>> {
 	private final DynamicDefinitionRepository dynamicModelRepository;
 	private final String entityName;
 	private final Entity entity;
 
-	DSLInnerDefinitionRule(final DynamicDefinitionRepository dynamicModelRepository, final String entityName, final Entity entity) {
+	DslInnerDefinitionRule(final DynamicDefinitionRepository dynamicModelRepository, final String entityName, final Entity entity) {
 		Assertion.checkNotNull(dynamicModelRepository);
 		Assertion.checkArgNotEmpty(entityName);
 		Assertion.checkNotNull(entity);
@@ -54,37 +54,37 @@ final class DSLInnerDefinitionRule extends AbstractRule<DSLDefinitionEntry, List
 
 	@Override
 	protected Rule<List<?>> createMainRule() {
-		final DSLDefinitionBodyRule definitionBodyRule = new DSLDefinitionBodyRule(dynamicModelRepository, entity);
+		final DslDefinitionBodyRule definitionBodyRule = new DslDefinitionBodyRule(dynamicModelRepository, entity);
 		return new SequenceRule(//"InnerDefinition"
 				new TermRule(entityName), //
-				DSLSyntaxRules.SPACES,//
-				DSLSyntaxRules.WORD,//2
-				DSLSyntaxRules.SPACES,//
+				DslSyntaxRules.SPACES,//
+				DslSyntaxRules.WORD,//2
+				DslSyntaxRules.SPACES,//
 				definitionBodyRule,//4
-				DSLSyntaxRules.SPACES,//
-				new OptionRule<>(DSLSyntaxRules.OBJECT_SEPARATOR)//
+				DslSyntaxRules.SPACES,//
+				new OptionRule<>(DslSyntaxRules.OBJECT_SEPARATOR)//
 		);
 	}
 
 	@Override
-	protected DSLDefinitionEntry handle(final List<?> parsing) {
+	protected DslDefinitionEntry handle(final List<?> parsing) {
 		//Dans le cas des sous définition :: field [PRD_XXX]
 
 		final String definitionName = (String) parsing.get(2);
-		final DSLDefinitionBody definitionBody = (DSLDefinitionBody) parsing.get(4);
+		final DslDefinitionBody definitionBody = (DslDefinitionBody) parsing.get(4);
 
 		final DynamicDefinitionBuilder dynamicDefinitionBuilder = dynamicModelRepository.createDynamicDefinitionBuilder(definitionName, entity, null);
 		populateDefinition(definitionBody, dynamicDefinitionBuilder);
 
 		//---
-		return new DSLDefinitionEntry(entityName, dynamicDefinitionBuilder.build());
+		return new DslDefinitionEntry(entityName, dynamicDefinitionBuilder.build());
 	}
 
 	/**
 	 * Peuple la définition à partir des éléments trouvés.
 	 */
-	private static void populateDefinition(final DSLDefinitionBody definitionBody, final DynamicDefinitionBuilder dynamicDefinitionBuilder) {
-		for (final DSLDefinitionEntry fieldDefinitionEntry : definitionBody.getDefinitionEntries()) {
+	private static void populateDefinition(final DslDefinitionBody definitionBody, final DynamicDefinitionBuilder dynamicDefinitionBuilder) {
+		for (final DslDefinitionEntry fieldDefinitionEntry : definitionBody.getDefinitionEntries()) {
 			// ------------------------------------------------------------------
 			// 1.On vérifie que le champ existe pour la metaDefinition
 			// et qu'elle n'est pas déjà enregistrée sur l'objet.
@@ -97,7 +97,7 @@ final class DSLInnerDefinitionRule extends AbstractRule<DSLDefinitionEntry, List
 				dynamicDefinitionBuilder.withDefinitions(fieldDefinitionEntry.getFieldName(), toDefinitionKeys(fieldDefinitionEntry.getDefinitionKeys()));
 			}
 		}
-		for (final DSLPropertyEntry fieldPropertyEntry : definitionBody.getPropertyEntries()) {
+		for (final DslPropertyEntry fieldPropertyEntry : definitionBody.getPropertyEntries()) {
 			//			// On vérifie que la propriété est enregistrée sur la metaDefinition
 			//			Assertion.precondition(definition.getEntity().getPropertySet().contains(fieldPropertyEntry.getProperty()), "Propriété {0} non enregistré sur {1}",
 			//					fieldPropertyEntry.getProperty(), definition.getEntity().getName());

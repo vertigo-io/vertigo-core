@@ -20,7 +20,7 @@ package io.vertigo.dynamo.environment.plugins.loaders.kpr.definition;
 
 import io.vertigo.commons.parser.NotFoundException;
 import io.vertigo.commons.parser.Parser;
-import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLWordsRule;
+import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslWordsRule;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public final class DslWordListRuleTest {
-	private final DSLWordsRule wordListRule = new DSLWordsRule();
+	private final DslWordsRule wordListRule = new DslWordsRule();
 
 	@Test
 	public void testList0() throws NotFoundException {

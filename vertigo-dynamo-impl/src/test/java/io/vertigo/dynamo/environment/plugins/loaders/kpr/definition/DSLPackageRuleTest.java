@@ -20,13 +20,13 @@ package io.vertigo.dynamo.environment.plugins.loaders.kpr.definition;
 
 import io.vertigo.commons.parser.NotFoundException;
 import io.vertigo.commons.parser.Parser;
-import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLPackageRule;
+import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslPackageRule;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 public final class DslPackageRuleTest {
-	private static final DSLPackageRule packageRule = new DSLPackageRule();
+	private static final DslPackageRule packageRule = new DslPackageRule();
 
 	@Test
 	public void testExpression() throws NotFoundException {

@@ -22,7 +22,7 @@ import io.vertigo.commons.parser.NotFoundException;
 import io.vertigo.commons.parser.Parser;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
-import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLDynamicDefinitionRule;
+import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslDynamicDefinitionRule;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,7 +32,7 @@ public class DslDefinitionRuleTest {
 
 	@Test
 	public void test1() throws NotFoundException {
-		final DSLDynamicDefinitionRule definitionRule = new DSLDynamicDefinitionRule("create", dynamicDefinitionRepository);
+		final DslDynamicDefinitionRule definitionRule = new DslDynamicDefinitionRule("create", dynamicDefinitionRepository);
 
 		final Parser<DynamicDefinition> parser = definitionRule.createParser();
 		parser.parse("create Formatter FMT_TEST { args : \"UPPER\" }", 0);
@@ -48,7 +48,7 @@ public class DslDefinitionRuleTest {
 	//		)
 	@Test
 	public void test2() throws NotFoundException {
-		final DSLDynamicDefinitionRule definitionRule = new DSLDynamicDefinitionRule("create", dynamicDefinitionRepository);
+		final DslDynamicDefinitionRule definitionRule = new DslDynamicDefinitionRule("create", dynamicDefinitionRepository);
 
 		final Parser<DynamicDefinition> parser = definitionRule.createParser();
 		parser.parse("create Domain DO_CODE_POSTAL { dataType : String ,  formatter:FMT_DEFAULT, constraint : [ CK_CODE_POSTAL ]   } ", 0);
@@ -57,7 +57,7 @@ public class DslDefinitionRuleTest {
 
 	@Test
 	public void testTemplate() throws NotFoundException {
-		final DSLDynamicDefinitionRule DynamicDefinitionRule = new DSLDynamicDefinitionRule("alter", dynamicDefinitionRepository);
+		final DslDynamicDefinitionRule DynamicDefinitionRule = new DslDynamicDefinitionRule("alter", dynamicDefinitionRepository);
 		DynamicDefinitionRule.createParser().parse("alter Formatter FMT_DEFAULT {args : \"UPPER\"}", 0);
 	}
 }

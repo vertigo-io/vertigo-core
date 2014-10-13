@@ -30,7 +30,7 @@ import java.util.List;
  * 
  * @author pchretien
  */
-public final class DSLDefinitionEntry {
+public final class DslDefinitionEntry {
 	/**
 	 * Obligatoire
 	 */
@@ -44,7 +44,7 @@ public final class DSLDefinitionEntry {
 	 * @param definitionKeyList Liste des clés de définition
 	 * @param fieldName Nom du champ
 	 */
-	public DSLDefinitionEntry(final String fieldName, final List<String> definitionKeyList) {
+	public DslDefinitionEntry(final String fieldName, final List<String> definitionKeyList) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkNotNull(definitionKeyList);
 		// ----------------------------------------------------------------------
@@ -59,7 +59,7 @@ public final class DSLDefinitionEntry {
 	 * @param fieldName Nom du champ
 	 * @param definition Définition
 	 */
-	public DSLDefinitionEntry(final String fieldName, final DynamicDefinition definition) {
+	public DslDefinitionEntry(final String fieldName, final DynamicDefinition definition) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkNotNull(definition);
 		// ----------------------------------------------------------------------

@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.kpr.rules;
 
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLSyntaxRules.PAIR_SEPARATOR;
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLSyntaxRules.PROPERTY_VALUE;
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLSyntaxRules.QUOTATION_MARK;
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLSyntaxRules.SPACES;
+import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.PAIR_SEPARATOR;
+import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.PROPERTY_VALUE;
+import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.QUOTATION_MARK;
+import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.SPACES;
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
 import io.vertigo.commons.parser.FirstOfRule;
@@ -32,7 +32,7 @@ import io.vertigo.commons.parser.TermRule;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.impl.environment.kernel.meta.EntityProperty;
-import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DSLPropertyEntry;
+import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,13 +51,13 @@ import java.util.Set;
  *
  * @author pchretien
  */
-public final class DSLPropertyEntryRule extends AbstractRule<DSLPropertyEntry, List<?>> {
+public final class DslPropertyEntryRule extends AbstractRule<DslPropertyEntry, List<?>> {
 	private final Map<String, EntityProperty> entityProperties;
 
 	/**
 	 * <propertyName> : "<propertyvalue>";
 	 */
-	public DSLPropertyEntryRule(final Set<EntityProperty> entityProperties) {
+	public DslPropertyEntryRule(final Set<EntityProperty> entityProperties) {
 		super();
 		Assertion.checkNotNull(entityProperties);
 		//----------------------------------------------------------------------
@@ -84,14 +84,14 @@ public final class DSLPropertyEntryRule extends AbstractRule<DSLPropertyEntry, L
 				PROPERTY_VALUE,//5
 				QUOTATION_MARK,//
 				SPACES,//
-				new OptionRule<>(DSLSyntaxRules.OBJECT_SEPARATOR)//
+				new OptionRule<>(DslSyntaxRules.OBJECT_SEPARATOR)//
 		);
 	}
 
 	@Override
-	protected DSLPropertyEntry handle(final List<?> parsing) {
+	protected DslPropertyEntry handle(final List<?> parsing) {
 		final String propertyName = (String) ((Choice) parsing.get(0)).getResult();
 		final String propertyValue = (String) parsing.get(5);
-		return new DSLPropertyEntry(entityProperties.get(propertyName), propertyValue);
+		return new DslPropertyEntry(entityProperties.get(propertyName), propertyValue);
 	}
 }

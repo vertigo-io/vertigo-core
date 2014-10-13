@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.kpr.rules;
 
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLSyntaxRules.OBJECT_END;
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLSyntaxRules.OBJECT_START;
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DSLSyntaxRules.SPACES;
+import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.OBJECT_END;
+import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.OBJECT_START;
+import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.SPACES;
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
 import io.vertigo.commons.parser.FirstOfRule;
@@ -31,9 +31,9 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.dynamo.impl.environment.kernel.meta.EntityAttribute;
 import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
-import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DSLDefinitionBody;
-import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DSLDefinitionEntry;
-import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DSLPropertyEntry;
+import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionBody;
+import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
+import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +47,7 @@ import java.util.List;
  *
  * @author pchretien
  */
-public final class DSLDefinitionBodyRule extends AbstractRule<DSLDefinitionBody, List<?>> {
+public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody, List<?>> {
 	private final DynamicDefinitionRepository dynamicModelRepository;
 	private final Entity entity;
 
@@ -55,7 +55,7 @@ public final class DSLDefinitionBodyRule extends AbstractRule<DSLDefinitionBody,
 	 * Constructeur.
 	 * @param dynamicModelRepository DynamicModelRepository
 	 */
-	public DSLDefinitionBodyRule(final DynamicDefinitionRepository dynamicModelRepository, final Entity entity) {
+	public DslDefinitionBodyRule(final DynamicDefinitionRepository dynamicModelRepository, final Entity entity) {
 		Assertion.checkNotNull(dynamicModelRepository);
 		Assertion.checkNotNull(entity);
 		//----------------------------------------------------------------------
@@ -78,11 +78,11 @@ public final class DSLDefinitionBodyRule extends AbstractRule<DSLDefinitionBody,
 		for (final EntityAttribute attribute : entity.getAttributes()) {
 			final String attributeName = attribute.getName();
 			attributeNames.add(attributeName);
-			innerDefinitionRules.add(new DSLInnerDefinitionRule(dynamicModelRepository, attributeName, attribute.getEntity()));
+			innerDefinitionRules.add(new DslInnerDefinitionRule(dynamicModelRepository, attributeName, attribute.getEntity()));
 		}
 
-		final DSLPropertyEntryRule xPropertyEntryRule = new DSLPropertyEntryRule(entity.getProperties());
-		final DSLDefinitionEntryRule xDefinitionEntryRule = new DSLDefinitionEntryRule(attributeNames);
+		final DslPropertyEntryRule xPropertyEntryRule = new DslPropertyEntryRule(entity.getProperties());
+		final DslDefinitionEntryRule xDefinitionEntryRule = new DslDefinitionEntryRule(attributeNames);
 		final FirstOfRule firstOfRule = new FirstOfRule(//
 				xPropertyEntryRule, // 0
 				xDefinitionEntryRule, // 1
@@ -100,25 +100,25 @@ public final class DSLDefinitionBodyRule extends AbstractRule<DSLDefinitionBody,
 	}
 
 	@Override
-	protected DSLDefinitionBody handle(final List<?> parsing) {
+	protected DslDefinitionBody handle(final List<?> parsing) {
 		final List<Choice> many = (List<Choice>) parsing.get(2);
 
-		final List<DSLDefinitionEntry> fieldDefinitionEntries = new ArrayList<>();
-		final List<DSLPropertyEntry> fieldPropertyEntries = new ArrayList<>();
+		final List<DslDefinitionEntry> fieldDefinitionEntries = new ArrayList<>();
+		final List<DslPropertyEntry> fieldPropertyEntries = new ArrayList<>();
 		for (final Choice item : many) {
 			switch (item.getValue()) {
 				case 0:
 					//Soit on est en présence d'une propriété standard
-					final DSLPropertyEntry propertyEntry = (DSLPropertyEntry) item.getResult();
+					final DslPropertyEntry propertyEntry = (DslPropertyEntry) item.getResult();
 					fieldPropertyEntries.add(propertyEntry);
 					break;
 				case 1:
-					final DSLDefinitionEntry xDefinitionEntry = (DSLDefinitionEntry) item.getResult();
+					final DslDefinitionEntry xDefinitionEntry = (DslDefinitionEntry) item.getResult();
 					fieldDefinitionEntries.add(xDefinitionEntry);
 					break;
 				case 2:
 					final Choice subTuple = (Choice) item.getResult();
-					fieldDefinitionEntries.add((DSLDefinitionEntry) subTuple.getResult());
+					fieldDefinitionEntries.add((DslDefinitionEntry) subTuple.getResult());
 					break;
 				case 3:
 					break;
@@ -126,6 +126,6 @@ public final class DSLDefinitionBodyRule extends AbstractRule<DSLDefinitionBody,
 					throw new IllegalArgumentException("Type of rule not supported");
 			}
 		}
-		return new DSLDefinitionBody(fieldDefinitionEntries, fieldPropertyEntries);
+		return new DslDefinitionBody(fieldDefinitionEntries, fieldPropertyEntries);
 	}
 }

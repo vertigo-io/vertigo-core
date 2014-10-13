@@ -26,7 +26,7 @@ import io.vertigo.dynamo.impl.environment.kernel.meta.EntityProperty;
  *
  * @author pchretien
  */
-public final class DSLPropertyEntry {
+public final class DslPropertyEntry {
 	private final String propertyValue;
 	private final EntityProperty property;
 
@@ -35,7 +35,7 @@ public final class DSLPropertyEntry {
 	 * @param property Propriété
 	 * @param propertyValue Valeur de la propriété
 	 */
-	public DSLPropertyEntry(final EntityProperty property, final String propertyValue) {
+	public DslPropertyEntry(final EntityProperty property, final String propertyValue) {
 		Assertion.checkNotNull(property);
 		//----------------------------------------------------------------------
 		this.property = property;
