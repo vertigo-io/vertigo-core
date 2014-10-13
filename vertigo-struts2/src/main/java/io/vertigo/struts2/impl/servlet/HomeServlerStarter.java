@@ -63,7 +63,7 @@ final class HomeServlerStarter {
 		} catch (final Throwable t) {
 			LOG.error(t.getMessage(), t);
 			t.printStackTrace();
-			throw new RuntimeException("Probl�me d'initialisation de l'application", t);
+			throw new RuntimeException("Problème d'initialisation de l'application", t);
 		} finally {
 			if (LOG.isInfoEnabled()) {
 				LOG.info("Temps d'initialisation du listener " + (System.currentTimeMillis() - start));
@@ -74,7 +74,7 @@ final class HomeServlerStarter {
 	/**
 	 * Création des propriétés à partir des différents fichiers de configuration. - Web XML - Fichier externe défini par
 	 * la valeur de la propriété système : external-properties
-	 * 
+	 *
 	 * @return Properties
 	 */
 	private static Properties createProperties(final ServletContext servletContext) {

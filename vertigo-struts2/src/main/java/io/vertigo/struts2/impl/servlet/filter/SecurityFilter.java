@@ -37,7 +37,7 @@ import javax.servlet.http.HttpSession;
 
 /**
  * Filtre de gestion des sessions utilisateurs bindées sur HTTP.
- * 
+ *
  * @author npiedeloup
  */
 public final class SecurityFilter extends AbstractFilter {
@@ -49,6 +49,8 @@ public final class SecurityFilter extends AbstractFilter {
 
 	private static final String NO_AUTHENTIFICATION_PATTERN_PARAM_NAME = "url-no-authentification";
 
+	private static final String CHECK_REQUEST_ACCESS_PARAM_NAME = "check-request-access";
+
 	/**
 	 * Le gestionnaire de sécurité
 	 */
@@ -56,11 +58,14 @@ public final class SecurityFilter extends AbstractFilter {
 
 	private Option<Pattern> noAuthentificationPattern;
 
+	private boolean checkRequestAccess = false;
+
 	/** {@inheritDoc} */
 	@Override
 	public void doInit() {
 		securityManager = Home.getComponentSpace().resolve(KSecurityManager.class);
 		noAuthentificationPattern = parsePattern(getFilterConfig().getInitParameter(NO_AUTHENTIFICATION_PATTERN_PARAM_NAME));
+		checkRequestAccess = Boolean.valueOf(getFilterConfig().getInitParameter(CHECK_REQUEST_ACCESS_PARAM_NAME));
 	}
 
 	/** {@inheritDoc} */
@@ -93,8 +98,10 @@ public final class SecurityFilter extends AbstractFilter {
 				//il ne faut pas continuer
 				if (!hasSession) {
 					//Par défaut on considère que la session a expirer
-					throw new ServletException(new SessionException("Session expir�e"));
+					throw new ServletException(new SessionException("Session expirée"));
 				}
+			} else if (checkRequestAccess && needsAuthentification && !securityManager.isAuthorized("HttpServletRequest", httpRequest, ".*")) {
+				httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
 			} else {
 				// ---------------------------------------------------------------------
 				chain.doFilter(request, response);
@@ -110,7 +117,7 @@ public final class SecurityFilter extends AbstractFilter {
 	// ==========================================================================
 	/**
 	 * Lie l'utilisateur à la session en cours.
-	 * 
+	 *
 	 * @param request Request
 	 * @param user User
 	 */
@@ -124,7 +131,7 @@ public final class SecurityFilter extends AbstractFilter {
 
 	/**
 	 * Retourne la session utilisateur.
-	 * 
+	 *
 	 * @return Session utilisateur
 	 * @param request HTTPRequest
 	 */
@@ -143,7 +150,7 @@ public final class SecurityFilter extends AbstractFilter {
 
 	/**
 	 * Récupération de l'utilisateur lié à la session.
-	 * 
+	 *
 	 * @param session HttpSession
 	 * @return UserSession Utilisateur bindé sur la session (peut être null)
 	 */
