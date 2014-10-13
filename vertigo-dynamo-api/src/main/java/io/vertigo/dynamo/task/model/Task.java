@@ -18,15 +18,20 @@
  */
 package io.vertigo.dynamo.task.model;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Gestion des taches.
- * 
+ *
  * Les taches sont implémentés par les classes dérivées de {@link io.vertigo.dynamo.task.model.TaskEngine}
- * 
+ *
  * Une tache peut être perçue comme une instance d'une {@link io.vertigo.dynamo.task.metamodel.TaskDefinition} ;
  * celle-ci doit être préalablement déclarée.
  *
@@ -35,7 +40,7 @@ import java.util.Map;
  * -  Etape 2 : définition des attributs (ou paramètres) d'entrées. <code>srv.setXXX(...);</code>
  * -  Etape 3 : exécution de la tache <code>srv.execute();</code>
  * -  Etape 4 : récupération des paramètres de sorties. <code>srv.getXXX(...);</code>
- * 
+ *
  * Notes :
  * -  Une tache s'exécute dans le cadre de la transaction courante.
  * -  Une tache n'est pas sérializable ; elle doit en effet posséder une durée de vie la plus courte possible.
@@ -43,9 +48,13 @@ import java.util.Map;
  */
 public final class Task {
 	/**
-	 * Conteneur des données et de l'état du service
+	 * Map conservant les paramètres d'entrée et de sortie de la tache.
 	 */
-	private final TaskDataSet dataSet;
+	private final Map<TaskAttribute, Object> taskAttributes;
+	/**
+	 * Définition de la tache.
+	 */
+	private final TaskDefinition taskDefinition;
 
 	/**
 	 * Constructeur.
@@ -53,8 +62,28 @@ public final class Task {
 	 *
 	 * @param dataSet Données de la tache.
 	 */
-	Task(final TaskDefinition taskDefinition, final Map<String, Object> params) {
-		this.dataSet = 	new TaskDataSet(taskDefinition, true, params);
+	Task(final TaskDefinition taskDefinition, final Map<TaskAttribute, Object> taskAttributes) {
+		Assertion.checkNotNull(taskDefinition);
+		Assertion.checkNotNull(taskAttributes);
+		//----------------------------------------------------------------------
+		this.taskDefinition = taskDefinition;
+		for (final Entry<TaskAttribute, Object> entry : taskAttributes.entrySet()) {
+			Assertion.checkArgument(entry.getKey().isIn(), "only 'in' taskAttributes are allowed");
+		}
+		//---
+		this.taskAttributes = Collections.unmodifiableMap(new HashMap<>(taskAttributes));
+		checkValues();
+	}
+
+	private void checkValues() {
+		for (final TaskAttribute taskAttribute : taskDefinition.getAttributes()) {
+			if (taskAttribute.isIn()) {
+				//on ne prend que les attributes correspondant au mode.
+				//We check all attributes
+				final Object value = taskAttributes.get(taskAttribute);
+				taskAttribute.checkAttribute(value);
+			}
+		}
 	}
 
 	/**
@@ -66,13 +95,16 @@ public final class Task {
 	 * @return Valeur
 	 */
 	public <V> V getValue(final String attributeName) {
-		return dataSet.<V> getValue(attributeName);
+		// on préfère centraliser le cast ici plutot que dans les classes générées.
+		final TaskAttribute taskAttribute = taskDefinition.getAttribute(attributeName);
+		Assertion.checkArgument(taskAttribute.isIn(), "only 'in' taskAttributes are allowed");
+		return (V) taskAttributes.get(taskAttribute);
 	}
 
 	/**
 	 * @return Définition de la task.
 	 */
 	public TaskDefinition getDefinition() {
-		return dataSet.getTaskDefinition();
+		return taskDefinition;
 	}
 }

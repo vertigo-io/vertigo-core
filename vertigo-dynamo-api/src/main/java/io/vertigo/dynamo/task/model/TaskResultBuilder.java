@@ -20,6 +20,7 @@ package io.vertigo.dynamo.task.model;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
+import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 
 import java.util.HashMap;
@@ -30,9 +31,8 @@ import java.util.Map;
  * @author dchallas
  */
 final class TaskResultBuilder implements Builder<TaskResult> {
-	private final Map<String, Object> params = new HashMap<>();
+	private final Map<TaskAttribute, Object> taskAttributes = new HashMap<>();
 	private final TaskDefinition taskDefinition;
-
 
 	/**
 	 * Initialise la tache.
@@ -55,13 +55,14 @@ final class TaskResultBuilder implements Builder<TaskResult> {
 	 * @param o Valeur
 	 */
 	TaskResultBuilder withValue(final String attributeName, final Object value) {
-		params.put(attributeName, value);
+		final TaskAttribute taskAttribute = taskDefinition.getAttribute(attributeName);
+		taskAttributes.put(taskAttribute, value);
 		return this;
 	}
 
 	@Override
 	public TaskResult build() {
-		return new TaskResult(taskDefinition, params);
+		return new TaskResult(taskDefinition, taskAttributes);
 	}
 
 }

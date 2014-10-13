@@ -18,9 +18,14 @@
  */
 package io.vertigo.dynamo.task.model;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Résultat de l'exécution d'une tache.
@@ -28,9 +33,13 @@ import java.util.Map;
  */
 public final class TaskResult {
 	/**
-	 * Conteneur des données et de l'état du service
+	 * Map conservant les paramètres d'entrée et de sortie de la tache.
 	 */
-	private final TaskDataSet dataSet;
+	private final Map<TaskAttribute, Object> taskAttributes;
+	/**
+	 * Définition de la tache.
+	 */
+	private final TaskDefinition taskDefinition;
 
 	/**
 	 * Constructeur.
@@ -38,8 +47,28 @@ public final class TaskResult {
 	 *
 	 * @param dataSet Données de la tache.
 	 */
-	TaskResult(final TaskDefinition taskDefinition, final Map<String, Object> params) {
-		this.dataSet = new TaskDataSet(taskDefinition, false, params);
+	TaskResult(final TaskDefinition taskDefinition, final Map<TaskAttribute, Object> taskAttributes) {
+		Assertion.checkNotNull(taskDefinition);
+		Assertion.checkNotNull(taskAttributes);
+		//----------------------------------------------------------------------
+		this.taskDefinition = taskDefinition;
+		for (final Entry<TaskAttribute, Object> entry : taskAttributes.entrySet()) {
+			Assertion.checkArgument(!entry.getKey().isIn(), "only 'out' taskAttributes are allowed");
+		}
+		//---
+		this.taskAttributes = Collections.unmodifiableMap(new HashMap<>(taskAttributes));
+		checkValues();
+	}
+
+	private void checkValues() {
+		for (final TaskAttribute taskAttribute : taskDefinition.getAttributes()) {
+			if (!taskAttribute.isIn()) {
+				//on ne prend que les attributes correspondant au mode output.
+				//We check all attributes
+				final Object value = this.taskAttributes.get(taskAttribute);
+				taskAttribute.checkAttribute(value);
+			}
+		}
 	}
 
 	/**
@@ -51,6 +80,9 @@ public final class TaskResult {
 	 * @return Valeur
 	 */
 	public <V> V getValue(final String attributeName) {
-		return dataSet.<V> getValue(attributeName);
+		// on préfère centraliser le cast ici plutot que dans les classes générées.
+		final TaskAttribute taskAttribute = taskDefinition.getAttribute(attributeName);
+		Assertion.checkArgument(!taskAttribute.isIn(), "only 'out' taskAttributes are allowed");
+		return (V) taskAttributes.get(taskAttribute);
 	}
 }

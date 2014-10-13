@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.task.metamodel;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.dynamo.domain.metamodel.ConstraintException;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 
 /**
@@ -27,9 +28,9 @@ import io.vertigo.dynamo.domain.metamodel.Domain;
  *  - d'un type primitif
  *  - d'un type complexe : DTO ou DTC
  * Dans tous les cas il s'agit d'un {@link io.vertigo.dynamo.domain.metamodel.Domain}.
- * 
+ *
  * Le paramètre peut être :
- * 
+ *
  *  - en entrée, ou en sortie
  *  - obligatoire ou facultatif
  *
@@ -109,6 +110,24 @@ public final class TaskAttribute {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return "{ name : "+ name + ", domain :" + domain + ", in :" + in + ", notnull :" + notNull+ "]";
+		return "{ name : " + name + ", domain :" + domain + ", in :" + in + ", notnull :" + notNull + "]";
+	}
+
+	/**
+	 * Vérifie la cohérence des arguments d'un Attribute
+	 * Vérifie que l'objet est cohérent avec le type défini sur l'attribut.
+	 * @param attributeName Nom de l'attribut de tache
+	 * @param value Object primitif ou DtObject ou bien DtList
+	 */
+	public void checkAttribute(final Object value) {
+		if (isNotNull()) {
+			Assertion.checkNotNull(value, "Attribut task {0} ne doit pas etre null (cf. paramétrage task)", getName());
+		}
+		try {
+			getDomain().checkValue(value);
+		} catch (final ConstraintException e) {
+			//On retransforme en Runtime pour conserver une API sur les getters et setters.
+			throw new RuntimeException(e);
+		}
 	}
 }
