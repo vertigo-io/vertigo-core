@@ -1,0 +1,19 @@
+index :
+	analysis :
+		analyzer :
+			code :
+				tokenizer : keyword
+				filter : [standard]
+			text_fr :
+				tokenizer : standard
+				filter : [standard, lowercase, snowball, elision]
+		tokenizer :
+			keyword :
+				type : keyword
+		filter :
+			snowball:
+				type:	snowball
+				language: French
+			elision:
+				type: elision
+				articles: [l, m, t, qu, n, s, j, d]

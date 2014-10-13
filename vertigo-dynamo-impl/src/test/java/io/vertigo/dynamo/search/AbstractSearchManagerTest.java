@@ -134,6 +134,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testIndexAllQuery() {
 		index(true);
+		waitIndexation();
 		final long size = query("*:*");
 		Assert.assertEquals(carDataBase.size(), size);
 	}
@@ -145,6 +146,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testQuery() {
 		index(false);
+		waitIndexation();
 		long size;
 		size = query("*:*");
 		Assert.assertEquals(carDataBase.size(), size);
@@ -158,20 +160,23 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		size = query("MAKE:Vol*"); //On compte les volkswagen
 		Assert.assertEquals(carDataBase.getByMake("volkswagen").size(), (int) size);
 
+		size = query("MAKE:vol*"); //On compte les volkswagen
+		Assert.assertEquals(0L, (int) size); //Les constructeur sont des mots clés donc sensible à la casse (y compris en wildcard)
+
 		size = query("YEAR:[* TO 2005]"); //On compte les véhicules avant 2005
 		Assert.assertEquals(carDataBase.before(2005), size);
 
 		size = query("DESCRIPTION:panoRAmique");
-		Assert.assertEquals(size, carDataBase.containsDescription("panoramique"));
+		Assert.assertEquals(carDataBase.containsDescription("panoramique"), size);
 
 		size = query("DESCRIPTION:clim");
-		Assert.assertEquals(size, carDataBase.containsDescription("clim"));
+		Assert.assertEquals(carDataBase.containsDescription("clim"), size);
 
 		size = query("DESCRIPTION:avenir");
-		Assert.assertEquals(size, carDataBase.containsDescription("avenir"));
+		Assert.assertEquals(carDataBase.containsDescription("avenir"), size);
 
 		size = query("DESCRIPTION:l'avenir");
-		Assert.assertEquals(size, carDataBase.containsDescription("l'avenir"));
+		Assert.assertEquals(carDataBase.containsDescription("l'avenir"), size);
 	}
 
 	/**
@@ -236,6 +241,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testFacetQueryByTerm() {
 		index(false);
+		waitIndexation();
 		final FacetedQueryResult<Car, SearchQuery> result = facetQuery("*:*");
 		testFacetResultByTerm(result);
 	}
@@ -284,8 +290,9 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		index(false);
 		final long size = query("*:*");
 		Assert.assertEquals(carDataBase.size(), size);
-		//On en supprime 2 
+		//On en supprime 2
 		remove(2);
+		waitIndexation();
 		final long resize = query("*:*");
 		Assert.assertEquals(carDataBase.size() - 2, resize);
 	}
@@ -306,8 +313,9 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 				nbPeugeot++;
 			}
 		}
-		//On supprime toute les Peugeots 
+		//On supprime toute les Peugeots
 		remove("MAKE:Peugeot");
+		waitIndexation();
 		final long resize = query("*:*");
 		Assert.assertEquals(carDataBase.size() - nbPeugeot, resize);
 	}
@@ -321,7 +329,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		index(false);
 		final long size = query("*:*");
 		Assert.assertEquals(carDataBase.size(), size);
-		//On supprime tout 
+		//On supprime tout
 		remove("*:*");
 		final long resize = query("*:*");
 		Assert.assertEquals(0L, resize);
@@ -360,7 +368,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private static FacetedQuery addFacetQuery(final String facetName, final String facetValueLabel, final FacetedQueryResult<Car, ?> result) {
-		FacetValue facetValue = null; //pb d'initialisation, et assert.notNull ne suffit pas 
+		FacetValue facetValue = null; //pb d'initialisation, et assert.notNull ne suffit pas
 		final Facet yearFacet = getFacetByName(result, facetName);
 		for (final Entry<FacetValue, Long> entry : yearFacet.getFacetValues().entrySet()) {
 			if (entry.getKey().getLabel().getDisplay().toLowerCase().contains(facetValueLabel)) {
@@ -452,16 +460,17 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 			searchManager.getSearchServices().putAll(carIndexDefinition, indexes);
 		} else {
 			//Indexation unitaire
-			//Indexation des cars de la base 
+			//Indexation des cars de la base
 			for (final Car car : carDataBase) {
 				final Index<Car, Car> index = Index.createIndex(carIndexDefinition, createURI(car), car, car);
 				searchManager.getSearchServices().put(carIndexDefinition, index);
 			}
 		}
+		waitIndexation();
 	}
 
 	private void doRemove(final int count) {
-		//Suppression de n voitures 
+		//Suppression de n voitures
 		for (long id = 0; id < count; id++) {
 			searchManager.getSearchServices().remove(carIndexDefinition, createURI(id));
 		}
@@ -473,22 +482,23 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private long doQuery(final String query) {
-		//recherche 
+		//recherche
 		final ListFilter listFilter = new ListFilter(query);
 		final SearchQuery searchQuery = SearchQuery.createSearchQuery(carIndexDefinition, listFilter);
 		return doQuery(searchQuery).getCount();
 	}
 
 	private <D extends DtObject> D doQueryAndGetFirst(final String query, final String sortField, final boolean sortAsc) {
-		//recherche 
+		//recherche
 		final ListFilter listFilter = new ListFilter(query);
 		final SearchQuery searchQuery = SearchQuery.createSearchQuery(carIndexDefinition, listFilter, carIndexDefinition.getIndexDtDefinition().getField(sortField), sortAsc);
 		final DtList<D> dtList = (DtList<D>) doQuery(searchQuery).getDtList();
+		Assert.assertFalse("Result list was empty", dtList.isEmpty());
 		return dtList.get(0);
 	}
 
 	private FacetedQueryResult<DtObject, SearchQuery> doQuery(final SearchQuery searchQuery) {
-		//recherche 
+		//recherche
 		final FacetedQuery facetedQuery = new FacetedQuery(carQueryDefinition, Collections.<ListFilter> emptyList());
 		return searchManager.getSearchServices().loadList(searchQuery, facetedQuery);
 	}
@@ -500,7 +510,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		return searchManager.getSearchServices().loadList(searchQuery, facetedQuery);
 	}
 
-	//		//recherche 
+	//		//recherche
 	//		final SearchResult<Car> searchResult = searchManager.getSearchServices().loadList(carQueryDefinition, "*:*", Collections.<String> emptyList());
 	//		Assert.assertEquals(expectedCount, searchResult.getCount());
 	//		System.out.println(">>>count = " + searchResult.getCount());
@@ -522,5 +532,13 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 	private static URI<DtObject> createURI(final long id) {
 		return new URI<>(DtObjectUtil.findDtDefinition(Car.class), id);
+	}
+
+	private static void waitIndexation() {
+		try {
+			Thread.sleep(500); //wait index was done
+		} catch (final InterruptedException e) {
+			//rien
+		}
 	}
 }
