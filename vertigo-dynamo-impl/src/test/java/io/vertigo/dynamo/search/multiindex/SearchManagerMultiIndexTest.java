@@ -111,6 +111,7 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 			final Index<Car, Car> index2 = Index.createIndex(carDynIndexDefinition, createURI(car), car, car);
 			searchManager.getSearchServices().put(carDynIndexDefinition, index2);
 		}
+		waitIndexation();
 
 		final long sizeCar = query("*:*", carIndexDefinition);
 		Assert.assertEquals(carDataBase.size(), sizeCar);
@@ -120,7 +121,7 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 	}
 
 	private long query(final String query, final IndexDefinition indexDefinition) {
-		//recherche 
+		//recherche
 		final FacetedQueryDefinition carQueryDefinition = Home.getDefinitionSpace().resolve(QRY_CAR, FacetedQueryDefinition.class);
 		final ListFilter listFilter = new ListFilter(query);
 		final SearchQuery searchQuery = SearchQuery.createSearchQuery(indexDefinition, listFilter);
@@ -132,5 +133,13 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 	private static URI<Car> createURI(final Car car) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Car.class);
 		return new URI<>(dtDefinition, DtObjectUtil.getId(car));
+	}
+
+	private static void waitIndexation() {
+		try {
+			Thread.sleep(1000); //wait index was done
+		} catch (final InterruptedException e) {
+			//rien
+		}
 	}
 }

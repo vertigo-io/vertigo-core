@@ -31,6 +31,7 @@ import java.util.Map;
 public final class IndexFieldNameResolver {
 
 	private final Map<String, String> indexFieldMap;
+	private final Map<String, String> dtFieldMap;
 	private final Map<String, String> replaceIndexFieldMap;
 
 	/**
@@ -41,11 +42,13 @@ public final class IndexFieldNameResolver {
 		Assertion.checkNotNull(indexFieldMap);
 		//---------------------------------------------------------------------
 		this.indexFieldMap = new HashMap<>(indexFieldMap);
+		dtFieldMap = new HashMap<>(indexFieldMap.size());
 		replaceIndexFieldMap = new HashMap<>(indexFieldMap.size());
 		for (final Map.Entry<String, String> entry : indexFieldMap.entrySet()) {
 			if (!entry.getKey().equals(entry.getValue())) {
 				final String regex = "([^\\w])" + entry.getKey() + ":";
 				replaceIndexFieldMap.put(regex, "$1" + entry.getValue() + ":");
+				dtFieldMap.put(entry.getValue(), entry.getKey());
 			}
 		}
 	}
@@ -61,6 +64,18 @@ public final class IndexFieldNameResolver {
 		final String fieldName = dtField.getName();
 		final String indexFieldName = indexFieldMap.get(fieldName);
 		return indexFieldName != null ? indexFieldName : fieldName;
+	}
+
+	/**
+	 * Retourne le nom du champs du dt à partir du champs de l'index.
+	 * @param Nom du champ de l'index
+	 * @return Champs du DT index
+	 */
+	public String obtainDtFieldName(final String indexField) {
+		Assertion.checkArgNotEmpty(indexField);
+		//---------------------------------------------------------------------
+		final String dtFieldName = dtFieldMap.get(indexField);
+		return dtFieldName != null ? dtFieldName : indexField;
 	}
 
 	/**

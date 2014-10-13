@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.search.solr;
+package io.vertigo.dynamo.plugins.search.elasticsearch;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
@@ -29,18 +29,22 @@ import io.vertigo.dynamo.search.IndexFieldNameResolver;
 import io.vertigo.dynamo.search.metamodel.IndexDefinition;
 import io.vertigo.dynamo.search.model.Index;
 
-import org.apache.solr.common.SolrDocument;
-import org.apache.solr.common.SolrInputDocument;
+import java.io.IOException;
+
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.search.SearchHit;
 
 /**
  * Traduction bi directionnelle des objets SOLR en objets logique de recherche.
- * Pseudo Codec : asymétrique par le fait que SOLR gère un objet différent en écriture et lecture.
+ * Pseudo Codec : asymétrique par le fait que ElasticSearch gère un objet différent en écriture et lecture.
  * L'objet lu ne contient pas les données indexées non stockées !
- * @author pchretien
+ * @author pchretien, npiedeloup
  */
-final class SolrDocumentCodec<I extends DtObject, R extends DtObject> {
-	public static final String FULL_RESULT = "FULL_RESULT";
-	public static final String URN = "URI";
+final class ElasticDocumentCodec {
+	/** FieldName containing Full result object. */
+	static final String FULL_RESULT = "FULL_RESULT";
+	//public static final String URN = "URI";
 	//-----------------------
 	private final CodecManager codecManager;
 
@@ -48,65 +52,70 @@ final class SolrDocumentCodec<I extends DtObject, R extends DtObject> {
 	 * Constructeur.
 	 * @param codecManager Manager des codecs
 	 */
-	SolrDocumentCodec(final CodecManager codecManager) {
+	ElasticDocumentCodec(final CodecManager codecManager) {
 		Assertion.checkNotNull(codecManager);
 		//-----------------------------------------------------------------
 		this.codecManager = codecManager;
 	}
 
-	private byte[] encode(final R dto) {
+	private <I extends DtObject> String encode(final I dto) {
 		Assertion.checkNotNull(dto);
 		//----------------------------------------------------------------
 		//	System.out.println(">>>encode : " + dto);
-		return codecManager.getCompressedSerializationCodec().encode(dto);
+		final byte[] data = codecManager.getCompressedSerializationCodec().encode(dto);
+		return codecManager.getBase64Codec().encode(data);
 	}
 
-	private R decode(final byte[] data) {
-		Assertion.checkNotNull(data);
+	private <R extends DtObject> R decode(final String base64Data) {
+		Assertion.checkNotNull(base64Data);
 		//----------------------------------------------------------------
-		//	System.out.println(">>>decode  : " + codecManager.getCompressedSerializationCodec().decode(data));
+		final byte[] data = codecManager.getBase64Codec().decode(base64Data);
 		return (R) codecManager.getCompressedSerializationCodec().decode(data);
 	}
 
 	/**
-	 * Transformation d'un document SOLR en un index.
-	 * Les highligh sont ajoutés avant ou après (non determinable).
+	 * Transformation d'un resultat ElasticSearch en un index.
+	 * Les highlights sont ajoutés avant ou après (non determinable).
+	 * @param <I> Type d'object indexé
+	 * @param <R> Type d'object resultat
 	 * @param indexDefinition Definition de l'index
-	 * @param solrDocument Document SOLR
+	 * @param searchHit Resultat ElasticSearch
 	 * @return Objet logique de recherche
 	 */
-	Index<I, R> solrDocument2Index(final IndexDefinition indexDefinition, final SolrDocument solrDocument) {
+	<I extends DtObject, R extends DtObject> Index<I, R> searchHit2Index(final IndexDefinition indexDefinition, final SearchHit searchHit) {
 		/* On lit du document les données persistantes. */
 		/* 1. URI */
-		final String urn = (String) solrDocument.get(URN);
-
-		final URI uri = io.vertigo.dynamo.domain.model.URI.fromURN(urn);
+		final String urn = searchHit.getId();
+		final URI<I> uri = (URI<I>) io.vertigo.dynamo.domain.model.URI.fromURN(urn);
 
 		/* 2 : Result stocké */
-		final byte[] data = (byte[]) solrDocument.get(FULL_RESULT);
-		final R resultDtObjectdtObject = decode(data);
+		final R resultDtObjectdtObject = decode((String) searchHit.field(FULL_RESULT).getValue());
 		//--------------------------
 		return Index.createResult(indexDefinition, uri, resultDtObjectdtObject);
 	}
 
 	/**
 	 * Transformation d'un index en un document SOLR.
+	 * @param <I> Type d'object indexé
+	 * @param <R> Type d'object resultat
 	 * @param index Objet logique de recherche
 	 * @param indexFieldNameResolver Resolver de nom de champs d'index
 	 * @return Document SOLR
+	 * @throws IOException Json exception
 	 */
-	SolrInputDocument index2SolrInputDocument(final Index<I, R> index, final IndexFieldNameResolver indexFieldNameResolver) {
+	<I extends DtObject, R extends DtObject> XContentBuilder index2XContentBuilder(final Index<I, R> index, final IndexFieldNameResolver indexFieldNameResolver) throws IOException {
 		Assertion.checkNotNull(index);
 		Assertion.checkNotNull(indexFieldNameResolver);
 		//---------------------------------------------------------------------
-		final SolrInputDocument solrInputDocument = new SolrInputDocument();
+
+		final XContentBuilder xContentBuilder = XContentFactory.jsonBuilder();
 
 		/* 1: URI */
-		solrInputDocument.addField(URN, index.getURI().toURN());
-
+		xContentBuilder.startObject();
+		//xContentBuilder.field(URN, index.getURI().toURN());
 		/* 2 : Result stocké */
-		final byte[] result = encode(index.getResultDtObject());
-		solrInputDocument.addField(FULL_RESULT, result);
+		final String result = encode(index.getResultDtObject());
+		xContentBuilder.field(FULL_RESULT, result);
 
 		/* 3 : Les champs du dto index */
 		final DtObject dtIndex = index.getIndexDtObject();
@@ -119,13 +128,14 @@ final class SolrDocumentCodec<I extends DtObject, R extends DtObject> {
 				final String indexFieldName = indexFieldNameResolver.obtainIndexFieldName(dtField);
 				if (value instanceof String) {
 					final String encodedValue = escapeInvalidUTF8Char((String) value);
-					solrInputDocument.addField(indexFieldName, encodedValue);
+					xContentBuilder.field(indexFieldName, encodedValue);
 				} else {
-					solrInputDocument.addField(indexFieldName, value);
+					xContentBuilder.field(indexFieldName, value);
 				}
 			}
 		}
-		return solrInputDocument;
+		xContentBuilder.endObject();
+		return xContentBuilder;
 	}
 
 	private static String escapeInvalidUTF8Char(final String value) {
