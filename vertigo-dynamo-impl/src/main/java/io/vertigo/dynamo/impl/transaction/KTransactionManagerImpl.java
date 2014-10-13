@@ -50,8 +50,7 @@ public final class KTransactionManagerImpl implements KTransactionManager {
 			throw new IllegalStateException("current transaction already created");
 		}
 		//On démarre la Transaction à cet endroit précis.
-		final KTransactionImpl transaction = new KTransactionImpl(transactionListener);
-		return transaction;
+		return new KTransactionImpl(transactionListener);
 	}
 
 	/** {@inheritDoc} */

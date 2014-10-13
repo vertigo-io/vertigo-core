@@ -129,7 +129,7 @@ final class EAXmiObject {
 	}
 
 	EAXmiObject createEAXmiObject(final EAXmiId newId, final EAXmiType newType, final String leNom) {
-		log.debug("Le père : " + name + " le fils " + leNom + " Le Type " + newType.name().toString());
+		log.debug("Le père : " + name + " le fils " + leNom + " Le Type " + newType.name());
 		final EAXmiObject created = new EAXmiObject(this, newId, newType);
 		if (leNom != null) {
 			created.setName(leNom);
@@ -166,7 +166,7 @@ final class EAXmiObject {
 		return name != null ? name : id.toString();
 	}
 
-	void setName(String name) {
+	void setName(final String name) {
 		this.name = name;
 	}
 
@@ -233,7 +233,7 @@ final class EAXmiObject {
 	 * Setter.
 	 * @param classA
 	 */
-	public void setClassA(EAXmiId classA) {
+	public void setClassA(final EAXmiId classA) {
 		this.classA = classA;
 	}
 
@@ -287,17 +287,17 @@ final class EAXmiObject {
 	private void manageNavigabilite(final Attributes attributs) {
 		final String value = attributs.getValue(PROPERTY_ROLE_NAVIGABILITY_NAME);
 		if (PROPERTY_NAVIGABILITY_NONE.equals(value)) {
-			roleANavigability = Boolean.valueOf(false);
-			roleBNavigability = Boolean.valueOf(false);
+			roleANavigability = false;
+			roleBNavigability = false;
 		} else if (PROPERTY_NAVIGABILITY_BI.equals(value)) {
-			roleANavigability = Boolean.valueOf(true);
-			roleBNavigability = Boolean.valueOf(true);
+			roleANavigability = true;
+			roleBNavigability = true;
 		} else if (PROPERTY_NAVIGABILITY_AB.equals(value)) {
-			roleANavigability = Boolean.valueOf(false);
-			roleBNavigability = Boolean.valueOf(true);
+			roleANavigability = false;
+			roleBNavigability = true;
 		} else if (PROPERTY_NAVIGABILITY_BA.equals(value)) {
-			roleANavigability = Boolean.valueOf(true);
-			roleBNavigability = Boolean.valueOf(false);
+			roleANavigability = true;
+			roleBNavigability = false;
 		}
 	}
 

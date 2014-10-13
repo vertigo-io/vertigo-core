@@ -85,7 +85,6 @@ enum ConverterFormat {
 		Assertion.checkNotNull(sFormat);
 		Assertion.checkArgument(sFormat.equals(sFormat.trim().toUpperCase()), "Le format doit être en majuscule, et sans espace");
 		// ---------------------------------------------------------------------
-		final ConverterFormat format = valueOf(sFormat);
-		return format;
+		return valueOf(sFormat);
 	}
 }

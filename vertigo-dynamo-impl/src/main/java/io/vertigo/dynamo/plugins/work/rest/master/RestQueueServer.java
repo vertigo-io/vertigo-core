@@ -164,8 +164,7 @@ final class RestQueueServer {
 		try {
 			//take attend qu'un élément soit disponible toutes les secondes.
 			//Poll attend (1s) qu'un élément soit disponible et sinon renvoit null
-			final WorkItem<?, ?> workItem = obtainWorkQueue(workType).poll(pullTimeoutInSeconds, TimeUnit.SECONDS);
-			return workItem;
+			return obtainWorkQueue(workType).poll(pullTimeoutInSeconds, TimeUnit.SECONDS);
 		} catch (final InterruptedException e) {
 			//dans le cas d'une interruption on arrête de dépiler
 			return null;

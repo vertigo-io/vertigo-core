@@ -58,7 +58,7 @@ public final class ConstraintBigDecimal extends AbstractConstraintImpl<String, B
 		try {
 			maxPrecision = Integer.parseInt(beforeAfter[0]);
 		} catch (final NumberFormatException e) {
-			throw new RuntimeException("Le nombre de chiffre n'est pas un entier");
+			throw new RuntimeException(args + "is not an integer", e);
 		}
 		try {
 			maxScale = Integer.parseInt(beforeAfter[1]);
