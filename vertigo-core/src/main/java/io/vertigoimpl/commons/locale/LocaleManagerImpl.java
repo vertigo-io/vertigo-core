@@ -27,7 +27,6 @@ import io.vertigo.core.lang.MessageKey;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -116,7 +115,7 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 
 	/** {@inheritDoc} */
 	public void registerLocaleProvider(final LocaleProvider newLocaleProvider) {
-		Assertion.checkArgument(localeProvider == null, "localeProvider deja enregistré");
+		Assertion.checkArgument(localeProvider == null, "localeProvider already registered");
 		Assertion.checkNotNull(newLocaleProvider);
 		//---------------------------------------------------------------------
 		localeProvider = newLocaleProvider;
@@ -152,18 +151,14 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 	}
 
 	private Map<String, String> getDictionary(final Locale locale) {
-		Assertion.checkArgument(dictionaries.containsKey(locale), "La locale {0} n''est pas gérée", locale);
+		Assertion.checkArgument(dictionaries.containsKey(locale), "La locale {0} n'est pas gérée", locale);
 		return dictionaries.get(locale);
 	}
 
 	private void load(final Locale locale, final ResourceBundle resourceBundle, final boolean override) {
 		//logger.trace("locale=" + locale + ", resourceBundle=" + resourceBundle + ", override=" + override);
-		final Enumeration<String> en = resourceBundle.getKeys();
-		String key;
-		String value;
-		while (en.hasMoreElements()) {
-			key = en.nextElement();
-			value = resourceBundle.getString(key);
+		for (final String key : Collections.list(resourceBundle.getKeys())) {
+			final String value = resourceBundle.getString(key);
 			Assertion.checkNotNull(value);
 			final String oldValue = getDictionary(locale).put(key, value);
 			if (!override) {
@@ -183,10 +178,7 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 		}
 
 		//1- Toutes les clés du fichier properties sont dans l'enum des resources
-		//On passe par la construction d'un set des keys car la fonction containsKey n'est dispo qu'é partir de java 1.6.
-		final Set<String> resourceBundleKeySet = new HashSet<>();
 		for (final String key : Collections.list(resourceBundle.getKeys())) {
-			resourceBundleKeySet.add(key);
 			if (!resourcesKeys.contains(key)) {
 				throw new IllegalStateException("Une clé du fichier properties est inconnue : " + key);
 			}
@@ -195,7 +187,7 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 		//2- Toutes les clés de l'enum sont dans le fichier properties
 		if (!override) {
 			for (final String resourceKey : resourcesKeys) {
-				if (!resourceBundleKeySet.contains(resourceKey)) {
+				if (!resourceBundle.containsKey(resourceKey)) {
 					onResourceNotFound(resourceKey);
 					throw new IllegalStateException("Une ressource n'est pas déclarée dans le fichier properties : " + resourceKey);
 				}
