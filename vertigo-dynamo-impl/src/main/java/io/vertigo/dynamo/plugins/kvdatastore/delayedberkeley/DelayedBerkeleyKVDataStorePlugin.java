@@ -60,7 +60,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	private static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
 
 	private final Logger logger = Logger.getLogger(getClass());
-	private final TupleBinding<CacheValue> cacheValueBinding;
+	private final TupleBinding<DelayedBerkeleyCacheValue> cacheValueBinding;
 	private final TupleBinding<String> keyBinding = TupleBinding.getPrimitiveBinding(String.class);
 
 	private final String dataStoreName;
@@ -89,7 +89,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 		myCacheEnvPath.mkdirs();
 		Assertion.checkState(myCacheEnvPath.canWrite(), "Can't access cache storage directory ({0})", myCacheEnvPath.getAbsolutePath());
 
-		cacheValueBinding = new CacheValueBinding(new SerializableBinding(codecManager.getCompressedSerializationCodec()));
+		cacheValueBinding = new DelayedBerkeleyCacheValueBinding(new DelayedBerkeleySerializableBinding(codecManager.getCompressedSerializationCodec()));
 	}
 
 	private static String translatePath(final String path) {
@@ -119,7 +119,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 				final DatabaseEntry theKey = new DatabaseEntry();
 				keyBinding.objectToEntry(key, theKey);
 				final DatabaseEntry theData = new DatabaseEntry();
-				cacheValueBinding.objectToEntry(new CacheValue((Serializable) data, System.currentTimeMillis()), theData);
+				cacheValueBinding.objectToEntry(new DelayedBerkeleyCacheValue((Serializable) data, System.currentTimeMillis()), theData);
 
 				final OperationStatus status = cacheDatas.put(transaction, theKey, theData);
 				if (!OperationStatus.SUCCESS.equals(status)) {
@@ -149,7 +149,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 			final DatabaseEntry theData = new DatabaseEntry();
 			final OperationStatus status = cacheDatas.get(null, theKey, theData, null);
 			if (OperationStatus.SUCCESS.equals(status)) {
-				final CacheValue cacheValue = readCacheValueSafely(theKey, theData);
+				final DelayedBerkeleyCacheValue cacheValue = readCacheValueSafely(theKey, theData);
 				if (cacheValue == null || isTooOld(cacheValue)) {//null if read error
 					cacheDatas.delete(null, theKey); //if corrupt (null) or too old, we delete it
 				} else {
@@ -171,7 +171,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 		try (final Cursor cursor = cacheDatas.openCursor(null, null)) {
 			int find = 0;
 			while ((limit == null || find < limit + skip) && cursor.getNext(theKey, theData, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-				final CacheValue cacheValue = cacheValueBinding.entryToObject(theData);
+				final DelayedBerkeleyCacheValue cacheValue = cacheValueBinding.entryToObject(theData);
 				if (cacheValue == null || isTooOld(cacheValue)) {//null if read error
 					cursor.delete(); //if corrupt (null) or too old, we delete it
 				} else {
@@ -203,11 +203,11 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 		}
 	}
 
-	private CacheValue readCacheValueSafely(final DatabaseEntry theKey, final DatabaseEntry theData) {
+	private DelayedBerkeleyCacheValue readCacheValueSafely(final DatabaseEntry theKey, final DatabaseEntry theData) {
 		String key = "IdError";
 		try {
 			key = keyBinding.entryToObject(theKey);
-			final CacheValue cacheValue = cacheValueBinding.entryToObject(theData);
+			final DelayedBerkeleyCacheValue cacheValue = cacheValueBinding.entryToObject(theData);
 			return cacheValue;
 		} catch (final RuntimeException e) {
 			logger.warn("Read error in UiSecurityTokenCache : remove tokenKey : " + key, e);
@@ -216,7 +216,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 		return null;
 	}
 
-	private boolean isTooOld(final CacheValue cacheValue) {
+	private boolean isTooOld(final DelayedBerkeleyCacheValue cacheValue) {
 		return System.currentTimeMillis() - cacheValue.getCreateTime() >= timeToLiveSeconds * 1000;
 	}
 
@@ -237,7 +237,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 			//Les elements sont parcouru dans l'ordre d'insertion (sans lock)
 			//dès qu'on en trouve un trop récent, on stop
 			while (checked < maxChecked && cursor.getNext(foundKey, foundData, LockMode.READ_UNCOMMITTED) == OperationStatus.SUCCESS) {
-				final CacheValue cacheValue = readCacheValueSafely(foundKey, foundData);
+				final DelayedBerkeleyCacheValue cacheValue = readCacheValueSafely(foundKey, foundData);
 				if (cacheValue == null || isTooOld(cacheValue)) {//null si erreur de lecture
 					cacheDatas.delete(null, foundKey);
 					checked++;
