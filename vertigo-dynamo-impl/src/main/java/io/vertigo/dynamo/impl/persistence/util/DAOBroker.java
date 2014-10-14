@@ -28,6 +28,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.persistence.Broker;
+import io.vertigo.dynamo.persistence.BrokerBatch;
 import io.vertigo.dynamo.persistence.BrokerNN;
 import io.vertigo.dynamo.persistence.Criteria;
 import io.vertigo.dynamo.persistence.FilterCriteria;
@@ -35,24 +36,28 @@ import io.vertigo.dynamo.persistence.FilterCriteriaBuilder;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Classe utilitaire pour accéder au Broker.
- * 
+ *
  * @author cgodard
  * @param <D> Type d'objet métier.
  * @param <P> Type de la clef primaire.
  */
-public class DAOBroker<D extends DtObject, P> implements BrokerNN {
+public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D, P> {
+
 	/** DT de l'objet dont on gére le CRUD. */
 	private final DtDefinition dtDefinition;
 	private final Broker broker;
 	private final BrokerNN brokerNN;
+	private final BrokerBatch<D, P> brokerBatch;
 
 	/**
 	 * Contructeur.
-	 * 
+	 *
 	 * @param dtObjectClass Définition du DtObject associé à ce DAOBroker
 	 * @param persistenceManager Manager de gestion de la persistance
 	 */
@@ -62,7 +67,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN {
 
 	/**
 	 * Contructeur.
-	 * 
+	 *
 	 * @param dtDefinition Définition du DtObject associé à ce DAOBroker
 	 * @param persistenceManager Manager de gestion de la persistance
 	 */
@@ -73,12 +78,13 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN {
 		broker = persistenceManager.getBroker();
 		brokerNN = persistenceManager.getBrokerNN();
 		this.dtDefinition = dtDefinition;
+		brokerBatch = new BrokerBatchImpl<>(dtDefinition);
 	}
 
 	/**
 	 * Sauvegarde d'un objet. Création (insert) ou mise à jour (update) en fonction du fait que l'objet existe ou pas
 	 * déjà en base.
-	 * 
+	 *
 	 * @param dto Objet à sauvegarder
 	 */
 	public final void save(final D dto) {
@@ -87,7 +93,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN {
 
 	/**
 	 * Suppression d'un objet persistant par son URI.
-	 * 
+	 *
 	 * @param uri URI de l'objet à supprimer
 	 */
 	public final void delete(final URI<D> uri) {
@@ -98,7 +104,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN {
 	 * Suppression d'un objet persistant par son identifiant.<br>
 	 * Cette méthode est utile uniquement dans les cas où l'identifiant est un identifiant technique (ex: entier calculé
 	 * via une séquence).
-	 * 
+	 *
 	 * @param id identifiant de l'objet persistant à supprimer
 	 */
 	public final void delete(final P id) {
@@ -107,7 +113,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN {
 
 	/**
 	 * Récupération d'un objet persistant par son URI. L'objet doit exister.
-	 * 
+	 *
 	 * @param uri URI de l'objet à récupérer
 	 * @return D Object recherché
 	 */
@@ -119,7 +125,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN {
 	 * Récupération d'un objet persistant par son identifiant.<br>
 	 * Cette méthode est utile uniquement dans les cas où l'identifiant est un identifiant technique (ex: entier calculé
 	 * via une séquence).
-	 * 
+	 *
 	 * @param id identifiant de l'objet persistant recherché
 	 * @return D Object objet recherché
 	 */
@@ -129,7 +135,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN {
 
 	/**
 	 * Retourne l'URI de DtObject correspondant à une URN de définition et une valeur d'URI donnés.
-	 * 
+	 *
 	 * @param id identifiant de l'objet persistant recherché
 	 * @return URI recherchée
 	 */
@@ -160,18 +166,20 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final void removeAllNN(final DtListURIForAssociation dtListURI) {
 		brokerNN.removeAllNN(dtListURI);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final void removeNN(final DtListURIForAssociation dtListURI, final URI<DtObject> uriToDelete) {
 		brokerNN.removeNN(dtListURI, uriToDelete);
 	}
 
 	/**
 	 * Mise à jour des associations n-n.
-	 * 
+	 *
 	 * @param <FK> <FK extends DtObject>
 	 * @param dtListURI DtList de référence
 	 * @param newDtc DtList modifiée
@@ -187,18 +195,20 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final void updateNN(final DtListURIForAssociation dtListURI, final List<URI<? extends DtObject>> newUriList) {
 		brokerNN.updateNN(dtListURI, newUriList);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final void appendNN(final DtListURIForAssociation dtListURI, final URI<DtObject> uriToAppend) {
 		brokerNN.appendNN(dtListURI, uriToAppend);
 	}
 
 	/**
 	 * Ajout un objet à la collection existante.
-	 * 
+	 *
 	 * @param dtListURI DtList de référence
 	 * @param dtoToAppend Objet à ajout à la NN
 	 */
@@ -208,16 +218,16 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN {
 
 	private static <D extends DtObject> URI<D> createURI(final D dto) {
 		Assertion.checkNotNull(dto);
-		//---------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		return new URI<>(dtDefinition, DtObjectUtil.getId(dto));
 	}
 
 	/**
 	 * Sauvegarde des associations n-n.
-	 * 
+	 *
 	 * @param dtc DtList initiale chargée à partir du DAO pour obtenir les méta-données qui indiquent sur quel
-	 *        objet on a la relation n-n (utiliser un "getCollection()").
+	 *            objet on a la relation n-n (utiliser un "getCollection()").
 	 * @param newDtc DtList
 	 * @param <FK> Objet en Foreign Key
 	 * @deprecated utiliser updateNN() # l'URI de la collection (getXXXCollection -> getXXXCollectionURI())
@@ -229,6 +239,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN {
 
 	/**
 	 * Récupération une liste filtrée par le champ saisie dans le dtoCritère.
+	 *
 	 * @param dtoCritere les criteres
 	 * @param maxRows Nombre maximum de ligne
 	 * @return Collection de DtObject
@@ -239,5 +250,29 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN {
 		final DtListURI collectionURI = new DtListURIForCriteria<D>(dtDefinition, dtoCritere, maxRows);
 		Assertion.checkNotNull(collectionURI);
 		return broker.getList(collectionURI);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public DtList<D> getList(final Collection<P> idList) {
+		return brokerBatch.getList(idList);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Map<P, D> getMap(final Collection<P> idList) {
+		return brokerBatch.getMap(idList);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <O> DtList<D> getListByField(final String fieldName, final Collection<O> value) {
+		return brokerBatch.getListByField(fieldName, value);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <O> Map<O, DtList<D>> getMapByField(final String fieldName, final Collection<O> value) {
+		return brokerBatch.getMapByField(fieldName, value);
 	}
 }
