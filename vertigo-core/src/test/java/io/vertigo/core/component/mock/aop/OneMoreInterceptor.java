@@ -18,16 +18,16 @@
  */
 package io.vertigo.core.component.mock.aop;
 
-import io.vertigo.core.aop.Interceptor;
-import io.vertigo.core.aop.MethodInvocation;
+import io.vertigo.core.aop.AOPInterceptor;
+import io.vertigo.core.aop.AOPMethodInvocation;
 
 /**
  * @author pchretien
  */
-public class OneMoreInterceptor implements Interceptor {
+public class OneMoreInterceptor implements AOPInterceptor {
 
 	@Override
-	public Integer invoke(final Object[] args, final MethodInvocation methodInvocation) throws Throwable {
+	public Integer invoke(final Object[] args, final AOPMethodInvocation methodInvocation) throws Throwable {
 		return (Integer) methodInvocation.proceed(args) + 1;
 	}
 }

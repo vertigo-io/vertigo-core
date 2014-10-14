@@ -16,29 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.engines;
-
-import io.vertigo.core.Engine;
-import io.vertigo.core.aop.AOPInterceptor;
+package io.vertigo.core.aop;
 
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
 
 /**
- * Create proxy-reference from component's instance.
- * Proxy reference implements aspects (AOP). 
- * 
+ * Abstraction de l'invocation d'une méthode.
  * @author pchretien
  */
-public interface AopEngine extends Engine {
+public interface AOPMethodInvocation {
+	Method getMethod();
 
-	/**
-	 * Create a proxy-reference.
-	 * 
-	 * @param instance Component's instance
-	 * @param joinPoints List of joinPoints 
-	 * @return  Proxy-Reference
-	 */
-	Object create(final Object instance, Map<Method, List<AOPInterceptor>> joinPoints);
+	Object proceed(Object[] args) throws Throwable;
 }

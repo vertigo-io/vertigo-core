@@ -19,7 +19,7 @@
 package io.vertigo.core.di.configurator;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.aop.Interceptor;
+import io.vertigo.core.aop.AOPInterceptor;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.core.lang.Assertion;
 
@@ -42,7 +42,7 @@ import java.util.Map;
  * @author pchretien, prahmoune
  */
 final class AspectInitializer {
-	private final Map<AspectConfig, Interceptor> interceptorsMap;
+	private final Map<AspectConfig, AOPInterceptor> interceptorsMap;
 	private final List<AspectConfig> aspectConfigs;
 
 	AspectInitializer(final ModuleConfig moduleConfig) {
@@ -59,13 +59,13 @@ final class AspectInitializer {
 	 * @param componentRefFactory Factory des références utilisables 
 	 * @return Liste des composants
 	 */
-	private static Map<AspectConfig, Interceptor> createInterceptorsMap(final Collection<AspectConfig> aspectInfos) {
+	private static Map<AspectConfig, AOPInterceptor> createInterceptorsMap(final Collection<AspectConfig> aspectInfos) {
 		final Injector injector = new Injector();
 
-		final Map<AspectConfig, Interceptor> interceptorMap = new HashMap<>();
+		final Map<AspectConfig, AOPInterceptor> interceptorMap = new HashMap<>();
 		for (final AspectConfig aspectInfo : aspectInfos) {
 			// création de l'instance du composant
-			final Interceptor interceptor = injector.newInstance(aspectInfo.getInterceptorImplClass(), Home.getComponentSpace());
+			final AOPInterceptor interceptor = injector.newInstance(aspectInfo.getInterceptorImplClass(), Home.getComponentSpace());
 			interceptorMap.put(aspectInfo, interceptor);
 		}
 		return interceptorMap;
@@ -77,16 +77,16 @@ final class AspectInitializer {
 	 * @param implClass Classe portant les aspects
 	 * @return Map des aspects par méthode
 	 */
-	Map<Method, List<Interceptor>> createJoinPoints(final ComponentConfig componentConfig) {
-		final Map<Method, List<Interceptor>> joinPoints = new HashMap<>();
+	Map<Method, List<AOPInterceptor>> createJoinPoints(final ComponentConfig componentConfig) {
+		final Map<Method, List<AOPInterceptor>> joinPoints = new HashMap<>();
 		for (final AspectConfig aspectInfo : aspectConfigs) {
 			// Build the interceptor list
-			final Interceptor advice = interceptorsMap.get(aspectInfo);
+			final AOPInterceptor advice = interceptorsMap.get(aspectInfo);
 
 			// On récupère ttes les méthodes matchant pour l'aspect concerné
 			// puis on crée la liste des intercepteurs
 			for (final Method method : getMatchingMethods(aspectInfo.getAnnotationType(), componentConfig.getImplClass())) {
-				List<Interceptor> interceptors = joinPoints.get(method);
+				List<AOPInterceptor> interceptors = joinPoints.get(method);
 				if (interceptors == null) {
 					interceptors = new ArrayList<>();
 					joinPoints.put(method, interceptors);

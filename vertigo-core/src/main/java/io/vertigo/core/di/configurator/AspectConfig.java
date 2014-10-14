@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.di.configurator;
 
-import io.vertigo.core.aop.Interceptor;
+import io.vertigo.core.aop.AOPInterceptor;
 import io.vertigo.core.lang.Assertion;
 
 /**
@@ -32,12 +32,12 @@ import io.vertigo.core.lang.Assertion;
 final class AspectConfig {
 	/** Annotation à intercepter. */
 	private final Class<?> annotationType;
-	private final Class<? extends Interceptor> implClass;
+	private final Class<? extends AOPInterceptor> implClass;
 
 	/**
 	 * Constructeur.
 	 */
-	AspectConfig(final Class<?> annotationType, final Class<? extends Interceptor> implClass) {
+	AspectConfig(final Class<?> annotationType, final Class<? extends AOPInterceptor> implClass) {
 		Assertion.checkNotNull(annotationType);
 		Assertion.checkArgument(annotationType.isAnnotation(), "On attend une annotation '{0}'", annotationType);
 		Assertion.checkNotNull(implClass);
@@ -56,7 +56,7 @@ final class AspectConfig {
 	/**
 	 * @return Classe d'implémentation du composant d'interception
 	 */
-	Class<? extends Interceptor> getInterceptorImplClass() {
+	Class<? extends AOPInterceptor> getInterceptorImplClass() {
 		return implClass;
 	}
 }

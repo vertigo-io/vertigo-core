@@ -20,7 +20,7 @@ package io.vertigo.core.di.configurator;
 
 import io.vertigo.core.Engine;
 import io.vertigo.core.Home;
-import io.vertigo.core.aop.Interceptor;
+import io.vertigo.core.aop.AOPInterceptor;
 import io.vertigo.core.command.VCommand;
 import io.vertigo.core.command.VCommandExecutor;
 import io.vertigo.core.component.ComponentInitializer;
@@ -267,7 +267,7 @@ public final class ComponentSpaceImpl implements ComponentSpace {
 		final Object instance = createComponent(componentConfig);
 
 		//4. AOP, on aopise le composant
-		final Map<Method, List<Interceptor>> joinPoints = aspectInitializer.createJoinPoints(componentConfig);
+		final Map<Method, List<AOPInterceptor>> joinPoints = aspectInitializer.createJoinPoints(componentConfig);
 		Object reference;
 		if (!joinPoints.isEmpty()) {
 			reference = aopEngine.create(instance, joinPoints);

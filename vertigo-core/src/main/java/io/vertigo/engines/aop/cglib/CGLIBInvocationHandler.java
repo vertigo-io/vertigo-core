@@ -18,8 +18,8 @@
  */
 package io.vertigo.engines.aop.cglib;
 
-import io.vertigo.core.aop.Interceptor;
-import io.vertigo.core.aop.MethodInvocation;
+import io.vertigo.core.aop.AOPInterceptor;
+import io.vertigo.core.aop.AOPMethodInvocation;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.ClassUtil;
 
@@ -32,9 +32,9 @@ import java.util.Map;
  */
 final class CGLIBInvocationHandler implements net.sf.cglib.proxy.InvocationHandler {
 	private final Object instance;
-	private final Map<Method, List<Interceptor>> interceptors;
+	private final Map<Method, List<AOPInterceptor>> interceptors;
 
-	CGLIBInvocationHandler(final Object instance, final Map<Method, List<Interceptor>> interceptors) {
+	CGLIBInvocationHandler(final Object instance, final Map<Method, List<AOPInterceptor>> interceptors) {
 		Assertion.checkNotNull(instance);
 		Assertion.checkNotNull(interceptors);
 		//-----------------------------------------------------------------
@@ -51,13 +51,13 @@ final class CGLIBInvocationHandler implements net.sf.cglib.proxy.InvocationHandl
 		return new MyMethodInvocation(instance, method, interceptors.get(method)).proceed(args);
 	}
 
-	private static final class MyMethodInvocation implements MethodInvocation {
-		private final List<Interceptor> interceptors;
+	private static final class MyMethodInvocation implements AOPMethodInvocation {
+		private final List<AOPInterceptor> interceptors;
 		private final Object instance;
 		private final Method method;
 		private int index = 0;
 
-		private MyMethodInvocation(final Object instance, final Method method, final List<Interceptor> interceptors) {
+		private MyMethodInvocation(final Object instance, final Method method, final List<AOPInterceptor> interceptors) {
 			Assertion.checkNotNull(instance);
 			Assertion.checkNotNull(method);
 			Assertion.checkNotNull(interceptors);

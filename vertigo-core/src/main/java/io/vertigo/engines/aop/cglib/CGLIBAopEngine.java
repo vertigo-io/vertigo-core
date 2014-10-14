@@ -18,7 +18,7 @@
  */
 package io.vertigo.engines.aop.cglib;
 
-import io.vertigo.core.aop.Interceptor;
+import io.vertigo.core.aop.AOPInterceptor;
 import io.vertigo.core.engines.AopEngine;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.ClassUtil;
@@ -37,7 +37,7 @@ import net.sf.cglib.proxy.Enhancer;
 public final class CGLIBAopEngine implements AopEngine {
 
 	/** {@inheritDoc} */
-	public Object create(final Object instance, final Map<Method, List<Interceptor>> interceptors) {
+	public Object create(final Object instance, final Map<Method, List<AOPInterceptor>> interceptors) {
 		Assertion.checkNotNull(instance);
 		Assertion.checkNotNull(interceptors);
 		//check : witgh cglib all methods have to bo non-final 
@@ -54,7 +54,7 @@ public final class CGLIBAopEngine implements AopEngine {
 		return enhancer.create();
 	}
 
-	private static Callback createCallBack(final Object instance, final Map<Method, List<Interceptor>> interceptors) {
+	private static Callback createCallBack(final Object instance, final Map<Method, List<AOPInterceptor>> interceptors) {
 		return new CGLIBInvocationHandler(instance, interceptors);
 	}
 

@@ -18,7 +18,7 @@
  */
 package io.vertigo.xml;
 
-import io.vertigo.core.aop.Interceptor;
+import io.vertigo.core.aop.AOPInterceptor;
 import io.vertigo.core.component.Plugin;
 import io.vertigo.core.di.configurator.ComponentConfigBuilder;
 import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
@@ -80,7 +80,7 @@ final class XMLModulesHandler extends DefaultHandler {
 				break;
 			case aspect:
 				final Class<?> annotationType = ClassUtil.classForName(annotationImplClassStr);
-				final Class<? extends Interceptor> adviceImplClass = ClassUtil.classForName(adviceImplClassStr, Interceptor.class);
+				final Class<? extends AOPInterceptor> adviceImplClass = ClassUtil.classForName(adviceImplClassStr, AOPInterceptor.class);
 				moduleConfigBuilder.withAspect(annotationType, adviceImplClass);
 				//Reset
 				annotationImplClassStr = null;
