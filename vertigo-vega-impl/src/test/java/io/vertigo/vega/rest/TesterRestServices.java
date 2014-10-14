@@ -32,9 +32,9 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.export.Export;
 import io.vertigo.dynamo.export.ExportBuilder;
-import io.vertigo.dynamo.export.ExportSheet;
 import io.vertigo.dynamo.export.ExportFormat;
 import io.vertigo.dynamo.export.ExportManager;
+import io.vertigo.dynamo.export.ExportSheet;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListChainFilter;
@@ -273,13 +273,13 @@ public final class TesterRestServices implements RestfulService {
 	@GET("/export/pdf/")
 	public KFile testExportContacts() {
 		final DtList<Contact> fullList = asDtList(contacts.values(), Contact.class);
-		final ExportSheet dtParameter = exportManager.createExportSheetBuilder(fullList, "Contacts")//
+		final ExportSheet exportSheet = exportManager.createExportSheetBuilder(fullList, "Contacts")//
 				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.PDF, "contacts")//
-		.withExportDtParameters(dtParameter)//
-		.withAuthor("vertigo-test")//
-		.build();
+				.withSheet(exportSheet)//
+				.withAuthor("vertigo-test")//
+				.build();
 
 		final KFile result = exportManager.createExportFile(export);
 		//200
@@ -289,13 +289,11 @@ public final class TesterRestServices implements RestfulService {
 	@GET("/export/pdf/{conId}")
 	public KFile testExportContact(@PathParam("conId") final long conId) {
 		final Contact contact = contacts.get(conId);
-		final ExportSheet dtParameter = exportManager.createExportSheetBuilder(contact, "Contacts")//
+		final ExportSheet exportSheet = exportManager.createExportSheetBuilder(contact, "Contacts")//
 				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.PDF, "contact" + conId + ".pdf")//
-		.withExportDtParameters(dtParameter)//
-		.withAuthor("vertigo-test")//
-		.build();
+				.withSheet(exportSheet).withAuthor("vertigo-test").build();
 
 		final KFile result = exportManager.createExportFile(export);
 		//200
