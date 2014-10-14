@@ -51,6 +51,6 @@ final class PDFExporter extends AbstractExporterIText {
 		// document.setFooter(footer);
 
 		// add the event handler for advanced page numbers : x/y
-		writer.setPageEvent(new AdvancedPageNumberEvents());
+		writer.setPageEvent(new PDFAdvancedPageNumberEvents());
 	}
 }
