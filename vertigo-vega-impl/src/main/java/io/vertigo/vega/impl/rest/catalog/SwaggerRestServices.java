@@ -34,15 +34,22 @@ import io.vertigo.vega.rest.metamodel.EndPointParam;
 import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
 import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.rest.stereotype.GET;
+import io.vertigo.vega.rest.stereotype.PathParam;
 import io.vertigo.vega.rest.stereotype.SessionLess;
 import io.vertigo.vega.rest.validation.UiMessageStack;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -50,6 +57,8 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Swagger RestService to list services published.
@@ -65,6 +74,90 @@ public final class SwaggerRestServices implements RestfulService {
 	@GET("/swaggerApi")
 	public Map<String, Object> getSwapperApi() {
 		return createSwagger();
+	}
+
+	@SessionLess
+	@AnonymousAccessAllowed
+	@GET("/swaggerUi")
+	public void getSwapperUi(final HttpServletResponse response) throws IOException {
+		sendRedirect(response);
+	}
+
+	@SessionLess
+	@AnonymousAccessAllowed
+	@GET("/swaggerUi/")
+	public void getSwapperUiEmpty(final HttpServletResponse response) throws IOException {
+		sendRedirect(response);
+	}
+
+	@SessionLess
+	@AnonymousAccessAllowed
+	@GET("/swaggerUi/{resourceUrl}")
+	public void getSwapperUi(@PathParam("resourceUrl") final String resourceUrl, final HttpServletResponse response) throws IOException {
+		if (resourceUrl.isEmpty()) {
+			sendRedirect(response);
+		}
+		final URL url = SwaggerRestServices.class.getResource("/swagger-site/" + resourceUrl);
+		sendFile(url, resolveContentType(resourceUrl), response);
+	}
+
+	@SessionLess
+	@AnonymousAccessAllowed
+	@GET("/swaggerUi/{resourcePathUrl}/{resourceUrl}")
+	public void getSwapperUi(@PathParam("resourcePathUrl") final String resourcePathUrl, @PathParam("resourceUrl") final String resourceUrl, final HttpServletResponse response) throws IOException {
+		final URL url = SwaggerRestServices.class.getResource("/swagger-site/" + resourcePathUrl + "/" + resourceUrl);
+		sendFile(url, resolveContentType(resourceUrl), response);
+	}
+
+	private void sendRedirect(final HttpServletResponse response) throws IOException {
+		//final URL url = SwaggerRestServices.class.getResource("/swagger-site/redirect.html");
+		//sendFile(url, resolveContentType("index.html"), response);
+		response.sendRedirect("/swaggerUi/index.html");
+	}
+
+	private void sendFile(final URL url, final String contentType, final HttpServletResponse response) throws IOException {
+		if (url != null) {
+			final URLConnection connection = url.openConnection();
+			connection.connect();
+			response.setContentLength(connection.getContentLength());
+			response.setDateHeader("Last-Modified", connection.getLastModified());
+			response.setContentType(contentType != null ? contentType : connection.getContentType());
+
+			try (final InputStream input = connection.getInputStream()) {
+				try (final BufferedInputStream bInput = new BufferedInputStream(input)) {
+					try (final OutputStream output = response.getOutputStream()) {
+						copy(bInput, output);
+					}
+				}
+			}
+		} else {
+			response.setStatus(404);
+		}
+	}
+
+	private static void copy(final InputStream in, final OutputStream out) throws IOException {
+		final int bufferSize = 10 * 1024;
+		final byte[] bytes = new byte[bufferSize];
+		int read = in.read(bytes);
+		while (read != -1) {
+			out.write(bytes, 0, read);
+			read = in.read(bytes);
+		}
+	}
+
+	private String resolveContentType(final String resourceUrl) {
+		if (resourceUrl.endsWith(".html")) {
+			return "text/html";
+		} else if (resourceUrl.endsWith(".css")) {
+			return "text/css";
+		} else if (resourceUrl.endsWith(".js")) {
+			return "application/x-javascript";
+		} else if (resourceUrl.endsWith(".png")) {
+			return "image/png";
+		} else if (resourceUrl.endsWith(".gif")) {
+			return "image/gif";
+		}
+		return null;
 	}
 
 	private Map<String, Object> createSwagger() {
@@ -391,7 +484,7 @@ public final class SwaggerRestServices implements RestfulService {
 	private Map<String, Object> createInfoObject() {
 		final Map<String, Object> infoObject = new LinkedHashMap<>();
 		infoObject.put("title", "MySwaggerAPI Tester");
-		//description, termOfService, contact 
+		//description, termOfService, contact
 		infoObject.put("license", createLicense());
 		infoObject.put("version", "1.0");
 		return infoObject;
