@@ -28,8 +28,6 @@ import java.io.OutputStream;
 
 import javax.inject.Inject;
 
-import com.lowagie.text.DocumentException;
-
 /**
  * Plugin d'export PDF.
  *
@@ -44,7 +42,7 @@ public final class PDFExporterPlugin implements ExporterPlugin {
 	}
 
 	/** {@inheritDoc} */
-	public void exportData(final Export export, final OutputStream out) throws DocumentException {
+	public void exportData(final Export export, final OutputStream out) throws Exception {
 		new PDFExporter(exportHelper).exportData(export, out);
 	}
 

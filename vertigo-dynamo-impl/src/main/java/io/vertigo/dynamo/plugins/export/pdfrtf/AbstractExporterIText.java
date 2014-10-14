@@ -22,8 +22,8 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.export.Export;
-import io.vertigo.dynamo.export.ExportSheet;
 import io.vertigo.dynamo.export.ExportField;
+import io.vertigo.dynamo.export.ExportSheet;
 import io.vertigo.dynamo.impl.export.core.ExportHelper;
 
 import java.awt.Color;
@@ -69,9 +69,10 @@ public abstract class AbstractExporterIText {
 
 	/**
 	 * Méthode principale qui gère l'export d'un tableau vers un fichier ODS.
-	 * 
+	 *
 	 * @param export paramètres du document à exporter
 	 * @param out flux de sortie
+	 * @throws DocumentException Exception
 	 */
 	public final void exportData(final Export export, final OutputStream out) throws DocumentException {
 		// step 1: creation of a document-object
