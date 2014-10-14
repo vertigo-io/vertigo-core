@@ -30,9 +30,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-/** 
+/**
  * EndPointDefinition Builder.
- *  
+ *
  * @author npiedeloup
  */
 public final class EndPointDefinitionBuilder implements Builder<EndPointDefinition> {
@@ -65,7 +65,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 
 	public EndPointDefinition build() {
 		final String usedPath = myPathPrefix != null ? myPathPrefix + myPath : myPath;
-		final String normalizedPath = usedPath.replaceAll("\\{.*\\}", "_").replaceAll("[//]", "_");
+		final String normalizedPath = usedPath.replaceAll("\\{.*?\\}", "_").replaceAll("[//]", "_"); //.*? : reluctant quantifier
 
 		return new EndPointDefinition(//
 				//"EP_" + StringUtil.camelToConstCase(restFullServiceClass.getSimpleName()) + "_" + StringUtil.camelToConstCase(method.getName()), //
