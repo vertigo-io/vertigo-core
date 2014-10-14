@@ -87,7 +87,7 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 		Assertion.checkArgNotEmpty(locales);
 		//---------------------------------------------------------------------
 		// this.locales = new Locale[] { Locale.getDefault() };
-		final List<Locale> localeList = new ArrayList<>();
+		final List<Locale> locales = new ArrayList<>();
 		{
 			//Liste des variables utilisées dans la boucle
 			String language;
@@ -99,10 +99,10 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 				language = loc[0];
 				country = loc.length > 1 ? loc[1] : "";
 				variant = loc.length > 2 ? loc[2] : "";
-				localeList.add(new Locale(language, country, variant));
+				locales.add(new Locale(language, country, variant));
 			}
 		}
-		this.locales = localeList.toArray(new Locale[localeList.size()]);
+		this.locales = locales.toArray(new Locale[locales.size()]);
 		//---------------------------------------------------------------------
 		Assertion.checkNotNull(this.locales);
 		Assertion.checkArgument(this.locales.length > 0, "Il faut au moins déclarer une locale");

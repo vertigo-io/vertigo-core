@@ -24,10 +24,10 @@ import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import java.util.List;
 
 /**
- * Une entrée de type définition est définie (XOR) 
- * - soit par un champ et une définition, 
+ * Une entrée de type définition est définie (XOR)
+ * - soit par un champ et une définition,
  * - soit par un champ et une liste de clés de définition.
- * 
+ *
  * @author pchretien
  */
 public final class DslDefinitionEntry {
@@ -40,22 +40,22 @@ public final class DslDefinitionEntry {
 
 	/**
 	 * Constructeur.
-	 * 
-	 * @param definitionKeyList Liste des clés de définition
+	 *
+	 * @param definitionKeys Liste des clés de définition
 	 * @param fieldName Nom du champ
 	 */
-	public DslDefinitionEntry(final String fieldName, final List<String> definitionKeyList) {
+	public DslDefinitionEntry(final String fieldName, final List<String> definitionKeys) {
 		Assertion.checkNotNull(fieldName);
-		Assertion.checkNotNull(definitionKeyList);
+		Assertion.checkNotNull(definitionKeys);
 		// ----------------------------------------------------------------------
 		this.fieldName = fieldName;
 		definition = null;
-		definitionKeys = definitionKeyList;
+		this.definitionKeys = definitionKeys;
 	}
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param fieldName Nom du champ
 	 * @param definition Définition
 	 */
@@ -77,7 +77,7 @@ public final class DslDefinitionEntry {
 
 	/**
 	 * Permet de savoir dans quel mode on se trouve (Definition XOR List<DefinitionKey>).
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean containsDefinition() {

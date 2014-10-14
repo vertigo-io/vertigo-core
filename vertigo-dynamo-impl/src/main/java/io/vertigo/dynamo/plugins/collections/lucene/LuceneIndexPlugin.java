@@ -125,13 +125,13 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 		final RamLuceneIndex<D> luceneDb = new RamLuceneIndex<>(fullDtc.getDefinition(), indexAnalyser);
 		try (final IndexWriter indexWriter = luceneDb.createIndexWriter()) {
 			final DtField pkField = fullDtc.getDefinition().getIdField().get();
-			final Collection<DtField> dtFieldList = fullDtc.getDefinition().getFields();
+			final Collection<DtField> dtFields = fullDtc.getDefinition().getFields();
 
 			for (final D dto : fullDtc) {
 				final Document document = new Document();
 				final String pkValue = String.valueOf(pkField.getDataAccessor().getValue(dto));
 				document.add(createKeyword(pkField.getName(), pkValue, true));
-				for (final DtField dtField : dtFieldList) {
+				for (final DtField dtField : dtFields) {
 					final Object value = dtField.getDataAccessor().getValue(dto);
 					if (value != null) {
 						if (value instanceof String) {

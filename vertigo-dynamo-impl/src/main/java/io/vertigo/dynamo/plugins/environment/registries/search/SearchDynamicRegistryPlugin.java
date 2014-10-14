@@ -46,7 +46,7 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	private static IndexDefinition createIndexDefinition(final DynamicDefinition xsearchObjet) {
 		final DtDefinition indexDtDefinition = Home.getDefinitionSpace().resolve(xsearchObjet.getDefinitionKey("dtIndex").getName(), DtDefinition.class);
 		final DtDefinition resultDtDefinition = Home.getDefinitionSpace().resolve(xsearchObjet.getDefinitionKey("dtResult").getName(), DtDefinition.class);
-		//	final List<FacetDefinition> facetDefinitionList = Collections.emptyList();
+		//	final List<FacetDefinition> facetDefinitions = Collections.emptyList();
 		final String definitionName = xsearchObjet.getDefinitionKey().getName();
 
 		final IndexDefinition indexDefinition = new IndexDefinition(definitionName, indexDtDefinition, resultDtDefinition);

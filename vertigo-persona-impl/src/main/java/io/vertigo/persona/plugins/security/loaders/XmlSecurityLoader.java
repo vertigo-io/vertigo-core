@@ -42,16 +42,16 @@ import org.xml.sax.SAXException;
  * Plugin XML chargeant la registry à partir d'un fichier XML
  * La définition du fichier XML est décrite dans le fichier authorisation-config_1_0.dtd
  * Un exemple de fichier:
- * 
+ *
  * <authorisation-config>
- *	
+ *
  *	<!--  Ressources -->
  *	<resource id="all_products" filter="/products/.*" description="Liste des produits"/>
- *	
+ *
  *	<!--  Permissions -->
  *	<permission id="read_all_products" operation="read" resource="all_products" description="Lire tous les produits"/>
  *	<permission id="write_all_products" operation="write" resource="all_products" description="Créer/Modifier un produit"/>
- *	
+ *
  *	<!-- Roles -->
  *	<role name="reader" description="Lecteur de l'application">
  * 		<permission ref="read_all_products"/>
@@ -91,14 +91,14 @@ final class XmlSecurityLoader {
 		final Element root = XmlSecurityLoader.create(authURL, "/io/vertigo/persona/security/authorisation-config_1_0.dtd");
 
 		// Permission
-		final List<Element> permElementList = root.getChildren(PERMISSION_KEY);
-		for (final Element permElement : permElementList) {
-			final Permission permission = createPermission(permElement);
+		final List<Element> permissions = root.getChildren(PERMISSION_KEY);
+		for (final Element permissionElement : permissions) {
+			final Permission permission = createPermission(permissionElement);
 			Home.getDefinitionSpace().put(permission, Permission.class);
 		}
 		// Role
-		final List<Element> list = root.getChildren(ROLE_KEY);
-		for (final Element roleElement : list) {
+		final List<Element> roleKeys = root.getChildren(ROLE_KEY);
+		for (final Element roleElement : roleKeys) {
 			final Role role = createRole(roleElement);
 			Home.getDefinitionSpace().put(role, Role.class);
 		}
@@ -135,14 +135,14 @@ final class XmlSecurityLoader {
 		}
 	}
 
-	private Permission createPermission(final Element permElement) {
-		Assertion.checkNotNull(permElement);
+	private Permission createPermission(final Element permissionElement) {
+		Assertion.checkNotNull(permissionElement);
 		// ---------------------------------------------------------------------
-		final String id = permElement.getAttributeValue(ID_KEY);
+		final String id = permissionElement.getAttributeValue(ID_KEY);
 		// ---------------------------------------------------------------------
-		final String operation = permElement.getAttributeValue(OPERATION_KEY);
+		final String operation = permissionElement.getAttributeValue(OPERATION_KEY);
 		// ---------------------------------------------------------------------
-		final String filter = permElement.getAttributeValue(FILTER_KEY);
+		final String filter = permissionElement.getAttributeValue(FILTER_KEY);
 		// ---------------------------------------------------------------------
 		return new Permission(id, operation, filter);
 	}
@@ -154,15 +154,15 @@ final class XmlSecurityLoader {
 		// ---------------------------------------------------------------------
 		final String description = roleElement.getAttributeValue(DESCRIPTION_KEY);
 		// ---------------------------------------------------------------------
-		final List<Permission> permissionList = new ArrayList<>();
+		final List<Permission> permissions = new ArrayList<>();
 		final List<Element> xps = roleElement.getChildren(PERMISSION_KEY);
 		for (final Element element : xps) {
 			final String permissionRef = element.getAttributeValue(REF_KEY);
 			// ---------------------------------------------------------------------
 			final Permission permission = Home.getDefinitionSpace().resolve(permissionRef, Permission.class);
 			// ---------------------------------------------------------------------
-			permissionList.add(permission);
+			permissions.add(permission);
 		}
-		return new Role(name, description, permissionList);
+		return new Role(name, description, permissions);
 	}
 }

@@ -31,8 +31,8 @@ import org.junit.Test;
 
 /**
  * Test du codec de sérialisation.
- * 
- * @author pchretien 
+ *
+ * @author pchretien
  */
 public final class SerializationCodecTest extends AbstractCodecTest<Serializable, byte[]> {
 
@@ -84,31 +84,32 @@ public final class SerializationCodecTest extends AbstractCodecTest<Serializable
 	// ==============================
 	// ===========================================================================
 	private List<Serializable> createObjects() {
-		final List<Serializable> valueList = new ArrayList<>();
-		valueList.add(Integer.valueOf(54)); // Test d'un entier
-		valueList.add(""); // Test d'une chaine vide
-		valueList.add("   "); // Test d'une chaine remplie avec des espaces
-		valueList.add("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ  1234567890"); // Test
-																							// d'une
-																							// chaine
-																							// de
-																							// caractères
-																							// simples
-		valueList.add("éèêë üû ïî àäâ öô"); // Test des accents
-		valueList.add(">< & # @ %"); // Test des caractères HTML XML
-		valueList.add(" % ' "); // Test des caractères SQL
-		valueList.add("abcdef aéàè ' () {}  \" ' 12345 \\ / /254sd %§!*-+/"); // Test
-																				// d'une
-																				// chaine
-																				// de
-																				// caractères
-																				// avec
-																				// caractères
-																				// spéciaux
-																				// mélangés
+		final List<Serializable> values = new ArrayList<>();
+		values.add(Integer.valueOf(54)); // Test d'un entier
+		values.add(""); // Test d'une chaine vide
+		values.add("   "); // Test d'une chaine remplie avec des espaces
+		values.add("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ  1234567890"); // Test
+		// d'une
+		// chaine
+		// de
+		// caractères
+		// simples
+		values.add("éèêë üû ïî àäâ öô"); // Test des accents
+		values.add(">< & # @ %"); // Test des caractères HTML XML
+		values.add(" % ' "); // Test des caractères SQL
+		values.add("abcdef aéàè ' () {}  \" ' 12345 \\ / /254sd %§!*-+/"); // Test
+		// d'une
+		// chaine
+		// de
+		// caractères
+		// avec
+		// caractères
+		// spéciaux
+		// mélangés
 
-		valueList.add(createPerson()); // Test d'un objet
-		return valueList;
+		values.add(createPerson()); // Test d'un objet
+
+		return values;
 	}
 
 	private TestPerson createPerson() {

@@ -164,11 +164,11 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 		final DynamicDefinition dtDefinitionB = dynamicModelrepository.getDefinition(getDtDefinitionKey(associationXmi.getCodeB()));
 
 		final DynamicDefinition foreignDefinition = AssociationUtil.isAPrimaryNode(associationXmi.getMultiplicityA(), associationXmi.getMultiplicityB()) ? dtDefinitionA : dtDefinitionB;
-		final List<DynamicDefinition> primaryKeyList = foreignDefinition.getChildDefinitions(DomainGrammar.PRIMARY_KEY);
-		if (primaryKeyList.isEmpty()) {
+		final List<DynamicDefinition> primaryKeys = foreignDefinition.getChildDefinitions(DomainGrammar.PRIMARY_KEY);
+		if (primaryKeys.isEmpty()) {
 			throw new IllegalArgumentException("Pour l'association '" + associationXmi.getCode() + "' aucune clé primaire sur la définition '" + foreignDefinition.getDefinitionKey().getName() + "'");
 		}
-		if (primaryKeyList.size() > 1) {
+		if (primaryKeys.size() > 1) {
 			throw new IllegalArgumentException("Pour l'association '" + associationXmi.getCode() + "' clé multiple non géré sur '" + foreignDefinition.getDefinitionKey().getName() + "'");
 		}
 		if (dtDefinitionA.getDefinitionKey().getName().equals(dtDefinitionB.getDefinitionKey().getName()) && associationXmi.getCodeName() == null) {
@@ -176,7 +176,7 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 		}
 
 		//On récupère le nom de LA clé primaire .
-		final String pkFieldName = primaryKeyList.get(0).getDefinitionKey().getName();
+		final String pkFieldName = primaryKeys.get(0).getDefinitionKey().getName();
 
 		//Par défaut le nom de la clé étrangère est constituée de la clé primaire référencée.
 		String fkFieldName = pkFieldName;

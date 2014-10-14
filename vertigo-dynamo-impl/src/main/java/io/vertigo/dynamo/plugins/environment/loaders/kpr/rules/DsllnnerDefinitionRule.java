@@ -126,11 +126,11 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 	}
 
 	private static List<DynamicDefinitionKey> toDefinitionKeys(final List<String> list) {
-		final List<DynamicDefinitionKey> definitionKeyList = new ArrayList<>();
+		final List<DynamicDefinitionKey> definitionKeys = new ArrayList<>();
 		for (final String item : list) {
-			definitionKeyList.add(new DynamicDefinitionKey(item));
+			definitionKeys.add(new DynamicDefinitionKey(item));
 		}
-		return definitionKeyList;
+		return definitionKeys;
 	}
 
 }

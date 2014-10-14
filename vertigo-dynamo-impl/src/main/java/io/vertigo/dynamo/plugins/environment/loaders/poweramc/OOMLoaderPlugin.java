@@ -177,11 +177,11 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 		final DynamicDefinition dtDefinitionB = dynamicModelrepository.getDefinition(getDtDefinitionKey(associationOOM.getCodeB()));
 
 		final DynamicDefinition foreignDefinition = AssociationUtil.isAPrimaryNode(associationOOM.getMultiplicityA(), associationOOM.getMultiplicityB()) ? dtDefinitionA : dtDefinitionB;
-		final List<DynamicDefinition> primaryKeyList = foreignDefinition.getChildDefinitions(DomainGrammar.PRIMARY_KEY);
-		if (primaryKeyList.isEmpty()) {
+		final List<DynamicDefinition> primaryKeys = foreignDefinition.getChildDefinitions(DomainGrammar.PRIMARY_KEY);
+		if (primaryKeys.isEmpty()) {
 			throw new IllegalArgumentException("Pour l'association '" + associationOOM.getCode() + "' aucune clé primaire sur la définition '" + foreignDefinition.getDefinitionKey().getName() + "'");
 		}
-		if (primaryKeyList.size() > 1) {
+		if (primaryKeys.size() > 1) {
 			throw new IllegalArgumentException("Pour l'association '" + associationOOM.getCode() + "' clé multiple non géré sur '" + foreignDefinition.getDefinitionKey().getName() + "'");
 		}
 		if (dtDefinitionA.getDefinitionKey().getName().equals(dtDefinitionB.getDefinitionKey().getName()) && associationOOM.getCodeName() == null) {
@@ -189,7 +189,7 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 		}
 
 		//On récupère le nom de LA clé primaire .
-		final String pkFieldName = primaryKeyList.get(0).getDefinitionKey().getName();
+		final String pkFieldName = primaryKeys.get(0).getDefinitionKey().getName();
 
 		//Par défaut le nom de la clé étrangére est constituée de la clé primaire référencée.
 		String fkFieldName = pkFieldName;

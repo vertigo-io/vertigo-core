@@ -154,12 +154,12 @@ public final class MapCachePlugin implements CachePlugin, Describable {
 	 * @param cacheType Type du cache
 	 */
 	private void registerCacheType(final String cacheName, final String cacheType) {
-		List<String> cacheNameList = cacheTypeMap.get(cacheType);
-		if (cacheNameList == null) {
-			cacheNameList = new ArrayList<>();
-			cacheTypeMap.put(cacheType, cacheNameList);
+		List<String> cacheNames = cacheTypeMap.get(cacheType);
+		if (cacheNames == null) {
+			cacheNames = new ArrayList<>();
+			cacheTypeMap.put(cacheType, cacheNames);
 		}
-		cacheNameList.add(cacheName);
+		cacheNames.add(cacheName);
 	}
 
 	/** {@inheritDoc} */
