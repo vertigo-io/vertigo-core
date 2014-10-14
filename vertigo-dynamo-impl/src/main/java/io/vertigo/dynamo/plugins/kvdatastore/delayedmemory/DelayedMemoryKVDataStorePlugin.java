@@ -48,8 +48,8 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin, 
 	private final String dataStoreName;
 	private Timer purgeTimer;
 	private final long timeToLiveSeconds;
-	private final DelayQueue<DelayedKey> timeoutQueue = new DelayQueue<>();
-	private final Map<String, CacheValue> cacheDatas = new ConcurrentHashMap<>();
+	private final DelayQueue<DelayedMemoryKey> timeoutQueue = new DelayQueue<>();
+	private final Map<String, DelayedMemoryCacheValue> cacheDatas = new ConcurrentHashMap<>();
 
 	/**
 	 * Constructor.
@@ -74,9 +74,9 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin, 
 	public void put(final String key, final Object data) {
 		Assertion.checkNotNull(data);
 		//---------------------------------------------------------------------
-		final CacheValue cacheValue = new CacheValue(data);
+		final DelayedMemoryCacheValue cacheValue = new DelayedMemoryCacheValue(data);
 		cacheDatas.put(key, cacheValue);
-		timeoutQueue.put(new DelayedKey(key, cacheValue.getCreateTime() + timeToLiveSeconds * 1000));
+		timeoutQueue.put(new DelayedMemoryKey(key, cacheValue.getCreateTime() + timeToLiveSeconds * 1000));
 	}
 
 	/** {@inheritDoc} */
@@ -87,7 +87,7 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin, 
 	/** {@inheritDoc} */
 	@Override
 	public <C> Option<C> find(final String key, final Class<C> clazz) {
-		final CacheValue cacheValue = cacheDatas.get(key);
+		final DelayedMemoryCacheValue cacheValue = cacheDatas.get(key);
 		if (cacheValue != null && !isTooOld(cacheValue)) {
 			return Option.some(clazz.cast(cacheValue.getValue()));
 		}
@@ -128,7 +128,7 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin, 
 		int checked = 0;
 		//Les elements sont parcouru dans l'ordre d'insertion (sans lock)		
 		while (checked < maxChecked) {
-			final DelayedKey delayedKey = timeoutQueue.poll();
+			final DelayedMemoryKey delayedKey = timeoutQueue.poll();
 			if (delayedKey != null) {
 				cacheDatas.remove(delayedKey.getKey());
 				checked++;
@@ -139,7 +139,7 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin, 
 		logger.info("purge " + checked + " elements");
 	}
 
-	private boolean isTooOld(final CacheValue cacheValue) {
+	private boolean isTooOld(final DelayedMemoryCacheValue cacheValue) {
 		return System.currentTimeMillis() - cacheValue.getCreateTime() >= timeToLiveSeconds * 1000;
 	}
 }
