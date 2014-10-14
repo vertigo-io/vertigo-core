@@ -53,6 +53,7 @@ import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.engines.command.TcpVCommandEngine;
 import io.vertigo.persona.impl.security.KSecurityManagerImpl;
+import io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin;
 import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.vega.impl.rest.RestManagerImpl;
 import io.vertigo.vega.impl.rest.catalog.CatalogRestServices;
@@ -74,7 +75,7 @@ import spark.Spark;
 /**
  * Main WebService Route handler.
  * TODO : make configurable
- * @author npiedeloup 
+ * @author npiedeloup
  */
 public final class WsRestHandler {
 
@@ -90,17 +91,17 @@ public final class WsRestHandler {
 		Spark.setPort(8088);
 
 		//		<final component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
-		//      
+		//
 		//       <plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" >
 		//            <param name ="kpr" value="invs/mdo/execution.kpr"/>
-		//        </plugin>  
-		//        <plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />     
+		//        </plugin>
+		//        <plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
 		//    </component>
 
-		// @formatter:off 
+		// @formatter:off
 		// Création de l'état de l'application
 		// Initialisation de l'état de l'application
-		
+
 		final ComponentSpaceConfig config = new ComponentSpaceConfigBuilder()//
 				.withSilence(false)//
 				//.withRestEngine(new GrizzlyRestEngine(8080))
@@ -114,6 +115,7 @@ public final class WsRestHandler {
 					.endComponent()
 					.beginComponent(KSecurityManager.class, KSecurityManagerImpl.class)//
 						.withParam("userSessionClassName", TestUserSession.class.getName())
+						.beginPlugin(SecurityResourceLoaderPlugin.class).endPlugin()
 					.endComponent() //
 				.endModule()
 				.beginModule("dynamo").withNoAPI() //
@@ -144,7 +146,7 @@ public final class WsRestHandler {
 					.beginComponent(EnvironmentManagerImpl.class) //
 						.beginPlugin(AnnotationLoaderPlugin.class).endPlugin() //
 						.beginPlugin(KprLoaderPlugin.class).endPlugin() //
-						.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()	//					
+						.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()	//
 					.endComponent()
 					.withResource("classes", DtDefinitions.class.getName())
 					.withResource("kpr", "ksp/execution.kpr")
@@ -163,14 +165,14 @@ public final class WsRestHandler {
 					.beginComponent(RateLimitingHandler.class).endComponent() //
 					.beginComponent(UiSecurityTokenManager.class, UiSecurityTokenManagerImpl.class)
 						.withParam("storeName", "UiSecurityStore") //
-					.endComponent() //					
+					.endComponent() //
 				.endModule()
-				
+
 				.build();
 		// @formatter:on
 		Home.start(config);
 
-		//test 
+		//test
 		/*Spark.get(new Route("familles") {
 			@Override
 			public Object handle(final Request request, final Response response) {
@@ -182,7 +184,7 @@ public final class WsRestHandler {
 		// Will serve all static file are under "/public" in classpath if the route isn't consumed by others routes.
 		// When using Maven, the "/public" folder is assumed to be in "/main/resources"
 		Spark.externalStaticFileLocation("d:/Projets/Projet_Kasper/SPA-Fmk/SPA-skeleton/public/");
-		Spark.externalStaticFileLocation("D:/@GitHub/vertigo/vertigo-vega-impl/src/test/resources/");
+		//Spark.externalStaticFileLocation("D:/@GitHub/vertigo/vertigo-vega-impl/src/test/resources/");
 		//Spark.before(new IE8CompatibilityFix("8"));
 		//Spark.before(new CorsAllower());
 		//Translate EndPoint to route
