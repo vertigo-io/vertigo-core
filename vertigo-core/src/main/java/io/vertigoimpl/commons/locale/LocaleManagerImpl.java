@@ -87,22 +87,7 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 		Assertion.checkArgNotEmpty(locales);
 		//---------------------------------------------------------------------
 		// this.locales = new Locale[] { Locale.getDefault() };
-		final List<Locale> localeList = new ArrayList<>();
-		{
-			//Liste des variables utilisées dans la boucle
-			String language;
-			String country;
-			String variant;
-			for (final String locale : locales.split(",")) {
-				final String[] loc = locale.trim().split("_");
-				Assertion.checkArgument(loc.length > 0, "Locale specifiée vide");
-				language = loc[0];
-				country = loc.length > 1 ? loc[1] : "";
-				variant = loc.length > 2 ? loc[2] : "";
-				localeList.add(new Locale(language, country, variant));
-			}
-		}
-		this.locales = localeList.toArray(new Locale[localeList.size()]);
+		this.locales = createLocales(locales);
 		//---------------------------------------------------------------------
 		Assertion.checkNotNull(this.locales);
 		Assertion.checkArgument(this.locales.length > 0, "Il faut au moins déclarer une locale");
@@ -110,6 +95,23 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 		for (final Locale locale : this.locales) {
 			dictionaries.put(locale, new HashMap<String, String>());
 		}
+	}
+
+	private static Locale[] createLocales(final String locales) {
+		final List<Locale> localeList = new ArrayList<>();
+		//Liste des variables utilisées dans la boucle
+		String language;
+		String country;
+		String variant;
+		for (final String locale : locales.split(",")) {
+			final String[] loc = locale.trim().split("_");
+			Assertion.checkArgument(loc.length > 0, "Locale specifiée vide");
+			language = loc[0];
+			country = loc.length > 1 ? loc[1] : "";
+			variant = loc.length > 2 ? loc[2] : "";
+			localeList.add(new Locale(language, country, variant));
+		}
+		return localeList.toArray(new Locale[localeList.size()]);
 	}
 
 	/** {@inheritDoc} */
