@@ -89,7 +89,7 @@ final class BerkeleyDatabase {
 			throw new RuntimeException(e);
 		}
 		if (status == OperationStatus.NOTFOUND) {
-			//Si on n'a rien trouvé 
+			//Si on n'a rien trouvé
 			return Option.none();
 		}
 		if (!OperationStatus.SUCCESS.equals(status)) {
@@ -125,25 +125,20 @@ final class BerkeleyDatabase {
 		final List<C> list = new ArrayList<>();
 		//System.out.println(">>>doLoadDtList......");
 
-		try {
-			final Cursor cursor = database.openCursor(getCurrentBerkeleyTransaction(), null);
-			try {
-				int find = 0;
-				while ((limit == null || find < limit + skip) && cursor.getNext(idEntry, dataEntry, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-					final Object object = dataBinding.entryToObject(dataEntry);
-					//@todo Pour l'instant on ne comptabilise que les collections du type demandé.
-					//System.out.println(">>>sto>" + dto);
-					if (clazz.isInstance(object)) {
-						find++;
-						if (find > skip) {
-							list.add(clazz.cast(object));
-						}
+		try (final Cursor cursor = database.openCursor(getCurrentBerkeleyTransaction(), null)) {
+			int find = 0;
+			while ((limit == null || find < limit + skip) && cursor.getNext(idEntry, dataEntry, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+				final Object object = dataBinding.entryToObject(dataEntry);
+				//@todo Pour l'instant on ne comptabilise que les collections du type demandé.
+				//System.out.println(">>>sto>" + dto);
+				if (clazz.isInstance(object)) {
+					find++;
+					if (find > skip) {
+						list.add(clazz.cast(object));
 					}
 				}
-				return list;
-			} finally {
-				cursor.close();
 			}
+			return list;
 		} catch (final DatabaseException e) {
 			throw new RuntimeException("findAll a échouée");
 		}
@@ -151,7 +146,7 @@ final class BerkeleyDatabase {
 
 	//	/**
 	//	 * Ajout d'un nouvel objet.
-	//	 * @param dto DTO à ajouter 
+	//	 * @param dto DTO à ajouter
 	//	 */
 	//	void insert(final DtObject dto) {
 	//		Assertion.notNull(dto);
@@ -184,7 +179,7 @@ final class BerkeleyDatabase {
 
 	//
 	//	/**
-	//	 * Modification d'un objet. 
+	//	 * Modification d'un objet.
 	//	 * @param dto DTO à modifier
 	//	 */
 	//	void update(final DtObject dto) {
@@ -254,10 +249,10 @@ final class BerkeleyDatabase {
 
 }
 //	/**
-//	 * Récupération d'une liste d'objets . 
+//	 * Récupération d'une liste d'objets .
 //	 * @param <C> D Type des objets à récupérer
 //	 * @param max Nombre maximal d'objets à récupérer, si null tous les objets sont récupérés
-//	 * @return DTC 
+//	 * @return DTC
 //	 */
 //	<D extends DtObject> DtList<D> doFind(final DtDefinition dtDefinition, final Integer max) {
 //		Assertion.notNull(dtDefinition);

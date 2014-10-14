@@ -168,30 +168,25 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 		final DatabaseEntry theKey = new DatabaseEntry();
 		final DatabaseEntry theData = new DatabaseEntry();
 		final List<C> list = new ArrayList<>();
-		try {
-			final Cursor cursor = cacheDatas.openCursor(null, null);
-			try {
-				int find = 0;
-				while ((limit == null || find < limit + skip) && cursor.getNext(theKey, theData, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-					final CacheValue cacheValue = cacheValueBinding.entryToObject(theData);
-					if (cacheValue == null || isTooOld(cacheValue)) {//null if read error
-						cursor.delete(); //if corrupt (null) or too old, we delete it
-					} else {
-						final Serializable value = cacheValue.getValue();
-						if (clazz.isInstance(value)) { //we only count asked class objects
-							find++;
-							if (find > skip) {
-								list.add(clazz.cast(value));
-							}
+		try (final Cursor cursor = cacheDatas.openCursor(null, null)) {
+			int find = 0;
+			while ((limit == null || find < limit + skip) && cursor.getNext(theKey, theData, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+				final CacheValue cacheValue = cacheValueBinding.entryToObject(theData);
+				if (cacheValue == null || isTooOld(cacheValue)) {//null if read error
+					cursor.delete(); //if corrupt (null) or too old, we delete it
+				} else {
+					final Serializable value = cacheValue.getValue();
+					if (clazz.isInstance(value)) { //we only count asked class objects
+						find++;
+						if (find > skip) {
+							list.add(clazz.cast(value));
 						}
-						//totalHits++;
 					}
-
+					//totalHits++;
 				}
-				return list;
-			} finally {
-				cursor.close();
+
 			}
+			return list;
 		} catch (final DatabaseException e) {
 			throw new RuntimeException("findAll failed");
 		}
