@@ -61,7 +61,7 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 	private final Map<Locale, Map<String, String>> dictionaries = new HashMap<>();
 
 	/** liste des locales gérées. */
-	private final Locale[] locales;
+	private final List<Locale> locales;
 
 	/**
 	 * Stratégie de choix de la langue.
@@ -90,15 +90,15 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 		this.locales = createLocales(locales);
 		//---------------------------------------------------------------------
 		Assertion.checkNotNull(this.locales);
-		Assertion.checkArgument(this.locales.length > 0, "Il faut au moins déclarer une locale");
+		Assertion.checkArgument(!this.locales.isEmpty(), "Il faut au moins déclarer une locale");
 		//---------------------------------------------------------------------
 		for (final Locale locale : this.locales) {
 			dictionaries.put(locale, new HashMap<String, String>());
 		}
 	}
 
-	private static Locale[] createLocales(final String locales) {
-		final List<Locale> localeList = new ArrayList<>();
+	private static List<Locale> createLocales(final String locales) {
+		final List<Locale> myLocales = new ArrayList<>();
 		//Liste des variables utilisées dans la boucle
 		String language;
 		String country;
@@ -109,9 +109,9 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 			language = loc[0];
 			country = loc.length > 1 ? loc[1] : "";
 			variant = loc.length > 2 ? loc[2] : "";
-			localeList.add(new Locale(language, country, variant));
+			myLocales.add(new Locale(language, country, variant));
 		}
-		return localeList.toArray(new Locale[localeList.size()]);
+		return Collections.unmodifiableList(myLocales);
 	}
 
 	/** {@inheritDoc} */
@@ -222,10 +222,13 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 	/** {@inheritDoc} */
 	public Locale getCurrentLocale() {
 		if (localeProvider != null && localeProvider.getCurrentLocale() != null) {
-			return localeProvider.getCurrentLocale();
+			final Locale currentLocale = localeProvider.getCurrentLocale();
+			//We have to check if the currentLocale belongs to locales.
+			Assertion.checkState(locales.contains(localeProvider.getCurrentLocale()), "CurrentLocale '{0}' is not allowed, it must be in '{1}'", currentLocale, locales);
+			return currentLocale;
 		}
 		//Si pas d'utilisateur on prend la première langue déclarée.
-		return locales[0];
+		return locales.get(0);
 	}
 
 	private void onResourceNotFound(final String key) {
