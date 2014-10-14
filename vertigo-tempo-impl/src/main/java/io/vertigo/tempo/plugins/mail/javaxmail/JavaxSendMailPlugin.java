@@ -24,6 +24,7 @@ import io.vertigo.core.exception.VUserException;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.MessageKey;
 import io.vertigo.core.lang.MessageText;
+import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.tempo.impl.mail.Resources;
@@ -57,68 +58,90 @@ import javax.mail.internet.MimeUtility;
 
 /**
  * Plugin de gestion des mails, pour l'implémentation du jdk.
+ *
  * @author npiedeloup
  */
 public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
+
 	private static final String CHARSET_USED = "ISO-8859-1";
 	private final FileManager fileManager;
 	private final String mailStoreProtocol;
 	private final String mailHost;
 	private final boolean developmentMode;
 	private final String developmentMailTo;
+	private final Option<Integer> mailPort;
+	private final Option<String> mailLogin;
+	private final Option<String> mailPassword;
 	/** Compteur de mails envoyés. */
 	private int mailSent = 0;
 
 	/**
 	 * Crée le plugin d'envoie de mail.
+	 *
 	 * @param fileManager Manager de gestion des fichiers
 	 * @param mailStoreProtocol Protocole utilisé
 	 * @param mailHost Serveur de mail
 	 * @param developmentMode Indique s'il le mode developpement est activé (surcharge des emails destinataires)
 	 * @param developmentMailTo Email destinataire forcé pour développement
+	 * @param mailPort port à utiliser (facultatif)
+	 * @param mailLogin Login à utiliser lors de la connexion au serveur mail (facultatif)
+	 * @param mailPassword mot de passe à utiliser lors de la connexion au serveur mail (facultatif)
 	 */
 	@Inject
-	public JavaxSendMailPlugin(final FileManager fileManager, @Named("storeProtocol") final String mailStoreProtocol, @Named("host") final String mailHost, @Named("developmentMode") final boolean developmentMode, @Named("developmentMailTo") final String developmentMailTo) {
+	public JavaxSendMailPlugin(final FileManager fileManager, @Named("storeProtocol") final String mailStoreProtocol, @Named("host") final String mailHost, @Named("developmentMode") final boolean developmentMode, @Named("developmentMailTo") final String developmentMailTo, @Named("port") final Option<Integer> mailPort, @Named("login") final Option<String> mailLogin, @Named("pwd") final Option<String> mailPassword) {
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkArgNotEmpty(mailStoreProtocol);
 		Assertion.checkArgNotEmpty(mailHost);
 		Assertion.checkArgNotEmpty(developmentMailTo);
-		//---------------------------------------------------------------------
+		Assertion.checkNotNull(mailPort);
+		Assertion.checkNotNull(mailLogin);
+		Assertion.checkNotNull(mailPassword);
+		Assertion.checkArgument(mailLogin.isEmpty() ^ mailPassword.isDefined(), // login and password must be null or not null both
+				"Password is required when login is defined");
+		// ---------------------------------------------------------------------
 		this.fileManager = fileManager;
 		this.mailStoreProtocol = mailStoreProtocol;
 		this.mailHost = mailHost;
 		this.developmentMailTo = developmentMailTo;
 		this.developmentMode = developmentMode;
+		this.mailPort = mailPort;
+		this.mailLogin = mailLogin;
+		this.mailPassword = mailPassword;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void sendMail(final Mail mail) {
 		Assertion.checkNotNull(mail);
-		//---------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 		try {
 			final Properties properties = new Properties();
 			properties.put("mail.store.protocol", mailStoreProtocol);
 			properties.put("mail.host", mailHost);
+			if (mailPort.isDefined()) {
+				properties.put("mail.port", mailPort.get());
+			}
 			properties.put("mail.debug", "false");
-
+			if (mailLogin.isDefined()) {
+				properties.put("mail.starttls.enable", true);
+				properties.put("mail.auth", "true");
+				properties.put("mail.user", mailLogin.get());
+				properties.put("mail.password", mailPassword.get());
+			}
 			final Session session = Session.getDefaultInstance(properties);
 			session.setDebug(false);
-
 			final Message message = new MimeMessage(session);
 			setFromAddress(mail.getFrom(), message);
 			if (mail.getReplyTo() != null) {
 				setReplyToAddress(mail.getReplyTo(), message);
 			}
-
 			setToAddress(mail.getToList(), message);
 			setCcAddress(mail.getCcList(), message);
-
 			if (mail.getSubject() != null) {
 				message.setSubject(MimeUtility.encodeWord(mail.getSubject(), CHARSET_USED, "Q"));
 			}
 			message.setHeader("X-Mailer", "Java");
 			message.setSentDate(new Date());
-
 			final List<KFile> attachments = mail.getAttachments();
 			if (attachments.isEmpty()) {
 				setBodyContent(mail.getTextContent(), mail.getHtmlContent(), message);
@@ -127,16 +150,14 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 				final BodyPart bodyPart = new MimeBodyPart();
 				setBodyContent(mail.getTextContent(), mail.getHtmlContent(), bodyPart);
 				multiPart.addBodyPart(bodyPart);
-
 				for (final KFile kFile : attachments) {
 					final BodyPart bodyFile = createBodyFile(kFile);
 					multiPart.addBodyPart(bodyFile);
 				}
 				message.setContent(multiPart);
 			}
-
 			Transport.send(message);
-			mailSent++; //on ne synchronize pas pour des stats peu importantes
+			mailSent++; // on ne synchronize pas pour des stats peu importantes
 		} catch (final MessagingException e) {
 			throw createMailException(Resources.TEMPO_MAIL_SERVER_TIMEOUT, e);
 		} catch (final UnsupportedEncodingException e) {
@@ -147,12 +168,11 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 	private void setFromAddress(final String from, final Message message) throws MessagingException {
 		Assertion.checkNotNull(from);
 		Assertion.checkNotNull(message);
-		//---------------------------------------------------------------------
-
+		// ---------------------------------------------------------------------
 		try {
 			message.setFrom(createInternetAddress(from));
 		} catch (final AddressException e) {
-			//on catch ici, pour pouvoir indiquer l'adresse qui pose pb
+			// on catch ici, pour pouvoir indiquer l'adresse qui pose pb
 			throw createMailException(Resources.TEMPO_MAIL_ADRESS_MAIL_INVALID, e, from);
 		}
 	}
@@ -160,12 +180,12 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 	private void setReplyToAddress(final String replyTo, final Message message) throws MessagingException {
 		Assertion.checkNotNull(message);
 		Assertion.checkNotNull(replyTo);
-		//---------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 		try {
 			final InternetAddress[] replyToArray = { createInternetAddress(replyTo) };
 			message.setReplyTo(replyToArray);
 		} catch (final AddressException e) {
-			//on catch ici, pour pouvoir indiquer l'adresse qui pose pb
+			// on catch ici, pour pouvoir indiquer l'adresse qui pose pb
 			throw createMailException(Resources.TEMPO_MAIL_ADRESS_MAIL_INVALID, e, replyTo);
 		}
 	}
@@ -190,39 +210,35 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		Assertion.checkNotNull(addressList);
 		Assertion.checkArgument(!addressList.isEmpty(), "La liste des destinataires ne doit pas être vide");
 		Assertion.checkNotNull(message);
-		//---------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 		final InternetAddress[] addresses = new InternetAddress[addressList.size()];
 		for (int i = 0; i < addressList.size(); i++) {
 			try {
 				addresses[i] = createInternetAddress(addressList.get(i));
 				if (developmentMode) {
-					//en mode debug on change l'adresse, mais on laisse le nom.
+					// en mode debug on change l'adresse, mais on laisse le nom.
 					addresses[i].setAddress(developmentMailTo);
 				}
 			} catch (final AddressException e) {
-				//on catch ici, pour pouvoir indiquer l'adresse qui pose pb
+				// on catch ici, pour pouvoir indiquer l'adresse qui pose pb
 				throw createMailException(Resources.TEMPO_MAIL_ADRESS_MAIL_INVALID, e, addressList.get(i));
 			}
 		}
 		message.setRecipients(type, addresses);
-
 	}
 
 	private void setBodyContent(final String textContent, final String htmlContent, final Part bodyPart) throws MessagingException {
 		Assertion.checkArgument(textContent != null || htmlContent != null, "Le mail n'a pas de contenu, ni en text, ni en html");
 		Assertion.checkNotNull(bodyPart);
-		//---------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 		if (textContent != null && htmlContent != null) {
 			final Multipart multipart = new MimeMultipart("alternative");
-
 			final BodyPart plainMessageBodyPart = new MimeBodyPart();
 			plainMessageBodyPart.setContent(textContent, "text/plain");
 			multipart.addBodyPart(plainMessageBodyPart);
-
 			final BodyPart htmlMessageBodyPart = new MimeBodyPart();
 			htmlMessageBodyPart.setContent(htmlContent, "text/html");
 			multipart.addBodyPart(htmlMessageBodyPart);
-
 			bodyPart.setContent(multipart);
 		} else if (textContent != null) {
 			bodyPart.setText(textContent);
@@ -250,6 +266,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public List<ComponentInfo> getInfos() {
 		final List<ComponentInfo> componentInfos = new ArrayList<>();
 		componentInfos.add(new ComponentInfo("mail.sent", mailSent));
