@@ -79,15 +79,15 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 	 * exemples :
 	 * Locale.french : 'fr'
 	 * Locale.FRANCE + Locale.us : 'fr_FR,us'
-	 * Une locale est définie par une langue{_Pays{_Variante}} 
-	 * @param locales Liste des locales gérées par l'application. 
+	 * Une locale est définie par une langue{_Pays{_Variante}}
+	 * @param locales Liste des locales gérées par l'application.
 	 */
 	@Inject
 	public LocaleManagerImpl(@Named("locales") final String locales) {
 		Assertion.checkArgNotEmpty(locales);
 		//---------------------------------------------------------------------
 		// this.locales = new Locale[] { Locale.getDefault() };
-		final List<Locale> locales = new ArrayList<>();
+		final List<Locale> localeList = new ArrayList<>();
 		{
 			//Liste des variables utilisées dans la boucle
 			String language;
@@ -99,10 +99,10 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 				language = loc[0];
 				country = loc.length > 1 ? loc[1] : "";
 				variant = loc.length > 2 ? loc[2] : "";
-				locales.add(new Locale(language, country, variant));
+				localeList.add(new Locale(language, country, variant));
 			}
 		}
-		this.locales = locales.toArray(new Locale[locales.size()]);
+		this.locales = localeList.toArray(new Locale[localeList.size()]);
 		//---------------------------------------------------------------------
 		Assertion.checkNotNull(this.locales);
 		Assertion.checkArgument(this.locales.length > 0, "Il faut au moins déclarer une locale");
@@ -143,7 +143,7 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 				}
 				throw new RuntimeException("le dictionnaire pour la locale '" + locale + "' n'est pas renseigné", e);
 			}
-			//On a trouvé un dictionnaire 
+			//On a trouvé un dictionnaire
 			check(resourceBundle, enums, override);
 			load(locale, resourceBundle, override);
 		}
@@ -190,7 +190,7 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 			}
 		}
 
-		//2- Toutes les clés de l'enum sont dans le fichier properties 
+		//2- Toutes les clés de l'enum sont dans le fichier properties
 		if (!override) {
 			for (final String resourceKey : resourcesKeys) {
 				if (!resourceBundleKeySet.contains(resourceKey)) {

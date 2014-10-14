@@ -21,7 +21,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 /**
  * Handler d'export ODS avec ODFDOM v0.7.
  * La version 0.8.7 d'ODFDOM genere un ods qui est lu par Excel mais avec une alerte (voir ODSExporter.java v 1.6 pour compatibilité avec odfdom-java 0.8.7).
- * 
+ *
  * @author oboitel, npiedeloup
  */
 //final class ODSExporter {
@@ -80,7 +80,7 @@ package io.vertigo.dynamo.plugins.export.ods;
 //		initDefaultStyle(contentDom);
 //
 //		// Pour chaque élément à exporter
-//		final List<ExportDtParametersReadable> parametersList = documentParameters.getReportDataParameters();
+//		final List<ExportDtParametersReadable> parameterss = documentParameters.getReportDataParameters();
 //		for (int i = 0; i < parametersList.size(); i++) {
 //			final ExportDtParametersImpl parameters = (ExportDtParametersImpl) parametersList.get(i);
 //
