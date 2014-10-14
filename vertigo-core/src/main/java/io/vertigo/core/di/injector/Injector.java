@@ -36,25 +36,25 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * Injection des dépendances. 
- * 
+ * Injection des dépendances.
+ *
  * @author pchretien
  */
 public final class Injector {
 	/**
 	 * Injection de dépendances.
 	 * Création d'une instance  à partir d'un conteneur de composants déjà intsanciés.
-	 * 
+	 *
 	 * @param <T> Type de l'instance
 	 * @param clazz Classe de l'instance
 	 * @param container Fournisseur de composants
-	 * @return Instance de composants créée. 
+	 * @return Instance de composants créée.
 	 */
 	public <T> T newInstance(final Class<T> clazz, final Container container) {
 		Assertion.checkNotNull(clazz);
 		Assertion.checkNotNull(container);
-		//---------------------------------------------------------------------	
-		//On encapsule la création par un bloc try/ctach afin de préciser le type de composant qui n'a pas pu être créé. 
+		//---------------------------------------------------------------------
+		//On encapsule la création par un bloc try/ctach afin de préciser le type de composant qui n'a pas pu être créé.
 		try {
 			//On a un et un seul constructeur public injectable.
 			final Constructor<T> constructor = DIAnnotationUtil.findInjectableConstructor(clazz);
@@ -71,12 +71,12 @@ public final class Injector {
 	}
 
 	/**
-	 * Injection des propriétés dans une instance. 
+	 * Injection des propriétés dans une instance.
 	 */
 	public void injectMembers(final Object instance, final Container container) {
 		Assertion.checkNotNull(instance);
 		Assertion.checkNotNull(container);
-		//---------------------------------------------------------------------	
+		//---------------------------------------------------------------------
 		final Collection<Field> fields = ClassUtil.getAllFields(instance.getClass(), Inject.class);
 		for (final Field field : fields) {
 			final Object injected = getInjected(container, field);
@@ -104,11 +104,12 @@ public final class Injector {
 		final boolean optionalParameter = DIAnnotationUtil.isOptional(constructor, i);
 		if (optionalParameter) {
 			if (container.contains(id)) {
-				return Option.some(container.resolve(id, ClassUtil.getGeneric(constructor, i)));
+				//ex : <param name="opt-port" value="a value that can be null or not">
+				return Option.option(container.resolve(id, ClassUtil.getGeneric(constructor, i)));
 			}
 			return Option.none();
 		}
-		//Injection des listes de plugins 
+		//Injection des listes de plugins
 		final boolean pluginsField = DIAnnotationUtil.hasPlugins(constructor, i);
 		if (pluginsField) {
 			final String pluginType = DIAnnotationUtil.buildId(ClassUtil.getGeneric(constructor, i));
@@ -142,7 +143,7 @@ public final class Injector {
 			return Option.none();
 		}
 		//----------
-		//Injection des listes de plugins 
+		//Injection des listes de plugins
 		final boolean pluginsField = DIAnnotationUtil.hasPlugins(field);
 		if (pluginsField) {
 			final String pluginType = DIAnnotationUtil.buildId(ClassUtil.getGeneric(field));

@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.plugins.search.elasticsearch.embedded;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractElasticSearchServicesPlugin;
@@ -58,12 +57,13 @@ public final class EmbeddedElasticSearchServicesPlugin extends AbstractElasticSe
 	 * @param resourceManager Manager d'accès aux ressources
 	 */
 	@Inject
-	public EmbeddedElasticSearchServicesPlugin(@Named("home") final String elasticSearchHome, @Named("cores") final String cores, @Named("rowsPerQuery") final int rowsPerQuery, final CodecManager codecManager, final LocaleManager localeManager, final ResourceManager resourceManager) {
+	public EmbeddedElasticSearchServicesPlugin(@Named("home") final String elasticSearchHome, @Named("cores") final String cores, @Named("rowsPerQuery") final int rowsPerQuery, final CodecManager codecManager, final ResourceManager resourceManager) {
 		super(cores, rowsPerQuery, codecManager);
 		Assertion.checkArgNotEmpty(elasticSearchHome);
 		// ---------------------------------------------------------------------
 		elasticSearchHomeURL = resourceManager.resolve(elasticSearchHome);
 		node = createNode(elasticSearchHomeURL);
+		node.start();
 	}
 
 	/** {@inheritDoc} */
@@ -83,23 +83,23 @@ public final class EmbeddedElasticSearchServicesPlugin extends AbstractElasticSe
 		final File home = new File(esHomeURL.getFile());
 		Assertion.checkArgument(home.exists() && home.isDirectory(), "Le ElasticSearchHome : {0} n''existe pas, ou n''est pas un répertoire.", home.getAbsolutePath());
 		Assertion.checkArgument(home.canWrite(), "L''application n''a pas les droits d''écriture sur le ElasticSearchHome : {0}", home.getAbsolutePath());
-		final Node node = new NodeBuilder() //
+
+		return new NodeBuilder() //
 		.settings(buildNodeSettings(home.getAbsolutePath()))//
 		.local(true) //
-				.node();
-		return node;
+				.build();
 	}
 
 	private static Settings buildNodeSettings(final String homePath) {
 		//Build settings
-		final ImmutableSettings.Builder builder = ImmutableSettings.settingsBuilder() //
+		return ImmutableSettings.settingsBuilder() //
 				.put("node.name", "es-embedded-node-" + System.currentTimeMillis())
 				// .put("node.data", true)
 				// .put("cluster.name", "cluster-test-" + NetworkUtils.getLocalAddress().getHostName())
 				//.put("index.store.type", "memory")//
 				//.put("index.store.fs.memory.enabled", "true")//
 				//.put("gateway.type", "none")//
-				.put("path.home", homePath);//
-		return builder.build();
+				.put("path.home", homePath)//
+				.build();
 	}
 }

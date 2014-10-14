@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.plugins.search.elasticsearch.commonshttp;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractElasticSearchServicesPlugin;
 
@@ -51,13 +50,15 @@ public final class CommonsHttpElasticSearchServicesPlugin extends AbstractElasti
 	 * @param localeManager Manager des messages localisés
 	 */
 	@Inject
-	public CommonsHttpElasticSearchServicesPlugin(@Named("servers.names") final String serversNamesStr, @Named("cores") final String cores, @Named("rowsPerQuery") final int rowsPerQuery, final CodecManager codecManager, final LocaleManager localeManager) {
+	public CommonsHttpElasticSearchServicesPlugin(@Named("servers.names") final String serversNamesStr, @Named("cores") final String cores, @Named("rowsPerQuery") final int rowsPerQuery, final CodecManager codecManager) {
 		super(cores, rowsPerQuery, codecManager);
 		Assertion.checkArgNotEmpty(serversNamesStr, "Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','");
 		Assertion.checkArgument(!serversNamesStr.contains(";"), "Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','");
 		// ---------------------------------------------------------------------
 		serversNames = serversNamesStr.split(",");
 		node = createNode(serversNames);
+		//
+		node.start();
 	}
 
 	/** {@inheritDoc} */
@@ -72,28 +73,27 @@ public final class CommonsHttpElasticSearchServicesPlugin extends AbstractElasti
 	}
 
 	private static Node createNode(final String[] serversNames) {
-		final Node node = new NodeBuilder() //
+		return new NodeBuilder() //
 		.settings(buildNodeSettings(serversNames))//
 		.client(true) //
-				.node();
-		return node;
+				.build();
 	}
 
 	private static Settings buildNodeSettings(final String[] serversNames) {
 		//Build settings
-		final ImmutableSettings.Builder builder = ImmutableSettings.settingsBuilder() //
+		return ImmutableSettings.settingsBuilder() //
 				.put("node.name", "es-embedded-node-" + System.currentTimeMillis()).put("node.data", false) //
 				.put("node.master", false) //
 				//.put("discovery.zen.fd.ping_timeout", "30s") //
 				//.put("discovery.zen.minimum_master_nodes", 2) //
 				.put("discovery.zen.ping.multicast.enabled", false) //
-				.put("discovery.zen.ping.unicast.hosts", serversNames);
+				.put("discovery.zen.ping.unicast.hosts", serversNames)//
+				.build();
 
 		// .put("cluster.name", "cluster-test-" + NetworkUtils.getLocalAddress().getHostName())
 		//.put("index.store.type", "memory")//
 		//.put("index.store.fs.memory.enabled", "true")//
 		//.put("gateway.type", "none")//
 		//
-		return builder.build();
 	}
 }

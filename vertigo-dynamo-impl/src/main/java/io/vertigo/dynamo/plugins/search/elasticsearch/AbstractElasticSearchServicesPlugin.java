@@ -72,7 +72,7 @@ public abstract class AbstractElasticSearchServicesPlugin implements SearchServi
 
 	/**
 	 * Constructeur.
-	 * @param cores Nom des noyeaux Solr
+	 * @param cores Nom des noyeaux ES
 	 * @param rowsPerQuery Nombre de lignes
 	 * @param codecManager Manager de codec
 	 */
@@ -91,6 +91,7 @@ public abstract class AbstractElasticSearchServicesPlugin implements SearchServi
 
 	/** {@inheritDoc} */
 	public final void start() {
+
 		esClient = createEsClient();
 		initIndicesSettings();
 		for (final String core : cores) {
@@ -99,7 +100,6 @@ public abstract class AbstractElasticSearchServicesPlugin implements SearchServi
 				esClient.admin().indices().prepareCreate(indexName).execute().actionGet();
 			}
 		}
-
 	}
 
 	/*private static final String DEFAULT_SETTINGS = //
@@ -234,9 +234,9 @@ public abstract class AbstractElasticSearchServicesPlugin implements SearchServi
 		final IndexFieldNameResolver indexFieldNameResolver = obtainIndexFieldNameResolver(indexDefinition);
 		try (final XContentBuilder typeMapping = XContentFactory.jsonBuilder()) {
 			typeMapping.startObject().startObject("properties") //
-			.startObject(ElasticDocumentCodec.FULL_RESULT) //
-			.field("type", "binary")//
-			.endObject();
+					.startObject(ElasticDocumentCodec.FULL_RESULT) //
+					.field("type", "binary")//
+					.endObject();
 			/* 3 : Les champs du dto index */
 			final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
 			for (final DtField dtField : indexDtDefinition.getFields()) {
@@ -254,10 +254,10 @@ public abstract class AbstractElasticSearchServicesPlugin implements SearchServi
 			//
 			final IndicesAdminClient indicesAdmin = esClient.admin().indices();
 			final PutMappingResponse putMappingResponse = new PutMappingRequestBuilder(indicesAdmin) //
-			.setIndices(indexDefinition.getName().toLowerCase()) //
-			.setType(indexDefinition.getIndexDtDefinition().getName()) //
-			.setSource(typeMapping)//
-			.get();
+					.setIndices(indexDefinition.getName().toLowerCase()) //
+					.setType(indexDefinition.getIndexDtDefinition().getName()) //
+					.setSource(typeMapping)//
+					.get();
 			putMappingResponse.isAcknowledged();
 		} catch (final IOException e) {
 			throw new RuntimeException("Serveur ElasticSearch indisponible", e);

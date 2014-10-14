@@ -141,13 +141,11 @@ final class ElasticStatement<I extends DtObject, R extends DtObject> {
 	 */
 	void put(final Index<I, R> index) {
 		//Injection spécifique au moteur d'indexation.
-		try {
-			try (final XContentBuilder xContentBuilder = elasticSearchDocumentCodec.index2XContentBuilder(index, indexFieldNameResolver)) {
-				esClient.prepareIndex(indexName, index.getURI().getDefinition().getName(), index.getURI().toURN())//
-						.setSource(xContentBuilder) //
-						.execute() //execute asynchrone
-						.actionGet(); //get wait exec
-			}
+		try (final XContentBuilder xContentBuilder = elasticSearchDocumentCodec.index2XContentBuilder(index, indexFieldNameResolver)) {
+			esClient.prepareIndex(indexName, index.getURI().getDefinition().getName(), index.getURI().toURN())//
+			.setSource(xContentBuilder) //
+			.execute() //execute asynchrone
+			.actionGet(); //get wait exec
 		} catch (final IOException e) {
 			handleIOException(e);
 		}
@@ -343,14 +341,15 @@ final class ElasticStatement<I extends DtObject, R extends DtObject> {
 			//}
 			return indexFieldNameResolver.replaceAllIndexFieldNames(stringQuery.toString());
 		}*/
-	private static QueryBuilder translateToQueryBuilder(final ListFilter query, final IndexFieldNameResolver indexFieldNameResolver) {
-		Assertion.checkNotNull(query);
+	private static QueryBuilder translateToQueryBuilder(final ListFilter listFilter, final IndexFieldNameResolver indexFieldNameResolver) {
+		Assertion.checkNotNull(listFilter);
 		//---------------------------------------------------------------------
-		final StringBuilder stringQuery = new StringBuilder();
-		stringQuery.append(" +(");
-		stringQuery.append(query.getFilterValue());
-		stringQuery.append(')');
-		return QueryBuilders.queryString(indexFieldNameResolver.replaceAllIndexFieldNames(stringQuery.toString())) //
+		final String query = new StringBuilder()//
+				.append(" +(")//
+				.append(listFilter.getFilterValue())//
+				.append(')')//
+				.toString();
+		return QueryBuilders.queryString(indexFieldNameResolver.replaceAllIndexFieldNames(query)) //
 				.lowercaseExpandedTerms(false);
 	}
 
@@ -371,9 +370,9 @@ final class ElasticStatement<I extends DtObject, R extends DtObject> {
 			resultHighlights.put(result, highlights);
 		}
 		//On fabrique à la volée le résultat.
-		final List<Facet> facetList = createFacetList(filtersQuery.getDefinition(), queryResponse);
+		final List<Facet> facets = createFacetList(filtersQuery.getDefinition(), queryResponse);
 		final long count = queryResponse.getHits().getTotalHits();
-		return new FacetedQueryResult<>(filtersQuery, count, dtc, facetList, resultHighlights, searchQuery);
+		return new FacetedQueryResult<>(filtersQuery, count, dtc, facets, resultHighlights, searchQuery);
 	}
 
 	private static Map<DtField, String> createHighlight(final SearchHit searchHit, final DtDefinition indexDtDefinition, final IndexFieldNameResolver indexFieldNameResolver) {
@@ -390,25 +389,25 @@ final class ElasticStatement<I extends DtObject, R extends DtObject> {
 		return highlights;
 	}
 
-	private List<Facet> createFacetList(final FacetedQueryDefinition queryDefinition, final SearchResponse queryResponse) {
-		final List<Facet> facetList = new ArrayList<>();
+	private static List<Facet> createFacetList(final FacetedQueryDefinition queryDefinition, final SearchResponse queryResponse) {
+		final List<Facet> facets = new ArrayList<>();
 		if (queryResponse.getAggregations() != null) {
-			for (final Aggregation agregation : queryResponse.getAggregations().asList()) {
-				final FacetDefinition facetDefinition = queryDefinition.getFacetDefinition(agregation.getName());
+			for (final Aggregation aggregation : queryResponse.getAggregations().asList()) {
+				final FacetDefinition facetDefinition = queryDefinition.getFacetDefinition(aggregation.getName());
+				final Facet currentFacet;
 				if (facetDefinition.isRangeFacet()) {
 					//Cas des facettes par 'range'
-					final Range rangeBuckets = (Range) agregation;
-					final Facet currentFacet = createFacetRange(facetDefinition, rangeBuckets);
-					facetList.add(currentFacet);
+					final Range rangeBuckets = (Range) aggregation;
+					currentFacet = createFacetRange(facetDefinition, rangeBuckets);
 				} else {
 					//Cas des facettes par 'term'
-					final MultiBucketsAggregation multiBuckets = (MultiBucketsAggregation) agregation;
-					final Facet currentFacet = createTermFacet(facetDefinition, multiBuckets);
-					facetList.add(currentFacet);
+					final MultiBucketsAggregation multiBuckets = (MultiBucketsAggregation) aggregation;
+					currentFacet = createTermFacet(facetDefinition, multiBuckets);
 				}
+				facets.add(currentFacet);
 			}
 		}
-		return facetList;
+		return facets;
 	}
 
 	private static Facet createTermFacet(final FacetDefinition facetDefinition, final MultiBucketsAggregation multiBuckets) {
@@ -434,7 +433,7 @@ final class ElasticStatement<I extends DtObject, R extends DtObject> {
 		return new Facet(facetDefinition, sortedFacetValues);
 	}
 
-	private Facet createFacetRange(final FacetDefinition facetDefinition, final Range rangeBuckets) {
+	private static Facet createFacetRange(final FacetDefinition facetDefinition, final Range rangeBuckets) {
 		//Cas des facettes par range
 		final Map<FacetValue, Long> rangeValues = new LinkedHashMap<>();
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
