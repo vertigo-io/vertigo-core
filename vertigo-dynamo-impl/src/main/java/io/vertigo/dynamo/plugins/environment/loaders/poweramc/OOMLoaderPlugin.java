@@ -97,7 +97,7 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 
 	private DynamicDefinition toDynamicDefinition(final OOMClass classOOM, final DynamicDefinitionRepository dynamicModelrepository) {
 
-		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelrepository.createDynamicDefinitionBuilder(getDtDefinitionName(classOOM.getCode()), dtDefinitionEntity, classOOM.getPackageName());
+		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(getDtDefinitionName(classOOM.getCode()), dtDefinitionEntity, classOOM.getPackageName());
 		//Par défaut les DT lues depuis OOM sont persistantes.
 		dtDefinitionBuilder.withPropertyValue(KspProperty.PERSISTENT, true);
 
@@ -115,7 +115,7 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 	private DynamicDefinition toDynamicDefinition(final OOMAttribute attributeOOM, final DynamicDefinitionRepository dynamicModelrepository) {
 		final DynamicDefinitionKey domainKey = new DynamicDefinitionKey(attributeOOM.getDomain());
 
-		return dynamicModelrepository.createDynamicDefinitionBuilder(attributeOOM.getCode(), dtFieldEntity, null)//
+		return DynamicDefinitionRepository.createDynamicDefinitionBuilder(attributeOOM.getCode(), dtFieldEntity, null)//
 				.withPropertyValue(KspProperty.LABEL, attributeOOM.getLabel())//
 				.withPropertyValue(KspProperty.PERSISTENT, attributeOOM.isPersistent())//
 				.withPropertyValue(KspProperty.NOT_NULL, attributeOOM.isNotNull())//
@@ -138,7 +138,7 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 		}
 
 		//On crée l'association
-		final DynamicDefinitionBuilder associationDefinitionBuilder = dynamicModelrepository.createDynamicDefinitionBuilder(name, dynamicMetaDefinition, associationOOM.getPackageName())//
+		final DynamicDefinitionBuilder associationDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(name, dynamicMetaDefinition, associationOOM.getPackageName())//
 				.withPropertyValue(KspProperty.NAVIGABILITY_A, associationOOM.isNavigableA())//
 				.withPropertyValue(KspProperty.NAVIGABILITY_B, associationOOM.isNavigableB())//
 				//---
@@ -161,8 +161,8 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 			//Dans le cas d'une NN ses deux propriétés sont redondantes ;
 			//elles ne font donc pas partie de la définition d'une association de type NN
 			associationDefinitionBuilder.withPropertyValue(KspProperty.MULTIPLICITY_A, associationOOM.getMultiplicityA())//
-			.withPropertyValue(KspProperty.MULTIPLICITY_B, associationOOM.getMultiplicityB())//
-			.withPropertyValue(KspProperty.FK_FIELD_NAME, buildFkFieldName(associationOOM, dynamicModelrepository));
+					.withPropertyValue(KspProperty.MULTIPLICITY_B, associationOOM.getMultiplicityB())//
+					.withPropertyValue(KspProperty.FK_FIELD_NAME, buildFkFieldName(associationOOM, dynamicModelrepository));
 
 		}
 		return associationDefinitionBuilder.build();

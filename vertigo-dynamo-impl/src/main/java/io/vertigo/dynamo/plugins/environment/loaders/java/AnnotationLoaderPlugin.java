@@ -103,7 +103,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 		final String urn = DT_DEFINITION_PREFIX + SEPARATOR + StringUtil.camelToConstCase(simpleName);
 
-		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelRepository.createDynamicDefinitionBuilder(urn, DomainGrammar.DT_DEFINITION_ENTITY, packageName)//
+		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(urn, DomainGrammar.DT_DEFINITION_ENTITY, packageName)//
 				.withPropertyValue(KspProperty.PERSISTENT, dtDefinitionAnnotation.persistent());
 
 		// Le tri des champs et des méthodes par ordre alphabétique est important car classe.getMethods() retourne
@@ -138,7 +138,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 				final DynamicDefinitionKey primaryDtDefinitionKey = new DynamicDefinitionKey(association.primaryDtDefinitionName());
 				final DynamicDefinitionKey foreignDtDefinitionKey = new DynamicDefinitionKey(association.foreignDtDefinitionName());
 
-				final DynamicDefinition associationDefinition = dynamicModelRepository.createDynamicDefinitionBuilder(association.name(), DomainGrammar.ASSOCIATION_ENTITY, packageName)//
+				final DynamicDefinition associationDefinition = DynamicDefinitionRepository.createDynamicDefinitionBuilder(association.name(), DomainGrammar.ASSOCIATION_ENTITY, packageName)//
 						// associationDefinition.
 						//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
 						.withPropertyValue(KspProperty.MULTIPLICITY_A, association.primaryMultiplicity())//
@@ -170,7 +170,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 				final DynamicDefinitionKey dtDefinitionAKey = new DynamicDefinitionKey(association.dtDefinitionA());
 				final DynamicDefinitionKey dtDefinitionBKey = new DynamicDefinitionKey(association.dtDefinitionB());
 
-				final DynamicDefinition associationDefinition = dynamicModelRepository.createDynamicDefinitionBuilder(association.name(), DomainGrammar.ASSOCIATION_NN_ENTITY, packageName)//
+				final DynamicDefinition associationDefinition = DynamicDefinitionRepository.createDynamicDefinitionBuilder(association.name(), DomainGrammar.ASSOCIATION_NN_ENTITY, packageName)//
 						.withPropertyValue(KspProperty.TABLE_NAME, association.tableName())//
 
 						// associationDefinition.
@@ -224,7 +224,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		//Si on trouve un domaine on est dans un objet dynamo.
 		final FieldType type = FieldType.valueOf(field.type());
 		final DynamicDefinitionKey fieldDomainKey = new DynamicDefinitionKey(field.domain());
-		final DynamicDefinition dtField = dynamicModelrepository.createDynamicDefinitionBuilder(fieldName, DomainGrammar.DT_FIELD_ENTITY, null)//
+		final DynamicDefinition dtField = DynamicDefinitionRepository.createDynamicDefinitionBuilder(fieldName, DomainGrammar.DT_FIELD_ENTITY, null)//
 				.withDefinition("domain", fieldDomainKey)//
 				.withPropertyValue(KspProperty.LABEL, field.label())//
 				.withPropertyValue(KspProperty.NOT_NULL, field.notNull())//
@@ -232,21 +232,21 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 				.build();
 
 		switch (type) {
-		case PRIMARY_KEY:
-			dtDefinition.withChildDefinition(DomainGrammar.PRIMARY_KEY, dtField);
-			break;
-		case DATA:
-			dtDefinition.withChildDefinition("field", dtField);
-			break;
-		case COMPUTED:
-			//Valeurs renseignées automatiquement parce que l'on est dans le cas d'un champ calculé
-			dtDefinition.withChildDefinition("computed", dtField);
-			break;
-		case FOREIGN_KEY:
-			//on ne fait rien puisque le champ est défini par une association.
-			break;
-		default:
-			throw new IllegalArgumentException("case " + type + " not implemented");
+			case PRIMARY_KEY:
+				dtDefinition.withChildDefinition(DomainGrammar.PRIMARY_KEY, dtField);
+				break;
+			case DATA:
+				dtDefinition.withChildDefinition("field", dtField);
+				break;
+			case COMPUTED:
+				//Valeurs renseignées automatiquement parce que l'on est dans le cas d'un champ calculé
+				dtDefinition.withChildDefinition("computed", dtField);
+				break;
+			case FOREIGN_KEY:
+				//on ne fait rien puisque le champ est défini par une association.
+				break;
+			default:
+				throw new IllegalArgumentException("case " + type + " not implemented");
 		}
 	}
 

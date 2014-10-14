@@ -42,7 +42,7 @@ import javax.inject.Inject;
 
 /**
  * Permet de gérer le CRUD sur un fichier stocké sur deux tables (Méta données / Données).
- * 
+ *
  * @author sezratty
  */
 public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
@@ -64,7 +64,7 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param fileManager Manager de gestion des fichiers
 	 */
 	@Inject
@@ -80,17 +80,17 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 		// Ramène FileMetada
 		final URI<DtObject> dtoMetaDataUri = createMetaDataURI(uri);
 		final DtObject fileMetadataDto = getPersistenceManager().getBroker().get(dtoMetaDataUri);
-		final Object fdtId = this.<Object> getValue(fileMetadataDto, DtoFields.FDT_ID);
+		final Object fdtId = TwoTablesDbFileStorePlugin.<Object> getValue(fileMetadataDto, DtoFields.FDT_ID);
 
 		// Ramène FileData
 		final URI<DtObject> dtoDataUri = createDataURI(uri.<FileInfoDefinition> getDefinition(), fdtId);
 		final DtObject fileDataDto = getPersistenceManager().getBroker().get(dtoDataUri);
 		// Construction du KFile.
-		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder(this.<DataStream> getValue(fileDataDto, DtoFields.FILE_DATA));
-		final String fileName = this.<String> getValue(fileMetadataDto, DtoFields.FILE_NAME);
-		final String mimeType = this.<String> getValue(fileMetadataDto, DtoFields.MIME_TYPE);
-		final Date lastModified = this.<Date> getValue(fileMetadataDto, DtoFields.LAST_MODIFIED);
-		final Long length = this.<Long> getValue(fileMetadataDto, DtoFields.LENGTH);
+		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder((DataStream) getValue(fileDataDto, DtoFields.FILE_DATA));
+		final String fileName = (String) getValue(fileMetadataDto, DtoFields.FILE_NAME);
+		final String mimeType = (String) getValue(fileMetadataDto, DtoFields.MIME_TYPE);
+		final Date lastModified = (Date) getValue(fileMetadataDto, DtoFields.LAST_MODIFIED);
+		final Long length = (Long) getValue(fileMetadataDto, DtoFields.LENGTH);
 		final KFile kFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
 
 		//TODO passer par une factory de FileInfo à partir de la FileInfoDefinition (comme DomainFactory)
@@ -128,7 +128,7 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 			// Chargement du FDT_ID
 			final URI<DtObject> dtoMetaDataUri = createMetaDataURI(fileInfo.getURI());
 			final DtObject fileMetadataDtoOld = getPersistenceManager().getBroker().<DtObject> get(dtoMetaDataUri);
-			final Object fdtId = this.<Object> getValue(fileMetadataDtoOld, DtoFields.FDT_ID);
+			final Object fdtId = TwoTablesDbFileStorePlugin.<Object> getValue(fileMetadataDtoOld, DtoFields.FDT_ID);
 			setValue(fileMetadataDto, DtoFields.FDT_ID, fdtId);
 			setValue(fileDataDto, DtoFields.FDT_ID, fdtId);
 			getPersistenceManager().getBroker().save(fileDataDto);
@@ -146,7 +146,7 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 		// ---------------------------------------------------------------------
 		final URI<DtObject> dtoMetaDataUri = createMetaDataURI(uri);
 		final DtObject fileMetadataDtoOld = getPersistenceManager().getBroker().<DtObject> get(dtoMetaDataUri);
-		final Object fdtId = this.<Object> getValue(fileMetadataDtoOld, DtoFields.FDT_ID);
+		final Object fdtId = TwoTablesDbFileStorePlugin.<Object> getValue(fileMetadataDtoOld, DtoFields.FDT_ID);
 		final URI<DtObject> dtoDataUri = createDataURI(uri.<FileInfoDefinition> getDefinition(), fdtId);
 
 		getPersistenceManager().getBroker().delete(dtoDataUri);
@@ -155,7 +155,7 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 
 	/**
 	 * Création d'une URI du DTO de métadonnées à partir de l'URI de FileInfo
-	 * 
+	 *
 	 * @param uri URI de FileInfo
 	 * @return URI du DTO utilisé en BDD pour stocker les métadonnées.
 	 */
@@ -169,7 +169,7 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 
 	/**
 	 * Création d'une URI de DTO des données à partir de l'URI de FileInfo et la clé de la ligne
-	 * 
+	 *
 	 * @param fileInfoDefinition Definition de FileInfo
 	 * @param fdtId Identifiant de la ligne
 	 * @return URI du DTO utilisé en BDD pour stocker les données.
@@ -201,20 +201,20 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 
 	/**
 	 * Retourne une valeur d'un champ à partir du DtObject.
-	 * 
+	 *
 	 * @param dto DtObject
 	 * @param field Nom du champs
 	 * @return Valeur typé du champ
 	 */
-	private static <O> O getValue(final DtObject dto, final DtoFields field) {
+	private static Object getValue(final DtObject dto, final DtoFields field) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		final DtField dtField = dtDefinition.getField(field.name());
-		return (O) dtField.getDataAccessor().getValue(dto);
+		return dtField.getDataAccessor().getValue(dto);
 	}
 
 	/**
 	 * Fixe une valeur d'un champ d'un DtObject.
-	 * 
+	 *
 	 * @param dto DtObject
 	 * @param field Nom du champs
 	 * @param value Valeur

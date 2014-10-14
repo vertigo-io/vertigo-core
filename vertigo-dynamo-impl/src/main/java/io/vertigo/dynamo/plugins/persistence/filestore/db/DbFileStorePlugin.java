@@ -80,11 +80,11 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 	public FileInfo load(final URI<FileInfo> uri) {
 		final URI<DtObject> dtoUri = createDtObjectURI(uri);
 		final DtObject fileInfoDto = getPersistenceManager().getBroker().get(dtoUri);
-		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder(this.<DataStream> getValue(fileInfoDto, DtoFields.FILE_DATA));
-		final String fileName = this.<String> getValue(fileInfoDto, DtoFields.FILE_NAME);
-		final String mimeType = this.<String> getValue(fileInfoDto, DtoFields.MIME_TYPE);
-		final Date lastModified = this.<Date> getValue(fileInfoDto, DtoFields.LAST_MODIFIED);
-		final Long length = this.<Long> getValue(fileInfoDto, DtoFields.LENGTH);
+		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder((DataStream) getValue(fileInfoDto, DtoFields.FILE_DATA));
+		final String fileName = (String) getValue(fileInfoDto, DtoFields.FILE_NAME);
+		final String mimeType = (String) getValue(fileInfoDto, DtoFields.MIME_TYPE);
+		final Date lastModified = (Date) getValue(fileInfoDto, DtoFields.LAST_MODIFIED);
+		final Long length = (Long) getValue(fileInfoDto, DtoFields.LENGTH);
 		final KFile kFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
 		//TODO passer par une factory de FileInfo à partir de la FileInfoDefinition (comme DomainFactory)
 		return new DatabaseFileInfo(uri.<FileInfoDefinition> getDefinition(), kFile);
@@ -162,20 +162,20 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 
 	/**
 	 * Retourne une valeur d'un champ à partir du DtObject.
-	 * 
+	 *
 	 * @param dto DtObject
 	 * @param field Nom du champs
 	 * @return Valeur typé du champ
 	 */
-	private static  <O> O getValue(final DtObject dto, final DtoFields field) {
+	private static Object getValue(final DtObject dto, final DtoFields field) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		final DtField dtField = dtDefinition.getField(field.name());
-		return (O) dtField.getDataAccessor().getValue(dto);
+		return dtField.getDataAccessor().getValue(dto);
 	}
 
 	/**
 	 * Fixe une valeur d'un champ d'un DtObject.
-	 * 
+	 *
 	 * @param dto DtObject
 	 * @param field Nom du champs
 	 * @param value Valeur

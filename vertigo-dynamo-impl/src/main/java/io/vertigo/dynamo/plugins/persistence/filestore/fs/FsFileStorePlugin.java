@@ -51,7 +51,7 @@ import javax.inject.Named;
 /**
  * Permet de gérer les accès atomiques à n'importe quel type de stockage SQL/
  * non SQL pour les traitements de FileInfo.
- * 
+ *
  * @author pchretien, npiedeloup, skerdudou
  */
 public final class FsFileStorePlugin implements FileStorePlugin {
@@ -65,7 +65,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	/**
 	 * Liste des champs du Dto de stockage.
 	 * Ces champs sont obligatoire sur les Dt associés aux fileInfoDefinitions
-	 * 
+	 *
 	 * @author npiedeloup
 	 */
 	private static enum DtoFields {
@@ -93,7 +93,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param fileManager Manager de gestion des fichiers
 	 * @param path le chemin jndi pour récupérer le paramètre path dans le context
 	 */
@@ -116,11 +116,11 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		final DtObject fileInfoDto = getPersistenceManager().getBroker().get(dtoUri);
 
 		// récupération du fichier
-		final String fileName = this.<String> getValue(fileInfoDto, DtoFields.FILE_NAME);
-		final String mimeType = this.<String> getValue(fileInfoDto, DtoFields.MIME_TYPE);
-		final Date lastModified = this.<Date> getValue(fileInfoDto, DtoFields.LAST_MODIFIED);
-		final Long length = this.<Long> getValue(fileInfoDto, DtoFields.LENGTH);
-		final String filePath = this.<String> getValue(fileInfoDto, DtoFields.FILE_PATH);
+		final String fileName = FsFileStorePlugin.<String> getValue(fileInfoDto, DtoFields.FILE_NAME);
+		final String mimeType = FsFileStorePlugin.<String> getValue(fileInfoDto, DtoFields.MIME_TYPE);
+		final Date lastModified = FsFileStorePlugin.<Date> getValue(fileInfoDto, DtoFields.LAST_MODIFIED);
+		final Long length = FsFileStorePlugin.<Long> getValue(fileInfoDto, DtoFields.LENGTH);
+		final String filePath = FsFileStorePlugin.<String> getValue(fileInfoDto, DtoFields.FILE_PATH);
 
 		final InputStreamBuilder inputStreamBuilder = new FileInputStreamBuilder(new File(documentRoot + filePath));
 		final KFile kFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
@@ -163,7 +163,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 			// récupération de l'objet en base pour récupérer le path du fichier et ne pas modifier la base
 			final URI<DtObject> dtoUri = createDtObjectURI(fileInfo.getURI());
 			final DtObject fileInfoDtoBase = getPersistenceManager().getBroker().get(dtoUri);
-			pathToSave = this.<String> getValue(fileInfoDtoBase, DtoFields.FILE_PATH);
+			pathToSave = FsFileStorePlugin.<String> getValue(fileInfoDtoBase, DtoFields.FILE_PATH);
 			setValue(fileInfoDto, DtoFields.FILE_PATH, pathToSave);
 		}
 
@@ -205,7 +205,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		final URI<DtObject> dtoUri = createDtObjectURI(uri);
 		// ----------------- suppression du fichier ----------------------------
 		final DtObject fileInfoDto = getPersistenceManager().getBroker().get(dtoUri);
-		final String path = this.<String> getValue(fileInfoDto, DtoFields.FILE_PATH);
+		final String path = FsFileStorePlugin.<String> getValue(fileInfoDto, DtoFields.FILE_PATH);
 		obtainFsTransactionRessource().deleteFile(documentRoot + path);
 		// ------------------ suppression en base ------------------------------
 		getPersistenceManager().getBroker().delete(dtoUri);
@@ -213,7 +213,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 
 	/**
 	 * Création d'une URI de DTO à partir de l'URI de FileInfo
-	 * 
+	 *
 	 * @param uri URI de FileInfo
 	 * @return URI du DTO utilisé en BDD pour stocker.
 	 */
@@ -230,7 +230,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 
 	/**
 	 * Création d'un DTO à partir d'une definition de FileInfo
-	 * 
+	 *
 	 * @param fileInfoDefinition Definition de FileInfo
 	 * @return DTO utilisé en BDD pour stocker.
 	 */
@@ -246,7 +246,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 
 	/**
 	 * Retourne une valeur d'un champ à partir du DtObject.
-	 * 
+	 *
 	 * @param dto DtObject
 	 * @param field Nom du champs
 	 * @return Valeur typé du champ
@@ -259,7 +259,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 
 	/**
 	 * Fixe une valeur d'un champ d'un DtObject.
-	 * 
+	 *
 	 * @param dto DtObject
 	 * @param field Nom du champs
 	 * @param value Valeur
@@ -294,7 +294,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 
 	/**
 	 * Retourne l'id de la ressource FileSystem.
-	 * 
+	 *
 	 * @return Id de la Ressource Connexion FileSystem dans la transaction
 	 */
 	private static KTransactionResourceId<FsTransactionResource> getKTransactionResourceId() {
@@ -315,7 +315,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 
 	/**
 	 * récupère la valeur de documentRoot.
-	 * 
+	 *
 	 * @return valeur de documentRoot
 	 */
 	public String getDocumentRoot() {

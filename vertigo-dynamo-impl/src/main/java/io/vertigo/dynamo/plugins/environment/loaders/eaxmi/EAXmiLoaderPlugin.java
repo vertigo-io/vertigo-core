@@ -82,7 +82,7 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 
 	private static DynamicDefinition toDynamicDefinition(final EAXmiClass classXmi, final DynamicDefinitionRepository dynamicModelrepository) {
 		final Entity dtDefinitionEntity = DomainGrammar.DT_DEFINITION_ENTITY;
-		final DynamicDefinitionBuilder dtDefinitionBuilder = dynamicModelrepository.createDynamicDefinitionBuilder(getDtDefinitionName(classXmi.getCode()), dtDefinitionEntity, classXmi.getPackageName())//
+		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(getDtDefinitionName(classXmi.getCode()), dtDefinitionEntity, classXmi.getPackageName())//
 				//Par défaut les DT lues depuis le XMI sont persistantes.
 				.withPropertyValue(KspProperty.PERSISTENT, true);
 
@@ -101,7 +101,7 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 		final Entity dtFieldEntity = DomainGrammar.DT_FIELD_ENTITY;
 		final DynamicDefinitionKey domainKey = new DynamicDefinitionKey(attributeXmi.getDomain());
 
-		return dynamicModelrepository.createDynamicDefinitionBuilder(attributeXmi.getCode(), dtFieldEntity, null)//
+		return DynamicDefinitionRepository.createDynamicDefinitionBuilder(attributeXmi.getCode(), dtFieldEntity, null)//
 				.withPropertyValue(KspProperty.LABEL, attributeXmi.getLabel())//
 				.withPropertyValue(KspProperty.PERSISTENT, attributeXmi.isPersistent())//
 				.withPropertyValue(KspProperty.NOT_NULL, attributeXmi.isNotNull())//
@@ -125,7 +125,7 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 		}
 
 		//On crée l'association
-		final DynamicDefinitionBuilder associationDefinitionBuilder = dynamicModelrepository.createDynamicDefinitionBuilder(name, dynamicMetaDefinition, associationXmi.getPackageName())//
+		final DynamicDefinitionBuilder associationDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(name, dynamicMetaDefinition, associationXmi.getPackageName())//
 				.withPropertyValue(KspProperty.NAVIGABILITY_A, associationXmi.isNavigableA())//
 				.withPropertyValue(KspProperty.NAVIGABILITY_B, associationXmi.isNavigableB())//
 				//---
@@ -148,8 +148,8 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 			//Dans le cas d'une NN ses deux propriétés sont redondantes ;
 			//elles ne font donc pas partie de la définition d'une association de type NN
 			associationDefinitionBuilder.withPropertyValue(KspProperty.MULTIPLICITY_A, associationXmi.getMultiplicityA())//
-					.withPropertyValue(KspProperty.MULTIPLICITY_B, associationXmi.getMultiplicityB())//
-					.withPropertyValue(KspProperty.FK_FIELD_NAME, buildFkFieldName(associationXmi, dynamicModelrepository));
+			.withPropertyValue(KspProperty.MULTIPLICITY_B, associationXmi.getMultiplicityB())//
+			.withPropertyValue(KspProperty.FK_FIELD_NAME, buildFkFieldName(associationXmi, dynamicModelrepository));
 
 		}
 		return associationDefinitionBuilder.build();

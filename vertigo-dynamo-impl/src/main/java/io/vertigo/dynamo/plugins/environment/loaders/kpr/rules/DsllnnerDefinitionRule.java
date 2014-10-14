@@ -63,7 +63,7 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 				definitionBodyRule,//4
 				DslSyntaxRules.SPACES,//
 				new OptionRule<>(DslSyntaxRules.OBJECT_SEPARATOR)//
-		);
+				);
 	}
 
 	@Override
@@ -73,7 +73,7 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 		final String definitionName = (String) parsing.get(2);
 		final DslDefinitionBody definitionBody = (DslDefinitionBody) parsing.get(4);
 
-		final DynamicDefinitionBuilder dynamicDefinitionBuilder = dynamicModelRepository.createDynamicDefinitionBuilder(definitionName, entity, null);
+		final DynamicDefinitionBuilder dynamicDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(definitionName, entity, null);
 		populateDefinition(definitionBody, dynamicDefinitionBuilder);
 
 		//---

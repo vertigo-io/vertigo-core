@@ -71,7 +71,7 @@ final class Environment implements ResourceLoader {
 		//--Enregistrement des types primitifs
 		final Entity dataTypeEntity = KernelGrammar.getDataTypeEntity();
 		for (final DataType type : DataType.values()) {
-			final DynamicDefinition definition = dynamicModelRepository.createDynamicDefinitionBuilder(type.name(), dataTypeEntity, null).build();
+			final DynamicDefinition definition = DynamicDefinitionRepository.createDynamicDefinitionBuilder(type.name(), dataTypeEntity, null).build();
 			dynamicModelRepository.addDefinition(definition);
 		}
 		for (final ResourceConfig resourceConfig : resourceConfigs) {

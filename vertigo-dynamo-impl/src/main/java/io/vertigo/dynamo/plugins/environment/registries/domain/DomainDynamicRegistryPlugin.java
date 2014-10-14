@@ -197,9 +197,9 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		//----------------------------------------------------------------------
 		final String dtDefinitionName = xdtDefinition.getDefinitionKey().getName();
 		final DtDefinitionBuilder dtDefinitionBuilder = new DtDefinitionBuilder(dtDefinitionName)//
-		.withPackageName(xdtDefinition.getPackageName())//
-		.withPersistent(persistent)//
-		.withDynamic(dynamic);
+				.withPackageName(xdtDefinition.getPackageName())//
+				.withPersistent(persistent)//
+				.withDynamic(dynamic);
 		//On enregistre les Builder pour pouvoir les mettre à jour sur les associations.
 		Assertion.checkArgument(!dtDefinitionBuilders.containsKey(dtDefinitionName), "Definition '{0}' déjà enregistrée", dtDefinitionName);
 		dtDefinitionBuilders.put(dtDefinitionName, dtDefinitionBuilder);
@@ -428,7 +428,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final DynamicDefinitionKey fmtDefaultKey = new DynamicDefinitionKey(Formatter.FMT_DEFAULT);
 		final DynamicDefinitionKey dtObjectKey = new DynamicDefinitionKey("DtObject");
 
-		final DynamicDefinition domain = dynamicModelRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain, packageName)//
+		final DynamicDefinition domain = DynamicDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain, packageName)//
 				.withDefinition("formatter", fmtDefaultKey)//
 				.withDefinition("dataType", dtObjectKey)//
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
@@ -441,7 +441,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		//On fait la même chose avec DTC
 
 		final DynamicDefinitionKey dtListKey = new DynamicDefinitionKey("DtList");
-		final DynamicDefinition domain2 = dynamicModelRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTC", metaDefinitionDomain, packageName)//
+		final DynamicDefinition domain2 = DynamicDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTC", metaDefinitionDomain, packageName)//
 				.withDefinition("formatter", fmtDefaultKey)//
 				.withDefinition("dataType", dtListKey)//
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
