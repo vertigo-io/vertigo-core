@@ -80,7 +80,7 @@ public final class ConstraintBigDecimal extends AbstractConstraintImpl<String, B
 		final BigDecimal noZero = value.stripTrailingZeros();
 		final int scale = noZero.scale();
 		final int precision = noZero.precision();
-		if (scale > maxScale || (precision - scale) > (maxPrecision - maxScale)) {
+		if (scale > maxScale || precision > maxPrecision || (precision - scale) > (maxPrecision - maxScale)) {
 			return false;
 		}
 		return true;
