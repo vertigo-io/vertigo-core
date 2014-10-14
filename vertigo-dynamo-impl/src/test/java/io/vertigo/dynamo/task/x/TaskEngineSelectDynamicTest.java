@@ -20,7 +20,7 @@ package io.vertigo.dynamo.task.x;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
-import io.vertigo.dynamo.database.DataBaseManager;
+import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -54,7 +54,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Inject
 	private PersistenceManager persistenceManager;
 	@Inject
-	private DataBaseManager dataBaseManager;
+	private SqlDataBaseManager dataBaseManager;
 	@Inject
 	private KTransactionManager transactionManager;
 

@@ -230,13 +230,11 @@ final class ElasticStatement<I extends DtObject, R extends DtObject> {
 		for (final ListFilter facetQuery : filtersQuery.getListFilters()) {
 			filterBuilder.add(translateToFilterBuilder(facetQuery, indexFieldNameResolver));
 		}
-		searchRequestBuilder.setPostFilter(filterBuilder);
 
-		searchRequestBuilder.setHighlighterFilter(true) //
+		return searchRequestBuilder.setPostFilter(filterBuilder)//
+				.setHighlighterFilter(true) //
 				.setHighlighterNumOfFragments(3) //
 				.addHighlightedField("*");
-
-		return searchRequestBuilder;
 	}
 
 	private static QueryBuilder appendBoostMostRecent(final SearchQuery searchQuery, final QueryBuilder queryBuilder) {
@@ -253,8 +251,9 @@ final class ElasticStatement<I extends DtObject, R extends DtObject> {
 				//facette par range
 				//solrQuery.addFacetQuery(translateToQueryBuilder(facetRange.getListFilter(), indexFieldNameResolver));
 				final DataType dataType = dtField.getDomain().getDataType();
+				final DateRangeBuilder dateRangeBuilder;
 				if (dataType == DataType.Date) {
-					final DateRangeBuilder dateRangeBuilder = AggregationBuilders.dateRange(facetDefinition.getName())//
+					dateRangeBuilder = AggregationBuilders.dateRange(facetDefinition.getName())//
 							.field(indexFieldNameResolver.obtainIndexFieldName(dtField))//
 							.format(DATE_PATTERN);
 					for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {

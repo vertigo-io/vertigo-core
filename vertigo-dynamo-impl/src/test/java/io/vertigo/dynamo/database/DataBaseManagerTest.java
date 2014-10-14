@@ -51,7 +51,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	private static final String BALSAMINACEAE = "Balsaminaceae";
 	private static final String AIZOACEAE = "Aizoaceae";
 	@Inject
-	private DataBaseManager dataBaseManager;
+	private SqlDataBaseManager dataBaseManager;
 
 	@Override
 	protected void doSetUp() throws Exception {

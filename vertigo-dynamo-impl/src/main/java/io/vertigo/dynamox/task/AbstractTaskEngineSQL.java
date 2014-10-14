@@ -23,7 +23,7 @@ import io.vertigo.commons.script.SeparatorType;
 import io.vertigo.commons.script.parser.ScriptSeparator;
 import io.vertigo.core.Home;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.database.DataBaseManager;
+import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
@@ -443,8 +443,8 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	/**
 	 * @return Manager de base de données
 	 */
-	protected static final DataBaseManager getDataBaseManager() {
-		return Home.getComponentSpace().resolve(DataBaseManager.class);
+	protected static final SqlDataBaseManager getDataBaseManager() {
+		return Home.getComponentSpace().resolve(SqlDataBaseManager.class);
 	}
 
 	/**

@@ -22,7 +22,7 @@ import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.dynamo.database.DataBaseManager;
+import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -67,7 +67,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	private static final FilterCriteria<?> EMPTY_FILTER_CRITERIA = new FilterCriteriaBuilder<>().build();
 
 	private final KTransactionManager transactionManager;
-	private final DataBaseManager dataBaseManager;
+	private final SqlDataBaseManager dataBaseManager;
 	private final JpaListenerImpl dataBaseListener;
 
 	/**
@@ -75,7 +75,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	 * @param workManager Manager des works
 	 */
 	@Inject
-	public JpaDataStorePlugin(final KTransactionManager transactionManager, final DataBaseManager dataBaseManager, final WorkManager workManager, final AnalyticsManager analyticsManager) {
+	public JpaDataStorePlugin(final KTransactionManager transactionManager, final SqlDataBaseManager dataBaseManager, final WorkManager workManager, final AnalyticsManager analyticsManager) {
 		//super(workManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(dataBaseManager);

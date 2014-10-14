@@ -14,7 +14,7 @@
 	</module>
 	     
 	<module name = "dynamo">
-     <component api="DataBaseManager" class="io.vertigo.dynamo.impl.database.DataBaseManagerImpl">
+     <component api="SqlDataBaseManager" class="io.vertigo.dynamo.impl.database.SqlDataBaseManagerImpl">
 	        <plugin class="io.vertigo.dynamo.plugins.database.connection.mock.MockConnectionProviderPlugin">
 	              <param name="dataBaseClass" value="io.vertigo.dynamo.impl.database.vendor.hsql.HsqlDataBase"/>
 	              <param name="jdbcDriver" value="org.hsqldb.jdbcDriver"/>

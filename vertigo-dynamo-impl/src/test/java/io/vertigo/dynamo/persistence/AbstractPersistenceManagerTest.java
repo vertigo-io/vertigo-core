@@ -22,7 +22,7 @@ import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.TestUtil;
-import io.vertigo.dynamo.database.DataBaseManager;
+import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -72,7 +72,7 @@ import org.junit.Test;
  */
 public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4 {
 	@Inject
-	private DataBaseManager dataBaseManager;
+	private SqlDataBaseManager dataBaseManager;
 	@Inject
 	private PersistenceManager persistenceManager;
 	@Inject
