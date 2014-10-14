@@ -29,6 +29,7 @@ public final class AssociationNNDefinition extends AssociationDefinition {
 
 	/**
 	 * Constructeur d'une association n-n.
+	 * @param name Nom de l'association
 	 * @param tableName Nom de la table
 	 * @param associationNodeA Noeud A
 	 * @param associationNodeB Noeud B
@@ -37,6 +38,8 @@ public final class AssociationNNDefinition extends AssociationDefinition {
 		super(name, associationNodeA, associationNodeB);
 		//----------------------------------------------------------------------
 		Assertion.checkNotNull(tableName);
+		Assertion.checkArgument(!associationNodeA.getDtDefinition().equals(associationNodeB.getDtDefinition()), "Les autojointures en relation NN ne sont pas supportées. Créer un Dt pour représenter cette jointure.");
+		//----------------------------------------------------------------------
 		this.tableName = tableName;
 	}
 
