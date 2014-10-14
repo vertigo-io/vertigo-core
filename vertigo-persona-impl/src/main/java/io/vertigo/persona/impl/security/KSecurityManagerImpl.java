@@ -61,6 +61,7 @@ public final class KSecurityManagerImpl implements KSecurityManager, Activeable 
 	/**
 	 * Constructeur.
 	 * Les deux namespace ne sont pas types pour eviter des couplages forts (notamment sur UI).
+	 * @param securityLoaderPlugin Plugin responsible for loading security model
 	 * @param localeManager Manager des messages localises
 	 * @param userSessionClassName ClassName de l'objet de session utilisateur
 	 */
