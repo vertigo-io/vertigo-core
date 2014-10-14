@@ -1,12 +1,30 @@
 Version history
 ===============
 
-Running 0.5.3-SNAPSHOT
+Running 0.6.1-SNAPSHOT
 ----------------------
-* Add Vega support to Swagger Api viewer (see http://swagger.io/)
 
 more to come :)
 
+Release 0.6.0 - 2014/10/15
+----------------------
+* [Vega] Add support to Swagger Api viewer (see http://swagger.io/)
+* [Vega] Add HttpRequest and HttpResponse parameters support
+* [Vega] Add Header param support
+* [Vega] Fix some bug with query parameters
+* [Dynamo] Some refacts (first step). No major api modifications.
+* [Dynamo] Some rename
+* [Dynamo] Swap search from Solr to ElasticSearch 
+* [Dynamo] Add Batch support to DAOBroker
+* [Struts2] Fix struts2 checkboxlist.ftl 
+* [Struts2] Add a ftl jar for overrided ui components ftl
+* [Struts2] Add check page access in SecurityFilter 
+* [Studio] Refact some generated code for **Focus** compatibility
+* [Persona] Refact dependencies
+* [Persona] Rename securityLoaderplugin into securityResourceLoaderPlugin
+* [Tempo] Add authentification support in JavaxSendMailPlugin
+* [Commons] Fix CurrentLocale can provide an unsupported Locale
+* Some minor fix
 
 Release 0.5.2 - 2014/09/23
 --------------------------
