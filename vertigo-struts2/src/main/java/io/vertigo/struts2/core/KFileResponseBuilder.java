@@ -67,7 +67,7 @@ public final class KFileResponseBuilder {
 
 	private void doSend(final KFile kFile) throws IOException {
 		final Long length = kFile.getLength();
-		Assertion.checkArgument(length.longValue() < Integer.MAX_VALUE, "Le fichier est trop gros pour être envoy�. Il fait " + length.longValue() / 1024 + " Ko, mais le maximum acceptable est de " + (Integer.MAX_VALUE / 1024) + " Ko.");
+		Assertion.checkArgument(length.longValue() < Integer.MAX_VALUE, "Le fichier est trop gros pour être envoyé. Il fait " + length.longValue() / 1024 + " Ko, mais le maximum acceptable est de " + (Integer.MAX_VALUE / 1024) + " Ko.");
 		httpResponse.setContentLength(length.intValue());
 		httpResponse.addHeader("Content-Disposition", encodeFileNameToContentDisposition(httpRequest, kFile.getFileName()));
 		httpResponse.setDateHeader("Last-Modified", kFile.getLastModified().getTime());

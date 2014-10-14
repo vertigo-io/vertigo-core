@@ -72,7 +72,7 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 		}
 		//final UiList<D> uiList = getModel().getUiList(listRef.get());
 		//final DtList<D> list = uiList.validate(new UiObjectValidator<D>(), getUiMessageStack());
-		//final DtList<D> list = uiList.flush(); //flush sans validator car elle ne doit pas avoir été modifi�e
+		//final DtList<D> list = uiList.flush(); //flush sans validator car elle ne doit pas avoir été modifiée
 		final DtDefinition dtDefinition = list.getDefinition();
 		final DtField keyField;
 		final DtField labelField;
@@ -100,8 +100,8 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 	//		String paramSearchString = term.get();
 	//		Assertion.checkNotNull(paramSearchString, "Champs : {0} non présent dans la request", "term");
 	//
-	//		// On doit décoder la chaine UTF-8 qui a été récup�r�e en ISO-8859-1 par getParameter (tomcat récupère
-	//		// par défaut la requête en ISO-8859-1. pour forcer l'UTF-8 il faut modifier le server.xml (trop risqu� en cours de projet)
+	//		// On doit décoder la chaine UTF-8 qui a été récupérée en ISO-8859-1 par getParameter (tomcat récupère
+	//		// par défaut la requête en ISO-8859-1. pour forcer l'UTF-8 il faut modifier le server.xml (trop risqué en cours de projet)
 	//		try {
 	//			paramSearchString = new String(paramSearchString.getBytes("ISO-8859-1"), "UTF-8");
 	//		} catch (final UnsupportedEncodingException e) {
@@ -135,7 +135,7 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 	}
 
 	private static String jsonEncode(final String json) {
-		String jsonEncoded = json.replaceAll("([\"\\\\])", "\\$1");// " => \" et \ => \\ (ils sont echapp�s avec \ devant)
+		String jsonEncoded = json.replaceAll("([\"\\\\])", "\\$1");// " => \" et \ => \\ (ils sont echappés avec \ devant)
 		jsonEncoded = jsonEncoded.replaceAll("\n", "|");// \n => | (interdit en json)
 		return jsonEncoded;
 	}
