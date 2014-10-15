@@ -20,7 +20,7 @@ limitations under the License. -->
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-parent</artifactId>
-		<version>0.6.0</version>
+		<version>0.6.1-SNAPSHOT</version>
 		<relativePath>./vertigo-parent</relativePath>
 	</parent>
 	
@@ -63,7 +63,7 @@ limitations under the License. -->
 		<connection>scm:git:https://github.com/KleeGroup/vertigo.git</connection>
 		<developerConnection>scm:git:https://github.com/KleeGroup/vertigo.git</developerConnection>
 		<url>scm:git:https://github.com/KleeGroup/vertigo.git</url>
-		<tag>vertigo-0.6.0</tag>
+		<tag>vertigo-0.5.1</tag>
 	</scm>
 	
 	<build>
