@@ -27,6 +27,8 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.transaction.KTransactionManager;
+import io.vertigo.dynamo.transaction.KTransactionWritable;
 import io.vertigo.struts2.core.AbstractActionSupport;
 import io.vertigo.struts2.core.ContextRef;
 import io.vertigo.struts2.core.UiList;
@@ -50,6 +52,8 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 	private final ContextRef<String> listValueRef = new ContextRef<>("listValue", String.class, this);
 	@Inject
 	private CollectionsManager collectionsManager;
+	@Inject
+	private KTransactionManager transactionManager; //used for search in linked masterdatalist
 
 	/** {@inheritDoc} */
 	@Override
@@ -88,11 +92,14 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 		}
 
 		final Collection<DtField> searchedFields = Collections.singletonList(labelField);
-		final DtListProcessor fullTextFilter = collectionsManager.createDtListProcessor()//
-				.filter(searchString != null ? searchString : "", 20, searchedFields);
-
+		final DtList<D> results;
+		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) { //Open a transaction because all fields are indexed. If there is a MDL it was load too.
+			final DtListProcessor fullTextFilter = collectionsManager.createDtListProcessor()//
+					.filter(searchString != null ? searchString : "", 20, searchedFields);
+			results = fullTextFilter.apply(list);
+		}
 		return createAjaxResponseBuilder() //
-				.withJson(toJson(fullTextFilter.apply(list), keyField, labelField)) //
+				.withJson(toJson(results, keyField, labelField)) //
 				.send();
 	}
 
