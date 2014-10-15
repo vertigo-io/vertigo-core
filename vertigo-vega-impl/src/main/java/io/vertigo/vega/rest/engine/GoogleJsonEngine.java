@@ -28,7 +28,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.vega.rest.EndPointTypeHelper;
-import io.vertigo.vega.rest.metamodel.DtListDelta;
+import io.vertigo.vega.rest.model.DtListDelta;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;

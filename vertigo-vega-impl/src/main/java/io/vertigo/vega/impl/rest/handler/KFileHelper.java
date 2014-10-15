@@ -95,7 +95,7 @@ final class KFileHelper {
 		final Long length = kFile.getLength();
 		Assertion.checkArgument(length.longValue() < Integer.MAX_VALUE, "Too big file to be send. It's " + length.longValue() / 1024 + " Ko long, but maximum was " + (Integer.MAX_VALUE / 1024) + " Ko.");
 		//response.contentLength(length.intValue());
-		//response.header("Content-Length", String.valueOf(length.intValue()));
+		response.header("Content-Length", String.valueOf(length.intValue()));
 		response.header("Content-Disposition", encodeFileNameToContentDisposition(request, kFile.getFileName()));
 		response.raw().addDateHeader("Last-Modified", kFile.getLastModified().getTime());
 		response.type(kFile.getMimeType());

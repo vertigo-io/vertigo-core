@@ -28,12 +28,12 @@ import io.vertigo.vega.rest.engine.UiListDelta;
 import io.vertigo.vega.rest.engine.UiObject;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
-import io.vertigo.vega.rest.metamodel.DtListDelta;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
 import io.vertigo.vega.rest.metamodel.EndPointParam.ImplicitParam;
 import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
-import io.vertigo.vega.rest.metamodel.UiListState;
+import io.vertigo.vega.rest.model.DtListDelta;
+import io.vertigo.vega.rest.model.UiListState;
 import io.vertigo.vega.security.UiSecurityTokenManager;
 
 import java.io.Serializable;
