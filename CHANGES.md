@@ -8,7 +8,7 @@ more to come :)
 
 Release 0.6.0 - 2014/10/15
 ----------------------
-* [Core] xsd check params are declared before plugins
+* [Core] managers.xml xsd now checks params are declared before plugins
 * [Vega] Add support to Swagger Api viewer (see http://swagger.io/)
 * [Vega] Add HttpRequest and HttpResponse parameters support
 * [Vega] Add Header param support
