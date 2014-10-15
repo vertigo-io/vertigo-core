@@ -3,6 +3,8 @@ Version history
 
 Running 0.6.1-SNAPSHOT
 ----------------------
+* [Vega] Fix relative path support with SwaggerUI
+* [Struts2] Add VFreemarkerManager to better override of struts2 FLT (add this to your struts.xml *&lt;constant name="struts.freemarker.manager.classname" value="io.vertigo.struts2.impl.views.freemarker.VFreemarkerManager" /&gt;*) 
 
 more to come :)
 
