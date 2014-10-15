@@ -8,6 +8,7 @@ docco/
 .settings/
 vertigo-release/
 mvn-release.txt
+vertigo-bundle/src
 *.bak
 **/abak
 **/ubak
