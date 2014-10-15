@@ -8,12 +8,13 @@ more to come :)
 
 Release 0.6.0 - 2014/10/15
 ----------------------
+* [Core] xsd check params are declared before plugins
 * [Vega] Add support to Swagger Api viewer (see http://swagger.io/)
 * [Vega] Add HttpRequest and HttpResponse parameters support
 * [Vega] Add Header param support
 * [Vega] Fix some bug with query parameters
 * [Dynamo] Some refacts (first step). No major api modifications.
-* [Dynamo] Some rename
+* [Dynamo] Some rename (DatabaseManager => SqlDatabaseManager)
 * [Dynamo] Swap search from Solr to ElasticSearch 
 * [Dynamo] Add Batch support to DAOBroker
 * [Struts2] Fix struts2 checkboxlist.ftl 
