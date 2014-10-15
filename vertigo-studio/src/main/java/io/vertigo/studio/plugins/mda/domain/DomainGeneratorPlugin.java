@@ -40,8 +40,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * Génération des objets relatifs au module Domain. 
- *  
+ * Génération des objets relatifs au module Domain.
+ *
  * @author pchretien
  */
 public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainConfiguration> {
@@ -58,8 +58,9 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 	/**
 	 * Constructeur.
 	 *
-	 * @param generateDtResources Si on génère les fichiers i18n pour MessageText des labels des champs 
-	 * @param generateJpaAnnotations Si on ajoute les annotations JPA 
+	 * @param generateDtResources Si on génère les fichiers i18n pour MessageText des labels des champs
+	 * @param generateDtResourcesJS Si on génère les fichiers i18n pour les labels des champs en JS
+	 * @param generateJpaAnnotations Si on ajoute les annotations JPA
 	 * @param generateDtDefinitions Si on génère le fichier fournissant la liste des classes de Dt
 	 * @param generateDtObject Si on génère les classes des Dt
 	 * @param generateJsDtDefinitions Si on génère les classes JS.
@@ -118,7 +119,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 		}
 
 		/* Génération des ressources afférentes au DT mais pour la partie JS.*/
-		if(generateDtResourcesJS){
+		if (generateDtResourcesJS) {
 			generateDtResourcesJS(domainConfiguration, result);
 		}
 
@@ -198,19 +199,16 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 			Assertion.checkNotNull(dtDefinitionCollection);
 			final String packageName = entry.getKey();
 
-			if (domainConfiguration.isResourcesFileGenerated()) {
+			final Map<String, Object> mapRoot = new HashMap<>();
+			mapRoot.put("packageName", packageName);
+			mapRoot.put("simpleClassName", simpleClassName);
+			mapRoot.put("dtDefinitions", dtDefinitionCollection);
 
-				final Map<String, Object> mapRoot = new HashMap<>();
-				mapRoot.put("packageName", packageName);
-				mapRoot.put("simpleClassName", simpleClassName);
-				mapRoot.put("dtDefinitions", dtDefinitionCollection);
+			final FileGenerator dtDefinitions2ResourceEnum = getFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".java", "resources.ftl");
+			dtDefinitions2ResourceEnum.generateFile(result, true);
 
-				final FileGenerator dtDefinitions2ResourceEnum = getFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".java", "resources.ftl");
-				dtDefinitions2ResourceEnum.generateFile(result, true);
-
-				final FileGenerator dtDefinitions2ResourceProperties = getFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".properties", "properties.ftl");
-				dtDefinitions2ResourceProperties.generateFile(result, true);
-			}
+			final FileGenerator dtDefinitions2ResourceProperties = getFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".properties", "properties.ftl");
+			dtDefinitions2ResourceProperties.generateFile(result, true);
 		}
 	}
 
@@ -219,34 +217,31 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 	 * @param domainConfiguration Configuration du domaine.
 	 * @param result Fichier dans lequel est généré.
 	 */
-	private void generateDtResourcesJS(DomainConfiguration domainConfiguration, final Result result){
-				/**
-				 * Génération des ressources afférentes au DT.
-				 */
-				for (final Entry<String, Collection<DtDefinition>> entry : getDtDefinitionCollectionMap().entrySet()) {
-					String simpleClassName = entry.getClass().getName()+".generated";
-					
-					final List<TemplateDtDefinition> dtDefinitions = new ArrayList<>();
-					for (final DtDefinition dtDefinition : getDtDefinitions()) {
-						dtDefinitions.add(new TemplateDtDefinition(dtDefinition));
-						simpleClassName =  (new TemplateDtDefinition(dtDefinition)).getClassSimpleNameCamelCase();
-					}
-						
-					final Collection<DtDefinition> dtDefinitionCollection = entry.getValue();
-					Assertion.checkNotNull(dtDefinitionCollection);
-					final String packageName = entry.getKey();
+	private void generateDtResourcesJS(final DomainConfiguration domainConfiguration, final Result result) {
+		/**
+		 * Génération des ressources afférentes au DT.
+		 */
+		for (final Entry<String, Collection<DtDefinition>> entry : getDtDefinitionCollectionMap().entrySet()) {
+			String simpleClassName = entry.getClass().getName() + ".generated";
 
-					if (domainConfiguration.isResourcesFileGenerated()) {
+			final List<TemplateDtDefinition> dtDefinitions = new ArrayList<>();
+			for (final DtDefinition dtDefinition : getDtDefinitions()) {
+				dtDefinitions.add(new TemplateDtDefinition(dtDefinition));
+				simpleClassName = (new TemplateDtDefinition(dtDefinition)).getClassSimpleNameCamelCase();
+			}
 
-						final Map<String, Object> mapRoot = new HashMap<>();
-						mapRoot.put("packageName", packageName);
-						mapRoot.put("simpleClassName", simpleClassName);
-						mapRoot.put("dtDefinitions", dtDefinitions);
+			final Collection<DtDefinition> dtDefinitionCollection = entry.getValue();
+			Assertion.checkNotNull(dtDefinitionCollection);
+			final String packageName = entry.getKey();
 
-						final FileGenerator dtDefinitions2ResourceEnum = getFileGenerator(domainConfiguration, mapRoot,simpleClassName, packageName, ".js", "propertiesJS.ftl");
-						dtDefinitions2ResourceEnum.generateFile(result, true);
-					}
-				}
+			final Map<String, Object> mapRoot = new HashMap<>();
+			mapRoot.put("packageName", packageName);
+			mapRoot.put("simpleClassName", simpleClassName);
+			mapRoot.put("dtDefinitions", dtDefinitions);
+
+			final FileGenerator dtDefinitions2ResourceEnum = getFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".js", "propertiesJS.ftl");
+			dtDefinitions2ResourceEnum.generateFile(result, true);
+		}
 	}
 
 	private void generateSql(final DomainConfiguration domainConfiguration, final Result result) {

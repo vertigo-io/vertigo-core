@@ -10,7 +10,7 @@ public enum ${simpleClassName} implements MessageKey {
 <#list dtDefinitions as dtDefinition>
 
 	/***********************************************************
-	/** ${dtDefinition.shortName}.
+	/** ${dtDefinition.classSimpleName}.
 	/***********************************************************
 	<#list dtDefinition.fields as dtField>
 	/**
