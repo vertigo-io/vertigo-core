@@ -5,7 +5,8 @@
  */
 -->
 
-<#assign hasFieldErrors = parameters.name?? && fieldErrors?? && fieldErrors[parameters.name]??/>
+<#assign fieldName = parameters.widgetname!parameters.name/> <#-- for jquery component -->
+<#assign hasFieldErrors = parameters.name?? && fieldErrors?? && fieldErrors[fieldName]??/>
 <label <#t/>
 <#if parameters.id??>
 	for="${parameters.id?html}" <#t/>
@@ -15,7 +16,7 @@
 </#if>
 ><#t/>
 <#if parameters.label = "default">    
-	${util.label(parameters.name)?html}<#t/>
+	${util.label(fieldName)?html}<#t/>
 <#else>
 	${parameters.label?html}<#t/>
 </#if>
@@ -24,7 +25,7 @@
  		<em class="required">*</em><#t/>
 	</#if>	
 <#else>
-	<#if parameters.nameValue?is_boolean && util.required(parameters.name) >
+	<#if (!(parameters.nameValue?? && parameters.nameValue?is_boolean) && util.required(fieldName))>
 		<em class="required">*</em><#t/>
 	</#if>
 </#if>

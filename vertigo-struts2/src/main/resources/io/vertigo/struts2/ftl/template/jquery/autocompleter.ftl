@@ -3,8 +3,8 @@
  * $Id: autocompleter.ftl,v 1.4 2014/02/26 17:49:02 npiedeloup Exp $
  */
 -->
-<#if parameters.parentTheme == 'xhtml_read'>
-   <#include "/${parameters.templateDir}/xhtml_read/autocompleter.ftl" />
+<#if parameters.parentTheme == 'xhtml_read' || parameters.parentTheme == 'simple_read'>
+  <#include "/${parameters.templateDir}/${parameters.parentTheme}/autocompleter.ftl" />
 <#else>
 	<#if (parameters.parentTheme == 'xhtml')>
 		<#include "/${parameters.templateDir}/xhtml/controlheader.ftl" />
