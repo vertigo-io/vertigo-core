@@ -18,10 +18,10 @@
 </#if>
 <#if parameters.label??>
   <#-- We use parentTheme if theme is different of xhtml or xhtml_read. -->
-  <#if parameters.theme != 'xhtml' && parameters.theme != 'xhtml_read'>
-    <#include "/${parameters.templateDir}/${parameters.parentTheme}/controllabel.ftl" />
-  <#else>
+  <#if parameters.theme == 'xhtml' || parameters.theme == 'xhtml_read' || !(parameters.parentTheme??)>
     <#include "/${parameters.templateDir}/${parameters.theme}/controllabel.ftl" />
+  <#else>
+    <#include "/${parameters.templateDir}/${parameters.parentTheme}/controllabel.ftl" />
   </#if>
 </#if>
 <#if currentLayout = 'table'>
