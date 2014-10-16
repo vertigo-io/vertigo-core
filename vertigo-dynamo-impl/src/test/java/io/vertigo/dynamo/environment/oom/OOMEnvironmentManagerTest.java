@@ -35,8 +35,8 @@ import org.junit.Test;
 
 /**
  * Test de l'implémentation standard.
- * 
- * @author pchretien 
+ *
+ * @author pchretien
  */
 public final class OOMEnvironmentManagerTest extends AbstractTestCaseJU4 {
 	@Override
@@ -54,6 +54,12 @@ public final class OOMEnvironmentManagerTest extends AbstractTestCaseJU4 {
 	public void testDefaultFormatter() {
 		final Formatter formatter = Home.getDefinitionSpace().resolve(Formatter.FMT_DEFAULT, Formatter.class);
 		Assert.assertEquals(FormatterDefault.class, formatter.getClass());
+	}
+
+	@Test
+	public void testDefaultBooleanFormatter() {
+		final Formatter formatter = Home.getDefinitionSpace().resolve(Formatter.FMT_DEFAULT, Formatter.class);
+		Assert.assertEquals("MyTrue", formatter.valueToString(true, DataType.Boolean));
 	}
 
 	@Test
