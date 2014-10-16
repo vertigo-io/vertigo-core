@@ -22,7 +22,6 @@ import io.vertigo.core.Home;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
@@ -74,7 +73,7 @@ public final class UiUtil implements Serializable {
 	public final String formatBoolean(final String fieldPath, final Boolean value) {
 		final Formatter formatter;
 		if (!fieldPath.contains(".")) { //cas des ContextRef sans domain
-			formatter = Home.getDefinitionSpace().resolve("DO_OUI_NON", Domain.class).getFormatter();
+			formatter = Home.getDefinitionSpace().resolve(Formatter.FMT_DEFAULT, Formatter.class);
 		} else {
 			formatter = getDtField(fieldPath).getDomain().getFormatter();
 		}
