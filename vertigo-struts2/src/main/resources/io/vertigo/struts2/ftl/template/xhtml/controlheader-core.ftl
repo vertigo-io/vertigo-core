@@ -17,7 +17,12 @@
 	><#t/>
 </#if>
 <#if parameters.label??>
-	<#include "/${parameters.templateDir}/${parameters.theme}/controllabel.ftl" />
+  <#-- We use parentTheme if theme is different of xhtml or xhtml_read. -->
+  <#if parameters.theme != 'xhtml' && parameters.theme != 'xhtml_read'>
+    <#include "/${parameters.templateDir}/${parameters.parentTheme}/controllabel.ftl" />
+  <#else>
+    <#include "/${parameters.templateDir}/${parameters.theme}/controllabel.ftl" />
+  </#if>
 </#if>
 <#if currentLayout = 'table'>
 	</th><#lt/>
