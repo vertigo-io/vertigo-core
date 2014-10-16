@@ -35,7 +35,7 @@ import java.util.List;
  *
  * @author pchretien
  */
-public abstract class AbstractSqlConnectionProviderPlugin implements SqlConnectionProviderPlugin, Describable {
+public abstract class AbstractSqlConnectionProviderPlugin implements SqlConnectionProviderPlugin,  {
 	/**
 	 * Base de données utilisée
 	 */
@@ -63,7 +63,7 @@ public abstract class AbstractSqlConnectionProviderPlugin implements SqlConnecti
 	public final List<ComponentInfo> getInfos() {
 		final List<ComponentInfo> componentInfos = new ArrayList<>();
 		try {
-			// 
+			//
 			final SqlConnection connection = obtainConnection();
 			final Connection jdbcConnection = connection.getJdbcConnection();//NOPMD
 			try {

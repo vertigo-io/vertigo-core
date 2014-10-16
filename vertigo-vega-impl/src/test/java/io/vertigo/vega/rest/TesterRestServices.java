@@ -19,9 +19,9 @@
 package io.vertigo.vega.rest;
 
 import io.vertigo.commons.resource.ResourceManager;
-import io.vertigo.core.exception.VUserException;
 import io.vertigo.core.lang.MessageText;
 import io.vertigo.core.lang.Option;
+import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.util.DateUtil;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.DtListFunction;

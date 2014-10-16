@@ -18,9 +18,9 @@
  */
 package io.vertigo.struts2.core;
 
-import io.vertigo.core.exception.VUserException;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.MessageText;
+import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
