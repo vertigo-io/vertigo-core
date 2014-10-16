@@ -24,7 +24,7 @@
  		<em class="required">*</em><#t/>
 	</#if>	
 <#else>
-	<#if util.required(parameters.name) >
+	<#if parameters.nameValue?is_boolean && util.required(parameters.name) >
 		<em class="required">*</em><#t/>
 	</#if>
 </#if>
