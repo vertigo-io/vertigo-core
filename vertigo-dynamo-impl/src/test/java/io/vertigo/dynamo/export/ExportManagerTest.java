@@ -24,6 +24,9 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.export.model.Export;
+import io.vertigo.dynamo.export.model.ExportBuilder;
+import io.vertigo.dynamo.export.model.ExportFormat;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamock.domain.famille.Famille;
@@ -37,13 +40,13 @@ import org.junit.Test;
 
 /**
  * Test de l'implémentation standard.
- *
+ * 
  * @author dchallas
  */
 public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private ExportManager exportManager;
-	//Répertoire de test
+	// Répertoire de test
 	private static String OUTPUT_PATH = "c:/tmp/";
 	private static final boolean KEEP_OUTPUT_FILE = false;
 
@@ -53,11 +56,9 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testExportHandlerCSV() {
 		final DtList<Famille> dtc = createDtc();
-		final ExportSheet exportSheet = exportManager.createExportSheetBuilder(dtc, "famille")//
-				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test.csv")//
-				.withSheet(exportSheet)//
+				.beginSheet(dtc, "famille").endSheet()//
 				.build();
 		final KFile result = exportManager.createExportFile(export);
 		if (KEEP_OUTPUT_FILE) {
@@ -72,11 +73,9 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	public void testExportObject() {
 		final Famille famille = new Famille();
 		famille.setLibelle("Test");
-		final ExportSheet dtParameter = exportManager.createExportSheetBuilder(famille, "famille")//
-				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test2.csv")//
-				.withSheet(dtParameter)//
+				.beginSheet(famille, "famille").endSheet()//
 				.build();
 		final KFile result = exportManager.createExportFile(export);
 		if (KEEP_OUTPUT_FILE) {
@@ -94,12 +93,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		final DtField dtField = dtFamille.getField("LIBELLE");
 		famille.setLibelle("Test");
 
-		final ExportSheet exportSheet = exportManager.createExportSheetBuilder(famille, "famille")//
-				.withField(dtField)//
-				.build();
-
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test3.csv")//
-				.withSheet(exportSheet)//
+				.beginSheet(famille, "famille").withField(dtField).endSheet()//
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);
@@ -118,13 +113,11 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 
 		final DtField dtField = dtFamille.getField("LIBELLE");
 		famille.setLibelle("Test");
-		final ExportSheet dtParameter = exportManager.createExportSheetBuilder(famille, "famille")//
-				.withField(dtField, new MessageText("test", null))//
-				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test3.csv")//
-				.withSheet(dtParameter)//
+				.beginSheet(famille, "famille").withField(dtField, new MessageText("test", null)).endSheet()//
 				.build();
+
 		final KFile result = exportManager.createExportFile(export);
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
@@ -143,12 +136,9 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		final DtField dtFieldKey = dtFamille.getField("FAM_ID");
 		final DtField dtFieldLabel = dtFamille.getField("LIBELLE");
 		famille.setLibelle("Test");
-		final ExportSheet dtParameter = exportManager.createExportSheetBuilder(famille, "famille")//
-				.withField(dtFieldKey, list, dtFieldLabel)//
-				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test4.csv")//
-				.withSheet(dtParameter)//
+				.beginSheet(famille, "famille").withField(dtFieldKey, list, dtFieldLabel).endSheet()//
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);
@@ -158,7 +148,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test l'export CSV d'un champs avec une dénormalisation de sa valeur, et surcharge du label.
+	 * Test l'export CSV d'un champs avec une dénormalisation de sa valeur, et
+	 * surcharge du label.
 	 */
 	@Test
 	public void testExportFieldDenormOverrideLabel() {
@@ -169,12 +160,9 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		final DtField dtFieldKey = dtFamille.getField("FAM_ID");
 		final DtField dtFieldLabel = dtFamille.getField("LIBELLE");
 		famille.setLibelle("Test");
-		final ExportSheet exportSheet = exportManager.createExportSheetBuilder(famille, "famille")//
-				.withField(dtFieldKey, list, dtFieldLabel, new MessageText("test", null))//
-				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test5.csv")//
-				.withSheet(exportSheet)//
+				.beginSheet(famille, "famille").withField(dtFieldKey, list, dtFieldLabel, new MessageText("test", null)).endSheet()//
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);
@@ -189,11 +177,9 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testExportHandlerExcel() {
 		final DtList<Famille> dtc = createDtc();
-		final ExportSheet exportSheet = exportManager.createExportSheetBuilder(dtc, "famille")//
-				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.XLS, OUTPUT_PATH + "test.xls")//
-				.withSheet(exportSheet)//
+				.beginSheet(dtc, "famille").endSheet()//
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);
@@ -208,13 +194,11 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testExportHandlerRTF() {
 		final DtList<Famille> dtc = createDtc();
-		final ExportSheet exportSheet = exportManager.createExportSheetBuilder(dtc, "famille")//
-				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.RTF, OUTPUT_PATH + "test.rtf")//
 				.withAuthor("test")//
 				.withTitle("test title")//
-				.withSheet(exportSheet)//
+				.beginSheet(dtc, "famille").endSheet()//
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);
@@ -229,11 +213,9 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testExportHandlerPDF() {
 		final DtList<Famille> dtc = createDtc();
-		final ExportSheet exportSheet = exportManager.createExportSheetBuilder(dtc, "famille")//
-				.build();
 
 		final Export export = new ExportBuilder(ExportFormat.PDF, OUTPUT_PATH + "test.pdf")//
-				.withSheet(exportSheet)//
+				.beginSheet(dtc, "famille").endSheet()//
 				.withAuthor("test")//
 				.build();
 
@@ -243,24 +225,26 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
-	//	/**
-	//	 * Test l'export ODS.
-	//	 */
-	//	@Test
-	//	public void testExportHandlerODS() {
-	//		final DtList<Famille> dtc = createDtc();
-	//		final ExportDtParameters dtParameter = exportManager.createExportListParameters(dtc);
+	// /**
+	// * Test l'export ODS.
+	// */
+	// @Test
+	// public void testExportHandlerODS() {
+	// final DtList<Famille> dtc = createDtc();
+	// final ExportDtParameters dtParameter =
+	// exportManager.createExportListParameters(dtc);
 	//
-	//		final Export export = new ExportBuilder(ExportFormat.ODS, OUTPUT_PATH + "test.ods")//
-	//				.withSheet(dtParameter)//
-	//				.withAuthor("test")//
-	//				.build();
+	// final Export export = new ExportBuilder(ExportFormat.ODS, OUTPUT_PATH +
+	// "test.ods")//
+	// .withSheet(dtParameter)//
+	// .withAuthor("test")//
+	// .build();
 	//
-	//		final KFile result = exportManager.createExportFile(export);
-	//		if (KEEP_OUTPUT_FILE) {
-	//			save(result);
-	//		}
-	//	}
+	// final KFile result = exportManager.createExportFile(export);
+	// if (KEEP_OUTPUT_FILE) {
+	// save(result);
+	// }
+	// }
 
 	private static DtList<Famille> createDtc() {
 		final DtList<Famille> dtc = new DtList<>(Famille.class);

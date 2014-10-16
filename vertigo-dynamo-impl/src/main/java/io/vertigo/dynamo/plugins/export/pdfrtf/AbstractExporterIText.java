@@ -21,10 +21,11 @@ package io.vertigo.dynamo.plugins.export.pdfrtf;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.export.Export;
-import io.vertigo.dynamo.export.ExportField;
-import io.vertigo.dynamo.export.ExportSheet;
-import io.vertigo.dynamo.impl.export.core.ExportHelper;
+import io.vertigo.dynamo.export.model.Export;
+import io.vertigo.dynamo.export.model.ExportField;
+import io.vertigo.dynamo.export.model.ExportSheet;
+import io.vertigo.dynamo.impl.export.util.ExportUtil;
+import io.vertigo.dynamo.persistence.PersistenceManager;
 
 import java.awt.Color;
 import java.io.OutputStream;
@@ -52,34 +53,45 @@ public abstract class AbstractExporterIText {
 	private final Map<DtField, Map<Object, String>> referenceCache = new HashMap<>();
 	private final Map<DtField, Map<Object, String>> denormCache = new HashMap<>();
 
-	private final ExportHelper exportHelper;
+	private final PersistenceManager persistenceManager;
 
-	protected AbstractExporterIText(final ExportHelper exportHelper) {
-		Assertion.checkNotNull(exportHelper);
-		//---------------------------------------------------------------------
-		this.exportHelper = exportHelper;
+	protected AbstractExporterIText(final PersistenceManager persistenceManager) {
+		Assertion.checkNotNull(persistenceManager);
+		// ---------------------------------------------------------------------
+		this.persistenceManager = persistenceManager;
 	}
 
 	/**
-	 * We create a writer that listens to the document and directs a PDF-stream to out
-	 * @param document Document
-	 * @param out OutputStream
+	 * We create a writer that listens to the document and directs a PDF-stream
+	 * to out
+	 * 
+	 * @param document
+	 *            Document
+	 * @param out
+	 *            OutputStream
 	 */
 	protected abstract void createWriter(final Document document, final OutputStream out) throws DocumentException;
 
 	/**
 	 * Méthode principale qui gère l'export d'un tableau vers un fichier ODS.
-	 *
-	 * @param export paramètres du document à exporter
-	 * @param out flux de sortie
-	 * @throws DocumentException Exception
+	 * 
+	 * @param export
+	 *            paramètres du document à exporter
+	 * @param out
+	 *            flux de sortie
+	 * @throws DocumentException
+	 *             Exception
 	 */
 	public final void exportData(final Export export, final OutputStream out) throws DocumentException {
 		// step 1: creation of a document-object
 		final boolean landscape = export.getOrientation() == Export.Orientation.Landscape;
 		final Rectangle pageSize = landscape ? PageSize.A4.rotate() : PageSize.A4;
-		final Document document = new Document(pageSize, 20, 20, 50, 50); // left, right, top, bottom
-		// step 2: we create a writer that listens to the document and directs a PDF-stream to out
+		final Document document = new Document(pageSize, 20, 20, 50, 50); // left,
+																			// right,
+																			// top,
+																			// bottom
+		// step 2: we create a writer that listens to the document and directs a
+		// PDF-stream to out
 		createWriter(document, out);
 
 		// we add some meta information to the document, and we open it
@@ -97,7 +109,8 @@ public abstract class AbstractExporterIText {
 		document.addCreator(CREATOR);
 		document.open();
 		try {
-			// pour ajouter l'ouverture automatique de la boîte de dialogue imprimer
+			// pour ajouter l'ouverture automatique de la boîte de dialogue
+			// imprimer
 			// (print(false) pour imprimer directement)
 			// ((PdfWriter) writer).addJavaScript("this.print(true);", false);
 
@@ -124,8 +137,11 @@ public abstract class AbstractExporterIText {
 
 	/**
 	 * Effectue le rendu des headers.
-	 * @param parameters Paramètres
-	 * @param datatable Table
+	 * 
+	 * @param parameters
+	 *            Paramètres
+	 * @param datatable
+	 *            Table
 	 */
 	private static void renderHeaders(final ExportSheet parameters, final Table datatable) throws BadElementException {
 		// size of columns
@@ -147,8 +163,11 @@ public abstract class AbstractExporterIText {
 
 	/**
 	 * Effectue le rendu de la liste.
-	 * @param parameters Paramètres
-	 * @param datatable Table
+	 * 
+	 * @param parameters
+	 *            Paramètres
+	 * @param datatable
+	 *            Table
 	 */
 	private void renderList(final ExportSheet parameters, final Table datatable) throws BadElementException {
 		// data rows
@@ -174,7 +193,7 @@ public abstract class AbstractExporterIText {
 				}
 				datatable.getDefaultCell().setHorizontalAlignment(horizontalAlignement);
 
-				String text = exportHelper.getText(referenceCache, denormCache, dto, exportColumn);
+				String text = ExportUtil.getText(persistenceManager, referenceCache, denormCache, dto, exportColumn);
 				if (text == null) {
 					text = "";
 				}

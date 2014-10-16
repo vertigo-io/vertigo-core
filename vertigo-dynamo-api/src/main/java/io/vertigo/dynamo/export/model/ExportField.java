@@ -16,32 +16,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.export;
+package io.vertigo.dynamo.export.model;
 
-import io.vertigo.core.component.Manager;
-import io.vertigo.dynamo.export.model.Export;
-import io.vertigo.dynamo.file.model.KFile;
-import io.vertigo.dynamo.work.WorkResultHandler;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.MessageText;
+import io.vertigo.dynamo.domain.metamodel.DtField;
 
 /**
- * Gestionnaire centralisé des éditions de données.
- * Le choix du type de report est fait par l'appelant qui fournit les paramètres adaptés à son besoin.
+ * Définition d'une colonne à exporter.
  *
  * @author pchretien, npiedeloup
  */
-public interface ExportManager extends Manager {
+public class ExportField {
+	private final DtField dtField;
+	private final MessageText label;
 
 	/**
-	 * Création du fichier d'export
-	 * @param export Expotr à envoyer
-	 * @return Fichier
+	 * Constructeur.
+	 * @param dtField DtField
 	 */
-	KFile createExportFile(final Export export);
+	public ExportField(final DtField dtField, final MessageText label) {
+		Assertion.checkNotNull(dtField);
+		//label may be null
+		//---------------------------------------------------------------------
+		this.dtField = dtField;
+		this.label = label;
+	}
 
 	/**
-	 * Création asynchrone du fichier d'export
-	 * @param export Expotr à envoyer
-	 * @param workResultHandler Handler du resultat
+	 * @return DtField
 	 */
-	void createExportFileASync(final Export export, final WorkResultHandler<KFile> workResultHandler);
+	public final DtField getDtField() {
+		return dtField;
+	}
+
+	/**
+	 * @return Label du dtField
+	 */
+	public final MessageText getLabel() {
+		//Selon que le label est surchargé ou non
+		return label != null ? label : dtField.getLabel();
+	}
 }

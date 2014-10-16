@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.export.pdf;
 
-import io.vertigo.dynamo.impl.export.core.ExportHelper;
+import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.plugins.export.pdfrtf.AbstractExporterIText;
 
 import java.io.OutputStream;
@@ -28,17 +28,16 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfWriter;
 
 /**
- * Export PDF avec iText.
- * Configuré par ExportParametersPDF.
- *
+ * Export PDF avec iText. Configuré par ExportParametersPDF.
+ * 
  * @author evernat
  */
 final class PDFExporter extends AbstractExporterIText {
-	PDFExporter(final ExportHelper exportHelper) {
-		super(exportHelper);
+	PDFExporter(final PersistenceManager persistenceManager) {
+		super(persistenceManager);
 	}
 
-	/** {@inheritDoc}*/
+	/** {@inheritDoc} */
 	@Override
 	protected void createWriter(final Document document, final OutputStream out) throws DocumentException {
 		final PdfWriter writer = PdfWriter.getInstance(document, out);

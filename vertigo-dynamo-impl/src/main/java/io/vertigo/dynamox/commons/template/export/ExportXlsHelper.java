@@ -24,10 +24,10 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.export.ExportBuilder;
-import io.vertigo.dynamo.export.ExportFormat;
 import io.vertigo.dynamo.export.ExportManager;
-import io.vertigo.dynamo.export.ExportSheetBuilder;
+import io.vertigo.dynamo.export.model.ExportBuilder;
+import io.vertigo.dynamo.export.model.ExportFormat;
+import io.vertigo.dynamo.export.model.ExportSheetBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +104,7 @@ public class ExportXlsHelper<R extends DtObject> {
 
 		// --------------------------------------------
 
-		final ExportSheetBuilder exportSheetBuilder = exportManager.createExportSheetBuilder(dtcToExport, null);
+		final ExportSheetBuilder exportSheetBuilder = exportBuilder.beginSheet(dtcToExport, null);
 
 		// exportListParameters.setMetaData(PublisherMetaData.TITLE, tabName);
 		for (final DtField dtField : getExportColumnList(dtcToExport, collectionColumnNameList)) {
@@ -116,7 +116,7 @@ public class ExportXlsHelper<R extends DtObject> {
 				exportSheetBuilder.withField(dtField, null);
 			}
 		}
-		exportBuilder.withSheet(exportSheetBuilder.build());
+		exportSheetBuilder.endSheet();
 	}
 
 	/**
@@ -133,14 +133,14 @@ public class ExportXlsHelper<R extends DtObject> {
 
 		// --------------------------------------------
 
-		final ExportSheetBuilder exportSheet = exportManager.createExportSheetBuilder(criterion, null);
+		final ExportSheetBuilder exportSheetBuilder = exportBuilder.beginSheet(criterion, null);
 
 		// exportObjectParameters.setMetaData(PublisherMetaData.TITLE, tabName);
 		for (final DtField dtField : getExportCriterionFields(criterion, criterionExcludedColumnNames)) {
-			exportSheet.withField(dtField);
+			exportSheetBuilder.withField(dtField);
 		}
 
-		exportBuilder.withSheet(exportSheet.build());
+		exportSheetBuilder.endSheet();
 	}
 
 	/**

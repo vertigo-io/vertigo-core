@@ -24,10 +24,11 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.export.Export;
-import io.vertigo.dynamo.export.ExportSheet;
-import io.vertigo.dynamo.export.ExportField;
-import io.vertigo.dynamo.impl.export.core.ExportHelper;
+import io.vertigo.dynamo.export.model.Export;
+import io.vertigo.dynamo.export.model.ExportField;
+import io.vertigo.dynamo.export.model.ExportSheet;
+import io.vertigo.dynamo.impl.export.util.ExportUtil;
+import io.vertigo.dynamo.persistence.PersistenceManager;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -60,32 +61,41 @@ final class CSVExporter {
 
 	private final Map<DtField, Map<Object, String>> referenceCache = new HashMap<>();
 	private final Map<DtField, Map<Object, String>> denormCache = new HashMap<>();
-	private final ExportHelper exportHelper;
+	private final PersistenceManager persistenceManager;
 
 	/**
 	 * Constructeur.
-	 * @param codecManager Manager des codecs
-	 * @param exportHelper Helper d'export.
+	 * 
+	 * @param codecManager
+	 *            Manager des codecs
+	 * @param exportHelper
+	 *            Helper d'export.
 	 */
-	CSVExporter(final CodecManager codecManager, final ExportHelper exportHelper) {
+	CSVExporter(final CodecManager codecManager, final PersistenceManager persistenceManager) {
 		Assertion.checkNotNull(codecManager);
-		Assertion.checkNotNull(exportHelper);
-		//---------------------------------------------------------------------
+		Assertion.checkNotNull(persistenceManager);
+		// ---------------------------------------------------------------------
 		csvEncoder = codecManager.getCsvEncoder();
-		this.exportHelper = exportHelper;
+		this.persistenceManager = persistenceManager;
 	}
 
 	/**
-	 * Méthode principale qui gère l'export d'un tableau vers un fichier CVS.
-	 * On ajoute le BOM UTF8 si le fichier est généré en UTF-8 pour une bonne ouverture dans Excel.
-	 * @param documentParameters Paramètres du document à exporter
-	 * @param out Flux de sortie
-	 * @throws IOException Exception d'ecriture
+	 * Méthode principale qui gère l'export d'un tableau vers un fichier CVS. On
+	 * ajoute le BOM UTF8 si le fichier est généré en UTF-8 pour une bonne
+	 * ouverture dans Excel.
+	 * 
+	 * @param documentParameters
+	 *            Paramètres du document à exporter
+	 * @param out
+	 *            Flux de sortie
+	 * @throws IOException
+	 *             Exception d'ecriture
 	 */
 	void exportData(final Export documentParameters, final OutputStream out) throws IOException {
 		final Charset charset = Charset.forName("UTF-8");
 		try (final Writer writer = new OutputStreamWriter(out, charset.name())) {
-			// on met le BOM UTF-8 afin d'avoir des ouvertures correctes avec excel
+			// on met le BOM UTF-8 afin d'avoir des ouvertures correctes avec
+			// excel
 			writer.append('\uFEFF');
 			final boolean isMultiData = documentParameters.getSheets().size() > 1;
 			for (final ExportSheet exportSheet : documentParameters.getSheets()) {
@@ -101,9 +111,13 @@ final class CSVExporter {
 
 	/**
 	 * Réalise l'export des données d'en-tête.
-	 * @param parameters de cet export
-	 * @param out Le flux d'écriture des données exportées.
-	 * @throws IOException Exception lors de l'écriture dans le flux.
+	 * 
+	 * @param parameters
+	 *            de cet export
+	 * @param out
+	 *            Le flux d'écriture des données exportées.
+	 * @throws IOException
+	 *             Exception lors de l'écriture dans le flux.
 	 */
 	private void exportHeader(final ExportSheet parameters, final Writer out) throws IOException {
 		final String title = parameters.getTitle();
@@ -123,9 +137,13 @@ final class CSVExporter {
 
 	/**
 	 * Réalise l'export des données de contenu.
-	 * @param parameters de cet export
-	 * @param out Le flux d'écriture des données exportées.
-	 * @throws IOException Exception lors de l'écriture dans le flux.
+	 * 
+	 * @param parameters
+	 *            de cet export
+	 * @param out
+	 *            Le flux d'écriture des données exportées.
+	 * @throws IOException
+	 *             Exception lors de l'écriture dans le flux.
 	 */
 	private void exportData(final ExportSheet parameters, final Writer out) throws IOException {
 		// Parcours des DTO de la DTC
@@ -144,7 +162,7 @@ final class CSVExporter {
 		for (final ExportField exportColumn : parameters.getExportFields()) {
 			final DtField dtField = exportColumn.getDtField();
 			out.write(sep);
-			sValue = exportHelper.getText(referenceCache, denormCache, dto, exportColumn);
+			sValue = ExportUtil.getText(persistenceManager, referenceCache, denormCache, dto, exportColumn);
 			// si toutes les colonnes de cette ligne sont vides,
 			// on n'obtient pas une ligne correctement formatée ...
 			if ("".equals(sValue)) {
@@ -162,8 +180,9 @@ final class CSVExporter {
 
 	/**
 	 * Encode la chaîne exportée en csv.
-	 *
-	 * @param str La chaîne à encoder.
+	 * 
+	 * @param str
+	 *            La chaîne à encoder.
 	 * @return La chaîne encodée.
 	 */
 	private String encodeString(final String str) {
@@ -173,8 +192,9 @@ final class CSVExporter {
 
 	/**
 	 * Encode la chaîne exportée en csv.
-	 *
-	 * @param str La chaîne à encoder.
+	 * 
+	 * @param str
+	 *            La chaîne à encoder.
 	 * @return La chaîne encodée.
 	 */
 	private String encodeNumber(final String str) {

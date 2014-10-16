@@ -19,16 +19,12 @@
 package io.vertigo.dynamo.impl.export;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.export.Export;
-import io.vertigo.dynamo.export.ExportFormat;
 import io.vertigo.dynamo.export.ExportManager;
-import io.vertigo.dynamo.export.ExportSheetBuilder;
+import io.vertigo.dynamo.export.model.Export;
+import io.vertigo.dynamo.export.model.ExportFormat;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.file.util.TempFile;
-import io.vertigo.dynamo.impl.export.core.ExportSheetBuilderImpl;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkResultHandler;
 
@@ -62,16 +58,6 @@ public final class ExportManagerImpl implements ExportManager {
 		this.workManager = workManager;
 		this.fileManager = fileManager;
 		this.exporterPlugins = Collections.unmodifiableList(exporterPlugins);
-	}
-
-	/** {@inheritDoc} */
-	public ExportSheetBuilder createExportSheetBuilder(final DtObject dto, final String title) {
-		return new ExportSheetBuilderImpl(dto, title);
-	}
-
-	/** {@inheritDoc} */
-	public ExportSheetBuilder createExportSheetBuilder(final DtList<?> dtc, final String title) {
-		return new ExportSheetBuilderImpl(dtc, title);
 	}
 
 	/**

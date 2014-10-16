@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.export.rtf;
 
-import io.vertigo.dynamo.impl.export.core.ExportHelper;
+import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.plugins.export.pdfrtf.AbstractExporterIText;
 
 import java.io.OutputStream;
@@ -37,24 +37,24 @@ import com.lowagie.text.rtf.field.RtfTotalPageNumber;
 import com.lowagie.text.rtf.headerfooter.RtfHeaderFooter;
 
 /**
- * Handler d'export RTF avec iText.
- * Configuré par ExportParametersRTF.
- *
+ * Handler d'export RTF avec iText. Configuré par ExportParametersRTF.
+ * 
  * @author evernat
  */
 final class RTFExporter extends AbstractExporterIText {
-	// l'implémentation de ExportHandlerRTF est majoritairement commune avec ExportHandlerPDF
+	// l'implémentation de ExportHandlerRTF est majoritairement commune avec
+	// ExportHandlerPDF
 
-	RTFExporter(final ExportHelper exportHelper) {
-		super(exportHelper);
+	RTFExporter(final PersistenceManager persistenceManager) {
+		super(persistenceManager);
 	}
 
-	/** {@inheritDoc}*/
+	/** {@inheritDoc} */
 	@Override
 	protected void createWriter(final Document document, final OutputStream out) {
-		//final RtfWriter2 writer =
+		// final RtfWriter2 writer =
 		RtfWriter2.getInstance(document, out);
-		//writer.setViewerPreferences(PdfWriter.PageLayoutTwoColumnLeft);
+		// writer.setViewerPreferences(PdfWriter.PageLayoutTwoColumnLeft);
 
 		// advanced page numbers : x/y
 		final Paragraph footerParagraph = new Paragraph();

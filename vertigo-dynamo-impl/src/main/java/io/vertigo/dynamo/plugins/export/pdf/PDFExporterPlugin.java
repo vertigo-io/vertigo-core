@@ -18,10 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.export.pdf;
 
-import io.vertigo.dynamo.export.Export;
-import io.vertigo.dynamo.export.ExportFormat;
+import io.vertigo.dynamo.export.model.Export;
+import io.vertigo.dynamo.export.model.ExportFormat;
 import io.vertigo.dynamo.impl.export.ExporterPlugin;
-import io.vertigo.dynamo.impl.export.core.ExportHelper;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 
 import java.io.OutputStream;
@@ -30,23 +29,23 @@ import javax.inject.Inject;
 
 /**
  * Plugin d'export PDF.
- *
+ * 
  * @author pchretien, npiedeloup
  */
 public final class PDFExporterPlugin implements ExporterPlugin {
-	private final ExportHelper exportHelper;
+	private final PersistenceManager persistenceManager;
 
 	@Inject
 	public PDFExporterPlugin(final PersistenceManager persistenceManager) {
-		exportHelper = new ExportHelper(persistenceManager);
+		this.persistenceManager = persistenceManager;
 	}
 
 	/** {@inheritDoc} */
 	public void exportData(final Export export, final OutputStream out) throws Exception {
-		new PDFExporter(exportHelper).exportData(export, out);
+		new PDFExporter(persistenceManager).exportData(export, out);
 	}
 
-	/** {@inheritDoc}*/
+	/** {@inheritDoc} */
 	public boolean accept(final ExportFormat exportFormat) {
 		return ExportFormat.PDF.equals(exportFormat);
 	}

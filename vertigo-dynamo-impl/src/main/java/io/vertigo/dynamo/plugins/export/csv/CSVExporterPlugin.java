@@ -20,10 +20,9 @@ package io.vertigo.dynamo.plugins.export.csv;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.export.Export;
-import io.vertigo.dynamo.export.ExportFormat;
+import io.vertigo.dynamo.export.model.Export;
+import io.vertigo.dynamo.export.model.ExportFormat;
 import io.vertigo.dynamo.impl.export.ExporterPlugin;
-import io.vertigo.dynamo.impl.export.core.ExportHelper;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 
 import java.io.IOException;
@@ -33,31 +32,33 @@ import javax.inject.Inject;
 
 /**
  * Plugin d'export CSV.
- *
+ * 
  * @author pchretien, npiedeloup
  */
 public final class CSVExporterPlugin implements ExporterPlugin {
 	private final CodecManager codecManager;
-	private final ExportHelper exportHelper;
+	private final PersistenceManager persistenceManager;
 
 	/**
 	 * Constructeur.
-	 * @param codecManager Manager des mécanismes de codage/décodage.
+	 * 
+	 * @param codecManager
+	 *            Manager des mécanismes de codage/décodage.
 	 */
 	@Inject
 	public CSVExporterPlugin(final PersistenceManager persistenceManager, final CodecManager codecManager) {
 		Assertion.checkNotNull(codecManager);
-		//---------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 		this.codecManager = codecManager;
-		exportHelper = new ExportHelper(persistenceManager);
+		this.persistenceManager = persistenceManager;
 	}
 
-	/** {@inheritDoc}*/
+	/** {@inheritDoc} */
 	public void exportData(final Export export, final OutputStream out) throws IOException {
-		new CSVExporter(codecManager, exportHelper).exportData(export, out);
+		new CSVExporter(codecManager, persistenceManager).exportData(export, out);
 	}
 
-	/** {@inheritDoc}*/
+	/** {@inheritDoc} */
 	public boolean accept(final ExportFormat exportFormat) {
 		return ExportFormat.CSV.equals(exportFormat);
 	}

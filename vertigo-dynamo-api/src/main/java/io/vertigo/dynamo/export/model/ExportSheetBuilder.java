@@ -16,29 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.export.core;
+package io.vertigo.dynamo.export.model;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
 import io.vertigo.core.lang.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.export.ExportField;
-import io.vertigo.dynamo.export.ExportSheet;
-import io.vertigo.dynamo.export.ExportSheetBuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 /**
- * Implementation standard de ExportDtParameters.
- * 
+ * Parametre d'export pour les données de type DT.
+ * La particularité est que l'on fournit la liste des colonnes du DT a exporter,
+ * avec éventuellement des paramètres d'affichage particulier pour une colonne.
  * @author pchretien, npiedeloup
  */
-public final class ExportSheetBuilderImpl implements ExportSheetBuilder {
+public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	/**
 	 * List des champs à exporter
 	 */
@@ -52,6 +51,7 @@ public final class ExportSheetBuilderImpl implements ExportSheetBuilder {
 	private final DtDefinition dtDefinition;
 
 	private final String title;
+	private final ExportBuilder exportBuilder;
 
 	/**
 	 * Constructeur.
@@ -59,10 +59,12 @@ public final class ExportSheetBuilderImpl implements ExportSheetBuilder {
 	 * @param dto
 	 *            DTO à exporter
 	 */
-	public ExportSheetBuilderImpl(final DtObject dto, final String title) {
+	ExportSheetBuilder(final ExportBuilder exportBuilder, final DtObject dto, final String title) {
+		Assertion.checkNotNull(exportBuilder);
 		Assertion.checkNotNull(dto);
 		// title may be null
 		// ---------------------------------------------------------------------
+		this.exportBuilder = exportBuilder;
 		this.dto = dto;
 		dtc = null;
 		this.title = title;
@@ -75,29 +77,42 @@ public final class ExportSheetBuilderImpl implements ExportSheetBuilder {
 	 * @param dtc
 	 *            DTC à exporter
 	 */
-	public ExportSheetBuilderImpl(final DtList<?> dtc, final String title) {
+	ExportSheetBuilder(final ExportBuilder exportBuilder, final DtList<?> dtc, final String title) {
+		Assertion.checkNotNull(exportBuilder);
 		Assertion.checkNotNull(dtc);
 		// title may be null
 		// ---------------------------------------------------------------------
+		this.exportBuilder = exportBuilder;
 		this.dtc = dtc;
 		dto = null;
 		this.title = title;
 		dtDefinition = dtc.getDefinition();
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * Ajoute un champs du Dt dans l'export, le label de la colonne sera celui indiqué dans le DT pour ce champs.
+	 * @param exportfield ajout d'un champs du Dt à exporter
+	 */
 	public ExportSheetBuilder withField(final DtField exportfield) {
 		withField(exportfield, null);
 		return this;
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * Ajoute un champs du Dt dans l'export, le label de la colonne sera celui indiqué dans le DT pour ce champs.
+	 * @param exportfield ajout d'un champs du Dt à exporter
+	 * @param list Liste des éléments dénormés
+	 * @param displayfield Field du libellé à utiliser.
+	 */
 	public ExportSheetBuilder withField(final DtField exportfield, final DtList<?> list, final DtField displayfield) {
 		withField(exportfield, list, displayfield, null);
 		return this;
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * @param exportfield ajout d'un champs du Dt à exporter
+	 * @param label nom spécifique à utiliser dans l'export, null si l'on souhaite utiliser celui indiqué dans le DT pour ce champs
+	 */
 	public ExportSheetBuilder withField(final DtField exportfield, final MessageText overridedLabel) {
 		Assertion.checkNotNull(exportfield);
 		// On vérifie que la colonne est bien dans la définition de la DTC
@@ -110,7 +125,12 @@ public final class ExportSheetBuilderImpl implements ExportSheetBuilder {
 		return this;
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * @param exportfield ajout d'un champs du Dt à exporter
+	 * @param list Liste des éléments dénormés
+	 * @param displayfield Field du libellé à utiliser.
+	 * @param label nom spécifique à utiliser dans l'export, null si l'on souhaite utiliser celui indiqué dans le DT pour ce champs
+	 */
 	public ExportSheetBuilder withField(final DtField exportfield, final DtList<?> list, final DtField displayfield, final MessageText overridedLabel) {
 		Assertion.checkNotNull(exportfield);
 		// On vérifie que la colonne est bien dans la définition de la DTC
@@ -134,6 +154,9 @@ public final class ExportSheetBuilderImpl implements ExportSheetBuilder {
 			}
 		}
 		return new ExportSheet(title, exportFields, dto, dtc);
+	}
 
+	public ExportBuilder endSheet() {
+		return exportBuilder.withSheet(this.build());
 	}
 }

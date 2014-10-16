@@ -23,10 +23,11 @@ import io.vertigo.core.lang.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.export.Export;
-import io.vertigo.dynamo.export.ExportSheet;
-import io.vertigo.dynamo.export.ExportField;
-import io.vertigo.dynamo.impl.export.core.ExportHelper;
+import io.vertigo.dynamo.export.model.Export;
+import io.vertigo.dynamo.export.model.ExportField;
+import io.vertigo.dynamo.export.model.ExportSheet;
+import io.vertigo.dynamo.impl.export.util.ExportUtil;
+import io.vertigo.dynamo.persistence.PersistenceManager;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -54,7 +55,7 @@ import org.apache.poi.ss.usermodel.PrintSetup;
 
 /**
  * Export avec POI.
- *
+ * 
  * @author pchretien, npiedeloup
  */
 final class XLSExporter {
@@ -67,12 +68,12 @@ final class XLSExporter {
 	private final Map<DataType, HSSFCellStyle> evenHssfStyleCache = new HashMap<>();
 	private final Map<DataType, HSSFCellStyle> oddHssfStyleCache = new HashMap<>();
 
-	private final ExportHelper exportHelper;
+	private final PersistenceManager persistenceManager;
 
-	XLSExporter(final ExportHelper exportHelper) {
-		Assertion.checkNotNull(exportHelper);
-		//---------------------------------------------------------------------
-		this.exportHelper = exportHelper;
+	XLSExporter(final PersistenceManager persistenceManagers) {
+		Assertion.checkNotNull(persistenceManagers);
+		// ---------------------------------------------------------------------
+		this.persistenceManager = persistenceManagers;
 	}
 
 	private static HSSFCellStyle createHeaderCellStyle(final HSSFWorkbook workbook) {
@@ -120,10 +121,15 @@ final class XLSExporter {
 
 	/**
 	 * Réalise l'export des données de contenu et de la ligne d'en-tête.
-	 * @param parameters Paramètre de cet export
-	 * @param workbook Document excel
-	 * @param sheet Feuille Excel
-	 * @param forceLandscape Indique si le parametrage force un affichage en paysage
+	 * 
+	 * @param parameters
+	 *            Paramètre de cet export
+	 * @param workbook
+	 *            Document excel
+	 * @param sheet
+	 *            Feuille Excel
+	 * @param forceLandscape
+	 *            Indique si le parametrage force un affichage en paysage
 	 */
 	private void exportData(final ExportSheet parameters, final HSSFWorkbook workbook, final HSSFSheet sheet, final boolean forceLandscape) {
 		initHssfStyle(workbook);
@@ -145,9 +151,13 @@ final class XLSExporter {
 			sheet.setColumnWidth(cellIndex, Double.valueOf(usesMaxLength * 256).intValue());
 			totalWidth += usesMaxLength;
 		}
-		/** @todo ne serait-il pas plus simple d'utiliser sheet.autoSizeColumn(i); de poi 3.0.1 ? */
+		/**
+		 * @todo ne serait-il pas plus simple d'utiliser
+		 *       sheet.autoSizeColumn(i); de poi 3.0.1 ?
+		 */
 
-		// note: il ne semble pas simple de mettre title et author dans les propriétés du document
+		// note: il ne semble pas simple de mettre title et author dans les
+		// propriétés du document
 		final String title = parameters.getTitle();
 		if (title != null) {
 			final HSSFHeader header = sheet.getHeader();
@@ -204,10 +214,14 @@ final class XLSExporter {
 	}
 
 	private void exportList(final ExportSheet parameters, final HSSFWorkbook workbook, final HSSFSheet sheet, final Map<Integer, Double> maxWidthPerColumn) {
-		// final HSSFCellStyle oddRowCellStyle = createRowCellStyle(workbook, true, false); //impair
-		// final HSSFCellStyle evenRowCellStyle = createRowCellStyle(workbook, false, false); //pair
-		// final HSSFCellStyle oddDateRowCellStyle = createRowCellStyle(workbook, true, true); //impair
-		// final HSSFCellStyle evenDateRowCellStyle = createRowCellStyle(workbook, false, true); //pair
+		// final HSSFCellStyle oddRowCellStyle = createRowCellStyle(workbook,
+		// true, false); //impair
+		// final HSSFCellStyle evenRowCellStyle = createRowCellStyle(workbook,
+		// false, false); //pair
+		// final HSSFCellStyle oddDateRowCellStyle =
+		// createRowCellStyle(workbook, true, true); //impair
+		// final HSSFCellStyle evenDateRowCellStyle =
+		// createRowCellStyle(workbook, false, true); //pair
 
 		// exporte le header
 		final HSSFRow headerRow = sheet.createRow(0);
@@ -218,13 +232,20 @@ final class XLSExporter {
 			cell.setCellValue(new HSSFRichTextString(displayedLabel));
 			cell.setCellStyle(createHeaderCellStyle(workbook));
 
-			updateMaxWidthPerColumn(displayedLabel, 1.2, cellIndex, maxWidthPerColumn); // +20% pour les majuscules
+			updateMaxWidthPerColumn(displayedLabel, 1.2, cellIndex, maxWidthPerColumn); // +20%
+																						// pour
+																						// les
+																						// majuscules
 			cellIndex++;
 		}
-		// il faut indiquer l'indice de la feuille sur laquelle on applique cette propriété, c'est toujours la derniere du document Excel, fonc i = max-1
-		// TODO probleme quand on set cette property plus de deux fois à regler. Solution de dépannage utilisée ci dessous
+		// il faut indiquer l'indice de la feuille sur laquelle on applique
+		// cette propriété, c'est toujours la derniere du document Excel, fonc i
+		// = max-1
+		// TODO probleme quand on set cette property plus de deux fois à regler.
+		// Solution de dépannage utilisée ci dessous
 		if (!isRepeatHeaderSet) {
-			// workbook.setRepeatingRowsAndColumns(workbook.getSheetIndex(sheet.toString()), -1, -1, 0, 0);
+			// workbook.setRepeatingRowsAndColumns(workbook.getSheetIndex(sheet.toString()),
+			// -1, -1, 0, 0);
 			workbook.setRepeatingRowsAndColumns(getSheetIndex(workbook, sheet), -1, -1, 0, 0);
 			isRepeatHeaderSet = true;
 		}
@@ -237,7 +258,7 @@ final class XLSExporter {
 			for (final ExportField exportColumn : parameters.getExportFields()) {
 				final HSSFCell cell = row.createCell(cellIndex);
 
-				value = exportHelper.getValue(referenceCache, denormCache, dto, exportColumn);
+				value = ExportUtil.getValue(persistenceManager, referenceCache, denormCache, dto, exportColumn);
 				putValueInCell(value, cell, rowIndex % 2 == 0 ? evenHssfStyleCache : oddHssfStyleCache, cellIndex, maxWidthPerColumn, exportColumn.getDtField().getDomain().getDataType());
 
 				cellIndex++;
@@ -256,8 +277,10 @@ final class XLSExporter {
 	}
 
 	private void exportObject(final ExportSheet parameters, final HSSFWorkbook workbook, final HSSFSheet sheet, final Map<Integer, Double> maxWidthPerColumn) {
-		// final HSSFCellStyle oddRowCellStyle = createRowCellStyle(workbook, true, false); //impair
-		// final HSSFCellStyle oddDateRowCellStyle = createRowCellStyle(workbook, true, true); //impair
+		// final HSSFCellStyle oddRowCellStyle = createRowCellStyle(workbook,
+		// true, false); //impair
+		// final HSSFCellStyle oddDateRowCellStyle =
+		// createRowCellStyle(workbook, true, true); //impair
 
 		int rowIndex = 0;
 		final int labelCellIndex = 0;
@@ -271,10 +294,13 @@ final class XLSExporter {
 			final MessageText label = exportColumn.getLabel();
 			cell.setCellValue(new HSSFRichTextString(label.getDisplay()));
 			cell.setCellStyle(createHeaderCellStyle(workbook));
-			updateMaxWidthPerColumn(label.getDisplay(), 1.2, labelCellIndex, maxWidthPerColumn); // +20% pour les majuscules
+			updateMaxWidthPerColumn(label.getDisplay(), 1.2, labelCellIndex, maxWidthPerColumn); // +20%
+																									// pour
+																									// les
+																									// majuscules
 
 			final HSSFCell valueCell = row.createCell(valueCellIndex);
-			value = exportHelper.getValue(referenceCache, denormCache, dto, exportColumn);
+			value = ExportUtil.getValue(persistenceManager, referenceCache, denormCache, dto, exportColumn);
 			putValueInCell(value, valueCell, oddHssfStyleCache, valueCellIndex, maxWidthPerColumn, exportColumn.getDtField().getDomain().getDataType());
 			rowIndex++;
 		}
@@ -309,19 +335,35 @@ final class XLSExporter {
 				cell.setCellValue(bValue.booleanValue() ? "Oui" : "Non");
 			} else if (value instanceof Date) {
 				final Date dateValue = (Date) value;
-				// sans ce style "date" les dates apparaîtraient au format "nombre"
+				// sans ce style "date" les dates apparaîtraient au format
+				// "nombre"
 				cell.setCellValue(dateValue);
-				stringValueForColumnWidth = "DD/MM/YYYY"; // ceci ne sert que pour déterminer la taille de la cellule, on a pas besoin de la vrai valeur
+				stringValueForColumnWidth = "DD/MM/YYYY"; // ceci ne sert que
+															// pour déterminer
+															// la taille de la
+															// cellule, on a pas
+															// besoin de la vrai
+															// valeur
 			} else {
 				throw new UnsupportedOperationException("Type " + type + " non géré en export Excel");
 			}
-			updateMaxWidthPerColumn(stringValueForColumnWidth, 1, cellIndex, maxWidthPerColumn); // +20% pour les majuscules
+			updateMaxWidthPerColumn(stringValueForColumnWidth, 1, cellIndex, maxWidthPerColumn); // +20%
+																									// pour
+																									// les
+																									// majuscules
 		}
 	}
 
 	private static void updateMaxWidthPerColumn(final String value, final double textSizeCoeff, final int cellIndex, final Map<Integer, Double> maxWidthPerColumn) {
 		// Calcul de la largeur des colonnes
-		final double newLenght = value != null ? value.length() * textSizeCoeff + 2 : 0; // +textSizeCoeff% pour les majuscules,et +2 pour les marges
+		final double newLenght = value != null ? value.length() * textSizeCoeff + 2 : 0; // +textSizeCoeff%
+																							// pour
+																							// les
+																							// majuscules,et
+																							// +2
+																							// pour
+																							// les
+																							// marges
 		final Double oldLenght = maxWidthPerColumn.get(cellIndex);
 		if (oldLenght == null || oldLenght.doubleValue() < newLenght) {
 			maxWidthPerColumn.put(cellIndex, newLenght);
@@ -331,8 +373,10 @@ final class XLSExporter {
 	/**
 	 * Méthode principale qui gère l'export d'un tableau vers un fichier ODS.
 	 * 
-	 * @param documentParameters Paramètres du document à exporter
-	 * @param out Flux de sortie
+	 * @param documentParameters
+	 *            Paramètres du document à exporter
+	 * @param out
+	 *            Flux de sortie
 	 */
 	void exportData(final Export documentParameters, final OutputStream out) throws IOException {
 		try {

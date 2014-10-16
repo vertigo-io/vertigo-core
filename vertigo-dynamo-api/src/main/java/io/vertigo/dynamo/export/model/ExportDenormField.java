@@ -16,29 +16,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.export.core;
+package io.vertigo.dynamo.export.model;
 
 import io.vertigo.core.lang.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.export.ExportField;
 
 /**
- * Définition d'une colonne de type dénormalisation à exporter.
- * On précise la liste et le champs a utiliser comme libellé à afficher à la place de l'id de la liste de l'export.
- *
+ * Définition d'une colonne de type dénormalisation à exporter. On précise la
+ * liste et le champs a utiliser comme libellé à afficher à la place de l'id de
+ * la liste de l'export.
+ * 
  * @author pchretien, npiedeloup
  */
-final class ExportDenormField extends ExportField {
+public final class ExportDenormField extends ExportField {
 	private final DtList<?> list;
 	private final DtField keyField;
 	private final DtField displayField;
 
 	/**
 	 * Constructeur.
-	 * @param dtField Champ à exporter
-	 * @param list Liste de éléments dénormés
-	 * @param displayField Champs dénormé
+	 * 
+	 * @param dtField
+	 *            Champ à exporter
+	 * @param list
+	 *            Liste de éléments dénormés
+	 * @param displayField
+	 *            Champs dénormé
 	 */
 	ExportDenormField(final DtField dtField, final MessageText label, final DtList<?> list, final DtField displayField) {
 		super(dtField, label);
@@ -50,31 +54,22 @@ final class ExportDenormField extends ExportField {
 	/**
 	 * @return DtList<?> liste contenant les éléments dénormés.
 	 */
-	DtList<?> getDenormList() {
+	public DtList<?> getDenormList() {
 		return list;
 	}
 
 	/**
 	 * @return DtField représentant le display de la liste de dénorm.
 	 */
-	DtField getDisplayField() {
+	public DtField getDisplayField() {
 		return displayField;
 	}
 
 	/**
-	 * @return DtField représentant la clé de la liste de dénorm.
-	 * (par défaut la key du DT)
+	 * @return DtField représentant la clé de la liste de dénorm. (par défaut la
+	 *         key du DT)
 	 */
-	DtField getKeyField() {
+	public DtField getKeyField() {
 		return keyField;
 	}
-
-	//--------------------------------------------------------------------------
-
-	//	/**
-	//	 * @param keyField représentant la clé de la liste de dénorm. (util seulement si différent de la key du DT)
-	//	 */
-	//	void setKeyField(final DtField keyField) {
-	//		this.keyField = keyField;
-	//	}
 }

@@ -16,32 +16,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.export;
-
-import io.vertigo.core.component.Manager;
-import io.vertigo.dynamo.export.model.Export;
-import io.vertigo.dynamo.file.model.KFile;
-import io.vertigo.dynamo.work.WorkResultHandler;
+package io.vertigo.dynamo.export.model;
 
 /**
- * Gestionnaire centralisé des éditions de données.
- * Le choix du type de report est fait par l'appelant qui fournit les paramètres adaptés à son besoin.
- *
+ * Formats de sortie supportés par le manager d'édition.
  * @author pchretien, npiedeloup
  */
-public interface ExportManager extends Manager {
+public enum ExportFormat {
 
 	/**
-	 * Création du fichier d'export
-	 * @param export Expotr à envoyer
-	 * @return Fichier
+	 * Document Excel.
 	 */
-	KFile createExportFile(final Export export);
+	XLS("application/vnd.ms-excel"),
 
 	/**
-	 * Création asynchrone du fichier d'export
-	 * @param export Expotr à envoyer
-	 * @param workResultHandler Handler du resultat
+	 * Document RTF.
 	 */
-	void createExportFileASync(final Export export, final WorkResultHandler<KFile> workResultHandler);
+	RTF("text/rtf"),
+
+	/**
+	 * Comma Separated Value.
+	 */
+	CSV("application/csv.ms-excel"),
+
+	/**
+	 * Document PDF.
+	 */
+	PDF("application/pdf"),
+
+	/**
+	 * Document ODS.
+	 */
+	ODS("application/vnd.oasis.opendocument.spreadsheet");
+
+	private final String typeMime;
+
+	/**
+	 * Constructeur.
+	 * @param typeMime Type mime associé
+	 */
+	private ExportFormat(final String typeMime) {
+		this.typeMime = typeMime;
+	}
+
+	/**
+	 * @return Type mime associé
+	 */
+	public String getTypeMime() {
+		return typeMime;
+	}
 }
