@@ -35,7 +35,7 @@ import java.util.List;
  *
  * @author pchretien
  */
-public abstract class AbstractSqlConnectionProviderPlugin implements SqlConnectionProviderPlugin,  {
+public abstract class AbstractSqlConnectionProviderPlugin implements SqlConnectionProviderPlugin, Describable {
 	/**
 	 * Base de données utilisée
 	 */
@@ -59,26 +59,29 @@ public abstract class AbstractSqlConnectionProviderPlugin implements SqlConnecti
 		return dataBase;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public final List<ComponentInfo> getInfos() {
 		final List<ComponentInfo> componentInfos = new ArrayList<>();
 		try {
 			//
 			final SqlConnection connection = obtainConnection();
-			final Connection jdbcConnection = connection.getJdbcConnection();//NOPMD
-			try {
-				final DatabaseMetaData metaData = jdbcConnection.getMetaData();
-				//---
-				componentInfos.add(new ComponentInfo("database.name", metaData.getDatabaseProductName()));
-				componentInfos.add(new ComponentInfo("database.version", metaData.getDatabaseProductVersion()));
+			try (final Connection jdbcConnection = connection.getJdbcConnection()) {
+				try {
+					final DatabaseMetaData metaData = jdbcConnection.getMetaData();
+					//---
+					componentInfos.add(new ComponentInfo("database.name", metaData.getDatabaseProductName()));
+					componentInfos.add(new ComponentInfo("database.version", metaData.getDatabaseProductVersion()));
 
-				componentInfos.add(new ComponentInfo("database.driver.name", metaData.getDriverName()));
-				componentInfos.add(new ComponentInfo("database.driver.name", metaData.getDriverVersion()));
-				componentInfos.add(new ComponentInfo("database.driver.url", metaData.getURL()));
-			} finally {
-				connection.rollback();
-				connection.release();
+					componentInfos.add(new ComponentInfo("database.driver.name", metaData.getDriverName()));
+					componentInfos.add(new ComponentInfo("database.driver.name", metaData.getDriverVersion()));
+					componentInfos.add(new ComponentInfo("database.driver.url", metaData.getURL()));
+				} finally {
+					connection.rollback();
+					connection.release();
+				}
 			}
+
 		} catch (final Exception ex) {
 			//
 		}
