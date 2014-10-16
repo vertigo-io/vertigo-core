@@ -27,7 +27,6 @@ import io.vertigo.core.lang.Activeable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.core.util.DILifeCycleUtil;
 import io.vertigo.core.util.StringUtil;
 
 import java.io.PrintStream;
@@ -156,14 +155,14 @@ final class ComponentContainer implements Container, Activeable {
 	}
 
 	private static void startComponent(final Object component) {
-		final Method startMethod = DILifeCycleUtil.getStartMethod(component.getClass());
+		final Method startMethod = ComponentLifeCycleUtil.getStartMethod(component.getClass());
 		if (startMethod != null) {
 			ClassUtil.invoke(component, startMethod);
 		}
 	}
 
 	private static void stopComponent(final Object component) {
-		final Method stopMethod = DILifeCycleUtil.getStopMethod(component.getClass());
+		final Method stopMethod = ComponentLifeCycleUtil.getStopMethod(component.getClass());
 		if (stopMethod != null) {
 			ClassUtil.invoke(component, stopMethod);
 		}
