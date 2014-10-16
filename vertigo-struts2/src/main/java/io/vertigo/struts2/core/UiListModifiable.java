@@ -18,8 +18,8 @@
  */
 package io.vertigo.struts2.core;
 
-import io.vertigo.core.exception.VUserException;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VUserException;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;

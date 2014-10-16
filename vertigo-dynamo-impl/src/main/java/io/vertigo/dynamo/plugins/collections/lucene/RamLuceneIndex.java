@@ -70,7 +70,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifi
 
 	private void buildIndex() throws IOException {
 		try (final IndexWriter indexWriter = createIndexWriter()) {
-			// we are creating an empty index if it does not exist 
+			// we are creating an empty index if it does not exist
 		}
 	}
 

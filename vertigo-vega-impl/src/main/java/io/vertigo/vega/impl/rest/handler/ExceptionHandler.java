@@ -18,8 +18,8 @@
  */
 package io.vertigo.vega.impl.rest.handler;
 
-import io.vertigo.core.exception.VUserException;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VUserException;
 import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.TooManyRequestException;

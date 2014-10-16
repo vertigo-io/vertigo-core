@@ -19,8 +19,8 @@
 package io.vertigo.tempo.mail;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.exception.VUserException;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VUserException;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.KFile;
 

@@ -18,8 +18,8 @@
  */
 package io.vertigo.struts2.controller;
 
-import io.vertigo.core.exception.VUserException;
 import io.vertigo.core.lang.MessageText;
+import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.DtListProcessor;
