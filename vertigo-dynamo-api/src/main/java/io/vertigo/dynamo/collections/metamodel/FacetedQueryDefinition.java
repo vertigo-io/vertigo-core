@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.collections.metamodel;
 
+import io.vertigo.core.definiton.Definition;
+import io.vertigo.core.definiton.DefinitionPrefix;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.metamodel.Definition;
-import io.vertigo.core.stereotype.Prefix;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -35,7 +35,7 @@ import java.util.Map;
  *
  * @author pchretien 
  */
-@Prefix("QRY")
+@DefinitionPrefix("QRY")
 public final class FacetedQueryDefinition implements Definition {
 	/**
 	 * Nom de la définition.

@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.task.metamodel;
 
+import io.vertigo.core.definiton.Definition;
+import io.vertigo.core.definiton.DefinitionUtil;
+import io.vertigo.core.definiton.DefinitionPrefix;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.metamodel.Definition;
-import io.vertigo.core.metamodel.DefinitionUtil;
-import io.vertigo.core.stereotype.Prefix;
 import io.vertigo.dynamo.task.model.TaskEngine;
 
 import java.util.Collection;
@@ -34,7 +34,7 @@ import java.util.Map;
  *
  * @author  fconstantin, pchretien
  */
-@Prefix("TK")
+@DefinitionPrefix("TK")
 public final class TaskDefinition implements Definition {
 	/** Nom de la définition. */
 	private final String name;

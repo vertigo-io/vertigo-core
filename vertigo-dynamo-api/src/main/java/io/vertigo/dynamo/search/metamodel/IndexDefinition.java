@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.search.metamodel;
 
+import io.vertigo.core.definiton.Definition;
+import io.vertigo.core.definiton.DefinitionPrefix;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.metamodel.Definition;
-import io.vertigo.core.stereotype.Prefix;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 
 /**
@@ -34,7 +34,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
  *  
  * @author dchallas
  */
-@Prefix("IDX")
+@DefinitionPrefix("IDX")
 public final class IndexDefinition implements Definition {
 	/**
 	* Nom de l'index.

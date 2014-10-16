@@ -19,10 +19,10 @@
 package io.vertigo.dynamo.domain.metamodel;
 
 import io.vertigo.core.Home;
+import io.vertigo.core.definiton.Definition;
+import io.vertigo.core.definiton.DefinitionReference;
+import io.vertigo.core.definiton.DefinitionPrefix;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.metamodel.Definition;
-import io.vertigo.core.metamodel.DefinitionReference;
-import io.vertigo.core.stereotype.Prefix;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +39,7 @@ import java.util.List;
  *
  * @author pchretien
  */
-@Prefix("DO")
+@DefinitionPrefix("DO")
 public final class Domain implements Definition {
 	/** Nom du domaine.*/
 	private final String name;

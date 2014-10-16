@@ -20,11 +20,11 @@ package io.vertigo.core.home.definitionspace;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
+import io.vertigo.core.definiton.Definition;
+import io.vertigo.core.definiton.DefinitionReference;
+import io.vertigo.core.definiton.DefinitionUtil;
+import io.vertigo.core.definiton.DefinitionPrefix;
 import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
-import io.vertigo.core.metamodel.Definition;
-import io.vertigo.core.metamodel.DefinitionReference;
-import io.vertigo.core.metamodel.DefinitionUtil;
-import io.vertigo.core.stereotype.Prefix;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -92,7 +92,7 @@ public class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 		Assert.assertSame("Definitions must be strictly equals", sampleDefinition, definitionReference.get());
 	}
 
-	@Prefix("SAMPLE")
+	@DefinitionPrefix("SAMPLE")
 	public static class SampleDefinition implements Definition {
 
 		public String getName() {

@@ -19,10 +19,10 @@
 package io.vertigo.core;
 
 import io.vertigo.core.component.ComponentSpace;
+import io.vertigo.core.definiton.DefinitionSpace;
 import io.vertigo.core.di.configurator.ComponentSpaceConfig;
 import io.vertigo.core.di.configurator.ComponentSpaceImpl;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.metamodel.DefinitionSpace;
 import io.vertigo.core.resource.ResourceSpace;
 
 /**

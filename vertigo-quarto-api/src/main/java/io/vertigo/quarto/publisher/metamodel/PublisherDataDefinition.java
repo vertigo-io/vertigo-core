@@ -18,9 +18,9 @@
  */
 package io.vertigo.quarto.publisher.metamodel;
 
+import io.vertigo.core.definiton.Definition;
+import io.vertigo.core.definiton.DefinitionPrefix;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.metamodel.Definition;
-import io.vertigo.core.stereotype.Prefix;
 
 /**
  * Définition d'un modèle d'édition.
@@ -28,7 +28,7 @@ import io.vertigo.core.stereotype.Prefix;
  *
  * @author npiedeloup, pchretien
  */
-@Prefix("PU")
+@DefinitionPrefix("PU")
 public final class PublisherDataDefinition implements Definition {
 	/** Nom de la définition. */
 	private final String name;

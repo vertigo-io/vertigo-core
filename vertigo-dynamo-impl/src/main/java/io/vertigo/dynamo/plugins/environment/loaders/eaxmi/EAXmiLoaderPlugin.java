@@ -19,9 +19,9 @@
 package io.vertigo.dynamo.plugins.environment.loaders.eaxmi;
 
 import io.vertigo.commons.resource.ResourceManager;
+import io.vertigo.core.definiton.Definition;
+import io.vertigo.core.definiton.DefinitionUtil;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.metamodel.Definition;
-import io.vertigo.core.metamodel.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.impl.environment.LoaderPlugin;

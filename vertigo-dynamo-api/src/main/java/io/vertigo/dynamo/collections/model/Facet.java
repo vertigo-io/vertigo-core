@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.collections.model;
 
+import io.vertigo.core.definiton.DefinitionReference;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.metamodel.DefinitionReference;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 
 import java.io.Serializable;

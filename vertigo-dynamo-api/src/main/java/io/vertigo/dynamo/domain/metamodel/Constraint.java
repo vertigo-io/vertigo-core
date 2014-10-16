@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
+import io.vertigo.core.definiton.Definition;
+import io.vertigo.core.definiton.DefinitionPrefix;
 import io.vertigo.core.lang.MessageText;
-import io.vertigo.core.metamodel.Definition;
-import io.vertigo.core.stereotype.Prefix;
 
 /**
  * Interface de base pour la définition de contrainte
@@ -39,7 +39,7 @@ import io.vertigo.core.stereotype.Prefix;
  * @param <J> Type java de la propriété associée à la contrainte
  * @param <D> Type java de la valeur à contrôler
  */
-@Prefix("CK")
+@DefinitionPrefix("CK")
 public interface Constraint<J, D> extends Definition {
 	/**
 	 * Cette méthode permet de définir la propriété(le comportement générique) que la contrainte implémente.

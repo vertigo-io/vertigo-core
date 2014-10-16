@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
+import io.vertigo.core.definiton.Definition;
+import io.vertigo.core.definiton.DefinitionUtil;
+import io.vertigo.core.definiton.DefinitionPrefix;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
-import io.vertigo.core.metamodel.Definition;
-import io.vertigo.core.metamodel.DefinitionUtil;
-import io.vertigo.core.stereotype.Prefix;
 import io.vertigo.core.util.StringUtil;
 
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ import java.util.Map;
  *
  * @author pchretien
  */
-@Prefix("DT")
+@DefinitionPrefix("DT")
 public final class DtDefinition implements Definition {
 	/** Nom de la définition. */
 	private final String name;

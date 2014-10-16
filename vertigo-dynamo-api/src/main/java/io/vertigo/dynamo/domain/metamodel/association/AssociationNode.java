@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.domain.metamodel.association;
 
+import io.vertigo.core.definiton.DefinitionReference;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.JsonExclude;
-import io.vertigo.core.metamodel.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 
 /**

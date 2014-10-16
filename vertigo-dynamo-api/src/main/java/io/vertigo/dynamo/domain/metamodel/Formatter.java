@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
-import io.vertigo.core.metamodel.Definition;
-import io.vertigo.core.stereotype.Prefix;
+import io.vertigo.core.definiton.Definition;
+import io.vertigo.core.definiton.DefinitionPrefix;
 
 /**
  * Permet de définir des formats particuliers d'affichages et de saisie.
@@ -29,7 +29,7 @@ import io.vertigo.core.stereotype.Prefix;
  *
  * @author pchretien
  */
-@Prefix("FMT")
+@DefinitionPrefix("FMT")
 public interface Formatter extends Definition {
 	/**
 	 * Nom de du formatter par défaut.

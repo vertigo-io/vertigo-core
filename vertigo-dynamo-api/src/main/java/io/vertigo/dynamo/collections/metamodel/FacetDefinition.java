@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.collections.metamodel;
 
+import io.vertigo.core.definiton.Definition;
+import io.vertigo.core.definiton.DefinitionPrefix;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.MessageText;
-import io.vertigo.core.metamodel.Definition;
-import io.vertigo.core.stereotype.Prefix;
 import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 
@@ -50,7 +50,7 @@ import java.util.List;
  *
  * @author pchretien
  */
-@Prefix("FCT")
+@DefinitionPrefix("FCT")
 public final class FacetDefinition implements Definition {
 	private final String name;
 	private final DtField dtField;

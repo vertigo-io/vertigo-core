@@ -18,16 +18,16 @@
  */
 package io.vertigo.persona.security.metamodel;
 
+import io.vertigo.core.definiton.Definition;
+import io.vertigo.core.definiton.DefinitionPrefix;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.metamodel.Definition;
-import io.vertigo.core.stereotype.Prefix;
 
 /**
  * Une permission est l'association d'une opération et d'une ressource.
  * 
  * @author prahmoune
  */
-@Prefix("PRM_")
+@DefinitionPrefix("PRM_")
 public final class Permission implements Definition {
 	private final String name;
 	private final String operation;

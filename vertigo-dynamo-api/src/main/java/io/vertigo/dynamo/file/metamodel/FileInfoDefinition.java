@@ -19,10 +19,10 @@
 package io.vertigo.dynamo.file.metamodel;
 
 import io.vertigo.core.Home;
+import io.vertigo.core.definiton.Definition;
+import io.vertigo.core.definiton.DefinitionUtil;
+import io.vertigo.core.definiton.DefinitionPrefix;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.metamodel.Definition;
-import io.vertigo.core.metamodel.DefinitionUtil;
-import io.vertigo.core.stereotype.Prefix;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.file.model.FileInfo;
 
@@ -35,7 +35,7 @@ import io.vertigo.dynamo.file.model.FileInfo;
  *
  * @author  npiedeloup, pchretien
  */
-@Prefix("FI")
+@DefinitionPrefix("FI")
 public final class FileInfoDefinition implements Definition {
 	/**
 	 * Nom de la définition.

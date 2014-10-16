@@ -18,9 +18,9 @@
  */
 package io.vertigo.vega.rest.metamodel;
 
+import io.vertigo.core.definiton.Definition;
+import io.vertigo.core.definiton.DefinitionPrefix;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.metamodel.Definition;
-import io.vertigo.core.stereotype.Prefix;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ import java.util.Set;
  * End point definition.
  * @author npiedeloup
  */
-@Prefix("EP_")
+@DefinitionPrefix("EP_")
 public final class EndPointDefinition implements Definition {
 
 	public enum Verb {

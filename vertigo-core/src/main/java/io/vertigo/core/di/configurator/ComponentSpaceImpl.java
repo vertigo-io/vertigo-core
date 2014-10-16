@@ -27,6 +27,7 @@ import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.core.component.Container;
 import io.vertigo.core.component.Plugin;
+import io.vertigo.core.definiton.DefinitionSpace;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.core.di.reactor.DIReactor;
 import io.vertigo.core.engines.AopEngine;
@@ -34,7 +35,6 @@ import io.vertigo.core.engines.VCommandEngine;
 import io.vertigo.core.lang.Activeable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
-import io.vertigo.core.metamodel.DefinitionSpace;
 import io.vertigo.core.resource.ResourceLoader;
 import io.vertigo.core.util.StringUtil;
 

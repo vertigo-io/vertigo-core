@@ -19,9 +19,9 @@
 package io.vertigo.engines.command;
 
 import io.vertigo.core.component.ComponentInfo;
+import io.vertigo.core.definiton.DefinitionReference;
 import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.lang.Option;
-import io.vertigo.core.metamodel.DefinitionReference;
 
 import java.lang.reflect.Type;
 import java.util.List;

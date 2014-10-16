@@ -18,9 +18,9 @@
  */
 package io.vertigo.persona.security.metamodel;
 
+import io.vertigo.core.definiton.Definition;
+import io.vertigo.core.definiton.DefinitionPrefix;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.metamodel.Definition;
-import io.vertigo.core.stereotype.Prefix;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ import java.util.List;
  * 
  * @author prahmoune
  */
-@Prefix("R_")
+@DefinitionPrefix("R_")
 public final class Role implements Definition {
 	private final String name;
 	private final String description;

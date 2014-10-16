@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.domain.metamodel.association;
 
+import io.vertigo.core.definiton.Definition;
+import io.vertigo.core.definiton.DefinitionPrefix;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.metamodel.Definition;
-import io.vertigo.core.stereotype.Prefix;
 
 /**
  * Décrit une association entre deux objets (A et B)
@@ -45,7 +45,7 @@ import io.vertigo.core.stereotype.Prefix;
  *
  * @author  jcassignol, pchretien
  */
-@Prefix("A")
+@DefinitionPrefix("A")
 public abstract class AssociationDefinition implements Definition {
 	/**
 	 * Nom de la définition.

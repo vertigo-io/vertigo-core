@@ -22,9 +22,9 @@
 package io.vertigo.dynamo.impl.persistence.util;
 
 import io.vertigo.core.Home;
+import io.vertigo.core.definiton.Definition;
+import io.vertigo.core.definiton.DefinitionUtil;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.metamodel.Definition;
-import io.vertigo.core.metamodel.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;

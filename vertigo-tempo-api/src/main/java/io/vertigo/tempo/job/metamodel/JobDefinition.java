@@ -18,16 +18,16 @@
  */
 package io.vertigo.tempo.job.metamodel;
 
+import io.vertigo.core.definiton.Definition;
+import io.vertigo.core.definiton.DefinitionPrefix;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.metamodel.Definition;
-import io.vertigo.core.stereotype.Prefix;
 
 /**
  * JobDefinition décrit le travail qu'il faut exécuter.
  * La tache à exécuter oit étendre Runnable.
  * @author pchretien
  */
-@Prefix("JB")
+@DefinitionPrefix("JB")
 public final class JobDefinition implements Definition {
 	/** Nom de la définition. */
 	private final String name;

@@ -18,9 +18,9 @@
  */
 package io.vertigo.struts2.core;
 
+import io.vertigo.core.definiton.DefinitionReference;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
-import io.vertigo.core.metamodel.DefinitionReference;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;

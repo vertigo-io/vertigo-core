@@ -19,9 +19,9 @@
 package io.vertigo.dynamo.domain.model;
 
 import io.vertigo.core.Home;
+import io.vertigo.core.definiton.Definition;
+import io.vertigo.core.definiton.DefinitionReference;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.metamodel.Definition;
-import io.vertigo.core.metamodel.DefinitionReference;
 import io.vertigo.core.util.StringUtil;
 
 import java.io.Serializable;
