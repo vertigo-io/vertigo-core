@@ -22,7 +22,7 @@ import java.io.PrintStream;
 
 /**
  * Displays logo.
- * 
+ *
  * @author pchretien
  */
 public final class Logo {
@@ -34,12 +34,12 @@ public final class Logo {
 		out.println("##########################################");
 		out.println("#  _____________                         #");
 		out.println("# |     _     / | ---------------------- #");
-		out.println("# |#   / \\   / /|  Vertigo V0.4.0 - 2014 #"); //add one char for \\ 
-		out.println("# |  __\\ /__/ / |                        #"); //add one char for \\ 
+		out.println("# |#   / \\   / /|  Vertigo V0.7.0 - 2014 #"); //add one char for \\
+		out.println("# |  __\\ /__/ / |                        #"); //add one char for \\
 		out.println("# | / _      /  |                        #");
-		out.println("# |/ / \\  ()/  *|                        #"); //add one char for \\ 
+		out.println("# |/ / \\  ()/  *|                        #"); //add one char for \\
 		out.println("# | /  |   |    |  www.kleegroup.com     #");
-		out.println("# |/___|____\\___| ---------------------- #"); //add one char for \\ 
+		out.println("# |/___|____\\___| ---------------------- #"); //add one char for \\
 		out.println("#                                        #");
 		out.println("##########################################");
 		out.println();
