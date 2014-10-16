@@ -12,31 +12,7 @@
 	<artifactId>vertigo-struts2</artifactId>
 	<packaging>jar</packaging>
 	<name>vertigo-struts2</name>
-
-
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>FTL override</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-						<phase>package</phase>
-						<configuration>
-							<finalName>ftl-tags-${project.build.finalName}</finalName>
-							<classifier>ftl</classifier>
-							<includes>
-								<include>**/*.ftl</include>
-							</includes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+	
 	<dependencies>
 		<dependency>
 			<groupId>io.vertigo</groupId>
