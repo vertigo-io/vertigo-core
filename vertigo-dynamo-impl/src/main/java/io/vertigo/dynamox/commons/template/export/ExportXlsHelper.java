@@ -24,7 +24,6 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.export.ExportManager;
 import io.vertigo.dynamo.export.model.ExportBuilder;
 import io.vertigo.dynamo.export.model.ExportFormat;
 import io.vertigo.dynamo.export.model.ExportSheetBuilder;
@@ -41,7 +40,6 @@ import java.util.Map;
  *            Type d'objet pour la liste
  */
 public class ExportXlsHelper<R extends DtObject> {
-	private final ExportManager exportManager;
 	private final ExportBuilder exportBuilder;
 
 	/**
@@ -52,11 +50,9 @@ public class ExportXlsHelper<R extends DtObject> {
 	 * @param title
 	 *            titre de la feuille principale de l'export
 	 */
-	public ExportXlsHelper(final ExportManager exportManager, final String fileName, final String title) {
-		Assertion.checkNotNull(exportManager);
+	public ExportXlsHelper(final String fileName, final String title) {
 		Assertion.checkNotNull(fileName);
 		// ---------------------------------------------------------------------
-		this.exportManager = exportManager;
 		exportBuilder = new ExportBuilder(ExportFormat.XLS, fileName)//
 				.withTitle(title);
 	}
