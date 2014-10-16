@@ -27,7 +27,7 @@ import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
-import io.vertigo.vega.rest.metamodel.UiListState;
+import io.vertigo.vega.rest.model.UiListState;
 import io.vertigo.vega.security.UiSecurityTokenManager;
 import spark.Request;
 import spark.Response;

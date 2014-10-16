@@ -1,6 +1,6 @@
 ################################################################################");
 # Attention ce fichier est généré automatiquement !");
-# Resources du module ", packageName);
+# Resources du module ${packageName};
 ################################################################################");
 
 <#list dtDefinitions as dtDefinition>

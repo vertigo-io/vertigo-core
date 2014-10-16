@@ -3,17 +3,20 @@ Version history
 
 Running 0.6.1-SNAPSHOT
 ----------------------
+* [Vega] Fix relative path support with SwaggerUI
+* [Struts2] Add VFreemarkerManager to better override of struts2 FLT (add this to your struts.xml *&lt;constant name="struts.freemarker.manager.classname" value="io.vertigo.struts2.impl.views.freemarker.VFreemarkerManager" /&gt;*) 
 
 more to come :)
 
 Release 0.6.0 - 2014/10/15
 ----------------------
+* [Core] managers.xml xsd now checks params are declared before plugins
 * [Vega] Add support to Swagger Api viewer (see http://swagger.io/)
 * [Vega] Add HttpRequest and HttpResponse parameters support
 * [Vega] Add Header param support
 * [Vega] Fix some bug with query parameters
 * [Dynamo] Some refacts (first step). No major api modifications.
-* [Dynamo] Some rename
+* [Dynamo] Some rename (DatabaseManager => SqlDatabaseManager)
 * [Dynamo] Swap search from Solr to ElasticSearch 
 * [Dynamo] Add Batch support to DAOBroker
 * [Struts2] Fix struts2 checkboxlist.ftl 

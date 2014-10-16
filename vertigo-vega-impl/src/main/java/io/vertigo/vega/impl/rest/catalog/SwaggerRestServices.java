@@ -80,14 +80,14 @@ public final class SwaggerRestServices implements RestfulService {
 	@AnonymousAccessAllowed
 	@GET("/swaggerUi")
 	public void getSwapperUi(final HttpServletResponse response) throws IOException {
-		sendRedirect(response);
+		response.sendRedirect("./swaggerUi/index.html");
 	}
 
 	@SessionLess
 	@AnonymousAccessAllowed
 	@GET("/swaggerUi/")
 	public void getSwapperUiEmpty(final HttpServletResponse response) throws IOException {
-		sendRedirect(response);
+		response.sendRedirect("./index.html");
 	}
 
 	@SessionLess
@@ -95,7 +95,7 @@ public final class SwaggerRestServices implements RestfulService {
 	@GET("/swaggerUi/{resourceUrl}")
 	public void getSwapperUi(@PathParam("resourceUrl") final String resourceUrl, final HttpServletResponse response) throws IOException {
 		if (resourceUrl.isEmpty()) {
-			sendRedirect(response);
+			response.sendRedirect("./index.html");
 		}
 		final URL url = SwaggerRestServices.class.getResource("/swagger-site/" + resourceUrl);
 		sendFile(url, resolveContentType(resourceUrl), response);
@@ -107,12 +107,6 @@ public final class SwaggerRestServices implements RestfulService {
 	public void getSwapperUi(@PathParam("resourcePathUrl") final String resourcePathUrl, @PathParam("resourceUrl") final String resourceUrl, final HttpServletResponse response) throws IOException {
 		final URL url = SwaggerRestServices.class.getResource("/swagger-site/" + resourcePathUrl + "/" + resourceUrl);
 		sendFile(url, resolveContentType(resourceUrl), response);
-	}
-
-	private void sendRedirect(final HttpServletResponse response) throws IOException {
-		//final URL url = SwaggerRestServices.class.getResource("/swagger-site/redirect.html");
-		//sendFile(url, resolveContentType("index.html"), response);
-		response.sendRedirect("/swaggerUi/index.html");
 	}
 
 	private void sendFile(final URL url, final String contentType, final HttpServletResponse response) throws IOException {

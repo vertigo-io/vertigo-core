@@ -20,8 +20,8 @@ package io.vertigo.dynamox.domain.formatter;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl;
 
 import java.util.StringTokenizer;
@@ -60,24 +60,24 @@ public final class FormatterBoolean extends AbstractFormatterImpl {
 	@Override
 	public void initParameters(final String args) {
 		// Les arguments ne doivent pas être vides.
-		assertArgs(args != null);
+		assertArgs(args != null, args);
 		//----------------------------------------------------------------------
 		final StringTokenizer st = new StringTokenizer(args, ";");
 
 		//OUI
-		assertArgs(st.hasMoreTokens());
+		assertArgs(st.hasMoreTokens(), args);
 		truePattern = st.nextToken().trim();
 
 		//NON
-		assertArgs(st.hasMoreTokens());
+		assertArgs(st.hasMoreTokens(), args);
 		falsePattern = st.nextToken().trim();
 
 		//C'est fini plus de texte attendu
-		assertArgs(!st.hasMoreTokens());
+		assertArgs(!st.hasMoreTokens(), args);
 	}
 
-	private static void assertArgs(final boolean test) {
-		Assertion.checkArgument(test, "Les arguments pour la construction de FormatterBoolean sont invalides :format oui; format non");
+	private static void assertArgs(final boolean test, final String args) {
+		Assertion.checkArgument(test, "Les arguments pour la construction de FormatterBoolean sont invalides: format oui; format non (ici:{0})", args);
 	}
 
 	/** {@inheritDoc} */

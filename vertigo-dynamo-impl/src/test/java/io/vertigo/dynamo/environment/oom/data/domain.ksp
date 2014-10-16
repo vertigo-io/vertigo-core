@@ -144,9 +144,16 @@ create Domain DO_DYN_DTC {
 /*                                          Gestion des formatters                                */
 /**************************************************************************************************/
 
+
+create Formatter FMT_BOOLEAN_DEFAULT {
+    className : "io.vertigo.dynamox.domain.formatter.FormatterBoolean"
+    args : "MyTrue;MyFalse"
+}
+
 create Formatter FMT_DEFAULT {
     className : "io.vertigo.dynamox.domain.formatter.FormatterDefault"
 }
+
 
 create Formatter FMT_UPPERCASE {
     className : "io.vertigo.dynamox.domain.formatter.FormatterString"

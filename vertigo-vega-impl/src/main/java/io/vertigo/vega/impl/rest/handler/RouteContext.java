@@ -21,8 +21,8 @@ package io.vertigo.vega.impl.rest.handler;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.vega.rest.engine.UiListDelta;
 import io.vertigo.vega.rest.engine.UiObject;
-import io.vertigo.vega.rest.metamodel.DtListDelta;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
+import io.vertigo.vega.rest.model.DtListDelta;
 import io.vertigo.vega.rest.validation.UiContextResolver;
 import io.vertigo.vega.rest.validation.UiMessageStack;
 

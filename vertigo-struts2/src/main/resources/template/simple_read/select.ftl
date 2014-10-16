@@ -4,36 +4,48 @@
  *
  */
 -->
-<span<#rt/>
-<#if parameters.id??>
- id="${parameters.id?html}"<#rt/>
+<#if parameters.multiple?default(false) >
+	<#assign value = parameters.nameValue />
+<#elseif parameters.nameValue??>
+	<#assign value = [parameters.nameValue] />
 </#if>
-<#if parameters.title??>
- title="${parameters.title?html}"<#rt/>
+<#if value?? && value?has_content>
+	<#assign itemCount = 0/>
+	<#list value as selectedValue>
+		<#assign itemCount = itemCount + 1/>
+		<span<#rt/>
+		<#if parameters.id??>
+		 id="${parameters.id?html}-${itemCount?html}"<#rt/>
+		</#if>
+		<#if parameters.title??>
+		 title="${parameters.title?html}"<#rt/>
+		</#if>
+		<#include "/${parameters.templateDir}/simple/css.ftl" />
+		<#include "/${parameters.templateDir}/simple/scripting-events.ftl" />
+		<#include "/${parameters.templateDir}/simple/common-attributes.ftl" />
+		<#include "/${parameters.templateDir}/simple/dynamic-attributes.ftl" />
+		><#t/>
+		<#if parameters.headerKey?? && parameters.headerValue?? && tag.contains(parameters.nameValue, parameters.headerKey) == true>
+		${parameters.headerValue?html}
+		<#else>
+		<#if selectedValue?? && selectedValue!='' >
+		<#if parameters.list.getById??>
+		<#assign paramListKey = parameters.listKey!util.getIdField(parameters.list) />
+		<#assign paramListValue = parameters.listValue!util.getDisplayField(parameters.list) />
+		<#assign uiObject = parameters.list.getById(paramListKey, selectedValue) />
+		<#if uiObject??>
+		 ${uiObject[paramListValue]?html?replace("\n", "<br/>")}<#rt/>
+		</#if>
+		<#else> <#-- si pas de getById : liste ou map brute -->
+		<#list parameters.list as entry>
+		<#if entry.key = selectedValue>
+		 ${entry.value?html?replace("\n", "<br/>")}<#t/>
+		</#if>
+		</#list>
+		</#if>
+		</#if>
+		</#if>
+		</span><#t/>
+		<br>
+	</#list>
 </#if>
-<#include "/${parameters.templateDir}/simple/css.ftl" />
-<#include "/${parameters.templateDir}/simple/scripting-events.ftl" />
-<#include "/${parameters.templateDir}/simple/common-attributes.ftl" />
-<#include "/${parameters.templateDir}/simple/dynamic-attributes.ftl" />
-><#t/>
-<#if parameters.headerKey?? && parameters.headerValue?? && tag.contains(parameters.nameValue, parameters.headerKey) == true>
-${parameters.headerValue?html}
-<#else>
-<#if parameters.nameValue?? && parameters.nameValue!='' >
-<#if parameters.list.getById??>
-<#assign paramListKey = parameters.listKey!util.getIdField(parameters.list) />
-<#assign paramListValue = parameters.listValue!util.getDisplayField(parameters.list) />
-<#assign uiObject = parameters.list.getById(paramListKey, parameters.nameValue) />
-<#if uiObject??>
- ${uiObject[paramListValue]?html?replace("\n", "<br/>")}<#rt/>
-</#if>
-<#else> <#-- si pas de getById : liste ou map brute -->
-<#list parameters.list as entry>
-<#if entry.key = parameters.nameValue>
- ${entry.value?html?replace("\n", "<br/>")}<#t/>
-</#if>
-</#list>
-</#if>
-</#if>
-</#if>
-</span>
