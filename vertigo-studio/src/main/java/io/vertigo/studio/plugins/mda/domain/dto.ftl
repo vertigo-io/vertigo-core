@@ -85,7 +85,7 @@ public final class ${dtDefinition.classSimpleName} implements DtObject {
 			return new io.vertigo.dynamo.domain.model.DtList<>(${association.returnType}.class);
 		}
 		final io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation fkDtListURI = get${association.role?cap_first}DtListURI();
-		io.vertigo.core.lang.Assertion.checkNotNull(fkDtListURI);
+		io.vertigo.lang.Assertion.checkNotNull(fkDtListURI);
 		//---------------------------------------------------------------------
 		//On est toujours dans un mode lazy.
 		if (${association.role?uncap_first} == null) {
