@@ -5,12 +5,13 @@ public final class Node {
 	//		running,
 	//		notRunning
 	//	}
-	boolean isRunning(){
+	boolean isRunning() {
 		return true;
 	}
+
 	//	String getLabel();
 
-	String getAddress(){
-		return true;
+	String getAddress() {
+		return "";
 	}
 }
