@@ -104,7 +104,7 @@ public final class DtDefinition implements Definition {
 		displayField = Option.some(dtField);
 	}
 
-	//TODO A fermer 
+	//TODO A fermer
 	void registerDtField(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
 		Assertion.checkArgument(!DtField.FieldType.PRIMARY_KEY.equals(dtField.getType()), "interdit d'ajouter les champs ID ");
@@ -173,6 +173,16 @@ public final class DtDefinition implements Definition {
 	}
 
 	/**
+	 * @param fieldName FieldName
+	 * @return if this field exists in this DtDefinition
+	 */
+	public boolean contains(final DtFieldName fieldName) {
+		Assertion.checkNotNull(fieldName);
+		//---------------------------------------------------------------------
+		return mappedFields.containsKey(fieldName.name());
+	}
+
+	/**
 	 * @return Collection des champs.
 	 */
 	public List<DtField> getFields() {
@@ -187,7 +197,7 @@ public final class DtDefinition implements Definition {
 	}
 
 	/**
-	 * @return Si la définition est dynamique. - C'est à dire non représentée par une classe spécifique - 
+	 * @return Si la définition est dynamique. - C'est à dire non représentée par une classe spécifique -
 	 */
 	public boolean isDynamic() {
 		return dynamic;

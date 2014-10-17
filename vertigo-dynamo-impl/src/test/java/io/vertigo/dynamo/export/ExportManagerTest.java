@@ -19,15 +19,13 @@
 package io.vertigo.dynamo.export;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.export.model.Export;
 import io.vertigo.dynamo.export.model.ExportBuilder;
 import io.vertigo.dynamo.export.model.ExportFormat;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.file.util.FileUtil;
+import io.vertigo.dynamock.domain.DtDefinitions;
 import io.vertigo.dynamock.domain.famille.Famille;
 import io.vertigo.lang.MessageText;
 
@@ -40,7 +38,7 @@ import org.junit.Test;
 
 /**
  * Test de l'implémentation standard.
- * 
+ *
  * @author dchallas
  */
 public final class ExportManagerTest extends AbstractTestCaseJU4 {
@@ -89,12 +87,10 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testExportField() {
 		final Famille famille = new Famille();
-		final DtDefinition dtFamille = DtObjectUtil.findDtDefinition(Famille.class);
-		final DtField dtField = dtFamille.getField("LIBELLE");
 		famille.setLibelle("Test");
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test3.csv")//
-				.beginSheet(famille, "famille").withField(dtField).endSheet()//
+				.beginSheet(famille, "famille").withField(DtDefinitions.FamilleFields.LIBELLE).endSheet()//
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);
@@ -109,13 +105,10 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testExportFieldOverrideLabel() {
 		final Famille famille = new Famille();
-		final DtDefinition dtFamille = DtObjectUtil.findDtDefinition(Famille.class);
-
-		final DtField dtField = dtFamille.getField("LIBELLE");
 		famille.setLibelle("Test");
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test3.csv")//
-				.beginSheet(famille, "famille").withField(dtField, new MessageText("test", null)).endSheet()//
+				.beginSheet(famille, "famille").withField(DtDefinitions.FamilleFields.LIBELLE, new MessageText("test", null)).endSheet()//
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);
@@ -131,14 +124,11 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	public void testExportFieldDenorm() {
 		final DtList<Famille> list = createDtc();
 		final Famille famille = new Famille();
-		final DtDefinition dtFamille = DtObjectUtil.findDtDefinition(Famille.class);
 		famille.setFamId(1L);
-		final DtField dtFieldKey = dtFamille.getField("FAM_ID");
-		final DtField dtFieldLabel = dtFamille.getField("LIBELLE");
 		famille.setLibelle("Test");
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test4.csv")//
-				.beginSheet(famille, "famille").withField(dtFieldKey, list, dtFieldLabel).endSheet()//
+				.beginSheet(famille, "famille").withField(DtDefinitions.FamilleFields.FAM_ID, list, DtDefinitions.FamilleFields.LIBELLE).endSheet()//
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);
@@ -155,14 +145,11 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	public void testExportFieldDenormOverrideLabel() {
 		final DtList<Famille> list = createDtc();
 		final Famille famille = new Famille();
-		final DtDefinition dtFamille = DtObjectUtil.findDtDefinition(Famille.class);
 		famille.setFamId(1L);
-		final DtField dtFieldKey = dtFamille.getField("FAM_ID");
-		final DtField dtFieldLabel = dtFamille.getField("LIBELLE");
 		famille.setLibelle("Test");
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test5.csv")//
-				.beginSheet(famille, "famille").withField(dtFieldKey, list, dtFieldLabel, new MessageText("test", null)).endSheet()//
+				.beginSheet(famille, "famille").withField(DtDefinitions.FamilleFields.FAM_ID, list, DtDefinitions.FamilleFields.LIBELLE, new MessageText("test", null)).endSheet()//
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);

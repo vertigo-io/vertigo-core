@@ -26,4 +26,5 @@ public interface DtFieldName {
 
 	/** @return nom du champ (const case) */
 	String name();
+
 }

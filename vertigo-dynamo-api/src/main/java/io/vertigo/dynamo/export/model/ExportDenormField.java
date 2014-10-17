@@ -26,7 +26,7 @@ import io.vertigo.lang.MessageText;
  * Définition d'une colonne de type dénormalisation à exporter. On précise la
  * liste et le champs a utiliser comme libellé à afficher à la place de l'id de
  * la liste de l'export.
- * 
+ *
  * @author pchretien, npiedeloup
  */
 public final class ExportDenormField extends ExportField {
@@ -36,7 +36,7 @@ public final class ExportDenormField extends ExportField {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param dtField
 	 *            Champ à exporter
 	 * @param list
@@ -47,7 +47,7 @@ public final class ExportDenormField extends ExportField {
 	ExportDenormField(final DtField dtField, final MessageText label, final DtList<?> list, final DtField displayField) {
 		super(dtField, label);
 		this.list = list;
-		this.keyField = list.getDefinition().getIdField().get();
+		keyField = list.getDefinition().getIdField().get();
 		this.displayField = displayField;
 	}
 

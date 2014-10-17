@@ -1,26 +1,8 @@
-/**
- * vertigo - simple java starter
- *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
- * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.dynamock.domain.car;
 
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
+import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 /**
@@ -28,9 +10,10 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
  * Objet de données Car
  */
 @javax.persistence.Entity
-@javax.persistence.Table(name = "CAR")
+@javax.persistence.Table (name = "CAR")
 @DtDefinition
 public final class Car implements DtObject {
+
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
@@ -42,11 +25,10 @@ public final class Car implements DtObject {
 	private Integer kilo;
 	private Integer price;
 	private String motorType;
-	private Long famId;
 
 	/**
 	 * Champ : PRIMARY_KEY.
-	 * récupère la valeur de la propriété 'identifiant de la voiture'.
+	 * Récupère la valeur de la propriété 'identifiant de la voiture'. 
 	 * @return Long id <b>Obligatoire</b>
 	 */
 	@javax.persistence.Id
@@ -54,7 +36,7 @@ public final class Car implements DtObject {
 	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.SEQUENCE, generator = "sequence")
 	@javax.persistence.Column(name = "ID")
 	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", notNull = true, label = "identifiant de la voiture")
-	public final Long getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -63,18 +45,18 @@ public final class Car implements DtObject {
 	 * Définit la valeur de la propriété 'identifiant de la voiture'.
 	 * @param id Long <b>Obligatoire</b>
 	 */
-	public final void setId(final Long id) {
+	public void setId(final Long id) {
 		this.id = id;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * récupère la valeur de la propriété 'Constructeur'.
+	 * Récupère la valeur de la propriété 'Constructeur'. 
 	 * @return String make <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "MAKE")
 	@Field(domain = "DO_KEYWORD", notNull = true, label = "Constructeur")
-	public final String getMake() {
+	public String getMake() {
 		return make;
 	}
 
@@ -83,38 +65,38 @@ public final class Car implements DtObject {
 	 * Définit la valeur de la propriété 'Constructeur'.
 	 * @param make String <b>Obligatoire</b>
 	 */
-	public final void setMake(final String make) {
+	public void setMake(final String make) {
 		this.make = make;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * récupère la valeur de la propriété 'Modéle'.
+	 * Récupère la valeur de la propriété 'ModÃ¨le'. 
 	 * @return String model <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "MODEL")
-	@Field(domain = "DO_FULL_TEXT", notNull = true, label = "Modéle")
-	public final String getModel() {
+	@Field(domain = "DO_FULL_TEXT", notNull = true, label = "ModÃ¨le")
+	public String getModel() {
 		return model;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Modéle'.
+	 * Définit la valeur de la propriété 'ModÃ¨le'.
 	 * @param model String <b>Obligatoire</b>
 	 */
-	public final void setModel(final String model) {
+	public void setModel(final String model) {
 		this.model = model;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * récupère la valeur de la propriété 'Descriptif'.
+	 * Récupère la valeur de la propriété 'Descriptif'. 
 	 * @return String description <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "DESCRIPTION")
 	@Field(domain = "DO_FULL_TEXT", notNull = true, label = "Descriptif")
-	public final String getDescription() {
+	public String getDescription() {
 		return description;
 	}
 
@@ -123,58 +105,58 @@ public final class Car implements DtObject {
 	 * Définit la valeur de la propriété 'Descriptif'.
 	 * @param description String <b>Obligatoire</b>
 	 */
-	public final void setDescription(final String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * récupère la valeur de la propriété 'Année'.
+	 * Récupère la valeur de la propriété 'AnnÃ©e'. 
 	 * @return Integer year <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "YEAR")
-	@Field(domain = "DO_INTEGER", notNull = true, label = "Année")
-	public final Integer getYear() {
+	@Field(domain = "DO_INTEGER", notNull = true, label = "AnnÃ©e")
+	public Integer getYear() {
 		return year;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Année'.
+	 * Définit la valeur de la propriété 'AnnÃ©e'.
 	 * @param year Integer <b>Obligatoire</b>
 	 */
-	public final void setYear(final Integer year) {
+	public void setYear(final Integer year) {
 		this.year = year;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * récupère la valeur de la propriété 'Kilométrage'.
+	 * Récupère la valeur de la propriété 'KilomÃ©trage'. 
 	 * @return Integer kilo <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "KILO")
-	@Field(domain = "DO_INTEGER", notNull = true, label = "Kilométrage")
-	public final Integer getKilo() {
+	@Field(domain = "DO_INTEGER", notNull = true, label = "KilomÃ©trage")
+	public Integer getKilo() {
 		return kilo;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Kilométrage'.
+	 * Définit la valeur de la propriété 'KilomÃ©trage'.
 	 * @param kilo Integer <b>Obligatoire</b>
 	 */
-	public final void setKilo(final Integer kilo) {
+	public void setKilo(final Integer kilo) {
 		this.kilo = kilo;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * récupère la valeur de la propriété 'Prix'.
+	 * Récupère la valeur de la propriété 'Prix'. 
 	 * @return Integer price <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "PRICE")
 	@Field(domain = "DO_INTEGER", notNull = true, label = "Prix")
-	public final Integer getPrice() {
+	public Integer getPrice() {
 		return price;
 	}
 
@@ -183,18 +165,18 @@ public final class Car implements DtObject {
 	 * Définit la valeur de la propriété 'Prix'.
 	 * @param price Integer <b>Obligatoire</b>
 	 */
-	public final void setPrice(final Integer price) {
+	public void setPrice(final Integer price) {
 		this.price = price;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * récupère la valeur de la propriété 'Type de moteur'.
+	 * Récupère la valeur de la propriété 'Type de moteur'. 
 	 * @return String motorType <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "MOTOR_TYPE")
 	@Field(domain = "DO_KEYWORD", notNull = true, label = "Type de moteur")
-	public final String getMotorType() {
+	public String getMotorType() {
 		return motorType;
 	}
 
@@ -203,33 +185,11 @@ public final class Car implements DtObject {
 	 * Définit la valeur de la propriété 'Type de moteur'.
 	 * @param motorType String <b>Obligatoire</b>
 	 */
-	public final void setMotorType(final String motorType) {
+	public void setMotorType(final String motorType) {
 		this.motorType = motorType;
 	}
 
-	/**
-	 * Champ : FOREIGN_KEY.
-	 * récupère la valeur de la propriété 'Famille'.
-	 * @return Long famId <b>Obligatoire</b>
-	 */
-	@javax.persistence.Column(name = "FAM_ID")
-	@Field(domain = "DO_IDENTIFIANT", type = "FOREIGN_KEY", notNull = true, label = "Famille")
-	public final Long getFamId() {
-		return famId;
-	}
-
-	/**
-	 * Champ : FOREIGN_KEY.
-	 * Définit la valeur de la propriété 'Famille'.
-	 * @param famId Long <b>Obligatoire</b>
-	 */
-	public final void setFamId(final Long famId) {
-		this.famId = famId;
-	}
-
-	// Association : Famille non navigable
-
-	// Association : Famille non navigable
+	//Aucune Association déclarée
 
 	/** {@inheritDoc} */
 	@Override

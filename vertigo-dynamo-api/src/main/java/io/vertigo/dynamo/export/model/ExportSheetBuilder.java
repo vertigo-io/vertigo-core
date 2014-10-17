@@ -20,6 +20,7 @@ package io.vertigo.dynamo.export.model;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -55,7 +56,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param dto
 	 *            DTO à exporter
 	 */
@@ -73,7 +74,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param dtc
 	 *            DTC à exporter
 	 */
@@ -93,7 +94,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * Ajoute un champs du Dt dans l'export, le label de la colonne sera celui indiqué dans le DT pour ce champs.
 	 * @param exportfield ajout d'un champs du Dt à exporter
 	 */
-	public ExportSheetBuilder withField(final DtField exportfield) {
+	public ExportSheetBuilder withField(final DtFieldName exportfield) {
 		withField(exportfield, null);
 		return this;
 	}
@@ -104,7 +105,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @param list Liste des éléments dénormés
 	 * @param displayfield Field du libellé à utiliser.
 	 */
-	public ExportSheetBuilder withField(final DtField exportfield, final DtList<?> list, final DtField displayfield) {
+	public ExportSheetBuilder withField(final DtFieldName exportfield, final DtList<?> list, final DtFieldName displayfield) {
 		withField(exportfield, list, displayfield, null);
 		return this;
 	}
@@ -113,14 +114,14 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @param exportfield ajout d'un champs du Dt à exporter
 	 * @param label nom spécifique à utiliser dans l'export, null si l'on souhaite utiliser celui indiqué dans le DT pour ce champs
 	 */
-	public ExportSheetBuilder withField(final DtField exportfield, final MessageText overridedLabel) {
+	public ExportSheetBuilder withField(final DtFieldName exportfield, final MessageText overridedLabel) {
 		Assertion.checkNotNull(exportfield);
 		// On vérifie que la colonne est bien dans la définition de la DTC
-		Assertion.checkArgument(dtDefinition.getFields().contains(exportfield), "Le champ " + exportfield.getName() + " n'est pas dans la liste à exporter");
+		Assertion.checkArgument(dtDefinition.contains(exportfield), "Le champ " + exportfield.name() + " n'est pas dans la liste à exporter");
 		// On ne vérifie pas que les champs ne sont placés qu'une fois
 		// car pour des raisons diverses ils peuvent l'être plusieurs fois.
 		// ----------------------------------------------------------------------
-		final ExportField exportField = new ExportField(exportfield, overridedLabel);
+		final ExportField exportField = new ExportField(resolveDtField(exportfield), overridedLabel);
 		exportFields.add(exportField);
 		return this;
 	}
@@ -131,14 +132,14 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @param displayfield Field du libellé à utiliser.
 	 * @param label nom spécifique à utiliser dans l'export, null si l'on souhaite utiliser celui indiqué dans le DT pour ce champs
 	 */
-	public ExportSheetBuilder withField(final DtField exportfield, final DtList<?> list, final DtField displayfield, final MessageText overridedLabel) {
+	public ExportSheetBuilder withField(final DtFieldName exportfield, final DtList<?> list, final DtFieldName displayfield, final MessageText overridedLabel) {
 		Assertion.checkNotNull(exportfield);
 		// On vérifie que la colonne est bien dans la définition de la DTC
-		Assertion.checkArgument(dtDefinition.getFields().contains(exportfield), "Le champ " + exportfield.getName() + " n'est pas dans la liste à exporter");
+		Assertion.checkArgument(dtDefinition.contains(exportfield), "Le champ " + exportfield.name() + " n'est pas dans la liste à exporter");
 		// On ne vérifie pas que les champs ne sont placés qu'une fois
 		// car pour des raisons diverses ils peuvent l'être plusieurs fois.
 		// ----------------------------------------------------------------------
-		final ExportField exportField = new ExportDenormField(exportfield, overridedLabel, list, displayfield);
+		final ExportField exportField = new ExportDenormField(resolveDtField(exportfield), overridedLabel, list, resolveDtField(displayfield));
 		exportFields.add(exportField);
 		return this;
 	}
@@ -157,6 +158,10 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	}
 
 	public ExportBuilder endSheet() {
-		return exportBuilder.withSheet(this.build());
+		return exportBuilder.withSheet(build());
+	}
+
+	private DtField resolveDtField(final DtFieldName fieldName) {
+		return dtDefinition.getField(fieldName);
 	}
 }
