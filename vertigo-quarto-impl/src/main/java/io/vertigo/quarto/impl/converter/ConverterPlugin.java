@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.impl.converter;
 
-import io.vertigo.core.component.Plugin;
+import io.vertigo.core.spaces.component.Plugin;
 import io.vertigo.dynamo.file.model.KFile;
 
 /**

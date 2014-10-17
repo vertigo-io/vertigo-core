@@ -18,13 +18,13 @@
  */
 package io.vertigo.tempo.plugins.mail.javaxmail;
 
-import io.vertigo.core.component.ComponentInfo;
-import io.vertigo.core.component.Describable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.MessageKey;
 import io.vertigo.core.lang.MessageText;
 import io.vertigo.core.lang.Option;
 import io.vertigo.core.lang.VUserException;
+import io.vertigo.core.spaces.component.ComponentInfo;
+import io.vertigo.core.spaces.component.Describable;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.tempo.impl.mail.Resources;

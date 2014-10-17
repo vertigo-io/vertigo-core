@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.cache;
 
-import io.vertigo.core.component.ComponentInitializer;
+import io.vertigo.core.spaces.component.ComponentInitializer;
 
 /**
  * Initialisation du manager des caches.

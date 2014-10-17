@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.persistence;
 
-import io.vertigo.core.component.ComponentInitializer;
+import io.vertigo.core.spaces.component.ComponentInitializer;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamock.domain.car.Car;

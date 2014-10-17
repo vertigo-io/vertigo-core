@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.task;
 
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.spaces.component.Manager;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskResult;
 

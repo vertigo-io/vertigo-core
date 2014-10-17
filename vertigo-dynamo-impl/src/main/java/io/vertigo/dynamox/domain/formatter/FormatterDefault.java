@@ -19,8 +19,8 @@
 package io.vertigo.dynamox.domain.formatter;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.definiton.DefinitionReference;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;

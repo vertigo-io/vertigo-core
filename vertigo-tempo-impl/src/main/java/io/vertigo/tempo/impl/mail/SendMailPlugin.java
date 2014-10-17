@@ -18,7 +18,7 @@
  */
 package io.vertigo.tempo.impl.mail;
 
-import io.vertigo.core.component.Plugin;
+import io.vertigo.core.spaces.component.Plugin;
 import io.vertigo.tempo.mail.Mail;
 
 /**

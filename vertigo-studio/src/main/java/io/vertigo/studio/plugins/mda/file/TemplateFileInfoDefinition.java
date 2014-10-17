@@ -18,8 +18,8 @@
  */
 package io.vertigo.studio.plugins.mda.file;
 
-import io.vertigo.core.definiton.DefinitionUtil;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 

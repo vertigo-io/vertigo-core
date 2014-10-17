@@ -18,9 +18,9 @@
  */
 package io.vertigo.persona.security.metamodel;
 
-import io.vertigo.core.definiton.Definition;
-import io.vertigo.core.definiton.DefinitionPrefix;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 
 /**
  * Une permission est l'association d'une opération et d'une ressource.

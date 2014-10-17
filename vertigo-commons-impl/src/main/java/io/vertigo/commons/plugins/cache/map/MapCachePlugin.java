@@ -20,11 +20,11 @@ package io.vertigo.commons.plugins.cache.map;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.cache.CachePlugin;
-import io.vertigo.core.component.ComponentInfo;
-import io.vertigo.core.component.Describable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Modifiable;
 import io.vertigo.core.lang.Option;
+import io.vertigo.core.spaces.component.ComponentInfo;
+import io.vertigo.core.spaces.component.Describable;
 
 import java.io.Serializable;
 import java.util.ArrayList;

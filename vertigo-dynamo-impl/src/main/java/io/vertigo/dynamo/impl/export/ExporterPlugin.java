@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.impl.export;
 
-import io.vertigo.core.component.Plugin;
+import io.vertigo.core.spaces.component.Plugin;
 import io.vertigo.dynamo.export.model.Export;
 import io.vertigo.dynamo.export.model.ExportFormat;
 

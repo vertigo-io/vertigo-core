@@ -18,7 +18,6 @@
  */
 package io.vertigo.core.di.injector;
 
-import io.vertigo.core.component.Container;
 import io.vertigo.core.di.A;
 import io.vertigo.core.di.B;
 import io.vertigo.core.di.DIException;
@@ -27,6 +26,7 @@ import io.vertigo.core.di.F;
 import io.vertigo.core.di.configurator.ParamsContainer;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.spaces.component.Container;
 
 import java.util.Collections;
 import java.util.HashMap;

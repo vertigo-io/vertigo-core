@@ -19,12 +19,12 @@
 package io.vertigo.xml;
 
 import io.vertigo.core.aop.AOPInterceptor;
-import io.vertigo.core.component.Plugin;
 import io.vertigo.core.di.configurator.ComponentConfigBuilder;
 import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.core.di.configurator.ModuleConfigBuilder;
 import io.vertigo.core.di.configurator.PluginConfigBuilder;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.spaces.component.Plugin;
 import io.vertigo.core.util.ClassUtil;
 
 import java.util.Properties;

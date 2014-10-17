@@ -19,7 +19,7 @@
 package io.vertigo.commons.impl.script;
 
 import io.vertigo.commons.script.ExpressionParameter;
-import io.vertigo.core.component.Plugin;
+import io.vertigo.core.spaces.component.Plugin;
 
 import java.util.List;
 

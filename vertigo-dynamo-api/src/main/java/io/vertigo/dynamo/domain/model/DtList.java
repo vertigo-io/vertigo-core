@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.domain.model;
 
-import io.vertigo.core.definiton.DefinitionReference;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
+import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 

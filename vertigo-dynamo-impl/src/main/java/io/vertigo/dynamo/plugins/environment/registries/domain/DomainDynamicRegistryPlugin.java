@@ -19,11 +19,11 @@
 package io.vertigo.dynamo.plugins.environment.registries.domain;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.definiton.Definition;
-import io.vertigo.core.definiton.DefinitionSpace;
-import io.vertigo.core.definiton.DefinitionUtil;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.MessageText;
+import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.dynamo.domain.metamodel.ComputedExpression;
 import io.vertigo.dynamo.domain.metamodel.Constraint;

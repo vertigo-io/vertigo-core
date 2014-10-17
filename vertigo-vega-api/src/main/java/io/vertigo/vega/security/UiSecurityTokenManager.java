@@ -18,8 +18,8 @@
  */
 package io.vertigo.vega.security;
 
-import io.vertigo.core.component.Manager;
 import io.vertigo.core.lang.Option;
+import io.vertigo.core.spaces.component.Manager;
 
 import java.io.Serializable;
 

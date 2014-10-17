@@ -19,10 +19,10 @@
 package io.vertigo.dynamo.domain.metamodel;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.definiton.DefinitionReference;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.lang.MessageText;
+import io.vertigo.core.spaces.definiton.DefinitionReference;
 
 /**
  * Définition de la structure d'un champ.

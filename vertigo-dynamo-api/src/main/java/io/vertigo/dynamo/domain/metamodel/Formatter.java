@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
-import io.vertigo.core.definiton.Definition;
-import io.vertigo.core.definiton.DefinitionPrefix;
+import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 
 /**
  * Permet de définir des formats particuliers d'affichages et de saisie.

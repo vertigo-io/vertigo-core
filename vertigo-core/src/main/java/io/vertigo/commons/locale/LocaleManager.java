@@ -18,9 +18,9 @@
  */
 package io.vertigo.commons.locale;
 
-import io.vertigo.core.component.Manager;
 import io.vertigo.core.lang.MessageKey;
 import io.vertigo.core.lang.MessageText;
+import io.vertigo.core.spaces.component.Manager;
 
 import java.util.Locale;
 

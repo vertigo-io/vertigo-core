@@ -19,9 +19,9 @@
 package io.vertigo.commons.impl.codec.crypto;
 
 import io.vertigo.commons.codec.Codec;
-import io.vertigo.core.component.ComponentInfo;
-import io.vertigo.core.component.Describable;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.spaces.component.ComponentInfo;
+import io.vertigo.core.spaces.component.Describable;
 
 import java.security.Key;
 import java.util.ArrayList;

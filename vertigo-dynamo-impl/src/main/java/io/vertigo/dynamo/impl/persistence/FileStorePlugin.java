@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.impl.persistence;
 
-import io.vertigo.core.component.Plugin;
+import io.vertigo.core.spaces.component.Plugin;
 
 /**
  * Plugin de FileStore.

@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.export;
 
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.spaces.component.Manager;
 import io.vertigo.dynamo.export.model.Export;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.work.WorkResultHandler;

@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.reporting;
 
-import io.vertigo.core.component.Plugin;
+import io.vertigo.core.spaces.component.Plugin;
 
 /**
  * Plugin permettant de créer un rapport particulier.

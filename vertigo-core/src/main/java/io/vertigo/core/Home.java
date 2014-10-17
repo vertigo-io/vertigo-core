@@ -18,12 +18,12 @@
  */
 package io.vertigo.core;
 
-import io.vertigo.core.component.ComponentSpace;
-import io.vertigo.core.definiton.DefinitionSpace;
 import io.vertigo.core.di.configurator.ComponentSpaceConfig;
 import io.vertigo.core.di.configurator.ComponentSpaceImpl;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.resource.ResourceSpace;
+import io.vertigo.core.spaces.component.ComponentSpace;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.core.spaces.resource.ResourceSpace;
 
 /**
  * Home : Classe d'entrée sur toutes les modules. 

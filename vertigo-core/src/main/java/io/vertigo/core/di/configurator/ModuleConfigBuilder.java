@@ -19,10 +19,10 @@
 package io.vertigo.core.di.configurator;
 
 import io.vertigo.core.aop.AOPInterceptor;
-import io.vertigo.core.component.Manager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.lang.Option;
+import io.vertigo.core.spaces.component.Manager;
 
 import java.util.ArrayList;
 import java.util.List;

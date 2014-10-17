@@ -18,8 +18,8 @@
  */
 package io.vertigo.core.di.configurator;
 
-import io.vertigo.core.component.Container;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.spaces.component.Container;
 
 import java.util.HashSet;
 import java.util.LinkedHashSet;

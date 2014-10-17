@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
-import io.vertigo.core.definiton.Definition;
-import io.vertigo.core.definiton.DefinitionUtil;
-import io.vertigo.core.definiton.DefinitionPrefix;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
+import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionPrefix;
+import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.core.util.StringUtil;
 
 import java.util.ArrayList;

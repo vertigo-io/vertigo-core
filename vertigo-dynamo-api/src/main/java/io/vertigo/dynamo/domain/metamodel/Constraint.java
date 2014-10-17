@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
-import io.vertigo.core.definiton.Definition;
-import io.vertigo.core.definiton.DefinitionPrefix;
 import io.vertigo.core.lang.MessageText;
+import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 
 /**
  * Interface de base pour la définition de contrainte

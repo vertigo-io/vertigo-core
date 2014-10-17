@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.task.metamodel;
 
-import io.vertigo.core.definiton.Definition;
-import io.vertigo.core.definiton.DefinitionUtil;
-import io.vertigo.core.definiton.DefinitionPrefix;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionPrefix;
+import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.task.model.TaskEngine;
 
 import java.util.Collection;

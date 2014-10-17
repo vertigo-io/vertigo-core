@@ -20,13 +20,13 @@ package io.vertigo;
 
 import io.vertigo.core.AppBuilder;
 import io.vertigo.core.Home;
-import io.vertigo.core.component.ComponentInfo;
-import io.vertigo.core.component.Container;
-import io.vertigo.core.component.Describable;
-import io.vertigo.core.component.Manager;
 import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.core.lang.Option;
+import io.vertigo.core.spaces.component.ComponentInfo;
+import io.vertigo.core.spaces.component.Container;
+import io.vertigo.core.spaces.component.Describable;
+import io.vertigo.core.spaces.component.Manager;
 
 import java.util.List;
 

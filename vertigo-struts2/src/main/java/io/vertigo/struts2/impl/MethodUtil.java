@@ -18,9 +18,9 @@
  */
 package io.vertigo.struts2.impl;
 
-import io.vertigo.core.component.Container;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Option;
+import io.vertigo.core.spaces.component.Container;
 import io.vertigo.core.util.ClassUtil;
 
 import java.lang.annotation.Annotation;

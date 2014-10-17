@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.codec;
 
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.spaces.component.Manager;
 
 import java.io.Serializable;
 

@@ -20,7 +20,7 @@ package io.vertigo.commons.script;
 
 import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.spaces.component.Manager;
 
 import java.util.List;
 

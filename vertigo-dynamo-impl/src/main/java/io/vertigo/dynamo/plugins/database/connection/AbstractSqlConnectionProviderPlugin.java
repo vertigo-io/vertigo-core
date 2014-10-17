@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.database.connection;
 
-import io.vertigo.core.component.ComponentInfo;
-import io.vertigo.core.component.Describable;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.spaces.component.ComponentInfo;
+import io.vertigo.core.spaces.component.Describable;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.impl.database.SqlConnectionProviderPlugin;

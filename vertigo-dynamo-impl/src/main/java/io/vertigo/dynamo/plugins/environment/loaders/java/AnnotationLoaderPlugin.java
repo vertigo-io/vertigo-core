@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.java;
 
-import io.vertigo.core.definiton.Definition;
-import io.vertigo.core.definiton.DefinitionUtil;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
