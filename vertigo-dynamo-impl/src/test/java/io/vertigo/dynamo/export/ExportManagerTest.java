@@ -25,7 +25,7 @@ import io.vertigo.dynamo.export.model.ExportBuilder;
 import io.vertigo.dynamo.export.model.ExportFormat;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.file.util.FileUtil;
-import io.vertigo.dynamock.domain.DtDefinitions;
+import io.vertigo.dynamock.domain.DtDefinitions.FamilleFields;
 import io.vertigo.dynamock.domain.famille.Famille;
 import io.vertigo.lang.MessageText;
 
@@ -55,8 +55,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	public void testExportHandlerCSV() {
 		final DtList<Famille> dtc = createDtc();
 
-		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test.csv")//
-				.beginSheet(dtc, "famille").endSheet()//
+		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test.csv")
+				.beginSheet(dtc, "famille").endSheet()
 				.build();
 		final KFile result = exportManager.createExportFile(export);
 		if (KEEP_OUTPUT_FILE) {
@@ -72,8 +72,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		final Famille famille = new Famille();
 		famille.setLibelle("Test");
 
-		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test2.csv")//
-				.beginSheet(famille, "famille").endSheet()//
+		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test2.csv")
+				.beginSheet(famille, "famille").endSheet()
 				.build();
 		final KFile result = exportManager.createExportFile(export);
 		if (KEEP_OUTPUT_FILE) {
@@ -89,8 +89,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		final Famille famille = new Famille();
 		famille.setLibelle("Test");
 
-		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test3.csv")//
-				.beginSheet(famille, "famille").withField(DtDefinitions.FamilleFields.LIBELLE).endSheet()//
+		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test3.csv")
+				.beginSheet(famille, "famille").withField(FamilleFields.LIBELLE).endSheet()
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);
@@ -107,8 +107,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		final Famille famille = new Famille();
 		famille.setLibelle("Test");
 
-		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test3.csv")//
-				.beginSheet(famille, "famille").withField(DtDefinitions.FamilleFields.LIBELLE, new MessageText("test", null)).endSheet()//
+		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test3.csv")
+				.beginSheet(famille, "famille").withField(FamilleFields.LIBELLE, new MessageText("test", null)).endSheet()
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);
@@ -127,8 +127,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		famille.setFamId(1L);
 		famille.setLibelle("Test");
 
-		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test4.csv")//
-				.beginSheet(famille, "famille").withField(DtDefinitions.FamilleFields.FAM_ID, list, DtDefinitions.FamilleFields.LIBELLE).endSheet()//
+		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test4.csv")
+				.beginSheet(famille, "famille").withField(FamilleFields.FAM_ID, list, FamilleFields.LIBELLE).endSheet()
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);
@@ -148,8 +148,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		famille.setFamId(1L);
 		famille.setLibelle("Test");
 
-		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test5.csv")//
-				.beginSheet(famille, "famille").withField(DtDefinitions.FamilleFields.FAM_ID, list, DtDefinitions.FamilleFields.LIBELLE, new MessageText("test", null)).endSheet()//
+		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test5.csv")
+				.beginSheet(famille, "famille").withField(FamilleFields.FAM_ID, list, FamilleFields.LIBELLE, new MessageText("test", null)).endSheet()
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);
@@ -165,8 +165,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	public void testExportHandlerExcel() {
 		final DtList<Famille> dtc = createDtc();
 
-		final Export export = new ExportBuilder(ExportFormat.XLS, OUTPUT_PATH + "test.xls")//
-				.beginSheet(dtc, "famille").endSheet()//
+		final Export export = new ExportBuilder(ExportFormat.XLS, OUTPUT_PATH + "test.xls")
+				.beginSheet(dtc, "famille").endSheet()
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);
@@ -182,10 +182,10 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	public void testExportHandlerRTF() {
 		final DtList<Famille> dtc = createDtc();
 
-		final Export export = new ExportBuilder(ExportFormat.RTF, OUTPUT_PATH + "test.rtf")//
-				.withAuthor("test")//
-				.withTitle("test title")//
-				.beginSheet(dtc, "famille").endSheet()//
+		final Export export = new ExportBuilder(ExportFormat.RTF, OUTPUT_PATH + "test.rtf")
+				.withAuthor("test")
+				.withTitle("test title")
+				.beginSheet(dtc, "famille").endSheet()
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);
@@ -201,9 +201,9 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	public void testExportHandlerPDF() {
 		final DtList<Famille> dtc = createDtc();
 
-		final Export export = new ExportBuilder(ExportFormat.PDF, OUTPUT_PATH + "test.pdf")//
-				.beginSheet(dtc, "famille").endSheet()//
-				.withAuthor("test")//
+		final Export export = new ExportBuilder(ExportFormat.PDF, OUTPUT_PATH + "test.pdf")
+				.beginSheet(dtc, "famille").endSheet()
+				.withAuthor("test")
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);

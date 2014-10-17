@@ -75,8 +75,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	/**
 	 * Constructeur.
 	 *
-	 * @param dtc
-	 *            DTC à exporter
+	 * @param dtc DTC à exporter
 	 */
 	ExportSheetBuilder(final ExportBuilder exportBuilder, final DtList<?> dtc, final String title) {
 		Assertion.checkNotNull(exportBuilder);
@@ -92,54 +91,54 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 
 	/**
 	 * Ajoute un champs du Dt dans l'export, le label de la colonne sera celui indiqué dans le DT pour ce champs.
-	 * @param exportfield ajout d'un champs du Dt à exporter
+	 * @param fieldName ajout d'un champs du Dt à exporter
 	 */
-	public ExportSheetBuilder withField(final DtFieldName exportfield) {
-		withField(exportfield, null);
+	public ExportSheetBuilder withField(final DtFieldName fieldName) {
+		withField(fieldName, null);
 		return this;
 	}
 
 	/**
 	 * Ajoute un champs du Dt dans l'export, le label de la colonne sera celui indiqué dans le DT pour ce champs.
-	 * @param exportfield ajout d'un champs du Dt à exporter
+	 * @param fieldName ajout d'un champs du Dt à exporter
 	 * @param list Liste des éléments dénormés
 	 * @param displayfield Field du libellé à utiliser.
 	 */
-	public ExportSheetBuilder withField(final DtFieldName exportfield, final DtList<?> list, final DtFieldName displayfield) {
-		withField(exportfield, list, displayfield, null);
+	public ExportSheetBuilder withField(final DtFieldName fieldName, final DtList<?> list, final DtFieldName displayfield) {
+		withField(fieldName, list, displayfield, null);
 		return this;
 	}
 
 	/**
-	 * @param exportfield ajout d'un champs du Dt à exporter
+	 * @param fieldName ajout d'un champs du Dt à exporter
 	 * @param label nom spécifique à utiliser dans l'export, null si l'on souhaite utiliser celui indiqué dans le DT pour ce champs
 	 */
-	public ExportSheetBuilder withField(final DtFieldName exportfield, final MessageText overridedLabel) {
-		Assertion.checkNotNull(exportfield);
+	public ExportSheetBuilder withField(final DtFieldName fieldName, final MessageText overridedLabel) {
+		Assertion.checkNotNull(fieldName);
 		// On vérifie que la colonne est bien dans la définition de la DTC
-		Assertion.checkArgument(dtDefinition.contains(exportfield), "Le champ " + exportfield.name() + " n'est pas dans la liste à exporter");
+		Assertion.checkArgument(dtDefinition.contains(fieldName), "Le champ " + fieldName.name() + " n'est pas dans la liste à exporter");
 		// On ne vérifie pas que les champs ne sont placés qu'une fois
 		// car pour des raisons diverses ils peuvent l'être plusieurs fois.
 		// ----------------------------------------------------------------------
-		final ExportField exportField = new ExportField(resolveDtField(exportfield), overridedLabel);
+		final ExportField exportField = new ExportField(resolveDtField(fieldName), overridedLabel);
 		exportFields.add(exportField);
 		return this;
 	}
 
 	/**
-	 * @param exportfield ajout d'un champs du Dt à exporter
+	 * @param fieldName ajout d'un champs du Dt à exporter
 	 * @param list Liste des éléments dénormés
 	 * @param displayfield Field du libellé à utiliser.
 	 * @param label nom spécifique à utiliser dans l'export, null si l'on souhaite utiliser celui indiqué dans le DT pour ce champs
 	 */
-	public ExportSheetBuilder withField(final DtFieldName exportfield, final DtList<?> list, final DtFieldName displayfield, final MessageText overridedLabel) {
-		Assertion.checkNotNull(exportfield);
+	public ExportSheetBuilder withField(final DtFieldName fieldName, final DtList<?> list, final DtFieldName displayfield, final MessageText overridedLabel) {
+		Assertion.checkNotNull(fieldName);
 		// On vérifie que la colonne est bien dans la définition de la DTC
-		Assertion.checkArgument(dtDefinition.contains(exportfield), "Le champ " + exportfield.name() + " n'est pas dans la liste à exporter");
+		Assertion.checkArgument(dtDefinition.contains(fieldName), "Le champ " + fieldName.name() + " n'est pas dans la liste à exporter");
 		// On ne vérifie pas que les champs ne sont placés qu'une fois
 		// car pour des raisons diverses ils peuvent l'être plusieurs fois.
 		// ----------------------------------------------------------------------
-		final ExportField exportField = new ExportDenormField(resolveDtField(exportfield), overridedLabel, list, resolveDtField(displayfield));
+		final ExportField exportField = new ExportDenormField(resolveDtField(fieldName), overridedLabel, list, resolveDtField(displayfield));
 		exportFields.add(exportField);
 		return this;
 	}
