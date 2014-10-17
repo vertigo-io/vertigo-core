@@ -20,8 +20,8 @@ package io.vertigo.tempo.job;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
-import io.vertigo.lang.DateBuilder;
 import io.vertigo.tempo.job.metamodel.JobDefinition;
+import io.vertigo.util.DateBuilder;
 
 import java.util.Date;
 

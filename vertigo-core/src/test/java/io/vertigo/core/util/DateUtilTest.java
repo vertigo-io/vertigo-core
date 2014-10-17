@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.util;
 
-import io.vertigo.lang.DateBuilder;
+import io.vertigo.util.DateBuilder;
 import io.vertigo.util.DateUtil;
 
 import java.util.Calendar;
