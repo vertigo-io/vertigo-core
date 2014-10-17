@@ -16,29 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.engines;
-
-import io.vertigo.core.aop.AOPInterceptor;
-import io.vertigo.lang.Engine;
-
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
+package io.vertigo.lang;
 
 /**
- * Create proxy-reference from component's instance.
- * Proxy reference implements aspects (AOP). 
+ * Engines are used to activate a native vertigo behavior.
+ * For example AOP or REST behaviors are defined by engines. 
+ * Like plugins, engines are often implemented by using external libraries.
+ * Unlike components, engines don't add new behaviors. 
  * 
  * @author pchretien
  */
-public interface AopEngine extends Engine {
-
-	/**
-	 * Create a proxy-reference.
-	 * 
-	 * @param instance Component's instance
-	 * @param joinPoints List of joinPoints 
-	 * @return  Proxy-Reference
-	 */
-	Object create(final Object instance, Map<Method, List<AOPInterceptor>> joinPoints);
+public interface Engine {
+	//
 }

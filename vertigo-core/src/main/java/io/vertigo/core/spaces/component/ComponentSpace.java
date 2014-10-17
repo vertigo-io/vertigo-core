@@ -18,7 +18,6 @@
  */
 package io.vertigo.core.spaces.component;
 
-import io.vertigo.core.Engine;
 import io.vertigo.core.Home;
 import io.vertigo.core.aop.AOPInterceptor;
 import io.vertigo.core.command.VCommand;
@@ -38,6 +37,7 @@ import io.vertigo.core.spaces.resource.ResourceLoader;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
+import io.vertigo.lang.Engine;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.Plugin;
 import io.vertigo.util.StringUtil;

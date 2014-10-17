@@ -18,9 +18,9 @@
  */
 package io.vertigo.core.engines;
 
-import io.vertigo.core.Engine;
 import io.vertigo.core.command.VCommandExecutor;
 import io.vertigo.core.command.VCommandHandler;
+import io.vertigo.lang.Engine;
 
 /**
  * Vertigo can be requested with commands.

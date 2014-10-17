@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.engines;
 
-import io.vertigo.core.Engine;
+import io.vertigo.lang.Engine;
 
 /**
  * @author pchretien
