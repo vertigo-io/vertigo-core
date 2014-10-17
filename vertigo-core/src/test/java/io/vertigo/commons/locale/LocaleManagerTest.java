@@ -19,7 +19,7 @@
 package io.vertigo.commons.locale;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
+import io.vertigo.core.config.ComponentSpaceConfigBuilder;
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.MessageText;
 import io.vertigoimpl.commons.locale.LocaleManagerImpl;

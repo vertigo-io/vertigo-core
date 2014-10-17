@@ -20,7 +20,7 @@ package io.vertigo.commons.codec;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
-import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
+import io.vertigo.core.config.ComponentSpaceConfigBuilder;
 
 import javax.inject.Inject;
 

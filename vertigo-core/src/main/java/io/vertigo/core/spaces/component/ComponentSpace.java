@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.spaces.component;
 
-import io.vertigo.core.di.configurator.ComponentSpaceConfig;
+import io.vertigo.core.config.ComponentSpaceConfig;
 import io.vertigo.lang.Activeable;
 
 /**

@@ -18,7 +18,7 @@
  */
 package io.vertigo.xml;
 
-import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
+import io.vertigo.core.config.ComponentSpaceConfigBuilder;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Loader;
 import io.vertigo.util.XMLUtil;

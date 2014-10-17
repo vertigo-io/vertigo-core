@@ -19,7 +19,7 @@
 package io.vertigoimpl.engines.rest.cmd;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.di.configurator.ComponentSpaceConfig;
+import io.vertigo.core.config.ComponentSpaceConfig;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;

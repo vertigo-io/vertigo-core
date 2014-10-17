@@ -19,8 +19,8 @@
 package io.vertigo.xml;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.di.configurator.ComponentSpaceConfig;
-import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
+import io.vertigo.core.config.ComponentSpaceConfig;
+import io.vertigo.core.config.ComponentSpaceConfigBuilder;
 import io.vertigo.core.home.componentspace.data.BioManager;
 import io.vertigo.xml.XMLModulesLoader;
 

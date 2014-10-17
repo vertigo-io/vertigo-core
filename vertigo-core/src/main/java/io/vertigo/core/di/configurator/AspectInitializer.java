@@ -20,6 +20,9 @@ package io.vertigo.core.di.configurator;
 
 import io.vertigo.core.Home;
 import io.vertigo.core.aop.AOPInterceptor;
+import io.vertigo.core.config.AspectConfig;
+import io.vertigo.core.config.ComponentConfig;
+import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.lang.Assertion;
 
@@ -34,11 +37,11 @@ import java.util.Map;
 /**
  * Classe permettant d'injecter les intercepteurs sur les points d'exécutions définis dans les aspects.
  * La liste des intercepteurs est construite en amont.
- * 
- * Les points d'interceptions sont définis par des annotations placées au niveau 
+ *
+ * Les points d'interceptions sont définis par des annotations placées au niveau
  *  - des classes
  *  - des méthodes.
- *  
+ *
  * @author pchretien, prahmoune
  */
 final class AspectInitializer {
@@ -56,7 +59,7 @@ final class AspectInitializer {
 	/**
 	 * Création des composants
 	 * @param adviceInfos Liste des advices à créer
-	 * @param componentRefFactory Factory des références utilisables 
+	 * @param componentRefFactory Factory des références utilisables
 	 * @return Liste des composants
 	 */
 	private static Map<AspectConfig, AOPInterceptor> createInterceptorsMap(final Collection<AspectConfig> aspectInfos) {
@@ -73,11 +76,11 @@ final class AspectInitializer {
 
 	/**
 	 * Création des points d'exécution identifiés par méthode.
-	 * 
+	 *
 	 * @param implClass Classe portant les aspects
 	 * @return Map des aspects par méthode
 	 */
-	Map<Method, List<AOPInterceptor>> createJoinPoints(final ComponentConfig componentConfig) {
+	public Map<Method, List<AOPInterceptor>> createJoinPoints(final ComponentConfig componentConfig) {
 		final Map<Method, List<AOPInterceptor>> joinPoints = new HashMap<>();
 		for (final AspectConfig aspectInfo : aspectConfigs) {
 			// Build the interceptor list
@@ -102,7 +105,7 @@ final class AspectInitializer {
 		// aspect au niveau classe
 		for (final Annotation annotation : implClass.getAnnotations()) {
 			if (annotation.annotationType().equals(annotationType)) {
-				for (Method method : implClass.getMethods()) {
+				for (final Method method : implClass.getMethods()) {
 					// annotation trouvée, il faut ajouter toutes les méthodes de la classe.
 					if (!Object.class.equals(method.getDeclaringClass())) {
 						//On ne veut pas des méthodes de Object

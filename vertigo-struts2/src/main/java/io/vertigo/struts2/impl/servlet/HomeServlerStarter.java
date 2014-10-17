@@ -18,8 +18,8 @@
  */
 package io.vertigo.struts2.impl.servlet;
 
-import io.vertigo.core.AppBuilder;
 import io.vertigo.core.Home;
+import io.vertigo.core.config.AppBuilder;
 import io.vertigo.struts2.plugins.config.servlet.WebAppContextConfigPlugin;
 import io.vertigo.struts2.plugins.resource.servlet.ServletResourceResolverPlugin;
 

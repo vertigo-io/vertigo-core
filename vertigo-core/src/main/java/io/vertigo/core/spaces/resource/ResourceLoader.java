@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.spaces.resource;
 
-import io.vertigo.core.di.configurator.ResourceConfig;
+import io.vertigo.core.config.ResourceConfig;
 
 import java.util.List;
 import java.util.Set;

@@ -29,7 +29,7 @@ import io.vertigo.core.component.mock.aop.OneMore;
 import io.vertigo.core.component.mock.aop.OneMoreInterceptor;
 import io.vertigo.core.component.mock.aop.TenMore;
 import io.vertigo.core.component.mock.aop.TenMoreInterceptor;
-import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
+import io.vertigo.core.config.ComponentSpaceConfigBuilder;
 import io.vertigo.core.engines.AopEngine;
 import io.vertigo.lang.Assertion;
 

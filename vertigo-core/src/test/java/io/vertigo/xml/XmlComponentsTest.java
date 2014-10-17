@@ -19,7 +19,7 @@
 package io.vertigo.xml;
 
 import io.vertigo.core.component.AbstractAspectTestCase;
-import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
+import io.vertigo.core.config.ComponentSpaceConfigBuilder;
 import io.vertigo.engines.aop.cglib.CGLIBAopEngine;
 import io.vertigo.xml.XMLModulesLoader;
 

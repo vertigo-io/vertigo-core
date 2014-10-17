@@ -20,6 +20,8 @@ package io.vertigo.core.di.configurator;
 
 import io.vertigo.core.Home;
 import io.vertigo.core.Logo;
+import io.vertigo.core.config.ComponentConfig;
+import io.vertigo.core.config.PluginConfig;
 import io.vertigo.core.spaces.component.ComponentInitializer;
 import io.vertigo.core.spaces.component.Container;
 import io.vertigo.core.spaces.component.Plugin;
