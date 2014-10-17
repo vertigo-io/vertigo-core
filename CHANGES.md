@@ -1,12 +1,25 @@
 Version history
 ===============
 
-Running 0.6.1-SNAPSHOT
+Running 0.6.2-SNAPSHOT
 ----------------------
-* [Vega] Fix relative path support with SwaggerUI
-* [Struts2] Add VFreemarkerManager to better override of struts2 FLT (add this to your struts.xml *&lt;constant name="struts.freemarker.manager.classname" value="io.vertigo.struts2.impl.views.freemarker.VFreemarkerManager" /&gt;*) 
 
 more to come :)
+
+
+Release 0.6.1 - 2014/10/17
+----------------------
+* [Vega] Fix relative path support with SwaggerUI
+* [Vega] Move DtListDelta and UiListDelta
+* [Dynamo] Add possibility to override FormatterDefault rendering
+* [Struts2] Add VFreemarkerManager to better override of struts2 FLT (add this to your struts.xml *&lt;constant name="struts.freemarker.manager.classname" value="io.vertigo.struts2.impl.views.freemarker.VFreemarkerManager" /&gt;*, configure it with *TemplatePath* param in *web.xml*) 
+* [Struts2] Move ftl files to /io/vertigo/struts2/ftl/template 
+* [Struts2] Disable required mark for checkbox
+* [Struts2] Add Multiple select tag support
+* [Struts2] Fix index dto with FK bind to MDL
+* [Struts2] Fix autocompleter theme support
+* [Studio] Fix properties generator
+* Some CodeStyle fix
 
 Release 0.6.0 - 2014/10/15
 ----------------------
