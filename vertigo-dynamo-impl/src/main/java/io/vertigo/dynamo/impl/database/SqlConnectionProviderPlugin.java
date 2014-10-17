@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.impl.database;
 
-import io.vertigo.core.spaces.component.Plugin;
 import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
+import io.vertigo.lang.Plugin;
 
 /**
 * Plugin du provider de connexions.

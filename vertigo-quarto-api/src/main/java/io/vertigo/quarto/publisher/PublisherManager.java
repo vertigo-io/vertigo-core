@@ -18,9 +18,9 @@
  */
 package io.vertigo.quarto.publisher;
 
-import io.vertigo.core.spaces.component.Manager;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.work.WorkResultHandler;
+import io.vertigo.lang.Manager;
 import io.vertigo.quarto.publisher.model.PublisherData;
 
 import java.net.URL;

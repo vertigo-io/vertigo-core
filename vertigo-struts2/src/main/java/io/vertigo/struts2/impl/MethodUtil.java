@@ -18,8 +18,8 @@
  */
 package io.vertigo.struts2.impl;
 
-import io.vertigo.core.spaces.component.Container;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Container;
 import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
 

@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.search;
 
-import io.vertigo.core.spaces.component.Manager;
+import io.vertigo.lang.Manager;
 
 /**
  * Gestionnaire des indexes de recherche.

@@ -18,7 +18,7 @@
  */
 package io.vertigo.struts2.impl.context;
 
-import io.vertigo.core.spaces.component.Plugin;
+import io.vertigo.lang.Plugin;
 import io.vertigo.struts2.core.KActionContext;
 
 /**

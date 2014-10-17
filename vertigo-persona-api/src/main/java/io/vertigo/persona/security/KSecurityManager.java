@@ -18,7 +18,7 @@
  */
 package io.vertigo.persona.security;
 
-import io.vertigo.core.spaces.component.Manager;
+import io.vertigo.lang.Manager;
 import io.vertigo.lang.Option;
 import io.vertigo.persona.security.metamodel.Role;
 

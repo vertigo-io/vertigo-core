@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.rest;
 
-import io.vertigo.core.spaces.component.Plugin;
+import io.vertigo.lang.Plugin;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 
 import java.util.List;

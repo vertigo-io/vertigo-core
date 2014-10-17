@@ -18,8 +18,8 @@
  */
 package io.vertigo.commons.impl.resource;
 
-import io.vertigo.core.spaces.component.Plugin;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.Plugin;
 
 import java.net.URL;
 

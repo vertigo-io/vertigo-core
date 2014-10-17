@@ -18,8 +18,8 @@
  */
 package io.vertigo.tempo.mail;
 
-import io.vertigo.core.spaces.component.Manager;
 import io.vertigo.dynamo.work.WorkResultHandler;
+import io.vertigo.lang.Manager;
 
 import java.util.Date;
 

@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.persistence;
 
-import io.vertigo.core.spaces.component.Manager;
+import io.vertigo.lang.Manager;
 
 /**
 * Gestionnaire des données et des accès aux données.

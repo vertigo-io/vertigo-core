@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.file;
 
-import io.vertigo.core.spaces.component.Manager;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.lang.Manager;
 
 import java.io.File;
 import java.util.Date;

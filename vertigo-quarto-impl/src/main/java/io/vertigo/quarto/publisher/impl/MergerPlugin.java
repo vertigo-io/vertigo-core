@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.publisher.impl;
 
-import io.vertigo.core.spaces.component.Plugin;
+import io.vertigo.lang.Plugin;
 import io.vertigo.quarto.publisher.PublisherFormat;
 import io.vertigo.quarto.publisher.model.PublisherData;
 

@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.persistence;
 
-import io.vertigo.core.spaces.component.Plugin;
+import io.vertigo.lang.Plugin;
 
 /**
  * Plugin permettant de gérer les accès physiques à un quelconque système de stockage.

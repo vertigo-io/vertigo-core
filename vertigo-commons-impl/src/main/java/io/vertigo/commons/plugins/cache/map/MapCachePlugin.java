@@ -21,8 +21,8 @@ package io.vertigo.commons.plugins.cache.map;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.cache.CachePlugin;
 import io.vertigo.core.spaces.component.ComponentInfo;
-import io.vertigo.core.spaces.component.Describable;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Describable;
 import io.vertigo.lang.Modifiable;
 import io.vertigo.lang.Option;
 

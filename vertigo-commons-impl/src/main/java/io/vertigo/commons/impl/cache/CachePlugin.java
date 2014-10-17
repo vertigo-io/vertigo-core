@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.impl.cache;
 
-import io.vertigo.core.spaces.component.Plugin;
+import io.vertigo.lang.Plugin;
 
 import java.io.Serializable;
 

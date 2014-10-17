@@ -19,10 +19,10 @@
 package io.vertigo.tempo.plugins.mail.javaxmail;
 
 import io.vertigo.core.spaces.component.ComponentInfo;
-import io.vertigo.core.spaces.component.Describable;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Describable;
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.Option;

@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.resource;
 
-import io.vertigo.core.spaces.component.Manager;
+import io.vertigo.lang.Manager;
 
 import java.net.URL;
 

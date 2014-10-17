@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.work;
 
-import io.vertigo.core.spaces.component.Manager;
+import io.vertigo.lang.Manager;
 
 import java.util.concurrent.Callable;
 

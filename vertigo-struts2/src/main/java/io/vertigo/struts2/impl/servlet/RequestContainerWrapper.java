@@ -18,8 +18,8 @@
  */
 package io.vertigo.struts2.impl.servlet;
 
-import io.vertigo.core.spaces.component.Container;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Container;
 
 import java.util.Set;
 

@@ -18,8 +18,8 @@
  */
 package io.vertigo.quarto.impl.converter;
 
-import io.vertigo.core.spaces.component.Plugin;
 import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.lang.Plugin;
 
 /**
  * Plugin de Conversion des fichiers.

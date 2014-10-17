@@ -18,8 +18,8 @@
  */
 package io.vertigo.commons.impl.config;
 
-import io.vertigo.core.spaces.component.Plugin;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.Plugin;
 
 /**
  * Interface d'un plugin de gestion de configuration applicative. 

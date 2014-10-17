@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.impl.node;
 
-import io.vertigo.core.spaces.component.Plugin;
 import io.vertigo.dynamo.impl.work.WorkItem;
+import io.vertigo.lang.Plugin;
 
 import java.util.List;
 

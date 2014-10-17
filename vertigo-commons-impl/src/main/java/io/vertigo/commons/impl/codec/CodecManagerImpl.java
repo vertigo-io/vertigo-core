@@ -31,7 +31,7 @@ import io.vertigo.commons.impl.codec.hex.HexEncoder;
 import io.vertigo.commons.impl.codec.html.HtmlCodec;
 import io.vertigo.commons.impl.codec.serialization.SerializationCodec;
 import io.vertigo.core.spaces.component.ComponentInfo;
-import io.vertigo.core.spaces.component.Describable;
+import io.vertigo.lang.Describable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
