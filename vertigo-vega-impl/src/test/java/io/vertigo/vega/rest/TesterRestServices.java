@@ -34,7 +34,6 @@ import io.vertigo.dynamo.export.ExportManager;
 import io.vertigo.dynamo.export.model.Export;
 import io.vertigo.dynamo.export.model.ExportBuilder;
 import io.vertigo.dynamo.export.model.ExportFormat;
-import io.vertigo.dynamo.export.model.ExportSheet;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListChainFilter;
@@ -273,11 +272,8 @@ public final class TesterRestServices implements RestfulService {
 	@GET("/export/pdf/")
 	public KFile testExportContacts() {
 		final DtList<Contact> fullList = asDtList(contacts.values(), Contact.class);
-		final ExportSheet exportSheet = exportManager.createExportSheetBuilder(fullList, "Contacts")//
-				.build();
-
 		final Export export = new ExportBuilder(ExportFormat.PDF, "contacts")//
-				.withSheet(exportSheet)//
+				.beginSheet(fullList, "Contacts").endSheet()//
 				.withAuthor("vertigo-test")//
 				.build();
 
@@ -289,11 +285,9 @@ public final class TesterRestServices implements RestfulService {
 	@GET("/export/pdf/{conId}")
 	public KFile testExportContact(@PathParam("conId") final long conId) {
 		final Contact contact = contacts.get(conId);
-		final ExportSheet exportSheet = exportManager.createExportSheetBuilder(contact, "Contacts")//
-				.build();
-
 		final Export export = new ExportBuilder(ExportFormat.PDF, "contact" + conId + ".pdf")//
-				.withSheet(exportSheet).withAuthor("vertigo-test").build();
+				.beginSheet(contact, "Contacts").endSheet()//
+				.withAuthor("vertigo-test").build();
 
 		final KFile result = exportManager.createExportFile(export);
 		//200
