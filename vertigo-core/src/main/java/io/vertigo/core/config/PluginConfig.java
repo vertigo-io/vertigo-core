@@ -19,9 +19,9 @@
 package io.vertigo.core.config;
 
 import io.vertigo.core.di.DIAnnotationUtil;
-import io.vertigo.core.spaces.component.Plugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
+import io.vertigo.lang.Plugin;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 

@@ -18,9 +18,9 @@
  */
 package io.vertigo.core.di;
 
-import io.vertigo.core.spaces.component.Plugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.Plugin;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 

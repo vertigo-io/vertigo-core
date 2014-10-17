@@ -18,9 +18,9 @@
  */
 package io.vertigo.core.config;
 
-import io.vertigo.core.spaces.component.Plugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
+import io.vertigo.lang.Plugin;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -16,12 +16,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.home.componentspace.data;
+package io.vertigo.lang;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.core.spaces.component.ComponentInfo;
 
-public interface BioManager extends Manager {
-	int add(int... a);
+import java.util.List;
 
-	boolean isActive();
+/**
+ * Permet d'ajouter un comportement sur un composant.
+ * @author pchretien
+ */
+public interface Describable {
+	/**
+	 * @return Liste des informations relatives à ce composant
+	 */
+	List<ComponentInfo> getInfos();
 }

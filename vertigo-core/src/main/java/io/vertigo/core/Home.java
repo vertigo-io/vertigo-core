@@ -19,21 +19,20 @@
 package io.vertigo.core;
 
 import io.vertigo.core.config.ComponentSpaceConfig;
-import io.vertigo.core.di.configurator.ComponentSpaceImpl;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.core.spaces.resource.ResourceSpace;
 import io.vertigo.lang.Assertion;
 
 /**
- * Home : Classe d'entrée sur toutes les modules. 
- * Cycle de vie : 
- *  on start : INACTIVE ==[starting]==> ACTIVE 
+ * Home : Classe d'entrée sur toutes les modules.
+ * Cycle de vie :
+ *  on start : INACTIVE ==[starting]==> ACTIVE
  *  on stop  : ACTIVE 	==[stopping]==>INACTIVE
  * 'starting' et 'stopping' sont des phases transitoires.
- * 
+ *
  * Si erreur durant la transition start (c'est à dire durant la phase starting) alors on procéde à un arrét via un stopping ==> INACTIVE.
- * Si erreur durant la transition stop (c'est à dire durant la phase stopping) alors on part sur une phase FAIL qui nécessite un redémarrage. 
+ * Si erreur durant la transition stop (c'est à dire durant la phase stopping) alors on part sur une phase FAIL qui nécessite un redémarrage.
  *
 
  * @author pchretien
@@ -60,7 +59,7 @@ public final class Home {
 	private State state = State.INACTIVE;
 
 	private final DefinitionSpace definitionSpace = new DefinitionSpace();
-	private ComponentSpace componentSpace = ComponentSpaceImpl.EMPTY;
+	private ComponentSpace componentSpace = ComponentSpace.EMPTY;
 	private final ResourceSpace resourceSpace = new ResourceSpace();
 
 	private Home() {
@@ -78,7 +77,7 @@ public final class Home {
 		try {
 			INSTANCE.definitionSpace.start();
 			//---
-			INSTANCE.componentSpace = new ComponentSpaceImpl(componentSpaceConfig);
+			INSTANCE.componentSpace = new ComponentSpace(componentSpaceConfig);
 			INSTANCE.componentSpace.start();
 			INSTANCE.resourceSpace.start();
 			//	INSTANCE.jmx();
@@ -101,7 +100,7 @@ public final class Home {
 	 * Fermeture de l'application.
 	 */
 	public static void stop() {
-		//il est toujours possible de re-stopper. 
+		//il est toujours possible de re-stopper.
 		if (INSTANCE.state != State.INACTIVE) {
 			INSTANCE.change(State.ACTIVE, State.stopping);
 			INSTANCE.doStop();

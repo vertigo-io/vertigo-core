@@ -23,10 +23,8 @@ import io.vertigo.core.di.B;
 import io.vertigo.core.di.DIException;
 import io.vertigo.core.di.E;
 import io.vertigo.core.di.F;
-import io.vertigo.core.di.configurator.ParamsContainer;
-import io.vertigo.core.di.injector.Injector;
-import io.vertigo.core.spaces.component.Container;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Container;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,7 +35,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Voir sur reactor pour l'arbre des dépendances des objets A==>F.  
+ * Voir sur reactor pour l'arbre des dépendances des objets A==>F.
  * @author pchretien
  */
 public final class InjectorTest {
@@ -79,13 +77,39 @@ public final class InjectorTest {
 
 	@Test
 	public void testA() {
-		final A a = injector.newInstance(A.class, new ParamsContainer(Collections.<String, String> emptyMap()));
+		final A a = injector.newInstance(A.class, new Container() {
+
+			public boolean contains(final String id) {
+				return false;
+			}
+
+			public <T> T resolve(final String id, final Class<T> componentClass) {
+				return null;
+			}
+
+			public Set<String> keySet() {
+				return Collections.EMPTY_SET;
+			}
+		});
 		nop(a);
 	}
 
 	@Test(expected = DIException.class)
 	public void testBFail() {
-		final B b = injector.newInstance(B.class, new ParamsContainer(Collections.<String, String> emptyMap()));
+		final B b = injector.newInstance(B.class, new Container() {
+
+			public boolean contains(final String id) {
+				return false;
+			}
+
+			public <T> T resolve(final String id, final Class<T> componentClass) {
+				return null;
+			}
+
+			public Set<String> keySet() {
+				return Collections.EMPTY_SET;
+			}
+		});
 		nop(b);
 	}
 

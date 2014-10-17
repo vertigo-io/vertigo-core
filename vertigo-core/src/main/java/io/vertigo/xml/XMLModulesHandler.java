@@ -23,8 +23,8 @@ import io.vertigo.core.config.ComponentConfigBuilder;
 import io.vertigo.core.config.ComponentSpaceConfigBuilder;
 import io.vertigo.core.config.ModuleConfigBuilder;
 import io.vertigo.core.config.PluginConfigBuilder;
-import io.vertigo.core.spaces.component.Plugin;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Plugin;
 import io.vertigo.util.ClassUtil;
 
 import java.util.Properties;

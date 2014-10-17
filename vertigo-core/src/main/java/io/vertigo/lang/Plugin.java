@@ -16,12 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.home.componentspace.data;
+package io.vertigo.lang;
 
-import io.vertigo.lang.Manager;
-
-public interface BioManager extends Manager {
-	int add(int... a);
-
-	boolean isActive();
+/**
+ * Tout plugin doit être ThreadSafe. 
+ * Les plugins sont tous des singletons.
+ * Un plugin peut posséder un état actif / inactif via l'interface Activeable.
+ * 
+ * @author pchretien
+ */
+public interface Plugin {
+	//Un plugin peut être activeable.
 }

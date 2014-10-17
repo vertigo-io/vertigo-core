@@ -19,9 +19,9 @@
 package io.vertigo.core.config;
 
 import io.vertigo.core.aop.AOPInterceptor;
-import io.vertigo.core.spaces.component.Manager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
+import io.vertigo.lang.Manager;
 import io.vertigo.lang.Option;
 
 import java.util.ArrayList;

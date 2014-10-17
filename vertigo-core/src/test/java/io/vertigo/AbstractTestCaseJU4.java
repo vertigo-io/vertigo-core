@@ -23,9 +23,9 @@ import io.vertigo.core.config.AppBuilder;
 import io.vertigo.core.config.ComponentSpaceConfigBuilder;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.core.spaces.component.ComponentInfo;
-import io.vertigo.core.spaces.component.Container;
-import io.vertigo.core.spaces.component.Describable;
-import io.vertigo.core.spaces.component.Manager;
+import io.vertigo.lang.Container;
+import io.vertigo.lang.Describable;
+import io.vertigo.lang.Manager;
 import io.vertigo.lang.Option;
 
 import java.util.List;
