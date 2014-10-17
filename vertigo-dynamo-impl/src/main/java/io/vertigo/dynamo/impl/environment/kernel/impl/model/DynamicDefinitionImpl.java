@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamo.impl.environment.kernel.impl.model;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
 import io.vertigo.dynamo.impl.environment.kernel.meta.EntityProperty;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionBuilder;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
+import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
 import java.util.Collections;

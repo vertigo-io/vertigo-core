@@ -19,8 +19,6 @@
 package io.vertigo.dynamo.impl.collections;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.DtListProcessor;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -33,6 +31,8 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.impl.collections.facet.model.FacetFactory;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.util.Collections;
 import java.util.List;

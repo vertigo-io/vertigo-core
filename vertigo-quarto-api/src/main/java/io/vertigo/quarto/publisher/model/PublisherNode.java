@@ -18,9 +18,9 @@
  */
 package io.vertigo.quarto.publisher.model;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 import io.vertigo.quarto.publisher.metamodel.PublisherField;
 import io.vertigo.quarto.publisher.metamodel.PublisherFieldType;
 import io.vertigo.quarto.publisher.metamodel.PublisherNodeDefinition;

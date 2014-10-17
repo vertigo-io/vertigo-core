@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.kvdatastore.delayedberkeley;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 import java.io.Serializable;
 

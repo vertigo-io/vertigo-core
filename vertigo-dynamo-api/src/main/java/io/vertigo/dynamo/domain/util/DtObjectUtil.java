@@ -19,11 +19,8 @@
 package io.vertigo.dynamo.domain.util;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
-import io.vertigo.core.util.ClassUtil;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.Dynamic;
@@ -33,6 +30,9 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.DynaDtObject;
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.lang.Assertion;
+import io.vertigo.util.ClassUtil;
+import io.vertigo.util.StringUtil;
 
 /**
  * Utilitaire offrant des méthodes sur  DtObject.

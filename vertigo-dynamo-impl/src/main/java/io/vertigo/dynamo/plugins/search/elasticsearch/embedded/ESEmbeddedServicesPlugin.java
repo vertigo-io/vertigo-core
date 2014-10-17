@@ -20,8 +20,8 @@ package io.vertigo.dynamo.plugins.search.elasticsearch.embedded;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.resource.ResourceManager;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESServicesPlugin;
+import io.vertigo.lang.Assertion;
 
 import java.io.File;
 import java.net.URL;

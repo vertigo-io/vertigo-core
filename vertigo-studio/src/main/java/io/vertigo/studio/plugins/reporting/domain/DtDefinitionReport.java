@@ -18,9 +18,9 @@
  */
 package io.vertigo.studio.plugins.reporting.domain;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.lang.Assertion;
 import io.vertigo.studio.reporting.DataReport;
 import io.vertigo.studio.reporting.Metric;
 

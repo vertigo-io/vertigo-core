@@ -18,10 +18,7 @@
  */
 package io.vertigo.struts2.core;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -29,6 +26,9 @@ import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VUserException;
+import io.vertigo.util.StringUtil;
 
 import java.io.Serializable;
 import java.util.Collection;

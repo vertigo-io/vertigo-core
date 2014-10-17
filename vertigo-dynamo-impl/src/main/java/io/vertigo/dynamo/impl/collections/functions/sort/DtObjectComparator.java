@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.impl.collections.functions.sort;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DataAccessor;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
@@ -28,6 +27,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.persistence.Broker;
 import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.lang.Assertion;
 
 import java.text.Collator;
 import java.util.Comparator;

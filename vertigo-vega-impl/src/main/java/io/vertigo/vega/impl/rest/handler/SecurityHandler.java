@@ -18,8 +18,8 @@
  */
 package io.vertigo.vega.impl.rest.handler;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Option;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.vega.rest.exception.SessionException;

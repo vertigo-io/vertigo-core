@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamox.task;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 /**
  * Ce processor permet de supprimer les retours chariots en trop dans les requêtes sql dynamiques.

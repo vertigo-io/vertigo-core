@@ -22,13 +22,13 @@
 package io.vertigo.dynamox.task;
 
 import io.vertigo.commons.script.ScriptManager;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
+import io.vertigo.lang.Assertion;
 
 import java.sql.SQLException;
 

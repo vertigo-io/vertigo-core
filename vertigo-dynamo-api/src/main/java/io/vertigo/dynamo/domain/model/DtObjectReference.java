@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.domain.model;
 
-import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.lang.Option;
 
 /**
  * Interface d'objet métier.

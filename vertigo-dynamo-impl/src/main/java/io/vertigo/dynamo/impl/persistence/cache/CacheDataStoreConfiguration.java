@@ -19,8 +19,8 @@
 package io.vertigo.dynamo.impl.persistence.cache;
 
 import io.vertigo.commons.cache.CacheManager;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.lang.Assertion;
 
 import java.util.HashMap;
 import java.util.Map;

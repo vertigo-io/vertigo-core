@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.task.metamodel;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.ConstraintException;
 import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.lang.Assertion;
 
 /**
  * Attribut d'une tache.

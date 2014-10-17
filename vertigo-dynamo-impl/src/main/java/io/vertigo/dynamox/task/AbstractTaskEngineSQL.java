@@ -22,7 +22,6 @@ import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.script.SeparatorType;
 import io.vertigo.commons.script.parser.ScriptSeparator;
 import io.vertigo.core.Home;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
 import io.vertigo.dynamo.database.connection.SqlConnection;
@@ -41,6 +40,7 @@ import io.vertigo.dynamo.transaction.KTransaction;
 import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamo.transaction.KTransactionResourceId;
 import io.vertigo.dynamox.task.TaskEngineSQLParam.InOutType;
+import io.vertigo.lang.Assertion;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

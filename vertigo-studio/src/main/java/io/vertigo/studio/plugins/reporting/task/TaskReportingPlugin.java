@@ -19,11 +19,11 @@
 package io.vertigo.studio.plugins.reporting.task;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamo.transaction.KTransactionWritable;
+import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.reporting.task.metrics.explainplan.ExplainPlanMetricEngine;
 import io.vertigo.studio.plugins.reporting.task.metrics.join.JoinMetricEngine;
 import io.vertigo.studio.plugins.reporting.task.metrics.performance.PerformanceMetricEngine;

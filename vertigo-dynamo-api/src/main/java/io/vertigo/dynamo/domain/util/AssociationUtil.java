@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.domain.util;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
+import io.vertigo.lang.Assertion;
 
 /**
  * Classe utilitaire permettant de travailler sur les associations.

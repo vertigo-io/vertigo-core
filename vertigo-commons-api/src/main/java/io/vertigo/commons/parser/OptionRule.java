@@ -18,8 +18,8 @@
  */
 package io.vertigo.commons.parser;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Option;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 /**
  * Règle optionnelle.

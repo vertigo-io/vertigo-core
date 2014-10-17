@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.plugins.converter.openoffice.stream;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 import java.io.File;
 import java.io.FileNotFoundException;

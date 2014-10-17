@@ -19,7 +19,7 @@
 package io.vertigo.vega.impl.rest;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 import io.vertigo.vega.rest.EndPointIntrospectorPlugin;
 import io.vertigo.vega.rest.RestManager;
 import io.vertigo.vega.rest.RestfulService;

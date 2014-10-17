@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamock.domain.famille;
 
-import io.vertigo.core.lang.MessageKey;
+import io.vertigo.lang.MessageKey;
 
 /**
  * Attention cette classe est générée automatiquement !

@@ -18,8 +18,8 @@
  */
 package io.vertigo.quarto.publisher.metamodel;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.publisher.model.PublisherNode;
 
 import java.util.List;

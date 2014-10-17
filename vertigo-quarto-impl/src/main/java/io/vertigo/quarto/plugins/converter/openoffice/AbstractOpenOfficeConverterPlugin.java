@@ -18,10 +18,10 @@
  */
 package io.vertigo.quarto.plugins.converter.openoffice;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.file.util.TempFile;
+import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.impl.converter.ConverterPlugin;
 
 import java.io.File;

@@ -19,10 +19,10 @@
 package io.vertigo.dynamo.domain.model;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
-import io.vertigo.core.util.StringUtil;
+import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 import java.io.Serializable;
 import java.util.regex.Pattern;

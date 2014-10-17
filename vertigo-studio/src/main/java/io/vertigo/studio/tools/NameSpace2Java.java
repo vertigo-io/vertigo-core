@@ -21,8 +21,8 @@ package io.vertigo.studio.tools;
 import io.vertigo.core.AppBuilder;
 import io.vertigo.core.Home;
 import io.vertigo.core.AppBuilder.App;
-import io.vertigo.core.util.ClassUtil;
 import io.vertigo.studio.tools.generate.GenerateGoal;
+import io.vertigo.util.ClassUtil;
 
 import java.util.ArrayList;
 import java.util.List;

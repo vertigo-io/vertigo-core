@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.publisher.mock;
 
-import io.vertigo.core.lang.MessageKey;
+import io.vertigo.lang.MessageKey;
 
 /**
  * Attention cette classe est générée automatiquement !

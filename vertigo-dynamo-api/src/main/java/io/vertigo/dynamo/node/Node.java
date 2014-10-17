@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.node;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 /**
  * Node.

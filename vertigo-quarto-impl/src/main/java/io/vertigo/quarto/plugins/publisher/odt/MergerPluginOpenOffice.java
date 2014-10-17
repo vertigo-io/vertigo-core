@@ -19,7 +19,7 @@
 package io.vertigo.quarto.plugins.publisher.odt;
 
 import io.vertigo.commons.script.ScriptManager;
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.publisher.PublisherFormat;
 import io.vertigo.quarto.publisher.impl.MergerPlugin;
 import io.vertigo.quarto.publisher.impl.merger.grammar.ScriptGrammarUtil;

@@ -18,9 +18,9 @@
  */
 package io.vertigo.studio.plugins.mda.domain;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
+import io.vertigo.lang.Assertion;
 
 import java.util.List;
 

@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.home.componentspace.data;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 import java.util.List;
 

@@ -19,10 +19,10 @@
 package io.vertigo.dynamo.domain.metamodel;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
+import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
 import java.util.Collections;

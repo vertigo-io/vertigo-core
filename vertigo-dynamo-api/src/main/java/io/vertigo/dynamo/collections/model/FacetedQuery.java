@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.collections.model;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
+import io.vertigo.lang.Assertion;
 
 import java.io.Serializable;
 import java.util.List;

@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.poweramc.core;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.util.StringUtil;
+import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 import java.net.URL;
 import java.util.ArrayList;

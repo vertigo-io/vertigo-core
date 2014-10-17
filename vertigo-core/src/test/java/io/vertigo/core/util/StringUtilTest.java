@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.util;
 
-import io.vertigo.core.util.StringUtil;
+import io.vertigo.util.StringUtil;
 
 import org.junit.Assert;
 import org.junit.Test;

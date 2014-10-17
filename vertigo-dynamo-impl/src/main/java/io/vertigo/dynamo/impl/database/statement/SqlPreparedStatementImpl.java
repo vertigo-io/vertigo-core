@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.impl.database.statement;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.database.statement.SqlQueryResult;
@@ -26,6 +25,7 @@ import io.vertigo.dynamo.database.vendor.SqlMapping;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.impl.database.listener.SqlDataBaseListener;
+import io.vertigo.lang.Assertion;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

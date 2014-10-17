@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.kvdatastore.berkeley;
 
-import io.vertigo.core.util.ClassUtil;
+import io.vertigo.util.ClassUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

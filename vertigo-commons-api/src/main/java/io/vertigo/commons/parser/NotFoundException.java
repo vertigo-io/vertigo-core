@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.parser;
 
-import io.vertigo.core.util.StringUtil;
+import io.vertigo.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;

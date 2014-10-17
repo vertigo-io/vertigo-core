@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.impl.collections.functions.filter;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilterUtil.FilterPattern;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.io.Serializable;
 

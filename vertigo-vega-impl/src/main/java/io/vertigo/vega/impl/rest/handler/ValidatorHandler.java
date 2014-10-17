@@ -18,10 +18,10 @@
  */
 package io.vertigo.vega.impl.rest.handler;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.util.ClassUtil;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.lang.Assertion;
+import io.vertigo.util.ClassUtil;
 import io.vertigo.vega.rest.engine.UiListDelta;
 import io.vertigo.vega.rest.engine.UiObject;
 import io.vertigo.vega.rest.exception.SessionException;

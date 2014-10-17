@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamox.domain.formatter;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl;
+import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 import java.util.Locale;
 

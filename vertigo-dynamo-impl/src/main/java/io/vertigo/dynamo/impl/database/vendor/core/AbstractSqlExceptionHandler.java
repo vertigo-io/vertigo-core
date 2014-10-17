@@ -18,14 +18,14 @@
  */
 package io.vertigo.dynamo.impl.database.vendor.core;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.MessageKey;
-import io.vertigo.core.lang.MessageText;
-import io.vertigo.core.lang.VUserException;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.database.vendor.SqlExceptionHandler;
 import io.vertigo.dynamo.impl.database.Resources;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.MessageKey;
+import io.vertigo.lang.MessageText;
+import io.vertigo.lang.VUserException;
+import io.vertigo.util.StringUtil;
 
 import java.sql.SQLException;
 

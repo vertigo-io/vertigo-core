@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.impl.kvdatastore;
 
-import io.vertigo.core.lang.Option;
 import io.vertigo.core.spaces.component.Plugin;
+import io.vertigo.lang.Option;
 
 import java.util.List;
 

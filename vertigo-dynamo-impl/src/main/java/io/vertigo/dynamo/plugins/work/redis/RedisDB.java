@@ -19,14 +19,14 @@
 package io.vertigo.dynamo.plugins.work.redis;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.core.lang.Activeable;
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Option;
-import io.vertigo.core.util.DateUtil;
 import io.vertigo.dynamo.impl.work.WorkResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.node.Node;
 import io.vertigo.dynamo.work.WorkEngineProvider;
+import io.vertigo.lang.Activeable;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.util.DateUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;

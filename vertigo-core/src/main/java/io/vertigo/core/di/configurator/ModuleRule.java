@@ -18,8 +18,8 @@
  */
 package io.vertigo.core.di.configurator;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.util.StringUtil;
+import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 /**
  * Rule : all components of a module must respect this rule.

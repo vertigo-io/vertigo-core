@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.spaces.component;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 import java.util.Date;
 

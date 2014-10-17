@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.impl.environment.kernel.meta;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 import java.util.Collections;
 import java.util.Map;

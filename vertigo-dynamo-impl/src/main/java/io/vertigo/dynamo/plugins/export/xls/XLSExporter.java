@@ -18,8 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.export.xls;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -28,6 +26,8 @@ import io.vertigo.dynamo.export.model.ExportField;
 import io.vertigo.dynamo.export.model.ExportSheet;
 import io.vertigo.dynamo.impl.export.util.ExportUtil;
 import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.MessageText;
 
 import java.io.IOException;
 import java.io.OutputStream;

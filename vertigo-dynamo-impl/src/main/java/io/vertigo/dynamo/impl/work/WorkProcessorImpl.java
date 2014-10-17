@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.impl.work;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.work.WorkEngine;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkProcessor;
+import io.vertigo.lang.Assertion;
 
 import java.util.Arrays;
 /**

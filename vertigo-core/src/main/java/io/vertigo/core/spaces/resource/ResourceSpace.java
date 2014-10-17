@@ -18,8 +18,8 @@
  */
 package io.vertigo.core.spaces.resource;
 
-import io.vertigo.core.lang.Activeable;
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Activeable;
+import io.vertigo.lang.Assertion;
 
 import java.util.Collection;
 import java.util.Collections;

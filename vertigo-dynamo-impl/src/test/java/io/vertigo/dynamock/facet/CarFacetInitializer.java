@@ -19,7 +19,6 @@
 package io.vertigo.dynamock.facet;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.lang.MessageText;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinitionByRangeBuilder;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
@@ -27,6 +26,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamock.domain.car.Car;
+import io.vertigo.lang.MessageText;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.plugins.mda;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 import io.vertigo.studio.mda.Result;
 import io.vertigo.studio.plugins.mda.domain.TemplateMethodStringUtil;
 

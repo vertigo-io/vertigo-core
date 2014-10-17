@@ -18,7 +18,7 @@
  */
 package io.vertigo.tempo.impl.mail;
 
-import io.vertigo.core.lang.MessageKey;
+import io.vertigo.lang.MessageKey;
 
 /**
  * Dictionnaire des ressources.

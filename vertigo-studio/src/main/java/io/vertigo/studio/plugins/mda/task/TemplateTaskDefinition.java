@@ -18,10 +18,10 @@
  */
 package io.vertigo.studio.plugins.mda.task;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
+import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.impl.persistence.logical;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.impl.persistence.FileStore;
+import io.vertigo.lang.Assertion;
 
 /**
  * Permet de gérer le stockage des documents.

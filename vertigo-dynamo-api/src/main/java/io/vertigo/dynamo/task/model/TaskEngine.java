@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.task.model;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
+import io.vertigo.lang.Assertion;
 
 /**
  * Moteur précisant le mode d'exécution d'une définition de tache.

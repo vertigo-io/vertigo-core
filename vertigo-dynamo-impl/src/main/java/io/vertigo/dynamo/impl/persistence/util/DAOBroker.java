@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.impl.persistence.util;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -34,6 +33,7 @@ import io.vertigo.dynamo.persistence.Criteria;
 import io.vertigo.dynamo.persistence.FilterCriteria;
 import io.vertigo.dynamo.persistence.FilterCriteriaBuilder;
 import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
 import java.util.Collection;

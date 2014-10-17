@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.locale;
 
-import io.vertigo.core.lang.MessageKey;
+import io.vertigo.lang.MessageKey;
 
 /**
  * Dictionnaire des ressources.

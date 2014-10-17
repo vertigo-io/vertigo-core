@@ -19,9 +19,9 @@
 package io.vertigo.dynamo.impl.database.listener;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.impl.database.statement.SqlStatementStats;
+import io.vertigo.lang.Assertion;
 
 import org.apache.log4j.Logger;
 

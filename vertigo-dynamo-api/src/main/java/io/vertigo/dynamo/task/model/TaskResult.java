@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.task.model;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
+import io.vertigo.lang.Assertion;
 
 import java.util.Collections;
 import java.util.HashMap;

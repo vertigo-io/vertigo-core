@@ -18,8 +18,8 @@
  */
 package io.vertigo.struts2.core;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.lang.Assertion;
 
 /**
  * Liste des couples (clé, object) enregistrés.

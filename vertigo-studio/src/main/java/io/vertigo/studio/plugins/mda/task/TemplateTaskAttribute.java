@@ -18,12 +18,12 @@
  */
 package io.vertigo.studio.plugins.mda.task;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
+import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.mda.domain.DomainUtil;
+import io.vertigo.util.StringUtil;
 
 /** 
  * Génération des classes/méthodes des taches de type DAO.

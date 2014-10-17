@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.kvdatastore.delayedmemory;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;

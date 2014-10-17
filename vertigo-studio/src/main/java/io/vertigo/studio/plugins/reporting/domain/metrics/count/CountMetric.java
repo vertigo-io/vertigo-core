@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.plugins.reporting.domain.metrics.count;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 import io.vertigo.studio.reporting.Metric;
 
 /**

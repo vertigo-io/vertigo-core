@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.plugins.database.connection.mock;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.util.ClassUtil;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.plugins.database.connection.AbstractSqlConnectionProviderPlugin;
+import io.vertigo.lang.Assertion;
+import io.vertigo.util.ClassUtil;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;

@@ -18,9 +18,9 @@
  */
 package io.vertigo.persona.impl.security;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.util.BeanUtil;
+import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.ResourceNameFactory;
+import io.vertigo.util.BeanUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ public final class BeanResourceNameFactory implements ResourceNameFactory {
 	 * @param securityPattern Pattern de la resource.
 	 */
 	public BeanResourceNameFactory(final String securityPattern) {
-		io.vertigo.core.lang.Assertion.checkNotNull(securityPattern);
+		io.vertigo.lang.Assertion.checkNotNull(securityPattern);
 		//---------------------------------------------------------------------
 		this.securityPattern = securityPattern;
 		int previousIndex = 0;

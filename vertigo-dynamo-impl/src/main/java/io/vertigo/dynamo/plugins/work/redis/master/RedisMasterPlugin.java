@@ -19,13 +19,13 @@
 package io.vertigo.dynamo.plugins.work.redis.master;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.core.lang.Activeable;
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.impl.work.MasterPlugin;
 import io.vertigo.dynamo.impl.work.WorkResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.plugins.work.redis.RedisDB;
+import io.vertigo.lang.Activeable;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.util.Arrays;
 import java.util.List;

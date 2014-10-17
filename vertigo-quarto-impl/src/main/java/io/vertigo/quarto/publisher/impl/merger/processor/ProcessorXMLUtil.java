@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.publisher.impl.merger.processor;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 import java.util.Iterator;
 import java.util.Stack;

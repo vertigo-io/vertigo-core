@@ -19,8 +19,6 @@
 package io.vertigo.quarto.x.publisher;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -28,9 +26,11 @@ import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.publisher.metamodel.PublisherField;
 import io.vertigo.quarto.publisher.metamodel.PublisherNodeDefinition;
 import io.vertigo.quarto.publisher.model.PublisherNode;
+import io.vertigo.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;

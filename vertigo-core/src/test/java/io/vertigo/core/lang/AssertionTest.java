@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.lang;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 import org.junit.Test;
 

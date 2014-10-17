@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.collections.model;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.MessageText;
 import io.vertigo.dynamo.collections.ListFilter;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.MessageText;
 
 import java.io.Serializable;
 

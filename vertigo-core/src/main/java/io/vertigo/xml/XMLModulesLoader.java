@@ -19,9 +19,9 @@
 package io.vertigo.xml;
 
 import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Loader;
-import io.vertigo.core.util.XMLUtil;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Loader;
+import io.vertigo.util.XMLUtil;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;

@@ -20,7 +20,7 @@ package io.vertigo.commons.impl.script;
 
 import io.vertigo.commons.script.ExpressionParameter;
 import io.vertigo.commons.script.SeparatorType;
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 import java.util.List;
 

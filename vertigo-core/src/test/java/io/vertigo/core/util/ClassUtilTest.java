@@ -18,10 +18,10 @@
  */
 package io.vertigo.core.util;
 
-import io.vertigo.core.lang.MessageText;
-import io.vertigo.core.lang.Option;
-import io.vertigo.core.lang.VUserException;
-import io.vertigo.core.util.ClassUtil;
+import io.vertigo.lang.MessageText;
+import io.vertigo.lang.Option;
+import io.vertigo.lang.VUserException;
+import io.vertigo.util.ClassUtil;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;

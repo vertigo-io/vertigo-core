@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.impl.mda;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 import io.vertigo.studio.mda.Configuration;
 import io.vertigo.studio.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaManager;

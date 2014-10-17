@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.parser;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 /**
  * A  terminal succeeds if the first character of the input string matches that terminal.

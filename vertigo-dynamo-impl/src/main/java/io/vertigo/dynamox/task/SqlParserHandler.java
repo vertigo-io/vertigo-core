@@ -20,11 +20,11 @@ package io.vertigo.dynamox.task;
 
 import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamox.task.TaskEngineSQLParam.InOutType;
+import io.vertigo.lang.Assertion;
 
 import java.util.Collections;
 import java.util.List;

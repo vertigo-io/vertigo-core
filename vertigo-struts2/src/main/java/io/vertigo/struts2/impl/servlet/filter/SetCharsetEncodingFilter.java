@@ -18,7 +18,7 @@
  */
 package io.vertigo.struts2.impl.servlet.filter;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 import java.io.IOException;
 

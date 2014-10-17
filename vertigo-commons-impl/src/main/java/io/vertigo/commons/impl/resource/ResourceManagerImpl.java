@@ -19,8 +19,8 @@
 package io.vertigo.commons.impl.resource;
 
 import io.vertigo.commons.resource.ResourceManager;
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Option;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.net.URL;
 import java.util.List;

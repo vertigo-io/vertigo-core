@@ -18,8 +18,8 @@
  */
 package io.vertigo.core.util;
 
-import io.vertigo.core.lang.DateBuilder;
-import io.vertigo.core.util.DateUtil;
+import io.vertigo.lang.DateBuilder;
+import io.vertigo.util.DateUtil;
 
 import java.util.Date;
 import java.util.GregorianCalendar;

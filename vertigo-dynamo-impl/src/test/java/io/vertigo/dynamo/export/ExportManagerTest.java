@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.export;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.lang.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -30,6 +29,7 @@ import io.vertigo.dynamo.export.model.ExportFormat;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamock.domain.famille.Famille;
+import io.vertigo.lang.MessageText;
 
 import java.io.File;
 import java.io.IOException;

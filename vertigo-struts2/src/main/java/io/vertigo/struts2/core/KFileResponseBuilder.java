@@ -18,8 +18,8 @@
  */
 package io.vertigo.struts2.core;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.lang.Assertion;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;

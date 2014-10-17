@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.plugins.persistence.filestore.db;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DataStream;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -33,6 +32,7 @@ import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.impl.persistence.FileStorePlugin;
 import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.lang.Assertion;
 
 import java.io.IOException;
 import java.io.InputStream;

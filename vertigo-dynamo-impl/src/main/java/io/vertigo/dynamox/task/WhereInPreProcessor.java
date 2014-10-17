@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamox.task;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
+import io.vertigo.lang.Assertion;
 
 import java.util.Locale;
 import java.util.Map;

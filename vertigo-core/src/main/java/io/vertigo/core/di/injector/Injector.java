@@ -20,11 +20,11 @@ package io.vertigo.core.di.injector;
 
 import io.vertigo.core.di.DIAnnotationUtil;
 import io.vertigo.core.di.DIException;
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Option;
 import io.vertigo.core.spaces.component.Container;
 import io.vertigo.core.spaces.component.Plugin;
-import io.vertigo.core.util.ClassUtil;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.util.ClassUtil;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

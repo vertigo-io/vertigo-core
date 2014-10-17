@@ -18,10 +18,10 @@
  */
 package io.vertigo.quarto.publisher.impl.merger.grammar;
 
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.quarto.publisher.impl.merger.script.ScriptContext;
 import io.vertigo.quarto.publisher.impl.merger.script.ScriptTag;
 import io.vertigo.quarto.publisher.impl.merger.script.ScriptTagContent;
+import io.vertigo.util.StringUtil;
 
 /**
  * @author pchretien, npiedeloup

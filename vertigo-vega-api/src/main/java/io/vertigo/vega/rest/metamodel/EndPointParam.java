@@ -18,9 +18,9 @@
  */
 package io.vertigo.vega.rest.metamodel;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.lang.Assertion;
 import io.vertigo.vega.rest.EndPointTypeHelper;
 import io.vertigo.vega.rest.model.DtListDelta;
 import io.vertigo.vega.rest.model.UiListState;

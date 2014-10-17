@@ -21,7 +21,7 @@ package io.vertigo.core.di.configurator;
 import io.vertigo.core.Home;
 import io.vertigo.core.aop.AOPInterceptor;
 import io.vertigo.core.di.injector.Injector;
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

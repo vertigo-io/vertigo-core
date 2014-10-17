@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.database.connection;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.transaction.KTransactionResource;
+import io.vertigo.lang.Assertion;
 
 import java.sql.Connection;
 import java.sql.SQLException;

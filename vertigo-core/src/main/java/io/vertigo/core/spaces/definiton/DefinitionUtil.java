@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.spaces.definiton;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 /**
  * Utilitaire concernant les Definitions.

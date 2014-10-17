@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.impl.work;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.work.WorkEngineProvider;
+import io.vertigo.lang.Assertion;
 
 public final class WorkItem<WR, W> {
 	private final W work;

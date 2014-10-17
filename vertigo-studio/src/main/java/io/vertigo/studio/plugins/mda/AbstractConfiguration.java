@@ -19,7 +19,7 @@
 package io.vertigo.studio.plugins.mda;
 
 import static io.vertigo.studio.impl.mda.PropertiesUtil.getPropertyNotNull;
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 import io.vertigo.studio.mda.Configuration;
 
 import java.util.Properties;

@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.domain.metamodel.association;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
+import io.vertigo.lang.Assertion;
 
 /**
  * Décrit une association entre deux objets (A et B)

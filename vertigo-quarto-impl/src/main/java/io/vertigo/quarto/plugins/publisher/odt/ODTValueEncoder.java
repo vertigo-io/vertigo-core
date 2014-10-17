@@ -19,7 +19,7 @@
 package io.vertigo.quarto.plugins.publisher.odt;
 
 import io.vertigo.commons.codec.Encoder;
-import io.vertigo.core.util.StringUtil;
+import io.vertigo.util.StringUtil;
 
 /**
  * Implémentation de l'encodage des données dans un fichier ODT.

@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.export.model;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
 import java.util.List;

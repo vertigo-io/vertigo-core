@@ -19,7 +19,7 @@
 package io.vertigo.engines.command.tcp;
 
 import io.vertigo.core.command.VCommandHandler;
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

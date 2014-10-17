@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.kpr.definition;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.impl.environment.kernel.meta.EntityProperty;
+import io.vertigo.lang.Assertion;
 
 /**
  * Gestion des couples : propriété et valeur.

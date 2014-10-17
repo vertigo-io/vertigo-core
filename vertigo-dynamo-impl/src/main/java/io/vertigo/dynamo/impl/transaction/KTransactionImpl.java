@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamo.impl.transaction;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.impl.transaction.listener.KTransactionListener;
 import io.vertigo.dynamo.transaction.KTransaction;
 import io.vertigo.dynamo.transaction.KTransactionResource;
 import io.vertigo.dynamo.transaction.KTransactionResourceId;
 import io.vertigo.dynamo.transaction.KTransactionWritable;
+import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
 import java.util.HashMap;

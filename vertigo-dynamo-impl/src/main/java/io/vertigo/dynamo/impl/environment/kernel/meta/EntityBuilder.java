@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.impl.environment.kernel.meta;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Builder;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Builder;
 
 import java.util.HashMap;
 import java.util.HashSet;

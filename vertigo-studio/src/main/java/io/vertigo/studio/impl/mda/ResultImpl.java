@@ -18,8 +18,8 @@
  */
 package io.vertigo.studio.impl.mda;
 
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.studio.mda.Result;
+import io.vertigo.util.StringUtil;
 
 import java.io.File;
 import java.io.PrintStream;

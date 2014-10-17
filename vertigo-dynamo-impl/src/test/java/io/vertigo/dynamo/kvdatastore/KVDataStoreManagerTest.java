@@ -19,10 +19,10 @@
 package io.vertigo.dynamo.kvdatastore;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamo.transaction.KTransactionWritable;
 import io.vertigo.dynamock.domain.car.Car;
+import io.vertigo.lang.Option;
 
 import java.util.List;
 

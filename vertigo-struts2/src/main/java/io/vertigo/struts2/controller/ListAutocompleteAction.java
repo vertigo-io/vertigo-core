@@ -18,9 +18,6 @@
  */
 package io.vertigo.struts2.controller;
 
-import io.vertigo.core.lang.MessageText;
-import io.vertigo.core.lang.VUserException;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.DtListProcessor;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -29,9 +26,12 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamo.transaction.KTransactionWritable;
+import io.vertigo.lang.MessageText;
+import io.vertigo.lang.VUserException;
 import io.vertigo.struts2.core.AbstractActionSupport;
 import io.vertigo.struts2.core.ContextRef;
 import io.vertigo.struts2.core.UiList;
+import io.vertigo.util.StringUtil;
 
 import java.util.Collection;
 import java.util.Collections;

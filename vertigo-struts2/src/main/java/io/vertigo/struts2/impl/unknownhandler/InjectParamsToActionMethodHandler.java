@@ -18,10 +18,10 @@
  */
 package io.vertigo.struts2.impl.unknownhandler;
 
-import io.vertigo.core.lang.Option;
-import io.vertigo.core.util.StringUtil;
+import io.vertigo.lang.Option;
 import io.vertigo.struts2.impl.MethodUtil;
 import io.vertigo.struts2.impl.servlet.RequestContainerWrapper;
+import io.vertigo.util.StringUtil;
 
 import java.lang.reflect.Method;
 

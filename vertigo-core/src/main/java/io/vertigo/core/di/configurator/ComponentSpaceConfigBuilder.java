@@ -21,11 +21,11 @@ package io.vertigo.core.di.configurator;
 import io.vertigo.core.engines.AopEngine;
 import io.vertigo.core.engines.ElasticaEngine;
 import io.vertigo.core.engines.VCommandEngine;
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Builder;
-import io.vertigo.core.lang.Loader;
-import io.vertigo.core.lang.Option;
 import io.vertigo.engines.aop.cglib.CGLIBAopEngine;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Builder;
+import io.vertigo.lang.Loader;
+import io.vertigo.lang.Option;
 
 import java.util.ArrayList;
 import java.util.HashMap;

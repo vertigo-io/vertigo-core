@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.domain.metamodel.association;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
+import io.vertigo.lang.Assertion;
 
 /**
  * Relation simple : 1-1 ou 1-n

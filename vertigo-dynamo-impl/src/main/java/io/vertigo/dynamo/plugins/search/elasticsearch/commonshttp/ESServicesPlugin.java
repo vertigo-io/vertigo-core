@@ -19,8 +19,8 @@
 package io.vertigo.dynamo.plugins.search.elasticsearch.commonshttp;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESServicesPlugin;
+import io.vertigo.lang.Assertion;
 
 import javax.inject.Inject;
 import javax.inject.Named;

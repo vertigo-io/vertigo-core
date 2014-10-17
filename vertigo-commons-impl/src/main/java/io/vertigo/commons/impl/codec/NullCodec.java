@@ -19,7 +19,7 @@
 package io.vertigo.commons.impl.codec;
 
 import io.vertigo.commons.codec.Codec;
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 /**
  *

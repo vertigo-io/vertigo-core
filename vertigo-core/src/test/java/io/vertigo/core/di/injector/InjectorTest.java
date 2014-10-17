@@ -25,8 +25,8 @@ import io.vertigo.core.di.E;
 import io.vertigo.core.di.F;
 import io.vertigo.core.di.configurator.ParamsContainer;
 import io.vertigo.core.di.injector.Injector;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.spaces.component.Container;
+import io.vertigo.lang.Assertion;
 
 import java.util.Collections;
 import java.util.HashMap;

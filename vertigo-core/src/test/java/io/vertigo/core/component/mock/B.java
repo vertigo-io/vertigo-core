@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.component.mock;
 
-import io.vertigo.core.lang.Activeable;
+import io.vertigo.lang.Activeable;
 
 /**
  * @author prahmoune

@@ -20,7 +20,6 @@ package io.vertigo.dynamo.persistence;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
@@ -49,6 +48,7 @@ import io.vertigo.dynamock.domain.famille.Famille;
 import io.vertigo.dynamock.fileinfo.FileInfoStd;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
+import io.vertigo.lang.Assertion;
 
 import java.io.OutputStream;
 import java.sql.PreparedStatement;

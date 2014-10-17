@@ -18,10 +18,7 @@
  */
 package io.vertigo.struts2.core;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Option;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
@@ -31,6 +28,9 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamo.transaction.KTransactionWritable;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.util.StringUtil;
 
 import java.io.Serializable;
 import java.util.AbstractList;

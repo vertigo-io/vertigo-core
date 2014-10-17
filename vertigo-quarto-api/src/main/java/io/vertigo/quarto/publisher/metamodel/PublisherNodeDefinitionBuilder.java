@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.publisher.metamodel;
 
-import io.vertigo.core.lang.Builder;
+import io.vertigo.lang.Builder;
 
 import java.util.ArrayList;
 import java.util.List;

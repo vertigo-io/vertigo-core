@@ -19,9 +19,9 @@
 package io.vertigo.dynamo.work.distributed.redis;
 
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
-import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.plugins.work.redis.RedisDB;
 import io.vertigo.dynamo.work.AbstractWorkManagerTest;
+import io.vertigo.lang.Option;
 
 /**
  * @author pchretien

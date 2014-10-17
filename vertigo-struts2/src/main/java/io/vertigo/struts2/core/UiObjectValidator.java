@@ -18,12 +18,12 @@
  */
 package io.vertigo.struts2.core;
 
-import io.vertigo.core.lang.MessageText;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.ConstraintException;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.lang.MessageText;
 import io.vertigo.struts2.resources.Resources;
+import io.vertigo.util.StringUtil;
 
 import java.util.Date;
 import java.util.Set;

@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.transaction;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 /**
  * Identification des ressources participant à la transaction.

@@ -18,8 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.persistence.sqlserver;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.plugins.persistence.AbstractSqlDataStorePlugin;
@@ -27,6 +25,8 @@ import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.sqlserver.TaskEngineInsertWithGeneratedKeys;
+import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 import javax.inject.Inject;
 

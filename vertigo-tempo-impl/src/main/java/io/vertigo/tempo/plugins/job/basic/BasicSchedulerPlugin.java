@@ -18,8 +18,8 @@
  */
 package io.vertigo.tempo.plugins.job.basic;
 
-import io.vertigo.core.lang.Activeable;
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Activeable;
+import io.vertigo.lang.Assertion;
 import io.vertigo.tempo.job.JobManager;
 import io.vertigo.tempo.job.SchedulerPlugin;
 import io.vertigo.tempo.job.metamodel.JobDefinition;

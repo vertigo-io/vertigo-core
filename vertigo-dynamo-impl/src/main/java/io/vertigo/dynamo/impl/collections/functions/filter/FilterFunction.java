@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.impl.collections.functions.filter;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.lang.Assertion;
 
 /**
  * Fonction de filtre.

@@ -19,7 +19,7 @@
 package io.vertigo.core.spaces.component;
 
 import io.vertigo.core.di.configurator.ComponentSpaceConfig;
-import io.vertigo.core.lang.Activeable;
+import io.vertigo.lang.Activeable;
 
 /**
  * Centralisation des accès aux composants et aux plugins d'un module.

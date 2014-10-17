@@ -18,9 +18,6 @@
  */
 package io.vertigo.dynamo.plugins.search.elasticsearch;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.MessageText;
-import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
@@ -38,6 +35,9 @@ import io.vertigo.dynamo.search.IndexFieldNameResolver;
 import io.vertigo.dynamo.search.metamodel.IndexDefinition;
 import io.vertigo.dynamo.search.model.Index;
 import io.vertigo.dynamo.search.model.SearchQuery;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.MessageText;
+import io.vertigo.lang.Option;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -19,8 +19,8 @@
 package io.vertigo.commons.cache;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Modifiable;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Modifiable;
 
 import java.io.Serializable;
 import java.util.HashSet;

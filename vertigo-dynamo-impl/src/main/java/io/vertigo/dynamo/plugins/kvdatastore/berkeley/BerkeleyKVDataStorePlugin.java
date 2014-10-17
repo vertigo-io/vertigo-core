@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.plugins.kvdatastore.berkeley;
 
-import io.vertigo.core.lang.Activeable;
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.impl.kvdatastore.KVDataStorePlugin;
 import io.vertigo.dynamo.transaction.KTransactionManager;
+import io.vertigo.lang.Activeable;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.io.File;
 import java.util.List;

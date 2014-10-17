@@ -19,7 +19,7 @@
 package io.vertigo.commons.impl.cache;
 
 import io.vertigo.commons.cache.CacheManager;
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 import java.io.Serializable;
 

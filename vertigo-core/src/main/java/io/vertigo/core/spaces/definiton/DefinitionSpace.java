@@ -18,9 +18,9 @@
  */
 package io.vertigo.core.spaces.definiton;
 
-import io.vertigo.core.lang.Activeable;
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.JsonExclude;
+import io.vertigo.lang.Activeable;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.JsonExclude;
 
 import java.util.Collection;
 import java.util.Collections;

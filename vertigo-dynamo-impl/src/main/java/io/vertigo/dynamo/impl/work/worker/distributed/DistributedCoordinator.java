@@ -18,14 +18,14 @@
  */
 package io.vertigo.dynamo.impl.work.worker.distributed;
 
-import io.vertigo.core.lang.Activeable;
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.impl.work.MasterPlugin;
 import io.vertigo.dynamo.impl.work.WorkResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.impl.work.worker.Coordinator;
 import io.vertigo.dynamo.work.WorkResultHandler;
+import io.vertigo.lang.Activeable;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.util.Collections;
 import java.util.HashMap;

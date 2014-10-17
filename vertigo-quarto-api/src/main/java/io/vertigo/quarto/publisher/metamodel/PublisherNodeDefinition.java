@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.publisher.metamodel;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;

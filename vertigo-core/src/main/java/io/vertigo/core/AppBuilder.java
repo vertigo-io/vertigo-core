@@ -20,8 +20,8 @@ package io.vertigo.core;
 
 import io.vertigo.core.di.configurator.ComponentSpaceConfig;
 import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Option;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 import io.vertigo.xml.XMLModulesLoader;
 
 import java.io.IOException;

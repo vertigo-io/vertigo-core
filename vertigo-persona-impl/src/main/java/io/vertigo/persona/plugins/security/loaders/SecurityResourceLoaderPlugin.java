@@ -20,9 +20,9 @@ package io.vertigo.persona.plugins.security.loaders;
 
 import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.core.di.configurator.ResourceConfig;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.spaces.component.Plugin;
 import io.vertigo.core.spaces.resource.ResourceLoader;
+import io.vertigo.lang.Assertion;
 
 import java.util.Collections;
 import java.util.List;

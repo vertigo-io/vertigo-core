@@ -18,8 +18,8 @@
  */
 package io.vertigo.quarto.publisher.impl.merger.script;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.util.StringUtil;
+import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;

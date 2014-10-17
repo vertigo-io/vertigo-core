@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
-import io.vertigo.core.lang.MessageKey;
-import io.vertigo.core.lang.MessageText;
-import io.vertigo.core.lang.VUserException;
+import io.vertigo.lang.MessageKey;
+import io.vertigo.lang.MessageText;
+import io.vertigo.lang.VUserException;
 
 import java.io.Serializable;
 

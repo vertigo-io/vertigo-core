@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.export.model;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Builder;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.export.model.Export.Orientation;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Builder;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -19,7 +19,7 @@
 package io.vertigo.struts2.core;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 import java.io.Serializable;
 

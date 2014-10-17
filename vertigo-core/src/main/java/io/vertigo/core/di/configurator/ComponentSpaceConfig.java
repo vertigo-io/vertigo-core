@@ -21,9 +21,9 @@ package io.vertigo.core.di.configurator;
 import io.vertigo.core.engines.AopEngine;
 import io.vertigo.core.engines.ElasticaEngine;
 import io.vertigo.core.engines.VCommandEngine;
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.JsonExclude;
-import io.vertigo.core.lang.Option;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.JsonExclude;
+import io.vertigo.lang.Option;
 
 import java.util.ArrayList;
 import java.util.Collections;

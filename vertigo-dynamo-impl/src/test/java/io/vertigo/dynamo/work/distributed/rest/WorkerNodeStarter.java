@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.work.distributed.rest;
 
-import io.vertigo.core.lang.Option;
+import io.vertigo.lang.Option;
 
 import java.util.Properties;
 

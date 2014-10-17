@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.plugins.persistence.jpa;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 import org.apache.log4j.Logger;
 

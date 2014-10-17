@@ -18,15 +18,15 @@
  */
 package io.vertigo.vega.rest.engine;
 
-import io.vertigo.core.lang.JsonExclude;
-import io.vertigo.core.lang.Option;
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.lang.JsonExclude;
+import io.vertigo.lang.Option;
+import io.vertigo.util.StringUtil;
 import io.vertigo.vega.rest.EndPointTypeHelper;
 import io.vertigo.vega.rest.model.DtListDelta;
 

@@ -20,9 +20,9 @@ package io.vertigo.ccc.console;
 
 import io.vertigo.core.command.VCommand;
 import io.vertigo.core.command.VResponse;
-import io.vertigo.core.lang.Activeable;
 import io.vertigo.engines.command.JsonUtil;
 import io.vertigo.engines.command.tcp.VClient;
+import io.vertigo.lang.Activeable;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;

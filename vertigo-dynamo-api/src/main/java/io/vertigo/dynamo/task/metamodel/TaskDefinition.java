@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.task.metamodel;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.task.model.TaskEngine;
+import io.vertigo.lang.Assertion;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;

@@ -20,10 +20,10 @@ package io.vertigo.dynamo.plugins.environment.loaders.kpr;
 
 import io.vertigo.commons.parser.NotFoundException;
 import io.vertigo.commons.parser.Rule;
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslKspRule;
+import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;

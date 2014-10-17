@@ -19,10 +19,10 @@
 package io.vertigo.dynamo.search.model;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.search.metamodel.IndexDefinition;
+import io.vertigo.lang.Assertion;
 
 import java.io.Serializable;
 

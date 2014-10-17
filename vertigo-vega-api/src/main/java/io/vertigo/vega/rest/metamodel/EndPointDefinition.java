@@ -18,9 +18,9 @@
  */
 package io.vertigo.vega.rest.metamodel;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
+import io.vertigo.lang.Assertion;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

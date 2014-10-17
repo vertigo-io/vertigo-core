@@ -20,8 +20,8 @@ package io.vertigo.dynamox.domain.formatter;
 
 import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.core.Home;
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.MessageText;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.MessageText;
 
 import java.text.DecimalFormatSymbols;
 import java.util.HashMap;

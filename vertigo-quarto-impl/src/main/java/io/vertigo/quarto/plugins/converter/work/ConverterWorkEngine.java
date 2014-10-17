@@ -18,8 +18,8 @@
  */
 package io.vertigo.quarto.plugins.converter.work;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.work.WorkEngine;
+import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.converter.ConverterManager;
 
 import javax.inject.Inject;

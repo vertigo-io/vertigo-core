@@ -19,12 +19,12 @@
 package io.vertigo.dynamox.domain.formatter;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl;
+import io.vertigo.lang.Assertion;
 
 /**
  * Default formatter for boolean, number, date and string.

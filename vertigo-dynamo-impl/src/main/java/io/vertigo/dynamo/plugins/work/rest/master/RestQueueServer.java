@@ -19,9 +19,9 @@
 package io.vertigo.dynamo.plugins.work.rest.master;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.impl.work.WorkResult;
+import io.vertigo.lang.Assertion;
 
 import java.io.Serializable;
 import java.util.Collections;

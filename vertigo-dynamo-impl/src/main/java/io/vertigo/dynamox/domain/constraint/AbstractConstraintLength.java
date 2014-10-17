@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamox.domain.constraint;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.metamodel.Property;
 import io.vertigo.dynamo.impl.domain.metamodel.AbstractConstraintImpl;
+import io.vertigo.lang.Assertion;
 
 /**
  * Implémentation de base des contraintes de longueur sur une donnée quelconque.

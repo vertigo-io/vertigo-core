@@ -18,7 +18,7 @@
  */
 package io.vertigo.struts2.impl.interceptor;
 
-import io.vertigo.core.lang.VUserException;
+import io.vertigo.lang.VUserException;
 import io.vertigo.struts2.core.AbstractActionSupport;
 import io.vertigo.struts2.core.UiError;
 import io.vertigo.struts2.core.ValidationUserException;

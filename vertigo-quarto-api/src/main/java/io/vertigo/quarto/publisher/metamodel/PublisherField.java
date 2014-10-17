@@ -18,8 +18,8 @@
  */
 package io.vertigo.quarto.publisher.metamodel;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Option;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.util.regex.Pattern;
 

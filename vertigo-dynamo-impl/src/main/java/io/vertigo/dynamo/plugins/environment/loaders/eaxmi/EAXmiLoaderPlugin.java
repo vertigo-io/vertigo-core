@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.plugins.environment.loaders.eaxmi;
 
 import io.vertigo.commons.resource.ResourceManager;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -36,6 +35,7 @@ import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core.EAXmiAttribute;
 import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core.EAXmiClass;
 import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core.EAXmiLoader;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
+import io.vertigo.lang.Assertion;
 
 import java.net.URL;
 import java.util.List;

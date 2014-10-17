@@ -18,9 +18,9 @@
  */
 package io.vertigoimpl.engines.elastica.redis;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.util.DateUtil;
-import io.vertigo.core.util.StringUtil;
+import io.vertigo.lang.Assertion;
+import io.vertigo.util.DateUtil;
+import io.vertigo.util.StringUtil;
 
 import java.util.UUID;
 

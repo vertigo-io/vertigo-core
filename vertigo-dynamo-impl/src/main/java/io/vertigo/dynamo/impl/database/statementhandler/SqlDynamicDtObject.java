@@ -18,13 +18,13 @@
  */
 package io.vertigo.dynamo.impl.database.statementhandler;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.Dynamic;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.database.statementhandler.SqlResultMetaDataDynamic.SerializableDtDefinition;
+import io.vertigo.lang.Assertion;
 
 import java.util.HashMap;
 import java.util.Map;

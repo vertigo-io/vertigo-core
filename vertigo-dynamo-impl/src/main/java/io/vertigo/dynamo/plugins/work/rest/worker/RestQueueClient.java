@@ -19,9 +19,9 @@
 package io.vertigo.dynamo.plugins.work.rest.worker;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.work.WorkEngineProvider;
+import io.vertigo.lang.Assertion;
 
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;

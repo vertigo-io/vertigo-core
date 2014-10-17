@@ -18,7 +18,7 @@
  */
 package io.vertigoimpl.engines.elastica.redis;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 

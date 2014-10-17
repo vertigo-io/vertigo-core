@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamox.task;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
+import io.vertigo.lang.Assertion;
 
 /**
  * Paramètres créés par l'analyseur et utilisés par le Handler. 

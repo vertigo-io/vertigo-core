@@ -18,10 +18,10 @@
  */
 package io.vertigo.vega.rest.validation;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.MessageText;
-import io.vertigo.core.lang.VUserException;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.MessageText;
+import io.vertigo.lang.VUserException;
 
 /**
 * @author npiedeloup 

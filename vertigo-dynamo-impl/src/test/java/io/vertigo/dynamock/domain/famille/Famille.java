@@ -113,7 +113,7 @@ public final class Famille implements DtObject {
 	public final DtList<Car> getVoituresFamilleList() {
 		//		return this.<.domain.car.Car> getList(getVoituresFamilleListURI());
 		final DtListURIForAssociation fkDtListURI = getVoituresFamilleDtListURI();
-		io.vertigo.core.lang.Assertion.checkNotNull(fkDtListURI);
+		io.vertigo.lang.Assertion.checkNotNull(fkDtListURI);
 		//---------------------------------------------------------------------
 		//On est toujours dans un mode lazy.
 		if (voituresFamille == null) {
@@ -140,7 +140,7 @@ public final class Famille implements DtObject {
 	public final DtList<Car> getVoituresLocationList() {
 		//		return this.<.domain.car.Car> getList(getVoituresLocationListURI());
 		final DtListURIForAssociation fkDtListURI = getVoituresLocationDtListURI();
-		io.vertigo.core.lang.Assertion.checkNotNull(fkDtListURI);
+		io.vertigo.lang.Assertion.checkNotNull(fkDtListURI);
 		//---------------------------------------------------------------------
 		//On est toujours dans un mode lazy.
 		if (voituresLocation == null) {

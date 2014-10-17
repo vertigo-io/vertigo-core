@@ -19,11 +19,11 @@
 package io.vertigo.quarto.publisher.impl;
 
 import io.vertigo.commons.script.ScriptManager;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkResultHandler;
+import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.publisher.PublisherManager;
 import io.vertigo.quarto.publisher.model.PublisherData;
 

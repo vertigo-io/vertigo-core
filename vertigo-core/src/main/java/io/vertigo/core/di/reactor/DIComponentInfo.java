@@ -19,8 +19,8 @@
 package io.vertigo.core.di.reactor;
 
 import io.vertigo.core.di.DIAnnotationUtil;
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.util.ClassUtil;
+import io.vertigo.lang.Assertion;
+import io.vertigo.util.ClassUtil;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

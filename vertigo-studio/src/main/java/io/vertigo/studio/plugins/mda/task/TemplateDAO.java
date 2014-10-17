@@ -18,9 +18,9 @@
  */
 package io.vertigo.studio.plugins.mda.task;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
+import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
 import java.util.Collection;

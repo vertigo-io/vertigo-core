@@ -18,8 +18,6 @@
  */
 package io.vertigo.dynamo.impl.persistence;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Option;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
@@ -32,6 +30,8 @@ import io.vertigo.dynamo.impl.persistence.logical.LogicalDataStore;
 import io.vertigo.dynamo.persistence.Broker;
 import io.vertigo.dynamo.persistence.Criteria;
 import io.vertigo.dynamo.persistence.DataStore;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 /**
  * Implémentation Standard du Broker.

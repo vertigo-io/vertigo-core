@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.plugins.config.xml;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 import java.util.HashMap;
 import java.util.Map;

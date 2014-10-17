@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.persistence;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Builder;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Builder;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -19,7 +19,7 @@
 package io.vertigo.struts2.impl.servlet.filter;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.lang.Option;
+import io.vertigo.lang.Option;
 import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.struts2.exception.SessionException;

@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.di;
 
-import io.vertigo.core.lang.Option;
+import io.vertigo.lang.Option;
 
 import javax.inject.Inject;
 

@@ -18,9 +18,9 @@
  */
 package io.vertigo.struts2.core;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.lang.Assertion;
 
 import java.io.Serializable;
 import java.util.HashMap;

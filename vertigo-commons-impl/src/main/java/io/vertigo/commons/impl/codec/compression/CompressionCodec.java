@@ -19,9 +19,9 @@
 package io.vertigo.commons.impl.codec.compression;
 
 import io.vertigo.commons.codec.Codec;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.core.spaces.component.Describable;
+import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
 import java.util.Arrays;

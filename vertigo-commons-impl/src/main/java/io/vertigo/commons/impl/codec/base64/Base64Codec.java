@@ -19,7 +19,7 @@
 package io.vertigo.commons.impl.codec.base64;
 
 import io.vertigo.commons.codec.Codec;
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 /**
  * Implémentation threadSafe des mécanismes standards d'encodage/décodage.

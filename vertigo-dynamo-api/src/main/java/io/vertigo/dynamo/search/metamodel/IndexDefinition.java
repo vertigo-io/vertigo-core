@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.search.metamodel;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.lang.Assertion;
 
 /**
  * Définition de l'index de recherche.

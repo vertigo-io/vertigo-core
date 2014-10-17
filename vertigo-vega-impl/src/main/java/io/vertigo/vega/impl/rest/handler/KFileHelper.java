@@ -19,10 +19,10 @@
 package io.vertigo.vega.impl.rest.handler;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.lang.Assertion;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
 
 import java.io.IOException;

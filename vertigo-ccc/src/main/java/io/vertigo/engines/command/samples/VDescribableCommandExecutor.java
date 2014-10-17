@@ -21,9 +21,9 @@ package io.vertigo.engines.command.samples;
 import io.vertigo.core.Home;
 import io.vertigo.core.command.VCommand;
 import io.vertigo.core.command.VCommandExecutor;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.core.spaces.component.Describable;
+import io.vertigo.lang.Assertion;
 
 import java.util.List;
 

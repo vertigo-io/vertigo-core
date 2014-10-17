@@ -19,10 +19,10 @@
 package io.vertigo.commons.impl.config;
 
 import io.vertigo.commons.config.ConfigManager;
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Option;
-import io.vertigo.core.util.ClassUtil;
-import io.vertigo.core.util.StringUtil;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
+import io.vertigo.util.ClassUtil;
+import io.vertigo.util.StringUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;

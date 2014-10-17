@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.plugins.persistence;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.DataType;
@@ -52,6 +51,7 @@ import io.vertigo.dynamox.domain.formatter.FormatterNumber;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
+import io.vertigo.lang.Assertion;
 
 import java.util.HashMap;
 import java.util.Map;

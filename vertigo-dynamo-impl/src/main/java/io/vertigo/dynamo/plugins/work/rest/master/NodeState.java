@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.work.rest.master;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 import java.util.Collections;
 import java.util.HashSet;

@@ -18,11 +18,11 @@
  */
 package io.vertigo.quarto.plugins.converter.work;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.dynamo.impl.file.model.FSFile;
+import io.vertigo.lang.Assertion;
 
 import java.io.File;
 import java.io.FileOutputStream;

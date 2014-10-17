@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.parser;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 /**
  * Une règle peut être vue comme 

@@ -18,8 +18,8 @@
  */
 package io.vertigo.struts2.impl.interceptor;
 
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Option;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 import io.vertigo.struts2.core.GET;
 import io.vertigo.struts2.impl.MethodUtil;
 

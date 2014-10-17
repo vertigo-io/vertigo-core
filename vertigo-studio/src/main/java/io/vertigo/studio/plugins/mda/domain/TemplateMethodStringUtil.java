@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.plugins.mda.domain;
 
-import io.vertigo.core.util.StringUtil;
+import io.vertigo.util.StringUtil;
 
 import java.util.List;
 

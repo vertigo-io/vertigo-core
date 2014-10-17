@@ -19,8 +19,8 @@
 package io.vertigo.struts2.plugins.context.berkeley;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.core.lang.Activeable;
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Activeable;
+import io.vertigo.lang.Assertion;
 import io.vertigo.struts2.core.KActionContext;
 import io.vertigo.struts2.impl.context.ContextCachePlugin;
 

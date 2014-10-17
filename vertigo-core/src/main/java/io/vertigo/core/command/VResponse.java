@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.command;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 /**
  * A response contains 

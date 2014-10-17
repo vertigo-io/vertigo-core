@@ -20,7 +20,6 @@ package io.vertigo.dynamo.impl.database;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.locale.LocaleManager;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
@@ -31,6 +30,7 @@ import io.vertigo.dynamo.impl.database.statement.SqlCallableStatementImpl;
 import io.vertigo.dynamo.impl.database.statement.SqlPreparedStatementImpl;
 import io.vertigo.dynamo.impl.database.statement.SqlStatementHandler;
 import io.vertigo.dynamo.impl.database.statementhandler.SqlStatementHandlerImpl;
+import io.vertigo.lang.Assertion;
 
 import javax.inject.Inject;
 

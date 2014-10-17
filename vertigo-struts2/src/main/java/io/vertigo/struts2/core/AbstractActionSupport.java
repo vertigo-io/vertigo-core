@@ -21,7 +21,7 @@ package io.vertigo.struts2.core;
 import io.vertigo.commons.config.ConfigManager;
 import io.vertigo.core.Home;
 import io.vertigo.core.di.injector.Injector;
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 import io.vertigo.struts2.context.ContextCacheManager;
 import io.vertigo.struts2.exception.ExpiredContextException;
 import io.vertigo.struts2.exception.VSecurityException;

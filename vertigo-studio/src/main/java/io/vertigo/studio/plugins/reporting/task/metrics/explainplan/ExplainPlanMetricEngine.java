@@ -19,7 +19,6 @@
 package io.vertigo.studio.plugins.reporting.task.metrics.explainplan;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
@@ -30,6 +29,7 @@ import io.vertigo.dynamo.transaction.KTransaction;
 import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineSelect;
+import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.reporting.task.metrics.performance.TaskPopulator;
 import io.vertigo.studio.reporting.MetricEngine;
 

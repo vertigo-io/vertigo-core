@@ -18,9 +18,9 @@
  */
 package io.vertigo.core.di.configurator;
 
-import io.vertigo.core.lang.Activeable;
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.util.ClassUtil;
+import io.vertigo.lang.Activeable;
+import io.vertigo.lang.Assertion;
+import io.vertigo.util.ClassUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

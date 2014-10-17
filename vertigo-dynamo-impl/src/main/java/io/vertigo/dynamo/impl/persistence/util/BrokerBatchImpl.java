@@ -22,7 +22,6 @@
 package io.vertigo.dynamo.impl.persistence.util;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -38,6 +37,7 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.dynamox.task.TaskEngineSelect;
+import io.vertigo.lang.Assertion;
 
 import java.util.Collection;
 import java.util.HashMap;

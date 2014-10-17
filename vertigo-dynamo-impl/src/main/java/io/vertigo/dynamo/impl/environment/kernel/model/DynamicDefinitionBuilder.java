@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.impl.environment.kernel.model;
 
-import io.vertigo.core.lang.Builder;
 import io.vertigo.dynamo.impl.environment.kernel.meta.EntityProperty;
+import io.vertigo.lang.Builder;
 
 import java.util.List;
 

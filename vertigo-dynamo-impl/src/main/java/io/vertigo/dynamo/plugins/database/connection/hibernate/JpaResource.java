@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.database.connection.hibernate;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.transaction.KTransactionResource;
+import io.vertigo.lang.Assertion;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

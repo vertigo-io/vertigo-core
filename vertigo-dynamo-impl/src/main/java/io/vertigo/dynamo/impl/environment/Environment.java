@@ -19,12 +19,12 @@
 package io.vertigo.dynamo.impl.environment;
 
 import io.vertigo.core.di.configurator.ResourceConfig;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.spaces.resource.ResourceLoader;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
+import io.vertigo.lang.Assertion;
 
 import java.util.Collections;
 import java.util.HashMap;

@@ -31,7 +31,7 @@ import io.vertigo.core.component.mock.aop.TenMore;
 import io.vertigo.core.component.mock.aop.TenMoreInterceptor;
 import io.vertigo.core.di.configurator.ComponentSpaceConfigBuilder;
 import io.vertigo.core.engines.AopEngine;
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 public final class ComponentsConfig {
 	private final AopEngine aopEngine;

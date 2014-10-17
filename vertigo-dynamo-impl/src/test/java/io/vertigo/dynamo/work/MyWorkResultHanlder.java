@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.work;
 
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 
 /**
  * Handler unique permettant de collecter les infos relatives à l'exécution des tests.

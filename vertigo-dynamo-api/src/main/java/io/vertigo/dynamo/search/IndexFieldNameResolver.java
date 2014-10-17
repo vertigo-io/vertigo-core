@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.search;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.lang.Assertion;
 
 import java.util.HashMap;
 import java.util.Map;

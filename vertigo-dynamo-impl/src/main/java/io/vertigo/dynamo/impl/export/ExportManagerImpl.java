@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.impl.export;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.export.ExportManager;
 import io.vertigo.dynamo.export.model.Export;
 import io.vertigo.dynamo.export.model.ExportFormat;
@@ -27,6 +26,7 @@ import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.dynamo.work.WorkResultHandler;
+import io.vertigo.lang.Assertion;
 
 import java.io.File;
 import java.io.FileOutputStream;

@@ -18,8 +18,8 @@
  */
 package io.vertigo.quarto.plugins.converter.work;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.lang.Assertion;
 
 /**
  * Travail de conversion.

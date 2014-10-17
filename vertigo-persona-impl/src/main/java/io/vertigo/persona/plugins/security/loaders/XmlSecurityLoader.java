@@ -20,7 +20,7 @@ package io.vertigo.persona.plugins.security.loaders;
 
 import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.core.Home;
-import io.vertigo.core.lang.Assertion;
+import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.metamodel.Permission;
 import io.vertigo.persona.security.metamodel.Role;
 

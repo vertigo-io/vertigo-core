@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.impl.database.statement;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.impl.database.listener.SqlDataBaseListener;
+import io.vertigo.lang.Assertion;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;

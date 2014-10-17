@@ -19,9 +19,9 @@
 package io.vertigo.dynamox.task;
 
 import io.vertigo.commons.script.ScriptManager;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
+import io.vertigo.lang.Assertion;
 
 import java.sql.SQLException;
 

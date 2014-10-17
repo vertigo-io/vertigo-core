@@ -19,11 +19,11 @@
 package io.vertigo.studio.plugins.reporting.domain;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamo.transaction.KTransactionWritable;
+import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.reporting.domain.metrics.count.CountMetricEngine;
 import io.vertigo.studio.plugins.reporting.domain.metrics.dependency.DependencyMetricEngine;
 import io.vertigo.studio.plugins.reporting.domain.metrics.fields.FieldsMetricEngine;

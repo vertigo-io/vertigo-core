@@ -18,7 +18,7 @@
  */
 package io.vertigo.struts2.impl.servlet.filter;
 
-import io.vertigo.core.lang.Option;
+import io.vertigo.lang.Option;
 
 import java.io.IOException;
 import java.util.regex.Matcher;

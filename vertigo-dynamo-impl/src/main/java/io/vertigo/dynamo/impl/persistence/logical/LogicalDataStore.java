@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.impl.persistence.logical;
 
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
@@ -30,6 +29,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.persistence.Broker;
 import io.vertigo.dynamo.persistence.Criteria;
 import io.vertigo.dynamo.persistence.DataStore;
+import io.vertigo.lang.Assertion;
 
 /**
  * Permet de gérer les listes de référence.

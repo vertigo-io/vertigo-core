@@ -19,10 +19,10 @@
 package io.vertigo.quarto.plugins.publisher.environment.registries;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
+import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.publisher.metamodel.PublisherDataDefinition;
 import io.vertigo.quarto.publisher.metamodel.PublisherNodeDefinition;
 import io.vertigo.quarto.publisher.metamodel.PublisherNodeDefinitionBuilder;
