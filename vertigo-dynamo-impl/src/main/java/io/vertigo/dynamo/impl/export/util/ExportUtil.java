@@ -31,7 +31,7 @@ import java.util.Map;
 
 /**
  * Classe utilitaire pour export.
- * 
+ *
  * @author pchretien
  */
 public final class ExportUtil {
@@ -39,19 +39,11 @@ public final class ExportUtil {
 	 * Retourne le text d'un champs du DTO en utilisant le formateur du domaine,
 	 * ou l'élément issu de la liste de REF si il y a une dénormalisation à
 	 * faire.
-	 * 
-	 * @param referenceCache
-	 *            Cache des éléments de référence (clé-libellé), peut être vide
-	 *            la premiere fois il sera remplit automatiquement (utilisé pour
-	 *            les champs issus d'association avec une liste de ref)
-	 * @param denormCache
-	 *            Cache des colonnes dénormalisées par field, peut être vide la
-	 *            premiere fois il sera remplit automatiquement (utilisé en cas
-	 *            de dénorm spécifique)
-	 * @param dto
-	 *            Objet métier
-	 * @param exportColumn
-	 *            Information de la colonne a exporter.
+	 *
+	 * @param referenceCacheCache des éléments de référence (clé-libellé), peut être vide la premiere fois il sera remplit automatiquement (utilisé pour les champs issus d'association avec une liste de ref)
+	 * @param denormCache  Cache des colonnes dénormalisées par field, peut être vide la premiere fois il sera remplit automatiquement (utilisé en cas de dénorm spécifique)
+	 * @param dto Objet métier
+	 * @param exportColumn Information de la colonne a exporter.
 	 * @return Valeur d'affichage de la colonne de l'objet métier
 	 */
 	public static String getText(final PersistenceManager persistenceManager, final Map<DtField, Map<Object, String>> referenceCache, final Map<DtField, Map<Object, String>> denormCache, final DtObject dto, final ExportField exportColumn) {
@@ -59,21 +51,12 @@ public final class ExportUtil {
 	}
 
 	/**
-	 * Retourne la valeur d'un champs du DTO, ou l'élément issu de la liste de
-	 * REF si il y a une dénormalisation à faire.
-	 * 
-	 * @param referenceCache
-	 *            Cache des éléments de référence (clé-libellé), peut être vide
-	 *            la premiere fois il sera remplit automatiquement (utilisé pour
-	 *            les champs issus d'association avec une liste de ref)
-	 * @param denormCache
-	 *            Cache des colonnes dénormalisées par field, peut être vide la
-	 *            premiere fois il sera remplit automatiquement (utilisé en cas
-	 *            de dénorm spécifique)
-	 * @param dto
-	 *            Objet métier
-	 * @param exportColumn
-	 *            Information de la colonne a exporter.
+	 * Retourne la valeur d'un champs du DTO, ou l'élément issu de la liste de REF si il y a une dénormalisation à faire.
+	 *
+	 * @param referenceCache Cache des éléments de référence (clé-libellé), peut être vide la premiere fois il sera remplit automatiquement (utilisé pour les champs issus d'association avec une liste de ref)
+	 * @param denormCache Cache des colonnes dénormalisées par field, peut être vide la premiere fois il sera remplit automatiquement (utilisé en cas de dénorm spécifique)
+	 * @param dto Objet métier
+	 * @param exportColumn Information de la colonne a exporter.
 	 * @return Valeur typée de la colonne de l'objet métier
 	 */
 	public static Object getValue(final PersistenceManager persistenceManager, final Map<DtField, Map<Object, String>> referenceCache, final Map<DtField, Map<Object, String>> denormCache, final DtObject dto, final ExportField exportColumn) {

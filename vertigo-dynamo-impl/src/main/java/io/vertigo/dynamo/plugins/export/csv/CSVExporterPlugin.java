@@ -32,7 +32,7 @@ import javax.inject.Inject;
 
 /**
  * Plugin d'export CSV.
- * 
+ *
  * @author pchretien, npiedeloup
  */
 public final class CSVExporterPlugin implements ExporterPlugin {
@@ -41,9 +41,8 @@ public final class CSVExporterPlugin implements ExporterPlugin {
 
 	/**
 	 * Constructeur.
-	 * 
-	 * @param codecManager
-	 *            Manager des mécanismes de codage/décodage.
+	 *
+	 * @param codecManager Manager des mécanismes de codage/décodage.
 	 */
 	@Inject
 	public CSVExporterPlugin(final PersistenceManager persistenceManager, final CodecManager codecManager) {

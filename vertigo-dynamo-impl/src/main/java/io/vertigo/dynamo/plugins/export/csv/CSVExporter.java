@@ -40,7 +40,7 @@ import java.util.Map;
 
 /**
  * Export avec ETAT.
- * 
+ *
  * @author pchretien, npiedeloup
  */
 final class CSVExporter {
@@ -65,11 +65,9 @@ final class CSVExporter {
 
 	/**
 	 * Constructeur.
-	 * 
-	 * @param codecManager
-	 *            Manager des codecs
-	 * @param exportHelper
-	 *            Helper d'export.
+	 *
+	 * @param codecManager Manager des codecs
+	 * @param exportHelper Helper d'export.
 	 */
 	CSVExporter(final CodecManager codecManager, final PersistenceManager persistenceManager) {
 		Assertion.checkNotNull(codecManager);
@@ -83,13 +81,10 @@ final class CSVExporter {
 	 * Méthode principale qui gère l'export d'un tableau vers un fichier CVS. On
 	 * ajoute le BOM UTF8 si le fichier est généré en UTF-8 pour une bonne
 	 * ouverture dans Excel.
-	 * 
-	 * @param documentParameters
-	 *            Paramètres du document à exporter
-	 * @param out
-	 *            Flux de sortie
-	 * @throws IOException
-	 *             Exception d'ecriture
+	 *
+	 * @param documentParameters  Paramètres du document à exporter
+	 * @param out Flux de sortie
+	 * @throws IOException Exception d'ecriture
 	 */
 	void exportData(final Export documentParameters, final OutputStream out) throws IOException {
 		final Charset charset = Charset.forName("UTF-8");
@@ -111,13 +106,10 @@ final class CSVExporter {
 
 	/**
 	 * Réalise l'export des données d'en-tête.
-	 * 
-	 * @param parameters
-	 *            de cet export
-	 * @param out
-	 *            Le flux d'écriture des données exportées.
-	 * @throws IOException
-	 *             Exception lors de l'écriture dans le flux.
+	 *
+	 * @param parameters de cet export
+	 * @param out Le flux d'écriture des données exportées.
+	 * @throws IOException Exception lors de l'écriture dans le flux.
 	 */
 	private void exportHeader(final ExportSheet parameters, final Writer out) throws IOException {
 		final String title = parameters.getTitle();
@@ -137,13 +129,10 @@ final class CSVExporter {
 
 	/**
 	 * Réalise l'export des données de contenu.
-	 * 
-	 * @param parameters
-	 *            de cet export
-	 * @param out
-	 *            Le flux d'écriture des données exportées.
-	 * @throws IOException
-	 *             Exception lors de l'écriture dans le flux.
+	 *
+	 * @param parameters de cet export
+	 * @param out Le flux d'écriture des données exportées.
+	 * @throws IOException Exception lors de l'écriture dans le flux.
 	 */
 	private void exportData(final ExportSheet parameters, final Writer out) throws IOException {
 		// Parcours des DTO de la DTC
@@ -180,9 +169,8 @@ final class CSVExporter {
 
 	/**
 	 * Encode la chaîne exportée en csv.
-	 * 
-	 * @param str
-	 *            La chaîne à encoder.
+	 *
+	 * @param str La chaîne à encoder.
 	 * @return La chaîne encodée.
 	 */
 	private String encodeString(final String str) {
@@ -192,9 +180,8 @@ final class CSVExporter {
 
 	/**
 	 * Encode la chaîne exportée en csv.
-	 * 
-	 * @param str
-	 *            La chaîne à encoder.
+	 *
+	 * @param str La chaîne à encoder.
 	 * @return La chaîne encodée.
 	 */
 	private String encodeNumber(final String str) {

@@ -55,7 +55,7 @@ import org.apache.poi.ss.usermodel.PrintSetup;
 
 /**
  * Export avec POI.
- * 
+ *
  * @author pchretien, npiedeloup
  */
 final class XLSExporter {
@@ -121,15 +121,11 @@ final class XLSExporter {
 
 	/**
 	 * Réalise l'export des données de contenu et de la ligne d'en-tête.
-	 * 
-	 * @param parameters
-	 *            Paramètre de cet export
-	 * @param workbook
-	 *            Document excel
-	 * @param sheet
-	 *            Feuille Excel
-	 * @param forceLandscape
-	 *            Indique si le parametrage force un affichage en paysage
+	 *
+	 * @param parameters Paramètre de cet export
+	 * @param workbook Document excel
+	 * @param sheet Feuille Excel
+	 * @param forceLandscape Indique si le parametrage force un affichage en paysage
 	 */
 	private void exportData(final ExportSheet parameters, final HSSFWorkbook workbook, final HSSFSheet sheet, final boolean forceLandscape) {
 		initHssfStyle(workbook);
@@ -152,8 +148,7 @@ final class XLSExporter {
 			totalWidth += usesMaxLength;
 		}
 		/**
-		 * @todo ne serait-il pas plus simple d'utiliser
-		 *       sheet.autoSizeColumn(i); de poi 3.0.1 ?
+		 * @todo ne serait-il pas plus simple d'utilisersheet.autoSizeColumn(i); de poi 3.0.1 ?
 		 */
 
 		// note: il ne semble pas simple de mettre title et author dans les
@@ -372,27 +367,21 @@ final class XLSExporter {
 
 	/**
 	 * Méthode principale qui gère l'export d'un tableau vers un fichier ODS.
-	 * 
-	 * @param documentParameters
-	 *            Paramètres du document à exporter
-	 * @param out
-	 *            Flux de sortie
+	 *
+	 * @param documentParameters Paramètres du document à exporter
+	 * @param out Flux de sortie
 	 */
 	void exportData(final Export documentParameters, final OutputStream out) throws IOException {
-		try {
-			// Workbook
-			final boolean forceLandscape = Export.Orientation.Landscape == documentParameters.getOrientation();
+		// Workbook
+		final boolean forceLandscape = Export.Orientation.Landscape == documentParameters.getOrientation();
 
-			final HSSFWorkbook workbook = new HSSFWorkbook();
-			for (final ExportSheet exportSheet : documentParameters.getSheets()) {
-				final String title = exportSheet.getTitle();
-				final HSSFSheet sheet = title == null ? workbook.createSheet() : workbook.createSheet(title);
-				exportData(exportSheet, workbook, sheet, forceLandscape);
+		final HSSFWorkbook workbook = new HSSFWorkbook();
+		for (final ExportSheet exportSheet : documentParameters.getSheets()) {
+			final String title = exportSheet.getTitle();
+			final HSSFSheet sheet = title == null ? workbook.createSheet() : workbook.createSheet(title);
+			exportData(exportSheet, workbook, sheet, forceLandscape);
 
-			}
-			workbook.write(out);
-		} finally {
-			out.close();
 		}
+		workbook.write(out);
 	}
 }

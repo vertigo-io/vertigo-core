@@ -37,12 +37,9 @@ public final class ExportDenormField extends ExportField {
 	/**
 	 * Constructeur.
 	 *
-	 * @param dtField
-	 *            Champ à exporter
-	 * @param list
-	 *            Liste de éléments dénormés
-	 * @param displayField
-	 *            Champs dénormé
+	 * @param dtField  Champ à exporter
+	 * @param list Liste de éléments dénormés
+	 * @param displayField Champs dénormé
 	 */
 	ExportDenormField(final DtField dtField, final MessageText label, final DtList<?> list, final DtField displayField) {
 		super(dtField, label);
@@ -66,8 +63,7 @@ public final class ExportDenormField extends ExportField {
 	}
 
 	/**
-	 * @return DtField représentant la clé de la liste de dénorm. (par défaut la
-	 *         key du DT)
+	 * @return DtField représentant la clé de la liste de dénorm. (par défaut la  key du DT)
 	 */
 	public DtField getKeyField() {
 		return keyField;

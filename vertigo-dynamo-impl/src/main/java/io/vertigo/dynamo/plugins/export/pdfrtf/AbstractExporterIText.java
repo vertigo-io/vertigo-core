@@ -62,25 +62,19 @@ public abstract class AbstractExporterIText {
 	}
 
 	/**
-	 * We create a writer that listens to the document and directs a PDF-stream
-	 * to out
-	 * 
-	 * @param document
-	 *            Document
-	 * @param out
-	 *            OutputStream
+	 * We create a writer that listens to the document and directs a PDF-stream to out
+	 *
+	 * @param document Document
+	 * @param out OutputStream
 	 */
 	protected abstract void createWriter(final Document document, final OutputStream out) throws DocumentException;
 
 	/**
 	 * Méthode principale qui gère l'export d'un tableau vers un fichier ODS.
-	 * 
-	 * @param export
-	 *            paramètres du document à exporter
-	 * @param out
-	 *            flux de sortie
-	 * @throws DocumentException
-	 *             Exception
+	 *
+	 * @param export paramètres du document à exporter
+	 * @param outflux de sortie
+	 * @throws DocumentException Exception
 	 */
 	public final void exportData(final Export export, final OutputStream out) throws DocumentException {
 		// step 1: creation of a document-object
@@ -137,11 +131,9 @@ public abstract class AbstractExporterIText {
 
 	/**
 	 * Effectue le rendu des headers.
-	 * 
-	 * @param parameters
-	 *            Paramètres
-	 * @param datatable
-	 *            Table
+	 *
+	 * @param parameters Paramètres
+	 * @param datatable Table
 	 */
 	private static void renderHeaders(final ExportSheet parameters, final Table datatable) throws BadElementException {
 		// size of columns
@@ -163,11 +155,9 @@ public abstract class AbstractExporterIText {
 
 	/**
 	 * Effectue le rendu de la liste.
-	 * 
-	 * @param parameters
-	 *            Paramètres
-	 * @param datatable
-	 *            Table
+	 *
+	 * @param parameters Paramètres
+	 * @param datatable Table
 	 */
 	private void renderList(final ExportSheet parameters, final Table datatable) throws BadElementException {
 		// data rows

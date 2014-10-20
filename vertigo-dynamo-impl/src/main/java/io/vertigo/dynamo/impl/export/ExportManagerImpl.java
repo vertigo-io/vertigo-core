@@ -38,7 +38,7 @@ import javax.inject.Inject;
 
 /**
  * Implémentation standard du manager des exports.
- * 
+ *
  * @author pchretien, npiedeloup
  */
 public final class ExportManagerImpl implements ExportManager {
@@ -62,9 +62,8 @@ public final class ExportManagerImpl implements ExportManager {
 
 	/**
 	 * Récupère le plugin d'export associé au format.
-	 * 
-	 * @param exportFormat
-	 *            Format d'export souhaité
+	 *
+	 * @param exportFormat Format d'export souhaité
 	 * @return Plugin d'export associé au format
 	 */
 	private ExporterPlugin getExporterPlugin(final ExportFormat exportFormat) {
@@ -104,14 +103,11 @@ public final class ExportManagerImpl implements ExportManager {
 	}
 
 	/**
-	 * Ecrire dans un fichier temporaire en passant par le writer le données
-	 * (CSV, XML, DOC,...).
-	 * 
+	 * Ecrire dans un fichier temporaire en passant par le writer le données (CSV, XML, DOC,...).
+	 *
 	 * @return Fichier temporaire généré
-	 * @param export
-	 *            Paramètres de l'export
-	 * @throws Exception
-	 *             Exception lors de la création du fichier
+	 * @param export Paramètres de l'export
+	 * @throws Exception Exception lors de la création du fichier
 	 */
 	private KFile generateFile(final Export export) throws Exception {
 		final ExporterPlugin exporterPlugin = getExporterPlugin(export.getFormat());
