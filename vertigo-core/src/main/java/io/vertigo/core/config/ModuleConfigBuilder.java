@@ -29,7 +29,7 @@ import java.util.List;
 
 /**
  * Paramétrage de l'application.
- * 
+ *
  * @author npiedeloup, pchretien
  */
 public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
@@ -52,10 +52,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
-	 * Ajout de resources  
-	 * @param paramName Nom du paramètre
-	 * @param paramValue Valeur du paramètre
-	 * @return
+	 * Ajout de resources
+	 * @param resourceType Type of resource
 	 */
 	public ModuleConfigBuilder withResource(final String resourceType, final String resourcePath) {
 		Assertion.checkArgNotEmpty(resourceType);
@@ -133,7 +131,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	/** {@inheritDoc} */
 	public ModuleConfig build() {
 		final List<ModuleRule> moduleRules = new ArrayList<>();
-		//Mise à jour des règles. 
+		//Mise à jour des règles.
 		if (myHasApi) {
 			moduleRules.add(new APIModuleRule());
 		}

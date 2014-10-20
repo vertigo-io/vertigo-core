@@ -27,14 +27,13 @@ import io.vertigo.lang.Assertion;
 
 /**
  * @author pchretien
- * @param <G> Type de Grammaire
  */
 public abstract class AbstractDynamicRegistryPlugin implements DynamicRegistryPlugin {
 	private final Grammar grammar;
 
 	/**
 	 * Constructeur.
-	 * @param grammarProvider Grammaire
+	 * @param grammar Grammaire
 	 */
 	protected AbstractDynamicRegistryPlugin(final Grammar grammar) {
 		Assertion.checkNotNull(grammar);

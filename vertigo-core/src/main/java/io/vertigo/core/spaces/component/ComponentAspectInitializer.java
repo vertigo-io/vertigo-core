@@ -58,8 +58,7 @@ final class ComponentAspectInitializer {
 
 	/**
 	 * Création des composants
-	 * @param adviceInfos Liste des advices à créer
-	 * @param componentRefFactory Factory des références utilisables
+	 * @param aspectInfos Liste des définitions d'aspects à créer
 	 * @return Liste des composants
 	 */
 	private static Map<AspectConfig, AOPInterceptor> createInterceptorsMap(final Collection<AspectConfig> aspectInfos) {
@@ -77,7 +76,6 @@ final class ComponentAspectInitializer {
 	/**
 	 * Création des points d'exécution identifiés par méthode.
 	 *
-	 * @param implClass Classe portant les aspects
 	 * @return Map des aspects par méthode
 	 */
 	public Map<Method, List<AOPInterceptor>> createJoinPoints(final ComponentConfig componentConfig) {

@@ -43,11 +43,10 @@ public final class ESServicesPlugin extends AbstractESServicesPlugin {
 
 	/**
 	 * Constructeur.
-	 * @param serverURL URL du serveur ElasticSearch (ex : "http://localhost:8983/elasticsearch")
+	 * @param serversNamesStr URL du serveur ElasticSearch (ex : "http://localhost:8983/elasticsearch")
 	 * @param cores Liste des indexes
 	 * @param rowsPerQuery Liste des indexes
 	 * @param codecManager Manager des codecs
-	 * @param localeManager Manager des messages localisés
 	 */
 	@Inject
 	public ESServicesPlugin(@Named("servers.names") final String serversNamesStr, @Named("cores") final String cores, @Named("rowsPerQuery") final int rowsPerQuery, final CodecManager codecManager) {
@@ -76,7 +75,7 @@ public final class ESServicesPlugin extends AbstractESServicesPlugin {
 		return new NodeBuilder() //
 				.settings(buildNodeSettings(serversNames))//
 				.client(true)//
-		.build();
+				.build();
 	}
 
 	private static Settings buildNodeSettings(final String[] serversNames) {

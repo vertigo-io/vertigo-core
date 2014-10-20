@@ -138,7 +138,6 @@ public final class DynamicDefinitionRepository {
 
 	/**
 	 * Ajoute un template.
-	 * @param template DynamicDefinition
 	 */
 	public void addTemplate(final DynamicDefinition dynamicDefinition) {
 		Assertion.checkNotNull(dynamicDefinition);

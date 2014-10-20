@@ -19,8 +19,8 @@
 package io.vertigo.dynamo.impl.work.worker.distributed;
 
 import io.vertigo.dynamo.impl.work.MasterPlugin;
-import io.vertigo.dynamo.impl.work.WorkResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
+import io.vertigo.dynamo.impl.work.WorkResult;
 import io.vertigo.dynamo.impl.work.worker.Coordinator;
 import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.lang.Activeable;
@@ -69,7 +69,7 @@ public final class DistributedCoordinator implements Coordinator, Activeable {
 
 	/**
 	 * Indique si ce type de work peut-être distribué.
-	 * @param work Travail à effectuer
+	 * @param workItem Travail à effectuer
 	 * @return si ce type de work peut-être distribué.
 	 */
 	public <WR, W> boolean accept(final WorkItem<WR, W> workItem) {

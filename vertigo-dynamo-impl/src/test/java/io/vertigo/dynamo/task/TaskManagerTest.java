@@ -33,7 +33,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * 
+ *
  * @author dchallas
  */
 public final class TaskManagerTest extends AbstractTestCaseJU4 {
@@ -71,7 +71,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 		registerTask(TK_ADD_REGISTRY, "+");
 
 		final String id = null;
-		//L'appel à la résolution doit remonter une assertion 
+		//L'appel à la résolution doit remonter une assertion
 		final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(id, TaskDefinition.class);
 		nop(taskDefinition);
 	}
@@ -111,7 +111,6 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * On vérifie les caractères obligatoires des attributs en entrée.
-	 * @throws Exception erreur
 	 */
 	@Test(expected = NullPointerException.class)
 	public void testExecuteNull() {
@@ -122,7 +121,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Vérification de l'impossibilité d'enregistrer deux fois une tache. 
+	 * Vérification de l'impossibilité d'enregistrer deux fois une tache.
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testDoubleRegister() {
@@ -176,7 +175,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 		return taskDefinition;
 	}
 
-	/**  
+	/**
 	 * @param value1 entier 1
 	 * @param value2 entier 2
 	 * @param value3 entier 3

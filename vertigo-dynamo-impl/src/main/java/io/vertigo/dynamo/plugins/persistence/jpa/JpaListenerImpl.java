@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
 
 /**
  * Implémentation standard du Listener de réception des événements produits par l'exécution des tachess.
- * 
+ *
  * @author pchretien
  */
 final class JpaListenerImpl {
@@ -56,7 +56,6 @@ final class JpaListenerImpl {
 		sqlLog = Logger.getLogger("Sql");
 	}
 
-	/** {@inheritDoc} */
 	public void onStart(final String query) {
 		if (sqlLog.isDebugEnabled()) {
 			// on passe le preparedStatement en argument pour éviter de
@@ -66,7 +65,6 @@ final class JpaListenerImpl {
 		analyticsManager.getAgent().addMetaData(MD_DB_SQL, query);
 	}
 
-	/** {@inheritDoc} */
 	public void onFinish(final String query, final boolean success, final long elapsedTime, final Long nbModifiedRow, final Long nbSelectedRow) {
 		if (sqlLog.isInfoEnabled()) {
 			final StringBuilder sb = new StringBuilder();
@@ -92,7 +90,7 @@ final class JpaListenerImpl {
 			sqlLog.info(sb.toString());
 		}
 		//On choisit d'incrémenter l'indicateur.
-		//Se faisant on perd le moyen de faire la moyenne par requete, 
+		//Se faisant on perd le moyen de faire la moyenne par requete,
 		//Si le besoin apparaissait il faudrait creer un sous-process autour des appels
 		analyticsManager.getAgent().incMeasure(ME_DB_TIME, elapsedTime);
 		analyticsManager.getAgent().incMeasure(ME_DB_COMMAND_COUNT, nbModifiedRow != null ? 1 : 0);

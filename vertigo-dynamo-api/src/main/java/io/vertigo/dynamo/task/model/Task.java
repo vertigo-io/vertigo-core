@@ -59,8 +59,6 @@ public final class Task {
 	/**
 	 * Constructeur.
 	 * Le constructeur est protégé, il est nécessaire de passer par le Builder.
-	 *
-	 * @param dataSet Données de la tache.
 	 */
 	Task(final TaskDefinition taskDefinition, final Map<TaskAttribute, Object> taskAttributes) {
 		Assertion.checkNotNull(taskDefinition);

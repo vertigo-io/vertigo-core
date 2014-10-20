@@ -57,8 +57,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	/**
 	 * Constructeur.
 	 *
-	 * @param dto
-	 *            DTO à exporter
+	 * @param dto DTO à exporter
 	 */
 	ExportSheetBuilder(final ExportBuilder exportBuilder, final DtObject dto, final String title) {
 		Assertion.checkNotNull(exportBuilder);
@@ -111,7 +110,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 
 	/**
 	 * @param fieldName ajout d'un champs du Dt à exporter
-	 * @param label nom spécifique à utiliser dans l'export, null si l'on souhaite utiliser celui indiqué dans le DT pour ce champs
+	 * @param overridedLabel nom spécifique à utiliser dans l'export, null si l'on souhaite utiliser celui indiqué dans le DT pour ce champs
 	 */
 	public ExportSheetBuilder withField(final DtFieldName fieldName, final MessageText overridedLabel) {
 		Assertion.checkNotNull(fieldName);
@@ -129,7 +128,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @param fieldName ajout d'un champs du Dt à exporter
 	 * @param list Liste des éléments dénormés
 	 * @param displayfield Field du libellé à utiliser.
-	 * @param label nom spécifique à utiliser dans l'export, null si l'on souhaite utiliser celui indiqué dans le DT pour ce champs
+	 * @param overridedLabel nom spécifique à utiliser dans l'export, null si l'on souhaite utiliser celui indiqué dans le DT pour ce champs
 	 */
 	public ExportSheetBuilder withField(final DtFieldName fieldName, final DtList<?> list, final DtFieldName displayfield, final MessageText overridedLabel) {
 		Assertion.checkNotNull(fieldName);

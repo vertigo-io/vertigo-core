@@ -111,7 +111,7 @@ final class KFileHelper {
 	 * Encode un nom de fichier avec des % pour Content-Disposition.
 	 * (US-ASCII + Encode-Word : http://www.ietf.org/rfc/rfc2183.txt, http://www.ietf.org/rfc/rfc2231.txt
 	 * sauf en MS IE et Chrome qui ne supportent pas cet encodage et qui n'en ont pas besoin)
-	 * @param localHttpRequest HttpServletRequest
+	 * @param request HttpServletRequest
 	 * @param fileName String
 	 * @return String
 	 */

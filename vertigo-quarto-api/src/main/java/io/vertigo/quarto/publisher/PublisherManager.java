@@ -46,7 +46,7 @@ public interface PublisherManager extends Manager {
 	 * @param fileName Nom du document à générer (! pas son emplacement de stockage !)
 	 * @param modelFileURL Chemin vers le fichier model
 	 * @param data Données à fusionner avec le model
-	 * @param Handler permettant de notifier l'exécution de publisher
+	 * @param workResultHandler Handler permettant de notifier l'exécution de publisher
 	 */
 	void publishASync(final String fileName, final URL modelFileURL, final PublisherData data, final WorkResultHandler<KFile> workResultHandler);
 }

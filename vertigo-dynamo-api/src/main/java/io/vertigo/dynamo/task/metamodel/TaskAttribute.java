@@ -116,8 +116,7 @@ public final class TaskAttribute {
 	/**
 	 * Vérifie la cohérence des arguments d'un Attribute
 	 * Vérifie que l'objet est cohérent avec le type défini sur l'attribut.
-	 * @param attributeName Nom de l'attribut de tache
-	 * @param value Object primitif ou DtObject ou bien DtList
+	 * @param value Valeur (Object primitif ou DtObject ou bien DtList)
 	 */
 	public void checkAttribute(final Object value) {
 		if (isNotNull()) {

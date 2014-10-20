@@ -32,7 +32,7 @@ import javax.inject.Named;
 
 /**
  * Exécution synchrone et distante des Works avec un transfert par WS REST.
- * 
+ *
  * @author npiedeloup, pchretien
  */
 public final class RestMasterPlugin implements MasterPlugin {
@@ -42,7 +42,7 @@ public final class RestMasterPlugin implements MasterPlugin {
 	/**
 	 * Constructeur.
 	 * @param timeoutSeconds Timeout des travaux en attente de traitement
-	 * @param workTypesAsString Liste des types de work distribués (séparateur ;)
+	 * @param distributedWorkTypes Liste des types de work distribués (séparateur ;)
 	 * @param codecManager Manager d'encodage/decodage
 	 */
 	@Inject

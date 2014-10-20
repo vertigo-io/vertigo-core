@@ -70,7 +70,7 @@ final class BerkeleyDatabase {
 	/**
 	 * Récupération d'un Objet par sa clé.
 	 * @param <C> D Type des objets à récupérer
-	 * @param key id de l'objet à récupérer
+	 * @param id Id de l'objet à récupérer
 	 * @return Objet correspondant à la clé
 	 */
 	<C> Option<C> find(final String id, final Class<C> clazz) {

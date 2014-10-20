@@ -38,7 +38,6 @@ public final class Grammar {
 
 	/**
 	 * Ajout d'une grammaire.
-	 * @param grammars Grammaires à ajouter
 	 */
 	public Grammar(final Entity... entities) {
 		this(Arrays.asList(entities));
@@ -46,7 +45,6 @@ public final class Grammar {
 
 	/**
 	 * Ajout d'une grammaire.
-	 * @param grammars Grammaires à ajouter
 	 */
 	public Grammar(final List<Entity> entities) {
 		Assertion.checkNotNull(entities);

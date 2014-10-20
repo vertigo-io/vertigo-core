@@ -52,7 +52,7 @@ final class TaskResultBuilder implements Builder<TaskResult> {
 	 * Affecte la valeur d'un paramètre.
 	 *
 	 * @param attributeName Nom du paramètre
-	 * @param o Valeur
+	 * @param value Valeur
 	 */
 	TaskResultBuilder withValue(final String attributeName, final Object value) {
 		final TaskAttribute taskAttribute = taskDefinition.getAttribute(attributeName);

@@ -96,7 +96,6 @@ final class ComponentContainer implements Container, Activeable {
 
 	/**
 	 * Enregistrement des plugins .
-	 * @param componentClass Classe/Interface du gestionnaire
 	 */
 	void registerPlugins(final ComponentConfig componentConfig, final Map<PluginConfig, Plugin> plugins) {
 		Assertion.checkNotNull(componentConfig);
@@ -124,7 +123,6 @@ final class ComponentContainer implements Container, Activeable {
 	/**
 	 * Enregistrement d'un composant.
 	 * @param component Gestionnaire
-	 * @param apiClass Classe/Interface du gestionnaire
 	 */
 	void registerComponent(final ComponentConfig componentConfig, final Object component, final Option<ComponentInitializer> componentInitializer) {
 		Assertion.checkNotNull(componentConfig);

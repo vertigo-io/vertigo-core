@@ -37,7 +37,7 @@ import javax.inject.Named;
  * NodePlugin
  * Ce plugin permet d'exécuter des travaux en mode distribué.
  * REDIS est utilisé comme plateforme d'échanges.
- * 
+ *
  * @author pchretien
  */
 public final class RedisWorkerPlugin implements WorkerPlugin, Activeable {
@@ -72,7 +72,6 @@ public final class RedisWorkerPlugin implements WorkerPlugin, Activeable {
 		redisDB.stop();
 	}
 
-	/** {@inheritDoc} */
 	public List<Node> getNodes() {
 		return redisDB.getNodes();
 	}

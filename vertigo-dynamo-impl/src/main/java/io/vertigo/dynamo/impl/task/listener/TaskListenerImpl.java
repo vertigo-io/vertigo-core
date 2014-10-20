@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 
 /**
  * Implémentation standard du Listener de réception des événements produits par l'exécution des tachess.
- * 
+ *
  * @author pchretien
  */
 public final class TaskListenerImpl implements TaskListener {
@@ -42,7 +42,6 @@ public final class TaskListenerImpl implements TaskListener {
 
 	/**
 	 * Constructeur.
-	 * @param analyticsManager Manager de monitoring
 	 */
 	public TaskListenerImpl(/*final AnalyticsManager analyticsManager*/) {
 		//		Assertion.checkNotNull(analyticsManager);

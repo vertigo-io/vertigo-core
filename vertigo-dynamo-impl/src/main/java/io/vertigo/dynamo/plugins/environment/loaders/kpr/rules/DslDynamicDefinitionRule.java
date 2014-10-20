@@ -44,8 +44,7 @@ public final class DslDynamicDefinitionRule extends AbstractRule<DynamicDefiniti
 
 	/**
 	 * Constructeur.
-	 * 
-	 * @param packageName Nom du package
+	 *
 	 * @param dynamicModelRepository DynamicModelRepository
 	 */
 	public DslDynamicDefinitionRule(final String operation, final DynamicDefinitionRepository dynamicModelRepository) {

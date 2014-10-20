@@ -54,7 +54,6 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 
 	/**
 	 * Constructeur.
-	 * @param oomFileName Adresse du fichier powerAMC (OOM).
 	 */
 	@Inject
 	public EAXmiLoaderPlugin(final ResourceManager resourceManager) {
@@ -148,8 +147,8 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 			//Dans le cas d'une NN ses deux propriétés sont redondantes ;
 			//elles ne font donc pas partie de la définition d'une association de type NN
 			associationDefinitionBuilder.withPropertyValue(KspProperty.MULTIPLICITY_A, associationXmi.getMultiplicityA())//
-			.withPropertyValue(KspProperty.MULTIPLICITY_B, associationXmi.getMultiplicityB())//
-			.withPropertyValue(KspProperty.FK_FIELD_NAME, buildFkFieldName(associationXmi, dynamicModelrepository));
+					.withPropertyValue(KspProperty.MULTIPLICITY_B, associationXmi.getMultiplicityB())//
+					.withPropertyValue(KspProperty.FK_FIELD_NAME, buildFkFieldName(associationXmi, dynamicModelrepository));
 
 		}
 		return associationDefinitionBuilder.build();

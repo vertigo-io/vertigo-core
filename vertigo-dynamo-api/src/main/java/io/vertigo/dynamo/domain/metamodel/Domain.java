@@ -73,7 +73,7 @@ public final class Domain implements Definition {
 	 * Constructeur.
 	 * @param dataType Type Dynamo
 	 * @param formatter Formatter du domaine
-	 * @param constraintList Liste des contraintes du domaine
+	 * @param constraints Liste des contraintes du domaine
 	 * @param properties Map des (DtProperty, value)
 	 */
 	public Domain(final String name, final DataType dataType, final Formatter formatter, final List<Constraint<?, Object>> constraints, final Properties properties) {
@@ -99,7 +99,7 @@ public final class Domain implements Definition {
 		if (this.properties.getValue(DtProperty.TYPE) != null) {
 			Assertion.checkArgument(!getDataType().isPrimitive(), "Le type ne peut être renseigné que pour des types non primitifs");
 			//-----------------------------------------------------------------
-			//On ne s'intéresse qu'au type de DTO et DTC dont le type de DT est déclaré 
+			//On ne s'intéresse qu'au type de DTO et DTC dont le type de DT est déclaré
 			dtDefinitionName = this.properties.getValue(DtProperty.TYPE);
 		} else {
 			dtDefinitionName = null;

@@ -40,7 +40,6 @@ public final class PostgreSqlDataStorePlugin extends AbstractSqlDataStorePlugin 
 
 	/**
 	 * Constructeur.
-	 * @param workManager Manager des works
 	 * @param sequencePrefix Configuration du préfixe de la séquence
 	 */
 	@Inject

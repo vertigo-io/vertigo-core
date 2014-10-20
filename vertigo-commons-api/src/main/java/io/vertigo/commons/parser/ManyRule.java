@@ -38,7 +38,6 @@ public final class ManyRule<R> implements Rule<List<R>> {
 
 	/**
 	 * Constructeur.
-	 * @param contentRule Possibilité de la boucle
 	 * @param emptyAccepted Si liste vide autorisée
 	 */
 	public ManyRule(final Rule<R> rule, final boolean emptyAccepted, final boolean repeat) {
@@ -51,7 +50,6 @@ public final class ManyRule<R> implements Rule<List<R>> {
 
 	/**
 	 * Constructeur.
-	 * @param contentRule Possibilité de la boucle
 	 * @param emptyAccepted Si liste vide autorisée
 	 */
 	public ManyRule(final Rule<R> rule, final boolean emptyAccepted) {

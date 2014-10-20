@@ -47,8 +47,8 @@ public abstract class TaskEngine {
 	 * Le travail s'exécute dans la transaction courante si elle existe.
 	 *  - Le moteur n'est pas responsable de de créer une transaction.
 	 *  - En revanche si une telle transaction existe elle est utilisée.
-	 * @param work paramétrage du WorkEngine
-	 * @return WorkResult contenant les résultats
+	 * @param task Task to process
+	 * @return TaskResult contenant les résultats
 	 */
 	public final TaskResult process(final Task task) {
 		Assertion.checkNotNull(task);

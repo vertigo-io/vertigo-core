@@ -74,7 +74,7 @@ public final class BrokerNNImpl implements BrokerNN {
 
 	/**
 	 * Constructeur.
-	 * @param workManager Manager des works
+	 * @param taskManager
 	 */
 	public BrokerNNImpl(final TaskManager taskManager) {
 		Assertion.checkNotNull(taskManager);
@@ -134,7 +134,7 @@ public final class BrokerNNImpl implements BrokerNN {
 	}
 
 	/**
-	 * Créer une association. 
+	 * Créer une association.
 	 * @param nn description de la nn
 	 * @param targetValue targetValue
 	 */
@@ -175,7 +175,7 @@ public final class BrokerNNImpl implements BrokerNN {
 	}
 
 	private int processNN(final String taskDefinitionName, final String request,//
-			final DtField sourceField, final Object sourceValue, // 
+			final DtField sourceField, final Object sourceValue, //
 			final DtField targetField, final Object targetValue) {
 		//FieldName
 		final String sourceFieldName = sourceField.getName();

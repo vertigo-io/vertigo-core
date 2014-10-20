@@ -62,7 +62,7 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 
 	/**
 	 * Constructeur.
-	 * @param workManager Manager des works
+	 * @param taskManager Manager des Tasks
 	 * @param sequencePrefix Configuration du préfixe de la séquence
 	 */
 	@Inject

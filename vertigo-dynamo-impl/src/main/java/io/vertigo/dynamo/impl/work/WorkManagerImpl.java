@@ -42,7 +42,7 @@ import javax.inject.Named;
 
 /**
  * Implémentation de workManager.
- * 
+ *
  * @author pchretien, npiedeloup
  */
 public final class WorkManagerImpl implements WorkManager, Activeable {
@@ -53,7 +53,6 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 
 	/**
 	 * Constructeur.
-	 * @param analyticsManager Manager de la performance applicative
 	 */
 	@Inject
 	public WorkManagerImpl(final @Named("workerCount") int workerCount, final Option<MasterPlugin> masterPlugin) {

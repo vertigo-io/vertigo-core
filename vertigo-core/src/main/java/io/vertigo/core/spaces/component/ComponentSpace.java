@@ -364,7 +364,6 @@ public final class ComponentSpace implements Container, Activeable {
 		return componentContainer.contains(id);
 	}
 
-	/** {@inheritDoc} */
 	public ComponentSpaceConfig getConfig() {
 		return componentSpaceConfig;
 	}

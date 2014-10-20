@@ -26,7 +26,7 @@ import io.vertigo.lang.Assertion;
  * Possède :
  * - le fichier à convertir
  * - le format destination
- * 
+ *
  * @author npiedeloup
  */
 final class ConverterWork {
@@ -44,11 +44,6 @@ final class ConverterWork {
 		//-----------------------------------------------------------------
 		this.file = new KFileSerializable(file);
 		this.targetFormat = targetFormat;
-	}
-
-	/** {@inheritDoc} */
-	public String getName() {
-		return this.getClass().getSimpleName();
 	}
 
 	/**

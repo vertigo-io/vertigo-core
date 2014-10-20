@@ -81,7 +81,6 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 		}
 	}
 
-	/** {@inheritDoc} */
 	public boolean remove(final UiObject<D> dto) {
 		final boolean result = bufferUiObjects.remove(dto);
 		if (result) {
@@ -106,7 +105,6 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 		return dto;
 	}
 
-	/** {@inheritDoc} */
 	public boolean add(final D dto) {
 		final UiObject<D> uiObject = new UiObject<>(dto);
 		final boolean result = bufferUiObjects.add(uiObject);
@@ -170,7 +168,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	}
 
 	/**
-	 * @param DtObject DtObject recherché
+	 * @param dtObject DtObject recherché
 	 * @return index de l'objet dans la liste
 	 */
 	public int indexOf(final DtObject dtObject) {
@@ -220,7 +218,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 		//2. Op�rations
 		for (final UiObject<D> uiObject : removedUiObjects) {
 			final D dto = dtoByUiObject.get(uiObject);
-			if (dto != null) {//on ne garde que les dto qui ETAIENT dans la dtc	
+			if (dto != null) {//on ne garde que les dto qui ETAIENT dans la dtc
 				removedDtObjects.add(dto);
 				//on ne supprime pas tout de suite de la dtc, car cela invalidera les index de originIndexByUiObject
 			}
@@ -228,8 +226,8 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 
 		for (final UiObject<D> uiObject : addedUiObjects) {
 			final D dto = dtoByUiObject.get(uiObject);
-			if (dto == null) {//on ne garde que les dto qui N'ETAIENT PAS dans la dtc	
-				addedDtObjects.add(uiObject.flush()); //ce dtoInput a déjà été valid� dans la boucle sur bufferList 
+			if (dto == null) {//on ne garde que les dto qui N'ETAIENT PAS dans la dtc
+				addedDtObjects.add(uiObject.flush()); //ce dtoInput a déjà été valid� dans la boucle sur bufferList
 			}
 		}
 		//on vérifie avant s'il y a des elements pour le cas des listes non modifiable

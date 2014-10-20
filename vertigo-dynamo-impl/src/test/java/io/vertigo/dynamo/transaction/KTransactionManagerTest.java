@@ -29,7 +29,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * 
+ *
  * @author dchallas
  *
  */
@@ -58,7 +58,7 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 
 	//	/**
 	//	 * test la description du manager.
-	//	 * @throws Exception  si erreur 
+	//	 * @throws Exception  si erreur
 	//	 */
 	//	@Test
 	//	public void testDescription() throws Exception {
@@ -135,7 +135,7 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 			currentTransaction.commit();
 
-			//L'appel au second commit doit déclencher une exception	
+			//L'appel au second commit doit déclencher une exception
 			currentTransaction.commit();
 		}
 	}
@@ -149,7 +149,7 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 			currentTransaction.rollback();
 
-			//L'appel au commit après un rollback doit déclencher une exception	
+			//L'appel au commit après un rollback doit déclencher une exception
 			currentTransaction.commit();
 		}
 	}
@@ -180,7 +180,6 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * Création d'une transaction automome à l'intérieur d'une transaction.
-	 * @throws Exception si erreur lors du rollback
 	 */
 	@Test
 	public void testCreateAutonomousTransaction() {
@@ -201,7 +200,7 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 				//On vérifie que la bdd est mise à jour.
 				Assert.assertEquals(value, dataBase.getData());
 				rootTransaction.commit();
-				//On vérifie que la bdd est mise à jour. 
+				//On vérifie que la bdd est mise à jour.
 				Assert.assertEquals(rootValue, dataBase.getData());
 
 				Assert.assertNotSame(rootTransaction, autonomousTransaction);

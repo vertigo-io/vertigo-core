@@ -34,7 +34,7 @@ import java.util.Map;
 
 /**
  * Configuration.
- * 
+ *
  * @author npiedeloup, pchretien
  */
 public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpaceConfig> {
@@ -49,10 +49,9 @@ public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpace
 	//==================Paramétrage général====================================
 	//=========================================================================
 	/**
-	 * Ajout de paramètres  
+	 * Ajout de paramètres
 	 * @param paramName Nom du paramètre
 	 * @param paramValue Valeur du paramètre
-	 * @return
 	 */
 	public ComponentSpaceConfigBuilder withParam(final String paramName, final String paramValue) {
 		Assertion.checkArgNotEmpty(paramName);
@@ -74,7 +73,7 @@ public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpace
 
 	/**
 	 * Permet de définir un démarrage silencieux. (Sans retour console)
-	 * @param silence Si le mode est silencieux 
+	 * @param silence Si le mode est silencieux
 	 * @return Builder
 	 */
 	public ComponentSpaceConfigBuilder withSilence(final boolean silence) {

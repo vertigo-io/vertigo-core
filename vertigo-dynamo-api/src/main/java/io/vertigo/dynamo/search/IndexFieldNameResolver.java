@@ -68,7 +68,7 @@ public final class IndexFieldNameResolver {
 
 	/**
 	 * Retourne le nom du champs du dt à partir du champs de l'index.
-	 * @param Nom du champ de l'index
+	 * @param indexField Nom du champ de l'index
 	 * @return Champs du DT index
 	 */
 	public String obtainDtFieldName(final String indexField) {

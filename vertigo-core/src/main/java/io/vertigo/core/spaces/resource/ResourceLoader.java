@@ -36,8 +36,8 @@ public interface ResourceLoader {
 	Set<String> getTypes();
 
 	/**
-	 * 
-	 * @param List of resources (must be in a type managed by this loader) 
+	 *
+	 * @param resourceConfigs List of resources (must be in a type managed by this loader)
 	 */
 	void parse(List<ResourceConfig> resourceConfigs);
 }

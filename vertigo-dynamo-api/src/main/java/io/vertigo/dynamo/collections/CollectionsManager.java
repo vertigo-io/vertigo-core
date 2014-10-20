@@ -34,7 +34,6 @@ import io.vertigo.lang.Manager;
 public interface CollectionsManager extends Manager {
 	/**
 	 * Filter or sort a list via a listProcessor, can be composed of filters or sorters.
-	 * @return
 	 */
 	DtListProcessor createDtListProcessor();
 

@@ -77,9 +77,8 @@ public final class SessionHandler implements RouteHandler {
 
 	/**
 	 * Retourne la session utilisateur.
-	 * 
+	 *
 	 * @return Session utilisateur
-	 * @param request HTTPRequest
 	 */
 	private UserSession obtainUserSession(final Session session) {
 		UserSession user = (UserSession) session.attribute(USER_SESSION);

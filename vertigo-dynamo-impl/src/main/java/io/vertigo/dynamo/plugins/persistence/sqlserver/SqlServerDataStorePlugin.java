@@ -39,7 +39,7 @@ import javax.inject.Inject;
 public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 	/**
 	 * Constructeur.
-	 * @param workManager Manager des works
+	 * @param taskManager Manager des Tasks
 	 */
 	@Inject
 	public SqlServerDataStorePlugin(final TaskManager taskManager) {

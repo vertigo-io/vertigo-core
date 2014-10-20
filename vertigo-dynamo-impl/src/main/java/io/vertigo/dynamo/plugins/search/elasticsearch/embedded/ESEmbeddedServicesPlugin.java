@@ -53,7 +53,6 @@ public final class ESEmbeddedServicesPlugin extends AbstractESServicesPlugin {
 	 * @param cores Liste des indexes
 	 * @param rowsPerQuery Nombre d'élément retourné par query
 	 * @param codecManager Manager des codecs
-	 * @param localeManager Manager des messages localisés
 	 * @param resourceManager Manager d'accès aux ressources
 	 */
 	@Inject
@@ -85,8 +84,8 @@ public final class ESEmbeddedServicesPlugin extends AbstractESServicesPlugin {
 		Assertion.checkArgument(home.canWrite(), "L''application n''a pas les droits d''écriture sur le ElasticSearchHome : {0}", home.getAbsolutePath());
 
 		return new NodeBuilder() //
-		.settings(buildNodeSettings(home.getAbsolutePath()))//
-		.local(true) //
+				.settings(buildNodeSettings(home.getAbsolutePath()))//
+				.local(true) //
 				.build();
 	}
 

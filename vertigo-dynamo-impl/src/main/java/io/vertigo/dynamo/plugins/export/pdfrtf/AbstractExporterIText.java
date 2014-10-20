@@ -73,7 +73,7 @@ public abstract class AbstractExporterIText {
 	 * Méthode principale qui gère l'export d'un tableau vers un fichier ODS.
 	 *
 	 * @param export paramètres du document à exporter
-	 * @param outflux de sortie
+	 * @param out flux de sortie
 	 * @throws DocumentException Exception
 	 */
 	public final void exportData(final Export export, final OutputStream out) throws DocumentException {

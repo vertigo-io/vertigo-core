@@ -28,15 +28,15 @@ import java.util.concurrent.Future;
  * Interface d'un Worker threadsafe.
  * Permet d'exécuter un travail de façona * - synchrone
  * - asynchrone
- * 
+ *
  * @author pchretien, npiedeloup
  */
-public interface Coordinator  {
+public interface Coordinator {
 	/**
 	 * Exécution d'un travail de façon asynchrone.
 	 * @param <W> Type de Work (Travail)
 	 * @param <WR> Produit d'un work à l'issu de son exécution
-	 * @param work Travail à exécuter
+	 * @param workItem Travail à exécuter
 	 * @return resultats
 	 */
 	<WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler);

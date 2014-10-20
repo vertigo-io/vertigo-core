@@ -64,7 +64,6 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 
 	/**
 	 * Constructeur.
-	 * @param oomFileName Adresse du fichier powerAMC (OOM).
 	 */
 	@Inject
 	public OOMLoaderPlugin(final ResourceManager resourceManager) {

@@ -235,9 +235,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	/**
 	 * Ajoute une liste de champs d'un certain type à la dtDefinition
 	 *
-	 * @param xdtDefinition DynamicDefinition
 	 * @param fields List
-	 * @param fieldType FieldType
 	 */
 	private void populateIdDtField(final DtDefinitionBuilder dtDefinitionBuilder, final List<DynamicDefinition> fields, final String sortFieldName, final String displayFieldName) {
 		for (final DynamicDefinition field : fields) {
@@ -257,9 +255,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	/**
 	 * Ajoute une liste de champs d'un certain type à la dtDefinition
 	 *
-	 * @param xdtDefinition DynamicDefinition
 	 * @param fields List
-	 * @param fieldType FieldType
 	 */
 	private void populateDataDtField(final DtDefinitionBuilder dtDefinitionBuilder, final List<DynamicDefinition> fields, final String sortFieldName, final String displayFieldName) {
 		for (final DynamicDefinition field : fields) {
@@ -286,9 +282,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	/**
 	 * Ajoute une liste de champs d'un certain type à la dtDefinition
 	 *
-	 * @param xdtDefinition DynamicDefinition
 	 * @param fields List
-	 * @param fieldType FieldType
 	 */
 	private void populateComputedDtField(final DtDefinitionBuilder dtDefinitionBuilder, final List<DynamicDefinition> fields, final String sortFieldName, final String displayFieldName) {
 		for (final DynamicDefinition field : fields) {

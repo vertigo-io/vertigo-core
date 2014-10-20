@@ -40,7 +40,7 @@ public final class ExportUtil {
 	 * ou l'élément issu de la liste de REF si il y a une dénormalisation à
 	 * faire.
 	 *
-	 * @param referenceCacheCache des éléments de référence (clé-libellé), peut être vide la premiere fois il sera remplit automatiquement (utilisé pour les champs issus d'association avec une liste de ref)
+	 * @param referenceCache Cache des éléments de référence (clé-libellé), peut être vide la premiere fois il sera remplit automatiquement (utilisé pour les champs issus d'association avec une liste de ref)
 	 * @param denormCache  Cache des colonnes dénormalisées par field, peut être vide la premiere fois il sera remplit automatiquement (utilisé en cas de dénorm spécifique)
 	 * @param dto Objet métier
 	 * @param exportColumn Information de la colonne a exporter.

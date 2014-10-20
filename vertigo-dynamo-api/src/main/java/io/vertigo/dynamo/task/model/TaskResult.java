@@ -44,8 +44,6 @@ public final class TaskResult {
 	/**
 	 * Constructeur.
 	 * Le constructeur est protégé, il est nécessaire de passer par le Builder.
-	 *
-	 * @param dataSet Données de la tache.
 	 */
 	TaskResult(final TaskDefinition taskDefinition, final Map<TaskAttribute, Object> taskAttributes) {
 		Assertion.checkNotNull(taskDefinition);

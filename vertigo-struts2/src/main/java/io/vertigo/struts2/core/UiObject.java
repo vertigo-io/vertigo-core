@@ -43,7 +43,7 @@ import java.util.Set;
 /**
  * Objet d'IHM, fournit les valeurs formatés des champs de l'objet métier sous-jacent.
  * Implements Map<String, Object> car struts poste des String[] que l'on reconverti en String (on prend le premier).
- * 
+ *
  * @author pchretien, npiedeloup
  * @param <D> Type de DtObject représenté par cet Input
  */
@@ -171,7 +171,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 		final DtField dtField = getDtField(constFieldName);
 		isChecked = false;
 
-		//on a trois choix : 
+		//on a trois choix :
 		// 1) soit on ne fait pas de controle ici (sera fait par le check plus tard)
 		// 2) soit on fait un check et on remplit la stack d'erreur
 		// 3) soit on check et on lance une Runtime si erreur (comme dans DtObject)
@@ -331,7 +331,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	/**
 	 * Mise à jour des données typées.
 	 * Verifie si la valeur correspond à une modification.
-	 * Si oui, la valeur est gardée, sinon la saisie de l'utilisateur est vidée. 
+	 * Si oui, la valeur est gardée, sinon la saisie de l'utilisateur est vidée.
 	 */
 	private void compactModifiedSet() {
 		final Set<String> unmodifiedFieldNameSet = new HashSet<>();
@@ -360,8 +360,8 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 
 	/**
 	 * Récupération des données formatées.
-	 * 
-	 * @param field Champ
+	 *
+	 * @param dtField Champ
 	 * @return Valeur formatée (typée)
 	 */
 	private Object doGetTypedValue(final DtField dtField) {

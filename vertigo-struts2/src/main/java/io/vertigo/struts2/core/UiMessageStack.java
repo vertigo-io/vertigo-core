@@ -27,7 +27,7 @@ import io.vertigo.util.StringUtil;
 
 /**
  * Class d'enregistrement des messages.
- * 
+ *
  * @author npiedeloup
  */
 public final class UiMessageStack {
@@ -204,8 +204,7 @@ public final class UiMessageStack {
 	/**
 	 * @param dto
 	 * @param fieldName
-	 * @return
-	 * @deprecated Ne pas faire ca. On test pas champs par champs. Le but est de laisser remonter les erreurs. La méthode va bientot disparaitre :) 
+	 * @deprecated Ne pas faire ca. On test pas champs par champs. Le but est de laisser remonter les erreurs. La méthode va bientot disparaitre :)
 	 */
 	@Deprecated
 	public boolean hasErrorOnField(final UiObject<?> dto, final String fieldName) {

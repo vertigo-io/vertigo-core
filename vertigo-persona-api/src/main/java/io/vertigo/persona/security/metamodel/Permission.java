@@ -24,7 +24,7 @@ import io.vertigo.lang.Assertion;
 
 /**
  * Une permission est l'association d'une opération et d'une ressource.
- * 
+ *
  * @author prahmoune
  */
 @DefinitionPrefix("PRM_")
@@ -35,10 +35,9 @@ public final class Permission implements Definition {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param name Nom de la permission
 	 * @param operation Operation
-	 * @param resource Ressource
 	 */
 	public Permission(final String name, final String operation, final String filter) {
 		Assertion.checkArgNotEmpty(name);

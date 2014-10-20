@@ -50,7 +50,7 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	 * Ajoute une liste de définitions au champ défini par fieldName.
 	 * La définition n'est connue que par sa référence, son nom.
 	 * @param fieldName Nom du champ
-	 * @param definitionKeyList  Liste des clés de définition
+	 * @param definitionKeys  Liste des clés de définition
 	 */
 	DynamicDefinitionBuilder withDefinitions(final String fieldName, final List<DynamicDefinitionKey> definitionKeys);
 

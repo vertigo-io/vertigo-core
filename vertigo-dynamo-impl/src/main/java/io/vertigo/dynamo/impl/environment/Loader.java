@@ -31,7 +31,6 @@ public interface Loader {
 	 * défini par une url (sur système de fichier ou classpath)
 	 * et selon la grammaire en argument.
 	 * @param dynamicModelRepository DynamicModelRepository
-	 * @throws LoaderException Exception lors du chargement
 	 */
 	void load(String resourcePath, DynamicDefinitionRepository dynamicModelRepository);
 }

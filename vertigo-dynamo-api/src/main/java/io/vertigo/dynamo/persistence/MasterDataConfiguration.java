@@ -71,7 +71,6 @@ public interface MasterDataConfiguration {
 	DtListURIForMasterData getDtListURIForMasterData(final DtDefinition dtDefinition);
 
 	/**
-	 * @param <D> Type d'objet
 	 * @param uri URI de la liste
 	 * @return Fonction à appliquer sur la liste (par rapport à la liste complète).
 	 */

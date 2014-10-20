@@ -37,7 +37,7 @@ import javax.inject.Named;
  * 1- contacte la partie serveur pour récupérer les travaux qu'elle sait gérer,
  * 2- execute la tache en synchrone exclusivement
  * 3- retourne le résultat au serveur
- * 
+ *
  * @author npiedeloup, pchretien
  */
 public final class RestWorkerPlugin implements WorkerPlugin {
@@ -66,7 +66,6 @@ public final class RestWorkerPlugin implements WorkerPlugin {
 		return workTypes;
 	}
 
-	/** {@inheritDoc} */
 	public List<Node> getNodes() {
 		return null; //Collections.singletonList(new Node(getNodeId(), true));
 	}

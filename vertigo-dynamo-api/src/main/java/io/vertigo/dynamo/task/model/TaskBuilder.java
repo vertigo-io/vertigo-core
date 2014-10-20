@@ -55,7 +55,7 @@ public final class TaskBuilder implements Builder<Task> {
 	 * Affecte la valeur d'un paramètre.
 	 *
 	 * @param attributeName Nom du paramètre
-	 * @param o Valeur
+	 * @param value Valeur
 	 */
 	public TaskBuilder withValue(final String attributeName, final Object value) {
 		final TaskAttribute taskAttribute = taskDefinition.getAttribute(attributeName);

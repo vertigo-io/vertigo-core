@@ -45,7 +45,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * 
+ *
  * @author npiedeloup
  */
 public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
@@ -95,7 +95,6 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * Test de double exécution d'une tache.
-	 * @throws Exception erreur
 	 */
 	@Test
 	public void testScript() {
@@ -119,7 +118,6 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * Test des scripts.
-	 * @throws Exception erreur
 	 */
 	@Test
 	public void testScriptVar() {
@@ -145,7 +143,6 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * Test des nullable.
-	 * @throws Exception erreur
 	 */
 	@Test
 	public void testNullable() {
@@ -172,7 +169,6 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * Test des scripts.
-	 * @throws Exception erreur
 	 */
 	@Test
 	public void testScriptVarList() {
@@ -196,7 +192,6 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	/**
 	 * Test du preprocessor trim.
 	 * Note: nous n'avons pas accès à la chaine trimée, on check juste que la requete est valide.
-	 * @throws Exception erreur
 	 */
 	@Test
 	public void testTrim() {
@@ -221,7 +216,6 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * Test exécution d'une tache.
-	 * @throws Exception erreur
 	 */
 	@Test
 	public void testWhereIn() {
@@ -249,7 +243,6 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * Test exécution d'une tache.
-	 * @throws Exception erreur
 	 */
 	@Test
 	public void testWhereInEmpty() {
@@ -272,7 +265,6 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * Test exécution d'une tache.
-	 * @throws Exception erreur
 	 */
 	@Test
 	public void testWhereNotIn() {
@@ -305,7 +297,6 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * Test exécution d'une tache.
-	 * @throws Exception erreur
 	 */
 	@Test
 	public void testWhereNotInEmpty() {
@@ -329,7 +320,6 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * Test where in avec 2200 Id a inclure.
-	 * @throws Exception erreur
 	 */
 	@Test
 	public void testWhereIn2200() {
@@ -358,7 +348,6 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * Test where in avec 2200 Id a exclure.
-	 * @throws Exception erreur
 	 */
 	@Test
 	public void testWhereNotIn2200() {

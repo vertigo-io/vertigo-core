@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * EndPoint param infos : 
+ * EndPoint param infos :
  * - source type (query, path, body, innerBody or implicit)
  * - name
  * - type (class)
@@ -93,7 +93,6 @@ public final class EndPointParam {
 	 * @param paramType Parameter type
 	 * @param name Parameter name
 	 * @param type Parameter class
-	 * @param genericType Parameter generic class if defined
 	 * @param excludedFields List of excluded fieldNames
 	 * @param needServerSideToken if access token mandatory
 	 * @param consumeServerSideToken if access token is consume (one time token)

@@ -37,7 +37,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * 
+ *
  * @author dchallas
  */
 public class CollectionsManagerTest extends AbstractTestCaseJU4 {
@@ -60,7 +60,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * @see CollectionsManager#createSort(String, boolean, boolean, boolean)
+	 * @see DtListProcessor#sort
 	 */
 	@Test
 	public void testCreateSortState() {
@@ -70,7 +70,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * @see CollectionsManager#createSort(String, boolean, boolean, boolean)
+	 * @see DtListProcessor#sort
 	 */
 	@Test
 	public void testHeavySort() {
@@ -90,7 +90,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * @see CollectionsManager#createSort(String, boolean, boolean, boolean)
+	 * @see DtListProcessor#sort
 	 */
 	@Test
 	public void testSort() {
@@ -175,7 +175,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * @see CollectionsManager#createFilterByValue
+	 * @see DtListProcessor#filterByValue
 	 */
 	@Test
 	public void testCreateValueFilter() {
@@ -185,7 +185,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * @see CollectionsManager#createFilterByTwoValues
+	 * @see DtListProcessor#filterByValue
 	 */
 	@Test
 	public void testCreateTwoValuesFilter() {
@@ -196,7 +196,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * @see CollectionsManager#createFilter
+	 * @see DtListProcessor#filterByValue
 	 */
 	@Test
 	public void testFilter() {
@@ -207,7 +207,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * @see CollectionsManager#createFilterByTwoValues
+	 * @see DtListProcessor#filterByValue
 	 */
 	@Test
 	public void testFilterTwoValues() {
@@ -219,7 +219,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * @see CollectionsManager#createFilter
+	 * @see DtListProcessor#filter
 	 */
 	@Test
 	public void testFilterFullText() {
@@ -231,7 +231,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * @see CollectionsManager#createFilter
+	 * @see DtListProcessor#filter
 	 */
 	@Test
 	public void testFilterFullTextTokenizer() {
@@ -260,7 +260,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * @see CollectionsManager#createFilter
+	 * @see DtListProcessor#filter
 	 */
 	@Test
 	public void testFilterFullTextElision() {
@@ -279,7 +279,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * @see CollectionsManager#createFilter
+	 * @see DtListProcessor#filter
 	 */
 	@Test
 	public void testFilterFullTextMultiKeyword() {
@@ -303,7 +303,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	/**
 	 * Vérifie le comportement quand la recherche en commence par addresse trop de term du dictionnaire.
 	 * Par défaut Lucene envoi une erreur TooMany...., le collectionsManager limite aux premiers terms.
-	 * @see CollectionsManager#createFilter
+	 * @see DtListProcessor#filter
 	 */
 	@Test
 	public void testFilterFullTextBigList() {
@@ -321,7 +321,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * @see CollectionsManager#createFilterSubList
+	 * @see DtListProcessor#filterSubList
 	 */
 	@Test
 	public void testSubList() {
@@ -347,7 +347,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * @see CollectionsManager#createFilterSubList
+	 * @see DtListProcessor#filterSubList
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testSubListFail1() {
@@ -357,7 +357,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * @see CollectionsManager#createFilterSubList
+	 * @see DtListProcessor#filterSubList
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testSubListFail2() {
@@ -368,7 +368,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * combiner sort/filter ; filter/sort ; sublist/sort ; filter/sublist.
-	 * 
+	 *
 	 */
 	@Test
 	public void testChainFilterSortSubList() {
@@ -426,7 +426,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * @see CollectionsManager#createFilter
+	 * @see DtListProcessor#filter
 	 */
 	@Test
 	public void testCreateFilterForValue() {
@@ -436,7 +436,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * @see CollectionsManager#createFilter
+	 * @see DtListProcessor#filter
 	 */
 	@Test
 	public void testTermFilterString() {
@@ -445,7 +445,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * @see CollectionsManager#createFilter
+	 * @see DtListProcessor#filter
 	 */
 	@Test
 	public void testTermFilterLong() {
@@ -455,7 +455,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * @see CollectionsManager#createFilterByRange
+	 * @see DtListProcessor#filterByRange
 	 */
 	@Test
 	public void testCreateFilterByRange() {
@@ -465,7 +465,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * @see CollectionsManager#createFilterByRange
+	 * @see DtListProcessor#filter
 	 */
 	@Test
 	public void testCreateFilter() {
@@ -494,7 +494,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * @see CollectionsManager#createFilter
+	 * @see DtListProcessor#filter
 	 */
 	@Test
 	public void testRangeFilter() {
@@ -502,7 +502,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * @see CollectionsManager#createFilter
+	 * @see DtListProcessor#filter
 	 */
 	@Test
 	public void testRangeFilterLong() {
@@ -515,7 +515,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * @see CollectionsManager#createFilter
+	 * @see DtListProcessor#filter
 	 */
 	@Test
 	public void testRangeFilterString() {
@@ -581,7 +581,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	// -------------- PRIVATE
 	/**
 	 * Asserts that two booleans are equal.
-	 * 
+	 *
 	 */
 	private static void assertEquals(final String[] expected, final String[] actual) {
 		Assert.assertEquals(Arrays.toString(expected), Arrays.toString(actual));

@@ -49,7 +49,6 @@ final class Environment implements ResourceLoader {
 
 	/**
 	 * Constructeur.
-	 * @param dynamicModelRepository  DynamicModelRepository
 	 */
 	Environment(final List<DynamicRegistryPlugin> dynamicRegistryPlugins, final List<LoaderPlugin> loaderPlugins) {
 		Assertion.checkNotNull(dynamicRegistryPlugins);

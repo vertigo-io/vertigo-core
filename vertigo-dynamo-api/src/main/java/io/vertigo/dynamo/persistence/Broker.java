@@ -38,7 +38,7 @@ public interface Broker {
 	 * @param <D> Type des objets de la collection
 	 * @param dtDefinition Définition de DT
 	 * @param criteria Criteria (null=aucun)
-	 * @param maxRows Nombre max de lignes retournées (null=tous)
+	 * @param limit  Nombre max de lignes retournées (null=tous)
 	 * @return DtList DTC
 	 */
 	<D extends DtObject> DtList<D> getList(final DtDefinition dtDefinition, final Criteria<D> criteria, Integer limit);
@@ -48,7 +48,7 @@ public interface Broker {
 	/**
 	 * Nombre d'éléments présents dans le sysème de persistance.
 	 * @param dtDefinition Définition de DT
-	 * @return Nombre d'éléments. 
+	 * @return Nombre d'éléments.
 	 */
 	int count(final DtDefinition dtDefinition);
 
@@ -95,7 +95,7 @@ public interface Broker {
 	//==========================================================================
 	/**
 	 * Récupération d'un objet persistant par son URI.
-	 * Lorsque l'objet est en lecture seule il est possible d'accéder au objets partagés. (Liste de référence paér ex) 
+	 * Lorsque l'objet est en lecture seule il est possible d'accéder au objets partagés. (Liste de référence paér ex)
 	 * Si l'object n'existe pas l'option sera isEmpty.
 	 *
 	 * @param <D> Type de l'objet
@@ -106,7 +106,7 @@ public interface Broker {
 
 	/**
 	 * Récupération d'un objet persistant par son URI.
-	 * Lorsque l'objet est en lecture seule il est possible d'accéder au objets partagés. (Liste de référence paér ex) 
+	 * Lorsque l'objet est en lecture seule il est possible d'accéder au objets partagés. (Liste de référence paér ex)
 	 * L'objet doit exister.
 	 * Récupération d'un fichier par son URI.
 	 *

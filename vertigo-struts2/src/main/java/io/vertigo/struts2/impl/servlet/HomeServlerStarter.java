@@ -116,7 +116,6 @@ final class HomeServlerStarter {
 		}
 	}
 
-	/** {@inheritDoc} */
 	public final void contextDestroyed(final ServletContext servletContext) {
 		try {
 			Home.stop();

@@ -39,16 +39,16 @@ public interface JsonEngine {
 	static final String SERVER_SIDE_TOKEN_FIELDNAME = "serverToken";
 
 	/**
-	 * Standard convert full object to Json. 
+	 * Standard convert full object to Json.
 	 * @param data Object
 	 * @return Json string
 	 */
 	String toJson(Object data);
 
 	/**
-	 * Convert object to Json but excluded fields. 
-	 * @param data Object 
-	 * @param excludedFields Set of fields to include (empty means all fields include)
+	 * Convert object to Json but excluded fields.
+	 * @param data Object
+	 * @param includedFields Set of fields to include (empty means all fields include)
 	 * @param excludedFields Set of fields to exclude
 	 * @return Json string
 	 */
@@ -62,10 +62,10 @@ public interface JsonEngine {
 	String toJsonError(Throwable th);
 
 	/**
-	 * Convert object to Json but excluded fields. 
+	 * Convert object to Json but excluded fields.
 	 * @param data Object
 	 * @param tokenId token to include in Json (as a serverSideToken field)
-	 * @param excludedFields Set of fields to include (empty means all fields include)
+	 * @param includedFields Set of fields to include (empty means all fields include)
 	 * @param excludedFields Set of fields to exclude
 	 * @return Json string
 	 */
@@ -73,22 +73,22 @@ public interface JsonEngine {
 
 	/**
 	 * Standard convert Json to object.
-	 * While converting accept missing object fields and unknown object fields (and then just forgot json value) 
+	 * While converting accept missing object fields and unknown object fields (and then just forgot json value)
 	 * @param <D> Object type
 	 * @param json Json string
 	 * @param paramType Object type
-	 * @return Object filled with json typed data 
+	 * @return Object filled with json typed data
 	 */
 	<D extends Object> D fromJson(String json, Type paramType);
 
 	/**
 	 * Specific convertion Json to UiObject.
 	 * UiObject is used as a buffer from client input.
-	 * While converting accept missing object fields and unknown object fields (and then just forgot json value) 
+	 * While converting accept missing object fields and unknown object fields (and then just forgot json value)
 	 * @param <D> Object type
 	 * @param json Json string
 	 * @param paramType Object type
-	 * @return UiObject filled with a DtObject partially filled and the accessTOken if present 
+	 * @return UiObject filled with a DtObject partially filled and the accessTOken if present
 	 */
 	<D extends DtObject> UiObject<D> uiObjectFromJson(String json, Type paramType);
 
@@ -97,7 +97,7 @@ public interface JsonEngine {
 	 * UiContext is used as a buffer from client input
 	 * @param json Json string
 	 * @param paramTypes Objects type
-	 * @return UiContext filled with a DtObject partially filled and the accessTOken if present 
+	 * @return UiContext filled with a DtObject partially filled and the accessTOken if present
 	 */
 	UiContext uiContextFromJson(String json, Map<String, Type> paramTypes);
 
@@ -106,7 +106,7 @@ public interface JsonEngine {
 	 * @param <D> Object type
 	 * @param json Json string
 	 * @param paramType Object type
-	 * @return UiListDelta filled with created/updated/deleted DtObjects list partially filled and the accessTOken if present 
+	 * @return UiListDelta filled with created/updated/deleted DtObjects list partially filled and the accessTOken if present
 	 */
 	<D extends DtObject> UiListDelta<D> uiListDeltaFromJson(String json, Type paramType);
 

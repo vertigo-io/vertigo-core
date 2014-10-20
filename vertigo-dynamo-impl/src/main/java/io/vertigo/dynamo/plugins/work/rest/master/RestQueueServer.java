@@ -62,7 +62,6 @@ final class RestQueueServer {
 
 	/**
 	 * Constructeur.
-	 * @param queue MultipleWorkQueues
 	 * @param nodeTimeOutSec Timeout (secondes) avant de considérer un noeud comme mort
 	 * @param codecManager Manager de codec
 	 * @param pullTimeoutSec Timeout (secondes) utilisé lors des long pull
@@ -175,7 +174,6 @@ final class RestQueueServer {
 	 * Ajoute un travail à faire.
 	 * @param <WR> Type du résultat
 	 * @param <W> Travail à effectué
-	 * @param workType Type du travail
 	 * @param workItem Work et WorkResultHandler
 	 */
 	<WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {

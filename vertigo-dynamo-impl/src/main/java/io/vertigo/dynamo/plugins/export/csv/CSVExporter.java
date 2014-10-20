@@ -67,7 +67,6 @@ final class CSVExporter {
 	 * Constructeur.
 	 *
 	 * @param codecManager Manager des codecs
-	 * @param exportHelper Helper d'export.
 	 */
 	CSVExporter(final CodecManager codecManager, final PersistenceManager persistenceManager) {
 		Assertion.checkNotNull(codecManager);

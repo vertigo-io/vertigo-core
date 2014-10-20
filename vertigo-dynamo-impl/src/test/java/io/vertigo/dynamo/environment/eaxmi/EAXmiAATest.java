@@ -66,12 +66,11 @@ public class EAXmiAATest {
 	 * Conventions de nommage utilisées pour les tests ci dessous.
 	 * - Relation de A vers B
 	 * - Cardinalité notée 	1 ou n
-	 * - Navigabilité notée v 
+	 * - Navigabilité notée v
 	 */
 
 	/**
 	 * Test d'une relation A1 - Bnv.
-	 * @throws Exception si erreur
 	 */
 	@Test
 	public void testAssoctationA1Bnv() {
@@ -88,7 +87,6 @@ public class EAXmiAATest {
 
 	/**
 	 * Test d'une relation A1v - Bnv.
-	 * @throws Exception si erreur
 	 */
 	@Test
 	public void testAssoctationA1vBnv() {
@@ -105,7 +103,6 @@ public class EAXmiAATest {
 
 	/**
 	 * Test d'une relation A1v - Bn.
-	 * @throws Exception si erreur
 	 */
 	@Test
 	public void testAssoctationA1vBn() {
@@ -122,7 +119,6 @@ public class EAXmiAATest {
 
 	/**
 	 * Test d'une relation An - B1v.
-	 * @throws Exception si erreur
 	 */
 	@Test
 	public void testAssoctationAnB1v() {
@@ -139,7 +135,6 @@ public class EAXmiAATest {
 
 	/**
 	 * Test d'une relation Anv - B1.
-	 * @throws Exception si erreur
 	 */
 	@Test
 	public void testAssoctationAnvB1() {
@@ -156,7 +151,6 @@ public class EAXmiAATest {
 
 	/**
 	 * Test d'une relation Anv - B1v.
-	 * @throws Exception si erreur
 	 */
 	@Test
 	public void testAssoctationAnvB1v() {
@@ -173,7 +167,6 @@ public class EAXmiAATest {
 
 	/**
 	 * Test d'une relation An - Bnv.
-	 * @throws Exception si erreur
 	 */
 	@Test
 	public void testAssoctationAnBnv() {
@@ -190,7 +183,6 @@ public class EAXmiAATest {
 
 	/**
 	 * Test d'une relation Anv - Bnv.
-	 * @throws Exception si erreur
 	 */
 	@Test
 	public void testAssoctationAnvBnv() {
@@ -207,7 +199,6 @@ public class EAXmiAATest {
 
 	/**
 	 * Test d'une relation An - Bn.
-	 * @throws Exception si erreur
 	 */
 	@Test
 	public void testAssoctationAnBn() {
@@ -224,7 +215,6 @@ public class EAXmiAATest {
 
 	/**
 	 * Test d'une relation Anv - Bn.
-	 * @throws Exception si erreur
 	 */
 	@Test
 	public void testAssoctationAnvBn() {

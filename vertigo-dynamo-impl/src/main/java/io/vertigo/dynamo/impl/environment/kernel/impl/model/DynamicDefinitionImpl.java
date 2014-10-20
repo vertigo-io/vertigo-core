@@ -68,7 +68,6 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	/**
 	 * Constructeur.
 	 * @param dynamicDefinitionKey Clé de la définition
-	 * @param packageName Nom du package
 	 * @param entity Entité
 	 */
 	DynamicDefinitionImpl(final DynamicDefinitionKey dynamicDefinitionKey, final Entity entity) {

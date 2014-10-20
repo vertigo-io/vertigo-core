@@ -42,7 +42,6 @@ public enum EntityPropertyType {
 	 * Constructeur.
 	 *
 	 * @param javaClass Classe java encapsulée
-	 * @param primitive Si il s'agit d'un type primitif (sinon composite)
 	 */
 	private EntityPropertyType(final Class<?> javaClass) {
 		Assertion.checkNotNull(javaClass);
@@ -50,7 +49,6 @@ public enum EntityPropertyType {
 		this.javaClass = javaClass;
 	}
 
-	/** {@inheritDoc} */
 	public void checkValue(final Object value) {
 		//Il suffit de vérifier que la valeur passée est une instance de la classe java définie pour le type Dynamo.
 		//Le test doit être effectué car le cast est non fiable par les generics
