@@ -20,7 +20,7 @@ package io.vertigo.dynamo.file;
 
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.KFile;
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 
 import java.io.File;
 import java.util.Date;
@@ -29,7 +29,7 @@ import java.util.Date;
  * Gestionnaire de la notion de fichier.
  * @author npiedeloup
  */
-public interface FileManager extends Manager {
+public interface FileManager extends Component {
 
 	/**
 	 * @param kFile KFile à lire

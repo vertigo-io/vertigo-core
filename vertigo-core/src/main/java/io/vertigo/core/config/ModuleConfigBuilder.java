@@ -21,7 +21,7 @@ package io.vertigo.core.config;
 import io.vertigo.core.aop.AOPInterceptor;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 
 	//---Rules
 	private boolean myHasApi = true; //par défaut on a une api.
-	private Class<?> mySuperClass = Manager.class; //Par défaut la super Classe est Manager
+	private Class<?> mySuperClass = Component.class; //Par défaut la super Classe est Manager
 
 	ModuleConfigBuilder(final ComponentSpaceConfigBuilder componentSpaceConfigBuilder, final String name) {
 		Assertion.checkNotNull(componentSpaceConfigBuilder);

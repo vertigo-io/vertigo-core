@@ -18,9 +18,9 @@
  */
 package io.vertigo.core.home.componentspace.data;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 
-public interface FunctionManager extends Manager {
+public interface FunctionManager extends Component {
 
 	int compute(String functionName, int x);
 

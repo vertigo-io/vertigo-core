@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.environment;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 
 /**
  * Manager de gestion de l'environnement applicatif.
@@ -27,6 +27,6 @@ import io.vertigo.lang.Manager;
  * 
  * @author pchretien
  */
-public interface EnvironmentManager extends Manager {
+public interface EnvironmentManager extends Component {
 	//
 }

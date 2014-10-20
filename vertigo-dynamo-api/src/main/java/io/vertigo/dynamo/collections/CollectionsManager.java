@@ -22,7 +22,7 @@ import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 
 /**
  * Some tools on collections/lists to allow
@@ -31,7 +31,7 @@ import io.vertigo.lang.Manager;
  *  - facets.
  * @author  pchretien
  */
-public interface CollectionsManager extends Manager {
+public interface CollectionsManager extends Component {
 	/**
 	 * Filter or sort a list via a listProcessor, can be composed of filters or sorters.
 	 */

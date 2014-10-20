@@ -18,14 +18,14 @@
  */
 package io.vertigo.commons.analytics;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 
 /**
  * Accès centralisé à toutes les fonctions Analytiques.
  * 
  * @author pchretien
  */
-public interface AnalyticsManager extends Manager {
+public interface AnalyticsManager extends Component {
 	/**
 	 * @return Agent de collecte
 	 */

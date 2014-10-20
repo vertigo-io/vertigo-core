@@ -18,9 +18,9 @@
  */
 package io.vertigo.core.home.componentspace.data;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 
-public interface BioManager extends Manager {
+public interface BioManager extends Component {
 	int add(int... a);
 
 	boolean isActive();

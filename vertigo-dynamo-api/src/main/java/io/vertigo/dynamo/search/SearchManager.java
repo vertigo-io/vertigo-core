@@ -18,14 +18,14 @@
  */
 package io.vertigo.dynamo.search;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 
 /**
  * Gestionnaire des indexes de recherche.
  * 
  * @author dchallas
  */
-public interface SearchManager extends Manager {
+public interface SearchManager extends Component {
 	/**
 	 * @return Services de recherche.
 	 */

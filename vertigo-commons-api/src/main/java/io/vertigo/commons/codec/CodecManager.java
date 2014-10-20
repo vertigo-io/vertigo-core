@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.codec;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 
 import java.io.Serializable;
 
@@ -33,7 +33,7 @@ import java.io.Serializable;
  *
  * @author pchretien
  */
-public interface CodecManager extends Manager {
+public interface CodecManager extends Component {
 	/**
 	 * @return Codec HTML.
 	 */

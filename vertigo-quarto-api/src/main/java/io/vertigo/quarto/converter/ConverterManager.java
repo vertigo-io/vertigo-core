@@ -20,7 +20,7 @@ package io.vertigo.quarto.converter;
 
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.work.WorkResultHandler;
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 
 /**
  * Gestionnaire centralisé des conversions de documents.
@@ -31,7 +31,7 @@ import io.vertigo.lang.Manager;
  * 
  * @author pchretien, npiedeloup
  */
-public interface ConverterManager extends Manager {
+public interface ConverterManager extends Component {
 	/**
 	 * Conversion d'un document à un format cible.
 	 * 

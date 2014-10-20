@@ -18,13 +18,13 @@
  */
 package io.vertigo.vega.rest;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 
 /**
  * Restful webservice manager.
  * @author npiedeloup
  */
-public interface RestManager extends Manager {
+public interface RestManager extends Component {
 	/**
 	 * Scan and register ResfulServices as EndPointDefinitions.
 	 */

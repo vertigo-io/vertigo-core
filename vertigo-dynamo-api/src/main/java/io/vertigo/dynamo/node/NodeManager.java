@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.node;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ import java.util.List;
  * 
  * @author npiedeloup, pchretien
  */
-public interface NodeManager extends Manager {
+public interface NodeManager extends Component {
 	/**
 	 * @return Liste des noeuds
 	 */

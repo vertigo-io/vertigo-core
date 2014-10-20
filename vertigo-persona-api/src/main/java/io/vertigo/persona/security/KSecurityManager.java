@@ -18,7 +18,7 @@
  */
 package io.vertigo.persona.security;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;
 import io.vertigo.persona.security.metamodel.Role;
 
@@ -29,7 +29,7 @@ import java.util.Set;
  *
  * @author npiedeloup
  */
-public interface KSecurityManager extends Manager {
+public interface KSecurityManager extends Component {
 	//-------------------------------------------------------------------------
 	//--------------Gestion de l'utilisateur (porteur des droits) -------------
 	//-------------------------------------------------------------------------

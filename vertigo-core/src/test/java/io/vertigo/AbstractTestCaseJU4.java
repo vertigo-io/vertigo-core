@@ -25,7 +25,7 @@ import io.vertigo.core.di.injector.Injector;
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.lang.Container;
 import io.vertigo.lang.Describable;
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;
 
 import java.util.List;
@@ -178,7 +178,7 @@ public abstract class AbstractTestCaseJU4 {
 	* Utilitaire.
 	* @param manager Manager
 	*/
-	protected static final void testDescription(final Manager manager) {
+	protected static final void testDescription(final Component manager) {
 		if (manager instanceof Describable) {
 			final List<ComponentInfo> componentInfos = Describable.class.cast(manager).getInfos();
 			for (final ComponentInfo componentInfo : componentInfos) {

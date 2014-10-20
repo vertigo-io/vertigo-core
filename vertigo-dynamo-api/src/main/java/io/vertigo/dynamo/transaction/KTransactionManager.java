@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.transaction;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 
 /**
  * Gestionnaire de transactions.
@@ -33,7 +33,7 @@ import io.vertigo.lang.Manager;
  *
  * @author  pchretien
  */
-public interface KTransactionManager extends Manager {
+public interface KTransactionManager extends Component {
 	/**
 	 * Crée la transaction courante.
 	 * Il est nécessaire qu'aucune transaction courante vivante n'existe.

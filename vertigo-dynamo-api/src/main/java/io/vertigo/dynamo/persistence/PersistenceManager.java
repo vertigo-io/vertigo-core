@@ -18,14 +18,14 @@
  */
 package io.vertigo.dynamo.persistence;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 
 /**
 * Gestionnaire des données et des accès aux données.
 *
 * @author pchretien
 */
-public interface PersistenceManager extends Manager {
+public interface PersistenceManager extends Component {
 	/**
 	 * @return Broker d'objets métier
 	 */

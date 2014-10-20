@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.locale;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.MessageText;
 
@@ -47,7 +47,7 @@ import java.util.Locale;
  *  
  * @author pchretien
  */
-public interface LocaleManager extends Manager {
+public interface LocaleManager extends Component {
 	//=========================================================================
 	//======================Méthodes d'initialisation =========================
 	//=========================================================================

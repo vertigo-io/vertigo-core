@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.resource;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 
 import java.net.URL;
 
@@ -40,7 +40,7 @@ import java.net.URL;
  *  
  * @author pchretien
  */
-public interface ResourceManager extends Manager {
+public interface ResourceManager extends Component {
 	/**
 	 * Retourne une URL à partir de sa représentation 'chaîne de caractères'
 	 * 

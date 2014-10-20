@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.kvdatastore;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;
 
 import java.util.List;
@@ -30,7 +30,7 @@ import java.util.List;
  *
  * @author pchretien
  */
-public interface KVDataStoreManager extends Manager {
+public interface KVDataStoreManager extends Component {
 
 	void put(String dataStoreName, String id, Object objet);
 

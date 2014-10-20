@@ -21,7 +21,7 @@ package io.vertigo.dynamo.export;
 import io.vertigo.dynamo.export.model.Export;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.work.WorkResultHandler;
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 
 /**
  * Gestionnaire centralisé des éditions de données.
@@ -29,7 +29,7 @@ import io.vertigo.lang.Manager;
  *
  * @author pchretien, npiedeloup
  */
-public interface ExportManager extends Manager {
+public interface ExportManager extends Component {
 
 	/**
 	 * Création du fichier d'export

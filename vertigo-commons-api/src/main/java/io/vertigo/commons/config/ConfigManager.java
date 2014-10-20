@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.config;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 
 import java.util.regex.Pattern;
 
@@ -71,7 +71,7 @@ import java.util.regex.Pattern;
  * 
  * @author prahmoune, npiedeloup
  */
-public interface ConfigManager extends Manager {
+public interface ConfigManager extends Component {
 	Pattern REGEX_PATH = Pattern.compile("([a-z][a-zA-Z0-9]*)([a-z][a-zA-Z0-9]*.)*");
 	Pattern REGEX_PROPERTY = Pattern.compile("[a-z][a-zA-Z0-9]*");
 

@@ -22,14 +22,14 @@ import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 
 /**
 * Gestionnaire des accès aux bases de données.
 *
 * @author pchretien
 */
-public interface SqlDataBaseManager extends Manager {
+public interface SqlDataBaseManager extends Component {
 	/**
 	 * @return ConnectionProvider
 	 */

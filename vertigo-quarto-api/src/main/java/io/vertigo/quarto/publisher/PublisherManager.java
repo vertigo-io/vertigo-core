@@ -20,7 +20,7 @@ package io.vertigo.quarto.publisher;
 
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.work.WorkResultHandler;
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 import io.vertigo.quarto.publisher.model.PublisherData;
 
 import java.net.URL;
@@ -31,7 +31,7 @@ import java.net.URL;
  *
  * @author pchretien, npiedeloup
  */
-public interface PublisherManager extends Manager {
+public interface PublisherManager extends Component {
 	/**
 	 * Création d'une nouvelle édition.
 	 * @param fileName Nom du document à générer (! pas son emplacement de stockage !)

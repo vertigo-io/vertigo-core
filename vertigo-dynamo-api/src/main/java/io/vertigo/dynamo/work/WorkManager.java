@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.work;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 
 import java.util.concurrent.Callable;
 
@@ -35,7 +35,7 @@ import java.util.concurrent.Callable;
  *
  * @author pchretien
  */
-public interface WorkManager extends Manager {
+public interface WorkManager extends Component {
 	<WR, W> WorkProcessor<WR, W> createProcessor(final WorkEngineProvider<WR, W> workEngineProvider);
 
 	/**
