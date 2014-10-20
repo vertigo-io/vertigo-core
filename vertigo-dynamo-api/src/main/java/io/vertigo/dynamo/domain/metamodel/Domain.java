@@ -106,14 +106,14 @@ public final class Domain implements Definition {
 		}
 	}
 
-	private static Properties buildProperties(final List<Constraint<?, Object>> constraintList, final Properties inputProperties) {
+	private static Properties buildProperties(final List<Constraint<?, Object>> constraints, final Properties inputProperties) {
 		final Properties properties = new Properties();
 		for (final Property property : inputProperties.getProperties()) {
 			properties.putValue(property, inputProperties.getValue(property));
 		}
 
 		//On récupère les propriétés d'après les contraintes
-		for (final Constraint<?, ?> constraint : constraintList) {
+		for (final Constraint<?, ?> constraint : constraints) {
 			properties.putValue(constraint.getProperty(), constraint.getPropertyValue());
 		}
 		properties.makeUnmodifiable();
