@@ -63,7 +63,7 @@ public final class ReportRendererImpl implements ReportRenderer {
 		//---------------
 		startRender(report, sb);
 		//---------------
-		//Création de la table	
+		//Création de la table
 		sb.append("<h1>Rapport pour les " + report.getDataReports().size() + " requêtes</h1>");
 		sb.append("<table id=\"myTable\" class=\"tablesorter\">");
 		//---------------
@@ -94,26 +94,26 @@ public final class ReportRendererImpl implements ReportRenderer {
 	}
 
 	private String getTHead(final DataReport dataReport) {
-		final StringBuilder colSb = new StringBuilder();
-		colSb.append("<thead><tr><th>");
-		colSb.append("Tâche");
-		colSb.append("</th>");
+		final StringBuilder colSb = new StringBuilder()
+				.append("<thead><tr><th>")
+				.append("Tâche")
+				.append("</th>");
 		for (final Metric metric : dataReport.getMetrics()) {
-			colSb.append("<th>");
-			colSb.append(metric.getTitle());
-			colSb.append("</th>");
+			colSb.append("<th>").append(metric.getTitle()).append("</th>");
 		}
-		colSb.append("</tr>");
-		colSb.append("</thead>");
-		return colSb.toString();
+		return colSb
+				.append("</tr>")
+				.append("</thead>")
+				.toString();
 	}
 
 	private static void initItemRenderer(final DataReport dataReport, final StringBuilder stringBuilder) {
-		stringBuilder.append("<td>");
-		stringBuilder.append("<a href=\"" + dataReport.getFileName() + "\">");
-		stringBuilder.append(dataReport.getTitle());
-		stringBuilder.append("</a>");
-		stringBuilder.append("</td>");
+		stringBuilder
+				.append("<td>")
+				.append("<a href=\"" + dataReport.getFileName() + "\">")
+				.append(dataReport.getTitle())
+				.append("</a>")
+				.append("</td>");
 	}
 
 	//Une métrique correspond à une cellule.
@@ -142,35 +142,36 @@ public final class ReportRendererImpl implements ReportRenderer {
 	}
 
 	private static void startRender(final Report report, final StringBuilder sb) {
-		sb.append("<html>");
-		sb.append("<head>");
-		sb.append("<link rel=\"stylesheet\" href=\"..\\css\\tablesorter.css\" type=\"text/css\" media=\"print, projection, screen\" />");
-		sb.append("<script type=\"text/javascript\" src=\"..\\js\\jquery-1.5.min.js\"></script> ");
-		sb.append("<script type=\"text/javascript\" src=\"..\\js\\jquery.tablesorter.min.js\"></script> ");
-		sb.append("<script type=\"text/javascript\">");
-		sb.append("$(document).ready(function() ");
-		sb.append(" { ");
-		sb.append("     // add parser through the tablesorter addParser method");
-		sb.append("     $.tablesorter.addParser({ ");
-		sb.append("         // set a unique id");
-		sb.append("         id: 'numericWithErrors',");
-		sb.append("         is: function(s) { ");
-		sb.append("              // return false so this parser is not auto detected");
-		sb.append("              return false;");
-		sb.append("          }, ");
-		sb.append("          format: function(s) {");
-		sb.append("              // format your data for normalization ");
-		sb.append("             return s.replace(/--/,-1).replace(/xxx/,-2);");
-		sb.append("          }, ");
-		sb.append("          // set type, either numeric or text");
-		sb.append("         type: 'numeric'");
-		sb.append("     }); ");
-		sb.append("     $(\"#myTable\").tablesorter({sortList: [[1,1]], headers: {1: {sorter:'numericWithErrors'}, 3: {sorter:'numericWithErrors'}});");
-		sb.append("  } ");
-		sb.append("); ");
-		sb.append("</script>");
-		sb.append("</head>");
-		sb.append("<body>");
+		sb
+				.append("<html>")
+				.append("<head>")
+				.append("<link rel=\"stylesheet\" href=\"..\\css\\tablesorter.css\" type=\"text/css\" media=\"print, projection, screen\" />")
+				.append("<script type=\"text/javascript\" src=\"..\\js\\jquery-1.5.min.js\"></script> ")
+				.append("<script type=\"text/javascript\" src=\"..\\js\\jquery.tablesorter.min.js\"></script> ")
+				.append("<script type=\"text/javascript\">")
+				.append("$(document).ready(function() ")
+				.append(" { ")
+				.append("     // add parser through the tablesorter addParser method")
+				.append("     $.tablesorter.addParser({ ")
+				.append("         // set a unique id")
+				.append("         id: 'numericWithErrors',")
+				.append("         is: function(s) { ")
+				.append("              // return false so this parser is not auto detected")
+				.append("              return false;")
+				.append("          }, ")
+				.append("          format: function(s) {")
+				.append("              // format your data for normalization ")
+				.append("             return s.replace(/--/,-1).replace(/xxx/,-2);")
+				.append("          }, ")
+				.append("          // set type, either numeric or text")
+				.append("         type: 'numeric'")
+				.append("     }); ")
+				.append("     $(\"#myTable\").tablesorter({sortList: [[1,1]], headers: {1: {sorter:'numericWithErrors'}, 3: {sorter:'numericWithErrors'}});")
+				.append("  } ")
+				.append("); ")
+				.append("</script>")
+				.append("</head>")
+				.append("<body>");
 	}
 
 	private static void endRender(final StringBuilder sb) {
