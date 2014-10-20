@@ -49,7 +49,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 				//les locales doivent être séparées par des virgules
 				.withParam("locales", "fr_FR, en , de_DE")
 			.endComponent()
-		.endModule();	
+		.endModule();
 		// @formatter:on
 	}
 
@@ -123,14 +123,14 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 				return Locale.JAPANESE;
 			}
 		});
-		//On vérifie que l'on ne connait pas le japonais
+		//On vérifie que l'on ne connait pas le japonais et que l'on retombe sur la langue par défaut
 		final MessageText helloTxt = new MessageText(CityGuide.HELLO);
-		Assert.assertEquals("<<ja:HELLO>>", helloTxt.getDisplay());
+		Assert.assertEquals("bonjour", helloTxt.getDisplay());
 	}
 
 	@Test
 	public void testDynamicMessageKey() {
-		/* 
+		/*
 		 * On teste que l'on accède au dictionnaire par une clé sous forme de chaine de caractères.
 		 */
 		final MessageKey key = new MessageKey() {

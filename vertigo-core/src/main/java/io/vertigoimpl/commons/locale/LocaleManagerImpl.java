@@ -48,7 +48,7 @@ import org.apache.log4j.Logger;
  * @author  pchretien
  */
 public final class LocaleManagerImpl implements LocaleManager, Describable {
-	private final Logger generalLog = Logger.getLogger(LocaleManager.class);
+	private final Logger log = Logger.getLogger(LocaleManager.class);
 
 	/**
 	 * Set des clés non trouvées pour ne pas les reloguer.
@@ -216,10 +216,14 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 		if (localeProvider != null && localeProvider.getCurrentLocale() != null) {
 			final Locale currentLocale = localeProvider.getCurrentLocale();
 			//We have to check if the currentLocale belongs to locales.
-			Assertion.checkState(locales.contains(localeProvider.getCurrentLocale()), "CurrentLocale '{0}' is not allowed, it must be in '{1}'", currentLocale, locales);
+			if (!locales.contains(localeProvider.getCurrentLocale())) {
+				log.error("CurrentLocale '" + currentLocale + "' is not allowed, it must be in '" + locales + "'");
+				//So, we can pick the default language.
+				return locales.get(0);
+			}
 			return currentLocale;
 		}
-		//Si pas d'utilisateur on prend la première langue déclarée.
+		//If there is no user, we can pick the default language.
 		return locales.get(0);
 	}
 
@@ -239,7 +243,7 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 	 * @param resource  Nom de la ressource externalisée non trouvée
 	 */
 	private void logResourceNotFound(final String resource) {
-		generalLog.warn("Resource " + resource + " non trouvée");
+		log.warn("Resource " + resource + " non trouvée");
 	}
 
 	private Map<Locale, Map<String, String>> getDictionaries() {
