@@ -40,7 +40,7 @@ import java.sql.SQLException;
 
 /**
  * Plugin qui va lancer la commande de calcul puis d'affichage du plan d'exécution.
- * 
+ *
  * @author tchassagnette
  */
 public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinition, ExplainPlanMetric> {
@@ -50,7 +50,7 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 
 	/**
 	 * Constructeur apr défaut.
-	 * @param workManager Manager des works
+	 * @param taskManager Manager des tasks
 	 */
 	public ExplainPlanMetricEngine(final TaskManager taskManager) {
 		Assertion.checkNotNull(taskManager);
@@ -117,7 +117,7 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 		//		final String explainPlanRequest = "select * from plan_table where statement_id = #STATEMENT_ID# order by id";
 		//		taskDefinitionFactory.init(taskDefinitionName, TaskEngineSelect.class, explainPlanRequest, TaskEngineSelect.class.getPackage().getName());
 		//		taskDefinitionFactory.addAttribute(taskDefinitionName, "STATEMENT_ID", getDomainManager().getNameSpace().getDomain("DO_LIBELLE_LONG"), true, true);
-		//		
+		//
 		//		final TaskDefinition taskExplain = taskDefinitionFactory.createTaskDefinition(taskDefinitionName);
 		//		try {
 		//			final Task currentTask = getTaskManager().getFactory().createTask(taskExplain);

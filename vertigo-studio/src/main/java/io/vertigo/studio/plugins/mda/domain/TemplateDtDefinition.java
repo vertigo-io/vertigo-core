@@ -33,7 +33,7 @@ import java.util.List;
 
 /**
  * Objet utilisé par FreeMarker.
- * 
+ *
  * @author pchretien
  */
 public final class TemplateDtDefinition {
@@ -44,7 +44,7 @@ public final class TemplateDtDefinition {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param dtDefinition DtDefinition de l'objet à générer
 	 */
 	public TemplateDtDefinition(final DtDefinition dtDefinition) {
@@ -67,7 +67,7 @@ public final class TemplateDtDefinition {
 
 	/**
 	 * Retourne toutes les associations ou la DtDéfinition est concernée.
-	 * 
+	 *
 	 * @return Collection des associations concernées
 	 */
 	private Collection<AssociationNode> getTargetAssociationNodes() {
@@ -102,9 +102,9 @@ public final class TemplateDtDefinition {
 	public String getClassSimpleName() {
 		return dtDefinition.getClassSimpleName();
 	}
+
 	/**
 	 * Retourne le nom camelCase de la classe.
-	 * @return 
 	 */
 	public String getClassSimpleNameCamelCase() {
 		return StringUtil.constToCamelCase(dtDefinition.getLocalName(), false);

@@ -28,7 +28,7 @@ import io.vertigo.studio.reporting.MetricEngine;
 
 /**
  * Plugin de calcul du temps d'exécution d'une requête.
- * 
+ *
  * @author tchassagnette
  */
 public final class PerformanceMetricEngine implements MetricEngine<TaskDefinition, PerformanceMetric> {
@@ -36,7 +36,7 @@ public final class PerformanceMetricEngine implements MetricEngine<TaskDefinitio
 
 	/**
 	 * Constructeur apr défaut.
-	 * @param workManager Manager des works
+	 * @param taskManager Manager des tasks
 	 */
 	public PerformanceMetricEngine(final TaskManager taskManager) {
 		Assertion.checkNotNull(taskManager);
@@ -70,7 +70,7 @@ public final class PerformanceMetricEngine implements MetricEngine<TaskDefinitio
 			final long executionTime = endTime - startTime;
 			return new PerformanceMetric(executionTime);
 		}
-		//Le test n'a pas de sens. 
+		//Le test n'a pas de sens.
 		return new PerformanceMetric();
 	}
 
