@@ -32,19 +32,19 @@ import io.vertigo.lang.MessageText;
  * 
  * Un champ possède
  *   - un nom
- *   - un domaine métier 
+ *   - un domaine métier
  *   - un label (obligatoirement renseigné)
- *   - un caractère requis ou non 
+ *   - un caractère requis ou non
  *   - un caractère persistent ou non
- *   - un index 
+ *   - un index
  * *
- * Un champ référence 
+ * Un champ référence
  * 	 - la définition qu'il enrichit (DtDefinition)
- * 	 - la définition qu'il relie (équivalent d'une Foreign Key) 	   
- *   
+ * 	 - la définition qu'il relie (équivalent d'une Foreign Key)
+ * 
  * @author  fconstantin, pchretien , npiedeloup
  */
-public final class DtField {
+public final class DtField implements DtFieldName {
 	public static final String PREFIX = "FLD_";
 
 	/**
@@ -105,18 +105,18 @@ public final class DtField {
 	private final boolean display;
 
 	/**
-	* Constructeur.
-	* @param id ID du champ
-	* @param fieldName Nom du champ
-	* @param type Type du champ
-	* @param domain Domaine du champ
-	* @param label Label
-	* @param notNull Si champ not null
-	* @param persistent Si champ persistent
-	* @param fkDtDefinitionName Nom de la DtDefinition de la FK (noNull si type=FK)
-	* @param computedExpression Expression du computed (noNull si type=Computed)
-	* @param dynamic Gestion des champs dynamiques
-	*/
+	 * Constructeur.
+	 * @param id ID du champ
+	 * @param fieldName Nom du champ
+	 * @param type Type du champ
+	 * @param domain Domaine du champ
+	 * @param label Label
+	 * @param notNull Si champ not null
+	 * @param persistent Si champ persistent
+	 * @param fkDtDefinitionName Nom de la DtDefinition de la FK (noNull si type=FK)
+	 * @param computedExpression Expression du computed (noNull si type=Computed)
+	 * @param dynamic Gestion des champs dynamiques
+	 */
 	DtField(final String id, final String fieldName, final FieldType type, //
 			final Domain domain, final MessageText label, final boolean notNull,//
 			final boolean persistent, final String fkDtDefinitionName, //
@@ -171,10 +171,16 @@ public final class DtField {
 		return id;
 	}
 
+	/** {@inheritDoc} */
+	public String name() {
+		return name;
+	}
+
 	/**
 	 * Retourne le nom du champ.
 	 * @return Nom du champ
 	 */
+	@Deprecated // "use name()" instead of name()
 	public String getName() {
 		return name;
 	}
@@ -242,7 +248,7 @@ public final class DtField {
 
 	/**
 	 * Permet d'accéder aux données.
-	 * @return Accesseur des propriétés du dto. 
+	 * @return Accesseur des propriétés du dto.
 	 */
 	public DataAccessor getDataAccessor() {
 		return dataAccessor;
