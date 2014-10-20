@@ -34,7 +34,6 @@ import java.util.Collection;
 public interface DtListProcessor {
 	/**
 	 * Add any function that transform a list into an another list
-	 * @param listFunction
 	 */
 	DtListProcessor add(DtListFunction listFunction);
 

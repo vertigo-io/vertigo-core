@@ -34,7 +34,7 @@ import javax.inject.Inject;
 /**
  * Modèle d'un composant.
  * Un composant est défini par ses dépendances externes.
- * Les dépendances à des objets fournis par les params ne sont pas exposées. (ele ne servent pas dans la résolution). 
+ * Les dépendances à des objets fournis par les params ne sont pas exposées. (ele ne servent pas dans la résolution).
  * @author prahmoune, pchretien
  */
 final class DIComponentInfo {
@@ -88,7 +88,6 @@ final class DIComponentInfo {
 
 	/**
 	 * Dependencies on constructor
-	 * @param diComponentInfo 
 	 */
 	private static void populateConstructorDepedencies(final DIComponentInfo diComponentInfo, final Collection<DIDependency> dependencies, final Class<?> implClass, final Set<String> params) {
 		final Constructor<?> constructor = DIAnnotationUtil.findInjectableConstructor(implClass);

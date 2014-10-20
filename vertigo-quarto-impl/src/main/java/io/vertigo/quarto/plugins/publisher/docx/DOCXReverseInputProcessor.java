@@ -36,7 +36,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * Mise en forme des tags et suppression des champs inutiles dans le document DOCX.
- * 
+ *
  * @author adufranne
  */
 final class DOCXReverseInputProcessor implements MergerProcessor {
@@ -116,8 +116,7 @@ final class DOCXReverseInputProcessor implements MergerProcessor {
 	/**
 	 * Méthode de suppression de tags.
 	 * Supprime l'ensemble des résultats de la requête xpath.
-	 * 
-	 * @param xpathExpr
+	 *
 	 * @param xmlDoc Document source
 	 * @param xpath Moteur Xpath
 	 * @throws XPathExpressionException Erreur Xpath

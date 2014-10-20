@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.work;
 
 /**
- * 
+ *
  * @author pchretien
  */
 public interface WorkProcessor<WR, W> {
@@ -32,7 +32,6 @@ public interface WorkProcessor<WR, W> {
 
 	/**
 	 * Execute processor composed of tasks.
-	 * @param input
 	 * @return output
 	 */
 	WR exec(W input);

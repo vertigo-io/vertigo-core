@@ -34,9 +34,8 @@ public interface WorkerPlugin extends Plugin {
 	List<String> getWorkTypes();
 
 	/**
-	 * Polling workitem. 
-	 * @param workType 
-	 * @param timeoutInSeconds
+	 * Polling workitem.
+	 * @param workType Type de tache
 	 * @return Workitem or null (if timeout)
 	 */
 	<WR, W> WorkItem<WR, W> pollWorkItem(final String workType, final int timeoutInSeconds);
@@ -44,7 +43,7 @@ public interface WorkerPlugin extends Plugin {
 	/**
 	 * Send result or error if execution failed
 	 * @param workId WorkId
-	 * @param result Result (not null if execution succeeded) 
+	 * @param result Result (not null if execution succeeded)
 	 * @param error Error ( not null if execution failed)
 	 */
 	<WR> void putResult(final String workId, WR result, Throwable error);

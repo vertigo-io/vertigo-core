@@ -231,7 +231,6 @@ final class EAXmiObject {
 
 	/**
 	 * Setter.
-	 * @param classA
 	 */
 	public void setClassA(final EAXmiId classA) {
 		this.classA = classA;

@@ -42,7 +42,6 @@ public interface ExporterPlugin extends Plugin {
 
 	/**
 	 * Type de Format accepté à l'export
-	 * @param exportFormat
 	 * @return si le format précisé est pris en compte par le plugin
 	 */
 	boolean accept(ExportFormat exportFormat);

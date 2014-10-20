@@ -74,7 +74,7 @@ public final class BrokerNNImpl implements BrokerNN {
 
 	/**
 	 * Constructeur.
-	 * @param taskManager
+	 * @param taskManager Manager des Tasks
 	 */
 	public BrokerNNImpl(final TaskManager taskManager) {
 		Assertion.checkNotNull(taskManager);

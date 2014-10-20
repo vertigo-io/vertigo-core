@@ -202,8 +202,6 @@ public final class UiMessageStack {
 	}
 
 	/**
-	 * @param dto
-	 * @param fieldName
 	 * @deprecated Ne pas faire ca. On test pas champs par champs. Le but est de laisser remonter les erreurs. La méthode va bientot disparaitre :)
 	 */
 	@Deprecated

@@ -25,12 +25,12 @@ import java.util.Date;
 
 /**
  * Utilitaire concernant les dates.
- * 
+ *
  * On distingue deux types de date
- *  - les dates précises au jour 
- *  - les dates précises au jour, min, sec (ms)  
- *  
- * @author npiedeloup, pchretien 
+ *  - les dates précises au jour
+ *  - les dates précises au jour, min, sec (ms)
+ *
+ * @author npiedeloup, pchretien
  */
 public final class DateUtil {
 	private DateUtil() {
@@ -55,7 +55,7 @@ public final class DateUtil {
 
 	/**
 	 * Calcule le nombre de jours entre deux dates.
-	 * 
+	 *
 	 * @param startDate Date de début
 	 * @param endDate Date de fin
 	 * @return Nombre de jours
@@ -107,7 +107,7 @@ public final class DateUtil {
 	}
 
 	/**
-	 * Vérification que la date est du type Date(sans notion d'heure, min, sec, milisecondes) 
+	 * Vérification que la date est du type Date(sans notion d'heure, min, sec, milisecondes)
 	 * @param dateToCheck Date à vérifier
 	 */
 	private static void checkIsDate(final Date dateToCheck) {
@@ -128,11 +128,10 @@ public final class DateUtil {
 	 * now-12M
 	 * now-2y
 	 * "06/12/2003", "dd/MM/yyyy"
-	 * 
-	 * @param dateQuery
+	 *
 	 * @return date
 	 */
-	public static Date parse(final String dateQuery, String datePattern) {
+	public static Date parse(final String dateQuery, final String datePattern) {
 		return DateQueryParserUtil.parse(dateQuery, datePattern);
 	}
 }

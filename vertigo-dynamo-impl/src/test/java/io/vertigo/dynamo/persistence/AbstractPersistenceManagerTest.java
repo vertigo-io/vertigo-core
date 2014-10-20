@@ -153,7 +153,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_INSERT_CAR")//
 				.withEngine(TaskEngineProc.class)//
-				.withRequest("insert into CAR (ID, FAM_ID,MAKE, MODEL, DESCRIPTION, YEAR, KILO, PRICE, MOTOR_TYPE) values " // 
+				.withRequest("insert into CAR (ID, FAM_ID,MAKE, MODEL, DESCRIPTION, YEAR, KILO, PRICE, MOTOR_TYPE) values " //
 						//syntaxe HsqlDb pour sequence.nextval
 						+ "(NEXT VALUE FOR SEQ_CAR, #DTO_CAR.FAM_ID#, #DTO_CAR.MAKE#, #DTO_CAR.MODEL#, #DTO_CAR.DESCRIPTION#, #DTO_CAR.YEAR#, #DTO_CAR.KILO#, #DTO_CAR.PRICE#, #DTO_CAR.MOTOR_TYPE#)") //
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())//
@@ -169,7 +169,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_UPDATE_CAR")//
 				.withEngine(TaskEngineProc.class)//
-				.withRequest("update CAR set " // 
+				.withRequest("update CAR set " //
 						+ "FAM_ID = #DTO_CAR.FAM_ID#, " //
 						+ "MAKE = #DTO_CAR.MAKE#, " //
 						+ "MODEL = #DTO_CAR.MODEL#, " //
@@ -282,7 +282,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 
 	//		//BIGINT > LONG
 	//		statement.execute("SET PROPERTY \"sql.enforce_strict_size\" TRUE; " + "create table famille(ID BIGINT, LIBELLE varchar(255), PRIMARY KEY (ID))");
-	//	// TODO private 
+	//	// TODO private
 	//	protected void createHsqlTablesFileInfo() throws SQLException {
 	//		statement.execute("drop table KX_FILE_INFO if exists");
 	//		statement.execute("drop sequence SEQ_KX_FILE_INFO if exists");
@@ -340,7 +340,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			for (int i = 0; i < 4000; i++) {
 				sb.append(df.format(i));
 			}
-			// libelle 
+			// libelle
 			famille.setLibelle(sb.toString());
 			//On doit échouer car le libellé est trop long
 			persistenceManager.getBroker().save(famille);
@@ -398,7 +398,6 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	/**
 	 * Test que les listes NN ne reste pas en cache après une mise à jour.
 	 * Ici l'entité en cache est la destination de la navigation : Car
-	 * @throws SQLException 
 	 */
 	@Test
 	public void testGetFamilleLocationCars() {
@@ -425,7 +424,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			final DtList<Car> firstResult = famille.getVoituresLocationList();
 			Assert.assertEquals("Test tailles du nombre de voiture dans une NN", cars.size(), firstResult.size());
 
-			//On met à jour l'association en retirant le premier élément 
+			//On met à jour l'association en retirant le premier élément
 			carUriList.remove(0);
 			persistenceManager.getBrokerNN().updateNN(famille.getVoituresLocationDtListURI(), carUriList);
 
@@ -469,7 +468,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			//On garde le résultat de l'association 1N
 			final DtList<Car> firstResult = famille.getVoituresFamilleList();
 
-			//On met à jour l'association en retirant le premier élément 
+			//On met à jour l'association en retirant le premier élément
 			final Car firstCar = cars.get(0);
 			firstCar.setFamId(null);
 			persistenceManager.getBroker().save(firstCar);

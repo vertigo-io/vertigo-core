@@ -44,7 +44,7 @@ public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends
 		componentSpaceConfigBuilder
 			.beginModule("commons").
 				beginComponent(CodecManager.class, CodecManagerImpl.class).endComponent()
-			.endModule();	
+			.endModule();
 		// @formatter:on
 	}
 
@@ -74,10 +74,6 @@ public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends
 		checkEncodedValue(encodedValue);
 	}
 
-	/**
-	 * 
-	 * @param encodedValue
-	 */
 	protected void checkEncodedValue(final T encodedValue) {
 		// à implementer si besoin
 	}
