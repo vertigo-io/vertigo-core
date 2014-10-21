@@ -19,8 +19,8 @@
 package io.vertigo.studio.tools;
 
 import io.vertigo.core.Home;
+import io.vertigo.core.config.App;
 import io.vertigo.core.config.AppBuilder;
-import io.vertigo.core.config.AppBuilder.App;
 import io.vertigo.studio.tools.generate.GenerateGoal;
 import io.vertigo.util.ClassUtil;
 
@@ -30,7 +30,7 @@ import java.util.Properties;
 
 /**
  * Génération des fichiers Java et SQL à patrir de fichiers template freemarker.
- * 
+ *
  * @author dchallas, pchretien
  */
 public final class NameSpace2Java {

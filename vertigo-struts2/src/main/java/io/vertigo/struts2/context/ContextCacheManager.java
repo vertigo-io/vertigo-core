@@ -18,7 +18,7 @@
  */
 package io.vertigo.struts2.context;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Component;
 import io.vertigo.struts2.core.KActionContext;
 
 /**
@@ -26,7 +26,7 @@ import io.vertigo.struts2.core.KActionContext;
  *
  * @author pchretien, npiedeloup
  */
-public interface ContextCacheManager extends Manager {
+public interface ContextCacheManager extends Component {
 
 	/**
 	 * Ajoute Objet dans le cache.
