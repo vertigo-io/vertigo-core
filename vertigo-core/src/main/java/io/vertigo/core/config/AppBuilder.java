@@ -18,7 +18,6 @@
  */
 package io.vertigo.core.config;
 
-import io.vertigo.core.Home;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.xml.XMLModulesLoader;
@@ -34,7 +33,7 @@ import java.util.Properties;
 /**
  * Build a App from conventional elements.
  * App are start at create time and are autocloseable.
- * 
+ *
  * @author npiedeloup
  */
 public final class AppBuilder {
@@ -42,37 +41,6 @@ public final class AppBuilder {
 	private boolean mySilence;
 	private final Properties myEnvParams = new Properties();
 	private final List<URL> xmlUrls = new ArrayList<>();
-
-	/**
-	 * Application state.
-	 */
-	public static class App implements AutoCloseable {
-		private final Properties envParams;
-
-		/**
-		 * Constructor.
-		 * @param envParams Environment Parameters (are public in app)
-		 * @param componentSpaceConfig ComponentSpace Config
-		 */
-		App(final Properties envParams, final ComponentSpaceConfig componentSpaceConfig) {
-			Assertion.checkNotNull(envParams, "envParams");
-			//---------------------------------------------------------------------
-			this.envParams = envParams;
-			Home.start(componentSpaceConfig);
-		}
-
-		/** {@inheritDoc} */
-		public void close() {
-			Home.stop();
-		}
-
-		/**
-		 * @return Environment Parameters
-		 */
-		public Properties getEnvParams() {
-			return envParams;
-		}
-	}
 
 	/**
 	 * @param newSilence silence mode
@@ -162,7 +130,7 @@ public final class AppBuilder {
 
 	/**
 	 * Update the 'already set' componentSpaceConfigBuilder and return it.
-	 * @return ComponentSpaceConfigBuilder 
+	 * @return ComponentSpaceConfigBuilder
 	 */
 	public ComponentSpaceConfigBuilder toComponentSpaceConfigBuilder() {
 		Assertion.checkState(componentSpaceConfigBuilder != null, "componentSpaceConfigBuilder was not set, use build instead");
@@ -224,7 +192,7 @@ public final class AppBuilder {
 
 	/**
 	 * Retourne l'URL correspondant au nom du fichier dans le classPath.
-	 * 
+	 *
 	 * @param fileName Nom du fichier
 	 * @return URN non null
 	 */
@@ -234,7 +202,7 @@ public final class AppBuilder {
 		try {
 			return new URL(fileName);
 		} catch (final MalformedURLException e) {
-			//Si fileName non trouvé, on recherche dans le classPath 
+			//Si fileName non trouvé, on recherche dans le classPath
 			final URL url = relativeRootClass.getResource(fileName);
 			Assertion.checkNotNull(url, "Impossible de récupérer le fichier [" + fileName + "]");
 			return url;
@@ -254,7 +222,7 @@ public final class AppBuilder {
 	//		try {
 	//			return new URL(absoluteFileName);
 	//		} catch (final MalformedURLException e) {
-	//			//Si fileName non trouvé, on recherche dans le classPath 
+	//			//Si fileName non trouvé, on recherche dans le classPath
 	//			final URL url = relativeRootClass.getResource(absoluteFileName);
 	//			Assertion.checkNotNull(url, "Impossible de récupérer le fichier [" + absoluteFileName + "]");
 	//			return url;
@@ -269,7 +237,7 @@ public final class AppBuilder {
 	//			return "/" + getRelativePath(relativeRootClass) + "/" + fileName.replace("./", "");
 	//		}
 	//
-	//		//soit en absolu		
+	//		//soit en absolu
 	//		if (fileName.startsWith("/")) {
 	//			return fileName;
 	//		}
