@@ -19,6 +19,7 @@
 package io.vertigo.core.config;
 
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Loader;
 import io.vertigo.lang.Option;
 import io.vertigo.xml.XMLModulesLoader;
 
@@ -146,14 +147,11 @@ public final class AppBuilder {
 		//---------------------------------------------------------------------
 		//2- We load XML with Loaders to componentSpaceConfigBuilder
 		Assertion.checkArgument(!xmlUrls.isEmpty(), "We need at least one Xml file");
-		final List<XMLModulesLoader> moduleLoaders = new ArrayList<>();
 		for (final URL xmlUrl : xmlUrls) {
-			moduleLoaders.add(new XMLModulesLoader(xmlUrl, myEnvParams));
+			final Loader<ComponentSpaceConfigBuilder> loader = new XMLModulesLoader(xmlUrl, myEnvParams);
+			componentSpaceConfigBuilder.withLoader(loader);
 		}
 		//.withRestEngine(new GrizzlyRestEngine(8086));
-		for (final XMLModulesLoader modulesLoader : moduleLoaders) {
-			componentSpaceConfigBuilder.withLoader(modulesLoader);
-		}
 		return componentSpaceConfigBuilder;
 	}
 
@@ -179,11 +177,9 @@ public final class AppBuilder {
 	}
 
 	private static Properties loadProperties(final String propertiesName, final Class<?> relativePathBase) {
-		try {
+		try (final InputStream in = AppBuilder.createURL(propertiesName, relativePathBase).openStream()) {
 			final Properties properties = new Properties();
-			try (final InputStream in = AppBuilder.createURL(propertiesName, relativePathBase).openStream()) {
-				properties.load(in);
-			}
+			properties.load(in);
 			return properties;
 		} catch (final IOException e) {
 			throw new RuntimeException(e);
