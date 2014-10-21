@@ -90,7 +90,7 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 	 * @param referenceClass Class de référence du template
 	 * @return Configuration de FreeMarker
 	 */
-	private Configuration initConfiguration(final Class<?> referenceClass) {
+	private static Configuration initConfiguration(final Class<?> referenceClass) {
 		final Configuration config = new Configuration();
 		config.setSharedVariable("constToCamelCase", new TemplateMethodStringUtil());
 		setTemplateLoading(config, referenceClass);
@@ -98,7 +98,7 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 		return config;
 	}
 
-	private void setTemplateLoading(final Configuration config, final Class<?> referenceClass) {
+	private static void setTemplateLoading(final Configuration config, final Class<?> referenceClass) {
 		config.setClassForTemplateLoading(referenceClass, "");
 	}
 

@@ -26,10 +26,14 @@ import java.io.PrintStream;
  * @author pchretien
  */
 public final class Logo {
+	private Logo() {
+		//constructor is proteceted
+	}
+
 	/**
 	 * Displays logo in console.
 	 */
-	public void printCredits(final PrintStream out) {
+	public static void printCredits(final PrintStream out) {
 		out.println();
 		out.println("##########################################");
 		out.println("#  _____________                         #");

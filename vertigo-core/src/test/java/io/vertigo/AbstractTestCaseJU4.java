@@ -23,9 +23,9 @@ import io.vertigo.core.config.AppBuilder;
 import io.vertigo.core.config.ComponentSpaceConfigBuilder;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.core.spaces.component.ComponentInfo;
+import io.vertigo.lang.Component;
 import io.vertigo.lang.Container;
 import io.vertigo.lang.Describable;
-import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;
 
 import java.util.List;
@@ -98,8 +98,7 @@ public abstract class AbstractTestCaseJU4 {
 			startHome();
 		}
 		// On injecte les managers sur la classe de test.
-		final Injector injector = new Injector();
-		injector.injectMembers(this, getContainer());
+		Injector.injectMembers(this, getContainer());
 		doSetUp();
 	}
 
@@ -152,7 +151,7 @@ public abstract class AbstractTestCaseJU4 {
 	 *
 	 * @return Container de l'injection
 	 */
-	private Container getContainer() {
+	private static Container getContainer() {
 		return Home.getComponentSpace();
 	}
 

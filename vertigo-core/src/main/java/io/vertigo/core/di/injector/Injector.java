@@ -41,6 +41,10 @@ import javax.inject.Inject;
  * @author pchretien
  */
 public final class Injector {
+	private Injector() {
+		//constructor is protected
+	}
+
 	/**
 	 * Injection de dépendances.
 	 * Création d'une instance  à partir d'un conteneur de composants déjà intsanciés.
@@ -50,7 +54,7 @@ public final class Injector {
 	 * @param container Fournisseur de composants
 	 * @return Instance de composants créée.
 	 */
-	public <T> T newInstance(final Class<T> clazz, final Container container) {
+	public static <T> T newInstance(final Class<T> clazz, final Container container) {
 		Assertion.checkNotNull(clazz);
 		Assertion.checkNotNull(container);
 		//---------------------------------------------------------------------
@@ -73,7 +77,7 @@ public final class Injector {
 	/**
 	 * Injection des propriétés dans une instance.
 	 */
-	public void injectMembers(final Object instance, final Container container) {
+	public static void injectMembers(final Object instance, final Container container) {
 		Assertion.checkNotNull(instance);
 		Assertion.checkNotNull(container);
 		//---------------------------------------------------------------------

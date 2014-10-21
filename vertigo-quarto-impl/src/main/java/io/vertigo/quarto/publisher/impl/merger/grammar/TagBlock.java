@@ -38,7 +38,7 @@ public final class TagBlock extends AbstractKScriptTag implements ScriptTag {
 		return START_BLOC_JSP + decode(tag.getAttribute()) + END_BLOC_JSP;
 	}
 
-	private String decode(final String s) {
+	private static String decode(final String s) {
 		//On décode les caractères qui peuvent avoir du sens dans un block
 		final StringBuilder decode = new StringBuilder(s);
 		StringUtil.replace(decode, "&quot;", "\"");

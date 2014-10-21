@@ -31,7 +31,6 @@ import io.vertigo.dynamo.task.model.TaskResult;
  * @author  pchretien
  */
 public final class TaskManagerImpl implements TaskManager {
-	private static final Injector INJECTOR = new Injector();
 	private final TaskListener taskListener;
 
 	public TaskManagerImpl() {
@@ -44,7 +43,7 @@ public final class TaskManagerImpl implements TaskManager {
 		boolean executed = false;
 		final long start = System.currentTimeMillis();
 		try {
-			final TaskEngine taskEngine = INJECTOR.newInstance(task.getDefinition().getTaskEngineClass(), Home.getComponentSpace());
+			final TaskEngine taskEngine = Injector.newInstance(task.getDefinition().getTaskEngineClass(), Home.getComponentSpace());
 			final TaskResult taskResult = taskEngine.process(task);
 			executed = true;
 			return taskResult;

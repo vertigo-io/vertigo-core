@@ -85,7 +85,6 @@ public final class ComponentSpace implements Container, Activeable {
 
 	private final ComponentSpaceConfig componentSpaceConfig;
 	private final ComponentContainer componentContainer = new ComponentContainer();
-	private final Injector injector = new Injector();
 
 	private final List<Engine> engines = new ArrayList<>();
 
@@ -149,7 +148,7 @@ public final class ComponentSpace implements Container, Activeable {
 		}
 	}
 
-	private void injectResources(final ModuleConfig moduleConfig) {
+	private static void injectResources(final ModuleConfig moduleConfig) {
 		//			int resourcesToBeLoad = moduleConfig.getResourceConfigs().size();
 		//We are doing a copy of all resources, to check that they are all parsed.
 		final List<ResourceConfig> resourceConfigsToDo = new ArrayList<>(moduleConfig.getResourceConfigs());
@@ -290,7 +289,7 @@ public final class ComponentSpace implements Container, Activeable {
 	}
 
 	private ComponentInitializer<?> createComponentInitializer(final ComponentConfig componentConfig) {
-		return injector.newInstance(componentConfig.getInitializerClass(), componentContainer);
+		return Injector.newInstance(componentConfig.getInitializerClass(), componentContainer);
 	}
 
 	private Object createComponent(final ComponentConfig componentConfig) {
@@ -306,7 +305,7 @@ public final class ComponentSpace implements Container, Activeable {
 		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(componentConfig.getParams());
 		final ComponentDualContainer container = new ComponentDualContainer(componentContainer, paramsContainer);
 		//---
-		final Object component = injector.newInstance(componentConfig.getImplClass(), container);
+		final Object component = Injector.newInstance(componentConfig.getImplClass(), container);
 		//--Search for unuseds plugins
 		// We are inspecting all unused keys, and we check if we can find almost one plugin of the component.
 		for (final String key : container.getUnusedKeys()) {
@@ -325,7 +324,7 @@ public final class ComponentSpace implements Container, Activeable {
 		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(pluginConfig.getParams());
 		final Container container = new ComponentDualContainer(componentContainer, paramsContainer);
 		//---
-		final Plugin plugin = injector.newInstance(pluginConfig.getImplClass(), container);
+		final Plugin plugin = Injector.newInstance(pluginConfig.getImplClass(), container);
 		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}'", paramsContainer.getUnusedKeys());
 		return plugin;
 	}

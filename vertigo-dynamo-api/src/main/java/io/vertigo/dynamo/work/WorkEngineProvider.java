@@ -27,11 +27,10 @@ import io.vertigo.util.ClassUtil;
  * Provider des taches.
  * Ce provider définit le moyen dont la tache doit être exécuter.
  * Dans la plupart des cas le moyen est une classe.
- * Dans certain cs il peut s'agir du nom de la classe. 
+ * Dans certain cs il peut s'agir du nom de la classe.
  * @author  pchretien
  */
 public final class WorkEngineProvider<WR, W> {
-	private static final Injector INJECTOR = new Injector();
 	private final String className;
 	private final Class<? extends WorkEngine<WR, W>> clazz;
 	private final WorkEngine<WR, W> workEngine;
@@ -71,7 +70,7 @@ public final class WorkEngineProvider<WR, W> {
 			engineClazz = (Class<? extends WorkEngine<WR, W>>) ClassUtil.classForName(className);
 		}
 		//récupéartion de l'engine par sa classe.
-		return INJECTOR.newInstance(engineClazz, Home.getComponentSpace());
+		return Injector.newInstance(engineClazz, Home.getComponentSpace());
 	}
 
 	public String getName() {

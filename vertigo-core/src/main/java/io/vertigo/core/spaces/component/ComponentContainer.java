@@ -200,8 +200,7 @@ final class ComponentContainer implements Container, Activeable {
 	void print() {
 		// ---Affichage du logo et des modules---
 		final PrintStream out = System.out;
-		final Logo logo = new Logo();
-		logo.printCredits(out);
+		Logo.printCredits(out);
 		out.println();
 		print(out);
 	}

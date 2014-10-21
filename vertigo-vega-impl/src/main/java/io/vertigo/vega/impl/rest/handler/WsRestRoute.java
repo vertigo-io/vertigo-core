@@ -59,7 +59,7 @@ public final class WsRestRoute extends Route {
 	 */
 	public WsRestRoute(final EndPointDefinition endPointDefinition) {
 		super(convertJaxRsPathToSpark(endPointDefinition.getPath()), endPointDefinition.getAcceptType());
-		new Injector().injectMembers(this, Home.getComponentSpace());
+		Injector.injectMembers(this, Home.getComponentSpace());
 
 		handlerChain.addHandler(new ExceptionHandler(jsonEngine));
 

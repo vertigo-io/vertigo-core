@@ -40,7 +40,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * Tests sur l'implémentation du plugin DOCX.
- * 
+ *
  * @author adufranne
  */
 public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
@@ -107,7 +107,7 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * Test de factoristion des tags multiples .
-	 * 
+	 *
 	 * @throws XPathExpressionException xpath mal formée.
 	 */
 	@Test
@@ -125,7 +125,7 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 	/**
 	 * Test de nettoyage des tags .
 	 * Doit laisser les tags words inchangés et supprimer les separate des tags .
-	 * 
+	 *
 	 * @throws XPathExpressionException xpath mal formée.
 	 */
 	@Test
@@ -143,7 +143,7 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * Test des passages à la ligne.
-	 * 
+	 *
 	 * @throws XPathExpressionException si le xpath est mal formé.
 	 */
 	@Test
@@ -162,7 +162,7 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 
 	}
 
-	private void checkCarriageReturn(final Document xmlDoc, final XPath xpath, final String[] expected) throws XPathExpressionException {
+	private static void checkCarriageReturn(final Document xmlDoc, final XPath xpath, final String[] expected) throws XPathExpressionException {
 		final String findNode = "//w:r";
 		final NodeList nodeList = (NodeList) xpath.evaluate(findNode, xmlDoc, XPathConstants.NODESET);
 		String content;
@@ -174,7 +174,7 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * Test des reformatages de balises.
-	 * 
+	 *
 	 * @throws XPathExpressionException erreur xpath.
 	 */
 	@Test
@@ -202,7 +202,7 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 		DOCXUtil.renderXML(xmlDoc);
 	}
 
-	private String buildBESTag(final String beginContent, final String separateContent) {
+	private static String buildBESTag(final String beginContent, final String separateContent) {
 		final String[] bContent = new String[1];
 		bContent[0] = beginContent;
 		final String[] sContent = new String[1];
@@ -211,7 +211,7 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 
 	}
 
-	private String buildBESTag(final String[] beginContent, final String[] separateContent) {
+	private static String buildBESTag(final String[] beginContent, final String[] separateContent) {
 		final StringBuilder sb = new StringBuilder();
 		appendBESTag("begin", sb);
 		for (final String be : beginContent) {
@@ -228,11 +228,11 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * Construit un DOCX depuis son contenu (ajoute le header et le footer).
-	 * 
+	 *
 	 * @param content le contenu.
 	 * @return le docx.
 	 */
-	private String getDOCX(final String content) {
+	private static String getDOCX(final String content) {
 		final StringBuilder sb = new StringBuilder();
 		sb.append(getDOCXHeader());
 		sb.append(content);
@@ -240,7 +240,7 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 		return sb.toString();
 	}
 
-	private void appendBESTag(final String tagType, final StringBuilder sb) {
+	private static void appendBESTag(final String tagType, final StringBuilder sb) {
 		sb.append("<w:r>");
 		sb.append("<w:fldChar w:fldCharType=\"");
 		sb.append(tagType);
@@ -249,19 +249,19 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 	}
 
 	// METHODES DE CONSTRUCTION DOCX.
-	private String wrapInColToken(final String content) {
+	private static String wrapInColToken(final String content) {
 		return MessageFormat.format(COL_TOKEN, content);
 	}
 
-	private String wrapInRowToken(final String content) {
+	private static String wrapInRowToken(final String content) {
 		return MessageFormat.format(ROW_TOKEN, content);
 	}
 
-	private String getDOCXHeader() {
+	private static String getDOCXHeader() {
 		return DOCX_HEADER;
 	}
 
-	private String getDOCXFooter() {
+	private static String getDOCXFooter() {
 		return DOCX_FOOTER;
 
 	}

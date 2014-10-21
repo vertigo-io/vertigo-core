@@ -135,7 +135,7 @@ final class XmlSecurityLoader {
 		}
 	}
 
-	private Permission createPermission(final Element permissionElement) {
+	private static Permission createPermission(final Element permissionElement) {
 		Assertion.checkNotNull(permissionElement);
 		// ---------------------------------------------------------------------
 		final String id = permissionElement.getAttributeValue(ID_KEY);
@@ -147,7 +147,7 @@ final class XmlSecurityLoader {
 		return new Permission(id, operation, filter);
 	}
 
-	private Role createRole(final Element roleElement) {
+	private static Role createRole(final Element roleElement) {
 		Assertion.checkNotNull(roleElement);
 		// ---------------------------------------------------------------------
 		final String name = roleElement.getAttributeValue(NAME_KEY);

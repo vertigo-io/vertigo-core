@@ -46,7 +46,7 @@ import com.opensymphony.xwork2.Preparable;
 
 /**
  * Super class des Actions struts.
- * 
+ *
  * @author npiedeloup
  */
 public abstract class AbstractActionSupport extends ActionSupport implements ModelDriven<KActionContext>, Preparable, ServletResponseAware {
@@ -87,7 +87,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	 * Constructeur.
 	 */
 	protected AbstractActionSupport() {
-		new Injector().injectMembers(this, Home.getComponentSpace());
+		Injector.injectMembers(this, Home.getComponentSpace());
 		uiMessageStack = new UiMessageStack(this);
 	}
 
@@ -137,7 +137,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 
 	/**
 	 * Initialisation du context.
-	 * Pour accepter initContext avec des paramètres de la request, il est possible de le faire avec ce code : 
+	 * Pour accepter initContext avec des paramètres de la request, il est possible de le faire avec ce code :
 	 * <code>
 	 * final RequestContainerWrapper container = new RequestContainerWrapper(ServletActionContext.getRequest());
 	 * MethodUtil.invoke(this, "initContext", container);

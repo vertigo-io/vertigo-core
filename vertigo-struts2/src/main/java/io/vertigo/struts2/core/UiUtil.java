@@ -43,7 +43,7 @@ public final class UiUtil implements Serializable {
 	 * @param uiObject Object du context
 	 * @return Nom de l'object dans le context
 	 */
-	public final String contextKey(final UiObject<?> uiObject) {
+	public static final String contextKey(final UiObject<?> uiObject) {
 		final ActionContext actionContext = ActionContext.getContext();
 		final KActionContext kActionContext = ((AbstractActionSupport) actionContext.getActionInvocation().getAction()).getModel();
 		return kActionContext.findKey(uiObject);
@@ -53,7 +53,7 @@ public final class UiUtil implements Serializable {
 	* @param uiObject Object du context
 	* @return index de l'objet dans sa liste
 	*/
-	public final int indexOf(final List<?> uiList, final UiObject<?> uiObject) {
+	public static final int indexOf(final List<?> uiList, final UiObject<?> uiObject) {
 		return uiList.indexOf(uiObject);
 	}
 
@@ -61,7 +61,7 @@ public final class UiUtil implements Serializable {
 	 * @param fieldPath Chemin du champ
 	 * @return Label du champs
 	 */
-	public final String label(final String fieldPath) {
+	public static final String label(final String fieldPath) {
 		return getDtField(fieldPath).getLabel().getDisplay();
 	}
 
@@ -70,7 +70,7 @@ public final class UiUtil implements Serializable {
 	 * @param value Valeur à formater
 	 * @return rendu du champs boolean
 	 */
-	public final String formatBoolean(final String fieldPath, final Boolean value) {
+	public static final String formatBoolean(final String fieldPath, final Boolean value) {
 		final Formatter formatter;
 		if (!fieldPath.contains(".")) { //cas des ContextRef sans domain
 			formatter = Home.getDefinitionSpace().resolve(Formatter.FMT_DEFAULT, Formatter.class);
@@ -84,7 +84,7 @@ public final class UiUtil implements Serializable {
 	 * @param fieldPath Chemin du champ
 	 * @return Si le champs est obligatoire
 	 */
-	public final boolean required(final String fieldPath) {
+	public static final boolean required(final String fieldPath) {
 		if (fieldPath.indexOf('.') > 0) { //Le champs est n'est pas porté par un Object
 			return getDtField(fieldPath).isNotNull();
 		}
@@ -95,7 +95,7 @@ public final class UiUtil implements Serializable {
 	 * @param uiList liste du context
 	 * @return Nom du champ display de cette liste
 	 */
-	public final String getDisplayField(final AbstractUiList<?> uiList) {
+	public static final String getDisplayField(final AbstractUiList<?> uiList) {
 		final DtDefinition dtDefinition = uiList.getDtDefinition();
 		return StringUtil.constToCamelCase(dtDefinition.getDisplayField().get().getName(), false);
 	}
@@ -104,7 +104,7 @@ public final class UiUtil implements Serializable {
 	 * @param uiList liste du context
 	 * @return Nom du champ de la pk de cette liste
 	 */
-	public final String getIdField(final AbstractUiList<?> uiList) {
+	public static final String getIdField(final AbstractUiList<?> uiList) {
 		final DtDefinition dtDefinition = uiList.getDtDefinition();
 		return StringUtil.constToCamelCase(dtDefinition.getIdField().get().getName(), false);
 	}

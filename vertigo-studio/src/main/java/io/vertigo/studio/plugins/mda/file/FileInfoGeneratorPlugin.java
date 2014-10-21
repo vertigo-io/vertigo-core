@@ -31,8 +31,8 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Génération des objets relatifs au module File. 
- *  
+ * Génération des objets relatifs au module File.
+ *
  * @author npiedeloup
  */
 public final class FileInfoGeneratorPlugin extends AbstractGeneratorPlugin<FileInfoConfiguration> {
@@ -50,14 +50,14 @@ public final class FileInfoGeneratorPlugin extends AbstractGeneratorPlugin<FileI
 		generateFileInfos(fileInfoConfiguration, result);
 	}
 
-	private void generateFileInfos(final FileInfoConfiguration fileInfoConfiguration, final Result result) {
+	private static void generateFileInfos(final FileInfoConfiguration fileInfoConfiguration, final Result result) {
 		final Collection<FileInfoDefinition> fileInfoDefinitions = Home.getDefinitionSpace().getAll(FileInfoDefinition.class);
 		for (final FileInfoDefinition fileInfoDefinition : fileInfoDefinitions) {
 			generateFileInfo(fileInfoConfiguration, result, fileInfoDefinition);
 		}
 	}
 
-	private void generateFileInfo(final FileInfoConfiguration fileInfoConfiguration, final Result result, final FileInfoDefinition fileInfoDefinition) {
+	private static void generateFileInfo(final FileInfoConfiguration fileInfoConfiguration, final Result result, final FileInfoDefinition fileInfoDefinition) {
 		final TemplateFileInfoDefinition definition = new TemplateFileInfoDefinition(fileInfoDefinition);
 		final Map<String, Object> mapRoot = new HashMap<>();
 		mapRoot.put("fiDefinition", definition);

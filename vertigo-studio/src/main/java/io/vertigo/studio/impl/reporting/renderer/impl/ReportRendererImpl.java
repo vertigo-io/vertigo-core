@@ -93,7 +93,7 @@ public final class ReportRendererImpl implements ReportRenderer {
 		FileRendererUtil.writeFile(rootPath, "index.html", sb.toString());
 	}
 
-	private String getTHead(final DataReport dataReport) {
+	private static String getTHead(final DataReport dataReport) {
 		final StringBuilder colSb = new StringBuilder()
 				.append("<thead><tr><th>")
 				.append("Tâche")

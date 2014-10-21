@@ -154,14 +154,14 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 		return openOfficeConnection;
 	}
 
-	private void refreshDocument(final XComponent document) {
+	private static void refreshDocument(final XComponent document) {
 		final XRefreshable refreshable = UnoRuntime.queryInterface(XRefreshable.class, document);
 		if (refreshable != null) {
 			refreshable.refresh();
 		}
 	}
 
-	private PropertyValue[] getFileProperties(final ConverterFormat docType, final XOutputStream outputStream, final XInputStream inputStream) {
+	private static PropertyValue[] getFileProperties(final ConverterFormat docType, final XOutputStream outputStream, final XInputStream inputStream) {
 		Assertion.checkNotNull(docType, "Le type du format de sortie est obligatoire");
 		Assertion.checkArgument(outputStream == null || inputStream == null, "Les properties pointent soit un fichier local, soit un flux d'entrée, soit un flux de sortie");
 		final List<PropertyValue> fileProps = new ArrayList<>(3);
@@ -196,7 +196,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 	 * @param docType format
 	 * @return Proterties
 	 */
-	protected final PropertyValue[] getFileProperties(final ConverterFormat docType) {
+	protected static final PropertyValue[] getFileProperties(final ConverterFormat docType) {
 		return getFileProperties(docType, null, null);
 	}
 
@@ -206,7 +206,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 	 * @param outputStream Flux d'ecriture
 	 * @return Proterties
 	 */
-	protected final PropertyValue[] getFileProperties(final ConverterFormat docType, final XOutputStream outputStream) {
+	protected static final PropertyValue[] getFileProperties(final ConverterFormat docType, final XOutputStream outputStream) {
 		return getFileProperties(docType, outputStream, null);
 	}
 
@@ -216,7 +216,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 	 * @param inputStream Flux de lecture
 	 * @return Proterties
 	 */
-	protected final PropertyValue[] getFileProperties(final ConverterFormat docType, final XInputStream inputStream) {
+	protected static final PropertyValue[] getFileProperties(final ConverterFormat docType, final XInputStream inputStream) {
 		return getFileProperties(docType, null, inputStream);
 	}
 
@@ -224,7 +224,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 	 * @param docType Format de conversion
 	 * @return filterName géré par OpenOffice pour lui préciser le format de conversion
 	 */
-	protected final String getFilterNameFromExtension(final ConverterFormat docType) {
+	protected static final String getFilterNameFromExtension(final ConverterFormat docType) {
 		//Liste des filterName géré par OpenOffice.
 		//la liste est dans :
 		//OO 3.3 "OpenOffice.org 3\Basis\share\registry\modules\org\openoffice\TypeDetection\Filter\fcfg_writer_filters.xcu"

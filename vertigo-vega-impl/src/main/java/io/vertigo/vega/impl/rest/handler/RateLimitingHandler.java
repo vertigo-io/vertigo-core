@@ -47,7 +47,7 @@ public final class RateLimitingHandler implements Activeable, RouteHandler {
 	private static final long DEFAULT_WINDOW_SECONDS = 15 * 60; //the time windows use to limit calls rate
 	private static final String RATE_LIMIT_LIMIT = "X-Rate-Limit-Limit"; //the rate limit ceiling for that given request
 	private static final String RATE_LIMIT_REMAINING = "X-Rate-Limit-Remaining"; //the number of requests left for the M minute window
-	private static final String RATE_LIMIT_RESET = "X-Rate-Limit-Reset"; //the remaining seconds before the rate limit resets 
+	private static final String RATE_LIMIT_RESET = "X-Rate-Limit-Reset"; //the remaining seconds before the rate limit resets
 
 	private final KSecurityManager securityManager;
 	private final long windowSeconds;
@@ -112,7 +112,7 @@ public final class RateLimitingHandler implements Activeable, RouteHandler {
 		return chain.handle(request, response, routeContext);
 	}
 
-	private String obtainUserKey(final Request request, final Option<UserSession> userSession) {
+	private static String obtainUserKey(final Request request, final Option<UserSession> userSession) {
 		if (userSession.isDefined()) {
 			return userSession.get().getSessionUUID().toString();
 		}

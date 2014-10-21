@@ -53,7 +53,7 @@ public final class MapCachePlugin implements CachePlugin, Describable {
 
 	/**
 	 * Constructeur.
-	 * @param codecManager Manager des mécanismes de codage/décodage. 
+	 * @param codecManager Manager des mécanismes de codage/décodage.
 	 * @param noSerializationOption Liste optionnelles des noms de context à ne jamais sérialiser
 	 */
 	@Inject
@@ -84,7 +84,7 @@ public final class MapCachePlugin implements CachePlugin, Describable {
 		//---------------------------------------------------------------------
 		//Si l'objet est bien marqué non modifiable (ie : interface Modifiable ET !isModifiable)
 		//on peut le garder tel quel, sinon on le clone
-		//TODO à revoir : les DtObject et DtList ne peuvent plus etre non Modifiable, on ajoute un paramétrage spécifique 
+		//TODO à revoir : les DtObject et DtList ne peuvent plus etre non Modifiable, on ajoute un paramétrage spécifique
 		if (isUnmodifiable(value) || noSerializationContext.contains(context)) {
 			putElement(context, key, value);
 		} else {
@@ -95,9 +95,9 @@ public final class MapCachePlugin implements CachePlugin, Describable {
 		}
 	}
 
-	private boolean isUnmodifiable(final Serializable value) {
+	private static boolean isUnmodifiable(final Serializable value) {
 		//s'il n'implemente pas Modifiable, il doit être cloné
-		//s'il implemente Modifiable et que isModifiable == true, il doit être cloné 
+		//s'il implemente Modifiable et que isModifiable == true, il doit être cloné
 		return value instanceof Modifiable && !((Modifiable) value).isModifiable();
 	}
 
@@ -126,7 +126,7 @@ public final class MapCachePlugin implements CachePlugin, Describable {
 
 	/** {@inheritDoc} */
 	public void clear(final String context) {
-		//Dans le cas de clear 
+		//Dans le cas de clear
 		final MapCache mapCache = cachesPerContext.get(context);
 		if (mapCache != null) {
 			mapCache.removeAll();
@@ -178,7 +178,7 @@ public final class MapCachePlugin implements CachePlugin, Describable {
 			hits += mapCache.getHits();
 			calls += mapCache.getCalls();
 		}
-		final double ratio = 100d * (calls > 0 ? hits / calls : 1);//Par convention 100% 
+		final double ratio = 100d * (calls > 0 ? hits / calls : 1);//Par convention 100%
 		componentInfos.add(new ComponentInfo("cache.hits", hits));
 		componentInfos.add(new ComponentInfo("cache.calls", calls));
 		componentInfos.add(new ComponentInfo("cache.ratio", ratio));

@@ -62,12 +62,11 @@ final class ComponentAspectInitializer {
 	 * @return Liste des composants
 	 */
 	private static Map<AspectConfig, AOPInterceptor> createInterceptorsMap(final Collection<AspectConfig> aspectInfos) {
-		final Injector injector = new Injector();
 
 		final Map<AspectConfig, AOPInterceptor> interceptorMap = new HashMap<>();
 		for (final AspectConfig aspectInfo : aspectInfos) {
 			// création de l'instance du composant
-			final AOPInterceptor interceptor = injector.newInstance(aspectInfo.getInterceptorImplClass(), Home.getComponentSpace());
+			final AOPInterceptor interceptor = Injector.newInstance(aspectInfo.getInterceptorImplClass(), Home.getComponentSpace());
 			interceptorMap.put(aspectInfo, interceptor);
 		}
 		return interceptorMap;

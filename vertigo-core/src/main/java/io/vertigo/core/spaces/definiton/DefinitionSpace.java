@@ -32,8 +32,8 @@ import java.util.Map;
  * Espace de définitions (non threadSafe).
  * Il est nécessaier d'enregistrer toutes les définitions au démarrage du serveur.
  * Etape 1 : Enregistrer les classes éligibles (register)
- * Etape 2 : Ajouter les objets (put) 
- * 
+ * Etape 2 : Ajouter les objets (put)
+ *
  * @author pchretien
  */
 public final class DefinitionSpace implements Activeable {
@@ -76,7 +76,7 @@ public final class DefinitionSpace implements Activeable {
 		Assertion.checkState(previous2 == null, "L'objet {0} est déja enregistré !", id);
 	}
 
-	private void checkId(final String name, final Class<? extends Definition> clazz) {
+	private static void checkId(final String name, final Class<? extends Definition> clazz) {
 		final String prefix = DefinitionUtil.getPrefix(clazz);
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkArgument(name.startsWith(prefix), "La définition {0} doit commencer par {1}", name, prefix);
@@ -86,7 +86,7 @@ public final class DefinitionSpace implements Activeable {
 	}
 
 	/**
-	 * @param value  Objet recherché 
+	 * @param value  Objet recherché
 	 * @return  Si un objet avec l'identifiant est déjà enregistré.
 	 */
 	public boolean containsValue(final Object value) {
@@ -94,7 +94,7 @@ public final class DefinitionSpace implements Activeable {
 	}
 
 	/**
-	 * @param id  Objet recherché 
+	 * @param id  Objet recherché
 	 * @return Si un objet avec l'identifiant est déjà enregistré.
 	 */
 	public boolean containsKey(final String id) {

@@ -49,7 +49,7 @@ import org.junit.Test;
 
 /**
  * Test de l'implémentation standard.
- * 
+ *
  * @author npiedeloup
  */
 public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
@@ -257,13 +257,14 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 	//		assertTrue(true);
 	//	}
 
-	private PublisherMock createTestPublisher() {
+	private static PublisherMock createTestPublisher() {
 		final PublisherMock reportData = new PublisherMock();
 		reportData.setTitre("Mon titre");
 		reportData.setNom("BITUM");
 		reportData.setPrenom("John");
 		reportData.setAddress("38, rue de la corniche\n01345 - rivera");
-		reportData.setCommentaire("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pretium urna pulvinar massa placerat imperdiet. Curabitur vestibulum dui eget nibh consequat eget ultrices velit iaculis. Ut justo ipsum, euismod nec pulvinar sit amet, consectetur in dui. Ut sed ligula ligula. Phasellus libero enim, congue nec volutpat dignissim, pulvinar luctus urna.\n\tLorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pretium urna pulvinar massa placerat imperdiet. Curabitur vestibulum dui eget nibh consequat eget ultrices velit iaculis. Ut justo ipsum, euismod nec pulvinar sit amet, consectetur in dui. Ut sed ligula ligula. Phasellus libero enim, congue nec volutpat dignissim, pulvinar luctus urna.\n\t1-\tLorem ipsum dolor\n\t2-\tLorem ipsum dolor\n\t3-\tLorem ipsum dolor");
+		reportData
+				.setCommentaire("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pretium urna pulvinar massa placerat imperdiet. Curabitur vestibulum dui eget nibh consequat eget ultrices velit iaculis. Ut justo ipsum, euismod nec pulvinar sit amet, consectetur in dui. Ut sed ligula ligula. Phasellus libero enim, congue nec volutpat dignissim, pulvinar luctus urna.\n\tLorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pretium urna pulvinar massa placerat imperdiet. Curabitur vestibulum dui eget nibh consequat eget ultrices velit iaculis. Ut justo ipsum, euismod nec pulvinar sit amet, consectetur in dui. Ut sed ligula ligula. Phasellus libero enim, congue nec volutpat dignissim, pulvinar luctus urna.\n\t1-\tLorem ipsum dolor\n\t2-\tLorem ipsum dolor\n\t3-\tLorem ipsum dolor");
 		reportData.setBoolean1(true);
 		reportData.setBoolean2(false);
 		reportData.setBoolean3(true);
@@ -296,7 +297,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 	//		return reportData;
 	//	}
 
-	private PublisherData createPublisherData(final String definitionName) {
+	private static PublisherData createPublisherData(final String definitionName) {
 		final PublisherDataDefinition publisherDataDefinition = Home.getDefinitionSpace().resolve(definitionName, PublisherDataDefinition.class);
 		Assert.assertNotNull(publisherDataDefinition);
 

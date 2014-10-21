@@ -83,7 +83,7 @@ public final class SerializationCodecTest extends AbstractCodecTest<Serializable
 	// =========================== Données de tests
 	// ==============================
 	// ===========================================================================
-	private List<Serializable> createObjects() {
+	private static List<Serializable> createObjects() {
 		final List<Serializable> values = new ArrayList<>();
 		values.add(Integer.valueOf(54)); // Test d'un entier
 		values.add(""); // Test d'une chaine vide
@@ -112,7 +112,7 @@ public final class SerializationCodecTest extends AbstractCodecTest<Serializable
 		return values;
 	}
 
-	private TestPerson createPerson() {
+	private static TestPerson createPerson() {
 		final TestPerson mother = new TestPerson("jeanne", "lagrange", 58, null, null);
 		final TestPerson father = new TestPerson("charles", "dupond", 86, null, null);
 		return new TestPerson("edmond", "dupond", 72, mother, father);

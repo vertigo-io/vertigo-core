@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 
 /**
  * Classe abstraite représentant un KScriptTag.
- * 
+ *
  * @author pchretien, npiedeloup
  */
 abstract class AbstractKScriptTag {
@@ -56,7 +56,7 @@ abstract class AbstractKScriptTag {
 	 * @param currentVariableName nom de la variable local courante
 	 * @return Appel de la methode report
 	 */
-	protected final String getCallForFieldPath(final String fieldPath, final String currentVariableName) {
+	protected static final String getCallForFieldPath(final String fieldPath, final String currentVariableName) {
 		return currentVariableName + ".getString(\"" + fieldPath + "\")";
 	}
 
@@ -67,19 +67,19 @@ abstract class AbstractKScriptTag {
 	 * @param currentVariableName nom de la variable local courante
 	 * @return Appel de la methode report
 	 */
-	protected final String getCallForBooleanFieldPath(final String fieldPath, final String currentVariableName) {
+	protected static final String getCallForBooleanFieldPath(final String fieldPath, final String currentVariableName) {
 		return currentVariableName + ".getBoolean(\"" + fieldPath + "\")";
 	}
 
 	/**
 	 * Ajouter du test equals d'un fieldPath et d'une valeur fixe du modèle.
-	 * 
+	 *
 	 * @param fieldPath Chemin du champ.
 	 * @param value Valeur à tester.
 	 * @param currentVariableName Nom de la variable courante
 	 * @return Code java resultant.
 	 */
-	protected final String getCallForEqualsBooleanFieldPath(final String fieldPath, final String value, final String currentVariableName) {
+	protected static final String getCallForEqualsBooleanFieldPath(final String fieldPath, final String value, final String currentVariableName) {
 		final StringBuilder concatString = new StringBuilder();
 		concatString.append(getCallForFieldPath(fieldPath, currentVariableName));
 		concatString.append(".equals(\"");
@@ -94,7 +94,7 @@ abstract class AbstractKScriptTag {
 	 * @param currentVariableName Nom de la variable courante
 	 * @return Code java resultant.
 	 */
-	protected final String getCallForCollectionFieldPath(final String fieldPath, final String currentVariableName) {
+	protected static final String getCallForCollectionFieldPath(final String fieldPath, final String currentVariableName) {
 		return currentVariableName + ".getNodes(\"" + fieldPath + "\")";
 	}
 
@@ -104,14 +104,14 @@ abstract class AbstractKScriptTag {
 	 * @param currentVariableName Nom de la variable courante
 	 * @return Code java resultant.
 	 */
-	protected final String getCallForObjectFieldPath(final String fieldPath, final String currentVariableName) {
+	protected static final String getCallForObjectFieldPath(final String fieldPath, final String currentVariableName) {
 		return currentVariableName + ".getNode(\"" + fieldPath + "\")";
 	}
 
 	/**
 	 * @return Class d'accès aux données.
 	 */
-	protected final Class<?> getDataAccessorClass() {
+	protected static final Class<?> getDataAccessorClass() {
 		return PublisherNode.class;
 	}
 
@@ -122,7 +122,7 @@ abstract class AbstractKScriptTag {
 	 * @param datas Données sous forme de chaines de caractere
 	 * @return Tag java représenté sous forme de chaine de caractere
 	 */
-	protected final String getTagRepresentation(final String tagRepresentation, final String[] datas) {
+	protected static final String getTagRepresentation(final String tagRepresentation, final String[] datas) {
 		return START_BLOC_JSP + StringUtil.format(tagRepresentation, (Object[]) datas) + END_BLOC_JSP;
 	}
 
@@ -136,7 +136,7 @@ abstract class AbstractKScriptTag {
 	 *         matche pas le format. la premiere case du tableau correspond
 	 *         toujours a la chaine à l'attribut lui même
 	 */
-	protected final String[] parseAttribute(final String attribute, final String regEexpFormat) {
+	protected static final String[] parseAttribute(final String attribute, final String regEexpFormat) {
 		Assertion.checkNotNull(attribute);
 		Assertion.checkNotNull(regEexpFormat);
 		//----------------------------------------------------

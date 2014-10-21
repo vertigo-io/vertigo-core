@@ -39,8 +39,6 @@ import org.junit.Test;
  * @author pchretien
  */
 public final class InjectorTest {
-	private final Injector injector = new Injector();
-
 	private static class MyContainer implements Container {
 		private final Map<String, Object> map = new HashMap<>();
 
@@ -77,7 +75,7 @@ public final class InjectorTest {
 
 	@Test
 	public void testA() {
-		final A a = injector.newInstance(A.class, new Container() {
+		final A a = Injector.newInstance(A.class, new Container() {
 
 			public boolean contains(final String id) {
 				return false;
@@ -96,7 +94,7 @@ public final class InjectorTest {
 
 	@Test(expected = DIException.class)
 	public void testBFail() {
-		final B b = injector.newInstance(B.class, new Container() {
+		final B b = Injector.newInstance(B.class, new Container() {
 
 			public boolean contains(final String id) {
 				return false;
@@ -116,18 +114,18 @@ public final class InjectorTest {
 	@Test
 	public void testB() {
 		final MyContainer container = new MyContainer();
-		final A a = injector.newInstance(A.class, container);
+		final A a = Injector.newInstance(A.class, container);
 		container.put("a", a);
-		final B b = injector.newInstance(B.class, container);
+		final B b = Injector.newInstance(B.class, container);
 		Assert.assertEquals(b.getA(), a);
 	}
 
 	@Test
 	public void testE() {
 		final MyContainer container = new MyContainer();
-		final A a = injector.newInstance(A.class, container);
+		final A a = Injector.newInstance(A.class, container);
 		container.put("a", a);
-		final E e = injector.newInstance(E.class, container);
+		final E e = Injector.newInstance(E.class, container);
 		Assert.assertTrue(e.getA().isDefined());
 		Assert.assertEquals(e.getA().get(), a);
 		Assert.assertTrue(e.getB().isEmpty());
@@ -136,12 +134,12 @@ public final class InjectorTest {
 	@Test
 	public void testF() {
 		final MyContainer container = new MyContainer();
-		final A a = injector.newInstance(A.class, container);
+		final A a = Injector.newInstance(A.class, container);
 		container.put("a", a);
 		container.put("param1", "test1");
 		container.put("param2", "test2");
 		container.put("param3", "test3");
-		final F f = injector.newInstance(F.class, container);
+		final F f = Injector.newInstance(F.class, container);
 		Assert.assertEquals(f.getA(), a);
 		Assert.assertEquals(f.getParam1(), "test1");
 		Assert.assertEquals(f.getParam2(), "test2");

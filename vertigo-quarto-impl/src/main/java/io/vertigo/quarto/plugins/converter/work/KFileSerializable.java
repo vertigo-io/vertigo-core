@@ -92,7 +92,7 @@ public final class KFileSerializable implements KFile {
 		file = readKFile(stream);
 	}
 
-	private KFile readKFile(final ObjectInputStream stream) throws IOException {
+	private static KFile readKFile(final ObjectInputStream stream) throws IOException {
 		final String fileName = stream.readUTF();
 		final String mimeType = stream.readUTF();
 		final File tempFile = new TempFile("kConverter", "." + FileUtil.getFileExtension(fileName));
@@ -103,7 +103,7 @@ public final class KFileSerializable implements KFile {
 		return new FSFile(fileName, mimeType, tempFile);
 	}
 
-	private void copyStream(final InputStream in, final OutputStream out) throws IOException {
+	private static void copyStream(final InputStream in, final OutputStream out) throws IOException {
 		final int bufferSize = 10 * 1024;
 		final byte[] bytes = new byte[bufferSize];
 		int read = in.read(bytes);

@@ -52,7 +52,7 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 	 * @param dtDefinition DtDefinition
 	 * @return Liste des lignes de code java à ajouter.
 	 */
-	private List<String> writeJpaAnnotations(final DtDefinition dtDefinition) {
+	private static List<String> writeJpaAnnotations(final DtDefinition dtDefinition) {
 		final List<String> lines = new ArrayList<>();
 		if (dtDefinition.getIdField().isDefined()) { //Il faut un Id pour déclarer l'élément comme Entity. Nous faisons le choix de déclarer comme Entity même les Objects non persistant.
 			lines.add("@javax.persistence.Entity");
@@ -66,7 +66,7 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 		return lines;
 	}
 
-	private boolean containsDataStreamField(final DtDefinition dtDefinition) {
+	private static boolean containsDataStreamField(final DtDefinition dtDefinition) {
 		for (final DtField field : dtDefinition.getFields()) {
 			if (field.isPersistent() && field.getDomain().getDataType() == DataType.DataStream) {
 				return true;
@@ -137,7 +137,7 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 	 * @param associationNode Noeud de l'association
 	 * @return Liste des lignes de code java à ajouter.
 	 */
-	private List<String> writeJpaAnnotations(final AssociationNode associationNode) {
+	private static List<String> writeJpaAnnotations(final AssociationNode associationNode) {
 		final List<String> lines = new ArrayList<>();
 		lines.add("@javax.persistence.Transient"); //On ne crée pas de grappe d'objet
 		return lines;
@@ -149,7 +149,7 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 	 * @param dtDefinition Définition du DT mappé
 	 * @return Nom de la table
 	 */
-	private String getTableName(final DtDefinition dtDefinition) {
+	private static String getTableName(final DtDefinition dtDefinition) {
 		return dtDefinition.getLocalName();
 	}
 

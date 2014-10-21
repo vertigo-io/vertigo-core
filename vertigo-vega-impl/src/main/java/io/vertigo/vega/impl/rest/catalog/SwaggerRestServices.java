@@ -207,7 +207,7 @@ public final class SwaggerRestServices implements RestfulService {
 		return operation;
 	}
 
-	private void putIfNotEmpty(final Map<String, Object> entity, final String key, final Object value) {
+	private static void putIfNotEmpty(final Map<String, Object> entity, final String key, final Object value) {
 		if (value instanceof List && ((List) value).isEmpty()) {
 			return;
 		}
@@ -374,7 +374,7 @@ public final class SwaggerRestServices implements RestfulService {
 		putIfNotEmpty(entity, "properties", properties);
 	}
 
-	private List<String> createTagsArray(final EndPointDefinition endPointDefinition) {
+	private static List<String> createTagsArray(final EndPointDefinition endPointDefinition) {
 		final List<String> tags = new ArrayList<>();
 		tags.add(endPointDefinition.getMethod().getDeclaringClass().getSimpleName());
 		return tags;
@@ -451,7 +451,7 @@ public final class SwaggerRestServices implements RestfulService {
 		return parameter;
 	}
 
-	private String[] toSwaggerType(final Class paramClass) {
+	private static String[] toSwaggerType(final Class paramClass) {
 		if (String.class.isAssignableFrom(paramClass)) {
 			return new String[] { "string", null };
 		} else if (boolean.class.isAssignableFrom(paramClass) || Boolean.class.isAssignableFrom(paramClass)) {
@@ -475,7 +475,7 @@ public final class SwaggerRestServices implements RestfulService {
 		}
 	}
 
-	private Map<String, Object> createInfoObject() {
+	private static Map<String, Object> createInfoObject() {
 		final Map<String, Object> infoObject = new LinkedHashMap<>();
 		infoObject.put("title", "MySwaggerAPI Tester");
 		//description, termOfService, contact
@@ -484,7 +484,7 @@ public final class SwaggerRestServices implements RestfulService {
 		return infoObject;
 	}
 
-	private Map<String, Object> createLicense() {
+	private static Map<String, Object> createLicense() {
 		final Map<String, Object> licence = new LinkedHashMap<>();
 		licence.put("name", "Apache 2.0");
 		licence.put("url", "http://www.apache.org/licenses/LICENSE-2.0.html");

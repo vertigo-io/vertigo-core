@@ -53,7 +53,7 @@ import spark.Request;
 import spark.Response;
 
 /**
- * Params handler. 
+ * Params handler.
  * It's an handler barrier : bellow this handler anything is object, over this handler it's json.
  * Extract and Json convert.
  * @author npiedeloup
@@ -155,7 +155,7 @@ final class JsonConverterHandler implements RouteHandler {
 		return ""; //jetty understand null as 404 not found
 	}
 
-	private void setHeadersFromResultType(final Object result, final Response response) {
+	private static void setHeadersFromResultType(final Object result, final Response response) {
 		if (result instanceof List) {
 			if (result instanceof DtList && !((DtList) result).getMetaDataNames().isEmpty()) {
 				response.type("application/json+list+meta;charset=UTF-8");
@@ -326,7 +326,7 @@ final class JsonConverterHandler implements RouteHandler {
 		//---------------------------------------------------------------------
 		if (endPointDefinition.isServerSideSave()) {
 			if (UiContext.class.isInstance(value)) {
-				//TODO build json in jsonWriterEngine 
+				//TODO build json in jsonWriterEngine
 				final StringBuilder sb = new StringBuilder();
 				sb.append("{");
 				String sep = "";

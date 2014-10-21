@@ -37,10 +37,10 @@ import com.opensymphony.xwork2.config.entities.ActionConfig;
  * Gestion du passage de paramètres aux Actions.
  * A ajouter dans le struts.xml :
  * <bean type="com.opensymphony.xwork2.UnknownHandler" name="handler" class="io.vertigo.struts2.impl.unknownhandler.InjectParamsToActionMethodHandler"/>
- * 
+ *
  * Pour en déclarer plusieurs rechercher "Stacking Unknown Handlers".
  * @see "http://struts.apache.org/release/2.3.x/docs/unknown-handlers.html"
- * 
+ *
  * @author npiedeloup
  */
 public class InjectParamsToActionMethodHandler implements UnknownHandler {
@@ -73,7 +73,7 @@ public class InjectParamsToActionMethodHandler implements UnknownHandler {
 		return MethodUtil.invoke(action, actionMethod.get(), container);
 	}
 
-	private String getPrefixedMethodName(final String methodName) {
+	private static String getPrefixedMethodName(final String methodName) {
 		return "do" + StringUtil.first2UpperCase(methodName);
 	}
 }

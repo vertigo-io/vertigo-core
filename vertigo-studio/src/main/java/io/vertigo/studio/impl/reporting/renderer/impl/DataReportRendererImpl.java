@@ -54,7 +54,7 @@ final class DataReportRendererImpl implements DataReportRenderer {
 		FileRendererUtil.writeFile(rootPath, dataReport.getFileName(), sb.toString());
 	}
 
-	private void renderMetric(final StringBuilder sb, final Metric metric) {
+	private static void renderMetric(final StringBuilder sb, final Metric metric) {
 		sb.append(metric.getTitle()).append(" : ");
 		String valueInformation = metric.getValueInformation();
 		if (valueInformation != null) {
@@ -66,14 +66,14 @@ final class DataReportRendererImpl implements DataReportRenderer {
 		sb.append("<hr />");
 	}
 
-	private void startRender(final StringBuilder sb) {
+	private static void startRender(final StringBuilder sb) {
 		sb.append("<html>");
 		sb.append("<head>");
 		sb.append("</head>");
 		sb.append("<body>");
 	}
 
-	private void endRender(final StringBuilder sb) {
+	private static void endRender(final StringBuilder sb) {
 		sb.append("</body>");
 		sb.append("</html>");
 	}

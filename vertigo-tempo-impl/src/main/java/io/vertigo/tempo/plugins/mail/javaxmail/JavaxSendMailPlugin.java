@@ -165,7 +165,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		}
 	}
 
-	private void setFromAddress(final String from, final Message message) throws MessagingException {
+	private static void setFromAddress(final String from, final Message message) throws MessagingException {
 		Assertion.checkNotNull(from);
 		Assertion.checkNotNull(message);
 		// ---------------------------------------------------------------------
@@ -177,7 +177,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		}
 	}
 
-	private void setReplyToAddress(final String replyTo, final Message message) throws MessagingException {
+	private static void setReplyToAddress(final String replyTo, final Message message) throws MessagingException {
 		Assertion.checkNotNull(message);
 		Assertion.checkNotNull(replyTo);
 		// ---------------------------------------------------------------------
@@ -190,7 +190,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		}
 	}
 
-	private InternetAddress createInternetAddress(final String address) throws AddressException {
+	private static InternetAddress createInternetAddress(final String address) throws AddressException {
 		final InternetAddress internetAddress = new InternetAddress(address);
 		internetAddress.validate();
 		return internetAddress;
@@ -227,7 +227,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		message.setRecipients(type, addresses);
 	}
 
-	private void setBodyContent(final String textContent, final String htmlContent, final Part bodyPart) throws MessagingException {
+	private static void setBodyContent(final String textContent, final String htmlContent, final Part bodyPart) throws MessagingException {
 		Assertion.checkArgument(textContent != null || htmlContent != null, "Le mail n'a pas de contenu, ni en text, ni en html");
 		Assertion.checkNotNull(bodyPart);
 		// ---------------------------------------------------------------------

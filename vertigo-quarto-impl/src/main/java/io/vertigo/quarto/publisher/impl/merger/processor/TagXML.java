@@ -92,7 +92,7 @@ public final class TagXML {
 		return getFullTag() + ':' + getIndex();
 	}
 
-	private String getTagName(final String theFullTag) {
+	private static String getTagName(final String theFullTag) {
 		if (theFullTag.startsWith("</")) {
 			return theFullTag.substring(2, theFullTag.indexOf('>'));
 		}

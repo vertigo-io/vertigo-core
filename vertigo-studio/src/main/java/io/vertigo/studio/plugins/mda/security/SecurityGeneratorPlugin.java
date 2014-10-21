@@ -32,7 +32,7 @@ import java.util.Properties;
 
 /**
  * Generation des objets relatifs au module Securite.
- * 
+ *
  * @author pchretien
  */
 public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin<SecurityConfiguration> {
@@ -41,7 +41,7 @@ public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin<Secur
 		return new SecurityConfiguration(properties);
 	}
 
-	private Collection<Role> getRoles() {
+	private static Collection<Role> getRoles() {
 		// return Home.getNameSpace().getDefinitions(Role.class);
 		return Home.getDefinitionSpace().getAll(Role.class);
 	}
@@ -54,7 +54,7 @@ public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin<Secur
 		generateRole(securityConfiguration, result);
 	}
 
-	private void generateRole(final SecurityConfiguration securityConfiguration, final Result result) {
+	private static void generateRole(final SecurityConfiguration securityConfiguration, final Result result) {
 		final Collection<Role> roles = getRoles();
 		if (!roles.isEmpty()) {
 			//On ne genere aucun fichier si aucun rele.

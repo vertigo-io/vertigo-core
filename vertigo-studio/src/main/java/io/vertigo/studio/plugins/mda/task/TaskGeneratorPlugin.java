@@ -37,8 +37,8 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 /**
- * Génération des objets relatifs au module Task. 
- *  
+ * Génération des objets relatifs au module Task.
+ *
  * @author pchretien
  */
 public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin<TaskConfiguration> {
@@ -57,9 +57,9 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin<TaskConfi
 	}
 
 	/**
-	 * Génération de tous les PAOs.	
+	 * Génération de tous les PAOs.
 	 */
-	private void generatePaos(final TaskConfiguration taskConfiguration, final Result result) {
+	private static void generatePaos(final TaskConfiguration taskConfiguration, final Result result) {
 		//On liste des taches regroupées par Package.
 		for (final Entry<String, List<TaskDefinition>> entry : buildPackageMap().entrySet()) {
 			final Collection<TaskDefinition> taskDefinitionCollection = entry.getValue();
@@ -71,9 +71,9 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin<TaskConfi
 	}
 
 	/**
-	 * Génération de tous les DAOs.	
+	 * Génération de tous les DAOs.
 	 */
-	private void generateDaos(final TaskConfiguration taskConfiguration, final Result result) {
+	private static void generateDaos(final TaskConfiguration taskConfiguration, final Result result) {
 		for (final Entry<DtDefinition, List<TaskDefinition>> entry : builDtDefinitiondMap().entrySet()) {
 			final DtDefinition dtDefinition = entry.getKey();
 			if (dtDefinition.isPersistent()) {
@@ -83,10 +83,10 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin<TaskConfi
 		}
 	}
 
-	/** 
+	/**
 	 * Génération d'un DAO c'est à dire des taches afférentes à un objet.
 	 */
-	private void generateDao(final TaskConfiguration taskConfiguration, final Result result, final DtDefinition dtDefinition, final Collection<TaskDefinition> taskDefinitionCollection) {
+	private static void generateDao(final TaskConfiguration taskConfiguration, final Result result, final DtDefinition dtDefinition, final Collection<TaskDefinition> taskDefinitionCollection) {
 		final TemplateDAO dao = new TemplateDAO(taskConfiguration, dtDefinition, taskDefinitionCollection);
 
 		final Map<String, Object> mapRoot = new HashMap<>();
@@ -99,7 +99,7 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin<TaskConfi
 	/**
 	 *  Génération d'un PAO c'est à dire des taches afférentes à un package.
 	 */
-	private void generatePao(final TaskConfiguration taskConfiguration, final Result result, final Collection<TaskDefinition> taskDefinitionCollection, final String packageName) {
+	private static void generatePao(final TaskConfiguration taskConfiguration, final Result result, final Collection<TaskDefinition> taskDefinitionCollection, final String packageName) {
 		final TemplatePAO pao = new TemplatePAO(taskConfiguration, taskDefinitionCollection, packageName);
 
 		final Map<String, Object> mapRoot = new HashMap<>();
@@ -115,7 +115,7 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin<TaskConfi
 	 */
 	private static DtDefinition getDtDefinition(final TemplateTaskDefinition templateTaskDefinition) {
 		if (templateTaskDefinition.isOut()) {
-			//si out on regarde si en sortie on a un DTO ou une DTC typé. 
+			//si out on regarde si en sortie on a un DTO ou une DTC typé.
 			final Domain outDomain = templateTaskDefinition.getOutAttribute().getDomain();
 			if (outDomain.hasDtDefinition()) {
 				return outDomain.getDtDefinition();
@@ -125,7 +125,7 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin<TaskConfi
 		return null;
 	}
 
-	private Map<String, List<TaskDefinition>> buildPackageMap() {
+	private static Map<String, List<TaskDefinition>> buildPackageMap() {
 		final Collection<TaskDefinition> allTaskDefinitions = Home.getDefinitionSpace().getAll(TaskDefinition.class);
 		final Map<String, List<TaskDefinition>> taskDefinitionsMap = new LinkedHashMap<>();
 		//---
@@ -133,8 +133,8 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin<TaskConfi
 			final TemplateTaskDefinition templateTaskDefinition = new TemplateTaskDefinition(taskDefinition);
 			final DtDefinition dtDefinition = getDtDefinition(templateTaskDefinition);
 			// Correction bug : task avec retour DtObject (non persistant) non générée
-			//Les taches sont générées dans les pao 
-			// - si il n'esxiste pas de définition associées à la tache 
+			//Les taches sont générées dans les pao
+			// - si il n'esxiste pas de définition associées à la tache
 			// - ou si la définition est considérée comme non persistante.
 			final boolean pao = dtDefinition == null || !dtDefinition.isPersistent();
 			if (pao) {
@@ -152,7 +152,7 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin<TaskConfi
 
 	}
 
-	private Map<DtDefinition, List<TaskDefinition>> builDtDefinitiondMap() {
+	private static Map<DtDefinition, List<TaskDefinition>> builDtDefinitiondMap() {
 		final Collection<TaskDefinition> allTaskDefinitions = Home.getDefinitionSpace().getAll(TaskDefinition.class);
 		final Map<DtDefinition, List<TaskDefinition>> taskDefinitionsMap = new LinkedHashMap<>();
 

@@ -111,7 +111,7 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 		return value.substring(0, maxSize - endTruncString.length()) + endTruncString;
 	}
 
-	private String readExplainPlan(final TaskDefinition taskDefinition, final int currentSequence) {
+	private static String readExplainPlan(final TaskDefinition taskDefinition, final int currentSequence) {
 		//		final String taskDefinitionName = "TK_EXPLAIN_PLAN";
 		//		final TaskDefinitionFactory taskDefinitionFactory = getTaskManager().createTaskDefinitionFactory();
 		//		final String explainPlanRequest = "select * from plan_table where statement_id = #STATEMENT_ID# order by id";
@@ -149,7 +149,7 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 	 * Retourne la connexion SQL de cette transaction en la demandant au pool de connexion si nécessaire.
 	 * @return Connexion SQL
 	 */
-	private SqlConnection getCurrentConnection() {
+	private static SqlConnection getCurrentConnection() {
 		final KTransaction transaction = Home.getComponentSpace().resolve(KTransactionManager.class).getCurrentTransaction();
 		return transaction.getResource(AbstractTaskEngineSQL.SQL_RESOURCE_ID);
 	}

@@ -84,7 +84,7 @@ final class ValidatorHandler implements RouteHandler {
 		return chain.handle(request, response, routeContext);
 	}
 
-	private List<DtObjectValidator<DtObject>> obtainDtObjectValidators(final EndPointParam endPointParam) {
+	private static List<DtObjectValidator<DtObject>> obtainDtObjectValidators(final EndPointParam endPointParam) {
 		final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses = endPointParam.getDtObjectValidatorClasses();
 		final List<DtObjectValidator<DtObject>> dtObjectValidators = new ArrayList<>(dtObjectValidatorClasses.size());
 		for (final Class<? extends DtObjectValidator> dtObjectValidatorClass : dtObjectValidatorClasses) {
@@ -93,7 +93,7 @@ final class ValidatorHandler implements RouteHandler {
 		return dtObjectValidators;
 	}
 
-	private <D extends DtObject> DtList<D> mergeAndCheckInput(final Class<D> objectType, final Map<String, UiObject<D>> uiObjectMap, final String listName, final List<DtObjectValidator<D>> dtObjectValidators, final UiMessageStack uiMessageStack, final Map<String, DtObject> contextKeyMap) {
+	private static <D extends DtObject> DtList<D> mergeAndCheckInput(final Class<D> objectType, final Map<String, UiObject<D>> uiObjectMap, final String listName, final List<DtObjectValidator<D>> dtObjectValidators, final UiMessageStack uiMessageStack, final Map<String, DtObject> contextKeyMap) {
 		final DtList<D> dtList = new DtList<>(objectType);
 		for (final Map.Entry<String, UiObject<D>> entry : uiObjectMap.entrySet()) {
 			//entry.getValue().setInputKey(inputKey + "." + listName + "." + entry.getKey());

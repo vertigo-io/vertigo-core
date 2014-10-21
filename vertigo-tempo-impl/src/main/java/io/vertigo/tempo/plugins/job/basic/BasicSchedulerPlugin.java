@@ -84,7 +84,7 @@ public final class BasicSchedulerPlugin implements SchedulerPlugin, Activeable {
 		Assertion.checkArgument(active, "le manager n'est pas dans un état actif");
 	}
 
-	private Logger getLogger(final String jobName) {
+	private static Logger getLogger(final String jobName) {
 		return Logger.getLogger(jobName);
 	}
 
@@ -116,7 +116,7 @@ public final class BasicSchedulerPlugin implements SchedulerPlugin, Activeable {
 		log("Tache de reprogrammation du Job ", jobDefinition, nextReschedulerDate);
 	}
 
-	private void log(final String info, final JobDefinition jobDefinition, final Date date) {
+	private static void log(final String info, final JobDefinition jobDefinition, final Date date) {
 		final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRANCE);
 		getLogger(jobDefinition.getName()).info(info + jobDefinition.getName() + " programmé pour " + dateFormat.format(date));
 	}

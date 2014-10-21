@@ -39,7 +39,7 @@ import org.w3c.dom.NodeList;
  * Ce processor effectue plusieurs opérations de rectification du XML d'un fichier DOCX.
  * - 1. Nettoyage du XML en fermant les balises
  * - 2. Suppression des balises de script
- * 
+ *
  * @author adufranne
  */
 final class DOCXCleanerProcessor implements MergerProcessor {
@@ -83,7 +83,7 @@ final class DOCXCleanerProcessor implements MergerProcessor {
 	 * @param xpath Moteur Xpath
 	 * @throws XPathExpressionException Erreur Xpath
 	 */
-	void handleCarriageReturn(final Document xmlDoc, final XPath xpath) throws XPathExpressionException {
+	static void handleCarriageReturn(final Document xmlDoc, final XPath xpath) throws XPathExpressionException {
 
 		final NodeList nodeList = (NodeList) xpath.evaluate(DOCXUtil.XPATH_TAG_NODES, xmlDoc, XPathConstants.NODESET);
 		Node node;
@@ -102,7 +102,7 @@ final class DOCXCleanerProcessor implements MergerProcessor {
 
 	}
 
-	private String[] getNodeTextContent(final Node node) {
+	private static String[] getNodeTextContent(final Node node) {
 		final String[] lines;
 		final String textContent = node.getLastChild().getTextContent();
 		if (textContent == null || textContent.isEmpty()) {
@@ -113,7 +113,7 @@ final class DOCXCleanerProcessor implements MergerProcessor {
 
 	}
 
-	private void doHandleCarriageReturn(final String[] lines, final Node node) {
+	private static void doHandleCarriageReturn(final String[] lines, final Node node) {
 		Node paragraphClone;
 		Node rowClone;
 		String line;
@@ -163,7 +163,7 @@ final class DOCXCleanerProcessor implements MergerProcessor {
 		}
 	}
 
-	private void removeNodes(final List<Node> removeNodes) {
+	private static void removeNodes(final List<Node> removeNodes) {
 		for (final Node removeNode : removeNodes) {
 			removeNode.getParentNode().removeChild(removeNode);
 		}
@@ -175,7 +175,7 @@ final class DOCXCleanerProcessor implements MergerProcessor {
 	 * @param xpath Moteur Xpath
 	 * @throws XPathExpressionException Erreur Xpath
 	 */
-	private void removeEmptyTags(final Document xmlDoc, final XPath xpath) throws XPathExpressionException {
+	private static void removeEmptyTags(final Document xmlDoc, final XPath xpath) throws XPathExpressionException {
 		final NodeList nodeList = (NodeList) xpath.evaluate("//w:r[w:instrText]", xmlDoc, XPathConstants.NODESET);
 		Node node;
 		final Pattern p = Pattern.compile(EMPTY_STRING);

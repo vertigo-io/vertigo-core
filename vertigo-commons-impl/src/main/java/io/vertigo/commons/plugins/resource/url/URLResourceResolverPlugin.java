@@ -29,7 +29,7 @@ import java.net.URL;
 
 /**
  * Résolution des URL par le standard java.net.URL.
- * 
+ *
  * @author npiedeloup
  */
 public final class URLResourceResolverPlugin implements ResourceResolverPlugin {
@@ -46,7 +46,7 @@ public final class URLResourceResolverPlugin implements ResourceResolverPlugin {
 		}
 	}
 
-	private boolean checkUrlAvailable(final URL url) {
+	private static boolean checkUrlAvailable(final URL url) {
 		try (InputStream is = url.openStream()) {
 			return is.read() > 0;
 		} catch (final IOException e) {

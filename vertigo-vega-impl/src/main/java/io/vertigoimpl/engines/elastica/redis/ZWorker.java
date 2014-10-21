@@ -33,7 +33,7 @@ public final class ZWorker /*implements Runnable*/{
 		//	this.managerClass = managerClass;
 	}
 
-	private void execute(final Jedis jedis, final String workId) {
+	private static void execute(final Jedis jedis, final String workId) {
 		final String base64 = jedis.hget("work:" + workId, "base64");
 		final ZMethod work = Util.decodeMethod(base64);
 		final boolean sync = "true".equals(jedis.hget("work:" + workId, "sync"));

@@ -63,7 +63,7 @@ public abstract class UserSession implements Serializable {
 	 */
 	private boolean authenticated;
 
-	private UUID createUUID() {
+	private static UUID createUUID() {
 		//On utilise le mecanisme de creation standard.
 		return UUID.randomUUID();
 	}

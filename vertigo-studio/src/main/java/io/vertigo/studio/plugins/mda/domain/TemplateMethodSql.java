@@ -34,7 +34,7 @@ import freemarker.template.TemplateModelException;
  * Méthode Freemarker 'sql'.
  * si config.setSharedVariable("sql", new TemplateMethodSql());
  * Exemple : ${sql(field.domain.dataType)}
- * 
+ *
  * @author  dchallas
  */
 public final class TemplateMethodSql implements TemplateMethodModelEx {
@@ -48,7 +48,7 @@ public final class TemplateMethodSql implements TemplateMethodModelEx {
 		throw new TemplateModelException("Le paramètre type n'est pas un Domain.");
 	}
 
-	private String getSqlType(final Domain domain) {
+	private static String getSqlType(final Domain domain) {
 		final String storeType = domain.getProperties().getValue(DtProperty.STORE_TYPE);
 		Assertion.checkNotNull(storeType, "La propriété StoreType est obligatoire dans le cas de génération de Sql. Domaine incriminé : {0}", domain.getName());
 

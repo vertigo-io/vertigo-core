@@ -91,7 +91,7 @@ final class ClientNode {
 		}
 	}
 
-	private Thread createOutputFlusher(final InputStream inputStream, final String prefix, final PrintStream out) {
+	private static Thread createOutputFlusher(final InputStream inputStream, final String prefix, final PrintStream out) {
 		return new Thread(new Runnable() {
 			public void run() {
 				try (final InputStreamReader isr = new InputStreamReader(inputStream)) {

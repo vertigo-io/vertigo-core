@@ -36,9 +36,9 @@ import org.apache.log4j.Logger;
 /**
  * Implémentation générique de JobManager.
  * Attention, cette implémentation n'est pas transactionnelle ; la gestion des transaction doit rester à la charge des services.
- * 
+ *
  * Les jobs sont instanciés, y sont injectés les composants métiers et les managers.
- * 
+ *
  * @author evernat, pchretien
  */
 public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
@@ -52,7 +52,6 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 
 	private final SchedulerPlugin schedulerPlugin;
 	private final AnalyticsManager analyticsManager;
-	private final Injector injector = new Injector();
 
 	/**
 	 * Constructeur.
@@ -96,8 +95,8 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 	/**
 	 * Gestion transactionnelle de l'exécution d'un Job.
 	 */
-	private void doExecute(final JobDefinition jobDefinition) {
-		final Runnable job = injector.newInstance(jobDefinition.getJobClass(), Home.getComponentSpace());
+	private static void doExecute(final JobDefinition jobDefinition) {
+		final Runnable job = Injector.newInstance(jobDefinition.getJobClass(), Home.getComponentSpace());
 
 		final long start = System.currentTimeMillis();
 		getLogger(jobDefinition.getName()).info("Exécution du job " + jobDefinition.getName());
@@ -109,11 +108,11 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 		}
 	}
 
-	private Logger getLogger(final String jobName) {
+	private static Logger getLogger(final String jobName) {
 		return Logger.getLogger(jobName);
 	}
 
-	private boolean isUserException(final Throwable t) {
+	private static boolean isUserException(final Throwable t) {
 		return t instanceof VUserException;
 	}
 

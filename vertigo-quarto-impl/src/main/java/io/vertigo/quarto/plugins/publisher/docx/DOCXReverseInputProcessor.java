@@ -89,7 +89,7 @@ final class DOCXReverseInputProcessor implements MergerProcessor {
 	 * @param xpath Moteur Xpath
 	 * @throws XPathExpressionException Erreur Xpath
 	 */
-	void convertWrongFormattedTags(final Document xmlDoc, final XPath xpath) throws XPathExpressionException {
+	static void convertWrongFormattedTags(final Document xmlDoc, final XPath xpath) throws XPathExpressionException {
 		final NodeList nodeList = (NodeList) xpath.evaluate(DOCXUtil.XPATH_TAG_NODES, xmlDoc, XPathConstants.NODESET);
 
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -98,7 +98,7 @@ final class DOCXReverseInputProcessor implements MergerProcessor {
 		}
 	}
 
-	private String convertWrongFormattedTagString(final String tag) {
+	private static String convertWrongFormattedTagString(final String tag) {
 		final String tagTrimmed = tag.trim();
 		final Pattern p = Pattern.compile(DOCXUtil.KSP_WRAPPING_TAG);
 		final Matcher m = p.matcher(tag);
@@ -121,7 +121,7 @@ final class DOCXReverseInputProcessor implements MergerProcessor {
 	 * @param xpath Moteur Xpath
 	 * @throws XPathExpressionException Erreur Xpath
 	 */
-	private void cleanTagsByXPATH(final String xpathExpr, final Document xmlDoc, final XPath xpath) throws XPathExpressionException {
+	private static void cleanTagsByXPATH(final String xpathExpr, final Document xmlDoc, final XPath xpath) throws XPathExpressionException {
 		final NodeList nodeList = (NodeList) xpath.evaluate(xpathExpr, xmlDoc, XPathConstants.NODESET);
 
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -142,7 +142,7 @@ final class DOCXReverseInputProcessor implements MergerProcessor {
 	 * @param xpath Moteur Xpath
 	 * @throws XPathExpressionException Erreur Xpath
 	 */
-	private void cleanNotWordBESTags(final Document xmlDoc, final XPath xpath) throws XPathExpressionException {
+	private static void cleanNotWordBESTags(final Document xmlDoc, final XPath xpath) throws XPathExpressionException {
 		String controlContent = null; // valeur de controle pour vérifier que le champ n'est pas WORD.
 		final List<Node> removeNodes = new ArrayList<>(); // liste des noeuds à supprimer
 		Node currentNode; // noeud en cours de traitement.
@@ -185,13 +185,13 @@ final class DOCXReverseInputProcessor implements MergerProcessor {
 
 	}
 
-	private void removeNodes(final List<Node> removeNodes) {
+	private static void removeNodes(final List<Node> removeNodes) {
 		for (final Node removeNode : removeNodes) {
 			removeNode.getParentNode().removeChild(removeNode);
 		}
 	}
 
-	private boolean isDOCXNode(final Node node, final DOCXUtil.DOCXNode nodeType) {
+	private static boolean isDOCXNode(final Node node, final DOCXUtil.DOCXNode nodeType) {
 		if (node == null) {
 			return false;
 		}
@@ -217,7 +217,7 @@ final class DOCXReverseInputProcessor implements MergerProcessor {
 	 * @param xpath Moteur Xpath
 	 * @throws XPathExpressionException Erreur Xpath
 	 */
-	private void factorMultipleTags(final Document xmlDoc, final XPath xpath) throws XPathExpressionException {
+	private static void factorMultipleTags(final Document xmlDoc, final XPath xpath) throws XPathExpressionException {
 		final NodeList nodeList = (NodeList) xpath.evaluate(DOCXUtil.XPATH_BEGIN, xmlDoc, XPathConstants.NODESET);
 		Node startNode;
 		Node factorNode;

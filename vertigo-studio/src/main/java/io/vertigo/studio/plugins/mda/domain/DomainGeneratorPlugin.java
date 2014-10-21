@@ -96,15 +96,15 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 		return new DomainConfiguration(properties);
 	}
 
-	private Collection<DtDefinition> getDtDefinitions() {
+	private static Collection<DtDefinition> getDtDefinitions() {
 		return sortDefinitionCollection(Home.getDefinitionSpace().getAll(DtDefinition.class));
 	}
 
-	private Map<String, Collection<DtDefinition>> getDtDefinitionCollectionMap() {
+	private static Map<String, Collection<DtDefinition>> getDtDefinitionCollectionMap() {
 		return getDefinitionCollectionMap(getDtDefinitions());
 	}
 
-	private Collection<AssociationDefinition> getAssociations() {
+	private static Collection<AssociationDefinition> getAssociations() {
 		return sortAssociationsCollection(Home.getDefinitionSpace().getAll(AssociationDefinition.class));
 	}
 
@@ -142,7 +142,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 		}
 	}
 
-	private void generateDtDefinitions(final DomainConfiguration domainConfiguration, final Result result) {
+	private static void generateDtDefinitions(final DomainConfiguration domainConfiguration, final Result result) {
 
 		final Map<String, Object> mapRoot = new HashMap<>();
 		mapRoot.put("packageName", domainConfiguration.getDomainPackage());
@@ -154,7 +154,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 
 	}
 
-	private void generateJsDtDefinitions(final DomainConfiguration domainConfiguration, final Result result) {
+	private static void generateJsDtDefinitions(final DomainConfiguration domainConfiguration, final Result result) {
 
 		final List<TemplateDtDefinition> dtDefinitions = new ArrayList<>();
 		for (final DtDefinition dtDefinition : getDtDefinitions()) {
@@ -189,7 +189,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 		super2java.generateFile(result, true);
 	}
 
-	private void generateDtResources(final DomainConfiguration domainConfiguration, final Result result) {
+	private static void generateDtResources(final DomainConfiguration domainConfiguration, final Result result) {
 		final String simpleClassName = "DtResources";
 		/**
 		 * Génération des ressources afférentes au DT.
@@ -217,7 +217,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 	 * @param domainConfiguration Configuration du domaine.
 	 * @param result Fichier dans lequel est généré.
 	 */
-	private void generateDtResourcesJS(final DomainConfiguration domainConfiguration, final Result result) {
+	private static void generateDtResourcesJS(final DomainConfiguration domainConfiguration, final Result result) {
 		/**
 		 * Génération des ressources afférentes au DT.
 		 */

@@ -147,7 +147,7 @@ public final class UiErrorBuilder {
 	}
 
 	/**
-	 * Vérifie que la date du champ 2 est après (strictement) la date du champ 1. 
+	 * Vérifie que la date du champ 2 est après (strictement) la date du champ 1.
 	 * @param dto Object a tester
 	 * @param fieldName1 Champs 1
 	 * @param fieldName2 Champs 2
@@ -164,10 +164,10 @@ public final class UiErrorBuilder {
 	}
 
 	/**
-	 * Vérifie que le Long du champ 2 est après (strictement) le Long du champ 1. 
+	 * Vérifie que le Long du champ 2 est après (strictement) le Long du champ 1.
 	 * @param dto Object a tester
-	 * @param fieldName1 Champs 1 
-	 * @param fieldName2 Champs 2 
+	 * @param fieldName1 Champs 1
+	 * @param fieldName2 Champs 2
 	 * @param messageText Message à appliquer si erreur
 	 */
 	public void checkFieldLongAfter(final DtObject dto, final String fieldName1, final String fieldName2, final MessageText messageText) {
@@ -181,7 +181,7 @@ public final class UiErrorBuilder {
 	}
 
 	/**
-	 * Vérifie que le champ est renseigner. 
+	 * Vérifie que le champ est renseigner.
 	 * @param dto Object a tester
 	 * @param fieldName Champs
 	 * @param messageText Message à appliquer si erreur
@@ -194,11 +194,11 @@ public final class UiErrorBuilder {
 		}
 	}
 
-	private Object getValue(final DtObject dto, final DtField dtField) {
+	private static Object getValue(final DtObject dto, final DtField dtField) {
 		return dtField.getDataAccessor().getValue(dto);
 	}
 
-	private DtField getDtField(final DtObject dto, final String fieldName) {
+	private static DtField getDtField(final DtObject dto, final String fieldName) {
 		return DtObjectUtil.findDtDefinition(dto).getField(StringUtil.camelToConstCase(fieldName));
 	}
 
@@ -218,7 +218,7 @@ public final class UiErrorBuilder {
 	public void flushIntoAction(final UiMessageStack uiMessageStack) {
 		for (final UiError uiError : uiObjectErrors) {
 			uiMessageStack.addActionMessage(UiMessageStack.Level.ERROR, uiError.getErrorMessage().getDisplay(), uiError.getDtObject(), uiError.getFieldName());
-			//action.addActionError("<b>" + entry.getKey().getLabel().getDisplay() + "</b> : " + errorMessage.getDisplay());			
+			//action.addActionError("<b>" + entry.getKey().getLabel().getDisplay() + "</b> : " + errorMessage.getDisplay());
 		}
 	}
 

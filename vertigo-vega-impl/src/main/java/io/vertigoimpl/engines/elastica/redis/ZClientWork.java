@@ -62,7 +62,7 @@ public final class ZClientWork /*implements Runnable*/{
 		}
 	}
 
-	private Object doProcess(final Jedis jedis, final ZMethod work, final int timeoutSeconds) {
+	private static Object doProcess(final Jedis jedis, final ZMethod work, final int timeoutSeconds) {
 		//On renseigne la demande de travaux
 		final String id = publish(jedis, work, true);
 
@@ -84,7 +84,7 @@ public final class ZClientWork /*implements Runnable*/{
 		throw new RuntimeException(t);
 	}
 
-	private String publish(final Jedis jedis, final ZMethod method, final boolean sync) {
+	private static String publish(final Jedis jedis, final ZMethod method, final boolean sync) {
 		final UUID uuid = UUID.randomUUID();
 		final String workId = uuid.toString();
 

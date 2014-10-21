@@ -24,7 +24,7 @@ import io.vertigo.lang.Assertion;
 /**
  * Implémentation threadSafe des mécanismes standards d'encodage/décodage.
  * Base 64 modifié pour passer dans les urls ('+', '/' remplacer par '_', '-' )
- * Les codes sont gérés par quatre octets. 
+ * Les codes sont gérés par quatre octets.
  * {voir wikipedia http://en.wikipedia.org/wiki/Base64#Privacy-Enhanced_Mail_.28PEM.29}
  * @author  npiedeloup
  */
@@ -78,7 +78,7 @@ public final class Base64Codec implements Codec<byte[], String> {
 		return res;
 	}
 
-	private void decodeCharacters(final String coded, final int length, final int len1, final int len2, final byte[] res) {
+	private static void decodeCharacters(final String coded, final int length, final int len1, final int len2, final byte[] res) {
 		final int[] b = new int[4];
 		//int[] e = new int[3];
 		int pos = 0;
