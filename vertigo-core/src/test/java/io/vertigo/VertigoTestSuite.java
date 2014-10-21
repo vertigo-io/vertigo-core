@@ -26,11 +26,11 @@ import io.vertigo.core.home.componentspace.ComponentSpace2Test;
 import io.vertigo.core.home.componentspace.ComponentSpace3Test;
 import io.vertigo.core.home.componentspace.ComponentSpaceTest;
 import io.vertigo.core.home.definitionspace.DefinitionSpaceTest;
-import io.vertigo.core.lang.AssertionTest;
-import io.vertigo.core.util.ClassUtilTest;
-import io.vertigo.core.util.DateQueryParserUtilTest;
-import io.vertigo.core.util.DateUtilTest;
-import io.vertigo.core.util.StringUtilTest;
+import io.vertigo.lang.AssertionTest;
+import io.vertigo.util.ClassUtilTest;
+import io.vertigo.util.DateQueryParserUtilTest;
+import io.vertigo.util.DateUtilTest;
+import io.vertigo.util.StringUtilTest;
 import io.vertigo.xml.XmlComponentsTest;
 import io.vertigo.xml.XmlHomeTest;
 
