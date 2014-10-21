@@ -33,16 +33,16 @@ import io.vertigo.dynamo.environment.eaxmi.EAXmiTestParserIdentifiers;
 import io.vertigo.dynamo.environment.java.JavaEnvironmentManagerTest;
 import io.vertigo.dynamo.environment.oom.OOMAATest;
 import io.vertigo.dynamo.environment.oom.OOMEnvironmentManagerTest;
-import io.vertigo.dynamo.environment.oom.OOMTest;
-import io.vertigo.dynamo.environment.oom.OOMParserTest;
 import io.vertigo.dynamo.environment.oom.OOMParserAATest;
 import io.vertigo.dynamo.environment.oom.OOMParserIdentifiersTest;
+import io.vertigo.dynamo.environment.oom.OOMParserTest;
+import io.vertigo.dynamo.environment.oom.OOMTest;
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslDefinitionBodyRuleTest;
+import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslDefinitionEntryRuleTest;
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslDefinitionRuleTest;
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslPackageRuleTest;
-import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslWordListRuleTest;
-import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslDefinitionEntryRuleTest;
 import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslPropertyEntryRuleTest;
+import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslWordListRuleTest;
 import io.vertigo.dynamo.environment.splittedmodules.SplittedModulesEnvironmentManagerTest;
 import io.vertigo.dynamo.export.ExportManagerTest;
 import io.vertigo.dynamo.file.FileManagerTest;
@@ -65,27 +65,19 @@ import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * Test de l'implémentation standard.
- *
+ * 
  * @author pchretien
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-//@formatter:off
-		//--	
-		//--
-		//--
 		JavaEnvironmentManagerTest.class,
 		//--OOM
 		OOMAATest.class, OOMEnvironmentManagerTest.class, OOMTest.class, OOMParserTest.class, OOMParserAATest.class, OOMParserIdentifiersTest.class,
 		EAXmiAATest.class, EAXmiEnvironmentManagerTest.class, EAXmiTest.class, EAXmiTestParser.class, EAXmiTestParserAA.class, EAXmiTestParserIdentifiers.class,
 		SplittedModulesEnvironmentManagerTest.class,
 		//--
-
-		//@formatter:on
-
-		//@formatter:off
 		//--collections
-		CollectionsManagerTest.class, 
+		CollectionsManagerTest.class,
 		FacetManagerTest.class,
 		//--database
 		DataBaseManagerTest.class,
@@ -102,24 +94,23 @@ import org.junit.runners.Suite.SuiteClasses;
 
 		//--transaction
 		KTransactionManagerTest.class,
-		
+
 		//--work
 		WorkManagerTest.class,
 		//RedisWorkManagerTest.class, DistributedWorkManagerTest.class, //REST
-		
+
 		//Rule
 		DslDefinitionRuleTest.class, DslPackageRuleTest.class, DslDefinitionBodyRuleTest.class, DslWordListRuleTest.class, DslPropertyEntryRuleTest.class, DslDefinitionEntryRuleTest.class,
-		
+
 		//Search
-		SearchManagerDynaFieldsTest.class, 
+		SearchManagerDynaFieldsTest.class,
 		SearchManagerMultiIndexTest.class,
 		SearchManagerTest.class,
 		//--
-		RedisWorkManagerTest.class, 
-		RestWorkManagerTest.class, 
+		RedisWorkManagerTest.class,
+		RestWorkManagerTest.class,
 		//---
 		ExportManagerTest.class,
-//@formatter:on
 })
 public final class DynamoTestSuite {
 	//

@@ -35,16 +35,14 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-//@formatter:off
 		PublisherManagerTest.class,
 		DOCXProcessorTest.class,
-		io.vertigo.quarto.publisher.docx.PublisherMergerTest.class, 
-		io.vertigo.quarto.publisher.odt.PublisherMergerTest.class, 
-		XMLHelperTest.class, 
+		io.vertigo.quarto.publisher.docx.PublisherMergerTest.class,
+		io.vertigo.quarto.publisher.odt.PublisherMergerTest.class,
+		XMLHelperTest.class,
 		//----
 		ConverterManagerRemoteTest.class,
-		ConverterManagerDistributedTest.class	
-//@formatter:on
+		ConverterManagerDistributedTest.class
 })
 public final class QuartoTestSuite {
 	//

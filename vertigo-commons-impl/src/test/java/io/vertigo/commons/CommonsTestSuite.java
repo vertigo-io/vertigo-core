@@ -51,40 +51,37 @@ import org.junit.runners.Suite.SuiteClasses;
  * @author pchretien
  */
 @RunWith(Suite.class)
-@SuiteClasses({ 
-//@formatter:off
-
+@SuiteClasses({
 	//--analytics
-		AnalyticsManagerTest.class,
+	AnalyticsManagerTest.class,
 	//--cache
-		CacheManagerTest.class,
+	CacheManagerTest.class,
 	//--codec
-		Base64CodecTest.class,
-		CompressedSerializationCodecTest.class,
-		CompressionCodecTest.class,
-		AES128CodecTest.class,
-		TripleDESCodecTest.class,
-		CSVCodecTest.class,
-		HashCodecMD5Test.class,
-		HashCodecSha1Test.class,
-		HashCodecSha256Test.class,
-		HtmlCodecTest.class,
-		SerializationCodecTest.class,
+	Base64CodecTest.class,
+	CompressedSerializationCodecTest.class,
+	CompressionCodecTest.class,
+	AES128CodecTest.class,
+	TripleDESCodecTest.class,
+	CSVCodecTest.class,
+	HashCodecMD5Test.class,
+	HashCodecSha1Test.class,
+	HashCodecSha256Test.class,
+	HtmlCodecTest.class,
+	SerializationCodecTest.class,
 	//--config
-		ConfigManagerTest.class,
-		LocaleManagerTest.class,
-		ResourceManagerTest.class,
-		MultiConfigManagerTest.class,
-		PropertiesConfigManagerTest.class,
-		XmlConfigManagerTest.class,
+	ConfigManagerTest.class,
+	LocaleManagerTest.class,
+	ResourceManagerTest.class,
+	MultiConfigManagerTest.class,
+	PropertiesConfigManagerTest.class,
+	XmlConfigManagerTest.class,
 	//--resource
-		ResourceManagerTest.class,
+	ResourceManagerTest.class,
 	//--script
-		ScriptManagerTest.class,
+	ScriptManagerTest.class,
 	//--parser
-		ParserTest.class,
-		CalculatorTest.class,
-//@formatter:on
+	ParserTest.class,
+	CalculatorTest.class,
 })
 public final class CommonsTestSuite {
 	//

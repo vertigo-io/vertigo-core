@@ -21,7 +21,6 @@ package io.vertigo.xml;
 import io.vertigo.core.component.AbstractAspectTestCase;
 import io.vertigo.core.config.ComponentSpaceConfigBuilder;
 import io.vertigo.engines.aop.cglib.CGLIBAopEngine;
-import io.vertigo.xml.XMLModulesLoader;
 
 import java.util.Properties;
 
@@ -31,9 +30,8 @@ import java.util.Properties;
 public final class XmlComponentsTest extends AbstractAspectTestCase {
 	@Override
 	protected final void configMe(final ComponentSpaceConfigBuilder componentSpaceConfigBuilder) {
-		//@formatter:off
-			componentSpaceConfigBuilder
-				.withAopEngine(new CGLIBAopEngine())
-				.withLoader(new XMLModulesLoader(XmlComponentsTest.class.getResource("components.xml"), new Properties()));
+		componentSpaceConfigBuilder
+		.withAopEngine(new CGLIBAopEngine())
+		.withLoader(new XMLModulesLoader(XmlComponentsTest.class.getResource("components.xml"), new Properties()));
 	}
 }

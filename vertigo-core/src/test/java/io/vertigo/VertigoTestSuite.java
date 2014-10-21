@@ -44,8 +44,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * @author pchretien
  */
 @RunWith(Suite.class)
-@SuiteClasses({ 
-//@formatter:off
+@SuiteClasses({
 	//LocaleManager
 	LocaleManagerTest.class,
 	//core
@@ -63,8 +62,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	DateQueryParserUtilTest.class,
 	StringUtilTest.class,
 	//---
-	CGLIBAspectContainerTest.class, 
-//@formatter:on
+	CGLIBAspectContainerTest.class,
 })
 public final class VertigoTestSuite {
 	//
