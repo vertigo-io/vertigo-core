@@ -66,7 +66,7 @@ public final class Domain implements Definition {
 	 * @param formatter Formatter du domaine
 	 */
 	public Domain(final String name, final DataType dataType, final Formatter formatter) {
-		this(name, dataType, formatter, Collections.<Constraint<?, Object>> emptyList(), new Properties());
+		this(name, dataType, formatter, Collections.<Constraint<?, Object>> emptyList(), new PropertiesBuilder().build());
 	}
 
 	/**
@@ -107,17 +107,16 @@ public final class Domain implements Definition {
 	}
 
 	private static Properties buildProperties(final List<Constraint<?, Object>> constraints, final Properties inputProperties) {
-		final Properties properties = new Properties();
+		final PropertiesBuilder propertiesBuilder = new PropertiesBuilder();
 		for (final Property property : inputProperties.getProperties()) {
-			properties.putValue(property, inputProperties.getValue(property));
+			propertiesBuilder.withValue(property, inputProperties.getValue(property));
 		}
 
 		//On récupère les propriétés d'après les contraintes
 		for (final Constraint<?, ?> constraint : constraints) {
-			properties.putValue(constraint.getProperty(), constraint.getPropertyValue());
+			propertiesBuilder.withValue(constraint.getProperty(), constraint.getPropertyValue());
 		}
-		properties.makeUnmodifiable();
-		return properties;
+		return propertiesBuilder.build();
 	}
 
 	/**

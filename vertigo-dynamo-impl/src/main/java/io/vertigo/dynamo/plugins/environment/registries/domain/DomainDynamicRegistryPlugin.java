@@ -31,6 +31,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.Properties;
+import io.vertigo.dynamo.domain.metamodel.PropertiesBuilder;
 import io.vertigo.dynamo.domain.metamodel.Property;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
@@ -393,13 +394,14 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	 * @return Container des propriétés
 	 */
 	private static Properties extractProperties(final DynamicDefinition dynamicDefinition) {
-		final Properties properties = new Properties();
+		final PropertiesBuilder propertiesBuilder = new PropertiesBuilder();
+
 		//On associe les propriétés Dt et Ksp par leur nom.
 		for (final EntityProperty entityProperty : dynamicDefinition.getProperties()) {
 			final Property property = DtProperty.valueOf(entityProperty.getName());
-			properties.putValue(property, dynamicDefinition.getPropertyValue(entityProperty));
+			propertiesBuilder.withValue(property, dynamicDefinition.getPropertyValue(entityProperty));
 		}
-		return properties;
+		return propertiesBuilder.build();
 	}
 
 	/** {@inheritDoc} */

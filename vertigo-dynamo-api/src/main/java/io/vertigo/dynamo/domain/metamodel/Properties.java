@@ -19,9 +19,8 @@
 package io.vertigo.dynamo.domain.metamodel;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.JsonExclude;
-import io.vertigo.lang.Modifiable;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -32,17 +31,25 @@ import java.util.Set;
  *
  * @author pchretien
  */
-public final class Properties implements Modifiable {
-	private final Map<Property<?>, Object> properties = new HashMap<>();
-	@JsonExclude
-	private boolean modifiable = true;
+public final class Properties {
+	private final Map<Property<?>, Object> properties;
+
+	Properties(final Map<Property<?>, Object> properties) {
+		Assertion.checkNotNull(properties);
+		//----------------------------------------------------------------------
+		if (properties.isEmpty()) {
+			this.properties = Collections.emptyMap();
+		} else {
+			this.properties = Collections.unmodifiableMap(new HashMap<>(properties));
+		}
+	}
 
 	/**
 	 * Set des propriétés gérées.
 	 * @return Collection
 	 */
 	public Set<Property<?>> getProperties() {
-		return java.util.Collections.unmodifiableSet(properties.keySet());
+		return properties.keySet();
 	}
 
 	/**
@@ -53,35 +60,10 @@ public final class Properties implements Modifiable {
 	 */
 	public <T> T getValue(final Property<T> property) {
 		Assertion.checkNotNull(property);
-		//On ne vérifie rien sur le type retourné par le getter. 
+		//On ne vérifie rien sur le type retourné par le getter.
 		//le type a été validé lors du put.
 		//----------------------------------------------------------------------
 		//Conformémément au contrat, on retourne null si pas de propriété trouvée
 		return property.getType().cast(properties.get(property));
-	}
-
-	/**
-	 * Ajout d'une propriété typée.
-	 * @param property propriété
-	 * @param value Valeur de la propriété
-	 */
-	public <T> void putValue(final Property<T> property, final T value) {
-		Assertion.checkNotNull(property);
-		Assertion.checkArgument(modifiable, "Aucune propriété ne peut être ajoutée");
-		Assertion.checkArgument(!properties.containsKey(property), "Propriété {0} déjà déclarée : ", property);
-		//On vérifie que la valeur est du bon type
-		property.getType().cast(value);
-		//----------------------------------------------------------------------
-		properties.put(property, value);
-	}
-
-	/** {@inheritDoc} */
-	public void makeUnmodifiable() {
-		modifiable = false;
-	}
-
-	/** {@inheritDoc} */
-	public boolean isModifiable() {
-		return modifiable;
 	}
 }

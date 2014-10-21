@@ -32,7 +32,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * 
+ *
  * @author dchallas
  */
 public final class CacheManagerTest extends AbstractTestCaseJU4 {
@@ -43,7 +43,7 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 	private CacheManager cacheManager;
 
 	/**
-	 * 
+	 *
 	 * @throws Exception manager null
 	 */
 	@Test
@@ -60,7 +60,7 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 
 		cacheManager.put(CONTEXT, KEY, value);
 		final Serializable retrieve = cacheManager.get(CONTEXT, KEY);
-		//On vérifie qu'il s'agit du même objet. 
+		//On vérifie qu'il s'agit du même objet.
 		Assert.assertEquals(value, retrieve);
 	}
 
@@ -245,14 +245,14 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 				try {
 					Thread.sleep(10); //on rend juste la main
 				} catch (final InterruptedException e) {
-					//rien					
+					//rien
 				}
 			}
 		}
 	}
 
 	//	/**
-	//	 * Test que quand on ferme 
+	//	 * Test que quand on ferme
 	//	  * @throws KSystemException   si erreur récupération cache
 	//	 */
 	//	public void testClose() throws KSystemException {
@@ -299,10 +299,6 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 
 		ElementUnmodifiable() {
 			super();
-		}
-
-		public void makeUnmodifiable() {
-			//rien
 		}
 
 		public boolean isModifiable() {

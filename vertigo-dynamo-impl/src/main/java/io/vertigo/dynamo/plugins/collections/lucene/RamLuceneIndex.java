@@ -117,8 +117,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifi
 		return modifiable;
 	}
 
-	/** {@inheritDoc} */
-	public void makeUnmodifiable() {
+	void makeUnmodifiable() {
 		checkModifiable();
 		//---------------------------------------------------------------------
 		modifiable = false;
