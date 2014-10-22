@@ -58,6 +58,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -72,8 +73,8 @@ public final class SwaggerRestServices implements RestfulService {
 	@SessionLess
 	@AnonymousAccessAllowed
 	@GET("/swaggerApi")
-	public Map<String, Object> getSwapperApi() {
-		return createSwagger();
+	public Map<String, Object> getSwapperApi(final HttpServletRequest request) {
+		return createSwagger(request.getContextPath(), request.getServletPath());
 	}
 
 	@SessionLess
@@ -154,10 +155,11 @@ public final class SwaggerRestServices implements RestfulService {
 		return null;
 	}
 
-	private Map<String, Object> createSwagger() {
+	private Map<String, Object> createSwagger(final String contextPath, final String servletPath) {
 		final Map<String, Object> swagger = new LinkedHashMap<>();
 		swagger.put("swagger", 2.0);
 		swagger.put("info", createInfoObject());
+		swagger.put("basePath", (contextPath != null ? "/" + contextPath : "") + (servletPath != null ? "/" + servletPath : ""));
 
 		//host, basePath, schemes, consumes, produces
 		swagger.put("paths", createPathsObject());
