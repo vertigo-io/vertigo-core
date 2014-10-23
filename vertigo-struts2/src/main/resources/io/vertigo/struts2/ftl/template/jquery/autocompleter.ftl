@@ -22,6 +22,9 @@
 	  <#if parameters.disabled?default(false)>
 	    disabled="disabled"<#rt/>
 	  </#if>
+	  <#if parameters.popinURL?if_exists != "">
+	 	popinURL="${parameters.popinURL?html}"<#rt/>
+	  </#if>
 	/><#rt/>
 	<#include "/${parameters.templateDir}/jquery/autocomplete-simple-text.ftl" />
 	<#assign escapedIconId="icon_${parameters.id?string?replace('.', '_')}">
