@@ -54,7 +54,7 @@ public final class FileManagerTest extends AbstractTestCaseJU4 {
 	public void testCreateTempFile() {
 		final File file = TestUtil.getFile("data/testFile.txt", getClass());
 		final KFile kFile = fileManager.createFile(file);
-		checkFile(kFile, "testFile.txt", null, "text/plain", 71321L);
+		checkFile(kFile, "testFile.txt", null, "text/plain", 71092L);
 	}
 
 	@Test
@@ -70,7 +70,7 @@ public final class FileManagerTest extends AbstractTestCaseJU4 {
 		final String typeMime = "monTypeMime";
 		final File file = TestUtil.getFile("data/testFile.txt", getClass());
 		final KFile kFile = fileManager.createFile(fileName, typeMime, file);
-		checkFile(kFile, fileName, null, typeMime, 71321L);
+		checkFile(kFile, fileName, null, typeMime, 71092L);
 	}
 
 	@Test
