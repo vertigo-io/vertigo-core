@@ -48,7 +48,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 				//les locales doivent être séparées par des virgules
 				.withParam("locales", "fr_FR, en , de_DE")
 			.endComponent()
-		.endModule();	
+		.endModule();
 		// @formatter:on
 	}
 
@@ -67,11 +67,5 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 	public void testDefaultDisplay() {
 		final MessageText helloTxt = new MessageText(CityGuide.HELLO);
 		Assert.assertEquals("bonjour", helloTxt.getDisplay());
-		try {
-			Thread.sleep(100000000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 }

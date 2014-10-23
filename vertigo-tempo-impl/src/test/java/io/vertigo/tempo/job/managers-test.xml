@@ -2,7 +2,7 @@
 <modules>
 	<module name="kasper-labs">
   	   <component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl"/> 
-  	   	   <component api="JobManager" class="io.vertigo.tempo.impl.job.JobManagerImpl">
+  	   <component api="JobManager" class="io.vertigo.tempo.impl.job.JobManagerImpl">
 	        <plugin class="io.vertigo.tempo.plugins.job.basic.BasicSchedulerPlugin" />
 	    </component>
     </module>
