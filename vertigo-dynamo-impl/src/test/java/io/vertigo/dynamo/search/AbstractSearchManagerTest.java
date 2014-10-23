@@ -536,7 +536,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 	private static void waitIndexation() {
 		try {
-			Thread.sleep(500); //wait index was done
+			Thread.sleep(1000); //wait index was done
 		} catch (final InterruptedException e) {
 			//rien
 		}
