@@ -28,6 +28,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VUserException;
+import io.vertigo.util.BeanUtil;
 import io.vertigo.util.StringUtil;
 
 import java.io.Serializable;
@@ -343,9 +344,8 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 				// ======================================================================
 				// ======================Mise à jour différentielle du BUFFER============
 				// ======================================================================
-				final DataType dataType = dtField.getDomain().getDataType();
 				// égalité entre la valeur d'origine et la valeur saisie.
-				if (dataType.equals(dtField.getDataAccessor().getValue(dto), doGetTypedValue(dtField))) {
+				if (BeanUtil.equals(dtField.getDataAccessor().getValue(dto), doGetTypedValue(dtField))) {
 					// Si la valeur saisie est identique à la valeur d'origine
 					// alors on purge le buffer de saisie.
 					modifiedTypedValues.remove(constFieldName);

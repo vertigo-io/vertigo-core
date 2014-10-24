@@ -19,12 +19,12 @@
 package io.vertigo.vega.rest.engine;
 
 import io.vertigo.core.spaces.definiton.DefinitionReference;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.BeanUtil;
 import io.vertigo.util.StringUtil;
 import io.vertigo.vega.rest.validation.DtObjectErrors;
 import io.vertigo.vega.rest.validation.DtObjectValidator;
@@ -41,11 +41,11 @@ import java.util.Set;
 
 /**
  * UiObject is used as an Input buffer from client.
- * It managed to : 
+ * It managed to :
  * - merge a serverSideObject and an inputBufferObject
  * - check validators
  * - return merged Object
- * 
+ *
  * @author pchretien, npiedeloup
  * @param <D> DtObject type
  */
@@ -194,7 +194,7 @@ public final class UiObject<D extends DtObject> implements Serializable {
 	/**
 	 * Mise Ã  jour des donnÃ©es typÃ©es.
 	 * Verifie si la valeur correspond Ã  une modification.
-	 * Si oui, la valeur est gardÃ©e, sinon la saisie de l'utilisateur est vidÃ©e. 
+	 * Si oui, la valeur est gardÃ©e, sinon la saisie de l'utilisateur est vidÃ©e.
 	 */
 	private void compactModifiedSet() {
 		Assertion.checkNotNull(serverSideDto, "serverSideDto is mandatory");
@@ -210,9 +210,8 @@ public final class UiObject<D extends DtObject> implements Serializable {
 				// ======================Mise Ã  jour diffÃ©rentielle du BUFFER============
 				// ======================================================================
 				final DtField dtField = getDtField(camelField);
-				final DataType dataType = dtField.getDomain().getDataType();
 				// Ã©galitÃ© entre la valeur d'origine et la valeur saisie.
-				if (dataType.equals(dtField.getDataAccessor().getValue(serverSideDto), dtField.getDataAccessor().getValue(inputDto))) {
+				if (BeanUtil.equals(dtField.getDataAccessor().getValue(serverSideDto), dtField.getDataAccessor().getValue(inputDto))) {
 					// Si la valeur saisie est identique Ã  la valeur d'origine
 					// alors on purge le buffer de saisie.
 					updatedModifiedFields.remove(camelField);

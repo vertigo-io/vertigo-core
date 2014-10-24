@@ -29,7 +29,7 @@ import java.util.Date;
  * On distingue :
  * - les types primitifs,
  * - types complexes.
- * 
+ *
  * Les types complexes permettent de créer des objets composites.
  * Ils unifient le socle autour de la notion clé de domaine.
  *
@@ -99,27 +99,6 @@ public enum DataType {
 	 */
 	public Class<?> getJavaClass() {
 		return javaClass;
-	}
-
-	/**
-	 * Vérifie l'égalité de deux valeurs non nulles.
-	 *
-	 * @param a Valeur 1
-	 * @param b Valeur 2
-	 * @return Si égales
-	 */
-	public boolean equals(final Object a, final Object b) {
-		if (a == null && b == null) {
-			//Si les deux objets sont null alors on considère qu'ils sont égaux
-			return true;
-		}
-
-		if (a == null || b == null) {
-			//Si un seul des objets est null alors ils sont différents
-			return false;
-		}
-		//A partir de maintenant a et b sont non null
-		return a.equals(b);
 	}
 
 	/**

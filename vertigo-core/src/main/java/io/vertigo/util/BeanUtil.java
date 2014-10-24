@@ -109,7 +109,7 @@ public final class BeanUtil {
 	 */
 	private static PropertyDescriptor getPropertyDescriptor(final String propertyName, final Class<?> beanClass) {
 		// on pourrait faire new PropertyDescriptor(propertyName, beanClass)
-		// mais si jamais il a été défini des BeanInfo pour certaines classes, 
+		// mais si jamais il a été défini des BeanInfo pour certaines classes,
 		//autant les utiliser.
 		final PropertyDescriptor[] descriptors = getPropertyDescriptors(beanClass);
 		for (final PropertyDescriptor propertyDescriptor : descriptors) {
@@ -127,4 +127,25 @@ public final class BeanUtil {
 			throw new RuntimeException("Erreur d'introspection des propriétés sur la classe " + beanClass, e);
 		}
 	}
+
+	/**
+	 * Vérifie l'égalité de deux valeurs non nulles.
+	 *
+	 * @param a Valeur 1
+	 * @param b Valeur 2
+	 * @return Si égales
+	 */
+	public static boolean equals(final Object a, final Object b) {
+		if (a == null && b == null) {
+			//Si les deux objets sont null alors on considère qu'ils sont égaux
+			return true;
+		}
+		if (a == null || b == null) {
+			//Si un seul des objets est null alors ils sont différents
+			return false;
+		}
+		//A partir de maintenant a et b sont non null
+		return a.equals(b);
+	}
+
 }

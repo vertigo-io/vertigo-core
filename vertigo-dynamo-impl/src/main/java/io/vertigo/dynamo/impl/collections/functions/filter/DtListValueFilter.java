@@ -23,6 +23,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.BeanUtil;
 
 import java.io.Serializable;
 
@@ -70,6 +71,6 @@ public final class DtListValueFilter<D extends DtObject> implements DtListFilter
 	 * @return Si acceptée
 	 */
 	private boolean accept(final Object fieldValue) {
-		return dtField.getDomain().getDataType().equals(value, fieldValue);
+		return BeanUtil.equals(value, fieldValue);
 	}
 }

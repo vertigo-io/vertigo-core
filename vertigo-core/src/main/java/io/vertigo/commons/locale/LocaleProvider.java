@@ -21,13 +21,13 @@ package io.vertigo.commons.locale;
 import java.util.Locale;
 
 /**
- * Fournisseur de la langue  courante.
+ * Provide current language.
  *
  * @author  pchretien, npiedeloup
  */
 public interface LocaleProvider {
 	/**
-	 * @return Locale courante. (peut-être null)
+	 * @return Current locale (may be null)
 	 */
 	Locale getCurrentLocale();
 }
