@@ -224,11 +224,11 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		//Si on trouve un domaine on est dans un objet dynamo.
 		final FieldType type = FieldType.valueOf(field.type());
 		final DynamicDefinitionKey fieldDomainKey = new DynamicDefinitionKey(field.domain());
-		final DynamicDefinition dtField = DynamicDefinitionRepository.createDynamicDefinitionBuilder(fieldName, DomainGrammar.DT_FIELD_ENTITY, null)//
-				.withDefinition("domain", fieldDomainKey)//
-				.withPropertyValue(KspProperty.LABEL, field.label())//
-				.withPropertyValue(KspProperty.NOT_NULL, field.notNull())//
-				.withPropertyValue(KspProperty.PERSISTENT, field.persistent())//
+		final DynamicDefinition dtField = DynamicDefinitionRepository.createDynamicDefinitionBuilder(fieldName, DomainGrammar.DT_FIELD_ENTITY, null)
+				.withDefinition("domain", fieldDomainKey)
+				.withPropertyValue(KspProperty.LABEL, field.label())
+				.withPropertyValue(KspProperty.NOT_NULL, field.notNull())
+				.withPropertyValue(KspProperty.PERSISTENT, field.persistent())
 				.build();
 
 		switch (type) {

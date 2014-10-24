@@ -100,11 +100,11 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 		final Entity dtFieldEntity = DomainGrammar.DT_FIELD_ENTITY;
 		final DynamicDefinitionKey domainKey = new DynamicDefinitionKey(attributeXmi.getDomain());
 
-		return DynamicDefinitionRepository.createDynamicDefinitionBuilder(attributeXmi.getCode(), dtFieldEntity, null)//
-				.withPropertyValue(KspProperty.LABEL, attributeXmi.getLabel())//
-				.withPropertyValue(KspProperty.PERSISTENT, attributeXmi.isPersistent())//
-				.withPropertyValue(KspProperty.NOT_NULL, attributeXmi.isNotNull())//
-				.withDefinition("domain", domainKey)//
+		return DynamicDefinitionRepository.createDynamicDefinitionBuilder(attributeXmi.getCode(), dtFieldEntity, null)
+				.withPropertyValue(KspProperty.LABEL, attributeXmi.getLabel())
+				.withPropertyValue(KspProperty.PERSISTENT, attributeXmi.isPersistent())
+				.withPropertyValue(KspProperty.NOT_NULL, attributeXmi.isNotNull())
+				.withDefinition("domain", domainKey)
 				.build();
 	}
 
@@ -124,17 +124,17 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 		}
 
 		//On crée l'association
-		final DynamicDefinitionBuilder associationDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(name, dynamicMetaDefinition, associationXmi.getPackageName())//
-				.withPropertyValue(KspProperty.NAVIGABILITY_A, associationXmi.isNavigableA())//
-				.withPropertyValue(KspProperty.NAVIGABILITY_B, associationXmi.isNavigableB())//
+		final DynamicDefinitionBuilder associationDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(name, dynamicMetaDefinition, associationXmi.getPackageName())
+				.withPropertyValue(KspProperty.NAVIGABILITY_A, associationXmi.isNavigableA())
+				.withPropertyValue(KspProperty.NAVIGABILITY_B, associationXmi.isNavigableB())
 				//---
-				.withPropertyValue(KspProperty.LABEL_A, associationXmi.getRoleLabelA())//
+				.withPropertyValue(KspProperty.LABEL_A, associationXmi.getRoleLabelA())
 				//On transforme en CODE ce qui est écrit en toutes lettres.
-				.withPropertyValue(KspProperty.ROLE_A, french2Java(associationXmi.getRoleLabelA()))//
-				.withPropertyValue(KspProperty.LABEL_B, associationXmi.getRoleLabelB())//
+				.withPropertyValue(KspProperty.ROLE_A, french2Java(associationXmi.getRoleLabelA()))
+				.withPropertyValue(KspProperty.LABEL_B, associationXmi.getRoleLabelB())
 				.withPropertyValue(KspProperty.ROLE_B, french2Java(associationXmi.getRoleLabelB()))
 				//---
-				.withDefinition("dtDefinitionA", getDtDefinitionKey(associationXmi.getCodeA()))//
+				.withDefinition("dtDefinitionA", getDtDefinitionKey(associationXmi.getCodeA()))
 				.withDefinition("dtDefinitionB", getDtDefinitionKey(associationXmi.getCodeB()));
 
 		if (isAssociationNN) {
@@ -146,8 +146,8 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 			LOGGER.trace("!isAssociationNN:Code=" + associationXmi.getCode());
 			//Dans le cas d'une NN ses deux propriétés sont redondantes ;
 			//elles ne font donc pas partie de la définition d'une association de type NN
-			associationDefinitionBuilder.withPropertyValue(KspProperty.MULTIPLICITY_A, associationXmi.getMultiplicityA())//
-					.withPropertyValue(KspProperty.MULTIPLICITY_B, associationXmi.getMultiplicityB())//
+			associationDefinitionBuilder.withPropertyValue(KspProperty.MULTIPLICITY_A, associationXmi.getMultiplicityA())
+					.withPropertyValue(KspProperty.MULTIPLICITY_B, associationXmi.getMultiplicityB())
 					.withPropertyValue(KspProperty.FK_FIELD_NAME, buildFkFieldName(associationXmi, dynamicModelrepository));
 
 		}

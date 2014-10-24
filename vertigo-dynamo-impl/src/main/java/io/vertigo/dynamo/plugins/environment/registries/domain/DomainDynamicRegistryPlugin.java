@@ -424,11 +424,11 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final DynamicDefinitionKey fmtDefaultKey = new DynamicDefinitionKey(Formatter.FMT_DEFAULT);
 		final DynamicDefinitionKey dtObjectKey = new DynamicDefinitionKey("DtObject");
 
-		final DynamicDefinition domain = DynamicDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain, packageName)//
-				.withDefinition("formatter", fmtDefaultKey)//
-				.withDefinition("dataType", dtObjectKey)//
+		final DynamicDefinition domain = DynamicDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain, packageName)
+				.withDefinition("formatter", fmtDefaultKey)
+				.withDefinition("dataType", dtObjectKey)
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
-				.withPropertyValue(KspProperty.TYPE, definitionName)//
+				.withPropertyValue(KspProperty.TYPE, definitionName)
 				.build();
 
 		//On ajoute le domain crée au repository
@@ -437,11 +437,11 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		//On fait la même chose avec DTC
 
 		final DynamicDefinitionKey dtListKey = new DynamicDefinitionKey("DtList");
-		final DynamicDefinition domain2 = DynamicDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTC", metaDefinitionDomain, packageName)//
-				.withDefinition("formatter", fmtDefaultKey)//
-				.withDefinition("dataType", dtListKey)//
+		final DynamicDefinition domain2 = DynamicDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTC", metaDefinitionDomain, packageName)
+				.withDefinition("formatter", fmtDefaultKey)
+				.withDefinition("dataType", dtListKey)
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
-				.withPropertyValue(KspProperty.TYPE, definitionName)//
+				.withPropertyValue(KspProperty.TYPE, definitionName)
 				.build();
 
 		//On ajoute le domain crée au repository
