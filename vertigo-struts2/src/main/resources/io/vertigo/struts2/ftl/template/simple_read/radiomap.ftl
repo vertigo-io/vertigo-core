@@ -4,7 +4,7 @@
  */
 -->
 
-<span<#rt/>
+<span<#t/>
 <#if parameters.id??>
  id="${parameters.id?html}"<#rt/>
 </#if>

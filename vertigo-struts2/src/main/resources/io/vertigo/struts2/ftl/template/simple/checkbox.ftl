@@ -13,7 +13,7 @@
  	</#if>
 <#else>
 	<#if parameters.nameValue?? && parameters.nameValue>
-	 checked="checked"<#rt/>
+ checked="checked"<#rt/>
 	</#if>
 </#if>
 <#if parameters.disabled?default(false)>
@@ -35,8 +35,9 @@
 <#include "/${parameters.templateDir}/simple/scripting-events.ftl" />
 <#include "/${parameters.templateDir}/simple/common-attributes.ftl" />
 <#include "/${parameters.templateDir}/simple/dynamic-attributes.ftl" />
-/><input type="hidden" id="${hiddenPrefix}${parameters.id?html}" name="${hiddenPrefix}${parameters.name?html}" value="${parameters.fieldValue?html}"<#rt/>
+/><#t/>
+<input type="hidden" id="${hiddenPrefix}${parameters.id?html}" name="${hiddenPrefix}${parameters.name?html}" value="${parameters.fieldValue?html}"<#rt/>
 <#if parameters.disabled?default(false)>
  disabled="disabled"<#rt/>
 </#if>
- />
+/><#t/>

@@ -7,20 +7,20 @@
 	<#assign itemCount = 0/>
 	<#list parameters.nameValue as selectedValue>
 		<#assign itemCount = itemCount + 1/>
-		<span<#rt/>
+<span<#rt/>
 		<#if parameters.id??>
-		 id="${parameters.id?html}-${itemCount?html}"<#rt/>
+ id="${parameters.id?html}-${itemCount?html}"<#rt/>
 		</#if>
 		<#if parameters.title??>
-		 title="${parameters.title?html}"<#rt/>
+ title="${parameters.title?html}"<#rt/>
 		</#if>
 		<#assign previousCssClass = appendedCssClass!''/>
 		<#assign appendedCssClass = previousCssClass +' checkbox-checked'/>
-		<#include "/${parameters.templateDir}/simple/css.ftl" /><#rt/>
+		<#include "/${parameters.templateDir}/simple/css.ftl" /><#t/>
 		<#assign appendedCssClass = previousCssClass/>
-		<#include "/${parameters.templateDir}/simple/scripting-events.ftl" /><#rt/>
-		<#include "/${parameters.templateDir}/simple/common-attributes.ftl" /><#rt/>
-		<#include "/${parameters.templateDir}/simple/dynamic-attributes.ftl" /><#rt/>
+		<#include "/${parameters.templateDir}/simple/scripting-events.ftl" /><#t/>
+		<#include "/${parameters.templateDir}/simple/common-attributes.ftl" /><#t/>
+		<#include "/${parameters.templateDir}/simple/dynamic-attributes.ftl" /><#t/>
 		><#t/>
 		<#if selectedValue?? && selectedValue!='' >
 			<#if parameters.list.getById??>
@@ -39,7 +39,7 @@
 			</#if>
 		</#if>
 		</span><#t/>
-		<br/>
+		<br/><#lt/>
 	</#list>
 </#if>
 

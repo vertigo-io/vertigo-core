@@ -5,7 +5,7 @@
  */
 -->
 
-<span
+<span<#t/>
 <#if parameters.id??>
  id="${parameters.id?html}"<#rt/>
 </#if>
@@ -20,8 +20,8 @@
 "><#rt/>
 <#assign itemValue = stack.findValue(parameters.name)?default('')/>
 <#if itemValue?is_enumerable && parameters.fieldValue?? >
-	${util.formatBoolean(parameters.name,itemValue?seq_contains(parameters.fieldValue?html)!false)}<#rt/>	
+	${util.formatBoolean(parameters.name,itemValue?seq_contains(parameters.fieldValue?html)!false)}<#t/>	
 <#else>
-	${util.formatBoolean(parameters.name,parameters.nameValue!false)}<#rt/>
+	${util.formatBoolean(parameters.name,parameters.nameValue!false)}<#t/>
 </#if>
-</span><#rt/>
+</span><#t/>

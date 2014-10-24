@@ -9,5 +9,5 @@
 		</tr><#-- Write out the closing tr. -->
 		<#assign columnCount = 0 />
 	</#if>
-	${stack.setValue('#controlLayout_currentColumnCount', columnCount)}
+	${stack.setValue('#controlLayout_currentColumnCount', columnCount)}<#t/>
 </#if>

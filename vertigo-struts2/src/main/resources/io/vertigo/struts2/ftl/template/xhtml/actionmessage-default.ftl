@@ -9,8 +9,8 @@
 <#list actionMessages as message>
 	<#if message?if_exists != "" && message?starts_with('WARNING:')>
 		<#if !panelRendered>
-			<div class="warningPanel">
-				<ul <#t/>
+<div class="warningPanel">
+	<ul <#rt/>
 			<#if parameters.id?if_exists != "">
 			 id="${parameters.id?html}" <#t/>
 			</#if>
@@ -22,17 +22,17 @@
 			<#if parameters.cssStyle??>
 			 style="${parameters.cssStyle?html}"<#t/>
 			</#if>
-			><#t/>
-			<#assign panelRendered = true/>
+	><#lt/>
+		<#assign panelRendered = true/>
 		</#if>
 		<#assign warnMessage = message!?substring('WARNING:'?length)>
 		<#assign warnFieldMessage = warnMessage?matches("<label>(.+)</label>(.+)$")>
 		<#if warnFieldMessage>
 			<#list warnFieldMessage as m> 
-				<li><span class="messageLabel">${m?groups[1]?html}: </span><span class="message"><#if parameters.escape>${m?groups[2]?html}<#else>${m?groups[2]!}</#if></span></li>
-	        </#list> 
+		<li><span class="messageLabel">${m?groups[1]?html}: </span><span class="message"><#if parameters.escape>${m?groups[2]?html}<#else>${m?groups[2]!}</#if></span></li>
+	        	</#list> 
 		<#else>
-			<li><span><#if parameters.escape>${warnMessage?html}<#else>${warnMessage!}</#if></span></li>
+		<li><span><#if parameters.escape>${warnMessage?html}<#else>${warnMessage!}</#if></span></li>
 		</#if>				 
 	</#if>
 </#list>
@@ -40,13 +40,13 @@
 	</ul>
 </div>
 </#if>
-
+<#t/>
 <#assign panelRendered = false/>
 <#list actionMessages as message>
 	<#if message?if_exists != "" && message?starts_with('INFO:')>
 		<#if !panelRendered>
-			<div class="infoPanel">
-				<ul <#t/>
+<div class="infoPanel">
+	<ul <#rt/>
 			<#if parameters.id?if_exists != "">
 			 id="${parameters.id?html}" <#t/>
 			</#if>
@@ -58,17 +58,17 @@
 			<#if parameters.cssStyle??>
 			 style="${parameters.cssStyle?html}"<#t/>
 			</#if>
-			><#t/>
-			<#assign panelRendered = true/>
+	><#lt/>
+		<#assign panelRendered = true/>
 		</#if>
 		<#assign infoMessage = message!?substring('INFO:'?length)>
 		<#assign infoFieldMessage = infoMessage?matches("<label>(.+)</label>(.+)$")>
 		<#if infoFieldMessage>
 			<#list infoFieldMessage as m> 
-				<li><span class="messageLabel">${m?groups[1]?html}: </span><span class="message"><#if parameters.escape>${m?groups[2]?html}<#else>${m?groups[2]!}</#if></span></li>
-	        </#list> 
+		<li><span class="messageLabel">${m?groups[1]?html}: </span><span class="message"><#if parameters.escape>${m?groups[2]?html}<#else>${m?groups[2]!}</#if></span></li>
+	        	</#list> 
 		<#else>
-			<li><span><#if parameters.escape>${infoMessage?html}<#else>${infoMessage!}</#if></span></li>
+		<li><span><#if parameters.escape>${infoMessage?html}<#else>${infoMessage!}</#if></span></li>
 		</#if>				 
 	</#if>
 </#list>
@@ -76,13 +76,13 @@
 	</ul>
 </div>
 </#if>
-
+<#t/>
 <#assign panelRendered = false/>
 <#list actionMessages as message>
 	<#if message?if_exists != "" && !message?starts_with('INFO:') && !message?starts_with('WARNING:') && !message?starts_with('ERROR:')>
 		<#if !panelRendered>
-			<div class="errorPanel">
-				<ul <#t/>
+<div class="errorPanel">
+	<ul <#rt/>
 			<#if parameters.id?if_exists != "">
 			 id="${parameters.id?html}" <#t/>
 			</#if>
@@ -94,7 +94,7 @@
 			<#if parameters.cssStyle??>
 			 style="${parameters.cssStyle?html}"<#t/>
 			</#if>
-			><#t/>
+	><#lt/>
 			<#assign panelRendered = true/>
 		</#if>
 		<li><span><#if parameters.escape>${message?html}<#else>${message!}</#if></span></li>
@@ -104,6 +104,6 @@
 	</ul>
 </div>
 </#if>
-
-
+<#t/>
+<#t/>
 </#if>

@@ -19,11 +19,11 @@
 <#include "/${parameters.templateDir}/simple/scripting-events.ftl" />
 <#include "/${parameters.templateDir}/simple/common-attributes.ftl" />
 <#include "/${parameters.templateDir}/simple/dynamic-attributes.ftl" />
->
+><#t/>
 <#if parameters.headerKey?? && parameters.headerValue?? && tag.contains(parameters.nameValue, parameters.headerKey) == true>
-${parameters.headerValue?html}
+${parameters.headerValue?html}<#t/>
 </#if>
 <#if uiObject??>
  ${uiObject[parameters.remoteListValue]?html?replace("\n", "<br/>")}<#rt/>
 </#if>
-</span>
+</span><#t/>

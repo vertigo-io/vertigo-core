@@ -21,23 +21,23 @@
  */
 -->
 <#if (actionErrors?? && actionErrors?size > 0)>
-	<ul<#rt/>
+	<ul <#rt/>
 <#if parameters.id?if_exists != "">
- id="${parameters.id?html}"<#rt/>
-</#if>            
+ id="${parameters.id?html}" <#t/>
+</#if>
 <#if parameters.cssClass??>
- class="${parameters.cssClass?html}"<#rt/>
+ class="${parameters.cssClass?html}" <#t/>
 <#else>
- class="errorMessage"<#rt/>
+ class="errorMessage" <#t/>
 </#if>
 <#if parameters.cssStyle??>
- style="${parameters.cssStyle?html}"<#rt/>
+ style="${parameters.cssStyle?html}" <#t/>
 </#if>
->
-	<#list actionErrors as error>
-		<#if error?if_exists != "">
-            <li><span class="message"><#if parameters.escape>${error!?html}<#else>${error!}</#if></span><#rt/></li><#rt/>
+><#lt/>
+<#list actionErrors as error>
+	<#if error?if_exists != "">
+		<li><span class="message"><#if parameters.escape>${error!?html}<#else>${error!}</#if></span></li>
         </#if>
-	</#list>
-	</ul>	
+</#list>
+	</ul>
 </#if>

@@ -5,11 +5,11 @@
  */
 -->
 <#assign fieldName = parameters.widgetname!parameters.name/> <#-- for jquery component -->
-<label <#t/>
+<label<#t/>
 <#if parameters.id??>
-	for="${parameters.id?html}" <#t/>
+ for="${parameters.id?html}"<#rt/>
 </#if>
-  class="readonly"
+ class="readonly"<#rt/>
 ><#t/>
 <#if parameters.label = "default"> 
 	${util.label(fieldName)?html}<#t/>
@@ -17,6 +17,6 @@
 	${parameters.label?html}<#t/>
 </#if>
 <#if parameters.dynamicAttributes['forceTooltip']?? && parameters.dynamicAttributes['forceTooltip'] = 'true' > 
-	<#include "/${parameters.templateDir}/xhtml/tooltip.ftl" />
+<#include "/${parameters.templateDir}/xhtml/tooltip.ftl" />
 </#if>
 </label><#t/>

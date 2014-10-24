@@ -15,9 +15,8 @@
 <#include "/${parameters.templateDir}/simple/scripting-events.ftl" />
 <#include "/${parameters.templateDir}/simple/common-attributes.ftl" />
 <#include "/${parameters.templateDir}/simple/dynamic-attributes.ftl" />
->
+><#t/>
 <#if parameters.nameValue??>
- ${parameters.nameValue?html?replace("\n", "<br/>")}<#rt/>
+ ${parameters.nameValue?html?replace("\n", "<br/>")}<#t/>
 </#if>
-</span>
-
+</span><#t/>

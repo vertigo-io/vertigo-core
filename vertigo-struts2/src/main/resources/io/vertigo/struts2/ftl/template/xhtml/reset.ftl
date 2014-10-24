@@ -7,7 +7,7 @@
 <#assign currentLayout = controlLayout_type?default('none') />	
 <#if currentLayout = 'table'>
 	<#include "/${parameters.templateDir}/${parameters.theme}/controlheader-trlogic.ftl" />
-	<td <#t/>
+			<td <#t/>
 	<#if parameters.submitcolspan??><#t/>
 	    colspan="${parameters.submitcolspan?html}"<#t/>	    
 	<#t/></#if>
@@ -18,7 +18,7 @@
 	<#if controlLayout_tablecolspan?exists >
     	<#assign columnCount = controlLayout_currentColumnCount + parameters.submitcolspan?default(1) />	
 		<#-- update the value of the controlLayout_currentColumnCount bean on the value stack. -->
-		${stack.setValue('#controlLayout_currentColumnCount', columnCount)}
+		${stack.setValue('#controlLayout_currentColumnCount', columnCount)}<#t/>
 	</#if>
 </#if>
 <#include "/${parameters.templateDir}/simple/reset.ftl" />

@@ -9,8 +9,8 @@
 
 <#assign currentLayout = controlLayout_type?default('none') />	
 <#if currentLayout = 'table'>
-	<#include "/${parameters.templateDir}/xhtml/controlheader-trlogic.ftl" /> 
-    <th class="tdLabel" <#t/>
+<#include "/${parameters.templateDir}/xhtml/controlheader-trlogic.ftl" />
+			<th class="tdLabel" <#rt/>
     <#if parameters.labelcolspan??>
 	    colspan="${parameters.labelcolspan?html}" <#t/>
 	</#if>
@@ -19,17 +19,15 @@
 <#if parameters.label??>
   <#-- We use parentTheme if theme is different of xhtml or xhtml_read. -->
   <#if parameters.theme == 'xhtml' || parameters.theme == 'xhtml_read' || !(parameters.parentTheme??)>
-    <#include "/${parameters.templateDir}/${parameters.theme}/controllabel.ftl" />
+<#include "/${parameters.templateDir}/${parameters.theme}/controllabel.ftl" />
   <#else>
-    <#include "/${parameters.templateDir}/${parameters.parentTheme}/controllabel.ftl" />
+<#include "/${parameters.templateDir}/${parameters.parentTheme}/controllabel.ftl" />
   </#if>
 </#if>
 <#if currentLayout = 'table'>
-	</th><#lt/>
+</th><#lt/>
 	<#-- We only update the controlLayout_currentColumnCount if we actually printed out a th for the lable. -->
 	<#assign columnCount = controlLayout_currentColumnCount + parameters.labelcolspan?default(1) />	
 	<#-- update the value of the controlLayout_currentColumnCount bean on the value stack. -->
-	${stack.setValue('#controlLayout_currentColumnCount', columnCount)}
+	${stack.setValue('#controlLayout_currentColumnCount', columnCount)}<#t/>
 </#if>
-    
-
