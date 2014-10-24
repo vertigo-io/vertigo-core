@@ -62,12 +62,13 @@ final class DIComponentInfo {
 	@Override
 	public String toString() {
 		//Utilisé pour afficher les messages d'erreurs lors du calcul des DI
+
 		return id;
 	}
 
-	//-------------------------------------------------------------------------
-	//------------------------Calcul des Dépendances---------------------------
-	//-------------------------------------------------------------------------
+	/*
+	 * Build Dependencies
+	 */
 	private static Collection<DIDependency> buildDependencies(final DIComponentInfo diComponentInfo, final Class<?> implClass, final Set<String> params, final Set<String> pluginIds) {
 		final Collection<DIDependency> tmpDependencies = new ArrayList<>();
 		//Les paramètres sont supposés connus et ne sont donc pas concernés par l'analyse de dépendances
