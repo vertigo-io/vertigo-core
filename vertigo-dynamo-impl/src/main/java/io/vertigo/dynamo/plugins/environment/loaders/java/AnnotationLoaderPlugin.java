@@ -103,7 +103,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 		final String urn = DT_DEFINITION_PREFIX + SEPARATOR + StringUtil.camelToConstCase(simpleName);
 
-		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(urn, DomainGrammar.DT_DEFINITION_ENTITY, packageName)//
+		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(urn, DomainGrammar.DT_DEFINITION_ENTITY, packageName)
 				.withPropertyValue(KspProperty.PERSISTENT, dtDefinitionAnnotation.persistent());
 
 		// Le tri des champs et des méthodes par ordre alphabétique est important car classe.getMethods() retourne
@@ -138,24 +138,24 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 				final DynamicDefinitionKey primaryDtDefinitionKey = new DynamicDefinitionKey(association.primaryDtDefinitionName());
 				final DynamicDefinitionKey foreignDtDefinitionKey = new DynamicDefinitionKey(association.foreignDtDefinitionName());
 
-				final DynamicDefinition associationDefinition = DynamicDefinitionRepository.createDynamicDefinitionBuilder(association.name(), DomainGrammar.ASSOCIATION_ENTITY, packageName)//
+				final DynamicDefinition associationDefinition = DynamicDefinitionRepository.createDynamicDefinitionBuilder(association.name(), DomainGrammar.ASSOCIATION_ENTITY, packageName)
 						// associationDefinition.
 						//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
-						.withPropertyValue(KspProperty.MULTIPLICITY_A, association.primaryMultiplicity())//
-						.withPropertyValue(KspProperty.MULTIPLICITY_B, association.foreignMultiplicity())//
+						.withPropertyValue(KspProperty.MULTIPLICITY_A, association.primaryMultiplicity())
+						.withPropertyValue(KspProperty.MULTIPLICITY_B, association.foreignMultiplicity())
 						// navigabilités
-						.withPropertyValue(KspProperty.NAVIGABILITY_A, association.primaryIsNavigable())//
-						.withPropertyValue(KspProperty.NAVIGABILITY_B, association.foreignIsNavigable())//
+						.withPropertyValue(KspProperty.NAVIGABILITY_A, association.primaryIsNavigable())
+						.withPropertyValue(KspProperty.NAVIGABILITY_B, association.foreignIsNavigable())
 						//Roles
-						.withPropertyValue(KspProperty.ROLE_A, association.primaryRole())//
-						.withPropertyValue(KspProperty.LABEL_A, association.primaryLabel())//
-						.withPropertyValue(KspProperty.ROLE_B, association.foreignRole())//
-						.withPropertyValue(KspProperty.LABEL_B, association.foreignRole())//
+						.withPropertyValue(KspProperty.ROLE_A, association.primaryRole())
+						.withPropertyValue(KspProperty.LABEL_A, association.primaryLabel())
+						.withPropertyValue(KspProperty.ROLE_B, association.foreignRole())
+						.withPropertyValue(KspProperty.LABEL_B, association.foreignRole())
 						//---
-						.withDefinition("dtDefinitionA", primaryDtDefinitionKey)//
-						.withDefinition("dtDefinitionB", foreignDtDefinitionKey)//
+						.withDefinition("dtDefinitionA", primaryDtDefinitionKey)
+						.withDefinition("dtDefinitionB", foreignDtDefinitionKey)
 						//---
-						.withPropertyValue(KspProperty.FK_FIELD_NAME, association.fkFieldName())//
+						.withPropertyValue(KspProperty.FK_FIELD_NAME, association.fkFieldName())
 						.build();
 
 				if (!dynamicModelRepository.containsDefinitionKey(associationDefinition.getDefinitionKey())) {
@@ -170,23 +170,23 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 				final DynamicDefinitionKey dtDefinitionAKey = new DynamicDefinitionKey(association.dtDefinitionA());
 				final DynamicDefinitionKey dtDefinitionBKey = new DynamicDefinitionKey(association.dtDefinitionB());
 
-				final DynamicDefinition associationDefinition = DynamicDefinitionRepository.createDynamicDefinitionBuilder(association.name(), DomainGrammar.ASSOCIATION_NN_ENTITY, packageName)//
-						.withPropertyValue(KspProperty.TABLE_NAME, association.tableName())//
+				final DynamicDefinition associationDefinition = DynamicDefinitionRepository.createDynamicDefinitionBuilder(association.name(), DomainGrammar.ASSOCIATION_NN_ENTITY, packageName)
+						.withPropertyValue(KspProperty.TABLE_NAME, association.tableName())
 
 						// associationDefinition.
 						//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
 
 						// navigabilités
-						.withPropertyValue(KspProperty.NAVIGABILITY_A, association.navigabilityA())//
-						.withPropertyValue(KspProperty.NAVIGABILITY_B, association.navigabilityB())//
+						.withPropertyValue(KspProperty.NAVIGABILITY_A, association.navigabilityA())
+						.withPropertyValue(KspProperty.NAVIGABILITY_B, association.navigabilityB())
 
-						.withPropertyValue(KspProperty.ROLE_A, association.roleA())//
-						.withPropertyValue(KspProperty.LABEL_A, association.labelA())//
-						.withPropertyValue(KspProperty.ROLE_B, association.roleB())//
-						.withPropertyValue(KspProperty.LABEL_B, association.labelB())//
+						.withPropertyValue(KspProperty.ROLE_A, association.roleA())
+						.withPropertyValue(KspProperty.LABEL_A, association.labelA())
+						.withPropertyValue(KspProperty.ROLE_B, association.roleB())
+						.withPropertyValue(KspProperty.LABEL_B, association.labelB())
 
-						.withDefinition("dtDefinitionA", dtDefinitionAKey)//
-						.withDefinition("dtDefinitionB", dtDefinitionBKey)//
+						.withDefinition("dtDefinitionA", dtDefinitionAKey)
+						.withDefinition("dtDefinitionB", dtDefinitionBKey)
 						.build();
 
 				if (!dynamicModelRepository.containsDefinitionKey(associationDefinition.getDefinitionKey())) {

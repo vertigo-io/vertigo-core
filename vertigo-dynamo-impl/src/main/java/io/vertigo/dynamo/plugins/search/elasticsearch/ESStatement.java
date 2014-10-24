@@ -143,9 +143,9 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		//Injection spécifique au moteur d'indexation.
 		try (final XContentBuilder xContentBuilder = elasticSearchDocumentCodec.index2XContentBuilder(index, indexFieldNameResolver)) {
 			esClient.prepareIndex(indexName, index.getURI().getDefinition().getName(), index.getURI().toURN())//
-			.setSource(xContentBuilder) //
-			.execute() //execute asynchrone
-			.actionGet(); //get wait exec
+					.setSource(xContentBuilder)
+					.execute() //execute asynchrone
+					.actionGet(); //get wait exec
 		} catch (final IOException e) {
 			handleIOException(e);
 		}
@@ -160,9 +160,9 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		Assertion.checkNotNull(query);
 		//---------------------------------------------------------------------
 		final QueryBuilder queryBuilder = translateToQueryBuilder(query, indexFieldNameResolver);
-		esClient.prepareDeleteByQuery(indexName) //
-				.setQuery(queryBuilder)//
-				.execute()//
+		esClient.prepareDeleteByQuery(indexName)
+				.setQuery(queryBuilder)
+				.execute()
 				.actionGet();
 	}
 
@@ -174,8 +174,8 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	void remove(final IndexDefinition indexDefinition, final URI uri) {
 		Assertion.checkNotNull(uri);
 		//---------------------------------------------------------------------
-		esClient.prepareDelete(indexName, uri.getDefinition().getName(), uri.toURN()) //
-				.execute() //
+		esClient.prepareDelete(indexName, uri.getDefinition().getName(), uri.toURN())
+				.execute()
 				.actionGet();
 	}
 
@@ -202,16 +202,16 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	 * @return Nombre de document indexés
 	 */
 	public long count() {
-		final CountResponse response = esClient.prepareCount(indexName) //
-				.execute() //
+		final CountResponse response = esClient.prepareCount(indexName)
+				.execute()
 				.actionGet();
 		return response.getCount();
 	}
 
 	private SearchRequestBuilder createSearchRequestBuilder(final SearchQuery searchQuery, final FacetedQuery filtersQuery, final int rowsPerQuery) {
-		final SearchRequestBuilder searchRequestBuilder = esClient.prepareSearch(indexName)//
-				.setSearchType(SearchType.QUERY_THEN_FETCH)//
-				.addFields(ESDocumentCodec.FULL_RESULT) //
+		final SearchRequestBuilder searchRequestBuilder = esClient.prepareSearch(indexName)
+				.setSearchType(SearchType.QUERY_THEN_FETCH)
+				.addFields(ESDocumentCodec.FULL_RESULT)
 				.setSize(rowsPerQuery);
 		if (searchQuery.isSortActive()) {
 			final DtField sortField = searchQuery.getIndexDefinition().getIndexDtDefinition().getField(searchQuery.getSortField());
@@ -231,9 +231,9 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 			filterBuilder.add(translateToFilterBuilder(facetQuery, indexFieldNameResolver));
 		}
 
-		return searchRequestBuilder.setPostFilter(filterBuilder)//
-				.setHighlighterFilter(true) //
-				.setHighlighterNumOfFragments(3) //
+		return searchRequestBuilder.setPostFilter(filterBuilder)
+				.setHighlighterFilter(true)
+				.setHighlighterNumOfFragments(3)
 				.addHighlightedField("*");
 	}
 
@@ -343,12 +343,12 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	private static QueryBuilder translateToQueryBuilder(final ListFilter listFilter, final IndexFieldNameResolver indexFieldNameResolver) {
 		Assertion.checkNotNull(listFilter);
 		//---------------------------------------------------------------------
-		final String query = new StringBuilder()//
-				.append(" +(")//
-				.append(listFilter.getFilterValue())//
-				.append(')')//
+		final String query = new StringBuilder()
+				.append(" +(")
+				.append(listFilter.getFilterValue())
+				.append(')')
 				.toString();
-		return QueryBuilders.queryString(indexFieldNameResolver.replaceAllIndexFieldNames(query)) //
+		return QueryBuilders.queryString(indexFieldNameResolver.replaceAllIndexFieldNames(query))
 				.lowercaseExpandedTerms(false);
 	}
 
