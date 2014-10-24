@@ -3,8 +3,8 @@
  * $Id: form-common.ftl,v 1.1 2014/03/18 11:08:57 npiedeloup Exp $
  */
 -->
-<#if (parameters.validate?default(false) == false)><#rt/>
-    <#if parameters.onsubmit??><#rt/>
+<#if (parameters.validate?default(false) == false)>
+    <#if parameters.onsubmit??>
         ${tag.addParameter('onsubmit', "${parameters.onsubmit}") }
     </#if>
 </#if>
@@ -35,11 +35,11 @@
 <#if parameters.enctype??>
  enctype="${parameters.enctype?html}"<#rt/>
 </#if>
-class="form-inline 
+ class="form-inline<#rt/>
 <#if parameters.cssClass??>
- ${parameters.cssClass?html}
- </#if>
- "<#rt/>
+ ${parameters.cssClass?html}<#rt/>
+</#if>
+"<#rt/>
 <#if parameters.cssStyle??>
  style="${parameters.cssStyle?html}"<#rt/>
 </#if>

@@ -83,6 +83,6 @@
 <#include "/${parameters.templateDir}/simple/common-attributes.ftl" />
 <#include "/${parameters.templateDir}/simple/dynamic-attributes.ftl" />
 /><#rt/>
-    ${itemValue}<#rt/>
+  ${itemValue}<#rt/>
 </label><br/>
 </@s.iterator>

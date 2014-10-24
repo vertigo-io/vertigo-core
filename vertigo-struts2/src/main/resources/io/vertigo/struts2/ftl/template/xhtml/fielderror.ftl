@@ -4,63 +4,63 @@
  *
  */
 -->
-<#if fieldErrors??><#t/>
-    <#assign eKeys = fieldErrors.keySet()><#t/>
-    <#assign eKeysSize = eKeys.size()><#t/>
-    <#assign doneStartUlTag=false><#t/>
-    <#assign doneEndUlTag=false><#t/>
-    <#assign haveMatchedErrorField=false><#t/>
-    <#if (fieldErrorFieldNames?size > 0) ><#t/>
-        <#list fieldErrorFieldNames as fieldErrorFieldName><#t/>
-            <#list eKeys as eKey><#t/>
-                <#if (eKey = fieldErrorFieldName)><#t/>
-                    <#assign haveMatchedErrorField=true><#t/>
-                    <#assign eValue = fieldErrors[fieldErrorFieldName]><#t/>
-                    <#if (haveMatchedErrorField && (!doneStartUlTag))><#t/>
-                    <ul<#rt/>
+<#if fieldErrors??>
+    <#assign eKeys = fieldErrors.keySet()>
+    <#assign eKeysSize = eKeys.size()>
+    <#assign doneStartUlTag=false>
+    <#assign doneEndUlTag=false>
+    <#assign haveMatchedErrorField=false>
+    <#if (fieldErrorFieldNames?size > 0) >
+        <#list fieldErrorFieldNames as fieldErrorFieldName>
+            <#list eKeys as eKey>
+                <#if (eKey = fieldErrorFieldName)>
+                    <#assign haveMatchedErrorField=true>
+                    <#assign eValue = fieldErrors[fieldErrorFieldName]>
+                    <#if (haveMatchedErrorField && (!doneStartUlTag))>
+	<ul <#rt/>
                         <#if parameters.id?if_exists != "">
-                                id="${parameters.id?html}"<#rt/>
+                                id="${parameters.id?html}" <#t/>
                         </#if>
                         <#if parameters.cssClass??>
-                                class="${parameters.cssClass?html}"<#rt/>
+                                class="${parameters.cssClass?html}" <#t/>
                             <#else>
-                                class="errorMessage"<#rt/>
+                                class="errorMessage"<#t/>
                         </#if>
                         <#if parameters.cssStyle??>
-                                style="${parameters.cssStyle?html}"<#rt/>
+                                style="${parameters.cssStyle?html}" <#t/>
                         </#if>
-                            >
-                        <#assign doneStartUlTag=true><#t/>
-                    </#if><#t/>
-                    <#list eValue as eEachValue><#t/>
-                            <li><span class="messageLabel">${util.label(eKey)?html}: </span><span class="message"><#if parameters.escape>${eEachValue!?html}<#else>${eEachValue!}</#if></span></li>
-                    </#list><#t/>
-                </#if><#t/>
-            </#list><#t/>
-        </#list><#t/>
-        <#if (haveMatchedErrorField && (!doneEndUlTag))><#t/>
-        </ul>
-            <#assign doneEndUlTag=true><#t/>
-        </#if><#t/>
-        <#else><#t/>
-        <#if (eKeysSize > 0)><#t/>
-        <ul<#rt/>
+	><#lt/>
+                        <#assign doneStartUlTag=true>
+                    </#if>
+                    <#list eValue as eEachValue>
+		<li><span class="messageLabel">${util.label(eKey)?html}: </span><span class="message"><#if parameters.escape>${eEachValue!?html}<#else>${eEachValue!}</#if></span></li>
+                    </#list>
+                </#if>
+            </#list>
+        </#list>
+        <#if (haveMatchedErrorField && (!doneEndUlTag))>
+	</ul>
+            <#assign doneEndUlTag=true>
+        </#if>
+        <#else>
+        <#if (eKeysSize > 0)>
+	<ul <#rt/>
             <#if parameters.cssClass??>
-                    class="${parameters.cssClass?html}"<#rt/>
+                    class="${parameters.cssClass?html}" <#t/>
                 <#else>
-                    class="errorMessage"<#rt/>
+                    class="errorMessage" <#t/>
             </#if>
             <#if parameters.cssStyle??>
-                    style="${parameters.cssStyle?html}"<#rt/>
+                    style="${parameters.cssStyle?html}" <#t/>
             </#if>
-                >
-            <#list eKeys as eKey><#t/>
-                <#assign eValue = fieldErrors[eKey]><#t/>
-                <#list eValue as eEachValue><#t/>
-                    <li><span class="messageLabel">${util.label(eKey)?html}: </span><span class="message"><#if parameters.escape>${eEachValue!?html}<#else>${eEachValue!}</#if></span></li>
-                </#list><#t/>
-            </#list><#t/>
-        </ul>
-        </#if><#t/>
-    </#if><#t/>
-</#if><#t/>
+                ><#lt/>
+            <#list eKeys as eKey>
+                <#assign eValue = fieldErrors[eKey]>
+                <#list eValue as eEachValue>
+		<li><span class="messageLabel">${util.label(eKey)?html}: </span><span class="message"><#if parameters.escape>${eEachValue!?html}<#else>${eEachValue!}</#if></span></li>
+                </#list>
+            </#list>
+	</ul>
+        </#if>
+    </#if>
+</#if>

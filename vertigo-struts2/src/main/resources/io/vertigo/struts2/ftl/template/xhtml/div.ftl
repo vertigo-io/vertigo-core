@@ -4,9 +4,25 @@
  *
  */
 -->
-
-${stack.setValue('#controlLayout_previoustype', controlLayout_type?default('none'))}
-${stack.setValue('#controlLayout_previousColumnCount', controlLayout_currentColumnCount?default(0))}
+<#assign currentLayout = controlLayout_type?default('none') />	
+<#if currentLayout = 'table'>
+	<#include "/${parameters.templateDir}/xhtml/controlheader-trlogic.ftl" />
+		<td <#rt/>
+	<#if parameters.inputcolspan??>
+	    colspan="${parameters.inputcolspan?html}"<#t/>	    
+	</#if>
+	<#if parameters.align??>
+	    align="${parameters.align?html}"<#t/>
+	</#if>
+	><#lt/>
+	<#if controlLayout_tablecolspan?exists >
+    		<#assign columnCount = controlLayout_currentColumnCount + parameters.inputcolspan?default(1) />	
+		<#-- update the value of the controlLayout_currentColumnCount bean on the value stack. -->
+		${stack.setValue('#controlLayout_currentColumnCount', columnCount)}<#t/>
+	</#if>
+</#if>
+${stack.setValue('#controlLayout_previoustype', controlLayout_type?default('none'))}<#t/>
+${stack.setValue('#controlLayout_previousColumnCount', controlLayout_currentColumnCount?default(0))}<#t/>
 <#if parameters.dynamicAttributes['layout']??>
 	<#if parameters.dynamicAttributes['layout'] = 'table' > 
 <#assign tablecolspan = parameters.dynamicAttributes['cols']?default(2)?number />
@@ -19,15 +35,15 @@ ${stack.setValue('#controlLayout_previousColumnCount', controlLayout_currentColu
 <#include "/${parameters.templateDir}/simple/scripting-events.ftl" />
 <#include "/${parameters.templateDir}/simple/common-attributes.ftl" />
 <#include "/${parameters.templateDir}/simple/dynamic-attributes.ftl" />
->
-${stack.setValue('#controlLayout_type', 'table')}
-${stack.setValue('#controlLayout_currentColumnCount', 0)}
-${stack.setValue('#controlLayout_tablecolspan', tablecolspan)}
+><#t/>
+${stack.setValue('#controlLayout_type', 'table')}<#t/>
+${stack.setValue('#controlLayout_currentColumnCount', 0)}<#t/>
+${stack.setValue('#controlLayout_tablecolspan', tablecolspan)}<#t/>
 	<#elseif parameters.dynamicAttributes['layout'] = 'none'>
-	${stack.setValue('#controlLayout_type', 'none')}
-	<#-- none -->
-	</#if> <#-- layout == 'table' -->
-<#else> <#-- layout??-->
+	${stack.setValue('#controlLayout_type', 'none')}<#t/>
+	<#-- none --><#t/>
+	</#if><#-- layout == 'table' -->
+<#else><#-- layout??--><#t/>
 <div<#rt/>
 <#if parameters.id??> id="${parameters.id?html}"</#if><#rt/>
 <#if parameters.name??> name="${parameters.name?html}"</#if><#rt/>
@@ -37,6 +53,6 @@ ${stack.setValue('#controlLayout_tablecolspan', tablecolspan)}
 <#include "/${parameters.templateDir}/simple/scripting-events.ftl" />
 <#include "/${parameters.templateDir}/simple/common-attributes.ftl" />
 <#include "/${parameters.templateDir}/simple/dynamic-attributes.ftl" />
->
-${stack.setValue('#controlLayout_type', 'div')}
+><#t/>
+${stack.setValue('#controlLayout_type', 'div')}<#t/>
 </#if>

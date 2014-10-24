@@ -4,5 +4,6 @@
  *
  */
 -->
-<@s.hidden name="CTX" value="%{CTX}"/><#t/>
+<@s.hidden name="CTX" value="%{CTX}"/>
+
 <#include "/${parameters.templateDir}/simple/form-close.ftl" />

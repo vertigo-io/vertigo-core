@@ -85,18 +85,18 @@
  title="${parameters.title?html}"<#rt/>
         </#if>
     </#if>
-    <#include "/${parameters.templateDir}/simple/css.ftl" />
-    <#include "/${parameters.templateDir}/simple/scripting-events.ftl" />
-    <#include "/${parameters.templateDir}/simple/common-attributes.ftl" />
+<#include "/${parameters.templateDir}/simple/css.ftl" />
+<#include "/${parameters.templateDir}/simple/scripting-events.ftl" />
+<#include "/${parameters.templateDir}/simple/common-attributes.ftl" />
 /><#rt/>
 ${itemValue?html}</label><br/>
 </@s.iterator>
     <#else>
- &nbsp;
+ &nbsp;<#t/>
 </#if>
 <input type="hidden" id="__multiselect_${parameters.id?html}" name="__multiselect_${parameters.name?html}"<#rt/>
  value=""<#rt/>
 <#if parameters.disabled?default(false)>
  disabled="disabled"<#rt/>
 </#if>
- />
+/><#t/>

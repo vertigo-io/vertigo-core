@@ -31,16 +31,15 @@
 <#include "/${parameters.templateDir}/simple/dynamic-attributes.ftl" />
 >
 <#if parameters.headerKey?? && parameters.headerValue??>
-    <option value="${parameters.headerKey?html}"
+    <option value="${parameters.headerKey?html}"<#rt/>
     <#if tag.contains(parameters.nameValue, parameters.headerKey) == true>
-    selected="selected"
+ selected="selected"<#rt/>
     </#if>
-    >${parameters.headerValue?html}</option>
+    >${parameters.headerValue?html}</option><#lt/>
 </#if>
 <#if parameters.emptyOption?default(false)>
     <option value=""></option>
 </#if>
-
 <#assign paramListKey = parameters.listKey!util.getIdField(parameters.list) />
 <#assign paramListValue = parameters.listValue!util.getDisplayField(parameters.list) />
 <@s.iterator value="parameters.list">
@@ -104,11 +103,12 @@
 
 <#include "/${parameters.templateDir}/simple/optgroup.ftl" />
 
-</select>
+</select><#t/>
 <#if parameters.multiple?default(false)>
+
 <input type="hidden" id="__multiselect_${parameters.id?html}" name="__multiselect_${parameters.name?html}" value=""<#rt/>
 <#if parameters.disabled?default(false)>
  disabled="disabled"<#rt/>
 </#if>
- />
+/><#t/>
 </#if>

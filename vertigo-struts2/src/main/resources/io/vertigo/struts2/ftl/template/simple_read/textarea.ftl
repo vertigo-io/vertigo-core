@@ -8,8 +8,8 @@
 <#if parameters.id??>
  id="${parameters.id?html}"<#rt/>
 </#if>
- readonly="readonly"
- disabled="disabled"
+ readonly="readonly"<#rt/>
+ disabled="disabled"<#rt/>
  cols="${parameters.cols?default("")?html}"<#rt/>
  rows="${parameters.rows?default("")?html}"<#rt/>
 <#if parameters.wrap??>
@@ -25,8 +25,8 @@
 <#include "/${parameters.templateDir}/simple/scripting-events.ftl" />
 <#include "/${parameters.templateDir}/simple/common-attributes.ftl" />
 <#include "/${parameters.templateDir}/simple/dynamic-attributes.ftl" />
-><#rt/>
+><#t/>
 <#if parameters.nameValue??>
 <@s.property value="parameters.nameValue"/><#t/>
 </#if>
-</textarea>
+</textarea><#t/>
