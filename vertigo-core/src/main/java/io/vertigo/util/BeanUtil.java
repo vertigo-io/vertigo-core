@@ -136,15 +136,14 @@ public final class BeanUtil {
 	 * @return Si égales
 	 */
 	public static boolean equals(final Object a, final Object b) {
-		if (a == null && b == null) {
-			//Si les deux objets sont null alors on considère qu'ils sont égaux
+		if (a == b) {
 			return true;
 		}
-		if (a == null || b == null) {
-			//Si un seul des objets est null alors ils sont différents
-			return false;
+		if (a == null) {
+			//Si les deux objets sont null alors on considère qu'ils sont égaux
+			return b == null;
 		}
-		//A partir de maintenant a et b sont non null
+		//A partir de maintenant a est non null
 		return a.equals(b);
 	}
 
