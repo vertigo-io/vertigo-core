@@ -1,11 +1,18 @@
 Version history
 ===============
 
-Running 0.6.2-SNAPSHOT
+Running 0.6.3-SNAPSHOT
 ----------------------
 
 more to come :)
 
+Release 0.6.2 - 2014/10/27
+----------------------
+* [Struts2] fix 0.6.1 broken xxx_read themes inheritance
+* [Struts2] Some ftl's tags fix and improvments (autocompleter popinURL, div in div, remove some \n)
+* [Vega] fix swagger contextPath
+* [Studio] fix resources.ftl
+* Fix some tests
 
 Release 0.6.1 - 2014/10/17
 ----------------------
