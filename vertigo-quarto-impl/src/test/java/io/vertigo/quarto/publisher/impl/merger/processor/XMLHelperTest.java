@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.publisher.impl.merger.processor;
 
-import java.util.Stack;
+import java.util.Deque;
 
 import junit.framework.TestCase;
 
@@ -46,7 +46,7 @@ public final class XMLHelperTest extends TestCase {
 	}
 
 	private static String getMinimalXML(final String xmlContent) {
-		final Stack<TagXML> pileTag = ProcessorXMLUtil.extractUnbalancedTag(xmlContent.toCharArray());
+		final Deque<TagXML> pileTag = ProcessorXMLUtil.extractUnbalancedTag(xmlContent.toCharArray());
 
 		final StringBuilder contentClean = new StringBuilder();
 		for (final TagXML tag : pileTag) {

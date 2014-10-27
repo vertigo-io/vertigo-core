@@ -21,7 +21,7 @@ package io.vertigo.quarto.publisher.impl.merger.processor;
 import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.publisher.model.PublisherData;
 
-import java.util.Stack;
+import java.util.Queue;
 
 /**
  * Replace les tags <# #> pour les inscrire correctement dans le xml
@@ -111,7 +111,7 @@ public final class GrammarXMLBalancerProcessor implements MergerProcessor {
 		int endGramarLenght;
 		int beginXmlMoveToIndex;
 		int endXmlMoveToIndex;
-		Stack<TagXML> pileTag;
+		Queue<TagXML> pileTag;
 		int indexOffset;
 		int firstBodyIndex;
 		int lastBodyEndIndex;

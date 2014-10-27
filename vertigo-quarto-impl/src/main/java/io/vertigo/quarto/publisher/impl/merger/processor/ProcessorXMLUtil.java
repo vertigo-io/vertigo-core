@@ -20,8 +20,10 @@ package io.vertigo.quarto.publisher.impl.merger.processor;
 
 import io.vertigo.lang.Assertion;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Iterator;
-import java.util.Stack;
+import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,10 +46,8 @@ public final class ProcessorXMLUtil {
 	 * @param content contenu XML
 	 * @return pile des tag XML
 	 */
-	private static Stack<TagXML> extractTagStack(final char[] content) {
-		// en jdk 1.6, il est un peu plus performant (synchronizeds) de faire :
-		// Deque<TagXML> pileTag = new ArrayDeque<TagXML>();
-		final Stack<TagXML> pileTag = new Stack<>();
+	private static Deque<TagXML> extractTagStack(final char[] content) {
+		final Deque<TagXML> pileTag = new ArrayDeque<>();
 
 		// On parcours le contenu
 		char current;
@@ -92,7 +92,7 @@ public final class ProcessorXMLUtil {
 			if (current == '>' && beginTagEnCours) {
 				if (content[i - 1] != '/') {
 					currentBeginTag.append('>');
-					pileTag.push(new TagXML(currentBeginTag.toString(), currentBeginTagIndex));
+					pileTag.add(new TagXML(currentBeginTag.toString(), currentBeginTagIndex));
 				}
 				beginTagEnCours = false;
 				currentBeginTag.setLength(0);
@@ -100,7 +100,7 @@ public final class ProcessorXMLUtil {
 
 			if (endTagEnCours && current == '>') {
 				currentEndTag.append('>');
-				pileTag.push(new TagXML(currentEndTag.toString(), currentEndTagIndex));
+				pileTag.add(new TagXML(currentEndTag.toString(), currentEndTagIndex));
 				currentEndTag.setLength(0);
 				endTagEnCours = false;
 			}
@@ -121,22 +121,22 @@ public final class ProcessorXMLUtil {
 	 * @param content Extrait d'un XML correct.
 	 * @return Pile des tags mal ouverts ou mal fermés
 	 */
-	static Stack<TagXML> extractUnbalancedTag(final char[] content) {
+	static Deque<TagXML> extractUnbalancedTag(final char[] content) {
 		// en jdk 1.6, il est un peu plus performant (synchronizeds) de faire :
 		// Deque<String> pileTag = new ArrayDeque<String>();
-		final Stack<TagXML> fullTagStack = extractTagStack(content);
-		final Stack<TagXML> openedTagStack = new Stack<>();
+		final Deque<TagXML> fullTagStack = extractTagStack(content);
+		final Deque<TagXML> openedTagStack = new ArrayDeque<>();
 		String tagName;
 		for (final TagXML tag : fullTagStack) {
 			if (!tag.isOpenTag()) {
 				tagName = tag.getName();
-				if (!openedTagStack.isEmpty() && tagName.equals(openedTagStack.lastElement().getName()) && openedTagStack.lastElement().isOpenTag()) {
-					openedTagStack.pop();
+				if (!openedTagStack.isEmpty() && tagName.equals(openedTagStack.getLast().getName()) && openedTagStack.getLast().isOpenTag()) {
+					openedTagStack.pollLast();
 				} else {
-					openedTagStack.push(tag);
+					openedTagStack.addLast(tag);
 				}
 			} else if (tag.hasBody()) {
-				openedTagStack.push(tag);
+				openedTagStack.addLast(tag);
 			}
 		}
 		return openedTagStack;
@@ -150,20 +150,20 @@ public final class ProcessorXMLUtil {
 	 * @param content extrait de XML
 	 * @return Pile des tagXML perturbant la repetition de l'extrait XML
 	 */
-	public static Stack<TagXML> extractUnrepeatableTag(final char[] content) {
-		final Stack<TagXML> openedTagStack = extractUnbalancedTag(content);
+	public static Queue<TagXML> extractUnrepeatableTag(final char[] content) {
+		final Deque<TagXML> openedTagStack = extractUnbalancedTag(content);
 
 		//On retire les elements centraux symétrique : </b></c></l><l><c><r> : on retire les c et l
 		TagXML tag;
-		final Stack<TagXML> closeTagStack = new Stack<>();
+		final Deque<TagXML> closeTagStack = new ArrayDeque<>();
 		for (final Iterator<TagXML> it = openedTagStack.iterator(); it.hasNext();) {
 			tag = it.next();
 			if (!tag.isOpenTag()) {
-				closeTagStack.push(tag);
+				closeTagStack.addLast(tag);
 				it.remove();
 			} else {
-				if (!closeTagStack.isEmpty() && tag.getName().equals(closeTagStack.lastElement().getName())) {
-					closeTagStack.pop();
+				if (!closeTagStack.isEmpty() && tag.getName().equals(closeTagStack.getLast().getName())) {
+					closeTagStack.pollLast();
 					it.remove();
 				} else {
 					break;
@@ -171,7 +171,7 @@ public final class ProcessorXMLUtil {
 			}
 		}
 		while (!closeTagStack.isEmpty()) {
-			openedTagStack.add(0, closeTagStack.pop());
+			openedTagStack.addFirst(closeTagStack.pollLast());
 		}
 
 		return openedTagStack;
