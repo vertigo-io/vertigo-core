@@ -11,7 +11,7 @@
 	        <param name="workerCount" value="5" />
 	        <plugin class="io.vertigo.dynamo.plugins.work.rest.master.RestMasterPlugin">
 	            <param name="timeoutSeconds" value="30" />
-	            <param name="distributedWorkTypes" value="ConverterWork" />
+	            <param name="distributedWorkTypes" value="io.vertigo.quarto.plugins.converter.work.ConverterWorkEngine" />
 	        </plugin>
 	   	</component>
 	</module>

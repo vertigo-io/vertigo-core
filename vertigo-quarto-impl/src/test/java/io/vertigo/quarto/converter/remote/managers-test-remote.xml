@@ -14,7 +14,7 @@
 		    	<param name="unoport" value="8100"/>
 		    </plugin -->
 		    <plugin class="io.vertigo.quarto.plugins.converter.openoffice.OpenOfficeRemoteConverterPlugin">
-		    	<param name="unohost" value="ficenrecette"/>
+		    	<param name="unohost" value="ficenweb.part.klee.lan.net"/>
 		    	<param name="unoport" value="8200"/>
 		    </plugin>
 	    </component>

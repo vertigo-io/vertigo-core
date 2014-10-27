@@ -51,7 +51,7 @@ final class ODTUtil {
 	static final String STYLES_XML = "styles.xml";
 
 	/** Prefix des fichiers temporaires générés. */
-	private static final String TEMP_FILE_PREFIX = "krep";
+	private static final String TEMP_FILE_PREFIX = "quarto";
 
 	/** Suffix des fichiers temporaires générés. */
 	private static final String TEMP_FILE_SUFFIX = ".odt";

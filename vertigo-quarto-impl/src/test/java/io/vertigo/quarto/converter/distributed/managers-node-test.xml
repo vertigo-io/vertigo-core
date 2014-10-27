@@ -14,8 +14,8 @@
 		    	<param name="unoport" value="8100"/>
 		    </plugin> -->
 		    <plugin class="io.vertigo.quarto.plugins.converter.openoffice.OpenOfficeRemoteConverterPlugin">
-		    	<param name="unohost" value="mrveille.dev.klee.lan.net"/>
-		    	<param name="unoport" value="8100"/>
+		    	<param name="unohost" value="ficenweb.part.klee.lan.net"/>
+		    	<param name="unoport" value="8200"/>
 		    </plugin>
 	    </component>
 	    
@@ -23,7 +23,7 @@
 	            <plugin class="io.vertigo.dynamo.plugins.work.rest.worker.RestWorkerPlugin">
 	            	<param name="nodeId" value="node#1-1" />
 	            	<param name="serverUrl" value="http://localhost:10001" />
-	            	<param name="workTypes" value="ConverterWork" />
+	            	<param name="workTypes" value="io.vertigo.quarto.plugins.converter.work.ConverterWorkEngine" />
 	            </plugin>
 	   </component>
 	</module>

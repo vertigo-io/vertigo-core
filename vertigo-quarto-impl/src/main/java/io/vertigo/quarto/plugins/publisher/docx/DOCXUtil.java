@@ -55,12 +55,12 @@ import org.xml.sax.SAXException;
 
 /**
  * Classe d'utilitaires pour les fichiers de type DOCX.
- * 
+ *
  * @author adufranne
  */
 final class DOCXUtil {
 	/** Prefix des fichiers temporaires générés. */
-	private static final String TEMP_FILE_PREFIX = "krep";
+	private static final String TEMP_FILE_PREFIX = "quarto";
 
 	/** Suffix des fichiers temporaires générés. */
 	private static final String TEMP_FILE_SUFFIX = ".docx";
@@ -118,7 +118,7 @@ final class DOCXUtil {
 
 	/**
 	 * Enum pour les types de noeuds gérés.
-	 * 
+	 *
 	 * @author adufranne
 	 */
 	public enum DOCXNode {
@@ -139,7 +139,7 @@ final class DOCXUtil {
 
 		/**
 		 * Constructeur.
-		 * 
+		 *
 		 * @param ns le nom.
 		 */
 		DOCXNode(final String ns) {
@@ -148,7 +148,7 @@ final class DOCXUtil {
 
 		/**
 		 * Getter pour le nom.
-		 * 
+		 *
 		 * @return le nom.
 		 */
 		public String getNs() {
@@ -165,7 +165,7 @@ final class DOCXUtil {
 
 	/**
 	 * Indique si le contenu d'un noeud appartient à la grammaire KSP.
-	 * 
+	 *
 	 * @param content le contenu du noeud.
 	 * @return un booléen.
 	 */
@@ -181,7 +181,7 @@ final class DOCXUtil {
 	 * -styles
 	 * -footers
 	 * -headers
-	 * 
+	 *
 	 * @param docxFile ZipFile fichier source
 	 * @return une map contenant les noms et les fichiers associés au format texte.
 	 * @throws IOException Si une exception d'entrée sortie a lieu
@@ -208,7 +208,7 @@ final class DOCXUtil {
 
 	/**
 	 * Crée le fichier content.xml d'un fichier odt par le contenu provenant d'une fusion.
-	 * 
+	 *
 	 * @param docxFile ZipFile d'origine
 	 * @param newXmlContents Map contenant tous les fichiers qui ont été modifiés.
 	 * @return File le document Docx créé.
@@ -235,7 +235,7 @@ final class DOCXUtil {
 
 	/**
 	 * Méthode transformant le Document de travail en String xml.
-	 * 
+	 *
 	 * @param xmlDocument le Document à formater.
 	 * @return String le xml formaté.
 	 */
@@ -259,7 +259,7 @@ final class DOCXUtil {
 
 	/**
 	 * Méthode de chargement d'un Document DOM à partir d'un fichier XML.
-	 * 
+	 *
 	 * @param xmlInput la String représentant le fichier XML à traiter.
 	 * @return le Document résultant.
 	 */
@@ -277,7 +277,7 @@ final class DOCXUtil {
 
 	/**
 	 * Méthode de chargement d'un objet XPath compatible DOCX.
-	 * 
+	 *
 	 * @return l'objet Xpath généré.
 	 */
 	public static XPath loadXPath() {

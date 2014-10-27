@@ -21,6 +21,8 @@ package io.vertigo.quarto.plugins.converter.work;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.lang.Assertion;
 
+import java.io.Serializable;
+
 /**
  * Travail de conversion.
  * Possède :
@@ -29,7 +31,8 @@ import io.vertigo.lang.Assertion;
  *
  * @author npiedeloup
  */
-final class ConverterWork {
+final class ConverterWork implements Serializable {
+	private static final long serialVersionUID = -8627255258640375006L;
 	private final KFileSerializable file;
 	private final String targetFormat;
 

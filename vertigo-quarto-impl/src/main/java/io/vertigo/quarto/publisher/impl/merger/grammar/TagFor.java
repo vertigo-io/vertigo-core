@@ -27,7 +27,7 @@ import io.vertigo.quarto.publisher.impl.merger.script.ScriptTagContent;
  */
 //public car instancié dynamiquement
 public final class TagFor extends AbstractKScriptTag implements ScriptTag {
-	private static final String FOR_CALL = "for (java.util.Iterator it = {0}.iterator(); it.hasNext();) \\{ {1} {2} = ({1}) it.next(); ";
+	private static final String FOR_CALL = "for (java.util.Iterator {2}It = {0}.iterator(); {2}It.hasNext();) \\{ {1} {2} = ({1}) {2}It.next(); ";
 	private static final String FOR_ATTRIBUTE = "^([0-9a-zA-Z_]+) *: *([0-9a-zA-Z_]+(\\.[0-9a-zA-Z_]+)*)";
 
 	/** {@inheritDoc} */
