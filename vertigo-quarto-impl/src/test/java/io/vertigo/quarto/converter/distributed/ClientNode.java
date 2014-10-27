@@ -19,6 +19,8 @@
 package io.vertigo.quarto.converter.distributed;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -31,6 +33,7 @@ import java.util.List;
  */
 final class ClientNode {
 	private static final String CP_SEP = System.getProperty("path.separator");
+	private static final String CP_DEPENDENCIES_PATH = "./target/dependency/";
 	private Process nodeProcess;
 	private final List<Thread> subThreads = new ArrayList<>();
 
@@ -43,22 +46,16 @@ final class ClientNode {
 	public void start() throws IOException {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("java -cp ");
-		sb.append("./kasper-demo/src/main/webapp/WEB-INF/classes");
-		//		sb.append("./vertigo/target/classes/");
-		//		sb.append(CP_SEP).append("./vertigo/target/test-classes/");
-		//		sb.append(CP_SEP).append("./kasper-commons/target/classes/");
-		//		sb.append(CP_SEP).append("./kasper-commons/target/test-classes/");
-		//		sb.append(CP_SEP).append("./kasper-converter/target/classes/");
-		sb.append(CP_SEP).append("./kasper-external/lib/javax.inject-1.jar");
-		sb.append(CP_SEP).append("./kasper-external/lib/log4j-1.2.16.jar");
-		sb.append(CP_SEP).append("./kasper-external/lib/jersey-bundle-1.17.1.jar");
-		sb.append(CP_SEP).append("./kasper-external/lib/gson-2.2.2.jar");
-		sb.append(CP_SEP).append("./kasper-external/lib/cglib-2.2.2.jar");
-		sb.append(CP_SEP).append("./kasper-external/lib/ridl-3.2.1.jar");
-		sb.append(CP_SEP).append("./kasper-external/lib/juh-3.2.1.jar");
-		sb.append(CP_SEP).append("./kasper-external/lib/jurt-3.2.1.jar");
-		sb.append(CP_SEP).append("./kasper-external/lib/unoil-3.2.1.jar");
-		sb.append(" kasper.converter.distributed.WorkerNodeStarter " + maxLifeTime);
+		sb.append("./target/classes");
+		sb.append(CP_SEP).append("./target/test-classes");
+		for (final File dependencyJar : new File(CP_DEPENDENCIES_PATH).listFiles(new FileFilter() {
+			public boolean accept(final File pathname) {
+				return pathname.isFile() && pathname.getName().endsWith(".jar");
+			}
+		})) {
+			sb.append(CP_SEP).append(CP_DEPENDENCIES_PATH).append(dependencyJar.getName());
+		}
+		sb.append(" io.vertigo.quarto.converter.distributed.WorkerNodeStarter " + maxLifeTime);
 
 		nodeProcess = Runtime.getRuntime().exec(sb.toString());
 		subThreads.add(createMaxLifeTime());

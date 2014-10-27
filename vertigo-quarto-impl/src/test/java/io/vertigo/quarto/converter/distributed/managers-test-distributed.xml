@@ -9,9 +9,9 @@
 	    <component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
     	<component api="WorkManager" class="io.vertigo.dynamo.impl.work.WorkManagerImpl" >
 	        <param name="workerCount" value="5" />
-	        <plugin class="io.vertigo.dynamo.plugins.work.rest.worker.RestWorkerPlugin">
+	        <plugin class="io.vertigo.dynamo.plugins.work.rest.master.RestMasterPlugin">
 	            <param name="timeoutSeconds" value="30" />
-	            <param name="workTypes" value="ConverterWork" />
+	            <param name="distributedWorkTypes" value="ConverterWork" />
 	        </plugin>
 	   	</component>
 	</module>
