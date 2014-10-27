@@ -76,7 +76,7 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 		analyticsManager.getAgent().startProcess(PROCESS_TYPE, jobDefinition.getName());
 		try {
 			doExecute(jobDefinition);
-		} catch (final Throwable throwable) {
+		} catch (final Throwable throwable) { //NOSONAR
 			// On catche throwable et pas seulement exception pour que le timer
 			// ne s'arrête pas en cas d'Assertion ou de OutOfMemoryError :
 			// Aucune exception ou erreur ne doit être lancée par la méthode doExecute
@@ -93,7 +93,7 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 	}
 
 	/**
-	 * Gestion transactionnelle de l'exécution d'un Job.
+	 * Gestion de l'exécution d'un Job avec son log.
 	 */
 	private static void doExecute(final JobDefinition jobDefinition) {
 		final Runnable job = Injector.newInstance(jobDefinition.getJobClass(), Home.getComponentSpace());
@@ -101,7 +101,7 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 		final long start = System.currentTimeMillis();
 		getLogger(jobDefinition.getName()).info("Exécution du job " + jobDefinition.getName());
 		try {
-			job.run();
+			job.run(); //NOSONAR : JobManager should managed Job execution, it decided if a runnable job runs in a new thread or not
 		} finally {
 			final long end = System.currentTimeMillis();
 			getLogger(jobDefinition.getName()).info("Job " + jobDefinition.getName() + " exécuté en " + (end - start) + " ms");
