@@ -26,7 +26,7 @@
 	    <component api="SearchManager" class="io.vertigo.dynamo.impl.search.SearchManagerImpl" />
 	    <component api="KTransactionManager" class="io.vertigo.dynamo.impl.transaction.KTransactionManagerImpl"/>
 	    <component api="WorkManager" class="io.vertigo.dynamo.impl.work.WorkManagerImpl">
-	    	    	<param name="workerCount" value="5" />
+	    	<param name="workerCount" value="5" />
 	    </component>
 	    <component api="PersistenceManager" class="io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl">
 	        <plugin class="io.vertigo.dynamo.plugins.persistence.oracle.OracleDataStorePlugin">
@@ -34,6 +34,7 @@
 	        </plugin>
 	        <plugin class="io.vertigo.dynamo.plugins.persistence.filestore.db.DbFileStorePlugin" />
 	    </component>
+	     <component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl"/>
 	    <component api="SqlDataBaseManager" class="io.vertigo.dynamo.impl.database.SqlDataBaseManagerImpl">
 	        <plugin class="io.vertigo.dynamo.plugins.database.connection.mock.MockConnectionProviderPlugin">
 	              <param name="dataBaseClass" value="io.vertigo.dynamo.impl.database.vendor.hsql.HsqlDataBase"/>
@@ -42,16 +43,13 @@
 	        </plugin>
 	    </component>
 	    <component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
-	       <plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" >
-	            <param name ="kpr" value="io/vertigo/dynamock/execution.kpr"/>
-	       </plugin>
-	       <plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" >
-	               <param name ="classes" value="io.vertigo.dynamock.domain.DtDefinitions"/>
-	        </plugin>  
+	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
+	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" />
 	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
 	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
 	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
 	    </component>
+	    
 	</module> 
 	
     <module name="vertigo-studio">
@@ -61,5 +59,10 @@
 	        <plugin class="io.vertigo.studio.plugins.reporting.domain.DomainReportingPlugin"/>
 	    </component>
     </module>
-	  
+    
+    
+	<module name="vertigo-test-resource">
+		<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
+		<resource type="classes" path="io.vertigo.dynamock.domain.DtDefinitions"/>
+	</module>
 </modules>
