@@ -159,7 +159,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 			Transport.send(message);
 			mailSent++; // on ne synchronize pas pour des stats peu importantes
 		} catch (final MessagingException e) {
-			throw createMailException(Resources.TEMPO_MAIL_SERVER_TIMEOUT, e);
+			throw createMailException(Resources.TEMPO_MAIL_SERVER_TIMEOUT, e, mailHost, mailPort.isDefined() ? mailPort.get() : "default");
 		} catch (final UnsupportedEncodingException e) {
 			throw new RuntimeException("Probleme d'encodage lors de l'envoi du mail", e);
 		}
