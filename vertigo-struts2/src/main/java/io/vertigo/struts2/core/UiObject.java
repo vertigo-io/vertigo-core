@@ -345,7 +345,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 				// ======================Mise à jour différentielle du BUFFER============
 				// ======================================================================
 				// égalité entre la valeur d'origine et la valeur saisie.
-				if (BeanUtil.equals(dtField.getDataAccessor().getValue(dto), doGetTypedValue(dtField))) {
+				if (BeanUtil.isNullableEquals(dtField.getDataAccessor().getValue(dto), doGetTypedValue(dtField))) {
 					// Si la valeur saisie est identique à la valeur d'origine
 					// alors on purge le buffer de saisie.
 					modifiedTypedValues.remove(constFieldName);

@@ -129,13 +129,13 @@ public final class BeanUtil {
 	}
 
 	/**
-	 * Vérifie l'égalité de deux valeurs non nulles.
-	 *
-	 * @param a Valeur 1
-	 * @param b Valeur 2
-	 * @return Si égales
+	 * Check equality of two nullable objects.
+	 * Are equals if both are null or if a.equals(b) (support null value)
+	 * @param a Value 1
+	 * @param b Value 2
+	 * @return is equals
 	 */
-	public static boolean equals(final Object a, final Object b) {
+	public static boolean isNullableEquals(final Object a, final Object b) {
 		if (a == b) {
 			return true;
 		}

@@ -71,6 +71,6 @@ public final class DtListValueFilter<D extends DtObject> implements DtListFilter
 	 * @return Si acceptée
 	 */
 	private boolean accept(final Object fieldValue) {
-		return BeanUtil.equals(value, fieldValue);
+		return BeanUtil.isNullableEquals(value, fieldValue);
 	}
 }

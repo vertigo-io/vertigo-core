@@ -54,7 +54,7 @@ public final class DataStreamType implements UserType {
 
 	/** {@inheritDoc} */
 	public boolean equals(final Object x, final Object y) {
-		return BeanUtil.equals(x, y);
+		return BeanUtil.isNullableEquals(x, y);
 	}
 
 	/** {@inheritDoc} */

@@ -58,7 +58,7 @@ public final class UiObject<D extends DtObject> implements Serializable {
 	private final Map<String, String> camel2ConstIndex = new HashMap<>();
 	private final Map<String, String> const2CamelIndex = new HashMap<>();
 
-	/** Référence vers la éfinition. */
+	/** Référence vers la définition. */
 	private final DefinitionReference<DtDefinition> dtDefinitionRef;
 
 	private String inputKey;
@@ -136,7 +136,7 @@ public final class UiObject<D extends DtObject> implements Serializable {
 	}
 
 	/**
-	 * @return DtDefinition de l'objet mÃ©tier
+	 * @return DtDefinition de l'objet métier
 	 */
 	public final DtDefinition getDtDefinition() {
 		return dtDefinitionRef.get();
@@ -164,10 +164,10 @@ public final class UiObject<D extends DtObject> implements Serializable {
 	}
 
 	/**
-	 * Merge et Valide l'objet d'IHM et place les erreurs rencontrÃ©es dans la stack.
-	 * @param dtObjectValidators Validateurs Ã  utiliser, peut-Ãªtre spÃ©cifique Ã  l'objet.
+	 * Merge et Valide l'objet d'IHM et place les erreurs rencontrées dans la stack.
+	 * @param dtObjectValidators Validateurs à utiliser, peut-Ãªtre spécifique Ã  l'objet.
 	 * @param uiMessageStack Pile des messages qui sera mise Ã  jour
-	 * @return Objet mÃ©tier mis Ã  jour
+	 * @return Objet métier mis Ã  jour
 	 */
 	public D mergeAndCheckInput(final List<DtObjectValidator<D>> dtObjectValidators, final UiMessageStack uiMessageStack) {
 		Assertion.checkNotNull(dtObjectValidators);
@@ -192,9 +192,9 @@ public final class UiObject<D extends DtObject> implements Serializable {
 	}
 
 	/**
-	 * Mise Ã  jour des donnÃ©es typÃ©es.
-	 * Verifie si la valeur correspond Ã  une modification.
-	 * Si oui, la valeur est gardÃ©e, sinon la saisie de l'utilisateur est vidÃ©e.
+	 * Mise à jour des données typées.
+	 * Verifie si la valeur correspond à une modification.
+	 * Si oui, la valeur est gardée, sinon la saisie de l'utilisateur est vidée.
 	 */
 	private void compactModifiedSet() {
 		Assertion.checkNotNull(serverSideDto, "serverSideDto is mandatory");
@@ -207,12 +207,12 @@ public final class UiObject<D extends DtObject> implements Serializable {
 			//On regarde pour vider le buffer
 			if (!dtObjectErrors.hasError(camelField)) {
 				// ======================================================================
-				// ======================Mise Ã  jour diffÃ©rentielle du BUFFER============
+				// ======================Mise Ã  jour différentielle du BUFFER============
 				// ======================================================================
 				final DtField dtField = getDtField(camelField);
-				// Ã©galitÃ© entre la valeur d'origine et la valeur saisie.
-				if (BeanUtil.equals(dtField.getDataAccessor().getValue(serverSideDto), dtField.getDataAccessor().getValue(inputDto))) {
-					// Si la valeur saisie est identique Ã  la valeur d'origine
+				// Egalité entre la valeur d'origine et la valeur saisie.
+				if (BeanUtil.isNullableEquals(dtField.getDataAccessor().getValue(serverSideDto), dtField.getDataAccessor().getValue(inputDto))) {
+					// Si la valeur saisie est identique à la valeur d'origine
 					// alors on purge le buffer de saisie.
 					updatedModifiedFields.remove(camelField);
 				}
@@ -227,7 +227,7 @@ public final class UiObject<D extends DtObject> implements Serializable {
 
 	/**
 	 * @param fieldName Champs
-	 * @return Si le champs Ã  Ã©tÃ© modifiÃ© dans le UiObject
+	 * @return Si le champs à été modifié dans le UiObject
 	 */
 	public boolean isModified(final String fieldName) {
 		Assertion.checkArgNotEmpty(fieldName);
