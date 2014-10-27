@@ -59,8 +59,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 		try {
 			Thread.sleep(10);
 		} catch (final InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// nothing
 		}
 	}
 

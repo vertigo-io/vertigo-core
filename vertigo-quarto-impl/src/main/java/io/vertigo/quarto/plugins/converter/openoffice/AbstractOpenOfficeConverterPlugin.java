@@ -248,32 +248,4 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 				throw new InvalidParameterException("Type de document non géré : " + docType);
 		}
 	}
-
-	//	protected void main(final String[] args) {
-	//		final ConverterOpenOffice converter = new ConverterOpenOffice("PDF");
-	//		String dirPath = System.getProperty("java.io.tmpdir");
-	//		dirPath += File.separator;
-	//		final File tempDir = new File(dirPath);
-	//		File inputFile;
-	//		File outputFile;
-	//		final FilenameFilter filter = new FilenameFilter() {
-	//			public boolean accept(final File dir, final String name) {
-	//				return name.endsWith(".odt");
-	//			}
-	//		};
-	//		println("nb ODT files in " + dirPath + " : " + tempDir.list(filter).length);
-	//		for (final String fileName : tempDir.list(filter)) {
-	//			inputFile = new File(dirPath + fileName);
-	//			println("converting : " + inputFile.getAbsolutePath());
-	//			try {
-	//				outputFile = converter.conversionVersFormat(inputFile);
-	//				println("output: " + outputFile.getAbsolutePath());
-	//			} catch (final KSystemException e) {
-	//				println("ERREUR de conversion sur : " + dirPath + fileName);
-	//				e.printStackTrace();
-	//			}
-	//		}
-	//		System.exit(0);
-	//	}
-
 }

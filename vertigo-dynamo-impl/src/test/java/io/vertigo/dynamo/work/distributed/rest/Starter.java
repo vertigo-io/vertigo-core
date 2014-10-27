@@ -25,11 +25,14 @@ import io.vertigo.lang.Option;
 
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 /**
  * Charge et démarre un environnement.
  * @author pchretien, npiedeloup
  */
 public final class Starter implements Runnable {
+	private final Logger log = Logger.getLogger(getClass());
 	private static boolean SILENCE = true;
 	private final Class<?> relativeRootClass;
 	private final String managersXmlFileName;
@@ -86,7 +89,7 @@ public final class Starter implements Runnable {
 		} catch (final InterruptedException e) {
 			//rien arret normal
 		} catch (final Exception e) {
-			e.printStackTrace();
+			log.error("Application error, exit", e);
 		} finally {
 			stop();
 		}

@@ -41,7 +41,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -49,6 +48,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -59,6 +59,8 @@ import org.xml.sax.SAXException;
  * @author adufranne
  */
 final class DOCXUtil {
+	private static final Logger LOG = Logger.getLogger(DOCXUtil.class);
+
 	/** Prefix des fichiers temporaires générés. */
 	private static final String TEMP_FILE_PREFIX = "quarto";
 
@@ -90,7 +92,6 @@ final class DOCXUtil {
 	 * Requête XPATH pour enlever les separate.
 	 */
 	public static final String XPATH_SEPARATE = "//w:r[w:fldChar[@w:fldCharType=\"separate\"]]";
-
 	/**
 	 * Retrouver tous les tags insérés.
 	 */
@@ -248,12 +249,9 @@ final class DOCXUtil {
 		try {
 			transformer = tf.newTransformer();
 			transformer.transform(domSource, result);
-		} catch (final TransformerConfigurationException e) {
-			e.printStackTrace();
 		} catch (final TransformerException e) {
-			e.printStackTrace();
+			LOG.error("Convert XML Document to String error", e);
 		}
-
 		return writer.toString();
 	}
 

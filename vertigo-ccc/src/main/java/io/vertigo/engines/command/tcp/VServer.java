@@ -46,7 +46,6 @@ public final class VServer implements Runnable/*, VEventListener */{
 	}
 
 	public void run() {
-		//System.out.println("$vserver.run");
 		try (Selector selector = Selector.open()) {
 			try (ServerSocketChannel serverSocketChannel = ServerSocketChannel.open()) {
 				serverSocketChannel.socket().bind(new InetSocketAddress(port));
@@ -57,7 +56,6 @@ public final class VServer implements Runnable/*, VEventListener */{
 				while (!Thread.interrupted()) {
 					// Wait for an event
 					/*int keys =*/selector.select();
-					//System.out.println("select : " + keys);
 					final Iterator<SelectionKey> selectionKeyIt = selector.selectedKeys().iterator();
 
 					while (selectionKeyIt.hasNext()) {
@@ -69,7 +67,7 @@ public final class VServer implements Runnable/*, VEventListener */{
 						}
 						//---
 						if (selectionKey.isAcceptable()) {
-							//On accepte une ouverture de socket 
+							//On accepte une ouverture de socket
 							accept(selectionKey);
 						}
 						if (selectionKey.isReadable()) {
@@ -79,16 +77,15 @@ public final class VServer implements Runnable/*, VEventListener */{
 					}
 				}
 			}
-		} catch (IOException e) {
-			//e.printStackTrace();
-			//throw new RuntimeException(e);
+		} catch (final IOException e) {
+			// nothing
 		}
 	}
 
-	private static void accept(SelectionKey selectionKey) throws IOException {
-		ServerSocketChannel serverSocketChannel = (ServerSocketChannel) selectionKey.channel();
+	private static void accept(final SelectionKey selectionKey) throws IOException {
+		final ServerSocketChannel serverSocketChannel = (ServerSocketChannel) selectionKey.channel();
 
-		SocketChannel socketChannel = serverSocketChannel.accept();
+		final SocketChannel socketChannel = serverSocketChannel.accept();
 		//System.out.println("$vserver.accept : " + socketChannel.getRemoteAddress());
 		socketChannel.configureBlocking(false);
 
@@ -96,9 +93,9 @@ public final class VServer implements Runnable/*, VEventListener */{
 	}
 
 	//Read a command and execute.
-	private void read(SelectionKey selectionKey) throws IOException {
+	private void read(final SelectionKey selectionKey) throws IOException {
 		//System.out.println("$vserver.read");
-		SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
+		final SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
 		protocol.execCommand(socketChannel, commandHandler);
 		//System.out.println("$vserver.read : ok");
 	}

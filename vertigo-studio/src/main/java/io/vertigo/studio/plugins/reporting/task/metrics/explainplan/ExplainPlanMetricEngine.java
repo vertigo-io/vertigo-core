@@ -71,7 +71,6 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 
 			return new ExplainPlanMetric();
 		} catch (final Throwable e) {
-			e.printStackTrace();
 			return new ExplainPlanMetric(e);
 		}
 	}

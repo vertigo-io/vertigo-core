@@ -62,7 +62,6 @@ final class HomeServlerStarter {
 			servletListener.onServletStart(getClass().getName());
 		} catch (final Throwable t) {
 			LOG.error(t.getMessage(), t);
-			t.printStackTrace();
 			throw new RuntimeException("Problème d'initialisation de l'application", t);
 		} finally {
 			if (LOG.isInfoEnabled()) {
@@ -116,13 +115,16 @@ final class HomeServlerStarter {
 		}
 	}
 
+	/**
+	 * Called when this servlet is stopped.
+	 * @param servletContext Servlet Context
+	 */
 	public final void contextDestroyed(final ServletContext servletContext) {
 		try {
 			Home.stop();
 			servletListener.onServletDestroy(getClass().getName());
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
-			e.printStackTrace();
 		}
 	}
 }

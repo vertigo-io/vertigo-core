@@ -29,6 +29,8 @@ import io.vertigo.vega.rest.validation.ValidationUserException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import spark.Request;
 import spark.Response;
 
@@ -39,9 +41,11 @@ import com.google.gson.JsonSyntaxException;
  * @author npiedeloup
  */
 public final class ExceptionHandler implements RouteHandler {
-	private final JsonEngine jsonWriterEngine;
+
 	private static final int SC_UNPROCESSABLE_ENTITY = 422; //server understands the content syntaxe but not semanticly
 	private static final int SC_TOO_MANY_REQUEST = 429; //RFC 6585 : TooManyRequest in time window
+	private final Logger log = Logger.getLogger(getClass());
+	private final JsonEngine jsonWriterEngine;
 
 	ExceptionHandler(final JsonEngine jsonWriterEngine) {
 		Assertion.checkNotNull(jsonWriterEngine);
@@ -66,12 +70,11 @@ public final class ExceptionHandler implements RouteHandler {
 		} catch (final VSecurityException e) {
 			return sendJsonError(HttpServletResponse.SC_FORBIDDEN, e, response);
 		} catch (final JsonSyntaxException e) {
-			e.printStackTrace();//TODO use a loggers
 			return sendJsonError(HttpServletResponse.SC_BAD_REQUEST, e, response);
 		} catch (final TooManyRequestException e) {
 			return sendJsonError(SC_TOO_MANY_REQUEST, e, response);
-		} catch (final Throwable e) {
-			e.printStackTrace();//TODO use a loggers
+		} catch (final Throwable e) {//NOSONAR : In every situation we need to try to respond client that server got a pb
+			log.error("Internal Server Error", e);
 			return sendJsonError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e, response);
 		}
 	}

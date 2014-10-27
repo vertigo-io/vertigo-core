@@ -66,12 +66,10 @@ final class HomeServletStarter {
 					.withEnvParams(conf).build();
 			// Initialisation de l'état de l'application
 			Home.start(componentSpaceConfig);
-
 			servletListener.onServletStart(getClass().getName());
-		} catch (final Throwable t) {
-			LOG.error(t.getMessage(), t);
-			t.printStackTrace();
-			throw new RuntimeException("Problème d'initialisation de l'application", t);
+		} catch (final Exception e) {
+			LOG.error(e.getMessage(), e);
+			throw new RuntimeException("Problème d'initialisation de l'application", e);
 		} finally {
 			if (LOG.isInfoEnabled()) {
 				LOG.info("Temps d'initialisation du listener " + (System.currentTimeMillis() - start));
@@ -82,7 +80,7 @@ final class HomeServletStarter {
 	/**
 	 * Création des propriétés à partir des différents fichiers de configuration. - Web XML - Fichier externe défini par
 	 * la valeur de la propriété système : external-properties
-	 * 
+	 *
 	 * @return Properties
 	 */
 	private static Properties createProperties(final ServletContext servletContext) {
@@ -134,7 +132,6 @@ final class HomeServletStarter {
 			servletListener.onServletDestroy(getClass().getName());
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
-			e.printStackTrace();
 		}
 	}
 }
