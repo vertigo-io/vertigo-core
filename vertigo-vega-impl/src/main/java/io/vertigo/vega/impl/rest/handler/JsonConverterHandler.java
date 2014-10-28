@@ -88,8 +88,8 @@ final class JsonConverterHandler implements RouteHandler {
 		for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
 			try {
 				final Object value;
-				if (KFileHelper.isKFileParam(endPointParam)) {
-					value = KFileHelper.readKFileParam(request, endPointParam);
+				if (KFileUtil.isKFileParam(endPointParam)) {
+					value = KFileUtil.readKFileParam(request, endPointParam);
 				} else {
 					switch (endPointParam.getParamType()) {
 						case Body:
@@ -146,8 +146,8 @@ final class JsonConverterHandler implements RouteHandler {
 		}
 
 		final Object result = chain.handle(request, response, routeContext);
-		if (KFileHelper.isKFileResult(result)) {
-			KFileHelper.sendKFile(result, request, response);
+		if (KFileUtil.isKFileResult(result)) {
+			KFileUtil.sendKFile(result, request, response);
 			return null; // response already send
 		} else if (result instanceof HttpServletResponse) {
 			return null; // response already send

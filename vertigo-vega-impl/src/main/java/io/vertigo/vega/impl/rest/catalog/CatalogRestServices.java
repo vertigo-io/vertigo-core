@@ -40,11 +40,11 @@ public final class CatalogRestServices implements RestfulService {
 	@AnonymousAccessAllowed
 	@GET("/catalog")
 	public List<String> publishCatalog() {
-		final Collection<EndPointDefinition> endPointDefCollection = Home.getDefinitionSpace().getAll(EndPointDefinition.class);
+		final Collection<EndPointDefinition> endPointDefinitions = Home.getDefinitionSpace().getAll(EndPointDefinition.class);
 		final List<String> result = new ArrayList<>();
 
 		final StringBuilder sb = new StringBuilder();
-		for (final EndPointDefinition endPointDefinition : endPointDefCollection) {
+		for (final EndPointDefinition endPointDefinition : endPointDefinitions) {
 			final String doc = endPointDefinition.getDoc();
 			sb.append(endPointDefinition.getVerb().name()).append(":");
 			sb.append(endPointDefinition.getPath());
