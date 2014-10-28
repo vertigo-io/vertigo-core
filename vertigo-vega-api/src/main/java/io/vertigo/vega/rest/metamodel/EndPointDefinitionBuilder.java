@@ -89,63 +89,73 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 				myDoc);
 	}
 
-	public void withPathPrefix(final String pathPrefix) {
+	public EndPointDefinitionBuilder withPathPrefix(final String pathPrefix) {
 		Assertion.checkArgNotEmpty(pathPrefix, "Route pathPrefix must be specified on {0}", myMethod.getName());
 		Assertion.checkArgument(pathPrefix.startsWith("/"), "Route pathPrefix must starts with / (on {0})", myMethod.getName());
 		//---------------------------------------------------------------------
 		myPathPrefix = pathPrefix;
+		return this;
 	}
 
-	public void with(final Verb verb, final String path) {
+	public EndPointDefinitionBuilder with(final Verb verb, final String path) {
 		Assertion.checkState(myVerb == null, "A verb is already specified on {0} ({1})", myMethod.getName(), myVerb);
 		Assertion.checkArgNotEmpty(path, "Route path must be specified on {0}", myMethod.getName());
 		Assertion.checkArgument(path.startsWith("/"), "Route path must starts with / (on {0})", myMethod.getName());
 		//---------------------------------------------------------------------
 		myVerb = verb;
 		myPath = path;
+		return this;
 	}
 
 	public boolean hasVerb() {
 		return myVerb != null;
 	}
 
-	public void withAccessTokenConsume(final boolean accessTokenConsume) {
+	public EndPointDefinitionBuilder withAccessTokenConsume(final boolean accessTokenConsume) {
 		myAccessTokenConsume = accessTokenConsume;
+		return this;
 	}
 
-	public void withNeedAuthentication(final boolean needAuthentication) {
+	public EndPointDefinitionBuilder withNeedAuthentication(final boolean needAuthentication) {
 		myNeedAuthentication = needAuthentication;
+		return this;
 	}
 
-	public void withNeedSession(final boolean needSession) {
+	public EndPointDefinitionBuilder withNeedSession(final boolean needSession) {
 		myNeedSession = needSession;
+		return this;
 	}
 
-	public void withSessionInvalidate(final boolean sessionInvalidate) {
+	public EndPointDefinitionBuilder withSessionInvalidate(final boolean sessionInvalidate) {
 		mySessionInvalidate = sessionInvalidate;
+		return this;
 	}
 
-	public void withExcludedFields(final String... excludedFields) {
+	public EndPointDefinitionBuilder withExcludedFields(final String... excludedFields) {
 		myExcludedFields.addAll(Arrays.asList(excludedFields));
+		return this;
 	}
 
-	public void withIncludedFields(final String... includedFields) {
+	public EndPointDefinitionBuilder withIncludedFields(final String... includedFields) {
 		myIncludedFields.addAll(Arrays.asList(includedFields));
+		return this;
 	}
 
-	public void withAccessTokenPublish(final boolean accessTokenPublish) {
+	public EndPointDefinitionBuilder withAccessTokenPublish(final boolean accessTokenPublish) {
 		myAccessTokenPublish = accessTokenPublish;
+		return this;
 	}
 
 	public void withAccessTokenMandatory(final boolean accessTokenMandatory) {
 		myAccessTokenMandatory = accessTokenMandatory;
 	}
 
-	public void withServerSideSave(final boolean serverSideSave) {
+	public EndPointDefinitionBuilder withServerSideSave(final boolean serverSideSave) {
 		myServerSideSave = serverSideSave;
+		return this;
 	}
 
-	public void withAutoSortAndPagination(final boolean autoSortAndPagination) {
+	public EndPointDefinitionBuilder withAutoSortAndPagination(final boolean autoSortAndPagination) {
 		myAutoSortAndPagination = autoSortAndPagination;
 
 		//autoSortAndPagination must keep the list serverSide but not the input one, its the full one, so we don't use serverSideSave marker
@@ -156,13 +166,16 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 					.with(RestParamType.Body, "listState") // We declare ListState in body, it will merge with other EndPointParams
 					.build());
 		}
+		return this;
 	}
 
-	public void withDoc(final String doc) {
+	public EndPointDefinitionBuilder withDoc(final String doc) {
 		myDoc = doc;
+		return this;
 	}
 
-	public void withEndPointParam(final EndPointParam endPointParam) {
+	public EndPointDefinitionBuilder withEndPointParam(final EndPointParam endPointParam) {
 		myEndPointParams.add(endPointParam);
+		return this;
 	}
 }
