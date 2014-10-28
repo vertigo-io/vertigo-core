@@ -27,6 +27,7 @@ import io.vertigo.core.home.componentspace.ComponentSpace3Test;
 import io.vertigo.core.home.componentspace.ComponentSpaceTest;
 import io.vertigo.core.home.definitionspace.DefinitionSpaceTest;
 import io.vertigo.lang.AssertionTest;
+import io.vertigo.util.BeanUtilTest;
 import io.vertigo.util.ClassUtilTest;
 import io.vertigo.util.DateQueryParserUtilTest;
 import io.vertigo.util.DateUtilTest;
@@ -45,24 +46,26 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-	//LocaleManager
-	LocaleManagerTest.class,
-	//core
-	DefinitionSpaceTest.class,
-	ComponentSpaceTest.class,
-	ComponentSpace2Test.class,
-	ComponentSpace3Test.class,
-	XmlHomeTest.class,
-	XmlComponentsTest.class,
-	InjectorTest.class,
-	ReactorTest.class,
-	AssertionTest.class,
-	ClassUtilTest.class,
-	DateUtilTest.class,
-	DateQueryParserUtilTest.class,
-	StringUtilTest.class,
-	//---
-	CGLIBAspectContainerTest.class,
+		//LocaleManager
+		LocaleManagerTest.class,
+		//core
+		DefinitionSpaceTest.class,
+		ComponentSpaceTest.class,
+		ComponentSpace2Test.class,
+		ComponentSpace3Test.class,
+		XmlHomeTest.class,
+		XmlComponentsTest.class,
+		InjectorTest.class,
+		ReactorTest.class,
+		AssertionTest.class,
+		//---
+		BeanUtilTest.class,
+		ClassUtilTest.class,
+		DateQueryParserUtilTest.class,
+		DateUtilTest.class,
+		StringUtilTest.class,
+		//---
+		CGLIBAspectContainerTest.class,
 })
 public final class VertigoTestSuite {
 	//

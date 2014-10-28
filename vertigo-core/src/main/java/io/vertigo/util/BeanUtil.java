@@ -35,10 +35,10 @@ public final class BeanUtil {
 	private static final Map<Class<?>, BeanInfo> BEAN_INFOS = new ConcurrentHashMap<>();
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	private BeanUtil() {
-		super();
+		//constructor is private
 	}
 
 	/**
