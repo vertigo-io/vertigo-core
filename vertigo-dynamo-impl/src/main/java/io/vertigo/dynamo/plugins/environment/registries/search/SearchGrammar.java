@@ -31,10 +31,10 @@ final class SearchGrammar {
 	public static final Grammar GRAMMAR;
 
 	static {
-		INDEX_DEFINITION_ENTITY = new EntityBuilder("IndexDefinition")//
-		.withAttribute("dtIndex", DomainGrammar.DT_DEFINITION_ENTITY, false, true)//
-		.withAttribute("dtResult", DomainGrammar.DT_DEFINITION_ENTITY, false, true)//s
-		.build();
+		INDEX_DEFINITION_ENTITY = new EntityBuilder("IndexDefinition")
+				.withAttribute("dtIndex", DomainGrammar.DT_DEFINITION_ENTITY, false, true)
+				.withAttribute("dtResult", DomainGrammar.DT_DEFINITION_ENTITY, false, true)
+				.build();
 
 		GRAMMAR = new Grammar(INDEX_DEFINITION_ENTITY);
 	}

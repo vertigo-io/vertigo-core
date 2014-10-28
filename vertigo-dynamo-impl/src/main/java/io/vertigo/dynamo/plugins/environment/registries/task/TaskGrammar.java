@@ -37,16 +37,16 @@ final class TaskGrammar {
 	public static final Grammar GRAMMAR;
 
 	static {
-		TASK_ATTRIBUTE_DEFINITION_ENTITY = new EntityBuilder("Attribute")//
-				.withProperty(KspProperty.NOT_NULL, true)//
-				.withProperty(KspProperty.IN_OUT, true)//
-				.withAttribute("domain", DomainGrammar.DOMAIN_ENTITY, false, true)//
+		TASK_ATTRIBUTE_DEFINITION_ENTITY = new EntityBuilder("Attribute")
+				.withProperty(KspProperty.NOT_NULL, true)
+				.withProperty(KspProperty.IN_OUT, true)
+				.withAttribute("domain", DomainGrammar.DOMAIN_ENTITY, false, true)
 				.build();
 
-		TASK_DEFINITION_ENTITY = new EntityBuilder("Task")//
-				.withProperty(KspProperty.REQUEST, true)//
-				.withProperty(KspProperty.CLASS_NAME, true)//
-				.withAttribute(TASK_ATTRIBUTE, TASK_ATTRIBUTE_DEFINITION_ENTITY, true, false)//
+		TASK_DEFINITION_ENTITY = new EntityBuilder("Task")
+				.withProperty(KspProperty.REQUEST, true)
+				.withProperty(KspProperty.CLASS_NAME, true)
+				.withAttribute(TASK_ATTRIBUTE, TASK_ATTRIBUTE_DEFINITION_ENTITY, true, false)
 				.build();
 
 		GRAMMAR = new Grammar(TASK_DEFINITION_ENTITY, TASK_ATTRIBUTE_DEFINITION_ENTITY);
