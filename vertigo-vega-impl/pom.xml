@@ -130,6 +130,12 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency> <!-- For Rest Webservice testing -->
+	      <groupId>com.jayway.restassured</groupId>
+	      <artifactId>rest-assured</artifactId>
+	      <version>2.3.4</version>
+	      <scope>test</scope>
+		</dependency>
 		
 		<dependency>
 			<groupId>com.sleepycat</groupId>

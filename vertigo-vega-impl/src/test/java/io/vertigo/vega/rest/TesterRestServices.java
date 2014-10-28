@@ -90,7 +90,7 @@ import java.util.UUID;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
-//bas� sur http://www.restapitutorial.com/lessons/httpmethods.html
+//basé sur http://www.restapitutorial.com/lessons/httpmethods.html
 
 @PathPrefix("/test")
 public final class TesterRestServices implements RestfulService {
@@ -242,7 +242,7 @@ public final class TesterRestServices implements RestfulService {
 		if ("Confirm".equals(type)) {
 			result.put("message", "Are you sure");
 		} else {
-			result.put("contact", contacts.get(1));
+			result.put("contact", contacts.get(1L));
 		}
 		//offset + range ?
 		//code 200
