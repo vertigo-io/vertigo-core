@@ -29,7 +29,7 @@ public final class TestUserSession extends UserSession {
 
 	@Override
 	public Locale getLocale() {
-		return Locale.FRANCE;
+		return Locale.FRENCH;
 	}
 
 	/**
