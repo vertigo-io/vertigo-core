@@ -27,7 +27,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.JsonExclude;
 import io.vertigo.lang.Option;
 import io.vertigo.util.StringUtil;
-import io.vertigo.vega.rest.EndPointTypeHelper;
+import io.vertigo.vega.rest.EndPointTypeUtil;
 import io.vertigo.vega.rest.model.DtListDelta;
 
 import java.io.Serializable;
@@ -161,10 +161,10 @@ public final class GoogleJsonEngine implements JsonEngine {
 				final JsonElement jsonSubElement = jsonObject.get(key);
 
 				final Serializable value;
-				if (EndPointTypeHelper.isAssignableFrom(DtObject.class, paramType)) {
+				if (EndPointTypeUtil.isAssignableFrom(DtObject.class, paramType)) {
 					final Type typeOfDest = createParameterizedType(UiObject.class, paramType);
 					value = gson.fromJson(jsonSubElement, typeOfDest);
-				} else if (EndPointTypeHelper.isAssignableFrom(DtListDelta.class, paramType)) {
+				} else if (EndPointTypeUtil.isAssignableFrom(DtListDelta.class, paramType)) {
 					final Class<DtObject> dtoClass = (Class<DtObject>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that DtListDelta has one parameterized type
 					final Type typeOfDest = createParameterizedType(UiListDelta.class, dtoClass);
 					value = gson.fromJson(jsonSubElement, typeOfDest);

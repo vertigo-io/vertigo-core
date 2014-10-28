@@ -21,7 +21,7 @@ package io.vertigo.vega.rest.metamodel;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
-import io.vertigo.vega.rest.EndPointTypeHelper;
+import io.vertigo.vega.rest.EndPointTypeUtil;
 import io.vertigo.vega.rest.model.DtListDelta;
 import io.vertigo.vega.rest.model.UiListState;
 import io.vertigo.vega.rest.validation.DtObjectValidator;
@@ -102,7 +102,7 @@ public final class EndPointParam {
 		this(":" + paramType.name() + ":" + name, paramType, name, type, includedFields, excludedFields, needServerSideToken, consumeServerSideToken, dtObjectValidatorClasses);
 		Assertion.checkArgument(paramType != RestParamType.Implicit || isImplicitParam(name), "When ImplicitParam, name ({1}) must be one of {0}", ImplicitParam.values(), name);
 		Assertion.checkNotNull(name);
-		Assertion.checkArgument(!name.isEmpty() || (EndPointTypeHelper.isAssignableFrom(UiListState.class, type) || EndPointTypeHelper.isAssignableFrom(DtObject.class, type)), "Only DtObject and UiListState can be map from Query parameters");
+		Assertion.checkArgument(!name.isEmpty() || (EndPointTypeUtil.isAssignableFrom(UiListState.class, type) || EndPointTypeUtil.isAssignableFrom(DtObject.class, type)), "Only DtObject and UiListState can be map from Query parameters");
 	}
 
 	private static boolean isImplicitParam(final String testedName) {
@@ -121,9 +121,9 @@ public final class EndPointParam {
 		Assertion.checkNotNull(excludedFields);
 		Assertion.checkNotNull(dtObjectValidatorClasses);
 		Assertion.checkArgument(dtObjectValidatorClasses.isEmpty() //
-				|| EndPointTypeHelper.isAssignableFrom(DtObject.class, type) //
-				|| EndPointTypeHelper.isAssignableFrom(DtList.class, type) //
-				|| EndPointTypeHelper.isAssignableFrom(DtListDelta.class, type), "Validators aren't supported for {0}", type);
+				|| EndPointTypeUtil.isAssignableFrom(DtObject.class, type) //
+				|| EndPointTypeUtil.isAssignableFrom(DtList.class, type) //
+				|| EndPointTypeUtil.isAssignableFrom(DtListDelta.class, type), "Validators aren't supported for {0}", type);
 		//-----------------------------------------------------------------
 		this.paramType = paramType;
 		this.type = type;

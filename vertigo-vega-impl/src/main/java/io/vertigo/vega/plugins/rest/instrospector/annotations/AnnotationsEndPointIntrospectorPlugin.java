@@ -21,7 +21,7 @@ package io.vertigo.vega.plugins.rest.instrospector.annotations;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Option;
 import io.vertigo.vega.rest.EndPointIntrospectorPlugin;
-import io.vertigo.vega.rest.EndPointTypeHelper;
+import io.vertigo.vega.rest.EndPointTypeUtil;
 import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition.Verb;
@@ -136,9 +136,9 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 
 	private static EndPointParam buildEndPointParam(final Annotation[] annotations, final Type paramType) {
 		final EndPointParamBuilder builder = new EndPointParamBuilder(paramType);
-		if (EndPointTypeHelper.isAssignableFrom(DtObject.class, paramType)) {
+		if (EndPointTypeUtil.isAssignableFrom(DtObject.class, paramType)) {
 			builder.withValidatorClasses(DefaultDtObjectValidator.class);
-		} else if (EndPointTypeHelper.isAssignableFrom(DtListDelta.class, paramType)) {
+		} else if (EndPointTypeUtil.isAssignableFrom(DtListDelta.class, paramType)) {
 			builder.withValidatorClasses(DefaultDtObjectValidator.class);
 		} else if (isImplicitParam(paramType)) {
 			builder.with(RestParamType.Implicit, getImplicitParam(paramType).name());

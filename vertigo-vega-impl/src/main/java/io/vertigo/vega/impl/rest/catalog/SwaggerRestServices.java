@@ -26,7 +26,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.lang.Option;
 import io.vertigo.util.StringUtil;
-import io.vertigo.vega.rest.EndPointTypeHelper;
+import io.vertigo.vega.rest.EndPointTypeUtil;
 import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition.Verb;
@@ -272,15 +272,15 @@ public final class SwaggerRestServices implements RestfulService {
 
 	private Map<String, Object> createSchemaObject(final Type type) {
 		final Map<String, Object> schema = new LinkedHashMap<>();
-		final Class<?> objectClass = EndPointTypeHelper.castAsClass(type);
+		final Class<?> objectClass = EndPointTypeUtil.castAsClass(type);
 		final String[] typeAndFormat = toSwaggerType(objectClass);
 		schema.put("type", typeAndFormat[0]);
 		if (typeAndFormat[1] != null) {
 			schema.put("format", typeAndFormat[1]);
 		}
-		if (EndPointTypeHelper.isAssignableFrom(void.class, type)) {
+		if (EndPointTypeUtil.isAssignableFrom(void.class, type)) {
 			return null;
-		} else if (EndPointTypeHelper.isAssignableFrom(List.class, type)) {
+		} else if (EndPointTypeUtil.isAssignableFrom(List.class, type)) {
 			final Type itemsType = ((ParameterizedType) type).getActualTypeArguments()[0]; //we known that List has one parameterized type
 			schema.put("items", createSchemaObject(itemsType));
 		} else if ("object".equals(typeAndFormat[0])) {
@@ -290,7 +290,7 @@ public final class SwaggerRestServices implements RestfulService {
 					&& ((ParameterizedType) type).getActualTypeArguments().length == 1 //
 					&& !(((ParameterizedType) type).getActualTypeArguments()[0] instanceof WildcardType)) {
 				final Type itemsType = ((ParameterizedType) type).getActualTypeArguments()[0]; //we known that DtListDelta has one parameterized type
-				parameterClass = EndPointTypeHelper.castAsClass(itemsType);
+				parameterClass = EndPointTypeUtil.castAsClass(itemsType);
 				objectName = objectClass.getSimpleName() + "&lt;" + parameterClass.getSimpleName() + "&gt;";
 			} else {
 				objectName = objectClass.getSimpleName();
@@ -332,7 +332,7 @@ public final class SwaggerRestServices implements RestfulService {
 	}
 
 	private void appendPropertiesObject(final Map<String, Object> entity, final Type type, final Class<? extends Object> parameterClass) {
-		final Class<?> objectClass = EndPointTypeHelper.castAsClass(type);
+		final Class<?> objectClass = EndPointTypeUtil.castAsClass(type);
 		//can't be a primitive nor array nor DtListDelta
 		final Map<String, Object> properties = new LinkedHashMap<>();
 		final List<String> enums = new ArrayList<>(); //mandatory fields
