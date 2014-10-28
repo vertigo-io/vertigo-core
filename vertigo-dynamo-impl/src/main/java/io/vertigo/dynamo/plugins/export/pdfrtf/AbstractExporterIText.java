@@ -109,23 +109,65 @@ public abstract class AbstractExporterIText {
 			// ((PdfWriter) writer).addJavaScript("this.print(true);", false);
 
 			for (final ExportSheet exportSheet : export.getSheets()) {
-				// table
-				final Table datatable = new Table(exportSheet.getExportFields().size());
-				datatable.setCellsFitPage(true);
-				datatable.setPadding(4);
-				datatable.setSpacing(0);
+				final Table datatable;
+				if (exportSheet.hasDtObject()) {
+					// table
+					datatable = new Table(2);
+					datatable.setCellsFitPage(true);
+					datatable.setPadding(4);
+					datatable.setSpacing(0);
 
-				// headers
-				renderHeaders(exportSheet, datatable);
+					// data rows
+					renderObject(exportSheet, datatable);
+				} else {
+					// table
+					datatable = new Table(exportSheet.getExportFields().size());
+					datatable.setCellsFitPage(true);
+					datatable.setPadding(4);
+					datatable.setSpacing(0);
 
-				// data rows
-				renderList(exportSheet, datatable);
+					// headers
+					renderHeaders(exportSheet, datatable);
 
+					// data rows
+					renderList(exportSheet, datatable);
+				}
 				document.add(datatable);
 			}
 		} finally {
 			// we close the document
 			document.close();
+		}
+	}
+
+	private void renderObject(final ExportSheet exportSheet, final Table datatable) throws BadElementException {
+		final Font labelFont = FontFactory.getFont(FontFactory.HELVETICA, 12, Font.BOLD);
+		final Font valueFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL);
+
+		for (final ExportField exportColumn : exportSheet.getExportFields()) {
+			datatable.getDefaultCell().setBorderWidth(2);
+			datatable.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+			datatable.addCell(new Phrase(exportColumn.getLabel().getDisplay(), labelFont));
+
+			datatable.getDefaultCell().setBorderWidth(1);
+			datatable.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
+			final DtField dtField = exportColumn.getDtField();
+			final Object value = dtField.getDataAccessor().getValue(exportSheet.getDtObject());
+			final int horizontalAlignement;
+			if (value instanceof Number || value instanceof Date) {
+				horizontalAlignement = Element.ALIGN_RIGHT;
+			} else if (value instanceof Boolean) {
+				horizontalAlignement = Element.ALIGN_CENTER;
+			} else {
+				horizontalAlignement = Element.ALIGN_LEFT;
+			}
+			datatable.getDefaultCell().setHorizontalAlignment(horizontalAlignement);
+
+			String text = ExportUtil.getText(persistenceManager, referenceCache, denormCache, exportSheet.getDtObject(), exportColumn);
+			if (text == null) {
+				text = "";
+			}
+			datatable.addCell(new Phrase(8, text, valueFont));
 		}
 	}
 
