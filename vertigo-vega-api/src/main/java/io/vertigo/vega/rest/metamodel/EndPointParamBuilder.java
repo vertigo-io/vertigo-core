@@ -32,7 +32,7 @@ import java.util.Set;
 
 /**
  * EndPointParam Builder.
- * 
+ *
  * @author npiedeloup
  */
 public final class EndPointParamBuilder implements Builder<EndPointParam> {
@@ -116,11 +116,14 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 
 	/** {@inheritDoc} */
 	public EndPointParam build() {
-		return new EndPointParam(myRestParamType, myRestParamName, myParamType, //
-				myIncludedFields, //
-				myExcludedFields, //
-				myNeedServerSideToken, //
-				myConsumeServerSideToken, //
+		return new EndPointParam(
+				myRestParamType,
+				myRestParamName,
+				myParamType,
+				myIncludedFields,
+				myExcludedFields,
+				myNeedServerSideToken,
+				myConsumeServerSideToken,
 				myValidatorClasses);
 	}
 }
