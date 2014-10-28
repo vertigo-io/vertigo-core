@@ -178,18 +178,19 @@ public final class WsRestTest extends AbstractTestCaseJU4 {
 		//Spark.before(new CorsAllower());
 		//Translate EndPoint to route
 		if (!sparkInitialized) {
+			sparkInitialized = true;
+
 			Spark.setPort(WS_PORT);
 			final String tempDir = System.getProperty("java.io.tmpdir");
 			Spark.before(new JettyMultipartConfig(tempDir));
 			//Spark.before(new VegaMultipartConfig(tempDir));
 			new SparkJavaRoutesRegister().init();
-			sparkInitialized = true;
 
+			//RestAsssured init
 			RestAssured.baseURI = "http://localhost";
 			RestAssured.port = WS_PORT;
 			RestAssured.registerParser("application/json+list", Parser.JSON);
 			RestAssured.registerParser("application/json+entity:Contact", Parser.JSON);
-
 		}
 
 		RestAssured.given()
