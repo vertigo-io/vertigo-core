@@ -75,6 +75,7 @@ import spark.Spark;
 
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.filter.session.SessionFilter;
+import com.jayway.restassured.parsing.Parser;
 import com.jayway.restassured.specification.RequestSpecification;
 import com.jayway.restassured.specification.ResponseSpecification;
 
@@ -186,69 +187,136 @@ public final class WsRestTest extends AbstractTestCaseJU4 {
 
 			RestAssured.baseURI = "http://localhost";
 			RestAssured.port = WS_PORT;
+			RestAssured.registerParser("application/json+list", Parser.JSON);
+			RestAssured.registerParser("application/json+entity:Contact", Parser.JSON);
+
 		}
 
-		RestAssured.given().
-				filter(sessionFilter).
-				get("/test/login");
+		RestAssured.given()
+				.filter(sessionFilter)
+				.get("/test/login");
 	}
 
 	@Test
 	public void testLogout() {
-		loggedAndExpect().
-				statusCode(HttpStatus.SC_NO_CONTENT).
-				when().
-				get("/test/logout");
+		loggedAndExpect()
+				.statusCode(HttpStatus.SC_NO_CONTENT)
+				.when()
+				.get("/test/logout");
 	}
 
 	@Test
 	public void testLogin() {
-		RestAssured.expect().
-				statusCode(HttpStatus.SC_NO_CONTENT).
-				when().
-				get("/test/login");
+		RestAssured.expect()
+				.statusCode(HttpStatus.SC_NO_CONTENT)
+				.when()
+				.get("/test/login");
 	}
 
 	@Test
 	public void testAnonymousTest() {
-		RestAssured.expect().
-				statusCode(HttpStatus.SC_OK).
-				when().
-				get("/test/anonymousTest");
+		RestAssured.expect()
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/anonymousTest");
 	}
 
 	@Test
 	public void testAuthentifiedTest() {
-		loggedAndExpect().
-				statusCode(HttpStatus.SC_OK).
-				when().
-				get("/test/authentifiedTest");
+		loggedAndExpect()
+				.statusCode(HttpStatus.SC_OK)
+				.body("size()", Matchers.equalTo(10))
+				.when()
+				.get("/test/authentifiedTest");
 	}
 
 	@Test
 	public void testUnauthentifiedTest() {
-		expect().
-				statusCode(HttpStatus.SC_UNAUTHORIZED).
-				when().
-				get("/test/authentifiedTest");
+		expect()
+				.statusCode(HttpStatus.SC_UNAUTHORIZED)
+				.when()
+				.get("/test/authentifiedTest");
 	}
 
 	@Test
 	public void testTwoResultConfirm() {
-		loggedAndExpect(given().param("type", "Confirm")).
-				statusCode(HttpStatus.SC_OK).
-				body("message", Matchers.equalTo("Are you sure")).
-				when().
-				get("/test/twoResult");
+		loggedAndExpect(given().param("type", "Confirm"))
+				.statusCode(HttpStatus.SC_OK)
+				.body("message", Matchers.equalTo("Are you sure"))
+				.when()
+				.get("/test/twoResult");
 	}
 
 	@Test
 	public void testTwoResultContact() {
-		loggedAndExpect(given().param("type", "Contact")).
-				statusCode(HttpStatus.SC_OK).
-				body("contact.conId", Matchers.equalTo(1)).
-				when().
-				get("/test/twoResult");
+		loggedAndExpect(given().param("type", "Contact"))
+				.statusCode(HttpStatus.SC_OK)
+				.body("contact.conId", Matchers.equalTo(1))
+				.when()
+				.get("/test/twoResult");
+	}
+
+	@Test
+	public void docTest1() {
+		loggedAndExpect()
+				.statusCode(HttpStatus.SC_OK)
+				.body("size()", Matchers.equalTo(10))
+				.when()
+				.get("/test/docTest/RtFM");
+	}
+
+	@Test
+	public void docTest2() {
+		loggedAndExpect()
+				.statusCode(HttpStatus.SC_FORBIDDEN)
+				.when()
+				.get("/test/docTest/myPass");
+	}
+
+	@Test
+	public void docTest3() {
+		loggedAndExpect()
+				.statusCode(HttpStatus.SC_FORBIDDEN)
+				.when()
+				.get("/test/docTest/");
+	}
+
+	@Test
+	public void testRead1() {
+		loggedAndExpect()
+				.body("conId", Matchers.equalTo(2))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/2");
+	}
+
+	@Test
+	public void testRead2() {
+		loggedAndExpect()
+				.body("globalErrors", Matchers.contains("Contact #30 unknown"))
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.get("/test/30");
+	}
+
+	@Test
+	public void testExportContacts() {
+		loggedAndExpect()
+				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename*=\"contacts%2epdf\""))
+				.header("Content-Length", Matchers.equalTo("2572"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/export/pdf/");
+	}
+
+	@Test
+	public void testExportOneContact() {
+		loggedAndExpect()
+				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename*=\"contact2%2epdf\""))
+				.header("Content-Length", Matchers.equalTo("1703"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/export/pdf/2");
 	}
 
 	private ResponseSpecification expect() {
@@ -260,14 +328,14 @@ public final class WsRestTest extends AbstractTestCaseJU4 {
 	}
 
 	private ResponseSpecification loggedAndExpect() {
-		return RestAssured.given().
-				filter(sessionFilter).
-				expect();
+		return RestAssured.given()
+				.filter(sessionFilter)
+				.expect();
 	}
 
 	private ResponseSpecification loggedAndExpect(final RequestSpecification given) {
-		return given.
-				filter(sessionFilter).
-				expect();
+		return given
+				.filter(sessionFilter)
+				.expect();
 	}
 }

@@ -285,8 +285,8 @@ public final class TesterRestServices implements RestfulService {
 	@GET("/export/pdf/{conId}")
 	public KFile testExportContact(@PathParam("conId") final long conId) {
 		final Contact contact = contacts.get(conId);
-		final Export export = new ExportBuilder(ExportFormat.PDF, "contact" + conId + ".pdf")//
-				.beginSheet(contact, "Contacts").endSheet()//
+		final Export export = new ExportBuilder(ExportFormat.PDF, "contact" + conId)//
+				.beginSheet(contact, "Contact").endSheet()//
 				.withAuthor("vertigo-test").build();
 
 		final KFile result = exportManager.createExportFile(export);

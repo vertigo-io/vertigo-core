@@ -70,6 +70,7 @@ public final class ExceptionHandler implements RouteHandler {
 		} catch (final VSecurityException e) {
 			return sendJsonError(HttpServletResponse.SC_FORBIDDEN, e, response);
 		} catch (final JsonSyntaxException e) {
+			log.info("JsonSyntaxException", e);
 			return sendJsonError(HttpServletResponse.SC_BAD_REQUEST, e, response);
 		} catch (final TooManyRequestException e) {
 			return sendJsonError(SC_TOO_MANY_REQUEST, e, response);

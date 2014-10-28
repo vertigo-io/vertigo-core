@@ -52,6 +52,8 @@ import spark.QueryParamsMap;
 import spark.Request;
 import spark.Response;
 
+import com.google.gson.JsonSyntaxException;
+
 /**
  * Params handler.
  * It's an handler barrier : bellow this handler anything is object, over this handler it's json.
@@ -84,59 +86,63 @@ final class JsonConverterHandler implements RouteHandler {
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
 		UiContext innerBodyParsed = null; //we can't read body at first : because if it's a multipart request call body() disabled getParts() access.
 		for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
-			final Object value;
-			if (KFileHelper.isKFileParam(endPointParam)) {
-				value = KFileHelper.readKFileParam(request, endPointParam);
-			} else {
-				switch (endPointParam.getParamType()) {
-					case Body:
-						value = readValue(request.body(), endPointParam);
-						break;
-					case InnerBody:
-						if (innerBodyParsed == null) {
-							innerBodyParsed = readInnerBodyValue(request.body(), endPointDefinition.getEndPointParams());
-						}
-						value = innerBodyParsed.get(endPointParam.getName());
-						break;
-					case Path:
-						value = readPrimitiveValue(request.params(endPointParam.getName()), endPointParam.getType());
-						break;
-					case Query:
-						value = readQueryValue(request.queryMap(), endPointParam);
-						break;
-					case Header:
-						value = readPrimitiveValue(request.headers(endPointParam.getName()), endPointParam.getType());
-						break;
-					case Implicit:
-						switch (ImplicitParam.valueOf(endPointParam.getName())) {
-							case UiMessageStack:
-								value = routeContext.getUiMessageStack();
-								break;
-							case Request:
-								value = request.raw();
-								break;
-							case Response:
-								value = response.raw();
-								break;
-							/*case UiListState:
-								value = readQueryValue(request.queryMap(), endPointParam);
-								break;*/
-							//		case Request:
-							//			value = request;
-							//			break;
-							//		case Response:
-							//			value = response;
-							//			break;
-							default:
-								throw new IllegalArgumentException("ImplicitParam : " + endPointParam.getName());
-						}
-						break;
-					default:
-						throw new IllegalArgumentException("RestParamType : " + endPointParam.getFullName());
+			try {
+				final Object value;
+				if (KFileHelper.isKFileParam(endPointParam)) {
+					value = KFileHelper.readKFileParam(request, endPointParam);
+				} else {
+					switch (endPointParam.getParamType()) {
+						case Body:
+							value = readValue(request.body(), endPointParam);
+							break;
+						case InnerBody:
+							if (innerBodyParsed == null) {
+								innerBodyParsed = readInnerBodyValue(request.body(), endPointDefinition.getEndPointParams());
+							}
+							value = innerBodyParsed.get(endPointParam.getName());
+							break;
+						case Path:
+							value = readPrimitiveValue(request.params(endPointParam.getName()), endPointParam.getType());
+							break;
+						case Query:
+							value = readQueryValue(request.queryMap(), endPointParam);
+							break;
+						case Header:
+							value = readPrimitiveValue(request.headers(endPointParam.getName()), endPointParam.getType());
+							break;
+						case Implicit:
+							switch (ImplicitParam.valueOf(endPointParam.getName())) {
+								case UiMessageStack:
+									value = routeContext.getUiMessageStack();
+									break;
+								case Request:
+									value = request.raw();
+									break;
+								case Response:
+									value = response.raw();
+									break;
+								/*case UiListState:
+									value = readQueryValue(request.queryMap(), endPointParam);
+									break;*/
+								//		case Request:
+								//			value = request;
+								//			break;
+								//		case Response:
+								//			value = response;
+								//			break;
+								default:
+									throw new IllegalArgumentException("ImplicitParam : " + endPointParam.getName());
+							}
+							break;
+						default:
+							throw new IllegalArgumentException("RestParamType : " + endPointParam.getFullName());
+					}
 				}
+				Assertion.checkNotNull(value, "RestParam not found : {0}", endPointParam);
+				routeContext.setParamValue(endPointParam, value);
+			} catch (final JsonSyntaxException e) {
+				throw new JsonSyntaxException("Error parsing param " + endPointParam.getFullName() + " on service " + endPointDefinition.getVerb() + " " + endPointDefinition.getPath(), e);
 			}
-			Assertion.checkNotNull(value, "RestParam not found : {0}", endPointParam);
-			routeContext.setParamValue(endPointParam, value);
 		}
 
 		final Object result = chain.handle(request, response, routeContext);
