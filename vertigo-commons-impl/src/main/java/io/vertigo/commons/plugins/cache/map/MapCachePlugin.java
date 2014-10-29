@@ -18,6 +18,7 @@
  */
 package io.vertigo.commons.plugins.cache.map;
 
+import io.vertigo.commons.cache.CacheConfig;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.cache.CachePlugin;
 import io.vertigo.core.spaces.component.ComponentInfo;
@@ -69,13 +70,13 @@ public final class MapCachePlugin implements CachePlugin, Describable {
 	}
 
 	/** {@inheritDoc} */
-	public void addCache(final String cacheType, final String context, final int maxElementsInMemory, final long timeToLiveSeconds, final long timeToIdleSeconds) {
+	public void addCache(final String context, final CacheConfig cacheConfig) {
 		if (!cachesPerContext.containsKey(context)) {
 			final boolean eternal = false;
-			final MapCache cache = new MapCache(context, eternal, timeToLiveSeconds);
+			final MapCache cache = new MapCache(context, eternal, cacheConfig.getTimeToLiveSeconds());
 			cachesPerContext.put(context, cache);
 		}
-		registerCacheType(context, cacheType);
+		registerCacheType(context, cacheConfig.getCacheType());
 	}
 
 	/** {@inheritDoc} */

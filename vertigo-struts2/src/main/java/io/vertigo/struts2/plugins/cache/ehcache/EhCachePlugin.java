@@ -18,6 +18,7 @@
  */
 package io.vertigo.struts2.plugins.cache.ehcache;
 
+import io.vertigo.commons.cache.CacheConfig;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.cache.CachePlugin;
 import io.vertigo.lang.Activeable;
@@ -75,14 +76,14 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void addCache(final String cacheType, final String context, final int maxElementsInMemory, final long timeToLiveSeconds, final long timeToIdleSeconds) {
+	public void addCache(final String context, final CacheConfig cacheConfig) {
 		if (!manager.cacheExists(context)) {
 			final boolean overflowToDisk = true;
 			final boolean eternal = false;
-			final net.sf.ehcache.Cache cache = new net.sf.ehcache.Cache(context, maxElementsInMemory, overflowToDisk, eternal, timeToLiveSeconds, timeToIdleSeconds);
+			final net.sf.ehcache.Cache cache = new net.sf.ehcache.Cache(context, cacheConfig.getMaxElementsInMemory(), overflowToDisk, eternal, cacheConfig.getTimeToLiveSeconds(), cacheConfig.getTimeToIdleSeconds());
 			manager.addCache(cache);
 		}
-		registerCacheType(context, cacheType);
+		registerCacheType(context, cacheConfig.getCacheType());
 	}
 
 	/** {@inheritDoc} */
@@ -104,7 +105,7 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 
 	private static boolean isUnmodifiable(final Serializable value) {
 		//s'il n'implemente pas Modifiable, il doit être cloné
-		//s'il implemente Modifiable et que isModifiable == true, il doit être cloné 
+		//s'il implemente Modifiable et que isModifiable == true, il doit être cloné
 		return value instanceof Modifiable && !((Modifiable) value).isModifiable();
 	}
 
@@ -139,7 +140,7 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 		if (ehCache != null) {
 			ehCache.removeAll();
 		}
-		
+
 	}
 
 	private void putEH(final String context, final Object key, final Serializable serialized) {

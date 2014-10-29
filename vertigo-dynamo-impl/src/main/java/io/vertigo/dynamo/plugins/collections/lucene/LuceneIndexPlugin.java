@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.collections.lucene;
 
+import io.vertigo.commons.cache.CacheConfig;
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.core.Home;
@@ -67,7 +68,7 @@ import org.apache.lucene.search.TopDocs;
 
 /**
  * Plugin de d'indexation de DtList utilisant Lucene en Ram.
- * 
+ *
  * @author npiedeloup
  */
 public final class LuceneIndexPlugin implements IndexPlugin {
@@ -99,13 +100,13 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 	}
 
 	private <D extends DtObject> LuceneIndex<D> indexList(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
-		//TODO : gestion du cache a revoir... et le lien avec le CacheStore. 
+		//TODO : gestion du cache a revoir... et le lien avec le CacheStore.
 		//L'index devrait être interrogé par le Broker ? on pourrait alors mettre en cache dans le DataCache.
 		final DtListURI dtcUri = fullDtc.getURI();
 		final String indexName = "INDEX_" + (dtcUri != null ? dtcUri.toURN() : "noURI");
 		final String cacheContext = getContext(fullDtc.getDefinition());
 		//TODO non threadSafe.
-		cacheManager.addCache("dataCache", cacheContext, 1000, 1800, 3600);
+		cacheManager.addCache(cacheContext, new CacheConfig("dataCache", 1000, 1800, 3600));
 		LuceneIndex<D> index = (LuceneIndex<D>) cacheManager.get(cacheContext, indexName);
 		if (index == null) {
 			index = createIndex(fullDtc, storeValue);

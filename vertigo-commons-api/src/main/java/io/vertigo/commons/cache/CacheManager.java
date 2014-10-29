@@ -34,15 +34,11 @@ public interface CacheManager extends Component {
 	/**
 	 * Configuration des caches.
 	 * Il est préférable d'appeler cette méthode une seule fois par type de cache et au démarrage.
-	 * Il s'agit en effet d'une phase d'initialisation. 
-	 * 
-	 * @param cacheType Type du cache
+	 * Il s'agit en effet d'une phase d'initialisation.
+	 *
 	 * @param context Contexte du cache
-	 * @param maxElementsInMemory Nombre maximal d'éléments mis en cache mémoire
-	 * @param timeToLiveSeconds Durée maximale de conservation des données en cache  
-	 * @param timeToIdleSeconds Durée d'inactivité au delé de laquelle le cache est vidé.
 	 */
-	void addCache(final String cacheType, final String context, final int maxElementsInMemory, final long timeToLiveSeconds, final long timeToIdleSeconds);
+	void addCache(final String context, final CacheConfig cacheConfig);
 
 	/**
 	 * Ajoute Objet dans le cache.

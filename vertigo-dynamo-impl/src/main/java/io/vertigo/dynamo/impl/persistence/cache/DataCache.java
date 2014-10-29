@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.persistence.cache;
 
+import io.vertigo.commons.cache.CacheConfig;
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -54,7 +55,7 @@ final class DataCache {
 		final String context = getContext(dtDefinition);
 		final int maxElementsInMemory = 1000;
 		final long timeToIdleSeconds = timeToLiveSeconds / 2; //longévité déun élément non utilisé
-		cacheManager.addCache("dataCache", context, maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds);
+		cacheManager.addCache(context, new CacheConfig("dataCache", maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds));
 	}
 
 	private static String getContext(final DtDefinition dtDefinition) {
@@ -64,7 +65,7 @@ final class DataCache {
 	/**
 	 * Récupération d'un objet potentiellement mis en cache
 	 * @param uri URI du DTO
-	 * @return null ou DTO 
+	 * @return null ou DTO
 	 */
 	<D extends DtObject> D getDtObject(final URI<D> uri) {
 		final DtDefinition dtDefinition = uri.getDefinition();
@@ -79,14 +80,14 @@ final class DataCache {
 		Assertion.checkNotNull(dto);
 		//---------------------------------------------------------------------
 		final String context = getContext(DtObjectUtil.findDtDefinition(dto));
-		//2.On met à jour l'objet 
+		//2.On met à jour l'objet
 		cacheManager.put(context, createURI(dto), dto);
 	}
 
 	/**
 	 * Récupération de la liste ratine objet potentiellement mise en cache
 	 * @param dtcUri URI de la DTC
-	 * @return null ou DTC 
+	 * @return null ou DTC
 	 */
 	<D extends DtObject> DtList<D> getDtList(final DtListURI dtcUri) {
 		Assertion.checkNotNull(dtcUri);
@@ -103,7 +104,7 @@ final class DataCache {
 		//---------------------------------------------------------------------
 		final String context = getContext(dtc.getDefinition());
 
-		//1.On met à jour les objets 
+		//1.On met à jour les objets
 		for (final DtObject dto : dtc) {
 			cacheManager.put(context, createURI(dto), dto);
 		}

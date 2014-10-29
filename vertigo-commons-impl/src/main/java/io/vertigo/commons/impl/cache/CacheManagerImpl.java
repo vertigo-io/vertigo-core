@@ -18,6 +18,7 @@
  */
 package io.vertigo.commons.impl.cache;
 
+import io.vertigo.commons.cache.CacheConfig;
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.lang.Assertion;
 
@@ -49,8 +50,8 @@ public final class CacheManagerImpl implements CacheManager {
 	//---------------------------------------------------------------------------
 
 	/** {@inheritDoc} */
-	public void addCache(final String cacheType, final String context, final int maxElementsInMemory, final long timeToLiveSeconds, final long timeToIdleSeconds) {
-		cachePlugin.addCache(cacheType, context, maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds);
+	public void addCache(final String context, final CacheConfig cacheConfig) {
+		cachePlugin.addCache(context, cacheConfig);
 	}
 
 	/** {@inheritDoc} */
