@@ -80,6 +80,7 @@ import com.jayway.restassured.specification.RequestSpecification;
 import com.jayway.restassured.specification.ResponseSpecification;
 
 public final class WsRestTest extends AbstractTestCaseJU4 {
+	private static final String HEADER_ACCESS_TOKEN = "x-access-token";
 
 	private static final int WS_PORT = 8088;
 	private static boolean sparkInitialized = false;
@@ -318,6 +319,98 @@ public final class WsRestTest extends AbstractTestCaseJU4 {
 				.statusCode(HttpStatus.SC_OK)
 				.when()
 				.get("/test/export/pdf/2");
+	}
+
+	@Test
+	public void testGrantAccessToken() {
+		loggedAndExpect()
+				.statusCode(HttpStatus.SC_NO_CONTENT)
+				.header(HEADER_ACCESS_TOKEN, Matchers.notNullValue())
+				.when()
+				.get("/test/grantAccess");
+	}
+
+	@Test
+	public void testNoAccessToken() {
+		loggedAndExpect()
+				.statusCode(HttpStatus.SC_FORBIDDEN)
+				.when()
+				.get("/test/limitedAccess/3");
+	}
+
+	@Test
+	public void testBadAccessToken() {
+		loggedAndExpect(given().header(HEADER_ACCESS_TOKEN, "badToken"))
+				.statusCode(HttpStatus.SC_FORBIDDEN)
+				.when()
+				.get("/test/limitedAccess/3");
+	}
+
+	@Test
+	public void testLimitedAccessToken() {
+		final String headerAccessToken = given()
+				.filter(sessionFilter)
+				.get("/test/grantAccess")
+				.header(HEADER_ACCESS_TOKEN);
+
+		loggedAndExpect(given().header(HEADER_ACCESS_TOKEN, headerAccessToken))
+				.body("conId", Matchers.equalTo(3))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/limitedAccess/3");
+	}
+
+	@Test
+	public void testLimitedAccessToken2() {
+		final String headerAccessToken = given()
+				.filter(sessionFilter)
+				.get("/test/grantAccess")
+				.header(HEADER_ACCESS_TOKEN);
+
+		loggedAndExpect(given().header(HEADER_ACCESS_TOKEN, headerAccessToken))
+				.body("conId", Matchers.equalTo(3))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/limitedAccess/3");
+
+		loggedAndExpect(given().header(HEADER_ACCESS_TOKEN, headerAccessToken))
+				.body("conId", Matchers.equalTo(3))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/limitedAccess/3");
+	}
+
+	@Test
+	public void testAccessTokenConsume() {
+		final String headerAccessToken = given()
+				.filter(sessionFilter)
+				.get("/test/grantAccess")
+				.header(HEADER_ACCESS_TOKEN);
+
+		loggedAndExpect(given().header(HEADER_ACCESS_TOKEN, headerAccessToken))
+				.body("conId", Matchers.equalTo(1))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/oneTimeAccess/1");
+	}
+
+	@Test
+	public void testAccessTokenConsume2() {
+		final String headerAccessToken = given()
+				.filter(sessionFilter)
+				.get("/test/grantAccess")
+				.header(HEADER_ACCESS_TOKEN);
+
+		loggedAndExpect(given().header(HEADER_ACCESS_TOKEN, headerAccessToken))
+				.body("conId", Matchers.equalTo(1))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/oneTimeAccess/1");
+
+		loggedAndExpect(given().header(HEADER_ACCESS_TOKEN, headerAccessToken))
+				.statusCode(HttpStatus.SC_FORBIDDEN)
+				.when()
+				.get("/test/oneTimeAccess/1");
 	}
 
 	private ResponseSpecification expect() {

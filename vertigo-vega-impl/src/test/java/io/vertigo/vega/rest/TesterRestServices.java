@@ -294,7 +294,7 @@ public final class TesterRestServices implements RestfulService {
 		return result;
 	}
 
-	@GET("/grantAccess/")
+	@GET("/grantAccess")
 	@AccessTokenPublish
 	public void testAccessToken() {
 		//access token publish
