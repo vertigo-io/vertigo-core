@@ -25,6 +25,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,6 +36,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author npiedeloup
  */
 public final class KFileResponseBuilder {
+	private static final String NOT_ALLOWED_IN_FILENAME = "\\/:*?\"<>|;";
+	
 	private final HttpServletRequest httpRequest;
 	private final HttpServletResponse httpResponse;
 
@@ -52,24 +55,38 @@ public final class KFileResponseBuilder {
 	}
 
 	/**
-	 * Envoi les données au client.
+	 * Envoi les données au client sous forme d'attachment.
 	 * @param kFile Fichier a envoyer
 	 * @return Retour de l'action struts
 	 */
-	public String send(final KFile kFile) {
+	public void send(final KFile kFile) {
+		send(kFile, true);
+	}
+	
+	/**
+	 * Envoi les données au client sous forme de stream.
+	 * @param kFile Fichier a envoyer
+	 * @return Retour de l'action struts
+	 */
+	public void sendAsStream(final KFile kFile) {
+		send(kFile, false);
+	}
+	
+	
+	private String send(final KFile kFile, final boolean attachment) {
 		try {
-			doSend(kFile);
+			doSend(kFile, attachment);
 		} catch (final IOException e) {
 			handleException(e);
 		}
 		return null;
 	}
 
-	private void doSend(final KFile kFile) throws IOException {
+	private void doSend(final KFile kFile, final boolean attachment) throws IOException {
 		final Long length = kFile.getLength();
 		Assertion.checkArgument(length.longValue() < Integer.MAX_VALUE, "Le fichier est trop gros pour être envoyé. Il fait " + length.longValue() / 1024 + " Ko, mais le maximum acceptable est de " + (Integer.MAX_VALUE / 1024) + " Ko.");
 		httpResponse.setContentLength(length.intValue());
-		httpResponse.addHeader("Content-Disposition", encodeFileNameToContentDisposition(httpRequest, kFile.getFileName()));
+		httpResponse.addHeader("Content-Disposition", encodeFileNameToContentDisposition(httpRequest, kFile.getFileName(), attachment));
 		httpResponse.setDateHeader("Last-Modified", kFile.getLastModified().getTime());
 		httpResponse.setContentType(kFile.getMimeType());
 
@@ -91,46 +108,46 @@ public final class KFileResponseBuilder {
 	}
 
 	/**
-	 * Encode un nom de fichier avec des % pour Content-Disposition.
-	 * (US-ASCII + Encode-Word : http://www.ietf.org/rfc/rfc2183.txt, http://www.ietf.org/rfc/rfc2231.txt
-	 * sauf en MS IE et Chrome qui ne supportent pas cet encodage et qui n'en ont pas besoin)
-	 * @param localHttpRequest HttpServletRequest
+	 * Encode fileName according to RFC 5987.
+	 * @param request HttpServletRequest
 	 * @param fileName String
+	 * @param isAttachment boolean is Content an attachment
 	 * @return String
 	 */
-	private static String encodeFileNameToContentDisposition(final HttpServletRequest localHttpRequest, final String fileName) {
+	private static String encodeFileNameToContentDisposition(final HttpServletRequest request, final String fileName,
+			boolean isAttachment) {
 		if (fileName == null) {
 			return "";
 		}
-		// on remplace par des espaces les caractères interdits dans les noms de fichiers : \ / : * ? " < > |
-		final String notAllowed = "\\/:*?\"<>|";
-		final int notAllowedLength = notAllowed.length();
-		String file = fileName;
+		// on remplace par des espaces les caractères interdits dans les noms de fichiers : \ / : * ? " < > | ;
+		final int notAllowedLength = NOT_ALLOWED_IN_FILENAME.length();
+		String cleanFileName = fileName; //only accepted char
 		for (int i = 0; i < notAllowedLength; i++) {
-			file = file.replace(notAllowed.charAt(i), ' ');
+			cleanFileName = cleanFileName.replace(NOT_ALLOWED_IN_FILENAME.charAt(i), '_');
 		}
 
-		final String userAgent = localHttpRequest.getHeader("user-agent");
-		if (userAgent != null && (userAgent.indexOf("MSIE") != -1 || userAgent.indexOf("Chrome") != -1)) {
-			return "attachment;filename=" + file;
-		}
-		final int length = file.length();
+		final int length = cleanFileName.length();
 		final StringBuilder sb = new StringBuilder(length + length / 4);
-		sb.append("attachment;filename*=\"");
-		char c;
-		for (int i = 0; i < length; i++) {
-			c = file.charAt(i);
-			if (isSimpleLetterOrDigit(c)) {
-				sb.append(c);
-			} else {
-				sb.append('%');
-				if (c < 16) {
-					sb.append('0');
-				}
-				sb.append(Integer.toHexString(c));
-			}
+		if (isAttachment) {
+			sb.append("attachment;");
 		}
-		sb.append('\"');
+		String cleanestFileName = cleanFileName.replaceAll(" ", "%20"); //cleanest for default fileName
+		sb.append("filename=" + cleanestFileName);
+		byte[] utf8FileName;
+		try {
+			utf8FileName = cleanFileName.getBytes("utf8"); //Utf8 fileName
+			sb.append(";filename*=UTF-8''");
+			for (byte c : utf8FileName) {
+				if (isSimpleLetterOrDigit(c) || c == '.' || c == '-' || c == '_') {
+					sb.append((char) c);
+				} else {
+					sb.append("%");
+					sb.append(Integer.toHexString(c & 0xff)); // we want byte as a char on one byte
+				}
+			}
+		} catch (UnsupportedEncodingException e) {
+			//nothing : utf-8 unsupported we only use the filename= header
+		}
 		return sb.toString();
 	}
 
@@ -150,7 +167,7 @@ public final class KFileResponseBuilder {
 		}
 	}
 
-	private static boolean isSimpleLetterOrDigit(final char c) {
+	private static boolean isSimpleLetterOrDigit(final byte c) {
 		return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9';
 	}
 }
