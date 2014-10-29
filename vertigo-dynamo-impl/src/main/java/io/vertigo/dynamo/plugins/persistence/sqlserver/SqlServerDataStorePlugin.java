@@ -75,10 +75,10 @@ public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 	@Override
 	protected String createInsertQuery(final DtDefinition dtDefinition) {
 		final String tableName = getTableName(dtDefinition);
-		final StringBuilder request = new StringBuilder();
-		request.append("insert into ");
-		request.append(tableName);
-		request.append(" ( ");
+		final StringBuilder request = new StringBuilder()
+				.append("insert into ")
+				.append(tableName)
+				.append(" ( ");
 
 		String separator = "";
 

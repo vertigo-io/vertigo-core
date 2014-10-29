@@ -64,8 +64,8 @@ public final class PostgreSqlDataStorePlugin extends AbstractSqlDataStorePlugin 
 	@Override
 	protected String createInsertQuery(final DtDefinition dtDefinition) {
 		final String tableName = getTableName(dtDefinition);
-		final StringBuilder request = new StringBuilder();
-		request.append("insert into ").append(tableName).append(" (");
+		final StringBuilder request = new StringBuilder()
+				.append("insert into ").append(tableName).append(" (");
 		String separator = "";
 		for (final DtField dtField : dtDefinition.getFields()) {
 			if (dtField.isPersistent()) {

@@ -80,12 +80,12 @@ abstract class AbstractKScriptTag {
 	 * @return Code java resultant.
 	 */
 	protected static final String getCallForEqualsBooleanFieldPath(final String fieldPath, final String value, final String currentVariableName) {
-		final StringBuilder concatString = new StringBuilder();
-		concatString.append(getCallForFieldPath(fieldPath, currentVariableName));
-		concatString.append(".equals(\"");
-		concatString.append(value);
-		concatString.append("\")");
-		return concatString.toString();
+		return new StringBuilder()
+				.append(getCallForFieldPath(fieldPath, currentVariableName))
+				.append(".equals(\"")
+				.append(value)
+				.append("\")")
+				.toString();
 	}
 
 	/**

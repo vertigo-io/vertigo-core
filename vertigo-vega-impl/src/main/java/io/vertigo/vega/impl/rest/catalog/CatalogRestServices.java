@@ -46,9 +46,9 @@ public final class CatalogRestServices implements RestfulService {
 		final StringBuilder sb = new StringBuilder();
 		for (final EndPointDefinition endPointDefinition : endPointDefinitions) {
 			final String doc = endPointDefinition.getDoc();
-			sb.append(endPointDefinition.getVerb().name()).append(":");
-			sb.append(endPointDefinition.getPath());
-			sb.append("(");
+			sb.append(endPointDefinition.getVerb().name()).append(":")
+					.append(endPointDefinition.getPath())
+					.append("(");
 			String sep = "";
 			for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
 				sb.append(sep);
@@ -57,9 +57,9 @@ public final class CatalogRestServices implements RestfulService {
 			}
 			sb.append(")");
 			if (!doc.isEmpty()) {
-				sb.append(" /*");
-				sb.append(endPointDefinition.getDoc());
-				sb.append("*/");
+				sb.append(" /*")
+						.append(endPointDefinition.getDoc())
+						.append("*/");
 			}
 			result.add(sb.toString());
 			sb.setLength(0);

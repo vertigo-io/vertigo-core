@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
 
 /**
  * Implémentation standard du Listener de réception des événements produits par l'exécution des tachess.
- * 
+ *
  * @author pchretien
  */
 public final class SqlDataBaseListenerImpl implements SqlDataBaseListener {
@@ -71,9 +71,9 @@ public final class SqlDataBaseListenerImpl implements SqlDataBaseListener {
 	/** {@inheritDoc} */
 	public void onPreparedStatementFinish(final SqlStatementStats statementStats) {
 		if (sqlLog.isInfoEnabled()) {
-			final StringBuilder sb = new StringBuilder();
-			sb.append("Execution du prepareStatement : ");
-			sb.append(statementStats.getPreparedStatement().toString());
+			final StringBuilder sb = new StringBuilder()
+					.append("Execution du prepareStatement : ")
+					.append(statementStats.getPreparedStatement().toString());
 			// on passe le preparedStatement en argument pour éviter de
 			// construire la query si pas nécessaire
 			if (statementStats.isSuccess()) {
@@ -96,7 +96,7 @@ public final class SqlDataBaseListenerImpl implements SqlDataBaseListener {
 			sqlLog.info(sb.toString());
 		}
 		//On choisit d'incrémenter l'indicateur.
-		//Se faisant on perd le moyen de faire la moyenne par requete, 
+		//Se faisant on perd le moyen de faire la moyenne par requete,
 		//Si le besoin apparaissait il faudrait creer un sous-process autour des appels
 		analyticsManager.getAgent().incMeasure(ME_DB_TIME, statementStats.getElapsedTime());
 		analyticsManager.getAgent().incMeasure(ME_DB_COMMAND_COUNT, statementStats.getNbModifiedRow() != null ? 1 : 0);

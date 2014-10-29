@@ -91,11 +91,11 @@ public final class NotFoundException extends Exception {
 		String sep = "- ";
 		int i = 1;
 		for (final String msg : errorRuleList) {
-			sb.append("\t");
-			sb.append(i++);
-			sb.append(sep);
-			sb.append(msg);
-			sb.append("\n");
+			sb.append("\t")
+					.append(i++)
+					.append(sep)
+					.append(msg)
+					.append("\n");
 			sep = "- dans ";
 		}
 		return sb.toString();
@@ -119,7 +119,6 @@ public final class NotFoundException extends Exception {
 	 * @return Chaîne de caractère pour la position de l'erreur (ligne, colonne, extrait).
 	 */
 	private String displayPosition() {
-		final StringBuilder sb = new StringBuilder();
 		int start = index > 1 ? s.lastIndexOf('\n', index - 1) + 1 : 0;
 		start = Math.max(index - 150, start);
 		int end = s.indexOf('\n', index + 1);
@@ -133,15 +132,16 @@ public final class NotFoundException extends Exception {
 			pointeur.append(' ');
 		}
 		pointeur.append("^^^");
-		sb.append("Erreur à la ligne ");
-		sb.append(getLine());
-		sb.append(" colonne ");
-		sb.append(index - start);
-		sb.append("\n\tvers : ");
-		sb.append(s.substring(start, end).replace('\t', ' '));
-		sb.append("\n\t      ");
-		sb.append(pointeur);
-		return sb.toString();
+
+		return new StringBuilder("Erreur à la ligne ")
+				.append(getLine())
+				.append(" colonne ")
+				.append(index - start)
+				.append("\n\tvers : ")
+				.append(s.substring(start, end).replace('\t', ' '))
+				.append("\n\t      ")
+				.append(pointeur)
+				.toString();
 	}
 
 	/**
