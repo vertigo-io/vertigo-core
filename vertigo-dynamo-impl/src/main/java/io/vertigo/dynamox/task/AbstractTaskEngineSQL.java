@@ -23,8 +23,8 @@ import io.vertigo.commons.script.SeparatorType;
 import io.vertigo.commons.script.parser.ScriptSeparator;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
-import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
 import io.vertigo.dynamo.database.connection.SqlConnection;
+import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.domain.metamodel.DataType;
@@ -77,7 +77,7 @@ import java.util.Map;
  * WHERE TOTO_ID = #LON_TOTO_ID# <br>
  * AND   NOM like #DTO_FILTRE.NOM#||'%' <br>
  * AND   TYPE_ID IN (#DTC_TYPE.0.TYPE_ID#,#DTC_TYPE.1.TYPE_ID#,#DTC_TYPE.2.TYPE_ID#) <br>
- * 
+ *
  * De plus permet de créer du SQL dynamiquement interprété.
  * Les paramètres IN de la tache peuvent être invoqués pour construire
  * la requête SQL.
@@ -87,7 +87,7 @@ import java.util.Map;
  *       <%if (dtoProduitCritere.getPrdLibelle()!=null) {%>
  *               Where PRD_LIBELLE like #DTO_PRODUIT_CRITERE.PRD_LIBELLE#||'%%'
  *       <%}%> order by <%=1%>";
- * 
+ *
  * @author  pchretien, npiedeloup
  * @param <S> Type de Statement utilisé
  */
@@ -180,12 +180,12 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 */
 	protected String getSqlQuery() {
 		//On ajoute dans la requête SQL le nom de la tache utilisée
-		return preProcessQuery(new StringBuilder()//
-		.append("/* TaskEngine : ")//
-		.append(getTaskDefinition().getName())//
-		.append(" */\n")//
-		.append(getTaskDefinition().getRequest())//
-		.toString());
+		return preProcessQuery(new StringBuilder()
+				.append("/* TaskEngine : ")
+				.append(getTaskDefinition().getName())
+				.append(" */\n")
+				.append(getTaskDefinition().getRequest())
+				.toString());
 	}
 
 	/**
@@ -254,14 +254,14 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		//----------------------------------------------------------------------
 		for (final TaskEngineSQLParam param : params) {
 			switch (param.getType()) {
-			case OUT:
-			case INOUT:
-				setOutParameter(cs, param);
-				break;
-			case IN:
-			default:
-				//On ne calcule rien
-				break;
+				case OUT:
+				case INOUT:
+					setOutParameter(cs, param);
+					break;
+				case IN:
+				default:
+					//On ne calcule rien
+					break;
 			}
 		}
 	}
@@ -310,15 +310,15 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		//----------------------------------------------------------------------
 		for (final TaskEngineSQLParam param : params) {
 			switch (param.getType()) {
-			case IN:
-			case INOUT:
-				final Integer rowNumber = param.isList() ? param.getRowNumber() : null;
-				setParameter(statement, param, rowNumber);
-				break;
-			case OUT:
-			default:
-				//On ne fait rien
-				break;
+				case IN:
+				case INOUT:
+					final Integer rowNumber = param.isList() ? param.getRowNumber() : null;
+					setParameter(statement, param, rowNumber);
+					break;
+				case OUT:
+				default:
+					//On ne fait rien
+					break;
 			}
 		}
 	}

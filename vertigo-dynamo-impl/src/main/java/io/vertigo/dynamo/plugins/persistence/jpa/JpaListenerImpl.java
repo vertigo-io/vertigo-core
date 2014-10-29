@@ -67,9 +67,9 @@ final class JpaListenerImpl {
 
 	public void onFinish(final String query, final boolean success, final long elapsedTime, final Long nbModifiedRow, final Long nbSelectedRow) {
 		if (sqlLog.isInfoEnabled()) {
-			final StringBuilder sb = new StringBuilder();
-			sb.append("Execution du prepareStatement : ");
-			sb.append(query);
+			final StringBuilder sb = new StringBuilder()
+					.append("Execution du prepareStatement : ")
+					.append(query);
 			// on passe le preparedStatement en argument pour éviter de
 			// construire la query si pas nécessaire
 			if (success) {

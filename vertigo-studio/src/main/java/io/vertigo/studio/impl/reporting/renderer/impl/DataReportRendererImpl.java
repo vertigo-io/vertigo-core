@@ -67,10 +67,11 @@ final class DataReportRendererImpl implements DataReportRenderer {
 	}
 
 	private static void startRender(final StringBuilder sb) {
-		sb.append("<html>");
-		sb.append("<head>");
-		sb.append("</head>");
-		sb.append("<body>");
+		sb
+				.append("<html>")
+				.append("<head>")
+				.append("</head>")
+				.append("<body>");
 	}
 
 	private static void endRender(final StringBuilder sb) {

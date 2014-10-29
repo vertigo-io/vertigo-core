@@ -140,16 +140,17 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 			openOfficeConnection.connect(); //Attention déjà observé : connection ne s'établissant pas et pas de timeout
 		} catch (final ConnectException connectException) {
 			//On précise les causes possibles de l'erreur.
-			final StringBuilder sb = new StringBuilder();
-			sb.append("Dans le fichier OOoBasePath\\Basis\\share\\registry\\data\\org\\openoffice\\Setup.xcu.\n");
-			sb.append("Juste après cette ligne-ci : <node oor:name=\"Office\">\n");
-			sb.append("Il faut ajouter les lignes suivantes :\n");
-			sb.append("<prop oor:name=\"ooSetupConnectionURL\" oor:type=\"xs:string\">\n");
-			sb.append("<value>socket,host=localhost,port=").append(unoPort).append(";urp;</value>\n");
-			sb.append("</prop>\n");
-			sb.append("Ensuite, il faut lancer OpenOffice... et l'agent OpenOffice si il tourne.");
+			final String msg = new StringBuilder()
+					.append("Dans le fichier OOoBasePath\\Basis\\share\\registry\\data\\org\\openoffice\\Setup.xcu.\n")
+					.append("Juste après cette ligne-ci : <node oor:name=\"Office\">\n")
+					.append("Il faut ajouter les lignes suivantes :\n")
+					.append("<prop oor:name=\"ooSetupConnectionURL\" oor:type=\"xs:string\">\n")
+					.append("<value>socket,host=localhost,port=").append(unoPort).append(";urp;</value>\n")
+					.append("</prop>\n")
+					.append("Ensuite, il faut lancer OpenOffice... et l'agent OpenOffice si il tourne.")
+					.toString();
 
-			throw new IOException("Impossible de se connecter à OpenOffice, vérifier qu'il est bien en écoute sur le port " + unoPort + ".\n\n" + sb.toString(), connectException);
+			throw new IOException("Impossible de se connecter à OpenOffice, vérifier qu'il est bien en écoute sur le port " + unoPort + ".\n\n" + msg, connectException);
 		}
 		return openOfficeConnection;
 	}

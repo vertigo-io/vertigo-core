@@ -101,11 +101,11 @@ public final class ConstraintBigDecimal extends AbstractConstraintImpl<String, B
 	/** {@inheritDoc} */
 	@Override
 	public String getPropertyValue() {
-		final StringBuilder numberFormat = new StringBuilder()//
-				.append(maxPrecision.toString())//
-				.append(SEPARATOR_ARGS)//
-				.append(maxScale.toString());
-		return numberFormat.toString();
+		return new StringBuilder()
+				.append(maxPrecision.toString())
+				.append(SEPARATOR_ARGS)
+				.append(maxScale.toString())
+				.toString();
 	}
 
 }

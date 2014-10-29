@@ -35,9 +35,9 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.persistence.Criteria;
+import io.vertigo.dynamo.persistence.DataStorePlugin;
 import io.vertigo.dynamo.persistence.FilterCriteria;
 import io.vertigo.dynamo.persistence.FilterCriteriaBuilder;
-import io.vertigo.dynamo.persistence.DataStorePlugin;
 import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaDataBase;
 import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaResource;
 import io.vertigo.dynamo.transaction.KTransaction;
@@ -167,7 +167,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			//on charge toute la liste
 			dtc = loadList(uri.getDtDefinition(), null, null);
 		} else if (uri instanceof DtListURIForCriteria<?>) {
-			//@todo : A voir 
+			//@todo : A voir
 			final DtListURIForCriteria<D> dtListURIForDtCriteria = (DtListURIForCriteria<D>) uri;
 			dtc = loadList(uri.getDtDefinition(), dtListURIForDtCriteria.getCriteria(), dtListURIForDtCriteria.getMaxRows());
 		} else {
@@ -310,13 +310,13 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			final DtField fkField = associationNode.getDtDefinition().getIdField().get();
 			final String fkFieldName = fkField.getName();
 
-			final StringBuilder request = new StringBuilder(" select t.* from ");
-			request.append(dtDefinition.getLocalName()).append(" t");
-			//On établit une jointure fermée entre la pk et la fk de la collection recherchée.
-			request.append(" join ").append(joinTableName);
-			request.append(" j on j.").append(joinDtField.getName()).append(" = t.").append(pkFieldName);
-			//Condition de la recherche
-			request.append(" where j.").append(fkFieldName).append(" = :").append(fkFieldName);
+			final StringBuilder request = new StringBuilder(" select t.* from ")
+					.append(dtDefinition.getLocalName()).append(" t")
+					//On établit une jointure fermée entre la pk et la fk de la collection recherchée.
+					.append(" join ").append(joinTableName)
+					.append(" j on j.").append(joinDtField.getName()).append(" = t.").append(pkFieldName)
+					//Condition de la recherche
+					.append(" where j.").append(fkFieldName).append(" = :").append(fkFieldName);
 
 			final URI<? extends DtObject> uri = dtcUri.getSource();
 

@@ -219,10 +219,10 @@ public final class EndPointParam {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return new StringBuilder()//
-				.append(type)//
-				.append(" ")//
-				.append(fullName)//
+		return new StringBuilder()
+				.append(type)
+				.append(" ")
+				.append(fullName)
 				.toString();
 	}
 }

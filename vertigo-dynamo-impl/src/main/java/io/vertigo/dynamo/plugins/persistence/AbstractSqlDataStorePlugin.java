@@ -138,10 +138,10 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 		final DtField pk = dtDefinition.getIdField().get();
 		final String pkFieldName = pk.getName();
-		final StringBuilder request = new StringBuilder();
-		request.append(" select * from ");
-		request.append(tableName);
-		request.append(" where ").append(pkFieldName).append(" = #").append(pkFieldName).append('#');
+		final StringBuilder request = new StringBuilder()
+				.append(" select * from ")
+				.append(tableName)
+				.append(" where ").append(pkFieldName).append(" = #").append(pkFieldName).append('#');
 		postAlterLoadRequest(request);
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
@@ -502,9 +502,9 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final String taskName = TASK.TK_DELETE.toString() + '_' + tableName;
 
 		final String pkFieldName = pk.getName();
-		final StringBuilder request = new StringBuilder();
-		request.append("delete from ").append(tableName);
-		request.append(" where ").append(pkFieldName).append(" = #").append(pkFieldName).append('#');
+		final StringBuilder request = new StringBuilder()
+		.append("delete from ").append(tableName)
+		.append(" where ").append(pkFieldName).append(" = #").append(pkFieldName).append('#');
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineProc.class)

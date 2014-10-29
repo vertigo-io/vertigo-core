@@ -95,10 +95,9 @@ public final class UiSecurityTokenManagerImpl implements UiSecurityTokenManager 
 		final Option<UserSession> userSessionOption = securityManager.getCurrentUserSession();
 		Assertion.checkArgument(userSessionOption.isDefined(), "UserSession is mandatory for security token");
 		//---------------------------------------------------------------------
-		final StringBuilder sb = new StringBuilder(36 + 1 + 36);
-		sb.append(getUserTokenPart()).append(":").append(objectUUID);
-		final String tokenKey = sb.toString();
-		return tokenKey;
+		return new StringBuilder(36 + 1 + 36)
+				.append(getUserTokenPart()).append(":").append(objectUUID)
+				.toString();
 	}
 
 	private String getUserTokenPart() {

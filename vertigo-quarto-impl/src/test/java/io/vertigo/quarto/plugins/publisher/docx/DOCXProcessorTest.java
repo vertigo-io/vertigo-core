@@ -233,19 +233,20 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 	 * @return le docx.
 	 */
 	private static String getDOCX(final String content) {
-		final StringBuilder sb = new StringBuilder();
-		sb.append(getDOCXHeader());
-		sb.append(content);
-		sb.append(getDOCXFooter());
-		return sb.toString();
+		return new StringBuilder()
+				.append(getDOCXHeader())
+				.append(content)
+				.append(getDOCXFooter())
+				.toString();
 	}
 
 	private static void appendBESTag(final String tagType, final StringBuilder sb) {
-		sb.append("<w:r>");
-		sb.append("<w:fldChar w:fldCharType=\"");
-		sb.append(tagType);
-		sb.append("\"/>");
-		sb.append("</w:r>");
+		sb
+				.append("<w:r>")
+				.append("<w:fldChar w:fldCharType=\"")
+				.append(tagType)
+				.append("\"/>")
+				.append("</w:r>");
 	}
 
 	// METHODES DE CONSTRUCTION DOCX.

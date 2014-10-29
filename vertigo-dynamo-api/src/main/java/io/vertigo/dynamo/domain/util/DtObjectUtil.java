@@ -63,7 +63,7 @@ public final class DtObjectUtil {
 	}
 
 	/**
-	 * @return Valeur de la PK 
+	 * @return Valeur de la PK
 	 */
 	public static Object getId(final DtObject dto) {
 		Assertion.checkNotNull(dto);
@@ -76,12 +76,12 @@ public final class DtObjectUtil {
 	/**
 	 * Récupération d'une URI de DTO.
 	 * On récupère l'URI d'un DTO référencé par une association.
-	 * Il est nécessaire que l'association soit simple. 
-	 * Si l'association est multiple on ne récupère pas une URI mais une DtListURI, c'est à dire le pointeur vers une liste.  
-	 * 
-	 *  On recherche une URI correspondant à une association. 
+	 * Il est nécessaire que l'association soit simple.
+	 * Si l'association est multiple on ne récupère pas une URI mais une DtListURI, c'est à dire le pointeur vers une liste.
+	 *
+	 *  On recherche une URI correspondant à une association.
 	 *  Exemple : Une Commande possède un bénéficiaire.
-	 *  Dans cetexemple on recherche l'URI du bénéficiaire à partir de l'objet commande. 
+	 *  Dans cetexemple on recherche l'URI du bénéficiaire à partir de l'objet commande.
 
 	 * @param associationDefinitionName Nom de la définition d'une association
 	 * @param dto DtObject
@@ -111,7 +111,7 @@ public final class DtObjectUtil {
 	/**
 	 * Récupération d'une URI de Collection à partir d'un dto
 	 * @param dto DtObject
-	 * @param associationDefinitionName Nom de l'association 
+	 * @param associationDefinitionName Nom de l'association
 	 * @param roleName Nom du role
 	 * @return URI de la collection référencée.
 	 */
@@ -139,9 +139,9 @@ public final class DtObjectUtil {
 	public static String toString(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//---------------------------------------------------------------------
-		final StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(findDtDefinition(dto).getName());
-		stringBuilder.append('(');
+		final StringBuilder stringBuilder = new StringBuilder()
+				.append(findDtDefinition(dto).getName())
+				.append('(');
 		boolean first = true;
 		for (final DtField dtField : findDtDefinition(dto).getFields()) {
 			if (!first) {
