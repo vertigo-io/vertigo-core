@@ -313,7 +313,6 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 
 	private String getValueAsString(final DtField dtField) {
 		if (hasFormatError(dtField)) {
-			//return inputBuffer.get(dtField.getName())[0];
 			return inputBuffer.get(dtField.getName());
 		}
 		final Object value = doGetTypedValue(dtField);
@@ -340,17 +339,13 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 			//Si le champs n'a pas d'erreur
 			//On regarde pour vider le buffer
 			final DtField dtField = getDtField(constFieldName);
-			if (!uiObjectErrors.hasError(dtField)) {
-				// ======================================================================
-				// ======================Mise à jour différentielle du BUFFER============
-				// ======================================================================
-				// égalité entre la valeur d'origine et la valeur saisie.
-				if (BeanUtil.isNullableEquals(dtField.getDataAccessor().getValue(dto), doGetTypedValue(dtField))) {
-					// Si la valeur saisie est identique à la valeur d'origine
-					// alors on purge le buffer de saisie.
-					modifiedTypedValues.remove(constFieldName);
-					unmodifiedFieldNameSet.add(constFieldName);
-				}
+			// Mise à jour différentielle du BUFFER : check égalité entre la valeur d'origine et la valeur saisie.
+			if (!uiObjectErrors.hasError(dtField)
+					&& BeanUtil.isNullableEquals(dtField.getDataAccessor().getValue(dto), doGetTypedValue(dtField))) {
+				// Si la valeur saisie est identique à la valeur d'origine
+				// alors on purge le buffer de saisie.
+				modifiedTypedValues.remove(constFieldName);
+				unmodifiedFieldNameSet.add(constFieldName);
 			}
 		}
 		for (final String fieldName : unmodifiedFieldNameSet) {
@@ -423,10 +418,8 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 			final Serializable typedValue = (Serializable) formatter.stringToValue(value, dtField.getDomain().getDataType());
 			doSetTypedValue(dtField.getName(), typedValue);
 			return formatter.valueToString(typedValue, dtField.getDomain().getDataType());
-		} catch (final FormatterException e) {
-			/**
-			 * Erreur de typage
-			 */
+		} catch (final FormatterException e) { //We don't log nor rethrow this exception
+			/** Erreur de typage.	 */
 			doSetTypedValue(dtField.getName(), FORMAT_ERROR_VALUE);
 			return value;
 		}
@@ -445,32 +438,25 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	/** {@inheritDoc} */
 	@Override
 	public boolean containsKey(final Object arg0) {
-		//System.out.println("containsKey(" + arg0 + ") => " + keysIndex.containsKey(arg0));
 		return keysIndex.containsKey(arg0);
 	}
 
 	/** Non implémenté. */
 	@Override
 	public void clear() {
-		//System.out.println("clear()");
 		throw new UnsupportedOperationException("Non implémenté");
-		//return inputBuffer.clear();
 	}
 
 	/** Non implémenté. */
 	@Override
 	public boolean containsValue(final Object arg0) {
-		//System.out.println("containsValue(" + arg0 + ")");
 		throw new UnsupportedOperationException("Non implémenté");
-		//return inputBuffer.containsValue(arg0);
 	}
 
 	/** Non implémenté. */
 	@Override
 	public Set<java.util.Map.Entry<String, Serializable>> entrySet() {
-		//System.out.println("entrySet()");
 		throw new UnsupportedOperationException("Non implémenté");
-		//return inputBuffer.entrySet();
 	}
 
 	/** {@inheritDoc} */
@@ -482,24 +468,19 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	/** {@inheritDoc} */
 	@Override
 	public Set<String> keySet() {
-		//System.out.println("keySet()");
 		return keysIndex.keySet();
 	}
 
 	/** Non implémenté. */
 	@Override
 	public void putAll(final Map<? extends String, ? extends Serializable> arg0) {
-		//System.out.println("putAll(" + arg0 + ")");
 		throw new UnsupportedOperationException("Non implémenté");
-		//inputBuffer.putAll(arg0);
 	}
 
 	/** Non implémenté. */
 	@Override
 	public String remove(final Object arg0) {
-		//System.out.println("remove(" + arg0 + ")");
 		throw new UnsupportedOperationException("Non implémenté");
-		//return inputBuffer.remove(arg0);
 	}
 
 	/** {@inheritDoc} */
@@ -511,8 +492,6 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	/** Non implémenté. */
 	@Override
 	public Collection<Serializable> values() {
-		//System.out.println("values()");
 		throw new UnsupportedOperationException("Non implémenté");
-		//return inputBuffer.values();
 	}
 }
