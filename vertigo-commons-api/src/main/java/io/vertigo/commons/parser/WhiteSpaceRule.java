@@ -46,6 +46,7 @@ public final class WhiteSpaceRule implements Rule<Void>, Parser<Void> {
 		return "blanks";
 	}
 
+	/** {@inheritDoc} */
 	public Parser<Void> createParser() {
 		return this;
 	}
@@ -57,13 +58,11 @@ public final class WhiteSpaceRule implements Rule<Void>, Parser<Void> {
 		index = rule.createParser().parse(text, index);
 
 		//Suppression des commentaires  /*xxxxxxxxxxxxxxx*/
-		while (text.length() > index + 2 && text.substring(index, index + 2).equals("/*")) {
-			//final int startComment = index;
+		while (text.length() > index + 2 && "/*".equals(text.substring(index, index + 2))) {
 			index += 2;
 			lastIndex = index;
 			index = text.indexOf("*/", index);
 			if (index < 0) {
-				//throw new NotFoundException(text, startComment, null, "Fermeture des commentaires */ non trouvée");
 				throw new NotFoundException(text, lastIndex, null, "Fermeture des commentaires */ non trouvée");
 			}
 			index += 2;
@@ -73,6 +72,7 @@ public final class WhiteSpaceRule implements Rule<Void>, Parser<Void> {
 		return index;
 	}
 
+	/** {@inheritDoc} */
 	public Void get() {
 		return null;
 	}
