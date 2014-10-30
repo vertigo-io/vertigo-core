@@ -20,6 +20,8 @@ package io.vertigo.struts2.impl.interceptor;
 
 import io.vertigo.struts2.core.AbstractActionSupport;
 
+import java.io.Serializable;
+
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 import com.opensymphony.xwork2.interceptor.PreResultListener;
@@ -36,14 +38,18 @@ public class KActionContextStoreInterceptor extends AbstractInterceptor {
 	@Override
 	public String intercept(final ActionInvocation actionInvocation) throws Exception {
 		actionInvocation.addPreResultListener(exceptionPreResultListener);
-		//try {
 		return actionInvocation.invoke();
-		//} finally {
-
-		//}
 	}
 
-	private static class StoreContextPreResultListener implements PreResultListener {
+	private static class StoreContextPreResultListener implements PreResultListener, Serializable {
+		private static final long serialVersionUID = 3177335059999813691L;
+
+		/**
+		 * Constructor.
+		 */
+		public StoreContextPreResultListener() {
+			//nothing
+		}
 
 		/** {@inheritDoc} */
 		@Override
