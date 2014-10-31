@@ -155,6 +155,7 @@ public final class WsRestHandler {
 					.beginComponent(ComponentCmdRestServices.class).endComponent() //
 					.beginComponent(ContactsRestServices.class).endComponent() //
 					.beginComponent(TesterRestServices.class).endComponent() //
+					.beginComponent(TesterFileDownload.class).endComponent() //
 				.endModule()
 				.beginModule("restCore").withNoAPI().withInheritance(Object.class) //
 					.beginComponent(RestManager.class, RestManagerImpl.class)

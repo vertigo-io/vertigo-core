@@ -304,7 +304,7 @@ public final class WsRestTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testExportContacts() {
 		loggedAndExpect()
-				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename*=\"contacts%2epdf\""))
+				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=contact2.pdf;filename*=UTF-8''contact2.pdf"))
 				.header("Content-Length", Matchers.equalTo("2572"))
 				.statusCode(HttpStatus.SC_OK)
 				.when()
@@ -314,7 +314,7 @@ public final class WsRestTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testExportOneContact() {
 		loggedAndExpect()
-				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename*=\"contact2%2epdf\""))
+				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=contact2.pdf;filename*=UTF-8''contact2.pdf"))
 				.header("Content-Length", Matchers.equalTo("1703"))
 				.statusCode(HttpStatus.SC_OK)
 				.when()

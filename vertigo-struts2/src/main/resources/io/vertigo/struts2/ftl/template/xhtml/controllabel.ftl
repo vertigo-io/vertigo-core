@@ -24,7 +24,8 @@
  		<em class="required">*</em><#t/>
 	</#if>	
 <#else>
-	<#if (!(parameters.nameValue?? && parameters.nameValue?is_boolean) && util.required(fieldName))>
+	<#-- No required mark if : not required field or if label invisible (trim return an empty string) --> 
+	<#if (parameters.label?trim?length > 0) && (!(parameters.nameValue?? && parameters.nameValue?is_boolean) && util.required(fieldName))>
 		<em class="required">*</em><#t/>
 	</#if>
 </#if>
