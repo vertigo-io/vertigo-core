@@ -1,0 +1,4 @@
+lib <groupId>org.odftoolkit</groupId><artifactId>odfdom-java</artifactId>
+in version 0.7 has suddenly disappeared from mvn repository.
+
+This plugin should be updated .... but the new version is not compatible with the oldest.

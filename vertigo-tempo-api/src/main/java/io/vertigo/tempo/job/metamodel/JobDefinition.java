@@ -23,8 +23,8 @@ import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.lang.Assertion;
 
 /**
- * JobDefinition defines the task that's must be excecuted.
- * Task must extend Runnable.
+ * JobDefinition décrit le travail qu'il faut exécuter.
+ * La tache à exécuter oit étendre Runnable.
  * @author pchretien
  */
 @DefinitionPrefix("JB")
