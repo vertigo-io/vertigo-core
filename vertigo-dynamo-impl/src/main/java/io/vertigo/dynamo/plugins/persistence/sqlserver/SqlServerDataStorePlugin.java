@@ -74,14 +74,10 @@ public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	protected String createInsertQuery(final DtDefinition dtDefinition) {
-		final StringBuilder request = new StringBuilder();
-		createInsert(request, dtDefinition);
-		return request.toString();
-	}
 
-	private void createInsert(final StringBuilder request, final DtDefinition dtDefinition) {
 		final String tableName = getTableName(dtDefinition);
-		request.append("insert into ").append(tableName).append(" ( ");
+		final StringBuilder request = new StringBuilder()
+				.append("insert into ").append(tableName).append(" ( ");
 
 		String separator = "";
 
@@ -109,6 +105,7 @@ public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 		}
 
 		request.append(") ");
+		return request.toString();
 	}
 
 	private void onPrimaryKey(final StringBuilder request, final DtDefinition dtDefinition, final DtField dtField) {

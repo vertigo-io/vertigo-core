@@ -63,15 +63,10 @@ public final class PostgreSqlDataStorePlugin extends AbstractSqlDataStorePlugin 
 	/** {@inheritDoc} */
 	@Override
 	protected String createInsertQuery(final DtDefinition dtDefinition) {
-		final StringBuilder request = new StringBuilder();
-		createInsert(request, dtDefinition);
-		request.append(";");
-		return request.toString();
-	}
 
-	private void createInsert(final StringBuilder request, final DtDefinition dtDefinition) {
 		final String tableName = getTableName(dtDefinition);
-		request.append("insert into ").append(tableName).append(" (");
+		final StringBuilder request = new StringBuilder()
+				.append("insert into ").append(tableName).append(" (");
 
 		String separator = "";
 		for (final DtField dtField : dtDefinition.getFields()) {
@@ -94,7 +89,8 @@ public final class PostgreSqlDataStorePlugin extends AbstractSqlDataStorePlugin 
 				separator = ", ";
 			}
 		}
-		request.append(")");
+		request.append(");");
+		return request.toString();
 	}
 
 	private void onPrimaryKey(final StringBuilder request, final DtDefinition dtDefinition, final DtField dtField) {
