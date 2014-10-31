@@ -60,44 +60,23 @@ public final class PostgreSqlDataStorePlugin extends AbstractSqlDataStorePlugin 
 		return sequencePrefix + getTableName(dtDefinition);
 	}
 
-	/** {@inheritDoc} */
 	@Override
-	protected String createInsertQuery(final DtDefinition dtDefinition) {
-		final StringBuilder request = new StringBuilder();
-		createInsert(request, dtDefinition);
+	protected void beforeInsert(final StringBuilder request) {
+		//
+	}
+
+	@Override
+	protected void afterInsert(final StringBuilder request, final DtDefinition dtDefinition) {
 		request.append(";");
-		return request.toString();
 	}
 
-	private void createInsert(final StringBuilder request, final DtDefinition dtDefinition) {
-		final String tableName = getTableName(dtDefinition);
-		request.append("insert into ").append(tableName).append(" (");
-
-		String separator = "";
-		for (final DtField dtField : dtDefinition.getFields()) {
-			if (dtField.isPersistent()) {
-				request.append(separator);
-				request.append(dtField.getName());
-				separator = ", ";
-			}
-		}
-		request.append(") values (");
-		separator = "";
-		for (final DtField dtField : dtDefinition.getFields()) {
-			if (dtField.isPersistent()) {
-				request.append(separator);
-				if (dtField.getType() != DtField.FieldType.PRIMARY_KEY) {
-					request.append(" #DTO.").append(dtField.getName()).append('#');
-				} else {
-					onPrimaryKey(request, dtDefinition, dtField);
-				}
-				separator = ", ";
-			}
-		}
-		request.append(")");
+	@Override
+	protected boolean acceptOnInsert(final DtField dtField) {
+		return dtField.isPersistent();
 	}
 
-	private void onPrimaryKey(final StringBuilder request, final DtDefinition dtDefinition, final DtField dtField) {
+	@Override
+	protected void onPrimaryKey(final StringBuilder request, final DtDefinition dtDefinition, final DtField dtField) {
 		request.append("nextval('").append(getSequenceName(dtDefinition)).append("')");
 	}
 
