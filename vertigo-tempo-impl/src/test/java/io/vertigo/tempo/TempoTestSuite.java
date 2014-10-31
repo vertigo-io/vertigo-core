@@ -34,13 +34,10 @@ import org.junit.runners.Suite.SuiteClasses;
  * @author pchretien
  */
 @RunWith(Suite.class)
-@SuiteClasses({ //
-MailManagerTest.class,
+@SuiteClasses({
+		MailManagerTest.class,
 		JobManagerTest.class,
-		//--work
 		WorkManagerTest.class,
-		//RedisWorkManagerTest.class, DistributedWorkManagerTest.class, //REST
-		//--
 		RedisWorkManagerTest.class,
 		RestWorkManagerTest.class,
 })
