@@ -75,9 +75,17 @@ public final class OracleDataStorePlugin extends AbstractSqlDataStorePlugin {
 	protected String createInsertQuery(final DtDefinition dtDefinition) {
 		final DtField pk = dtDefinition.getIdField().get();
 
+		final StringBuilder request = new StringBuilder("begin ");
+		createInsert(request, dtDefinition);
+		request.append(" returning ").append(pk.getName()).append(" into %DTO.").append(pk.getName()).append("%;");
+		request.append("end;");
+		return request.toString();
+	}
+
+	private void createInsert(final StringBuilder request, final DtDefinition dtDefinition) {
+
 		final String tableName = getTableName(dtDefinition);
-		final StringBuilder request = new StringBuilder()
-				.append("begin insert into ").append(tableName).append(" ( ");
+		request.append("insert into ").append(tableName).append(" ( ");
 
 		String separator = "";
 		for (final DtField dtField : dtDefinition.getFields()) {
@@ -100,9 +108,7 @@ public final class OracleDataStorePlugin extends AbstractSqlDataStorePlugin {
 				separator = ", ";
 			}
 		}
-		request.append(") returning ").append(pk.getName()).append(" into %DTO.").append(pk.getName()).append("%;");
-		request.append("end;");
-		return request.toString();
+		request.append(")");
 	}
 
 	private void onPrimaryKey(final StringBuilder request, final DtDefinition dtDefinition, final DtField dtField) {
