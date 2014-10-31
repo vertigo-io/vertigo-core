@@ -21,8 +21,6 @@ package io.vertigo.quarto.publisher.impl;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.KFile;
-import io.vertigo.dynamo.work.WorkManager;
-import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.publisher.PublisherManager;
 import io.vertigo.quarto.publisher.model.PublisherData;
@@ -30,7 +28,6 @@ import io.vertigo.quarto.publisher.model.PublisherData;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
@@ -42,37 +39,20 @@ import javax.inject.Inject;
 public final class PublisherManagerImpl implements PublisherManager {
 	private final MergerPlugin mergerPlugin;
 	private final FileManager fileManager;
-	private final WorkManager workManager;
 
 	/**
 	 * Constructeur.
-	 * @param workManager Manager des works
 	 * @param scriptManager Manager des scripts
 	 * @param fileManager Manager des fichiers
 	 */
 	@Inject
-	public PublisherManagerImpl(final WorkManager workManager, final ScriptManager scriptManager, final FileManager fileManager, final MergerPlugin mergerPlugin) {
-		Assertion.checkNotNull(workManager);
+	public PublisherManagerImpl(final ScriptManager scriptManager, final FileManager fileManager, final MergerPlugin mergerPlugin) {
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkNotNull(scriptManager);
 		Assertion.checkNotNull(mergerPlugin);
 		//---------------------------------------------------------------------
-		this.workManager = workManager;
 		this.fileManager = fileManager;
 		this.mergerPlugin = mergerPlugin;
-	}
-
-	/** {@inheritDoc} */
-	public void publishASync(final String fileName, final URL modelFileURL, final PublisherData data, final WorkResultHandler<KFile> workResultHandler) {
-		Assertion.checkNotNull(fileName);
-		Assertion.checkNotNull(modelFileURL);
-		Assertion.checkNotNull(data);
-		//---------------------------------------------------------------------
-		workManager.schedule(new Callable<KFile>() {
-			public KFile call() {
-				return publish(fileName, modelFileURL, data);
-			}
-		}, workResultHandler);
 	}
 
 	/** {@inheritDoc} */

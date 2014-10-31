@@ -19,55 +19,35 @@
 package io.vertigo.quarto.impl.converter;
 
 import io.vertigo.dynamo.file.model.KFile;
-import io.vertigo.dynamo.work.WorkManager;
-import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.converter.ConverterManager;
-
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 /**
  * Implémentation standard du manager des conversions de documents.
- * 
+ *
  * Conversions acceptés entre formats :
  *  - ODT
  *  - DOC
  *  - RTF
  *  - CSV
  *  - PDF
- * 
+ *
  * @author pchretien, npiedeloup
  */
 public final class ConverterManagerImpl implements ConverterManager {
-	private final WorkManager workManager;
 	private final ConverterPlugin converterPlugin;
 
 	/**
 	 * Constructeur.
-	 * @param workManager Manager des works
 	 */
 	@Inject
-	public ConverterManagerImpl(final WorkManager workManager, final ConverterPlugin converterPlugin) {
+	public ConverterManagerImpl(final ConverterPlugin converterPlugin) {
 		// La connexion au serveur openOffice est instanciée lors du start
-		Assertion.checkNotNull(workManager);
 		Assertion.checkNotNull(converterPlugin);
 		//---------------------------------------------------------------------
-		this.workManager = workManager;
 		this.converterPlugin = converterPlugin;
-	}
-
-	/** {@inheritDoc} */
-	public void convertASync(final KFile inputFile, final String format, final WorkResultHandler<KFile> workResultHandler) {
-		Assertion.checkNotNull(inputFile);
-		Assertion.checkArgNotEmpty(format);
-		// ---------------------------------------------------------------------
-		workManager.schedule(new Callable<KFile>() {
-			public KFile call() {
-				return convert(inputFile, format);
-			}
-		}, workResultHandler);
 	}
 
 	/** {@inheritDoc} */

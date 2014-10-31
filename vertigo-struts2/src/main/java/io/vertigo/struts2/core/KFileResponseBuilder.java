@@ -32,12 +32,12 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Builder d'envoi de Fichier.
- * 
+ *
  * @author npiedeloup
  */
 public final class KFileResponseBuilder {
 	private static final String NOT_ALLOWED_IN_FILENAME = "\\/:*?\"<>|;";
-	
+
 	private final HttpServletRequest httpRequest;
 	private final HttpServletResponse httpResponse;
 
@@ -57,22 +57,19 @@ public final class KFileResponseBuilder {
 	/**
 	 * Envoi les données au client sous forme d'attachment.
 	 * @param kFile Fichier a envoyer
-	 * @return Retour de l'action struts
 	 */
 	public void send(final KFile kFile) {
 		send(kFile, true);
 	}
-	
+
 	/**
 	 * Envoi les données au client sous forme de stream.
 	 * @param kFile Fichier a envoyer
-	 * @return Retour de l'action struts
 	 */
 	public void sendAsStream(final KFile kFile) {
 		send(kFile, false);
 	}
-	
-	
+
 	private String send(final KFile kFile, final boolean attachment) {
 		try {
 			doSend(kFile, attachment);
@@ -115,7 +112,7 @@ public final class KFileResponseBuilder {
 	 * @return String
 	 */
 	private static String encodeFileNameToContentDisposition(final HttpServletRequest request, final String fileName,
-			boolean isAttachment) {
+			final boolean isAttachment) {
 		if (fileName == null) {
 			return "";
 		}
@@ -131,13 +128,13 @@ public final class KFileResponseBuilder {
 		if (isAttachment) {
 			sb.append("attachment;");
 		}
-		String cleanestFileName = cleanFileName.replaceAll(" ", "%20"); //cleanest for default fileName
+		final String cleanestFileName = cleanFileName.replaceAll(" ", "%20"); //cleanest for default fileName
 		sb.append("filename=" + cleanestFileName);
 		byte[] utf8FileName;
 		try {
 			utf8FileName = cleanFileName.getBytes("utf8"); //Utf8 fileName
 			sb.append(";filename*=UTF-8''");
-			for (byte c : utf8FileName) {
+			for (final byte c : utf8FileName) {
 				if (isSimpleLetterOrDigit(c) || c == '.' || c == '-' || c == '_') {
 					sb.append((char) c);
 				} else {
@@ -145,7 +142,7 @@ public final class KFileResponseBuilder {
 					sb.append(Integer.toHexString(c & 0xff)); // we want byte as a char on one byte
 				}
 			}
-		} catch (UnsupportedEncodingException e) {
+		} catch (final UnsupportedEncodingException e) {
 			//nothing : utf-8 unsupported we only use the filename= header
 		}
 		return sb.toString();

@@ -19,7 +19,6 @@
 package io.vertigo.quarto.publisher;
 
 import io.vertigo.dynamo.file.model.KFile;
-import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.lang.Component;
 import io.vertigo.quarto.publisher.model.PublisherData;
 
@@ -40,13 +39,4 @@ public interface PublisherManager extends Component {
 	 * @return Tache permettant la production d'un document au format passé en paramètre
 	 */
 	KFile publish(String fileName, URL modelFileURL, PublisherData data);
-
-	/**
-	 * Création asynchrone d'une nouvelle édition.
-	 * @param fileName Nom du document à générer (! pas son emplacement de stockage !)
-	 * @param modelFileURL Chemin vers le fichier model
-	 * @param data Données à fusionner avec le model
-	 * @param workResultHandler Handler permettant de notifier l'exécution de publisher
-	 */
-	void publishASync(final String fileName, final URL modelFileURL, final PublisherData data, final WorkResultHandler<KFile> workResultHandler);
 }

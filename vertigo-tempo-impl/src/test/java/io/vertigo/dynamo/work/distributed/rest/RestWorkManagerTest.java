@@ -16,9 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.quarto.converter.distributed;
+package io.vertigo.dynamo.work.distributed.rest;
 
-import io.vertigo.quarto.converter.AbstractConverterManagerTest;
+import io.vertigo.dynamo.work.AbstractWorkManagerTest;
 
 import java.io.IOException;
 import java.net.URI;
@@ -32,29 +32,22 @@ import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.api.core.ResourceConfig;
 
 /**
- * Test de l'implémentation avec le plugin OpenOfficeRemoteConverterPlugin.
- *
  * @author npiedeloup
  */
-public final class ConverterManagerDistributedTest extends AbstractConverterManagerTest {
-	/** {@inheritDoc} */
-	@Override
-	protected String[] getManagersXmlFileName() {
-		return new String[] { "./managers-test-distributed.xml" };
-	}
+public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 
 	private HttpServer httpServer;
 	private ClientNode clientNode;
 
 	private static URI getBaseURI() {
-		return UriBuilder.fromUri("http://0.0.0.0/").port(10001).build(); //0.0.0.0 permet d'indiquer que l'url est accessible depuis l'interface réseau exterieur : localhost n'est accessible qu'en loopback.
+		return UriBuilder.fromUri("http://0.0.0.0/").port(10998).build();
 	}
 
 	public static final URI BASE_URI = getBaseURI();
 
 	protected static HttpServer startServer() throws IOException {
 		System.out.println("Starting grizzly...");
-		final ResourceConfig rc = new PackagesResourceConfig("io.vertigo.dynamo.plugins.work.rest.master");
+		final ResourceConfig rc = new PackagesResourceConfig("io.vertigo.dynamo.plugins.work.rest");
 		rc.getProperties().put(ResourceConfig.PROPERTY_CONTAINER_REQUEST_FILTERS, com.sun.jersey.api.container.filter.GZIPContentEncodingFilter.class.getName());
 		rc.getProperties().put(ResourceConfig.PROPERTY_CONTAINER_RESPONSE_FILTERS, com.sun.jersey.api.container.filter.GZIPContentEncodingFilter.class.getName());
 		return GrizzlyServerFactory.createHttpServer(BASE_URI, rc);
@@ -62,7 +55,7 @@ public final class ConverterManagerDistributedTest extends AbstractConverterMana
 
 	protected static ClientNode startClientNode() throws IOException {
 		System.out.println("Starting ClientNode...");
-		final ClientNode clientNode = new ClientNode(2 * 60);//durée de vie 2 min max
+		final ClientNode clientNode = new ClientNode(30);//duree de vie 30s max
 		clientNode.start();
 		return clientNode;
 	}
@@ -73,7 +66,6 @@ public final class ConverterManagerDistributedTest extends AbstractConverterMana
 	 */
 	@Override
 	protected void doSetUp() throws Exception {
-		super.doSetUp();
 		//pour éviter le mécanisme d'attente du client lorsque le serveur est absend, on démarre le serveur puis le client
 		httpServer = startServer();
 		Thread.sleep(500);
@@ -87,13 +79,20 @@ public final class ConverterManagerDistributedTest extends AbstractConverterMana
 	 */
 	@Override
 	protected void doTearDown() throws Exception {
-		super.doTearDown();
-		Thread.sleep(500);
-		if (clientNode != null) {
-			clientNode.stop();
-		}
 		if (httpServer != null) {
-			httpServer.stop();
+			System.out.println("Stopping grizzly...");
+			httpServer.stop(); //TODO this stop don't interrupt handler threads. check with an 2.3.x grizzly version
+			httpServer = null;
+			/*for (final Thread thread : Thread.getAllStackTraces().keySet()) {
+				if (thread.getName().contains("Grizzly")) {
+					thread.interrupt();
+				}
+			}*/
+		}
+		if (clientNode != null) {
+			System.out.println("Stopping ClientNode...");
+			clientNode.stop();
+			clientNode = null;
 		}
 	}
 }

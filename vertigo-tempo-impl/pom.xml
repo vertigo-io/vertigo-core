@@ -66,6 +66,41 @@
 			</exclusions>
 		</dependency>
 		<!-- /Mail -->
+		
+			<!-- Distributed -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.3</version>
+		</dependency>
+		<!-- REST distributed impl dependency-->
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>1.18.1</version>
+			<optional>true</optional> <!-- REST DistributedWork impl -->
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>1.18.1</version>
+			<optional>true</optional> <!-- REST DistributedWork impl  -->
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId> 
+			<artifactId>jersey-grizzly2</artifactId> <!-- REST DistributedWork test  -->
+			<version>1.18.1</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- REST DistributedWork test  -->
+		<dependency>
+		    <groupId>redis.clients</groupId>
+		    <artifactId>jedis</artifactId>
+   			 <version>2.5.2</version>
+		    <optional>true</optional><!-- REDIS DistributedWork impl  -->
+		</dependency>
+		<!-- /Distributed -->
+		
 	</dependencies>
 		
 </project>

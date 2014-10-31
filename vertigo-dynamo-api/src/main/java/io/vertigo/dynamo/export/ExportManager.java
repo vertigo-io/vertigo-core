@@ -20,7 +20,6 @@ package io.vertigo.dynamo.export;
 
 import io.vertigo.dynamo.export.model.Export;
 import io.vertigo.dynamo.file.model.KFile;
-import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.lang.Component;
 
 /**
@@ -38,10 +37,4 @@ public interface ExportManager extends Component {
 	 */
 	KFile createExportFile(final Export export);
 
-	/**
-	 * Création asynchrone du fichier d'export
-	 * @param export Expotr à envoyer
-	 * @param workResultHandler Handler du resultat
-	 */
-	void createExportFileASync(final Export export, final WorkResultHandler<KFile> workResultHandler);
 }

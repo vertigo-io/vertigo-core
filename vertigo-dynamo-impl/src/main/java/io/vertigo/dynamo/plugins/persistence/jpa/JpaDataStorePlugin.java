@@ -42,7 +42,6 @@ import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaDataBase;
 import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaResource;
 import io.vertigo.dynamo.transaction.KTransaction;
 import io.vertigo.dynamo.transaction.KTransactionManager;
-import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
@@ -72,10 +71,9 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/**
 	 * Constructeur.
-	 * @param workManager Manager des works
 	 */
 	@Inject
-	public JpaDataStorePlugin(final KTransactionManager transactionManager, final SqlDataBaseManager dataBaseManager, final WorkManager workManager, final AnalyticsManager analyticsManager) {
+	public JpaDataStorePlugin(final KTransactionManager transactionManager, final SqlDataBaseManager dataBaseManager, final AnalyticsManager analyticsManager) {
 		//super(workManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(dataBaseManager);

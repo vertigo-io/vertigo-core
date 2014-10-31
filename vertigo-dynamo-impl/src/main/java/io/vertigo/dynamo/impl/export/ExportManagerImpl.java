@@ -24,15 +24,12 @@ import io.vertigo.dynamo.export.model.ExportFormat;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.file.util.TempFile;
-import io.vertigo.dynamo.work.WorkManager;
-import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.lang.Assertion;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
@@ -42,7 +39,6 @@ import javax.inject.Inject;
  * @author pchretien, npiedeloup
  */
 public final class ExportManagerImpl implements ExportManager {
-	private final WorkManager workManager;
 	private final FileManager fileManager;
 	private final List<ExporterPlugin> exporterPlugins;
 
@@ -50,12 +46,10 @@ public final class ExportManagerImpl implements ExportManager {
 	 * Constructeur.
 	 */
 	@Inject
-	public ExportManagerImpl(final WorkManager workManager, final FileManager fileManager, final List<ExporterPlugin> exporterPlugins) {
-		Assertion.checkNotNull(workManager);
+	public ExportManagerImpl(final FileManager fileManager, final List<ExporterPlugin> exporterPlugins) {
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkNotNull(exporterPlugins);
 		// ---------------------------------------------------------------------
-		this.workManager = workManager;
 		this.fileManager = fileManager;
 		this.exporterPlugins = Collections.unmodifiableList(exporterPlugins);
 	}
@@ -75,17 +69,6 @@ public final class ExportManagerImpl implements ExportManager {
 			}
 		}
 		throw new RuntimeException("aucun plugin trouve pour le format " + exportFormat);
-	}
-
-	/** {@inheritDoc} */
-	public void createExportFileASync(final Export export, final WorkResultHandler<KFile> workResultHandler) {
-		Assertion.checkNotNull(export);
-		// ---------------------------------------------------------------------
-		workManager.schedule(new Callable<KFile>() {
-			public KFile call() {
-				return createExportFile(export);
-			}
-		}, workResultHandler);
 	}
 
 	/** {@inheritDoc} */

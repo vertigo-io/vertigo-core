@@ -39,7 +39,6 @@ import io.vertigo.dynamo.impl.file.FileManagerImpl;
 import io.vertigo.dynamo.impl.kvdatastore.KVDataStoreManagerImpl;
 import io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl;
 import io.vertigo.dynamo.impl.task.TaskManagerImpl;
-import io.vertigo.dynamo.impl.work.WorkManagerImpl;
 import io.vertigo.dynamo.kvdatastore.KVDataStoreManager;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
@@ -49,7 +48,6 @@ import io.vertigo.dynamo.plugins.export.pdf.PDFExporterPlugin;
 import io.vertigo.dynamo.plugins.kvdatastore.delayedmemory.DelayedMemoryKVDataStorePlugin;
 import io.vertigo.dynamo.plugins.persistence.postgresql.PostgreSqlDataStorePlugin;
 import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.engines.command.TcpVCommandEngine;
 import io.vertigo.persona.impl.security.KSecurityManagerImpl;
 import io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin;
@@ -129,9 +127,9 @@ public final class WsRestTest extends AbstractTestCaseJU4 {
 					.beginPlugin( MapCachePlugin.class).endPlugin()
 				.endComponent()
 				.beginComponent(TaskManager.class, TaskManagerImpl.class).endComponent()
-				.beginComponent(WorkManager.class, WorkManagerImpl.class)
-					.withParam("workerCount", "2")
-				.endComponent()
+//				.beginComponent(WorkManager.class, WorkManagerImpl.class)
+//					.withParam("workerCount", "2")
+//				.endComponent()
 				.beginComponent(ExportManager.class, ExportManagerImpl.class)
 					.beginPlugin(PDFExporterPlugin.class).endPlugin()
 				.endComponent()

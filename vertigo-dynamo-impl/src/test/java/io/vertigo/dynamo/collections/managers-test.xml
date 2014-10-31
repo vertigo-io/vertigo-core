@@ -23,10 +23,6 @@
 	    </component>
 
 		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl"/>
-
-	    <component api="WorkManager" class="io.vertigo.dynamo.impl.work.WorkManagerImpl">
-	    	<param name="workerCount" value="5" />
-	    </component>
 	    
 	    <component api="PersistenceManager" class="io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl">
 	        <plugin class="io.vertigo.dynamo.plugins.persistence.oracle.OracleDataStorePlugin">

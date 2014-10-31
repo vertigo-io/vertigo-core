@@ -12,10 +12,6 @@
 	
 	<module name="vertigo-commons">
 		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl"/>
-
-	    <component api="WorkManager" class="io.vertigo.dynamo.impl.work.WorkManagerImpl">
-	    	<param name="workerCount" value="5" />
-	    </component>
 	
 	    <component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
 	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />

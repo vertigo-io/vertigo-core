@@ -18,6 +18,9 @@
  */
 package io.vertigo.tempo;
 
+import io.vertigo.dynamo.work.distributed.redis.RedisWorkManagerTest;
+import io.vertigo.dynamo.work.distributed.rest.RestWorkManagerTest;
+import io.vertigo.dynamo.work.local.WorkManagerTest;
 import io.vertigo.tempo.job.JobManagerTest;
 import io.vertigo.tempo.mail.MailManagerTest;
 
@@ -32,8 +35,14 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({ //
-	MailManagerTest.class,//
-	JobManagerTest.class,//
+MailManagerTest.class,
+		JobManagerTest.class,
+		//--work
+		WorkManagerTest.class,
+		//RedisWorkManagerTest.class, DistributedWorkManagerTest.class, //REST
+		//--
+		RedisWorkManagerTest.class,
+		RestWorkManagerTest.class,
 })
 public final class TempoTestSuite {
 	//

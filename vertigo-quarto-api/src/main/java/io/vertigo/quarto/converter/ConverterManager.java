@@ -19,34 +19,24 @@
 package io.vertigo.quarto.converter;
 
 import io.vertigo.dynamo.file.model.KFile;
-import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.lang.Component;
 
 /**
  * Gestionnaire centralisé des conversions de documents.
- * 
+ *
  * Exemple :
  *  - doc-->pdf
  *  - odt-->doc
- * 
+ *
  * @author pchretien, npiedeloup
  */
 public interface ConverterManager extends Component {
 	/**
 	 * Conversion d'un document à un format cible.
-	 * 
+	 *
 	 * @param inputFile Document source à convertir
 	 * @param format Format du document à cible
 	 * @return Document converti au format passé en paramètre.
 	 */
 	KFile convert(KFile inputFile, String format);
-
-	/**
-	 * Conversion asynchrone d'un document à un format cible.
-	 * 
-	 * @param inputFile Document source à convertir
-	 * @param format Format du document à cible
-	 * param Handler de résultat sur l'exécution de la tache de conversion
-	 */
-	void convertASync(final KFile inputFile, final String format, final WorkResultHandler<KFile> workResultHandler);
 }

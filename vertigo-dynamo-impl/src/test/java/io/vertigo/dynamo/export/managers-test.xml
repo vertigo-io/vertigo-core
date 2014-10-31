@@ -22,9 +22,7 @@
 			<plugin class="io.vertigo.dynamo.plugins.collections.lucene.LuceneIndexPlugin" />
 		</component>
 		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl"/>
-		<component api="WorkManager" class="io.vertigo.dynamo.impl.work.WorkManagerImpl">
-				<param name="workerCount" value="2" />
-		</component>
+
 		<component api="PersistenceManager" class="io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.persistence.oracle.OracleDataStorePlugin">
 				<param name="sequencePrefix" value="SEQ_" />
