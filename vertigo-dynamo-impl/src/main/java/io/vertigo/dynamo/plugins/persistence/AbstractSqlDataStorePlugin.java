@@ -130,7 +130,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	}
 
 	/** {@inheritDoc} */
-	public <D extends DtObject> D load(final URI<D> uri) {
+	public final <D extends DtObject> D load(final URI<D> uri) {
 		final DtDefinition dtDefinition = getDtDefinition(uri);
 
 		final String tableName = getTableName(dtDefinition);
@@ -333,7 +333,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		for (final String fieldName : filterCriteria.getPrefixMap().keySet()) {
 			request.append(sep);
 			request.append(fieldName).append(" like #").append(fieldName).append('#');
-			request.append(" || '%%'");
+			request.append(getConcatOperator() + "'%%'");
 			sep = " and ";
 		}
 		if (maxRows != null) {
@@ -341,6 +341,11 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		}
 		postAlterLoadRequest(request);
 		return request.toString();
+	}
+
+	protected String getConcatOperator() {
+		//default
+		return " || ";
 	}
 
 	private static <D extends DtObject> String getListTaskName(final String tableName, final FilterCriteria<D> filter) {
@@ -379,7 +384,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 * TODO voir s'il ne faudrait pas des paramètres de la tache.
 	 * @param request Request à mettre à jour
 	 */
-	protected void postAlterLoadRequest(final StringBuilder request) {
+	protected final void postAlterLoadRequest(final StringBuilder request) {
 		//rien par defaut;
 	}
 
@@ -503,8 +508,8 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 		final String pkFieldName = pk.getName();
 		final StringBuilder request = new StringBuilder()
-		.append("delete from ").append(tableName)
-		.append(" where ").append(pkFieldName).append(" = #").append(pkFieldName).append('#');
+				.append("delete from ").append(tableName)
+				.append(" where ").append(pkFieldName).append(" = #").append(pkFieldName).append('#');
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineProc.class)

@@ -136,18 +136,13 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 				if (dtField.getType() != DtField.FieldType.PRIMARY_KEY) {
 					request.append(" #DTO.").append(dtField.getName()).append('#');
 				} else {
-					onPrimaryKey(request, dtDefinition, dtField);
+					request.append(" #DTO.").append(dtField.getName()).append('#');
 				}
 				separator = ", ";
 			}
 		}
 		request.append(");");
 		return request.toString();
-	}
-
-	private void onPrimaryKey(final StringBuilder request, final DtDefinition dtDefinition, final DtField dtField) {
-		//cas par défaut
-		request.append(" #DTO.").append(dtField.getName()).append('#');
 	}
 
 	/** {@inheritDoc} */

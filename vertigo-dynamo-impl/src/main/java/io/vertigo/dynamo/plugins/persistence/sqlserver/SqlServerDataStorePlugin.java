@@ -26,7 +26,6 @@ import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.sqlserver.TaskEngineInsertWithGeneratedKeys;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 import javax.inject.Inject;
 
@@ -54,15 +53,9 @@ public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 		request.insert("select ".length(), " top " + maxRows + ' ');
 	}
 
-	/** {@inheritDoc} */
 	@Override
-	protected void postAlterLoadRequest(final StringBuilder request) {
-		//dans le cas de SQLServer, il faut rajouter un SET TEXTSIZE XX sinon les select * sont très lent, car le contenu complet du blob est retourné.
-		//TODO Normalement il ne faudrait le rajouter que si il y a une colonne type LargeObject (image, text, ntext, varbinary(max))
-		final String convertStrConctat = StringUtil.replace(request.toString(), " || ", " + ");
-		request.setLength(0);
-		//	request.append(" SET TEXTSIZE 16\n ");//16 correspond à la taille du pointeur.
-		request.append(convertStrConctat);
+	protected String getConcatOperator() {
+		return " + ";
 	}
 
 	/** {@inheritDoc} */
@@ -97,8 +90,6 @@ public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 				request.append(separator);
 				if (dtField.getType() != DtField.FieldType.PRIMARY_KEY) {
 					request.append(" #DTO.").append(dtField.getName()).append('#');
-				} else {
-					onPrimaryKey(request, dtDefinition, dtField);
 				}
 				separator = ", ";
 			}
@@ -108,7 +99,4 @@ public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 		return request.toString();
 	}
 
-	private void onPrimaryKey(final StringBuilder request, final DtDefinition dtDefinition, final DtField dtField) {
-		request.append(" #DTO.").append(dtField.getName()).append('#');
-	}
 }

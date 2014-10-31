@@ -95,18 +95,13 @@ public final class OracleDataStorePlugin extends AbstractSqlDataStorePlugin {
 				if (dtField.getType() != DtField.FieldType.PRIMARY_KEY) {
 					request.append(" #DTO.").append(dtField.getName()).append('#');
 				} else {
-					onPrimaryKey(request, dtDefinition, dtField);
+					request.append(getSequenceName(dtDefinition)).append(".nextval ");
 				}
 				separator = ", ";
 			}
 		}
-		request.append(") returning ").append(pk.getName()).append(" into %DTO.").append(pk.getName()).append("%;");
-		request.append("end;");
+		request.append(") returning ").append(pk.getName()).append(" into %DTO.").append(pk.getName()).append("%;").append("end;");
 		return request.toString();
-	}
-
-	private void onPrimaryKey(final StringBuilder request, final DtDefinition dtDefinition, final DtField dtField) {
-		request.append(getSequenceName(dtDefinition)).append(".nextval ");
 	}
 
 	/** {@inheritDoc} */

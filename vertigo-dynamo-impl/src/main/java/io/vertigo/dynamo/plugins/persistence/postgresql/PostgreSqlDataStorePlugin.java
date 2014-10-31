@@ -84,17 +84,13 @@ public final class PostgreSqlDataStorePlugin extends AbstractSqlDataStorePlugin 
 				if (dtField.getType() != DtField.FieldType.PRIMARY_KEY) {
 					request.append(" #DTO.").append(dtField.getName()).append('#');
 				} else {
-					onPrimaryKey(request, dtDefinition, dtField);
+					request.append("nextval('").append(getSequenceName(dtDefinition)).append("')");
 				}
 				separator = ", ";
 			}
 		}
 		request.append(");");
 		return request.toString();
-	}
-
-	private void onPrimaryKey(final StringBuilder request, final DtDefinition dtDefinition, final DtField dtField) {
-		request.append("nextval('").append(getSequenceName(dtDefinition)).append("')");
 	}
 
 	/** {@inheritDoc} */
