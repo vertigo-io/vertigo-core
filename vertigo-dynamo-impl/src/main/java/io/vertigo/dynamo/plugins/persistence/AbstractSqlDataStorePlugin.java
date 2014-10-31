@@ -411,6 +411,13 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	}
 
 	/**
+	 * Création de la requête SQL d'insert.
+	 * @param dtDefinition Définition de DT
+	 * @return Requête SQL
+	 */
+	protected abstract String createInsertQuery(final DtDefinition dtDefinition);
+
+	/**
 	 * Création de la requête SQL d'update.
 	 * @param dtDefinition Définition de DT
 	 * @return Requête SQL
@@ -496,8 +503,8 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 		final String pkFieldName = pk.getName();
 		final StringBuilder request = new StringBuilder()
-				.append("delete from ").append(tableName)
-				.append(" where ").append(pkFieldName).append(" = #").append(pkFieldName).append('#');
+		.append("delete from ").append(tableName)
+		.append(" where ").append(pkFieldName).append(" = #").append(pkFieldName).append('#');
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineProc.class)
@@ -548,53 +555,4 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final DtObject dto = taskResult.getValue("dto");
 		return (Integer) DtObjectUtil.findDtDefinition(dto).getField("COUNT").getDataAccessor().getValue(dto);
 	}
-
-	/**
-	 * Création de la requête SQL d'insert.
-	 * @param dtDefinition Définition de DT
-	 * @return Requête SQL
-	 */
-	private final String createInsertQuery(final DtDefinition dtDefinition) {
-		final StringBuilder request = new StringBuilder();
-		//---
-		beforeInsert(request);
-		//---
-		final String tableName = getTableName(dtDefinition);
-		request.append("insert into ").append(tableName).append(" ( ");
-
-		String separator = "";
-		for (final DtField dtField : dtDefinition.getFields()) {
-			if (acceptOnInsert(dtField)) {
-				request.append(separator);
-				request.append(dtField.getName());
-				separator = ", ";
-			}
-		}
-		request.append(") values ( ");
-		separator = "";
-		for (final DtField dtField : dtDefinition.getFields()) {
-			if (acceptOnInsert(dtField)) {
-				request.append(separator);
-				if (dtField.getType() != DtField.FieldType.PRIMARY_KEY) {
-					request.append(" #DTO.").append(dtField.getName()).append('#');
-				} else {
-					onPrimaryKey(request, dtDefinition, dtField);
-				}
-				separator = ", ";
-			}
-		}
-		request.append(")");
-		//---
-		afterInsert(request, dtDefinition);
-		//---
-		return request.toString();
-	}
-
-	protected abstract void afterInsert(StringBuilder request, DtDefinition dtDefinition);
-
-	protected abstract void beforeInsert(final StringBuilder request);
-
-	protected abstract void onPrimaryKey(StringBuilder request, DtDefinition dtDefinition, DtField dtField);
-
-	protected abstract boolean acceptOnInsert(final DtField dtField);
 }
