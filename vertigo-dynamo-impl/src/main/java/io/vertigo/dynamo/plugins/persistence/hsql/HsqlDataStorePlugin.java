@@ -117,8 +117,9 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 	@Override
 	protected String createInsertQuery(final DtDefinition dtDefinition) {
 		final String tableName = getTableName(dtDefinition);
-		final StringBuilder request = new StringBuilder();
-		request.append("insert into ").append(tableName).append(" (");
+		final StringBuilder request = new StringBuilder()
+				.append("insert into ").append(tableName).append(" (");
+
 		String separator = "";
 		for (final DtField dtField : dtDefinition.getFields()) {
 			if (dtField.isPersistent()) {
@@ -132,12 +133,21 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 		for (final DtField dtField : dtDefinition.getFields()) {
 			if (dtField.isPersistent()) {
 				request.append(separator);
-				request.append(" #DTO.").append(dtField.getName()).append('#');
+				if (dtField.getType() != DtField.FieldType.PRIMARY_KEY) {
+					request.append(" #DTO.").append(dtField.getName()).append('#');
+				} else {
+					onPrimaryKey(request, dtDefinition, dtField);
+				}
 				separator = ", ";
 			}
 		}
 		request.append(");");
 		return request.toString();
+	}
+
+	private void onPrimaryKey(final StringBuilder request, final DtDefinition dtDefinition, final DtField dtField) {
+		//cas par défaut
+		request.append(" #DTO.").append(dtField.getName()).append('#');
 	}
 
 	/** {@inheritDoc} */

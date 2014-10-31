@@ -74,11 +74,10 @@ public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	protected String createInsertQuery(final DtDefinition dtDefinition) {
+
 		final String tableName = getTableName(dtDefinition);
 		final StringBuilder request = new StringBuilder()
-				.append("insert into ")
-				.append(tableName)
-				.append(" ( ");
+				.append("insert into ").append(tableName).append(" ( ");
 
 		String separator = "";
 
@@ -96,14 +95,20 @@ public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 		for (final DtField dtField : dtDefinition.getFields()) {
 			if (dtField.isPersistent() && dtField.getType() != DtField.FieldType.PRIMARY_KEY) {
 				request.append(separator);
-				request.append(" #DTO.");
-				request.append(dtField.getName());
-				request.append('#');
+				if (dtField.getType() != DtField.FieldType.PRIMARY_KEY) {
+					request.append(" #DTO.").append(dtField.getName()).append('#');
+				} else {
+					onPrimaryKey(request, dtDefinition, dtField);
+				}
 				separator = ", ";
 			}
 		}
 
 		request.append(") ");
 		return request.toString();
+	}
+
+	private void onPrimaryKey(final StringBuilder request, final DtDefinition dtDefinition, final DtField dtField) {
+		request.append(" #DTO.").append(dtField.getName()).append('#');
 	}
 }

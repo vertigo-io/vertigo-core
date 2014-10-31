@@ -73,11 +73,12 @@ public final class OracleDataStorePlugin extends AbstractSqlDataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	protected String createInsertQuery(final DtDefinition dtDefinition) {
-		final String tableName = getTableName(dtDefinition);
 		final DtField pk = dtDefinition.getIdField().get();
-		final StringBuilder request = new StringBuilder();
 
-		request.append("begin insert into ").append(tableName).append(" ( ");
+		final String tableName = getTableName(dtDefinition);
+		final StringBuilder request = new StringBuilder()
+				.append("begin insert into ").append(tableName).append(" ( ");
+
 		String separator = "";
 		for (final DtField dtField : dtDefinition.getFields()) {
 			if (dtField.isPersistent()) {
@@ -94,7 +95,7 @@ public final class OracleDataStorePlugin extends AbstractSqlDataStorePlugin {
 				if (dtField.getType() != DtField.FieldType.PRIMARY_KEY) {
 					request.append(" #DTO.").append(dtField.getName()).append('#');
 				} else {
-					request.append(getSequenceName(dtDefinition)).append(".nextval ");
+					onPrimaryKey(request, dtDefinition, dtField);
 				}
 				separator = ", ";
 			}
@@ -102,6 +103,10 @@ public final class OracleDataStorePlugin extends AbstractSqlDataStorePlugin {
 		request.append(") returning ").append(pk.getName()).append(" into %DTO.").append(pk.getName()).append("%;");
 		request.append("end;");
 		return request.toString();
+	}
+
+	private void onPrimaryKey(final StringBuilder request, final DtDefinition dtDefinition, final DtField dtField) {
+		request.append(getSequenceName(dtDefinition)).append(".nextval ");
 	}
 
 	/** {@inheritDoc} */
