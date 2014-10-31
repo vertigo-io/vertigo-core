@@ -21,7 +21,7 @@ package io.vertigo.tempo.job;
 import io.vertigo.lang.Component;
 import io.vertigo.tempo.job.metamodel.JobDefinition;
 
-import java.util.Date;
+import java.util.List;
 
 /**
  * Job scheduler.
@@ -33,29 +33,11 @@ import java.util.Date;
  * En général, les implémentations de cette interface utilisent un ou plusieurs threads séparés
  * du thread d'appel et sont transactionnelles dans leurs threads pour chaque exécution.
  *
- * @author evernat
+ * @author pchretien
  */
 public interface JobManager extends Component {
-	/**
-	 * Programme un job pour exécution à une fréquence donnée en secondes.
-	 * @param periodInSecond Fréquence d'exécution en secondes
-	 */
-	void scheduleEverySecondInterval(final JobDefinition jobDefinition, int periodInSecond);
 
-	/**
-	 * Programme un job pour exécution chaque jour à heure fixe.
-	 * <br/>Si il y a besoin de programmer un job pour exécution à jour fixe dans la semaine
-	 * ou dans le mois, il peut être programmé un job chaque puis conditioner l'exécution selon la
-	 * date courante en utilisant la classe Calendar.
-	 * @param hour Heure fixe d'exécution
-	 */
-	void scheduleEveryDayAtHour(final JobDefinition jobDefinition, int hour);
-
-	/**
-	 * Programme un job pour une seul exécution à une date donnée.
-	 * @param date Date d'exécution
-	 */
-	void scheduleAtDate(final JobDefinition jobDefinition, Date date);
+	void register(final JobDefinition jobDefinition, JobConfig jobConfig);
 
 	/**
 	 * Exécution immédiate et asynchrone d'un job.
@@ -66,4 +48,6 @@ public interface JobManager extends Component {
 	 * Exécution immédiate et synchrone d'un job.
 	 */
 	void execute(final JobDefinition jobDefinition);
+
+	List<JobExecution> getJobExecutions(JobExecutionFilter jobExecutionFilter);
 }

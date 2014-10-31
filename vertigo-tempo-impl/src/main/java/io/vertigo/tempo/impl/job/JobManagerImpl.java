@@ -23,11 +23,15 @@ import io.vertigo.core.Home;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VUserException;
+import io.vertigo.tempo.job.JobConfig;
 import io.vertigo.tempo.job.JobManager;
 import io.vertigo.tempo.job.SchedulerPlugin;
 import io.vertigo.tempo.job.metamodel.JobDefinition;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -50,6 +54,7 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 	/** Mesures des exceptions system. */
 	private static final String JOB_SYSTEM_EXCEPTION_COUNT = "JOB_SYSTEM_EXCEPTION_COUNT";
 
+	private final Map<JobDefinition, List<JobConfig>> configs = new HashMap<>();
 	private final SchedulerPlugin schedulerPlugin;
 	private final AnalyticsManager analyticsManager;
 
@@ -136,19 +141,7 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 		schedulerPlugin.scheduleNow(this, jobDefinition);
 	}
 
-	// /** {@inheritDoc} */
-	// public void toHtml(final PrintStream out) throws Exception {
-	// analyticsManager.getDashboard().toHtml(DB, out);
-	// }
-	//
-	// /** {@inheritDoc} */
-	// public final String getName() {
-	// return "Job";
-	// }
-	//
-	// /** {@inheritDoc} */
-	// public final String getImage() {
-	// return "cpanel.png";
-	// }
-
+	public void register(final JobDefinition jobDefinition, final JobConfig jobConfig) {
+		configs.put(jobDefinition, jobConfig);
+	}
 }
