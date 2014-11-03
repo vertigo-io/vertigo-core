@@ -33,8 +33,8 @@ import java.util.UUID;
  * @author npiedeloup
  */
 public final class KActionContext extends HashMap<String, Serializable> {
-	/** Cl�e de l'id de context dans le context. */
-	public static String CTX = "CTX";
+	/** Clée de l'id de context dans le context. */
+	public static final String CTX = "CTX";
 	private static final long serialVersionUID = 2850788652438173312L;
 
 	//Index UiObject et DtObject vers clé de context.
