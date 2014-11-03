@@ -25,9 +25,6 @@
 	    <component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
 	    <component api="SearchManager" class="io.vertigo.dynamo.impl.search.SearchManagerImpl" />
 	    <component api="KTransactionManager" class="io.vertigo.dynamo.impl.transaction.KTransactionManagerImpl"/>
-	    <component api="WorkManager" class="io.vertigo.dynamo.impl.work.WorkManagerImpl">
-	    	<param name="workerCount" value="5" />
-	    </component>
 	    <component api="PersistenceManager" class="io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl">
 	        <plugin class="io.vertigo.dynamo.plugins.persistence.oracle.OracleDataStorePlugin">
 	            <param name="sequencePrefix" value="SEQ_" />
