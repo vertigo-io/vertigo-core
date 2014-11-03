@@ -32,6 +32,8 @@ import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition.Verb;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
 import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
+import io.vertigo.vega.rest.metamodel.EndPointParamBuilder;
+import io.vertigo.vega.rest.model.UiListState;
 import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.rest.stereotype.GET;
 import io.vertigo.vega.rest.stereotype.PathParam;
@@ -203,6 +205,7 @@ public final class SwaggerRestServices implements RestfulService {
 		}
 		putIfNotEmpty(operation, "description", description.toString());
 		operation.put("operationId", endPointDefinition.getName());
+		operation.put("consumes", Collections.singletonList("multipart/form-data"));
 		putIfNotEmpty(operation, "parameters", createParametersArray(endPointDefinition));
 		putIfNotEmpty(operation, "responses", createResponsesObject(endPointDefinition));
 		putIfNotEmpty(operation, "tags", createTagsArray(endPointDefinition));
@@ -384,10 +387,18 @@ public final class SwaggerRestServices implements RestfulService {
 
 	private List<Map<String, Object>> createParametersArray(final EndPointDefinition endPointDefinition) {
 		final List<Map<String, Object>> parameters = new ArrayList<>();
-		for (final EndPointParam endPointParams : endPointDefinition.getEndPointParams()) {
-			final Map<String, Object> parameter = createParameterObject(endPointParams, endPointDefinition);
-			if (parameter != null) {
-				parameters.add(parameter);
+		for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
+			if (endPointParam.getParamType() != RestParamType.Implicit) {//if implicit : no public parameter
+				if (isExplodedParams(endPointParam)) {
+					for (final EndPointParam pseudoEndPointParam : createPseudoEndPointParams(endPointParam)) {
+						final Map<String, Object> parameter = createParameterObject(pseudoEndPointParam, endPointDefinition);
+						parameter.remove("required"); //query params aren't required
+						parameters.add(parameter);
+					}
+				} else {
+					final Map<String, Object> parameter = createParameterObject(endPointParam, endPointDefinition);
+					parameters.add(parameter);
+				}
 			}
 		}
 		if (endPointDefinition.isAccessTokenMandatory()) {
@@ -402,37 +413,66 @@ public final class SwaggerRestServices implements RestfulService {
 		return parameters;
 	}
 
-	private Map<String, Object> createParameterObject(final EndPointParam endPointParams, final EndPointDefinition endPointDefinition) {
+	private List<EndPointParam> createPseudoEndPointParams(final EndPointParam endPointParam) {
+		final List<EndPointParam> pseudoEndPointParams = new ArrayList<>();
+		final String prefix = !endPointParam.getName().isEmpty() ? endPointParam.getName() + "." : "";
+		if (UiListState.class.isAssignableFrom(endPointParam.getType())) {
+			pseudoEndPointParams.add(new EndPointParamBuilder(int.class)
+					.with(endPointParam.getParamType(), prefix + "top").build());
+			pseudoEndPointParams.add(new EndPointParamBuilder(int.class)
+					.with(endPointParam.getParamType(), prefix + "skip").build());
+			pseudoEndPointParams.add(new EndPointParamBuilder(String.class)
+					.with(endPointParam.getParamType(), prefix + "sortFieldName").build());
+			pseudoEndPointParams.add(new EndPointParamBuilder(boolean.class)
+					.with(endPointParam.getParamType(), prefix + "sortDesc").build());
+		} else if (DtObject.class.isAssignableFrom(endPointParam.getType())) {
+			final Class<? extends DtObject> paramClass = (Class<? extends DtObject>) endPointParam.getType();
+			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(paramClass);
+			for (final DtField dtField : dtDefinition.getFields()) {
+				final String fieldName = StringUtil.constToCamelCase(dtField.name(), false);
+				pseudoEndPointParams.add(new EndPointParamBuilder(dtField.getDomain().getDataType().getJavaClass())
+						.with(endPointParam.getParamType(), prefix + fieldName)
+						.build());
+			}
+		}
+		return pseudoEndPointParams;
+	}
+
+	private boolean isExplodedParams(final EndPointParam endPointParam) {
+		final Class<?> paramClass = endPointParam.getType();
+		return endPointParam.getParamType() == RestParamType.Query && (UiListState.class.isAssignableFrom(paramClass) || DtObject.class.isAssignableFrom(paramClass));
+	}
+
+	private Map<String, Object> createParameterObject(final EndPointParam endPointParam, final EndPointDefinition endPointDefinition) {
 
 		final String inValue;
 		final String nameValue;
 		String description = null;
-		switch (endPointParams.getParamType()) {
+		switch (endPointParam.getParamType()) {
 			case Body:
 				inValue = "body";
 				nameValue = "body";
 				break;
-			case Implicit:
-				return null; //no public parameter
 			case InnerBody:
 				inValue = "body";
 				nameValue = "body";
-				description = "InnerBody:" + endPointParams.getName();
+				description = "InnerBody:" + endPointParam.getName();
 				break;
 			case Path:
 				inValue = "path";
-				nameValue = endPointParams.getName();
+				nameValue = endPointParam.getName();
 				break;
 			case Query:
 				inValue = endPointDefinition.getVerb() == Verb.GET ? "query" : "formData";
-				nameValue = endPointParams.getName();
+				nameValue = endPointParam.getName();
 				break;
 			case Header:
 				inValue = "header";
-				nameValue = endPointParams.getName();
+				nameValue = endPointParam.getName();
 				break;
+			case Implicit://must be escape before
 			default:
-				throw new RuntimeException("Unsupported type : " + endPointParams.getParamType());
+				throw new RuntimeException("Unsupported type : " + endPointParam.getParamType());
 		}
 
 		final Map<String, Object> parameter = new LinkedHashMap<>();
@@ -440,10 +480,10 @@ public final class SwaggerRestServices implements RestfulService {
 		parameter.put("in", inValue);
 		putIfNotEmpty(parameter, "description", description);
 		parameter.put("required", "true");
-		if (endPointParams.getParamType() == RestParamType.Body || endPointParams.getParamType() == RestParamType.InnerBody) {
-			parameter.put("schema", createSchemaObject(endPointParams.getGenericType()));
+		if (endPointParam.getParamType() == RestParamType.Body || endPointParam.getParamType() == RestParamType.InnerBody) {
+			parameter.put("schema", createSchemaObject(endPointParam.getGenericType()));
 		} else {
-			final String[] typeAndFormat = toSwaggerType(endPointParams.getType());
+			final String[] typeAndFormat = toSwaggerType(endPointParam.getType());
 			parameter.put("type", typeAndFormat[0]);
 			if (typeAndFormat[1] != null) {
 				parameter.put("format", typeAndFormat[1]);

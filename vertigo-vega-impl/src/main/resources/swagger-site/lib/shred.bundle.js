@@ -896,28 +896,13 @@ Object.defineProperties(Request.prototype, {
   port: {
     get: function() {
       if (!this._port) {
-        /*switch(this.scheme) {
+        switch(this.scheme) {
           case "https": return this._port = 443;
           case "http":
           default: return this._port = 80;
-          }
-        }*/
-        if (this.scheme === "https") {
-          if (typeof(window) !== "undefined") {
-            return this._port = window.location.port || 443;
-          } else {
-            return this._port = 443;
-          }
-        } else {
-          if (typeof(window) !== "undefined") {
-            return this._port = window.location.port || 80;
-          } else {
-            return this._port = 80;
-          }
-         }
-      } else {
-      	return this._port;
-    	}
+        }
+      }
+      return this._port;
     },
     set: function(value) { this._port = value; return this; },
     enumerable: true
@@ -2146,10 +2131,10 @@ require.define("/shred/mixins/headers.js", function (require, module, exports, _
 // to `Content-Type`.
 
 var corsetCase = function(string) {
-  return string.toLowerCase()
+  return string;//.toLowerCase()
       //.replace("_","-")
-      .replace(/(^|-)(\w)/g, 
-          function(s) { return s.toUpperCase(); });
+      // .replace(/(^|-)(\w)/g, 
+          // function(s) { return s.toUpperCase(); });
 };
 
 // We suspect that `initializeHeaders` was once more complicated ...

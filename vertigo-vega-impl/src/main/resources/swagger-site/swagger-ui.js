@@ -1,5 +1,5 @@
 // swagger-ui.js
-// version 2.1.0
+// version 2.1.0-alpha.3
 $(function() {
 
 	// Helper function for vertically aligning DOM elements
@@ -185,6 +185,35 @@ var Docs = {
 	}
 };(function() {
   var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};
+templates['apikey_button_view'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression;
+
+
+  buffer += "<div class='auth_button' id='apikey_button'><img class='auth_icon' alt='apply api key' src='images/apikey.jpeg'></div>\n<div class='auth_container' id='apikey_container'>\n  <div class='key_input_container'>\n    <div class='auth_label'>";
+  if (stack1 = helpers.keyName) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
+  else { stack1 = depth0.keyName; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
+  buffer += escapeExpression(stack1)
+    + "</div>\n    <input placeholder=\"api_key\" class=\"auth_input\" id=\"input_apiKey_entry\" name=\"apiKey\" type=\"text\"/>\n    <div class='auth_submit'><a class='auth_submit_button' id=\"apply_api_key\" href=\"#\">apply</a></div>\n  </div>\n</div>\n\n";
+  return buffer;
+  });
+})();
+
+(function() {
+  var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};
+templates['basic_auth_button_view'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  
+
+
+  return "<div class='auth_button' id='basic_auth_button'><img class='auth_icon' src='images/password.jpeg'></div>\n<div class='auth_container' id='basic_auth_container'>\n  <div class='key_input_container'>\n    <div class=\"auth_label\">Username</div>\n    <input placeholder=\"username\" class=\"auth_input\" id=\"input_username\" name=\"username\" type=\"text\"/>\n    <div class=\"auth_label\">Password</div>\n    <input placeholder=\"password\" class=\"auth_input\" id=\"input_password\" name=\"password\" type=\"password\"/>\n    <div class='auth_submit'><a class='auth_submit_button' id=\"apply_basic_auth\" href=\"#\">apply</a></div>\n  </div>\n</div>\n\n";
+  });
+})();
+
+(function() {
+  var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};
 templates['content_type'] = template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
@@ -231,23 +260,23 @@ function program4(depth0,data) {
 templates['main'] = template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression, self=this;
+  var buffer = "", stack1, stack2, functionType="function", escapeExpression=this.escapeExpression, self=this;
 
 function program1(depth0,data) {
   
   var buffer = "", stack1, stack2;
-  buffer += "\n    <div class=\"info_title\">"
+  buffer += "\n  <div class=\"info_title\">"
     + escapeExpression(((stack1 = ((stack1 = depth0.info),stack1 == null || stack1 === false ? stack1 : stack1.title)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "</div>\n    <div class=\"info_description\">";
+    + "</div>\n  <div class=\"info_description\">";
   stack2 = ((stack1 = ((stack1 = depth0.info),stack1 == null || stack1 === false ? stack1 : stack1.description)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1);
   if(stack2 || stack2 === 0) { buffer += stack2; }
-  buffer += "</div>\n    ";
+  buffer += "</div>\n  ";
   stack2 = helpers['if'].call(depth0, ((stack1 = depth0.info),stack1 == null || stack1 === false ? stack1 : stack1.termsOfServiceUrl), {hash:{},inverse:self.noop,fn:self.program(2, program2, data),data:data});
   if(stack2 || stack2 === 0) { buffer += stack2; }
-  buffer += "\n    ";
+  buffer += "\n  ";
   stack2 = helpers['if'].call(depth0, ((stack1 = depth0.info),stack1 == null || stack1 === false ? stack1 : stack1.contact), {hash:{},inverse:self.noop,fn:self.program(4, program4, data),data:data});
   if(stack2 || stack2 === 0) { buffer += stack2; }
-  buffer += "\n    ";
+  buffer += "\n  ";
   stack2 = helpers['if'].call(depth0, ((stack1 = depth0.info),stack1 == null || stack1 === false ? stack1 : stack1.license), {hash:{},inverse:self.noop,fn:self.program(6, program6, data),data:data});
   if(stack2 || stack2 === 0) { buffer += stack2; }
   buffer += "\n  ";
@@ -266,7 +295,7 @@ function program4(depth0,data) {
   
   var buffer = "", stack1;
   buffer += "<div class='info_contact'><a href=\"mailto:"
-    + escapeExpression(((stack1 = ((stack1 = depth0.info),stack1 == null || stack1 === false ? stack1 : stack1.contact)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = depth0.info),stack1 == null || stack1 === false ? stack1 : stack1.contact)),stack1 == null || stack1 === false ? stack1 : stack1.name)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
     + "\">Contact the developer</a></div>";
   return buffer;
   }
@@ -275,9 +304,9 @@ function program6(depth0,data) {
   
   var buffer = "", stack1;
   buffer += "<div class='info_license'><a href='"
-    + escapeExpression(((stack1 = ((stack1 = ((stack1 = depth0.info),stack1 == null || stack1 === false ? stack1 : stack1.license)),stack1 == null || stack1 === false ? stack1 : stack1.name)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "'>"
     + escapeExpression(((stack1 = ((stack1 = ((stack1 = depth0.info),stack1 == null || stack1 === false ? stack1 : stack1.license)),stack1 == null || stack1 === false ? stack1 : stack1.url)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "'>"
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = depth0.info),stack1 == null || stack1 === false ? stack1 : stack1.license)),stack1 == null || stack1 === false ? stack1 : stack1.name)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
     + "</a></div>";
   return buffer;
   }
@@ -285,25 +314,49 @@ function program6(depth0,data) {
 function program8(depth0,data) {
   
   var buffer = "", stack1;
-  buffer += "\n        , <span style=\"font-variant: small-caps\">api version</span>: ";
-  if (stack1 = helpers.apiVersion) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
-  else { stack1 = depth0.apiVersion; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
+  buffer += "\n    , <span style=\"font-variant: small-caps\">api version</span>: "
+    + escapeExpression(((stack1 = ((stack1 = depth0.info),stack1 == null || stack1 === false ? stack1 : stack1.version)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "\n    ";
+  return buffer;
+  }
+
+function program10(depth0,data) {
+  
+  var buffer = "", stack1;
+  buffer += "\n    <span style=\"float:right\"><a href=\"";
+  if (stack1 = helpers.validatorUrl) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
+  else { stack1 = depth0.validatorUrl; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
-    + "\n        ";
+    + "/debug?url=";
+  if (stack1 = helpers.url) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
+  else { stack1 = depth0.url; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
+  buffer += escapeExpression(stack1)
+    + "\"><img id=\"validator\" src=\"";
+  if (stack1 = helpers.validatorUrl) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
+  else { stack1 = depth0.validatorUrl; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
+  buffer += escapeExpression(stack1)
+    + "?url=";
+  if (stack1 = helpers.url) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
+  else { stack1 = depth0.url; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
+  buffer += escapeExpression(stack1)
+    + "\"></a>\n    </span>\n    ";
   return buffer;
   }
 
   buffer += "<div class='info' id='api_info'>\n  ";
   stack1 = helpers['if'].call(depth0, depth0.info, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n</div>\n<div class='container' id='resources_container'>\n    <ul id='resources'>\n    </ul>\n\n    <div class=\"footer\">\n        <br>\n        <br>\n        <h4 style=\"color: #999\">[ <span style=\"font-variant: small-caps\">base url</span>: ";
+  buffer += "\n</div>\n<div class='container' id='resources_container'>\n  <ul id='resources'></ul>\n\n  <div class=\"footer\">\n    <br>\n    <br>\n    <h4 style=\"color: #999\">[ <span style=\"font-variant: small-caps\">base url</span>: ";
   if (stack1 = helpers.basePath) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.basePath; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
-    + "\n        ";
-  stack1 = helpers['if'].call(depth0, depth0.apiVersion, {hash:{},inverse:self.noop,fn:self.program(8, program8, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "]</h4>\n    </div>\n</div>\n";
+    + "\n    ";
+  stack2 = helpers['if'].call(depth0, ((stack1 = depth0.info),stack1 == null || stack1 === false ? stack1 : stack1.version), {hash:{},inverse:self.noop,fn:self.program(8, program8, data),data:data});
+  if(stack2 || stack2 === 0) { buffer += stack2; }
+  buffer += "]\n    ";
+  stack2 = helpers['if'].call(depth0, depth0.validatorUrl, {hash:{},inverse:self.noop,fn:self.program(10, program10, data),data:data});
+  if(stack2 || stack2 === 0) { buffer += stack2; }
+  buffer += "\n    </h4>\n    </div>\n</div>\n";
   return buffer;
   });
 })();
@@ -317,6 +370,18 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
 
 function program1(depth0,data) {
   
+  
+  return "deprecated";
+  }
+
+function program3(depth0,data) {
+  
+  
+  return "\n            <h4>Warning: Deprecated</h4>\n        ";
+  }
+
+function program5(depth0,data) {
+  
   var buffer = "", stack1;
   buffer += "\n        <h4>Implementation Notes</h4>\n        <p>";
   if (stack1 = helpers.description) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
@@ -326,22 +391,22 @@ function program1(depth0,data) {
   return buffer;
   }
 
-function program3(depth0,data) {
+function program7(depth0,data) {
   
   
   return "\n        <div class=\"auth\">\n        <span class=\"api-ic ic-error\"></span>";
   }
 
-function program5(depth0,data) {
+function program9(depth0,data) {
   
   var buffer = "", stack1;
   buffer += "\n          <div id=\"api_information_panel\" style=\"top: 526px; left: 776px; display: none;\">\n          ";
-  stack1 = helpers.each.call(depth0, depth0, {hash:{},inverse:self.noop,fn:self.program(6, program6, data),data:data});
+  stack1 = helpers.each.call(depth0, depth0, {hash:{},inverse:self.noop,fn:self.program(10, program10, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n          </div>\n        ";
   return buffer;
   }
-function program6(depth0,data) {
+function program10(depth0,data) {
   
   var buffer = "", stack1, stack2;
   buffer += "\n            <div title='";
@@ -353,43 +418,43 @@ function program6(depth0,data) {
   return buffer;
   }
 
-function program8(depth0,data) {
+function program12(depth0,data) {
   
   
   return "</div>";
   }
 
-function program10(depth0,data) {
+function program14(depth0,data) {
   
   
   return "\n        <div class='access'>\n          <span class=\"api-ic ic-off\" title=\"click to authenticate\"></span>\n        </div>\n        ";
   }
 
-function program12(depth0,data) {
+function program16(depth0,data) {
   
   
   return "\n          <h4>Response Class</h4>\n          <p><span class=\"model-signature\" /></p>\n          <br/>\n          <div class=\"response-content-type\" />\n        ";
   }
 
-function program14(depth0,data) {
+function program18(depth0,data) {
   
   
   return "\n          <h4>Parameters</h4>\n          <table class='fullwidth'>\n          <thead>\n            <tr>\n            <th style=\"width: 100px; max-width: 100px\">Parameter</th>\n            <th style=\"width: 310px; max-width: 310px\">Value</th>\n            <th style=\"width: 200px; max-width: 200px\">Description</th>\n            <th style=\"width: 100px; max-width: 100px\">Parameter Type</th>\n            <th style=\"width: 220px; max-width: 230px\">Data Type</th>\n            </tr>\n          </thead>\n          <tbody class=\"operation-params\">\n\n          </tbody>\n          </table>\n          ";
   }
 
-function program16(depth0,data) {
+function program20(depth0,data) {
   
   
   return "\n          <div style='margin:0;padding:0;display:inline'></div>\n          <h4>Response Messages</h4>\n          <table class='fullwidth'>\n            <thead>\n            <tr>\n              <th>HTTP Status Code</th>\n              <th>Reason</th>\n              <th>Response Model</th>\n            </tr>\n            </thead>\n            <tbody class=\"operation-status\">\n            \n            </tbody>\n          </table>\n          ";
   }
 
-function program18(depth0,data) {
+function program22(depth0,data) {
   
   
   return "\n          ";
   }
 
-function program20(depth0,data) {
+function program24(depth0,data) {
   
   
   return "\n          <div class='sandbox_header'>\n            <input class='submit' name='commit' type='button' value='Try it out!' />\n            <a href='#' class='response_hider' style='display:none'>Hide Response</a>\n            <span class='response_throbber' style='display:none'></span>\n          </div>\n          ";
@@ -427,7 +492,10 @@ function program20(depth0,data) {
   if (stack1 = helpers.nickname) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.nickname; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
-    + "' class=\"toggleOperation\">";
+    + "' class=\"toggleOperation ";
+  stack1 = helpers['if'].call(depth0, depth0.deprecated, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\">";
   if (stack1 = helpers.path) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.path; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
@@ -452,40 +520,43 @@ function program20(depth0,data) {
   else { stack1 = depth0.nickname; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
     + "_content' style='display:none'>\n        ";
-  stack1 = helpers['if'].call(depth0, depth0.description, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  stack1 = helpers['if'].call(depth0, depth0.deprecated, {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n        ";
-  options = {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data};
+  stack1 = helpers['if'].call(depth0, depth0.description, {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n        ";
+  options = {hash:{},inverse:self.noop,fn:self.program(7, program7, data),data:data};
   if (stack1 = helpers.oauth) { stack1 = stack1.call(depth0, options); }
   else { stack1 = depth0.oauth; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   if (!helpers.oauth) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n        ";
-  stack1 = helpers.each.call(depth0, depth0.oauth, {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
+  stack1 = helpers.each.call(depth0, depth0.oauth, {hash:{},inverse:self.noop,fn:self.program(9, program9, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n        ";
-  options = {hash:{},inverse:self.noop,fn:self.program(8, program8, data),data:data};
+  options = {hash:{},inverse:self.noop,fn:self.program(12, program12, data),data:data};
   if (stack1 = helpers.oauth) { stack1 = stack1.call(depth0, options); }
   else { stack1 = depth0.oauth; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   if (!helpers.oauth) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n        ";
-  options = {hash:{},inverse:self.noop,fn:self.program(10, program10, data),data:data};
+  options = {hash:{},inverse:self.noop,fn:self.program(14, program14, data),data:data};
   if (stack1 = helpers.oauth) { stack1 = stack1.call(depth0, options); }
   else { stack1 = depth0.oauth; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   if (!helpers.oauth) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n        ";
-  stack1 = helpers['if'].call(depth0, depth0.type, {hash:{},inverse:self.noop,fn:self.program(12, program12, data),data:data});
+  stack1 = helpers['if'].call(depth0, depth0.type, {hash:{},inverse:self.noop,fn:self.program(16, program16, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n        <form accept-charset='UTF-8' class='sandbox'>\n          <div style='margin:0;padding:0;display:inline'></div>\n          ";
-  stack1 = helpers['if'].call(depth0, depth0.parameters, {hash:{},inverse:self.noop,fn:self.program(14, program14, data),data:data});
+  stack1 = helpers['if'].call(depth0, depth0.parameters, {hash:{},inverse:self.noop,fn:self.program(18, program18, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n          ";
-  stack1 = helpers['if'].call(depth0, depth0.responseMessages, {hash:{},inverse:self.noop,fn:self.program(16, program16, data),data:data});
+  stack1 = helpers['if'].call(depth0, depth0.responseMessages, {hash:{},inverse:self.noop,fn:self.program(20, program20, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n          ";
-  stack1 = helpers['if'].call(depth0, depth0.isReadOnly, {hash:{},inverse:self.program(20, program20, data),fn:self.program(18, program18, data),data:data});
+  stack1 = helpers['if'].call(depth0, depth0.isReadOnly, {hash:{},inverse:self.program(24, program24, data),fn:self.program(22, program22, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n        </form>\n        <div class='response' style='display:none'>\n          <h4>Request URL</h4>\n          <div class='block request_url'></div>\n          <h4>Response Body</h4>\n          <div class='block response_body'></div>\n          <h4>Response Code</h4>\n          <div class='block response_code'></div>\n          <h4>Response Headers</h4>\n          <div class='block response_headers'></div>\n        </div>\n      </div>\n    </li>\n  </ul>\n";
   return buffer;
@@ -523,7 +594,7 @@ function program4(depth0,data) {
   
   var buffer = "", stack1;
   buffer += "\n			";
-  stack1 = helpers['if'].call(depth0, depth0.defaultValue, {hash:{},inverse:self.program(7, program7, data),fn:self.program(5, program5, data),data:data});
+  stack1 = helpers['if'].call(depth0, depth0['default'], {hash:{},inverse:self.program(7, program7, data),fn:self.program(5, program5, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n		";
   return buffer;
@@ -536,8 +607,8 @@ function program5(depth0,data) {
   else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
     + "'>";
-  if (stack1 = helpers.defaultValue) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
-  else { stack1 = depth0.defaultValue; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
+  if (stack1 = helpers['default']) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
+  else { stack1 = depth0['default']; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
     + "</textarea>\n			";
   return buffer;
@@ -567,7 +638,7 @@ function program10(depth0,data) {
   
   var buffer = "", stack1;
   buffer += "\n			";
-  stack1 = helpers['if'].call(depth0, depth0.defaultValue, {hash:{},inverse:self.program(13, program13, data),fn:self.program(11, program11, data),data:data});
+  stack1 = helpers['if'].call(depth0, depth0['default'], {hash:{},inverse:self.program(13, program13, data),fn:self.program(11, program11, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n		";
   return buffer;
@@ -580,8 +651,8 @@ function program11(depth0,data) {
   else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
     + "' placeholder='' type='text' value='";
-  if (stack1 = helpers.defaultValue) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
-  else { stack1 = depth0.defaultValue; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
+  if (stack1 = helpers['default']) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
+  else { stack1 = depth0['default']; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
     + "'/>\n			";
   return buffer;
@@ -1073,6 +1144,17 @@ function program1(depth0,data) {
   return " : ";
   }
 
+function program3(depth0,data) {
+  
+  var buffer = "", stack1;
+  buffer += "<li>\n      <a href='";
+  if (stack1 = helpers.url) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
+  else { stack1 = depth0.url; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
+  buffer += escapeExpression(stack1)
+    + "'>Raw</a>\n    </li>";
+  return buffer;
+  }
+
   buffer += "<div class='heading'>\n  <h2>\n    <a href='#!/";
   if (stack1 = helpers.id) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.id; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
@@ -1114,11 +1196,13 @@ function program1(depth0,data) {
   if (stack1 = helpers.id) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.id; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
-    + ">\n        Expand Operations\n      </a>\n    </li>\n    <li>\n      <a href='";
-  if (stack1 = helpers.url) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
+    + ">\n        Expand Operations\n      </a>\n    </li>\n    ";
+  options = {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data};
+  if (stack1 = helpers.url) { stack1 = stack1.call(depth0, options); }
   else { stack1 = depth0.url; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
-  buffer += escapeExpression(stack1)
-    + "'>Raw</a>\n    </li>\n  </ul>\n</div>\n<ul class='endpoints' id='";
+  if (!helpers.url) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n  </ul>\n</div>\n<ul class='endpoints' id='";
   if (stack1 = helpers.id) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.id; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
@@ -1178,15 +1262,15 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression;
 
 
-  buffer += "<div>\n<ul class=\"signature-nav\">\n    <li><a class=\"description-link\" href=\"#\">Model</a></li>\n    <li><a class=\"snippet-link\" href=\"#\">Model Schema</a></li>\n</ul>\n<div>\n\n<div class=\"signature-container\">\n    <div class=\"description\">\n        ";
+  buffer += "<div>\n<ul class=\"signature-nav\">\n  <li><a class=\"description-link\" href=\"#\">Model</a></li>\n  <li><a class=\"snippet-link\" href=\"#\">Model Schema</a></li>\n</ul>\n<div>\n\n<div class=\"signature-container\">\n  <div class=\"description\">\n    ";
   if (stack1 = helpers.signature) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.signature; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n    </div>\n\n    <div class=\"snippet\">\n        <pre><code>";
+  buffer += "\n  </div>\n\n  <div class=\"snippet\">\n    <pre><code>";
   if (stack1 = helpers.sampleJSON) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.sampleJSON; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
-    + "</code></pre>\n        <small class=\"notice\"></small>\n    </div>\n</div>\n\n";
+    + "</code></pre>\n    <small class=\"notice\"></small>\n  </div>\n</div>\n\n";
   return buffer;
   });
 })();
@@ -1216,7 +1300,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
 
 // Generated by CoffeeScript 1.6.3
 (function() {
-  var ContentTypeView, HeaderView, MainView, OperationView, ParameterContentTypeView, ParameterView, ResourceView, ResponseContentTypeView, SignatureView, StatusCodeView, SwaggerUi, _ref, _ref1, _ref10, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9,
+  var ApiKeyButton, BasicAuthButton, ContentTypeView, HeaderView, MainView, OperationView, ParameterContentTypeView, ParameterView, ResourceView, ResponseContentTypeView, SignatureView, StatusCodeView, SwaggerUi, _ref, _ref1, _ref10, _ref11, _ref12, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -1272,6 +1356,14 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       return this.headerView.on('update-swagger-ui', function(data) {
         return _this.updateSwaggerUi(data);
       });
+    };
+
+    SwaggerUi.prototype.setOption = function(option, value) {
+      return this.options[option] = value;
+    };
+
+    SwaggerUi.prototype.getOption = function(option) {
+      return this.options[option];
     };
 
     SwaggerUi.prototype.updateSwaggerUi = function(data) {
@@ -1452,36 +1544,64 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
     };
 
     MainView.prototype.initialize = function(opts) {
-      var name, route, sorter, sorterName, url, _i, _len, _ref3;
+      var auth, key, name, url, value, _ref3;
       if (opts == null) {
         opts = {};
       }
-      if (opts.swaggerOptions.sorter) {
-        sorterName = opts.swaggerOptions.sorter;
-        sorter = sorters[sorterName];
-        if (this.model.apisArray) {
-          _ref3 = this.model.apisArray;
-          for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
-            route = _ref3[_i];
-            route.operationsArray.sort(sorter);
-          }
-          if (sorterName === "alpha") {
-            this.model.apisArray.sort(sorter);
-          }
-        }
+      this.model.auths = [];
+      _ref3 = this.model.securityDefinitions;
+      for (key in _ref3) {
+        value = _ref3[key];
+        auth = {
+          name: key,
+          type: value.type,
+          value: value
+        };
+        this.model.auths.push(auth);
       }
-      log(this.model);
       if (this.model.info && this.model.info.license && typeof this.model.info.license === 'string') {
         name = this.model.info.license;
         url = this.model.info.licenseUrl;
         this.model.info.license = {};
         this.model.info.license.name = name;
-        return this.model.info.license.url = url;
+        this.model.info.license.url = url;
+      }
+      if (!this.model.info) {
+        this.model.info = {};
+      }
+      if (!this.model.info.version) {
+        this.model.info.version = this.model.apiVersion;
+      }
+      if (this.model.swaggerVersion === "2.0") {
+        if ("validatorUrl" in opts.swaggerOptions) {
+          return this.model.validatorUrl = opts.swaggerOptions.validatorUrl;
+        } else if (this.model.url.match(/https?:\/\/localhost/)) {
+          return this.model.validatorUrl = this.model.url;
+        } else {
+          return this.model.validatorUrl = "http://online.swagger.io/validator";
+        }
       }
     };
 
     MainView.prototype.render = function() {
-      var counter, id, resource, resources, _i, _len, _ref3;
+      var auth, button, counter, id, name, resource, resources, _i, _len, _ref3;
+      if (this.model.securityDefinitions) {
+        for (name in this.model.securityDefinitions) {
+          auth = this.model.securityDefinitions[name];
+          if (auth.type === "apiKey" && $("#apikey_button").length === 0) {
+            button = new ApiKeyButton({
+              model: auth
+            }).render().el;
+            $('.auth_main_container').append(button);
+          }
+          if (auth.type === "basicAuth" && $("#basic_auth_button").length === 0) {
+            button = new BasicAuthButton({
+              model: auth
+            }).render().el;
+            $('.auth_main_container').append(button);
+          }
+        }
+      }
       $(this.el).html(Handlebars.templates.main(this.model));
       resources = {};
       counter = 0;
@@ -1495,12 +1615,12 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
         }
         resource.id = id;
         resources[id] = resource;
-        this.addResource(resource);
+        this.addResource(resource, this.model.auths);
       }
       return this;
     };
 
-    MainView.prototype.addResource = function(resource) {
+    MainView.prototype.addResource = function(resource, auths) {
       var resourceView;
       resource.id = resource.id.replace(/\s/g, '_');
       resourceView = new ResourceView({
@@ -1508,6 +1628,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
         tagName: 'li',
         id: 'resource_' + resource.id,
         className: 'resource',
+        auths: auths,
         swaggerOptions: this.options.swaggerOptions
       });
       return $('#resources').append(resourceView.render().el);
@@ -1529,7 +1650,11 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       return _ref3;
     }
 
-    ResourceView.prototype.initialize = function() {
+    ResourceView.prototype.initialize = function(opts) {
+      if (opts == null) {
+        opts = {};
+      }
+      this.auths = opts.auths;
       if ("" === this.model.description) {
         return this.model.description = null;
       }
@@ -1558,7 +1683,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       }
       $('.toggleEndpointList', this.el).click(this.callDocs.bind(this, 'toggleEndpointListForResource'));
       $('.collapseResource', this.el).click(this.callDocs.bind(this, 'collapseOperationsForResource'));
-      $('.expandResource', this.el).click(this.callDocs.bind(this, 'expandOperationsForResoruce'));
+      $('.expandResource', this.el).click(this.callDocs.bind(this, 'expandOperationsForResource'));
       return this;
     };
 
@@ -1569,7 +1694,8 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
         model: operation,
         tagName: 'li',
         className: 'endpoint',
-        swaggerOptions: this.options.swaggerOptions
+        swaggerOptions: this.options.swaggerOptions,
+        auths: this.auths
       });
       $('.endpoints', $(this.el)).append(operationView.render().el);
       return this.number++;
@@ -1603,7 +1729,13 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       'mouseout .api-ic': 'mouseExit'
     };
 
-    OperationView.prototype.initialize = function() {};
+    OperationView.prototype.initialize = function(opts) {
+      if (opts == null) {
+        opts = {};
+      }
+      this.auths = opts.auths;
+      return this;
+    };
 
     OperationView.prototype.mouseEnter = function(e) {
       var elem, hgh, pos, scMaxX, scMaxY, scX, scY, wd, x, y;
@@ -1640,7 +1772,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
     };
 
     OperationView.prototype.render = function() {
-      var code, contentTypeModel, isMethodSubmissionSupported, k, o, param, ref, responseContentTypeView, responseSignatureView, schema, schemaObj, signatureModel, statusCode, type, v, value, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref5, _ref6, _ref7, _ref8, _ref9;
+      var a, auth, auths, code, contentTypeModel, isMethodSubmissionSupported, k, key, o, param, ref, responseContentTypeView, responseSignatureView, schema, schemaObj, signatureModel, statusCode, type, v, value, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref10, _ref11, _ref5, _ref6, _ref7, _ref8, _ref9;
       isMethodSubmissionSupported = true;
       if (!isMethodSubmissionSupported) {
         this.model.isReadOnly = true;
@@ -1650,29 +1782,56 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
         this.model.description = this.model.description.replace(/(?:\r\n|\r|\n)/g, '<br />');
       }
       this.model.oauth = null;
+      log(this.model.authorizations);
       if (this.model.authorizations) {
-        _ref5 = this.model.authorizations;
-        for (k in _ref5) {
-          v = _ref5[k];
-          if (k === "oauth2") {
-            if (this.model.oauth === null) {
-              this.model.oauth = {};
+        if (Array.isArray(this.model.authorizations)) {
+          _ref5 = this.model.authorizations;
+          for (_i = 0, _len = _ref5.length; _i < _len; _i++) {
+            auths = _ref5[_i];
+            for (key in auths) {
+              auth = auths[key];
+              for (a in this.auths) {
+                auth = this.auths[a];
+                if (auth.type === 'oauth2') {
+                  this.model.oauth = {};
+                  this.model.oauth.scopes = [];
+                  _ref6 = auth.value.scopes;
+                  for (k in _ref6) {
+                    v = _ref6[k];
+                    o = {
+                      scope: k,
+                      description: v
+                    };
+                    this.model.oauth.scopes.push(o);
+                  }
+                }
+              }
             }
-            if (this.model.oauth.scopes === void 0) {
-              this.model.oauth.scopes = [];
-            }
-            for (_i = 0, _len = v.length; _i < _len; _i++) {
-              o = v[_i];
-              this.model.oauth.scopes.push(o);
+          }
+        } else {
+          _ref7 = this.model.authorizations;
+          for (k in _ref7) {
+            v = _ref7[k];
+            if (k === "oauth2") {
+              if (this.model.oauth === null) {
+                this.model.oauth = {};
+              }
+              if (this.model.oauth.scopes === void 0) {
+                this.model.oauth.scopes = [];
+              }
+              for (_j = 0, _len1 = v.length; _j < _len1; _j++) {
+                o = v[_j];
+                this.model.oauth.scopes.push(o);
+              }
             }
           }
         }
       }
       if (typeof this.model.responses !== 'undefined') {
         this.model.responseMessages = [];
-        _ref6 = this.model.responses;
-        for (code in _ref6) {
-          value = _ref6[code];
+        _ref8 = this.model.responses;
+        for (code in _ref8) {
+          value = _ref8[code];
           schema = null;
           schemaObj = this.model.responses[code].schema;
           if (schemaObj && schemaObj['$ref']) {
@@ -1712,13 +1871,13 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       };
       contentTypeModel.consumes = this.model.consumes;
       contentTypeModel.produces = this.model.produces;
-      _ref7 = this.model.parameters;
-      for (_j = 0, _len1 = _ref7.length; _j < _len1; _j++) {
-        param = _ref7[_j];
+      _ref9 = this.model.parameters;
+      for (_k = 0, _len2 = _ref9.length; _k < _len2; _k++) {
+        param = _ref9[_k];
         type = param.type || param.dataType;
         if (typeof type === 'undefined') {
           schema = param.schema;
-          if (schema['$ref']) {
+          if (schema && schema['$ref']) {
             ref = schema['$ref'];
             if (ref.indexOf('#/definitions/') === 0) {
               type = ref.substring('#/definitions/'.length);
@@ -1738,14 +1897,14 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
         model: contentTypeModel
       });
       $('.response-content-type', $(this.el)).append(responseContentTypeView.render().el);
-      _ref8 = this.model.parameters;
-      for (_k = 0, _len2 = _ref8.length; _k < _len2; _k++) {
-        param = _ref8[_k];
+      _ref10 = this.model.parameters;
+      for (_l = 0, _len3 = _ref10.length; _l < _len3; _l++) {
+        param = _ref10[_l];
         this.addParameter(param, contentTypeModel.consumes);
       }
-      _ref9 = this.model.responseMessages;
-      for (_l = 0, _len3 = _ref9.length; _l < _len3; _l++) {
-        statusCode = _ref9[_l];
+      _ref11 = this.model.responseMessages;
+      for (_m = 0, _len4 = _ref11.length; _m < _len4; _m++) {
+        statusCode = _ref11[_m];
         this.addStatusCode(statusCode);
       }
       return this;
@@ -1811,7 +1970,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
         for (_j = 0, _len1 = _ref6.length; _j < _len1; _j++) {
           o = _ref6[_j];
           if ((o.value != null) && jQuery.trim(o.value).length > 0) {
-            map["body"] = o.value;
+            map[o.name] = o.value;
           }
         }
         _ref7 = form.find("select");
@@ -1940,7 +2099,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
           }
         }
         if (options.length > 0) {
-          return options.join(",");
+          return options;
         } else {
           return null;
         }
@@ -2043,7 +2202,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
     };
 
     OperationView.prototype.showStatus = function(response) {
-      var code, content, contentType, headers, opts, pre, response_body, response_body_el, url;
+      var code, content, contentType, e, headers, json, opts, pre, response_body, response_body_el, url;
       if (response.content === void 0) {
         content = response.data;
         url = response.url;
@@ -2057,7 +2216,14 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
         code = $('<code />').text("no content");
         pre = $('<pre class="json" />').append(code);
       } else if (contentType === "application/json" || /\+json$/.test(contentType)) {
-        code = $('<code />').text(JSON.stringify(JSON.parse(content), null, "  "));
+        json = null;
+        try {
+          json = JSON.stringify(JSON.parse(content), null, "  ");
+        } catch (_error) {
+          e = _error;
+          json = "can't parse JSON.  Raw result:\n\n" + content;
+        }
+        code = $('<code />').text(json);
         pre = $('<pre class="json" />').append(code);
       } else if (contentType === "application/xml" || /\+xml$/.test(contentType)) {
         code = $('<code />').text(this.formatXml(content));
@@ -2165,7 +2331,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       type = this.model.type || this.model.dataType;
       if (typeof type === 'undefined') {
         schema = this.model.schema;
-        if (schema['$ref']) {
+        if (schema && schema['$ref']) {
           ref = schema['$ref'];
           if (ref.indexOf('#/definitions/') === 0) {
             type = ref.substring('#/definitions/'.length);
@@ -2182,6 +2348,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       if (type && type.toLowerCase() === 'file') {
         this.model.isFile = true;
       }
+      this.model["default"] = this.model["default"] || this.model.defaultValue;
       template = this.template();
       $(this.el).html(template(this.model));
       signatureModel = {
@@ -2388,6 +2555,109 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
     };
 
     return ParameterContentTypeView;
+
+  })(Backbone.View);
+
+  ApiKeyButton = (function(_super) {
+    __extends(ApiKeyButton, _super);
+
+    function ApiKeyButton() {
+      _ref11 = ApiKeyButton.__super__.constructor.apply(this, arguments);
+      return _ref11;
+    }
+
+    ApiKeyButton.prototype.initialize = function() {};
+
+    ApiKeyButton.prototype.render = function() {
+      var template;
+      template = this.template();
+      $(this.el).html(template(this.model));
+      return this;
+    };
+
+    ApiKeyButton.prototype.events = {
+      "click #apikey_button": "toggleApiKeyContainer",
+      "click #apply_api_key": "applyApiKey"
+    };
+
+    ApiKeyButton.prototype.applyApiKey = function() {
+      var elem;
+      window.authorizations.add(this.model.name, new ApiKeyAuthorization(this.model.name, $("#input_apiKey_entry").val(), this.model["in"]));
+      window.swaggerUi.load();
+      return elem = $('#apikey_container').show();
+    };
+
+    ApiKeyButton.prototype.toggleApiKeyContainer = function() {
+      var elem;
+      if ($('#apikey_container').length > 0) {
+        elem = $('#apikey_container').first();
+        if (elem.is(':visible')) {
+          return elem.hide();
+        } else {
+          $('.auth_container').hide();
+          return elem.show();
+        }
+      }
+    };
+
+    ApiKeyButton.prototype.template = function() {
+      return Handlebars.templates.apikey_button_view;
+    };
+
+    return ApiKeyButton;
+
+  })(Backbone.View);
+
+  BasicAuthButton = (function(_super) {
+    __extends(BasicAuthButton, _super);
+
+    function BasicAuthButton() {
+      _ref12 = BasicAuthButton.__super__.constructor.apply(this, arguments);
+      return _ref12;
+    }
+
+    BasicAuthButton.prototype.initialize = function() {};
+
+    BasicAuthButton.prototype.render = function() {
+      var template;
+      template = this.template();
+      $(this.el).html(template(this.model));
+      return this;
+    };
+
+    BasicAuthButton.prototype.events = {
+      "click #basic_auth_button": "togglePasswordContainer",
+      "click #apply_basic_auth": "applyPassword"
+    };
+
+    BasicAuthButton.prototype.applyPassword = function() {
+      var elem, password, username;
+      console.log("applying password");
+      username = $(".input_username").val();
+      password = $(".input_password").val();
+      window.authorizations.add(this.model.type, new PasswordAuthorization("basic", username, password));
+      window.swaggerUi.load();
+      return elem = $('#basic_auth_container').hide();
+    };
+
+    BasicAuthButton.prototype.togglePasswordContainer = function() {
+      var elem;
+      if ($('#basic_auth_container').length > 0) {
+        elem = $('#basic_auth_container').show();
+        if (elem.is(':visible')) {
+          return elem.slideUp();
+        } else {
+          $('.auth_container').hide();
+          return elem.show();
+        }
+      }
+    };
+
+    BasicAuthButton.prototype.template = function() {
+      return Handlebars.templates.basic_auth_button_view;
+    };
+
+    return BasicAuthButton;
 
   })(Backbone.View);
 
