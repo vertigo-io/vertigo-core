@@ -2,9 +2,6 @@
 <modules>
 	<module name="vertigo-commons">
 	    <component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
-	    <component api="WorkManager" class="io.vertigo.dynamo.impl.work.WorkManagerImpl">
-	        <param name="workerCount" value="15" />
-	    </component>
 	    <component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
 	</module>
 	
