@@ -54,6 +54,12 @@
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-tempo-impl</artifactId><!--  work dependency -->
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- Dépendances à des librairies spécifiques au module -->
 		<dependency>

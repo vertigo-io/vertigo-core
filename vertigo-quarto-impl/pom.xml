@@ -70,6 +70,12 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-tempo-impl</artifactId><!--  work dependency -->
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
 
 		<!--Open Office dependencies -->
 		<dependency>
