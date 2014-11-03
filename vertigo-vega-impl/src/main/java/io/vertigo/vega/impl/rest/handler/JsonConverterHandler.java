@@ -162,17 +162,17 @@ final class JsonConverterHandler implements RouteHandler {
 	}
 
 	private static void setHeadersFromResultType(final Object result, final Response response) {
+		final StringBuilder contentType = new StringBuilder("application/json;charset=UTF-8");
 		if (result instanceof List) {
 			if (result instanceof DtList && !((DtList) result).getMetaDataNames().isEmpty()) {
-				response.type("application/json+list+meta;charset=UTF-8");
+				contentType.append(";json+list+meta");
 			} else {
-				response.type("application/json+list;charset=UTF-8");
+				contentType.append(";json+list");
 			}
 		} else if (result instanceof DtObject) {
-			response.type("application/json+entity:" + result.getClass().getSimpleName() + ";charset=UTF-8");
-		} else {
-			response.type("application/json;charset=UTF-8");
+			contentType.append(";json+entity:" + result.getClass().getSimpleName());
 		}
+		response.type(contentType.toString());
 	}
 
 	private UiContext readInnerBodyValue(final String jsonBody, final List<EndPointParam> endPointParams) throws VSecurityException {
