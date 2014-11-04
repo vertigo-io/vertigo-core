@@ -94,8 +94,11 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 		esClient = createEsClient();
 		for (final String core : cores) {
 			final String indexName = core.toLowerCase();
+			System.out.println(System.currentTimeMillis() + " Check prepareExists: " + indexName);
 			if (!esClient.admin().indices().prepareExists(indexName).execute().actionGet().isExists()) {
-				esClient.admin().indices().prepareCreate(indexName).execute().actionGet().isAcknowledged();
+				System.out.println(System.currentTimeMillis() + " prepareExists " + indexName + " doesn't exist create it");
+				final boolean acknowledged = esClient.admin().indices().prepareCreate(indexName).execute().actionGet().isAcknowledged();
+				System.out.println(System.currentTimeMillis() + " create " + indexName + " acknowledged:" + acknowledged);
 			}
 		}
 	}
