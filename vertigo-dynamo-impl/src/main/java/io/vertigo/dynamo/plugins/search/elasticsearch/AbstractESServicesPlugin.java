@@ -101,6 +101,7 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 				System.out.println(System.currentTimeMillis() + " create " + indexName + " acknowledged:" + acknowledged);
 			}
 		}
+		waitForYellowStatus();
 	}
 
 	/** {@inheritDoc} */
@@ -271,7 +272,13 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 	}
 
 	private void markToOptimize(final IndexDefinition indexDefinition) {
-		esClient.admin().indices().optimize(new OptimizeRequest().flush(true).maxNumSegments(32)); //32 files : empirique
+		esClient.admin().indices()
+				.optimize(new OptimizeRequest(indexDefinition.getName().toLowerCase())
+						.flush(true).maxNumSegments(32)); //32 files : empirique
+	}
+
+	private void waitForYellowStatus() {
+		esClient.admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
 	}
 
 }
