@@ -21,18 +21,36 @@
 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-	<xs:element name="modules">
+	<xs:element name="config">
 		<xs:complexType>
-	    	<xs:sequence minOccurs="1" maxOccurs="unbounded">
-	        	<xs:element name="module" type="moduleType"/>
-			</xs:sequence>
+			<xs:sequence>
+		    	<xs:element name="modules" type="modulesType" minOccurs="0"/>
+		      	<xs:element name="resources" type="resourcesType" minOccurs="0"/>
+		    </xs:sequence>
 		</xs:complexType>
-	</xs:element>
-
+  	</xs:element>
+  	
+	<xs:complexType name="modulesType">
+    	<xs:sequence minOccurs="0" maxOccurs="unbounded">
+        	<xs:element name="module" type="moduleType"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="resourcesType">
+    	<xs:sequence minOccurs="0" maxOccurs="unbounded">
+        	<xs:element name="resource" type="resourceType"/>
+		</xs:sequence>
+	</xs:complexType>
+		
+	<xs:complexType name="resourceType">
+	  	<xs:attribute name="type" type="xs:string" use="required"/>
+	  	<xs:attribute name="path" type="xs:string" use="required"/>
+	</xs:complexType>
+	
 	<xs:complexType name="moduleType">
 		<xs:sequence>
 			<xs:element name="resource" type="resourceType" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="component" type="managerType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="component" type="componentType" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="aspect" type="aspectType" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
  		<xs:attribute name="name" type="xs:string" use="required"/>
@@ -40,7 +58,7 @@
  		<xs:attribute name="inheritance" type="xs:string" use="optional"/>
 	</xs:complexType>
 	
-	<xs:complexType name="managerType">
+	<xs:complexType name="componentType">
 		<xs:sequence>
 			<xs:element name="param" type="paramType" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="plugin" type="pluginType" minOccurs="0" maxOccurs="unbounded"/>
@@ -55,11 +73,6 @@
 			<xs:element name="param" type="paramType" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:attribute name="class" type="xs:string" use="required"/>
-	</xs:complexType>
-	
-		<xs:complexType name="resourceType">
-	  	<xs:attribute name="type" type="xs:string" use="required"/>
-	  	<xs:attribute name="path" type="xs:string" use="required"/>
 	</xs:complexType>
 	
 	<xs:complexType name="paramType">
@@ -78,6 +91,7 @@
 	<xs:complexType name="annotationType">
 	  	<xs:attribute name="class" type="xs:string" use="required"/>
 	</xs:complexType>
+	
 	<xs:complexType name="adviceType">
 	  	<xs:attribute name="class" type="xs:string" use="required"/>
 	</xs:complexType>

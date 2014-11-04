@@ -362,8 +362,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			for (int i = 0; i < 2200; i++) {
 				familleIds.add(createFamId(10001L + 2 * i));
 			}
-			final Task task = new TaskBuilder(taskDefinition)//
-					.withValue("DTC_FAMILLE_IN", familleIds)//
+			final Task task = new TaskBuilder(taskDefinition)
+					.withValue("DTC_FAMILLE_IN", familleIds)
 					.build();
 
 			// on suppose un appel synchrone : getResult immédiat.

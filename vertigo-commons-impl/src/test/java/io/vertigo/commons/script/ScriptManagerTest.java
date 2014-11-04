@@ -106,7 +106,7 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	@Test(expected = Exception.class)
-	public void testOubliParametre() {
+	public void testParameterForgotten() {
 		final List<ScriptSeparator> separators = new ArrayList<>();
 		separators.add(comment);
 

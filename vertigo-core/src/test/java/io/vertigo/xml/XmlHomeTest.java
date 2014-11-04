@@ -33,9 +33,9 @@ public final class XmlHomeTest {
 	@Test
 	public void HomeTest() {
 		final ComponentSpaceConfig componentSpaceConfig = new ComponentSpaceConfigBuilder()
-		.withSilence(false)
-		.withLoader(new XMLModulesLoader( XmlHomeTest.class.getResource("bio.xml"), new Properties()))
-		.build();
+				.withSilence(false)
+				.withLoader(new XMLModulesLoader(XmlHomeTest.class.getResource("bio.xml"), new Properties()))
+				.build();
 
 		Home.start(componentSpaceConfig);
 		try {

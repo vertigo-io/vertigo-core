@@ -100,10 +100,12 @@ public final class WsRestHandler {
 		// Création de l'état de l'application
 		// Initialisation de l'état de l'application
 
-		final ComponentSpaceConfig config = new ComponentSpaceConfigBuilder()//
+		final ComponentSpaceConfig config = new ComponentSpaceConfigBuilder()
 				.withSilence(false)//
 				//.withRestEngine(new GrizzlyRestEngine(8080))
-				.withCommandEngine(new TcpVCommandEngine(4406))//
+				.withCommandEngine(new TcpVCommandEngine(4406))
+				.withResource("classes", DtDefinitions.class.getName())
+				.withResource("kpr", "ksp/execution.kpr")
 				.beginModule("commons") //
 					.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
 						.withParam("locales", "fr")
@@ -111,15 +113,15 @@ public final class WsRestHandler {
 					.beginComponent(ResourceManager.class, ResourceManagerImpl.class)
 						.beginPlugin( ClassPathResourceResolverPlugin.class).endPlugin()
 					.endComponent()
-					.beginComponent(KSecurityManager.class, KSecurityManagerImpl.class)//
+					.beginComponent(KSecurityManager.class, KSecurityManagerImpl.class)
 						.withParam("userSessionClassName", TestUserSession.class.getName())
 						.beginPlugin(SecurityResourceLoaderPlugin.class).endPlugin()
-					.endComponent() //
+					.endComponent()
 				.endModule()
-				.beginModule("dynamo").withNoAPI() //
-					.beginComponent(CodecManager.class, CodecManagerImpl.class).endComponent() //
-					.beginComponent(CollectionsManager.class, CollectionsManagerImpl.class).endComponent() //
-					.beginComponent(FileManager.class, FileManagerImpl.class).endComponent() //
+				.beginModule("dynamo").withNoAPI()
+					.beginComponent(CodecManager.class, CodecManagerImpl.class).endComponent()
+					.beginComponent(CollectionsManager.class, CollectionsManagerImpl.class).endComponent()
+					.beginComponent(FileManager.class, FileManagerImpl.class).endComponent()
 					.beginComponent(KVDataStoreManager.class, KVDataStoreManagerImpl.class)
 						.beginPlugin(DelayedMemoryKVDataStorePlugin.class)
 							.withParam("dataStoreName", "UiSecurityStore")
@@ -127,44 +129,42 @@ public final class WsRestHandler {
 						.endPlugin()
 					.endComponent() //
 					.beginComponent(PersistenceManager.class, PersistenceManagerImpl.class)
-						.beginPlugin(PostgreSqlDataStorePlugin.class) //
-							.withParam("sequencePrefix","SEQ_") //
-						.endPlugin() //
-					.endComponent() //
+						.beginPlugin(PostgreSqlDataStorePlugin.class)
+							.withParam("sequencePrefix","SEQ_")
+						.endPlugin()
+					.endComponent()
 					.beginComponent(CacheManager.class, CacheManagerImpl.class)
 						.beginPlugin( MapCachePlugin.class).endPlugin()
-					.endComponent() //
-					.beginComponent(TaskManager.class, TaskManagerImpl.class).endComponent() //
+					.endComponent()
+					.beginComponent(TaskManager.class, TaskManagerImpl.class).endComponent()
 //					.beginComponent(WorkManager.class, WorkManagerImpl.class)
 //						.withParam("workerCount", "2") //
 //					.endComponent() //
-					.beginComponent(ExportManager.class, ExportManagerImpl.class)//
-						.beginPlugin(PDFExporterPlugin.class).endPlugin() //
-					.endComponent() //
-					.beginComponent(EnvironmentManagerImpl.class) //
-						.beginPlugin(AnnotationLoaderPlugin.class).endPlugin() //
-						.beginPlugin(KprLoaderPlugin.class).endPlugin() //
-						.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()	//
+					.beginComponent(ExportManager.class, ExportManagerImpl.class)
+						.beginPlugin(PDFExporterPlugin.class).endPlugin()
 					.endComponent()
-					.withResource("classes", DtDefinitions.class.getName())
-					.withResource("kpr", "ksp/execution.kpr")
+					.beginComponent(EnvironmentManagerImpl.class)
+						.beginPlugin(AnnotationLoaderPlugin.class).endPlugin()
+						.beginPlugin(KprLoaderPlugin.class).endPlugin()
+						.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
+					.endComponent()
 				.endModule()
-				.beginModule("restServices").withNoAPI().withInheritance(RestfulService.class) //
-					.beginComponent(ComponentCmdRestServices.class).endComponent() //
-					.beginComponent(ContactsRestServices.class).endComponent() //
-					.beginComponent(TesterRestServices.class).endComponent() //
-					.beginComponent(TesterFileDownload.class).endComponent() //
+				.beginModule("restServices").withNoAPI().withInheritance(RestfulService.class)
+					.beginComponent(ComponentCmdRestServices.class).endComponent()
+					.beginComponent(ContactsRestServices.class).endComponent()
+					.beginComponent(TesterRestServices.class).endComponent()
+					.beginComponent(TesterFileDownload.class).endComponent()
 				.endModule()
-				.beginModule("restCore").withNoAPI().withInheritance(Object.class) //
+				.beginModule("restCore").withNoAPI().withInheritance(Object.class)
 					.beginComponent(RestManager.class, RestManagerImpl.class)
-						.beginPlugin(AnnotationsEndPointIntrospectorPlugin.class).endPlugin() //
+						.beginPlugin(AnnotationsEndPointIntrospectorPlugin.class).endPlugin()
 					.endComponent() //
-					.beginComponent(SwaggerRestServices.class).endComponent() //
-					.beginComponent(CatalogRestServices.class).endComponent() //
-					.beginComponent(RateLimitingHandler.class).endComponent() //
+					.beginComponent(SwaggerRestServices.class).endComponent()
+					.beginComponent(CatalogRestServices.class).endComponent()
+					.beginComponent(RateLimitingHandler.class).endComponent()
 					.beginComponent(UiSecurityTokenManager.class, UiSecurityTokenManagerImpl.class)
-						.withParam("storeName", "UiSecurityStore") //
-					.endComponent() //
+						.withParam("storeName", "UiSecurityStore")
+					.endComponent()
 				.endModule()
 
 				.build();

@@ -45,6 +45,8 @@ public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpace
 	private ElasticaEngine myElasticaEngine = null; //par défaut pas d'elasticité.
 	private VCommandEngine myCommandEngine = null; // new VCommandEngineImpl(jsonEngine, VCommandEngine.DEFAULT_PORT); //Par défaut
 
+	private final List<ResourceConfig> myResourceConfigs = new ArrayList<>();
+
 	//=========================================================================
 	//==================Paramétrage général====================================
 	//=========================================================================
@@ -58,6 +60,18 @@ public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpace
 		Assertion.checkNotNull(paramValue);
 		//---------------------------------------------------------------------
 		myParams.put(paramName, paramValue);
+		return this;
+	}
+
+	/**
+	 * Ajout de resources
+	 * @param resourceType Type of resource
+	 */
+	public ComponentSpaceConfigBuilder withResource(final String resourceType, final String resourcePath) {
+		Assertion.checkArgNotEmpty(resourceType);
+		Assertion.checkNotNull(resourcePath);
+		//---------------------------------------------------------------------
+		myResourceConfigs.add(new ResourceConfig(resourceType, resourcePath));
 		return this;
 	}
 
@@ -129,6 +143,6 @@ public final class ComponentSpaceConfigBuilder implements Builder<ComponentSpace
 			final ModuleConfig moduleConfig = moduleConfigBuilder.build();
 			moduleConfigs.add(moduleConfig);
 		}
-		return new ComponentSpaceConfig(myParams, moduleConfigs, myAopEngine, Option.option(myElasticaEngine), Option.option(myCommandEngine), mySilence);
+		return new ComponentSpaceConfig(myParams, moduleConfigs, myAopEngine, Option.option(myElasticaEngine), Option.option(myCommandEngine), mySilence, myResourceConfigs);
 	}
 }

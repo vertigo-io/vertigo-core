@@ -184,8 +184,8 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public final void testDefinitionInfinitLoopRegister() {
 		try {
-			final PublisherNodeDefinition publisherNodeDefinition = new PublisherNodeDefinitionBuilder() //
-					.withBooleanField("TEST_BOOLEAN")//
+			final PublisherNodeDefinition publisherNodeDefinition = new PublisherNodeDefinitionBuilder()
+					.withBooleanField("TEST_BOOLEAN")
 					.build();
 			final PublisherDataDefinition publisherDataDefinition = new PublisherDataDefinition("PU_TEST_1_BIS", publisherNodeDefinition);
 			registerDefinition(publisherDataDefinition);
@@ -209,15 +209,15 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public final void testDefinitionWithData() {
-		final PublisherNodeDefinition subDefinition = new PublisherNodeDefinitionBuilder() //
-				.withBooleanField("TEST_BOOLEAN") //
-				.withStringField("TEST_STRING")//
+		final PublisherNodeDefinition subDefinition = new PublisherNodeDefinitionBuilder()
+				.withBooleanField("TEST_BOOLEAN")
+				.withStringField("TEST_STRING")
 				.build();
 
-		final PublisherNodeDefinition publisherNodeDefinition = new PublisherNodeDefinitionBuilder() //
-				.withBooleanField("TEST_BOOLEAN") //
-				.withStringField("TEST_STRING")//
-				.withNodeField("TEST_DATA", subDefinition)//
+		final PublisherNodeDefinition publisherNodeDefinition = new PublisherNodeDefinitionBuilder()
+				.withBooleanField("TEST_BOOLEAN")
+				.withStringField("TEST_STRING")
+				.withNodeField("TEST_DATA", subDefinition)
 				.build();
 		final PublisherDataDefinition publisherDataDefinition = new PublisherDataDefinition("PU_TEST_2", publisherNodeDefinition);
 		registerDefinition(publisherDataDefinition);
@@ -232,21 +232,21 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public final void testDefinitionWithDataAndList() {
-		final PublisherNodeDefinition subDefinition1 = new PublisherNodeDefinitionBuilder() //
-				.withBooleanField("TEST_BOOLEAN") //
-				.withStringField("TEST_STRING")//
+		final PublisherNodeDefinition subDefinition1 = new PublisherNodeDefinitionBuilder()
+				.withBooleanField("TEST_BOOLEAN")
+				.withStringField("TEST_STRING")
 				.build();
 
-		final PublisherNodeDefinition subDefinition3 = new PublisherNodeDefinitionBuilder() //
-				.withBooleanField("TEST_BOOLEAN") //
-				.withStringField("TEST_STRING")//
+		final PublisherNodeDefinition subDefinition3 = new PublisherNodeDefinitionBuilder()
+				.withBooleanField("TEST_BOOLEAN")
+				.withStringField("TEST_STRING")
 				.build();
 
-		final PublisherNodeDefinition publisherNodeDefinition = new PublisherNodeDefinitionBuilder() //
-				.withBooleanField("TEST_BOOLEAN")//
-				.withStringField("TEST_STRING")//
-				.withNodeField("TEST_DATA", subDefinition1)//
-				.withListField("TEST_LIST", subDefinition3)//
+		final PublisherNodeDefinition publisherNodeDefinition = new PublisherNodeDefinitionBuilder()
+				.withBooleanField("TEST_BOOLEAN")
+				.withStringField("TEST_STRING")
+				.withNodeField("TEST_DATA", subDefinition1)
+				.withListField("TEST_LIST", subDefinition3)
 				.build();
 		final PublisherDataDefinition publisherDataDefinition = new PublisherDataDefinition("PU_TEST_3", publisherNodeDefinition);
 
@@ -262,22 +262,22 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public final void testDefinitionWithDataImageAndList() {
-		final PublisherNodeDefinition subDefinition1 = new PublisherNodeDefinitionBuilder() //
-				.withBooleanField("TEST_BOOLEAN") //
-				.withStringField("TEST_STRING")//
+		final PublisherNodeDefinition subDefinition1 = new PublisherNodeDefinitionBuilder()
+				.withBooleanField("TEST_BOOLEAN")
+				.withStringField("TEST_STRING")
 				.build();
 
-		final PublisherNodeDefinition subDefinition3 = new PublisherNodeDefinitionBuilder() //
-				.withBooleanField("TEST_BOOLEAN") //
-				.withStringField("TEST_STRING")//
+		final PublisherNodeDefinition subDefinition3 = new PublisherNodeDefinitionBuilder()
+				.withBooleanField("TEST_BOOLEAN")
+				.withStringField("TEST_STRING")
 				.build();
 
-		final PublisherNodeDefinition publisherNodeDefinition = new PublisherNodeDefinitionBuilder() //
-				.withBooleanField("TEST_BOOLEAN")//
-				.withStringField("TEST_STRING")//
-				.withNodeField("TEST_DATA", subDefinition1)//
-				.withListField("TEST_LIST", subDefinition3)//
-				.withImageField("TEST_IMAGE")//
+		final PublisherNodeDefinition publisherNodeDefinition = new PublisherNodeDefinitionBuilder()
+				.withBooleanField("TEST_BOOLEAN")
+				.withStringField("TEST_STRING")
+				.withNodeField("TEST_DATA", subDefinition1)
+				.withListField("TEST_LIST", subDefinition3)
+				.withImageField("TEST_IMAGE")
 				.build();
 		final PublisherDataDefinition publisherDataDefinition = new PublisherDataDefinition("PU_TEST_4", publisherNodeDefinition);
 
@@ -294,33 +294,33 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public final void testDefinitionWithHierachy() {
 
-		final PublisherNodeDefinition subDefinition2 = new PublisherNodeDefinitionBuilder() //
-				.withBooleanField("TEST_BOOLEAN") //
-				.withStringField("TEST_STRING")//
+		final PublisherNodeDefinition subDefinition2 = new PublisherNodeDefinitionBuilder()
+				.withBooleanField("TEST_BOOLEAN")
+				.withStringField("TEST_STRING")
 				.build();
 
-		final PublisherNodeDefinition subDefinition1 = new PublisherNodeDefinitionBuilder() //
-				.withBooleanField("TEST_BOOLEAN") //
-				.withStringField("TEST_STRING")//
-				.withNodeField("TEST_DATA", subDefinition2)//
+		final PublisherNodeDefinition subDefinition1 = new PublisherNodeDefinitionBuilder()
+				.withBooleanField("TEST_BOOLEAN")
+				.withStringField("TEST_STRING")
+				.withNodeField("TEST_DATA", subDefinition2)
 				.build();
 
-		final PublisherNodeDefinition subDefinition4 = new PublisherNodeDefinitionBuilder() //
-				.withBooleanField("TEST_BOOLEAN")//
-				.withStringField("TEST_STRING")//
+		final PublisherNodeDefinition subDefinition4 = new PublisherNodeDefinitionBuilder()
+				.withBooleanField("TEST_BOOLEAN")
+				.withStringField("TEST_STRING")
 				.build();
 
-		final PublisherNodeDefinition subDefinition3 = new PublisherNodeDefinitionBuilder() //
-				.withBooleanField("TEST_BOOLEAN")//
-				.withStringField("TEST_STRING")//
-				.withListField("TEST_LIST", subDefinition4)//
+		final PublisherNodeDefinition subDefinition3 = new PublisherNodeDefinitionBuilder()
+				.withBooleanField("TEST_BOOLEAN")
+				.withStringField("TEST_STRING")
+				.withListField("TEST_LIST", subDefinition4)
 				.build();
 
-		final PublisherNodeDefinition publisherNodeDefinition = new PublisherNodeDefinitionBuilder() //
-				.withBooleanField("TEST_BOOLEAN")//
-				.withStringField("TEST_STRING")//
-				.withNodeField("TEST_DATA", subDefinition1)//
-				.withListField("TEST_LIST", subDefinition3)//
+		final PublisherNodeDefinition publisherNodeDefinition = new PublisherNodeDefinitionBuilder()
+				.withBooleanField("TEST_BOOLEAN")
+				.withStringField("TEST_STRING")
+				.withNodeField("TEST_DATA", subDefinition1)
+				.withListField("TEST_LIST", subDefinition3)
 				.build();
 		final PublisherDataDefinition publisherDataDefinition = new PublisherDataDefinition("PU_TEST_5", publisherNodeDefinition);
 		registerDefinition(publisherDataDefinition);
@@ -334,36 +334,36 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public final void testDefinitionEnquete() {
-		final PublisherNodeDefinition ville = new PublisherNodeDefinitionBuilder() //
-				.withStringField("NOM")//
-				.withStringField("CODE_POSTAL")//
+		final PublisherNodeDefinition ville = new PublisherNodeDefinitionBuilder()
+				.withStringField("NOM")
+				.withStringField("CODE_POSTAL")
 				.build();
 
-		final PublisherNodeDefinition address = new PublisherNodeDefinitionBuilder() //
-				.withStringField("RUE")//
-				.withNodeField("VILLE", ville)//
+		final PublisherNodeDefinition address = new PublisherNodeDefinitionBuilder()
+				.withStringField("RUE")
+				.withNodeField("VILLE", ville)
 				.build();
 
-		final PublisherNodeDefinition enqueteur = new PublisherNodeDefinitionBuilder() //
-				.withStringField("NOM")//
-				.withStringField("PRENOM")//
-				.withNodeField("ADRESSE_RATACHEMENT", address)//
+		final PublisherNodeDefinition enqueteur = new PublisherNodeDefinitionBuilder()
+				.withStringField("NOM")
+				.withStringField("PRENOM")
+				.withNodeField("ADRESSE_RATACHEMENT", address)
 				.build();
 
-		final PublisherNodeDefinition misEnCause = new PublisherNodeDefinitionBuilder() //
-				.withBooleanField("SI_HOMME")//
-				.withStringField("NOM")//
-				.withStringField("PRENOM")//
-				.withListField("ADRESSES_CONNUES", address)//
+		final PublisherNodeDefinition misEnCause = new PublisherNodeDefinitionBuilder()
+				.withBooleanField("SI_HOMME")
+				.withStringField("NOM")
+				.withStringField("PRENOM")
+				.withListField("ADRESSES_CONNUES", address)
 				.build();
 
-		final PublisherNodeDefinition publisherNodeDefinition = new PublisherNodeDefinitionBuilder() //
-				.withBooleanField("ENQUETE_TERMINEE")//
-				.withStringField("CODE_ENQUETE")//
-				.withNodeField("ENQUETEUR", enqueteur)//
-				.withListField("MIS_EN_CAUSE", misEnCause)//
-				.withStringField("FAIT")//
-				.withBooleanField("SI_GRAVE")//
+		final PublisherNodeDefinition publisherNodeDefinition = new PublisherNodeDefinitionBuilder()
+				.withBooleanField("ENQUETE_TERMINEE")
+				.withStringField("CODE_ENQUETE")
+				.withNodeField("ENQUETEUR", enqueteur)
+				.withListField("MIS_EN_CAUSE", misEnCause)
+				.withStringField("FAIT")
+				.withBooleanField("SI_GRAVE")
 				.build();
 
 		final PublisherDataDefinition publisherDataDefinition = new PublisherDataDefinition("PU_TEST_ENQUETE", publisherNodeDefinition);

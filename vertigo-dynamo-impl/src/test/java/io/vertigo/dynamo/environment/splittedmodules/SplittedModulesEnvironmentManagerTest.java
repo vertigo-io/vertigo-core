@@ -40,7 +40,7 @@ import org.junit.Test;
 
 /**
  * Test de l'implémentation standard.
- * 
+ *
  * @author npiedeloup
  */
 public final class SplittedModulesEnvironmentManagerTest {
@@ -52,13 +52,9 @@ public final class SplittedModulesEnvironmentManagerTest {
 
 	@Test
 	public void testFirstModule() {
-		// @formatter:off
 		final ComponentSpaceConfig componentSpaceConfig = prepareDefaultComponentSpaceConfigBuilder()
-			.beginModule("test-1")
 				.withResource("kpr", "io/vertigo/dynamock/execution.kpr")
-			.endModule()
-			.build();
-		// @formatter:on
+				.build();
 
 		Home.start(componentSpaceConfig);
 		try {
@@ -73,10 +69,8 @@ public final class SplittedModulesEnvironmentManagerTest {
 	public void testMergedModules() {
 		// @formatter:off
 		final ComponentSpaceConfig componentSpaceConfig = prepareDefaultComponentSpaceConfigBuilder()
-			.beginModule("test-1-2")
 				.withResource("kpr", "io/vertigo/dynamock/execution.kpr")
 				.withResource("classes", DtDefinitions.class.getCanonicalName())
-			.endModule()
 			.build();
 		// @formatter:on
 
@@ -95,13 +89,9 @@ public final class SplittedModulesEnvironmentManagerTest {
 	public void testSplittedModules() {
 		// @formatter:off
 		final ComponentSpaceConfig componentSpaceConfig = prepareDefaultComponentSpaceConfigBuilder()
-			.beginModule("test-1")
 				.withResource("kpr", "io/vertigo/dynamock/execution.kpr")
-			.endModule()
-			.beginModule("test-2")
 				.withResource("classes", DtDefinitions.class.getCanonicalName())
-			.endModule()
-			.build();
+		.build();
 		// @formatter:on
 
 		Home.start(componentSpaceConfig);

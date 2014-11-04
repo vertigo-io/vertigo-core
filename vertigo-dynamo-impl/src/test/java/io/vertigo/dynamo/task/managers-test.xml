@@ -1,26 +1,28 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
-<modules>
-	<module name="vertigo-commons">
-		<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
-	    	<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin"/>                               
-	    </component> 	
-	    <component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
-	</module>
-	
-	<module name="vertigo-dynamo">
-	    <component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl"/>
+<config>
+	<modules>
+		<module name="vertigo-commons">
+			<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
+				<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
+			</component>
+			<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
+		</module>
 
-	    <component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
+		<module name="vertigo-dynamo">
+			<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
 
-	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
-	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" />
-	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
-	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
-	    </component>  
-	</module>
-	
-	<module name="test">
-		<resource type ="kpr" path="io/vertigo/dynamock/execution.kpr"/>
-        <resource type ="classes" path="io.vertigo.dynamock.domain.DtDefinitions"/>
-	</module>
-</modules>
+			<component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
+
+				<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
+				<plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" />
+				<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
+				<plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
+			</component>
+		</module>
+
+		<module name="test">
+			<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
+			<resource type="classes" path="io.vertigo.dynamock.domain.DtDefinitions" />
+		</module>
+	</modules>
+</config>

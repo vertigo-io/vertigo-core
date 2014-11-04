@@ -54,10 +54,10 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testProcessor() {
 		//	final DivideWork work = new DivideWork(10, 5);
-		final long result = workManager//
-				.createProcessor(new WorkEngineProvider<>(LengthWorkEngine.class))//
-				.then(SquareWorkEngine.class)//
-				.then(SquareWorkEngine.class)//
+		final long result = workManager
+				.createProcessor(new WorkEngineProvider<>(LengthWorkEngine.class))
+				.then(SquareWorkEngine.class)
+				.then(SquareWorkEngine.class)
 				.exec("aa");
 		Assert.assertEquals(2 * 2 * 2 * 2L, result);
 	}

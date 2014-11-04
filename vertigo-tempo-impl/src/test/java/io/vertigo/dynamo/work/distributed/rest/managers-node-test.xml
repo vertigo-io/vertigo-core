@@ -1,27 +1,28 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
-<modules>
-	<module name="kasper-commons">
-	   <component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
-	   <component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
-	  
-	  <component api="WorkManager" class="io.vertigo.dynamo.impl.work.WorkManagerImpl" >
-	            <param name="workerCount" value="10" />
-	  </component>
-	   
-	   <component api="NodeManager" class="io.vertigo.dynamo.impl.node.NodeManagerImpl" >
-	            <plugin class="io.vertigo.dynamo.plugins.work.rest.worker.RestWorkerPlugin">
-	            	<param name="nodeId" value="node#1-1" />
-	            	<param name="serverUrl" value="http://localhost:10998" />
-	            	<!--  On déclare la spécialisation des 10 workers du WorkManager : 5 de chaque pour les TU -->
-	            	<param name="workTypes" value="io.vertigo.dynamo.work.mock.DivideWorkEngine;io.vertigo.dynamo.work.mock.DivideWorkEngine;io.vertigo.dynamo.work.mock.DivideWorkEngine;io.vertigo.dynamo.work.mock.DivideWorkEngine;io.vertigo.dynamo.work.mock.DivideWorkEngine" />
-	            </plugin>
-	            <plugin class="io.vertigo.dynamo.plugins.work.rest.worker.RestWorkerPlugin">
-	            	<param name="nodeId" value="node#1-2" />
-	            	<param name="serverUrl" value="http://localhost:10998" />
-	            	<!--  On déclare la spécialisation des 10 workers du WorkManager : 5 de chaque pour les TU -->
-	            	<param name="workTypes" value="io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine" />
-	            </plugin>
-	   </component>
-	</module>
-</modules>
+<config>
+	<modules>
+		<module name="kasper-commons">
+			<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
+			<component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
 
+			<component api="WorkManager" class="io.vertigo.dynamo.impl.work.WorkManagerImpl">
+				<param name="workerCount" value="10" />
+			</component>
+
+			<component api="NodeManager" class="io.vertigo.dynamo.impl.node.NodeManagerImpl">
+				<plugin class="io.vertigo.dynamo.plugins.work.rest.worker.RestWorkerPlugin">
+					<param name="nodeId" value="node#1-1" />
+					<param name="serverUrl" value="http://localhost:10998" />
+					<!-- On déclare la spécialisation des 10 workers du WorkManager : 5 de chaque pour les TU -->
+					<param name="workTypes" value="io.vertigo.dynamo.work.mock.DivideWorkEngine;io.vertigo.dynamo.work.mock.DivideWorkEngine;io.vertigo.dynamo.work.mock.DivideWorkEngine;io.vertigo.dynamo.work.mock.DivideWorkEngine;io.vertigo.dynamo.work.mock.DivideWorkEngine" />
+				</plugin>
+				<plugin class="io.vertigo.dynamo.plugins.work.rest.worker.RestWorkerPlugin">
+					<param name="nodeId" value="node#1-2" />
+					<param name="serverUrl" value="http://localhost:10998" />
+					<!-- On déclare la spécialisation des 10 workers du WorkManager : 5 de chaque pour les TU -->
+					<param name="workTypes" value="io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine" />
+				</plugin>
+			</component>
+		</module>
+	</modules>
+</config>

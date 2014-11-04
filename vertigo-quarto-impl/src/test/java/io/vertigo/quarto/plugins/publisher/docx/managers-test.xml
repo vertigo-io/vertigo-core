@@ -1,8 +1,10 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
-<modules>
-    <module name="vertigo">
-		<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
-			<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
-		</component>
-	</module>
-</modules>
+<config>
+	<modules>
+		<module name="vertigo">
+			<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
+				<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
+			</component>
+		</module>
+	</modules>
+</config>

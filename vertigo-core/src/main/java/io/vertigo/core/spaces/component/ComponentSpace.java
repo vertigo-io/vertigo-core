@@ -100,8 +100,11 @@ public final class ComponentSpace implements Container, Activeable {
 		initLog(componentSpaceConfig.getParams());
 		//-------------------
 		for (final ModuleConfig moduleConfig : componentSpaceConfig.getModuleConfigs()) {
-			startModule(moduleConfig);
+			injectComponents(moduleConfig);
+			//injectResources(moduleConfig);
+			//			startModule(moduleConfig);
 		}
+		injectResources(componentSpaceConfig);
 		// ------------------
 		if (componentSpaceConfig.getElasticaEngine().isDefined()) {
 			engines.add(componentSpaceConfig.getElasticaEngine().get());
@@ -148,10 +151,10 @@ public final class ComponentSpace implements Container, Activeable {
 		}
 	}
 
-	private static void injectResources(final ModuleConfig moduleConfig) {
+	private static void injectResources(final ComponentSpaceConfig componentSpaceConfig) {
 		//			int resourcesToBeLoad = moduleConfig.getResourceConfigs().size();
 		//We are doing a copy of all resources, to check that they are all parsed.
-		final List<ResourceConfig> resourceConfigsToDo = new ArrayList<>(moduleConfig.getResourceConfigs());
+		final List<ResourceConfig> resourceConfigsToDo = new ArrayList<>(componentSpaceConfig.getResourceConfigs());
 		for (final ResourceLoader resourceLoader : Home.getResourceSpace().getResourceLoaders()) {
 			//Candidates contins all resources that can be treated by the resourceLoader
 			final List<ResourceConfig> candidates = new ArrayList<>();
@@ -209,10 +212,10 @@ public final class ComponentSpace implements Container, Activeable {
 		}
 	}
 
-	private void startModule(final ModuleConfig moduleConfig) {
-		injectComponents(moduleConfig);
-		injectResources(moduleConfig);
-	}
+	//	private void startModule(final ModuleConfig moduleConfig, final boolean resource) {
+	//		injectComponents(moduleConfig);
+	//		injectResources(moduleConfig);
+	//	}
 
 	private void injectComponents(final ModuleConfig moduleConfig) {
 		final AopEngine aopEngine = componentSpaceConfig.getAopEngine();

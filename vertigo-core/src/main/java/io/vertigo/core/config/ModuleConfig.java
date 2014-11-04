@@ -42,20 +42,17 @@ public final class ModuleConfig {
 	private final List<AspectConfig> aspects;
 	@JsonExclude
 	private final List<ModuleRule> moduleRules;
-	private final List<ResourceConfig> resources;
 
-	ModuleConfig(final String name, final List<ComponentConfig> componentConfigs, final List<AspectConfig> aspectConfigs, final List<ModuleRule> moduleRules, final List<ResourceConfig> resourceConfigs) {
+	ModuleConfig(final String name, final List<ComponentConfig> componentConfigs, final List<AspectConfig> aspectConfigs, final List<ModuleRule> moduleRules) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(componentConfigs);
 		Assertion.checkNotNull(aspectConfigs);
 		Assertion.checkNotNull(moduleRules);
-		Assertion.checkNotNull(resourceConfigs);
 		//---------------------------------------------------------------------
 		this.name = name;
 		this.components = Collections.unmodifiableList(new ArrayList<>(componentConfigs));
 		this.aspects = aspectConfigs;
 		this.moduleRules = Collections.unmodifiableList(new ArrayList<>(moduleRules));
-		this.resources = Collections.unmodifiableList(new ArrayList<>(resourceConfigs));
 	}
 
 	/**
@@ -80,10 +77,6 @@ public final class ModuleConfig {
 		for (final ModuleRule moduleRule : moduleRules) {
 			moduleRule.chek(this);
 		}
-	}
-
-	public List<ResourceConfig> getResourceConfigs() {
-		return resources;
 	}
 
 	@Override

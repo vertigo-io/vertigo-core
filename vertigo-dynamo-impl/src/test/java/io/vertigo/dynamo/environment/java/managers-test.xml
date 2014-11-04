@@ -1,27 +1,29 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
-<modules>
-	<module name="vertigo">
-	    <component api="LocaleManager" class="io.vertigoimpl.commons.locale.LocaleManagerImpl" >
-	         <param name="locales" value="fr_FR" />
-	    </component>
-	</module>
-	<module name="vertigo-commons">
-	     <component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
-	    	<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin"/>                               
-	    </component> 
-	</module>
-
-	<module name="dynamo">
-	    <component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
-	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
-	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin"/>
-	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
-	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
-	    </component> 
-	</module>
+<config>
+	<modules>
+		<module name="vertigo">
+		    <component api="LocaleManager" class="io.vertigoimpl.commons.locale.LocaleManagerImpl" >
+		         <param name="locales" value="fr_FR" />
+		    </component>
+		</module>
+		<module name="vertigo-commons">
+		     <component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
+		    	<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin"/>                               
+		    </component> 
+		</module>
 	
-	<module name="test">
+		<module name="dynamo">
+		    <component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
+		        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
+		        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin"/>
+		        <plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
+		        <plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
+		    </component> 
+		</module>
+	</modules>
+	
+	<resources>
 		<resource type ="kpr" path="io/vertigo/dynamock/execution.kpr"/>
 		<resource type ="classes" path="io.vertigo.dynamock.domain.DtDefinitions"/>
-	</module>
-</modules>
+	</resources>
+</config>

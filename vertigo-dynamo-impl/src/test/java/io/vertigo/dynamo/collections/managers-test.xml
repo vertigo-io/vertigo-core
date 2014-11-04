@@ -1,44 +1,46 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
-<modules>
-	<module name="vertigo">
-	       <component api="LocaleManager" class="io.vertigoimpl.commons.locale.LocaleManagerImpl"> 
-	         <param name="locales" value="fr_FR" />
-	    </component>
-	</module>
+<config>
+	<modules>
+		<module name="vertigo">
+			<component api="LocaleManager" class="io.vertigoimpl.commons.locale.LocaleManagerImpl">
+				<param name="locales" value="fr_FR" />
+			</component>
+		</module>
 
-	<module name="vertigo-commons">
-	     <component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
-	    	<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin"/>                               
-	    </component> 	
-	    <component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
-	    <component api="CacheManager" class="io.vertigo.commons.impl.cache.CacheManagerImpl">
-	        <plugin class="io.vertigo.commons.plugins.cache.map.MapCachePlugin" />
-	    </component>
-	    <component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
-	</module>
-	
-	<module name="dynamo">
-		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl">
-	        <plugin class="io.vertigo.dynamo.plugins.collections.lucene.LuceneIndexPlugin" />
-	    </component>
+		<module name="vertigo-commons">
+			<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
+				<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
+			</component>
+			<component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
+			<component api="CacheManager" class="io.vertigo.commons.impl.cache.CacheManagerImpl">
+				<plugin class="io.vertigo.commons.plugins.cache.map.MapCachePlugin" />
+			</component>
+			<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
+		</module>
 
-		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl"/>
-	    
-	    <component api="PersistenceManager" class="io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl">
-	        <plugin class="io.vertigo.dynamo.plugins.persistence.oracle.OracleDataStorePlugin">
-	            <param name="sequencePrefix" value="SEQ_" />
-	        </plugin>
-	    </component>
-	
-	    <component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
-	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin"/>
-	        <plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" />
-	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
-	    </component>  
-	 </module>   
-	 
-	 <module name="test">
-		<resource type ="kpr" path="io/vertigo/dynamock/execution.kpr"/>
-	    <resource type ="classes" path="io.vertigo.dynamock.domain.DtDefinitions"/>
-	 </module> 
-</modules>
+		<module name="dynamo">
+			<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl">
+				<plugin class="io.vertigo.dynamo.plugins.collections.lucene.LuceneIndexPlugin" />
+			</component>
+
+			<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
+
+			<component api="PersistenceManager" class="io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl">
+				<plugin class="io.vertigo.dynamo.plugins.persistence.oracle.OracleDataStorePlugin">
+					<param name="sequencePrefix" value="SEQ_" />
+				</plugin>
+			</component>
+
+			<component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
+				<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
+				<plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" />
+				<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
+			</component>
+		</module>
+
+		<module name="test">
+			<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
+			<resource type="classes" path="io.vertigo.dynamock.domain.DtDefinitions" />
+		</module>
+	</modules>
+</config>

@@ -37,7 +37,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	private final String myName;
 	private final List<ComponentConfigBuilder> myComponentConfigBuilders = new ArrayList<>();
 	private final List<AspectConfig> myAspectConfigs = new ArrayList<>();
-	private final List<ResourceConfig> myResourceConfigs = new ArrayList<>();
 
 	//---Rules
 	private boolean myHasApi = true; //par défaut on a une api.
@@ -49,18 +48,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		//---------------------------------------------------------------------
 		myName = name;
 		myComponentSpaceConfigBuilder = componentSpaceConfigBuilder;
-	}
-
-	/**
-	 * Ajout de resources
-	 * @param resourceType Type of resource
-	 */
-	public ModuleConfigBuilder withResource(final String resourceType, final String resourcePath) {
-		Assertion.checkArgNotEmpty(resourceType);
-		Assertion.checkNotNull(resourcePath);
-		//---------------------------------------------------------------------
-		myResourceConfigs.add(new ResourceConfig(resourceType, resourcePath));
-		return this;
 	}
 
 	public ModuleConfigBuilder withAspect(final Class<?> annotationType, final Class<? extends AOPInterceptor> implClass) {
@@ -141,7 +128,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		for (final ComponentConfigBuilder componentConfigBuilder : myComponentConfigBuilders) {
 			componentConfig.add(componentConfigBuilder.build());
 		}
-		final ModuleConfig moduleConfig = new ModuleConfig(myName, componentConfig, myAspectConfigs, moduleRules, myResourceConfigs);
+		final ModuleConfig moduleConfig = new ModuleConfig(myName, componentConfig, myAspectConfigs, moduleRules);
 		moduleConfig.checkRules();
 		return moduleConfig;
 	}
