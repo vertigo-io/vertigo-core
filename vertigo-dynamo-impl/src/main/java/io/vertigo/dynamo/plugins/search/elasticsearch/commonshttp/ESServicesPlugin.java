@@ -25,7 +25,6 @@ import io.vertigo.lang.Assertion;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
@@ -39,7 +38,6 @@ import org.elasticsearch.node.NodeBuilder;
 public final class ESServicesPlugin extends AbstractESServicesPlugin {
 	/** url du serveur elasticSearch. */
 	private final String[] serversNames;
-	private final Node node;
 
 	/**
 	 * Constructeur.
@@ -55,20 +53,12 @@ public final class ESServicesPlugin extends AbstractESServicesPlugin {
 		Assertion.checkArgument(!serversNamesStr.contains(";"), "Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','");
 		// ---------------------------------------------------------------------
 		serversNames = serversNamesStr.split(",");
-		node = createNode(serversNames);
-		//
-		node.start();
-	}
-
-	/** {@inheritDoc} */
-	public void stop() {
-		node.close();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	protected Client createEsClient() {
-		return node.client();
+	protected Node createNode() {
+		return createNode(serversNames);
 	}
 
 	private static Node createNode(final String[] serversNames) {

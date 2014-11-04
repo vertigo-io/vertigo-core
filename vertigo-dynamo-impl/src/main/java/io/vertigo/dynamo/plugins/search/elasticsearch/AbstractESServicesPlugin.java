@@ -53,6 +53,7 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.node.Node;
 
 /**
  * Gestion de la connexion au serveur Solr de manière transactionnel.
@@ -63,6 +64,7 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 
 	private final ESDocumentCodec elasticDocumentCodec;
 
+	private Node node;
 	private Client esClient;
 	private final Map<String, IndexFieldNameResolver> indexFieldNameResolvers;
 	private final int rowsPerQuery;
@@ -91,7 +93,9 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 
 	/** {@inheritDoc} */
 	public final void start() {
-		esClient = createEsClient();
+		node = createNode();
+		node.start();
+		esClient = node.client();
 		for (final String core : cores) {
 			final String indexName = core.toLowerCase();
 			System.out.println(System.currentTimeMillis() + " Check prepareExists: " + indexName);
@@ -99,11 +103,22 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 				System.out.println(System.currentTimeMillis() + " prepareExists " + indexName + " doesn't exist create it");
 				final boolean acknowledged = esClient.admin().indices().prepareCreate(indexName).execute().actionGet().isAcknowledged();
 				System.out.println(System.currentTimeMillis() + " create " + indexName + " acknowledged:" + acknowledged);
-				esClient.admin().indices().prepareRefresh(indexName).execute().actionGet();
-				System.out.println(System.currentTimeMillis() + " refresh " + indexName);
+				esClient.admin().indices().prepareOpen(indexName).execute().actionGet();
+				System.out.println(System.currentTimeMillis() + " open " + indexName);
 			}
 		}
-		waitForGreenStatus();
+
+		waitForYellowStatus();
+	}
+
+	/**
+	 * @return ElasticSearch node.
+	 */
+	protected abstract Node createNode();
+
+	/** {@inheritDoc} */
+	public final void stop() {
+		node.close();
 	}
 
 	/** {@inheritDoc} */
@@ -167,11 +182,6 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 		createElasticStatement(indexDefinition).remove(indexDefinition, listFilter);
 		markToOptimize(indexDefinition);
 	}
-
-	/**
-	 * @return ElastcSearch Client
-	 */
-	protected abstract Client createEsClient();
 
 	/**
 	 * Fournit l' IndexFieldNameResolver d'un index.
@@ -279,8 +289,8 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 						.flush(true).maxNumSegments(32)); //32 files : empirique
 	}
 
-	private void waitForGreenStatus() {
-		esClient.admin().cluster().prepareHealth().setWaitForGreenStatus().execute().actionGet();
+	private void waitForYellowStatus() {
+		esClient.admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
 	}
 
 }

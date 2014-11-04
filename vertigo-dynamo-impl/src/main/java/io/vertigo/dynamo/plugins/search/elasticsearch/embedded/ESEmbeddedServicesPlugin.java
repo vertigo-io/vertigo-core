@@ -31,7 +31,6 @@ import java.net.URLDecoder;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
@@ -47,8 +46,6 @@ public final class ESEmbeddedServicesPlugin extends AbstractESServicesPlugin {
 	/** url du serveur elasticSearch.  */
 	private final URL elasticSearchHomeURL;
 
-	private final Node node;
-
 	/**
 	 * Constructeur
 	 * @param elasticSearchHome URL du serveur SOLR
@@ -63,19 +60,12 @@ public final class ESEmbeddedServicesPlugin extends AbstractESServicesPlugin {
 		Assertion.checkArgNotEmpty(elasticSearchHome);
 		// ---------------------------------------------------------------------
 		elasticSearchHomeURL = resourceManager.resolve(elasticSearchHome);
-		node = createNode(elasticSearchHomeURL);
-		node.start();
-	}
-
-	/** {@inheritDoc} */
-	public void stop() {
-		node.close();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	protected Client createEsClient() {
-		return node.client();
+	protected Node createNode() {
+		return createNode(elasticSearchHomeURL);
 	}
 
 	private static Node createNode(final URL esHomeURL) {
