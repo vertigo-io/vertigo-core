@@ -82,19 +82,6 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test de création nettoyage de l'index.
-	 * La création s'effectue dans une seule transaction.
-	 */
-	@Test
-	public void testClean() {
-		final IndexDefinition carIndexDefinition = Home.getDefinitionSpace().resolve(IDX_CAR, IndexDefinition.class);
-		final IndexDefinition carDynIndexDefinition = Home.getDefinitionSpace().resolve(IDX_DYNA_CAR, IndexDefinition.class);
-		final ListFilter removeQuery = new ListFilter("*:*");
-		searchManager.getSearchServices().remove(carIndexDefinition, removeQuery);
-		searchManager.getSearchServices().remove(carDynIndexDefinition, removeQuery);
-	}
-
-	/**
 	 * Test de création de n enregistrements dans l'index.
 	 * La création s'effectue dans une seule transaction mais sur deux indexes.
 	 * Vérifie la capacité du système à gérer plusieurs indexes.
@@ -118,6 +105,19 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 
 		final long sizeCarDyn = query("*:*", carDynIndexDefinition);
 		Assert.assertEquals(carDataBase.size(), sizeCarDyn);
+	}
+
+	/**
+	 * Test de création nettoyage de l'index.
+	 * La création s'effectue dans une seule transaction.
+	 */
+	@Test
+	public void testClean() {
+		final IndexDefinition carIndexDefinition = Home.getDefinitionSpace().resolve(IDX_CAR, IndexDefinition.class);
+		final IndexDefinition carDynIndexDefinition = Home.getDefinitionSpace().resolve(IDX_DYNA_CAR, IndexDefinition.class);
+		final ListFilter removeQuery = new ListFilter("*:*");
+		searchManager.getSearchServices().remove(carIndexDefinition, removeQuery);
+		searchManager.getSearchServices().remove(carDynIndexDefinition, removeQuery);
 	}
 
 	private long query(final String query, final IndexDefinition indexDefinition) {
