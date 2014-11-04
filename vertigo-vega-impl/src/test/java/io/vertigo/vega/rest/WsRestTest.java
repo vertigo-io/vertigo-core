@@ -152,13 +152,13 @@ public final class WsRestTest extends AbstractTestCaseJU4 {
 				.beginComponent(ComponentCmdRestServices.class).endComponent()
 				.beginComponent(ContactsRestServices.class).endComponent()
 				.beginComponent(TesterRestServices.class).endComponent()
+				.beginComponent(SwaggerRestServices.class).endComponent()
+				.beginComponent(CatalogRestServices.class).endComponent()
 			.endModule()
 			.beginModule("restCore").withNoAPI().withInheritance(Object.class)
 				.beginComponent(RestManager.class, RestManagerImpl.class)
 					.beginPlugin(AnnotationsEndPointIntrospectorPlugin.class).endPlugin()
 				.endComponent()
-				.beginComponent(SwaggerRestServices.class).endComponent()
-				.beginComponent(CatalogRestServices.class).endComponent()
 				.beginComponent(RateLimitingHandler.class).endComponent()
 				.beginComponent(UiSecurityTokenManager.class, UiSecurityTokenManagerImpl.class)
 					.withParam("storeName", "UiSecurityStore")
@@ -202,6 +202,45 @@ public final class WsRestTest extends AbstractTestCaseJU4 {
 		RestAssured.given()
 				.filter(sessionFilter)
 				.get("/test/login");
+	}
+
+	@Test
+	public void testCatalog() {
+		RestAssured.given()
+				.expect()
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/catalog");
+	}
+
+	@Test
+	public void testSwaggerApi() {
+		RestAssured.given()
+				.expect()
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/swaggerApi");
+	}
+
+	@Test
+	public void testSwaggerUi() {
+		RestAssured.given()
+				.expect()
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/swaggerUi");
+
+		RestAssured.given()
+				.expect()
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/swaggerUi/swagger-ui.min.js");
+
+		RestAssured.given()
+				.expect()
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/swaggerUi/lib/swagger-client.js");
 	}
 
 	@Test
