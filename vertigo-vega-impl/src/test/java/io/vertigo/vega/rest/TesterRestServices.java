@@ -326,12 +326,9 @@ public final class TesterRestServices implements RestfulService {
 	}
 
 	//@POST is non-indempotent
-	@POST("/test")
+	@POST("/contact")
 	public Contact testPost(//
-			final @Validate({ ContactValidator.class, MandatoryPkValidator.class }) Contact contact) {
-		if (contact.getConId() != null) {
-			throw new VUserException(new MessageText("Contact #" + contact.getConId() + " already exist", null));
-		}
+			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			throw new VUserException(new MessageText("Name is mandatory", null));
 		}
@@ -343,7 +340,7 @@ public final class TesterRestServices implements RestfulService {
 	}
 
 	//PUT is indempotent : ID obligatoire
-	@PUT("/{conId}")
+	@PUT("/contact")
 	public Contact testUpdate(//
 			final @Validate({ ContactValidator.class, MandatoryPkValidator.class }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
@@ -351,6 +348,20 @@ public final class TesterRestServices implements RestfulService {
 			throw new VUserException(new MessageText("Name is mandatory", null));
 		}
 
+		contacts.put(contact.getConId(), contact);
+		//200
+		return contact;
+	}
+
+	//PUT is indempotent : ID obligatoire
+	@PUT("/contact/{conId}")
+	public Contact testUpdateByPath(@PathParam("conId") final long conId,
+			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) Contact contact) {
+		if (contact.getName() == null || contact.getName().isEmpty()) {
+			//400
+			throw new VUserException(new MessageText("Name is mandatory", null));
+		}
+		contact.setConId(conId);
 		contacts.put(contact.getConId(), contact);
 		//200
 		return contact;

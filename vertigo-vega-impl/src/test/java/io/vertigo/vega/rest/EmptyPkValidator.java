@@ -18,39 +18,26 @@
  */
 package io.vertigo.vega.rest;
 
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.MessageText;
 import io.vertigo.vega.rest.validation.AbstractDtObjectValidator;
 import io.vertigo.vega.rest.validation.DtObjectErrors;
 
-import java.util.Set;
-
 /**
- * Check that PK was set in this object.
+ * Check that PK was NOT set in this object.
  * @author npiedeloup (4 nov. 2014 12:32:31)
  * @param <O> Object type
  */
-public final class MandatoryPkValidator<O extends DtObject> extends AbstractDtObjectValidator<O> {
-
-	/**
-	 * NO checkMonoFieldConstraints.
-	 * Can't check that PK was set in a checkMonoFieldConstraints.
-	 * Because it was called for modified fields only, if PK is undefined it will not be checked.
-	 */
+public final class EmptyPkValidator<O extends DtObject> extends AbstractDtObjectValidator<O> {
 
 	/** {@inheritDoc} */
 	@Override
-	protected void checkMultiFieldConstraints(final O dtObject, final Set<String> modifiedFieldNameSet, final DtObjectErrors dtObjectErrors) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtObject);
-		final DtField pkField = dtDefinition.getIdField().get();
-		final String camelCaseFieldName = getCamelCaseFieldName(pkField);
-		if (!dtObjectErrors.hasError(camelCaseFieldName)) {
-			if (DtObjectUtil.getId(dtObject) == null) {
-				dtObjectErrors.addError(camelCaseFieldName, new MessageText("Id is mandatory", null));
-			}
+	protected void checkMonoFieldConstraints(final O dtObject, final DtField dtField, final DtObjectErrors dtObjectErrors) {
+		final String camelCaseFieldName = getCamelCaseFieldName(dtField);
+		if (dtField.getType() == FieldType.PRIMARY_KEY && !dtObjectErrors.hasError(camelCaseFieldName)) {
+			dtObjectErrors.addError(camelCaseFieldName, new MessageText("Id must not be set", null));
 		}
 	}
 }

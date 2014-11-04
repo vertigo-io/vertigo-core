@@ -65,6 +65,13 @@ import io.vertigo.vega.security.UiSecurityTokenManager;
 import io.vertigoimpl.commons.locale.LocaleManagerImpl;
 import io.vertigoimpl.engines.rest.cmd.ComponentCmdRestServices;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -302,7 +309,7 @@ public final class WsRestTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testExportContacts() {
 		loggedAndExpect()
-				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=contact2.pdf;filename*=UTF-8''contact2.pdf"))
+				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=contacts.pdf;filename*=UTF-8''contacts.pdf"))
 				.header("Content-Length", Matchers.equalTo("2572"))
 				.statusCode(HttpStatus.SC_OK)
 				.when()
@@ -411,6 +418,176 @@ public final class WsRestTest extends AbstractTestCaseJU4 {
 				.get("/test/oneTimeAccess/1");
 	}
 
+	@Test
+	public void testFilteredRead() {
+		loggedAndExpect()
+				.body("conId", Matchers.equalTo(1))
+				.body("honorificCode", Matchers.notNullValue())
+				.body("name", Matchers.notNullValue())
+				.body("firstName", Matchers.notNullValue())
+				.body("birthday", Matchers.nullValue()) //excluded field
+				.body("email", Matchers.nullValue()) //excluded field
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/filtered/1");
+	}
+
+	@Test
+	public void testPostContact() throws ParseException {
+		final Map<String, Object> newContact = createContact(null, "Mrs", "Fournier", "Catherine", parseDate("24/10/1985"), //
+				createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"), //
+				"catherine.fournier@gmail.com", "01 91 92 93 94");
+
+		loggedAndExpect(given().body(newContact))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.post("/test/contact");
+	}
+
+	@Test
+	public void testPostContactValidatorError() throws ParseException {
+		final Map<String, Object> newContact = createContact(100L, "Mrs", "Fournier", "Catherine", parseDate("24/10/1985"), //
+				createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"), //
+				"catherine.fournier@gmail.com", "01 91 92 93 94");
+
+		loggedAndExpect(given().body(newContact))
+				.body("fieldErrors.conId", Matchers.contains("Id must not be set"))
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.post("/test/contact");
+
+		final Map<String, Object> new2Contact = createContact(null, "Mrs", "Fournier", "Catherine", parseDate("24/10/2012"), //
+				createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"), //
+				"catherine.fournier@gmail.com", "01 91 92 93 94");
+
+		loggedAndExpect(given().body(new2Contact))
+				.body("fieldErrors.birthday", Matchers.contains("You can't add contact younger than 16"))
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.post("/test/contact");
+	}
+
+	@Test
+	public void testPostContactUserException() throws ParseException {
+		final Map<String, Object> newContact = createContact(null, "Mrs", null, "Catherine", parseDate("24/10/1985"), //
+				createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"), //
+				"catherine.fournier@gmail.com", "01 91 92 93 94");
+
+		loggedAndExpect(given().body(newContact))
+				.body("globalErrors", Matchers.contains("Name is mandatory"))
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.post("/test/contact");
+	}
+
+	@Test
+	public void testPutContact() throws ParseException {
+		final Map<String, Object> newContact = createContact(100L, "Mrs", "Fournier", "Catherine", parseDate("24/10/1985"), //
+				createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"), //
+				"catherine.fournier@gmail.com", "01 91 92 93 94");
+
+		loggedAndExpect(given().body(newContact))
+				.body("conId", Matchers.equalTo(100))
+				.body("honorificCode", Matchers.notNullValue())
+				.body("name", Matchers.notNullValue())
+				.body("firstName", Matchers.notNullValue())
+				.body("birthday", Matchers.notNullValue())
+				.body("email", Matchers.notNullValue())
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/contact");
+	}
+
+	@Test
+	public void testPutContactByPath() throws ParseException {
+		final Map<String, Object> newContact = createContact(null, "Mrs", "Fournier", "Catherine", parseDate("24/10/1985"), //
+				createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"), //
+				"catherine.fournier@gmail.com", "01 91 92 93 94");
+
+		loggedAndExpect(given().body(newContact))
+				.body("conId", Matchers.equalTo(101))
+				.body("honorificCode", Matchers.notNullValue())
+				.body("name", Matchers.notNullValue())
+				.body("firstName", Matchers.notNullValue())
+				.body("birthday", Matchers.notNullValue())
+				.body("email", Matchers.notNullValue())
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/contact/101");
+	}
+
+	@Test
+	public void testPutContactValidatorError() throws ParseException {
+		final Map<String, Object> newContact = createContact(null, "Mrs", "Fournier", "Catherine", parseDate("24/10/1985"), //
+				createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"), //
+				"catherine.fournier@gmail.com", "01 91 92 93 94");
+
+		loggedAndExpect(given().body(newContact))
+				.body("fieldErrors.conId", Matchers.contains("Id is mandatory"))
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.put("/test/contact");
+
+		final Map<String, Object> new2Contact = createContact(100L, "Mrs", "Fournier", "Catherine", parseDate("24/10/2012"), //
+				createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"), //
+				"catherine.fournier@gmail.com", "01 91 92 93 94");
+
+		loggedAndExpect(given().body(new2Contact))
+				.body("fieldErrors.birthday", Matchers.contains("You can't add contact younger than 16"))
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.put("/test/contact");
+	}
+
+	@Test
+	public void testPutContactByPathValidatorError() throws ParseException {
+		final Map<String, Object> newContact = createContact(null, "Mrs", "Fournier", "Catherine", parseDate("24/10/1985"), //
+				createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"), //
+				"catherine.fournier@gmail.com", "01 91 92 93 94");
+
+		loggedAndExpect(given().body(newContact))
+				.body("fieldErrors.conId", Matchers.contains("Id is mandatory"))
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.put("/test/contact/ ");
+
+		final Map<String, Object> new2Contact = createContact(null, "Mrs", "Fournier", "Catherine", parseDate("24/10/2012"), //
+				createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"), //
+				"catherine.fournier@gmail.com", "01 91 92 93 94");
+
+		loggedAndExpect(given().body(new2Contact))
+				.body("fieldErrors.birthday", Matchers.contains("You can't add contact younger than 16"))
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.put("/test/contact/101");
+	}
+
+	@Test
+	public void testPutContactUserException() throws ParseException {
+		final Map<String, Object> newContact = createContact(100L, "Mrs", null, "Catherine", parseDate("24/10/1985"), //
+				createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"), //
+				"catherine.fournier@gmail.com", "01 91 92 93 94");
+
+		loggedAndExpect(given().body(newContact))
+				.body("globalErrors", Matchers.contains("Name is mandatory"))
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.put("/test/contact");
+	}
+
+	@Test
+	public void testPutContactByPathUserException() throws ParseException {
+		final Map<String, Object> newContact = createContact(null, "Mrs", null, "Catherine", parseDate("24/10/1985"), //
+				createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"), //
+				"catherine.fournier@gmail.com", "01 91 92 93 94");
+
+		loggedAndExpect(given().body(newContact))
+				.body("globalErrors", Matchers.contains("Name is mandatory"))
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.put("/test/contact/101");
+	}
+
 	private ResponseSpecification expect() {
 		return RestAssured.expect();
 	}
@@ -429,5 +606,34 @@ public final class WsRestTest extends AbstractTestCaseJU4 {
 		return given
 				.filter(sessionFilter)
 				.expect();
+	}
+
+	private Date parseDate(final String dateStr) throws ParseException {
+		return new SimpleDateFormat("dd/MM/yyyy").parse(dateStr);
+	}
+
+	private Map<String, Object> createContact(final Long conId, final String honorific, final String name, final String firstName, final Date birthday, final Map<String, Object> address, final String email, final String... tels) {
+		final Map<String, Object> contact = new HashMap<>();
+		if (conId != null) {
+			contact.put("conId", conId);
+		}
+		contact.put("honorificCode", honorific);
+		contact.put("name", name);
+		contact.put("firstName", firstName);
+		contact.put("birthday", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(birthday));
+		contact.put("address", address);
+		contact.put("email", email);
+		contact.put("tels", Arrays.asList(tels));
+		return contact;
+	}
+
+	private Map<String, Object> createAddress(final String street1, final String street2, final String city, final String postalCode, final String country) {
+		final Map<String, Object> address = new HashMap<>();
+		address.put("street1", street1);
+		address.put("street2", street2);
+		address.put("city", city);
+		address.put("postalCode", postalCode);
+		address.put("country", country);
+		return address;
 	}
 }
