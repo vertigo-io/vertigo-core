@@ -91,37 +91,13 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 
 	/** {@inheritDoc} */
 	public final void start() {
-
 		esClient = createEsClient();
-		initIndicesSettings();
 		for (final String core : cores) {
 			final String indexName = core.toLowerCase();
 			if (!esClient.admin().indices().prepareExists(indexName).execute().actionGet().isExists()) {
-				esClient.admin().indices().prepareCreate(indexName).execute().actionGet();
+				esClient.admin().indices().prepareCreate(indexName).execute().actionGet().isAcknowledged();
 			}
 		}
-	}
-
-	/*private static final String DEFAULT_SETTINGS = //
-	"{\"index\" : {\"analysis\" : {" //
-			+ "	\"analyzer\" : {" //
-			+ "		\"default\" : {" //
-			+ "			\"tokenizer\" : \"standard\"," //
-			+ "			\"filter\" : [\"standard\", \"elision\"]" //
-			+ "		}" //
-			+ "	}," //
-			+ "	\"filter\" : {" //
-			+ "		\"elision\" : {" //
-			+ "			\"type\" : \"elision\"," //
-			+ "			\"articles\" : [\"l\", \"m\", \"t\", \"qu\", \"n\", \"s\", \"j\"]" //
-			+ "		}" //
-			+ "	}" //
-			+ "}}}";*/
-
-	private void initIndicesSettings() {
-		//esClient.admin().indices().prepareUpdateSettings()//
-		//.setSettings(DEFAULT_SETTINGS) //
-		//.execute().actionGet();
 	}
 
 	/** {@inheritDoc} */
