@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequestBuilder;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
@@ -69,7 +70,6 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 	private final Map<String, IndexFieldNameResolver> indexFieldNameResolvers;
 	private final int rowsPerQuery;
 	private final Set<String> cores;
-	//private final String[] indices;
 	private boolean typeMappingInitialized = false;
 
 	/**
@@ -86,28 +86,27 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 		elasticDocumentCodec = new ESDocumentCodec(codecManager);
 		indexFieldNameResolvers = new HashMap<>();
 		//------
-		//indices = cores.toLowerCase().split(",");
 		this.cores = new HashSet<>(Arrays.asList(cores.split(",")));
 
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final void start() {
 		node = createNode();
 		node.start();
 		esClient = node.client();
 		for (final String core : cores) {
-			final String indexName = core.toLowerCase();
-			System.out.println(System.currentTimeMillis() + " Check prepareExists: " + indexName);
-			if (!esClient.admin().indices().prepareExists(indexName).execute().actionGet().isExists()) {
-				System.out.println(System.currentTimeMillis() + " prepareExists " + indexName + " doesn't exist create it");
-				final boolean acknowledged = esClient.admin().indices().prepareCreate(indexName).execute().actionGet().isAcknowledged();
-				System.out.println(System.currentTimeMillis() + " create " + indexName + " acknowledged:" + acknowledged);
-				esClient.admin().indices().prepareOpen(indexName).execute().actionGet();
-				System.out.println(System.currentTimeMillis() + " open " + indexName);
+			final String indexName = core.toLowerCase().trim();
+			waitForYellowStatus(); //must wait yellow status to be sure prepareExists works fine (instead of returning false on a already exist index)
+			try {
+				if (!esClient.admin().indices().prepareExists(indexName).execute().get().isExists()) {
+					esClient.admin().indices().prepareCreate(indexName).execute().get();
+				}
+			} catch (InterruptedException | ExecutionException e) {
+				throw new RuntimeException("Error on index " + indexName, e);
 			}
 		}
-
 		waitForYellowStatus();
 	}
 
@@ -117,11 +116,13 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 	protected abstract Node createNode();
 
 	/** {@inheritDoc} */
+	@Override
 	public final void stop() {
 		node.close();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final void registerIndexFieldNameResolver(final IndexDefinition indexDefinition, final IndexFieldNameResolver indexFieldNameResolver) {
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkNotNull(indexFieldNameResolver);
@@ -131,6 +132,7 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final <I extends DtObject, R extends DtObject> void putAll(final IndexDefinition indexDefinition, final Collection<Index<I, R>> indexCollection) {
 		Assertion.checkNotNull(indexCollection);
 		//---------------------------------------------------------------------
@@ -139,6 +141,7 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final <I extends DtObject, R extends DtObject> void put(final IndexDefinition indexDefinition, final Index<I, R> index) {
 		//On vérifie la cohérence des données SO et SOD.
 		Assertion.checkNotNull(indexDefinition);
@@ -150,6 +153,7 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final void remove(final IndexDefinition indexDefinition, final URI uri) {
 		Assertion.checkNotNull(uri);
 		Assertion.checkNotNull(indexDefinition);
@@ -159,6 +163,7 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchQuery searchQuery, final FacetedQuery facetedQuery) {
 		Assertion.checkNotNull(searchQuery);
 		Assertion.checkNotNull(facetedQuery);
@@ -168,6 +173,7 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final long count(final IndexDefinition indexDefinition) {
 		Assertion.checkNotNull(indexDefinition);
 		//---------------------------------------------------------------------
@@ -175,6 +181,7 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final void remove(final IndexDefinition indexDefinition, final ListFilter listFilter) {
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkNotNull(listFilter);
