@@ -3,7 +3,8 @@ Version history
 
 Running 0.7.0-SNAPSHOT
 ----------------------
-* [core] Managers.xml syntax changed : add a &lt;config&gt; at root
+* [Core] Managers.xml syntax changed : add a &lt;config&gt; at root
+* [Dynamo] Move search public api from SearchServicePlugin to SearchManager
 more to come :)
 
 Release 0.6.2 - 2014/10/27
