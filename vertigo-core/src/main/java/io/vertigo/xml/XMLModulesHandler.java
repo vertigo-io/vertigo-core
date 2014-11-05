@@ -94,6 +94,8 @@ final class XMLModulesHandler extends DefaultHandler {
 			case modules: //non géré
 			case param: //non géré
 			case resource: //non géré
+			case config: //non géré
+			case resources: //non géré
 			default:
 		}
 	}
@@ -164,6 +166,8 @@ final class XMLModulesHandler extends DefaultHandler {
 				adviceImplClassStr = attrs.getValue("class");
 				break;
 			case modules: //non géré
+			case config: //non géré
+			case resources: //non géré
 			default:
 		}
 	}
