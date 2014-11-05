@@ -94,7 +94,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	 */
 	private void clean(final IndexDefinition indexDefinition) {
 		final ListFilter removeQuery = new ListFilter("*:*");
-		searchManager.getSearchServices().remove(indexDefinition, removeQuery);
+		searchManager.remove(indexDefinition, removeQuery);
 	}
 
 	/**
@@ -457,13 +457,13 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 			for (final Car car : carDataBase) {
 				indexes.add(Index.createIndex(carIndexDefinition, createURI(car), car, car));
 			}
-			searchManager.getSearchServices().putAll(carIndexDefinition, indexes);
+			searchManager.putAll(carIndexDefinition, indexes);
 		} else {
 			//Indexation unitaire
 			//Indexation des cars de la base
 			for (final Car car : carDataBase) {
 				final Index<Car, Car> index = Index.createIndex(carIndexDefinition, createURI(car), car, car);
-				searchManager.getSearchServices().put(carIndexDefinition, index);
+				searchManager.put(carIndexDefinition, index);
 			}
 		}
 		waitIndexation();
@@ -472,13 +472,13 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	private void doRemove(final int count) {
 		//Suppression de n voitures
 		for (long id = 0; id < count; id++) {
-			searchManager.getSearchServices().remove(carIndexDefinition, createURI(id));
+			searchManager.remove(carIndexDefinition, createURI(id));
 		}
 	}
 
 	private void doRemove(final String query) {
 		final ListFilter removeQuery = new ListFilter(query);
-		searchManager.getSearchServices().remove(carIndexDefinition, removeQuery);
+		searchManager.remove(carIndexDefinition, removeQuery);
 	}
 
 	private long doQuery(final String query) {
@@ -500,35 +500,15 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	private FacetedQueryResult<DtObject, SearchQuery> doQuery(final SearchQuery searchQuery) {
 		//recherche
 		final FacetedQuery facetedQuery = new FacetedQuery(carQueryDefinition, Collections.<ListFilter> emptyList());
-		return searchManager.getSearchServices().loadList(searchQuery, facetedQuery);
+		return searchManager.loadList(searchQuery, facetedQuery);
 	}
 
 	private FacetedQueryResult<Car, SearchQuery> doFacetQuery(final String query) {
 		final ListFilter listFilter = new ListFilter(query);
 		final SearchQuery searchQuery = SearchQuery.createSearchQuery(carIndexDefinition, listFilter);
 		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, Collections.<ListFilter> emptyList());
-		return searchManager.getSearchServices().loadList(searchQuery, facetedQuery);
+		return searchManager.loadList(searchQuery, facetedQuery);
 	}
-
-	//		//recherche
-	//		final SearchResult<Car> searchResult = searchManager.getSearchServices().loadList(carQueryDefinition, "*:*", Collections.<String> emptyList());
-	//		Assert.assertEquals(expectedCount, searchResult.getCount());
-	//		System.out.println(">>>count = " + searchResult.getCount());
-	//		final DtList<Car> cars = searchResult.getDtList();
-	//		System.out.println(">>>voitures = " + cars.size());
-	//		for (final Car car : cars) {
-	//			System.out.println(">>>voiture : " + car);
-	//		}
-	//		System.out.println(">>>Nombre de facettes : " + searchResult.getFacets().size());
-	//		System.out.println(">>>Facettes de type fieldValue");
-	//		for (final Facet facet : searchResult.getFacets()) {
-	//			for (final Entry<FacetFilter, Long> fieldValueEntry : facet.getFacetValues().entrySet()) {
-	//				System.out.println(">>>------fieldValues : " + fieldValueEntry.getKey().getLabel() + "::" + fieldValueEntry.getValue());
-	//			}
-	//		}
-	//		System.out.println(">>>Facettes de type range");
-	//		System.out.println(">>>Facettes de type date");
-	//	}
 
 	private static URI<DtObject> createURI(final long id) {
 		return new URI<>(DtObjectUtil.findDtDefinition(Car.class), id);

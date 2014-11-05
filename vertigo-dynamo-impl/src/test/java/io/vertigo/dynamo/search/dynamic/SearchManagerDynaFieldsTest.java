@@ -48,7 +48,7 @@ public final class SearchManagerDynaFieldsTest extends AbstractSearchManagerTest
 			}
 			indexFieldsMap.put(dtField.getName(), dtField.getName() + "_DYN_" + indexType);
 		}
-		searchManager.getSearchServices().registerIndexFieldNameResolver(carIndexDefinition, new IndexFieldNameResolver(indexFieldsMap));
+		searchManager.registerIndexFieldNameResolver(carIndexDefinition, new IndexFieldNameResolver(indexFieldsMap));
 
 	}
 }

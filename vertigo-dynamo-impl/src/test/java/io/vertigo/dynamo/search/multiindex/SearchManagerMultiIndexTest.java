@@ -78,7 +78,7 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 			}
 			indexFieldsMap.put(dtField.getName(), dtField.getName() + "_DYN" + indexType);
 		}
-		searchManager.getSearchServices().registerIndexFieldNameResolver(carDynIndexDefinition, new IndexFieldNameResolver(indexFieldsMap));
+		searchManager.registerIndexFieldNameResolver(carDynIndexDefinition, new IndexFieldNameResolver(indexFieldsMap));
 	}
 
 	/**
@@ -93,10 +93,10 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 
 		for (final Car car : carDataBase) {
 			final Index<Car, Car> index = Index.createIndex(carIndexDefinition, createURI(car), car, car);
-			searchManager.getSearchServices().put(carIndexDefinition, index);
+			searchManager.put(carIndexDefinition, index);
 
 			final Index<Car, Car> index2 = Index.createIndex(carDynIndexDefinition, createURI(car), car, car);
-			searchManager.getSearchServices().put(carDynIndexDefinition, index2);
+			searchManager.put(carDynIndexDefinition, index2);
 		}
 		waitIndexation();
 
@@ -116,8 +116,8 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 		final IndexDefinition carIndexDefinition = Home.getDefinitionSpace().resolve(IDX_CAR, IndexDefinition.class);
 		final IndexDefinition carDynIndexDefinition = Home.getDefinitionSpace().resolve(IDX_DYNA_CAR, IndexDefinition.class);
 		final ListFilter removeQuery = new ListFilter("*:*");
-		searchManager.getSearchServices().remove(carIndexDefinition, removeQuery);
-		searchManager.getSearchServices().remove(carDynIndexDefinition, removeQuery);
+		searchManager.remove(carIndexDefinition, removeQuery);
+		searchManager.remove(carDynIndexDefinition, removeQuery);
 
 		waitIndexation();
 
@@ -134,7 +134,7 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 		final ListFilter listFilter = new ListFilter(query);
 		final SearchQuery searchQuery = SearchQuery.createSearchQuery(indexDefinition, listFilter);
 		final FacetedQuery facetedQuery = new FacetedQuery(carQueryDefinition, Collections.<ListFilter> emptyList());
-		final FacetedQueryResult<DtObject, SearchQuery> result = searchManager.getSearchServices().loadList(searchQuery, facetedQuery);
+		final FacetedQueryResult<DtObject, SearchQuery> result = searchManager.loadList(searchQuery, facetedQuery);
 		return result.getCount();
 	}
 

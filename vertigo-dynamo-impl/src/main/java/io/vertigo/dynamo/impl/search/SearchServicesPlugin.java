@@ -16,26 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.search;
+package io.vertigo.dynamo.impl.search;
 
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.search.IndexFieldNameResolver;
 import io.vertigo.dynamo.search.metamodel.IndexDefinition;
 import io.vertigo.dynamo.search.model.Index;
 import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Plugin;
 
 import java.util.Collection;
 
 /**
- * Gestionnaire des indexes de recherche.
+ * Plugin offrant des services de recherche.
  *
- * @author dchallas
+ * @author pchretien
  */
-public interface SearchManager extends Component {
+public interface SearchServicesPlugin extends Plugin {
+
 	/**
 	 * Enregistre un resolver de nom, entre ceux du DT et ceux du schéma Solr.
 	 * @param indexDefinition Type de l'index
