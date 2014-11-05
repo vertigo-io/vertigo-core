@@ -1,52 +1,54 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
-<modules>
-    <module name="vertigo">
-		<component api="LocaleManager" class="io.vertigoimpl.commons.locale.LocaleManagerImpl">
-			<param name="locales" value="fr_FR" />
-		</component>
-		<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
-			<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
-		</component>
-	</module>
-    
-    <module name="vertigo-commons">
-	    <component api="ScriptManager" class="io.vertigo.commons.impl.script.ScriptManagerImpl" >
-	       <plugin class="io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin"/>  
-	    </component>
-	    <component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
-	    <component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl"/>
-	    </module>
-    
-    <module name="vertigo-dynamo">
-	    <component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
-	       <plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
-	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
-	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
-	        <plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
-	    </component>
-	</module> 
-    
-    <module name="vertigo-studio">
-	    <component api="MdaManager" class="io.vertigo.studio.impl.mda.MdaManagerImpl">
-	        <plugin class="io.vertigo.studio.plugins.mda.domain.DomainGeneratorPlugin">
-	            <param name="generateDtResources" value="true" />
-	            <param name="generateDtResourcesJS" value="true" />
-	            <param name="generateJpaAnnotations" value="true" />
-	            <param name="generateDtDefinitions" value="true" />
-	            <param name="generateJsDtDefinitions" value="true" />
-	            <param name="generateDtObject" value="true" />   
-	            <param name="generateSql" value="false" />
-	            <param name="baseCible" value="PostgreSql" />
-	            <param name="generateDrop" value="false" />
-	        </plugin>
-	        <plugin class="io.vertigo.studio.plugins.mda.task.TaskGeneratorPlugin"/>
-	        <!-- plugin class="io.vertigo.studio.plugins.mda.search.SearchGeneratorPlugin"/  -->
-	        <plugin class="io.vertigo.studio.plugins.mda.file.FileInfoGeneratorPlugin">
-	        </plugin>
-	    </component> 
-    </module>
-    
-    <module name="test">
-		<resource type ="kpr" path="{kpr}"/>
-    </module>
-</modules>
+<config>
+	<modules>
+		<module name="vertigo">
+			<component api="LocaleManager" class="io.vertigoimpl.commons.locale.LocaleManagerImpl">
+				<param name="locales" value="fr_FR" />
+			</component>
+			<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
+				<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
+			</component>
+		</module>
+
+		<module name="vertigo-commons">
+			<component api="ScriptManager" class="io.vertigo.commons.impl.script.ScriptManagerImpl">
+				<plugin class="io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin" />
+			</component>
+			<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
+			<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
+		</module>
+
+		<module name="vertigo-dynamo">
+			<component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
+				<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
+				<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
+				<plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
+				<plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
+			</component>
+		</module>
+
+		<module name="vertigo-studio">
+			<component api="MdaManager" class="io.vertigo.studio.impl.mda.MdaManagerImpl">
+				<plugin class="io.vertigo.studio.plugins.mda.domain.DomainGeneratorPlugin">
+					<param name="generateDtResources" value="true" />
+					<param name="generateDtResourcesJS" value="true" />
+					<param name="generateJpaAnnotations" value="true" />
+					<param name="generateDtDefinitions" value="true" />
+					<param name="generateJsDtDefinitions" value="true" />
+					<param name="generateDtObject" value="true" />
+					<param name="generateSql" value="false" />
+					<param name="baseCible" value="PostgreSql" />
+					<param name="generateDrop" value="false" />
+				</plugin>
+				<plugin class="io.vertigo.studio.plugins.mda.task.TaskGeneratorPlugin" />
+				<!-- plugin class="io.vertigo.studio.plugins.mda.search.SearchGeneratorPlugin"/ -->
+				<plugin class="io.vertigo.studio.plugins.mda.file.FileInfoGeneratorPlugin">
+				</plugin>
+			</component>
+		</module>
+	</modules>
+	
+	<resources>
+		<resource type="kpr" path="{kpr}" />
+	</resources>
+</config>
