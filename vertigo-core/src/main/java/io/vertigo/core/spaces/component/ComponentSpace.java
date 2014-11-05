@@ -22,18 +22,16 @@ import io.vertigo.core.Home;
 import io.vertigo.core.aop.AOPInterceptor;
 import io.vertigo.core.command.VCommand;
 import io.vertigo.core.command.VCommandExecutor;
+import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.ComponentConfig;
 import io.vertigo.core.config.ComponentSpaceConfig;
-import io.vertigo.core.config.ComponentSpaceConfigBuilder;
 import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.config.PluginConfig;
-import io.vertigo.core.config.ResourceConfig;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.core.di.reactor.DIReactor;
 import io.vertigo.core.engines.AopEngine;
 import io.vertigo.core.engines.VCommandEngine;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
-import io.vertigo.core.spaces.resource.ResourceLoader;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
@@ -48,7 +46,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,7 +78,7 @@ import org.apache.log4j.xml.DOMConfigurator;
  */
 public final class ComponentSpace implements Container, Activeable {
 
-	public static final ComponentSpace EMPTY = new ComponentSpace(new ComponentSpaceConfigBuilder().build());
+	public static final ComponentSpace EMPTY = new ComponentSpace(new AppConfigBuilder().build().getComponentSpaceConfig());
 
 	private final ComponentSpaceConfig componentSpaceConfig;
 	private final ComponentContainer componentContainer = new ComponentContainer();
@@ -92,20 +89,16 @@ public final class ComponentSpace implements Container, Activeable {
 		Assertion.checkNotNull(componentSpaceConfig);
 		//---------------------------------------------------------------------
 		this.componentSpaceConfig = componentSpaceConfig;
+		initLog(componentSpaceConfig.getParams());
+		//-------------------
+		for (final ModuleConfig moduleConfig : componentSpaceConfig.getModuleConfigs()) {
+			injectComponents(moduleConfig);
+		}
 	}
 
 	/* We are registered all the components and their plugins*/
 	/** {@inheritDoc} */
 	public void start() {
-		initLog(componentSpaceConfig.getParams());
-		//-------------------
-		for (final ModuleConfig moduleConfig : componentSpaceConfig.getModuleConfigs()) {
-			injectComponents(moduleConfig);
-			//injectResources(moduleConfig);
-			//			startModule(moduleConfig);
-		}
-		injectResources(componentSpaceConfig);
-		// ------------------
 		if (componentSpaceConfig.getElasticaEngine().isDefined()) {
 			engines.add(componentSpaceConfig.getElasticaEngine().get());
 		}
@@ -149,25 +142,6 @@ public final class ComponentSpace implements Container, Activeable {
 				}
 			});
 		}
-	}
-
-	private static void injectResources(final ComponentSpaceConfig componentSpaceConfig) {
-		//			int resourcesToBeLoad = moduleConfig.getResourceConfigs().size();
-		//We are doing a copy of all resources, to check that they are all parsed.
-		final List<ResourceConfig> resourceConfigsToDo = new ArrayList<>(componentSpaceConfig.getResourceConfigs());
-		for (final ResourceLoader resourceLoader : Home.getResourceSpace().getResourceLoaders()) {
-			//Candidates contins all resources that can be treated by the resourceLoader
-			final List<ResourceConfig> candidates = new ArrayList<>();
-			for (final Iterator<ResourceConfig> it = resourceConfigsToDo.iterator(); it.hasNext();) {
-				final ResourceConfig resourceConfig = it.next();
-				if (resourceLoader.getTypes().contains(resourceConfig.getType())) {
-					candidates.add(resourceConfig);
-					it.remove();
-				}
-			}
-			resourceLoader.parse(candidates);
-		}
-		Assertion.checkArgument(resourceConfigsToDo.isEmpty(), "All resources '{0}' have not been parsed successfully ", resourceConfigsToDo);
 	}
 
 	/*We are stopping all the components.*/

@@ -31,7 +31,7 @@ import java.util.Map;
 
 /**
  * Paramétrage de l'application.
- * 
+ *
  * @author npiedeloup, pchretien
  */
 public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
@@ -82,7 +82,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 
 	/** {@inheritDoc} */
 	public ComponentConfig build() {
-		//Création des pluginConfigs 
+		//Création des pluginConfigs
 		final List<PluginConfig> pluginConfigurations = new ArrayList<>();
 		for (final PluginConfigBuilder pluginConfigBuilder : plugins) {
 			pluginConfigBuilder.withInheritedParams(inheritedParams);

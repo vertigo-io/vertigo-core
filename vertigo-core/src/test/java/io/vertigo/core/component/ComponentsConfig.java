@@ -29,22 +29,22 @@ import io.vertigo.core.component.mock.aop.OneMore;
 import io.vertigo.core.component.mock.aop.OneMoreInterceptor;
 import io.vertigo.core.component.mock.aop.TenMore;
 import io.vertigo.core.component.mock.aop.TenMoreInterceptor;
-import io.vertigo.core.config.ComponentSpaceConfigBuilder;
+import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.engines.AopEngine;
 import io.vertigo.lang.Assertion;
 
 public final class ComponentsConfig {
 	private final AopEngine aopEngine;
 
-	public ComponentsConfig(AopEngine aopEngine) {
+	public ComponentsConfig(final AopEngine aopEngine) {
 		Assertion.checkNotNull(aopEngine);
 		//---------------------------------------------------------------------
 		this.aopEngine = aopEngine;
 	}
 
-	public void config(final ComponentSpaceConfigBuilder componentSpaceConfiguilder) {
+	public void config(final AppConfigBuilder appConfiguilder) {
 		// @formatter:off
-		componentSpaceConfiguilder
+		appConfiguilder
 		.withAopEngine(aopEngine)
 		.beginModule("vertigo")
 			.withNoAPI()

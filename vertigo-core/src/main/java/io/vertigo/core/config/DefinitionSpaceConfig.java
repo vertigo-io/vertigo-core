@@ -16,31 +16,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.environment;
+package io.vertigo.core.config;
 
-import io.vertigo.core.Home;
-import io.vertigo.dynamo.environment.EnvironmentManager;
 import io.vertigo.lang.Assertion;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import javax.inject.Inject;
-
 /**
- * Manager de chargement de l'environnement. Ce manager ce paramètre par l'ajout
- * de plugins implémentant DynamicHandler. Chaque plugins permet d'enrichir la
- * grammaire et de transposer les DynamicDefinition lues dans les NameSpaces des
- * Managers idoines.
+ * Paramétrage des définitions de l'application.
  *
- * @author pchretien, npiedeloup
+ * @author npiedeloup, pchretien
  */
-public final class EnvironmentManagerImpl implements EnvironmentManager {
+public final class DefinitionSpaceConfig {
+	private final List<ResourceConfig> resources;
 
-	@Inject
-	public EnvironmentManagerImpl(final List<LoaderPlugin> loaderPlugins, final List<DynamicRegistryPlugin> dynamicRegistryPlugins) {
-		Assertion.checkNotNull(loaderPlugins);
-		Assertion.checkNotNull(dynamicRegistryPlugins);
+	DefinitionSpaceConfig(final List<ResourceConfig> resourceConfigs) {
+		Assertion.checkNotNull(resourceConfigs);
 		//---------------------------------------------------------------------
-		Home.getDefinitionSpace().addLoader(new Environment(dynamicRegistryPlugins, loaderPlugins));
+		this.resources = Collections.unmodifiableList(new ArrayList<>(resourceConfigs));
+	}
+
+	public List<ResourceConfig> getResourceConfigs() {
+		return resources;
 	}
 }

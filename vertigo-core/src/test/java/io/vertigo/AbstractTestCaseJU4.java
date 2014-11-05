@@ -20,7 +20,7 @@ package io.vertigo;
 
 import io.vertigo.core.Home;
 import io.vertigo.core.config.AppBuilder;
-import io.vertigo.core.config.ComponentSpaceConfigBuilder;
+import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.lang.Component;
@@ -43,9 +43,9 @@ public abstract class AbstractTestCaseJU4 {
 	private static boolean homeStarted;
 
 	private synchronized void startHome() {
-		final ComponentSpaceConfigBuilder componentSpaceConfigBuilder = new ComponentSpaceConfigBuilder();
-		configMe(componentSpaceConfigBuilder);
-		Home.start(componentSpaceConfigBuilder.build());
+		final AppConfigBuilder appConfigBuilder = new AppConfigBuilder();
+		configMe(appConfigBuilder);
+		Home.start(appConfigBuilder.build());
 		homeStarted = true;
 	}
 
@@ -188,16 +188,15 @@ public abstract class AbstractTestCaseJU4 {
 
 	/**
 	 * Configuration des tests.
-	 * @param componentSpaceConfigBuilder builder
 	 */
-	protected void configMe(final ComponentSpaceConfigBuilder componentSpaceConfigBuilder) {
+	protected void configMe(final AppConfigBuilder appConfigBuilder) {
 		final AppBuilder appBuilder = new AppBuilder() //
 				.withSilence(true) //
-				.withComponentSpaceConfigBuilder(componentSpaceConfigBuilder) //
+				.withAppConfigBuilder(appConfigBuilder) //
 				.withXmlFileNames(getClass(), getManagersXmlFileName()); //
 		if (getPropertiesFileName().isDefined()) {
 			appBuilder.withEnvParams(getClass(), getPropertiesFileName().get());
 		}
-		appBuilder.toComponentSpaceConfigBuilder();
+		appBuilder.toAppConfigBuilder();
 	}
 }

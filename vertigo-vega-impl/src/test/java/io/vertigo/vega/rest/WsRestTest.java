@@ -28,7 +28,7 @@ import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.commons.plugins.cache.map.MapCachePlugin;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.commons.resource.ResourceManager;
-import io.vertigo.core.config.ComponentSpaceConfigBuilder;
+import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.export.ExportManager;
 import io.vertigo.dynamo.file.FileManager;
@@ -94,14 +94,14 @@ public final class WsRestTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * Configuration des tests.
-	 * @param componentSpaceConfigBuilder builder
+	 * @param appConfigBuilder builder
 	 */
 	@Override
-	protected void configMe(final ComponentSpaceConfigBuilder componentSpaceConfigBuilder) {
+	protected void configMe(final AppConfigBuilder appConfigBuilder) {
 		// Création de l'état de l'application
 		// Initialisation de l'état de l'application
 		// @formatter:off
-		componentSpaceConfigBuilder
+		appConfigBuilder
 			.withSilence(false)
 			.withCommandEngine(new TcpVCommandEngine(4406))
 			.withResource("classes", DtDefinitions.class.getName())

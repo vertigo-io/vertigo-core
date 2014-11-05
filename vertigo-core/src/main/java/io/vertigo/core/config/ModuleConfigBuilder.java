@@ -33,7 +33,7 @@ import java.util.List;
  * @author npiedeloup, pchretien
  */
 public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
-	private final ComponentSpaceConfigBuilder myComponentSpaceConfigBuilder;
+	private final AppConfigBuilder myAppConfigBuilder;
 	private final String myName;
 	private final List<ComponentConfigBuilder> myComponentConfigBuilders = new ArrayList<>();
 	private final List<AspectConfig> myAspectConfigs = new ArrayList<>();
@@ -42,12 +42,12 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	private boolean myHasApi = true; //par défaut on a une api.
 	private Class<?> mySuperClass = Component.class; //Par défaut la super Classe est Manager
 
-	ModuleConfigBuilder(final ComponentSpaceConfigBuilder componentSpaceConfigBuilder, final String name) {
-		Assertion.checkNotNull(componentSpaceConfigBuilder);
+	ModuleConfigBuilder(final AppConfigBuilder appConfigBuilder, final String name) {
+		Assertion.checkNotNull(appConfigBuilder);
 		Assertion.checkArgNotEmpty(name);
 		//---------------------------------------------------------------------
 		myName = name;
-		myComponentSpaceConfigBuilder = componentSpaceConfigBuilder;
+		myAppConfigBuilder = appConfigBuilder;
 	}
 
 	public ModuleConfigBuilder withAspect(final Class<?> annotationType, final Class<? extends AOPInterceptor> implClass) {
@@ -111,8 +111,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * Mark end of current module.
 	 * @return Builder
 	 */
-	public ComponentSpaceConfigBuilder endModule() {
-		return myComponentSpaceConfigBuilder;
+	public AppConfigBuilder endModule() {
+		return myAppConfigBuilder;
 	}
 
 	/** {@inheritDoc} */

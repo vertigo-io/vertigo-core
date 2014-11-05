@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.impl.environment;
 
 import io.vertigo.core.config.ResourceConfig;
-import io.vertigo.core.spaces.resource.ResourceLoader;
+import io.vertigo.core.spaces.definiton.ResourceLoader;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;

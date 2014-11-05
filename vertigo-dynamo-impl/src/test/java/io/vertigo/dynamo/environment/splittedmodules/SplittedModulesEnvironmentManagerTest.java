@@ -23,8 +23,8 @@ import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.core.Home;
-import io.vertigo.core.config.ComponentSpaceConfig;
-import io.vertigo.core.config.ComponentSpaceConfigBuilder;
+import io.vertigo.core.config.AppConfig;
+import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.environment.EnvironmentManager;
@@ -52,11 +52,11 @@ public final class SplittedModulesEnvironmentManagerTest {
 
 	@Test
 	public void testFirstModule() {
-		final ComponentSpaceConfig componentSpaceConfig = prepareDefaultComponentSpaceConfigBuilder()
+		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
 				.withResource("kpr", "io/vertigo/dynamock/execution.kpr")
 				.build();
 
-		Home.start(componentSpaceConfig);
+		Home.start(appConfig);
 		try {
 			final Domain doString = Home.getDefinitionSpace().resolve("DO_STRING", Domain.class);
 			Assert.assertNotNull(doString);
@@ -68,13 +68,13 @@ public final class SplittedModulesEnvironmentManagerTest {
 	@Test
 	public void testMergedModules() {
 		// @formatter:off
-		final ComponentSpaceConfig componentSpaceConfig = prepareDefaultComponentSpaceConfigBuilder()
+		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
 				.withResource("kpr", "io/vertigo/dynamock/execution.kpr")
 				.withResource("classes", DtDefinitions.class.getCanonicalName())
 			.build();
 		// @formatter:on
 
-		Home.start(componentSpaceConfig);
+		Home.start(appConfig);
 		try {
 			final Domain doString = Home.getDefinitionSpace().resolve("DO_STRING", Domain.class);
 			Assert.assertNotNull(doString);
@@ -88,13 +88,13 @@ public final class SplittedModulesEnvironmentManagerTest {
 	@Test
 	public void testSplittedModules() {
 		// @formatter:off
-		final ComponentSpaceConfig componentSpaceConfig = prepareDefaultComponentSpaceConfigBuilder()
+		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
 				.withResource("kpr", "io/vertigo/dynamock/execution.kpr")
 				.withResource("classes", DtDefinitions.class.getCanonicalName())
 		.build();
 		// @formatter:on
 
-		Home.start(componentSpaceConfig);
+		Home.start(appConfig);
 		try {
 			final Domain doString = Home.getDefinitionSpace().resolve("DO_STRING", Domain.class);
 			Assert.assertNotNull(doString);
@@ -105,9 +105,9 @@ public final class SplittedModulesEnvironmentManagerTest {
 		}
 	}
 
-	private ComponentSpaceConfigBuilder prepareDefaultComponentSpaceConfigBuilder() {
+	private AppConfigBuilder prepareDefaultAppConfigBuilder() {
 		// @formatter:off
-		final ComponentSpaceConfigBuilder componentSpaceConfigBuilder = new ComponentSpaceConfigBuilder()
+		final AppConfigBuilder appConfigBuilder = new AppConfigBuilder()
 		.withParam("log4j.configurationFileName", "/log4j.xml")
 		.withSilence(false)
 		.beginModule("vertigo")
@@ -124,6 +124,6 @@ public final class SplittedModulesEnvironmentManagerTest {
 			.endComponent()
 		.endModule();
 		// @formatter:on
-		return componentSpaceConfigBuilder;
+		return appConfigBuilder;
 	}
 }

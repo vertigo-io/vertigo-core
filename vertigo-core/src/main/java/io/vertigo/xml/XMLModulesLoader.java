@@ -18,7 +18,7 @@
  */
 package io.vertigo.xml;
 
-import io.vertigo.core.config.ComponentSpaceConfigBuilder;
+import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Loader;
 import io.vertigo.util.XMLUtil;
@@ -38,7 +38,7 @@ import org.xml.sax.SAXException;
  * Parser XML du paramétrage de l'application.
  * @author npiedeloup, pchretien
  */
-public final class XMLModulesLoader implements Loader<ComponentSpaceConfigBuilder> {
+public final class XMLModulesLoader implements Loader<AppConfigBuilder> {
 	private final URL managersURL;
 	private final Properties properties;
 
@@ -56,11 +56,11 @@ public final class XMLModulesLoader implements Loader<ComponentSpaceConfigBuilde
 	/**
 	 * Charge une configuration, et complète celle existante.
 	 */
-	public void load(ComponentSpaceConfigBuilder componentSpaceConfigBuilder) {
-		Assertion.checkNotNull(componentSpaceConfigBuilder);
+	public void load(final AppConfigBuilder appConfigBuilder) {
+		Assertion.checkNotNull(appConfigBuilder);
 		//----------------------------------------------------------------------
 		try {
-			doLoad(componentSpaceConfigBuilder);
+			doLoad(appConfigBuilder);
 		} catch (final ParserConfigurationException pce) {
 			throw new RuntimeException("Erreur de configuration du parseur (fichier " + managersURL.getPath() + "), lors de l'appel à newSAXParser()", pce);
 		} catch (final SAXException se) {
@@ -70,20 +70,20 @@ public final class XMLModulesLoader implements Loader<ComponentSpaceConfigBuilde
 		}
 	}
 
-	private void doLoad(ComponentSpaceConfigBuilder componentSpaceConfigBuilder) throws ParserConfigurationException, SAXException, IOException {
+	private void doLoad(final AppConfigBuilder appConfigBuilder) throws ParserConfigurationException, SAXException, IOException {
 		//---validation XSD
 		final URL xsd = XMLModulesLoader.class.getResource("vertigo_1_0.xsd");
 		XMLUtil.validateXmlByXsd(managersURL, xsd);
 		//---fin validation XSD
 
-		final XMLModulesHandler handler = new XMLModulesHandler(componentSpaceConfigBuilder, properties);
+		final XMLModulesHandler handler = new XMLModulesHandler(appConfigBuilder, properties);
 		final SAXParserFactory factory = SAXParserFactory.newInstance();
 
 		final SAXParser saxParser = factory.newSAXParser();
 		saxParser.parse(new BufferedInputStream(managersURL.openStream()), handler);
 
-		for (Object key : properties.keySet()) {
-			componentSpaceConfigBuilder.withParam((String) key, properties.getProperty((String) key));
+		for (final Object key : properties.keySet()) {
+			appConfigBuilder.withParam((String) key, properties.getProperty((String) key));
 		}
 	}
 }

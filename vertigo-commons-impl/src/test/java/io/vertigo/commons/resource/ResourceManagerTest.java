@@ -21,7 +21,7 @@ package io.vertigo.commons.resource;
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.impl.resource.ResourceManagerImpl;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
-import io.vertigo.core.config.ComponentSpaceConfigBuilder;
+import io.vertigo.core.config.AppConfigBuilder;
 
 import java.net.URL;
 
@@ -38,14 +38,14 @@ public final class ResourceManagerTest extends AbstractTestCaseJU4 {
 	private ResourceManager resourceManager;
 
 	@Override
-	protected void configMe(final ComponentSpaceConfigBuilder componentSpaceConfiguilder) {
+	protected void configMe(final AppConfigBuilder appConfiguilder) {
 		// @formatter:off
-		componentSpaceConfiguilder
+		appConfiguilder
 		.beginModule("spaces").
 			beginComponent(ResourceManager.class, ResourceManagerImpl.class)
 				.beginPlugin(ClassPathResourceResolverPlugin.class).endPlugin()
 			.endComponent()
-		.endModule();	
+		.endModule();
 		// @formatter:on
 	}
 

@@ -20,7 +20,7 @@ package io.vertigo.vega.impl.rest.servlet;
 
 import io.vertigo.core.Home;
 import io.vertigo.core.config.AppBuilder;
-import io.vertigo.core.config.ComponentSpaceConfig;
+import io.vertigo.core.config.AppConfig;
 import io.vertigo.vega.plugins.rest.servlet.ServletResourceResolverPlugin;
 import io.vertigo.vega.plugins.rest.servlet.WebAppContextConfigPlugin;
 
@@ -61,11 +61,11 @@ final class HomeServletStarter {
 			final Properties conf = createProperties(servletContext);
 			WebAppContextConfigPlugin.setInitConfig(conf);
 
-			final ComponentSpaceConfig componentSpaceConfig = new AppBuilder() //
+			final AppConfig appConfig = new AppBuilder() //
 					.withSilence(true)//
 					.withEnvParams(conf).build();
 			// Initialisation de l'état de l'application
-			Home.start(componentSpaceConfig);
+			Home.start(appConfig);
 			servletListener.onServletStart(getClass().getName());
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);

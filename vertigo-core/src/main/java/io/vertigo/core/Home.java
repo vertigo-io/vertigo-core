@@ -18,10 +18,9 @@
  */
 package io.vertigo.core;
 
-import io.vertigo.core.config.ComponentSpaceConfig;
+import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
-import io.vertigo.core.spaces.resource.ResourceSpace;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -58,9 +57,8 @@ public final class Home {
 
 	private State state = State.INACTIVE;
 
-	private final DefinitionSpace definitionSpace = new DefinitionSpace();
+	private DefinitionSpace definitionSpace = DefinitionSpace.EMPTY;
 	private ComponentSpace componentSpace = ComponentSpace.EMPTY;
-	private final ResourceSpace resourceSpace = new ResourceSpace();
 
 	private Home() {
 		// Classe statique d'accès aux composants.
@@ -68,18 +66,19 @@ public final class Home {
 
 	/**
 	 * Démarrage de l'application.
-	 * @param componentSpaceConfig ComponentSpaceConfig
+	 * @param appConfig AppConfig
 	 */
-	public static void start(final ComponentSpaceConfig componentSpaceConfig) {
-		Assertion.checkNotNull(componentSpaceConfig);
+	public static void start(final AppConfig appConfig) {
+		Assertion.checkNotNull(appConfig);
 		//-------------------------------------------------------------------------
 		INSTANCE.change(State.INACTIVE, State.starting);
 		try {
 			INSTANCE.definitionSpace.start();
 			//---
-			INSTANCE.componentSpace = new ComponentSpace(componentSpaceConfig);
+			INSTANCE.componentSpace = new ComponentSpace(appConfig.getComponentSpaceConfig());
+			INSTANCE.definitionSpace = new DefinitionSpace(appConfig.getDefinitionSpaceConfig());
 			INSTANCE.componentSpace.start();
-			INSTANCE.resourceSpace.start();
+			INSTANCE.definitionSpace.start();
 			//	INSTANCE.jmx();
 		} catch (final Throwable t) {
 			//En cas d'erreur on essaie de fermer proprement les composants démarrés.
@@ -120,13 +119,6 @@ public final class Home {
 	//-------------------Méthods publiques-------------------------------------
 	//-------------------------------------------------------------------------
 	/**
-	 * @return ResourceSpace contains application's Resources
-	 */
-	public static ResourceSpace getResourceSpace() {
-		return INSTANCE.doGetResourceSpace();
-	}
-
-	/**
 	 * @return DefinitionSpace contains application's Definitions
 	 */
 	public static DefinitionSpace getDefinitionSpace() {
@@ -143,11 +135,6 @@ public final class Home {
 	//-------------------------------------------------------------------------
 	//-------------------Méthods privées---------------------------------------
 	//-------------------------------------------------------------------------
-
-	private ResourceSpace doGetResourceSpace() {
-		return resourceSpace;
-	}
-
 	private DefinitionSpace doGetDefinitionSpace() {
 		return definitionSpace;
 	}
@@ -157,9 +144,8 @@ public final class Home {
 	 */
 	private void doStop() {
 		try {
-			resourceSpace.stop();
-			componentSpace.stop();
 			definitionSpace.stop();
+			componentSpace.stop();
 		} catch (final Throwable t) {
 			//Quel que soit l'état, on part en échec de l'arrét.
 			state = State.FAIL;

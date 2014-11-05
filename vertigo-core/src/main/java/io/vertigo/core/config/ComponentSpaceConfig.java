@@ -46,16 +46,13 @@ public final class ComponentSpaceConfig {
 	@JsonExclude
 	private final Option<VCommandEngine> commandEngine;
 
-	private final List<ResourceConfig> resources;
-
-	ComponentSpaceConfig(final Map<String, String> params, final List<ModuleConfig> moduleConfigs, final AopEngine aopEngine, final Option<ElasticaEngine> elasticaEngine, final Option<VCommandEngine> commandEngine, final boolean silence, final List<ResourceConfig> resourceConfigs) {
+	ComponentSpaceConfig(final Map<String, String> params, final List<ModuleConfig> moduleConfigs, final AopEngine aopEngine, final Option<ElasticaEngine> elasticaEngine, final Option<VCommandEngine> commandEngine, final boolean silence) {
 		Assertion.checkNotNull(params);
 		Assertion.checkNotNull(moduleConfigs);
 		//---
 		Assertion.checkNotNull(aopEngine);
 		Assertion.checkNotNull(elasticaEngine);
 		Assertion.checkNotNull(commandEngine);
-		Assertion.checkNotNull(resourceConfigs);
 		//---------------------------------------------------------------------
 		this.params = params;
 		this.modules = Collections.unmodifiableList(new ArrayList<>(moduleConfigs));
@@ -63,7 +60,6 @@ public final class ComponentSpaceConfig {
 		this.aopEngine = aopEngine;
 		this.elasticaEngine = elasticaEngine;
 		this.commandEngine = commandEngine;
-		this.resources = Collections.unmodifiableList(new ArrayList<>(resourceConfigs));
 	}
 
 	/**
@@ -71,10 +67,6 @@ public final class ComponentSpaceConfig {
 	 */
 	public List<ModuleConfig> getModuleConfigs() {
 		return modules;
-	}
-
-	public List<ResourceConfig> getResourceConfigs() {
-		return resources;
 	}
 
 	/**

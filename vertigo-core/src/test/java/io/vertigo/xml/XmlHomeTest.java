@@ -19,8 +19,8 @@
 package io.vertigo.xml;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.config.ComponentSpaceConfig;
-import io.vertigo.core.config.ComponentSpaceConfigBuilder;
+import io.vertigo.core.config.AppConfig;
+import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.home.componentspace.data.BioManager;
 
 import java.util.Properties;
@@ -32,7 +32,7 @@ public final class XmlHomeTest {
 
 	@Test
 	public void HomeTest() {
-		final ComponentSpaceConfig componentSpaceConfig = new ComponentSpaceConfigBuilder()
+		final AppConfig componentSpaceConfig = new AppConfigBuilder()
 				.withSilence(false)
 				.withLoader(new XMLModulesLoader(XmlHomeTest.class.getResource("bio.xml"), new Properties()))
 				.build();

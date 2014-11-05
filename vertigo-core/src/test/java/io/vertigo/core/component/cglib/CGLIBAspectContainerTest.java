@@ -20,7 +20,7 @@ package io.vertigo.core.component.cglib;
 
 import io.vertigo.core.component.AbstractAspectTestCase;
 import io.vertigo.core.component.ComponentsConfig;
-import io.vertigo.core.config.ComponentSpaceConfigBuilder;
+import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.engines.aop.cglib.CGLIBAopEngine;
 
 /**
@@ -28,8 +28,8 @@ import io.vertigo.engines.aop.cglib.CGLIBAopEngine;
  */
 public final class CGLIBAspectContainerTest extends AbstractAspectTestCase {
 	@Override
-	protected final void configMe(final ComponentSpaceConfigBuilder componentSpaceConfiguilder) {
-		new ComponentsConfig(new CGLIBAopEngine()).config(componentSpaceConfiguilder);
+	protected final void configMe(final AppConfigBuilder appConfiguilder) {
+		new ComponentsConfig(new CGLIBAopEngine()).config(appConfiguilder);
 	}
 
 }

@@ -20,7 +20,7 @@ package io.vertigo.core.home.definitionspace;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
-import io.vertigo.core.config.ComponentSpaceConfigBuilder;
+import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
@@ -38,8 +38,8 @@ import org.junit.Test;
 public class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 
 	@Override
-	protected void configMe(final ComponentSpaceConfigBuilder componentSpaceConfiguilder) {
-		componentSpaceConfiguilder//
+	protected void configMe(final AppConfigBuilder appConfiguilder) {
+		appConfiguilder//
 				.withParam("log4j.configurationFileName", "/log4j.xml")//
 				.withSilence(false);
 	}
@@ -64,12 +64,12 @@ public class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals("definitionSpace must contain one element ", 1L, Home.getDefinitionSpace().getAllTypes().size());
 		Assert.assertEquals("definitionSpace[SampleDefinition.class] must contain one element ", 1L, Home.getDefinitionSpace().getAll(SampleDefinition.class).size());
 
-		SampleDefinition sampleDefinition = Home.getDefinitionSpace().resolve("SAMPLE_THE_DEFINITION", SampleDefinition.class);
+		final SampleDefinition sampleDefinition = Home.getDefinitionSpace().resolve("SAMPLE_THE_DEFINITION", SampleDefinition.class);
 		Assert.assertNotNull(sampleDefinition);
 		Assert.assertEquals("localName must be THE_DEFINITION", "THE_DEFINITION", DefinitionUtil.getLocalName(sampleDefinition.getName(), SampleDefinition.class));
 		Assert.assertEquals("localName must be THE_DEFINITION", sampleDefinition.getName(), DefinitionUtil.getPrefix(SampleDefinition.class) + "_" + DefinitionUtil.getLocalName(sampleDefinition.getName(), SampleDefinition.class));
 
-		DefinitionReference<SampleDefinition> sampleDefinitionRef = new DefinitionReference<>(sampleDefinition);
+		final DefinitionReference<SampleDefinition> sampleDefinitionRef = new DefinitionReference<>(sampleDefinition);
 
 		byte[] serialized;
 		try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {

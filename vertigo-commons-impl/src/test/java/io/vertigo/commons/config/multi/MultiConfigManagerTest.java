@@ -27,7 +27,7 @@ import io.vertigo.commons.plugins.config.properties.PropertiesConfigPlugin;
 import io.vertigo.commons.plugins.config.xml.XmlConfigPlugin;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.commons.resource.ResourceManager;
-import io.vertigo.core.config.ComponentSpaceConfigBuilder;
+import io.vertigo.core.config.AppConfigBuilder;
 
 import javax.inject.Inject;
 
@@ -42,9 +42,9 @@ public final class MultiConfigManagerTest extends AbstractTestCaseJU4 {
 	private ConfigManager configManager;
 
 	@Override
-	protected void configMe(final ComponentSpaceConfigBuilder componentSpaceConfiguilder) {
+	protected void configMe(final AppConfigBuilder appConfiguilder) {
 		// @formatter:off
-		componentSpaceConfiguilder
+		appConfiguilder
 		.beginModule("vertigo").
 			beginComponent(ResourceManager.class, ResourceManagerImpl.class)
 				.beginPlugin( ClassPathResourceResolverPlugin.class).endPlugin()
@@ -64,8 +64,8 @@ public final class MultiConfigManagerTest extends AbstractTestCaseJU4 {
 				.beginPlugin(XmlConfigPlugin.class)
 					.withParam("url", "io/vertigo/commons/config/multi/app-config2.xml")
 				.endPlugin()
-			.endComponent()	
-		.endModule();	
+			.endComponent()
+		.endModule();
 		// @formatter:on
 	}
 

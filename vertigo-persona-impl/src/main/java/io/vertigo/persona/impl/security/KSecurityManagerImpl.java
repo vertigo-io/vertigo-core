@@ -78,7 +78,7 @@ public final class KSecurityManagerImpl implements KSecurityManager, Activeable 
 		Home.getDefinitionSpace().register(Permission.class);
 		//---
 		//We are populating xml loader or anything that can load security policy.
-		Home.getResourceSpace().addLoader(securityLoaderPlugin);
+		Home.getDefinitionSpace().addLoader(securityLoaderPlugin);
 	}
 
 	/** {@inheritDoc} */

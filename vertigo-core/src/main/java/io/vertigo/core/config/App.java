@@ -14,13 +14,13 @@ public final class App implements AutoCloseable {
 	/**
 	 * Constructor.
 	 * @param envParams Environment Parameters (are public in app)
-	 * @param componentSpaceConfig ComponentSpace Config
+	 * @param appConfig App Config
 	 */
-	App(final Properties envParams, final ComponentSpaceConfig componentSpaceConfig) {
+	App(final Properties envParams, final AppConfig appConfig) {
 		Assertion.checkNotNull(envParams, "envParams");
 		//---------------------------------------------------------------------
 		this.envParams = envParams;
-		Home.start(componentSpaceConfig);
+		Home.start(appConfig);
 	}
 
 	/** {@inheritDoc} */

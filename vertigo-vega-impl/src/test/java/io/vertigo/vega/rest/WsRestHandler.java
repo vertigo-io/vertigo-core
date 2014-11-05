@@ -28,8 +28,8 @@ import io.vertigo.commons.plugins.cache.map.MapCachePlugin;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.core.Home;
-import io.vertigo.core.config.ComponentSpaceConfig;
-import io.vertigo.core.config.ComponentSpaceConfigBuilder;
+import io.vertigo.core.config.AppConfig;
+import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.export.ExportManager;
 import io.vertigo.dynamo.file.FileManager;
@@ -100,7 +100,7 @@ public final class WsRestHandler {
 		// Création de l'état de l'application
 		// Initialisation de l'état de l'application
 
-		final ComponentSpaceConfig config = new ComponentSpaceConfigBuilder()
+		final AppConfig config = new AppConfigBuilder()
 				.withSilence(false)//
 				//.withRestEngine(new GrizzlyRestEngine(8080))
 				.withCommandEngine(new TcpVCommandEngine(4406))

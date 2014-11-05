@@ -19,8 +19,8 @@
 package io.vertigo.xml;
 
 import io.vertigo.core.aop.AOPInterceptor;
+import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.ComponentConfigBuilder;
-import io.vertigo.core.config.ComponentSpaceConfigBuilder;
 import io.vertigo.core.config.ModuleConfigBuilder;
 import io.vertigo.core.config.PluginConfigBuilder;
 import io.vertigo.lang.Assertion;
@@ -36,7 +36,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author npiedeloup, pchretien
  */
 final class XMLModulesHandler extends DefaultHandler {
-	private final ComponentSpaceConfigBuilder componentSpaceConfigBuilder;
+	private final AppConfigBuilder appConfigBuilder;
 	private ModuleConfigBuilder moduleConfigBuilder;
 	private ComponentConfigBuilder componentConfigBuilder;
 	private PluginConfigBuilder pluginConfigBuilder;
@@ -47,11 +47,11 @@ final class XMLModulesHandler extends DefaultHandler {
 	private String annotationImplClassStr;
 	private String adviceImplClassStr;
 
-	XMLModulesHandler(final ComponentSpaceConfigBuilder componentSpaceConfigBuilder, final Properties properties) {
-		Assertion.checkNotNull(componentSpaceConfigBuilder);
+	XMLModulesHandler(final AppConfigBuilder appConfigBuilder, final Properties properties) {
+		Assertion.checkNotNull(appConfigBuilder);
 		Assertion.checkNotNull(properties);
 		//---------------------------------------------------------------------
-		this.componentSpaceConfigBuilder = componentSpaceConfigBuilder;
+		this.appConfigBuilder = appConfigBuilder;
 		this.properties = properties;
 	}
 
@@ -112,7 +112,7 @@ final class XMLModulesHandler extends DefaultHandler {
 				final String moduleName = attrs.getValue("name");
 				final String api = attrs.getValue("api");
 				final String superClass = attrs.getValue("inheritance");
-				moduleConfigBuilder = componentSpaceConfigBuilder.beginModule(moduleName);
+				moduleConfigBuilder = appConfigBuilder.beginModule(moduleName);
 				if (api != null) {
 					if (!Boolean.valueOf(api)) {
 						moduleConfigBuilder.withNoAPI();
@@ -145,7 +145,7 @@ final class XMLModulesHandler extends DefaultHandler {
 			case resource:
 				final String resourceType = attrs.getValue("type");
 				final String resourcePath = attrs.getValue("path");
-				componentSpaceConfigBuilder.withResource(resourceType, evalParamValue(properties, resourcePath));
+				appConfigBuilder.withResource(resourceType, evalParamValue(properties, resourcePath));
 				break;
 			case param:
 				final String paramName = attrs.getValue("name");

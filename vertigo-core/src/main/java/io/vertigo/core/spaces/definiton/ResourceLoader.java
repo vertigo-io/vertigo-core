@@ -16,22 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.xml;
+package io.vertigo.core.spaces.definiton;
 
-import io.vertigo.core.component.AbstractAspectTestCase;
-import io.vertigo.core.config.AppConfigBuilder;
-import io.vertigo.engines.aop.cglib.CGLIBAopEngine;
+import io.vertigo.core.config.ResourceConfig;
 
-import java.util.Properties;
+import java.util.List;
+import java.util.Set;
 
 /**
+ * This object can parse and load resources from a certain type.
+ * All 'static' definitions should use this way to be populated.
+ *
  * @author pchretien
  */
-public final class XmlComponentsTest extends AbstractAspectTestCase {
-	@Override
-	protected final void configMe(final AppConfigBuilder appConfigBuilder) {
-		appConfigBuilder
-				.withAopEngine(new CGLIBAopEngine())
-				.withLoader(new XMLModulesLoader(XmlComponentsTest.class.getResource("components.xml"), new Properties()));
-	}
+public interface ResourceLoader {
+	/**
+	 * @return Types that can be parsed.
+	 */
+	Set<String> getTypes();
+
+	/**
+	 *
+	 * @param resourceConfigs List of resources (must be in a type managed by this loader)
+	 */
+	void parse(List<ResourceConfig> resourceConfigs);
 }

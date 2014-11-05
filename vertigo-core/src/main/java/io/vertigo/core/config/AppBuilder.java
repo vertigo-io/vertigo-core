@@ -38,7 +38,7 @@ import java.util.Properties;
  * @author npiedeloup
  */
 public final class AppBuilder {
-	private ComponentSpaceConfigBuilder componentSpaceConfigBuilder;
+	private AppConfigBuilder myAppConfigBuilder;
 	private boolean mySilence;
 	private final Properties myEnvParams = new Properties();
 	private final List<URL> xmlUrls = new ArrayList<>();
@@ -53,13 +53,13 @@ public final class AppBuilder {
 	}
 
 	/**
-	 * @param newComponentSpaceConfigBuilder ComponentSpaceConfigBuilder to use (can be completed outside this builder)
+	 * @param appConfigBuilder appConfigBuilder to use (can be completed outside this builder)
 	 * @return this builder
 	 */
-	public AppBuilder withComponentSpaceConfigBuilder(final ComponentSpaceConfigBuilder newComponentSpaceConfigBuilder) {
-		Assertion.checkState(componentSpaceConfigBuilder == null, "componentSpaceConfigBuilder was already set");
+	public AppBuilder withAppConfigBuilder(final AppConfigBuilder appConfigBuilder) {
+		Assertion.checkState(myAppConfigBuilder == null, "componentSpaceConfigBuilder was already set");
 		//---------------------------------------------------------------------
-		componentSpaceConfigBuilder = newComponentSpaceConfigBuilder;
+		this.myAppConfigBuilder = appConfigBuilder;
 		return this;
 	}
 
@@ -133,10 +133,10 @@ public final class AppBuilder {
 	 * Update the 'already set' componentSpaceConfigBuilder and return it.
 	 * @return ComponentSpaceConfigBuilder
 	 */
-	public ComponentSpaceConfigBuilder toComponentSpaceConfigBuilder() {
-		Assertion.checkState(componentSpaceConfigBuilder != null, "componentSpaceConfigBuilder was not set, use build instead");
+	public AppConfigBuilder toAppConfigBuilder() {
+		Assertion.checkState(myAppConfigBuilder != null, "appConfigBuilder was not set, use build instead");
 		//---------------------------------------------------------------------
-		componentSpaceConfigBuilder.withSilence(mySilence); //
+		myAppConfigBuilder.withSilence(mySilence); //
 		//1- if no xmlUrls we check if a property reference files
 		if (xmlUrls.isEmpty()) {
 			final String xmlFileNames = myEnvParams.getProperty("applicationConfiguration");
@@ -148,21 +148,21 @@ public final class AppBuilder {
 		//2- We load XML with Loaders to componentSpaceConfigBuilder
 		Assertion.checkArgument(!xmlUrls.isEmpty(), "We need at least one Xml file");
 		for (final URL xmlUrl : xmlUrls) {
-			final Loader<ComponentSpaceConfigBuilder> loader = new XMLModulesLoader(xmlUrl, myEnvParams);
-			componentSpaceConfigBuilder.withLoader(loader);
+			final Loader<AppConfigBuilder> loader = new XMLModulesLoader(xmlUrl, myEnvParams);
+			myAppConfigBuilder.withLoader(loader);
 		}
 		//.withRestEngine(new GrizzlyRestEngine(8086));
-		return componentSpaceConfigBuilder;
+		return myAppConfigBuilder;
 	}
 
 	/**
 	 * @return Build the ComponentSpaceConfig (can be use to start a Home)
 	 */
-	public ComponentSpaceConfig build() {
-		if (componentSpaceConfigBuilder == null) {
-			withComponentSpaceConfigBuilder(new ComponentSpaceConfigBuilder());
+	public AppConfig build() {
+		if (myAppConfigBuilder == null) {
+			withAppConfigBuilder(new AppConfigBuilder());
 		}
-		return toComponentSpaceConfigBuilder().build();
+		return toAppConfigBuilder().build();
 	}
 
 	/**

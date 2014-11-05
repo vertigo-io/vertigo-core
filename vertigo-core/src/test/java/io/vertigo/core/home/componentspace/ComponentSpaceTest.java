@@ -19,8 +19,8 @@
 package io.vertigo.core.home.componentspace;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.config.ComponentSpaceConfig;
-import io.vertigo.core.config.ComponentSpaceConfigBuilder;
+import io.vertigo.core.config.AppConfig;
+import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.home.componentspace.data.BioManager;
 import io.vertigo.core.home.componentspace.data.BioManagerImpl;
 import io.vertigo.core.home.componentspace.data.DummyPlugin;
@@ -36,7 +36,7 @@ public final class ComponentSpaceTest {
 	@Test
 	public void testHome() {
 		// @formatter:off
-		final ComponentSpaceConfig componentSpaceConfig = new ComponentSpaceConfigBuilder()
+		final AppConfig appConfig = new AppConfigBuilder()
 			.withParam("log4j.configurationFileName", "/log4j.xml")
 			.withSilence(false)
 			.beginModule("Bio")
@@ -46,12 +46,12 @@ public final class ComponentSpaceTest {
 					.beginPlugin( MathPlugin.class)
 						.withParam("factor", "20")
 					.endPlugin()
-				.endComponent()	
-			.endModule()	
+				.endComponent()
+			.endModule()
 		.build();
 		// @formatter:on
 
-		Home.start(componentSpaceConfig);
+		Home.start(appConfig);
 		try {
 			final BioManager bioManager = Home.getComponentSpace().resolve(BioManager.class);
 			final int res = bioManager.add(1, 2, 3);
@@ -65,7 +65,7 @@ public final class ComponentSpaceTest {
 	@Test(expected = RuntimeException.class)
 	public void testHome2() {
 		// @formatter:off
-		final ComponentSpaceConfig componentSpaceConfig = new ComponentSpaceConfigBuilder()
+		final AppConfig appConfig = new AppConfigBuilder()
 			.withParam("log4j.configurationFileName", "/log4j.xml")
 			.withSilence(false)
 			.beginModule("Bio")
@@ -78,12 +78,12 @@ public final class ComponentSpaceTest {
 					.beginPlugin( MathPlugin.class)
 						.withParam("factor", "20")
 					.endPlugin()
-				.endComponent()	
-			.endModule()	
+				.endComponent()
+			.endModule()
 		.build();
 		// @formatter:on
 
-		Home.start(componentSpaceConfig);
+		Home.start(appConfig);
 		try {
 			//
 		} finally {
@@ -94,25 +94,25 @@ public final class ComponentSpaceTest {
 	@Test
 	public void testHome3() {
 		// @formatter:off
-		final ComponentSpaceConfig componentSpaceConfig = new ComponentSpaceConfigBuilder()
+		final AppConfig appConfig = new AppConfigBuilder()
 			.withParam("log4j.configurationFileName", "/log4j.xml")
-			.withSilence(false)			
+			.withSilence(false)
 			.beginModule("Bio-core")
 				.beginComponent(MathManager.class, MathManagerImpl.class)
 					.withParam("start", "100")
 					.beginPlugin( MathPlugin.class)
 						.withParam("factor", "20")
 					.endPlugin()
-				.endComponent()	
+				.endComponent()
 			.endModule()
 			.beginModule("Bio-spe") //This module depends of Bio-core module
-				.beginComponent(BioManager.class, BioManagerImpl.class)					
-				.endComponent()				
-			.endModule()			
+				.beginComponent(BioManager.class, BioManagerImpl.class)
+				.endComponent()
+			.endModule()
 		.build();
 		// @formatter:on
 
-		Home.start(componentSpaceConfig);
+		Home.start(appConfig);
 		try {
 			//
 		} finally {
