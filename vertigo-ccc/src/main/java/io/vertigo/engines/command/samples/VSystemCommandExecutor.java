@@ -23,42 +23,44 @@ import io.vertigo.core.command.VCommand;
 import io.vertigo.core.command.VCommandExecutor;
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.ListBuilder;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public final class VSystemCommandExecutor implements VCommandExecutor<List<ComponentInfo>> {
 	/** {@inheritDoc} */
-	public List<ComponentInfo> exec(VCommand command) {
+	public List<ComponentInfo> exec(final VCommand command) {
 		Assertion.checkNotNull(command);
 		//Assertion.checkArgument(command.getName());
 		//---------------------------------------------------------------------
-		final List<ComponentInfo> componentInfos = new ArrayList<>();
-		componentInfos.add(new ComponentInfo("vertigo.start", new Date(Home.getStartDate())));
-		componentInfos.add(new ComponentInfo("vertigo.uptime#inseconds", (System.currentTimeMillis() - Home.getStartDate()) / 1000));
-
-		//---
-		componentInfos.add(new ComponentInfo("java.version", System.getProperty("java.version")));
-		componentInfos.add(new ComponentInfo("os.name", System.getProperty("os.name")));
-		componentInfos.add(new ComponentInfo("os.version", System.getProperty("os.version")));
-		//----
+		String address;
 		try {
-			componentInfos.add(new ComponentInfo("host.address", InetAddress.getLocalHost().getHostAddress()));
+			address = InetAddress.getLocalHost().getHostAddress();
 		} catch (final UnknownHostException e) {
-			componentInfos.add(new ComponentInfo("host.address", "????"));
+			address = "????";
 		}
-		//		componentInfos.add(new ComponentInfo(SystemManager.class, "log.level", Logger.getRootLogger().getLevel()));
-		//----
-		componentInfos.add(new ComponentInfo("memory.free", Runtime.getRuntime().freeMemory()));
-		componentInfos.add(new ComponentInfo("memory.max", Runtime.getRuntime().maxMemory()));
-		componentInfos.add(new ComponentInfo("memory.totalMemory", Runtime.getRuntime().totalMemory()));
-		//----
-		componentInfos.add(new ComponentInfo("thread.active", Thread.activeCount()));
 
-		return componentInfos;
+		return new ListBuilder<ComponentInfo>()
+				.add(new ComponentInfo("vertigo.start", new Date(Home.getStartDate())))
+				.add(new ComponentInfo("vertigo.uptime#inseconds", (System.currentTimeMillis() - Home.getStartDate()) / 1000))
+
+				//---
+				.add(new ComponentInfo("java.version", System.getProperty("java.version")))
+				.add(new ComponentInfo("os.name", System.getProperty("os.name")))
+				.add(new ComponentInfo("os.version", System.getProperty("os.version")))
+				//----
+				.add(new ComponentInfo("host.address", address))
+				//		componentInfos.add(new ComponentInfo(SystemManager.class, "log.level", Logger.getRootLogger().getLevel()));
+				//----
+				.add(new ComponentInfo("memory.free", Runtime.getRuntime().freeMemory()))
+				.add(new ComponentInfo("memory.max", Runtime.getRuntime().maxMemory()))
+				.add(new ComponentInfo("memory.totalMemory", Runtime.getRuntime().totalMemory()))
+				//----
+				.add(new ComponentInfo("thread.active", Thread.activeCount()))
+				.build();
 	}
 }
 

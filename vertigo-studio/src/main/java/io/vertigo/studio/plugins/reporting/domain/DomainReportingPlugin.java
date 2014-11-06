@@ -33,6 +33,7 @@ import io.vertigo.studio.reporting.Metric;
 import io.vertigo.studio.reporting.MetricEngine;
 import io.vertigo.studio.reporting.Report;
 import io.vertigo.studio.reporting.ReportingPlugin;
+import io.vertigo.util.ListBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +42,7 @@ import javax.inject.Inject;
 
 /**
  * Implémentation de ReportingPlugin.
- * 
+ *
  * @author pchretien
  */
 public final class DomainReportingPlugin implements ReportingPlugin {
@@ -82,11 +83,12 @@ public final class DomainReportingPlugin implements ReportingPlugin {
 	}
 
 	private List<MetricEngine<DtDefinition, ? extends Metric>> createMetricEngines() {
-		final List<MetricEngine<DtDefinition, ? extends Metric>> tmpMmetricEngines = new ArrayList<>();
-		tmpMmetricEngines.add(new FieldsMetricEngine());
-		tmpMmetricEngines.add(new DependencyMetricEngine());
-		tmpMmetricEngines.add(new PersistenceMetricEngine(persistenceManager));
-		tmpMmetricEngines.add(new CountMetricEngine(persistenceManager));
-		return tmpMmetricEngines;
+		return new ListBuilder<MetricEngine<DtDefinition, ? extends Metric>>()
+				.add(new FieldsMetricEngine())
+				.add(new DependencyMetricEngine())
+				.add(new PersistenceMetricEngine(persistenceManager))
+				.add(new CountMetricEngine(persistenceManager))
+				.unmodifiable()
+				.build();
 	}
 }

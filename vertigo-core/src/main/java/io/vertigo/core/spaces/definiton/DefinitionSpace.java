@@ -18,10 +18,8 @@
  */
 package io.vertigo.core.spaces.definiton;
 
-import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.DefinitionSpaceConfig;
 import io.vertigo.core.config.ResourceConfig;
-import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
 
@@ -42,10 +40,8 @@ import java.util.Map;
  *
  * @author pchretien
  */
-public final class DefinitionSpace implements Activeable {
+public final class DefinitionSpace {
 	private final Map<String, ResourceLoader> resourceLoaders = new HashMap<>();
-
-	public static final DefinitionSpace EMPTY = new DefinitionSpace(new AppConfigBuilder().build().getDefinitionSpaceConfig());
 
 	/**
 	 * Liste des objets indexés par Class (le type) et identifiant.
@@ -54,13 +50,13 @@ public final class DefinitionSpace implements Activeable {
 	@JsonExclude
 	private final Map<String, Definition> allObjects = new LinkedHashMap<>(); //byId
 
-	public DefinitionSpace(final DefinitionSpaceConfig definitionSpaceConfig) {
-		Assertion.checkNotNull(definitionSpaceConfig);
-		//---------------------------------------------------------------------
-		injectResources(definitionSpaceConfig);
+	public DefinitionSpace() {
+		//
 	}
 
-	private  void injectResources(final DefinitionSpaceConfig definitionSpaceConfig) {
+	public void injectResources(final DefinitionSpaceConfig definitionSpaceConfig) {
+		Assertion.checkNotNull(definitionSpaceConfig);
+		//---------------------------------------------------------------------
 		//			int resourcesToBeLoad = moduleConfig.getResourceConfigs().size();
 		//We are doing a copy of all resources, to check that they are all parsed.
 		final List<ResourceConfig> resourceConfigsToDo = new ArrayList<>(definitionSpaceConfig.getResourceConfigs());
@@ -184,17 +180,14 @@ public final class DefinitionSpace implements Activeable {
 		return (Collection<C>) definitions.get(clazz).values();
 	}
 
-	/** {@inheritDoc} */
-	public void start() {
-		Assertion.checkState(definitions.isEmpty(), "DefinitionSpace must be empty");
-		Assertion.checkState(allObjects.isEmpty(), "DefinitionSpace must be empty");
+	public boolean isEmpty() {
+		return definitions.isEmpty() && allObjects.isEmpty() && resourceLoaders.isEmpty();
 	}
 
 	/**
 	 * Vide l'ensemble de ce container.
 	 */
-	/** {@inheritDoc} */
-	public void stop() {
+	public void clear() {
 		definitions.clear();
 		allObjects.clear();
 		resourceLoaders.clear();

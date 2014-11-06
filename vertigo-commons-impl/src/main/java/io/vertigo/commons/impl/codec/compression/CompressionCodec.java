@@ -22,8 +22,8 @@ import io.vertigo.commons.codec.Codec;
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Describable;
+import io.vertigo.util.ListBuilder;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.zip.DataFormatException;
@@ -32,7 +32,7 @@ import java.util.zip.Inflater;
 
 /**
  * Implémentation standard ThreadSafe gérant les mécanismes permettant de compresser/décompresser un format binaire (byte[]) en un binaire.
- * 
+ *
  * @author pchretien
  */
 public final class CompressionCodec implements Codec<byte[], byte[]>, Describable {
@@ -42,7 +42,7 @@ public final class CompressionCodec implements Codec<byte[], byte[]>, Describabl
 	public static final int MIN_SIZE_FOR_COMPRESSION = 100;
 
 	/**
-	 * Seuil maximal autorisé pour la compression, ce seuil est exprimé en octets. 
+	 * Seuil maximal autorisé pour la compression, ce seuil est exprimé en octets.
 	 */
 	public static final int MAX_SIZE_FOR_COMPRESSION = 20 * 1024 * 1024; //au dela de 20Mo, on ne compresse pas en mémoire : le codec est inadapté
 
@@ -145,12 +145,10 @@ public final class CompressionCodec implements Codec<byte[], byte[]>, Describabl
 
 	/** {@inheritDoc} */
 	public List<ComponentInfo> getInfos() {
-		final List<ComponentInfo> componentInfos = new ArrayList<>();
-		//---
-		componentInfos.add(new ComponentInfo("compression.minSize(bytes)", MIN_SIZE_FOR_COMPRESSION));
-		componentInfos.add(new ComponentInfo("compression.compressionLevel", COMPRESSION_LEVEL));
-		//---
-		return componentInfos;
-
+		return new ListBuilder<ComponentInfo>()
+				.add(new ComponentInfo("compression.minSize(bytes)", MIN_SIZE_FOR_COMPRESSION))
+				.add(new ComponentInfo("compression.compressionLevel", COMPRESSION_LEVEL))
+				.unmodifiable()
+				.build();
 	}
 }

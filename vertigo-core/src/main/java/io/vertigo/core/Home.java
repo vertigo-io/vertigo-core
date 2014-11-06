@@ -57,7 +57,7 @@ public final class Home {
 
 	private State state = State.INACTIVE;
 
-	private DefinitionSpace definitionSpace = DefinitionSpace.EMPTY;
+	private final DefinitionSpace definitionSpace = new DefinitionSpace();
 	private ComponentSpace componentSpace = ComponentSpace.EMPTY;
 
 	private Home() {
@@ -73,12 +73,12 @@ public final class Home {
 		//-------------------------------------------------------------------------
 		INSTANCE.change(State.INACTIVE, State.starting);
 		try {
-			INSTANCE.definitionSpace.start();
+			Assertion.checkState(INSTANCE.definitionSpace.isEmpty(), "DefinitionSpace must be empty");
 			//---
 			INSTANCE.componentSpace = new ComponentSpace(appConfig.getComponentSpaceConfig());
-			INSTANCE.definitionSpace = new DefinitionSpace(appConfig.getDefinitionSpaceConfig());
+			//On charge definitionSpace après car les loaders sont créées par injection
+			INSTANCE.definitionSpace.injectResources(appConfig.getDefinitionSpaceConfig());
 			INSTANCE.componentSpace.start();
-			INSTANCE.definitionSpace.start();
 			//	INSTANCE.jmx();
 		} catch (final Throwable t) {
 			//En cas d'erreur on essaie de fermer proprement les composants démarrés.
@@ -144,7 +144,7 @@ public final class Home {
 	 */
 	private void doStop() {
 		try {
-			definitionSpace.stop();
+			definitionSpace.clear();
 			componentSpace.stop();
 		} catch (final Throwable t) {
 			//Quel que soit l'état, on part en échec de l'arrét.

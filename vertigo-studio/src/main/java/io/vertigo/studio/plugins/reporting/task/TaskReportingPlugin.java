@@ -34,6 +34,7 @@ import io.vertigo.studio.reporting.Metric;
 import io.vertigo.studio.reporting.MetricEngine;
 import io.vertigo.studio.reporting.Report;
 import io.vertigo.studio.reporting.ReportingPlugin;
+import io.vertigo.util.ListBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ import javax.inject.Inject;
 
 /**
  * Implémentation de TaskReportingManager.
- * 
+ *
  * @author tchassagnette
  */
 public final class TaskReportingPlugin implements ReportingPlugin {
@@ -84,12 +85,13 @@ public final class TaskReportingPlugin implements ReportingPlugin {
 	}
 
 	private List<MetricEngine<TaskDefinition, ? extends Metric>> createMetricEngines() {
-		final List<MetricEngine<TaskDefinition, ? extends Metric>> tmpMmetricEngines = new ArrayList<>();
-		tmpMmetricEngines.add(new PerformanceMetricEngine(taskManager));
-		tmpMmetricEngines.add(new RequestSizeMetricEngine());
-		tmpMmetricEngines.add(new ExplainPlanMetricEngine(taskManager));
-		tmpMmetricEngines.add(new JoinMetricEngine());
-		tmpMmetricEngines.add(new SubRequestMetricEngine());
-		return tmpMmetricEngines;
+		return new ListBuilder<MetricEngine<TaskDefinition, ? extends Metric>>()
+				.add(new PerformanceMetricEngine(taskManager))
+				.add(new RequestSizeMetricEngine())
+				.add(new ExplainPlanMetricEngine(taskManager))
+				.add(new JoinMetricEngine())
+				.add(new SubRequestMetricEngine())
+				.unmodifiable()
+				.build();
 	}
 }

@@ -22,9 +22,9 @@ import io.vertigo.commons.codec.Codec;
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Describable;
+import io.vertigo.util.ListBuilder;
 
 import java.security.Key;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.crypto.Cipher;
@@ -33,7 +33,7 @@ import javax.crypto.KeyGenerator;
 /**
  * Implémentation du cryptage
  * - Triple DES.
- * 
+ *
  * @author  alauthier, pchretien
  */
 public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
@@ -136,11 +136,10 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 
 	/** {@inheritDoc} */
 	public List<ComponentInfo> getInfos() {
-		final List<ComponentInfo> componentInfos = new ArrayList<>();
-		//---
-		componentInfos.add(new ComponentInfo("crypto.algo", crypto.getAlgoName()));
-		componentInfos.add(new ComponentInfo("crypto.keySize", crypto.getKeySize()));
-		//---
-		return componentInfos;
+		return new ListBuilder<ComponentInfo>()
+				.add(new ComponentInfo("crypto.algo", crypto.getAlgoName()))
+				.add(new ComponentInfo("crypto.keySize", crypto.getKeySize()))
+				.unmodifiable()
+				.build();
 	}
 }
