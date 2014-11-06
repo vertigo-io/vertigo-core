@@ -35,7 +35,7 @@ import java.util.List;
 
 /**
  * Centralisation des créations d'instances à partir d'une nom de classe. Cette approche étant utilisée pour créer des liens plus souples entre des objets.
- * 
+ *
  * @author pchretien
  */
 public final class ClassUtil {
@@ -61,7 +61,7 @@ public final class ClassUtil {
 
 	/**
 	 * Création d'une nouvelle instance typée via un nom de classe (constructeur vide).
-	 * 
+	 *
 	 * @param <J> Type de l'instance retournée
 	 * @param javaClassName Nom de la classe
 	 * @param  type Type retourné
@@ -74,7 +74,7 @@ public final class ClassUtil {
 
 	/**
 	 * Création d'une nouvelle instance typée via une classe (constructeur vide).
-	 * 
+	 *
 	 * @param <J> Type de l'instance retournée
 	 * @param clazz Classe
 	 * @return Nouvelle instance
@@ -86,7 +86,7 @@ public final class ClassUtil {
 
 	/**
 	 * Création d'une nouvelle instance typée via un constructeur et ses arguments.
-	 * 
+	 *
 	 * @param <J> Type de l'instance retournée
 	 * @param constructor Constructeur
 	 * @param args Arguments de la construction
@@ -120,24 +120,25 @@ public final class ClassUtil {
 	}
 
 	/**
-	 * Récupère le constructeur sans paramètres. 
+	 * Récupère le constructeur sans paramètres.
 	 * @param clazz Classe sur laquelle on recherche le constructeur
-	 * @return Constructeur recherché 
+	 * @return Constructeur recherché
 	 */
 	private static <J> Constructor<J> findConstructor(final Class<J> clazz) {
 		return findConstructor(clazz, EMPTY_CLAZZ_ARRAY);
 	}
 
 	/**
-	* Récupère le constructeur correspondant à la signature indiquée. 
+	* Récupère le constructeur correspondant à la signature indiquée.
+	* @param <J> Class type
 	* @param clazz Classe sur laquelle on recherche le constructeur
 	* @param parameterTypes Signature du constructeur recherché
-	* @return Constructeur recherché 
+	* @return Constructeur recherché
 	*/
 	public static <J> Constructor<J> findConstructor(final Class<J> clazz, final Class<?>[] parameterTypes) {
 		Assertion.checkNotNull(clazz);
 		Assertion.checkNotNull(parameterTypes);
-		//---------------------------------------------------------------------	
+		//---------------------------------------------------------------------
 		try {
 			return clazz.getConstructor(parameterTypes);
 		} catch (final NoSuchMethodException e) {
@@ -145,13 +146,13 @@ public final class ClassUtil {
 				//Dans le cas des constructeur vide (sans paramètre), on lance un message plus simple.
 				throw new RuntimeException("Aucun constructeur vide trouvé sur " + clazz.getSimpleName(), e);
 			}
-			throw new RuntimeException("Aucun constructeur trouvé sur " + clazz.getSimpleName() + " avec la signature " + parameterTypes, e);
+			throw new RuntimeException("Aucun constructeur trouvé sur " + clazz.getSimpleName() + " avec la signature " + Arrays.toString(parameterTypes), e);
 		}
 	}
 
 	/**
 	 * Récupération d'une classe non typée à partir de son nom.
-	 * 
+	 *
 	 * @param javaClassName Nom de la classe
 	 * @return Classe java
 	 */
@@ -167,7 +168,7 @@ public final class ClassUtil {
 
 	/**
 	 * Récupération d'une classe typée à partir de son nom.
-	 * 
+	 *
 	 * @param <J> Type de l'instance retournée
 	 * @param javaClassName Nom de la classe
 	 * @param type Type.
@@ -186,7 +187,7 @@ public final class ClassUtil {
 
 	/**
 	 * Invocation dynamique d'une méthode sur une instance.
-	 * 
+	 *
 	 * @param instance Objet sur lequel est invoqué la méthode
 	 * @param method Methode invoquée
 	 * @param args Arguments
@@ -207,7 +208,7 @@ public final class ClassUtil {
 
 	/**
 	 * Affectation dynamique de la valeur d'un champ (méme privé).
-	 * 
+	 *
 	 * @param instance Objet sur lequel est invoqué la méthode
 	 * @param field Champ concerné
 	 * @param value Nouvelle valeur
@@ -226,7 +227,7 @@ public final class ClassUtil {
 
 	/**
 	 * Récupération dynamique de la valeur d'un champ.
-	 * 
+	 *
 	 * @param instance Objet sur lequel est invoqué la méthode
 	 * @param field Champ concerné
 	 * @return Valeur
@@ -244,17 +245,17 @@ public final class ClassUtil {
 	}
 
 	/**
-	 * Récupère la méthode correspondant au nom et à la signature indiquée parmi les méthodes passées. 
+	 * Récupère la méthode correspondant au nom et à la signature indiquée parmi les méthodes passées.
 	 * @param clazz Classe sur laquelle on recherche les méthodes
 	 * @param methodName Nom de la méthode recherchée
 	 * @param parameterTypes Signature de la méthode recherchée
-	 * @return Méthode recherchée 
+	 * @return Méthode recherchée
 	 */
 	public static Method findMethod(final Class<?> clazz, final String methodName, final Class<?>... parameterTypes) {
 		Assertion.checkNotNull(clazz);
 		Assertion.checkNotNull(methodName);
 		Assertion.checkNotNull(parameterTypes);
-		//---------------------------------------------------------------------	
+		//---------------------------------------------------------------------
 		try {
 			return clazz.getMethod(methodName, parameterTypes);
 		} catch (final NoSuchMethodException e) {
@@ -265,13 +266,13 @@ public final class ClassUtil {
 	/**
 	 * Retourne tous les champs déclarés (incluant les champs parents) et annotés pour une classe donnée.
 	 * @param clazz Class
-	 * @param annotation Annotation attendue 
+	 * @param annotation Annotation attendue
 	 * @return Tous les champs déclarés (incluant les champs parents)
 	 */
 	public static Collection<Field> getAllFields(final Class<?> clazz, final Class<? extends Annotation> annotation) {
 		Assertion.checkNotNull(clazz);
 		Assertion.checkNotNull(annotation);
-		//---------------------------------------------------------------------	
+		//---------------------------------------------------------------------
 		final List<Field> fields = new ArrayList<>();
 		for (final Field field : ClassUtil.getAllFields(clazz)) {
 			if (field.isAnnotationPresent(annotation)) {
@@ -288,7 +289,7 @@ public final class ClassUtil {
 	 */
 	public static Collection<Field> getAllFields(final Class<?> clazz) {
 		Assertion.checkNotNull(clazz);
-		//---------------------------------------------------------------------	
+		//---------------------------------------------------------------------
 		final List<Field> fields = new ArrayList<>();
 		final Field[] declaredFields = clazz.getDeclaredFields();
 		fields.addAll(Arrays.asList(declaredFields));
@@ -299,9 +300,14 @@ public final class ClassUtil {
 		return Collections.unmodifiableCollection(fields);
 	}
 
+	/**
+	 * Retourne toutes les interfaces (incluant celles des parents) pour une classe donnée.
+	 * @param clazz Class
+	 * @return Toutes les interfaces implémentées
+	 */
 	public static Class<?>[] getAllInterfaces(final Class<?> clazz) {
 		Assertion.checkNotNull(clazz);
-		//---------------------------------------------------------------------	
+		//---------------------------------------------------------------------
 		Class<?> root = clazz;
 		final List<Class<?>> allInterfaces = new ArrayList<>();
 		while (root != null) {
@@ -324,16 +330,16 @@ public final class ClassUtil {
 	/**
 	 * Récupération du type générique d'un champ paramétré.
 	 * Il convient qu'il y ait UN et un seul générique déclaré.
-	 * exemple  : 
+	 * exemple  :
 	 * List<Voiture> => Voiture
 	 * Option<Voiture> => Voiture
-	 * @param constructor constructeur 
-	 * @param i Index du paramètre dans le composant 
+	 * @param constructor constructeur
+	 * @param i Index du paramètre dans le composant
 	 * @return Classe du type générique
 	 */
 	public static Class<?> getGeneric(final Constructor<?> constructor, final int i) {
 		Assertion.checkNotNull(constructor);
-		//---------------------------------------------------------------------	
+		//---------------------------------------------------------------------
 		final Class<?> generic = getGeneric(constructor.getGenericParameterTypes()[i]);
 		if (generic == null) {
 			throw new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur le constructeur " + constructor);
@@ -344,16 +350,16 @@ public final class ClassUtil {
 	/**
 	 * Récupération du type générique d'un champ paramétré.
 	 * Il convient qu'il y ait UN et un seul générique déclaré.
-	 * exemple  : 
+	 * exemple  :
 	 * List<Voiture> => Voiture
 	 * Option<Voiture> => Voiture
-	 * @param method method 
-	 * @param i Index du paramètre dans le composant 
+	 * @param method method
+	 * @param i Index du paramètre dans le composant
 	 * @return Classe du type générique
 	 */
 	public static Class<?> getGeneric(final Method method, final int i) {
 		Assertion.checkNotNull(method);
-		//---------------------------------------------------------------------	
+		//---------------------------------------------------------------------
 		final Class<?> generic = getGeneric(method.getGenericParameterTypes()[i]);
 		if (generic == null) {
 			throw new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur la methode " + method.getDeclaringClass() + "." + method.getName());
@@ -364,7 +370,7 @@ public final class ClassUtil {
 	/**
 	 * Récupération du type générique d'un champ paramétré.
 	 * Il convient qu'il y ait UN et un seul générique déclaré.
-	 * exemple  : 
+	 * exemple  :
 	 * List<Voiture> => Voiture
 	 * Option<Voiture> => Voiture
 	 * @param field Champ
@@ -372,7 +378,7 @@ public final class ClassUtil {
 	 */
 	public static Class<?> getGeneric(final Field field) {
 		Assertion.checkNotNull(field);
-		//---------------------------------------------------------------------	
+		//---------------------------------------------------------------------
 		final Class<?> generic = getGeneric(field.getGenericType());
 		if (generic == null) {
 			throw new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur le champ " + field.getName());
@@ -403,7 +409,7 @@ public final class ClassUtil {
 	 */
 	public static String getPropertyName(final Method method) {
 		Assertion.checkNotNull(method);
-		//---------------------------------------------------------------------	
+		//---------------------------------------------------------------------
 		final String property;
 		if (method.getName().startsWith("get")) {
 			property = method.getName().substring("get".length());
