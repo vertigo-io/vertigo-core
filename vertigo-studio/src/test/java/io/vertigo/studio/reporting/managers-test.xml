@@ -47,7 +47,6 @@
 				<plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
 				<plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
 			</component>
-
 		</module>
 
 		<module name="vertigo-studio">

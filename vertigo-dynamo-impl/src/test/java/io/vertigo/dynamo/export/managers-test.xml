@@ -44,10 +44,10 @@
 				<plugin class="io.vertigo.dynamo.plugins.export.rtf.RTFExporterPlugin" />
 			</component>
 		</module>
-
-		<module name="test">
-			<resource type="classes" path="io.vertigo.dynamock.domain.DtDefinitions" />
-			<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
-		</module>
 	</components>
+	
+	<definitions>
+		<resource type="classes" path="io.vertigo.dynamock.domain.DtDefinitions" />
+		<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
+	</definitions>
 </config>
