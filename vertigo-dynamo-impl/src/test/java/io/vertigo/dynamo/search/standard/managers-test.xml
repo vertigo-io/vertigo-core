@@ -1,6 +1,6 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<modules>
+	<components>
 		<module name="vertigo">
 			<component api="LocaleManager" class="io.vertigoimpl.commons.locale.LocaleManagerImpl">
 				<param name="locales" value="fr_FR" />
@@ -15,9 +15,6 @@
 		</module>
 
 		<module name="vertigo-dynamo">
-			<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
-			<resource type="kpr" path="io/vertigo/dynamo/search/ksp/search.kpr" />
-
 			<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl" initClass="io.vertigo.dynamo.search.CollectionsManagerInitializer" />
 			<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
 			<component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
@@ -36,5 +33,10 @@
 				</plugin>
 			</component>
 		</module>
-	</modules>
+	</components>
+	
+	<definitions>
+			<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
+			<resource type="kpr" path="io/vertigo/dynamo/search/ksp/search.kpr" />
+	</definitions>
 </config>

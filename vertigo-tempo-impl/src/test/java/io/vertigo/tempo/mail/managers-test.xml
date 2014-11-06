@@ -1,6 +1,6 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<modules>
+	<components>
 
 		<module name="vertigo">
 			<component api="LocaleManager" class="io.vertigoimpl.commons.locale.LocaleManagerImpl">
@@ -29,5 +29,5 @@
 				</plugin>
 			</component>
 		</module>
-	</modules>
+	</components>
 </config>

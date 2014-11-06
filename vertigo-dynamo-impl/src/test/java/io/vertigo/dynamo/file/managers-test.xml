@@ -1,6 +1,6 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<modules>
+	<components>
 		<module name="vertigo-commonos">
 			<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
 				<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
@@ -16,9 +16,9 @@
 				<plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
 			</component>
 		</module>
+	</components>
 
-		<module name="test">
-			<resource type="kpr" path="io/vertigo/dynamo/file/ksp/file.kpr" />
-		</module>
-	</modules>
+	<definitions>
+		<resource type="kpr" path="io/vertigo/dynamo/file/ksp/file.kpr" />
+	</definitions>
 </config>

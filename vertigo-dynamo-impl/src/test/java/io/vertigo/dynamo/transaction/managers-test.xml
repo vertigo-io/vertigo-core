@@ -1,8 +1,8 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-<modules>
-	<module name="dynamo">
-	    <component api="KTransactionManager" class="io.vertigo.dynamo.impl.transaction.KTransactionManagerImpl"/>
-	</module>
-</modules>
+	<components>
+		<module name="dynamo">
+			<component api="KTransactionManager" class="io.vertigo.dynamo.impl.transaction.KTransactionManagerImpl" />
+		</module>
+	</components>
 </config>

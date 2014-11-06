@@ -1,6 +1,6 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<modules>
+	<components>
 		<module name="vertigo">
 			<component api="LocaleManager" class="io.vertigoimpl.commons.locale.LocaleManagerImpl">
 				<param name="locales" value="fr_FR" />
@@ -29,10 +29,10 @@
 				<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
 			</component>
 		</module>
-	</modules>
+	</components>
 	
-	<resources>
+	<definitions>
 		<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
 		<resource type="classes" path="io.vertigo.dynamock.domain.DtDefinitions" />
-	</resources>
+	</definitions>
 </config>

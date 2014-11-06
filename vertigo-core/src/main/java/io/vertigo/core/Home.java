@@ -76,7 +76,7 @@ public final class Home {
 			Assertion.checkState(INSTANCE.definitionSpace.isEmpty(), "DefinitionSpace must be empty");
 			//---
 			INSTANCE.componentSpace = new ComponentSpace(appConfig.getComponentSpaceConfig());
-			//On charge definitionSpace après car les loaders sont créées par injection
+			//On charge definitionSpace après car les loaders de définition sont créées par injection
 			INSTANCE.definitionSpace.injectResources(appConfig.getDefinitionSpaceConfig());
 			INSTANCE.componentSpace.start();
 			//	INSTANCE.jmx();

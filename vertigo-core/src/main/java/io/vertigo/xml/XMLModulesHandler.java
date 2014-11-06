@@ -57,10 +57,8 @@ final class XMLModulesHandler extends DefaultHandler {
 
 	enum TagName {
 		config,
-		modules, resources,
-		resource,
-		module, component, plugin, param,
-		aspect, advice, annotation
+		definitions, resource,
+		components, module, component, plugin, param, aspect, advice, annotation
 	}
 
 	private TagName current;
@@ -91,11 +89,11 @@ final class XMLModulesHandler extends DefaultHandler {
 				break;
 			case advice: //non géré
 			case annotation: //non géré
-			case modules: //non géré
+			case components: //non géré
 			case param: //non géré
 			case resource: //non géré
 			case config: //non géré
-			case resources: //non géré
+			case definitions: //non géré
 			default:
 		}
 	}
@@ -165,9 +163,9 @@ final class XMLModulesHandler extends DefaultHandler {
 			case advice:
 				adviceImplClassStr = attrs.getValue("class");
 				break;
-			case modules: //non géré
+			case components: //non géré
 			case config: //non géré
-			case resources: //non géré
+			case definitions: //non géré
 			default:
 		}
 	}

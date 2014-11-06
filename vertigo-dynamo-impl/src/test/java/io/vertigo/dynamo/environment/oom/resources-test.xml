@@ -1,9 +1,7 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<modules>
-		<module name="test">
-			<resource type="kpr" path="io/vertigo/dynamo/environment/oom/data/domain.kpr" />
-			<resource type="oom" path="io/vertigo/dynamo/environment/oom/data/demo.oom" />
-		</module>
-	</modules>
+	<definitions>
+		<resource type="kpr" path="io/vertigo/dynamo/environment/oom/data/domain.kpr" />
+		<resource type="oom" path="io/vertigo/dynamo/environment/oom/data/demo.oom" />
+	</definitions>
 </config>

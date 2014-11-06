@@ -1,6 +1,6 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<modules>
+	<components>
 		<module name="vertigo">
 			<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
 				<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
@@ -33,10 +33,10 @@
 				</plugin>
 			</component>
 		</module>
-	</modules>
+	</components>
 
-	<resources>
+	<definitions>
 		<resource type="kpr" path="io/vertigo/dynamo/search/ksp/search.kpr" />
 		<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
-	</resources>
+	</definitions>
 </config>

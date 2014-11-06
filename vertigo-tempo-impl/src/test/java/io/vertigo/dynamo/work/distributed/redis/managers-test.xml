@@ -1,6 +1,6 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<modules>
+	<components>
 		<module name="dynamo">
 			<component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
 
@@ -27,5 +27,5 @@
 				<!-- plugin class="io.vertigo.dynamo.plugins.work.redis.worker.RedisNodePlugin"> <param name="nodeId" value="node#1-2" /> <param name="host" value="localhost" /> <param name="port" value="6379" /> <param name="workTypes" value="io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine" /> </plugin -->
 			</component>
 		</module>
-	</modules>
+	</components>
 </config>

@@ -1,6 +1,6 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<modules>
+	<components>
 		<module name="kasper-commons">
 			<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
 			<component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
@@ -14,5 +14,5 @@
 				</plugin>
 			</component>
 		</module>
-	</modules>
+	</components>
 </config>

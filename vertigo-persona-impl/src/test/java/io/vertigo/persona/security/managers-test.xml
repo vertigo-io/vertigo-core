@@ -1,6 +1,6 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<modules>
+	<components>
 		<module name="vertigo-core">
 			<component api="LocaleManager" class="io.vertigoimpl.commons.locale.LocaleManagerImpl">
 				<param name="locales" value="fr_FR" />
@@ -17,9 +17,9 @@
 				<plugin class="io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin" />
 			</component>
 		</module>
-	</modules>
+	</components>
 
-	<resources>
+	<definitions>
 		<resource type="security" path="io/vertigo/persona/security/basic-auth-config.xml" />
-	</resources>
+	</definitions>
 </config>

@@ -1,6 +1,6 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<modules>
+	<components>
 		<module name="dynamo">
 			<component api="ScriptManager" class="io.vertigo.commons.impl.script.ScriptManagerImpl">
 				<plugin class="io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin" />
@@ -8,5 +8,5 @@
 				<!-- <plugin id ="MVEL" name="ExpressionEvaluatorPlugin" class=".script.plugins.mvel.MVELExpressionEvaluatorPlugin"/>-->
 			</component>
 		</module>
-	</modules>
+	</components>
 </config>

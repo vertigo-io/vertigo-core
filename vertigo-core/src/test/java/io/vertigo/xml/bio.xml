@@ -1,6 +1,6 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<modules>
+	<components>
 		<module name="Bio">
 			<component api="BioManager" class="io.vertigo.core.home.componentspace.data.BioManagerImpl" />
 			<component api="MathManager" class="io.vertigo.core.home.componentspace.data.MathManagerImpl">
@@ -10,5 +10,5 @@
 				</plugin>
 			</component>
 		</module>
-	</modules>
+	</components>
 </config>

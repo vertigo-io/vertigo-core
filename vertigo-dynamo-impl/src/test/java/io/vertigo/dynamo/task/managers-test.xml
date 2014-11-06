@@ -1,6 +1,6 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<modules>
+	<components>
 		<module name="vertigo-commons">
 			<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
 				<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
@@ -19,10 +19,9 @@
 				<plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
 			</component>
 		</module>
-
-		<module name="test">
-			<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
-			<resource type="classes" path="io.vertigo.dynamock.domain.DtDefinitions" />
-		</module>
-	</modules>
+	</components>
+	<definitions>
+		<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
+		<resource type="classes" path="io.vertigo.dynamock.domain.DtDefinitions" />
+	</definitions>
 </config>

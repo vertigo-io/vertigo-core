@@ -1,6 +1,6 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<modules>
+	<components>
 		<module name="vertigo-commons">
 			<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
 			<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
@@ -15,5 +15,5 @@
 				</plugin>
 			</component>
 		</module>
-	</modules>
+	</components>
 </config>
