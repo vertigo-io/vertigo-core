@@ -34,10 +34,12 @@ public final class FunctionManager2Impl implements FunctionManager {
 		this.functionPlugins = functionPlugins;
 	}
 
+	@Override
 	public int compute(final String functionName, final int x) {
 		return getFunctionPlugin(functionName).compute(x);
 	}
 
+	@Override
 	public int computeAll(final int x) {
 		int result = x;
 		for (final FunctionPlugin functionPlugin : functionPlugins) {

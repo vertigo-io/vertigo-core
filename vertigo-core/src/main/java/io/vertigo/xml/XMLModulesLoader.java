@@ -56,6 +56,7 @@ public final class XMLModulesLoader implements Loader<AppConfigBuilder> {
 	/**
 	 * Charge une configuration, et complète celle existante.
 	 */
+	@Override
 	public void load(final AppConfigBuilder appConfigBuilder) {
 		Assertion.checkNotNull(appConfigBuilder);
 		//----------------------------------------------------------------------

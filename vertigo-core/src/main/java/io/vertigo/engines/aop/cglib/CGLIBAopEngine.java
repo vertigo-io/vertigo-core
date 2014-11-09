@@ -37,11 +37,12 @@ import net.sf.cglib.proxy.Enhancer;
 public final class CGLIBAopEngine implements AopEngine {
 
 	/** {@inheritDoc} */
+	@Override
 	public Object create(final Object instance, final Map<Method, List<AOPInterceptor>> interceptors) {
 		Assertion.checkNotNull(instance);
 		Assertion.checkNotNull(interceptors);
 		//check : witgh cglib all methods have to bo non-final 
-		for (Method method : interceptors.keySet()) {
+		for (final Method method : interceptors.keySet()) {
 			Assertion.checkArgument(!Modifier.isFinal(method.getModifiers()), "due to cglib method '" + method.getName() + "' on '" + instance.getClass().getName() + "' can not be markedf as final");
 		}
 		//---------------------------------------------------------------------

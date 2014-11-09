@@ -98,6 +98,7 @@ public final class ComponentSpace implements Container, Activeable {
 
 	/* We are registered all the components and their plugins*/
 	/** {@inheritDoc} */
+	@Override
 	public void start() {
 		if (componentSpaceConfig.getElasticaEngine().isDefined()) {
 			engines.add(componentSpaceConfig.getElasticaEngine().get());
@@ -128,6 +129,7 @@ public final class ComponentSpace implements Container, Activeable {
 			//
 			//		if (componentSpaceConfig.getCommandEngine().isDefined()) {
 			commandEngine.registerCommandExecutor("config", new VCommandExecutor<ComponentSpaceConfig>() {
+				@Override
 				public ComponentSpaceConfig exec(final VCommand command) {
 					return componentSpaceConfig;
 				}
@@ -135,6 +137,7 @@ public final class ComponentSpace implements Container, Activeable {
 
 			commandEngine.registerCommandExecutor("definitions", new VCommandExecutor<DefinitionSpace>() {
 				/** {@inheritDoc} */
+				@Override
 				public DefinitionSpace exec(final VCommand command) {
 					Assertion.checkNotNull(command);
 					//---------------------------------------------------------------------
@@ -146,6 +149,7 @@ public final class ComponentSpace implements Container, Activeable {
 
 	/*We are stopping all the components.*/
 	/** {@inheritDoc} */
+	@Override
 	public void stop() {
 		componentContainer.stop();
 		//---
@@ -326,16 +330,19 @@ public final class ComponentSpace implements Container, Activeable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <T> T resolve(final String id, final Class<T> componentClass) {
 		return componentContainer.resolve(id, componentClass);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Set<String> keySet() {
 		return componentContainer.keySet();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean contains(final String id) {
 		return componentContainer.contains(id);
 	}

@@ -27,6 +27,7 @@ public final class BioManagerImpl implements BioManager, Activeable {
 	@Inject
 	private MathManager mathManager;
 
+	@Override
 	public int add(final int... all) {
 		int res = 0;
 		for (final int a : all) {
@@ -35,14 +36,17 @@ public final class BioManagerImpl implements BioManager, Activeable {
 		return res;
 	}
 
+	@Override
 	public boolean isActive() {
 		return active;
 	}
 
+	@Override
 	public void start() {
 		active = true;
 	}
 
+	@Override
 	public void stop() {
 		//
 	}

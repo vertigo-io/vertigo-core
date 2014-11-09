@@ -49,6 +49,7 @@ final class ComponentDualContainer implements Container {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean contains(final String id) {
 		Assertion.checkNotNull(id);
 		// ---------------------------------------------------------------------
@@ -56,6 +57,7 @@ final class ComponentDualContainer implements Container {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <O> O resolve(final String id, final Class<O> clazz) {
 		Assertion.checkNotNull(id);
 		Assertion.checkNotNull(clazz);
@@ -71,6 +73,7 @@ final class ComponentDualContainer implements Container {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Set<String> keySet() {
 		return ids;
 	}

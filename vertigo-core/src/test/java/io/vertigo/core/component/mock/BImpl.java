@@ -28,22 +28,27 @@ public class BImpl implements B {
 	private boolean initialized;
 	private boolean finalized;
 
+	@Override
 	public boolean isInitialized() {
 		return initialized;
 	}
 
+	@Override
 	public boolean isFinalized() {
 		return finalized;
 	}
 
+	@Override
 	public void start() {
 		initialized = true;
 	}
 
+	@Override
 	public void stop() {
 		finalized = true;
 	}
 
+	@Override
 	public void throwMyException() throws MyException {
 		throw new MyException();
 	}

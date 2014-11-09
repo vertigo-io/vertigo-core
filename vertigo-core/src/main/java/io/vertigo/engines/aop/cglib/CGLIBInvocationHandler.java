@@ -43,6 +43,7 @@ final class CGLIBInvocationHandler implements net.sf.cglib.proxy.InvocationHandl
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
 		if (!interceptors.containsKey(method)) {
 			//Si pas d'intercepteur sur la méthode. 
@@ -68,6 +69,7 @@ final class CGLIBInvocationHandler implements net.sf.cglib.proxy.InvocationHandl
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public Object proceed(final Object[] args) throws Throwable {
 			if (index < interceptors.size()) {
 				return interceptors.get(index++).invoke(args, this);
@@ -76,6 +78,7 @@ final class CGLIBInvocationHandler implements net.sf.cglib.proxy.InvocationHandl
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public Method getMethod() {
 			return method;
 		}

@@ -99,6 +99,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testLocaleProvider() {
 		localeManager.registerLocaleProvider(new LocaleProvider() {
+			@Override
 			public Locale getCurrentLocale() {
 				return Locale.GERMANY;
 			}
@@ -118,6 +119,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testJapanese() {
 		localeManager.registerLocaleProvider(new LocaleProvider() {
+			@Override
 			public Locale getCurrentLocale() {
 				return Locale.JAPANESE;
 			}
@@ -135,6 +137,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 		final MessageKey key = new MessageKey() {
 			private static final long serialVersionUID = 4654362997955319282L;
 
+			@Override
 			public String name() {
 				return "HELLO";
 			}
@@ -149,6 +152,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 		final MessageKey key = new MessageKey() {
 			private static final long serialVersionUID = 4654362997955319282L;
 
+			@Override
 			public String name() {
 				return "UNKNOWN KEY";
 			}
@@ -162,6 +166,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 		final MessageKey key = new MessageKey() {
 			private static final long serialVersionUID = 4654362997955319282L;
 
+			@Override
 			public String name() {
 				return "UNKNOWN KEY";
 			}
@@ -175,6 +180,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 		final MessageKey key = new MessageKey() {
 			private static final long serialVersionUID = 4654362997955319282L;
 
+			@Override
 			public String name() {
 				return "UNKNOWN KEY";
 			}

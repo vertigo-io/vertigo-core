@@ -57,6 +57,7 @@ public final class DateBuilder implements Builder<Date> {
 	/**
 	 * @return Date tronquée à 0h 0min 0ss
 	 */
+	@Override
 	public Date build() {
 		calendar.set(Calendar.HOUR_OF_DAY, 0);
 		calendar.set(Calendar.MINUTE, 0);

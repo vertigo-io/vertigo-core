@@ -74,6 +74,7 @@ final class ComponentContainer implements Container, Activeable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean contains(final String id) {
 		Assertion.checkArgNotEmpty(id);
 		//---------------------------------------------------------------------
@@ -82,11 +83,13 @@ final class ComponentContainer implements Container, Activeable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Set<String> keySet() {
 		return startedComponents.keySet();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <C> C resolve(final String id, final Class<C> componentClass) {
 		final String normalizedId = StringUtil.normalize(id);
 		Assertion.checkArgument(contains(normalizedId), "Aucun composant enregistré pour id = {0} parmi {1}", normalizedId, Home.getComponentSpace().keySet());
@@ -139,12 +142,14 @@ final class ComponentContainer implements Container, Activeable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void stop() {
 		stopComponents();
 		clear();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void start() {
 		//le démarrage des composants est effectué au fur et à mesure de leur création.
 		//L'initialisation est en revanche globale.

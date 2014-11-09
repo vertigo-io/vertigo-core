@@ -116,6 +116,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public ModuleConfig build() {
 		final List<ModuleRule> moduleRules = new ArrayList<>();
 		//Mise à jour des règles.

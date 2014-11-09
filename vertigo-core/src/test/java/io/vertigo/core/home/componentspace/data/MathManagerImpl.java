@@ -28,7 +28,8 @@ public final class MathManagerImpl implements MathManager {
 	@Named("start")
 	private int start;
 
-	public int add(int a, int b) {
+	@Override
+	public int add(final int a, final int b) {
 		return start + mathPlugin.add(a, b);
 	}
 

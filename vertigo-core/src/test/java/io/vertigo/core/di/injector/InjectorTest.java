@@ -42,6 +42,7 @@ public final class InjectorTest {
 	private static class MyContainer implements Container {
 		private final Map<String, Object> map = new HashMap<>();
 
+		@Override
 		public boolean contains(final String id) {
 			Assertion.checkArgNotEmpty(id);
 			//-----------------------------------------------------------------
@@ -55,6 +56,7 @@ public final class InjectorTest {
 			map.put(id, object);
 		}
 
+		@Override
 		public <C> C resolve(final String id, final Class<C> componentClass) {
 			Assertion.checkArgNotEmpty(id);
 			Assertion.checkNotNull(componentClass);
@@ -64,6 +66,7 @@ public final class InjectorTest {
 			return componentClass.cast(object);
 		}
 
+		@Override
 		public Set<String> keySet() {
 			return map.keySet();
 		}
@@ -77,14 +80,17 @@ public final class InjectorTest {
 	public void testA() {
 		final A a = Injector.newInstance(A.class, new Container() {
 
+			@Override
 			public boolean contains(final String id) {
 				return false;
 			}
 
+			@Override
 			public <T> T resolve(final String id, final Class<T> componentClass) {
 				return null;
 			}
 
+			@Override
 			public Set<String> keySet() {
 				return Collections.EMPTY_SET;
 			}
@@ -96,14 +102,17 @@ public final class InjectorTest {
 	public void testBFail() {
 		final B b = Injector.newInstance(B.class, new Container() {
 
+			@Override
 			public boolean contains(final String id) {
 				return false;
 			}
 
+			@Override
 			public <T> T resolve(final String id, final Class<T> componentClass) {
 				return null;
 			}
 
+			@Override
 			public Set<String> keySet() {
 				return Collections.EMPTY_SET;
 			}

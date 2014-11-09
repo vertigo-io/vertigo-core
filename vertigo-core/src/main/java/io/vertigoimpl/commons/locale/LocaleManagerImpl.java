@@ -114,6 +114,7 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void registerLocaleProvider(final LocaleProvider newLocaleProvider) {
 		Assertion.checkArgument(localeProvider == null, "localeProvider already registered");
 		Assertion.checkNotNull(newLocaleProvider);
@@ -122,11 +123,13 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void add(final String baseName, final MessageKey[] enums) {
 		add(baseName, enums, false);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void override(final String baseName, final MessageKey[] enums) {
 		add(baseName, enums, true);
 	}
@@ -197,6 +200,7 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getMessage(final MessageKey messageKey, final Locale locale) {
 		Assertion.checkNotNull(messageKey);
 		Assertion.checkNotNull(locale);
@@ -212,6 +216,7 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Locale getCurrentLocale() {
 		if (localeProvider != null && localeProvider.getCurrentLocale() != null) {
 			final Locale currentLocale = localeProvider.getCurrentLocale();
@@ -251,6 +256,7 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public List<ComponentInfo> getInfos() {
 		final List<ComponentInfo> componentInfos = new ArrayList<>();
 		//---

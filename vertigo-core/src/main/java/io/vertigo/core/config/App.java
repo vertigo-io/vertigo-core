@@ -24,6 +24,7 @@ public final class App implements AutoCloseable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void close() {
 		Home.stop();
 	}

@@ -44,6 +44,7 @@ final class ComponentParamsContainer implements Container {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean contains(final String id) {
 		Assertion.checkNotNull(id);
 		//-----------------------------------------------------------------
@@ -51,6 +52,7 @@ final class ComponentParamsContainer implements Container {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <O> O resolve(final String id, final Class<O> clazz) {
 		Assertion.checkNotNull(id);
 		Assertion.checkState(params.containsKey(id), "Le paramètre '{0}' de type '{1}' n'a pas été défini.", id, clazz.getSimpleName());
@@ -63,6 +65,7 @@ final class ComponentParamsContainer implements Container {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Set<String> keySet() {
 		return Collections.unmodifiableSet(params.keySet());
 	}

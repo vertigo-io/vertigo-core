@@ -25,6 +25,7 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 		return this;
 	}
 
+	@Override
 	public List<X> build() {
 		return list;
 	}

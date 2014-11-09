@@ -38,10 +38,12 @@ public class C implements Activeable {
 		return finalized;
 	}
 
+	@Override
 	public void start() {
 		initialized = true;
 	}
 
+	@Override
 	public void stop() {
 		finalized = true;
 	}

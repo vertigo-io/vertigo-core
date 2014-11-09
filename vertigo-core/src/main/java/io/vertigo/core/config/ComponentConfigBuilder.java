@@ -81,6 +81,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public ComponentConfig build() {
 		//Création des pluginConfigs
 		final List<PluginConfig> pluginConfigurations = new ArrayList<>();

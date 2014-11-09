@@ -32,17 +32,20 @@ public class ComputerImpl implements Computer {
 	/**
 	 * On ajoute un Modifier AOP pour fausser le calcul !
 	 */
+	@Override
 	@OneMore
 	public int sum(final int i, final int j) {
 		return i + j;
 	}
 
+	@Override
 	@TenMore
 	@OneMore
 	public int multi(final int i, final int j) {
 		return i * j;
 	}
 
+	@Override
 	public int no(final int i) {
 		return i;
 	}

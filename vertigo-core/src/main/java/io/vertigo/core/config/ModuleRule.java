@@ -37,6 +37,7 @@ interface ModuleRule {
  */
 final class APIModuleRule implements ModuleRule {
 	/** {@inheritDoc} */
+	@Override
 	public void chek(final ModuleConfig moduleConfig) {
 		for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
 			if (componentConfig.getApiClass().isEmpty()) {
@@ -61,6 +62,7 @@ final class InheritanceModuleRule implements ModuleRule {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void chek(final ModuleConfig moduleConfig) {
 		for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
 			Class<?> clazz;

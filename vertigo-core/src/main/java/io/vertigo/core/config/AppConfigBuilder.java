@@ -127,6 +127,7 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public AppConfig build() {
 		final List<ModuleConfig> moduleConfigs = new ArrayList<>();
 		for (final ModuleConfigBuilder moduleConfigBuilder : myModuleConfigBuilders) {

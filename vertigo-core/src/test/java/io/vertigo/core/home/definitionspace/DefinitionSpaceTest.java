@@ -95,6 +95,7 @@ public class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 	@DefinitionPrefix("SAMPLE")
 	public static class SampleDefinition implements Definition {
 
+		@Override
 		public String getName() {
 			return "SAMPLE_THE_DEFINITION";
 		}

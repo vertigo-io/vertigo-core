@@ -64,6 +64,7 @@ public final class PluginConfigBuilder implements Builder<PluginConfig> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public PluginConfig build() {
 		return new PluginConfig(myPluginImplClass, myParams);
 	}
