@@ -67,6 +67,7 @@ public final class PropertiesConfigPlugin implements ConfigPlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Option<String> getValue(final String configPath, final String property) {
 		Assertion.checkArgNotEmpty(configPath);
 		Assertion.checkArgNotEmpty(property);

@@ -64,21 +64,25 @@ public final class ConfigManagerImpl implements ConfigManager {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean getBooleanValue(final String configPath, final String property) {
 		return (Boolean) doGetPropertyValue(configPath, property, boolean.class);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int getIntValue(final String configPath, final String property) {
 		return (Integer) doGetPropertyValue(configPath, property, int.class);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getStringValue(final String configPath, final String property) {
 		return (String) doGetPropertyValue(configPath, property, String.class);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <C> C resolve(final String configPath, final Class<C> config) {
 		Assertion.checkNotNull(configPath);
 		Assertion.checkNotNull(config);
@@ -122,6 +126,7 @@ public final class ConfigManagerImpl implements ConfigManager {
 		}
 
 		return config.cast(Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] { config }, new InvocationHandler() {
+			@Override
 			public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
 				final String property = configs.get(method);
 				Assertion.checkNotNull(property, "Méthode {0} inconnue sur la classe {1}", method, config.getSimpleName());

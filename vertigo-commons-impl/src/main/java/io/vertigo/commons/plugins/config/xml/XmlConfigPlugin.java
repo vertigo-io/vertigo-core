@@ -64,6 +64,7 @@ public final class XmlConfigPlugin implements ConfigPlugin { /*implements Loader
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Option<String> getValue(final String configPath, final String propertyName) {
 		Assertion.checkArgNotEmpty(configPath);
 		Assertion.checkArgNotEmpty(propertyName);

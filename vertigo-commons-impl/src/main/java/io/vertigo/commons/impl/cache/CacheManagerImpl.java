@@ -50,31 +50,37 @@ public final class CacheManagerImpl implements CacheManager {
 	//---------------------------------------------------------------------------
 
 	/** {@inheritDoc} */
+	@Override
 	public void addCache(final String context, final CacheConfig cacheConfig) {
 		cachePlugin.addCache(context, cacheConfig);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void put(final String context, final Serializable key, final Serializable value) {
 		cachePlugin.put(context, key, value);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Serializable get(final String context, final Serializable key) {
 		return cachePlugin.get(context, key);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean remove(final String context, final Serializable key) {
 		return cachePlugin.remove(context, key);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void clear(final String context) {
 		cachePlugin.clear(context);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void clearAll() {
 		cachePlugin.clearAll();
 	}

@@ -35,6 +35,7 @@ import java.net.URL;
 public final class URLResourceResolverPlugin implements ResourceResolverPlugin {
 
 	/** {@inheritDoc} */
+	@Override
 	public Option<URL> resolve(final String resource) {
 		Assertion.checkNotNull(resource);
 		// ---------------------------------------------------------------------

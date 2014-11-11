@@ -49,6 +49,7 @@ public final class ResourceManagerImpl implements ResourceManager {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public URL resolve(final String resource) {
 		for (final ResourceResolverPlugin resourceResolver : resourceResolverPlugins) {
 			final Option<URL> url = resourceResolver.resolve(resource);

@@ -66,6 +66,7 @@ final class ScriptParserHandlerImpl implements ScriptParserHandler {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void onText(final String text) {
 		evaluatedScript.append("query.append(\"");
 		appendEncodedText(evaluatedScript, text);
@@ -73,6 +74,7 @@ final class ScriptParserHandlerImpl implements ScriptParserHandler {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void onExpression(final String expression, final ScriptSeparator separator) {
 		isDynamic = true; //Si on entre dans cette méthode, on est forcément dynamique
 		if (expression.charAt(0) == '=') {

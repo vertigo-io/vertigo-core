@@ -213,6 +213,7 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 			this.nbRow = nbRow;
 		}
 
+		@Override
 		public void run() {
 			while (!Thread.interrupted() && System.currentTimeMillis() < deathTime) {
 				final String key = "ma clé[" + Math.round(Math.random() * nbRow) + "]";
@@ -237,6 +238,7 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 			this.nbRow = nbRow;
 		}
 
+		@Override
 		public void run() {
 			while (System.currentTimeMillis() < deathTime) {
 				final String key = "ma clé[" + Math.round(Math.random() * nbRow) + "]";
@@ -301,6 +303,7 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 			super();
 		}
 
+		@Override
 		public boolean isModifiable() {
 			return false;
 		}

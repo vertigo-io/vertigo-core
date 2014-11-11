@@ -77,6 +77,7 @@ public final class HashEncoder implements Encoder<byte[], byte[]> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public byte[] encode(final byte[] data) {
 		Assertion.checkNotNull(data);
 		//---------------------------------------------------------------------

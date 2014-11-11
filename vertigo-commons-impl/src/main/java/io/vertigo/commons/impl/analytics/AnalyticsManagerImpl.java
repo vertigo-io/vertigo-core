@@ -42,6 +42,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public AnalyticsAgent getAgent() {
 		return analyticsAgent;
 	}

@@ -114,66 +114,79 @@ public final class CodecManagerImpl implements CodecManager, Describable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Codec<String, String> getHtmlCodec() {
 		return htmlCodec;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Encoder<byte[], byte[]> getMD5Encoder() {
 		return md5Encoder;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Encoder<byte[], byte[]> getSha256Encoder() {
 		return sha256Encoder;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Encoder<byte[], byte[]> getSha1Encoder() {
 		return sha1Encoder;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Codec<byte[], String> getBase64Codec() {
 		return base64Codec;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Encoder<byte[], String> getHexEncoder() {
 		return hexEncoder;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Codec<byte[], byte[]> getTripleDESCodec() {
 		return tripleDESCodec;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Codec<byte[], byte[]> getAES128Codec() {
 		return aes128Codec;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Codec<byte[], byte[]> getCompressionCodec() {
 		return compressionCodec;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Codec<Serializable, byte[]> getCompressedSerializationCodec() {
 		return compressedSerializationCodec;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Codec<Serializable, byte[]> getSerializationCodec() {
 		return serializationCodec;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Encoder<String, String> getCsvEncoder() {
 		return csvEncoder;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public List<ComponentInfo> getInfos() {
 		return componentInfos;
 	}

@@ -70,6 +70,7 @@ public final class MapCachePlugin implements CachePlugin, Describable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void addCache(final String context, final CacheConfig cacheConfig) {
 		if (!cachesPerContext.containsKey(context)) {
 			final boolean eternal = false;
@@ -80,6 +81,7 @@ public final class MapCachePlugin implements CachePlugin, Describable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void put(final String context, final Serializable key, final Serializable value) {
 		Assertion.checkArgument(!(value instanceof byte[]), "Ce CachePlugin ne permet pas de mettre en cache des byte[].");
 		//---------------------------------------------------------------------
@@ -103,6 +105,7 @@ public final class MapCachePlugin implements CachePlugin, Describable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Serializable get(final String context, final Serializable key) {
 		final Serializable cachedObject = getElement(context, key);
 		//on ne connait pas l'état Modifiable ou non de l'objet, on se base sur son type.
@@ -114,11 +117,13 @@ public final class MapCachePlugin implements CachePlugin, Describable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean remove(final String context, final Serializable key) {
 		return getMapCache(context).remove(key);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public synchronized void clearAll() {
 		for (final MapCache mapCache : cachesPerContext.values()) {
 			mapCache.removeAll();
@@ -126,6 +131,7 @@ public final class MapCachePlugin implements CachePlugin, Describable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void clear(final String context) {
 		//Dans le cas de clear
 		final MapCache mapCache = cachesPerContext.get(context);
@@ -164,6 +170,7 @@ public final class MapCachePlugin implements CachePlugin, Describable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public List<ComponentInfo> getInfos() {
 		long hits = 0L;
 		long calls = 0L;

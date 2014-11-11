@@ -179,6 +179,7 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 	private class MyScriptParserHandler implements ScriptParserHandler {
 		final StringBuilder result = new StringBuilder();
 
+		@Override
 		public void onExpression(final String expression, final ScriptSeparator separator) {
 			if ("price".equals(expression)) {
 				result.append("100");
@@ -187,6 +188,7 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 			}
 		}
 
+		@Override
 		public void onText(final String text) {
 			result.append(text);
 		}

@@ -30,6 +30,7 @@ import io.vertigo.lang.Assertion;
 public final class HexEncoder implements Encoder<byte[], String> {
 
 	/** {@inheritDoc} */
+	@Override
 	public String encode(final byte[] data) {
 		Assertion.checkNotNull(data);
 		//---------------------------------------------------------------------

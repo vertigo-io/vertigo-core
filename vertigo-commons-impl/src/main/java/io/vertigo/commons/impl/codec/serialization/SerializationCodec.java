@@ -37,6 +37,7 @@ import java.io.Serializable;
 public final class SerializationCodec implements Codec<Serializable, byte[]> {
 
 	/** {@inheritDoc} */
+	@Override
 	public byte[] encode(final Serializable object) {
 		Assertion.checkNotNull(object);
 		//---------------------------------------------------------------------
@@ -53,6 +54,7 @@ public final class SerializationCodec implements Codec<Serializable, byte[]> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Serializable decode(final byte[] serializedObject) {
 		Assertion.checkNotNull(serializedObject);
 		//---------------------------------------------------------------------

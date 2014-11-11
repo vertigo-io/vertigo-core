@@ -28,6 +28,7 @@ public final class CacheManagerInitializer implements ComponentInitializer<Cache
 	public static final String CONTEXT = "testCacheManager";
 
 	/** {@inheritDoc} */
+	@Override
 	public void init(final CacheManager manager) {
 		//Paramétrage d'un cache spécifique au test
 		/** Parametre du cache, pour une config ou il est multi-session*/

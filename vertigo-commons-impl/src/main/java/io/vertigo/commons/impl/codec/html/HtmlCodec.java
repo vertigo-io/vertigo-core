@@ -58,10 +58,10 @@ public final class HtmlCodec extends AbstractCodec {
 		// on copie colle depuis un browser web (pour les caractères spéciaux, ont les enlèves pour bien laisser le fichier en charset Standard
 
 		return new String[] {
-		/**********************************************************/
-		/** Character entity references for ISO 8859-1 characters */
-		/**********************************************************/
-		(char) 160 + " &nbsp;", //  : no-break space = non-breaking space, 
+				/**********************************************************/
+				/** Character entity references for ISO 8859-1 characters */
+				/**********************************************************/
+				(char) 160 + " &nbsp;", //  : no-break space = non-breaking space, 
 				(char) 161 + " &iexcl;", //à : inverted exclamation mark, 
 				(char) 162 + " &cent;", //à : cent sign, 
 				(char) 163 + " &pound;", //à : pound sign, 
@@ -381,6 +381,7 @@ public final class HtmlCodec extends AbstractCodec {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String decode(final String encoded) {
 		if (encoded == null) {
 			return null;
@@ -389,6 +390,7 @@ public final class HtmlCodec extends AbstractCodec {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String encode(final String toEncode) {
 		if (toEncode == null) {
 			return "";

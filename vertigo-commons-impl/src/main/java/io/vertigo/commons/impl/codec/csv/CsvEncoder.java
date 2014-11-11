@@ -36,6 +36,7 @@ public final class CsvEncoder implements Encoder<String, String> {
 	private static final char CHAR_11 = (char) 11;
 
 	/** {@inheritDoc} */
+	@Override
 	public String encode(final String toEncode) {
 		if (toEncode == null || toEncode.length() == 0) { // perf
 			return "";

@@ -35,6 +35,7 @@ final class NullCodec<S, T> implements Codec<S, T> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public S decode(final T encoded) {
 		if (encoded == null) {
 			return null;
@@ -43,6 +44,7 @@ final class NullCodec<S, T> implements Codec<S, T> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public T encode(final S toEncode) {
 		if (toEncode == null) {
 			return null;

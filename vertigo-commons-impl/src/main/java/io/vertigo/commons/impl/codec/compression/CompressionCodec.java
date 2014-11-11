@@ -64,6 +64,7 @@ public final class CompressionCodec implements Codec<byte[], byte[]>, Describabl
 	 * @param unCompressedObject Objet non compressé
 	 * @return Objet Compressé
 	 */
+	@Override
 	public byte[] encode(final byte[] unCompressedObject) {
 		Assertion.checkNotNull(unCompressedObject);
 		checkMaxSize(unCompressedObject.length);
@@ -110,6 +111,7 @@ public final class CompressionCodec implements Codec<byte[], byte[]>, Describabl
 	 * @param compressedObject Objet compressé
 	 * @return Objet décompressé
 	 */
+	@Override
 	public byte[] decode(final byte[] compressedObject) {
 		Assertion.checkNotNull(compressedObject);
 		//---------------------------------------------------------------------
@@ -144,6 +146,7 @@ public final class CompressionCodec implements Codec<byte[], byte[]>, Describabl
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public List<ComponentInfo> getInfos() {
 		return new ListBuilder<ComponentInfo>()
 				.add(new ComponentInfo("compression.minSize(bytes)", MIN_SIZE_FOR_COMPRESSION))

@@ -27,26 +27,31 @@ import io.vertigo.commons.impl.analytics.AnalyticsAgentPlugin;
  */
 public final class DummyAgentPlugin implements AnalyticsAgentPlugin {
 	/** {@inheritDoc} */
+	@Override
 	public void startProcess(final String processType, final String processName) {
 		//
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void incMeasure(final String measureType, final double value) {
 		//
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void setMeasure(final String measureType, final double value) {
 		//
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void addMetaData(final String metaDataName, final String value) {
 		//
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void stopProcess() {
 		//
 	}

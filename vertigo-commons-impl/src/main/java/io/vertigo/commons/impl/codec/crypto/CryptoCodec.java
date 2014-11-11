@@ -105,6 +105,7 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 	 * @param data Données à encrypter
 	 * @return Données encryptées
 	 */
+	@Override
 	public byte[] encode(final byte[] data) {
 		Assertion.checkNotNull(data);
 		//---------------------------------------------------------------------
@@ -122,6 +123,7 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 	 * @param data Données à décrypter
 	 * @return Données décryptées
 	 */
+	@Override
 	public byte[] decode(final byte[] data) {
 		Assertion.checkNotNull(data);
 		//---------------------------------------------------------------------
@@ -135,6 +137,7 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public List<ComponentInfo> getInfos() {
 		return new ListBuilder<ComponentInfo>()
 				.add(new ComponentInfo("crypto.algo", crypto.getAlgoName()))
