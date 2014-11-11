@@ -54,6 +54,7 @@ public final class ReportingManagerImpl implements ReportingManager {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void analyze() {
 		for (final ReportingPlugin reportingPlugin : getReportingPlugins()) {
 			final Report report = reportingPlugin.analyze();
@@ -63,6 +64,7 @@ public final class ReportingManagerImpl implements ReportingManager {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public List<ReportingPlugin> getReportingPlugins() {
 		return Collections.unmodifiableList(reportingPlugins);
 	}

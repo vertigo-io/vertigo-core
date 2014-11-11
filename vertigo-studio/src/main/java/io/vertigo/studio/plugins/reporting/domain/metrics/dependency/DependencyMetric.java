@@ -36,26 +36,31 @@ public final class DependencyMetric implements Metric {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getTitle() {
 		return "Utilisation dans les dao";
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Integer getValue() {
 		return count;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getValueInformation() {
 		return null;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getUnit() {
 		return "";
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Status getStatus() {
 		return Status.Executed;
 	}

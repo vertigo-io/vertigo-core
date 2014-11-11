@@ -35,23 +35,28 @@ public final class SubRequestMetric implements Metric {
 		this.subRequestCount = subRequestCount;
 	}
 
+	@Override
 	public String getTitle() {
 		return "Nombre de ss-requêtes";
 	}
 
+	@Override
 	public Integer getValue() {
 		return subRequestCount;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getValueInformation() {
 		return null;
 	}
 
+	@Override
 	public String getUnit() {
 		return "";
 	}
 
+	@Override
 	public Status getStatus() {
 		return Status.Executed;
 	}

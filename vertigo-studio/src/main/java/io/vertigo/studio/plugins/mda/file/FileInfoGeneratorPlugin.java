@@ -37,11 +37,13 @@ import java.util.Properties;
  */
 public final class FileInfoGeneratorPlugin extends AbstractGeneratorPlugin<FileInfoConfiguration> {
 	/** {@inheritDoc} */
+	@Override
 	public FileInfoConfiguration createConfiguration(final Properties properties) {
 		return new FileInfoConfiguration(properties);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void generate(final FileInfoConfiguration fileInfoConfiguration, final Result result) {
 		Assertion.checkNotNull(fileInfoConfiguration);
 		Assertion.checkNotNull(result);

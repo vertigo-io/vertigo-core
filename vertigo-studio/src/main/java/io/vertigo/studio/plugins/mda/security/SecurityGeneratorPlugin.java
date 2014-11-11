@@ -37,6 +37,7 @@ import java.util.Properties;
  */
 public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin<SecurityConfiguration> {
 	/** {@inheritDoc}  */
+	@Override
 	public SecurityConfiguration createConfiguration(final Properties properties) {
 		return new SecurityConfiguration(properties);
 	}
@@ -47,6 +48,7 @@ public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin<Secur
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void generate(final SecurityConfiguration securityConfiguration, final Result result) {
 		Assertion.checkNotNull(securityConfiguration);
 		Assertion.checkNotNull(result);

@@ -29,6 +29,7 @@ import io.vertigo.studio.reporting.MetricEngine;
  */
 public final class SubRequestMetricEngine implements MetricEngine<TaskDefinition, SubRequestMetric> {
 	/** {@inheritDoc} */
+	@Override
 	public SubRequestMetric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//---------------------------------------------------------------------

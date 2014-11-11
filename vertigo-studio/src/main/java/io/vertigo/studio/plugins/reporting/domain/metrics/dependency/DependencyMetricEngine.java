@@ -33,6 +33,7 @@ import io.vertigo.studio.reporting.MetricEngine;
 public final class DependencyMetricEngine implements MetricEngine<DtDefinition, DependencyMetric> {
 
 	/** {@inheritDoc} */
+	@Override
 	public DependencyMetric execute(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//---------------------------------------------------------------------

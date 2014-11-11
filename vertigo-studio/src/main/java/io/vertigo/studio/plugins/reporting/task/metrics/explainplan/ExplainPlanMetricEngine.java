@@ -59,6 +59,7 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public ExplainPlanMetric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//---------------------------------------------------------------------

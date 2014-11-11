@@ -42,6 +42,7 @@ public final class PersistenceMetricEngine implements MetricEngine<DtDefinition,
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public PersitenceMetric execute(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//---------------------------------------------------------------------

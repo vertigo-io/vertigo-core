@@ -40,6 +40,7 @@ import freemarker.template.TemplateModelException;
 public final class TemplateMethodSql implements TemplateMethodModelEx {
 
 	/** {@inheritDoc}*/
+	@Override
 	public TemplateModel exec(final List params) throws TemplateModelException {
 		final Object type = ((StringModel) params.get(0)).getWrappedObject();
 		if (type instanceof Domain) {

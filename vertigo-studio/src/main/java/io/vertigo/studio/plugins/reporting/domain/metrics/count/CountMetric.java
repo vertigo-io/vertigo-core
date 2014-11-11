@@ -53,26 +53,31 @@ public final class CountMetric implements Metric {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getTitle() {
 		return "Nbre lignes";
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Integer getValue() {
 		return count;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getValueInformation() {
 		return null;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getUnit() {
 		return "rows";
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Status getStatus() {
 		return status;
 	}

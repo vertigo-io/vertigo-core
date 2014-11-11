@@ -72,11 +72,13 @@ final class TemplateAnnotationLines implements TemplateSequenceModel {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public TemplateModel get(final int index) {
 		return new SimpleScalar(lines.get(index));
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int size() {
 		return lines.size();
 	}

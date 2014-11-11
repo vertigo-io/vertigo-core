@@ -34,23 +34,28 @@ public final class JoinMetric implements Metric {
 		this.joinCount = joinCount;
 	}
 
+	@Override
 	public String getTitle() {
 		return "Nombre de jointures";
 	}
 
+	@Override
 	public Integer getValue() {
 		return joinCount;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getValueInformation() {
 		return null;
 	}
 
+	@Override
 	public String getUnit() {
 		return "";
 	}
 
+	@Override
 	public Status getStatus() {
 		return Status.Executed;
 	}

@@ -47,12 +47,14 @@ final class ResultImpl implements Result {
 	private final long start = System.currentTimeMillis();
 
 	/** {@inheritDoc} */
+	@Override
 	public void displayResultMessage(final PrintStream out) {
 		final long duration = System.currentTimeMillis() - start;
 		out.append(StringUtil.format("\nGénération de {0} fichiers, {1} fichiers identiques et {2} problemes en {3} ms", writtenFiles, identicalFiles, errorFiles, duration));
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void addFileWritten(final File file, final boolean success) {
 		if (success) {
 			writtenFiles++;
@@ -65,6 +67,7 @@ final class ResultImpl implements Result {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void addIdenticalFile(final File file) {
 		identicalFiles++;
 		logger.trace("Fichier identique : " + file.getAbsolutePath());

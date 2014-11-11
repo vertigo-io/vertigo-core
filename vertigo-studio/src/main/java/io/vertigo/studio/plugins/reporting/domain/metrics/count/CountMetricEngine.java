@@ -43,6 +43,7 @@ public final class CountMetricEngine implements MetricEngine<DtDefinition, Count
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public CountMetric execute(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//---------------------------------------------------------------------

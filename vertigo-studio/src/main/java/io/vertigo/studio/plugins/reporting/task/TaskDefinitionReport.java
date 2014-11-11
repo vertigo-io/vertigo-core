@@ -49,21 +49,25 @@ public final class TaskDefinitionReport implements DataReport {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public List<Metric> getMetrics() {
 		return Collections.unmodifiableList(metrics);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getTitle() {
 		return taskDefinition.getName();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getFileName() {
 		return taskDefinition.getName() + ".html";
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getHtmlDescription() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("<h1>").append(taskDefinition.getName()).append("</h1>");

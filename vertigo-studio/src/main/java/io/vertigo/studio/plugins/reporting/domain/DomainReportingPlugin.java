@@ -62,6 +62,7 @@ public final class DomainReportingPlugin implements ReportingPlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Report analyze() {
 		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			return doAnalyze();

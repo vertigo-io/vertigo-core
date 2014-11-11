@@ -35,6 +35,7 @@ final class DataReportRendererImpl implements DataReportRenderer {
 		this.rootPath = rootPath;
 	}
 
+	@Override
 	public void render(final DataReport dataReport) {
 		Assertion.checkNotNull(dataReport);
 		//---------------------------------------------------------------------

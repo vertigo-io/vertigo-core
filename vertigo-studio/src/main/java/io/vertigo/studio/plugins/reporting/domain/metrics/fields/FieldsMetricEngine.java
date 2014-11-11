@@ -29,6 +29,7 @@ import io.vertigo.studio.reporting.MetricEngine;
  */
 public final class FieldsMetricEngine implements MetricEngine<DtDefinition, FieldsMetric> {
 	/** {@inheritDoc} */
+	@Override
 	public FieldsMetric execute(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//---------------------------------------------------------------------

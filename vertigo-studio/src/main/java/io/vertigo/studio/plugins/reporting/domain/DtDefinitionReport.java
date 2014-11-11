@@ -49,19 +49,23 @@ public final class DtDefinitionReport implements DataReport {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public List<Metric> getMetrics() {
 		return Collections.unmodifiableList(metrics);
 	}
 
+	@Override
 	public String getTitle() {
 		return dtDefinition.getLocalName();
 	}
 
+	@Override
 	public String getFileName() {
 		return dtDefinition.getLocalName() + ".html";
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getHtmlDescription() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("<h1>").append(dtDefinition.getLocalName()).append("</h1>");

@@ -69,11 +69,13 @@ public final class ExplainPlanMetric implements Metric {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getTitle() {
 		return "Explain Plan";
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Object getValue() {
 		if (explainPlan != null) {
 			return explainPlan.split("TABLE ACCESS FULL").length - 1;
@@ -82,6 +84,7 @@ public final class ExplainPlanMetric implements Metric {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getValueInformation() {
 		if (explainPlan != null) {
 			return explainPlan.replaceAll("TABLE ACCESS FULL", "<b style='color: red;'>TABLE ACCESS FULL</b>");
@@ -95,11 +98,13 @@ public final class ExplainPlanMetric implements Metric {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getUnit() {
 		return "";
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Status getStatus() {
 		return status;
 	}

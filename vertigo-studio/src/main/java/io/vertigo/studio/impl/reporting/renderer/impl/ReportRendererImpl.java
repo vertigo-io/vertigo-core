@@ -43,6 +43,7 @@ public final class ReportRendererImpl implements ReportRenderer {
 		dataReportRenderer = new DataReportRendererImpl(rootPath);
 	}
 
+	@Override
 	public void render(final Report report) {
 		Assertion.checkNotNull(report);
 		//---------------------------------------------------------------------

@@ -29,6 +29,7 @@ import java.util.Properties;
  */
 public final class ReportingGoal implements Goal {
 
+	@Override
 	public void process(final Properties properties) {
 		final ReportingManager reportingManager = Home.getComponentSpace().resolve(ReportingManager.class);
 

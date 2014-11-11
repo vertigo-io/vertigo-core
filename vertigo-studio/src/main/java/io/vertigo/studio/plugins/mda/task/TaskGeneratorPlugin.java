@@ -43,11 +43,13 @@ import java.util.Properties;
  */
 public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin<TaskConfiguration> {
 	/** {@inheritDoc} */
+	@Override
 	public TaskConfiguration createConfiguration(final Properties properties) {
 		return new TaskConfiguration(properties);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void generate(final TaskConfiguration taskConfiguration, final Result result) {
 		Assertion.checkNotNull(taskConfiguration);
 		Assertion.checkNotNull(result);

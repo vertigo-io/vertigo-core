@@ -45,6 +45,7 @@ public final class MdaManagerImpl implements MdaManager {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Result generate(final Properties properties) {
 		//Création d'un objet listant les résultats
 		final Result result = new ResultImpl();

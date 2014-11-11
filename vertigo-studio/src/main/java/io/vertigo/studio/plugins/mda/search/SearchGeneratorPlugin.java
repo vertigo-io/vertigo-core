@@ -36,11 +36,13 @@ import java.util.Properties;
  */
 public final class SearchGeneratorPlugin extends AbstractGeneratorPlugin<SearchConfiguration> {
 	/** {@inheritDoc}  */
+	@Override
 	public SearchConfiguration createConfiguration(final Properties properties) {
 		return new SearchConfiguration(properties);
 	}
 
 	/** {@inheritDoc}  */
+	@Override
 	public void generate(final SearchConfiguration searchConfiguration, final Result result) {
 		Assertion.checkNotNull(searchConfiguration);
 		Assertion.checkNotNull(result);

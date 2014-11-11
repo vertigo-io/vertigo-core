@@ -45,6 +45,7 @@ public final class PerformanceMetricEngine implements MetricEngine<TaskDefinitio
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public PerformanceMetric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//---------------------------------------------------------------------

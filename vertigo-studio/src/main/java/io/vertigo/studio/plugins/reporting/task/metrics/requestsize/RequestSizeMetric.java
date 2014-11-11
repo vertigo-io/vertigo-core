@@ -35,23 +35,28 @@ public final class RequestSizeMetric implements Metric {
 		this.size = size;
 	}
 
+	@Override
 	public String getTitle() {
 		return "Taille requête";
 	}
 
+	@Override
 	public Integer getValue() {
 		return size;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getValueInformation() {
 		return null;
 	}
 
+	@Override
 	public String getUnit() {
 		return "caractères";
 	}
 
+	@Override
 	public Status getStatus() {
 		return Status.Executed;
 	}

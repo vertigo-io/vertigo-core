@@ -63,6 +63,7 @@ public final class TaskReportingPlugin implements ReportingPlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Report analyze() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			return doAnalyze();

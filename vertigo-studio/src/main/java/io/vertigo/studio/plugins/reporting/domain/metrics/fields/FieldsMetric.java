@@ -36,26 +36,31 @@ public final class FieldsMetric implements Metric {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getTitle() {
 		return "Nombre de champs";
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Integer getValue() {
 		return size;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getValueInformation() {
 		return null;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getUnit() {
 		return "";
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Status getStatus() {
 		return Status.Executed;
 	}

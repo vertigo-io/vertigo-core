@@ -63,16 +63,19 @@ public final class PerformanceMetric implements Metric {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getTitle() {
 		return "Temps d'exécution";
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Long getValue() {
 		return executionTime;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getValueInformation() {
 		if (status != Status.Error) {
 			return null;
@@ -83,11 +86,13 @@ public final class PerformanceMetric implements Metric {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getUnit() {
 		return "ms";
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Status getStatus() {
 		return status;
 	}

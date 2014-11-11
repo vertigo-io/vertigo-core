@@ -92,6 +92,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public DomainConfiguration createConfiguration(final Properties properties) {
 		return new DomainConfiguration(properties);
 	}
@@ -109,6 +110,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void generate(final DomainConfiguration domainConfiguration, final Result result) {
 		Assertion.checkNotNull(domainConfiguration);
 		Assertion.checkNotNull(result);
@@ -269,6 +271,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 	private static Collection<DtDefinition> sortDefinitionCollection(final Collection<DtDefinition> definitionCollection) {
 		final List<DtDefinition> list = new ArrayList<>(definitionCollection);
 		java.util.Collections.sort(list, new Comparator<DtDefinition>() {
+			@Override
 			public int compare(final DtDefinition definition1, final DtDefinition definition2) {
 				return definition1.getClassCanonicalName().compareTo(definition2.getClassCanonicalName());
 			}
@@ -307,6 +310,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 	private static Collection<DtDefinition> sortAbsoluteDefinitionCollection(final Collection<DtDefinition> definitionCollection) {
 		final List<DtDefinition> list = new ArrayList<>(definitionCollection);
 		java.util.Collections.sort(list, new Comparator<DtDefinition>() {
+			@Override
 			public int compare(final DtDefinition definition1, final DtDefinition definition2) {
 				return definition1.getClassSimpleName().compareTo(definition2.getClassSimpleName());
 			}
@@ -327,6 +331,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 	private static Collection<AssociationDefinition> sortAssociationsCollection(final Collection<AssociationDefinition> associationCollection) {
 		final List<AssociationDefinition> list = new ArrayList<>(associationCollection);
 		java.util.Collections.sort(list, new Comparator<AssociationDefinition>() {
+			@Override
 			public int compare(final AssociationDefinition definition1, final AssociationDefinition definition2) {
 				return definition1.getName().compareTo(definition2.getName());
 			}

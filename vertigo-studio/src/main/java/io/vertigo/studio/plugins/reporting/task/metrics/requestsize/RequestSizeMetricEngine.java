@@ -29,6 +29,7 @@ import io.vertigo.studio.reporting.MetricEngine;
  */
 public final class RequestSizeMetricEngine implements MetricEngine<TaskDefinition, RequestSizeMetric> {
 	/** {@inheritDoc} */
+	@Override
 	public RequestSizeMetric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//---------------------------------------------------------------------

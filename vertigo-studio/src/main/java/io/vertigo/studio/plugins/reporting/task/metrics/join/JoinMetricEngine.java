@@ -29,6 +29,7 @@ import io.vertigo.studio.reporting.MetricEngine;
  */
 public final class JoinMetricEngine implements MetricEngine<TaskDefinition, JoinMetric> {
 	/** {@inheritDoc} */
+	@Override
 	public JoinMetric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//---------------------------------------------------------------------

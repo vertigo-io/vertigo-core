@@ -27,6 +27,7 @@ import java.util.Properties;
 
 public final class GenerateGoal implements Goal {
 
+	@Override
 	public void process(final Properties properties) {
 		//Génération des fichiers données (code java, properties)
 		//final NameSpaceConfiguration nameSpaceConfiguration = new NameSpaceConfiguration(properties);

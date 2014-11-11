@@ -38,6 +38,7 @@ import freemarker.template.TemplateModelException;
 public class TemplateMethodStringUtil implements TemplateMethodModel {
 
 	/** {@inheritDoc}*/
+	@Override
 	public TemplateModel exec(final List params) throws TemplateModelException {
 		final String str = (String) params.get(0);
 		return new SimpleScalar(StringUtil.constToCamelCase(str, false));

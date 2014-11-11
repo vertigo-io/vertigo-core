@@ -43,28 +43,32 @@ public final class PersitenceMetric implements Metric {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getTitle() {
 		return "Persistance";
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Boolean getValue() {
 		return persistent;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getValueInformation() {
 		return null;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getUnit() {
 		return "";
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Status getStatus() {
 		return status;
 	}
-
 }

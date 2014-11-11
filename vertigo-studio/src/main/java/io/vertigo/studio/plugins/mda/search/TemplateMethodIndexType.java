@@ -38,6 +38,7 @@ import freemarker.template.TemplateModelException;
 public final class TemplateMethodIndexType implements TemplateMethodModel {
 
 	/** {@inheritDoc}*/
+	@Override
 	public TemplateModel exec(final List params) throws TemplateModelException {
 		final String domainUrn = (String) params.get(0);
 		final Domain domain = Home.getDefinitionSpace().resolve(domainUrn, Domain.class);
