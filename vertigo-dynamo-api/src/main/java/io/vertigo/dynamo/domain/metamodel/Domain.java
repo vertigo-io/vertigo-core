@@ -200,6 +200,7 @@ public final class Domain implements Definition {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getName() {
 		return name;
 	}

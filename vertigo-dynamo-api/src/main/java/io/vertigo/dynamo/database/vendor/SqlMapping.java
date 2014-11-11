@@ -80,4 +80,3 @@ public interface SqlMapping {
 	 */
 	Object getValueForResultSet(ResultSet rs, int col, DataType dataType) throws SQLException;
 }
-

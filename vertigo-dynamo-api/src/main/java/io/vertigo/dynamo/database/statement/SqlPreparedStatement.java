@@ -129,5 +129,6 @@ public interface SqlPreparedStatement extends AutoCloseable {
 	/**
 	 * Ferme le PreparedStatement.
 	 */
+	@Override
 	void close();
 }

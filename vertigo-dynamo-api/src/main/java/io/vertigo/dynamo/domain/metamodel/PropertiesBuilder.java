@@ -29,6 +29,7 @@ public final class PropertiesBuilder implements Builder<Properties> {
 		properties.put(property, value);
 	}
 
+	@Override
 	public Properties build() {
 		return new Properties(properties);
 	}

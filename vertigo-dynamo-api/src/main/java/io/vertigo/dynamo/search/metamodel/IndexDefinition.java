@@ -80,6 +80,7 @@ public final class IndexDefinition implements Definition {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getName() {
 		return name;
 	}

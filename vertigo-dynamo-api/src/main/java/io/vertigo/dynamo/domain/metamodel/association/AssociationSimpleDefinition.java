@@ -73,11 +73,11 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 	 * @return AssociationSimpleDefinitionStandard
 	 */
 	public static AssociationSimpleDefinition createAssociationSimpleDefinition(
-	//
+			//
 			final String urn, final String fkFieldName,//  
 			final DtDefinition dtDefinitionA, final boolean isANavigable, final String roleA, final String labelA, final boolean isAMultiple, final boolean isANotNull,//
 			final DtDefinition dtDefinitionB, final boolean isBNavigable, final String roleB, final String labelB, final boolean isBMultiple, final boolean isBNotNull//
-	) {
+			) {
 		//On vérifie que l'on est bien dans le cas d'une relation simple.
 		Assertion.checkArgument(!(isAMultiple && isBMultiple), " {0} ne gère pas les relations n-n", AssociationSimpleDefinition.class);
 		Assertion.checkNotNull(fkFieldName);

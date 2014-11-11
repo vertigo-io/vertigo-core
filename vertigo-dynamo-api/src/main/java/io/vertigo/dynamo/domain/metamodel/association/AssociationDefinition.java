@@ -103,6 +103,7 @@ public abstract class AssociationDefinition implements Definition {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final String getName() {
 		return name;
 	}

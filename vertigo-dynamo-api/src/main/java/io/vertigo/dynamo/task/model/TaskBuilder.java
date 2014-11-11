@@ -64,6 +64,7 @@ public final class TaskBuilder implements Builder<Task> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Task build() {
 		return new Task(taskDefinition, taskAttributes);
 	}

@@ -47,6 +47,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public String name() {
 			return name;
 		}
@@ -170,6 +171,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		return new DtField(id, fieldName, type, domain, label, notNull, persistent && myPersistent, fkDtDefinitionName, computedExpression, dynamic, sort, display);
 	}
 
+	@Override
 	public DtDefinition build() {
 		Assertion.checkState(dtDefinition == null, "Build deja effectué");
 		//-----------------------------------------------------------------

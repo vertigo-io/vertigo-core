@@ -82,6 +82,7 @@ public final class FileInfoDefinition implements Definition {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getName() {
 		return name;
 	}

@@ -27,7 +27,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
  * 
  * @author  pchretien
  */
-public interface DtListFunction<D extends DtObject>{
+public interface DtListFunction<D extends DtObject> {
 	/**
 	 * @param input List
 	 * @return List output

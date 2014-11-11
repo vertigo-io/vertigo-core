@@ -75,6 +75,7 @@ public final class FilterCriteriaBuilder<D extends DtObject> implements Builder<
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public FilterCriteria<D> build() {
 		return new FilterCriteria<>(mapFilter, mapPrefix);
 	}

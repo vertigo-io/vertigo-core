@@ -157,6 +157,7 @@ public final class TaskDefinition implements Definition {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getName() {
 		return name;
 	}

@@ -106,6 +106,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public TaskDefinition build() {
 		return new TaskDefinition(myTaskDefinitionName, myPackageName, myTaskEngineClass, myRequest, myTaskAttributes);
 	}

@@ -62,6 +62,7 @@ public final class FacetDefinitionByRangeBuilder implements Builder<FacetDefinit
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public FacetDefinition build() {
 		return FacetDefinition.createFacetDefinitionByRange(name, dtField, label, facetRanges);
 	}

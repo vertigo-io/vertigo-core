@@ -51,6 +51,7 @@ public interface KTransactionWritable extends KTransaction, AutoCloseable {
 
 	//method is overriden to delete "throw Exception"
 	//close is similar to rollback
+	@Override
 	void close();
 
 }
