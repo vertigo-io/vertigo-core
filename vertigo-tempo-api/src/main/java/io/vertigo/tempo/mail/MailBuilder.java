@@ -152,6 +152,7 @@ public class MailBuilder implements Builder<Mail> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Mail build() {
 		Assertion.checkArgument(!myToAddresses.isEmpty(), "No receiver defined");
 		//---------------------------------------------------------------------

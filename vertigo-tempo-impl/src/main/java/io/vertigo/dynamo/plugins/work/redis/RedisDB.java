@@ -19,8 +19,8 @@
 package io.vertigo.dynamo.plugins.work.redis;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.dynamo.impl.work.WorkResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
+import io.vertigo.dynamo.impl.work.WorkResult;
 import io.vertigo.dynamo.node.Node;
 import io.vertigo.dynamo.work.WorkEngineProvider;
 import io.vertigo.lang.Activeable;
@@ -67,10 +67,12 @@ public final class RedisDB implements Activeable {
 		}
 	}
 
+	@Override
 	public void start() {
 		//
 	}
 
+	@Override
 	public void stop() {
 		//see doc :https://github.com/xetorthio/jedis/wiki/Getting-started
 		jedisPool.destroy();

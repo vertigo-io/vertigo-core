@@ -25,21 +25,22 @@ import io.vertigo.dynamo.work.WorkProcessor;
 import io.vertigo.lang.Assertion;
 
 import java.util.Arrays;
+
 /**
  * 
  * @author pchretien
  */
-final class WorkProcessorImpl<WR,W> implements WorkProcessor<WR, W>{
+final class WorkProcessorImpl<WR, W> implements WorkProcessor<WR, W> {
 	private final WorkManager workManager;
 	private final WorkEngineProvider[] workEngineProviders;
 
-	WorkProcessorImpl(final WorkManager workManager, final WorkEngineProvider workEngineProvider){
-		this(workManager, new WorkEngineProvider[] {workEngineProvider});
+	WorkProcessorImpl(final WorkManager workManager, final WorkEngineProvider workEngineProvider) {
+		this(workManager, new WorkEngineProvider[] { workEngineProvider });
 		//-----------------------------------------------------------------
 		Assertion.checkNotNull(workEngineProvider);
 	}
 
-	private WorkProcessorImpl(final WorkManager workManager, final WorkEngineProvider[] workEngineProviders){
+	private WorkProcessorImpl(final WorkManager workManager, final WorkEngineProvider[] workEngineProviders) {
 		Assertion.checkNotNull(workManager);
 		Assertion.checkNotNull(workEngineProviders);
 		//-----------------------------------------------------------------
@@ -48,23 +49,28 @@ final class WorkProcessorImpl<WR,W> implements WorkProcessor<WR, W>{
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <WR1> WorkProcessor<WR1, W> then(final WorkEngineProvider<WR1, WR> workEngineProvider) {
 		Assertion.checkNotNull(workEngineProvider);
 		//-----------------------------------------------------------------
-		final WorkEngineProvider[] list= Arrays.copyOf(workEngineProviders, workEngineProviders.length+1);
-		list[workEngineProviders.length]=workEngineProvider;
+		final WorkEngineProvider[] list = Arrays.copyOf(workEngineProviders, workEngineProviders.length + 1);
+		list[workEngineProviders.length] = workEngineProvider;
 		return new WorkProcessorImpl<>(workManager, list);
 	}
+
 	/** {@inheritDoc} */
-	public <WR1> WorkProcessor<WR1, W> then(final Class<? extends WorkEngine<WR1, WR>> clazz){
+	@Override
+	public <WR1> WorkProcessor<WR1, W> then(final Class<? extends WorkEngine<WR1, WR>> clazz) {
 		Assertion.checkNotNull(clazz);
 		//-----------------------------------------------------------------
 		return then(new WorkEngineProvider<>(clazz));
 	}
+
 	/** {@inheritDoc} */
+	@Override
 	public WR exec(final W input) {
 		Object result = input;
-		for (final WorkEngineProvider workEngineProvider:workEngineProviders){
+		for (final WorkEngineProvider workEngineProvider : workEngineProviders) {
 			result = workManager.process(result, workEngineProvider);
 		}
 		return (WR) result;

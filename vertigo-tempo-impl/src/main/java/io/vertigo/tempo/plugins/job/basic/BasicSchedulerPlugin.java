@@ -70,11 +70,13 @@ public final class BasicSchedulerPlugin implements SchedulerPlugin, Activeable {
 	private boolean active;
 
 	/** {@inheritDoc} */
+	@Override
 	public void start() {
 		active = true;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void stop() {
 		active = false;
 		timerPool.close();
@@ -89,6 +91,7 @@ public final class BasicSchedulerPlugin implements SchedulerPlugin, Activeable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void scheduleEverySecondInterval(final JobManager jobManager, final JobDefinition jobDefinition, final int periodInSecond) {
 		checkActive();
 		Assertion.checkArgument(periodInSecond <= 7 * 24 * 60 * 60, "La période doit être inférieure à une semaine");
@@ -103,6 +106,7 @@ public final class BasicSchedulerPlugin implements SchedulerPlugin, Activeable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void scheduleEveryDayAtHour(final JobManager jobManager, final JobDefinition jobDefinition, final int hour) {
 		checkActive();
 		//a chaque exécution il est nécessaire de reprogrammer l'execution.
@@ -122,6 +126,7 @@ public final class BasicSchedulerPlugin implements SchedulerPlugin, Activeable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void scheduleNow(final JobManager jobManager, final JobDefinition jobDefinition) {
 		checkActive();
 		final TimerTask task = createTimerTask(jobManager, jobDefinition);
@@ -129,6 +134,7 @@ public final class BasicSchedulerPlugin implements SchedulerPlugin, Activeable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void scheduleAtDate(final JobManager jobManager, final JobDefinition jobDefinition, final Date date) {
 		checkActive();
 		final TimerTask task = createTimerTask(jobManager, jobDefinition);

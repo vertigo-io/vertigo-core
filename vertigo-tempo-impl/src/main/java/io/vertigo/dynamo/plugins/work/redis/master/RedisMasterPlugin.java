@@ -20,8 +20,8 @@ package io.vertigo.dynamo.plugins.work.redis.master;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.impl.work.MasterPlugin;
-import io.vertigo.dynamo.impl.work.WorkResult;
 import io.vertigo.dynamo.impl.work.WorkItem;
+import io.vertigo.dynamo.impl.work.WorkResult;
 import io.vertigo.dynamo.plugins.work.redis.RedisDB;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
@@ -55,11 +55,13 @@ public final class RedisMasterPlugin implements MasterPlugin, Activeable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void start() {
 		redisDB.start();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void stop() {
 		redisDB.stop();
 	}
@@ -71,11 +73,13 @@ public final class RedisMasterPlugin implements MasterPlugin, Activeable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public WorkResult pollResult(final int waitTimeSeconds) {
 		return redisDB.pollResult(waitTimeSeconds);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {
 		redisDB.putWorkItem(workItem);
 	}

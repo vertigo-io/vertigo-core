@@ -39,6 +39,7 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 	private final List<WorkerPlugin> nodePlugins;
 	private final List<Thread> dispatcherThreads = new ArrayList<>();
 	private final LocalCoordinator localWorker = new LocalCoordinator(/*workersCount*/5);
+
 	//private final String nodeId;
 
 	@Inject
@@ -48,7 +49,7 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 		this.nodePlugins = nodePlugins;
 		//---
 		for (final WorkerPlugin nodePlugin : this.nodePlugins) {
-			for (final String workType : nodePlugin.getWorkTypes()){
+			for (final String workType : nodePlugin.getWorkTypes()) {
 				final WWorker worker = new WWorker(workType, localWorker, nodePlugin);
 				dispatcherThreads.add(new Thread(worker));
 			}
@@ -56,12 +57,10 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public List<Node> getNodes() {
 		return null; //nodes;
 	}
-
-
-
 
 	//	private final List<String> workTypes;
 	//
@@ -74,12 +73,12 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 	//		this.workTypes = Arrays.asList(workTypes.trim().split(";"));
 	//	}
 
-
 	//	public String getNodeId() {
 	//		return nodeId;
 	//	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final void start() {
 		for (final Thread dispatcherThread : dispatcherThreads) {
 			dispatcherThread.start();
@@ -87,6 +86,7 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final void stop() {
 		for (final Thread dispatcherThread : dispatcherThreads) {
 			dispatcherThread.interrupt();

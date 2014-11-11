@@ -34,6 +34,7 @@ public final class ThreadLocalWorkEngine implements WorkEngine<Integer, ThreadLo
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Integer process(final ThreadLocalWork work) {
 		final Map<Integer, String> cache = threadLocalCache.get();
 		final int size = cache.size();

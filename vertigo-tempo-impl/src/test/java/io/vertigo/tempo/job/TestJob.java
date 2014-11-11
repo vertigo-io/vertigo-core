@@ -21,6 +21,7 @@ package io.vertigo.tempo.job;
 public final class TestJob implements Runnable {
 	private static int count = 0;
 
+	@Override
 	public void run() {
 		try {
 			//On simule une attente qui correspond à un traitement métier de 100 ms

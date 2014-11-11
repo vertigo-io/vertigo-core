@@ -60,6 +60,7 @@ final class ClientNode {
 
 	private Thread createMaxLifeTime() {
 		return new Thread(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					Thread.sleep(maxLifeTime * 1000);
@@ -82,6 +83,7 @@ final class ClientNode {
 
 	private static Thread createOutputFlusher(final InputStream inputStream, final String prefix, final PrintStream out) {
 		return new Thread(new Runnable() {
+			@Override
 			public void run() {
 				try (final InputStreamReader isr = new InputStreamReader(inputStream)) {
 					try (final BufferedReader br = new BufferedReader(isr)) {

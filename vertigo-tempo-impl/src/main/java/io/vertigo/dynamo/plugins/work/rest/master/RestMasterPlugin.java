@@ -56,6 +56,7 @@ public final class RestMasterPlugin implements MasterPlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public List<String> acceptedWorkTypes() {
 		return distributedWorkTypes;
 	}
@@ -65,6 +66,7 @@ public final class RestMasterPlugin implements MasterPlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public WorkResult pollResult(final int waitTimeSeconds) {
 		return getWorkQueueRestServer().pollResult(waitTimeSeconds);
 	}

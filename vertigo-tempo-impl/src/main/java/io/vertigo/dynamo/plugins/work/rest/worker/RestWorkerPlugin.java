@@ -62,6 +62,7 @@ public final class RestWorkerPlugin implements WorkerPlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public List<String> getWorkTypes() {
 		return workTypes;
 	}
@@ -71,16 +72,19 @@ public final class RestWorkerPlugin implements WorkerPlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <WR, W> WorkItem<WR, W> pollWorkItem(final String workType, final int timeoutInSeconds) {
 		return restQueueClient.pollWorkItem(workType, timeoutInSeconds);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <WR> void putResult(final String workId, final WR result, final Throwable error) {
 		restQueueClient.putResult(workId, result, error);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void putStart(final String workId) {
 		restQueueClient.putStart(workId);
 	}

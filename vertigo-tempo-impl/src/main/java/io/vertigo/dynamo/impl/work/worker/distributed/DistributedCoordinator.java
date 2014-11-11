@@ -48,6 +48,7 @@ public final class DistributedCoordinator implements Coordinator, Activeable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
 		//2. On attend les notifs sur un thread séparé, la main est rendue de suite
 		final WFuture<WR> future = createFuture(workItem.getId(), workResultHandler);
@@ -107,11 +108,13 @@ public final class DistributedCoordinator implements Coordinator, Activeable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final void start() {
 		watcher.start();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final void stop() {
 		if (watcher != null) {
 			watcher.interrupt();

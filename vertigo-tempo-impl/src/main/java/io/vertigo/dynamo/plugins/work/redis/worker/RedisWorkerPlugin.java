@@ -55,11 +55,13 @@ public final class RedisWorkerPlugin implements WorkerPlugin, Activeable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public List<String> getWorkTypes() {
 		return workTypes;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void start() {
 		redisDB.start();
 		//On enregistre le node
@@ -67,6 +69,7 @@ public final class RedisWorkerPlugin implements WorkerPlugin, Activeable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void stop() {
 		//redisDB.registerNode(new Node(getNodeId(), false));
 		redisDB.stop();
@@ -77,16 +80,19 @@ public final class RedisWorkerPlugin implements WorkerPlugin, Activeable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <WR, W> WorkItem<WR, W> pollWorkItem(final String workType, final int timeoutInSeconds) {
 		return redisDB.pollWorkItem(workType, timeoutInSeconds);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <WR> void putResult(final String workId, final WR result, final Throwable error) {
 		redisDB.putResult(workId, result, error);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void putStart(final String workId) {
 		redisDB.putStart(workId);
 	}

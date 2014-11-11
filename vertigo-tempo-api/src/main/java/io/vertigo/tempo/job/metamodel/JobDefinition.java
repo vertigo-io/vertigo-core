@@ -54,6 +54,7 @@ public final class JobDefinition implements Definition {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getName() {
 		return name;
 	}

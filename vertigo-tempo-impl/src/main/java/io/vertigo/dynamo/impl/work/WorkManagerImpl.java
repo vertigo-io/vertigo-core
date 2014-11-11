@@ -64,6 +64,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void start() {
 		//coordinator n'étant pas un plugin
 		//il faut le démarrer et l'arréter explicitement.
@@ -73,6 +74,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void stop() {
 		if (distributedCoordinator.isDefined()) {
 			distributedCoordinator.get().stop();
@@ -85,11 +87,13 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <WR, W> WorkProcessor<WR, W> createProcessor(final WorkEngineProvider<WR, W> workEngineProvider) {
 		return new WorkProcessorImpl<>(this, workEngineProvider);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <WR, W> WR process(final W work, final WorkEngineProvider<WR, W> workEngineProvider) {
 		Assertion.checkNotNull(work);
 		Assertion.checkNotNull(workEngineProvider);
@@ -108,6 +112,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		}
 	}
 
+	@Override
 	public <WR, W> void schedule(final W work, final WorkEngineProvider<WR, W> workEngineProvider, final WorkResultHandler<WR> workResultHandler) {
 		Assertion.checkNotNull(work);
 		Assertion.checkNotNull(workEngineProvider);
@@ -117,11 +122,13 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		submit(workItem, Option.some(workResultHandler));
 	}
 
+	@Override
 	public <WR> void schedule(final Callable<WR> callable, final WorkResultHandler<WR> workResultHandler) {
 		Assertion.checkNotNull(callable);
 		Assertion.checkNotNull(workResultHandler);
 		//---------------------------------------------------------------------
 		final WorkEngineProvider<WR, Void> workEngineProvider = new WorkEngineProvider<>(new WorkEngine<WR, Void>() {
+			@Override
 			public WR process(final Void dummy) {
 				try {
 					return callable.call();

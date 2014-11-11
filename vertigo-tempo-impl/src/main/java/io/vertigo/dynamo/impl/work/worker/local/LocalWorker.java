@@ -76,6 +76,7 @@ final class LocalWorker<WR, W> implements Callable<WR> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public WR call() {
 		final WR result;
 		try {

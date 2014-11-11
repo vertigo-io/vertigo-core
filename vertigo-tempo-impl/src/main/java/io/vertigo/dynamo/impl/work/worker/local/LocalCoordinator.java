@@ -53,6 +53,7 @@ public final class LocalCoordinator implements Coordinator, Closeable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void close() {
 		//Shutdown in two phases (see doc)
 		workers.shutdown();
@@ -77,6 +78,7 @@ public final class LocalCoordinator implements Coordinator, Closeable {
 	 * WorkItem contient à la fois le Work et le callback.  
 	 * @param workItem WorkItem
 	 */
+	@Override
 	public <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
 		Assertion.checkNotNull(workItem);
 		//-------------------------------------------------------------------

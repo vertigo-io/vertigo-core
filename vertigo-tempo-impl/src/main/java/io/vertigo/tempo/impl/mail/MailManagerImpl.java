@@ -57,6 +57,7 @@ public final class MailManagerImpl implements MailManager {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void sendMail(final Mail mail) {
 		Assertion.checkNotNull(mail);
 		//---------------------------------------------------------------------
@@ -64,10 +65,12 @@ public final class MailManagerImpl implements MailManager {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void sendMailASync(final Mail mail, final WorkResultHandler<Date> workResultHandler) {
 		Assertion.checkNotNull(mail);
 		//---------------------------------------------------------------------
 		workManager.schedule(new Callable<Date>() {
+			@Override
 			public Date call() {
 				sendMail(mail);
 				return new Date();

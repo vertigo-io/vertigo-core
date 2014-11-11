@@ -49,6 +49,7 @@ final class WFuture<WR> implements Future<WR>, WorkResultHandler<WR> {
 		redirect = null;
 	}
 
+	@Override
 	public void onDone(final WR result, final Throwable error) {
 		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
 		//---------------------------------------------------------------------
@@ -63,12 +64,14 @@ final class WFuture<WR> implements Future<WR>, WorkResultHandler<WR> {
 		}
 	}
 
+	@Override
 	public void onStart() {
 		if (redirect != null) {
 			redirect.onStart();
 		}
 	}
 
+	@Override
 	public boolean cancel(final boolean mayInterruptIfRunning) {
 		if (done.compareAndSet(false, true)) {
 			myResult = null;
@@ -79,6 +82,7 @@ final class WFuture<WR> implements Future<WR>, WorkResultHandler<WR> {
 		return false;
 	}
 
+	@Override
 	public boolean isCancelled() {
 		if (done.get()) {
 			try {
@@ -91,10 +95,12 @@ final class WFuture<WR> implements Future<WR>, WorkResultHandler<WR> {
 		return false;
 	}
 
+	@Override
 	public boolean isDone() {
 		return done.get() && countDownLatch.getCount() == 0;
 	}
 
+	@Override
 	public WR get() throws InterruptedException, ExecutionException {
 		countDownLatch.await();
 		if (myResult != null) {
@@ -106,6 +112,7 @@ final class WFuture<WR> implements Future<WR>, WorkResultHandler<WR> {
 		throw new ExecutionException(myError);
 	}
 
+	@Override
 	public WR get(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
 		if (!countDownLatch.await(timeout, unit)) {
 			throw new TimeoutException();

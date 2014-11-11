@@ -72,6 +72,7 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void execute(final JobDefinition jobDefinition) {
 		analyticsManager.getAgent().startProcess(PROCESS_TYPE, jobDefinition.getName());
 		try {
@@ -117,21 +118,25 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void scheduleEverySecondInterval(final JobDefinition jobDefinition, final int periodInSecond) {
 		schedulerPlugin.scheduleEverySecondInterval(this, jobDefinition, periodInSecond);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void scheduleEveryDayAtHour(final JobDefinition jobDefinition, final int hour) {
 		schedulerPlugin.scheduleEveryDayAtHour(this, jobDefinition, hour);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void scheduleAtDate(final JobDefinition jobDefinition, final Date date) {
 		schedulerPlugin.scheduleAtDate(this, jobDefinition, date);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void scheduleNow(final JobDefinition jobDefinition) {
 		schedulerPlugin.scheduleNow(this, jobDefinition);
 	}

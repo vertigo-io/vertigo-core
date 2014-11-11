@@ -33,6 +33,7 @@ public final class MyWorkResultHanlder<WR> implements WorkResultHandler<WR> {
 	private int failedCount;
 	private final long start = System.currentTimeMillis();
 
+	@Override
 	public synchronized void onStart() {
 		//System.out.println("onStart");
 	}
@@ -45,6 +46,7 @@ public final class MyWorkResultHanlder<WR> implements WorkResultHandler<WR> {
 		return lastError;
 	}
 
+	@Override
 	public synchronized void onDone(final WR result, final Throwable error) {
 		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
 		//---------------------------------------------------------------------

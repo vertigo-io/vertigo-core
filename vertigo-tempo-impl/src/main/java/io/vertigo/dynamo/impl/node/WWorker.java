@@ -55,10 +55,12 @@ final class WWorker implements Runnable {
 		if (workItem != null) {
 
 			final Option<WorkResultHandler<WR>> workResultHandler = Option.<WorkResultHandler<WR>> some(new WorkResultHandler<WR>() {
+				@Override
 				public void onStart() {
 					workerPlugin.putStart(workItem.getId());
 				}
 
+				@Override
 				public void onDone(final WR result, final Throwable error) {
 					workerPlugin.putResult(workItem.getId(), result, error);
 				}

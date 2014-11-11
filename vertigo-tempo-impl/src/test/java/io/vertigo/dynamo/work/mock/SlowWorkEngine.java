@@ -23,6 +23,7 @@ import io.vertigo.dynamo.work.WorkEngine;
 public final class SlowWorkEngine implements WorkEngine<Boolean, SlowWork> {
 
 	/** {@inheritDoc} */
+	@Override
 	public Boolean process(final SlowWork work) {
 		try {
 			final long sleepTimeAvg = work.getSleepTime();

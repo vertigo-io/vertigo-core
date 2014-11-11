@@ -64,6 +64,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 
 	public static final class LengthWorkEngine implements WorkEngine<Long, String> {
 		/** {@inheritDoc} */
+		@Override
 		public Long process(final String work) {
 			return work.length() * 1L;
 		}
@@ -71,6 +72,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 
 	public static final class SquareWorkEngine implements WorkEngine<Long, Long> {
 		/** {@inheritDoc} */
+		@Override
 		public Long process(final Long work) {
 			return work.longValue() * work.longValue();
 		}
