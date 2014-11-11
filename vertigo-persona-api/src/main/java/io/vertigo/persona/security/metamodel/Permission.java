@@ -66,6 +66,7 @@ public final class Permission implements Definition {
 	/**
 	 * @return Nom de la permission
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}

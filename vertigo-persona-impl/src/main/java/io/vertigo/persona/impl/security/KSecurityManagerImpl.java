@@ -82,22 +82,26 @@ public final class KSecurityManagerImpl implements KSecurityManager, Activeable 
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void start() {
 		localeManager.registerLocaleProvider(createLocaleProvider());
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void stop() {
 		//
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <U extends UserSession> U createUserSession() {
 		return (U) ClassUtil.newInstance(userSessionClassName);
 	}
 
 	private LocaleProvider createLocaleProvider() {
 		return new LocaleProvider() {
+			@Override
 			public Locale getCurrentLocale() {
 				final Option<UserSession> userSession = getCurrentUserSession();
 				return userSession.isDefined() ? userSession.get().getLocale() : null;
@@ -106,6 +110,7 @@ public final class KSecurityManagerImpl implements KSecurityManager, Activeable 
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void startCurrentUserSession(final UserSession user) {
 		Assertion.checkNotNull(user);
 		//On verifie que la UserSession precedante a bien été retiree (securite et memoire).
@@ -117,17 +122,20 @@ public final class KSecurityManagerImpl implements KSecurityManager, Activeable 
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void stopCurrentUserSession() {
 		USER_SESSION_THREAD_LOCAL.remove();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <U extends UserSession> Option<U> getCurrentUserSession() {
 		final U userSession = (U) USER_SESSION_THREAD_LOCAL.get();
 		return Option.option(userSession);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean hasRole(final UserSession userSession, final Set<Role> authorizedRoleSet) {
 		Assertion.checkNotNull(userSession);
 		Assertion.checkNotNull(authorizedRoleSet);
@@ -150,6 +158,7 @@ public final class KSecurityManagerImpl implements KSecurityManager, Activeable 
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean isAuthorized(final String resource, final String operation) {
 		// Note: il s'agit d'une implementation naïve non optimisee,
 		// réalisée pour valider le modèle
@@ -206,6 +215,7 @@ public final class KSecurityManagerImpl implements KSecurityManager, Activeable 
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean isAuthorized(final String resourceType, final Object resource, final String operation) {
 		final ResourceNameFactory resourceNameFactory = resourceNameFactories.get(resourceType);
 		Assertion.checkNotNull(resourceNameFactory, "Ce type de resource : {0}, ne possède pas de ResourceNameFactory.", resourceType);
@@ -214,6 +224,7 @@ public final class KSecurityManagerImpl implements KSecurityManager, Activeable 
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void registerResourceNameFactory(final String resourceType, final ResourceNameFactory resourceNameFactory) {
 		Assertion.checkArgNotEmpty(resourceType);
 		Assertion.checkNotNull(resourceNameFactory);

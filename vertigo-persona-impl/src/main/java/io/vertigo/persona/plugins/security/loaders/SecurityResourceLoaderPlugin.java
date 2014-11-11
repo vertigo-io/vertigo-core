@@ -48,11 +48,13 @@ public final class SecurityResourceLoaderPlugin implements ResourceLoader, Plugi
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Set<String> getTypes() {
 		return Collections.singleton("security");
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void parse(final List<ResourceConfig> resourceConfigs) {
 		for (final ResourceConfig resourceConfig : resourceConfigs) {
 			final XmlSecurityLoader xmlSecurityLoader = new XmlSecurityLoader(resourceManager, resourceConfig.getPath());

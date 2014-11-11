@@ -70,6 +70,7 @@ public final class Role implements Definition {
 	/**
 	 * @return Nom du rôle
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}

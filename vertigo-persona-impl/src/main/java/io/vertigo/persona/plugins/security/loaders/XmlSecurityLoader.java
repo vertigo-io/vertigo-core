@@ -114,6 +114,7 @@ final class XmlSecurityLoader {
 		Assertion.checkArgNotEmpty(dtdResource);
 		//-----------------------------------------------------------------
 		final EntityResolver entityResolver = new EntityResolver() {
+			@Override
 			public InputSource resolveEntity(final String publicId, final String systemId) throws SAXException, IOException {
 				return new InputSource(getClass().getResourceAsStream(dtdResource));
 			}
