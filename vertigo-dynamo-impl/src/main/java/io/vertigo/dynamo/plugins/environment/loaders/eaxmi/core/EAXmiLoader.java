@@ -21,6 +21,7 @@ package io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core;
 import io.vertigo.dynamo.plugins.environment.loaders.TagAssociation;
 import io.vertigo.dynamo.plugins.environment.loaders.TagAttribute;
 import io.vertigo.dynamo.plugins.environment.loaders.TagClass;
+import io.vertigo.dynamo.plugins.environment.loaders.TagId;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -39,7 +40,7 @@ import org.apache.log4j.Logger;
  * @author pforhan
  */
 public final class EAXmiLoader {
-	private final Map<EAXmiId, EAXmiObject> map;
+	private final Map<TagId, EAXmiObject> map;
 
 	private final Logger log = Logger.getLogger(this.getClass());
 

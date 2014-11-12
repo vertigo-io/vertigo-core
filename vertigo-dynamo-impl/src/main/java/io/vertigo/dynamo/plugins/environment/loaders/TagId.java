@@ -16,22 +16,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core;
+package io.vertigo.dynamo.plugins.environment.loaders;
 
 import io.vertigo.lang.Assertion;
 
 /**
- * Classe de gestion des identifiants du XMI.
- * @author pforhan
-  */
-final class EAXmiId {
+ * Identifiant d'un objet powerAMC ou XMI.
+ *
+ * @author pchretien, pforhan
+ */
+public final class TagId {
 	private final String keyValue;
 
 	/**
 	 * Constructeur.
 	 * @param keyValue Valeur de l'identiant
 	 */
-	EAXmiId(final String keyValue) {
+	public TagId(final String keyValue) {
 		Assertion.checkNotNull(keyValue);
 		//------------------------------------------------------------------
 		this.keyValue = keyValue;
@@ -46,8 +47,8 @@ final class EAXmiId {
 	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object o) {
-		if (o instanceof EAXmiId) {
-			return ((EAXmiId) o).keyValue.equals(this.keyValue);
+		if (o instanceof TagId) {
+			return ((TagId) o).keyValue.equals(this.keyValue);
 		}
 		return false;
 	}
@@ -57,5 +58,4 @@ final class EAXmiId {
 	public String toString() {
 		return "id(" + keyValue + ')';
 	}
-
 }

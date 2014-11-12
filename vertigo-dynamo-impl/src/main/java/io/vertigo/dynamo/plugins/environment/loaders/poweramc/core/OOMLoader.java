@@ -21,6 +21,7 @@ package io.vertigo.dynamo.plugins.environment.loaders.poweramc.core;
 import io.vertigo.dynamo.plugins.environment.loaders.TagAssociation;
 import io.vertigo.dynamo.plugins.environment.loaders.TagAttribute;
 import io.vertigo.dynamo.plugins.environment.loaders.TagClass;
+import io.vertigo.dynamo.plugins.environment.loaders.TagId;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -38,7 +39,7 @@ import javax.xml.parsers.SAXParserFactory;
  * @author pchretien
  */
 public final class OOMLoader {
-	private final Map<OOMId, OOMObject> map;
+	private final Map<TagId, OOMObject> map;
 
 	/**
 	 * Constructeur.
@@ -97,8 +98,8 @@ public final class OOMLoader {
 		//- une liste des identifiers qui référencent des champs
 		//- un bloc <c:PrimaryIdentifier> (non parsé) qui référence les primaryIdentifiers
 		//C'est pourquoi on a une double redirection
-		final List<OOMId> pkList = new ArrayList<>();
-		for (final OOMId ref : obj.getRefList()) {
+		final List<TagId> pkList = new ArrayList<>();
+		for (final TagId ref : obj.getRefList()) {
 			final OOMObject childRef = map.get(ref); //On recherche les references vers identifiers (ceux dans PrimaryIdentifier)
 			if (childRef != null && childRef.getType() == OOMType.Identifier) {
 				pkList.addAll(childRef.getRefList()); //On recherche les champs pointé par l'identifier
@@ -135,7 +136,7 @@ public final class OOMLoader {
 
 		//Domain
 		String domain = null;
-		for (final OOMId ref : obj.getRefList()) {
+		for (final TagId ref : obj.getRefList()) {
 			final OOMObject childRef = map.get(ref);
 			if (childRef != null && childRef.getType() == OOMType.Domain) {
 				Assertion.checkState(domain == null, "domain deja affecté");
@@ -160,7 +161,7 @@ public final class OOMLoader {
 		//On recherche les objets référencés par l'association.
 		OOMObject objectB = null;
 		OOMObject objectA = null;
-		for (final OOMId ref : obj.getRefList()) {
+		for (final TagId ref : obj.getRefList()) {
 			final OOMObject childRef = map.get(ref);
 			if (childRef != null && (childRef.getType() == OOMType.Class || childRef.getType() == OOMType.Shortcut)) {
 				if (objectB == null) {

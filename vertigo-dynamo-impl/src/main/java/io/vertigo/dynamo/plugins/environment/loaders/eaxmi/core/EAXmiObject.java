@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core;
 
+import io.vertigo.dynamo.plugins.environment.loaders.TagId;
 import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
@@ -70,7 +71,7 @@ final class EAXmiObject {
 	private static final String PROPERTY_NAVIGABILITY_AB = "Source -> Destination";
 	private static final String PROPERTY_NAVIGABILITY_BA = "Destination -> Source";
 
-	private final EAXmiId id;
+	private final TagId id;
 	private final EAXmiObject parent;
 	private final EAXmiType type;
 	private final List<EAXmiObject> children = new ArrayList<>();
@@ -89,8 +90,8 @@ final class EAXmiObject {
 	private String roleALabel;
 	private String roleBLabel;
 
-	private EAXmiId classA;
-	private EAXmiId classB;
+	private TagId classA;
+	private TagId classB;
 
 	private String roleAMultiplicity;
 	private String roleBMultiplicity;
@@ -113,7 +114,7 @@ final class EAXmiObject {
 		root = this;
 	}
 
-	private EAXmiObject(final EAXmiObject parent, final EAXmiId id, final EAXmiType type) {
+	private EAXmiObject(final EAXmiObject parent, final TagId id, final EAXmiType type) {
 		Assertion.checkNotNull(parent);
 		Assertion.checkNotNull(id);
 		Assertion.checkNotNull(type);
@@ -128,7 +129,7 @@ final class EAXmiObject {
 		return new EAXmiObject();
 	}
 
-	EAXmiObject createEAXmiObject(final EAXmiId newId, final EAXmiType newType, final String leNom) {
+	EAXmiObject createEAXmiObject(final TagId newId, final EAXmiType newType, final String leNom) {
 		log.debug("Le père : " + name + " le fils " + leNom + " Le Type " + newType.name());
 		final EAXmiObject created = new EAXmiObject(this, newId, newType);
 		if (leNom != null) {
@@ -150,7 +151,7 @@ final class EAXmiObject {
 		return parent;
 	}
 
-	EAXmiId getId() {
+	TagId getId() {
 		return id;
 	}
 
@@ -225,21 +226,21 @@ final class EAXmiObject {
 	/**
 	 * @return La classe d'origine
 	 */
-	public EAXmiId getClassA() {
+	public TagId getClassA() {
 		return classA;
 	}
 
 	/**
 	 * Setter.
 	 */
-	public void setClassA(final EAXmiId classA) {
+	public void setClassA(final TagId classA) {
 		this.classA = classA;
 	}
 
 	/**
 	 * @return La classe de destination
 	 */
-	public EAXmiId getClassB() {
+	public TagId getClassB() {
 		return classB;
 	}
 
@@ -272,12 +273,12 @@ final class EAXmiObject {
 		} else if (PROPERTY_CLASSE_A.equals(propertyName)) {
 			final String valeur = attributs.getValue(PROPERTY_CLASSE_NAME);
 			if (valeur != null) {
-				classA = new EAXmiId(valeur);
+				classA = new TagId(valeur);
 			}
 		} else if (PROPERTY_CLASSE_B.equals(propertyName)) {
 			final String valeur = attributs.getValue(PROPERTY_CLASSE_NAME);
 			if (valeur != null) {
-				classB = new EAXmiId(valeur);
+				classB = new TagId(valeur);
 			}
 		}
 		//On ne tient pas compte des autres propriétés
