@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.plugins.environment.loaders.poweramc;
 
 import io.vertigo.commons.resource.ResourceManager;
+import io.vertigo.dynamo.plugins.environment.loaders.AbstractLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.TagLoader;
 import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMLoader;
 

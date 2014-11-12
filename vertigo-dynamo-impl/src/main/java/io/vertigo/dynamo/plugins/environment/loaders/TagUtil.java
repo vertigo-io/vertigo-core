@@ -2,14 +2,14 @@ package io.vertigo.dynamo.plugins.environment.loaders;
 
 import io.vertigo.lang.Assertion;
 
-public final class TagUtil {
+final class TagUtil {
 
 	/**
 	 * Conversion français vers Java avec remplacement d'accents : Xxx éèà zzz -> XxxEeaZzz.
 	 * @param str la chaine de caratères sur laquelle s'appliquent les transformation
 	 * @return Renvoie le résultat
 	 */
-	public static String french2Java(final String str) {
+	static String french2Java(final String str) {
 		Assertion.checkNotNull(str);
 		Assertion.checkArgument(str.length() > 0, "La chaine à modifier ne doit pas être vide.");
 		// ----------------------------------------------------------------------
@@ -84,7 +84,6 @@ public final class TagUtil {
 				result = c;
 				break;
 		}
-
 		return result;
 	}
 }
