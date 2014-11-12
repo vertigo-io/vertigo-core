@@ -23,6 +23,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
+import io.vertigo.studio.reporting.Metric;
 import io.vertigo.studio.reporting.MetricEngine;
 
 /**
@@ -34,7 +35,7 @@ public final class DependencyMetricEngine implements MetricEngine<DtDefinition> 
 
 	/** {@inheritDoc} */
 	@Override
-	public DependencyMetric execute(final DtDefinition dtDefinition) {
+	public Metric execute(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//---------------------------------------------------------------------
 		int count = 0;

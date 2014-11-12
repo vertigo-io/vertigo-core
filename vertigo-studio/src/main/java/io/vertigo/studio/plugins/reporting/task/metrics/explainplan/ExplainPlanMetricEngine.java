@@ -31,6 +31,7 @@ import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.reporting.task.metrics.performance.TaskPopulator;
+import io.vertigo.studio.reporting.Metric;
 import io.vertigo.studio.reporting.MetricEngine;
 
 import java.sql.Connection;
@@ -60,7 +61,7 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 
 	/** {@inheritDoc} */
 	@Override
-	public ExplainPlanMetric execute(final TaskDefinition taskDefinition) {
+	public Metric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//---------------------------------------------------------------------
 		try {

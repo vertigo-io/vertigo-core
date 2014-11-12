@@ -24,6 +24,7 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
+import io.vertigo.studio.reporting.Metric;
 import io.vertigo.studio.reporting.MetricEngine;
 
 /**
@@ -46,7 +47,7 @@ public final class PerformanceMetricEngine implements MetricEngine<TaskDefinitio
 
 	/** {@inheritDoc} */
 	@Override
-	public PerformanceMetric execute(final TaskDefinition taskDefinition) {
+	public Metric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//---------------------------------------------------------------------
 		try {

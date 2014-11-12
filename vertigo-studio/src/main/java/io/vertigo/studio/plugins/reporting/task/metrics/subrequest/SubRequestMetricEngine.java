@@ -20,6 +20,7 @@ package io.vertigo.studio.plugins.reporting.task.metrics.subrequest;
 
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
+import io.vertigo.studio.reporting.Metric;
 import io.vertigo.studio.reporting.MetricEngine;
 
 /**
@@ -30,10 +31,36 @@ import io.vertigo.studio.reporting.MetricEngine;
 public final class SubRequestMetricEngine implements MetricEngine<TaskDefinition> {
 	/** {@inheritDoc} */
 	@Override
-	public SubRequestMetric execute(final TaskDefinition taskDefinition) {
+	public Metric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//---------------------------------------------------------------------
 		final int subRequestCount = taskDefinition.getRequest().toUpperCase().split("SELECT").length - 1;
-		return new SubRequestMetric(subRequestCount);
+		return new Metric() {
+			@Override
+			public String getTitle() {
+				return "Nombre de ss-requêtes";
+			}
+
+			@Override
+			public Integer getValue() {
+				return subRequestCount;
+			}
+
+			/** {@inheritDoc} */
+			@Override
+			public String getValueInformation() {
+				return null;
+			}
+
+			@Override
+			public String getUnit() {
+				return "";
+			}
+
+			@Override
+			public Status getStatus() {
+				return Status.Executed;
+			}
+		};
 	}
 }

@@ -20,6 +20,7 @@ package io.vertigo.studio.plugins.reporting.task.metrics.requestsize;
 
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
+import io.vertigo.studio.reporting.Metric;
 import io.vertigo.studio.reporting.MetricEngine;
 
 /**
@@ -30,10 +31,36 @@ import io.vertigo.studio.reporting.MetricEngine;
 public final class RequestSizeMetricEngine implements MetricEngine<TaskDefinition> {
 	/** {@inheritDoc} */
 	@Override
-	public RequestSizeMetric execute(final TaskDefinition taskDefinition) {
+	public Metric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//---------------------------------------------------------------------
 		final int size = taskDefinition.getRequest().length();
-		return new RequestSizeMetric(size);
+		return new Metric() {
+			@Override
+			public String getTitle() {
+				return "Taille requête";
+			}
+
+			@Override
+			public Integer getValue() {
+				return size;
+			}
+
+			/** {@inheritDoc} */
+			@Override
+			public String getValueInformation() {
+				return null;
+			}
+
+			@Override
+			public String getUnit() {
+				return "caractères";
+			}
+
+			@Override
+			public Status getStatus() {
+				return Status.Executed;
+			}
+		};
 	}
 }

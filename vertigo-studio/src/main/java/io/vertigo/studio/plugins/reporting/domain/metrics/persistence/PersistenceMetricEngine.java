@@ -21,6 +21,7 @@ package io.vertigo.studio.plugins.reporting.domain.metrics.persistence;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.lang.Assertion;
+import io.vertigo.studio.reporting.Metric;
 import io.vertigo.studio.reporting.MetricEngine;
 
 /**
@@ -43,7 +44,7 @@ public final class PersistenceMetricEngine implements MetricEngine<DtDefinition>
 
 	/** {@inheritDoc} */
 	@Override
-	public PersitenceMetric execute(final DtDefinition dtDefinition) {
+	public Metric execute(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//---------------------------------------------------------------------
 		return new PersitenceMetric(dtDefinition.isPersistent(), test(dtDefinition));
