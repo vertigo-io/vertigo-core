@@ -77,6 +77,7 @@ final class RedisInvocationHandler<F> implements InvocationHandler {
 	//==========================================================================
 
 	/** {@inheritDoc} */
+	@Override
 	public Object invoke(final Object proxy, final Method method, final Object[] parameters) throws Throwable {
 		//System.out.println(">>invoke");
 		Assertion.checkNotNull(proxy);
@@ -93,7 +94,7 @@ final class RedisInvocationHandler<F> implements InvocationHandler {
 		//		return result;
 	}
 	//	private Object doInvoke(final Method method, final Object[] parameters) throws IOException {
-	//	
+	//
 	//		final URLConnection connection = openConnection(serverURL, address, method.getName());
 	//		final HttpTunnellingRequest request = new HttpTunnellingRequest(beanClass.getName(), method.getName(), method.getParameterTypes(), parameters);
 	//		HttpTunnellingReaderWriterUtil.write(request, connection.getOutputStream());

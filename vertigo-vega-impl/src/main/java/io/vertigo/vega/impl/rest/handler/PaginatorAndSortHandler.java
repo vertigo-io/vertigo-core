@@ -59,6 +59,7 @@ final class PaginatorAndSortHandler implements RouteHandler {
 	}
 
 	/** {@inheritDoc}  */
+	@Override
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
 		//Criteria in body (and only criteria)
 		//UiListState must be in query

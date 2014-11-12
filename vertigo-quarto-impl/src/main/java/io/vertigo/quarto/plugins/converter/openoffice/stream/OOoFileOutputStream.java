@@ -50,6 +50,7 @@ public final class OOoFileOutputStream implements XOutputStream {
 	//
 
 	/** {@inheritDoc} */
+	@Override
 	public void writeBytes(final byte[] values) throws IOException {
 		try {
 			fileOutputStream.write(values);
@@ -59,6 +60,7 @@ public final class OOoFileOutputStream implements XOutputStream {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void closeOutput() throws IOException {
 		try {
 			fileOutputStream.flush();
@@ -69,6 +71,7 @@ public final class OOoFileOutputStream implements XOutputStream {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void flush() throws IOException {
 		try {
 			fileOutputStream.flush();

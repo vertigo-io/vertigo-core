@@ -67,11 +67,13 @@ final class ODTTagRemoverUtil {
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public void onNoBodyEndTag(final String tagXML, final StringBuilder output) {
 			//rien
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public void onBodyEndTag(final String tagXML, final String bodyContent, final StringBuilder output) {
 			if (keepBody) {
 				output.append(bodyContent);

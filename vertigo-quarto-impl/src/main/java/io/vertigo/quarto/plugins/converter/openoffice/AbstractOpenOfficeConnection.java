@@ -58,9 +58,9 @@ import com.sun.star.uno.XComponentContext;
  * API de connexion à OpenOffice repris de JodConverter 2.2.0 (LGPL = utilisable pour logiciel propriétaire)
  * (http://www.artofsolving.com/opensource/jodconverter).
  * La différence est la suppression de la dépendance au logger d'origine, pour pointer sur log4j.
- * 
+ *
  * Cet utilitaire de connexion à OpenOffice n'est pas Multi-Thread !!
- * 
+ *
  * @author npiedeloup
  */
 abstract class AbstractOpenOfficeConnection implements OpenOfficeConnection, XEventListener {
@@ -83,6 +83,7 @@ abstract class AbstractOpenOfficeConnection implements OpenOfficeConnection, XEv
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final void connect() throws ConnectException {
 		logger.debug("connecting");
 		try {
@@ -110,6 +111,7 @@ abstract class AbstractOpenOfficeConnection implements OpenOfficeConnection, XEv
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final void close() {
 		logger.debug("disconnecting");
 		expectingDisconnection = true;
@@ -117,6 +119,7 @@ abstract class AbstractOpenOfficeConnection implements OpenOfficeConnection, XEv
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final void disposing(final EventObject event) {
 		connected = false;
 		if (expectingDisconnection) {
@@ -140,16 +143,19 @@ abstract class AbstractOpenOfficeConnection implements OpenOfficeConnection, XEv
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final XComponentLoader getDesktop() {
 		return UnoRuntime.queryInterface(XComponentLoader.class, getService("com.sun.star.frame.Desktop"));
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final XFileIdentifierConverter getFileContentProvider() {
 		return UnoRuntime.queryInterface(XFileIdentifierConverter.class, getService("com.sun.star.ucb.FileContentProvider"));
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final XSimpleFileAccess getSimpleFileAccess() {
 		return UnoRuntime.queryInterface(XSimpleFileAccess.class, getService("com.sun.star.ucb.SimpleFileAccess"));
 	}

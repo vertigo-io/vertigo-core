@@ -49,6 +49,7 @@ final class DOCXCleanerProcessor implements MergerProcessor {
 	private static final String EMPTY_STRING = "\\s+";
 
 	/** {@inheritDoc} */
+	@Override
 	public String execute(final String xmlInput, final PublisherData publisherData) {
 		final Document xmlDoc = DOCXUtil.loadDOM(xmlInput);
 		final XPath xpath = DOCXUtil.loadXPath();

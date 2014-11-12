@@ -31,6 +31,7 @@ public final class TagObject extends AbstractKScriptTag implements ScriptTag {
 	private static final String OBJECT_ATTRIBUTE = "^([0-9a-zA-Z_]+) *= *([0-9a-zA-Z_]+(\\.[0-9a-zA-Z_]+)*)";
 
 	/** {@inheritDoc} */
+	@Override
 	public String renderOpen(final ScriptTagContent tag, final ScriptContext context) {
 		// Renvoie un tableau de trois elements d'après l'expression reguliere
 		final String[] parsing = parseAttribute(tag.getAttribute(), OBJECT_ATTRIBUTE);
@@ -55,6 +56,7 @@ public final class TagObject extends AbstractKScriptTag implements ScriptTag {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String renderClose(final ScriptTagContent content, final ScriptContext context) {
 		if (context.empty()) {
 			throw new RuntimeException("document malforme : le tag object est mal ferme");

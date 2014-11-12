@@ -80,9 +80,10 @@ public final class PublisherNodeDefinitionBuilder implements Builder<PublisherNo
 	}
 
 	/**
-	 * 
+	 *
 	 * @return PublisherDataNodeDefinition
 	 */
+	@Override
 	public PublisherNodeDefinition build() {
 		return new PublisherNodeDefinition(publisherFields);
 	}

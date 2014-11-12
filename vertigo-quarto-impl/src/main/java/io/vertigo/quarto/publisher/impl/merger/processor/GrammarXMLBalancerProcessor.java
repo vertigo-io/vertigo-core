@@ -102,6 +102,7 @@ public final class GrammarXMLBalancerProcessor implements MergerProcessor {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String execute(final String input, final PublisherData publisherData) {
 		final StringBuilder output = new StringBuilder(input);
 		String grammarTag;

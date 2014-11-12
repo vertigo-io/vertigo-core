@@ -51,6 +51,7 @@ public final class SecurityHandler implements RouteHandler {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
 		// 2. Check user is authentified
 		final Option<UserSession> userSessionOption = securityManager.getCurrentUserSession();

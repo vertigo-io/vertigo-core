@@ -26,12 +26,12 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * As wikipedia says  
- * The sequence operator e1 e2 first invokes e1, 
- * and if e1 succeeds, subsequently invokes e2 on the remainder of the input string left unconsumed by e1, 
- * and returns the result. 
+ * As wikipedia says
+ * The sequence operator e1 e2 first invokes e1,
+ * and if e1 succeeds, subsequently invokes e2 on the remainder of the input string left unconsumed by e1,
+ * and returns the result.
  * If either e1 or e2 fails, then the sequence expression e1 e2 fails.
- * 
+ *
  * @author pchretien
  */
 public final class SequenceRule implements Rule<List<?>> {
@@ -68,15 +68,18 @@ public final class SequenceRule implements Rule<List<?>> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getExpression() {
 		return expression;
 	}
 
+	@Override
 	public Parser<List<?>> createParser() {
 		return new Parser<List<?>>() {
 			private List results;
 
 			/** {@inheritDoc} */
+			@Override
 			public int parse(final String text, final int start) throws NotFoundException {
 				results = new ArrayList<>();
 				int index = start;
@@ -92,6 +95,7 @@ public final class SequenceRule implements Rule<List<?>> {
 				return index;
 			}
 
+			@Override
 			public List<?> get() {
 				return results;
 			}

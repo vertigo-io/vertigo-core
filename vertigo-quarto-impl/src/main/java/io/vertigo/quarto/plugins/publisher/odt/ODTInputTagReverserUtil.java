@@ -53,11 +53,13 @@ final class ODTInputTagReverserUtil {
 	static final class TagInverser implements ParserXMLHandler {
 
 		/** {@inheritDoc} */
+		@Override
 		public void onNoBodyEndTag(final String tagXML, final StringBuilder output) {
 			//rien
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public void onBodyEndTag(final String tagXML, final String bodyContent, final StringBuilder output) {
 			output.append(ODTInputTagReverserUtil.doInversion(tagXML, bodyContent));
 		}
@@ -71,14 +73,14 @@ final class ODTInputTagReverserUtil {
 			final int indexDebutBody = tagToInverse.indexOf(bodyContent, indexFinAttribut);
 
 			return new StringBuilder(tagToInverse.length())//
-			.append(tagToInverse.substring(0, indexAttribut))//
-			.append(DESCRIPTION_ATTRIBUTE)//
-			.append("=\"")//
-			.append(bodyContent)//
-			.append("\">")//
-			.append(valueAttribut)//
-			.append(tagToInverse.substring(indexDebutBody + bodyContent.length()))//
-			.toString();//
+					.append(tagToInverse.substring(0, indexAttribut))//
+					.append(DESCRIPTION_ATTRIBUTE)//
+					.append("=\"")//
+					.append(bodyContent)//
+					.append("\">")//
+					.append(valueAttribut)//
+					.append(tagToInverse.substring(indexDebutBody + bodyContent.length()))//
+					.toString();//
 		}
 		return "";
 	}

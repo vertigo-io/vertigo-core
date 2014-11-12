@@ -41,18 +41,21 @@ public class IE8CompatablityFixServlet implements Filter {
 	private String mode;
 
 	/** {@inheritDoc} */
+	@Override
 	public void init(final FilterConfig filterConfig) throws ServletException {
 		mode = filterConfig.getInitParameter("mode");
 		Assertion.checkState(ACCEPTED_MODES.contains(mode), "Mode de compatibilité IE non géré {0} (modes ok :{1})", mode, ACCEPTED_MODES);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
 		((HttpServletResponse) response).setHeader("X-UA-Compatible", "IE=" + mode);
 		chain.doFilter(request, response);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void destroy() {
 		//rien
 	}

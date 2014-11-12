@@ -52,6 +52,7 @@ public final class MergerScriptEvaluatorProcessor implements MergerProcessor {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String execute(final String script, final PublisherData publisherData) {
 		final List<ExpressionParameter> scriptEvaluatorParameters = new ArrayList<>();
 

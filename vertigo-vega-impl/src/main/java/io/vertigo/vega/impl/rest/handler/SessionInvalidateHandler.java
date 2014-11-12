@@ -31,6 +31,7 @@ import spark.Session;
 public final class SessionInvalidateHandler implements RouteHandler {
 
 	/** {@inheritDoc} */
+	@Override
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
 		try {
 			return chain.handle(request, response, routeContext);

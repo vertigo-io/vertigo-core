@@ -62,6 +62,7 @@ public final class RedisElasticaEngine implements ElasticaEngine, Activeable {
 		}
 	}
 
+	@Override
 	public <F> F createProxy(final Class<F> facadeClass) {
 		final InvocationHandler proxy = new RedisInvocationHandler(jedisPool, facadeClass);
 		return (F) Proxy.newProxyInstance(proxy.getClass().getClassLoader(), new Class[] { facadeClass }, proxy);

@@ -28,7 +28,7 @@ import com.sun.star.io.XSeekable;
 
 /**
  * InputStream de lecture de fichier pour l'envoyer vers le serveur OpenOffice.
- * 
+ *
  * @author tchassagnette
  */
 public final class OOoFileInputStream implements XInputStream, XSeekable {
@@ -53,6 +53,7 @@ public final class OOoFileInputStream implements XInputStream, XSeekable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public long getLength() throws IOException {
 		try {
 			return randomAccessFile.length();
@@ -62,6 +63,7 @@ public final class OOoFileInputStream implements XInputStream, XSeekable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public long getPosition() throws IOException {
 		try {
 			return randomAccessFile.getFilePointer();
@@ -71,6 +73,7 @@ public final class OOoFileInputStream implements XInputStream, XSeekable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void seek(final long arg0) throws IOException {
 		try {
 			randomAccessFile.seek(arg0);
@@ -80,6 +83,7 @@ public final class OOoFileInputStream implements XInputStream, XSeekable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int available() throws IOException {
 		//retourne le nombre d'octet readable ou skipable sans blocage
 		try {
@@ -90,6 +94,7 @@ public final class OOoFileInputStream implements XInputStream, XSeekable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void closeInput() throws IOException {
 		try {
 			randomAccessFile.close();
@@ -99,6 +104,7 @@ public final class OOoFileInputStream implements XInputStream, XSeekable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int readBytes(final byte[][] buffer, final int bufferSize) throws IOException {
 		int numberOfReadBytes;
 		try {
@@ -123,11 +129,13 @@ public final class OOoFileInputStream implements XInputStream, XSeekable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int readSomeBytes(final byte[][] buffer, final int bufferSize) throws IOException {
 		return readBytes(buffer, bufferSize);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void skipBytes(final int arg0) throws IOException {
 		try {
 			randomAccessFile.skipBytes(arg0);

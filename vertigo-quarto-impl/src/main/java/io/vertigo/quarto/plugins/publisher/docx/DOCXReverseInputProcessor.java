@@ -57,6 +57,7 @@ final class DOCXReverseInputProcessor implements MergerProcessor {
 	private static final String W_FLD_CHAR = "w:fldChar";
 
 	/** {@inheritDoc} */
+	@Override
 	public String execute(final String xmlInput, final PublisherData publisherData) {
 		final Document xmlDoc = DOCXUtil.loadDOM(xmlInput);
 		final XPath xpath = DOCXUtil.loadXPath();

@@ -71,6 +71,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final KFile convertToFormat(final KFile file, final String targetFormat) {
 		Assertion.checkArgNotEmpty(targetFormat);
 		// ---------------------------------------------------------------------

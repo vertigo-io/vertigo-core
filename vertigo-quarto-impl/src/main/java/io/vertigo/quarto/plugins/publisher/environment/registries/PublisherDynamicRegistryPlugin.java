@@ -50,6 +50,7 @@ public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistr
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void onDefinition(final DynamicDefinition xdefinition) {
 		final Entity metaDefinition = xdefinition.getEntity();
 

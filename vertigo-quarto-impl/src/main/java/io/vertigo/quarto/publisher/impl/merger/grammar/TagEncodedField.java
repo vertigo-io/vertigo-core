@@ -32,6 +32,7 @@ public final class TagEncodedField extends AbstractKScriptTag implements ScriptT
 	private static final String CALL = "=" + ENCODER + ".encode({0})";
 
 	/** {@inheritDoc} */
+	@Override
 	public String renderOpen(final ScriptTagContent tag, final ScriptContext context) {
 		final String[] parsing = parseAttribute(tag.getAttribute(), FIELD_PATH_CALL);
 		// le tag est dans le bon format
@@ -41,6 +42,7 @@ public final class TagEncodedField extends AbstractKScriptTag implements ScriptT
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String renderClose(final ScriptTagContent tag, final ScriptContext context) {
 		return "";
 	}

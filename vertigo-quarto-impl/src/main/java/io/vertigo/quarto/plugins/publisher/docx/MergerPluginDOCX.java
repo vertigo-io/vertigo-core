@@ -43,7 +43,7 @@ import javax.inject.Inject;
 
 /**
  * Gestionnaire des fusions de documents Docx.
- * 
+ *
  * @author adufranne
  */
 public final class MergerPluginDOCX implements MergerPlugin {
@@ -51,7 +51,7 @@ public final class MergerPluginDOCX implements MergerPlugin {
 
 	/**
 	 * Constructeur avec ODTScriptGrammar par défaut.
-	 * 
+	 *
 	 * @param scriptManager le script manager.
 	 */
 	@Inject
@@ -87,10 +87,11 @@ public final class MergerPluginDOCX implements MergerPlugin {
 
 	/**
 	 * Effectue la fusion.
-	 * 
+	 *
 	 * @return Fichier résultat de la fusion
 	 * @throws IOException Exception système
 	 */
+	@Override
 	public File execute(final URL modelFileURL, final PublisherData data) throws IOException {
 		Assertion.checkNotNull(modelFileURL);
 		Assertion.checkNotNull(data);
@@ -106,7 +107,7 @@ public final class MergerPluginDOCX implements MergerPlugin {
 
 	/**
 	 * Effectue le traitement.
-	 * 
+	 *
 	 * @param modelFile Fichier model, ce fichier n'est pas modifié.
 	 * @param publisherData Parametres des données à fusionner
 	 * @return Fichier d'entrée modifié par le sous-processor
@@ -129,6 +130,7 @@ public final class MergerPluginDOCX implements MergerPlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public PublisherFormat getPublisherFormat() {
 		return PublisherFormat.DOCX;
 	}

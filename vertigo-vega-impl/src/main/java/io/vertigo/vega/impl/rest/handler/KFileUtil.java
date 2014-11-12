@@ -77,11 +77,11 @@ final class KFileUtil {
 	static void sendKFile(final Object result, final Request request, final Response response) {
 		sendKFile((KFile) result, true, request, response);
 	}
-	
+
 	static void sendKFileAsStream(final Object result, final Request request, final Response response) {
 		sendKFile((KFile) result, false, request, response);
 	}
-	
+
 	private static void sendKFile(final KFile result, final boolean attachment, final Request request, final Response response) {
 		try {
 			send(result, attachment, request, response);
@@ -128,7 +128,7 @@ final class KFileUtil {
 	 * @return String
 	 */
 	private static String encodeFileNameToContentDisposition(final Request request, final String fileName,
-			boolean isAttachment) {
+			final boolean isAttachment) {
 		if (fileName == null) {
 			return "";
 		}
@@ -144,13 +144,13 @@ final class KFileUtil {
 		if (isAttachment) {
 			sb.append("attachment;");
 		}
-		String cleanestFileName = cleanFileName.replaceAll(" ", "%20"); //cleanest for default fileName
+		final String cleanestFileName = cleanFileName.replaceAll(" ", "%20"); //cleanest for default fileName
 		sb.append("filename=" + cleanestFileName);
 		byte[] utf8FileName;
 		try {
 			utf8FileName = cleanFileName.getBytes("utf8"); //Utf8 fileName
 			sb.append(";filename*=UTF-8''");
-			for (byte c : utf8FileName) {
+			for (final byte c : utf8FileName) {
 				if (isSimpleLetterOrDigit(c) || c == '.' || c == '-' || c == '_') {
 					sb.append((char) c);
 				} else {
@@ -158,7 +158,7 @@ final class KFileUtil {
 					sb.append(Integer.toHexString(c & 0xff)); // we want byte as a char on one byte
 				}
 			}
-		} catch (UnsupportedEncodingException e) {
+		} catch (final UnsupportedEncodingException e) {
 			//nothing : utf-8 unsupported we only use the filename= header
 		}
 		return sb.toString();
@@ -192,6 +192,7 @@ final class KFileUtil {
 		}
 		final FileManager fileManager = Home.getComponentSpace().resolve(FileManager.class);
 		return fileManager.createFile(fileName, mimeType, new Date(), file.getSize(), new InputStreamBuilder() {
+			@Override
 			public InputStream createInputStream() throws IOException {
 				return file.getInputStream();
 			}

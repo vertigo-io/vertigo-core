@@ -80,6 +80,7 @@ public final class UiSecurityTokenManagerImpl implements UiSecurityTokenManager 
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Option<Serializable> getAndRemove(final String objectUUID) {
 		Assertion.checkArgNotEmpty(objectUUID, "Security key is mandatory");
 		//---------------------------------------------------------------------

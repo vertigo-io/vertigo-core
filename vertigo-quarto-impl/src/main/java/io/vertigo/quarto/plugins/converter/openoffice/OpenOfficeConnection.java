@@ -57,6 +57,7 @@ interface OpenOfficeConnection extends AutoCloseable {
 	/**
 	 * Ferme la connexion à OpenOffice.
 	 */
+	@Override
 	void close();
 
 	/**

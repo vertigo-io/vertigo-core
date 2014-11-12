@@ -55,6 +55,7 @@ final class ValidatorHandler implements RouteHandler {
 	}
 
 	/** {@inheritDoc}  */
+	@Override
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
 		final UiMessageStack uiMessageStack = routeContext.getUiMessageStack();
 		for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {

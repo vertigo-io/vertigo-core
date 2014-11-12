@@ -51,6 +51,7 @@ public final class ConverterManagerImpl implements ConverterManager {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public KFile convert(final KFile inputFile, final String format) {
 		Assertion.checkNotNull(inputFile);
 		Assertion.checkArgNotEmpty(format);

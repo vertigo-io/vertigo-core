@@ -39,6 +39,7 @@ public final class TermRule implements Rule<String>, Parser<String> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getExpression() {
 		return "'" + term + "'";
 	}
@@ -50,6 +51,7 @@ public final class TermRule implements Rule<String>, Parser<String> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int parse(final String text, final int start) throws NotFoundException {
 		final int end = Math.min(start + term.length(), text.length());
 		int match = start;

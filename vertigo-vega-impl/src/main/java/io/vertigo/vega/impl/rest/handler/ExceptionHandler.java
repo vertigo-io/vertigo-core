@@ -54,6 +54,7 @@ public final class ExceptionHandler implements RouteHandler {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) {
 		try {
 			return chain.handle(request, response, routeContext);

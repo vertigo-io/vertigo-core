@@ -58,6 +58,7 @@ public final class UiListUnmodifiable<D extends DtObject> extends AbstractUiList
 	 * @param uiMessageStack Pile des messages qui sera mise à jour
 	 * @return Liste métier valid�e.
 	 */
+	@Override
 	public DtList<D> validate(final UiObjectValidator<D> validator, final UiMessageStack uiMessageStack) {
 		check(validator, uiMessageStack);
 		return flush();
@@ -73,6 +74,7 @@ public final class UiListUnmodifiable<D extends DtObject> extends AbstractUiList
 	 * @param validator Validateur à utilisé
 	 * @param uiMessageStack Pile des messages qui sera mise à jour
 	 */
+	@Override
 	public void check(final UiObjectValidator<D> validator, final UiMessageStack uiMessageStack) {
 		//1. check Error => KUserException
 		//on valide les éléments internes
@@ -84,6 +86,7 @@ public final class UiListUnmodifiable<D extends DtObject> extends AbstractUiList
 	/**
 	 * @return met à jour les objets métiers et retourne la liste.
 	 */
+	@Override
 	public DtList<D> flush() {
 		//1. check Error => KUserException
 		//on valide les éléments internes

@@ -37,6 +37,7 @@ abstract class AbstractTagIf extends AbstractKScriptTag implements ScriptTag {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final String renderOpen(final ScriptTagContent tag, final ScriptContext context) {
 		final String[] parsing = parseAttribute(tag.getAttribute(), equalsCondition ? FIELD_PATH_CALL_EQUALS_CONDITION : FIELD_PATH_CALL);
 		// le tag est dans le bon format
@@ -49,6 +50,7 @@ abstract class AbstractTagIf extends AbstractKScriptTag implements ScriptTag {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final String renderClose(final ScriptTagContent content, final ScriptContext context) {
 		return START_BLOC_JSP + '}' + END_BLOC_JSP;
 	}

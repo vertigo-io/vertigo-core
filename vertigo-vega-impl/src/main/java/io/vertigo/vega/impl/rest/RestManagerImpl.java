@@ -54,6 +54,7 @@ public final class RestManagerImpl implements RestManager {
 	/**
 	 * Scan and register ResfulServices as EndPointDefinitions.
 	 */
+	@Override
 	public void scanAndRegisterRestfulServices() {
 		final List<EndPointDefinition> allEndPointDefinitions = new ArrayList<>();
 
@@ -69,6 +70,7 @@ public final class RestManagerImpl implements RestManager {
 		//2- We sort by path, parameterized path should be after strict path
 		Collections.sort(allEndPointDefinitions, new Comparator<EndPointDefinition>() {
 
+			@Override
 			public int compare(final EndPointDefinition endPointDefinition1, final EndPointDefinition endPointDefinition2) {
 				return endPointDefinition1.getPath().compareTo(endPointDefinition2.getPath());
 			}

@@ -115,6 +115,7 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public EndPointParam build() {
 		return new EndPointParam(
 				myRestParamType,

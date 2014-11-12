@@ -55,6 +55,7 @@ final class RestfulServiceHandler implements RouteHandler {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
 		final Object[] serviceArgs = makeArgs(routeContext);
 		final Method method = endPointDefinition.getMethod();

@@ -64,6 +64,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 		myMethod = method;
 	}
 
+	@Override
 	public EndPointDefinition build() {
 		final String usedPath = myPathPrefix != null ? myPathPrefix + myPath : myPath;
 		final String normalizedPath = usedPath.replaceAll("\\{.*?\\}", "_").replaceAll("[//]", "_"); //.*? : reluctant quantifier

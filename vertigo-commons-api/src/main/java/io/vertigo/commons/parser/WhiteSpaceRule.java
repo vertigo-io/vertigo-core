@@ -47,11 +47,13 @@ public final class WhiteSpaceRule implements Rule<Void>, Parser<Void> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Parser<Void> createParser() {
 		return this;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int parse(final String text, final int start) throws NotFoundException {
 		int lastIndex;
 		int index = start;
@@ -73,6 +75,7 @@ public final class WhiteSpaceRule implements Rule<Void>, Parser<Void> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Void get() {
 		return null;
 	}

@@ -32,7 +32,7 @@ import spark.servlet.SparkApplication;
 /**
  * Application class, use to register Spark-java route.
  * Could be embedded in Tomcat Server (see http://www.sparkjava.com/readme.html#title19)
- * 
+ *
  * @author npiedeloup
  */
 public final class SparkJavaRoutesRegister implements SparkApplication {
@@ -41,6 +41,7 @@ public final class SparkJavaRoutesRegister implements SparkApplication {
 	 * Spark-java application class.
 	 * Translate EndPointDefinitions to Spark routes.
 	 */
+	@Override
 	public void init() {
 		final RestManager restManager = Home.getComponentSpace().resolve(RestManager.class);
 		restManager.scanAndRegisterRestfulServices();

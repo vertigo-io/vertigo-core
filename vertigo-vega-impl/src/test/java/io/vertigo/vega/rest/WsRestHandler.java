@@ -78,6 +78,7 @@ import spark.Spark;
 public final class WsRestHandler {
 
 	public static final class DtDefinitions implements Iterable<Class<?>> {
+		@Override
 		public Iterator<Class<?>> iterator() {
 			return Arrays.asList(new Class<?>[] { //
 					Contact.class, ContactCriteria.class //

@@ -348,14 +348,17 @@ public final class SwaggerRestServices implements RestfulService {
 					if (actualTypeArguments.length == 1 && actualTypeArguments[0] instanceof TypeVariable) {
 						final Type[] resolvedTypeArguments = new Type[] { parameterClass };
 						usedFieldType = new ParameterizedType() {
+							@Override
 							public Type[] getActualTypeArguments() {
 								return resolvedTypeArguments;
 							}
 
+							@Override
 							public Type getRawType() {
 								return ((ParameterizedType) fieldType).getRawType();
 							}
 
+							@Override
 							public Type getOwnerType() {
 								return ((ParameterizedType) fieldType).getOwnerType();
 							}

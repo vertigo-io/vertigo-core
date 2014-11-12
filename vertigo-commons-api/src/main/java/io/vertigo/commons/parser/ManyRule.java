@@ -57,15 +57,18 @@ public final class ManyRule<R> implements Rule<List<R>> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getExpression() {
 		return "(" + rule.getExpression() + ")" + (emptyAccepted ? "*" : "+");
 	}
 
+	@Override
 	public Parser<List<R>> createParser() {
 		return new Parser<List<R>>() {
 			private List<R> results;
 
 			/** {@inheritDoc} */
+			@Override
 			public int parse(final String text, final int start) throws NotFoundException {
 				int index = start;
 				//======================================================================
@@ -97,6 +100,7 @@ public final class ManyRule<R> implements Rule<List<R>> {
 				return index;
 			}
 
+			@Override
 			public List<R> get() {
 				return results;
 			}

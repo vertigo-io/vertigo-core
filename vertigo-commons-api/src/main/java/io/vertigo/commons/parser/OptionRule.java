@@ -42,15 +42,18 @@ public final class OptionRule<P> implements Rule<Option<P>> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getExpression() {
 		return expression;
 	}
 
+	@Override
 	public Parser<Option<P>> createParser() {
 		return new Parser<Option<P>>() {
 			private Option<P> option;
 
 			/** {@inheritDoc} */
+			@Override
 			public int parse(final String text, final int start) throws NotFoundException {
 				int index = start;
 				//======================================================================
@@ -60,7 +63,7 @@ public final class OptionRule<P> implements Rule<Option<P>> {
 					index = parser.parse(text, index);
 					option = Option.option(parser.get());
 				} catch (final NotFoundException e) {
-					//Comme la règle est optionnelle si on ne trouve rien on reste au point de départ. 
+					//Comme la règle est optionnelle si on ne trouve rien on reste au point de départ.
 				}
 				return index;
 			}

@@ -56,6 +56,7 @@ final class ODTImageProcessor implements MergerProcessor {
 	private final Map<String, KFile> newImagesMap = new HashMap<>();
 
 	/** {@inheritDoc} */
+	@Override
 	public String execute(final String xmlInput, final PublisherData publisherData) throws IOException {
 		final StringBuilder xmlOutput = new StringBuilder(xmlInput.length());
 

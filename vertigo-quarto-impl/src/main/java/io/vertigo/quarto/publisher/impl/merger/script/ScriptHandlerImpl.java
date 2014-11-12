@@ -119,11 +119,13 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 	 */
 
 	/** {@inheritDoc} */
+	@Override
 	public void onText(final String text) {
 		evaluatedScript.append(text);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void onExpression(final String expression, final ScriptSeparator separator) {
 		Assertion.checkState(!isGrammarClosed, "l'évaluateur de grammaire ne peut pas être réutilisé car il a été fermé");
 		Assertion.checkArgument(expression != null, "un tag ne doit pas etre vide");
@@ -176,18 +178,22 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 		 */
 		private final Stack<String> variableNames = new Stack<>();
 
+		@Override
 		public String peek() {
 			return variableNames.peek();
 		}
 
+		@Override
 		public String pop() {
 			return variableNames.pop();
 		}
 
+		@Override
 		public void push(final String variableName) {
 			variableNames.push(variableName);
 		}
 
+		@Override
 		public boolean empty() {
 			return variableNames.empty();
 		}

@@ -94,6 +94,7 @@ public final class RateLimitingHandler implements Activeable, RouteHandler {
 	}
 
 	/** {@inheritDoc}  */
+	@Override
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
 		Assertion.checkNotNull(request);
 		Assertion.checkNotNull(response);

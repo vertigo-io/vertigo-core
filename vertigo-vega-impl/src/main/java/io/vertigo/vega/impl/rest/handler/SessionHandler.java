@@ -51,6 +51,7 @@ public final class SessionHandler implements RouteHandler {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
 		final Session session = request.session(true); //obtain session (create if needed)
 		final UserSession user = obtainUserSession(session);

@@ -69,6 +69,7 @@ import java.util.List;
 public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntrospectorPlugin {
 
 	/** {@inheritDoc} */
+	@Override
 	public List<EndPointDefinition> instrospectEndPoint(final Class<? extends RestfulService> restfulServiceClass) {
 		final List<EndPointDefinition> endPointDefinitions = new ArrayList<>();
 		for (final Method method : restfulServiceClass.getMethods()) {

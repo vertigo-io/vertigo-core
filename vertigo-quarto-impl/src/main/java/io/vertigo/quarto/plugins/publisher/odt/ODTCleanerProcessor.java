@@ -33,6 +33,7 @@ final class ODTCleanerProcessor implements MergerProcessor {
 	private static final String INPUT_TAG = "text:text-input";
 
 	/** {@inheritDoc} */
+	@Override
 	public String execute(final String xmlInput, final PublisherData publisherData) {
 		String xmlOutput;
 		/*

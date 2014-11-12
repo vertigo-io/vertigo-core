@@ -28,6 +28,7 @@ import io.vertigo.quarto.publisher.model.PublisherData;
 final class ODTReverseInputProcessor implements MergerProcessor {
 
 	/** {@inheritDoc} */
+	@Override
 	public String execute(final String xmlInput, final PublisherData publisherData) {
 		String xmlOutput;
 

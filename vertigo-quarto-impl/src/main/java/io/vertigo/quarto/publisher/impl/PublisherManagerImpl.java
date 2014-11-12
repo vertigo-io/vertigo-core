@@ -56,6 +56,7 @@ public final class PublisherManagerImpl implements PublisherManager {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public KFile publish(final String fileName, final URL modelFileURL, final PublisherData data) {
 		Assertion.checkNotNull(fileName);
 		Assertion.checkNotNull(modelFileURL);

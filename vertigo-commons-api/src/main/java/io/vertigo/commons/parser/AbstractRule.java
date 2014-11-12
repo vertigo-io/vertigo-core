@@ -21,10 +21,10 @@ package io.vertigo.commons.parser;
 import io.vertigo.lang.Assertion;
 
 /**
- * Une règle peut être vue comme 
+ * Une règle peut être vue comme
  * - la création d'une règle principale
  * - la gestion du résultat du parsing
- * 
+ *
  * @author pchretien
  */
 public abstract class AbstractRule<R, M> implements Rule<R> {
@@ -40,17 +40,20 @@ public abstract class AbstractRule<R, M> implements Rule<R> {
 	protected abstract Rule<M> createMainRule();
 
 	/** {@inheritDoc} */
+	@Override
 	public String getExpression() {
 		return getMainRule().getExpression();
 	}
 
 	protected abstract R handle(M parsing);
 
+	@Override
 	public final Parser<R> createParser() {
 		return new Parser<R>() {
 			private R result;
 
 			/** {@inheritDoc} */
+			@Override
 			public int parse(final String text, final int start) throws NotFoundException {
 				final Parser<M> parser = getMainRule().createParser();
 				final int end = parser.parse(text, start);
@@ -60,6 +63,7 @@ public abstract class AbstractRule<R, M> implements Rule<R> {
 				return end;
 			}
 
+			@Override
 			public R get() {
 				Assertion.checkNotNull(result);
 				return result;

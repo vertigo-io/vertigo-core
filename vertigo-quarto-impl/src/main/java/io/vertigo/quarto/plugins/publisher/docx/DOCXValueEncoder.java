@@ -23,12 +23,13 @@ import io.vertigo.util.StringUtil;
 
 /**
  * Implémentation de l'encodage des données dans un fichier ODT.
- * 
+ *
  * @author npiedeloup
  */
 public final class DOCXValueEncoder implements Encoder<String, String> {
 
 	/** {@inheritDoc} */
+	@Override
 	public String encode(final String toEncode) {
 		if (toEncode == null) {
 			return null;

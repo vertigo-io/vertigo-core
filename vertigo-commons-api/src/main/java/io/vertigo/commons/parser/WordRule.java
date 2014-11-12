@@ -22,11 +22,11 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
 /**
- * Règle a état permettant de récupérer un mot. 
+ * Règle a état permettant de récupérer un mot.
  * En précisant :
- * - Soit les caractères acceptés, 
+ * - Soit les caractères acceptés,
  * - Soit les caractères rejetés.
- * 
+ *
  * @author pchretien
  */
 public final class WordRule implements Rule<String> {
@@ -36,7 +36,7 @@ public final class WordRule implements Rule<String> {
 		ACCEPT,
 		/** Accepte tout sauf les caractères passés en paramètre. */
 		REJECT,
-		/** Accepte tout sauf les caractères passés en paramètre. 
+		/** Accepte tout sauf les caractères passés en paramètre.
 		 * Avec la possibilité d'echaper un caractère avec le \ */
 		REJECT_ESCAPABLE
 	}
@@ -84,6 +84,7 @@ public final class WordRule implements Rule<String> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getExpression() {
 		final StringBuilder expression = new StringBuilder();
 		if (!acceptedCharacters.isEmpty()) {
@@ -107,6 +108,7 @@ public final class WordRule implements Rule<String> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Parser<String> createParser() {
 		return new Parser<String>() {
 			private String word;
@@ -114,11 +116,13 @@ public final class WordRule implements Rule<String> {
 			/**
 			 * @return Mot trouvé par la règle
 			 */
+			@Override
 			public String get() {
 				return word;
 			}
 
 			/** {@inheritDoc} */
+			@Override
 			public int parse(final String text, final int start) throws NotFoundException {
 				int index = start;
 				// On vérifie que le caractère est contenu dans les caractères acceptés.

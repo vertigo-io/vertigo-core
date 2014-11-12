@@ -29,11 +29,13 @@ import io.vertigo.util.StringUtil;
 //public car instancié dynamiquement
 public final class TagBlock extends AbstractKScriptTag implements ScriptTag {
 	/** {@inheritDoc} */
+	@Override
 	public String renderOpen(final ScriptTagContent tag, final ScriptContext context) {
 		return START_BLOC_JSP + decode(tag.getAttribute()) + END_BLOC_JSP;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String renderClose(final ScriptTagContent tag, final ScriptContext context) {
 		return START_BLOC_JSP + decode(tag.getAttribute()) + END_BLOC_JSP;
 	}

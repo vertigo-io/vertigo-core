@@ -41,7 +41,7 @@ import javax.inject.Inject;
 
 /**
  * Gestionnaire des fusions de documents OpenOffice.
- * 
+ *
  * @author npiedeloup
  */
 public final class MergerPluginOpenOffice implements MergerPlugin {
@@ -80,6 +80,7 @@ public final class MergerPluginOpenOffice implements MergerPlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public File execute(final URL modelFileURL, final PublisherData data) throws IOException {
 		Assertion.checkNotNull(modelFileURL);
 		Assertion.checkNotNull(data);
@@ -97,7 +98,7 @@ public final class MergerPluginOpenOffice implements MergerPlugin {
 
 	/**
 	 * Effectue le traitement.
-	 * 
+	 *
 	 * @param modelFile Fichier model, ce fichier n'est pas modifié.
 	 * @param publisherData Parametres des données à fusionner
 	 * @return Fichier d'entrée modifié par le sous-processor
@@ -129,6 +130,7 @@ public final class MergerPluginOpenOffice implements MergerPlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public PublisherFormat getPublisherFormat() {
 		return PublisherFormat.ODT;
 	}

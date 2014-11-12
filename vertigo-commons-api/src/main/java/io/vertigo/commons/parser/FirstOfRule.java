@@ -59,10 +59,12 @@ public final class FirstOfRule implements Rule<Choice> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final String getExpression() {
 		return expression;
 	}
 
+	@Override
 	public Parser<Choice> createParser() {
 		return new Parser<Choice>() {
 			private Choice result;
@@ -70,11 +72,13 @@ public final class FirstOfRule implements Rule<Choice> {
 			/**
 			 * @return numéro de la règle ayant aboutie.
 			 */
+			@Override
 			public Choice get() {
 				return result;
 			}
 
 			/** {@inheritDoc} */
+			@Override
 			public int parse(final String text, final int start) throws NotFoundException {
 				//Règle ayant été le plus profond
 				NotFoundException best = null;

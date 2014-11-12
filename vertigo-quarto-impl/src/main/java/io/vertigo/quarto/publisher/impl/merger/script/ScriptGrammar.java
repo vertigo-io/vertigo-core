@@ -48,6 +48,7 @@ public final class ScriptGrammar {
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public int compare(final String o1, final String o2) {
 			return o2.length() - o1.length();
 		}
