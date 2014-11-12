@@ -31,6 +31,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilterUtil;
 import io.vertigo.dynamo.search.IndexFieldNameResolver;
 import io.vertigo.dynamo.search.metamodel.IndexDefinition;
 import io.vertigo.dynamo.search.model.Index;
@@ -48,7 +49,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
@@ -258,7 +258,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 							.format(DATE_PATTERN);
 					for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 						final String filterValue = facetRange.getListFilter().getFilterValue();
-						final String[] parsedFilter = parseFilter(filterValue, RANGE_PATTERN).get();
+						final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
 						final String minValue = parsedFilter[3];
 						final String maxValue = parsedFilter[4];
 						if ("*".equals(minValue)) {
@@ -275,7 +275,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 							.field(indexFieldNameResolver.obtainIndexFieldName(dtField));
 					for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 						final String filterValue = facetRange.getListFilter().getFilterValue();
-						final String[] parsedFilter = parseFilter(filterValue, RANGE_PATTERN).get();
+						final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
 						final Option<Double> minValue = convertToDouble(parsedFilter[3]);
 						final Option<Double> maxValue = convertToDouble(parsedFilter[4]);
 						if (minValue.isEmpty()) {
@@ -299,25 +299,6 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 
 	private static final String DATE_PATTERN = "dd/MM/yy";
 	private static final Pattern RANGE_PATTERN = Pattern.compile("([A-Z_0-9]+):([\\[\\]])(.*) TO (.*)([\\[\\]])");
-
-	private static Option<String[]> parseFilter(final String filterString, final Pattern parsingPattern) {
-		Assertion.checkNotNull(filterString);
-		Assertion.checkNotNull(parsingPattern);
-		//----------------------------------------------------------------------
-		final String[] groups;
-		int nbGroup = 0;
-		final Matcher matcher = parsingPattern.matcher(filterString);
-		if (!matcher.matches()) {
-			return Option.none();
-		}
-
-		nbGroup = matcher.groupCount() + 1;
-		groups = new String[nbGroup];
-		for (int i = 0; i < nbGroup; i++) {
-			groups[i] = matcher.group(i);
-		}
-		return Option.some(groups);
-	}
 
 	private static Option<Double> convertToDouble(final String valueToConvert) {
 		final String stringValue = valueToConvert.trim();

@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
 /**
  * Parser des filtres utilisant une syntaxe définie.
  */
-final class DtListPatternFilterUtil {
+public final class DtListPatternFilterUtil {
 	private static final String DATE_PATTERN = "dd/MM/yy";
 
 	public static enum FilterPattern {
@@ -88,7 +88,7 @@ final class DtListPatternFilterUtil {
 	 * index 1 : nom du champs (par convention)
 	 * ensuite dépend du pattern
 	 **/
-	static Option<String[]> parseFilter(final String filterString, final Pattern parsingPattern) {
+	public static Option<String[]> parseFilter(final String filterString, final Pattern parsingPattern) {
 		Assertion.checkNotNull(filterString);
 		Assertion.checkNotNull(parsingPattern);
 		//----------------------------------------------------------------------
