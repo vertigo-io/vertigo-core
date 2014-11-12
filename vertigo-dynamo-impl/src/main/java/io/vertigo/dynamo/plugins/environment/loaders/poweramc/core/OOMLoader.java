@@ -112,17 +112,17 @@ public final class OOMLoader implements TagLoader {
 		for (final OOMObject child : obj.getChildren()) {
 			if (child.getType() == OOMType.Attribute) {
 				if (pkList.contains(child.getId())) {
-					final TagAttribute attributeOOm = createDynAttribute(child, true);
+					final TagAttribute attributeOOm = createTagAttribute(child, true);
 					keyAttributes.add(attributeOOm);
 				} else {
-					fieldAttributes.add(createDynAttribute(child, false));
+					fieldAttributes.add(createTagAttribute(child, false));
 				}
 			}
 		}
 		return new TagClass(code, packageName, keyAttributes, fieldAttributes);
 	}
 
-	private TagAttribute createDynAttribute(final OOMObject obj, final boolean isPK) {
+	private TagAttribute createTagAttribute(final OOMObject obj, final boolean isPK) {
 		final String code = obj.getCode();
 		final String label = obj.getLabel();
 		final boolean persistent = !"0".equals(obj.getPersistent());

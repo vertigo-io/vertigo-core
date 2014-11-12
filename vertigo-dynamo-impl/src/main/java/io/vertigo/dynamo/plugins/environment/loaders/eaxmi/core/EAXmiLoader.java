@@ -117,6 +117,10 @@ public final class EAXmiLoader implements TagLoader {
 	}
 
 	private static TagAttribute createTagAttribute(final EAXmiObject obj, final boolean isPK) {
+		final String code = obj.getName().toUpperCase();
+		final String label = obj.getLabel();
+		final boolean persistent = true;
+
 		final boolean notNull;
 		if (isPK) {
 			//La pk est toujours notNull
@@ -126,7 +130,7 @@ public final class EAXmiLoader implements TagLoader {
 		}
 
 		// L'information de persistence ne peut pas être déduite du Xmi, tous les champs sont déclarés persistent de facto
-		return new TagAttribute(obj.getName().toUpperCase(), obj.getLabel(), true, notNull, obj.getDomain());
+		return new TagAttribute(code, label, persistent, notNull, obj.getDomain());
 	}
 
 	/**
