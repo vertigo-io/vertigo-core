@@ -246,11 +246,11 @@ final class EAXmiObject {
 
 	// Gestion des propriétés
 
-	void setProperty(final String propertyName, final String propertyValue, final Attributes attributes) {
+	void setProperty(final String propertyName, final Attributes attributes) {
 		Assertion.checkNotNull(propertyName);
 		//----------------------------------------------------------------------
 		if (PROPERTY_NAME.equals(propertyName)) {
-			name = propertyValue;
+			name = "";
 		} else if (PROPERTY_COMMENT.equals(propertyName)) {
 			label = attributes.getValue(PROPERTY_ALIAS_NAME);
 		} else if (PROPERTY_ALIAS.equals(propertyName)) {
@@ -284,8 +284,8 @@ final class EAXmiObject {
 		//On ne tient pas compte des autres propriétés
 	}
 
-	private void manageNavigability(final Attributes attributs) {
-		final String value = attributs.getValue(PROPERTY_ROLE_NAVIGABILITY_NAME);
+	private void manageNavigability(final Attributes attributes) {
+		final String value = attributes.getValue(PROPERTY_ROLE_NAVIGABILITY_NAME);
 		if (PROPERTY_NAVIGABILITY_NONE.equals(value)) {
 			roleANavigability = false;
 			roleBNavigability = false;
@@ -301,11 +301,11 @@ final class EAXmiObject {
 		}
 	}
 
-	private void manageMultiplicity(final Attributes attributs) {
-		roleAMultiplicity = attributs.getValue(PROPERTY_ROLE_A_MULTIPLICITY);
-		roleBMultiplicity = attributs.getValue(PROPERTY_ROLE_B_MULTIPLICITY);
-		roleALabel = attributs.getValue(PROPERTY_ROLE_A_NAME);
-		roleBLabel = attributs.getValue(PROPERTY_ROLE_B_NAME);
+	private void manageMultiplicity(final Attributes attributes) {
+		roleAMultiplicity = attributes.getValue(PROPERTY_ROLE_A_MULTIPLICITY);
+		roleBMultiplicity = attributes.getValue(PROPERTY_ROLE_B_MULTIPLICITY);
+		roleALabel = attributes.getValue(PROPERTY_ROLE_A_NAME);
+		roleBLabel = attributes.getValue(PROPERTY_ROLE_B_NAME);
 		if (roleALabel != null && roleALabel.startsWith("+")) {
 			roleALabel = roleALabel.substring(1);
 		}
@@ -314,9 +314,9 @@ final class EAXmiObject {
 		}
 	}
 
-	private void manageDomain(final Attributes attributs) {
+	private void manageDomain(final Attributes attributes) {
 		if (domain == null || domain.isEmpty()) {
-			domain = attributs.getValue(PROPERTY_DOMAIN_NAME);
+			domain = attributes.getValue(PROPERTY_DOMAIN_NAME);
 		}
 
 	}
@@ -327,13 +327,13 @@ final class EAXmiObject {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		String s = type + "::" + name;
+		final StringBuilder buffer = new StringBuilder(type + "::" + name);
 		if (type == EAXmiType.Association) {
-			s += " [roleA=" + getRoleALabel() + ", roleB=" + getRoleBLabel() + ']';
+			buffer.append(" [roleA=" + getRoleALabel() + ", roleB=" + getRoleBLabel() + "]");
 		} else {
-			s += " [label=" + label + ", multiplicity=" + multiplicity + ']';
+			buffer.append(" [label=" + label + ", multiplicity=" + multiplicity + "]");
 		}
-		return s;
+		return buffer.toString();
 	}
 
 	/**

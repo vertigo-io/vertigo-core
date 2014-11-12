@@ -107,7 +107,7 @@ public final class EAXmiHandler extends DefaultHandler {
 			}
 			// On peut être dans le cas d'un début de tag utile, on le passe pour le traiter.
 		} else if (currentObject != null) {
-			currentObject.setProperty(name, "", attributes);
+			currentObject.setProperty(name, attributes);
 		}
 	}
 
