@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core;
 
-import io.vertigo.dynamo.plugins.environment.loaders.TagId;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
 import io.vertigo.lang.Assertion;
 
 import java.util.Map;
@@ -42,7 +42,7 @@ public final class EAXmiHandler extends DefaultHandler {
 	private static final String ATTR_NAME = "name";
 	private static final String ATTR_ASSOCIATION = "association";
 
-	private final Map<TagId, EAXmiObject> map;
+	private final Map<XmlId, EAXmiObject> map;
 
 	private EAXmiObject currentObject;
 
@@ -52,7 +52,7 @@ public final class EAXmiHandler extends DefaultHandler {
 
 	private final Logger log = Logger.getLogger(this.getClass());
 
-	EAXmiHandler(final Map<TagId, EAXmiObject> map) {
+	EAXmiHandler(final Map<XmlId, EAXmiObject> map) {
 		Assertion.checkNotNull(map);
 		//---------------------------------------------------------------------
 		this.map = map;
@@ -78,7 +78,7 @@ public final class EAXmiHandler extends DefaultHandler {
 			phase2 = true;
 			log.debug("On est dans la référence " + name + " ref : " + ref);
 			// Si le tag courant est associé à un objet alors on ajoute à cet objet la référence.
-			final TagId eaXmiId = new TagId(ref);
+			final XmlId eaXmiId = new XmlId(ref);
 			if (map.containsKey(eaXmiId)) {
 				currentObject = map.get(eaXmiId);
 				log.debug("Current Object : " + currentObject.getName());
@@ -93,7 +93,7 @@ public final class EAXmiHandler extends DefaultHandler {
 			// On a un type, un id et on n'est pas dans un attribut ajouté à cause d'une association.
 			if (type != null && id != null && !(type.isAttribute() && association != null)) {
 				//Il existe un nouvel objet géré associé à ce Tag
-				final TagId eaxmiid = new TagId(id);
+				final XmlId eaxmiid = new XmlId(id);
 				final EAXmiObject obj;
 				// Nouvelle classe ou association, on revient au package pour créer l'objet.
 				if (currentObject.getType() != null && currentObject.getType().isClass() && type.isClass()) {

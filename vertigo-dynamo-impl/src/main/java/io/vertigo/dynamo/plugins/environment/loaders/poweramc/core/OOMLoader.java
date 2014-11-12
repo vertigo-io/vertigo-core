@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.poweramc.core;
 
-import io.vertigo.dynamo.plugins.environment.loaders.TagAssociation;
-import io.vertigo.dynamo.plugins.environment.loaders.TagAttribute;
-import io.vertigo.dynamo.plugins.environment.loaders.TagClass;
-import io.vertigo.dynamo.plugins.environment.loaders.TagId;
-import io.vertigo.dynamo.plugins.environment.loaders.TagLoader;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAssociation;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAttribute;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlClass;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlLoader;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -39,8 +39,8 @@ import javax.xml.parsers.SAXParserFactory;
  * Seules les classes et leurs attributs ainsi que les associations sont extraites.
  * @author pchretien
  */
-public final class OOMLoader implements TagLoader {
-	private final Map<TagId, OOMObject> map;
+public final class OOMLoader implements XmlLoader {
+	private final Map<XmlId, OOMObject> map;
 
 	/**
 	 * Constructeur.
@@ -58,30 +58,24 @@ public final class OOMLoader implements TagLoader {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.TagLoader#getTagClasses()
-	 */
 	@Override
-	public List<TagClass> getTagClasses() {
-		final List<TagClass> list = new ArrayList<>();
+	public List<XmlClass> getClasses() {
+		final List<XmlClass> list = new ArrayList<>();
 		for (final OOMObject obj : map.values()) {
 			//On ne conserve que les classes et les domaines
 			if (obj.getType() == OOMType.Class) {
-				list.add(createTagClass(obj));
+				list.add(createClass(obj));
 			}
 		}
 		return java.util.Collections.unmodifiableList(list);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.TagLoader#getTagAssociations()
-	 */
 	@Override
-	public List<TagAssociation> getTagAssociations() {
-		final List<TagAssociation> list = new ArrayList<>();
+	public List<XmlAssociation> getAssociations() {
+		final List<XmlAssociation> list = new ArrayList<>();
 		for (final OOMObject obj : map.values()) {
 			if (obj.getType() == OOMType.Association) {
-				final TagAssociation associationOOM = createTagAssociation(obj);
+				final XmlAssociation associationOOM = createAssociation(obj);
 				if (associationOOM != null) {
 					list.add(associationOOM);
 				}
@@ -90,7 +84,7 @@ public final class OOMLoader implements TagLoader {
 		return java.util.Collections.unmodifiableList(list);
 	}
 
-	private TagClass createTagClass(final OOMObject obj) {
+	private XmlClass createClass(final OOMObject obj) {
 		//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
 		final String code = obj.getCode();
 		final String packageName = obj.getParent().getPackageName();
@@ -99,30 +93,30 @@ public final class OOMLoader implements TagLoader {
 		//- une liste des identifiers qui référencent des champs
 		//- un bloc <c:PrimaryIdentifier> (non parsé) qui référence les primaryIdentifiers
 		//C'est pourquoi on a une double redirection
-		final List<TagId> pkList = new ArrayList<>();
-		for (final TagId ref : obj.getRefList()) {
+		final List<XmlId> pkList = new ArrayList<>();
+		for (final XmlId ref : obj.getRefList()) {
 			final OOMObject childRef = map.get(ref); //On recherche les references vers identifiers (ceux dans PrimaryIdentifier)
 			if (childRef != null && childRef.getType() == OOMType.Identifier) {
 				pkList.addAll(childRef.getRefList()); //On recherche les champs pointé par l'identifier
 			}
 		}
 
-		final List<TagAttribute> keyAttributes = new ArrayList<>();
-		final List<TagAttribute> fieldAttributes = new ArrayList<>();
+		final List<XmlAttribute> keyAttributes = new ArrayList<>();
+		final List<XmlAttribute> fieldAttributes = new ArrayList<>();
 		for (final OOMObject child : obj.getChildren()) {
 			if (child.getType() == OOMType.Attribute) {
 				if (pkList.contains(child.getId())) {
-					final TagAttribute attributeOOm = createTagAttribute(child, true);
+					final XmlAttribute attributeOOm = createAttribute(child, true);
 					keyAttributes.add(attributeOOm);
 				} else {
-					fieldAttributes.add(createTagAttribute(child, false));
+					fieldAttributes.add(createAttribute(child, false));
 				}
 			}
 		}
-		return new TagClass(code, packageName, keyAttributes, fieldAttributes);
+		return new XmlClass(code, packageName, keyAttributes, fieldAttributes);
 	}
 
-	private TagAttribute createTagAttribute(final OOMObject obj, final boolean isPK) {
+	private XmlAttribute createAttribute(final OOMObject obj, final boolean isPK) {
 		final String code = obj.getCode();
 		final String label = obj.getLabel();
 		final boolean persistent = !"0".equals(obj.getPersistent());
@@ -137,14 +131,14 @@ public final class OOMLoader implements TagLoader {
 
 		//Domain
 		String domain = null;
-		for (final TagId ref : obj.getRefList()) {
+		for (final XmlId ref : obj.getRefList()) {
 			final OOMObject childRef = map.get(ref);
 			if (childRef != null && childRef.getType() == OOMType.Domain) {
 				Assertion.checkState(domain == null, "domain deja affecté");
 				domain = childRef.getCode();
 			}
 		}
-		return new TagAttribute(code, label, persistent, notNull, domain);
+		return new XmlAttribute(code, label, persistent, notNull, domain);
 	}
 
 	/**
@@ -152,7 +146,7 @@ public final class OOMLoader implements TagLoader {
 	 * @param obj ObjectOOM
 	 * @return Association
 	 */
-	private TagAssociation createTagAssociation(final OOMObject obj) {
+	private XmlAssociation createAssociation(final OOMObject obj) {
 		final String code = obj.getCode();
 		final String packageName = obj.getParent().getPackageName();
 
@@ -162,7 +156,7 @@ public final class OOMLoader implements TagLoader {
 		//On recherche les objets référencés par l'association.
 		OOMObject objectB = null;
 		OOMObject objectA = null;
-		for (final TagId ref : obj.getRefList()) {
+		for (final XmlId ref : obj.getRefList()) {
 			final OOMObject childRef = map.get(ref);
 			if (childRef != null && (childRef.getType() == OOMType.Class || childRef.getType() == OOMType.Shortcut)) {
 				if (objectB == null) {
@@ -195,6 +189,6 @@ public final class OOMLoader implements TagLoader {
 		final boolean navigabilityA = obj.getRoleANavigability() == null ? false : obj.getRoleANavigability();
 		final boolean navigabilityB = obj.getRoleBNavigability() == null ? true : obj.getRoleBNavigability();
 
-		return new TagAssociation(code, packageName, multiplicityA, multiplicityB, roleLabelA, roleLabelB, codeA, codeB, navigabilityA, navigabilityB);
+		return new XmlAssociation(code, packageName, multiplicityA, multiplicityB, roleLabelA, roleLabelB, codeA, codeB, navigabilityA, navigabilityB);
 	}
 }

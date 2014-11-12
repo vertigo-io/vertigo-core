@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.poweramc.core;
 
-import io.vertigo.dynamo.plugins.environment.loaders.TagId;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
 import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
@@ -47,11 +47,11 @@ final class OOMObject {
 	private static final String PROPERTY_ROLE_A_NAME = "a:RoleAName";
 	private static final String PROPERTY_ROLE_B_NAME = "a:RoleBName";
 
-	private final TagId id;
+	private final XmlId id;
 	private final OOMObject parent;
 	private final OOMType type;
 	private final List<OOMObject> children = new ArrayList<>();
-	private final List<TagId> refList = new ArrayList<>();
+	private final List<XmlId> refList = new ArrayList<>();
 
 	//Données spécifiques
 	private String code;
@@ -86,7 +86,7 @@ final class OOMObject {
 		root = this;
 	}
 
-	private OOMObject(final OOMObject parent, final TagId id, final OOMType type) {
+	private OOMObject(final OOMObject parent, final XmlId id, final OOMType type) {
 		Assertion.checkNotNull(parent);
 		Assertion.checkNotNull(id);
 		Assertion.checkNotNull(type);
@@ -101,13 +101,13 @@ final class OOMObject {
 		return new OOMObject();
 	}
 
-	OOMObject createObjectOOM(final TagId newId, final OOMType newType) {
+	OOMObject createObjectOOM(final XmlId newId, final OOMType newType) {
 		final OOMObject created = new OOMObject(this, newId, newType);
 		children.add(created);
 		return created;
 	}
 
-	List<TagId> getRefList() {
+	List<XmlId> getRefList() {
 		return refList;
 	}
 
@@ -123,11 +123,11 @@ final class OOMObject {
 		return parent;
 	}
 
-	TagId getId() {
+	XmlId getId() {
 		return id;
 	}
 
-	void addIdOOM(final TagId idOOM) {
+	void addIdOOM(final XmlId idOOM) {
 		refList.add(idOOM);
 	}
 

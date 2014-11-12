@@ -16,31 +16,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.environment.loaders.eaxmi;
+package io.vertigo.dynamo.plugins.environment.loaders.xml;
 
-import io.vertigo.commons.resource.ResourceManager;
-import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core.EAXmiLoader;
-import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlLoaderPlugin;
+import io.vertigo.lang.Assertion;
 
-import java.net.URL;
+/**
+ * Identifiant d'un objet powerAMC ou XMI.
+ *
+ * @author pchretien, pforhan
+ */
+public final class XmlId {
+	private final String keyValue;
 
-import javax.inject.Inject;
-
-public final class EAXmiLoaderPlugin extends XmlLoaderPlugin {
 	/**
 	 * Constructeur.
+	 * @param keyValue Valeur de l'identiant
 	 */
-	@Inject
-	public EAXmiLoaderPlugin(final ResourceManager resourceManager) {
-		super(resourceManager);
+	public XmlId(final String keyValue) {
+		Assertion.checkNotNull(keyValue);
+		//------------------------------------------------------------------
+		this.keyValue = keyValue;
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	protected EAXmiLoader createLoader(final URL url) {
-		return new EAXmiLoader(url);
+	public int hashCode() {
+		return keyValue.hashCode();
 	}
 
-	public String getType() {
-		return "xmi";
+	/** {@inheritDoc} */
+	@Override
+	public boolean equals(final Object o) {
+		if (o instanceof XmlId) {
+			return ((XmlId) o).keyValue.equals(this.keyValue);
+		}
+		return false;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return "id(" + keyValue + ')';
 	}
 }

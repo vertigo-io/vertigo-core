@@ -19,9 +19,9 @@
 package io.vertigo.dynamo.environment.oom;
 
 import io.vertigo.dynamo.TestUtil;
-import io.vertigo.dynamo.plugins.environment.loaders.TagAssociation;
-import io.vertigo.dynamo.plugins.environment.loaders.TagLoader;
 import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMLoader;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAssociation;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlLoader;
 
 import java.io.File;
 import java.net.URL;
@@ -41,20 +41,20 @@ import org.junit.Test;
  */
 public class OOMTest {
 	private static final Logger LOGGER = Logger.getLogger(OOMTest.class);
-	private Map<String, TagAssociation> map;
+	private Map<String, XmlAssociation> map;
 
 	@Before
 	public void setUp() throws Exception {
 		final File oomFile = TestUtil.getFile("data/Associations.oom", getClass());
 
 		final URL oomURL = oomFile.toURL();
-		final TagLoader loader = new OOMLoader(oomURL);
+		final XmlLoader loader = new OOMLoader(oomURL);
 		map = new HashMap<>();
-		for (final TagAssociation associationOOM : loader.getTagAssociations()) {
-			map.put(associationOOM.getCode(), associationOOM);
-			LOGGER.trace("> code = " + associationOOM.getCode());
+		for (final XmlAssociation association : loader.getAssociations()) {
+			map.put(association.getCode(), association);
+			LOGGER.trace("> code = " + association.getCode());
 		}
-		LOGGER.trace(">> nb ass.=" + loader.getTagAssociations().size());
+		LOGGER.trace(">> nb ass.=" + loader.getAssociations().size());
 
 	}
 
@@ -67,7 +67,7 @@ public class OOMTest {
 	 * Conventions de nommage utilisées pour les tests ci dessous.
 	 * - Relation de A vers B
 	 * - Cardinalité notée 	1 ou n
-	 * - Navigabilité notée v 
+	 * - Navigabilité notée v
 	 */
 
 	/**
@@ -75,15 +75,15 @@ public class OOMTest {
 	 */
 	@Test
 	public void testAssoctationA1Bnv() {
-		final TagAssociation associationOOM = map.get("CHA_CHI_1");
-		Assert.assertEquals("0..1", associationOOM.getMultiplicityA());
-		Assert.assertEquals("0..*", associationOOM.getMultiplicityB());
+		final XmlAssociation association = map.get("CHA_CHI_1");
+		Assert.assertEquals("0..1", association.getMultiplicityA());
+		Assert.assertEquals("0..*", association.getMultiplicityB());
 
-		Assert.assertEquals("R1A", associationOOM.getRoleLabelA());
-		Assert.assertEquals("R1B", associationOOM.getRoleLabelB());
+		Assert.assertEquals("R1A", association.getRoleLabelA());
+		Assert.assertEquals("R1B", association.getRoleLabelB());
 
-		Assert.assertEquals(false, associationOOM.isNavigableA());
-		Assert.assertEquals(true, associationOOM.isNavigableB());
+		Assert.assertEquals(false, association.isNavigableA());
+		Assert.assertEquals(true, association.isNavigableB());
 	}
 
 	/**
@@ -91,15 +91,15 @@ public class OOMTest {
 	 */
 	@Test
 	public void testAssoctationA1vBnv() {
-		final TagAssociation associationOOM = map.get("CHA_CHI_2");
-		Assert.assertEquals("0..1", associationOOM.getMultiplicityA());
-		Assert.assertEquals("0..*", associationOOM.getMultiplicityB());
+		final XmlAssociation association = map.get("CHA_CHI_2");
+		Assert.assertEquals("0..1", association.getMultiplicityA());
+		Assert.assertEquals("0..*", association.getMultiplicityB());
 
-		Assert.assertEquals("R2A", associationOOM.getRoleLabelA());
-		Assert.assertEquals("R2B", associationOOM.getRoleLabelB());
+		Assert.assertEquals("R2A", association.getRoleLabelA());
+		Assert.assertEquals("R2B", association.getRoleLabelB());
 
-		Assert.assertEquals(true, associationOOM.isNavigableA());
-		Assert.assertEquals(true, associationOOM.isNavigableB());
+		Assert.assertEquals(true, association.isNavigableA());
+		Assert.assertEquals(true, association.isNavigableB());
 	}
 
 	/**
@@ -107,15 +107,15 @@ public class OOMTest {
 	 */
 	@Test
 	public void testAssoctationA1vBn() {
-		final TagAssociation associationOOM = map.get("CHA_CHI_3");
-		Assert.assertEquals("0..1", associationOOM.getMultiplicityA());
-		Assert.assertEquals("0..*", associationOOM.getMultiplicityB());
+		final XmlAssociation association = map.get("CHA_CHI_3");
+		Assert.assertEquals("0..1", association.getMultiplicityA());
+		Assert.assertEquals("0..*", association.getMultiplicityB());
 
-		Assert.assertEquals("R3A", associationOOM.getRoleLabelA());
-		Assert.assertEquals("R3B", associationOOM.getRoleLabelB());
+		Assert.assertEquals("R3A", association.getRoleLabelA());
+		Assert.assertEquals("R3B", association.getRoleLabelB());
 
-		Assert.assertEquals(true, associationOOM.isNavigableA());
-		Assert.assertEquals(false, associationOOM.isNavigableB());
+		Assert.assertEquals(true, association.isNavigableA());
+		Assert.assertEquals(false, association.isNavigableB());
 	}
 
 	/**
@@ -123,15 +123,15 @@ public class OOMTest {
 	 */
 	@Test
 	public void testAssoctationAnB1v() {
-		final TagAssociation associationOOM = map.get("CHA_CHI_4");
-		Assert.assertEquals("0..*", associationOOM.getMultiplicityA());
-		Assert.assertEquals("0..1", associationOOM.getMultiplicityB());
+		final XmlAssociation association = map.get("CHA_CHI_4");
+		Assert.assertEquals("0..*", association.getMultiplicityA());
+		Assert.assertEquals("0..1", association.getMultiplicityB());
 
-		Assert.assertEquals("R4A", associationOOM.getRoleLabelA());
-		Assert.assertEquals("R4B", associationOOM.getRoleLabelB());
+		Assert.assertEquals("R4A", association.getRoleLabelA());
+		Assert.assertEquals("R4B", association.getRoleLabelB());
 
-		Assert.assertEquals(false, associationOOM.isNavigableA());
-		Assert.assertEquals(true, associationOOM.isNavigableB());
+		Assert.assertEquals(false, association.isNavigableA());
+		Assert.assertEquals(true, association.isNavigableB());
 	}
 
 	/**
@@ -139,15 +139,15 @@ public class OOMTest {
 	 */
 	@Test
 	public void testAssoctationAnvB1() {
-		final TagAssociation associationOOM = map.get("CHA_CHI_5");
-		Assert.assertEquals("0..*", associationOOM.getMultiplicityA());
-		Assert.assertEquals("0..1", associationOOM.getMultiplicityB());
+		final XmlAssociation association = map.get("CHA_CHI_5");
+		Assert.assertEquals("0..*", association.getMultiplicityA());
+		Assert.assertEquals("0..1", association.getMultiplicityB());
 
-		Assert.assertEquals("R5A", associationOOM.getRoleLabelA());
-		Assert.assertEquals("R5B", associationOOM.getRoleLabelB());
+		Assert.assertEquals("R5A", association.getRoleLabelA());
+		Assert.assertEquals("R5B", association.getRoleLabelB());
 
-		Assert.assertEquals(true, associationOOM.isNavigableA());
-		Assert.assertEquals(false, associationOOM.isNavigableB());
+		Assert.assertEquals(true, association.isNavigableA());
+		Assert.assertEquals(false, association.isNavigableB());
 	}
 
 	/**
@@ -155,15 +155,15 @@ public class OOMTest {
 	 */
 	@Test
 	public void testAssoctationAnvB1v() {
-		final TagAssociation associationOOM = map.get("CHA_CHI_6");
-		Assert.assertEquals("0..*", associationOOM.getMultiplicityA());
-		Assert.assertEquals("0..1", associationOOM.getMultiplicityB());
+		final XmlAssociation association = map.get("CHA_CHI_6");
+		Assert.assertEquals("0..*", association.getMultiplicityA());
+		Assert.assertEquals("0..1", association.getMultiplicityB());
 
-		Assert.assertEquals("R6A", associationOOM.getRoleLabelA());
-		Assert.assertEquals("R6B", associationOOM.getRoleLabelB());
+		Assert.assertEquals("R6A", association.getRoleLabelA());
+		Assert.assertEquals("R6B", association.getRoleLabelB());
 
-		Assert.assertEquals(true, associationOOM.isNavigableA());
-		Assert.assertEquals(true, associationOOM.isNavigableB());
+		Assert.assertEquals(true, association.isNavigableA());
+		Assert.assertEquals(true, association.isNavigableB());
 	}
 
 	/**
@@ -171,15 +171,15 @@ public class OOMTest {
 	 */
 	@Test
 	public void testAssoctationAnBnv() {
-		final TagAssociation associationOOM = map.get("CHA_CHI_7");
-		Assert.assertEquals("0..*", associationOOM.getMultiplicityA());
-		Assert.assertEquals("0..*", associationOOM.getMultiplicityB());
+		final XmlAssociation association = map.get("CHA_CHI_7");
+		Assert.assertEquals("0..*", association.getMultiplicityA());
+		Assert.assertEquals("0..*", association.getMultiplicityB());
 
-		Assert.assertEquals("R7A", associationOOM.getRoleLabelA());
-		Assert.assertEquals("R7B", associationOOM.getRoleLabelB());
+		Assert.assertEquals("R7A", association.getRoleLabelA());
+		Assert.assertEquals("R7B", association.getRoleLabelB());
 
-		Assert.assertEquals(false, associationOOM.isNavigableA());
-		Assert.assertEquals(true, associationOOM.isNavigableB());
+		Assert.assertEquals(false, association.isNavigableA());
+		Assert.assertEquals(true, association.isNavigableB());
 	}
 
 	/**
@@ -187,15 +187,15 @@ public class OOMTest {
 	 */
 	@Test
 	public void testAssoctationAnvBnv() {
-		final TagAssociation associationOOM = map.get("CHA_CHI_8");
-		Assert.assertEquals("0..*", associationOOM.getMultiplicityA());
-		Assert.assertEquals("0..*", associationOOM.getMultiplicityB());
+		final XmlAssociation association = map.get("CHA_CHI_8");
+		Assert.assertEquals("0..*", association.getMultiplicityA());
+		Assert.assertEquals("0..*", association.getMultiplicityB());
 
-		Assert.assertEquals("R8A", associationOOM.getRoleLabelA());
-		Assert.assertEquals("R8B", associationOOM.getRoleLabelB());
+		Assert.assertEquals("R8A", association.getRoleLabelA());
+		Assert.assertEquals("R8B", association.getRoleLabelB());
 
-		Assert.assertEquals(true, associationOOM.isNavigableA());
-		Assert.assertEquals(true, associationOOM.isNavigableB());
+		Assert.assertEquals(true, association.isNavigableA());
+		Assert.assertEquals(true, association.isNavigableB());
 	}
 
 	/**
@@ -203,15 +203,15 @@ public class OOMTest {
 	 */
 	@Test
 	public void testAssoctationAnBn() {
-		final TagAssociation associationOOM = map.get("CHA_CHI_9");
-		Assert.assertEquals("0..*", associationOOM.getMultiplicityA());
-		Assert.assertEquals("0..*", associationOOM.getMultiplicityB());
+		final XmlAssociation association = map.get("CHA_CHI_9");
+		Assert.assertEquals("0..*", association.getMultiplicityA());
+		Assert.assertEquals("0..*", association.getMultiplicityB());
 
-		Assert.assertEquals("R9A", associationOOM.getRoleLabelA());
-		Assert.assertEquals("R9B", associationOOM.getRoleLabelB());
+		Assert.assertEquals("R9A", association.getRoleLabelA());
+		Assert.assertEquals("R9B", association.getRoleLabelB());
 
-		Assert.assertEquals(false, associationOOM.isNavigableA());
-		Assert.assertEquals(false, associationOOM.isNavigableB());
+		Assert.assertEquals(false, association.isNavigableA());
+		Assert.assertEquals(false, association.isNavigableB());
 	}
 
 	/**
@@ -219,14 +219,14 @@ public class OOMTest {
 	 */
 	@Test
 	public void testAssoctationAnvBn() {
-		final TagAssociation associationOOM = map.get("CHA_CHI_10");
-		Assert.assertEquals("0..*", associationOOM.getMultiplicityA());
-		Assert.assertEquals("0..*", associationOOM.getMultiplicityB());
+		final XmlAssociation association = map.get("CHA_CHI_10");
+		Assert.assertEquals("0..*", association.getMultiplicityA());
+		Assert.assertEquals("0..*", association.getMultiplicityB());
 
-		Assert.assertEquals("R10A", associationOOM.getRoleLabelA());
-		Assert.assertEquals("R10B", associationOOM.getRoleLabelB());
+		Assert.assertEquals("R10A", association.getRoleLabelA());
+		Assert.assertEquals("R10B", association.getRoleLabelB());
 
-		Assert.assertEquals(true, associationOOM.isNavigableA());
-		Assert.assertEquals(false, associationOOM.isNavigableB());
+		Assert.assertEquals(true, association.isNavigableA());
+		Assert.assertEquals(false, association.isNavigableB());
 	}
 }

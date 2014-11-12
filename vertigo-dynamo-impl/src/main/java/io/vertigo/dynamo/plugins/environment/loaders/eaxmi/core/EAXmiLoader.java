@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core;
 
-import io.vertigo.dynamo.plugins.environment.loaders.TagAssociation;
-import io.vertigo.dynamo.plugins.environment.loaders.TagAttribute;
-import io.vertigo.dynamo.plugins.environment.loaders.TagClass;
-import io.vertigo.dynamo.plugins.environment.loaders.TagId;
-import io.vertigo.dynamo.plugins.environment.loaders.TagLoader;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAssociation;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAttribute;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlClass;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlLoader;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -40,8 +40,8 @@ import org.apache.log4j.Logger;
  * Loader de fichier XMI version Enterprise Architect.
  * @author pforhan
  */
-public final class EAXmiLoader implements TagLoader {
-	private final Map<TagId, EAXmiObject> map;
+public final class EAXmiLoader implements XmlLoader {
+	private final Map<XmlId, EAXmiObject> map;
 
 	private final Logger log = Logger.getLogger(this.getClass());
 
@@ -65,13 +65,13 @@ public final class EAXmiLoader implements TagLoader {
 	 * Récupération des classes déclarées dans le XMI.
 	 * @return Liste des classes
 	 */
-	public List<TagClass> getTagClasses() {
-		final List<TagClass> list = new ArrayList<>();
+	public List<XmlClass> getClasses() {
+		final List<XmlClass> list = new ArrayList<>();
 		for (final EAXmiObject obj : map.values()) {
 			log.debug("classe : " + obj.toString());
 			//On ne conserve que les classes et les domaines
 			if (obj.getType() == EAXmiType.Class) {
-				list.add(createTagClass(obj));
+				list.add(createClass(obj));
 			}
 		}
 		return java.util.Collections.unmodifiableList(list);
@@ -81,11 +81,11 @@ public final class EAXmiLoader implements TagLoader {
 	 * Récupération des associations déclarées dans le XMI.
 	 * @return Liste des associations
 	 */
-	public List<TagAssociation> getTagAssociations() {
-		final List<TagAssociation> list = new ArrayList<>();
+	public List<XmlAssociation> getAssociations() {
+		final List<XmlAssociation> list = new ArrayList<>();
 		for (final EAXmiObject obj : map.values()) {
 			if (obj.getType() == EAXmiType.Association) {
-				final TagAssociation associationXmi = createTagAssociation(obj);
+				final XmlAssociation associationXmi = createAssociation(obj);
 				if (associationXmi != null) {
 					list.add(associationXmi);
 				}
@@ -94,29 +94,29 @@ public final class EAXmiLoader implements TagLoader {
 		return java.util.Collections.unmodifiableList(list);
 	}
 
-	private TagClass createTagClass(final EAXmiObject obj) {
+	private XmlClass createClass(final EAXmiObject obj) {
 		log.debug("Creation de classe : " + obj.getName());
 		//On recherche les attributs (>DtField) de cette classe(>Dt_DEFINITION)
 		final String code = obj.getName().toUpperCase();
 		final String packageName = obj.getParent().getPackageName();
 
-		final List<TagAttribute> keyAttributes = new ArrayList<>();
-		final List<TagAttribute> fieldAttributes = new ArrayList<>();
+		final List<XmlAttribute> keyAttributes = new ArrayList<>();
+		final List<XmlAttribute> fieldAttributes = new ArrayList<>();
 		for (final EAXmiObject child : obj.getChildren()) {
 			if (child.getType() == EAXmiType.Attribute) {
 				log.debug("Attribut = " + child.getName() + " isId = " + Boolean.toString(child.getIsId()));
 				if (child.getIsId()) {
-					final TagAttribute attributeXmi = createTagAttribute(child, true);
+					final XmlAttribute attributeXmi = createAttribute(child, true);
 					keyAttributes.add(attributeXmi);
 				} else {
-					fieldAttributes.add(createTagAttribute(child, false));
+					fieldAttributes.add(createAttribute(child, false));
 				}
 			}
 		}
-		return new TagClass(code, packageName, keyAttributes, fieldAttributes);
+		return new XmlClass(code, packageName, keyAttributes, fieldAttributes);
 	}
 
-	private static TagAttribute createTagAttribute(final EAXmiObject obj, final boolean isPK) {
+	private static XmlAttribute createAttribute(final EAXmiObject obj, final boolean isPK) {
 		final String code = obj.getName().toUpperCase();
 		final String label = obj.getLabel();
 		final boolean persistent = true;
@@ -130,7 +130,7 @@ public final class EAXmiLoader implements TagLoader {
 		}
 
 		// L'information de persistence ne peut pas être déduite du Xmi, tous les champs sont déclarés persistent de facto
-		return new TagAttribute(code, label, persistent, notNull, obj.getDomain());
+		return new XmlAttribute(code, label, persistent, notNull, obj.getDomain());
 	}
 
 	/**
@@ -138,7 +138,7 @@ public final class EAXmiLoader implements TagLoader {
 	 * @param obj ObjectOOM
 	 * @return Association
 	 */
-	private TagAssociation createTagAssociation(final EAXmiObject obj) {
+	private XmlAssociation createAssociation(final EAXmiObject obj) {
 		log.debug("Créer association :" + obj.getName());
 		final String code = obj.getName().toUpperCase();
 		final String packageName = obj.getParent().getPackageName();
@@ -169,7 +169,7 @@ public final class EAXmiLoader implements TagLoader {
 		// navigabilités sont optionnelles; elles sont déduites de la multiplicités quand elles ne sont pas renseignées
 		final boolean navigabilityA = obj.getRoleANavigability() == null ? false : obj.getRoleANavigability();
 		final boolean navigabilityB = obj.getRoleBNavigability() == null ? true : obj.getRoleBNavigability();
-		return new TagAssociation(code, packageName, multiplicityA, multiplicityB, roleLabelA, roleLabelB, codeA, codeB, navigabilityA, navigabilityB);
+		return new XmlAssociation(code, packageName, multiplicityA, multiplicityB, roleLabelA, roleLabelB, codeA, codeB, navigabilityA, navigabilityB);
 	}
 
 }

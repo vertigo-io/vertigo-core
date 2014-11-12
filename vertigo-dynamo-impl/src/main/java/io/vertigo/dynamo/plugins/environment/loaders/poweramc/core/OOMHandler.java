@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.poweramc.core;
 
-import io.vertigo.dynamo.plugins.environment.loaders.TagId;
+import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
 import io.vertigo.lang.Assertion;
 
 import java.util.Map;
@@ -35,13 +35,13 @@ final class OOMHandler extends DefaultHandler {
 	private static final String ATTR_ID = "Id";
 	private static final String ATTR_REF = "Ref";
 
-	private final Map<TagId, OOMObject> map;
+	private final Map<XmlId, OOMObject> map;
 
 	private OOMTag currentTag;
 
 	private String chars;
 
-	OOMHandler(final Map<TagId, OOMObject> map) {
+	OOMHandler(final Map<XmlId, OOMObject> map) {
 		Assertion.checkNotNull(map);
 		//---------------------------------------------------------------------
 		this.map = map;
@@ -57,7 +57,7 @@ final class OOMHandler extends DefaultHandler {
 		final String ref = attributes.getValue(ATTR_REF);
 		if (ref != null && OOMType.isNodeByRef(name) && currentTag.getCurrentOOM() != null) {
 			// Si le tag courant est associé à un objet alors on ajoute à cet objet la référence.
-			final TagId idOOM = new TagId(ref);
+			final XmlId idOOM = new XmlId(ref);
 			currentTag.getCurrentOOM().addIdOOM(idOOM);
 		}
 
@@ -68,7 +68,7 @@ final class OOMHandler extends DefaultHandler {
 			final OOMType type = OOMType.getType(name);
 			if (type != null && id != null) {
 				//Il existe un nouvel objet géré associé à ce Tag
-				final TagId idOOM = new TagId(id);
+				final XmlId idOOM = new XmlId(id);
 				final OOMObject obj = currentTag.getParentOOM().createObjectOOM(idOOM, type);
 				map.put(idOOM, obj);
 				currentTag = currentTag.createTag(obj);
