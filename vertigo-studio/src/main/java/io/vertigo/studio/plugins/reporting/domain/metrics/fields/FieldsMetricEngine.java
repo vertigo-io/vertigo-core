@@ -20,6 +20,7 @@ package io.vertigo.studio.plugins.reporting.domain.metrics.fields;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
+import io.vertigo.studio.reporting.Metric;
 import io.vertigo.studio.reporting.MetricEngine;
 
 /**
@@ -27,10 +28,10 @@ import io.vertigo.studio.reporting.MetricEngine;
  *
  * @author pchretien
  */
-public final class FieldsMetricEngine implements MetricEngine<DtDefinition, FieldsMetric> {
+public final class FieldsMetricEngine implements MetricEngine<DtDefinition> {
 	/** {@inheritDoc} */
 	@Override
-	public FieldsMetric execute(final DtDefinition dtDefinition) {
+	public Metric execute(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//---------------------------------------------------------------------
 		final int size = dtDefinition.getFields().size();

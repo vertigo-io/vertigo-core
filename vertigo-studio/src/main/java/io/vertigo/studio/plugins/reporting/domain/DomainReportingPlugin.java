@@ -48,7 +48,7 @@ import javax.inject.Inject;
 public final class DomainReportingPlugin implements ReportingPlugin {
 	private final KTransactionManager transactionManager;
 	private final PersistenceManager persistenceManager;
-	private final List<MetricEngine<DtDefinition, ? extends Metric>> metricEngines;
+	private final List<MetricEngine<DtDefinition>> metricEngines;
 
 	@Inject
 	public DomainReportingPlugin(final KTransactionManager transactionManager, final PersistenceManager persistenceManager) {
@@ -73,7 +73,7 @@ public final class DomainReportingPlugin implements ReportingPlugin {
 		final List<DataReport> domainAnalysisList = new ArrayList<>();
 		for (final DtDefinition dtDefinition : Home.getDefinitionSpace().getAll(DtDefinition.class)) {
 			final List<Metric> results = new ArrayList<>();
-			for (final MetricEngine<DtDefinition, ? extends Metric> metricEngine : metricEngines) {
+			for (final MetricEngine<DtDefinition> metricEngine : metricEngines) {
 				final Metric result = metricEngine.execute(dtDefinition);
 				results.add(result);
 			}
@@ -83,8 +83,8 @@ public final class DomainReportingPlugin implements ReportingPlugin {
 		return new Report(domainAnalysisList);
 	}
 
-	private List<MetricEngine<DtDefinition, ? extends Metric>> createMetricEngines() {
-		return new ListBuilder<MetricEngine<DtDefinition, ? extends Metric>>()
+	private List<MetricEngine<DtDefinition>> createMetricEngines() {
+		return new ListBuilder<MetricEngine<DtDefinition>>()
 				.add(new FieldsMetricEngine())
 				.add(new DependencyMetricEngine())
 				.add(new PersistenceMetricEngine(persistenceManager))

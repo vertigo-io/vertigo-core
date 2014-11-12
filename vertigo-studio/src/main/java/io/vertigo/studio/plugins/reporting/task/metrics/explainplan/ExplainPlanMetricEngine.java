@@ -43,7 +43,7 @@ import java.sql.SQLException;
  *
  * @author tchassagnette
  */
-public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinition, ExplainPlanMetric> {
+public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinition> {
 	private int sequence;
 
 	private final TaskManager taskManager;

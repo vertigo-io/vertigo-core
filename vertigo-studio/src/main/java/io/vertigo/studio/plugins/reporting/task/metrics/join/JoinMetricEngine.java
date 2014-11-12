@@ -27,7 +27,7 @@ import io.vertigo.studio.reporting.MetricEngine;
  *
  * @author tchassagnette
  */
-public final class JoinMetricEngine implements MetricEngine<TaskDefinition, JoinMetric> {
+public final class JoinMetricEngine implements MetricEngine<TaskDefinition> {
 	/** {@inheritDoc} */
 	@Override
 	public JoinMetric execute(final TaskDefinition taskDefinition) {

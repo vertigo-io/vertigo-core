@@ -49,7 +49,7 @@ import javax.inject.Inject;
 public final class TaskReportingPlugin implements ReportingPlugin {
 	private final KTransactionManager transactionManager;
 	private final TaskManager taskManager;
-	private final List<MetricEngine<TaskDefinition, ? extends Metric>> metricEngines;
+	private final List<MetricEngine<TaskDefinition>> metricEngines;
 
 	@Inject
 	public TaskReportingPlugin(final KTransactionManager transactionManager, final TaskManager taskManager) {
@@ -75,7 +75,7 @@ public final class TaskReportingPlugin implements ReportingPlugin {
 		final List<DataReport> taskAnalyseResults = new ArrayList<>();
 		for (final TaskDefinition taskDefinition : Home.getDefinitionSpace().getAll(TaskDefinition.class)) {
 			final List<Metric> results = new ArrayList<>();
-			for (final MetricEngine<TaskDefinition, ? extends Metric> metricEngine : metricEngines) {
+			for (final MetricEngine<TaskDefinition> metricEngine : metricEngines) {
 				final Metric result = metricEngine.execute(taskDefinition);
 				results.add(result);
 			}
@@ -85,8 +85,8 @@ public final class TaskReportingPlugin implements ReportingPlugin {
 		return new Report(taskAnalyseResults);
 	}
 
-	private List<MetricEngine<TaskDefinition, ? extends Metric>> createMetricEngines() {
-		return new ListBuilder<MetricEngine<TaskDefinition, ? extends Metric>>()
+	private List<MetricEngine<TaskDefinition>> createMetricEngines() {
+		return new ListBuilder<MetricEngine<TaskDefinition>>()
 				.add(new PerformanceMetricEngine(taskManager))
 				.add(new RequestSizeMetricEngine())
 				.add(new ExplainPlanMetricEngine(taskManager))

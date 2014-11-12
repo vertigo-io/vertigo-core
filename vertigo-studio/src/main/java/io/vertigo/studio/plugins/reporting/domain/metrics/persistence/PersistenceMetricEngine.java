@@ -28,7 +28,7 @@ import io.vertigo.studio.reporting.MetricEngine;
  *
  * @author pchretien
  */
-public final class PersistenceMetricEngine implements MetricEngine<DtDefinition, PersitenceMetric> {
+public final class PersistenceMetricEngine implements MetricEngine<DtDefinition> {
 	private final PersistenceManager persistenceManager;
 
 	/**

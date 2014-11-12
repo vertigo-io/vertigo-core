@@ -30,7 +30,7 @@ import io.vertigo.studio.reporting.MetricEngine;
  *
  * @author pchretien
  */
-public final class DependencyMetricEngine implements MetricEngine<DtDefinition, DependencyMetric> {
+public final class DependencyMetricEngine implements MetricEngine<DtDefinition> {
 
 	/** {@inheritDoc} */
 	@Override

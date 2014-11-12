@@ -29,7 +29,7 @@ import io.vertigo.studio.reporting.MetricEngine;
  *
  * @author pchretien
  */
-public final class CountMetricEngine implements MetricEngine<DtDefinition, CountMetric> {
+public final class CountMetricEngine implements MetricEngine<DtDefinition> {
 	private final PersistenceManager persistenceManager;
 
 	/**

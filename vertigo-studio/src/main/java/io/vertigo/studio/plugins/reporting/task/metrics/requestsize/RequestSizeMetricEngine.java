@@ -24,10 +24,10 @@ import io.vertigo.studio.reporting.MetricEngine;
 
 /**
  * Plugin de calcul de la taille en caractères d'une requête.
- * 
+ *
  * @author tchassagnette
  */
-public final class RequestSizeMetricEngine implements MetricEngine<TaskDefinition, RequestSizeMetric> {
+public final class RequestSizeMetricEngine implements MetricEngine<TaskDefinition> {
 	/** {@inheritDoc} */
 	@Override
 	public RequestSizeMetric execute(final TaskDefinition taskDefinition) {

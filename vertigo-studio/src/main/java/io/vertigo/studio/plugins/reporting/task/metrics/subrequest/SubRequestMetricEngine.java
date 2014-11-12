@@ -24,10 +24,10 @@ import io.vertigo.studio.reporting.MetricEngine;
 
 /**
  * Plugin qui compte le nombre de ss requete dans une requete SQL.
- * 
+ *
  * @author tchassagnette
  */
-public final class SubRequestMetricEngine implements MetricEngine<TaskDefinition, SubRequestMetric> {
+public final class SubRequestMetricEngine implements MetricEngine<TaskDefinition> {
 	/** {@inheritDoc} */
 	@Override
 	public SubRequestMetric execute(final TaskDefinition taskDefinition) {

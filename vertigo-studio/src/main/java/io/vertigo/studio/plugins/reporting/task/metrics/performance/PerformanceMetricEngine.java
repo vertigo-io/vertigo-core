@@ -31,7 +31,7 @@ import io.vertigo.studio.reporting.MetricEngine;
  *
  * @author tchassagnette
  */
-public final class PerformanceMetricEngine implements MetricEngine<TaskDefinition, PerformanceMetric> {
+public final class PerformanceMetricEngine implements MetricEngine<TaskDefinition> {
 	private final TaskManager taskManager;
 
 	/**
