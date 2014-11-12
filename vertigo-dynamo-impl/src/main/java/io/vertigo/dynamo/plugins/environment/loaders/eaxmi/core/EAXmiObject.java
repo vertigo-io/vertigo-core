@@ -258,7 +258,7 @@ final class EAXmiObject {
 		} else if (PROPERTY_DOMAIN.equals(propertyName)) {
 			manageDomain(attributs);
 			// Même nom pour le domaine et les navigabilité
-			manageNavigabilite(attributs);
+			manageNavigability(attributs);
 		} else if (PROPERTY_ID.equals(propertyName)) {
 			// On peut se retrouver en fin de fichier avec des xrefs qui reviennent.
 			// On ne mets à jour que si on ne l'a pas fait.
@@ -284,7 +284,7 @@ final class EAXmiObject {
 		//On ne tient pas compte des autres propriétés
 	}
 
-	private void manageNavigabilite(final Attributes attributs) {
+	private void manageNavigability(final Attributes attributs) {
 		final String value = attributs.getValue(PROPERTY_ROLE_NAVIGABILITY_NAME);
 		if (PROPERTY_NAVIGABILITY_NONE.equals(value)) {
 			roleANavigability = false;

@@ -33,6 +33,7 @@ import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.loaders.TagAssociation;
 import io.vertigo.dynamo.plugins.environment.loaders.TagAttribute;
 import io.vertigo.dynamo.plugins.environment.loaders.TagClass;
+import io.vertigo.dynamo.plugins.environment.loaders.TagUtil;
 import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core.EAXmiLoader;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.lang.Assertion;
@@ -91,7 +92,7 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 		}
 		for (final TagAttribute attributeXmi : classXmi.getFieldAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(attributeXmi, dynamicModelrepository);
-			dtDefinitionBuilder.withChildDefinition("field", dtField);
+			dtDefinitionBuilder.withChildDefinition(DomainGrammar.FIELD, dtField);
 		}
 		return dtDefinitionBuilder.build();
 	}
@@ -130,9 +131,9 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 				//---
 				.withPropertyValue(KspProperty.LABEL_A, associationXmi.getRoleLabelA())
 				//On transforme en CODE ce qui est écrit en toutes lettres.
-				.withPropertyValue(KspProperty.ROLE_A, french2Java(associationXmi.getRoleLabelA()))
+				.withPropertyValue(KspProperty.ROLE_A, TagUtil.french2Java(associationXmi.getRoleLabelA()))
 				.withPropertyValue(KspProperty.LABEL_B, associationXmi.getRoleLabelB())
-				.withPropertyValue(KspProperty.ROLE_B, french2Java(associationXmi.getRoleLabelB()))
+				.withPropertyValue(KspProperty.ROLE_B, TagUtil.french2Java(associationXmi.getRoleLabelB()))
 				//---
 				.withDefinition("dtDefinitionA", getDtDefinitionKey(associationXmi.getCodeA()))
 				.withDefinition("dtDefinitionB", getDtDefinitionKey(associationXmi.getCodeB()));
@@ -146,7 +147,8 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 			LOGGER.trace("!isAssociationNN:Code=" + associationXmi.getCode());
 			//Dans le cas d'une NN ses deux propriétés sont redondantes ;
 			//elles ne font donc pas partie de la définition d'une association de type NN
-			associationDefinitionBuilder.withPropertyValue(KspProperty.MULTIPLICITY_A, associationXmi.getMultiplicityA())
+			associationDefinitionBuilder
+					.withPropertyValue(KspProperty.MULTIPLICITY_A, associationXmi.getMultiplicityA())
 					.withPropertyValue(KspProperty.MULTIPLICITY_B, associationXmi.getMultiplicityB())
 					.withPropertyValue(KspProperty.FK_FIELD_NAME, buildFkFieldName(associationXmi, dynamicModelrepository));
 
@@ -206,86 +208,6 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 
 	private static DynamicDefinitionKey getDtDefinitionKey(final String code) {
 		return new DynamicDefinitionKey(getDtDefinitionName(code));
-	}
-
-	// A sa place dans un util mais ramené ici pour indépendance des plugins
-	public static String french2Java(final String str) {
-		Assertion.checkNotNull(str);
-		Assertion.checkArgument(str.length() > 0, "La chaine à modifier ne doit pas être vide.");
-		// ----------------------------------------------------------------------
-		final StringBuilder suffix = new StringBuilder();
-		int i = 1;
-		char c;
-		c = replaceAccent(str.charAt(0));
-		suffix.append(Character.toUpperCase(c));
-
-		final int length = str.length();
-		while (i < length) {
-			c = str.charAt(i);
-			//On considère blanc, et ' comme des séparateurs de mots.
-			if (c == ' ' || c == '\'') {
-				if (i + 1 < length) {
-					c = replaceAccent(str.charAt(i + 1));
-					if (Character.isLetterOrDigit(c)) {
-						suffix.append(Character.toUpperCase(c));
-					}
-					i += 2;
-				} else {
-					i++; // évitons boucle infinie
-				}
-			} else {
-				c = replaceAccent(c);
-				if (Character.isLetterOrDigit(c)) {
-					suffix.append(c);
-				}
-				i++;
-			}
-		}
-		return suffix.toString();
-	}
-
-	/**
-	 * Remplacement de caractères accentués par leurs équivalents non accentués
-	 * (par ex: accents dans rôles)
-	 * @param c caractère accentué à traiter
-	 * @return caractère traité (sans accent)
-	 */
-	private static char replaceAccent(final char c) {
-		char result;
-		switch (c) {
-			case '\u00e0':
-			case '\u00e2':
-			case '\u00e4':
-				result = 'a';
-				break;
-			case '\u00e7':
-				result = 'c';
-				break;
-			case '\u00e8':
-			case '\u00e9':
-			case '\u00ea':
-			case '\u00eb':
-				result = 'e';
-				break;
-			case '\u00ee':
-			case '\u00ef':
-				result = 'i';
-				break;
-			case '\u00f4':
-			case '\u00f6':
-				result = 'o';
-				break;
-			case '\u00f9':
-			case '\u00fb':
-			case '\u00fc':
-				result = 'u';
-				break;
-			default:
-				result = c;
-				break;
-		}
-
-		return result;
 	}
 
 	public String getType() {

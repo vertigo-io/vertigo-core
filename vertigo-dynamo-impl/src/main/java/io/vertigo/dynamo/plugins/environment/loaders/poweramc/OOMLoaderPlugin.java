@@ -33,6 +33,7 @@ import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.loaders.TagAssociation;
 import io.vertigo.dynamo.plugins.environment.loaders.TagAttribute;
 import io.vertigo.dynamo.plugins.environment.loaders.TagClass;
+import io.vertigo.dynamo.plugins.environment.loaders.TagUtil;
 import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMLoader;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.lang.Assertion;
@@ -143,9 +144,9 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 				//---
 				.withPropertyValue(KspProperty.LABEL_A, associationOOM.getRoleLabelA())//
 				//On transforme en CODE ce qui est écrit en toutes lettres.
-				.withPropertyValue(KspProperty.ROLE_A, OOMUtil.french2Java(associationOOM.getRoleLabelA()))//
+				.withPropertyValue(KspProperty.ROLE_A, TagUtil.french2Java(associationOOM.getRoleLabelA()))//
 				.withPropertyValue(KspProperty.LABEL_B, associationOOM.getRoleLabelB())//
-				.withPropertyValue(KspProperty.ROLE_B, OOMUtil.french2Java(associationOOM.getRoleLabelB()))//
+				.withPropertyValue(KspProperty.ROLE_B, TagUtil.french2Java(associationOOM.getRoleLabelB()))//
 				//---
 				.withDefinition("dtDefinitionA", getDtDefinitionKey(associationOOM.getCodeA()))//
 				.withDefinition("dtDefinitionB", getDtDefinitionKey(associationOOM.getCodeB()));
