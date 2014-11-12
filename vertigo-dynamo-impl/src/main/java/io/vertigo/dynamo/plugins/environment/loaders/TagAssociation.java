@@ -16,17 +16,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core;
+package io.vertigo.dynamo.plugins.environment.loaders;
 
 import io.vertigo.lang.Assertion;
 
 /**
- * Classe de gestion des associations pour le loader XMI.
- * Extension Enterprise Architect seulement.
- * @author pforhan
+ * Association.
+ * Une association est définie par deux noeuds A et B.
+ * Chaque noeud possède des propriétés :
+ *  - Navigabilité
+ *  - Cardinalité (appelée multiplicité dans poweramc)
+ *  - Libellé
+ *  - Code de l'entité à laquelle est attachée le noeud.
  *
+ *  D'autre part l'association possède son propre code.
+ * @author pchretien
  */
-public final class EAXmiAssociation {
+public final class TagAssociation {
 	private final String code;
 	private final String packageName;
 
@@ -45,8 +51,9 @@ public final class EAXmiAssociation {
 	/**
 	 * Constructeur.
 	 */
-	EAXmiAssociation(final String code, final String packageName, final String multiplicityA, final String multiplicityB, final String roleLabelA, final String roleLabelB, final String codeA, final String codeB, final boolean navigabilityA, final boolean navigabilityB) {
+	public TagAssociation(final String code, final String packageName, final String multiplicityA, final String multiplicityB, final String roleLabelA, final String roleLabelB, final String codeA, final String codeB, final boolean navigabilityA, final boolean navigabilityB) {
 		Assertion.checkArgNotEmpty(code);
+		//Assertion.notEmpty(packageName);
 		Assertion.checkArgNotEmpty(multiplicityA);
 		Assertion.checkArgNotEmpty(multiplicityB);
 		Assertion.checkArgNotEmpty(roleLabelA);
@@ -68,7 +75,6 @@ public final class EAXmiAssociation {
 		} else {
 			this.multiplicityB = multiplicityB;
 		}
-
 		this.roleLabelA = roleLabelA;
 		this.roleLabelB = roleLabelB;
 
@@ -84,7 +90,7 @@ public final class EAXmiAssociation {
 	 * AAA = Trois première lettre du code de A
 	 * BBB = Trois première lettre du code de B
 	 * Le nom défini par l'utilisateur est facultatif.
-	 * 
+	 *
 	 * @return Code de l'association
 	 */
 	public String getCode() {
@@ -92,7 +98,7 @@ public final class EAXmiAssociation {
 	}
 
 	/**
-	 * Le code suivant est déduit du code.  
+	 * Le code suivant est déduit du code.
 	 * @return Nom de l'association défini par l'utilisateur. (Peut être null)
 	 */
 	public String getCodeName() {
@@ -153,6 +159,7 @@ public final class EAXmiAssociation {
 
 	/**
 	 * @return Code de l'entité A participant à l'association
+
 	 */
 	public String getCodeA() {
 		return codeA;
@@ -164,5 +171,4 @@ public final class EAXmiAssociation {
 	public String getCodeB() {
 		return codeB;
 	}
-
 }

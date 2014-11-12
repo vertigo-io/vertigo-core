@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.environment.eaxmi;
 
 import io.vertigo.dynamo.TestUtil;
-import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core.EAXmiAssociation;
+import io.vertigo.dynamo.plugins.environment.loaders.TagAssociation;
 import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core.EAXmiLoader;
 
 import java.io.File;
@@ -40,7 +40,7 @@ import org.junit.Test;
  */
 public class EAXmiAATest {
 	private static final Logger LOGGER = Logger.getLogger(EAXmiAATest.class);
-	private Map<String, EAXmiAssociation> map;
+	private Map<String, TagAssociation> map;
 
 	@Before
 	public void setUp() throws Exception {
@@ -49,7 +49,7 @@ public class EAXmiAATest {
 
 		final EAXmiLoader loader = new EAXmiLoader(xmiURL);
 		map = new HashMap<>();
-		for (final EAXmiAssociation association : loader.getAssociations()) {
+		for (final TagAssociation association : loader.getAssociations()) {
 			map.put(association.getCode(), association);
 			LOGGER.trace("> code = " + association.getCode());
 		}
@@ -74,7 +74,7 @@ public class EAXmiAATest {
 	 */
 	@Test
 	public void testAssoctationA1Bnv() {
-		final EAXmiAssociation association = map.get("CHI_CHI_1");
+		final TagAssociation association = map.get("CHI_CHI_1");
 		Assert.assertEquals("0..1", association.getMultiplicityA());
 		Assert.assertEquals("0..*", association.getMultiplicityB());
 
@@ -90,7 +90,7 @@ public class EAXmiAATest {
 	 */
 	@Test
 	public void testAssoctationA1vBnv() {
-		final EAXmiAssociation association = map.get("CHI_CHI_2");
+		final TagAssociation association = map.get("CHI_CHI_2");
 		Assert.assertEquals("0..1", association.getMultiplicityA());
 		Assert.assertEquals("0..*", association.getMultiplicityB());
 
@@ -106,7 +106,7 @@ public class EAXmiAATest {
 	 */
 	@Test
 	public void testAssoctationA1vBn() {
-		final EAXmiAssociation association = map.get("CHI_CHI_3");
+		final TagAssociation association = map.get("CHI_CHI_3");
 		Assert.assertEquals("0..1", association.getMultiplicityA());
 		Assert.assertEquals("0..*", association.getMultiplicityB());
 
@@ -122,7 +122,7 @@ public class EAXmiAATest {
 	 */
 	@Test
 	public void testAssoctationAnB1v() {
-		final EAXmiAssociation association = map.get("CHI_CHI_4");
+		final TagAssociation association = map.get("CHI_CHI_4");
 		Assert.assertEquals("0..*", association.getMultiplicityA());
 		Assert.assertEquals("0..1", association.getMultiplicityB());
 
@@ -138,7 +138,7 @@ public class EAXmiAATest {
 	 */
 	@Test
 	public void testAssoctationAnvB1() {
-		final EAXmiAssociation association = map.get("CHI_CHI_5");
+		final TagAssociation association = map.get("CHI_CHI_5");
 		Assert.assertEquals("0..*", association.getMultiplicityA());
 		Assert.assertEquals("0..1", association.getMultiplicityB());
 
@@ -154,7 +154,7 @@ public class EAXmiAATest {
 	 */
 	@Test
 	public void testAssoctationAnvB1v() {
-		final EAXmiAssociation association = map.get("CHI_CHI_6");
+		final TagAssociation association = map.get("CHI_CHI_6");
 		Assert.assertEquals("0..*", association.getMultiplicityA());
 		Assert.assertEquals("0..1", association.getMultiplicityB());
 
@@ -170,7 +170,7 @@ public class EAXmiAATest {
 	 */
 	@Test
 	public void testAssoctationAnBnv() {
-		final EAXmiAssociation association = map.get("CHI_CHI_7");
+		final TagAssociation association = map.get("CHI_CHI_7");
 		Assert.assertEquals("0..*", association.getMultiplicityA());
 		Assert.assertEquals("0..*", association.getMultiplicityB());
 
@@ -186,7 +186,7 @@ public class EAXmiAATest {
 	 */
 	@Test
 	public void testAssoctationAnvBnv() {
-		final EAXmiAssociation association = map.get("CHI_CHI_8");
+		final TagAssociation association = map.get("CHI_CHI_8");
 		Assert.assertEquals("0..*", association.getMultiplicityA());
 		Assert.assertEquals("0..*", association.getMultiplicityB());
 
@@ -202,7 +202,7 @@ public class EAXmiAATest {
 	 */
 	@Test
 	public void testAssoctationAnBn() {
-		final EAXmiAssociation association = map.get("CHI_CHI_9");
+		final TagAssociation association = map.get("CHI_CHI_9");
 		Assert.assertEquals("0..*", association.getMultiplicityA());
 		Assert.assertEquals("0..*", association.getMultiplicityB());
 
@@ -218,7 +218,7 @@ public class EAXmiAATest {
 	 */
 	@Test
 	public void testAssoctationAnvBn() {
-		final EAXmiAssociation association = map.get("CHI_CHI_10");
+		final TagAssociation association = map.get("CHI_CHI_10");
 		Assert.assertEquals("0..*", association.getMultiplicityA());
 		Assert.assertEquals("0..*", association.getMultiplicityB());
 

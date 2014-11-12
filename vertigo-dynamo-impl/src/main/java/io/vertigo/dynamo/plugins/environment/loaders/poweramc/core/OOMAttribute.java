@@ -76,7 +76,7 @@ public final class OOMAttribute {
 	}
 
 	/**
-	 * @return Domain au sens poweramc (Nom).
+	 * @return Type de l'attribut au sens poweramc/EA (Nom).
 	 */
 	public String getDomain() {
 		return domain;

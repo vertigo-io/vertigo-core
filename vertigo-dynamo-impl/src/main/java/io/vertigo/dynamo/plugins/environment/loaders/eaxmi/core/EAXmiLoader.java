@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core;
 
+import io.vertigo.dynamo.plugins.environment.loaders.TagAssociation;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -76,11 +77,11 @@ public final class EAXmiLoader {
 	 * Récupération des associations déclarées dans le XMI.
 	 * @return Liste des associations
 	 */
-	public List<EAXmiAssociation> getAssociations() {
-		final List<EAXmiAssociation> list = new ArrayList<>();
+	public List<TagAssociation> getAssociations() {
+		final List<TagAssociation> list = new ArrayList<>();
 		for (final EAXmiObject obj : map.values()) {
 			if (obj.getType() == EAXmiType.Association) {
-				final EAXmiAssociation associationXmi = buildDynAssociation(obj);
+				final TagAssociation associationXmi = buildDynAssociation(obj);
 				if (associationXmi != null) {
 					list.add(associationXmi);
 				}
@@ -126,9 +127,9 @@ public final class EAXmiLoader {
 	/**
 	 * Création d'une association.
 	 * @param obj ObjectOOM
-	 * @return Association 
+	 * @return Association
 	 */
-	private EAXmiAssociation buildDynAssociation(final EAXmiObject obj) {
+	private TagAssociation buildDynAssociation(final EAXmiObject obj) {
 		log.debug("Créer association :" + obj.getName());
 		final String code = obj.getName().toUpperCase();
 		final String packageName = obj.getParent().getPackageName();
@@ -137,8 +138,8 @@ public final class EAXmiLoader {
 		final String multiplicityB = obj.getRoleBMultiplicity();
 
 		//On recherche les objets référencés par l'association.
-		EAXmiObject objectB = map.get(obj.getClassB());
-		EAXmiObject objectA = map.get(obj.getClassA());
+		final EAXmiObject objectB = map.get(obj.getClassB());
+		final EAXmiObject objectA = map.get(obj.getClassA());
 
 		if (objectA == null || objectB == null) {
 			throw new IllegalArgumentException("Noeuds de l'association introuvables");
@@ -159,7 +160,7 @@ public final class EAXmiLoader {
 		// navigabilités sont optionnelles; elles sont déduites de la multiplicités quand elles ne sont pas renseignées
 		final boolean navigabilityA = obj.getRoleANavigability() == null ? false : obj.getRoleANavigability();
 		final boolean navigabilityB = obj.getRoleBNavigability() == null ? true : obj.getRoleBNavigability();
-		return new EAXmiAssociation(code, packageName, multiplicityA, multiplicityB, roleLabelA, roleLabelB, codeA, codeB, navigabilityA, navigabilityB);
+		return new TagAssociation(code, packageName, multiplicityA, multiplicityB, roleLabelA, roleLabelB, codeA, codeB, navigabilityA, navigabilityB);
 	}
 
 }

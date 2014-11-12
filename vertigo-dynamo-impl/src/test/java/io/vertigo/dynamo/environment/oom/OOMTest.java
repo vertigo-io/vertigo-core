@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.environment.oom;
 
 import io.vertigo.dynamo.TestUtil;
-import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMAssociation;
+import io.vertigo.dynamo.plugins.environment.loaders.TagAssociation;
 import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMLoader;
 
 import java.io.File;
@@ -40,7 +40,7 @@ import org.junit.Test;
  */
 public class OOMTest {
 	private static final Logger LOGGER = Logger.getLogger(OOMTest.class);
-	private Map<String, OOMAssociation> map;
+	private Map<String, TagAssociation> map;
 
 	@Before
 	public void setUp() throws Exception {
@@ -49,7 +49,7 @@ public class OOMTest {
 		final URL oomURL = oomFile.toURL();
 		final OOMLoader loader = new OOMLoader(oomURL);
 		map = new HashMap<>();
-		for (final OOMAssociation associationOOM : loader.getAssociationOOMList()) {
+		for (final TagAssociation associationOOM : loader.getAssociationOOMList()) {
 			map.put(associationOOM.getCode(), associationOOM);
 			LOGGER.trace("> code = " + associationOOM.getCode());
 		}
@@ -74,7 +74,7 @@ public class OOMTest {
 	 */
 	@Test
 	public void testAssoctationA1Bnv() {
-		final OOMAssociation associationOOM = map.get("CHA_CHI_1");
+		final TagAssociation associationOOM = map.get("CHA_CHI_1");
 		Assert.assertEquals("0..1", associationOOM.getMultiplicityA());
 		Assert.assertEquals("0..*", associationOOM.getMultiplicityB());
 
@@ -90,7 +90,7 @@ public class OOMTest {
 	 */
 	@Test
 	public void testAssoctationA1vBnv() {
-		final OOMAssociation associationOOM = map.get("CHA_CHI_2");
+		final TagAssociation associationOOM = map.get("CHA_CHI_2");
 		Assert.assertEquals("0..1", associationOOM.getMultiplicityA());
 		Assert.assertEquals("0..*", associationOOM.getMultiplicityB());
 
@@ -106,7 +106,7 @@ public class OOMTest {
 	 */
 	@Test
 	public void testAssoctationA1vBn() {
-		final OOMAssociation associationOOM = map.get("CHA_CHI_3");
+		final TagAssociation associationOOM = map.get("CHA_CHI_3");
 		Assert.assertEquals("0..1", associationOOM.getMultiplicityA());
 		Assert.assertEquals("0..*", associationOOM.getMultiplicityB());
 
@@ -122,7 +122,7 @@ public class OOMTest {
 	 */
 	@Test
 	public void testAssoctationAnB1v() {
-		final OOMAssociation associationOOM = map.get("CHA_CHI_4");
+		final TagAssociation associationOOM = map.get("CHA_CHI_4");
 		Assert.assertEquals("0..*", associationOOM.getMultiplicityA());
 		Assert.assertEquals("0..1", associationOOM.getMultiplicityB());
 
@@ -138,7 +138,7 @@ public class OOMTest {
 	 */
 	@Test
 	public void testAssoctationAnvB1() {
-		final OOMAssociation associationOOM = map.get("CHA_CHI_5");
+		final TagAssociation associationOOM = map.get("CHA_CHI_5");
 		Assert.assertEquals("0..*", associationOOM.getMultiplicityA());
 		Assert.assertEquals("0..1", associationOOM.getMultiplicityB());
 
@@ -154,7 +154,7 @@ public class OOMTest {
 	 */
 	@Test
 	public void testAssoctationAnvB1v() {
-		final OOMAssociation associationOOM = map.get("CHA_CHI_6");
+		final TagAssociation associationOOM = map.get("CHA_CHI_6");
 		Assert.assertEquals("0..*", associationOOM.getMultiplicityA());
 		Assert.assertEquals("0..1", associationOOM.getMultiplicityB());
 
@@ -170,7 +170,7 @@ public class OOMTest {
 	 */
 	@Test
 	public void testAssoctationAnBnv() {
-		final OOMAssociation associationOOM = map.get("CHA_CHI_7");
+		final TagAssociation associationOOM = map.get("CHA_CHI_7");
 		Assert.assertEquals("0..*", associationOOM.getMultiplicityA());
 		Assert.assertEquals("0..*", associationOOM.getMultiplicityB());
 
@@ -186,7 +186,7 @@ public class OOMTest {
 	 */
 	@Test
 	public void testAssoctationAnvBnv() {
-		final OOMAssociation associationOOM = map.get("CHA_CHI_8");
+		final TagAssociation associationOOM = map.get("CHA_CHI_8");
 		Assert.assertEquals("0..*", associationOOM.getMultiplicityA());
 		Assert.assertEquals("0..*", associationOOM.getMultiplicityB());
 
@@ -202,7 +202,7 @@ public class OOMTest {
 	 */
 	@Test
 	public void testAssoctationAnBn() {
-		final OOMAssociation associationOOM = map.get("CHA_CHI_9");
+		final TagAssociation associationOOM = map.get("CHA_CHI_9");
 		Assert.assertEquals("0..*", associationOOM.getMultiplicityA());
 		Assert.assertEquals("0..*", associationOOM.getMultiplicityB());
 
@@ -218,7 +218,7 @@ public class OOMTest {
 	 */
 	@Test
 	public void testAssoctationAnvBn() {
-		final OOMAssociation associationOOM = map.get("CHA_CHI_10");
+		final TagAssociation associationOOM = map.get("CHA_CHI_10");
 		Assert.assertEquals("0..*", associationOOM.getMultiplicityA());
 		Assert.assertEquals("0..*", associationOOM.getMultiplicityB());
 

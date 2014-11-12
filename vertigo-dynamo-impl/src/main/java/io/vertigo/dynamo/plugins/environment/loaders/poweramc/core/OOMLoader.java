@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.poweramc.core;
 
+import io.vertigo.dynamo.plugins.environment.loaders.TagAssociation;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -72,11 +73,11 @@ public final class OOMLoader {
 	 * Récupération des associations déclarées dans l'OOM.
 	 * @return Liste des associations
 	 */
-	public List<OOMAssociation> getAssociationOOMList() {
-		final List<OOMAssociation> list = new ArrayList<>();
+	public List<TagAssociation> getAssociationOOMList() {
+		final List<TagAssociation> list = new ArrayList<>();
 		for (final OOMObject obj : map.values()) {
 			if (obj.getType() == OOMType.Association) {
-				final OOMAssociation associationOOM = buildDynAssociation(obj);
+				final TagAssociation associationOOM = buildDynAssociation(obj);
 				if (associationOOM != null) {
 					list.add(associationOOM);
 				}
@@ -90,7 +91,7 @@ public final class OOMLoader {
 		final String code = obj.getCode();
 		final String packageName = obj.getParent().getPackageName();
 		//On recherche les PrimaryIdentifiers :
-		//La class possède 
+		//La class possède
 		//- une liste des identifiers qui référencent des champs
 		//- un bloc <c:PrimaryIdentifier> (non parsé) qui référence les primaryIdentifiers
 		//C'est pourquoi on a une double redirection
@@ -98,7 +99,7 @@ public final class OOMLoader {
 		for (final OOMId ref : obj.getRefList()) {
 			final OOMObject childRef = map.get(ref); //On recherche les references vers identifiers (ceux dans PrimaryIdentifier)
 			if (childRef != null && childRef.getType() == OOMType.Identifier) {
-				pkList.addAll(childRef.getRefList()); //On recherche les champs pointé par l'identifier				
+				pkList.addAll(childRef.getRefList()); //On recherche les champs pointé par l'identifier
 			}
 		}
 
@@ -145,9 +146,9 @@ public final class OOMLoader {
 	/**
 	 * Création d'une association.
 	 * @param obj ObjectOOM
-	 * @return Association 
+	 * @return Association
 	 */
-	private OOMAssociation buildDynAssociation(final OOMObject obj) {
+	private TagAssociation buildDynAssociation(final OOMObject obj) {
 		final String code = obj.getCode();
 		final String packageName = obj.getParent().getPackageName();
 
@@ -190,6 +191,6 @@ public final class OOMLoader {
 		final boolean navigabilityA = obj.getRoleANavigability() == null ? false : obj.getRoleANavigability();
 		final boolean navigabilityB = obj.getRoleBNavigability() == null ? true : obj.getRoleBNavigability();
 
-		return new OOMAssociation(code, packageName, multiplicityA, multiplicityB, roleLabelA, roleLabelB, codeA, codeB, navigabilityA, navigabilityB);
+		return new TagAssociation(code, packageName, multiplicityA, multiplicityB, roleLabelA, roleLabelB, codeA, codeB, navigabilityA, navigabilityB);
 	}
 }

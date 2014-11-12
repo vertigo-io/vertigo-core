@@ -30,7 +30,7 @@ import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionBuilder;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
-import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMAssociation;
+import io.vertigo.dynamo.plugins.environment.loaders.TagAssociation;
 import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMAttribute;
 import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMClass;
 import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMLoader;
@@ -89,7 +89,7 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 			dynamicModelrepository.addDefinition(toDynamicDefinition(classOOM, dynamicModelrepository));
 		}
 
-		for (final OOMAssociation associationOOM : loader.getAssociationOOMList()) {
+		for (final TagAssociation associationOOM : loader.getAssociationOOMList()) {
 			dynamicModelrepository.addDefinition(toDynamicDefinition(associationOOM, dynamicModelrepository));
 		}
 	}
@@ -122,7 +122,7 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 				.build();
 	}
 
-	private DynamicDefinition toDynamicDefinition(final OOMAssociation associationOOM, final DynamicDefinitionRepository dynamicModelrepository) {
+	private DynamicDefinition toDynamicDefinition(final TagAssociation associationOOM, final DynamicDefinitionRepository dynamicModelrepository) {
 		//			final DynamicDefinition associationDefinition = dynamicModelrepository.createDynamicDefinition(name,
 		//					return associationDefinition;
 		final String name = associationOOM.getCode().toUpperCase();
@@ -167,7 +167,7 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 		return associationDefinitionBuilder.build();
 	}
 
-	private static String buildFkFieldName(final OOMAssociation associationOOM, final DynamicDefinitionRepository dynamicModelrepository) {
+	private static String buildFkFieldName(final TagAssociation associationOOM, final DynamicDefinitionRepository dynamicModelrepository) {
 		// Dans le cas d'une association simple, on recherche le nom de la FK
 		// recherche de code de contrainte destiné à renommer la fk selon convention du vbsript PowerAMC
 		// Cas de la relation 1-n : où le nom de la FK est redéfini.
