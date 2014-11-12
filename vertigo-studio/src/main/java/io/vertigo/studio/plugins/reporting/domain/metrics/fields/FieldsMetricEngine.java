@@ -21,6 +21,7 @@ package io.vertigo.studio.plugins.reporting.domain.metrics.fields;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.reporting.Metric;
+import io.vertigo.studio.reporting.MetricBuilder;
 import io.vertigo.studio.reporting.MetricEngine;
 
 /**
@@ -35,37 +36,9 @@ public final class FieldsMetricEngine implements MetricEngine<DtDefinition> {
 		Assertion.checkNotNull(dtDefinition);
 		//---------------------------------------------------------------------
 		final int size = dtDefinition.getFields().size();
-		return new Metric() {
-
-			/** {@inheritDoc} */
-			@Override
-			public String getTitle() {
-				return "Nombre de champs";
-			}
-
-			/** {@inheritDoc} */
-			@Override
-			public Integer getValue() {
-				return size;
-			}
-
-			/** {@inheritDoc} */
-			@Override
-			public String getValueInformation() {
-				return null;
-			}
-
-			/** {@inheritDoc} */
-			@Override
-			public String getUnit() {
-				return "";
-			}
-
-			/** {@inheritDoc} */
-			@Override
-			public Status getStatus() {
-				return Status.Executed;
-			}
-		};
+		return new MetricBuilder()
+				.withTitle("Nombre de champs")
+				.withValue(size)
+				.build();
 	}
 }

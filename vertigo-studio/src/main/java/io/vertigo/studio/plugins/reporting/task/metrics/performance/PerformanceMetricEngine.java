@@ -25,7 +25,12 @@ import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.reporting.Metric;
+import io.vertigo.studio.reporting.Metric.Status;
+import io.vertigo.studio.reporting.MetricBuilder;
 import io.vertigo.studio.reporting.MetricEngine;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
  * Plugin de calcul du temps d'exécution d'une requête.
@@ -54,12 +59,27 @@ public final class PerformanceMetricEngine implements MetricEngine<TaskDefinitio
 			return doExecute(taskDefinition);
 		} catch (final Throwable e) {
 			//throw new RiException("Erreur du plugin perfs", e);
-			return new PerformanceMetric(e);
+			return buildPerformanceMetric(Status.Error, null, createValueInformation(e));
 		}
-
 	}
 
-	private PerformanceMetric doExecute(final TaskDefinition taskDefinition) {
+	private static String createValueInformation(final Throwable throwable) {
+		final StringWriter sw = new StringWriter();
+		throwable.printStackTrace(new PrintWriter(sw));
+		return sw.getBuffer().toString();
+	}
+
+	private static Metric buildPerformanceMetric(final Status status, final Long executionTime, final String valueInformation) {
+		return new MetricBuilder()
+				.withValue(executionTime)
+				.withTitle("Temps d'exécution")
+				.withUnit("ms")
+				.withValueInformation(valueInformation)
+				.withStatus(status)
+				.build();
+	}
+
+	private Metric doExecute(final TaskDefinition taskDefinition) {
 		//System.out.println(">>>>" + currentTask.getEngineClass().getCanonicalName());
 		if (TaskEngineSelect.class.isAssignableFrom(taskDefinition.getTaskEngineClass()) && !hasNotNullOutParams(taskDefinition)) {
 			//	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>" + currentTask.getEngineClass().getCanonicalName());
@@ -70,10 +90,10 @@ public final class PerformanceMetricEngine implements MetricEngine<TaskDefinitio
 			//on n'utilise pas le resultat
 			final long endTime = System.currentTimeMillis();
 			final long executionTime = endTime - startTime;
-			return new PerformanceMetric(executionTime);
+			return buildPerformanceMetric(Status.Executed, executionTime, null);
 		}
 		//Le test n'a pas de sens.
-		return new PerformanceMetric();
+		return buildPerformanceMetric(Status.Rejected, null, null);
 	}
 
 	private static boolean hasNotNullOutParams(final TaskDefinition taskDefinition) {

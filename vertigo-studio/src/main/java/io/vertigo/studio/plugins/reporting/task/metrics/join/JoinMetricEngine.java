@@ -21,6 +21,7 @@ package io.vertigo.studio.plugins.reporting.task.metrics.join;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.reporting.Metric;
+import io.vertigo.studio.reporting.MetricBuilder;
 import io.vertigo.studio.reporting.MetricEngine;
 
 /**
@@ -36,32 +37,9 @@ public final class JoinMetricEngine implements MetricEngine<TaskDefinition> {
 		//---------------------------------------------------------------------
 		final int joinCount = taskDefinition.getRequest().toUpperCase().split("JOIN").length - 1;
 		final int fromCount = taskDefinition.getRequest().toUpperCase().split("FROM ").length - 1;
-		return new Metric() {
-			@Override
-			public final String getTitle() {
-				return "Nombre de jointures";
-			}
-
-			@Override
-			public final Integer getValue() {
-				return joinCount + fromCount;
-			}
-
-			/** {@inheritDoc} */
-			@Override
-			public final String getValueInformation() {
-				return null;
-			}
-
-			@Override
-			public final String getUnit() {
-				return "";
-			}
-
-			@Override
-			public final Status getStatus() {
-				return Status.Executed;
-			}
-		};
+		return new MetricBuilder()
+				.withTitle("Nombre de jointures")
+				.withValue(joinCount + fromCount)
+				.build();
 	}
 }

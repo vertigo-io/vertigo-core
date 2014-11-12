@@ -24,6 +24,7 @@ import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.reporting.Metric;
+import io.vertigo.studio.reporting.MetricBuilder;
 import io.vertigo.studio.reporting.MetricEngine;
 
 /**
@@ -39,37 +40,10 @@ public final class DependencyMetricEngine implements MetricEngine<DtDefinition> 
 		Assertion.checkNotNull(dtDefinition);
 		//---------------------------------------------------------------------
 		final int count = count(dtDefinition);
-		return new Metric() {
-			/** {@inheritDoc} */
-			@Override
-			public String getTitle() {
-				return "Utilisation dans les dao";
-			}
-
-			/** {@inheritDoc} */
-			@Override
-			public Integer getValue() {
-				return count;
-			}
-
-			/** {@inheritDoc} */
-			@Override
-			public String getValueInformation() {
-				return null;
-			}
-
-			/** {@inheritDoc} */
-			@Override
-			public String getUnit() {
-				return "";
-			}
-
-			/** {@inheritDoc} */
-			@Override
-			public Status getStatus() {
-				return Status.Executed;
-			}
-		};
+		return new MetricBuilder()
+				.withTitle("Utilisation dans les dao")
+				.withValue(count)
+				.build();
 	}
 
 	private static int count(final DtDefinition dtDefinition) {

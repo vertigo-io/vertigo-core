@@ -22,6 +22,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.reporting.Metric;
+import io.vertigo.studio.reporting.MetricBuilder;
 import io.vertigo.studio.reporting.MetricEngine;
 
 /**
@@ -47,15 +48,26 @@ public final class CountMetricEngine implements MetricEngine<DtDefinition> {
 	public Metric execute(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//---------------------------------------------------------------------
+		final MetricBuilder metricBuilder = new MetricBuilder()
+				.withTitle("Nbre lignes")
+				.withUnit("rows");
+
 		if (!dtDefinition.isPersistent()) {
-			return new CountMetric(null, Metric.Status.Rejected);
+			return metricBuilder
+					.withStatus(Metric.Status.Rejected)
+					.build();
 		}
 		//Dans le cas ou DT est persistant on compte le nombre de lignes.
 		try {
 			final int count = persistenceManager.getBroker().count(dtDefinition);
-			return new CountMetric(count, Metric.Status.Executed);
+			return metricBuilder
+					.withStatus(Metric.Status.Executed)
+					.withValue(count)
+					.build();
 		} catch (final Exception e) {
-			return new CountMetric(null, Metric.Status.Error);
+			return metricBuilder
+					.withStatus(Metric.Status.Error)
+					.build();
 		}
 	}
 }

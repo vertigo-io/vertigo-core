@@ -22,6 +22,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.reporting.Metric;
+import io.vertigo.studio.reporting.MetricBuilder;
 import io.vertigo.studio.reporting.MetricEngine;
 
 /**
@@ -47,7 +48,19 @@ public final class PersistenceMetricEngine implements MetricEngine<DtDefinition>
 	public Metric execute(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//---------------------------------------------------------------------
-		return new PersitenceMetric(dtDefinition.isPersistent(), test(dtDefinition));
+		final boolean test = test(dtDefinition);
+		final Metric.Status status;
+		if (test) {
+			status = Metric.Status.Executed;
+		} else {
+			status = Metric.Status.Error;
+		}
+
+		return new MetricBuilder()
+				.withTitle("Persistance")
+				.withStatus(status)
+				.withValue(dtDefinition.isPersistent())
+				.build();
 	}
 
 	//On teste si la définition est persistante, elle existe en BDD et le mapping est ok.

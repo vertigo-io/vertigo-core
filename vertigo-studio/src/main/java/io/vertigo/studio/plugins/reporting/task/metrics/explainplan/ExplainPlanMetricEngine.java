@@ -32,8 +32,12 @@ import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.reporting.task.metrics.performance.TaskPopulator;
 import io.vertigo.studio.reporting.Metric;
+import io.vertigo.studio.reporting.Metric.Status;
+import io.vertigo.studio.reporting.MetricBuilder;
 import io.vertigo.studio.reporting.MetricEngine;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -68,13 +72,48 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 			if (TaskEngineSelect.class.isAssignableFrom(taskDefinition.getTaskEngineClass())) {
 				final int currentSequence = sequence++;
 				final String explainPlan = getExplainPlanElement(taskDefinition, currentSequence);
-				return new ExplainPlanMetric(explainPlan);
+				return createMetric(explainPlan, Status.Executed, null);
 			}
 
-			return new ExplainPlanMetric();
+			return createMetric(null, Status.Rejected, null);
 		} catch (final Throwable e) {
-			return new ExplainPlanMetric(e);
+			return createMetric(null, Status.Error, e);
 		}
+	}
+
+	/**
+	 * @param explainPlan Plan d'execution
+	 */
+	private static Metric createMetric(final String explainPlan, final Status status, final Throwable throwable) {
+		Assertion.checkNotNull(explainPlan);
+		//---------------------------------------------------------------------
+		final Integer value = createValue(explainPlan);
+		final String valueInformation = createValueInformation(explainPlan, status, throwable);
+		return new MetricBuilder()
+				.withTitle("Explain Plan")
+				.withStatus(status)
+				.withValue(value)
+				.withValueInformation(valueInformation)
+				.build();
+	}
+
+	private static Integer createValue(final String explainPlan) {
+		if (explainPlan != null) {
+			return explainPlan.split("TABLE ACCESS FULL").length - 1;
+		}
+		return null;
+	}
+
+	private static String createValueInformation(final String explainPlan, final Status status, final Throwable throwable) {
+		if (explainPlan != null) {
+			return explainPlan.replaceAll("TABLE ACCESS FULL", "<b style='color: red;'>TABLE ACCESS FULL</b>");
+		}
+		if (status == Status.Error) {
+			final StringWriter sw = new StringWriter();
+			throwable.printStackTrace(new PrintWriter(sw));
+			return sw.getBuffer().toString();
+		}
+		return "Rejected";
 	}
 
 	private String getExplainPlanElement(final TaskDefinition taskDefinition, final int currentSequence) {

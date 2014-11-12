@@ -18,13 +18,15 @@
  */
 package io.vertigo.studio.reporting;
 
+import io.vertigo.lang.Assertion;
+
 /**
  * Interface décrivant un résultat de metric.
- * 
+ *
  * @author tchassagnette, pchretien
  */
-public interface Metric {
-	enum Status {
+public final class Metric {
+	public static enum Status {
 		/** Exécution OK*/
 		Executed,
 		/** Erreur lors de l'exécution*/
@@ -33,28 +35,57 @@ public interface Metric {
 		Rejected
 	}
 
+	private final Status status;
+	private final String title;
+	private final String unit;
+	private final Object value;
+	private final String valueInformation;
+
+	Metric(final Status status, final String title, final String unit, final Object value, final String valueInformation) {
+		Assertion.checkNotNull(status);
+		Assertion.checkArgNotEmpty(title);
+		Assertion.checkNotNull(unit); //may be empty
+		//Assertion.checkNotNull(value);
+		//---------------------------------------------------------------------
+		this.status = status;
+		this.title = title;
+		this.unit = unit;
+		this.value = value;
+		this.valueInformation = valueInformation;
+	}
+
 	/**
 	 * @return Status de la métrique.
 	 */
-	Status getStatus();
+	public Status getStatus() {
+		return status;
+	}
 
 	/**
 	 * @return Titre de la métrique. (notNull)
 	 */
-	String getTitle();
+	public String getTitle() {
+		return title;
+	}
 
 	/**
 	 * @return Unité de la métrique. (notNull)
 	 */
-	String getUnit();
+	public String getUnit() {
+		return unit;
+	}
 
 	/**
-	 * @return Valeur de la métrique. (Integer, Long, String, etc..) 
+	 * @return Valeur de la métrique. (Integer, Long, String, etc..)
 	 */
-	Object getValue();
+	public Object getValue() {
+		return value;
+	}
 
 	/**
 	 * @return Complément d'information sur la valeur. (nullable)
 	 */
-	String getValueInformation();
+	public String getValueInformation() {
+		return valueInformation;
+	}
 }
