@@ -32,7 +32,7 @@ import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.loaders.TagAssociation;
 import io.vertigo.dynamo.plugins.environment.loaders.TagAttribute;
-import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMClass;
+import io.vertigo.dynamo.plugins.environment.loaders.TagClass;
 import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMLoader;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.lang.Assertion;
@@ -85,7 +85,7 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 
 		final OOMLoader loader = new OOMLoader(powerAMCURL);
 
-		for (final OOMClass classOOM : loader.getClassOOMList()) {
+		for (final TagClass classOOM : loader.getClassOOMList()) {
 			dynamicModelrepository.addDefinition(toDynamicDefinition(classOOM, dynamicModelrepository));
 		}
 
@@ -94,7 +94,7 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 		}
 	}
 
-	private DynamicDefinition toDynamicDefinition(final OOMClass classOOM, final DynamicDefinitionRepository dynamicModelrepository) {
+	private DynamicDefinition toDynamicDefinition(final TagClass classOOM, final DynamicDefinitionRepository dynamicModelrepository) {
 
 		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(getDtDefinitionName(classOOM.getCode()), dtDefinitionEntity, classOOM.getPackageName());
 		//Par défaut les DT lues depuis OOM sont persistantes.

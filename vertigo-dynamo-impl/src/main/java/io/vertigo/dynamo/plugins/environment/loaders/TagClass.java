@@ -16,9 +16,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core;
+package io.vertigo.dynamo.plugins.environment.loaders;
 
-import io.vertigo.dynamo.plugins.environment.loaders.TagAttribute;
 import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
@@ -26,15 +25,16 @@ import java.util.Collections;
 import java.util.List;
 
 /**
-* @author pforhan
-*/
-public final class EAXmiClass {
+ * Classe ou entité.
+ * @author pchretien, pforhan
+ */
+public final class TagClass {
 	private final String code;
 	private final String packageName;
 	private final List<TagAttribute> keyAttributes;
 	private final List<TagAttribute> fieldAttributes;
 
-	EAXmiClass(final String code, final String packageName, final List<TagAttribute> keyAttributes, final List<TagAttribute> fieldAttributes) {
+	public TagClass(final String code, final String packageName, final List<TagAttribute> keyAttributes, final List<TagAttribute> fieldAttributes) {
 		Assertion.checkArgNotEmpty(code);
 		//Assertion.notEmpty(packageName);
 		Assertion.checkNotNull(keyAttributes);
@@ -73,5 +73,4 @@ public final class EAXmiClass {
 	public List<TagAttribute> getFieldAttributes() {
 		return fieldAttributes;
 	}
-
 }

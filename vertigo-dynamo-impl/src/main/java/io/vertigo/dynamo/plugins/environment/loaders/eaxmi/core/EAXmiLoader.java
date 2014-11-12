@@ -20,6 +20,7 @@ package io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core;
 
 import io.vertigo.dynamo.plugins.environment.loaders.TagAssociation;
 import io.vertigo.dynamo.plugins.environment.loaders.TagAttribute;
+import io.vertigo.dynamo.plugins.environment.loaders.TagClass;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -62,8 +63,8 @@ public final class EAXmiLoader {
 	 * Récupération des classes déclarées dans le XMI.
 	 * @return Liste des classes
 	 */
-	public List<EAXmiClass> getClasses() {
-		final List<EAXmiClass> list = new ArrayList<>();
+	public List<TagClass> getClasses() {
+		final List<TagClass> list = new ArrayList<>();
 		for (final EAXmiObject obj : map.values()) {
 			log.debug("classe : " + obj.toString());
 			//On ne conserve que les classes et les domaines
@@ -91,7 +92,7 @@ public final class EAXmiLoader {
 		return java.util.Collections.unmodifiableList(list);
 	}
 
-	private EAXmiClass createEAXmiClass(final EAXmiObject obj) {
+	private TagClass createEAXmiClass(final EAXmiObject obj) {
 		log.debug("Creation de classe : " + obj.getName());
 		//On recherche les attributs (>DtField) de cette classe(>Dt_DEFINITION)
 		final String code = obj.getName().toUpperCase();
@@ -110,7 +111,7 @@ public final class EAXmiLoader {
 				}
 			}
 		}
-		return new EAXmiClass(code, packageName, keyAttributes, fieldAttributes);
+		return new TagClass(code, packageName, keyAttributes, fieldAttributes);
 	}
 
 	private static TagAttribute createDynAttribute(final EAXmiObject obj, final boolean isPK) {

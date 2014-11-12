@@ -20,6 +20,7 @@ package io.vertigo.dynamo.plugins.environment.loaders.poweramc.core;
 
 import io.vertigo.dynamo.plugins.environment.loaders.TagAssociation;
 import io.vertigo.dynamo.plugins.environment.loaders.TagAttribute;
+import io.vertigo.dynamo.plugins.environment.loaders.TagClass;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -59,8 +60,8 @@ public final class OOMLoader {
 	 * Récupération des classes déclarées dans l'OOM.
 	 * @return Liste des classes
 	 */
-	public List<OOMClass> getClassOOMList() {
-		final List<OOMClass> list = new ArrayList<>();
+	public List<TagClass> getClassOOMList() {
+		final List<TagClass> list = new ArrayList<>();
 		for (final OOMObject obj : map.values()) {
 			//On ne conserve que les classes et les domaines
 			if (obj.getType() == OOMType.Class) {
@@ -87,7 +88,7 @@ public final class OOMLoader {
 		return java.util.Collections.unmodifiableList(list);
 	}
 
-	private OOMClass createClassOOM(final OOMObject obj) {
+	private TagClass createClassOOM(final OOMObject obj) {
 		//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
 		final String code = obj.getCode();
 		final String packageName = obj.getParent().getPackageName();
@@ -116,7 +117,7 @@ public final class OOMLoader {
 				}
 			}
 		}
-		return new OOMClass(code, packageName, keyAttributes, fieldAttributes);
+		return new TagClass(code, packageName, keyAttributes, fieldAttributes);
 	}
 
 	private TagAttribute createDynAttribute(final OOMObject obj, final boolean isPK) {

@@ -22,7 +22,7 @@ import io.vertigo.lang.Assertion;
 
 /**
  * Implémentation de référence.
- * @author pchretien
+ * @author pchretien, pforhan
  */
 public final class TagAttribute {
 	private final String code;

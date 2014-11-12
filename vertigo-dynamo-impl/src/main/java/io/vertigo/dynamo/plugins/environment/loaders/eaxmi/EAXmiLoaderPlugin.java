@@ -32,7 +32,7 @@ import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.loaders.TagAssociation;
 import io.vertigo.dynamo.plugins.environment.loaders.TagAttribute;
-import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core.EAXmiClass;
+import io.vertigo.dynamo.plugins.environment.loaders.TagClass;
 import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core.EAXmiLoader;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.lang.Assertion;
@@ -70,7 +70,7 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 		final URL xmiFileURL = resourceManager.resolve(resourcePath);
 		final EAXmiLoader loader = new EAXmiLoader(xmiFileURL);
 
-		for (final EAXmiClass classXmi : loader.getClasses()) {
+		for (final TagClass classXmi : loader.getClasses()) {
 			dynamicModelrepository.addDefinition(toDynamicDefinition(classXmi, dynamicModelrepository));
 		}
 
@@ -79,7 +79,7 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 		}
 	}
 
-	private static DynamicDefinition toDynamicDefinition(final EAXmiClass classXmi, final DynamicDefinitionRepository dynamicModelrepository) {
+	private static DynamicDefinition toDynamicDefinition(final TagClass classXmi, final DynamicDefinitionRepository dynamicModelrepository) {
 		final Entity dtDefinitionEntity = DomainGrammar.DT_DEFINITION_ENTITY;
 		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(getDtDefinitionName(classXmi.getCode()), dtDefinitionEntity, classXmi.getPackageName())//
 				//Par défaut les DT lues depuis le XMI sont persistantes.

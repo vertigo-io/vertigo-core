@@ -30,7 +30,7 @@ import io.vertigo.lang.Assertion;
  *  - Code de l'entité à laquelle est attachée le noeud.
  *
  *  D'autre part l'association possède son propre code.
- * @author pchretien
+ * @author pchretien, pforhan
  */
 public final class TagAssociation {
 	private final String code;
