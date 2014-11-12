@@ -49,11 +49,11 @@ public class OOMTest {
 		final URL oomURL = oomFile.toURL();
 		final OOMLoader loader = new OOMLoader(oomURL);
 		map = new HashMap<>();
-		for (final TagAssociation associationOOM : loader.getAssociationOOMList()) {
+		for (final TagAssociation associationOOM : loader.getTagAssociations()) {
 			map.put(associationOOM.getCode(), associationOOM);
 			LOGGER.trace("> code = " + associationOOM.getCode());
 		}
-		LOGGER.trace(">> nb ass.=" + loader.getAssociationOOMList().size());
+		LOGGER.trace(">> nb ass.=" + loader.getTagAssociations().size());
 
 	}
 

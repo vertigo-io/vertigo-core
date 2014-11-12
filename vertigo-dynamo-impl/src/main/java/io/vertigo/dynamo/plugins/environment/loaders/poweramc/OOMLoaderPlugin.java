@@ -86,11 +86,11 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 
 		final OOMLoader loader = new OOMLoader(powerAMCURL);
 
-		for (final TagClass classOOM : loader.getClassOOMList()) {
+		for (final TagClass classOOM : loader.getTagClasses()) {
 			dynamicModelrepository.addDefinition(toDynamicDefinition(classOOM, dynamicModelrepository));
 		}
 
-		for (final TagAssociation associationOOM : loader.getAssociationOOMList()) {
+		for (final TagAssociation associationOOM : loader.getTagAssociations()) {
 			dynamicModelrepository.addDefinition(toDynamicDefinition(associationOOM, dynamicModelrepository));
 		}
 	}

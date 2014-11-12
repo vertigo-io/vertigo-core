@@ -71,11 +71,11 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 		final URL xmiFileURL = resourceManager.resolve(resourcePath);
 		final EAXmiLoader loader = new EAXmiLoader(xmiFileURL);
 
-		for (final TagClass classXmi : loader.getClasses()) {
+		for (final TagClass classXmi : loader.getTagClasses()) {
 			dynamicModelrepository.addDefinition(toDynamicDefinition(classXmi, dynamicModelrepository));
 		}
 
-		for (final TagAssociation associationXmi : loader.getAssociations()) {
+		for (final TagAssociation associationXmi : loader.getTagAssociations()) {
 			dynamicModelrepository.addDefinition(toDynamicDefinition(associationXmi, dynamicModelrepository));
 		}
 	}

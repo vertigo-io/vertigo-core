@@ -61,12 +61,12 @@ public final class OOMLoader {
 	 * Récupération des classes déclarées dans l'OOM.
 	 * @return Liste des classes
 	 */
-	public List<TagClass> getClassOOMList() {
+	public List<TagClass> getTagClasses() {
 		final List<TagClass> list = new ArrayList<>();
 		for (final OOMObject obj : map.values()) {
 			//On ne conserve que les classes et les domaines
 			if (obj.getType() == OOMType.Class) {
-				list.add(createClassOOM(obj));
+				list.add(createTagClass(obj));
 			}
 		}
 		return java.util.Collections.unmodifiableList(list);
@@ -76,11 +76,11 @@ public final class OOMLoader {
 	 * Récupération des associations déclarées dans l'OOM.
 	 * @return Liste des associations
 	 */
-	public List<TagAssociation> getAssociationOOMList() {
+	public List<TagAssociation> getTagAssociations() {
 		final List<TagAssociation> list = new ArrayList<>();
 		for (final OOMObject obj : map.values()) {
 			if (obj.getType() == OOMType.Association) {
-				final TagAssociation associationOOM = buildDynAssociation(obj);
+				final TagAssociation associationOOM = createTagAssociation(obj);
 				if (associationOOM != null) {
 					list.add(associationOOM);
 				}
@@ -89,7 +89,7 @@ public final class OOMLoader {
 		return java.util.Collections.unmodifiableList(list);
 	}
 
-	private TagClass createClassOOM(final OOMObject obj) {
+	private TagClass createTagClass(final OOMObject obj) {
 		//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
 		final String code = obj.getCode();
 		final String packageName = obj.getParent().getPackageName();
@@ -151,7 +151,7 @@ public final class OOMLoader {
 	 * @param obj ObjectOOM
 	 * @return Association
 	 */
-	private TagAssociation buildDynAssociation(final OOMObject obj) {
+	private TagAssociation createTagAssociation(final OOMObject obj) {
 		final String code = obj.getCode();
 		final String packageName = obj.getParent().getPackageName();
 

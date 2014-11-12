@@ -64,13 +64,13 @@ public final class EAXmiLoader {
 	 * Récupération des classes déclarées dans le XMI.
 	 * @return Liste des classes
 	 */
-	public List<TagClass> getClasses() {
+	public List<TagClass> getTagClasses() {
 		final List<TagClass> list = new ArrayList<>();
 		for (final EAXmiObject obj : map.values()) {
 			log.debug("classe : " + obj.toString());
 			//On ne conserve que les classes et les domaines
 			if (obj.getType() == EAXmiType.Class) {
-				list.add(createEAXmiClass(obj));
+				list.add(createTagClass(obj));
 			}
 		}
 		return java.util.Collections.unmodifiableList(list);
@@ -80,11 +80,11 @@ public final class EAXmiLoader {
 	 * Récupération des associations déclarées dans le XMI.
 	 * @return Liste des associations
 	 */
-	public List<TagAssociation> getAssociations() {
+	public List<TagAssociation> getTagAssociations() {
 		final List<TagAssociation> list = new ArrayList<>();
 		for (final EAXmiObject obj : map.values()) {
 			if (obj.getType() == EAXmiType.Association) {
-				final TagAssociation associationXmi = buildDynAssociation(obj);
+				final TagAssociation associationXmi = createTagAssociation(obj);
 				if (associationXmi != null) {
 					list.add(associationXmi);
 				}
@@ -93,7 +93,7 @@ public final class EAXmiLoader {
 		return java.util.Collections.unmodifiableList(list);
 	}
 
-	private TagClass createEAXmiClass(final EAXmiObject obj) {
+	private TagClass createTagClass(final EAXmiObject obj) {
 		log.debug("Creation de classe : " + obj.getName());
 		//On recherche les attributs (>DtField) de cette classe(>Dt_DEFINITION)
 		final String code = obj.getName().toUpperCase();
@@ -105,17 +105,17 @@ public final class EAXmiLoader {
 			if (child.getType() == EAXmiType.Attribute) {
 				log.debug("Attribut = " + child.getName() + " isId = " + Boolean.toString(child.getIsId()));
 				if (child.getIsId()) {
-					final TagAttribute attributeXmi = createDynAttribute(child, true);
+					final TagAttribute attributeXmi = createTagAttribute(child, true);
 					keyAttributes.add(attributeXmi);
 				} else {
-					fieldAttributes.add(createDynAttribute(child, false));
+					fieldAttributes.add(createTagAttribute(child, false));
 				}
 			}
 		}
 		return new TagClass(code, packageName, keyAttributes, fieldAttributes);
 	}
 
-	private static TagAttribute createDynAttribute(final EAXmiObject obj, final boolean isPK) {
+	private static TagAttribute createTagAttribute(final EAXmiObject obj, final boolean isPK) {
 		final boolean notNull;
 		if (isPK) {
 			//La pk est toujours notNull
@@ -133,7 +133,7 @@ public final class EAXmiLoader {
 	 * @param obj ObjectOOM
 	 * @return Association
 	 */
-	private TagAssociation buildDynAssociation(final EAXmiObject obj) {
+	private TagAssociation createTagAssociation(final EAXmiObject obj) {
 		log.debug("Créer association :" + obj.getName());
 		final String code = obj.getName().toUpperCase();
 		final String packageName = obj.getParent().getPackageName();
