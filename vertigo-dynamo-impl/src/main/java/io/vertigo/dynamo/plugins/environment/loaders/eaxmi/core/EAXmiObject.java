@@ -246,37 +246,37 @@ final class EAXmiObject {
 
 	// Gestion des propriétés
 
-	void setProperty(final String propertyName, final String propertyValue, final Attributes attributs) {
+	void setProperty(final String propertyName, final String propertyValue, final Attributes attributes) {
 		Assertion.checkNotNull(propertyName);
 		//----------------------------------------------------------------------
 		if (PROPERTY_NAME.equals(propertyName)) {
 			name = propertyValue;
 		} else if (PROPERTY_COMMENT.equals(propertyName)) {
-			label = attributs.getValue(PROPERTY_ALIAS_NAME);
+			label = attributes.getValue(PROPERTY_ALIAS_NAME);
 		} else if (PROPERTY_ALIAS.equals(propertyName)) {
-			label = attributs.getValue(PROPERTY_ALIAS_NAME);
+			label = attributes.getValue(PROPERTY_ALIAS_NAME);
 		} else if (PROPERTY_DOMAIN.equals(propertyName)) {
-			manageDomain(attributs);
+			manageDomain(attributes);
 			// Même nom pour le domaine et les navigabilité
-			manageNavigability(attributs);
+			manageNavigability(attributes);
 		} else if (PROPERTY_ID.equals(propertyName)) {
 			// On peut se retrouver en fin de fichier avec des xrefs qui reviennent.
 			// On ne mets à jour que si on ne l'a pas fait.
-			final String valeur = attributs.getValue(PROPERTY_ALIAS_NAME);
+			final String valeur = attributes.getValue(PROPERTY_ALIAS_NAME);
 			isId = (valeur != null && valeur.contains(PROPERTY_ID_NAME));
 		} else if (PROPERTY_MULTIPLICITY.equals(propertyName)) {
-			final String lower = attributs.getValue(PROPERTY_MULTIPLICITY_LOWER_NAME);
-			final String upper = attributs.getValue(PROPERTY_MULTIPLICITY_UPPER_NAME);
+			final String lower = attributes.getValue(PROPERTY_MULTIPLICITY_LOWER_NAME);
+			final String upper = attributes.getValue(PROPERTY_MULTIPLICITY_UPPER_NAME);
 			multiplicity = lower + ".." + upper;
 		} else if (PROPERTY_ROLE_MULTIPLICITY.equals(propertyName)) {
-			manageMultiplicity(attributs);
+			manageMultiplicity(attributes);
 		} else if (PROPERTY_CLASSE_A.equals(propertyName)) {
-			final String valeur = attributs.getValue(PROPERTY_CLASSE_NAME);
+			final String valeur = attributes.getValue(PROPERTY_CLASSE_NAME);
 			if (valeur != null) {
 				classA = new TagId(valeur);
 			}
 		} else if (PROPERTY_CLASSE_B.equals(propertyName)) {
-			final String valeur = attributs.getValue(PROPERTY_CLASSE_NAME);
+			final String valeur = attributes.getValue(PROPERTY_CLASSE_NAME);
 			if (valeur != null) {
 				classB = new TagId(valeur);
 			}
