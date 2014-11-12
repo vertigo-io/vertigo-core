@@ -22,6 +22,7 @@ import io.vertigo.dynamo.plugins.environment.loaders.TagAssociation;
 import io.vertigo.dynamo.plugins.environment.loaders.TagAttribute;
 import io.vertigo.dynamo.plugins.environment.loaders.TagClass;
 import io.vertigo.dynamo.plugins.environment.loaders.TagId;
+import io.vertigo.dynamo.plugins.environment.loaders.TagLoader;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -38,7 +39,7 @@ import javax.xml.parsers.SAXParserFactory;
  * Seules les classes et leurs attributs ainsi que les associations sont extraites.
  * @author pchretien
  */
-public final class OOMLoader {
+public final class OOMLoader implements TagLoader {
 	private final Map<TagId, OOMObject> map;
 
 	/**
@@ -57,10 +58,10 @@ public final class OOMLoader {
 		}
 	}
 
-	/**
-	 * Récupération des classes déclarées dans l'OOM.
-	 * @return Liste des classes
+	/* (non-Javadoc)
+	 * @see io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.TagLoader#getTagClasses()
 	 */
+	@Override
 	public List<TagClass> getTagClasses() {
 		final List<TagClass> list = new ArrayList<>();
 		for (final OOMObject obj : map.values()) {
@@ -72,10 +73,10 @@ public final class OOMLoader {
 		return java.util.Collections.unmodifiableList(list);
 	}
 
-	/**
-	 * Récupération des associations déclarées dans l'OOM.
-	 * @return Liste des associations
+	/* (non-Javadoc)
+	 * @see io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.TagLoader#getTagAssociations()
 	 */
+	@Override
 	public List<TagAssociation> getTagAssociations() {
 		final List<TagAssociation> list = new ArrayList<>();
 		for (final OOMObject obj : map.values()) {

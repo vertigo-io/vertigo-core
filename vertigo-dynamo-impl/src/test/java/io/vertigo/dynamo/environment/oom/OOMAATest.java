@@ -20,6 +20,7 @@ package io.vertigo.dynamo.environment.oom;
 
 import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.plugins.environment.loaders.TagAssociation;
+import io.vertigo.dynamo.plugins.environment.loaders.TagLoader;
 import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMLoader;
 
 import java.io.File;
@@ -47,7 +48,7 @@ public class OOMAATest {
 		final File oomFile = TestUtil.getFile("data/AssociationAA.oom", getClass());
 		final URL oomURL = oomFile.toURL();
 
-		final OOMLoader loader = new OOMLoader(oomURL);
+		final TagLoader loader = new OOMLoader(oomURL);
 		map = new HashMap<>();
 		for (final TagAssociation associationOOM : loader.getTagAssociations()) {
 			map.put(associationOOM.getCode(), associationOOM);
