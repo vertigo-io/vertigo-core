@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.plugins.environment.loaders.poweramc.core;
 
 import io.vertigo.dynamo.plugins.environment.loaders.TagAssociation;
+import io.vertigo.dynamo.plugins.environment.loaders.TagAttribute;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -103,12 +104,12 @@ public final class OOMLoader {
 			}
 		}
 
-		final List<OOMAttribute> keyAttributes = new ArrayList<>();
-		final List<OOMAttribute> fieldAttributes = new ArrayList<>();
+		final List<TagAttribute> keyAttributes = new ArrayList<>();
+		final List<TagAttribute> fieldAttributes = new ArrayList<>();
 		for (final OOMObject child : obj.getChildren()) {
 			if (child.getType() == OOMType.Attribute) {
 				if (pkList.contains(child.getId())) {
-					final OOMAttribute attributeOOm = createDynAttribute(child, true);
+					final TagAttribute attributeOOm = createDynAttribute(child, true);
 					keyAttributes.add(attributeOOm);
 				} else {
 					fieldAttributes.add(createDynAttribute(child, false));
@@ -118,7 +119,7 @@ public final class OOMLoader {
 		return new OOMClass(code, packageName, keyAttributes, fieldAttributes);
 	}
 
-	private OOMAttribute createDynAttribute(final OOMObject obj, final boolean isPK) {
+	private TagAttribute createDynAttribute(final OOMObject obj, final boolean isPK) {
 		final String code = obj.getCode();
 		final String label = obj.getLabel();
 		final boolean persistent = !"0".equals(obj.getPersistent());
@@ -140,7 +141,7 @@ public final class OOMLoader {
 				domain = childRef.getCode();
 			}
 		}
-		return new OOMAttribute(code, label, persistent, notNull, domain);
+		return new TagAttribute(code, label, persistent, notNull, domain);
 	}
 
 	/**

@@ -16,23 +16,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core;
+package io.vertigo.dynamo.plugins.environment.loaders;
 
 import io.vertigo.lang.Assertion;
 
 /**
-* @author pforhan
-*/
-public final class EAXmiAttribute {
+ * Implémentation de référence.
+ * @author pchretien
+ */
+public final class TagAttribute {
 	private final String code;
 	private final String label;
+	private final boolean persistent;
 	private final boolean notNull;
 	private final String domain;
 
 	/**
 	 * Constructeur.
 	 */
-	EAXmiAttribute(final String code, final String label, final boolean notNull, final String domain) {
+	public TagAttribute(final String code, final String label, final boolean persistent, final boolean notNull, final String domain) {
 		Assertion.checkArgNotEmpty(code);
 		Assertion.checkArgNotEmpty(label);
 		Assertion.checkArgNotEmpty(code);
@@ -40,6 +42,7 @@ public final class EAXmiAttribute {
 		//----------------------------------------------------------------------
 		this.code = code;
 		this.label = label;
+		this.persistent = persistent;
 		this.notNull = notNull;
 		this.domain = domain;
 	}
@@ -62,8 +65,7 @@ public final class EAXmiAttribute {
 	 * @return Si l'attribut est persistent.
 	 */
 	public boolean isPersistent() {
-		// L'information de persistence ne peut pas être déduite du Xmi, tous les champs sont déclarés persistent de facto
-		return true;
+		return persistent;
 	}
 
 	/**
@@ -74,10 +76,9 @@ public final class EAXmiAttribute {
 	}
 
 	/**
-	 * @return Type de l'attribut.
+	 * @return Type de l'attribut au sens poweramc/EA (Nom).
 	 */
 	public String getDomain() {
 		return domain;
 	}
-
 }

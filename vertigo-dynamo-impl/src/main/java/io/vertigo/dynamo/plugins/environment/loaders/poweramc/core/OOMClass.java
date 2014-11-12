@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.poweramc.core;
 
+import io.vertigo.dynamo.plugins.environment.loaders.TagAttribute;
 import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
@@ -31,10 +32,10 @@ import java.util.List;
 public final class OOMClass {
 	private final String code;
 	private final String packageName;
-	private final List<OOMAttribute> keyAttributes;
-	private final List<OOMAttribute> fieldAttributes;
+	private final List<TagAttribute> keyAttributes;
+	private final List<TagAttribute> fieldAttributes;
 
-	OOMClass(final String code, final String packageName, final List<OOMAttribute> keyAttributes, final List<OOMAttribute> fieldAttributes) {
+	OOMClass(final String code, final String packageName, final List<TagAttribute> keyAttributes, final List<TagAttribute> fieldAttributes) {
 		Assertion.checkArgNotEmpty(code);
 		//Assertion.notEmpty(packageName);
 		Assertion.checkNotNull(keyAttributes);
@@ -63,14 +64,14 @@ public final class OOMClass {
 	/**
 	 * @return Listes des champs identifiants (PK).
 	 */
-	public List<OOMAttribute> getKeyAttributes() {
+	public List<TagAttribute> getKeyAttributes() {
 		return keyAttributes;
 	}
 
 	/***
 	 * @return Liste des champs non PK.
 	 */
-	public List<OOMAttribute> getFieldAttributes() {
+	public List<TagAttribute> getFieldAttributes() {
 		return fieldAttributes;
 	}
 }

@@ -31,7 +31,7 @@ import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionBuilder;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.loaders.TagAssociation;
-import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMAttribute;
+import io.vertigo.dynamo.plugins.environment.loaders.TagAttribute;
 import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMClass;
 import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMLoader;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
@@ -100,18 +100,18 @@ public final class OOMLoaderPlugin implements LoaderPlugin {
 		//Par défaut les DT lues depuis OOM sont persistantes.
 		dtDefinitionBuilder.withPropertyValue(KspProperty.PERSISTENT, true);
 
-		for (final OOMAttribute attributeOOM : classOOM.getKeyAttributes()) {
+		for (final TagAttribute attributeOOM : classOOM.getKeyAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(attributeOOM, dynamicModelrepository);
 			dtDefinitionBuilder.withChildDefinition(DomainGrammar.PRIMARY_KEY, dtField);
 		}
-		for (final OOMAttribute attributeOOM : classOOM.getFieldAttributes()) {
+		for (final TagAttribute attributeOOM : classOOM.getFieldAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(attributeOOM, dynamicModelrepository);
 			dtDefinitionBuilder.withChildDefinition("field", dtField);
 		}
 		return dtDefinitionBuilder.build();
 	}
 
-	private DynamicDefinition toDynamicDefinition(final OOMAttribute attributeOOM, final DynamicDefinitionRepository dynamicModelrepository) {
+	private DynamicDefinition toDynamicDefinition(final TagAttribute attributeOOM, final DynamicDefinitionRepository dynamicModelrepository) {
 		final DynamicDefinitionKey domainKey = new DynamicDefinitionKey(attributeOOM.getDomain());
 
 		return DynamicDefinitionRepository.createDynamicDefinitionBuilder(attributeOOM.getCode(), dtFieldEntity, null)//

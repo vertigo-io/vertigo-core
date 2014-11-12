@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core;
 
 import io.vertigo.dynamo.plugins.environment.loaders.TagAssociation;
+import io.vertigo.dynamo.plugins.environment.loaders.TagAttribute;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -96,13 +97,13 @@ public final class EAXmiLoader {
 		final String code = obj.getName().toUpperCase();
 		final String packageName = obj.getParent().getPackageName();
 
-		final List<EAXmiAttribute> keyAttributes = new ArrayList<>();
-		final List<EAXmiAttribute> fieldAttributes = new ArrayList<>();
+		final List<TagAttribute> keyAttributes = new ArrayList<>();
+		final List<TagAttribute> fieldAttributes = new ArrayList<>();
 		for (final EAXmiObject child : obj.getChildren()) {
 			if (child.getType() == EAXmiType.Attribute) {
 				log.debug("Attribut = " + child.getName() + " isId = " + Boolean.toString(child.getIsId()));
 				if (child.getIsId()) {
-					final EAXmiAttribute attributeXmi = createDynAttribute(child, true);
+					final TagAttribute attributeXmi = createDynAttribute(child, true);
 					keyAttributes.add(attributeXmi);
 				} else {
 					fieldAttributes.add(createDynAttribute(child, false));
@@ -112,7 +113,7 @@ public final class EAXmiLoader {
 		return new EAXmiClass(code, packageName, keyAttributes, fieldAttributes);
 	}
 
-	private static EAXmiAttribute createDynAttribute(final EAXmiObject obj, final boolean isPK) {
+	private static TagAttribute createDynAttribute(final EAXmiObject obj, final boolean isPK) {
 		final boolean notNull;
 		if (isPK) {
 			//La pk est toujours notNull
@@ -121,7 +122,8 @@ public final class EAXmiLoader {
 			notNull = "1..1".equals(obj.getMultiplicity());
 		}
 
-		return new EAXmiAttribute(obj.getName().toUpperCase(), obj.getLabel(), notNull, obj.getDomain());
+		// L'information de persistence ne peut pas être déduite du Xmi, tous les champs sont déclarés persistent de facto
+		return new TagAttribute(obj.getName().toUpperCase(), obj.getLabel(), true, notNull, obj.getDomain());
 	}
 
 	/**

@@ -31,7 +31,7 @@ import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionBuilder;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.loaders.TagAssociation;
-import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core.EAXmiAttribute;
+import io.vertigo.dynamo.plugins.environment.loaders.TagAttribute;
 import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core.EAXmiClass;
 import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core.EAXmiLoader;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
@@ -85,18 +85,18 @@ public final class EAXmiLoaderPlugin implements LoaderPlugin {
 				//Par défaut les DT lues depuis le XMI sont persistantes.
 				.withPropertyValue(KspProperty.PERSISTENT, true);
 
-		for (final EAXmiAttribute attributeXmi : classXmi.getKeyAttributes()) {
+		for (final TagAttribute attributeXmi : classXmi.getKeyAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(attributeXmi, dynamicModelrepository);
 			dtDefinitionBuilder.withChildDefinition(DomainGrammar.PRIMARY_KEY, dtField);
 		}
-		for (final EAXmiAttribute attributeXmi : classXmi.getFieldAttributes()) {
+		for (final TagAttribute attributeXmi : classXmi.getFieldAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(attributeXmi, dynamicModelrepository);
 			dtDefinitionBuilder.withChildDefinition("field", dtField);
 		}
 		return dtDefinitionBuilder.build();
 	}
 
-	private static DynamicDefinition toDynamicDefinition(final EAXmiAttribute attributeXmi, final DynamicDefinitionRepository dynamicModelrepository) {
+	private static DynamicDefinition toDynamicDefinition(final TagAttribute attributeXmi, final DynamicDefinitionRepository dynamicModelrepository) {
 		final Entity dtFieldEntity = DomainGrammar.DT_FIELD_ENTITY;
 		final DynamicDefinitionKey domainKey = new DynamicDefinitionKey(attributeXmi.getDomain());
 

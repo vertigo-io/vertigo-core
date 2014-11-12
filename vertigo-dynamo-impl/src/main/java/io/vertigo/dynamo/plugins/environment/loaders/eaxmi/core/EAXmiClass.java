@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core;
 
+import io.vertigo.dynamo.plugins.environment.loaders.TagAttribute;
 import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
@@ -30,10 +31,10 @@ import java.util.List;
 public final class EAXmiClass {
 	private final String code;
 	private final String packageName;
-	private final List<EAXmiAttribute> keyAttributes;
-	private final List<EAXmiAttribute> fieldAttributes;
+	private final List<TagAttribute> keyAttributes;
+	private final List<TagAttribute> fieldAttributes;
 
-	EAXmiClass(final String code, final String packageName, final List<EAXmiAttribute> keyAttributes, final List<EAXmiAttribute> fieldAttributes) {
+	EAXmiClass(final String code, final String packageName, final List<TagAttribute> keyAttributes, final List<TagAttribute> fieldAttributes) {
 		Assertion.checkArgNotEmpty(code);
 		//Assertion.notEmpty(packageName);
 		Assertion.checkNotNull(keyAttributes);
@@ -62,14 +63,14 @@ public final class EAXmiClass {
 	/**
 	 * @return Listes des champs identifiants (PK).
 	 */
-	public List<EAXmiAttribute> getKeyAttributes() {
+	public List<TagAttribute> getKeyAttributes() {
 		return keyAttributes;
 	}
 
 	/***
 	 * @return Liste des champs non PK.
 	 */
-	public List<EAXmiAttribute> getFieldAttributes() {
+	public List<TagAttribute> getFieldAttributes() {
 		return fieldAttributes;
 	}
 
