@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.environment.loaders.poweramc;
+package io.vertigo.dynamo.plugins.environment.loaders;
 
 import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.core.spaces.definiton.Definition;
@@ -30,11 +30,7 @@ import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionBuilder;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
-import io.vertigo.dynamo.plugins.environment.loaders.TagAssociation;
-import io.vertigo.dynamo.plugins.environment.loaders.TagAttribute;
-import io.vertigo.dynamo.plugins.environment.loaders.TagClass;
-import io.vertigo.dynamo.plugins.environment.loaders.TagLoader;
-import io.vertigo.dynamo.plugins.environment.loaders.TagUtil;
+import io.vertigo.dynamo.plugins.environment.loaders.poweramc.OOMLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.lang.Assertion;
 
@@ -49,7 +45,7 @@ import org.apache.log4j.Logger;
  *
  * @author pchretien
  */
-public abstract class AbstractLoaderPlugin implements LoaderPlugin {
+public abstract class TagLoaderPlugin implements LoaderPlugin {
 	private static final Locale TO_UPPER_CASE_LOCALE = Locale.FRANCE;
 	private static final Logger LOGGER = Logger.getLogger(OOMLoaderPlugin.class);
 
@@ -60,7 +56,7 @@ public abstract class AbstractLoaderPlugin implements LoaderPlugin {
 	/**
 	 * Constructeur.
 	 */
-	public AbstractLoaderPlugin(final ResourceManager resourceManager) {
+	public TagLoaderPlugin(final ResourceManager resourceManager) {
 		Assertion.checkNotNull(resourceManager);
 		//----------------------------------------------------------------------
 		this.resourceManager = resourceManager;

@@ -19,14 +19,14 @@
 package io.vertigo.dynamo.plugins.environment.loaders.eaxmi;
 
 import io.vertigo.commons.resource.ResourceManager;
-import io.vertigo.dynamo.plugins.environment.loaders.AbstractLoaderPlugin;
+import io.vertigo.dynamo.plugins.environment.loaders.TagLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core.EAXmiLoader;
 
 import java.net.URL;
 
 import javax.inject.Inject;
 
-public final class EAXmiLoaderPlugin extends AbstractLoaderPlugin {
+public final class EAXmiLoaderPlugin extends TagLoaderPlugin {
 	/**
 	 * Constructeur.
 	 */

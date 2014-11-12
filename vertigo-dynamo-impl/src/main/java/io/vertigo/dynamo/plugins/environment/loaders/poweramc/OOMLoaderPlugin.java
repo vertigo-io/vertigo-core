@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.plugins.environment.loaders.poweramc;
 
 import io.vertigo.commons.resource.ResourceManager;
-import io.vertigo.dynamo.plugins.environment.loaders.AbstractLoaderPlugin;
+import io.vertigo.dynamo.plugins.environment.loaders.TagLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.TagLoader;
 import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMLoader;
 
@@ -32,7 +32,7 @@ import javax.inject.Inject;
  *
  * @author pchretien
  */
-public final class OOMLoaderPlugin extends AbstractLoaderPlugin {
+public final class OOMLoaderPlugin extends TagLoaderPlugin {
 
 	@Inject
 	public OOMLoaderPlugin(final ResourceManager resourceManager) {
