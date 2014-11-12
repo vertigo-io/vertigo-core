@@ -38,6 +38,41 @@ public final class DependencyMetricEngine implements MetricEngine<DtDefinition> 
 	public Metric execute(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//---------------------------------------------------------------------
+		final int count = count(dtDefinition);
+		return new Metric() {
+			/** {@inheritDoc} */
+			@Override
+			public String getTitle() {
+				return "Utilisation dans les dao";
+			}
+
+			/** {@inheritDoc} */
+			@Override
+			public Integer getValue() {
+				return count;
+			}
+
+			/** {@inheritDoc} */
+			@Override
+			public String getValueInformation() {
+				return null;
+			}
+
+			/** {@inheritDoc} */
+			@Override
+			public String getUnit() {
+				return "";
+			}
+
+			/** {@inheritDoc} */
+			@Override
+			public Status getStatus() {
+				return Status.Executed;
+			}
+		};
+	}
+
+	private static int count(final DtDefinition dtDefinition) {
 		int count = 0;
 		for (final TaskDefinition taskDefinition : Home.getDefinitionSpace().getAll(TaskDefinition.class)) {
 			for (final TaskAttribute taskAttribute : taskDefinition.getAttributes()) {
@@ -51,7 +86,6 @@ public final class DependencyMetricEngine implements MetricEngine<DtDefinition> 
 
 			}
 		}
-		return new DependencyMetric(count);
+		return count;
 	}
-
 }
