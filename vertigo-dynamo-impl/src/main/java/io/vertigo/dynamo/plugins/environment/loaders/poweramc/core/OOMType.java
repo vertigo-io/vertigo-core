@@ -88,12 +88,11 @@ enum OOMType {
 	}
 
 	static boolean isNodeByRef(final String name) {
-		boolean ok = false;
-		ok = ok || Domain.getCode().equals(name);
-		ok = ok || Attribute.getCode().equals(name);
-		ok = ok || Class.getCode().equals(name);
-		ok = ok || Shortcut.getCode().equals(name);
-		ok = ok || Identifier.getCode().equals(name);
-		return ok;
+		return false
+				|| Domain.getCode().equals(name)
+				|| Attribute.getCode().equals(name)
+				|| Class.getCode().equals(name)
+				|| Shortcut.getCode().equals(name)
+				|| Identifier.getCode().equals(name);
 	}
 }

@@ -88,34 +88,29 @@ public enum EAXmiType {
 	}
 
 	static boolean isNodeByRef(final String name) {
-		boolean ok = false;
-		ok = ok || Attribute.getCode().equals(name);
-		ok = ok || Class.getCode().equals(name);
-		ok = ok || ClassAttribute.getCode().equals(name);
-		ok = ok || Package.getCode().equals(name);
-		ok = ok || Connector.getCode().equals(name);
-		return ok;
+		return false
+				|| Attribute.getCode().equals(name)
+				|| Class.getCode().equals(name)
+				|| ClassAttribute.getCode().equals(name)
+				|| Package.getCode().equals(name)
+				|| Connector.getCode().equals(name);
 	}
 
 	static boolean isObjet(final String type, final String tagName) {
-		boolean ok = false;
-		ok = ok || Attribute.getCode().equals(type) && OwnedAttribute.getCode().equals(tagName);
-		ok = ok || Class.getCode().equals(type);
-		ok = ok || Package.getCode().equals(type);
-		ok = ok || Association.getCode().equals(type);
-		return ok;
+		return false
+				|| Attribute.getCode().equals(type) && OwnedAttribute.getCode().equals(tagName)
+				|| Class.getCode().equals(type)
+				|| Package.getCode().equals(type)
+				|| Association.getCode().equals(type);
 	}
 
 	boolean isAttribute() {
-		boolean ok = false;
-		ok = ok || this == Attribute;
-		return ok;
+		return this == Attribute;
 	}
 
 	boolean isClass() {
-		boolean ok = false;
-		ok = ok || this == Class;
-		ok = ok || this == Association;
-		return ok;
+		return false
+				|| this == Class
+				|| this == Association;
 	}
 }

@@ -271,9 +271,9 @@ final class EAXmiObject {
 		} else if (PROPERTY_ROLE_MULTIPLICITY.equals(propertyName)) {
 			manageMultiplicity(attributes);
 		} else if (PROPERTY_CLASSE_A.equals(propertyName)) {
-			final String valeur = attributes.getValue(PROPERTY_CLASSE_NAME);
-			if (valeur != null) {
-				classA = new TagId(valeur);
+			final String value = attributes.getValue(PROPERTY_CLASSE_NAME);
+			if (value != null) {
+				classA = new TagId(value);
 			}
 		} else if (PROPERTY_CLASSE_B.equals(propertyName)) {
 			final String valeur = attributes.getValue(PROPERTY_CLASSE_NAME);
