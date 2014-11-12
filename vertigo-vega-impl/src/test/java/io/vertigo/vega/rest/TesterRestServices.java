@@ -594,6 +594,22 @@ public final class TesterRestServices implements RestfulService {
 		return "OK";
 	}
 
+	//PUT is indempotent : ID obligatoire
+	@PUT("/contactAliasName/{conId}")
+	public Contact testUpdateByPath(@PathParam("conId") final long conId,
+			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) Contact contact,
+			@InnerBodyParam("itsatoolongaliasforfieldcontactname") final String aliasName) {
+		if (contact.getName() == null || contact.getName().isEmpty()) {
+			//400
+			throw new VUserException(new MessageText("Name is mandatory", null));
+		}
+		contact.setConId(conId);
+		contact.setName(aliasName);
+		contacts.put(contact.getConId(), contact);
+		//200
+		return contact;
+	}
+
 	/*@GET("/searchFacet")
 	public FacetedQueryResult<DtObject, ContactCriteria> testSearchServiceFaceted(final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);

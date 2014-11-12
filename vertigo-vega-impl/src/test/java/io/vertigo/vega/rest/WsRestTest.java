@@ -685,6 +685,20 @@ public final class WsRestTest extends AbstractTestCaseJU4 {
 				.put("/test/filtered/" + oldConId);
 	}
 
+	@Test
+	public void testPutContactTooLongField() throws ParseException {
+		final Map<String, Object> newContact = createDefaultContact(null);
+		final String newNameValue = "Here i am !!";
+		newContact.put("itsatoolongaliasforfieldcontactname", newNameValue);
+
+		loggedAndExpect(given().body(newContact))
+				.body("conId", Matchers.equalTo(101))
+				.body("name", Matchers.equalTo(newNameValue))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/contactAliasName/101");
+	}
+
 	//=========================================================================
 
 	private ResponseSpecification expect() {
