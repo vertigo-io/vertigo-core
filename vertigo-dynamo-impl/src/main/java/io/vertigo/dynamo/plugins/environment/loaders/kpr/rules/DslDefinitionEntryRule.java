@@ -21,7 +21,7 @@ package io.vertigo.dynamo.plugins.environment.loaders.kpr.rules;
 import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.PAIR_SEPARATOR;
 import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.SPACES;
 import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.WORD;
-import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.WORDS;
+import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslWordsRule.WORDS;
 import io.vertigo.commons.parser.AbstractRule;
 import io.vertigo.commons.parser.Choice;
 import io.vertigo.commons.parser.FirstOfRule;

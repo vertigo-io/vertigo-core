@@ -39,14 +39,15 @@ import java.util.List;
  * @author pchretien
  */
 public final class DslWordsRule extends AbstractRule<List<String>, Choice> {
+	static final Rule<List<String>> WORDS = new DslWordsRule();
 
-	// 	{ } 
+	// 	{ }
 	private static final Rule<List<?>> EMPTY_LIST = new SequenceRule(//Liste vide
 			ARRAY_START,//
 			SPACES,//
 			ARRAY_END);
 
-	// , XXXX 
+	// , XXXX
 	private static final Rule<List<List<?>>> MANY_WORDS = new ManyRule<>(//
 			new SequenceRule(//"mot"
 					ARRAY_SEPARATOR, //
@@ -68,7 +69,7 @@ public final class DslWordsRule extends AbstractRule<List<String>, Choice> {
 	protected Rule<Choice> createMainRule() {
 		return new FirstOfRule(//"liste vide ou non"
 				EMPTY_LIST, //0
-				NON_EMPTY_LIST);//1 
+				NON_EMPTY_LIST);//1
 	}
 
 	@Override
