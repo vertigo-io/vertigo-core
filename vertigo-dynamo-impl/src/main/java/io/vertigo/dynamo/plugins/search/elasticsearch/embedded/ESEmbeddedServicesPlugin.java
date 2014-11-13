@@ -71,14 +71,14 @@ public final class ESEmbeddedServicesPlugin extends AbstractESServicesPlugin {
 	private static Node createNode(final URL esHomeURL) {
 		Assertion.checkNotNull(esHomeURL);
 		//---------------------------------------------------------------------
-		File home;
+		final File home;
 		try {
 			home = new File(URLDecoder.decode(esHomeURL.getFile(), "UTF-8"));
-			Assertion.checkArgument(home.exists() && home.isDirectory(), "Le ElasticSearchHome : {0} n''existe pas, ou n''est pas un répertoire.", home.getAbsolutePath());
-			Assertion.checkArgument(home.canWrite(), "L''application n''a pas les droits d''écriture sur le ElasticSearchHome : {0}", home.getAbsolutePath());
 		} catch (final UnsupportedEncodingException e) {
 			throw new RuntimeException("Error de parametrage du ElasticSearchHome " + esHomeURL, e);
 		}
+		Assertion.checkArgument(home.exists() && home.isDirectory(), "Le ElasticSearchHome : {0} n''existe pas, ou n''est pas un répertoire.", home.getAbsolutePath());
+		Assertion.checkArgument(home.canWrite(), "L''application n''a pas les droits d''écriture sur le ElasticSearchHome : {0}", home.getAbsolutePath());
 		return new NodeBuilder()
 				.settings(buildNodeSettings(home.getAbsolutePath()))
 				.local(true)

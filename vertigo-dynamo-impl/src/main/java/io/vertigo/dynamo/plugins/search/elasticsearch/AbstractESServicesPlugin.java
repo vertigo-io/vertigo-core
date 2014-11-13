@@ -70,7 +70,6 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 	private final Map<String, IndexFieldNameResolver> indexFieldNameResolvers;
 	private final int rowsPerQuery;
 	private final Set<String> cores;
-	private boolean typeMappingInitialized = false;
 
 	/**
 	 * Constructeur.
@@ -93,6 +92,12 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 	/** {@inheritDoc} */
 	@Override
 	public final void start() {
+		//Init typeMapping IndexDefinition <-> Conf ElasticSearch
+		for (final IndexDefinition indexDefinition : Home.getDefinitionSpace().getAll(IndexDefinition.class)) {
+			updateTypeMapping(indexDefinition);
+		}
+
+		//Init ElasticSearch Node
 		node = createNode();
 		node.start();
 		esClient = node.client();
@@ -128,7 +133,6 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 		Assertion.checkNotNull(indexFieldNameResolver);
 		//---------------------------------------------------------------------
 		indexFieldNameResolvers.put(indexDefinition.getName(), indexFieldNameResolver);
-		typeMappingInitialized = false;
 	}
 
 	/** {@inheritDoc} */
@@ -205,22 +209,8 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 	private <I extends DtObject, R extends DtObject> ESStatement<I, R> createElasticStatement(final IndexDefinition indexDefinition) {
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkArgument(cores.contains(indexDefinition.getName()), "Index {0} hasn't been registered (Registered indexes: {2}).", indexDefinition.getName(), cores);
-		checkInitialized();
 		//---------------------------------------------------------------------
 		return new ESStatement<>(elasticDocumentCodec, indexDefinition.getName().toLowerCase(), esClient, obtainIndexFieldNameResolver(indexDefinition));
-	}
-
-	private void checkInitialized() {
-		if (!typeMappingInitialized) {
-			synchronized (this) { //double check locking OK for primitive like boolean
-				if (!typeMappingInitialized) {
-					for (final IndexDefinition indexDefinition : Home.getDefinitionSpace().getAll(IndexDefinition.class)) {
-						updateTypeMapping(indexDefinition);
-					}
-					typeMappingInitialized = true;
-				}
-			}
-		}
 	}
 
 	/**
