@@ -24,6 +24,7 @@ import io.vertigo.lang.Option;
 import io.vertigo.quarto.publisher.metamodel.PublisherField;
 import io.vertigo.quarto.publisher.metamodel.PublisherFieldType;
 import io.vertigo.quarto.publisher.metamodel.PublisherNodeDefinition;
+import io.vertigo.util.StringUtil;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -156,7 +157,8 @@ public final class PublisherNode implements Serializable {
 			node = getNode(nodeName);
 		} catch (final NullPointerException e) {//on catch juste pour reformuler l'erreur
 			if (e.getMessage().contains("est obligatoire")) {
-				Assertion.checkNotNull(null, "L'objet {0} utilisé pour le champs {1} est null. Dans votre modèle vous devez tester l'existance de cet objet.", nodeName, fieldPath);
+				final String msg = "L'objet {0} utilisé pour le champs {1} est null. Dans votre modèle vous devez tester l'existance de cet objet.";
+				throw new NullPointerException(StringUtil.format(msg, nodeName, fieldPath));
 			}
 			throw e;
 		}
