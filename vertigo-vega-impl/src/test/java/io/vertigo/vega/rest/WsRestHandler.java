@@ -128,7 +128,7 @@ public final class WsRestHandler {
 							.withParam("dataStoreName", "UiSecurityStore")
 							.withParam("timeToLiveSeconds", "120")
 						.endPlugin()
-					.endComponent() //
+					.endComponent() 
 					.beginComponent(PersistenceManager.class, PersistenceManagerImpl.class)
 						.beginPlugin(PostgreSqlDataStorePlugin.class)
 							.withParam("sequencePrefix","SEQ_")
@@ -138,9 +138,6 @@ public final class WsRestHandler {
 						.beginPlugin( MapCachePlugin.class).endPlugin()
 					.endComponent()
 					.beginComponent(TaskManager.class, TaskManagerImpl.class).endComponent()
-//					.beginComponent(WorkManager.class, WorkManagerImpl.class)
-//						.withParam("workerCount", "2") //
-//					.endComponent() //
 					.beginComponent(ExportManager.class, ExportManagerImpl.class)
 						.beginPlugin(PDFExporterPlugin.class).endPlugin()
 					.endComponent()
