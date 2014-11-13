@@ -70,8 +70,8 @@ final class OOMObject {
 	private String roleAMultiplicity;
 	private String roleBMultiplicity;
 
-	private boolean roleANavigability;
-	private boolean roleBNavigability;
+	private boolean roleANavigability = false;
+	private boolean roleBNavigability = true;
 
 	//============================================================
 	private final OOMObject root;

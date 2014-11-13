@@ -96,8 +96,8 @@ final class EAXmiObject {
 	private String roleAMultiplicity;
 	private String roleBMultiplicity;
 
-	private Boolean roleANavigability;
-	private Boolean roleBNavigability;
+	private Boolean roleANavigability = false;
+	private Boolean roleBNavigability = true;
 
 	//============================================================
 	private final EAXmiObject root;
