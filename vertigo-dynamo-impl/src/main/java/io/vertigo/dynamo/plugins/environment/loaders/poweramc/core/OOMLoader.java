@@ -185,9 +185,8 @@ public final class OOMLoader implements XmlLoader {
 		// associationDefinition.
 		//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
 
-		// navigabilités sont optionnelles; elles sont déduites de la multiplicités quand elles ne sont pas renseignées
-		final boolean navigabilityA = obj.getRoleANavigability() == null ? false : obj.getRoleANavigability();
-		final boolean navigabilityB = obj.getRoleBNavigability() == null ? true : obj.getRoleBNavigability();
+		final boolean navigabilityA = obj.getRoleANavigability();
+		final boolean navigabilityB = obj.getRoleBNavigability();
 
 		return new XmlAssociation(code, packageName, multiplicityA, multiplicityB, roleLabelA, roleLabelB, codeA, codeB, navigabilityA, navigabilityB);
 	}

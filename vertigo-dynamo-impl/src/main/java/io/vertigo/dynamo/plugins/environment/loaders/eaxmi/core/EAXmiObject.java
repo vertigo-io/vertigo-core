@@ -212,14 +212,14 @@ final class EAXmiObject {
 	/**
 	 * @return Navigabilité du noeud A
 	 */
-	Boolean getRoleANavigability() {
+	boolean getRoleANavigability() {
 		return roleANavigability;
 	}
 
 	/**
 	 * @return Navigabilité du noeud B
 	 */
-	Boolean getRoleBNavigability() {
+	boolean getRoleBNavigability() {
 		return roleBNavigability;
 	}
 

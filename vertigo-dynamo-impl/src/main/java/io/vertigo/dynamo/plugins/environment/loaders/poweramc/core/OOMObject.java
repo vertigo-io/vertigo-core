@@ -70,8 +70,8 @@ final class OOMObject {
 	private String roleAMultiplicity;
 	private String roleBMultiplicity;
 
-	private Boolean roleANavigability;
-	private Boolean roleBNavigability;
+	private boolean roleANavigability;
+	private boolean roleBNavigability;
 
 	//============================================================
 	private final OOMObject root;
@@ -186,14 +186,14 @@ final class OOMObject {
 	/**
 	 * @return Navigabilité du noeud A
 	 */
-	Boolean getRoleANavigability() {
+	boolean getRoleANavigability() {
 		return roleANavigability;
 	}
 
 	/**
 	 * @return Navigabilité du noeud B
 	 */
-	Boolean getRoleBNavigability() {
+	boolean getRoleBNavigability() {
 		return roleBNavigability;
 	}
 
