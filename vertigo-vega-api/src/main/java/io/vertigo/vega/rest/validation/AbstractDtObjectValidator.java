@@ -36,21 +36,21 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 
 	/** {@inheritDoc} */
 	@Override
-	public void validate(final O dtObject, final Set<String> modifiedFieldNameSet, final DtObjectErrors dtObjectErrors) {
-		for (final String fieldName : modifiedFieldNameSet) {
+	public void validate(final O dtObject, final Set<String> modifiedFieldNames, final DtObjectErrors dtObjectErrors) {
+		for (final String fieldName : modifiedFieldNames) {
 			final DtField dtField = getDtField(fieldName, dtObject);
 			checkMonoFieldConstraints(dtObject, dtField, dtObjectErrors);
 		}
-		checkMultiFieldConstraints(dtObject, modifiedFieldNameSet, dtObjectErrors);
+		checkMultiFieldConstraints(dtObject, modifiedFieldNames, dtObjectErrors);
 	}
 
 	/**
 	 * Effectue des controles multichamps spécifiques.
 	 * @param dtObject Objet à tester
-	 * @param modifiedFieldNameSet Liste des champs modifiés
+	 * @param modifiedFieldNames Liste des champs modifiés
 	 * @param dtObjectErrors Pile des erreurs
 	 */
-	protected void checkMultiFieldConstraints(final O dtObject, final Set<String> modifiedFieldNameSet, final DtObjectErrors dtObjectErrors) {
+	protected void checkMultiFieldConstraints(final O dtObject, final Set<String> modifiedFieldNames, final DtObjectErrors dtObjectErrors) {
 		//enrichissable pour un type d'objet particulier
 		//ex: input.addError(e.getMessageText());
 	}
@@ -68,14 +68,14 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 
 	/**
 	 * @param dto Object a tester
-	 * @param modifiedFieldNameSet Liste des champs modifiés
+	 * @param modifiedFieldNames Liste des champs modifiés
 	 * @param fieldNames Nom des champs à tester
 	 * @return si le champ a été modifié 
 	 */
-	protected final boolean shouldCheck(final O dto, final Set<String> modifiedFieldNameSet, final String... fieldNames) {
+	protected final boolean shouldCheck(final O dto, final Set<String> modifiedFieldNames, final String... fieldNames) {
 		for (final String fieldName : fieldNames) {
 			final String constFieldName = StringUtil.camelToConstCase(fieldName);
-			if (!modifiedFieldNameSet.contains(constFieldName)) {
+			if (!modifiedFieldNames.contains(constFieldName)) {
 				return false;
 			}
 		}
