@@ -61,6 +61,7 @@ final class Environment implements ResourceLoader {
 		}
 	}
 
+	@Override
 	public void parse(final List<ResourceConfig> resourceConfigs) {
 		final CompositeDynamicRegistry handler = new CompositeDynamicRegistry(dynamicRegistryPlugins);
 
@@ -81,6 +82,7 @@ final class Environment implements ResourceLoader {
 		dynamicModelRepository.solve();
 	}
 
+	@Override
 	public Set<String> getTypes() {
 		return Collections.unmodifiableSet(loaders.keySet());
 	}

@@ -84,6 +84,7 @@ public final class BrokerNNImpl implements BrokerNN {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void appendNN(final DtListURIForAssociation dtListURI, final URI<DtObject> uriToAppend) {
 		Assertion.checkNotNull(uriToAppend);
 		//---------------------------------------------------------------------
@@ -91,12 +92,14 @@ public final class BrokerNNImpl implements BrokerNN {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void removeAllNN(final DtListURIForAssociation dtListURI) {
 		// on supprime tout
 		removeNN(new DescriptionNN(dtListURI));
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void removeNN(final DtListURIForAssociation dtListURI, final URI<DtObject> uriToDelete) {
 		Assertion.checkNotNull(uriToDelete);
 		//---------------------------------------------------------------------
@@ -104,6 +107,7 @@ public final class BrokerNNImpl implements BrokerNN {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void updateNN(final DtListURIForAssociation dtListURI, final List<URI<? extends DtObject>> newUriList) {
 		Assertion.checkNotNull(newUriList);
 		//---------------------------------------------------------------------

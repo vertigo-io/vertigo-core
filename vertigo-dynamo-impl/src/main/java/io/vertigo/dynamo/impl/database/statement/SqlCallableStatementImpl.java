@@ -84,6 +84,7 @@ public final class SqlCallableStatementImpl extends SqlPreparedStatementImpl imp
 	//--------------------------------------------------------------------
 
 	/** {@inheritDoc} */
+	@Override
 	public Object getValue(final int index) throws SQLException {
 		Assertion.checkArgument(getState() == State.EXECUTED, "L'exécution n'a pas été effectuée !");
 		final SqlParameter parameter = getParameter(index);

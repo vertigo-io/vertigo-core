@@ -55,6 +55,7 @@ public abstract class AbstractSqlConnectionProviderPlugin implements SqlConnecti
 
 	//----------------------GESTION DU CONNECTION PROVIDER----------------------
 	/** {@inheritDoc} */
+	@Override
 	public final SqlDataBase getDataBase() {
 		return dataBase;
 	}

@@ -44,7 +44,7 @@ import java.util.Locale;
  */
 final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 	//On ne veut pas d'un comparateur sérializable !!!
-	/** 
+	/**
 	 * Comparateur du tri
 	 */
 	private final Comparator<Object> comparator;
@@ -69,7 +69,7 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 
 		//On regarde si on est sur une ForeignKey et sur une MasterDataList
 		if (sortField.getType() == FieldType.FOREIGN_KEY && persistenceManager.getMasterDataConfiguration().containsMasterData(sortField.getFkDtDefinition())) {
-			//Il existe une Liste de référence associée 
+			//Il existe une Liste de référence associée
 			//Dans le cas des liste de référence on délégue la comparaison
 			final DtListURIForMasterData mdlUri = persistenceManager.getMasterDataConfiguration().getDtListURIForMasterData(sortField.getFkDtDefinition());
 			this.comparator = createMasterDataComparator(sortState, persistenceManager, mdlUri, sortState);
@@ -80,6 +80,7 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int compare(final D dto1, final D dto2) {
 		Assertion.checkNotNull(dto1);
 		Assertion.checkNotNull(dto2);
@@ -128,6 +129,7 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 	private static Comparator<Object> createDefaultComparator(final SortState sortState) {
 		return new Comparator<Object>() {
 			/** {@inheritDoc} */
+			@Override
 			public int compare(final Object v1, final Object v2) {
 				return compareValues(sortState, v1, v2);
 			}
@@ -161,6 +163,7 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 				return mdFieldSort.getDataAccessor().getValue(dto);
 			}
 
+			@Override
 			public int compare(final Object o1, final Object o2) {
 				if (o1 != null && o2 != null) {
 					final Object lib1 = getSortValue(o1);

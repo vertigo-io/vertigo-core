@@ -32,7 +32,7 @@ import javax.inject.Named;
 
 /**
  * Implémentation d'un pseudo Pool.
- * 
+ *
  * @see io.vertigo.dynamo.plugins.database.connection.datasource.DataSourceConnectionProviderPlugin Utiliser une DataSource
  * @deprecated NE DOIT PAS ETRE UTILISE EN PRODUCTION.
  */
@@ -60,6 +60,7 @@ public final class MockConnectionProviderPlugin extends AbstractSqlConnectionPro
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public SqlConnection obtainConnection() throws SQLException {
 		//Dans le pseudo pool on crée systématiquement une connexion
 		return new SqlConnection(DriverManager.getConnection(jdbcUrl), getDataBase(), true);

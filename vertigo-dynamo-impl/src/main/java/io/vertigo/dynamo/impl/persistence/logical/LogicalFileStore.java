@@ -52,17 +52,20 @@ public final class LogicalFileStore implements FileStore {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public FileInfo load(final URI<FileInfo> uri) {
 		final FileInfoDefinition fileInfoDefinition = getFileInfoDefinition(uri);
 		return getPhysicalStore(fileInfoDefinition).load(uri);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void put(final FileInfo fileInfo) {
 		getPhysicalStore(fileInfo.getDefinition()).put(fileInfo);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void remove(final URI<FileInfo> uri) {
 		final FileInfoDefinition fileInfoDefinition = getFileInfoDefinition(uri);
 		getPhysicalStore(fileInfoDefinition).remove(uri);

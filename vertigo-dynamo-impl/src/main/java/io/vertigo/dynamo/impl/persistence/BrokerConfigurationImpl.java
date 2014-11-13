@@ -32,7 +32,7 @@ import io.vertigo.lang.Assertion;
 
 /**
  * Implémentation Standard du StoreProvider.
- * 
+ *
  * @author pchretien
  */
 final class BrokerConfigurationImpl implements BrokerConfiguration {
@@ -42,7 +42,7 @@ final class BrokerConfigurationImpl implements BrokerConfiguration {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param cacheManager Manager de gestion du cache
 	 */
 	BrokerConfigurationImpl(final CacheManager cacheManager, final PersistenceManager persistenceManager, final CollectionsManager collectionsManager) {
@@ -69,6 +69,7 @@ final class BrokerConfigurationImpl implements BrokerConfiguration {
 	 * @param timeToLiveInSeconds Durée de vie du cache
 	 * @param isReloadedByList Si ce type d'objet doit être chargé de façon ensembliste ou non
 	 */
+	@Override
 	public void registerCacheable(final DtDefinition dtDefinition, final long timeToLiveInSeconds, final boolean isReloadedByList) {
 		Assertion.checkNotNull(dtDefinition);
 		//---------------------------------------------------------------------
@@ -87,6 +88,7 @@ final class BrokerConfigurationImpl implements BrokerConfiguration {
 		return logicalFileStoreConfiguration;
 	}
 
+	@Override
 	public void register(final DtDefinition dtDefinition, final DataStorePlugin specificStore) {
 		getLogicalStoreConfiguration().register(dtDefinition, specificStore);
 	}

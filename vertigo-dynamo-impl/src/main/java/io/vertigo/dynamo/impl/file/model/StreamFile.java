@@ -39,6 +39,7 @@ public final class StreamFile extends AbstractKFile {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public InputStream createInputStream() throws IOException {
 		return inputStreamBuilder.createInputStream();
 	}

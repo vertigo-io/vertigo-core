@@ -72,11 +72,11 @@ public final class KTransactionImpl implements KTransactionWritable {
 	//==========================================================================
 	/**
 	 * Construit un contexte de transaction.
-	 * @param transactionListener Listener des événements produits par 
+	 * @param transactionListener Listener des événements produits par
 	 */
 	KTransactionImpl(final KTransactionListener transactionListener) {
 		Assertion.checkNotNull(transactionListener);
-		//---------------------------------------------------------------------	
+		//---------------------------------------------------------------------
 		parentTransaction = null;
 		this.transactionListener = transactionListener;
 		//La transaction démarre
@@ -112,6 +112,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <TR extends KTransactionResource> TR getResource(final KTransactionResourceId<TR> transactionResourceId) {
 		checkStateStarted();
 		Assertion.checkNotNull(transactionResourceId);
@@ -159,6 +160,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <TR extends KTransactionResource> void addResource(final KTransactionResourceId<TR> id, final TR resource) {
 		checkStateStarted();
 		Assertion.checkNotNull(resource);
@@ -172,6 +174,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void commit() {
 		checkStateStarted();
 		//Il ne doit plus exister de transaction imbriquée
@@ -186,6 +189,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void rollback() {
 		final Throwable throwable = doRollback();
 		if (throwable != null) {
@@ -255,7 +259,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 		boolean shouldRollback = rollback;
 		if (resources != null) {
 			//Il existe des ressources
-			//On traite les ressources par ordre de priorité 
+			//On traite les ressources par ordre de priorité
 			for (final KTransactionResourceId<?> id : getOrderedListByPriority()) {
 				final KTransactionResource ktr = resources.remove(id);
 				//On termine toutes les resources utilisées en les otant de la map.
@@ -292,7 +296,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 	}
 
 	private void populate(final List<KTransactionResourceId<?>> list, final KTransactionResourceId.Priority priority) {
-		// Ajout des ressources ayant une ceraine priorité à la liste. 
+		// Ajout des ressources ayant une ceraine priorité à la liste.
 		for (final KTransactionResourceId<?> id : resources.keySet()) {
 			if (id.getPriority().equals(priority)) {
 				list.add(id);
@@ -353,6 +357,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 		throw new RuntimeException("Transaction", error);
 	}
 
+	@Override
 	public void close() {
 		try {
 			rollback();

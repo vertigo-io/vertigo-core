@@ -24,7 +24,7 @@ import io.vertigo.dynamo.database.vendor.SqlMapping;
 
 /**
  * Gestion de la base de données H2.
- * 
+ *
  * @author jmainaud
  */
 public final class H2Database implements SqlDataBase {
@@ -32,11 +32,13 @@ public final class H2Database implements SqlDataBase {
 	private final SqlMapping sqlMapping = new H2Mapping();
 
 	/** {@inheritDoc} */
+	@Override
 	public SqlExceptionHandler getSqlExceptionHandler() {
 		return sqlExceptionHandler;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public SqlMapping getSqlMapping() {
 		return sqlMapping;
 	}

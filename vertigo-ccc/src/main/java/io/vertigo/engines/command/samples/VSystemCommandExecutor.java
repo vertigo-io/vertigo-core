@@ -32,6 +32,7 @@ import java.util.List;
 
 public final class VSystemCommandExecutor implements VCommandExecutor<List<ComponentInfo>> {
 	/** {@inheritDoc} */
+	@Override
 	public List<ComponentInfo> exec(final VCommand command) {
 		Assertion.checkNotNull(command);
 		//Assertion.checkArgument(command.getName());

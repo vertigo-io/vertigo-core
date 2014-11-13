@@ -45,6 +45,7 @@ public final class ConstraintNumberMaximum extends AbstractConstraintImpl<Number
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean checkConstraint(final Number value) {
 		if (value == null) {
 			return true;
@@ -59,11 +60,13 @@ public final class ConstraintNumberMaximum extends AbstractConstraintImpl<Number
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Property getProperty() {
 		return DtProperty.MAX_VALUE;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Number getPropertyValue() {
 		return maxValue;
 	}

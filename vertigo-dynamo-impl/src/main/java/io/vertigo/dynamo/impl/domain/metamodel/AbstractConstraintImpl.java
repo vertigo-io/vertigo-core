@@ -67,6 +67,7 @@ public abstract class AbstractConstraintImpl<J, D> implements Constraint<J, D> {
 	/**
 	 * @return Message d'erreur (Nullable)
 	 */
+	@Override
 	public final MessageText getErrorMessage() {
 		return msg != null ? msg : getDefaultMessage();
 	}
@@ -77,6 +78,7 @@ public abstract class AbstractConstraintImpl<J, D> implements Constraint<J, D> {
 	protected abstract MessageText getDefaultMessage();
 
 	/** {@inheritDoc} */
+	@Override
 	public final String getName() {
 		return name;
 	}

@@ -47,6 +47,7 @@ public final class ConstraintRegex extends AbstractConstraintImpl<String, String
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean checkConstraint(final String value) {
 		if (value == null) {
 			return true;
@@ -64,11 +65,13 @@ public final class ConstraintRegex extends AbstractConstraintImpl<String, String
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Property getProperty() {
 		return DtProperty.REGEX;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getPropertyValue() {
 		return pattern.pattern();
 	}

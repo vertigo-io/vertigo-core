@@ -79,6 +79,7 @@ public final class DtListRangeFilter<D extends DtObject, C extends Comparable> i
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean accept(final D dto) {
 		getDtField(dto);
 		return accept(dtField.getDataAccessor().getValue(dto));

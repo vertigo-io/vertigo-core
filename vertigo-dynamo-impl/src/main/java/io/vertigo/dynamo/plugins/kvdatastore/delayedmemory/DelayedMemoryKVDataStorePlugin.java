@@ -80,6 +80,7 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin, 
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void remove(final String key) {
 		cacheDatas.remove(key);
 	}
@@ -126,7 +127,7 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin, 
 	void removeTooOldElements() {
 		final int maxChecked = 500;
 		int checked = 0;
-		//Les elements sont parcouru dans l'ordre d'insertion (sans lock)		
+		//Les elements sont parcouru dans l'ordre d'insertion (sans lock)
 		while (checked < maxChecked) {
 			final DelayedMemoryKey delayedKey = timeoutQueue.poll();
 			if (delayedKey != null) {

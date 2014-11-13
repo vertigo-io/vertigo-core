@@ -36,8 +36,8 @@ import com.google.gson.GsonBuilder;
 public class ZZDistributedMapServer {
 	private final VServer tcpServer2;
 
-	public static void main(String[] args) {
-		ZZDistributedMapServer server = new ZZDistributedMapServer();
+	public static void main(final String[] args) {
+		final ZZDistributedMapServer server = new ZZDistributedMapServer();
 		server.start();
 	}
 
@@ -53,12 +53,13 @@ public class ZZDistributedMapServer {
 		private final Gson gson = new GsonBuilder().create();
 		private final Map<String, String> map = new HashMap<>();
 
-		public VResponse onCommand(VCommand command) {
+		@Override
+		public VResponse onCommand(final VCommand command) {
 			System.out.println(">>ici>" + command);
 			try {
 				if ("put".equals(command.getName())) {
-					String key = command.arg("name", (String) null);
-					String value = command.arg("value", (String) null);
+					final String key = command.arg("name", (String) null);
+					final String value = command.arg("value", (String) null);
 					map.put(key, value);
 					return VResponse.createResponse(gson.toJson("OK"));
 				} else if ("keys".equals(command.getName())) {
@@ -66,14 +67,14 @@ public class ZZDistributedMapServer {
 				} else if ("values".equals(command.getName())) {
 					return VResponse.createResponse(gson.toJson(map.values()));
 				} else if ("get".equals(command.getName())) {
-					String key = command.arg("name", (String) null);
+					final String key = command.arg("name", (String) null);
 					return VResponse.createResponse(gson.toJson(map.get(key)));
 				} else if ("clear".equals(command.getName())) {
 					map.clear();
 					return VResponse.createResponse(gson.toJson("OK"));
 				}
 				return VResponse.createResponseWithError("unknown command " + command.getName());
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				return VResponse.createResponseWithError(command.getName() + " failed " + e);
 			}
 		}

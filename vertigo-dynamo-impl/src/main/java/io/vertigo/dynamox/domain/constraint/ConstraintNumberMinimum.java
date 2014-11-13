@@ -45,6 +45,7 @@ public final class ConstraintNumberMinimum extends AbstractConstraintImpl<Number
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean checkConstraint(final Number value) {
 		if (value == null) {
 			return true;
@@ -59,11 +60,13 @@ public final class ConstraintNumberMinimum extends AbstractConstraintImpl<Number
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Property getProperty() {
 		return DtProperty.MIN_VALUE;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Number getPropertyValue() {
 		return minValue;
 	}

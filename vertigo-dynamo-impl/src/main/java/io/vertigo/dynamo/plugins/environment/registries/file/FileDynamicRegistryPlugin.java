@@ -38,6 +38,7 @@ public final class FileDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void onDefinition(final DynamicDefinition xdefinition) {
 		if (FileGrammar.FILE_INFO_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
 			//Seuls les taches sont gérées.

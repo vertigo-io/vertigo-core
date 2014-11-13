@@ -80,31 +80,37 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getPackageName() {
 		return packageName;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Entity getEntity() {
 		return entity;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void check() {
 		check(getEntity());
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public DynamicDefinition build() {
 		return this;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final DynamicDefinitionKey getDefinitionKey() {
 		return dynamicDefinitionKey;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Object getPropertyValue(final EntityProperty property) {
 		Assertion.checkNotNull(property);
 		// On ne vérifie rien sur le type retourné par le getter.
@@ -116,21 +122,25 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Set<EntityProperty> getProperties() {
 		return Collections.unmodifiableSet(properties.keySet());
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final List<DynamicDefinitionKey> getDefinitionKeys(final String fieldName) {
 		return obtainDefinitionKeys(fieldName);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final List<DynamicDefinition> getChildDefinitions(final String fieldName) {
 		return obtainComposites(fieldName);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final List<DynamicDefinition> getAllChildDefinitions() {
 		final List<DynamicDefinition> dynamicDefinitions = new ArrayList<>();
 		for (final List<DynamicDefinition> dynamicDefinitionList : definitionsByFieldName.values()) {
@@ -141,6 +151,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	//-------
 	/** {@inheritDoc} */
+	@Override
 	public final DynamicDefinitionKey getDefinitionKey(final String fieldName) {
 		Assertion.checkArgument(definitionKeysByFieldName.containsKey(fieldName), "Aucune définition déclarée pour ''{0}'' sur ''{1}'' ", fieldName, getDefinitionKey().getName());
 		final List<DynamicDefinitionKey> list = definitionKeysByFieldName.get(fieldName);
@@ -152,6 +163,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final List<DynamicDefinitionKey> getAllDefinitionKeys() {
 		final List<DynamicDefinitionKey> dynamicDefinitionKeys = new ArrayList<>();
 		for (final List<DynamicDefinitionKey> dynamicDefinitionKeyList : definitionKeysByFieldName.values()) {
@@ -161,11 +173,13 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public DynamicDefinitionBuilder withPackageName(final String newPackageName) {
 		this.packageName = newPackageName;
 		return this;
 	}
 
+	@Override
 	public final DynamicDefinitionBuilder withPropertyValue(final EntityProperty property, final Object value) {
 		property.getPrimitiveType().checkValue(value);
 		properties.put(property, value);
@@ -184,6 +198,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return list;
 	}
 
+	@Override
 	public final DynamicDefinitionBuilder withChildDefinition(final String fieldName, final DynamicDefinition definition) {
 		Assertion.checkNotNull(definition);
 		// ------------------------------------------------------------------
@@ -197,6 +212,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		obtainDefinitionKeys(fieldName).add(definitionKey);
 	}
 
+	@Override
 	public final DynamicDefinitionBuilder withDefinitions(final String fieldName, final List<DynamicDefinitionKey> definitionKeys) {
 		Assertion.checkNotNull(definitionKeys);
 		Assertion.checkArgument(obtainDefinitionKeys(fieldName).isEmpty(), "syntaxe interdite");
@@ -221,6 +237,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return list;
 	}
 
+	@Override
 	public final DynamicDefinitionBuilder withBody(final DynamicDefinition dynamicDefinition) {
 		// 1. maj des EntityProperty
 		for (final EntityProperty property : dynamicDefinition.getProperties()) {
@@ -241,6 +258,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return this;
 	}
 
+	@Override
 	public DynamicDefinitionBuilder withDefinition(final String fieldName, final DynamicDefinitionKey definitionKey) {
 		// On vérifie que la liste est vide pour éviter les syntaxe avec multi
 		// déclarations

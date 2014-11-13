@@ -28,13 +28,14 @@ import io.vertigo.lang.Describable;
 import java.util.List;
 
 public final class VDescribableCommandExecutor implements VCommandExecutor<List<ComponentInfo>> {
-	public List<ComponentInfo> exec(VCommand command) {
+	@Override
+	public List<ComponentInfo> exec(final VCommand command) {
 		Assertion.checkNotNull(command);
 		//Assertion.checkArgument(command.getName());
 		System.out.println(">>> find:" + command.getName());
 		System.out.println(">>> Home:" + Home.getComponentSpace().keySet());
 		//---------------------------------------------------------------------
-		Object component = Home.getComponentSpace().resolve(command.getName(), Object.class);
+		final Object component = Home.getComponentSpace().resolve(command.getName(), Object.class);
 
 		//			if (component instanceof Describable) {
 		return Describable.class.cast(component).getInfos();

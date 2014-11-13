@@ -50,11 +50,13 @@ public abstract class AbstractFileInfo implements FileInfo {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final URI<FileInfo> getURI() {
 		return uri;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final void setURIStored(final URI<FileInfo> storedUri) {
 		Assertion.checkNotNull(storedUri);
 		Assertion.checkState(uri == null, "Impossible de setter deux fois l'uri de stockage");
@@ -64,11 +66,13 @@ public abstract class AbstractFileInfo implements FileInfo {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final FileInfoDefinition getDefinition() {
 		return fileInfoDefinition.get();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final KFile getKFile() {
 		return kFile;
 	}

@@ -68,6 +68,7 @@ public final class ConstraintIntegerLength extends AbstractConstraintLength<Inte
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean checkConstraint(final Integer value) {
 		if (value == null) {
 			return true;

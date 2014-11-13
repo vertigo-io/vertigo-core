@@ -77,6 +77,7 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public FileInfo load(final URI<FileInfo> uri) {
 		final URI<DtObject> dtoUri = createDtObjectURI(uri);
 		final DtObject fileInfoDto = getPersistenceManager().getBroker().get(dtoUri);
@@ -91,6 +92,7 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void put(final FileInfo fileInfo) {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 		//---------------------------------------------------------------------
@@ -122,6 +124,7 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void remove(final URI<FileInfo> uri) {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 		//---------------------------------------------------------------------
@@ -193,10 +196,12 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 			this.kFile = kFile;
 		}
 
+		@Override
 		public InputStream createInputStream() throws IOException {
 			return kFile.createInputStream();
 		}
 
+		@Override
 		public long getLength() {
 			return kFile.getLength();
 		}
@@ -210,6 +215,7 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public InputStream createInputStream() throws IOException {
 			return dataStream.createInputStream();
 		}

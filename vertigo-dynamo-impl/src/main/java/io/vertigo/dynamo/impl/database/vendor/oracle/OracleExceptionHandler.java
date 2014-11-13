@@ -26,7 +26,7 @@ import java.sql.SQLException;
 /**
  * Handler des exceptions SQL qui peuvent survenir dans une tache.
  * Cette implémentation est adaptée pour Oracle.
- * 
+ *
  * @author npiedeloup
  */
 final class OracleExceptionHandler extends AbstractSqlExceptionHandler {
@@ -38,6 +38,7 @@ final class OracleExceptionHandler extends AbstractSqlExceptionHandler {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void handleSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 		final int errCode = sqle.getErrorCode();
 		if (errCode >= 20000 && errCode < 30000) {

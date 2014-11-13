@@ -50,9 +50,9 @@ public final class SqlDataStreamMappingUtil {
 	 * Récupération d'un flux à partir d'un Blob.
 	 * Si le blob est inférieur à un seuil, il est conservé en mémoire.
 	 * En revanche s'il excéde ce seuil, il est conservé sous la forme d'un fichier temporaire.
-	 * 
+	 *
 	 * @return Flux correspondant au blob.
-	 * @throws SQLException Exception SQL. 
+	 * @throws SQLException Exception SQL.
 	 */
 	public static DataStream getDataStream(final ResultSet rs, final int col) throws SQLException {
 		Assertion.checkNotNull(rs);
@@ -77,7 +77,7 @@ public final class SqlDataStreamMappingUtil {
 				copy(in, memoryOut, MEMORY_MAX_LENTH);
 				return new ByteArrayDataStream(memoryOut.toByteArray());
 			} catch (final SqlOffLimitsException e) {
-				//Cas où le blob dépasse les limites imposées à la mémoire. 
+				//Cas où le blob dépasse les limites imposées à la mémoire.
 				return createDataStream(in, memoryOut.toByteArray());
 			}
 		}
@@ -93,9 +93,9 @@ public final class SqlDataStreamMappingUtil {
 				copy(memoryIn, fileOut, FILE_MAX_LENGTH);
 				Assertion.checkState(tmpFile.length() <= MEMORY_MAX_LENTH, "Le fichier n'a pas repris le debut de l'export (RAM)");
 			}
-			//2eme Etape : on copie la suite 
+			//2eme Etape : on copie la suite
 			final long length = copy(in, fileOut, FILE_MAX_LENGTH);
-			//La longueur totale du fichier est la somme. 
+			//La longueur totale du fichier est la somme.
 			return new FileDataStream(tmpFile, length + bytes.length);
 		}
 	}
@@ -129,10 +129,12 @@ public final class SqlDataStreamMappingUtil {
 			this.bytes = bytes;
 		}
 
+		@Override
 		public InputStream createInputStream() {
 			return new ByteArrayInputStream(bytes);
 		}
 
+		@Override
 		public long getLength() {
 			return bytes.length;
 		}
@@ -147,10 +149,12 @@ public final class SqlDataStreamMappingUtil {
 			this.length = length;
 		}
 
+		@Override
 		public InputStream createInputStream() throws IOException {
 			return new FileInputStream(tmpFile);
 		}
 
+		@Override
 		public long getLength() {
 			return length;
 		}

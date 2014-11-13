@@ -110,6 +110,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public FileInfo load(final URI<FileInfo> uri) {
 		// récupération de l'objet en base
 		final URI<DtObject> dtoUri = createDtObjectURI(uri);
@@ -140,6 +141,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void put(final FileInfo fileInfo) {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 		String pathToSave = null;
@@ -199,6 +201,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void remove(final URI<FileInfo> uri) {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 
@@ -278,6 +281,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public InputStream createInputStream() throws IOException {
 			return new FileInputStream(file);
 		}

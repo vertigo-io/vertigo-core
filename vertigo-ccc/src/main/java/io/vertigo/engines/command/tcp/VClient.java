@@ -35,7 +35,7 @@ public final class VClient implements AutoCloseable {
 	private final SocketChannel socketChannel;
 	private final VProtocol protocol = new VProtocol();
 
-	public VClient(SocketAddress socketAddress) {
+	public VClient(final SocketAddress socketAddress) {
 		Assertion.checkNotNull(socketAddress);
 		//---------------------------------------------------------------------
 		try {
@@ -46,18 +46,19 @@ public final class VClient implements AutoCloseable {
 			//			socket.setKeepAlive(true); //Will monitor the TCP connection is valid
 			//			socket.setTcpNoDelay(true); //Socket buffer Whetherclosed, to ensure timely delivery of data
 			//			socket.setSoLinger(true, 0); //Control calls close () method, the underlying socket is closed immediately
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
+	@Override
 	public void close() {
 		try {
-			//On notifie l'autre que l'on part.  
+			//On notifie l'autre que l'on part.
 			//	quit();
 			//On ferme tjrs la socket
 			socketChannel.close();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -71,10 +72,10 @@ public final class VClient implements AutoCloseable {
 	//		}
 	//	}
 
-	public VResponse execCommand(VCommand command) {
+	public VResponse execCommand(final VCommand command) {
 		try {
 			return protocol.sendCommand(socketChannel, command);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			return VResponse.createResponseWithError(e.getMessage() == null ? e.getClass().getName() : e.getMessage());
 		}
 	}

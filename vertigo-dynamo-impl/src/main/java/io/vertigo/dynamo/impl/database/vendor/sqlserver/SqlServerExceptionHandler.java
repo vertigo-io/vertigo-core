@@ -61,6 +61,7 @@ final class SqlServerExceptionHandler extends AbstractSqlExceptionHandler {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void handleSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 
 		final int codeErreur = sqle.getErrorCode();

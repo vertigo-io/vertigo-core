@@ -41,6 +41,7 @@ public class KTransactionInterceptor implements AOPInterceptor {
 		this.transactionManager = transactionManager;
 	}
 
+	@Override
 	public Object invoke(final Object[] args, final AOPMethodInvocation methodInvocation) throws Throwable {
 		//La transaction est REQUIRED : si elle existe on l'utilise, sinon on la crée.
 		if (transactionManager.hasCurrentTransaction()) {

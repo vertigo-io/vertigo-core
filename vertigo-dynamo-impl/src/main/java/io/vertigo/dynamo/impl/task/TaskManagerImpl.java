@@ -38,6 +38,7 @@ public final class TaskManagerImpl implements TaskManager {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public TaskResult execute(final Task task) {
 		taskListener.onStart(task.getDefinition().getName());
 		boolean executed = false;

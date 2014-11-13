@@ -81,6 +81,7 @@ public final class FormatterBoolean extends AbstractFormatterImpl {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String valueToString(final Object objValue, final DataType dataType) {
 		Assertion.checkArgument(dataType == DataType.Boolean, "Formatter ne s'applique qu'aux booléens");
 		//----------------------------------------------------------------------
@@ -88,6 +89,7 @@ public final class FormatterBoolean extends AbstractFormatterImpl {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Object stringToValue(final String strValue, final DataType dataType) throws FormatterException {
 		Assertion.checkArgument(dataType == DataType.Boolean, "Formatter ne s'applique qu'aux booléens");
 		//----------------------------------------------------------------------

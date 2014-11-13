@@ -24,7 +24,7 @@ import io.vertigo.dynamo.database.vendor.SqlMapping;
 
 /**
  * Gestiond de la base de données PostrgreSQL.
- * 
+ *
  * @author pchretien
  */
 public final class PostgreSqlDataBase implements SqlDataBase {
@@ -32,11 +32,13 @@ public final class PostgreSqlDataBase implements SqlDataBase {
 	private final SqlMapping sqlMapping = new PostgresqlMapping();
 
 	/** {@inheritDoc} */
+	@Override
 	public SqlExceptionHandler getSqlExceptionHandler() {
 		return sqlExceptionHandler;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public SqlMapping getSqlMapping() {
 		return sqlMapping;
 	}

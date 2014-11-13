@@ -23,7 +23,8 @@ import io.vertigo.core.command.VCommandExecutor;
 import io.vertigo.lang.Assertion;
 
 public final class VPingCommandExecutor implements VCommandExecutor<String> {
-	public String exec(VCommand command) {
+	@Override
+	public String exec(final VCommand command) {
 		Assertion.checkNotNull(command);
 		//Assertion.checkArgument(command.getName());
 		//---------------------------------------------------------------------

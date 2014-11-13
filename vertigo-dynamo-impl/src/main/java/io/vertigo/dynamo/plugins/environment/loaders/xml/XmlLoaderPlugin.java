@@ -65,6 +65,7 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 	protected abstract XmlLoader createLoader(final URL url);
 
 	/** {@inheritDoc} */
+	@Override
 	public final void load(final String resourcePath, final DynamicDefinitionRepository dynamicModelrepository) {
 		Assertion.checkArgNotEmpty(resourcePath);
 		Assertion.checkNotNull(dynamicModelrepository);

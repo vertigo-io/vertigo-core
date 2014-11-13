@@ -29,11 +29,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * This test start 
+ * This test start
  * - 1 TCP server
  * - n TCP clients (each clientis a separated java thread)
- * 
- *  a test sequence is a loop. 
+ *
+ *  a test sequence is a loop.
  * @author pchretien
  */
 public final class TcpTest {
@@ -55,9 +55,9 @@ public final class TcpTest {
 		new Thread(new VServer(new MyCommandHandler(), PORT)).start();
 	}
 
-	public void test(int threadCount, int count) throws InterruptedException {
-		Thread[] threads = new Thread[threadCount];
-		long start = System.currentTimeMillis();
+	public void test(final int threadCount, final int count) throws InterruptedException {
+		final Thread[] threads = new Thread[threadCount];
+		final long start = System.currentTimeMillis();
 		for (int j = 0; j < threadCount; j++) {
 			threads[j] = new Thread(new Sender(count));
 			threads[j].start();
@@ -77,12 +77,12 @@ public final class TcpTest {
 		//private final int id;
 		private final int count;
 
-		Sender(int count) {
+		Sender(final int count) {
 			this.count = count;
 		}
 
 		static VClient createClient() {
-			SocketAddress socketAddress = new InetSocketAddress(HOST, PORT);
+			final SocketAddress socketAddress = new InetSocketAddress(HOST, PORT);
 			return new VClient(socketAddress);
 		}
 
@@ -93,7 +93,7 @@ public final class TcpTest {
 					//if (i % 10 == 0) {
 					//	System.out.println(">>[" + id + "] :" + i);
 					//}
-					VResponse response = tcpClient.execCommand(new VCommand("ping"));
+					final VResponse response = tcpClient.execCommand(new VCommand("ping"));
 					Assert.assertFalse(response.hasError());
 					Assert.assertTrue(response.getResponse().contains("pong"));
 				}
@@ -102,7 +102,8 @@ public final class TcpTest {
 	}
 
 	private static class MyCommandHandler implements VCommandHandler {
-		public VResponse onCommand(VCommand command) {
+		@Override
+		public VResponse onCommand(final VCommand command) {
 			if ("ping".equals(command.getName())) {
 				return VResponse.createResponse("pong");
 			} else if ("pong".equals(command.getName())) {

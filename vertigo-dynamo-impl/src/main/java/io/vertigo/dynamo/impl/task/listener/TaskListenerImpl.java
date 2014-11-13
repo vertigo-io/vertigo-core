@@ -72,12 +72,14 @@ public final class TaskListenerImpl implements TaskListener {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void onStart(final String taskName) {
 		//		analyticsManager.getAgent().startProcess(PROCESS_TYPE, taskName);
 		logWorkStart(taskName);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void onFinish(final String taskName, final long elapsedTime, final boolean success) {
 		//		analyticsManager.getAgent().setMeasure(ERROR_PCT, success ? 0 : 100);
 		//		analyticsManager.getAgent().stopProcess();

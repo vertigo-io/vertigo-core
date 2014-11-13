@@ -40,6 +40,7 @@ final class SqlStatementStatsImpl implements SqlStatementStats {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public long getElapsedTime() {
 		return elapsedTime;
 	}
@@ -49,6 +50,7 @@ final class SqlStatementStatsImpl implements SqlStatementStats {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Long getNbModifiedRow() {
 		return nbModifiedRow;
 	}
@@ -58,6 +60,7 @@ final class SqlStatementStatsImpl implements SqlStatementStats {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Long getNbSelectedRow() {
 		return nbSelectedRow;
 	}
@@ -67,11 +70,13 @@ final class SqlStatementStatsImpl implements SqlStatementStats {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public SqlPreparedStatement getPreparedStatement() {
 		return statement;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean isSuccess() {
 		return success;
 	}

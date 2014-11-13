@@ -75,6 +75,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifi
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public IndexWriter createIndexWriter() throws IOException {
 		checkModifiable();
 		//---------------------------------------------------------------------
@@ -83,16 +84,19 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifi
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public IndexReader createIndexReader() throws IOException {
 		return IndexReader.open(directory);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public DtDefinition getDtDefinition() {
 		return dtDefinition;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public D getDtObjectIndexed(final String pkValue) {
 		return indexedObjectPerPk.get(pkValue);
 	}
@@ -113,6 +117,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifi
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean isModifiable() {
 		return modifiable;
 	}

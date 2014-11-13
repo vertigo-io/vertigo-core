@@ -26,7 +26,7 @@ import java.sql.SQLException;
 /**
  * Handler des exceptions SQL qui peuvent survenir dans une tache.
  * Cette implémentation est adaptée pour PostgreSQL.
- * 
+ *
  * @author pforhan
  */
 final class PostgreSqlExceptionHandler extends AbstractSqlExceptionHandler {
@@ -42,6 +42,7 @@ final class PostgreSqlExceptionHandler extends AbstractSqlExceptionHandler {
 	 * @param sqle Exception Sql
 	 * @param statement Requête en erreur.
 	 */
+	@Override
 	public void handleSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 		final String errCode = sqle.getSQLState();
 		final String code = errCode.substring(0, 2);

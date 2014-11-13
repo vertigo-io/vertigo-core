@@ -53,6 +53,7 @@ final class BerkeleyResource implements KTransactionResource {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void commit() throws Exception {
 		if (transaction != null) {
 			transaction.commit();
@@ -60,6 +61,7 @@ final class BerkeleyResource implements KTransactionResource {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void rollback() throws Exception {
 		if (transaction != null) {
 			transaction.abort();
@@ -67,6 +69,7 @@ final class BerkeleyResource implements KTransactionResource {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void release() {
 		if (transaction != null) {
 			transaction = null;

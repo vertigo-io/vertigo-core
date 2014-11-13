@@ -58,16 +58,19 @@ final class SqlResultMetaDataDynamic implements SqlResultMetaData {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public DtObject createDtObject() {
 		return new SqlDynamicDtObject(serializableDefinition);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean isDtObject() {
 		return isDtObject;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public DtDefinition getDtDefinition() {
 		return serializableDefinition.getDtDefinition();
 	}
@@ -174,7 +177,7 @@ final class SqlResultMetaDataDynamic implements SqlResultMetaData {
 //	return ClassUtil.newProxyInstance(DynamicDtObject.class.getClassLoader(), new Class<?>[] { DtObject.class }, proxy);
 //}
 //
-////>>>>>A Supprimer 
+////>>>>>A Supprimer
 //static DtList<DtObject> createDtList(final SerializableDtDefinition serializableDefinition) {
 //	final InvocationHandler proxy = new DtListProxy(serializableDefinition);
 //	return ClassUtil.newProxyInstance(DynamicDtObject.class.getClassLoader(), new Class<?>[] { DtList.class }, proxy);

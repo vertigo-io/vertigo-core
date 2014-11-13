@@ -51,11 +51,13 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Grammar getGrammar() {
 		return grammar;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void onNewDefinition(final DynamicDefinition xdefinition, final DynamicDefinitionRepository dynamicModelrepository) {
 		//Les entités du noyaux ne sont pas à gérer per des managers spécifiques.
 		if (KernelGrammar.grammar.getEntities().contains(xdefinition.getEntity())) {
@@ -66,6 +68,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void onDefinition(final DynamicDefinition xdefinition) {
 		//Les entités du noyaux ne sont pas à gérer per des managers spécifiques.
 		if (KernelGrammar.grammar.getEntities().contains(xdefinition.getEntity())) {

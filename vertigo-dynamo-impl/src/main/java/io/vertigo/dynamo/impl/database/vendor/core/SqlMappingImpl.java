@@ -42,6 +42,7 @@ public final class SqlMappingImpl implements SqlMapping {
 	private static final String TYPE_INCONNU = "Type unknown : ";
 
 	/** {@inheritDoc} */
+	@Override
 	public DataType getDataType(final int typeSQL) {
 		final DataType dataType;
 		switch (typeSQL) {
@@ -86,6 +87,7 @@ public final class SqlMappingImpl implements SqlMapping {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int getSqlType(final DataType dataType) {
 		switch (dataType) {
 			case Integer:
@@ -113,6 +115,7 @@ public final class SqlMappingImpl implements SqlMapping {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void setValueOnStatement(final java.sql.PreparedStatement statement, final int index, final DataType dataType, final Object value) throws SQLException {
 		if (value == null) {
 			final int typeSQL = getSqlType(dataType);
@@ -166,6 +169,7 @@ public final class SqlMappingImpl implements SqlMapping {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Object getValueForCallableStatement(final CallableStatement callableStatement, final int index, final DataType dataType) throws SQLException {
 		Object o;
 		switch (dataType) {
@@ -213,6 +217,7 @@ public final class SqlMappingImpl implements SqlMapping {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Object getValueForResultSet(final ResultSet rs, final int col, final DataType dataType) throws SQLException {
 		final Object value;
 		switch (dataType) {

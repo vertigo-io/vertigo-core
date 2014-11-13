@@ -20,8 +20,8 @@ package io.vertigo.dynamo.impl.database.statementhandler;
 
 import io.vertigo.dynamo.database.statement.SqlQueryResult;
 import io.vertigo.dynamo.database.vendor.SqlMapping;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.impl.database.statement.SqlStatementHandler;
 import io.vertigo.lang.Assertion;
 
@@ -37,6 +37,7 @@ import java.sql.SQLException;
  */
 public final class SqlStatementHandlerImpl implements SqlStatementHandler {
 	/** {@inheritDoc} */
+	@Override
 	public SqlQueryResult retrieveData(final Domain domain, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
 		if (domain.getDataType().isPrimitive()) {
 			return SqlRetrieveUtil.retrievePrimitive(domain.getDataType(), mapping, resultSet);

@@ -29,13 +29,14 @@ import java.sql.Types;
 
 /**
  * Implémentation spécifique à H2.
- * 
+ *
  * @author jmainaud
  */
 final class H2Mapping implements SqlMapping {
 	private final SqlMapping defaultSQLMapping = new SqlMappingImpl();
 
 	/** {@inheritDoc} */
+	@Override
 	public int getSqlType(final DataType dataType) {
 		if (dataType == DataType.Boolean) {
 			return Types.BOOLEAN;
@@ -44,6 +45,7 @@ final class H2Mapping implements SqlMapping {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void setValueOnStatement(final java.sql.PreparedStatement statement, final int index, final DataType dataType, final Object value) throws SQLException {
 		if (dataType == DataType.Boolean) {
 			if (value == null) {
@@ -57,6 +59,7 @@ final class H2Mapping implements SqlMapping {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Object getValueForCallableStatement(final CallableStatement callableStatement, final int index, final DataType dataType) throws SQLException {
 		if (dataType == DataType.Boolean) {
 			final boolean vb = callableStatement.getBoolean(index);
@@ -66,6 +69,7 @@ final class H2Mapping implements SqlMapping {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Object getValueForResultSet(final ResultSet rs, final int col, final DataType dataType) throws SQLException {
 		if (dataType == DataType.Boolean) {
 			final boolean vb = rs.getBoolean(col);
@@ -75,6 +79,7 @@ final class H2Mapping implements SqlMapping {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public DataType getDataType(final int typeSQL) {
 		return defaultSQLMapping.getDataType(typeSQL);
 	}

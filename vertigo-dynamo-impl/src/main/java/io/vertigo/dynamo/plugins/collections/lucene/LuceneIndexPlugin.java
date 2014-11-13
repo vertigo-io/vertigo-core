@@ -261,6 +261,7 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 	 * @param dtc Liste source
 	 * @return Liste résultat
 	 */
+	@Override
 	public <D extends DtObject> DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final int maxRows, final DtField boostedField, final DtList<D> dtc) {
 		try {
 			final LuceneIndex<D> index = indexList(dtc, false);

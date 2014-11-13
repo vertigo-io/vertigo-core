@@ -30,12 +30,12 @@ import java.io.Serializable;
  * Filtre de DtList prenant en entrée un String qui doit respecter certains patterns.
  * Syntaxes acceptées :
  * FIELD_NAME:VALUE => FilterByValue.
- * 
+ *
  * FIELD_NAME:[MINVALUE TO MAXVALUE]
  * - Le min et max doivent être du même type.
  * - Le caractère * peut être utiliser pour indiquer qu'il n'y a pas de borne max ou min.
  * - Les accolades sont ouvrantes ou fermantes pour indiquer si la valeur est comprise ou non
- * 
+ *
  * @author npiedeloup
  * @param <D> Type d'objet
  */
@@ -72,6 +72,7 @@ public final class DtListPatternFilter<D extends DtObject> implements DtListFilt
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean accept(final D dto) {
 		if (subDtListFilter == null) {
 			subDtListFilter = DtListPatternFilterUtil.createDtListFilterForPattern(filterPattern, parsedFilter, DtObjectUtil.findDtDefinition(dto));

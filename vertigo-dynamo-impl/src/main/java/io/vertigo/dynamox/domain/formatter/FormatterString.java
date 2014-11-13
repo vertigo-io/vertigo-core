@@ -38,8 +38,8 @@ public final class FormatterString extends AbstractFormatterImpl {
 	 * Mode utilisé.
 	 * Pour tous les mode un "trim" à droite et à gauche est effectué.
 	 * Le trim à droite est obligatoire.
-	 * Concernant le trim à gauche, il est possible de s'en passer 
-	 * il convient alors de créer un formatter ad hoc. 
+	 * Concernant le trim à gauche, il est possible de s'en passer
+	 * il convient alors de créer un formatter ad hoc.
 	 */
 	public static enum Mode {
 		/**
@@ -79,6 +79,7 @@ public final class FormatterString extends AbstractFormatterImpl {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Object stringToValue(final String strValue, final DataType dataType) {
 		Assertion.checkArgument(dataType == DataType.String, "Formatter ne s'applique qu'aux Strings");
 		//----------------------------------------------------------------------
@@ -86,6 +87,7 @@ public final class FormatterString extends AbstractFormatterImpl {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String valueToString(final Object objValue, final DataType dataType) {
 		Assertion.checkArgument(dataType == DataType.String, "Formatter ne s'applique qu'aux Strings");
 		//----------------------------------------------------------------------

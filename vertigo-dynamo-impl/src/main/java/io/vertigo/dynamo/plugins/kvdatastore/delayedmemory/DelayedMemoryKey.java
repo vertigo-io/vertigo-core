@@ -34,7 +34,7 @@ final class DelayedMemoryKey implements Delayed {
 	/**
 	 * Constructor.
 	 * @param key Security Token key
-	 * @param timeoutTime When key expired 
+	 * @param timeoutTime When key expired
 	 */
 	public DelayedMemoryKey(final String key, final long timeoutTime) {
 		this.key = key;
@@ -42,6 +42,7 @@ final class DelayedMemoryKey implements Delayed {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int compareTo(final Delayed o) {
 		Assertion.checkArgument(o instanceof DelayedMemoryKey, "Only DelayedKey is supported ({0})", o.getClass());
 		//-----------------------------------------------------------------
@@ -49,6 +50,7 @@ final class DelayedMemoryKey implements Delayed {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public long getDelay(final TimeUnit unit) {
 		return unit.convert(timeoutTime - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
 	}

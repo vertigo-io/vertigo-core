@@ -22,7 +22,7 @@ import io.vertigo.dynamo.transaction.KTransactionResource;
 import io.vertigo.lang.Assertion;
 
 /**
- * 
+ *
  * @author dchallas
  *
  */
@@ -44,6 +44,7 @@ public final class TransactionResourceMock implements KTransactionResource, IDat
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void commit() {
 		check();
 		if (isUpdated) {
@@ -52,6 +53,7 @@ public final class TransactionResourceMock implements KTransactionResource, IDat
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void release() {
 		check();
 		dataUpdated = null;
@@ -64,17 +66,20 @@ public final class TransactionResourceMock implements KTransactionResource, IDat
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void rollback() {
 		check();
 		//Pas de mise à jour
 	}
 
+	@Override
 	public void setData(final String newdata) {
 		check();
 		this.isUpdated = true;
 		this.dataUpdated = newdata;
 	}
 
+	@Override
 	public String getData() {
 		check();
 		return isUpdated ? dataUpdated : bdd.getData();

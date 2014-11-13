@@ -43,21 +43,25 @@ public final class DataStreamType implements UserType {
 	private static int[] SQL_TYPES = new int[] { Types.BLOB };
 
 	/** {@inheritDoc} */
+	@Override
 	public int[] sqlTypes() {
 		return SQL_TYPES;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Class returnedClass() {
 		return DataStream.class;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean equals(final Object x, final Object y) {
 		return BeanUtil.isNullableEquals(x, y);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int hashCode(final Object x) throws HibernateException {
 		if (x != null) {
 			return x.hashCode();
@@ -66,6 +70,7 @@ public final class DataStreamType implements UserType {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Object nullSafeGet(final ResultSet rs, final String[] names, final SessionImplementor session, final Object owner) throws HibernateException, SQLException {
 		//Cf io.vertigo.dynamo.impl.database.vendor.core.SQLMappingImpl
 		final String columnName = names[0];
@@ -75,6 +80,7 @@ public final class DataStreamType implements UserType {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void nullSafeSet(final PreparedStatement statement, final Object value, final int index, final SessionImplementor session) throws HibernateException, SQLException {
 		if (value == null) {
 			statement.setNull(index, sqlTypes()[0]);
@@ -92,26 +98,31 @@ public final class DataStreamType implements UserType {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean isMutable() {
 		return false;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Object assemble(final Serializable cached, final Object owner) {
 		return cached;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Object deepCopy(final Object value) {
 		return value;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Serializable disassemble(final Object value) {
 		return (Serializable) value;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Object replace(final Object original, final Object target, final Object owner) {
 		return original;
 	}

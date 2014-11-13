@@ -41,11 +41,13 @@ public abstract class AbstractDynamicRegistryPlugin implements DynamicRegistryPl
 		this.grammar = grammar;
 	}
 
+	@Override
 	public Grammar getGrammar() {
 		return grammar;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void onNewDefinition(final DynamicDefinition xdefinition, final DynamicDefinitionRepository dynamicModelrepository) {
 		//Par défaut rien .
 	}

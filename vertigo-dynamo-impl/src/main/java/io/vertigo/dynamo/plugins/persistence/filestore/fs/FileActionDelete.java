@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 /**
- * 
+ *
  */
 package io.vertigo.dynamo.plugins.persistence.filestore.fs;
 
@@ -29,7 +29,7 @@ import org.apache.log4j.Logger;
 
 /**
  * Classe de gestion de la sauvegarde d'un fichier.
- * 
+ *
  * @author skerdudou
  */
 final class FileActionDelete implements FileAction {
@@ -40,7 +40,7 @@ final class FileActionDelete implements FileAction {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param path le chemin de destination du fichier
 	 */
 	FileActionDelete(final String path) {
@@ -61,6 +61,7 @@ final class FileActionDelete implements FileAction {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void process() throws Exception {
 		Assertion.checkArgument(State.READY.equals(state), "Le fichier n'est pas dans l'état requis 'READY' pour effectuer l'action. Etat actuel : '{0}'", state);
 
@@ -75,11 +76,13 @@ final class FileActionDelete implements FileAction {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void clean() {
 		state = State.END;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getAbsolutePath() {
 		return file.getAbsolutePath();
 	}

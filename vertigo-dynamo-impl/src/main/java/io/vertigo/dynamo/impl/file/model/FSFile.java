@@ -52,6 +52,7 @@ public final class FSFile extends AbstractKFile {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public InputStream createInputStream() throws IOException {
 		return new java.io.FileInputStream(file);
 		//Exemple de code où on recrée à chaque fois le inputStream

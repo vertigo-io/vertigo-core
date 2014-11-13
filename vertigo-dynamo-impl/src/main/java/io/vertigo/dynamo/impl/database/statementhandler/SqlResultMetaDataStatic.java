@@ -26,7 +26,7 @@ import io.vertigo.lang.Assertion;
 /**
  * Implémentation par défaut de StatementHandler.
  * Toute l'information est portée par le domain.
- * 
+ *
  * @author  pchretien
  */
 final class SqlResultMetaDataStatic implements SqlResultMetaData {
@@ -44,16 +44,19 @@ final class SqlResultMetaDataStatic implements SqlResultMetaData {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public DtObject createDtObject() {
 		return DtObjectUtil.createDtObject(dtDefinition);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean isDtObject() {
 		return isDtObject;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public DtDefinition getDtDefinition() {
 		return dtDefinition;
 	}

@@ -55,6 +55,7 @@ public final class TextFile extends AbstractKFile {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public InputStream createInputStream() {
 		return new java.io.ByteArrayInputStream(content.getBytes());
 	}

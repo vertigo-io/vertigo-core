@@ -42,7 +42,7 @@ import javax.inject.Inject;
 
 /**
  * Implémentation du gestionnaire de la manipulation des collections.
- * 
+ *
  * @author  pchretien
  */
 public final class CollectionsManagerImpl implements CollectionsManager {
@@ -93,6 +93,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	//	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <R extends DtObject> FacetedQueryResult<R, DtList<R>> facetList(final DtList<R> dtList, final FacetedQuery facetedQuery) {
 		Assertion.checkNotNull(dtList);
 		Assertion.checkNotNull(facetedQuery);
@@ -123,6 +124,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public DtListProcessor createDtListProcessor() {
 		return listProcessor;
 	}

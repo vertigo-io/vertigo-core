@@ -83,6 +83,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void onDefinition(final DynamicDefinition xdefinition) {
 		final Entity metaDefinition = xdefinition.getEntity();
 		if (metaDefinition.equals(DomainGrammar.DOMAIN_ENTITY)) {

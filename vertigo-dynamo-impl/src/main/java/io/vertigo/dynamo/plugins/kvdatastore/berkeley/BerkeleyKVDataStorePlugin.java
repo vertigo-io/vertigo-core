@@ -38,7 +38,7 @@ import com.sleepycat.je.EnvironmentConfig;
 
 /**
  * Implémentation d'un store BerkeleyDB.
- * 
+ *
  * @author  pchretien
  */
 public final class BerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activeable {
@@ -79,6 +79,7 @@ public final class BerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activ
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void start() {
 		try {
 			doStart(READONLY);
@@ -90,8 +91,8 @@ public final class BerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activ
 
 	/**
 	 * Ouverture de la DB.
-	 * @param readOnly Si DB en consultation seule.	
-	 * @throws DatabaseException Si erreur lors de l'ouverture 
+	 * @param readOnly Si DB en consultation seule.
+	 * @throws DatabaseException Si erreur lors de l'ouverture
 	 */
 	private void doStart(final boolean readOnly) throws DatabaseException {
 
@@ -112,6 +113,7 @@ public final class BerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activ
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void stop() {
 		try {
 			doStop();
@@ -238,18 +240,22 @@ public final class BerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activ
 	//		//return dtc;
 	//	}
 
+	@Override
 	public void remove(final String id) {
 		berkeleyDatabase.delete(id);
 	}
 
+	@Override
 	public void put(final String id, final Object object) {
 		berkeleyDatabase.put(id, object);
 	}
 
+	@Override
 	public <C> Option<C> find(final String id, final Class<C> clazz) {
 		return berkeleyDatabase.find(id, clazz);
 	}
 
+	@Override
 	public <C> List<C> findAll(final int skip, final Integer limit, final Class<C> clazz) {
 		return berkeleyDatabase.findAll(skip, limit, clazz);
 	}

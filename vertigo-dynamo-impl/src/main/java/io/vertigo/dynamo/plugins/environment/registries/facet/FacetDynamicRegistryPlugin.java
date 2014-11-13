@@ -33,6 +33,7 @@ public final class FacetDynamicRegistryPlugin extends AbstractDynamicRegistryPlu
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void onDefinition(final DynamicDefinition xdefinition) {
 		//		if (getGrammar().fileInfoDefinition.equals(xdefinition.getEntity())) {
 		//			//Seuls les taches sont gérées.

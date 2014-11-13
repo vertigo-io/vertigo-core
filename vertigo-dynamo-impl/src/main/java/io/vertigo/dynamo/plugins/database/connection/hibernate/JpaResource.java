@@ -52,16 +52,19 @@ public class JpaResource implements KTransactionResource {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void commit() {
 		tx.commit();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void rollback() {
 		tx.rollback();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void release() {
 		em.close();
 	}

@@ -45,6 +45,7 @@ public final class DtListChainFilter<D extends DtObject> implements DtListFilter
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean accept(final D dto) {
 		for (final DtListFilter<D> filter : filters) {
 			if (!filter.accept(dto)) {

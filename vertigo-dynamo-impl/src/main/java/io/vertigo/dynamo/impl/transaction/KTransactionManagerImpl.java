@@ -34,16 +34,19 @@ public final class KTransactionManagerImpl implements KTransactionManager {
 	private final KTransactionListener transactionListener = new KTransactionListenerImpl();
 
 	/** {@inheritDoc} */
+	@Override
 	public KTransaction getCurrentTransaction() {
 		return getCurrentTransactionImpl();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean hasCurrentTransaction() {
 		return KTransactionImpl.getLocalCurrentTransaction() != null;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public KTransactionWritable createCurrentTransaction() {
 		//Il faut qu'il n'existe aucune transaction en cours.
 		if (hasCurrentTransaction()) {
@@ -54,6 +57,7 @@ public final class KTransactionManagerImpl implements KTransactionManager {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public KTransactionWritable createAutonomousTransaction() {
 		final KTransactionImpl currentTransaction = getCurrentTransactionImpl();
 		return new KTransactionImpl(currentTransaction);

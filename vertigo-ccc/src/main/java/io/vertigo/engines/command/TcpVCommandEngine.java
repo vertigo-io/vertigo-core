@@ -46,13 +46,14 @@ public final class TcpVCommandEngine implements VCommandEngine, Activeable {
 	private final Map<String, VCommandExecutor> commmandExecutors = new LinkedHashMap<>();
 
 	@Inject
-	public TcpVCommandEngine(@Named("port") int port) {
+	public TcpVCommandEngine(@Named("port") final int port) {
 		this.port = port;
 	}
 
 	private Thread tcpServerThread;
 
-	public void registerCommandExecutor(String name, VCommandExecutor commandExecutor) {
+	@Override
+	public void registerCommandExecutor(final String name, final VCommandExecutor commandExecutor) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(commandExecutor);
 		Assertion.checkArgument(!commmandExecutors.containsKey(name), "command '{0}' is already registered'", name);
@@ -60,14 +61,15 @@ public final class TcpVCommandEngine implements VCommandEngine, Activeable {
 		commmandExecutors.put(name, commandExecutor);
 	}
 
+	@Override
 	public void start() {
 		//Chargement des commandes
 		registerCommandExecutor("ping", new VPingCommandExecutor());
 		registerCommandExecutor("system", new VSystemCommandExecutor());
 
-		for (String componentId : Home.getComponentSpace().keySet()) {
-			Object component = Home.getComponentSpace().resolve(componentId, Object.class);
-			VDescribableCommandExecutor describableCommandExecutor = new VDescribableCommandExecutor();
+		for (final String componentId : Home.getComponentSpace().keySet()) {
+			final Object component = Home.getComponentSpace().resolve(componentId, Object.class);
+			final VDescribableCommandExecutor describableCommandExecutor = new VDescribableCommandExecutor();
 			if (component instanceof Describable) {
 				registerCommandExecutor(componentId, describableCommandExecutor);
 			}
@@ -76,7 +78,8 @@ public final class TcpVCommandEngine implements VCommandEngine, Activeable {
 		registerCommandExecutor("help", new VCommandExecutor<Set<String>>() {
 			//All commands are listed
 			/** {@inheritDoc} */
-			public Set<String> exec(VCommand command) {
+			@Override
+			public Set<String> exec(final VCommand command) {
 				Assertion.checkNotNull(command);
 				//Assertion.checkArgument(command.getName());
 				//---------------------------------------------------------------------
@@ -91,27 +94,28 @@ public final class TcpVCommandEngine implements VCommandEngine, Activeable {
 		//	new TcpBroadcaster().hello(port);
 	}
 
+	@Override
 	public void stop() {
 		tcpServerThread.interrupt();
 		try {
 			tcpServerThread.join();
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			//
 		}
 	}
 
-	private Object exec(VCommand command) {
+	private Object exec(final VCommand command) {
 		Assertion.checkNotNull(command);
 		Assertion.checkArgument(commmandExecutors.containsKey(command.getName()), "command '{0}' unknown", command.getName());
 		//---------------------------------------------------------------------
-		VCommandExecutor<?> commandExecutor = commmandExecutors.get(command.getName());
+		final VCommandExecutor<?> commandExecutor = commmandExecutors.get(command.getName());
 		return commandExecutor.exec(command);
 	}
 
 	static final class VError {
 		private final String error;
 
-		VError(String error) {
+		VError(final String error) {
 			this.error = error;
 		}
 
@@ -120,7 +124,8 @@ public final class TcpVCommandEngine implements VCommandEngine, Activeable {
 		}
 	}
 
-	public VResponse onCommand(VCommand command) {
+	@Override
+	public VResponse onCommand(final VCommand command) {
 		return VResponse.createResponse(JsonUtil.toJson(exec(command)));
 	}
 

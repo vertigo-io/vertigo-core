@@ -26,7 +26,7 @@ import java.sql.SQLException;
 /**
  * Handler des exceptions SQL qui peuvent survenir dans une tache.
  * Cette implémentation est adaptée pour H2.
- * 
+ *
  * @author jmainaud
  */
 final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
@@ -51,10 +51,11 @@ final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
 
 	/**
 	 * Gestionnaire des erreurs de la base de données pour PostgreSql.
-	 * 
+	 *
 	 * @param sqle Exception Sql
 	 * @param statement Requête en erreur.
 	 */
+	@Override
 	public void handleSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 		final int errCode = sqle.getErrorCode();
 		switch (errCode) {
@@ -94,19 +95,19 @@ final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
 
 	/*
 	 * Exemple de messages d'erreur.
-	 * 
+	 *
 	 * VALUE_TOO_LONG_2: Value too long for column "NAME VARCHAR(2)": "'Hello' (5)"; SQL statement: INSERT INTO TEST VALUES(1, 'Hello')
 	 * [90005-147]
-	 * 
+	 *
 	 * VALUE_TOO_LARGE_FOR_PRECISION_1: The value is too large for the precision "2"; SQL statement: SELECT * FROM TABLE(X DECIMAL(2, 2) =
 	 * (123.34)) [90039-147]
-	 * 
+	 *
 	 * REFERENTIAL_INTEGRITY_VIOLATED_PARENT_MISSING_1: Referential integrity constraint violation:
 	 * "CONSTRAINT_3: PUBLIC.CHILD FOREIGN KEY(P_ID) REFERENCES PUBLIC.PARENT(ID)"; SQL statement: INSERT INTO CHILD VALUES(1) [23002-147]
-	 * 
+	 *
 	 * REFERENTIAL_INTEGRITY_VIOLATED_CHILD_EXISTS_1: Referential integrity constraint violation:
 	 * "CONSTRAINT_3: PUBLIC.CHILD FOREIGN KEY(P_ID) REFERENCES PUBLIC.PARENT(ID)"; SQL statement: DELETE FROM PARENT [23003-147]
-	 * 
+	 *
 	 * DUPLICATE_KEY_1: Unique index or primary key violation: "PRIMARY KEY ON PUBLIC.TEST(ID)"; SQL statement: INSERT INTO TEST VALUES(1)
 	 * [23001-147]
 	 */

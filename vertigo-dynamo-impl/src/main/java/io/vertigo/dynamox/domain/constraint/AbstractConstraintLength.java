@@ -58,11 +58,13 @@ abstract class AbstractConstraintLength<D> extends AbstractConstraintImpl<Intege
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final Property getProperty() {
 		return DtProperty.MAX_LENGTH;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final Integer getPropertyValue() {
 		return getMaxLength();
 	}

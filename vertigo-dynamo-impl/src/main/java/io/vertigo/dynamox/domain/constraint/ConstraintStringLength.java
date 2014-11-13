@@ -40,6 +40,7 @@ public final class ConstraintStringLength extends AbstractConstraintLength<Strin
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean checkConstraint(final String value) {
 		if (value == null) {
 			return true;

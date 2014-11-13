@@ -130,6 +130,7 @@ public final class FacetFactory {
 
 		//tri des facettes
 		final Comparator<FacetValue> facetComparator = new Comparator<FacetValue>() {
+			@Override
 			public int compare(final FacetValue o1, final FacetValue o2) {
 				final int compareNbDoc = (int) (facetValues.get(o2) - facetValues.get(o1));
 				return compareNbDoc != 0 ? compareNbDoc : o1.getLabel().getDisplay().compareToIgnoreCase(o2.getLabel().getDisplay());

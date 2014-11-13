@@ -35,31 +35,36 @@ import javax.activation.MimetypesFileTypeMap;
 
 /**
 * Implémentation du gestionnaire de la définition des fichiers.
-* 
+*
 * @author pchretien
 */
 public final class FileManagerImpl implements FileManager {
 	/** {@inheritDoc} */
+	@Override
 	public File obtainReadOnlyFile(final KFile file) {
 		return doObtainReadOnlyFile(file);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public KFile createFile(final String fileName, final String typeMime, final File file) {
 		return new FSFile(fileName, typeMime, file);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public KFile createFile(final File file) {
 		return new FSFile(file.getName(), new MimetypesFileTypeMap().getContentType(file), file);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public KFile createFile(final String fileName, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
 		return createFile(fileName, new MimetypesFileTypeMap().getContentType(fileName), lastModified, length, inputStreamBuilder);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public KFile createFile(final String fileName, final String mimeType, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
 		return new StreamFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
 	}

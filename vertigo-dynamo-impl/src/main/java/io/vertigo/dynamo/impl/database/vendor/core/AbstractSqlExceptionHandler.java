@@ -90,6 +90,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 			private static final long serialVersionUID = -3457399434625437700L;
 
 			/** {@inheritDoc} */
+			@Override
 			public String name() {
 				return constraintName;
 			}

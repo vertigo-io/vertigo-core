@@ -35,6 +35,7 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void onDefinition(final DynamicDefinition xdefinition) {
 		if (SearchGrammar.INDEX_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
 			// Seuls les controllers sont gérés.

@@ -29,7 +29,7 @@ import javax.inject.Inject;
 
 /**
  * Plugin d'export PDF.
- * 
+ *
  * @author pchretien, npiedeloup
  */
 public final class PDFExporterPlugin implements ExporterPlugin {
@@ -41,11 +41,13 @@ public final class PDFExporterPlugin implements ExporterPlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void exportData(final Export export, final OutputStream out) throws Exception {
 		new PDFExporter(persistenceManager).exportData(export, out);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean accept(final ExportFormat exportFormat) {
 		return ExportFormat.PDF.equals(exportFormat);
 	}

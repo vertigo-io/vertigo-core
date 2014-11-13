@@ -29,7 +29,7 @@ import javax.persistence.EntityManagerFactory;
 
 /**
  * Gestion de la base de données Hibernate.
- * 
+ *
  * @author npiedeloup
  */
 public final class JpaDataBase implements SqlDataBase {
@@ -53,17 +53,19 @@ public final class JpaDataBase implements SqlDataBase {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public SqlExceptionHandler getSqlExceptionHandler() {
 		return innerDataBase.getSqlExceptionHandler();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public SqlMapping getSqlMapping() {
 		return innerDataBase.getSqlMapping();
 	}
 
-	/** 
-	 * récupère la ressource JPA de la transaction et la créé si nécessaire. 
+	/**
+	 * récupère la ressource JPA de la transaction et la créé si nécessaire.
 	 * @param transaction Transaction courante
 	 * @return ResourceJpa de la transaction, elle est crée si nécessaire.
 	 * */

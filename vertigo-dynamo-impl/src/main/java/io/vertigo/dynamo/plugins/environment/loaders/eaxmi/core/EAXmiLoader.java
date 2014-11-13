@@ -65,6 +65,7 @@ public final class EAXmiLoader implements XmlLoader {
 	 * Récupération des classes déclarées dans le XMI.
 	 * @return Liste des classes
 	 */
+	@Override
 	public List<XmlClass> getClasses() {
 		final List<XmlClass> list = new ArrayList<>();
 		for (final EAXmiObject obj : map.values()) {
@@ -81,6 +82,7 @@ public final class EAXmiLoader implements XmlLoader {
 	 * Récupération des associations déclarées dans le XMI.
 	 * @return Liste des associations
 	 */
+	@Override
 	public List<XmlAssociation> getAssociations() {
 		final List<XmlAssociation> list = new ArrayList<>();
 		for (final EAXmiObject obj : map.values()) {

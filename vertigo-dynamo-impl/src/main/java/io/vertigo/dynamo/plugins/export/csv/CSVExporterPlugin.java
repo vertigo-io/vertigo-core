@@ -53,11 +53,13 @@ public final class CSVExporterPlugin implements ExporterPlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void exportData(final Export export, final OutputStream out) throws IOException {
 		new CSVExporter(codecManager, persistenceManager).exportData(export, out);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean accept(final ExportFormat exportFormat) {
 		return ExportFormat.CSV.equals(exportFormat);
 	}

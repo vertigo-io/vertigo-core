@@ -36,7 +36,7 @@ import java.util.List;
 
 /**
  * Implémentation Standard de KPrepareStatement.
- * 
+ *
  * @author pchretien
  */
 public class SqlPreparedStatementImpl implements SqlPreparedStatement {
@@ -154,6 +154,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	}
 
 	/** {@inheritDoc}  */
+	@Override
 	public final void close() {
 		if (statement == null) {
 			return;
@@ -170,7 +171,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	//------------------1ere Etape : Enregistrement-----------------------
 	//--------------------------------------------------------------------
 	/**
-	 * Ajoute un paramètre en précisant son type 
+	 * Ajoute un paramètre en précisant son type
 	 * @param in Si le paramètre est in
 	 * @param out Si le paramètre est out
 	 * @param index Indexe du paramètre
@@ -183,6 +184,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final void registerParameter(final int index, final DataType dataType, final ParameterType parameterType) {
 		Assertion.checkNotNull(parameterType);
 		//---------------------------------------------------------------------
@@ -205,6 +207,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	//------------------Clôture des affectations et 1ere Etape -------------------------------
 	//--------------------------------------------------------------------
 	/** {@inheritDoc} */
+	@Override
 	public final void init() throws SQLException {
 		Assertion.checkArgument(state == State.CREATED, "L'enregistrement ne peut se faire que sur l'état STATE_CREATED");
 		//----------------------------------------------------------------------
@@ -246,6 +249,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	//------------------2ème Etape : Setters------------------------------
 	//--------------------------------------------------------------------
 	/** {@inheritDoc} */
+	@Override
 	public final void setValue(final int index, final Object o) throws SQLException {
 		Assertion.checkArgument(state == State.DEFINED, "Les Setters ne peuvent se faire que sur l'état STATE_DEFINED ; une fois les types enregistrés et l'enregistrement clôturé par la méthode init()");
 		final SqlParameter parameter = getParameter(index);
@@ -263,6 +267,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	//--------------------------------------------------------------------
 
 	/** {@inheritDoc} */
+	@Override
 	public final SqlQueryResult executeQuery(final Domain domain) throws SQLException {
 		Assertion.checkNotNull(domain);
 		//---------------------------------------------------------------------
@@ -285,6 +290,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final int executeUpdate() throws SQLException {
 		boolean ok = false;
 		int res;
@@ -301,11 +307,13 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void addBatch() throws SQLException {
 		statement.addBatch();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int executeBatch() throws SQLException {
 		boolean ok = false;
 		final int[] res;
@@ -414,6 +422,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final Object getGeneratedKey(final String columnName, final Domain domain) throws SQLException {
 		Assertion.checkArgNotEmpty(columnName);
 		Assertion.checkNotNull(domain);

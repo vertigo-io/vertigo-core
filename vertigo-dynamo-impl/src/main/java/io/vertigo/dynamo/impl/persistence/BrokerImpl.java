@@ -25,8 +25,8 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.impl.persistence.cache.CacheDataStore;
-import io.vertigo.dynamo.impl.persistence.logical.LogicalFileStore;
 import io.vertigo.dynamo.impl.persistence.logical.LogicalDataStore;
+import io.vertigo.dynamo.impl.persistence.logical.LogicalFileStore;
 import io.vertigo.dynamo.persistence.Broker;
 import io.vertigo.dynamo.persistence.Criteria;
 import io.vertigo.dynamo.persistence.DataStore;
@@ -36,7 +36,7 @@ import io.vertigo.lang.Option;
 /**
  * Implémentation Standard du Broker.
  * Cette implémentation s'appuie sur le concept de Store.
- * Un store définit les modalités du stockage 
+ * Un store définit les modalités du stockage
  * alors que le broker se concentre sur la problématique des accès aux ressources.
  * @author pchretien
  */
@@ -46,7 +46,7 @@ final class BrokerImpl implements Broker {
 	private final FileStore fileStore;
 
 	/**
-	 * Constructeur. 
+	 * Constructeur.
 	 * Une fois le broker construit la configuration est bloquée.
 	 * @param brokerConfiguration Configuration du broker
 	 */
@@ -65,6 +65,7 @@ final class BrokerImpl implements Broker {
 	//===================Méthodes publiques du Broker===========================
 	//==========================================================================
 	/** {@inheritDoc} */
+	@Override
 	public void save(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//----------------------------------------------------------------------
@@ -73,6 +74,7 @@ final class BrokerImpl implements Broker {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void save(final FileInfo fileInfo) {
 		Assertion.checkNotNull(fileInfo);
 		//----------------------------------------------------------------------
@@ -80,6 +82,7 @@ final class BrokerImpl implements Broker {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void merge(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//----------------------------------------------------------------------
@@ -87,6 +90,7 @@ final class BrokerImpl implements Broker {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void delete(final URI<? extends DtObject> uri) {
 		Assertion.checkNotNull(uri);
 		//----------------------------------------------------------------------
@@ -94,6 +98,7 @@ final class BrokerImpl implements Broker {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void deleteFileInfo(final URI<FileInfo> uri) {
 		Assertion.checkNotNull(uri);
 		//----------------------------------------------------------------------
@@ -104,6 +109,7 @@ final class BrokerImpl implements Broker {
 	//==============================Accesseurs =================================
 	//==========================================================================
 	/** {@inheritDoc} */
+	@Override
 	public <D extends DtObject> Option<D> getOption(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
 		//----------------------------------------------------------------------
@@ -113,10 +119,11 @@ final class BrokerImpl implements Broker {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <D extends DtObject> D get(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
 		//----------------------------------------------------------------------
-		//on ne reutilise pas le getOption volontairement 
+		//on ne reutilise pas le getOption volontairement
 		//car c'est ici le cas le plus courant, et on l'optimise au maximum
 		final D dto = dataStore.<D> load(uri);
 		//----------------------------------------------------------------------
@@ -125,6 +132,7 @@ final class BrokerImpl implements Broker {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public FileInfo getFileInfo(final URI<FileInfo> uri) {
 		Assertion.checkNotNull(uri);
 		//----------------------------------------------------------------------
@@ -135,6 +143,7 @@ final class BrokerImpl implements Broker {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <D extends DtObject> DtList<D> getList(final DtListURI uri) {
 		Assertion.checkNotNull(uri);
 		//----------------------------------------------------------------------
@@ -146,6 +155,7 @@ final class BrokerImpl implements Broker {
 
 	/** {@inheritDoc} */
 	@Deprecated
+	@Override
 	public <D extends DtObject> DtList<D> getList(final DtDefinition dtDefinition, final Criteria<D> criteria, final Integer maxRows) {
 		final DtList<D> dtc = dataStore.loadList(dtDefinition, criteria, maxRows);
 		//----------------------------------------------------------------------
@@ -154,6 +164,7 @@ final class BrokerImpl implements Broker {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int count(final DtDefinition dtDefinition) {
 		return dataStore.count(dtDefinition);
 	}

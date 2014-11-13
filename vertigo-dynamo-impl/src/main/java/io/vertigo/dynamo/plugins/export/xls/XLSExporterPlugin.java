@@ -30,7 +30,7 @@ import javax.inject.Inject;
 
 /**
  * Plugin d'export Excel.
- * 
+ *
  * @author pchretien, npiedeloup
  */
 public final class XLSExporterPlugin implements ExporterPlugin {
@@ -42,11 +42,13 @@ public final class XLSExporterPlugin implements ExporterPlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void exportData(final Export export, final OutputStream out) throws IOException {
 		new XLSExporter(persistenceManager).exportData(export, out);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean accept(final ExportFormat exportFormat) {
 		return ExportFormat.XLS.equals(exportFormat);
 	}

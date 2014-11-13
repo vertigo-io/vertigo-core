@@ -60,6 +60,7 @@ public final class ConstraintBigDecimalLength extends AbstractConstraintLength<B
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean checkConstraint(final BigDecimal value) {
 		if (value == null) {
 			return true;

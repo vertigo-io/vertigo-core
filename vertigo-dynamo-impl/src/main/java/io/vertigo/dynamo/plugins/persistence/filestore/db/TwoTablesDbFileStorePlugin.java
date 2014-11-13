@@ -76,6 +76,7 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public FileInfo load(final URI<FileInfo> uri) {
 		// Ramène FileMetada
 		final URI<DtObject> dtoMetaDataUri = createMetaDataURI(uri);
@@ -100,6 +101,7 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void put(final FileInfo fileInfo) {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 		final boolean isCreation = fileInfo.getURI() == null;
@@ -141,6 +143,7 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void remove(final URI<FileInfo> uri) {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 		// ---------------------------------------------------------------------
@@ -235,11 +238,13 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public InputStream createInputStream() throws IOException {
 			return kFile.createInputStream();
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public long getLength() {
 			return kFile.getLength();
 		}
@@ -255,6 +260,7 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public InputStream createInputStream() throws IOException {
 			return dataStream.createInputStream();
 		}

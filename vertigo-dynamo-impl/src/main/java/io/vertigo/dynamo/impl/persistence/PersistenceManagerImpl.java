@@ -24,9 +24,9 @@ import io.vertigo.dynamo.impl.persistence.util.BrokerNNImpl;
 import io.vertigo.dynamo.persistence.Broker;
 import io.vertigo.dynamo.persistence.BrokerConfiguration;
 import io.vertigo.dynamo.persistence.BrokerNN;
+import io.vertigo.dynamo.persistence.DataStorePlugin;
 import io.vertigo.dynamo.persistence.MasterDataConfiguration;
 import io.vertigo.dynamo.persistence.PersistenceManager;
-import io.vertigo.dynamo.persistence.DataStorePlugin;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
@@ -72,6 +72,7 @@ public final class PersistenceManagerImpl implements PersistenceManager {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public MasterDataConfiguration getMasterDataConfiguration() {
 		return masterDataConfiguration;
 	}
@@ -88,6 +89,7 @@ public final class PersistenceManagerImpl implements PersistenceManager {
 	/**
 	 * @return Configuration du PersistenceManager
 	 */
+	@Override
 	public BrokerConfiguration getBrokerConfiguration() {
 		return brokerConfiguration;
 	}
@@ -95,10 +97,12 @@ public final class PersistenceManagerImpl implements PersistenceManager {
 	//-------------------------------------------------------------------------
 
 	/** {@inheritDoc} */
+	@Override
 	public Broker getBroker() {
 		return broker;
 	}
 
+	@Override
 	public BrokerNN getBrokerNN() {
 		return brokerNN;
 	}

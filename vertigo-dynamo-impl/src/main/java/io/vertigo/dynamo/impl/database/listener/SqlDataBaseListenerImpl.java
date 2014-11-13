@@ -59,6 +59,7 @@ public final class SqlDataBaseListenerImpl implements SqlDataBaseListener {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void onPreparedStatementStart(final SqlPreparedStatement preparedStatement) {
 		if (sqlLog.isDebugEnabled()) {
 			// on passe le preparedStatement en argument pour éviter de
@@ -69,6 +70,7 @@ public final class SqlDataBaseListenerImpl implements SqlDataBaseListener {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void onPreparedStatementFinish(final SqlStatementStats statementStats) {
 		if (sqlLog.isInfoEnabled()) {
 			final StringBuilder sb = new StringBuilder()

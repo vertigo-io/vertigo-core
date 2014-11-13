@@ -61,6 +61,7 @@ public final class ConstraintDoubleLength extends AbstractConstraintLength<Doubl
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean checkConstraint(final Double value) {
 		if (value == null) {
 			return true;

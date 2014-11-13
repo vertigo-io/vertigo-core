@@ -28,7 +28,7 @@ import java.util.Set;
 
 /**
  * Builder des entities.
- * 
+ *
  * @author pchretien
  */
 public final class EntityBuilder implements Builder<Entity> {
@@ -97,6 +97,7 @@ public final class EntityBuilder implements Builder<Entity> {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Entity build() {
 		return new Entity(name, attributes, properties);
 	}

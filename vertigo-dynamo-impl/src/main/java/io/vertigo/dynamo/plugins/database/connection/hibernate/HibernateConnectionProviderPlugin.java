@@ -54,6 +54,7 @@ public final class HibernateConnectionProviderPlugin extends JpaConnectionProvid
 		//preconisation StackOverFlow to get current jpa connection
 		final Session session = em.unwrap(Session.class);
 		return session.doReturningWork(new ReturningWork<SqlConnection>() {
+			@Override
 			public SqlConnection execute(final Connection connection) throws SQLException {
 				return new SqlConnection(connection, getDataBase(), false);
 			}

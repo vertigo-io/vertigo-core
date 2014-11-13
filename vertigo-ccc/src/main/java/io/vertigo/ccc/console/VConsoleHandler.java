@@ -41,12 +41,14 @@ import com.google.gson.JsonParser;
 public final class VConsoleHandler implements Activeable {
 	private static String DEFAULT_HOST = "localhost";
 	private static int DEFAULT_PORT = 4400;
-	private Map<SocketAddress, VClient> clients = new LinkedHashMap<>();
+	private final Map<SocketAddress, VClient> clients = new LinkedHashMap<>();
 
+	@Override
 	public void start() {
 		//		clients.p = new VClient("localhost", 4444);
 	}
 
+	@Override
 	public void stop() {
 		final Iterator<VClient> it = clients.values().iterator();
 		while (it.hasNext()) {
@@ -55,7 +57,7 @@ public final class VConsoleHandler implements Activeable {
 		}
 	}
 
-	public VResponse execCommand(VCommand command) {
+	public VResponse execCommand(final VCommand command) {
 		if (command.getName().startsWith("$")) {
 			switch (command.getName()) {
 				case "$help":
@@ -66,18 +68,18 @@ public final class VConsoleHandler implements Activeable {
 					stop();
 					return VResponse.createResponse(JsonUtil.toJson("disconnection OK"));
 				case "$connect":
-					String host = command.arg("host", DEFAULT_HOST);
-					int port = command.arg("port", DEFAULT_PORT);
-					SocketAddress socketAddress = new InetSocketAddress(host, port);
+					final String host = command.arg("host", DEFAULT_HOST);
+					final int port = command.arg("port", DEFAULT_PORT);
+					final SocketAddress socketAddress = new InetSocketAddress(host, port);
 					if (clients.containsKey(socketAddress)) {
 						return VResponse.createResponseWithError("connection already established");
 					}
 
 					try {
-						VClient client = new VClient(socketAddress);
+						final VClient client = new VClient(socketAddress);
 						clients.put(socketAddress, client);
 						return VResponse.createResponse(JsonUtil.toJson("connection successfull"));
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						return VResponse.createResponseWithError("connection failed " + e.getMessage());
 					}
 				default:
@@ -94,11 +96,11 @@ public final class VConsoleHandler implements Activeable {
 		//			return clients.get(0).execCommand(command);
 		//		} else {
 		//Multiples clients
-		JsonObject map = new JsonObject();
-		for (Entry<SocketAddress, VClient> entry : clients.entrySet()) {
-			VResponse response = entry.getValue().execCommand(command);
+		final JsonObject map = new JsonObject();
+		for (final Entry<SocketAddress, VClient> entry : clients.entrySet()) {
+			final VResponse response = entry.getValue().execCommand(command);
 			if (response.hasError()) {
-				//if only one response has an error... 
+				//if only one response has an error...
 				return response;
 			}
 			final JsonElement jsonElement = parser.parse(response.getResponse());

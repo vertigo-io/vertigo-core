@@ -79,6 +79,7 @@ public final class FileManagerTest extends AbstractTestCaseJU4 {
 		final Date lastModified = new Date();
 		final long length = 123;
 		final InputStreamBuilder inputStreamBuilder = new InputStreamBuilder() {
+			@Override
 			public InputStream createInputStream() {
 				return new StringBufferInputStream("Contenu test");
 			}
@@ -94,6 +95,7 @@ public final class FileManagerTest extends AbstractTestCaseJU4 {
 		final Date lastModified = new Date();
 		final long length = 123;
 		final InputStreamBuilder inputStreamBuilder = new InputStreamBuilder() {
+			@Override
 			public InputStream createInputStream() {
 				return new StringBufferInputStream("Contenu test");
 			}

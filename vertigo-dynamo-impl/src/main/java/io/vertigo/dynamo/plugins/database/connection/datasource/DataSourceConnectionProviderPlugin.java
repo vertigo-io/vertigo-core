@@ -62,6 +62,7 @@ public final class DataSourceConnectionProviderPlugin extends AbstractSqlConnect
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public SqlConnection obtainConnection() throws SQLException {
 		final java.sql.Connection connection = dataSource.getConnection();
 		return new SqlConnection(connection, getDataBase(), true);

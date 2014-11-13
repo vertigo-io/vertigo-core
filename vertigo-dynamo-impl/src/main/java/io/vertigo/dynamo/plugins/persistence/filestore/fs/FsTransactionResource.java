@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 /**
- * 
+ *
  */
 package io.vertigo.dynamo.plugins.persistence.filestore.fs;
 
@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
 
 /**
  * Classe de ressource, gérant la transaction des fichiers.
- * 
+ *
  * @author skerdudou
  */
 public final class FsTransactionResource implements KTransactionResource {
@@ -41,6 +41,7 @@ public final class FsTransactionResource implements KTransactionResource {
 	private final List<FileAction> fileActions = new ArrayList<>();
 
 	/** {@inheritDoc} */
+	@Override
 	public void commit() throws Exception {
 		Exception firstException = null;
 		// on effectue les actions, on essaie d'en faire le maximum quelque soit les erreurs
@@ -62,11 +63,13 @@ public final class FsTransactionResource implements KTransactionResource {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void rollback() {
 		// RAF
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void release() {
 		for (final FileAction fileAction : fileActions) {
 			fileAction.clean();
@@ -76,7 +79,7 @@ public final class FsTransactionResource implements KTransactionResource {
 
 	/**
 	 * Sauvegarde du fichier au commit.
-	 * 
+	 *
 	 * @param inputStream l'inputStream du fichier
 	 * @param path le chemin de destination du fichier
 	 */
@@ -87,7 +90,7 @@ public final class FsTransactionResource implements KTransactionResource {
 	/**
 	 * Suppression du fichier au commit. Si on avait des insertions mémorisées sur ce fichier (cas uniquement pour TNR),
 	 * on les retire et on ne met pas la suppression dans la liste des opérations à faire.
-	 * 
+	 *
 	 * @param path le chemin de destination du fichier
 	 */
 	void deleteFile(final String path) {

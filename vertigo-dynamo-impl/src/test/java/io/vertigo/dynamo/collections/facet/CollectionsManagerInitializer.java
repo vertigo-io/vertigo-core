@@ -28,6 +28,7 @@ import io.vertigo.dynamock.facet.CarFacetInitializer;
  */
 public final class CollectionsManagerInitializer implements ComponentInitializer<CollectionsManager> {
 	/** {@inheritDoc} */
+	@Override
 	public void init(final CollectionsManager collectionsManager) {
 		CarFacetInitializer.initCarFacet();
 	}

@@ -32,7 +32,7 @@ import io.vertigo.lang.Assertion;
 
 /**
  * Gestion des données mises en cache.
- * 
+ *
  * @author  pchretien
  */
 public final class CacheDataStore implements DataStore {
@@ -53,6 +53,7 @@ public final class CacheDataStore implements DataStore {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <D extends DtObject> D load(final URI<D> uri) {
 		// - Prise en compte du cache
 		if (cacheDataStoreConfiguration.isCacheable(uri.<DtDefinition> getDefinition())) {
@@ -83,6 +84,7 @@ public final class CacheDataStore implements DataStore {
 	}
 
 	/** {@inheritDoc}  */
+	@Override
 	public <D extends DtObject> DtList<D> loadList(final DtListURI uri) {
 		// - Prise en compte du cache
 		//On ne met pas en cache les URI d'une association NN
@@ -114,6 +116,7 @@ public final class CacheDataStore implements DataStore {
 	}
 
 	@Deprecated
+	@Override
 	public <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final Criteria<D> criteria, final Integer maxRows) {
 		//loadCache(dtDefinition);
 		return logicalDataStore.loadList(dtDefinition, criteria, maxRows);
@@ -121,12 +124,14 @@ public final class CacheDataStore implements DataStore {
 
 	//==============================Fonctions d'écriture=======================
 	/** {@inheritDoc} */
+	@Override
 	public void merge(final DtObject dto) {
 		logicalDataStore.merge(dto);
 		clearCache(DtObjectUtil.findDtDefinition(dto));
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void put(final DtObject dto) {
 		logicalDataStore.put(dto);
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
@@ -134,6 +139,7 @@ public final class CacheDataStore implements DataStore {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void remove(final URI<? extends DtObject> uri) {
 		final DtDefinition dtDefinition = uri.getDefinition();
 		logicalDataStore.remove(uri);
@@ -145,11 +151,12 @@ public final class CacheDataStore implements DataStore {
 		// On ne vérifie pas que la definition est cachable, Lucene utilise le même cache
 		// A changer si on gère lucene différemment
 		//	if (cacheDataStoreConfiguration.isCacheable(dtDefinition)) {
-				cacheDataStoreConfiguration.getDataCache().clear(dtDefinition);
+		cacheDataStoreConfiguration.getDataCache().clear(dtDefinition);
 		//	}
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int count(final DtDefinition dtDefinition) {
 		return logicalDataStore.count(dtDefinition);
 	}

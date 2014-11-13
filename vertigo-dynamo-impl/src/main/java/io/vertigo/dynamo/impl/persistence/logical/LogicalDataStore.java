@@ -63,6 +63,7 @@ public final class LogicalDataStore implements DataStore {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <D extends DtObject> DtList<D> loadList(final DtListURI uri) {
 		Assertion.checkNotNull(uri);
 		//---------------------------------------------------------------------
@@ -91,6 +92,7 @@ public final class LogicalDataStore implements DataStore {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <D extends DtObject> D load(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
 		//---------------------------------------------------------------------
@@ -99,16 +101,19 @@ public final class LogicalDataStore implements DataStore {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void merge(final DtObject dto) {
 		getPhysicalStore(DtObjectUtil.findDtDefinition(dto)).merge(dto);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void put(final DtObject dto) {
 		getPhysicalStore(DtObjectUtil.findDtDefinition(dto)).put(dto);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void remove(final URI<? extends DtObject> uri) {
 		final DtDefinition dtDefinition = getDtDefinition(uri);
 		getPhysicalStore(dtDefinition).remove(uri);
@@ -116,11 +121,13 @@ public final class LogicalDataStore implements DataStore {
 
 	/** {@inheritDoc} */
 	@Deprecated
+	@Override
 	public <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final Criteria<D> criteria, final Integer maxRows) {
 		return getPhysicalStore(dtDefinition).loadList(dtDefinition, criteria, maxRows);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int count(final DtDefinition dtDefinition) {
 		return getPhysicalStore(dtDefinition).count(dtDefinition);
 	}

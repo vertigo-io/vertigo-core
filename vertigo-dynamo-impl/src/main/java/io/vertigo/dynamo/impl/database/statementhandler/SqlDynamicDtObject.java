@@ -53,16 +53,19 @@ final class SqlDynamicDtObject implements DtObject, Dynamic {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public DtDefinition getDefinition() {
 		return serializableDefinition.getDtDefinition();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void setValue(final DtField dtField, final Object value) {
 		values.put(dtField.getName(), value);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Object getValue(final DtField dtField) {
 		return values.get(dtField.getName());
 	}

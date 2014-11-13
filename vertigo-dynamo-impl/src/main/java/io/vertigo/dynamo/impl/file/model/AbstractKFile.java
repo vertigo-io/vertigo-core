@@ -55,21 +55,25 @@ abstract class AbstractKFile implements KFile {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final String getFileName() {
 		return fileName;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final String getMimeType() {
 		return mimeType;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final Long getLength() {
 		return length;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final Date getLastModified() {
 		return (Date) lastModified.clone();
 	}

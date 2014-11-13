@@ -121,6 +121,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int count(final DtDefinition dtDefinition) {
 		//Add the where condition to the end of the query
 		final EntityManager em = obtainEntityManager();
@@ -132,6 +133,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Deprecated
+	@Override
 	public <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final Criteria<D> criteria, final Integer maxRows) {
 		Assertion.checkArgument(criteria == null || criteria instanceof FilterCriteria<?>, "Ce store ne gére que les FilterCriteria");
 		//---------------------------------------------------------------------
@@ -140,6 +142,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <D extends DtObject> D load(final URI<D> uri) {
 		final D dto = this.<D> loadWithoutClear(uri);
 		//On détache le DTO du contexte jpa
@@ -149,6 +152,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public <D extends DtObject> DtList<D> loadList(final DtListURI uri) {
 		// Assertion.precondition(uri instanceof DtListURIForAssociation, "cas non traité {0}", uri.toURN());
 		// uri.toURN >>  java.lang.IllegalArgumentException: uri urn[.persistence.utilx.DtListURIForDtCriteria]::null non serializable
@@ -333,6 +337,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		}
 	}
 
+	@Override
 	public void put(final DtObject dto) {
 		final EntityManager em = obtainEntityManager();
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
@@ -358,6 +363,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		}
 	}
 
+	@Override
 	public void merge(final DtObject dto) {
 		final EntityManager em = obtainEntityManager();
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
@@ -376,6 +382,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void remove(final URI<? extends DtObject> uri) {
 		final EntityManager em = obtainEntityManager();
 		final String serviceName = "Jpa:remove " + uri.getDefinition().getName();

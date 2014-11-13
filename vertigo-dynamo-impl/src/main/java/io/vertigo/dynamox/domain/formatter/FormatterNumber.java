@@ -33,16 +33,16 @@ import java.text.NumberFormat;
 /**
  * Gestion des formatages de nombres.
  * L'argument est obligatoire, il permet de préciser le format d'affichage des nombres.
- * 
- * A l'affichage 
- * - le séparateur de millier est un espace 
+ *
+ * A l'affichage
+ * - le séparateur de millier est un espace
  * - le séparateur décimal est une virgule
- * En saisie 
+ * En saisie
  * - les séparateurs de milliers acceptés sont l'espace et l'espace insécable
  * - les séparateurs décimaux acceptés  sont la virgule et le point
-* 
+*
  * Exemple d'argument : #,###,##0.00
-  * 
+  *
  * @author pchretien
  */
 public class FormatterNumber extends AbstractFormatterImpl {
@@ -103,6 +103,7 @@ public class FormatterNumber extends AbstractFormatterImpl {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final Object stringToValue(final String strValue, final DataType dataType) throws FormatterException {
 		checkType(dataType);
 		//----------------------------------------------------------------------
@@ -163,7 +164,7 @@ public class FormatterNumber extends AbstractFormatterImpl {
 
 	/**
 	 * Simplifie une chaine réprésentant un nombre.
-	 * Utilisé en préprocessing avant le parsing. 
+	 * Utilisé en préprocessing avant le parsing.
 	 * @param value Chaine saisie
 	 * @param decimalFormatSymbols symboles décimaux utilisées
 	 * @return Chaine simplifiée
@@ -174,7 +175,7 @@ public class FormatterNumber extends AbstractFormatterImpl {
 
 	/**
 	 * Simplifie une chaine réprésentant un nombre.
-	 * Utilisé en préprocessing avant le parsing. 
+	 * Utilisé en préprocessing avant le parsing.
 	 * @param sValue Chaine saisie
 	 * @param decimalCharUsed caractère décimal utilisé
 	 * @param groupCharUsed caractère de millier utilisé
@@ -197,6 +198,7 @@ public class FormatterNumber extends AbstractFormatterImpl {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final String valueToString(final Object objValue, final DataType dataType) {
 		checkType(dataType);
 		//----------------------------------------------------------------------

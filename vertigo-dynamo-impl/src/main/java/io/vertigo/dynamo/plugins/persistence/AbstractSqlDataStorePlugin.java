@@ -130,6 +130,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final <D extends DtObject> D load(final URI<D> uri) {
 		final DtDefinition dtDefinition = getDtDefinition(uri);
 
@@ -160,6 +161,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final <D extends DtObject> DtList<D> loadList(final DtListURI uri) {
 		// Assertion.precondition(uri instanceof DtListURIForAssociation, "cas non traité {0}", uri.toURN());
 		// uri.toURN >>  java.lang.IllegalArgumentException: uri urn[dynamoimpl.persistence.utilx.DtListURIForDtCriteria]::null non serializable
@@ -255,6 +257,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	protected abstract void appendMaxRows(final String separator, final StringBuilder request, final Integer maxRows);
 
 	/** {@inheritDoc} **/
+	@Override
 	public <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final Criteria<D> criteria, final Integer maxRows) {
 		Assertion.checkArgument(criteria == null || criteria instanceof FilterCriteria<?>, "Ce store ne gére que les FilterCriteria");
 		//---------------------------------------------------------------------
@@ -392,6 +395,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	//=============================== Ecriture =================================
 	//==========================================================================
 	/** {@inheritDoc} */
+	@Override
 	public void put(final DtObject dto) {
 		//Mode insertion ssi uri est null
 		// sinon mode update.
@@ -403,6 +407,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void merge(final DtObject dto) {
 		//On fait un update
 		boolean saved = put(dto, false);
@@ -500,6 +505,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void remove(final URI<? extends DtObject> uri) {
 		final DtDefinition dtDefinition = getDtDefinition(uri);
 		final DtField pk = dtDefinition.getIdField().get();
@@ -537,6 +543,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int count(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkArgument(dtDefinition.isPersistent(), "DtDefinition n'est pas persistante");

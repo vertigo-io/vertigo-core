@@ -31,7 +31,7 @@ import com.lowagie.text.DocumentException;
 
 /**
  * Plugin d'export PDF.
- * 
+ *
  * @author pchretien, npiedeloup
  */
 public final class RTFExporterPlugin implements ExporterPlugin {
@@ -43,11 +43,13 @@ public final class RTFExporterPlugin implements ExporterPlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void exportData(final Export export, final OutputStream out) throws DocumentException {
 		new RTFExporter(persistenceManager).exportData(export, out);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean accept(final ExportFormat exportFormat) {
 		return ExportFormat.RTF.equals(exportFormat);
 	}

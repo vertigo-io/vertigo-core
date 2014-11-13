@@ -55,6 +55,7 @@ abstract class JpaConnectionProviderPlugin extends AbstractSqlConnectionProvider
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public final SqlConnection obtainConnection() throws SQLException {
 		final EntityManager em = obtainJpaResource().getEntityManager();
 		return obtainWrappedConnection(em);

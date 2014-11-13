@@ -25,12 +25,13 @@ import io.vertigo.dynamock.domain.car.Car;
 
 /**
  * Initialisation des listes de références.
- * 
+ *
  * @author jmforhan
  */
 public class PersistenceManagerInitializer implements ComponentInitializer<PersistenceManager> {
 
 	/** {@inheritDoc} */
+	@Override
 	public void init(final PersistenceManager persistenceManager) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Car.class);
 		persistenceManager.getBrokerConfiguration().registerCacheable(dtDefinition, 3600, true);

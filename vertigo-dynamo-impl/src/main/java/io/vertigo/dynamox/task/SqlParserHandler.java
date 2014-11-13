@@ -49,11 +49,13 @@ final class SqlParserHandler implements ScriptParserHandler {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void onText(final String text) {
 		appendSql(text);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void onExpression(final String expression, final ScriptSeparator separator) {
 		//Cas d'un vrai paramètre.
 		// Et on teste s'il s'agit d'un attribut du service.
@@ -72,7 +74,7 @@ final class SqlParserHandler implements ScriptParserHandler {
 	 */
 	private void checkFieldName(final String attributeName, final String fieldName) {
 		final TaskAttribute taskAttribute = taskDefinition.getAttribute(attributeName);
-		//Dans le cas des domaines de type DTO et DTC génériques, 
+		//Dans le cas des domaines de type DTO et DTC génériques,
 		//c'est à dire ne précisant pas un DT,
 		//il n'est pas possible d'eefectuer de vérification au niveau modèle.
 		if (taskAttribute.getDomain().hasDtDefinition()) {

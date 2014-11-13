@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 
 /**
  * Réception des  événements produits lors de l'exécution des transactions.
- * 
+ *
  * @author pchretien
  */
 public final class KTransactionListenerImpl implements KTransactionListener {
@@ -41,6 +41,7 @@ public final class KTransactionListenerImpl implements KTransactionListener {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void onTransactionStart() {
 		if (transactionLog.isTraceEnabled()) {
 			transactionLog.trace("Demarrage de la transaction");
@@ -48,6 +49,7 @@ public final class KTransactionListenerImpl implements KTransactionListener {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void onTransactionFinish(final boolean rollback, final long elapsedTime) {
 		if (transactionLog.isTraceEnabled()) {
 			if (rollback) {

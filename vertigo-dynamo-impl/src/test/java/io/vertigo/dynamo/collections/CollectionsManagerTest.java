@@ -480,6 +480,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 				.add(new DtListFunction<Famille>() {
 
 					/** {@inheritDoc} */
+					@Override
 					public DtList<Famille> apply(final DtList<Famille> input) {
 						final DtList<Famille> result = new DtList<>(Famille.class);
 						for (final Famille family : input) {

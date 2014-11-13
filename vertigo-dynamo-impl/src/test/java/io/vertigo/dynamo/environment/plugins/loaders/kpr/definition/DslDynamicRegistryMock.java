@@ -44,16 +44,19 @@ public final class DslDynamicRegistryMock implements DynamicRegistry {
 		return new DynamicDefinitionRepository(new DslDynamicRegistryMock());
 	}
 
+	@Override
 	public Grammar getGrammar() {
 		return DomainGrammar.GRAMMAR;
 	}
 
 	private final List<DynamicDefinition> dynamicDefinitions = new ArrayList<>();
 
+	@Override
 	public void onDefinition(final DynamicDefinition definition) {
 		dynamicDefinitions.add(definition);
 	}
 
+	@Override
 	public void onNewDefinition(final DynamicDefinition xdefinition, final DynamicDefinitionRepository dynamicModelrepository) {
 		//rien
 	}

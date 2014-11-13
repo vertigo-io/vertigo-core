@@ -45,6 +45,7 @@ public final class SortFunction<D extends DtObject> implements DtListFunction<D>
 		this.persistenceManager = persistenceManager;
 	}
 
+	@Override
 	public DtList<D> apply(final DtList<D> dtc) {
 		Assertion.checkNotNull(dtc);
 		Assertion.checkNotNull(sortState);
@@ -52,7 +53,7 @@ public final class SortFunction<D extends DtObject> implements DtListFunction<D>
 		//On crée une liste triable par l'utilitaire java.util.Collections
 		final List<D> list = new ArrayList<>(dtc);
 
-		//On trie. 
+		//On trie.
 		final Comparator<D> comparator = new DtObjectComparator<>(persistenceManager, dtc, sortState);
 		Collections.sort(list, comparator);
 

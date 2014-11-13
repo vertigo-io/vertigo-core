@@ -49,6 +49,7 @@ public abstract class AbstractFormatterImpl implements Formatter {
 	public abstract void initParameters(String args);
 
 	/** {@inheritDoc} */
+	@Override
 	public final String getName() {
 		return name;
 	}

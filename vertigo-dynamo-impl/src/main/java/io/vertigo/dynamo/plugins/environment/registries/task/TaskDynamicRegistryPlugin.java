@@ -42,6 +42,7 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void onDefinition(final DynamicDefinition xdefinition) {
 		if (TaskGrammar.TASK_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
 			//Seuls les taches sont gérées.
@@ -61,9 +62,9 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 		Assertion.checkNotNull(taskDefinitionName);
 		final Class<? extends TaskEngine> taskEngineClass = getTaskEngineClass(xtaskDefinition);
 		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskDefinitionName)//
-		.withEngine(taskEngineClass)//
-		.withRequest(request)//
-		.withPackageName(xtaskDefinition.getPackageName());
+				.withEngine(taskEngineClass)//
+				.withRequest(request)//
+				.withPackageName(xtaskDefinition.getPackageName());
 		for (final DynamicDefinition xtaskAttribute : xtaskDefinition.getChildDefinitions(TaskGrammar.TASK_ATTRIBUTE)) {
 			final String attributeName = xtaskAttribute.getDefinitionKey().getName();
 			Assertion.checkNotNull(attributeName);

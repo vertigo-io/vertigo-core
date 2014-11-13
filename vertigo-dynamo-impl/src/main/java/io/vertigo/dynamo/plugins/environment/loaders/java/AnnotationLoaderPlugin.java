@@ -53,6 +53,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 	private static final class MethodComparator implements Comparator<Method> {
 		/** {@inheritDoc} */
+		@Override
 		public int compare(final Method m1, final Method m2) {
 			return m1.getName().compareTo(m2.getName());
 		}
@@ -60,6 +61,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 	private static final class FieldComparator implements Comparator<Field> {
 		/** {@inheritDoc} */
+		@Override
 		public int compare(final Field f1, final Field f2) {
 			return f1.getName().compareTo(f2.getName());
 		}
@@ -73,6 +75,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void load(final String resourcePath, final DynamicDefinitionRepository dynamicModelrepository) {
 		Assertion.checkArgNotEmpty(resourcePath);
 		Assertion.checkNotNull(dynamicModelrepository);
@@ -284,6 +287,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		throw new IllegalArgumentException(method.getName() + "ne permet pas de donner un nom unique de propriété ");
 	}
 
+	@Override
 	public String getType() {
 		return "classes";
 	}

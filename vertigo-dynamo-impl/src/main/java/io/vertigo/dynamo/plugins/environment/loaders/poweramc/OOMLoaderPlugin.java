@@ -44,6 +44,7 @@ public final class OOMLoaderPlugin extends XmlLoaderPlugin {
 		return new OOMLoader(url);
 	}
 
+	@Override
 	public String getType() {
 		return "oom";
 	}

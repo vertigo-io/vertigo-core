@@ -40,6 +40,7 @@ public final class EAXmiLoaderPlugin extends XmlLoaderPlugin {
 		return new EAXmiLoader(url);
 	}
 
+	@Override
 	public String getType() {
 		return "xmi";
 	}

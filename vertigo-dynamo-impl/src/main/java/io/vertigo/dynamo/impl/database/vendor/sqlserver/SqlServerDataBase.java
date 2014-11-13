@@ -25,7 +25,7 @@ import io.vertigo.dynamo.impl.database.vendor.core.SqlMappingImpl;
 
 /**
  * Gestion de la base de données SqlServer.
- * 
+ *
  * @author pchretien
  */
 public final class SqlServerDataBase implements SqlDataBase {
@@ -33,11 +33,13 @@ public final class SqlServerDataBase implements SqlDataBase {
 	private final SqlMapping sqlMapping = new SqlMappingImpl();
 
 	/** {@inheritDoc} */
+	@Override
 	public SqlExceptionHandler getSqlExceptionHandler() {
 		return sqlExceptionHandler;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public SqlMapping getSqlMapping() {
 		return sqlMapping;
 	}

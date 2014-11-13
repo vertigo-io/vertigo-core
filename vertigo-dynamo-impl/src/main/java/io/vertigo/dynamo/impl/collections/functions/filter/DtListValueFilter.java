@@ -57,6 +57,7 @@ public final class DtListValueFilter<D extends DtObject> implements DtListFilter
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean accept(final D dto) {
 		if (dtField == null) {
 			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);

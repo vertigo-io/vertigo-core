@@ -56,6 +56,7 @@ public final class FullTextFilterFunction<D extends DtObject> implements DtListF
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public DtList<D> apply(final DtList<D> dtc) {
 		Assertion.checkNotNull(dtc);
 		//----------------------------------------------------------------------
