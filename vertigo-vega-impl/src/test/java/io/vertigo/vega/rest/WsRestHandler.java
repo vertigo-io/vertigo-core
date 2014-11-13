@@ -80,23 +80,14 @@ public final class WsRestHandler {
 	public static final class DtDefinitions implements Iterable<Class<?>> {
 		@Override
 		public Iterator<Class<?>> iterator() {
-			return Arrays.asList(new Class<?>[] { //
-					Contact.class, ContactCriteria.class //
+			return Arrays.asList(new Class<?>[] { 
+					Contact.class, ContactCriteria.class 
 			}).iterator();
 		}
 	}
 
 	public static void main(final String[] args) {
 		Spark.setPort(8088);
-
-		//		<final component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
-		//
-		//       <plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" >
-		//            <param name ="kpr" value="invs/mdo/execution.kpr"/>
-		//        </plugin>
-		//        <plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
-		//    </component>
-
 		// @formatter:off
 		// Création de l'état de l'application
 		// Initialisation de l'état de l'application
