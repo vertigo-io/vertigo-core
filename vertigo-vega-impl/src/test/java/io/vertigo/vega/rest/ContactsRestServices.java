@@ -49,43 +49,6 @@ public final class ContactsRestServices implements RestfulService {
 	@Inject
 	private KSecurityManager securityManager;
 
-	/*private final enum Group {
-		Friends("FRD", "Friends"),
-		Familly("FAM", "Familly"), 
-		CoWorkers("CWO", "Colleagues"), Familiar("FAR", "Familiar"),
-	}*/
-
-	public static enum Honorific {
-		Mr("MR_", "Mr", "Mister"),
-		Miss("MIS", "Miss", "Miss"),
-		Mrs("MRS", "Mrs", "Mrs"),
-		Ms("MS_", "Ms.", "Ms."),
-		Dr("DR_", "Dr.", "Doctor"),
-		Cpt("CAP", "Cpt", "Captain"),
-		Cch("CCH", "Cch", "Coach"),
-
-		Off("OFF", "Off", "Officer"),
-		Rev("REV", "Rev", "Reverend"),
-		Fth("FTH", "Fth", "Father"),
-		PhD("PHD", "PhD", "Professor"),
-		Mst("MST", "Mst", "Master");
-
-		private final String code;
-
-		//		private final String abbreviation;
-		//		private final String label;
-
-		Honorific(final String code, final String abbreviation, final String label) {
-			this.code = code;
-			//			this.abbreviation = abbreviation;
-			//			this.label = label;
-		}
-
-		public String getCode() {
-			return code;
-		}
-	}
-
 	private final Map<Long, Contact> contacts = new HashMap<>();
 
 	public ContactsRestServices() throws ParseException {

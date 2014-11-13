@@ -42,33 +42,31 @@ public final class TesterFileDownload implements RestfulService {
 	@Inject
 	private FileManager fileManager;
 
-
-
 	@AnonymousAccessAllowed
 	@GET("/downloadFileContentType")
 	public KFile testDownloadFile(final @QueryParam("id") Integer id) {
 		final URL imageUrl = resourcetManager.resolve("npi2loup.png");
 		final File imageFile = asFile(imageUrl);
-		final KFile imageKFile = fileManager.createFile("image" + id +generateSpecialChars(id)+ ".png", "image/png", imageFile);
+		final KFile imageKFile = fileManager.createFile("image" + id + generateSpecialChars(id) + ".png", "image/png", imageFile);
 		return imageKFile;
 	}
-	
-	private String generateSpecialChars(final Integer id){
+
+	private static String generateSpecialChars(final Integer id) {
 		switch (id) {
-		case 1:
-			return "ÔÙæóñ";
-		case 2:
-			return "µ°«/";
-		case 3:
-			return "ÔÙæ óñµ°«/";
-		case 4:
-			return "€;_~";
-		default:
-			return "";
+			case 1:
+				return "ÔÙæóñ";
+			case 2:
+				return "µ°«/";
+			case 3:
+				return "ÔÙæ óñµ°«/";
+			case 4:
+				return "€;_~";
+			default:
+				return "";
 		}
 	}
 
-	private File asFile(final URL url) {
+	private static File asFile(final URL url) {
 		File f;
 		try {
 			f = new File(url.toURI());
