@@ -35,8 +35,8 @@ import java.util.Map;
 final class WhereInPreProcessor {
 	private static final String ROWNUM = ".ROWNUM.";
 	private static final int NB_MAX_WHERE_IN_ITEM = 1000;
-	private static final String STR_IN = "IN";
-	private static final String STR_NOT_IN = "NOT IN";
+	private static final String STR_IN = " IN";
+	private static final String STR_NOT_IN = " NOT IN";
 	private static final char IN_CHAR = '#';
 
 	private final Map<TaskAttribute, Object> parameterValuesMap;
@@ -61,7 +61,7 @@ final class WhereInPreProcessor {
 
 	private static boolean containsKeywords(final String sqlQuery) {
 		//On vérifie la précense de tous les mots clés (.rownum., in, #)
-		return sqlQuery.contains(ROWNUM) && sqlQuery.contains(STR_IN) && sqlQuery.indexOf(IN_CHAR) > -1;
+		return containsIgnoreCase(sqlQuery, ROWNUM) && containsIgnoreCase(sqlQuery, STR_IN) && sqlQuery.indexOf(IN_CHAR) > 1;
 	}
 
 	private String doEvaluate(final String sqlQuery) {
@@ -102,7 +102,7 @@ final class WhereInPreProcessor {
 					//---------------------------------------------------------------------------------------------------
 					final DtList<?> listObject = (DtList<?>) parameterValuesMap.get(attribute);
 					if (listObject.isEmpty()) {
-						//Liste vide 
+						//Liste vide
 						//-------------------------------------------------------------------------------------------------
 						//TG : recherche parentheses + IN & NOT IN pour contraintre oracle (pas plus de 1000 elements dans clause IN)
 						query = query.replace(query.substring(indexOfFirstSpace + 1, query.indexOf(")", indexEnd) + 1), isNotIn ? "1=1" : "1=2");
@@ -167,7 +167,11 @@ final class WhereInPreProcessor {
 		return query;
 	}
 
-	private static int lastIndexOfIgnoreCase(final String string, final String searchString, final int fromIndex) {
-		return Math.max(string.lastIndexOf(searchString, fromIndex), string.lastIndexOf(searchString.toLowerCase(Locale.FRENCH), fromIndex));
+	private static int lastIndexOfIgnoreCase(final String string, final String searchStringUpperCase, final int fromIndex) {
+		return Math.max(string.lastIndexOf(searchStringUpperCase, fromIndex), string.lastIndexOf(searchStringUpperCase.toLowerCase(Locale.FRENCH), fromIndex));
+	}
+
+	private static boolean containsIgnoreCase(final String sqlQuery, final String searchStringUpperCase) {
+		return sqlQuery.contains(searchStringUpperCase) || sqlQuery.contains(searchStringUpperCase.toLowerCase());
 	}
 }
