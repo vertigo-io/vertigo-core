@@ -17,7 +17,7 @@ public enum Honorific {
 
 	private final String code;
 
-	Honorific(final String code) {
+	private Honorific(final String code) {
 		this.code = code;
 	}
 

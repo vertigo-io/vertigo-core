@@ -75,17 +75,11 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -106,73 +100,16 @@ public final class TesterRestServices implements RestfulService {
 	@Inject
 	private FileManager fileManager;
 
+	private final ContactDao contactDao;
+
 	/*private final enum Group {
 		Friends("FRD", "Friends"), 
 		Familly("FAM", "Familly"), 
 		CoWorkers("CWO", "Colleagues"), Familiar("FAR", "Familiar"),
 	}*/
 
-	private final Map<Long, Contact> contacts = new HashMap<>();
-
 	public TesterRestServices() throws ParseException {
-		appendContact(Honorific.Mr, "Martin", "Jean", parseDate("19/05/1980"), //
-				createAddress("1, rue de Rivoli", "", "Paris", "75001", "France"), //
-				"jean.martin@gmail.com", "01 02 03 04 05");
-		appendContact(Honorific.Miss, "Dubois", "Marie", parseDate("20/06/1981"), //
-				createAddress("2, rue Beauregard", "", "Paris", "75002", "France"), //
-				"marie.dubois@gmail.com", "01 13 14 15 16");
-		appendContact(Honorific.Cpt, "Petit", "Philippe", parseDate("18/04/1979"), //
-				createAddress("3, rue Meslay", "", "Paris", "75003", "France"), //
-				"philippe.petit@gmail.com", "01 24 25 26 27");
-		appendContact(Honorific.Off, "Durant", "Nathalie", parseDate("21/07/1982"), //
-				createAddress("4, avenue Victoria", "", "Paris", "75004", "France"), //
-				"nathalie.durant@gmail.com", "01 35 36 37 38");
-		appendContact(Honorific.PhD, "Leroy", "Michel", parseDate("17/03/1978"), //
-				createAddress("5, boulevard Saint-Marcel", "", "Paris", "75005", "France"), //
-				"michel.leroy@gmail.com", "01 46 47 48 49");
-		appendContact(Honorific.Ms, "Moreau", "Isabelle", parseDate("22/08/1983"), //
-				createAddress("6, boulevard Raspail", "", "Paris", "75006", "France"), //
-				"isabelle.moreau@gmail.com", "01 57 58 59 50");
-		appendContact(Honorific.Rev, "Lefebvre", "Alain", parseDate("16/02/1977"), //
-				createAddress("7, rue Cler", "", "Paris", "75007", "France"), //
-				"alain.lefebvre@gmail.com", "01 68 69 60 61");
-		appendContact(Honorific.Dr, "Garcia", "Sylvie", parseDate("23/09/1984"), //
-				createAddress("8, rue de Ponthieu", "", "Paris", "75008", "France"), //
-				"sylvie.garcia@gmail.com", "01 79 70 71 72");
-		appendContact(Honorific.Mst, "Roux", "Patrick", parseDate("15/01/1976"), //
-				createAddress("9, avenue Frochot", "", "Paris", "75009", "France"), //
-				"patrick.roux@gmail.com", "01 80 81 82 83");
-		appendContact(Honorific.Mrs, "Fournier", "Catherine", parseDate("24/10/1985"), //
-				createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"), //
-				"catherine.fournier@gmail.com", "01 91 92 93 94");
-	}
-
-	private Date parseDate(final String dateStr) throws ParseException {
-		return new SimpleDateFormat("dd/MM/yyyy").parse(dateStr);
-	}
-
-	private void appendContact(final Honorific honorific, final String name, final String firstName, final Date birthday, final Address address, final String email, final String... tels) {
-		final long conId = contacts.size() + 1;
-		final Contact contact = new Contact();
-		contact.setConId(conId);
-		contact.setHonorificCode(honorific.getCode());
-		contact.setName(name);
-		contact.setFirstName(firstName);
-		contact.setBirthday(birthday);
-		contact.setAddress(address);
-		contact.setEmail(email);
-		contact.setTels(Arrays.asList(tels));
-		contacts.put(conId, contact);
-	}
-
-	private Address createAddress(final String street1, final String street2, final String city, final String postalCode, final String country) {
-		final Address address = new Address();
-		address.setStreet1(street1);
-		address.setStreet2(street2);
-		address.setCity(city);
-		address.setPostalCode(postalCode);
-		address.setCountry(country);
-		return address;
+		contactDao = new ContactDao();
 	}
 
 	@AnonymousAccessAllowed
@@ -194,14 +131,14 @@ public final class TesterRestServices implements RestfulService {
 	public List<Contact> anonymousTest() {
 		//offset + range ?
 		//code 200
-		return new ArrayList<>(contacts.values());
+		return contactDao.getList();
 	}
 
 	@GET("/authentifiedTest")
 	public List<Contact> authentifiedTest() {
 		//offset + range ?
 		//code 200
-		return new ArrayList<>(contacts.values());
+		return contactDao.getList();
 	}
 
 	@Doc("send param type='Confirm' or type = 'Contact' \n Return 'OK' or 'Contact'")
@@ -211,7 +148,7 @@ public final class TesterRestServices implements RestfulService {
 		if ("Confirm".equals(type)) {
 			result.put("message", "Are you sure");
 		} else {
-			result.put("contact", contacts.get(1L));
+			result.put("contact", contactDao.get(1L));
 		}
 		//offset + range ?
 		//code 200
@@ -224,12 +161,12 @@ public final class TesterRestServices implements RestfulService {
 		if (!"RtFM".equals(passPhrase)) {
 			throw new VSecurityException("Bad passPhrase, check the doc in /catalog");
 		}
-		return new ArrayList<>(contacts.values());
+		return contactDao.getList();
 	}
 
 	@GET("/{conId}")
 	public Contact testRead(@PathParam("conId") final long conId) {
-		final Contact contact = contacts.get(conId);
+		final Contact contact = contactDao.get(conId);
 		if (contact == null) {
 			//404 ?
 			throw new VUserException(new MessageText("Contact #" + conId + " unknown", null));
@@ -240,10 +177,10 @@ public final class TesterRestServices implements RestfulService {
 
 	@GET("/export/pdf/")
 	public KFile testExportContacts() {
-		final DtList<Contact> fullList = asDtList(contacts.values(), Contact.class);
-		final Export export = new ExportBuilder(ExportFormat.PDF, "contacts")//
-				.beginSheet(fullList, "Contacts").endSheet()//
-				.withAuthor("vertigo-test")//
+		final DtList<Contact> fullList = asDtList(contactDao.getList(), Contact.class);
+		final Export export = new ExportBuilder(ExportFormat.PDF, "contacts")
+				.beginSheet(fullList, "Contacts").endSheet()
+				.withAuthor("vertigo-test")
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);
@@ -253,9 +190,9 @@ public final class TesterRestServices implements RestfulService {
 
 	@GET("/export/pdf/{conId}")
 	public KFile testExportContact(@PathParam("conId") final long conId) {
-		final Contact contact = contacts.get(conId);
-		final Export export = new ExportBuilder(ExportFormat.PDF, "contact" + conId)//
-				.beginSheet(contact, "Contact").endSheet()//
+		final Contact contact = contactDao.get(conId);
+		final Export export = new ExportBuilder(ExportFormat.PDF, "contact" + conId)
+				.beginSheet(contact, "Contact").endSheet()
 				.withAuthor("vertigo-test").build();
 
 		final KFile result = exportManager.createExportFile(export);
@@ -285,7 +222,7 @@ public final class TesterRestServices implements RestfulService {
 	@ExcludedFields({ "birthday", "email" })
 	@ServerSideSave
 	public Contact testFilteredRead(@PathParam("conId") final long conId) {
-		final Contact contact = contacts.get(conId);
+		final Contact contact = contactDao.get(conId);
 		if (contact == null) {
 			//404 ?
 			throw new VUserException(new MessageText("Contact #" + conId + " unknown", null));
@@ -301,9 +238,7 @@ public final class TesterRestServices implements RestfulService {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			throw new VUserException(new MessageText("Name is mandatory", null));
 		}
-		final long nextId = getNextId();
-		contact.setConId(nextId);
-		contacts.put(nextId, contact);
+		contactDao.post(contact);
 		//code 201 + location header : GET route
 		return contact;
 	}
@@ -317,7 +252,7 @@ public final class TesterRestServices implements RestfulService {
 			throw new VUserException(new MessageText("Name is mandatory", null));
 		}
 
-		contacts.put(contact.getConId(), contact);
+		contactDao.put(contact);
 		//200
 		return contact;
 	}
@@ -331,7 +266,7 @@ public final class TesterRestServices implements RestfulService {
 			throw new VUserException(new MessageText("Name is mandatory", null));
 		}
 		contact.setConId(conId);
-		contacts.put(contact.getConId(), contact);
+		contactDao.put(contact);
 		//200
 		return contact;
 	}
@@ -348,7 +283,7 @@ public final class TesterRestServices implements RestfulService {
 			throw new VUserException(new MessageText("Name is mandatory", null));
 		}
 
-		contacts.put(contact.getConId(), contact);
+		contactDao.put(contact);
 		//200
 		return contact;
 	}
@@ -365,14 +300,14 @@ public final class TesterRestServices implements RestfulService {
 			throw new VUserException(new MessageText("Name is mandatory", null));
 		}
 
-		contacts.put(contact.getConId(), contact);
+		contactDao.put(contact);
 		//200
 		return contact;
 	}
 
 	@DELETE("/{conId}")
 	public void delete(@PathParam("conId") final long conId) {
-		if (!contacts.containsKey(conId)) {
+		if (!contactDao.containsKey(conId)) {
 			//404
 			throw new VUserException(new MessageText("Contact #" + conId + " unknown", null));
 		}
@@ -381,7 +316,7 @@ public final class TesterRestServices implements RestfulService {
 			throw new VUserException(new MessageText("You don't have enought rights", null));
 		}
 		//200
-		contacts.remove(conId);
+		contactDao.remove(conId);
 	}
 
 	@Doc("Test ws-rest multipart body with objects. Send a body with an object of to field : contactFrom, contactTo. Each one should be an json of Contact.")
@@ -401,8 +336,8 @@ public final class TesterRestServices implements RestfulService {
 	@POST("/innerLong")
 	public DtList<Contact> testInnerBodyLong(@InnerBodyParam("contactId1") final long contactIdFrom, @InnerBodyParam("contactId2") final long contactIdTo) {
 		final DtList<Contact> result = new DtList<>(Contact.class);
-		result.add(contacts.get(contactIdFrom));
-		result.add(contacts.get(contactIdTo));
+		result.add(contactDao.get(contactIdFrom));
+		result.add(contactDao.get(contactIdTo));
 		//offset + range ?
 		//code 200
 		return result;
@@ -414,8 +349,8 @@ public final class TesterRestServices implements RestfulService {
 	@POST("/uiContext")
 	public UiContext testInnerBody(@InnerBodyParam("contactId1") final long contactIdFrom, @InnerBodyParam("contactId2") final long contactIdTo) {
 		final UiContext uiContext = new UiContext();
-		uiContext.put("contactFrom", contacts.get(contactIdFrom));
-		uiContext.put("contactTo", contacts.get(contactIdTo));
+		uiContext.put("contactFrom", contactDao.get(contactIdFrom));
+		uiContext.put("contactTo", contactDao.get(contactIdTo));
 		uiContext.put("testLong", 12);
 		uiContext.put("testString", "the String test");
 		uiContext.put("testDate", DateUtil.newDate());
@@ -432,8 +367,8 @@ public final class TesterRestServices implements RestfulService {
 			@PathParam("conIdFrom") final long contactIdFrom, //
 			@PathParam("conIdTo") final long contactIdTo) {
 		final DtList<Contact> result = new DtList<>(Contact.class);
-		result.add(contacts.get(contactIdFrom));
-		result.add(contacts.get(contactIdTo));
+		result.add(contactDao.get(contactIdFrom));
+		result.add(contactDao.get(contactIdTo));
 		//offset + range ?
 		//code 200
 		return result;
@@ -457,7 +392,7 @@ public final class TesterRestServices implements RestfulService {
 	public List<Contact> testSearch(//
 			@ExcludedFields({ "conId", "email", "birthday", "address", "tels" }) final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
-		final DtList<Contact> fullList = asDtList(contacts.values(), Contact.class);
+		final DtList<Contact> fullList = asDtList(contactDao.getList(), Contact.class);
 		final DtList<Contact> result = filterFunction.apply(fullList);
 		//offset + range ?
 		//code 200
@@ -470,7 +405,7 @@ public final class TesterRestServices implements RestfulService {
 			@InnerBodyParam("criteria") final ContactCriteria contact, //
 			@InnerBodyParam("listState") final UiListState uiListState) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
-		final DtList<Contact> fullList = asDtList(contacts.values(), Contact.class);
+		final DtList<Contact> fullList = asDtList(contactDao.getList(), Contact.class);
 		final DtList<Contact> result = filterFunction.apply(fullList);
 
 		//offset + range ?
@@ -483,7 +418,7 @@ public final class TesterRestServices implements RestfulService {
 	public List<Contact> testSearchServiceQueryPagined(final ContactCriteria contact, //
 			@QueryParam("") final UiListState uiListState) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
-		final DtList<Contact> fullList = asDtList(contacts.values(), Contact.class);
+		final DtList<Contact> fullList = asDtList(contactDao.getList(), Contact.class);
 		final DtList<Contact> result = filterFunction.apply(fullList);
 
 		//offset + range ?
@@ -496,7 +431,7 @@ public final class TesterRestServices implements RestfulService {
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
 	public List<Contact> testSearchServiceAutoPagined(final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
-		final DtList<Contact> fullList = asDtList(contacts.values(), Contact.class);
+		final DtList<Contact> fullList = asDtList(contactDao.getList(), Contact.class);
 		final DtList<Contact> result = filterFunction.apply(fullList);
 		//offset + range ?
 		//code 200
@@ -574,7 +509,7 @@ public final class TesterRestServices implements RestfulService {
 		}
 		contact.setConId(conId);
 		contact.setName(aliasName);
-		contacts.put(contact.getConId(), contact);
+		contactDao.put(contact);
 		//200
 		return contact;
 	}
@@ -648,11 +583,4 @@ public final class TesterRestServices implements RestfulService {
 		return new FilterFunction<>(new DtListChainFilter(filters.toArray(new DtListFilter[filters.size()])));
 	}
 
-	private long getNextId() {
-		final long nextId = UUID.randomUUID().getMostSignificantBits();
-		if (contacts.containsKey(nextId)) {
-			return getNextId();
-		}
-		return nextId;
-	}
 }
