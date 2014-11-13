@@ -334,8 +334,8 @@ final class JsonConverterHandler implements RouteHandler {
 		if (endPointDefinition.isServerSideSave()) {
 			if (UiContext.class.isInstance(value)) {
 				//TODO build json in jsonWriterEngine
-				final StringBuilder sb = new StringBuilder();
-				sb.append("{");
+				final StringBuilder sb = new StringBuilder()
+						.append("{");
 				String sep = "";
 				for (final Map.Entry<String, Serializable> entry : ((UiContext) value).entrySet()) {
 					sb.append(sep);
@@ -357,7 +357,7 @@ final class JsonConverterHandler implements RouteHandler {
 				final String tokenId = uiSecurityTokenManager.put((DtObject) value);
 				return jsonWriterEngine.toJsonWithTokenId(value, tokenId, endPointDefinition.getIncludedFields(), endPointDefinition.getExcludedFields());
 			} else {
-				throw new RuntimeException("Return type can't be ServerSide :" + (value != null ? value.getClass().getSimpleName() : "null"));
+				throw new RuntimeException("Return type can't be ServerSide :" + value.getClass().getSimpleName());
 			}
 		}
 		return jsonWriterEngine.toJson(value, endPointDefinition.getIncludedFields(), endPointDefinition.getExcludedFields());
