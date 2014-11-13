@@ -29,7 +29,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.usertype.UserType;
 
@@ -62,7 +61,7 @@ public final class DataStreamType implements UserType {
 
 	/** {@inheritDoc} */
 	@Override
-	public int hashCode(final Object x) throws HibernateException {
+	public int hashCode(final Object x) {
 		if (x != null) {
 			return x.hashCode();
 		}
@@ -71,7 +70,7 @@ public final class DataStreamType implements UserType {
 
 	/** {@inheritDoc} */
 	@Override
-	public Object nullSafeGet(final ResultSet rs, final String[] names, final SessionImplementor session, final Object owner) throws HibernateException, SQLException {
+	public Object nullSafeGet(final ResultSet rs, final String[] names, final SessionImplementor session, final Object owner) throws SQLException {
 		//Cf io.vertigo.dynamo.impl.database.vendor.core.SQLMappingImpl
 		final String columnName = names[0];
 		final int index = rs.findColumn(columnName);
@@ -81,7 +80,7 @@ public final class DataStreamType implements UserType {
 
 	/** {@inheritDoc} */
 	@Override
-	public void nullSafeSet(final PreparedStatement statement, final Object value, final int index, final SessionImplementor session) throws HibernateException, SQLException {
+	public void nullSafeSet(final PreparedStatement statement, final Object value, final int index, final SessionImplementor session) throws SQLException {
 		if (value == null) {
 			statement.setNull(index, sqlTypes()[0]);
 		} else {
