@@ -77,20 +77,6 @@ public final class AppBuilder {
 
 	/**
 	 * Append EnvParams.
-	 * @param optionEnvParams Option of envParams
-	 * @return this builder
-	 */
-	public AppBuilder withEnvParams(final Option<Properties> optionEnvParams) {
-		Assertion.checkNotNull(optionEnvParams);
-		//---------------------------------------------------------------------
-		if (optionEnvParams.isDefined()) {
-			myEnvParams.putAll(optionEnvParams.get());
-		}
-		return this;
-	}
-
-	/**
-	 * Append EnvParams.
 	 * @param relativeRootClass Class use for relative path
 	 * @param optionEnvParams Option of envParamsFileName
 	 * @return this builder

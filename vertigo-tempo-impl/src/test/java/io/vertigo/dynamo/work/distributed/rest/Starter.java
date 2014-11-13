@@ -23,8 +23,6 @@ import io.vertigo.core.config.AppBuilder;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 
-import java.util.Properties;
-
 import org.apache.log4j.Logger;
 
 /**
@@ -37,7 +35,6 @@ public final class Starter implements Runnable {
 	private final Class<?> relativeRootClass;
 	private final String managersXmlFileName;
 	private final Option<String> propertiesFileName;
-	private final Option<Properties> defaultProperties;
 	private final long timeToWait;
 	private boolean started;
 
@@ -45,17 +42,14 @@ public final class Starter implements Runnable {
 	 * @param managersXmlFileName Fichier managers.xml
 	 * @param propertiesFileName Fichier de propriétés
 	 * @param relativeRootClass Racine du chemin relatif, le cas échéant
-	 * @param defaultProperties Propriétés par défaut (pouvant être récupéré de la ligne de commande par exemple)
 	 * @param timeToWait Temps d'attente, 0 signifie illimité
 	 */
-	public Starter(final String managersXmlFileName, final Option<String> propertiesFileName, final Class<?> relativeRootClass, final Option<Properties> defaultProperties, final long timeToWait) {
+	public Starter(final String managersXmlFileName, final Option<String> propertiesFileName, final Class<?> relativeRootClass, final long timeToWait) {
 		Assertion.checkNotNull(managersXmlFileName);
 		Assertion.checkNotNull(propertiesFileName);
-		Assertion.checkNotNull(defaultProperties);
 		//---------------------------------------------------------------------
 		this.managersXmlFileName = managersXmlFileName;
 		this.propertiesFileName = propertiesFileName;
-		this.defaultProperties = defaultProperties;
 		this.timeToWait = timeToWait;
 		this.relativeRootClass = relativeRootClass;
 
@@ -73,7 +67,7 @@ public final class Starter implements Runnable {
 		//---------------------------------------------------------------------
 		final String managersXmlFileName = args[0];
 		final Option<String> propertiesFileName = args.length == 2 ? Option.<String> some(args[1]) : Option.<String> none();
-		final Starter starter = new Starter(managersXmlFileName, propertiesFileName, Starter.class, Option.<Properties> none(), 0);
+		final Starter starter = new Starter(managersXmlFileName, propertiesFileName, Starter.class, 0);
 		starter.run();
 	}
 
@@ -103,10 +97,9 @@ public final class Starter implements Runnable {
 		// Création de l'état de l'application
 		// Initialisation de l'état de l'application
 		//final URL xmlURL = createURL(managersXmlFileName, relativeRootClass);
-		final AppBuilder builder = new AppBuilder() //
-				.withSilence(SILENCE) //
-				.withXmlFileNames(relativeRootClass, managersXmlFileName) //
-				.withEnvParams(defaultProperties) //
+		final AppBuilder builder = new AppBuilder()
+				.withSilence(SILENCE)
+				.withXmlFileNames(relativeRootClass, managersXmlFileName)
 				.withEnvParams(relativeRootClass, propertiesFileName);
 		Home.start(builder.build());
 		started = true;
