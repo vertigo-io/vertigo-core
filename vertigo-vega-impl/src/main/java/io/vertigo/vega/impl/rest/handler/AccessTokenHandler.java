@@ -24,7 +24,7 @@ import io.vertigo.lang.Option;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
-import io.vertigo.vega.security.UiSecurityTokenManager;
+import io.vertigo.vega.token.TokenManager;
 
 import java.io.Serializable;
 
@@ -42,10 +42,10 @@ final class AccessTokenHandler implements RouteHandler {
 	/** Access Token header name. */
 	private static final String HEADER_ACCESS_TOKEN = "x-access-token";
 	private static final String INVALID_ACCESS_TOKEN_MSG = "Invalid access token"; //Todo make a resource.properties
-	private final UiSecurityTokenManager uiSecurityTokenManager;
+	private final TokenManager uiSecurityTokenManager;
 	private final EndPointDefinition endPointDefinition;
 
-	AccessTokenHandler(final UiSecurityTokenManager uiSecurityTokenManager, final EndPointDefinition endPointDefinition) {
+	AccessTokenHandler(final TokenManager uiSecurityTokenManager, final EndPointDefinition endPointDefinition) {
 		Assertion.checkNotNull(uiSecurityTokenManager);
 		Assertion.checkNotNull(endPointDefinition);
 		//---------------------------------------------------------------------

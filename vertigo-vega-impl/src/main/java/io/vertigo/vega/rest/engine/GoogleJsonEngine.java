@@ -202,7 +202,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 		return typeOfDest;
 	}
 
-	static class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer<UiObject<D>> {
+	private static class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer<UiObject<D>> {
 		@Override
 		public UiObject<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
 			final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
@@ -226,7 +226,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 		}
 	}
 
-	static Set<String> getFieldNames(final DtDefinition dtDefinition) {
+	private static Set<String> getFieldNames(final DtDefinition dtDefinition) {
 		final Set<String> dtFieldNames = new HashSet<>();
 		for (final DtField dtField : dtDefinition.getFields()) {
 			dtFieldNames.add(StringUtil.constToCamelCase(dtField.getName(), false));
@@ -234,31 +234,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 		return dtFieldNames;
 	}
 
-	/*  {@inheritDoc}
-	 *  TODO
-	 *  public <D extends DtObject> UiList<D> uiListFromJson(final String json, final Class<D> paramClass) {
-		final Type[] typeArguments = { paramClass };
-		final Type typeOfDest = new ParameterizedType() {
-
-			@Override
-			public Type[] getActualTypeArguments() {
-				return typeArguments;
-			}
-
-			@Override
-			public Type getOwnerType() {
-				return null;
-			}
-
-			@Override
-			public Type getRawType() {
-				return UiList.class;
-			}
-		};
-		return gson.fromJson(json, typeOfDest);
-	}*/
-
-	static class UiListDeltaDeserializer<D extends DtObject> implements JsonDeserializer<UiListDelta<D>> {
+	private static class UiListDeltaDeserializer<D extends DtObject> implements JsonDeserializer<UiListDelta<D>> {
 		@Override
 		public UiListDelta<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
 			final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
@@ -312,7 +288,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 	//		}
 	//	}
 
-	private static Gson createGson() {
+	private Gson createGson() {
 		return new GsonBuilder()//
 				.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") //
 				.setPrettyPrinting()//

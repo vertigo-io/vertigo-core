@@ -38,10 +38,10 @@ import io.vertigo.vega.impl.rest.RestManagerImpl;
 import io.vertigo.vega.impl.rest.catalog.CatalogRestServices;
 import io.vertigo.vega.impl.rest.catalog.SwaggerRestServices;
 import io.vertigo.vega.impl.rest.handler.RateLimitingHandler;
-import io.vertigo.vega.impl.security.UiSecurityTokenManagerImpl;
+import io.vertigo.vega.impl.token.TokenManagerImpl;
 import io.vertigo.vega.plugins.rest.instrospector.annotations.AnnotationsEndPointIntrospectorPlugin;
 import io.vertigo.vega.rest.WsRestHandler.DtDefinitions;
-import io.vertigo.vega.security.UiSecurityTokenManager;
+import io.vertigo.vega.token.TokenManager;
 import io.vertigoimpl.commons.locale.LocaleManagerImpl;
 import io.vertigoimpl.engines.rest.cmd.ComponentCmdRestServices;
 
@@ -109,7 +109,7 @@ public final class MyApp {
 				.beginComponent(SwaggerRestServices.class).endComponent()
 				.beginComponent(CatalogRestServices.class).endComponent()
 				.beginComponent(RateLimitingHandler.class).endComponent()
-				.beginComponent(UiSecurityTokenManager.class, UiSecurityTokenManagerImpl.class)
+				.beginComponent(TokenManager.class, TokenManagerImpl.class)
 					.withParam("storeName", "UiSecurityStore")
 				.endComponent()
 			.endModule()

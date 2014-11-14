@@ -34,7 +34,7 @@ import io.vertigo.vega.rest.metamodel.EndPointParam.ImplicitParam;
 import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
 import io.vertigo.vega.rest.model.DtListDelta;
 import io.vertigo.vega.rest.model.UiListState;
-import io.vertigo.vega.security.UiSecurityTokenManager;
+import io.vertigo.vega.token.TokenManager;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
@@ -67,10 +67,10 @@ final class JsonConverterHandler implements RouteHandler {
 	private final JsonEngine jsonWriterEngine;
 	private final JsonEngine jsonReaderEngine;
 
-	private final UiSecurityTokenManager uiSecurityTokenManager;
+	private final TokenManager uiSecurityTokenManager;
 	private final EndPointDefinition endPointDefinition;
 
-	JsonConverterHandler(final UiSecurityTokenManager uiSecurityTokenManager, final EndPointDefinition endPointDefinition, final JsonEngine jsonWriterEngine, final JsonEngine jsonReaderEngine) {
+	JsonConverterHandler(final TokenManager uiSecurityTokenManager, final EndPointDefinition endPointDefinition, final JsonEngine jsonWriterEngine, final JsonEngine jsonReaderEngine) {
 		Assertion.checkNotNull(uiSecurityTokenManager);
 		Assertion.checkNotNull(endPointDefinition);
 		Assertion.checkNotNull(jsonWriterEngine);
@@ -274,7 +274,7 @@ final class JsonConverterHandler implements RouteHandler {
 		}
 	}
 
-	private static void postReadUiObject(final UiObject<DtObject> uiObject, final String inputKey, final EndPointParam endPointParam, final UiSecurityTokenManager uiSecurityTokenManager) throws VSecurityException {
+	private static void postReadUiObject(final UiObject<DtObject> uiObject, final String inputKey, final EndPointParam endPointParam, final TokenManager uiSecurityTokenManager) throws VSecurityException {
 		uiObject.setInputKey(inputKey);
 		checkUnauthorizedFieldModifications(uiObject, endPointParam);
 
@@ -296,7 +296,7 @@ final class JsonConverterHandler implements RouteHandler {
 		}
 	}
 
-	private static void postReadUiListDelta(final UiListDelta<DtObject> uiListDelta, final String inputKey, final EndPointParam endPointParam, final UiSecurityTokenManager uiSecurityTokenManager) throws VSecurityException {
+	private static void postReadUiListDelta(final UiListDelta<DtObject> uiListDelta, final String inputKey, final EndPointParam endPointParam, final TokenManager uiSecurityTokenManager) throws VSecurityException {
 		final String prefix = inputKey.length() > 0 ? inputKey + "." : "";
 		for (final Map.Entry<String, UiObject<DtObject>> entry : uiListDelta.getCreatesMap().entrySet()) {
 			final String uiObjectInputKey = prefix + entry.getKey();

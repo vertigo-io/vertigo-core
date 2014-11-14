@@ -28,7 +28,7 @@ import io.vertigo.vega.rest.exception.VSecurityException;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
 import io.vertigo.vega.rest.model.UiListState;
-import io.vertigo.vega.security.UiSecurityTokenManager;
+import io.vertigo.vega.token.TokenManager;
 import spark.Request;
 import spark.Response;
 
@@ -39,7 +39,7 @@ import spark.Response;
 final class PaginatorAndSortHandler implements RouteHandler {
 	private static final int DEFAULT_RESULT_PER_PAGE = 20;
 
-	private final UiSecurityTokenManager uiSecurityTokenManager;
+	private final TokenManager uiTokenManager;
 	private final CollectionsManager collectionsManager;
 	private final EndPointDefinition endPointDefinition;
 
@@ -49,13 +49,13 @@ final class PaginatorAndSortHandler implements RouteHandler {
 	 * @param collectionsManager collections manager
 	 * @param uiSecurityTokenManager token manager
 	 */
-	public PaginatorAndSortHandler(final EndPointDefinition endPointDefinition, final CollectionsManager collectionsManager, final UiSecurityTokenManager uiSecurityTokenManager) {
+	public PaginatorAndSortHandler(final EndPointDefinition endPointDefinition, final CollectionsManager collectionsManager, final TokenManager uiSecurityTokenManager) {
 		Assertion.checkNotNull(collectionsManager);
 		Assertion.checkNotNull(uiSecurityTokenManager);
 		//---------------------------------------------------------------------
 		this.endPointDefinition = endPointDefinition;
 		this.collectionsManager = collectionsManager;
-		this.uiSecurityTokenManager = uiSecurityTokenManager;
+		this.uiTokenManager = uiSecurityTokenManager;
 	}
 
 	/** {@inheritDoc}  */
@@ -74,7 +74,7 @@ final class PaginatorAndSortHandler implements RouteHandler {
 		String serverSideToken = uiListState.getListServerToken();
 		Option<DtList<?>> fullListOption = Option.none();
 		if (serverSideToken != null) {
-			fullListOption = uiSecurityTokenManager.<DtList<?>> get(uiListState.getListServerToken());
+			fullListOption = uiTokenManager.<DtList<?>> get(uiListState.getListServerToken());
 		}
 		final DtList<?> fullList;
 		if (fullListOption.isDefined()) {
@@ -83,7 +83,7 @@ final class PaginatorAndSortHandler implements RouteHandler {
 			final Object result = chain.handle(request, response, routeContext);
 			Assertion.checkArgument(result instanceof DtList, "sort and pagination only supports DtList");
 			fullList = (DtList<?>) result;
-			serverSideToken = uiSecurityTokenManager.put(fullList);
+			serverSideToken = uiTokenManager.put(fullList);
 		}
 		response.header("listServerToken", serverSideToken);
 		response.header("x-total-count", String.valueOf(fullList.size())); //TODO total count should be list meta

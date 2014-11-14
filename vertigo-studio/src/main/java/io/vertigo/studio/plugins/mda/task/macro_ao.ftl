@@ -40,15 +40,19 @@
 	</#if>
 	*/
 	public <#if taskDefinition.out><#if !taskDefinition.outAttribute.notNull>Option<</#if>${taskDefinition.outAttribute.dataType}<#if !taskDefinition.outAttribute.notNull>></#if><#else>void</#if> ${taskDefinition.methodName}(<#list taskDefinition.inAttributes as taskAttribute>final <#if !taskAttribute.notNull>Option<</#if>${taskAttribute.dataType}<#if !taskAttribute.notNull>></#if> ${taskAttribute.variableName}<#if taskAttribute_has_next>, </#if></#list>) {
-		final Task task = createTaskBuilder(Tasks.${taskDefinition.urn})//
+		final Task task = createTaskBuilder(Tasks.${taskDefinition.urn})
 	<#list taskDefinition.inAttributes as taskAttribute>
-				.withValue(${taskAttribute.constantName}, ${taskAttribute.variableName}<#if !taskAttribute.notNull>.getOrElse(null)</#if>)//
+				.withValue(${taskAttribute.constantName}, ${taskAttribute.variableName}<#if !taskAttribute.notNull>.getOrElse(null)</#if>)
     </#list>
 				.build();
     <#if taskDefinition.out>
 		final TaskResult taskResult = taskManager.execute(task);
-		return <#if !taskDefinition.outAttribute.notNull>Option.option(</#if>taskResult.<${taskDefinition.outAttribute.dataType}> getValue(${taskDefinition.outAttribute.constantName})<#if !taskDefinition.outAttribute.notNull>)</#if>;
-    <#else>
+		<#if !taskDefinition.outAttribute.notNull>
+		return Option.option(taskResult.<${taskDefinition.outAttribute.dataType}> getValue(${taskDefinition.outAttribute.constantName}));
+		<#else>
+		return taskResult.getValue(${taskDefinition.outAttribute.constantName});
+		</#if>
+	 <#else>
 		taskManager.execute(task);
     </#if>
 	}

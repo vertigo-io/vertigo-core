@@ -16,14 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega.impl.security;
+package io.vertigo.vega.impl.token;
 
 import io.vertigo.dynamo.kvdatastore.KVDataStoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.persona.security.UserSession;
-import io.vertigo.vega.security.UiSecurityTokenManager;
+import io.vertigo.vega.token.TokenManager;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -37,7 +37,7 @@ import javax.inject.Named;
  *
  * @author npiedeloup
  */
-public final class UiSecurityTokenManagerImpl implements UiSecurityTokenManager {
+public final class TokenManagerImpl implements TokenManager {
 
 	private final String storeName;
 	private final KSecurityManager securityManager;
@@ -45,7 +45,7 @@ public final class UiSecurityTokenManagerImpl implements UiSecurityTokenManager 
 	private final KVDataStoreManager kvDataStoreManager;
 
 	@Inject
-	public UiSecurityTokenManagerImpl(@Named("storeName") final String storeName, final KSecurityManager securityManager, final KVDataStoreManager kvDataStoreManager) {
+	public TokenManagerImpl(@Named("storeName") final String storeName, final KSecurityManager securityManager, final KVDataStoreManager kvDataStoreManager) {
 		Assertion.checkArgNotEmpty(storeName);
 		Assertion.checkNotNull(securityManager);
 		Assertion.checkNotNull(kvDataStoreManager);
