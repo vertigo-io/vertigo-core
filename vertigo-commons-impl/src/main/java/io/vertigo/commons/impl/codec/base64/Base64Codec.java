@@ -29,6 +29,18 @@ import io.vertigo.lang.Assertion;
  * @author  npiedeloup
  */
 public final class Base64Codec implements Codec<byte[], String> {
+	private static final int OFFSET_3 = 3;
+	private static final int OFFSET_2 = 2;
+	private static final int OFFSET_1 = 1;
+	private static final int OFFSET_0 = 0;
+	private static final int SHIFT_1BIT = 2; //shift octet 1 bit left or right
+	private static final int SHIFT_2BIT = 4; //shift octet 2 bits left or right
+	private static final int SHIFT_3BIT = 6; //shift octet 3 bits left or right
+
+	private static final int BASE64_ENCODED_BLOCK_LEN = 4; //Length of base64 encoded block
+	private static final int BASE64_DECODED_BLOCK_LEN = 3; //Length of base64 decoded block
+	private static final int BASE64_NB_CHAR = 256; //Number of supported decoded char (all chars = 1 byte)
+
 	private static final char PADDING = '=';
 	private static final char[] ENCODE_TABLE = { //
 	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', //
@@ -36,7 +48,7 @@ public final class Base64Codec implements Codec<byte[], String> {
 			'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_', '-', };
 	private static final int[] DECODE_TABLE;
 	static {
-		DECODE_TABLE = new int[256];
+		DECODE_TABLE = new int[BASE64_NB_CHAR];
 		for (int i = 0; i < DECODE_TABLE.length; i++) {
 			DECODE_TABLE[i] = -1;
 		}
@@ -54,7 +66,7 @@ public final class Base64Codec implements Codec<byte[], String> {
 		if (length == 0) {
 			return new byte[0];
 		}
-		if (length % 4 != 0) {
+		if (length % BASE64_ENCODED_BLOCK_LEN != 0) {
 			throw new RuntimeException("Données transmises malformées");
 		}
 		for (int i = 0; i < coded.length(); i++) {
@@ -64,39 +76,38 @@ public final class Base64Codec implements Codec<byte[], String> {
 		}
 		// ----
 		final int mod; // = coded.charAt(0) - '0';
-		if (PADDING == coded.charAt(length - 2)) {
-			mod = 2;
-		} else if (PADDING == coded.charAt(length - 1)) {
-			mod = 1;
+		if (PADDING == coded.charAt(length - OFFSET_2)) {
+			mod = OFFSET_2;
+		} else if (PADDING == coded.charAt(length - OFFSET_1)) {
+			mod = OFFSET_1;
 		} else {
-			mod = 0;
+			mod = OFFSET_0;
 		}
-		final int len = length / 4 * 3 - mod;/*(mod == 0 ? 0 : (3 - mod));*/
-		final int len1 = len - 1;
-		final int len2 = len - 2;
+		final int len = length / BASE64_ENCODED_BLOCK_LEN * (BASE64_DECODED_BLOCK_LEN) - mod;/*(mod == 0 ? 0 : (3 - mod));*/
+		final int len1 = len - OFFSET_1;
+		final int len2 = len - OFFSET_2;
 		final byte[] res = new byte[len];
 		decodeCharacters(coded, length, len1, len2, res);
 		return res;
 	}
 
 	private static void decodeCharacters(final String coded, final int length, final int len1, final int len2, final byte[] res) {
-		final int[] b = new int[4];
-		//int[] e = new int[3];
+		final int[] b = new int[BASE64_ENCODED_BLOCK_LEN];
 		int pos = 0;
 
-		for (int i = 0; i < length; i += 4) {
+		for (int i = 0; i < length; i += BASE64_ENCODED_BLOCK_LEN) {
 			// on part de i=1 puisque le caractère 0 est la longeur modulo 3 (voir encode)
-			for (int j = 0; j < 4; j++) {
+			for (int j = 0; j < BASE64_ENCODED_BLOCK_LEN; j++) {
 				b[j] = DECODE_TABLE[coded.charAt(i + j)];
 			}
-			res[pos] = (byte) ((b[0] << 2 | b[1] >> 4) & 0xFF);
+			res[pos] = (byte) ((b[OFFSET_0] << SHIFT_1BIT | b[OFFSET_1] >> SHIFT_2BIT) & 0xFF);
 			if (pos < len1) {
-				res[pos + 1] = (byte) ((b[1] << 4 | b[2] >> 2) & 0xFF);
+				res[pos + OFFSET_1] = (byte) ((b[OFFSET_1] << SHIFT_2BIT | b[OFFSET_2] >> SHIFT_1BIT) & 0xFF);
 				if (pos < len2) {
-					res[pos + 2] = (byte) ((b[2] << 6 | b[3]) & 0xFF);
+					res[pos + OFFSET_2] = (byte) ((b[OFFSET_2] << SHIFT_3BIT | b[OFFSET_3]) & 0xFF);
 				}
 			}
-			pos += 3;
+			pos += BASE64_DECODED_BLOCK_LEN;
 		}
 	}
 
@@ -105,22 +116,21 @@ public final class Base64Codec implements Codec<byte[], String> {
 	public String encode(final byte[] raw) {
 		Assertion.checkNotNull(raw);
 		//---------------------------------------------------------------------
-		/*
-		 * Encode une série d'octets en base 64.
-		 */
-		final int mod = raw.length % 3;
-		final int len = raw.length;
-		final StringBuilder res = new StringBuilder((len / 3 + mod == 0 ? 0 : 1) * 4);
+		// Encode une série d'octets en base 64.
 
-		final int[] e = new int[3];
-		for (int i = 0; i < len; i += 3) {
-			e[0] = raw[i] & 0xFF;
-			e[1] = (i + 1 < len ? raw[i + 1] : 0) & 0xFF;
-			e[2] = (i + 2 < len ? raw[i + 2] : 0) & 0xFF;
-			res.append(ENCODE_TABLE[e[0] >> 2]);
-			res.append(ENCODE_TABLE[(e[0] << 4 | e[1] >> 4) & 0x3F]);
-			res.append(i + 1 < len ? ENCODE_TABLE[(e[1] << 2 | e[2] >> 6) & 0x3F] : PADDING);
-			res.append(i + 2 < len ? ENCODE_TABLE[e[2] & 0x3F] : PADDING);
+		final int mod = raw.length % BASE64_DECODED_BLOCK_LEN;
+		final int len = raw.length;
+		final StringBuilder res = new StringBuilder((len / BASE64_DECODED_BLOCK_LEN + mod == 0 ? 0 : 1) * BASE64_ENCODED_BLOCK_LEN);
+
+		final int[] e = new int[BASE64_DECODED_BLOCK_LEN];
+		for (int i = 0; i < len; i += BASE64_DECODED_BLOCK_LEN) {
+			e[OFFSET_0] = raw[i] & 0xFF;
+			e[OFFSET_1] = (i + OFFSET_1 < len ? raw[i + OFFSET_1] : 0) & 0xFF;
+			e[OFFSET_2] = (i + OFFSET_2 < len ? raw[i + OFFSET_2] : 0) & 0xFF;
+			res.append(ENCODE_TABLE[e[OFFSET_0] >> SHIFT_1BIT]);
+			res.append(ENCODE_TABLE[(e[OFFSET_0] << SHIFT_2BIT | e[OFFSET_1] >> SHIFT_2BIT) & 0x3F]);
+			res.append(i + OFFSET_1 < len ? ENCODE_TABLE[(e[OFFSET_1] << SHIFT_1BIT | e[OFFSET_2] >> SHIFT_3BIT) & 0x3F] : PADDING);
+			res.append(i + OFFSET_2 < len ? ENCODE_TABLE[e[OFFSET_2] & 0x3F] : PADDING);
 		}
 		return res.toString();
 	}
