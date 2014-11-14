@@ -24,7 +24,7 @@ import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.vega.rest.engine.GoogleJsonEngine;
 import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
-import io.vertigo.vega.security.UiSecurityTokenManager;
+import io.vertigo.vega.token.TokenManager;
 
 import javax.inject.Inject;
 
@@ -49,7 +49,7 @@ public final class WsRestRoute extends Route {
 	@Inject
 	private KSecurityManager securityManager;
 	@Inject
-	private UiSecurityTokenManager uiSecurityTokenManager;
+	private TokenManager uiSecurityTokenManager;
 
 	private final HandlerChain handlerChain = new HandlerChain();
 	private final JsonEngine jsonEngine = new GoogleJsonEngine();
