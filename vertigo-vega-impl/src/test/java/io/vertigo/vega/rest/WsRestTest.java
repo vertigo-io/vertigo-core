@@ -52,17 +52,17 @@ public final class WsRestTest {
 	private final SessionFilter sessionFilter = new SessionFilter();
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		Home.start(MyApp.config());
 		doSetUp();
 	}
 
 	@After
-	public void tearDown() throws Exception {
+	public void tearDown() {
 		Home.stop();
 	}
 
-	private void doSetUp() throws Exception {
+	private void doSetUp() {
 		// Will serve all static file are under "/public" in classpath if the route isn't consumed by others routes.
 		// When using Maven, the "/public" folder is assumed to be in "/main/resources"
 		//Spark.externalStaticFileLocation("d:/Projets/Projet_Kasper/SPA-Fmk/SPA-skeleton/public/");
@@ -551,6 +551,108 @@ public final class WsRestTest {
 				.statusCode(HttpStatus.SC_FORBIDDEN)
 				.when()
 				.put("/test/filtered/" + oldConId);
+
+		contact.remove("conId");//can't modify conId
+		contact.remove("name"); //can't modify name
+		loggedAndExpect(given().body(contact))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/filtered/" + oldConId);
+	}
+
+	@Test
+	public void testFilteredUpdateByInclude() throws ParseException {
+		final Map<String, Object> contact = doGetServerSideObject();
+
+		final Long oldConId = (Long) contact.get("conId");
+		final String oldName = (String) contact.get("name");
+		final String oldFirstName = (String) contact.get("firstName");
+		final String oldEmail = (String) contact.get("email");
+		final String oldHonorificCode = (String) contact.get("honorificCode");
+		final String oldBirthday = (String) contact.get("birthday");
+		final String newFirstName = oldFirstName + "FNTest";
+		final String newEmail = "ETest." + oldEmail;
+
+		contact.remove("conId"); //can't modify conId
+		contact.remove("name"); //can't modify name
+		contact.put("firstName", newFirstName);
+		contact.put("email", newEmail);
+		contact.remove("honorificCode"); //can't modify conId
+		contact.remove("birthday"); //can't modify name
+
+		loggedAndExpect(given().body(contact).log().body())
+				.body("conId", Matchers.equalTo(oldConId))//not changed
+				.body("honorificCode", Matchers.equalTo(oldHonorificCode)) //not changed
+				.body("name", Matchers.equalTo(oldName)) //not changed
+				.body("firstName", Matchers.equalTo(newFirstName))// changed
+				.body("birthday", Matchers.equalTo(oldBirthday))//not changed
+				.body("email", Matchers.equalTo(newEmail))// changed
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/filteredInclude/" + oldConId);
+
+	}
+
+	@Test
+	public void testFilteredUpdateByIncludeErrors() throws ParseException {
+		final Map<String, Object> contact = doGetServerSideObject();
+		final Long oldConId = (Long) contact.get("conId");
+
+		loggedAndExpect(given().body(contact))
+				.statusCode(HttpStatus.SC_FORBIDDEN)
+				.when()
+				.put("/test/filteredInclude/" + oldConId);
+
+		contact.put("conId", 1000L); //can't modify conId
+		contact.remove("name"); //can't modify name
+		contact.remove("firstName");
+		contact.remove("email");
+		contact.remove("honorificCode"); //can't modify conId
+		contact.remove("birthday"); //can't modify name
+		loggedAndExpect(given().body(contact))
+				.statusCode(HttpStatus.SC_FORBIDDEN)
+				.when()
+				.put("/test/filteredInclude/" + oldConId);
+
+		contact.remove("conId");//can't modify conId
+		contact.put("firstName", "test"); //can't modify name
+		loggedAndExpect(given().body(contact))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/filteredInclude/" + oldConId);
+
+		contact.remove("firstName");
+		contact.put("name", "test"); //can't modify name
+		loggedAndExpect(given().body(contact))
+				.statusCode(HttpStatus.SC_FORBIDDEN)
+				.when()
+				.put("/test/filteredInclude/" + oldConId);
+
+		contact.remove("name"); //can't modify name
+		contact.put("email", "test@test.com");
+		loggedAndExpect(given().body(contact))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/filteredInclude/" + oldConId);
+
+		contact.put("honorificCode", "test"); //can't modify honorificCode
+		loggedAndExpect(given().body(contact))
+				.statusCode(HttpStatus.SC_FORBIDDEN)
+				.when()
+				.put("/test/filteredInclude/" + oldConId);
+
+		contact.remove("honorificCode"); //can't modify honorificCode
+		contact.put("birthday", convertDate("24/10/1985")); //can't modify birthday
+		loggedAndExpect(given().body(contact))
+				.statusCode(HttpStatus.SC_FORBIDDEN)
+				.when()
+				.put("/test/filteredInclude/" + oldConId);
+
+		contact.remove("birthday"); //can't modify honorificCode
+		loggedAndExpect(given().body(contact))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/filteredInclude/" + oldConId);
 	}
 
 	@Test
@@ -601,13 +703,13 @@ public final class WsRestTest {
 	private ResponseSpecification loggedAndExpect() {
 		return RestAssured.given()
 				.filter(sessionFilter)
-				.expect();
+				.expect().log().ifError();
 	}
 
 	private ResponseSpecification loggedAndExpect(final RequestSpecification given) {
 		return given
 				.filter(sessionFilter)
-				.expect();
+				.expect().log().ifError();
 	}
 
 	private Map<String, Object> doGetServerSideObject() throws ParseException {

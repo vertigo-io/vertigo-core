@@ -261,6 +261,7 @@ public final class TesterRestServices implements RestfulService {
 	}
 
 	//PUT is indempotent : ID obligatoire
+	@Doc("Exclude conId and name.")
 	@PUT("/filtered/{conId}")
 	@ServerSideSave
 	public Contact filteredUpdateByExclude(//
@@ -278,7 +279,8 @@ public final class TesterRestServices implements RestfulService {
 	}
 
 	//PUT is indempotent : ID obligatoire
-	@PUT("/filtered2/{conId}")
+	@Doc("Only accept firstName and email. Will blocked if other fields are send.")
+	@PUT("/filteredInclude/{conId}")
 	@ServerSideSave
 	public Contact filteredUpdateByInclude(//
 			final @Validate({ ContactValidator.class, MandatoryPkValidator.class })//
