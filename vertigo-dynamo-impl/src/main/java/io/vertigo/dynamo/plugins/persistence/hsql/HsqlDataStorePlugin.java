@@ -133,11 +133,7 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 		for (final DtField dtField : dtDefinition.getFields()) {
 			if (dtField.isPersistent()) {
 				request.append(separator);
-				if (dtField.getType() != DtField.FieldType.PRIMARY_KEY) {
-					request.append(" #DTO.").append(dtField.getName()).append('#');
-				} else {
-					request.append(" #DTO.").append(dtField.getName()).append('#');
-				}
+				request.append(" #DTO.").append(dtField.getName()).append('#');
 				separator = ", ";
 			}
 		}
