@@ -71,11 +71,11 @@ public final class ExceptionHandler implements RouteHandler {
 		} catch (final VSecurityException e) {
 			return sendJsonError(HttpServletResponse.SC_FORBIDDEN, e, response);
 		} catch (final JsonSyntaxException e) {
-			log.info("JsonSyntaxException", e);
+			log.info("JsonSyntaxException", e); //info and not warn, to keep warn level clean and not bad client depends
 			return sendJsonError(HttpServletResponse.SC_BAD_REQUEST, e, response);
 		} catch (final TooManyRequestException e) {
 			return sendJsonError(SC_TOO_MANY_REQUEST, e, response);
-		} catch (final Throwable e) {//NOSONAR : In every situation we need to try to respond client that server got a pb
+		} catch (final Throwable e) {//NOSONAR : In every situation we need to catch to respond client that server got a pb
 			log.error("Internal Server Error", e);
 			return sendJsonError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e, response);
 		}
