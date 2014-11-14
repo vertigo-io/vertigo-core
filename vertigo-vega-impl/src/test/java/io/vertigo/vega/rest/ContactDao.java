@@ -15,7 +15,7 @@ import java.util.UUID;
 public class ContactDao {
 	private final Map<Long, Contact> contacts = new HashMap<>();
 
-	ContactDao() throws ParseException {
+	public ContactDao() throws ParseException {
 		appendContact(Honorific.Mr, "Martin", "Jean", parseDate("19/05/1980"),
 				createAddress("1, rue de Rivoli", "", "Paris", "75001", "France"),
 				"jean.martin@gmail.com", "01 02 03 04 05");
@@ -76,7 +76,7 @@ public class ContactDao {
 		return address;
 	}
 
-	public void post(Contact contact) {
+	public void post(final Contact contact) {
 		Assertion.checkNotNull(contact);
 		Assertion.checkArgument(contact.getConId() == null, "post");
 		//------
@@ -85,7 +85,7 @@ public class ContactDao {
 		contacts.put(nextId, contact);
 	}
 
-	public void put(Contact contact) {
+	public void put(final Contact contact) {
 		Assertion.checkNotNull(contact);
 		Assertion.checkNotNull(contact.getConId());
 		//------
@@ -96,11 +96,11 @@ public class ContactDao {
 		return new ArrayList<>(contacts.values());
 	}
 
-	public void remove(Long id) {
+	public void remove(final Long id) {
 		contacts.remove(id);
 	}
 
-	public Contact get(Long id) {
+	public Contact get(final Long id) {
 		return contacts.get(id);
 	}
 
@@ -112,7 +112,7 @@ public class ContactDao {
 		return nextId;
 	}
 
-	public boolean containsKey(long id) {
+	public boolean containsKey(final long id) {
 		return contacts.containsKey(id);
 	}
 }

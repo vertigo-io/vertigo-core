@@ -30,7 +30,6 @@ import io.vertigo.vega.rest.stereotype.PathParam;
 import io.vertigo.vega.rest.stereotype.SessionLess;
 import io.vertigo.vega.rest.stereotype.Validate;
 
-import java.text.ParseException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -41,12 +40,8 @@ public final class ContactsRestServices implements RestfulService {
 
 	@Inject
 	private KSecurityManager securityManager;
-	private final ContactDao contactDao;
-
-	public ContactsRestServices() throws ParseException {
-		contactDao = new ContactDao();
-		//
-	}
+	@Inject
+	private ContactDao contactDao;
 
 	@GET("/contacts/search")
 	public List<Contact> readList(final ContactCriteria listCriteria) {

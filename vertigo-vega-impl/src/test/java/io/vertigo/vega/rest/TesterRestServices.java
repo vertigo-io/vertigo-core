@@ -74,7 +74,6 @@ import io.vertigo.vega.rest.validation.ValidationUserException;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -99,18 +98,8 @@ public final class TesterRestServices implements RestfulService {
 	private ResourceManager resourcetManager;
 	@Inject
 	private FileManager fileManager;
-
-	private final ContactDao contactDao;
-
-	/*private final enum Group {
-		Friends("FRD", "Friends"), 
-		Familly("FAM", "Familly"), 
-		CoWorkers("CWO", "Colleagues"), Familiar("FAR", "Familiar"),
-	}*/
-
-	public TesterRestServices() throws ParseException {
-		contactDao = new ContactDao();
-	}
+	@Inject
+	private ContactDao contactDao;
 
 	@AnonymousAccessAllowed
 	@GET("/login")

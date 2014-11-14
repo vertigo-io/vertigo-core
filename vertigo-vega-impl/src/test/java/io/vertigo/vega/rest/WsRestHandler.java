@@ -80,8 +80,8 @@ public final class WsRestHandler {
 	public static final class DtDefinitions implements Iterable<Class<?>> {
 		@Override
 		public Iterator<Class<?>> iterator() {
-			return Arrays.asList(new Class<?>[] { 
-					Contact.class, ContactCriteria.class 
+			return Arrays.asList(new Class<?>[] {
+					Contact.class, ContactCriteria.class
 			}).iterator();
 		}
 	}
@@ -119,7 +119,7 @@ public final class WsRestHandler {
 							.withParam("dataStoreName", "UiSecurityStore")
 							.withParam("timeToLiveSeconds", "120")
 						.endPlugin()
-					.endComponent() 
+					.endComponent()
 					.beginComponent(PersistenceManager.class, PersistenceManagerImpl.class)
 						.beginPlugin(PostgreSqlDataStorePlugin.class)
 							.withParam("sequencePrefix","SEQ_")
@@ -138,7 +138,10 @@ public final class WsRestHandler {
 						.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
 					.endComponent()
 				.endModule()
-				.beginModule("restServices").withNoAPI().withInheritance(RestfulService.class)
+			.beginModule("dao").withNoAPI().withInheritance(Object.class)
+				.beginComponent(ContactDao.class).endComponent()
+			.endModule()
+			.beginModule("restServices").withNoAPI().withInheritance(RestfulService.class)
 					.beginComponent(ComponentCmdRestServices.class).endComponent()
 					.beginComponent(ContactsRestServices.class).endComponent()
 					.beginComponent(TesterRestServices.class).endComponent()
