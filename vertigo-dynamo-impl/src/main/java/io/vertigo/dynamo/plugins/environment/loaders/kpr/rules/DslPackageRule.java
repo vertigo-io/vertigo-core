@@ -38,9 +38,9 @@ public final class DslPackageRule extends AbstractRule<String, List<?>> {
 
 	@Override
 	protected Rule<List<?>> createMainRule() {
-		return new SequenceRule(//
+		return new SequenceRule(
 				new TermRule("package "),//après package il y a un blanc obligatoire
-				SPACES,//
+				SPACES,
 				WORD,// Nom du package 2
 				SPACES);
 	}

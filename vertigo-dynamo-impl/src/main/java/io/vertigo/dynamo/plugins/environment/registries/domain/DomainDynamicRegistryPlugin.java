@@ -198,9 +198,9 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final boolean dynamic = tmpDynamic != null && tmpDynamic.booleanValue();
 		//----------------------------------------------------------------------
 		final String dtDefinitionName = xdtDefinition.getDefinitionKey().getName();
-		final DtDefinitionBuilder dtDefinitionBuilder = new DtDefinitionBuilder(dtDefinitionName)//
-				.withPackageName(xdtDefinition.getPackageName())//
-				.withPersistent(persistent)//
+		final DtDefinitionBuilder dtDefinitionBuilder = new DtDefinitionBuilder(dtDefinitionName)
+				.withPackageName(xdtDefinition.getPackageName())
+				.withPersistent(persistent)
 				.withDynamic(dynamic);
 		//On enregistre les Builder pour pouvoir les mettre à jour sur les associations.
 		Assertion.checkArgument(!dtDefinitionBuilders.containsKey(dtDefinitionName), "Definition '{0}' déjà enregistrée", dtDefinitionName);
@@ -371,8 +371,8 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 		//Relation 1-n ou 1-1
 		final String urn = fixAssociationName(xassociation.getDefinitionKey().getName());
-		final AssociationSimpleDefinition associationSimpleDefinition = AssociationSimpleDefinition.createAssociationSimpleDefinition(urn, fkFieldName, //
-				dtDefinitionA, navigabilityA, roleA, labelA, AssociationUtil.isMultiple(multiplicityA), AssociationUtil.isNotNull(multiplicityA), //
+		final AssociationSimpleDefinition associationSimpleDefinition = AssociationSimpleDefinition.createAssociationSimpleDefinition(urn, fkFieldName, 
+				dtDefinitionA, navigabilityA, roleA, labelA, AssociationUtil.isMultiple(multiplicityA), AssociationUtil.isNotNull(multiplicityA), 
 				dtDefinitionB, navigabilityB, roleB, labelB, AssociationUtil.isMultiple(multiplicityB), AssociationUtil.isNotNull(multiplicityB));
 
 		final AssociationNode primaryAssociationNode = associationSimpleDefinition.getPrimaryAssociationNode();

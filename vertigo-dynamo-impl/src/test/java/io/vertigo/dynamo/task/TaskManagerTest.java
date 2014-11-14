@@ -141,10 +141,10 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 		registerTask(TK_ADD_2, "+");
 		final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(TK_ADD_2, TaskDefinition.class);
 
-		final Task task = new TaskBuilder(taskDefinition)//
-				.withValue(TaskEngineMock.ATTR_IN_INT_1, 1)//
-				.withValue(TaskEngineMock.ATTR_IN_INT_2, 8)//
-				.withValue(TaskEngineMock.ATTR_IN_INT_3, 7)//
+		final Task task = new TaskBuilder(taskDefinition)
+				.withValue(TaskEngineMock.ATTR_IN_INT_1, 1)
+				.withValue(TaskEngineMock.ATTR_IN_INT_2, 8)
+				.withValue(TaskEngineMock.ATTR_IN_INT_3, 7)
 				.build();
 
 		// on suppose un appel synchrone : getResult immédiat.
@@ -161,14 +161,14 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	private static TaskDefinition registerTask(final String taskDefinitionName, final String params) {
 		final Domain doInteger = Home.getDefinitionSpace().resolve("DO_INTEGER", Domain.class);
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskDefinitionName)//
-				.withEngine(TaskEngineMock.class)//
-				.withRequest(params)//
-				.withPackageName(TaskEngineMock.class.getPackage().getName())//
-				.withAttribute(TaskEngineMock.ATTR_IN_INT_1, doInteger, true, true)//
-				.withAttribute(TaskEngineMock.ATTR_IN_INT_2, doInteger, true, true)//
-				.withAttribute(TaskEngineMock.ATTR_IN_INT_3, doInteger, true, true)//
-				.withAttribute(TaskEngineMock.ATTR_OUT, doInteger, true, false)//
+		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskDefinitionName)
+				.withEngine(TaskEngineMock.class)
+				.withRequest(params)
+				.withPackageName(TaskEngineMock.class.getPackage().getName())
+				.withAttribute(TaskEngineMock.ATTR_IN_INT_1, doInteger, true, true)
+				.withAttribute(TaskEngineMock.ATTR_IN_INT_2, doInteger, true, true)
+				.withAttribute(TaskEngineMock.ATTR_IN_INT_3, doInteger, true, true)
+				.withAttribute(TaskEngineMock.ATTR_OUT, doInteger, true, false)
 				.build();
 
 		Home.getDefinitionSpace().put(taskDefinition, TaskDefinition.class);
@@ -183,10 +183,10 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	 */
 	private Integer executeTask(final String taskDefinitionName, final Integer value1, final Integer value2, final Integer value3) {
 		final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(taskDefinitionName, TaskDefinition.class);
-		final Task task = new TaskBuilder(taskDefinition)//
-				.withValue(TaskEngineMock.ATTR_IN_INT_1, value1)//
-				.withValue(TaskEngineMock.ATTR_IN_INT_2, value2)//
-				.withValue(TaskEngineMock.ATTR_IN_INT_3, value3)//
+		final Task task = new TaskBuilder(taskDefinition)
+				.withValue(TaskEngineMock.ATTR_IN_INT_1, value1)
+				.withValue(TaskEngineMock.ATTR_IN_INT_2, value2)
+				.withValue(TaskEngineMock.ATTR_IN_INT_3, value3)
 				.build();
 		// on suppose un appel synchrone : getResult immédiat
 		final TaskResult taskResult = taskManager.execute(task);

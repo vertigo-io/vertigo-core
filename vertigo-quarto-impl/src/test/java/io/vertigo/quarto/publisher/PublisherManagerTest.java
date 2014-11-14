@@ -49,9 +49,9 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public final void testDefinitionSimple() {
-		final PublisherNodeDefinition rootNodeDefinition = new PublisherNodeDefinitionBuilder() //
-				.withBooleanField("TEST_BOOLEAN") //
-				.withStringField("TEST_STRING")//
+		final PublisherNodeDefinition rootNodeDefinition = new PublisherNodeDefinitionBuilder()
+				.withBooleanField("TEST_BOOLEAN")
+				.withStringField("TEST_STRING")
 				.build();
 		final PublisherDataDefinition publisherDataDefinition = new PublisherDataDefinition("PU_TEST_1", rootNodeDefinition);
 		// --------------------
@@ -106,9 +106,9 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private static PublisherNodeDefinition createNodeDefinition() {
-		return new PublisherNodeDefinitionBuilder() //
-				.withBooleanField("TEST_BOOLEAN") //
-				.withStringField("TEST_STRING")//
+		return new PublisherNodeDefinitionBuilder() 
+				.withBooleanField("TEST_BOOLEAN") 
+				.withStringField("TEST_STRING")
 				.build();
 	}
 
@@ -117,9 +117,9 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public final void testDefinitionDoubleRegister() {
-		final PublisherNodeDefinition publisherNodeDefinition = new PublisherNodeDefinitionBuilder() //
-				.withBooleanField("TEST_BOOLEAN") //
-				.withStringField("TEST_STRING")//
+		final PublisherNodeDefinition publisherNodeDefinition = new PublisherNodeDefinitionBuilder() 
+				.withBooleanField("TEST_BOOLEAN") 
+				.withStringField("TEST_STRING")
 				.build();
 		final PublisherDataDefinition publisherDataDefinition = new PublisherDataDefinition("PU_TEST", publisherNodeDefinition);
 		registerDefinition(publisherDataDefinition);
@@ -171,8 +171,8 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public final void testDefinitionFieldDoubleRegister() {
-		final PublisherNodeDefinitionBuilder rootDefinitionBuilder = new PublisherNodeDefinitionBuilder()//
-				.withBooleanField("TEST_STRING")//
+		final PublisherNodeDefinitionBuilder rootDefinitionBuilder = new PublisherNodeDefinitionBuilder()
+				.withBooleanField("TEST_STRING")
 				.withStringField("TEST_STRING");
 		final PublisherNodeDefinition rootDefinition = rootDefinitionBuilder.build();
 		nop(rootDefinition);
@@ -190,9 +190,9 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 			final PublisherDataDefinition publisherDataDefinition = new PublisherDataDefinition("PU_TEST_1_BIS", publisherNodeDefinition);
 			registerDefinition(publisherDataDefinition);
 
-			/*final PublisherDataNodeDefinition subDefinition = publisherDataDefinitionFactory.createPublisherDataNodeDefinitionBuilder() //
-					.registerStringField("TEST_STRING")//
-					.registerNodeField("TEST_DATA", rootDefinition)//
+			/*final PublisherDataNodeDefinition subDefinition = publisherDataDefinitionFactory.createPublisherDataNodeDefinitionBuilder()
+					.registerStringField("TEST_STRING")
+					.registerNodeField("TEST_DATA", rootDefinition)
 					.toNodeDefinition();
 			 */
 

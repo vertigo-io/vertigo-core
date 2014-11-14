@@ -15,7 +15,7 @@ public final class ${classSimpleName} implements Iterable<Class<?>> {
 	public enum Definitions {
 <#list dtDefinitions as dtDefinition>
 			/** Objet de données ${dtDefinition.classSimpleName}. */
-			${dtDefinition.classSimpleName}(${dtDefinition.classCanonicalName}.class), //
+			${dtDefinition.classSimpleName}(${dtDefinition.classCanonicalName}.class),
 </#list>
 		;
 		
@@ -40,7 +40,7 @@ public final class ${classSimpleName} implements Iterable<Class<?>> {
 	public enum ${dtDefinition.classSimpleName}Fields implements DtFieldName {
 		<#list dtDefinition.fields as dtField>
 		/** Propriété '${dtField.label.display}'. */
-		${dtField.name()}, //
+		${dtField.name()},
 		</#list>
 	}
 

@@ -53,7 +53,7 @@ public class ExportXlsHelper<R extends DtObject> {
 	public ExportXlsHelper(final String fileName, final String title) {
 		Assertion.checkNotNull(fileName);
 		// ---------------------------------------------------------------------
-		exportBuilder = new ExportBuilder(ExportFormat.XLS, fileName)//
+		exportBuilder = new ExportBuilder(ExportFormat.XLS, fileName)
 				.withTitle(title);
 	}
 

@@ -295,8 +295,8 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 			taskDefinitionBuilder.withAttribute(fieldName, domainMap.get(fieldName), true, true);
 		}
 		//OUT, obligatoire
-		final TaskDefinition taskDefinition = taskDefinitionBuilder//
-				.withAttribute("dtc", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true, false)//
+		final TaskDefinition taskDefinition = taskDefinitionBuilder
+				.withAttribute("dtc", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true, false)
 				.build();
 
 		final TaskBuilder taskBuilder = createTaskBuilder(taskDefinition);

@@ -117,16 +117,16 @@ final class PaginatorAndSortHandler implements RouteHandler {
 	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final UiListState uiListState) {
 		final DtList<D> sortedList;
 		if (uiListState.getSortFieldName() != null) {
-			sortedList = collectionsManager.createDtListProcessor()//
-					.sort(uiListState.getSortFieldName(), uiListState.isSortDesc(), true, true)//
+			sortedList = collectionsManager.createDtListProcessor()
+					.sort(uiListState.getSortFieldName(), uiListState.isSortDesc(), true, true)
 					.apply(unFilteredList);
 		} else {
 			sortedList = unFilteredList;
 		}
 		final DtList<D> filteredList;
 		if (uiListState.getTop() > 0) {
-			filteredList = collectionsManager.createDtListProcessor()//
-					.filterSubList(uiListState.getSkip(), uiListState.getSkip() + uiListState.getTop())//
+			filteredList = collectionsManager.createDtListProcessor()
+					.filterSubList(uiListState.getSkip(), uiListState.getSkip() + uiListState.getTop())
 					.apply(sortedList);
 		} else {
 			filteredList = sortedList;

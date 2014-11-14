@@ -48,8 +48,8 @@ public final class JsonUtil {
 	}
 
 	private static Gson createGson() {
-		return new GsonBuilder()//
-				//.setPrettyPrinting()//
+		return new GsonBuilder()
+				//.setPrettyPrinting()
 				//.serializeNulls()//On veut voir les null
 				.registerTypeAdapter(ComponentInfo.class, new JsonSerializer<ComponentInfo>() {
 					@Override
@@ -58,7 +58,7 @@ public final class JsonUtil {
 						jsonObject.add(componentInfo.getTitle(), context.serialize(componentInfo.getValue()));
 						return jsonObject;
 					}
-				})//	
+				})	
 				.registerTypeAdapter(List.class, new JsonSerializer<List>() {
 
 					@Override
@@ -68,7 +68,7 @@ public final class JsonUtil {
 						}
 						return context.serialize(src);
 					}
-				})//	
+				})	
 				.registerTypeAdapter(Map.class, new JsonSerializer<Map>() {
 
 					@Override
@@ -78,14 +78,14 @@ public final class JsonUtil {
 						}
 						return context.serialize(src);
 					}
-				})//
+				})
 				.registerTypeAdapter(DefinitionReference.class, new JsonSerializer<DefinitionReference>() {
 
 					@Override
 					public JsonElement serialize(DefinitionReference src, Type typeOfSrc, JsonSerializationContext context) {
 						return context.serialize(src.get().getName());
 					}
-				})//
+				})
 				.registerTypeAdapter(Option.class, new JsonSerializer<Option>() {
 
 					@Override
@@ -95,7 +95,7 @@ public final class JsonUtil {
 						}
 						return null; //rien
 					}
-				})//			
+				})	
 				.registerTypeAdapter(Class.class, new JsonSerializer<Class>() {
 
 					@Override

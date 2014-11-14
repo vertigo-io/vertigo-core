@@ -289,13 +289,13 @@ public final class GoogleJsonEngine implements JsonEngine {
 	//	}
 
 	private Gson createGson() {
-		return new GsonBuilder()//
-				.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") //
-				.setPrettyPrinting()//
+		return new GsonBuilder()
+				.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+				.setPrettyPrinting()
 				//TODO  registerTypeAdapter(String.class, new EmptyStringAsNull<>())// add "" <=> null
 				//.serializeNulls()//On veut voir les null
-				.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())//
-				.registerTypeAdapter(UiListDelta.class, new UiListDeltaDeserializer<>())//
+				.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())
+				.registerTypeAdapter(UiListDelta.class, new UiListDeltaDeserializer<>())
 				.registerTypeAdapter(ComponentInfo.class, new JsonSerializer<ComponentInfo>() {
 					@Override
 					public JsonElement serialize(final ComponentInfo componentInfo, final Type typeOfSrc, final JsonSerializationContext context) {
@@ -303,7 +303,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 						jsonObject.add(componentInfo.getTitle(), context.serialize(componentInfo.getValue()));
 						return jsonObject;
 					}
-				})//
+				})
 				.registerTypeAdapter(List.class, new JsonSerializer<List>() {
 
 					@Override
@@ -313,7 +313,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 						}
 						return context.serialize(src);
 					}
-				})//
+				})
 				.registerTypeAdapter(Map.class, new JsonSerializer<Map>() {
 
 					@Override
@@ -323,14 +323,14 @@ public final class GoogleJsonEngine implements JsonEngine {
 						}
 						return context.serialize(src);
 					}
-				})//
+				})
 				.registerTypeAdapter(DefinitionReference.class, new JsonSerializer<DefinitionReference>() {
 
 					@Override
 					public JsonElement serialize(final DefinitionReference src, final Type typeOfSrc, final JsonSerializationContext context) {
 						return context.serialize(src.get().getName());
 					}
-				})//
+				})
 				.registerTypeAdapter(Option.class, new JsonSerializer<Option>() {
 
 					@Override
@@ -340,14 +340,14 @@ public final class GoogleJsonEngine implements JsonEngine {
 						}
 						return null; //rien
 					}
-				})//
+				})
 				.registerTypeAdapter(Class.class, new JsonSerializer<Class>() {
 
 					@Override
 					public JsonElement serialize(final Class src, final Type typeOfSrc, final JsonSerializationContext context) {
 						return new JsonPrimitive(src.getName());
 					}
-				})//
+				})
 				.addSerializationExclusionStrategy(new ExclusionStrategy() {
 					@Override
 					public boolean shouldSkipField(final FieldAttributes arg0) {

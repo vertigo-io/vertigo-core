@@ -121,9 +121,9 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 		final String explainPlanRequest = "explain plan set statement_id = 'PLAN_" + currentSequence + "' for " + taskDefinition.getRequest();
 		//final String explainPlanRequest = "explain plan for " + taskDefinition.getRequest();
 
-		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskDefinitionName)//
-				.withEngine(taskDefinition.getTaskEngineClass())//
-				.withRequest(explainPlanRequest)//
+		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskDefinitionName)
+				.withEngine(taskDefinition.getTaskEngineClass())
+				.withRequest(explainPlanRequest)
 				.withPackageName(getClass().getPackage().getName());
 		for (final TaskAttribute attribute : taskDefinition.getAttributes()) {
 			if (attribute.isIn()) {

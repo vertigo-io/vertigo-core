@@ -731,8 +731,8 @@ public final class WsRestTest {
 	}
 
 	private Map<String, Object> createDefaultContact(final Long conId) throws ParseException {
-		final Map<String, Object> newContact = createContact2(conId, "Mrs", "Fournier", "Catherine", convertDate("24/10/1985"), //
-				createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"), //
+		final Map<String, Object> newContact = createContact2(conId, "Mrs", "Fournier", "Catherine", convertDate("24/10/1985"), 
+				createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"), 
 				"catherine.fournier@gmail.com", "01 91 92 93 94");
 		return newContact;
 	}

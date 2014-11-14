@@ -190,10 +190,10 @@ public abstract class AbstractTestCaseJU4 {
 	 * Configuration des tests.
 	 */
 	protected void configMe(final AppConfigBuilder appConfigBuilder) {
-		final AppBuilder appBuilder = new AppBuilder() //
-				.withSilence(true) //
-				.withAppConfigBuilder(appConfigBuilder) //
-				.withXmlFileNames(getClass(), getManagersXmlFileName()); //
+		final AppBuilder appBuilder = new AppBuilder()
+				.withSilence(true)
+				.withAppConfigBuilder(appConfigBuilder)
+				.withXmlFileNames(getClass(), getManagersXmlFileName());
 		if (getPropertiesFileName().isDefined()) {
 			appBuilder.withEnvParams(getClass(), getPropertiesFileName().get());
 		}

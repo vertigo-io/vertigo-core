@@ -61,12 +61,12 @@ public final class DslDefinitionEntryRule extends AbstractRule<DslDefinitionEntr
 		//---------------------------------------------------------------------
 		return new SequenceRule(//"DefinitionKey"
 				new FirstOfRule(fieldNamesRules), //0
-				SPACES,//
-				PAIR_SEPARATOR,//
-				SPACES,//
+				SPACES,
+				PAIR_SEPARATOR,
+				SPACES,
 				new FirstOfRule(WORD, WORDS),//4
-				SPACES,//
-				new OptionRule<>(DslSyntaxRules.OBJECT_SEPARATOR)//
+				SPACES,
+				new OptionRule<>(DslSyntaxRules.OBJECT_SEPARATOR)
 		);
 	}
 

@@ -116,7 +116,6 @@ final class VProtocol {
 		//TODO Envoyer les map
 		push(socketChannel, "$" + command.getName());
 
-		//
 		String response = pull(socketChannel);
 		if (response == null) {
 			return VResponse.createResponseWithError("no data received from server");

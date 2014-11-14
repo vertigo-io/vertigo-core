@@ -138,8 +138,8 @@ final class SqlResultMetaDataDynamic implements SqlResultMetaData {
 		public synchronized DtDefinition getDtDefinition() {
 			//synchronizer, car lasy loading
 			if (dtDefinition == null) {
-				final DtDefinitionBuilder dtDefinitionBuilder = new DtDefinitionBuilder(DT_DYNAMIC)//
-						.withPersistent(false)//
+				final DtDefinitionBuilder dtDefinitionBuilder = new DtDefinitionBuilder(DT_DYNAMIC)
+						.withPersistent(false)
 						.withDynamic(true);
 
 				for (final SerializableDtField field : fields) {
@@ -170,8 +170,8 @@ final class SqlResultMetaDataDynamic implements SqlResultMetaData {
 		}
 	}
 }
-//
-//
+
+
 //static DtObject createDtObject(final SerializableDtDefinition serializableDefinition) {
 //	final InvocationHandler proxy = new DtObjectProxy(serializableDefinition);
 //	return ClassUtil.newProxyInstance(DynamicDtObject.class.getClassLoader(), new Class<?>[] { DtObject.class }, proxy);

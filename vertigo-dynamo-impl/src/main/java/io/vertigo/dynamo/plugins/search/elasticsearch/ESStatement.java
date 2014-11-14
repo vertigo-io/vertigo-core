@@ -119,7 +119,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 			final BulkRequestBuilder bulkRequest = esClient.prepareBulk();
 			for (final Index<I, R> index : indexCollection) {
 				try (final XContentBuilder xContentBuilder = elasticSearchDocumentCodec.index2XContentBuilder(index, indexFieldNameResolver)) {
-					bulkRequest.add(esClient.prepareIndex(indexName, index.getURI().getDefinition().getName(), index.getURI().toURN())//
+					bulkRequest.add(esClient.prepareIndex(indexName, index.getURI().getDefinition().getName(), index.getURI().toURN())
 							.setSource(xContentBuilder));
 				}
 			}
@@ -142,7 +142,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	void put(final Index<I, R> index) {
 		//Injection spécifique au moteur d'indexation.
 		try (final XContentBuilder xContentBuilder = elasticSearchDocumentCodec.index2XContentBuilder(index, indexFieldNameResolver)) {
-			esClient.prepareIndex(indexName, index.getURI().getDefinition().getName(), index.getURI().toURN())//
+			esClient.prepareIndex(indexName, index.getURI().getDefinition().getName(), index.getURI().toURN())
 					.setSource(xContentBuilder)
 					.execute() //execute asynchrone
 					.actionGet(); //get wait exec
@@ -253,8 +253,8 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 				final DataType dataType = dtField.getDomain().getDataType();
 				final DateRangeBuilder dateRangeBuilder;
 				if (dataType == DataType.Date) {
-					dateRangeBuilder = AggregationBuilders.dateRange(facetDefinition.getName())//
-							.field(indexFieldNameResolver.obtainIndexFieldName(dtField))//
+					dateRangeBuilder = AggregationBuilders.dateRange(facetDefinition.getName())
+							.field(indexFieldNameResolver.obtainIndexFieldName(dtField))
 							.format(DATE_PATTERN);
 					for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 						final String filterValue = facetRange.getListFilter().getFilterValue();
@@ -290,7 +290,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 				}
 			} else {
 				//facette par field
-				final TermsBuilder aggregationBuilder = AggregationBuilders.terms(facetDefinition.getName())//
+				final TermsBuilder aggregationBuilder = AggregationBuilders.terms(facetDefinition.getName())
 						.field(indexFieldNameResolver.obtainIndexFieldName(dtField));
 				searchRequestBuilder.addAggregation(aggregationBuilder);
 			}

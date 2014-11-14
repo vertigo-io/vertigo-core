@@ -289,8 +289,8 @@ public final class SwaggerRestServices implements RestfulService {
 		} else if ("object".equals(typeAndFormat[0])) {
 			final String objectName;
 			final Class<?> parameterClass;
-			if (type instanceof ParameterizedType //
-					&& ((ParameterizedType) type).getActualTypeArguments().length == 1 //
+			if (type instanceof ParameterizedType 
+					&& ((ParameterizedType) type).getActualTypeArguments().length == 1 
 					&& !(((ParameterizedType) type).getActualTypeArguments()[0] instanceof WildcardType)) {
 				final Type itemsType = ((ParameterizedType) type).getActualTypeArguments()[0]; //we known that DtListDelta has one parameterized type
 				parameterClass = EndPointTypeUtil.castAsClass(itemsType);
@@ -370,7 +370,7 @@ public final class SwaggerRestServices implements RestfulService {
 				}
 				final Map<String, Object> fieldSchema = createSchemaObject(usedFieldType);
 				//fieldSchema.put("title", field.getName());
-				if ((field.getModifiers() & (Modifier.FINAL)) != 0 //
+				if ((field.getModifiers() & (Modifier.FINAL)) != 0
 						&& !Option.class.isAssignableFrom(field.getType())) {
 					//fieldSchema.put("required", true);
 					enums.add(field.getName());

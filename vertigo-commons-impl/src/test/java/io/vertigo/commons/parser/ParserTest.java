@@ -39,34 +39,34 @@ public final class ParserTest {
 	private static final Rule MANY_AB2 = new ManyRule(AB, true, true);
 	private static final Rule MANY_AB_MORE = new ManyRule(AB, false);
 
-	private static final Rule HELLO_WORLD = new SequenceRule(//
-			HELLO, //
-			SPACE, //
+	private static final Rule HELLO_WORLD = new SequenceRule(
+			HELLO,
+			SPACE, 
 			WORLD);
 
-	private static final Rule<Choice> WORLD_MUSIC = new FirstOfRule(//
-			WORLD,//
+	private static final Rule<Choice> WORLD_MUSIC = new FirstOfRule(
+			WORLD,
 			MUSIC);
 
-	private static final Rule<List<?>> HELLO_WORLD_MUSIC = new SequenceRule(//
-			HELLO,//
-			SPACE,//
+	private static final Rule<List<?>> HELLO_WORLD_MUSIC = new SequenceRule(
+			HELLO,
+			SPACE,
 			WORLD_MUSIC);
 
-	private static final Rule HELLO_WORLD_FROM = new SequenceRule(//
-			HELLO, //
-			SPACE,//
-			WORLD,//
-			new OptionRule<>(new SequenceRule(//
-					SPACE,//
-					FROM,//
-					SPACE,//
+	private static final Rule HELLO_WORLD_FROM = new SequenceRule(
+			HELLO,
+			SPACE,
+			WORLD,
+			new OptionRule<>(new SequenceRule(
+					SPACE,
+					FROM,
+					SPACE,
 					WHERE))//3
 	);
 
-	private static final Rule HELLO_PROPERTY = new SequenceRule(//
-			HELLO, //
-			SPACE, //
+	private static final Rule HELLO_PROPERTY = new SequenceRule(
+			HELLO, 
+			SPACE, 
 			PROPERTY);
 
 	@Test

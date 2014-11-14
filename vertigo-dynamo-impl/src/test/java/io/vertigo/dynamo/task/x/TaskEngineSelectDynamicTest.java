@@ -105,8 +105,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 
 			final Famille famille = new Famille();
 			famille.setFamId(10001L + 1);
-			final Task task = new TaskBuilder(taskDefinition)//
-					.withValue("DTO_FAMILLE", famille)//
+			final Task task = new TaskBuilder(taskDefinition)
+					.withValue("DTO_FAMILLE", famille)
 					.build();
 			// on suppose un appel synchrone : getResult immédiat.
 			final TaskResult result = taskManager.execute(task);
@@ -128,8 +128,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 
 			final Famille famille = new Famille();
 			famille.setFamId(10001L + 1);
-			final Task task = new TaskBuilder(taskDefinition)//
-					.withValue("DTO_FAMILLE", famille)//
+			final Task task = new TaskBuilder(taskDefinition)
+					.withValue("DTO_FAMILLE", famille)
 					.build();
 
 			// on suppose un appel synchrone : getResult immédiat.
@@ -151,10 +151,10 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			registerTaskWithNullableIn(TK_NULLABLE_TEST, "select * from FAMILLE fam where fam.FAM_ID = #PARAM_1#<%if(param2!=null) {%> OR fam.FAM_ID = #PARAM_2#+2 <%}%><%if(param3!=null) {%> OR fam.FAM_ID = #PARAM_3#+3<%}%>");
 			final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(TK_NULLABLE_TEST, TaskDefinition.class);
 
-			final Task task = new TaskBuilder(taskDefinition)//
-					.withValue("PARAM_1", 10002)//
-					.withValue("PARAM_2", null)//
-					.withValue("PARAM_3", 10002)//
+			final Task task = new TaskBuilder(taskDefinition)
+					.withValue("PARAM_1", 10002)
+					.withValue("PARAM_2", null)
+					.withValue("PARAM_3", 10002)
 					.build();
 
 			// on suppose un appel synchrone : getResult immédiat.
@@ -178,8 +178,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(TK_SCRIPT_TEST, TaskDefinition.class);
 
 			final DtList<Famille> familleIds = new DtList<>(Famille.class);
-			final Task task = new TaskBuilder(taskDefinition)//
-					.withValue("DTC_FAMILLE_IN", familleIds)//
+			final Task task = new TaskBuilder(taskDefinition)
+					.withValue("DTC_FAMILLE_IN", familleIds)
 					.build();
 			// on suppose un appel synchrone : getResult immédiat.
 			final TaskResult result = taskManager.execute(task);
@@ -202,8 +202,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 
 			final Famille famille = new Famille();
 			famille.setFamId(10001L + 1);
-			final Task task = new TaskBuilder(taskDefinition)//
-					.withValue("DTO_FAMILLE", famille)//
+			final Task task = new TaskBuilder(taskDefinition)
+					.withValue("DTO_FAMILLE", famille)
 					.build();
 
 			// on suppose un appel synchrone : getResult immédiat.
@@ -227,8 +227,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			final DtList<Famille> familleIds = new DtList<>(Famille.class);
 			familleIds.add(createFamId(10001L + 1));
 			familleIds.add(createFamId(10001L + 3));
-			final Task task = new TaskBuilder(taskDefinition)//
-					.withValue("DTC_FAMILLE_IN", familleIds)//
+			final Task task = new TaskBuilder(taskDefinition)
+					.withValue("DTC_FAMILLE_IN", familleIds)
 					.build();
 
 			// on suppose un appel synchrone : getResult immédiat.
@@ -252,8 +252,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(TK_WHERE_ID_TEST, TaskDefinition.class);
 
 			final DtList<Famille> familleIds = new DtList<>(Famille.class);
-			final Task task = new TaskBuilder(taskDefinition)//
-					.withValue("DTC_FAMILLE_IN", familleIds)//
+			final Task task = new TaskBuilder(taskDefinition)
+					.withValue("DTC_FAMILLE_IN", familleIds)
 					.build();
 			// on suppose un appel synchrone : getResult immédiat.
 			final TaskResult result = taskManager.execute(task);
@@ -274,7 +274,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(TK_WHERE_ID_TEST, TaskDefinition.class);
 
 			final DtList<Famille> familleIds = new DtList<>(Famille.class);
-			final Task task = new TaskBuilder(taskDefinition)//
+			final Task task = new TaskBuilder(taskDefinition)
 					.withValue("DTC_FAMILLE_IN", familleIds).build();
 
 			familleIds.add(createFamId(10001L + 1));
@@ -306,8 +306,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(TK_WHERE_ID_TEST, TaskDefinition.class);
 
 			final DtList<Famille> familleIds = new DtList<>(Famille.class);
-			final Task task = new TaskBuilder(taskDefinition)//
-					.withValue("DTC_FAMILLE_IN", familleIds)//
+			final Task task = new TaskBuilder(taskDefinition)
+					.withValue("DTC_FAMILLE_IN", familleIds)
 					.build();
 
 			// on suppose un appel synchrone : getResult immédiat.
@@ -334,8 +334,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			for (int i = 0; i < 2200; i++) {
 				familleIds.add(createFamId(10001L + 2 * i));
 			}
-			final Task task = new TaskBuilder(taskDefinition)//
-					.withValue("DTC_FAMILLE_IN", familleIds)//
+			final Task task = new TaskBuilder(taskDefinition)
+					.withValue("DTC_FAMILLE_IN", familleIds)
 					.build();
 
 			// on suppose un appel synchrone : getResult immédiat.
@@ -384,14 +384,14 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 		final Domain doInteger = Home.getDefinitionSpace().resolve("DO_INTEGER", Domain.class);
 		final Domain doFamilleList = Home.getDefinitionSpace().resolve("DO_DT_FAMILLE_DTC", Domain.class);
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskDefinitionName)//
-				.withEngine(TaskEngineSelect.class)//
-				.withRequest(params)//
-				.withPackageName(TaskEngineSelect.class.getPackage().getName())//
-				.withAttribute("PARAM_1", doInteger, true, true)//
-				.withAttribute("PARAM_2", doInteger, false, true)//
-				.withAttribute("PARAM_3", doInteger, false, true)//
-				.withAttribute("DTC_FAMILLE_OUT", doFamilleList, true, false)//
+		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskDefinitionName)
+				.withEngine(TaskEngineSelect.class)
+				.withRequest(params)
+				.withPackageName(TaskEngineSelect.class.getPackage().getName())
+				.withAttribute("PARAM_1", doInteger, true, true)
+				.withAttribute("PARAM_2", doInteger, false, true)
+				.withAttribute("PARAM_3", doInteger, false, true)
+				.withAttribute("DTC_FAMILLE_OUT", doFamilleList, true, false)
 				.build();
 
 		Home.getDefinitionSpace().put(taskDefinition, TaskDefinition.class);
@@ -402,12 +402,12 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 		final Domain doFamilleList = Home.getDefinitionSpace().resolve("DO_DT_FAMILLE_DTC", Domain.class);
 		final Domain doFamille = Home.getDefinitionSpace().resolve("DO_DT_FAMILLE_DTO", Domain.class);
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskDefinitionName)//
-				.withEngine(TaskEngineSelect.class)//
-				.withRequest(params)//
-				.withPackageName(TaskEngineSelect.class.getPackage().getName())//
-				.withAttribute("DTO_FAMILLE", doFamille, true, true)//
-				.withAttribute("DTC_FAMILLE_OUT", doFamilleList, true, false)//
+		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskDefinitionName)
+				.withEngine(TaskEngineSelect.class)
+				.withRequest(params)
+				.withPackageName(TaskEngineSelect.class.getPackage().getName())
+				.withAttribute("DTO_FAMILLE", doFamille, true, true)
+				.withAttribute("DTC_FAMILLE_OUT", doFamilleList, true, false)
 				.build();
 
 		Home.getDefinitionSpace().put(taskDefinition, TaskDefinition.class);
@@ -417,12 +417,12 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	private static TaskDefinition registerTaskList(final String taskDefinitionName, final String params) {
 		final Domain doFamilleList = Home.getDefinitionSpace().resolve("DO_DT_FAMILLE_DTC", Domain.class);
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskDefinitionName)//
-				.withEngine(TaskEngineSelect.class)//
-				.withRequest(params)//
-				.withPackageName(TaskEngineSelect.class.getPackage().getName())//
-				.withAttribute("DTC_FAMILLE_IN", doFamilleList, true, true)//
-				.withAttribute("DTC_FAMILLE_OUT", doFamilleList, true, false)//
+		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskDefinitionName)
+				.withEngine(TaskEngineSelect.class)
+				.withRequest(params)
+				.withPackageName(TaskEngineSelect.class.getPackage().getName())
+				.withAttribute("DTC_FAMILLE_IN", doFamilleList, true, true)
+				.withAttribute("DTC_FAMILLE_OUT", doFamilleList, true, false)
 				.build();
 
 		Home.getDefinitionSpace().put(taskDefinition, TaskDefinition.class);

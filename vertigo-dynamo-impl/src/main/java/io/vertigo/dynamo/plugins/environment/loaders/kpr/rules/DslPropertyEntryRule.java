@@ -75,16 +75,16 @@ public final class DslPropertyEntryRule extends AbstractRule<DslPropertyEntry, L
 			propertyNamesRules.add(new TermRule(propertyName));
 		}
 
-		return new SequenceRule(//
-				new FirstOfRule(propertyNamesRules),//
-				SPACES,//
-				PAIR_SEPARATOR,//
-				SPACES,//
-				QUOTATION_MARK,//
+		return new SequenceRule(
+				new FirstOfRule(propertyNamesRules),
+				SPACES,
+				PAIR_SEPARATOR,
+				SPACES,
+				QUOTATION_MARK,
 				PROPERTY_VALUE,//5
-				QUOTATION_MARK,//
-				SPACES,//
-				new OptionRule<>(DslSyntaxRules.OBJECT_SEPARATOR)//
+				QUOTATION_MARK,
+				SPACES,
+				new OptionRule<>(DslSyntaxRules.OBJECT_SEPARATOR)
 		);
 	}
 

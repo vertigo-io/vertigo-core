@@ -67,10 +67,10 @@ public final class DslKspRule extends AbstractRule<Void, List<?>> {
 				templateRule //1 
 		);
 		final Rule<List<Choice>> manyRule = new ManyRule<>(firstOfRule, true, true);
-		return new SequenceRule(//
-				SPACES,//
+		return new SequenceRule(
+				SPACES,
 				new DslPackageRule(),//1
-				SPACES, //
+				SPACES, 
 				manyRule); //3
 	}
 

@@ -49,9 +49,9 @@ public final class NameSpace2Java {
 			throw new IllegalArgumentException("Usage : java io.vertigo.studio.tools.NameSpace2Java \"<<pathToParams.properties>>\" ");
 		}
 		// ---------------------------------------------------------------------
-		try (App app = new AppBuilder() //
-				.withSilence(true)//
-				.withEnvParams(NameSpace2Java.class, args[0])//
+		try (App app = new AppBuilder()
+				.withSilence(true)
+				.withEnvParams(NameSpace2Java.class, args[0])
 				.start()) {
 			final List<Class<? extends Goal>> goalClazzList = new ArrayList<>();
 			//-------------------------------

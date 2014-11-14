@@ -65,7 +65,7 @@ final class MasterDataConfigurationImpl implements MasterDataConfiguration {
 		Assertion.checkNotNull(uri);
 		Assertion.checkNotNull(fieldName);
 		//----------------------------------------------------------------------
-		final DtListProcessor dtListFilter = collectionsManager.createDtListProcessor()//
+		final DtListProcessor dtListFilter = collectionsManager.createDtListProcessor()
 				.filterByValue(fieldName, value);
 		register(uri, dtListFilter);
 	}
@@ -78,8 +78,8 @@ final class MasterDataConfigurationImpl implements MasterDataConfiguration {
 		Assertion.checkNotNull(fieldName1);
 		Assertion.checkNotNull(fieldName2);
 		//----------------------------------------------------------------------
-		final DtListProcessor dtListFilter = collectionsManager.createDtListProcessor()//
-				.filterByValue(fieldName1, value1)//
+		final DtListProcessor dtListFilter = collectionsManager.createDtListProcessor()
+				.filterByValue(fieldName1, value1)
 				.filterByValue(fieldName2, value2);
 		register(uri, dtListFilter);
 	}

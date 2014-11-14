@@ -281,8 +281,8 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		final DtField fkField = dtcUri.getAssociationDefinition().castAsAssociationSimpleDefinition().getFKField();
 		final Object value = dtcUri.getSource().getKey();
 
-		final FilterCriteria<D> filterCriteria = new FilterCriteriaBuilder<D>() //
-				.withFilter(fkField.getName(), value) //
+		final FilterCriteria<D> filterCriteria = new FilterCriteriaBuilder<D>()
+				.withFilter(fkField.getName(), value)
 				.build();
 		return doLoadList(dtDefinition, filterCriteria, null);
 	}

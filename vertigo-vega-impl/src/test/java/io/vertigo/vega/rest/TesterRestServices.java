@@ -222,7 +222,7 @@ public final class TesterRestServices implements RestfulService {
 
 	//@POST is non-indempotent
 	@POST("/contact")
-	public Contact testPost(//
+	public Contact testPost(
 			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			throw new VUserException(new MessageText("Name is mandatory", null));
@@ -234,7 +234,7 @@ public final class TesterRestServices implements RestfulService {
 
 	//PUT is indempotent : ID obligatoire
 	@PUT("/contact")
-	public Contact testUpdate(//
+	public Contact testUpdate(
 			final @Validate({ ContactValidator.class, MandatoryPkValidator.class }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
@@ -264,9 +264,9 @@ public final class TesterRestServices implements RestfulService {
 	@Doc("Exclude conId and name.")
 	@PUT("/filtered/{conId}")
 	@ServerSideSave
-	public Contact filteredUpdateByExclude(//
-			final @Validate({ ContactValidator.class, MandatoryPkValidator.class })//
-			@ServerSideRead//
+	public Contact filteredUpdateByExclude(
+			final @Validate({ ContactValidator.class, MandatoryPkValidator.class })
+			@ServerSideRead
 			@ExcludedFields({ "conId", "name" }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
@@ -406,7 +406,7 @@ public final class TesterRestServices implements RestfulService {
 
 	@POST("/searchQueryPagined")
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
-	public List<Contact> testSearchServiceQueryPagined(final ContactCriteria contact, //
+	public List<Contact> testSearchServiceQueryPagined(final ContactCriteria contact, 
 			@QueryParam("") final UiListState uiListState) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
 		final DtList<Contact> fullList = asDtList(contactDao.getList(), Contact.class);
@@ -526,8 +526,8 @@ public final class TesterRestServices implements RestfulService {
 	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final UiListState uiListState) {
 		final DtList<D> sortedList;
 		if (uiListState.getSortFieldName() != null) {
-			sortedList = collectionsManager.createDtListProcessor()//
-					.sort(uiListState.getSortFieldName(), uiListState.isSortDesc(), true, true)//
+			sortedList = collectionsManager.createDtListProcessor()
+					.sort(uiListState.getSortFieldName(), uiListState.isSortDesc(), true, true)
 					.apply(unFilteredList);
 		} else {
 			sortedList = unFilteredList;
@@ -537,8 +537,8 @@ public final class TesterRestServices implements RestfulService {
 			final int listSize = sortedList.size();
 			final int usedSkip = Math.min(uiListState.getSkip(), listSize);
 			final int usedTop = Math.min(usedSkip + uiListState.getTop(), listSize);
-			filteredList = collectionsManager.createDtListProcessor()//
-					.filterSubList(usedSkip, usedTop)//
+			filteredList = collectionsManager.createDtListProcessor()
+					.filterSubList(usedSkip, usedTop)
 					.apply(sortedList);
 		} else {
 			filteredList = sortedList;

@@ -93,9 +93,9 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	}
 
 	private static String translatePath(final String path) {
-		return path//
-				.replaceAll(USER_HOME, System.getProperty(USER_HOME).replace('\\', '/'))//
-				.replaceAll(USER_DIR, System.getProperty(USER_DIR).replace('\\', '/'))//
+		return path
+				.replaceAll(USER_HOME, System.getProperty(USER_HOME).replace('\\', '/'))
+				.replaceAll(USER_DIR, System.getProperty(USER_DIR).replace('\\', '/'))
 				.replaceAll(JAVA_IO_TMPDIR, System.getProperty(JAVA_IO_TMPDIR).replace('\\', '/'));
 	}
 
@@ -292,9 +292,9 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	}
 
 	private Environment createDbEnv() throws DatabaseException {
-		final EnvironmentConfig myEnvConfig = new EnvironmentConfig()//
-				.setReadOnly(false)//
-				.setAllowCreate(true)//
+		final EnvironmentConfig myEnvConfig = new EnvironmentConfig()
+				.setReadOnly(false)
+				.setAllowCreate(true)
 				.setTransactional(true);
 		//we limit cache usage to 20% of global memory.
 		myEnvConfig.setCachePercent(20);
@@ -303,9 +303,9 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	}
 
 	private Database createDb() {
-		final DatabaseConfig myDbConfig = new DatabaseConfig()//
-				.setReadOnly(false)//
-				.setAllowCreate(true)//
+		final DatabaseConfig myDbConfig = new DatabaseConfig()
+				.setReadOnly(false)
+				.setAllowCreate(true)
 				.setTransactional(true);
 		try {
 			return myEnv.openDatabase(null, "KVDataStorePlugin", myDbConfig);

@@ -87,7 +87,7 @@ public final class ESEmbeddedServicesPlugin extends AbstractESServicesPlugin {
 
 	private static Settings buildNodeSettings(final String homePath) {
 		//Build settings
-		return ImmutableSettings.settingsBuilder() //
+		return ImmutableSettings.settingsBuilder()
 				.put("node.name", "es-embedded-node-" + System.currentTimeMillis())
 				.put("path.home", homePath)
 				.build();

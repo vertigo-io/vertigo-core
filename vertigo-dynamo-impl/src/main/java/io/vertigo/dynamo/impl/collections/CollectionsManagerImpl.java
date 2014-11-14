@@ -116,8 +116,8 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		final List<ListFilter> listFilters = facetedQuery.getListFilters();
 		DtList<D> filteredDtList = dtList;
 		for (final ListFilter listFilter : listFilters) {
-			filteredDtList = this.createDtListProcessor()//
-					.filter(listFilter)//
+			filteredDtList = this.createDtListProcessor()
+					.filter(listFilter)
 					.apply(filteredDtList);
 		}
 		return filteredDtList;

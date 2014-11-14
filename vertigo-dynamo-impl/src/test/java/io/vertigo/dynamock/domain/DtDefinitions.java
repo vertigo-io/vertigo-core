@@ -14,9 +14,9 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 */
 	public enum Definitions {
 			/** Objet de données Car. */
-			Car(io.vertigo.dynamock.domain.car.Car.class), //
+			Car(io.vertigo.dynamock.domain.car.Car.class),
 			/** Objet de données Famille. */
-			Famille(io.vertigo.dynamock.domain.famille.Famille.class), //
+			Famille(io.vertigo.dynamock.domain.famille.Famille.class),
 		;
 		
 		private final Class<?> clazz;
@@ -38,21 +38,21 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 */
 	public enum CarFields implements DtFieldName {
 		/** Propriété 'identifiant de la voiture'. */
-		ID, //
+		ID,
 		/** Propriété 'Constructeur'. */
-		MAKE, //
+		MAKE,
 		/** Propriété 'ModÃ¨le'. */
-		MODEL, //
+		MODEL,
 		/** Propriété 'Descriptif'. */
-		DESCRIPTION, //
+		DESCRIPTION, 
 		/** Propriété 'AnnÃ©e'. */
-		YEAR, //
+		YEAR,
 		/** Propriété 'KilomÃ©trage'. */
-		KILO, //
+		KILO,
 		/** Propriété 'Prix'. */
-		PRICE, //
+		PRICE, 
 		/** Propriété 'Type de moteur'. */
-		MOTOR_TYPE, //
+		MOTOR_TYPE,
 	}
 
 	/**
@@ -60,11 +60,11 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 */
 	public enum FamilleFields implements DtFieldName {
 		/** Propriété 'identifiant de la famille'. */
-		FAM_ID, //
+		FAM_ID,
 		/** Propriété 'Libelle'. */
-		LIBELLE, //
+		LIBELLE,
 		/** Propriété 'Libelle'. */
-		DESCRIPTION, //
+		DESCRIPTION,
 	}
 
 	    

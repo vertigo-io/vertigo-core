@@ -59,9 +59,9 @@ public final class DslDynamicDefinitionRule extends AbstractRule<DynamicDefiniti
 		// Création de la règle de déclaration d'une nouvelle definition.
 		return new SequenceRule(//Definition
 				new TermRule(operation),// alter ou create
-				SPACES,//
+				SPACES,
 				definitionRule,//2
-				SPACES//
+				SPACES
 		);
 	}
 

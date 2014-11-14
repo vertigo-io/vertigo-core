@@ -84,8 +84,8 @@ public final class LogicalDataStore implements DataStore {
 		//On compose les fonctions
 		//1.on filtre
 		//2.on trie
-		final DtList<D> sortedDtc = logicalStoreConfiguration.getPersistenceManager().getMasterDataConfiguration().getFilter(uri)//
-				.sort(uri.getDtDefinition().getSortField().get().getName(), false, true, true)//
+		final DtList<D> sortedDtc = logicalStoreConfiguration.getPersistenceManager().getMasterDataConfiguration().getFilter(uri)
+				.sort(uri.getDtDefinition().getSortField().get().getName(), false, true, true)
 				.apply(unFilteredDtc);
 		sortedDtc.setURI(uri);
 		return sortedDtc;

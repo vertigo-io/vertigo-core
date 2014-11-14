@@ -151,13 +151,13 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	private static TaskDefinition registerTaskInsertCar() {
 		final Domain doCar = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTO", Domain.class);
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_INSERT_CAR")//
-				.withEngine(TaskEngineProc.class)//
-				.withRequest("insert into CAR (ID, FAM_ID,MAKE, MODEL, DESCRIPTION, YEAR, KILO, PRICE, MOTOR_TYPE) values " //
+		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_INSERT_CAR")
+				.withEngine(TaskEngineProc.class)
+				.withRequest("insert into CAR (ID, FAM_ID,MAKE, MODEL, DESCRIPTION, YEAR, KILO, PRICE, MOTOR_TYPE) values " 
 						//syntaxe HsqlDb pour sequence.nextval
-						+ "(NEXT VALUE FOR SEQ_CAR, #DTO_CAR.FAM_ID#, #DTO_CAR.MAKE#, #DTO_CAR.MODEL#, #DTO_CAR.DESCRIPTION#, #DTO_CAR.YEAR#, #DTO_CAR.KILO#, #DTO_CAR.PRICE#, #DTO_CAR.MOTOR_TYPE#)") //
-				.withPackageName(TaskEngineSelect.class.getPackage().getName())//
-				.withAttribute("DTO_CAR", doCar, true, true)//
+						+ "(NEXT VALUE FOR SEQ_CAR, #DTO_CAR.FAM_ID#, #DTO_CAR.MAKE#, #DTO_CAR.MODEL#, #DTO_CAR.DESCRIPTION#, #DTO_CAR.YEAR#, #DTO_CAR.KILO#, #DTO_CAR.PRICE#, #DTO_CAR.MOTOR_TYPE#)")
+				.withPackageName(TaskEngineSelect.class.getPackage().getName())
+				.withAttribute("DTO_CAR", doCar, true, true)
 				.build();
 
 		Home.getDefinitionSpace().put(taskDefinition, TaskDefinition.class);
@@ -167,20 +167,20 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	private static TaskDefinition registerTaskUpdateCar() {
 		final Domain doCar = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTO", Domain.class);
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_UPDATE_CAR")//
-				.withEngine(TaskEngineProc.class)//
-				.withRequest("update CAR set " //
-						+ "FAM_ID = #DTO_CAR.FAM_ID#, " //
-						+ "MAKE = #DTO_CAR.MAKE#, " //
-						+ "MODEL = #DTO_CAR.MODEL#, " //
-						+ "DESCRIPTION = #DTO_CAR.DESCRIPTION#, " //
-						+ "YEAR = #DTO_CAR.YEAR#, " //
-						+ "KILO = #DTO_CAR.KILO#, " //
-						+ "PRICE = #DTO_CAR.PRICE#, " //
-						+ "MOTOR_TYPE = #DTO_CAR.MOTOR_TYPE#) " //
-						+ "where CAR_ID = #DTO_CAR.ID#" + "") //
-				.withPackageName(TaskEngineSelect.class.getPackage().getName())//
-				.withAttribute("DTO_CAR", doCar, true, true)//
+		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_UPDATE_CAR")
+				.withEngine(TaskEngineProc.class)
+				.withRequest("update CAR set "
+						+ "FAM_ID = #DTO_CAR.FAM_ID#, "
+						+ "MAKE = #DTO_CAR.MAKE#, "
+						+ "MODEL = #DTO_CAR.MODEL#, "
+						+ "DESCRIPTION = #DTO_CAR.DESCRIPTION#, "
+						+ "YEAR = #DTO_CAR.YEAR#, " 
+						+ "KILO = #DTO_CAR.KILO#, " 
+						+ "PRICE = #DTO_CAR.PRICE#, "
+						+ "MOTOR_TYPE = #DTO_CAR.MOTOR_TYPE#) "
+						+ "where CAR_ID = #DTO_CAR.ID#" + "") 
+				.withPackageName(TaskEngineSelect.class.getPackage().getName())
+				.withAttribute("DTO_CAR", doCar, true, true)
 				.build();
 
 		Home.getDefinitionSpace().put(taskDefinition, TaskDefinition.class);
@@ -191,12 +191,12 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		final Domain doId = Home.getDefinitionSpace().resolve("DO_IDENTIFIANT", Domain.class);
 		final Domain doCar = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTO", Domain.class);
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_CAR_BY_ID")//
-				.withEngine(TaskEngineSelect.class)//
-				.withRequest("select * from CAR where ID = #ID#")//
-				.withPackageName(TaskEngineSelect.class.getPackage().getName())//
-				.withAttribute("ID", doId, true, true)//
-				.withAttribute("DTO_CAR_OUT", doCar, true, false)//
+		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_CAR_BY_ID")
+				.withEngine(TaskEngineSelect.class)
+				.withRequest("select * from CAR where ID = #ID#")
+				.withPackageName(TaskEngineSelect.class.getPackage().getName())
+				.withAttribute("ID", doId, true, true)
+				.withAttribute("DTO_CAR_OUT", doCar, true, false)
 				.build();
 
 		Home.getDefinitionSpace().put(taskDefinition, TaskDefinition.class);
@@ -206,11 +206,11 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	private static TaskDefinition registerTaskLoadCarList() {
 		final Domain doCarList = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTC", Domain.class);
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_ALL_CARS")//
-				.withEngine(TaskEngineSelect.class)//
-				.withRequest("select * from CAR")//
-				.withPackageName(TaskEngineSelect.class.getPackage().getName())//
-				.withAttribute("DTC_CAR_OUT", doCarList, true, false)//
+		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_ALL_CARS")
+				.withEngine(TaskEngineSelect.class)
+				.withRequest("select * from CAR")
+				.withPackageName(TaskEngineSelect.class.getPackage().getName())
+				.withAttribute("DTC_CAR_OUT", doCarList, true, false)
 				.build();
 
 		Home.getDefinitionSpace().put(taskDefinition, TaskDefinition.class);
@@ -220,8 +220,8 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	protected final void nativeInsertCar(final Car car) {
 		Assertion.checkArgument(car.getId() == null, "L'id n'est pas null {0}", car.getId());
 		//---------------------------------------------------------------------
-		final Task task = new TaskBuilder(taskInsertCar)//
-				.withValue("DTO_CAR", car)//
+		final Task task = new TaskBuilder(taskInsertCar)
+				.withValue("DTO_CAR", car)
 				.build();
 		final TaskResult taskResult = taskManager.execute(task);
 		nop(taskResult);
@@ -230,8 +230,8 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	protected final void nativeUpdateCar(final Car car) {
 		Assertion.checkArgument(car.getId() != null, "L'id est null");
 		//---------------------------------------------------------------------
-		final Task task = new TaskBuilder(taskUpdateCar)//
-				.withValue("DTO_CAR", car)//
+		final Task task = new TaskBuilder(taskUpdateCar)
+				.withValue("DTO_CAR", car)
 				.build();
 		final TaskResult taskResult = taskManager.execute(task);
 		nop(taskResult);
@@ -239,15 +239,15 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	}
 
 	protected final Car nativeLoadCar(final long carId) {
-		final Task task = new TaskBuilder(taskLoadCar)//
-				.withValue("CAR_ID", carId)//
+		final Task task = new TaskBuilder(taskLoadCar)
+				.withValue("CAR_ID", carId)
 				.build();
 		final TaskResult taskResult = taskManager.execute(task);
 		return taskResult.<Car> getValue("DTO_CAR_OUT");
 	}
 
 	protected final DtList<Car> nativeLoadCarList() {
-		final Task task = new TaskBuilder(taskLoadCars)//
+		final Task task = new TaskBuilder(taskLoadCars)
 				.build();
 		final TaskResult taskResult = taskManager.execute(task);
 		return taskResult.<DtList<Car>> getValue("DTC_CAR_OUT");

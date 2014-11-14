@@ -178,15 +178,15 @@ public final class BrokerNNImpl implements BrokerNN {
 		}
 	}
 
-	private int processNN(final String taskDefinitionName, final String request,//
-			final DtField sourceField, final Object sourceValue, //
+	private int processNN(final String taskDefinitionName, final String request,
+			final DtField sourceField, final Object sourceValue, 
 			final DtField targetField, final Object targetValue) {
 		//FieldName
 		final String sourceFieldName = sourceField.getName();
 
-		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskDefinitionName)//
-				.withEngine(TaskEngineProc.class)//
-				.withRequest(request)//
+		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskDefinitionName)
+				.withEngine(TaskEngineProc.class)
+				.withRequest(request)
 				.withAttribute(sourceFieldName, sourceField.getDomain(), true, true); //IN, obligatoire
 		if (targetField != null) {
 			taskDefinitionBuilder.withAttribute(targetField.getName(), targetField.getDomain(), true, true);

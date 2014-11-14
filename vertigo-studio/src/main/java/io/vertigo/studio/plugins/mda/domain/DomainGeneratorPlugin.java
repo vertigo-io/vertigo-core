@@ -69,15 +69,15 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 	 * @param baseCible Type de base de données ciblé.
 	 */
 	@Inject
-	public DomainGeneratorPlugin(//
-			@Named("generateDtResources") final boolean generateDtResources,//
-			@Named("generateDtResourcesJS") final boolean generateDtResourcesJS,//
-			@Named("generateJpaAnnotations") final boolean generateJpaAnnotations,//
-			@Named("generateDtDefinitions") final boolean generateDtDefinitions, //
-			@Named("generateJsDtDefinitions") final boolean generateJsDtDefinitions,//
-			@Named("generateDtObject") final boolean generateDtObject, //
-			@Named("generateSql") final boolean generateSql, //
-			@Named("generateDrop") final boolean generateDrop, //
+	public DomainGeneratorPlugin(
+			@Named("generateDtResources") final boolean generateDtResources,
+			@Named("generateDtResourcesJS") final boolean generateDtResourcesJS,
+			@Named("generateJpaAnnotations") final boolean generateJpaAnnotations,
+			@Named("generateDtDefinitions") final boolean generateDtDefinitions, 
+			@Named("generateJsDtDefinitions") final boolean generateJsDtDefinitions,
+			@Named("generateDtObject") final boolean generateDtObject, 
+			@Named("generateSql") final boolean generateSql, 
+			@Named("generateDrop") final boolean generateDrop, 
 			@Named("baseCible") final String baseCible) {
 		// ---------------------------------------------------------------------
 		this.generateDtResources = generateDtResources;

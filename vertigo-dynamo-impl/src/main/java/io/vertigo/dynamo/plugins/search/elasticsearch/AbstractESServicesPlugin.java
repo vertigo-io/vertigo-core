@@ -222,9 +222,9 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 		//---------------------------------------------------------------------
 		final IndexFieldNameResolver indexFieldNameResolver = obtainIndexFieldNameResolver(indexDefinition);
 		try (final XContentBuilder typeMapping = XContentFactory.jsonBuilder()) {
-			typeMapping.startObject().startObject("properties") //
-					.startObject(ESDocumentCodec.FULL_RESULT) //
-					.field("type", "binary")//
+			typeMapping.startObject().startObject("properties")
+					.startObject(ESDocumentCodec.FULL_RESULT)
+					.field("type", "binary")
 					.endObject();
 			/* 3 : Les champs du dto index */
 			final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
@@ -242,10 +242,10 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 			typeMapping.endObject().endObject(); //end properties
 			//
 			final IndicesAdminClient indicesAdmin = esClient.admin().indices();
-			final PutMappingResponse putMappingResponse = new PutMappingRequestBuilder(indicesAdmin) //
-					.setIndices(indexDefinition.getName().toLowerCase()) //
-					.setType(indexDefinition.getIndexDtDefinition().getName()) //
-					.setSource(typeMapping)//
+			final PutMappingResponse putMappingResponse = new PutMappingRequestBuilder(indicesAdmin)
+					.setIndices(indexDefinition.getName().toLowerCase())
+					.setType(indexDefinition.getIndexDtDefinition().getName())
+					.setSource(typeMapping)
 					.get();
 			putMappingResponse.isAcknowledged();
 		} catch (final IOException e) {

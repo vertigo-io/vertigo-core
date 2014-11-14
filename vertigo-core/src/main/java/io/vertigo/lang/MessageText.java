@@ -117,12 +117,13 @@ public final class MessageText implements Serializable {
 	}
 
 	private String getPanicMessage(final Locale locale) {
-		return new StringBuilder()//
-				.append("<<")//
-				.append(locale != null ? locale.getLanguage() : "xx")//
-				.append(":")//
-				.append(defaultMsg != null ? defaultMsg : key.name() + (params.length == 0 ? "" : Arrays.toString(params)))//
-				.append(">>").toString();
+		return new StringBuilder()
+				.append("<<")
+				.append(locale != null ? locale.getLanguage() : "xx")
+				.append(":")
+				.append(defaultMsg != null ? defaultMsg : key.name() + (params.length == 0 ? "" : Arrays.toString(params)))
+				.append(">>")
+				.toString();
 	}
 
 	/** {@inheritDoc} */

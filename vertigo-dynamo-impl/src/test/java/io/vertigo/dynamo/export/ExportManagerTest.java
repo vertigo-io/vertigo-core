@@ -222,9 +222,9 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	// exportManager.createExportListParameters(dtc);
 	//
 	// final Export export = new ExportBuilder(ExportFormat.ODS, OUTPUT_PATH +
-	// "test.ods")//
-	// .withSheet(dtParameter)//
-	// .withAuthor("test")//
+	// "test.ods")
+	// .withSheet(dtParameter)
+	// .withAuthor("test")
 	// .build();
 	//
 	// final KFile result = exportManager.createExportFile(export);

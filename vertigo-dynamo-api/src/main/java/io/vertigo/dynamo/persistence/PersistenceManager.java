@@ -31,7 +31,6 @@ public interface PersistenceManager extends Component {
 	 */
 	Broker getBroker();
 
-	//
 	BrokerNN getBrokerNN();
 
 	/**

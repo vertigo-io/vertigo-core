@@ -117,10 +117,10 @@ public final class DtField implements DtFieldName {
 	 * @param computedExpression Expression du computed (noNull si type=Computed)
 	 * @param dynamic Gestion des champs dynamiques
 	 */
-	DtField(final String id, final String fieldName, final FieldType type, //
-			final Domain domain, final MessageText label, final boolean notNull,//
-			final boolean persistent, final String fkDtDefinitionName, //
-			final ComputedExpression computedExpression, final boolean dynamic, //
+	DtField(final String id, final String fieldName, final FieldType type, 
+			final Domain domain, final MessageText label, final boolean notNull,
+			final boolean persistent, final String fkDtDefinitionName,
+			final ComputedExpression computedExpression, final boolean dynamic,
 			final boolean sort, final boolean display) {
 		Assertion.checkArgNotEmpty(id);
 		Assertion.checkNotNull(type);

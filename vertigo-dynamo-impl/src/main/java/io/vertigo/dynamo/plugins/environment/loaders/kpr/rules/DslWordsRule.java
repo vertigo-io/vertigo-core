@@ -43,25 +43,25 @@ public final class DslWordsRule extends AbstractRule<List<String>, Choice> {
 
 	// 	{ }
 	private static final Rule<List<?>> EMPTY_LIST = new SequenceRule(//Liste vide
-			ARRAY_START,//
-			SPACES,//
+			ARRAY_START,
+			SPACES,
 			ARRAY_END);
 
 	// , XXXX
-	private static final Rule<List<List<?>>> MANY_WORDS = new ManyRule<>(//
+	private static final Rule<List<List<?>>> MANY_WORDS = new ManyRule<>(
 			new SequenceRule(//"mot"
-					ARRAY_SEPARATOR, //
-					SPACES, //
+					ARRAY_SEPARATOR,
+					SPACES,
 					WORD //2
 			), true);
 
 	//{ XXXXX (,XXXX)+ }
 	private static final Rule<List<?>> NON_EMPTY_LIST = new SequenceRule(//"Liste non vide"
-			ARRAY_START,//
-			SPACES,//
+			ARRAY_START,
+			SPACES,
 			WORD,//2
 			MANY_WORDS, // 3
-			SPACES,//
+			SPACES,
 			ARRAY_END);
 
 	@Override

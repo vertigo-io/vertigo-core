@@ -122,7 +122,7 @@ public final class AppBuilder {
 	public AppConfigBuilder toAppConfigBuilder() {
 		Assertion.checkState(myAppConfigBuilder != null, "appConfigBuilder was not set, use build instead");
 		//---------------------------------------------------------------------
-		myAppConfigBuilder.withSilence(mySilence); //
+		myAppConfigBuilder.withSilence(mySilence);
 		//1- if no xmlUrls we check if a property reference files
 		if (xmlUrls.isEmpty()) {
 			final String xmlFileNames = myEnvParams.getProperty("applicationConfiguration");

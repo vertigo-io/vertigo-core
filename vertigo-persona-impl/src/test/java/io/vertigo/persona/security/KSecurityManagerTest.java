@@ -111,8 +111,8 @@ public final class KSecurityManagerTest extends AbstractTestCaseJU4 {
 		Home.getDefinitionSpace().put(manager, Role.class);
 		Home.getDefinitionSpace().put(secretary, Role.class);
 
-		final UserSession userSession = securityManager.createUserSession()//
-				.addRole(admin)//
+		final UserSession userSession = securityManager.createUserSession()
+				.addRole(admin)
 				.addRole(manager);
 		try {
 			securityManager.startCurrentUserSession(userSession);
@@ -138,8 +138,8 @@ public final class KSecurityManagerTest extends AbstractTestCaseJU4 {
 		final Role reader = getRole("R_READER");
 		final Role writer = getRole("R_WRITER");
 
-		final UserSession userSession = securityManager.createUserSession()//
-				.addRole(reader)//
+		final UserSession userSession = securityManager.createUserSession()
+				.addRole(reader)
 				.addRole(writer);
 		try {
 			securityManager.startCurrentUserSession(userSession);
@@ -155,8 +155,8 @@ public final class KSecurityManagerTest extends AbstractTestCaseJU4 {
 		final Role reader = getRole("R_READER");
 		final Role writer = getRole("R_WRITER");
 
-		final UserSession userSession = securityManager.createUserSession()//
-				.addRole(reader)//
+		final UserSession userSession = securityManager.createUserSession()
+				.addRole(reader)
 				.addRole(writer);
 		try {
 			securityManager.startCurrentUserSession(userSession);
@@ -173,7 +173,7 @@ public final class KSecurityManagerTest extends AbstractTestCaseJU4 {
 	public void testNoWriterRole() {
 		final Role reader = getRole("R_READER");
 
-		final UserSession userSession = securityManager.createUserSession()//
+		final UserSession userSession = securityManager.createUserSession()
 				.addRole(reader);
 		try {
 			securityManager.startCurrentUserSession(userSession);
@@ -197,7 +197,7 @@ public final class KSecurityManagerTest extends AbstractTestCaseJU4 {
 
 		//Test toutes familles
 		final Role readAllFamillies = getRole("R_ALL_FAMILLES");
-		final UserSession userSession = securityManager.createUserSession()//
+		final UserSession userSession = securityManager.createUserSession()
 				.addRole(readAllFamillies);
 		try {
 			securityManager.startCurrentUserSession(userSession);
@@ -221,7 +221,7 @@ public final class KSecurityManagerTest extends AbstractTestCaseJU4 {
 
 		//Test ma famille
 		final Role readMyFamilly = getRole("R_MY_FAMILLE");
-		final UserSession userSession = securityManager.createUserSession()//
+		final UserSession userSession = securityManager.createUserSession()
 				.addRole(readMyFamilly);
 		try {
 			securityManager.startCurrentUserSession(userSession);

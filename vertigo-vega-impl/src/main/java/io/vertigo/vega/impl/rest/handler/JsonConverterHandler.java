@@ -224,7 +224,7 @@ final class JsonConverterHandler implements RouteHandler {
 		if (queryMap == null) {
 			return null;
 		}
-		if (UiListState.class.isAssignableFrom(paramClass) //
+		if (UiListState.class.isAssignableFrom(paramClass)
 				|| DtObject.class.isAssignableFrom(paramClass)) {
 			return (D) readValue(convertToJson(queryMap, endPointParam.getName()), endPointParam);
 		}

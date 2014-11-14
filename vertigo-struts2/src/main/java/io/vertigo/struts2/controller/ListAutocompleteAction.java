@@ -94,12 +94,12 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 		final Collection<DtField> searchedFields = Collections.singletonList(labelField);
 		final DtList<D> results;
 		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) { //Open a transaction because all fields are indexed. If there is a MDL it was load too.
-			final DtListProcessor fullTextFilter = collectionsManager.createDtListProcessor()//
+			final DtListProcessor fullTextFilter = collectionsManager.createDtListProcessor()
 					.filter(searchString != null ? searchString : "", 20, searchedFields);
 			results = fullTextFilter.apply(list);
 		}
-		return createAjaxResponseBuilder() //
-				.withJson(toJson(results, keyField, labelField)) //
+		return createAjaxResponseBuilder() 
+				.withJson(toJson(results, keyField, labelField))
 				.send();
 	}
 

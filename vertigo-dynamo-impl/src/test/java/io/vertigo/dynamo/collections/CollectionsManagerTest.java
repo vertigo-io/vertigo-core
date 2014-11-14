@@ -64,7 +64,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testCreateSortState() {
-		final DtListProcessor sortStateAsc = collectionsManager.createDtListProcessor()//
+		final DtListProcessor sortStateAsc = collectionsManager.createDtListProcessor()
 				.sort("LIBELLE", false, true, true);
 		Assert.assertNotNull(sortStateAsc);
 	}
@@ -82,7 +82,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 			mocka.setLibelle(String.valueOf(i % 100));
 			dtc.add(mocka);
 		}
-		final DtListProcessor sortState = collectionsManager.createDtListProcessor()//
+		final DtListProcessor sortState = collectionsManager.createDtListProcessor()
 				.sort("LIBELLE", false, true, true);
 		final DtList<Famille> sortedDtc = sortState.apply(dtc);
 		nop(sortedDtc);
@@ -102,8 +102,9 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// ======================== Ascendant
 		// =================================== nullLast
 		// ================================================ ignoreCase
-		sortDtc = collectionsManager.createDtListProcessor()//
-				.sort("LIBELLE", false, true, true)//
+		sortDtc = collectionsManager
+				.createDtListProcessor()
+				.sort("LIBELLE", false, true, true)
 				.apply(dtc);
 
 		assertEquals(indexDtc, indexId(dtc));
@@ -112,8 +113,8 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// ======================== Ascendant
 		// =================================== nullLast
 		// ================================================ not ignoreCase
-		sortDtc = collectionsManager.createDtListProcessor()//
-				.sort("LIBELLE", false, true, false)//
+		sortDtc = collectionsManager.createDtListProcessor()
+				.sort("LIBELLE", false, true, false)
 				.apply(dtc);
 
 		assertEquals(indexDtc, indexId(dtc));
@@ -122,8 +123,8 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// ======================== Ascendant
 		// =================================== not nullLast
 		// ================================================ ignoreCase
-		sortDtc = collectionsManager.createDtListProcessor()//
-				.sort("LIBELLE", false, false, true)//
+		sortDtc = collectionsManager.createDtListProcessor()
+				.sort("LIBELLE", false, false, true)
 				.apply(dtc);
 		assertEquals(indexDtc, indexId(dtc));
 		assertEquals(new String[] { null, aaa, Ba, bb }, indexId(sortDtc));
@@ -131,8 +132,8 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// ======================== Ascendant
 		// =================================== not nullLast
 		// ================================================ not ignoreCase
-		sortDtc = collectionsManager.createDtListProcessor()//
-				.sort("LIBELLE", false, false, false)//
+		sortDtc = collectionsManager.createDtListProcessor()
+				.sort("LIBELLE", false, false, false)
 				.apply(dtc);
 		assertEquals(indexDtc, indexId(dtc));
 		assertEquals(new String[] { null, Ba, aaa, bb }, indexId(sortDtc));
@@ -140,8 +141,8 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// ======================== Descendant
 		// =================================== nullLast
 		// ================================================ ignoreCase
-		sortDtc = collectionsManager.createDtListProcessor()//
-				.sort("LIBELLE", true, true, true)//
+		sortDtc = collectionsManager.createDtListProcessor()
+				.sort("LIBELLE", true, true, true)
 				.apply(dtc);
 		assertEquals(indexDtc, indexId(dtc));
 		assertEquals(new String[] { bb, Ba, aaa, null }, indexId(sortDtc));
@@ -149,8 +150,8 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// ======================== Descendant
 		// =================================== nullLast
 		// ================================================ not ignoreCase
-		sortDtc = collectionsManager.createDtListProcessor()//
-				.sort("LIBELLE", true, true, false)//
+		sortDtc = collectionsManager.createDtListProcessor()
+				.sort("LIBELLE", true, true, false)
 				.apply(dtc);
 		assertEquals(indexDtc, indexId(dtc));
 		assertEquals(new String[] { bb, aaa, Ba, null }, indexId(sortDtc));
@@ -158,8 +159,8 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// ======================== Descendant
 		// =================================== not nullLast
 		// ================================================ ignoreCase
-		sortDtc = collectionsManager.createDtListProcessor()//
-				.sort("LIBELLE", true, false, true)//
+		sortDtc = collectionsManager.createDtListProcessor()
+				.sort("LIBELLE", true, false, true)
 				.apply(dtc);
 		assertEquals(indexDtc, indexId(dtc));
 		assertEquals(new String[] { null, bb, Ba, aaa }, indexId(sortDtc));
@@ -167,8 +168,8 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// ======================== Descendant
 		// =================================== not nullLast
 		// ============================================ not ignoreCase
-		sortDtc = collectionsManager.createDtListProcessor()//
-				.sort("LIBELLE", true, false, false)//
+		sortDtc = collectionsManager.createDtListProcessor()
+				.sort("LIBELLE", true, false, false)
 				.apply(dtc);
 		assertEquals(indexDtc, indexId(dtc));
 		assertEquals(new String[] { null, bb, aaa, Ba }, indexId(sortDtc));
@@ -179,7 +180,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testCreateValueFilter() {
-		final DtListProcessor filter = collectionsManager.createDtListProcessor()//
+		final DtListProcessor filter = collectionsManager.createDtListProcessor()
 				.filterByValue("LIBELLE", "a");
 		Assert.assertNotNull(filter);
 	}
@@ -189,8 +190,8 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testCreateTwoValuesFilter() {
-		final DtListProcessor filter = collectionsManager.createDtListProcessor()//
-				.filterByValue("LIBELLE", "a")//
+		final DtListProcessor filter = collectionsManager.createDtListProcessor()
+				.filterByValue("LIBELLE", "a")
 				.filterByValue("FAM_ID", 1L);
 		Assert.assertNotNull(filter);
 	}
@@ -200,8 +201,8 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testFilter() {
-		final DtList<Famille> result = collectionsManager.createDtListProcessor()//
-				.filterByValue("LIBELLE", "aaa")//
+		final DtList<Famille> result = collectionsManager.createDtListProcessor()
+				.filterByValue("LIBELLE", "aaa")
 				.apply(createFamilles());
 		Assert.assertEquals(1, result.size());
 	}
@@ -211,9 +212,9 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testFilterTwoValues() {
-		final DtList<Famille> result = collectionsManager.createDtListProcessor()//
-				.filterByValue("LIBELLE", "aaa")//
-				.filterByValue("FAM_ID", 13L)//
+		final DtList<Famille> result = collectionsManager.createDtListProcessor()
+				.filterByValue("LIBELLE", "aaa")
+				.filterByValue("FAM_ID", 13L)
 				.apply(createFamillesForRangeTest());
 		Assert.assertEquals(1, result.size());
 	}
@@ -223,8 +224,8 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testFilterFullText() {
-		final DtList<Famille> result = collectionsManager.createDtListProcessor()//
-				.filter("aa", 1000, dtDefinitionFamille.getFields())//
+		final DtList<Famille> result = collectionsManager.createDtListProcessor()
+				.filter("aa", 1000, dtDefinitionFamille.getFields())
 				.apply(createFamilles());
 		Assert.assertEquals(1, result.size(), 0);
 
@@ -254,8 +255,8 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private List<Famille> filter(final DtList<Famille> dtc, final String query, final int nbRows, final Collection<DtField> searchedDtFields) {
-		return collectionsManager.createDtListProcessor()//
-				.filter(query, nbRows, searchedDtFields)//
+		return collectionsManager.createDtListProcessor()
+				.filter(query, nbRows, searchedDtFields)
 				.apply(dtc);
 	}
 
@@ -307,7 +308,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testFilterFullTextBigList() {
-		final DtListProcessor filter = collectionsManager.createDtListProcessor()//
+		final DtListProcessor filter = collectionsManager.createDtListProcessor()
 				.filter("a", 2000, dtDefinitionFamille.getFields());
 		Assert.assertNotNull(filter);
 		final DtList<Famille> bigFamillyList = new DtList<>(Famille.class);
@@ -341,8 +342,8 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private DtList<Famille> subList(final DtList<Famille> dtc, final int start, final int end) {
-		return collectionsManager.createDtListProcessor()//
-				.filterSubList(start, end)//
+		return collectionsManager.createDtListProcessor()
+				.filterSubList(start, end)
 				.apply(dtc);
 	}
 
@@ -376,9 +377,9 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		final DtList<Famille> dtc = createFamilles();
 		final String[] indexDtc = indexId(dtc);
 
-		final DtListProcessor filter = collectionsManager.createDtListProcessor()//
+		final DtListProcessor filter = collectionsManager.createDtListProcessor()
 				.filterByValue("LIBELLE", "aaa");
-		final DtListProcessor sortState = collectionsManager.createDtListProcessor()//
+		final DtListProcessor sortState = collectionsManager.createDtListProcessor()
 				.sort("LIBELLE", false, true, true);
 
 		final int sizeDtc = dtc.size();
@@ -430,7 +431,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testCreateFilterForValue() {
-		final DtListProcessor filter = collectionsManager.createDtListProcessor()//
+		final DtListProcessor filter = collectionsManager.createDtListProcessor()
 				.filter(new ListFilter("LIBELLE" + ":\"aaa\""));
 		Assert.assertNotNull(filter);
 	}
@@ -459,7 +460,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testCreateFilterByRange() {
-		final DtListProcessor filter = collectionsManager.createDtListProcessor()//
+		final DtListProcessor filter = collectionsManager.createDtListProcessor()
 				.filterByRange("LIBELLE", Option.option("a"), Option.option("b"));
 		Assert.assertNotNull(filter);
 	}
@@ -469,14 +470,14 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testCreateFilter() {
-		final DtListProcessor filter = collectionsManager.createDtListProcessor()//
+		final DtListProcessor filter = collectionsManager.createDtListProcessor()
 				.filter(new ListFilter("LIBELLE" + ":[a TO b]"));
 		Assert.assertNotNull(filter);
 	}
 
 	@Test
 	public void testaddDtListFunction() {
-		final DtList<Famille> familles = collectionsManager.createDtListProcessor()//
+		final DtList<Famille> familles = collectionsManager.createDtListProcessor()
 				.add(new DtListFunction<Famille>() {
 
 					/** {@inheritDoc} */
@@ -529,14 +530,14 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private void testTermFilter(final String filterString, final int countEspected) {
-		final DtList<Famille> result = collectionsManager.createDtListProcessor()//
-				.filter(new ListFilter(filterString))//
+		final DtList<Famille> result = collectionsManager.createDtListProcessor()
+				.filter(new ListFilter(filterString))
 				.apply(createFamillesForRangeTest());
 		Assert.assertEquals(countEspected, result.size());
 	}
 
 	private void testRangeFilter(final String filterString, final int countEspected) {
-		final DtListProcessor filter = collectionsManager.createDtListProcessor()//
+		final DtListProcessor filter = collectionsManager.createDtListProcessor()
 				.filter(new ListFilter(filterString));
 		Assert.assertNotNull(filter);
 		final DtList<Famille> result = filter.apply(createFamillesForRangeTest());

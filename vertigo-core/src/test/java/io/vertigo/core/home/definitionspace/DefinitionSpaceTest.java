@@ -39,8 +39,8 @@ public class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 
 	@Override
 	protected void configMe(final AppConfigBuilder appConfiguilder) {
-		appConfiguilder//
-				.withParam("log4j.configurationFileName", "/log4j.xml")//
+		appConfiguilder
+				.withParam("log4j.configurationFileName", "/log4j.xml")
 				.withSilence(false);
 	}
 

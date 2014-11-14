@@ -83,19 +83,19 @@ public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody,
 
 		final DslPropertyEntryRule xPropertyEntryRule = new DslPropertyEntryRule(entity.getProperties());
 		final DslDefinitionEntryRule xDefinitionEntryRule = new DslDefinitionEntryRule(attributeNames);
-		final FirstOfRule firstOfRule = new FirstOfRule(//
+		final FirstOfRule firstOfRule = new FirstOfRule(
 				xPropertyEntryRule, // 0
 				xDefinitionEntryRule, // 1
 				new FirstOfRule(innerDefinitionRules),//2, 
 				SPACES);
 
 		final ManyRule<Choice> manyRule = new ManyRule<>(firstOfRule, true);
-		return new SequenceRule(//
-				OBJECT_START,//
-				SPACES,//
+		return new SequenceRule(
+				OBJECT_START,
+				SPACES,
 				manyRule,//2
-				SPACES,//
-				OBJECT_END//
+				SPACES,
+				OBJECT_END
 		);
 	}
 

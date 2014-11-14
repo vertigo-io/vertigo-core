@@ -61,8 +61,8 @@ final class HomeServletStarter {
 			final Properties conf = createProperties(servletContext);
 			WebAppContextConfigPlugin.setInitConfig(conf);
 
-			final AppConfig appConfig = new AppBuilder() //
-					.withSilence(true)//
+			final AppConfig appConfig = new AppBuilder()
+					.withSilence(true)
 					.withEnvParams(conf).build();
 			// Initialisation de l'état de l'application
 			Home.start(appConfig);

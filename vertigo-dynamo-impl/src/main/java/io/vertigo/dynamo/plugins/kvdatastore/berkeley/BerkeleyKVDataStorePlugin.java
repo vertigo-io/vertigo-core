@@ -96,17 +96,17 @@ public final class BerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activ
 	 */
 	private void doStart(final boolean readOnly) throws DatabaseException {
 
-		final EnvironmentConfig environmentConfig = new EnvironmentConfig()//
-				.setConfigParam(EnvironmentConfig.LOG_MEM_ONLY, inMemory ? "true" : "false")//
-				.setReadOnly(readOnly)//
-				.setAllowCreate(!readOnly)//
-				.setTransactional(!readOnly);//
+		final EnvironmentConfig environmentConfig = new EnvironmentConfig()
+				.setConfigParam(EnvironmentConfig.LOG_MEM_ONLY, inMemory ? "true" : "false")
+				.setReadOnly(readOnly)
+				.setAllowCreate(!readOnly)
+				.setTransactional(!readOnly);
 
 		environment = new Environment(dbFile, environmentConfig);
 
-		final DatabaseConfig databaseConfig = new DatabaseConfig()//
-				.setReadOnly(readOnly)//
-				.setAllowCreate(!readOnly)//
+		final DatabaseConfig databaseConfig = new DatabaseConfig()
+				.setReadOnly(readOnly)
+				.setAllowCreate(!readOnly)
 				.setTransactional(!readOnly);
 
 		database = environment.openDatabase(null, "MyDB", databaseConfig);

@@ -51,22 +51,22 @@ public final class ReactorTest {
 
 	@Test(expected = NullPointerException.class)
 	public void testIdArgument() {
-		final DIReactor reactor = new DIReactor() //
+		final DIReactor reactor = new DIReactor()
 				.addComponent(null, A.class);
 		nop(reactor);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testClassArgument() {
-		final DIReactor reactor = new DIReactor() //
+		final DIReactor reactor = new DIReactor()
 				.addComponent("a", null);
 		nop(reactor);
 	}
 
 	@Test
 	public void testA() {
-		final List<String> list = new DIReactor() //
-				.addComponent("a", A.class)//
+		final List<String> list = new DIReactor()
+				.addComponent("a", A.class)
 				.proceed();
 		Assert.assertEquals(1, list.size());
 		Assert.assertEquals("a", list.get(0));
@@ -74,9 +74,9 @@ public final class ReactorTest {
 
 	@Test
 	public void testB() {
-		final List<String> list = new DIReactor() //
-				.addComponent("a", A.class)//
-				.addComponent("b", B.class)//
+		final List<String> list = new DIReactor()
+				.addComponent("a", A.class)
+				.addComponent("b", B.class)
 				.proceed();
 		Assert.assertEquals(2, list.size());
 		Assert.assertEquals("a", list.get(0));
@@ -86,9 +86,9 @@ public final class ReactorTest {
 	@Test
 	public void testBWithParent() {
 		//rappel B dépend de A
-		final List<String> list = new DIReactor() //
-				.addParent("a")//
-				.addComponent("b", B.class)//
+		final List<String> list = new DIReactor()
+				.addParent("a")
+				.addComponent("b", B.class)
 				.proceed();
 		Assert.assertEquals(1, list.size());
 		Assert.assertEquals("b", list.get(0));
@@ -97,9 +97,9 @@ public final class ReactorTest {
 	@Test
 	/** On change l'ordre ; on vérifie que Reactor gère bien l'ordre */
 	public void testDependency2bis() {
-		final List<String> list = new DIReactor() //
-				.addComponent("b", B.class)//
-				.addComponent("a", A.class)//
+		final List<String> list = new DIReactor()
+				.addComponent("b", B.class)
+				.addComponent("a", A.class)
 				.proceed();
 		Assert.assertEquals(2, list.size());
 		Assert.assertEquals("a", list.get(0));
@@ -109,9 +109,9 @@ public final class ReactorTest {
 	@Test
 	/** On teste les options */
 	public void testOption() {
-		final List<String> list = new DIReactor() //
-				.addComponent("e", E.class)//
-				.addComponent("a", A.class)//
+		final List<String> list = new DIReactor()
+				.addComponent("e", E.class)
+				.addComponent("a", A.class)
 				.proceed();
 		//E dépend de option(A) et de option(B) donc A doit être le premier élément listé
 		Assert.assertEquals(2, list.size());
@@ -125,9 +125,9 @@ public final class ReactorTest {
 		final Set<String> params = new HashSet<>();
 		params.add("param1");
 		params.add("param2");
-		final List<String> list = new DIReactor() //
-				.addComponent("a", A.class)//
-				.addComponent("f", F.class, params)//
+		final List<String> list = new DIReactor()
+				.addComponent("a", A.class)
+				.addComponent("f", F.class, params)
 				.proceed();
 		Assert.assertEquals(2, list.size());
 		Assert.assertEquals("a", list.get(0));
@@ -139,8 +139,8 @@ public final class ReactorTest {
 	public void testParams2() {
 		final Set<String> params = new HashSet<>();
 		params.add("a");
-		final List<String> list = new DIReactor() //
-				.addComponent("b", B.class, params)//
+		final List<String> list = new DIReactor()
+				.addComponent("b", B.class, params)
 				.proceed();
 		Assert.assertEquals(1, list.size());
 		Assert.assertEquals("b", list.get(0));
@@ -148,41 +148,41 @@ public final class ReactorTest {
 
 	@Test(expected = DIException.class)
 	public void testDependencyMissing() {
-		final List<String> list = new DIReactor() //
-				.addComponent("a", A.class)//
-				.addComponent("b", B.class)//
-				.addComponent("c", C.class)//
+		final List<String> list = new DIReactor()
+				.addComponent("a", A.class)
+				.addComponent("b", B.class)
+				.addComponent("c", C.class)
 				.proceed();
 		nop(list);
 	}
 
 	@Test(expected = DIException.class)
 	public void testDependencyCyclic() {
-		final List<String> list = new DIReactor() //
-				.addComponent("a", A.class)//
-				.addComponent("b", B.class)//
-				.addComponent("c", C.class)//
-				.addComponent("D", D.class)//
+		final List<String> list = new DIReactor()
+				.addComponent("a", A.class)
+				.addComponent("b", B.class)
+				.addComponent("c", C.class)
+				.addComponent("D", D.class)
 				.proceed();
 		nop(list);
 	}
 
 	@Test(expected = DIException.class)
 	public void testDependencyMultiple() {
-		final List<String> list = new DIReactor() //
-				.addComponent("a", A.class)//
-				.addComponent("b", B.class)//
-				.addComponent("b", B.class)//
+		final List<String> list = new DIReactor()
+				.addComponent("a", A.class)
+				.addComponent("b", B.class)
+				.addComponent("b", B.class)
 				.proceed();
 		nop(list);
 	}
 
 	@Test(expected = DIException.class)
 	public void testDependencyMultiple2() {
-		final List<String> list = new DIReactor() //
-				.addComponent("a", A.class)//
-				.addComponent("b", B.class)//
-				.addParent("b")//
+		final List<String> list = new DIReactor()
+				.addComponent("a", A.class)
+				.addComponent("b", B.class)
+				.addParent("b")
 				.proceed();
 		nop(list);
 		Assert.fail();

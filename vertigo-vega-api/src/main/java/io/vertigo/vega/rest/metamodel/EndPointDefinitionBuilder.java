@@ -69,24 +69,24 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 		final String usedPath = myPathPrefix != null ? myPathPrefix + myPath : myPath;
 		final String normalizedPath = usedPath.replaceAll("\\{.*?\\}", "_").replaceAll("[//]", "_"); //.*? : reluctant quantifier
 
-		return new EndPointDefinition(//
-				//"EP_" + StringUtil.camelToConstCase(restFullServiceClass.getSimpleName()) + "_" + StringUtil.camelToConstCase(method.getName()), //
-				"EP_" + myVerb + "_" + normalizedPath.toUpperCase(), //
-				myVerb, //
-				usedPath, //
-				myAcceptType, //
-				myMethod, //
-				myNeedSession, //
-				mySessionInvalidate, //
-				myNeedAuthentication, //
-				myAccessTokenPublish,//
-				myAccessTokenMandatory,//
-				myAccessTokenConsume,//
-				myServerSideSave,//
-				myAutoSortAndPagination,//
-				myIncludedFields, //
-				myExcludedFields, //
-				myEndPointParams, //
+		return new EndPointDefinition(
+				//"EP_" + StringUtil.camelToConstCase(restFullServiceClass.getSimpleName()) + "_" + StringUtil.camelToConstCase(method.getName()), 
+				"EP_" + myVerb + "_" + normalizedPath.toUpperCase(), 
+				myVerb, 
+				usedPath, 
+				myAcceptType, 
+				myMethod, 
+				myNeedSession, 
+				mySessionInvalidate, 
+				myNeedAuthentication, 
+				myAccessTokenPublish,
+				myAccessTokenMandatory,
+				myAccessTokenConsume,
+				myServerSideSave,
+				myAutoSortAndPagination,
+				myIncludedFields, 
+				myExcludedFields, 
+				myEndPointParams, 
 				myDoc);
 	}
 

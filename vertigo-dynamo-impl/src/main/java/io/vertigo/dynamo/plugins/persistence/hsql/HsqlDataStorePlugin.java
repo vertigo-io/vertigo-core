@@ -84,9 +84,9 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 
 		final StringBuilder request = chooseDataBaseStyle(sequenceName);
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)//
-				.withEngine(TaskEngineSelect.class)//
-				.withRequest(request.toString())//
+		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
+				.withEngine(TaskEngineSelect.class)
+				.withRequest(request.toString())
 				.withAttribute(DTO_SEQUENCE, resultDomain, true, false)// OUT, obligatoire
 				.build();
 
@@ -100,7 +100,7 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 	}
 
 	private static StringBuilder chooseDataBaseStyle(final String sequenceName) {
-		return new StringBuilder("select next value for " + sequenceName + "  as " + SEQUENCE_FIELD)//
+		return new StringBuilder("select next value for " + sequenceName + "  as " + SEQUENCE_FIELD)
 				.append(" from information_schema.system_sequences where sequence_name = upper('" + sequenceName + "')");
 	}
 

@@ -62,27 +62,27 @@ public final class ESServicesPlugin extends AbstractESServicesPlugin {
 	}
 
 	private static Node createNode(final String[] serversNames) {
-		return new NodeBuilder() //
-				.settings(buildNodeSettings(serversNames))//
-				.client(true)//
+		return new NodeBuilder()
+				.settings(buildNodeSettings(serversNames))
+				.client(true)
 				.build();
 	}
 
 	private static Settings buildNodeSettings(final String[] serversNames) {
 		//Build settings
-		return ImmutableSettings.settingsBuilder() //
-				.put("node.name", "es-embedded-node-" + System.currentTimeMillis()) //
-				.put("node.data", false) //
-				.put("node.master", false) //
-				//.put("discovery.zen.fd.ping_timeout", "30s") //
-				//.put("discovery.zen.minimum_master_nodes", 2) //
-				.put("discovery.zen.ping.multicast.enabled", false) //
-				.put("discovery.zen.ping.unicast.hosts", serversNames)//
+		return ImmutableSettings.settingsBuilder()
+				.put("node.name", "es-embedded-node-" + System.currentTimeMillis())
+				.put("node.data", false)
+				.put("node.master", false)
+				//.put("discovery.zen.fd.ping_timeout", "30s") 
+				//.put("discovery.zen.minimum_master_nodes", 2) 
+				.put("discovery.zen.ping.multicast.enabled", false) 
+				.put("discovery.zen.ping.unicast.hosts", serversNames)
 				.build();
 		//.put("cluster.name", "cluster-test-" + NetworkUtils.getLocalAddress().getHostName())
-		//.put("index.store.type", "memory")//
-		//.put("index.store.fs.memory.enabled", "true")//
-		//.put("gateway.type", "none")//
+		//.put("index.store.type", "memory")
+		//.put("index.store.fs.memory.enabled", "true")
+		//.put("gateway.type", "none")
 		//
 	}
 }

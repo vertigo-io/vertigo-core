@@ -56,13 +56,13 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 	protected Rule<List<?>> createMainRule() {
 		final DslDefinitionBodyRule definitionBodyRule = new DslDefinitionBodyRule(dynamicModelRepository, entity);
 		return new SequenceRule(//"InnerDefinition"
-				new TermRule(entityName), //
-				DslSyntaxRules.SPACES,//
+				new TermRule(entityName),
+				DslSyntaxRules.SPACES,
 				DslSyntaxRules.WORD,//2
-				DslSyntaxRules.SPACES,//
+				DslSyntaxRules.SPACES,
 				definitionBodyRule,//4
-				DslSyntaxRules.SPACES,//
-				new OptionRule<>(DslSyntaxRules.OBJECT_SEPARATOR)//
+				DslSyntaxRules.SPACES,
+				new OptionRule<>(DslSyntaxRules.OBJECT_SEPARATOR)
 				);
 	}
 

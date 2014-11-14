@@ -65,7 +65,6 @@ public abstract class AbstractSqlConnectionProviderPlugin implements SqlConnecti
 	public final List<ComponentInfo> getInfos() {
 		final List<ComponentInfo> componentInfos = new ArrayList<>();
 		try {
-			//
 			final SqlConnection connection = obtainConnection();
 			try (final Connection jdbcConnection = connection.getJdbcConnection()) {
 				try {

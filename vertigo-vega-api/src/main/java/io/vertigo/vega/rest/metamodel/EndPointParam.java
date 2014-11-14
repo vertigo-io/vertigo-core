@@ -61,11 +61,11 @@ public final class EndPointParam {
 	}
 
 	public static enum ImplicitParam {
-		UiMessageStack(UiMessageStack.class), //
-		//UiListState(UiListState.class), //
-		Request(HttpServletRequest.class), //
-		Response(HttpServletResponse.class), //
-		; //
+		UiMessageStack(UiMessageStack.class), 
+		//UiListState(UiListState.class), 
+		Request(HttpServletRequest.class), 
+		Response(HttpServletResponse.class), 
+		;
 
 		private Class<?> implicitType;
 
@@ -120,9 +120,9 @@ public final class EndPointParam {
 		Assertion.checkNotNull(includedFields);
 		Assertion.checkNotNull(excludedFields);
 		Assertion.checkNotNull(dtObjectValidatorClasses);
-		Assertion.checkArgument(dtObjectValidatorClasses.isEmpty() //
-				|| EndPointTypeUtil.isAssignableFrom(DtObject.class, type) //
-				|| EndPointTypeUtil.isAssignableFrom(DtList.class, type) //
+		Assertion.checkArgument(dtObjectValidatorClasses.isEmpty()
+				|| EndPointTypeUtil.isAssignableFrom(DtObject.class, type)
+				|| EndPointTypeUtil.isAssignableFrom(DtList.class, type)
 				|| EndPointTypeUtil.isAssignableFrom(DtListDelta.class, type), "Validators aren't supported for {0}", type);
 		//-----------------------------------------------------------------
 		this.paramType = paramType;
