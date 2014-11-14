@@ -68,7 +68,7 @@ public abstract class AbstractFilter implements Filter {
 			String urlExcludePatternParamNormalized = urlExcludePattern.replaceAll("\\.", "\\\\."); // . devient \\. (pour matcher un .)
 			urlExcludePatternParamNormalized = urlExcludePatternParamNormalized.replaceAll("\\*([^;])", "[^\\/]*$1"); //* en milieu de pattern devient tous char sauf /
 			urlExcludePatternParamNormalized = urlExcludePatternParamNormalized.replaceAll("\\*(;|$)", ".*$1"); //* en fin de pattern devient tous char
-			urlExcludePatternParamNormalized = urlExcludePatternParamNormalized.replaceAll(";", ")|(^"); //; devient un OR 
+			urlExcludePatternParamNormalized = urlExcludePatternParamNormalized.replaceAll(";", ")|(^"); //; devient un OR
 			urlExcludePatternParamNormalized = "(^" + urlExcludePatternParamNormalized + ")";
 			return Option.some(Pattern.compile(urlExcludePatternParamNormalized));
 		}
@@ -101,12 +101,8 @@ public abstract class AbstractFilter implements Filter {
 		if (url.indexOf(";") >= 0) { //pour les ;jsessionid qui ne doivent pas etre pris en compte par les patterns
 			url = url.substring(0, url.indexOf(";"));
 		}
-
-		if (url != null) {
-			final Matcher matcher = pattern.matcher(url);
-			return matcher.matches();
-		}
-		return false;
+		final Matcher matcher = pattern.matcher(url);
+		return matcher.matches();
 	}
 
 	protected final FilterConfig getFilterConfig() {
