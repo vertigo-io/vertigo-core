@@ -75,7 +75,7 @@ public final class Base64Codec implements Codec<byte[], String> {
 			}
 		}
 		// ----
-		final int mod; // = coded.charAt(0) - '0';
+		final int mod;
 		if (PADDING == coded.charAt(length - OFFSET_2)) {
 			mod = OFFSET_2;
 		} else if (PADDING == coded.charAt(length - OFFSET_1)) {
@@ -83,7 +83,7 @@ public final class Base64Codec implements Codec<byte[], String> {
 		} else {
 			mod = OFFSET_0;
 		}
-		final int len = length / BASE64_ENCODED_BLOCK_LEN * (BASE64_DECODED_BLOCK_LEN) - mod;/*(mod == 0 ? 0 : (3 - mod));*/
+		final int len = length / BASE64_ENCODED_BLOCK_LEN * (BASE64_DECODED_BLOCK_LEN) - mod;
 		final int len1 = len - OFFSET_1;
 		final int len2 = len - OFFSET_2;
 		final byte[] res = new byte[len];
