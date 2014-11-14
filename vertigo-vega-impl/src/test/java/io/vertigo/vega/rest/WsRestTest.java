@@ -18,8 +18,7 @@
  */
 package io.vertigo.vega.rest;
 
-import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.core.config.AppConfigBuilder;
+import io.vertigo.core.Home;
 import io.vertigo.vega.impl.rest.filter.JettyMultipartConfig;
 import io.vertigo.vega.plugins.rest.routesregister.sparkjava.SparkJavaRoutesRegister;
 
@@ -32,6 +31,8 @@ import java.util.Map;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import spark.Spark;
@@ -43,31 +44,25 @@ import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 import com.jayway.restassured.specification.ResponseSpecification;
 
-public final class WsRestTest extends AbstractTestCaseJU4 {
+public final class WsRestTest {
 	private static final String HEADER_ACCESS_TOKEN = "x-access-token";
 
 	private static final int WS_PORT = 8088;
 	private static boolean sparkInitialized = false;
 	private final SessionFilter sessionFilter = new SessionFilter();
 
-	/**
-	 * Configuration des tests.
-	 * @param appConfigBuilder builder
-	 */
-	@Override
-	protected void configMe(final AppConfigBuilder appConfigBuilder) {
-		MyApp.config(appConfigBuilder);
+	@Before
+	public void setUp() throws Exception {
+		Home.start(MyApp.config());
+		doSetUp();
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected boolean cleanHomeForTest() {
-		return false;
+	@After
+	public void tearDown() throws Exception {
+		Home.stop();
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected void doSetUp() throws Exception {
+	private void doSetUp() throws Exception {
 		// Will serve all static file are under "/public" in classpath if the route isn't consumed by others routes.
 		// When using Maven, the "/public" folder is assumed to be in "/main/resources"
 		//Spark.externalStaticFileLocation("d:/Projets/Projet_Kasper/SPA-Fmk/SPA-skeleton/public/");

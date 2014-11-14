@@ -9,6 +9,7 @@ import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.commons.plugins.cache.map.MapCachePlugin;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.commons.resource.ResourceManager;
+import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.export.ExportManager;
@@ -45,9 +46,9 @@ import io.vertigoimpl.commons.locale.LocaleManagerImpl;
 import io.vertigoimpl.engines.rest.cmd.ComponentCmdRestServices;
 
 public final class MyApp {
-	static void config(final AppConfigBuilder appConfigBuilder) {
+	static AppConfig config() {
 		// @formatter:off
-		appConfigBuilder
+		return new AppConfigBuilder()
 			.withSilence(false)
 			.withCommandEngine(new TcpVCommandEngine(4406))
 			.withResource("classes", DtDefinitions.class.getName())
@@ -111,7 +112,8 @@ public final class MyApp {
 				.beginComponent(UiSecurityTokenManager.class, UiSecurityTokenManagerImpl.class)
 					.withParam("storeName", "UiSecurityStore")
 				.endComponent()
-			.endModule();
+			.endModule()
+		.build();
 		// @formatter:on
 	}
 }

@@ -19,7 +19,6 @@
 package io.vertigo.vega.rest;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.vega.impl.rest.filter.JettyMultipartConfig;
 import io.vertigo.vega.plugins.rest.routesregister.sparkjava.SparkJavaRoutesRegister;
 
@@ -48,11 +47,7 @@ public final class WsRestHandler {
 		Spark.setPort(8088);
 		// Création de l'état de l'application
 		// Initialisation de l'état de l'application
-
-		final AppConfigBuilder appConfigBuilder = new AppConfigBuilder();
-
-		MyApp.config(appConfigBuilder);
-		Home.start(appConfigBuilder.build());
+		Home.start(MyApp.config());
 
 		//test
 		/*Spark.get(new Route("familles") {
