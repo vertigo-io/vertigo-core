@@ -27,9 +27,9 @@ import spark.Response;
  * @author npiedeloup
  */
 public final class CorsAllower extends Filter {
-	private final String originCORSFilter = "*";
-	private final String methodsCORSFilter = "GET, POST, DELETE, PUT";//"*";
-	private final String headersCORSFilter = "Content-Type";//"*";
+	private static final String originCORSFilter = "*";
+	private static final String methodsCORSFilter = "GET, POST, DELETE, PUT";//"*";
+	private static final String headersCORSFilter = "Content-Type";//"*";
 
 	/** {@inheritDoc} */
 	@Override
