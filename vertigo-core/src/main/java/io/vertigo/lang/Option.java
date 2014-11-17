@@ -123,16 +123,6 @@ public final class Option<T> {
 		return value == null ? defaut : value;
 	}
 
-	/**
-	 * Permet de récupérer le contenu.
-	 *
-	 * @param defaut Valeur par défaut.
-	 * @return Contenu si la valeur est définie.
-	 */
-	public Option<T> orElse(final Option<T> defaut) {
-		return value == null ? defaut : this;
-	}
-
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
