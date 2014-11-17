@@ -19,8 +19,13 @@
 package io.vertigo.struts2.core;
 
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListURI;
+import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.persistence.Criteria;
 import io.vertigo.lang.Assertion;
+
+import java.util.UUID;
 
 /**
  * Liste des couples (clé, object) enregistrés.
@@ -68,6 +73,10 @@ public final class ContextList<O extends DtObject> {
 	 * @param dtList List à publier
 	 */
 	public void publish(final DtList<O> dtList) {
+		if (dtList.getURI() == null) {
+			//if no URI, we add a unique one, to manage this list lifecycle.
+			dtList.setURI(new DtListURIForCriteria<>(dtList.getDefinition(), new UuidCriteria<O>(), dtList.size()));
+		}
 		action.getModel().put(contextKey, new UiListUnmodifiable<>(dtList));
 	}
 
@@ -79,7 +88,7 @@ public final class ContextList<O extends DtObject> {
 	}
 
 	/**
-	 * @return List des objets métiers valid�e. Lance une exception si erreur.
+	 * @return List des objets métiers validée. Lance une exception si erreur.
 	 */
 	public DtList<O> readDtList() {
 		return action.getModel().<O> getUiList(contextKey).validate(validator, uiMessageStack);
@@ -92,4 +101,27 @@ public final class ContextList<O extends DtObject> {
 		return action.getModel().getUiList(contextKey);
 	}
 
+	/**
+	 * Criteria unique Id.
+	 * @param <O> Object type
+	 */
+	static class UuidCriteria<O extends DtObject> implements Criteria<O> {
+		private static final long serialVersionUID = -5967571928701007323L;
+		private final UUID uuid = UUID.randomUUID();
+
+		/** {@inheritDoc} */
+		@Override
+		public final int hashCode() {
+			return uuid.hashCode();
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public final boolean equals(final Object o) {
+			if (o instanceof DtListURI) {
+				return o == this;
+			}
+			return false;
+		}
+	}
 }

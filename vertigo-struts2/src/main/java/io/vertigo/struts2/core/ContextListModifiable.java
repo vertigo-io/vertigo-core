@@ -79,7 +79,7 @@ public final class ContextListModifiable<O extends DtObject> {
 	}
 
 	/**
-	 * @return List des objets métiers valid�e. Lance une exception si erreur.
+	 * @return List des objets métiers validée. Lance une exception si erreur.
 	 */
 	public DtList<O> readDtList() {
 		return action.getModel().<O> getUiList(contextKey).validate(validator, uiMessageStack);

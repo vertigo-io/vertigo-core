@@ -103,14 +103,20 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 		//TODO : gestion du cache a revoir... et le lien avec le CacheStore.
 		//L'index devrait être interrogé par le Broker ? on pourrait alors mettre en cache dans le DataCache.
 		final DtListURI dtcUri = fullDtc.getURI();
-		final String indexName = "INDEX_" + (dtcUri != null ? dtcUri.toURN() : "noURI");
-		final String cacheContext = getContext(fullDtc.getDefinition());
-		//TODO non threadSafe.
-		cacheManager.addCache(cacheContext, new CacheConfig("dataCache", 1000, 1800, 3600));
-		LuceneIndex<D> index = (LuceneIndex<D>) cacheManager.get(cacheContext, indexName);
-		if (index == null) {
+		final boolean useCache = dtcUri != null; //no cache if no URI
+		LuceneIndex<D> index;
+		if (useCache) {
+			final String indexName = "INDEX_" + dtcUri.toURN();
+			final String cacheContext = getContext(fullDtc.getDefinition());
+			//TODO non threadSafe.
+			cacheManager.addCache(cacheContext, new CacheConfig("dataCache", 1000, 1800, 3600));
+			index = (LuceneIndex<D>) cacheManager.get(cacheContext, indexName);
+			if (index == null) {
+				index = createIndex(fullDtc, storeValue);
+				cacheManager.put(getContext(fullDtc.getDefinition()), indexName, index);
+			}
+		} else {
 			index = createIndex(fullDtc, storeValue);
-			cacheManager.put(getContext(fullDtc.getDefinition()), indexName, index);
 		}
 		return index;
 	}
