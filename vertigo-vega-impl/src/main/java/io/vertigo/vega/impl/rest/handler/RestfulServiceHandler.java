@@ -67,6 +67,8 @@ final class RestfulServiceHandler implements RouteHandler {
 		try {
 			return ClassUtil.invoke(service, method, serviceArgs);
 		} catch (final RuntimeException e) {
+			//If throwed exception was ValidationUserException, VUserException, SessionException, VSecurityException, RuntimeException
+			//we re throw it
 			final Throwable cause = e.getCause();
 			if (cause instanceof InvocationTargetException) {
 				final Throwable targetException = ((InvocationTargetException) cause).getTargetException();
