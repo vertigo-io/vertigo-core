@@ -23,6 +23,7 @@ import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import spark.Request;
@@ -35,13 +36,14 @@ import spark.Response;
 final class HandlerChain {
 	private final List<RouteHandler> handlers;
 	private final int offset;
-	private boolean isLock;
 
 	/**
 	 * Constructor.
 	 */
-	HandlerChain() {
-		handlers = new ArrayList<>();
+	HandlerChain(final List<RouteHandler> handlers) {
+		Assertion.checkNotNull(handlers);
+		//---------------------------------------------------------------------
+		this.handlers = Collections.unmodifiableList(new ArrayList<>(handlers));
 		offset = 0;
 	}
 
@@ -54,17 +56,15 @@ final class HandlerChain {
 		//---------------------------------------------------------------------
 		handlers = previous.handlers;
 		offset = previous.offset + 1; //on avance
-		isLock = true;
 	}
 
 	/**
 	 * Do handle of this route.
-	 * 
+	 *
 	 * @param request spark.Request
 	 * @param response spark.Response
 	 */
 	Object handle(final Request request, final Response response, final RouteContext routeContext) throws VSecurityException, SessionException {
-		isLock = true;
 		if (offset < handlers.size()) {
 			final RouteHandler nextHandler = handlers.get(offset);
 			//System.out.println(">>> before doFilter " + nextHandler);
@@ -72,18 +72,6 @@ final class HandlerChain {
 			//System.out.println("<<< after doFilter " + nextHandler);
 		}
 		throw new RuntimeException("Last routeHandler haven't send response body");
-	}
-
-	/**
-	 * Add an handler to this chain (only during init phase).
-	 * @param newHandler Handler to add
-	 */
-	void addHandler(final RouteHandler newHandler) {
-		Assertion.checkNotNull(newHandler);
-		Assertion.checkState(!isLock, "Can't add handler to a already used chain");
-		//---------------------------------------------------------------------	
-		//System.out.println("+++ addHandler " + newHandler);
-		handlers.add(newHandler);
 	}
 
 }

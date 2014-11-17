@@ -51,7 +51,7 @@ public final class WsRestRoute extends Route {
 	@Inject
 	private TokenManager uiSecurityTokenManager;
 
-	private final HandlerChain handlerChain = new HandlerChain();
+	private final HandlerChain handlerChain;
 	private final JsonEngine jsonEngine = new GoogleJsonEngine();
 
 	/**
@@ -61,22 +61,17 @@ public final class WsRestRoute extends Route {
 		super(convertJaxRsPathToSpark(endPointDefinition.getPath()), endPointDefinition.getAcceptType());
 		Injector.injectMembers(this, Home.getComponentSpace());
 
-		handlerChain.addHandler(new ExceptionHandler(jsonEngine));
-
-		if (endPointDefinition.isSessionInvalidate()) {
-			handlerChain.addHandler(new SessionInvalidateHandler());
-		}
-		if (endPointDefinition.isNeedSession()) {
-			handlerChain.addHandler(new SessionHandler(securityManager));
-		}
-		handlerChain.addHandler(rateLimitingHandler);
-		if (endPointDefinition.isNeedAuthentification()) {
-			handlerChain.addHandler(new SecurityHandler(securityManager));
-		}
-		handlerChain.addHandler(new AccessTokenHandler(uiSecurityTokenManager, endPointDefinition));
-		handlerChain.addHandler(new JsonConverterHandler(uiSecurityTokenManager, endPointDefinition, jsonEngine, jsonEngine));
-		handlerChain.addHandler(new ValidatorHandler(endPointDefinition));
-		handlerChain.addHandler(new RestfulServiceHandler(endPointDefinition));
+		handlerChain = new HandlerChainBuilder()
+				.withHandler(new ExceptionHandler(jsonEngine))
+				.withHandler(endPointDefinition.isSessionInvalidate(), new SessionInvalidateHandler())
+				.withHandler(endPointDefinition.isNeedSession(), new SessionHandler(securityManager))
+				.withHandler(rateLimitingHandler)
+				.withHandler(endPointDefinition.isNeedAuthentification(), new SecurityHandler(securityManager))
+				.withHandler(new AccessTokenHandler(uiSecurityTokenManager, endPointDefinition))
+				.withHandler(new JsonConverterHandler(uiSecurityTokenManager, endPointDefinition, jsonEngine, jsonEngine))
+				.withHandler(new ValidatorHandler(endPointDefinition))
+				.withHandler(new RestfulServiceHandler(endPointDefinition))
+				.build();
 	}
 
 	private static String convertJaxRsPathToSpark(final String path) {
