@@ -717,6 +717,26 @@ public final class WsRestTest {
 				.put("/test/contactExtended/103");
 	}
 
+	@Test
+	public void testPutContactExtendedValidator() throws ParseException {
+		final Map<String, Object> newContact = createDefaultContact(104L);
+		newContact.put("vanillaUnsupportedMultipleIds", new int[] { 3, 4, 5 });
+
+		loggedAndExpect(given().body(newContact))
+				.body("fieldErrors.conId", Matchers.contains("Id must not be set"))
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.put("/test/contactExtended/104");
+
+		newContact.remove("conId");
+		newContact.put("birthday", convertDate("24/10/2012"));
+		loggedAndExpect(given().body(newContact))
+				.body("fieldErrors.birthday", Matchers.contains("You can't add contact younger than 16"))
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.put("/test/contactExtended/104");
+	}
+
 	//=========================================================================
 
 	private ResponseSpecification expect() {
