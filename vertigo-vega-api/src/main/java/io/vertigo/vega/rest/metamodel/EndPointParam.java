@@ -24,6 +24,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.vega.rest.EndPointTypeUtil;
 import io.vertigo.vega.rest.model.DtListDelta;
 import io.vertigo.vega.rest.model.UiListState;
+import io.vertigo.vega.rest.model.DtObjectExtended;
 import io.vertigo.vega.rest.validation.DtObjectValidator;
 import io.vertigo.vega.rest.validation.UiMessageStack;
 
@@ -61,11 +62,10 @@ public final class EndPointParam {
 	}
 
 	public static enum ImplicitParam {
-		UiMessageStack(UiMessageStack.class), 
-		//UiListState(UiListState.class), 
-		Request(HttpServletRequest.class), 
-		Response(HttpServletResponse.class), 
-		;
+		UiMessageStack(UiMessageStack.class),
+		//UiListState(UiListState.class),
+		Request(HttpServletRequest.class),
+		Response(HttpServletResponse.class), ;
 
 		private Class<?> implicitType;
 
@@ -122,6 +122,7 @@ public final class EndPointParam {
 		Assertion.checkNotNull(dtObjectValidatorClasses);
 		Assertion.checkArgument(dtObjectValidatorClasses.isEmpty()
 				|| EndPointTypeUtil.isAssignableFrom(DtObject.class, type)
+				|| EndPointTypeUtil.isAssignableFrom(DtObjectExtended.class, type)
 				|| EndPointTypeUtil.isAssignableFrom(DtList.class, type)
 				|| EndPointTypeUtil.isAssignableFrom(DtListDelta.class, type), "Validators aren't supported for {0}", type);
 		//-----------------------------------------------------------------

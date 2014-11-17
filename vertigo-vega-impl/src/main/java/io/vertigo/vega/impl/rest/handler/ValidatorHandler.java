@@ -24,11 +24,13 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.vega.rest.engine.UiListDelta;
 import io.vertigo.vega.rest.engine.UiObject;
+import io.vertigo.vega.rest.engine.UiObjectExtended;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
 import io.vertigo.vega.rest.model.DtListDelta;
+import io.vertigo.vega.rest.model.DtObjectExtended;
 import io.vertigo.vega.rest.validation.DtObjectValidator;
 import io.vertigo.vega.rest.validation.UiMessageStack;
 import io.vertigo.vega.rest.validation.ValidationUserException;
@@ -77,6 +79,15 @@ final class ValidatorHandler implements RouteHandler {
 				final DtList<DtObject> dtListDeletes = mergeAndCheckInput(uiListDelta.getObjectType(), uiListDelta.getDeletesMap(), "collDeletes", dtObjectValidators, uiMessageStack, contextKeyMap);
 				final DtListDelta<DtObject> dtListDelta = new DtListDelta<>(dtListCreates, dtListUpdates, dtListDeletes);
 				routeContext.registerUpdatedDtListDelta(endPointParam, dtListDelta, contextKeyMap);
+			} else if (value instanceof UiObjectExtended) {
+				final UiObjectExtended<DtObject> uiObjectExtended = (UiObjectExtended<DtObject>) value;
+				final List<DtObjectValidator<DtObject>> dtObjectValidators = obtainDtObjectValidators(endPointParam);
+				//Only authorized fields have already been checked (JsonConverterHandler)
+				final DtObject updatedDto = uiObjectExtended.getInnerObject().mergeAndCheckInput(dtObjectValidators, uiMessageStack);
+				final DtObjectExtended<DtObject> dtObjectExtended = new DtObjectExtended(updatedDto);
+				dtObjectExtended.putAll(uiObjectExtended);
+				routeContext.registerUpdatedDto(endPointParam, uiObjectExtended.getInnerObject().getInputKey(), updatedDto);
+				routeContext.setParamValue(endPointParam, dtObjectExtended);
 			}
 		}
 		if (uiMessageStack.hasErrors()) {

@@ -690,6 +690,33 @@ public final class WsRestTest {
 				.put("/test/contactAliasName/101");
 	}
 
+	@Test
+	public void testGetContactExtended() {
+		loggedAndExpect()
+				.body("conId", Matchers.equalTo(1))
+				.body("vanillaUnsupportedMultipleIds", Matchers.iterableWithSize(3))
+				.body("vanillaUnsupportedMultipleIds", Matchers.hasItems(1, 2, 3))
+				.header("content-type", Matchers.containsString("json+entity:Contact+meta"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/contactExtended/1");
+	}
+
+	@Test
+	public void testPutContactExtended() throws ParseException {
+		final Map<String, Object> newContact = createDefaultContact(103L);
+		newContact.remove("conId");
+		newContact.put("vanillaUnsupportedMultipleIds", new int[] { 3, 4, 5 });
+
+		loggedAndExpect(given().body(newContact))
+				.body("conId", Matchers.equalTo(103))
+				.body("vanillaUnsupportedMultipleIds", Matchers.iterableWithSize(3))
+				.body("vanillaUnsupportedMultipleIds", Matchers.hasItems(3, 4, 5))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/contactExtended/103");
+	}
+
 	//=========================================================================
 
 	private ResponseSpecification expect() {
@@ -731,8 +758,8 @@ public final class WsRestTest {
 	}
 
 	private Map<String, Object> createDefaultContact(final Long conId) throws ParseException {
-		final Map<String, Object> newContact = createContact2(conId, "Mrs", "Fournier", "Catherine", convertDate("24/10/1985"), 
-				createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"), 
+		final Map<String, Object> newContact = createContact2(conId, "Mrs", "Fournier", "Catherine", convertDate("24/10/1985"),
+				createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"),
 				"catherine.fournier@gmail.com", "01 91 92 93 94");
 		return newContact;
 	}

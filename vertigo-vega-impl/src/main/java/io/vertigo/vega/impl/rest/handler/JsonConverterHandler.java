@@ -33,6 +33,7 @@ import io.vertigo.vega.rest.metamodel.EndPointParam;
 import io.vertigo.vega.rest.metamodel.EndPointParam.ImplicitParam;
 import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
 import io.vertigo.vega.rest.model.DtListDelta;
+import io.vertigo.vega.rest.model.DtObjectExtended;
 import io.vertigo.vega.rest.model.UiListState;
 import io.vertigo.vega.token.TokenManager;
 
@@ -165,13 +166,15 @@ final class JsonConverterHandler implements RouteHandler {
 	private static void setHeadersFromResultType(final Object result, final Response response) {
 		final StringBuilder contentType = new StringBuilder("application/json;charset=UTF-8");
 		if (result instanceof List) {
-			if (result instanceof DtList && !((DtList) result).getMetaDataNames().isEmpty()) {
+			if (result instanceof DtList && !((DtList<?>) result).getMetaDataNames().isEmpty()) {
 				contentType.append(";json+list+meta");
 			} else {
 				contentType.append(";json+list");
 			}
 		} else if (result instanceof DtObject) {
 			contentType.append(";json+entity:" + result.getClass().getSimpleName());
+		} else if (result instanceof DtObjectExtended<?>) {
+			contentType.append(";json+entity:" + ((DtObjectExtended<?>) result).getInnerObject().getClass().getSimpleName() + "+meta");
 		}
 		response.type(contentType.toString());
 	}
@@ -267,6 +270,8 @@ final class JsonConverterHandler implements RouteHandler {
 				postReadUiListDelta(uiListDelta, "", endPointParam, uiSecurityTokenManager);
 			}
 			return uiListDelta;
+		} else if (DtObjectExtended.class.isAssignableFrom(paramClass)) {
+			throw new RuntimeException("Unsupported type DtObjectExtended (use multiple params instead, /*implicit body*/ myDto, @InnerBodyParams others...).");
 		} else if (UiContext.class.isAssignableFrom(paramClass)) {
 			throw new RuntimeException("Unsupported type UiContext (use @InnerBodyParams instead).");
 		} else {
@@ -355,6 +360,9 @@ final class JsonConverterHandler implements RouteHandler {
 				return jsonWriterEngine.toJsonWithTokenId(value, tokenId, endPointDefinition.getIncludedFields(), endPointDefinition.getExcludedFields());
 			} else if (DtObject.class.isInstance(value)) {
 				final String tokenId = uiSecurityTokenManager.put((DtObject) value);
+				return jsonWriterEngine.toJsonWithTokenId(value, tokenId, endPointDefinition.getIncludedFields(), endPointDefinition.getExcludedFields());
+			} else if (DtObjectExtended.class.isInstance(value)) {
+				final String tokenId = uiSecurityTokenManager.put((DtObjectExtended) value);
 				return jsonWriterEngine.toJsonWithTokenId(value, tokenId, endPointDefinition.getIncludedFields(), endPointDefinition.getExcludedFields());
 			} else {
 				throw new RuntimeException("Return type can't be ServerSide :" + value.getClass().getSimpleName());

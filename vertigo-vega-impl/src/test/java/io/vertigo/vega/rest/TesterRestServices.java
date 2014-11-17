@@ -45,6 +45,7 @@ import io.vertigo.util.DateUtil;
 import io.vertigo.vega.rest.engine.UiContext;
 import io.vertigo.vega.rest.exception.VSecurityException;
 import io.vertigo.vega.rest.model.DtListDelta;
+import io.vertigo.vega.rest.model.DtObjectExtended;
 import io.vertigo.vega.rest.model.UiListState;
 import io.vertigo.vega.rest.stereotype.AccessTokenConsume;
 import io.vertigo.vega.rest.stereotype.AccessTokenMandatory;
@@ -265,9 +266,7 @@ public final class TesterRestServices implements RestfulService {
 	@PUT("/filtered/{conId}")
 	@ServerSideSave
 	public Contact filteredUpdateByExclude(
-			final @Validate({ ContactValidator.class, MandatoryPkValidator.class })
-			@ServerSideRead
-			@ExcludedFields({ "conId", "name" }) Contact contact) {
+			final @Validate({ ContactValidator.class, MandatoryPkValidator.class }) @ServerSideRead @ExcludedFields({ "conId", "name" }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
 			throw new VUserException(new MessageText("Name is mandatory", null));
@@ -406,7 +405,7 @@ public final class TesterRestServices implements RestfulService {
 
 	@POST("/searchQueryPagined")
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
-	public List<Contact> testSearchServiceQueryPagined(final ContactCriteria contact, 
+	public List<Contact> testSearchServiceQueryPagined(final ContactCriteria contact,
 			@QueryParam("") final UiListState uiListState) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
 		final DtList<Contact> fullList = asDtList(contactDao.getList(), Contact.class);
@@ -503,6 +502,27 @@ public final class TesterRestServices implements RestfulService {
 		contactDao.put(contact);
 		//200
 		return contact;
+	}
+
+	@GET("/contactExtended/{conId}")
+	public DtObjectExtended<Contact> testGetExtended(@PathParam("conId") final long conId) {
+		final Contact contact = contactDao.get(conId);
+		final DtObjectExtended<Contact> result = new DtObjectExtended<>(contact);
+		result.put("vanillaUnsupportedMultipleIds", new int[] { 1, 2, 3 });
+		//200
+		return result;
+	}
+
+	@PUT("/contactExtended/{conId}")
+	public DtObjectExtended<Contact> testGetExtended(@PathParam("conId") final long conId,
+			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) Contact contact,
+			@InnerBodyParam("vanillaUnsupportedMultipleIds") final int[] multipleIds) {
+		contact.setConId(conId);
+		contactDao.put(contact);
+		final DtObjectExtended<Contact> result = new DtObjectExtended<>(contact);
+		result.put("vanillaUnsupportedMultipleIds", multipleIds);
+		//200
+		return result;
 	}
 
 	/*@GET("/searchFacet")

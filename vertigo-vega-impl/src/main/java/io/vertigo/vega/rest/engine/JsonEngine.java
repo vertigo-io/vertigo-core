@@ -93,6 +93,17 @@ public interface JsonEngine {
 	<D extends DtObject> UiObject<D> uiObjectFromJson(String json, Type paramType);
 
 	/**
+	 * Specific convertion Json to UiObjectExtended.
+	 * UiObjectExtended is used as a buffer from client input with extended attributes.
+	 * While converting accept missing object fields and unknown object fields (and then put json's values in extention part)
+	 * @param <D> Object type
+	 * @param json Json string
+	 * @param paramType Object type
+	 * @return UiObjectExtended filled with a DtObject partially filled, the accessToken if present, and all other properties send
+	 */
+	//<D extends DtObject> UiObjectExtended<D> uiObjectExtendedFromJson(String json, Type paramType);
+
+	/**
 	 * Specific convertion Json to UiContext.
 	 * UiContext is used as a buffer from client input
 	 * @param json Json string
