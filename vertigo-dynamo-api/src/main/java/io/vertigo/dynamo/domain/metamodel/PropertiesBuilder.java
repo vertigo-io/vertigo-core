@@ -17,18 +17,22 @@ public final class PropertiesBuilder implements Builder<Properties> {
 
 	/**
 	 * Ajout d'une propriété typée.
+	 * @param <T> Property type
 	 * @param property propriété
 	 * @param value Valeur de la propriété
+	 * @return builder
 	 */
-	public <T> void withValue(final Property<T> property, final T value) {
+	public <T> PropertiesBuilder withValue(final Property<T> property, final T value) {
 		Assertion.checkNotNull(property);
 		Assertion.checkArgument(!properties.containsKey(property), "Propriété {0} déjà déclarée : ", property);
 		//On vérifie que la valeur est du bon type
 		property.getType().cast(value);
 		//----------------------------------------------------------------------
 		properties.put(property, value);
+		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Properties build() {
 		return new Properties(properties);
