@@ -134,9 +134,8 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 			final ModuleConfig moduleConfig = moduleConfigBuilder.build();
 			moduleConfigs.add(moduleConfig);
 		}
-		final ComponentSpaceConfig componentSpaceConfig = new ComponentSpaceConfig(myParams, moduleConfigs, myAopEngine, Option.option(myElasticaEngine), Option.option(myCommandEngine), mySilence);
+		final ComponentSpaceConfig componentSpaceConfig = new ComponentSpaceConfig(moduleConfigs, myAopEngine, Option.option(myElasticaEngine), Option.option(myCommandEngine), mySilence);
 		final DefinitionSpaceConfig definitionSpaceConfig = new DefinitionSpaceConfig(myResourceConfigs);
-		return new AppConfig(componentSpaceConfig, definitionSpaceConfig);
-
+		return new AppConfig(myParams, componentSpaceConfig, definitionSpaceConfig);
 	}
 }

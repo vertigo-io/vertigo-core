@@ -40,9 +40,7 @@ import io.vertigo.lang.Option;
 import io.vertigo.lang.Plugin;
 import io.vertigo.util.StringUtil;
 
-import java.io.File;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,10 +48,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.xml.DOMConfigurator;
 
 /**
  * Centralisation des accès aux composants et aux plugins.
@@ -89,7 +83,6 @@ public final class ComponentSpace implements Container, Activeable {
 		Assertion.checkNotNull(componentSpaceConfig);
 		//---------------------------------------------------------------------
 		this.componentSpaceConfig = componentSpaceConfig;
-		initLog(componentSpaceConfig.getParams());
 		//-------------------
 		for (final ModuleConfig moduleConfig : componentSpaceConfig.getModuleConfigs()) {
 			injectComponents(moduleConfig);
@@ -160,33 +153,6 @@ public final class ComponentSpace implements Container, Activeable {
 			if (engine instanceof Activeable) {
 				Activeable.class.cast(engine).stop();
 			}
-		}
-	}
-
-	private void initLog(final Map<String, String> params) {
-		final String log4jFileName = params.get("log4j.configurationFileName");
-		if (log4jFileName != null) {
-			final boolean log4jFormatXml = log4jFileName.endsWith(".xml");
-			final URL url = getClass().getResource(log4jFileName);
-			if (url != null) {
-				if (log4jFormatXml) {
-					DOMConfigurator.configure(url);
-				} else {
-					PropertyConfigurator.configure(url);
-				}
-				Logger.getRootLogger().info("Log4J configuration chargée (resource) : " + url.getFile());
-			} else {
-				Assertion.checkArgument(new File(log4jFileName).exists(), "Fichier de configuration log4j : {0} est introuvable", log4jFileName);
-				// Avec configureAndWatch (utilise un anonymous thread)
-				// on peut modifier à chaud le fichier de conf log4j
-				// mais en cas de hot-deploy, le thread reste présent ce qui peut-entrainer des problèmes.
-				if (log4jFormatXml) {
-					DOMConfigurator.configureAndWatch(log4jFileName);
-				} else {
-					PropertyConfigurator.configureAndWatch(log4jFileName);
-				}
-			}
-			Logger.getRootLogger().info("Log4J configuration chargée (fichier) : " + log4jFileName);
 		}
 	}
 

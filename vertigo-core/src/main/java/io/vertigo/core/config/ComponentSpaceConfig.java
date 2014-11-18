@@ -28,7 +28,6 @@ import io.vertigo.lang.Option;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Paramétrage des composants de l'application.
@@ -37,7 +36,6 @@ import java.util.Map;
  */
 public final class ComponentSpaceConfig {
 	private final List<ModuleConfig> modules;
-	private final Map<String, String> params;
 	private final boolean silence;
 	@JsonExclude
 	private final AopEngine aopEngine;
@@ -46,15 +44,13 @@ public final class ComponentSpaceConfig {
 	@JsonExclude
 	private final Option<VCommandEngine> commandEngine;
 
-	ComponentSpaceConfig(final Map<String, String> params, final List<ModuleConfig> moduleConfigs, final AopEngine aopEngine, final Option<ElasticaEngine> elasticaEngine, final Option<VCommandEngine> commandEngine, final boolean silence) {
-		Assertion.checkNotNull(params);
+	ComponentSpaceConfig(final List<ModuleConfig> moduleConfigs, final AopEngine aopEngine, final Option<ElasticaEngine> elasticaEngine, final Option<VCommandEngine> commandEngine, final boolean silence) {
 		Assertion.checkNotNull(moduleConfigs);
 		//---
 		Assertion.checkNotNull(aopEngine);
 		Assertion.checkNotNull(elasticaEngine);
 		Assertion.checkNotNull(commandEngine);
 		//---------------------------------------------------------------------
-		this.params = params;
 		this.modules = Collections.unmodifiableList(new ArrayList<>(moduleConfigs));
 		this.silence = silence;
 		this.aopEngine = aopEngine;
@@ -67,13 +63,6 @@ public final class ComponentSpaceConfig {
 	 */
 	public List<ModuleConfig> getModuleConfigs() {
 		return modules;
-	}
-
-	/**
-	 * @return Map des paramètres globaux
-	 */
-	public Map<String, String> getParams() {
-		return params;
 	}
 
 	public boolean isSilence() {

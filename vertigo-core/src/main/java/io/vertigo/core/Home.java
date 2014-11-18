@@ -23,6 +23,14 @@ import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
 
+import java.io.File;
+import java.net.URL;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.xml.DOMConfigurator;
+
 /**
  * Home : Classe d'entrée sur toutes les modules.
  * Cycle de vie :
@@ -74,6 +82,8 @@ public final class Home {
 		INSTANCE.change(State.INACTIVE, State.starting);
 		try {
 			Assertion.checkState(INSTANCE.definitionSpace.isEmpty(), "DefinitionSpace must be empty");
+			//---
+			initLog(appConfig.getParams());
 			//---
 			INSTANCE.componentSpace = new ComponentSpace(appConfig.getComponentSpaceConfig());
 			//On charge definitionSpace après car les loaders de définition sont créées par injection
@@ -165,5 +175,32 @@ public final class Home {
 		}
 		//---------------------------------------------------------------------
 		state = toState;
+	}
+
+	private static void initLog(final Map<String, String> params) {
+		final String log4jFileName = params.get("log4j.configurationFileName");
+		if (log4jFileName != null) {
+			final boolean log4jFormatXml = log4jFileName.endsWith(".xml");
+			final URL url = Home.class.getResource(log4jFileName);
+			if (url != null) {
+				if (log4jFormatXml) {
+					DOMConfigurator.configure(url);
+				} else {
+					PropertyConfigurator.configure(url);
+				}
+				Logger.getRootLogger().info("Log4J configuration chargée (resource) : " + url.getFile());
+			} else {
+				Assertion.checkArgument(new File(log4jFileName).exists(), "Fichier de configuration log4j : {0} est introuvable", log4jFileName);
+				// Avec configureAndWatch (utilise un anonymous thread)
+				// on peut modifier à chaud le fichier de conf log4j
+				// mais en cas de hot-deploy, le thread reste présent ce qui peut-entrainer des problèmes.
+				if (log4jFormatXml) {
+					DOMConfigurator.configureAndWatch(log4jFileName);
+				} else {
+					PropertyConfigurator.configureAndWatch(log4jFileName);
+				}
+			}
+			Logger.getRootLogger().info("Log4J configuration chargée (fichier) : " + log4jFileName);
+		}
 	}
 }
