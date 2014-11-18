@@ -72,7 +72,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
 		final Option<DtField> dtIdField = getDtDefinition().getIdField();
 		if (dtIdField.isDefined()) {
-			camelIdFieldName = StringUtil.constToCamelCase(dtIdField.get().getName(), false);
+			camelIdFieldName = StringUtil.constToCamelCase(dtIdField.get().name(), false);
 		} else {
 			camelIdFieldName = null;
 		}
@@ -130,6 +130,37 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 	@Override
 	public final int size() {
 		return obtainDtList().size();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int indexOf(final Object o) {
+		if (o instanceof DtObject) {
+			return indexOf((DtObject) o);
+		} else if (o instanceof UiObject) {
+			return indexOf((UiObject<D>) o);
+		}
+		return super.indexOf(o);
+	}
+
+	/**
+	 * @param UiObject UiObject recherché
+	 * @return index de l'objet dans la liste
+	 */
+	private int indexOf(final UiObject<D> UiObject) {
+		Assertion.checkNotNull(UiObject);
+		//---------------------------------------------------------------------
+		return obtainDtList().indexOf(UiObject.getInnerObject());
+	}
+
+	/**
+	 * @param dtObject DtObject recherché
+	 * @return index de l'objet dans la liste
+	 */
+	private int indexOf(final DtObject dtObject) {
+		Assertion.checkNotNull(dtObject);
+		//---------------------------------------------------------------------
+		return obtainDtList().indexOf(dtObject);
 	}
 
 	/**

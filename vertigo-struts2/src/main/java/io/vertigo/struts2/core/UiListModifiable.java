@@ -157,11 +157,22 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 		return UiObject;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public int indexOf(final Object o) {
+		if (o instanceof DtObject) {
+			return indexOf((DtObject) o);
+		} else if (o instanceof UiObject) {
+			return indexOf((UiObject<D>) o);
+		}
+		return super.indexOf(o);
+	}
+
 	/**
 	 * @param UiObject UiObject recherché
 	 * @return index de l'objet dans la liste
 	 */
-	public int indexOf(final UiObject<D> UiObject) {
+	private int indexOf(final UiObject<D> UiObject) {
 		Assertion.checkNotNull(UiObject);
 		//---------------------------------------------------------------------
 		return bufferUiObjects.indexOf(UiObject);
@@ -171,7 +182,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	 * @param dtObject DtObject recherché
 	 * @return index de l'objet dans la liste
 	 */
-	public int indexOf(final DtObject dtObject) {
+	private int indexOf(final DtObject dtObject) {
 		Assertion.checkNotNull(dtObject);
 		//---------------------------------------------------------------------
 		for (int i = 0; i < bufferUiObjects.size(); i++) {
