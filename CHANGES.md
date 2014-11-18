@@ -3,8 +3,28 @@ Version history
 
 Running 0.7.0-SNAPSHOT
 ----------------------
-* [Core] Managers.xml syntax changed : add a &lt;config&gt; at root
+* [Core] Managers.xml syntax changed : add a &lt;config&gt; at root, ten two tags : components (containing module) and definitions (containing resource)
+* [Core] move some classes : VUserException, DefinitionSpace, io.vertigo.core.util, io.vertigo.core.lang, Engine
+* [Core] Injector static instead of instance
+* [Core] rename @Prefix to @DefinitionPrefix, Manager to Component
+* [Commons] Add CacheConfig
 * [Dynamo] Move search public api from SearchServicePlugin to SearchManager
+* [Dynamo] Add possibility to override FormatterDefault rendering
+* [Dynamo] Add fluent style with ExportBuilder, PropertiesBuilder
+* [Dynamo] DtField is a DtFieldName	
+* [Dynamo] Refact ElasticSearch plugins	
+* [Dynamo] Move search public api from SearchServicePlugin to SearchManager
+* [Dynamo] Work are migrated to tempo
+* [Vega] Fix swagger contextPath
+* [Vega] Move DtListDelta and UiListDelta
+* [Vega] Update export api
+* [Studio] Fix properties generator
+* [Struts2] Fix index dto with FK bind to MDL
+* [Struts2] Multiple select in simple_read
+* [Struts2] Add autocompleter popinURL	
+* [Struts2][Vega] Fix file download Content-Disposition
+* [Struts2] Change layout table behaviour	
+
 more to come :)
 
 Release 0.6.2 - 2014/10/27
