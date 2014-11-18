@@ -151,17 +151,6 @@ public final class AppBuilder {
 		return toAppConfigBuilder().build();
 	}
 
-	/**
-	 * Build this App and start it.
-	 * @return App as Application
-	 */
-	public App start() {
-		//1- build
-		//2- start
-		//3- return autoCloseable to stop Home
-		return new App(build());
-	}
-
 	private static Properties loadProperties(final String propertiesName, final Class<?> relativePathBase) {
 		try (final InputStream in = AppBuilder.createURL(propertiesName, relativePathBase).openStream()) {
 			final Properties properties = new Properties();

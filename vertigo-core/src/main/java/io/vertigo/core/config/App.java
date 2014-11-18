@@ -13,7 +13,7 @@ public final class App implements AutoCloseable {
 	 * Constructor.
 	 * @param appConfig App Config
 	 */
-	App(final AppConfig appConfig) {
+	public App(final AppConfig appConfig) {
 		Assertion.checkNotNull(appConfig);
 		//---------------------------------------------------------------------
 		this.appConfig = appConfig;
