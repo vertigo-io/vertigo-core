@@ -18,6 +18,11 @@
  */
 package io.vertigo.vega.impl.rest.filter;
 
+import io.vertigo.lang.Option;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import spark.Filter;
 import spark.Request;
 import spark.Response;
@@ -26,17 +31,24 @@ import spark.Response;
  * Handler of Cross-Origin Resource Sharing (CORS).
  * @author npiedeloup
  */
-public final class CorsAllower extends Filter {
-	private static final String originCORSFilter = "*";
-	private static final String methodsCORSFilter = "GET, POST, DELETE, PUT";//"*";
-	private static final String headersCORSFilter = "Content-Type";//"*";
+public final class CorsAllowerFilter extends Filter {
+	private static final String DEFAULT_ORIGINE_CORS_FILTER = "*";
+	private static final String DEFAULT_METHODS_CORS_FILTER = "GET, POST, DELETE, PUT";//"*";
+	private static final String DEFAULT_HEADERS_CORS_FILTER = "Content-Type";//"*";
+
+	private final String originCORSFilter;
+
+	@Inject
+	public CorsAllowerFilter(@Named("originCORSFilter") final Option<String> originCORSFilter) {
+		this.originCORSFilter = originCORSFilter.getOrElse(DEFAULT_ORIGINE_CORS_FILTER);
+	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void handle(final Request request, final Response response) {
 		response.header("Access-Control-Allow-Origin", originCORSFilter);
-		response.header("Access-Control-Request-Method", methodsCORSFilter);
-		response.header("Access-Control-Allow-Headers", headersCORSFilter);
+		response.header("Access-Control-Request-Method", DEFAULT_METHODS_CORS_FILTER);
+		response.header("Access-Control-Allow-Headers", DEFAULT_HEADERS_CORS_FILTER);
 	}
 
 }
