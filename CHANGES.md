@@ -3,7 +3,7 @@ Version history
 
 Running 0.7.0-SNAPSHOT
 ----------------------
-* [Core] Managers.xml syntax changed : add a &lt;config&gt; at root, ten two tags : components (containing module) and definitions (containing resource)
+* [Core] Managers.xml syntax changed : add a &lt;config&gt; at root, contains two tags : components (containing module) and definitions (containing resource)
 * [Core] move some classes : VUserException, DefinitionSpace, io.vertigo.core.util, io.vertigo.core.lang, Engine
 * [Core] Injector static instead of instance
 * [Core] rename @Prefix to @DefinitionPrefix, Manager to Component
