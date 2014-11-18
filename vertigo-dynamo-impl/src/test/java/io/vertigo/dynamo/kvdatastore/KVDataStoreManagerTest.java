@@ -35,7 +35,7 @@ import org.junit.Test;
  * @author pchretien
  */
 public class KVDataStoreManagerTest extends AbstractTestCaseJU4 {
-	private static final String DEFAULT_STORE_NAME = "default";
+	private static final String DEFAULT_DATA_STORE_NAME = "default";
 	@Inject
 	private KVDataStoreManager kvDataStoreManager;
 	@Inject
@@ -45,13 +45,13 @@ public class KVDataStoreManagerTest extends AbstractTestCaseJU4 {
 	public void testFindPutFind() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction();) {
 			Option<Car> search;
-			search = kvDataStoreManager.find(DEFAULT_STORE_NAME, "1", Car.class);
+			search = kvDataStoreManager.find(DEFAULT_DATA_STORE_NAME, "1", Car.class);
 			Assert.assertTrue(search.isEmpty());
 			final Car car = new Car();
 			car.setModel("205 gti");
 
-			kvDataStoreManager.put(DEFAULT_STORE_NAME, "1", car);
-			search = kvDataStoreManager.find(DEFAULT_STORE_NAME, "1", Car.class);
+			kvDataStoreManager.put(DEFAULT_DATA_STORE_NAME, "1", car);
+			search = kvDataStoreManager.find(DEFAULT_DATA_STORE_NAME, "1", Car.class);
 			Assert.assertTrue(search.isDefined());
 			Assert.assertEquals("205 gti", search.get().getModel());
 
@@ -68,7 +68,7 @@ public class KVDataStoreManagerTest extends AbstractTestCaseJU4 {
 	public void testFindAllPutFindAll() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			List<Car> cars;
-			cars = kvDataStoreManager.findAll(DEFAULT_STORE_NAME, 0, null, Car.class);
+			cars = kvDataStoreManager.findAll(DEFAULT_DATA_STORE_NAME, 0, null, Car.class);
 			Assert.assertTrue(cars.isEmpty());
 
 			addCar(cars, "205 gti");
@@ -89,13 +89,13 @@ public class KVDataStoreManagerTest extends AbstractTestCaseJU4 {
 	public void test2() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			Option<Flower> search;
-			search = kvDataStoreManager.find(DEFAULT_STORE_NAME, "1", Flower.class);
+			search = kvDataStoreManager.find(DEFAULT_DATA_STORE_NAME, "1", Flower.class);
 			Assert.assertTrue(search.isEmpty());
 			final Flower flower = new Flower();
 			flower.setName("Hortensia");
 			flower.setPrice(10d);
-			kvDataStoreManager.put(DEFAULT_STORE_NAME, "H1", flower);
-			search = kvDataStoreManager.find(DEFAULT_STORE_NAME, "H1", Flower.class);
+			kvDataStoreManager.put(DEFAULT_DATA_STORE_NAME, "H1", flower);
+			search = kvDataStoreManager.find(DEFAULT_DATA_STORE_NAME, "H1", Flower.class);
 			Assert.assertTrue(search.isDefined());
 			Assert.assertEquals("Hortensia", search.get().getName());
 

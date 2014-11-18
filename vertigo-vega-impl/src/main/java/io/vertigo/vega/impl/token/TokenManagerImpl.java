@@ -39,18 +39,18 @@ import javax.inject.Named;
  */
 public final class TokenManagerImpl implements TokenManager {
 
-	private final String storeName;
+	private final String dataStoreName;
 	private final KSecurityManager securityManager;
 	/** Object token, by */
 	private final KVDataStoreManager kvDataStoreManager;
 
 	@Inject
-	public TokenManagerImpl(@Named("storeName") final String storeName, final KSecurityManager securityManager, final KVDataStoreManager kvDataStoreManager) {
-		Assertion.checkArgNotEmpty(storeName);
+	public TokenManagerImpl(@Named("dataStoreName") final String dataStoreName, final KSecurityManager securityManager, final KVDataStoreManager kvDataStoreManager) {
+		Assertion.checkArgNotEmpty(dataStoreName);
 		Assertion.checkNotNull(securityManager);
 		Assertion.checkNotNull(kvDataStoreManager);
 		//---------------------------------------------------------------------
-		this.storeName = storeName;
+		this.dataStoreName = dataStoreName;
 		this.securityManager = securityManager;
 		this.kvDataStoreManager = kvDataStoreManager;
 	}
@@ -66,7 +66,7 @@ public final class TokenManagerImpl implements TokenManager {
 		//---------------------------------------------------------------------
 		final String objectUUID = UUID.randomUUID().toString();
 		final String tokenKey = makeTokenKey(objectUUID);
-		kvDataStoreManager.put(storeName, tokenKey, data);
+		kvDataStoreManager.put(dataStoreName, tokenKey, data);
 		return objectUUID; //We only return the object part.
 	}
 
@@ -76,7 +76,7 @@ public final class TokenManagerImpl implements TokenManager {
 		Assertion.checkArgNotEmpty(objectUUID, "Security key is mandatory");
 		//---------------------------------------------------------------------
 		final String tokenKey = makeTokenKey(objectUUID);
-		return kvDataStoreManager.find(storeName, tokenKey, Serializable.class);
+		return kvDataStoreManager.find(dataStoreName, tokenKey, Serializable.class);
 	}
 
 	/** {@inheritDoc} */
@@ -85,9 +85,9 @@ public final class TokenManagerImpl implements TokenManager {
 		Assertion.checkArgNotEmpty(objectUUID, "Security key is mandatory");
 		//---------------------------------------------------------------------
 		final String tokenKey = makeTokenKey(objectUUID);
-		final Option<Serializable> result = kvDataStoreManager.find(storeName, tokenKey, Serializable.class);
+		final Option<Serializable> result = kvDataStoreManager.find(dataStoreName, tokenKey, Serializable.class);
 		if (result.isDefined()) {
-			kvDataStoreManager.remove(storeName, tokenKey);
+			kvDataStoreManager.remove(dataStoreName, tokenKey);
 		}
 		return result;
 	}

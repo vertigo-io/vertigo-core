@@ -110,7 +110,7 @@ public final class MyApp {
 				.beginComponent(CatalogRestServices.class).endComponent()
 				.beginComponent(RateLimitingHandler.class).endComponent()
 				.beginComponent(TokenManager.class, TokenManagerImpl.class)
-					.withParam("storeName", "UiSecurityStore")
+					.withParam("dataStoreName", "UiSecurityStore")
 				.endComponent()
 			.endModule()
 		.build();
