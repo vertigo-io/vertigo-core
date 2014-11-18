@@ -83,7 +83,7 @@ public final class AppBuilder {
 	 */
 	public AppBuilder withEnvParams(final Class<?> relativeRootClass, final Option<String> optionEnvParams) {
 		if (optionEnvParams.isDefined()) {
-			myEnvParams.putAll(loadProperties(optionEnvParams.get(), relativeRootClass));
+			withEnvParams(loadProperties(optionEnvParams.get(), relativeRootClass));
 		}
 		return this;
 	}
@@ -96,7 +96,7 @@ public final class AppBuilder {
 	 */
 	public AppBuilder withEnvParams(final Class<?> relativeRootClass, final String... newEnvParams) {
 		for (final String newEnvParam : newEnvParams) {
-			myEnvParams.putAll(loadProperties(newEnvParam, relativeRootClass));
+			withEnvParams(loadProperties(newEnvParam, relativeRootClass));
 		}
 		return this;
 	}
@@ -137,7 +137,7 @@ public final class AppBuilder {
 			final Loader<AppConfigBuilder> loader = new XMLModulesLoader(xmlUrl, myEnvParams);
 			myAppConfigBuilder.withLoader(loader);
 		}
-		//.withRestEngine(new GrizzlyRestEngine(8086));
+		myAppConfigBuilder.withEnvParams(myEnvParams);
 		return myAppConfigBuilder;
 	}
 
@@ -159,7 +159,7 @@ public final class AppBuilder {
 		//1- build
 		//2- start
 		//3- return autoCloseable to stop Home
-		return new App(myEnvParams, build());
+		return new App(build());
 	}
 
 	private static Properties loadProperties(final String propertiesName, final Class<?> relativePathBase) {

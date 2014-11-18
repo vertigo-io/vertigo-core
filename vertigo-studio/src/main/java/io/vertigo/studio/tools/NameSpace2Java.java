@@ -58,7 +58,7 @@ public final class NameSpace2Java {
 			goalClazzList.add(GenerateGoal.class);
 			//		goalClazzList.add(ReportingGoal.class);
 			//-------------------------------
-			process(app.getEnvParams(), goalClazzList);
+			process(app.getAppConfig().getEnvParams(), goalClazzList);
 		} finally {
 			Home.stop();
 		}

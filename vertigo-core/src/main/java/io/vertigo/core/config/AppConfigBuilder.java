@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Configuration.
@@ -44,8 +45,21 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	private AopEngine myAopEngine = new CGLIBAopEngine();
 	private ElasticaEngine myElasticaEngine = null; //par défaut pas d'elasticité.
 	private VCommandEngine myCommandEngine = null; // new VCommandEngineImpl(jsonEngine, VCommandEngine.DEFAULT_PORT); //Par défaut
+	private final Properties myEnvParams = new Properties();
 
 	private final List<ResourceConfig> myResourceConfigs = new ArrayList<>();
+
+	/**
+	 * Append EnvParams.
+	 * @param envParams envParams
+	 * @return this builder
+	 */
+	public AppConfigBuilder withEnvParams(final Properties envParams) {
+		Assertion.checkNotNull(envParams);
+		//---------------------------------------------------------------------
+		myEnvParams.putAll(envParams);
+		return this;
+	}
 
 	/**
 	 * Ajout de paramètres
@@ -136,6 +150,6 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 		}
 		final ComponentSpaceConfig componentSpaceConfig = new ComponentSpaceConfig(moduleConfigs, myAopEngine, Option.option(myElasticaEngine), Option.option(myCommandEngine), mySilence);
 		final DefinitionSpaceConfig definitionSpaceConfig = new DefinitionSpaceConfig(myResourceConfigs);
-		return new AppConfig(myParams, componentSpaceConfig, definitionSpaceConfig);
+		return new AppConfig(myEnvParams, myParams, componentSpaceConfig, definitionSpaceConfig);
 	}
 }

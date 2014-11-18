@@ -3,23 +3,20 @@ package io.vertigo.core.config;
 import io.vertigo.core.Home;
 import io.vertigo.lang.Assertion;
 
-import java.util.Properties;
-
 /**
  * Application state.
  */
 public final class App implements AutoCloseable {
-	private final Properties envParams;
+	private final AppConfig appConfig;
 
 	/**
 	 * Constructor.
-	 * @param envParams Environment Parameters (are public in app)
 	 * @param appConfig App Config
 	 */
-	App(final Properties envParams, final AppConfig appConfig) {
-		Assertion.checkNotNull(envParams, "envParams");
+	App(final AppConfig appConfig) {
+		Assertion.checkNotNull(appConfig);
 		//---------------------------------------------------------------------
-		this.envParams = envParams;
+		this.appConfig = appConfig;
 		Home.start(appConfig);
 	}
 
@@ -32,7 +29,7 @@ public final class App implements AutoCloseable {
 	/**
 	 * @return Environment Parameters
 	 */
-	public Properties getEnvParams() {
-		return envParams;
+	public AppConfig getAppConfig() {
+		return appConfig;
 	}
 }
