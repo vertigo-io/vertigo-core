@@ -41,9 +41,7 @@ import spark.Route;
 public final class WsRestRoute extends Route {
 
 	private final Logger logger = Logger.getLogger(getClass());
-	//	private ExceptionHandler exceptionHandler;
-	//	private SessionHandler sessionHandler;
-	//	private SecurityHandler securityHandler;
+
 	@Inject
 	private RateLimitingHandler rateLimitingHandler;
 	@Inject
@@ -53,13 +51,16 @@ public final class WsRestRoute extends Route {
 
 	private final HandlerChain handlerChain;
 	private final JsonEngine jsonEngine = new GoogleJsonEngine();
+	private final String defaultContentCharset;
 
 	/**
 	 * @param endPointDefinition EndPoint Definition
+	 * @param defaultContentCharset DefaultContentCharset
 	 */
-	public WsRestRoute(final EndPointDefinition endPointDefinition) {
+	public WsRestRoute(final EndPointDefinition endPointDefinition, final String defaultContentCharset) {
 		super(convertJaxRsPathToSpark(endPointDefinition.getPath()), endPointDefinition.getAcceptType());
 		Injector.injectMembers(this, Home.getComponentSpace());
+		this.defaultContentCharset = defaultContentCharset;
 
 		handlerChain = new HandlerChainBuilder()
 				.withHandler(new ExceptionHandler(jsonEngine))
@@ -83,7 +84,8 @@ public final class WsRestRoute extends Route {
 	@Override
 	public Object handle(final Request request, final Response response) {
 		try {
-			return handlerChain.handle(request, response, new RouteContext(request));
+			final Request requestWrapper = new SparkRequestWrapper(request, defaultContentCharset);
+			return handlerChain.handle(requestWrapper, response, new RouteContext(requestWrapper));
 		} catch (final Throwable th) {
 			logger.error(th);
 			return th.getMessage();

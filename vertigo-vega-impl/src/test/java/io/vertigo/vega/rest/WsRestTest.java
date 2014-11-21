@@ -84,6 +84,7 @@ public final class WsRestTest {
 			RestAssured.port = WS_PORT;
 			RestAssured.registerParser("application/json+list", Parser.JSON);
 			RestAssured.registerParser("application/json+entity:Contact", Parser.JSON);
+			RestAssured.config = RestAssured.config.encoderConfig(RestAssured.config.getEncoderConfig().defaultContentCharset("ISO-8859-1"));
 		}
 
 		RestAssured.given()
@@ -735,6 +736,34 @@ public final class WsRestTest {
 				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 				.when()
 				.put("/test/contactExtended/104");
+	}
+
+	@Test
+	public void testPutContactUtf8() throws ParseException {
+		final Map<String, Object> newContact = createDefaultContact(100L);
+		final String testFirstName = "Gérard";
+		newContact.put("firstName", testFirstName);
+		loggedAndExpect(given().body(newContact)).log().all()
+				.body("conId", Matchers.equalTo(100))
+				.body("firstName", Matchers.equalTo(testFirstName))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/contact");
+	}
+
+	@Test
+	public void testPutContactCharsetIso8859() throws ParseException {
+		final Map<String, Object> newContact = createDefaultContact(100L);
+		final String testFirstName = "Gérard";
+		newContact.put("firstName", testFirstName);
+		loggedAndExpect(given()
+				.contentType("application/json;charset=ISO-8859-1")
+				.body(newContact).log().all())
+				.body("conId", Matchers.equalTo(100))
+				.body("firstName", Matchers.equalTo(testFirstName))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/contact");
 	}
 
 	//=========================================================================
