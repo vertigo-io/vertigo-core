@@ -18,6 +18,7 @@
  */
 package io.vertigo.vega.rest.metamodel;
 
+import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition.Verb;
@@ -41,7 +42,6 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	private Verb myVerb;
 	private String myPathPrefix;
 	private String myPath;
-	private final String myAcceptType = "application/json"; //default
 	private boolean myNeedSession = true;
 	private boolean mySessionInvalidate;
 	private boolean myNeedAuthentication = true;
@@ -57,6 +57,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 
 	/**
 	 * Constructeur.
+	 * @param method Method to bind to this endpoint
 	 */
 	public EndPointDefinitionBuilder(final Method method) {
 		Assertion.checkNotNull(method);
@@ -64,32 +65,43 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 		myMethod = method;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public EndPointDefinition build() {
 		final String usedPath = myPathPrefix != null ? myPathPrefix + myPath : myPath;
-		final String normalizedPath = usedPath.replaceAll("\\{.*?\\}", "_").replaceAll("[//]", "_"); //.*? : reluctant quantifier
-
+		final String normalizedPath = normalizePath(usedPath);
+		final String acceptedType = computeAcceptedType();
 		return new EndPointDefinition(
-				//"EP_" + StringUtil.camelToConstCase(restFullServiceClass.getSimpleName()) + "_" + StringUtil.camelToConstCase(method.getName()), 
-				"EP_" + myVerb + "_" + normalizedPath.toUpperCase(), 
-				myVerb, 
-				usedPath, 
-				myAcceptType, 
-				myMethod, 
-				myNeedSession, 
-				mySessionInvalidate, 
-				myNeedAuthentication, 
+				//"EP_" + StringUtil.camelToConstCase(restFullServiceClass.getSimpleName()) + "_" + StringUtil.camelToConstCase(method.getName()),
+				"EP_" + myVerb + "_" + normalizedPath.toUpperCase(),
+				myVerb,
+				usedPath,
+				acceptedType,
+				myMethod,
+				myNeedSession,
+				mySessionInvalidate,
+				myNeedAuthentication,
 				myAccessTokenPublish,
 				myAccessTokenMandatory,
 				myAccessTokenConsume,
 				myServerSideSave,
 				myAutoSortAndPagination,
-				myIncludedFields, 
-				myExcludedFields, 
-				myEndPointParams, 
+				myIncludedFields,
+				myExcludedFields,
+				myEndPointParams,
 				myDoc);
 	}
 
+	private String normalizePath(final String servicePath) {
+		return servicePath.replaceAll("\\{.*?\\}", "_")//.*? : reluctant quantifier;
+				.replaceAll("[//\\*]", "_")
+				.replaceAll("__", "_");
+	}
+
+	/**
+	 * @param pathPrefix Path prefix
+	 * @return this builder
+	 */
 	public EndPointDefinitionBuilder withPathPrefix(final String pathPrefix) {
 		Assertion.checkArgNotEmpty(pathPrefix, "Route pathPrefix must be specified on {0}", myMethod.getName());
 		Assertion.checkArgument(pathPrefix.startsWith("/"), "Route pathPrefix must starts with / (on {0})", myMethod.getName());
@@ -98,6 +110,11 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 		return this;
 	}
 
+	/**
+	 * @param verb Verb
+	 * @param path Path
+	 * @return this builder
+	 */
 	public EndPointDefinitionBuilder with(final Verb verb, final String path) {
 		Assertion.checkState(myVerb == null, "A verb is already specified on {0} ({1})", myMethod.getName(), myVerb);
 		Assertion.checkArgNotEmpty(path, "Route path must be specified on {0}", myMethod.getName());
@@ -108,54 +125,98 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 		return this;
 	}
 
+	/**
+	 * @return if verb was set
+	 */
 	public boolean hasVerb() {
 		return myVerb != null;
 	}
 
+	/**
+	 * @param accessTokenConsume accessTokenConsume
+	 * @return this builder
+	 */
 	public EndPointDefinitionBuilder withAccessTokenConsume(final boolean accessTokenConsume) {
 		myAccessTokenConsume = accessTokenConsume;
 		return this;
 	}
 
+	/**
+	 * @param needAuthentication needAuthentication
+	 * @return this builder
+	 */
 	public EndPointDefinitionBuilder withNeedAuthentication(final boolean needAuthentication) {
 		myNeedAuthentication = needAuthentication;
 		return this;
 	}
 
+	/**
+	 * @param needSession needSession
+	 * @return this builder
+	 */
 	public EndPointDefinitionBuilder withNeedSession(final boolean needSession) {
 		myNeedSession = needSession;
 		return this;
 	}
 
+	/**
+	 * @param sessionInvalidate sessionInvalidate
+	 * @return this builder
+	 */
 	public EndPointDefinitionBuilder withSessionInvalidate(final boolean sessionInvalidate) {
 		mySessionInvalidate = sessionInvalidate;
 		return this;
 	}
 
+	/**
+	 * @param excludedFields list of excludedFields
+	 * @return this builder
+	 */
 	public EndPointDefinitionBuilder withExcludedFields(final String... excludedFields) {
 		myExcludedFields.addAll(Arrays.asList(excludedFields));
 		return this;
 	}
 
+	/**
+	 * @param includedFields list of includedFields
+	 * @return this builder
+	 */
 	public EndPointDefinitionBuilder withIncludedFields(final String... includedFields) {
 		myIncludedFields.addAll(Arrays.asList(includedFields));
 		return this;
 	}
 
+	/**
+	 * @param accessTokenPublish accessTokenPublish
+	 * @return this builder
+	 */
 	public EndPointDefinitionBuilder withAccessTokenPublish(final boolean accessTokenPublish) {
 		myAccessTokenPublish = accessTokenPublish;
 		return this;
 	}
 
-	public void withAccessTokenMandatory(final boolean accessTokenMandatory) {
+	/**
+	 * @param accessTokenMandatory accessTokenMandatory
+	 * @return this builder
+	 */
+	public EndPointDefinitionBuilder withAccessTokenMandatory(final boolean accessTokenMandatory) {
 		myAccessTokenMandatory = accessTokenMandatory;
+		return this;
 	}
 
+	/**
+	 * @param serverSideSave serverSideSave
+	 * @return this builder
+	 */
 	public EndPointDefinitionBuilder withServerSideSave(final boolean serverSideSave) {
 		myServerSideSave = serverSideSave;
 		return this;
 	}
 
+	/**
+	 * @param autoSortAndPagination autoSortAndPagination
+	 * @return this builder
+	 */
 	public EndPointDefinitionBuilder withAutoSortAndPagination(final boolean autoSortAndPagination) {
 		myAutoSortAndPagination = autoSortAndPagination;
 
@@ -170,13 +231,37 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 		return this;
 	}
 
+	/**
+	 * @param doc doc
+	 * @return this builder
+	 */
 	public EndPointDefinitionBuilder withDoc(final String doc) {
 		myDoc = doc;
 		return this;
 	}
 
+	/**
+	 * @param endPointParam endPointParam
+	 * @return this builder
+	 */
 	public EndPointDefinitionBuilder withEndPointParam(final EndPointParam endPointParam) {
 		myEndPointParams.add(endPointParam);
 		return this;
 	}
+
+	private String computeAcceptedType() {
+		for (final EndPointParam endPointParam : myEndPointParams) {
+			if (KFile.class.isAssignableFrom(endPointParam.getType())) {
+				return "multipart/form-data";
+			} else if (endPointParam.getParamType() == RestParamType.Query) {
+				if (myVerb != Verb.GET) {//if GET => nothing
+					return "application/x-www-form-urlencoded";
+				}
+			} else if (endPointParam.getParamType() == RestParamType.Body || endPointParam.getParamType() == RestParamType.InnerBody) {
+				return "application/json";
+			}
+		}
+		return "application/json";
+	}
+
 }
