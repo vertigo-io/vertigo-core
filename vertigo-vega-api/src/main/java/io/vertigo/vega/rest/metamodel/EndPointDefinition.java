@@ -77,10 +77,11 @@ public final class EndPointDefinition implements Definition {
 		Assertion.checkNotNull(excludedFields);
 		Assertion.checkNotNull(endPointParams);
 		Assertion.checkNotNull(doc); //doc can be empty
-		Assertion.checkArgument(!accessTokenConsume || accessTokenMandatory, "AccessToken mandatory for accessTokenConsume ({0})", name);
-		Assertion.checkArgument(!serverSideSave || needSession, "Session mandatory for serverSideState ({0})", name);
-		Assertion.checkArgument(!serverSideSave || !Void.TYPE.equals(method.getReturnType()), "Return object mandatory for serverSideState ({0})", name);
-		checkPathParams(path, endPointParams);
+		final String userFriendlyMethodName = method.getDeclaringClass().getSimpleName() + "." + method.getName();
+		Assertion.checkArgument(!accessTokenConsume || accessTokenMandatory, "AccessToken mandatory for accessTokenConsume ({0})", userFriendlyMethodName);
+		Assertion.checkArgument(!serverSideSave || needSession, "Session mandatory for serverSideState ({0})", userFriendlyMethodName);
+		Assertion.checkArgument(!serverSideSave || !Void.TYPE.equals(method.getReturnType()), "Return object mandatory for serverSideState ({0})", userFriendlyMethodName);
+		checkPathParams(path, endPointParams, userFriendlyMethodName);
 		//---------------------------------------------------------------------
 		this.name = name;
 		this.verb = verb;
@@ -105,7 +106,7 @@ public final class EndPointDefinition implements Definition {
 		this.doc = doc;
 	}
 
-	private void checkPathParams(final String myPath, final List<EndPointParam> myEndPointParams) {
+	private void checkPathParams(final String myPath, final List<EndPointParam> myEndPointParams, final String methodName) {
 		final Set<String> inputPathParam = new HashSet<>();
 		final Set<String> urlPathParam = new HashSet<>();
 		for (final EndPointParam myEndPointParam : myEndPointParams) {
@@ -120,11 +121,11 @@ public final class EndPointDefinition implements Definition {
 		}
 		final Set<String> notUsed = new HashSet<>(urlPathParam);
 		notUsed.removeAll(inputPathParam);
-		Assertion.checkArgument(notUsed.isEmpty(), "Some pathParam declared in path are not used ({0})", notUsed);
+		Assertion.checkArgument(notUsed.isEmpty(), "Some pathParam of {1} declared in path are not used {0}", notUsed, methodName);
 
 		final Set<String> notDeclared = new HashSet<>(inputPathParam);
 		notDeclared.removeAll(urlPathParam);
-		Assertion.checkArgument(notDeclared.isEmpty(), "Some pathParam are not declared in path ({0})", notDeclared);
+		Assertion.checkArgument(notDeclared.isEmpty(), "Some pathParam of {1} are not declared in path {0}", notDeclared, methodName);
 	}
 
 	@Override

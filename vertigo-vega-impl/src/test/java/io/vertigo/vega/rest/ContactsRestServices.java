@@ -93,7 +93,7 @@ public final class ContactsRestServices implements RestfulService {
 	}
 
 	//PUT is indempotent : ID obligatoire
-	@PUT("/contacts/{conId}")
+	@PUT("/contacts/*")
 	public Contact update(final Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
