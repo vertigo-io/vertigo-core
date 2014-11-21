@@ -19,12 +19,15 @@
 package io.vertigo.vega.impl.rest.catalog;
 
 import io.vertigo.core.Home;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.lang.Option;
+import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 import io.vertigo.vega.rest.EndPointTypeUtil;
 import io.vertigo.vega.rest.RestfulService;
@@ -72,6 +75,10 @@ public final class SwaggerRestServices implements RestfulService {
 
 	private final Map<String, Object> definitions = new LinkedHashMap<>();
 
+	/**
+	 * @param request HttpRequest
+	 * @return Api representation in Swagger definition
+	 */
 	@SessionLess
 	@AnonymousAccessAllowed
 	@GET("/swaggerApi")
@@ -79,6 +86,11 @@ public final class SwaggerRestServices implements RestfulService {
 		return createSwagger(request.getContextPath());
 	}
 
+	/**
+	 * Redirect to index.html.
+	 * @param response HttpResponse
+	 * @throws IOException Exception
+	 */
 	@SessionLess
 	@AnonymousAccessAllowed
 	@GET("/swaggerUi")
@@ -86,6 +98,11 @@ public final class SwaggerRestServices implements RestfulService {
 		response.sendRedirect("./swaggerUi/index.html");
 	}
 
+	/**
+	 * Redirect to index.html.
+	 * @param response HttpResponse
+	 * @throws IOException Exception
+	 */
 	@SessionLess
 	@AnonymousAccessAllowed
 	@GET("/swaggerUi/")
@@ -93,6 +110,12 @@ public final class SwaggerRestServices implements RestfulService {
 		response.sendRedirect("./index.html");
 	}
 
+	/**
+	 * Return a swagger static resources.
+	 * @param resourceUrl Resource name
+	 * @param response HttpResponse
+	 * @throws IOException Exception
+	 */
 	@SessionLess
 	@AnonymousAccessAllowed
 	@GET("/swaggerUi/{resourceUrl}")
@@ -104,6 +127,13 @@ public final class SwaggerRestServices implements RestfulService {
 		sendFile(url, resolveContentType(resourceUrl), response);
 	}
 
+	/**
+	 * Return a swagger static resources.
+	 * @param resourcePathUrl Resource path
+	 * @param resourceUrl Resource name
+	 * @param response HttpResponse
+	 * @throws IOException Exception
+	 */
 	@SessionLess
 	@AnonymousAccessAllowed
 	@GET("/swaggerUi/{resourcePathUrl}/{resourceUrl}")
@@ -205,7 +235,7 @@ public final class SwaggerRestServices implements RestfulService {
 		}
 		putIfNotEmpty(operation, "description", description.toString());
 		operation.put("operationId", endPointDefinition.getName());
-		operation.put("consumes", Collections.singletonList("multipart/form-data"));
+		putIfNotEmpty(operation, "consumes", createConsumesArray(endPointDefinition));
 		putIfNotEmpty(operation, "parameters", createParametersArray(endPointDefinition));
 		putIfNotEmpty(operation, "responses", createResponsesObject(endPointDefinition));
 		putIfNotEmpty(operation, "tags", createTagsArray(endPointDefinition));
@@ -289,8 +319,8 @@ public final class SwaggerRestServices implements RestfulService {
 		} else if ("object".equals(typeAndFormat[0])) {
 			final String objectName;
 			final Class<?> parameterClass;
-			if (type instanceof ParameterizedType 
-					&& ((ParameterizedType) type).getActualTypeArguments().length == 1 
+			if (type instanceof ParameterizedType
+					&& ((ParameterizedType) type).getActualTypeArguments().length == 1
 					&& !(((ParameterizedType) type).getActualTypeArguments()[0] instanceof WildcardType)) {
 				final Type itemsType = ((ParameterizedType) type).getActualTypeArguments()[0]; //we known that DtListDelta has one parameterized type
 				parameterClass = EndPointTypeUtil.castAsClass(itemsType);
@@ -322,7 +352,8 @@ public final class SwaggerRestServices implements RestfulService {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(objectClass);
 		for (final DtField dtField : dtDefinition.getFields()) {
 			final String fieldName = StringUtil.constToCamelCase(dtField.getName(), false);
-			final Map<String, Object> fieldSchema = createSchemaObject(dtField.getDomain().getDataType().getJavaClass());
+			final Type fieldType = getFieldType(dtField);
+			final Map<String, Object> fieldSchema = createSchemaObject(fieldType);
 			fieldSchema.put("title", dtField.getLabel().getDisplay());
 			fieldSchema.put("required", dtField.isNotNull());
 			if (dtField.isNotNull()) {
@@ -332,6 +363,18 @@ public final class SwaggerRestServices implements RestfulService {
 		}
 		putIfNotEmpty(entity, "enum", enums);
 		putIfNotEmpty(entity, "properties", properties);
+	}
+
+	private Type getFieldType(final DtField dtField) {
+		final DataType dataType = dtField.getDomain().getDataType();
+		if (DataType.DtObject == dataType) {
+			final Class<?> dtClass = ClassUtil.classForName(dtField.getDomain().getDtDefinition().getClassCanonicalName());
+			return dtClass;
+		} else if (DataType.DtList == dataType) {
+			final Class<?> dtClass = ClassUtil.classForName(dtField.getDomain().getDtDefinition().getClassCanonicalName());
+			return createParameterizedType(DtList.class, dtClass);
+		}
+		return dataType.getJavaClass();
 	}
 
 	private void appendPropertiesObject(final Map<String, Object> entity, final Type type, final Class<? extends Object> parameterClass) {
@@ -346,31 +389,14 @@ public final class SwaggerRestServices implements RestfulService {
 				if (fieldType instanceof ParameterizedType) {
 					final Type[] actualTypeArguments = ((ParameterizedType) fieldType).getActualTypeArguments();
 					if (actualTypeArguments.length == 1 && actualTypeArguments[0] instanceof TypeVariable) {
-						final Type[] resolvedTypeArguments = new Type[] { parameterClass };
-						usedFieldType = new ParameterizedType() {
-							@Override
-							public Type[] getActualTypeArguments() {
-								return resolvedTypeArguments;
-							}
-
-							@Override
-							public Type getRawType() {
-								return ((ParameterizedType) fieldType).getRawType();
-							}
-
-							@Override
-							public Type getOwnerType() {
-								return ((ParameterizedType) fieldType).getOwnerType();
-							}
-
-						};
+						usedFieldType = createParameterizedType(fieldType, parameterClass);
 					}
 				} else if (fieldType instanceof TypeVariable) {
 					usedFieldType = parameterClass;
 				}
 				final Map<String, Object> fieldSchema = createSchemaObject(usedFieldType);
 				//fieldSchema.put("title", field.getName());
-				if ((field.getModifiers() & (Modifier.FINAL)) != 0
+				if ((field.getModifiers() & Modifier.FINAL) != 0
 						&& !Option.class.isAssignableFrom(field.getType())) {
 					//fieldSchema.put("required", true);
 					enums.add(field.getName());
@@ -388,15 +414,36 @@ public final class SwaggerRestServices implements RestfulService {
 		return tags;
 	}
 
+	private List<String> createConsumesArray(final EndPointDefinition endPointDefinition) {
+		if (endPointDefinition.getEndPointParams().isEmpty()) {
+			return Collections.emptyList();
+		}
+		return Collections.singletonList(endPointDefinition.getAcceptType());
+	}
+
 	private List<Map<String, Object>> createParametersArray(final EndPointDefinition endPointDefinition) {
+		Map<String, Object> bodyParameter = null;
 		final List<Map<String, Object>> parameters = new ArrayList<>();
 		for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
 			if (endPointParam.getParamType() != RestParamType.Implicit) {//if implicit : no public parameter
-				if (isExplodedParams(endPointParam)) {
+				if (isOneInMultipleOutParams(endPointParam)) {
 					for (final EndPointParam pseudoEndPointParam : createPseudoEndPointParams(endPointParam)) {
 						final Map<String, Object> parameter = createParameterObject(pseudoEndPointParam, endPointDefinition);
 						parameter.remove("required"); //query params aren't required
 						parameters.add(parameter);
+					}
+				} else if (isMultipleInOneOutParams(endPointParam)) {
+					final Map<String, Object> parameter = createParameterObject(endPointParam, endPointDefinition);
+					if (bodyParameter == null) {
+						bodyParameter = parameter;
+					} else {
+						final String newDescription = (String) parameter.get("description");
+						final String oldDescription = (String) bodyParameter.get("description");
+						bodyParameter.put("description", oldDescription + ", " + newDescription);
+
+						final Map<String, Object> newSchema = (Map<String, Object>) parameter.get("schema");
+						final Map<String, Object> oldSchema = (Map<String, Object>) bodyParameter.get("schema");
+						oldSchema.putAll(newSchema);
 					}
 				} else {
 					final Map<String, Object> parameter = createParameterObject(endPointParam, endPointDefinition);
@@ -404,6 +451,7 @@ public final class SwaggerRestServices implements RestfulService {
 				}
 			}
 		}
+
 		if (endPointDefinition.isAccessTokenMandatory()) {
 			final Map<String, Object> parameter = new LinkedHashMap<>();
 			parameter.put("name", "x-access-token");
@@ -413,6 +461,18 @@ public final class SwaggerRestServices implements RestfulService {
 			parameter.put("type", "string");
 			parameters.add(parameter);
 		}
+		if (bodyParameter != null) {
+			final String bodyName = StringUtil.constToCamelCase(endPointDefinition.getName().replaceAll("__", "_"), true) + "Body";
+			final Map<String, Object> compositeSchema = (Map<String, Object>) bodyParameter.get("schema");
+			bodyParameter.put("schema", Collections.singletonMap("$ref", bodyName));
+			final Map<String, Object> bodyDefinition = new LinkedHashMap<>();
+			bodyDefinition.put("enum", compositeSchema.keySet().toArray(new String[compositeSchema.size()]));
+			bodyDefinition.put("properties", compositeSchema);
+			definitions.put(bodyName, bodyDefinition);
+
+			parameters.add(0, bodyParameter);
+		}
+
 		return parameters;
 	}
 
@@ -441,9 +501,13 @@ public final class SwaggerRestServices implements RestfulService {
 		return pseudoEndPointParams;
 	}
 
-	private boolean isExplodedParams(final EndPointParam endPointParam) {
+	private boolean isOneInMultipleOutParams(final EndPointParam endPointParam) {
 		final Class<?> paramClass = endPointParam.getType();
 		return endPointParam.getParamType() == RestParamType.Query && (UiListState.class.isAssignableFrom(paramClass) || DtObject.class.isAssignableFrom(paramClass));
+	}
+
+	private boolean isMultipleInOneOutParams(final EndPointParam endPointParam) {
+		return endPointParam.getParamType() == RestParamType.InnerBody;
 	}
 
 	private Map<String, Object> createParameterObject(final EndPointParam endPointParam, final EndPointDefinition endPointDefinition) {
@@ -458,7 +522,7 @@ public final class SwaggerRestServices implements RestfulService {
 				break;
 			case InnerBody:
 				inValue = "body";
-				nameValue = "body";
+				nameValue = "body"; //only one body parameter is accepted : must append in body
 				description = "InnerBody:" + endPointParam.getName();
 				break;
 			case Path:
@@ -483,8 +547,12 @@ public final class SwaggerRestServices implements RestfulService {
 		parameter.put("in", inValue);
 		putIfNotEmpty(parameter, "description", description);
 		parameter.put("required", "true");
-		if (endPointParam.getParamType() == RestParamType.Body || endPointParam.getParamType() == RestParamType.InnerBody) {
+		if (endPointParam.getParamType() == RestParamType.Body) {
 			parameter.put("schema", createSchemaObject(endPointParam.getGenericType()));
+		} else if (endPointParam.getParamType() == RestParamType.InnerBody) {
+			final Map<String, Object> bodyParameter = new LinkedHashMap<>();
+			bodyParameter.put(endPointParam.getName(), createSchemaObject(endPointParam.getGenericType()));
+			parameter.put("schema", bodyParameter);
 		} else {
 			final String[] typeAndFormat = toSwaggerType(endPointParam.getType());
 			parameter.put("type", typeAndFormat[0]);
@@ -534,5 +602,27 @@ public final class SwaggerRestServices implements RestfulService {
 		licence.put("name", "Apache 2.0");
 		licence.put("url", "http://www.apache.org/licenses/LICENSE-2.0.html");
 		return licence;
+	}
+
+	private static Type createParameterizedType(final Type fieldType, final Type paramType) {
+		final Type[] typeArguments = { paramType };
+		final Type typeOfDest = new ParameterizedType() {
+
+			@Override
+			public Type[] getActualTypeArguments() {
+				return typeArguments;
+			}
+
+			@Override
+			public Type getOwnerType() {
+				return fieldType instanceof ParameterizedType ? ((ParameterizedType) fieldType).getOwnerType() : null;
+			}
+
+			@Override
+			public Type getRawType() {
+				return fieldType instanceof ParameterizedType ? ((ParameterizedType) fieldType).getRawType() : fieldType;
+			}
+		};
+		return typeOfDest;
 	}
 }
