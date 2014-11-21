@@ -21,13 +21,17 @@ package io.vertigo.vega.rest.metamodel;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.lang.Assertion;
+import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * End point definition.
@@ -76,6 +80,7 @@ public final class EndPointDefinition implements Definition {
 		Assertion.checkArgument(!accessTokenConsume || accessTokenMandatory, "AccessToken mandatory for accessTokenConsume ({0})", name);
 		Assertion.checkArgument(!serverSideSave || needSession, "Session mandatory for serverSideState ({0})", name);
 		Assertion.checkArgument(!serverSideSave || !Void.TYPE.equals(method.getReturnType()), "Return object mandatory for serverSideState ({0})", name);
+		checkPathParams(path, endPointParams);
 		//---------------------------------------------------------------------
 		this.name = name;
 		this.verb = verb;
@@ -98,6 +103,28 @@ public final class EndPointDefinition implements Definition {
 		this.endPointParams = Collections.unmodifiableList(new ArrayList<>(endPointParams));
 
 		this.doc = doc;
+	}
+
+	private void checkPathParams(final String myPath, final List<EndPointParam> myEndPointParams) {
+		final Set<String> inputPathParam = new HashSet<>();
+		final Set<String> urlPathParam = new HashSet<>();
+		for (final EndPointParam myEndPointParam : myEndPointParams) {
+			if (myEndPointParam.getParamType() == RestParamType.Path) {
+				inputPathParam.add(myEndPointParam.getName());
+			}
+		}
+		final Pattern pattern = Pattern.compile("\\{(.+?)\\}");
+		final Matcher matcher = pattern.matcher(myPath);
+		while (matcher.find()) {
+			urlPathParam.add(matcher.group(1)); //group 0 is always the entire match
+		}
+		final Set<String> notUsed = new HashSet<>(urlPathParam);
+		notUsed.removeAll(inputPathParam);
+		Assertion.checkArgument(notUsed.isEmpty(), "Some pathParam declared in path are not used ({0})", notUsed);
+
+		final Set<String> notDeclared = new HashSet<>(inputPathParam);
+		notDeclared.removeAll(urlPathParam);
+		Assertion.checkArgument(notDeclared.isEmpty(), "Some pathParam are not declared in path ({0})", notDeclared);
 	}
 
 	@Override
