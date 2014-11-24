@@ -48,6 +48,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 public final class Home {
 	//Start Date in milliseconds : used to have 'uptime'
 	private static long start = -1;
+	private static final Home INSTANCE = new Home();
 
 	private static enum State {
 		/** Composants non démarrés*/
@@ -62,8 +63,6 @@ public final class Home {
 		FAIL
 	}
 
-	private static final Home INSTANCE = new Home();
-
 	private State state = State.INACTIVE;
 
 	private final DefinitionSpace definitionSpace = new DefinitionSpace();
@@ -73,54 +72,22 @@ public final class Home {
 		// Classe statique d'accès aux composants.
 	}
 
+	//-------------------------------------------------------------------------
+	//-------------------Méthods publiques-------------------------------------
+	//-------------------------------------------------------------------------
 	/**
 	 * Démarrage de l'application.
 	 * @param appConfig AppConfig
 	 */
 	public static void start(final AppConfig appConfig) {
-		Assertion.checkNotNull(appConfig);
-		//-------------------------------------------------------------------------
-		INSTANCE.change(State.INACTIVE, State.starting);
-		try {
-			Assertion.checkState(INSTANCE.definitionSpace.isEmpty(), "DefinitionSpace must be empty");
-			//---
-			initLog(appConfig.getParams());
-			//---
-			INSTANCE.componentSpace = new ComponentSpace(appConfig);
-			//----
-			for (final ModuleConfig moduleConfig : appConfig.getModuleConfigs()) {
-				INSTANCE.definitionSpace.injectResources(moduleConfig);
-				INSTANCE.componentSpace.injectComponents(moduleConfig);
-			}
-			//--
-			INSTANCE.componentSpace.start();
-			//	INSTANCE.jmx();
-		} catch (final Throwable t) {
-			//En cas d'erreur on essaie de fermer proprement les composants démarrés.
-			INSTANCE.change(State.starting, State.stopping);
-			// ---------------------------------------------------------------------
-			INSTANCE.doStop();
-			// ---------------------------------------------------------------------
-			// L'arrét s'est bien déroulé.
-			INSTANCE.change(State.stopping, State.INACTIVE);
-			throw new RuntimeException("an error occured when starting", t);
-		}
-		INSTANCE.change(State.starting, State.ACTIVE);
-		//---
-		start = System.currentTimeMillis();
+		INSTANCE.doStart(appConfig);
 	}
 
 	/**
 	 * Fermeture de l'application.
 	 */
 	public static void stop() {
-		//il est toujours possible de re-stopper.
-		if (INSTANCE.state != State.INACTIVE) {
-			INSTANCE.change(State.ACTIVE, State.stopping);
-			INSTANCE.doStop();
-			// L'arrét s'est bien déroulé.
-			INSTANCE.change(State.stopping, State.INACTIVE);
-		}
+		INSTANCE.doStop();
 	}
 
 	/**
@@ -130,9 +97,6 @@ public final class Home {
 		return start;
 	}
 
-	//-------------------------------------------------------------------------
-	//-------------------Méthods publiques-------------------------------------
-	//-------------------------------------------------------------------------
 	/**
 	 * @return DefinitionSpace contains application's Definitions
 	 */
@@ -150,6 +114,39 @@ public final class Home {
 	//-------------------------------------------------------------------------
 	//-------------------Méthods privées---------------------------------------
 	//-------------------------------------------------------------------------
+	private void doStart(final AppConfig appConfig) {
+		Assertion.checkNotNull(appConfig);
+		//-------------------------------------------------------------------------
+		change(State.INACTIVE, State.starting);
+		try {
+			Assertion.checkState(definitionSpace.isEmpty(), "DefinitionSpace must be empty");
+			//---
+			initLog(appConfig.getParams());
+			//---
+			componentSpace = new ComponentSpace(appConfig);
+			//----
+			for (final ModuleConfig moduleConfig : appConfig.getModuleConfigs()) {
+				definitionSpace.injectResources(moduleConfig);
+				componentSpace.injectComponents(moduleConfig);
+			}
+			//--
+			componentSpace.start();
+			//	INSTANCE.jmx();
+		} catch (final Throwable t) {
+			//En cas d'erreur on essaie de fermer proprement les composants démarrés.
+			change(State.starting, State.stopping);
+			// ---------------------------------------------------------------------
+			doStop();
+			// ---------------------------------------------------------------------
+			// L'arrét s'est bien déroulé.
+			change(State.stopping, State.INACTIVE);
+			throw new RuntimeException("an error occured when starting", t);
+		}
+		change(State.starting, State.ACTIVE);
+		//---
+		start = System.currentTimeMillis();
+	}
+
 	private DefinitionSpace doGetDefinitionSpace() {
 		return definitionSpace;
 	}
@@ -158,13 +155,19 @@ public final class Home {
 	 * Fermeture de l'application.
 	 */
 	private void doStop() {
-		try {
-			definitionSpace.clear();
-			componentSpace.stop();
-		} catch (final Throwable t) {
-			//Quel que soit l'état, on part en échec de l'arrét.
-			state = State.FAIL;
-			throw new RuntimeException("an error occured when stopping", t);
+		//il est toujours possible de re-stopper.
+		if (INSTANCE.state != State.INACTIVE) {
+			INSTANCE.change(State.ACTIVE, State.stopping);
+			try {
+				definitionSpace.clear();
+				componentSpace.stop();
+			} catch (final Throwable t) {
+				//Quel que soit l'état, on part en échec de l'arrét.
+				state = State.FAIL;
+				throw new RuntimeException("an error occured when stopping", t);
+			}
+			// L'arrét s'est bien déroulé.
+			INSTANCE.change(State.stopping, State.INACTIVE);
 		}
 	}
 
