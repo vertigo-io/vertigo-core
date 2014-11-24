@@ -32,7 +32,7 @@ import java.util.List;
  * @author  pchretien, npiedeloup
  */
 final class JpaAnnotationWriter extends AnnotationWriter {
-	private final String sequencePrefix = "SEQ_";
+	private static final String SEQUENCE_PREFIX = "SEQ_";
 
 	/**
 	 * Ectiture des annotations sur une DT_DEFINITION.
@@ -160,7 +160,7 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 	 */
 	private String getSequenceName(final DtDefinition dtDefinition) {
 		//oracle n'autorise pas de sequence de plus de 30 char.
-		String seqName = sequencePrefix + getTableName(dtDefinition);
+		String seqName = SEQUENCE_PREFIX + getTableName(dtDefinition);
 		if (seqName.length() > 30) {
 			seqName = seqName.substring(0, 30);
 		}
