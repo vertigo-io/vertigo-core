@@ -20,6 +20,7 @@ package io.vertigo.vega.impl.rest.handler;
 
 import io.vertigo.core.Home;
 import io.vertigo.core.di.injector.Injector;
+import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.vega.rest.engine.GoogleJsonEngine;
 import io.vertigo.vega.rest.engine.JsonEngine;
@@ -47,7 +48,9 @@ public final class WsRestRoute extends Route {
 	@Inject
 	private KSecurityManager securityManager;
 	@Inject
-	private TokenManager uiSecurityTokenManager;
+	private CollectionsManager collectionsManager;
+	@Inject
+	private TokenManager tokenManager;
 
 	private final HandlerChain handlerChain;
 	private final JsonEngine jsonEngine = new GoogleJsonEngine();
@@ -68,8 +71,9 @@ public final class WsRestRoute extends Route {
 				.withHandler(endPointDefinition.isNeedSession(), new SessionHandler(securityManager))
 				.withHandler(rateLimitingHandler)
 				.withHandler(endPointDefinition.isNeedAuthentification(), new SecurityHandler(securityManager))
-				.withHandler(new AccessTokenHandler(uiSecurityTokenManager, endPointDefinition))
-				.withHandler(new JsonConverterHandler(uiSecurityTokenManager, endPointDefinition, jsonEngine, jsonEngine))
+				.withHandler(new AccessTokenHandler(tokenManager, endPointDefinition))
+				.withHandler(new JsonConverterHandler(tokenManager, endPointDefinition, jsonEngine, jsonEngine))
+				.withHandler(endPointDefinition.isAutoSortAndPagination(), new PaginatorAndSortHandler(endPointDefinition, collectionsManager, tokenManager))
 				.withHandler(new ValidatorHandler(endPointDefinition))
 				.withHandler(new RestfulServiceHandler(endPointDefinition))
 				.build();

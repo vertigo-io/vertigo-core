@@ -42,6 +42,7 @@ import io.vertigo.lang.Option;
 import io.vertigo.lang.VUserException;
 import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.util.DateUtil;
+import io.vertigo.util.StringUtil;
 import io.vertigo.vega.rest.engine.UiContext;
 import io.vertigo.vega.rest.exception.VSecurityException;
 import io.vertigo.vega.rest.model.DtListDelta;
@@ -221,6 +222,13 @@ public final class TesterRestServices implements RestfulService {
 		return contact;
 	}
 
+	//PUT is indempotent : ID obligatoire
+	@PUT("/contactSyntax")
+	public Contact testJsonSyntax(final Contact contact) {
+		//200
+		return contact;
+	}
+
 	//@POST is non-indempotent
 	@POST("/contact")
 	public Contact testPost(
@@ -295,15 +303,15 @@ public final class TesterRestServices implements RestfulService {
 		return contact;
 	}
 
-	@DELETE("/{conId}")
-	public void delete(@PathParam("conId") final long conId) {
+	@DELETE("/contact/{conId}")
+	public void delete(@PathParam("conId") final long conId) throws VSecurityException {
 		if (!contactDao.containsKey(conId)) {
 			//404
 			throw new VUserException(new MessageText("Contact #" + conId + " unknown", null));
 		}
 		if (conId < 5) {
 			//401
-			throw new VUserException(new MessageText("You don't have enought rights", null));
+			throw new VSecurityException("You don't have enought rights");
 		}
 		//200
 		contactDao.remove(conId);
@@ -321,10 +329,22 @@ public final class TesterRestServices implements RestfulService {
 	}
 
 	@Doc("Test ws-rest multipart body with primitives. Send a body with an object of to field : contactId1, contactId2. Each one should be an json of long.")
-	@ServerSideSave
 	@ExcludedFields({ "address", "tels" })
 	@POST("/innerLong")
-	public DtList<Contact> testInnerBodyLong(@InnerBodyParam("contactId1") final long contactIdFrom, @InnerBodyParam("contactId2") final long contactIdTo) {
+	public List<Contact> testInnerBodyLong(@InnerBodyParam("contactId1") final long contactIdFrom, @InnerBodyParam("contactId2") final long contactIdTo) {
+		final List<Contact> result = new ArrayList<>();
+		result.add(contactDao.get(contactIdFrom));
+		result.add(contactDao.get(contactIdTo));
+		//offset + range ?
+		//code 200
+		return result;
+	}
+
+	@Doc("Test ws-rest multipart body with primitives. Send a body with an object of to field : contactId1, contactId2. Each one should be an json of long.")
+	@ServerSideSave
+	@ExcludedFields({ "address", "tels" })
+	@POST("/innerLongToDtList")
+	public DtList<Contact> testInnerBodyLongToDtList(@InnerBodyParam("contactId1") final long contactIdFrom, @InnerBodyParam("contactId2") final long contactIdTo) {
 		final DtList<Contact> result = new DtList<>(Contact.class);
 		result.add(contactDao.get(contactIdFrom));
 		result.add(contactDao.get(contactIdTo));
@@ -554,7 +574,7 @@ public final class TesterRestServices implements RestfulService {
 		final DtList<D> sortedList;
 		if (uiListState.getSortFieldName() != null) {
 			sortedList = collectionsManager.createDtListProcessor()
-					.sort(uiListState.getSortFieldName(), uiListState.isSortDesc(), true, true)
+					.sort(StringUtil.camelToConstCase(uiListState.getSortFieldName()), uiListState.isSortDesc(), true, true)
 					.apply(unFilteredList);
 		} else {
 			sortedList = unFilteredList;

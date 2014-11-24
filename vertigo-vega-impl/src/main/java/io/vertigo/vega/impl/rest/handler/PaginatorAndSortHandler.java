@@ -23,6 +23,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.util.StringUtil;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
@@ -55,14 +56,14 @@ final class PaginatorAndSortHandler implements RouteHandler {
 		//---------------------------------------------------------------------
 		this.endPointDefinition = endPointDefinition;
 		this.collectionsManager = collectionsManager;
-		this.uiTokenManager = uiSecurityTokenManager;
+		uiTokenManager = uiSecurityTokenManager;
 	}
 
 	/** {@inheritDoc}  */
 	@Override
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
-		//Criteria in body (and only criteria)
-		//UiListState must be in query
+		//Criteria in body
+		//UiListState in body //see at EndPointDefinitionBuilder withAutoSortAndPagination it defined where UiListState was
 		//serverToken in UiListState
 
 		final EndPointParam uiListEndPointParams = lookupEndPointParam(endPointDefinition, UiListState.class);
@@ -94,7 +95,7 @@ final class PaginatorAndSortHandler implements RouteHandler {
 
 	private static UiListState checkAndEnsureDefaultValue(final UiListState parsedUiListState) {
 		if (parsedUiListState.getTop() == 0) {//check if parsedUiListState, is just not initalized
-			return new UiListState(DEFAULT_RESULT_PER_PAGE, 0, null, true, null);
+			return new UiListState(DEFAULT_RESULT_PER_PAGE, parsedUiListState.getSkip(), null, true, null);
 		}
 		return parsedUiListState;
 	}
@@ -118,20 +119,23 @@ final class PaginatorAndSortHandler implements RouteHandler {
 		final DtList<D> sortedList;
 		if (uiListState.getSortFieldName() != null) {
 			sortedList = collectionsManager.createDtListProcessor()
-					.sort(uiListState.getSortFieldName(), uiListState.isSortDesc(), true, true)
+					.sort(StringUtil.camelToConstCase(uiListState.getSortFieldName()), uiListState.isSortDesc(), true, true)
 					.apply(unFilteredList);
 		} else {
 			sortedList = unFilteredList;
 		}
 		final DtList<D> filteredList;
-		if (uiListState.getTop() > 0) {
+		if (uiListState.getSkip() >= sortedList.size()) {
+			filteredList = new DtList<>(unFilteredList.getDefinition());
+		} else if (uiListState.getTop() > 0) {
+			final int start = uiListState.getSkip();
+			final int end = Math.min(start + uiListState.getTop(), sortedList.size());
 			filteredList = collectionsManager.createDtListProcessor()
-					.filterSubList(uiListState.getSkip(), uiListState.getSkip() + uiListState.getTop())
+					.filterSubList(start, end)
 					.apply(sortedList);
 		} else {
 			filteredList = sortedList;
 		}
 		return filteredList;
 	}
-
 }

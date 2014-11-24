@@ -411,6 +411,39 @@ public final class WsRestTest {
 	}
 
 	@Test
+	public void testJsonSyntaxError() {
+		final String[] testOkJson = { "{ \"firstName\" : \"test\" }", "{ firstName : \"test\" }", "{ 'firstName' : \"test\" }", "{\n\t\"firstName\" : \"test\"\n}" };
+		final String[] testBadInterpretedJson = { "{ \"firstName\" : test\" }" };
+		final String[] testBadSyntaxJson = { " \"firstName\" : \"test\" }", "{ \"firstName : \"test\" }", "{ firstName\" : \"test\" }",
+				"{ \"firstName\"  \"test\" }", "{ \"firstName\" : \"test }", "{ \"firstName\" : \"test\" " };
+
+		for (final String testJson : testOkJson) {
+			loggedAndExpect(given().body(testJson))
+					.body("firstName", Matchers.equalTo("test"))
+					.statusCode(HttpStatus.SC_OK)
+					.when()
+					.put("/test/contactSyntax");
+		}
+
+		for (final String testJson : testBadInterpretedJson) {
+			loggedAndExpect(given().body(testJson))
+					.body("firstName", Matchers.equalTo("test\""))
+					.statusCode(HttpStatus.SC_OK)
+					.when()
+					.put("/test/contactSyntax");
+		}
+
+		for (final String testJson : testBadSyntaxJson) {
+			System.out.println("test : " + testJson);
+			loggedAndExpect(given().body(testJson))
+					.body("globalErrors", Matchers.contains("Error parsing param :Body:[1] on service PUT /test/contactSyntax"))
+					.statusCode(HttpStatus.SC_BAD_REQUEST)
+					.when()
+					.put("/test/contactSyntax");
+		}
+	}
+
+	@Test
 	public void testPutContact() throws ParseException {
 		final Map<String, Object> newContact = createDefaultContact(100L);
 
@@ -496,6 +529,126 @@ public final class WsRestTest {
 				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 				.when()
 				.put("/test/contact/101");
+	}
+
+	@Test
+	public void testDeleteContact() throws ParseException {
+		final Map<String, Object> newContact = createDefaultContact(null);
+		loggedAndExpect(given().body(newContact))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/contact/105");
+
+		loggedAndExpect(given().body(newContact))
+				.statusCode(HttpStatus.SC_NO_CONTENT)
+				.when()
+				.delete("/test/contact/105");
+	}
+
+	@Test
+	public void testDeleteContactErrors() throws ParseException {
+		final Map<String, Object> newContact = createDefaultContact(null);
+		loggedAndExpect(given().body(newContact))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/contact/106");
+
+		loggedAndExpect(given().body(newContact))
+				.statusCode(HttpStatus.SC_NO_CONTENT)
+				.when()
+				.delete("/test/contact/106");
+
+		loggedAndExpect(given().body(newContact))
+				.body("globalErrors", Matchers.contains("Contact #106 unknown"))
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.delete("/test/contact/106");
+
+		loggedAndExpect(given().body(newContact))
+				.body("globalErrors", Matchers.contains("You don't have enought rights"))
+				.statusCode(HttpStatus.SC_FORBIDDEN)
+				.when()
+				.delete("/test/contact/2");
+	}
+
+	@Test
+	public void testPostInnerBodyObject() {
+		final Map<String, String> contactFrom = given().filter(sessionFilter)
+				.when().get("/test/5")
+				.body().as(Map.class);
+
+		final Map<String, String> contactTo = given().filter(sessionFilter)
+				.when().get("/test/6")
+				.body().as(Map.class);
+
+		final Map<String, Object> fullBody = new HashMap<>();
+		fullBody.put("contactFrom", contactFrom);
+		fullBody.put("contactTo", contactTo);
+
+		loggedAndExpect(given().body(fullBody))
+				.body("size()", Matchers.equalTo(2))
+				.body("get(0).conId", Matchers.equalTo(5))
+				.body("get(0).firstName", Matchers.notNullValue())
+				.body("get(1).conId", Matchers.equalTo(6))
+				.body("get(1).firstName", Matchers.notNullValue())
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.post("/test/innerbody");
+	}
+
+	@Test
+	public void testPostInnerBodyLong() {
+		final Map<String, Object> fullBody = new HashMap<>();
+		fullBody.put("contactId1", 6);
+		fullBody.put("contactId2", 7);
+
+		loggedAndExpect(given().body(fullBody))
+				.body("size()", Matchers.equalTo(2))
+				.body("get(0).conId", Matchers.equalTo(6))
+				.body("get(0).firstName", Matchers.notNullValue())
+				.body("get(1).conId", Matchers.equalTo(7))
+				.body("get(1).firstName", Matchers.notNullValue())
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.post("/test/innerLong");
+	}
+
+	@Test
+	public void testInnerBodyLongToDtList() {
+		final Map<String, Object> fullBody = new HashMap<>();
+		fullBody.put("contactId1", 6);
+		fullBody.put("contactId2", 7);
+
+		loggedAndExpect(given().body(fullBody)).log().body()
+				.body("serverToken", Matchers.notNullValue())
+				.body("value.size()", Matchers.equalTo(2))
+				.body("value.get(0).conId", Matchers.equalTo(6))
+				.body("value.get(0).firstName", Matchers.notNullValue())
+				.body("value.get(1).conId", Matchers.equalTo(7))
+				.body("value.get(1).firstName", Matchers.notNullValue())
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.post("/test/innerLongToDtList");
+	}
+
+	@Test
+	public void testUiContext() {
+		final Map<String, Object> fullBody = new HashMap<>();
+		fullBody.put("contactId1", 6);
+		fullBody.put("contactId2", 7);
+
+		loggedAndExpect(given().body(fullBody)).log().body()
+				.body("contactFrom.name", Matchers.equalTo("Moreau"))
+				.body("contactFrom.serverToken", Matchers.notNullValue())
+				.body("contactTo.name", Matchers.equalTo("Lefebvre"))
+				.body("contactTo.serverToken", Matchers.notNullValue())
+				.body("testLong", Matchers.equalTo(12))
+				.body("testString", Matchers.equalTo("the String test"))
+				//.body("testDate", Matchers.any(Date.class)) //get a string no directly a Date can't ensured
+				.body("testEscapedString", Matchers.equalTo("the EscapedString \",} test"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.post("/test/uiContext");
 	}
 
 	@Test
@@ -842,6 +995,149 @@ public final class WsRestTest {
 				.statusCode(HttpStatus.SC_OK)
 				.when()
 				.post("/test/charset");
+	}
+
+	@Test
+	public void testSearchQueryPagined() throws ParseException {
+		doTestSearchPagined(false);
+	}
+
+	@Test
+	public void testSearchAutoPagined() throws ParseException {
+		doTestSearchPagined(true);
+	}
+
+	private void doTestSearchPagined(final boolean isAuto) throws ParseException {
+		final Map<String, Object> criteriaContact = new HashMap<>();
+		criteriaContact.put("birthdayMin", convertDate("19/05/1978"));
+		criteriaContact.put("birthdayMax", convertDate("19/05/1985"));
+
+		final String serverSideToken;
+		serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia", isAuto);
+		doPaginedSearch(criteriaContact, 3, 2, "name", false, serverSideToken, 3, "Garcia", "Moreau", isAuto);
+		doPaginedSearch(criteriaContact, 3, 5, "name", false, serverSideToken, 1, "Petit", "Petit", isAuto);
+		doPaginedSearch(criteriaContact, 10, 10, "name", false, serverSideToken, 0, "Petit", "Petit", isAuto);
+	}
+
+	@Test
+	public void testSearchQueryPaginedSortName() throws ParseException {
+		doTestSearchPaginedSortName(false);
+	}
+
+	@Test
+	public void testSearchAutoPaginedSortName() throws ParseException {
+		doTestSearchPaginedSortName(true);
+	}
+
+	private void doTestSearchPaginedSortName(final boolean isAuto) throws ParseException {
+		final Map<String, Object> criteriaContact = new HashMap<>();
+		criteriaContact.put("birthdayMin", convertDate("19/05/1978"));
+		criteriaContact.put("birthdayMax", convertDate("19/05/1985"));
+		//gets : "Dubois","Durant","Garcia","Martin","Moreau","Petit"
+
+		final String serverSideToken;
+		serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia", isAuto);
+		doPaginedSearch(criteriaContact, 10, 0, "name", false, serverSideToken, 6, "Dubois", "Petit", isAuto);
+		doPaginedSearch(criteriaContact, 4, 0, "name", false, serverSideToken, 4, "Dubois", "Martin", isAuto);
+		doPaginedSearch(criteriaContact, 4, 0, "name", true, serverSideToken, 4, "Petit", "Garcia", isAuto);
+		doPaginedSearch(criteriaContact, 4, 1, "name", true, serverSideToken, 4, "Moreau", "Durant", isAuto);
+		doPaginedSearch(criteriaContact, 4, 1, "name", false, serverSideToken, 4, "Durant", "Moreau", isAuto);
+	}
+
+	@Test
+	public void testSearchQueryPaginedSortDate() throws ParseException {
+		doTestSearchPaginedSortDate(false);
+	}
+
+	@Test
+	public void testSearchAutoPaginedSortDate() throws ParseException {
+		doTestSearchPaginedSortDate(true);
+	}
+
+	private void doTestSearchPaginedSortDate(final boolean isAuto) throws ParseException {
+		final Map<String, Object> criteriaContact = new HashMap<>();
+		criteriaContact.put("birthdayMin", convertDate("19/05/1978"));
+		criteriaContact.put("birthdayMax", convertDate("19/05/1985"));
+
+		final String serverSideToken;
+		serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia", isAuto);
+		doPaginedSearch(criteriaContact, 10, 0, "birthday", false, serverSideToken, 6, "Petit", "Garcia", isAuto);
+		doPaginedSearch(criteriaContact, 3, 1, "birthday", false, serverSideToken, 3, "Martin", "Durant", isAuto);
+		doPaginedSearch(criteriaContact, 3, 1, "birthday", true, serverSideToken, 3, "Moreau", "Dubois", isAuto);
+	}
+
+	@Test
+	public void testSearchQueryPaginedMissing() throws ParseException {
+		doTestSearchPaginedMissing(false);
+	}
+
+	@Test
+	public void testSearchAutoPaginedMissing() throws ParseException {
+		doTestSearchPaginedMissing(true);
+	}
+
+	private void doTestSearchPaginedMissing(final boolean isAuto) throws ParseException {
+		final Map<String, Object> criteriaContact = new HashMap<>();
+		criteriaContact.put("birthdayMin", convertDate("19/05/1978"));
+		criteriaContact.put("birthdayMax", convertDate("19/05/1985"));
+
+		String serverSideToken;
+		serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia", isAuto);
+		doPaginedSearch(criteriaContact, null, null, null, null, serverSideToken, 6, "Martin", "Garcia", isAuto);
+		doPaginedSearch(criteriaContact, 5, null, null, null, serverSideToken, 5, "Martin", "Moreau", isAuto);
+		doPaginedSearch(criteriaContact, 5, 5, null, null, serverSideToken, 1, "Garcia", "Garcia", isAuto);
+	}
+
+	private String doPaginedSearch(final Map<String, Object> criteriaContact, final Integer top, final Integer skip, final String sortFieldName, final Boolean sortDesc, final String listServerToken, final int expectedSize, final String firstContactName, final String lastContactName, final boolean isAuto) {
+		final RequestSpecification given = given().filter(sessionFilter);
+		final String wsUrl = isAuto ? "/test/searchAutoPagined" : "/test/searchQueryPagined";
+		if (isAuto) {
+			criteriaContact.put("top", top);
+			criteriaContact.put("skip", skip);
+			criteriaContact.put("sortFieldName", sortFieldName);
+			criteriaContact.put("sortDesc", sortDesc);
+			criteriaContact.put("listServerToken", listServerToken);
+			if (top == null) {
+				criteriaContact.remove("top");
+			}
+			if (skip == null) {
+				criteriaContact.remove("skip");
+			}
+			if (sortFieldName == null) {
+				criteriaContact.remove("sortFieldName");
+			}
+			if (sortDesc == null) {
+				criteriaContact.remove("sortDesc");
+			}
+			if (listServerToken == null) {
+				criteriaContact.remove("listServerToken");
+			}
+		} else {
+			if (top != null) {
+				given.queryParam("top", top);
+			}
+			if (skip != null) {
+				given.queryParam("skip", skip);
+			}
+			if (sortFieldName != null) {
+				given.queryParam("sortFieldName", sortFieldName);
+			}
+			if (sortDesc != null) {
+				given.queryParam("sortDesc", sortDesc);
+			}
+		}
+		ResponseSpecification responseSpecification = given.body(criteriaContact).log().body()
+				.expect()
+				.body("size()", Matchers.equalTo(expectedSize));
+		if (expectedSize > 0) {
+			responseSpecification = responseSpecification.body("get(0).name", Matchers.equalTo(firstContactName))
+					.body("get(" + (expectedSize - 1) + ").name", Matchers.equalTo(lastContactName));
+		}
+		final String serverSideToken = responseSpecification.statusCode(HttpStatus.SC_OK)
+				.when().log().body()
+				.post(wsUrl)
+				.header("serverSideToken");
+		return serverSideToken;
 	}
 
 	//=========================================================================
