@@ -38,21 +38,28 @@ import java.util.List;
  */
 public final class ModuleConfig {
 	private final String name;
+	private final List<ResourceConfig> resources;
 	private final List<ComponentConfig> components;
 	private final List<AspectConfig> aspects;
 	@JsonExclude
 	private final List<ModuleRule> moduleRules;
 
-	ModuleConfig(final String name, final List<ComponentConfig> componentConfigs, final List<AspectConfig> aspectConfigs, final List<ModuleRule> moduleRules) {
+	ModuleConfig(final String name, final List<ResourceConfig> resourceConfigs, final List<ComponentConfig> componentConfigs, final List<AspectConfig> aspectConfigs, final List<ModuleRule> moduleRules) {
 		Assertion.checkArgNotEmpty(name);
+		Assertion.checkNotNull(resourceConfigs);
 		Assertion.checkNotNull(componentConfigs);
 		Assertion.checkNotNull(aspectConfigs);
 		Assertion.checkNotNull(moduleRules);
 		//---------------------------------------------------------------------
 		this.name = name;
+		this.resources = Collections.unmodifiableList(new ArrayList<>(resourceConfigs));
 		this.components = Collections.unmodifiableList(new ArrayList<>(componentConfigs));
 		this.aspects = aspectConfigs;
 		this.moduleRules = Collections.unmodifiableList(new ArrayList<>(moduleRules));
+	}
+
+	public List<ResourceConfig> getResourceConfigs() {
+		return resources;
 	}
 
 	/**

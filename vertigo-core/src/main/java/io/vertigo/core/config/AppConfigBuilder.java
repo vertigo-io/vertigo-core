@@ -47,8 +47,6 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	private VCommandEngine myCommandEngine = null; // new VCommandEngineImpl(jsonEngine, VCommandEngine.DEFAULT_PORT); //Par défaut
 	private final Properties myEnvParams = new Properties();
 
-	private final List<ResourceConfig> myResourceConfigs = new ArrayList<>();
-
 	/**
 	 * Append EnvParams.
 	 * @param envParams envParams
@@ -71,18 +69,6 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 		Assertion.checkNotNull(paramValue);
 		//---------------------------------------------------------------------
 		myParams.put(paramName, paramValue);
-		return this;
-	}
-
-	/**
-	 * Ajout de resources
-	 * @param resourceType Type of resource
-	 */
-	public AppConfigBuilder withResource(final String resourceType, final String resourcePath) {
-		Assertion.checkArgNotEmpty(resourceType);
-		Assertion.checkNotNull(resourcePath);
-		//---------------------------------------------------------------------
-		myResourceConfigs.add(new ResourceConfig(resourceType, resourcePath));
 		return this;
 	}
 
@@ -148,8 +134,6 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 			final ModuleConfig moduleConfig = moduleConfigBuilder.build();
 			moduleConfigs.add(moduleConfig);
 		}
-		final ComponentSpaceConfig componentSpaceConfig = new ComponentSpaceConfig(moduleConfigs, myAopEngine, Option.option(myElasticaEngine), Option.option(myCommandEngine), mySilence);
-		final DefinitionSpaceConfig definitionSpaceConfig = new DefinitionSpaceConfig(myResourceConfigs);
-		return new AppConfig(myEnvParams, myParams, componentSpaceConfig, definitionSpaceConfig);
+		return new AppConfig(myEnvParams, myParams, moduleConfigs, myAopEngine, Option.option(myElasticaEngine), Option.option(myCommandEngine), mySilence);
 	}
 }

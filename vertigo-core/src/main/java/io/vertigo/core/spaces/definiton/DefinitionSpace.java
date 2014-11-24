@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.spaces.definiton;
 
-import io.vertigo.core.config.DefinitionSpaceConfig;
+import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.config.ResourceConfig;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
@@ -54,12 +54,12 @@ public final class DefinitionSpace {
 		//
 	}
 
-	public void injectResources(final DefinitionSpaceConfig definitionSpaceConfig) {
-		Assertion.checkNotNull(definitionSpaceConfig);
+	public void injectResources(final ModuleConfig moduleConfig) {
+		Assertion.checkNotNull(moduleConfig);
 		//---------------------------------------------------------------------
 		//			int resourcesToBeLoad = moduleConfig.getResourceConfigs().size();
 		//We are doing a copy of all resources, to check that they are all parsed.
-		final List<ResourceConfig> resourceConfigsToDo = new ArrayList<>(definitionSpaceConfig.getResourceConfigs());
+		final List<ResourceConfig> resourceConfigsToDo = new ArrayList<>(moduleConfig.getResourceConfigs());
 		for (final ResourceLoader resourceLoader : getResourceLoaders()) {
 			//Candidates contins all resources that can be treated by the resourceLoader
 			final List<ResourceConfig> candidates = new ArrayList<>();

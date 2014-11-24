@@ -53,7 +53,7 @@ public final class SplittedModulesEnvironmentManagerTest {
 	@Test
 	public void testFirstModule() {
 		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
-				.withResource("kpr", "io/vertigo/dynamock/execution.kpr")
+				.beginModule("myApp").withResource("kpr", "io/vertigo/dynamock/execution.kpr").endModule()
 				.build();
 
 		Home.start(appConfig);
@@ -69,8 +69,10 @@ public final class SplittedModulesEnvironmentManagerTest {
 	public void testMergedModules() {
 		// @formatter:off
 		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
-				.withResource("kpr", "io/vertigo/dynamock/execution.kpr")
-				.withResource("classes", DtDefinitions.class.getCanonicalName())
+				.beginModule("myApp")
+					.withResource("kpr", "io/vertigo/dynamock/execution.kpr")
+					.withResource("classes", DtDefinitions.class.getCanonicalName())
+				.endModule()
 			.build();
 		// @formatter:on
 
@@ -89,9 +91,11 @@ public final class SplittedModulesEnvironmentManagerTest {
 	public void testSplittedModules() {
 		// @formatter:off
 		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
-				.withResource("kpr", "io/vertigo/dynamock/execution.kpr")
-				.withResource("classes", DtDefinitions.class.getCanonicalName())
-		.build();
+				.beginModule("myApp")
+					.withResource("kpr", "io/vertigo/dynamock/execution.kpr")
+					.withResource("classes", DtDefinitions.class.getCanonicalName())
+				.endModule()
+			.build();
 		// @formatter:on
 
 		Home.start(appConfig);

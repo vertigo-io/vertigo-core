@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <config>
-	<components>
-		<module name="components" api="false" inheritance="java.lang.Object">
+	<module name="components" api="false" inheritance="java.lang.Object">
 
-			<!-- Components declaration -->
-			<component class="io.vertigo.core.component.mock.ComputerImpl" />
-			<component class="io.vertigo.core.component.mock.A" />
-			<component class="io.vertigo.core.component.mock.BImpl" />
-			<component class="io.vertigo.core.component.mock.C" />
-			<component class="io.vertigo.core.component.mock.F" />
+		<!-- Components declaration -->
+		<component class="io.vertigo.core.component.mock.ComputerImpl" />
+		<component class="io.vertigo.core.component.mock.A" />
+		<component class="io.vertigo.core.component.mock.BImpl" />
+		<component class="io.vertigo.core.component.mock.C" />
+		<component class="io.vertigo.core.component.mock.F" />
 
-			<!-- Aspects declaration -->
-			<aspect>
-				<annotation class="io.vertigo.core.component.mock.aop.OneMore" />
-				<advice class="io.vertigo.core.component.mock.aop.OneMoreInterceptor" />
-			</aspect>
+		<!-- Aspects declaration -->
+		<aspect>
+			<annotation class="io.vertigo.core.component.mock.aop.OneMore" />
+			<advice class="io.vertigo.core.component.mock.aop.OneMoreInterceptor" />
+		</aspect>
 
-			<aspect>
-				<annotation class="io.vertigo.core.component.mock.aop.TenMore" />
-				<advice class="io.vertigo.core.component.mock.aop.TenMoreInterceptor" />
-			</aspect>
-		</module>
-	</components>
+		<aspect>
+			<annotation class="io.vertigo.core.component.mock.aop.TenMore" />
+			<advice class="io.vertigo.core.component.mock.aop.TenMoreInterceptor" />
+		</aspect>
+	</module>
 </config>

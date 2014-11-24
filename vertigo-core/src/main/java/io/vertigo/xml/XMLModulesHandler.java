@@ -50,15 +50,16 @@ final class XMLModulesHandler extends DefaultHandler {
 	XMLModulesHandler(final AppConfigBuilder appConfigBuilder, final Properties properties) {
 		Assertion.checkNotNull(appConfigBuilder);
 		Assertion.checkNotNull(properties);
-		//---------------------------------------------------------------------
+		//-----
 		this.appConfigBuilder = appConfigBuilder;
 		this.properties = properties;
 	}
 
 	enum TagName {
 		config,
-		definitions, resource,
-		components, module, component, plugin, param, aspect, advice, annotation
+		module,
+		resource,
+		component, plugin, param, aspect, advice, annotation
 	}
 
 	private TagName current;
@@ -89,11 +90,9 @@ final class XMLModulesHandler extends DefaultHandler {
 				break;
 			case advice: //non géré
 			case annotation: //non géré
-			case components: //non géré
 			case param: //non géré
 			case resource: //non géré
 			case config: //non géré
-			case definitions: //non géré
 			default:
 		}
 	}
@@ -143,7 +142,7 @@ final class XMLModulesHandler extends DefaultHandler {
 			case resource:
 				final String resourceType = attrs.getValue("type");
 				final String resourcePath = attrs.getValue("path");
-				appConfigBuilder.withResource(resourceType, evalParamValue(properties, resourcePath));
+				moduleConfigBuilder.withResource(resourceType, evalParamValue(properties, resourcePath));
 				break;
 			case param:
 				final String paramName = attrs.getValue("name");
@@ -163,16 +162,10 @@ final class XMLModulesHandler extends DefaultHandler {
 			case advice:
 				adviceImplClassStr = attrs.getValue("class");
 				break;
-			case components: //non géré
 			case config: //non géré
-			case definitions: //non géré
 			default:
 		}
 	}
-
-	//-------------------------------------------------------------------------
-	//----------------------------STATIC---------------------------------------
-	//-------------------------------------------------------------------------
 
 	//On recherche l'interface ayant le nom 'simpleName' dans l'arbre de la classe 'clazz'
 	//Cette interface doit exister et être unique.

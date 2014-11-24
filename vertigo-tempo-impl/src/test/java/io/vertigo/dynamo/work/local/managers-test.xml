@@ -1,12 +1,10 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<components>
-		<module name="dynamo">
-			<component api="WorkManager" class="io.vertigo.dynamo.impl.work.WorkManagerImpl">
-				<param name="workerCount" value="5" />
-				<!-- plugin name = "DistributedPlugin" class = "io.vertigo.dynamo.impl.work.plugins.redis.RedisDistributedPlugin"> <param name="host" value="localhost" /> </plugin -->
-			</component>
-		</module>
-	</components>
+	<module name="dynamo">
+		<component api="WorkManager" class="io.vertigo.dynamo.impl.work.WorkManagerImpl">
+			<param name="workerCount" value="5" />
+			<!-- plugin name = "DistributedPlugin" class = "io.vertigo.dynamo.impl.work.plugins.redis.RedisDistributedPlugin"> <param name="host" value="localhost" /> </plugin -->
+		</component>
+	</module>
 </config>
 

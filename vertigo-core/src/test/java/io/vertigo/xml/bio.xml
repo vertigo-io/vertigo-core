@@ -1,14 +1,12 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<components>
-		<module name="Bio">
-			<component api="BioManager" class="io.vertigo.core.home.componentspace.data.BioManagerImpl" />
-			<component api="MathManager" class="io.vertigo.core.home.componentspace.data.MathManagerImpl">
-				<param name="start" value="100" />
-				<plugin class="io.vertigo.core.home.componentspace.data.MathPlugin">
-					<param name="factor" value="20" />
-				</plugin>
-			</component>
-		</module>
-	</components>
+	<module name="Bio">
+		<component api="BioManager" class="io.vertigo.core.home.componentspace.data.BioManagerImpl" />
+		<component api="MathManager" class="io.vertigo.core.home.componentspace.data.MathManagerImpl">
+			<param name="start" value="100" />
+			<plugin class="io.vertigo.core.home.componentspace.data.MathPlugin">
+				<param name="factor" value="20" />
+			</plugin>
+		</component>
+	</module>
 </config>

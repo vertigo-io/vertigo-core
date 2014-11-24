@@ -23,24 +23,12 @@
 
 	<xs:element name="config">
 		<xs:complexType>
-			<xs:sequence>
-		    	<xs:element name="components" type="componentsType" minOccurs="0"/>
-		      	<xs:element name="definitions" type="definitionsType" minOccurs="0"/>
-		    </xs:sequence>
+	    	<xs:sequence minOccurs="0" maxOccurs="unbounded">
+	        	<xs:element name="module" type="moduleType"/>
+			</xs:sequence>
 		</xs:complexType>
   	</xs:element>
   	
-	<xs:complexType name="componentsType">
-    	<xs:sequence minOccurs="0" maxOccurs="unbounded">
-        	<xs:element name="module" type="moduleType"/>
-		</xs:sequence>
-	</xs:complexType>
-	
-	<xs:complexType name="definitionsType">
-    	<xs:sequence minOccurs="0" maxOccurs="unbounded">
-        	<xs:element name="resource" type="resourceType"/>
-		</xs:sequence>
-	</xs:complexType>
 		
 	<xs:complexType name="resourceType">
 	  	<xs:attribute name="type" type="xs:string" use="required"/>
@@ -49,6 +37,7 @@
 	
 	<xs:complexType name="moduleType">
 		<xs:sequence>
+        	<xs:element name="resource" type="resourceType" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="component" type="componentType" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="aspect" type="aspectType" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>

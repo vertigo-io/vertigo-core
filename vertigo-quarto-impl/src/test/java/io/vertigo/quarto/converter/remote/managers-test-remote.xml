@@ -1,19 +1,17 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<components>
-		<module name="vertigo-commons">
-			<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
-			<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
-		</module>
+	<module name="vertigo-commons">
+		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
+		<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
+	</module>
 
-		<module name="vertigo-quarto">
-			<component api="ConverterManager" class="io.vertigo.quarto.impl.converter.ConverterManagerImpl">
-				<!-- plugin name="ConverterPlugin" class="io.vertigo.quarto.plugins.converter.openoffice.OpenOfficeLocalConverterPlugin"> <param name="unoport" value="8100"/> </plugin -->
-				<plugin class="io.vertigo.quarto.plugins.converter.openoffice.OpenOfficeRemoteConverterPlugin">
-					<param name="unohost" value="ficenweb.part.klee.lan.net" />
-					<param name="unoport" value="8200" />
-				</plugin>
-			</component>
-		</module>
-	</components>
+	<module name="vertigo-quarto">
+		<component api="ConverterManager" class="io.vertigo.quarto.impl.converter.ConverterManagerImpl">
+			<!-- plugin name="ConverterPlugin" class="io.vertigo.quarto.plugins.converter.openoffice.OpenOfficeLocalConverterPlugin"> <param name="unoport" value="8100"/> </plugin -->
+			<plugin class="io.vertigo.quarto.plugins.converter.openoffice.OpenOfficeRemoteConverterPlugin">
+				<param name="unohost" value="ficenweb.part.klee.lan.net" />
+				<param name="unoport" value="8200" />
+			</plugin>
+		</component>
+	</module>
 </config>

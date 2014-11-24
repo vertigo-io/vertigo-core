@@ -19,6 +19,7 @@
 package io.vertigo.core;
 
 import io.vertigo.core.config.AppConfig;
+import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
@@ -85,9 +86,13 @@ public final class Home {
 			//---
 			initLog(appConfig.getParams());
 			//---
-			INSTANCE.componentSpace = new ComponentSpace(appConfig.getComponentSpaceConfig());
-			//On charge definitionSpace après car les loaders de définition sont créées par injection
-			INSTANCE.definitionSpace.injectResources(appConfig.getDefinitionSpaceConfig());
+			INSTANCE.componentSpace = new ComponentSpace(appConfig);
+			//----
+			for (final ModuleConfig moduleConfig : appConfig.getModuleConfigs()) {
+				INSTANCE.definitionSpace.injectResources(moduleConfig);
+				INSTANCE.componentSpace.injectComponents(moduleConfig);
+			}
+			//--
 			INSTANCE.componentSpace.start();
 			//	INSTANCE.jmx();
 		} catch (final Throwable t) {
