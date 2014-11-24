@@ -27,6 +27,6 @@ final class FacetGrammar {
 	/**
 	 * Initialisation des métadonnées permet tant de décrire le métamodèle de dynamo.
 	 */
-	public static Grammar GRAMMAR = new Grammar();
+	public static final Grammar GRAMMAR = new Grammar();
 
 }
