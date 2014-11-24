@@ -72,6 +72,13 @@ import javax.servlet.http.HttpServletResponse;
  * @author npiedeloup (22 juil. 2014 11:12:02)
  */
 public final class SwaggerRestServices implements RestfulService {
+	private static final String[][] SUPPORTED_CONTENT_TYPE = {
+			{ ".html", "text/html" },
+			{ ".css", "text/css" },
+			{ ".js", "application/x-javascript" },
+			{ ".png", "image/png" },
+			{ ".gif", "image/gif" }
+	};
 
 	private final Map<String, Object> definitions = new LinkedHashMap<>();
 
@@ -149,12 +156,9 @@ public final class SwaggerRestServices implements RestfulService {
 			response.setContentLength(connection.getContentLength());
 			response.setDateHeader("Last-Modified", connection.getLastModified());
 			response.setContentType(contentType != null ? contentType : connection.getContentType());
-
-			try (final InputStream input = connection.getInputStream()) {
-				try (final BufferedInputStream bInput = new BufferedInputStream(input)) {
-					try (final OutputStream output = response.getOutputStream()) {
-						copy(bInput, output);
-					}
+			try (final BufferedInputStream bInput = new BufferedInputStream(connection.getInputStream())) {
+				try (final OutputStream output = response.getOutputStream()) {
+					copy(bInput, output);
 				}
 			}
 		} else {
@@ -173,16 +177,10 @@ public final class SwaggerRestServices implements RestfulService {
 	}
 
 	private String resolveContentType(final String resourceUrl) {
-		if (resourceUrl.endsWith(".html")) {
-			return "text/html";
-		} else if (resourceUrl.endsWith(".css")) {
-			return "text/css";
-		} else if (resourceUrl.endsWith(".js")) {
-			return "application/x-javascript";
-		} else if (resourceUrl.endsWith(".png")) {
-			return "image/png";
-		} else if (resourceUrl.endsWith(".gif")) {
-			return "image/gif";
+		for (final String[] entry : SUPPORTED_CONTENT_TYPE) {
+			if (resourceUrl.endsWith(entry[0])) {
+				return entry[1];
+			}
 		}
 		return null;
 	}
@@ -384,28 +382,31 @@ public final class SwaggerRestServices implements RestfulService {
 		final List<String> enums = new ArrayList<>(); //mandatory fields
 		for (final Field field : objectClass.getDeclaredFields()) {
 			if ((field.getModifiers() & (Modifier.STATIC | Modifier.TRANSIENT | 0x1000)) == 0) { //0x1000 is for synthetic field (excludes)
-				final Type fieldType = field.getGenericType();
-				Type usedFieldType = fieldType;
-				if (fieldType instanceof ParameterizedType) {
-					final Type[] actualTypeArguments = ((ParameterizedType) fieldType).getActualTypeArguments();
-					if (actualTypeArguments.length == 1 && actualTypeArguments[0] instanceof TypeVariable) {
-						usedFieldType = createParameterizedType(fieldType, parameterClass);
-					}
-				} else if (fieldType instanceof TypeVariable) {
-					usedFieldType = parameterClass;
-				}
-				final Map<String, Object> fieldSchema = createSchemaObject(usedFieldType);
-				//fieldSchema.put("title", field.getName());
-				if ((field.getModifiers() & Modifier.FINAL) != 0
-						&& !Option.class.isAssignableFrom(field.getType())) {
-					//fieldSchema.put("required", true);
-					enums.add(field.getName());
-				}
+				final Map<String, Object> fieldSchema = obtainFieldSchema(field, parameterClass, enums);
 				properties.put(field.getName(), fieldSchema);
 			}
 		}
 		putIfNotEmpty(entity, "enum", enums);
 		putIfNotEmpty(entity, "properties", properties);
+	}
+
+	private Map<String, Object> obtainFieldSchema(final Field field, final Class<? extends Object> parameterClass, final List<String> enums) {
+		final Type fieldType = field.getGenericType();
+		Type usedFieldType = fieldType;
+		if (fieldType instanceof ParameterizedType) {
+			final Type[] actualTypeArguments = ((ParameterizedType) fieldType).getActualTypeArguments();
+			if (actualTypeArguments.length == 1 && actualTypeArguments[0] instanceof TypeVariable) {
+				usedFieldType = createParameterizedType(fieldType, parameterClass);
+			}
+		} else if (fieldType instanceof TypeVariable) {
+			usedFieldType = parameterClass;
+		}
+		final Map<String, Object> fieldSchema = createSchemaObject(usedFieldType);
+		if ((field.getModifiers() & Modifier.FINAL) != 0
+				&& !Option.class.isAssignableFrom(field.getType())) {
+			enums.add(field.getName());
+		}
+		return fieldSchema;
 	}
 
 	private static List<String> createTagsArray(final EndPointDefinition endPointDefinition) {
@@ -422,33 +423,11 @@ public final class SwaggerRestServices implements RestfulService {
 	}
 
 	private List<Map<String, Object>> createParametersArray(final EndPointDefinition endPointDefinition) {
-		Map<String, Object> bodyParameter = null;
+		Map<String, Object> bodyParameter = new LinkedHashMap<>();
 		final List<Map<String, Object>> parameters = new ArrayList<>();
 		for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
 			if (endPointParam.getParamType() != RestParamType.Implicit) {//if implicit : no public parameter
-				if (isOneInMultipleOutParams(endPointParam)) {
-					for (final EndPointParam pseudoEndPointParam : createPseudoEndPointParams(endPointParam)) {
-						final Map<String, Object> parameter = createParameterObject(pseudoEndPointParam, endPointDefinition);
-						parameter.remove("required"); //query params aren't required
-						parameters.add(parameter);
-					}
-				} else if (isMultipleInOneOutParams(endPointParam)) {
-					final Map<String, Object> parameter = createParameterObject(endPointParam, endPointDefinition);
-					if (bodyParameter == null) {
-						bodyParameter = parameter;
-					} else {
-						final String newDescription = (String) parameter.get("description");
-						final String oldDescription = (String) bodyParameter.get("description");
-						bodyParameter.put("description", oldDescription + ", " + newDescription);
-
-						final Map<String, Object> newSchema = (Map<String, Object>) parameter.get("schema");
-						final Map<String, Object> oldSchema = (Map<String, Object>) bodyParameter.get("schema");
-						oldSchema.putAll(newSchema);
-					}
-				} else {
-					final Map<String, Object> parameter = createParameterObject(endPointParam, endPointDefinition);
-					parameters.add(parameter);
-				}
+				bodyParameter = appendParameters(endPointParam, endPointDefinition, parameters, bodyParameter);
 			}
 		}
 
@@ -474,6 +453,33 @@ public final class SwaggerRestServices implements RestfulService {
 		}
 
 		return parameters;
+	}
+
+	private Map<String, Object> appendParameters(final EndPointParam endPointParam, final EndPointDefinition endPointDefinition, final List<Map<String, Object>> parameters, final Map<String, Object> bodyParameter) {
+		if (isOneInMultipleOutParams(endPointParam)) {
+			for (final EndPointParam pseudoEndPointParam : createPseudoEndPointParams(endPointParam)) {
+				final Map<String, Object> parameter = createParameterObject(pseudoEndPointParam, endPointDefinition);
+				parameter.remove("required"); //query params aren't required
+				parameters.add(parameter);
+			}
+		} else if (isMultipleInOneOutParams(endPointParam)) {
+			final Map<String, Object> parameter = createParameterObject(endPointParam, endPointDefinition);
+			if (bodyParameter.isEmpty()) {
+				bodyParameter.putAll(parameter);
+			} else {
+				final String newDescription = (String) parameter.get("description");
+				final String oldDescription = (String) bodyParameter.get("description");
+				bodyParameter.put("description", oldDescription + ", " + newDescription);
+
+				final Map<String, Object> newSchema = (Map<String, Object>) parameter.get("schema");
+				final Map<String, Object> oldSchema = (Map<String, Object>) bodyParameter.get("schema");
+				oldSchema.putAll(newSchema);
+			}
+		} else {
+			final Map<String, Object> parameter = createParameterObject(endPointParam, endPointDefinition);
+			parameters.add(parameter);
+		}
+		return bodyParameter;
 	}
 
 	private List<EndPointParam> createPseudoEndPointParams(final EndPointParam endPointParam) {

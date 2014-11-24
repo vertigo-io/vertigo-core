@@ -129,7 +129,20 @@ public final class WsRestTest {
 				.expect()
 				.statusCode(HttpStatus.SC_OK)
 				.when()
-				.get("/swaggerUi/lib/swagger-client.js");
+				.get("/swaggerUi/css/screen.css");
+
+		RestAssured.given()
+				.expect()
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/swaggerUi/images/logo_small.png");
+
+		RestAssured.given()
+				.expect()
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/swaggerUi/images/throbber.gif");
+
 	}
 
 	@Test
