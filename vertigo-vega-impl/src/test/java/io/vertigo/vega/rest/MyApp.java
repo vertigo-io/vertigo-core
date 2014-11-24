@@ -52,8 +52,6 @@ public final class MyApp {
 		return new AppConfigBuilder()
 			.withSilence(false)
 			.withCommandEngine(new TcpVCommandEngine(4406))
-			.withResource("classes", DtDefinitions.class.getName())
-			.withResource("kpr", "ksp/execution.kpr")
 			.beginModule("commons")
 				.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
 					.withParam("locales", "fr")
@@ -114,6 +112,10 @@ public final class MyApp {
 				.beginComponent(TokenManager.class, TokenManagerImpl.class)
 					.withParam("dataStoreName", "UiSecurityStore")
 				.endComponent()
+			.endModule()
+			.beginModule("myApp")
+				.withResource("classes", DtDefinitions.class.getName())
+				.withResource("kpr", "ksp/execution.kpr")
 			.endModule()
 		.build();
 		// @formatter:on

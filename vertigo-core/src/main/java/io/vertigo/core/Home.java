@@ -67,6 +67,7 @@ public final class Home {
 
 	private final DefinitionSpace definitionSpace = new DefinitionSpace();
 	private ComponentSpace componentSpace = ComponentSpace.EMPTY;
+	private AppConfig appConfig;
 
 	private Home() {
 		// Classe statique d'accès aux composants.
@@ -83,11 +84,18 @@ public final class Home {
 		INSTANCE.doStart(appConfig);
 	}
 
+	public static AppConfig getAppConfig() {
+		return INSTANCE.appConfig;
+	}
+
 	/**
 	 * Fermeture de l'application.
 	 */
 	public static void stop() {
-		INSTANCE.doStop();
+		//Une instance inactive peut être stopé 
+		if (INSTANCE.state != State.INACTIVE) {
+			INSTANCE.doStop(State.ACTIVE);
+		}
 	}
 
 	/**
@@ -118,6 +126,7 @@ public final class Home {
 		Assertion.checkNotNull(appConfig);
 		//-------------------------------------------------------------------------
 		change(State.INACTIVE, State.starting);
+		this.appConfig = appConfig;
 		try {
 			Assertion.checkState(definitionSpace.isEmpty(), "DefinitionSpace must be empty");
 			//---
@@ -133,13 +142,7 @@ public final class Home {
 			componentSpace.start();
 			//	INSTANCE.jmx();
 		} catch (final Throwable t) {
-			//En cas d'erreur on essaie de fermer proprement les composants démarrés.
-			change(State.starting, State.stopping);
-			// ---------------------------------------------------------------------
-			doStop();
-			// ---------------------------------------------------------------------
-			// L'arrét s'est bien déroulé.
-			change(State.stopping, State.INACTIVE);
+			doStop(State.starting);
 			throw new RuntimeException("an error occured when starting", t);
 		}
 		change(State.starting, State.ACTIVE);
@@ -154,21 +157,20 @@ public final class Home {
 	/**
 	 * Fermeture de l'application.
 	 */
-	private void doStop() {
-		//il est toujours possible de re-stopper.
-		if (INSTANCE.state != State.INACTIVE) {
-			INSTANCE.change(State.ACTIVE, State.stopping);
-			try {
-				definitionSpace.clear();
-				componentSpace.stop();
-			} catch (final Throwable t) {
-				//Quel que soit l'état, on part en échec de l'arrét.
-				state = State.FAIL;
-				throw new RuntimeException("an error occured when stopping", t);
-			}
-			// L'arrét s'est bien déroulé.
-			INSTANCE.change(State.stopping, State.INACTIVE);
+	private void doStop(final State from) {
+		//En cas d'erreur on essaie de fermer proprement les composants démarrés.
+		change(from, State.stopping);
+		//-----
+		try {
+			definitionSpace.clear();
+			componentSpace.stop();
+		} catch (final Throwable t) {
+			//Quel que soit l'état, on part en échec de l'arrét.
+			state = State.FAIL;
+			throw new RuntimeException("an error occured when stopping", t);
 		}
+		// L'arrét s'est bien déroulé.
+		INSTANCE.change(State.stopping, State.INACTIVE);
 	}
 
 	private ComponentSpace doGetComponentSpace() {

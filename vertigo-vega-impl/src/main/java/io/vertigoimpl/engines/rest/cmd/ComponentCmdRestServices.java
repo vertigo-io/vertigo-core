@@ -19,7 +19,7 @@
 package io.vertigoimpl.engines.rest.cmd;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.config.ComponentSpaceConfig;
+import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
@@ -41,8 +41,8 @@ public final class ComponentCmdRestServices implements RestfulService {
 
 	@AnonymousAccessAllowed
 	@GET("/vertigo/components")
-	public ComponentSpaceConfig getComponentSpaceConfig() {
-		return Home.getComponentSpace().getConfig();
+	public AppConfig getAppConfig() {
+		return Home.getAppConfig();
 	}
 
 	@AnonymousAccessAllowed
@@ -72,7 +72,7 @@ public final class ComponentCmdRestServices implements RestfulService {
 	}
 
 	private JsonArray doGetModuleConfigs() {
-		final String json = jsonEngine.toJson(Home.getComponentSpace().getConfig());
+		final String json = jsonEngine.toJson(Home.getAppConfig());
 		final JsonParser parser = new JsonParser();
 		final JsonObject jsonObject = (JsonObject) parser.parse(json);
 		final JsonArray jsonModuleConfigs = jsonObject.get("moduleConfigs").getAsJsonArray();
