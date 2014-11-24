@@ -150,19 +150,15 @@ public final class SwaggerRestServices implements RestfulService {
 	}
 
 	private void sendFile(final URL url, final String contentType, final HttpServletResponse response) throws IOException {
-		if (url != null) {
-			final URLConnection connection = url.openConnection();
-			connection.connect();
-			response.setContentLength(connection.getContentLength());
-			response.setDateHeader("Last-Modified", connection.getLastModified());
-			response.setContentType(contentType != null ? contentType : connection.getContentType());
-			try (final BufferedInputStream bInput = new BufferedInputStream(connection.getInputStream())) {
-				try (final OutputStream output = response.getOutputStream()) {
-					copy(bInput, output);
-				}
+		final URLConnection connection = url.openConnection();
+		connection.connect();
+		response.setContentLength(connection.getContentLength());
+		response.setDateHeader("Last-Modified", connection.getLastModified());
+		response.setContentType(contentType != null ? contentType : connection.getContentType());
+		try (final BufferedInputStream bInput = new BufferedInputStream(connection.getInputStream())) {
+			try (final OutputStream output = response.getOutputStream()) {
+				copy(bInput, output);
 			}
-		} else {
-			response.setStatus(404);
 		}
 	}
 
@@ -423,11 +419,11 @@ public final class SwaggerRestServices implements RestfulService {
 	}
 
 	private List<Map<String, Object>> createParametersArray(final EndPointDefinition endPointDefinition) {
-		Map<String, Object> bodyParameter = new LinkedHashMap<>();
+		final Map<String, Object> bodyParameter = new LinkedHashMap<>();
 		final List<Map<String, Object>> parameters = new ArrayList<>();
 		for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
 			if (endPointParam.getParamType() != RestParamType.Implicit) {//if implicit : no public parameter
-				bodyParameter = appendParameters(endPointParam, endPointDefinition, parameters, bodyParameter);
+				appendParameters(endPointParam, endPointDefinition, parameters, bodyParameter);
 			}
 		}
 
@@ -440,7 +436,7 @@ public final class SwaggerRestServices implements RestfulService {
 			parameter.put("type", "string");
 			parameters.add(parameter);
 		}
-		if (bodyParameter != null) {
+		if (!bodyParameter.isEmpty()) {
 			final String bodyName = StringUtil.constToCamelCase(endPointDefinition.getName().replaceAll("__", "_"), true) + "Body";
 			final Map<String, Object> compositeSchema = (Map<String, Object>) bodyParameter.get("schema");
 			bodyParameter.put("schema", Collections.singletonMap("$ref", bodyName));
@@ -455,7 +451,7 @@ public final class SwaggerRestServices implements RestfulService {
 		return parameters;
 	}
 
-	private Map<String, Object> appendParameters(final EndPointParam endPointParam, final EndPointDefinition endPointDefinition, final List<Map<String, Object>> parameters, final Map<String, Object> bodyParameter) {
+	private void appendParameters(final EndPointParam endPointParam, final EndPointDefinition endPointDefinition, final List<Map<String, Object>> parameters, final Map<String, Object> bodyParameter) {
 		if (isOneInMultipleOutParams(endPointParam)) {
 			for (final EndPointParam pseudoEndPointParam : createPseudoEndPointParams(endPointParam)) {
 				final Map<String, Object> parameter = createParameterObject(pseudoEndPointParam, endPointDefinition);
@@ -479,7 +475,6 @@ public final class SwaggerRestServices implements RestfulService {
 			final Map<String, Object> parameter = createParameterObject(endPointParam, endPointDefinition);
 			parameters.add(parameter);
 		}
-		return bodyParameter;
 	}
 
 	private List<EndPointParam> createPseudoEndPointParams(final EndPointParam endPointParam) {

@@ -143,6 +143,11 @@ public final class WsRestTest {
 				.when()
 				.get("/swaggerUi/images/throbber.gif");
 
+		RestAssured.given()
+				.expect()
+				.statusCode(HttpStatus.SC_NOT_FOUND)
+				.when()
+				.get("/swaggerUi/test404.mp4");
 	}
 
 	@Test
@@ -632,7 +637,7 @@ public final class WsRestTest {
 		fullBody.put("contactId1", 6);
 		fullBody.put("contactId2", 7);
 
-		loggedAndExpect(given().body(fullBody)).log().body()
+		loggedAndExpect(given().body(fullBody))
 				.body("serverToken", Matchers.notNullValue())
 				.body("value.size()", Matchers.equalTo(2))
 				.body("value.get(0).conId", Matchers.equalTo(6))
@@ -650,7 +655,7 @@ public final class WsRestTest {
 		fullBody.put("contactId1", 6);
 		fullBody.put("contactId2", 7);
 
-		loggedAndExpect(given().body(fullBody)).log().body()
+		loggedAndExpect(given().body(fullBody))
 				.body("contactFrom.name", Matchers.equalTo("Moreau"))
 				.body("contactFrom.serverToken", Matchers.notNullValue())
 				.body("contactTo.name", Matchers.equalTo("Lefebvre"))
@@ -748,7 +753,7 @@ public final class WsRestTest {
 		contact.remove("honorificCode"); //can't modify conId
 		contact.remove("birthday"); //can't modify name
 
-		loggedAndExpect(given().body(contact).log().body())
+		loggedAndExpect(given().body(contact))
 				.body("conId", Matchers.equalTo(oldConId))//not changed
 				.body("honorificCode", Matchers.equalTo(oldHonorificCode)) //not changed
 				.body("name", Matchers.equalTo(oldName)) //not changed
@@ -1139,7 +1144,7 @@ public final class WsRestTest {
 				given.queryParam("sortDesc", sortDesc);
 			}
 		}
-		ResponseSpecification responseSpecification = given.body(criteriaContact).log().body()
+		ResponseSpecification responseSpecification = given.body(criteriaContact)
 				.expect()
 				.body("size()", Matchers.equalTo(expectedSize));
 		if (expectedSize > 0) {
@@ -1147,7 +1152,7 @@ public final class WsRestTest {
 					.body("get(" + (expectedSize - 1) + ").name", Matchers.equalTo(lastContactName));
 		}
 		final String serverSideToken = responseSpecification.statusCode(HttpStatus.SC_OK)
-				.when().log().body()
+				.when()
 				.post(wsUrl)
 				.header("serverSideToken");
 		return serverSideToken;
