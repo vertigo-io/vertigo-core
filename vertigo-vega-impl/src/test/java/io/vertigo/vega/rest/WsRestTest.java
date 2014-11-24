@@ -22,9 +22,11 @@ import io.vertigo.core.Home;
 import io.vertigo.vega.impl.rest.filter.JettyMultipartConfig;
 import io.vertigo.vega.plugins.rest.routesregister.sparkjava.SparkJavaRoutesRegister;
 
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,6 +48,7 @@ import com.jayway.restassured.specification.ResponseSpecification;
 
 public final class WsRestTest {
 	private static final String HEADER_ACCESS_TOKEN = "x-access-token";
+	private static final String UTF8_TEST_STRING = "? TM™ éè'`àöêõù Euro€ R®@©∆∏∑∞⅓۲²³œβ";
 
 	private static final int WS_PORT = 8088;
 	private static boolean sparkInitialized = false;
@@ -76,7 +79,6 @@ public final class WsRestTest {
 			Spark.setPort(WS_PORT);
 			final String tempDir = System.getProperty("java.io.tmpdir");
 			Spark.before(new JettyMultipartConfig(tempDir));
-			//Spark.before(new VegaMultipartConfig(tempDir));
 			new SparkJavaRoutesRegister().init();
 
 			//RestAsssured init
@@ -84,7 +86,6 @@ public final class WsRestTest {
 			RestAssured.port = WS_PORT;
 			RestAssured.registerParser("application/json+list", Parser.JSON);
 			RestAssured.registerParser("application/json+entity:Contact", Parser.JSON);
-			RestAssured.config = RestAssured.config.encoderConfig(RestAssured.config.getEncoderConfig().defaultContentCharset("ISO-8859-1"));
 		}
 
 		RestAssured.given()
@@ -739,31 +740,108 @@ public final class WsRestTest {
 	}
 
 	@Test
-	public void testPutContactUtf8() throws ParseException {
-		final Map<String, Object> newContact = createDefaultContact(100L);
+	public void testPostCharset() throws UnsupportedEncodingException {
 		final String testFirstName = "Gérard";
-		newContact.put("firstName", testFirstName);
-		loggedAndExpect(given().body(newContact)).log().all()
-				.body("conId", Matchers.equalTo(100))
+		final String testJson = "{ \"firstName\" : \"" + testFirstName + "\" }";
+		given().filter(sessionFilter) //logged
+				.contentType("application/json;charset=UTF-8")
+				.body(Collections.singletonMap("firstName", testFirstName)) //RestAssured read encodetype and encode as UTF8
+				.expect()
 				.body("firstName", Matchers.equalTo(testFirstName))
 				.statusCode(HttpStatus.SC_OK)
 				.when()
-				.put("/test/contact");
+				.post("/test/charset");
+
+		given().filter(sessionFilter) //logged
+				.contentType("application/json;charset=UTF-8")
+				.body(testJson.getBytes("UTF-8")) //We force the encode charset
+				.expect()
+				.body("firstName", Matchers.equalTo(testFirstName))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.post("/test/charset");
+
+		given().filter(sessionFilter) //logged
+				.contentType("application/json;charset=ISO-8859-1")
+				.body(Collections.singletonMap("firstName", testFirstName)) //RestAssured read encodetype and encode as ISO-8859-1
+				.expect()
+				.body("firstName", Matchers.equalTo(testFirstName))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.post("/test/charset");
+
+		given().filter(sessionFilter) //logged
+				.contentType("application/json;charset=ISO-8859-1")
+				.body(testJson.getBytes("ISO-8859-1")) //We force the encode charset
+				.expect()
+				.body("firstName", Matchers.equalTo(testFirstName))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.post("/test/charset");
 	}
 
 	@Test
-	public void testPutContactCharsetIso8859() throws ParseException {
-		final Map<String, Object> newContact = createDefaultContact(100L);
-		final String testFirstName = "Gérard";
-		newContact.put("firstName", testFirstName);
-		loggedAndExpect(given()
-				.contentType("application/json;charset=ISO-8859-1")
-				.body(newContact).log().all())
-				.body("conId", Matchers.equalTo(100))
+	public void testPostCharsetUtf8() throws UnsupportedEncodingException {
+		final String testFirstName = UTF8_TEST_STRING;
+		final String testJson = "{ \"firstName\" : \"" + testFirstName + "\" }";
+		given().filter(sessionFilter) //logged
+				.contentType("application/json;charset=UTF-8")
+				.body(Collections.singletonMap("firstName", testFirstName)) //RestAssured read encodetype and encode as UTF8
+				.expect()
 				.body("firstName", Matchers.equalTo(testFirstName))
 				.statusCode(HttpStatus.SC_OK)
 				.when()
-				.put("/test/contact");
+				.post("/test/charset");
+
+		given().filter(sessionFilter) //logged
+				.contentType("application/json;charset=UTF-8")
+				.body(testJson.getBytes("UTF-8")) //We force the encode charset
+				.expect()
+				.body("firstName", Matchers.equalTo(testFirstName))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.post("/test/charset");
+	}
+
+	@Test
+	public void testPostCharsetDefaultUtf8() throws UnsupportedEncodingException {
+		final String testFirstName = UTF8_TEST_STRING;
+		final String testJson = "{ \"firstName\" : \"" + testFirstName + "\" }";
+
+		given().filter(sessionFilter) //logged
+				.contentType("application/json;charset") //We precise an incomplete charset otherwise Restassured add a default charset=ISO-8859-1 to contentType
+				.body(testJson.getBytes("UTF-8")) //We force the encode charset
+				.expect()
+				.body("firstName", Matchers.equalTo(testFirstName))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.post("/test/charset");
+	}
+
+	@Test
+	public void testPutContactCharsetIso8859() throws UnsupportedEncodingException {
+		final String testedCharset = "ISO-8859-1";
+		final String testFirstName = UTF8_TEST_STRING;
+		final String testFirstNameIso = new String(UTF8_TEST_STRING.getBytes(testedCharset), testedCharset);
+		final String testJson = "{ \"firstName\" : \"" + testFirstName + "\" }";
+
+		given().filter(sessionFilter) //logged
+				.contentType("application/json;charset=" + testedCharset)
+				.body(Collections.singletonMap("firstName", testFirstName))
+				.expect()
+				.body("firstName", Matchers.equalTo(testFirstNameIso))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.post("/test/charset");
+
+		given().filter(sessionFilter) //logged
+				.contentType("application/json;charset=" + testedCharset)
+				.body(testJson.getBytes(testedCharset))
+				.expect()
+				.body("firstName", Matchers.equalTo(testFirstNameIso))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.post("/test/charset");
 	}
 
 	//=========================================================================

@@ -525,6 +525,13 @@ public final class TesterRestServices implements RestfulService {
 		return result;
 	}
 
+	@POST("/charset")
+	public Contact testCharset(
+			final Contact text) {
+		//200
+		return text;
+	}
+
 	/*@GET("/searchFacet")
 	public FacetedQueryResult<DtObject, ContactCriteria> testSearchServiceFaceted(final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
