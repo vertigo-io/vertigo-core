@@ -131,7 +131,7 @@ public final class SwaggerRestServices implements RestfulService {
 			response.sendRedirect("./index.html");
 		}
 		final URL url = SwaggerRestServices.class.getResource("/swagger-site/" + resourceUrl);
-		sendFile(url, resolveContentType(resourceUrl), response);
+		sendFile(url, resolveContentType(resourceUrl), response, resourceUrl);
 	}
 
 	/**
@@ -146,18 +146,26 @@ public final class SwaggerRestServices implements RestfulService {
 	@GET("/swaggerUi/{resourcePathUrl}/{resourceUrl}")
 	public void getSwapperUi(@PathParam("resourcePathUrl") final String resourcePathUrl, @PathParam("resourceUrl") final String resourceUrl, final HttpServletResponse response) throws IOException {
 		final URL url = SwaggerRestServices.class.getResource("/swagger-site/" + resourcePathUrl + "/" + resourceUrl);
-		sendFile(url, resolveContentType(resourceUrl), response);
+		sendFile(url, resolveContentType(resourceUrl), response, resourceUrl);
 	}
 
-	private void sendFile(final URL url, final String contentType, final HttpServletResponse response) throws IOException {
-		final URLConnection connection = url.openConnection();
-		connection.connect();
-		response.setContentLength(connection.getContentLength());
-		response.setDateHeader("Last-Modified", connection.getLastModified());
-		response.setContentType(contentType != null ? contentType : connection.getContentType());
-		try (final BufferedInputStream bInput = new BufferedInputStream(connection.getInputStream())) {
+	private void sendFile(final URL url, final String contentType, final HttpServletResponse response, final String resourceName) throws IOException {
+		if (url != null) {
+			final URLConnection connection = url.openConnection();
+			connection.connect();
+			response.setContentLength(connection.getContentLength());
+			response.setDateHeader("Last-Modified", connection.getLastModified());
+			response.setContentType(contentType != null ? contentType : connection.getContentType());
+			try (final BufferedInputStream bInput = new BufferedInputStream(connection.getInputStream())) {
+				try (final OutputStream output = response.getOutputStream()) {
+					copy(bInput, output);
+				}
+			}
+		} else {
+			response.setStatus(404);
+			//send a content otherwise Jetty change status to 204
 			try (final OutputStream output = response.getOutputStream()) {
-				copy(bInput, output);
+				output.write((resourceName + " not found").getBytes("ISO-8859-1"));
 			}
 		}
 	}
