@@ -126,7 +126,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 	@Override
 	public String toJsonError(final Throwable th) {
 		final String exceptionMessage = th.getMessage() != null ? th.getMessage() : th.getClass().getSimpleName();
-		return "{\"globalErrorMessages\":[\"" + exceptionMessage + "\"]}"; //TODO +stack;
+		return "{\"globalErrors\":[\"" + exceptionMessage + "\"]}"; //TODO +stack;
 	}
 
 	/** {@inheritDoc} */
@@ -225,6 +225,14 @@ public final class GoogleJsonEngine implements JsonEngine {
 				if (dtFields.contains(fieldName)) { //we only keep fields of this dtObject
 					modifiedFields.add(fieldName);
 				}
+			}
+			//Send a alert if no fields match the DtObject ones : details may be a security issue ?
+			if (modifiedFields.isEmpty()) {
+				final Set<String> jsonEntry = new HashSet<>();
+				for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+					jsonEntry.add(entry.getKey());
+				}
+				throw new JsonSyntaxException("Received Json's fields doesn't match " + dtoClass.getSimpleName() + " ones : " + jsonEntry);
 			}
 			final UiObject<D> uiObject = new UiObject<>(inputDto, modifiedFields);
 			if (jsonObject.has(SERVER_SIDE_TOKEN_FIELDNAME)) {
