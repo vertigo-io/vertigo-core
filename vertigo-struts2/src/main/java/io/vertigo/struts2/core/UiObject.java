@@ -402,7 +402,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 				final Formatter formatter = dtField.getDomain().getFormatter();
 				try {
 					final Serializable typedValue = (Serializable) formatter.stringToValue(inputBuffer.get(constFieldName), dtField.getDomain().getDataType());
-					throw new RuntimeException("Erreur de formatage non reproduite ('" + inputBuffer.get(constFieldName) + "'=>" + String.valueOf(typedValue) + "), l'UiObject doit être désynchronisé. Recharger votre page. " + this.toString());
+					throw new RuntimeException("Erreur de formatage non reproduite ('" + inputBuffer.get(constFieldName) + "'=>" + typedValue + "), l'UiObject doit être désynchronisé. Recharger votre page. " + this.toString());
 				} catch (final FormatterException e) {
 					getUiObjectErrors().addError(dtField, e.getMessageText());
 				}
