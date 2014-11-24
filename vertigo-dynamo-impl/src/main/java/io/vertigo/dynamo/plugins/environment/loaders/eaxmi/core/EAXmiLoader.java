@@ -43,7 +43,7 @@ import org.apache.log4j.Logger;
 public final class EAXmiLoader implements XmlLoader {
 	private final Map<XmlId, EAXmiObject> map;
 
-	private final Logger log = Logger.getLogger(this.getClass());
+	private static final Logger LOG = Logger.getLogger(EAXmiLoader.class);
 
 	/**
 	 * Constructeur.
@@ -69,7 +69,7 @@ public final class EAXmiLoader implements XmlLoader {
 	public List<XmlClass> getClasses() {
 		final List<XmlClass> list = new ArrayList<>();
 		for (final EAXmiObject obj : map.values()) {
-			log.debug("classe : " + obj.toString());
+			LOG.debug("classe : " + obj.toString());
 			//On ne conserve que les classes et les domaines
 			if (obj.getType() == EAXmiType.Class) {
 				list.add(createClass(obj));
@@ -97,7 +97,7 @@ public final class EAXmiLoader implements XmlLoader {
 	}
 
 	private XmlClass createClass(final EAXmiObject obj) {
-		log.debug("Creation de classe : " + obj.getName());
+		LOG.debug("Creation de classe : " + obj.getName());
 		//On recherche les attributs (>DtField) de cette classe(>Dt_DEFINITION)
 		final String code = obj.getName().toUpperCase();
 		final String packageName = obj.getParent().getPackageName();
@@ -106,7 +106,7 @@ public final class EAXmiLoader implements XmlLoader {
 		final List<XmlAttribute> fieldAttributes = new ArrayList<>();
 		for (final EAXmiObject child : obj.getChildren()) {
 			if (child.getType() == EAXmiType.Attribute) {
-				log.debug("Attribut = " + child.getName() + " isId = " + Boolean.toString(child.getIsId()));
+				LOG.debug("Attribut = " + child.getName() + " isId = " + Boolean.toString(child.getIsId()));
 				if (child.getIsId()) {
 					final XmlAttribute attributeXmi = createAttribute(child, true);
 					keyAttributes.add(attributeXmi);
@@ -141,7 +141,7 @@ public final class EAXmiLoader implements XmlLoader {
 	 * @return Association
 	 */
 	private XmlAssociation createAssociation(final EAXmiObject obj) {
-		log.debug("Créer association :" + obj.getName());
+		LOG.debug("Créer association :" + obj.getName());
 		final String code = obj.getName().toUpperCase();
 		final String packageName = obj.getParent().getPackageName();
 

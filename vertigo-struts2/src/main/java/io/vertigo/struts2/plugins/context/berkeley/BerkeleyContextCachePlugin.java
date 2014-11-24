@@ -56,7 +56,7 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 	private static final String USER_DIR = "user.dir";
 	private static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
 
-	private final Logger logger = Logger.getLogger(getClass());
+	private static final Logger LOGGER = Logger.getLogger(BerkeleyContextCachePlugin.class);
 	private final TupleBinding cacheValueBinding;
 	private final TupleBinding keyBinding = TupleBinding.getPrimitiveBinding(String.class);
 
@@ -69,7 +69,7 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 
 	/**
 	 * Constructeur.
-	 * @param codecManager Manager des mécanismes de codage/décodage. 
+	 * @param codecManager Manager des mécanismes de codage/décodage.
 	 * @param cachePath Chemin de stockage
 	 * @param timeToLiveSeconds Durée de vie des éléments en seconde
 	 */
@@ -156,7 +156,7 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 			final CacheValue cacheValue = (CacheValue) cacheValueBinding.entryToObject(theData);
 			return cacheValue;
 		} catch (final RuntimeException e) {
-			logger.warn("Erreur de lecture du ContextCache : suppression de l'entrée incrimin�e : " + key, e);
+			LOGGER.warn("Erreur de lecture du ContextCache : suppression de l'entrée incrimin�e : " + key, e);
 			cacheDatas.delete(null, theKey);
 		}
 		return null;
@@ -193,7 +193,7 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 					break;
 				}
 			}
-			logger.info("purge " + checked + " elements");
+			LOGGER.info("purge " + checked + " elements");
 		} finally {
 			if (cursor != null) {
 				cursor.close();
@@ -238,7 +238,7 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 				// Finally, close the environment.
 				myEnv.close();
 			} catch (final DatabaseException dbe) {
-				logger.error("Error closing BerkeleyContextCachePlugin: " + dbe.toString(), dbe);
+				LOGGER.error("Error closing BerkeleyContextCachePlugin: " + dbe.toString(), dbe);
 			}
 		}
 	}

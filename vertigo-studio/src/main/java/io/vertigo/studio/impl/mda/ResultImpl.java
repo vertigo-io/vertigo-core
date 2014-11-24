@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
  * @author pchretien
  */
 final class ResultImpl implements Result {
-	private final Logger logger = Logger.getLogger(getClass());
+	private static final Logger LOGGER = Logger.getLogger(ResultImpl.class);
 
 	/** Nombre de fichiers écrits . */
 	private int writtenFiles;
@@ -58,11 +58,11 @@ final class ResultImpl implements Result {
 	public void addFileWritten(final File file, final boolean success) {
 		if (success) {
 			writtenFiles++;
-			logger.trace("Fichier généré : " + file.getAbsolutePath());
+			LOGGER.trace("Fichier généré : " + file.getAbsolutePath());
 		} else {
 			errorFiles++;
 			//Ajout d'un fichier en erreur.
-			logger.trace("Fichier en erreur : " + file.getAbsolutePath());
+			LOGGER.trace("Fichier en erreur : " + file.getAbsolutePath());
 		}
 	}
 
@@ -70,6 +70,6 @@ final class ResultImpl implements Result {
 	@Override
 	public void addIdenticalFile(final File file) {
 		identicalFiles++;
-		logger.trace("Fichier identique : " + file.getAbsolutePath());
+		LOGGER.trace("Fichier identique : " + file.getAbsolutePath());
 	}
 }

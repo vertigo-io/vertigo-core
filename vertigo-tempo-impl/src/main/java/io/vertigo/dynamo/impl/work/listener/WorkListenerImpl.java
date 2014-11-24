@@ -35,38 +35,26 @@ public final class WorkListenerImpl implements WorkListener {
 	//	private final AnalyticsManager analyticsManager;
 
 	/** Mécanisme de log utilisé pour les taches. */
-	private final Logger workLog;
+	private static final Logger WORK_LOG = Logger.getLogger(WorkManager.class);
 
 	/** Mécanisme de log utilisé pour les performances. */
-	private final Logger performanceLog;
-
-	/**
-	 * Constructeur.
-	 */
-	public WorkListenerImpl(/*final AnalyticsManager analyticsManager*/) {
-		//		Assertion.checkNotNull(analyticsManager);
-		//		//---------------------------------------------------------------------
-		//		this.analyticsManager = analyticsManager;
-
-		workLog = Logger.getLogger(WorkManager.class);
-		performanceLog = Logger.getLogger("Performance");
-	}
+	private static final Logger PERFORMANCE_LOGGER = Logger.getLogger("Performance");
 
 	private void logWorkStart(final String workName) {
-		if (workLog.isDebugEnabled()) {
-			workLog.debug("Execution tache : " + workName);
+		if (WORK_LOG.isDebugEnabled()) {
+			WORK_LOG.debug("Execution tache : " + workName);
 		}
 	}
 
 	private void logWorkFinish(final String workName, final long elapsedTime, final boolean success) {
-		if (performanceLog.isInfoEnabled()) {
-			performanceLog.info(">> Tache : " + workName + " : time = " + elapsedTime);
+		if (PERFORMANCE_LOGGER.isInfoEnabled()) {
+			PERFORMANCE_LOGGER.info(">> Tache : " + workName + " : time = " + elapsedTime);
 		}
-		if (workLog.isInfoEnabled()) {
+		if (WORK_LOG.isInfoEnabled()) {
 			if (success) {
-				workLog.info("Execution tache : " + workName + " reussie en  ( " + elapsedTime + " ms)");
+				WORK_LOG.info("Execution tache : " + workName + " reussie en  ( " + elapsedTime + " ms)");
 			} else {
-				workLog.info("Execution tache : " + workName + " interrompue apres ( " + elapsedTime + " ms)");
+				WORK_LOG.info("Execution tache : " + workName + " interrompue apres ( " + elapsedTime + " ms)");
 			}
 		}
 	}

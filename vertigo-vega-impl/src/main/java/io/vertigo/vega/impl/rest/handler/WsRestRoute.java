@@ -40,7 +40,7 @@ import spark.Route;
  */
 public final class WsRestRoute extends Route {
 
-	private final Logger logger = Logger.getLogger(getClass());
+	private static final Logger LOGGER = Logger.getLogger(WsRestRoute.class);
 
 	@Inject
 	private RateLimitingHandler rateLimitingHandler;
@@ -87,7 +87,7 @@ public final class WsRestRoute extends Route {
 			final Request requestWrapper = new SparkRequestWrapper(request, defaultContentCharset);
 			return handlerChain.handle(requestWrapper, response, new RouteContext(requestWrapper));
 		} catch (final Throwable th) {
-			logger.error(th);
+			LOGGER.error(th);
 			return th.getMessage();
 		}
 	}

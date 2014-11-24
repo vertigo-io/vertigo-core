@@ -50,7 +50,7 @@ public final class EAXmiHandler extends DefaultHandler {
 	// La deuxième phase remplit les propriétés des objets.
 	private boolean phase2 = false;
 
-	private final Logger log = Logger.getLogger(this.getClass());
+	private static final Logger LOG = Logger.getLogger(EAXmiHandler.class);
 
 	EAXmiHandler(final Map<XmlId, EAXmiObject> map) {
 		Assertion.checkNotNull(map);
@@ -62,30 +62,30 @@ public final class EAXmiHandler extends DefaultHandler {
 	/** {@inheritDoc} */
 	@Override
 	public void startElement(final String unusedUri, final String unusedLocalName, final String name, final Attributes attributes) {
-		log.debug(" Début de tag : " + name);
+		LOG.debug(" Début de tag : " + name);
 		// Type xmi du tag
 		String typeElement = attributes.getValue(ATTR_TYPE);
 		// Si le type est null, alors on se base sur le nom du tag (cas des extensions EA)
 		if (typeElement == null) {
 			typeElement = name;
 		}
-		log.debug("Type : " + typeElement);
+		LOG.debug("Type : " + typeElement);
 
 		//Les références
 		final String ref = attributes.getValue(ATTR_REF);
 
 		if (ref != null && typeElement != null && EAXmiType.isNodeByRef(typeElement)) {
 			phase2 = true;
-			log.debug("On est dans la référence " + name + " ref : " + ref);
+			LOG.debug("On est dans la référence " + name + " ref : " + ref);
 			// Si le tag courant est associé à un objet alors on ajoute à cet objet la référence.
 			final XmlId eaXmiId = new XmlId(ref);
 			if (map.containsKey(eaXmiId)) {
 				currentObject = map.get(eaXmiId);
-				log.debug("Current Object : " + currentObject.getName());
+				LOG.debug("Current Object : " + currentObject.getName());
 			}
 			// On ne gère que les éléments objets qui nous intéressent
 		} else if (EAXmiType.isObjet(typeElement, name)) {
-			log.debug("On est dans l'objet ");
+			LOG.debug("On est dans l'objet ");
 			final String id = attributes.getValue(ATTR_ID);
 			final String leNom = attributes.getValue(ATTR_NAME);
 			final EAXmiType type = EAXmiType.getType(typeElement);

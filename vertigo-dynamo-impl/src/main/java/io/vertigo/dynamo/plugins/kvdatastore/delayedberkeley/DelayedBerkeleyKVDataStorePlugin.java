@@ -59,7 +59,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	private static final String USER_DIR = "user.dir";
 	private static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
 
-	private final Logger logger = Logger.getLogger(getClass());
+	private static final Logger LOGGER = Logger.getLogger(DelayedBerkeleyKVDataStorePlugin.class);
 	private final TupleBinding<DelayedBerkeleyCacheValue> cacheValueBinding;
 	private final TupleBinding<String> keyBinding = TupleBinding.getPrimitiveBinding(String.class);
 
@@ -211,7 +211,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 			final DelayedBerkeleyCacheValue cacheValue = cacheValueBinding.entryToObject(theData);
 			return cacheValue;
 		} catch (final RuntimeException e) {
-			logger.warn("Read error in UiSecurityTokenCache : remove tokenKey : " + key, e);
+			LOGGER.warn("Read error in UiSecurityTokenCache : remove tokenKey : " + key, e);
 			cacheDatas.delete(null, theKey);
 		}
 		return null;
@@ -246,7 +246,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 					break;
 				}
 			}
-			logger.info("purge " + checked + " elements");
+			LOGGER.info("purge " + checked + " elements");
 		}
 	}
 
@@ -286,7 +286,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 				// Finally, close the environment.
 				myEnv.close();
 			} catch (final DatabaseException dbe) {
-				logger.error("Error closing " + getClass().getSimpleName() + ": " + dbe.toString(), dbe);
+				LOGGER.error("Error closing " + getClass().getSimpleName() + ": " + dbe.toString(), dbe);
 			}
 		}
 	}
