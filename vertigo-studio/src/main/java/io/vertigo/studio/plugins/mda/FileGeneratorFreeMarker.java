@@ -38,12 +38,6 @@ import freemarker.template.TemplateException;
  * @author dchallas
  */
 public final class FileGeneratorFreeMarker implements FileGenerator {
-
-	/**
-	 * Répertoire des fichiers générés une fois.
-	 * Doit être renseigné dans le fichier properties [targetDir]
-	 */
-	private final String targetDir;
 	/**
 	 * Répertoire des fichiers TOUJOURS générés
 	 * Doit être renseigné dans le fichier properties [targetDir]
@@ -81,7 +75,6 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 		this.fileExtention = fileExtention;
 		this.templateName = templateName;
 		configuration = initConfiguration(parameters.getClass());
-		targetDir = parameters.getTargetDir();
 		targetGenDir = parameters.getTargetGenDir();
 		encoding = parameters.getEncoding();
 	}
@@ -104,9 +97,9 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 
 	/** {@inheritDoc} */
 	@Override
-	public void generateFile(final Result result, final boolean override) {
-		final File file = new File(getFileName(override));
-		if (override || !file.exists()) {
+	public void generateFile(final Result result) {
+		final File file = new File(getFileName());
+		if (!file.exists()) {
 			try {
 				generateFile(result, file);
 			} catch (final Exception e) {
@@ -119,8 +112,8 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 		return packageName.replace('.', '/').replace('\\', '/');
 	}
 
-	private String getFileName(final boolean override) {
-		final String finalTargetDir = override ? targetGenDir : targetDir;
+	private String getFileName() {
+		final String finalTargetDir = targetGenDir;
 		final String currentPath = finalTargetDir + package2directory(packageName);
 		return currentPath + '/' + classSimpleName + fileExtention;
 	}

@@ -68,7 +68,7 @@ public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin<Secur
 					.build();
 
 			createFileGenerator(securityConfiguration, mapRoot, "Role", securityConfiguration.getSecurityPackage(), ".java", "role.ftl")
-					.generateFile(result, true);
+					.generateFile(result);
 		}
 	}
 }

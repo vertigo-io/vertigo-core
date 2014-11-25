@@ -95,7 +95,7 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin<TaskConfi
 				.build();
 
 		createFileGenerator(taskConfiguration, mapRoot, dao.getClassSimpleName(), dao.getPackageName(), ".java", "dao.ftl")
-				.generateFile(result, true);
+				.generateFile(result);
 	}
 
 	/**
@@ -109,7 +109,7 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin<TaskConfi
 				.build();
 
 		createFileGenerator(taskConfiguration, mapRoot, pao.getClassSimpleName(), pao.getPackageName(), ".java", "pao.ftl")
-				.generateFile(result, true);
+				.generateFile(result);
 	}
 
 	/**

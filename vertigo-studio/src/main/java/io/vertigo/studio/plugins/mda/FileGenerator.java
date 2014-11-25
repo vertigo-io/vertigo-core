@@ -28,13 +28,9 @@ import io.vertigo.studio.mda.Result;
 public interface FileGenerator {
 	/**
 	 * Génèration d'un fichier.
-	 * La génération n'est effectique que si
-	 * - le fichier n'existe pas déjà 
-	 * ou bien
-	 * - le fichier existe déjà et si le fichier peut être regénéré 
+	 * Si le fichier existe déjà, il est regénéré 
 	 * 
-	 * @param override Si le fichier peut être regénéré 
 	 * @param result Résultat de la génération (statistiques)
 	 */
-	void generateFile(final Result result, final boolean override);
+	void generateFile(final Result result);
 }

@@ -63,6 +63,6 @@ public final class SearchGeneratorPlugin extends AbstractGeneratorPlugin<SearchC
 				.build();
 
 		createFileGenerator(searchConfiguration, mapRoot, "schema", "solr/" + indexDefinition.getName() + "/conf", ".xml", "schema.ftl")
-				.generateFile(result, true);
+				.generateFile(result);
 	}
 }

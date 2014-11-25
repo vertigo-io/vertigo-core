@@ -152,7 +152,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 				.build();
 
 		createFileGenerator(domainConfiguration, mapRoot, domainConfiguration.getDomainDictionaryClassName(), domainConfiguration.getDomainPackage(), ".java", "dtdefinitions.ftl")
-				.generateFile(result, true);
+				.generateFile(result);
 
 	}
 
@@ -170,7 +170,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 				.build();
 
 		createFileGenerator(domainConfiguration, mapRoot, domainConfiguration.getDomainDictionaryClassName(), domainConfiguration.getDomainPackage(), ".js", "js.ftl")
-				.generateFile(result, true);
+				.generateFile(result);
 
 	}
 
@@ -189,7 +189,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 				.build();
 
 		createFileGenerator(domainConfiguration, mapRoot, definition.getClassSimpleName(), definition.getPackageName(), ".java", "dto.ftl")
-				.generateFile(result, true);
+				.generateFile(result);
 	}
 
 	private static void generateDtResources(final DomainConfiguration domainConfiguration, final Result result) {
@@ -209,10 +209,10 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 					.build();
 
 			createFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".java", "resources.ftl")
-					.generateFile(result, true);
+					.generateFile(result);
 
 			createFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".properties", "properties.ftl")
-					.generateFile(result, true);
+					.generateFile(result);
 		}
 	}
 
@@ -245,7 +245,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 					.build();
 
 			createFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".js", "propertiesJS.ftl")
-					.generateFile(result, true);
+					.generateFile(result);
 		}
 	}
 
@@ -268,7 +268,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 				.build();
 
 		createFileGenerator(domainConfiguration, mapRoot, "crebas", "sqlgen", ".sql", "sql.ftl")
-				.generateFile(result, true);
+				.generateFile(result);
 	}
 
 	/**
