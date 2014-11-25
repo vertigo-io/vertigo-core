@@ -22,8 +22,8 @@ A big version :)
 * [Dynamo] Added possibility to override FormatterDefault rendering
 * [Dynamo] Added fluent style with ExportBuilder, PropertiesBuilder
 * [Dynamo] DtField is a DtFieldName	
-* [Dynamo] Refact ElasticSearch plugins	
-* [Dynamo] Work are migrated to tempo
+* [Dynamo] Refactored ElasticSearch plugins	
+* [Dynamo] **Work** is migrated to tempo
 * [Vega] Fixed swagger contextPath, nnerBody params, inline test POST services
 * [Vega] Moved DtListDelta and UiListDelta
 * [Vega] Updated export api
