@@ -21,7 +21,7 @@ package io.vertigo.studio.plugins.mda.file;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.mda.Result;
+import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
 import io.vertigo.util.MapBuilder;
 
@@ -43,22 +43,22 @@ public final class FileInfoGeneratorPlugin extends AbstractGeneratorPlugin<FileI
 
 	/** {@inheritDoc} */
 	@Override
-	public void generate(final FileInfoConfiguration fileInfoConfiguration, final Result result) {
+	public void generate(final FileInfoConfiguration fileInfoConfiguration, final ResultBuilder resultBuilder) {
 		Assertion.checkNotNull(fileInfoConfiguration);
-		Assertion.checkNotNull(result);
+		Assertion.checkNotNull(resultBuilder);
 		// ---------------------------------------------------------------------
 		/* Générations des FI. */
-		generateFileInfos(fileInfoConfiguration, result);
+		generateFileInfos(fileInfoConfiguration, resultBuilder);
 	}
 
-	private static void generateFileInfos(final FileInfoConfiguration fileInfoConfiguration, final Result result) {
+	private static void generateFileInfos(final FileInfoConfiguration fileInfoConfiguration, final ResultBuilder resultBuilder) {
 		final Collection<FileInfoDefinition> fileInfoDefinitions = Home.getDefinitionSpace().getAll(FileInfoDefinition.class);
 		for (final FileInfoDefinition fileInfoDefinition : fileInfoDefinitions) {
-			generateFileInfo(fileInfoConfiguration, result, fileInfoDefinition);
+			generateFileInfo(fileInfoConfiguration, resultBuilder, fileInfoDefinition);
 		}
 	}
 
-	private static void generateFileInfo(final FileInfoConfiguration fileInfoConfiguration, final Result result, final FileInfoDefinition fileInfoDefinition) {
+	private static void generateFileInfo(final FileInfoConfiguration fileInfoConfiguration, final ResultBuilder resultBuilder, final FileInfoDefinition fileInfoDefinition) {
 		final TemplateFileInfoDefinition definition = new TemplateFileInfoDefinition(fileInfoDefinition);
 
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
@@ -67,6 +67,6 @@ public final class FileInfoGeneratorPlugin extends AbstractGeneratorPlugin<FileI
 				.build();
 
 		createFileGenerator(fileInfoConfiguration, mapRoot, definition.getClassSimpleName(), fileInfoConfiguration.getFilePackage(), ".java", "fileInfo.ftl")
-				.generateFile(result, true);
+				.generateFile(resultBuilder);
 	}
 }

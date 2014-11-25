@@ -16,9 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.impl.mda;
+package io.vertigo.studio.mda;
 
-import io.vertigo.studio.mda.Result;
+import io.vertigo.lang.Builder;
 import io.vertigo.util.StringUtil;
 
 import java.io.File;
@@ -31,8 +31,8 @@ import org.apache.log4j.Logger;
  *
  * @author pchretien
  */
-final class ResultImpl implements Result {
-	private static final Logger LOGGER = Logger.getLogger(ResultImpl.class);
+public final class ResultBuilder implements Builder<Result> {
+	private static final Logger LOGGER = Logger.getLogger(Result.class);
 
 	/** Nombre de fichiers écrits . */
 	private int writtenFiles;
@@ -46,15 +46,24 @@ final class ResultImpl implements Result {
 
 	private final long start = System.currentTimeMillis();
 
-	/** {@inheritDoc} */
 	@Override
-	public void displayResultMessage(final PrintStream out) {
-		final long duration = System.currentTimeMillis() - start;
-		out.append(StringUtil.format("\nGénération de {0} fichiers, {1} fichiers identiques et {2} problemes en {3} ms", writtenFiles, identicalFiles, errorFiles, duration));
+	public Result build() {
+		return new Result() {
+
+			/** {@inheritDoc} */
+			@Override
+			public void displayResultMessage(final PrintStream out) {
+				final long duration = System.currentTimeMillis() - start;
+				System.out.append(StringUtil.format("\nGénération de {0} fichiers, {1} fichiers identiques et {2} problemes en {3} ms", writtenFiles, identicalFiles, errorFiles, duration));
+			}
+		};
 	}
 
-	/** {@inheritDoc} */
-	@Override
+	/**
+	 * Notification de la génération d'un fichier (écrit sur disque).
+	 * @param file Fichier généré
+	 * @param success Si la génération a réussi 
+	 */
 	public void addFileWritten(final File file, final boolean success) {
 		if (success) {
 			writtenFiles++;
@@ -66,8 +75,10 @@ final class ResultImpl implements Result {
 		}
 	}
 
-	/** {@inheritDoc} */
-	@Override
+	/** 
+	 * Le fichier est identique
+	 * @param file Fichier généré
+	 */
 	public void addIdenticalFile(final File file) {
 		identicalFiles++;
 		LOGGER.trace("Fichier identique : " + file.getAbsolutePath());

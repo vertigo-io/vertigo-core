@@ -22,7 +22,7 @@ import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.mda.Result;
+import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
 import io.vertigo.util.MapBuilder;
 
@@ -110,40 +110,40 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 
 	/** {@inheritDoc} */
 	@Override
-	public void generate(final DomainConfiguration domainConfiguration, final Result result) {
+	public void generate(final DomainConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
 		Assertion.checkNotNull(domainConfiguration);
-		Assertion.checkNotNull(result);
+		Assertion.checkNotNull(resultBuilder);
 		// ---------------------------------------------------------------------
 		/* Génération des ressources afférentes au DT. */
 		if (generateDtResources) {
-			generateDtResources(domainConfiguration, result);
+			generateDtResources(domainConfiguration, resultBuilder);
 		}
 
 		/* Génération des ressources afférentes au DT mais pour la partie JS.*/
 		if (generateDtResourcesJS) {
-			generateDtResourcesJS(domainConfiguration, result);
+			generateDtResourcesJS(domainConfiguration, resultBuilder);
 		}
 
 		/* Génération de la lgeneratee référençant toutes des définitions. */
 		if (generateDtDefinitions) {
-			generateDtDefinitions(domainConfiguration, result);
+			generateDtDefinitions(domainConfiguration, resultBuilder);
 		}
 
 		/* Génération des fichiers javascripts référençant toutes les définitions. */
 		if (generateJsDtDefinitions) {
-			generateJsDtDefinitions(domainConfiguration, result);
+			generateJsDtDefinitions(domainConfiguration, resultBuilder);
 		}
 
 		/* Générations des DTO. */
 		if (generateDtObject) {
-			generateDtObjects(domainConfiguration, result);
+			generateDtObjects(domainConfiguration, resultBuilder);
 		}
 		if (generateSql) {
-			generateSql(domainConfiguration, result);
+			generateSql(domainConfiguration, resultBuilder);
 		}
 	}
 
-	private static void generateDtDefinitions(final DomainConfiguration domainConfiguration, final Result result) {
+	private static void generateDtDefinitions(final DomainConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
 
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
 				.put("packageName", domainConfiguration.getDomainPackage())
@@ -152,11 +152,11 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 				.build();
 
 		createFileGenerator(domainConfiguration, mapRoot, domainConfiguration.getDomainDictionaryClassName(), domainConfiguration.getDomainPackage(), ".java", "dtdefinitions.ftl")
-				.generateFile(result);
+				.generateFile(resultBuilder);
 
 	}
 
-	private static void generateJsDtDefinitions(final DomainConfiguration domainConfiguration, final Result result) {
+	private static void generateJsDtDefinitions(final DomainConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
 
 		final List<TemplateDtDefinition> dtDefinitions = new ArrayList<>();
 		for (final DtDefinition dtDefinition : getDtDefinitions()) {
@@ -170,17 +170,17 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 				.build();
 
 		createFileGenerator(domainConfiguration, mapRoot, domainConfiguration.getDomainDictionaryClassName(), domainConfiguration.getDomainPackage(), ".js", "js.ftl")
-				.generateFile(result);
+				.generateFile(resultBuilder);
 
 	}
 
-	private void generateDtObjects(final DomainConfiguration domainConfiguration, final Result result) {
+	private void generateDtObjects(final DomainConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
 		for (final DtDefinition dtDefinition : getDtDefinitions()) {
-			generateDtObject(domainConfiguration, result, dtDefinition);
+			generateDtObject(domainConfiguration, resultBuilder, dtDefinition);
 		}
 	}
 
-	private void generateDtObject(final DomainConfiguration domainConfiguration, final Result result, final DtDefinition dtDefinition) {
+	private void generateDtObject(final DomainConfiguration domainConfiguration, final ResultBuilder resultBuilder, final DtDefinition dtDefinition) {
 		final TemplateDtDefinition definition = new TemplateDtDefinition(dtDefinition);
 
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
@@ -189,10 +189,10 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 				.build();
 
 		createFileGenerator(domainConfiguration, mapRoot, definition.getClassSimpleName(), definition.getPackageName(), ".java", "dto.ftl")
-				.generateFile(result);
+				.generateFile(resultBuilder);
 	}
 
-	private static void generateDtResources(final DomainConfiguration domainConfiguration, final Result result) {
+	private static void generateDtResources(final DomainConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
 		final String simpleClassName = "DtResources";
 		/**
 		 * Génération des ressources afférentes au DT.
@@ -209,19 +209,19 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 					.build();
 
 			createFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".java", "resources.ftl")
-					.generateFile(result);
+					.generateFile(resultBuilder);
 
 			createFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".properties", "properties.ftl")
-					.generateFile(result);
+					.generateFile(resultBuilder);
 		}
 	}
 
 	/**
 	 * Génère les ressources JS pour les traductions.
 	 * @param domainConfiguration Configuration du domaine.
-	 * @param result Fichier dans lequel est généré.
+	 * @param resultBuilder Builder
 	 */
-	private static void generateDtResourcesJS(final DomainConfiguration domainConfiguration, final Result result) {
+	private static void generateDtResourcesJS(final DomainConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
 		/**
 		 * Génération des ressources afférentes au DT.
 		 */
@@ -245,11 +245,11 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 					.build();
 
 			createFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".js", "propertiesJS.ftl")
-					.generateFile(result);
+					.generateFile(resultBuilder);
 		}
 	}
 
-	private void generateSql(final DomainConfiguration domainConfiguration, final Result result) {
+	private void generateSql(final DomainConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
 		final List<TemplateDtDefinition> list = new ArrayList<>(getDtDefinitions().size());
 		for (final DtDefinition dtDefinition : sortAbsoluteDefinitionCollection(getDtDefinitions())) {
 			final TemplateDtDefinition templateDef = new TemplateDtDefinition(dtDefinition);
@@ -268,7 +268,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 				.build();
 
 		createFileGenerator(domainConfiguration, mapRoot, "crebas", "sqlgen", ".sql", "sql.ftl")
-				.generateFile(result);
+				.generateFile(resultBuilder);
 	}
 
 	/**

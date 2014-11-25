@@ -39,7 +39,7 @@ public interface GeneratorPlugin<C extends Configuration> extends Plugin {
 	/**
 	 * Génération d'un fichier à partir d'une source et de paramètres.
 	 * @param configuration Configuration de la génération
-	 * @param result Résultat de la génération
+	 * @param resultBuilder Builder
 	 */
-	void generate(final C configuration, final Result result);
+	void generate(final C configuration, final ResultBuilder resultBuilder);
 }

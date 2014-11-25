@@ -19,7 +19,7 @@
 package io.vertigo.studio.plugins.mda;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.mda.Result;
+import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.domain.TemplateMethodStringUtil;
 
 import java.io.File;
@@ -97,11 +97,11 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 
 	/** {@inheritDoc} */
 	@Override
-	public void generateFile(final Result result) {
+	public void generateFile(final ResultBuilder resultBuilder) {
 		final File file = new File(getFileName());
 		if (!file.exists()) {
 			try {
-				generateFile(result, file);
+				generateFile(resultBuilder, file);
 			} catch (final Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -118,7 +118,7 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 		return currentPath + '/' + classSimpleName + fileExtention;
 	}
 
-	private void generateFile(final Result result, final File file2create) throws IOException, TemplateException {
+	private void generateFile(final ResultBuilder resultBuilder, final File file2create) throws IOException, TemplateException {
 		// On crée le répertoire
 		final File directory2create = file2create.getParentFile();
 		directory2create.mkdirs();
@@ -132,11 +132,11 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 		final String currentContent = FileUtil.readContentFile(file2create, encoding);
 		if (content.equals(currentContent)) {
 			// Les deux fichiers sont identiques
-			result.addIdenticalFile(file2create);
+			resultBuilder.addIdenticalFile(file2create);
 		} else {
 			// Si le contenu est différent on réécrit le fichier.
 			final boolean success = FileUtil.writeFile(file2create, content, encoding);
-			result.addFileWritten(file2create, success);
+			resultBuilder.addFileWritten(file2create, success);
 		}
 	}
 

@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.plugins.mda;
 
-import io.vertigo.studio.mda.Result;
+import io.vertigo.studio.mda.ResultBuilder;
 
 /**
  * Interface des generateurs de fichier.
@@ -30,7 +30,7 @@ public interface FileGenerator {
 	 * Génèration d'un fichier.
 	 * Si le fichier existe déjà, il est regénéré 
 	 * 
-	 * @param result Résultat de la génération (statistiques)
+	 * @param resultBuilder Builder 
 	 */
-	void generateFile(final Result result);
+	void generateFile(final ResultBuilder resultBuilder);
 }
