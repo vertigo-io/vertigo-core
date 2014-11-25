@@ -14,6 +14,7 @@ A big version :)
 * [Core] Managers.xml syntax changed : Renamed &lt;modules&gt; to &lt;config&gt; (tag module doesn't change)
 * [Core] remane two packages : io.vertigo.core.util, io.vertigo.core.lang
 * [Core] Moved some classes : VUserException, DefinitionSpace, Engine
+* [Core] Renamed ComponentSpaceConfigBuilder to AppConfigBuilder
 * [Core] Injector static instead of instance
 * [Core] Renamed @PreFixed to @DefinitionPreFixed and Manager to Component
 * [Commons] Added CacheConfig
