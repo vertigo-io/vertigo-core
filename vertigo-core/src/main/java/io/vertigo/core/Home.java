@@ -67,7 +67,7 @@ public final class Home {
 
 	private final DefinitionSpace definitionSpace = new DefinitionSpace();
 	private ComponentSpace componentSpace = ComponentSpace.EMPTY;
-	private AppConfig appConfig;
+	private AppConfig currentAppConfig;
 
 	private Home() {
 		// Classe statique d'accès aux composants.
@@ -84,15 +84,18 @@ public final class Home {
 		INSTANCE.doStart(appConfig);
 	}
 
+	/**
+	 * @return Current AppConfig
+	 */
 	public static AppConfig getAppConfig() {
-		return INSTANCE.appConfig;
+		return INSTANCE.currentAppConfig;
 	}
 
 	/**
 	 * Fermeture de l'application.
 	 */
 	public static void stop() {
-		//Une instance inactive peut être stopé 
+		//Une instance inactive peut être stopé
 		if (INSTANCE.state != State.INACTIVE) {
 			INSTANCE.doStop(State.ACTIVE);
 		}
@@ -126,7 +129,7 @@ public final class Home {
 		Assertion.checkNotNull(appConfig);
 		//-------------------------------------------------------------------------
 		change(State.INACTIVE, State.starting);
-		this.appConfig = appConfig;
+		currentAppConfig = appConfig;
 		try {
 			Assertion.checkState(definitionSpace.isEmpty(), "DefinitionSpace must be empty");
 			//---
