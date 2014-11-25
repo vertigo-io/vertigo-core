@@ -25,11 +25,10 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.mda.Result;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
-import io.vertigo.studio.plugins.mda.FileGenerator;
+import io.vertigo.util.MapBuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,11 +90,12 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin<TaskConfi
 	private static void generateDao(final TaskConfiguration taskConfiguration, final Result result, final DtDefinition dtDefinition, final Collection<TaskDefinition> taskDefinitionCollection) {
 		final TemplateDAO dao = new TemplateDAO(taskConfiguration, dtDefinition, taskDefinitionCollection);
 
-		final Map<String, Object> mapRoot = new HashMap<>();
-		mapRoot.put("dao", dao);
+		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
+				.put("dao", dao)
+				.build();
 
-		final FileGenerator daoGenerator = getFileGenerator(taskConfiguration, mapRoot, dao.getClassSimpleName(), dao.getPackageName(), ".java", "dao.ftl");
-		daoGenerator.generateFile(result, true);
+		createFileGenerator(taskConfiguration, mapRoot, dao.getClassSimpleName(), dao.getPackageName(), ".java", "dao.ftl")
+				.generateFile(result, true);
 	}
 
 	/**
@@ -104,11 +104,12 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin<TaskConfi
 	private static void generatePao(final TaskConfiguration taskConfiguration, final Result result, final Collection<TaskDefinition> taskDefinitionCollection, final String packageName) {
 		final TemplatePAO pao = new TemplatePAO(taskConfiguration, taskDefinitionCollection, packageName);
 
-		final Map<String, Object> mapRoot = new HashMap<>();
-		mapRoot.put("pao", pao);
+		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
+				.put("pao", pao)
+				.build();
 
-		final FileGenerator super2java = getFileGenerator(taskConfiguration, mapRoot, pao.getClassSimpleName(), pao.getPackageName(), ".java", "pao.ftl");
-		super2java.generateFile(result, true);
+		createFileGenerator(taskConfiguration, mapRoot, pao.getClassSimpleName(), pao.getPackageName(), ".java", "pao.ftl")
+				.generateFile(result, true);
 	}
 
 	/**

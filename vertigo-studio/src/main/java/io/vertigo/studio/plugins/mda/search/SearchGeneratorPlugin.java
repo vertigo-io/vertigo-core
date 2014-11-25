@@ -23,9 +23,8 @@ import io.vertigo.dynamo.search.metamodel.IndexDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.mda.Result;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
-import io.vertigo.studio.plugins.mda.FileGenerator;
+import io.vertigo.util.MapBuilder;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -58,11 +57,12 @@ public final class SearchGeneratorPlugin extends AbstractGeneratorPlugin<SearchC
 
 	private static void generateSchema(final SearchConfiguration searchConfiguration, final Result result, final IndexDefinition indexDefinition) {
 		/** Registry */
-		final Map<String, Object> mapRoot = new HashMap<>();
-		mapRoot.put("indexDefinition", indexDefinition);
-		mapRoot.put("indexType", new TemplateMethodIndexType());
+		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
+				.put("indexDefinition", indexDefinition)
+				.put("indexType", new TemplateMethodIndexType())
+				.build();
 
-		final FileGenerator super2java = getFileGenerator(searchConfiguration, mapRoot, "schema", "solr/" + indexDefinition.getName() + "/conf", ".xml", "schema.ftl");
-		super2java.generateFile(result, true);
+		createFileGenerator(searchConfiguration, mapRoot, "schema", "solr/" + indexDefinition.getName() + "/conf", ".xml", "schema.ftl")
+				.generateFile(result, true);
 	}
 }

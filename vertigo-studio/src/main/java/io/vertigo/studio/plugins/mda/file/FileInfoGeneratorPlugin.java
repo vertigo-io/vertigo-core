@@ -23,10 +23,9 @@ import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.mda.Result;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
-import io.vertigo.studio.plugins.mda.FileGenerator;
+import io.vertigo.util.MapBuilder;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -61,12 +60,13 @@ public final class FileInfoGeneratorPlugin extends AbstractGeneratorPlugin<FileI
 
 	private static void generateFileInfo(final FileInfoConfiguration fileInfoConfiguration, final Result result, final FileInfoDefinition fileInfoDefinition) {
 		final TemplateFileInfoDefinition definition = new TemplateFileInfoDefinition(fileInfoDefinition);
-		final Map<String, Object> mapRoot = new HashMap<>();
-		mapRoot.put("fiDefinition", definition);
-		mapRoot.put("packageName", fileInfoConfiguration.getFilePackage());
 
-		final FileGenerator super2java = getFileGenerator(fileInfoConfiguration, mapRoot, definition.getClassSimpleName(), fileInfoConfiguration.getFilePackage(),
-				".java", "fileInfo.ftl");
-		super2java.generateFile(result, true);
+		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
+				.put("fiDefinition", definition)
+				.put("packageName", fileInfoConfiguration.getFilePackage())
+				.build();
+
+		createFileGenerator(fileInfoConfiguration, mapRoot, definition.getClassSimpleName(), fileInfoConfiguration.getFilePackage(), ".java", "fileInfo.ftl")
+				.generateFile(result, true);
 	}
 }

@@ -23,10 +23,9 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.metamodel.Role;
 import io.vertigo.studio.mda.Result;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
-import io.vertigo.studio.plugins.mda.FileGenerator;
+import io.vertigo.util.MapBuilder;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -62,12 +61,14 @@ public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin<Secur
 			//On ne genere aucun fichier si aucun rele.
 			//				final Roles2java roles2Java = new Roles2java(packageName, roleList, parameters);
 
-			final Map<String, Object> mapRoot = new HashMap<>();
-			mapRoot.put("roles", roles);
-			mapRoot.put("classSimpleName", "Role");
-			mapRoot.put("packageName", securityConfiguration.getSecurityPackage());
-			final FileGenerator super2java = getFileGenerator(securityConfiguration, mapRoot, "Role", securityConfiguration.getSecurityPackage(), ".java", "role.ftl");
-			super2java.generateFile(result, true);
+			final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
+					.put("roles", roles)
+					.put("classSimpleName", "Role")
+					.put("packageName", securityConfiguration.getSecurityPackage())
+					.build();
+
+			createFileGenerator(securityConfiguration, mapRoot, "Role", securityConfiguration.getSecurityPackage(), ".java", "role.ftl")
+					.generateFile(result, true);
 		}
 	}
 }

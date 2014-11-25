@@ -24,12 +24,11 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.mda.Result;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
-import io.vertigo.studio.plugins.mda.FileGenerator;
+import io.vertigo.util.MapBuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,11 +72,11 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 			@Named("generateDtResources") final boolean generateDtResources,
 			@Named("generateDtResourcesJS") final boolean generateDtResourcesJS,
 			@Named("generateJpaAnnotations") final boolean generateJpaAnnotations,
-			@Named("generateDtDefinitions") final boolean generateDtDefinitions, 
+			@Named("generateDtDefinitions") final boolean generateDtDefinitions,
 			@Named("generateJsDtDefinitions") final boolean generateJsDtDefinitions,
-			@Named("generateDtObject") final boolean generateDtObject, 
-			@Named("generateSql") final boolean generateSql, 
-			@Named("generateDrop") final boolean generateDrop, 
+			@Named("generateDtObject") final boolean generateDtObject,
+			@Named("generateSql") final boolean generateSql,
+			@Named("generateDrop") final boolean generateDrop,
 			@Named("baseCible") final String baseCible) {
 		// ---------------------------------------------------------------------
 		this.generateDtResources = generateDtResources;
@@ -146,13 +145,14 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 
 	private static void generateDtDefinitions(final DomainConfiguration domainConfiguration, final Result result) {
 
-		final Map<String, Object> mapRoot = new HashMap<>();
-		mapRoot.put("packageName", domainConfiguration.getDomainPackage());
-		mapRoot.put("classSimpleName", domainConfiguration.getDomainDictionaryClassName());
-		mapRoot.put("dtDefinitions", getDtDefinitions());
+		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
+				.put("packageName", domainConfiguration.getDomainPackage())
+				.put("classSimpleName", domainConfiguration.getDomainDictionaryClassName())
+				.put("dtDefinitions", getDtDefinitions())
+				.build();
 
-		final FileGenerator super2java = getFileGenerator(domainConfiguration, mapRoot, domainConfiguration.getDomainDictionaryClassName(), domainConfiguration.getDomainPackage(), ".java", "dtdefinitions.ftl");
-		super2java.generateFile(result, true);
+		createFileGenerator(domainConfiguration, mapRoot, domainConfiguration.getDomainDictionaryClassName(), domainConfiguration.getDomainPackage(), ".java", "dtdefinitions.ftl")
+				.generateFile(result, true);
 
 	}
 
@@ -163,13 +163,14 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 			dtDefinitions.add(new TemplateDtDefinition(dtDefinition));
 		}
 
-		final Map<String, Object> mapRoot = new HashMap<>();
-		mapRoot.put("packageName", domainConfiguration.getDomainPackage());
-		mapRoot.put("classSimpleName", domainConfiguration.getDomainDictionaryClassName());
-		mapRoot.put("dtDefinitions", dtDefinitions);
+		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
+				.put("packageName", domainConfiguration.getDomainPackage())
+				.put("classSimpleName", domainConfiguration.getDomainDictionaryClassName())
+				.put("dtDefinitions", dtDefinitions)
+				.build();
 
-		final FileGenerator super2java = getFileGenerator(domainConfiguration, mapRoot, domainConfiguration.getDomainDictionaryClassName(), domainConfiguration.getDomainPackage(), ".js", "js.ftl");
-		super2java.generateFile(result, true);
+		createFileGenerator(domainConfiguration, mapRoot, domainConfiguration.getDomainDictionaryClassName(), domainConfiguration.getDomainPackage(), ".js", "js.ftl")
+				.generateFile(result, true);
 
 	}
 
@@ -182,13 +183,13 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 	private void generateDtObject(final DomainConfiguration domainConfiguration, final Result result, final DtDefinition dtDefinition) {
 		final TemplateDtDefinition definition = new TemplateDtDefinition(dtDefinition);
 
-		final Map<String, Object> mapRoot = new HashMap<>();
-		mapRoot.put("dtDefinition", definition);
-		mapRoot.put("annotations", new TemplateMethodAnnotations(generateJpaAnnotations));
+		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
+				.put("dtDefinition", definition)
+				.put("annotations", new TemplateMethodAnnotations(generateJpaAnnotations))
+				.build();
 
-		final FileGenerator super2java = getFileGenerator(domainConfiguration, mapRoot, definition.getClassSimpleName(), definition.getPackageName(), //
-				".java", "dto.ftl");
-		super2java.generateFile(result, true);
+		createFileGenerator(domainConfiguration, mapRoot, definition.getClassSimpleName(), definition.getPackageName(), ".java", "dto.ftl")
+				.generateFile(result, true);
 	}
 
 	private static void generateDtResources(final DomainConfiguration domainConfiguration, final Result result) {
@@ -201,16 +202,17 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 			Assertion.checkNotNull(dtDefinitionCollection);
 			final String packageName = entry.getKey();
 
-			final Map<String, Object> mapRoot = new HashMap<>();
-			mapRoot.put("packageName", packageName);
-			mapRoot.put("simpleClassName", simpleClassName);
-			mapRoot.put("dtDefinitions", dtDefinitionCollection);
+			final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
+					.put("packageName", packageName)
+					.put("simpleClassName", simpleClassName)
+					.put("dtDefinitions", dtDefinitionCollection)
+					.build();
 
-			final FileGenerator dtDefinitions2ResourceEnum = getFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".java", "resources.ftl");
-			dtDefinitions2ResourceEnum.generateFile(result, true);
+			createFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".java", "resources.ftl")
+					.generateFile(result, true);
 
-			final FileGenerator dtDefinitions2ResourceProperties = getFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".properties", "properties.ftl");
-			dtDefinitions2ResourceProperties.generateFile(result, true);
+			createFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".properties", "properties.ftl")
+					.generateFile(result, true);
 		}
 	}
 
@@ -236,13 +238,14 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 			Assertion.checkNotNull(dtDefinitionCollection);
 			final String packageName = entry.getKey();
 
-			final Map<String, Object> mapRoot = new HashMap<>();
-			mapRoot.put("packageName", packageName);
-			mapRoot.put("simpleClassName", simpleClassName);
-			mapRoot.put("dtDefinitions", dtDefinitions);
+			final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
+					.put("packageName", packageName)
+					.put("simpleClassName", simpleClassName)
+					.put("dtDefinitions", dtDefinitions)
+					.build();
 
-			final FileGenerator dtDefinitions2ResourceEnum = getFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".js", "propertiesJS.ftl");
-			dtDefinitions2ResourceEnum.generateFile(result, true);
+			createFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".js", "propertiesJS.ftl")
+					.generateFile(result, true);
 		}
 	}
 
@@ -252,15 +255,20 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 			final TemplateDtDefinition templateDef = new TemplateDtDefinition(dtDefinition);
 			list.add(templateDef);
 		}
-		final Map<String, Object> mapRoot = new HashMap<>();
-		mapRoot.put("sql", new TemplateMethodSql());
-		mapRoot.put("dtDefinitions", list);
-		mapRoot.put("associations", getAssociations());
-		mapRoot.put("drop", generateDrop);
-		mapRoot.put("basecible", baseCible); // Ne sert actuellement à rien, le sql généré étant le même. Prévu pour le futur
-		mapRoot.put("truncateNames", baseCible == "Oracle"); // Oracle limite le nom des entités (index) à 30 charactères. Il faut alors tronquer les noms composés.
-		final FileGenerator super2java = getFileGenerator(domainConfiguration, mapRoot, "crebas", "sqlgen", ".sql", "sql.ftl");
-		super2java.generateFile(result, true);
+
+		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
+				.put("sql", new TemplateMethodSql())
+				.put("dtDefinitions", list)
+				.put("associations", getAssociations())
+				.put("drop", generateDrop)
+				// Ne sert actuellement à rien, le sql généré étant le même. Prévu pour le futur
+				.put("basecible", baseCible)
+				// Oracle limite le nom des entités (index) à 30 charactères. Il faut alors tronquer les noms composés.
+				.put("truncateNames", baseCible == "Oracle")
+				.build();
+
+		createFileGenerator(domainConfiguration, mapRoot, "crebas", "sqlgen", ".sql", "sql.ftl")
+				.generateFile(result, true);
 	}
 
 	/**
