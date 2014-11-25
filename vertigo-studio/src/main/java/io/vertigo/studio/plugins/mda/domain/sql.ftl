@@ -70,8 +70,8 @@ create index <#if (truncateNames && dtDefinition.dtDefinition.localName?length >
 <#if associationDefinition.getAssociationNodeA().getDtDefinition().isPersistent() && associationDefinition.getAssociationNodeB().getDtDefinition().isPersistent()>
 <#if associationDefinition.isAssociationSimpleDefinition()>
 alter table ${associationDefinition.getForeignAssociationNode().getDtDefinition().localName}
-	add constraint FK_${associationDefinition.getName()?substring(2)} foreign key (${associationDefinition.getFKField().name})
-	references ${associationDefinition.getPrimaryAssociationNode().getDtDefinition().localName} (${associationDefinition.getPrimaryAssociationNode().getDtDefinition().getIdField().get().name});
+	add constraint FK_${associationDefinition.getName()?substring(2)} foreign key (${associationDefinition.getFKField().name()})
+	references ${associationDefinition.getPrimaryAssociationNode().getDtDefinition().localName} (${associationDefinition.getPrimaryAssociationNode().getDtDefinition().getIdField().get().name()});
 <#else>
 create table ${associationDefinition.getTableName()}
 (
