@@ -11,7 +11,7 @@ Running 0.7.0 - 2014/11/25
 ----------------------
 A big version :)
 * [All] Lots of code style fixes, tests units coverage, cleaning and refactoring
-* [Core] Managers.xml syntax changed : Renamed &lt;modules&gt to &lt;config&gt; (tag module doesn't change)
+* [Core] Managers.xml syntax changed : Renamed &lt;modules&gt; to &lt;config&gt; (tag module doesn't change)
 * [Core] remane two packages : io.vertigo.core.util, io.vertigo.core.lang
 * [Core] Moved some classes : VUserException, DefinitionSpace, Engine
 * [Core] Injector static instead of instance
