@@ -22,6 +22,8 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
+import io.vertigo.studio.plugins.mda.domain.templates.TemplateDtDefinition;
+import io.vertigo.studio.plugins.mda.domain.templates.TemplateMethodSql;
 import io.vertigo.util.MapBuilder;
 
 import java.util.ArrayList;
@@ -89,7 +91,7 @@ public final class SqlGeneratorPlugin extends AbstractGeneratorPlugin<DomainConf
 				.put("truncateNames", baseCible == "Oracle")
 				.build();
 
-		createFileGenerator(domainConfiguration, mapRoot, "crebas", "sqlgen", ".sql", "sql.ftl")
+		createFileGenerator(domainConfiguration, mapRoot, "crebas", "sqlgen", ".sql", "templates/sql.ftl")
 				.generateFile(resultBuilder);
 	}
 

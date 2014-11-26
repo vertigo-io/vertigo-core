@@ -22,6 +22,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
+import io.vertigo.studio.plugins.mda.domain.templates.TemplateDtDefinition;
 import io.vertigo.util.MapBuilder;
 
 import java.util.ArrayList;
@@ -93,7 +94,7 @@ public final class JSGeneratorPlugin extends AbstractGeneratorPlugin<DomainConfi
 				.put("dtDefinitions", dtDefinitions)
 				.build();
 
-		createFileGenerator(domainConfiguration, mapRoot, domainConfiguration.getDomainDictionaryClassName(), domainConfiguration.getDomainPackage(), ".js", "js.ftl")
+		createFileGenerator(domainConfiguration, mapRoot, domainConfiguration.getDomainDictionaryClassName(), domainConfiguration.getDomainPackage(), ".js", "templates/js.ftl")
 				.generateFile(resultBuilder);
 
 	}
@@ -126,7 +127,7 @@ public final class JSGeneratorPlugin extends AbstractGeneratorPlugin<DomainConfi
 					.put("dtDefinitions", dtDefinitions)
 					.build();
 
-			createFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".js", "propertiesJS.ftl")
+			createFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".js", "templates/propertiesJS.ftl")
 					.generateFile(resultBuilder);
 		}
 	}

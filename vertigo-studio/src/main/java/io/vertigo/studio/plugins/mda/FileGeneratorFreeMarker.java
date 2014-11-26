@@ -20,7 +20,7 @@ package io.vertigo.studio.plugins.mda;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.mda.ResultBuilder;
-import io.vertigo.studio.plugins.mda.domain.TemplateMethodStringUtil;
+import io.vertigo.studio.plugins.mda.domain.templates.TemplateMethodStringUtil;
 
 import java.io.File;
 import java.io.IOException;

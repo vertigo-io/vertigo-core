@@ -22,6 +22,8 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
+import io.vertigo.studio.plugins.mda.domain.templates.TemplateDtDefinition;
+import io.vertigo.studio.plugins.mda.domain.templates.TemplateMethodAnnotations;
 import io.vertigo.util.MapBuilder;
 
 import java.util.Collection;
@@ -101,7 +103,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 				.put("dtDefinitions", DomainUtil.getDtDefinitions())
 				.build();
 
-		createFileGenerator(domainConfiguration, mapRoot, domainConfiguration.getDomainDictionaryClassName(), domainConfiguration.getDomainPackage(), ".java", "dtdefinitions.ftl")
+		createFileGenerator(domainConfiguration, mapRoot, domainConfiguration.getDomainDictionaryClassName(), domainConfiguration.getDomainPackage(), ".java", "templates/dtdefinitions.ftl")
 				.generateFile(resultBuilder);
 
 	}
@@ -120,7 +122,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 				.put("annotations", new TemplateMethodAnnotations(generateJpaAnnotations))
 				.build();
 
-		createFileGenerator(domainConfiguration, mapRoot, definition.getClassSimpleName(), definition.getPackageName(), ".java", "dto.ftl")
+		createFileGenerator(domainConfiguration, mapRoot, definition.getClassSimpleName(), definition.getPackageName(), ".java", "templates/dto.ftl")
 				.generateFile(resultBuilder);
 	}
 
@@ -140,10 +142,10 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 					.put("dtDefinitions", dtDefinitionCollection)
 					.build();
 
-			createFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".java", "resources.ftl")
+			createFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".java", "templates/resources.ftl")
 					.generateFile(resultBuilder);
 
-			createFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".properties", "properties.ftl")
+			createFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".properties", "templates/properties.ftl")
 					.generateFile(resultBuilder);
 		}
 	}
