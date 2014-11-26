@@ -79,7 +79,6 @@ public final class WsRestTest {
 			Spark.setPort(WS_PORT);
 			final String tempDir = System.getProperty("java.io.tmpdir");
 			Spark.before(new JettyMultipartConfig(tempDir));
-			new SparkJavaRoutesRegister().init();
 
 			//RestAsssured init
 			RestAssured.baseURI = "http://localhost";
@@ -87,6 +86,9 @@ public final class WsRestTest {
 			RestAssured.registerParser("application/json+list", Parser.JSON);
 			RestAssured.registerParser("application/json+entity:Contact", Parser.JSON);
 		}
+
+		//init must be done foreach tests as Home was restarted each times
+		new SparkJavaRoutesRegister().init();
 
 		RestAssured.given()
 				.filter(sessionFilter)
@@ -97,6 +99,7 @@ public final class WsRestTest {
 	public void testCatalog() {
 		RestAssured.given()
 				.expect()
+				.body("size()", Matchers.greaterThanOrEqualTo(50)) //actually 62
 				.statusCode(HttpStatus.SC_OK)
 				.when()
 				.get("/catalog");
@@ -106,8 +109,16 @@ public final class WsRestTest {
 	public void testSwaggerApi() {
 		RestAssured.given()
 				.expect()
+				.body("swagger", Matchers.equalTo(2.0f))
+				.body("info", Matchers.notNullValue())
+				.body("info.size()", Matchers.equalTo(3))
+				.body("basePath", Matchers.anything()) //can be null
+				.body("paths", Matchers.notNullValue())
+				.body("paths.size()", Matchers.greaterThanOrEqualTo(50)) //actually 57
+				.body("definitions", Matchers.notNullValue())
+				.body("definitions.size()", Matchers.greaterThanOrEqualTo(30)) //actually 37
 				.statusCode(HttpStatus.SC_OK)
-				.when()
+				.when().log().ifValidationFails()
 				.get("/swaggerApi");
 	}
 
@@ -452,7 +463,6 @@ public final class WsRestTest {
 		}
 
 		for (final String testJson : testBadSyntaxJson) {
-			System.out.println("test : " + testJson);
 			loggedAndExpect(given().body(testJson))
 					.body("globalErrors", Matchers.contains("Error parsing param :Body:[1] on service PUT /test/contactSyntax"))
 					.statusCode(HttpStatus.SC_BAD_REQUEST)
@@ -1151,13 +1161,13 @@ public final class WsRestTest {
 	private ResponseSpecification loggedAndExpect() {
 		return RestAssured.given()
 				.filter(sessionFilter)
-				.expect().log().ifError();
+				.expect().log().ifValidationFails();
 	}
 
 	private ResponseSpecification loggedAndExpect(final RequestSpecification given) {
 		return given
 				.filter(sessionFilter)
-				.expect().log().ifError();
+				.expect().log().ifValidationFails();
 	}
 
 	private Map<String, Object> doGetServerSideObject() throws ParseException {

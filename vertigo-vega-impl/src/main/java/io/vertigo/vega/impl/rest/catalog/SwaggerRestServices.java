@@ -335,13 +335,13 @@ public final class SwaggerRestServices implements RestfulService {
 			schema.remove("type");
 			if (!definitions.containsKey(objectName)) {
 				final Map<String, Object> definition = new LinkedHashMap<>();
+				definitions.put(objectName, definition); //we put definitions first to avoid infinite resolution loop
 				if (DtObject.class.isAssignableFrom(objectClass)) {
 					final Class<? extends DtObject> dtClass = (Class<? extends DtObject>) objectClass;
 					appendPropertiesDtObject(definition, dtClass);
 				} else {
 					appendPropertiesObject(definition, objectClass, parameterClass);
 				}
-				definitions.put(objectName, definition);
 			}
 		}
 		return schema;
@@ -450,7 +450,7 @@ public final class SwaggerRestServices implements RestfulService {
 			bodyParameter.put("schema", Collections.singletonMap("$ref", bodyName));
 			final Map<String, Object> bodyDefinition = new LinkedHashMap<>();
 			bodyDefinition.put("enum", compositeSchema.keySet().toArray(new String[compositeSchema.size()]));
-			bodyDefinition.put("properties", compositeSchema);
+			putIfNotEmpty(bodyDefinition, "properties", compositeSchema);
 			definitions.put(bodyName, bodyDefinition);
 
 			parameters.add(0, bodyParameter);

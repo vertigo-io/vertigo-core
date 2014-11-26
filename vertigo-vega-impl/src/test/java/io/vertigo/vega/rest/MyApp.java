@@ -68,7 +68,7 @@ public final class MyApp {
 	static AppConfig config() {
 		// @formatter:off
 		return new AppConfigBuilder()
-			.withSilence(false)
+			.withSilence(true)
 			.withCommandEngine(new TcpVCommandEngine(4406))
 			.beginModule("commons")
 				.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
