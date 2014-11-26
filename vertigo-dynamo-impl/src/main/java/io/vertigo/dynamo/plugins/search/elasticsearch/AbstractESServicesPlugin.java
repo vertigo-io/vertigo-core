@@ -92,11 +92,6 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 	/** {@inheritDoc} */
 	@Override
 	public final void start() {
-		//Init typeMapping IndexDefinition <-> Conf ElasticSearch
-		for (final IndexDefinition indexDefinition : Home.getDefinitionSpace().getAll(IndexDefinition.class)) {
-			updateTypeMapping(indexDefinition);
-		}
-
 		//Init ElasticSearch Node
 		node = createNode();
 		node.start();
@@ -112,6 +107,11 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 				throw new RuntimeException("Error on index " + indexName, e);
 			}
 		}
+		//Init typeMapping IndexDefinition <-> Conf ElasticSearch
+		for (final IndexDefinition indexDefinition : Home.getDefinitionSpace().getAll(IndexDefinition.class)) {
+			updateTypeMapping(indexDefinition);
+		}
+
 		waitForYellowStatus();
 	}
 
