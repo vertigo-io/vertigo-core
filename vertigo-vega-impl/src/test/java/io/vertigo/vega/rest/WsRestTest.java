@@ -33,8 +33,9 @@ import java.util.Map;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
-import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import spark.Spark;
@@ -51,21 +52,27 @@ public final class WsRestTest {
 	private static final String UTF8_TEST_STRING = "? TM™ éè'`àöêõù Euro€ R®@©∆∏∑∞⅓۲²³œβ";
 
 	private static final int WS_PORT = 8088;
-	private static boolean sparkInitialized = false;
 	private final SessionFilter sessionFilter = new SessionFilter();
 
-	@Before
-	public void setUp() {
+	@BeforeClass
+	public static void setUp() {
 		Home.start(MyApp.config());
 		doSetUp();
 	}
 
-	@After
-	public void tearDown() {
+	@Before
+	public void preTestLogin() {
+		RestAssured.given()
+				.filter(sessionFilter)
+				.get("/test/login");
+	}
+
+	@AfterClass
+	public static void tearDown() {
 		Home.stop();
 	}
 
-	private void doSetUp() {
+	private static void doSetUp() {
 		// Will serve all static file are under "/public" in classpath if the route isn't consumed by others routes.
 		// When using Maven, the "/public" folder is assumed to be in "/main/resources"
 		//Spark.externalStaticFileLocation("d:/Projets/Projet_Kasper/SPA-Fmk/SPA-skeleton/public/");
@@ -73,26 +80,19 @@ public final class WsRestTest {
 		//Spark.before(new IE8CompatibilityFix("8"));
 		//Spark.before(new CorsAllower());
 		//Translate EndPoint to route
-		if (!sparkInitialized) {
-			sparkInitialized = true;
 
-			Spark.setPort(WS_PORT);
-			final String tempDir = System.getProperty("java.io.tmpdir");
-			Spark.before(new JettyMultipartConfig(tempDir));
+		Spark.setPort(WS_PORT);
+		final String tempDir = System.getProperty("java.io.tmpdir");
+		Spark.before(new JettyMultipartConfig(tempDir));
 
-			//RestAsssured init
-			RestAssured.baseURI = "http://localhost";
-			RestAssured.port = WS_PORT;
-			RestAssured.registerParser("application/json+list", Parser.JSON);
-			RestAssured.registerParser("application/json+entity:Contact", Parser.JSON);
-		}
+		//RestAsssured init
+		RestAssured.baseURI = "http://localhost";
+		RestAssured.port = WS_PORT;
+		RestAssured.registerParser("application/json+list", Parser.JSON);
+		RestAssured.registerParser("application/json+entity:Contact", Parser.JSON);
 
 		//init must be done foreach tests as Home was restarted each times
 		new SparkJavaRoutesRegister().init();
-
-		RestAssured.given()
-				.filter(sessionFilter)
-				.get("/test/login");
 	}
 
 	@Test
