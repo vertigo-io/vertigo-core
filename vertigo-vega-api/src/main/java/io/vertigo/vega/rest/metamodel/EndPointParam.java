@@ -23,8 +23,8 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.rest.EndPointTypeUtil;
 import io.vertigo.vega.rest.model.DtListDelta;
-import io.vertigo.vega.rest.model.UiListState;
 import io.vertigo.vega.rest.model.DtObjectExtended;
+import io.vertigo.vega.rest.model.UiListState;
 import io.vertigo.vega.rest.validation.DtObjectValidator;
 import io.vertigo.vega.rest.validation.UiMessageStack;
 
@@ -73,7 +73,7 @@ public final class EndPointParam {
 			this.implicitType = implicitType;
 		}
 
-		public Class<?> getImplicitType() {
+		public Class getImplicitType() {
 			return implicitType;
 		}
 
