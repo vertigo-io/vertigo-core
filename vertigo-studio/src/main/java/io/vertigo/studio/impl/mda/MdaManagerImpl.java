@@ -23,6 +23,7 @@ import io.vertigo.studio.mda.Configuration;
 import io.vertigo.studio.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaManager;
 import io.vertigo.studio.mda.Result;
+import io.vertigo.studio.mda.ResultBuilder;
 
 import java.util.List;
 import java.util.Properties;
@@ -48,12 +49,12 @@ public final class MdaManagerImpl implements MdaManager {
 	@Override
 	public Result generate(final Properties properties) {
 		//Création d'un objet listant les résultats
-		final Result result = new ResultImpl();
+		final ResultBuilder resultBuilder = new ResultBuilder();
 		//Génèration des objets issus de la modélisation
 		for (final GeneratorPlugin<Configuration> generatorPlugin : generatorPlugins) {
 			final Configuration c = generatorPlugin.createConfiguration(properties);
-			generatorPlugin.generate(c, result);
+			generatorPlugin.generate(c, resultBuilder);
 		}
-		return result;
+		return resultBuilder.build();
 	}
 }

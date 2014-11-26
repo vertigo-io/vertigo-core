@@ -12,7 +12,7 @@ Running 0.7.0 - 2014/11/25
 A big version :)
 * [All] Lots of code style fixes, tests units coverage, cleaning and refactoring
 * [Core] Managers.xml syntax changed : Renamed &lt;modules&gt; to &lt;config&gt; (tag module doesn't change)
-* [Core] remane two packages : io.vertigo.core.util, io.vertigo.core.lang
+* [Core] Renamed two packages : io.vertigo.core.util, io.vertigo.core.lang
 * [Core] Moved some classes : VUserException, DefinitionSpace, Engine
 * [Core] Renamed ComponentSpaceConfigBuilder to AppConfigBuilder
 * [Core] Injector static instead of instance
@@ -22,8 +22,8 @@ A big version :)
 * [Dynamo] Added possibility to override FormatterDefault rendering
 * [Dynamo] Added fluent style with ExportBuilder, PropertiesBuilder
 * [Dynamo] DtField is a DtFieldName	
-* [Dynamo] Refact ElasticSearch plugins	
-* [Dynamo] Work are migrated to tempo
+* [Dynamo] Refactored ElasticSearch plugins	
+* [Dynamo] **Work** is migrated to tempo
 * [Vega] Fixed swagger contextPath, nnerBody params, inline test POST services
 * [Vega] Moved DtListDelta and UiListDelta
 * [Vega] Updated export api
@@ -31,6 +31,7 @@ A big version :)
 * [Vega] Added DtObjectExtended support
 * [Vega] Added check to unused pathParams
 * [Vega] Added AutoPaginator support
+* [Vega] Added CorsAllowerFilter to component (must be in managers.xml). Param originCORSFilter can be set here
 * [Studio] Fixed properties generator
 * [Struts2] Fixed index dto with FK bind to MDL
 * [Struts2] Fixed #9, added a unique uriList when list put in context, and no cache for list without uri

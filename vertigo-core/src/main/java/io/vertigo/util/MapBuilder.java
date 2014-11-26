@@ -16,22 +16,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.tools.generate;
+package io.vertigo.util;
 
-import io.vertigo.core.Home;
-import io.vertigo.studio.mda.MdaManager;
-import io.vertigo.studio.tools.Goal;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Builder;
 
-import java.util.Properties;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
-public final class GenerateGoal implements Goal {
+/**
+ * @author pchretien
+ */
+public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
+	private Map<K, V> map = new HashMap<>();
+
+	public MapBuilder<K, V> put(final K key, final V value) {
+		Assertion.checkNotNull(key);
+		Assertion.checkNotNull(value);
+		//---------------------------------------------------------------------
+		map.put(key, value);
+		return this;
+	}
+
+	public MapBuilder<K, V> unmodifiable() {
+		this.map = Collections.unmodifiableMap(map);
+		return this;
+	}
 
 	@Override
-	public void process(final Properties properties) {
-		//Génération des fichiers données (code java, properties)
-		Home.getComponentSpace().resolve(MdaManager.class)
-				.generate(properties)
-				/* Impression du Rapport d'exécution. */
-				.displayResultMessage(System.out);
+	public Map<K, V> build() {
+		return map;
 	}
 }

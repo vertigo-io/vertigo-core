@@ -19,7 +19,7 @@
 package io.vertigo.studio.plugins.mda;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.mda.Result;
+import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.domain.TemplateMethodStringUtil;
 
 import java.io.File;
@@ -38,12 +38,6 @@ import freemarker.template.TemplateException;
  * @author dchallas
  */
 public final class FileGeneratorFreeMarker implements FileGenerator {
-
-	/**
-	 * Répertoire des fichiers générés une fois.
-	 * Doit être renseigné dans le fichier properties [targetDir]
-	 */
-	private final String targetDir;
 	/**
 	 * Répertoire des fichiers TOUJOURS générés
 	 * Doit être renseigné dans le fichier properties [targetDir]
@@ -81,7 +75,6 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 		this.fileExtention = fileExtention;
 		this.templateName = templateName;
 		configuration = initConfiguration(parameters.getClass());
-		targetDir = parameters.getTargetDir();
 		targetGenDir = parameters.getTargetGenDir();
 		encoding = parameters.getEncoding();
 	}
@@ -104,11 +97,11 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 
 	/** {@inheritDoc} */
 	@Override
-	public void generateFile(final Result result, final boolean override) {
-		final File file = new File(getFileName(override));
-		if (override || !file.exists()) {
+	public void generateFile(final ResultBuilder resultBuilder) {
+		final File file = new File(getFileName());
+		if (!file.exists()) {
 			try {
-				generateFile(result, file);
+				generateFile(resultBuilder, file);
 			} catch (final Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -119,13 +112,13 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 		return packageName.replace('.', '/').replace('\\', '/');
 	}
 
-	private String getFileName(final boolean override) {
-		final String finalTargetDir = override ? targetGenDir : targetDir;
+	private String getFileName() {
+		final String finalTargetDir = targetGenDir;
 		final String currentPath = finalTargetDir + package2directory(packageName);
 		return currentPath + '/' + classSimpleName + fileExtention;
 	}
 
-	private void generateFile(final Result result, final File file2create) throws IOException, TemplateException {
+	private void generateFile(final ResultBuilder resultBuilder, final File file2create) throws IOException, TemplateException {
 		// On crée le répertoire
 		final File directory2create = file2create.getParentFile();
 		directory2create.mkdirs();
@@ -139,11 +132,11 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 		final String currentContent = FileUtil.readContentFile(file2create, encoding);
 		if (content.equals(currentContent)) {
 			// Les deux fichiers sont identiques
-			result.addIdenticalFile(file2create);
+			resultBuilder.addIdenticalFile(file2create);
 		} else {
 			// Si le contenu est différent on réécrit le fichier.
 			final boolean success = FileUtil.writeFile(file2create, content, encoding);
-			result.addFileWritten(file2create, success);
+			resultBuilder.addFileWritten(file2create, success);
 		}
 	}
 

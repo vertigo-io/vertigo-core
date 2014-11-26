@@ -40,7 +40,7 @@ public abstract class AbstractGeneratorPlugin<C extends Configuration> implement
 	 * @param templateName Nom du template
 	 * @return Générateur de fichier
 	 */
-	protected static final FileGenerator getFileGenerator(final AbstractConfiguration fileGeneratorConfiguration, final Map<String, Object> mapRoot, final String classSimpleName, final String packageName, final String fileExtention, final String templateName) {
+	protected static final FileGenerator createFileGenerator(final AbstractConfiguration fileGeneratorConfiguration, final Map<String, Object> mapRoot, final String classSimpleName, final String packageName, final String fileExtention, final String templateName) {
 		return new FileGeneratorFreeMarker(fileGeneratorConfiguration, mapRoot, classSimpleName, packageName, fileExtention, templateName);
 	}
 }

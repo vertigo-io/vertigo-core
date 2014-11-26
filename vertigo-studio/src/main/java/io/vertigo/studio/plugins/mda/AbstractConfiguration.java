@@ -30,12 +30,6 @@ import java.util.Properties;
  * @author dchallas
  */
 public class AbstractConfiguration implements Configuration {
-
-	/**
-	 * Répertoire des fichiers générés une fois.
-	 * Doit être renseigné dans le fichier properties [targetDir]
-	 */
-	private final String targetDir;
 	/**
 	 * Répertoire des fichiers TOUJOURS générés
 	 * Doit être renseigné dans le fichier properties [targetDir]
@@ -58,8 +52,6 @@ public class AbstractConfiguration implements Configuration {
 	protected AbstractConfiguration(final Properties properties) {
 		Assertion.checkNotNull(properties);
 		// ---------------------------------------------------------------------
-		targetDir = getPropertyNotNull(properties, "targetDir", "Le repertoire des fichiers generes [targetDir] doit etre renseigné !");
-		Assertion.checkState(targetDir.endsWith("/"), "Le chemin doit finir par '/'.");
 		targetGenDir = getPropertyNotNull(properties, "targetGenDir", "Le repertoire des fichiers generes [targetGenDir] doit etre renseigné !");
 		Assertion.checkState(targetGenDir.endsWith("/"), "Le chemin doit finir par '/'.");
 		projectPackageName = getPropertyNotNull(properties, "project.packagename", "le package racine du projet doit être renseigne ! [project.packagename]");
@@ -73,15 +65,6 @@ public class AbstractConfiguration implements Configuration {
 	 */
 	public final String getProjectPackageName() {
 		return projectPackageName;
-	}
-
-	/**
-	 * Donne la valeur de targetDir.
-	 *
-	 * @return la valeur de targetDir.
-	 */
-	final String getTargetDir() {
-		return targetDir;
 	}
 
 	/**

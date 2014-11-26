@@ -21,11 +21,10 @@ package io.vertigo.studio.plugins.mda.search;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.search.metamodel.IndexDefinition;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.mda.Result;
+import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
-import io.vertigo.studio.plugins.mda.FileGenerator;
+import io.vertigo.util.MapBuilder;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -43,26 +42,27 @@ public final class SearchGeneratorPlugin extends AbstractGeneratorPlugin<SearchC
 
 	/** {@inheritDoc}  */
 	@Override
-	public void generate(final SearchConfiguration searchConfiguration, final Result result) {
+	public void generate(final SearchConfiguration searchConfiguration, final ResultBuilder resultBuilder) {
 		Assertion.checkNotNull(searchConfiguration);
-		Assertion.checkNotNull(result);
+		Assertion.checkNotNull(resultBuilder);
 		//---------------------------------------------------------------------
-		generateDtDefinitions(searchConfiguration, result);
+		generateDtDefinitions(searchConfiguration, resultBuilder);
 	}
 
-	private static void generateDtDefinitions(final SearchConfiguration searchConfiguration, final Result result) {
+	private static void generateDtDefinitions(final SearchConfiguration searchConfiguration, final ResultBuilder resultBuilder) {
 		for (final IndexDefinition indexDefinition : Home.getDefinitionSpace().getAll(IndexDefinition.class)) {
-			generateSchema(searchConfiguration, result, indexDefinition);
+			generateSchema(searchConfiguration, resultBuilder, indexDefinition);
 		}
 	}
 
-	private static void generateSchema(final SearchConfiguration searchConfiguration, final Result result, final IndexDefinition indexDefinition) {
+	private static void generateSchema(final SearchConfiguration searchConfiguration, final ResultBuilder resultBuilder, final IndexDefinition indexDefinition) {
 		/** Registry */
-		final Map<String, Object> mapRoot = new HashMap<>();
-		mapRoot.put("indexDefinition", indexDefinition);
-		mapRoot.put("indexType", new TemplateMethodIndexType());
+		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
+				.put("indexDefinition", indexDefinition)
+				.put("indexType", new TemplateMethodIndexType())
+				.build();
 
-		final FileGenerator super2java = getFileGenerator(searchConfiguration, mapRoot, "schema", "solr/" + indexDefinition.getName() + "/conf", ".xml", "schema.ftl");
-		super2java.generateFile(result, true);
+		createFileGenerator(searchConfiguration, mapRoot, "schema", "solr/" + indexDefinition.getName() + "/conf", ".xml", "schema.ftl")
+				.generateFile(resultBuilder);
 	}
 }
