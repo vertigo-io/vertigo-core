@@ -224,7 +224,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 		//autoSortAndPaginationHandler will use it
 		if (autoSortAndPagination) {
 			withEndPointParam(new EndPointParamBuilder(UiListState.class)
-					.with(RestParamType.Body, "listState") // We declare ListState in body, it will merge with other EndPointParams
+					.with(RestParamType.Query, "") // We declare ListState in query without prefix
 					.build());
 		}
 		return this;

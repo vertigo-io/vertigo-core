@@ -1109,40 +1109,20 @@ public final class WsRestTest {
 	private String doPaginedSearch(final Map<String, Object> criteriaContact, final Integer top, final Integer skip, final String sortFieldName, final Boolean sortDesc, final String listServerToken, final int expectedSize, final String firstContactName, final String lastContactName, final boolean isAuto) {
 		final RequestSpecification given = given().filter(sessionFilter);
 		final String wsUrl = isAuto ? "/test/searchAutoPagined" : "/test/searchQueryPagined";
-		if (isAuto) {
-			criteriaContact.put("top", top);
-			criteriaContact.put("skip", skip);
-			criteriaContact.put("sortFieldName", sortFieldName);
-			criteriaContact.put("sortDesc", sortDesc);
-			criteriaContact.put("listServerToken", listServerToken);
-			if (top == null) {
-				criteriaContact.remove("top");
-			}
-			if (skip == null) {
-				criteriaContact.remove("skip");
-			}
-			if (sortFieldName == null) {
-				criteriaContact.remove("sortFieldName");
-			}
-			if (sortDesc == null) {
-				criteriaContact.remove("sortDesc");
-			}
-			if (listServerToken == null) {
-				criteriaContact.remove("listServerToken");
-			}
-		} else {
-			if (top != null) {
-				given.queryParam("top", top);
-			}
-			if (skip != null) {
-				given.queryParam("skip", skip);
-			}
-			if (sortFieldName != null) {
-				given.queryParam("sortFieldName", sortFieldName);
-			}
-			if (sortDesc != null) {
-				given.queryParam("sortDesc", sortDesc);
-			}
+		if (top != null) {
+			given.queryParam("top", top);
+		}
+		if (skip != null) {
+			given.queryParam("skip", skip);
+		}
+		if (sortFieldName != null) {
+			given.queryParam("sortFieldName", sortFieldName);
+		}
+		if (sortDesc != null) {
+			given.queryParam("sortDesc", sortDesc);
+		}
+		if (listServerToken != null) {
+			given.queryParam("listServerToken", listServerToken);
 		}
 		ResponseSpecification responseSpecification = given.body(criteriaContact)
 				.expect()

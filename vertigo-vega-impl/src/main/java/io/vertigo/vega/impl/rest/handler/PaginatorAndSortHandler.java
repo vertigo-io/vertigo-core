@@ -63,7 +63,7 @@ final class PaginatorAndSortHandler implements RouteHandler {
 	@Override
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
 		//Criteria in body
-		//UiListState in body //see at EndPointDefinitionBuilder withAutoSortAndPagination it defined where UiListState was
+		//UiListState in query //see at EndPointDefinitionBuilder withAutoSortAndPagination it defined where UiListState was
 		//serverToken in UiListState
 
 		final EndPointParam uiListEndPointParams = lookupEndPointParam(endPointDefinition, UiListState.class);
