@@ -1141,11 +1141,11 @@ public final class WsRestTest {
 			responseSpecification = responseSpecification.body("get(0).name", Matchers.equalTo(firstContactName))
 					.body("get(" + (expectedSize - 1) + ").name", Matchers.equalTo(lastContactName));
 		}
-		final String serverSideToken = responseSpecification.statusCode(HttpStatus.SC_OK)
-				.when()
+		final String newListServerToken = responseSpecification.statusCode(HttpStatus.SC_OK)
+				.when().log().all()
 				.post(wsUrl)
-				.header("serverSideToken");
-		return serverSideToken;
+				.header("listServerToken");
+		return newListServerToken;
 	}
 
 	//=========================================================================

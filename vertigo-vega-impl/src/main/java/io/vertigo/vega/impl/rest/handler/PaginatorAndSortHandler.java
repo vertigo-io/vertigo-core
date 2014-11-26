@@ -72,9 +72,9 @@ final class PaginatorAndSortHandler implements RouteHandler {
 		final UiListState parsedUiListState = (UiListState) routeContext.getParamValue(uiListEndPointParams);
 		final UiListState uiListState = checkAndEnsureDefaultValue(parsedUiListState);
 
-		String serverSideToken = uiListState.getListServerToken();
+		String listServerToken = uiListState.getListServerToken();
 		Option<DtList<?>> fullListOption = Option.none();
-		if (serverSideToken != null) {
+		if (listServerToken != null) {
 			fullListOption = uiTokenManager.<DtList<?>> get(uiListState.getListServerToken());
 		}
 		final DtList<?> fullList;
@@ -84,9 +84,9 @@ final class PaginatorAndSortHandler implements RouteHandler {
 			final Object result = chain.handle(request, response, routeContext);
 			Assertion.checkArgument(result instanceof DtList, "sort and pagination only supports DtList");
 			fullList = (DtList<?>) result;
-			serverSideToken = uiTokenManager.put(fullList);
+			listServerToken = uiTokenManager.put(fullList);
 		}
-		response.header("listServerToken", serverSideToken);
+		response.header("listServerToken", listServerToken);
 		response.header("x-total-count", String.valueOf(fullList.size())); //TODO total count should be list meta
 		final DtList<?> filteredList = applySortAndPagination(fullList, uiListState);
 		filteredList.setMetaData("total-count", fullList.size());
