@@ -122,7 +122,7 @@ public class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P>
 				.append(" where ")
 				.append(fieldName)
 				.append(" in (#")
-
+				.append(inDtcName)
 				.append(".ROWNUM.")
 				.append(fieldName)
 				.append("#)");
