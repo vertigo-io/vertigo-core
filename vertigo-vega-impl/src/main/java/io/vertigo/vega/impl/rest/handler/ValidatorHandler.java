@@ -22,6 +22,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
+import io.vertigo.vega.rest.engine.UiList;
 import io.vertigo.vega.rest.engine.UiListDelta;
 import io.vertigo.vega.rest.engine.UiObject;
 import io.vertigo.vega.rest.engine.UiObjectExtended;
@@ -79,6 +80,14 @@ final class ValidatorHandler implements RouteHandler {
 				final DtList<DtObject> dtListDeletes = mergeAndCheckInput(uiListDelta.getObjectType(), uiListDelta.getDeletesMap(), "collDeletes", dtObjectValidators, uiMessageStack, contextKeyMap);
 				final DtListDelta<DtObject> dtListDelta = new DtListDelta<>(dtListCreates, dtListUpdates, dtListDeletes);
 				routeContext.registerUpdatedDtListDelta(endPointParam, dtListDelta, contextKeyMap);
+			} else if (value instanceof UiList) {
+				final UiList<DtObject> uiList = (UiList<DtObject>) value;
+				final List<DtObjectValidator<DtObject>> dtObjectValidators = obtainDtObjectValidators(endPointParam);
+				final Map<String, DtObject> contextKeyMap = new HashMap<>();
+
+				//Only authorized fields have already been checked (JsonConverterHandler)
+				final DtList<DtObject> dtList = mergeAndCheckInput(uiList.getObjectType(), uiList, dtObjectValidators, uiMessageStack, contextKeyMap);
+				routeContext.registerUpdatedDtList(endPointParam, dtList, contextKeyMap);
 			} else if (value instanceof UiObjectExtended) {
 				final UiObjectExtended<DtObject> uiObjectExtended = (UiObjectExtended<DtObject>) value;
 				final List<DtObjectValidator<DtObject>> dtObjectValidators = obtainDtObjectValidators(endPointParam);
@@ -112,6 +121,17 @@ final class ValidatorHandler implements RouteHandler {
 			final D dto = entry.getValue().mergeAndCheckInput(dtObjectValidators, uiMessageStack);
 			dtList.add(dto);
 			contextKeyMap.put(entry.getValue().getInputKey(), dto);
+		}
+		return dtList;
+	}
+
+	private static <D extends DtObject> DtList<D> mergeAndCheckInput(final Class<DtObject> objectType, final UiList<D> uiList, final List<DtObjectValidator<D>> dtObjectValidators, final UiMessageStack uiMessageStack, final Map<String, DtObject> contextKeyMap) {
+		final DtList<D> dtList = new DtList<>(objectType);
+		for (final UiObject<D> element : uiList) {
+			//entry.getValue().setInputKey(inputKey + "." + listName + "." + entry.getKey());
+			final D dto = element.mergeAndCheckInput(dtObjectValidators, uiMessageStack);
+			dtList.add(dto);
+			contextKeyMap.put(element.getInputKey(), dto);
 		}
 		return dtList;
 	}

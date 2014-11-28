@@ -18,7 +18,9 @@
  */
 package io.vertigo.vega.impl.rest.handler;
 
+import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.vega.rest.engine.UiList;
 import io.vertigo.vega.rest.engine.UiListDelta;
 import io.vertigo.vega.rest.engine.UiObject;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
@@ -31,7 +33,7 @@ import java.util.Map;
 import spark.Request;
 
 /**
-* @author npiedeloup 
+* @author npiedeloup
 */
 public final class RouteContext {
 	private static final String UI_MESSAGE_STACK = "UiMessageStack";
@@ -67,9 +69,9 @@ public final class RouteContext {
 		request.attribute(endPointParam.getFullName(), updatedDto);
 	}
 
-	public void registerUiListDelta(final EndPointParam endPointParam, final UiObject uiObject) {
+	/*public void registerUiListDelta(final EndPointParam endPointParam, final UiObject uiObject) {
 		request.attribute(endPointParam.getFullName(), uiObject);
-	}
+	}*/
 
 	public void registerUpdatedDtListDelta(final EndPointParam endPointParam, final DtListDelta dtListDelta, final Map<String, DtObject> contextKeyMap) {
 		final UiListDelta<?> uiListDelta = (UiListDelta<?>) request.attribute(endPointParam.getFullName());
@@ -78,5 +80,14 @@ public final class RouteContext {
 		}
 		request.attribute(endPointParam.getFullName() + "-input", uiListDelta);
 		request.attribute(endPointParam.getFullName(), dtListDelta);
+	}
+
+	public void registerUpdatedDtList(final EndPointParam endPointParam, final DtList dtList, final Map<String, DtObject> contextKeyMap) {
+		final UiList<?> uiList = (UiList<?>) request.attribute(endPointParam.getFullName());
+		for (final Map.Entry<String, DtObject> entry : contextKeyMap.entrySet()) {
+			uiContextResolver.register(entry.getKey(), entry.getValue());
+		}
+		request.attribute(endPointParam.getFullName() + "-input", uiList);
+		request.attribute(endPointParam.getFullName(), dtList);
 	}
 }

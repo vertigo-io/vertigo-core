@@ -25,10 +25,13 @@ import io.vertigo.vega.plugins.rest.routesregister.sparkjava.SparkJavaRoutesRegi
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpStatus;
@@ -62,6 +65,7 @@ public final class WsRestTest {
 
 	@Before
 	public void preTestLogin() {
+		RestAssured.registerParser("plain/text", Parser.TEXT);
 		RestAssured.given()
 				.filter(sessionFilter)
 				.get("/test/login");
@@ -88,8 +92,6 @@ public final class WsRestTest {
 		//RestAsssured init
 		RestAssured.baseURI = "http://localhost";
 		RestAssured.port = WS_PORT;
-		RestAssured.registerParser("application/json+list", Parser.JSON);
-		RestAssured.registerParser("application/json+entity:Contact", Parser.JSON);
 
 		//init must be done foreach tests as Home was restarted each times
 		new SparkJavaRoutesRegister().init();
@@ -1146,6 +1148,170 @@ public final class WsRestTest {
 				.post(wsUrl)
 				.header("listServerToken");
 		return newListServerToken;
+	}
+
+	@Test
+	public void testLoadListMeta() {
+		loggedAndExpect()
+				.header("testLong", Matchers.equalTo("12"))
+				.header("testString", Matchers.equalTo("the String test"))
+				.header("testDate", Matchers.notNullValue())
+				//.header("testDate", Matchers.any(Date.class)) //get a string no directly a Date can't ensured
+				.header("testEscapedString", Matchers.equalTo("the EscapedString \",} test"))
+				.body("size()", Matchers.greaterThanOrEqualTo(10))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/dtListMeta");
+	}
+
+	@Test
+	public void testLoadListMetaAsList() {
+		loggedAndExpect()
+				.header("testLong", Matchers.equalTo("12"))
+				.header("testString", Matchers.equalTo("the String test"))
+				.header("testDate", Matchers.notNullValue())
+				//.header("testDate", Matchers.any(Date.class)) //get a string no directly a Date can't ensured
+				.header("testEscapedString", Matchers.equalTo("the EscapedString \",} test"))
+				.body("size()", Matchers.greaterThanOrEqualTo(10))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/dtListMetaAsList");
+	}
+
+	@Test
+	public void testLoadListComplexMeta() {
+		loggedAndExpect()
+				.body("testLong", Matchers.equalTo(12))
+				.body("testString", Matchers.equalTo("the String test"))
+				.body("testDate", Matchers.notNullValue())
+				//.body("testDate", Matchers.any(Date.class)) //get a string no directly a Date can't ensured
+				.body("testEscapedString", Matchers.equalTo("the EscapedString \",} test"))
+				.body("contact1.name", Matchers.notNullValue())
+				.body("contact2.name", Matchers.notNullValue())
+				.body("size()", Matchers.equalTo(1 + 6)) //value field + meta fields
+				.body("value.size()", Matchers.greaterThanOrEqualTo(10)) //list value
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/listComplexMeta");
+	}
+
+	@Test
+	public void testSaveListDelta() throws ParseException {
+		final Map<String, Object> dtListDelta = new LinkedHashMap<>();
+		final Map<String, Map<String, Object>> collCreates = new LinkedHashMap<>();
+		final Map<String, Map<String, Object>> collUpdates = new LinkedHashMap<>();
+		final Map<String, Map<String, Object>> collDeletes = new LinkedHashMap<>();
+		dtListDelta.put("collCreates", collCreates);
+		dtListDelta.put("collUpdates", collUpdates);
+		dtListDelta.put("collDeletes", collDeletes);
+		collCreates.put("c110", createDefaultContact(110L));
+		collCreates.put("c111", createDefaultContact(111L));
+		collUpdates.put("c100", createDefaultContact(100L));
+		collUpdates.put("c101", createDefaultContact(101L));
+		collUpdates.put("c102", createDefaultContact(102L));
+		collDeletes.put("c90", createDefaultContact(90L));
+
+		loggedAndExpect(given().body(dtListDelta))
+				.body(Matchers.equalTo("OK : add 2 contacts, update 3 contacts, removed 1"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.post("/test/saveListDelta");
+	}
+
+	@Test
+	public void testSaveListDeltaValdationError() throws ParseException {
+		final Map<String, Object> dtListDelta = new LinkedHashMap<>();
+		final Map<String, Map<String, Object>> collCreates = new LinkedHashMap<>();
+		final Map<String, Map<String, Object>> collUpdates = new LinkedHashMap<>();
+		final Map<String, Map<String, Object>> collDeletes = new LinkedHashMap<>();
+		dtListDelta.put("collCreates", collCreates);
+		dtListDelta.put("collUpdates", collUpdates);
+		dtListDelta.put("collDeletes", collDeletes);
+		collCreates.put("c110", createDefaultContact(110L));
+		collCreates.put("c111", createDefaultContact(111L));
+		final Map<String, Object> newContact = createDefaultContact(100L);
+		newContact.put("birthday", convertDate("24/10/2012"));
+		collUpdates.put("c100", newContact);
+		collUpdates.put("c101", createDefaultContact(101L));
+		collUpdates.put("c102", createDefaultContact(102L));
+		collDeletes.put("c90", createDefaultContact(90L));
+
+		loggedAndExpect(given().body(dtListDelta))
+				.body("fieldErrors.\"c100.birthday\"", Matchers.contains("You can't add contact younger than 16"))
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.post("/test/saveListDelta");
+	}
+
+	@Test
+	public void testSaveDtListContact() throws ParseException {
+		final List<Map<String, Object>> dtList = new ArrayList<>();
+		dtList.add(createDefaultContact(120L));
+		dtList.add(createDefaultContact(121L));
+		dtList.add(createDefaultContact(123L));
+		dtList.add(createDefaultContact(124L));
+		dtList.add(createDefaultContact(125L));
+		dtList.add(createDefaultContact(126L));
+
+		loggedAndExpect(given().body(dtList))
+				.body(Matchers.equalTo("OK : received 6 contacts"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.post("/test/saveDtListContact");
+	}
+
+	@Test
+	public void testSaveDtListContactValidationError() throws ParseException {
+		final List<Map<String, Object>> dtList = new ArrayList<>();
+		dtList.add(createDefaultContact(120L));
+		dtList.add(createDefaultContact(121L));
+		final Map<String, Object> newContact = createDefaultContact(123L);
+		newContact.remove("name");
+		dtList.add(newContact);
+		dtList.add(createDefaultContact(124L));
+		dtList.add(createDefaultContact(125L));
+		dtList.add(createDefaultContact(126L));
+
+		loggedAndExpect(given().body(dtList))
+				.body("globalErrors", Matchers.contains("Name is mandatory"))
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.post("/test/saveDtListContact");
+	}
+
+	@Test
+	public void testSaveListContact() throws ParseException {
+		final List<Map<String, Object>> dtList = new ArrayList<>();
+		dtList.add(createDefaultContact(130L));
+		dtList.add(createDefaultContact(131L));
+		dtList.add(createDefaultContact(133L));
+		dtList.add(createDefaultContact(134L));
+		dtList.add(createDefaultContact(135L));
+
+		loggedAndExpect(given().body(dtList))
+				.body(Matchers.equalTo("OK : received 5 contacts"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.post("/test/saveListContact");
+	}
+
+	@Test
+	public void testSaveDtListContactValidationError2() throws ParseException {
+		final List<Map<String, Object>> dtList = new ArrayList<>();
+		dtList.add(createDefaultContact(120L));
+		dtList.add(createDefaultContact(121L));
+		final Map<String, Object> newContact = createDefaultContact(123L);
+		newContact.put("birthday", convertDate("24/10/2012"));
+		dtList.add(newContact);
+		dtList.add(createDefaultContact(124L));
+		dtList.add(createDefaultContact(125L));
+		dtList.add(createDefaultContact(126L));
+
+		loggedAndExpect(given().body(dtList))
+				.body("fieldErrors.\"idx2.birthday\"", Matchers.contains("You can't add contact younger than 16"))
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.post("/test/saveDtListContact");
 	}
 
 	//=========================================================================

@@ -495,8 +495,48 @@ public final class TesterRestServices implements RestfulService {
 	}
 
 	@POST("/saveListDelta")
-	public String saveListDelta(final DtListDelta<Contact> myList) {
+	public String saveListDelta(final @Validate({ ContactValidator.class }) DtListDelta<Contact> myList) {
 		return "OK : add " + myList.getCreated().size() + " contacts, update " + myList.getUpdated().size() + " contacts, removed " + myList.getDeleted().size();
+	}
+
+	@POST("/saveDtListContact")
+	public String saveDtListContact(final @Validate({ ContactValidator.class }) DtList<Contact> myList) {
+		return "OK : received " + myList.size() + " contacts";
+	}
+
+	@POST("/saveListContact")
+	public String saveListContact(final List<Contact> myList) {
+		return "OK : received " + myList.size() + " contacts";
+	}
+
+	@GET("/dtListMeta")
+	public DtList<Contact> loadListMeta() {
+		final DtList<Contact> result = new DtList<>(Contact.class);
+		for (final Contact contact : contactDao.getList()) {
+			result.add(contact);
+		}
+		result.setMetaData("testLong", 12);
+		result.setMetaData("testString", "the String test");
+		result.setMetaData("testDate", DateUtil.newDate());
+		result.setMetaData("testEscapedString", "the EscapedString \",} test");
+		return result;
+	}
+
+	@GET("/dtListMetaAsList")
+	public List<Contact> loadListMetaAsList() {
+		return loadListMeta();
+	}
+
+	@GET("/listComplexMeta")
+	public DtList<Contact> loadListComplexMeta() {
+		final DtList<Contact> result = loadListMeta();
+		result.setMetaData("testLong", 12);
+		result.setMetaData("testString", "the String test");
+		result.setMetaData("testDate", DateUtil.newDate());
+		result.setMetaData("testEscapedString", "the EscapedString \",} test");
+		result.setMetaData("contact1", result.get(1));
+		result.setMetaData("contact2", result.get(2));
+		return result;
 	}
 
 	@GET("/headerParams")

@@ -20,6 +20,7 @@ package io.vertigo.vega.rest.engine;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
@@ -46,15 +47,6 @@ public interface JsonEngine {
 	String toJson(Object data);
 
 	/**
-	 * Convert object to Json but excluded fields.
-	 * @param data Object
-	 * @param includedFields Set of fields to include (empty means all fields include)
-	 * @param excludedFields Set of fields to exclude
-	 * @return Json string
-	 */
-	String toJson(Object data, final Set<String> includedFields, Set<String> excludedFields);
-
-	/**
 	 * Convert Exception to Json
 	 * @param th Throwable
 	 * @return Json string
@@ -64,12 +56,12 @@ public interface JsonEngine {
 	/**
 	 * Convert object to Json but excluded fields.
 	 * @param data Object
-	 * @param tokenId token to include in Json (as a serverSideToken field)
+	 * @param metaDatas metaDatas to include in Json
 	 * @param includedFields Set of fields to include (empty means all fields include)
 	 * @param excludedFields Set of fields to exclude
 	 * @return Json string
 	 */
-	String toJsonWithTokenId(Object data, String tokenId, final Set<String> includedFields, Set<String> excludedFields);
+	String toJsonWithMeta(Object data, Map<String, Serializable> metaDatas, final Set<String> includedFields, Set<String> excludedFields);
 
 	/**
 	 * Standard convert Json to object.
@@ -88,7 +80,7 @@ public interface JsonEngine {
 	 * @param <D> Object type
 	 * @param json Json string
 	 * @param paramType Object type
-	 * @return UiObject filled with a DtObject partially filled and the accessTOken if present
+	 * @return UiObject filled with a DtObject partially filled and the accessToken if present
 	 */
 	<D extends DtObject> UiObject<D> uiObjectFromJson(String json, Type paramType);
 
@@ -117,8 +109,17 @@ public interface JsonEngine {
 	 * @param <D> Object type
 	 * @param json Json string
 	 * @param paramType Object type
-	 * @return UiListDelta filled with created/updated/deleted DtObjects list partially filled and the accessTOken if present
+	 * @return UiListDelta filled with created/updated/deleted DtObjects list partially filled and the accessToken if present
 	 */
 	<D extends DtObject> UiListDelta<D> uiListDeltaFromJson(String json, Type paramType);
+
+	/**
+	 * Specific convertion Json to UiList.
+	 * @param <D> Object type
+	 * @param json Json string
+	 * @param paramType Object type
+	 * @return UiList filled with DtObjects list partially filled and the accessToken if present
+	 */
+	<D extends DtObject> UiList<D> uiListFromJson(String json, Type paramType);
 
 }
