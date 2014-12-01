@@ -34,6 +34,7 @@ import io.vertigo.vega.rest.model.DtListDelta;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -124,7 +125,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 	@Override
 	public String toJsonError(final Throwable th) {
 		final String exceptionMessage = th.getMessage() != null ? th.getMessage() : th.getClass().getSimpleName();
-		return "{\"globalErrors\":[\"" + exceptionMessage + "\"]}"; //TODO +stack;
+		return gson.toJson(Collections.singletonMap("globalErrors", Collections.singletonList(exceptionMessage)));//TODO +stack;
 	}
 
 	/** {@inheritDoc} */

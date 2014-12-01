@@ -1368,6 +1368,36 @@ public final class WsRestTest {
 	}
 
 	@Test
+	public void testUploadFileError() throws UnsupportedEncodingException {
+		final URL imageUrl = Thread.currentThread().getContextClassLoader().getResource("npi2loup.png");
+		final File imageFile = new File(URLDecoder.decode(imageUrl.getFile(), "UTF-8"));
+
+		RestAssured.given()
+				.filter(sessionFilter)
+				.given()
+				.multiPart("upFile", imageFile, "image/png")
+				.formParam("id", 12)
+				.formParam("note", "Some very important notes about this file.")
+				.expect()
+				.body("globalErrors", Matchers.contains("File upfile not found. Parts sent : id, upFile, note"))
+				.statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+				.when()
+				.post("/test/uploadFile");
+
+		RestAssured.given()
+				.filter(sessionFilter)
+				.given()
+				.formParam("id", 12)
+				.formParam("note", "Some very important notes about this file.")
+				.formParam("upfile", imageFile)
+				.expect()
+				.body("globalErrors", Matchers.contains("File upfile not found. Request contentType isn't \"multipart/form-data\""))
+				.statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+				.when()
+				.post("/test/uploadFile");
+	}
+
+	@Test
 	public void testDownloadFile() {
 		loggedAndExpect(given().queryParam("id", 10))
 				.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
