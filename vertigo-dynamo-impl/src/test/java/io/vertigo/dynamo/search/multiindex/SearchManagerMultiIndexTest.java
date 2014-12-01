@@ -145,7 +145,7 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 
 	private static void waitIndexation() {
 		try {
-			Thread.sleep(1000); //wait index was done
+			Thread.sleep(2000); //wait index was done
 		} catch (final InterruptedException e) {
 			//rien
 		}
