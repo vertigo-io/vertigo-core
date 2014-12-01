@@ -192,20 +192,19 @@ final class JsonConverterHandler implements RouteHandler {
 		}
 
 		final Object result = chain.handle(request, response, routeContext);
-		if (KFileUtil.isKFileResult(result)) {
+		if (result == null) {
+			response.status(HttpServletResponse.SC_NO_CONTENT);
+		} else if (KFileUtil.isKFileResult(result)) {
 			KFileUtil.sendKFile(result, request, response);
-			return null; // response already send
+			return ""; // response already send but can't send null : javaspark anderstand it as : not consumed here
 		} else if (result instanceof HttpServletResponse) {
-			return null; // response already send
+			return ""; // response already send but can't send null : javaspark anderstand it as : not consumed here
 		} else if (result instanceof String) {
 			final String resultString = (String) result;
 			final int length = resultString.length();
 			Assertion.checkArgument(!(resultString.charAt(0) == '{' && resultString.charAt(length - 1) == '}') && !(resultString.charAt(0) == '[' && resultString.charAt(length - 1) == ']'), "Can't return pre-build json : {0}", resultString);
 			response.type("text/plain;charset=UTF-8");
 			return result;
-		}
-		if (result == null) {
-			response.status(HttpServletResponse.SC_NO_CONTENT);
 		} else {
 			final EncodedType encodedType = findEncodedType(result);
 			final StringBuilder contentType = new StringBuilder("application/json;charset=UTF-8");

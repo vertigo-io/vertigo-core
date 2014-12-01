@@ -1144,7 +1144,7 @@ public final class WsRestTest {
 					.body("get(" + (expectedSize - 1) + ").name", Matchers.equalTo(lastContactName));
 		}
 		final String newListServerToken = responseSpecification.statusCode(HttpStatus.SC_OK)
-				.when().log().all()
+				.when()
 				.post(wsUrl)
 				.header("listServerToken");
 		return newListServerToken;
