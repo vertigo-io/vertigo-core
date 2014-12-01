@@ -38,6 +38,10 @@ import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.dynamock.domain.car.Car;
 import io.vertigo.dynamock.domain.car.CarDataBase;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,6 +50,7 @@ import java.util.Map.Entry;
 import javax.inject.Inject;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -87,6 +92,35 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		carQueryDefinition = Home.getDefinitionSpace().resolve(QRY_CAR, FacetedQueryDefinition.class);
 		carFacetQueryDefinition = Home.getDefinitionSpace().resolve(QRY_CAR_FACET, FacetedQueryDefinition.class);
 		clean(carIndexDefinition);
+	}
+
+	@BeforeClass
+	public static void doBeforeClass() throws Exception {
+		//We must remove data dir in index, in order to support versions updates when testing on PIC
+		final URL esDataURL = Thread.currentThread().getContextClassLoader().getResource("io/vertigo/dynamo/search/serverelastic/data");
+		final File esData = new File(URLDecoder.decode(esDataURL.getFile(), "UTF-8"));
+		if (esData.exists() && esData.isDirectory()) {
+			recursiveDelete(esData);
+		}
+	}
+
+	private static void recursiveDelete(final File file) throws IOException {
+
+		if (file.isDirectory()) {
+			//list all the directory contents
+			for (final File subFile : file.listFiles()) {
+				//recursive delete
+				recursiveDelete(subFile);
+			}
+			if (!file.delete()) {
+				System.err.println("Can't delete directory : " + file.getAbsolutePath());
+			}
+		} else {
+			//if file, then delete it
+			if (!file.delete()) {
+				System.err.println("Can't delete file : " + file.getAbsolutePath());
+			}
+		}
 	}
 
 	/**
@@ -516,7 +550,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 	private static void waitIndexation() {
 		try {
-			Thread.sleep(1000); //wait index was done
+			Thread.sleep(1500); //wait index was done
 		} catch (final InterruptedException e) {
 			//rien
 		}
