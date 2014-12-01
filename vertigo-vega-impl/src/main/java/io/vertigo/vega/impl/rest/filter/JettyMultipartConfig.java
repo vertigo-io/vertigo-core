@@ -32,6 +32,10 @@ public final class JettyMultipartConfig extends Filter {
 	private static final String JETTY_CONFIG_ATTRIBUTE = org.eclipse.jetty.server.Request.__MULTIPART_CONFIG_ELEMENT;//"org.eclipse.multipartConfig";
 	private final MultipartConfigElement multipartConfigElement;
 
+	/**
+	 * Constructor.
+	 * @param tempPath path for uploaded tempfiles
+	 */
 	public JettyMultipartConfig(final String tempPath) {
 		multipartConfigElement = new MultipartConfigElement(tempPath, 30 * 1024 * 1024L, 5 * 30 * 1024 * 1024L, 50 * 1024);
 	}

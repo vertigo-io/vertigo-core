@@ -19,10 +19,16 @@
 package io.vertigo.vega.rest;
 
 import io.vertigo.core.Home;
+import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.vega.impl.rest.filter.JettyMultipartConfig;
 import io.vertigo.vega.plugins.rest.routesregister.sparkjava.SparkJavaRoutesRegister;
+import io.vertigo.vega.rest.stereotype.POST;
+import io.vertigo.vega.rest.stereotype.QueryParam;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -269,6 +275,7 @@ public final class WsRestTest {
 	public void testExportContacts() {
 		loggedAndExpect()
 				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=contacts.pdf;filename*=UTF-8''contacts.pdf"))
+				// greaterThanOrEqualTo because it depends of previously inserted elements
 				.header("Content-Length", Matchers.greaterThanOrEqualTo("2572"))
 				.statusCode(HttpStatus.SC_OK)
 				.when()
@@ -1321,6 +1328,65 @@ public final class WsRestTest {
 				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 				.when()
 				.post("/test/saveDtListContact");
+	}
+
+	@POST("/uploadFile")
+	public KFile testUploadFile(final @QueryParam("upfile") KFile inputFile, //
+			final @QueryParam("id") Integer id, //
+			final @QueryParam("note") String note) {
+
+		return inputFile;
+	}
+
+	@Test
+	public void testUploadFile() throws UnsupportedEncodingException {
+		final URL imageUrl = Thread.currentThread().getContextClassLoader().getResource("npi2loup.png");
+		final File imageFile = new File(URLDecoder.decode(imageUrl.getFile(), "UTF-8"));
+
+		loggedAndExpect(given().multiPart("upfile", imageFile, "image/png")
+				.formParam("id", 12)
+				.formParam("note", "Some very important notes about this file."))
+				//expect
+				.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
+				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=npi2loup.png;filename*=UTF-8''npi2loup.png"))
+				.header("Content-Length", Matchers.equalTo("27039"))
+				.statusCode(HttpStatus.SC_OK)
+				.when().log().headers()
+				.post("/test/uploadFile");
+
+		loggedAndExpect(given()
+				.formParam("id", 12)
+				.formParam("note", "Some very important notes about this file.")
+				.multiPart("upfile", imageFile, "image/png"))
+				//expect
+				.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
+				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=npi2loup.png;filename*=UTF-8''npi2loup.png"))
+				.header("Content-Length", Matchers.equalTo("27039"))
+				.statusCode(HttpStatus.SC_OK)
+				.when().log().headers()
+				.post("/test/uploadFile");
+	}
+
+	@Test
+	public void testDownloadFile() {
+		loggedAndExpect(given().queryParam("id", 10))
+				.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
+				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=image10.png;filename*=UTF-8''image10.png"))
+				.header("Content-Length", Matchers.equalTo("27039"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/downloadFile");
+	}
+
+	@Test
+	public void testDownloadNotModifiedFile() {
+		loggedAndExpect(given().queryParam("id", 10))
+				.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
+				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=image10.png;filename*=UTF-8''image10.png"))
+				.header("Content-Length", Matchers.equalTo("27039"))
+				.statusCode(HttpStatus.SC_NOT_MODIFIED)
+				.when()
+				.get("/test/downloadNotModifiedFile");
 	}
 
 	//=========================================================================

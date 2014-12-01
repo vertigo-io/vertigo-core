@@ -477,11 +477,9 @@ public final class TesterRestServices implements RestfulService {
 
 	@GET("/downloadNotModifiedFile")
 	public KFile testDownloadNotModifiedFile(final @QueryParam("id") Integer id, final HttpServletResponse response) {
-		if (Math.random() > 0.5) {
-			response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-			return null;
-		}
-		return testDownloadFile(id);
+		response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+		return null;
+		//this service must declared KFile as return type because it should return KFile when file was modified
 	}
 
 	private File asFile(final URL url) {

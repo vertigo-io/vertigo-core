@@ -196,9 +196,9 @@ final class JsonConverterHandler implements RouteHandler {
 			response.status(HttpServletResponse.SC_NO_CONTENT);
 		} else if (KFileUtil.isKFileResult(result)) {
 			KFileUtil.sendKFile(result, request, response);
-			return ""; // response already send but can't send null : javaspark anderstand it as : not consumed here
+			return ""; // response already send but can't send null : javaspark understand it as : not consumed here
 		} else if (result instanceof HttpServletResponse) {
-			return ""; // response already send but can't send null : javaspark anderstand it as : not consumed here
+			return ""; // response already send but can't send null : javaspark understand it as : not consumed here
 		} else if (result instanceof String) {
 			final String resultString = (String) result;
 			final int length = resultString.length();
