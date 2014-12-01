@@ -501,6 +501,12 @@ public final class TesterRestServices implements RestfulService {
 
 	@POST("/saveDtListContact")
 	public String saveDtListContact(final @Validate({ ContactValidator.class }) DtList<Contact> myList) {
+		for (final Contact contact : myList) {
+			if (contact.getName() == null || contact.getName().isEmpty()) {
+				//400
+				throw new VUserException(new MessageText("Name is mandatory", null));
+			}
+		}
 		return "OK : received " + myList.size() + " contacts";
 	}
 

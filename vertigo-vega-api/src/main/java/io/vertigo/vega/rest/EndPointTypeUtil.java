@@ -50,6 +50,27 @@ public final class EndPointTypeUtil {
 	}
 
 	/**
+	 * Check if testedType is ParameterizedType and it's parameter is assignable from innerClass;
+	 * @param innerClass Inner Class
+	 * @param testedType Type to test (must be a Class or ParameterizedType)
+	 * @return Is testedType parameterized by innerClass ?
+	 */
+	public static boolean isParameterizedBy(final Class<?> innerClass, final Type testedType) {
+		if (testedType instanceof Class) {
+			return false;
+		} else if (testedType instanceof ParameterizedType) {
+			final Type[] typeArguments = ((ParameterizedType) testedType).getActualTypeArguments();
+			for (final Type typeArgument : typeArguments) {
+				if (isAssignableFrom(innerClass, typeArgument)) {
+					return true;
+				}
+			}
+			return false;
+		}
+		throw new IllegalArgumentException("Parameters Type must be Class or ParameterizedType, unsupported type:" + testedType);
+	}
+
+	/**
 	 * Cast as Class;
 	 * @param type Type to test (must be a Class or ParameterizedType)
 	 * @return Is testedType assignable from parentClass ?

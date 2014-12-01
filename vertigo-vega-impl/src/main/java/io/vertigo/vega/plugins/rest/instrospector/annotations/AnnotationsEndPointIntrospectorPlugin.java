@@ -30,7 +30,7 @@ import io.vertigo.vega.rest.metamodel.EndPointParam;
 import io.vertigo.vega.rest.metamodel.EndPointParam.ImplicitParam;
 import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
 import io.vertigo.vega.rest.metamodel.EndPointParamBuilder;
-import io.vertigo.vega.rest.model.DtListDelta;
+import io.vertigo.vega.rest.model.DtObjectExtended;
 import io.vertigo.vega.rest.model.UiListState;
 import io.vertigo.vega.rest.stereotype.AccessTokenConsume;
 import io.vertigo.vega.rest.stereotype.AccessTokenMandatory;
@@ -137,14 +137,14 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 
 	private static EndPointParam buildEndPointParam(final Annotation[] annotations, final Type paramType) {
 		final EndPointParamBuilder builder = new EndPointParamBuilder(paramType);
-		if (EndPointTypeUtil.isAssignableFrom(DtObject.class, paramType)) {
+		if (EndPointTypeUtil.isAssignableFrom(DtObject.class, paramType) || EndPointTypeUtil.isAssignableFrom(DtObjectExtended.class, paramType)) {
 			builder.withValidatorClasses(DefaultDtObjectValidator.class);
-		} else if (EndPointTypeUtil.isAssignableFrom(DtListDelta.class, paramType)) {
+		} else if (EndPointTypeUtil.isParameterizedBy(DtObject.class, paramType) || EndPointTypeUtil.isParameterizedBy(DtObjectExtended.class, paramType)) {
 			builder.withValidatorClasses(DefaultDtObjectValidator.class);
 		} else if (isImplicitParam(paramType)) {
 			builder.with(RestParamType.Implicit, getImplicitParam(paramType).name());
 		} else if (UiListState.class.equals(paramType)) {
-			builder.with(RestParamType.Body, "listState"); //UiListState don't need to be named, it will be retrieve from body
+			builder.with(RestParamType.Query, "listState"); //UiListState don't need to be named, it will be retrieve from query
 		}
 		for (final Annotation annotation : annotations) {
 			if (annotation instanceof PathParam) {

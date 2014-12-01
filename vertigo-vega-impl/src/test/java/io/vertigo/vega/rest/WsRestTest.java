@@ -1277,6 +1277,15 @@ public final class WsRestTest {
 				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 				.when()
 				.post("/test/saveDtListContact");
+
+		final Map<String, Object> new2Contact = createDefaultContact(127L);
+		new2Contact.put("birthday", convertDate("24/10/2012"));
+		dtList.add(new2Contact);
+		loggedAndExpect(given().body(dtList))
+				.body("fieldErrors.\"idx6.birthday\"", Matchers.contains("You can't add contact younger than 16"))
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.post("/test/saveDtListContact");
 	}
 
 	@Test
