@@ -20,7 +20,6 @@ package io.vertigo.quarto.publisher.impl.merger.processor;
 
 import java.util.Deque;
 
-import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;
 

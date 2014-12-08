@@ -20,7 +20,6 @@ package io.vertigo.dynamo.plugins.database.connection.hibernate;
 
 import io.vertigo.dynamo.domain.metamodel.DataStream;
 import io.vertigo.dynamo.impl.database.vendor.core.SqlDataStreamMappingUtil;
-import io.vertigo.util.BeanUtil;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -28,6 +27,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Objects;
 
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.usertype.UserType;
@@ -56,7 +56,7 @@ public final class DataStreamType implements UserType {
 	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object x, final Object y) {
-		return BeanUtil.isNullableEquals(x, y);
+		return Objects.equals(x, y);
 	}
 
 	/** {@inheritDoc} */

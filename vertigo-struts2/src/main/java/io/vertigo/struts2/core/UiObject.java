@@ -28,7 +28,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VUserException;
-import io.vertigo.util.BeanUtil;
 import io.vertigo.util.StringUtil;
 
 import java.io.Serializable;
@@ -39,6 +38,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -341,7 +341,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 			final DtField dtField = getDtField(constFieldName);
 			// Mise à jour différentielle du BUFFER : check égalité entre la valeur d'origine et la valeur saisie.
 			if (!uiObjectErrors.hasError(dtField)
-					&& BeanUtil.isNullableEquals(dtField.getDataAccessor().getValue(dto), doGetTypedValue(dtField))) {
+					&& Objects.equals(dtField.getDataAccessor().getValue(dto), doGetTypedValue(dtField))) {
 				// Si la valeur saisie est identique à la valeur d'origine
 				// alors on purge le buffer de saisie.
 				modifiedTypedValues.remove(constFieldName);

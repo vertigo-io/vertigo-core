@@ -127,24 +127,4 @@ public final class BeanUtil {
 			throw new RuntimeException("Erreur d'introspection des propriétés sur la classe " + beanClass, e);
 		}
 	}
-
-	/**
-	 * Check equality of two nullable objects.
-	 * Are equals if both are null or if a.equals(b) (support null value)
-	 * @param a Value 1
-	 * @param b Value 2
-	 * @return is equals
-	 */
-	public static boolean isNullableEquals(final Object a, final Object b) {
-		if (a == b) {
-			return true;
-		}
-		if (a == null) {
-			//Si les deux objets sont null alors on considère qu'ils sont égaux
-			return b == null;
-		}
-		//A partir de maintenant a est non null
-		return a.equals(b);
-	}
-
 }

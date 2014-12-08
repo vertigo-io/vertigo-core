@@ -18,8 +18,7 @@
  */
 package io.vertigo.util;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -64,14 +63,5 @@ public final class BeanUtilTest {
 	public void testFailsetAuthor() {
 		final Book book = new Book();
 		BeanUtil.setValue(book, "creator", "Mishima");
-	}
-
-	@Test
-	public void testEquals() {
-		Assert.assertTrue(BeanUtil.isNullableEquals(null, null));
-		Assert.assertFalse(BeanUtil.isNullableEquals(null, "dummy"));
-		Assert.assertFalse(BeanUtil.isNullableEquals("dummy", null));
-		Assert.assertTrue(BeanUtil.isNullableEquals("sky", "sky"));
-		Assert.assertTrue(BeanUtil.isNullableEquals("sky", "s" + "ky"));
 	}
 }
