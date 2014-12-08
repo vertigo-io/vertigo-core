@@ -10,14 +10,8 @@
 		<component class="io.vertigo.core.component.mock.F" />
 
 		<!-- Aspects declaration -->
-		<aspect>
-			<annotation class="io.vertigo.core.component.mock.aop.OneMore" />
-			<advice class="io.vertigo.core.component.mock.aop.OneMoreInterceptor" />
-		</aspect>
+		<aspect class="io.vertigo.core.component.mock.aop.OneMoreAspect" />
+		<aspect class="io.vertigo.core.component.mock.aop.TenMoreAspect" />
 
-		<aspect>
-			<annotation class="io.vertigo.core.component.mock.aop.TenMore" />
-			<advice class="io.vertigo.core.component.mock.aop.TenMoreInterceptor" />
-		</aspect>
 	</module>
 </config>

@@ -19,12 +19,11 @@
 package io.vertigo.core.spaces.component;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.aop.AOPInterceptor;
+import io.vertigo.core.aop.Aspect;
 import io.vertigo.core.command.VCommand;
 import io.vertigo.core.command.VCommandExecutor;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
-import io.vertigo.core.config.AspectConfig;
 import io.vertigo.core.config.ComponentConfig;
 import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.config.PluginConfig;
@@ -78,7 +77,7 @@ public final class ComponentSpace implements Container, Activeable {
 	private final ComponentContainer componentContainer = new ComponentContainer();
 
 	//---Aspects
-	private final Map<AspectConfig, AOPInterceptor> aspects = new HashMap<>();
+	private final Map<Class<? extends Aspect>, Aspect> aspects = new HashMap<>();
 	//---/Aspects
 
 	private final List<Engine> engines = new ArrayList<>();
@@ -197,7 +196,10 @@ public final class ComponentSpace implements Container, Activeable {
 		//On a récupéré la liste ordonnée des ids.
 
 		//. On enrichit la liste des aspects
-		aspects.putAll(ComponentAspectUtil.findAspects(moduleConfig));
+		for (final Aspect aspect : ComponentAspectUtil.findAspects(moduleConfig)) {
+			Assertion.checkArgument(!aspects.containsKey(aspect.getClass()), "aspect {0} already registered", aspect.getClass());
+			aspects.put(aspect.getClass(), aspect);
+		}
 
 		for (final String id : ids) {
 			if (map.containsKey(id)) {
@@ -224,7 +226,7 @@ public final class ComponentSpace implements Container, Activeable {
 		final Object instance = createComponent(componentConfig);
 
 		//4. AOP, on aopise le composant
-		final Map<Method, List<AOPInterceptor>> joinPoints = ComponentAspectUtil.createJoinPoints(componentConfig, aspects);
+		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(componentConfig, aspects.values());
 		Object reference;
 		if (!joinPoints.isEmpty()) {
 			reference = aopEngine.create(instance, joinPoints);

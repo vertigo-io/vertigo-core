@@ -25,10 +25,8 @@ import io.vertigo.core.component.mock.C;
 import io.vertigo.core.component.mock.Computer;
 import io.vertigo.core.component.mock.ComputerImpl;
 import io.vertigo.core.component.mock.F;
-import io.vertigo.core.component.mock.aop.OneMore;
-import io.vertigo.core.component.mock.aop.OneMoreInterceptor;
-import io.vertigo.core.component.mock.aop.TenMore;
-import io.vertigo.core.component.mock.aop.TenMoreInterceptor;
+import io.vertigo.core.component.mock.aop.OneMoreAspect;
+import io.vertigo.core.component.mock.aop.TenMoreAspect;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.engines.AopEngine;
 import io.vertigo.lang.Assertion;
@@ -47,7 +45,7 @@ public final class ComponentsConfig {
 		appConfiguilder
 		.withAopEngine(aopEngine)
 		.beginModule("aspect") //an aspect can be defined before the module that using it.
-			.withAspect(OneMore.class, OneMoreInterceptor.class)
+			.withAspect(OneMoreAspect.class)
 		.endModule()
 		.beginModule("vertigo")
 			.withNoAPI()
@@ -57,7 +55,7 @@ public final class ComponentsConfig {
 			.beginComponent(B.class, BImpl.class).endComponent()
 			.beginComponent(C.class).endComponent()
 			.beginComponent(F.class).endComponent()
-			.withAspect(TenMore.class, TenMoreInterceptor.class)
+			.withAspect(TenMoreAspect.class)
 		.endModule();
 		// @formatter:on
 	}

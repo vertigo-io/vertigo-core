@@ -16,35 +16,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.config;
+package io.vertigo.core.component.mock.aop;
 
 import io.vertigo.core.aop.Aspect;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.aop.AspectMethodInvocation;
 
 /**
- * Définition d'un aspect.
- * Un aspect est la réunion
- *  - d'un point d'interception défini par une annotation
- *  - d'un intercepteur (advice) défini par un composant
- *
  * @author pchretien
  */
-public final class AspectConfig {
-	private final Class<? extends Aspect> implClass;
-
-	/**
-	 * Constructeur.
-	 */
-	AspectConfig(final Class<? extends Aspect> implClass) {
-		Assertion.checkNotNull(implClass);
-		//---------------------------------------------------------------------
-		this.implClass = implClass;
+public class TenMoreAspect implements Aspect {
+	@Override
+	public Integer invoke(final Object[] args, final AspectMethodInvocation methodInvocation) throws Throwable {
+		return (Integer) methodInvocation.proceed(args) + 10;
 	}
 
-	/**
-	 * @return Classe d'implémentation du composant d'interception
-	 */
-	public Class<? extends Aspect> getAspectImplClass() {
-		return implClass;
+	@Override
+	public Class<?> getAnnotationType() {
+		return TenMore.class;
 	}
 }

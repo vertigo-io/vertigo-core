@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.config;
 
-import io.vertigo.core.aop.AOPInterceptor;
+import io.vertigo.core.aop.Aspect;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Component;
@@ -51,8 +51,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		myAppConfigBuilder = appConfigBuilder;
 	}
 
-	public ModuleConfigBuilder withAspect(final Class<?> annotationType, final Class<? extends AOPInterceptor> implClass) {
-		myAspectConfigs.add(new AspectConfig(annotationType, implClass));
+	public ModuleConfigBuilder withAspect(final Class<? extends Aspect> implClass) {
+		myAspectConfigs.add(new AspectConfig(implClass));
 		return this;
 	}
 

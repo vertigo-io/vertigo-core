@@ -18,8 +18,8 @@
  */
 package io.vertigo.engines.aop.cglib;
 
-import io.vertigo.core.aop.AOPInterceptor;
-import io.vertigo.core.aop.AOPMethodInvocation;
+import io.vertigo.core.aop.Aspect;
+import io.vertigo.core.aop.AspectMethodInvocation;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
 
@@ -32,33 +32,33 @@ import java.util.Map;
  */
 final class CGLIBInvocationHandler implements net.sf.cglib.proxy.InvocationHandler {
 	private final Object instance;
-	private final Map<Method, List<AOPInterceptor>> interceptors;
+	private final Map<Method, List<Aspect>> joinPoints;
 
-	CGLIBInvocationHandler(final Object instance, final Map<Method, List<AOPInterceptor>> interceptors) {
+	CGLIBInvocationHandler(final Object instance, final Map<Method, List<Aspect>> joinPoints) {
 		Assertion.checkNotNull(instance);
-		Assertion.checkNotNull(interceptors);
+		Assertion.checkNotNull(joinPoints);
 		//-----------------------------------------------------------------
 		this.instance = instance;
-		this.interceptors = interceptors;
+		this.joinPoints = joinPoints;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public final Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-		if (!interceptors.containsKey(method)) {
+		if (!joinPoints.containsKey(method)) {
 			//Si pas d'intercepteur sur la méthode. 
 			return ClassUtil.invoke(instance, method, args);
 		}
-		return new MyMethodInvocation(instance, method, interceptors.get(method)).proceed(args);
+		return new MyMethodInvocation(instance, method, joinPoints.get(method)).proceed(args);
 	}
 
-	private static final class MyMethodInvocation implements AOPMethodInvocation {
-		private final List<AOPInterceptor> interceptors;
+	private static final class MyMethodInvocation implements AspectMethodInvocation {
+		private final List<Aspect> interceptors;
 		private final Object instance;
 		private final Method method;
 		private int index = 0;
 
-		private MyMethodInvocation(final Object instance, final Method method, final List<AOPInterceptor> interceptors) {
+		private MyMethodInvocation(final Object instance, final Method method, final List<Aspect> interceptors) {
 			Assertion.checkNotNull(instance);
 			Assertion.checkNotNull(method);
 			Assertion.checkNotNull(interceptors);

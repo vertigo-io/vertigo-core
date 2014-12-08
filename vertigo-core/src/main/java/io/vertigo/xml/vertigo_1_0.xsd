@@ -70,18 +70,6 @@
 
 	<!-- Aspects-->
 	<xs:complexType name="aspectType">
- 		<xs:sequence>
- 			<xs:element name="annotation" type="annotationType" minOccurs="1" maxOccurs="1"/>
-			<xs:element name="advice" type="adviceType" minOccurs="1" maxOccurs="1"/>
-		</xs:sequence>	
-	</xs:complexType>
-
-	<xs:complexType name="annotationType">
 	  	<xs:attribute name="class" type="xs:string" use="required"/>
 	</xs:complexType>
-	
-	<xs:complexType name="adviceType">
-	  	<xs:attribute name="class" type="xs:string" use="required"/>
-	</xs:complexType>
-
 </xs:schema>

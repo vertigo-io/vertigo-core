@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.engines;
 
-import io.vertigo.core.aop.AOPInterceptor;
+import io.vertigo.core.aop.Aspect;
 import io.vertigo.lang.Engine;
 
 import java.lang.reflect.Method;
@@ -40,5 +40,5 @@ public interface AopEngine extends Engine {
 	 * @param joinPoints List of joinPoints 
 	 * @return  Proxy-Reference
 	 */
-	Object create(final Object instance, Map<Method, List<AOPInterceptor>> joinPoints);
+	Object create(final Object instance, Map<Method, List<Aspect>> joinPoints);
 }

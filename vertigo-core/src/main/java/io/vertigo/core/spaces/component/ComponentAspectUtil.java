@@ -19,7 +19,7 @@
 package io.vertigo.core.spaces.component;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.aop.AOPInterceptor;
+import io.vertigo.core.aop.Aspect;
 import io.vertigo.core.config.AspectConfig;
 import io.vertigo.core.config.ComponentConfig;
 import io.vertigo.core.config.ModuleConfig;
@@ -33,7 +33,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * Classe permettant d'injecter les intercepteurs sur les points d'exécutions définis dans les aspects.
@@ -55,14 +54,18 @@ final class ComponentAspectUtil {
 	 * @param moduleConfig Module
 	 * @return aspects (and its config)
 	 */
-	static Map<AspectConfig, AOPInterceptor> findAspects(final ModuleConfig moduleConfig) {
+	static List<Aspect> findAspects(final ModuleConfig moduleConfig) {
 		Assertion.checkNotNull(moduleConfig);
 		//-----
-		final Map<AspectConfig, AOPInterceptor> aspects = new HashMap<>();
+		final List<Aspect> aspects = new ArrayList<>();
 		for (final AspectConfig aspectConfig : moduleConfig.getAspectConfigs()) {
 			// création de l'instance du composant
-			final AOPInterceptor aspect = Injector.newInstance(aspectConfig.getInterceptorImplClass(), Home.getComponentSpace());
-			aspects.put(aspectConfig, aspect);
+			final Aspect aspect = Injector.newInstance(aspectConfig.getAspectImplClass(), Home.getComponentSpace());
+			//---
+			Assertion.checkNotNull(aspect.getAnnotationType());
+			Assertion.checkArgument(aspect.getAnnotationType().isAnnotation(), "On attend une annotation '{0}'", aspect.getAnnotationType());
+
+			aspects.add(aspect);
 		}
 		return aspects;
 	}
@@ -73,22 +76,22 @@ final class ComponentAspectUtil {
 	 *
 	 * @return Map des aspects par méthode
 	 */
-	static final Map<Method, List<AOPInterceptor>> createJoinPoints(final ComponentConfig componentConfig, final Map<AspectConfig, AOPInterceptor> aspects) {
+	static final Map<Method, List<Aspect>> createJoinPoints(final ComponentConfig componentConfig, final Collection<Aspect> aspects) {
 		Assertion.checkNotNull(componentConfig);
 		Assertion.checkNotNull(aspects);
 		//-----
-		final Map<Method, List<AOPInterceptor>> joinPoints = new HashMap<>();
-		for (final Entry<AspectConfig, AOPInterceptor> entry : aspects.entrySet()) {
+		final Map<Method, List<Aspect>> joinPoints = new HashMap<>();
+		for (final Aspect aspect : aspects) {
 
 			// On récupère ttes les méthodes matchant pour l'aspect concerné
 			// puis on crée la liste des intercepteurs
-			for (final Method method : getMatchingMethods(entry.getKey(), componentConfig.getImplClass())) {
-				List<AOPInterceptor> interceptors = joinPoints.get(method);
+			for (final Method method : getMatchingMethods(aspect, componentConfig.getImplClass())) {
+				List<Aspect> interceptors = joinPoints.get(method);
 				if (interceptors == null) {
 					interceptors = new ArrayList<>();
 					joinPoints.put(method, interceptors);
 				}
-				interceptors.add(entry.getValue());
+				interceptors.add(aspect);
 			}
 		}
 		return joinPoints;
@@ -98,8 +101,8 @@ final class ComponentAspectUtil {
 	 * We are looking all tagged methods to be intercepted.
 	 * AspectConfig defines strategy to find these methods in a class.
 	 */
-	private static Collection<Method> getMatchingMethods(final AspectConfig aspectConfig, final Class<?> implClass) {
-		final Class<?> annotationType = aspectConfig.getAnnotationType();
+	private static Collection<Method> getMatchingMethods(final Aspect aspect, final Class<?> implClass) {
+		final Class<?> annotationType = aspect.getAnnotationType();
 		final Collection<Method> methods = new ArrayList<>();
 		// aspect au niveau classe
 		for (final Annotation annotation : implClass.getAnnotations()) {

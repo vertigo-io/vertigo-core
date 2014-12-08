@@ -18,7 +18,7 @@
  */
 package io.vertigo.xml;
 
-import io.vertigo.core.aop.AOPInterceptor;
+import io.vertigo.core.aop.Aspect;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.ComponentConfigBuilder;
 import io.vertigo.core.config.ModuleConfigBuilder;
@@ -43,10 +43,6 @@ final class XMLModulesHandler extends DefaultHandler {
 	//Global Params
 	private final Properties properties;
 
-	//---aspect
-	private String annotationImplClassStr;
-	private String adviceImplClassStr;
-
 	XMLModulesHandler(final AppConfigBuilder appConfigBuilder, final Properties properties) {
 		Assertion.checkNotNull(appConfigBuilder);
 		Assertion.checkNotNull(properties);
@@ -59,7 +55,7 @@ final class XMLModulesHandler extends DefaultHandler {
 		config,
 		module,
 		resource,
-		component, plugin, param, aspect, advice, annotation
+		component, plugin, param, aspect
 	}
 
 	private TagName current;
@@ -80,16 +76,7 @@ final class XMLModulesHandler extends DefaultHandler {
 			case plugin:
 				pluginConfigBuilder = null;
 				break;
-			case aspect:
-				final Class<?> annotationType = ClassUtil.classForName(annotationImplClassStr);
-				final Class<? extends AOPInterceptor> adviceImplClass = ClassUtil.classForName(adviceImplClassStr, AOPInterceptor.class);
-				moduleConfigBuilder.withAspect(annotationType, adviceImplClass);
-				//Reset
-				annotationImplClassStr = null;
-				adviceImplClassStr = null;
-				break;
-			case advice: //non géré
-			case annotation: //non géré
+			case aspect: //non géré
 			case param: //non géré
 			case resource: //non géré
 			case config: //non géré
@@ -154,13 +141,9 @@ final class XMLModulesHandler extends DefaultHandler {
 				}
 				break;
 			case aspect:
-				//On reste dans le module
-				break;
-			case annotation:
-				annotationImplClassStr = attrs.getValue("class");
-				break;
-			case advice:
-				adviceImplClassStr = attrs.getValue("class");
+				final String aspectImplClassStr = attrs.getValue("class");
+				final Class<? extends Aspect> aspectImplClass = ClassUtil.classForName(aspectImplClassStr, Aspect.class);
+				moduleConfigBuilder.withAspect(aspectImplClass);
 				break;
 			case config: //non géré
 			default:

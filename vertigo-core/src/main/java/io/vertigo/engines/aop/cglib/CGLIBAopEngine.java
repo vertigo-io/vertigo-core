@@ -18,7 +18,7 @@
  */
 package io.vertigo.engines.aop.cglib;
 
-import io.vertigo.core.aop.AOPInterceptor;
+import io.vertigo.core.aop.Aspect;
 import io.vertigo.core.engines.AopEngine;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
@@ -38,16 +38,16 @@ public final class CGLIBAopEngine implements AopEngine {
 
 	/** {@inheritDoc} */
 	@Override
-	public Object create(final Object instance, final Map<Method, List<AOPInterceptor>> interceptors) {
+	public Object create(final Object instance, final Map<Method, List<Aspect>> joinPoints) {
 		Assertion.checkNotNull(instance);
-		Assertion.checkNotNull(interceptors);
+		Assertion.checkNotNull(joinPoints);
 		//check : witgh cglib all methods have to bo non-final
-		for (final Method method : interceptors.keySet()) {
+		for (final Method method : joinPoints.keySet()) {
 			Assertion.checkArgument(!Modifier.isFinal(method.getModifiers()), "due to cglib method '" + method.getName() + "' on '" + instance.getClass().getName() + "' can not be markedf as final");
 		}
 		//---------------------------------------------------------------------
 		final Enhancer enhancer = new Enhancer();
-		enhancer.setCallback(createCallBack(instance, interceptors));
+		enhancer.setCallback(createCallBack(instance, joinPoints));
 		final Class<?> implClass = instance.getClass();
 		final Class[] intfs = ClassUtil.getAllInterfaces(implClass).toArray(new Class[0]);
 		enhancer.setInterfaces(intfs);
@@ -55,8 +55,8 @@ public final class CGLIBAopEngine implements AopEngine {
 		return enhancer.create();
 	}
 
-	private static Callback createCallBack(final Object instance, final Map<Method, List<AOPInterceptor>> interceptors) {
-		return new CGLIBInvocationHandler(instance, interceptors);
+	private static Callback createCallBack(final Object instance, final Map<Method, List<Aspect>> joinPoints) {
+		return new CGLIBInvocationHandler(instance, joinPoints);
 	}
 
 }
