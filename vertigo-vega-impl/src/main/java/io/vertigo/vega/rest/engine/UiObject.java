@@ -24,7 +24,6 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.BeanUtil;
 import io.vertigo.util.StringUtil;
 import io.vertigo.vega.rest.validation.DtObjectErrors;
 import io.vertigo.vega.rest.validation.DtObjectValidator;
@@ -37,6 +36,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -211,7 +211,7 @@ public final class UiObject<D extends DtObject> implements Serializable {
 				// ======================================================================
 				final DtField dtField = getDtField(camelField);
 				// Egalité entre la valeur d'origine et la valeur saisie.
-				if (BeanUtil.isNullableEquals(dtField.getDataAccessor().getValue(serverSideDto), dtField.getDataAccessor().getValue(inputDto))) {
+				if (Objects.equals(dtField.getDataAccessor().getValue(serverSideDto), dtField.getDataAccessor().getValue(inputDto))) {
 					// Si la valeur saisie est identique à la valeur d'origine
 					// alors on purge le buffer de saisie.
 					updatedModifiedFields.remove(camelField);

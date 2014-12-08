@@ -28,7 +28,7 @@ import io.vertigo.lang.Assertion;
 import javax.inject.Inject;
 
 /**
- * Intercepteur pour la gestion des transactions au niveau
+ * Aspect pour la gestion des transactions au niveau
  * de la couche service.
  * @author prahmoune
  */

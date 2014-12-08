@@ -53,26 +53,26 @@ final class CGLIBInvocationHandler implements net.sf.cglib.proxy.InvocationHandl
 	}
 
 	private static final class MyMethodInvocation implements AspectMethodInvocation {
-		private final List<Aspect> interceptors;
+		private final List<Aspect> aspects;
 		private final Object instance;
 		private final Method method;
 		private int index = 0;
 
-		private MyMethodInvocation(final Object instance, final Method method, final List<Aspect> interceptors) {
+		private MyMethodInvocation(final Object instance, final Method method, final List<Aspect> aspects) {
 			Assertion.checkNotNull(instance);
 			Assertion.checkNotNull(method);
-			Assertion.checkNotNull(interceptors);
+			Assertion.checkNotNull(aspects);
 			//-----------------------------------------------------------------
 			this.instance = instance;
 			this.method = method;
-			this.interceptors = interceptors;
+			this.aspects = aspects;
 		}
 
 		/** {@inheritDoc} */
 		@Override
 		public Object proceed(final Object[] args) throws Throwable {
-			if (index < interceptors.size()) {
-				return interceptors.get(index++).invoke(args, this);
+			if (index < aspects.size()) {
+				return aspects.get(index++).invoke(args, this);
 			}
 			return ClassUtil.invoke(instance, method, args);
 		}
