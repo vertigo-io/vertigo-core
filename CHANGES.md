@@ -3,6 +3,15 @@ Version history
 
 Running 0.7.1-SNAPSHOT
 ----------------------
+* [Studio] Refactored : DomainGeneratorPlugin splited into more Plugins usages dependents
+* [Studio] Fixed sql.ftl
+* [Vega] UiListState in query instead of body
+* [Dynamo] Fixed #10 and #11
+* [Studio] ElasticSearch type mapping
+* [Vega] Refacted JsonConverter and added DtList support in body
+* [Vega] Added defaultValidator on Xxx<O extends DtObject>
+* [Vega] fixed "already commited response" error
+* [Vega] Added upload file test
 
 more to come :)
 
