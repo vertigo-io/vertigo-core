@@ -18,8 +18,9 @@
  */
 package io.vertigo.dynamo.impl.transaction;
 
-import io.vertigo.core.aop.AOPInterceptor;
-import io.vertigo.core.aop.AOPMethodInvocation;
+import io.vertigo.core.aop.Aspect;
+import io.vertigo.core.aop.AspectMethodInvocation;
+import io.vertigo.dynamo.transaction.KTransaction;
 import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamo.transaction.KTransactionWritable;
 import io.vertigo.lang.Assertion;
@@ -31,18 +32,18 @@ import javax.inject.Inject;
  * de la couche service.
  * @author prahmoune
  */
-public class KTransactionInterceptor implements AOPInterceptor {
+public class KTransactionAspect implements Aspect {
 	private final KTransactionManager transactionManager;
 
 	@Inject
-	public KTransactionInterceptor(final KTransactionManager transactionManager) {
+	public KTransactionAspect(final KTransactionManager transactionManager) {
 		Assertion.checkNotNull(transactionManager);
 		//---------------------------------------------------------------------
 		this.transactionManager = transactionManager;
 	}
 
 	@Override
-	public Object invoke(final Object[] args, final AOPMethodInvocation methodInvocation) throws Throwable {
+	public Object invoke(final Object[] args, final AspectMethodInvocation methodInvocation) throws Throwable {
 		//La transaction est REQUIRED : si elle existe on l'utilise, sinon on la crée.
 		if (transactionManager.hasCurrentTransaction()) {
 			return methodInvocation.proceed(args);
@@ -53,5 +54,10 @@ public class KTransactionInterceptor implements AOPInterceptor {
 			transaction.commit();
 			return o;
 		}
+	}
+
+	@Override
+	public Class<?> getAnnotationType() {
+		return KTransaction.class;
 	}
 }
