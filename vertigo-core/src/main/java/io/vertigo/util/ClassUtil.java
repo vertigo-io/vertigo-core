@@ -31,7 +31,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Centralisation des créations d'instances à partir d'une nom de classe. Cette approche étant utilisée pour créer des liens plus souples entre des objets.
@@ -305,11 +307,11 @@ public final class ClassUtil {
 	 * @param clazz Class
 	 * @return Toutes les interfaces implémentées
 	 */
-	public static Class<?>[] getAllInterfaces(final Class<?> clazz) {
+	public static Set<Class<?>> getAllInterfaces(final Class<?> clazz) {
 		Assertion.checkNotNull(clazz);
 		//---------------------------------------------------------------------
 		Class<?> root = clazz;
-		final List<Class<?>> allInterfaces = new ArrayList<>();
+		final Set<Class<?>> allInterfaces = new HashSet<>();
 		while (root != null) {
 			for (final Class<?> intf : root.getInterfaces()) {
 				if (!allInterfaces.contains(intf)) {
@@ -323,8 +325,7 @@ public final class ClassUtil {
 			}
 			root = root.getSuperclass();
 		}
-		final Class<?>[] ia = new Class[allInterfaces.size()];
-		return allInterfaces.toArray(ia);
+		return Collections.unmodifiableSet(allInterfaces);
 	}
 
 	/**

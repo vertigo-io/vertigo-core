@@ -170,9 +170,8 @@ final class XMLModulesHandler extends DefaultHandler {
 	//On recherche l'interface ayant le nom 'simpleName' dans l'arbre de la classe 'clazz'
 	//Cette interface doit exister et être unique.
 	private static Class<?> resolveInterface(final String simpleName, final Class<?> clazz) {
-		final Class<?>[] interfaces = ClassUtil.getAllInterfaces(clazz);
 		Class<?> found = null;
-		for (final Class<?> interfaceClazz : interfaces) {
+		for (final Class<?> interfaceClazz : ClassUtil.getAllInterfaces(clazz)) {
 			if (simpleName.equals(interfaceClazz.getSimpleName())) {
 				Assertion.checkState(found == null, "Many interfaces of class '{0}' have the same simpleName {1}", clazz, simpleName);
 				found = interfaceClazz;

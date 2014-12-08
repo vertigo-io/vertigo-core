@@ -41,7 +41,7 @@ public final class CGLIBAopEngine implements AopEngine {
 	public Object create(final Object instance, final Map<Method, List<AOPInterceptor>> interceptors) {
 		Assertion.checkNotNull(instance);
 		Assertion.checkNotNull(interceptors);
-		//check : witgh cglib all methods have to bo non-final 
+		//check : witgh cglib all methods have to bo non-final
 		for (final Method method : interceptors.keySet()) {
 			Assertion.checkArgument(!Modifier.isFinal(method.getModifiers()), "due to cglib method '" + method.getName() + "' on '" + instance.getClass().getName() + "' can not be markedf as final");
 		}
@@ -49,7 +49,7 @@ public final class CGLIBAopEngine implements AopEngine {
 		final Enhancer enhancer = new Enhancer();
 		enhancer.setCallback(createCallBack(instance, interceptors));
 		final Class<?> implClass = instance.getClass();
-		final Class<?>[] intfs = ClassUtil.getAllInterfaces(implClass);
+		final Class[] intfs = ClassUtil.getAllInterfaces(implClass).toArray(new Class[0]);
 		enhancer.setInterfaces(intfs);
 		enhancer.setSuperclass(implClass);
 		return enhancer.create();

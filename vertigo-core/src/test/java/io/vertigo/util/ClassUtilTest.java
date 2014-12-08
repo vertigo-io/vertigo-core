@@ -21,7 +21,6 @@ package io.vertigo.util;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.VUserException;
-import io.vertigo.util.ClassUtil;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
@@ -29,8 +28,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -291,18 +292,23 @@ public final class ClassUtilTest {
 
 	@Test
 	public void testGetAllInterfaces() throws SecurityException {
-		Class<?>[] interfaces;
-		final Class<?>[] declaredInterfaces = { MyInterface1.class };
+		Set<Class<?>> interfaces;
+		final Set<Class<?>> declaredInterfaces = new HashSet<>();
+		declaredInterfaces.add(MyInterface1.class);
 		interfaces = ClassUtil.getAllInterfaces(MyBean.class);
 		//--
-		Assert.assertEquals(declaredInterfaces.length, interfaces.length);
-		Assert.assertArrayEquals(declaredInterfaces, interfaces);
+		Assert.assertEquals(declaredInterfaces.size(), interfaces.size());
+		Assert.assertEquals(declaredInterfaces, interfaces);
 
-		final Class<?>[] inheritedInterfaces = { MyInterface2.class, MyInterface4.class, MyInterface3.class, MyInterface1.class };
+		final Set<Class<?>> inheritedInterfaces = new HashSet<>();
+		inheritedInterfaces.add(MyInterface2.class);
+		inheritedInterfaces.add(MyInterface4.class);
+		inheritedInterfaces.add(MyInterface3.class);
+		inheritedInterfaces.add(MyInterface1.class);
 		interfaces = ClassUtil.getAllInterfaces(MySubBean.class);
 		//--
-		Assert.assertEquals(inheritedInterfaces.length, interfaces.length);
-		Assert.assertArrayEquals(inheritedInterfaces, interfaces);
+		Assert.assertEquals(inheritedInterfaces.size(), interfaces.size());
+		Assert.assertEquals(inheritedInterfaces, interfaces);
 	}
 
 	@Test
@@ -362,7 +368,7 @@ public final class ClassUtilTest {
 	}
 
 	public static final class MyGenerics {
-		//Tests pour les génériques 
+		//Tests pour les génériques
 		public Option<Long> myOption;
 		public List<Long> myList;
 		public List<?> myList2;
