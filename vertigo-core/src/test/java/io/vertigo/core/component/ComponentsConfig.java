@@ -46,6 +46,9 @@ public final class ComponentsConfig {
 		// @formatter:off
 		appConfiguilder
 		.withAopEngine(aopEngine)
+		.beginModule("aspect") //an aspect can be defined before the module that using it.
+			.withAspect(OneMore.class, OneMoreInterceptor.class)
+		.endModule()
 		.beginModule("vertigo")
 			.withNoAPI()
 			.withInheritance(Object.class)
@@ -54,7 +57,6 @@ public final class ComponentsConfig {
 			.beginComponent(B.class, BImpl.class).endComponent()
 			.beginComponent(C.class).endComponent()
 			.beginComponent(F.class).endComponent()
-			.withAspect(OneMore.class, OneMoreInterceptor.class)
 			.withAspect(TenMore.class, TenMoreInterceptor.class)
 		.endModule();
 		// @formatter:on

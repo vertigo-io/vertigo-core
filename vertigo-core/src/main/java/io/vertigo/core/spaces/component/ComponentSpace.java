@@ -24,6 +24,7 @@ import io.vertigo.core.command.VCommand;
 import io.vertigo.core.command.VCommandExecutor;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
+import io.vertigo.core.config.AspectConfig;
 import io.vertigo.core.config.ComponentConfig;
 import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.config.PluginConfig;
@@ -71,11 +72,14 @@ import java.util.Set;
  * @author pchretien
  */
 public final class ComponentSpace implements Container, Activeable {
-
 	public static final ComponentSpace EMPTY = new ComponentSpace(new AppConfigBuilder().build());
 
 	private final AppConfig appConfig;
 	private final ComponentContainer componentContainer = new ComponentContainer();
+
+	//---Aspects
+	private final Map<AspectConfig, AOPInterceptor> aspects = new HashMap<>();
+	//---/Aspects
 
 	private final List<Engine> engines = new ArrayList<>();
 
@@ -150,6 +154,7 @@ public final class ComponentSpace implements Container, Activeable {
 				Activeable.class.cast(engine).stop();
 			}
 		}
+		aspects.clear();
 	}
 
 	//	private void startModule(final ModuleConfig moduleConfig, final boolean resource) {
@@ -191,18 +196,18 @@ public final class ComponentSpace implements Container, Activeable {
 		final List<String> ids = reactor.proceed();
 		//On a récupéré la liste ordonnée des ids.
 
-		//. On initialise l'injecteur AOP
-		final ComponentAspectInitializer aspectInitializer = new ComponentAspectInitializer(moduleConfig);
+		//. On enrichit la liste des aspects
+		aspects.putAll(ComponentAspectUtil.findAspects(moduleConfig));
 
 		for (final String id : ids) {
 			if (map.containsKey(id)) {
 				final ComponentConfig componentConfig = map.get(id);
-				registerComponent(componentConfig, aspectInitializer, aopEngine);
+				registerComponent(componentConfig, aopEngine);
 			}
 		}
 	}
 
-	private void registerComponent(final ComponentConfig componentConfig, final ComponentAspectInitializer aspectInitializer, final AopEngine aopEngine) {
+	private void registerComponent(final ComponentConfig componentConfig, final AopEngine aopEngine) {
 		// 1. On crée et on enregistre les plugins (Qui ne doivent pas dépendre du composant)
 		final Map<PluginConfig, Plugin> plugins = createPlugins(componentConfig);
 		componentContainer.registerPlugins(componentConfig, plugins);
@@ -219,7 +224,7 @@ public final class ComponentSpace implements Container, Activeable {
 		final Object instance = createComponent(componentConfig);
 
 		//4. AOP, on aopise le composant
-		final Map<Method, List<AOPInterceptor>> joinPoints = aspectInitializer.createJoinPoints(componentConfig);
+		final Map<Method, List<AOPInterceptor>> joinPoints = ComponentAspectUtil.createJoinPoints(componentConfig, aspects);
 		Object reference;
 		if (!joinPoints.isEmpty()) {
 			reference = aopEngine.create(instance, joinPoints);
