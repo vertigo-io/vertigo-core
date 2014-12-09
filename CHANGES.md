@@ -1,9 +1,15 @@
 Version history
 ===============
 
-Running 0.7.1-SNAPSHOT
+Running 0.7.2-SNAPSHOT
 ----------------------
-* [Studio] Refactored : DomainGeneratorPlugin splited into more Plugins usages dependents
+
+more to come :)
+
+
+Release 0.7.1 - 2014/12/09
+----------------------
+* [Studio] Refactored : DomainGeneratorPlugin splited into more Plugins usages dependents (look at SqlGeneratorPlugin and JSGeneratorPlugin)
 * [Studio] Fixed sql.ftl
 * [Vega] UiListState in query instead of body
 * [Dynamo] Fixed #10 and #11
@@ -12,11 +18,10 @@ Running 0.7.1-SNAPSHOT
 * [Vega] Added defaultValidator on Xxx<O extends DtObject>
 * [Vega] fixed "already commited response" error
 * [Vega] Added upload file test
+* [Core] Refactored aspects : global scoped, simplier declarations with only one tag &lt;aspect&gt; with an attribute class extends Aspect
 
-more to come :)
 
-
-Running 0.7.0 - 2014/11/25
+Release 0.7.0 - 2014/11/25
 ----------------------
 A big version :)
 * [All] Lots of code style fixes, tests units coverage, cleaning and refactoring
