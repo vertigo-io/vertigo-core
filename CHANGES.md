@@ -15,7 +15,7 @@ Release 0.7.1 - 2014/12/09
 * [Dynamo] Fixed #10 and #11
 * [Studio] ElasticSearch type mapping
 * [Vega] Refacted JsonConverter and added DtList support in body
-* [Vega] Added defaultValidator on Xxx<O extends DtObject>
+* [Vega] Added defaultValidator on Xxx&lt;O extends DtObject&gt;
 * [Vega] fixed "already commited response" error
 * [Vega] Added upload file test
 * [Core] Refactored aspects : global scoped, simplier declarations with only one tag &lt;aspect&gt; with an attribute class extends Aspect
