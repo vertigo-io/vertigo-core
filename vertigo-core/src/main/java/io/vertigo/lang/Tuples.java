@@ -28,6 +28,8 @@ public final class Tuples {
 
 	/**
 	 * Tuple with 2 Objects.
+	 * @param <T1> Type one
+	 * @param <T2> Type two
 	 */
 	public static final class Tuple2<T1, T2> {
 		private final T1 val1;
@@ -58,11 +60,13 @@ public final class Tuples {
 			return val2;
 		}
 
+		/** {@inheritDoc} */
 		@Override
 		public int hashCode() {
 			return Objects.hash(val1, val2);
 		}
 
+		/** {@inheritDoc} */
 		@Override
 		public boolean equals(final Object object) {
 			if (this == object) {
@@ -78,6 +82,9 @@ public final class Tuples {
 
 	/**
 	 * Tuple with 3 Objects.
+	 * @param <T1> Type one
+	 * @param <T2> Type two
+	 * @param <T3> Type three
 	 */
 	public static final class Tuple3<T1, T2, T3> {
 		private final T1 val1;
@@ -112,27 +119,29 @@ public final class Tuples {
 		}
 
 		/**
-		* @return  Value#2.
+		* @return  Value#3.
 		 */
 		public T3 getVal3() {
 			return val3;
 		}
 
+		/** {@inheritDoc} */
 		@Override
 		public int hashCode() {
 			return Objects.hash(val1, val2, val3);
 		}
 
+		/** {@inheritDoc} */
 		@Override
 		public boolean equals(final Object object) {
 			if (this == object) {
 				return true;
 			}
 			if (object instanceof Tuple3) {
-				return false;
+				final Tuple3<?, ?, ?> that = Tuple3.class.cast(object);
+				return Objects.equals(val1, that.val1) && Objects.equals(val2, that.val2) && Objects.equals(val3, that.val3);
 			}
-			final Tuple3<?, ?, ?> that = Tuple3.class.cast(object);
-			return Objects.equals(val1, that.val1) && Objects.equals(val2, that.val2) && Objects.equals(val3, that.val3);
+			return false;
 		}
 	}
 }
