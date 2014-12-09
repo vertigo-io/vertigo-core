@@ -20,40 +20,32 @@ package io.vertigo.quarto.publisher.impl.merger.processor;
 
 import java.util.Deque;
 
-
 import org.apache.log4j.Logger;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Classe utilitaire pour une arborescence XML.
  *
- *
  * @author npiedeloup
  */
-public final class XMLHelperTest extends TestCase {
+public final class XMLHelperTest {
 	/** Logger. */
 	private final Logger LOG = Logger.getLogger(getClass());
 
-	public static void testMinimalXML() {
+	@Test
+	public void testMinimalXML() {
 		final String[] xmlTest = { "<a b=\"test\"></a>", "<a></a></a>", "<a b=\"test\"></a><a c=\"test2\">", "</b></r><a b=\"test\"></a>", "</r></c></l><l b=\"test\"><c d=\"test3\"></c><c c=\"test2\">", "</b></c></l><l><c><r>", "</b></c></l><a><l><c><r>", "</sc></s></s><s><s>a</s></s><s><s><sc>", };
 		final String[] xmlTestResult = { "", "</a>", "<a c=\"test2\">", "</b></r>", "</r></c></l><l b=\"test\"><c c=\"test2\">", "</b></c></l><l><c><r>", "</b></c></l><a><l><c><r>", "</sc></s></s><s><s><sc>", "" };
 
 		for (int i = 0; i < xmlTest.length; i++) {
 			//log.trace("Text:" + xmlTest[i]);
 			//log.trace(", \"" + getMinimalXML(xmlTest[i]) + "\"");
-			assertEquals(xmlTestResult[i], getMinimalXML(xmlTest[i]));
+			Assert.assertEquals(xmlTestResult[i], getMinimalXML(xmlTest[i]));
 		}
 	}
 
-	private static String getMinimalXML(final String xmlContent) {
-		final Deque<TagXML> pileTag = ProcessorXMLUtil.extractUnbalancedTag(xmlContent.toCharArray());
-
-		final StringBuilder contentClean = new StringBuilder();
-		for (final TagXML tag : pileTag) {
-			contentClean.append(tag.getFullTag());
-		}
-		return contentClean.toString();
-	}
-
+	@Test
 	public void testXMLBalancer() {
 		final String[] xmlTest2 = { "body", "body<r>", "<r>body", "</b></c></l><a><l><c><r>", "<a b=\"test\">&lt;#loop #&gt;<b></b>&lt;#endloop#&gt;</a>", "<a b=\"test\"></a>&lt;#loop #&gt;<a c=\"test2\">&lt;#endloop#&gt;</a>", "<r><b>&lt;#loop #&gt;</b></r><a b=\"test\">&lt;#endloop#&gt;</a>", "<t><l row=\"1\"><c c=\"1\">header1</c><c c=\"2\"><r>header2&lt;#loop #&gt;</r></c></l><l row=\"2\"><c c=\"1\">data1</c><c c=\"2\">data2&lt;#endloop#&gt;</c></l></t>",
 				"<t><l row=\"1\"><c c=\"1\">header1</c><c c=\"2\"><r>header2&lt;#loop #&gt;</r></c></l><l row=\"2\"><c c=\"1\">data1</c><c c=\"2\"><g>data2&lt;#endloop#&gt;</g></c></l></t>", "<t><l row=\"1\"><c c=\"1\">header1</c><c c=\"2\"><r>header2</r></c></l><l row=\"2\"><c c=\"1\">&lt;#loop #&gt;data1</c><c c=\"2\">data2&lt;#endloop#&gt;</c></l></t>",
@@ -70,6 +62,7 @@ public final class XMLHelperTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testXMLBalancerEnclosed() {
 		final String[] xmlTest2 = {
 				"body",
@@ -96,6 +89,7 @@ public final class XMLHelperTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testXMLBalancerBig() {
 		final String[] xmlTest2 = { "<script>&lt;#var address2 = ADRESSE_RATACHEMENT#&gt;</script>" + "<span><span>" + "<script>&lt;#endvar#&gt;</script>" + "</span></span>" };
 		final GrammarXMLBalancerProcessor prepross = new GrammarXMLBalancerProcessor();
@@ -108,5 +102,15 @@ public final class XMLHelperTest extends TestCase {
 			LOG.trace("  getLastBodyEndIndex:" + lindex + "   " + (lindex != -1 ? xml.substring(0, lindex) : ""));
 			LOG.trace("  prepross:" + prepross.execute(xml, null));
 		}
+	}
+
+	private static String getMinimalXML(final String xmlContent) {
+		final Deque<TagXML> pileTag = ProcessorXMLUtil.extractUnbalancedTag(xmlContent.toCharArray());
+
+		final StringBuilder contentClean = new StringBuilder();
+		for (final TagXML tag : pileTag) {
+			contentClean.append(tag.getFullTag());
+		}
+		return contentClean.toString();
 	}
 }
