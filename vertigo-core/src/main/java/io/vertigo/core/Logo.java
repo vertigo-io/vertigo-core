@@ -38,7 +38,7 @@ public final class Logo {
 		out.println("##########################################");
 		out.println("#  _____________                         #");
 		out.println("# |     _     / | ---------------------- #");
-		out.println("# |#   / \\   / /|  Vertigo V0.7.0 - 2014 #"); //add one char for \\
+		out.println("# |#   / \\   / /|  Vertigo V0.7.1 - 2014 #"); //add one char for \\
 		out.println("# |  __\\ /__/ / |                        #"); //add one char for \\
 		out.println("# | / _      /  |                        #");
 		out.println("# |/ / \\  ()/  *|                        #"); //add one char for \\
