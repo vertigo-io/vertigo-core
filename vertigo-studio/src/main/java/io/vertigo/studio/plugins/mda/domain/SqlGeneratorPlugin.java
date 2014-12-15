@@ -20,6 +20,7 @@ package io.vertigo.studio.plugins.mda.domain;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
 import io.vertigo.studio.plugins.mda.domain.templates.TemplateDtDefinition;
@@ -42,20 +43,28 @@ import javax.inject.Named;
 public final class SqlGeneratorPlugin extends AbstractGeneratorPlugin<DomainConfiguration> {
 	private final boolean generateDrop;
 	private final String baseCible;
+	private final Option<String> tableSpaceData;
+	private final Option<String> tableSpaceIndex;
 
 	/**
 	 * Constructeur.
 	 *
 	 * @param generateDrop Si on génère les Drop table dans le fichier SQL
 	 * @param baseCible Type de base de données ciblé.
+	 * @param tableSpaceData Nom du tableSpace des données
+	 * @param tableSpaceIndex Nom du tableSpace des indexes
 	 */
 	@Inject
 	public SqlGeneratorPlugin(
 			@Named("generateDrop") final boolean generateDrop,
-			@Named("baseCible") final String baseCible) {
+			@Named("baseCible") final String baseCible,
+			@Named("tableSpaceData") final Option<String> tableSpaceData,
+			@Named("tableSpaceIndex") final Option<String> tableSpaceIndex) {
 		// ---------------------------------------------------------------------
 		this.generateDrop = generateDrop;
 		this.baseCible = baseCible;
+		this.tableSpaceData = tableSpaceData;
+		this.tableSpaceIndex = tableSpaceIndex;
 	}
 
 	/** {@inheritDoc} */
@@ -80,7 +89,7 @@ public final class SqlGeneratorPlugin extends AbstractGeneratorPlugin<DomainConf
 			list.add(templateDef);
 		}
 
-		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
+		final MapBuilder<String, Object> mapRootBuilder = new MapBuilder<String, Object>()
 				.put("sql", new TemplateMethodSql())
 				.put("dtDefinitions", list)
 				.put("associations", DomainUtil.getAssociations())
@@ -88,8 +97,15 @@ public final class SqlGeneratorPlugin extends AbstractGeneratorPlugin<DomainConf
 				// Ne sert actuellement à rien, le sql généré étant le même. Prévu pour le futur
 				.put("basecible", baseCible)
 				// Oracle limite le nom des entités (index) à 30 charactères. Il faut alors tronquer les noms composés.
-				.put("truncateNames", baseCible == "Oracle")
-				.build();
+				.put("truncateNames", baseCible == "Oracle");
+
+		if (tableSpaceData.isDefined()) {
+			mapRootBuilder.put("tableSpaceData", tableSpaceData.get());
+		}
+		if (tableSpaceIndex.isDefined()) {
+			mapRootBuilder.put("tableSpaceIndex", tableSpaceIndex.get());
+		}
+		final Map<String, Object> mapRoot = mapRootBuilder.build();
 
 		createFileGenerator(domainConfiguration, mapRoot, "crebas", "sqlgen", ".sql", "templates/sql.ftl")
 				.generateFile(resultBuilder);

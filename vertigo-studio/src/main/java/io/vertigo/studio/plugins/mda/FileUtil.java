@@ -76,10 +76,12 @@ final class FileUtil {
 		final StringBuilder currentContent = new StringBuilder();
 		try (final BufferedReader myReader = new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding))) {
 			String line = myReader.readLine();
+			String endOfLine = "";
 			while (line != null) {
+				currentContent.append(endOfLine);
 				currentContent.append(line);
-				currentContent.append(EOL);
 				line = myReader.readLine();
+				endOfLine = EOL;
 			}
 		}
 		return currentContent.toString();

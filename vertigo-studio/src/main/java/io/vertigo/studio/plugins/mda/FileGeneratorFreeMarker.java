@@ -99,12 +99,10 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 	@Override
 	public void generateFile(final ResultBuilder resultBuilder) {
 		final File file = new File(getFileName());
-		if (!file.exists()) {
-			try {
-				generateFile(resultBuilder, file);
-			} catch (final Exception e) {
-				throw new RuntimeException(e);
-			}
+		try {
+			generateFile(resultBuilder, file);
+		} catch (final Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
