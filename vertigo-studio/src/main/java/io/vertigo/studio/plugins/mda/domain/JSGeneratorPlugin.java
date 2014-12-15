@@ -100,7 +100,6 @@ public final class JSGeneratorPlugin extends AbstractGeneratorPlugin<DomainConfi
 	/**
 	 * Génère les ressources JS pour les traductions.
 	 * @param domainConfiguration Configuration du domaine.
-	 * @param resultBuilder Builder
 	 */
 	private static void generateDtResourcesJS(final DomainConfiguration domainConfiguration, final ResultBuilder result) {
 		final List<TemplateDtDefinition> dtDefinitions = new ArrayList<>();
