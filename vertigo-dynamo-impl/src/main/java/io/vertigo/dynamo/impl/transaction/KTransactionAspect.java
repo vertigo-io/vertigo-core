@@ -20,9 +20,9 @@ package io.vertigo.dynamo.impl.transaction;
 
 import io.vertigo.core.aop.Aspect;
 import io.vertigo.core.aop.AspectMethodInvocation;
-import io.vertigo.dynamo.transaction.KTransaction;
 import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamo.transaction.KTransactionWritable;
+import io.vertigo.dynamo.transaction.Transactional;
 import io.vertigo.lang.Assertion;
 
 import javax.inject.Inject;
@@ -32,7 +32,7 @@ import javax.inject.Inject;
  * de la couche service.
  * @author prahmoune
  */
-public class KTransactionAspect implements Aspect {
+public final class KTransactionAspect implements Aspect {
 	private final KTransactionManager transactionManager;
 
 	@Inject
@@ -58,6 +58,6 @@ public class KTransactionAspect implements Aspect {
 
 	@Override
 	public Class<?> getAnnotationType() {
-		return KTransaction.class;
+		return Transactional.class;
 	}
 }

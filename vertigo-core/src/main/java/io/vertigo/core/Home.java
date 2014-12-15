@@ -137,6 +137,7 @@ public final class Home {
 			for (final ModuleConfig moduleConfig : appConfig.getModuleConfigs()) {
 				definitionSpace.injectResources(moduleConfig);
 				componentSpace.injectComponents(moduleConfig);
+				componentSpace.injectAspects(moduleConfig);
 			}
 			//--
 			componentSpace.start();

@@ -24,7 +24,7 @@ import io.vertigo.core.aop.AspectMethodInvocation;
 /**
  * @author pchretien
  */
-public class TenMoreAspect implements Aspect {
+public final class TenMoreAspect implements Aspect {
 	@Override
 	public Integer invoke(final Object[] args, final AspectMethodInvocation methodInvocation) throws Throwable {
 		return (Integer) methodInvocation.proceed(args) + 10;

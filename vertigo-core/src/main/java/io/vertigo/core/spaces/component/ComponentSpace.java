@@ -161,6 +161,7 @@ public final class ComponentSpace implements Container, Activeable {
 	//		injectResources(moduleConfig);
 	//	}
 
+	//fix me
 	public void injectComponents(final ModuleConfig moduleConfig) {
 		final AopEngine aopEngine = appConfig.getAopEngine();
 
@@ -194,19 +195,23 @@ public final class ComponentSpace implements Container, Activeable {
 
 		final List<String> ids = reactor.proceed();
 		//On a récupéré la liste ordonnée des ids.
-
-		//. On enrichit la liste des aspects
-		for (final Aspect aspect : ComponentAspectUtil.findAspects(moduleConfig)) {
-			Assertion.checkArgument(!aspects.containsKey(aspect.getClass()), "aspect {0} already registered", aspect.getClass());
-			aspects.put(aspect.getClass(), aspect);
-		}
-
 		for (final String id : ids) {
 			if (map.containsKey(id)) {
 				final ComponentConfig componentConfig = map.get(id);
 				registerComponent(componentConfig, aopEngine);
 			}
 		}
+
+	}
+
+	//fix me
+	public void injectAspects(final ModuleConfig moduleConfig) {
+		//. On enrichit la liste des aspects
+		for (final Aspect aspect : ComponentAspectUtil.findAspects(moduleConfig)) {
+			Assertion.checkArgument(!aspects.containsKey(aspect.getClass()), "aspect {0} already registered", aspect.getClass());
+			aspects.put(aspect.getClass(), aspect);
+		}
+
 	}
 
 	private void registerComponent(final ComponentConfig componentConfig, final AopEngine aopEngine) {

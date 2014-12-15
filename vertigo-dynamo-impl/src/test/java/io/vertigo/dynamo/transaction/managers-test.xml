@@ -2,5 +2,11 @@
 <config>
 	<module name="dynamo">
 		<component api="KTransactionManager" class="io.vertigo.dynamo.impl.transaction.KTransactionManagerImpl" />
+		<aspect class="io.vertigo.dynamo.impl.transaction.KTransactionAspect" />
 	</module>
+	
+	<module name="test" api="false">
+		<component class="io.vertigo.dynamo.transaction.BusinessServices" />
+	</module>
+	
 </config>

@@ -37,6 +37,9 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	private static int count;
 
 	@Inject
+	private BusinessServices businessServices;
+
+	@Inject
 	private KTransactionManager transactionManager;
 	private DataBaseMock dataBase;
 
@@ -288,5 +291,14 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 			Assert.assertEquals(oldValue1, dataBase.getData());
 			Assert.assertEquals(oldValue2, secondDataBase.getData());
 		}
+	}
+
+	/**
+	 * Test @Transactional aspect placed upon all methods of BusinessServices component.
+	 */
+	@Test
+	public void testTransactional() {
+		final String value = businessServices.test();
+		businessServices.check(value);
 	}
 }
