@@ -88,7 +88,6 @@ public final class SqlGeneratorPlugin extends AbstractGeneratorPlugin<DomainConf
 			final TemplateDtDefinition templateDef = new TemplateDtDefinition(dtDefinition);
 			list.add(templateDef);
 		}
-
 		final MapBuilder<String, Object> mapRootBuilder = new MapBuilder<String, Object>()
 				.put("sql", new TemplateMethodSql())
 				.put("dtDefinitions", list)
@@ -99,12 +98,8 @@ public final class SqlGeneratorPlugin extends AbstractGeneratorPlugin<DomainConf
 				// Oracle limite le nom des entités (index) à 30 charactères. Il faut alors tronquer les noms composés.
 				.put("truncateNames", baseCible == "Oracle");
 
-		if (tableSpaceData.isDefined()) {
-			mapRootBuilder.put("tableSpaceData", tableSpaceData.get());
-		}
-		if (tableSpaceIndex.isDefined()) {
-			mapRootBuilder.put("tableSpaceIndex", tableSpaceIndex.get());
-		}
+		mapRootBuilder.put("tableSpaceData", tableSpaceData.getOrElse(null));
+		mapRootBuilder.put("tableSpaceIndex", tableSpaceIndex.getOrElse(null));
 		final Map<String, Object> mapRoot = mapRootBuilder.build();
 
 		createFileGenerator(domainConfiguration, mapRoot, "crebas", "sqlgen", ".sql", "templates/sql.ftl")
