@@ -1,10 +1,17 @@
 Version history
 ===============
 
-Running 0.7.2-SNAPSHOT
+Running 0.7.3-SNAPSHOT
 ----------------------
 
 more to come :)
+
+Release 0.7.2 - 2014/12/16
+----------------------
+* [Dynamo] Forced Hibernate sequence handler to use DB sequence
+* [core] Fixed aspect bug
+* [Studio] Fixed js generator, sql generator, updates dectector
+* [Studio] Added sql tablespaces (data and index) : use optional params on SqlGenerator tableSpaceData and tableSpaceIndex
 
 
 Release 0.7.1 - 2014/12/09
