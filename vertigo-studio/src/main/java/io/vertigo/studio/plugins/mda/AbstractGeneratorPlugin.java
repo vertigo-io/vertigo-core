@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.plugins.mda;
 
-import io.vertigo.studio.mda.Configuration;
+import io.vertigo.studio.mda.FileConfiguration;
 import io.vertigo.studio.mda.GeneratorPlugin;
 
 import java.util.Map;
@@ -27,9 +27,8 @@ import java.util.Map;
  * Pré-ImplémGénération de la génération des fichiers.
  *
  * @author dchallas
- * @param <C> Class de configuration du générateur
  */
-public abstract class AbstractGeneratorPlugin<C extends Configuration> implements GeneratorPlugin<C> {
+public abstract class AbstractGeneratorPlugin implements GeneratorPlugin {
 
 	/**
 	 * @param fileGeneratorConfiguration Configuration de la génération
@@ -40,7 +39,7 @@ public abstract class AbstractGeneratorPlugin<C extends Configuration> implement
 	 * @param templateName Nom du template
 	 * @return Générateur de fichier
 	 */
-	protected static final FileGenerator createFileGenerator(final AbstractConfiguration fileGeneratorConfiguration, final Map<String, Object> mapRoot, final String classSimpleName, final String packageName, final String fileExtention, final String templateName) {
+	protected static final FileGenerator createFileGenerator(final FileConfiguration fileGeneratorConfiguration, final Map<String, Object> mapRoot, final String classSimpleName, final String packageName, final String fileExtention, final String templateName) {
 		return new FileGeneratorFreeMarker(fileGeneratorConfiguration, mapRoot, classSimpleName, packageName, fileExtention, templateName);
 	}
 }

@@ -24,22 +24,21 @@ import java.util.Properties;
 
 /**
  * Plugin de génération de fichiers.
- * 
+ *
  * @author dchallas
- * @param <C> Type de configuration du générateur
  */
-public interface GeneratorPlugin<C extends Configuration> extends Plugin {
+public interface GeneratorPlugin extends Plugin {
 	/**
 	 * Positionne les propriétés.
 	 * @param properties Propriétés.
 	 * @return Configuration de la génération
 	 */
-	C createConfiguration(Properties properties);
+	FileConfiguration createConfiguration(Properties properties);
 
 	/**
 	 * Génération d'un fichier à partir d'une source et de paramètres.
 	 * @param configuration Configuration de la génération
 	 * @param resultBuilder Builder
 	 */
-	void generate(final C configuration, final ResultBuilder resultBuilder);
+	void generate(final FileConfiguration configuration, final ResultBuilder resultBuilder);
 }

@@ -21,6 +21,7 @@ package io.vertigo.studio.plugins.mda.domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.studio.mda.FileConfiguration;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
 import io.vertigo.studio.plugins.mda.domain.templates.TemplateDtDefinition;
@@ -40,7 +41,7 @@ import javax.inject.Named;
  *
  * @author pchretien
  */
-public final class SqlGeneratorPlugin extends AbstractGeneratorPlugin<DomainConfiguration> {
+public final class SqlGeneratorPlugin extends AbstractGeneratorPlugin {
 	private final boolean generateDrop;
 	private final String baseCible;
 	private final Option<String> tableSpaceData;
@@ -69,20 +70,20 @@ public final class SqlGeneratorPlugin extends AbstractGeneratorPlugin<DomainConf
 
 	/** {@inheritDoc} */
 	@Override
-	public DomainConfiguration createConfiguration(final Properties properties) {
-		return new DomainConfiguration(properties);
+	public FileConfiguration createConfiguration(final Properties properties) {
+		return new FileConfiguration(properties, "domain");
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void generate(final DomainConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
+	public void generate(final FileConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
 		Assertion.checkNotNull(domainConfiguration);
 		Assertion.checkNotNull(resultBuilder);
 		// ---------------------------------------------------------------------
 		generateSql(domainConfiguration, resultBuilder);
 	}
 
-	private void generateSql(final DomainConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
+	private void generateSql(final FileConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
 		final List<TemplateDtDefinition> list = new ArrayList<>(DomainUtil.getDtDefinitions().size());
 		for (final DtDefinition dtDefinition : DomainUtil.sortAbsoluteDefinitionCollection(DomainUtil.getDtDefinitions())) {
 			final TemplateDtDefinition templateDef = new TemplateDtDefinition(dtDefinition);

@@ -21,13 +21,14 @@ package io.vertigo.studio.plugins.mda.task;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
+import io.vertigo.studio.mda.FileConfiguration;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 /**
  * Objet utilisé par FreeMarker.
- * 
+ *
  * @author pchretien
  */
 public final class TemplateDAO {
@@ -38,10 +39,10 @@ public final class TemplateDAO {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param dtDefinition DtDefinition de l'objet à générer
 	 */
-	TemplateDAO(final TaskConfiguration taskConfiguration, final DtDefinition dtDefinition, final Collection<TaskDefinition> taskDefinitionCollection) {
+	TemplateDAO(final FileConfiguration taskConfiguration, final DtDefinition dtDefinition, final Collection<TaskDefinition> taskDefinitionCollection) {
 		Assertion.checkNotNull(taskConfiguration);
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(taskDefinitionCollection);

@@ -20,6 +20,7 @@ package io.vertigo.studio.plugins.mda.domain;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
+import io.vertigo.studio.mda.FileConfiguration;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
 import io.vertigo.studio.plugins.mda.domain.templates.TemplateDtDefinition;
@@ -39,7 +40,7 @@ import javax.inject.Named;
  *
  * @author pchretien
  */
-public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainConfiguration> {
+public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin {
 	private final boolean generateDtResources;
 	private final boolean generateJpaAnnotations;
 	private final boolean generateDtDefinitions;
@@ -68,13 +69,13 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 
 	/** {@inheritDoc} */
 	@Override
-	public DomainConfiguration createConfiguration(final Properties properties) {
-		return new DomainConfiguration(properties);
+	public FileConfiguration createConfiguration(final Properties properties) {
+		return new FileConfiguration(properties, "domain");
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void generate(final DomainConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
+	public void generate(final FileConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
 		Assertion.checkNotNull(domainConfiguration);
 		Assertion.checkNotNull(resultBuilder);
 		// ---------------------------------------------------------------------
@@ -95,7 +96,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 
 	}
 
-	private static void generateDtDefinitions(final DomainConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
+	private static void generateDtDefinitions(final FileConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
 
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
 				.put("packageName", domainConfiguration.getPackageName())
@@ -108,13 +109,13 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 
 	}
 
-	private void generateDtObjects(final DomainConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
+	private void generateDtObjects(final FileConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
 		for (final DtDefinition dtDefinition : DomainUtil.getDtDefinitions()) {
 			generateDtObject(domainConfiguration, resultBuilder, dtDefinition);
 		}
 	}
 
-	private void generateDtObject(final DomainConfiguration domainConfiguration, final ResultBuilder resultBuilder, final DtDefinition dtDefinition) {
+	private void generateDtObject(final FileConfiguration domainConfiguration, final ResultBuilder resultBuilder, final DtDefinition dtDefinition) {
 		final TemplateDtDefinition definition = new TemplateDtDefinition(dtDefinition);
 
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
@@ -126,7 +127,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 				.generateFile(resultBuilder);
 	}
 
-	private static void generateDtResources(final DomainConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
+	private static void generateDtResources(final FileConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
 		final String simpleClassName = "DtResources";
 		/**
 		 * Génération des ressources afférentes au DT.

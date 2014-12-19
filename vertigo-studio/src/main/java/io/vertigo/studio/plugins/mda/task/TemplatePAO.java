@@ -20,6 +20,7 @@ package io.vertigo.studio.plugins.mda.task;
 
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
+import io.vertigo.studio.mda.FileConfiguration;
 import io.vertigo.util.StringUtil;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ import java.util.Collections;
 
 /**
  * Objet utilisé par FreeMarker.
- * 
+ *
  * @author pchretien
  */
 public final class TemplatePAO {
@@ -40,7 +41,7 @@ public final class TemplatePAO {
 	/**
 	 * Constructeur.
 	 */
-	TemplatePAO(final TaskConfiguration taskConfiguration, final Collection<TaskDefinition> taskDefinitionCollection, final String packageName) {
+	TemplatePAO(final FileConfiguration taskConfiguration, final Collection<TaskDefinition> taskDefinitionCollection, final String packageName) {
 		Assertion.checkNotNull(taskConfiguration);
 		Assertion.checkNotNull(taskDefinitionCollection);
 		Assertion.checkArgument(!taskDefinitionCollection.isEmpty(), "Aucune tache dans le package {0}", packageName);

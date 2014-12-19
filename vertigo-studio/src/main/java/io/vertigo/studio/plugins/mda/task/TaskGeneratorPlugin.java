@@ -23,6 +23,7 @@ import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
+import io.vertigo.studio.mda.FileConfiguration;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
 import io.vertigo.util.MapBuilder;
@@ -40,16 +41,16 @@ import java.util.Properties;
  *
  * @author pchretien
  */
-public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin<TaskConfiguration> {
+public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin {
 	/** {@inheritDoc} */
 	@Override
-	public TaskConfiguration createConfiguration(final Properties properties) {
-		return new TaskConfiguration(properties);
+	public FileConfiguration createConfiguration(final Properties properties) {
+		return new FileConfiguration(properties, "dao");
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void generate(final TaskConfiguration taskConfiguration, final ResultBuilder resultBuilder) {
+	public void generate(final FileConfiguration taskConfiguration, final ResultBuilder resultBuilder) {
 		Assertion.checkNotNull(taskConfiguration);
 		Assertion.checkNotNull(resultBuilder);
 		//---------------------------------------------------------------------
@@ -60,7 +61,7 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin<TaskConfi
 	/**
 	 * Génération de tous les PAOs.
 	 */
-	private static void generatePaos(final TaskConfiguration taskConfiguration, final ResultBuilder resultBuilder) {
+	private static void generatePaos(final FileConfiguration taskConfiguration, final ResultBuilder resultBuilder) {
 		//On liste des taches regroupées par Package.
 		for (final Entry<String, List<TaskDefinition>> entry : buildPackageMap().entrySet()) {
 			final Collection<TaskDefinition> taskDefinitionCollection = entry.getValue();
@@ -74,7 +75,7 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin<TaskConfi
 	/**
 	 * Génération de tous les DAOs.
 	 */
-	private static void generateDaos(final TaskConfiguration taskConfiguration, final ResultBuilder resultBuilder) {
+	private static void generateDaos(final FileConfiguration taskConfiguration, final ResultBuilder resultBuilder) {
 		for (final Entry<DtDefinition, List<TaskDefinition>> entry : builDtDefinitiondMap().entrySet()) {
 			final DtDefinition dtDefinition = entry.getKey();
 			if (dtDefinition.isPersistent()) {
@@ -87,7 +88,7 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin<TaskConfi
 	/**
 	 * Génération d'un DAO c'est à dire des taches afférentes à un objet.
 	 */
-	private static void generateDao(final TaskConfiguration taskConfiguration, final ResultBuilder resultBuilder, final DtDefinition dtDefinition, final Collection<TaskDefinition> taskDefinitionCollection) {
+	private static void generateDao(final FileConfiguration taskConfiguration, final ResultBuilder resultBuilder, final DtDefinition dtDefinition, final Collection<TaskDefinition> taskDefinitionCollection) {
 		final TemplateDAO dao = new TemplateDAO(taskConfiguration, dtDefinition, taskDefinitionCollection);
 
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
@@ -101,7 +102,7 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin<TaskConfi
 	/**
 	 *  Génération d'un PAO c'est à dire des taches afférentes à un package.
 	 */
-	private static void generatePao(final TaskConfiguration taskConfiguration, final ResultBuilder resultBuilder, final Collection<TaskDefinition> taskDefinitionCollection, final String packageName) {
+	private static void generatePao(final FileConfiguration taskConfiguration, final ResultBuilder resultBuilder, final Collection<TaskDefinition> taskDefinitionCollection, final String packageName) {
 		final TemplatePAO pao = new TemplatePAO(taskConfiguration, taskDefinitionCollection, packageName);
 
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()

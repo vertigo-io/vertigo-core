@@ -21,6 +21,7 @@ package io.vertigo.studio.plugins.mda.file;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.lang.Assertion;
+import io.vertigo.studio.mda.FileConfiguration;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
 import io.vertigo.util.MapBuilder;
@@ -34,16 +35,16 @@ import java.util.Properties;
  *
  * @author npiedeloup
  */
-public final class FileInfoGeneratorPlugin extends AbstractGeneratorPlugin<FileInfoConfiguration> {
+public final class FileInfoGeneratorPlugin extends AbstractGeneratorPlugin {
 	/** {@inheritDoc} */
 	@Override
-	public FileInfoConfiguration createConfiguration(final Properties properties) {
-		return new FileInfoConfiguration(properties);
+	public FileConfiguration createConfiguration(final Properties properties) {
+		return new FileConfiguration(properties, "fileinfo");
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void generate(final FileInfoConfiguration fileInfoConfiguration, final ResultBuilder resultBuilder) {
+	public void generate(final FileConfiguration fileInfoConfiguration, final ResultBuilder resultBuilder) {
 		Assertion.checkNotNull(fileInfoConfiguration);
 		Assertion.checkNotNull(resultBuilder);
 		// ---------------------------------------------------------------------
@@ -51,14 +52,14 @@ public final class FileInfoGeneratorPlugin extends AbstractGeneratorPlugin<FileI
 		generateFileInfos(fileInfoConfiguration, resultBuilder);
 	}
 
-	private static void generateFileInfos(final FileInfoConfiguration fileInfoConfiguration, final ResultBuilder resultBuilder) {
+	private static void generateFileInfos(final FileConfiguration fileInfoConfiguration, final ResultBuilder resultBuilder) {
 		final Collection<FileInfoDefinition> fileInfoDefinitions = Home.getDefinitionSpace().getAll(FileInfoDefinition.class);
 		for (final FileInfoDefinition fileInfoDefinition : fileInfoDefinitions) {
 			generateFileInfo(fileInfoConfiguration, resultBuilder, fileInfoDefinition);
 		}
 	}
 
-	private static void generateFileInfo(final FileInfoConfiguration fileInfoConfiguration, final ResultBuilder resultBuilder, final FileInfoDefinition fileInfoDefinition) {
+	private static void generateFileInfo(final FileConfiguration fileInfoConfiguration, final ResultBuilder resultBuilder, final FileInfoDefinition fileInfoDefinition) {
 		final TemplateFileInfoDefinition definition = new TemplateFileInfoDefinition(fileInfoDefinition);
 
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()

@@ -20,6 +20,7 @@ package io.vertigo.studio.plugins.mda.domain;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
+import io.vertigo.studio.mda.FileConfiguration;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
 import io.vertigo.studio.plugins.mda.domain.templates.TemplateDtDefinition;
@@ -38,7 +39,7 @@ import javax.inject.Named;
  *
  * @author pchretien
  */
-public final class JSGeneratorPlugin extends AbstractGeneratorPlugin<DomainConfiguration> {
+public final class JSGeneratorPlugin extends AbstractGeneratorPlugin {
 	private final boolean generateDtResourcesJS;
 	private final boolean generateJsDtDefinitions;
 
@@ -59,13 +60,13 @@ public final class JSGeneratorPlugin extends AbstractGeneratorPlugin<DomainConfi
 
 	/** {@inheritDoc} */
 	@Override
-	public DomainConfiguration createConfiguration(final Properties properties) {
-		return new DomainConfiguration(properties);
+	public FileConfiguration createConfiguration(final Properties properties) {
+		return new FileConfiguration(properties, "domain");
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void generate(final DomainConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
+	public void generate(final FileConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
 		Assertion.checkNotNull(domainConfiguration);
 		Assertion.checkNotNull(resultBuilder);
 		// ---------------------------------------------------------------------
@@ -79,7 +80,7 @@ public final class JSGeneratorPlugin extends AbstractGeneratorPlugin<DomainConfi
 		}
 	}
 
-	private static void generateJsDtDefinitions(final DomainConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
+	private static void generateJsDtDefinitions(final FileConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
 
 		final List<TemplateDtDefinition> dtDefinitions = new ArrayList<>();
 		for (final DtDefinition dtDefinition : DomainUtil.getDtDefinitions()) {
@@ -101,7 +102,7 @@ public final class JSGeneratorPlugin extends AbstractGeneratorPlugin<DomainConfi
 	 * Génère les ressources JS pour les traductions.
 	 * @param domainConfiguration Configuration du domaine.
 	 */
-	private static void generateDtResourcesJS(final DomainConfiguration domainConfiguration, final ResultBuilder result) {
+	private static void generateDtResourcesJS(final FileConfiguration domainConfiguration, final ResultBuilder result) {
 		final List<TemplateDtDefinition> dtDefinitions = new ArrayList<>();
 		for (final DtDefinition dtDefinition : DomainUtil.getDtDefinitions()) {
 			dtDefinitions.add(new TemplateDtDefinition(dtDefinition));
