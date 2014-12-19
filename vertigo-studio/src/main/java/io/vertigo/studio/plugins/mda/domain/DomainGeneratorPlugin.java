@@ -20,9 +20,9 @@ package io.vertigo.studio.plugins.mda.domain;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.mda.FileConfiguration;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
+import io.vertigo.studio.plugins.mda.FileConfiguration;
 import io.vertigo.studio.plugins.mda.domain.templates.TemplateDtDefinition;
 import io.vertigo.studio.plugins.mda.domain.templates.TemplateMethodAnnotations;
 import io.vertigo.util.MapBuilder;
@@ -69,16 +69,11 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public FileConfiguration createConfiguration(final Properties properties) {
-		return new FileConfiguration(properties, "domain");
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void generate(final FileConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
-		Assertion.checkNotNull(domainConfiguration);
+	public void generate(final Properties properties, final ResultBuilder resultBuilder) {
+		Assertion.checkNotNull(properties);
 		Assertion.checkNotNull(resultBuilder);
 		// ---------------------------------------------------------------------
+		final FileConfiguration domainConfiguration = new FileConfiguration(properties, "domain");
 		/* Génération des ressources afférentes au DT. */
 		if (generateDtResources) {
 			generateDtResources(domainConfiguration, resultBuilder);
@@ -104,7 +99,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin {
 				.put("dtDefinitions", DomainUtil.getDtDefinitions())
 				.build();
 
-		createFileGenerator(domainConfiguration, mapRoot, "DtDefinitions", domainConfiguration.getPackageName(), ".java", "templates/dtdefinitions.ftl")
+		createFileGenerator(domainConfiguration, mapRoot, "DtDefinitions", domainConfiguration.getPackageName(), ".java", "domain/templates/dtdefinitions.ftl")
 				.generateFile(resultBuilder);
 
 	}
@@ -123,7 +118,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin {
 				.put("annotations", new TemplateMethodAnnotations(generateJpaAnnotations))
 				.build();
 
-		createFileGenerator(domainConfiguration, mapRoot, definition.getClassSimpleName(), definition.getPackageName(), ".java", "templates/dto.ftl")
+		createFileGenerator(domainConfiguration, mapRoot, definition.getClassSimpleName(), definition.getPackageName(), ".java", "domain/templates/dto.ftl")
 				.generateFile(resultBuilder);
 	}
 
@@ -143,10 +138,10 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin {
 					.put("dtDefinitions", dtDefinitionCollection)
 					.build();
 
-			createFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".java", "templates/resources.ftl")
+			createFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".java", "domain/templates/resources.ftl")
 					.generateFile(resultBuilder);
 
-			createFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".properties", "templates/properties.ftl")
+			createFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".properties", "domain/templates/properties.ftl")
 					.generateFile(resultBuilder);
 		}
 	}

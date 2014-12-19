@@ -19,7 +19,6 @@
 package io.vertigo.studio.plugins.mda;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.mda.FileConfiguration;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.domain.templates.TemplateMethodStringUtil;
 

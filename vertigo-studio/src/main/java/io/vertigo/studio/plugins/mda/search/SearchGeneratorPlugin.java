@@ -21,9 +21,9 @@ package io.vertigo.studio.plugins.mda.search;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.search.metamodel.IndexDefinition;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.mda.FileConfiguration;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
+import io.vertigo.studio.plugins.mda.FileConfiguration;
 import io.vertigo.util.MapBuilder;
 
 import java.util.Map;
@@ -35,18 +35,14 @@ import java.util.Properties;
  * @author dchallas
  */
 public final class SearchGeneratorPlugin extends AbstractGeneratorPlugin {
-	/** {@inheritDoc}  */
-	@Override
-	public FileConfiguration createConfiguration(final Properties properties) {
-		return new FileConfiguration(properties, "search");
-	}
 
 	/** {@inheritDoc}  */
 	@Override
-	public void generate(final FileConfiguration searchConfiguration, final ResultBuilder resultBuilder) {
-		Assertion.checkNotNull(searchConfiguration);
+	public void generate(final Properties properties, final ResultBuilder resultBuilder) {
+		Assertion.checkNotNull(properties);
 		Assertion.checkNotNull(resultBuilder);
 		//---------------------------------------------------------------------
+		final FileConfiguration searchConfiguration = new FileConfiguration(properties, "search");
 		generateDtDefinitions(searchConfiguration, resultBuilder);
 	}
 
@@ -63,7 +59,7 @@ public final class SearchGeneratorPlugin extends AbstractGeneratorPlugin {
 				.put("indexType", new TemplateMethodIndexType())
 				.build();
 
-		createFileGenerator(searchConfiguration, mapRoot, "schema", "solr/" + indexDefinition.getName() + "/conf", ".xml", "schema.ftl")
+		createFileGenerator(searchConfiguration, mapRoot, "schema", "solr/" + indexDefinition.getName() + "/conf", ".xml", "search/schema.ftl")
 				.generateFile(resultBuilder);
 	}
 }

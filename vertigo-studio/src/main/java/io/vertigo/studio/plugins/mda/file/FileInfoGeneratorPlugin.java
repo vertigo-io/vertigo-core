@@ -21,9 +21,9 @@ package io.vertigo.studio.plugins.mda.file;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.mda.FileConfiguration;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
+import io.vertigo.studio.plugins.mda.FileConfiguration;
 import io.vertigo.util.MapBuilder;
 
 import java.util.Collection;
@@ -38,16 +38,11 @@ import java.util.Properties;
 public final class FileInfoGeneratorPlugin extends AbstractGeneratorPlugin {
 	/** {@inheritDoc} */
 	@Override
-	public FileConfiguration createConfiguration(final Properties properties) {
-		return new FileConfiguration(properties, "fileinfo");
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void generate(final FileConfiguration fileInfoConfiguration, final ResultBuilder resultBuilder) {
-		Assertion.checkNotNull(fileInfoConfiguration);
+	public void generate(final Properties properties, final ResultBuilder resultBuilder) {
+		Assertion.checkNotNull(properties);
 		Assertion.checkNotNull(resultBuilder);
 		// ---------------------------------------------------------------------
+		final FileConfiguration fileInfoConfiguration = new FileConfiguration(properties, "fileinfo");
 		/* Générations des FI. */
 		generateFileInfos(fileInfoConfiguration, resultBuilder);
 	}
@@ -67,7 +62,7 @@ public final class FileInfoGeneratorPlugin extends AbstractGeneratorPlugin {
 				.put("packageName", fileInfoConfiguration.getPackageName())
 				.build();
 
-		createFileGenerator(fileInfoConfiguration, mapRoot, definition.getClassSimpleName(), fileInfoConfiguration.getPackageName(), ".java", "fileInfo.ftl")
+		createFileGenerator(fileInfoConfiguration, mapRoot, definition.getClassSimpleName(), fileInfoConfiguration.getPackageName(), ".java", "file/fileInfo.ftl")
 				.generateFile(resultBuilder);
 	}
 }

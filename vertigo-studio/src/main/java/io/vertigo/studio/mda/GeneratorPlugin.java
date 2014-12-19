@@ -29,16 +29,9 @@ import java.util.Properties;
  */
 public interface GeneratorPlugin extends Plugin {
 	/**
-	 * Positionne les propriétés.
-	 * @param properties Propriétés.
-	 * @return Configuration de la génération
-	 */
-	FileConfiguration createConfiguration(Properties properties);
-
-	/**
 	 * Génération d'un fichier à partir d'une source et de paramètres.
-	 * @param configuration Configuration de la génération
+	 * @param properties Propriétés.
 	 * @param resultBuilder Builder
 	 */
-	void generate(final FileConfiguration configuration, final ResultBuilder resultBuilder);
+	void generate(final Properties properties, final ResultBuilder resultBuilder);
 }

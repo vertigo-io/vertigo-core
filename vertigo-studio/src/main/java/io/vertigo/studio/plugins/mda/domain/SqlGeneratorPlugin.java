@@ -21,9 +21,9 @@ package io.vertigo.studio.plugins.mda.domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-import io.vertigo.studio.mda.FileConfiguration;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
+import io.vertigo.studio.plugins.mda.FileConfiguration;
 import io.vertigo.studio.plugins.mda.domain.templates.TemplateDtDefinition;
 import io.vertigo.studio.plugins.mda.domain.templates.TemplateMethodSql;
 import io.vertigo.util.MapBuilder;
@@ -70,16 +70,11 @@ public final class SqlGeneratorPlugin extends AbstractGeneratorPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public FileConfiguration createConfiguration(final Properties properties) {
-		return new FileConfiguration(properties, "domain");
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void generate(final FileConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
-		Assertion.checkNotNull(domainConfiguration);
+	public void generate(final Properties properties, final ResultBuilder resultBuilder) {
+		Assertion.checkNotNull(properties);
 		Assertion.checkNotNull(resultBuilder);
 		// ---------------------------------------------------------------------
+		final FileConfiguration domainConfiguration = new FileConfiguration(properties, "domain");
 		generateSql(domainConfiguration, resultBuilder);
 	}
 
@@ -98,12 +93,15 @@ public final class SqlGeneratorPlugin extends AbstractGeneratorPlugin {
 				.put("basecible", baseCible)
 				// Oracle limite le nom des entités (index) à 30 charactères. Il faut alors tronquer les noms composés.
 				.put("truncateNames", baseCible == "Oracle");
-
-		mapRootBuilder.put("tableSpaceData", tableSpaceData.getOrElse(null));
-		mapRootBuilder.put("tableSpaceIndex", tableSpaceIndex.getOrElse(null));
+		if (tableSpaceData.isDefined()) {
+			mapRootBuilder.put("tableSpaceData", tableSpaceData.get());
+		}
+		if (tableSpaceIndex.isDefined()) {
+			mapRootBuilder.put("tableSpaceIndex", tableSpaceIndex.get());
+		}
 		final Map<String, Object> mapRoot = mapRootBuilder.build();
 
-		createFileGenerator(domainConfiguration, mapRoot, "crebas", "sqlgen", ".sql", "templates/sql.ftl")
+		createFileGenerator(domainConfiguration, mapRoot, "crebas", "sqlgen", ".sql", "domain/templates/sql.ftl")
 				.generateFile(resultBuilder);
 	}
 

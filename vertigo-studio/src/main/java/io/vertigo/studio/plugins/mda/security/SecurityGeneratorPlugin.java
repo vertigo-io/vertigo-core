@@ -21,9 +21,9 @@ package io.vertigo.studio.plugins.mda.security;
 import io.vertigo.core.Home;
 import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.metamodel.Role;
-import io.vertigo.studio.mda.FileConfiguration;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
+import io.vertigo.studio.plugins.mda.FileConfiguration;
 import io.vertigo.util.MapBuilder;
 
 import java.util.Collection;
@@ -36,11 +36,6 @@ import java.util.Properties;
  * @author pchretien
  */
 public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin {
-	/** {@inheritDoc}  */
-	@Override
-	public FileConfiguration createConfiguration(final Properties properties) {
-		return new FileConfiguration(properties, "security");
-	}
 
 	private static Collection<Role> getRoles() {
 		// return Home.getNameSpace().getDefinitions(Role.class);
@@ -49,10 +44,11 @@ public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void generate(final FileConfiguration securityConfiguration, final ResultBuilder resultBuilder) {
-		Assertion.checkNotNull(securityConfiguration);
+	public void generate(final Properties properties, final ResultBuilder resultBuilder) {
+		Assertion.checkNotNull(properties);
 		Assertion.checkNotNull(resultBuilder);
 		//---------------------------------------------------------------------
+		final FileConfiguration securityConfiguration = new FileConfiguration(properties, "security");
 		generateRole(securityConfiguration, resultBuilder);
 	}
 
@@ -68,7 +64,7 @@ public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin {
 					.put("packageName", securityConfiguration.getPackageName())
 					.build();
 
-			createFileGenerator(securityConfiguration, mapRoot, "Role", securityConfiguration.getPackageName(), ".java", "role.ftl")
+			createFileGenerator(securityConfiguration, mapRoot, "Role", securityConfiguration.getPackageName(), ".java", "security/role.ftl")
 					.generateFile(resultBuilder);
 		}
 	}

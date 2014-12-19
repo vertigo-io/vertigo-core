@@ -19,7 +19,6 @@
 package io.vertigo.studio.impl.mda;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.mda.FileConfiguration;
 import io.vertigo.studio.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaManager;
 import io.vertigo.studio.mda.Result;
@@ -52,8 +51,7 @@ public final class MdaManagerImpl implements MdaManager {
 		final ResultBuilder resultBuilder = new ResultBuilder();
 		//Génèration des objets issus de la modélisation
 		for (final GeneratorPlugin generatorPlugin : generatorPlugins) {
-			final FileConfiguration c = generatorPlugin.createConfiguration(properties);
-			generatorPlugin.generate(c, resultBuilder);
+			generatorPlugin.generate(properties, resultBuilder);
 		}
 		return resultBuilder.build();
 	}

@@ -20,9 +20,9 @@ package io.vertigo.studio.plugins.mda.domain;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.mda.FileConfiguration;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
+import io.vertigo.studio.plugins.mda.FileConfiguration;
 import io.vertigo.studio.plugins.mda.domain.templates.TemplateDtDefinition;
 import io.vertigo.util.MapBuilder;
 
@@ -60,16 +60,11 @@ public final class JSGeneratorPlugin extends AbstractGeneratorPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public FileConfiguration createConfiguration(final Properties properties) {
-		return new FileConfiguration(properties, "domain");
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void generate(final FileConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
-		Assertion.checkNotNull(domainConfiguration);
+	public void generate(final Properties properties, final ResultBuilder resultBuilder) {
+		Assertion.checkNotNull(properties);
 		Assertion.checkNotNull(resultBuilder);
 		// ---------------------------------------------------------------------
+		final FileConfiguration domainConfiguration = new FileConfiguration(properties, "domain");
 		/* Génération des ressources afférentes au DT mais pour la partie JS.*/
 		if (generateDtResourcesJS) {
 			generateDtResourcesJS(domainConfiguration, resultBuilder);
@@ -93,7 +88,7 @@ public final class JSGeneratorPlugin extends AbstractGeneratorPlugin {
 				.put("dtDefinitions", dtDefinitions)
 				.build();
 
-		createFileGenerator(domainConfiguration, mapRoot, "DtDefinitions", domainConfiguration.getPackageName(), ".js", "templates/js.ftl")
+		createFileGenerator(domainConfiguration, mapRoot, "DtDefinitions", domainConfiguration.getPackageName(), ".js", "domain/templates/js.ftl")
 				.generateFile(resultBuilder);
 
 	}
@@ -117,7 +112,7 @@ public final class JSGeneratorPlugin extends AbstractGeneratorPlugin {
 				.put("dtDefinitions", dtDefinitions)
 				.build();
 
-		createFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".js", "templates/propertiesJS.ftl").generateFile(result);
+		createFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".js", "domain/templates/propertiesJS.ftl").generateFile(result);
 	}
 
 }
