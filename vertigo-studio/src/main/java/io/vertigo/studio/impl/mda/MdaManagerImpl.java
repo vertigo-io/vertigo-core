@@ -19,7 +19,7 @@
 package io.vertigo.studio.impl.mda;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.mda.Configuration;
+import io.vertigo.studio.mda.FileConfiguration;
 import io.vertigo.studio.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaManager;
 import io.vertigo.studio.mda.Result;
@@ -32,14 +32,14 @@ import javax.inject.Inject;
 
 /**
  * Implémentation du MDA.
- * 
+ *
  * @author pchretien, dchallas
  */
 public final class MdaManagerImpl implements MdaManager {
-	private final List<GeneratorPlugin<Configuration>> generatorPlugins;
+	private final List<GeneratorPlugin> generatorPlugins;
 
 	@Inject
-	public MdaManagerImpl(final List<GeneratorPlugin<Configuration>> generatorPlugins) {
+	public MdaManagerImpl(final List<GeneratorPlugin> generatorPlugins) {
 		Assertion.checkNotNull(generatorPlugins);
 		//---------------------------------------------------------------------
 		this.generatorPlugins = java.util.Collections.unmodifiableList(generatorPlugins);
@@ -51,8 +51,8 @@ public final class MdaManagerImpl implements MdaManager {
 		//Création d'un objet listant les résultats
 		final ResultBuilder resultBuilder = new ResultBuilder();
 		//Génèration des objets issus de la modélisation
-		for (final GeneratorPlugin<Configuration> generatorPlugin : generatorPlugins) {
-			final Configuration c = generatorPlugin.createConfiguration(properties);
+		for (final GeneratorPlugin generatorPlugin : generatorPlugins) {
+			final FileConfiguration c = generatorPlugin.createConfiguration(properties);
 			generatorPlugin.generate(c, resultBuilder);
 		}
 		return resultBuilder.build();

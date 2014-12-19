@@ -21,6 +21,7 @@ package io.vertigo.studio.plugins.mda.security;
 import io.vertigo.core.Home;
 import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.metamodel.Role;
+import io.vertigo.studio.mda.FileConfiguration;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
 import io.vertigo.util.MapBuilder;
@@ -34,11 +35,11 @@ import java.util.Properties;
  *
  * @author pchretien
  */
-public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin<SecurityConfiguration> {
+public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin {
 	/** {@inheritDoc}  */
 	@Override
-	public SecurityConfiguration createConfiguration(final Properties properties) {
-		return new SecurityConfiguration(properties);
+	public FileConfiguration createConfiguration(final Properties properties) {
+		return new FileConfiguration(properties, "security");
 	}
 
 	private static Collection<Role> getRoles() {
@@ -48,14 +49,14 @@ public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin<Secur
 
 	/** {@inheritDoc} */
 	@Override
-	public void generate(final SecurityConfiguration securityConfiguration, final ResultBuilder resultBuilder) {
+	public void generate(final FileConfiguration securityConfiguration, final ResultBuilder resultBuilder) {
 		Assertion.checkNotNull(securityConfiguration);
 		Assertion.checkNotNull(resultBuilder);
 		//---------------------------------------------------------------------
 		generateRole(securityConfiguration, resultBuilder);
 	}
 
-	private static void generateRole(final SecurityConfiguration securityConfiguration, final ResultBuilder resultBuilder) {
+	private static void generateRole(final FileConfiguration securityConfiguration, final ResultBuilder resultBuilder) {
 		final Collection<Role> roles = getRoles();
 		if (!roles.isEmpty()) {
 			//On ne genere aucun fichier si aucun rele.
