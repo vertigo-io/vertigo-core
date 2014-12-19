@@ -18,7 +18,6 @@
  */
 package io.vertigo.studio.plugins.mda.domain;
 
-import static io.vertigo.studio.impl.mda.PropertiesUtil.getPropertyNotNull;
 import io.vertigo.studio.plugins.mda.AbstractConfiguration;
 
 import java.util.Properties;
@@ -29,19 +28,12 @@ import java.util.Properties;
  * @author dchallas
  */
 final class DomainConfiguration extends AbstractConfiguration {
-	private final String domainDictionaryClassName;
-
 	/**
 	 * Constructeur.
 	 * @param properties propriétes
 	 */
 	DomainConfiguration(final Properties properties) {
 		super(properties, "domain");
-		//---------------------------------------------------------------------
-		domainDictionaryClassName = getPropertyNotNull(properties, "domain.dictionaryClassName", "domain.dictionaryClassName doit être renseigné et préciser le nom de la class Dictionaire des DtDefinitions");
 	}
 
-	String getDomainDictionaryClassName() {
-		return domainDictionaryClassName;
-	}
 }

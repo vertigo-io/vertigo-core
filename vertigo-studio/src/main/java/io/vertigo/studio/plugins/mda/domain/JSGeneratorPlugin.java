@@ -88,11 +88,11 @@ public final class JSGeneratorPlugin extends AbstractGeneratorPlugin<DomainConfi
 
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
 				.put("packageName", domainConfiguration.getPackageName())
-				.put("classSimpleName", domainConfiguration.getDomainDictionaryClassName())
+				.put("classSimpleName", "DtDefinitions")
 				.put("dtDefinitions", dtDefinitions)
 				.build();
 
-		createFileGenerator(domainConfiguration, mapRoot, domainConfiguration.getDomainDictionaryClassName(), domainConfiguration.getPackageName(), ".js", "templates/js.ftl")
+		createFileGenerator(domainConfiguration, mapRoot, "DtDefinitions", domainConfiguration.getPackageName(), ".js", "templates/js.ftl")
 				.generateFile(resultBuilder);
 
 	}
@@ -107,7 +107,7 @@ public final class JSGeneratorPlugin extends AbstractGeneratorPlugin<DomainConfi
 			dtDefinitions.add(new TemplateDtDefinition(dtDefinition));
 		}
 
-		final String simpleClassName = domainConfiguration.getDomainDictionaryClassName() + "Label";
+		final String simpleClassName = "DtDefinitions" + "Label";
 		final String packageName = domainConfiguration.getPackageName();
 
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
