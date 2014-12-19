@@ -64,10 +64,10 @@ public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin<Secur
 			final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
 					.put("roles", roles)
 					.put("classSimpleName", "Role")
-					.put("packageName", securityConfiguration.getSecurityPackage())
+					.put("packageName", securityConfiguration.getPackageName())
 					.build();
 
-			createFileGenerator(securityConfiguration, mapRoot, "Role", securityConfiguration.getSecurityPackage(), ".java", "role.ftl")
+			createFileGenerator(securityConfiguration, mapRoot, "Role", securityConfiguration.getPackageName(), ".java", "role.ftl")
 					.generateFile(resultBuilder);
 		}
 	}

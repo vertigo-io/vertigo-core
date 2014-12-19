@@ -24,7 +24,7 @@ import java.util.Properties;
 
 /**
  * Configuration du Task Generator.
- * 
+ *
  * @author dchallas
  */
 final class TaskConfiguration extends AbstractConfiguration {
@@ -33,10 +33,6 @@ final class TaskConfiguration extends AbstractConfiguration {
 	 * @param properties propriétes
 	 */
 	TaskConfiguration(final Properties properties) {
-		super(properties);
-	}
-
-	String getDaoPackage() {
-		return getProjectPackageName() + ".dao";
+		super(properties, "dao");
 	}
 }

@@ -63,10 +63,10 @@ public final class FileInfoGeneratorPlugin extends AbstractGeneratorPlugin<FileI
 
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
 				.put("fiDefinition", definition)
-				.put("packageName", fileInfoConfiguration.getFilePackage())
+				.put("packageName", fileInfoConfiguration.getPackageName())
 				.build();
 
-		createFileGenerator(fileInfoConfiguration, mapRoot, definition.getClassSimpleName(), fileInfoConfiguration.getFilePackage(), ".java", "fileInfo.ftl")
+		createFileGenerator(fileInfoConfiguration, mapRoot, definition.getClassSimpleName(), fileInfoConfiguration.getPackageName(), ".java", "fileInfo.ftl")
 				.generateFile(resultBuilder);
 	}
 }

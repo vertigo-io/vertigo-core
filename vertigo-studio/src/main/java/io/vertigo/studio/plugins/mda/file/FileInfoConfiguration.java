@@ -24,7 +24,7 @@ import java.util.Properties;
 
 /**
  * Configuration du FileInfoGenerator.
- * 
+ *
  * @author npiedeloup
  */
 final class FileInfoConfiguration extends AbstractConfiguration {
@@ -34,10 +34,6 @@ final class FileInfoConfiguration extends AbstractConfiguration {
 	 * @param properties propriétes
 	 */
 	FileInfoConfiguration(final Properties properties) {
-		super(properties);
-	}
-
-	String getFilePackage() {
-		return getProjectPackageName() + ".fileinfo";
+		super(properties, "fileinfo");
 	}
 }

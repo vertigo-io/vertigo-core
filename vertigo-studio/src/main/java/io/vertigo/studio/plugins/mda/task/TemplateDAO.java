@@ -51,7 +51,7 @@ public final class TemplateDAO {
 		// -----------------------------------------------------------------
 		this.dtDefinition = dtDefinition;
 		//On construit le nom du package à partir du package de la DT dans le quel on supprime le début.
-		packageName = taskConfiguration.getDaoPackage() + definitionPackageName.substring(packageNamePrefix.length());
+		packageName = taskConfiguration.getPackageName() + definitionPackageName.substring(packageNamePrefix.length());
 
 		boolean hasOption = false;
 		taskDefinitions = new ArrayList<>();

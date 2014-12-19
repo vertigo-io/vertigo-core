@@ -36,13 +36,9 @@ final class DomainConfiguration extends AbstractConfiguration {
 	 * @param properties propriétes
 	 */
 	DomainConfiguration(final Properties properties) {
-		super(properties);
+		super(properties, "domain");
 		//---------------------------------------------------------------------
 		domainDictionaryClassName = getPropertyNotNull(properties, "domain.dictionaryClassName", "domain.dictionaryClassName doit être renseigné et préciser le nom de la class Dictionaire des DtDefinitions");
-	}
-
-	String getDomainPackage() {
-		return getProjectPackageName() + ".domain";
 	}
 
 	String getDomainDictionaryClassName() {

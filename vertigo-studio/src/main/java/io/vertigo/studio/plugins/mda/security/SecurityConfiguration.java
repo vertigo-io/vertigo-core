@@ -24,7 +24,7 @@ import java.util.Properties;
 
 /**
  * Security Generator configuration.
- * 
+ *
  * @author dchallas
  */
 final class SecurityConfiguration extends AbstractConfiguration {
@@ -34,13 +34,6 @@ final class SecurityConfiguration extends AbstractConfiguration {
 	 * @param properties properties
 	 */
 	SecurityConfiguration(final Properties properties) {
-		super(properties);
-	}
-
-	/**
-	 * @return Package use
-	 */
-	String getSecurityPackage() {
-		return getProjectPackageName() + ".security";
+		super(properties, "security");
 	}
 }

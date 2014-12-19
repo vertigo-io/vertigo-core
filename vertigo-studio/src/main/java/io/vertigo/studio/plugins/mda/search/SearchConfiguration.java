@@ -24,7 +24,7 @@ import java.util.Properties;
 
 /**
  * Configuration du SearchGenerator.
- * 
+ *
  * @author dchallas
  */
 final class SearchConfiguration extends AbstractConfiguration {
@@ -33,6 +33,6 @@ final class SearchConfiguration extends AbstractConfiguration {
 	 * @param properties propriétes
 	 */
 	SearchConfiguration(final Properties properties) {
-		super(properties);
+		super(properties, "search");
 	}
 }

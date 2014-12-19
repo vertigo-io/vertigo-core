@@ -44,18 +44,26 @@ public class AbstractConfiguration implements Configuration {
 	 */
 	private final String encoding;
 
+	private final String suffix;
+
 	/**
 	 * Chargement des paramètres depuis le fichier properties.
 	 *
 	 * @param properties Paramètres de la génération
 	 */
-	protected AbstractConfiguration(final Properties properties) {
+	protected AbstractConfiguration(final Properties properties, final String suffix) {
 		Assertion.checkNotNull(properties);
+		Assertion.checkNotNull(suffix);
 		// ---------------------------------------------------------------------
+		this.suffix = suffix;
 		targetGenDir = getPropertyNotNull(properties, "targetGenDir", "Le repertoire des fichiers generes [targetGenDir] doit etre renseigné !");
 		Assertion.checkState(targetGenDir.endsWith("/"), "Le chemin doit finir par '/'.");
 		projectPackageName = getPropertyNotNull(properties, "project.packagename", "le package racine du projet doit être renseigne ! [project.packagename]");
 		encoding = getPropertyNotNull(properties, "encoding", "l'encoding des fichiers gérénés [encoding] doit etre renseigné !");
+	}
+
+	public final String getPackageName() {
+		return getProjectPackageName() + "." + suffix;
 	}
 
 	/**

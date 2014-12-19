@@ -98,12 +98,12 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin<DomainC
 	private static void generateDtDefinitions(final DomainConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
 
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
-				.put("packageName", domainConfiguration.getDomainPackage())
+				.put("packageName", domainConfiguration.getPackageName())
 				.put("classSimpleName", domainConfiguration.getDomainDictionaryClassName())
 				.put("dtDefinitions", DomainUtil.getDtDefinitions())
 				.build();
 
-		createFileGenerator(domainConfiguration, mapRoot, domainConfiguration.getDomainDictionaryClassName(), domainConfiguration.getDomainPackage(), ".java", "templates/dtdefinitions.ftl")
+		createFileGenerator(domainConfiguration, mapRoot, domainConfiguration.getDomainDictionaryClassName(), domainConfiguration.getPackageName(), ".java", "templates/dtdefinitions.ftl")
 				.generateFile(resultBuilder);
 
 	}
