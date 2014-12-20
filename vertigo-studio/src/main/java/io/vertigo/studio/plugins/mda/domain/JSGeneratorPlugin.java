@@ -29,7 +29,6 @@ import io.vertigo.util.MapBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -60,11 +59,10 @@ public final class JSGeneratorPlugin extends AbstractGeneratorPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void generate(final Properties properties, final ResultBuilder resultBuilder) {
-		Assertion.checkNotNull(properties);
+	public void generate(final FileConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
+		Assertion.checkNotNull(domainConfiguration);
 		Assertion.checkNotNull(resultBuilder);
 		// ---------------------------------------------------------------------
-		final FileConfiguration domainConfiguration = new FileConfiguration(properties, "domain");
 		/* Génération des ressources afférentes au DT mais pour la partie JS.*/
 		if (generateDtResourcesJS) {
 			generateDtResourcesJS(domainConfiguration, resultBuilder);
@@ -83,12 +81,12 @@ public final class JSGeneratorPlugin extends AbstractGeneratorPlugin {
 		}
 
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
-				.put("packageName", domainConfiguration.getPackageName())
+				.put("packageName", domainConfiguration.getProjectPackageName() + ".domain")
 				.put("classSimpleName", "DtDefinitions")
 				.put("dtDefinitions", dtDefinitions)
 				.build();
 
-		createFileGenerator(domainConfiguration, mapRoot, "DtDefinitions", domainConfiguration.getPackageName(), ".js", "domain/templates/js.ftl")
+		createFileGenerator(domainConfiguration, mapRoot, "DtDefinitions", domainConfiguration.getProjectPackageName() + ".domain", ".js", "domain/templates/js.ftl")
 				.generateFile(resultBuilder);
 
 	}
@@ -104,7 +102,7 @@ public final class JSGeneratorPlugin extends AbstractGeneratorPlugin {
 		}
 
 		final String simpleClassName = "DtDefinitions" + "Label";
-		final String packageName = domainConfiguration.getPackageName();
+		final String packageName = domainConfiguration.getProjectPackageName() + ".domain";
 
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
 				.put("packageName", packageName)

@@ -29,14 +29,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 /*
  * @author pchretien
  */
 public final class AppConfig {
 	private final Map<String, String> params;
-	private final Properties envParams;
 
 	private final List<ModuleConfig> modules;
 	//---
@@ -48,8 +46,7 @@ public final class AppConfig {
 	@JsonExclude
 	private final Option<VCommandEngine> commandEngine;
 
-	AppConfig(final Properties envParams, final Map<String, String> params, final List<ModuleConfig> moduleConfigs, final AopEngine aopEngine, final Option<ElasticaEngine> elasticaEngine, final Option<VCommandEngine> commandEngine, final boolean silence) {
-		Assertion.checkNotNull(envParams);
+	AppConfig(final Map<String, String> params, final List<ModuleConfig> moduleConfigs, final AopEngine aopEngine, final Option<ElasticaEngine> elasticaEngine, final Option<VCommandEngine> commandEngine, final boolean silence) {
 		Assertion.checkNotNull(params);
 		Assertion.checkNotNull(moduleConfigs);
 		//---
@@ -58,17 +55,12 @@ public final class AppConfig {
 		Assertion.checkNotNull(commandEngine);
 		//---------------------------------------------------------------------
 		this.params = params;
-		this.envParams = envParams;
 		this.modules = Collections.unmodifiableList(new ArrayList<>(moduleConfigs));
 		//---
 		this.silence = silence;
 		this.aopEngine = aopEngine;
 		this.elasticaEngine = elasticaEngine;
 		this.commandEngine = commandEngine;
-	}
-
-	public Properties getEnvParams() {
-		return envParams;
 	}
 
 	public Map<String, String> getParams() {

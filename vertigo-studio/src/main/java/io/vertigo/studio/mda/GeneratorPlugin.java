@@ -19,8 +19,7 @@
 package io.vertigo.studio.mda;
 
 import io.vertigo.lang.Plugin;
-
-import java.util.Properties;
+import io.vertigo.studio.plugins.mda.FileConfiguration;
 
 /**
  * Plugin de génération de fichiers.
@@ -30,8 +29,7 @@ import java.util.Properties;
 public interface GeneratorPlugin extends Plugin {
 	/**
 	 * Génération d'un fichier à partir d'une source et de paramètres.
-	 * @param properties Propriétés.
 	 * @param resultBuilder Builder
 	 */
-	void generate(final Properties properties, final ResultBuilder resultBuilder);
+	void generate(final FileConfiguration fileConfiguration, final ResultBuilder resultBuilder);
 }

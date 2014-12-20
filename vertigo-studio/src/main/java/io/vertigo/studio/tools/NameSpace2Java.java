@@ -26,7 +26,6 @@ import io.vertigo.util.ClassUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * Génération des fichiers Java et SQL à patrir de fichiers template freemarker.
@@ -58,16 +57,16 @@ public final class NameSpace2Java {
 			goalClazzList.add(GenerateGoal.class);
 			//		goalClazzList.add(ReportingGoal.class);
 			//-------------------------------
-			process(app.getAppConfig().getEnvParams(), goalClazzList);
+			process(goalClazzList);
 		} finally {
 			Home.stop();
 		}
 	}
 
-	private static void process(final Properties properties, final List<Class<? extends Goal>> goalClazzList) {
+	private static void process(final List<Class<? extends Goal>> goalClazzList) {
 		for (final Class<? extends Goal> goalClazz : goalClazzList) {
 			final Goal goal = ClassUtil.newInstance(goalClazz);
-			goal.process(properties);
+			goal.process();
 		}
 	}
 }

@@ -20,8 +20,6 @@ package io.vertigo.studio.plugins.mda;
 
 import io.vertigo.lang.Assertion;
 
-import java.util.Properties;
-
 /**
  * Configuration du generateur de fichiers.
  *
@@ -42,42 +40,23 @@ public final class FileConfiguration {
 	 */
 	private final String encoding;
 
-	private final String suffix;
+	//	private final String suffix;
 
 	/**
 	 * Chargement des paramètres depuis le fichier properties.
-	 *
-	 * @param properties Paramètres de la génération
 	 */
-	public FileConfiguration(final Properties properties, final String suffix) {
-		Assertion.checkNotNull(properties);
-		Assertion.checkNotNull(suffix);
+	public FileConfiguration(
+			String targetGenDir,
+			String projectPackageName,
+			String encoding) {
+		Assertion.checkArgNotEmpty(targetGenDir, "Le repertoire des fichiers generes [targetGenDir] doit etre renseigné !");
+		Assertion.checkArgNotEmpty(projectPackageName, "le package racine du projet doit être renseigne ! ");
+		Assertion.checkArgNotEmpty(encoding, "l'encoding des fichiers gérénés [encoding] doit etre renseigné !");
 		// ---------------------------------------------------------------------
-		this.suffix = suffix;
-		targetGenDir = getPropertyNotNull(properties, "targetGenDir", "Le repertoire des fichiers generes [targetGenDir] doit etre renseigné !");
+		this.targetGenDir = targetGenDir;
+		this.projectPackageName = projectPackageName;
+		this.encoding = encoding;
 		Assertion.checkState(targetGenDir.endsWith("/"), "Le chemin doit finir par '/'.");
-		projectPackageName = getPropertyNotNull(properties, "project.packagename", "le package racine du projet doit être renseigne ! [project.packagename]");
-		encoding = getPropertyNotNull(properties, "encoding", "l'encoding des fichiers gérénés [encoding] doit etre renseigné !");
-	}
-
-	/**
-	 * Retourne une propriété non null.
-	 * @param properties Propriétés
-	 * @param propertyName Nom de la propriété recherchée
-	 * @param messageIfNull Message en cas de propriété non trouvée
-	 * @return Valeur de la propriété
-	 */
-	private static String getPropertyNotNull(final Properties properties, final String propertyName, final String messageIfNull) {
-		Assertion.checkNotNull(properties);
-		Assertion.checkNotNull(propertyName);
-		//---------------------------------------------------------------------
-		final String property = properties.getProperty(propertyName, null);
-		Assertion.checkNotNull(property, messageIfNull);
-		return property.trim();
-	}
-
-	public String getPackageName() {
-		return getProjectPackageName() + "." + suffix;
 	}
 
 	/**

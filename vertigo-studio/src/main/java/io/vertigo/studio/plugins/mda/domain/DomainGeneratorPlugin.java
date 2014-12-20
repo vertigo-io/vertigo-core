@@ -30,7 +30,6 @@ import io.vertigo.util.MapBuilder;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -69,11 +68,10 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void generate(final Properties properties, final ResultBuilder resultBuilder) {
-		Assertion.checkNotNull(properties);
+	public void generate(final FileConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
+		Assertion.checkNotNull(domainConfiguration);
 		Assertion.checkNotNull(resultBuilder);
 		// ---------------------------------------------------------------------
-		final FileConfiguration domainConfiguration = new FileConfiguration(properties, "domain");
 		/* Génération des ressources afférentes au DT. */
 		if (generateDtResources) {
 			generateDtResources(domainConfiguration, resultBuilder);
@@ -94,12 +92,12 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin {
 	private static void generateDtDefinitions(final FileConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
 
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
-				.put("packageName", domainConfiguration.getPackageName())
+				.put("packageName", domainConfiguration.getProjectPackageName() + ".domain")
 				.put("classSimpleName", "DtDefinitions")
 				.put("dtDefinitions", DomainUtil.getDtDefinitions())
 				.build();
 
-		createFileGenerator(domainConfiguration, mapRoot, "DtDefinitions", domainConfiguration.getPackageName(), ".java", "domain/templates/dtdefinitions.ftl")
+		createFileGenerator(domainConfiguration, mapRoot, "DtDefinitions", domainConfiguration.getProjectPackageName() + ".domain", ".java", "domain/templates/dtdefinitions.ftl")
 				.generateFile(resultBuilder);
 
 	}

@@ -28,6 +28,10 @@
 
 	<module name="vertigo-studio">
 		<component api="MdaManager" class="io.vertigo.studio.impl.mda.MdaManagerImpl">
+			<param name="projectPackageName" value="io.vertigo.dynamock" />
+			<param name="targetGenDir" value="target/javagen/" />
+			<param name="encoding" value="utf8" />
+ 
 			<plugin class="io.vertigo.studio.plugins.mda.domain.DomainGeneratorPlugin">
 				<param name="generateDtResources" value="true" />
 				<param name="generateJpaAnnotations" value="true" />

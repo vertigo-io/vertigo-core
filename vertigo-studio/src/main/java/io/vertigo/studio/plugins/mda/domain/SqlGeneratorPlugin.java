@@ -31,7 +31,6 @@ import io.vertigo.util.MapBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -70,11 +69,10 @@ public final class SqlGeneratorPlugin extends AbstractGeneratorPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void generate(final Properties properties, final ResultBuilder resultBuilder) {
-		Assertion.checkNotNull(properties);
+	public void generate(final FileConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
+		Assertion.checkNotNull(domainConfiguration);
 		Assertion.checkNotNull(resultBuilder);
 		// ---------------------------------------------------------------------
-		final FileConfiguration domainConfiguration = new FileConfiguration(properties, "domain");
 		generateSql(domainConfiguration, resultBuilder);
 	}
 

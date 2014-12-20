@@ -28,7 +28,6 @@ import io.vertigo.util.MapBuilder;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Generation des objets relatifs au module Securite.
@@ -44,11 +43,10 @@ public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void generate(final Properties properties, final ResultBuilder resultBuilder) {
-		Assertion.checkNotNull(properties);
+	public void generate(final FileConfiguration securityConfiguration, final ResultBuilder resultBuilder) {
+		Assertion.checkNotNull(securityConfiguration);
 		Assertion.checkNotNull(resultBuilder);
 		//---------------------------------------------------------------------
-		final FileConfiguration securityConfiguration = new FileConfiguration(properties, "security");
 		generateRole(securityConfiguration, resultBuilder);
 	}
 
@@ -61,10 +59,10 @@ public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin {
 			final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
 					.put("roles", roles)
 					.put("classSimpleName", "Role")
-					.put("packageName", securityConfiguration.getPackageName())
+					.put("packageName", securityConfiguration.getProjectPackageName() + ".security")
 					.build();
 
-			createFileGenerator(securityConfiguration, mapRoot, "Role", securityConfiguration.getPackageName(), ".java", "security/role.ftl")
+			createFileGenerator(securityConfiguration, mapRoot, "Role", securityConfiguration.getProjectPackageName() + ".security", ".java", "security/role.ftl")
 					.generateFile(resultBuilder);
 		}
 	}

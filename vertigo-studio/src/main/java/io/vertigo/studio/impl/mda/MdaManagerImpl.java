@@ -23,11 +23,12 @@ import io.vertigo.studio.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaManager;
 import io.vertigo.studio.mda.Result;
 import io.vertigo.studio.mda.ResultBuilder;
+import io.vertigo.studio.plugins.mda.FileConfiguration;
 
 import java.util.List;
-import java.util.Properties;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * Implémentation du MDA.
@@ -36,22 +37,37 @@ import javax.inject.Inject;
  */
 public final class MdaManagerImpl implements MdaManager {
 	private final List<GeneratorPlugin> generatorPlugins;
+	private final FileConfiguration fileConfiguration;
 
 	@Inject
-	public MdaManagerImpl(final List<GeneratorPlugin> generatorPlugins) {
+	/**
+	 * 
+	 * @param generatorPlugins
+	 * @param targetGenDir Répertoire des fichiers TOUJOURS générés
+	 * @param projectPackageName Racine du projet.
+	 * @param encoding Encoding des fichiers générés.
+	 */
+	public MdaManagerImpl(final List<GeneratorPlugin> generatorPlugins,
+			@Named("targetGenDir") String targetGenDir,
+			@Named("projectPackageName") String projectPackageName,
+			@Named("encoding") String encoding) {
 		Assertion.checkNotNull(generatorPlugins);
+		Assertion.checkArgNotEmpty(targetGenDir);
+		Assertion.checkArgNotEmpty(projectPackageName);
+		Assertion.checkArgNotEmpty(encoding);
 		//---------------------------------------------------------------------
 		this.generatorPlugins = java.util.Collections.unmodifiableList(generatorPlugins);
+		fileConfiguration = new FileConfiguration(targetGenDir, projectPackageName, encoding);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Result generate(final Properties properties) {
+	public Result generate() {
 		//Création d'un objet listant les résultats
 		final ResultBuilder resultBuilder = new ResultBuilder();
 		//Génèration des objets issus de la modélisation
 		for (final GeneratorPlugin generatorPlugin : generatorPlugins) {
-			generatorPlugin.generate(properties, resultBuilder);
+			generatorPlugin.generate(fileConfiguration, resultBuilder);
 		}
 		return resultBuilder.build();
 	}

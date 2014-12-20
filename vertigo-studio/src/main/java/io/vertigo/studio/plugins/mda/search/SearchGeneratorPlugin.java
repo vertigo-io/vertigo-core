@@ -27,7 +27,6 @@ import io.vertigo.studio.plugins.mda.FileConfiguration;
 import io.vertigo.util.MapBuilder;
 
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Génération des objets relatifs au module Search.
@@ -38,11 +37,10 @@ public final class SearchGeneratorPlugin extends AbstractGeneratorPlugin {
 
 	/** {@inheritDoc}  */
 	@Override
-	public void generate(final Properties properties, final ResultBuilder resultBuilder) {
-		Assertion.checkNotNull(properties);
+	public void generate(final FileConfiguration searchConfiguration, final ResultBuilder resultBuilder) {
+		Assertion.checkNotNull(searchConfiguration);
 		Assertion.checkNotNull(resultBuilder);
 		//---------------------------------------------------------------------
-		final FileConfiguration searchConfiguration = new FileConfiguration(properties, "search");
 		generateDtDefinitions(searchConfiguration, resultBuilder);
 	}
 

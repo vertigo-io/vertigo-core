@@ -34,7 +34,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 
 /**
  * Génération des objets relatifs au module Task.
@@ -45,11 +44,10 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void generate(final Properties properties, final ResultBuilder resultBuilder) {
-		Assertion.checkNotNull(properties);
+	public void generate(final FileConfiguration taskConfiguration, final ResultBuilder resultBuilder) {
+		Assertion.checkNotNull(taskConfiguration);
 		Assertion.checkNotNull(resultBuilder);
 		//---------------------------------------------------------------------
-		final FileConfiguration taskConfiguration = new FileConfiguration(properties, "dao");
 		generatePaos(taskConfiguration, resultBuilder);
 		generateDaos(taskConfiguration, resultBuilder);
 	}

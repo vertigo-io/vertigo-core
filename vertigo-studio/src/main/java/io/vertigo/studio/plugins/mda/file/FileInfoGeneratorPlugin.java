@@ -28,7 +28,6 @@ import io.vertigo.util.MapBuilder;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Génération des objets relatifs au module File.
@@ -38,11 +37,10 @@ import java.util.Properties;
 public final class FileInfoGeneratorPlugin extends AbstractGeneratorPlugin {
 	/** {@inheritDoc} */
 	@Override
-	public void generate(final Properties properties, final ResultBuilder resultBuilder) {
-		Assertion.checkNotNull(properties);
+	public void generate(final FileConfiguration fileInfoConfiguration, final ResultBuilder resultBuilder) {
+		Assertion.checkNotNull(fileInfoConfiguration);
 		Assertion.checkNotNull(resultBuilder);
 		// ---------------------------------------------------------------------
-		final FileConfiguration fileInfoConfiguration = new FileConfiguration(properties, "fileinfo");
 		/* Générations des FI. */
 		generateFileInfos(fileInfoConfiguration, resultBuilder);
 	}
@@ -59,10 +57,10 @@ public final class FileInfoGeneratorPlugin extends AbstractGeneratorPlugin {
 
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
 				.put("fiDefinition", definition)
-				.put("packageName", fileInfoConfiguration.getPackageName())
+				.put("packageName", fileInfoConfiguration.getProjectPackageName() + ".fileinfo")
 				.build();
 
-		createFileGenerator(fileInfoConfiguration, mapRoot, definition.getClassSimpleName(), fileInfoConfiguration.getPackageName(), ".java", "file/fileInfo.ftl")
+		createFileGenerator(fileInfoConfiguration, mapRoot, definition.getClassSimpleName(), fileInfoConfiguration.getProjectPackageName() + ".fileinfo", ".java", "file/fileInfo.ftl")
 				.generateFile(resultBuilder);
 	}
 }

@@ -137,7 +137,6 @@ public final class AppBuilder {
 			final Loader<AppConfigBuilder> loader = new XMLModulesLoader(xmlUrl, myEnvParams);
 			myAppConfigBuilder.withLoader(loader);
 		}
-		myAppConfigBuilder.withEnvParams(myEnvParams);
 		return myAppConfigBuilder;
 	}
 
