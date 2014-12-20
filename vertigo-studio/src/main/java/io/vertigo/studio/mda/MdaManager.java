@@ -20,8 +20,6 @@ package io.vertigo.studio.mda;
 
 import io.vertigo.lang.Component;
 
-import java.util.Properties;
-
 /**
  * Manager MDA.
  * @author pchretien
@@ -29,8 +27,7 @@ import java.util.Properties;
 public interface MdaManager extends Component {
 	/**
 	 * Génération des fichiers. 
-	 * @param properties Configuration de la génération
 	 * @return Rapport resultat de la génération
 	 */
-	Result generate(Properties properties);
+	Result generate();
 }
