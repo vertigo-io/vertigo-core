@@ -34,8 +34,11 @@ public final class TuplesTest {
 		final Tuples.Tuple2<String, String> marge = new Tuples.Tuple2<>("marge", "simpson");
 
 		Assert.assertEquals(homer, homer);
+		Assert.assertTrue(homer.equals(homer));
+		Assert.assertEquals(homer.hashCode(), homer2.hashCode());
 		Assert.assertEquals(homer, homer2);
 		Assert.assertNotEquals(homer, marge);
+		Assert.assertFalse(marge.equals(null));
 
 		Assert.assertEquals("homer", homer.getVal1());
 		Assert.assertEquals("simpson", homer.getVal2());
@@ -49,6 +52,13 @@ public final class TuplesTest {
 		final Tuples.Tuple3<String, String, String> homer = new Tuples.Tuple3<>("homer", "simpson", "M");
 		final Tuples.Tuple3<String, String, String> homer2 = new Tuples.Tuple3<>("homer", "simpson", "M");
 		final Tuples.Tuple3<String, String, String> marge = new Tuples.Tuple3<>("marge", "simpson", "F");
+
+		Assert.assertEquals(homer, homer);
+		Assert.assertTrue(homer.equals(homer));
+		Assert.assertEquals(homer.hashCode(), homer2.hashCode());
+		Assert.assertEquals(homer, homer2);
+		Assert.assertNotEquals(homer, marge);
+		Assert.assertFalse(marge.equals(null));
 
 		Assert.assertEquals(homer, homer2);
 		Assert.assertEquals(homer, homer);
