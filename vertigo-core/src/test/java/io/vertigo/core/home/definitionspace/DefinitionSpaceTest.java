@@ -21,6 +21,7 @@ package io.vertigo.core.home.definitionspace;
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
 import io.vertigo.core.config.AppConfigBuilder;
+import io.vertigo.core.config.LogConfig;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
@@ -40,7 +41,7 @@ public class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 	@Override
 	protected void configMe(final AppConfigBuilder appConfiguilder) {
 		appConfiguilder
-				.withParam("log4j.configurationFileName", "/log4j.xml")
+				.withLogConfig(new LogConfig("/log4j.xml"))
 				.withSilence(false);
 	}
 

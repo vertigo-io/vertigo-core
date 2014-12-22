@@ -19,6 +19,7 @@
 package io.vertigo.core;
 
 import io.vertigo.core.config.AppConfig;
+import io.vertigo.core.config.LogConfig;
 import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
@@ -26,7 +27,6 @@ import io.vertigo.lang.Assertion;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -130,7 +130,9 @@ public final class Home {
 		try {
 			Assertion.checkState(definitionSpace.isEmpty(), "DefinitionSpace must be empty");
 			//---
-			initLog(appConfig.getParams());
+			if (appConfig.getLogConfig().isDefined()) {
+				initLog(appConfig.getLogConfig().get());
+			}
 			//---
 			componentSpace = new ComponentSpace(appConfig);
 			//----
@@ -188,30 +190,30 @@ public final class Home {
 		state = toState;
 	}
 
-	private static void initLog(final Map<String, String> params) {
-		final String log4jFileName = params.get("log4j.configurationFileName");
-		if (log4jFileName != null) {
-			final boolean log4jFormatXml = log4jFileName.endsWith(".xml");
-			final URL url = Home.class.getResource(log4jFileName);
-			if (url != null) {
-				if (log4jFormatXml) {
-					DOMConfigurator.configure(url);
-				} else {
-					PropertyConfigurator.configure(url);
-				}
-				Logger.getRootLogger().info("Log4J configuration chargée (resource) : " + url.getFile());
+	private static void initLog(final LogConfig log4Config) {
+		Assertion.checkNotNull(log4Config);
+		//-----
+		final String log4jFileName = log4Config.getFileName();
+		final boolean log4jFormatXml = log4jFileName.endsWith(".xml");
+		final URL url = Home.class.getResource(log4jFileName);
+		if (url != null) {
+			if (log4jFormatXml) {
+				DOMConfigurator.configure(url);
 			} else {
-				Assertion.checkArgument(new File(log4jFileName).exists(), "Fichier de configuration log4j : {0} est introuvable", log4jFileName);
-				// Avec configureAndWatch (utilise un anonymous thread)
-				// on peut modifier à chaud le fichier de conf log4j
-				// mais en cas de hot-deploy, le thread reste présent ce qui peut-entrainer des problèmes.
-				if (log4jFormatXml) {
-					DOMConfigurator.configureAndWatch(log4jFileName);
-				} else {
-					PropertyConfigurator.configureAndWatch(log4jFileName);
-				}
+				PropertyConfigurator.configure(url);
 			}
-			Logger.getRootLogger().info("Log4J configuration chargée (fichier) : " + log4jFileName);
+			Logger.getRootLogger().info("Log4J configuration chargée (resource) : " + url.getFile());
+		} else {
+			Assertion.checkArgument(new File(log4jFileName).exists(), "Fichier de configuration log4j : {0} est introuvable", log4jFileName);
+			// Avec configureAndWatch (utilise un anonymous thread)
+			// on peut modifier à chaud le fichier de conf log4j
+			// mais en cas de hot-deploy, le thread reste présent ce qui peut-entrainer des problèmes.
+			if (log4jFormatXml) {
+				DOMConfigurator.configureAndWatch(log4jFileName);
+			} else {
+				PropertyConfigurator.configureAndWatch(log4jFileName);
+			}
 		}
+		Logger.getRootLogger().info("Log4J configuration chargée (fichier) : " + log4jFileName);
 	}
 }

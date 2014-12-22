@@ -25,6 +25,7 @@ import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.core.Home;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
+import io.vertigo.core.config.LogConfig;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.environment.EnvironmentManager;
@@ -112,7 +113,7 @@ public final class SplittedModulesEnvironmentManagerTest {
 	private AppConfigBuilder prepareDefaultAppConfigBuilder() {
 		// @formatter:off
 		final AppConfigBuilder appConfigBuilder = new AppConfigBuilder()
-		.withParam("log4j.configurationFileName", "/log4j.xml")
+		.withLogConfig(new LogConfig("/log4j.xml"))
 		.withSilence(false)
 		.beginModule("vertigo")
 			.beginComponent(LocaleManager.class, LocaleManagerImpl.class)

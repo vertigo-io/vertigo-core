@@ -21,6 +21,7 @@ package io.vertigo.core.home.componentspace;
 import io.vertigo.core.Home;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
+import io.vertigo.core.config.LogConfig;
 import io.vertigo.core.home.componentspace.data.FunctionManager;
 import io.vertigo.core.home.componentspace.data.FunctionManager1Impl;
 import io.vertigo.core.home.componentspace.data.FunctionManager2Impl;
@@ -98,7 +99,7 @@ public final class ComponentSpace3Test {
 	private void startHomeWithFunctionManager(final Class<? extends FunctionManager> implClass, final boolean withNullMult) {
 		// @formatter:off
 		final AppConfig appConfig = new AppConfigBuilder()
-			.withParam("log4j.configurationFileName", "/log4j.xml")
+			.withLogConfig(new LogConfig("/log4j.xml"))
 			.withSilence(false)
 			.beginModule("Function")
 				.beginComponent(FunctionManager.class, implClass)

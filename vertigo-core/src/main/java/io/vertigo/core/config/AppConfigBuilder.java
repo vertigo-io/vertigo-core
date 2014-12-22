@@ -27,9 +27,7 @@ import io.vertigo.lang.Builder;
 import io.vertigo.lang.Option;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Configuration.
@@ -38,7 +36,7 @@ import java.util.Map;
  */
 public final class AppConfigBuilder implements Builder<AppConfig> {
 	private final List<ModuleConfig> myModuleConfigs = new ArrayList<>();
-	private final Map<String, String> myParams = new HashMap<>(); //par défaut vide
+	private Option<LogConfig> myLogConfigOption = Option.none(); //par défaut
 	private boolean mySilence;
 	private AopEngine myAopEngine = new CGLIBAopEngine();
 	private ElasticaEngine myElasticaEngine = null; //par défaut pas d'elasticité.
@@ -46,14 +44,12 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 
 	/**
 	 * Ajout de paramètres
-	 * @param paramName Nom du paramètre
-	 * @param paramValue Valeur du paramètre
+	 * @param logConfig Config of logs
 	 */
-	public AppConfigBuilder withParam(final String paramName, final String paramValue) {
-		Assertion.checkArgNotEmpty(paramName);
-		Assertion.checkNotNull(paramValue);
+	public AppConfigBuilder withLogConfig(final LogConfig logConfig) {
+		Assertion.checkNotNull(logConfig);
 		//---------------------------------------------------------------------
-		myParams.put(paramName, paramValue);
+		myLogConfigOption = Option.some(logConfig);
 		return this;
 	}
 
@@ -113,6 +109,6 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	/** {@inheritDoc} */
 	@Override
 	public AppConfig build() {
-		return new AppConfig(myParams, myModuleConfigs, myAopEngine, Option.option(myElasticaEngine), Option.option(myCommandEngine), mySilence);
+		return new AppConfig(myLogConfigOption, myModuleConfigs, myAopEngine, Option.option(myElasticaEngine), Option.option(myCommandEngine), mySilence);
 	}
 }

@@ -21,6 +21,7 @@ package io.vertigo.core.home.componentspace;
 import io.vertigo.core.Home;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
+import io.vertigo.core.config.LogConfig;
 import io.vertigo.core.home.componentspace.data.BioManager;
 import io.vertigo.core.home.componentspace.data.BioManagerImpl;
 import io.vertigo.core.home.componentspace.data.DummyPlugin;
@@ -37,7 +38,7 @@ public final class ComponentSpaceTest {
 	public void testHome() {
 		// @formatter:off
 		final AppConfig appConfig = new AppConfigBuilder()
-			.withParam("log4j.configurationFileName", "/log4j.xml")
+			.withLogConfig(new LogConfig("/log4j.xml"))
 			.withSilence(false)
 			.beginModule("Bio")
 				.beginComponent(BioManager.class, BioManagerImpl.class).endComponent()
@@ -66,7 +67,7 @@ public final class ComponentSpaceTest {
 	public void testHome2() {
 		// @formatter:off
 		final AppConfig appConfig = new AppConfigBuilder()
-			.withParam("log4j.configurationFileName", "/log4j.xml")
+			.withLogConfig(new LogConfig("/log4j.xml"))
 			.withSilence(false)
 			.beginModule("Bio")
 				.beginComponent(BioManager.class, BioManagerImpl.class)
@@ -95,7 +96,7 @@ public final class ComponentSpaceTest {
 	public void testHome3() {
 		// @formatter:off
 		final AppConfig appConfig = new AppConfigBuilder()
-			.withParam("log4j.configurationFileName", "/log4j.xml")
+			.withLogConfig(new LogConfig("/log4j.xml"))
 			.withSilence(false)
 			.beginModule("Bio-core")
 				.beginComponent(MathManager.class, MathManagerImpl.class)

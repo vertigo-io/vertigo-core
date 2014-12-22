@@ -28,13 +28,12 @@ import io.vertigo.lang.Option;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /*
  * @author pchretien
  */
 public final class AppConfig {
-	private final Map<String, String> params;
+	private final Option<LogConfig> logConfigOption;
 
 	private final List<ModuleConfig> modules;
 	//---
@@ -46,25 +45,28 @@ public final class AppConfig {
 	@JsonExclude
 	private final Option<VCommandEngine> commandEngine;
 
-	AppConfig(final Map<String, String> params, final List<ModuleConfig> moduleConfigs, final AopEngine aopEngine, final Option<ElasticaEngine> elasticaEngine, final Option<VCommandEngine> commandEngine, final boolean silence) {
-		Assertion.checkNotNull(params);
+	AppConfig(
+			final Option<LogConfig> logConfigOption, final List<ModuleConfig> moduleConfigs,
+			final AopEngine aopEngine, final Option<ElasticaEngine> elasticaEngine, final Option<VCommandEngine> commandEngine,
+			final boolean silence) {
+		Assertion.checkNotNull(logConfigOption);
 		Assertion.checkNotNull(moduleConfigs);
 		//---
 		Assertion.checkNotNull(aopEngine);
 		Assertion.checkNotNull(elasticaEngine);
 		Assertion.checkNotNull(commandEngine);
-		//---------------------------------------------------------------------
-		this.params = params;
+		//-----
+		this.logConfigOption = logConfigOption;
 		this.modules = Collections.unmodifiableList(new ArrayList<>(moduleConfigs));
-		//---
+		//-----
 		this.silence = silence;
 		this.aopEngine = aopEngine;
 		this.elasticaEngine = elasticaEngine;
 		this.commandEngine = commandEngine;
 	}
 
-	public Map<String, String> getParams() {
-		return params;
+	public Option<LogConfig> getLogConfig() {
+		return logConfigOption;
 	}
 
 	/**
