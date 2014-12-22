@@ -18,14 +18,15 @@
  */
 package io.vertigo.xml;
 
-import io.vertigo.core.config.AppConfigBuilder;
+import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Loader;
+import io.vertigo.util.ListBuilder;
 import io.vertigo.util.XMLUtil;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -38,30 +39,22 @@ import org.xml.sax.SAXException;
  * Parser XML du paramétrage de l'application.
  * @author npiedeloup, pchretien
  */
-public final class XMLModulesLoader implements Loader<AppConfigBuilder> {
-	private final URL managersURL;
+public final class XMLModulesLoader {
 	private final Properties properties;
 
 	/**
 	 * Builder de HomeConfig à partir d'une description XML et d'un fichier de propriétés.
 	 */
-	public XMLModulesLoader(final URL managersURL, final Properties properties) {
-		Assertion.checkNotNull(managersURL);
+	public XMLModulesLoader(final Properties properties) {
 		Assertion.checkNotNull(properties);
 		//----------------------------------------------------------------------
-		this.managersURL = managersURL;
 		this.properties = properties;
 	}
 
-	/**
-	 * Charge une configuration, et complète celle existante.
-	 */
-	@Override
-	public void load(final AppConfigBuilder appConfigBuilder) {
-		Assertion.checkNotNull(appConfigBuilder);
+	public List<ModuleConfig> parse(final URL managersURL) {
 		//----------------------------------------------------------------------
 		try {
-			doLoad(appConfigBuilder);
+			return doParse(managersURL);
 		} catch (final ParserConfigurationException pce) {
 			throw new RuntimeException("Erreur de configuration du parseur (fichier " + managersURL.getPath() + "), lors de l'appel à newSAXParser()", pce);
 		} catch (final SAXException se) {
@@ -71,20 +64,20 @@ public final class XMLModulesLoader implements Loader<AppConfigBuilder> {
 		}
 	}
 
-	private void doLoad(final AppConfigBuilder appConfigBuilder) throws ParserConfigurationException, SAXException, IOException {
+	private List<ModuleConfig> doParse(final URL managersURL) throws ParserConfigurationException, SAXException, IOException {
 		//---validation XSD
 		final URL xsd = XMLModulesLoader.class.getResource("vertigo_1_0.xsd");
 		XMLUtil.validateXmlByXsd(managersURL, xsd);
 		//---fin validation XSD
 
-		final XMLModulesHandler handler = new XMLModulesHandler(appConfigBuilder, properties);
+		final ListBuilder<ModuleConfig> moduleConfigsBuilder = new ListBuilder<>();
+		final XMLModulesHandler handler = new XMLModulesHandler(moduleConfigsBuilder, properties);
 		final SAXParserFactory factory = SAXParserFactory.newInstance();
 
 		final SAXParser saxParser = factory.newSAXParser();
 		saxParser.parse(new BufferedInputStream(managersURL.openStream()), handler);
 
-		for (final Object key : properties.keySet()) {
-			appConfigBuilder.withParam((String) key, properties.getProperty((String) key));
-		}
+		return moduleConfigsBuilder.unmodifiable().build();
+
 	}
 }

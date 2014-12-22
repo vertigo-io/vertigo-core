@@ -25,6 +25,7 @@ import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,7 +34,7 @@ import java.util.List;
  * @author npiedeloup, pchretien
  */
 public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
-	private final AppConfigBuilder myAppConfigBuilder;
+	private final Option<AppConfigBuilder> myAppConfigBuilderOption;
 	private final String myName;
 	private final List<ComponentConfigBuilder> myComponentConfigBuilders = new ArrayList<>();
 	private final List<AspectConfig> myAspectConfigs = new ArrayList<>();
@@ -43,25 +44,40 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	private boolean myHasApi = true; //par défaut on a une api.
 	private Class<?> mySuperClass = Component.class; //Par défaut la super Classe est Manager
 
+	//State to avoid reuse of this Builder
+	private boolean ended = false;
+
+	public ModuleConfigBuilder(final String name) {
+		Assertion.checkArgNotEmpty(name);
+		//---------------------------------------------------------------------
+		myName = name;
+		myAppConfigBuilderOption = Option.none();
+	}
+
 	ModuleConfigBuilder(final AppConfigBuilder appConfigBuilder, final String name) {
 		Assertion.checkNotNull(appConfigBuilder);
 		Assertion.checkArgNotEmpty(name);
 		//---------------------------------------------------------------------
 		myName = name;
-		myAppConfigBuilder = appConfigBuilder;
+		myAppConfigBuilderOption = Option.some(appConfigBuilder);
 	}
 
 	public ModuleConfigBuilder withAspect(final Class<? extends Aspect> implClass) {
+		Assertion.checkArgument(!ended, "this builder is ended");
+		//-----
 		myAspectConfigs.add(new AspectConfig(implClass));
 		return this;
 	}
 
 	public ModuleConfigBuilder withNoAPI() {
+		Assertion.checkArgument(!ended, "this builder is ended");
+		//-----
 		myHasApi = false;
 		return this;
 	}
 
 	public ModuleConfigBuilder withInheritance(final Class<?> superClass) {
+		Assertion.checkArgument(!ended, "this builder is ended");
 		Assertion.checkNotNull(superClass);
 		//---------------------------------------------------------------------
 		mySuperClass = superClass;
@@ -73,6 +89,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @param resourceType Type of resource
 	 */
 	public ModuleConfigBuilder withResource(final String resourceType, final String resourcePath) {
+		Assertion.checkArgument(!ended, "this builder is ended");
 		Assertion.checkArgNotEmpty(resourceType);
 		Assertion.checkNotNull(resourcePath);
 		//---------------------------------------------------------------------
@@ -86,6 +103,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	* @return Builder
 	*/
 	public ComponentConfigBuilder beginElasticComponent(final Class<?> apiClass) {
+		Assertion.checkArgument(!ended, "this builder is ended");
+		//-----
 		return doBeginComponent(Option.<Class<?>> some(apiClass), Object.class, true);
 	}
 
@@ -95,6 +114,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	* @return Builder
 	*/
 	public ComponentConfigBuilder beginComponent(final Class<?> implClass) {
+		Assertion.checkArgument(!ended, "this builder is ended");
+		//-----
 		return doBeginComponent(Option.<Class<?>> none(), implClass, false);
 	}
 
@@ -105,6 +126,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	* @return Builder
 	*/
 	public ComponentConfigBuilder beginComponent(final Class<?> apiClass, final Class<?> implClass) {
+		Assertion.checkArgument(!ended, "this builder is ended");
+		//-----
 		return doBeginComponent(Option.<Class<?>> some(apiClass), implClass, false);
 	}
 
@@ -125,12 +148,19 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @return Builder
 	 */
 	public AppConfigBuilder endModule() {
-		return myAppConfigBuilder;
+		Assertion.checkArgument(!ended, "this builder is ended");
+		Assertion.checkArgument(myAppConfigBuilderOption.isDefined(), "beginModule() must be used before endModule()");
+		//-----
+		myAppConfigBuilderOption.get().withModules(Collections.singletonList(this.build()));
+		ended = true;
+		return myAppConfigBuilderOption.get();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public ModuleConfig build() {
+		Assertion.checkArgument(!ended, "this builder is ended");
+		//-----
 		final List<ModuleRule> moduleRules = new ArrayList<>();
 		//Mise à jour des règles.
 		if (myHasApi) {

@@ -19,13 +19,14 @@
 package io.vertigo.xml;
 
 import io.vertigo.core.aop.Aspect;
-import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.ComponentConfigBuilder;
+import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.config.ModuleConfigBuilder;
 import io.vertigo.core.config.PluginConfigBuilder;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Plugin;
 import io.vertigo.util.ClassUtil;
+import io.vertigo.util.ListBuilder;
 
 import java.util.Properties;
 
@@ -36,18 +37,19 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author npiedeloup, pchretien
  */
 final class XMLModulesHandler extends DefaultHandler {
-	private final AppConfigBuilder appConfigBuilder;
 	private ModuleConfigBuilder moduleConfigBuilder;
 	private ComponentConfigBuilder componentConfigBuilder;
 	private PluginConfigBuilder pluginConfigBuilder;
 	//Global Params
 	private final Properties properties;
+	//We are populating moduleConfigs during parsing
+	private final ListBuilder<ModuleConfig> moduleConfigsBuilder;
 
-	XMLModulesHandler(final AppConfigBuilder appConfigBuilder, final Properties properties) {
-		Assertion.checkNotNull(appConfigBuilder);
+	XMLModulesHandler(final ListBuilder<ModuleConfig> moduleConfigsBuilder, final Properties properties) {
+		Assertion.checkNotNull(moduleConfigsBuilder);
 		Assertion.checkNotNull(properties);
 		//-----
-		this.appConfigBuilder = appConfigBuilder;
+		this.moduleConfigsBuilder = moduleConfigsBuilder;
 		this.properties = properties;
 	}
 
@@ -68,6 +70,7 @@ final class XMLModulesHandler extends DefaultHandler {
 		}
 		switch (TagName.valueOf(eName)) {
 			case module:
+				moduleConfigsBuilder.add(moduleConfigBuilder.build());
 				moduleConfigBuilder = null;
 				break;
 			case component:
@@ -96,7 +99,7 @@ final class XMLModulesHandler extends DefaultHandler {
 				final String moduleName = attrs.getValue("name");
 				final String api = attrs.getValue("api");
 				final String superClass = attrs.getValue("inheritance");
-				moduleConfigBuilder = appConfigBuilder.beginModule(moduleName);
+				moduleConfigBuilder = new ModuleConfigBuilder(moduleName);
 				if (api != null) {
 					if (!Boolean.valueOf(api)) {
 						moduleConfigBuilder.withNoAPI();

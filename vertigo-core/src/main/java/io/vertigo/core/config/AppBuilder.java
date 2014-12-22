@@ -19,7 +19,6 @@
 package io.vertigo.core.config;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Loader;
 import io.vertigo.lang.Option;
 import io.vertigo.xml.XMLModulesLoader;
 
@@ -133,9 +132,9 @@ public final class AppBuilder {
 		//---------------------------------------------------------------------
 		//2- We load XML with Loaders to componentSpaceConfigBuilder
 		Assertion.checkArgument(!xmlUrls.isEmpty(), "We need at least one Xml file");
+		final XMLModulesLoader parser = new XMLModulesLoader(myEnvParams);
 		for (final URL xmlUrl : xmlUrls) {
-			final Loader<AppConfigBuilder> loader = new XMLModulesLoader(xmlUrl, myEnvParams);
-			myAppConfigBuilder.withLoader(loader);
+			myAppConfigBuilder.withModules(parser.parse(xmlUrl));
 		}
 		return myAppConfigBuilder;
 	}

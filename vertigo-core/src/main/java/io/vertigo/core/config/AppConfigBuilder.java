@@ -24,7 +24,6 @@ import io.vertigo.core.engines.VCommandEngine;
 import io.vertigo.engines.aop.cglib.CGLIBAopEngine;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.lang.Loader;
 import io.vertigo.lang.Option;
 
 import java.util.ArrayList;
@@ -38,7 +37,7 @@ import java.util.Map;
  * @author npiedeloup, pchretien
  */
 public final class AppConfigBuilder implements Builder<AppConfig> {
-	private final List<ModuleConfigBuilder> myModuleConfigBuilders = new ArrayList<>();
+	private final List<ModuleConfig> myModuleConfigs = new ArrayList<>();
 	private final Map<String, String> myParams = new HashMap<>(); //par défaut vide
 	private boolean mySilence;
 	private AopEngine myAopEngine = new CGLIBAopEngine();
@@ -60,11 +59,13 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 
 	/**
 	 * Permet d'externaliser le processus de chargement dans un système dédié
-	 * @param loader Responsable du chagement d'un fragment de la conf
+	 * @param moduleConfigs Liste des modules
 	 * @return Builder
 	 */
-	public AppConfigBuilder withLoader(final Loader<AppConfigBuilder> loader) {
-		loader.load(this);
+	public AppConfigBuilder withModules(final List<ModuleConfig> moduleConfigs) {
+		Assertion.checkNotNull(moduleConfigs);
+		//---------------------------------------------------------------------
+		myModuleConfigs.addAll(moduleConfigs);
 		return this;
 	}
 
@@ -106,20 +107,12 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	 * @return Builder
 	 */
 	public ModuleConfigBuilder beginModule(final String name) {
-		//On remet à null le plugin et le composant courant
-		final ModuleConfigBuilder moduleConfigBuilder = new ModuleConfigBuilder(this, name);
-		myModuleConfigBuilders.add(moduleConfigBuilder);
-		return moduleConfigBuilder;
+		return new ModuleConfigBuilder(this, name);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public AppConfig build() {
-		final List<ModuleConfig> moduleConfigs = new ArrayList<>();
-		for (final ModuleConfigBuilder moduleConfigBuilder : myModuleConfigBuilders) {
-			final ModuleConfig moduleConfig = moduleConfigBuilder.build();
-			moduleConfigs.add(moduleConfig);
-		}
-		return new AppConfig(myParams, moduleConfigs, myAopEngine, Option.option(myElasticaEngine), Option.option(myCommandEngine), mySilence);
+		return new AppConfig(myParams, myModuleConfigs, myAopEngine, Option.option(myElasticaEngine), Option.option(myCommandEngine), mySilence);
 	}
 }
