@@ -63,7 +63,8 @@ final class HomeServletStarter {
 
 			final AppConfig appConfig = new AppBuilder()
 					.withSilence(true)
-					.withEnvParams(conf).build();
+					.withEnvParams(conf)
+					.build();
 			// Initialisation de l'état de l'application
 			Home.start(appConfig);
 			servletListener.onServletStart(getClass().getName());
