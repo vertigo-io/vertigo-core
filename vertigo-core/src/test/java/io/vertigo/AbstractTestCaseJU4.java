@@ -193,10 +193,8 @@ public abstract class AbstractTestCaseJU4 {
 		final AppBuilder appBuilder = new AppBuilder()
 				.withSilence(true)
 				.withAppConfigBuilder(appConfigBuilder)
-				.withXmlFileNames(getClass(), getManagersXmlFileName());
-		if (getPropertiesFileName().isDefined()) {
-			appBuilder.withEnvParams(getClass(), getPropertiesFileName().get());
-		}
+				.withXmlFileNames(getClass(), getManagersXmlFileName())
+				.withEnvParams(getClass(), getPropertiesFileName());
 		appBuilder.toAppConfigBuilder();
 	}
 }

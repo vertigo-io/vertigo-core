@@ -32,6 +32,6 @@ public final class XmlComponentsTest extends AbstractAspectTestCase {
 	protected final void configMe(final AppConfigBuilder appConfigBuilder) {
 		appConfigBuilder
 				.withAopEngine(new CGLIBAopEngine())
-				.withModules(new XMLModulesLoader(new Properties()).parse(XmlComponentsTest.class.getResource("components.xml")));
+				.withModules(new XMLModulesParser(new Properties()).parse(XmlComponentsTest.class.getResource("components.xml")));
 	}
 }
