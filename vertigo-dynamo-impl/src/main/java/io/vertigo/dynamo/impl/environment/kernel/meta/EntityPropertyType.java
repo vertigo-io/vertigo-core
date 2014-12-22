@@ -45,7 +45,7 @@ public enum EntityPropertyType {
 	 */
 	private EntityPropertyType(final Class<?> javaClass) {
 		Assertion.checkNotNull(javaClass);
-		//----------------------------------------------------------------------
+		//-----
 		this.javaClass = javaClass;
 	}
 

@@ -38,7 +38,7 @@ final class DelayedBerkeleyCacheValueBinding extends TupleBinding<DelayedBerkele
 	 */
 	public DelayedBerkeleyCacheValueBinding(final TupleBinding<Serializable> serializableBinding) {
 		Assertion.checkNotNull(serializableBinding);
-		//---------------------------------------------------------------------
+		//-----
 		this.serializableBinding = serializableBinding;
 	}
 

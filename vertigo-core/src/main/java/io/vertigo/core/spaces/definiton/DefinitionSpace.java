@@ -82,7 +82,7 @@ public final class DefinitionSpace {
 	public void register(final Class<? extends Definition> clazz) {
 		Assertion.checkNotNull(clazz);
 		Assertion.checkArgument(!definitions.containsKey(clazz), "Type '{0}' deja enregistré", clazz.getName());
-		//---------------------------------------------------------------------
+		//-----
 		definitions.put(clazz, new LinkedHashMap<String, Definition>());
 	}
 
@@ -95,13 +95,13 @@ public final class DefinitionSpace {
 		Assertion.checkNotNull(definition, "L'objet ne peut pas pas être null !");
 		Assertion.checkNotNull(clazz);
 		Assertion.checkArgument(definitions.containsKey(clazz), "L'objet {0} ne peut pas pas être enregistré, son type  '{1}' est inconnu !", definition, clazz);
-		// ----------------------------------------------------------------------
+		//-----
 		final Map<String, Definition> tobjects = definitions.get(clazz);
 		final String id = definition.getName();
 		checkId(id, clazz);
 		final Definition previous = tobjects.put(id, definition);
 		Assertion.checkArgument(previous == null, "L'objet {0} est déja enregistré !", id);
-		// ----------------------------------------------------------------------
+		//-----
 		final Definition previous2 = allObjects.put(id, definition);
 		//On vérifie l'unicité globale du nom.
 		Assertion.checkState(previous2 == null, "L'objet {0} est déja enregistré !", id);
@@ -143,7 +143,7 @@ public final class DefinitionSpace {
 		Assertion.checkNotNull(id); // L'identifiant de l'objet recherché ne peut pas être null
 		Assertion.checkNotNull(clazz);
 		Assertion.checkArgument(definitions.containsKey(clazz), "Type '{0}' non enregistré", clazz.getName());
-		//---------------------------------------------------------------------
+		//-----
 		final Map<String, Definition> tobjects = definitions.get(clazz);
 		final Object o = tobjects.get(id);
 		Assertion.checkNotNull(o, "Object '{0}' non trouvé", id);
@@ -176,7 +176,7 @@ public final class DefinitionSpace {
 	public <C extends Definition> Collection<C> getAll(final Class<C> clazz) {
 		Assertion.checkNotNull(clazz); // Le type des objets recherchés ne peut pas être null
 		Assertion.checkArgument(definitions.containsKey(clazz), "Type '{0}' non enregistré", clazz.getName());
-		//---------------------------------------------------------------------
+		//-----
 		return (Collection<C>) definitions.get(clazz).values();
 	}
 
@@ -200,7 +200,7 @@ public final class DefinitionSpace {
 	public void addLoader(final ResourceLoader resourceLoader) {
 		Assertion.checkNotNull(resourceLoader);
 		Assertion.checkArgument(!resourceLoader.getTypes().isEmpty(), "a loader must be able to parse at least one type of resource");
-		//---------------------------------------------------------------------
+		//-----
 		for (final String type : resourceLoader.getTypes()) {
 			final ResourceLoader previous = resourceLoaders.put(type, resourceLoader);
 			Assertion.checkArgument(previous == null, "this type {0} of resource is already defined", type);

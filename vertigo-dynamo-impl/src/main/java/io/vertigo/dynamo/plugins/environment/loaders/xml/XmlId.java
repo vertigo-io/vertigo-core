@@ -34,7 +34,7 @@ public final class XmlId {
 	 */
 	public XmlId(final String keyValue) {
 		Assertion.checkNotNull(keyValue);
-		//------------------------------------------------------------------
+		//-----
 		this.keyValue = keyValue;
 	}
 

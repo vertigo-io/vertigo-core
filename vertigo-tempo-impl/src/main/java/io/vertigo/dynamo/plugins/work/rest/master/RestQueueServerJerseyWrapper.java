@@ -47,14 +47,14 @@ public final class RestQueueServerJerseyWrapper {
 	@GET
 	@Path("/pollWork/{workType}")
 	public String pollWork(@PathParam("workType") final String workType, @QueryParam("nodeUID") final String nodeUID) {
-		//---------------------------------------------------------------------
+		//-----
 		return getWorkQueueRestServer().pollWork(workType, nodeUID);
 	}
 
 	@POST
 	@Path("/event/start/{uuid}")
 	public void onStart(@PathParam("uuid") final String uuid) {
-		//---------------------------------------------------------------------
+		//-----
 		getWorkQueueRestServer().onStart(uuid);
 	}
 
@@ -62,7 +62,7 @@ public final class RestQueueServerJerseyWrapper {
 	@Path("/event/success/{uuid}")
 	@Consumes(MediaType.TEXT_PLAIN)
 	public void onSuccess(@PathParam("uuid") final String uuid, final String base64Result) {
-		//---------------------------------------------------------------------
+		//-----
 		getWorkQueueRestServer().onDone(true, uuid, base64Result);
 	}
 
@@ -70,7 +70,7 @@ public final class RestQueueServerJerseyWrapper {
 	@Path("/event/failure/{uuid}")
 	@Consumes(MediaType.TEXT_PLAIN)
 	public void onFailure(@PathParam("uuid") final String uuid, final String base64Result) {
-		//---------------------------------------------------------------------
+		//-----
 		getWorkQueueRestServer().onDone(false, uuid, base64Result);
 	}
 
@@ -78,7 +78,7 @@ public final class RestQueueServerJerseyWrapper {
 	@Path("/version")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getVersion() {
-		//---------------------------------------------------------------------
+		//-----
 		return getWorkQueueRestServer().getVersion();
 	}
 }

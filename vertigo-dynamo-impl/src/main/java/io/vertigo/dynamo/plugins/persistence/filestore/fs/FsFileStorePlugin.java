@@ -102,7 +102,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkNotNull(path);
-		// ---------------------------------------------------------------------
+		//-----
 		this.transactionManager = transactionManager;
 		this.fileManager = fileManager;
 		readOnly = false;
@@ -169,7 +169,6 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 			setValue(fileInfoDto, DtoFields.FILE_PATH, pathToSave);
 		}
 
-		// ---------------------------------------------------------------------
 		getPersistenceManager().getBroker().save(fileInfoDto);
 
 		if (fileInfo.getURI() == null) {
@@ -206,11 +205,11 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 
 		final URI<DtObject> dtoUri = createDtObjectURI(uri);
-		// ----------------- suppression du fichier ----------------------------
+		//-----suppression du fichier
 		final DtObject fileInfoDto = getPersistenceManager().getBroker().get(dtoUri);
 		final String path = FsFileStorePlugin.<String> getValue(fileInfoDto, DtoFields.FILE_PATH);
 		obtainFsTransactionRessource().deleteFile(documentRoot + path);
-		// ------------------ suppression en base ------------------------------
+		//-----suppression en base
 		getPersistenceManager().getBroker().delete(dtoUri);
 	}
 
@@ -222,7 +221,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	 */
 	private static URI<DtObject> createDtObjectURI(final URI<FileInfo> uri) {
 		Assertion.checkNotNull(uri, "uri du fichier doit être renseignée.");
-		// ---------------------------------------------------------------------
+		//-----
 		final FileInfoDefinition fileInfoDefinition = uri.<FileInfoDefinition> getDefinition();
 		final String fileDefinitionRoot = fileInfoDefinition.getRoot();
 		// Pour ce fileStore, on utilise le root de la fileDefinition comme nom de la table de stockage.
@@ -239,7 +238,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	 */
 	private static DtObject createDtObject(final FileInfoDefinition fileInfoDefinition) {
 		Assertion.checkNotNull(fileInfoDefinition, "fileInfoDefinition du fichier doit être renseignée.");
-		// ---------------------------------------------------------------------
+		//-----
 		final String fileDefinitionRoot = fileInfoDefinition.getRoot();
 		// Pour ce fileStore, on utilise le root de la fileDefinition comme nom de la table de stockage.
 		// Il doit exister un DtObjet associé, avec la structure attendue.

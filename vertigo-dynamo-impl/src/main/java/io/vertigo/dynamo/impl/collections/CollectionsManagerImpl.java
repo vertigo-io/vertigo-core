@@ -59,13 +59,13 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	@Inject
 	public CollectionsManagerImpl(final Option<IndexPlugin> indexPlugin) {
 		Assertion.checkNotNull(indexPlugin);
-		//---------------------------------------------------------------------
+		//-----
 		//	this.indexPlugin = indexPlugin;
 		facetFactory = new FacetFactory(this);
 		listProcessor = new DtListProcessorImpl(indexPlugin);
 		//		Assertion.notNull(masterDataManager);
 		//		Assertion.notNull(persistenceManager);
-		//---------------------------------------------------------------------
+		//-----
 		Home.getDefinitionSpace().register(FacetDefinition.class);
 		Home.getDefinitionSpace().register(FacetedQueryDefinition.class);
 		//this.masterDataManager = masterDataManager;
@@ -97,7 +97,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	public <R extends DtObject> FacetedQueryResult<R, DtList<R>> facetList(final DtList<R> dtList, final FacetedQuery facetedQuery) {
 		Assertion.checkNotNull(dtList);
 		Assertion.checkNotNull(facetedQuery);
-		//---------------------------------------------------------------------
+		//-----
 		//1- on applique les filtres
 		final DtList<R> filteredDtList = filter(dtList, facetedQuery);
 		//2- on facette

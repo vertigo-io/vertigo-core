@@ -37,7 +37,7 @@ public final class SearchQuery implements Serializable {
 	private final ListFilter listFilter;
 	//Informations optionnelles pour trier les résultats (null si inutilisé => tri par pertinence)
 	private final String sortFieldName;
-	private final Boolean sortAsc; //true si tri ascendant 
+	private final Boolean sortAsc; //true si tri ascendant
 
 	//Informations optionnelles pour booster la pertinence des documents plus récent (null si inutilisé)
 	private final String boostedDocumentDateFieldName;
@@ -61,7 +61,7 @@ public final class SearchQuery implements Serializable {
 		Assertion.checkArgument(boostedDocumentDateField == null || numDaysOfBoostRefDocument != null && mostRecentBoost != null, "Lorsque le boost des documents récents est activé, numDaysOfBoostRefDocument et mostRecentBoost sont obligatoires.");
 		Assertion.checkArgument(boostedDocumentDateField != null || numDaysOfBoostRefDocument == null && mostRecentBoost == null, "Lorsque le boost des documents récents est désactivé, numDaysOfBoostRefDocument et mostRecentBoost doivent être null.");
 		Assertion.checkArgument(numDaysOfBoostRefDocument == null || mostRecentBoost == null || numDaysOfBoostRefDocument.longValue() > 1 && mostRecentBoost.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1.");
-		//---------------------------------------------------------------------
+		//-----
 		indexDefinitionName = indexDefinition.getName();
 		this.listFilter = listFilter;
 		sortFieldName = sortField != null ? sortField.getName() : null;
@@ -100,7 +100,7 @@ public final class SearchQuery implements Serializable {
 	 */
 	public String getSortField() {
 		Assertion.checkArgument(isSortActive(), "Le tri des documents n'est pas activé sur cette recherche");
-		//---------------------------------------------------------------------
+		//-----
 		return sortFieldName;
 	}
 
@@ -110,7 +110,7 @@ public final class SearchQuery implements Serializable {
 	 */
 	public boolean getSortAsc() {
 		Assertion.checkArgument(isSortActive(), "Le tri des documents n'est pas activé sur cette recherche");
-		//---------------------------------------------------------------------
+		//-----
 		return sortAsc;
 	}
 
@@ -130,7 +130,7 @@ public final class SearchQuery implements Serializable {
 	 */
 	public String getBoostedDocumentDateField() {
 		Assertion.checkArgument(isBoostMostRecent(), "Le boost des documents les plus récent, n'est pas activé sur cette recherche");
-		//---------------------------------------------------------------------
+		//-----
 		return boostedDocumentDateFieldName;
 	}
 
@@ -140,7 +140,7 @@ public final class SearchQuery implements Serializable {
 	 */
 	public int getNumDaysOfBoostRefDocument() {
 		Assertion.checkArgument(isBoostMostRecent(), "Le boost des documents les plus récent, n'est pas activé sur cette recherche");
-		//---------------------------------------------------------------------
+		//-----
 		return numDaysOfBoostRefDocument;
 	}
 
@@ -150,7 +150,7 @@ public final class SearchQuery implements Serializable {
 	 */
 	public int getMostRecentBoost() {
 		Assertion.checkArgument(isBoostMostRecent(), "Le boost des documents les plus récent, n'est pas activé sur cette recherche");
-		//---------------------------------------------------------------------
+		//-----
 		return mostRecentBoost;
 	}
 
@@ -190,7 +190,7 @@ public final class SearchQuery implements Serializable {
 	 */
 	public static SearchQuery createSearchQuery(final IndexDefinition indexDefinition, final ListFilter listFilter, final DtField boostedDocumentDateField, final Integer numDaysOfBoostRefDocument, final Integer mostRecentBoost) {
 		Assertion.checkNotNull(boostedDocumentDateField);
-		//---------------------------------------------------------------------
+		//-----
 		return new SearchQuery(indexDefinition, listFilter, null, null, boostedDocumentDateField, numDaysOfBoostRefDocument, mostRecentBoost);
 	}
 }

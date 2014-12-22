@@ -37,17 +37,17 @@ public class KspProperty {
 	 */
 	public static final EntityProperty ARGS = new EntityProperty("ARGS", EntityPropertyType.String);
 
-	//------------------------------
+	//==============================
 	//----Constraint
-	//------------------------------
+	//==============================
 	/**
 	 * Propriété standard : message d'erreur, valeur String.
 	 */
 	public static final EntityProperty MSG = new EntityProperty("MSG", EntityPropertyType.String);
 
-	//------------------------------
+	//==============================
 	//----Domain
-	//------------------------------
+	//==============================
 	/**
 	 * Propriété standard : libellé du champ, valeur String.
 	 */
@@ -127,9 +127,9 @@ public class KspProperty {
 	 */
 	public static final EntityProperty TABLE_NAME = new EntityProperty("TABLE_NAME", EntityPropertyType.String);
 
-	//------------------------------
+	//==============================
 	//----Task
-	//------------------------------
+	//==============================
 	/**
 	 * Requête ou plus générallement paramètre d'une tache.
 	 */
@@ -140,9 +140,9 @@ public class KspProperty {
 	 */
 	public static final EntityProperty IN_OUT = new EntityProperty("IN_OUT", EntityPropertyType.String);
 
-	//------------------------------
+	//==============================
 	//----FileInfo
-	//------------------------------
+	//==============================
 	/**
 	 * Racine des éléments de cette définition.
 	 */
@@ -153,9 +153,9 @@ public class KspProperty {
 	 */
 	public static final EntityProperty STORE_NAME = new EntityProperty("STORE_NAME", EntityPropertyType.String);
 
-	//------------------------------
+	//==============================
 	//----Mda
-	//------------------------------
+	//==============================
 	/**
 	 * Expression du champ computed.
 	 */
@@ -166,13 +166,9 @@ public class KspProperty {
 	 */
 	public static final EntityProperty STORE_TYPE = new EntityProperty("STORE_TYPE", EntityPropertyType.String);
 
-	//==========================================================================
-	//==========================================================================
-	//==========================================================================
-
-	//------------------------------
+	//==============================
 	//----Propriétés hérités de DoProperty
-	//------------------------------
+	//==============================
 
 	/**
 	 * Propriété standard : longueur max du champ, valeur Integer.
@@ -201,7 +197,9 @@ public class KspProperty {
 	 */
 	public static final EntityProperty MAX_VALUE = new EntityProperty("MAX_VALUE", EntityPropertyType.Double);
 
-	//----------------Style----------------------------------------------------
+	//==============================
+	//-----Style
+	//==============================
 	/**
 	 * Propriété standard : Unité de la valeur, valeur String.
 	 */

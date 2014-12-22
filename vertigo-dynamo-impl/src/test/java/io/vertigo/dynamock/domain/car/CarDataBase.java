@@ -57,7 +57,7 @@ public final class CarDataBase implements Iterable<Car> {
 		car.setKilo(kilo);
 		car.setMotorType(motorType.toLowerCase());
 		car.setDescription(description);
-		//------------------
+		//-----
 		cars.add(car);
 		size++;
 	}

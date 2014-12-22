@@ -45,7 +45,7 @@ final class ESDocumentCodec {
 	/** FieldName containing Full result object. */
 	static final String FULL_RESULT = "FULL_RESULT";
 	//public static final String URN = "URI";
-	//-----------------------
+	//-----
 	private final CodecManager codecManager;
 
 	/**
@@ -54,13 +54,13 @@ final class ESDocumentCodec {
 	 */
 	ESDocumentCodec(final CodecManager codecManager) {
 		Assertion.checkNotNull(codecManager);
-		//-----------------------------------------------------------------
+		//-----
 		this.codecManager = codecManager;
 	}
 
 	private <I extends DtObject> String encode(final I dto) {
 		Assertion.checkNotNull(dto);
-		//----------------------------------------------------------------
+		//-----
 		//	System.out.println(">>>encode : " + dto);
 		final byte[] data = codecManager.getCompressedSerializationCodec().encode(dto);
 		return codecManager.getBase64Codec().encode(data);
@@ -68,7 +68,7 @@ final class ESDocumentCodec {
 
 	private <R extends DtObject> R decode(final String base64Data) {
 		Assertion.checkNotNull(base64Data);
-		//----------------------------------------------------------------
+		//-----
 		final byte[] data = codecManager.getBase64Codec().decode(base64Data);
 		return (R) codecManager.getCompressedSerializationCodec().decode(data);
 	}
@@ -90,7 +90,7 @@ final class ESDocumentCodec {
 
 		/* 2 : Result stocké */
 		final R resultDtObjectdtObject = decode((String) searchHit.field(FULL_RESULT).getValue());
-		//--------------------------
+		//-----
 		return Index.createResult(indexDefinition, uri, resultDtObjectdtObject);
 	}
 
@@ -106,7 +106,7 @@ final class ESDocumentCodec {
 	<I extends DtObject, R extends DtObject> XContentBuilder index2XContentBuilder(final Index<I, R> index, final IndexFieldNameResolver indexFieldNameResolver) throws IOException {
 		Assertion.checkNotNull(index);
 		Assertion.checkNotNull(indexFieldNameResolver);
-		//---------------------------------------------------------------------
+		//-----
 
 		final XContentBuilder xContentBuilder = XContentFactory.jsonBuilder();
 

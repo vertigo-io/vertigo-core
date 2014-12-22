@@ -95,7 +95,7 @@ public final class BasicSchedulerPlugin implements SchedulerPlugin, Activeable {
 	public void scheduleEverySecondInterval(final JobManager jobManager, final JobDefinition jobDefinition, final int periodInSecond) {
 		checkActive();
 		Assertion.checkArgument(periodInSecond <= 7 * 24 * 60 * 60, "La période doit être inférieure à une semaine");
-		//---------------------------------------------------------------------
+		//-----
 		final TimerTask task = createTimerTask(jobManager, jobDefinition);
 		final int startDelay = periodInSecond;
 		// on utilise schedule et non scheduleAtFixedRate car c'est la période inter-exécution
@@ -165,9 +165,9 @@ public final class BasicSchedulerPlugin implements SchedulerPlugin, Activeable {
 		return calendar.getTime();
 	}
 
-	//---------------------------------------------------------------------------
-	//------------------Gestion du rendu et des interactions---------------------
-	//---------------------------------------------------------------------------
+	//=========================================================================
+	//==================Gestion du rendu et des interactions===================
+	//=========================================================================
 	//
 	//	/** {@inheritDoc} */
 	//	@Override
@@ -192,9 +192,9 @@ public final class BasicSchedulerPlugin implements SchedulerPlugin, Activeable {
 	//		return Collections.<ManagerSummaryInfo> singletonList(managerSummaryInfo);
 	//	}
 
-	//-------------------------------------------------------------------------
-	//----------------------------------POOL de TIMER--------------------------
-	//-------------------------------------------------------------------------
+	//=========================================================================
+	//=============================POOL de TIMER===============================
+	//=========================================================================
 	static class TimerPool {
 		// cette implémentation est simplement basée sur la classe java.util.Timer du JDK
 		private final Map<String, Timer> timerMap = new HashMap<>();

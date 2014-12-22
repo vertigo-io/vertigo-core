@@ -51,7 +51,7 @@ public final class DtListValueFilter<D extends DtObject> implements DtListFilter
 	 */
 	public DtListValueFilter(final String fieldName, final Serializable value) {
 		Assertion.checkNotNull(fieldName);
-		//----------------------------------------------------------------------
+		//-----
 		this.fieldName = fieldName;
 		this.value = value;
 	}

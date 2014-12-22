@@ -30,9 +30,9 @@ import java.util.Set;
  * @author npiedeloup
  */
 public interface KSecurityManager extends Component {
-	//-------------------------------------------------------------------------
-	//--------------Gestion de l'utilisateur (porteur des droits) -------------
-	//-------------------------------------------------------------------------
+	//=========================================================================
+	//===============Gestion de l'utilisateur (porteur des droits)=============
+	//=========================================================================
 	/**
 	 * Accroche l'utilisateur au thread courant.
 	 * S'effectue dans la servlet. Ne pas utiliser directement.
@@ -61,7 +61,7 @@ public interface KSecurityManager extends Component {
 
 	/**
 	 * Contrôle d'accès basé sur les rôles.
-	 * 
+	 *
 	 * L'utilisateur dispose-t-il des droits nécessaires.
 	 * <br/>
 	 * <ul>
@@ -81,10 +81,10 @@ public interface KSecurityManager extends Component {
 
 	/**
 	 * Controle d'acces base sur les permissions.
-	 * 
+	 *
 	 * Indique si l'utilisateur courant a la permission d'effectuer l'operation
 	 * donnee sur la ressource donnee.
-	 * 
+	 *
 	 * @param resource la ressource
 	 * @param operation l'operation
 	 * @return true si l'utilisateur courant a la permission d'effectuer l'operation
@@ -94,7 +94,7 @@ public interface KSecurityManager extends Component {
 
 	/**
 	 * Contrôle d'accès basé sur les permissions.
-	 * 
+	 *
 	 * Indique si l'utilisateur courant a la permission d'effectuer l'opération
 	 * donnée sur la ressource donnée.
 	 * @param resourceType Type de la resource

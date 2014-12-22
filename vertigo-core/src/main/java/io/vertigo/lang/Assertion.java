@@ -21,8 +21,8 @@ package io.vertigo.lang;
 import io.vertigo.util.StringUtil;
 
 /**
- * Permet de gérer les Assertions. 
- * C'est à dire les : 
+ * Permet de gérer les Assertions.
+ * C'est à dire les :
  * <ul>
  * 	<li>pré conditions : validation des arguments</li>
  * 	<li>invariants / post conditions : validation des états</li>
@@ -37,9 +37,9 @@ import io.vertigo.util.StringUtil;
  * @author fconstantin
  */
 public final class Assertion {
-	//-------------------------------------------------------------------------
-	//-------------------------NullPointerException----------------------------
-	//-------------------------------------------------------------------------
+	//=========================================================================
+	//-----NullPointerException
+	//=========================================================================
 
 	/**
 	 * Permet de tester le caractère obligatoire (non null) d'un objet.
@@ -59,15 +59,15 @@ public final class Assertion {
 	 * @param params paramètres du message
 	 */
 	public static void checkNotNull(final Object o, final String msg, final Object... params) {
-		//Attention si o est un Boolean : il peut s'agir du resultat d'un test (boolean) qui a été autoboxé en Boolean 
+		//Attention si o est un Boolean : il peut s'agir du resultat d'un test (boolean) qui a été autoboxé en Boolean
 		if (o == null) {
 			throw new NullPointerException(StringUtil.format(msg, params));
 		}
 	}
 
-	//-------------------------------------------------------------------------
-	//-------------------------IllegalArgumentException------------------------
-	//-------------------------------------------------------------------------
+	//=========================================================================
+	//-----IllegalArgumentException
+	//=========================================================================
 	/**
 	 * Permet de tester les arguments.
 	 * Utilisé comme validation des préconditions.
@@ -105,14 +105,14 @@ public final class Assertion {
 		}
 	}
 
-	//-------------------------------------------------------------------------
-	//-------------------------IllegalStateException----------------------------
-	//-------------------------------------------------------------------------
-	/** 
+	//=========================================================================
+	//-----IllegalStateException
+	//=========================================================================
+	/**
 	 * Vérification d'un état.
 	 * S'utilise de maniére courante dans les calculs pour vérifer les états de variables au cours du traitement.
 	 * S'utilise comme postCondition
-	 * 
+	 *
 	 * @param test Expression booléenne qui doit être vérifiée
 	 * @param msg Message affiché si le test <b>n'est pas</b> vérifié.
 	 * @param params paramètres du message

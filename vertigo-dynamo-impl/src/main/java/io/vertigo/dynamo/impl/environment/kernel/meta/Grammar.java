@@ -48,7 +48,7 @@ public final class Grammar {
 	 */
 	public Grammar(final List<Entity> entities) {
 		Assertion.checkNotNull(entities);
-		//---------------------------------------------------------------------
+		//-----
 		final List<EntityProperty> myProperties = new ArrayList<>();
 		//--
 		for (final Entity entity : entities) {

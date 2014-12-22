@@ -121,7 +121,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 */
 	protected AbstractTaskEngineSQL(final ScriptManager scriptManager) {
 		Assertion.checkNotNull(scriptManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.scriptManager = scriptManager;
 	}
 
@@ -230,7 +230,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	private String prepareParams(final String query) {
 		Assertion.checkNotNull(query); //La requête ne peut pas être nulle
 		Assertion.checkState(params == null, "La query a déjà été préparée !");
-		//----------------------------------------------------------------------
+		//-----
 		final SqlParserHandler scriptHandler = new SqlParserHandler(getTaskDefinition());
 		getScriptManager().parse(query, scriptHandler, SQL_SEPARATORS);
 		params = scriptHandler.getParams();
@@ -307,7 +307,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 */
 	protected final void setParameters(final SqlPreparedStatement statement) throws SQLException {
 		Assertion.checkNotNull(statement);
-		//----------------------------------------------------------------------
+		//-----
 		for (final TaskEngineSQLParam param : params) {
 			switch (param.getType()) {
 				case IN:

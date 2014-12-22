@@ -212,7 +212,7 @@ public final class BerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activ
 	//		//				}*/
 	//		//			final DtObjectURI uri = URIHelper.readURN(urn);
 	//		//			final D item = getPersistenceManager().getBroker().<D> get(uri);
-	//		//			//-------------
+	//-----
 	//		//			dtc.add(item);
 	//		//		}
 	//		//==================================================================
@@ -224,7 +224,7 @@ public final class BerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activ
 	//		//System.out.println(">>>loadList");
 	//		Assertion.notNull(dtDefinition);
 	//		Assertion.notNull(criteria instanceof SimpleCriteria, "Ce store ne gère que des SimpleCriteria.");
-	//		//----------------------------------------------------------------------
+	//-----
 	//		return obtainBerkeleyResource().obtainBerkeleyReader().loadDtList(dtDefinition, maxRows);
 	//		//final List<String> list = obtainLuceneResource().obtainLuceneReader().getURINameList(dtDefinition, ((SimpleCriteria) criteria).getSearch(), maxRows);
 	//		//final DtList<D> dtc = new DtList<D>(dtDefinition);
@@ -232,7 +232,7 @@ public final class BerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activ
 	//		//			final DtObjectURI uri = URIHelper.readURN(urn);
 	//		//			try {
 	//		//				final D item = getPersistenceManager().getBroker().<D> get(uri);
-	//		//				//-------------
+	//-----
 	//		//				dtc.add(item);
 	//		//			} catch (final Exception e) {
 	//		//			}

@@ -52,7 +52,7 @@ public final class PublisherNode implements Serializable {
 
 	PublisherNode(final PublisherNodeDefinition nodeDefinition) {
 		Assertion.checkNotNull(nodeDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		this.nodeDefinition = nodeDefinition;
 		//On initialise toutes les champs de type liste à vide.
 		for (final PublisherField field : getNodeDefinition().getFields()) {
@@ -69,12 +69,10 @@ public final class PublisherNode implements Serializable {
 		return nodeDefinition;
 	}
 
-	//-------------------------------------------------------------------------
-	//-------------------------------------------------------------------------
 	private void check(final PublisherFieldType fieldType, final String fieldName, final Object value) {
 		Assertion.checkNotNull(fieldName, "Le nom du champ est obligatoire.");
 		Assertion.checkNotNull(value, "La valeur du champ {0} est obligatoire.", fieldName);
-		//---------------------------------------------------------------------
+		//-----
 		final PublisherFieldType currentFieldType = nodeDefinition.getField(fieldName).getFieldType();
 		Assertion.checkArgument(currentFieldType == fieldType, "Le field {0} n''est pas du type {1} mais de type {2}", fieldName, fieldType, currentFieldType);
 		Assertion.checkArgument(fieldType.checkValue(value), "La valeur {0} n'est pas conforme au type '{1}' sur le champ '{2}'", value, fieldType, fieldName);
@@ -91,9 +89,9 @@ public final class PublisherNode implements Serializable {
 		return new PublisherNode(childNodeDefinition.get());
 	}
 
-	//-------------------------------------------------------------------------
-	//------------------------GetValue-----------------------------------------
-	//-------------------------------------------------------------------------
+	//=========================================================================
+	//-----GetValue
+	//=========================================================================
 	/**
 	 * Récupère une valeur affichable.
 	 * @param fieldName Nom du champ
@@ -146,7 +144,7 @@ public final class PublisherNode implements Serializable {
 		}
 		final Object value = dataMap.get(fieldName);
 		check(fieldType, fieldName, value);
-		//---------------------------------------------------------------------
+		//-----
 		return clazz.cast(value);
 	}
 
@@ -165,9 +163,9 @@ public final class PublisherNode implements Serializable {
 		return node.getValue(fieldPath.substring(pathIndex + 1), fieldType, clazz);
 	}
 
-	//-------------------------------------------------------------------------
-	//------------------------SetValue-----------------------------------------
-	//-------------------------------------------------------------------------
+	//=========================================================================
+	//-----SetValue
+	//=========================================================================
 	/**
 	 * Fixe une valeur affichable.
 	 * @param fieldName Nom du champ
@@ -215,13 +213,13 @@ public final class PublisherNode implements Serializable {
 
 	private void setValue(final String fieldName, final PublisherFieldType fieldType, final Object value) {
 		check(fieldType, fieldName, value);
-		//---------------------------------------------------------------------
+		//-----
 		dataMap.put(fieldName, value);
 	}
 
-	//-------------------------------------------------------------------------
-	//------------------------ToString-----------------------------------------
-	//-------------------------------------------------------------------------
+	//=========================================================================
+	//-----ToString
+	//=========================================================================
 
 	/** {@inheritDoc} */
 	@Override

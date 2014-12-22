@@ -47,7 +47,7 @@ public final class DslDefinitionEntryRule extends AbstractRule<DslDefinitionEntr
 	 */
 	public DslDefinitionEntryRule(final List<String> fieldNames) {
 		Assertion.checkNotNull(fieldNames);
-		//----------------------------------------------------------------------
+		//-----
 		this.fieldNames = fieldNames;
 
 	}
@@ -58,7 +58,7 @@ public final class DslDefinitionEntryRule extends AbstractRule<DslDefinitionEntr
 		for (final String fieldName : fieldNames) {
 			fieldNamesRules.add(new TermRule(fieldName));
 		}
-		//---------------------------------------------------------------------
+		//-----
 		return new SequenceRule(//"DefinitionKey"
 				new FirstOfRule(fieldNamesRules), //0
 				SPACES,
@@ -66,8 +66,7 @@ public final class DslDefinitionEntryRule extends AbstractRule<DslDefinitionEntr
 				SPACES,
 				new FirstOfRule(WORD, WORDS),//4
 				SPACES,
-				new OptionRule<>(DslSyntaxRules.OBJECT_SEPARATOR)
-		);
+				new OptionRule<>(DslSyntaxRules.OBJECT_SEPARATOR));
 	}
 
 	@Override

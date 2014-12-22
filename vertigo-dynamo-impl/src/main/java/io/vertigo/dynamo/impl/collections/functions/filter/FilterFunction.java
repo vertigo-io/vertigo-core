@@ -39,7 +39,7 @@ public final class FilterFunction<D extends DtObject> implements DtListFunction<
 	@Override
 	public DtList<D> apply(final DtList<D> dtc) {
 		Assertion.checkNotNull(dtc);
-		//----------------------------------------------------------------------
+		//-----
 		final DtList<D> filteredDtc = new DtList<>(dtc.getDefinition());
 		for (final D dto : dtc) {
 			if (filter.accept(dto)) {

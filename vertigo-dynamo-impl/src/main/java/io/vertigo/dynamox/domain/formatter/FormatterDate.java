@@ -90,7 +90,7 @@ public final class FormatterDate extends AbstractFormatterImpl {
 	public void initParameters(final String args) {
 		// Les arguments ne doivent pas être vides.
 		assertArgs(args != null);
-		//----------------------------------------------------------------------
+		//-----
 		final StringTokenizer st = new StringTokenizer(args, ";");
 
 		//Affichage des dates renseignées

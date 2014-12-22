@@ -70,7 +70,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 
 	private void addNFamille(final int nbFamille) {
 		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			//----------------------
+			//-----
 			for (int i = 0; i < nbFamille; i++) {
 				final Famille famille = new Famille();
 				famille.setLibelle("encore un (" + i + ")");

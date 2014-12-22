@@ -28,7 +28,7 @@ import java.util.Set;
  * Une entité permet de décrire un modèle, une classe.
  * - Elle est définie par son nom.
  * - Elle possède une liste de propriétés (Chacune étant obligatoire / facultative)
- * - Elle est composée d'une liste d'attibuts. 
+ * - Elle est composée d'une liste d'attibuts.
  *
  * Une entité permet, ainsi, d'adopter des comportement dynamique, de fabriquer des grammaires.
  * Si l'ensemble des définitions permet de construire le modèle, l'ensemble des entités permet de décrire le métamodèle.
@@ -62,7 +62,7 @@ public final class Entity {
 		Assertion.checkNotNull(name);
 		Assertion.checkNotNull(attributes);
 		Assertion.checkNotNull(properties);
-		//----------------------------------------------------------------------
+		//-----
 		this.name = name;
 		this.attributes = Collections.unmodifiableSet(attributes);
 		this.properties = Collections.unmodifiableMap(properties);
@@ -83,13 +83,13 @@ public final class Entity {
 	}
 
 	/**
-	 * @param property Propriété 
+	 * @param property Propriété
 	 * @return Si la propriété mentionnée est nulle
 	 */
 	public boolean isNotNull(final EntityProperty property) {
 		Assertion.checkNotNull(property);
 		Assertion.checkArgument(properties.containsKey(property), "la propriete {0} n'est pas declaree pour {1}", property, this);
-		//----------------------------------------------------------------------
+		//-----
 		return properties.get(property);
 	}
 

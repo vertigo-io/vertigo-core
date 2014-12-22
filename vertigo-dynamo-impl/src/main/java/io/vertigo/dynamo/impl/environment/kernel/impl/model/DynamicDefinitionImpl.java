@@ -155,7 +155,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		Assertion.checkArgument(definitionKeysByFieldName.containsKey(fieldName), "Aucune définition déclarée pour ''{0}'' sur ''{1}'' ", fieldName, getDefinitionKey().getName());
 		final List<DynamicDefinitionKey> list = definitionKeysByFieldName.get(fieldName);
 		final DynamicDefinitionKey definitionKey = list.get(0);
-		// ------------------------------------------------------------------
+		//-----
 		// On vérifie qu'il y a une définition pour le champ demandé
 		Assertion.checkNotNull(definitionKey);
 		return definitionKey;
@@ -207,7 +207,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	private void doAddDefinition(final String fieldName, final DynamicDefinitionKey definitionKey) {
 		Assertion.checkNotNull(definitionKey);
-		// ----------------------------------------------------------------------
+		//-----
 		obtainDefinitionKeys(fieldName).add(definitionKey);
 	}
 
@@ -217,7 +217,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		Assertion.checkArgument(obtainDefinitionKeys(fieldName).isEmpty(), "syntaxe interdite");
 		// On vérifie que la liste est vide pour éviter les syntaxe avec multi
 		// déclarations
-		// ----------------------------------------------------------------------
+		//-----
 		for (final DynamicDefinitionKey definitionKey : definitionKeys) {
 			doAddDefinition(fieldName, definitionKey);
 		}
@@ -226,9 +226,9 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	private List<DynamicDefinition> obtainComposites(final String fieldName) {
 		Assertion.checkNotNull(fieldName);
-		// ------------------------------------------------------------------
+		//-----
 		List<DynamicDefinition> list = definitionsByFieldName.get(fieldName);
-		// ------------------------------------------------------------------
+		//-----
 		if (list == null) {
 			list = new ArrayList<>();
 			definitionsByFieldName.put(fieldName, list);
@@ -262,14 +262,14 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		// On vérifie que la liste est vide pour éviter les syntaxe avec multi
 		// déclarations
 		Assertion.checkArgument(obtainDefinitionKeys(fieldName).isEmpty(), "syntaxe interdite");
-		// ----------------------------------------------------------------------
+		//-----
 		doAddDefinition(fieldName, definitionKey);
 		return this;
 	}
 
 	public void check(final Entity myEntity) {
 		Assertion.checkNotNull(myEntity);
-		// ---------------------------------------------------------------------
+		//-----
 		// 1.On vérifie la définition par rapport à la métadéfinition
 		// 1.1 on vérifie les propriétés.
 		final Set<EntityProperty> propertySet = getProperties();

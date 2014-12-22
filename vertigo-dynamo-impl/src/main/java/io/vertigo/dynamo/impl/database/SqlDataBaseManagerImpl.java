@@ -54,7 +54,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		Assertion.checkNotNull(localeManager);
 		Assertion.checkNotNull(analyticsManager);
 		Assertion.checkNotNull(connectionProviderPlugin);
-		//---------------------------------------------------------------------
+		//-----
 		dataBaseListener = new SqlDataBaseListenerImpl(analyticsManager);
 		statementHandler = new SqlStatementHandlerImpl();
 		this.connectionProviderPlugin = connectionProviderPlugin;

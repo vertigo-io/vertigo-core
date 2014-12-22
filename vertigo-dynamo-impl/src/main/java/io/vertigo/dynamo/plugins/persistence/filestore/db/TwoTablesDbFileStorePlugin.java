@@ -70,7 +70,7 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 	@Inject
 	public TwoTablesDbFileStorePlugin(final FileManager fileManager) {
 		Assertion.checkNotNull(fileManager);
-		// ---------------------------------------------------------------------
+		//-----
 		readOnly = false;
 		this.fileManager = fileManager;
 	}
@@ -117,7 +117,7 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 		setValue(fileDataDto, DtoFields.FILE_NAME, kFile.getFileName());
 		setValue(fileDataDto, DtoFields.FILE_DATA, new FileInfoDataStream(kFile));
 
-		// ---------------------------------------------------------------------
+		//-----
 		if (isCreation) {
 			getPersistenceManager().getBroker().save(fileDataDto);
 			setValue(fileMetadataDto, DtoFields.FDT_ID, DtObjectUtil.getId(fileDataDto));
@@ -255,7 +255,7 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 
 		DataStreamInputStreamBuilder(final DataStream dataStream) {
 			Assertion.checkNotNull(dataStream);
-			//-----------------------------------------------------------------
+			//-----
 			this.dataStream = dataStream;
 		}
 

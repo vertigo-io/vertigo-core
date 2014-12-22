@@ -78,7 +78,7 @@ public final class BrokerNNImpl implements BrokerNN {
 	 */
 	public BrokerNNImpl(final TaskManager taskManager) {
 		Assertion.checkNotNull(taskManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.taskManager = taskManager;
 		integerDomain = new Domain("DO_INTEGER_BROKER", DataType.Integer, new FormatterNumber("FMT_NUMBER_BROKER"));
 	}
@@ -87,7 +87,7 @@ public final class BrokerNNImpl implements BrokerNN {
 	@Override
 	public void appendNN(final DtListURIForAssociation dtListURI, final URI<DtObject> uriToAppend) {
 		Assertion.checkNotNull(uriToAppend);
-		//---------------------------------------------------------------------
+		//-----
 		appendNN(new DescriptionNN(dtListURI), uriToAppend.getKey());
 	}
 
@@ -102,7 +102,7 @@ public final class BrokerNNImpl implements BrokerNN {
 	@Override
 	public void removeNN(final DtListURIForAssociation dtListURI, final URI<DtObject> uriToDelete) {
 		Assertion.checkNotNull(uriToDelete);
-		//---------------------------------------------------------------------
+		//-----
 		removeNN(new DescriptionNN(dtListURI), uriToDelete.getKey());
 	}
 
@@ -110,7 +110,7 @@ public final class BrokerNNImpl implements BrokerNN {
 	@Override
 	public void updateNN(final DtListURIForAssociation dtListURI, final List<URI<? extends DtObject>> newUriList) {
 		Assertion.checkNotNull(newUriList);
-		//---------------------------------------------------------------------
+		//-----
 		final DescriptionNN descriptionNN = new DescriptionNN(dtListURI);
 		//1. on supprime tout
 		removeNN(descriptionNN);
@@ -179,7 +179,7 @@ public final class BrokerNNImpl implements BrokerNN {
 	}
 
 	private int processNN(final String taskDefinitionName, final String request,
-			final DtField sourceField, final Object sourceValue, 
+			final DtField sourceField, final Object sourceValue,
 			final DtField targetField, final Object targetValue) {
 		//FieldName
 		final String sourceFieldName = sourceField.getName();

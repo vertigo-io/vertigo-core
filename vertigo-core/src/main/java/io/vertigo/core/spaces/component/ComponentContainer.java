@@ -131,7 +131,7 @@ final class ComponentContainer implements Container, Activeable {
 		Assertion.checkNotNull(componentConfig);
 		Assertion.checkNotNull(component);
 		Assertion.checkNotNull(componentInitializer);
-		//---On vérifie que le manager est uunique-----------------------------
+		//On vérifie que le manager est unique
 		final Object old = components.put(componentConfig.getId(), component);
 		Assertion.checkState(old == null, "component {0} deja enregistré", componentConfig.getId());
 		//-----

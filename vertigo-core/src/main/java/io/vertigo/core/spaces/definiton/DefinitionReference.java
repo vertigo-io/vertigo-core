@@ -43,7 +43,7 @@ public final class DefinitionReference<D extends Definition> implements Serializ
 	 */
 	public DefinitionReference(final D definition) {
 		Assertion.checkNotNull(definition);
-		//----------------------------------------------------------------------
+		//-----
 		this.definition = definition;
 		definitionName = definition.getName();
 	}

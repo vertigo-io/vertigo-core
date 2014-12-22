@@ -70,7 +70,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 */
 	public TaskDefinitionBuilder withRequest(final String request) {
 		Assertion.checkNotNull(request);
-		//---------------------------------------------------------------------
+		//-----
 		//Pour unifier la saisie de la request sous un environnement unix ou dos
 		// et pour éviter la disparité de gestion des retours chariot
 		//par certains drivers de base de données.
@@ -99,7 +99,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	public TaskDefinitionBuilder withAttribute(final String attributeName, final Domain domain, final boolean notNull, final boolean in) {
 		Assertion.checkNotNull(attributeName);
 		Assertion.checkNotNull(domain);
-		//----------------------------------------------------------------------
+		//-----
 		final TaskAttribute taskAttribute = new TaskAttribute(attributeName, domain, notNull, in);
 		myTaskAttributes.add(taskAttribute);
 		return this;

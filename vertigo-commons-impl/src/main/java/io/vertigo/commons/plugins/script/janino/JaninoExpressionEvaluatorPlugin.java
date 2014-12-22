@@ -35,7 +35,7 @@ public final class JaninoExpressionEvaluatorPlugin implements ExpressionEvaluato
 	/** {@inheritDoc} */
 	@Override
 	public <J> J evaluate(final String expression, final List<ExpressionParameter> parameters, final Class<J> type) {
-		// ---------Initialisation des types et noms de paramètre------------
+		//==========Initialisation des types et noms de paramètre==============
 		final int size = parameters.size();
 
 		final String[] parameterNames = new String[size];

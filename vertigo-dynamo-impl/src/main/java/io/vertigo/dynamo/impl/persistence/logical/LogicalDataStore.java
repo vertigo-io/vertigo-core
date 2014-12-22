@@ -49,7 +49,7 @@ public final class LogicalDataStore implements DataStore {
 	public LogicalDataStore(final LogicalStoreConfiguration logicalStoreConfiguration, final Broker broker) {
 		Assertion.checkNotNull(logicalStoreConfiguration);
 		Assertion.checkNotNull(broker);
-		//---------------------------------------------------------------------
+		//-----
 		this.logicalStoreConfiguration = logicalStoreConfiguration;
 		this.broker = broker;
 	}
@@ -66,7 +66,7 @@ public final class LogicalDataStore implements DataStore {
 	@Override
 	public <D extends DtObject> DtList<D> loadList(final DtListURI uri) {
 		Assertion.checkNotNull(uri);
-		//---------------------------------------------------------------------
+		//-----
 		if (uri instanceof DtListURIForMasterData) {
 			return loadMDList((DtListURIForMasterData) uri);
 		}
@@ -76,7 +76,7 @@ public final class LogicalDataStore implements DataStore {
 	private <D extends DtObject> DtList<D> loadMDList(final DtListURIForMasterData uri) {
 		Assertion.checkNotNull(uri);
 		Assertion.checkArgument(uri.getDtDefinition().getSortField().isDefined(), "Sortfield on definition {0} wasn't set. It's mandatory for MasterDataList.", uri.getDtDefinition().getName());
-		//---------------------------------------------------------------------
+		//-----
 		//On cherche la liste complete (URIAll n'est pas une DtListURIForMasterData pour ne pas boucler)
 		final DtList<D> unFilteredDtc = broker.<D> getList(new DtListURIAll(uri.getDtDefinition()));
 
@@ -95,7 +95,7 @@ public final class LogicalDataStore implements DataStore {
 	@Override
 	public <D extends DtObject> D load(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
-		//---------------------------------------------------------------------
+		//-----
 		final DtDefinition dtDefinition = getDtDefinition(uri);
 		return getPhysicalStore(dtDefinition).<D> load(uri);
 	}

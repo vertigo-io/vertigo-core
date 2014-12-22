@@ -45,7 +45,7 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 		Assertion.checkNotNull(dynamicModelRepository);
 		Assertion.checkArgNotEmpty(entityName);
 		Assertion.checkNotNull(entity);
-		//-----------------------------------------------------------------
+		//-----
 		this.dynamicModelRepository = dynamicModelRepository;
 		this.entityName = entityName;
 		this.entity = entity;
@@ -62,8 +62,7 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 				DslSyntaxRules.SPACES,
 				definitionBodyRule,//4
 				DslSyntaxRules.SPACES,
-				new OptionRule<>(DslSyntaxRules.OBJECT_SEPARATOR)
-				);
+				new OptionRule<>(DslSyntaxRules.OBJECT_SEPARATOR));
 	}
 
 	@Override
@@ -85,10 +84,10 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 	 */
 	private static void populateDefinition(final DslDefinitionBody definitionBody, final DynamicDefinitionBuilder dynamicDefinitionBuilder) {
 		for (final DslDefinitionEntry fieldDefinitionEntry : definitionBody.getDefinitionEntries()) {
-			// ------------------------------------------------------------------
+			//-----
 			// 1.On vérifie que le champ existe pour la metaDefinition
 			// et qu'elle n'est pas déjà enregistrée sur l'objet.
-			// ------------------------------------------------------------------
+			//-----
 			if (fieldDefinitionEntry.containsDefinition()) {
 				// On ajoute la définition par sa valeur.
 				dynamicDefinitionBuilder.withChildDefinition(fieldDefinitionEntry.getFieldName(), fieldDefinitionEntry.getDefinition());
@@ -101,7 +100,7 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 			//			// On vérifie que la propriété est enregistrée sur la metaDefinition
 			//			Assertion.precondition(definition.getEntity().getPropertySet().contains(fieldPropertyEntry.getProperty()), "Propriété {0} non enregistré sur {1}",
 			//					fieldPropertyEntry.getProperty(), definition.getEntity().getName());
-			//			// ------------------------------------------------------------------
+			//-----
 			final Object value = readProperty(fieldPropertyEntry.getProperty(), fieldPropertyEntry.getPropertyValueAsString());
 			dynamicDefinitionBuilder.withPropertyValue(fieldPropertyEntry.getProperty(), value);
 		}
@@ -121,7 +120,7 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 	 */
 	private static Object readProperty(final EntityProperty property, final String stringValue) {
 		Assertion.checkNotNull(property);
-		//---------------------------------------------------------------------
+		//-----
 		return property.getPrimitiveType().cast(stringValue);
 	}
 

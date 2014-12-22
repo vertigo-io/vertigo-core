@@ -48,7 +48,7 @@ public final class FullTextFilterFunction<D extends DtObject> implements DtListF
 	public FullTextFilterFunction(final String keywords, final int maxRows, final Collection<DtField> searchedFields, final IndexPlugin indexerPlugin) {
 		Assertion.checkNotNull(keywords); //peut être vide
 		Assertion.checkNotNull(indexerPlugin);
-		//-----------------------------------------------------------------
+		//-----
 		this.keywords = keywords;
 		this.maxRows = maxRows;
 		this.searchedFields = searchedFields;
@@ -59,7 +59,7 @@ public final class FullTextFilterFunction<D extends DtObject> implements DtListF
 	@Override
 	public DtList<D> apply(final DtList<D> dtc) {
 		Assertion.checkNotNull(dtc);
-		//----------------------------------------------------------------------
+		//-----
 		return plugin.getCollection(keywords, searchedFields, maxRows, null, dtc);
 	}
 }

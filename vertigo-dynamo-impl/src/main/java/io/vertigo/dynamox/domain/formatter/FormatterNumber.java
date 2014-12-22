@@ -75,9 +75,9 @@ public class FormatterNumber extends AbstractFormatterImpl {
 	@Override
 	public void initParameters(final String args) {
 		Assertion.checkNotNull(args);
-		//---------------------------------------------------------------------
+		//-----
 		pattern = args;
-		//----------------------------------------------------------------------
+		//-----
 		//On vérifie la syntaxe de DecimalFormat
 		Assertion.checkNotNull(new DecimalFormat(pattern));
 	}
@@ -106,7 +106,7 @@ public class FormatterNumber extends AbstractFormatterImpl {
 	@Override
 	public final Object stringToValue(final String strValue, final DataType dataType) throws FormatterException {
 		checkType(dataType);
-		//----------------------------------------------------------------------
+		//-----
 		//Pour les nombres on "trim" à droite et à gauche
 		String sValue = StringUtil.isEmpty(strValue) ? null : strValue.trim();
 
@@ -201,7 +201,7 @@ public class FormatterNumber extends AbstractFormatterImpl {
 	@Override
 	public final String valueToString(final Object objValue, final DataType dataType) {
 		checkType(dataType);
-		//----------------------------------------------------------------------
+		//-----
 		String decimalString = null;
 		if (objValue == null) {
 			decimalString = "";

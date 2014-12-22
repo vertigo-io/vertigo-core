@@ -57,7 +57,7 @@ public final class SqlDataStreamMappingUtil {
 	public static DataStream getDataStream(final ResultSet rs, final int col) throws SQLException {
 		Assertion.checkNotNull(rs);
 		Assertion.checkNotNull(col);
-		//---------------------------------------------------------------------
+		//-----
 		try (final InputStream in = rs.getBinaryStream(col)) {
 			if (in != null) { //le flux est null, s'il n'a jamais été setté (si champs non persistant par exemple)
 				return createDataStream(in);
@@ -86,7 +86,7 @@ public final class SqlDataStreamMappingUtil {
 	private static DataStream createDataStream(final InputStream in, final byte[] bytes) throws IOException, SqlOffLimitsException {
 		//On crée  un fichier temporaire.
 		final File tmpFile = new TempFile("kdata", ".tmp");
-		//-----------
+		//-----
 		try (final OutputStream fileOut = new FileOutputStream(tmpFile)) {
 			//1ere étape : on recopie le contenu de la mémoire dans le fichier. (car on ne peut par relire le Blob)
 			try (final InputStream memoryIn = new ByteArrayInputStream(bytes)) {
@@ -125,7 +125,7 @@ public final class SqlDataStreamMappingUtil {
 
 		ByteArrayDataStream(final byte[] bytes) {
 			Assertion.checkNotNull(bytes);
-			//---------------------------------------------------------------------
+			//-----
 			this.bytes = bytes;
 		}
 

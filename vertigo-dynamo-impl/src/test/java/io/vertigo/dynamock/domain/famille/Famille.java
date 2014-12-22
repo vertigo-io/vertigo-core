@@ -48,7 +48,7 @@ public final class Famille implements DtObject {
 	/**
 	 * Champ : PRIMARY_KEY. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'identifiant
 	 * de la famille'.
-	 * 
+	 *
 	 * @return Long famId <b>Obligatoire</b>
 	 */
 	@javax.persistence.Id
@@ -63,7 +63,7 @@ public final class Famille implements DtObject {
 	/**
 	 * Champ : PRIMARY_KEY. DÃ©finit la valeur de la propriÃ©tÃ© 'identifiant de
 	 * la famille'.
-	 * 
+	 *
 	 * @param famId
 	 *            Long <b>Obligatoire</b>
 	 */
@@ -73,7 +73,7 @@ public final class Famille implements DtObject {
 
 	/**
 	 * Champ : DATA. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'Libelle'.
-	 * 
+	 *
 	 * @return String libelle
 	 */
 	@javax.persistence.Column(name = "LIBELLE")
@@ -84,7 +84,7 @@ public final class Famille implements DtObject {
 
 	/**
 	 * Champ : DATA. DÃ©finit la valeur de la propriÃ©tÃ© 'Libelle'.
-	 * 
+	 *
 	 * @param libelle
 	 *            String
 	 */
@@ -95,7 +95,7 @@ public final class Famille implements DtObject {
 	/**
 	 * Champ : COMPUTED. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© calculÃ©e
 	 * 'Libelle'.
-	 * 
+	 *
 	 * @return String description
 	 */
 	@javax.persistence.Column(name = "DESCRIPTION")
@@ -119,7 +119,7 @@ public final class Famille implements DtObject {
 		// return this.<.domain.car.Car> getList(getVoituresFamilleListURI());
 		final DtListURIForAssociation fkDtListURI = getVoituresFamilleDtListURI();
 		io.vertigo.lang.Assertion.checkNotNull(fkDtListURI);
-		// ---------------------------------------------------------------------
+		//-----
 		// On est toujours dans un mode lazy.
 		if (voituresFamille == null) {
 			voituresFamille = io.vertigo.core.Home.getComponentSpace().resolve(PersistenceManager.class).getBroker().getList(fkDtListURI);
@@ -129,7 +129,7 @@ public final class Famille implements DtObject {
 
 	/**
 	 * Association URI: Voitures de la famille.
-	 * 
+	 *
 	 * @return URI de l'association
 	 */
 	@javax.persistence.Transient
@@ -147,7 +147,7 @@ public final class Famille implements DtObject {
 		// return this.<.domain.car.Car> getList(getVoituresLocationListURI());
 		final DtListURIForAssociation fkDtListURI = getVoituresLocationDtListURI();
 		io.vertigo.lang.Assertion.checkNotNull(fkDtListURI);
-		// ---------------------------------------------------------------------
+		//-----
 		// On est toujours dans un mode lazy.
 		if (voituresLocation == null) {
 			voituresLocation = io.vertigo.core.Home.getComponentSpace().resolve(PersistenceManager.class).getBroker().getList(fkDtListURI);
@@ -157,7 +157,7 @@ public final class Famille implements DtObject {
 
 	/**
 	 * Association URI: Voitures de location.
-	 * 
+	 *
 	 * @return URI de l'association
 	 */
 	@javax.persistence.Transient

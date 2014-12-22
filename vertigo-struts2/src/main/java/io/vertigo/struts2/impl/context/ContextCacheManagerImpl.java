@@ -39,13 +39,13 @@ public final class ContextCacheManagerImpl implements ContextCacheManager {
 	@Inject
 	public ContextCacheManagerImpl(final ContextCachePlugin contextCachePlugin) {
 		Assertion.checkNotNull(contextCachePlugin);
-		//---------------------------------------------------------------------
+		//-----
 		this.contextCachePlugin = contextCachePlugin;
 	}
 
-	//---------------------------------------------------------------------------
-	//------------------Gestion du rendu et des interactions---------------------
-	//---------------------------------------------------------------------------
+	//=========================================================================
+	//==================Gestion du rendu et des interactions===================
+	//=========================================================================
 
 	/** {@inheritDoc} */
 	@Override

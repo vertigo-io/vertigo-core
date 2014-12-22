@@ -39,7 +39,7 @@ public final class TransactionResourceMock implements KTransactionResource, IDat
 
 	public TransactionResourceMock(final DataBaseMock bdd) {
 		Assertion.checkNotNull(bdd);
-		//---------------------------------------------------------------------
+		//-----
 		this.bdd = bdd;
 	}
 

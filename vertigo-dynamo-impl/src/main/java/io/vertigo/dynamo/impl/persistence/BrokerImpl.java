@@ -112,7 +112,7 @@ final class BrokerImpl implements Broker {
 	@Override
 	public <D extends DtObject> Option<D> getOption(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
-		//----------------------------------------------------------------------
+		//-----
 		final D dto = dataStore.<D> load(uri);
 		//-----
 		return Option.option(dto);
@@ -126,7 +126,7 @@ final class BrokerImpl implements Broker {
 		//on ne reutilise pas le getOption volontairement
 		//car c'est ici le cas le plus courant, et on l'optimise au maximum
 		final D dto = dataStore.<D> load(uri);
-		//----------------------------------------------------------------------
+		//-----
 		Assertion.checkNotNull(dto, "L''objet {0} n''a pas été trouvé", uri);
 		return dto;
 	}
@@ -137,7 +137,7 @@ final class BrokerImpl implements Broker {
 		Assertion.checkNotNull(uri);
 		//-----
 		final FileInfo fileInfo = fileStore.load(uri);
-		//----------------------------------------------------------------------
+		//-----
 		Assertion.checkNotNull(fileInfo, "Le fichier {0} n''a pas été trouvé", uri);
 		return fileInfo;
 	}

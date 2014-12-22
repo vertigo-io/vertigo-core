@@ -52,7 +52,7 @@ final class SqlResultMetaDataDynamic implements SqlResultMetaData {
 	SqlResultMetaDataDynamic(final boolean isDtObject, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
 		Assertion.checkNotNull(mapping);
 		Assertion.checkNotNull(resultSet);
-		//-----------------------------------------------------------------
+		//-----
 		this.isDtObject = isDtObject;
 		serializableDefinition = createSerializableDtDefinition(mapping, resultSet);
 	}
@@ -90,7 +90,7 @@ final class SqlResultMetaDataDynamic implements SqlResultMetaData {
 			fieldName = metaData.getColumnName(i).toUpperCase();
 			//On vérifie que la colonne possède un nom signifiant
 			Assertion.checkArgNotEmpty(fieldName, "Une des colonnes de la requête ne possède ni nom ni alias.");
-			//-----------------------------------------------------------------
+			//-----
 			fieldLabel = metaData.getColumnLabel(i);
 			localDataType = mapping.getDataType(metaData.getColumnType(i));
 			fields[i - 1] = new SerializableDtField(fieldName, fieldLabel, localDataType);
@@ -113,7 +113,7 @@ final class SqlResultMetaDataDynamic implements SqlResultMetaData {
 			Assertion.checkNotNull(fieldName);
 			Assertion.checkNotNull(fieldLabel);
 			Assertion.checkNotNull(dataType);
-			//-----------------------------------------------------------------
+			//-----
 			name = fieldName;
 			label = fieldLabel;
 			this.dataType = dataType;
@@ -131,7 +131,7 @@ final class SqlResultMetaDataDynamic implements SqlResultMetaData {
 
 		SerializableDtDefinition(final SerializableDtField[] fields) {
 			Assertion.checkNotNull(fields);
-			//-----------------------------------------------------------------
+			//-----
 			this.fields = fields;
 		}
 
@@ -171,7 +171,6 @@ final class SqlResultMetaDataDynamic implements SqlResultMetaData {
 	}
 }
 
-
 //static DtObject createDtObject(final SerializableDtDefinition serializableDefinition) {
 //	final InvocationHandler proxy = new DtObjectProxy(serializableDefinition);
 //	return ClassUtil.newProxyInstance(DynamicDtObject.class.getClassLoader(), new Class<?>[] { DtObject.class }, proxy);
@@ -198,7 +197,7 @@ final class SqlResultMetaDataDynamic implements SqlResultMetaData {
 //	Proxy(final SerializableDtDefinition serializableDefinition, final X obj) {
 //		Assertion.notNull(serializableDefinition);
 //		Assertion.notNull(obj);
-//		//-----------------------------------------------------------------
+//-----
 //		this.serializableDefinition = serializableDefinition;
 //		this.obj = obj;
 //	}

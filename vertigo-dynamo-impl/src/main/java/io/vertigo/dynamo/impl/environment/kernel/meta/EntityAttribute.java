@@ -22,7 +22,7 @@ import io.vertigo.lang.Assertion;
 
 /**
  * Attribut d'une entité.
- * 
+ *
  * @author pchretien
  */
 public final class EntityAttribute {
@@ -41,7 +41,7 @@ public final class EntityAttribute {
 	EntityAttribute(final String name, final Entity entity, final boolean multiple, final boolean notNull) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(entity);
-		//----------------------------------------------------------------------
+		//-----
 		this.name = name;
 		this.multiple = multiple;
 		this.notNull = notNull;

@@ -58,7 +58,7 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 	 */
 	public XmlLoaderPlugin(final ResourceManager resourceManager) {
 		Assertion.checkNotNull(resourceManager);
-		//----------------------------------------------------------------------
+		//-----
 		this.resourceManager = resourceManager;
 	}
 
@@ -69,7 +69,7 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 	public final void load(final String resourcePath, final DynamicDefinitionRepository dynamicModelrepository) {
 		Assertion.checkArgNotEmpty(resourcePath);
 		Assertion.checkNotNull(dynamicModelrepository);
-		//----------------------------------------------------------------------
+		//-----
 		final URL url = resourceManager.resolve(resourcePath);
 
 		final XmlLoader loader = createLoader(url);
@@ -200,7 +200,7 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 
 		}
 		LOGGER.trace(KspProperty.FK_FIELD_NAME + "=" + fkFieldName);
-		//-----------------------------------------------------------------
+		//-----
 		Assertion.checkNotNull(fkFieldName, "La clé primaire n''a pas pu être définie pour l'association '{0}'", association.getCode());
 		return fkFieldName;
 	}

@@ -51,7 +51,7 @@ final class JpaListenerImpl {
 	 */
 	JpaListenerImpl(final AnalyticsManager analyticsManager) {
 		Assertion.checkNotNull(analyticsManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.analyticsManager = analyticsManager;
 	}
 

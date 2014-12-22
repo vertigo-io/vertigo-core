@@ -52,7 +52,7 @@ final class MasterDataConfigurationImpl implements MasterDataConfiguration {
 	 */
 	MasterDataConfigurationImpl(final CollectionsManager collectionsManager) {
 		Assertion.checkNotNull(collectionsManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.collectionsManager = collectionsManager;
 		//identity function do nothing
 		identityFunction = collectionsManager.createDtListProcessor();
@@ -64,7 +64,7 @@ final class MasterDataConfigurationImpl implements MasterDataConfiguration {
 		//check();
 		Assertion.checkNotNull(uri);
 		Assertion.checkNotNull(fieldName);
-		//----------------------------------------------------------------------
+		//-----
 		final DtListProcessor dtListFilter = collectionsManager.createDtListProcessor()
 				.filterByValue(fieldName, value);
 		register(uri, dtListFilter);
@@ -77,7 +77,7 @@ final class MasterDataConfigurationImpl implements MasterDataConfiguration {
 		Assertion.checkNotNull(uri);
 		Assertion.checkNotNull(fieldName1);
 		Assertion.checkNotNull(fieldName2);
-		//----------------------------------------------------------------------
+		//-----
 		final DtListProcessor dtListFilter = collectionsManager.createDtListProcessor()
 				.filterByValue(fieldName1, value1)
 				.filterByValue(fieldName2, value2);
@@ -89,7 +89,7 @@ final class MasterDataConfigurationImpl implements MasterDataConfiguration {
 	public void register(final DtListURIForMasterData uri) {
 		//check();
 		Assertion.checkNotNull(uri);
-		//----------------------------------------------------------------------
+		//-----
 		register(uri, identityFunction);
 	}
 
@@ -98,7 +98,7 @@ final class MasterDataConfigurationImpl implements MasterDataConfiguration {
 		Assertion.checkArgument(!mdlUriFilterMap.containsKey(uri), "Il existe deja une liste de référence enregistrée {0}.", uri);
 		//Criteria peut être null
 		Assertion.checkNotNull(dtListFilter);
-		//----------------------------------------------------------------------
+		//-----
 
 		mdlUriFilterMap.put(uri, dtListFilter);
 
@@ -112,7 +112,7 @@ final class MasterDataConfigurationImpl implements MasterDataConfiguration {
 	@Override
 	public boolean containsMasterData(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
-		//----------------------------------------------------------------------
+		//-----
 		return defaultMdlMap2.containsKey(dtDefinition);
 	}
 
@@ -120,7 +120,7 @@ final class MasterDataConfigurationImpl implements MasterDataConfiguration {
 	@Override
 	public DtListURIForMasterData getDtListURIForMasterData(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
-		//----------------------------------------------------------------------
+		//-----
 		final DtListURIForMasterData uri = defaultMdlMap2.get(dtDefinition);
 		//		final MasterDataDefinition masterDataDefinition = masterDataDefinitionMap.get(dtDefinition);
 		//		return getDomainManager().getDomainFactory().createDtListURI(masterDataDefinition, null);//pas de code : on prend celle par défaut
@@ -131,7 +131,7 @@ final class MasterDataConfigurationImpl implements MasterDataConfiguration {
 	@Override
 	public DtListProcessor getFilter(final DtListURIForMasterData uri) {
 		Assertion.checkNotNull(uri);
-		//---------------------------------------------------------------------
+		//-----
 		final DtListProcessor function = mdlUriFilterMap.get(uri);
 		return function != null ? function : identityFunction;
 	}

@@ -121,7 +121,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final String args = getPropertyValueAsString(xconstraint, KspProperty.ARGS);
 		final String msg = getPropertyValueAsString(xconstraint, KspProperty.MSG);
 		final Class<? extends AbstractConstraintImpl> constraintClass = getConstraintClass(xconstraint);
-		//----------------------------------------------------------------------
+		//-----
 		//On instancie un objet contrainte.
 		return createConstraint(constraintClass, xconstraint.getDefinitionKey().getName(), args, msg);
 	}
@@ -163,7 +163,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 		final String args = getPropertyValueAsString(xformatter, KspProperty.ARGS);
 		final Class<? extends AbstractFormatterImpl> formatterClass = getFormatterClass(xformatter);
-		//---------------------------------------------------------------------
+		//-----
 		//On instancie un objet formatter.
 		return createFormatter(formatterClass, xformatter.getDefinitionKey().getName(), args);
 	}
@@ -189,14 +189,14 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		//Déclaration de la définition
 		final String sortFieldName = (String) xdtDefinition.getPropertyValue(KspProperty.SORT_FIELD);
 		final String displayFieldName = (String) xdtDefinition.getPropertyValue(KspProperty.DISPLAY_FIELD);
-		//----------------------------------------------------------------------
+		//-----
 		final Boolean persistent = (Boolean) xdtDefinition.getPropertyValue(KspProperty.PERSISTENT);
 		Assertion.checkNotNull(persistent, "Le mot-clé ''persistent'' est obligatoire sur une DtDefinition ({0}).", xdtDefinition.getDefinitionKey().getName());
-		//----------------------------------------------------------------------
+		//-----
 		final Boolean tmpDynamic = (Boolean) xdtDefinition.getPropertyValue(KspProperty.DYNAMIC);
 		//Si DYNAMIC est non renseigné on suppose que le champ est non dynamic.
 		final boolean dynamic = tmpDynamic != null && tmpDynamic.booleanValue();
-		//----------------------------------------------------------------------
+		//-----
 		final String dtDefinitionName = xdtDefinition.getDefinitionKey().getName();
 		final DtDefinitionBuilder dtDefinitionBuilder = new DtDefinitionBuilder(dtDefinitionName)
 				.withPackageName(xdtDefinition.getPackageName())
@@ -249,7 +249,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 			final String fieldName = field.getDefinitionKey().getName();
 			final boolean sort = fieldName.equals(sortFieldName);
 			final boolean display = fieldName.equals(displayFieldName);
-			//----------------------------------------------------------------------
+			//-----
 			dtDefinitionBuilder.withIdField(fieldName, label, domain, sort, display);
 		}
 	}
@@ -276,7 +276,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 			final String fieldName = field.getDefinitionKey().getName();
 			final boolean sort = fieldName.equals(sortFieldName);
 			final boolean display = fieldName.equals(displayFieldName);
-			//----------------------------------------------------------------------
+			//-----
 			dtDefinitionBuilder.withDataField(fieldName, label, domain, notNull, persistent, sort, display);
 		}
 	}
@@ -371,8 +371,8 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 		//Relation 1-n ou 1-1
 		final String urn = fixAssociationName(xassociation.getDefinitionKey().getName());
-		final AssociationSimpleDefinition associationSimpleDefinition = AssociationSimpleDefinition.createAssociationSimpleDefinition(urn, fkFieldName, 
-				dtDefinitionA, navigabilityA, roleA, labelA, AssociationUtil.isMultiple(multiplicityA), AssociationUtil.isNotNull(multiplicityA), 
+		final AssociationSimpleDefinition associationSimpleDefinition = AssociationSimpleDefinition.createAssociationSimpleDefinition(urn, fkFieldName,
+				dtDefinitionA, navigabilityA, roleA, labelA, AssociationUtil.isMultiple(multiplicityA), AssociationUtil.isNotNull(multiplicityA),
 				dtDefinitionB, navigabilityB, roleB, labelB, AssociationUtil.isMultiple(multiplicityB), AssociationUtil.isNotNull(multiplicityB));
 
 		final AssociationNode primaryAssociationNode = associationSimpleDefinition.getPrimaryAssociationNode();

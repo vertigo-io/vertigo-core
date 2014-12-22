@@ -46,7 +46,7 @@ public final class PostgreSqlDataStorePlugin extends AbstractSqlDataStorePlugin 
 	public PostgreSqlDataStorePlugin(@Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
 		super(taskManager);
 		Assertion.checkArgNotEmpty(sequencePrefix);
-		//---------------------------------------------------------------------
+		//-----
 		this.sequencePrefix = sequencePrefix;
 	}
 

@@ -118,7 +118,7 @@ final class EAXmiObject {
 		Assertion.checkNotNull(parent);
 		Assertion.checkNotNull(id);
 		Assertion.checkNotNull(type);
-		//------------------------------------------------------------------
+		//-----
 		this.parent = parent;
 		this.id = id;
 		this.type = type;
@@ -248,7 +248,7 @@ final class EAXmiObject {
 
 	void setProperty(final String propertyName, final Attributes attributes) {
 		Assertion.checkNotNull(propertyName);
-		//----------------------------------------------------------------------
+		//-----
 		if (PROPERTY_NAME.equals(propertyName)) {
 			name = "";
 		} else if (PROPERTY_COMMENT.equals(propertyName)) {

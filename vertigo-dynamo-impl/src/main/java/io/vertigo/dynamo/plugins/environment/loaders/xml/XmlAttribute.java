@@ -39,7 +39,7 @@ public final class XmlAttribute {
 		Assertion.checkArgNotEmpty(label);
 		Assertion.checkArgNotEmpty(code);
 		Assertion.checkArgNotEmpty(domain, "Le domain du champ '{0}' a été oublié.", label);
-		//----------------------------------------------------------------------
+		//-----
 		this.code = code;
 		this.label = label;
 		this.persistent = persistent;

@@ -47,7 +47,7 @@ final class WhereInPreProcessor {
 	 */
 	WhereInPreProcessor(final Map<TaskAttribute, Object> parameterValuesMap) {
 		Assertion.checkNotNull(parameterValuesMap);
-		//---------------------------------------------------------------------
+		//-----
 		this.parameterValuesMap = parameterValuesMap;
 	}
 
@@ -99,11 +99,11 @@ final class WhereInPreProcessor {
 					final int indexRownum = strDtc.indexOf(ROWNUM);
 					final String fieldName = strDtc.substring(indexRownum + ROWNUM.length(), strDtc.length() - 1);
 
-					//---------------------------------------------------------------------------------------------------
+					//-----
 					final DtList<?> listObject = (DtList<?>) parameterValuesMap.get(attribute);
 					if (listObject.isEmpty()) {
 						//Liste vide
-						//-------------------------------------------------------------------------------------------------
+						//-----
 						//TG : recherche parentheses + IN & NOT IN pour contraintre oracle (pas plus de 1000 elements dans clause IN)
 						query = query.replace(query.substring(indexOfFirstSpace + 1, query.indexOf(")", indexEnd) + 1), isNotIn ? "1=1" : "1=2");
 						final DataType dataType = listObject.getDefinition().getField(fieldName).getDomain().getDataType();
@@ -145,7 +145,7 @@ final class WhereInPreProcessor {
 									.append(IN_CHAR);
 
 							separator = ",";
-							//-------------------------------------------------------------------------------------------------
+							//-----
 							//TG : recherche parentheses + IN & NOT IN pour contraintre oracle (pas plus de 1000 elements dans clause IN)
 							if (listObject.size() > NB_MAX_WHERE_IN_ITEM) {
 								if (index == listObject.size()) {
@@ -157,7 +157,7 @@ final class WhereInPreProcessor {
 									separator = "";
 								}
 							}
-							//-------------------------------------------------------------------------------------------------
+							//-----
 							index++;
 						}
 						query = query.replace(strDtc, subQuery.toString());

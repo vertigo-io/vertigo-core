@@ -103,7 +103,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		Assertion.checkNotNull(solrDocumentCodec);
 		Assertion.checkNotNull(esClient);
 		Assertion.checkNotNull(indexFieldNameResolver);
-		//---------------------------------------------------------------------
+		//-----
 		this.indexName = indexName;
 		this.esClient = esClient;
 		this.elasticSearchDocumentCodec = solrDocumentCodec;
@@ -158,7 +158,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	 */
 	void remove(final IndexDefinition indexDefinition, final ListFilter query) {
 		Assertion.checkNotNull(query);
-		//---------------------------------------------------------------------
+		//-----
 		final QueryBuilder queryBuilder = translateToQueryBuilder(query, indexFieldNameResolver);
 		esClient.prepareDeleteByQuery(indexName)
 				.setQuery(queryBuilder)
@@ -173,7 +173,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	 */
 	void remove(final IndexDefinition indexDefinition, final URI uri) {
 		Assertion.checkNotNull(uri);
-		//---------------------------------------------------------------------
+		//-----
 		esClient.prepareDelete(indexName, uri.getDefinition().getName(), uri.toURN())
 				.execute()
 				.actionGet();
@@ -243,7 +243,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 
 	private void appendFacetDefinition(final FacetedQueryDefinition queryDefinition, final SearchRequestBuilder searchRequestBuilder) {
 		Assertion.checkNotNull(searchRequestBuilder);
-		//---------------------------------------------------------------------
+		//-----
 		for (final FacetDefinition facetDefinition : queryDefinition.getFacetDefinitions()) {
 			//Récupération des noms des champs correspondant aux facettes.
 			final DtField dtField = facetDefinition.getDtField();

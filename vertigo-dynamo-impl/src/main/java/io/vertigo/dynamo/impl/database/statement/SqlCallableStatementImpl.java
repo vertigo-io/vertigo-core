@@ -44,9 +44,9 @@ public final class SqlCallableStatementImpl extends SqlPreparedStatementImpl imp
 		super(statementHandler, dataBaseListener, connection, procName, false);
 	}
 
-	//--------------------------------------------------------------------
-	//------------------clôture 1ere Etape -------------------------------
-	//--------------------------------------------------------------------
+	//====================================================================
+	//-----clôture 1ere Etape
+	//====================================================================
 	/** {@inheritDoc} */
 	@Override
 	PreparedStatement createStatement() throws SQLException {
@@ -73,15 +73,15 @@ public final class SqlCallableStatementImpl extends SqlPreparedStatementImpl imp
 		}
 	}
 
-	//--------------------------------------------------------------------
-	//------------------3àme Etape : Exécution------------------------------
-	//--------------------------------------------------------------------
+	//====================================================================
+	//-----3àme Etape : Exécution------------------------------
+	//====================================================================
 	//Les méthodes sont définies dans l'ancétre KPrepareStatement
 	//Notamment la méthode executeUpdate()
 
-	//--------------------------------------------------------------------
-	//------------------4àme Etape : Getters------------------------------
-	//--------------------------------------------------------------------
+	//====================================================================
+	//-----4àme Etape : Getters------------------------------
+	//====================================================================
 
 	/** {@inheritDoc} */
 	@Override
@@ -89,15 +89,15 @@ public final class SqlCallableStatementImpl extends SqlPreparedStatementImpl imp
 		Assertion.checkArgument(getState() == State.EXECUTED, "L'exécution n'a pas été effectuée !");
 		final SqlParameter parameter = getParameter(index);
 		Assertion.checkArgument(parameter.isOut(), "Les Getters ne peuvent se faire que sur des paramètres OUT");
-		//---------------------------------------------------------------------
+		//-----
 		//On récupère le type saisi en amont par la méthode register
 		final DataType dataType = parameter.getDataType();
 		return getConnection().getDataBase().getSqlMapping().getValueForCallableStatement(getCallableStatement(), index + 1, dataType);
 	}
 
-	//----------------------------------------------------------------
-	//----------------------Utilitaires : affichages de la Query  avec ou sans binding pour faciliter le debugging
-	//----------------------------------------------------------------
+	//====================================================================
+	//-----Utilitaires : affichages de la Query  avec ou sans binding pour faciliter le debugging
+	//====================================================================
 	/**
 	 * Retourne le CallableStatement créé
 	 *

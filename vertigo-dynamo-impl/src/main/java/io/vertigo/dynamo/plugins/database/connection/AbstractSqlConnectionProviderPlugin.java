@@ -49,11 +49,13 @@ public abstract class AbstractSqlConnectionProviderPlugin implements SqlConnecti
 		Assertion.checkNotNull(dataBase);
 		Assertion.checkNotNull(dataBase.getSqlMapping());
 		Assertion.checkNotNull(dataBase.getSqlExceptionHandler());
-		//---------------------------------------------------------------------
+		//-----
 		this.dataBase = dataBase;
 	}
 
-	//----------------------GESTION DU CONNECTION PROVIDER----------------------
+	//=========================================================================
+	//-----GESTION DU CONNECTION PROVIDER
+	//=========================================================================
 	/** {@inheritDoc} */
 	@Override
 	public final SqlDataBase getDataBase() {

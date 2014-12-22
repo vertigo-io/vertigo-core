@@ -92,7 +92,7 @@ public final class DynamicDefinitionRepository {
 		Assertion.checkArgument(definitions.containsKey(definitionKey), "Aucune clé enregistrée pour :{0} parmi {1}", definitionKey, definitions.keySet());
 		//-----
 		final DynamicDefinition definition = definitions.get(definitionKey);
-		//---------------------------------------------------------------------
+		//-----
 		Assertion.checkNotNull(definition, "Clé trouvée mais pas de définition enregistrée trouvée pour {0}", definitionKey);
 		return definition;
 	}
@@ -171,7 +171,7 @@ public final class DynamicDefinitionRepository {
 		if (definition != null) {
 			Assertion.checkArgument(definition.getDefinitionKey().equals(definitionKey), "si la définition est renseignée la clé doit correspondre !");
 		}
-		//----------------------------------------------------------------------
+		//-----
 		final DynamicDefinition previousDefinition = definitions.get(definitionKey);
 		if (previousDefinition == null) {
 			//On enregistre la définition qu'elle soit renseignée ou null.

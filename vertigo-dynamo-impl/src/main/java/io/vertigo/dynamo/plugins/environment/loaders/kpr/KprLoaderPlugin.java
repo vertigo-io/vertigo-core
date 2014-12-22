@@ -56,7 +56,7 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 	public KprLoaderPlugin(final ResourceManager resourceManager, @Named("encoding") final Option<String> encoding) {
 		Assertion.checkNotNull(resourceManager);
 		Assertion.checkNotNull(encoding);
-		// ----------------------------------------------------------------------
+		//-----
 		this.resourceManager = resourceManager;
 		charset = encoding.getOrElse("ISO-8859-1");
 	}
@@ -66,7 +66,7 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 	public void load(final String resourcePath, final DynamicDefinitionRepository dynamicModelrepository) {
 		Assertion.checkArgNotEmpty(resourcePath);
 		Assertion.checkNotNull(dynamicModelrepository);
-		// ----------------------------------------------------------------------
+		//-----
 		final URL kprURL = resourceManager.resolve(resourcePath);
 		for (final URL url : getKspFiles(kprURL, resourceManager)) {
 			final KspLoader loader = new KspLoader(url, charset);
@@ -92,7 +92,7 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 		final List<URL> kspFileList = new ArrayList<>();
 		try (final BufferedReader reader = new BufferedReader(new InputStreamReader(kprURL.openStream()))) {
 			String line = reader.readLine();
-			// -----------------------------------
+			//-----
 			String path = kprURL.getPath();
 			path = path.substring(0, path.lastIndexOf('/'));
 			while (line != null) {

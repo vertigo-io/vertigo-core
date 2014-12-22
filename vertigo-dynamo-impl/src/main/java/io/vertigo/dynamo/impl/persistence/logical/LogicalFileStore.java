@@ -39,7 +39,7 @@ public final class LogicalFileStore implements FileStore {
 	 */
 	public LogicalFileStore(final LogicalFileStoreConfiguration logicalFileStoreConfiguration) {
 		Assertion.checkNotNull(logicalFileStoreConfiguration);
-		//---------------------------------------------------------------------
+		//-----
 		this.logicalFileStoreConfiguration = logicalFileStoreConfiguration;
 	}
 

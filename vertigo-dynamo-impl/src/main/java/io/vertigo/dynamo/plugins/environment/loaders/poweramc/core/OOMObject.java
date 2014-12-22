@@ -90,7 +90,7 @@ final class OOMObject {
 		Assertion.checkNotNull(parent);
 		Assertion.checkNotNull(id);
 		Assertion.checkNotNull(type);
-		//------------------------------------------------------------------
+		//-----
 		this.parent = parent;
 		this.id = id;
 		this.type = type;
@@ -199,7 +199,7 @@ final class OOMObject {
 
 	void setProperty(final String propertyName, final String propertyValue) {
 		Assertion.checkNotNull(propertyName);
-		//----------------------------------------------------------------------
+		//-----
 		if (PROPERTY_CODE.equals(propertyName)) {
 			code = propertyValue;
 		} else if (PROPERTY_NAME.equals(propertyName)) {
@@ -271,7 +271,7 @@ final class OOMObject {
 	String getPackageName() {
 		//1. On vérifie que cet objet est bien un package
 		Assertion.checkArgument(getType() == OOMType.Package, "père de l''objet {0} doit être un package", this);
-		//----------------------------------------------------------------------
+		//-----
 		//2. Si on arrive à la racine on s'arrète
 		if (getParent().equals(root)) {
 			return getName();

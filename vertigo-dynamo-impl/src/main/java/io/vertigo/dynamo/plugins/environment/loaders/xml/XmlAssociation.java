@@ -60,7 +60,7 @@ public final class XmlAssociation {
 		Assertion.checkArgNotEmpty(roleLabelB);
 		Assertion.checkArgNotEmpty(codeA);
 		Assertion.checkArgNotEmpty(codeB);
-		//---------------------------------------------------------------------
+		//-----
 		this.code = code;
 		this.packageName = packageName;
 

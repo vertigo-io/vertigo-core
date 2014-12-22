@@ -60,7 +60,7 @@ public final class DslPropertyEntryRule extends AbstractRule<DslPropertyEntry, L
 	public DslPropertyEntryRule(final Set<EntityProperty> entityProperties) {
 		super();
 		Assertion.checkNotNull(entityProperties);
-		//----------------------------------------------------------------------
+		//-----
 		this.entityProperties = new HashMap<>();
 		for (final EntityProperty entityProperty : entityProperties) {
 			final String propertyName = StringUtil.constToCamelCase(entityProperty.getName(), false);
@@ -84,8 +84,7 @@ public final class DslPropertyEntryRule extends AbstractRule<DslPropertyEntry, L
 				PROPERTY_VALUE,//5
 				QUOTATION_MARK,
 				SPACES,
-				new OptionRule<>(DslSyntaxRules.OBJECT_SEPARATOR)
-		);
+				new OptionRule<>(DslSyntaxRules.OBJECT_SEPARATOR));
 	}
 
 	@Override

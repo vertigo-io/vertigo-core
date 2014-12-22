@@ -39,7 +39,7 @@ public final class XmlClass {
 		//Assertion.notEmpty(packageName);
 		Assertion.checkNotNull(keyAttributes);
 		Assertion.checkNotNull(fieldAttributes);
-		//---------------------------------------------------------------------
+		//-----
 		this.code = code;
 		this.packageName = packageName;
 		this.keyAttributes = Collections.unmodifiableList(new ArrayList<>(keyAttributes));

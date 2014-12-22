@@ -80,7 +80,7 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 	protected AbstractESServicesPlugin(final String cores, final int rowsPerQuery, final CodecManager codecManager) {
 		Assertion.checkArgNotEmpty(cores);
 		Assertion.checkNotNull(codecManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.rowsPerQuery = rowsPerQuery;
 		elasticDocumentCodec = new ESDocumentCodec(codecManager);
 		indexFieldNameResolvers = new HashMap<>();
@@ -131,7 +131,7 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 	public final void registerIndexFieldNameResolver(final IndexDefinition indexDefinition, final IndexFieldNameResolver indexFieldNameResolver) {
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkNotNull(indexFieldNameResolver);
-		//---------------------------------------------------------------------
+		//-----
 		indexFieldNameResolvers.put(indexDefinition.getName(), indexFieldNameResolver);
 	}
 
@@ -151,7 +151,7 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkNotNull(index);
 		Assertion.checkArgument(indexDefinition.equals(index.getDefinition()), "les Définitions ne sont pas conformes");
-		//---------------------------------------------------------------------
+		//-----
 		final ESStatement<I, R> statement = createElasticStatement(indexDefinition);
 		statement.put(index);
 	}
@@ -161,7 +161,7 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 	public final void remove(final IndexDefinition indexDefinition, final URI uri) {
 		Assertion.checkNotNull(uri);
 		Assertion.checkNotNull(indexDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		createElasticStatement(indexDefinition).remove(indexDefinition, uri);
 		markToOptimize(indexDefinition);
 	}
@@ -189,7 +189,7 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 	public final void remove(final IndexDefinition indexDefinition, final ListFilter listFilter) {
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkNotNull(listFilter);
-		//---------------------------------------------------------------------
+		//-----
 		createElasticStatement(indexDefinition).remove(indexDefinition, listFilter);
 		markToOptimize(indexDefinition);
 	}
@@ -219,7 +219,7 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 	 */
 	private void updateTypeMapping(final IndexDefinition indexDefinition) {
 		Assertion.checkNotNull(indexDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		final IndexFieldNameResolver indexFieldNameResolver = obtainIndexFieldNameResolver(indexDefinition);
 		try (final XContentBuilder typeMapping = XContentFactory.jsonBuilder()) {
 			typeMapping.startObject().startObject("properties")

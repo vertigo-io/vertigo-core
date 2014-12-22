@@ -27,15 +27,15 @@ public final class WorkItem<WR, W> {
 	private final String id;
 
 	/**
-	 * Constructor. 
-	 * This workItem is used to define a synchronous work. 
+	 * Constructor.
+	 * This workItem is used to define a synchronous work.
 	 * @param work Travail dont on représente l'état.
 	 */
 	public WorkItem(final String id, final W work, final WorkEngineProvider<WR, W> workEngineProvider) {
 		Assertion.checkNotNull(id);
 		//work can be null
 		Assertion.checkNotNull(workEngineProvider);
-		//---------------------------------------------------------------------
+		//-----
 		this.id = id;
 		this.work = work;
 		this.workEngineProvider = workEngineProvider;
@@ -46,7 +46,7 @@ public final class WorkItem<WR, W> {
 	}
 
 	/**
-	 * Permet de récupérer les informations pour réaliser un traitement. 
+	 * Permet de récupérer les informations pour réaliser un traitement.
 	 * @return le work
 	 */
 	public W getWork() {

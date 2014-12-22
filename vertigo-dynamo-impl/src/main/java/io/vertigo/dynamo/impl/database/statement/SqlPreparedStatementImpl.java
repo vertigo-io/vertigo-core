@@ -95,17 +95,14 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	//Début du temps d'exécution
 	private long begin;
 
-	//-----------------------------------------------------------------------------------
-	//----------------------GESTION des paramètres types & valeurs-----------------------
-	//-----------------------------------------------------------------------------------
+	//=========================================================================
+	//-----GESTION des paramètres types & valeurs
+	//=========================================================================
 	/**
 	 * Listes des paramètres (indexé par les index définis dans les méthodes registerXXX
 	 */
 	private final List<SqlParameter> parameters = new ArrayList<>();
 
-	//--------------------------------------------------------------------
-	//------------------Construction / Destruction  -----------------------
-	//---------------------------------------------------------------------
 	/**
 	 * Constructeur.
 	 * @param sql Requête SQL
@@ -117,7 +114,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		Assertion.checkNotNull(sql);
 		Assertion.checkNotNull(statementHandler);
 		Assertion.checkNotNull(dataBaseListener);
-		//-----------------------------------------------------------------
+		//-----
 		this.connection = connection;
 		this.sql = sql;
 		this.returnGeneratedKeys = returnGeneratedKeys;
@@ -169,9 +166,9 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		}
 	}
 
-	//--------------------------------------------------------------------
-	//------------------1ere Etape : Enregistrement-----------------------
-	//--------------------------------------------------------------------
+	//=========================================================================
+	//-----1ere Etape : Enregistrement
+	//=========================================================================
 	/**
 	 * Ajoute un paramètre en précisant son type
 	 * @param in Si le paramètre est in
@@ -189,7 +186,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	@Override
 	public final void registerParameter(final int index, final DataType dataType, final ParameterType parameterType) {
 		Assertion.checkNotNull(parameterType);
-		//---------------------------------------------------------------------
+		//-----
 		switch (parameterType) {
 			case IN:
 				registerParameter(index, dataType, true, false);
@@ -205,18 +202,18 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		}
 	}
 
-	//--------------------------------------------------------------------
-	//------------------Clôture des affectations et 1ere Etape -------------------------------
-	//--------------------------------------------------------------------
+	//=========================================================================
+	//-----Clôture des affectations et 1ere Etape
+	//=========================================================================
 	/** {@inheritDoc} */
 	@Override
 	public final void init() throws SQLException {
 		Assertion.checkArgument(state == State.CREATED, "L'enregistrement ne peut se faire que sur l'état STATE_CREATED");
-		//----------------------------------------------------------------------
+		//-----
 		statement = createStatement();
 		//On passe à l'état Défini, l'enregistrement des types  est clôt.
 		state = State.DEFINED;
-		//---------------------------------
+		//-----
 		postInit();
 	}
 
@@ -247,9 +244,9 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		return preparedStatement;
 	}
 
-	//--------------------------------------------------------------------
-	//------------------2ème Etape : Setters------------------------------
-	//--------------------------------------------------------------------
+	//=========================================================================
+	//-----2ème Etape : Setters
+	//=========================================================================
 	/** {@inheritDoc} */
 	@Override
 	public final void setValue(final int index, final Object o) throws SQLException {
@@ -264,15 +261,15 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		parameter.setValue(o);
 	}
 
-	//--------------------------------------------------------------------
-	//------------------3ème Etape : Exécution------------------------------
-	//--------------------------------------------------------------------
+	//=========================================================================
+	//-----3ème Etape : Exécution
+	//=========================================================================
 
 	/** {@inheritDoc} */
 	@Override
 	public final SqlQueryResult executeQuery(final Domain domain) throws SQLException {
 		Assertion.checkNotNull(domain);
-		//---------------------------------------------------------------------
+		//-----
 		boolean ok = false;
 		beginExecution();
 		try {
@@ -363,12 +360,13 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		dataBaseListener.onPreparedStatementFinish(stats);
 	}
 
-	//----------------------------------------------------------------
-	//----------Utilitaires
-	//----------> affichages de la Query  avec ou sans binding pour faciliter le debugging
-	//----------> Récupération du statement
-	//----------> Récupération de la connection
-	//----------------------------------------------------------------
+	//=========================================================================
+	//-----Utilitaires
+	//-----> affichages de la Query  avec ou sans binding pour faciliter le debugging
+	//-----> Récupération du statement
+	//-----> Récupération de la connection
+	//=========================================================================
+
 	/**
 	 * Retourne la chaine SQL de la requête.
 	 * @return Chaine SQL de la Requête
@@ -419,7 +417,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	 */
 	final java.sql.PreparedStatement getPreparedStatement() {
 		Assertion.checkNotNull(statement, "Le statement est null, l'exécution est elle OK ?");
-		//----------------------------------------------------------------------
+		//-----
 		return statement;
 	}
 
@@ -430,7 +428,7 @@ public class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		Assertion.checkNotNull(domain);
 		Assertion.checkArgument(returnGeneratedKeys, "Statement non créé pour retourner les clés générées");
 		Assertion.checkArgument(getState() == State.EXECUTED, "L'exécution n'a pas été effectuée !");
-		//---------------------------------------------------------------------
+		//-----
 		// L'utilisation des generatedKeys permet d'avoir un seul appel réseau entre le
 		// serveur d'application et la base de données pour un insert et la récupération de la
 		// valeur de la clé primaire en respectant les standards jdbc et sql ansi.

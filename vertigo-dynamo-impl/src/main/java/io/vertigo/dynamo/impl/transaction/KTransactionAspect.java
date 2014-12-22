@@ -38,7 +38,7 @@ public final class KTransactionAspect implements Aspect {
 	@Inject
 	public KTransactionAspect(final KTransactionManager transactionManager) {
 		Assertion.checkNotNull(transactionManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.transactionManager = transactionManager;
 	}
 

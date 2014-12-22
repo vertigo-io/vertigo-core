@@ -47,7 +47,7 @@ public final class DynaDtObject implements DtObject, Dynamic {
 	 */
 	public DynaDtObject(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
 	}
 

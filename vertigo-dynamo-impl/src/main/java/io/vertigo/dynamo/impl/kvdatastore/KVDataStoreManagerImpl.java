@@ -38,7 +38,7 @@ public final class KVDataStoreManagerImpl implements KVDataStoreManager {
 	@Inject
 	public KVDataStoreManagerImpl(final List<KVDataStorePlugin> kvDataStorePlugins) {
 		Assertion.checkNotNull(kvDataStorePlugins);
-		//---------------------------------------------------------------------
+		//-----
 		final Map<String, KVDataStorePlugin> map = new HashMap<>();
 		for (final KVDataStorePlugin kvDataStorePlugin : kvDataStorePlugins) {
 			map.put(kvDataStorePlugin.getDataStoreName(), kvDataStorePlugin);
@@ -68,9 +68,9 @@ public final class KVDataStoreManagerImpl implements KVDataStoreManager {
 
 	private KVDataStorePlugin getKVDataStorePlugin(final String dataStoreName) {
 		final KVDataStorePlugin kvDataStorePlugin = kvDataStorePluginBinding.get(dataStoreName);
-		//---------------------------------------------------------------------
+		//-----
 		Assertion.checkNotNull(kvDataStorePlugin, "No KVDataStorePlugin bind to this name : {0}. Registered dataStoreNames : ({1})", dataStoreName, kvDataStorePluginBinding.keySet());
-		//---------------------------------------------------------------------
+		//-----
 		return kvDataStorePlugin;
 	}
 

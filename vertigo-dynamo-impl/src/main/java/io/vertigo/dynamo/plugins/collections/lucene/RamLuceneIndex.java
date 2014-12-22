@@ -59,7 +59,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifi
 	RamLuceneIndex(final DtDefinition dtDefinition, final Analyzer analyzer) throws IOException {
 		Assertion.checkNotNull(analyzer);
 		Assertion.checkNotNull(dtDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		this.analyzer = analyzer;
 		this.dtDefinition = dtDefinition;
 		directory = new RAMDirectory();
@@ -78,7 +78,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifi
 	@Override
 	public IndexWriter createIndexWriter() throws IOException {
 		checkModifiable();
-		//---------------------------------------------------------------------
+		//-----
 		final IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_40, analyzer);
 		return new IndexWriter(directory, config);
 	}
@@ -108,7 +108,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifi
 	 */
 	public void mapDocument(final String pkValue, final D dto) {
 		checkModifiable();
-		//---------------------------------------------------------------------
+		//-----
 		indexedObjectPerPk.put(pkValue, dto);
 	}
 
@@ -124,7 +124,7 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifi
 
 	void makeUnmodifiable() {
 		checkModifiable();
-		//---------------------------------------------------------------------
+		//-----
 		modifiable = false;
 	}
 }

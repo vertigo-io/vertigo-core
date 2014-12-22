@@ -73,9 +73,9 @@ public final class Home {
 		// Classe statique d'accès aux composants.
 	}
 
-	//-------------------------------------------------------------------------
-	//-------------------Méthods publiques-------------------------------------
-	//-------------------------------------------------------------------------
+	//=========================================================================
+	//============================Méthods publiques============================
+	//=========================================================================
 	/**
 	 * Démarrage de l'application.
 	 * @param appConfig AppConfig
@@ -119,12 +119,12 @@ public final class Home {
 		return INSTANCE.doGetComponentSpace();
 	}
 
-	//-------------------------------------------------------------------------
-	//-------------------Méthods privées---------------------------------------
-	//-------------------------------------------------------------------------
+	//=========================================================================
+	//=============================Méthods privées=============================
+	//=========================================================================
 	private void doStart(final AppConfig appConfig) {
 		Assertion.checkNotNull(appConfig);
-		//-------------------------------------------------------------------------
+		//-----
 		change(State.INACTIVE, State.starting);
 		this.MyAppConfig = appConfig;
 		try {
@@ -178,7 +178,7 @@ public final class Home {
 
 	private ComponentSpace doGetComponentSpace() {
 		//	check(State.ACTIVE, "'état non actif");
-		//---------------------------------------------------------------------
+		//-----
 		return componentSpace;
 	}
 
@@ -186,7 +186,7 @@ public final class Home {
 		if (!state.equals(fromState)) {
 			System.err.println("Container pas dans l'état attendu pour la transition ['" + fromState + "'==>'" + toState + "'], état actuel :'" + state + "' ");
 		}
-		//---------------------------------------------------------------------
+		//-----
 		state = toState;
 	}
 

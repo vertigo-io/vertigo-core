@@ -47,7 +47,7 @@ public final class CSVExporterPlugin implements ExporterPlugin {
 	@Inject
 	public CSVExporterPlugin(final PersistenceManager persistenceManager, final CodecManager codecManager) {
 		Assertion.checkNotNull(codecManager);
-		// ---------------------------------------------------------------------
+		//-----
 		this.codecManager = codecManager;
 		this.persistenceManager = persistenceManager;
 	}

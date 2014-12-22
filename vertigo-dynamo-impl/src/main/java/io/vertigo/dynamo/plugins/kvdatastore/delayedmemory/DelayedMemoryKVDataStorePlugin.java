@@ -58,7 +58,7 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin, 
 	@Inject
 	public DelayedMemoryKVDataStorePlugin(final @Named("dataStoreName") String dataStoreName, final @Named("timeToLiveSeconds") int timeToLiveSeconds) {
 		Assertion.checkArgNotEmpty(dataStoreName);
-		//---------------------------------------------------------------------
+		//-----
 		this.dataStoreName = dataStoreName;
 		this.timeToLiveSeconds = timeToLiveSeconds;
 	}
@@ -73,7 +73,7 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin, 
 	@Override
 	public void put(final String key, final Object data) {
 		Assertion.checkNotNull(data);
-		//---------------------------------------------------------------------
+		//-----
 		final DelayedMemoryCacheValue cacheValue = new DelayedMemoryCacheValue(data);
 		cacheDatas.put(key, cacheValue);
 		timeoutQueue.put(new DelayedMemoryKey(key, cacheValue.getCreateTime() + timeToLiveSeconds * 1000));

@@ -74,7 +74,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	public DAOBroker(final DtDefinition dtDefinition, final PersistenceManager persistenceManager) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(persistenceManager);
-		// ---------------------------------------------------------------------
+		//-----
 		broker = persistenceManager.getBroker();
 		brokerNN = persistenceManager.getBrokerNN();
 		this.dtDefinition = dtDefinition;
@@ -186,7 +186,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 */
 	public final <FK extends DtObject> void updateNN(final DtListURIForAssociation dtListURI, final DtList<FK> newDtc) {
 		Assertion.checkNotNull(newDtc);
-		// ---------------------------------------------------------------------
+		//-----
 		final List<URI<? extends DtObject>> objectURIs = new ArrayList<>();
 		for (final FK dto : newDtc) {
 			objectURIs.add(createURI(dto));
@@ -218,7 +218,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 
 	private static <D extends DtObject> URI<D> createURI(final D dto) {
 		Assertion.checkNotNull(dto);
-		// ---------------------------------------------------------------------
+		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		return new URI<>(dtDefinition, DtObjectUtil.getId(dto));
 	}

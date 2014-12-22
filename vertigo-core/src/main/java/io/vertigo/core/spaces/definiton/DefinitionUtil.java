@@ -22,8 +22,8 @@ import io.vertigo.lang.Assertion;
 
 /**
  * Utilitaire concernant les Definitions.
- *  
- * @author  pchretien 
+ *
+ * @author  pchretien
  */
 public final class DefinitionUtil {
 	private DefinitionUtil() {
@@ -32,7 +32,7 @@ public final class DefinitionUtil {
 
 	public static String getPrefix(final Class<? extends Definition> definitionClass) {
 		Assertion.checkNotNull(definitionClass);
-		//---------------------------------------------------------------------
+		//-----
 		final DefinitionPrefix prefix = definitionClass.getAnnotation(DefinitionPrefix.class);
 		if (prefix == null) {
 			throw new RuntimeException("Annotation  '@Prefix' non trouvée sur " + definitionClass.getName());
@@ -43,7 +43,7 @@ public final class DefinitionUtil {
 
 	public static String getLocalName(final String name, final Class<? extends Definition> definitionClass) {
 		//On enléve le prefix et le separateur.
-		//On vérifie aussi que le prefix est OK 
+		//On vérifie aussi que le prefix est OK
 		final String prefix = getPrefix(definitionClass);
 		Assertion.checkArgument(name.startsWith(prefix), "Le nom de la définition '{0}' ne commence pas par le prefix attendu : '{1}'", name, prefix);
 		Assertion.checkArgument(name.charAt(prefix.length()) == Definition.SEPARATOR, "Séparateur utilisé pour la définition '{0}' n'est pas correct", name);

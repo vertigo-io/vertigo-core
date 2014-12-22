@@ -91,7 +91,7 @@ final class DataCache {
 	 */
 	<D extends DtObject> DtList<D> getDtList(final DtListURI dtcUri) {
 		Assertion.checkNotNull(dtcUri);
-		//---------------------------------------------------------------------
+		//-----
 		return (DtList<D>) cacheManager.get(getContext(dtcUri.getDtDefinition()), dtcUri);
 	}
 

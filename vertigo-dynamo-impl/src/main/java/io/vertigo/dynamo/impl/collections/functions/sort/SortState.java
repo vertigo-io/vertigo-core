@@ -43,7 +43,7 @@ public final class SortState {
 	 */
 	public SortState(final String fieldName, final boolean desc, final boolean nullLast, final boolean ignoreCase) {
 		Assertion.checkArgNotEmpty(fieldName);
-		//----------------------------------------------------------------------
+		//-----
 		this.fieldName = fieldName;
 		this.desc = desc;
 		this.nullLast = nullLast;

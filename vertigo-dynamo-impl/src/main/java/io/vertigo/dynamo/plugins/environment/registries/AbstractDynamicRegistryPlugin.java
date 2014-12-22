@@ -37,7 +37,7 @@ public abstract class AbstractDynamicRegistryPlugin implements DynamicRegistryPl
 	 */
 	protected AbstractDynamicRegistryPlugin(final Grammar grammar) {
 		Assertion.checkNotNull(grammar);
-		//---------------------------------------------------------------------
+		//-----
 		this.grammar = grammar;
 	}
 

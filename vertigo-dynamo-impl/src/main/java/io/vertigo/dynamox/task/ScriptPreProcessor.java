@@ -58,7 +58,7 @@ final class ScriptPreProcessor {
 		Assertion.checkNotNull(scriptManager);
 		Assertion.checkNotNull(parameterValuesMap);
 		Assertion.checkNotNull(separatorType);
-		//---------------------------------------------------------------------
+		//-----
 		this.scriptManager = scriptManager;
 		this.parameterValuesMap = parameterValuesMap;
 		this.separatorType = separatorType;
@@ -67,10 +67,10 @@ final class ScriptPreProcessor {
 	private static List<ExpressionParameter> createParameters(final ScriptManager scriptManager, final Map<TaskAttribute, Object> parameterValuesMap) {
 		Assertion.checkNotNull(scriptManager);
 		Assertion.checkNotNull(parameterValuesMap);
-		//---------------------------------------------------------------------
+		//-----
 		final List<ExpressionParameter> tmpParameters = new ArrayList<>(parameterValuesMap.size());
 
-		// ---------Initialisation des types et noms de paramètre------------
+		//==========Initialisation des types et noms de paramètre==============
 		ExpressionParameter scriptEvaluatorParameter;
 		for (final Entry<TaskAttribute, Object> entry : parameterValuesMap.entrySet()) {
 			final Class<?> clazz;

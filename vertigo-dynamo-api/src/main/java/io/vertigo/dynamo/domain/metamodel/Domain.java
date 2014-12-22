@@ -77,12 +77,12 @@ public final class Domain implements Definition {
 	 * @param properties Map des (DtProperty, value)
 	 */
 	public Domain(final String name, final DataType dataType, final Formatter formatter, final List<Constraint<?, Object>> constraints, final Properties properties) {
-		//--Vérification des contrats-------------------------------------------
+		//--Vérification des contrats
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(formatter);
 		Assertion.checkNotNull(constraints);
 		Assertion.checkNotNull(properties);
-		//----------------------------------------------------------------------
+		//-----
 		this.name = name;
 		this.dataType = dataType;
 		formatterRef = new DefinitionReference<>(formatter);
@@ -98,7 +98,7 @@ public final class Domain implements Definition {
 		//Mise à jour de la FK.
 		if (this.properties.getValue(DtProperty.TYPE) != null) {
 			Assertion.checkArgument(!getDataType().isPrimitive(), "Le type ne peut être renseigné que pour des types non primitifs");
-			//-----------------------------------------------------------------
+			//-----
 			//On ne s'intéresse qu'au type de DTO et DTC dont le type de DT est déclaré
 			dtDefinitionName = this.properties.getValue(DtProperty.TYPE);
 		} else {
