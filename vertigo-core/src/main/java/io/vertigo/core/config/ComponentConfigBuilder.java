@@ -39,7 +39,6 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	private final ModuleConfigBuilder moduleConfigBuilder;
 	private final Option<Class<?>> apiClass;
 	private final Class<?> implClass;
-	private final Map<String, String> inheritedParams = new HashMap<>();
 	private final boolean elastic;
 	private Class<? extends ComponentInitializer<?>> managerInitializerClass;
 	final Map<String, String> params = new HashMap<>();
@@ -86,7 +85,6 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 		//Création des pluginConfigs
 		final List<PluginConfig> pluginConfigurations = new ArrayList<>();
 		for (final PluginConfigBuilder pluginConfigBuilder : plugins) {
-			pluginConfigBuilder.withInheritedParams(inheritedParams);
 			pluginConfigurations.add(pluginConfigBuilder.build());
 		}
 		return new ComponentConfig(apiClass, implClass, elastic, managerInitializerClass, pluginConfigurations, params);

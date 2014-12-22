@@ -33,7 +33,6 @@ import java.util.Map;
 public final class PluginConfigBuilder implements Builder<PluginConfig> {
 	private final Class<? extends Plugin> myPluginImplClass;
 	private final Map<String, String> myParams = new HashMap<>();
-	private final Map<String, String> myInheritedParams = new HashMap<>();
 	private final ComponentConfigBuilder myComponentConfigBuilder;
 
 	PluginConfigBuilder(final ComponentConfigBuilder componentConfigBuilder, final Class<? extends Plugin> pluginImplClass) {
@@ -42,13 +41,6 @@ public final class PluginConfigBuilder implements Builder<PluginConfig> {
 		//-----
 		this.myPluginImplClass = pluginImplClass;
 		this.myComponentConfigBuilder = componentConfigBuilder;
-	}
-
-	PluginConfigBuilder withInheritedParams(final Map<String, String> inheritedParams) {
-		Assertion.checkNotNull(inheritedParams);
-		//-----
-		this.myInheritedParams.putAll(inheritedParams);
-		return this;
 	}
 
 	public PluginConfigBuilder withParam(final String paramName, final String paramValue) {
