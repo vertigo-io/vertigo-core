@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.plugins.mda;
 
-import io.vertigo.studio.mda.GeneratorPlugin;
+import io.vertigo.studio.impl.mda.GeneratorPlugin;
 
 import java.util.Map;
 
