@@ -27,6 +27,7 @@ import io.vertigo.core.home.componentspace.ComponentSpace3Test;
 import io.vertigo.core.home.componentspace.ComponentSpaceTest;
 import io.vertigo.core.home.definitionspace.DefinitionSpaceTest;
 import io.vertigo.lang.AssertionTest;
+import io.vertigo.lang.OptionTest;
 import io.vertigo.lang.TuplesTest;
 import io.vertigo.util.BeanUtilTest;
 import io.vertigo.util.ClassUtilTest;
@@ -61,6 +62,7 @@ import org.junit.runners.Suite.SuiteClasses;
 		ReactorTest.class,
 		//-----
 		AssertionTest.class,
+		OptionTest.class,
 		TuplesTest.class,
 		//-----
 		BeanUtilTest.class,
