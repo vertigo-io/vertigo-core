@@ -27,10 +27,12 @@ import io.vertigo.core.home.componentspace.ComponentSpace3Test;
 import io.vertigo.core.home.componentspace.ComponentSpaceTest;
 import io.vertigo.core.home.definitionspace.DefinitionSpaceTest;
 import io.vertigo.lang.AssertionTest;
+import io.vertigo.lang.TuplesTest;
 import io.vertigo.util.BeanUtilTest;
 import io.vertigo.util.ClassUtilTest;
 import io.vertigo.util.DateQueryParserUtilTest;
 import io.vertigo.util.DateUtilTest;
+import io.vertigo.util.MapBuilderTest;
 import io.vertigo.util.StringUtilTest;
 import io.vertigo.xml.XmlComponentsTest;
 import io.vertigo.xml.XmlHomeTest;
@@ -57,13 +59,16 @@ import org.junit.runners.Suite.SuiteClasses;
 		XmlComponentsTest.class,
 		InjectorTest.class,
 		ReactorTest.class,
+		//-----
 		AssertionTest.class,
-		//---
+		TuplesTest.class,
+		//-----
 		BeanUtilTest.class,
 		ClassUtilTest.class,
 		DateQueryParserUtilTest.class,
 		DateUtilTest.class,
 		StringUtilTest.class,
+		MapBuilderTest.class,
 		//---
 		CGLIBAspectContainerTest.class,
 })
