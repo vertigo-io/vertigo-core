@@ -46,7 +46,7 @@ public final class MergerScriptEvaluatorProcessor implements MergerProcessor {
 	public MergerScriptEvaluatorProcessor(final ScriptManager scriptManager, final Encoder<String, String> valueEncoder) {
 		Assertion.checkNotNull(scriptManager);
 		Assertion.checkNotNull(valueEncoder);
-		//---------------------------------------------------------------------
+		//-----
 		this.scriptManager = scriptManager;
 		this.valueEncoder = valueEncoder;
 	}

@@ -128,7 +128,7 @@ final class JsonConverterHandler implements RouteHandler {
 		Assertion.checkNotNull(endPointDefinition);
 		Assertion.checkNotNull(jsonWriterEngine);
 		Assertion.checkNotNull(jsonReaderEngine);
-		//---------------------------------------------------------------------
+		//-----
 		this.uiSecurityTokenManager = uiSecurityTokenManager;
 		this.endPointDefinition = endPointDefinition;
 		this.jsonWriterEngine = jsonWriterEngine;

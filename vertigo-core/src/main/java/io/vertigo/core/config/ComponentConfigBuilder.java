@@ -49,7 +49,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 		Assertion.checkNotNull(moduleConfigBuilder);
 		Assertion.checkNotNull(apiClass);
 		Assertion.checkNotNull(implClass);
-		//---------------------------------------------------------------------
+		//-----
 		this.moduleConfigBuilder = moduleConfigBuilder;
 		this.apiClass = apiClass;
 		this.implClass = implClass;
@@ -58,7 +58,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 
 	public ComponentConfigBuilder withInitializer(final Class<? extends ComponentInitializer<?>> managerInitialierClass) {
 		Assertion.checkNotNull(managerInitialierClass);
-		//---------------------------------------------------------------------
+		//-----
 		this.managerInitializerClass = managerInitialierClass;
 		return this;
 	}
@@ -66,7 +66,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	public ComponentConfigBuilder withParam(final String paramName, final String paramValue) {
 		Assertion.checkArgNotEmpty(paramName);
 		Assertion.checkNotNull(paramValue);
-		//---------------------------------------------------------------------
+		//-----
 		params.put(paramName, paramValue);
 		return this;
 	}

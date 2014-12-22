@@ -49,7 +49,7 @@ public final class ConfigManagerImpl implements ConfigManager {
 	@Inject
 	public ConfigManagerImpl(final List<ConfigPlugin> configPlugins) {
 		Assertion.checkNotNull(configPlugins);
-		//---------------------------------------------------------------------
+		//-----
 		this.configPlugins = configPlugins;
 	}
 
@@ -86,7 +86,7 @@ public final class ConfigManagerImpl implements ConfigManager {
 	public <C> C resolve(final String configPath, final Class<C> config) {
 		Assertion.checkNotNull(configPath);
 		Assertion.checkNotNull(config);
-		//---------------------------------------------------------------------
+		//-----
 		if (config.isInterface()) {
 			return createProxy(configPath, config);
 		}
@@ -104,7 +104,7 @@ public final class ConfigManagerImpl implements ConfigManager {
 				properties.add(ClassUtil.getPropertyName(method));
 			}
 		}
-		//2. On affecte à ces propriétés les valeurs en 
+		//2. On affecte à ces propriétés les valeurs en
 		for (final Field field : config.getDeclaredFields()) {
 			final String property = field.getName();
 			if (properties.contains(property)) {
@@ -119,7 +119,7 @@ public final class ConfigManagerImpl implements ConfigManager {
 		Assertion.checkNotNull(path);
 		Assertion.checkNotNull(config);
 		Assertion.checkArgument(config.isInterface(), "la configuration recherchée doit être une interface");
-		//---------------------------------------------------------------------
+		//-----
 		final Map<Method, String> configs = new HashMap<>();
 		for (final Method method : config.getMethods()) {
 			configs.put(method, ClassUtil.getPropertyName(method));
@@ -139,12 +139,12 @@ public final class ConfigManagerImpl implements ConfigManager {
 	 * Retourne la config a utiliser pour cette propriété.
 	 * Le séparateur par défaut est le .
 	 * @param configPath Chemin de la config de départ
-	 * @return Config à utiliser : une supérieur ou égale. Si property inconnue on retourne celle de départ 
+	 * @return Config à utiliser : une supérieur ou égale. Si property inconnue on retourne celle de départ
 	 */
 	private Object doGetPropertyValue(final String configPath, final String property, final Class<?> propertyClass) {
 		checkPath(configPath);
 		checkProperty(property);
-		//---------------------------------------------------------------------
+		//-----
 		String subConfig = configPath;
 		while (subConfig != null) {
 			for (final ConfigPlugin configPlugin : configPlugins) {

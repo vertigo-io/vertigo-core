@@ -40,7 +40,7 @@ public final class MethodUtil {
 
 	/**
 	 * Invocation dynamique d'une méthode sur une instance.
-	 * 
+	 *
 	 * @param instance Objet sur lequel est invoqu� la méthode
 	 * @param methodName Nom de la methode invoqu�e (la premiere trouvée est appelée)
 	 * @param container Container des arguments
@@ -57,7 +57,7 @@ public final class MethodUtil {
 
 	/**
 	 * Invocation dynamique d'une méthode sur une instance.
-	 * 
+	 *
 	 * @param instance Objet sur lequel est invoqu� la méthode
 	 * @param method Methode invoqu�e
 	 * @param container Container des arguments
@@ -66,7 +66,7 @@ public final class MethodUtil {
 	public static Object invoke(final Object instance, final Method method, final Container container) {
 		Assertion.checkNotNull(instance);
 		Assertion.checkNotNull(method);
-		//--------------------------------------------------------------------
+		//-----
 		final Object[] args = findMethodParameters(container, method);
 		return ClassUtil.invoke(instance, method, args);
 	}
@@ -101,7 +101,7 @@ public final class MethodUtil {
 	//On récupère pour le paramètre i du constructeur l'objet à injecter
 	private static Object getInjected(final Container container, final Method method, final int i) {
 		final String id = getNamedValue(method.getParameterAnnotations()[i]);
-		//------------
+		//-----
 		final boolean optionalParameter = isOptional(method, i);
 		if (optionalParameter) {
 			if (container.contains(id)) {
@@ -111,13 +111,13 @@ public final class MethodUtil {
 		}
 		final Object value = container.resolve(id, method.getParameterTypes()[i]);
 		Assertion.checkNotNull(value);
-		//------------
+		//-----
 		return value;
 	}
 
 	private static boolean isOptional(final Method method, final int i) {
 		Assertion.checkNotNull(method);
-		//---------------------------------------------------------------------
+		//-----
 		return Option.class.isAssignableFrom(method.getParameterTypes()[i]);
 	}
 

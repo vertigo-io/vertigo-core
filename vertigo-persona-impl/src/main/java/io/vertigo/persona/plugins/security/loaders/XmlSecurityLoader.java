@@ -83,7 +83,7 @@ final class XmlSecurityLoader {
 	XmlSecurityLoader(final ResourceManager resourceManager, @Named("url") final String url) {
 		Assertion.checkNotNull(resourceManager);
 		Assertion.checkArgNotEmpty(url);
-		// ---------------------------------------------------------------------
+		//-----
 		authURL = resourceManager.resolve(url);
 	}
 
@@ -112,7 +112,7 @@ final class XmlSecurityLoader {
 	//repris de XMLUtil 6.1.18
 	private static Element create(final URL url, final String dtdResource) {
 		Assertion.checkArgNotEmpty(dtdResource);
-		//-----------------------------------------------------------------
+		//-----
 		final EntityResolver entityResolver = new EntityResolver() {
 			@Override
 			public InputSource resolveEntity(final String publicId, final String systemId) throws SAXException, IOException {
@@ -125,7 +125,7 @@ final class XmlSecurityLoader {
 	//repris de XMLUtil 6.1.18
 	private static Document createDocument(final URL url, final EntityResolver entityResolver) {
 		Assertion.checkNotNull(url);
-		//---------------------------------------------------------------------
+		//-----
 		try {
 			final SAXBuilder builder = new SAXBuilder(true);
 			builder.setExpandEntities(true);
@@ -138,30 +138,28 @@ final class XmlSecurityLoader {
 
 	private static Permission createPermission(final Element permissionElement) {
 		Assertion.checkNotNull(permissionElement);
-		// ---------------------------------------------------------------------
+		//-----
 		final String id = permissionElement.getAttributeValue(ID_KEY);
-		// ---------------------------------------------------------------------
 		final String operation = permissionElement.getAttributeValue(OPERATION_KEY);
-		// ---------------------------------------------------------------------
 		final String filter = permissionElement.getAttributeValue(FILTER_KEY);
-		// ---------------------------------------------------------------------
+		//-----
 		return new Permission(id, operation, filter);
 	}
 
 	private static Role createRole(final Element roleElement) {
 		Assertion.checkNotNull(roleElement);
-		// ---------------------------------------------------------------------
+		//-----
 		final String name = roleElement.getAttributeValue(NAME_KEY);
-		// ---------------------------------------------------------------------
+		//-----
 		final String description = roleElement.getAttributeValue(DESCRIPTION_KEY);
-		// ---------------------------------------------------------------------
+		//-----
 		final List<Permission> permissions = new ArrayList<>();
 		final List<Element> xps = roleElement.getChildren(PERMISSION_KEY);
 		for (final Element element : xps) {
 			final String permissionRef = element.getAttributeValue(REF_KEY);
-			// ---------------------------------------------------------------------
+			//-----
 			final Permission permission = Home.getDefinitionSpace().resolve(permissionRef, Permission.class);
-			// ---------------------------------------------------------------------
+			//-----
 			permissions.add(permission);
 		}
 		return new Role(name, description, permissions);

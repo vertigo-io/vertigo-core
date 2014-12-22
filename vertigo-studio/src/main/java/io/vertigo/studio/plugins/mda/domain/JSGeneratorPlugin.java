@@ -52,7 +52,7 @@ public final class JSGeneratorPlugin extends AbstractGeneratorPlugin {
 	public JSGeneratorPlugin(
 			@Named("generateDtResourcesJS") final boolean generateDtResourcesJS,
 			@Named("generateJsDtDefinitions") final boolean generateJsDtDefinitions) {
-		// ---------------------------------------------------------------------
+		//-----
 		this.generateDtResourcesJS = generateDtResourcesJS;
 		this.generateJsDtDefinitions = generateJsDtDefinitions;
 	}
@@ -62,7 +62,7 @@ public final class JSGeneratorPlugin extends AbstractGeneratorPlugin {
 	public void generate(final FileConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
 		Assertion.checkNotNull(domainConfiguration);
 		Assertion.checkNotNull(resultBuilder);
-		// ---------------------------------------------------------------------
+		//-----
 		/* Génération des ressources afférentes au DT mais pour la partie JS.*/
 		if (generateDtResourcesJS) {
 			generateDtResourcesJS(domainConfiguration, resultBuilder);

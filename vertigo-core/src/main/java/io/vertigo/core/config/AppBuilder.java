@@ -57,7 +57,7 @@ public final class AppBuilder {
 	 */
 	public AppBuilder withAppConfigBuilder(final AppConfigBuilder appConfigBuilder) {
 		Assertion.checkState(myAppConfigBuilder == null, "componentSpaceConfigBuilder was already set");
-		//---------------------------------------------------------------------
+		//-----
 		this.myAppConfigBuilder = appConfigBuilder;
 		return this;
 	}
@@ -69,7 +69,7 @@ public final class AppBuilder {
 	 */
 	public AppBuilder withEnvParams(final Properties envParams) {
 		Assertion.checkNotNull(envParams);
-		//---------------------------------------------------------------------
+		//-----
 		myEnvParams.putAll(envParams);
 		return this;
 	}
@@ -120,7 +120,7 @@ public final class AppBuilder {
 	 */
 	public AppConfigBuilder toAppConfigBuilder() {
 		Assertion.checkState(myAppConfigBuilder != null, "appConfigBuilder was not set, use build instead");
-		//---------------------------------------------------------------------
+		//-----
 		myAppConfigBuilder.withSilence(mySilence);
 		//1- if no xmlUrls we check if a property reference files
 		if (xmlUrls.isEmpty()) {
@@ -129,7 +129,7 @@ public final class AppBuilder {
 			final String[] xmlFileNamesSplit = xmlFileNames.split(";");
 			withXmlFileNames(getClass(), xmlFileNamesSplit);
 		}
-		//---------------------------------------------------------------------
+		//-----
 		//2- We load XML with parser to obtain all the moduleConfigs
 		Assertion.checkArgument(!xmlUrls.isEmpty(), "We need at least one Xml file");
 		final XMLModulesParser parser = new XMLModulesParser(myEnvParams);
@@ -167,7 +167,7 @@ public final class AppBuilder {
 	 */
 	private static URL createURL(final String fileName, final Class<?> relativeRootClass) {
 		Assertion.checkArgNotEmpty(fileName);
-		//---------------------------------------------------------------------
+		//-----
 		try {
 			return new URL(fileName);
 		} catch (final MalformedURLException e) {

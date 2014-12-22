@@ -58,12 +58,12 @@ public final class ComponentConfig {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(pluginConfigurations);
 		Assertion.checkNotNull(params);
-		//---------------------------------------------------------------------
+		//-----
 		id = DIAnnotationUtil.buildId(apiClass, implClass);
 		this.elastic = elastic;
 		this.componentInitializerClass = componentInitializerClass;
 		plugins = Collections.unmodifiableList(new ArrayList<>(pluginConfigurations));
-		//---------------------------------------------------------------------
+		//-----
 		this.apiClass = apiClass;
 		this.implClass = implClass;
 		this.params = new HashMap<>(params);

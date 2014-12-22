@@ -59,7 +59,7 @@ final class ScriptParserHandlerImpl implements ScriptParserHandler {
 		Assertion.checkNotNull(expressionEvaluatorPlugin);
 		Assertion.checkArgNotEmpty(originalScript);
 		Assertion.checkNotNull(parameters);
-		//----------------------------------------------------------------------
+		//-----
 		this.expressionEvaluatorPlugin = expressionEvaluatorPlugin;
 		this.originalScript = originalScript;
 		this.parameters = parameters;
@@ -89,12 +89,12 @@ final class ScriptParserHandlerImpl implements ScriptParserHandler {
 
 	String eval() {
 		if (isDynamic) {
-			//On positionne un try catch 
+			//On positionne un try catch
 			evaluatedScript.insert(0, "try { StringBuilder query = new StringBuilder();");
 			//---
 			evaluatedScript.append(" return query.toString();");
 			evaluatedScript.append("} catch (Exception e) { throw new RuntimeException(e);}");
-			// ------------------------------------------------------------------
+			//-----
 			return scriptEvaluate(evaluatedScript.toString());
 		}
 		return originalScript;

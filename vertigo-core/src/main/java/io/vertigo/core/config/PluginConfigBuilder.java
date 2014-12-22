@@ -27,7 +27,7 @@ import java.util.Map;
 
 /**
  * Paramétrage de l'application.
- * 
+ *
  * @author npiedeloup, pchretien
  */
 public final class PluginConfigBuilder implements Builder<PluginConfig> {
@@ -39,14 +39,14 @@ public final class PluginConfigBuilder implements Builder<PluginConfig> {
 	PluginConfigBuilder(final ComponentConfigBuilder componentConfigBuilder, final Class<? extends Plugin> pluginImplClass) {
 		Assertion.checkNotNull(componentConfigBuilder);
 		Assertion.checkNotNull(pluginImplClass);
-		//---------------------------------------------------------------------
+		//-----
 		this.myPluginImplClass = pluginImplClass;
 		this.myComponentConfigBuilder = componentConfigBuilder;
 	}
 
 	PluginConfigBuilder withInheritedParams(final Map<String, String> inheritedParams) {
 		Assertion.checkNotNull(inheritedParams);
-		//---------------------------------------------------------------------
+		//-----
 		this.myInheritedParams.putAll(inheritedParams);
 		return this;
 	}
@@ -54,7 +54,7 @@ public final class PluginConfigBuilder implements Builder<PluginConfig> {
 	public PluginConfigBuilder withParam(final String paramName, final String paramValue) {
 		Assertion.checkArgNotEmpty(paramName, "Parameter must not be empty");
 		Assertion.checkNotNull(paramValue, "parameter '{0}' is required ", paramName);
-		//---------------------------------------------------------------------
+		//-----
 		myParams.put(paramName, paramValue);
 		return this;
 	}

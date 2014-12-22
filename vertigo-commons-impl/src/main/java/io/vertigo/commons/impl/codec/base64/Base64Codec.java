@@ -43,7 +43,7 @@ public final class Base64Codec implements Codec<byte[], String> {
 
 	private static final char PADDING = '=';
 	private static final char[] ENCODE_TABLE = {
-	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+			'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
 			'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
 			'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_', '-', };
 	private static final int[] DECODE_TABLE;
@@ -61,7 +61,7 @@ public final class Base64Codec implements Codec<byte[], String> {
 	@Override
 	public byte[] decode(final String coded) {
 		Assertion.checkNotNull(coded);
-		//---------------------------------------------------------------------
+		//-----
 		final int length = coded.length();
 		if (length == 0) {
 			return new byte[0];
@@ -115,7 +115,7 @@ public final class Base64Codec implements Codec<byte[], String> {
 	@Override
 	public String encode(final byte[] raw) {
 		Assertion.checkNotNull(raw);
-		//---------------------------------------------------------------------
+		//-----
 		// Encode une série d'octets en base 64.
 
 		final int mod = raw.length % BASE64_DECODED_BLOCK_LEN;

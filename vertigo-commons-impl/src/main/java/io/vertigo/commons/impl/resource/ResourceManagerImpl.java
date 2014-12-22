@@ -28,14 +28,14 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * Selecteur 
+ * Selecteur
  *  - de classes
  *  - de ressources
- *  
+ *
  * L'implémentation permet de définir une liste de plusieurs plugins de résolutions de ressources.
  * Il est aussi possible d'enregistrer des @see ResourceResolver spécifique. (Par exemple pour stocker les ressources en BDD)
  * L'enregistrement doit se faire lors de la phase de démarrage.
- * 
+ *
  * @author pchretien
  */
 public final class ResourceManagerImpl implements ResourceManager {
@@ -44,7 +44,7 @@ public final class ResourceManagerImpl implements ResourceManager {
 	@Inject
 	public ResourceManagerImpl(final List<ResourceResolverPlugin> resourceResolverPlugins) {
 		Assertion.checkNotNull(resourceResolverPlugins);
-		//---------------------------------------------------------------------
+		//-----
 		this.resourceResolverPlugins = resourceResolverPlugins;
 	}
 

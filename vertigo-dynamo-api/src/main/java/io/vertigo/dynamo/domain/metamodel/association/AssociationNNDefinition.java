@@ -35,7 +35,7 @@ public final class AssociationNNDefinition extends AssociationDefinition {
 	 */
 	public AssociationNNDefinition(final String name, final String tableName, final AssociationNode associationNodeA, final AssociationNode associationNodeB) {
 		super(name, associationNodeA, associationNodeB);
-		//----------------------------------------------------------------------
+		//-----
 		Assertion.checkNotNull(tableName);
 		this.tableName = tableName;
 	}

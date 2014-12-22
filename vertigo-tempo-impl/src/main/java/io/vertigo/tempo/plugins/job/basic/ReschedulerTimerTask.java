@@ -42,7 +42,7 @@ final class ReschedulerTimerTask extends TimerTask {
 	ReschedulerTimerTask(final JobManager jobManager, final JobDefinition jobDefinition, final int hour) {
 		Assertion.checkNotNull(jobManager);
 		Assertion.checkNotNull(jobDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		this.jobManager = jobManager;
 		this.jobDefinition = jobDefinition;
 		this.hour = hour;

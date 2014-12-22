@@ -26,10 +26,10 @@ import io.vertigo.lang.MessageText;
 
 /**
  * Définition de la structure d'un champ.
- * 
+ *
  * Un champ représente une donnée nommée et typée.
  * Un champ permet de valider des données en s'appuyant sur le caractère requis et sur la validation intrinsèque au domaine.
- * 
+ *
  * Un champ possède
  *   - un nom
  *   - un domaine métier
@@ -41,7 +41,7 @@ import io.vertigo.lang.MessageText;
  * Un champ référence
  * 	 - la définition qu'il enrichit (DtDefinition)
  * 	 - la définition qu'il relie (équivalent d'une Foreign Key)
- * 
+ *
  * @author  fconstantin, pchretien , npiedeloup
  */
 public final class DtField implements DtFieldName {
@@ -117,7 +117,7 @@ public final class DtField implements DtFieldName {
 	 * @param computedExpression Expression du computed (noNull si type=Computed)
 	 * @param dynamic Gestion des champs dynamiques
 	 */
-	DtField(final String id, final String fieldName, final FieldType type, 
+	DtField(final String id, final String fieldName, final FieldType type,
 			final Domain domain, final MessageText label, final boolean notNull,
 			final boolean persistent, final String fkDtDefinitionName,
 			final ComputedExpression computedExpression, final boolean dynamic,
@@ -126,41 +126,41 @@ public final class DtField implements DtFieldName {
 		Assertion.checkNotNull(type);
 		Assertion.checkNotNull(domain);
 		Assertion.checkNotNull(type);
-		//----------------------------------------------------------------------
+		//-----
 		this.id = id;
 		this.domainRef = new DefinitionReference<>(domain);
 		this.type = type;
 		this.notNull = notNull;
-		//----------------------------------------------------------------------
+		//-----
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkArgument(fieldName.length() <= 30, "Le Nom du champ {0} doit être inférieur à 30", fieldName);
 		Assertion.checkArgument(fieldName.toUpperCase().equals(fieldName), "Le nom du champ {0} doit être en majuscules", fieldName);
 		name = fieldName;
-		//----------------------------------------------------------------------
+		//-----
 		Assertion.checkNotNull(label);
 		this.label = label;
-		//-----------------------------------------------------------------------
+		//-----
 		Assertion.checkArgument(!(getType() == FieldType.COMPUTED && persistent), "Un champ calculé n'est jamais persistant");
 		this.persistent = persistent;
-		//-----------------------------------------------------------------------
+		//-----
 		if (getType() == FieldType.FOREIGN_KEY) {
 			Assertion.checkNotNull(fkDtDefinitionName, "Le champ {0} de type clé étrangère doit référencer une définition ", fieldName);
 		} else {
 			Assertion.checkState(fkDtDefinitionName == null, "Le champ {0} n''est pas une clé étrangère", fieldName);
 		}
 		this.fkDtDefinitionName = fkDtDefinitionName;
-		//-----------------------------------------------------------------------
+		//-----
 		if (getType() == DtField.FieldType.COMPUTED) {
 			Assertion.checkNotNull(computedExpression, "Le champ {0} de type Computed doit référencer une expression ", fieldName);
 		} else {
 			Assertion.checkState(computedExpression == null, "Le champ {0} n''est pas Computed", fieldName);
 		}
 		this.computedExpression = computedExpression;
-		//------------------------------------------------------------------------
+		//-----
 		this.dynamic = dynamic;
 		this.sort = sort;
 		this.display = display;
-		//------------------------------------------------------------------------
+		//-----
 		dataAccessor = new DataAccessor(this);
 	}
 
@@ -183,8 +183,7 @@ public final class DtField implements DtFieldName {
 	 */
 	@Deprecated
 	// "use name()" instead of name()
-			public
-			String getName() {
+	public String getName() {
 		return name;
 	}
 
@@ -235,7 +234,7 @@ public final class DtField implements DtFieldName {
 	//Todo changer le nom
 	public DtDefinition getFkDtDefinition() {
 		Assertion.checkNotNull(fkDtDefinitionName);
-		//---------------------------------------------------------------------
+		//-----
 		return Home.getDefinitionSpace().resolve(fkDtDefinitionName, DtDefinition.class);
 	}
 
@@ -245,7 +244,7 @@ public final class DtField implements DtFieldName {
 	 */
 	public ComputedExpression getComputedExpression() {
 		Assertion.checkNotNull(computedExpression);
-		//---------------------------------------------------------------------
+		//-----
 		return computedExpression;
 	}
 

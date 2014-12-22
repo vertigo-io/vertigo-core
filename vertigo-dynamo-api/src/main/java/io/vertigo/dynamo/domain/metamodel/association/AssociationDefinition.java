@@ -63,7 +63,7 @@ public abstract class AssociationDefinition implements Definition {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(associationNodeA);
 		Assertion.checkNotNull(associationNodeB);
-		//----------------------------------------------------------------------
+		//-----
 		this.name = name;
 		this.associationNodeA = associationNodeA;
 		this.associationNodeB = associationNodeB;

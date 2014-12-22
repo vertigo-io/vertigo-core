@@ -41,7 +41,7 @@ public final class OOoFileOutputStream implements XOutputStream {
 	 */
 	public OOoFileOutputStream(final File file) throws FileNotFoundException {
 		Assertion.checkNotNull(file);
-		//---------------------------------------------------------------------
+		//-----
 		fileOutputStream = new FileOutputStream(file);
 	}
 

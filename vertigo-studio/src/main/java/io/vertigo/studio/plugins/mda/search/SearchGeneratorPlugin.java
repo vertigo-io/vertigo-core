@@ -40,7 +40,7 @@ public final class SearchGeneratorPlugin extends AbstractGeneratorPlugin {
 	public void generate(final FileConfiguration searchConfiguration, final ResultBuilder resultBuilder) {
 		Assertion.checkNotNull(searchConfiguration);
 		Assertion.checkNotNull(resultBuilder);
-		//---------------------------------------------------------------------
+		//-----
 		generateDtDefinitions(searchConfiguration, resultBuilder);
 	}
 

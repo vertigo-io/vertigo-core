@@ -22,7 +22,7 @@ import io.vertigo.lang.Assertion;
 
 /**
  * Gestion des Séparateurs utilisés par le parser.
- * 
+ *
  * Un séparateur est défini
  * - soit par un caractère. (le même en début et fin)
  *      Exemple #  : #name#
@@ -75,7 +75,7 @@ public final class ScriptSeparator {
 	public ScriptSeparator(final String beginSeparator, final String endSeparator) {
 		Assertion.checkArgNotEmpty(beginSeparator);
 		Assertion.checkArgNotEmpty(endSeparator);
-		//---------------------------------------------------------------------
+		//-----
 		isCar = false;
 		separatorCar = ' ';
 		this.beginSeparator = beginSeparator;
@@ -84,13 +84,13 @@ public final class ScriptSeparator {
 
 	public String getBeginSeparator() {
 		Assertion.checkArgument(!isCar, "type de séparateur inconsistant");
-		//---------------------------------------------------------------------
+		//-----
 		return beginSeparator;
 	}
 
 	public String getEndSeparator() {
 		Assertion.checkArgument(!isCar, "type de séparateur inconsistant");
-		//---------------------------------------------------------------------
+		//-----
 		return endSeparator;
 	}
 
@@ -99,7 +99,7 @@ public final class ScriptSeparator {
 	 */
 	public char getSeparator() {
 		Assertion.checkArgument(isCar, "type de séparateur inconsistant");
-		//---------------------------------------------------------------------
+		//-----
 		return separatorCar;
 	}
 

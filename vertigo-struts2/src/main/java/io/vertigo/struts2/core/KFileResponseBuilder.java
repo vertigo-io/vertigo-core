@@ -49,7 +49,7 @@ public final class KFileResponseBuilder {
 	public KFileResponseBuilder(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
 		Assertion.checkNotNull(httpRequest);
 		Assertion.checkNotNull(httpResponse);
-		//---------------------------------------------------------------------
+		//-----
 		this.httpRequest = httpRequest;
 		this.httpResponse = httpResponse;
 	}

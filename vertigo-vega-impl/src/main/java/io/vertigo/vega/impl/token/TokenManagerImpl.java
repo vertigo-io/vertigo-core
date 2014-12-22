@@ -49,7 +49,7 @@ public final class TokenManagerImpl implements TokenManager {
 		Assertion.checkArgNotEmpty(dataStoreName);
 		Assertion.checkNotNull(securityManager);
 		Assertion.checkNotNull(kvDataStoreManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.dataStoreName = dataStoreName;
 		this.securityManager = securityManager;
 		this.kvDataStoreManager = kvDataStoreManager;
@@ -63,7 +63,7 @@ public final class TokenManagerImpl implements TokenManager {
 	@Override
 	public String put(final Serializable data) {
 		Assertion.checkNotNull(data, "Data is mandatory");
-		//---------------------------------------------------------------------
+		//-----
 		final String objectUUID = UUID.randomUUID().toString();
 		final String tokenKey = makeTokenKey(objectUUID);
 		kvDataStoreManager.put(dataStoreName, tokenKey, data);
@@ -74,7 +74,7 @@ public final class TokenManagerImpl implements TokenManager {
 	@Override
 	public Option<Serializable> get(final String objectUUID) {
 		Assertion.checkArgNotEmpty(objectUUID, "Security key is mandatory");
-		//---------------------------------------------------------------------
+		//-----
 		final String tokenKey = makeTokenKey(objectUUID);
 		return kvDataStoreManager.find(dataStoreName, tokenKey, Serializable.class);
 	}
@@ -83,7 +83,7 @@ public final class TokenManagerImpl implements TokenManager {
 	@Override
 	public Option<Serializable> getAndRemove(final String objectUUID) {
 		Assertion.checkArgNotEmpty(objectUUID, "Security key is mandatory");
-		//---------------------------------------------------------------------
+		//-----
 		final String tokenKey = makeTokenKey(objectUUID);
 		final Option<Serializable> result = kvDataStoreManager.find(dataStoreName, tokenKey, Serializable.class);
 		if (result.isDefined()) {
@@ -95,7 +95,7 @@ public final class TokenManagerImpl implements TokenManager {
 	private String makeTokenKey(final String objectUUID) {
 		final Option<UserSession> userSessionOption = securityManager.getCurrentUserSession();
 		Assertion.checkArgument(userSessionOption.isDefined(), "UserSession is mandatory for security token");
-		//---------------------------------------------------------------------
+		//-----
 		return new StringBuilder(36 + 1 + 36)
 				.append(getUserTokenPart()).append(":").append(objectUUID)
 				.toString();
@@ -104,7 +104,7 @@ public final class TokenManagerImpl implements TokenManager {
 	private String getUserTokenPart() {
 		final Option<UserSession> userSessionOption = securityManager.getCurrentUserSession();
 		Assertion.checkArgument(userSessionOption.isDefined(), "UserSession is mandatory for security token");
-		//---------------------------------------------------------------------
+		//-----
 		return userSessionOption.get().getSessionUUID().toString();
 	}
 

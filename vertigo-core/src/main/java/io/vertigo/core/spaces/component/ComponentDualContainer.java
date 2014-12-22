@@ -27,7 +27,7 @@ import java.util.Set;
 
 /**
  * Super Conteneur.
- * 
+ *
  * @author pchretien
  */
 final class ComponentDualContainer implements Container {
@@ -38,7 +38,7 @@ final class ComponentDualContainer implements Container {
 	ComponentDualContainer(final Container container1, final Container container2) {
 		Assertion.checkNotNull(container1);
 		Assertion.checkNotNull(container2);
-		//---------------------------------------------------------------------
+		//-----
 		this.container1 = container1;
 		this.container2 = container2;
 		ids = new LinkedHashSet<>();
@@ -52,7 +52,7 @@ final class ComponentDualContainer implements Container {
 	@Override
 	public boolean contains(final String id) {
 		Assertion.checkNotNull(id);
-		// ---------------------------------------------------------------------
+		//-----
 		return ids.contains(id);
 	}
 
@@ -61,7 +61,7 @@ final class ComponentDualContainer implements Container {
 	public <O> O resolve(final String id, final Class<O> clazz) {
 		Assertion.checkNotNull(id);
 		Assertion.checkNotNull(clazz);
-		// ---------------------------------------------------------------------
+		//-----
 		unusedKeys.remove(id);
 		if (container1.contains(id)) {
 			return container1.resolve(id, clazz);

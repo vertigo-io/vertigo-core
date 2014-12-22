@@ -28,7 +28,7 @@ import javax.inject.Inject;
 
 /**
  * Implémentation de référence des fonctions Analytiques.
- * 
+ *
  * @author pchretien
  */
 public final class AnalyticsManagerImpl implements AnalyticsManager {
@@ -37,7 +37,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 	@Inject
 	public AnalyticsManagerImpl(final Option<AnalyticsAgentPlugin> agentPlugin) {
 		Assertion.checkNotNull(agentPlugin);
-		//---------------------------------------------------------------------
+		//-----
 		this.analyticsAgent = agentPlugin.getOrElse(new DummyAgentPlugin());
 	}
 

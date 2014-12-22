@@ -35,18 +35,18 @@ import java.util.List;
  * - celles remontant les terms d'un champ
  * - celles remontant les valeurs d'une facette discrétisée par une liste de segments.
  *
- * Une facette 
+ * Une facette
  *  - est identifiés par un nom unique au sein de son index.
- *  - posséde un Titre. 
- *  
- * Exemple : 
- * Pour une liste d'articles, on créera des définitions de facette 
- *  - pour segmenter les prix, 
- *  	. 0-10€ 	
- *  	. 10-50€ 	
+ *  - posséde un Titre.
+ *
+ * Exemple :
+ * Pour une liste d'articles, on créera des définitions de facette
+ *  - pour segmenter les prix,
+ *  	. 0-10€
+ *  	. 10-50€
  *  	. >50€
  *  - pour donner les principaux fabricants, (facette de type 'term')
- *  - etc.. 
+ *  - etc..
  *
  * @author pchretien
  */
@@ -62,7 +62,7 @@ public final class FacetDefinition implements Definition {
 	 * Constructeur.
 	 * @param dtField Champ de l'index facetté
 	 * @param label Libellé de la facette
-	 * @param facetValues Liste des segments pour les facettes segmentées 
+	 * @param facetValues Liste des segments pour les facettes segmentées
 	 * @param hasFacetValues Si facette segmentée
 	 */
 	private FacetDefinition(final String name, final DtField dtField, final MessageText label, final List<FacetValue> facetValues, final boolean hasFacetValues) {
@@ -72,7 +72,7 @@ public final class FacetDefinition implements Definition {
 		Assertion.checkNotNull(facetValues);
 		Assertion.checkArgument(!hasFacetValues || !facetValues.isEmpty(), "Les FacetDefinition de type 'term' doivent fournir une liste des segments vide");
 		Assertion.checkArgument(hasFacetValues || facetValues.isEmpty(), "Les FacetDefinition de type 'range' doivent fournir la liste des segments non vides (FacetValues)");
-		//-----------------------------------------------------------------
+		//-----
 		this.name = name;
 		this.dtField = dtField;
 		this.label = label;
@@ -108,7 +108,7 @@ public final class FacetDefinition implements Definition {
 	 */
 	public List<FacetValue> getFacetRanges() {
 		Assertion.checkArgument(rangeFacet, "Cette facette ({0}) n'est pas segmentée.", getName());
-		//---------------------------------------------------------------------
+		//-----
 		return facetValues;
 	}
 

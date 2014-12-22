@@ -24,9 +24,9 @@ import io.vertigo.lang.Assertion;
 import java.io.Serializable;
 
 /**
- * Implémentation standard ThreadSafe gérant les mécanismes permettant de 
+ * Implémentation standard ThreadSafe gérant les mécanismes permettant de
  * sérialiser de façon compressée un objet en format binaire (byte[]).
- * 
+ *
  * @author pchretien
  */
 public final class CompressedSerializationCodec implements Codec<Serializable, byte[]> {
@@ -41,7 +41,7 @@ public final class CompressedSerializationCodec implements Codec<Serializable, b
 	public CompressedSerializationCodec(final Codec<Serializable, byte[]> serializationCodec, final Codec<byte[], byte[]> compressionCodec) {
 		Assertion.checkNotNull(serializationCodec);
 		Assertion.checkNotNull(compressionCodec);
-		//--------------------------------------------------------------------
+		//-----
 		this.serializationCodec = serializationCodec;
 		this.compressionCodec = compressionCodec;
 	}
@@ -50,7 +50,7 @@ public final class CompressedSerializationCodec implements Codec<Serializable, b
 	@Override
 	public byte[] encode(final Serializable data) {
 		Assertion.checkNotNull(data);
-		//---------------------------------------------------------------------
+		//-----
 		return compressionCodec.encode(serializationCodec.encode(data));
 
 	}
@@ -59,7 +59,7 @@ public final class CompressedSerializationCodec implements Codec<Serializable, b
 	@Override
 	public Serializable decode(final byte[] data) {
 		Assertion.checkNotNull(data);
-		//---------------------------------------------------------------------
+		//-----
 		return serializationCodec.decode(compressionCodec.decode(data));
 	}
 }

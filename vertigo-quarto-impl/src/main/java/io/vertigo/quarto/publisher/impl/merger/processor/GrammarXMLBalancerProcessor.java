@@ -53,8 +53,8 @@ public final class GrammarXMLBalancerProcessor implements MergerProcessor {
 	//
 	//
 	// public static void main(String[] args) {
-	// // ---------------------------------------0 10 20 30 40 50 60 70
-	// // --------------------------------------- 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789
+	// //-----0 10 20 30 40 50 60 70
+	// //-----123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789
 	// StringBuilder output = new StringBuilder("<#loo#   ><#loo#   ><#endloo#><#loo#   ><#endloo#><#endloo#>");
 	// System.out.println(findEndGrammarIndex(output, "loo", 1));
 	// }

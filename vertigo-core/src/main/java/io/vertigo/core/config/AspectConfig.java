@@ -37,7 +37,7 @@ public final class AspectConfig {
 	 */
 	AspectConfig(final Class<? extends Aspect> implClass) {
 		Assertion.checkNotNull(implClass);
-		//---------------------------------------------------------------------
+		//-----
 		this.implClass = implClass;
 	}
 

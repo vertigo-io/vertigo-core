@@ -42,7 +42,7 @@ public final class ManyRule<R> implements Rule<List<R>> {
 	 */
 	public ManyRule(final Rule<R> rule, final boolean emptyAccepted, final boolean repeat) {
 		Assertion.checkNotNull(rule);
-		//---------------------------------------------------------------------
+		//-----
 		this.rule = rule;
 		this.emptyAccepted = emptyAccepted;
 		this.repeat = repeat;

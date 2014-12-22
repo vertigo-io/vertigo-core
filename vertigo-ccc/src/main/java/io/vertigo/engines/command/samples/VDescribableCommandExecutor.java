@@ -34,7 +34,7 @@ public final class VDescribableCommandExecutor implements VCommandExecutor<List<
 		//Assertion.checkArgument(command.getName());
 		System.out.println(">>> find:" + command.getName());
 		System.out.println(">>> Home:" + Home.getComponentSpace().keySet());
-		//---------------------------------------------------------------------
+		//-----
 		final Object component = Home.getComponentSpace().resolve(command.getName(), Object.class);
 
 		//			if (component instanceof Describable) {

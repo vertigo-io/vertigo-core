@@ -26,14 +26,14 @@ import java.util.Map;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
-/** 
+/**
  * @author  pchretien
  */
 final class XmlConfigHandler extends DefaultHandler {
 	enum TagName {
 		applicationConfig, config, property;
 
-		static TagName valueOf2(String value) {
+		static TagName valueOf2(final String value) {
 			if ("application-config".equals(value))
 				return applicationConfig;
 			return valueOf(value);
@@ -43,9 +43,9 @@ final class XmlConfigHandler extends DefaultHandler {
 	private final Map<String, Map<String, String>> configs;
 	private Map<String, String> currentConfig;
 
-	XmlConfigHandler(Map<String, Map<String, String>> configs) {
+	XmlConfigHandler(final Map<String, Map<String, String>> configs) {
 		Assertion.checkNotNull(configs);
-		//---------------------------------------------------------------------
+		//-----
 		this.configs = configs;
 	}
 
@@ -78,7 +78,7 @@ final class XmlConfigHandler extends DefaultHandler {
 				break;
 			case config:
 				currentConfig = new HashMap<>();
-				//				
+				//
 				final String configName = attrs.getValue("name");
 				configs.put(configName, currentConfig);
 				break;

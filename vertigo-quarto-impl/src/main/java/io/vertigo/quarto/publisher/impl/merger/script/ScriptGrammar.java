@@ -82,13 +82,13 @@ public final class ScriptGrammar {
 	 */
 	private ScriptTagDefinition getDefinition(final String str) {
 		Assertion.checkNotNull(str);
-		// ------------------------------------------------
+		//-----
 		return tagDefinitionBySyntax.get(str);
 	}
 
 	ScriptTagContent parseTag(final String tagValue) {
 		Assertion.checkNotNull(tagValue);
-		// ---------------------------------------------------------------------
+		//-----
 		final String value = tagValue.trim();
 		for (final String key : orderedParsingTags) {
 			if (value.startsWith(key)) {

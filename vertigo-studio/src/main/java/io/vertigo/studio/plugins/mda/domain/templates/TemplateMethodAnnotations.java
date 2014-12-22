@@ -39,7 +39,7 @@ import freemarker.template.TemplateModelException;
  * Exemple : annotations(dtField)
  * Exemple : annotations(associationNode)
  * TemplateMethodModelEx : les params sont considérés comme des Objets.
- * 
+ *
  * @author  dchallas
  */
 public final class TemplateMethodAnnotations implements TemplateMethodModelEx {
@@ -61,7 +61,7 @@ public final class TemplateMethodAnnotations implements TemplateMethodModelEx {
 	@Override
 	public TemplateModel exec(final List params) throws TemplateModelException {
 		Assertion.checkArgument(!params.isEmpty(), "Un parametre de type [DtField, DtDefinition, AssociationNode] est obligatoire");
-		//----------------------------------------------------------------------
+		//-----
 		final Object type = ((StringModel) params.get(0)).getWrappedObject();
 
 		if (type instanceof DtDefinition) {

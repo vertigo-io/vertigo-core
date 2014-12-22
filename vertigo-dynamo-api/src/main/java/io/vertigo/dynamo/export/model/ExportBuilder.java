@@ -50,7 +50,7 @@ public final class ExportBuilder implements Builder<Export> {
 	public ExportBuilder(final ExportFormat format, final String fileName) {
 		Assertion.checkNotNull(format);
 		Assertion.checkArgNotEmpty(fileName, "FileName doit être non vide");
-		// ----------------------------------------------------------------------
+		//-----
 		this.format = format;
 		this.fileName = fileName;
 	}

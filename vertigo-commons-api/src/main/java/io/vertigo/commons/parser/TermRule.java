@@ -34,7 +34,7 @@ public final class TermRule implements Rule<String>, Parser<String> {
 	 */
 	public TermRule(final String term) {
 		Assertion.checkNotNull(term, "Terminal is mandatory");
-		//---------------------------------------------------------------------
+		//-----
 		this.term = term;
 	}
 

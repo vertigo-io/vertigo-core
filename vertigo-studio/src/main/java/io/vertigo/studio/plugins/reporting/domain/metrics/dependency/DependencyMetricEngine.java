@@ -38,7 +38,7 @@ public final class DependencyMetricEngine implements MetricEngine<DtDefinition> 
 	@Override
 	public Metric execute(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		final int count = count(dtDefinition);
 		return new MetricBuilder()
 				.withTitle("Utilisation dans les dao")

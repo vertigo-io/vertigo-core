@@ -27,7 +27,7 @@ public final class VPingCommandExecutor implements VCommandExecutor<String> {
 	public String exec(final VCommand command) {
 		Assertion.checkNotNull(command);
 		//Assertion.checkArgument(command.getName());
-		//---------------------------------------------------------------------
+		//-----
 		return "pong";
 	}
 }

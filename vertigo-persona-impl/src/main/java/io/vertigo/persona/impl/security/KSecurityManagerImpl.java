@@ -70,7 +70,7 @@ public final class KSecurityManagerImpl implements KSecurityManager, Activeable 
 		Assertion.checkNotNull(securityLoaderPlugin);
 		Assertion.checkNotNull(localeManager);
 		Assertion.checkArgNotEmpty(userSessionClassName);
-		//---------------------------------------------------
+		//-----
 		this.localeManager = localeManager;
 		this.userSessionClassName = userSessionClassName;
 		//---
@@ -117,7 +117,7 @@ public final class KSecurityManagerImpl implements KSecurityManager, Activeable 
 		if (USER_SESSION_THREAD_LOCAL.get() != null) {
 			throw new IllegalStateException("UserSession deje creee, verifier l'utilisation du stopCurrentUserSession dans un block finally ");
 		}
-		//---------------------------------------------------------------------
+		//-----
 		USER_SESSION_THREAD_LOCAL.set(user);
 	}
 
@@ -139,7 +139,7 @@ public final class KSecurityManagerImpl implements KSecurityManager, Activeable 
 	public boolean hasRole(final UserSession userSession, final Set<Role> authorizedRoleSet) {
 		Assertion.checkNotNull(userSession);
 		Assertion.checkNotNull(authorizedRoleSet);
-		// ----------------------------------------------------------------------
+		//-----
 		if (authorizedRoleSet.isEmpty()) {
 			return true;
 		}
@@ -228,7 +228,7 @@ public final class KSecurityManagerImpl implements KSecurityManager, Activeable 
 	public void registerResourceNameFactory(final String resourceType, final ResourceNameFactory resourceNameFactory) {
 		Assertion.checkArgNotEmpty(resourceType);
 		Assertion.checkNotNull(resourceNameFactory);
-		// ----------------------------------------------------------------------
+		//-----
 		resourceNameFactories.put(resourceType, resourceNameFactory);
 	}
 }

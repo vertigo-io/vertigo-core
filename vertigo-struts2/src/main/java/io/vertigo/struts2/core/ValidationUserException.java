@@ -45,7 +45,7 @@ public final class ValidationUserException extends VUserException {
 		super(messageText);
 		Assertion.checkNotNull(dto, "L'objet est obligatoire");
 		Assertion.checkArgNotEmpty(fieldName, "Le champs est obligatoire");
-		//---------------------------------------------------------------------
+		//-----
 		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getField(StringUtil.camelToConstCase(fieldName));
 		uiErrors.add(new UiError(dto, dtField, messageText));
 	}

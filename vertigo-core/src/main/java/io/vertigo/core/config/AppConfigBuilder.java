@@ -48,7 +48,7 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	 */
 	public AppConfigBuilder withLogConfig(final LogConfig logConfig) {
 		Assertion.checkNotNull(logConfig);
-		//---------------------------------------------------------------------
+		//-----
 		myLogConfigOption = Option.some(logConfig);
 		return this;
 	}
@@ -60,7 +60,7 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	 */
 	public AppConfigBuilder withModules(final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
-		//---------------------------------------------------------------------
+		//-----
 		myModuleConfigs.addAll(moduleConfigs);
 		return this;
 	}
@@ -77,7 +77,7 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 
 	public AppConfigBuilder withCommandEngine(final VCommandEngine commandEngine) {
 		Assertion.checkNotNull(commandEngine);
-		//---------------------------------------------------------------------
+		//-----
 		this.myCommandEngine = commandEngine;
 		return this;
 	}
@@ -85,14 +85,14 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	public AppConfigBuilder withElasticaEngine(final ElasticaEngine elasticaEngine) {
 		Assertion.checkNotNull(elasticaEngine);
 		Assertion.checkState(this.myElasticaEngine == null, "elasticaEngine is alreday completed");
-		//---------------------------------------------------------------------
+		//-----
 		this.myElasticaEngine = elasticaEngine;
 		return this;
 	}
 
 	public AppConfigBuilder withAopEngine(final AopEngine aopEngine) {
 		Assertion.checkNotNull(aopEngine);
-		//---------------------------------------------------------------------
+		//-----
 		this.myAopEngine = aopEngine;
 		return this;
 	}

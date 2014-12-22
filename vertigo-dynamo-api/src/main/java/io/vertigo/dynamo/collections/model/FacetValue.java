@@ -26,17 +26,17 @@ import java.io.Serializable;
 
 /**
  * Valeur de facette relatif à une définition.
- * Les valeurs sont 
- *  - soit déclarée.  
+ * Les valeurs sont
+ *  - soit déclarée.
  *  - soit déduite.
- * Exemple : 
+ * Exemple :
  *  - Fourchettes de prix (valeurs déclarées)
- *  - Fourchettes de dates (valeurs déclarées)  
+ *  - Fourchettes de dates (valeurs déclarées)
  *  - Termes les plus usités (valeurs déduites)
- *  - Clustering sémantique (valeurs déduites) 
+ *  - Clustering sémantique (valeurs déduites)
  * Fait partie du métamodèle lorsque la facette est déclarée par ses ranges.
- * Fait partie du modèle lorsque les valeurs sont déduites. 
- * 
+ * Fait partie du modèle lorsque les valeurs sont déduites.
+ *
  * @author pchretien
  */
 public final class FacetValue implements Serializable {
@@ -52,7 +52,7 @@ public final class FacetValue implements Serializable {
 	public FacetValue(final ListFilter listFilter, final MessageText label) {
 		Assertion.checkNotNull(listFilter);
 		Assertion.checkNotNull(label);
-		//---------------------------------------------------------------------
+		//-----
 		this.listFilter = listFilter;
 		this.label = label;
 	}

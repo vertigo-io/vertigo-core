@@ -31,7 +31,7 @@ import freemarker.template.TemplateSequenceModel;
 
 /**
  * Permet de construire les lignes décritants l'annotation.
- * 
+ *
  * @author dchallas
  */
 final class TemplateAnnotationLines implements TemplateSequenceModel {
@@ -67,7 +67,7 @@ final class TemplateAnnotationLines implements TemplateSequenceModel {
 
 	private TemplateAnnotationLines(final List<String> lines) {
 		Assertion.checkNotNull(lines);
-		//-----------------------------------------------------------------
+		//-----
 		this.lines = lines;
 	}
 

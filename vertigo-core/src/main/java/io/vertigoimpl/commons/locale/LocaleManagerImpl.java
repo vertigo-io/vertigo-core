@@ -84,13 +84,13 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 	@Inject
 	public LocaleManagerImpl(@Named("locales") final String locales) {
 		Assertion.checkArgNotEmpty(locales);
-		//---------------------------------------------------------------------
+		//-----
 		// this.locales = new Locale[] { Locale.getDefault() };
 		this.locales = createLocales(locales);
-		//---------------------------------------------------------------------
+		//-----
 		Assertion.checkNotNull(this.locales);
 		Assertion.checkArgument(!this.locales.isEmpty(), "Il faut au moins déclarer une locale");
-		//---------------------------------------------------------------------
+		//-----
 		for (final Locale locale : this.locales) {
 			dictionaries.put(locale, new HashMap<String, String>());
 		}
@@ -118,7 +118,7 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 	public void registerLocaleProvider(final LocaleProvider newLocaleProvider) {
 		Assertion.checkArgument(localeProvider == null, "localeProvider already registered");
 		Assertion.checkNotNull(newLocaleProvider);
-		//---------------------------------------------------------------------
+		//-----
 		localeProvider = newLocaleProvider;
 	}
 
@@ -204,7 +204,7 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 	public String getMessage(final MessageKey messageKey, final Locale locale) {
 		Assertion.checkNotNull(messageKey);
 		Assertion.checkNotNull(locale);
-		//---------------------------------------------------------------------
+		//-----
 		final String msg = getDictionary(locale).get(messageKey.name());
 		//Cas anormal :  où la ressource n'est pas présente.
 		if (msg == null) {

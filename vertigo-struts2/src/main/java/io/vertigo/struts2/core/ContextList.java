@@ -61,7 +61,7 @@ public final class ContextList<O extends DtObject> {
 		Assertion.checkArgNotEmpty(contextKey);
 		Assertion.checkNotNull(action);
 		Assertion.checkNotNull(validator);
-		//---------------------------------------------------------------------
+		//-----
 		this.contextKey = contextKey;
 		this.action = action;
 		this.uiMessageStack = action.getUiMessageStack();

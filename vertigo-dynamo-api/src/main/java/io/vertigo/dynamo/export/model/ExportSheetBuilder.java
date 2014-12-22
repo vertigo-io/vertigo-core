@@ -63,7 +63,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 		Assertion.checkNotNull(exportBuilder);
 		Assertion.checkNotNull(dto);
 		// title may be null
-		// ---------------------------------------------------------------------
+		//-----
 		this.exportBuilder = exportBuilder;
 		this.dto = dto;
 		dtc = null;
@@ -80,7 +80,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 		Assertion.checkNotNull(exportBuilder);
 		Assertion.checkNotNull(dtc);
 		// title may be null
-		// ---------------------------------------------------------------------
+		//-----
 		this.exportBuilder = exportBuilder;
 		this.dtc = dtc;
 		dto = null;
@@ -118,7 +118,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 		Assertion.checkArgument(dtDefinition.contains(fieldName), "Le champ " + fieldName.name() + " n'est pas dans la liste à exporter");
 		// On ne vérifie pas que les champs ne sont placés qu'une fois
 		// car pour des raisons diverses ils peuvent l'être plusieurs fois.
-		// ----------------------------------------------------------------------
+		//-----
 		final ExportField exportField = new ExportField(resolveDtField(fieldName), overridedLabel);
 		exportFields.add(exportField);
 		return this;
@@ -136,7 +136,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 		Assertion.checkArgument(dtDefinition.contains(fieldName), "Le champ " + fieldName.name() + " n'est pas dans la liste à exporter");
 		// On ne vérifie pas que les champs ne sont placés qu'une fois
 		// car pour des raisons diverses ils peuvent l'être plusieurs fois.
-		// ----------------------------------------------------------------------
+		//-----
 		final ExportField exportField = new ExportDenormField(resolveDtField(fieldName), overridedLabel, list, resolveDtField(displayfield));
 		exportFields.add(exportField);
 		return this;

@@ -21,22 +21,22 @@ package io.vertigo.core.config;
 import io.vertigo.lang.Assertion;
 
 /**
- * A resource is defined by 
- * - a type 
+ * A resource is defined by
+ * - a type
  * - a path
  * A resource can be a file, a blob or a simple java class.
- * A resource is used to configure a module.  
- * 
+ * A resource is used to configure a module.
+ *
  * @author pchretien
  */
 public final class ResourceConfig {
 	private final String type;
 	private final String path;
 
-	ResourceConfig(String type, String path) {
+	ResourceConfig(final String type, final String path) {
 		Assertion.checkArgNotEmpty(type);
 		Assertion.checkArgNotEmpty(path);
-		//---------------------------------------------------------------------
+		//-----
 		this.type = type;
 		this.path = path;
 	}

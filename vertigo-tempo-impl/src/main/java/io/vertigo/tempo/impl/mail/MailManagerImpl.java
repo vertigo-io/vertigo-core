@@ -50,7 +50,7 @@ public final class MailManagerImpl implements MailManager {
 		Assertion.checkNotNull(workManager);
 		Assertion.checkNotNull(localeManager);
 		Assertion.checkNotNull(sendMailPlugin);
-		//---------------------------------------------------
+		//-----
 		this.workManager = workManager;
 		localeManager.add("io.vertigo.tempo.impl.mail.Mail", io.vertigo.tempo.impl.mail.Resources.values());
 		this.sendMailPlugin = sendMailPlugin;
@@ -60,7 +60,7 @@ public final class MailManagerImpl implements MailManager {
 	@Override
 	public void sendMail(final Mail mail) {
 		Assertion.checkNotNull(mail);
-		//---------------------------------------------------------------------
+		//-----
 		sendMailPlugin.sendMail(mail);
 	}
 
@@ -68,7 +68,7 @@ public final class MailManagerImpl implements MailManager {
 	@Override
 	public void sendMailASync(final Mail mail, final WorkResultHandler<Date> workResultHandler) {
 		Assertion.checkNotNull(mail);
-		//---------------------------------------------------------------------
+		//-----
 		workManager.schedule(new Callable<Date>() {
 			@Override
 			public Date call() {

@@ -44,7 +44,7 @@ public final class MetricBuilder implements Builder<Metric> {
 	 */
 	public MetricBuilder withStatus(final Status status) {
 		Assertion.checkNotNull(status);
-		//---------------------------------------------------------------------
+		//-----
 		myStatus = status;
 		return this;
 	}
@@ -54,7 +54,7 @@ public final class MetricBuilder implements Builder<Metric> {
 	 */
 	public MetricBuilder withTitle(final String title) {
 		Assertion.checkArgNotEmpty(title);
-		//---------------------------------------------------------------------
+		//-----
 		myTitle = title;
 		return this;
 	}
@@ -64,7 +64,7 @@ public final class MetricBuilder implements Builder<Metric> {
 	 */
 	public MetricBuilder withUnit(final String unit) {
 		Assertion.checkArgNotEmpty(unit);
-		//---------------------------------------------------------------------
+		//-----
 		myUnit = unit;
 		return this;
 	}

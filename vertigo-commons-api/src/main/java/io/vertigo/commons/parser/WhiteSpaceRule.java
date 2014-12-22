@@ -36,7 +36,7 @@ public final class WhiteSpaceRule implements Rule<Void>, Parser<Void> {
 	public WhiteSpaceRule(final String blanks) {
 		super();
 		Assertion.checkNotNull(blanks);
-		//----------------------------------------------------------------------
+		//-----
 		rule = new WordRule(true, blanks, WordRule.Mode.ACCEPT);
 	}
 

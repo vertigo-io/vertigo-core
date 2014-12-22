@@ -41,7 +41,7 @@ public final class ContextMdl<O extends DtObject> {
 	public ContextMdl(final String contextKey, final AbstractActionSupport action) {
 		Assertion.checkArgNotEmpty(contextKey);
 		Assertion.checkNotNull(action);
-		//---------------------------------------------------------------------
+		//-----
 		this.contextKey = contextKey;
 		this.action = action;
 	}
@@ -59,7 +59,7 @@ public final class ContextMdl<O extends DtObject> {
 	//	public ContextMdl(final String contextKey, final Class<O> dtoClass, final String code, final AbstractActionSupport action) {
 	//		Assertion.checkArgNotEmpty(contextKey);
 	//		Assertion.checkNotNull(action);
-	//		//---------------------------------------------------------------------
+	//-----
 	//		this.contextKey = contextKey;
 	//		this.action = action;
 	//

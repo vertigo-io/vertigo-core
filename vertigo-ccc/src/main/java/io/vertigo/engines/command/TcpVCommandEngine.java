@@ -57,7 +57,7 @@ public final class TcpVCommandEngine implements VCommandEngine, Activeable {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(commandExecutor);
 		Assertion.checkArgument(!commmandExecutors.containsKey(name), "command '{0}' is already registered'", name);
-		//---------------------------------------------------------------------
+		//-----
 		commmandExecutors.put(name, commandExecutor);
 	}
 
@@ -82,7 +82,7 @@ public final class TcpVCommandEngine implements VCommandEngine, Activeable {
 			public Set<String> exec(final VCommand command) {
 				Assertion.checkNotNull(command);
 				//Assertion.checkArgument(command.getName());
-				//---------------------------------------------------------------------
+				//-----
 				return commmandExecutors.keySet();
 			}
 		});
@@ -107,7 +107,7 @@ public final class TcpVCommandEngine implements VCommandEngine, Activeable {
 	private Object exec(final VCommand command) {
 		Assertion.checkNotNull(command);
 		Assertion.checkArgument(commmandExecutors.containsKey(command.getName()), "command '{0}' unknown", command.getName());
-		//---------------------------------------------------------------------
+		//-----
 		final VCommandExecutor<?> commandExecutor = commmandExecutors.get(command.getName());
 		return commandExecutor.exec(command);
 	}

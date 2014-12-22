@@ -64,7 +64,7 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 	public EhCachePlugin(final CodecManager codecManager, @Named("noSerialization") final Option<String> noSerializationOption) throws ClassNotFoundException {
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkNotNull(noSerializationOption);
-		//---------------------------------------------------------------------
+		//-----
 		this.codecManager = codecManager;
 		if (noSerializationOption.isDefined()) {
 			noSerializationContext = new HashSet<>(Arrays.asList(noSerializationOption.get().split(";")));
@@ -90,7 +90,7 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 	@Override
 	public void put(final String context, final Serializable key, final Serializable value) {
 		Assertion.checkState(!(value instanceof byte[]), "Ce CachePlugin ne permet pas de mettre en cache des byte[].");
-		//---------------------------------------------------------------------
+		//-----
 		//Si l'objet est bien marqué non modifiable (ie : interface Modifiable ET !isModifiable)
 		//on peut le garder tel quel, sinon on le clone
 		if (isUnmodifiable(value) || noSerializationContext.contains(context)) {

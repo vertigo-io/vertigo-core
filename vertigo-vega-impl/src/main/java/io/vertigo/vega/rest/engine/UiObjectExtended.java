@@ -38,7 +38,7 @@ public final class UiObjectExtended<D extends DtObject> extends HashMap<String, 
 	 */
 	public UiObjectExtended(final UiObject<D> uiObject) {
 		Assertion.checkNotNull(uiObject);
-		//---------------------------------------------------------------------
+		//-----
 		this.innerObject = uiObject;
 	}
 

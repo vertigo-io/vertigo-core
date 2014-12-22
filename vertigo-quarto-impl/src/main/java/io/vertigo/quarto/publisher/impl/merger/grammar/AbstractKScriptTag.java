@@ -139,7 +139,7 @@ abstract class AbstractKScriptTag {
 	protected static final String[] parseAttribute(final String attribute, final String regEexpFormat) {
 		Assertion.checkNotNull(attribute);
 		Assertion.checkNotNull(regEexpFormat);
-		//----------------------------------------------------
+		//-----
 
 		final String[] groups;
 		int nbGroup = 0;

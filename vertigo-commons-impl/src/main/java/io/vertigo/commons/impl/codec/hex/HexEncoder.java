@@ -24,7 +24,7 @@ import io.vertigo.lang.Assertion;
 /**
  * Implémentation threadSafe des mécanismes standards d'encodage/décodage.
  * Hex transforme en chaine de caractères un tableau d'octets
- * 
+ *
  * @author  pchretirn
  */
 public final class HexEncoder implements Encoder<byte[], String> {
@@ -33,7 +33,7 @@ public final class HexEncoder implements Encoder<byte[], String> {
 	@Override
 	public String encode(final byte[] data) {
 		Assertion.checkNotNull(data);
-		//---------------------------------------------------------------------
+		//-----
 		final StringBuilder output = new StringBuilder(data.length * 2);
 		for (final byte element : data) {
 			output.append(Integer.toHexString(element >> 4 & 0xf)).append(Integer.toHexString(element & 0xf));

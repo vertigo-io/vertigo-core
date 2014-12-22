@@ -51,7 +51,7 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 		 */
 		AES("AES", 128);
 
-		//--------------------------
+		//-----
 		private final String algoName;
 		private final int keySize;
 
@@ -85,7 +85,7 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 	 */
 	public CryptoCodec(final Crypto crypto) {
 		Assertion.checkNotNull(crypto);
-		//------------------------------------------------------------------------
+		//-----
 		this.crypto = crypto;
 		key = createKey();
 	}
@@ -108,7 +108,7 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 	@Override
 	public byte[] encode(final byte[] data) {
 		Assertion.checkNotNull(data);
-		//---------------------------------------------------------------------
+		//-----
 		try {
 			final Cipher cipher = Cipher.getInstance(crypto.getAlgoName());
 			cipher.init(Cipher.ENCRYPT_MODE, key);
@@ -126,7 +126,7 @@ public final class CryptoCodec implements Codec<byte[], byte[]>, Describable {
 	@Override
 	public byte[] decode(final byte[] data) {
 		Assertion.checkNotNull(data);
-		//---------------------------------------------------------------------
+		//-----
 		try {
 			final Cipher cipher = Cipher.getInstance(crypto.getAlgoName());
 			cipher.init(Cipher.DECRYPT_MODE, key);

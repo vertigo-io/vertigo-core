@@ -49,7 +49,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 
 	public ModuleConfigBuilder(final String name) {
 		Assertion.checkArgNotEmpty(name);
-		//---------------------------------------------------------------------
+		//-----
 		myName = name;
 		myAppConfigBuilderOption = Option.none();
 	}
@@ -57,7 +57,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	ModuleConfigBuilder(final AppConfigBuilder appConfigBuilder, final String name) {
 		Assertion.checkNotNull(appConfigBuilder);
 		Assertion.checkArgNotEmpty(name);
-		//---------------------------------------------------------------------
+		//-----
 		myName = name;
 		myAppConfigBuilderOption = Option.some(appConfigBuilder);
 	}
@@ -79,7 +79,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	public ModuleConfigBuilder withInheritance(final Class<?> superClass) {
 		Assertion.checkArgument(!ended, "this builder is ended");
 		Assertion.checkNotNull(superClass);
-		//---------------------------------------------------------------------
+		//-----
 		mySuperClass = superClass;
 		return this;
 	}
@@ -92,7 +92,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkArgument(!ended, "this builder is ended");
 		Assertion.checkArgNotEmpty(resourceType);
 		Assertion.checkNotNull(resourcePath);
-		//---------------------------------------------------------------------
+		//-----
 		myResourceConfigs.add(new ResourceConfig(resourceType, resourcePath));
 		return this;
 	}

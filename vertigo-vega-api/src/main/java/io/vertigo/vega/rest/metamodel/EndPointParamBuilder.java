@@ -51,7 +51,7 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 	 */
 	public EndPointParamBuilder(final Type paramType) {
 		Assertion.checkNotNull(paramType);
-		// ---------------------------------------------------------------------
+		//-----
 		myParamType = paramType;
 	}
 
@@ -63,7 +63,7 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 	public EndPointParamBuilder with(final RestParamType restParamType, final String restParamName) {
 		Assertion.checkNotNull(restParamType);
 		Assertion.checkNotNull(restParamName); //empty names were check on EndPointParam constructor
-		// ---------------------------------------------------------------------
+		//-----
 		myRestParamType = restParamType;
 		myRestParamName = restParamName;
 		return this;

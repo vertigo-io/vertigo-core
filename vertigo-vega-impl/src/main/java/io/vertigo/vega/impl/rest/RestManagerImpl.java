@@ -46,7 +46,7 @@ public final class RestManagerImpl implements RestManager {
 	@Inject
 	public RestManagerImpl(final EndPointIntrospectorPlugin endPointIntrospectorPlugin) {
 		Assertion.checkNotNull(endPointIntrospectorPlugin);
-		//---------------------------------------------------------------------
+		//-----
 		this.endPointIntrospectorPlugin = endPointIntrospectorPlugin;
 		Home.getDefinitionSpace().register(EndPointDefinition.class);
 	}

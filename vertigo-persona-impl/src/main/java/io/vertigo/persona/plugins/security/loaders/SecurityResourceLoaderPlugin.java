@@ -42,7 +42,7 @@ public final class SecurityResourceLoaderPlugin implements ResourceLoader, Plugi
 	@Inject
 	public SecurityResourceLoaderPlugin(final ResourceManager resourceManager) {
 		Assertion.checkNotNull(resourceManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.resourceManager = resourceManager;
 
 	}

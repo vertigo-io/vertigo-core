@@ -36,7 +36,7 @@ public final class OptionRule<P> implements Rule<Option<P>> {
 	public OptionRule(final Rule<P> rule) {
 		super();
 		Assertion.checkNotNull(rule);
-		//---------------------------------------------------------------------
+		//-----
 		expression = rule.getExpression() + "?";
 		this.rule = rule;
 	}

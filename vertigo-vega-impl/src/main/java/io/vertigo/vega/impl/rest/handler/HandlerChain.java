@@ -42,7 +42,7 @@ final class HandlerChain {
 	 */
 	HandlerChain(final List<RouteHandler> handlers) {
 		Assertion.checkNotNull(handlers);
-		//---------------------------------------------------------------------
+		//-----
 		this.handlers = Collections.unmodifiableList(new ArrayList<>(handlers));
 		offset = 0;
 	}

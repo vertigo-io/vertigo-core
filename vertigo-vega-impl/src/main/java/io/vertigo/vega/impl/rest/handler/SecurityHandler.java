@@ -46,7 +46,7 @@ public final class SecurityHandler implements RouteHandler {
 	@Inject
 	public SecurityHandler(final KSecurityManager securityManager) {
 		Assertion.checkNotNull(securityManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.securityManager = securityManager;
 	}
 

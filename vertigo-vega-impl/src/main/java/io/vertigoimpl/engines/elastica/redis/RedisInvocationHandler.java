@@ -44,7 +44,7 @@ final class RedisInvocationHandler<F> implements InvocationHandler {
 	RedisInvocationHandler(final JedisPool jedisPool, final Class<F> beanClass) {
 		Assertion.checkNotNull(jedisPool);
 		Assertion.checkNotNull(beanClass, "Classe du Bean non renseignée");
-		//---------------------------------------------------------------------
+		//-----
 		this.clientWork = new ZClientWork(jedisPool);
 		this.beanClass = beanClass;
 	}
@@ -83,7 +83,7 @@ final class RedisInvocationHandler<F> implements InvocationHandler {
 		Assertion.checkNotNull(proxy);
 		Assertion.checkNotNull(method);
 		//Les méthodes sans paramètres envoient null
-		//---------------------------------------------------------------------
+		//-----
 		final ZMethod zmethod = new ZMethod(beanClass, method, parameters);
 		final int timeoutSeconds = 10;
 		return clientWork.process(zmethod, timeoutSeconds);

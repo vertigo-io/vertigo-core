@@ -49,7 +49,7 @@ public final class TemplateDtDefinition {
 	 */
 	public TemplateDtDefinition(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
-		// -----------------------------------------------------------------
+		//-----
 		this.dtDefinition = dtDefinition;
 
 		for (final DtField dtField : dtDefinition.getFields()) {

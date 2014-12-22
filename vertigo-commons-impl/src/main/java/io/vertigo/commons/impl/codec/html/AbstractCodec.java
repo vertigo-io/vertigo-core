@@ -177,13 +177,13 @@ public abstract class AbstractCodec implements Codec<String, String> {
 	}
 
 	/**
-	 * Effectue l'encodage. 
+	 * Effectue l'encodage.
 	 * @param s Chaine à encoder
 	 * @return Chaine encodée
 	 */
 	protected final String doEncode(final String s) {
 		Assertion.checkNotNull(s);
-		//---------------------------------------------------------------------
+		//-----
 		if (s.length() == 0) { // perf
 			return "";
 		}
@@ -194,13 +194,13 @@ public abstract class AbstractCodec implements Codec<String, String> {
 	}
 
 	/**
-	 * Effectue le décodage. 
+	 * Effectue le décodage.
 	 * @param s Chaine à décoder
 	 * @return Chaine décodée
 	 */
 	protected final String doDecode(final String s) {
 		Assertion.checkNotNull(s);
-		//---------------------------------------------------------------------
+		//-----
 		if (s.length() == 0) { // perf
 			return "";
 		}

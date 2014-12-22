@@ -41,7 +41,7 @@ public final class ServletResourceResolverPlugin implements ResourceResolverPlug
 	 */
 	public static void setServletContext(final ServletContext servletContext) {
 		Assertion.checkNotNull(servletContext);
-		//---------------------------------------------------------------------
+		//-----
 		servletContextRef = new WeakReference<>(servletContext);
 	}
 
@@ -50,7 +50,7 @@ public final class ServletResourceResolverPlugin implements ResourceResolverPlug
 	 */
 	public ServletResourceResolverPlugin() {
 		Assertion.checkNotNull(servletContextRef.get(), "Ce servletContext n'est plus accessible");
-		//---------------------------------------------------------------------
+		//-----
 		servletContext = servletContextRef.get();
 	}
 
@@ -58,7 +58,7 @@ public final class ServletResourceResolverPlugin implements ResourceResolverPlug
 	@Override
 	public Option<URL> resolve(final String resource) {
 		Assertion.checkNotNull(resource);
-		// ---------------------------------------------------------------------
+		//-----
 		// 2. On recherche dans le context de la webapp
 		try {
 			return Option.option(servletContext.getResource(resource)); //null if not found

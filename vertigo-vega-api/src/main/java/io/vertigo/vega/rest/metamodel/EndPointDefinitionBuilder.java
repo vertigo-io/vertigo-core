@@ -61,7 +61,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	 */
 	public EndPointDefinitionBuilder(final Method method) {
 		Assertion.checkNotNull(method);
-		//---------------------------------------------------------------------
+		//-----
 		myMethod = method;
 	}
 
@@ -104,7 +104,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	public EndPointDefinitionBuilder withPathPrefix(final String pathPrefix) {
 		Assertion.checkArgNotEmpty(pathPrefix, "Route pathPrefix must be specified on {0}", myMethod.getName());
 		Assertion.checkArgument(pathPrefix.startsWith("/"), "Route pathPrefix must starts with / (on {0})", myMethod.getName());
-		//---------------------------------------------------------------------
+		//-----
 		myPathPrefix = pathPrefix;
 		return this;
 	}
@@ -117,8 +117,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	public EndPointDefinitionBuilder with(final Verb verb, final String path) {
 		Assertion.checkState(myVerb == null, "A verb is already specified on {0} ({1})", myMethod.getName(), myVerb);
 		Assertion.checkArgNotEmpty(path, "Route path must be specified on {0}", myMethod.getName());
-		Assertion.checkArgument(path.startsWith("/"), "Route path must starts with / (on {0})", myMethod.getName());
-		//---------------------------------------------------------------------
+		//-----
 		myVerb = verb;
 		myPath = path;
 		return this;

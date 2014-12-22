@@ -36,7 +36,7 @@ public final class VSystemCommandExecutor implements VCommandExecutor<List<Compo
 	public List<ComponentInfo> exec(final VCommand command) {
 		Assertion.checkNotNull(command);
 		//Assertion.checkArgument(command.getName());
-		//---------------------------------------------------------------------
+		//-----
 		String address;
 		try {
 			address = InetAddress.getLocalHost().getHostAddress();
@@ -78,7 +78,7 @@ public final class VSystemCommandExecutor implements VCommandExecutor<List<Compo
 //	if (freeEnd < freeBegin) {
 //		freeEnd = freeBegin;
 //	}
-//	//------------------------------------------------------------------------
+//-----
 //	// Rendu html de la page effectuant un garbage collector.
 //	out.print("Garbage collector effectué en ");
 //	out.print(SystemUtil.DOUBLE_FORMATTER.format(((double) end - begin) / 1000));

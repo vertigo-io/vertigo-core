@@ -58,7 +58,7 @@ public final class XmlConfigPlugin implements ConfigPlugin { /*implements Loader
 	public XmlConfigPlugin(final ResourceManager resourceManager, @Named("url") final String url) {
 		Assertion.checkNotNull(resourceManager);
 		Assertion.checkArgNotEmpty(url);
-		// ---------------------------------------------------------------------
+		//-----
 		final URL configURL = resourceManager.resolve(url);
 		configs = readXML(configURL);
 	}
@@ -68,7 +68,7 @@ public final class XmlConfigPlugin implements ConfigPlugin { /*implements Loader
 	public Option<String> getValue(final String configPath, final String propertyName) {
 		Assertion.checkArgNotEmpty(configPath);
 		Assertion.checkArgNotEmpty(propertyName);
-		// ---------------------------------------------------------------------
+		//-----
 		final Map<String, String> properties = configs.get(configPath);
 		return properties == null ? Option.<String> none() : Option.<String> option(properties.get(propertyName));
 	}
@@ -78,7 +78,7 @@ public final class XmlConfigPlugin implements ConfigPlugin { /*implements Loader
 	 */
 	private static Map<String, Map<String, String>> readXML(final URL configURL) {
 		Assertion.checkNotNull(configURL);
-		//----------------------------------------------------------------------
+		//-----
 		try {
 			return doReadXML(configURL);
 		} catch (final ParserConfigurationException pce) {

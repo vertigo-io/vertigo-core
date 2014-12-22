@@ -60,7 +60,7 @@ public final class MapCachePlugin implements CachePlugin, Describable {
 	@Inject
 	public MapCachePlugin(final CodecManager codecManager, @Named("noSerialization") final Option<String> noSerializationOption) {
 		Assertion.checkNotNull(codecManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.codecManager = codecManager;
 		if (noSerializationOption.isDefined()) {
 			noSerializationContext = new HashSet<>(Arrays.asList(noSerializationOption.get().split(";")));
@@ -84,7 +84,7 @@ public final class MapCachePlugin implements CachePlugin, Describable {
 	@Override
 	public void put(final String context, final Serializable key, final Serializable value) {
 		Assertion.checkArgument(!(value instanceof byte[]), "Ce CachePlugin ne permet pas de mettre en cache des byte[].");
-		//---------------------------------------------------------------------
+		//-----
 		//Si l'objet est bien marqué non modifiable (ie : interface Modifiable ET !isModifiable)
 		//on peut le garder tel quel, sinon on le clone
 		//TODO à revoir : les DtObject et DtList ne peuvent plus etre non Modifiable, on ajoute un paramétrage spécifique

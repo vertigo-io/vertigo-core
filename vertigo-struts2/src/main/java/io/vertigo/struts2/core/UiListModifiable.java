@@ -59,7 +59,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 
 	UiListModifiable(final DtList<D> dtList) {
 		Assertion.checkNotNull(dtList);
-		// -------------------------------------------------------------------------
+		//-----
 		this.dtList = dtList;
 		final DtDefinition dtDefinition = dtList.getDefinition();
 		this.removedDtObjects = new DtList<>(dtDefinition);
@@ -125,7 +125,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	 */
 	public DtList<D> getRemovedList() {
 		Assertion.checkState(removedUiObjects.isEmpty(), "La UiList doit être valid�, pour avoir la liste des éléments supprim�s.");
-		//---------------------------------------------------------------------
+		//-----
 		return removedDtObjects;
 	}
 
@@ -134,7 +134,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	 */
 	public DtList<D> getAddedList() {
 		Assertion.checkState(removedUiObjects.isEmpty(), "La UiList doit être valid�, pour avoir la liste des éléments ajoutés.");
-		//---------------------------------------------------------------------
+		//-----
 		return addedDtObjects;
 	}
 
@@ -143,7 +143,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	 */
 	public DtList<D> getModifiedList() {
 		Assertion.checkState(removedUiObjects.isEmpty(), "La UiList doit être valid�, pour avoir la liste des éléments ajoutés.");
-		//---------------------------------------------------------------------
+		//-----
 		return modifiedDtObjects;
 	}
 
@@ -174,7 +174,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	 */
 	private int indexOf(final UiObject<D> UiObject) {
 		Assertion.checkNotNull(UiObject);
-		//---------------------------------------------------------------------
+		//-----
 		return bufferUiObjects.indexOf(UiObject);
 	}
 
@@ -184,7 +184,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	 */
 	private int indexOf(final DtObject dtObject) {
 		Assertion.checkNotNull(dtObject);
-		//---------------------------------------------------------------------
+		//-----
 		for (int i = 0; i < bufferUiObjects.size(); i++) {
 			if (bufferUiObjects.get(i).getInnerObject().equals(dtObject)) {
 				return i;
@@ -251,7 +251,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 		if (!removedDtObjects.isEmpty()) {
 			dtList.removeAll(removedDtObjects);
 		}
-		//---------------------------------------------------------------------
+		//-----
 		Assertion.checkState(bufferUiObjects.size() == dtList.size(), "bufferList.size() <> dtList.size() : mauvaise synchronisation dtList / bufferList");
 
 		//3. On reconstruit buffer et indexes

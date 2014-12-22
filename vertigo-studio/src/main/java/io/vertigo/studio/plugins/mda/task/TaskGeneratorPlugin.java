@@ -47,7 +47,7 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin {
 	public void generate(final FileConfiguration taskConfiguration, final ResultBuilder resultBuilder) {
 		Assertion.checkNotNull(taskConfiguration);
 		Assertion.checkNotNull(resultBuilder);
-		//---------------------------------------------------------------------
+		//-----
 		generatePaos(taskConfiguration, resultBuilder);
 		generateDaos(taskConfiguration, resultBuilder);
 	}

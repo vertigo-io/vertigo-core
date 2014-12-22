@@ -39,19 +39,19 @@ final class VProtocol {
 
 	VProtocol(/*VEventListener eventListener*/) {
 		//	Assertion.checkNotNull(eventListener);
-		//---------------------------------------------------------------------
+		//-----
 		//Todo à optimiser
 		buffer = ByteBuffer.allocate(1024 * 1024);
 		//		this.eventListener = eventListener;
 	}
 
 	//primitive : Protocol agnostic
-	private void push(final SocketChannel socketChannel, String data) throws IOException {
+	private void push(final SocketChannel socketChannel, final String data) throws IOException {
 		Assertion.checkNotNull(socketChannel);
 		Assertion.checkNotNull(data);
-		//---------------------------------------------------------------------
+		//-----
 		//System.out.println("  $push : " + socketChannel.getLocalAddress() + " >>>> " + socketChannel.getRemoteAddress() + " size=" + data.length());
-		//---
+		//-----
 
 		//ByteBuffer wrappedBuffer = ByteBuffer.wrap(data.getBytes(CHARSET));
 		buffer.clear();
@@ -68,11 +68,11 @@ final class VProtocol {
 	//return null si le flux est fini
 	private String pull(final SocketChannel socketChannel) throws IOException {
 		Assertion.checkNotNull(socketChannel);
-		//---------------------------------------------------------------------
+		//-----
 		//System.out.println("  $pull : " + socketChannel.getLocalAddress() + "<<<< " + socketChannel.getRemoteAddress());
-		//---
+		//-----
 		buffer.clear();
-		int bytesRead = socketChannel.read(buffer);
+		final int bytesRead = socketChannel.read(buffer);
 
 		if (bytesRead == -1) {
 			//			System.out.println("  socketChannel :" + socketChannel.getRemoteAddress() + " - connected           :" + socketChannel.isConnected());
@@ -107,7 +107,7 @@ final class VProtocol {
 	//=============================Command / Response =========================
 	//=========================================================================
 	//client side
-	VResponse sendCommand(final SocketChannel socketChannel, VCommand command) throws IOException {
+	VResponse sendCommand(final SocketChannel socketChannel, final VCommand command) throws IOException {
 		Assertion.checkNotNull(socketChannel);
 		Assertion.checkNotNull(command);
 		//---------------------------------------------------------------------
@@ -116,7 +116,7 @@ final class VProtocol {
 		//TODO Envoyer les map
 		push(socketChannel, "$" + command.getName());
 
-		String response = pull(socketChannel);
+		final String response = pull(socketChannel);
 		if (response == null) {
 			return VResponse.createResponseWithError("no data received from server");
 		} else if (response.startsWith("+")) {
@@ -130,8 +130,8 @@ final class VProtocol {
 	}
 
 	//server side
-	void execCommand(final SocketChannel socketChannel, VCommandHandler requestHandler) throws IOException {
-		//1. Routage 
+	void execCommand(final SocketChannel socketChannel, final VCommandHandler requestHandler) throws IOException {
+		//1. Routage
 		//System.out.println("$execCommand 1 [waiting]");
 		final String dataReceived = pull(socketChannel);
 
@@ -151,15 +151,15 @@ final class VProtocol {
 		}
 	}
 
-	private VResponse onDataReceived(String dataReceived, VCommandHandler commandHandler) {
+	private VResponse onDataReceived(final String dataReceived, final VCommandHandler commandHandler) {
 		Assertion.checkNotNull(dataReceived);
-		//---------------------------------------------------------------------
+		//-----
 		if (!dataReceived.startsWith("$")) {
 			return VResponse.createResponseWithError("command must start with $");
 		}
 		try {
 			return commandHandler.onCommand(new VCommand(dataReceived.substring(1)));
-		} catch (RuntimeException e) {
+		} catch (final RuntimeException e) {
 			return VResponse.createResponseWithError("Error :" + e.getMessage());
 		}
 	}

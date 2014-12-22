@@ -44,7 +44,7 @@ public final class FacetedQuery implements Serializable {
 	public FacetedQuery(final FacetedQueryDefinition facetedQueryDefinition, final List<ListFilter> listFilters) {
 		Assertion.checkNotNull(facetedQueryDefinition);
 		Assertion.checkNotNull(listFilters);
-		//---------------------------------------------------------------------
+		//-----
 		this.facetedQueryDefinition = new DefinitionReference<>(facetedQueryDefinition);
 		this.listFilters = listFilters;
 	}

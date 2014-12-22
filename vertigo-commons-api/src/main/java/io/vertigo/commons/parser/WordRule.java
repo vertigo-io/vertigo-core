@@ -70,7 +70,7 @@ public final class WordRule implements Rule<String> {
 		Assertion.checkNotNull(mode);
 		Assertion.checkNotNull(checkedChars);
 		Assertion.checkArgNotEmpty(readableCheckedChar);
-		//---------------------------------------------------------------------
+		//-----
 		this.emptyAccepted = emptyAccepted;
 		this.mode = mode;
 		if (mode == Mode.ACCEPT) {

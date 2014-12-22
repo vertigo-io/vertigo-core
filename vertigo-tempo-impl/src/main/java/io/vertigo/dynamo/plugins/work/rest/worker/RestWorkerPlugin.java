@@ -56,7 +56,7 @@ public final class RestWorkerPlugin implements WorkerPlugin {
 	public RestWorkerPlugin(@Named("nodeId") final String nodeId, @Named("workTypes") final String workTypes, @Named("serverUrl") final String serverUrl, final WorkManager workManager, final CodecManager codecManager) {
 		Assertion.checkArgNotEmpty(workTypes);
 		Assertion.checkArgNotEmpty(serverUrl);
-		//---------------------------------------------------------------------
+		//-----
 		this.workTypes = Arrays.asList(workTypes.trim().split(";"));
 		restQueueClient = new RestQueueClient(nodeId, serverUrl + "/workQueue", codecManager);
 	}

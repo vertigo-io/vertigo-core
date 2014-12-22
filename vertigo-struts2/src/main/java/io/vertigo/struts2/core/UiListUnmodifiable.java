@@ -37,7 +37,7 @@ public final class UiListUnmodifiable<D extends DtObject> extends AbstractUiList
 	 */
 	public UiListUnmodifiable(final DtList<D> dtList) {
 		super(dtList.getDefinition());
-		// -------------------------------------------------------------------------
+		//-----
 		this.dtList = dtList;
 		if (dtList.size() < 1000) {
 			initUiObjectByIdIndex();

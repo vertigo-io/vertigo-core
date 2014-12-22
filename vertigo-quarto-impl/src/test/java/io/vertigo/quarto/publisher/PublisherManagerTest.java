@@ -54,9 +54,9 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 				.withStringField("TEST_STRING")
 				.build();
 		final PublisherDataDefinition publisherDataDefinition = new PublisherDataDefinition("PU_TEST_1", rootNodeDefinition);
-		// --------------------
+		//-----
 		registerDefinition(publisherDataDefinition);
-		// --------------------
+		//-----
 		final PublisherData publisherData = createPublisherData("PU_TEST_1");
 		// on teste juste.
 		log.trace(asString(publisherData.getDefinition()));
@@ -106,8 +106,8 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private static PublisherNodeDefinition createNodeDefinition() {
-		return new PublisherNodeDefinitionBuilder() 
-				.withBooleanField("TEST_BOOLEAN") 
+		return new PublisherNodeDefinitionBuilder()
+				.withBooleanField("TEST_BOOLEAN")
 				.withStringField("TEST_STRING")
 				.build();
 	}
@@ -117,8 +117,8 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public final void testDefinitionDoubleRegister() {
-		final PublisherNodeDefinition publisherNodeDefinition = new PublisherNodeDefinitionBuilder() 
-				.withBooleanField("TEST_BOOLEAN") 
+		final PublisherNodeDefinition publisherNodeDefinition = new PublisherNodeDefinitionBuilder()
+				.withBooleanField("TEST_BOOLEAN")
 				.withStringField("TEST_STRING")
 				.build();
 		final PublisherDataDefinition publisherDataDefinition = new PublisherDataDefinition("PU_TEST", publisherNodeDefinition);

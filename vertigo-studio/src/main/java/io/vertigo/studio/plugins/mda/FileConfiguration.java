@@ -46,13 +46,13 @@ public final class FileConfiguration {
 	 * Chargement des paramètres depuis le fichier properties.
 	 */
 	public FileConfiguration(
-			String targetGenDir,
-			String projectPackageName,
-			String encoding) {
+			final String targetGenDir,
+			final String projectPackageName,
+			final String encoding) {
 		Assertion.checkArgNotEmpty(targetGenDir, "Le repertoire des fichiers generes [targetGenDir] doit etre renseigné !");
 		Assertion.checkArgNotEmpty(projectPackageName, "le package racine du projet doit être renseigne ! ");
 		Assertion.checkArgNotEmpty(encoding, "l'encoding des fichiers gérénés [encoding] doit etre renseigné !");
-		// ---------------------------------------------------------------------
+		//-----
 		this.targetGenDir = targetGenDir;
 		this.projectPackageName = projectPackageName;
 		this.encoding = encoding;

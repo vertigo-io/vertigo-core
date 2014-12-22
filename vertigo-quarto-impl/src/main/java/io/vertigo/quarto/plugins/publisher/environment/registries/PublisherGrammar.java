@@ -64,8 +64,8 @@ final class PublisherGrammar {
 		publisherFieldDefinition = new EntityBuilder(NODE_FIELD_META_DEFINITION).build();
 
 		publisherDataFieldDefinition = new EntityBuilder(NODE_DATA_FIELD_META_DEFINITION)//
-		.withAttribute("type", builder.build(), false, true)//
-		.build();
+				.withAttribute("type", builder.build(), false, true)//
+				.build();
 
 		publisherNodeDefinition = builder//
 				.withAttribute(STRING_FIELD, publisherFieldDefinition, true, false) //Multiple, facultative
@@ -77,9 +77,9 @@ final class PublisherGrammar {
 
 		//--
 		publisherDefinition = new EntityBuilder(PUB_DEFINITION_META_DEFINITION)//
-		.withAttribute("root", publisherNodeDefinition, false, true)//
-		.build();
-		//---------------------------------------------------------------------
+				.withAttribute("root", publisherNodeDefinition, false, true)//
+				.build();
+		//-----
 		grammar = new Grammar(publisherDefinition, //
 				publisherNodeDefinition, //
 				publisherFieldDefinition, //

@@ -85,7 +85,7 @@ public final class UiObject<D extends DtObject> implements Serializable {
 		Assertion.checkNotNull(inputDto, "inputObject can't be null");
 		Assertion.checkNotNull(modifiedFields, "modifiedFields can't be null");
 		Assertion.checkArgument(!modifiedFields.isEmpty(), "modifiedFields can't be empty");
-		//-------------------------------------------------------------------------------
+		//-----
 		this.inputDto = inputDto;
 		this.modifiedFields = Collections.unmodifiableSet(new LinkedHashSet<>(modifiedFields));
 
@@ -117,7 +117,7 @@ public final class UiObject<D extends DtObject> implements Serializable {
 	 */
 	public final void setServerSideObject(final D serverSideDto) {
 		Assertion.checkNotNull(serverSideDto, "ServerSideObject can't be null");
-		//-------------------------------------------------------------------------------
+		//-----
 		this.serverSideDto = serverSideDto;
 	}
 
@@ -155,7 +155,7 @@ public final class UiObject<D extends DtObject> implements Serializable {
 		Assertion.checkNotNull(serverSideDto, "serverSideDto is mandatory");
 		Assertion.checkNotNull(inputDto, "inputDto is mandatory");
 		Assertion.checkNotNull(modifiedFields, "modifiedFields is mandatory");
-		//---------------------------------------------------------------------
+		//-----
 		for (final DtField dtField : getDtDefinition().getFields()) {
 			if (!isModified(dtField)) {
 				dtField.getDataAccessor().setValue(inputDto, dtField.getDataAccessor().getValue(serverSideDto));
@@ -171,7 +171,7 @@ public final class UiObject<D extends DtObject> implements Serializable {
 	 */
 	public D mergeAndCheckInput(final List<DtObjectValidator<D>> dtObjectValidators, final UiMessageStack uiMessageStack) {
 		Assertion.checkNotNull(dtObjectValidators);
-		//---------------------------------------------------------------------
+		//-----
 		//we update inputBuffer with older datas
 		if (serverSideDto != null) { //If serverSideObject was kept, we merge input with server object
 			mergeInput();
@@ -200,7 +200,7 @@ public final class UiObject<D extends DtObject> implements Serializable {
 		Assertion.checkNotNull(serverSideDto, "serverSideDto is mandatory");
 		Assertion.checkNotNull(inputDto, "inputDto is mandatory");
 		Assertion.checkNotNull(modifiedFields, "modifiedFields is mandatory");
-		//---------------------------------------------------------------------
+		//-----
 		final Set<String> updatedModifiedFields = new HashSet<>(modifiedFields);
 		for (final String camelField : modifiedFields) {
 			//Si le champs n'a pas d'erreur
@@ -231,7 +231,7 @@ public final class UiObject<D extends DtObject> implements Serializable {
 	 */
 	public boolean isModified(final String fieldName) {
 		Assertion.checkArgNotEmpty(fieldName);
-		//---------------------------------------------------------------------
+		//-----
 		return modifiedFields.contains(fieldName);
 	}
 
@@ -244,7 +244,7 @@ public final class UiObject<D extends DtObject> implements Serializable {
 
 	private boolean isModified(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
-		//---------------------------------------------------------------------
+		//-----
 		return modifiedFields.contains(const2CamelIndex.get(dtField.getName()));
 	}
 

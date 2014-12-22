@@ -67,7 +67,7 @@ public final class DtObjectUtil {
 	 */
 	public static Object getId(final DtObject dto) {
 		Assertion.checkNotNull(dto);
-		//---------------------------------------------------------------------
+		//-----
 		final DtDefinition dtDefinition = findDtDefinition(dto);
 		final DtField pkField = dtDefinition.getIdField().get();
 		return pkField.getDataAccessor().getValue(dto);
@@ -91,7 +91,7 @@ public final class DtObjectUtil {
 		Assertion.checkNotNull(associationDefinitionName);
 		Assertion.checkNotNull(dto);
 		Assertion.checkNotNull(dtoTargetClass);
-		// ----------------------------------------------------------------------
+		//-----
 		final AssociationDefinition associationDefinition = Home.getDefinitionSpace().resolve(associationDefinitionName, AssociationDefinition.class);
 		final AssociationSimpleDefinition associationSimpleDefinition = associationDefinition.castAsAssociationSimpleDefinition();
 		// 1. On recherche le nom du champ portant l'objet référencé (Exemple : personne)
@@ -119,14 +119,14 @@ public final class DtObjectUtil {
 		Assertion.checkNotNull(associationDefinitionName);
 		Assertion.checkNotNull(roleName);
 		Assertion.checkNotNull(dto);
-		// ----------------------------------------------------------------------
+		//-----
 		final AssociationDefinition associationDefinition = Home.getDefinitionSpace().resolve(associationDefinitionName, AssociationDefinition.class);
 		return new DtListURIForAssociation(associationDefinition, createURI(dto), roleName);
 	}
 
 	private static <D extends DtObject> URI<D> createURI(final D dto) {
 		Assertion.checkNotNull(dto);
-		//---------------------------------------------------------------------
+		//-----
 		final DtDefinition dtDefinition = findDtDefinition(dto);
 		return new URI<>(dtDefinition, DtObjectUtil.getId(dto));
 	}
@@ -138,7 +138,7 @@ public final class DtObjectUtil {
 	 */
 	public static String toString(final DtObject dto) {
 		Assertion.checkNotNull(dto);
-		//---------------------------------------------------------------------
+		//-----
 		final StringBuilder stringBuilder = new StringBuilder()
 				.append(findDtDefinition(dto).getName())
 				.append('(');
@@ -160,7 +160,7 @@ public final class DtObjectUtil {
 	//=========================================================================
 	public static DtDefinition findDtDefinition(final DtObject dto) {
 		Assertion.checkNotNull(dto);
-		//---------------------------------------------------------------------
+		//-----
 		if (dto instanceof Dynamic) {
 			return Dynamic.class.cast(dto).getDefinition();
 		}
@@ -169,7 +169,7 @@ public final class DtObjectUtil {
 
 	public static DtDefinition findDtDefinition(final Class<? extends DtObject> dtObjectClass) {
 		Assertion.checkNotNull(dtObjectClass);
-		//----------------------------------------------------------------------
+		//-----
 		final String name = DT_DEFINITION_PREFIX + SEPARATOR + StringUtil.camelToConstCase(dtObjectClass.getSimpleName());
 		return Home.getDefinitionSpace().resolve(name, DtDefinition.class);
 	}

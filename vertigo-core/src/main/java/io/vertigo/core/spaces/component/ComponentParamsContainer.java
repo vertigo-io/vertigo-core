@@ -38,7 +38,7 @@ final class ComponentParamsContainer implements Container {
 
 	ComponentParamsContainer(final Map<String, String> params) {
 		Assertion.checkNotNull(params);
-		//---------------------------------------------------------------------
+		//-----
 		this.params = params;
 		unusedKeys = new HashSet<>(params.keySet());
 	}
@@ -47,7 +47,7 @@ final class ComponentParamsContainer implements Container {
 	@Override
 	public boolean contains(final String id) {
 		Assertion.checkNotNull(id);
-		//-----------------------------------------------------------------
+		//-----
 		return params.containsKey(id);
 	}
 
@@ -56,7 +56,7 @@ final class ComponentParamsContainer implements Container {
 	public <O> O resolve(final String id, final Class<O> clazz) {
 		Assertion.checkNotNull(id);
 		Assertion.checkState(params.containsKey(id), "Le paramètre '{0}' de type '{1}' n'a pas été défini.", id, clazz.getSimpleName());
-		// ---------------------------------------------------------------------
+		//-----
 		unusedKeys.remove(id);
 		final Object value = getParam(params, id, clazz);
 		final Class<O> type = box(clazz);
@@ -79,7 +79,7 @@ final class ComponentParamsContainer implements Container {
 	private static Object getParam(final Map<String, String> params, final String paramName, final Class<?> paramType) {
 		Assertion.checkNotNull(params);
 		Assertion.checkNotNull(paramName);
-		//---------------------------------------------------------------------
+		//-----
 		final String value = params.get(paramName);
 		return cast(paramType, value);
 	}
@@ -99,7 +99,7 @@ final class ComponentParamsContainer implements Container {
 
 	private static Class box(final Class<?> clazz) {
 		Assertion.checkNotNull(clazz);
-		//---------------------------------------------------------------------
+		//-----
 		if (clazz.isPrimitive()) {
 			//Boolean n'est pas assignable à boolean
 			//boolean n'est pas assignable à Boolean

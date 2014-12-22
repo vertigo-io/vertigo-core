@@ -44,7 +44,7 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 		super(urn, associationNodeA, associationNodeB);
 
 		Assertion.checkNotNull(fkFieldName);
-		//---------------------------------------------------------------------
+		//-----
 		if (isAprimaryNode) {
 			primaryAssociationNode = getAssociationNodeA();
 			foreignAssociationNode = getAssociationNodeB();
@@ -58,7 +58,7 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 	/**
 	 *
 	 * @param fkFieldName >> Peut être null, doit être non null si la clé primaire ne peut être utilisée comme clé étrangère est ambigu
-	 * @param dtDefinitionA Définition de DT 
+	 * @param dtDefinitionA Définition de DT
 	 * @param isANavigable boolean
 	 * @param roleA String
 	 * @param labelA String
@@ -81,10 +81,10 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 		//On vérifie que l'on est bien dans le cas d'une relation simple.
 		Assertion.checkArgument(!(isAMultiple && isBMultiple), " {0} ne gère pas les relations n-n", AssociationSimpleDefinition.class);
 		Assertion.checkNotNull(fkFieldName);
-		//----------------------------------------------------------------------
+		//-----
 		// Qui représente la clé primaire dans la relation ?
 		final boolean isAPrimaryNode = AssociationUtil.isAPrimaryNode(isAMultiple, isANotNull, isBMultiple, isBNotNull);
-		//----------------------------------------------------------------------
+		//-----
 		final AssociationNode associationNodeA = new AssociationNode(dtDefinitionA, isANavigable, roleA, labelA, isAMultiple, isANotNull);
 		final AssociationNode associationNodeB = new AssociationNode(dtDefinitionB, isBNavigable, roleB, labelB, isBMultiple, isBNotNull);
 		//		LOG.trace("Creation NodeA:" + associationNodeA);

@@ -39,7 +39,7 @@ final class DIDependency {
 	DIDependency(final DIComponentInfo componentInfo, final String id) {
 		Assertion.checkNotNull(componentInfo);
 		Assertion.checkArgNotEmpty(id);
-		//---------------------------------------------------------------------
+		//-----
 		this.componentInfo = componentInfo;
 		this.id = id;
 		option = false;
@@ -48,7 +48,7 @@ final class DIDependency {
 	DIDependency(final DIComponentInfo componentInfo, final Field field) {
 		Assertion.checkNotNull(componentInfo);
 		Assertion.checkNotNull(field);
-		//---------------------------------------------------------------------
+		//-----
 		this.componentInfo = componentInfo;
 		id = DIAnnotationUtil.buildId(field);
 		option = DIAnnotationUtil.isOptional(field);
@@ -57,7 +57,7 @@ final class DIDependency {
 	DIDependency(final DIComponentInfo componentInfo, final Constructor<?> constructor, final int i) {
 		Assertion.checkNotNull(componentInfo);
 		Assertion.checkNotNull(constructor);
-		//---------------------------------------------------------------------
+		//-----
 		this.componentInfo = componentInfo;
 		id = DIAnnotationUtil.buildId(constructor, i);
 		option = DIAnnotationUtil.isOptional(constructor, i);

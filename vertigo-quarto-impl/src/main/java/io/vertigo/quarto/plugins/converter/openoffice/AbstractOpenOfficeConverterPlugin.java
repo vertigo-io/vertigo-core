@@ -64,7 +64,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 		super();
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkArgNotEmpty(unoHost);
-		//---------------------------------------------------------------------
+		//-----
 		this.fileManager = fileManager;
 		this.unoHost = unoHost;
 		this.unoPort = Integer.valueOf(unoPort);
@@ -74,7 +74,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 	@Override
 	public final KFile convertToFormat(final KFile file, final String targetFormat) {
 		Assertion.checkArgNotEmpty(targetFormat);
-		// ---------------------------------------------------------------------
+		//-----
 		return convertToFormat(file, ConverterFormat.find(targetFormat));
 	}
 
@@ -83,7 +83,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 		Assertion.checkNotNull(targetFormat);
 		// si le format de sortie est celui d'entrée la convertion est inutile
 		Assertion.checkArgument(!targetFormat.getTypeMime().equals(file.getMimeType()), "Le format de sortie est identique à celui d'entrée ; la conversion est inutile");
-		// ---------------------------------------------------------------------
+		//-----
 		final File inputFile = fileManager.obtainReadOnlyFile(file);
 		final File targetFile;
 		try {

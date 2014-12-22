@@ -37,7 +37,7 @@ public final class WorkEngineProvider<WR, W> {
 
 	public WorkEngineProvider(final Class<? extends WorkEngine<WR, W>> clazz) {
 		Assertion.checkNotNull(clazz);
-		//-----------------------------------------------------------------
+		//-----
 		this.clazz = clazz;
 		this.className = clazz.getName();
 		this.workEngine = null;
@@ -45,7 +45,7 @@ public final class WorkEngineProvider<WR, W> {
 
 	public WorkEngineProvider(final WorkEngine<WR, W> workEngine) {
 		Assertion.checkNotNull(workEngine);
-		//-----------------------------------------------------------------
+		//-----
 		this.workEngine = workEngine;
 		this.clazz = null;
 		this.className = workEngine.getClass().getName();
@@ -53,7 +53,7 @@ public final class WorkEngineProvider<WR, W> {
 
 	public WorkEngineProvider(final String className) {
 		Assertion.checkArgNotEmpty(className);
-		//-----------------------------------------------------------------
+		//-----
 		this.className = className;
 		this.clazz = null;
 		this.workEngine = null;

@@ -34,7 +34,7 @@ public final class JoinMetricEngine implements MetricEngine<TaskDefinition> {
 	@Override
 	public Metric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		final int joinCount = taskDefinition.getRequest().toUpperCase().split("JOIN").length - 1;
 		final int fromCount = taskDefinition.getRequest().toUpperCase().split("FROM ").length - 1;
 		return new MetricBuilder()

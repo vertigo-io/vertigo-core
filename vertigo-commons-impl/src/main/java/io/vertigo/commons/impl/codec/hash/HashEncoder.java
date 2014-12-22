@@ -28,7 +28,7 @@ import java.security.NoSuchAlgorithmException;
  * Implémentation des hachages.
  * L'encodage n'autorise pas les données null.
  * La fonction de décodage n'existe pas.
- * 
+ *
  * @author  pchretien
  */
 public final class HashEncoder implements Encoder<byte[], byte[]> {
@@ -37,7 +37,7 @@ public final class HashEncoder implements Encoder<byte[], byte[]> {
 	 *
 	 */
 	public enum Hash {
-		/** 
+		/**
 		 * MD5.
 		 */
 		MD5("MD5"),
@@ -49,7 +49,7 @@ public final class HashEncoder implements Encoder<byte[], byte[]> {
 		 * SHA256.
 		 */
 		SHA256("SHA-256");
-		//--------------------------
+		//-----
 		private final String algoName;
 
 		private Hash(final String algoName) {
@@ -57,7 +57,7 @@ public final class HashEncoder implements Encoder<byte[], byte[]> {
 		}
 
 		/**
-		 * @return Nom de l'algorithme. 
+		 * @return Nom de l'algorithme.
 		 */
 		String getAlgoName() {
 			return algoName;
@@ -72,7 +72,7 @@ public final class HashEncoder implements Encoder<byte[], byte[]> {
 	 */
 	public HashEncoder(final Hash hash) {
 		Assertion.checkNotNull(hash);
-		//-------------------------------------------------------------------------------
+		//-----
 		this.hash = hash;
 	}
 
@@ -80,7 +80,7 @@ public final class HashEncoder implements Encoder<byte[], byte[]> {
 	@Override
 	public byte[] encode(final byte[] data) {
 		Assertion.checkNotNull(data);
-		//---------------------------------------------------------------------
+		//-----
 		MessageDigest digest;
 		try {
 			digest = MessageDigest.getInstance(hash.getAlgoName());

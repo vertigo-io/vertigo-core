@@ -54,7 +54,7 @@ public final class AssociationNode {
 		Assertion.checkNotNull(label);
 		Assertion.checkNotNull(role);
 		Assertion.checkArgument(role.indexOf(' ') == -1, "Le role ne doit pas être un label : {0}", role);
-		//----------------------------------------------------------------------
+		//-----
 		this.dtDefinitionRef = new DefinitionReference<>(dtDefinition);
 		this.role = role;
 		this.label = label;
@@ -63,7 +63,7 @@ public final class AssociationNode {
 		multiple = isMultiple;
 	}
 
-	//Mis à jour lors de la création de l'association. 
+	//Mis à jour lors de la création de l'association.
 	void setAssociationDefinition(final AssociationDefinition associationDefinition) {
 		Assertion.checkNotNull(associationDefinition);
 		Assertion.checkState(this.associationDefinition == null, "variable deja affectee");

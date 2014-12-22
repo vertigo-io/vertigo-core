@@ -38,7 +38,7 @@ public final class URLResourceResolverPlugin implements ResourceResolverPlugin {
 	@Override
 	public Option<URL> resolve(final String resource) {
 		Assertion.checkNotNull(resource);
-		// ---------------------------------------------------------------------
+		//-----
 		try {
 			final URL url = new URL(resource);
 			return checkUrlAvailable(url) ? Option.some(url) : Option.<URL> none();

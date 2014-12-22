@@ -39,7 +39,7 @@ public final class CountMetricEngine implements MetricEngine<DtDefinition> {
 	 */
 	public CountMetricEngine(final PersistenceManager persistenceManager) {
 		Assertion.checkNotNull(persistenceManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.persistenceManager = persistenceManager;
 	}
 
@@ -47,7 +47,7 @@ public final class CountMetricEngine implements MetricEngine<DtDefinition> {
 	@Override
 	public Metric execute(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		final MetricBuilder metricBuilder = new MetricBuilder()
 				.withTitle("Nbre lignes")
 				.withUnit("rows");

@@ -100,7 +100,7 @@ public final class RateLimitingHandler implements Activeable, RouteHandler {
 		Assertion.checkNotNull(response);
 		Assertion.checkNotNull(routeContext);
 		Assertion.checkNotNull(chain);
-		//---------------------------------------------------------------------
+		//-----
 		final String userKey = obtainUserKey(request, securityManager.getCurrentUserSession());
 		response.header(RATE_LIMIT_LIMIT, String.valueOf(limitValue));
 		response.header(RATE_LIMIT_RESET, String.valueOf(windowSeconds - (System.currentTimeMillis() - lastRateLimitResetTime) / 1000));

@@ -49,7 +49,7 @@ public final class ExceptionHandler implements RouteHandler {
 
 	ExceptionHandler(final JsonEngine jsonWriterEngine) {
 		Assertion.checkNotNull(jsonWriterEngine);
-		//---------------------------------------------------------------------
+		//-----
 		this.jsonWriterEngine = jsonWriterEngine;
 	}
 

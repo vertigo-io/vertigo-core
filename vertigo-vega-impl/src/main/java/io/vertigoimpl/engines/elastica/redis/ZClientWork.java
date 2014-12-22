@@ -34,7 +34,7 @@ public final class ZClientWork /*implements Runnable*/{
 
 	ZClientWork(final JedisPool jedisPool) {
 		Assertion.checkNotNull(jedisPool);
-		//-----------
+		//-----
 		this.jedisPool = jedisPool;
 	}
 

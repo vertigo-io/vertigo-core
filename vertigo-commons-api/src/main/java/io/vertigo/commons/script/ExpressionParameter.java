@@ -22,11 +22,11 @@ import io.vertigo.lang.Assertion;
 
 /**
  * Paramètre.
- * Un paramètre est défini par 
+ * Un paramètre est défini par
  * - son nom
  * - sa valeur
  * - sont type java
- * 
+ *
  * @author  pchretien
  */
 public final class ExpressionParameter {
@@ -44,7 +44,7 @@ public final class ExpressionParameter {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(type);
 		Assertion.checkArgument(value == null || type.isInstance(value), "Valeur du paramètre '{0}' inconsistant avec son type '{1}'", name, type.getSimpleName());
-		//---------------------------------------------------------------------
+		//-----
 		this.name = name;
 		this.type = type;
 		this.value = value;

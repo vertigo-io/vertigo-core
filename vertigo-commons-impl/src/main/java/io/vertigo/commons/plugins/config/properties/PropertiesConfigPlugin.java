@@ -33,7 +33,7 @@ import javax.inject.Named;
 
 /**
  * Plugin de gestion de configuration de fichiers properties.
- * 
+ *
  * @author skerdudou
  */
 public final class PropertiesConfigPlugin implements ConfigPlugin {
@@ -42,7 +42,7 @@ public final class PropertiesConfigPlugin implements ConfigPlugin {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param resourceManager Selector
 	 * @param url Url du fichier XML de configuration
 	 * @throws IOException erreur de lecture du fichier
@@ -52,7 +52,7 @@ public final class PropertiesConfigPlugin implements ConfigPlugin {
 		Assertion.checkNotNull(resourceManager);
 		Assertion.checkArgNotEmpty(url);
 		Assertion.checkArgNotEmpty(configPath);
-		// ---------------------------------------------------------------------
+		//-----
 		final URL configURL = resourceManager.resolve(url);
 		managedConfigPath = configPath;
 		properties = loadProperties(configURL);
@@ -71,7 +71,7 @@ public final class PropertiesConfigPlugin implements ConfigPlugin {
 	public Option<String> getValue(final String configPath, final String property) {
 		Assertion.checkArgNotEmpty(configPath);
 		Assertion.checkArgNotEmpty(property);
-		//---------------------------------------------------------------------
+		//-----
 		return managedConfigPath.equals(configPath) ? Option.<String> option(properties.getProperty(property)) : Option.<String> none();
 	}
 }

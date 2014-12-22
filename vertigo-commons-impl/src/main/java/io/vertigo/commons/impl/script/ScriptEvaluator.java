@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * Evaluation d'un script
- * 
+ *
  * @author  pchretien
  */
 final class ScriptEvaluator {
@@ -42,7 +42,7 @@ final class ScriptEvaluator {
 		Assertion.checkNotNull(expressionEvaluatorPlugin);
 		Assertion.checkNotNull(parameters);
 		Assertion.checkNotNull(parameters);
-		//----------------------------------------------------
+		//-----
 		this.separatorType = separatorType;
 		this.parameters = parameters;
 		this.expressionEvaluatorPlugin = expressionEvaluatorPlugin;
@@ -56,7 +56,7 @@ final class ScriptEvaluator {
 	String evaluate(final String script) {
 		Assertion.checkNotNull(script);
 		Assertion.checkNotNull(parameters);
-		//---------------------------------------------------------------------
+		//-----
 		final ScriptParserHandlerImpl scriptHandler = new ScriptParserHandlerImpl(expressionEvaluatorPlugin, script, parameters);
 
 		final ScriptParser scriptParser = new ScriptParser(separatorType.getSeparators());

@@ -352,9 +352,6 @@ public final class ClassUtilTest {
 		nop(name);
 	}
 
-	//-------------------------------------------------------------------------
-	//-------------------------------------------------------------------------
-	//-------------------------------------------------------------------------
 	public static final class MyInjected {
 		public Long myLong = 1L;
 		private Long myPrivateLong = 2L;
@@ -469,9 +466,6 @@ public final class ClassUtilTest {
 		}
 	}
 
-	//-------------------------------------------------------------------------
-	//-------------------------------------------------------------------------
-	//-------------------------------------------------------------------------
 	private Field getField(final Class<?> clazz, final String fieldName) {
 		final Collection<Field> fields = ClassUtil.getAllFields(clazz);
 		for (final Field field : fields) {

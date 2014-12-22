@@ -43,7 +43,7 @@ public final class Permission implements Definition {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(operation);
 		Assertion.checkArgNotEmpty(filter);
-		// ---------------------------------------------------------------------
+		//-----
 		this.name = name;
 		this.operation = operation;
 		this.filter = filter;

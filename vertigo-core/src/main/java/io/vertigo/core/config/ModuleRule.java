@@ -23,7 +23,7 @@ import io.vertigo.util.StringUtil;
 
 /**
  * Rule : all components of a module must respect this rule.
- * 
+ *
  * @author pchretien
  */
 interface ModuleRule {
@@ -32,7 +32,7 @@ interface ModuleRule {
 
 /**
  * Rule : all components of a module must have an API.
- * 
+ *
  * @author pchretien
  */
 final class APIModuleRule implements ModuleRule {
@@ -49,7 +49,7 @@ final class APIModuleRule implements ModuleRule {
 
 /**
  * Rule : all components of a module must inherit a class.
- * 
+ *
  * @author pchretien
  */
 final class InheritanceModuleRule implements ModuleRule {
@@ -57,7 +57,7 @@ final class InheritanceModuleRule implements ModuleRule {
 
 	InheritanceModuleRule(final Class<?> superClass) {
 		Assertion.checkNotNull(superClass);
-		//---------------------------------------------------------------------
+		//-----
 		this.superClass = superClass;
 	}
 

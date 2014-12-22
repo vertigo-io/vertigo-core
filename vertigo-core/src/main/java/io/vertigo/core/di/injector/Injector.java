@@ -57,7 +57,7 @@ public final class Injector {
 	public static <T> T newInstance(final Class<T> clazz, final Container container) {
 		Assertion.checkNotNull(clazz);
 		Assertion.checkNotNull(container);
-		//---------------------------------------------------------------------
+		//-----
 		//On encapsule la création par un bloc try/ctach afin de préciser le type de composant qui n'a pas pu être créé.
 		try {
 			//On a un et un seul constructeur public injectable.
@@ -80,7 +80,7 @@ public final class Injector {
 	public static void injectMembers(final Object instance, final Container container) {
 		Assertion.checkNotNull(instance);
 		Assertion.checkNotNull(container);
-		//---------------------------------------------------------------------
+		//-----
 		final Collection<Field> fields = ClassUtil.getAllFields(instance.getClass(), Inject.class);
 		for (final Field field : fields) {
 			final Object injected = getInjected(container, field);
@@ -103,7 +103,7 @@ public final class Injector {
 	//On récupère pour le paramètre i du constructeur l'objet à injecter
 	private static Object getInjected(final Container container, final Constructor<?> constructor, final int i) {
 		final String id = DIAnnotationUtil.buildId(constructor, i);
-		//----------
+		//-----
 		// Options
 		final boolean optionalParameter = DIAnnotationUtil.isOptional(constructor, i);
 		if (optionalParameter) {
@@ -127,17 +127,17 @@ public final class Injector {
 			}
 			return Collections.unmodifiableList(list);
 		}
-		//----------
+		//-----
 		final Object value = container.resolve(id, constructor.getParameterTypes()[i]);
 		Assertion.checkNotNull(value);
-		//------------
+		//-----
 		return value;
 	}
 
 	//On récupère pour le champ 'field' l'objet à injecter
 	private static Object getInjected(final Container container, final Field field) {
 		final String id = DIAnnotationUtil.buildId(field);
-		//----------
+		//-----
 		// Options
 		final boolean optionalField = DIAnnotationUtil.isOptional(field);
 		if (optionalField) {
@@ -146,7 +146,7 @@ public final class Injector {
 			}
 			return Option.none();
 		}
-		//----------
+		//-----
 		//Injection des listes de plugins
 		final boolean pluginsField = DIAnnotationUtil.hasPlugins(field);
 		if (pluginsField) {
@@ -161,10 +161,10 @@ public final class Injector {
 			}
 			return Collections.unmodifiableList(list);
 		}
-		//----------
+		//-----
 		final Object value = container.resolve(id, field.getType());
 		Assertion.checkNotNull(value);
-		//------------
+		//-----
 		return value;
 	}
 }

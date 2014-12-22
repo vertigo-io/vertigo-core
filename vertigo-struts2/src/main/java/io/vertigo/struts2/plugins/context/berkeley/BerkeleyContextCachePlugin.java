@@ -76,7 +76,7 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 	@Inject
 	public BerkeleyContextCachePlugin(final CodecManager codecManager, final @Named("cachePath") String cachePath, final @Named("timeToLiveSeconds") int timeToLiveSeconds) {
 		Assertion.checkNotNull(codecManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.timeToLiveSeconds = timeToLiveSeconds;
 		final String translatedCachePath = translatePath(cachePath);
 		myCacheEnvPath = new File(translatedCachePath);
@@ -97,7 +97,7 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 	@Override
 	public void put(final KActionContext context) {
 		Assertion.checkNotNull(context);
-		//---------------------------------------------------------------------
+		//-----
 		//totalPuts++;
 		try {
 			final Transaction transaction = createTransaction();

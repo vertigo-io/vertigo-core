@@ -28,7 +28,7 @@ public final class ZWorker /*implements Runnable*/{
 
 	public ZWorker(final JedisPool jedisPool) {
 		Assertion.checkNotNull(jedisPool);
-		//-----------
+		//-----
 		this.jedisPool = jedisPool;
 		//	this.managerClass = managerClass;
 	}

@@ -25,10 +25,10 @@ import java.io.Serializable;
 /**
  * Gestion centralisée des mécanismes de codage/décodage.
  * Tous les codecs sont threadSafe et StateLess.
- * 
+ *
  * - CSV null donne ""
  * - HTML null donne ""
- * - les fonctions de Hachage MD5 et SHA1 n'autorisent pas les null. 
+ * - les fonctions de Hachage MD5 et SHA1 n'autorisent pas les null.
  * - pour tous les autres cas null  donne null
  *
  * @author pchretien
@@ -44,19 +44,19 @@ public interface CodecManager extends Component {
 	 */
 	Encoder<String, String> getCsvEncoder();
 
-	//-------------------------------------------------------------------------
+	//-----
 	/**
-	 * @return Encoder MD5. (128 bits) 
+	 * @return Encoder MD5. (128 bits)
 	 */
 	Encoder<byte[], byte[]> getMD5Encoder();
 
 	/**
-	 * @return Encoder SHA-1. (160 bits) 
+	 * @return Encoder SHA-1. (160 bits)
 	 */
 	Encoder<byte[], byte[]> getSha1Encoder();
 
 	/**
-	 * @return Encoder SHA-2. (256 bits) 
+	 * @return Encoder SHA-2. (256 bits)
 	 */
 	Encoder<byte[], byte[]> getSha256Encoder();
 

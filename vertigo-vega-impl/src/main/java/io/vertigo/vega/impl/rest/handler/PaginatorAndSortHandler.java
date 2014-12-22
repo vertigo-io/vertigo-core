@@ -53,7 +53,7 @@ final class PaginatorAndSortHandler implements RouteHandler {
 	public PaginatorAndSortHandler(final EndPointDefinition endPointDefinition, final CollectionsManager collectionsManager, final TokenManager uiSecurityTokenManager) {
 		Assertion.checkNotNull(collectionsManager);
 		Assertion.checkNotNull(uiSecurityTokenManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.endPointDefinition = endPointDefinition;
 		this.collectionsManager = collectionsManager;
 		uiTokenManager = uiSecurityTokenManager;

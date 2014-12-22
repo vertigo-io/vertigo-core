@@ -103,7 +103,6 @@ public final class SecurityFilter extends AbstractFilter {
 			} else if (checkRequestAccess && needsAuthentification && !securityManager.isAuthorized("HttpServletRequest", httpRequest, ".*")) {
 				httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
 			} else {
-				// ---------------------------------------------------------------------
 				chain.doFilter(request, response);
 			}
 		} finally {

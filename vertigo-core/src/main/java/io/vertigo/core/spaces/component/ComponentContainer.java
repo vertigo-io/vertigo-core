@@ -59,14 +59,14 @@ final class ComponentContainer implements Container, Activeable {
 	 */
 	List<Plugin> getPlugins(final String componentId) {
 		Assertion.checkArgNotEmpty(componentId);
-		// ---------------------------------------------------------------------
+		//-----
 		return subComponents.get(componentId);
 	}
 
 	private void registerComponent(final Object component, final String normalizedId) {
 		Assertion.checkArgNotEmpty(normalizedId);
 		Assertion.checkNotNull(component);
-		//---------------------------------------------------------------------
+		//-----
 		//Démarrage du composant
 		startComponent(component);
 		final Object previous = startedComponents.put(normalizedId, component);
@@ -77,7 +77,7 @@ final class ComponentContainer implements Container, Activeable {
 	@Override
 	public boolean contains(final String id) {
 		Assertion.checkArgNotEmpty(id);
-		//---------------------------------------------------------------------
+		//-----
 		final String normalizedId = StringUtil.normalize(id);
 		return startedComponents.containsKey(normalizedId);
 	}
@@ -93,7 +93,7 @@ final class ComponentContainer implements Container, Activeable {
 	public <C> C resolve(final String id, final Class<C> componentClass) {
 		final String normalizedId = StringUtil.normalize(id);
 		Assertion.checkArgument(contains(normalizedId), "Aucun composant enregistré pour id = {0} parmi {1}", normalizedId, Home.getComponentSpace().keySet());
-		//---------------------------------------------------------------------
+		//-----
 		return componentClass.cast(startedComponents.get(normalizedId));
 	}
 
@@ -103,11 +103,11 @@ final class ComponentContainer implements Container, Activeable {
 	void registerPlugins(final ComponentConfig componentConfig, final Map<PluginConfig, Plugin> plugins) {
 		Assertion.checkNotNull(componentConfig);
 		Assertion.checkNotNull(plugins);
-		// ---------------------------------------------------------------------
+		//-----
 		//On crée le container des sous composants (plugins) associés au Manager.
 		final Object previous = subComponents.put(componentConfig.getId(), new ArrayList<>(plugins.values()));
 		Assertion.checkState(previous == null, "subComponents of component '{0}' deja enregistrés", componentConfig.getId());
-		//---------------------------------------------------------------------
+		//-----
 		// Il est nécessaire d'enregistrer les sous-composants.
 
 		int nb = 0;
@@ -134,7 +134,7 @@ final class ComponentContainer implements Container, Activeable {
 		//---On vérifie que le manager est uunique-----------------------------
 		final Object old = components.put(componentConfig.getId(), component);
 		Assertion.checkState(old == null, "component {0} deja enregistré", componentConfig.getId());
-		//---------------------------------------------------------------------
+		//-----
 		registerComponent(component, componentConfig.getId());
 		if (componentInitializer.isDefined()) {
 			initializers.put(componentConfig.getId(), componentInitializer.get());
@@ -218,7 +218,7 @@ final class ComponentContainer implements Container, Activeable {
 		out.println("####################################################################################################");
 		printComponent(out, "Module", "ClassName", "Plugins");
 		out.println("# -------------------------+------------------------+----------------------------------------------#");
-		//-------------------
+		//-----
 		for (final Entry<String, Object> entry : components.entrySet()) {
 			printComponent(out, entry.getKey(), entry.getValue());
 			out.println("# -------------------------+------------------------+----------------------------------------------#");

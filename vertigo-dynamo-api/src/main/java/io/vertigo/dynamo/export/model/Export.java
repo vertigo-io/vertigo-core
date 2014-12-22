@@ -58,7 +58,7 @@ public final class Export {
 		//Assertion.notNull(author);
 		Assertion.checkNotNull(orientation);
 		Assertion.checkNotNull(sheets);
-		// ----------------------------------------------------------------------
+		//-----
 		this.format = format;
 		this.fileName = fileName;
 		this.title = title;

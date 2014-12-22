@@ -49,7 +49,7 @@ public final class TemplateDAO {
 		final String definitionPackageName = dtDefinition.getPackageName();
 		final String packageNamePrefix = taskConfiguration.getProjectPackageName() + ".domain";
 		Assertion.checkArgument(definitionPackageName.contains(packageNamePrefix), "Le nom du package {0}, doit commencer par le prefix normalise: {1}", definitionPackageName, packageNamePrefix);
-		// -----------------------------------------------------------------
+		//-----
 		this.dtDefinition = dtDefinition;
 		//On construit le nom du package à partir du package de la DT dans le quel on supprime le début.
 		packageName = taskConfiguration.getProjectPackageName() + ".dao" + definitionPackageName.substring(packageNamePrefix.length());

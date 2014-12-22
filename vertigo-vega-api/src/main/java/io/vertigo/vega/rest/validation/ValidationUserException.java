@@ -24,7 +24,7 @@ import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 
 /**
-* @author npiedeloup 
+* @author npiedeloup
 */
 public final class ValidationUserException extends VUserException {
 	private static final long serialVersionUID = 7214302356640340103L;
@@ -46,7 +46,7 @@ public final class ValidationUserException extends VUserException {
 		super(messageText);
 		Assertion.checkNotNull(dto, "L'objet est obligatoire");
 		Assertion.checkArgNotEmpty(fieldName, "Le champs est obligatoire");
-		//---------------------------------------------------------------------
+		//-----
 		oneField = true;
 		this.dto = dto;
 		this.fieldName = fieldName;

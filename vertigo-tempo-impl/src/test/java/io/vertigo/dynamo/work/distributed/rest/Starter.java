@@ -47,7 +47,7 @@ public final class Starter implements Runnable {
 	public Starter(final String managersXmlFileName, final Option<String> propertiesFileName, final Class<?> relativeRootClass, final long timeToWait) {
 		Assertion.checkNotNull(managersXmlFileName);
 		Assertion.checkNotNull(propertiesFileName);
-		//---------------------------------------------------------------------
+		//-----
 		this.managersXmlFileName = managersXmlFileName;
 		this.propertiesFileName = propertiesFileName;
 		this.timeToWait = timeToWait;
@@ -64,7 +64,7 @@ public final class Starter implements Runnable {
 		Assertion.checkArgument(args.length >= 1 && args.length <= 2, usageMsg + " (" + args.length + ")");
 		Assertion.checkArgument(args[0].endsWith(".xml"), usageMsg + " (" + args[0] + ")");
 		Assertion.checkArgument(args.length == 1 || args[1].endsWith(".properties"), usageMsg + " (" + (args.length == 2 ? args[1] : "vide") + ")");
-		//---------------------------------------------------------------------
+		//-----
 		final String managersXmlFileName = args[0];
 		final Option<String> propertiesFileName = args.length == 2 ? Option.<String> some(args[1]) : Option.<String> none();
 		final Starter starter = new Starter(managersXmlFileName, propertiesFileName, Starter.class, 0);

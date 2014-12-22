@@ -68,7 +68,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 	 */
 	AbstractUiList(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
 		final Option<DtField> dtIdField = getDtDefinition().getIdField();
 		if (dtIdField.isDefined()) {
@@ -149,7 +149,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 	 */
 	private int indexOf(final UiObject<D> UiObject) {
 		Assertion.checkNotNull(UiObject);
-		//---------------------------------------------------------------------
+		//-----
 		return obtainDtList().indexOf(UiObject.getInnerObject());
 	}
 
@@ -159,7 +159,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 	 */
 	private int indexOf(final DtObject dtObject) {
 		Assertion.checkNotNull(dtObject);
-		//---------------------------------------------------------------------
+		//-----
 		return obtainDtList().indexOf(dtObject);
 	}
 

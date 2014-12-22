@@ -82,7 +82,7 @@ public final class EndPointDefinition implements Definition {
 		Assertion.checkArgument(!serverSideSave || needSession, "Session mandatory for serverSideState ({0})", userFriendlyMethodName);
 		Assertion.checkArgument(!serverSideSave || !Void.TYPE.equals(method.getReturnType()), "Return object mandatory for serverSideState ({0})", userFriendlyMethodName);
 		checkPathParams(path, endPointParams, userFriendlyMethodName);
-		//---------------------------------------------------------------------
+		//-----
 		this.name = name;
 		this.verb = verb;
 		this.path = path;

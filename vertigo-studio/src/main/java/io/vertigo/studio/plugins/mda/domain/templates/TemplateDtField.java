@@ -26,7 +26,7 @@ import io.vertigo.util.StringUtil;
 
 /**
  * Objet utilisé par FreeMarker.
- * 
+ *
  * @author pchretien
  */
 public final class TemplateDtField {
@@ -40,13 +40,13 @@ public final class TemplateDtField {
 	TemplateDtField(final DtDefinition dtDefinition, final DtField dtField) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(dtField);
-		//-----------------------------------------------------------------
+		//-----
 		this.dtDefinition = dtDefinition;
 		this.dtField = dtField;
 	}
 
 	/**
-	 * Nom du champ en majuscules séparés par des _.  
+	 * Nom du champ en majuscules séparés par des _.
 	 * @return UN_NOM
 	 */
 	public String getName() {
@@ -61,14 +61,14 @@ public final class TemplateDtField {
 	}
 
 	/**
-	 * @return DtField 
+	 * @return DtField
 	 */
 	public DtField getDtField() {
 		return dtField;
 	}
 
 	/**
-	 * Nom du champ en CamelCase.  
+	 * Nom du champ en CamelCase.
 	 * La premiére lettre est en majuscule
 	 * si besoin la première lettre en miniscule avec FreeMarker : ${dtField.nameLowerCase?uncap_first}
 	 * @return UnNom

@@ -65,7 +65,7 @@ public final class UiMessageStack {
 	 */
 	public UiMessageStack(final UiContextResolver uiContextResolver) {
 		Assertion.checkNotNull(uiContextResolver);
-		//---------------------------------------------------------------------
+		//-----
 		this.uiContextResolver = uiContextResolver;
 	}
 
@@ -164,7 +164,7 @@ public final class UiMessageStack {
 			case INFO:
 				fieldMessageMap = fieldInfos;
 				break;
-			case SUCCESS: //unsupported for fields				
+			case SUCCESS: //unsupported for fields
 			default:
 				throw new UnsupportedOperationException("Unknowned level");
 		}

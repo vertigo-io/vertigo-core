@@ -43,7 +43,7 @@ public final class UiError {
 		Assertion.checkNotNull(dtObject);
 		Assertion.checkNotNull(dtField);
 		Assertion.checkNotNull(messageText);
-		//-----------------------------------------------------------------
+		//-----
 		this.dtObject = dtObject;
 		this.dtField = dtField;
 		this.messageText = messageText;

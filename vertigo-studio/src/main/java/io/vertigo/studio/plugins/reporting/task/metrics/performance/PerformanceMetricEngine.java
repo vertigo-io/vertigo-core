@@ -46,7 +46,7 @@ public final class PerformanceMetricEngine implements MetricEngine<TaskDefinitio
 	 */
 	public PerformanceMetricEngine(final TaskManager taskManager) {
 		Assertion.checkNotNull(taskManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.taskManager = taskManager;
 	}
 
@@ -54,7 +54,7 @@ public final class PerformanceMetricEngine implements MetricEngine<TaskDefinitio
 	@Override
 	public Metric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		try {
 			return doExecute(taskDefinition);
 		} catch (final Throwable e) {

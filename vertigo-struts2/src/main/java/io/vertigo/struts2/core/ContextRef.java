@@ -43,7 +43,7 @@ public final class ContextRef<O extends Serializable> {
 	public ContextRef(final String contextKey, final AbstractActionSupport action) {
 		Assertion.checkArgNotEmpty(contextKey);
 		Assertion.checkNotNull(action);
-		//---------------------------------------------------------------------
+		//-----
 		this.contextKey = contextKey;
 		this.action = action;
 	}
@@ -59,7 +59,7 @@ public final class ContextRef<O extends Serializable> {
 		Assertion.checkNotNull(action);
 		Assertion.checkNotNull(valueClass);
 		Assertion.checkArgument(String[].class.equals(valueClass) || String.class.equals(valueClass) || Long.class.equals(valueClass) || Integer.class.equals(valueClass) || Boolean.class.equals(valueClass) || File.class.equals(valueClass), "Le type du paramètre doit être un type primitif (String, Long, Integer, Boolean ou String[]) ou de type File ici {0}.", valueClass.getName());
-		//---------------------------------------------------------------------
+		//-----
 		this.contextKey = contextKey;
 		this.action = action;
 		this.valueClass = valueClass;

@@ -52,8 +52,7 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 	 * @param scriptGrammar KScriptGrammar
 	 */
 	public ScriptHandlerImpl(final String variableName, final ScriptGrammar scriptGrammar) {
-		Assertion.checkNotNull(scriptGrammar);
-		//---------------------------------------------------
+		//-----
 		scriptContext = new ScriptContextimpl();
 		scriptContext.push(variableName);
 		this.scriptGrammar = scriptGrammar;
@@ -86,7 +85,7 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 	 */
 	private ScriptTag closeBlock(final String tagName) {
 		Assertion.checkNotNull(tagName);
-		//----------------------------------------
+		//-----
 		if (!blockStack.isEmpty()) {
 			final TagStackEntry tagStackEntry = blockStack.pop();
 			if (tagStackEntry.getName().equals(tagName)) {
@@ -106,7 +105,7 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 	private void openBlock(final String tagName, final ScriptTag tagHandler) {
 		Assertion.checkNotNull(tagName);
 		Assertion.checkNotNull(tagHandler);
-		//--------------------------------------
+		//-----
 		blockStack.push(new TagStackEntry(tagName, tagHandler));
 	}
 
@@ -129,7 +128,7 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 	public void onExpression(final String expression, final ScriptSeparator separator) {
 		Assertion.checkState(!isGrammarClosed, "l'évaluateur de grammaire ne peut pas être réutilisé car il a été fermé");
 		Assertion.checkArgument(expression != null, "un tag ne doit pas etre vide");
-		//---------------------------------------------------------------------
+		//-----
 		final ScriptTagContent tagContent = scriptGrammar.parseTag(expression);
 		tagContent.setCurrentVariable(scriptContext.peek());
 		evaluatedScript.append(renderTag(tagContent));

@@ -46,7 +46,7 @@ final class DIComponentInfo {
 		//		Assertion.precondition(Container.REGEX_ID.matcher(id).matches(), "id '{0}' doit être camelCase et commencer par une minuscule", id);
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
-		//---------------------------------------------------------------------
+		//-----
 		this.id = id;
 		dependencies = buildDependencies(this, implClass, params, pluginIds);
 	}

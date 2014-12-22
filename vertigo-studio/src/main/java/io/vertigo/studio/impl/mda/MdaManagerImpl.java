@@ -41,21 +41,21 @@ public final class MdaManagerImpl implements MdaManager {
 
 	@Inject
 	/**
-	 * 
+	 *
 	 * @param generatorPlugins
 	 * @param targetGenDir Répertoire des fichiers TOUJOURS générés
 	 * @param projectPackageName Racine du projet.
 	 * @param encoding Encoding des fichiers générés.
 	 */
 	public MdaManagerImpl(final List<GeneratorPlugin> generatorPlugins,
-			@Named("targetGenDir") String targetGenDir,
-			@Named("projectPackageName") String projectPackageName,
-			@Named("encoding") String encoding) {
+			@Named("targetGenDir") final String targetGenDir,
+			@Named("projectPackageName") final String projectPackageName,
+			@Named("encoding") final String encoding) {
 		Assertion.checkNotNull(generatorPlugins);
 		Assertion.checkArgNotEmpty(targetGenDir);
 		Assertion.checkArgNotEmpty(projectPackageName);
 		Assertion.checkArgNotEmpty(encoding);
-		//---------------------------------------------------------------------
+		//-----
 		this.generatorPlugins = java.util.Collections.unmodifiableList(generatorPlugins);
 		fileConfiguration = new FileConfiguration(targetGenDir, projectPackageName, encoding);
 	}

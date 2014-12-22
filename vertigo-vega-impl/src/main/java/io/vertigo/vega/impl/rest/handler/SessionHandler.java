@@ -46,7 +46,7 @@ public final class SessionHandler implements RouteHandler {
 	 */
 	public SessionHandler(final KSecurityManager securityManager) {
 		Assertion.checkNotNull(securityManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.securityManager = securityManager;
 	}
 

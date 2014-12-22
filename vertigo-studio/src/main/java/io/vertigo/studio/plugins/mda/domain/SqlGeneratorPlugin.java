@@ -60,7 +60,7 @@ public final class SqlGeneratorPlugin extends AbstractGeneratorPlugin {
 			@Named("baseCible") final String baseCible,
 			@Named("tableSpaceData") final Option<String> tableSpaceData,
 			@Named("tableSpaceIndex") final Option<String> tableSpaceIndex) {
-		// ---------------------------------------------------------------------
+		//-----
 		this.generateDrop = generateDrop;
 		this.baseCible = baseCible;
 		this.tableSpaceData = tableSpaceData;
@@ -72,7 +72,7 @@ public final class SqlGeneratorPlugin extends AbstractGeneratorPlugin {
 	public void generate(final FileConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
 		Assertion.checkNotNull(domainConfiguration);
 		Assertion.checkNotNull(resultBuilder);
-		// ---------------------------------------------------------------------
+		//-----
 		generateSql(domainConfiguration, resultBuilder);
 	}
 

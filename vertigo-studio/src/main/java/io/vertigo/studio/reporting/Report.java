@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * Résultat d'une analyse.
- * 
+ *
  * @author tchassagnette
  */
 public final class Report {
@@ -37,12 +37,12 @@ public final class Report {
 	 */
 	public Report(final List<DataReport> dataReports) {
 		Assertion.checkNotNull(dataReports);
-		//---------------------------------------------------------------------
+		//-----
 		this.dataReports = Collections.unmodifiableList(new ArrayList<>(dataReports));
 	}
 
 	/**
-	 * @return Liste des rapports relatifs aux données. 
+	 * @return Liste des rapports relatifs aux données.
 	 */
 	public List<DataReport> getDataReports() {
 		return dataReports;

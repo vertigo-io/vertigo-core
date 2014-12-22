@@ -80,7 +80,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	/** {@inheritDoc} */
 	@Override
 	public D set(final int row, final D object) {
-		//Implementation de set, pour que la collection soit modifiable 
+		//Implementation de set, pour que la collection soit modifiable
 		//Et donc pour que le Collections.sort(List<?> ) fonctionne
 		return dtObjects.set(row, object);
 	}
@@ -116,7 +116,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 		Assertion.checkNotNull(dto);
 		final DtDefinition foundDtDefinition = DtObjectUtil.findDtDefinition(dto);
 		Assertion.checkArgument(getDefinition().equals(foundDtDefinition), "Ne peut pas inserer un dto '{0}' dans une collection '{1}'", foundDtDefinition, getDefinition());
-		//---------------------------------------------------------------------
+		//-----
 		return dtObjects.add(dto);
 	}
 
@@ -171,7 +171,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	//================================ Metadatas management ====================
 	//==========================================================================
 
-	// There is no all MetaData with values getter. 
+	// There is no all MetaData with values getter.
 	// Developers should always knows which metadata they needs. It's intended use.
 	//
 
@@ -198,7 +198,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	 */
 	public <O extends Serializable> Option<O> getMetaData(final String metaDataName, final Class<O> metaDataClass) {
 		Assertion.checkArgNotEmpty(metaDataName);
-		//---------------------------------------------------------------------
+		//-----
 		final Object value = metaDatas.get(metaDataName);
 		if (value == null) {
 			return Option.none();
@@ -216,7 +216,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	 */
 	public void setMetaData(final String metaDataName, final Serializable value) {
 		Assertion.checkArgNotEmpty(metaDataName);
-		//---------------------------------------------------------------------
+		//-----
 		if (value == null) {
 			metaDatas.remove(metaDataName);
 		}

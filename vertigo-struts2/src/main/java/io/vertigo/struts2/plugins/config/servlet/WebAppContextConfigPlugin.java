@@ -39,7 +39,7 @@ public final class WebAppContextConfigPlugin implements ConfigPlugin {
 	 */
 	public static void setInitConfig(final Properties initConf) {
 		Assertion.checkNotNull(initConf);
-		//---------------------------------------------------------------------
+		//-----
 		WebAppContextConfigPlugin.properties = initConf;
 	}
 
@@ -52,7 +52,7 @@ public final class WebAppContextConfigPlugin implements ConfigPlugin {
 	@Inject
 	public WebAppContextConfigPlugin(@Named("configPath") final String configPath) {
 		Assertion.checkArgNotEmpty(configPath);
-		// ---------------------------------------------------------------------
+		//-----
 		managedConfigPath = configPath;
 	}
 
@@ -61,7 +61,7 @@ public final class WebAppContextConfigPlugin implements ConfigPlugin {
 	public Option<String> getValue(final String configPath, final String property) {
 		Assertion.checkArgNotEmpty(configPath);
 		Assertion.checkArgNotEmpty(property);
-		//---------------------------------------------------------------------
+		//-----
 		return managedConfigPath.equals(configPath) ? Option.<String> option(properties.getProperty(property)) : Option.<String> none();
 	}
 }

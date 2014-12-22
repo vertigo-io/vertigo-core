@@ -29,7 +29,7 @@ import java.util.List;
 
 /**
  * Génération des classes/méthodes des taches de type DAO.
- * 
+ *
  * @author pchretien
  */
 public final class TemplateTaskDefinition {
@@ -42,7 +42,7 @@ public final class TemplateTaskDefinition {
 
 	TemplateTaskDefinition(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
-		//-----------------------------------------------------------------
+		//-----
 		this.taskDefinition = taskDefinition;
 		TemplateTaskAttribute outTemp = null;
 		boolean hasOption = false;
@@ -107,7 +107,7 @@ public final class TemplateTaskDefinition {
 	 */
 	public TemplateTaskAttribute getOutAttribute() {
 		Assertion.checkNotNull(out);
-		//---------------------------------------------------------------------
+		//-----
 		return out;
 	}
 

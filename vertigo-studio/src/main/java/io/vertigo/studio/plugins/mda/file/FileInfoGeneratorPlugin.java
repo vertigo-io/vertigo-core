@@ -40,7 +40,7 @@ public final class FileInfoGeneratorPlugin extends AbstractGeneratorPlugin {
 	public void generate(final FileConfiguration fileInfoConfiguration, final ResultBuilder resultBuilder) {
 		Assertion.checkNotNull(fileInfoConfiguration);
 		Assertion.checkNotNull(resultBuilder);
-		// ---------------------------------------------------------------------
+		//-----
 		/* Générations des FI. */
 		generateFileInfos(fileInfoConfiguration, resultBuilder);
 	}

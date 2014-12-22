@@ -31,8 +31,8 @@ import java.util.Set;
  * Reactor.
  * - add components in any order with their id, their class
  * - add ids for components that are already existing.
- * - then 'proceed' and you obtain an ORDERED list of components, taking account of their dependencies.  
- *   
+ * - then 'proceed' and you obtain an ORDERED list of components, taking account of their dependencies.
+ *
  * @author pchretien
  */
 public final class DIReactor {
@@ -49,7 +49,7 @@ public final class DIReactor {
 	}
 
 	/**
-	 * Add a component 
+	 * Add a component
 	 * @param id ID f the component
 	 * @param implClass Impl class of the component
 	 * @return Reactor
@@ -59,10 +59,10 @@ public final class DIReactor {
 	}
 
 	/**
-	 * Add a component 
+	 * Add a component
 	 * @param id ID f the component
 	 * @param implClass Impl class of the component
-	 * @params params List of ID of all local params - which will be automatically injected- 
+	 * @params params List of ID of all local params - which will be automatically injected-
 	 * @return Reactor
 	 */
 	public DIReactor addComponent(final String id, final Class<?> implClass, final Set<String> params) {
@@ -70,11 +70,11 @@ public final class DIReactor {
 	}
 
 	/**
-	 * Add a component 
+	 * Add a component
 	 * @param id ID f the component
 	 * @param implClass Impl class of the component
-	 * @params params List of ID of all local params - which will be automatically injected- 
-	 * @params pluginIds List of plugin IDs of all local plugins, which must be resolved before the component.  
+	 * @params params List of ID of all local params - which will be automatically injected-
+	 * @params pluginIds List of plugin IDs of all local plugins, which must be resolved before the component.
 	 * @return Reactor
 	 */
 	public DIReactor addComponent(final String id, final Class<?> implClass, final Set<String> params, final Set<String> pluginIds) {
@@ -99,10 +99,10 @@ public final class DIReactor {
 
 	/**
 	 * Process the 'digital' reaction in a way to obtain an ordered list of components, taking account of their dependencies.
-	 * @return Ordered list of comoponent's Ids.  
+	 * @return Ordered list of comoponent's Ids.
 	 */
 	public List<String> proceed() {
-		//-----------------------------------------------------------------------------------------
+		//-----
 		//1.On vérifie si tous les composants définis par leurs ids existent
 		final List<DIDependency> missing = new ArrayList<>();
 		for (final DIComponentInfo componentInfo : diComponentInfos) {
@@ -116,10 +116,10 @@ public final class DIReactor {
 		if (!missing.isEmpty()) {
 			throw new DIException("Components not found :" + missing + "\n\tLoaded components : " + diComponentInfos);
 		}
-		//-----------------------------------------------------------------------------------------
+		//-----
 		//2.On résout les dépendances
 		final List<DIComponentInfo> unsorted = new ArrayList<>(diComponentInfos);
-		//Niveaux de dépendances des composants 
+		//Niveaux de dépendances des composants
 		//		final List<List<String>> levels = new ArrayList<>();
 		final List<String> sorted = new ArrayList<>();
 
@@ -130,7 +130,7 @@ public final class DIReactor {
 				final DIComponentInfo componentInfo = iterator.next();
 				boolean solved = true;
 				for (final DIDependency dependency : componentInfo.getDependencies()) {
-					//On vérifie si pour un composant 
+					//On vérifie si pour un composant
 					//TOUTES ses dépendances sont bien déjà résolues.
 					if (allComponentInfos.contains(dependency.getId()) || !dependency.isOptional()) {
 						//On doit résoudre toutes des références connues(y compris les référenes optionnelles) sans tenir compte des références inconnues et optionnelles.
@@ -144,7 +144,7 @@ public final class DIReactor {
 				}
 				if (solved) {
 					//Le composant est résolu
-					// - On l'ajoute sa clé à la liste des clés de composants résolus 
+					// - On l'ajoute sa clé à la liste des clés de composants résolus
 					// - On le supprime de la liste des composants à résoudre
 					sorted.add(componentInfo.getId());
 					iterator.remove();
@@ -156,7 +156,7 @@ public final class DIReactor {
 				throw new DIException("Liste des composants non résolus :" + unsorted);
 			}
 		}
-		//-----------------------------------------------------------------------------------------
+		//-----
 		//3 On expose un liste de ids et non les composantInfos
 		return Collections.unmodifiableList(sorted);
 

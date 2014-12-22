@@ -22,7 +22,7 @@ import io.vertigo.lang.Assertion;
 
 /**
  * Handler unique permettant de collecter les infos relatives à l'exécution des tests.
- * 
+ *
  * @author pchretien
  */
 public final class MyWorkResultHanlder<WR> implements WorkResultHandler<WR> {
@@ -49,7 +49,7 @@ public final class MyWorkResultHanlder<WR> implements WorkResultHandler<WR> {
 	@Override
 	public synchronized void onDone(final WR result, final Throwable error) {
 		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
-		//---------------------------------------------------------------------
+		//-----
 		lastResult = result;
 		lastError = error;
 		if (error == null) {

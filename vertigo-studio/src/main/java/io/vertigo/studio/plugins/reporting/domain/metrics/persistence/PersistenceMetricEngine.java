@@ -39,7 +39,7 @@ public final class PersistenceMetricEngine implements MetricEngine<DtDefinition>
 	 */
 	public PersistenceMetricEngine(final PersistenceManager persistenceManager) {
 		Assertion.checkNotNull(persistenceManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.persistenceManager = persistenceManager;
 	}
 
@@ -47,7 +47,7 @@ public final class PersistenceMetricEngine implements MetricEngine<DtDefinition>
 	@Override
 	public Metric execute(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		final boolean test = test(dtDefinition);
 		final Metric.Status status;
 		if (test) {

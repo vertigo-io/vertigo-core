@@ -50,7 +50,7 @@ public final class SequenceRule implements Rule<List<?>> {
 	 */
 	public SequenceRule(final List<Rule<?>> rules) {
 		Assertion.checkNotNull(rules);
-		//----------------------------------------------------------------------
+		//-----
 		this.rules = Collections.unmodifiableList(rules);
 		expression = createExpression(rules);
 	}

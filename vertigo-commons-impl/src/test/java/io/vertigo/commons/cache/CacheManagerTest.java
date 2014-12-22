@@ -270,8 +270,6 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 	//		}
 	//	}
 
-	//-------------------------------------------------------------------------
-
 	static class Element implements Serializable {
 		private static final long serialVersionUID = 1L;
 		private static long count;

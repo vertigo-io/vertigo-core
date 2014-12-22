@@ -43,7 +43,7 @@ public final class DtDefinitionReport implements DataReport {
 	DtDefinitionReport(final DtDefinition dtDefinition, final List<Metric> metrics) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(metrics);
-		//---------------------------------------------------------------------
+		//-----
 		this.dtDefinition = dtDefinition;
 		this.metrics = new ArrayList<>(metrics);
 	}

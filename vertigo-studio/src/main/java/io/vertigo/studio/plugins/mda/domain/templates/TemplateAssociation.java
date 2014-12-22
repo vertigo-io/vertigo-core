@@ -23,7 +23,7 @@ import io.vertigo.lang.Assertion;
 
 /**
  * Objet utilisé par FreeMarker.
- * 
+ *
  * @author pchretien
  */
 public final class TemplateAssociation {
@@ -35,7 +35,7 @@ public final class TemplateAssociation {
 	 */
 	TemplateAssociation(final AssociationNode associationNode) {
 		Assertion.checkNotNull(associationNode);
-		//-----------------------------------------------------------------
+		//-----
 		this.associationNode = associationNode;
 	}
 

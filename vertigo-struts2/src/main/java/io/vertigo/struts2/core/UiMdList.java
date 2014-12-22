@@ -40,7 +40,7 @@ final class UiMdList<D extends DtObject> extends AbstractUiList<D> implements Ui
 	 */
 	public UiMdList(final DtListURI dtListUri) {
 		super(dtListUri.getDtDefinition());
-		// -------------------------------------------------------------------------
+		//-----
 		this.dtListUri = dtListUri;
 	}
 

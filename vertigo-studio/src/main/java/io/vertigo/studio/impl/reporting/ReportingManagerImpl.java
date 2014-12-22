@@ -33,7 +33,7 @@ import javax.inject.Named;
 
 /**
  * Implémentation de ReportingManager.
- * 
+ *
  * @author tchassagnette
  */
 public final class ReportingManagerImpl implements ReportingManager {
@@ -44,11 +44,11 @@ public final class ReportingManagerImpl implements ReportingManager {
 	 * @param rootPath Racine de stockage des raports
 	 */
 	@Inject
-	public ReportingManagerImpl(@Named("rootPath") final String rootPath, List<ReportingPlugin> reportingPlugins) {
+	public ReportingManagerImpl(@Named("rootPath") final String rootPath, final List<ReportingPlugin> reportingPlugins) {
 		Assertion.checkArgNotEmpty(rootPath);
 		Assertion.checkArgument(rootPath.endsWith("/"), "le path doit se terminer par un /");
 		Assertion.checkNotNull(reportingPlugins);
-		//---------------------------------------------------------------------
+		//-----
 		this.rootPath = rootPath;
 		this.reportingPlugins = reportingPlugins;
 	}

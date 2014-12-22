@@ -31,7 +31,7 @@ import java.util.Map;
 
 /**
  * Liste des erreurs d'un objet métier.
- * 
+ *
  * @author pchretien, npiedeloup
  */
 public final class UiObjectErrors {
@@ -56,7 +56,7 @@ public final class UiObjectErrors {
 
 	void clearErrors(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
-		//---------------------------------------------------------------------
+		//-----
 		fieldsErrors.remove(dtField);
 	}
 

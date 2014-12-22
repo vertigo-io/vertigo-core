@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Un rôle est la réunion d'un ensemble de permissions.
  * Un utilisateur peut avoir  plusieurs rôles.
- * 
+ *
  * @author prahmoune
  */
 @DefinitionPrefix("R_")
@@ -38,7 +38,7 @@ public final class Role implements Definition {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param name Nom du rôle
 	 * @param description Description du rôle
 	 * @param permissions Liste des permissions associées au rôle
@@ -47,7 +47,7 @@ public final class Role implements Definition {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkArgNotEmpty(description);
 		Assertion.checkNotNull(permissions);
-		// ---------------------------------------------------------------------
+		//-----
 		this.name = name;
 		this.description = description;
 		this.permissions = permissions;

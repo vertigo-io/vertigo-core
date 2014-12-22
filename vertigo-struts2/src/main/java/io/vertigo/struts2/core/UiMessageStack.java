@@ -66,7 +66,7 @@ public final class UiMessageStack {
 	 */
 	protected UiMessageStack(final AbstractActionSupport actionSupport) {
 		Assertion.checkNotNull(actionSupport);
-		//---------------------------------------------------------------------
+		//-----
 		this.actionSupport = actionSupport;
 	}
 
@@ -116,7 +116,7 @@ public final class UiMessageStack {
 		Assertion.checkArgNotEmpty(message);
 		Assertion.checkNotNull(dto);
 		Assertion.checkArgNotEmpty(fieldName);
-		//---------------------------------------------------------------------
+		//-----
 		final String contextKey = actionSupport.getModel().findKey(dto);
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		addActionMessage(level, message, dtDefinition, contextKey, fieldName);

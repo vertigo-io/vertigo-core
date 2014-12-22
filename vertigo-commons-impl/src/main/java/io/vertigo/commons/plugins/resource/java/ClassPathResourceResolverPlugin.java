@@ -27,7 +27,7 @@ import java.net.URL;
 /**
  * Résolution des URL liées au classPath.
  * Cette résolution est en absolue.
- * 
+ *
  * @author prahmoune
  */
 public final class ClassPathResourceResolverPlugin implements ResourceResolverPlugin {
@@ -36,7 +36,7 @@ public final class ClassPathResourceResolverPlugin implements ResourceResolverPl
 	@Override
 	public Option<URL> resolve(final String resource) {
 		Assertion.checkNotNull(resource);
-		// ---------------------------------------------------------------------
+		//-----
 		//le getClassLoader permet de se mettre en absolue (getClass().getRessource serait relatif)
 		final URL url = getClassLoader().getResource(resource);
 		return Option.option(url);

@@ -36,7 +36,7 @@ public final class HandlerChainBuilder implements Builder<HandlerChain> {
 
 	public HandlerChainBuilder withHandler(final RouteHandler routeHandler) {
 		Assertion.checkNotNull(routeHandler);
-		//---------------------------------------------------------------------
+		//-----
 		myHandlers.add(routeHandler);
 		return this;
 	}

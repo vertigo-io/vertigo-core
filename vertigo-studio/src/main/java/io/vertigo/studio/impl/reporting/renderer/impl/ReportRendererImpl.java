@@ -61,13 +61,13 @@ public final class ReportRendererImpl implements ReportRenderer {
 
 	private void renderIndexPage(final Report report) {
 		final StringBuilder sb = new StringBuilder();
-		//---------------
+		//-----
 		startRender(report, sb);
-		//---------------
+		//-----
 		//Création de la table
 		sb.append("<h1>Rapport pour les " + report.getDataReports().size() + " requêtes</h1>");
 		sb.append("<table id=\"myTable\" class=\"tablesorter\">");
-		//---------------
+		//-----
 		boolean firstColumn = true;
 		for (final DataReport dataReport : report.getDataReports()) {
 			if (firstColumn) {
@@ -85,9 +85,9 @@ public final class ReportRendererImpl implements ReportRenderer {
 			firstColumn = false;
 		}
 		sb.append("</tbody>");
-		//---------------
+		//-----
 		sb.append("</table>");
-		//---------------
+		//-----
 		endRender(sb);
 
 		//On génère le fichier

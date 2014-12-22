@@ -38,7 +38,7 @@ public final class DtObjectExtended<D extends DtObject> extends HashMap<String, 
 	 */
 	public DtObjectExtended(final D dtObject) {
 		Assertion.checkNotNull(dtObject);
-		//---------------------------------------------------------------------
+		//-----
 		this.innerObject = dtObject;
 	}
 

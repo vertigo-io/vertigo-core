@@ -38,7 +38,7 @@ final class CacheValueBinding extends TupleBinding {
 	 */
 	public CacheValueBinding(final TupleBinding serializableBinding) {
 		Assertion.checkNotNull(serializableBinding);
-		//---------------------------------------------------------------------
+		//-----
 		this.serializableBinding = serializableBinding;
 	}
 

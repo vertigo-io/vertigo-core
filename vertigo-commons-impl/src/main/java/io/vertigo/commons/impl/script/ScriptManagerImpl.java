@@ -29,7 +29,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-/** 
+/**
  * Gestion des manipulations sur des scripts.
  *
  * @author pchretien
@@ -43,7 +43,7 @@ public final class ScriptManagerImpl implements ScriptManager {
 	@Inject
 	public ScriptManagerImpl(final ExpressionEvaluatorPlugin expressionEvaluatorPlugin) {
 		Assertion.checkNotNull(expressionEvaluatorPlugin);
-		//---------------------------------------------------------------------
+		//-----
 		this.expressionEvaluatorPlugin = expressionEvaluatorPlugin;
 	}
 

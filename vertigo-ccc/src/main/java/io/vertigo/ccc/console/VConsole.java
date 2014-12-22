@@ -78,46 +78,46 @@ public final class VConsole {
 		frame.addWindowListener(new WindowAdapter() {
 
 			@Override
-			public void windowStateChanged(WindowEvent e) {
+			public void windowStateChanged(final WindowEvent e) {
 				//
 			}
 
 			@Override
-			public void windowOpened(WindowEvent e) {
+			public void windowOpened(final WindowEvent e) {
 				consoleHandler.start();
 
 			}
 
 			@Override
-			public void windowClosing(WindowEvent e) {
+			public void windowClosing(final WindowEvent e) {
 				//
 
 			}
 
 			@Override
-			public void windowClosed(WindowEvent e) {
+			public void windowClosed(final WindowEvent e) {
 				consoleHandler.stop();
 			}
 
 			@Override
-			public void windowIconified(WindowEvent e) {
+			public void windowIconified(final WindowEvent e) {
 				//
 
 			}
 
 			@Override
-			public void windowDeiconified(WindowEvent e) {
+			public void windowDeiconified(final WindowEvent e) {
 				//
 
 			}
 
 			@Override
-			public void windowActivated(WindowEvent e) {
+			public void windowActivated(final WindowEvent e) {
 				//
 			}
 
 			@Override
-			public void windowDeactivated(WindowEvent e) {
+			public void windowDeactivated(final WindowEvent e) {
 				//
 			}
 		});
@@ -140,7 +140,7 @@ public final class VConsole {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				jsonMode = !jsonMode;
 				inputKeyListener.selectCommand();
 			}
@@ -149,7 +149,7 @@ public final class VConsole {
 
 		clearButton.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(final ActionEvent arg0) {
 				output.setText("");
 				input.setText("");
 				inputKeyListener.reset();
@@ -163,7 +163,7 @@ public final class VConsole {
 
 		frame.getContentPane().setLayout(new BorderLayout());
 
-		JPanel header = new JPanel(new BorderLayout());
+		final JPanel header = new JPanel(new BorderLayout());
 		//	header.add(connectionButton, BorderLayout.WEST);
 		header.add(input, BorderLayout.CENTER);
 		header.add(toggleButton, BorderLayout.EAST);
@@ -185,12 +185,12 @@ public final class VConsole {
 
 		private int index;
 
-		InputKeyListener(VConsole console, VConsoleHandler consoleHandler, JTextField input, JTextArea output) {
+		InputKeyListener(final VConsole console, final VConsoleHandler consoleHandler, final JTextField input, final JTextArea output) {
 			Assertion.checkNotNull(console);
 			Assertion.checkNotNull(consoleHandler);
 			Assertion.checkNotNull(input);
 			Assertion.checkNotNull(output);
-			//-----------------------------------------------------------------
+			//-----
 			this.console = console;
 			this.consoleHandler = consoleHandler;
 			this.commands = new LinkedHashSet<>();
@@ -213,7 +213,7 @@ public final class VConsole {
 		}
 
 		//suggest a command
-		private void suggestAnotherCommand(int offset) {
+		private void suggestAnotherCommand(final int offset) {
 			index += offset;
 			if (index < 0 || matchingCommands.size() == 0) {
 				//On remet la valeur initiale
@@ -227,7 +227,7 @@ public final class VConsole {
 			}
 		}
 
-		private void onCommand(VCommand command) {
+		private void onCommand(final VCommand command) {
 			commands.add(command.getName());
 			//System.out.println(">>>command : " + command);
 			final VResponse response = consoleHandler.execCommand(command);
@@ -254,7 +254,7 @@ public final class VConsole {
 		}
 
 		@Override
-		public void keyReleased(KeyEvent keyEvent) {
+		public void keyReleased(final KeyEvent keyEvent) {
 			if (keyEvent.getKeyCode() == KeyEvent.VK_ENTER) {
 				selectCommand();
 			} else if (keyEvent.getKeyCode() == KeyEvent.VK_UP) {
@@ -269,8 +269,8 @@ public final class VConsole {
 		//ping
 		//connect --host localhost --port 4443
 		private void selectCommand() {
-			String inputText = input.getText();
-			Map<String, String> args = new HashMap<>();
+			final String inputText = input.getText();
+			final Map<String, String> args = new HashMap<>();
 			int idx = inputText.indexOf("--");
 			final String commandName = (idx > 0) ? inputText.substring(0, idx).trim() : inputText.trim();
 			int idx2, idx3 = 0;
@@ -288,14 +288,14 @@ public final class VConsole {
 				}
 				idx = inputText.indexOf("--", idx3);
 			}
-			VCommand command = new VCommand(commandName, args);
+			final VCommand command = new VCommand(commandName, args);
 			onCommand(command);
 		}
 
 		@Override
-		public void keyTyped(KeyEvent keyEvent) {
+		public void keyTyped(final KeyEvent keyEvent) {
 			typedInput = input.getText() + keyEvent.getKeyChar();
-			for (Iterator<String> it = matchingCommands.iterator(); it.hasNext();) {
+			for (final Iterator<String> it = matchingCommands.iterator(); it.hasNext();) {
 				if (!it.next().startsWith(typedInput)) {
 					it.remove();
 				}
@@ -303,8 +303,8 @@ public final class VConsole {
 		}
 	}
 
-	public static void main(String[] args) {
-		VConsole console = new VConsole();
+	public static void main(final String[] args) {
+		final VConsole console = new VConsole();
 		console.display();
 	}
 

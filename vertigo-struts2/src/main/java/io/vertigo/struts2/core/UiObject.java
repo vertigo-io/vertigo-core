@@ -81,7 +81,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	 */
 	public UiObject(final D dto) {
 		Assertion.checkNotNull(dto);
-		// -------------------------------------------------------------------------
+		//-----
 		this.dto = dto;
 		this.dtDefinitionRef = new DefinitionReference<>(DtObjectUtil.findDtDefinition(dto));
 		for (final DtField dtField : getDtDefinition().getFields()) {
@@ -117,7 +117,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	public Serializable get(final Object key) {
 		final String constFieldName = keysIndex.get(String.class.cast(key));
 		Assertion.checkArgNotEmpty(constFieldName);
-		// ----------------------------------------------------------------------
+		//-----
 		final DtField dtField = getDtField(constFieldName);
 		if (isMultiple(dtField)) {
 			final String strValue = getValueAsString(dtField);
@@ -138,7 +138,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 		Assertion.checkArgNotEmpty(constFieldName);
 		Assertion.checkNotNull(value, "La valeur formatée ne doit pas être null mais vide ({0})", fieldName);
 		Assertion.checkState(value instanceof String || value instanceof String[], "Les données saisies doivent être de type String ou String[] ({0} : {1})", fieldName, value.getClass());
-		// ----------------------------------------------------------------------
+		//-----
 		final DtField dtField = getDtField(constFieldName);
 		if (isMultiple(dtField)) {
 			final String strValue = formatMultipleValue((String[]) value);
@@ -157,7 +157,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 		if (hasFormatError(dtField)) {
 			throw new IllegalAccessError("Le champ " + dtField.getName() + " possède une erreur de formattage et doit être lu par son UiObject");
 		}
-		// ---------------------------------------------------------------------------------------------
+		//-----
 		return doGetTypedValue(dtField);
 	}
 
@@ -229,7 +229,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	 */
 	public void check(final UiObjectValidator<D> validator, final UiMessageStack uiMessageStack) {
 		Assertion.checkNotNull(validator);
-		//---------------------------------------------------------------------
+		//-----
 		//on vide les erreurs (sauf de format), avant de valider l'objet.
 		//sinon messages d'erreurs en doublons.
 		getUiObjectErrors().clearErrors();
@@ -390,7 +390,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	 */
 	boolean hasFormatError(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
-		//---------------------------------------------------------------------
+		//-----
 		return isModified(dtField) && FORMAT_ERROR_VALUE.equals(doGetTypedValue(dtField));
 	}
 

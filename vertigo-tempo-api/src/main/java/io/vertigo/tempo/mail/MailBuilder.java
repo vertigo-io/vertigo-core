@@ -43,13 +43,13 @@ public class MailBuilder implements Builder<Mail> {
 
 	/**
 	 * Set subject.
-	 * @param subject mail subject 
+	 * @param subject mail subject
 	 * @return MailBuilder
 	 */
 	public MailBuilder withSubject(final String subject) {
 		Assertion.checkArgNotEmpty(subject);
 		Assertion.checkState(mySubject == null, "subject is already completed");
-		//---------------------------------------------------------------------
+		//-----
 		mySubject = subject;
 		return this;
 	}
@@ -62,7 +62,7 @@ public class MailBuilder implements Builder<Mail> {
 	public MailBuilder from(final String from) {
 		Assertion.checkState(myFrom == null, "from is already completed");
 		Assertion.checkArgNotEmpty(from);
-		//---------------------------------------------------------------------
+		//-----
 		myFrom = from;
 		return this;
 	}
@@ -75,7 +75,7 @@ public class MailBuilder implements Builder<Mail> {
 	public MailBuilder replyTo(final String replyTo) {
 		Assertion.checkState(myReplyTo == null, "replyTo is already completed");
 		Assertion.checkArgNotEmpty(replyTo);
-		//---------------------------------------------------------------------
+		//-----
 		myReplyTo = replyTo;
 		return this;
 	}
@@ -87,7 +87,7 @@ public class MailBuilder implements Builder<Mail> {
 	 */
 	public MailBuilder to(final String... addresses) {
 		Assertion.checkNotNull(addresses);
-		//---------------------------------------------------------------------
+		//-----
 		for (final String address : addresses) {
 			Assertion.checkArgNotEmpty(address);
 			myToAddresses.add(address);
@@ -102,7 +102,7 @@ public class MailBuilder implements Builder<Mail> {
 	 */
 	public MailBuilder cc(final String... addresses) {
 		Assertion.checkNotNull(addresses);
-		//---------------------------------------------------------------------
+		//-----
 		for (final String address : addresses) {
 			Assertion.checkArgNotEmpty(address);
 			myCcAddresses.add(address);
@@ -112,7 +112,7 @@ public class MailBuilder implements Builder<Mail> {
 
 	/**
 	 * Set mail content at text format.
-	 * @param textContent Text content 
+	 * @param textContent Text content
 	 * @return MailBuilder
 	 */
 	public MailBuilder withTextContent(final String textContent) {
@@ -123,7 +123,7 @@ public class MailBuilder implements Builder<Mail> {
 		return this;
 	}
 
-	/** 
+	/**
 	 * Set mail content at html format.
 	 * @param htmlContent Html content
 	 * @return MailBuilder
@@ -131,7 +131,7 @@ public class MailBuilder implements Builder<Mail> {
 	public MailBuilder withHtmlContent(final String htmlContent) {
 		Assertion.checkState(myHtmlContent == null, "htmlContent is already completed");
 		Assertion.checkArgNotEmpty(htmlContent);
-		//---------------------------------------------------------------------
+		//-----
 		myHtmlContent = htmlContent;
 		return this;
 	}
@@ -143,7 +143,7 @@ public class MailBuilder implements Builder<Mail> {
 	 */
 	public MailBuilder withAttachments(final KFile... files) {
 		Assertion.checkNotNull(files);
-		//---------------------------------------------------------------------
+		//-----
 		for (final KFile attachment : files) {
 			Assertion.checkNotNull(attachment);
 			myAttachments.add(attachment);
@@ -155,7 +155,7 @@ public class MailBuilder implements Builder<Mail> {
 	@Override
 	public Mail build() {
 		Assertion.checkArgument(!myToAddresses.isEmpty(), "No receiver defined");
-		//---------------------------------------------------------------------
+		//-----
 		return new Mail(mySubject, myReplyTo, myFrom, myToAddresses, myCcAddresses, myTextContent, myHtmlContent, myAttachments);
 	}
 }

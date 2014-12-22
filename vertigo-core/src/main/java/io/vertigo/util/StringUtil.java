@@ -61,7 +61,7 @@ public final class StringUtil {
 	 */
 	public static String normalize(final String strValue) {
 		Assertion.checkNotNull(strValue);
-		//---------------------------------------------------------------------
+		//-----
 		return first2LowerCase(strValue);
 	}
 
@@ -72,7 +72,7 @@ public final class StringUtil {
 	 */
 	public static String first2LowerCase(final String strValue) {
 		Assertion.checkNotNull(strValue);
-		//---------------------------------------------------------------------
+		//-----
 		if (strValue.isEmpty()) {
 			return strValue;
 		}
@@ -92,7 +92,7 @@ public final class StringUtil {
 	 */
 	public static String first2UpperCase(final String strValue) {
 		Assertion.checkNotNull(strValue);
-		//---------------------------------------------------------------------
+		//-----
 		if (strValue.isEmpty()) {
 			return strValue;
 		}
@@ -115,7 +115,7 @@ public final class StringUtil {
 		Assertion.checkNotNull(str);
 		Assertion.checkArgument(str.length() > 0, "Chaine à modifier invalide (ne doit pas être vide)");
 		Assertion.checkArgument(str.indexOf("__") == -1, "Chaine à modifier invalide : {0} (__ interdit)", str);
-		// ----------------------------------------------------------------------
+		//-----
 		final StringBuilder result = new StringBuilder();
 		boolean upper = first2UpperCase;
 		Boolean digit = null;
@@ -160,7 +160,7 @@ public final class StringUtil {
 	public static String camelToConstCase(final String str) {
 		Assertion.checkNotNull(str);
 		Assertion.checkArgument(str.length() > 0, "Chaine à modifier invalide");
-		// ----------------------------------------------------------------------
+		//-----
 		final StringBuilder result = new StringBuilder();
 		final int length = str.length();
 		char c;
@@ -203,7 +203,7 @@ public final class StringUtil {
 	 * Remplacement au sein d'une chaine d'un motif par un autre.
 	 * Le remplacement avance, il n'est pas récursif !!.
 	 * Attention : pour des char le String.replace(char old, char new) est plus performant.
-	 * 
+	 *
 	 * @param str String
 	 * @param oldStr Chaine à remplacer
 	 * @param newStr Chaine de remplacement
@@ -211,7 +211,7 @@ public final class StringUtil {
 	 */
 	public static String replace(final String str, final String oldStr, final String newStr) {
 		Assertion.checkNotNull(str);
-		//------------------------------------------------------------------------
+		//-----
 		final StringBuilder result = new StringBuilder(str);
 		replace(result, oldStr, newStr);
 		return result.toString();
@@ -230,7 +230,7 @@ public final class StringUtil {
 		Assertion.checkNotNull(oldStr);
 		Assertion.checkArgument(oldStr.length() > 0, "La chaine a remplacer ne doit pas être vide");
 		Assertion.checkNotNull(newStr);
-		//------------------------------------------------------------------------
+		//-----
 		int index = str.indexOf(oldStr);
 		if (index == -1) {
 			return;
@@ -254,11 +254,11 @@ public final class StringUtil {
 	 */
 	public static String format(final String msg, final Object... params) {
 		Assertion.checkNotNull(msg);
-		//------------------------------------------------------------------------
+		//-----
 		if (params == null || params.length == 0) {
 			return msg;
 		}
-		//Gestion des doubles quotes 
+		//Gestion des doubles quotes
 		//On simple quotes les doubles quotes déjà posées.
 		//Puis on double toutes les simples quotes ainsi il ne reste plus de simple quote non doublée.
 		final StringBuilder newMsg = new StringBuilder(msg);

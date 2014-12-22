@@ -48,7 +48,7 @@ final class AccessTokenHandler implements RouteHandler {
 	AccessTokenHandler(final TokenManager uiSecurityTokenManager, final EndPointDefinition endPointDefinition) {
 		Assertion.checkNotNull(uiSecurityTokenManager);
 		Assertion.checkNotNull(endPointDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		this.uiSecurityTokenManager = uiSecurityTokenManager;
 		this.endPointDefinition = endPointDefinition;
 	}

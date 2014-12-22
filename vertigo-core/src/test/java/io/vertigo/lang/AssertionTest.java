@@ -18,8 +18,6 @@
  */
 package io.vertigo.lang;
 
-import io.vertigo.lang.Assertion;
-
 import org.junit.Test;
 
 /**
@@ -75,7 +73,7 @@ public final class AssertionTest {
 		Assertion.checkArgument(false, "message {0}", "param");
 	}
 
-	//-------------------------------------------------------------------------
+	//-----
 	@Test
 	public void testCheckState() {
 		Assertion.checkState(true, "message");
@@ -94,8 +92,7 @@ public final class AssertionTest {
 	@Test(expected = IllegalStateException.class)
 	public void testCheckState2Fail() {
 		Assertion.checkState(false, "message {0}", "param1");
-	} //-------------------------------------------------------------------------
-		//-------------------------------------------------------------------------
+	}
 
 	@Test
 	public void testCheckNotEmpty() {

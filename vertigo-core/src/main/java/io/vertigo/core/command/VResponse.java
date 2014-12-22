@@ -21,29 +21,29 @@ package io.vertigo.core.command;
 import io.vertigo.lang.Assertion;
 
 /**
- * A response contains 
+ * A response contains
  * - a status (in fact en errorMsg if there is only one error
- * - a body response in a string  ( a json formatted string is perfect) 
- * 
+ * - a body response in a string  ( a json formatted string is perfect)
+ *
 * @author pchretien
 */
 public final class VResponse {
 	private final String response;
 	private final String errorMsg;
 
-	public static VResponse createResponse(String response) {
+	public static VResponse createResponse(final String response) {
 		Assertion.checkArgNotEmpty(response);
-		//---------------------------------------------------------------------
+		//-----
 		return new VResponse(response, null);
 	}
 
-	public static VResponse createResponseWithError(String ErrorMsg) {
+	public static VResponse createResponseWithError(final String ErrorMsg) {
 		Assertion.checkArgNotEmpty(ErrorMsg, "errorMsg is required");
-		//---------------------------------------------------------------------
+		//-----
 		return new VResponse(null, ErrorMsg);
 	}
 
-	private VResponse(String response, String errorMsg) {
+	private VResponse(final String response, final String errorMsg) {
 		this.response = response;
 		this.errorMsg = errorMsg;
 	}
@@ -54,13 +54,13 @@ public final class VResponse {
 
 	public String getResponse() {
 		Assertion.checkNotNull(response, "there is no valid response");
-		//---------------------------------------------------------------------
+		//-----
 		return response;
 	}
 
 	public String getErrorMsg() {
 		Assertion.checkNotNull(errorMsg, "there is no error");
-		//---------------------------------------------------------------------
+		//-----
 		return errorMsg;
 	}
 }

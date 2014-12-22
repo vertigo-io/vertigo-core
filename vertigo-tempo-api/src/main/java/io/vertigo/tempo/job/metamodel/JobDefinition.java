@@ -40,7 +40,7 @@ public final class JobDefinition implements Definition {
 	public JobDefinition(final String name, final Class<? extends Runnable> jobClass) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(jobClass);
-		//----------------------------------------------------------------------
+		//-----
 		this.name = name;
 		this.jobClass = jobClass;
 	}

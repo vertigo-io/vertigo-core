@@ -46,7 +46,7 @@ public final class UiListState implements Serializable {
 	public UiListState(final int top, final int skip, final String sortFieldName, final boolean sortDesc, final String listServerToken) {
 		Assertion.checkArgument(top > 0, "Top must be positive ({0})", top);
 		Assertion.checkArgument(skip >= 0, "Skip must be positive ({0})", skip);
-		//---------------------------------------------------------------------
+		//-----
 		this.top = top;
 		this.skip = skip;
 		this.sortFieldName = sortFieldName;

@@ -56,11 +56,10 @@ public final class MergerPluginOpenOffice implements MergerPlugin {
 		mergerProcessors = createMergerProcessors(scriptManager, ScriptGrammarUtil.createScriptGrammar());
 	}
 
-	//-------------------------------------------------------------------------
 	private static List<MergerProcessor> createMergerProcessors(final ScriptManager scriptManager, final ScriptGrammar scriptGrammar) {
 		Assertion.checkNotNull(scriptManager);
 		Assertion.checkNotNull(scriptGrammar);
-		//---------------------------------------------------------------------
+		//-----
 		final List<MergerProcessor> localMergerProcessors = new ArrayList<>();
 
 		// Pré-Traitement (TEXT balisé grammaire simplifiée => TEXT balisé en  java)
@@ -84,7 +83,7 @@ public final class MergerPluginOpenOffice implements MergerPlugin {
 	public File execute(final URL modelFileURL, final PublisherData data) throws IOException {
 		Assertion.checkNotNull(modelFileURL);
 		Assertion.checkNotNull(data);
-		//---------------------------------------------------------------------
+		//-----
 		final File file = new File(modelFileURL.getFile());
 		Assertion.checkArgument(file.exists(), "Le fichier du modèle est introuvable");
 		Assertion.checkArgument(file.canRead(), "Le fichier du modèle n'est pas lisible");

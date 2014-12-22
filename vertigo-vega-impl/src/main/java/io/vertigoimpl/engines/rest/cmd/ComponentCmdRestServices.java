@@ -49,7 +49,7 @@ public final class ComponentCmdRestServices implements RestfulService {
 	@GET("/vertigo/components/{componentId}")
 	public String getComponentConfig(@PathParam("componentId") final String componentId) {
 		Assertion.checkArgNotEmpty(componentId);
-		//---------------------------------------------------------------------
+		//-----
 		final JsonArray jsonModuleConfigs = doGetModuleConfigs();
 		for (int i = 0; i < jsonModuleConfigs.size(); i++) {
 			final JsonObject jsonModuleConfig = (JsonObject) jsonModuleConfigs.get(i);
@@ -83,7 +83,7 @@ public final class ComponentCmdRestServices implements RestfulService {
 	@GET("/vertigo/components/modules/{moduleName}")
 	public String getModuleConfig(@PathParam("moduleName") final String moduleName) {
 		Assertion.checkArgNotEmpty(moduleName);
-		//---------------------------------------------------------------------
+		//-----
 		final JsonArray jsonModuleConfigs = doGetModuleConfigs();
 		for (int i = 0; i < jsonModuleConfigs.size(); i++) {
 			final JsonObject jsonModuleConfig = (JsonObject) jsonModuleConfigs.get(i);

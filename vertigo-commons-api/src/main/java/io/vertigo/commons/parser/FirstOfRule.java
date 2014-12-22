@@ -45,7 +45,7 @@ public final class FirstOfRule implements Rule<Choice> {
 	 */
 	public FirstOfRule(final List<Rule<?>> rules) {
 		Assertion.checkNotNull(rules);
-		//----------------------------------------------------------------------
+		//-----
 		this.rules = Collections.unmodifiableList(rules);
 		//---
 		final StringBuilder buffer = new StringBuilder();

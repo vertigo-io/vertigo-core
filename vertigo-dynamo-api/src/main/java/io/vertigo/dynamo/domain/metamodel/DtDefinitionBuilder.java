@@ -27,13 +27,13 @@ import io.vertigo.lang.MessageText;
 import java.util.ArrayList;
 import java.util.List;
 
-/** 
+/**
  * Builder de définition.
  * Tout DT doit avoir un nom en majuscule préfixé par DT_.
  * Pour obtenir la DtDéfinition utiliser la méthode build();
- * 
+ *
  * Le DtDefinitionsBuilder doit être flushée.
- * 
+ *
  * @author pchretien
  */
 public final class DtDefinitionBuilder implements Builder<DtDefinition> {
@@ -158,13 +158,13 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	private DtField createField(final String fieldName, final DtField.FieldType type, final Domain domain, final String strLabel, final boolean notNull, final boolean persistent, final String fkDtDefinitionName, final ComputedExpression computedExpression, final boolean dynamic, final boolean sort, final boolean display) {
 
 		final String shortName = DefinitionUtil.getLocalName(myName, DtDefinition.class);
-		//----------------------------------------------------------------------
+		//-----
 		// Le DtField vérifie ses propres règles et gère ses propres optimisations
 		final String id = DtField.PREFIX + shortName + '$' + fieldName;
 
 		Assertion.checkArgNotEmpty(strLabel, "Label doit être non vide");
 		//2. Sinon Indication de longueur portée par le champ du DT.
-		//-----------------------------------------------------------------------
+		//-----
 		final MessageText label = new MessageText(strLabel, new MessageKeyImpl(id));
 		// Champ CODE_COMMUNE >> getCodeCommune()
 		//Un champ est persisanty s'il est marqué comme tel et si la définition l'est aussi.
@@ -174,7 +174,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	@Override
 	public DtDefinition build() {
 		Assertion.checkState(dtDefinition == null, "Build deja effectué");
-		//-----------------------------------------------------------------
+		//-----
 		dtDefinition = new DtDefinition(myName, myPackageName, myPersistent, myFields, myDynamic);
 		return dtDefinition;
 	}

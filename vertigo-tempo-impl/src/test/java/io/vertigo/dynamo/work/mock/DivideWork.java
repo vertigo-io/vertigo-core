@@ -25,7 +25,7 @@ public final class DivideWork implements Serializable {
 	private final long value1, value2;
 
 	public DivideWork(final long value1, final long value2) {
-		//---------------------------------------------------------------------
+		//-----
 		this.value1 = value1;
 		this.value2 = value2;
 	}

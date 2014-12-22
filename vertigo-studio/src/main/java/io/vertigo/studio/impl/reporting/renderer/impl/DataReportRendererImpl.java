@@ -31,27 +31,27 @@ final class DataReportRendererImpl implements DataReportRenderer {
 
 	DataReportRendererImpl(final String rootPath) {
 		Assertion.checkArgNotEmpty(rootPath);
-		//---------------------------------------------------------------------
+		//-----
 		this.rootPath = rootPath;
 	}
 
 	@Override
 	public void render(final DataReport dataReport) {
 		Assertion.checkNotNull(dataReport);
-		//---------------------------------------------------------------------
+		//-----
 		final StringBuilder sb = new StringBuilder();
 
-		//---------
+		//-----
 		startRender(sb);
-		//---------
+		//-----
 		sb.append(dataReport.getHtmlDescription());
-		//---------
+		//-----
 		for (final Metric metric : dataReport.getMetrics()) {
 			renderMetric(sb, metric);
 		}
-		//---------
+		//-----
 		endRender(sb);
-		//---------
+		//-----
 		FileRendererUtil.writeFile(rootPath, dataReport.getFileName(), sb.toString());
 	}
 
@@ -76,8 +76,9 @@ final class DataReportRendererImpl implements DataReportRenderer {
 	}
 
 	private static void endRender(final StringBuilder sb) {
-		sb.append("</body>");
-		sb.append("</html>");
+		sb
+				.append("</body>")
+				.append("</html>");
 	}
 
 }

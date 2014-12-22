@@ -65,7 +65,7 @@ public final class ZipUtil {
 		Assertion.checkArgNotEmpty(entryName);
 		final ZipEntry zipEntry = odtFile.getEntry(entryName);
 		Assertion.checkNotNull(zipEntry, "Le modèle {0} ne contient pas {1}, vérifier que le modèle est un document valide et du bon type.", odtFile.getName(), entryName);
-		//---------------------------------------------------------------------
+		//-----
 		final StringBuilder resultat = new StringBuilder();
 
 		try (final InputStreamReader reader = new InputStreamReader(odtFile.getInputStream(zipEntry), ENCODER)) {

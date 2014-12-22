@@ -79,7 +79,7 @@ public final class UiListDelta<D extends DtObject> implements Serializable {
 	 */
 	public DtListDelta<D> mergeAndCheckInput(final List<DtObjectValidator<D>> dtObjectValidators, final UiMessageStack uiMessageStack) {
 		Assertion.checkNotNull(dtObjectValidators);
-		//---------------------------------------------------------------------
+		//-----
 		final DtList<D> dtListCreates = mergeAndCheckInput(collCreates, dtObjectValidators, uiMessageStack);
 		final DtList<D> dtListUpdates = mergeAndCheckInput(collUpdates, dtObjectValidators, uiMessageStack);
 		final DtList<D> dtListDeletes = mergeAndCheckInput(collDeletes, dtObjectValidators, uiMessageStack);

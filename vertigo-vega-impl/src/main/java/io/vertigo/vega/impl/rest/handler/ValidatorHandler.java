@@ -53,7 +53,7 @@ final class ValidatorHandler implements RouteHandler {
 
 	ValidatorHandler(final EndPointDefinition endPointDefinition) {
 		Assertion.checkNotNull(endPointDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		this.endPointDefinition = endPointDefinition;
 	}
 

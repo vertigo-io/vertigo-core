@@ -54,7 +54,7 @@ public final class KActionContext extends HashMap<String, Serializable> {
 	@Override
 	public Serializable get(final Object key) {
 		Assertion.checkNotNull(key);
-		//---------------------------------------------------------------------
+		//-----
 		final Serializable o = super.get(key);
 		Assertion.checkNotNull(o, "Objet :{0} non trouvé! Vérifier que l objet est bien enregistré avec la clé. Cl�s disponibles {1}", key, keySet());
 		return o;
@@ -126,7 +126,7 @@ public final class KActionContext extends HashMap<String, Serializable> {
 	@Override
 	public boolean containsKey(final Object key) {
 		Assertion.checkNotNull(key);
-		// ----------------------------------------------------------------------
+		//-----
 		return super.containsKey(key);
 	}
 
@@ -136,7 +136,7 @@ public final class KActionContext extends HashMap<String, Serializable> {
 	 */
 	public String findKey(final UiObject<?> uiObject) {
 		Assertion.checkNotNull(uiObject);
-		// ----------------------------------------------------------------------
+		//-----
 		final String contextKey = reverseUiObjectIndex.get(uiObject);
 		if (contextKey != null) {
 			return contextKey;
@@ -156,7 +156,7 @@ public final class KActionContext extends HashMap<String, Serializable> {
 	 */
 	public String findKey(final DtObject dtObject) {
 		Assertion.checkNotNull(dtObject);
-		// ----------------------------------------------------------------------
+		//-----
 		final String contextKey = reverseUiObjectIndex.get(dtObject);
 		if (contextKey != null) {
 			return contextKey;
@@ -178,7 +178,7 @@ public final class KActionContext extends HashMap<String, Serializable> {
 		Assertion.checkNotNull(value, "la valeur doit être renseignée pour {0}", key);
 		Assertion.checkArgument(!(value instanceof DtObject), "Vous devez poser des uiObject dans le context pas des objets métiers ({0})", key);
 		Assertion.checkArgument(!(value instanceof DtList), "Vous devez poser des uiList dans le context pas des listes d'objets métiers ({0})", key);
-		// ----------------------------------------------------------------------
+		//-----
 		if (CTX.equals(key)) { //struts tente de mettre a jour la clé lors de la reception de la request
 			return value;
 		}

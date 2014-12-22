@@ -59,7 +59,7 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 	 */
 	public ExplainPlanMetricEngine(final TaskManager taskManager) {
 		Assertion.checkNotNull(taskManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.taskManager = taskManager;
 	}
 
@@ -67,7 +67,7 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 	@Override
 	public Metric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		try {
 			if (TaskEngineSelect.class.isAssignableFrom(taskDefinition.getTaskEngineClass())) {
 				final int currentSequence = sequence++;
@@ -86,7 +86,7 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 	 */
 	private static Metric createMetric(final String explainPlan, final Status status, final Throwable throwable) {
 		Assertion.checkNotNull(explainPlan);
-		//---------------------------------------------------------------------
+		//-----
 		final Integer value = createValue(explainPlan);
 		final String valueInformation = createValueInformation(explainPlan, status, throwable);
 		return new MetricBuilder()

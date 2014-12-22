@@ -122,7 +122,7 @@ public final class EndPointParam {
 				|| EndPointTypeUtil.isAssignableFrom(DtObject.class, type)
 				|| EndPointTypeUtil.isAssignableFrom(DtObjectExtended.class, type)
 				|| EndPointTypeUtil.isParameterizedBy(DtObject.class, type), "Validators aren't supported for {0}", type);
-		//-----------------------------------------------------------------
+		//-----
 		this.paramType = paramType;
 		this.type = type;
 		this.name = name;

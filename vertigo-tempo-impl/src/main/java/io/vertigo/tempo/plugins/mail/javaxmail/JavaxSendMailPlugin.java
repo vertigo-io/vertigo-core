@@ -98,7 +98,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		Assertion.checkNotNull(mailPassword);
 		Assertion.checkArgument(mailLogin.isEmpty() ^ mailPassword.isDefined(), // login and password must be null or not null both
 				"Password is required when login is defined");
-		// ---------------------------------------------------------------------
+		//-----
 		this.fileManager = fileManager;
 		this.mailStoreProtocol = mailStoreProtocol;
 		this.mailHost = mailHost;
@@ -113,7 +113,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 	@Override
 	public void sendMail(final Mail mail) {
 		Assertion.checkNotNull(mail);
-		// ---------------------------------------------------------------------
+		//-----
 		try {
 			final Properties properties = new Properties();
 			properties.put("mail.store.protocol", mailStoreProtocol);
@@ -168,7 +168,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 	private static void setFromAddress(final String from, final Message message) throws MessagingException {
 		Assertion.checkNotNull(from);
 		Assertion.checkNotNull(message);
-		// ---------------------------------------------------------------------
+		//-----
 		try {
 			message.setFrom(createInternetAddress(from));
 		} catch (final AddressException e) {
@@ -180,7 +180,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 	private static void setReplyToAddress(final String replyTo, final Message message) throws MessagingException {
 		Assertion.checkNotNull(message);
 		Assertion.checkNotNull(replyTo);
-		// ---------------------------------------------------------------------
+		//-----
 		try {
 			final InternetAddress[] replyToArray = { createInternetAddress(replyTo) };
 			message.setReplyTo(replyToArray);
@@ -210,7 +210,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		Assertion.checkNotNull(addressList);
 		Assertion.checkArgument(!addressList.isEmpty(), "La liste des destinataires ne doit pas être vide");
 		Assertion.checkNotNull(message);
-		// ---------------------------------------------------------------------
+		//-----
 		final InternetAddress[] addresses = new InternetAddress[addressList.size()];
 		for (int i = 0; i < addressList.size(); i++) {
 			try {
@@ -230,7 +230,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 	private static void setBodyContent(final String textContent, final String htmlContent, final Part bodyPart) throws MessagingException {
 		Assertion.checkArgument(textContent != null || htmlContent != null, "Le mail n'a pas de contenu, ni en text, ni en html");
 		Assertion.checkNotNull(bodyPart);
-		// ---------------------------------------------------------------------
+		//-----
 		if (textContent != null && htmlContent != null) {
 			final Multipart multipart = new MimeMultipart("alternative");
 			final BodyPart plainMessageBodyPart = new MimeBodyPart();

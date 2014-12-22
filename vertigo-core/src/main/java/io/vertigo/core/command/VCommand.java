@@ -24,11 +24,11 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * Generic request with args to interact with vertigo, components. 
+ * Generic request with args to interact with vertigo, components.
  * A command contains
  *  - a name like put, push...
- *  - a list of args identified by their name and value. 
- * 
+ *  - a list of args identified by their name and value.
+ *
  * @author pchretien
  */
 public final class VCommand {
@@ -36,14 +36,14 @@ public final class VCommand {
 
 	private final Map<String, String> args;
 
-	public VCommand(String name) {
+	public VCommand(final String name) {
 		this(name, Collections.<String, String> emptyMap());
 	}
 
-	public VCommand(String name, Map<String, String> args) {
+	public VCommand(final String name, final Map<String, String> args) {
 		Assertion.checkNotNull(name, "name is required");
 		Assertion.checkNotNull(args, "args is required, may be empty");
-		//-------------------------------------------------
+		//-----
 		//		System.out.println("cmd : name => " + name);
 		//		System.out.println("cmd : args => " + args);
 		this.name = name;
@@ -54,12 +54,12 @@ public final class VCommand {
 		return name;
 	}
 
-	public String arg(String argName, String defaultValue) {
+	public String arg(final String argName, final String defaultValue) {
 		//		System.out.println("arg : name => " + argName + " contains " + args.containsKey(argName));
 		return args.containsKey(argName) ? args.get(argName) : defaultValue;
 	}
 
-	public int arg(String argName, int defaultValue) {
+	public int arg(final String argName, final int defaultValue) {
 		return args.containsKey(argName) ? Integer.valueOf(args.get(argName)) : defaultValue;
 	}
 }

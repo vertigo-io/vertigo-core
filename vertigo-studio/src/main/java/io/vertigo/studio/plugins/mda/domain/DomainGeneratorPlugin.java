@@ -59,7 +59,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin {
 			@Named("generateJpaAnnotations") final boolean generateJpaAnnotations,
 			@Named("generateDtDefinitions") final boolean generateDtDefinitions,
 			@Named("generateDtObject") final boolean generateDtObject) {
-		// ---------------------------------------------------------------------
+		//-----
 		this.generateDtResources = generateDtResources;
 		this.generateJpaAnnotations = generateJpaAnnotations;
 		this.generateDtDefinitions = generateDtDefinitions;
@@ -71,7 +71,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin {
 	public void generate(final FileConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
 		Assertion.checkNotNull(domainConfiguration);
 		Assertion.checkNotNull(resultBuilder);
-		// ---------------------------------------------------------------------
+		//-----
 		/* Génération des ressources afférentes au DT. */
 		if (generateDtResources) {
 			generateDtResources(domainConfiguration, resultBuilder);

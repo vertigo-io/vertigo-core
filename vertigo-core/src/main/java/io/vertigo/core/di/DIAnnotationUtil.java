@@ -41,7 +41,7 @@ public final class DIAnnotationUtil {
 	}
 
 	/**
-	 * Récupération du constructeur. 
+	 * Récupération du constructeur.
 	 * Il doit y avoir 1 et un seul constructeur public
 	 * Ce constructeur doit être vide ou marqué avec l'annotation @Inject.
 	 * @param clazz Class de l'objet
@@ -49,12 +49,12 @@ public final class DIAnnotationUtil {
 	 */
 	public static <T> Constructor<T> findInjectableConstructor(final Class<T> clazz) {
 		Assertion.checkNotNull(clazz);
-		//---------------------------------------------------------------------
+		//-----
 		final Constructor<T>[] constructors = (Constructor<T>[]) clazz.getConstructors();
 		Assertion.checkNotNull(constructors, "Aucun constructeur public identifiable");
 		Assertion.checkArgument(constructors.length == 1, "Un seul constructeur public doit être déclaré sur {0}", clazz.getName());
 		Assertion.checkArgument(isInjectable(constructors[0]), "Le constructeur public de {0} doit être marqué avec l'annotation @Inject ou bien être vide", clazz.getName());
-		//-----------------------------------------------------------------
+		//-----
 
 		//On a un et un seul constructeur.
 		return constructors[0];
@@ -72,7 +72,7 @@ public final class DIAnnotationUtil {
 	 */
 	public static boolean isOptional(final Constructor<?> constructor, final int i) {
 		Assertion.checkNotNull(constructor);
-		//---------------------------------------------------------------------
+		//-----
 		return Option.class.isAssignableFrom(constructor.getParameterTypes()[i]);
 	}
 
@@ -83,7 +83,7 @@ public final class DIAnnotationUtil {
 	 */
 	public static boolean isOptional(final Field field) {
 		Assertion.checkNotNull(field);
-		//---------------------------------------------------------------------
+		//-----
 		return Option.class.isAssignableFrom(field.getType());
 	}
 
@@ -95,7 +95,7 @@ public final class DIAnnotationUtil {
 	 */
 	public static boolean hasPlugins(final Constructor<?> constructor, final int i) {
 		Assertion.checkNotNull(constructor);
-		//---------------------------------------------------------------------
+		//-----
 		if (List.class.isAssignableFrom(constructor.getParameterTypes()[i])) {
 			if (!Plugin.class.isAssignableFrom(ClassUtil.getGeneric(constructor, i))) {
 				throw new IllegalStateException("Only plugins can be injected in list");
@@ -112,7 +112,7 @@ public final class DIAnnotationUtil {
 	 */
 	public static boolean hasPlugins(final Field field) {
 		Assertion.checkNotNull(field);
-		//---------------------------------------------------------------------
+		//-----
 		if (List.class.isAssignableFrom(field.getType())) {
 			if (!Plugin.class.isAssignableFrom(ClassUtil.getGeneric(field))) {
 				throw new IllegalStateException("Only plugins can be injected in list");
@@ -128,9 +128,9 @@ public final class DIAnnotationUtil {
 	public static String buildId(final Option<Class<?>> apiClass, final Class<?> implClass) {
 		Assertion.checkNotNull(apiClass);
 		Assertion.checkNotNull(implClass);
-		//---------------------------------------------------------------------
+		//-----
 		if (apiClass.isDefined()) {
-			//if en api is defined, api muust define id 
+			//if en api is defined, api muust define id
 			final String id = buildId(apiClass.get());
 			if (implClass.isAnnotationPresent(Named.class)) {
 				//if an api is defined and an annotation is found on implementation then we have to check the consistency
@@ -143,19 +143,19 @@ public final class DIAnnotationUtil {
 	}
 
 	/**
-	 * Construction d'un ID pour un composant défini par une implémentation.	
+	 * Construction d'un ID pour un composant défini par une implémentation.
 	 * @param clazz Classe d'implémentation du composant
-	 * @return Identifiant du composant 
+	 * @return Identifiant du composant
 	 */
 	public static String buildId(final Class<?> clazz) {
 		Assertion.checkNotNull(clazz);
-		//---------------------------------------------------------------------
+		//-----
 		//On construit l'identifiant du composant.
-		//Par ordre de priorité l'id est 
+		//Par ordre de priorité l'id est
 		// - la valeur de l'annotation Named si il y a une annotation Named déclarée
 		// - Sinon on prend le nom de la classe passée en paramètre.
 		if (clazz.isAnnotationPresent(Named.class)) {
-			//Si le composant recherché n'est pas explicitement précisé alors on le recherche via son type 
+			//Si le composant recherché n'est pas explicitement précisé alors on le recherche via son type
 			//et dans ce cas son id est obligatoirement le nom complet de la classe ou de l'interface.
 			final Named named = clazz.getAnnotation(Named.class);
 			return named.value();
@@ -171,11 +171,11 @@ public final class DIAnnotationUtil {
 	/**
 	 * Construction d'un ID pour un champ (Les options sont autorisées).
 	 * @param field Champ du composant (Option autorisée)
-	 * @return Identifiant du composant 
+	 * @return Identifiant du composant
 	 */
 	public static String buildId(final Field field) {
 		Assertion.checkNotNull(field);
-		//---------------------------------------------------------------------
+		//-----
 		final Class<?> implClass;
 		final String named = getNamedValue(field.getAnnotations());
 		if (Option.class.isAssignableFrom(field.getType())) {
@@ -200,7 +200,7 @@ public final class DIAnnotationUtil {
 	 */
 	public static String buildId(final Constructor<?> constructor, final int i) {
 		Assertion.checkNotNull(constructor);
-		//---------------------------------------------------------------------
+		//-----
 		final String named = getNamedValue(constructor.getParameterAnnotations()[i]);
 
 		final Class<?> implClass;

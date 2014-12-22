@@ -70,7 +70,7 @@ public final class DtDefinition implements Definition {
 	DtDefinition(final String name, final String packageName, final boolean persistent, final List<DtField> dtFields, final boolean dynamic) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(dtFields);
-		//---------------------------------------------------------------------
+		//-----
 		this.name = name;
 		this.persistent = persistent;
 		this.packageName = packageName;
@@ -86,21 +86,21 @@ public final class DtDefinition implements Definition {
 		}
 		idField = Option.option(id);
 		this.dynamic = dynamic;
-		//---------------------------------------------------------------------
+		//-----
 		Assertion.checkState(!persistent || idField.isDefined(), "Si un DT est persistant il doit posséder un ID");
 	}
 
 	private void registerSort(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
 		Assertion.checkArgument(sortField.isEmpty(), "Un seul champ 'sort' est autorisé par objet : {0}", dtField.getName());
-		//----------------------------------------------------------------------
+		//-----
 		sortField = Option.some(dtField);
 	}
 
 	private void registerDisplay(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
 		Assertion.checkArgument(displayField.isEmpty(), "Un seul champ 'display' est autorisé par objet : {0}", dtField.getName());
-		//----------------------------------------------------------------------
+		//-----
 		displayField = Option.some(dtField);
 	}
 
@@ -108,14 +108,14 @@ public final class DtDefinition implements Definition {
 	void registerDtField(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
 		Assertion.checkArgument(!DtField.FieldType.PRIMARY_KEY.equals(dtField.getType()), "interdit d'ajouter les champs ID ");
-		//----------------------------------------------------------------------
+		//-----
 		doRegisterDtField(dtField);
 	}
 
 	private void doRegisterDtField(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
 		Assertion.checkArgument(!mappedFields.containsKey(dtField.getName()), "Field {0} déjà enregistré sur {1}", dtField.getName(), this);
-		//----------------------------------------------------------------------
+		//-----
 		fields.add(dtField);
 		mappedFields.put(dtField.getName(), dtField);
 		if (dtField.isSort()) {
@@ -155,9 +155,9 @@ public final class DtDefinition implements Definition {
 	 */
 	public DtField getField(final String fieldName) {
 		Assertion.checkArgNotEmpty(fieldName);
-		//---------------------------------------------------------------------
+		//-----
 		final DtField dtField = mappedFields.get(fieldName);
-		//---------------------------------------------------------------------
+		//-----
 		Assertion.checkNotNull(dtField, "champ :{0} non trouvé pour le DT :{1}. Liste des champs disponibles :{2}", fieldName, this, mappedFields.keySet());
 		return dtField;
 	}
@@ -178,7 +178,7 @@ public final class DtDefinition implements Definition {
 	 */
 	public boolean contains(final DtFieldName fieldName) {
 		Assertion.checkNotNull(fieldName);
-		//---------------------------------------------------------------------
+		//-----
 		return mappedFields.containsKey(fieldName.name());
 	}
 

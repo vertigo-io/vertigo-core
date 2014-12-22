@@ -50,7 +50,7 @@ public final class ModuleConfig {
 		Assertion.checkNotNull(componentConfigs);
 		Assertion.checkNotNull(aspectConfigs);
 		Assertion.checkNotNull(moduleRules);
-		//---------------------------------------------------------------------
+		//-----
 		this.name = name;
 		this.resources = Collections.unmodifiableList(new ArrayList<>(resourceConfigs));
 		this.components = Collections.unmodifiableList(new ArrayList<>(componentConfigs));

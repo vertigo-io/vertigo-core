@@ -59,7 +59,7 @@ public final class UiList<D extends DtObject> extends ArrayList<UiObject<D>> {
 	 */
 	public DtList<D> mergeAndCheckInput(final List<DtObjectValidator<D>> dtObjectValidators, final UiMessageStack uiMessageStack) {
 		Assertion.checkNotNull(dtObjectValidators);
-		//---------------------------------------------------------------------
+		//-----
 		final DtList<D> dtList = new DtList<>(objectType);
 		for (final UiObject<D> element : this) {
 			//entry.getValue().setInputKey(inputKey + "." + listName + "." + entry.getKey());

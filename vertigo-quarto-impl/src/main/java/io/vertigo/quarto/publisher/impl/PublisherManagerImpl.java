@@ -50,7 +50,7 @@ public final class PublisherManagerImpl implements PublisherManager {
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkNotNull(scriptManager);
 		Assertion.checkNotNull(mergerPlugin);
-		//---------------------------------------------------------------------
+		//-----
 		this.fileManager = fileManager;
 		this.mergerPlugin = mergerPlugin;
 	}
@@ -61,7 +61,7 @@ public final class PublisherManagerImpl implements PublisherManager {
 		Assertion.checkNotNull(fileName);
 		Assertion.checkNotNull(modelFileURL);
 		Assertion.checkNotNull(data);
-		//---------------------------------------------------------------------
+		//-----
 		try {
 			return generateFile(fileName, modelFileURL, data);
 		} catch (final IOException e) {
@@ -75,7 +75,7 @@ public final class PublisherManagerImpl implements PublisherManager {
 		// mergeParameter.getOuputFileName() car on utilise cette méthode notamment dans send
 		// ci-dessus pour plusieurs utilisateurs simultanément avec probablement le même
 		// mergeParameter.getOuputFileName()
-		//----------------------------------------------------------------------
+		//-----
 		final File fileToExport = mergerPlugin.execute(modelFileURL, data);
 		return fileManager.createFile(fileName, mergerPlugin.getPublisherFormat().getMimeType(), fileToExport);
 	}

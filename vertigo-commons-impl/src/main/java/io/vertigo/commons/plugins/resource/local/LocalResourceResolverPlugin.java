@@ -28,7 +28,7 @@ import java.net.URL;
 
 /**
  * Résolution des URL liées à l'emplacement local.
- * 
+ *
  * @author prahmoune
  */
 public final class LocalResourceResolverPlugin implements ResourceResolverPlugin {
@@ -37,7 +37,7 @@ public final class LocalResourceResolverPlugin implements ResourceResolverPlugin
 	@Override
 	public Option<URL> resolve(final String resource) {
 		Assertion.checkNotNull(resource);
-		// ---------------------------------------------------------------------
+		//-----
 		try {
 			return Option.option(new File(resource).toURI().toURL());
 		} catch (final MalformedURLException e) {

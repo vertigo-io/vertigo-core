@@ -30,10 +30,10 @@ import java.util.Map;
 
 /**
  * Définition des requêtes d'accès à l'index de recherche.
- * 
+ *
  * les requêtes sont facettées.
  *
- * @author pchretien 
+ * @author pchretien
  */
 @DefinitionPrefix("QRY")
 public final class FacetedQueryDefinition implements Definition {
@@ -52,7 +52,7 @@ public final class FacetedQueryDefinition implements Definition {
 	public FacetedQueryDefinition(final String name, final List<FacetDefinition> facetDefinitions) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(facetDefinitions);
-		//---------------------------------------------------------------------
+		//-----
 		this.name = name;
 		for (final FacetDefinition facetDefinition : facetDefinitions) {
 			this.facetDefinitions.put(facetDefinition.getName(), facetDefinition);
@@ -67,9 +67,9 @@ public final class FacetedQueryDefinition implements Definition {
 	 */
 	public FacetDefinition getFacetDefinition(final String facetName) {
 		Assertion.checkArgNotEmpty(facetName);
-		//---------------------------------------------------------------------
+		//-----
 		final FacetDefinition facetDefinition = facetDefinitions.get(facetName);
-		//---------------------------------------------------------------------
+		//-----
 		Assertion.checkNotNull(facetDefinition, "Aucune Définition de facette trouvée pour {0}", facetName);
 		return facetDefinition;
 	}

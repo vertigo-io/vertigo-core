@@ -25,7 +25,7 @@ import io.vertigo.lang.Assertion;
 import java.util.List;
 
 /**
- * Parse une chaine de caractères. 
+ * Parse une chaine de caractères.
  * (script SQL ou autre)
  * Notifie le handler des paramètres trouvés.
  *
@@ -55,13 +55,13 @@ final class ScriptParser {
 	 */
 	ScriptParser(final List<ScriptSeparator> separators) {
 		Assertion.checkNotNull(separators);
-		//----------------------------------------------------------------------
+		//-----
 		this.separators = separators;
 	}
 
 	/**
 	 * Parse le script, notifie le handler.
-	 * La grammaire est constituées de simples balises (Séparateurs). 
+	 * La grammaire est constituées de simples balises (Séparateurs).
 	 *
 	 * @param script Script à analyser
 	 * @param scriptHandler Handler gérant la grammaire analysée
@@ -69,7 +69,7 @@ final class ScriptParser {
 	void parse(final String script, final ScriptParserHandler scriptHandler) {
 		Assertion.checkNotNull(script);
 		Assertion.checkNotNull(scriptHandler);
-		//----------------------------------------------------------------------
+		//-----
 		int index = 0;
 		int endCar = -1;
 

@@ -33,7 +33,7 @@ public final class CacheConfig {
 
 	public CacheConfig(final String cacheType, final int maxElementsInMemory, final long timeToLiveSeconds, final long timeToIdleSeconds) {
 		Assertion.checkArgNotEmpty(cacheType);
-		//---------------------------------------------------------------------
+		//-----
 		this.cacheType = cacheType;
 		this.maxElementsInMemory = maxElementsInMemory;
 		this.timeToLiveSeconds = timeToLiveSeconds;

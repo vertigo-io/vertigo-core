@@ -44,7 +44,7 @@ final class NodeState {
 	public NodeState(final String nodeUID, final String nodeWorkType) {
 		Assertion.checkArgNotEmpty(nodeUID);
 		Assertion.checkNotNull(nodeWorkType);
-		//---------------------------------------------------------------------
+		//-----
 		this.nodeUID = nodeUID;
 		nodeWorkTypes.add(nodeWorkType);
 		lastSeen = System.currentTimeMillis();

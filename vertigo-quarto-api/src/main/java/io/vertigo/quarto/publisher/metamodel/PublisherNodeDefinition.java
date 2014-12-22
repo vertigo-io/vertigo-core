@@ -40,7 +40,7 @@ public final class PublisherNodeDefinition {
 
 	PublisherNodeDefinition(final List<PublisherField> publisherFields) {
 		Assertion.checkNotNull(publisherFields);
-		//---------------------------------------------------------------------
+		//-----
 		publisherFieldMap = new LinkedHashMap<>();
 		for (final PublisherField publisherField : publisherFields) {
 			registerField(publisherField);
@@ -49,7 +49,7 @@ public final class PublisherNodeDefinition {
 
 	private void registerField(final PublisherField publisherField) {
 		Assertion.checkArgument(!publisherFieldMap.containsKey(publisherField.getName()), "Le champ {0} est déjà déclaré.", publisherField.getName());
-		//---------------------------------------------------------------------
+		//-----
 		publisherFieldMap.put(publisherField.getName(), publisherField);
 	}
 
@@ -61,7 +61,7 @@ public final class PublisherNodeDefinition {
 	 */
 	public PublisherField getField(final String fieldName) {
 		final PublisherField field = publisherFieldMap.get(fieldName);
-		//---------------------------------------------------------------------
+		//-----
 		Assertion.checkNotNull(field, "Le champ {0} n''est pas dans la définition de ce noeud, champs disponibles [{1}]", fieldName, publisherFieldMap.keySet());
 		return field;
 	}

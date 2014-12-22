@@ -97,7 +97,7 @@ public final class ClassUtil {
 	public static <J> J newInstance(final Constructor<J> constructor, final Object[] args) {
 		Assertion.checkNotNull(constructor);
 		Assertion.checkNotNull(args);
-		// ----------------------------------------------------------------------
+		//-----
 		try {
 			return constructor.newInstance(args);
 		} catch (final InvocationTargetException e) {
@@ -140,7 +140,7 @@ public final class ClassUtil {
 	public static <J> Constructor<J> findConstructor(final Class<J> clazz, final Class<?>[] parameterTypes) {
 		Assertion.checkNotNull(clazz);
 		Assertion.checkNotNull(parameterTypes);
-		//---------------------------------------------------------------------
+		//-----
 		try {
 			return clazz.getConstructor(parameterTypes);
 		} catch (final NoSuchMethodException e) {
@@ -160,7 +160,7 @@ public final class ClassUtil {
 	 */
 	public static Class<?> classForName(final String javaClassName) {
 		Assertion.checkArgNotEmpty(javaClassName);
-		// ----------------------------------------------------------------------
+		//-----
 		try {
 			return Class.forName(javaClassName);
 		} catch (final ClassNotFoundException e) {
@@ -179,7 +179,7 @@ public final class ClassUtil {
 	public static <J> Class<? extends J> classForName(final String javaClassName, final Class<J> type) {
 		Assertion.checkNotNull(javaClassName);
 		Assertion.checkNotNull(type);
-		// ----------------------------------------------------------------------
+		//-----
 		try {
 			return Class.forName(javaClassName).asSubclass(type);
 		} catch (final ClassNotFoundException e) {
@@ -198,7 +198,7 @@ public final class ClassUtil {
 	public static Object invoke(final Object instance, final Method method, final Object... args) {
 		Assertion.checkNotNull(instance);
 		Assertion.checkNotNull(method);
-		//--------------------------------------------------------------------
+		//-----
 		try {
 			return method.invoke(instance, args);
 		} catch (final IllegalAccessException e) {
@@ -218,7 +218,7 @@ public final class ClassUtil {
 	public static void set(final Object instance, final Field field, final Object value) {
 		Assertion.checkNotNull(instance);
 		Assertion.checkNotNull(field);
-		//--------------------------------------------------------------------
+		//-----
 		try {
 			field.setAccessible(true);
 			field.set(instance, value);
@@ -237,7 +237,7 @@ public final class ClassUtil {
 	public static Object get(final Object instance, final Field field) {
 		Assertion.checkNotNull(instance);
 		Assertion.checkNotNull(field);
-		//--------------------------------------------------------------------
+		//-----
 		try {
 			field.setAccessible(true);
 			return field.get(instance);
@@ -257,7 +257,7 @@ public final class ClassUtil {
 		Assertion.checkNotNull(clazz);
 		Assertion.checkNotNull(methodName);
 		Assertion.checkNotNull(parameterTypes);
-		//---------------------------------------------------------------------
+		//-----
 		try {
 			return clazz.getMethod(methodName, parameterTypes);
 		} catch (final NoSuchMethodException e) {
@@ -274,7 +274,7 @@ public final class ClassUtil {
 	public static Collection<Field> getAllFields(final Class<?> clazz, final Class<? extends Annotation> annotation) {
 		Assertion.checkNotNull(clazz);
 		Assertion.checkNotNull(annotation);
-		//---------------------------------------------------------------------
+		//-----
 		final List<Field> fields = new ArrayList<>();
 		for (final Field field : ClassUtil.getAllFields(clazz)) {
 			if (field.isAnnotationPresent(annotation)) {
@@ -291,7 +291,7 @@ public final class ClassUtil {
 	 */
 	public static Collection<Field> getAllFields(final Class<?> clazz) {
 		Assertion.checkNotNull(clazz);
-		//---------------------------------------------------------------------
+		//-----
 		final List<Field> fields = new ArrayList<>();
 		final Field[] declaredFields = clazz.getDeclaredFields();
 		fields.addAll(Arrays.asList(declaredFields));
@@ -309,7 +309,7 @@ public final class ClassUtil {
 	 */
 	public static Set<Class<?>> getAllInterfaces(final Class<?> clazz) {
 		Assertion.checkNotNull(clazz);
-		//---------------------------------------------------------------------
+		//-----
 		Class<?> root = clazz;
 		final Set<Class<?>> allInterfaces = new HashSet<>();
 		while (root != null) {
@@ -340,7 +340,7 @@ public final class ClassUtil {
 	 */
 	public static Class<?> getGeneric(final Constructor<?> constructor, final int i) {
 		Assertion.checkNotNull(constructor);
-		//---------------------------------------------------------------------
+		//-----
 		final Class<?> generic = getGeneric(constructor.getGenericParameterTypes()[i]);
 		if (generic == null) {
 			throw new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur le constructeur " + constructor);
@@ -360,7 +360,7 @@ public final class ClassUtil {
 	 */
 	public static Class<?> getGeneric(final Method method, final int i) {
 		Assertion.checkNotNull(method);
-		//---------------------------------------------------------------------
+		//-----
 		final Class<?> generic = getGeneric(method.getGenericParameterTypes()[i]);
 		if (generic == null) {
 			throw new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur la methode " + method.getDeclaringClass() + "." + method.getName());
@@ -379,7 +379,7 @@ public final class ClassUtil {
 	 */
 	public static Class<?> getGeneric(final Field field) {
 		Assertion.checkNotNull(field);
-		//---------------------------------------------------------------------
+		//-----
 		final Class<?> generic = getGeneric(field.getGenericType());
 		if (generic == null) {
 			throw new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur le champ " + field.getName());
@@ -410,7 +410,7 @@ public final class ClassUtil {
 	 */
 	public static String getPropertyName(final Method method) {
 		Assertion.checkNotNull(method);
-		//---------------------------------------------------------------------
+		//-----
 		final String property;
 		if (method.getName().startsWith("get")) {
 			property = method.getName().substring("get".length());

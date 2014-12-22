@@ -98,7 +98,7 @@ public final class UiErrorBuilder {
 	 */
 	void clearErrors(final DtObject dtObject, final DtField dtField) {
 		Assertion.checkNotNull(dtField);
-		//---------------------------------------------------------------------
+		//-----
 		for (final Iterator<UiError> it = uiObjectErrors.iterator(); it.hasNext();) {
 			final UiError uiError = it.next();
 			if (uiError.getDtObject() == dtObject && uiError.getDtField() == dtField) {

@@ -60,7 +60,7 @@ public final class ComponentRef<T> implements Serializable {
 	 */
 	private ComponentRef(final Class<T> componentClazz, final boolean lazy) {
 		Assertion.checkNotNull(componentClazz);
-		//---------------------------------------------------------------------
+		//-----
 		componentId = null;
 		this.componentClazz = componentClazz;
 		if (!lazy) {

@@ -40,7 +40,7 @@ public final class AjaxResponseBuilder {
 	 */
 	AjaxResponseBuilder(final PrintWriter writer, final boolean useBuffer) {
 		Assertion.checkNotNull(writer);
-		//---------------------------------------------------------------------
+		//-----
 		this.writer = writer;
 		this.useBuffer = useBuffer;
 		sb = useBuffer ? new StringBuilder() : null;
@@ -69,7 +69,7 @@ public final class AjaxResponseBuilder {
 	 */
 	public AjaxResponseBuilder appendHtml(final String content) {
 		Assertion.checkNotNull(content);
-		//---------------------------------------------------------------------
+		//-----
 		if (useBuffer) {
 			sb.append("<htmlUpdate>");
 			sb.append(content);

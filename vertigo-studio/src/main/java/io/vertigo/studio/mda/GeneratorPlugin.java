@@ -31,5 +31,6 @@ public interface GeneratorPlugin extends Plugin {
 	 * Génération d'un fichier à partir d'une source et de paramètres.
 	 * @param resultBuilder Builder
 	 */
+	//fix FileConfig dependency ?
 	void generate(final FileConfiguration fileConfiguration, final ResultBuilder resultBuilder);
 }

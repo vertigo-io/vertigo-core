@@ -54,7 +54,7 @@ public final class DomainReportingPlugin implements ReportingPlugin {
 	public DomainReportingPlugin(final KTransactionManager transactionManager, final PersistenceManager persistenceManager) {
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(persistenceManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.transactionManager = transactionManager;
 		this.persistenceManager = persistenceManager;
 		metricEngines = createMetricEngines();

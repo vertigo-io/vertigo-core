@@ -44,7 +44,7 @@ public final class TaskPopulator {
 	 */
 	public TaskPopulator(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		this.taskDefinition = taskDefinition;
 		taskBuilder = new TaskBuilder(taskDefinition);
 	}

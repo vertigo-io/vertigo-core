@@ -55,7 +55,7 @@ public final class PluginConfig {
 	PluginConfig(final Class<? extends Plugin> pluginImplClass, final Map<String, String> params) {
 		Assertion.checkNotNull(pluginImplClass);
 		Assertion.checkNotNull(params);
-		//---------------------------------------------------------------------
+		//-----
 		this.pluginType = StringUtil.normalize(getType(pluginImplClass));
 		implClass = pluginImplClass;
 		this.params = new HashMap<>(params);
