@@ -19,8 +19,8 @@
 package io.vertigo.studio.tools;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.config.App;
 import io.vertigo.core.config.AppBuilder;
+import io.vertigo.core.config.AppConfig;
 import io.vertigo.studio.tools.generate.GenerateGoal;
 import io.vertigo.util.ClassUtil;
 
@@ -48,10 +48,14 @@ public final class NameSpace2Java {
 			throw new IllegalArgumentException("Usage : java io.vertigo.studio.tools.NameSpace2Java \"<<pathToParams.properties>>\" ");
 		}
 		//-----
-		try (App app = new App(new AppBuilder()
+		AppConfig appConfig = new AppBuilder()
 				.withSilence(true)
 				.withEnvParams(NameSpace2Java.class, args[0])
-				.build())) {
+				.build();
+
+		try {
+			Home.start(appConfig);
+			//-----
 			final List<Class<? extends Goal>> goalClazzList = new ArrayList<>();
 			//-----
 			goalClazzList.add(GenerateGoal.class);
