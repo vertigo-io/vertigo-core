@@ -54,7 +54,7 @@ public final class DtObjectUtil {
 	 */
 	public static DtObject createDtObject(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		if (dtDefinition.isDynamic()) {
 			return new DynaDtObject(dtDefinition);
 		}

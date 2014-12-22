@@ -54,7 +54,7 @@ public final class ConstraintBigDecimalLength extends AbstractConstraintLength<B
 	@Override
 	public void initParameters(final String args) {
 		setMaxLength(args);
-		//----------------------------------------------------------------------
+		//-----
 		maxValue = BigDecimal.valueOf(1L).movePointRight(getMaxLength());
 		minValue = maxValue.negate();
 	}

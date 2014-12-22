@@ -36,7 +36,7 @@ public final class Properties {
 
 	Properties(final Map<Property<?>, Object> properties) {
 		Assertion.checkNotNull(properties);
-		//----------------------------------------------------------------------
+		//-----
 		if (properties.isEmpty()) {
 			this.properties = Collections.emptyMap();
 		} else {
@@ -62,7 +62,7 @@ public final class Properties {
 		Assertion.checkNotNull(property);
 		//On ne vérifie rien sur le type retourné par le getter.
 		//le type a été validé lors du put.
-		//----------------------------------------------------------------------
+		//-----
 		//Conformémément au contrat, on retourne null si pas de propriété trouvée
 		return property.getType().cast(properties.get(property));
 	}

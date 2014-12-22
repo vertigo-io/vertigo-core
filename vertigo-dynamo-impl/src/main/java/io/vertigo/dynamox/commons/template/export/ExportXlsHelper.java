@@ -34,7 +34,7 @@ import java.util.Map;
 
 /**
  * Helper pour les editions xls.
- * 
+ *
  * @author kleegroup
  * @param <R>
  *            Type d'objet pour la liste
@@ -44,7 +44,7 @@ public class ExportXlsHelper<R extends DtObject> {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param fileName
 	 *            nom du fichier résultat de l'export
 	 * @param title
@@ -52,7 +52,7 @@ public class ExportXlsHelper<R extends DtObject> {
 	 */
 	public ExportXlsHelper(final String fileName, final String title) {
 		Assertion.checkNotNull(fileName);
-		// ---------------------------------------------------------------------
+		//-----
 		exportBuilder = new ExportBuilder(ExportFormat.XLS, fileName)
 				.withTitle(title);
 	}
@@ -60,7 +60,7 @@ public class ExportXlsHelper<R extends DtObject> {
 	/**
 	 * Prepare the export generation. If the screen allows 2 exports, then one
 	 * must use 2 actions
-	 * 
+	 *
 	 * @param dtcToExport
 	 *            the objects collection to be exported
 	 * @param collectionColumnNames
@@ -85,7 +85,7 @@ public class ExportXlsHelper<R extends DtObject> {
 
 	/**
 	 * Add a DTC to the export.
-	 * 
+	 *
 	 * @param dtcToExport
 	 *            collection to be exported
 	 * @param collectionColumnNameList
@@ -98,7 +98,7 @@ public class ExportXlsHelper<R extends DtObject> {
 		Assertion.checkArgument(dtcToExport != null && dtcToExport.size() > 0, "The list of the objects to be exported must exist and not be empty");
 		Assertion.checkArgument(collectionColumnNameList != null && !collectionColumnNameList.isEmpty(), "The list of the columns to be exported must exist and not be empty");
 
-		// --------------------------------------------
+		//-----
 
 		final ExportSheetBuilder exportSheetBuilder = exportBuilder.beginSheet(dtcToExport, null);
 
@@ -117,7 +117,7 @@ public class ExportXlsHelper<R extends DtObject> {
 
 	/**
 	 * Add a criterion to the export.
-	 * 
+	 *
 	 * @param criterion
 	 *            criterion object to be exported
 	 * @param criterionExcludedColumnNames
@@ -127,7 +127,7 @@ public class ExportXlsHelper<R extends DtObject> {
 		Assertion.checkNotNull(criterion);
 		Assertion.checkArgument(criterionExcludedColumnNames != null, "The list of the columns to be excluded must exist");
 
-		// --------------------------------------------
+		//-----
 
 		final ExportSheetBuilder exportSheetBuilder = exportBuilder.beginSheet(criterion, null);
 
@@ -141,7 +141,7 @@ public class ExportXlsHelper<R extends DtObject> {
 
 	/**
 	 * Traduit la liste des champs à exporter en liste de DtField.
-	 * 
+	 *
 	 * @param list
 	 *            Liste à exporter
 	 * @param collectionColumnNames
@@ -159,7 +159,7 @@ public class ExportXlsHelper<R extends DtObject> {
 
 	/**
 	 * Détermine la liste des champs du critère à exporter en liste de DtField.
-	 * 
+	 *
 	 * @param dto
 	 *            DtObject à exporter
 	 * @param criterionExcludedColumnNameList

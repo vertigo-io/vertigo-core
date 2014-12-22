@@ -49,7 +49,7 @@ final class BrokerConfigurationImpl implements BrokerConfiguration {
 		Assertion.checkNotNull(cacheManager);
 		Assertion.checkNotNull(persistenceManager);
 		Assertion.checkNotNull(collectionsManager);
-		//---------------------------------------------------------------------
+		//-----
 		cacheStoreConfiguration = new CacheDataStoreConfiguration(cacheManager);
 		logicalStoreConfiguration = new LogicalStoreConfiguration(persistenceManager, collectionsManager);
 		logicalFileStoreConfiguration = new LogicalFileStoreConfiguration();
@@ -72,7 +72,7 @@ final class BrokerConfigurationImpl implements BrokerConfiguration {
 	@Override
 	public void registerCacheable(final DtDefinition dtDefinition, final long timeToLiveInSeconds, final boolean isReloadedByList) {
 		Assertion.checkNotNull(dtDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		cacheStoreConfiguration.registerCacheable(dtDefinition, timeToLiveInSeconds, isReloadedByList);
 	}
 

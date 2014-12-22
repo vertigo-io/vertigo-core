@@ -27,14 +27,14 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * Facette. 
+ * Facette.
  * Valeur d'une définition de facette.
  * la facette est soit constituée
- * - de catégories (range) et dénombre alors le nombre d'éléments par Range  
- *  ex : prix de [0-10[ [10-100[ [100-*]  
+ * - de catégories (range) et dénombre alors le nombre d'éléments par Range
+ *  ex : prix de [0-10[ [10-100[ [100-*]
  * - de terms distincts et dénombre alors le nombre d'éléments par term
- *  ex : marques de voiture renault, peugeot, ford 
- *  ex : villes ou départements    
+ *  ex : marques de voiture renault, peugeot, ford
+ *  ex : villes ou départements
  * @author pchretien, npiedeloup
  */
 public final class Facet implements Serializable {
@@ -51,7 +51,7 @@ public final class Facet implements Serializable {
 	public Facet(final FacetDefinition facetDefinition, final Map<FacetValue, Long> facetValues) {
 		Assertion.checkNotNull(facetDefinition);
 		Assertion.checkNotNull(facetValues);
-		//---------------------------------------------------------------------
+		//-----
 		this.facetDefinition = new DefinitionReference<>(facetDefinition);
 		this.facetValues = Collections.unmodifiableMap(facetValues);
 	}
@@ -65,7 +65,7 @@ public final class Facet implements Serializable {
 
 	/**
 	 * Valeurs des facettes. (Range ou Term)
-	 * @return Map (range | term ; count) 
+	 * @return Map (range | term ; count)
 	 */
 	public Map<FacetValue, Long> getFacetValues() {
 		return facetValues;

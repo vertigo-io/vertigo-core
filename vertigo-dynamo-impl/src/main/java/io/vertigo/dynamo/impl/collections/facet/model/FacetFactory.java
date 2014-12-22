@@ -49,7 +49,7 @@ public final class FacetFactory {
 
 	public FacetFactory(final CollectionsManager collectionManager) {
 		Assertion.checkNotNull(collectionManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.collectionManager = collectionManager;
 	}
 
@@ -62,7 +62,7 @@ public final class FacetFactory {
 	public List<Facet> createFacets(final FacetedQueryDefinition facetedQueryDefinition, final DtList<?> dtList) {
 		Assertion.checkNotNull(facetedQueryDefinition);
 		Assertion.checkNotNull(dtList);
-		//---------------------------------------------------------------------
+		//-----
 		final List<Facet> facets = new ArrayList<>();
 		//Pour chaque type de facette
 		for (final FacetDefinition facetDefinition : facetedQueryDefinition.getFacetDefinitions()) {
@@ -74,8 +74,8 @@ public final class FacetFactory {
 	private <D extends DtObject> DtList<D> apply(final ListFilter listFilter, final DtList<D> fullDtList) {
 		//on délégue à CollectionsManager les méthodes de requête de filtrage.
 		return collectionManager.createDtListProcessor()
-			.filter(listFilter)
-			.apply(fullDtList);
+				.filter(listFilter)
+				.apply(fullDtList);
 	}
 
 	private Facet createFacet(final FacetDefinition facetDefinition, final DtList<?> dtList) {

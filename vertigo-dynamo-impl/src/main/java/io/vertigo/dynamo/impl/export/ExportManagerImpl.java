@@ -49,7 +49,7 @@ public final class ExportManagerImpl implements ExportManager {
 	public ExportManagerImpl(final FileManager fileManager, final List<ExporterPlugin> exporterPlugins) {
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkNotNull(exporterPlugins);
-		// ---------------------------------------------------------------------
+		//-----
 		this.fileManager = fileManager;
 		this.exporterPlugins = Collections.unmodifiableList(exporterPlugins);
 	}
@@ -62,7 +62,7 @@ public final class ExportManagerImpl implements ExportManager {
 	 */
 	private ExporterPlugin getExporterPlugin(final ExportFormat exportFormat) {
 		Assertion.checkNotNull(exportFormat);
-		// ---------------------------------------------------------------------
+		//-----
 		for (final ExporterPlugin exporterPlugin : exporterPlugins) {
 			if (exporterPlugin.accept(exportFormat)) {
 				return exporterPlugin;
@@ -75,7 +75,7 @@ public final class ExportManagerImpl implements ExportManager {
 	@Override
 	public KFile createExportFile(final Export export) {
 		Assertion.checkNotNull(export);
-		// ---------------------------------------------------------------------
+		//-----
 		try {
 			return generateFile(export);
 		} catch (final Exception e) {

@@ -438,7 +438,7 @@ final class JsonConverterHandler implements RouteHandler {
 
 	private String writeValue(final Object value, final Response response, final EncodedType encodedType) {
 		Assertion.checkNotNull(value);
-		//---------------------------------------------------------------------
+		//-----
 		final String tokenId;
 		if (endPointDefinition.isServerSideSave()) {
 			Assertion.checkArgument(DtObject.class.isInstance(value)

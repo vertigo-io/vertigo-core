@@ -58,7 +58,7 @@ public final class DynamicDefinitionRepository {
 	 */
 	public DynamicDefinitionRepository(final DynamicRegistry dynamicRegistry) {
 		Assertion.checkNotNull(dynamicRegistry);
-		//------------------------------------------------------------------------
+		//-----
 		this.dynamicRegistry = dynamicRegistry;
 		grammar = dynamicRegistry.getGrammar();
 	}
@@ -90,7 +90,7 @@ public final class DynamicDefinitionRepository {
 	 */
 	public DynamicDefinition getDefinition(final DynamicDefinitionKey definitionKey) {
 		Assertion.checkArgument(definitions.containsKey(definitionKey), "Aucune clé enregistrée pour :{0} parmi {1}", definitionKey, definitions.keySet());
-		//---------------------------------------------------------------------
+		//-----
 		final DynamicDefinition definition = definitions.get(definitionKey);
 		//---------------------------------------------------------------------
 		Assertion.checkNotNull(definition, "Clé trouvée mais pas de définition enregistrée trouvée pour {0}", definitionKey);
@@ -129,7 +129,7 @@ public final class DynamicDefinitionRepository {
 	 */
 	public void addDefinition(final DynamicDefinition definition) {
 		Assertion.checkNotNull(definition);
-		//----------------------------------------------------------------------
+		//-----
 		//		if (definition.getDefinitionKey().getName().equals("DT_FAMILLE"))
 		//			throw new RuntimeException();
 		put(definition.getDefinitionKey(), definition);
@@ -141,7 +141,7 @@ public final class DynamicDefinitionRepository {
 	 */
 	public void addTemplate(final DynamicDefinition dynamicDefinition) {
 		Assertion.checkNotNull(dynamicDefinition);
-		//----------------------------------------------------------------------
+		//-----
 		//definition.check();
 		//On enregistre la définition qu'elle soit renseignée ou null.
 		//---
@@ -159,8 +159,6 @@ public final class DynamicDefinitionRepository {
 		final DynamicDefinitionKey dynamicDefinitionKey = new DynamicDefinitionKey(keyName);
 		return new DynamicDefinitionImpl(dynamicDefinitionKey, entity).withPackageName(packageName);
 	}
-
-	//-------------------------------------------------------------------------
 
 	/**
 	 * On ajoute une clé (non null) et sa définition (null)

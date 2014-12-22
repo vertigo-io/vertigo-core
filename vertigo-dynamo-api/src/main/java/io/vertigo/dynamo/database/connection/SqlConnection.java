@@ -49,7 +49,7 @@ public final class SqlConnection implements KTransactionResource {
 	public SqlConnection(final Connection jdbcConnection, final SqlDataBase dataBase, final boolean closeable) throws SQLException {
 		Assertion.checkNotNull(jdbcConnection);
 		Assertion.checkNotNull(dataBase);
-		//----------------------------------------------------------------------
+		//-----
 		this.jdbcConnection = jdbcConnection;
 		this.dataBase = dataBase;
 		this.closeable = closeable;

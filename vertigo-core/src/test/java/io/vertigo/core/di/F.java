@@ -42,7 +42,7 @@ public final class F {
 		Assertion.checkNotNull(param1);
 		Assertion.checkNotNull(param3);
 		Assertion.checkNotNull(param4);
-		//---------------------------------------------------------------------
+		//-----
 		this.param1 = param1;
 		this.param3 = param3;
 		this.param4 = param4;

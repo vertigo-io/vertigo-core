@@ -50,7 +50,7 @@ public final class TextFile extends AbstractKFile {
 	public TextFile(final String fileName, final String mimeType, final String content) {
 		//le content ne doit pas être null
 		super(fileName, mimeType, new Date(), Long.valueOf(content.length()));
-		//---------------------------------------------------------------------
+		//-----
 		this.content = content;
 	}
 

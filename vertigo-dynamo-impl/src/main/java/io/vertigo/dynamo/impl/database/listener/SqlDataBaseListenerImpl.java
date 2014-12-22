@@ -53,7 +53,7 @@ public final class SqlDataBaseListenerImpl implements SqlDataBaseListener {
 	 */
 	public SqlDataBaseListenerImpl(final AnalyticsManager analyticsManager) {
 		Assertion.checkNotNull(analyticsManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.analyticsManager = analyticsManager;
 		sqlLog = Logger.getLogger("Sql");
 	}

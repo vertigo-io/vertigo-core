@@ -47,7 +47,7 @@ public final class JpaDataBase implements SqlDataBase {
 	JpaDataBase(final SqlDataBase innerDataBase, final EntityManagerFactory entityManagerFactory) {
 		Assertion.checkNotNull(innerDataBase);
 		Assertion.checkNotNull(entityManagerFactory);
-		//---------------------------------------------------------------------
+		//-----
 		this.innerDataBase = innerDataBase;
 		this.entityManagerFactory = entityManagerFactory;
 	}

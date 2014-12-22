@@ -22,13 +22,13 @@ import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.lang.Assertion;
 
 /**
- * Paramètres créés par l'analyseur et utilisés par le Handler. 
- * 
+ * Paramètres créés par l'analyseur et utilisés par le Handler.
+ *
  * Ces paramètres sont de trois types :
  * - IN 	: le séparateur utilisé est #
  * - OUT 	: le séparateur utilisé est %
  * - IN OUT : le séparateur utilisé est @
- * 
+ *
  * @author pchretien
  */
 final class TaskEngineSQLParam {
@@ -58,7 +58,7 @@ final class TaskEngineSQLParam {
 
 		/**
 		 * Permet de connaitre le type du paramètre SQL en fonction du séparateur trouvé.
-		 * 
+		 *
 		 * @param separator Séparateur
 		 * @return Type de paramètre SQL
 		 */
@@ -86,7 +86,7 @@ final class TaskEngineSQLParam {
 
 	/**
 	 * Crée un objet Paramètre pour la requête.
-	 * 
+	 *
 	 * @param betweenCar String
 	 * @param inOut Type du Parametre
 	 */
@@ -110,13 +110,13 @@ final class TaskEngineSQLParam {
 				dtcRowNumber = parseDtcRowNumber(betweenCar, betweenPoints);
 			}
 		}
-		// ----------------------------------------------------------------------
+		//-----
 		// Le paramètre n'est pas encore indexé
 		Assertion.checkNotNull(newAttributeName);
 		Assertion.checkNotNull(inOut);
 		// Si le numéro de ligne est renseignée alors le champ doit l'être aussi
 		Assertion.checkNotNull(dtcRowNumber == null || newfieldName != null);
-		// ----------------------------------------------------------------------
+		//-----
 		attributeName = newAttributeName;
 		this.inOut = inOut;
 		fieldName = newfieldName;
@@ -142,7 +142,7 @@ final class TaskEngineSQLParam {
 
 	/**
 	 * Un paramètre est primitif si il ne correspond pas à une DTC ou un DTO.
-	 * 
+	 *
 	 * @return S'il s'agit d'un paramètre primitif
 	 */
 	boolean isPrimitive() {
@@ -182,7 +182,7 @@ final class TaskEngineSQLParam {
 	 */
 	int getRowNumber() {
 		Assertion.checkNotNull(rowNumber, "il ne s'agit pas d'une liste");
-		//---------------------------------------------------------------------
+		//-----
 		return rowNumber;
 	}
 

@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Implémentation d'un pool local de {@link Coordinator}.
- * 
+ *
  * @author pchretien
  */
 public final class LocalCoordinator implements Coordinator, Closeable {
@@ -41,14 +41,14 @@ public final class LocalCoordinator implements Coordinator, Closeable {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param workerCount paramètres d'initialisation du pool
 	 */
 	public LocalCoordinator(final int workerCount) {
 		Assertion.checkArgument(workerCount >= 1, "At least one thread must be allowed to process asynchronous jobs.");
-		// ---------------------------------------------------------------------
+		//-----
 		Assertion.checkArgument(workerCount >= 1, "Il faut définir au moins un thread pour gérer les traitements asynchrones.");
-		//---------------------------------------------------------------------
+		//-----
 		workers = Executors.newFixedThreadPool(workerCount);
 	}
 
@@ -75,13 +75,13 @@ public final class LocalCoordinator implements Coordinator, Closeable {
 
 	/**
 	 * Work devant être exécuté
-	 * WorkItem contient à la fois le Work et le callback.  
+	 * WorkItem contient à la fois le Work et le callback.
 	 * @param workItem WorkItem
 	 */
 	@Override
 	public <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
 		Assertion.checkNotNull(workItem);
-		//-------------------------------------------------------------------
+		//-----
 		return workers.submit(new LocalWorker<>(workItem, workResultHandler));
 	}
 }

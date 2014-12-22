@@ -46,7 +46,7 @@ public final class FilterCriteria<D extends DtObject> implements Criteria<D> {
 	FilterCriteria(final Map<String, Object> mapFilter, final Map<String, String> mapPrefix) {
 		Assertion.checkNotNull(mapFilter);
 		Assertion.checkNotNull(mapPrefix);
-		//---------------------------------------------------------------------
+		//-----
 		this.mapFilter = Collections.unmodifiableMap(mapFilter);
 		this.mapPrefix = Collections.unmodifiableMap(mapPrefix);
 	}

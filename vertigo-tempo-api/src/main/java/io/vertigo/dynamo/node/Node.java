@@ -25,7 +25,7 @@ import io.vertigo.lang.Assertion;
  * Un noeud possède
  *  - un état variable (actif/inactif)
  *  - une configuration (uid / ip)
- * 
+ *
  * @author npiedeloup, pchretien
  */
 public final class Node {
@@ -36,7 +36,7 @@ public final class Node {
 	public Node(final String uid, /*final String ip,*/final boolean active) {
 		Assertion.checkArgNotEmpty(uid);
 		//	Assertion.notEmpty(ip);
-		//---------------------------------------------------------------------
+		//-----
 		this.uid = uid;
 		//	this.ip = ip;
 		this.active = active;

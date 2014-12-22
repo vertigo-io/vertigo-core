@@ -28,7 +28,7 @@ import java.util.Date;
  * Utilitaire concernant les dates.
  * On distingue deux type de date
  * - date (précise au jour sans notion d'heure)
- * - dateTime 
+ * - dateTime
  * @author npiedeloup, pchretien
  */
 public final class DateBuilder implements Builder<Date> {
@@ -49,7 +49,7 @@ public final class DateBuilder implements Builder<Date> {
 	 */
 	public DateBuilder(final Date date) {
 		Assertion.checkNotNull(date);
-		//-----------------------------------------------------------------
+		//-----
 		calendar = Calendar.getInstance();
 		calendar.setTime(date);
 	}
@@ -75,7 +75,7 @@ public final class DateBuilder implements Builder<Date> {
 
 	/**
 	 * Ajoute un nombre de secondes.
-	 * 
+	 *
 	 * @param seconds Nombre de secondes à ajouter
 	 * @return Ce DateBuilder pour enchainer les traitements
 	 */
@@ -86,7 +86,7 @@ public final class DateBuilder implements Builder<Date> {
 
 	/**
 	 * Ajoute un nombre de minutes.
-	 * 
+	 *
 	 * @param minutes Nombre de minutes à ajouter
 	 * @return Ce DateBuilder pour enchainer les traitements
 	 */
@@ -96,8 +96,8 @@ public final class DateBuilder implements Builder<Date> {
 	}
 
 	/**
-	 * Ajoute un nombre d'heures. 
-	 * 
+	 * Ajoute un nombre d'heures.
+	 *
 	 * @param hours Nombre d'heures à ajouter
 	 * @return Ce DateBuilder pour enchainer les traitements
 	 */
@@ -108,7 +108,7 @@ public final class DateBuilder implements Builder<Date> {
 
 	/**
 	 * Ajoute un nombre de jours.
-	 * 
+	 *
 	 * @param days Nombre de jours à ajouter
 	 * @return Ce DateBuilder pour enchainer les traitements
 	 */
@@ -119,7 +119,7 @@ public final class DateBuilder implements Builder<Date> {
 
 	/**
 	 * Ajoute un nombre de semaines.
-	 * 
+	 *
 	 * @param weeks Nombre de semaines à ajouter
 	 * @return Ce DateBuilder pour enchainer les traitements
 	 */
@@ -130,12 +130,12 @@ public final class DateBuilder implements Builder<Date> {
 	}
 
 	/**
-	 * Ajoute un nombre de mois. 
-	 * Si le nouveau mois est plus court, la date est tronquée 
-	 * Cf. Calendar.add(int, int). 
-	 * For example, if the date is the 31 january 2004, 
+	 * Ajoute un nombre de mois.
+	 * Si le nouveau mois est plus court, la date est tronquée
+	 * Cf. Calendar.add(int, int).
+	 * For example, if the date is the 31 january 2004,
 	 * addMonths(date, 1) will return 29 february 2004.
-	 * 
+	 *
 	 * @param months Nombre de mois à ajouter
 	 * @return Ce DateBuilder pour enchainer les traitements
 	 */
@@ -146,7 +146,7 @@ public final class DateBuilder implements Builder<Date> {
 
 	/**
 	 * Ajoute un nombre d'années.
-	 * 
+	 *
 	 * @param years Nombre d'années à ajouter
 	 * @return Ce DateBuilder pour enchainer les traitements
 	 */

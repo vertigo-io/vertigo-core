@@ -55,7 +55,7 @@ public final class ConstraintDoubleLength extends AbstractConstraintLength<Doubl
 	@Override
 	public void initParameters(final String args) {
 		setMaxLength(args);
-		//----------------------------------------------------------------------
+		//-----
 		maxValue = BigDecimal.valueOf(1L).movePointRight(getMaxLength()).doubleValue();
 		minValue = BigDecimal.valueOf(1L).movePointRight(getMaxLength()).negate().doubleValue();
 	}

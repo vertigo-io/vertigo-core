@@ -76,7 +76,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 	 */
 	KTransactionImpl(final KTransactionListener transactionListener) {
 		Assertion.checkNotNull(transactionListener);
-		//---------------------------------------------------------------------
+		//-----
 		parentTransaction = null;
 		this.transactionListener = transactionListener;
 		//La transaction démarre
@@ -90,7 +90,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 	 */
 	KTransactionImpl(final KTransactionImpl parentTransaction) {
 		Assertion.checkNotNull(parentTransaction);
-		//---------------------------------------------------------------------
+		//-----
 		this.parentTransaction = parentTransaction;
 		parentTransaction.addInnerTransaction(this);
 		transactionListener = parentTransaction.transactionListener;
@@ -116,7 +116,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 	public <TR extends KTransactionResource> TR getResource(final KTransactionResourceId<TR> transactionResourceId) {
 		checkStateStarted();
 		Assertion.checkNotNull(transactionResourceId);
-		//----------------------------------------------------------------------
+		//-----
 		if (resources == null) {
 			return null;
 		}
@@ -142,7 +142,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 		Assertion.checkState(innerTransaction == null, "La transaction possède déjà une transaction imbriquée");
 		Assertion.checkNotNull(newInnerTransaction);
 		newInnerTransaction.checkStateStarted();
-		//----------------------------------------------------------------------
+		//-----
 		innerTransaction = newInnerTransaction;
 	}
 
@@ -155,7 +155,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 	private void removeInnerTransaction() {
 		Assertion.checkNotNull(innerTransaction, "La transaction ne possède pas de transaction imbriquée");
 		innerTransaction.checkStateEnded();
-		//----------------------------------------------------------------------
+		//-----
 		innerTransaction = null;
 	}
 
@@ -165,7 +165,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 		checkStateStarted();
 		Assertion.checkNotNull(resource);
 		Assertion.checkNotNull(id);
-		//----------------------------------------------------------------------
+		//-----
 		if (resources == null) {
 			resources = new HashMap<>();
 		}
@@ -181,7 +181,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 		if (innerTransaction != null) {
 			throw new IllegalStateException("La transaction imbriquée doit être terminée(Commit ou Rollback) avant la transaction parente");
 		}
-		//----------------------------------------------------------------------
+		//-----
 		final Throwable throwable = this.doEnd(false);
 		if (throwable != null) {
 			doThrow(throwable);
@@ -208,7 +208,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 		}
 		//Si la transaction n'est pas déjà terminée
 		//alors on la rollback réellement.
-		//----------------------------------------------------------------------
+		//-----
 		Throwable throwable = this.doEnd(true);
 
 		if (innerTransaction != null) {
@@ -315,7 +315,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 	 */
 	private static Throwable doEnd(final KTransactionResource resource, final boolean rollback) {
 		Assertion.checkNotNull(resource);
-		//----------------------------------------------------------------------
+		//-----
 		Throwable throwable = null;
 		try {
 			if (rollback) {

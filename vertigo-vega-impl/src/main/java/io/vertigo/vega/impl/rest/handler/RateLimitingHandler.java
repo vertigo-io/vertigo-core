@@ -68,7 +68,7 @@ public final class RateLimitingHandler implements Activeable, RouteHandler {
 		Assertion.checkNotNull(securityManager);
 		Assertion.checkNotNull(limitValue);
 		Assertion.checkNotNull(windowSeconds);
-		//---------------------------------------------------------------------
+		//-----
 		this.securityManager = securityManager;
 		this.limitValue = limitValue.getOrElse(DEFAULT_LIMIT_VALUE);
 		this.windowSeconds = windowSeconds.getOrElse(DEFAULT_WINDOW_SECONDS);

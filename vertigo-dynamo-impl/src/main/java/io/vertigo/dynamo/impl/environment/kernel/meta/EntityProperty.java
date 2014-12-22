@@ -32,7 +32,7 @@ public final class EntityProperty {
 	public EntityProperty(final String name, final EntityPropertyType primitiveType) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(primitiveType);
-		//---------------------------------------------------------------------
+		//-----
 		this.name = name;
 		this.primitiveType = primitiveType;
 	}

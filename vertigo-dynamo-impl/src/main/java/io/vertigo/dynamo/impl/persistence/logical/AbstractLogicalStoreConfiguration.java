@@ -37,12 +37,12 @@ abstract class AbstractLogicalStoreConfiguration<D extends Definition, S> {
 
 	/**
 	 * Fournit un store adpaté au type de l'objet.
-	 * @param definition Définition 
+	 * @param definition Définition
 	 * @return Store utilisé pour cette definition
 	 */
 	protected final S getPhysicalStore(final D definition) {
 		Assertion.checkNotNull(definition);
-		//---------------------------------------------------------------------
+		//-----
 		//On regarde si il existe un store enregistré spécifiquement pour cette Definition
 		S physicalStore = storeMap.get(definition);
 
@@ -61,14 +61,14 @@ abstract class AbstractLogicalStoreConfiguration<D extends Definition, S> {
 		Assertion.checkNotNull(definition);
 		Assertion.checkNotNull(specificStore);
 		Assertion.checkArgument(!storeMap.containsKey(definition), "Un store spécifique est déjà enregistré pour cette definition ''{0}'')", storeMap.get(definition));
-		//----------------------------------------------------------------------
+		//-----
 		storeMap.put(definition, specificStore);
 	}
 
 	public final void registerDefaultPhysicalStore(final S tmpDefaultStore) {
 		Assertion.checkNotNull(tmpDefaultStore);
 		Assertion.checkState(defaultStore == null, "defaultStore deja initialisé");
-		//---------------------------------------------------------------------
+		//-----
 		defaultStore = tmpDefaultStore;
 	}
 }

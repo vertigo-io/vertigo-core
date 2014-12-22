@@ -37,7 +37,7 @@ final class CGLIBInvocationHandler implements net.sf.cglib.proxy.InvocationHandl
 	CGLIBInvocationHandler(final Object instance, final Map<Method, List<Aspect>> joinPoints) {
 		Assertion.checkNotNull(instance);
 		Assertion.checkNotNull(joinPoints);
-		//-----------------------------------------------------------------
+		//-----
 		this.instance = instance;
 		this.joinPoints = joinPoints;
 	}
@@ -46,7 +46,7 @@ final class CGLIBInvocationHandler implements net.sf.cglib.proxy.InvocationHandl
 	@Override
 	public final Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
 		if (!joinPoints.containsKey(method)) {
-			//Si pas d'intercepteur sur la méthode. 
+			//Si pas d'intercepteur sur la méthode.
 			return ClassUtil.invoke(instance, method, args);
 		}
 		return new MyMethodInvocation(instance, method, joinPoints.get(method)).proceed(args);
@@ -62,7 +62,7 @@ final class CGLIBInvocationHandler implements net.sf.cglib.proxy.InvocationHandl
 			Assertion.checkNotNull(instance);
 			Assertion.checkNotNull(method);
 			Assertion.checkNotNull(aspects);
-			//-----------------------------------------------------------------
+			//-----
 			this.instance = instance;
 			this.method = method;
 			this.aspects = aspects;

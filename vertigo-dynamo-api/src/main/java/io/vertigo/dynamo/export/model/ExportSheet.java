@@ -49,7 +49,7 @@ public final class ExportSheet {
 		Assertion.checkNotNull(exportFields);
 		Assertion.checkArgument(dto == null ^ dtc == null, "a dto or a dtc is required");
 		//title may be null
-		//---------------------------------------------------------------------
+		//-----
 		this.exportFields = java.util.Collections.unmodifiableList(new ArrayList<>(exportFields));
 		this.title = title;
 		this.dto = dto;
@@ -75,7 +75,7 @@ public final class ExportSheet {
 	 */
 	public DtObject getDtObject() {
 		Assertion.checkNotNull(dto);
-		//---------------------------------------------------------------------
+		//-----
 		return dto;
 	}
 
@@ -84,7 +84,7 @@ public final class ExportSheet {
 	 */
 	public DtList<?> getDtList() {
 		Assertion.checkNotNull(dtc);
-		//---------------------------------------------------------------------
+		//-----
 		return dtc;
 	}
 

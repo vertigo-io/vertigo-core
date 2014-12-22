@@ -188,7 +188,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	FacetedQueryResult<R, SearchQuery> loadList(final SearchQuery searchQuery, final FacetedQuery filtersQuery, final int rowsPerQuery) {
 		Assertion.checkNotNull(searchQuery);
 		Assertion.checkNotNull(filtersQuery);
-		//---------------------------------------------------------------------
+		//-----
 		final SearchRequestBuilder searchRequestBuilder = createSearchRequestBuilder(searchQuery, filtersQuery, rowsPerQuery);
 
 		appendFacetDefinition(filtersQuery.getDefinition(), searchRequestBuilder);
@@ -312,7 +312,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 
 	/*private static String translateToQueryBuilder(final ListFilter query, final IndexFieldNameResolver indexFieldNameResolver) {
 			Assertion.checkNotNull(query);
-			//---------------------------------------------------------------------
+			//-----
 			final StringBuilder stringQuery = new StringBuilder();
 			//for (final QueryFilter facetQuery : queryFilters) {
 			stringQuery.append(" +(");
@@ -323,7 +323,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		}*/
 	private static QueryBuilder translateToQueryBuilder(final ListFilter listFilter, final IndexFieldNameResolver indexFieldNameResolver) {
 		Assertion.checkNotNull(listFilter);
-		//---------------------------------------------------------------------
+		//-----
 		final String query = new StringBuilder()
 				.append(" +(")
 				.append(listFilter.getFilterValue())

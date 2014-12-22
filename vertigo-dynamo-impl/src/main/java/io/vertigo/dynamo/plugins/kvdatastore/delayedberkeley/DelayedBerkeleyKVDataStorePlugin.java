@@ -81,7 +81,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	public DelayedBerkeleyKVDataStorePlugin(final CodecManager codecManager, final @Named("dataStoreName") String dataStoreName, final @Named("cachePath") String cachePath, final @Named("timeToLiveSeconds") int timeToLiveSeconds) {
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkArgNotEmpty(dataStoreName);
-		//---------------------------------------------------------------------
+		//-----
 		this.dataStoreName = dataStoreName;
 		this.timeToLiveSeconds = timeToLiveSeconds;
 		final String translatedCachePath = translatePath(cachePath);
@@ -110,7 +110,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	public void put(final String key, final Object data) {
 		Assertion.checkNotNull(data);
 		Assertion.checkArgument(data instanceof Serializable, "Value must be Serializable {0}", data.getClass().getSimpleName());
-		//---------------------------------------------------------------------
+		//-----
 		//totalPuts++;
 		try {
 			final Transaction transaction = createTransaction();

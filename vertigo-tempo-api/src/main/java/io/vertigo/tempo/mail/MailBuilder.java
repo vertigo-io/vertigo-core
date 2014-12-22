@@ -118,7 +118,7 @@ public class MailBuilder implements Builder<Mail> {
 	public MailBuilder withTextContent(final String textContent) {
 		Assertion.checkState(myTextContent == null, "textContent is already completed");
 		Assertion.checkArgNotEmpty(textContent);
-		//---------------------------------------------------------------------
+		//-----
 		myTextContent = textContent;
 		return this;
 	}

@@ -30,12 +30,12 @@ import java.util.regex.Pattern;
 /**
  * Représente l'identifiant ABSOLU d'une ressource.
  * Une ressource posséde une définition (sa classe), et une clé.
- * L'URI propose une URN, c'est é dire la transcription sous forme de chaine. 
+ * L'URI propose une URN, c'est é dire la transcription sous forme de chaine.
  * L'URI peut étre recomposée é partir de cette URN.
- * 
+ *
  * Le générique utilisé pour caractériser l'URI dépend de la ressource et non de la définition.
  * Cela permet de créer des URI plus intuitive comme URI<Personne> qui est un identifiant de personne.
- * 
+ *
  * @author  pchretien
  * @param <R> Type de la ressource représentée par l'URI
  */
@@ -43,8 +43,8 @@ public final class URI<R extends Serializable> implements Serializable {
 	private static final long serialVersionUID = -1L;
 	private static final char D2A_SEPARATOR = '@';
 
-	/** 
-	 * Expression réguliére vérifiée par les URN. 
+	/**
+	 * Expression réguliére vérifiée par les URN.
 	 */
 	public static final Pattern REGEX_URN = Pattern.compile("[a-zA-Z0-9_:@$-]{5,80}");
 
@@ -62,7 +62,7 @@ public final class URI<R extends Serializable> implements Serializable {
 	public URI(final Definition definition, final Object key) {
 		Assertion.checkNotNull(key);
 		Assertion.checkNotNull(definition);
-		//------------------------------------------------
+		//-----
 		this.key = Serializable.class.cast(key);
 		this.definitionRef = new DefinitionReference<>(definition);
 
@@ -73,7 +73,7 @@ public final class URI<R extends Serializable> implements Serializable {
 
 	/**
 	 * Il est nécessaire de passer la classe de la définition attendue.
-	 * 
+	 *
 	 * @return Définition de la ressource.
 	 */
 	public <D extends Definition> D getDefinition() {
@@ -83,9 +83,9 @@ public final class URI<R extends Serializable> implements Serializable {
 	/**
 	 * Récupére l'URN é partir de l'URI.
 	 * Une URN est la  représentation unique d'une URI sous forme de chaine de caractéres.
-	 * Cette chaine peut s'insérer telle que dans une URL en tant que paramétre 
+	 * Cette chaine peut s'insérer telle que dans une URL en tant que paramétre
 	 * et ne contient donc aucun caractére spécial.
-	 * Une URN respecte la regex exprimée ci dessus. 
+	 * Une URN respecte la regex exprimée ci dessus.
 	 * @return URN de la ressource.
 	 */
 	public String toURN() {
@@ -132,7 +132,7 @@ public final class URI<R extends Serializable> implements Serializable {
 
 	public static URI<?> fromURN(final String urn) {
 		Assertion.checkNotNull(urn);
-		// ----------------------------------------------------------------------
+		//-----
 		final int i = urn.indexOf(D2A_SEPARATOR);
 		final String dname = urn.substring(0, i);
 		final Object key = stringToKey(urn.substring(i + 1));

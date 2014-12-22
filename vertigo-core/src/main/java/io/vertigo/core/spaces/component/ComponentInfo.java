@@ -25,22 +25,22 @@ import java.util.Date;
 /**
  * Conteneur d'informations d'un composant.
  *
- * Contient une combinaison de : 
+ * Contient une combinaison de :
  *  - un titre
- *  - une valeur 
+ *  - une valeur
  *
  * @author npiedeloup
  */
 public final class ComponentInfo {
-	private Object value;
-	private String title;
+	private final Object value;
+	private final String title;
 
 	/**
 	 * @param value Valeur chaine ou numérique
 	 */
-	private ComponentInfo(final String title, final Object value, boolean dummy) {
+	private ComponentInfo(final String title, final Object value, final boolean dummy) {
 		Assertion.checkArgNotEmpty(title);
-		//-----------------------------
+		//-----
 		this.title = title;
 		this.value = value;
 	}

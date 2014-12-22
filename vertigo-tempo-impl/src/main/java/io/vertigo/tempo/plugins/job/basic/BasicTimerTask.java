@@ -39,7 +39,7 @@ final class BasicTimerTask extends TimerTask {
 	BasicTimerTask(final JobDefinition jobDefinition, final JobManager jobManager) {
 		Assertion.checkNotNull(jobDefinition);
 		Assertion.checkNotNull(jobManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.jobDefinition = jobDefinition;
 		this.jobManager = jobManager;
 	}

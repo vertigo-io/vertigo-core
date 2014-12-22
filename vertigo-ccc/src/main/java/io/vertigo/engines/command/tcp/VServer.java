@@ -40,7 +40,7 @@ public final class VServer implements Runnable/*, VEventListener */{
 
 	public VServer(final VCommandHandler commandHandler, final int port) {
 		Assertion.checkNotNull(commandHandler);
-		//---------------------------------------------------------------------
+		//-----
 		this.commandHandler = commandHandler;
 		this.port = port;
 	}

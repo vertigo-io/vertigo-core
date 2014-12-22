@@ -65,7 +65,7 @@ public final class DateUtil {
 		Assertion.checkNotNull(endDate);
 		checkIsDate(startDate);
 		checkIsDate(endDate);
-		//---------------------------------------------------------------------
+		//-----
 		final long diffMillis = endDate.getTime() / (24 * 60 * 60 * 1000L) - startDate.getTime() / (24 * 60 * 60 * 1000L);
 		return (int) diffMillis;
 	}
@@ -85,7 +85,7 @@ public final class DateUtil {
 		Assertion.checkNotNull(secondDate);
 		checkIsDate(firstDate);
 		checkIsDate(secondDate);
-		//---------------------------------------------------------------------
+		//-----
 		return firstDate.compareTo(secondDate);
 	}
 
@@ -102,7 +102,7 @@ public final class DateUtil {
 	public static int compareDateTime(final Date firstDateTime, final Date secondDateTime) {
 		Assertion.checkNotNull(firstDateTime);
 		Assertion.checkNotNull(secondDateTime);
-		//---------------------------------------------------------------------
+		//-----
 		return firstDateTime.compareTo(secondDateTime);
 	}
 

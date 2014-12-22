@@ -71,7 +71,7 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 	@Inject
 	public DbFileStorePlugin(final FileManager fileManager) {
 		Assertion.checkNotNull(fileManager);
-		//---------------------------------------------------------------------
+		//-----
 		readOnly = false;
 		this.fileManager = fileManager;
 	}
@@ -95,9 +95,9 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 	@Override
 	public void put(final FileInfo fileInfo) {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
-		//---------------------------------------------------------------------
+		//-----
 		final DtObject fileInfoDto = createDtObject(fileInfo.getDefinition());
-		//---------------------------------------------------------------------
+		//-----
 		final KFile kFile = fileInfo.getKFile();
 		setValue(fileInfoDto, DtoFields.FILE_NAME, kFile.getFileName());
 		setValue(fileInfoDto, DtoFields.MIME_TYPE, kFile.getMimeType());
@@ -108,7 +108,7 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 		if (fileInfo.getURI() != null) {
 			setValue(fileInfoDto, DtoFields.FIL_ID, fileInfo.getURI().getKey());
 		}
-		//---------------------------------------------------------------------
+		//-----
 
 		getPersistenceManager().getBroker().save(fileInfoDto);
 		if (fileInfo.getURI() == null) {
@@ -127,7 +127,7 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 	@Override
 	public void remove(final URI<FileInfo> uri) {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
-		//---------------------------------------------------------------------
+		//-----
 		final URI<DtObject> dtoUri = createDtObjectURI(uri);
 		getPersistenceManager().getBroker().delete(dtoUri);
 	}
@@ -139,7 +139,7 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 	 */
 	private static URI<DtObject> createDtObjectURI(final URI<FileInfo> uri) {
 		Assertion.checkNotNull(uri, "uri du fichier doit être renseignée.");
-		//---------------------------------------------------------------------
+		//-----
 		final FileInfoDefinition fileInfoDefinition = uri.<FileInfoDefinition> getDefinition();
 		final String fileDefinitionRoot = fileInfoDefinition.getRoot();
 		//Pour ce fileStore, on utilise le root de la fileDefinition comme nom de la table de stockage.
@@ -155,7 +155,7 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 	 */
 	private static DtObject createDtObject(final FileInfoDefinition fileInfoDefinition) {
 		Assertion.checkNotNull(fileInfoDefinition, "fileInfoDefinition du fichier doit être renseignée.");
-		//---------------------------------------------------------------------
+		//-----
 		final String fileDefinitionRoot = fileInfoDefinition.getRoot();
 		//Pour ce fileStore, on utilise le root de la fileDefinition comme nom de la table de stockage.
 		//Il doit exister un DtObjet associé, avec la structure attendue.

@@ -34,7 +34,7 @@ public final class RequestSizeMetricEngine implements MetricEngine<TaskDefinitio
 	@Override
 	public Metric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		final int size = taskDefinition.getRequest().length();
 		return new MetricBuilder()
 				.withTitle("Taille requête")

@@ -580,7 +580,6 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		return dtc;
 	}
 
-	// -------------- PRIVATE
 	/**
 	 * Asserts that two booleans are equal.
 	 *

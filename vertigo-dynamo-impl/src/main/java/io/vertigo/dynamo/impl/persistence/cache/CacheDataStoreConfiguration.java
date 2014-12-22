@@ -27,7 +27,7 @@ import java.util.Map;
 
 /**
  * Configuration des données mises en cache.
- * 
+ *
  * @author  pchretien
  */
 public final class CacheDataStoreConfiguration {
@@ -61,7 +61,7 @@ public final class CacheDataStoreConfiguration {
 	 */
 	public void registerCacheable(final DtDefinition dtDefinition, final long timeToLiveInSeconds, final boolean isReloadedByList) {
 		Assertion.checkNotNull(dtDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		cacheableDtDefinitionMap.put(dtDefinition, isReloadedByList);
 		dataCache.registerContext(dtDefinition, timeToLiveInSeconds);
 	}
@@ -72,7 +72,7 @@ public final class CacheDataStoreConfiguration {
 	 */
 	boolean isReloadedByList(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		return cacheableDtDefinitionMap.get(dtDefinition);
 	}
 }

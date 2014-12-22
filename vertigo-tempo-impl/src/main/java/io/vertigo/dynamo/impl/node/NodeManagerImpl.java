@@ -31,8 +31,8 @@ import javax.inject.Inject;
 
 /**
  * Implémentation de NodeManager, pour l'execution de travaux par des Workers distant.
- * 
- * 
+ *
+ *
  * @author npiedeloup, pchretien
  */
 public final class NodeManagerImpl implements NodeManager, Activeable {
@@ -45,7 +45,7 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 	@Inject
 	public NodeManagerImpl(final List<WorkerPlugin> nodePlugins) {
 		Assertion.checkNotNull(nodePlugins);
-		//---------------------------------------------------------------------
+		//-----
 		this.nodePlugins = nodePlugins;
 		//---
 		for (final WorkerPlugin nodePlugin : this.nodePlugins) {
@@ -68,7 +68,7 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 	//	public WNodePlugin(final String nodeId, final String workTypes) {
 	//		Assertion.checkArgNotEmpty(nodeId);
 	//		Assertion.checkArgNotEmpty(workTypes);
-	//		//---------------------------------------------------------------------
+	//-----
 	//		this.nodeId = nodeId;
 	//		this.workTypes = Arrays.asList(workTypes.trim().split(";"));
 	//	}

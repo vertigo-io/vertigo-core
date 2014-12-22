@@ -153,7 +153,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_INSERT_CAR")
 				.withEngine(TaskEngineProc.class)
-				.withRequest("insert into CAR (ID, FAM_ID,MAKE, MODEL, DESCRIPTION, YEAR, KILO, PRICE, MOTOR_TYPE) values " 
+				.withRequest("insert into CAR (ID, FAM_ID,MAKE, MODEL, DESCRIPTION, YEAR, KILO, PRICE, MOTOR_TYPE) values "
 						//syntaxe HsqlDb pour sequence.nextval
 						+ "(NEXT VALUE FOR SEQ_CAR, #DTO_CAR.FAM_ID#, #DTO_CAR.MAKE#, #DTO_CAR.MODEL#, #DTO_CAR.DESCRIPTION#, #DTO_CAR.YEAR#, #DTO_CAR.KILO#, #DTO_CAR.PRICE#, #DTO_CAR.MOTOR_TYPE#)")
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
@@ -174,11 +174,11 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 						+ "MAKE = #DTO_CAR.MAKE#, "
 						+ "MODEL = #DTO_CAR.MODEL#, "
 						+ "DESCRIPTION = #DTO_CAR.DESCRIPTION#, "
-						+ "YEAR = #DTO_CAR.YEAR#, " 
-						+ "KILO = #DTO_CAR.KILO#, " 
+						+ "YEAR = #DTO_CAR.YEAR#, "
+						+ "KILO = #DTO_CAR.KILO#, "
 						+ "PRICE = #DTO_CAR.PRICE#, "
 						+ "MOTOR_TYPE = #DTO_CAR.MOTOR_TYPE#) "
-						+ "where CAR_ID = #DTO_CAR.ID#" + "") 
+						+ "where CAR_ID = #DTO_CAR.ID#" + "")
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
 				.withAttribute("DTO_CAR", doCar, true, true)
 				.build();
@@ -219,7 +219,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 
 	protected final void nativeInsertCar(final Car car) {
 		Assertion.checkArgument(car.getId() == null, "L'id n'est pas null {0}", car.getId());
-		//---------------------------------------------------------------------
+		//-----
 		final Task task = new TaskBuilder(taskInsertCar)
 				.withValue("DTO_CAR", car)
 				.build();
@@ -229,7 +229,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 
 	protected final void nativeUpdateCar(final Car car) {
 		Assertion.checkArgument(car.getId() != null, "L'id est null");
-		//---------------------------------------------------------------------
+		//-----
 		final Task task = new TaskBuilder(taskUpdateCar)
 				.withValue("DTO_CAR", car)
 				.build();
@@ -314,13 +314,13 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			DtList<Famille> dtc = persistenceManager.getBroker().getList(dtDefinitionFamille, null, null);
 			Assert.assertEquals(0, dtc.size());
-			//----------------------
+			//-----
 			final Famille famille = new Famille();
 			famille.setLibelle("encore un");
 			persistenceManager.getBroker().save(famille);
 			// on attend un objet avec un ID non null ?
 			Assert.assertNotNull(famille.getFamId());
-			//----------------------
+			//-----
 			dtc = persistenceManager.getBroker().getList(dtDefinitionFamille, null, null);
 			Assert.assertEquals(1, dtc.size());
 			transaction.commit();
@@ -334,7 +334,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	public void testCreateFamilleFail() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final DecimalFormat df = new DecimalFormat("000000000:");
-			//----------------------
+			//-----
 			final Famille famille = new Famille();
 			final StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < 4000; i++) {

@@ -38,7 +38,7 @@ public final class ReportRendererImpl implements ReportRenderer {
 	 */
 	public ReportRendererImpl(final String rootPath) {
 		Assertion.checkArgNotEmpty(rootPath);
-		//---------------------------------------------------------------------
+		//-----
 		this.rootPath = rootPath;
 		dataReportRenderer = new DataReportRendererImpl(rootPath);
 	}
@@ -46,7 +46,7 @@ public final class ReportRendererImpl implements ReportRenderer {
 	@Override
 	public void render(final Report report) {
 		Assertion.checkNotNull(report);
-		//---------------------------------------------------------------------
+		//-----
 		renderAllPages(report);
 		//On crée la page d'index
 		renderIndexPage(report);

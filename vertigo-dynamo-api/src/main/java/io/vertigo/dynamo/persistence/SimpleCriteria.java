@@ -37,7 +37,7 @@ public final class SimpleCriteria<D extends DtObject> implements Criteria<D> {
 	 */
 	public SimpleCriteria(final String search) {
 		Assertion.checkNotNull(search);
-		//---------------------------------------------------------------------
+		//-----
 		this.search = search;
 	}
 

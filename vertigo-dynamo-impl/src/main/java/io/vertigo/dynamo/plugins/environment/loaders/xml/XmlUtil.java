@@ -30,7 +30,7 @@ final class XmlUtil {
 	static String french2Java(final String str) {
 		Assertion.checkNotNull(str);
 		Assertion.checkArgument(str.length() > 0, "La chaine à modifier ne doit pas être vide.");
-		// ----------------------------------------------------------------------
+		//-----
 		final StringBuilder suffix = new StringBuilder();
 		int i = 1;
 		char c;

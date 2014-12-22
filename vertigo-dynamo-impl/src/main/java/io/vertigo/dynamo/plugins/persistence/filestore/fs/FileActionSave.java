@@ -54,7 +54,7 @@ final class FileActionSave implements FileAction {
 	public FileActionSave(final InputStream inputStream, final String path) {
 		Assertion.checkNotNull(inputStream);
 		Assertion.checkNotNull(path);
-		//---------------------------------------------------------------------
+		//-----
 		file = new File(path);
 		newFile = new File(path + EXT_SEPARATOR + new Date().getTime() + EXT_SEPARATOR + EXT_NEW);
 

@@ -22,7 +22,6 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.export.model.ExportField;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.lang.Assertion;
 
@@ -41,7 +40,7 @@ public final class ExportHelper {
 	 */
 	public ExportHelper(final PersistenceManager persistenceManager) {
 		Assertion.checkNotNull(persistenceManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.persistenceManager = persistenceManager;
 	}
 

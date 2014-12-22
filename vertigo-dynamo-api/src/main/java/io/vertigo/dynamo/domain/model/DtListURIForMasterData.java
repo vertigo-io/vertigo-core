@@ -43,7 +43,7 @@ public final class DtListURIForMasterData extends DtListURI {
 	 */
 	public DtListURIForMasterData(final DtDefinition dtDefinition, final String code) {
 		super(dtDefinition);
-		//----------------------------------------------------------------------
+		//-----
 		this.code = code;
 	}
 

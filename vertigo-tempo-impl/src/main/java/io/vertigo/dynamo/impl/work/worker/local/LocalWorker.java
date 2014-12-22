@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
 
 /**
  * Exécution d'un work.
- * 
+ *
  * @author pchretien, npiedeloup
  * @param <WR> Type du résultat
  * @param <W> Type du work
@@ -64,14 +64,14 @@ final class LocalWorker<WR, W> implements Callable<WR> {
 	LocalWorker(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
 		Assertion.checkNotNull(workItem);
 		Assertion.checkNotNull(workResultHandler);
-		//-----------------------------------------------------------------
+		//-----
 		this.workItem = workItem;
 		this.workResultHandler = workResultHandler;
 	}
 
 	private static <WR, W> WR executeNow(final WorkItem<WR, W> workItem) {
 		Assertion.checkNotNull(workItem);
-		// ---------------------------------------------------------------------
+		//-----
 		return workItem.getWorkEngineProvider().provide().process(workItem.getWork());
 	}
 
@@ -116,7 +116,7 @@ final class LocalWorker<WR, W> implements Callable<WR> {
 
 	/**
 	 * Vide le threadLocal du thread avant de le remettre dans le pool.
-	 * Ceci protège contre les WorkEngine utilsant un ThreadLocal sans le vider. 
+	 * Ceci protège contre les WorkEngine utilsant un ThreadLocal sans le vider.
 	 * Ces workEngine peuvent poser des problémes de fuites mémoires (Ex: le FastDateParser de Talend)
 	 * Voir aussi: http://weblogs.java.net/blog/jjviana/archive/2010/06/10/threadlocal-thread-pool-bad-idea-or-dealing-apparent-glassfish-memor
 	 */

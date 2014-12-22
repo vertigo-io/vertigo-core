@@ -37,7 +37,7 @@ public final class DslPropertyEntry {
 	 */
 	public DslPropertyEntry(final EntityProperty property, final String propertyValue) {
 		Assertion.checkNotNull(property);
-		//----------------------------------------------------------------------
+		//-----
 		this.property = property;
 		this.propertyValue = propertyValue;
 	}

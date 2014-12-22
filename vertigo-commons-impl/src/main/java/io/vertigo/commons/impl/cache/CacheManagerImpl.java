@@ -41,13 +41,13 @@ public final class CacheManagerImpl implements CacheManager {
 	@Inject
 	public CacheManagerImpl(final CachePlugin cachePlugin) {
 		Assertion.checkNotNull(cachePlugin);
-		//---------------------------------------------------------------------
+		//-----
 		this.cachePlugin = cachePlugin;
 	}
 
-	//---------------------------------------------------------------------------
-	//------------------Gestion du rendu et des interactions---------------------
-	//---------------------------------------------------------------------------
+	//===========================================================================
+	//==================Gestion du rendu et des interactions=====================
+	//===========================================================================
 
 	/** {@inheritDoc} */
 	@Override

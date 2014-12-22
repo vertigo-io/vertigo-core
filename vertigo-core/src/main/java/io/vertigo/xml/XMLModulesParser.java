@@ -47,12 +47,12 @@ public final class XMLModulesParser {
 	 */
 	public XMLModulesParser(final Properties properties) {
 		Assertion.checkNotNull(properties);
-		//----------------------------------------------------------------------
+		//-----
 		this.properties = properties;
 	}
 
 	public List<ModuleConfig> parse(final URL managersURL) {
-		//----------------------------------------------------------------------
+		//-----
 		try {
 			return doParse(managersURL);
 		} catch (final ParserConfigurationException pce) {

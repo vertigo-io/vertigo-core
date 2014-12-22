@@ -28,8 +28,8 @@ import io.vertigo.commons.parser.ManyRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
-import io.vertigo.dynamo.impl.environment.kernel.meta.EntityAttribute;
 import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
+import io.vertigo.dynamo.impl.environment.kernel.meta.EntityAttribute;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionBody;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
@@ -58,7 +58,7 @@ public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody,
 	public DslDefinitionBodyRule(final DynamicDefinitionRepository dynamicModelRepository, final Entity entity) {
 		Assertion.checkNotNull(dynamicModelRepository);
 		Assertion.checkNotNull(entity);
-		//----------------------------------------------------------------------
+		//-----
 		this.dynamicModelRepository = dynamicModelRepository;
 		this.entity = entity;
 	}
@@ -86,7 +86,7 @@ public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody,
 		final FirstOfRule firstOfRule = new FirstOfRule(
 				xPropertyEntryRule, // 0
 				xDefinitionEntryRule, // 1
-				new FirstOfRule(innerDefinitionRules),//2, 
+				new FirstOfRule(innerDefinitionRules),//2,
 				SPACES);
 
 		final ManyRule<Choice> manyRule = new ManyRule<>(firstOfRule, true);
@@ -95,8 +95,7 @@ public final class DslDefinitionBodyRule extends AbstractRule<DslDefinitionBody,
 				SPACES,
 				manyRule,//2
 				SPACES,
-				OBJECT_END
-		);
+				OBJECT_END);
 	}
 
 	@Override

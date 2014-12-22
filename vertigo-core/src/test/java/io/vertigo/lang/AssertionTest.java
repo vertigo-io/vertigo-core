@@ -51,8 +51,6 @@ public final class AssertionTest {
 		Assertion.checkNotNull(null, "message: {0} ", "param");
 	}
 
-	//-------------------------------------------------------------------------
-
 	@Test
 	public void testCheckArgument() {
 		Assertion.checkArgument(true, "message");

@@ -48,7 +48,7 @@ public final class FilterCriteriaBuilder<D extends DtObject> implements Builder<
 	public FilterCriteriaBuilder<D> withFilter(final String fieldName, final Object value) {
 		Assertion.checkNotNull(value);
 		check(fieldName);
-		//----------------------------------------------------------------------
+		//-----
 		mapFilter.put(fieldName, value);
 		return this;
 	}
@@ -63,7 +63,7 @@ public final class FilterCriteriaBuilder<D extends DtObject> implements Builder<
 	public FilterCriteriaBuilder<D> withPrefix(final String fieldName, final String prefix) {
 		Assertion.checkNotNull(prefix);
 		check(fieldName);
-		//----------------------------------------------------------------------
+		//-----
 		mapPrefix.put(fieldName, prefix);
 		return this;
 	}

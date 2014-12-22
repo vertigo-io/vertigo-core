@@ -36,7 +36,7 @@ import javax.inject.Named;
 /**
  * Ce plugin permet de distribuer des travaux.
  * REDIS est utilisé comme plateforme d'échanges.
- * 
+ *
  * @author pchretien
  */
 public final class RedisMasterPlugin implements MasterPlugin, Activeable {
@@ -48,7 +48,7 @@ public final class RedisMasterPlugin implements MasterPlugin, Activeable {
 		Assertion.checkArgNotEmpty(distributedWorkTypes);
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkArgNotEmpty(redisHost);
-		//---------------------------------------------------------------------
+		//-----
 		this.distributedWorkTypes = Arrays.asList(distributedWorkTypes.split(";"));
 		redisDB = new RedisDB(codecManager, redisHost, redisPort, password);
 		//		this.timeoutSeconds = timeoutSeconds;

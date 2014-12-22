@@ -30,8 +30,8 @@ import java.util.Map;
 
 /**
  * Résultat de la recherche.
- * Tout résultat est facetté. 
- * Eventuellement il n'y a aucune facette. 
+ * Tout résultat est facetté.
+ * Eventuellement il n'y a aucune facette.
  * @author pchretien, dchallas
  * @param <R> Type de l'objet resultant de la recherche
  * @param <S> Type de l'objet source
@@ -48,7 +48,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 
 	/**
 	 * Constructeur.
-	 * @param query Requète 
+	 * @param query Requète
 	 * @param count  Nombre total de résultats
 	 * @param dtc DTC résultat, éventuellement tronquée à n (ex 500) si trop d'éléments.
 	 * @param facets Liste des facettes. (Peut être vide jamais null)
@@ -61,7 +61,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 		Assertion.checkNotNull(facets);
 		Assertion.checkNotNull(source);
 		Assertion.checkNotNull(highlights);
-		//---------------------------------------------------------------------
+		//-----
 		this.query = query;
 		this.count = count;
 		this.dtc = dtc;
@@ -79,7 +79,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 
 	/**
 	 * Rappel de la requête initiale.
-	 * @return Requète 
+	 * @return Requète
 	 */
 	public FacetedQuery getFacetedQuery() {
 		return query;

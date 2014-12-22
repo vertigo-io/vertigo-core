@@ -110,7 +110,7 @@ final class VProtocol {
 	VResponse sendCommand(final SocketChannel socketChannel, final VCommand command) throws IOException {
 		Assertion.checkNotNull(socketChannel);
 		Assertion.checkNotNull(command);
-		//---------------------------------------------------------------------
+		//-----
 		//System.out.println("$sendCommand : " + command);
 		//On envoit la request et on attend la response.
 		//TODO Envoyer les map

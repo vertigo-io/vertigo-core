@@ -37,7 +37,7 @@ public final class VClient implements AutoCloseable {
 
 	public VClient(final SocketAddress socketAddress) {
 		Assertion.checkNotNull(socketAddress);
-		//---------------------------------------------------------------------
+		//-----
 		try {
 			socketChannel = SocketChannel.open(socketAddress);
 			socketChannel.socket().setSoTimeout(DEFAULT_TIMEOUT);

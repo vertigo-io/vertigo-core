@@ -58,14 +58,14 @@ final class DtListProcessorImpl implements DtListProcessor {
 	private DtListProcessorImpl(final DtListFunction[] listFunctions, final Option<IndexPlugin> indexPlugin) {
 		Assertion.checkNotNull(listFunctions);
 		Assertion.checkNotNull(indexPlugin);
-		//---------------------------------------------------------------------
+		//-----
 		this.listFunctions = listFunctions;
 		this.indexPlugin = indexPlugin;
 	}
 
 	private DtListProcessorImpl createNewDtListProcessor(final DtListFunction listFunction) {
 		Assertion.checkNotNull(listFunction);
-		//---------------------------------------------------------------------
+		//-----
 		final DtListFunction[] list = Arrays.copyOf(listFunctions, listFunctions.length + 1);
 		//adding a new listFunction
 		list[listFunctions.length] = listFunction;
@@ -82,7 +82,7 @@ final class DtListProcessorImpl implements DtListProcessor {
 	@Override
 	public DtListProcessor filter(final String keywords, final int maxRows, final Collection<DtField> searchedFields) {
 		Assertion.checkArgument(indexPlugin.isDefined(), "An IndexPlugin is required to use this method");
-		//---------------------------------------------------------------------
+		//-----
 		return add(new FullTextFilterFunction<>(keywords, maxRows, searchedFields, indexPlugin.get()));
 	}
 
@@ -124,7 +124,7 @@ final class DtListProcessorImpl implements DtListProcessor {
 	@Override
 	public <D extends DtObject> DtList<D> apply(final DtList<D> input) {
 		Assertion.checkNotNull(input);
-		//-------------------------------------------------------------
+		//-----
 		DtList<D> current = input;
 		for (final DtListFunction<D> listFunction : listFunctions) {
 			current = listFunction.apply(current);

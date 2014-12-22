@@ -45,7 +45,7 @@ public final class CGLIBAopEngine implements AopEngine {
 		for (final Method method : joinPoints.keySet()) {
 			Assertion.checkArgument(!Modifier.isFinal(method.getModifiers()), "due to cglib method '" + method.getName() + "' on '" + instance.getClass().getName() + "' can not be markedf as final");
 		}
-		//---------------------------------------------------------------------
+		//-----
 		final Enhancer enhancer = new Enhancer();
 		enhancer.setCallback(createCallBack(instance, joinPoints));
 		final Class<?> implClass = instance.getClass();

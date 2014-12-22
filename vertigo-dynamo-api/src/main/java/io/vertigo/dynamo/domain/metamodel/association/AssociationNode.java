@@ -67,7 +67,7 @@ public final class AssociationNode {
 	void setAssociationDefinition(final AssociationDefinition associationDefinition) {
 		Assertion.checkNotNull(associationDefinition);
 		Assertion.checkState(this.associationDefinition == null, "variable deja affectee");
-		//----------------------------------------------------------------------
+		//-----
 		this.associationDefinition = associationDefinition;
 	}
 
@@ -76,7 +76,7 @@ public final class AssociationNode {
 	 */
 	public AssociationDefinition getAssociationDefinition() {
 		Assertion.checkNotNull(associationDefinition);
-		//----------------------------------------------------------------------
+		//-----
 		return associationDefinition;
 	}
 

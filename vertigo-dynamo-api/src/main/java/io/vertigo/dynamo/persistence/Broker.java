@@ -43,8 +43,6 @@ public interface Broker {
 	 */
 	<D extends DtObject> DtList<D> getList(final DtDefinition dtDefinition, final Criteria<D> criteria, Integer limit);
 
-	//-------------------------------------------------------------------------
-	//-------------------------------------------------------------------------
 	/**
 	 * Nombre d'éléments présents dans le sysème de persistance.
 	 * @param dtDefinition Définition de DT

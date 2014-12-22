@@ -31,8 +31,8 @@ import java.util.List;
  * Solver permet de résoudre les références.
  * Les références peuvent être orphelines : la clé ne correspond à aucune définition.
  * Les références circulaires ne peuvent pas être résolues.
- * Le solver est une fonction stateless qui prend en entrée le Repository du Model et calcule en sortie la liste des définitions. 
- * 
+ * Le solver est une fonction stateless qui prend en entrée le Repository du Model et calcule en sortie la liste des définitions.
+ *
  * @author  pchretien
  */
 final class DynamicSolver {
@@ -48,7 +48,7 @@ final class DynamicSolver {
 		if (!orphanCollection.isEmpty()) {
 			throw new RuntimeException(" Les clés suivantes " + orphanCollection + " sont orphelines");
 		}
-		//----------------------------------------------------------------------
+		//-----
 		final Collection<DynamicDefinition> coll = new ArrayList<>(definitionModelRepository.getDefinitions());
 
 		DynamicDefinition xdef = null;
@@ -80,7 +80,7 @@ final class DynamicSolver {
 		for (final DynamicDefinitionKey dynamicDefinitionKey : xdef.getAllDefinitionKeys()) {
 			//reference should be already solved in a previous resources module : then continue
 			if (!Home.getDefinitionSpace().containsKey(dynamicDefinitionKey.getName())) {
-				//or references should be in currently parsed resources 
+				//or references should be in currently parsed resources
 				final DynamicDefinition subDefinition = definitionModelRepository.getDefinition(dynamicDefinitionKey);
 				if (!orderedList.contains(subDefinition)) {
 					return false;

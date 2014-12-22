@@ -49,7 +49,7 @@ public final class FormatterId extends AbstractFormatterImpl {
 	@Override
 	public Object stringToValue(final String strValue, final DataType dataType) {
 		Assertion.checkArgument(dataType == DataType.Long, "Formatter ne s'applique qu'aux Long");
-		//----------------------------------------------------------------------
+		//-----
 		try {
 			if (StringUtil.isEmpty(strValue)) {
 				return null;
@@ -65,7 +65,7 @@ public final class FormatterId extends AbstractFormatterImpl {
 	@Override
 	public String valueToString(final Object objValue, final DataType dataType) {
 		Assertion.checkArgument(dataType == DataType.Long, "Formatter ne s'applique qu'aux Long");
-		//----------------------------------------------------------------------
+		//-----
 		if (objValue == null) {
 			return "";
 		}

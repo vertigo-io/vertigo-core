@@ -61,7 +61,7 @@ public final class FileInfoDefinition implements Definition {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(root);
 		Assertion.checkNotNull(fileStoreName);
-		//---------------------------------------------------------------------
+		//-----
 		this.name = name;
 		this.root = root;
 		this.fileStoreName = fileStoreName;
@@ -98,7 +98,7 @@ public final class FileInfoDefinition implements Definition {
 	//=========================================================================
 	public static FileInfoDefinition findFileInfoDefinition(final Class<? extends FileInfo> fileInfoClass) {
 		Assertion.checkNotNull(fileInfoClass);
-		//----------------------------------------------------------------------
+		//-----
 		final String name = DefinitionUtil.getPrefix(FileInfoDefinition.class) + SEPARATOR + StringUtil.camelToConstCase(fileInfoClass.getSimpleName());
 		return Home.getDefinitionSpace().resolve(name, FileInfoDefinition.class);
 	}

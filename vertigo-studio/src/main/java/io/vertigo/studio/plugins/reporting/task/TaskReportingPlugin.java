@@ -55,7 +55,7 @@ public final class TaskReportingPlugin implements ReportingPlugin {
 	public TaskReportingPlugin(final KTransactionManager transactionManager, final TaskManager taskManager) {
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(taskManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.transactionManager = transactionManager;
 		this.taskManager = taskManager;
 		metricEngines = createMetricEngines();

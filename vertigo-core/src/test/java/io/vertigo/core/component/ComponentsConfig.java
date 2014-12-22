@@ -36,7 +36,7 @@ public final class ComponentsConfig {
 
 	public ComponentsConfig(final AopEngine aopEngine) {
 		Assertion.checkNotNull(aopEngine);
-		//---------------------------------------------------------------------
+		//-----
 		this.aopEngine = aopEngine;
 	}
 

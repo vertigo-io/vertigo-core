@@ -38,7 +38,7 @@ public class ExportField {
 	public ExportField(final DtField dtField, final MessageText label) {
 		Assertion.checkNotNull(dtField);
 		//label may be null
-		//---------------------------------------------------------------------
+		//-----
 		this.dtField = dtField;
 		this.label = label;
 	}

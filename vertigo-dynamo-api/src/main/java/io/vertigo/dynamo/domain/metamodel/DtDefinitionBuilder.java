@@ -65,13 +65,13 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 */
 	public DtDefinitionBuilder(final String name) {
 		Assertion.checkArgNotEmpty(name);
-		//---------------------------------------------------------------------
+		//-----
 		myName = name;
 	}
 
 	public DtDefinitionBuilder withPackageName(final String packageName) {
 		//packageName peut être null
-		//---------------------------------------------------------------------
+		//-----
 		myPackageName = packageName;
 		return this;
 	}

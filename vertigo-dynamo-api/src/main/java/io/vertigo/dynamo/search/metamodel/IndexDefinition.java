@@ -25,13 +25,13 @@ import io.vertigo.lang.Assertion;
 
 /**
  * Définition de l'index de recherche.
- * 
+ *
  * Un index est constitué de deux types d'objets.
  * - Un objet d'index (les champs indexés)
- * - Un objet d'affichage 
- * 
+ * - Un objet d'affichage
+ *
  * L'objet d'affichage peut être simple (Ex: résultat google) alors qu'il se réfère à un index plus riche.
- *  
+ *
  * @author dchallas
  */
 @DefinitionPrefix("IDX")
@@ -56,7 +56,7 @@ public final class IndexDefinition implements Definition {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(indexDtDefinition);
 		Assertion.checkNotNull(resultDtDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		this.name = name;
 		this.indexDtDefinition = indexDtDefinition;
 		this.resultDtDefinition = resultDtDefinition;

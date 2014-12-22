@@ -105,10 +105,10 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 	public void put(final FileInfo fileInfo) {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 		final boolean isCreation = fileInfo.getURI() == null;
-		// ---------------------------------------------------------------------
+		//-----
 		final DtObject fileMetadataDto = createMetadataDtObject(fileInfo.getDefinition());
 		final DtObject fileDataDto = createDataDtObject(fileInfo.getDefinition());
-		// ---------------------------------------------------------------------
+		//-----
 		final KFile kFile = fileInfo.getKFile();
 		setValue(fileMetadataDto, DtoFields.FILE_NAME, kFile.getFileName());
 		setValue(fileMetadataDto, DtoFields.MIME_TYPE, kFile.getMimeType());
@@ -146,7 +146,7 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 	@Override
 	public void remove(final URI<FileInfo> uri) {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
-		// ---------------------------------------------------------------------
+		//-----
 		final URI<DtObject> dtoMetaDataUri = createMetaDataURI(uri);
 		final DtObject fileMetadataDtoOld = getPersistenceManager().getBroker().<DtObject> get(dtoMetaDataUri);
 		final Object fdtId = TwoTablesDbFileStorePlugin.<Object> getValue(fileMetadataDtoOld, DtoFields.FDT_ID);
@@ -164,7 +164,7 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 	 */
 	private static URI<DtObject> createMetaDataURI(final URI<FileInfo> uri) {
 		Assertion.checkNotNull(uri, "uri du fichier doit être renseignée.");
-		// ---------------------------------------------------------------------
+		//-----
 		final FileInfoDefinition fileInfoDefinition = uri.<FileInfoDefinition> getDefinition();
 		final DtDefinition dtDefinition = getRootDtDefinition(fileInfoDefinition, 0);
 		return new URI<>(dtDefinition, uri.getKey());
@@ -187,7 +187,7 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 		Assertion.checkNotNull(fileInfoDefinition.getRoot(), "Pour ce FileStore le root contient le nom des deux tables : FILE_METADATA;FILE_DATA");
 		Assertion.checkArgument(fileInfoDefinition.getRoot().contains(";"), "Pour ce FileStore le root contient le nom des deux tables : FILE_METADATA;FILE_DATA");
 		Assertion.checkArgument(fileInfoDefinition.getRoot().split(";").length == 2, "Pour ce FileStore le root contient le nom des deux tables : FILE_METADATA;FILE_DATA");
-		// ---------------------------------------------------------------------
+		//-----
 		final String fileDataDefinitionRoot = fileInfoDefinition.getRoot().split(";")[rootIndex];
 		// Pour ce fileStore, on utilise le root des fileDefinitions comme nom des tables de stockage.
 		// Il doit exister des DtObjet associés, avec la structure attendue.
@@ -233,7 +233,7 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 
 		FileInfoDataStream(final KFile kFile) {
 			Assertion.checkNotNull(kFile);
-			//-----------------------------------------------------------------
+			//-----
 			this.kFile = kFile;
 		}
 

@@ -39,7 +39,7 @@ public final class SearchManagerDynaFieldsTest extends AbstractSearchManagerTest
 
 		//attention : la première utilisation de l'index fige la définition des types
 		init(IDX_DYNA_CAR);
-		//---------------------------------------------------------------------
+		//-----
 		final Map<String, String> indexFieldsMap = new HashMap<>();
 		for (final DtField dtField : carIndexDefinition.getIndexDtDefinition().getFields()) {
 			String indexType = dtField.getDomain().getProperties().getValue(DtProperty.INDEX_TYPE);

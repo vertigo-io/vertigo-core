@@ -42,7 +42,7 @@ final class DataCache {
 	 */
 	DataCache(final CacheManager cacheManager) {
 		Assertion.checkNotNull(cacheManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.cacheManager = cacheManager;
 	}
 
@@ -78,7 +78,7 @@ final class DataCache {
 	 */
 	void putDtObject(final DtObject dto) {
 		Assertion.checkNotNull(dto);
-		//---------------------------------------------------------------------
+		//-----
 		final String context = getContext(DtObjectUtil.findDtDefinition(dto));
 		//2.On met à jour l'objet
 		cacheManager.put(context, createURI(dto), dto);
@@ -101,7 +101,7 @@ final class DataCache {
 	 */
 	void putDtList(final DtList<?> dtc) {
 		Assertion.checkNotNull(dtc);
-		//---------------------------------------------------------------------
+		//-----
 		final String context = getContext(dtc.getDefinition());
 
 		//1.On met à jour les objets
@@ -114,13 +114,13 @@ final class DataCache {
 
 	private static <D extends DtObject> URI<D> createURI(final D dto) {
 		Assertion.checkNotNull(dto);
-		//---------------------------------------------------------------------
+		//-----
 		return new URI<>(DtObjectUtil.findDtDefinition(dto), DtObjectUtil.getId(dto));
 	}
 
 	void clear(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		cacheManager.clear(getContext(dtDefinition));
 	}
 }

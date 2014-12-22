@@ -51,7 +51,7 @@ public final class ESServicesPlugin extends AbstractESServicesPlugin {
 		super(cores, rowsPerQuery, codecManager);
 		Assertion.checkArgNotEmpty(serversNamesStr, "Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','");
 		Assertion.checkArgument(!serversNamesStr.contains(";"), "Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','");
-		// ---------------------------------------------------------------------
+		//-----
 		serversNames = serversNamesStr.split(",");
 	}
 
@@ -74,9 +74,9 @@ public final class ESServicesPlugin extends AbstractESServicesPlugin {
 				.put("node.name", "es-embedded-node-" + System.currentTimeMillis())
 				.put("node.data", false)
 				.put("node.master", false)
-				//.put("discovery.zen.fd.ping_timeout", "30s") 
-				//.put("discovery.zen.minimum_master_nodes", 2) 
-				.put("discovery.zen.ping.multicast.enabled", false) 
+				//.put("discovery.zen.fd.ping_timeout", "30s")
+				//.put("discovery.zen.minimum_master_nodes", 2)
+				.put("discovery.zen.ping.multicast.enabled", false)
 				.put("discovery.zen.ping.unicast.hosts", serversNames)
 				.build();
 		//.put("cluster.name", "cluster-test-" + NetworkUtils.getLocalAddress().getHostName())

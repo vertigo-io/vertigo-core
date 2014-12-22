@@ -29,7 +29,7 @@ import java.util.List;
 
 /**
  * Résultat d'analyse d'une tâche.
- * 
+ *
  * @author tchassagnette
  */
 public final class TaskDefinitionReport implements DataReport {
@@ -43,7 +43,7 @@ public final class TaskDefinitionReport implements DataReport {
 	TaskDefinitionReport(final TaskDefinition taskDefinition, final List<Metric> metrics) {
 		Assertion.checkNotNull(taskDefinition);
 		Assertion.checkNotNull(metrics);
-		//---------------------------------------------------------------------
+		//-----
 		this.taskDefinition = taskDefinition;
 		this.metrics = new ArrayList<>(metrics);
 	}

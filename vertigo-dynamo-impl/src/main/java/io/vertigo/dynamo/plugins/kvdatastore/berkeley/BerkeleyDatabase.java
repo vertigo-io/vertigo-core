@@ -56,7 +56,7 @@ final class BerkeleyDatabase {
 	BerkeleyDatabase(final Database database, final KTransactionManager transactionManager) {
 		Assertion.checkNotNull(database);
 		Assertion.checkNotNull(transactionManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.transactionManager = transactionManager;
 		this.database = database;
 	}
@@ -81,7 +81,7 @@ final class BerkeleyDatabase {
 	<C> Option<C> find(final String id, final Class<C> clazz) {
 		Assertion.checkNotNull(id);
 		Assertion.checkNotNull(clazz);
-		//---------------------------------------------------------------------
+		//-----
 		final DatabaseEntry idEntry = new DatabaseEntry();
 		final DatabaseEntry dataEntry = new DatabaseEntry();
 
@@ -106,7 +106,7 @@ final class BerkeleyDatabase {
 	void put(final String id, final Object object) {
 		Assertion.checkArgNotEmpty(id);
 		Assertion.checkNotNull(object);
-		//---------------------------------------------------------------------
+		//-----
 		final DatabaseEntry idEntry = new DatabaseEntry();
 		final DatabaseEntry dataEntry = new DatabaseEntry();
 
@@ -152,7 +152,7 @@ final class BerkeleyDatabase {
 	 */
 	void delete(final String id) {
 		Assertion.checkArgNotEmpty(id);
-		//---------------------------------------------------------------------
+		//-----
 		final DatabaseEntry idEntry = new DatabaseEntry();
 
 		keyBinding.objectToEntry(id, idEntry);

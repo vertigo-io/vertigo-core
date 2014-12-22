@@ -53,7 +53,7 @@ public final class MockConnectionProviderPlugin extends AbstractSqlConnectionPro
 
 		Assertion.checkNotNull(jdbcUrl);
 		Assertion.checkNotNull(jdbcDriver);
-		//----------------------------------------------------------------------
+		//-----
 		ClassUtil.classForName(jdbcDriver); //Initialisation du driver
 
 		this.jdbcUrl = jdbcUrl;

@@ -87,7 +87,7 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 		Assertion.checkNotNull(localeManager);
 		Assertion.checkNotNull(cacheManager);
 
-		//---------------------------------------------------------------------
+		//-----
 		this.cacheManager = cacheManager;
 
 		indexAnalyser = new DefaultAnalyzer(false); //les stop word marchent mal si asymétrique entre l'indexation et la query
@@ -128,7 +128,7 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 
 	private <D extends DtObject> LuceneIndex<D> createIndex(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
 		Assertion.checkNotNull(fullDtc);
-		//---------------------------------------------------------------------
+		//-----
 		final RamLuceneIndex<D> luceneDb = new RamLuceneIndex<>(fullDtc.getDefinition(), indexAnalyser);
 		try (final IndexWriter indexWriter = luceneDb.createIndexWriter()) {
 			final DtField pkField = fullDtc.getDefinition().getIdField().get();
@@ -182,7 +182,7 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 	private <D extends DtObject> DtList<D> getCollection(final String keywords, final Collection<DtField> searchedDtFieldList, final int maxRows, final DtField boostedField, final LuceneIndex<D> index) throws IOException {
 		Assertion.checkNotNull(index);
 		Assertion.checkNotNull(searchedDtFieldList);
-		//---------------------------------------------------------------------
+		//-----
 		final Query query = createQuery(keywords, searchedDtFieldList, boostedField);
 		return executeQuery(index, query, maxRows);
 	}
@@ -216,7 +216,7 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 		if (StringUtil.isEmpty(keywords)) {
 			return new MatchAllDocsQuery();
 		}
-		//----------------
+		//-----
 		final BooleanQuery query = new BooleanQuery();
 
 		for (final DtField dtField : searchedFieldList) {

@@ -41,7 +41,7 @@ final class WFuture<WR> implements Future<WR>, WorkResultHandler<WR> {
 
 	WFuture(final WorkResultHandler<WR> redirect) {
 		Assertion.checkNotNull(redirect);
-		//---------------------------------------------------------------------
+		//-----
 		this.redirect = redirect;
 	}
 
@@ -52,8 +52,8 @@ final class WFuture<WR> implements Future<WR>, WorkResultHandler<WR> {
 	@Override
 	public void onDone(final WR result, final Throwable error) {
 		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
-		//---------------------------------------------------------------------
-		//---------------------------------------------------------------------
+		//-----
+		//-----
 		if (done.compareAndSet(false, true)) {
 			myResult = result;
 			myError = error;

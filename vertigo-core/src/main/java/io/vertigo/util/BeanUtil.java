@@ -52,7 +52,7 @@ public final class BeanUtil {
 		Assertion.checkNotNull(object);
 		Assertion.checkNotNull(propertyName);
 		Assertion.checkArgument(propertyName.indexOf('.') == -1, "La notation par point est interdite.");
-		//---------------------------------------------------------------------
+		//-----
 		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());
 		final Method readMethod = pd.getReadMethod();
 		if (readMethod == null) {
@@ -72,7 +72,7 @@ public final class BeanUtil {
 		Assertion.checkNotNull(object);
 		Assertion.checkNotNull(propertyName);
 		Assertion.checkArgument(propertyName.indexOf('.') == -1, "La notation par point est interdite.");
-		//---------------------------------------------------------------------
+		//-----
 		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());
 		final Method writeMethod = pd.getWriteMethod();
 		if (writeMethod == null) {

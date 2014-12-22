@@ -45,7 +45,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 */
 	public TaskDefinitionBuilder(final String taskDefinitionName) {
 		Assertion.checkNotNull(taskDefinitionName);
-		//----------------------------------------------------------------------
+		//-----
 		this.myTaskDefinitionName = taskDefinitionName;
 	}
 
@@ -60,7 +60,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 		if (taskEngineClass.isAssignableFrom(TaskEngine.class)) {
 			throw new ClassCastException("La classe doit être une sous classe de ServiceProvider");
 		}
-		//---------------------------------------------------------------------
+		//-----
 		this.myTaskEngineClass = taskEngineClass;
 		return this;
 	}
@@ -83,7 +83,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 */
 	public TaskDefinitionBuilder withPackageName(final String packageName) {
 		//packageName peut être null
-		//---------------------------------------------------------------------
+		//-----
 		this.myPackageName = packageName;
 		return this;
 	}

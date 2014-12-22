@@ -61,7 +61,7 @@ public final class FormatterBoolean extends AbstractFormatterImpl {
 	public void initParameters(final String args) {
 		// Les arguments ne doivent pas être vides.
 		assertArgs(args != null, args);
-		//----------------------------------------------------------------------
+		//-----
 		final StringTokenizer st = new StringTokenizer(args, ";");
 
 		//OUI
@@ -84,7 +84,7 @@ public final class FormatterBoolean extends AbstractFormatterImpl {
 	@Override
 	public String valueToString(final Object objValue, final DataType dataType) {
 		Assertion.checkArgument(dataType == DataType.Boolean, "Formatter ne s'applique qu'aux booléens");
-		//----------------------------------------------------------------------
+		//-----
 		return booleanToString((Boolean) objValue);
 	}
 
@@ -92,7 +92,7 @@ public final class FormatterBoolean extends AbstractFormatterImpl {
 	@Override
 	public Object stringToValue(final String strValue, final DataType dataType) throws FormatterException {
 		Assertion.checkArgument(dataType == DataType.Boolean, "Formatter ne s'applique qu'aux booléens");
-		//----------------------------------------------------------------------
+		//-----
 		final String sValue = StringUtil.isEmpty(strValue) ? null : strValue.trim();
 
 		return stringToBoolean(sValue);

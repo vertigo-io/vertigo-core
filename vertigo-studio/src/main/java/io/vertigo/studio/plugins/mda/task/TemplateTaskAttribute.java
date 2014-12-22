@@ -25,9 +25,9 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.mda.domain.DomainUtil;
 import io.vertigo.util.StringUtil;
 
-/** 
+/**
  * Génération des classes/méthodes des taches de type DAO.
- * 
+ *
  * @author pchretien
  */
 public final class TemplateTaskAttribute {
@@ -37,7 +37,7 @@ public final class TemplateTaskAttribute {
 	TemplateTaskAttribute(final TaskDefinition taskDefinition, final TaskAttribute taskAttribute) {
 		Assertion.checkNotNull(taskDefinition);
 		Assertion.checkNotNull(taskAttribute);
-		//-----------------------------------------------------------------
+		//-----
 		this.taskAttribute = taskAttribute;
 		this.taskDefinition = taskDefinition;
 	}

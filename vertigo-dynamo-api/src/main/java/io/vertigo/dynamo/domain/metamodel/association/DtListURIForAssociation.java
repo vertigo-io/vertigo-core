@@ -48,7 +48,7 @@ public final class DtListURIForAssociation extends DtListURI {
 		Assertion.checkNotNull(associationDefinition);
 		Assertion.checkNotNull(source);
 		Assertion.checkNotNull(roleName);
-		//----------------------------------------------------------------------
+		//-----
 		associationDefinitionName = associationDefinition.getName();
 		this.roleName = roleName;
 

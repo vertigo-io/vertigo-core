@@ -57,7 +57,7 @@ public final class PersistenceManagerImpl implements PersistenceManager {
 		Assertion.checkNotNull(collectionsManager);
 		Assertion.checkNotNull(fileStorePlugin);
 		Assertion.checkNotNull(defaultStorePlugin);
-		//---------------------------------------------------------------------
+		//-----
 		masterDataConfiguration = new MasterDataConfigurationImpl(collectionsManager);
 		brokerConfiguration = new BrokerConfigurationImpl(cacheManager, this, collectionsManager);
 		brokerNN = new BrokerNNImpl(taskManager);
@@ -93,8 +93,6 @@ public final class PersistenceManagerImpl implements PersistenceManager {
 	public BrokerConfiguration getBrokerConfiguration() {
 		return brokerConfiguration;
 	}
-
-	//-------------------------------------------------------------------------
 
 	/** {@inheritDoc} */
 	@Override

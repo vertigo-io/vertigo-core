@@ -48,7 +48,7 @@ final class SqlDynamicDtObject implements DtObject, Dynamic {
 	 */
 	SqlDynamicDtObject(final SerializableDtDefinition serializableDefinition) {
 		Assertion.checkNotNull(serializableDefinition);
-		// ----------------------------------------------------------------------
+		//-----
 		this.serializableDefinition = serializableDefinition;
 	}
 

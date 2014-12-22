@@ -47,7 +47,7 @@ abstract class AbstractKFile implements KFile {
 		Assertion.checkNotNull(mimeType);
 		Assertion.checkNotNull(lastModified);
 		Assertion.checkNotNull(length);
-		//---------------------------------------------------------------------
+		//-----
 		this.fileName = fileName;
 		this.mimeType = mimeType;
 		this.lastModified = lastModified;

@@ -36,7 +36,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 	 */
 	CompositeDynamicRegistry(final List<DynamicRegistryPlugin> handlerList) {
 		Assertion.checkNotNull(handlerList);
-		//---------------------------------------------------------------------
+		//-----
 		this.dynamicRegistries = new ArrayList<DynamicRegistry>(handlerList);
 		//Création de la grammaire.
 		grammar = createGrammar();

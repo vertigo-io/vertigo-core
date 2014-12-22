@@ -52,7 +52,7 @@ public abstract class TaskEngine {
 	 */
 	public final TaskResult process(final Task task) {
 		Assertion.checkNotNull(task);
-		//-----------------------------------------------------------------------------------
+		//-----
 		input = task;
 		output = new TaskResultBuilder(task.getDefinition());
 		// les implémentations de TaskEngine utilisent setValue qui remplit le result (ouput).

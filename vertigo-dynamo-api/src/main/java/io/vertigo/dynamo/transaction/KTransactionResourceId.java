@@ -59,7 +59,7 @@ public final class KTransactionResourceId<TR extends KTransactionResource> {
 	public KTransactionResourceId(final Priority priority, final String name) {
 		Assertion.checkNotNull(priority);
 		Assertion.checkNotNull(name);
-		//---------------------------------------------------------------------
+		//-----
 		this.priority = priority;
 		this.name = name;
 	}

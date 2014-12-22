@@ -79,7 +79,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	public void load(final String resourcePath, final DynamicDefinitionRepository dynamicModelrepository) {
 		Assertion.checkArgNotEmpty(resourcePath);
 		Assertion.checkNotNull(dynamicModelrepository);
-		//----------------------------------------------------------------------
+		//-----
 		final Iterable<Class<?>> classes = getClasses(resourcePath);
 
 		//--Enregistrement des fichiers java annotés
@@ -91,7 +91,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 
 	private static void load(final Class<?> clazz, final DynamicDefinitionRepository dynamicModelrepository) {
 		Assertion.checkNotNull(dynamicModelrepository);
-		//----------------------------------------------------------------------
+		//-----
 		for (final Annotation annotation : clazz.getAnnotations()) {
 			if (annotation instanceof io.vertigo.dynamo.domain.stereotype.DtDefinition) {
 				parseDtDefinition((io.vertigo.dynamo.domain.stereotype.DtDefinition) annotation, clazz, dynamicModelrepository);
@@ -260,7 +260,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	 */
 	private static String createFieldName(final Field field) {
 		Assertion.checkNotNull(field);
-		// ----------------------------------------------------------------------
+		//-----
 		final String fieldName = StringUtil.camelToConstCase(field.getName());
 		if (StringUtil.constToCamelCase(fieldName, false).equals(field.getName())) {
 			return fieldName;
@@ -275,7 +275,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	 */
 	private static String createFieldName(final Method method) {
 		Assertion.checkNotNull(method);
-		// ----------------------------------------------------------------------
+		//-----
 		if (method.getName().startsWith("get")) {
 			final String propertyName = method.getName().substring("get".length());
 			final String fieldName = StringUtil.camelToConstCase(propertyName);

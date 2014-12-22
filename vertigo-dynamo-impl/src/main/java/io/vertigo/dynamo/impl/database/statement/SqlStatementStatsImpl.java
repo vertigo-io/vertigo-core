@@ -35,7 +35,7 @@ final class SqlStatementStatsImpl implements SqlStatementStats {
 
 	SqlStatementStatsImpl(final SqlPreparedStatement statement) {
 		Assertion.checkNotNull(statement);
-		//---------------------------------------------------------------------
+		//-----
 		this.statement = statement;
 	}
 

@@ -72,7 +72,7 @@ final class XLSExporter {
 
 	XLSExporter(final PersistenceManager persistenceManagers) {
 		Assertion.checkNotNull(persistenceManagers);
-		// ---------------------------------------------------------------------
+		//-----
 		this.persistenceManager = persistenceManagers;
 	}
 

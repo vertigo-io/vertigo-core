@@ -40,7 +40,7 @@ public final class DtListChainFilter<D extends DtObject> implements DtListFilter
 	public DtListChainFilter(final DtListFilter<D>... filters) {
 		Assertion.checkNotNull(filters);
 		Assertion.checkArgument(filters.length > 0, "Il faut au moins un filter");
-		//-----------------------------------------------------------------
+		//-----
 		this.filters = filters;
 	}
 

@@ -373,7 +373,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	 */
 	boolean isModified(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
-		//---------------------------------------------------------------------
+		//-----
 		return inputBuffer.containsKey(dtField.getName());
 	}
 

@@ -56,7 +56,7 @@ public final class EntityBuilder implements Builder<Entity> {
 	 */
 	public EntityBuilder(final String name) {
 		Assertion.checkNotNull(name);
-		//----------------------------------------------------------------------
+		//-----
 		this.name = name;
 		attributes = new HashSet<>();
 		properties = new HashMap<>();
@@ -74,9 +74,9 @@ public final class EntityBuilder implements Builder<Entity> {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkNotNull(entity);
 		//On vérifie que le nom du champ n'est pas déjà utilisé.
-		//----------------------------------------------------------------------
+		//-----
 		final EntityAttribute metaFieldDefinition = new EntityAttribute(fieldName, entity, multiple, notNull);
-		//----------------------------------------------------------------------
+		//-----
 		attributes.add(metaFieldDefinition);
 		return this;
 	}
@@ -89,7 +89,7 @@ public final class EntityBuilder implements Builder<Entity> {
 	public EntityBuilder withProperty(final EntityProperty property, final boolean notNull) {
 		Assertion.checkNotNull(property);
 		Assertion.checkArgument(!properties.containsKey(property), "la propriete {0} est deja declaree pour {1}", property, this);
-		//----------------------------------------------------------------------
+		//-----
 		//Une propriété est unique pour une définition donnée.
 		//Il n'y a jamais de multiplicité
 		properties.put(property, notNull);

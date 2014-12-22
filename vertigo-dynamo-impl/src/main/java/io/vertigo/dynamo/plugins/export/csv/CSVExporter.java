@@ -71,7 +71,7 @@ final class CSVExporter {
 	CSVExporter(final CodecManager codecManager, final PersistenceManager persistenceManager) {
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkNotNull(persistenceManager);
-		// ---------------------------------------------------------------------
+		//-----
 		csvEncoder = codecManager.getCsvEncoder();
 		this.persistenceManager = persistenceManager;
 	}

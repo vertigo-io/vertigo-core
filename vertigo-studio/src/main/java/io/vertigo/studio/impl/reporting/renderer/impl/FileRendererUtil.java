@@ -26,7 +26,7 @@ import java.io.IOException;
 
 /**
  * Classe utilitaire.
- * 
+ *
  * @author tchassagnette
  */
 final class FileRendererUtil {
@@ -42,7 +42,7 @@ final class FileRendererUtil {
 	 */
 	static void writeFile(final String rootPath, final String fileName, final String content) {
 		Assertion.checkArgument(rootPath.endsWith("/"), "Le chemin doit se terminer par / ({0})", rootPath);
-		//---------------------------------------------------------------------
+		//-----
 		final File pathFile = new File(rootPath);
 		try {
 			if (!pathFile.exists()) {

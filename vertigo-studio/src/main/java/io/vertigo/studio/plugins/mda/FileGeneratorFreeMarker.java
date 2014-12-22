@@ -68,7 +68,7 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 		Assertion.checkNotNull(packageName);
 		Assertion.checkNotNull(fileExtention);
 		Assertion.checkNotNull(templateName);
-		// ---------------------------------------------------------------------
+		//-----
 		this.mapRoot = mapRoot;
 		this.classSimpleName = classSimpleName;
 		this.packageName = packageName;

@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Implementation d'un cache memoire.
  * La purge des éléments trop vieux se fait lors de la lecture.
- * 
+ *
  * @author npiedeloup
  */
 final class MapCache {
@@ -47,7 +47,7 @@ final class MapCache {
 	 */
 	MapCache(final String name, final boolean eternal, final long timeToLiveSeconds) {
 		Assertion.checkArgNotEmpty(name);
-		//---------------------------------------------------------------------
+		//-----
 		this.name = name;
 		this.eternal = eternal;
 		this.timeToLiveSeconds = timeToLiveSeconds;
@@ -77,9 +77,9 @@ final class MapCache {
 		return eternal;
 	}
 
-	//-------------------------------------------------------------------------
-	//-----------------------------Données-------------------------------------
-	//-------------------------------------------------------------------------
+	//=========================================================================
+	//=============================Données=====================================
+	//=========================================================================
 	/**
 	 * @return Nombre d'élément en cache
 	 */

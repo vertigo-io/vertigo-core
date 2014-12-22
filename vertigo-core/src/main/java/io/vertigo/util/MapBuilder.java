@@ -34,7 +34,7 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 	public MapBuilder<K, V> put(final K key, final V value) {
 		Assertion.checkNotNull(key);
 		Assertion.checkNotNull(value);
-		//---------------------------------------------------------------------
+		//-----
 		map.put(key, value);
 		return this;
 	}

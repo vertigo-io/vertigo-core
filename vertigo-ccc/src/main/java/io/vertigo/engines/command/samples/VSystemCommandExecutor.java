@@ -140,7 +140,7 @@ public final class VSystemCommandExecutor implements VCommandExecutor<List<Compo
 //	out.println(sb.toString());
 //	//et dans le log
 //	Logger.getLogger(getClass()).info(sb.toString());
-//	//------------------------------------------------------------------------
+//	//-----
 //}
 
 //private Map<Long, Long> appendThreadsInformations(final StringBuilder sb) {

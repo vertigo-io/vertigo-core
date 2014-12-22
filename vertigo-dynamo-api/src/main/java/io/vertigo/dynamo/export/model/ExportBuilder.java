@@ -102,7 +102,7 @@ public final class ExportBuilder implements Builder<Export> {
 	 */
 	ExportBuilder withSheet(final ExportSheet sheet) {
 		Assertion.checkNotNull(sheet);
-		//---------------------------------------------------------------------
+		//-----
 		sheets.add(sheet);
 		return this;
 	}

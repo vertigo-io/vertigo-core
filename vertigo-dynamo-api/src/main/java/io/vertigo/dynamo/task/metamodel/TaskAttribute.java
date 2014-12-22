@@ -63,7 +63,7 @@ public final class TaskAttribute {
 	TaskAttribute(final String attributeName, final Domain domain, final boolean notNull, final boolean in) {
 		Assertion.checkNotNull(attributeName);
 		Assertion.checkNotNull(domain);
-		//----------------------------------------------------------------------
+		//-----
 		name = attributeName;
 		this.domain = domain;
 		this.notNull = notNull;

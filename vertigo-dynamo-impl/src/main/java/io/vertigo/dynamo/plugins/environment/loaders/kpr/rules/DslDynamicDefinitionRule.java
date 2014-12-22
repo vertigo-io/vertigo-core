@@ -50,7 +50,7 @@ public final class DslDynamicDefinitionRule extends AbstractRule<DynamicDefiniti
 	public DslDynamicDefinitionRule(final String operation, final DynamicDefinitionRepository dynamicModelRepository) {
 		Assertion.checkArgNotEmpty(operation);
 		Assertion.checkNotNull(dynamicModelRepository);
-		// ----------------------------------------------------------------------
+		//-----
 		this.operation = operation;
 		this.dynamicModelRepository = dynamicModelRepository;
 	}
@@ -61,8 +61,7 @@ public final class DslDynamicDefinitionRule extends AbstractRule<DynamicDefiniti
 				new TermRule(operation),// alter ou create
 				SPACES,
 				definitionRule,//2
-				SPACES
-		);
+				SPACES);
 	}
 
 	@Override

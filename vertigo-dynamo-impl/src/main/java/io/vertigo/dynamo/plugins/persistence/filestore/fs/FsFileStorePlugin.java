@@ -147,9 +147,9 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		String pathToSave = null;
 		final KFile kFile = fileInfo.getKFile();
 
-		// ---------------------------------------------------------------------
+		//-----
 		final DtObject fileInfoDto = createDtObject(fileInfo.getDefinition());
-		// ---------------------------------------------------------------------
+		//-----
 		setValue(fileInfoDto, DtoFields.FILE_NAME, kFile.getFileName());
 		setValue(fileInfoDto, DtoFields.MIME_TYPE, kFile.getMimeType());
 		setValue(fileInfoDto, DtoFields.LAST_MODIFIED, kFile.getLastModified());

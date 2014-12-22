@@ -40,7 +40,7 @@ public final class ComputedExpression {
 	 */
 	public String getJavaCode() {
 		Assertion.checkArgNotEmpty(javaCode, "Le code java de l'expression est obligatoire.");
-		//---------------------------------------------------------------------
+		//-----
 		return javaCode;
 	}
 }

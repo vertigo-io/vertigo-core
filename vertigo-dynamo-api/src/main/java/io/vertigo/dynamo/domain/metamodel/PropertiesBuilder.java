@@ -45,7 +45,7 @@ public final class PropertiesBuilder implements Builder<Properties> {
 		Assertion.checkArgument(!properties.containsKey(property), "Propriété {0} déjà déclarée : ", property);
 		//On vérifie que la valeur est du bon type
 		property.getType().cast(value);
-		//----------------------------------------------------------------------
+		//-----
 		properties.put(property, value);
 		return this;
 	}

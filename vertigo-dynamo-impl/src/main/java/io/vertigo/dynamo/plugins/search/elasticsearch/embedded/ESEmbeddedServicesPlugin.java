@@ -58,7 +58,7 @@ public final class ESEmbeddedServicesPlugin extends AbstractESServicesPlugin {
 	public ESEmbeddedServicesPlugin(@Named("home") final String elasticSearchHome, @Named("cores") final String cores, @Named("rowsPerQuery") final int rowsPerQuery, final CodecManager codecManager, final ResourceManager resourceManager) {
 		super(cores, rowsPerQuery, codecManager);
 		Assertion.checkArgNotEmpty(elasticSearchHome);
-		// ---------------------------------------------------------------------
+		//-----
 		elasticSearchHomeURL = resourceManager.resolve(elasticSearchHome);
 	}
 
@@ -70,7 +70,7 @@ public final class ESEmbeddedServicesPlugin extends AbstractESServicesPlugin {
 
 	private static Node createNode(final URL esHomeURL) {
 		Assertion.checkNotNull(esHomeURL);
-		//---------------------------------------------------------------------
+		//-----
 		final File home;
 		try {
 			home = new File(URLDecoder.decode(esHomeURL.getFile(), "UTF-8"));

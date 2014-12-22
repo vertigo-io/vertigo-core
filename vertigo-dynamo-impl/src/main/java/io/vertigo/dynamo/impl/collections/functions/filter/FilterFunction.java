@@ -32,7 +32,7 @@ public final class FilterFunction<D extends DtObject> implements DtListFunction<
 
 	public FilterFunction(final DtListFilter<D> filter) {
 		Assertion.checkNotNull(filter);
-		//-----------------------------------------------------------------
+		//-----
 		this.filter = filter;
 	}
 

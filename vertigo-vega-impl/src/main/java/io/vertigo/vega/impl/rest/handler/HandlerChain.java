@@ -53,7 +53,7 @@ final class HandlerChain {
 	 */
 	private HandlerChain(final HandlerChain previous) {
 		Assertion.checkState(previous.offset < 50, "HandlerChain go through 50 handlers. Force halt : infinit loop suspected.");
-		//---------------------------------------------------------------------
+		//-----
 		handlers = previous.handlers;
 		offset = previous.offset + 1; //on avance
 	}

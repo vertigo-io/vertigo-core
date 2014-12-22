@@ -51,7 +51,7 @@ public final class XMLUtil {
 	public static void validateXmlByXsd(final URL xml, final URL xsd) {
 		Assertion.checkNotNull(xml);
 		Assertion.checkNotNull(xsd);
-		//---------------------------------------------------------------------
+		//-----
 		final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 		try {
 			final Validator validator = schemaFactory.newSchema(xsd).newValidator();

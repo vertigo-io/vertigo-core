@@ -86,7 +86,7 @@ public final class PublisherDataUtil {
 	public static void populateData(final DtObject dto, final PublisherNode publisherDataNode) {
 		Assertion.checkNotNull(dto);
 		Assertion.checkNotNull(publisherDataNode);
-		//---------------------------------------------------------------------
+		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		final List<String> dtFieldNames = getDtFieldList(dtDefinition);
 		final PublisherNodeDefinition pnDefinition = publisherDataNode.getNodeDefinition();
@@ -100,46 +100,46 @@ public final class PublisherDataUtil {
 			final Object value = dtField.getDataAccessor().getValue(dto);
 			nbMappedField++;
 			switch (publisherField.getFieldType()) {
-			case Boolean:
-				Assertion.checkArgument(value instanceof Boolean, "Le champ {0} du DT {1} doit être un Boolean (non null)", fieldName, dtDefinition.getName());
-				publisherDataNode.setBoolean(fieldName, (Boolean) value);
-				break;
-			case String:
-				final String renderedField = value != null ? renderStringField(dto, dtField) : "";//un champ null apparait comme vide
-				publisherDataNode.setString(fieldName, renderedField);
-				break;
-			case List:
-				if (value != null) { //on autorise les listes null et on la traite comme vide
-					//car la composition d'objet métier n'est pas obligatoire
-					//et le champ sera peut être peuplé plus tard
-					final DtList<?> dtc = (DtList<?>) value;
-					final List<PublisherNode> publisherNodes = new ArrayList<>();
-					for (final DtObject element : dtc) {
-						final PublisherNode publisherNode = publisherDataNode.createNode(fieldName);
-						populateData(element, publisherNode);
-						publisherNodes.add(publisherNode);
+				case Boolean:
+					Assertion.checkArgument(value instanceof Boolean, "Le champ {0} du DT {1} doit être un Boolean (non null)", fieldName, dtDefinition.getName());
+					publisherDataNode.setBoolean(fieldName, (Boolean) value);
+					break;
+				case String:
+					final String renderedField = value != null ? renderStringField(dto, dtField) : "";//un champ null apparait comme vide
+					publisherDataNode.setString(fieldName, renderedField);
+					break;
+				case List:
+					if (value != null) { //on autorise les listes null et on la traite comme vide
+						//car la composition d'objet métier n'est pas obligatoire
+						//et le champ sera peut être peuplé plus tard
+						final DtList<?> dtc = (DtList<?>) value;
+						final List<PublisherNode> publisherNodes = new ArrayList<>();
+						for (final DtObject element : dtc) {
+							final PublisherNode publisherNode = publisherDataNode.createNode(fieldName);
+							populateData(element, publisherNode);
+							publisherNodes.add(publisherNode);
+						}
+						publisherDataNode.setNodes(fieldName, publisherNodes);
 					}
-					publisherDataNode.setNodes(fieldName, publisherNodes);
-				}
-				break;
-			case Node:
-				if (value != null) { //on autorise les objet null,
-					//car la composition d'objet métier n'est pas obligatoire
-					//et le champ sera peut être peuplé plus tard
-					final DtObject element = (DtObject) value;
-					final PublisherNode elementPublisherDataNode = publisherDataNode.createNode(fieldName);
-					populateData(element, elementPublisherDataNode);
-					publisherDataNode.setNode(fieldName, elementPublisherDataNode);
-				}
-				break;
-			case Image:
-				throw new RuntimeException("Type unsupported : " + publisherField.getFieldType());
-			default:
-				throw new IllegalArgumentException("Type unknown : " + publisherField.getFieldType());
+					break;
+				case Node:
+					if (value != null) { //on autorise les objet null,
+						//car la composition d'objet métier n'est pas obligatoire
+						//et le champ sera peut être peuplé plus tard
+						final DtObject element = (DtObject) value;
+						final PublisherNode elementPublisherDataNode = publisherDataNode.createNode(fieldName);
+						populateData(element, elementPublisherDataNode);
+						publisherDataNode.setNode(fieldName, elementPublisherDataNode);
+					}
+					break;
+				case Image:
+					throw new RuntimeException("Type unsupported : " + publisherField.getFieldType());
+				default:
+					throw new IllegalArgumentException("Type unknown : " + publisherField.getFieldType());
 			}
 			//} else {
 			//	Assertion.precondition(!(value instanceof Boolean), "Le champ {0} du DT {1} est un Boolean, et il ne doit pas être null", fieldName, dtDefinition.toURN());
-			//-----------------------------------------------------------
+			//-----
 			//	value = ""; //un champ null apparait comme vide
 			//}
 		}
@@ -168,13 +168,9 @@ public final class PublisherDataUtil {
 		return dtFieldNames;
 	}
 
-	//-------------------------------------------------------------------------
-	//-------------------------------------------------------------------------
-	//-------------------------------------------------------------------------
-	//- Génération de PublisherNode en KSP à partir des DtDefinitions
-	//-------------------------------------------------------------------------
-	//-------------------------------------------------------------------------
-	//-------------------------------------------------------------------------
+	//=========================================================================
+	//======Génération de PublisherNode en KSP à partir des DtDefinitions======
+	//=========================================================================
 
 	/**
 	 * Méthode utilitaire pour générer une proposition de définition de PublisherNode, pour des DtDefinitions.
@@ -212,7 +208,7 @@ public final class PublisherDataUtil {
 	//		Assertion.notNull(dto);
 	//		Assertion.notNull(publisherDataNode);
 	//		Assertion.notNull(publisherDataNodeDefinition);
-	//		//---------------------------------------------------------------------
+	//-----
 	//		final DtDefinition dtDefinition = dto.getDefinition();
 	//		for (final PublisherField publisherField : publisherDataNodeDefinition.getFields()) {
 	//			final String fieldName = publisherField.getName();

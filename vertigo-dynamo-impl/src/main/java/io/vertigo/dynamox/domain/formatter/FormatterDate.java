@@ -116,7 +116,7 @@ public final class FormatterDate extends AbstractFormatterImpl {
 	@Override
 	public String valueToString(final Object objValue, final DataType dataType) {
 		Assertion.checkArgument(dataType == DataType.Date, "Formatter ne s'applique qu'aux dates");
-		//----------------------------------------------------------------------
+		//-----
 		return dateToString((Date) objValue);
 	}
 
@@ -124,7 +124,7 @@ public final class FormatterDate extends AbstractFormatterImpl {
 	@Override
 	public Object stringToValue(final String strValue, final DataType dataType) throws FormatterException {
 		Assertion.checkArgument(dataType == DataType.Date, "Formatter ne s'applique qu'aux dates");
-		//----------------------------------------------------------------------
+		//-----
 		final String sValue = StringUtil.isEmpty(strValue) ? null : strValue.trim();
 
 		return stringToDate(sValue);

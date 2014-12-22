@@ -139,7 +139,7 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 	@Override
 	public final <I extends DtObject, R extends DtObject> void putAll(final IndexDefinition indexDefinition, final Collection<Index<I, R>> indexCollection) {
 		Assertion.checkNotNull(indexCollection);
-		//---------------------------------------------------------------------
+		//-----
 		final ESStatement<I, R> statement = createElasticStatement(indexDefinition);
 		statement.putAll(indexCollection);
 	}
@@ -171,7 +171,7 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 	public final <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchQuery searchQuery, final FacetedQuery facetedQuery) {
 		Assertion.checkNotNull(searchQuery);
 		Assertion.checkNotNull(facetedQuery);
-		//---------------------------------------------------------------------
+		//-----
 		final ESStatement<DtObject, R> statement = createElasticStatement(searchQuery.getIndexDefinition());
 		return statement.loadList(searchQuery, facetedQuery, rowsPerQuery);
 	}
@@ -180,7 +180,7 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 	@Override
 	public final long count(final IndexDefinition indexDefinition) {
 		Assertion.checkNotNull(indexDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		return createElasticStatement(indexDefinition).count();
 	}
 
@@ -201,7 +201,7 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 	 */
 	protected final IndexFieldNameResolver obtainIndexFieldNameResolver(final IndexDefinition indexDefinition) {
 		Assertion.checkNotNull(indexDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		final IndexFieldNameResolver indexFieldNameResolver = indexFieldNameResolvers.get(indexDefinition.getName());
 		return indexFieldNameResolver != null ? indexFieldNameResolver : DEFAULT_INDEX_FIELD_NAME_RESOLVER;
 	}
@@ -209,7 +209,7 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 	private <I extends DtObject, R extends DtObject> ESStatement<I, R> createElasticStatement(final IndexDefinition indexDefinition) {
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkArgument(cores.contains(indexDefinition.getName()), "Index {0} hasn't been registered (Registered indexes: {2}).", indexDefinition.getName(), cores);
-		//---------------------------------------------------------------------
+		//-----
 		return new ESStatement<>(elasticDocumentCodec, indexDefinition.getName().toLowerCase(), esClient, obtainIndexFieldNameResolver(indexDefinition));
 	}
 

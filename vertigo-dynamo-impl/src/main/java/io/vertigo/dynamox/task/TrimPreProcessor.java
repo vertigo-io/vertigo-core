@@ -36,7 +36,7 @@ final class TrimPreProcessor {
 	TrimPreProcessor(final String beginSeparator, final String endSeparator) {
 		Assertion.checkArgNotEmpty(beginSeparator);
 		Assertion.checkArgNotEmpty(endSeparator);
-		//---------------------------------------------------------------------
+		//-----
 		this.beginSeparator = beginSeparator;
 		this.endSeparator = endSeparator;
 	}

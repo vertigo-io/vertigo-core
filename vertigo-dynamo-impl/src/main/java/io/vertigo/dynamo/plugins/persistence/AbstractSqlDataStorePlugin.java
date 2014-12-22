@@ -97,7 +97,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 */
 	protected AbstractSqlDataStorePlugin(final TaskManager taskManager) {
 		Assertion.checkNotNull(taskManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.taskManager = taskManager;
 		integerDomain = new Domain("DO_INTEGER_SQL", DataType.Integer, new FormatterNumber("FMT_INTEGER_SQL"));
 	}
@@ -165,7 +165,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	public final <D extends DtObject> DtList<D> loadList(final DtListURI uri) {
 		// Assertion.precondition(uri instanceof DtListURIForAssociation, "cas non traité {0}", uri.toURN());
 		// uri.toURN >>  java.lang.IllegalArgumentException: uri urn[dynamoimpl.persistence.utilx.DtListURIForDtCriteria]::null non serializable
-		//---------------------------------------------------------------------
+		//-----
 		final DtList<D> dtc;
 		if (uri instanceof DtListURIForAssociation) {
 			final DtListURIForAssociation dtListURIForAssociation = (DtListURIForAssociation) uri;
@@ -260,7 +260,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	@Override
 	public <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final Criteria<D> criteria, final Integer maxRows) {
 		Assertion.checkArgument(criteria == null || criteria instanceof FilterCriteria<?>, "Ce store ne gére que les FilterCriteria");
-		//---------------------------------------------------------------------
+		//-----
 		final FilterCriteria<D> filterCriteria = (FilterCriteria<D>) (criteria == null ? EMPTY_FILTER_CRITERIA : criteria);
 		return this.doLoadList(dtDefinition, filterCriteria, maxRows);
 	}
@@ -268,7 +268,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	private <D extends DtObject> DtList<D> doLoadList(final DtDefinition dtDefinition, final FilterCriteria<D> filterCriteria, final Integer maxRows) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(filterCriteria);
-		//---------------------------------------------------------------------
+		//-----
 		//TODO domainMap inutil, non ?
 		final Map<String, Domain> domainMap = new HashMap<>();
 		for (final String fieldName : filterCriteria.getFilterMap().keySet()) {
@@ -278,7 +278,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 			domainMap.put(fieldName, dtDefinition.getField(fieldName).getDomain());
 		}
 		//Il faudrait vérifier que les filtres portent tous sur des champs du DT, mais la tache le fera.
-		//----------------------------------------------------------------------
+		////-----
 
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = getListTaskName(tableName, filterCriteria);
@@ -547,7 +547,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	public int count(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkArgument(dtDefinition.isPersistent(), "DtDefinition n'est pas persistante");
-		//---------------------------------------------------------------------
+		//-----
 		final String tableName = getTableName(dtDefinition);
 		final String request = "select count(*) as count from " + tableName;
 

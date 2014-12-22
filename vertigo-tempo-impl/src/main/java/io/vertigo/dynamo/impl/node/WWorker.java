@@ -35,7 +35,7 @@ final class WWorker implements Runnable {
 		Assertion.checkArgNotEmpty(workType);
 		Assertion.checkNotNull(localWorker);
 		Assertion.checkNotNull(nodePlugin);
-		//-----------------------------------------------------------------
+		//-----
 		//	this.nodeId = nodeId;
 		this.workType = workType;
 		this.localWorker = localWorker;

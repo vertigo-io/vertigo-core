@@ -33,7 +33,7 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 
 	public ListBuilder<X> add(final X value) {
 		Assertion.checkNotNull(value);
-		//---------------------------------------------------------------------
+		//-----
 		list.add(value);
 		return this;
 	}

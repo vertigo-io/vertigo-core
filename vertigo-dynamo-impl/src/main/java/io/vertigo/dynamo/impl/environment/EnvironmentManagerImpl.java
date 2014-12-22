@@ -40,7 +40,7 @@ public final class EnvironmentManagerImpl implements EnvironmentManager {
 	public EnvironmentManagerImpl(final List<LoaderPlugin> loaderPlugins, final List<DynamicRegistryPlugin> dynamicRegistryPlugins) {
 		Assertion.checkNotNull(loaderPlugins);
 		Assertion.checkNotNull(dynamicRegistryPlugins);
-		//---------------------------------------------------------------------
+		//-----
 		Home.getDefinitionSpace().addLoader(new Environment(dynamicRegistryPlugins, loaderPlugins));
 	}
 }

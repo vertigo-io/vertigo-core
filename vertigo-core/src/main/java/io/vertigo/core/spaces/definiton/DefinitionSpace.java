@@ -56,7 +56,7 @@ public final class DefinitionSpace {
 
 	public void injectResources(final ModuleConfig moduleConfig) {
 		Assertion.checkNotNull(moduleConfig);
-		//---------------------------------------------------------------------
+		//-----
 		//			int resourcesToBeLoad = moduleConfig.getResourceConfigs().size();
 		//We are doing a copy of all resources, to check that they are all parsed.
 		final List<ResourceConfig> resourceConfigsToDo = new ArrayList<>(moduleConfig.getResourceConfigs());

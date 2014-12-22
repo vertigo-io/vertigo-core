@@ -82,7 +82,7 @@ final class WhereInPreProcessor {
 					Assertion.checkState(indexEnd > 0, "La fin du paramètre est introuvable ({0})", nameSearchTemp.toString());
 					final String strDtc = query.substring(indexStart, indexEnd + 1);
 					Assertion.checkState(!strDtc.contains("rownum") && strDtc.contains("ROWNUM"), "Le mot clé ROWNUM est attendu en majuscule ({0})", strDtc);
-					//--------------------------------------------------------------------------------------------------
+					//-----
 					//TG : recherche parentheses + IN & NOT IN pour contraintre oracle (pas plus de 1000 elements dans clause IN)
 					final int indexFirstParenthesis = query.lastIndexOf("(", indexStart + 1);
 					int indexOfIn = lastIndexOfIgnoreCase(query, STR_IN, indexFirstParenthesis + 1);
@@ -113,7 +113,7 @@ final class WhereInPreProcessor {
 							query = query.replace(strDtc, "'SHOULD_NOT_MATCH'");
 						}
 					} else {
-						//-------------------------------------------------------------------------------------------------
+						//-----
 						//TG : recherche parentheses + IN & NOT IN pour contraintre oracle (pas plus de 1000 elements dans clause IN)
 						if (listObject.size() > NB_MAX_WHERE_IN_ITEM) {
 							//supprime la parenthese apres le IN
@@ -125,7 +125,7 @@ final class WhereInPreProcessor {
 							query2 = query.substring(indexOfFirstSpace + 1, query.length());
 							query = query1 + "(" + query2;
 						}
-						//---------------------------------------------------------------------------------------------------
+						//-----
 						String separator = "";
 						int index = 1;
 						for (final DtObject dto : listObject) {
@@ -134,14 +134,16 @@ final class WhereInPreProcessor {
 									subQuery.append("(");
 								}
 							}
-							subQuery.append(separator);
-							subQuery.append(IN_CHAR);
-							subQuery.append(outParamName);
-							subQuery.append(".");
-							subQuery.append(String.valueOf(listObject.indexOf(dto)));
-							subQuery.append(".");
-							subQuery.append(fieldName);
-							subQuery.append(IN_CHAR);
+							subQuery
+									.append(separator)
+									.append(IN_CHAR)
+									.append(outParamName)
+									.append(".")
+									.append(String.valueOf(listObject.indexOf(dto)))
+									.append(".")
+									.append(fieldName)
+									.append(IN_CHAR);
+
 							separator = ",";
 							//-------------------------------------------------------------------------------------------------
 							//TG : recherche parentheses + IN & NOT IN pour contraintre oracle (pas plus de 1000 elements dans clause IN)

@@ -25,11 +25,11 @@ import io.vertigo.dynamo.search.metamodel.IndexDefinition;
 import io.vertigo.lang.Assertion;
 
 /**
- * Objet d'échange avec l'index. 
- * Cet objet permet de 
+ * Objet d'échange avec l'index.
+ * Cet objet permet de
  *  - construire l'index de recherche
  *  - consulter le résultat d'une recherhe
- * 
+ *
  * @author dchallas
  * @param <I> Type de l'objet contenant les champs à indexer
  * @param <R> Type de l'objet resultant de la recherche
@@ -60,7 +60,7 @@ public final class Index<I extends DtObject, R extends DtObject> {
 		//On vérifie la consistance des données.
 		Assertion.checkArgument(indexDefinition.getResultDtDefinition().equals(DtObjectUtil.findDtDefinition(resultDtObject)), "le type du DTO result n''est pas correct");
 		Assertion.checkArgument(indexDtObject == null || indexDefinition.getIndexDtDefinition().equals(DtObjectUtil.findDtDefinition(indexDtObject)), "le type du DTO index n''est pas correct");
-		//---------------------------------------------------------------------
+		//-----
 		this.uri = uri;
 		this.indexDefinition = indexDefinition;
 		this.indexDtObject = indexDtObject;
@@ -92,12 +92,12 @@ public final class Index<I extends DtObject, R extends DtObject> {
 	}
 
 	/**
-	 * Récupération de l'object contenant les champs à indexer. 
-	 * @return Objet contenant les champs à indexer 
+	 * Récupération de l'object contenant les champs à indexer.
+	 * @return Objet contenant les champs à indexer
 	 */
 	public I getIndexDtObject() {
 		Assertion.checkArgument(hasIndex(), "Index n'est pas dans l'état indexable.");
-		//---------------------------------------------------------------------
+		//-----
 		return indexDtObject;
 	}
 
@@ -113,8 +113,8 @@ public final class Index<I extends DtObject, R extends DtObject> {
 	 * @param <I> Type de l'objet contenant les champs à indexer
 	 * @param <R> Type de l'objet resultant de la recherche
 	 * @param uri URI de l'objet indexé
-	 * @param indexDefinition Définition de l'index de recherche.	
-	 * @param resultDto DTO représentant le résultat 
+	 * @param indexDefinition Définition de l'index de recherche.
+	 * @param resultDto DTO représentant le résultat
 	 * @param indexDto  DTO représentant l'index
 	 * @return  Objet permettant de créer l'index
 	 */
@@ -127,9 +127,9 @@ public final class Index<I extends DtObject, R extends DtObject> {
 	 * @param <I> Type de l'objet contenant les champs à indexer
 	 * @param <R> Type de l'objet resultant de la recherche
 	 * @param uri URI de l'objet indexé
-	 * @param indexDefinition Définition de l'index de recherche.	
-	 * @param resultDto DTO représentant le résultat 
-	 * @return Objet permettant d'accéder au résultat d'une recherche 
+	 * @param indexDefinition Définition de l'index de recherche.
+	 * @param resultDto DTO représentant le résultat
+	 * @return Objet permettant d'accéder au résultat d'une recherche
 	 */
 	public static <I extends DtObject, R extends DtObject> Index<I, R> createResult(final IndexDefinition indexDefinition, final URI uri, final R resultDto) {
 		return new Index<>(indexDefinition, uri, null, resultDto);

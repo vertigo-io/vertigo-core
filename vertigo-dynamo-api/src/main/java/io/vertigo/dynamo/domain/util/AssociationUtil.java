@@ -82,7 +82,7 @@ public final class AssociationUtil {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param multiplicityA Mutiplicité A
 	 * @param multiplicityB Multiplicité B
 	 * @return Si le noeud est primaire
@@ -185,7 +185,7 @@ public final class AssociationUtil {
 	public static AssociationNode getAssociationNode(final AssociationDefinition associationDefinition, final String roleNameSource) {
 		Assertion.checkNotNull(associationDefinition);
 		Assertion.checkNotNull(roleNameSource);
-		//----------------------------------------------------------------------
+		//-----
 		if (roleNameSource.equals(associationDefinition.getAssociationNodeA().getRole())) {
 			return associationDefinition.getAssociationNodeA();
 		} else if (roleNameSource.equals(associationDefinition.getAssociationNodeB().getRole())) {
@@ -201,7 +201,7 @@ public final class AssociationUtil {
 	 */
 	public static AssociationNode getAssociationNodeTarget(final AssociationDefinition associationDefinition, final String roleNameSource) {
 		Assertion.checkNotNull(roleNameSource);
-		//----------------------------------------------------------------------
+		//-----
 		if (roleNameSource.equals(associationDefinition.getAssociationNodeA().getRole())) {
 			return associationDefinition.getAssociationNodeB();
 		} else if (roleNameSource.equals(associationDefinition.getAssociationNodeB().getRole())) {

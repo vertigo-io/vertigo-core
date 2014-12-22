@@ -68,7 +68,7 @@ public @interface Association {
 	 */
 	String primaryMultiplicity();
 
-	//--------------------------------------------------------------------------
+	//-----
 	/**
 	 * Nom du DT possédant la clé étrangère utilisée (1).
 	 */

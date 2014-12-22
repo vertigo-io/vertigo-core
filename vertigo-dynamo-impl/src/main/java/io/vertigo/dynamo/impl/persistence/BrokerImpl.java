@@ -52,7 +52,7 @@ final class BrokerImpl implements Broker {
 	 */
 	BrokerImpl(final BrokerConfigurationImpl brokerConfiguration) {
 		Assertion.checkNotNull(brokerConfiguration);
-		//---------------------------------------------------------------------
+		//-----
 		//On vérouille la configuration.
 		//brokerConfiguration.lock();
 		//On crée la pile de Store.
@@ -68,7 +68,7 @@ final class BrokerImpl implements Broker {
 	@Override
 	public void save(final DtObject dto) {
 		Assertion.checkNotNull(dto);
-		//----------------------------------------------------------------------
+		//-----
 		dataStore.put(dto);
 
 	}
@@ -77,7 +77,7 @@ final class BrokerImpl implements Broker {
 	@Override
 	public void save(final FileInfo fileInfo) {
 		Assertion.checkNotNull(fileInfo);
-		//----------------------------------------------------------------------
+		//-----
 		fileStore.put(fileInfo);
 	}
 
@@ -85,7 +85,7 @@ final class BrokerImpl implements Broker {
 	@Override
 	public void merge(final DtObject dto) {
 		Assertion.checkNotNull(dto);
-		//----------------------------------------------------------------------
+		//-----
 		dataStore.merge(dto);
 	}
 
@@ -93,7 +93,7 @@ final class BrokerImpl implements Broker {
 	@Override
 	public void delete(final URI<? extends DtObject> uri) {
 		Assertion.checkNotNull(uri);
-		//----------------------------------------------------------------------
+		//-----
 		dataStore.remove(uri);
 	}
 
@@ -101,7 +101,7 @@ final class BrokerImpl implements Broker {
 	@Override
 	public void deleteFileInfo(final URI<FileInfo> uri) {
 		Assertion.checkNotNull(uri);
-		//----------------------------------------------------------------------
+		//-----
 		fileStore.remove(uri);
 	}
 
@@ -114,7 +114,7 @@ final class BrokerImpl implements Broker {
 		Assertion.checkNotNull(uri);
 		//----------------------------------------------------------------------
 		final D dto = dataStore.<D> load(uri);
-		//----------------------------------------------------------------------
+		//-----
 		return Option.option(dto);
 	}
 
@@ -122,7 +122,7 @@ final class BrokerImpl implements Broker {
 	@Override
 	public <D extends DtObject> D get(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
-		//----------------------------------------------------------------------
+		//-----
 		//on ne reutilise pas le getOption volontairement
 		//car c'est ici le cas le plus courant, et on l'optimise au maximum
 		final D dto = dataStore.<D> load(uri);
@@ -135,7 +135,7 @@ final class BrokerImpl implements Broker {
 	@Override
 	public FileInfo getFileInfo(final URI<FileInfo> uri) {
 		Assertion.checkNotNull(uri);
-		//----------------------------------------------------------------------
+		//-----
 		final FileInfo fileInfo = fileStore.load(uri);
 		//----------------------------------------------------------------------
 		Assertion.checkNotNull(fileInfo, "Le fichier {0} n''a pas été trouvé", uri);
@@ -146,9 +146,9 @@ final class BrokerImpl implements Broker {
 	@Override
 	public <D extends DtObject> DtList<D> getList(final DtListURI uri) {
 		Assertion.checkNotNull(uri);
-		//----------------------------------------------------------------------
+		//-----
 		final DtList<D> dtc = dataStore.loadList(uri);
-		//----------------------------------------------------------------------
+		//-----
 		Assertion.checkNotNull(dtc);
 		return dtc;
 	}
@@ -158,7 +158,7 @@ final class BrokerImpl implements Broker {
 	@Override
 	public <D extends DtObject> DtList<D> getList(final DtDefinition dtDefinition, final Criteria<D> criteria, final Integer maxRows) {
 		final DtList<D> dtc = dataStore.loadList(dtDefinition, criteria, maxRows);
-		//----------------------------------------------------------------------
+		//-----
 		Assertion.checkNotNull(dtc);
 		return dtc;
 	}

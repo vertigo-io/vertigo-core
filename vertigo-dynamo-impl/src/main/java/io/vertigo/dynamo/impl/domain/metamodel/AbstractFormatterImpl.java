@@ -38,7 +38,7 @@ public abstract class AbstractFormatterImpl implements Formatter {
 	 */
 	protected AbstractFormatterImpl(final String name) {
 		Assertion.checkArgNotEmpty(name);
-		//---------------------------------------------------------------------
+		//-----
 		this.name = name;
 	}
 

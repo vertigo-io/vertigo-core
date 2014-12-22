@@ -63,7 +63,7 @@ public final class Task {
 	Task(final TaskDefinition taskDefinition, final Map<TaskAttribute, Object> taskAttributes) {
 		Assertion.checkNotNull(taskDefinition);
 		Assertion.checkNotNull(taskAttributes);
-		//----------------------------------------------------------------------
+		//-----
 		this.taskDefinition = taskDefinition;
 		for (final Entry<TaskAttribute, Object> entry : taskAttributes.entrySet()) {
 			Assertion.checkArgument(entry.getKey().isIn(), "only 'in' taskAttributes are allowed");

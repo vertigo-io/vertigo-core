@@ -36,7 +36,7 @@ public final class DynamicDefinitionKey {
 	*/
 	public DynamicDefinitionKey(final String name) {
 		Assertion.checkNotNull(name);
-		//---------------------------------------------------------------------
+		//-----
 		this.name = name;
 	}
 

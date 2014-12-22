@@ -131,7 +131,7 @@ final class SqlRetrieveUtil {
 	 */
 	private static String[] getQueryColumnNames(final ResultSetMetaData resultSetMetaData) throws SQLException {
 		Assertion.checkNotNull(resultSetMetaData);
-		//----------------------------------------------------------------------
+		//-----
 		final String[] res = new String[resultSetMetaData.getColumnCount()];
 		for (int i = 0; i < res.length; i++) {
 			res[i] = resultSetMetaData.getColumnLabel(i + 1); //getColumnLabel permet de récupérer le nom adapté lors du select (avec un select truc as machin from xxx)

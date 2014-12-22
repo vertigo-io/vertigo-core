@@ -84,7 +84,7 @@ public final class ComponentSpace implements Container, Activeable {
 
 	public ComponentSpace(final AppConfig appConfig) {
 		Assertion.checkNotNull(appConfig);
-		//---------------------------------------------------------------------
+		//-----
 		this.appConfig = appConfig;
 	}
 
@@ -132,7 +132,7 @@ public final class ComponentSpace implements Container, Activeable {
 				@Override
 				public DefinitionSpace exec(final VCommand command) {
 					Assertion.checkNotNull(command);
-					//---------------------------------------------------------------------
+					//-----
 					return Home.getDefinitionSpace();
 				}
 			});

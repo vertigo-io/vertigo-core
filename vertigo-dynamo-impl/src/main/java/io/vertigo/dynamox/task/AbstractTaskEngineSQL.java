@@ -172,7 +172,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		}
 	}
 
-	// -------------------------------------------------------------------------
+	//-----
 	/**
 	 * Retourne la Query qui sera parsée
 	 * Par défaut il s'agit de la request définie sur le service
@@ -209,7 +209,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 				parameterValuesMap.put(taskAttribute, getValue(taskAttribute.getName()));
 			}
 		}
-		//---------------------------------------------------------------------
+		//-----
 		final ScriptPreProcessor scriptPreProcessor = new ScriptPreProcessor(scriptManager, parameterValuesMap, SeparatorType.CLASSIC);
 		final TrimPreProcessor trimPreProcessor = new TrimPreProcessor(SeparatorType.BEGIN_SEPARATOR_CLASSIC, SeparatorType.END_SEPARATOR_CLASSIC);
 		final WhereInPreProcessor whereInPreProcessor = new WhereInPreProcessor(parameterValuesMap);
@@ -251,7 +251,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @throws SQLException Si erreur */
 	protected final void setOutParameter(final SqlCallableStatement cs) throws SQLException {
 		Assertion.checkNotNull(cs); //KCallableStatement doit être renseigné
-		//----------------------------------------------------------------------
+		//-----
 		for (final TaskEngineSQLParam param : params) {
 			switch (param.getType()) {
 				case OUT:

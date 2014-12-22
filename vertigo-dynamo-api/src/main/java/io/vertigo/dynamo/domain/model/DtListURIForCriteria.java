@@ -81,7 +81,7 @@ public final class DtListURIForCriteria<D extends DtObject> extends DtListURI {
 	*/
 	private static <D extends DtObject> Criteria<D> createCriteria(final DtObject dtoCriteria) {
 		Assertion.checkNotNull(dtoCriteria);
-		//---------------------------------------------------------------------
+		//-----
 		final FilterCriteriaBuilder<D> filterCriteriaBuilder = new FilterCriteriaBuilder<>();
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtoCriteria);
 

@@ -50,7 +50,7 @@ final class KspLoader {
 	KspLoader(final URL kspURL, final String charset) {
 		Assertion.checkNotNull(kspURL);
 		Assertion.checkArgNotEmpty(charset);
-		// ----------------------------------------------------------------------
+		//-----
 		this.kspURL = kspURL;
 		this.charset = charset;
 	}

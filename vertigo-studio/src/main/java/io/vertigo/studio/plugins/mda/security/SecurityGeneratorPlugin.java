@@ -46,7 +46,7 @@ public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin {
 	public void generate(final FileConfiguration securityConfiguration, final ResultBuilder resultBuilder) {
 		Assertion.checkNotNull(securityConfiguration);
 		Assertion.checkNotNull(resultBuilder);
-		//---------------------------------------------------------------------
+		//-----
 		generateRole(securityConfiguration, resultBuilder);
 	}
 

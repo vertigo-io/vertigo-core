@@ -49,13 +49,13 @@ public final class SearchManagerImpl implements SearchManager {
 	@Inject
 	public SearchManagerImpl(final Option<SearchServicesPlugin> searchServicesPlugin) {
 		Assertion.checkNotNull(searchServicesPlugin);
-		//---------------------------------------------------------------------
+		//-----
 		this.searchServicesPlugin = searchServicesPlugin;
 	}
 
 	private SearchServicesPlugin getSearchServices() {
 		Assertion.checkArgument(searchServicesPlugin.isDefined(), "Aucun plugin de recherche déclaré");
-		//---------------------------------------------------------------------
+		//-----
 		return searchServicesPlugin.get();
 	}
 

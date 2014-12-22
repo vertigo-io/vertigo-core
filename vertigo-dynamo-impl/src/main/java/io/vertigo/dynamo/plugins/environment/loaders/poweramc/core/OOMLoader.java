@@ -48,7 +48,7 @@ public final class OOMLoader implements XmlLoader {
 	 */
 	public OOMLoader(final URL powerAMCURL) {
 		Assertion.checkNotNull(powerAMCURL);
-		//----------------------------------------------------------------------
+		//-----
 		map = new LinkedHashMap<>();
 		final OOMHandler handler = new OOMHandler(map);
 		try {

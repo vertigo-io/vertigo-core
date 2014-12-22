@@ -49,7 +49,7 @@ final class ComponentLifeCycleUtil {
 
 	static Method getStartMethod(final Class<?> clazz) {
 		Assertion.checkNotNull(clazz);
-		//---------------------------------------------------------------------
+		//-----
 		final Method startMethod = getMethod(clazz, PostConstruct.class);
 
 		if (Activeable.class.isAssignableFrom(clazz)) {
@@ -61,7 +61,7 @@ final class ComponentLifeCycleUtil {
 
 	static Method getStopMethod(final Class<?> clazz) {
 		Assertion.checkNotNull(clazz);
-		//---------------------------------------------------------------------
+		//-----
 		final Method stopMethod = getMethod(clazz, PreDestroy.class);
 		if (Activeable.class.isAssignableFrom(clazz)) {
 			Assertion.checkState(stopMethod == null, "Ambiguité sur la méthode d'arrét sur {0}", clazz);

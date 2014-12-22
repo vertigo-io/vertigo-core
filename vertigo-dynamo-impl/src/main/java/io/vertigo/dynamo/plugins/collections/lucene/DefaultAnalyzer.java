@@ -66,7 +66,7 @@ final class DefaultAnalyzer extends Analyzer implements Serializable {
 	protected TokenStreamComponents createComponents(final String fieldName, final Reader reader) {
 		/* initialisation du token */
 		final Tokenizer source = new StandardTokenizer(Version.LUCENE_40, reader);
-		//---------------------------------------------------------------------
+		//-----
 		/* on retire les élisions*/
 		final CharArraySet elisionSet = new CharArraySet(Version.LUCENE_40, Arrays.asList(LuceneConstants.ELISION_ARTICLES), true);
 		TokenStream filter = new ElisionFilter(source, elisionSet);

@@ -50,7 +50,7 @@ final class RestfulServiceHandler implements RouteHandler {
 	 */
 	RestfulServiceHandler(final EndPointDefinition endPointDefinition) {
 		Assertion.checkNotNull(endPointDefinition);
-		//---------------------------------------------------------------------
+		//-----
 		this.endPointDefinition = endPointDefinition;
 	}
 

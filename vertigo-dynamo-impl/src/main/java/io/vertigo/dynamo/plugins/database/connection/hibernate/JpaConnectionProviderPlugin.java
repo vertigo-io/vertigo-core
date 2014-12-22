@@ -50,7 +50,7 @@ abstract class JpaConnectionProviderPlugin extends AbstractSqlConnectionProvider
 	public JpaConnectionProviderPlugin(@Named("persistenceUnit") final String persistenceUnit, @Named("dataBaseName") final String dataBaseName, final KTransactionManager transactionManager) {
 		super(new JpaDataBase(createDataBase(dataBaseName), Persistence.createEntityManagerFactory(persistenceUnit)));
 		Assertion.checkArgNotEmpty(persistenceUnit);
-		//---------------------------------------------------------------------
+		//-----
 		this.transactionManager = transactionManager;
 	}
 

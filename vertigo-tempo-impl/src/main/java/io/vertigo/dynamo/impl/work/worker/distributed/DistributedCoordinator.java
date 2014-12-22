@@ -42,7 +42,7 @@ public final class DistributedCoordinator implements Coordinator, Activeable {
 
 	public DistributedCoordinator(final MasterPlugin masterPlugin) {
 		Assertion.checkNotNull(masterPlugin);
-		//---------------------------------------------------------------------
+		//-----
 		this.masterPlugin = masterPlugin;
 		watcher = createWatcher();
 	}
@@ -58,7 +58,7 @@ public final class DistributedCoordinator implements Coordinator, Activeable {
 
 	private <WR, W> WFuture<WR> createFuture(final String workId, final Option<WorkResultHandler<WR>> workResultHandler) {
 		Assertion.checkNotNull(workId);
-		//---------------------------------------------------------------------
+		//-----
 		final WFuture<WR> future;
 		if (workResultHandler.isDefined()) {
 			future = new WFuture<>(workResultHandler.get());
@@ -77,12 +77,12 @@ public final class DistributedCoordinator implements Coordinator, Activeable {
 		return masterPlugin.acceptedWorkTypes().contains(workItem.getWorkType());
 	}
 
-	//-------------------------------------------------------------------------
+	//-----
 
 	private <WR> void setResult(final String workId, final WR result, final Throwable error) {
 		Assertion.checkArgNotEmpty(workId);
 		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
-		//---------------------------------------------------------------------
+		//-----
 		final WorkResultHandler workResultHandler = workResultHandlers.remove(workId);
 		if (workResultHandler != null) {
 			//Que faire sinon

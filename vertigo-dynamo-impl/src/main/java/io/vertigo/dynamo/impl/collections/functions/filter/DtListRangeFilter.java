@@ -61,14 +61,14 @@ public final class DtListRangeFilter<D extends DtObject, C extends Comparable> i
 		Assertion.checkNotNull(maxValue);
 		Assertion.checkNotNull(isMinInclude);
 		Assertion.checkNotNull(isMaxInclude);
-		//---------------------------------------------------------------------
+		//-----
 		this.fieldName = fieldName;
 		this.minValue = minValue.getOrElse(null); //On remet a null (car Option non serializable)
 		this.maxValue = maxValue.getOrElse(null); //On remet a null (car Option non serializable)
 		this.isMinInclude = isMinInclude;
 		this.isMaxInclude = isMaxInclude;
 
-		//---------------------------------------------------------------------
+		//-----
 		// On vérifie le caractère serializable, car il est difficile de gérer cette propriété par les generics de bout en bout
 		if (this.minValue != null) {
 			Assertion.checkArgument(this.minValue instanceof Serializable, "Les valeurs doivent être Serializable (min:{0})", this.minValue.getClass().getSimpleName());

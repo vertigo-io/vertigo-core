@@ -57,7 +57,7 @@ public abstract class AbstractExporterIText {
 
 	protected AbstractExporterIText(final PersistenceManager persistenceManager) {
 		Assertion.checkNotNull(persistenceManager);
-		// ---------------------------------------------------------------------
+		//-----
 		this.persistenceManager = persistenceManager;
 	}
 

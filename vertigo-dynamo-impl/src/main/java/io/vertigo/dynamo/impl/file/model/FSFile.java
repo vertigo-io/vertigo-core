@@ -41,7 +41,7 @@ public final class FSFile extends AbstractKFile {
 	 */
 	public FSFile(final String fileName, final String mimeType, final File file) {
 		super(fileName, mimeType, new Date(file.lastModified()), Long.valueOf(file.length()));
-		//---------------------------------------------------------------------
+		//-----
 		this.file = file;
 	}
 

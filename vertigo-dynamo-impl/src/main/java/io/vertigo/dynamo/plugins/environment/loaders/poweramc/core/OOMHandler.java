@@ -43,7 +43,7 @@ final class OOMHandler extends DefaultHandler {
 
 	OOMHandler(final Map<XmlId, OOMObject> map) {
 		Assertion.checkNotNull(map);
-		//---------------------------------------------------------------------
+		//-----
 		this.map = map;
 		final OOMObject root = OOMObject.createdRoot();
 		//root.display();

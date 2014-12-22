@@ -52,7 +52,7 @@ public final class DtListPatternFilter<D extends DtObject> implements DtListFilt
 	 */
 	public DtListPatternFilter(final String filterString) {
 		Assertion.checkArgNotEmpty(filterString);
-		//----------------------------------------------------------------------
+		//-----
 		FilterPattern foundFilterPattern = null;
 		String[] foundParsedFilter = null;
 

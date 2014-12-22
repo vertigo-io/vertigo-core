@@ -54,7 +54,7 @@ public final class PublisherField {
 		} else {
 			Assertion.checkArgument(fieldType != PublisherFieldType.Node && fieldType != PublisherFieldType.List, "Le champ {0} n''est pas du bon type ({1}). Seul les champs de type Data ou List ont besoin d''une nodeDefinition", name, fieldType);
 		}
-		//---------------------------------------------------------------------
+		//-----
 		this.name = name;
 		this.fieldType = fieldType;
 		nodeDefinition = Option.option(publisherDataNodeDefinition);
@@ -76,7 +76,7 @@ public final class PublisherField {
 	}
 
 	/**
-	 * 
+	 *
 	 * Si et seulement si le champ est une liste ou un objet
 	 */
 	public Option<PublisherNodeDefinition> getNodeDefinition() {

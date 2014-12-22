@@ -57,7 +57,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	@Inject
 	public WorkManagerImpl(final @Named("workerCount") int workerCount, final Option<MasterPlugin> masterPlugin) {
 		Assertion.checkNotNull(masterPlugin);
-		//-----------------------------------------------------------------
+		//-----
 		workListener = new WorkListenerImpl(/*analyticsManager*/);
 		localCoordinator = new LocalCoordinator(workerCount);
 		distributedCoordinator = masterPlugin.isDefined() ? Option.some(new DistributedCoordinator(masterPlugin.get())) : Option.<DistributedCoordinator> none();
@@ -97,7 +97,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	public <WR, W> WR process(final W work, final WorkEngineProvider<WR, W> workEngineProvider) {
 		Assertion.checkNotNull(work);
 		Assertion.checkNotNull(workEngineProvider);
-		//---------------------------------------------------------------------
+		//-----
 		final WorkItem<WR, W> workItem = new WorkItem<>(createWorkId(), work, workEngineProvider);
 		final Future<WR> result = submit(workItem, Option.<WorkResultHandler<WR>> none());
 		try {
@@ -117,7 +117,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		Assertion.checkNotNull(work);
 		Assertion.checkNotNull(workEngineProvider);
 		Assertion.checkNotNull(workResultHandler);
-		//---------------------------------------------------------------------
+		//-----
 		final WorkItem<WR, W> workItem = new WorkItem<>(createWorkId(), work, workEngineProvider);
 		submit(workItem, Option.some(workResultHandler));
 	}
@@ -126,7 +126,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	public <WR> void schedule(final Callable<WR> callable, final WorkResultHandler<WR> workResultHandler) {
 		Assertion.checkNotNull(callable);
 		Assertion.checkNotNull(workResultHandler);
-		//---------------------------------------------------------------------
+		//-----
 		final WorkEngineProvider<WR, Void> workEngineProvider = new WorkEngineProvider<>(new WorkEngine<WR, Void>() {
 			@Override
 			public WR process(final Void dummy) {
@@ -142,8 +142,6 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		submit(workItem, Option.some(workResultHandler));
 	}
 
-	//-------------------------------------------------------------------------
-	//-------------------------------------------------------------------------
 	private <WR, W> Future<WR> submit(final WorkItem<WR, W> workItem, final Option<WorkResultHandler<WR>> workResultHandler) {
 		final Coordinator coordinator = resolveCoordinator(workItem);
 		//---
@@ -161,7 +159,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 
 	private <WR, W> Coordinator resolveCoordinator(final WorkItem<WR, W> workItem) {
 		Assertion.checkNotNull(workItem);
-		//----------------------------------------------------------------------
+		//-----
 		/*
 		 * On recherche un Worker capable d'effectuer le travail demandé.
 		 * 1- On recherche parmi les works externes

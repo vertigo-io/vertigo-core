@@ -45,7 +45,7 @@ public final class TaskListenerImpl implements TaskListener {
 	 */
 	public TaskListenerImpl(/*final AnalyticsManager analyticsManager*/) {
 		//		Assertion.checkNotNull(analyticsManager);
-		//		//---------------------------------------------------------------------
+		//-----
 		//		this.analyticsManager = analyticsManager;
 
 		taskLog = Logger.getLogger(TaskManager.class);

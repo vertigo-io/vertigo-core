@@ -54,9 +54,9 @@ public final class ConstraintLongLength extends AbstractConstraintLength<Long> {
 	@Override
 	public void initParameters(final String args) {
 		setMaxLength(args);
-		//----------------------------------------------------------------------
+		//-----
 		Assertion.checkArgument(getMaxLength() < 19, "Longueur max doit être strictement inférieure à 19");
-		//----------------------------------------------------------------------
+		//-----
 		long tmpMaxValue = 1;
 		for (int i = 0; i < getMaxLength(); i++) {
 			tmpMaxValue *= 10;

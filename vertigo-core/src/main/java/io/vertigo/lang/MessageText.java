@@ -29,7 +29,7 @@ import java.util.Locale;
 /**
  * Texte pouvant être externalisé dans un fichier de ressources,
  * en fonction du paramétrage de l'application.
- * Si le libelle n'est pas trouvé, l'affichage est 
+ * Si le libelle n'est pas trouvé, l'affichage est
  * @author npiedeloup, pchretien
  */
 public final class MessageText implements Serializable {
@@ -43,7 +43,7 @@ public final class MessageText implements Serializable {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param key Clé de la ressource
 	 * @param params paramètres de la ressource
 	 */
@@ -54,7 +54,7 @@ public final class MessageText implements Serializable {
 	/**
 	 * Constructeur.
 	 * La clé et/ou le message par défaut doit être non null.
-	 * 
+	 *
 	 * @param defaultMsg Message par défaut (non formatté) de la ressource
 	 * @param key Clé de la ressource
 	 * @param params paramètres de la ressource
@@ -63,7 +63,7 @@ public final class MessageText implements Serializable {
 		Assertion.checkArgument(!StringUtil.isEmpty(defaultMsg) || key != null, "La clé ou le message dot être renseigné");
 		//params n'est null que si l'on passe explicitement null
 		//dans ce cas on le transforme en en tableau vide.
-		// ----------------------------------------------------------------------
+		//-----
 		this.key = key;
 		this.defaultMsg = defaultMsg;
 		this.params = params != null ? params : new Serializable[0];
@@ -84,8 +84,8 @@ public final class MessageText implements Serializable {
 	 */
 	public String getDisplay() {
 		/*
-		 * Cette méthode doit toujours remonter un message. 
-		 * Si LocaleManager n'est pas enregistré ou génére une exception 
+		 * Cette méthode doit toujours remonter un message.
+		 * Si LocaleManager n'est pas enregistré ou génére une exception
 		 * alors on se contente de retourner la clé du message.
 		 */
 		Locale locale = null;

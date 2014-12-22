@@ -46,7 +46,7 @@ public final class Metric {
 		Assertion.checkArgNotEmpty(title);
 		Assertion.checkNotNull(unit); //may be empty
 		//Assertion.checkNotNull(value);
-		//---------------------------------------------------------------------
+		//-----
 		this.status = status;
 		this.title = title;
 		this.unit = unit;

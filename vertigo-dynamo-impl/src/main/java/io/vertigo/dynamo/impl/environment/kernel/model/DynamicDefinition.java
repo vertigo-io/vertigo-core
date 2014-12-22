@@ -32,18 +32,18 @@ import java.util.Set;
  * @author  pchretien
  */
 public interface DynamicDefinition {
-	/** 
+	/**
 	 * @return Clé de la Définition
 	 */
 	DynamicDefinitionKey getDefinitionKey();
 
-	/** 
-	 * @return Nom du package 
+	/**
+	 * @return Nom du package
 	 */
 	String getPackageName();
 
-	/** 
-	 * @return Entité 
+	/**
+	 * @return Entité
 	 */
 	Entity getEntity();
 
@@ -94,7 +94,7 @@ public interface DynamicDefinition {
 	 */
 	List<DynamicDefinition> getAllChildDefinitions();
 
-	//-------------------------------------------------------------------------
+	//-----
 	/**
 	 * Controle et valide les données de cette définition.
 	 */

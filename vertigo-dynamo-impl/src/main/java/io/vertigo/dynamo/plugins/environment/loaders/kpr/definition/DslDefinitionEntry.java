@@ -47,7 +47,7 @@ public final class DslDefinitionEntry {
 	public DslDefinitionEntry(final String fieldName, final List<String> definitionKeys) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkNotNull(definitionKeys);
-		// ----------------------------------------------------------------------
+		//-----
 		this.fieldName = fieldName;
 		definition = null;
 		this.definitionKeys = definitionKeys;
@@ -62,7 +62,7 @@ public final class DslDefinitionEntry {
 	public DslDefinitionEntry(final String fieldName, final DynamicDefinition definition) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkNotNull(definition);
-		// ----------------------------------------------------------------------
+		//-----
 		this.fieldName = fieldName;
 		this.definition = definition;
 		definitionKeys = null;
@@ -89,7 +89,7 @@ public final class DslDefinitionEntry {
 	 */
 	public DynamicDefinition getDefinition() {
 		Assertion.checkNotNull(definition);
-		// ----------------------------------------------------------------------
+		//-----
 		return definition;
 	}
 
@@ -98,7 +98,7 @@ public final class DslDefinitionEntry {
 	 */
 	public List<String> getDefinitionKeys() {
 		Assertion.checkNotNull(definitionKeys);
-		// ----------------------------------------------------------------------
+		//-----
 		return definitionKeys;
 	}
 }

@@ -77,7 +77,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		//super(workManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(dataBaseManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.transactionManager = transactionManager;
 		this.dataBaseManager = dataBaseManager;
 		dataBaseListener = new JpaListenerImpl(analyticsManager);
@@ -136,7 +136,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	@Override
 	public <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final Criteria<D> criteria, final Integer maxRows) {
 		Assertion.checkArgument(criteria == null || criteria instanceof FilterCriteria<?>, "Ce store ne gére que les FilterCriteria");
-		//---------------------------------------------------------------------
+		//-----
 		final FilterCriteria<D> filterCriteria = (FilterCriteria<D>) (criteria == null ? EMPTY_FILTER_CRITERIA : criteria);
 		return this.doLoadList(dtDefinition, filterCriteria, maxRows);
 	}
@@ -156,7 +156,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	public <D extends DtObject> DtList<D> loadList(final DtListURI uri) {
 		// Assertion.precondition(uri instanceof DtListURIForAssociation, "cas non traité {0}", uri.toURN());
 		// uri.toURN >>  java.lang.IllegalArgumentException: uri urn[.persistence.utilx.DtListURIForDtCriteria]::null non serializable
-		//---------------------------------------------------------------------
+		//-----
 		final DtList<D> dtc;
 		if (uri instanceof DtListURIForAssociation) {
 			final DtListURIForAssociation dtListURIForAssociation = (DtListURIForAssociation) uri;
@@ -182,9 +182,9 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	private <D extends DtObject> DtList<D> doLoadList(final DtDefinition dtDefinition, final FilterCriteria<D> filterCriteria, final Integer maxRows) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(filterCriteria);
-		//---------------------------------------------------------------------
+		//-----
 		//Il faudrait vérifier que les filtres portent tous sur des champs du DT.
-		//----------------------------------------------------------------------
+		//-----
 		final String serviceName = "Jpa:find " + getListTaskName(getTableName(dtDefinition), filterCriteria);
 		boolean executed = false;
 		long nbResult = 0;
@@ -427,7 +427,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	/*    private <D extends DtObject> DtCollection<D> loadListFromNNAssociation(
 	 KTransaction transaction, DtCollectionURI dtcUri) throws Exception {
 	 final DtDefinition definition = dtcUri.getDefinition();
-	 // ----------------------------------------------------------------------
+	 //-----
 	 final AssociationNNDefinition associationNNDefinition = dtcUri
 	 .getAssociationDefinition().castAsAssociationNNDefinition();
 	 final String tableName = getTableName(definition);

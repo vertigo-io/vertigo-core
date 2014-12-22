@@ -61,7 +61,7 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 	public JobManagerImpl(final AnalyticsManager analyticsManager, final SchedulerPlugin schedulerPlugin) {
 		Assertion.checkNotNull(analyticsManager);
 		Assertion.checkNotNull(schedulerPlugin);
-		//---------------------------------------------------------------------
+		//-----
 		this.analyticsManager = analyticsManager;
 		this.schedulerPlugin = schedulerPlugin;
 		//A déplacer

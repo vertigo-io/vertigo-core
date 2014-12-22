@@ -46,7 +46,7 @@ public abstract class AbstractConstraintImpl<J, D> implements Constraint<J, D> {
 	 */
 	protected AbstractConstraintImpl(final String name) {
 		Assertion.checkArgNotEmpty(name);
-		//---------------------------------------------------------------------
+		//-----
 		this.name = name;
 	}
 

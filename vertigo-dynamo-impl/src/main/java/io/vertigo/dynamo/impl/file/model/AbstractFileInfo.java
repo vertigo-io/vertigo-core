@@ -44,7 +44,7 @@ public abstract class AbstractFileInfo implements FileInfo {
 	protected AbstractFileInfo(final FileInfoDefinition fileInfoDefinition, final KFile kFile) {
 		Assertion.checkNotNull(fileInfoDefinition);
 		Assertion.checkNotNull(kFile);
-		//---------------------------------------------------------------------
+		//-----
 		this.fileInfoDefinition = new DefinitionReference<>(fileInfoDefinition);
 		this.kFile = kFile;
 	}
@@ -61,7 +61,7 @@ public abstract class AbstractFileInfo implements FileInfo {
 		Assertion.checkNotNull(storedUri);
 		Assertion.checkState(uri == null, "Impossible de setter deux fois l'uri de stockage");
 		Assertion.checkArgument(getDefinition().getName().equals(storedUri.<FileInfoDefinition> getDefinition().getName()), "L''URI ({0}) n''est pas compatible avec ce FileInfo ({1})", storedUri, fileInfoDefinition);
-		//----------------------------------------------------------------------
+		//-----
 		uri = storedUri;
 	}
 

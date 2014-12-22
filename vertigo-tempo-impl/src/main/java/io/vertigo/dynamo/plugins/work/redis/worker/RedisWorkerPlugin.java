@@ -49,7 +49,7 @@ public final class RedisWorkerPlugin implements WorkerPlugin, Activeable {
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkArgNotEmpty(workTypes);
 		Assertion.checkArgNotEmpty(redisHost);
-		//---------------------------------------------------------------------
+		//-----
 		this.workTypes = Arrays.asList(workTypes.trim().split(";"));
 		redisDB = new RedisDB(codecManager, redisHost, redisPort, password);
 	}

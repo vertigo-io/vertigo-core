@@ -62,7 +62,7 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 	DtObjectComparator(final PersistenceManager persistenceManager, final DtList<D> dtc, final SortState sortState) {
 		Assertion.checkNotNull(dtc);
 		Assertion.checkNotNull(sortState);
-		//------------------------------------------------------------------
+		//-----
 		//On recherche le comparateur associé au champ de la collection
 		//Si il n'y a pas de comparateur alors on applique la comparaison standard.
 		this.sortField = dtc.getDefinition().getField(sortState.getFieldName());
@@ -85,7 +85,7 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 		Assertion.checkNotNull(dto1);
 		Assertion.checkNotNull(dto2);
 		//Les DTC ne contiennent pas d'éléments null.
-		//---------------------------------------------------------------------
+		//-----
 		final DataAccessor dataAccessor = sortField.getDataAccessor();
 		return comparator.compare(dataAccessor.getValue(dto1), dataAccessor.getValue(dto2));
 	}
@@ -146,7 +146,7 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 		Assertion.checkNotNull(persistenceManager);
 		Assertion.checkNotNull(dtcURIForMasterData);
 		Assertion.checkNotNull(sortStateParam);
-		//----------------------------------------------------------------------
+		//-----
 		final Broker broker = persistenceManager.getBroker();
 		//		final Store store = getPhysicalStore(masterDataDefinition.getDtDefinition());
 		final DtField mdFieldSort = dtcURIForMasterData.getDtDefinition().getSortField().get();

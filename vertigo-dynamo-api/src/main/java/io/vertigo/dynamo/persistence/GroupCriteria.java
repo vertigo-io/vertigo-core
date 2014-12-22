@@ -64,7 +64,7 @@ public final class GroupCriteria<D extends DtObject> implements Criteria<D> {
 	public GroupCriteria(final JoinType joinType) {
 		Assertion.checkNotNull(joinType);
 		Assertion.checkArgument(JoinType.EXCLUDE != joinType, "Pour l'exclusion, vous devez précisier le premier group, ou filter dans le constructeur");
-		//----------------------------------------------------------------------
+		//-----
 		this.joinType = joinType;
 		firstGroupCriteria = null;
 	}
@@ -78,7 +78,7 @@ public final class GroupCriteria<D extends DtObject> implements Criteria<D> {
 		Assertion.checkNotNull(joinType);
 		Assertion.checkNotNull(firstGroup);
 		Assertion.checkArgument(JoinType.EXCLUDE == joinType, "Préciser le group dans le constructeur, n'est permis que pour l'EXCLUDE");
-		//----------------------------------------------------------------------
+		//-----
 		this.joinType = joinType;
 		firstGroupCriteria = firstGroup;
 	}
@@ -88,7 +88,7 @@ public final class GroupCriteria<D extends DtObject> implements Criteria<D> {
 	 */
 	public void add(final GroupCriteria<D> group) {
 		Assertion.checkNotNull(group);
-		//----------------------------------------------------------------------
+		//-----
 		groupCriterias.add(group);
 	}
 
@@ -98,7 +98,7 @@ public final class GroupCriteria<D extends DtObject> implements Criteria<D> {
 	 */
 	public void add(final FilterCriteria<D> filterCriteria) {
 		Assertion.checkNotNull(filterCriteria);
-		//----------------------------------------------------------------------
+		//-----
 		filterCriterias.add(filterCriteria);
 	}
 
@@ -132,7 +132,7 @@ public final class GroupCriteria<D extends DtObject> implements Criteria<D> {
 	 */
 	public GroupCriteria<D> getFirstGroup() {
 		Assertion.checkArgument(JoinType.EXCLUDE == joinType, "La notion de premier groupe n'est définit que pour l'EXCLUDE");
-		//----------------------------------------------------------------------
+		//-----
 		return firstGroupCriteria;
 	}
 

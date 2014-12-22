@@ -53,7 +53,7 @@ final class Environment implements ResourceLoader {
 	Environment(final List<DynamicRegistryPlugin> dynamicRegistryPlugins, final List<LoaderPlugin> loaderPlugins) {
 		Assertion.checkNotNull(dynamicRegistryPlugins);
 		Assertion.checkNotNull(loaderPlugins);
-		//---------------------------------------------------------------------
+		//-----
 		this.dynamicRegistryPlugins = dynamicRegistryPlugins;
 		//On enregistre les loaders
 		for (final LoaderPlugin loaderPlugin : loaderPlugins) {

@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
  * Inspirée de la classe Scala de même nom.
  *  - option : null ou renseignée
  *  - none : null
- *  - some : renseignée 
+ *  - some : renseignée
  *
  * @author jmainaud
  * @param <T> Type de l'objet optionnel.
@@ -46,7 +46,7 @@ public final class Option<T> {
 	}
 
 	/**
-	 * Donne l'instance de None. 
+	 * Donne l'instance de None.
 	 *
 	 * @param <T> Type de l'option demandé.
 	 * @return None.
@@ -64,7 +64,7 @@ public final class Option<T> {
 	 */
 	public static <R> Option<R> some(final R value) {
 		Assertion.checkNotNull(value, "Option.some requires a non null value.");
-		//---------------------------------------------------------------------
+		//-----
 		return new Option<>(value);
 	}
 

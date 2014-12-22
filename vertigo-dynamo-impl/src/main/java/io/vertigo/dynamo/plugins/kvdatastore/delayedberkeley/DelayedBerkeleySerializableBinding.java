@@ -39,7 +39,7 @@ final class DelayedBerkeleySerializableBinding extends TupleBinding<Serializable
 	 */
 	DelayedBerkeleySerializableBinding(final Codec<Serializable, byte[]> codec) {
 		Assertion.checkNotNull(codec);
-		//---------------------------------------------------------------------
+		//-----
 		this.codec = codec;
 	}
 
@@ -48,7 +48,7 @@ final class DelayedBerkeleySerializableBinding extends TupleBinding<Serializable
 	public Serializable entryToObject(final TupleInput ti) {
 		final String prefix = ti.readString();
 		Assertion.checkArgument(PREFIX.equals(prefix), "L'entrée n'est pas du bon type {0}", prefix);
-		//---------------------------------------------------------------------
+		//-----
 		try {
 			final int size = ti.readInt();
 			final byte[] buffer = new byte[size];

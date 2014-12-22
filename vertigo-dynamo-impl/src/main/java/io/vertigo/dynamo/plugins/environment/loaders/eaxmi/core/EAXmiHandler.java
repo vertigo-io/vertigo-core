@@ -54,7 +54,7 @@ public final class EAXmiHandler extends DefaultHandler {
 
 	EAXmiHandler(final Map<XmlId, EAXmiObject> map) {
 		Assertion.checkNotNull(map);
-		//---------------------------------------------------------------------
+		//-----
 		this.map = map;
 		this.currentObject = EAXmiObject.createdRoot();
 	}

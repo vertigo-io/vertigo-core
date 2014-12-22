@@ -75,7 +75,7 @@ public enum DataType {
 	 */
 	private DataType(final Class<?> javaClass, final boolean primitive) {
 		Assertion.checkNotNull(javaClass);
-		//----------------------------------------------------------------------
+		//-----
 		//Le nom est égal au type sous forme de String
 		this.javaClass = javaClass;
 		this.primitive = primitive;

@@ -45,7 +45,7 @@ final class FileActionDelete implements FileAction {
 	 */
 	FileActionDelete(final String path) {
 		Assertion.checkNotNull(path);
-		//---------------------------------------------------------------------
+		//-----
 		file = new File(path);
 
 		if (!file.exists()) {

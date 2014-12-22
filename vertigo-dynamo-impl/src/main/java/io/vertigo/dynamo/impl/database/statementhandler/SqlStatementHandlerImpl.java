@@ -51,7 +51,7 @@ public final class SqlStatementHandlerImpl implements SqlStatementHandler {
 	 */
 	private static SqlResultMetaData createResultMetaData(final Domain domain, final SqlMapping mapping, final ResultSet resultSet) throws SQLException {
 		Assertion.checkArgument(!domain.getDataType().isPrimitive(), "le type de retour n''est ni un DTO ni une DTC");
-		//---------------------------------------------------------------------
+		//-----
 		//Il y a deux cas
 		//Soit le DT est précisé alors le DTO ou DTC est typé de façon déclarative
 		//Soit le DT n'est pas précisé alors le DTO ou DTC est typé de façon dynamique

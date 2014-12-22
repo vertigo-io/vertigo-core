@@ -40,7 +40,7 @@ public final class ConstraintNumberMaximum extends AbstractConstraintImpl<Number
 	@Override
 	public void initParameters(final String args) {
 		Assertion.checkArgument(args != null && args.length() > 0, "Vous devez préciser la valeur maximum comme argument de ConstraintNumberMaximum");
-		//---------------------------------------------------------------------
+		//-----
 		maxValue = Double.valueOf(args);
 	}
 

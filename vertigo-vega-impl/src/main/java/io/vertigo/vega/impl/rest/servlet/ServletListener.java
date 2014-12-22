@@ -38,8 +38,6 @@ final class ServletListener {
 		generalLog = Logger.getRootLogger();
 	}
 
-	// --------------------------------------------------------------------------
-
 	/**
 	 * Evénement remonté lors du démarrage de la servlet.
 	 * @param servletName Nom de la servlet

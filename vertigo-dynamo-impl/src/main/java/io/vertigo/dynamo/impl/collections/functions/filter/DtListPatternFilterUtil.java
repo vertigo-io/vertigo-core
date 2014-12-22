@@ -66,7 +66,7 @@ public final class DtListPatternFilterUtil {
 		Assertion.checkNotNull(filterPattern);
 		Assertion.checkNotNull(parsedFilter);
 		Assertion.checkNotNull(dtDefinition);
-		//----------------------------------------------------------------------
+		//-----
 		//Si on trouve un pattern, on passe sur du code spécifique
 		final String fieldName = parsedFilter[1]; //attention parsedFilter[0] = filtre entier
 		final DtField dtField = dtDefinition.getField(fieldName);
@@ -91,7 +91,7 @@ public final class DtListPatternFilterUtil {
 	public static Option<String[]> parseFilter(final String filterString, final Pattern parsingPattern) {
 		Assertion.checkNotNull(filterString);
 		Assertion.checkNotNull(parsingPattern);
-		//----------------------------------------------------------------------
+		//-----
 		final String[] groups;
 		int nbGroup = 0;
 		final Matcher matcher = parsingPattern.matcher(filterString);

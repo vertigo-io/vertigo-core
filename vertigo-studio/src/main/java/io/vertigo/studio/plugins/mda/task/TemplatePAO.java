@@ -46,7 +46,7 @@ public final class TemplatePAO {
 		Assertion.checkNotNull(taskDefinitionCollection);
 		Assertion.checkArgument(!taskDefinitionCollection.isEmpty(), "Aucune tache dans le package {0}", packageName);
 		Assertion.checkNotNull(packageName);
-		// -----------------------------------------------------------------
+		//-----
 		this.packageName = packageName;
 
 		className = getLastPackagename(packageName) + "PAO";

@@ -53,7 +53,7 @@ public final class DslKspRule extends AbstractRule<Void, List<?>> {
 	public DslKspRule(final DynamicDefinitionRepository dynamicModelrepository) {
 		super();
 		Assertion.checkNotNull(dynamicModelrepository);
-		//----------------------------------------------------------------------
+		//-----
 		this.dynamicModelrepository = dynamicModelrepository;
 
 	}
@@ -64,13 +64,13 @@ public final class DslKspRule extends AbstractRule<Void, List<?>> {
 		final Rule<DynamicDefinition> templateRule = new DslDynamicDefinitionRule("alter", dynamicModelrepository);
 		final Rule<Choice> firstOfRule = new FirstOfRule(//"definition or template")
 				definitionRule, //0
-				templateRule //1 
+				templateRule //1
 		);
 		final Rule<List<Choice>> manyRule = new ManyRule<>(firstOfRule, true, true);
 		return new SequenceRule(
 				SPACES,
 				new DslPackageRule(),//1
-				SPACES, 
+				SPACES,
 				manyRule); //3
 	}
 

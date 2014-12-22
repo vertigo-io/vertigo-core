@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * Builder des Facettes par Range.
  *
- * @author pchretien 
+ * @author pchretien
  */
 public final class FacetDefinitionByRangeBuilder implements Builder<FacetDefinition> {
 	final String name;
@@ -43,7 +43,7 @@ public final class FacetDefinitionByRangeBuilder implements Builder<FacetDefinit
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(dtField);
 		Assertion.checkNotNull(label);
-		//-----------------------------------------------------------------
+		//-----
 		this.name = name;
 		this.dtField = dtField;
 		this.label = label;
@@ -56,7 +56,7 @@ public final class FacetDefinitionByRangeBuilder implements Builder<FacetDefinit
 
 	public FacetDefinitionByRangeBuilder withFacetValue(final FacetValue facetValue) {
 		Assertion.checkNotNull(facetValue);
-		//-----------------------------------------------------------------
+		//-----
 		facetRanges.add(facetValue);
 		return this;
 	}

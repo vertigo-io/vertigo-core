@@ -38,7 +38,7 @@ final class SqlResultMetaDataStatic implements SqlResultMetaData {
 	 */
 	SqlResultMetaDataStatic(final DtDefinition dtDefinition, final boolean isDtObject) {
 		Assertion.checkNotNull(dtDefinition);
-		//-----------------------------------------------------------------
+		//-----
 		this.dtDefinition = dtDefinition;
 		this.isDtObject = isDtObject;
 	}

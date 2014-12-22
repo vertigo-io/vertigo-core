@@ -43,7 +43,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * 
+ *
  * @author pchretien
  */
 public class DataBaseManagerTest extends AbstractTestCaseJU4 {
@@ -85,12 +85,12 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		try (final SqlCallableStatement callableStatement = dataBaseManager.createCallableStatement(connection, sql)) {
 			callableStatement.registerParameter(0, DataType.Long, SqlPreparedStatement.ParameterType.IN);
 			callableStatement.registerParameter(1, DataType.String, SqlPreparedStatement.ParameterType.IN);
-			//-------
+			//-----
 			callableStatement.init();
-			//-------
+			//-----
 			callableStatement.setValue(0, key);
 			callableStatement.setValue(1, libelle);
-			//-------
+			//-----
 			callableStatement.executeUpdate();
 		}
 	}

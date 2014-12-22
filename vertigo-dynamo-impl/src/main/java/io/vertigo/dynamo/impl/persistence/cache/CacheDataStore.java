@@ -47,7 +47,7 @@ public final class CacheDataStore implements DataStore {
 	public CacheDataStore(final DataStore logicalStore, final CacheDataStoreConfiguration cacheDataStoreConfiguration) {
 		Assertion.checkNotNull(cacheDataStoreConfiguration);
 		Assertion.checkNotNull(logicalStore);
-		//---------------------------------------------------------------------
+		//-----
 		this.logicalDataStore = logicalStore;
 		this.cacheDataStoreConfiguration = cacheDataStoreConfiguration;
 	}

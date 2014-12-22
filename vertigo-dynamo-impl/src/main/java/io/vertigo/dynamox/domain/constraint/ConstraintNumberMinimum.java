@@ -40,7 +40,7 @@ public final class ConstraintNumberMinimum extends AbstractConstraintImpl<Number
 	@Override
 	public void initParameters(final String args) {
 		Assertion.checkArgument(args != null && args.length() > 0, "Vous devez préciser la valeur minimum comme argument de ConstraintNumberMinimum");
-		//---------------------------------------------------------------------
+		//-----
 		minValue = Double.valueOf(args);
 	}
 

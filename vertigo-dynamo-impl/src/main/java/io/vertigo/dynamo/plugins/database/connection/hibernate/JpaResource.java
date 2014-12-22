@@ -44,10 +44,10 @@ public class JpaResource implements KTransactionResource {
 	public JpaResource(final EntityManagerFactory entityManagerFactory) {
 		em = entityManagerFactory.createEntityManager(); //throw a NPE if persistence.xml declare à jta-data-source. Use à non-jta-data-source instead
 		tx = em.getTransaction();
-		// ---------------------------------------------------------------------
+		//-----
 		Assertion.checkNotNull(tx);
 		Assertion.checkNotNull(em);
-		// ---------------------------------------------------------------------
+		//-----
 		tx.begin();
 	}
 

@@ -74,7 +74,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		Assertion.checkNotNull(dynamicDefinitionKey);
 		//packageName peut être null
 		Assertion.checkNotNull(entity);
-		// -------------------------------------------------------------------------
+		//-----
 		this.dynamicDefinitionKey = dynamicDefinitionKey;
 		this.entity = entity;
 	}
@@ -115,7 +115,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		Assertion.checkNotNull(property);
 		// On ne vérifie rien sur le type retourné par le getter.
 		// le type a été validé lors du put.
-		// ----------------------------------------------------------------------
+		//-----
 		// Conformémément au contrat, on retourne null si pas de propriété
 		// trouvée
 		return properties.get(property);
@@ -149,7 +149,6 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return dynamicDefinitions;
 	}
 
-	//-------
 	/** {@inheritDoc} */
 	@Override
 	public final DynamicDefinitionKey getDefinitionKey(final String fieldName) {
@@ -188,9 +187,9 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	private List<DynamicDefinitionKey> obtainDefinitionKeys(final String fieldName) {
 		Assertion.checkNotNull(fieldName);
-		// ------------------------------------------------------------------
+		//-----
 		List<DynamicDefinitionKey> list = definitionKeysByFieldName.get(fieldName);
-		// ------------------------------------------------------------------
+		//-----
 		if (list == null) {
 			list = new ArrayList<>();
 			definitionKeysByFieldName.put(fieldName, list);
@@ -201,7 +200,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	@Override
 	public final DynamicDefinitionBuilder withChildDefinition(final String fieldName, final DynamicDefinition definition) {
 		Assertion.checkNotNull(definition);
-		// ------------------------------------------------------------------
+		//-----
 		obtainComposites(fieldName).add(definition);
 		return this;
 	}

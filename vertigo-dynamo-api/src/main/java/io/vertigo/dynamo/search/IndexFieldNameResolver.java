@@ -40,7 +40,7 @@ public final class IndexFieldNameResolver {
 	 */
 	public IndexFieldNameResolver(final Map<String, String> indexFieldMap) {
 		Assertion.checkNotNull(indexFieldMap);
-		//---------------------------------------------------------------------
+		//-----
 		this.indexFieldMap = new HashMap<>(indexFieldMap);
 		dtFieldMap = new HashMap<>(indexFieldMap.size());
 		replaceIndexFieldMap = new HashMap<>(indexFieldMap.size());
@@ -60,7 +60,7 @@ public final class IndexFieldNameResolver {
 	 */
 	public String obtainIndexFieldName(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
-		//---------------------------------------------------------------------
+		//-----
 		final String fieldName = dtField.getName();
 		final String indexFieldName = indexFieldMap.get(fieldName);
 		return indexFieldName != null ? indexFieldName : fieldName;
@@ -73,7 +73,7 @@ public final class IndexFieldNameResolver {
 	 */
 	public String obtainDtFieldName(final String indexField) {
 		Assertion.checkArgNotEmpty(indexField);
-		//---------------------------------------------------------------------
+		//-----
 		final String dtFieldName = dtFieldMap.get(indexField);
 		return dtFieldName != null ? dtFieldName : indexField;
 	}

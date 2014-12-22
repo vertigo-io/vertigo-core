@@ -65,7 +65,7 @@ public final class BerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activ
 		Assertion.checkArgNotEmpty(dataStoreName);
 		Assertion.checkArgNotEmpty(dbFileName);
 		Assertion.checkNotNull(transactionManager);
-		//---------------------------------------------------------------------
+		//-----
 		this.dataStoreName = dataStoreName;
 		dbFile = new File(dbFileName);
 		this.transactionManager = transactionManager;

@@ -66,7 +66,7 @@ public final class TaskDefinition implements Definition {
 		Assertion.checkNotNull(taskEngineClass, "a taskEngineClass is required");
 		Assertion.checkNotNull(request, "a request is required");
 		Assertion.checkNotNull(taskAttributes);
-		//----------------------------------------------------------------------
+		//-----
 		this.name = name;
 		localName = DefinitionUtil.getLocalName(name, TaskDefinition.class);
 		this.packageName = packageName;
@@ -84,7 +84,7 @@ public final class TaskDefinition implements Definition {
 		for (final TaskAttribute taskAttribute : taskAttributes) {
 			Assertion.checkNotNull(taskAttribute);
 			Assertion.checkArgument(!map.containsKey(taskAttribute.getName()), "attribut {0} existe déjà", taskAttribute.getName());
-			//----------------------------------------------------------------------
+			//-----
 			map.put(taskAttribute.getName(), taskAttribute);
 		}
 		return java.util.Collections.unmodifiableMap(map);
@@ -98,7 +98,7 @@ public final class TaskDefinition implements Definition {
 	 */
 	public TaskAttribute getAttribute(final String attributeName) {
 		Assertion.checkNotNull(attributeName);
-		//----------------------------------------------------------------------
+		//-----
 		final TaskAttribute taskAttribute = taskAttributes.get(attributeName);
 		Assertion.checkNotNull(taskAttribute, "nom d''attribut :{0} non trouvé pour le service :{1}", attributeName, this);
 		return taskAttribute;

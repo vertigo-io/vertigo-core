@@ -25,7 +25,7 @@ import io.vertigo.util.StringUtil;
 
 /**
  * Génération des classes/méthodes des fileInfo.
- * 
+ *
  * @author npiedeloup
  */
 public final class TemplateFileInfoDefinition {
@@ -33,7 +33,7 @@ public final class TemplateFileInfoDefinition {
 
 	TemplateFileInfoDefinition(final FileInfoDefinition fileInfoDefinition) {
 		Assertion.checkNotNull(fileInfoDefinition);
-		//-----------------------------------------------------------------
+		//-----
 		this.fileInfoDefinition = fileInfoDefinition;
 	}
 

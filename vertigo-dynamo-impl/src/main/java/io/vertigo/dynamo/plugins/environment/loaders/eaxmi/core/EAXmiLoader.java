@@ -51,7 +51,7 @@ public final class EAXmiLoader implements XmlLoader {
 	 */
 	public EAXmiLoader(final URL xmiFileURL) {
 		Assertion.checkNotNull(xmiFileURL);
-		//----------------------------------------------------------------------
+		//-----
 		map = new LinkedHashMap<>();
 		final EAXmiHandler handler = new EAXmiHandler(map);
 		try {
