@@ -67,7 +67,7 @@ public final class Mail {
 		Assertion.checkNotNull(ccAddresses);
 		Assertion.checkArgument(textContent != null || htmlContent != null, "Le mail doit avoir un contenu, soit en text, soit en html");
 		Assertion.checkNotNull(attachments);
-		//---------------------------------------------------------------------
+		//-----
 		this.subject = subject;
 		this.replyTo = replyTo;
 		this.fromAddress = fromAddress;

@@ -82,7 +82,7 @@ public final class FormatterString extends AbstractFormatterImpl {
 	@Override
 	public Object stringToValue(final String strValue, final DataType dataType) {
 		Assertion.checkArgument(dataType == DataType.String, "Formatter ne s'applique qu'aux Strings");
-		//----------------------------------------------------------------------
+		//-----
 		return apply(strValue);
 	}
 
@@ -90,7 +90,7 @@ public final class FormatterString extends AbstractFormatterImpl {
 	@Override
 	public String valueToString(final Object objValue, final DataType dataType) {
 		Assertion.checkArgument(dataType == DataType.String, "Formatter ne s'applique qu'aux Strings");
-		//----------------------------------------------------------------------
+		//-----
 		final String result = apply((String) objValue);
 		if (result == null) {
 			return "";

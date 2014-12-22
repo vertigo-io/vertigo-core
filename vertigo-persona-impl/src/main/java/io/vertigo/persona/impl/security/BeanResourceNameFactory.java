@@ -35,13 +35,13 @@ public final class BeanResourceNameFactory implements ResourceNameFactory {
 
 	/**
 	 * Constructeur.
-	 * Prend en entrée le pattern de la chaine de resource à produire. 
+	 * Prend en entrée le pattern de la chaine de resource à produire.
 	 * Il peut être paramétré avec des propriétés de l'objet avec la syntaxe : ${maPropriete}
 	 * @param securityPattern Pattern de la resource.
 	 */
 	public BeanResourceNameFactory(final String securityPattern) {
 		io.vertigo.lang.Assertion.checkNotNull(securityPattern);
-		//---------------------------------------------------------------------
+		//-----
 		this.securityPattern = securityPattern;
 		int previousIndex = 0;
 		int nextIndex = securityPattern.indexOf("${", previousIndex);

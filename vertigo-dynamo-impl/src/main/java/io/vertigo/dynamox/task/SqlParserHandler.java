@@ -42,7 +42,7 @@ final class SqlParserHandler implements ScriptParserHandler {
 
 	SqlParserHandler(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
-		//-----------------------------------------------------------------
+		//-----
 		this.taskDefinition = taskDefinition;
 		sql = new StringBuilder();
 		params = new java.util.ArrayList<>();

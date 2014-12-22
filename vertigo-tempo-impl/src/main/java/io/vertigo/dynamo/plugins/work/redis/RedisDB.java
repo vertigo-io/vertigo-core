@@ -51,7 +51,7 @@ public final class RedisDB implements Activeable {
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkArgNotEmpty(redisHost);
 		Assertion.checkNotNull(password);
-		//---------------------------------------------------------------------
+		//-----
 		this.codecManager = codecManager;
 		final JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 		//jedisPoolConfig.setMaxActive(10);
@@ -90,7 +90,7 @@ public final class RedisDB implements Activeable {
 
 	public <WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {
 		Assertion.checkNotNull(workItem);
-		//---------------------------------------------------------------------
+		//-----
 		try (Jedis jedis = jedisPool.getResource()) {
 			//out.println("creating work [" + workId + "] : " + work.getClass().getSimpleName());
 
@@ -113,7 +113,7 @@ public final class RedisDB implements Activeable {
 
 	public <WR, W> WorkItem<WR, W> pollWorkItem(final String workType, final int timeoutInSeconds) {
 		Assertion.checkNotNull(workType);
-		//---------------------------------------------------------------------
+		//-----
 		try (Jedis jedis = jedisPool.getResource()) {
 			final String workId = jedis.brpoplpush("works:todo:" + workType, "works:in progress", timeoutInSeconds);
 			if (workId == null) {
@@ -130,7 +130,7 @@ public final class RedisDB implements Activeable {
 	public <WR> void putResult(final String workId, final WR result, final Throwable error) {
 		Assertion.checkArgNotEmpty(workId);
 		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
-		//---------------------------------------------------------------------
+		//-----
 		final Map<String, String> datas = new HashMap<>();
 		try (Jedis jedis = jedisPool.getResource()) {
 			if (error == null) {
@@ -166,7 +166,7 @@ public final class RedisDB implements Activeable {
 
 	public void registerNode(final Node node) {
 		Assertion.checkNotNull(node);
-		//---------------------------------------------------------------------
+		//-----
 		try (Jedis jedis = jedisPool.getResource()) {
 			jedis.lpush("nodes", node.getUID());
 			final Map<String, String> hash = new HashMap<>();

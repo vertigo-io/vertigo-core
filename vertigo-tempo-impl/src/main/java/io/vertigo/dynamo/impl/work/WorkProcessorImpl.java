@@ -27,7 +27,7 @@ import io.vertigo.lang.Assertion;
 import java.util.Arrays;
 
 /**
- * 
+ *
  * @author pchretien
  */
 final class WorkProcessorImpl<WR, W> implements WorkProcessor<WR, W> {
@@ -36,14 +36,14 @@ final class WorkProcessorImpl<WR, W> implements WorkProcessor<WR, W> {
 
 	WorkProcessorImpl(final WorkManager workManager, final WorkEngineProvider workEngineProvider) {
 		this(workManager, new WorkEngineProvider[] { workEngineProvider });
-		//-----------------------------------------------------------------
+		//-----
 		Assertion.checkNotNull(workEngineProvider);
 	}
 
 	private WorkProcessorImpl(final WorkManager workManager, final WorkEngineProvider[] workEngineProviders) {
 		Assertion.checkNotNull(workManager);
 		Assertion.checkNotNull(workEngineProviders);
-		//-----------------------------------------------------------------
+		//-----
 		this.workEngineProviders = workEngineProviders;
 		this.workManager = workManager;
 	}
@@ -52,7 +52,7 @@ final class WorkProcessorImpl<WR, W> implements WorkProcessor<WR, W> {
 	@Override
 	public <WR1> WorkProcessor<WR1, W> then(final WorkEngineProvider<WR1, WR> workEngineProvider) {
 		Assertion.checkNotNull(workEngineProvider);
-		//-----------------------------------------------------------------
+		//-----
 		final WorkEngineProvider[] list = Arrays.copyOf(workEngineProviders, workEngineProviders.length + 1);
 		list[workEngineProviders.length] = workEngineProvider;
 		return new WorkProcessorImpl<>(workManager, list);
@@ -62,7 +62,7 @@ final class WorkProcessorImpl<WR, W> implements WorkProcessor<WR, W> {
 	@Override
 	public <WR1> WorkProcessor<WR1, W> then(final Class<? extends WorkEngine<WR1, WR>> clazz) {
 		Assertion.checkNotNull(clazz);
-		//-----------------------------------------------------------------
+		//-----
 		return then(new WorkEngineProvider<>(clazz));
 	}
 

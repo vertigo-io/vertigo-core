@@ -68,7 +68,7 @@ final class RestQueueServer {
 	 */
 	public RestQueueServer(final int nodeTimeOutSec, final CodecManager codecManager, final int pullTimeoutSec) {
 		Assertion.checkNotNull(codecManager);
-		//---------------------------------------------------------------------
+		//-----
 		//	this.nodeTimeOut = nodeTimeOut;
 		this.pullTimeoutSec = pullTimeoutSec;
 		this.codecManager = codecManager;
@@ -105,7 +105,7 @@ final class RestQueueServer {
 	}
 
 	String pollWork(final String workType, final String nodeId) {
-		//---------------------------------------------------------------------
+		//-----
 		touchNode(nodeId, workType);
 		final WorkItem workItem = pollWorkItem(workType, pullTimeoutSec);
 		final String json;
@@ -126,7 +126,7 @@ final class RestQueueServer {
 
 	void onStart(final String workId) {
 		LOG.info("onStart(" + workId + ")");
-		//---------------------------------------------------------------------
+		//-----
 		//	final RunningWorkInfos runningWorkInfos = runningWorkInfosMap.get(UUID.fromString(uuid));
 		//		Assertion.checkNotNull(runningWorkInfos, "Ce travail ({0}) n''est pas connu, ou n''est plus en cours.", uuid);
 		//		runningWorkInfos.getWorkResultHandler().onStart();
@@ -134,7 +134,7 @@ final class RestQueueServer {
 
 	void onDone(final boolean success, final String workId, final String base64Result) {
 		LOG.info("onDone " + success + " : (" + workId + ")");
-		//---------------------------------------------------------------------
+		//-----
 		//		final RunningWorkInfos runningWorkInfos = runningWorkInfosMap.remove(UUID.fromString(uuid));
 		//		Assertion.checkNotNull(runningWorkInfos, "Ce travail ({0}) n''est pas connu, ou n''est plus en cours.", uuid);
 
@@ -178,7 +178,7 @@ final class RestQueueServer {
 	 */
 	<WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {
 		Assertion.checkNotNull(workItem);
-		//-------------------------------------------------------------------
+		//-----
 		try {
 			obtainWorkQueue(workItem.getWorkType()).put(workItem);
 		} catch (final InterruptedException e) {

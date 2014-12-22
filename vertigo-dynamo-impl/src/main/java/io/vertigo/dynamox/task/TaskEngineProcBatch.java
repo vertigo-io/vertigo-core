@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 /**
- * 
+ *
  */
 package io.vertigo.dynamox.task;
 
@@ -65,14 +65,14 @@ public class TaskEngineProcBatch extends TaskEngineProc {
 	/**
 	 * Modifie le statement en fonction des paramètres pour un statement qui sera exécuter en mode batch. Affecte les
 	 * valeurs en entrée
-	 * 
+	 *
 	 * @param statement de type KPreparedStatement, KCallableStatement...
 	 * @param rowNumber ligne de DTC à prendre en compte
 	 * @throws SQLException En cas d'erreur dans la configuration
 	 */
 	private void setBatchParameters(final SqlPreparedStatement statement, final int rowNumber) throws SQLException {
 		Assertion.checkNotNull(statement);
-		// ----------------------------------------------------------------------
+		//-----
 		for (final TaskEngineSQLParam param : getParams()) {
 			switch (param.getType()) {
 				case IN:

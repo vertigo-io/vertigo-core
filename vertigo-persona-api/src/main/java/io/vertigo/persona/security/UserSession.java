@@ -103,7 +103,7 @@ public abstract class UserSession implements Serializable {
 	 */
 	public final boolean hasRole(final Role role) {
 		Assertion.checkNotNull(role);
-		// ----------------------------------------------------------------------
+		//-----
 		return roles.contains(new DefinitionReference<>(role));
 	}
 

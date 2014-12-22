@@ -64,29 +64,29 @@ public enum PublisherFieldType {
 	 */
 	public boolean checkValue(final Object value) {
 		Assertion.checkNotNull(value, "La valeur du champ est obligatoire.");
-		//---------------------------------------------------------------------
+		//-----
 		switch (this) {
-		case Boolean:
-			return value instanceof Boolean;
-		case Node:
-			return value instanceof PublisherNode;
-		case List:
-			if (!(value instanceof List<?>)) {
-				return false;
-			}
-			//on teste le contenu de la liste, pas la liste elle même
-			for (final Object object : (List<?>) value) {
-				if (!PublisherFieldType.Node.checkValue(object)) {
+			case Boolean:
+				return value instanceof Boolean;
+			case Node:
+				return value instanceof PublisherNode;
+			case List:
+				if (!(value instanceof List<?>)) {
 					return false;
 				}
-			}
-			return true;
-		case Image:
-			return value instanceof KFile;
-		case String:
-			return value instanceof String;
-		default:
-			throw new UnsupportedOperationException();
+				//on teste le contenu de la liste, pas la liste elle même
+				for (final Object object : (List<?>) value) {
+					if (!PublisherFieldType.Node.checkValue(object)) {
+						return false;
+					}
+				}
+				return true;
+			case Image:
+				return value instanceof KFile;
+			case String:
+				return value instanceof String;
+			default:
+				throw new UnsupportedOperationException();
 		}
 	}
 }

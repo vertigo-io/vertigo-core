@@ -69,7 +69,7 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 	public HsqlDataStorePlugin(@Named("sequencePrefix") final String sequencePrefix, final TaskManager taskManager) {
 		super(taskManager);
 		Assertion.checkArgNotEmpty(sequencePrefix);
-		//---------------------------------------------------------------------
+		//-----
 		this.sequencePrefix = sequencePrefix;
 	}
 

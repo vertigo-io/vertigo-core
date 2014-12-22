@@ -49,7 +49,7 @@ public final class RestMasterPlugin implements MasterPlugin {
 	public RestMasterPlugin(final @Named("distributedWorkTypes") String distributedWorkTypes, @Named("timeoutSeconds") final long timeoutSeconds, final CodecManager codecManager) {
 		Assertion.checkArgNotEmpty(distributedWorkTypes);
 		Assertion.checkArgument(timeoutSeconds < 10000, "Le timeout s'exprime en seconde.");
-		//---------------------------------------------------------------------
+		//-----
 		this.distributedWorkTypes = Arrays.asList(distributedWorkTypes.split(";"));
 		//	this.timeoutSeconds = timeoutSeconds;
 		restQueueRestServer = new RestQueueServer(20, codecManager, 5);

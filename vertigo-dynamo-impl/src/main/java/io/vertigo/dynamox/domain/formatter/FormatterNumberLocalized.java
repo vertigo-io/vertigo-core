@@ -34,19 +34,19 @@ import java.util.StringTokenizer;
  * Les séparateurs décimaux et de milliers sont des listes de char.
  * Le premier est celui utilisé par défaut dans les valueToString.
  * La liste des char peut être le code d'une resource multi-lingue.
- * 
+ *
  * Exemple de saisie des args :
  * #,###.00 |.,;|/u00A0
  * format de rendu|séparateur décimalpar défaut puis ceux acceptés| séparateurs de milliers
- * 
- * #,###.00 |SEP_DECIMAUX|SEP_MILLIER  et dans resources_fr.properties : 
- * 
- * 
+ *
+ * #,###.00 |SEP_DECIMAUX|SEP_MILLIER  et dans resources_fr.properties :
+ *
+ *
  * @author npiedeloup
  */
 public class FormatterNumberLocalized extends FormatterNumber {
 
-	//Pour chaque locale on conserve les symboles utilisés 
+	//Pour chaque locale on conserve les symboles utilisés
 	private final Map<Locale, DecimalFormatSymbols> decimalFormatSymbolsMap;
 
 	private MessageText decimalSep;
@@ -64,7 +64,7 @@ public class FormatterNumberLocalized extends FormatterNumber {
 	@Override
 	public void initParameters(final String args) {
 		if (args != null) {
-			//----------------------------------------------------------------------
+			//-----
 			final StringTokenizer st = new StringTokenizer(args, "|");
 
 			//Affichage des nombre renseignées
