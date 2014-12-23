@@ -94,7 +94,7 @@ final class PaginatorAndSortHandler implements RouteHandler {
 	}
 
 	private static UiListState checkAndEnsureDefaultValue(final UiListState parsedUiListState) {
-		if (parsedUiListState.getTop() == 0) {//check if parsedUiListState, is just not initalized
+		if (parsedUiListState.getListServerToken() == null && parsedUiListState.getTop() == 0) {//check if parsedUiListState is just not initalized
 			return new UiListState(DEFAULT_RESULT_PER_PAGE, parsedUiListState.getSkip(), null, true, null);
 		}
 		return parsedUiListState;
