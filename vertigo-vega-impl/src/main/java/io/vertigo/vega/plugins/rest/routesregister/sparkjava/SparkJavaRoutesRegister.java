@@ -19,7 +19,6 @@
 package io.vertigo.vega.plugins.rest.routesregister.sparkjava;
 
 import io.vertigo.core.Home;
-import io.vertigo.vega.impl.rest.filter.CorsAllowerFilter;
 import io.vertigo.vega.impl.rest.handler.WsRestRoute;
 import io.vertigo.vega.rest.RestManager;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
@@ -44,15 +43,11 @@ public final class SparkJavaRoutesRegister implements SparkApplication {
 	@Override
 	public void init() {
 		final RestManager restManager = Home.getComponentSpace().resolve(RestManager.class);
-		final CorsAllowerFilter corsAllower = Home.getComponentSpace().resolve(CorsAllowerFilter.class);
 		final String defaultContentCharset = "UTF-8"; //TODO : parametrable ?
 		restManager.scanAndRegisterRestfulServices();
 
 		//Translate EndPoint to route
 		final Collection<EndPointDefinition> endPointDefinitions = Home.getDefinitionSpace().getAll(EndPointDefinition.class);
-
-		//Spark.before(new IE8CompatibilityFix("8"));
-		Spark.before(corsAllower);
 
 		for (final EndPointDefinition endPointDefinition : endPointDefinitions) {
 			switch (endPointDefinition.getVerb()) {

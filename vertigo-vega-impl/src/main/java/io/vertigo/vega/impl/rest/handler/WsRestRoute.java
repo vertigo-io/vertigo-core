@@ -21,6 +21,7 @@ package io.vertigo.vega.impl.rest.handler;
 import io.vertigo.core.Home;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.dynamo.collections.CollectionsManager;
+import io.vertigo.lang.Option;
 import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.vega.rest.engine.GoogleJsonEngine;
 import io.vertigo.vega.rest.engine.JsonEngine;
@@ -44,6 +45,8 @@ public final class WsRestRoute extends Route {
 	private static final Logger LOGGER = Logger.getLogger(WsRestRoute.class);
 
 	@Inject
+	private Option<CorsAllowerHandler> corsAllowerHandler;
+	@Inject
 	private RateLimitingHandler rateLimitingHandler;
 	@Inject
 	private KSecurityManager securityManager;
@@ -65,9 +68,13 @@ public final class WsRestRoute extends Route {
 		Injector.injectMembers(this, Home.getComponentSpace());
 		this.defaultContentCharset = defaultContentCharset;
 
-		handlerChain = new HandlerChainBuilder()
-				.withHandler(new ExceptionHandler(jsonEngine))
-				.withHandler(endPointDefinition.isSessionInvalidate(), new SessionInvalidateHandler())
+		final HandlerChainBuilder handlerChainBuilder = new HandlerChainBuilder()
+				.withHandler(new ExceptionHandler(jsonEngine));
+
+		if (corsAllowerHandler.isDefined()) {
+			handlerChainBuilder.withHandler(corsAllowerHandler.get());
+		}
+		handlerChainBuilder.withHandler(endPointDefinition.isSessionInvalidate(), new SessionInvalidateHandler())
 				.withHandler(endPointDefinition.isNeedSession(), new SessionHandler(securityManager))
 				.withHandler(rateLimitingHandler)
 				.withHandler(endPointDefinition.isNeedAuthentification(), new SecurityHandler(securityManager))
@@ -75,8 +82,9 @@ public final class WsRestRoute extends Route {
 				.withHandler(new JsonConverterHandler(tokenManager, endPointDefinition, jsonEngine, jsonEngine))
 				.withHandler(endPointDefinition.isAutoSortAndPagination(), new PaginatorAndSortHandler(endPointDefinition, collectionsManager, tokenManager))
 				.withHandler(new ValidatorHandler(endPointDefinition))
-				.withHandler(new RestfulServiceHandler(endPointDefinition))
-				.build();
+				.withHandler(new RestfulServiceHandler(endPointDefinition));
+
+		handlerChain = handlerChainBuilder.build();
 	}
 
 	private static String convertJaxRsPathToSpark(final String path) {

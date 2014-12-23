@@ -55,7 +55,7 @@ import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.vega.impl.rest.RestManagerImpl;
 import io.vertigo.vega.impl.rest.catalog.CatalogRestServices;
 import io.vertigo.vega.impl.rest.catalog.SwaggerRestServices;
-import io.vertigo.vega.impl.rest.filter.CorsAllowerFilter;
+import io.vertigo.vega.impl.rest.handler.CorsAllowerHandler;
 import io.vertigo.vega.impl.rest.handler.RateLimitingHandler;
 import io.vertigo.vega.impl.token.TokenManagerImpl;
 import io.vertigo.vega.plugins.rest.instrospector.annotations.AnnotationsEndPointIntrospectorPlugin;
@@ -126,7 +126,7 @@ public final class MyApp {
 				.beginComponent(SwaggerRestServices.class).endComponent()
 				.beginComponent(CatalogRestServices.class).endComponent()
 				.beginComponent(RateLimitingHandler.class).endComponent()
-				.beginComponent(CorsAllowerFilter.class).endComponent()
+				.beginComponent(CorsAllowerHandler.class).endComponent()
 				.beginComponent(TokenManager.class, TokenManagerImpl.class)
 					.withParam("dataStoreName", "UiSecurityStore")
 				.endComponent()
