@@ -22,6 +22,11 @@
 		</component>
 	</module>
 
+	<module name="myApp">
+		<resource type="kpr" path="io/vertigo/dynamo/search/ksp/search.kpr" />
+		<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
+	</module>
+	
 	<module name="document">
 		<component api="SearchManager" class="io.vertigo.dynamo.impl.search.SearchManagerImpl">
 			<!-- <plugin class="io.vertigo.dynamo.plugins.search.solr.commonshttp.CommonsHttpSolrSearchServicesPlugin" > <param name="solr.url" value="http://localhost:8983/solr" /> <param name="cores" value="IDX_ARTICLE,IDX_VOITURE,IDX_DEMANDE,IDX_DOCUMENT" /> </plugin> -->
@@ -33,8 +38,4 @@
 		</component>
 	</module>
 
-	<module name="myApp">
-		<resource type="kpr" path="io/vertigo/dynamo/search/ksp/search.kpr" />
-		<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
-	</module>
 </config>

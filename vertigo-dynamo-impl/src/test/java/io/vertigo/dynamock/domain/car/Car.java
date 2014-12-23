@@ -40,13 +40,14 @@ public final class Car implements DtObject {
 	private Integer year;
 	private Integer kilo;
 	private Integer price;
+	private java.math.BigDecimal consommation;
 	private String motorType;
 	private Long famId;
 
 	/**
 	 * Champ : PRIMARY_KEY. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'identifiant
 	 * de la voiture'.
-	 * 
+	 *
 	 * @return Long id <b>Obligatoire</b>
 	 */
 	@javax.persistence.Id
@@ -61,7 +62,7 @@ public final class Car implements DtObject {
 	/**
 	 * Champ : PRIMARY_KEY. DÃ©finit la valeur de la propriÃ©tÃ© 'identifiant de
 	 * la voiture'.
-	 * 
+	 *
 	 * @param id
 	 *            Long <b>Obligatoire</b>
 	 */
@@ -71,7 +72,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : DATA. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'Constructeur'.
-	 * 
+	 *
 	 * @return String make <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "MAKE")
@@ -82,7 +83,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : DATA. DÃ©finit la valeur de la propriÃ©tÃ© 'Constructeur'.
-	 * 
+	 *
 	 * @param make
 	 *            String <b>Obligatoire</b>
 	 */
@@ -92,7 +93,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : DATA. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'ModÃ©le'.
-	 * 
+	 *
 	 * @return String model <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "MODEL")
@@ -103,7 +104,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : DATA. DÃ©finit la valeur de la propriÃ©tÃ© 'ModÃ©le'.
-	 * 
+	 *
 	 * @param model
 	 *            String <b>Obligatoire</b>
 	 */
@@ -113,7 +114,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : DATA. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'Descriptif'.
-	 * 
+	 *
 	 * @return String description <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "DESCRIPTION")
@@ -124,7 +125,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : DATA. DÃ©finit la valeur de la propriÃ©tÃ© 'Descriptif'.
-	 * 
+	 *
 	 * @param description
 	 *            String <b>Obligatoire</b>
 	 */
@@ -134,7 +135,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : DATA. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'AnnÃ©e'.
-	 * 
+	 *
 	 * @return Integer year <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "YEAR")
@@ -145,7 +146,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : DATA. DÃ©finit la valeur de la propriÃ©tÃ© 'AnnÃ©e'.
-	 * 
+	 *
 	 * @param year
 	 *            Integer <b>Obligatoire</b>
 	 */
@@ -155,7 +156,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : DATA. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'KilomÃ©trage'.
-	 * 
+	 *
 	 * @return Integer kilo <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "KILO")
@@ -166,7 +167,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : DATA. DÃ©finit la valeur de la propriÃ©tÃ© 'KilomÃ©trage'.
-	 * 
+	 *
 	 * @param kilo
 	 *            Integer <b>Obligatoire</b>
 	 */
@@ -176,7 +177,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : DATA. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'Prix'.
-	 * 
+	 *
 	 * @return Integer price <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "PRICE")
@@ -187,7 +188,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : DATA. DÃ©finit la valeur de la propriÃ©tÃ© 'Prix'.
-	 * 
+	 *
 	 * @param price
 	 *            Integer <b>Obligatoire</b>
 	 */
@@ -196,8 +197,28 @@ public final class Car implements DtObject {
 	}
 
 	/**
+	 * Champ : DATA.
+	 * Récupère la valeur de la propriété 'Consommation'.
+	 * @return java.math.BigDecimal consommation <b>Obligatoire</b>
+	 */
+	@javax.persistence.Column(name = "CONSOMMATION")
+	@Field(domain = "DO_CONSO", notNull = true, label = "Consomation")
+	public java.math.BigDecimal getConsommation() {
+		return consommation;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'Consommation'.
+	 * @param consommation java.math.BigDecimal <b>Obligatoire</b>
+	 */
+	public void setConsommation(final java.math.BigDecimal consommation) {
+		this.consommation = consommation;
+	}
+
+	/**
 	 * Champ : DATA. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'Type de moteur'.
-	 * 
+	 *
 	 * @return String motorType <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "MOTOR_TYPE")
@@ -208,7 +229,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : DATA. DÃ©finit la valeur de la propriÃ©tÃ© 'Type de moteur'.
-	 * 
+	 *
 	 * @param motorType
 	 *            String <b>Obligatoire</b>
 	 */
@@ -218,7 +239,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : FOREIGN_KEY. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'Famille'.
-	 * 
+	 *
 	 * @return Long famId <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "FAM_ID")
@@ -229,7 +250,7 @@ public final class Car implements DtObject {
 
 	/**
 	 * Champ : FOREIGN_KEY. DÃ©finit la valeur de la propriÃ©tÃ© 'Famille'.
-	 * 
+	 *
 	 * @param famId
 	 *            Long <b>Obligatoire</b>
 	 */

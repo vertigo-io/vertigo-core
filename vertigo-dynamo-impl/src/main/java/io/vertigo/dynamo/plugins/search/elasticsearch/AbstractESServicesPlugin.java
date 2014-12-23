@@ -47,11 +47,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.log4j.Logger;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequestBuilder;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeRequest;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
+import org.elasticsearch.cluster.metadata.MappingMetaData;
+import org.elasticsearch.common.collect.ImmutableOpenMap;
+import org.elasticsearch.common.hppc.cursors.ObjectObjectCursor;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.node.Node;
@@ -62,7 +66,7 @@ import org.elasticsearch.node.Node;
  */
 public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, Activeable {
 	private static final IndexFieldNameResolver DEFAULT_INDEX_FIELD_NAME_RESOLVER = new IndexFieldNameResolver(Collections.<String, String> emptyMap());
-
+	private final Logger logger = Logger.getLogger(getClass());
 	private final ESDocumentCodec elasticDocumentCodec;
 
 	private Node node;
@@ -110,9 +114,22 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 		//Init typeMapping IndexDefinition <-> Conf ElasticSearch
 		for (final IndexDefinition indexDefinition : Home.getDefinitionSpace().getAll(IndexDefinition.class)) {
 			updateTypeMapping(indexDefinition);
+			logMappings(indexDefinition);
 		}
 
 		waitForYellowStatus();
+	}
+
+	private void logMappings(final IndexDefinition indexDefinition) {
+		final IndicesAdminClient indicesAdmin = esClient.admin().indices();
+		//logger.warn("Index " + indexName + " CurrentMapping:");
+		final ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> indexMappings = indicesAdmin.prepareGetMappings(indexDefinition.getName().toLowerCase()).get().getMappings();
+		for (final ObjectObjectCursor<String, ImmutableOpenMap<String, MappingMetaData>> indexMapping : indexMappings) {
+			logger.info("Index " + indexMapping.key + " CurrentMapping:");
+			for (final ObjectObjectCursor<String, MappingMetaData> dtoMapping : indexMapping.value) {
+				logger.info(dtoMapping.key + " -> " + dtoMapping.value.source());
+			}
+		}
 	}
 
 	/**
@@ -133,6 +150,8 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 		Assertion.checkNotNull(indexFieldNameResolver);
 		//-----
 		indexFieldNameResolvers.put(indexDefinition.getName(), indexFieldNameResolver);
+		updateTypeMapping(indexDefinition);
+		logMappings(indexDefinition);
 	}
 
 	/** {@inheritDoc} */
@@ -248,6 +267,7 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 					.setSource(typeMapping)
 					.get();
 			putMappingResponse.isAcknowledged();
+
 		} catch (final IOException e) {
 			throw new RuntimeException("Serveur ElasticSearch indisponible", e);
 		}
@@ -265,12 +285,12 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 			case Long: // native
 				break;
 			case String:
+			case BigDecimal:
 				if (fieldType == null) {
 					throw new IllegalArgumentException("## Précisez la valeur \"indexType\" dans le domain [" + domain + "].");
 				}
 				break;
 			case DataStream: // IllegalArgumentException
-			case BigDecimal: // IllegalArgumentException
 			case DtObject: // IllegalArgumentException
 			case DtList: // IllegalArgumentException
 			default: // IllegalArgumentException

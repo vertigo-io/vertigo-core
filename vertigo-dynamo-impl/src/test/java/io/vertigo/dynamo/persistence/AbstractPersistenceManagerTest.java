@@ -103,7 +103,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 
 			execCallableStatement(connection, "create table fam_car_location(fam_id BIGINT , ID BIGINT);");
 
-			execCallableStatement(connection, "create table car(ID BIGINT , FAM_ID BIGINT ,MAKE varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, MOTOR_TYPE varchar(50) );");
+			execCallableStatement(connection, "create table car(ID BIGINT, FAM_ID BIGINT, MAKE varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50) );");
 			execCallableStatement(connection, "create sequence SEQ_CAR start with 10001 increment by 1");
 			//execPreparedStatement(connection, "SELECT * FROM   INFORMATION_SCHEMA.SYSTEM_SESSIONS;");
 			//execPreparedStatement(connection, "call next value for SEQ_CAR;");

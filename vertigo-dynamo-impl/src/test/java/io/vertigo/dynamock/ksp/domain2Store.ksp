@@ -16,6 +16,10 @@ alter Domain DO_INTEGER {
 	storeType : "NUMERIC"
 }
 
+alter Domain DO_CONSO {
+	storeType: "NUMERIC(8,2)"
+}
+
 alter Domain DO_DATE {
 	storeType : "DATE"
 }
