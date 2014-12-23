@@ -18,12 +18,8 @@
  */
 package io.vertigo.core.spaces.component;
 
-import io.vertigo.core.Home;
 import io.vertigo.core.aop.Aspect;
-import io.vertigo.core.config.AspectConfig;
 import io.vertigo.core.config.ComponentConfig;
-import io.vertigo.core.config.ModuleConfig;
-import io.vertigo.core.di.injector.Injector;
 import io.vertigo.lang.Assertion;
 
 import java.lang.annotation.Annotation;
@@ -47,27 +43,6 @@ import java.util.Map;
 final class ComponentAspectUtil {
 	private ComponentAspectUtil() {
 		//
-	}
-
-	/**
-	 * Find all aspects declared inside a module
-	 * @param moduleConfig Module
-	 * @return aspects (and its config)
-	 */
-	static List<Aspect> findAspects(final ModuleConfig moduleConfig) {
-		Assertion.checkNotNull(moduleConfig);
-		//-----
-		final List<Aspect> aspects = new ArrayList<>();
-		for (final AspectConfig aspectConfig : moduleConfig.getAspectConfigs()) {
-			// création de l'instance du composant
-			final Aspect aspect = Injector.newInstance(aspectConfig.getAspectImplClass(), Home.getComponentSpace());
-			//---
-			Assertion.checkNotNull(aspect.getAnnotationType());
-			Assertion.checkArgument(aspect.getAnnotationType().isAnnotation(), "On attend une annotation '{0}'", aspect.getAnnotationType());
-
-			aspects.add(aspect);
-		}
-		return aspects;
 	}
 
 	/**

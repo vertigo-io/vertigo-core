@@ -24,6 +24,7 @@ import io.vertigo.core.command.VCommand;
 import io.vertigo.core.command.VCommandExecutor;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
+import io.vertigo.core.config.AspectConfig;
 import io.vertigo.core.config.ComponentConfig;
 import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.config.PluginConfig;
@@ -207,11 +208,31 @@ public final class ComponentSpace implements Container, Activeable {
 	//fix me
 	public void injectAspects(final ModuleConfig moduleConfig) {
 		//. On enrichit la liste des aspects
-		for (final Aspect aspect : ComponentAspectUtil.findAspects(moduleConfig)) {
+		for (final Aspect aspect : findAspects(moduleConfig)) {
 			Assertion.checkArgument(!aspects.containsKey(aspect.getClass()), "aspect {0} already registered", aspect.getClass());
 			aspects.put(aspect.getClass(), aspect);
 		}
+	}
 
+	/**
+	 * Find all aspects declared inside a module
+	 * @param moduleConfig Module
+	 * @return aspects (and its config)
+	 */
+	private List<Aspect> findAspects(final ModuleConfig moduleConfig) {
+		Assertion.checkNotNull(moduleConfig);
+		//-----
+		final List<Aspect> aspects = new ArrayList<>();
+		for (final AspectConfig aspectConfig : moduleConfig.getAspectConfigs()) {
+			// création de l'instance du composant
+			final Aspect aspect = Injector.newInstance(aspectConfig.getAspectImplClass(), this);
+			//---
+			Assertion.checkNotNull(aspect.getAnnotationType());
+			Assertion.checkArgument(aspect.getAnnotationType().isAnnotation(), "On attend une annotation '{0}'", aspect.getAnnotationType());
+
+			aspects.add(aspect);
+		}
+		return aspects;
 	}
 
 	private void registerComponent(final ComponentConfig componentConfig, final AopEngine aopEngine) {
