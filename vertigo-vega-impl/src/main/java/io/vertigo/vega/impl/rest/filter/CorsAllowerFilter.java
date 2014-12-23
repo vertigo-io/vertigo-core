@@ -26,6 +26,7 @@ import javax.inject.Named;
 import spark.Filter;
 import spark.Request;
 import spark.Response;
+import spark.utils.SparkUtils;
 
 /**
  * Handler of Cross-Origin Resource Sharing (CORS).
@@ -40,12 +41,16 @@ public final class CorsAllowerFilter extends Filter {
 
 	@Inject
 	public CorsAllowerFilter(@Named("originCORSFilter") final Option<String> originCORSFilter) {
+		super(SparkUtils.ALL_PATHS, "*/*");
 		this.originCORSFilter = originCORSFilter.getOrElse(DEFAULT_ORIGINE_CORS_FILTER);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void handle(final Request request, final Response response) {
+		//TODO
+		//check if OPTION : Origin not match originCORSFilter : throw Forbidden ?
+
 		response.header("Access-Control-Allow-Origin", originCORSFilter);
 		response.header("Access-Control-Request-Method", DEFAULT_METHODS_CORS_FILTER);
 		response.header("Access-Control-Allow-Headers", DEFAULT_HEADERS_CORS_FILTER);
