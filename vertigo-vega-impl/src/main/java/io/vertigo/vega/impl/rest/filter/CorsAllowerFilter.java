@@ -20,8 +20,12 @@ package io.vertigo.vega.impl.rest.filter;
 
 import io.vertigo.lang.Option;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletResponse;
 
 import spark.Filter;
 import spark.Request;
@@ -33,27 +37,62 @@ import spark.utils.SparkUtils;
  * @author npiedeloup
  */
 public final class CorsAllowerFilter extends Filter {
-	private static final String DEFAULT_ORIGINE_CORS_FILTER = "*";
+
+	private static final String REQUEST_HEADER_ORIGIN = "Origin";
+
+	private static final String DEFAULT_ORIGIN_CORS_FILTER = "*";
 	private static final String DEFAULT_METHODS_CORS_FILTER = "GET, POST, DELETE, PUT";//"*";
-	private static final String DEFAULT_HEADERS_CORS_FILTER = "Content-Type";//"*";
+	private static final String DEFAULT_HEADERS_CORS_FILTER = "Content-Type, listServerToken, x-total-count"; //"*";
 
 	private final String originCORSFilter;
+	private final String methodCORSFilter;
+	private final Set<String> originCORSFiltersSet;
+	private final Set<String> methodCORSFiltersSet;
 
 	@Inject
-	public CorsAllowerFilter(@Named("originCORSFilter") final Option<String> originCORSFilter) {
+	public CorsAllowerFilter(@Named("originCORSFilter") final Option<String> originCORSFilter, @Named("methodCORSFilter") final Option<String> methodCORSFilter) {
 		super(SparkUtils.ALL_PATHS, "*/*");
-		this.originCORSFilter = originCORSFilter.getOrElse(DEFAULT_ORIGINE_CORS_FILTER);
+		this.originCORSFilter = originCORSFilter.getOrElse(DEFAULT_ORIGIN_CORS_FILTER);
+		this.methodCORSFilter = methodCORSFilter.getOrElse(DEFAULT_METHODS_CORS_FILTER);
+		originCORSFiltersSet = parseStringToSet(this.originCORSFilter);
+		methodCORSFiltersSet = parseStringToSet(this.methodCORSFilter);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void handle(final Request request, final Response response) {
-		//TODO
-		//check if OPTION : Origin not match originCORSFilter : throw Forbidden ?
+		final String origin = request.headers(REQUEST_HEADER_ORIGIN);
+		if (origin != null) {
+			final String method = request.raw().getMethod();
+			if (!isAllowed(origin, originCORSFiltersSet) || !isAllowed(method, methodCORSFiltersSet)) {
+				handleInvalidCORS(request, response);
+			}
+		}
 
 		response.header("Access-Control-Allow-Origin", originCORSFilter);
-		response.header("Access-Control-Request-Method", DEFAULT_METHODS_CORS_FILTER);
-		response.header("Access-Control-Allow-Headers", DEFAULT_HEADERS_CORS_FILTER);
+		response.header("Access-Control-Request-Method", methodCORSFilter);
+		response.header("Access-Control-Expose-Headers", DEFAULT_HEADERS_CORS_FILTER);
 	}
 
+	private void handleInvalidCORS(final Request request, final Response response) {
+		response.status(HttpServletResponse.SC_FORBIDDEN);
+		response.raw().resetBuffer();
+		throw new RuntimeException("Invalid CORS");
+	}
+
+	private boolean isAllowed(final String currentValue, final Set<String> allowedValues) {
+		if (allowedValues.contains("*")) {
+			return true;
+		}
+		return allowedValues.contains(currentValue);
+	}
+
+	private Set<String> parseStringToSet(final String param) {
+		final String[] values = param.split(",");
+		final Set<String> parsedConfig = new HashSet<>(values.length);
+		for (final String value : values) {
+			parsedConfig.add(value.trim());
+		}
+		return parsedConfig;
+	}
 }
