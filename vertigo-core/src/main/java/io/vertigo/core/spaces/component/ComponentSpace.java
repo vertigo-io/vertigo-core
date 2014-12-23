@@ -222,7 +222,7 @@ public final class ComponentSpace implements Container, Activeable {
 	private List<Aspect> findAspects(final ModuleConfig moduleConfig) {
 		Assertion.checkNotNull(moduleConfig);
 		//-----
-		final List<Aspect> aspects = new ArrayList<>();
+		final List<Aspect> findAspects = new ArrayList<>();
 		for (final AspectConfig aspectConfig : moduleConfig.getAspectConfigs()) {
 			// création de l'instance du composant
 			final Aspect aspect = Injector.newInstance(aspectConfig.getAspectImplClass(), this);
@@ -230,9 +230,9 @@ public final class ComponentSpace implements Container, Activeable {
 			Assertion.checkNotNull(aspect.getAnnotationType());
 			Assertion.checkArgument(aspect.getAnnotationType().isAnnotation(), "On attend une annotation '{0}'", aspect.getAnnotationType());
 
-			aspects.add(aspect);
+			findAspects.add(aspect);
 		}
-		return aspects;
+		return findAspects;
 	}
 
 	private void registerComponent(final ComponentConfig componentConfig, final AopEngine aopEngine) {
