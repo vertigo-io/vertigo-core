@@ -20,6 +20,7 @@ package io.vertigo.quarto.plugins.converter.openoffice;
 
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 import io.vertigo.quarto.plugins.converter.openoffice.stream.OOoFileInputStream;
 import io.vertigo.quarto.plugins.converter.openoffice.stream.OOoFileOutputStream;
 
@@ -49,10 +50,11 @@ public final class OpenOfficeRemoteConverterPlugin extends AbstractOpenOfficeCon
 	 * @param fileManager Manager de gestion des fichiers
 	 * @param unoHost Hote du serveur OpenOffice
 	 * @param unoPort Port de connexion au serveur OpenOffice
+	 * @param convertTimeoutSeconds Timeout de conversion des documents
 	 */
 	@Inject
-	public OpenOfficeRemoteConverterPlugin(final FileManager fileManager, @Named("unohost") final String unoHost, @Named("unoport") final String unoPort) {
-		super(fileManager, unoHost, unoPort);
+	public OpenOfficeRemoteConverterPlugin(final FileManager fileManager, @Named("unohost") final String unoHost, @Named("unoport") final String unoPort, @Named("convertTimeoutSeconds") final Option<Integer> convertTimeoutSeconds) {
+		super(fileManager, unoHost, unoPort, convertTimeoutSeconds.getOrElse(60));
 	}
 
 	/** {@inheritDoc} */

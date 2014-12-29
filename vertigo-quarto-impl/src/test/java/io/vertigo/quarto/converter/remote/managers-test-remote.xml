@@ -11,6 +11,7 @@
 			<plugin class="io.vertigo.quarto.plugins.converter.openoffice.OpenOfficeRemoteConverterPlugin">
 				<param name="unohost" value="ficenweb.part.klee.lan.net" />
 				<param name="unoport" value="8200" />
+				<param name="convertTimeoutSeconds" value="5" />
 			</plugin>
 		</component>
 	</module>

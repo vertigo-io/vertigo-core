@@ -20,6 +20,7 @@ package io.vertigo.quarto.plugins.converter.openoffice;
 
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.io.File;
 
@@ -45,10 +46,11 @@ public final class OpenOfficeLocalConverterPlugin extends AbstractOpenOfficeConv
 	 * Constructeur.
 	 * @param fileManager Manager de gestion des fichiers
 	 * @param unoPort Port de connexion au serveur OpenOffice
+	 * @param convertTimeoutSeconds Timeout de conversion des documents
 	 */
 	@Inject
-	public OpenOfficeLocalConverterPlugin(final FileManager fileManager, @Named("unoport") final String unoPort) {
-		super(fileManager, "localhost", unoPort);
+	public OpenOfficeLocalConverterPlugin(final FileManager fileManager, @Named("unoport") final String unoPort, @Named("convertTimeoutSeconds") final Option<Integer> convertTimeoutSeconds) {
+		super(fileManager, "localhost", unoPort, convertTimeoutSeconds.getOrElse(60));
 
 	}
 

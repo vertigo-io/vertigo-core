@@ -21,6 +21,7 @@ package io.vertigo.quarto.plugins.converter.openoffice;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.file.util.TempFile;
+import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.impl.converter.ConverterPlugin;
 
@@ -30,6 +31,11 @@ import java.net.ConnectException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
@@ -44,15 +50,19 @@ import com.sun.star.util.XRefreshable;
  * Conversion des fichiers à partir de OpenOffice.
  * @author npiedeloup
  */
-abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
+abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Activeable {
 	/** Le port par défaut pour accéder à OpenOffice est 8100. */
 	public static final int DEFAULT_UNO_PORT = 8100;
 
 	private static final Logger LOGGER = Logger.getLogger(AbstractOpenOfficeConverterPlugin.class);
 
+	//private final Timer checkTimeoutTimer = new Timer("OpenOfficeConverterTimeoutCheck", true);
+	private final ExecutorService executors = Executors.newFixedThreadPool(1);
+
 	private final FileManager fileManager;
 	private final String unoHost;
 	private final int unoPort;
+	private final int convertTimeoutSeconds;
 
 	/**
 	 * Constructeur.
@@ -60,14 +70,28 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 	 * @param unoHost Hote du serveur OpenOffice
 	 * @param unoPort Port de connexion au serveur OpenOffice
 	 */
-	protected AbstractOpenOfficeConverterPlugin(final FileManager fileManager, final String unoHost, final String unoPort) {
+	protected AbstractOpenOfficeConverterPlugin(final FileManager fileManager, final String unoHost, final String unoPort, final int convertTimeoutSeconds) {
 		super();
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkArgNotEmpty(unoHost);
+		Assertion.checkArgument(convertTimeoutSeconds >= 1 && convertTimeoutSeconds <= 900, "Le timeout de conversion est exprimé en seconde et doit-être compris entre 1s et 15min (900s)");
 		//-----
 		this.fileManager = fileManager;
 		this.unoHost = unoHost;
 		this.unoPort = Integer.valueOf(unoPort);
+		this.convertTimeoutSeconds = convertTimeoutSeconds;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void start() {
+		//nothing
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void stop() {
+		executors.shutdown();
 	}
 
 	/** {@inheritDoc} */
@@ -85,9 +109,16 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 		Assertion.checkArgument(!targetFormat.getTypeMime().equals(file.getMimeType()), "Le format de sortie est identique à celui d'entrée ; la conversion est inutile");
 		//-----
 		final File inputFile = fileManager.obtainReadOnlyFile(file);
+		final Callable<File> convertTask = new Callable<File>() {
+			@Override
+			public File call() throws Exception {
+				return doConvertToFormat(inputFile, targetFormat);
+			}
+		};
 		final File targetFile;
 		try {
-			targetFile = doConvertToFormat(inputFile, targetFormat);
+			final Future<File> targetFileFuture = executors.submit(convertTask);
+			targetFile = targetFileFuture.get(convertTimeoutSeconds, TimeUnit.SECONDS);
 		} catch (final Exception e) {
 			throw new RuntimeException("Erreur de conversion du document au format " + targetFormat.name(), e);
 		}
@@ -95,7 +126,13 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin {
 	}
 
 	// On synchronize sur le plugin car OpenOffice supporte mal les accès concurrents.
-	private synchronized File doConvertToFormat(final File inputFile, final ConverterFormat targetFormat) throws Exception {
+	/**
+	 * @param inputFile Fichier source
+	 * @param targetFormat Format de destination
+	 * @return Fichier resultat
+	 * @throws Exception Exception
+	 */
+	synchronized File doConvertToFormat(final File inputFile, final ConverterFormat targetFormat) throws Exception {
 		try (final OpenOfficeConnection openOfficeConnection = connectOpenOffice()) {
 			Assertion.checkArgument(inputFile.exists(), "Le document à convertir n''existe pas : {0}", inputFile.getAbsolutePath());
 			final XComponent xDoc = loadDocument(inputFile, openOfficeConnection);
