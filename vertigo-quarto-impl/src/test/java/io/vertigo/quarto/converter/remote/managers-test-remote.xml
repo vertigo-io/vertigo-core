@@ -9,7 +9,7 @@
 		<component api="ConverterManager" class="io.vertigo.quarto.impl.converter.ConverterManagerImpl">
 			<!-- plugin name="ConverterPlugin" class="io.vertigo.quarto.plugins.converter.openoffice.OpenOfficeLocalConverterPlugin"> <param name="unoport" value="8100"/> </plugin -->
 			<plugin class="io.vertigo.quarto.plugins.converter.openoffice.OpenOfficeRemoteConverterPlugin">
-				<param name="unohost" value="ficenweb.part.klee.lan.net" />
+				<param name="unohost" value="ficenrecette.part.klee.lan.net" />
 				<param name="unoport" value="8200" />
 				<param name="convertTimeoutSeconds" value="5" />
 			</plugin>
