@@ -103,7 +103,7 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 			if (dtDefinition.isPersistent()) {
 				final String sequence = getSequenceName(dtDefinition);
 				lines.add("@javax.persistence.SequenceGenerator(name = \"sequence\", sequenceName = \"" + sequence + "\")");
-				lines.add("@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.SEQUENCE, generator = \"sequence\")");
+				lines.add("@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = \"sequence\")");
 			}
 		}
 		if (dtDefinition.isPersistent()) {
