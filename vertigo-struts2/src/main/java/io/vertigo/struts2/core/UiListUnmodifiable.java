@@ -99,6 +99,15 @@ public final class UiListUnmodifiable<D extends DtObject> extends AbstractUiList
 
 	/** {@inheritDoc} */
 	@Override
+	public int indexOf(final Object o) {
+		if (o instanceof DtObject) {
+			throw new UnsupportedOperationException("This list contains UiObject only. If objects are modifiable please use UiListModifiable instead of this one.");
+		}
+		return super.indexOf(o);
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder("uiList(" + dtList.size() + " element(s)");
 		for (int i = 0; i < Math.min(dtList.size(), 50); i++) {
