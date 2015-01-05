@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -41,6 +42,7 @@ import org.apache.lucene.util.Version;
  * Il ne doit aussi exister qu'un seul writer.
  *
  * @author  pchretien, npiedeloup
+ * @param <D> Type d'objet
  */
 final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifiable {
 	private static final long serialVersionUID = -8810115927887053497L;
@@ -79,14 +81,14 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifi
 	public IndexWriter createIndexWriter() throws IOException {
 		checkModifiable();
 		//-----
-		final IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_40, analyzer);
+		final IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_4_9, analyzer);
 		return new IndexWriter(directory, config);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public IndexReader createIndexReader() throws IOException {
-		return IndexReader.open(directory);
+		return DirectoryReader.open(directory);
 	}
 
 	/** {@inheritDoc} */
@@ -122,6 +124,9 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifi
 		return modifiable;
 	}
 
+	/**
+	 * Passe l'index en mode non modifiable.
+	 */
 	void makeUnmodifiable() {
 		checkModifiable();
 		//-----

@@ -21,6 +21,7 @@ package io.vertigo.dynamo.impl.collections;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.DtListProcessor;
+import io.vertigo.dynamo.collections.IndexDtListFunctionBuilder;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
@@ -46,30 +47,25 @@ import javax.inject.Inject;
  * @author  pchretien
  */
 public final class CollectionsManagerImpl implements CollectionsManager {
-	//private final MasterDataManager masterDataManager;
-	//private final PersistenceManager persistenceManagerManager;
-	//private final Option<IndexPlugin> indexPlugin;
+	private final Option<IndexPlugin> indexPlugin;
 
 	private final FacetFactory facetFactory;
 	private final DtListProcessor listProcessor;
 
 	/**
 	 * Constructeur.
+	 * @param indexPlugin Plugin optionnel d'index
 	 */
 	@Inject
 	public CollectionsManagerImpl(final Option<IndexPlugin> indexPlugin) {
 		Assertion.checkNotNull(indexPlugin);
 		//-----
-		//	this.indexPlugin = indexPlugin;
+		this.indexPlugin = indexPlugin;
 		facetFactory = new FacetFactory(this);
-		listProcessor = new DtListProcessorImpl(indexPlugin);
-		//		Assertion.notNull(masterDataManager);
-		//		Assertion.notNull(persistenceManager);
+		listProcessor = new DtListProcessorImpl();
 		//-----
 		Home.getDefinitionSpace().register(FacetDefinition.class);
 		Home.getDefinitionSpace().register(FacetedQueryDefinition.class);
-		//this.masterDataManager = masterDataManager;
-		//persistenceManagerManager = persistenceManager;
 	}
 
 	//	/** {@inheritDoc} */
@@ -125,5 +121,13 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	@Override
 	public DtListProcessor createDtListProcessor() {
 		return listProcessor;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <D extends DtObject> IndexDtListFunctionBuilder<D> createIndexDtListFunctionBuilder() {
+		Assertion.checkNotNull(indexPlugin.isDefined(), "An IndexPlugin is required to use this function");
+		//-----
+		return new IndexDtListFunctionBuilderImpl<>(indexPlugin.get());
 	}
 }
