@@ -52,36 +52,36 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-	//--analytics
-	AnalyticsManagerTest.class,
-	//--cache
-	CacheManagerTest.class,
-	//--codec
-	Base64CodecTest.class,
-	CompressedSerializationCodecTest.class,
-	CompressionCodecTest.class,
-	AES128CodecTest.class,
-	TripleDESCodecTest.class,
-	CSVCodecTest.class,
-	HashCodecMD5Test.class,
-	HashCodecSha1Test.class,
-	HashCodecSha256Test.class,
-	HtmlCodecTest.class,
-	SerializationCodecTest.class,
-	//--config
-	ConfigManagerTest.class,
-	LocaleManagerTest.class,
-	ResourceManagerTest.class,
-	MultiConfigManagerTest.class,
-	PropertiesConfigManagerTest.class,
-	XmlConfigManagerTest.class,
-	//--resource
-	ResourceManagerTest.class,
-	//--script
-	ScriptManagerTest.class,
-	//--parser
-	ParserTest.class,
-	CalculatorTest.class,
+		//--analytics
+		AnalyticsManagerTest.class,
+		//--cache
+		CacheManagerTest.class,
+		//--codec
+		Base64CodecTest.class,
+		CompressedSerializationCodecTest.class,
+		CompressionCodecTest.class,
+		AES128CodecTest.class,
+		TripleDESCodecTest.class,
+		CSVCodecTest.class,
+		HashCodecMD5Test.class,
+		HashCodecSha1Test.class,
+		HashCodecSha256Test.class,
+		HtmlCodecTest.class,
+		SerializationCodecTest.class,
+		//--config
+		ConfigManagerTest.class,
+		LocaleManagerTest.class,
+		ResourceManagerTest.class,
+		MultiConfigManagerTest.class,
+		PropertiesConfigManagerTest.class,
+		XmlConfigManagerTest.class,
+		//--resource
+		ResourceManagerTest.class,
+		//--script
+		ScriptManagerTest.class,
+		//--parser
+		ParserTest.class,
+		CalculatorTest.class,
 })
 public final class CommonsTestSuite {
 	//

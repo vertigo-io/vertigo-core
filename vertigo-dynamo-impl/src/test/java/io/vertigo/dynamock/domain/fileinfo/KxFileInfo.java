@@ -28,7 +28,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
  * Objet de données KxFileInfo
  */
 @javax.persistence.Entity
-@javax.persistence.Table (name = "KX_FILE_INFO")
+@javax.persistence.Table(name = "KX_FILE_INFO")
 @org.hibernate.annotations.TypeDefs(value = { @org.hibernate.annotations.TypeDef(name = "DO_STREAM", typeClass = io.vertigo.dynamo.plugins.database.connection.hibernate.DataStreamType.class) })
 @DtDefinition
 public final class KxFileInfo implements DtObject {

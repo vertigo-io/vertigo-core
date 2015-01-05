@@ -36,12 +36,12 @@ public enum PublisherFormat {
 	 */
 	public String getMimeType() {
 		switch (this) {
-		case ODT:
-			return "application/vnd.oasis.opendocument.text";
-		case DOCX:
-			return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-		default:
-			throw new IllegalArgumentException("Format " + this + "non reconnu");
+			case ODT:
+				return "application/vnd.oasis.opendocument.text";
+			case DOCX:
+				return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+			default:
+				throw new IllegalArgumentException("Format " + this + "non reconnu");
 		}
 	}
 }

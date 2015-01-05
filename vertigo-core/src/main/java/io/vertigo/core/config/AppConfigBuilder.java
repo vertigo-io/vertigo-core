@@ -159,7 +159,12 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 			withModules(parser.parse(xmlUrl));
 		}
 		//Assertion.checkArgument(!myModuleConfigs.isEmpty(), "We need at least one Xml file");
-		return new AppConfig(myLogConfigOption, myModuleConfigs, myAopEngine, Option.option(myElasticaEngine), Option.option(myCommandEngine), mySilence);
+		return new AppConfig(myLogConfigOption,
+				myModuleConfigs,
+				myAopEngine,
+				Option.option(myElasticaEngine),
+				Option.option(myCommandEngine),
+				mySilence);
 	}
 
 	/**

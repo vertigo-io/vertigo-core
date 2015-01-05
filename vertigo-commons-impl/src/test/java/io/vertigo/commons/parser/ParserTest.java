@@ -41,7 +41,7 @@ public final class ParserTest {
 
 	private static final Rule HELLO_WORLD = new SequenceRule(
 			HELLO,
-			SPACE, 
+			SPACE,
 			WORLD);
 
 	private static final Rule<Choice> WORLD_MUSIC = new FirstOfRule(
@@ -65,8 +65,8 @@ public final class ParserTest {
 	);
 
 	private static final Rule HELLO_PROPERTY = new SequenceRule(
-			HELLO, 
-			SPACE, 
+			HELLO,
+			SPACE,
 			PROPERTY);
 
 	@Test
