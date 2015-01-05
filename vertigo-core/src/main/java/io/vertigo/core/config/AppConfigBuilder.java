@@ -113,10 +113,6 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 		return new ModuleConfigBuilder(this, name);
 	}
 
-	//------
-	//------
-	//------
-	//------
 	/**
 	 * Append EnvParams.
 	 * @param envParams envParams
@@ -126,21 +122,6 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 		Assertion.checkNotNull(envParams);
 		//-----
 		myEnvParams.putAll(envParams);
-		return this;
-	}
-
-	/**
-	 * Append EnvParams.
-	 * @param relativeRootClass Class use for relative path
-	 * @param optionEnvParams Option of envParamsFileName
-	 * @return this builder
-	 */
-	public AppConfigBuilder withEnvParams(final Class<?> relativeRootClass, final Option<String> optionEnvParams) {
-		Assertion.checkNotNull(optionEnvParams);
-		//-----
-		if (optionEnvParams.isDefined()) {
-			withEnvParams(loadProperties(optionEnvParams.get(), relativeRootClass));
-		}
 		return this;
 	}
 
