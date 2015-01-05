@@ -19,7 +19,6 @@
 package io.vertigo;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.config.AppBuilder;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.core.spaces.component.ComponentInfo;
@@ -190,11 +189,9 @@ public abstract class AbstractTestCaseJU4 {
 	 * Configuration des tests.
 	 */
 	protected void configMe(final AppConfigBuilder appConfigBuilder) {
-		final AppBuilder appBuilder = new AppBuilder()
+		appConfigBuilder
 				.withSilence(true)
-				.withAppConfigBuilder(appConfigBuilder)
 				.withXmlFileNames(getClass(), getManagersXmlFileName())
 				.withEnvParams(getClass(), getPropertiesFileName());
-		appBuilder.toAppConfigBuilder();
 	}
 }

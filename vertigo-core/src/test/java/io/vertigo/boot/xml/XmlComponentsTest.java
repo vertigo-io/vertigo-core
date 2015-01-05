@@ -18,7 +18,6 @@
  */
 package io.vertigo.boot.xml;
 
-import io.vertigo.boot.xml.XMLModulesParser;
 import io.vertigo.core.component.AbstractAspectTestCase;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.engines.aop.cglib.CGLIBAopEngine;

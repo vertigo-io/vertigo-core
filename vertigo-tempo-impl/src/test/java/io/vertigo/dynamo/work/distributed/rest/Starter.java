@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.work.distributed.rest;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.config.AppBuilder;
+import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 
@@ -97,7 +97,7 @@ public final class Starter implements Runnable {
 		// Création de l'état de l'application
 		// Initialisation de l'état de l'application
 		//final URL xmlURL = createURL(managersXmlFileName, relativeRootClass);
-		final AppBuilder builder = new AppBuilder()
+		final AppConfigBuilder builder = new AppConfigBuilder()
 				.withSilence(SILENCE)
 				.withXmlFileNames(relativeRootClass, managersXmlFileName)
 				.withEnvParams(relativeRootClass, propertiesFileName);
