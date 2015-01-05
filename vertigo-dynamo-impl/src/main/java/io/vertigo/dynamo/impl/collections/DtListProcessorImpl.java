@@ -30,7 +30,6 @@ import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListValueFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.FilterFunction;
-import io.vertigo.dynamo.impl.collections.functions.fulltext.FullTextFilterFunction;
 import io.vertigo.dynamo.impl.collections.functions.sort.SortFunction;
 import io.vertigo.dynamo.impl.collections.functions.sort.SortState;
 import io.vertigo.dynamo.impl.collections.functions.sublist.SubListFunction;
@@ -42,6 +41,9 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 
+/**
+ * Standard implementation of DtListProcessor.
+ */
 final class DtListProcessorImpl implements DtListProcessor {
 	private final DtListFunction[] listFunctions;
 	private final Option<IndexPlugin> indexPlugin;
@@ -83,7 +85,8 @@ final class DtListProcessorImpl implements DtListProcessor {
 	public DtListProcessor filter(final String keywords, final int maxRows, final Collection<DtField> searchedFields) {
 		Assertion.checkArgument(indexPlugin.isDefined(), "An IndexPlugin is required to use this method");
 		//-----
-		return add(new FullTextFilterFunction<>(keywords, maxRows, searchedFields, indexPlugin.get()));
+		final DtListProcessorIndexImpl dtListProcessorLuceneImpl = new DtListProcessorIndexImpl(this, indexPlugin.get());
+		return dtListProcessorLuceneImpl.filter(keywords, maxRows, searchedFields);
 	}
 
 	/** {@inheritDoc} */

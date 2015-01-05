@@ -114,13 +114,11 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	//=========================================================================
 	private <D extends DtObject> DtList<D> filter(final DtList<D> dtList, final FacetedQuery facetedQuery) {
 		final List<ListFilter> listFilters = facetedQuery.getListFilters();
-		DtList<D> filteredDtList = dtList;
+		DtListProcessor dtListProcessor = createDtListProcessor();
 		for (final ListFilter listFilter : listFilters) {
-			filteredDtList = this.createDtListProcessor()
-					.filter(listFilter)
-					.apply(filteredDtList);
+			dtListProcessor = dtListProcessor.filter(listFilter);
 		}
-		return filteredDtList;
+		return dtListProcessor.apply(dtList);
 	}
 
 	/** {@inheritDoc} */

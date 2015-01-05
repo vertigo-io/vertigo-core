@@ -28,14 +28,16 @@ import java.util.Collection;
 
 /**
  * Processor that can be composed of filters or sorters
- * and be applied on a list
+ * and be applied on a list.
  * @author pchretien
  */
 public interface DtListProcessor {
 	/**
-	 * Add any function that transform a list into an another list
+	 * Add any function that transform a list into an another list.
+	 * @param listFunction List function
+	 * @return new DtListProcessor completed with this function
 	 */
-	DtListProcessor add(DtListFunction listFunction);
+	DtListProcessor add(DtListFunction<?> listFunction);
 
 	/**
 	 * Création d'un tri de colonne.
@@ -50,6 +52,7 @@ public interface DtListProcessor {
 	//=======================FILTER============================================
 	/**
 	 * Filtre une DTC par recherche plein text, ne modifie pas la collection d'origine.
+	 * (préférez le mettre comme premiere opération : pour passer en mode index)
 	 * @param keywords Liste de Mot-clé recherchés séparés par espace(préfix d'un mot)
 	 * @param maxRows Nombre max de lignes retournées
 	 * @param searchedFields Liste des champs sur lesquel porte la recherche  (nullable : tous)
@@ -96,6 +99,7 @@ public interface DtListProcessor {
 	//=========================================================================
 	/**
 	 * Apply composed functions to list
+	 * @param <D> List element's type
 	 * @param input List ( will be unchanged)
 	 * @return a new List
 	 */

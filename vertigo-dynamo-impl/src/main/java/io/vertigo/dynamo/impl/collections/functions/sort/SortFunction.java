@@ -54,7 +54,7 @@ public final class SortFunction<D extends DtObject> implements DtListFunction<D>
 		final List<D> list = new ArrayList<>(dtc);
 
 		//On trie.
-		final Comparator<D> comparator = new DtObjectComparator<>(persistenceManager, dtc, sortState);
+		final Comparator<D> comparator = new DtObjectComparator<>(persistenceManager, dtc.getDefinition(), sortState);
 		Collections.sort(list, comparator);
 
 		//On reconstitue la collection.

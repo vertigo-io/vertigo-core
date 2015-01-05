@@ -18,12 +18,16 @@
  */
 package io.vertigo.dynamo.impl.collections;
 
+import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.impl.collections.functions.sort.SortState;
+import io.vertigo.lang.Option;
 import io.vertigo.lang.Plugin;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Plugin de construction et d'interrogation de l'index d'une DtList.
@@ -35,9 +39,13 @@ public interface IndexPlugin extends Plugin {
 	 * @param <D> Type d'objet
 	 * @param keywords Liste de Mot-clé recherchés séparés par espace(préfix d'un mot)
 	 * @param searchedFields Liste des champs sur lesquel porte la recherche  (non null)
-	 * @param maxRows Nombre maximum de lignes retournées
-	 * @param boostedField Champ boosté (nullable : aucun)
-	 * @return Liste résultat 
+	 * @param listFilters Liste des filtres supplémentaires (facettes, sécurité, ...)
+	 * @param skip Nombre de lignes sautées dans le résultat
+	 * @param top Nombre maximum de lignes retournées
+	 * @param sortState Tri à appliquer (optionnel : aucun)
+	 * @param boostedField Champ boosté (optionnel : aucun)
+	 * @param dtc Liste d'origine à filtrer
+	 * @return Liste résultat
 	 */
-	<D extends DtObject> DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final int maxRows, final DtField boostedField, final DtList<D> dtc);
+	<D extends DtObject> DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final int skip, final int top, Option<SortState> sortState, final Option<DtField> boostedField, final DtList<D> dtc);
 }

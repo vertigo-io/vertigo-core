@@ -19,9 +19,9 @@
 package io.vertigo.dynamo.impl.collections.functions.sort;
 
 import io.vertigo.dynamo.domain.metamodel.DataAccessor;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
-import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
@@ -56,16 +56,17 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 
 	/**
 	 * Constructeur.
-	 * @param dtc DTC à trier
+	 * @param persistenceManager Manager de persistence
+	 * @param dtDefinition DtDefinition des éléments à comparer
 	 * @param sortState Etat du tri
 	 */
-	DtObjectComparator(final PersistenceManager persistenceManager, final DtList<D> dtc, final SortState sortState) {
-		Assertion.checkNotNull(dtc);
+	DtObjectComparator(final PersistenceManager persistenceManager, final DtDefinition dtDefinition, final SortState sortState) {
+		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(sortState);
 		//-----
 		//On recherche le comparateur associé au champ de la collection
 		//Si il n'y a pas de comparateur alors on applique la comparaison standard.
-		this.sortField = dtc.getDefinition().getField(sortState.getFieldName());
+		this.sortField = dtDefinition.getField(sortState.getFieldName());
 
 		//On regarde si on est sur une ForeignKey et sur une MasterDataList
 		if (sortField.getType() == FieldType.FOREIGN_KEY && persistenceManager.getMasterDataConfiguration().containsMasterData(sortField.getFkDtDefinition())) {

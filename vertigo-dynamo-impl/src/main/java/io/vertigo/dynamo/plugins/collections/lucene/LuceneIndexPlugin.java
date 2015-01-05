@@ -22,6 +22,7 @@ import io.vertigo.commons.cache.CacheConfig;
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.core.Home;
+import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -30,9 +31,11 @@ import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.collections.IndexPlugin;
+import io.vertigo.dynamo.impl.collections.functions.sort.SortState;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
+import io.vertigo.lang.Option;
 import io.vertigo.lang.VUserException;
 import io.vertigo.util.StringUtil;
 
@@ -41,6 +44,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -56,6 +60,8 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
+import org.apache.lucene.queryparser.flexible.standard.StandardQueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.BooleanQuery.TooManyClauses;
@@ -64,6 +70,8 @@ import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
 
 /**
@@ -86,10 +94,8 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 	public LuceneIndexPlugin(final LocaleManager localeManager, final CacheManager cacheManager) {
 		Assertion.checkNotNull(localeManager);
 		Assertion.checkNotNull(cacheManager);
-
 		//-----
 		this.cacheManager = cacheManager;
-
 		indexAnalyser = new DefaultAnalyzer(false); //les stop word marchent mal si asymétrique entre l'indexation et la query
 		queryAnalyser = new DefaultAnalyzer(false);
 		localeManager.add(Resources.class.getName(), Resources.values());
@@ -137,16 +143,16 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 			for (final D dto : fullDtc) {
 				final Document document = new Document();
 				final String pkValue = String.valueOf(pkField.getDataAccessor().getValue(dto));
-				document.add(createKeyword(pkField.getName(), pkValue, true));
+				document.add(createKeyword(pkField.name(), pkValue, true));
 				for (final DtField dtField : dtFields) {
 					final Object value = dtField.getDataAccessor().getValue(dto);
 					if (value != null) {
 						if (value instanceof String) {
-							document.add(createIndexed(dtField.getName(), getStringValue(dto, dtField), storeValue));
+							document.add(createIndexed(dtField.name(), getStringValue(dto, dtField), storeValue));
 						} else if (value instanceof Date) {
-							document.add(createKeyword(dtField.getName(), DateTools.dateToString((Date) value, DateTools.Resolution.DAY), storeValue));
+							document.add(createKeyword(dtField.name(), DateTools.dateToString((Date) value, DateTools.Resolution.DAY), storeValue));
 						} else {
-							document.add(createKeyword(dtField.getName(), value.toString(), storeValue));
+							document.add(createKeyword(dtField.name(), value.toString(), storeValue));
 						}
 					}
 				}
@@ -160,68 +166,90 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 
 	private static String getStringValue(final DtObject dto, final DtField field) {
 		final String stringValue;
-		if (field.getType() == DtField.FieldType.FOREIGN_KEY && getPersistenceManager().getMasterDataConfiguration().containsMasterData(field.getFkDtDefinition())) {
-			//TODO voir pour mise en cache de cette navigation
-			final DtListURIForMasterData mdlUri = getPersistenceManager().getMasterDataConfiguration().getDtListURIForMasterData(field.getFkDtDefinition());
-			final DtField displayField = mdlUri.getDtDefinition().getDisplayField().get();
-			final Object fkValue = field.getDataAccessor().getValue(dto);
-			if (fkValue != null) {
-				final URI<DtObject> uri = new URI<>(field.getFkDtDefinition(), fkValue);
+		final Object value = field.getDataAccessor().getValue(dto);
+		if (value != null) {
+			if (field.getType() == DtField.FieldType.FOREIGN_KEY && getPersistenceManager().getMasterDataConfiguration().containsMasterData(field.getFkDtDefinition())) {
+				//TODO voir pour mise en cache de cette navigation
+				final DtListURIForMasterData mdlUri = getPersistenceManager().getMasterDataConfiguration().getDtListURIForMasterData(field.getFkDtDefinition());
+				final DtField displayField = mdlUri.getDtDefinition().getDisplayField().get();
+				final URI<DtObject> uri = new URI<>(field.getFkDtDefinition(), value);
 				final DtObject fkDto = getPersistenceManager().getBroker().get(uri);
-				final Object value = displayField.getDataAccessor().getValue(fkDto);
-				stringValue = displayField.getDomain().getFormatter().valueToString(value, displayField.getDomain().getDataType());
+				final Object displayValue = displayField.getDataAccessor().getValue(fkDto);
+				stringValue = displayField.getDomain().getFormatter().valueToString(displayValue, displayField.getDomain().getDataType());
 			} else {
-				stringValue = null;
+				stringValue = String.valueOf(field.getDataAccessor().getValue(dto));
 			}
-		} else {
-			stringValue = (String) field.getDataAccessor().getValue(dto);
+			return stringValue.trim();
 		}
-		return stringValue != null ? stringValue.trim() : null;
+		return null;
 	}
 
-	private <D extends DtObject> DtList<D> getCollection(final String keywords, final Collection<DtField> searchedDtFieldList, final int maxRows, final DtField boostedField, final LuceneIndex<D> index) throws IOException {
+	private <D extends DtObject> DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final int skip, final int top, final Option<SortState> sortState, final Option<DtField> boostedField, final LuceneIndex<D> index) throws IOException {
 		Assertion.checkNotNull(index);
-		Assertion.checkNotNull(searchedDtFieldList);
+		Assertion.checkNotNull(searchedFields);
 		//-----
-		final Query query = createQuery(keywords, searchedDtFieldList, boostedField);
-		return executeQuery(index, query, maxRows);
+		final Query keywordsQuery = createKeywordQuery(keywords, searchedFields, boostedField);
+		final Query filteredQuery;
+		if (!listFilters.isEmpty()) {
+			filteredQuery = createFilteredQuery(keywordsQuery, listFilters);
+		} else {
+			filteredQuery = keywordsQuery;
+		}
+		final Sort sortQuery = createSortQuery(sortState);
+		return executeQuery(index, filteredQuery, skip, top, sortQuery);
 	}
 
-	private static <D extends DtObject> DtList<D> executeQuery(final LuceneIndex<D> luceneDb, final Query query, final int maxRow) throws IOException {
+	private Sort createSortQuery(final Option<SortState> sortStateOpt) {
+		if (sortStateOpt.isDefined()) {
+			final SortState sortState = sortStateOpt.get();
+			final SortField.Type luceneType = SortField.Type.STRING; //TODO : check if other type are necessary
+			return new Sort(new SortField(sortState.getFieldName(), luceneType, !sortState.isDesc()));
+		}
+		return null;//default null -> sort by score
+	}
+
+	private static <D extends DtObject> DtList<D> executeQuery(final LuceneIndex<D> luceneDb, final Query query, final int skip, final int top, final Sort sort) throws IOException {
 		try (final IndexReader indexReader = luceneDb.createIndexReader()) {
 			final IndexSearcher searcher = new IndexSearcher(indexReader);
 			//1. Exécution des la Requête
-			final TopDocs topDocs = searcher.search(query, null, maxRow);
-
+			final TopDocs topDocs;
+			if (sort != null) {
+				topDocs = searcher.search(query, skip + top, sort);
+			} else {
+				topDocs = searcher.search(query, skip + top);
+			}
 			//2. Traduction du résultat Lucene en une Collection
-			return translateDocs(luceneDb, searcher, topDocs);
+			return translateDocs(luceneDb, searcher, topDocs, skip, top);
 		} catch (final TooManyClauses e) {
 			throw new VUserException(new MessageText(Resources.DYNAMO_COLLECTIONS_INDEXER_TOO_MANY_CLAUSES));
 		}
 	}
 
-	private static <D extends DtObject> DtList<D> translateDocs(final LuceneIndex<D> luceneDb, final IndexSearcher searcher, final TopDocs topDocs) throws IOException {
+	private static <D extends DtObject> DtList<D> translateDocs(final LuceneIndex<D> luceneDb, final IndexSearcher searcher, final TopDocs topDocs, final int skip, final int top) throws IOException {
 		final DtDefinition dtDefinition = luceneDb.getDtDefinition();
 		final DtField pkField = dtDefinition.getIdField().get();
 
 		final DtList<D> dtcResult = new DtList<>(dtDefinition);
-		for (final ScoreDoc scoreDoc : topDocs.scoreDocs) {
-			final Document document = searcher.doc(scoreDoc.doc);
-			dtcResult.add(luceneDb.getDtObjectIndexed(document.get(pkField.getName())));
+		final int resultLength = topDocs.scoreDocs.length;
+		if (resultLength > skip) {
+			for (int i = skip; i < Math.min(skip + top, resultLength); i++) {
+				final ScoreDoc scoreDoc = topDocs.scoreDocs[i];
+				final Document document = searcher.doc(scoreDoc.doc);
+				dtcResult.add(luceneDb.getDtObjectIndexed(document.get(pkField.name())));
+			}
 		}
 		return dtcResult;
 	}
 
-	private Query createQuery(final String keywords, final Collection<DtField> searchedFieldList, final DtField boostedField) throws IOException {
+	private Query createKeywordQuery(final String keywords, final Collection<DtField> searchedFieldList, final Option<DtField> boostedField) throws IOException {
 		if (StringUtil.isEmpty(keywords)) {
 			return new MatchAllDocsQuery();
 		}
 		//-----
 		final BooleanQuery query = new BooleanQuery();
-
 		for (final DtField dtField : searchedFieldList) {
-			final Query queryWord = createParsedQuery(dtField.getName(), keywords);
-			if (dtField.equals(boostedField)) {
+			final Query queryWord = createParsedKeywordsQuery(dtField.name(), keywords);
+			if (boostedField.isDefined() && dtField.equals(boostedField)) {
 				queryWord.setBoost(4);
 			}
 			query.add(queryWord, BooleanClause.Occur.SHOULD);
@@ -229,7 +257,27 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 		return query;
 	}
 
-	private Query createParsedQuery(final String fieldName, final String keywords) throws IOException {
+	private Query createFilteredQuery(final Query keywordsQuery, final List<ListFilter> filters) {
+		final BooleanQuery query = new BooleanQuery();
+		query.add(keywordsQuery, BooleanClause.Occur.MUST);
+
+		for (final ListFilter filter : filters) {
+			final StandardQueryParser queryParser = new StandardQueryParser(queryAnalyser);
+			try {
+				query.add(queryParser.parse(filter.getFilterValue(), null), isExclusion(filter) ? BooleanClause.Occur.MUST_NOT : BooleanClause.Occur.MUST);
+			} catch (final QueryNodeException e) {
+				throw new RuntimeException("Erreur lors de la création du filtrage de la requete", e);
+			}
+		}
+		return query;
+	}
+
+	private static boolean isExclusion(final ListFilter listFilter) {
+		final String listFilterValue = listFilter.getFilterValue().trim();
+		return listFilterValue.startsWith("-");
+	}
+
+	private Query createParsedKeywordsQuery(final String fieldName, final String keywords) throws IOException {
 		final BooleanQuery query = new BooleanQuery();
 		final Reader reader = new StringReader(keywords);
 		try (final TokenStream tokenStream = queryAnalyser.tokenStream(fieldName, reader)) {
@@ -262,16 +310,17 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 	 * @param <D> type d'objet de la liste
 	 * @param keywords Mots clés de la recherche
 	 * @param searchedFields Liste des champs sur lesquels porte la recheche
+	 * @param listFilters Liste des filtres supplémentaires (facettes, sécurité, ...)
 	 * @param maxRows Nombre de résultat maximum
 	 * @param boostedField Liste des champs boostés (boost de 4 en dur)
-	 * @param dtc Liste source
+	 * @param dtc Liste d'origine à filtrer
 	 * @return Liste résultat
 	 */
 	@Override
-	public <D extends DtObject> DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final int maxRows, final DtField boostedField, final DtList<D> dtc) {
+	public <D extends DtObject> DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final int skip, final int top, final Option<SortState> sortState, final Option<DtField> boostedField, final DtList<D> dtc) {
 		try {
 			final LuceneIndex<D> index = indexList(dtc, false);
-			return this.<D> getCollection(keywords, searchedFields, maxRows, boostedField, index);
+			return this.<D> getCollection(keywords, searchedFields, listFilters, skip, top, sortState, boostedField, index);
 		} catch (final IOException e) {
 			throw new RuntimeException("Erreur d'indexation", e);
 		}
