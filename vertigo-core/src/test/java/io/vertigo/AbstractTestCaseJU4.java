@@ -25,7 +25,6 @@ import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Container;
 import io.vertigo.lang.Describable;
-import io.vertigo.lang.Option;
 
 import java.util.List;
 
@@ -164,15 +163,6 @@ public abstract class AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Fichier de propriétés de paramétrage des managers.
-	 *
-	 * @return fichier properties de paramétrage des managers (par defaut Option.none())
-	 */
-	protected Option<String> getPropertiesFileName() {
-		return Option.none(); // par défaut pas de properties
-	}
-
-	/**
 	* Utilitaire.
 	* @param manager Manager
 	*/
@@ -191,7 +181,6 @@ public abstract class AbstractTestCaseJU4 {
 	protected void configMe(final AppConfigBuilder appConfigBuilder) {
 		appConfigBuilder
 				.withSilence(true)
-				.withXmlFileNames(getClass(), getManagersXmlFileName())
-				.withEnvParams(getClass(), getPropertiesFileName());
+				.withXmlFileNames(getClass(), getManagersXmlFileName());
 	}
 }

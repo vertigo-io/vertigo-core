@@ -384,7 +384,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * @see IndexDtListProcessor#filterSubList
+	 * @see DtListProcessor#filterSubList
 	 */
 	@Test
 	public void testSubListWithIndex() {

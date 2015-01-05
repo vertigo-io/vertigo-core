@@ -19,8 +19,8 @@
 package io.vertigo.vega.impl.rest.servlet;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.config.AppBuilder;
 import io.vertigo.core.config.AppConfig;
+import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.vega.plugins.rest.servlet.ServletResourceResolverPlugin;
 import io.vertigo.vega.plugins.rest.servlet.WebAppContextConfigPlugin;
 
@@ -61,7 +61,7 @@ final class HomeServletStarter {
 			final Properties conf = createProperties(servletContext);
 			WebAppContextConfigPlugin.setInitConfig(conf);
 
-			final AppConfig appConfig = new AppBuilder()
+			final AppConfig appConfig = new AppConfigBuilder()
 					.withSilence(true)
 					.withEnvParams(conf)
 					.build();
