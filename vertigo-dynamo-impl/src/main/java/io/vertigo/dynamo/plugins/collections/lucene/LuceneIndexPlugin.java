@@ -311,7 +311,6 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 	 * @param keywords Mots clés de la recherche
 	 * @param searchedFields Liste des champs sur lesquels porte la recheche
 	 * @param listFilters Liste des filtres supplémentaires (facettes, sécurité, ...)
-	 * @param maxRows Nombre de résultat maximum
 	 * @param boostedField Liste des champs boostés (boost de 4 en dur)
 	 * @param dtc Liste d'origine à filtrer
 	 * @return Liste résultat

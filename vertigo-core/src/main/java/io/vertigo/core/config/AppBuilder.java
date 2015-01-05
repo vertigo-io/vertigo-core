@@ -81,21 +81,10 @@ public final class AppBuilder {
 	 * @return this builder
 	 */
 	public AppBuilder withEnvParams(final Class<?> relativeRootClass, final Option<String> optionEnvParams) {
+		Assertion.checkNotNull(optionEnvParams);
+		//-----
 		if (optionEnvParams.isDefined()) {
 			withEnvParams(loadProperties(optionEnvParams.get(), relativeRootClass));
-		}
-		return this;
-	}
-
-	/**
-	 * Append EnvParams.
-	 * @param relativeRootClass Class use for relative path
-	 * @param newEnvParams Multiple EnvParamsFileName
-	 * @return this builder
-	 */
-	public AppBuilder withEnvParams(final Class<?> relativeRootClass, final String... newEnvParams) {
-		for (final String newEnvParam : newEnvParams) {
-			withEnvParams(loadProperties(newEnvParam, relativeRootClass));
 		}
 		return this;
 	}
