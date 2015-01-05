@@ -21,12 +21,15 @@ package io.vertigo.studio.tools;
 import io.vertigo.core.Home;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
-import io.vertigo.lang.Option;
 import io.vertigo.studio.tools.generate.GenerateGoal;
 import io.vertigo.util.ClassUtil;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Génération des fichiers Java et SQL à patrir de fichiers template freemarker.
@@ -49,9 +52,10 @@ public final class NameSpace2Java {
 			throw new IllegalArgumentException("Usage : java io.vertigo.studio.tools.NameSpace2Java \"<<pathToParams.properties>>\" ");
 		}
 		//-----
+		final Properties properties = loadProperties(args[0], NameSpace2Java.class);
 		final AppConfig appConfig = new AppConfigBuilder()
 				.withSilence(true)
-				.withEnvParams(NameSpace2Java.class, Option.some(args[0]))
+				.withEnvParams(properties)
 				.build();
 
 		try {
@@ -65,6 +69,17 @@ public final class NameSpace2Java {
 			process(goalClazzList);
 		} finally {
 			Home.stop();
+		}
+	}
+
+	private static Properties loadProperties(final String propertiesName, final Class<?> relativeRootClass) {
+		final URL url = relativeRootClass.getResource(propertiesName);
+		try (final InputStream in = url.openStream()) {
+			final Properties properties = new Properties();
+			properties.load(in);
+			return properties;
+		} catch (final IOException e) {
+			throw new RuntimeException(e);
 		}
 	}
 

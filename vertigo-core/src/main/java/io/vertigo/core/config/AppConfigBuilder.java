@@ -27,8 +27,6 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Option;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -181,16 +179,6 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 		}
 		//Assertion.checkArgument(!myModuleConfigs.isEmpty(), "We need at least one Xml file");
 		return new AppConfig(myLogConfigOption, myModuleConfigs, myAopEngine, Option.option(myElasticaEngine), Option.option(myCommandEngine), mySilence);
-	}
-
-	private static Properties loadProperties(final String propertiesName, final Class<?> relativePathBase) {
-		try (final InputStream in = createURL(propertiesName, relativePathBase).openStream()) {
-			final Properties properties = new Properties();
-			properties.load(in);
-			return properties;
-		} catch (final IOException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	/**
