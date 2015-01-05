@@ -22,7 +22,6 @@ import io.vertigo.core.Home;
 import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.collections.DtListProcessor;
 import io.vertigo.dynamo.collections.ListFilter;
-import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListFilter;
@@ -39,17 +38,15 @@ import io.vertigo.lang.Option;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Collection;
 
 /**
  * Standard implementation of DtListProcessor.
  */
 final class DtListProcessorImpl implements DtListProcessor {
 	private final DtListFunction[] listFunctions;
-	private final Option<IndexPlugin> indexPlugin;
 
-	DtListProcessorImpl(final Option<IndexPlugin> indexPlugin) {
-		this(new DtListFunction[] {}, indexPlugin);
+	DtListProcessorImpl() {
+		this(new DtListFunction[] {});
 	}
 
 	// Getteur sur Home car dépendance cyclique entre CollectionsManager et PersistenceManager
@@ -57,12 +54,10 @@ final class DtListProcessorImpl implements DtListProcessor {
 		return Home.getComponentSpace().resolve(PersistenceManager.class);
 	}
 
-	private DtListProcessorImpl(final DtListFunction[] listFunctions, final Option<IndexPlugin> indexPlugin) {
+	private DtListProcessorImpl(final DtListFunction[] listFunctions) {
 		Assertion.checkNotNull(listFunctions);
-		Assertion.checkNotNull(indexPlugin);
 		//-----
 		this.listFunctions = listFunctions;
-		this.indexPlugin = indexPlugin;
 	}
 
 	private DtListProcessorImpl createNewDtListProcessor(final DtListFunction listFunction) {
@@ -71,22 +66,13 @@ final class DtListProcessorImpl implements DtListProcessor {
 		final DtListFunction[] list = Arrays.copyOf(listFunctions, listFunctions.length + 1);
 		//adding a new listFunction
 		list[listFunctions.length] = listFunction;
-		return new DtListProcessorImpl(list, indexPlugin);
+		return new DtListProcessorImpl(list);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public DtListProcessor add(final DtListFunction listFunction) {
 		return createNewDtListProcessor(listFunction);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public DtListProcessor filter(final String keywords, final int maxRows, final Collection<DtField> searchedFields) {
-		Assertion.checkArgument(indexPlugin.isDefined(), "An IndexPlugin is required to use this method");
-		//-----
-		final DtListProcessorIndexImpl dtListProcessorLuceneImpl = new DtListProcessorIndexImpl(this, indexPlugin.get());
-		return dtListProcessorLuceneImpl.filter(keywords, maxRows, searchedFields);
 	}
 
 	/** {@inheritDoc} */

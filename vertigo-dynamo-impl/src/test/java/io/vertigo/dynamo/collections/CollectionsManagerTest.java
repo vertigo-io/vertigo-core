@@ -224,8 +224,9 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testFilterFullText() {
-		final DtList<Famille> result = collectionsManager.createDtListProcessor()
+		final DtList<Famille> result = collectionsManager.<Famille> createIndexDtListFunctionBuilder()
 				.filter("aa", 1000, dtDefinitionFamille.getFields())
+				.build()
 				.apply(createFamilles());
 		Assert.assertEquals(1, result.size(), 0);
 
@@ -239,10 +240,12 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		final DtList<Famille> dtc = createFamilles();
 		final Collection<DtField> searchedDtFields = dtDefinitionFamille.getFields();
 		final Famille mock1 = new Famille();
+		mock1.setFamId(seqFamId++);
 		mock1.setLibelle("Agence de l'Ouest");
 		dtc.add(mock1);
 
 		final Famille mock2 = new Famille();
+		mock2.setFamId(seqFamId++);
 		mock2.setLibelle("Hôpital et autres accents çava où ãpied");
 		dtc.add(mock2);
 
@@ -255,8 +258,9 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private List<Famille> filter(final DtList<Famille> dtc, final String query, final int nbRows, final Collection<DtField> searchedDtFields) {
-		return collectionsManager.createDtListProcessor()
+		return collectionsManager.<Famille> createIndexDtListFunctionBuilder()
 				.filter(query, nbRows, searchedDtFields)
+				.build()
 				.apply(dtc);
 	}
 
@@ -269,10 +273,12 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		final Collection<DtField> searchedDtFields = dtDefinitionFamille.getFields();
 
 		final Famille mock1 = new Famille();
+		mock1.setFamId(seqFamId++);
 		mock1.setLibelle("Agence de l'Ouest");
 		dtc.add(mock1);
 
 		final Famille mock2 = new Famille();
+		mock2.setFamId(seqFamId++);
 		mock2.setLibelle("Hôpital et autres accents çava où àpied");
 		dtc.add(mock2);
 
@@ -288,10 +294,12 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		final Collection<DtField> searchedDtFields = dtDefinitionFamille.getFields();
 
 		final Famille mock1 = new Famille();
+		mock1.setFamId(seqFamId++);
 		mock1.setLibelle("Agence de l'Ouest");
 		dtc.add(mock1);
 
 		final Famille mock2 = new Famille();
+		mock2.setFamId(seqFamId++);
 		mock2.setLibelle("Hôpital et autres accents çava où ãpied");
 		dtc.add(mock2);
 
@@ -308,17 +316,98 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testFilterFullTextBigList() {
-		final DtListProcessor filter = collectionsManager.createDtListProcessor()
-				.filter("a", 2000, dtDefinitionFamille.getFields());
-		Assert.assertNotNull(filter);
+		final DtListFunction<Famille> filterFunction = collectionsManager.<Famille> createIndexDtListFunctionBuilder()
+				.filter("a", 2000, dtDefinitionFamille.getFields())
+				.build();
+		Assert.assertNotNull(filterFunction);
 		final DtList<Famille> bigFamillyList = new DtList<>(Famille.class);
 		for (int i = 0; i < 50000; i++) {
 			final Famille mocka = new Famille();
+			mocka.setFamId(seqFamId++);
 			mocka.setLibelle("blabla a" + (char) ('a' + i % 26) + String.valueOf(i % 100));
 			bigFamillyList.add(mocka);
 		}
-		final DtList<Famille> result = filter.apply(bigFamillyList);
+		final DtList<Famille> result = filterFunction.apply(bigFamillyList);
 		Assert.assertEquals(2000, result.size(), 0);
+	}
+
+	/**
+	 * @see DtListProcessor#sort
+	 */
+	@Test
+	public void testSortWithIndex() {
+		DtList<Famille> sortDtc;
+		final DtList<Famille> dtc = createFamilles();
+		final String[] indexDtc = indexId(dtc);
+
+		// Cas de base.
+		// ======================== Ascendant
+		// =================================== nullLast
+		// ================================================ ignoreCase
+		sortDtc = collectionsManager.<Famille> createIndexDtListFunctionBuilder()
+				.sort("LIBELLE", false, true)
+				.build()
+				.apply(dtc);
+
+		assertEquals(indexDtc, indexId(dtc));
+		assertEquals(new String[] { aaa, Ba, bb, null }, indexId(sortDtc));
+
+		// ======================== Ascendant
+		// =================================== not nullLast
+		// ================================================ ignoreCase
+		sortDtc = collectionsManager.<Famille> createIndexDtListFunctionBuilder()
+				.sort("LIBELLE", false, false)
+				.build()
+				.apply(dtc);
+		assertEquals(indexDtc, indexId(dtc));
+		assertEquals(new String[] { null, aaa, Ba, bb }, indexId(sortDtc));
+
+		// ======================== Descendant
+		// =================================== nullLast
+		// ================================================ ignoreCase
+		sortDtc = collectionsManager.<Famille> createIndexDtListFunctionBuilder()
+				.sort("LIBELLE", true, true)
+				.build()
+				.apply(dtc);
+		assertEquals(indexDtc, indexId(dtc));
+		assertEquals(new String[] { bb, Ba, aaa, null }, indexId(sortDtc));
+
+		// ======================== Descendant
+		// =================================== not nullLast
+		// ================================================ ignoreCase
+		sortDtc = collectionsManager.<Famille> createIndexDtListFunctionBuilder()
+				.sort("LIBELLE", true, false)
+				.build()
+				.apply(dtc);
+		assertEquals(indexDtc, indexId(dtc));
+		assertEquals(new String[] { null, bb, Ba, aaa }, indexId(sortDtc));
+	}
+
+	/**
+	 * @see IndexDtListProcessor#filterSubList
+	 */
+	@Test
+	public void testSubListWithIndex() {
+		// on test une implémentation de référence ArrayList
+		final List<String> list = new ArrayList<>();
+		list.add("a");
+		list.add("b");
+		Assert.assertEquals(0, list.subList(0, 0).size());
+		Assert.assertEquals(2, list.subList(0, 2).size()); // >0, 1
+		Assert.assertEquals(1, list.subList(1, 2).size()); // >1
+		Assert.assertEquals(0, list.subList(2, 2).size());
+		// on teste notre implémentation
+		Assert.assertEquals(0, subListWithIndex(createFamilles(), 0, 0).size());
+		Assert.assertEquals(2, subListWithIndex(createFamilles(), 0, 2).size());
+		Assert.assertEquals(1, subListWithIndex(createFamilles(), 1, 2).size());
+		Assert.assertEquals(0, subListWithIndex(createFamilles(), 2, 2).size());
+	}
+
+	private DtList<Famille> subListWithIndex(final DtList<Famille> dtc, final int start, final int end) {
+		return collectionsManager.<Famille> createIndexDtListFunctionBuilder()
+				.filterSubList(start, end)
+				.build()
+				.apply(dtc);
 	}
 
 	/**
@@ -475,8 +564,11 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertNotNull(filter);
 	}
 
+	/**
+	 * @see DtListProcessor#add
+	 */
 	@Test
-	public void testaddDtListFunction() {
+	public void testAddDtListFunction() {
 		final DtList<Famille> familles = collectionsManager.createDtListProcessor()
 				.add(new DtListFunction<Famille>() {
 
@@ -512,8 +604,8 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		testRangeFilter("FAM_ID:[1 TO 10[", 2);
 		testRangeFilter("FAM_ID:]1 TO 10]", 2);
 		testRangeFilter("FAM_ID:]1 TO 10[", 1);
-		testRangeFilter("FAM_ID:]1 TO *[", 5);
-		testRangeFilter("FAM_ID:[* TO *[", 6);
+		testRangeFilter("FAM_ID:]1 TO *[", 9);
+		testRangeFilter("FAM_ID:[* TO *[", 10);
 	}
 
 	/**
@@ -596,28 +688,35 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		return index;
 	}
 
+	private static long seqFamId = 100;
+
 	private static DtList<Famille> createFamilles() {
 		final DtList<Famille> dtc = new DtList<>(Famille.class);
 		// les index sont données par ordre alpha > null à la fin >
 		final Famille mockB = new Famille();
+		mockB.setFamId(seqFamId++);
 		mockB.setLibelle(Ba);
 		dtc.add(mockB);
 
 		final Famille mockNull = new Famille();
+		mockNull.setFamId(seqFamId++);
 		// On ne renseigne pas le libelle > null
 		dtc.add(mockNull);
 
 		final Famille mocka = new Famille();
+		mocka.setFamId(seqFamId++);
 		mocka.setLibelle(aaa);
 		dtc.add(mocka);
 
 		final Famille mockb = new Famille();
+		mockb.setFamId(seqFamId++);
 		mockb.setLibelle(bb);
 		dtc.add(mockb);
 
 		// On crée et on supprimme un élément dans la liste pour vérifier
 		// l'intégrité de la liste (Par rapport aux null).
 		final Famille mockRemoved = new Famille();
+		mockRemoved.setFamId(seqFamId++);
 		mockRemoved.setLibelle("mockRemoved");
 		dtc.add(mockRemoved);
 

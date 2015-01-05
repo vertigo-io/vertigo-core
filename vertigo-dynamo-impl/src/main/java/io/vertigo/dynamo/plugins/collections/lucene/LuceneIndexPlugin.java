@@ -80,6 +80,7 @@ import org.apache.lucene.search.TopDocs;
  * @author npiedeloup
  */
 public final class LuceneIndexPlugin implements IndexPlugin {
+	private static final String SORT_FIELD_PREFIX = "4SORT_";
 	private final Analyzer indexAnalyser;
 	private final Analyzer queryAnalyser;
 	//	private final int nbTermsMax = 1024; //a paramètrer
@@ -142,22 +143,28 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 
 			for (final D dto : fullDtc) {
 				final Document document = new Document();
-				final String pkValue = String.valueOf(pkField.getDataAccessor().getValue(dto));
-				document.add(createKeyword(pkField.name(), pkValue, true));
+				final Object pkValue = pkField.getDataAccessor().getValue(dto);
+				Assertion.checkNotNull(pkValue, "Indexed DtObject must have a not null primary key. {0}.{1} was null.", fullDtc.getDefinition().getName(), pkField.name());
+				final String indexedPkValue = String.valueOf(pkValue);
+				document.add(createKeyword(pkField.name(), indexedPkValue, true));
 				for (final DtField dtField : dtFields) {
 					final Object value = dtField.getDataAccessor().getValue(dto);
 					if (value != null) {
 						if (value instanceof String) {
-							document.add(createIndexed(dtField.name(), getStringValue(dto, dtField), storeValue));
+							final String valueAsString = getStringValue(dto, dtField);
+							document.add(createIndexed(dtField.name(), valueAsString, storeValue));
+							//we add a special field for sorting
+							document.add(createKeyword(SORT_FIELD_PREFIX + dtField.name(), valueAsString.toLowerCase(), storeValue));
 						} else if (value instanceof Date) {
-							document.add(createKeyword(dtField.name(), DateTools.dateToString((Date) value, DateTools.Resolution.DAY), storeValue));
+							final String valueAsString = DateTools.dateToString((Date) value, DateTools.Resolution.DAY);
+							document.add(createKeyword(dtField.name(), valueAsString, storeValue));
 						} else {
 							document.add(createKeyword(dtField.name(), value.toString(), storeValue));
 						}
 					}
 				}
 				indexWriter.addDocument(document);
-				luceneDb.mapDocument(pkValue, dto);
+				luceneDb.mapDocument(indexedPkValue, dto);
 			}
 			luceneDb.makeUnmodifiable();
 			return luceneDb;
@@ -202,8 +209,14 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 	private Sort createSortQuery(final Option<SortState> sortStateOpt) {
 		if (sortStateOpt.isDefined()) {
 			final SortState sortState = sortStateOpt.get();
+			Assertion.checkArgument(sortState.isIgnoreCase(), "Sort by index is always case insensitive. Set sortState.isIgnoreCase to true.");
+			//-----
 			final SortField.Type luceneType = SortField.Type.STRING; //TODO : check if other type are necessary
-			return new Sort(new SortField(sortState.getFieldName(), luceneType, !sortState.isDesc()));
+			final String fieldName = SORT_FIELD_PREFIX + sortState.getFieldName(); //can't use the tokenized field with sorting
+			final SortField sortField = new SortField(fieldName, luceneType, sortState.isDesc());
+			final boolean nullLast = sortState.isDesc() ? !sortState.isNullLast() : sortState.isNullLast(); //oh yeah : lucene use nullLast first then revert list if sort Desc :)
+			sortField.setMissingValue(nullLast ? SortField.STRING_LAST : SortField.STRING_FIRST);
+			return new Sort(sortField);
 		}
 		return null;//default null -> sort by score
 	}
@@ -311,12 +324,17 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 	 * @param keywords Mots clés de la recherche
 	 * @param searchedFields Liste des champs sur lesquels porte la recheche
 	 * @param listFilters Liste des filtres supplémentaires (facettes, sécurité, ...)
+	 * @param skip Nombre de résultat à sauter
+	 * @param top Nombre de résultat maximum
 	 * @param boostedField Liste des champs boostés (boost de 4 en dur)
 	 * @param dtc Liste d'origine à filtrer
 	 * @return Liste résultat
 	 */
 	@Override
 	public <D extends DtObject> DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final int skip, final int top, final Option<SortState> sortState, final Option<DtField> boostedField, final DtList<D> dtc) {
+		if (top == 0) { //like arrayList sublist implementation : accept top==0 but return empty list.
+			return new DtList<>(dtc.getDefinition());
+		}
 		try {
 			final LuceneIndex<D> index = indexList(dtc, false);
 			return this.<D> getCollection(keywords, searchedFields, listFilters, skip, top, sortState, boostedField, index);

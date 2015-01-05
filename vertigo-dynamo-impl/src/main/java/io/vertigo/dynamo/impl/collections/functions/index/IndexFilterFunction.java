@@ -30,6 +30,7 @@ import io.vertigo.lang.Option;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -40,7 +41,7 @@ import java.util.List;
 public final class IndexFilterFunction<D extends DtObject> implements DtListFunction<D> {
 
 	private String keywords;
-	private Collection<DtField> searchedFields;
+	private Collection<DtField> searchedFields = Collections.emptyList();
 	private final List<ListFilter> listFilters = new ArrayList<>();
 	private int skip = 0;
 	private int top = 250;
@@ -67,6 +68,7 @@ public final class IndexFilterFunction<D extends DtObject> implements DtListFunc
 	public void filter(final String userKeywords, final int maxRows, final Collection<DtField> keywordsSearchedFields) {
 		Assertion.checkState(keywords == null, "Keywords was already set on this processor : {0}. Only one is supported.", keywords);
 		Assertion.checkNotNull(userKeywords);
+		Assertion.checkNotNull(keywordsSearchedFields);
 		//-----
 		keywords = userKeywords;
 		top = maxRows;
@@ -79,10 +81,11 @@ public final class IndexFilterFunction<D extends DtObject> implements DtListFunc
 	 * @param fieldName Nom du champ concerné par le tri
 	 * @param desc Si tri descendant
 	 * @param nullLast Si les objets Null sont en derniers
-	 * @param ignoreCase Si on ignore la casse
 	 */
-	public void sort(final String fieldName, final boolean desc, final boolean nullLast, final boolean ignoreCase) {
-		sortState = new SortState(fieldName, desc, nullLast, ignoreCase);
+	public void sort(final String fieldName, final boolean desc, final boolean nullLast) {
+		Assertion.checkState(sortState == null, "SortState was already set on this processor : {0}. Only one is supported.", sortState);
+		//-----
+		sortState = new SortState(fieldName, desc, nullLast, true);
 	}
 
 	/**
@@ -99,6 +102,8 @@ public final class IndexFilterFunction<D extends DtObject> implements DtListFunc
 	 * @param end last index
 	 */
 	public void filterSubList(final int start, final int end) {
+		Assertion.checkArgument(start >= 0 && start <= end, "IndexOutOfBoundException, le subList n''est pas possible avec les index passés (start:{0}, end:{1})", String.valueOf(start), String.valueOf(end)); //condition tirée de la javadoc de subList sur java.util.List
+		//-----
 		skip = start;
 		top = end - start;
 	}

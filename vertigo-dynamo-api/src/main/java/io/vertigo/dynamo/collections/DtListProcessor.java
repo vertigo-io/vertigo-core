@@ -18,13 +18,11 @@
  */
 package io.vertigo.dynamo.collections;
 
-import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Option;
 
 import java.io.Serializable;
-import java.util.Collection;
 
 /**
  * Processor that can be composed of filters or sorters
@@ -50,16 +48,6 @@ public interface DtListProcessor {
 	DtListProcessor sort(final String fieldName, final boolean desc, final boolean nullLast, final boolean ignoreCase);
 
 	//=======================FILTER============================================
-	/**
-	 * Filtre une DTC par recherche plein text, ne modifie pas la collection d'origine.
-	 * (préférez le mettre comme premiere opération : pour passer en mode index)
-	 * @param keywords Liste de Mot-clé recherchés séparés par espace(préfix d'un mot)
-	 * @param maxRows Nombre max de lignes retournées
-	 * @param searchedFields Liste des champs sur lesquel porte la recherche  (nullable : tous)
-	 * @return Collection filtrée
-	 */
-	DtListProcessor filter(final String keywords, final int maxRows, final Collection<DtField> searchedFields);
-
 	/**
 	 * Constructeur d'un filtre champ = valeur.
 	 * @param fieldName Nom du champ

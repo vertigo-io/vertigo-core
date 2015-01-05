@@ -39,13 +39,19 @@ public interface CollectionsManager extends Component {
 	DtListProcessor createDtListProcessor();
 
 	/**
+	 * Filter or sort a list via a listProcessor powered by an index engine, can be composed of filters or sorters.
+	 * @return DtListIndexProcessor
+	 * @param <D> Type de l'objet de la liste
+	 */
+	<D extends DtObject> IndexDtListFunctionBuilder<D> createIndexDtListFunctionBuilder();
+
+	/**
 	 * Facettage d'une liste selon une requete.
 	 * Le facettage s'effectue en deux temps :
 	 *  - Filtrage de la liste
 	 *  - Facettage proprement dit
 	 * @param dtList Liste à facetter
 	 * @param facetedQuery Requete à appliquer (filtrage)
-	 * @param <R> Type de l'objet de la liste
 	 * @return Résultat correspondant à la requête
 	 */
 	<R extends DtObject> FacetedQueryResult<R, DtList<R>> facetList(final DtList<R> dtList, final FacetedQuery facetedQuery);
