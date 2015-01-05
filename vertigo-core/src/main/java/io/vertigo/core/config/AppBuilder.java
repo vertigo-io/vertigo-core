@@ -18,9 +18,9 @@
  */
 package io.vertigo.core.config;
 
+import io.vertigo.boot.xml.XMLModulesParser;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-import io.vertigo.xml.XMLModulesParser;
 
 import java.io.IOException;
 import java.io.InputStream;

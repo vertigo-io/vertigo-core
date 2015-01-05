@@ -18,6 +18,8 @@
  */
 package io.vertigo;
 
+import io.vertigo.boot.xml.XmlComponentsTest;
+import io.vertigo.boot.xml.XmlHomeTest;
 import io.vertigo.commons.locale.LocaleManagerTest;
 import io.vertigo.core.component.cglib.CGLIBAspectContainerTest;
 import io.vertigo.core.di.injector.InjectorTest;
@@ -35,8 +37,6 @@ import io.vertigo.util.DateQueryParserUtilTest;
 import io.vertigo.util.DateUtilTest;
 import io.vertigo.util.MapBuilderTest;
 import io.vertigo.util.StringUtilTest;
-import io.vertigo.xml.XmlComponentsTest;
-import io.vertigo.xml.XmlHomeTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -56,15 +56,16 @@ import org.junit.runners.Suite.SuiteClasses;
 		ComponentSpaceTest.class,
 		ComponentSpace2Test.class,
 		ComponentSpace3Test.class,
-		XmlHomeTest.class,
-		XmlComponentsTest.class,
 		InjectorTest.class,
 		ReactorTest.class,
-		//-----
+		//boot
+		XmlHomeTest.class,
+		XmlComponentsTest.class,
+		//lang
 		AssertionTest.class,
 		OptionTest.class,
 		TuplesTest.class,
-		//-----
+		//util
 		BeanUtilTest.class,
 		ClassUtilTest.class,
 		DateQueryParserUtilTest.class,
