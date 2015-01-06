@@ -19,6 +19,7 @@
 package io.vertigo.commons.locale;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.engines.command.TcpVCommandEngine;
 import io.vertigo.lang.MessageText;
@@ -38,17 +39,18 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 	private LocaleManager localeManager;
 
 	@Override
-	protected void configMe(final AppConfigBuilder appConfiguilder) {
+	protected AppConfig buildAppConfig() {
 		// @formatter:off
-		appConfiguilder
-		//.withRestEngine(new GrizzlyRestEngine(8080))
-		.withCommandEngine(new TcpVCommandEngine( 4406))
-		.beginModule("spaces").
-			beginComponent(LocaleManager.class, LocaleManagerImpl.class)
-				//les locales doivent être séparées par des virgules
-				.withParam("locales", "fr_FR, en , de_DE")
-			.endComponent()
-		.endModule();
+		return new AppConfigBuilder()
+			//.withRestEngine(new GrizzlyRestEngine(8080))
+			.withCommandEngine(new TcpVCommandEngine( 4406))
+			.beginModule("spaces").
+				beginComponent(LocaleManager.class, LocaleManagerImpl.class)
+					//les locales doivent être séparées par des virgules
+					.withParam("locales", "fr_FR, en , de_DE")
+				.endComponent()
+			.endModule()
+			.build();
 		// @formatter:on
 	}
 

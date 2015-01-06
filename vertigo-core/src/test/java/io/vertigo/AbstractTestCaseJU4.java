@@ -18,8 +18,9 @@
  */
 package io.vertigo;
 
+import io.vertigo.boot.xml.XMLAppConfigBuilder;
 import io.vertigo.core.Home;
-import io.vertigo.core.config.AppConfigBuilder;
+import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.lang.Component;
@@ -41,9 +42,7 @@ public abstract class AbstractTestCaseJU4 {
 	private static boolean homeStarted;
 
 	private synchronized void startHome() {
-		final AppConfigBuilder appConfigBuilder = new AppConfigBuilder();
-		configMe(appConfigBuilder);
-		Home.start(appConfigBuilder.build());
+		Home.start(buildAppConfig());
 		homeStarted = true;
 	}
 
@@ -178,9 +177,10 @@ public abstract class AbstractTestCaseJU4 {
 	/**
 	 * Configuration des tests.
 	 */
-	protected void configMe(final AppConfigBuilder appConfigBuilder) {
-		appConfigBuilder
+	protected AppConfig buildAppConfig() {
+		return new XMLAppConfigBuilder()
+				.withXmlFileNames(getClass(), getManagersXmlFileName())
 				.withSilence(true)
-				.withXmlFileNames(getClass(), getManagersXmlFileName());
+				.build();
 	}
 }
