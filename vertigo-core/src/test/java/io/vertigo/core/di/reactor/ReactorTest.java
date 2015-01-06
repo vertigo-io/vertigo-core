@@ -18,13 +18,13 @@
  */
 package io.vertigo.core.di.reactor;
 
-import io.vertigo.core.di.A;
-import io.vertigo.core.di.B;
-import io.vertigo.core.di.C;
-import io.vertigo.core.di.D;
 import io.vertigo.core.di.DIException;
-import io.vertigo.core.di.E;
-import io.vertigo.core.di.F;
+import io.vertigo.core.di.data.A;
+import io.vertigo.core.di.data.B;
+import io.vertigo.core.di.data.C;
+import io.vertigo.core.di.data.D;
+import io.vertigo.core.di.data.E;
+import io.vertigo.core.di.data.F;
 import io.vertigo.core.di.reactor.DIReactor;
 
 import java.util.HashSet;
