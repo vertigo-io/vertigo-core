@@ -19,7 +19,7 @@
 package io.vertigo.struts2.controller;
 
 import io.vertigo.dynamo.collections.CollectionsManager;
-import io.vertigo.dynamo.collections.DtListProcessor;
+import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -94,11 +94,12 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 		final Collection<DtField> searchedFields = Collections.singletonList(labelField);
 		final DtList<D> results;
 		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) { //Open a transaction because all fields are indexed. If there is a MDL it was load too.
-			final DtListProcessor fullTextFilter = collectionsManager.createDtListProcessor()
-					.filter(searchString != null ? searchString : "", 20, searchedFields);
+			final DtListFunction<D> fullTextFilter = collectionsManager.<D> createIndexDtListFunctionBuilder()
+					.filter(searchString != null ? searchString : "", 20, searchedFields)
+					.build();
 			results = fullTextFilter.apply(list);
 		}
-		return createAjaxResponseBuilder() 
+		return createAjaxResponseBuilder()
 				.withJson(toJson(results, keyField, labelField))
 				.send();
 	}
