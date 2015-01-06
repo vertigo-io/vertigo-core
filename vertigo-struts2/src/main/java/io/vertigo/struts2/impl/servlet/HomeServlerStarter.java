@@ -18,8 +18,8 @@
  */
 package io.vertigo.struts2.impl.servlet;
 
+import io.vertigo.boot.xml.XMLAppConfigBuilder;
 import io.vertigo.core.Home;
-import io.vertigo.core.config.AppBuilder;
 import io.vertigo.struts2.plugins.config.servlet.WebAppContextConfigPlugin;
 import io.vertigo.struts2.plugins.resource.servlet.ServletResourceResolverPlugin;
 
@@ -57,7 +57,7 @@ final class HomeServlerStarter {
 			WebAppContextConfigPlugin.setInitConfig(conf);
 
 			// Initialisation de l'état de l'application
-			Home.start(new AppBuilder().withEnvParams(conf).build());
+			Home.start(new XMLAppConfigBuilder().withEnvParams(conf).build());
 
 			servletListener.onServletStart(getClass().getName());
 		} catch (final Throwable t) {
