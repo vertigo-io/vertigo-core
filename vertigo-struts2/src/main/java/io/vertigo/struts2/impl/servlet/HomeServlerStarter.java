@@ -39,6 +39,7 @@ import org.apache.log4j.Logger;
 final class HomeServlerStarter {
 	private static final Logger LOG = Logger.getLogger(HomeServlerStarter.class);
 
+	private static final String BOOT_PROPERTIES_PREFIX = "boot.";
 	private static final String EXTERNAL_PROPERTIES_PARAM_NAME = "external-properties";
 
 	/** clés dans le fichier Web.xml */
@@ -89,9 +90,13 @@ final class HomeServlerStarter {
 		 */
 		for (final Enumeration<String> enumeration = servletContext.getInitParameterNames(); enumeration.hasMoreElements();) {
 			name = enumeration.nextElement();
-			servletParams.put(name, servletContext.getInitParameter(name));
+			if (name.startsWith(BOOT_PROPERTIES_PREFIX)) {
+				servletParams.put(name, servletContext.getInitParameter(name));
+			}
 		}
-
+		if (servletParams.isEmpty()) {
+			LOG.warn("None parameters had been loaded from servletcontext. Check they all have the prefix : " + BOOT_PROPERTIES_PREFIX);
+		}
 		/*
 		 * On récupère les paramètres du fichier de configuration externe (-Dexternal-properties). Ces paramètres
 		 * peuvent surcharger les paramètres de la servlet de façon à créer un paramétrage adhoc de développement par
