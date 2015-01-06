@@ -16,33 +16,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.config;
+package io.vertigo.core.aop.data.components;
 
-import io.vertigo.boot.xml.XMLAppConfigBuilder;
-import io.vertigo.core.Home;
-import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.spaces.component.data.BioManager;
+import io.vertigo.lang.Activeable;
 
-import org.junit.Assert;
-import org.junit.Test;
+import javax.inject.Named;
 
-public final class AppConfigTest {
-	@Test
-	public void HomeTest() {
+/**
+ * @author prahmoune
+ */
+@Named("c")
+public class C implements Activeable {
+	private boolean initialized;
+	private boolean finalized;
 
-		final AppConfig appConfig = new XMLAppConfigBuilder()
-				.withSilence(false)
-				.withXmlFileNames(getClass(), "bio.xml")
-				.build();
+	public boolean isInitialized() {
+		return initialized;
+	}
 
-		Home.start(appConfig);
-		try {
-			final BioManager bioManager = Home.getComponentSpace().resolve(BioManager.class);
-			final int res = bioManager.add(1, 2, 3);
-			Assert.assertEquals(366, res);
-			Assert.assertTrue(bioManager.isActive());
-		} finally {
-			Home.stop();
-		}
+	public boolean isFinalized() {
+		return finalized;
+	}
+
+	@Override
+	public void start() {
+		initialized = true;
+	}
+
+	@Override
+	public void stop() {
+		finalized = true;
 	}
 }

@@ -16,33 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.config;
+package io.vertigo.core.spaces.component.data;
 
-import io.vertigo.boot.xml.XMLAppConfigBuilder;
-import io.vertigo.core.Home;
-import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.spaces.component.data.BioManager;
+import io.vertigo.lang.Component;
 
-import org.junit.Assert;
-import org.junit.Test;
+public interface BioManager extends Component {
+	int add(int... a);
 
-public final class AppConfigTest {
-	@Test
-	public void HomeTest() {
-
-		final AppConfig appConfig = new XMLAppConfigBuilder()
-				.withSilence(false)
-				.withXmlFileNames(getClass(), "bio.xml")
-				.build();
-
-		Home.start(appConfig);
-		try {
-			final BioManager bioManager = Home.getComponentSpace().resolve(BioManager.class);
-			final int res = bioManager.add(1, 2, 3);
-			Assert.assertEquals(366, res);
-			Assert.assertTrue(bioManager.isActive());
-		} finally {
-			Home.stop();
-		}
-	}
+	boolean isActive();
 }

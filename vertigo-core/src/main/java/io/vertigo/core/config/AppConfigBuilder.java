@@ -38,7 +38,7 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	private final List<ModuleConfig> myModuleConfigs = new ArrayList<>();
 	private Option<LogConfig> myLogConfigOption = Option.none(); //par défaut
 	private boolean mySilence;
-	private AopEngine myAopEngine = new CGLIBAopEngine();
+	private AopEngine myAopEngine = new CGLIBAopEngine(); //By default
 	private ElasticaEngine myElasticaEngine = null; //par défaut pas d'elasticité.
 	private VCommandEngine myCommandEngine = null; // new VCommandEngineImpl(jsonEngine, VCommandEngine.DEFAULT_PORT); //Par défaut
 
@@ -77,6 +77,7 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 
 	public AppConfigBuilder withCommandEngine(final VCommandEngine commandEngine) {
 		Assertion.checkNotNull(commandEngine);
+		Assertion.checkState(this.myCommandEngine == null, "commandEngine is already completed");
 		//-----
 		this.myCommandEngine = commandEngine;
 		return this;
@@ -84,7 +85,7 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 
 	public AppConfigBuilder withElasticaEngine(final ElasticaEngine elasticaEngine) {
 		Assertion.checkNotNull(elasticaEngine);
-		Assertion.checkState(this.myElasticaEngine == null, "elasticaEngine is alreday completed");
+		Assertion.checkState(this.myElasticaEngine == null, "elasticaEngine is already completed");
 		//-----
 		this.myElasticaEngine = elasticaEngine;
 		return this;

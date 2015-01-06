@@ -16,33 +16,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.config;
+package io.vertigo.core.aop.data.components;
 
-import io.vertigo.boot.xml.XMLAppConfigBuilder;
-import io.vertigo.core.Home;
-import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.spaces.component.data.BioManager;
+import io.vertigo.core.aop.data.aspects.OneMore;
+import io.vertigo.core.aop.data.aspects.TenMore;
 
-import org.junit.Assert;
-import org.junit.Test;
+import javax.inject.Named;
 
-public final class AppConfigTest {
-	@Test
-	public void HomeTest() {
+/**
+ * @author prahmoune
+ */
+@Named("computer")
+public class ComputerImpl implements Computer {
 
-		final AppConfig appConfig = new XMLAppConfigBuilder()
-				.withSilence(false)
-				.withXmlFileNames(getClass(), "bio.xml")
-				.build();
+	/**
+	 * On ajoute un Modifier AOP pour fausser le calcul !
+	 */
+	@Override
+	@OneMore
+	public int sum(final int i, final int j) {
+		return i + j;
+	}
 
-		Home.start(appConfig);
-		try {
-			final BioManager bioManager = Home.getComponentSpace().resolve(BioManager.class);
-			final int res = bioManager.add(1, 2, 3);
-			Assert.assertEquals(366, res);
-			Assert.assertTrue(bioManager.isActive());
-		} finally {
-			Home.stop();
-		}
+	@Override
+	@TenMore
+	@OneMore
+	public int multi(final int i, final int j) {
+		return i * j;
+	}
+
+	@Override
+	public int no(final int i) {
+		return i;
 	}
 }

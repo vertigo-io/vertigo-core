@@ -16,33 +16,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.config;
+package io.vertigo.core.aop.data.components;
 
-import io.vertigo.boot.xml.XMLAppConfigBuilder;
-import io.vertigo.core.Home;
-import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.spaces.component.data.BioManager;
+import io.vertigo.core.aop.data.MyException;
 
-import org.junit.Assert;
-import org.junit.Test;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Named;
 
-public final class AppConfigTest {
-	@Test
-	public void HomeTest() {
+/**
+ * @author prahmoune
+ */
+@Named("a")
+public class A {
+	boolean initialized;
+	boolean finalized;
 
-		final AppConfig appConfig = new XMLAppConfigBuilder()
-				.withSilence(false)
-				.withXmlFileNames(getClass(), "bio.xml")
-				.build();
+	public boolean isInitialized() {
+		return initialized;
+	}
 
-		Home.start(appConfig);
-		try {
-			final BioManager bioManager = Home.getComponentSpace().resolve(BioManager.class);
-			final int res = bioManager.add(1, 2, 3);
-			Assert.assertEquals(366, res);
-			Assert.assertTrue(bioManager.isActive());
-		} finally {
-			Home.stop();
-		}
+	public boolean isFinalized() {
+		return finalized;
+	}
+
+	@PostConstruct
+	public void init() {
+		initialized = true;
+	}
+
+	@PreDestroy
+	public void destroy() {
+		finalized = true;
+	}
+
+	public void throwMyException() throws MyException {
+		throw new MyException();
 	}
 }

@@ -2,16 +2,16 @@
 <config>
 	<module name="aspects" >
 		<!-- Aspects declaration -->
-		<aspect class="io.vertigo.core.component.mock.aop.OneMoreAspect" />
-		<aspect class="io.vertigo.core.component.mock.aop.TenMoreAspect" />
+		<aspect class="io.vertigo.core.aop.data.aspects.OneMoreAspect" />
+		<aspect class="io.vertigo.core.aop.data.aspects.TenMoreAspect" />
 	</module>
 
 	<module name="components" api="false" inheritance="java.lang.Object">
 		<!-- Components declaration -->
-		<component class="io.vertigo.core.component.mock.ComputerImpl" />
-		<component class="io.vertigo.core.component.mock.A" />
-		<component class="io.vertigo.core.component.mock.BImpl" />
-		<component class="io.vertigo.core.component.mock.C" />
-		<component class="io.vertigo.core.component.mock.F" />
+		<component class="io.vertigo.core.aop.data.components.ComputerImpl" />
+		<component class="io.vertigo.core.aop.data.components.A" />
+		<component class="io.vertigo.core.aop.data.components.BImpl" />
+		<component class="io.vertigo.core.aop.data.components.C" />
+		<component class="io.vertigo.core.aop.data.components.F" />
 	</module>
 </config>

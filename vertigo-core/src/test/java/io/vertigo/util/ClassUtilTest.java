@@ -235,6 +235,13 @@ public final class ClassUtilTest {
 	}
 
 	@Test
+	public void testMethodParameterGeneric() throws NoSuchMethodException, SecurityException {
+		final Method method = MyGenerics.class.getMethod("setOption", Option.class);
+		//---
+		Assert.assertEquals(Long.class, ClassUtil.getGeneric(method, 0));
+	}
+
+	@Test
 	public void testConstructorParameterGeneric() throws NoSuchMethodException, SecurityException {
 		final Constructor<MyGenerics> constructor = MyGenerics.class.getConstructor(Option.class, List.class, List.class, List.class);
 		//---
@@ -373,6 +380,10 @@ public final class ClassUtilTest {
 
 		public MyGenerics(final Option<Long> myOption, final List<Long> myList, final List<?> myList2, final List<Map<?, ?>> myList3) {
 			//rien
+		}
+
+		public void setOption(final Option<Long> option) {
+			myOption = option;
 		}
 	}
 

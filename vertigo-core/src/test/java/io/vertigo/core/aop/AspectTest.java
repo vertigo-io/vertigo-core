@@ -20,12 +20,12 @@ package io.vertigo.core.aop;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
-import io.vertigo.core.component.mock.A;
-import io.vertigo.core.component.mock.B;
-import io.vertigo.core.component.mock.C;
-import io.vertigo.core.component.mock.Computer;
-import io.vertigo.core.component.mock.F;
-import io.vertigo.core.component.mock.MyException;
+import io.vertigo.core.aop.data.MyException;
+import io.vertigo.core.aop.data.components.A;
+import io.vertigo.core.aop.data.components.B;
+import io.vertigo.core.aop.data.components.C;
+import io.vertigo.core.aop.data.components.Computer;
+import io.vertigo.core.aop.data.components.F;
 
 import org.junit.Assert;
 import org.junit.Test;

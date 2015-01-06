@@ -16,33 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.config;
+package io.vertigo.core.aop.data;
 
-import io.vertigo.boot.xml.XMLAppConfigBuilder;
-import io.vertigo.core.Home;
-import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.spaces.component.data.BioManager;
+/**
+ * @author prahmoune
+ */
+public class MyException extends Exception {
 
-import org.junit.Assert;
-import org.junit.Test;
+	private static final long serialVersionUID = 5924343359294722683L;
 
-public final class AppConfigTest {
-	@Test
-	public void HomeTest() {
-
-		final AppConfig appConfig = new XMLAppConfigBuilder()
-				.withSilence(false)
-				.withXmlFileNames(getClass(), "bio.xml")
-				.build();
-
-		Home.start(appConfig);
-		try {
-			final BioManager bioManager = Home.getComponentSpace().resolve(BioManager.class);
-			final int res = bioManager.add(1, 2, 3);
-			Assert.assertEquals(366, res);
-			Assert.assertTrue(bioManager.isActive());
-		} finally {
-			Home.stop();
-		}
+	public MyException() {
+		super();
 	}
 }
