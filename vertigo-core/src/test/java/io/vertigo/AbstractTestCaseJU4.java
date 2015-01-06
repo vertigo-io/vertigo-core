@@ -20,6 +20,7 @@ package io.vertigo;
 
 import io.vertigo.boot.xml.XMLAppConfigBuilder;
 import io.vertigo.core.Home;
+import io.vertigo.core.Home.App;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.core.spaces.component.ComponentInfo;
@@ -39,16 +40,15 @@ import org.junit.Before;
  * @author jmforhan
  */
 public abstract class AbstractTestCaseJU4 {
-	private static boolean homeStarted;
+	private static App app;
 
 	private synchronized void startHome() {
-		Home.start(buildAppConfig());
-		homeStarted = true;
+		app = Home.start(buildAppConfig());
 	}
 
 	private synchronized void stopHome() {
-		Home.stop();
-		homeStarted = false;
+		app.close();
+		app = null;
 	}
 
 	/**
@@ -57,7 +57,7 @@ public abstract class AbstractTestCaseJU4 {
 	 * @return valeur de homeStarted
 	 */
 	private static synchronized boolean isHomeStarted() {
-		return homeStarted;
+		return app != null;
 	}
 
 	/**

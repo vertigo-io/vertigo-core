@@ -19,6 +19,7 @@
 package io.vertigo.core.spaces.component;
 
 import io.vertigo.core.Home;
+import io.vertigo.core.Home.App;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.LogConfig;
@@ -52,14 +53,11 @@ public final class ComponentSpaceTest {
 		.build();
 		// @formatter:on
 
-		Home.start(appConfig);
-		try {
+		try (App app = Home.start(appConfig)) {
 			final BioManager bioManager = Home.getComponentSpace().resolve(BioManager.class);
 			final int res = bioManager.add(1, 2, 3);
 			Assert.assertEquals(366, res);
 			Assert.assertTrue(bioManager.isActive());
-		} finally {
-			Home.stop();
 		}
 	}
 
@@ -84,11 +82,8 @@ public final class ComponentSpaceTest {
 		.build();
 		// @formatter:on
 
-		Home.start(appConfig);
-		try {
+		try (App app = Home.start(appConfig)) {
 			//
-		} finally {
-			Home.stop();
 		}
 	}
 
@@ -113,11 +108,8 @@ public final class ComponentSpaceTest {
 		.build();
 		// @formatter:on
 
-		Home.start(appConfig);
-		try {
+		try (App app = Home.start(appConfig)) {
 			//
-		} finally {
-			Home.stop();
 		}
 	}
 }

@@ -19,6 +19,7 @@
 package io.vertigo.core.spaces.component;
 
 import io.vertigo.core.Home;
+import io.vertigo.core.Home.App;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.LogConfig;
@@ -34,8 +35,8 @@ public final class ComponentSpace3Test {
 
 	@Test
 	public void testInjectPluginsAttribute() {
-		createHomeWithInjectPluginsAttribute(true);
-		try {
+		final AppConfig appConfig = createHomeWithInjectPluginsAttribute(true);
+		try (App app = Home.start(appConfig)) {
 			final FunctionManager functionManager = Home.getComponentSpace().resolve(FunctionManager.class);
 			Assert.assertEquals(4, functionManager.compute("x+1", 3));
 			Assert.assertEquals(6, functionManager.compute("2x", 3));
@@ -43,28 +44,22 @@ public final class ComponentSpace3Test {
 			Assert.assertEquals(1, functionManager.compute("0x+1", 3));
 			Assert.assertEquals(-7, functionManager.compute("x-10", 3));
 			Assert.assertEquals(-9, functionManager.computeAll(3));
-
-		} finally {
-			Home.stop();
 		}
 	}
 
 	@Test
 	public void testInjectPluginsAttributeOrder() {
-		createHomeWithInjectPluginsAttribute(false);
-		try {
+		final AppConfig appConfig = createHomeWithInjectPluginsAttribute(false);
+		try (App app = Home.start(appConfig)) {
 			final FunctionManager functionManager = Home.getComponentSpace().resolve(FunctionManager.class);
 			Assert.assertEquals(26, functionManager.computeAll(3));
-
-		} finally {
-			Home.stop();
 		}
 	}
 
 	@Test
 	public void testInjectPluginsConstructor() {
-		createHomeWithInjectPluginsConstructor(true);
-		try {
+		final AppConfig appConfig = createHomeWithInjectPluginsConstructor(true);
+		try (App app = Home.start(appConfig)) {
 			final FunctionManager functionManager = Home.getComponentSpace().resolve(FunctionManager.class);
 			Assert.assertEquals(4, functionManager.compute("x+1", 3));
 			Assert.assertEquals(6, functionManager.compute("2x", 3));
@@ -72,33 +67,29 @@ public final class ComponentSpace3Test {
 			Assert.assertEquals(1, functionManager.compute("0x+1", 3));
 			Assert.assertEquals(-7, functionManager.compute("x-10", 3));
 			Assert.assertEquals(-9, functionManager.computeAll(3));
-		} finally {
-			Home.stop();
 		}
 	}
 
 	@Test
 	public void testInjectPluginsConstructorOrder() {
-		createHomeWithInjectPluginsConstructor(false);
-		try {
+		final AppConfig appConfig = createHomeWithInjectPluginsConstructor(false);
+		try (App app = Home.start(appConfig)) {
 			final FunctionManager functionManager = Home.getComponentSpace().resolve(FunctionManager.class);
 			Assert.assertEquals(26, functionManager.computeAll(3));
-		} finally {
-			Home.stop();
 		}
 	}
 
-	private void createHomeWithInjectPluginsAttribute(final boolean withNullMult) {
-		startHomeWithFunctionManager(FunctionManager1Impl.class, withNullMult);
+	private AppConfig createHomeWithInjectPluginsAttribute(final boolean withNullMult) {
+		return startHomeWithFunctionManager(FunctionManager1Impl.class, withNullMult);
 	}
 
-	private void createHomeWithInjectPluginsConstructor(final boolean withNullMult) {
-		startHomeWithFunctionManager(FunctionManager2Impl.class, withNullMult);
+	private AppConfig createHomeWithInjectPluginsConstructor(final boolean withNullMult) {
+		return startHomeWithFunctionManager(FunctionManager2Impl.class, withNullMult);
 	}
 
-	private void startHomeWithFunctionManager(final Class<? extends FunctionManager> implClass, final boolean withNullMult) {
+	private static AppConfig startHomeWithFunctionManager(final Class<? extends FunctionManager> implClass, final boolean withNullMult) {
 		// @formatter:off
-		final AppConfig appConfig = new AppConfigBuilder()
+		return  new AppConfigBuilder()
 			.withLogConfig(new LogConfig("/log4j.xml"))
 			.withSilence(false)
 			.beginModule("Function")
@@ -132,7 +123,5 @@ public final class ComponentSpace3Test {
 			.endModule()
 		.build();
 		// @formatter:on
-
-		Home.start(appConfig);
 	}
 }

@@ -20,7 +20,7 @@ package io.vertigo.core.config;
 
 import io.vertigo.boot.xml.XMLAppConfigBuilder;
 import io.vertigo.core.Home;
-import io.vertigo.core.config.AppConfig;
+import io.vertigo.core.Home.App;
 import io.vertigo.core.spaces.component.data.BioManager;
 
 import org.junit.Assert;
@@ -35,14 +35,11 @@ public final class AppConfigTest {
 				.withXmlFileNames(getClass(), "bio.xml")
 				.build();
 
-		Home.start(appConfig);
-		try {
+		try (App app = Home.start(appConfig)) {
 			final BioManager bioManager = Home.getComponentSpace().resolve(BioManager.class);
 			final int res = bioManager.add(1, 2, 3);
 			Assert.assertEquals(366, res);
 			Assert.assertTrue(bioManager.isActive());
-		} finally {
-			Home.stop();
 		}
 	}
 }

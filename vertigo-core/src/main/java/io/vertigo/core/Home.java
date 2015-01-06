@@ -45,8 +45,35 @@ import org.apache.log4j.xml.DOMConfigurator;
  * @author pchretien
  */
 public final class Home {
-	//Start Date in milliseconds : used to have 'uptime'
-	private static long start = -1;
+	public static final class App implements AutoCloseable {
+		//Start Date in milliseconds : used to have 'uptime'
+		private final long start = System.currentTimeMillis();
+		private final AppConfig appConfig;
+
+		private App(final AppConfig appConfig) {
+			Assertion.checkNotNull(appConfig);
+			//-----
+			this.appConfig = appConfig;
+		}
+
+		@Override
+		public void close() {
+			Home.stop();
+		}
+
+		/**
+		 * @return Start Date in milliseconds
+		 */
+		public long getStartDate() {
+			return start;
+		}
+
+		public AppConfig getConfig() {
+			return appConfig;
+		}
+
+	}
+
 	private static final Home INSTANCE = new Home();
 
 	private static enum State {
@@ -62,11 +89,11 @@ public final class Home {
 		FAIL
 	}
 
+	private App app = null;
 	private State state = State.INACTIVE;
 
 	private final DefinitionSpace definitionSpace = new DefinitionSpace();
 	private ComponentSpace componentSpace = ComponentSpace.EMPTY;
-	private AppConfig MyAppConfig;
 
 	private Home() {
 		// Classe statique d'accès aux composants.
@@ -79,12 +106,13 @@ public final class Home {
 	 * Démarrage de l'application.
 	 * @param appConfig AppConfig
 	 */
-	public static void start(final AppConfig appConfig) {
-		INSTANCE.doStart(appConfig);
+	public static App start(final AppConfig appConfig) {
+		return INSTANCE.doStart(appConfig);
 	}
 
-	public static AppConfig getAppConfig() {
-		return INSTANCE.MyAppConfig;
+	public static App getApp() {
+		Assertion.checkNotNull(INSTANCE.app, "app has not been started");
+		return INSTANCE.app;
 	}
 
 	/**
@@ -95,13 +123,6 @@ public final class Home {
 		if (INSTANCE.state != State.INACTIVE) {
 			INSTANCE.doStop(State.ACTIVE);
 		}
-	}
-
-	/**
-	 * @return Start Date in milliseconds
-	 */
-	public static long getStartDate() {
-		return start;
 	}
 
 	/**
@@ -121,11 +142,11 @@ public final class Home {
 	//=========================================================================
 	//=============================Méthods privées=============================
 	//=========================================================================
-	private void doStart(final AppConfig appConfig) {
+	private App doStart(final AppConfig appConfig) {
 		Assertion.checkNotNull(appConfig);
 		//-----
 		change(State.INACTIVE, State.starting);
-		MyAppConfig = appConfig;
+		this.app = new App(appConfig);
 		try {
 			Assertion.checkState(definitionSpace.isEmpty(), "DefinitionSpace must be empty");
 			//---
@@ -149,7 +170,7 @@ public final class Home {
 		}
 		change(State.starting, State.ACTIVE);
 		//---
-		start = System.currentTimeMillis();
+		return app;
 	}
 
 	private DefinitionSpace doGetDefinitionSpace() {
@@ -166,13 +187,15 @@ public final class Home {
 		try {
 			definitionSpace.clear();
 			componentSpace.stop();
+			// L'arrét s'est bien déroulé.
+			change(State.stopping, State.INACTIVE);
 		} catch (final Throwable t) {
 			//Quel que soit l'état, on part en échec de l'arrét.
 			state = State.FAIL;
 			throw new RuntimeException("an error occured when stopping", t);
+		} finally {
+			app = null;
 		}
-		// L'arrét s'est bien déroulé.
-		INSTANCE.change(State.stopping, State.INACTIVE);
 	}
 
 	private ComponentSpace doGetComponentSpace() {
