@@ -28,8 +28,6 @@ import io.vertigo.lang.Plugin;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.ListBuilder;
 
-import java.util.Properties;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -41,16 +39,16 @@ final class XMLModulesHandler extends DefaultHandler {
 	private ComponentConfigBuilder componentConfigBuilder;
 	private PluginConfigBuilder pluginConfigBuilder;
 	//Global Params
-	private final Properties properties;
+	private final XMLParams params;
 	//We are populating moduleConfigs during parsing
 	private final ListBuilder<ModuleConfig> moduleConfigsBuilder;
 
-	XMLModulesHandler(final ListBuilder<ModuleConfig> moduleConfigsBuilder, final Properties properties) {
+	XMLModulesHandler(final ListBuilder<ModuleConfig> moduleConfigsBuilder, final XMLParams params) {
 		Assertion.checkNotNull(moduleConfigsBuilder);
-		Assertion.checkNotNull(properties);
+		Assertion.checkNotNull(params);
 		//-----
 		this.moduleConfigsBuilder = moduleConfigsBuilder;
-		this.properties = properties;
+		this.params = params;
 	}
 
 	enum TagName {
@@ -132,15 +130,15 @@ final class XMLModulesHandler extends DefaultHandler {
 			case resource:
 				final String resourceType = attrs.getValue("type");
 				final String resourcePath = attrs.getValue("path");
-				moduleConfigBuilder.withResource(resourceType, evalParamValue(properties, resourcePath));
+				moduleConfigBuilder.withResource(resourceType, evalParamValue(resourcePath));
 				break;
 			case param:
 				final String paramName = attrs.getValue("name");
 				final String paramValue = attrs.getValue("value");
 				if (current == TagName.plugin) {
-					pluginConfigBuilder.withParam(paramName, evalParamValue(properties, paramValue));
+					pluginConfigBuilder.withParam(paramName, evalParamValue(paramValue));
 				} else {
-					componentConfigBuilder.withParam(paramName, evalParamValue(properties, paramValue));
+					componentConfigBuilder.withParam(paramName, evalParamValue(paramValue));
 				}
 				break;
 			case aspect:
@@ -167,9 +165,9 @@ final class XMLModulesHandler extends DefaultHandler {
 		return found;
 	}
 
-	private static String evalParamValue(final Properties properties, final String paramValue) {
+	private String evalParamValue(final String paramValue) {
 		if (paramValue.startsWith("{") && paramValue.endsWith("}")) {
-			return properties.getProperty(paramValue.substring(1, paramValue.length() - 1));
+			return params.getParam(paramValue.substring(1, paramValue.length() - 1));
 		}
 		return paramValue;
 	}

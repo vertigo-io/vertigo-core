@@ -18,9 +18,9 @@
  */
 package io.vertigo.studio.tools;
 
+import io.vertigo.boot.xml.XMLAppConfigBuilder;
 import io.vertigo.core.Home;
 import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.studio.tools.generate.GenerateGoal;
 import io.vertigo.util.ClassUtil;
 
@@ -53,7 +53,8 @@ public final class NameSpace2Java {
 		}
 		//-----
 		final Properties properties = loadProperties(args[0], NameSpace2Java.class);
-		final AppConfig appConfig = new AppConfigBuilder()
+
+		final AppConfig appConfig = new XMLAppConfigBuilder()
 				.withSilence(true)
 				.withEnvParams(properties)
 				.build();

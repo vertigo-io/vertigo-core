@@ -26,6 +26,7 @@ import io.vertigo.commons.impl.resource.ResourceManagerImpl;
 import io.vertigo.commons.plugins.config.xml.XmlConfigPlugin;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.commons.resource.ResourceManager;
+import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 
 import javax.inject.Inject;
@@ -41,19 +42,20 @@ public final class XmlConfigManagerTest extends AbstractTestCaseJU4 {
 	private ConfigManager configManager;
 
 	@Override
-	protected void configMe(final AppConfigBuilder appConfiguilder) {
+	protected AppConfig buildAppConfig() {
 		//@formatter:off
-		appConfiguilder
-		.beginModule("vertigo").
-			beginComponent(ResourceManager.class, ResourceManagerImpl.class)
-				.beginPlugin(ClassPathResourceResolverPlugin.class).endPlugin()
-			.endComponent()
-			.beginComponent(ConfigManager.class, ConfigManagerImpl.class)
-				.beginPlugin( XmlConfigPlugin.class)
-					.withParam("url", "io/vertigo/commons/config/xml/basic-app-config.xml")
-				.endPlugin()
-			.endComponent()
-		.endModule();
+		return new AppConfigBuilder()
+			.beginModule("vertigo").
+				beginComponent(ResourceManager.class, ResourceManagerImpl.class)
+					.beginPlugin(ClassPathResourceResolverPlugin.class).endPlugin()
+				.endComponent()
+				.beginComponent(ConfigManager.class, ConfigManagerImpl.class)
+					.beginPlugin( XmlConfigPlugin.class)
+						.withParam("url", "io/vertigo/commons/config/xml/basic-app-config.xml")
+					.endPlugin()
+				.endComponent()
+			.endModule()
+			.build();
 		// @formatter:on
 	}
 

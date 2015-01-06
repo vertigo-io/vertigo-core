@@ -18,7 +18,6 @@
  */
 package io.vertigo.core.config;
 
-import io.vertigo.boot.xml.XMLModulesParser;
 import io.vertigo.core.engines.AopEngine;
 import io.vertigo.core.engines.ElasticaEngine;
 import io.vertigo.core.engines.VCommandEngine;
@@ -27,11 +26,8 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Option;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * Configuration.
@@ -39,9 +35,6 @@ import java.util.Properties;
  * @author npiedeloup, pchretien
  */
 public final class AppConfigBuilder implements Builder<AppConfig> {
-	private final Properties myEnvParams = new Properties();
-	private final List<URL> xmlUrls = new ArrayList<>();
-
 	private final List<ModuleConfig> myModuleConfigs = new ArrayList<>();
 	private Option<LogConfig> myLogConfigOption = Option.none(); //par défaut
 	private boolean mySilence;
@@ -114,51 +107,11 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	}
 
 	/**
-	 * Append EnvParams.
-	 * @param envParams envParams
-	 * @return this builder
-	 */
-	public AppConfigBuilder withEnvParams(final Properties envParams) {
-		Assertion.checkNotNull(envParams);
-		//-----
-		myEnvParams.putAll(envParams);
-		return this;
-	}
-
-	/**
-	 * Append XmlFiles.
-	 * @param relativeRootClass Class use for relative path
-	 * @param xmlFileNames Multiple xmlFileName
-	 * @return this builder
-	 */
-	public AppConfigBuilder withXmlFileNames(final Class<?> relativeRootClass, final String... xmlFileNames) {
-		for (final String xmlFileName : xmlFileNames) {
-			final URL xmlUrl = createURL(xmlFileName, relativeRootClass);
-			xmlUrls.add(xmlUrl);
-		}
-		return this;
-	}
-
-	/**
 	 * Update the 'already set' componentSpaceConfigBuilder and return it.
 	 * @return ComponentSpaceConfigBuilder
 	 */
 	@Override
 	public AppConfig build() {
-		//1- if no xmlUrls we check if a property reference files
-		final String xmlFileNames = myEnvParams.getProperty("applicationConfiguration");
-		if (xmlFileNames != null) {
-			//Assertion.checkNotNull(xmlFileNames, "'applicationConfiguration' property not found in EnvironmentParams");
-			final String[] xmlFileNamesSplit = xmlFileNames.split(";");
-			withXmlFileNames(getClass(), xmlFileNamesSplit);
-		}
-		//-----
-		//2- We load XML with parser to obtain all the moduleConfigs
-		final XMLModulesParser parser = new XMLModulesParser(myEnvParams);
-		for (final URL xmlUrl : xmlUrls) {
-			withModules(parser.parse(xmlUrl));
-		}
-		//Assertion.checkArgument(!myModuleConfigs.isEmpty(), "We need at least one Xml file");
 		return new AppConfig(myLogConfigOption,
 				myModuleConfigs,
 				myAopEngine,
@@ -167,22 +120,4 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 				mySilence);
 	}
 
-	/**
-	 * Retourne l'URL correspondant au nom du fichier dans le classPath.
-	 *
-	 * @param fileName Nom du fichier
-	 * @return URN non null
-	 */
-	private static URL createURL(final String fileName, final Class<?> relativeRootClass) {
-		Assertion.checkArgNotEmpty(fileName);
-		//-----
-		try {
-			return new URL(fileName);
-		} catch (final MalformedURLException e) {
-			//Si fileName non trouvé, on recherche dans le classPath
-			final URL url = relativeRootClass.getResource(fileName);
-			Assertion.checkNotNull(url, "Impossible de récupérer le fichier [" + fileName + "]");
-			return url;
-		}
-	}
 }

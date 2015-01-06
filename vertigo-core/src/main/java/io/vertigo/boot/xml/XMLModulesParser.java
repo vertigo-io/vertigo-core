@@ -26,6 +26,7 @@ import io.vertigo.util.XMLUtil;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -39,22 +40,35 @@ import org.xml.sax.SAXException;
  * Parser XML du paramétrage de l'application.
  * @author npiedeloup, pchretien
  */
-public final class XMLModulesParser {
-	private final Properties properties;
+final class XMLModulesParser {
 
-	/**
-	 * Builder de HomeConfig à partir d'une description XML et d'un fichier de propriétés.
-	 */
-	public XMLModulesParser(final Properties properties) {
-		Assertion.checkNotNull(properties);
-		//-----
-		this.properties = properties;
+	private XMLModulesParser() {
+		//
 	}
 
-	public List<ModuleConfig> parse(final URL managersURL) {
+	/**
+	 * Parser à partir d'une description XML et d'un fichier de propriétés.
+	 */
+	static List<ModuleConfig> parseAll(final Properties properties, final List<URL> managersURLs) {
+		Assertion.checkNotNull(managersURLs);
+		Assertion.checkNotNull(properties);
+		//-----
+		final XMLParams params = new XMLParams(properties);
+		final List<ModuleConfig> moduleConfigs = new ArrayList<>();
+		for (final URL managersURL : managersURLs) {
+			moduleConfigs.addAll(parse(managersURL, params));
+		}
+		//-----
+		Assertion.checkArgument(params.unreadProperties().isEmpty(), "Some properties are unused {0}", params.unreadProperties());
+		//-----
+		return moduleConfigs;
+	}
+
+	private static List<ModuleConfig> parse(final URL managersURL, final XMLParams params) {
+		Assertion.checkNotNull(managersURL);
 		//-----
 		try {
-			return doParse(managersURL);
+			return doParse(managersURL, params);
 		} catch (final ParserConfigurationException pce) {
 			throw new RuntimeException("Erreur de configuration du parseur (fichier " + managersURL.getPath() + "), lors de l'appel à newSAXParser()", pce);
 		} catch (final SAXException se) {
@@ -64,20 +78,19 @@ public final class XMLModulesParser {
 		}
 	}
 
-	private List<ModuleConfig> doParse(final URL managersURL) throws ParserConfigurationException, SAXException, IOException {
+	private static List<ModuleConfig> doParse(final URL managersURL, final XMLParams params) throws ParserConfigurationException, SAXException, IOException {
 		//---validation XSD
 		final URL xsd = XMLModulesParser.class.getResource("vertigo_1_0.xsd");
 		XMLUtil.validateXmlByXsd(managersURL, xsd);
 		//---fin validation XSD
 
 		final ListBuilder<ModuleConfig> moduleConfigsBuilder = new ListBuilder<>();
-		final XMLModulesHandler handler = new XMLModulesHandler(moduleConfigsBuilder, properties);
+		final XMLModulesHandler handler = new XMLModulesHandler(moduleConfigsBuilder, params);
 		final SAXParserFactory factory = SAXParserFactory.newInstance();
 
 		final SAXParser saxParser = factory.newSAXParser();
 		saxParser.parse(new BufferedInputStream(managersURL.openStream()), handler);
 
 		return moduleConfigsBuilder.unmodifiable().build();
-
 	}
 }

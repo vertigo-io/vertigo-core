@@ -20,6 +20,7 @@ package io.vertigo.commons.codec;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
+import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 
 import javax.inject.Inject;
@@ -39,12 +40,13 @@ public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends
 	private CodecManager codecManager;
 
 	@Override
-	protected void configMe(final AppConfigBuilder appConfigBuilder) {
+	protected AppConfig buildAppConfig() {
 		// @formatter:off
-		appConfigBuilder
+		return new AppConfigBuilder()
 			.beginModule("commons").
 				beginComponent(CodecManager.class, CodecManagerImpl.class).endComponent()
-			.endModule();
+			.endModule()
+			.build();
 		// @formatter:on
 	}
 

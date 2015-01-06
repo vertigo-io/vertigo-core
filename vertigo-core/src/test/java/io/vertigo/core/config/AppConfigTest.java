@@ -16,20 +16,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.component.cglib;
+package io.vertigo.core.config;
 
-import io.vertigo.core.component.AbstractAspectTestCase;
-import io.vertigo.core.component.ComponentsConfig;
-import io.vertigo.core.config.AppConfigBuilder;
-import io.vertigo.engines.aop.cglib.CGLIBAopEngine;
+import io.vertigo.boot.xml.XMLAppConfigBuilder;
+import io.vertigo.core.Home;
+import io.vertigo.core.config.AppConfig;
+import io.vertigo.core.home.componentspace.data.BioManager;
 
-/**
- * @author pchretien
- */
-public final class CGLIBAspectContainerTest extends AbstractAspectTestCase {
-	@Override
-	protected final void configMe(final AppConfigBuilder appConfiguilder) {
-		new ComponentsConfig(new CGLIBAopEngine()).config(appConfiguilder);
+import org.junit.Assert;
+import org.junit.Test;
+
+public final class AppConfigTest {
+	@Test
+	public void HomeTest() {
+
+		final AppConfig appConfig = new XMLAppConfigBuilder()
+				.withSilence(false)
+				.withXmlFileNames(getClass(), "bio.xml")
+				.build();
+
+		Home.start(appConfig);
+		try {
+			final BioManager bioManager = Home.getComponentSpace().resolve(BioManager.class);
+			final int res = bioManager.add(1, 2, 3);
+			Assert.assertEquals(366, res);
+			Assert.assertTrue(bioManager.isActive());
+		} finally {
+			Home.stop();
+		}
 	}
-
 }
