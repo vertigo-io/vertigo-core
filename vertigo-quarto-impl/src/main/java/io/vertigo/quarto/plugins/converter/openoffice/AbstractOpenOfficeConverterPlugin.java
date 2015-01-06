@@ -188,7 +188,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 					.append("Ensuite, il faut lancer OpenOffice... et l'agent OpenOffice si il tourne.")
 					.toString();
 
-			throw new IOException("Impossible de se connecter à OpenOffice, vérifier qu'il est bien en écoute sur le port " + unoPort + ".\n\n" + msg, connectException);
+			throw new IOException("Impossible de se connecter à OpenOffice, vérifier qu'il est bien en écoute sur " + unoHost + ":" + unoPort + ".\n\n" + msg, connectException);
 		}
 		return openOfficeConnection;
 	}
