@@ -18,8 +18,10 @@
  */
 package io.vertigo.vega.rest;
 
-import io.vertigo.core.Home;
+import io.vertigo.core.Home.App;
 import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.util.ListBuilder;
+import io.vertigo.util.MapBuilder;
 import io.vertigo.vega.impl.rest.filter.JettyMultipartConfig;
 import io.vertigo.vega.plugins.rest.routesregister.sparkjava.SparkJavaRoutesRegister;
 import io.vertigo.vega.rest.stereotype.POST;
@@ -62,10 +64,11 @@ public final class WsRestTest {
 
 	private static final int WS_PORT = 8088;
 	private final SessionFilter sessionFilter = new SessionFilter();
+	private static App app;
 
 	@BeforeClass
 	public static void setUp() {
-		Home.start(MyApp.config());
+		app = new App(MyApp.config());
 		doSetUp();
 	}
 
@@ -79,7 +82,7 @@ public final class WsRestTest {
 
 	@AfterClass
 	public static void tearDown() {
-		Home.stop();
+		app.close();
 	}
 
 	private static void doSetUp() {
@@ -1297,12 +1300,13 @@ public final class WsRestTest {
 
 	@Test
 	public void testSaveListContact() throws ParseException {
-		final List<Map<String, Object>> dtList = new ArrayList<>();
-		dtList.add(createDefaultContact(130L));
-		dtList.add(createDefaultContact(131L));
-		dtList.add(createDefaultContact(133L));
-		dtList.add(createDefaultContact(134L));
-		dtList.add(createDefaultContact(135L));
+		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
+				.add(createDefaultContact(130L))
+				.add(createDefaultContact(131L))
+				.add(createDefaultContact(133L))
+				.add(createDefaultContact(134L))
+				.add(createDefaultContact(135L))
+				.build();
 
 		loggedAndExpect(given().body(dtList))
 				.body(Matchers.equalTo("OK : received 5 contacts"))
@@ -1482,12 +1486,12 @@ public final class WsRestTest {
 	}
 
 	private Map<String, Object> createAddress(final String street1, final String street2, final String city, final String postalCode, final String country) {
-		final Map<String, Object> address = new HashMap<>();
-		address.put("street1", street1);
-		address.put("street2", street2);
-		address.put("city", city);
-		address.put("postalCode", postalCode);
-		address.put("country", country);
-		return address;
+		return new MapBuilder<String, Object>()
+				.put("street1", street1)
+				.put("street2", street2)
+				.put("city", city)
+				.put("postalCode", postalCode)
+				.put("country", country)
+				.build();
 	}
 }

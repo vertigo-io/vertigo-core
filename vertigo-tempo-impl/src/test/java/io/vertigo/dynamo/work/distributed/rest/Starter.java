@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.work.distributed.rest;
 
 import io.vertigo.boot.xml.XMLAppConfigBuilder;
-import io.vertigo.core.Home;
+import io.vertigo.core.Home.App;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.lang.Assertion;
 
@@ -31,11 +31,8 @@ import org.apache.log4j.Logger;
  */
 public final class Starter implements Runnable {
 	private final Logger log = Logger.getLogger(getClass());
-	private static boolean SILENCE = true;
-	private final Class<?> relativeRootClass;
-	private final String managersXmlFileName;
+	private final AppConfig appConfig;
 	private final long timeToWait;
-	private boolean started;
 
 	/**
 	 * @param managersXmlFileName Fichier managers.xml
@@ -45,18 +42,18 @@ public final class Starter implements Runnable {
 	public Starter(final String managersXmlFileName, final Class<?> relativeRootClass, final long timeToWait) {
 		Assertion.checkNotNull(managersXmlFileName);
 		//-----
-		this.managersXmlFileName = managersXmlFileName;
 		this.timeToWait = timeToWait;
-		this.relativeRootClass = relativeRootClass;
+		appConfig = new XMLAppConfigBuilder()
+				.withSilence(true)
+				.withXmlFileNames(relativeRootClass, managersXmlFileName)
+				.build();
 
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void run() {
-		try {
-			start();
-
+		try (App app = new App(appConfig)) {
 			final Object lock = new Object();
 			synchronized (lock) {
 				lock.wait(timeToWait * 1000); //on attend le temps demandé et 0 => illimité
@@ -65,33 +62,6 @@ public final class Starter implements Runnable {
 			//rien arret normal
 		} catch (final Exception e) {
 			log.error("Application error, exit", e);
-		} finally {
-			stop();
-		}
-	}
-
-	/**
-	 * Démarre l'application.
-	 */
-	public final void start() {
-		// Création de l'état de l'application
-		// Initialisation de l'état de l'application
-		//final URL xmlURL = createURL(managersXmlFileName, relativeRootClass);
-		final AppConfig appConfig = new XMLAppConfigBuilder()
-				.withSilence(SILENCE)
-				.withXmlFileNames(relativeRootClass, managersXmlFileName)
-				.build();
-		Home.start(appConfig);
-		started = true;
-	}
-
-	/**
-	 * Stop l'application.
-	 */
-	public final void stop() {
-		if (started) {
-			Home.stop();
-			started = false;
 		}
 	}
 }

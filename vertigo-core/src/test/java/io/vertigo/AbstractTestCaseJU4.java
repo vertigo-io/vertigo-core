@@ -43,7 +43,7 @@ public abstract class AbstractTestCaseJU4 {
 	private static App app;
 
 	private synchronized void startHome() {
-		app = Home.start(buildAppConfig());
+		app = new App(buildAppConfig());
 	}
 
 	private synchronized void stopHome() {

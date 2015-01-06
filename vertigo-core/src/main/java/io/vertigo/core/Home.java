@@ -50,15 +50,16 @@ public final class Home {
 		private final long start = System.currentTimeMillis();
 		private final AppConfig appConfig;
 
-		private App(final AppConfig appConfig) {
+		public App(final AppConfig appConfig) {
 			Assertion.checkNotNull(appConfig);
 			//-----
 			this.appConfig = appConfig;
+			Home.INSTANCE.start(appConfig);
 		}
 
 		@Override
 		public void close() {
-			Home.stop();
+			Home.INSTANCE.stop();
 		}
 
 		/**
@@ -99,17 +100,6 @@ public final class Home {
 		// Classe statique d'accès aux composants.
 	}
 
-	//=========================================================================
-	//============================Méthods publiques============================
-	//=========================================================================
-	/**
-	 * Démarrage de l'application.
-	 * @param appConfig AppConfig
-	 */
-	public static App start(final AppConfig appConfig) {
-		return INSTANCE.doStart(appConfig);
-	}
-
 	public static App getApp() {
 		Assertion.checkNotNull(INSTANCE.app, "app has not been started");
 		return INSTANCE.app;
@@ -118,10 +108,10 @@ public final class Home {
 	/**
 	 * Fermeture de l'application.
 	 */
-	public static void stop() {
+	private void stop() {
 		//Une instance inactive peut être stopé
-		if (INSTANCE.state != State.INACTIVE) {
-			INSTANCE.doStop(State.ACTIVE);
+		if (state != State.INACTIVE) {
+			doStop(State.ACTIVE);
 		}
 	}
 
@@ -139,14 +129,14 @@ public final class Home {
 		return INSTANCE.doGetComponentSpace();
 	}
 
-	//=========================================================================
-	//=============================Méthods privées=============================
-	//=========================================================================
-	private App doStart(final AppConfig appConfig) {
+	/**
+	 * Démarrage de l'application.
+	 * @param appConfig AppConfig
+	 */
+	private void start(final AppConfig appConfig) {
 		Assertion.checkNotNull(appConfig);
 		//-----
 		change(State.INACTIVE, State.starting);
-		this.app = new App(appConfig);
 		try {
 			Assertion.checkState(definitionSpace.isEmpty(), "DefinitionSpace must be empty");
 			//---
@@ -169,8 +159,6 @@ public final class Home {
 			throw new RuntimeException("an error occured when starting", t);
 		}
 		change(State.starting, State.ACTIVE);
-		//---
-		return app;
 	}
 
 	private DefinitionSpace doGetDefinitionSpace() {

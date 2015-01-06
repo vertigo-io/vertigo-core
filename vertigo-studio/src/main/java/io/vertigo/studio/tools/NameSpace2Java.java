@@ -19,7 +19,7 @@
 package io.vertigo.studio.tools;
 
 import io.vertigo.boot.xml.XMLAppConfigBuilder;
-import io.vertigo.core.Home;
+import io.vertigo.core.Home.App;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.studio.tools.generate.GenerateGoal;
 import io.vertigo.util.ClassUtil;
@@ -59,8 +59,7 @@ public final class NameSpace2Java {
 				.withEnvParams(properties)
 				.build();
 
-		try {
-			Home.start(appConfig);
+		try (App app = new App(appConfig)) {
 			//-----
 			final List<Class<? extends Goal>> goalClazzList = new ArrayList<>();
 			//-----
@@ -68,8 +67,6 @@ public final class NameSpace2Java {
 			//		goalClazzList.add(ReportingGoal.class);
 			//-----
 			process(goalClazzList);
-		} finally {
-			Home.stop();
 		}
 	}
 

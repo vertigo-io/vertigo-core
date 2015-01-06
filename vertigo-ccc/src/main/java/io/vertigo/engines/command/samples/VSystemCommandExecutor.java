@@ -45,8 +45,8 @@ public final class VSystemCommandExecutor implements VCommandExecutor<List<Compo
 		}
 
 		return new ListBuilder<ComponentInfo>()
-				.add(new ComponentInfo("vertigo.start", new Date(Home.getStartDate())))
-				.add(new ComponentInfo("vertigo.uptime#inseconds", (System.currentTimeMillis() - Home.getStartDate()) / 1000))
+				.add(new ComponentInfo("vertigo.start", new Date(Home.getApp().getStartDate())))
+				.add(new ComponentInfo("vertigo.uptime#inseconds", (System.currentTimeMillis() - Home.getApp().getStartDate()) / 1000))
 
 				//---
 				.add(new ComponentInfo("java.version", System.getProperty("java.version")))

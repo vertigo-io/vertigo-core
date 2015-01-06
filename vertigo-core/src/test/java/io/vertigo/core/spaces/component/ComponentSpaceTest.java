@@ -53,7 +53,7 @@ public final class ComponentSpaceTest {
 		.build();
 		// @formatter:on
 
-		try (App app = Home.start(appConfig)) {
+		try (App app = new App(appConfig)) {
 			final BioManager bioManager = Home.getComponentSpace().resolve(BioManager.class);
 			final int res = bioManager.add(1, 2, 3);
 			Assert.assertEquals(366, res);
@@ -82,7 +82,7 @@ public final class ComponentSpaceTest {
 		.build();
 		// @formatter:on
 
-		try (App app = Home.start(appConfig)) {
+		try (App app = new App(appConfig)) {
 			//
 		}
 	}
@@ -108,7 +108,7 @@ public final class ComponentSpaceTest {
 		.build();
 		// @formatter:on
 
-		try (App app = Home.start(appConfig)) {
+		try (App app = new App(appConfig)) {
 			//
 		}
 	}

@@ -35,7 +35,7 @@ public final class AppConfigTest {
 				.withXmlFileNames(getClass(), "bio.xml")
 				.build();
 
-		try (App app = Home.start(appConfig)) {
+		try (App app = new App(appConfig)) {
 			final BioManager bioManager = Home.getComponentSpace().resolve(BioManager.class);
 			final int res = bioManager.add(1, 2, 3);
 			Assert.assertEquals(366, res);

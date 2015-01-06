@@ -42,7 +42,7 @@ public final class ComponentCmdRestServices implements RestfulService {
 	@AnonymousAccessAllowed
 	@GET("/vertigo/components")
 	public AppConfig getAppConfig() {
-		return Home.getAppConfig();
+		return Home.getApp().getConfig();
 	}
 
 	@AnonymousAccessAllowed
@@ -72,7 +72,7 @@ public final class ComponentCmdRestServices implements RestfulService {
 	}
 
 	private JsonArray doGetModuleConfigs() {
-		final String json = jsonEngine.toJson(Home.getAppConfig());
+		final String json = jsonEngine.toJson(Home.getApp().getConfig());
 		final JsonParser parser = new JsonParser();
 		final JsonObject jsonObject = (JsonObject) parser.parse(json);
 		final JsonArray jsonModuleConfigs = jsonObject.get("moduleConfigs").getAsJsonArray();

@@ -19,7 +19,7 @@
 package io.vertigo.vega.impl.rest.servlet;
 
 import io.vertigo.boot.xml.XMLAppConfigBuilder;
-import io.vertigo.core.Home;
+import io.vertigo.core.Home.App;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.vega.plugins.rest.servlet.ServletResourceResolverPlugin;
 import io.vertigo.vega.plugins.rest.servlet.WebAppContextConfigPlugin;
@@ -47,6 +47,7 @@ final class HomeServletStarter {
 
 	/** Servlet listener */
 	private final ServletListener servletListener = new ServletListener();
+	private App app = null;
 
 	/**
 	 * Initialize and start Vertigo Home.
@@ -67,7 +68,7 @@ final class HomeServletStarter {
 					.withEnvParams(conf)
 					.build();
 			// Initialisation de l'état de l'application
-			Home.start(appConfig);
+			app = new App(appConfig);
 			servletListener.onServletStart(getClass().getName());
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
@@ -134,7 +135,7 @@ final class HomeServletStarter {
 	 */
 	public final void contextDestroyed(final ServletContext servletContext) {
 		try {
-			Home.stop();
+			app.close();
 			servletListener.onServletDestroy(getClass().getName());
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
