@@ -54,7 +54,7 @@ public final class Home {
 			Assertion.checkNotNull(appConfig);
 			//-----
 			this.appConfig = appConfig;
-			Home.INSTANCE.start(appConfig);
+			Home.INSTANCE.start(this);
 		}
 
 		@Override
@@ -131,10 +131,12 @@ public final class Home {
 
 	/**
 	 * Démarrage de l'application.
-	 * @param appConfig AppConfig
+	 * @param app App
 	 */
-	private void start(final AppConfig appConfig) {
-		Assertion.checkNotNull(appConfig);
+	private void start(final App app) {
+		Assertion.checkNotNull(app);
+		this.app = app;
+		final AppConfig appConfig = app.getConfig();
 		//-----
 		change(State.INACTIVE, State.starting);
 		try {

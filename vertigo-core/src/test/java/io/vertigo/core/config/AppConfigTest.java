@@ -36,6 +36,7 @@ public final class AppConfigTest {
 				.build();
 
 		try (App app = new App(appConfig)) {
+			Assert.assertEquals(app, Home.getApp());
 			final BioManager bioManager = Home.getComponentSpace().resolve(BioManager.class);
 			final int res = bioManager.add(1, 2, 3);
 			Assert.assertEquals(366, res);
