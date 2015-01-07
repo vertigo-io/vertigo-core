@@ -90,7 +90,7 @@ public final class Home {
 		FAIL
 	}
 
-	private App app = null;
+	private App currentApp = null;
 	private State state = State.INACTIVE;
 
 	private final DefinitionSpace definitionSpace = new DefinitionSpace();
@@ -101,8 +101,8 @@ public final class Home {
 	}
 
 	public static App getApp() {
-		Assertion.checkNotNull(INSTANCE.app, "app has not been started");
-		return INSTANCE.app;
+		Assertion.checkNotNull(INSTANCE.currentApp, "app has not been started");
+		return INSTANCE.currentApp;
 	}
 
 	/**
@@ -135,7 +135,7 @@ public final class Home {
 	 */
 	private void start(final App app) {
 		Assertion.checkNotNull(app);
-		this.app = app;
+		this.currentApp = app;
 		final AppConfig appConfig = app.getConfig();
 		//-----
 		change(State.INACTIVE, State.starting);
@@ -184,7 +184,7 @@ public final class Home {
 			state = State.FAIL;
 			throw new RuntimeException("an error occured when stopping", t);
 		} finally {
-			app = null;
+			currentApp = null;
 		}
 	}
 
