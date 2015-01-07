@@ -423,7 +423,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 				return entry.getValue();
 			}
 		}
-		throw new IllegalArgumentException("Pas de FacetValue contenant " + facetValueLabel + " dans la facette " + facetName);
+		return 0;
 	}
 
 	/**
@@ -469,7 +469,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		final SearchQuery searchQuery = SearchQuery.createSearchQuery(carIndexDefinition, new ListFilter("*:*"));
 		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, Collections.<ListFilter> emptyList());
 		final FacetedQueryResult<Car, SearchQuery> result = searchManager.loadList(searchQuery, facetedQuery);
-		logResult(result);
+		//logResult(result);
 		//on applique une facette
 		Assert.assertEquals(peugeotCars.size(), getFacetValueCount("FCT_MAKE" + facetSuffix, "peugeot", result));
 		final FacetedQuery facetedQuery1 = addFacetQuery("FCT_MAKE" + facetSuffix, "peugeot", result);
@@ -492,25 +492,25 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testFilterFacetListByRangeAndTerm() {
 		index(true);
-		final long before2000Count = carDataBase.before(2000);
+		final long car2000To2005Count = carDataBase.before(2005) - carDataBase.before(2000);
 		final List<Car> peugeotCars = carDataBase.getByMake("peugeot");
-		final long peugeotBefore2000Count = before(peugeotCars, 2000);
+		final long peugeot2000To2005Count = before(peugeotCars, 2005) - before(peugeotCars, 2000);
 
 		final SearchQuery searchQuery = SearchQuery.createSearchQuery(carIndexDefinition, new ListFilter("*:*"));
 		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, Collections.<ListFilter> emptyList());
 		final FacetedQueryResult<Car, SearchQuery> result = searchManager.loadList(searchQuery, facetedQuery);
 		logResult(result);
 		//on applique une facette
-		Assert.assertEquals(before2000Count, getFacetValueCount("FCT_YEAR" + facetSuffix, "avant 2000", result));
-		final FacetedQuery facetedQuery2 = addFacetQuery("FCT_YEAR" + facetSuffix, "avant", result);
+		Assert.assertEquals(car2000To2005Count, getFacetValueCount("FCT_YEAR" + facetSuffix, "2000-2005", result));
+		final FacetedQuery facetedQuery2 = addFacetQuery("FCT_YEAR" + facetSuffix, "2000-2005", result);
 		final FacetedQueryResult<Car, SearchQuery> result2 = searchManager.loadList(searchQuery, facetedQuery2);
-		Assert.assertEquals(before2000Count, result2.getCount());
+		Assert.assertEquals(car2000To2005Count, result2.getCount());
 		logResult(result2);
 		//on applique une autre facette
-		Assert.assertEquals(peugeotBefore2000Count, getFacetValueCount("FCT_MAKE" + facetSuffix, "peugeot", result2));
+		Assert.assertEquals(peugeot2000To2005Count, getFacetValueCount("FCT_MAKE" + facetSuffix, "peugeot", result2));
 		final FacetedQuery facetedQuery1 = addFacetQuery("FCT_MAKE" + facetSuffix, "peugeot", result2);
 		final FacetedQueryResult<Car, SearchQuery> result1 = searchManager.loadList(searchQuery, facetedQuery1);
-		Assert.assertEquals(peugeotBefore2000Count, (int) result1.getCount());
+		Assert.assertEquals(peugeot2000To2005Count, (int) result1.getCount());
 		logResult(result1);
 	}
 

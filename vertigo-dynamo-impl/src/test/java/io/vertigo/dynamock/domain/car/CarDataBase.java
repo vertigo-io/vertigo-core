@@ -38,7 +38,7 @@ public final class CarDataBase implements Iterable<Car> {
 
 	public void loadDatas() {
 		//http://www.papauto.com/
-		add(4600, "Peugeot", "307 sw", 2002, "essence", 137000, 9, "Vds 307SW année 2002 137000 kms, gris métal, clim, CD, jantes alu, toit panoramique, 7 places (6sièges) + pneus neiges offerts CT OK TBE");
+		add(4600, "Peugeot", "307 sw", 2002, "essence", 137000, 9, "Vds 307SW année 2002 137000 kms, gris métal, clim, CD, jantes alu, toit panoramique, 7 places (6 sièges) + pneus neiges offerts CT OK TBE");
 		add(13500, "Audi", "A3 S LINE", 2006, "diesel", 115000, 5.6, "AUDI A3 S LINE TDI 1.9L 105ch 115 000 KM - Jantes 18 Intérieur semi cuir final noir Feux automatique final Détecteur de pluie final Accoudoir central Courroie de distribution neuve final Pneus avant récent");
 		add(28500, "Volkswagen", "Eos TDI 140 CARAT DSG", 2010, "diesel", 4590, 6.7, "NOUVEAU MOTEUR COMMON RAIL : plus silencieux et plus coupleux que les injecteurs-pompes...LE SEUL COUPE/CABRIOLET AVEC TOIT OUVRANT VERRE ELECTRIQUE... , Sièges chauffants, Ordinateur de bord");
 		add(4400, "Peugeot", "806 final ST PACK", 2001, "diesel", 205000, 6.7, "7 Places, Sièges cuir, Attelage, l'avenir est à nous");

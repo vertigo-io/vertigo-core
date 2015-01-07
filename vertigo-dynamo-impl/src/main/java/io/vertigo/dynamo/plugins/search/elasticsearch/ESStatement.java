@@ -218,20 +218,21 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 			final String indexSortFieldName = indexFieldNameResolver.obtainIndexFieldName(sortField);
 			searchRequestBuilder.addSort(indexSortFieldName, searchQuery.getSortAsc() ? SortOrder.ASC : SortOrder.DESC);
 		}
-		final QueryBuilder queryBuilder = translateToQueryBuilder(searchQuery.getListFilter(), indexFieldNameResolver);
+		QueryBuilder queryBuilder = translateToQueryBuilder(searchQuery.getListFilter(), indexFieldNameResolver);
 		if (searchQuery.isBoostMostRecent()) {
-			final QueryBuilder boostedQuery = appendBoostMostRecent(searchQuery, queryBuilder);
-			searchRequestBuilder.setQuery(boostedQuery);
-		} else {
-			searchRequestBuilder.setQuery(queryBuilder);
+			queryBuilder = appendBoostMostRecent(searchQuery, queryBuilder);
 		}
-
-		final AndFilterBuilder filterBuilder = FilterBuilders.andFilter();
-		for (final ListFilter facetQuery : filtersQuery.getListFilters()) {
-			filterBuilder.add(translateToFilterBuilder(facetQuery, indexFieldNameResolver));
+		if (!filtersQuery.getListFilters().isEmpty()) {
+			final AndFilterBuilder filterBuilder = FilterBuilders.andFilter();
+			for (final ListFilter facetQuery : filtersQuery.getListFilters()) {
+				filterBuilder.add(translateToFilterBuilder(facetQuery, indexFieldNameResolver));
+			}
+			//use filteredQuery instead of PostFilter in order to filter aggregations too.
+			queryBuilder = QueryBuilders.filteredQuery(queryBuilder, filterBuilder);
 		}
+		searchRequestBuilder.setQuery(queryBuilder);
 
-		return searchRequestBuilder.setPostFilter(filterBuilder)
+		return searchRequestBuilder
 				.setHighlighterFilter(true)
 				.setHighlighterNumOfFragments(3)
 				.addHighlightedField("*");
@@ -291,6 +292,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 			} else {
 				//facette par field
 				final TermsBuilder aggregationBuilder = AggregationBuilders.terms(facetDefinition.getName())
+						.size(50) //Warning term aggregations are inaccurate : see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html
 						.field(indexFieldNameResolver.obtainIndexFieldName(dtField));
 				searchRequestBuilder.addAggregation(aggregationBuilder);
 			}
@@ -395,7 +397,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		FacetValue facetValue;
 		for (final Bucket value : multiBuckets.getBuckets()) {
 			final MessageText label = new MessageText(value.getKey(), null);
-			final String query = facetDefinition.getDtField().getName() + ":\"" + value.getKey() + "\"";
+			final String query = facetDefinition.getDtField().name() + ":\"" + value.getKey() + "\"";
 			facetValue = new FacetValue(new ListFilter(query), label);
 			facetValues.put(facetValue, value.getDocCount());
 		}
