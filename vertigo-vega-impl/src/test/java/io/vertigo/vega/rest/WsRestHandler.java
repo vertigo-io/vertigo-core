@@ -19,6 +19,7 @@
 package io.vertigo.vega.rest;
 
 import io.vertigo.core.Home.App;
+import io.vertigo.lang.Assertion;
 import io.vertigo.vega.impl.rest.filter.JettyMultipartConfig;
 import io.vertigo.vega.plugins.rest.routesregister.sparkjava.SparkJavaRoutesRegister;
 
@@ -47,20 +48,11 @@ public final class WsRestHandler {
 		Spark.setPort(8088);
 		// Création de l'état de l'application
 		// Initialisation de l'état de l'application
-		new App(MyApp.config());
-
-		//test
-		/*Spark.get(new Route("familles") {
-			@Override
-			public Object handle(final Request request, final Response response) {
-				final Object value = famillesRestFulService.readList();
-				return new Gson().toJson(value);
-			}
-		});*/
+		final App app = new App(MyApp.config());
+		Runtime.getRuntime().addShutdownHook(new OnCloseThread(app));
 
 		// Will serve all static file are under "/public" in classpath if the route isn't consumed by others routes.
 		// When using Maven, the "/public" folder is assumed to be in "/main/resources"
-		Spark.externalStaticFileLocation("d:/Projets/Projet_Kasper/SPA-Fmk/SPA-skeleton/public/");
 		//Spark.externalStaticFileLocation("D:/@GitHub/vertigo/vertigo-vega-impl/src/test/resources/");
 		//Spark.before(new IE8CompatibilityFix("8"));
 		//Spark.before(new CorsAllower());
@@ -68,7 +60,28 @@ public final class WsRestHandler {
 		final String tempDir = System.getProperty("java.io.tmpdir");
 		Spark.before(new JettyMultipartConfig(tempDir));
 		//Spark.before(new VegaMultipartConfig(tempDir));
-
 		new SparkJavaRoutesRegister().init();
+	}
+
+	private static class OnCloseThread extends Thread {
+		private final AutoCloseable closeableResource;
+
+		public OnCloseThread(final AutoCloseable closeableResource) {
+			super("Vertigo OnCloseThread");
+			Assertion.checkNotNull(closeableResource);
+			//-----
+			this.closeableResource = closeableResource;
+		}
+
+		@Override
+		public void run() {
+			try {
+				System.out.println("Try to close " + closeableResource);
+				closeableResource.close();
+			} catch (final Exception e) {
+				System.err.println("Can't close " + closeableResource + " : " + e.toString());
+				e.printStackTrace(System.err);
+			}
+		}
 	}
 }
