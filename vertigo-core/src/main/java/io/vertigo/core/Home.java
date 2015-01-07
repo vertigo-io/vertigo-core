@@ -33,54 +33,52 @@ import org.apache.log4j.xml.DOMConfigurator;
 
 /**
  * Home : Classe d'entrée sur toutes les modules.
- * Cycle de vie :
- *  on start : INACTIVE ==[starting]==> ACTIVE
- *  on stop  : ACTIVE 	==[stopping]==>INACTIVE
- * 'starting' et 'stopping' sont des phases transitoires.
+ * Life Cycle
+ * starting ==> active ==> stopping ==> closed
+ *  
+ * When error during starting
+ * starting ==> stopping ==> closed ()
+ * 
+ * 'starting' and 'stopping' sont are ephemeral transitions.
  *
- * Si erreur durant la transition start (c'est à dire durant la phase starting) alors on procéde à un arrét via un stopping ==> INACTIVE.
- * Si erreur durant la transition stop (c'est à dire durant la phase stopping) alors on part sur une phase FAIL qui nécessite un redémarrage.
- *
-
  * @author pchretien
  */
 public final class Home {
-	private static enum State {
-		/** Composants non démarrés*/
-		INACTIVE,
-		/** Composants en cours de démarrage*/
-		starting,
-		/** Composants configurés et démarrés*/
-		ACTIVE,
-		/** Composants en cours d'arrét*/
-		stopping,
-		/** Echec*/
-		FAIL
-	}
 
 	public static final class App implements AutoCloseable {
-		//Start Date in milliseconds : used to have 'uptime'
-		private final long start = System.currentTimeMillis();
-		private final AppConfig appConfig;
-		private State state = State.INACTIVE;
+		private static enum State {
+			/** Composants en cours de démarrage*/
+			starting,
+			/** Composants configurés et démarrés*/
+			active,
+			/** Composants en cours d'arrét*/
+			stopping,
+			/** Terminé*/
+			closed
+		}
 
-		private final DefinitionSpace definitionSpace = new DefinitionSpace();
-		private final ComponentSpace componentSpace;//= ComponentSpace.EMPTY;
+		//Start Date in milliseconds : used to have 'uptime'
+		private final long start;
+		private final AppConfig appConfig;
+		private State state;
+
+		private final DefinitionSpace definitionSpace;
+		private final ComponentSpace componentSpace;
 
 		public App(final AppConfig appConfig) {
 			Assertion.checkNotNull(appConfig);
 			//-----
+			start = System.currentTimeMillis();
 			this.appConfig = appConfig;
 			Home.CURRENT_APP = this;
+			state = State.starting;
 			//-----
-			change(State.INACTIVE, State.starting);
 			try {
-				Assertion.checkState(definitionSpace.isEmpty(), "DefinitionSpace must be empty");
-				//---
 				if (appConfig.getLogConfig().isDefined()) {
 					initLog(appConfig.getLogConfig().get());
 				}
-				//---
+				//-----
+				definitionSpace = new DefinitionSpace();
 				componentSpace = new ComponentSpace(appConfig);
 				//----
 				for (final ModuleConfig moduleConfig : appConfig.getModuleConfigs()) {
@@ -88,14 +86,32 @@ public final class Home {
 					componentSpace.injectComponents(moduleConfig);
 					componentSpace.injectAspects(moduleConfig);
 				}
-				//--
+				//-----
 				componentSpace.start();
 				//	INSTANCE.jmx();
+				this.state = State.active;
 			} catch (final Throwable t) {
-				doStop(State.starting);
+				this.close();
 				throw new RuntimeException("an error occured when starting", t);
 			}
-			change(State.starting, State.ACTIVE);
+		}
+
+		@Override
+		public void close() {
+			//En cas d'erreur on essaie de fermer proprement les composants démarrés.
+			Assertion.checkState(state == State.active || state == State.starting, "App with a state '{0}' can not be be closed", state);
+			state = State.stopping;
+			//-----
+			try {
+				definitionSpace.clear();
+				componentSpace.stop();
+			} catch (final Throwable t) {
+				//Quel que soit l'état, on part en échec de l'arrét.
+				throw new RuntimeException("an error occured when stopping", t);
+			} finally {
+				state = State.closed;
+				CURRENT_APP = null;
+			}
 		}
 
 		/**
@@ -114,46 +130,7 @@ public final class Home {
 		}
 
 		private ComponentSpace getComponentSpace() {
-			//	check(State.ACTIVE, "'état non actif");
-			//-----
 			return componentSpace;
-		}
-
-		@Override
-		public void close() {
-			//Une instance inactive peut être stopé
-			if (state != State.INACTIVE) {
-				doStop(State.ACTIVE);
-			}
-		}
-
-		/**
-		 * Fermeture de l'application.
-		 */
-		private void doStop(final State from) {
-			//En cas d'erreur on essaie de fermer proprement les composants démarrés.
-			change(from, State.stopping);
-			//-----
-			try {
-				definitionSpace.clear();
-				componentSpace.stop();
-				// L'arrét s'est bien déroulé.
-				change(State.stopping, State.INACTIVE);
-			} catch (final Throwable t) {
-				//Quel que soit l'état, on part en échec de l'arrét.
-				state = State.FAIL;
-				throw new RuntimeException("an error occured when stopping", t);
-			} finally {
-				CURRENT_APP = null;
-			}
-		}
-
-		private void change(final State fromState, final State toState) {
-			if (!state.equals(fromState)) {
-				System.err.println("Container pas dans l'état attendu pour la transition ['" + fromState + "'==>'" + toState + "'], état actuel :'" + state + "' ");
-			}
-			//-----
-			state = toState;
 		}
 
 		private static void initLog(final LogConfig log4Config) {
