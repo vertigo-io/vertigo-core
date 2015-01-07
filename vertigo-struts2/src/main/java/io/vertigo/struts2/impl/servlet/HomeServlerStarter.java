@@ -19,7 +19,7 @@
 package io.vertigo.struts2.impl.servlet;
 
 import io.vertigo.boot.xml.XMLAppConfigBuilder;
-import io.vertigo.core.Home;
+import io.vertigo.core.Home.App;
 import io.vertigo.struts2.plugins.config.servlet.WebAppContextConfigPlugin;
 import io.vertigo.struts2.plugins.resource.servlet.ServletResourceResolverPlugin;
 
@@ -47,6 +47,12 @@ final class HomeServlerStarter {
 	/** Servlet listener */
 	private final ServletListener servletListener = new ServletListener();
 
+	private App app;
+
+	/**
+	 * Initialize application.
+	 * @param servletContext ServletContext
+	 */
 	public final void contextInitialized(final ServletContext servletContext) {
 		final long start = System.currentTimeMillis();
 		try {
@@ -58,7 +64,7 @@ final class HomeServlerStarter {
 			WebAppContextConfigPlugin.setInitConfig(conf);
 
 			// Initialisation de l'état de l'application
-			Home.start(new XMLAppConfigBuilder().withEnvParams(conf).build());
+			app = new App(new XMLAppConfigBuilder().withEnvParams(conf).build());
 
 			servletListener.onServletStart(getClass().getName());
 		} catch (final Throwable t) {
@@ -126,7 +132,7 @@ final class HomeServlerStarter {
 	 */
 	public final void contextDestroyed(final ServletContext servletContext) {
 		try {
-			Home.stop();
+			app.close();
 			servletListener.onServletDestroy(getClass().getName());
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
