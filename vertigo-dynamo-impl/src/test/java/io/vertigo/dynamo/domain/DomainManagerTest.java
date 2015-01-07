@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.domain;
 
+import io.vertigo.core.Home.App;
+import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -34,18 +36,20 @@ public class DomainManagerTest {
 
 	@Test
 	public void createDtDefinitionTest() {
-		final Formatter formatter = new FormatterDefault("FMT_DEF");
-		final Domain domain = new Domain("DO_NAME", DataType.String, formatter);
+		try (App app = new App(new AppConfigBuilder().build())) {
+			final Formatter formatter = new FormatterDefault("FMT_DEF");
+			final Domain domain = new Domain("DO_NAME", DataType.String, formatter);
 
-		final DtDefinition dtDefinition = new DtDefinitionBuilder("DT_MOVIE")
-				.withPersistent(false)
-				.withDynamic(true)
-				.withDataField("NAME", "nom du film", domain, true, true, false, false)
-				.build();
+			final DtDefinition dtDefinition = new DtDefinitionBuilder("DT_MOVIE")
+					.withPersistent(false)
+					.withDynamic(true)
+					.withDataField("NAME", "nom du film", domain, true, true, false, false)
+					.build();
 
-		final DtObject dto = DtObjectUtil.createDtObject(dtDefinition);
-		dtDefinition.getField("NAME").getDataAccessor().setValue(dto, "dupond");
+			final DtObject dto = DtObjectUtil.createDtObject(dtDefinition);
+			dtDefinition.getField("NAME").getDataAccessor().setValue(dto, "dupond");
 
-		Assert.assertEquals("dupond", dtDefinition.getField("NAME").getDataAccessor().getValue(dto));
+			Assert.assertEquals("dupond", dtDefinition.getField("NAME").getDataAccessor().getValue(dto));
+		}
 	}
 }
