@@ -55,7 +55,7 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 	 * @author npiedeloup
 	 */
 	private static enum DtoFields {
-		FILE_NAME, MIME_TYPE, LAST_MODIFIED, LENGTH, FILE_DATA, FIL_ID
+		FILE_NAME, MIME_TYPE, LAST_MODIFIED, LENGTH, FILE_DATA
 	}
 
 	/**
@@ -106,7 +106,7 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 		setValue(fileInfoDto, DtoFields.FILE_DATA, new FileInfoDataStream(kFile));
 
 		if (fileInfo.getURI() != null) {
-			setValue(fileInfoDto, DtoFields.FIL_ID, fileInfo.getURI().getKey());
+			setPkValue(fileInfoDto, fileInfo.getURI().getKey());
 		}
 		//-----
 
@@ -186,6 +186,12 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 	private static void setValue(final DtObject dto, final DtoFields field, final Object value) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		final DtField dtField = dtDefinition.getField(field.name());
+		dtField.getDataAccessor().setValue(dto, value);
+	}
+
+	private static void setPkValue(final DtObject dto, final Object value) {
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
+		final DtField dtField = dtDefinition.getIdField().get();
 		dtField.getDataAccessor().setValue(dto, value);
 	}
 

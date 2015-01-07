@@ -69,8 +69,6 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	 * @author npiedeloup
 	 */
 	private static enum DtoFields {
-		/** Champ FIL_ID */
-		FIL_ID,
 		/** Champ FILE_NAME */
 		FILE_NAME,
 		/** Champ MIME_TYPE */
@@ -160,7 +158,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 			setValue(fileInfoDto, DtoFields.FILE_PATH, "/dev/null");
 		} else {
 			// cas de l'update
-			setValue(fileInfoDto, DtoFields.FIL_ID, fileInfo.getURI().getKey());
+			setPkValue(fileInfoDto, fileInfo.getURI().getKey());
 
 			// récupération de l'objet en base pour récupérer le path du fichier et ne pas modifier la base
 			final URI<DtObject> dtoUri = createDtObjectURI(fileInfo.getURI());
@@ -268,6 +266,11 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	 */
 	private static void setValue(final DtObject dto, final DtoFields field, final Object value) {
 		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getField(field.name());
+		dtField.getDataAccessor().setValue(dto, value);
+	}
+
+	private static void setPkValue(final DtObject dto, final Object value) {
+		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getIdField().get();
 		dtField.getDataAccessor().setValue(dto, value);
 	}
 
