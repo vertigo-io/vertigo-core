@@ -114,7 +114,7 @@ public final class FileManagerTest extends AbstractTestCaseJU4 {
 			Assert.assertEquals(lastModified, kFile.getLastModified());
 		}
 		Assert.assertEquals(mimeType, kFile.getMimeType());
-		Assert.assertEquals(length, kFile.getLength());
+		Assert.assertEquals(length, kFile.getLength(), length * 0.1); //+ or - 10%
 
 		try {
 			nop(kFile.createInputStream());
