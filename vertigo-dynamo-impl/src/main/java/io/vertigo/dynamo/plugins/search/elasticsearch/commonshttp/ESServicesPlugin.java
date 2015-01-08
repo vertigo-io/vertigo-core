@@ -77,7 +77,7 @@ public final class ESServicesPlugin extends AbstractESServicesPlugin {
 				//.put("discovery.zen.fd.ping_timeout", "30s")
 				//.put("discovery.zen.minimum_master_nodes", 2)
 				.put("discovery.zen.ping.multicast.enabled", false)
-				.put("discovery.zen.ping.unicast.hosts", serversNames)
+				.putArray("discovery.zen.ping.unicast.hosts", serversNames)
 				.build();
 		//.put("cluster.name", "cluster-test-" + NetworkUtils.getLocalAddress().getHostName())
 		//.put("index.store.type", "memory")
