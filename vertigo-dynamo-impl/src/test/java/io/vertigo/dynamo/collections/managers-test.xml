@@ -1,6 +1,6 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<module name="vertigo">
+	<module name="vertigo-core">
 		<component api="LocaleManager" class="io.vertigoimpl.commons.locale.LocaleManagerImpl">
 			<param name="locales" value="fr_FR" />
 		</component>
@@ -17,7 +17,7 @@
 		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
 	</module>
 
-	<module name="dynamo">
+	<module name="vertigo-dynamo">
 		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.collections.lucene.LuceneIndexPlugin" />
 		</component>

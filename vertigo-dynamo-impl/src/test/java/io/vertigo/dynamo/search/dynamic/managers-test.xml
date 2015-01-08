@@ -1,17 +1,18 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<module name="vertigo">
-		<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
-			<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
-		</component>
+	<module name="vertigo-core">
 		<component api="LocaleManager" class="io.vertigoimpl.commons.locale.LocaleManagerImpl">
 			<param name="locales" value="fr_FR" />
 		</component>
+	</module>	
+	<module name="vertigo-commons">
+		<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
+			<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
+		</component>
+		<component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
 	</module>
 
-	<module name="vertigo-commons">
-		<component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
-
+	<module name="vertigo-dynamo">
 		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl" initClass="io.vertigo.dynamo.search.CollectionsManagerInitializer" />
 		<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
 		<component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
@@ -20,14 +21,6 @@
 			<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
 			<plugin class="io.vertigo.dynamo.plugins.environment.registries.search.SearchDynamicRegistryPlugin" />
 		</component>
-	</module>
-
-	<module name="myApp">
-		<resource type="kpr" path="io/vertigo/dynamo/search/ksp/search.kpr" />
-		<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
-	</module>
-	
-	<module name="document">
 		<component api="SearchManager" class="io.vertigo.dynamo.impl.search.SearchManagerImpl">
 			<!-- <plugin class="io.vertigo.dynamo.plugins.search.solr.commonshttp.CommonsHttpSolrSearchServicesPlugin" > <param name="solr.url" value="http://localhost:8983/solr" /> <param name="cores" value="IDX_ARTICLE,IDX_VOITURE,IDX_DEMANDE,IDX_DOCUMENT" /> </plugin> -->
 			<plugin class="io.vertigo.dynamo.plugins.search.elasticsearch.embedded.ESEmbeddedServicesPlugin">
@@ -38,4 +31,8 @@
 		</component>
 	</module>
 
+	<module name="myApp">
+		<resource type="kpr" path="io/vertigo/dynamo/search/ksp/search.kpr" />
+		<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
+	</module>
 </config>

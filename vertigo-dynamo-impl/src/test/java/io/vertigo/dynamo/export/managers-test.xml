@@ -1,11 +1,10 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<module name="vertigo">
+	<module name="vertigo-core">
 		<component api="LocaleManager" class="io.vertigoimpl.commons.locale.LocaleManagerImpl">
 			<param name="locales" value="fr_FR" />
 		</component>
 	</module>
-
 	<module name="vertigo-commons">
 		<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
 			<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
@@ -16,6 +15,7 @@
 			<plugin class="io.vertigo.commons.plugins.cache.map.MapCachePlugin" />
 		</component>
 	</module>
+
 	<module name="vertigo-dynamo">
 		<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
 		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl">

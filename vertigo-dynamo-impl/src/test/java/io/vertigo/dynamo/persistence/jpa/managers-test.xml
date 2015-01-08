@@ -1,6 +1,6 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<module name="vertigo">
+	<module name="vertigo-core">
 		<component api="LocaleManager" class="io.vertigoimpl.commons.locale.LocaleManagerImpl">
 			<param name="locales" value="fr_FR" />
 		</component>
@@ -23,7 +23,7 @@
 
 	</module>
 
-	<module name="dynamo">
+	<module name="vertigo-dynamo">
 		<component api="SqlDataBaseManager" class="io.vertigo.dynamo.impl.database.SqlDataBaseManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.database.connection.hibernate.HibernateConnectionProviderPlugin">
 				<param name="dataBaseName" value="io.vertigo.dynamo.impl.database.vendor.hsql.HsqlDataBase" />

@@ -43,7 +43,7 @@ public class KVDataStoreManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testFindPutFind() {
-		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction();) {
+		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			Option<Car> search;
 			search = kvDataStoreManager.find(DEFAULT_DATA_STORE_NAME, "1", Car.class);
 			Assert.assertTrue(search.isEmpty());
