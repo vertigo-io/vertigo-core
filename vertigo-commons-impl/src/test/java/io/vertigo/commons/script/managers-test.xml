@@ -1,6 +1,6 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<module name="dynamo">
+	<module name="vertigo-commons">
 		<component api="ScriptManager" class="io.vertigo.commons.impl.script.ScriptManagerImpl">
 			<plugin class="io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin" />
 			<!-- <plugin id ="BeanShell" name="ExpressionEvaluatorPlugin" class=".script.plugins.beanshell.BeanShellExpressionEvaluatorPlugin"/> -->
