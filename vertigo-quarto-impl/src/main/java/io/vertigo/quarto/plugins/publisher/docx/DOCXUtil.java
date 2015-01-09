@@ -245,9 +245,8 @@ final class DOCXUtil {
 		final StringWriter writer = new StringWriter();
 		final StreamResult result = new StreamResult(writer);
 		final TransformerFactory tf = TransformerFactory.newInstance();
-		Transformer transformer;
 		try {
-			transformer = tf.newTransformer();
+			Transformer transformer = tf.newTransformer();
 			transformer.transform(domSource, result);
 		} catch (final TransformerException e) {
 			LOG.error("Convert XML Document to String error", e);
@@ -279,9 +278,8 @@ final class DOCXUtil {
 	 * @return l'objet Xpath généré.
 	 */
 	public static XPath loadXPath() {
-		XPath xpath;
 		final XPathFactory factory = XPathFactory.newInstance();
-		xpath = factory.newXPath();
+		XPath xpath = factory.newXPath();
 		xpath.setNamespaceContext(new DOCXNamespaceContext());
 		return xpath;
 	}

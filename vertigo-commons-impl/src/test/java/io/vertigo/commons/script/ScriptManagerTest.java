@@ -21,6 +21,7 @@ package io.vertigo.commons.script;
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
+import io.vertigo.util.ListBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,11 +43,11 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 	//	private ExpressionEvaluatorPlugin mvelExpressionEvaluatorPlugin;
 
 	private static List<ExpressionParameter> createParameters() {
-		final List<ExpressionParameter> parameters = new ArrayList<>();
-		parameters.add(new ExpressionParameter("nom", String.class, "Duraton"));
-		parameters.add(new ExpressionParameter("prenom", String.class, "jean paul"));
-		parameters.add(new ExpressionParameter("age", Integer.class, 54));
-		return parameters;
+		return new ListBuilder<ExpressionParameter>()
+				.add(new ExpressionParameter("nom", String.class, "Duraton"))
+				.add(new ExpressionParameter("prenom", String.class, "jean paul"))
+				.add(new ExpressionParameter("age", Integer.class, 54))
+				.build();
 	}
 
 	@Test

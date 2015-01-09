@@ -29,11 +29,11 @@ import io.vertigo.quarto.publisher.impl.merger.processor.MergerProcessor;
 import io.vertigo.quarto.publisher.impl.merger.processor.MergerScriptEvaluatorProcessor;
 import io.vertigo.quarto.publisher.impl.merger.script.ScriptGrammar;
 import io.vertigo.quarto.publisher.model.PublisherData;
+import io.vertigo.util.ListBuilder;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -65,23 +65,18 @@ public final class MergerPluginDOCX implements MergerPlugin {
 		Assertion.checkNotNull(scriptManager);
 		Assertion.checkNotNull(scriptGrammar);
 		//-----
-		final List<MergerProcessor> localMergerProcessors = new ArrayList<>();
-
-		// Extraction des variables.
-		localMergerProcessors.add(new DOCXReverseInputProcessor());
-
-		// équilibrage de l'arbre xml.
-		localMergerProcessors.add(new GrammarXMLBalancerProcessor());
-
-		// kscript <##> => jsp <%%>.
-		localMergerProcessors.add(new GrammarEvaluatorProcessor(scriptManager, scriptGrammar));
-
-		// Traitement Janino (TEXT balisé en java + Données => TEXT).
-		localMergerProcessors.add(new MergerScriptEvaluatorProcessor(scriptManager, new DOCXValueEncoder()));
-
-		// Post traitements (TEXT => XML(DOCX)).
-		localMergerProcessors.add(new DOCXCleanerProcessor());
-		return localMergerProcessors;
+		return new ListBuilder<MergerProcessor>()
+				// Extraction des variables.
+				.add(new DOCXReverseInputProcessor())
+				// équilibrage de l'arbre xml.
+				.add(new GrammarXMLBalancerProcessor())
+				// kscript <##> => jsp <%%>.
+				.add(new GrammarEvaluatorProcessor(scriptManager, scriptGrammar))
+				// Traitement Janino (TEXT balisé en java + Données => TEXT).
+				.add(new MergerScriptEvaluatorProcessor(scriptManager, new DOCXValueEncoder()))
+				// Post traitements (TEXT => XML(DOCX)).
+				.add(new DOCXCleanerProcessor())
+				.build();
 	}
 
 	/**
