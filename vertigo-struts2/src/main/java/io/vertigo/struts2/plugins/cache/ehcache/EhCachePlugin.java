@@ -51,7 +51,7 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 
 	private net.sf.ehcache.CacheManager manager;
 	private final CodecManager codecManager;
-	private final Map<String, List<String>> cacheTypeMap = new LinkedHashMap<>();
+	private final Map<String, List<String>> cacheTypes = new LinkedHashMap<>();
 	private final Set<String> noSerializationContext;
 
 	/**
@@ -79,8 +79,7 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 	public void addCache(final String context, final CacheConfig cacheConfig) {
 		if (!manager.cacheExists(context)) {
 			final boolean overflowToDisk = true;
-			final boolean eternal = false;
-			final net.sf.ehcache.Cache cache = new net.sf.ehcache.Cache(context, cacheConfig.getMaxElementsInMemory(), overflowToDisk, eternal, cacheConfig.getTimeToLiveSeconds(), cacheConfig.getTimeToIdleSeconds());
+			final net.sf.ehcache.Cache cache = new net.sf.ehcache.Cache(context, cacheConfig.getMaxElementsInMemory(), overflowToDisk, cacheConfig.isEternal(), cacheConfig.getTimeToLiveSeconds(), cacheConfig.getTimeToIdleSeconds());
 			manager.addCache(cache);
 		}
 		registerCacheType(context, cacheConfig.getCacheType());
@@ -172,12 +171,12 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 	}
 
 	private void registerCacheType(final String context, final String cacheType) {
-		List<String> cacheNameList = cacheTypeMap.get(cacheType);
-		if (cacheNameList == null) {
-			cacheNameList = new ArrayList<>();
-			cacheTypeMap.put(cacheType, cacheNameList);
+		List<String> cacheNames = cacheTypes.get(cacheType);
+		if (cacheNames == null) {
+			cacheNames = new ArrayList<>();
+			cacheTypes.put(cacheType, cacheNames);
 		}
-		cacheNameList.add(context);
+		cacheNames.add(context);
 	}
 
 }

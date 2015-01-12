@@ -44,6 +44,10 @@ public final class CacheConfig {
 		return cacheType;
 	}
 
+	public boolean isEternal() {
+		return false;
+	}
+
 	public int getMaxElementsInMemory() {
 		return maxElementsInMemory;
 	}

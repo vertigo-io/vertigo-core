@@ -73,8 +73,7 @@ public final class MapCachePlugin implements CachePlugin, Describable {
 	@Override
 	public void addCache(final String context, final CacheConfig cacheConfig) {
 		if (!cachesPerContext.containsKey(context)) {
-			final boolean eternal = false;
-			final MapCache cache = new MapCache(context, eternal, cacheConfig.getTimeToLiveSeconds());
+			final MapCache cache = new MapCache(context, cacheConfig.isEternal(), cacheConfig.getTimeToLiveSeconds());
 			cachesPerContext.put(context, cache);
 		}
 		registerCacheType(context, cacheConfig.getCacheType());
