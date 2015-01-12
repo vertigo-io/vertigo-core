@@ -44,7 +44,7 @@ import com.sleepycat.je.Transaction;
 final class BerkeleyDatabase {
 	private final KTransactionResourceId<BerkeleyResource> berkeleyResourceId = new KTransactionResourceId<>(KTransactionResourceId.Priority.TOP, "demo-berkeley");
 	private static final TupleBinding dataBinding = new BerkeleyDataBinding();
-	private static final EntryBinding keyBinding = TupleBinding.getPrimitiveBinding(String.class);
+	private static final EntryBinding<String> keyBinding = TupleBinding.getPrimitiveBinding(String.class);
 	private final KTransactionManager transactionManager;
 	private final Database database;
 

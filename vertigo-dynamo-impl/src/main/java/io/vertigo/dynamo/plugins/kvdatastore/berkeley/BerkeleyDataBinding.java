@@ -50,29 +50,33 @@ final class BerkeleyDataBinding extends TupleBinding<Object> {
 
 		while (ti.available() > 0) {
 			final String fieldName = ti.readString();
-			final String type = ti.readString();
-
-			final Object value;
-			if ("NULL".equals(type)) {
-				value = null;
-			} else if ("F".equals(type)) {
-				value = ti.readFloat();
-			} else if ("L".equals(type)) {
-				value = ti.readLong();
-			} else if ("I".equals(type)) {
-				value = ti.readInt();
-			} else if ("D".equals(type)) {
-				value = ti.readDouble();
-			} else if ("S".equals(type)) {
-				value = ti.readString();
-			} else {
-				throw new IllegalArgumentException(" type " + type + " non reconnu");
-			}
+			final Object value = readValue(ti);
 			final Field field = bean.getClass().getDeclaredField(fieldName);
+			//-----
 			ClassUtil.set(bean, field, value);
 		}
 		//4. L'objet est fabriqué, rempli. On le retourne.
 		return bean;
+	}
+
+	private static Object readValue(final TupleInput ti) {
+		final String type = ti.readString();
+		switch (type) {
+			case "NULL":
+				return null;
+			case "F":
+				return ti.readFloat();
+			case "L":
+				return ti.readLong();
+			case "I":
+				return ti.readInt();
+			case "D":
+				return ti.readDouble();
+			case "S":
+				return ti.readString();
+			default:
+				throw new IllegalArgumentException(" type " + type + " non reconnu");
+		}
 	}
 
 	/** {@inheritDoc} */
@@ -94,26 +98,30 @@ final class BerkeleyDataBinding extends TupleBinding<Object> {
 			//	System.out.println("field["+field.getName()+"] "+field.getModifiers());
 			final Object value = ClassUtil.get(object, field);
 			to.writeString(field.getName());
-			if (value == null) {
-				to.writeString("NULL");
-			} else if (value instanceof Float) {
-				to.writeString("F");
-				to.writeFloat(Float.class.cast(value));
-			} else if (value instanceof Long) {
-				to.writeString("L");
-				to.writeLong(Long.class.cast(value));
-			} else if (value instanceof Integer) {
-				to.writeString("I");
-				to.writeInt(Integer.class.cast(value));
-			} else if (value instanceof Double) {
-				to.writeString("D");
-				to.writeDouble(Double.class.cast(value));
-			} else if (value instanceof String) {
-				to.writeString("S");
-				to.writeString(String.class.cast(value));
-			} else {
-				throw new IllegalArgumentException(" type " + value.getClass() + " non reconnu");
-			}
+			writeValue(to, value);
+		}
+	}
+
+	private static void writeValue(final TupleOutput to, final Object value) {
+		if (value == null) {
+			to.writeString("NULL");
+		} else if (value instanceof Float) {
+			to.writeString("F");
+			to.writeFloat(Float.class.cast(value));
+		} else if (value instanceof Long) {
+			to.writeString("L");
+			to.writeLong(Long.class.cast(value));
+		} else if (value instanceof Integer) {
+			to.writeString("I");
+			to.writeInt(Integer.class.cast(value));
+		} else if (value instanceof Double) {
+			to.writeString("D");
+			to.writeDouble(Double.class.cast(value));
+		} else if (value instanceof String) {
+			to.writeString("S");
+			to.writeString(String.class.cast(value));
+		} else {
+			throw new IllegalArgumentException(" type " + value.getClass() + " non reconnu");
 		}
 	}
 }
