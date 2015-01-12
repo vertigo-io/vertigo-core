@@ -24,7 +24,7 @@ import io.vertigo.commons.impl.cache.CacheManagerImpl;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
 import io.vertigo.commons.impl.resource.ResourceManagerImpl;
 import io.vertigo.commons.locale.LocaleManager;
-import io.vertigo.commons.plugins.cache.map.MapCachePlugin;
+import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.core.config.AppConfig;
@@ -98,7 +98,7 @@ public final class MyApp {
 					.endPlugin()
 				.endComponent()
 				.beginComponent(CacheManager.class, CacheManagerImpl.class)
-					.beginPlugin( MapCachePlugin.class).endPlugin()
+					.beginPlugin( MemoryCachePlugin.class).endPlugin()
 				.endComponent()
 				.beginComponent(TaskManager.class, TaskManagerImpl.class).endComponent()
 				.beginComponent(ExportManager.class, ExportManagerImpl.class)

@@ -3,7 +3,7 @@
 	<module name="vertigo-commons">
 		<component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
 		<component api="CacheManager" class="io.vertigo.commons.impl.cache.CacheManagerImpl" initClass="io.vertigo.commons.cache.CacheManagerInitializer">
-			<plugin class="io.vertigo.commons.plugins.cache.map.MapCachePlugin" />
+			<plugin class="io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin" />
 		</component>
 	</module>
 </config>

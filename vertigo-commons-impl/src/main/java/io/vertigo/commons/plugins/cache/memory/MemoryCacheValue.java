@@ -16,26 +16,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.kvdatastore;
+package io.vertigo.commons.plugins.cache.memory;
 
-public final class Flower {
-	private String name;
-	private Double price;
+import java.io.Serializable;
 
-	public Double getPrice() {
-		return price;
+/**
+ * @author npiedeloup
+ */
+final class MemoryCacheValue {
+	private final long createTime;
+	private final Serializable value;
+
+	MemoryCacheValue(final Serializable value) {
+		this.value = value;
+		createTime = System.currentTimeMillis();
 	}
 
-	public String getName() {
-		return name;
+	Serializable getValue() {
+		return value;
 	}
 
-	public void setPrice(final Double price) {
-		this.price = price;
+	long getCreateTime() {
+		return createTime;
 	}
-
-	public void setName(final String name) {
-		this.name = name;
-	}
-
 }
