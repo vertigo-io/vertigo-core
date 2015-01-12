@@ -38,7 +38,7 @@ import com.lowagie.text.rtf.headerfooter.RtfHeaderFooter;
 
 /**
  * Handler d'export RTF avec iText. Configuré par ExportParametersRTF.
- * 
+ *
  * @author evernat
  */
 final class RTFExporter extends AbstractExporterIText {
@@ -57,12 +57,14 @@ final class RTFExporter extends AbstractExporterIText {
 		// writer.setViewerPreferences(PdfWriter.PageLayoutTwoColumnLeft);
 
 		// advanced page numbers : x/y
-		final Paragraph footerParagraph = new Paragraph();
 		final Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 12, Font.NORMAL);
+		//-----
+		final Paragraph footerParagraph = new Paragraph();
 		footerParagraph.add(new RtfPageNumber(font));
 		footerParagraph.add(new Phrase(" / ", font));
 		footerParagraph.add(new RtfTotalPageNumber(font));
 		footerParagraph.setAlignment(Element.ALIGN_CENTER);
+		//-----
 		final HeaderFooter footer = new RtfHeaderFooter(footerParagraph);
 		footer.setBorder(Rectangle.TOP);
 		document.setFooter(footer);
