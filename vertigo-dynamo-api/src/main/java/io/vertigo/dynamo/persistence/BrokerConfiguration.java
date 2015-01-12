@@ -22,7 +22,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 
 /**
  * Configuration du composant de persistance.
- * 
+ *
  * @author pchretien
  */
 public interface BrokerConfiguration {
@@ -40,5 +40,5 @@ public interface BrokerConfiguration {
 	 * @param dtDefinition Définition de DT
 	 * @param specificStore Store spécifique
 	 */
-	void register(final DtDefinition dtDefinition, final DataStorePlugin specificStore);
+	void register(final DtDefinition dtDefinition, final DataStore specificStore);
 }

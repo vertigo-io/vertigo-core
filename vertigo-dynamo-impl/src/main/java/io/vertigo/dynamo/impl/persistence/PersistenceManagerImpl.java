@@ -24,7 +24,6 @@ import io.vertigo.dynamo.impl.persistence.util.BrokerNNImpl;
 import io.vertigo.dynamo.persistence.Broker;
 import io.vertigo.dynamo.persistence.BrokerConfiguration;
 import io.vertigo.dynamo.persistence.BrokerNN;
-import io.vertigo.dynamo.persistence.DataStorePlugin;
 import io.vertigo.dynamo.persistence.MasterDataConfiguration;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.task.TaskManager;

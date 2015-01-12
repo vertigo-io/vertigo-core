@@ -16,25 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.export;
+package io.vertigo.dynamo.impl.persistence;
 
-import io.vertigo.dynamo.export.model.Export;
-import io.vertigo.dynamo.file.model.KFile;
-import io.vertigo.lang.Component;
+import io.vertigo.dynamo.persistence.DataStore;
+import io.vertigo.lang.Plugin;
 
 /**
- * Gestionnaire centralisé des éditions de données.
- * Le choix du type de report est fait par l'appelant qui fournit les paramètres adaptés à son besoin.
+ * Plugin permettant de gérer les accès physiques à un quelconque système de stockage.
+ * SQL ou non SQL.
  *
- * @author pchretien, npiedeloup
+ * @author  pchretien
  */
-public interface ExportManager extends Component {
-
-	/**
-	 * Create a file from a config.
-	 * @param export Config of the export
-	 * @return sFile
-	 */
-	KFile createExportFile(final Export export);
-
+public interface DataStorePlugin extends Plugin, DataStore {
+	//
 }

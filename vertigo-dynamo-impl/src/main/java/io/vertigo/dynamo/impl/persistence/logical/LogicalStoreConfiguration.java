@@ -20,7 +20,7 @@ package io.vertigo.dynamo.impl.persistence.logical;
 
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.persistence.DataStorePlugin;
+import io.vertigo.dynamo.persistence.DataStore;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.lang.Assertion;
 
@@ -28,7 +28,7 @@ import io.vertigo.lang.Assertion;
  * Configuration logique des stores physiques.
  * @author pchretien
  */
-public final class LogicalStoreConfiguration extends AbstractLogicalStoreConfiguration<DtDefinition, DataStorePlugin> {
+public final class LogicalStoreConfiguration extends AbstractLogicalStoreConfiguration<DtDefinition, DataStore> {
 	private final PersistenceManager persistenceManager;
 	private final CollectionsManager collectionsManager;
 
