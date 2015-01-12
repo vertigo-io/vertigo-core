@@ -163,8 +163,11 @@ final class BerkeleyDatabase {
 		} catch (final DatabaseException e) {
 			throw new RuntimeException(e);
 		}
+		if (OperationStatus.NOTFOUND.equals(status)) {
+			throw new RuntimeException("delete has failed because no data found with key : " + id);
+		}
 		if (!OperationStatus.SUCCESS.equals(status)) {
-			throw new RuntimeException("delete a échouée");
+			throw new RuntimeException("delete has failed");
 		}
 	}
 }

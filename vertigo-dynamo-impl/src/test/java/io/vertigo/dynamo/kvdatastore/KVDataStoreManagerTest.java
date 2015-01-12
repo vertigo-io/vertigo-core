@@ -19,10 +19,11 @@
 package io.vertigo.dynamo.kvdatastore;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.dynamo.kvdatastore.data.Flower;
 import io.vertigo.dynamo.transaction.KTransactionManager;
 import io.vertigo.dynamo.transaction.KTransactionWritable;
-import io.vertigo.dynamock.domain.car.Car;
 import io.vertigo.lang.Option;
+import io.vertigo.util.ListBuilder;
 
 import java.util.List;
 
@@ -41,65 +42,78 @@ public class KVDataStoreManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private KTransactionManager transactionManager;
 
-	@Test
-	public void testFindPutFind() {
-		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			Option<Car> search;
-			search = kvDataStoreManager.find(DEFAULT_DATA_STORE_NAME, "1", Car.class);
-			Assert.assertTrue(search.isEmpty());
-			final Car car = new Car();
-			car.setModel("205 gti");
-
-			kvDataStoreManager.put(DEFAULT_DATA_STORE_NAME, "1", car);
-			search = kvDataStoreManager.find(DEFAULT_DATA_STORE_NAME, "1", Car.class);
-			Assert.assertTrue(search.isDefined());
-			Assert.assertEquals("205 gti", search.get().getModel());
-
-		}
-	}
-
-	private static void addCar(final List<Car> cars, final String model) {
-		final Car car = new Car();
-		car.setModel(model);
-		cars.add(car);
+	private static Flower buildFlower(final String name, final double price) {
+		final Flower flower = new Flower();
+		flower.setName(name);
+		flower.setPrice(price);
+		return flower;
 	}
 
 	@Test
-	public void testFindAllPutFindAll() {
+	public void testFind() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			List<Car> cars;
-			cars = kvDataStoreManager.findAll(DEFAULT_DATA_STORE_NAME, 0, null, Car.class);
-			Assert.assertTrue(cars.isEmpty());
+			Option<Flower> foundFlower;
+			foundFlower = kvDataStoreManager.find(DEFAULT_DATA_STORE_NAME, "1", Flower.class);
+			Assert.assertTrue(foundFlower.isEmpty());
+			final Flower tulip = buildFlower("tulip", 100);
 
-			addCar(cars, "205 gti");
-			addCar(cars, "R4");
-			addCar(cars, "R5");
-			addCar(cars, "2CV");
-
-			//			for (
-			//			kvDataStoreManager.getDataStore().put("1", car);
-			//			search = kvDataStoreManager.getDataStore().find("1", Car.class);
-			//			Assert.assertTrue(search.isDefined());
-			//			Assert.assertEquals("205 gti", search.get().getModel());
-
+			kvDataStoreManager.put(DEFAULT_DATA_STORE_NAME, "1", tulip);
+			foundFlower = kvDataStoreManager.find(DEFAULT_DATA_STORE_NAME, "1", Flower.class);
+			Assert.assertTrue(foundFlower.isDefined());
+			Assert.assertEquals("tulip", foundFlower.get().getName());
+			Assert.assertEquals(100d, foundFlower.get().getPrice(), 0); //"Price must be excatly 100",
 		}
 	}
 
 	@Test
-	public void test2() {
-		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			Option<Flower> search;
-			search = kvDataStoreManager.find(DEFAULT_DATA_STORE_NAME, "1", Flower.class);
-			Assert.assertTrue(search.isEmpty());
-			final Flower flower = new Flower();
-			flower.setName("Hortensia");
-			flower.setPrice(10d);
-			kvDataStoreManager.put(DEFAULT_DATA_STORE_NAME, "H1", flower);
-			search = kvDataStoreManager.find(DEFAULT_DATA_STORE_NAME, "H1", Flower.class);
-			Assert.assertTrue(search.isDefined());
-			Assert.assertEquals("Hortensia", search.get().getName());
+	public void testFindAll() {
+		final List<Flower> flowers = new ListBuilder<Flower>()
+				.add(buildFlower("daisy", 60))
+				.add(buildFlower("tulip", 100))
+				.add(buildFlower("rose", 110))
+				.add(buildFlower("lily", 120))
+				.add(buildFlower("orchid", 200))
+				.build();
 
-			Assert.assertEquals(10d, search.get().getPrice(), 0); //"Price must be excatly 10",
+		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			List<Flower> foundFlowers;
+
+			foundFlowers = kvDataStoreManager.findAll(DEFAULT_DATA_STORE_NAME, 0, null, Flower.class);
+			Assert.assertTrue(foundFlowers.isEmpty());
+
+			int i = 0;
+			for (final Flower flower : flowers) {
+				final String id = "" + i++;
+				kvDataStoreManager.put(DEFAULT_DATA_STORE_NAME, id, flower);
+
+			}
+
+			foundFlowers = kvDataStoreManager.findAll(DEFAULT_DATA_STORE_NAME, 0, 1000, Flower.class);
+			Assert.assertEquals(flowers.size(), foundFlowers.size());
+			transaction.commit();
 		}
 	}
+
+	@Test(expected = RuntimeException.class)
+	public void testRemoveFail() {
+		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			kvDataStoreManager.remove(DEFAULT_DATA_STORE_NAME, "1");
+		}
+	}
+
+	@Test
+	public void testRemove() {
+		testFindAll();
+		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			List<Flower> foundFlowers;
+			foundFlowers = kvDataStoreManager.findAll(DEFAULT_DATA_STORE_NAME, 0, 1000, Flower.class);
+			final int before = foundFlowers.size();
+			//-----
+			kvDataStoreManager.remove(DEFAULT_DATA_STORE_NAME, "1");
+			//-----
+			foundFlowers = kvDataStoreManager.findAll(DEFAULT_DATA_STORE_NAME, 0, 1000, Flower.class);
+			Assert.assertEquals(before - 1, foundFlowers.size());
+		}
+	}
+
 }

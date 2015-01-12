@@ -30,6 +30,7 @@ public final class CacheConfig {
 	private final int maxElementsInMemory;
 	private final long timeToLiveSeconds;
 	private final long timeToIdleSeconds;
+	private final boolean eternal;
 
 	public CacheConfig(final String cacheType, final int maxElementsInMemory, final long timeToLiveSeconds, final long timeToIdleSeconds) {
 		Assertion.checkArgNotEmpty(cacheType);
@@ -38,6 +39,7 @@ public final class CacheConfig {
 		this.maxElementsInMemory = maxElementsInMemory;
 		this.timeToLiveSeconds = timeToLiveSeconds;
 		this.timeToIdleSeconds = timeToIdleSeconds;
+		this.eternal = false;
 	}
 
 	public String getCacheType() {
@@ -45,7 +47,7 @@ public final class CacheConfig {
 	}
 
 	public boolean isEternal() {
-		return false;
+		return eternal;
 	}
 
 	public int getMaxElementsInMemory() {
