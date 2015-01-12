@@ -27,7 +27,7 @@ import java.util.List;
 import org.codehaus.janino.ScriptEvaluator;
 
 /**
- * Evaluation d'une expression en se basant sur Janino.
+ * Evaluate an expression using Janino.
  *
  * @author  pchretien
  */
@@ -35,7 +35,7 @@ public final class JaninoExpressionEvaluatorPlugin implements ExpressionEvaluato
 	/** {@inheritDoc} */
 	@Override
 	public <J> J evaluate(final String expression, final List<ExpressionParameter> parameters, final Class<J> type) {
-		//==========Initialisation des types et noms de paramètre==============
+		//0. Init Janino parameters defined by their names, types and values.
 		final int size = parameters.size();
 
 		final String[] parameterNames = new String[size];
@@ -49,19 +49,15 @@ public final class JaninoExpressionEvaluatorPlugin implements ExpressionEvaluato
 			parameterValues[i] = parameter.getValue();
 			i++;
 		}
-		return type.cast(doEvaluate(expression, type, parameterNames, parameterTypes, parameterValues));
+
+		//1. Build the scriptEvaluator
+		final ScriptEvaluator scriptEvaluator = buildEvaluator(expression, type, parameterNames, parameterTypes);
+
+		//2.Evaluate the script
+		return type.cast(doEvaluate(scriptEvaluator, parameterValues));
 	}
 
-	private Object doEvaluate(final String expression, final Class<?> type, final String[] parameterNames, final Class<?>[] parameterTypes, final Object[] parameterValues) {
-		final ScriptEvaluator scriptEvaluator;
-		//1. Phase de construction du script
-		try {
-			scriptEvaluator = new ScriptEvaluator(expression, type, parameterNames, parameterTypes);
-		} catch (final Exception ex) {
-			throw new RuntimeException("Erreur durant la construction du preprocessing de texte dynamique dans \n" + expression + '\n', ex);
-		}
-
-		//2. Phase d'évaluation du script
+	private static Object doEvaluate(final ScriptEvaluator scriptEvaluator, final Object[] parameterValues) {
 		try {
 			return scriptEvaluator.evaluate(parameterValues);
 		} catch (final InvocationTargetException e) {
@@ -76,6 +72,14 @@ public final class JaninoExpressionEvaluatorPlugin implements ExpressionEvaluato
 				throw (Error) t;
 			}
 			throw new RuntimeException("Erreur durant l'évaluation du script", t);
+		}
+	}
+
+	private static ScriptEvaluator buildEvaluator(final String expression, final Class<?> type, final String[] parameterNames, final Class<?>[] parameterTypes) {
+		try {
+			return new ScriptEvaluator(expression, type, parameterNames, parameterTypes);
+		} catch (final Exception ex) {
+			throw new RuntimeException("An error occurred during text preprocessing  in \n" + expression + '\n', ex);
 		}
 	}
 }
