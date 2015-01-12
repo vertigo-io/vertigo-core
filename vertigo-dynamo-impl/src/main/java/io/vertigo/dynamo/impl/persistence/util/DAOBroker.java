@@ -30,9 +30,9 @@ import io.vertigo.dynamo.persistence.Broker;
 import io.vertigo.dynamo.persistence.BrokerBatch;
 import io.vertigo.dynamo.persistence.BrokerNN;
 import io.vertigo.dynamo.persistence.Criteria;
-import io.vertigo.dynamo.persistence.FilterCriteria;
-import io.vertigo.dynamo.persistence.FilterCriteriaBuilder;
 import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.persistence.criteria.FilterCriteria;
+import io.vertigo.dynamo.persistence.criteria.FilterCriteriaBuilder;
 import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;

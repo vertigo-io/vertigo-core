@@ -16,9 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.persistence;
+package io.vertigo.dynamo.persistence.criteria;
 
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.persistence.Criteria;
 import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
