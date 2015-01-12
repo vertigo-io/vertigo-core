@@ -65,9 +65,11 @@ public class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P>
 	 *
 	 * @param dtDefinition Définition associé à l'objet géré
 	 */
-	public BrokerBatchImpl(final DtDefinition dtDefinition) {
-		super();
-		taskManager = Home.getComponentSpace().resolve(TaskManager.class);
+	public BrokerBatchImpl(final DtDefinition dtDefinition, final TaskManager taskManager) {
+		Assertion.checkNotNull(dtDefinition);
+		Assertion.checkNotNull(taskManager);
+		//-----
+		this.taskManager = taskManager;
 		this.dtDefinition = dtDefinition;
 	}
 

@@ -33,6 +33,7 @@ import io.vertigo.dynamo.persistence.Criteria;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.persistence.criteria.FilterCriteria;
 import io.vertigo.dynamo.persistence.criteria.FilterCriteriaBuilder;
+import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
@@ -61,8 +62,8 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 * @param dtObjectClass Définition du DtObject associé à ce DAOBroker
 	 * @param persistenceManager Manager de gestion de la persistance
 	 */
-	public DAOBroker(final Class<? extends DtObject> dtObjectClass, final PersistenceManager persistenceManager) {
-		this(DtObjectUtil.findDtDefinition(dtObjectClass), persistenceManager);
+	public DAOBroker(final Class<? extends DtObject> dtObjectClass, final PersistenceManager persistenceManager, final TaskManager taskManager) {
+		this(DtObjectUtil.findDtDefinition(dtObjectClass), persistenceManager, taskManager);
 	}
 
 	/**
@@ -71,14 +72,15 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 * @param dtDefinition Définition du DtObject associé à ce DAOBroker
 	 * @param persistenceManager Manager de gestion de la persistance
 	 */
-	public DAOBroker(final DtDefinition dtDefinition, final PersistenceManager persistenceManager) {
+	public DAOBroker(final DtDefinition dtDefinition, final PersistenceManager persistenceManager, final TaskManager taskManager) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(persistenceManager);
+		Assertion.checkNotNull(taskManager);
 		//-----
 		broker = persistenceManager.getBroker();
 		brokerNN = persistenceManager.getBrokerNN();
 		this.dtDefinition = dtDefinition;
-		brokerBatch = new BrokerBatchImpl<>(dtDefinition);
+		brokerBatch = new BrokerBatchImpl<>(dtDefinition, taskManager);
 	}
 
 	/**
