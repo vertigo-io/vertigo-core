@@ -42,7 +42,7 @@ public final class ClassPathResourceResolverPlugin implements ResourceResolverPl
 		return Option.option(url);
 	}
 
-	private ClassLoader getClassLoader() {
+	private static ClassLoader getClassLoader() {
 		//On récupère le classLoader courant (celui qui a créé le thread).
 		return Thread.currentThread().getContextClassLoader();
 	}

@@ -77,22 +77,12 @@ final class MapCache {
 		return eternal;
 	}
 
-	//=========================================================================
-	//=============================Données=====================================
-	//=========================================================================
 	/**
 	 * @return Nombre d'élément en cache
 	 */
 	synchronized int getElementCount() {
 		return cacheDatas.size();
 	}
-
-	//	/**
-	//	 * @return Taille mémoire
-	//	 */
-	//	long calculateInMemorySize() {
-	//		return -1; //TODO il serait bon de pouvoir l'évaluer
-	//	}
 
 	/**
 	 * @return Nombre de cache hit
@@ -116,7 +106,7 @@ final class MapCache {
 		totalCalls++;
 		final CacheValue cacheValue = cacheDatas.get(key);
 		if (cacheValue != null) {
-			if (checkAge(cacheValue)) {
+			if (isAlive(cacheValue)) {
 				totalHits++;
 				return cacheValue.getValue();
 			}
@@ -125,7 +115,10 @@ final class MapCache {
 		return null;
 	}
 
-	private boolean checkAge(final CacheValue cacheValue) {
+	private boolean isAlive(final CacheValue cacheValue) {
+		//Data is alive
+		// - if it's eternal
+		// - if its age is less than than 'timeToLiveSeconds'
 		return eternal || System.currentTimeMillis() - cacheValue.getCreateTime() < timeToLiveSeconds * 1000;
 	}
 

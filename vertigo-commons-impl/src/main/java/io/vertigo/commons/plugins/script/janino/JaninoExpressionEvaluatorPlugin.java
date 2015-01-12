@@ -20,6 +20,7 @@ package io.vertigo.commons.plugins.script.janino;
 
 import io.vertigo.commons.impl.script.ExpressionEvaluatorPlugin;
 import io.vertigo.commons.script.ExpressionParameter;
+import io.vertigo.lang.Assertion;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -35,6 +36,10 @@ public final class JaninoExpressionEvaluatorPlugin implements ExpressionEvaluato
 	/** {@inheritDoc} */
 	@Override
 	public <J> J evaluate(final String expression, final List<ExpressionParameter> parameters, final Class<J> type) {
+		Assertion.checkNotNull(expression);
+		Assertion.checkNotNull(parameters);
+		Assertion.checkNotNull(type);
+		//-----
 		//0. Init Janino parameters defined by their names, types and values.
 		final int size = parameters.size();
 
@@ -61,9 +66,7 @@ public final class JaninoExpressionEvaluatorPlugin implements ExpressionEvaluato
 		try {
 			return scriptEvaluator.evaluate(parameterValues);
 		} catch (final InvocationTargetException e) {
-			//On déballe l'exception
-			//Si l'exception originale est une KSystemException on la retourne
-			//Sinon on l'embale dans une KSystemException
+			//Unpacking the exception
 			final Throwable t = e.getCause();
 			if (t instanceof RuntimeException) {
 				throw (RuntimeException) t;
@@ -71,7 +74,7 @@ public final class JaninoExpressionEvaluatorPlugin implements ExpressionEvaluato
 			if (t instanceof Error) {
 				throw (Error) t;
 			}
-			throw new RuntimeException("Erreur durant l'évaluation du script", t);
+			throw new RuntimeException("An error occurred during expression's evaluation", t);
 		}
 	}
 
@@ -79,7 +82,7 @@ public final class JaninoExpressionEvaluatorPlugin implements ExpressionEvaluato
 		try {
 			return new ScriptEvaluator(expression, type, parameterNames, parameterTypes);
 		} catch (final Exception ex) {
-			throw new RuntimeException("An error occurred during text preprocessing  in \n" + expression + '\n', ex);
+			throw new RuntimeException("An error occurred during expression's preprocessing  in \n" + expression + '\n', ex);
 		}
 	}
 }
