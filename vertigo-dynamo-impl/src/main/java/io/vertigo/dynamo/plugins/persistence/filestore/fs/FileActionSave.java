@@ -59,7 +59,7 @@ final class FileActionSave implements FileAction {
 		newFile = new File(path + EXT_SEPARATOR + new Date().getTime() + EXT_SEPARATOR + EXT_NEW);
 
 		// création du fichier temporaire
-		if (!newFile.getParentFile().mkdirs()) {
+		if (!newFile.getParentFile().exists() && !newFile.getParentFile().mkdirs()) {
 			LOG.error("Can't create temp directories " + newFile.getAbsolutePath());
 			throw new RuntimeException("Can't create temp directories");
 		}
