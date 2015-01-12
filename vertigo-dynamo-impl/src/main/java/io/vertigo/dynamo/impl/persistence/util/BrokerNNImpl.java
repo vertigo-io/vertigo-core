@@ -168,7 +168,7 @@ public final class BrokerNNImpl implements BrokerNN {
 		final String targetFieldName = nn.targetField.getName();
 		final String taskName = "TK_DELETE_" + nn.tableName;
 
-		final String request = String.format("delete from %s where %s = #%s# and %s = #%s#",//
+		final String request = String.format("delete from %s where %s = #%s# and %s = #%s#",
 				nn.tableName, sourceFieldName, sourceFieldName, targetFieldName, targetFieldName);
 		final int sqlRowCount = processNN(taskName, request, nn.sourceField, nn.sourceValue, nn.targetField, targetValue);
 		if (sqlRowCount > 1) {
@@ -196,8 +196,8 @@ public final class BrokerNNImpl implements BrokerNN {
 				.build();
 
 		/* Création de la tache. */
-		final TaskBuilder taskBuilder = new TaskBuilder(taskDefinition);
-		taskBuilder.withValue(sourceFieldName, sourceValue);
+		final TaskBuilder taskBuilder = new TaskBuilder(taskDefinition)
+				.withValue(sourceFieldName, sourceValue);
 		if (targetField != null) {
 			taskBuilder.withValue(targetField.getName(), targetValue);
 		}
