@@ -26,11 +26,7 @@ import io.vertigo.dynamo.export.model.Export;
 import io.vertigo.dynamo.export.model.ExportBuilder;
 import io.vertigo.dynamo.export.model.ExportFormat;
 import io.vertigo.dynamo.file.model.KFile;
-import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.lang.MessageText;
-
-import java.io.File;
-import java.io.IOException;
 
 import javax.inject.Inject;
 
@@ -42,11 +38,11 @@ import org.junit.Test;
  * @author dchallas
  */
 public final class ExportManagerTest extends AbstractTestCaseJU4 {
-	@Inject
-	private ExportManager exportManager;
 	// Répertoire de test
 	private static String OUTPUT_PATH = "c:/tmp/";
-	private static final boolean KEEP_OUTPUT_FILE = false;
+
+	@Inject
+	private ExportManager exportManager;
 
 	/**
 	 * Test l'export CSV.
@@ -59,9 +55,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 				.beginSheet(dtc, "famille").endSheet()
 				.build();
 		final KFile result = exportManager.createExportFile(export);
-		if (KEEP_OUTPUT_FILE) {
-			save(result);
-		}
+		nop(result);
 	}
 
 	/**
@@ -75,9 +69,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 				.beginSheet(china, "china").endSheet()
 				.build();
 		final KFile result = exportManager.createExportFile(export);
-		if (KEEP_OUTPUT_FILE) {
-			save(result);
-		}
+		nop(result);
 	}
 
 	/**
@@ -92,9 +84,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);
-		if (KEEP_OUTPUT_FILE) {
-			save(result);
-		}
+		nop(result);
 	}
 
 	/**
@@ -109,9 +99,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);
-		if (KEEP_OUTPUT_FILE) {
-			save(result);
-		}
+		nop(result);
 	}
 
 	/**
@@ -131,9 +119,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);
-		if (KEEP_OUTPUT_FILE) {
-			save(result);
-		}
+		nop(result);
 	}
 
 	/**
@@ -152,9 +138,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);
-		if (KEEP_OUTPUT_FILE) {
-			save(result);
-		}
+		nop(result);
 	}
 
 	/**
@@ -169,9 +153,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);
-		if (KEEP_OUTPUT_FILE) {
-			save(result);
-		}
+		nop(result);
 	}
 
 	/**
@@ -188,9 +170,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);
-		if (KEEP_OUTPUT_FILE) {
-			save(result);
-		}
+		nop(result);
 	}
 
 	/**
@@ -206,31 +186,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 				.build();
 
 		final KFile result = exportManager.createExportFile(export);
-		if (KEEP_OUTPUT_FILE) {
-			save(result);
-		}
+		nop(result);
 	}
-
-	// /**
-	// * Test l'export ODS.
-	// */
-	// @Test
-	// public void testExportHandlerODS() {
-	// final DtList<Famille> dtc = createDtc();
-	// final ExportDtParameters dtParameter =
-	// exportManager.createExportListParameters(dtc);
-	//
-	// final Export export = new ExportBuilder(ExportFormat.ODS, OUTPUT_PATH +
-	// "test.ods")
-	// .withSheet(dtParameter)
-	// .withAuthor("test")
-	// .build();
-	//
-	// final KFile result = exportManager.createExportFile(export);
-	// if (KEEP_OUTPUT_FILE) {
-	// save(result);
-	// }
-	// }
 
 	private static DtList<Country> buildCountries() {
 		final DtList<Country> dtc = new DtList<>(Country.class);
@@ -255,13 +212,5 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		dtc.add(japan);
 
 		return dtc;
-	}
-
-	private static void save(final KFile result) {
-		try {
-			FileUtil.copy(result.createInputStream(), new File(result.getFileName()));
-		} catch (final IOException e) {
-			throw new RuntimeException(e);
-		}
 	}
 }

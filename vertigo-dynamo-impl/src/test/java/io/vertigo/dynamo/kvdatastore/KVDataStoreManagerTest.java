@@ -35,7 +35,7 @@ import org.junit.Test;
 /**
  * @author pchretien
  */
-public class KVDataStoreManagerTest extends AbstractTestCaseJU4 {
+public final class KVDataStoreManagerTest extends AbstractTestCaseJU4 {
 	private static final String DEFAULT_DATA_STORE_NAME = "default";
 	@Inject
 	private KVDataStoreManager kvDataStoreManager;
@@ -52,16 +52,15 @@ public class KVDataStoreManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testFind() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			Option<Flower> foundFlower;
-			foundFlower = kvDataStoreManager.find(DEFAULT_DATA_STORE_NAME, "1", Flower.class);
+			final Option<Flower> foundFlower = kvDataStoreManager.find(DEFAULT_DATA_STORE_NAME, "1", Flower.class);
 			Assert.assertTrue(foundFlower.isEmpty());
 			final Flower tulip = buildFlower("tulip", 100);
 
 			kvDataStoreManager.put(DEFAULT_DATA_STORE_NAME, "1", tulip);
-			foundFlower = kvDataStoreManager.find(DEFAULT_DATA_STORE_NAME, "1", Flower.class);
-			Assert.assertTrue(foundFlower.isDefined());
-			Assert.assertEquals("tulip", foundFlower.get().getName());
-			Assert.assertEquals(100d, foundFlower.get().getPrice(), 0); //"Price must be excatly 100",
+			final Option<Flower> foundFlower2 = kvDataStoreManager.find(DEFAULT_DATA_STORE_NAME, "1", Flower.class);
+			Assert.assertTrue(foundFlower2.isDefined());
+			Assert.assertEquals("tulip", foundFlower2.get().getName());
+			Assert.assertEquals(100d, foundFlower2.get().getPrice(), 0); //"Price must be excatly 100",
 		}
 	}
 
@@ -76,9 +75,7 @@ public class KVDataStoreManagerTest extends AbstractTestCaseJU4 {
 				.build();
 
 		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			List<Flower> foundFlowers;
-
-			foundFlowers = kvDataStoreManager.findAll(DEFAULT_DATA_STORE_NAME, 0, null, Flower.class);
+			final List<Flower> foundFlowers = kvDataStoreManager.findAll(DEFAULT_DATA_STORE_NAME, 0, null, Flower.class);
 			Assert.assertTrue(foundFlowers.isEmpty());
 
 			int i = 0;
@@ -88,8 +85,8 @@ public class KVDataStoreManagerTest extends AbstractTestCaseJU4 {
 
 			}
 
-			foundFlowers = kvDataStoreManager.findAll(DEFAULT_DATA_STORE_NAME, 0, 1000, Flower.class);
-			Assert.assertEquals(flowers.size(), foundFlowers.size());
+			final List<Flower> foundFlowers2 = kvDataStoreManager.findAll(DEFAULT_DATA_STORE_NAME, 0, 1000, Flower.class);
+			Assert.assertEquals(flowers.size(), foundFlowers2.size());
 			transaction.commit();
 		}
 	}
@@ -105,14 +102,12 @@ public class KVDataStoreManagerTest extends AbstractTestCaseJU4 {
 	public void testRemove() {
 		testFindAll();
 		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			List<Flower> foundFlowers;
-			foundFlowers = kvDataStoreManager.findAll(DEFAULT_DATA_STORE_NAME, 0, 1000, Flower.class);
-			final int before = foundFlowers.size();
+			final List<Flower> foundFlowers = kvDataStoreManager.findAll(DEFAULT_DATA_STORE_NAME, 0, 1000, Flower.class);
 			//-----
 			kvDataStoreManager.remove(DEFAULT_DATA_STORE_NAME, "1");
 			//-----
-			foundFlowers = kvDataStoreManager.findAll(DEFAULT_DATA_STORE_NAME, 0, 1000, Flower.class);
-			Assert.assertEquals(before - 1, foundFlowers.size());
+			final List<Flower> foundFlowers2 = kvDataStoreManager.findAll(DEFAULT_DATA_STORE_NAME, 0, 1000, Flower.class);
+			Assert.assertEquals(foundFlowers.size() - 1, foundFlowers2.size());
 		}
 	}
 
