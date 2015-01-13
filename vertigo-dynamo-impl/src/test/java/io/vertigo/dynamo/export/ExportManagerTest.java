@@ -190,27 +190,17 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private static DtList<Country> buildCountries() {
+		final Country france = new Country().setId(1L).setName("France");
+		final Country usa = new Country().setId(2L).setName("usa");
+		final Country unknown = new Country().setId(3L); //no name
+		final Country japan = new Country().setId(4L).setName("japan");
+
 		final DtList<Country> dtc = new DtList<>(Country.class);
 		// les index sont données par ordre alpha > null à la fin >
-		final Country france = new Country()
-				.setId(1L)
-				.setName("France");
 		dtc.add(france);
-
-		final Country usa = new Country()
-				.setId(2L)
-				.setName("usa");
 		dtc.add(usa);
-
-		final Country unknown = new Country()
-				.setId(3L); //no name
 		dtc.add(unknown);
-
-		final Country japan = new Country()
-				.setId(4L)
-				.setName("japan");
 		dtc.add(japan);
-
 		return dtc;
 	}
 }

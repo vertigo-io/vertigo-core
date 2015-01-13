@@ -123,10 +123,6 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		final Domain domain = Home.getDefinitionSpace().resolve("DO_DT_MOVIE_DTC", Domain.class);
 		final SqlQueryResult result = executeQuery(domain, "select * from movie");
 
-		checkResult(result);
-	}
-
-	private static void checkResult(final SqlQueryResult result) {
 		Assert.assertEquals(3, result.getSQLRowCount());
 
 		final DtList<Movie> movies = (DtList<Movie>) result.getValue();
@@ -134,15 +130,20 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 
 		for (final Movie movie : movies) {
 			final long id = movie.getId();
-			if (id == 1) {
-				Assert.assertEquals(TITLE_MOVIE_1, movie.getTitle());
-			} else if (id == 2) {
-				Assert.assertEquals(TITLE_MOVIE_2, movie.getTitle());
-			} else if (id == 3) {
-				Assert.assertEquals(TITLE_MOVIE_3, movie.getTitle());
-			} else {
-				Assert.fail();
-			}
+			final String title = movie.getTitle();
+			checkTitle(id, title);
+		}
+	}
+
+	private static void checkTitle(final long id, final String title) {
+		if (id == 1) {
+			Assert.assertEquals(TITLE_MOVIE_1, title);
+		} else if (id == 2) {
+			Assert.assertEquals(TITLE_MOVIE_2, title);
+		} else if (id == 3) {
+			Assert.assertEquals(TITLE_MOVIE_3, title);
+		} else {
+			Assert.fail();
 		}
 	}
 
@@ -208,15 +209,8 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 
 		for (final DtObject dynMovie : dynMovies) {
 			final long id = (Long) getValue(dynMovie, "ID");
-			if (id == 1) {
-				Assert.assertEquals(TITLE_MOVIE_1, getValue(dynMovie, "TITLE"));
-			} else if (id == 2) {
-				Assert.assertEquals(TITLE_MOVIE_2, getValue(dynMovie, "TITLE"));
-			} else if (id == 3) {
-				Assert.assertEquals(TITLE_MOVIE_3, getValue(dynMovie, "TITLE"));
-			} else {
-				Assert.fail();
-			}
+			final String title = (String) getValue(dynMovie, "TITLE");
+			checkTitle(id, title);
 		}
 	}
 
