@@ -243,14 +243,14 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 				.withValue("CAR_ID", carId)
 				.build();
 		final TaskResult taskResult = taskManager.execute(task);
-		return taskResult.<Car> getValue("DTO_CAR_OUT");
+		return taskResult.getValue("DTO_CAR_OUT");
 	}
 
 	protected final DtList<Car> nativeLoadCarList() {
 		final Task task = new TaskBuilder(taskLoadCars)
 				.build();
 		final TaskResult taskResult = taskManager.execute(task);
-		return taskResult.<DtList<Car>> getValue("DTC_CAR_OUT");
+		return taskResult.getValue("DTC_CAR_OUT");
 	}
 
 	protected final List<Map<String, String>> execPreparedStatement(final SqlConnection connection, final String sql) throws SQLException {

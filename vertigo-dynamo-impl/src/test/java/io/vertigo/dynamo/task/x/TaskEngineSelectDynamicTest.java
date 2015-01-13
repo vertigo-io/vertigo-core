@@ -49,6 +49,12 @@ import org.junit.Test;
  * @author npiedeloup
  */
 public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
+	private static final String DTC_SUPER_HERO_IN = "DTC_SUPER_HERO_IN";
+	private static final String DO_INTEGER = "DO_INTEGER";
+	private static final String DO_DT_SUPER_HERO_DTO = "DO_DT_SUPER_HERO_DTO";
+	private static final String DO_DT_SUPER_HERO_DTC = "DO_DT_SUPER_HERO_DTC";
+	private static final String DTO_SUPER_HERO = "DTO_SUPER_HERO";
+	private static final String DTC_SUPER_HERO_OUT = "DTC_SUPER_HERO_OUT";
 	@Inject
 	private TaskManager taskManager;
 	@Inject
@@ -99,19 +105,18 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testScript() {
 		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final String TK_SCRIPT_TEST = "TK_SCRIPT_TEST";
-			registerTaskObject(TK_SCRIPT_TEST, "select * from SUPER_HERO <%if(false) {%>where ID = #DTO_SUPER_HERO.ID#<%}%>");
-			final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(TK_SCRIPT_TEST, TaskDefinition.class);
+			final TaskDefinition taskDefinition = registerTaskObject("TK_SCRIPT_TEST",
+					"select * from SUPER_HERO <%if(false) {%>where ID = #DTO_SUPER_HERO.ID#<%}%>");
 
-			final SuperHero superHero = new SuperHero();
-			superHero.setId(10001L + 1);
+			final SuperHero superHero = createSuperHero(10001L + 1);
+
 			final Task task = new TaskBuilder(taskDefinition)
-					.withValue("DTO_SUPER_HERO", superHero)
+					.withValue(DTO_SUPER_HERO, superHero)
 					.build();
-			// on suppose un appel synchrone : getResult immédiat.
+
 			final TaskResult result = taskManager.execute(task);
 
-			final DtList<SuperHero> resultList = result.<DtList<SuperHero>> getValue("DTC_SUPER_HERO_OUT");
+			final DtList<SuperHero> resultList = result.getValue(DTC_SUPER_HERO_OUT);
 			Assert.assertEquals(10, resultList.size());
 		}
 	}
@@ -122,21 +127,19 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testScriptVar() {
 		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final String TK_SCRIPT_TEST = "TK_SCRIPT_TEST";
-			registerTaskObject(TK_SCRIPT_TEST, "select * from SUPER_HERO <%if(dtoSuperHero.getId() == 10002L) {%>where ID = #DTO_SUPER_HERO.ID#<%}%>");
-			final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(TK_SCRIPT_TEST, TaskDefinition.class);
+			final TaskDefinition taskDefinition = registerTaskObject("TK_SCRIPT_TEST",
+					"select * from SUPER_HERO <%if(dtoSuperHero.getId() == 10002L) {%>where ID = #DTO_SUPER_HERO.ID#<%}%>");
 
 			final SuperHero superHero = new SuperHero();
 			superHero.setId(10001L + 1);
 
 			final Task task = new TaskBuilder(taskDefinition)
-					.withValue("DTO_SUPER_HERO", superHero)
+					.withValue(DTO_SUPER_HERO, superHero)
 					.build();
 
-			// on suppose un appel synchrone : getResult immédiat.
 			final TaskResult result = taskManager.execute(task);
 
-			final DtList<SuperHero> resultList = result.<DtList<SuperHero>> getValue("DTC_SUPER_HERO_OUT");
+			final DtList<SuperHero> resultList = result.getValue(DTC_SUPER_HERO_OUT);
 			Assert.assertEquals(1, resultList.size());
 			Assert.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
 		}
@@ -148,9 +151,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testNullable() {
 		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final String TK_NULLABLE_TEST = "TK_NULLABLE_TEST";
-			registerTaskWithNullableIn(TK_NULLABLE_TEST, "select * from SUPER_HERO where ID = #PARAM_1#<%if(param2!=null) {%> OR ID = #PARAM_2#+2 <%}%><%if(param3!=null) {%> OR ID = #PARAM_3#+3<%}%>");
-			final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(TK_NULLABLE_TEST, TaskDefinition.class);
+			final TaskDefinition taskDefinition = registerTaskWithNullableIn("TK_NULLABLE_TEST",
+					"select * from SUPER_HERO where ID = #PARAM_1#<%if(param2!=null) {%> OR ID = #PARAM_2#+2 <%}%><%if(param3!=null) {%> OR ID = #PARAM_3#+3<%}%>");
 
 			final Task task = new TaskBuilder(taskDefinition)
 					.withValue("PARAM_1", 10002)
@@ -158,10 +160,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.withValue("PARAM_3", 10002)
 					.build();
 
-			// on suppose un appel synchrone : getResult immédiat.
 			final TaskResult result = taskManager.execute(task);
 
-			final DtList<SuperHero> resultList = result.<DtList<SuperHero>> getValue("DTC_SUPER_HERO_OUT");
+			final DtList<SuperHero> resultList = result.getValue(DTC_SUPER_HERO_OUT);
 			Assert.assertEquals(2, resultList.size());
 			Assert.assertEquals(10002L, resultList.get(0).getId().longValue());
 			Assert.assertEquals(10002L + 3, resultList.get(1).getId().longValue());
@@ -174,18 +175,18 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testScriptVarList() {
 		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final String TK_SCRIPT_TEST = "TK_SCRIPT_TEST";
-			registerTaskList(TK_SCRIPT_TEST, "select * from SUPER_HERO <%if(!dtcSuperHeroIn.isEmpty()) {%>where ID in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)<%}%>");
-			final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(TK_SCRIPT_TEST, TaskDefinition.class);
+			final TaskDefinition taskDefinition = registerTaskList("TK_SCRIPT_TEST",
+					"select * from SUPER_HERO <%if(!dtcSuperHeroIn.isEmpty()) {%>where ID in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)<%}%>");
 
 			final DtList<SuperHero> ids = new DtList<>(SuperHero.class);
+
 			final Task task = new TaskBuilder(taskDefinition)
-					.withValue("DTC_SUPER_HERO_IN", ids)
+					.withValue(DTC_SUPER_HERO_IN, ids)
 					.build();
-			// on suppose un appel synchrone : getResult immédiat.
+
 			final TaskResult result = taskManager.execute(task);
 
-			final DtList<SuperHero> resultList = result.<DtList<SuperHero>> getValue("DTC_SUPER_HERO_OUT");
+			final DtList<SuperHero> resultList = result.getValue(DTC_SUPER_HERO_OUT);
 			Assert.assertEquals(10, resultList.size());
 		}
 	}
@@ -197,20 +198,19 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testTrim() {
 		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final String TK_SCRIPT_TEST = "TK_SCRIPT_TEST";
-			registerTaskObject(TK_SCRIPT_TEST, "select * from SUPER_HERO  \n<%if(false) {%>\nwhere ID = #DTO_SUPER_HERO.ID#\n<%}%>\n");
-			final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(TK_SCRIPT_TEST, TaskDefinition.class);
+			final TaskDefinition taskDefinition = registerTaskObject("TK_SCRIPT_TEST",
+					"select * from SUPER_HERO  \n<%if(false) {%>\nwhere ID = #DTO_SUPER_HERO.ID#\n<%}%>\n");
 
 			final SuperHero superHero = new SuperHero();
 			superHero.setId(10001L + 1);
+
 			final Task task = new TaskBuilder(taskDefinition)
-					.withValue("DTO_SUPER_HERO", superHero)
+					.withValue(DTO_SUPER_HERO, superHero)
 					.build();
 
-			// on suppose un appel synchrone : getResult immédiat.
 			final TaskResult result = taskManager.execute(task);
 
-			final DtList<SuperHero> resultList = result.<DtList<SuperHero>> getValue("DTC_SUPER_HERO_OUT");
+			final DtList<SuperHero> resultList = result.getValue(DTC_SUPER_HERO_OUT);
 			Assert.assertEquals(10, resultList.size());
 		}
 	}
@@ -221,21 +221,20 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testWhereIn() {
 		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final String TK_WHERE_ID_TEST = "TK_WHERE_ID_TEST";
-			registerTaskList(TK_WHERE_ID_TEST, "select * from SUPER_HERO  where ID in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
-			final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(TK_WHERE_ID_TEST, TaskDefinition.class);
+			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
+					"select * from SUPER_HERO  where ID in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
 
 			final DtList<SuperHero> ids = new DtList<>(SuperHero.class);
 			ids.add(createSuperHero(10001L + 1));
 			ids.add(createSuperHero(10001L + 3));
+
 			final Task task = new TaskBuilder(taskDefinition)
-					.withValue("DTC_SUPER_HERO_IN", ids)
+					.withValue(DTC_SUPER_HERO_IN, ids)
 					.build();
 
-			// on suppose un appel synchrone : getResult immédiat.
 			final TaskResult result = taskManager.execute(task);
 
-			final DtList<SuperHero> resultList = result.<DtList<SuperHero>> getValue("DTC_SUPER_HERO_OUT");
+			final DtList<SuperHero> resultList = result.getValue(DTC_SUPER_HERO_OUT);
 			Assert.assertEquals(2, resultList.size());
 			Assert.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
 			Assert.assertEquals(10001L + 3, resultList.get(1).getId().longValue());
@@ -248,18 +247,18 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testWhereInEmpty() {
 		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final String TK_WHERE_ID_TEST = "TK_WHERE_ID_TEST";
-			registerTaskList(TK_WHERE_ID_TEST, "select * from SUPER_HERO where ID in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
-			final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(TK_WHERE_ID_TEST, TaskDefinition.class);
+			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
+					"select * from SUPER_HERO where ID in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
 
 			final DtList<SuperHero> ids = new DtList<>(SuperHero.class);
+
 			final Task task = new TaskBuilder(taskDefinition)
-					.withValue("DTC_SUPER_HERO_IN", ids)
+					.withValue(DTC_SUPER_HERO_IN, ids)
 					.build();
-			// on suppose un appel synchrone : getResult immédiat.
+
 			final TaskResult result = taskManager.execute(task);
 
-			final DtList<SuperHero> resultList = result.<DtList<SuperHero>> getValue("DTC_SUPER_HERO_OUT");
+			final DtList<SuperHero> resultList = result.getValue(DTC_SUPER_HERO_OUT);
 			Assert.assertEquals(0, resultList.size());
 		}
 	}
@@ -270,13 +269,13 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testWhereNotIn() {
 		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final String TK_WHERE_ID_TEST = "TK_WHERE_ID_TEST";
-			registerTaskList(TK_WHERE_ID_TEST, "select * from SUPER_HERO where ID not in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
-			final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(TK_WHERE_ID_TEST, TaskDefinition.class);
+			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
+					"select * from SUPER_HERO where ID not in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
 
 			final DtList<SuperHero> ids = new DtList<>(SuperHero.class);
+
 			final Task task = new TaskBuilder(taskDefinition)
-					.withValue("DTC_SUPER_HERO_IN", ids).build();
+					.withValue(DTC_SUPER_HERO_IN, ids).build();
 
 			ids.add(createSuperHero(10001L + 1));
 			ids.add(createSuperHero(10001L + 3));
@@ -284,10 +283,10 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			ids.add(createSuperHero(10001L + 6));
 			ids.add(createSuperHero(10001L + 7));
 			ids.add(createSuperHero(10001L + 8));
-			// on suppose un appel synchrone : getResult immédiat.
+
 			final TaskResult result = taskManager.execute(task);
 
-			final DtList<SuperHero> resultList = result.<DtList<SuperHero>> getValue("DTC_SUPER_HERO_OUT");
+			final DtList<SuperHero> resultList = result.getValue(DTC_SUPER_HERO_OUT);
 			Assert.assertEquals(4, resultList.size());
 			Assert.assertEquals(10001L + 0, resultList.get(0).getId().longValue());
 			Assert.assertEquals(10001L + 2, resultList.get(1).getId().longValue());
@@ -302,19 +301,17 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testWhereNotInEmpty() {
 		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final String TK_WHERE_ID_TEST = "TK_WHERE_ID_TEST";
-			registerTaskList(TK_WHERE_ID_TEST, "select * from SUPER_HERO where ID not in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
-			final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(TK_WHERE_ID_TEST, TaskDefinition.class);
+			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
+					"select * from SUPER_HERO where ID not in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
 
 			final DtList<SuperHero> ids = new DtList<>(SuperHero.class);
 			final Task task = new TaskBuilder(taskDefinition)
-					.withValue("DTC_SUPER_HERO_IN", ids)
+					.withValue(DTC_SUPER_HERO_IN, ids)
 					.build();
 
-			// on suppose un appel synchrone : getResult immédiat.
 			final TaskResult result = taskManager.execute(task);
 
-			final DtList<SuperHero> resultList = result.<DtList<SuperHero>> getValue("DTC_SUPER_HERO_OUT");
+			final DtList<SuperHero> resultList = result.getValue(DTC_SUPER_HERO_OUT);
 			Assert.assertEquals(10, resultList.size());
 		}
 	}
@@ -327,22 +324,21 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 		addNSuperHero(4500);
 
 		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final String TK_WHERE_ID_TEST = "TK_WHERE_ID_TEST";
-			registerTaskList(TK_WHERE_ID_TEST, "select * from SUPER_HERO  where ID in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
-			final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(TK_WHERE_ID_TEST, TaskDefinition.class);
+			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
+					"select * from SUPER_HERO  where ID in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
 
 			final DtList<SuperHero> ids = new DtList<>(SuperHero.class);
 			for (int i = 0; i < 2200; i++) {
 				ids.add(createSuperHero(10001L + 2 * i));
 			}
+
 			final Task task = new TaskBuilder(taskDefinition)
-					.withValue("DTC_SUPER_HERO_IN", ids)
+					.withValue(DTC_SUPER_HERO_IN, ids)
 					.build();
 
-			// on suppose un appel synchrone : getResult immédiat.
 			final TaskResult result = taskManager.execute(task);
 
-			final DtList<SuperHero> resultList = result.<DtList<SuperHero>> getValue("DTC_SUPER_HERO_OUT");
+			final DtList<SuperHero> resultList = result.getValue(DTC_SUPER_HERO_OUT);
 			Assert.assertEquals(2200, resultList.size());
 		}
 	}
@@ -355,22 +351,21 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 		addNSuperHero(4500);
 
 		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final String TK_WHERE_ID_TEST = "TK_WHERE_ID_TEST";
-			registerTaskList(TK_WHERE_ID_TEST, "select * from SUPER_HERO  where ID not in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
-			final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(TK_WHERE_ID_TEST, TaskDefinition.class);
+			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
+					"select * from SUPER_HERO  where ID not in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
 
 			final DtList<SuperHero> ids = new DtList<>(SuperHero.class);
 			for (int i = 0; i < 2200; i++) {
 				ids.add(createSuperHero(10001L + 2 * i));
 			}
+
 			final Task task = new TaskBuilder(taskDefinition)
-					.withValue("DTC_SUPER_HERO_IN", ids)
+					.withValue(DTC_SUPER_HERO_IN, ids)
 					.build();
 
-			// on suppose un appel synchrone : getResult immédiat.
 			final TaskResult result = taskManager.execute(task);
 
-			final DtList<SuperHero> resultList = result.<DtList<SuperHero>> getValue("DTC_SUPER_HERO_OUT");
+			final DtList<SuperHero> resultList = result.getValue(DTC_SUPER_HERO_OUT);
 			Assert.assertEquals(10 + 4500 - 2200, resultList.size());
 		}
 	}
@@ -382,52 +377,43 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	}
 
 	private static TaskDefinition registerTaskWithNullableIn(final String taskDefinitionName, final String params) {
-		final Domain doInteger = Home.getDefinitionSpace().resolve("DO_INTEGER", Domain.class);
-		final Domain doSuperHeroList = Home.getDefinitionSpace().resolve("DO_DT_SUPER_HERO_DTC", Domain.class);
+		final Domain doInteger = Home.getDefinitionSpace().resolve(DO_INTEGER, Domain.class);
+		final Domain doSuperHeroList = Home.getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class);
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskDefinitionName)
+		return new TaskDefinitionBuilder(taskDefinitionName)
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
 				.withAttribute("PARAM_1", doInteger, true, true)
 				.withAttribute("PARAM_2", doInteger, false, true)
 				.withAttribute("PARAM_3", doInteger, false, true)
-				.withAttribute("DTC_SUPER_HERO_OUT", doSuperHeroList, true, false)
+				.withAttribute(DTC_SUPER_HERO_OUT, doSuperHeroList, true, false)
 				.build();
-
-		Home.getDefinitionSpace().put(taskDefinition, TaskDefinition.class);
-		return taskDefinition;
 	}
 
 	private static TaskDefinition registerTaskObject(final String taskDefinitionName, final String params) {
-		final Domain doSupeHeroList = Home.getDefinitionSpace().resolve("DO_DT_SUPER_HERO_DTC", Domain.class);
-		final Domain doSupeHero = Home.getDefinitionSpace().resolve("DO_DT_SUPER_HERO_DTO", Domain.class);
+		final Domain doSupeHeroList = Home.getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class);
+		final Domain doSupeHero = Home.getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTO, Domain.class);
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskDefinitionName)
+		return new TaskDefinitionBuilder(taskDefinitionName)
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.withAttribute("DTO_SUPER_HERO", doSupeHero, true, true)
-				.withAttribute("DTC_SUPER_HERO_OUT", doSupeHeroList, true, false)
+				.withAttribute(DTO_SUPER_HERO, doSupeHero, true, true)
+				.withAttribute(DTC_SUPER_HERO_OUT, doSupeHeroList, true, false)
 				.build();
-
-		Home.getDefinitionSpace().put(taskDefinition, TaskDefinition.class);
-		return taskDefinition;
 	}
 
 	private static TaskDefinition registerTaskList(final String taskDefinitionName, final String params) {
-		final Domain doSupeHeroList = Home.getDefinitionSpace().resolve("DO_DT_SUPER_HERO_DTC", Domain.class);
+		final Domain doSupeHeroList = Home.getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class);
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskDefinitionName)
+		return new TaskDefinitionBuilder(taskDefinitionName)
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.withAttribute("DTC_SUPER_HERO_IN", doSupeHeroList, true, true)
-				.withAttribute("DTC_SUPER_HERO_OUT", doSupeHeroList, true, false)
+				.withAttribute(DTC_SUPER_HERO_IN, doSupeHeroList, true, true)
+				.withAttribute(DTC_SUPER_HERO_OUT, doSupeHeroList, true, false)
 				.build();
-
-		Home.getDefinitionSpace().put(taskDefinition, TaskDefinition.class);
-		return taskDefinition;
 	}
 
 }
