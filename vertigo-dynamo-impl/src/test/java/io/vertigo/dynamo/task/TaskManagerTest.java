@@ -46,7 +46,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testDescription() {
 		final String TK_ADD_DESC = "TK_ADD_DESC";
-		registerTask(TK_ADD_DESC, "+");
+		buildTaskDefinition(TK_ADD_DESC, "+");
 	}
 
 	/**
@@ -54,11 +54,24 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testRegistry() {
-		final String TK_ADD = "TK_ADD";
+		final TaskDefinition taskDefinition1 = buildTaskDefinition("TK_ADD", "+");
+		Home.getDefinitionSpace().put(taskDefinition1, TaskDefinition.class);
 
-		registerTask(TK_ADD, "+");
-		final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(TK_ADD, TaskDefinition.class);
-		Assert.assertNotNull(taskDefinition);
+		final TaskDefinition taskDefinition2 = Home.getDefinitionSpace().resolve("TK_ADD", TaskDefinition.class);
+		Assert.assertNotNull(taskDefinition2);
+	}
+
+	/**
+	 * Vérification de l'impossibilité d'enregistrer deux fois une tache.
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testDoubleRegistry() {
+		final TaskDefinition taskDefinition1 = buildTaskDefinition("TK_MULTI_3", "*");
+		Home.getDefinitionSpace().put(taskDefinition1, TaskDefinition.class);
+
+		//On déclenche une assertion en réenregistrant la même tache
+		final TaskDefinition taskDefinition2 = buildTaskDefinition("TK_MULTI_3", "*");
+		Home.getDefinitionSpace().put(taskDefinition2, TaskDefinition.class);
 	}
 
 	/**
@@ -66,13 +79,8 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test(expected = NullPointerException.class)
 	public void testRegistryWithNull() {
-		//On ne respect pas le pattern TK_
-		final String TK_ADD_REGISTRY = "TK_ADD_REGISTRY";
-		registerTask(TK_ADD_REGISTRY, "+");
-
-		final String id = null;
 		//L'appel à la résolution doit remonter une assertion
-		final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(id, TaskDefinition.class);
+		final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(null, TaskDefinition.class);
 		nop(taskDefinition);
 	}
 
@@ -82,10 +90,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	@Test(expected = IllegalArgumentException.class)
 	public void testRegistryWithError() {
 		//On ne respect pas le pattern TK_
-		final String TK_ADD_REGISTRY = "TZ_ADD_REGISTRY";
-
-		registerTask(TK_ADD_REGISTRY, "+");
-		final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(TK_ADD_REGISTRY, TaskDefinition.class);
+		final TaskDefinition taskDefinition = buildTaskDefinition("TZ_ADD_REGISTRY", "+");
 		nop(taskDefinition);
 	}
 
@@ -94,9 +99,8 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testExecuteAdd() {
-		final String TK_ADD = "TK_ADD";
-		registerTask(TK_ADD, "+");
-		Assert.assertEquals(Integer.valueOf(10), executeTask(TK_ADD, 5, 2, 3));
+		final TaskDefinition taskDefinition = buildTaskDefinition("TK_ADD", "+");
+		Assert.assertEquals(Integer.valueOf(10), executeTask(taskDefinition, 5, 2, 3));
 	}
 
 	/***
@@ -104,9 +108,8 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testExecuteMulti() {
-		final String TK_MULTI = "TK_MULTI";
-		registerTask(TK_MULTI, "*");
-		Assert.assertEquals(Integer.valueOf(30), executeTask(TK_MULTI, 5, 2, 3));
+		final TaskDefinition taskDefinition = buildTaskDefinition("TK_MULTI", "*");
+		Assert.assertEquals(Integer.valueOf(30), executeTask(taskDefinition, 5, 2, 3));
 	}
 
 	/**
@@ -114,22 +117,9 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test(expected = NullPointerException.class)
 	public void testExecuteNull() {
-		final String TK_MULTI_2 = "TK_MULTI_2";
-		registerTask(TK_MULTI_2, "*");
+		final TaskDefinition taskDefinition = buildTaskDefinition("TK_MULTI_2", "*");
 		//on vérifie que le passage d'un paramètre null déclenche une assertion
-		executeTask(TK_MULTI_2, null, 2, 3);
-	}
-
-	/**
-	 * Vérification de l'impossibilité d'enregistrer deux fois une tache.
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testDoubleRegister() {
-		final String TK_MULTI_3 = "TK_MULTI_3";
-
-		registerTask(TK_MULTI_3, "*");
-		//On déclenche une assertion en réenregistrant la même tache
-		registerTask(TK_MULTI_3, "*");
+		executeTask(taskDefinition, null, 2, 3);
 	}
 
 	/**
@@ -137,9 +127,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testExecuteAddAdd() {
-		final String TK_ADD_2 = "TK_ADD_2";
-		registerTask(TK_ADD_2, "+");
-		final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(TK_ADD_2, TaskDefinition.class);
+		final TaskDefinition taskDefinition = buildTaskDefinition("TK_ADD_2", "+");
 
 		final Task task = new TaskBuilder(taskDefinition)
 				.withValue(TaskEngineMock.ATTR_IN_INT_1, 1)
@@ -147,32 +135,12 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 				.withValue(TaskEngineMock.ATTR_IN_INT_3, 7)
 				.build();
 
-		// on suppose un appel synchrone : getResult immédiat.
-		TaskResult taskResult;
+		final TaskResult taskResult1 = taskManager.execute(task);
+		Assert.assertEquals(Integer.valueOf(16), taskResult1.getValue(TaskEngineMock.ATTR_OUT));
 
-		taskResult = taskManager.execute(task);
-		Assert.assertEquals(Integer.valueOf(16), taskResult.getValue(TaskEngineMock.ATTR_OUT));
+		final TaskResult taskResult2 = taskManager.execute(task);
+		Assert.assertEquals(Integer.valueOf(16), taskResult2.getValue(TaskEngineMock.ATTR_OUT));
 
-		taskResult = taskManager.execute(task);
-		Assert.assertEquals(Integer.valueOf(16), taskResult.getValue(TaskEngineMock.ATTR_OUT));
-
-	}
-
-	private static TaskDefinition registerTask(final String taskDefinitionName, final String params) {
-		final Domain doInteger = Home.getDefinitionSpace().resolve("DO_INTEGER", Domain.class);
-
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskDefinitionName)
-				.withEngine(TaskEngineMock.class)
-				.withRequest(params)
-				.withPackageName(TaskEngineMock.class.getPackage().getName())
-				.withAttribute(TaskEngineMock.ATTR_IN_INT_1, doInteger, true, true)
-				.withAttribute(TaskEngineMock.ATTR_IN_INT_2, doInteger, true, true)
-				.withAttribute(TaskEngineMock.ATTR_IN_INT_3, doInteger, true, true)
-				.withAttribute(TaskEngineMock.ATTR_OUT, doInteger, true, false)
-				.build();
-
-		Home.getDefinitionSpace().put(taskDefinition, TaskDefinition.class);
-		return taskDefinition;
 	}
 
 	/**
@@ -181,18 +149,29 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	 * @param value3 entier 3
 	 * @return somme des entiers.
 	 */
-	private Integer executeTask(final String taskDefinitionName, final Integer value1, final Integer value2, final Integer value3) {
-		final TaskDefinition taskDefinition = Home.getDefinitionSpace().resolve(taskDefinitionName, TaskDefinition.class);
+	private Integer executeTask(final TaskDefinition taskDefinition, final Integer value1, final Integer value2, final Integer value3) {
 		final Task task = new TaskBuilder(taskDefinition)
 				.withValue(TaskEngineMock.ATTR_IN_INT_1, value1)
 				.withValue(TaskEngineMock.ATTR_IN_INT_2, value2)
 				.withValue(TaskEngineMock.ATTR_IN_INT_3, value3)
 				.build();
-		// on suppose un appel synchrone : getResult immédiat
+
 		final TaskResult taskResult = taskManager.execute(task);
-		//final WorkItem<Task, TaskResult> workItem = workManager.<Task, TaskResult> schedule(task);
-		//workManager.waitForAll(java.util.Collections.singleton(workItem), 10 * 1000);
-		//final TaskResult result = workItem.getResult();
 		return taskResult.getValue(TaskEngineMock.ATTR_OUT);
 	}
+
+	private static TaskDefinition buildTaskDefinition(final String taskDefinitionName, final String params) {
+		final Domain doInteger = Home.getDefinitionSpace().resolve("DO_INTEGER", Domain.class);
+
+		return new TaskDefinitionBuilder(taskDefinitionName)
+				.withEngine(TaskEngineMock.class)
+				.withRequest(params)
+				.withPackageName(TaskEngineMock.class.getPackage().getName())
+				.withAttribute(TaskEngineMock.ATTR_IN_INT_1, doInteger, true, true)
+				.withAttribute(TaskEngineMock.ATTR_IN_INT_2, doInteger, true, true)
+				.withAttribute(TaskEngineMock.ATTR_IN_INT_3, doInteger, true, true)
+				.withAttribute(TaskEngineMock.ATTR_OUT, doInteger, true, false)
+				.build();
+	}
+
 }

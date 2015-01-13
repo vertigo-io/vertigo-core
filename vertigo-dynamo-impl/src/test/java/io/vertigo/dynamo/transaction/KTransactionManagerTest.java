@@ -59,15 +59,6 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 		//	On vérifie que la transaction est bien terminée
 	}
 
-	//	/**
-	//	 * test la description du manager.
-	//	 * @throws Exception  si erreur
-	//	 */
-	//	@Test
-	//	public void testDescription() throws Exception {
-	//		TestUtil.testDescription(transactionManager);
-	//	}
-
 	/**
 	 * Il n'est pas possible de créer une transaction courante si celle-ci existe déjà.
 	 */
