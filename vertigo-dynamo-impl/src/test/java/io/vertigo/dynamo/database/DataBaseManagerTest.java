@@ -21,6 +21,7 @@ package io.vertigo.dynamo.database;
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.database.connection.SqlConnection;
+import io.vertigo.dynamo.database.data.Movie;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.database.statement.SqlQueryResult;
@@ -32,7 +33,6 @@ import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamock.domain.famille.Famille;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
 
 import java.sql.SQLException;
@@ -47,9 +47,9 @@ import org.junit.Test;
  * @author pchretien
  */
 public class DataBaseManagerTest extends AbstractTestCaseJU4 {
-	private static final String CAMPANULACEAE = "Campanulaceae";
-	private static final String BALSAMINACEAE = "Balsaminaceae";
-	private static final String AIZOACEAE = "Aizoaceae";
+	private static final String TITLE_MOVIE_1 = "citizen kane";
+	private static final String TITLE_MOVIE_2 = "vertigo";
+	private static final String TITLE_MOVIE_3 = "gone girl";
 	@Inject
 	private SqlDataBaseManager dataBaseManager;
 
@@ -57,7 +57,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	protected void doSetUp() throws Exception {
 		//A chaque test on recrée la table famille
 		final SqlConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
-		execCallableStatement(connection, "create table famille(fam_id BIGINT , LIBELLE varchar(255));");
+		execCallableStatement(connection, "create table movie(id BIGINT , title varchar(255));");
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private void insert(final SqlConnection connection, final long key, final String libelle) throws SQLException {
-		final String sql = "insert into famille values (?, ?)";
+		final String sql = "insert into movie values (?, ?)";
 		try (final SqlCallableStatement callableStatement = dataBaseManager.createCallableStatement(connection, sql)) {
 			callableStatement.registerParameter(0, DataType.Long, SqlPreparedStatement.ParameterType.IN);
 			callableStatement.registerParameter(1, DataType.String, SqlPreparedStatement.ParameterType.IN);
@@ -98,12 +98,12 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 	public void createDatas() throws Exception {
 		final SqlConnection connection = dataBaseManager.getConnectionProvider().obtainConnection();
 		try {
-			execCallableStatement(connection, "insert into famille values (1, 'Aizoaceae')");
+			execCallableStatement(connection, "insert into movie values (1, 'citizen kane')");
 			//-----
-			execCallableStatement(connection, "insert into famille values (2, 'Balsaminaceae')");
+			execCallableStatement(connection, "insert into movie values (2, 'vertigo')");
 			//-----
 			//On passe par une requête bindée
-			insert(connection, 3, CAMPANULACEAE);
+			insert(connection, 3, TITLE_MOVIE_3);
 		} finally {
 			connection.commit();
 		}
@@ -120,21 +120,26 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		//On crée les données
 		createDatas();
 		//----
-		final Domain domain = Home.getDefinitionSpace().resolve("DO_DT_FAMILLE_DTC", Domain.class);
-		final SqlQueryResult result = executeQuery(domain, "select * from famille");
+		final Domain domain = Home.getDefinitionSpace().resolve("DO_DT_MOVIE_DTC", Domain.class);
+		final SqlQueryResult result = executeQuery(domain, "select * from movie");
 
-		//On vérifie que l'on a bien les 3 familles
+		checkResult(result);
+	}
+
+	private static void checkResult(final SqlQueryResult result) {
 		Assert.assertEquals(3, result.getSQLRowCount());
-		final DtList<Famille> familles = (DtList<Famille>) result.getValue();
-		Assert.assertEquals(3, familles.size());
 
-		for (final Famille famille : familles) {
-			if (famille.getFamId() == 1) {
-				Assert.assertEquals(AIZOACEAE, famille.getLibelle());
-			} else if (famille.getFamId() == 2) {
-				Assert.assertEquals(BALSAMINACEAE, famille.getLibelle());
-			} else if (famille.getFamId() == 3) {
-				Assert.assertEquals(CAMPANULACEAE, famille.getLibelle());
+		final DtList<Movie> movies = (DtList<Movie>) result.getValue();
+		Assert.assertEquals(3, movies.size());
+
+		for (final Movie movie : movies) {
+			final long id = movie.getId();
+			if (id == 1) {
+				Assert.assertEquals(TITLE_MOVIE_1, movie.getTitle());
+			} else if (id == 2) {
+				Assert.assertEquals(TITLE_MOVIE_2, movie.getTitle());
+			} else if (id == 3) {
+				Assert.assertEquals(TITLE_MOVIE_3, movie.getTitle());
 			} else {
 				Assert.fail();
 			}
@@ -147,11 +152,11 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		//On crée les données
 		createDatas();
 		//----
-		final Domain domain = Home.getDefinitionSpace().resolve("DO_DT_FAMILLE_DTO", Domain.class);
-		final SqlQueryResult result = executeQuery(domain, "select * from famille where fam_id=1");
+		final Domain domain = Home.getDefinitionSpace().resolve("DO_DT_MOVIE_DTO", Domain.class);
+		final SqlQueryResult result = executeQuery(domain, "select * from movie where id=1");
 		Assert.assertEquals(1, result.getSQLRowCount());
-		final Famille famille = (Famille) result.getValue();
-		Assert.assertEquals(AIZOACEAE, famille.getLibelle());
+		final Movie movie = (Movie) result.getValue();
+		Assert.assertEquals("citizen kane", movie.getTitle());
 	}
 
 	private SqlQueryResult executeQuery(final Domain domain, final String sql) throws SQLException, Exception {
@@ -171,7 +176,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		createDatas();
 		//----
 		final Domain domain = new Domain("DO_INTEGER", DataType.Integer, new FormatterDefault("FMT_INTEGER"));
-		final SqlQueryResult result = executeQuery(domain, "select count(*) from famille");
+		final SqlQueryResult result = executeQuery(domain, "select count(*) from movie");
 		Assert.assertEquals(1, result.getSQLRowCount());
 		Assert.assertEquals(3, result.getValue());
 	}
@@ -183,9 +188,9 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		createDatas();
 		//----
 		final Domain domain = new Domain("DO_LIB", DataType.String, new FormatterDefault("FMT_INTEGER"));
-		final SqlQueryResult result = executeQuery(domain, "select libelle from famille where fam_id=1");
+		final SqlQueryResult result = executeQuery(domain, "select title from movie where id=1");
 		Assert.assertEquals(1, result.getSQLRowCount());
-		Assert.assertEquals(AIZOACEAE, result.getValue());
+		Assert.assertEquals(TITLE_MOVIE_1, result.getValue());
 	}
 
 	//On teste un preparestatement mappé sur un type dynamique DTList.
@@ -195,20 +200,21 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		createDatas();
 		//----
 		final Domain domain = new Domain("DO_TEST", DataType.DtList, Home.getDefinitionSpace().resolve(Formatter.FMT_DEFAULT, Formatter.class));
-		final SqlQueryResult result = executeQuery(domain, "select * from famille");
-		Assert.assertEquals(3, result.getSQLRowCount());
-		final DtList<DtObject> familles = (DtList<DtObject>) result.getValue();
-		Assert.assertEquals(3, familles.size());
+		final SqlQueryResult result = executeQuery(domain, "select * from movie");
 
-		for (final DtObject famille : familles) {
-			if (getValue(famille, "FAM_ID").equals(1L)) {
-				Assert.assertEquals(AIZOACEAE, getValue(famille, "LIBELLE"));
-			} else if (getValue(famille, "FAM_ID").equals(2L)) {
-				Assert.assertEquals(BALSAMINACEAE, getValue(famille, "LIBELLE"));
-			} else if (getValue(famille, "FAM_ID").equals(3L)) {
-				Assert.assertEquals(CAMPANULACEAE, getValue(famille, "LIBELLE"));
+		Assert.assertEquals(3, result.getSQLRowCount());
+		final DtList<DtObject> dynMovies = (DtList<DtObject>) result.getValue();
+		Assert.assertEquals(3, dynMovies.size());
+
+		for (final DtObject dynMovie : dynMovies) {
+			final long id = (Long) getValue(dynMovie, "ID");
+			if (id == 1) {
+				Assert.assertEquals(TITLE_MOVIE_1, getValue(dynMovie, "TITLE"));
+			} else if (id == 2) {
+				Assert.assertEquals(TITLE_MOVIE_2, getValue(dynMovie, "TITLE"));
+			} else if (id == 3) {
+				Assert.assertEquals(TITLE_MOVIE_3, getValue(dynMovie, "TITLE"));
 			} else {
-				//System.out.println("result >>>" + famille);
 				Assert.fail();
 			}
 		}
@@ -219,4 +225,5 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		final DtField dtField = dtDefinition.getField(fieldName);
 		return dtField.getDataAccessor().getValue(dto);
 	}
+
 }

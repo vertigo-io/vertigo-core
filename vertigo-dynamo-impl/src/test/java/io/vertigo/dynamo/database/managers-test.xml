@@ -30,7 +30,7 @@
 	</module>
 
 	<module name="myApp">
-		<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
-		<resource type="classes" path="io.vertigo.dynamock.domain.DtDefinitions" />
+		<resource type="kpr" path="io/vertigo/dynamo/database/data/execution.kpr" />
+		<resource type="classes" path="io.vertigo.dynamo.database.data.DtDefinitions" />
 	</module>
 </config>
