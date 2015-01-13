@@ -44,12 +44,6 @@ public final class FileManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private FileManager fileManager;
 
-	/** {@inheritDoc} */
-	@Override
-	protected void doTearDown() {
-		//rien
-	}
-
 	@Test
 	public void testCreateTempFile() {
 		final File file = TestUtil.getFile("data/testFile.txt", getClass());
@@ -104,11 +98,7 @@ public final class FileManagerTest extends AbstractTestCaseJU4 {
 		checkFile(kFile, fileName, lastModified, typeMime, length);
 	}
 
-	//	public void testFileDefinition() {
-	//		nop(FileMetaDefinition.getMetaDefinition("FI_FILE_INFO_STD"));
-	//	}
-
-	private void checkFile(final KFile kFile, final String fileName, final Date lastModified, final String mimeType, final Long length) {
+	private static void checkFile(final KFile kFile, final String fileName, final Date lastModified, final String mimeType, final Long length) {
 		Assert.assertEquals(fileName, kFile.getFileName());
 		if (lastModified != null) { //le lastModified peut être inconnu du test
 			Assert.assertEquals(lastModified, kFile.getLastModified());

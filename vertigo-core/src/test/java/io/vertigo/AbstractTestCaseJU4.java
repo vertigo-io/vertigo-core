@@ -75,7 +75,7 @@ public abstract class AbstractTestCaseJU4 {
 	 *
 	 * @param o object
 	 */
-	protected final void nop(final Object o) {
+	protected static final void nop(final Object o) {
 		// rien
 	}
 
