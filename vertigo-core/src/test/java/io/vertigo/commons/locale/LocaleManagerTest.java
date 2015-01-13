@@ -19,6 +19,7 @@
 package io.vertigo.commons.locale;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.commons.locale.data.CityGuide;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.lang.MessageKey;
@@ -57,7 +58,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 
 	@Before
 	public void setupLocale() {
-		localeManager.add("io.vertigo.commons.locale.city-guide", CityGuide.values());
+		localeManager.add("io.vertigo.commons.locale.data.city-guide", CityGuide.values());
 		try {
 			Thread.sleep(10);
 		} catch (final InterruptedException e) {
@@ -68,7 +69,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 	@Test(expected = IllegalStateException.class)
 	public void testDictionary() {
 		//On ne charge pas deux fois un dictionnaire
-		localeManager.add("io.vertigo.commons.locale.city-guide", CityGuide.values());
+		localeManager.add("io.vertigo.commons.locale.data.city-guide", CityGuide.values());
 	}
 
 	@Test
@@ -80,7 +81,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testOverride() {
 		//On surcharge le dictionnaire city-guide avec un dictionnaire partiel
-		localeManager.override("io.vertigo.commons.locale.popular-guide", CityGuide.values());
+		localeManager.override("io.vertigo.commons.locale.data.popular-guide", CityGuide.values());
 
 		final MessageText helloTxt = new MessageText(CityGuide.HELLO);
 		Assert.assertEquals("salut", helloTxt.getDisplay());

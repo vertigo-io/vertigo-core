@@ -19,6 +19,7 @@
 package io.vertigo.commons.locale;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.commons.locale.data.CityGuide;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.engines.command.TcpVCommandEngine;
