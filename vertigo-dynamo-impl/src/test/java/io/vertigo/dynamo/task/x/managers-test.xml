@@ -38,7 +38,7 @@
 		</component>
 		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl" />
 
-		<component api="PersistenceManager" class="io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl" initClass="io.vertigo.dynamo.persistence.PersistenceManagerInitializer">
+		<component api="PersistenceManager" class="io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl" >
 			<plugin class="io.vertigo.dynamo.plugins.persistence.hsql.HsqlDataStorePlugin">
 				<param name="sequencePrefix" value="SEQ_" />
 			</plugin>
@@ -49,7 +49,7 @@
 	</module>
 
 	<module name="myApp">
-		<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
-		<resource type="classes" path="io.vertigo.dynamock.domain.DtDefinitions" />
+		<resource type="kpr" path="io/vertigo/dynamo/task/data/execution.kpr" />
+		<resource type="classes" path="io.vertigo.dynamo.task.data.DtDefinitions" />
 	</module>
 </config>
