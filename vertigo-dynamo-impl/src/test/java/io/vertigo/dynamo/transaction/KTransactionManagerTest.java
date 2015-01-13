@@ -19,9 +19,9 @@
 package io.vertigo.dynamo.transaction;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.dynamo.transaction.database.DataBaseMock;
-import io.vertigo.dynamo.transaction.database.IDataBaseMock;
-import io.vertigo.dynamo.transaction.database.TransactionResourceMock;
+import io.vertigo.dynamo.transaction.data.SampleDataBase;
+import io.vertigo.dynamo.transaction.data.SampleDataBaseConection;
+import io.vertigo.dynamo.transaction.data.SampleTransactionResource;
 
 import javax.inject.Inject;
 
@@ -41,7 +41,7 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 
 	@Inject
 	private KTransactionManager transactionManager;
-	private DataBaseMock dataBase;
+	private SampleDataBase dataBase;
 
 	private static String createNewData() {
 		count++;
@@ -50,7 +50,7 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 
 	@Override
 	protected void doSetUp() {
-		dataBase = new DataBaseMock();
+		dataBase = new SampleDataBase();
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	public void testCommit() {
 		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 
-			final IDataBaseMock connection = obtainDataBaseConnection(dataBase, "test-memory-1");
+			final SampleDataBaseConection connection = obtainDataBaseConnection(dataBase, "test-memory-1");
 
 			// --- modification de la bdd
 			final String value = createNewData();
@@ -117,7 +117,7 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	public void testRollback() {
 		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 
-			final IDataBaseMock connection = obtainDataBaseConnection(dataBase, "test-memory-1");
+			final SampleDataBaseConection connection = obtainDataBaseConnection(dataBase, "test-memory-1");
 
 			// --- modification de la bdd
 			final String oldValue = dataBase.getData();
@@ -187,14 +187,14 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testCreateAutonomousTransaction() {
 		try (final KTransactionWritable rootTransaction = transactionManager.createCurrentTransaction()) {
-			final IDataBaseMock rootConnection = obtainDataBaseConnection(dataBase, "test-memory-1");
+			final SampleDataBaseConection rootConnection = obtainDataBaseConnection(dataBase, "test-memory-1");
 			// --- modification de la bdd sur la transaction principale.
 			final String rootValue = createNewData();
 			rootConnection.setData(rootValue);
 			Assert.assertEquals(rootValue, rootConnection.getData());
 
 			try (final KTransactionWritable autonomousTransaction = transactionManager.createAutonomousTransaction()) {
-				final IDataBaseMock connection = obtainDataBaseConnection(dataBase, "test-memory-2");
+				final SampleDataBaseConection connection = obtainDataBaseConnection(dataBase, "test-memory-2");
 				// --- modification de la bdd sur la transaction autonome.
 				final String value = createNewData();
 				connection.setData(value);
@@ -223,11 +223,11 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	//Utilitaire
-	private IDataBaseMock obtainDataBaseConnection(final DataBaseMock myDataBase, final String resourceId) {
+	private SampleDataBaseConection obtainDataBaseConnection(final SampleDataBase myDataBase, final String resourceId) {
 		// --- resource 1
-		final KTransactionResourceId<TransactionResourceMock> transactionResourceId = new KTransactionResourceId<>(KTransactionResourceId.Priority.TOP, resourceId);
+		final KTransactionResourceId<SampleTransactionResource> transactionResourceId = new KTransactionResourceId<>(KTransactionResourceId.Priority.TOP, resourceId);
 
-		final TransactionResourceMock transactionResourceMock = new TransactionResourceMock(myDataBase);
+		final SampleTransactionResource transactionResourceMock = new SampleTransactionResource(myDataBase);
 		transactionManager.getCurrentTransaction().addResource(transactionResourceId, transactionResourceMock);
 		return transactionResourceMock;
 	}
@@ -238,12 +238,12 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testTwoResourcesCommit() {
 		//On crée une autre BDD.
-		final DataBaseMock secondDataBase = new DataBaseMock();
+		final SampleDataBase secondDataBase = new SampleDataBase();
 
 		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 
-			final IDataBaseMock connection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
-			final IDataBaseMock connection2 = obtainDataBaseConnection(secondDataBase, "test-memory-2");
+			final SampleDataBaseConection connection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
+			final SampleDataBaseConection connection2 = obtainDataBaseConnection(secondDataBase, "test-memory-2");
 
 			// --- modification des deux bdd
 			final String value1 = createNewData();
@@ -267,12 +267,12 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testTwoResourcesRollback() {
 		//On crée une autre BDD.
-		final DataBaseMock secondDataBase = new DataBaseMock();
+		final SampleDataBase secondDataBase = new SampleDataBase();
 
 		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 
-			final IDataBaseMock connection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
-			final IDataBaseMock connection2 = obtainDataBaseConnection(secondDataBase, "test-memory-2");
+			final SampleDataBaseConection connection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
+			final SampleDataBaseConection connection2 = obtainDataBaseConnection(secondDataBase, "test-memory-2");
 
 			final String oldValue1 = dataBase.getData();
 			final String oldValue2 = secondDataBase.getData();

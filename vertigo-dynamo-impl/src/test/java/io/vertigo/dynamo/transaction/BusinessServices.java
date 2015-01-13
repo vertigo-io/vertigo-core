@@ -1,8 +1,8 @@
 package io.vertigo.dynamo.transaction;
 
-import io.vertigo.dynamo.transaction.database.DataBaseMock;
-import io.vertigo.dynamo.transaction.database.IDataBaseMock;
-import io.vertigo.dynamo.transaction.database.TransactionResourceMock;
+import io.vertigo.dynamo.transaction.data.SampleDataBase;
+import io.vertigo.dynamo.transaction.data.SampleDataBaseConection;
+import io.vertigo.dynamo.transaction.data.SampleTransactionResource;
 import io.vertigo.lang.Component;
 
 import javax.inject.Inject;
@@ -14,20 +14,20 @@ public class BusinessServices implements Component {
 
 	@Inject
 	private KTransactionManager transactionManager;
-	private final DataBaseMock dataBase = new DataBaseMock();
+	private final SampleDataBase dataBase = new SampleDataBase();
 
-	private IDataBaseMock obtainDataBaseConnection(final DataBaseMock myDataBase, final String resourceId) {
+	private SampleDataBaseConection obtainDataBaseConnection(final SampleDataBase sampleDataBase, final String resourceId) {
 		// --- resource 1
-		final KTransactionResourceId<TransactionResourceMock> transactionResourceId = new KTransactionResourceId<>(KTransactionResourceId.Priority.TOP, resourceId);
+		final KTransactionResourceId<SampleTransactionResource> transactionResourceId = new KTransactionResourceId<>(KTransactionResourceId.Priority.TOP, resourceId);
 
-		final TransactionResourceMock transactionResourceMock = new TransactionResourceMock(myDataBase);
+		final SampleTransactionResource transactionResourceMock = new SampleTransactionResource(sampleDataBase);
 		transactionManager.getCurrentTransaction().addResource(transactionResourceId, transactionResourceMock);
 		return transactionResourceMock;
 	}
 
 	@Transactional
 	public String test() {
-		final IDataBaseMock connection = obtainDataBaseConnection(dataBase, "test-memory-1");
+		final SampleDataBaseConection connection = obtainDataBaseConnection(dataBase, "test-memory-1");
 
 		// --- modification de la bdd
 		final String value = createNewData();
