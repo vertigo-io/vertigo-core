@@ -103,15 +103,6 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	}
 
 	/**
-	 * Crée une tache à partir d'une définition.
-	 * @param taskDefinition Definition de la tache
-	 * @return Nouvelle tache
-	 */
-	protected static final TaskBuilder createTaskBuilder(final TaskDefinition taskDefinition) {
-		return new TaskBuilder(taskDefinition);
-	}
-
-	/**
 	 * @param uri Uri de l'objet
 	 * @return DtDefinition associée
 	 */
@@ -152,7 +143,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withAttribute("dto", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + uri.<DtDefinition> getDefinition().getName() + "_DTO", Domain.class), false, false) //OUT, non obligatoire
 				.build();
 
-		final Task task = createTaskBuilder(taskDefinition)
+		final Task task = new TaskBuilder(taskDefinition)
 				.withValue(pkFieldName, uri.getKey())
 				.build();
 		final TaskResult taskResult = process(task);
@@ -225,7 +216,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 		final URI<? extends DtObject> uri = dtcUri.getSource();
 
-		final Task task = createTaskBuilder(taskDefinition)
+		final Task task = new TaskBuilder(taskDefinition)
 				.withValue(fkFieldName, uri.getKey())
 				.build();
 		final TaskResult taskResult = process(task);
@@ -299,7 +290,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withAttribute("dtc", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true, false)
 				.build();
 
-		final TaskBuilder taskBuilder = createTaskBuilder(taskDefinition);
+		final TaskBuilder taskBuilder = new TaskBuilder(taskDefinition);
 		for (final Map.Entry<String, Object> filterEntry : filterCriteria.getFilterMap().entrySet()) {
 			taskBuilder.withValue(filterEntry.getKey(), filterEntry.getValue());
 		}
@@ -483,7 +474,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		/*
 		 * Création de la tache.
 		 */
-		final Task task = createTaskBuilder(taskDefinition)
+		final Task task = new TaskBuilder(taskDefinition)
 				.withValue("DTO", dto)
 				.build();
 
@@ -524,7 +515,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true, false) //OUT, obligatoire
 				.build();
 
-		final Task task = createTaskBuilder(taskDefinition)
+		final Task task = new TaskBuilder(taskDefinition)
 				.withValue(pkFieldName, uri.getKey())
 				.build();
 
@@ -561,7 +552,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withAttribute("dto", countDomain, true, false)//OUT, obligatoire
 				.build();
 
-		final Task task = createTaskBuilder(taskDefinition)
+		final Task task = new TaskBuilder(taskDefinition)
 				.build();
 		final TaskResult taskResult = process(task);
 		final DtObject dto = taskResult.getValue("dto");

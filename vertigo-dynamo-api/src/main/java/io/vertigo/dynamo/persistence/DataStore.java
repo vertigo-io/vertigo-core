@@ -26,10 +26,14 @@ import io.vertigo.dynamo.domain.model.URI;
 
 /**
  * Objet permettant de gérer les accès aux systèmes de stockage.
- * 
+ *
  * @author pchretien
  */
 public interface DataStore {
+	//==========================================================================
+	//=============================== READ =====================================
+	//==========================================================================
+
 	/**
 	 * Nombre d'éléments.
 	 * @param dtDefinition Définition de DT
@@ -70,7 +74,7 @@ public interface DataStore {
 	<D extends DtObject> DtList<D> loadList(DtListURI uri);
 
 	//==========================================================================
-	//=============================== Ecriture =================================
+	//=============================== WRITE ====================================
 	//==========================================================================
 	/**
 	* Sauvegarde d'un objet.

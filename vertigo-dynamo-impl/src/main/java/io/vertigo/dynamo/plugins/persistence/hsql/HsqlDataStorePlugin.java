@@ -29,6 +29,7 @@ import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
+import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
@@ -90,7 +91,7 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 				.withAttribute(DTO_SEQUENCE, resultDomain, true, false)// OUT, obligatoire
 				.build();
 
-		final Task task = createTaskBuilder(taskDefinition).build();
+		final Task task = new TaskBuilder(taskDefinition).build();
 		final TaskResult taskResult = process(task);
 		final DtObject dto = taskResult.getValue(DTO_SEQUENCE);
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
