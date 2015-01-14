@@ -26,7 +26,7 @@ import io.vertigo.lang.Assertion;
  * @author dchallas
  *
  */
-public final class SampleTransactionResource implements KTransactionResource, SampleDataBaseConection {
+public final class SampleTransactionResource implements KTransactionResource, SampleDataBaseConnection {
 	private final SampleDataBase sampleDataBase;
 	private String dataUpdated;
 	private boolean isUpdated;

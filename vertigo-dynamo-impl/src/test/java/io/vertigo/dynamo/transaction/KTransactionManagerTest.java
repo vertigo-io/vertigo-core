@@ -20,7 +20,7 @@ package io.vertigo.dynamo.transaction;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.transaction.data.SampleDataBase;
-import io.vertigo.dynamo.transaction.data.SampleDataBaseConection;
+import io.vertigo.dynamo.transaction.data.SampleDataBaseConnection;
 import io.vertigo.dynamo.transaction.data.SampleTransactionResource;
 
 import javax.inject.Inject;
@@ -37,13 +37,13 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	private static int count;
 
 	@Inject
-	private BusinessServices businessServices;
+	private SampleServices sampleServices;
 
 	@Inject
 	private KTransactionManager transactionManager;
 	private SampleDataBase dataBase;
 
-	private static String createNewData() {
+	private static String createData() {
 		count++;
 		return "data - [" + count + "]" + String.valueOf(System.currentTimeMillis());
 	}
@@ -55,8 +55,7 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 
 	@Override
 	protected void doTearDown() {
-		Assert.assertFalse(transactionManager.hasCurrentTransaction());
-		//	On vérifie que la transaction est bien terminée
+		Assert.assertFalse("transaction must be closed", transactionManager.hasCurrentTransaction());
 	}
 
 	/**
@@ -89,10 +88,10 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	public void testCommit() {
 		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 
-			final SampleDataBaseConection connection = obtainDataBaseConnection(dataBase, "test-memory-1");
+			final SampleDataBaseConnection connection = obtainDataBaseConnection(dataBase, "test-memory-1");
 
 			// --- modification de la bdd
-			final String value = createNewData();
+			final String value = createData();
 			connection.setData(value);
 			Assert.assertEquals(value, connection.getData());
 			currentTransaction.commit();
@@ -108,11 +107,11 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	public void testRollback() {
 		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 
-			final SampleDataBaseConection connection = obtainDataBaseConnection(dataBase, "test-memory-1");
+			final SampleDataBaseConnection connection = obtainDataBaseConnection(dataBase, "test-memory-1");
 
 			// --- modification de la bdd
 			final String oldValue = dataBase.getData();
-			final String value = createNewData();
+			final String value = createData();
 			connection.setData(value);
 			Assert.assertEquals(value, connection.getData());
 			currentTransaction.rollback();
@@ -178,16 +177,16 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testCreateAutonomousTransaction() {
 		try (final KTransactionWritable rootTransaction = transactionManager.createCurrentTransaction()) {
-			final SampleDataBaseConection rootConnection = obtainDataBaseConnection(dataBase, "test-memory-1");
+			final SampleDataBaseConnection rootConnection = obtainDataBaseConnection(dataBase, "test-memory-1");
 			// --- modification de la bdd sur la transaction principale.
-			final String rootValue = createNewData();
+			final String rootValue = createData();
 			rootConnection.setData(rootValue);
 			Assert.assertEquals(rootValue, rootConnection.getData());
 
 			try (final KTransactionWritable autonomousTransaction = transactionManager.createAutonomousTransaction()) {
-				final SampleDataBaseConection connection = obtainDataBaseConnection(dataBase, "test-memory-2");
+				final SampleDataBaseConnection connection = obtainDataBaseConnection(dataBase, "test-memory-2");
 				// --- modification de la bdd sur la transaction autonome.
-				final String value = createNewData();
+				final String value = createData();
 				connection.setData(value);
 				Assert.assertEquals(value, connection.getData());
 				autonomousTransaction.commit();
@@ -214,13 +213,13 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	//Utilitaire
-	private SampleDataBaseConection obtainDataBaseConnection(final SampleDataBase myDataBase, final String resourceId) {
+	private SampleDataBaseConnection obtainDataBaseConnection(final SampleDataBase myDataBase, final String resourceId) {
 		// --- resource 1
 		final KTransactionResourceId<SampleTransactionResource> transactionResourceId = new KTransactionResourceId<>(KTransactionResourceId.Priority.TOP, resourceId);
 
-		final SampleTransactionResource transactionResourceMock = new SampleTransactionResource(myDataBase);
-		transactionManager.getCurrentTransaction().addResource(transactionResourceId, transactionResourceMock);
-		return transactionResourceMock;
+		final SampleTransactionResource sampleTransactionResource = new SampleTransactionResource(myDataBase);
+		transactionManager.getCurrentTransaction().addResource(transactionResourceId, sampleTransactionResource);
+		return sampleTransactionResource;
 	}
 
 	/**
@@ -233,17 +232,17 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 
 		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 
-			final SampleDataBaseConection connection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
-			final SampleDataBaseConection connection2 = obtainDataBaseConnection(secondDataBase, "test-memory-2");
+			final SampleDataBaseConnection sampleDataBaseConnection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
+			final SampleDataBaseConnection sampleDataBaseConnection2 = obtainDataBaseConnection(secondDataBase, "test-memory-2");
 
 			// --- modification des deux bdd
-			final String value1 = createNewData();
-			connection1.setData(value1);
-			Assert.assertEquals(value1, connection1.getData());
+			final String value1 = createData();
+			sampleDataBaseConnection1.setData(value1);
+			Assert.assertEquals(value1, sampleDataBaseConnection1.getData());
 
-			final String value2 = createNewData();
-			connection2.setData(value2);
-			Assert.assertEquals(value2, connection2.getData());
+			final String value2 = createData();
+			sampleDataBaseConnection2.setData(value2);
+			Assert.assertEquals(value2, sampleDataBaseConnection2.getData());
 
 			// --- test du commit
 			currentTransaction.commit();
@@ -262,20 +261,20 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 
 		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 
-			final SampleDataBaseConection connection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
-			final SampleDataBaseConection connection2 = obtainDataBaseConnection(secondDataBase, "test-memory-2");
+			final SampleDataBaseConnection sampleDataBaseConnection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
+			final SampleDataBaseConnection sampleDataBaseConnection2 = obtainDataBaseConnection(secondDataBase, "test-memory-2");
 
 			final String oldValue1 = dataBase.getData();
 			final String oldValue2 = secondDataBase.getData();
 
 			// --- modification des deux bdd
-			final String value1 = createNewData();
-			connection1.setData(value1);
-			Assert.assertEquals(value1, connection1.getData());
+			final String value1 = createData();
+			sampleDataBaseConnection1.setData(value1);
+			Assert.assertEquals(value1, sampleDataBaseConnection1.getData());
 
-			final String value2 = createNewData();
-			connection2.setData(value2);
-			Assert.assertEquals(value2, connection2.getData());
+			final String value2 = createData();
+			sampleDataBaseConnection2.setData(value2);
+			Assert.assertEquals(value2, sampleDataBaseConnection2.getData());
 
 			currentTransaction.rollback();
 			// --- test du rollback
@@ -289,7 +288,7 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testTransactional() {
-		final String value = businessServices.test();
-		businessServices.check(value);
+		final String value = sampleServices.test();
+		sampleServices.check(value);
 	}
 }
