@@ -16,12 +16,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega.rest.engine;
+package io.vertigo.vega.rest.data.domain;
 
-import java.io.Serializable;
-import java.util.HashMap;
+public enum Honorific {
+	Mr("MR_"),
+	Miss("MIS"),
+	Mrs("MRS"),
+	Ms("MS_"),
+	Dr("DR_"),
+	Cpt("CAP"),
+	Cch("CCH"),
 
-public class UiContext extends HashMap<String, Serializable> {
-	private static final long serialVersionUID = 4981453220600689399L;
+	Off("OFF"),
+	Rev("REV"),
+	Fth("FTH"),
+	PhD("PHD"),
+	Mst("MST");
 
+	private final String code;
+
+	private Honorific(final String code) {
+		this.code = code;
+	}
+
+	public String getCode() {
+		return code;
+	}
 }

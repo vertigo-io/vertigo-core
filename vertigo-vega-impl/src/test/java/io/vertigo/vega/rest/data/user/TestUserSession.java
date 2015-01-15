@@ -16,12 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega.rest.engine;
+package io.vertigo.vega.rest.data.user;
 
-import java.io.Serializable;
-import java.util.HashMap;
+import io.vertigo.persona.security.UserSession;
 
-public class UiContext extends HashMap<String, Serializable> {
-	private static final long serialVersionUID = 4981453220600689399L;
+import java.util.Collections;
+import java.util.Locale;
+import java.util.Map;
 
+public final class TestUserSession extends UserSession {
+	private static final long serialVersionUID = 1L;
+
+	@Override
+	public Locale getLocale() {
+		return Locale.FRENCH;
+	}
+
+	/**
+	 * Gestion de la sécurité.
+	 * @return Liste des clés de sécurité et leur valeur.
+	 */
+	@Override
+	public Map<String, String> getSecurityKeys() {
+		return Collections.singletonMap("famId", "12");
+	}
 }

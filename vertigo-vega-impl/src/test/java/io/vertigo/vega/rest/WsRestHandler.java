@@ -22,6 +22,9 @@ import io.vertigo.core.Home.App;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.impl.rest.filter.JettyMultipartConfig;
 import io.vertigo.vega.plugins.rest.routesregister.sparkjava.SparkJavaRoutesRegister;
+import io.vertigo.vega.rest.data.MyApp;
+import io.vertigo.vega.rest.data.domain.Contact;
+import io.vertigo.vega.rest.data.domain.ContactCriteria;
 
 import java.util.Arrays;
 import java.util.Iterator;

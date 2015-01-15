@@ -206,15 +206,12 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	private static TaskDefinition registerTaskLoadCarList() {
 		final Domain doCarList = Home.getDefinitionSpace().resolve("DO_DT_CAR_DTC", Domain.class);
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_LOAD_ALL_CARS")
+		return new TaskDefinitionBuilder("TK_LOAD_ALL_CARS")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from CAR")
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
 				.withAttribute("DTC_CAR_OUT", doCarList, true, false)
 				.build();
-
-		Home.getDefinitionSpace().put(taskDefinition, TaskDefinition.class);
-		return taskDefinition;
 	}
 
 	protected final void nativeInsertCar(final Car car) {
