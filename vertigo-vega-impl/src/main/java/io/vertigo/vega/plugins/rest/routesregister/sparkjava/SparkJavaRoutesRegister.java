@@ -46,22 +46,23 @@ public final class SparkJavaRoutesRegister implements SparkApplication {
 		final String defaultContentCharset = "UTF-8"; //TODO : parametrable ?
 		restManager.scanAndRegisterRestfulServices();
 
-		//Translate EndPoint to route
+		//Translate EndPoints to routes
 		final Collection<EndPointDefinition> endPointDefinitions = Home.getDefinitionSpace().getAll(EndPointDefinition.class);
 
 		for (final EndPointDefinition endPointDefinition : endPointDefinitions) {
+			final WsRestRoute wsRestRoute = new WsRestRoute(endPointDefinition, defaultContentCharset);
 			switch (endPointDefinition.getVerb()) {
 				case GET:
-					Spark.get(new WsRestRoute(endPointDefinition, defaultContentCharset));
+					Spark.get(wsRestRoute);
 					break;
 				case POST:
-					Spark.post(new WsRestRoute(endPointDefinition, defaultContentCharset));
+					Spark.post(wsRestRoute);
 					break;
 				case PUT:
-					Spark.put(new WsRestRoute(endPointDefinition, defaultContentCharset));
+					Spark.put(wsRestRoute);
 					break;
 				case DELETE:
-					Spark.delete(new WsRestRoute(endPointDefinition, defaultContentCharset));
+					Spark.delete(wsRestRoute);
 					break;
 				default:
 					throw new UnsupportedOperationException();
