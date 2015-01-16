@@ -44,7 +44,7 @@ import javax.inject.Inject;
  *
  * @author npiedeloup
  */
-public final class OpenOfficMergerPlugin implements MergerPlugin {
+public final class OpenOfficeMergerPlugin implements MergerPlugin {
 	private final List<MergerProcessor> mergerProcessors;
 
 	/**
@@ -52,7 +52,7 @@ public final class OpenOfficMergerPlugin implements MergerPlugin {
 	 * @param scriptManager le script manager.
 	 */
 	@Inject
-	public OpenOfficMergerPlugin(final ScriptManager scriptManager) {
+	public OpenOfficeMergerPlugin(final ScriptManager scriptManager) {
 		mergerProcessors = createMergerProcessors(scriptManager, ScriptGrammarUtil.createScriptGrammar());
 	}
 
