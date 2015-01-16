@@ -19,6 +19,7 @@
 package io.vertigo.struts2.core;
 
 import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
@@ -29,6 +30,10 @@ import io.vertigo.util.StringUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Validation exception on a object's field.
+ * @author npiedeloup (16 janv. 2015 15:03:33)
+ */
 public final class ValidationUserException extends VUserException {
 	private static final long serialVersionUID = 7214302356640340103L;
 
@@ -36,20 +41,46 @@ public final class ValidationUserException extends VUserException {
 
 	private final List<UiError> uiErrors = new ArrayList<>();
 
+	/**
+	 * @param uiErrors Ui errors
+	 */
 	ValidationUserException(final List<UiError> uiErrors) {
 		super(VALIDATE_ERROR_MESSAGE_TEXT);
 		this.uiErrors.addAll(uiErrors);
 	}
 
+	/**
+	 * Create a UserException on a field
+	 * @param messageText Message text
+	 * @param dto object
+	 * @param fieldName field
+	 */
+	public ValidationUserException(final MessageText messageText, final DtObject dto, final DtFieldName fieldName) {
+		this(messageText, fieldName.name(), dto);
+	}
+
+	/**
+	 * Create a UserException on a field
+	 * @param messageText Message text
+	 * @param dto object
+	 * @param fieldName fieldName in CamelCase
+	 */
 	public ValidationUserException(final MessageText messageText, final DtObject dto, final String fieldName) {
+		this(messageText, StringUtil.camelToConstCase(fieldName), dto);
+	}
+
+	private ValidationUserException(final MessageText messageText, final String constFieldName, final DtObject dto) {
 		super(messageText);
 		Assertion.checkNotNull(dto, "L'objet est obligatoire");
-		Assertion.checkArgNotEmpty(fieldName, "Le champs est obligatoire");
+		Assertion.checkArgNotEmpty(constFieldName, "Le champs est obligatoire");
 		//-----
-		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getField(StringUtil.camelToConstCase(fieldName));
+		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getField(constFieldName);
 		uiErrors.add(new UiError(dto, dtField, messageText));
 	}
 
+	/**
+	 * @return UiErrors List
+	 */
 	public List<UiError> getUiErrors() {
 		return uiErrors;
 	}
