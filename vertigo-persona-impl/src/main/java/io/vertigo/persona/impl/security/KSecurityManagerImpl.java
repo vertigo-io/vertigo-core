@@ -190,8 +190,9 @@ public final class KSecurityManagerImpl implements KSecurityManager, Activeable 
 	private static boolean isAuthorized(final Permission permission, final String resource, final String operation, final Map<String, String> securityKeys) {
 		final String filter = permission.getFilter();
 		final String personalFilter = applySecurityKeys(filter, securityKeys);
-		final Pattern p = Pattern.compile(personalFilter);
-		return p.matcher(resource).matches() && permission.getOperation().matches(operation);
+		final Pattern pFilter = Pattern.compile(personalFilter);
+		final Pattern pOperation = Pattern.compile(permission.getOperation());
+		return pFilter.matcher(resource).matches() && pOperation.matcher(operation).matches();
 	}
 
 	private static String applySecurityKeys(final String filter, final Map<String, String> securityKeys) {
