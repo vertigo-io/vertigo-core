@@ -18,10 +18,12 @@
  */
 package io.vertigo.vega.rest.validation;
 
+import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
+import io.vertigo.util.StringUtil;
 
 /**
 * @author npiedeloup
@@ -35,6 +37,9 @@ public final class ValidationUserException extends VUserException {
 	private final DtObject dto;
 	private final String fieldName;
 
+	/**
+	 * Exception to launch already fill UiMessageStack.
+	 */
 	public ValidationUserException() {
 		super(VALIDATE_ERROR_MESSAGE_TEXT);
 		oneField = false;
@@ -42,16 +47,40 @@ public final class ValidationUserException extends VUserException {
 		fieldName = null;
 	}
 
+	/**
+	 * Create a UserException on a field.
+	 * @param messageText Message text
+	 * @param dto object
+	 * @param fieldName field
+	 */
+	public ValidationUserException(final MessageText messageText, final DtObject dto, final DtFieldName fieldName) {
+		this(messageText, StringUtil.constToCamelCase(fieldName.name(), false), dto);
+	}
+
+	/**
+	 * Create a UserException on a field.
+	 * @param messageText Message text
+	 * @param dto object
+	 * @param fieldName fieldName in CamelCase
+	 */
 	public ValidationUserException(final MessageText messageText, final DtObject dto, final String fieldName) {
+		this(messageText, fieldName, dto);
+	}
+
+	private ValidationUserException(final MessageText messageText, final String fieldName, final DtObject dto) {
 		super(messageText);
 		Assertion.checkNotNull(dto, "L'objet est obligatoire");
 		Assertion.checkArgNotEmpty(fieldName, "Le champs est obligatoire");
+		Assertion.checkArgument(fieldName.indexOf('_') == -1, "Le nom du champs doit être en camelCase ({0}).", fieldName);
 		//-----
 		oneField = true;
 		this.dto = dto;
 		this.fieldName = fieldName;
 	}
 
+	/**
+	 * @param uiMessageStack UiMessageStack to fill
+	 */
 	public void flushToUiMessageStack(final UiMessageStack uiMessageStack) {
 		if (oneField) {
 			uiMessageStack.error(getMessage(), dto, fieldName);
