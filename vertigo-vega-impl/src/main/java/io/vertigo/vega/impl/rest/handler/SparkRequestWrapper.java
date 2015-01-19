@@ -141,7 +141,7 @@ final class SparkRequestWrapper extends Request {
 	public String body() {
 		if (body == null) {
 			try {
-				body = IOUtilstoString(raw().getInputStream(), getContentCharset()); //we can't override IOUtils static method
+				body = ioUtilstoString(raw().getInputStream(), getContentCharset()); //we can't override IOUtils static method
 			} catch (final Exception e) {
 				LOG.warn("Exception when reading body", e);
 			}
@@ -149,7 +149,7 @@ final class SparkRequestWrapper extends Request {
 		return body;
 	}
 
-	private static String IOUtilstoString(final InputStream input, final String contentCharset) throws IOException {
+	private static String ioUtilstoString(final InputStream input, final String contentCharset) throws IOException {
 		final StringWriter sw = new StringWriter();
 		IOUtils.copy(new InputStreamReader(input, contentCharset), sw); //set charset on InputStreamReader
 		return sw.toString();
