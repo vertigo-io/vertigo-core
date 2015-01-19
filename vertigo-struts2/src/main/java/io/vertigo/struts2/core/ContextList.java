@@ -19,7 +19,6 @@
 package io.vertigo.struts2.core;
 
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.persistence.Criteria;
@@ -118,8 +117,8 @@ public final class ContextList<O extends DtObject> {
 		/** {@inheritDoc} */
 		@Override
 		public final boolean equals(final Object o) {
-			if (o instanceof DtListURI) {
-				return o == this;
+			if (o instanceof UuidCriteria) {
+				return uuid.equals(((UuidCriteria<?>) o).uuid);
 			}
 			return false;
 		}
