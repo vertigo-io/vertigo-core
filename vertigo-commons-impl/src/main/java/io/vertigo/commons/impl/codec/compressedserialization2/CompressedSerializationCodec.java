@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.impl.codec.compressedserialization;
+package io.vertigo.commons.impl.codec.compressedserialization2;
 
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.lang.Assertion;
