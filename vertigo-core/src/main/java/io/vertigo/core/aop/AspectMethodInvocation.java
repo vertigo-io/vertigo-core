@@ -27,5 +27,5 @@ import java.lang.reflect.Method;
 public interface AspectMethodInvocation {
 	Method getMethod();
 
-	Object proceed(Object[] args) throws Throwable;
+	Object proceed(Object[] args) throws Exception;
 }

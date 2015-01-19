@@ -29,7 +29,7 @@ package io.vertigo.core.aop;
  * @author pchretien
  */
 public interface Aspect {
-	Object invoke(final Object[] args, final AspectMethodInvocation methodInvocation) throws Throwable;
+	Object invoke(final Object[] args, final AspectMethodInvocation methodInvocation) throws Exception;
 
 	/**
 	 * return Annotation that tagged any method or class concerned by this aspect

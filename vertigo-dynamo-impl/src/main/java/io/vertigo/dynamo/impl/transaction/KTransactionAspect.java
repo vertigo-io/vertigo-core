@@ -43,7 +43,7 @@ public final class KTransactionAspect implements Aspect {
 	}
 
 	@Override
-	public Object invoke(final Object[] args, final AspectMethodInvocation methodInvocation) throws Throwable {
+	public Object invoke(final Object[] args, final AspectMethodInvocation methodInvocation) throws Exception {
 		//La transaction est REQUIRED : si elle existe on l'utilise, sinon on la crée.
 		if (transactionManager.hasCurrentTransaction()) {
 			return methodInvocation.proceed(args);
