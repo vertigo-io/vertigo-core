@@ -22,7 +22,7 @@ import io.vertigo.commons.codec.Codec;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.codec.Encoder;
 import io.vertigo.commons.impl.codec.base64.Base64Codec;
-import io.vertigo.commons.impl.codec.compressedSerialization.CompressedSerializationCodec;
+import io.vertigo.commons.impl.codec.compressedserialization.CompressedSerializationCodec;
 import io.vertigo.commons.impl.codec.compression.CompressionCodec;
 import io.vertigo.commons.impl.codec.crypto.CryptoCodec;
 import io.vertigo.commons.impl.codec.csv.CsvEncoder;
