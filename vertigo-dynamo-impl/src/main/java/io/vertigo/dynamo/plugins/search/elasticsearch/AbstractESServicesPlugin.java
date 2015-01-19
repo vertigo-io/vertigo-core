@@ -66,7 +66,7 @@ import org.elasticsearch.node.Node;
  */
 public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, Activeable {
 	private static final IndexFieldNameResolver DEFAULT_INDEX_FIELD_NAME_RESOLVER = new IndexFieldNameResolver(Collections.<String, String> emptyMap());
-	private final Logger logger = Logger.getLogger(getClass());
+	private static final Logger LOGGER = Logger.getLogger(AbstractESServicesPlugin.class);
 	private final ESDocumentCodec elasticDocumentCodec;
 
 	private Node node;
@@ -125,9 +125,9 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 		//logger.warn("Index " + indexName + " CurrentMapping:");
 		final ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> indexMappings = indicesAdmin.prepareGetMappings(indexDefinition.getName().toLowerCase()).get().getMappings();
 		for (final ObjectObjectCursor<String, ImmutableOpenMap<String, MappingMetaData>> indexMapping : indexMappings) {
-			logger.info("Index " + indexMapping.key + " CurrentMapping:");
+			LOGGER.info("Index " + indexMapping.key + " CurrentMapping:");
 			for (final ObjectObjectCursor<String, MappingMetaData> dtoMapping : indexMapping.value) {
-				logger.info(dtoMapping.key + " -> " + dtoMapping.value.source());
+				LOGGER.info(dtoMapping.key + " -> " + dtoMapping.value.source());
 			}
 		}
 	}

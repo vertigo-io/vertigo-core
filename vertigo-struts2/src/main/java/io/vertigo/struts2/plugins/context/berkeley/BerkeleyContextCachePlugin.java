@@ -57,8 +57,8 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 	private static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
 
 	private static final Logger LOGGER = Logger.getLogger(BerkeleyContextCachePlugin.class);
-	private final TupleBinding cacheValueBinding;
-	private final TupleBinding keyBinding = TupleBinding.getPrimitiveBinding(String.class);
+	private final TupleBinding<CacheValue> cacheValueBinding;
+	private final TupleBinding<String> keyBinding = TupleBinding.getPrimitiveBinding(String.class);
 
 	private Timer purgeTimer;
 	private final long timeToLiveSeconds;
@@ -152,8 +152,8 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 	private CacheValue readCacheValueSafely(final DatabaseEntry theKey, final DatabaseEntry theData) {
 		String key = "IdError";
 		try {
-			key = (String) keyBinding.entryToObject(theKey);
-			final CacheValue cacheValue = (CacheValue) cacheValueBinding.entryToObject(theData);
+			key = keyBinding.entryToObject(theKey);
+			final CacheValue cacheValue = cacheValueBinding.entryToObject(theData);
 			return cacheValue;
 		} catch (final RuntimeException e) {
 			LOGGER.warn("Erreur de lecture du ContextCache : suppression de l'entrée incrimin�e : " + key, e);
@@ -177,9 +177,7 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 	void removeTooOldElements() throws DatabaseException {
 		final DatabaseEntry foundKey = new DatabaseEntry();
 		final DatabaseEntry foundData = new DatabaseEntry();
-		Cursor cursor = null;
-		try {
-			cursor = cacheDatas.openCursor(null, null);
+		try (Cursor cursor = cacheDatas.openCursor(null, null)) {
 			final int maxChecked = 500;
 			int checked = 0;
 			//Les elements sont parcouru dans l'ordre d'insertion (sans lock)
@@ -194,11 +192,6 @@ public final class BerkeleyContextCachePlugin implements Activeable, ContextCach
 				}
 			}
 			LOGGER.info("purge " + checked + " elements");
-		} finally {
-			if (cursor != null) {
-				cursor.close();
-			}
-
 		}
 	}
 

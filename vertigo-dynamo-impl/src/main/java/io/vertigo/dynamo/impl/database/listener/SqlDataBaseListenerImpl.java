@@ -43,7 +43,7 @@ public final class SqlDataBaseListenerImpl implements SqlDataBaseListener {
 	private static final String MS = " ms)";
 
 	/** Mécanisme de log utilisé pour le sql. */
-	private final Logger sqlLog;
+	private static final Logger LOGGER = Logger.getLogger("Sql");
 
 	private final AnalyticsManager analyticsManager;
 
@@ -55,16 +55,15 @@ public final class SqlDataBaseListenerImpl implements SqlDataBaseListener {
 		Assertion.checkNotNull(analyticsManager);
 		//-----
 		this.analyticsManager = analyticsManager;
-		sqlLog = Logger.getLogger("Sql");
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void onPreparedStatementStart(final SqlPreparedStatement preparedStatement) {
-		if (sqlLog.isDebugEnabled()) {
+		if (LOGGER.isDebugEnabled()) {
 			// on passe le preparedStatement en argument pour éviter de
 			// construire la query si pas nécessaire
-			sqlLog.debug("Execution du prepareStatement : " + preparedStatement.toString());
+			LOGGER.debug("Execution du prepareStatement : " + preparedStatement.toString());
 		}
 		analyticsManager.getAgent().addMetaData(MD_DB_SQL, preparedStatement.toString());
 	}
@@ -72,7 +71,7 @@ public final class SqlDataBaseListenerImpl implements SqlDataBaseListener {
 	/** {@inheritDoc} */
 	@Override
 	public void onPreparedStatementFinish(final SqlStatementStats statementStats) {
-		if (sqlLog.isInfoEnabled()) {
+		if (LOGGER.isInfoEnabled()) {
 			final StringBuilder sb = new StringBuilder()
 					.append("Execution du prepareStatement : ")
 					.append(statementStats.getPreparedStatement().toString());
@@ -95,7 +94,7 @@ public final class SqlDataBaseListenerImpl implements SqlDataBaseListener {
 				sb.append(" ").append(nbSelectedRow);
 				sb.append(nbSelectedRow > 1 ? " lignes récupérées" : " ligne récupérée");
 			}
-			sqlLog.info(sb.toString());
+			LOGGER.info(sb.toString());
 		}
 		//On choisit d'incrémenter l'indicateur.
 		//Se faisant on perd le moyen de faire la moyenne par requete,

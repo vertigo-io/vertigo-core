@@ -74,6 +74,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	/**
 	 * Constructeur.
 	 * @param codecManager Manager des mécanismes de codage/décodage.
+	 * @param dataStoreName Store utilisé
 	 * @param cachePath Chemin de stockage
 	 * @param timeToLiveSeconds Durée de vie des éléments en seconde
 	 */
@@ -262,18 +263,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 
 		final long purgePeriod = Math.min(15 * 60 * 1000, timeToLiveSeconds * 1000);
 		purgeTimer = new Timer("PurgeContextCache", true);
-		purgeTimer.schedule(new TimerTask() {
-			private final Logger timerLogger = Logger.getLogger(getClass());
-
-			@Override
-			public void run() {
-				try {
-					removeTooOldElements();
-				} catch (final DatabaseException dbe) {
-					timerLogger.error("Error closing BerkeleyContextCachePlugin: " + dbe.toString(), dbe);
-				}
-			}
-		}, purgePeriod, purgePeriod);
+		purgeTimer.schedule(new RemoveTooOldElementsTask(this), purgePeriod, purgePeriod);
 	}
 
 	/** {@inheritDoc} */
@@ -311,6 +301,32 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 			return myEnv.openDatabase(null, "KVDataStorePlugin", myDbConfig);
 		} catch (final DatabaseException e) {
 			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 *
+	 * @author npiedeloup
+	 */
+	static final class RemoveTooOldElementsTask extends TimerTask {
+		private final DelayedBerkeleyKVDataStorePlugin delayedBerkeleyKVDataStorePlugin;
+
+		/**
+		 * Constructor.
+		 * @param delayedBerkeleyKVDataStorePlugin plugin
+		 */
+		public RemoveTooOldElementsTask(final DelayedBerkeleyKVDataStorePlugin delayedBerkeleyKVDataStorePlugin) {
+			this.delayedBerkeleyKVDataStorePlugin = delayedBerkeleyKVDataStorePlugin;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public void run() {
+			try {
+				delayedBerkeleyKVDataStorePlugin.removeTooOldElements();
+			} catch (final DatabaseException dbe) {
+				LOGGER.error("Error closing BerkeleyContextCachePlugin: " + dbe.toString(), dbe);
+			}
 		}
 	}
 

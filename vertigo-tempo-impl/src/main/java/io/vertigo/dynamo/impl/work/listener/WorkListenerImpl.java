@@ -23,38 +23,32 @@ import io.vertigo.dynamo.work.WorkManager;
 import org.apache.log4j.Logger;
 
 /**
- * Implémentation standard du Listener de réception des événements produits par l'exécution des tachess.
- *
+ * Implémentation standard du Listener de réception des événements produits par l'exécution des taches.
  * @author pchretien
  */
 public final class WorkListenerImpl implements WorkListener {
-	/** Base de données gérant les statistiques des taches. */
-	//	private static final String PROCESS_TYPE = "WORK";
-	//	private static final String ERROR_PCT = "ERROR_PCT";
-
-	//	private final AnalyticsManager analyticsManager;
 
 	/** Mécanisme de log utilisé pour les taches. */
-	private static final Logger WORK_LOG = Logger.getLogger(WorkManager.class);
+	private static final Logger LOGGER = Logger.getLogger(WorkManager.class);
 
 	/** Mécanisme de log utilisé pour les performances. */
-	private static final Logger PERFORMANCE_LOGGER = Logger.getLogger("Performance");
+	private static final Logger LOGGER_PERFORMANCE = Logger.getLogger("Performance");
 
 	private void logWorkStart(final String workName) {
-		if (WORK_LOG.isDebugEnabled()) {
-			WORK_LOG.debug("Execution tache : " + workName);
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Execution tache : " + workName);
 		}
 	}
 
 	private void logWorkFinish(final String workName, final long elapsedTime, final boolean success) {
-		if (PERFORMANCE_LOGGER.isInfoEnabled()) {
-			PERFORMANCE_LOGGER.info(">> Tache : " + workName + " : time = " + elapsedTime);
+		if (LOGGER_PERFORMANCE.isInfoEnabled()) {
+			LOGGER_PERFORMANCE.info(">> Tache : " + workName + " : time = " + elapsedTime);
 		}
-		if (WORK_LOG.isInfoEnabled()) {
+		if (LOGGER.isInfoEnabled()) {
 			if (success) {
-				WORK_LOG.info("Execution tache : " + workName + " reussie en  ( " + elapsedTime + " ms)");
+				LOGGER.info("Execution tache : " + workName + " reussie en  ( " + elapsedTime + " ms)");
 			} else {
-				WORK_LOG.info("Execution tache : " + workName + " interrompue apres ( " + elapsedTime + " ms)");
+				LOGGER.info("Execution tache : " + workName + " interrompue apres ( " + elapsedTime + " ms)");
 			}
 		}
 	}

@@ -44,7 +44,7 @@ public final class ExceptionHandler implements RouteHandler {
 
 	private static final int SC_UNPROCESSABLE_ENTITY = 422; //server understands the content syntaxe but not semanticly
 	private static final int SC_TOO_MANY_REQUEST = 429; //RFC 6585 : TooManyRequest in time window
-	private final Logger log = Logger.getLogger(getClass());
+	private static final Logger LOGGER = Logger.getLogger(ExceptionHandler.class);
 	private final JsonEngine jsonWriterEngine;
 
 	ExceptionHandler(final JsonEngine jsonWriterEngine) {
@@ -71,12 +71,12 @@ public final class ExceptionHandler implements RouteHandler {
 		} catch (final VSecurityException e) {
 			return sendJsonError(HttpServletResponse.SC_FORBIDDEN, e, response);
 		} catch (final JsonSyntaxException e) {
-			log.info("JsonSyntaxException", e); //info and not warn, to keep warn level clean and not bad client depends
+			LOGGER.info("JsonSyntaxException", e); //info and not warn, to keep warn level clean and not bad client depends
 			return sendJsonError(HttpServletResponse.SC_BAD_REQUEST, e, response);
 		} catch (final TooManyRequestException e) {
 			return sendJsonError(SC_TOO_MANY_REQUEST, e, response);
 		} catch (final Throwable e) {//NOSONAR : In every situation we need to catch to respond client that server got a pb
-			log.error("Internal Server Error", e);
+			LOGGER.error("Internal Server Error", e);
 			return sendJsonError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e, response);
 		}
 	}

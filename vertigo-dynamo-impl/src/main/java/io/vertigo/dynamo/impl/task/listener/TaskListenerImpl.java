@@ -23,50 +23,33 @@ import io.vertigo.dynamo.task.TaskManager;
 import org.apache.log4j.Logger;
 
 /**
- * Implémentation standard du Listener de réception des événements produits par l'exécution des tachess.
+ * Implémentation standard du Listener de réception des événements produits par l'exécution des taches.
  *
  * @author pchretien
  */
 public final class TaskListenerImpl implements TaskListener {
-	/** Base de données gérant les statistiques des taches. */
-	//	private static final String PROCESS_TYPE = "WORK";
-	//	private static final String ERROR_PCT = "ERROR_PCT";
-
-	//	private final AnalyticsManager analyticsManager;
 
 	/** Mécanisme de log utilisé pour les taches. */
-	private final Logger taskLog;
+	private static final Logger LOGGER = Logger.getLogger(TaskManager.class);
 
 	/** Mécanisme de log utilisé pour les performances. */
-	private final Logger performanceLog;
-
-	/**
-	 * Constructeur.
-	 */
-	public TaskListenerImpl(/*final AnalyticsManager analyticsManager*/) {
-		//		Assertion.checkNotNull(analyticsManager);
-		//-----
-		//		this.analyticsManager = analyticsManager;
-
-		taskLog = Logger.getLogger(TaskManager.class);
-		performanceLog = Logger.getLogger("Performance");
-	}
+	private static final Logger LOGGER_PERFORMANCE = Logger.getLogger("Performance");
 
 	private void logWorkStart(final String taskName) {
-		if (taskLog.isDebugEnabled()) {
-			taskLog.debug("Execution tache : " + taskName);
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Execution tache : " + taskName);
 		}
 	}
 
 	private void logWorkFinish(final String taskName, final long elapsedTime, final boolean success) {
-		if (performanceLog.isInfoEnabled()) {
-			performanceLog.info(">> Tache : " + taskName + " : time = " + elapsedTime);
+		if (LOGGER_PERFORMANCE.isInfoEnabled()) {
+			LOGGER_PERFORMANCE.info(">> Tache : " + taskName + " : time = " + elapsedTime);
 		}
-		if (taskLog.isInfoEnabled()) {
+		if (LOGGER.isInfoEnabled()) {
 			if (success) {
-				taskLog.info("Execution tache : " + taskName + " reussie en  ( " + elapsedTime + " ms)");
+				LOGGER.info("Execution tache : " + taskName + " reussie en  ( " + elapsedTime + " ms)");
 			} else {
-				taskLog.info("Execution tache : " + taskName + " interrompue apres ( " + elapsedTime + " ms)");
+				LOGGER.info("Execution tache : " + taskName + " interrompue apres ( " + elapsedTime + " ms)");
 			}
 		}
 	}

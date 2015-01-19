@@ -21,34 +21,34 @@ package io.vertigo.struts2.impl.servlet;
 import org.apache.log4j.Logger;
 
 /**
- * Implémentation du listener des �v�nements produits par la servlet.
+ * Implémentation du listener des évènements produits par la servlet.
  *
  * @author pchretien
  */
 final class ServletListener {
 
 	/**
-	 * M�canisme de log racine
+	 * Mécanisme de log racine
 	 */
-	private static final Logger GENERAL_LOG = Logger.getRootLogger();
+	private static final Logger LOGGER = Logger.getRootLogger();
 
 	/**
-	 * Evénement remont� lors du démarrage de la servlet.
+	 * Evénement remonté lors du démarrage de la servlet.
 	 * @param servletName Nom de la servlet
 	 */
 	public void onServletStart(final String servletName) {
-		if (GENERAL_LOG.isInfoEnabled()) {
-			GENERAL_LOG.info("Start servlet " + servletName);
+		if (LOGGER.isInfoEnabled()) {
+			LOGGER.info("Start servlet " + servletName);
 		}
 	}
 
 	/**
-	 * Evénement remont� lors de l'arrêt de la servlet.
+	 * Evénement remonté lors de l'arrêt de la servlet.
 	 * @param servletName Nom de la servlet
 	 */
 	public void onServletDestroy(final String servletName) {
-		if (GENERAL_LOG.isInfoEnabled()) {
-			GENERAL_LOG.info("Destroy servlet " + servletName);
+		if (LOGGER.isInfoEnabled()) {
+			LOGGER.info("Destroy servlet " + servletName);
 		}
 	}
 }

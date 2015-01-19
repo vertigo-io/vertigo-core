@@ -38,6 +38,8 @@ import org.apache.log4j.Logger;
  */
 final class LocalWorker<WR, W> implements Callable<WR> {
 
+	private static final Logger LOGGER = Logger.getLogger(WorkManager.class); //même logger que le WorkListenerImpl
+
 	/**
 	 * Pour vider les threadLocal entre deux utilisations du Thread dans le pool,
 	 * on garde un accès débridé au field threadLocals de Thread.
@@ -55,7 +57,6 @@ final class LocalWorker<WR, W> implements Callable<WR> {
 
 	private final WorkItem<WR, W> workItem;
 	private final Option<WorkResultHandler<WR>> workResultHandler;
-	private final Logger logger = Logger.getLogger(WorkManager.class); //même logger que le WorkListenerImpl
 
 	/**
 	 * Constructeur.
@@ -111,7 +112,7 @@ final class LocalWorker<WR, W> implements Callable<WR> {
 	}
 
 	private void logError(final Throwable e) {
-		logger.error("Erreur de la tache de type : " + workItem.getWorkEngineProvider().getName(), e);
+		LOGGER.error("Erreur de la tache de type : " + workItem.getWorkEngineProvider().getName(), e);
 	}
 
 	/**

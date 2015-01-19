@@ -43,7 +43,7 @@ import org.apache.log4j.Logger;
  */
 public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin, Activeable {
 
-	private final Logger logger = Logger.getLogger(getClass());
+	private static final Logger LOGGER = Logger.getLogger(DelayedMemoryKVDataStorePlugin.class);
 
 	private final String dataStoreName;
 	private Timer purgeTimer;
@@ -53,6 +53,7 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin, 
 
 	/**
 	 * Constructor.
+	 * @param dataStoreName Store utilisé
 	 * @param timeToLiveSeconds life time of elements (seconde)
 	 */
 	@Inject
@@ -137,7 +138,7 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin, 
 				break;
 			}
 		}
-		logger.info("purge " + checked + " elements");
+		LOGGER.info("purge " + checked + " elements");
 	}
 
 	private boolean isTooOld(final DelayedMemoryCacheValue cacheValue) {

@@ -41,7 +41,14 @@ import org.apache.log4j.Logger;
  * @author npiedeloup, evernat
  */
 public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler {
-	private final Logger logger = Logger.getLogger(getClass()); //pas static, car on est sur une class abstraite
+	private static final Logger LOGGER = Logger.getLogger(AbstractSqlExceptionHandler.class);
+
+	/**
+	 * Crée une nouvelle instance de AbstractSqlExceptionHandler.
+	 */
+	public AbstractSqlExceptionHandler() {
+		LOGGER.info(String.format("Use %s as SqlExceptionHandler", this.getClass().getName()));
+	}
 
 	/**
 	 * @param msg Message base de données
@@ -54,7 +61,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 	 */
 	protected void handleTooLargeValueSqlException(final SQLException sqle) {
 		final MessageKey key = Resources.DYNAMO_SQL_CONSTRAINT_TOO_BIG_VALUE;
-		logger.warn(new MessageText(key).getDisplay(), sqle);
+		LOGGER.warn(new MessageText(key).getDisplay(), sqle);
 		//On se contente de logger l'exception cause mais on ne la lie pas à l'erreur utilisateur.
 		throw new VUserException(new MessageText(key));
 	}

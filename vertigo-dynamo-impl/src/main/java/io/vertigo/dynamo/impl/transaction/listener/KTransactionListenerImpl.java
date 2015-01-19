@@ -31,24 +31,24 @@ public final class KTransactionListenerImpl implements KTransactionListener {
 	/**
 	 * Mécanisme de log utilisé pour les transactions
 	 */
-	private static final Logger TRANSACTION_LOG = Logger.getLogger("transaction");
+	private static final Logger LOGGER = Logger.getLogger("transaction");
 
 	/** {@inheritDoc} */
 	@Override
 	public void onTransactionStart() {
-		if (TRANSACTION_LOG.isTraceEnabled()) {
-			TRANSACTION_LOG.trace("Demarrage de la transaction");
+		if (LOGGER.isTraceEnabled()) {
+			LOGGER.trace("Start transaction");
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void onTransactionFinish(final boolean rollback, final long elapsedTime) {
-		if (TRANSACTION_LOG.isTraceEnabled()) {
+		if (LOGGER.isTraceEnabled()) {
 			if (rollback) {
-				TRANSACTION_LOG.trace(">>Transaction rollback en ( " + elapsedTime + MS);
+				LOGGER.trace(">>Transaction rollback ( " + elapsedTime + MS);
 			} else {
-				TRANSACTION_LOG.trace(">>Transaction commit en ( " + elapsedTime + MS);
+				LOGGER.trace(">>Transaction commit ( " + elapsedTime + MS);
 			}
 		}
 	}

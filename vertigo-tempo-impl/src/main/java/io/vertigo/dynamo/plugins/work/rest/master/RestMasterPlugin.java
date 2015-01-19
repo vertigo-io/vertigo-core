@@ -61,6 +61,9 @@ public final class RestMasterPlugin implements MasterPlugin {
 		return distributedWorkTypes;
 	}
 
+	/**
+	 * @return RestQueueServer
+	 */
 	RestQueueServer getWorkQueueRestServer() {
 		return restQueueRestServer;
 	}

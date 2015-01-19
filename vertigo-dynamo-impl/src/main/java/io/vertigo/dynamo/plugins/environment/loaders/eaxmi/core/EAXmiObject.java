@@ -33,6 +33,9 @@ import org.xml.sax.Attributes;
  * @author pforhan
  */
 final class EAXmiObject {
+
+	private static final Logger LOGGER = Logger.getLogger(EAXmiObject.class);
+
 	// Propriétés des attributs
 	private static final String PROPERTY_NAME = "name";
 	//Le libellé est dans une des deux propriétés suivantes s'il a été défini.
@@ -102,8 +105,6 @@ final class EAXmiObject {
 	//============================================================
 	private final EAXmiObject root;
 
-	private final Logger log = Logger.getLogger(this.getClass());
-
 	/**
 	 * Constructeur de la racine
 	 */
@@ -130,7 +131,7 @@ final class EAXmiObject {
 	}
 
 	EAXmiObject createEAXmiObject(final XmlId newId, final EAXmiType newType, final String leNom) {
-		log.debug("Le père : " + name + " le fils " + leNom + " Le Type " + newType.name());
+		LOGGER.debug("Le père : " + name + " le fils " + leNom + " Le Type " + newType.name());
 		final EAXmiObject created = new EAXmiObject(this, newId, newType);
 		if (leNom != null) {
 			created.setName(leNom);
@@ -176,7 +177,7 @@ final class EAXmiObject {
 	}
 
 	String getDomain() {
-		return this.domain;
+		return domain;
 	}
 
 	//================================ASSOCIATIONS==============================

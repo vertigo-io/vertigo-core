@@ -65,7 +65,7 @@ import com.sun.star.uno.XComponentContext;
  */
 abstract class AbstractOpenOfficeConnection implements OpenOfficeConnection, XEventListener {
 
-	private final Logger logger = Logger.getLogger(getClass());
+	private static final Logger LOGGER = Logger.getLogger(AbstractOpenOfficeConnection.class);
 
 	private final String connectionString;
 	private XComponent bridgeComponent;
@@ -85,7 +85,7 @@ abstract class AbstractOpenOfficeConnection implements OpenOfficeConnection, XEv
 	/** {@inheritDoc} */
 	@Override
 	public final void connect() throws ConnectException {
-		logger.debug("connecting");
+		LOGGER.debug("connecting");
 		try {
 			final XComponentContext localContext = Bootstrap.createInitialComponentContext(null);
 			final XMultiComponentFactory localServiceManager = localContext.getServiceManager();
@@ -100,7 +100,7 @@ abstract class AbstractOpenOfficeConnection implements OpenOfficeConnection, XEv
 			final XPropertySet properties = UnoRuntime.queryInterface(XPropertySet.class, serviceManager);
 			componentContext = UnoRuntime.queryInterface(XComponentContext.class, properties.getPropertyValue("DefaultContext"));
 			connected = true;
-			logger.info("connected");
+			LOGGER.info("connected");
 		} catch (final NoConnectException connectException) {
 			final ConnectException e = new ConnectException("connection failed: " + connectionString + ": " + connectException.getMessage());
 			e.initCause(connectException);
@@ -113,7 +113,7 @@ abstract class AbstractOpenOfficeConnection implements OpenOfficeConnection, XEv
 	/** {@inheritDoc} */
 	@Override
 	public final void close() {
-		logger.debug("disconnecting");
+		LOGGER.debug("disconnecting");
 		expectingDisconnection = true;
 		bridgeComponent.dispose();
 	}
@@ -123,9 +123,9 @@ abstract class AbstractOpenOfficeConnection implements OpenOfficeConnection, XEv
 	public final void disposing(final EventObject event) {
 		connected = false;
 		if (expectingDisconnection) {
-			logger.info("disconnected");
+			LOGGER.info("disconnected");
 		} else {
-			logger.error("disconnected unexpectedly");
+			LOGGER.error("disconnected unexpectedly");
 		}
 		expectingDisconnection = false;
 	}
@@ -133,7 +133,7 @@ abstract class AbstractOpenOfficeConnection implements OpenOfficeConnection, XEv
 	private Object getService(final String className) {
 		try {
 			if (!connected) {
-				logger.info("trying to (re)connect");
+				LOGGER.info("trying to (re)connect");
 				connect();
 			}
 			return serviceManager.createInstanceWithContext(className, componentContext);

@@ -41,7 +41,7 @@ final class JpaListenerImpl {
 	private static final String MS = " ms)";
 
 	/** Mécanisme de log utilisé pour le sql. */
-	private static final Logger SQL_LOG = Logger.getLogger("Sql");
+	private static final Logger LOGGER = Logger.getLogger("Sql");
 
 	private final AnalyticsManager analyticsManager;
 
@@ -56,16 +56,16 @@ final class JpaListenerImpl {
 	}
 
 	public void onStart(final String query) {
-		if (SQL_LOG.isDebugEnabled()) {
+		if (LOGGER.isDebugEnabled()) {
 			// on passe le preparedStatement en argument pour éviter de
 			// construire la query si pas nécessaire
-			SQL_LOG.debug("Execution du prepareStatement : " + query);
+			LOGGER.debug("Execution du prepareStatement : " + query);
 		}
 		analyticsManager.getAgent().addMetaData(MD_DB_SQL, query);
 	}
 
 	public void onFinish(final String query, final boolean success, final long elapsedTime, final Long nbModifiedRow, final Long nbSelectedRow) {
-		if (SQL_LOG.isInfoEnabled()) {
+		if (LOGGER.isInfoEnabled()) {
 			final StringBuilder sb = new StringBuilder()
 					.append("Execution du prepareStatement : ")
 					.append(query);
@@ -86,7 +86,7 @@ final class JpaListenerImpl {
 				sb.append(" ").append(nbSelectedRow);
 				sb.append(nbSelectedRow > 1 ? " lignes récupérées" : " ligne récupérée");
 			}
-			SQL_LOG.info(sb.toString());
+			LOGGER.info(sb.toString());
 		}
 		//On choisit d'incrémenter l'indicateur.
 		//Se faisant on perd le moyen de faire la moyenne par requete,

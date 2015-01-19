@@ -29,22 +29,15 @@ final class ServletListener {
 	/**
 	 * Mécanisme de log racine
 	 */
-	private final Logger generalLog;
-
-	/**
-	 * Constructeur.
-	 */
-	ServletListener() {
-		generalLog = Logger.getRootLogger();
-	}
+	private static final Logger LOGGER = Logger.getRootLogger();
 
 	/**
 	 * Evénement remonté lors du démarrage de la servlet.
 	 * @param servletName Nom de la servlet
 	 */
 	public void onServletStart(final String servletName) {
-		if (generalLog.isInfoEnabled()) {
-			generalLog.info("Start servlet " + servletName);
+		if (LOGGER.isInfoEnabled()) {
+			LOGGER.info("Start servlet " + servletName);
 		}
 	}
 
@@ -53,8 +46,8 @@ final class ServletListener {
 	 * @param servletName Nom de la servlet
 	 */
 	public void onServletDestroy(final String servletName) {
-		if (generalLog.isInfoEnabled()) {
-			generalLog.info("Destroy servlet " + servletName);
+		if (LOGGER.isInfoEnabled()) {
+			LOGGER.info("Destroy servlet " + servletName);
 		}
 	}
 }
