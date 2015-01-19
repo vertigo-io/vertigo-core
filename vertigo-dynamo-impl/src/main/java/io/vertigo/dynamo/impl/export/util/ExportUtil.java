@@ -35,6 +35,10 @@ import java.util.Map;
  * @author pchretien
  */
 public final class ExportUtil {
+	private ExportUtil() {
+		//private constructor
+	}
+
 	/**
 	 * Retourne le text d'un champs du DTO en utilisant le formateur du domaine,
 	 * ou l'élément issu de la liste de REF si il y a une dénormalisation à

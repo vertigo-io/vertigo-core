@@ -45,9 +45,9 @@ public class KActionRestrictAccessInterceptor extends AbstractInterceptor {
 	public String intercept(final ActionInvocation actionInvocation) throws Exception {
 		final HttpServletRequest request = ServletActionContext.getRequest();
 		final String methodName = actionInvocation.getProxy().getMethod();
-		//si on est en GET, et que l'on appelle une action spécifique (autre que execute) 
+		//si on est en GET, et que l'on appelle une action spécifique (autre que execute)
 		//on test la présence de l'annotation @GET
-		if (request.getMethod().equals("GET") && !"execute".equals(methodName)) {
+		if ("GET".equals(request.getMethod()) && !"execute".equals(methodName)) {
 			final Option<Method> actionMethod = MethodUtil.findMethodByName(actionInvocation.getAction().getClass(), methodName);
 			Assertion.checkArgument(actionMethod.isDefined(), "Method {0} not found in {1}", methodName, actionInvocation.getAction().getClass());
 			if (!actionMethod.get().isAnnotationPresent(GET.class)) {

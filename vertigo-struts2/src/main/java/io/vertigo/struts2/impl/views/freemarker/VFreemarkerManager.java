@@ -47,11 +47,11 @@ import freemarker.cache.WebappTemplateLoader;
  *     		file://<absolutePath> : Add a loader using URL
  *     		struts2:// : The default struts2 templateLoader
  *     Example : webapp://WEB-INF/classes/
- * 
+ *
  * 2/ look into /io/vertigo/struts2/ftl/ directory in classPath (ftl override in Vertigo jar)
  * 3/ look into / directory in classPath (default to Struts2 jar)
- * 
- * Use of this VFreeMarkerManager : add this to your struts.xml 
+ *
+ * Use of this VFreeMarkerManager : add this to your struts.xml
  *       <constant name="struts.freemarker.manager.classname" value="io.vertigo.struts2.impl.views.freemarker.VFreemarkerManager" />
  *
  */
@@ -64,7 +64,7 @@ public final class VFreemarkerManager extends FreemarkerManager {
 	@Override
 	protected TemplateLoader createTemplateLoader(final ServletContext servletContext, final String templatesPath) {
 		final List<TemplateLoader> templatesLoaders = new ArrayList<>();
-		String usedTemplatesPath;
+		final String usedTemplatesPath;
 		if (templatesPath != null) {
 			usedTemplatesPath = templatesPath + SEP + IMPLICIT_TEMPLATES_PATH;
 		} else {

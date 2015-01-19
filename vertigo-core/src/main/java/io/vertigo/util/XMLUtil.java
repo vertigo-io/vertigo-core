@@ -40,7 +40,7 @@ public final class XMLUtil {
 	 * Constructeur.
 	 */
 	private XMLUtil() {
-		//Rien
+		//private constructor
 	}
 
 	/**
