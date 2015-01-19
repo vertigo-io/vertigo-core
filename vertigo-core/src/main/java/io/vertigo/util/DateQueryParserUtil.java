@@ -41,13 +41,13 @@ import java.util.regex.Pattern;
  * now-12M
  * now-2y
  * "06/12/2003", "dd/MM/yyyy"
- * 
+ *
  * @author mlaroche
  */
 final class DateQueryParserUtil {
 	private static final Map<String, Integer> CALENDAR_UNITS = createCalendarUnits();
-	private final static Pattern PATTERN = Pattern.compile("([0-9]{1,})([y,M, w,d,h,m,s]{1})");
-	private final static String NOW = "now";
+	private static final Pattern PATTERN = Pattern.compile("([0-9]{1,})([y,M, w,d,h,m,s]{1})");
+	private static final String NOW = "now";
 
 	private static Map<String, Integer> createCalendarUnits() {
 		final Map<String, Integer> units = new HashMap<>(5);
@@ -64,17 +64,17 @@ final class DateQueryParserUtil {
 	/**
 	 * Retourne la date correspondant à l'expression passée en parametre.
 	 * La syntaxe est de type now((+/-)eeeUNIT) ou une date au format dd/MM/yy
-	 * 
+	 *
 	 * @param dateQuery Expression
 	 * @param datePattern Pattern used to define a date (dd/MM/YYYY)
 	 * @return date
 	 */
-	static Date parse(final String dateQuery, String datePattern) {
+	static Date parse(final String dateQuery, final String datePattern) {
 		Assertion.checkArgNotEmpty(dateQuery);
 		Assertion.checkArgNotEmpty(datePattern, "you must define a valid datePattern such as dd/MM/yyyy or MM/dd/yy");
 		// ---
 		if (NOW.equals(dateQuery)) {
-			//today is gonna be the day 
+			//today is gonna be the day
 			return new Date();
 		}
 		if (dateQuery.startsWith(NOW)) {
@@ -91,7 +91,7 @@ final class DateQueryParserUtil {
 			//---
 			//operand = 21d
 			final String operand = dateQuery.substring(index + 1);
-			//NOW+21DAY or NOW-12MONTH 
+			//NOW+21DAY or NOW-12MONTH
 			final Matcher matcher = PATTERN.matcher(operand);
 			Assertion.checkState(matcher.matches(), "Le second operande ne respecte pas le pattern {0}", PATTERN.toString());
 			//---
@@ -107,7 +107,7 @@ final class DateQueryParserUtil {
 			return calendar.getTime();
 		}
 
-		//We are expecting a date respectig pattern 
+		//We are expecting a date respectig pattern
 		final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(datePattern);
 		try {
 			final Calendar calendar = new GregorianCalendar();

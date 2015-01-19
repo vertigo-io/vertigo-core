@@ -70,7 +70,7 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	 * @param dto Object a tester
 	 * @param modifiedFieldNames Liste des champs modifiés
 	 * @param fieldNames Nom des champs à tester
-	 * @return si le champ a été modifié 
+	 * @return si le champ a été modifié
 	 */
 	protected final boolean shouldCheck(final O dto, final Set<String> modifiedFieldNames, final String... fieldNames) {
 		for (final String fieldName : fieldNames) {
@@ -85,7 +85,7 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	/**
 	 * Vérifie l'égalité des champs.
 	 * @param dto Object a tester
-	 * @param fieldName1 Champs 1 
+	 * @param fieldName1 Champs 1
 	 * @param fieldName2 Champs 2
 	 * @param dtObjectErrors Pile des erreurs
 	 * @param messageText Message à appliquer si erreur
@@ -101,10 +101,10 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	}
 
 	/**
-	 * Vérifie que la date du champ 2 est après (strictement) la date du champ 1. 
+	 * Vérifie que la date du champ 2 est après (strictement) la date du champ 1.
 	 * @param dto Object a tester
-	 * @param fieldName1 Champs 1 
-	 * @param fieldName2 Champs 2 
+	 * @param fieldName1 Champs 1
+	 * @param fieldName2 Champs 2
 	 * @param dtObjectErrors Pile des erreurs
 	 * @param messageText Message à appliquer si erreur
 	 */
@@ -117,10 +117,10 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	}
 
 	/**
-	 * Vérifie que le Long du champ 2 est après (strictement) le Long du champ 1. 
+	 * Vérifie que le Long du champ 2 est après (strictement) le Long du champ 1.
 	 * @param dto Object a tester
-	 * @param fieldName1 Champs 1 
-	 * @param fieldName2 Champs 2 
+	 * @param fieldName1 Champs 1
+	 * @param fieldName2 Champs 2
 	 * @param dtObjectErrors Pile des erreurs
 	 * @param messageText Message à appliquer si erreur
 	 */
@@ -133,9 +133,9 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	}
 
 	/**
-	 * Vérifie que le champ est renseigner. 
+	 * Vérifie que le champ est renseigner.
 	 * @param dto Object a tester
-	 * @param fieldName Champs 
+	 * @param fieldName Champs
 	 * @param dtObjectErrors Pile des erreurs
 	 * @param messageText Message à appliquer si erreur
 	 */
@@ -195,7 +195,7 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	 * @param dtField DtField
 	 * @return camelCase fieldName.
 	 */
-	protected final static String getCamelCaseFieldName(final DtField dtField) {
+	protected static final String getCamelCaseFieldName(final DtField dtField) {
 		return StringUtil.constToCamelCase(dtField.getName(), false);
 	}
 
