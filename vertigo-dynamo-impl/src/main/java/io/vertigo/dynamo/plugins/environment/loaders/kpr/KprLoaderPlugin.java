@@ -89,39 +89,30 @@ public final class KprLoaderPlugin implements LoaderPlugin {
 	}
 
 	private static List<URL> doGetKspFiles(final URL kprURL, final ResourceManager resourceManager) throws Exception {
-		final List<URL> kspFileList = new ArrayList<>();
+		final List<URL> kspFiles = new ArrayList<>();
 		try (final BufferedReader reader = new BufferedReader(new InputStreamReader(kprURL.openStream()))) {
-			String line = reader.readLine();
-			//-----
 			String path = kprURL.getPath();
 			path = path.substring(0, path.lastIndexOf('/'));
-			while (line != null) {
+
+			for (String line = reader.readLine(); line != null; line = reader.readLine()) {
 				final String fileName = line.trim();
 				if (fileName.length() > 0) {
-					URL url;
 					// voir http://commons.apache.org/vfs/filesystems.html
-					if (fileName.indexOf('!') != -1) {
-						// pour client riche JavaWebStart (Jar, Tar, Zip)
-						final String archFileUri = fileName.substring(fileName.indexOf('!') + 1).replace('\\', '/');
-						url = resourceManager.resolve(archFileUri + '/' + fileName);
-					} else {
-						// Protocol : vfszip pour jboss par exemple
-						url = new URL(kprURL.getProtocol() + ':' + path + '/' + fileName);
-					}
+					// Protocol : vfszip pour jboss par exemple
+					final URL url = new URL(kprURL.getProtocol() + ':' + path + '/' + fileName);
 					if (fileName.endsWith(KPR_EXTENSION)) {
 						// kpr
-						kspFileList.addAll(getKspFiles(url, resourceManager));
+						kspFiles.addAll(getKspFiles(url, resourceManager));
 					} else if (fileName.endsWith(KSP_EXTENSION)) {
 						// ksp
-						kspFileList.add(url);
+						kspFiles.add(url);
 					} else {
 						throw new RuntimeException("Type de fichier inconnu : " + fileName);
 					}
 				}
-				line = reader.readLine();
 			}
 		}
-		return kspFileList;
+		return kspFiles;
 	}
 
 	/**
