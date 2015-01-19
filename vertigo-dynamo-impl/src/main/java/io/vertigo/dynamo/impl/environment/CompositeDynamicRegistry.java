@@ -79,7 +79,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 			// perf: ifs ordonnés en gros par fréquence sur les projets
 			final DynamicRegistry dynamicRegistry = lookUpDynamicRegistry(xdefinition);
 			dynamicRegistry.onDefinition(xdefinition);
-		} catch (final Throwable e) {
+		} catch (final Exception e) {
 			//on catch tout (notament les assertions) car c'est ici qu'on indique l'URI de la définition posant problème
 			throw new RuntimeException("Erreur dans le traitement de " + xdefinition.getDefinitionKey().getName(), e);
 		}

@@ -99,7 +99,7 @@ public final class MessageText implements Serializable {
 				localeManager = Home.getComponentSpace().resolve(LocaleManager.class);
 				locale = localeManager.getCurrentLocale();
 				msg = localeManager.getMessage(key, locale);
-			} catch (final Throwable t) {
+			} catch (final Exception e) {
 				//Si pas de locale msg est null et on va récupérer s'il existe le message par défaut.
 			}
 		}

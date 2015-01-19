@@ -68,9 +68,9 @@ public final class Injector {
 
 			injectMembers(instance, container);
 			return instance;
-		} catch (final Throwable t) {
+		} catch (final Exception e) {
 			//Contextualisation de l'exception et des assertions.
-			throw new DIException("Erreur lors de la création du composant de type : '" + clazz.getName() + "'", t);
+			throw new DIException("Erreur lors de la création du composant de type : '" + clazz.getName() + "'", e);
 		}
 	}
 
