@@ -76,7 +76,7 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 			}
 
 			return createMetric(null, Status.Rejected, null);
-		} catch (final Throwable e) {
+		} catch (final Exception e) {
 			return createMetric(null, Status.Error, e);
 		}
 	}

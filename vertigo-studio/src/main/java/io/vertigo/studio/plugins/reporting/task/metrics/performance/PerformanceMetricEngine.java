@@ -57,7 +57,7 @@ public final class PerformanceMetricEngine implements MetricEngine<TaskDefinitio
 		//-----
 		try {
 			return doExecute(taskDefinition);
-		} catch (final Throwable e) {
+		} catch (final Exception e) {
 			//throw new RiException("Erreur du plugin perfs", e);
 			return buildPerformanceMetric(Status.Error, null, createValueInformation(e));
 		}
