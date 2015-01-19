@@ -94,7 +94,7 @@ final class KFileUtil {
 	private static KFile readQueryFile(final Request request, final EndPointParam endPointParam) {
 		try {
 			Assertion.checkArgument(request.contentType().contains("multipart/form-data"), "File {0} not found. Request contentType isn't \"multipart/form-data\"", endPointParam.getName());
-			Assertion.checkArgument(request.raw().getParts().size() > 0, "File {0} not found. Request is multipart but there is no Parts. : Check you have defined MultipartConfig (example for Tomcat set allowCasualMultipartParsing=\"true\" on context tag in your context definition, for Jetty use JettyMultipartConfig)", endPointParam.getName());
+			Assertion.checkArgument(!request.raw().getParts().isEmpty(), "File {0} not found. Request is multipart but there is no Parts. : Check you have defined MultipartConfig (example for Tomcat set allowCasualMultipartParsing=\"true\" on context tag in your context definition, for Jetty use JettyMultipartConfig)", endPointParam.getName());
 			final Part file = request.raw().getPart(endPointParam.getName());
 			if (file == null) {
 				final StringBuilder sb = new StringBuilder();
