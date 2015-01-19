@@ -60,6 +60,6 @@ public final class VCommand {
 	}
 
 	public int arg(final String argName, final int defaultValue) {
-		return args.containsKey(argName) ? Integer.valueOf(args.get(argName)) : defaultValue;
+		return args.containsKey(argName) ? Integer.valueOf(args.get(argName)).intValue() : defaultValue;
 	}
 }

@@ -83,7 +83,7 @@ public final class VFreemarkerManager extends FreemarkerManager {
 					// substring(length-1) is intentional as we "reuse" the last slash
 					templatePathLoader = new WebappTemplateLoader(servletContext, singleTemplatePath.substring("webapp://"
 							.length() - 1));
-				} else if (singleTemplatePath.equals("struts2://")) {
+				} else if ("struts2://".equals(singleTemplatePath)) {
 					// substring(length-1) is intentional as we "reuse" the last slash
 					templatePathLoader = new StrutsClassTemplateLoader();
 				} else {
