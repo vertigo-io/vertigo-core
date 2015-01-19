@@ -32,7 +32,6 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -56,14 +55,9 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 		// @formatter:on
 	}
 
-	@Before
-	public void setupLocale() {
+	@Override
+	public void doSetUp() {
 		localeManager.add("io.vertigo.commons.locale.data.city-guide", CityGuide.values());
-		try {
-			Thread.sleep(10);
-		} catch (final InterruptedException e) {
-			// nothing
-		}
 	}
 
 	@Test(expected = IllegalStateException.class)
