@@ -87,6 +87,9 @@ import org.elasticsearch.search.sort.SortOrder;
  * @param <R> Type de l'objet resultant de la recherche
  */
 final class ESStatement<I extends DtObject, R extends DtObject> {
+	private static final String DATE_PATTERN = "dd/MM/yy";
+	private static final Pattern RANGE_PATTERN = Pattern.compile("([A-Z_0-9]+):([\\[\\]])(.*) TO (.*)([\\[\\]])");
+
 	private final String indexName;
 	private final Client esClient;
 	private final ESDocumentCodec elasticSearchDocumentCodec;
@@ -298,9 +301,6 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 			}
 		}
 	}
-
-	private static final String DATE_PATTERN = "dd/MM/yy";
-	private static final Pattern RANGE_PATTERN = Pattern.compile("([A-Z_0-9]+):([\\[\\]])(.*) TO (.*)([\\[\\]])");
 
 	private static Option<Double> convertToDouble(final String valueToConvert) {
 		final String stringValue = valueToConvert.trim();

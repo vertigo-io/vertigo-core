@@ -19,17 +19,17 @@
 package io.vertigo.core.aop;
 
 /**
- * Aspect. 
- * 
+ * Aspect.
+ *
  * use cases
- *  - log 
+ *  - log
  *  - monitoring
  *  - transaction
- *  
+ *
  * @author pchretien
  */
 public interface Aspect {
-	Object invoke(final Object args[], final AspectMethodInvocation methodInvocation) throws Throwable;
+	Object invoke(final Object[] args, final AspectMethodInvocation methodInvocation) throws Throwable;
 
 	/**
 	 * return Annotation that tagged any method or class concerned by this aspect

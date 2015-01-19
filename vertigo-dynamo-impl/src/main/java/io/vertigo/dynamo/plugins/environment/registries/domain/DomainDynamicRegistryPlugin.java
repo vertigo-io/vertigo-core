@@ -68,6 +68,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	private static final String ASSOCIATION_DEFINITION_PREFIX = DefinitionUtil.getPrefix(AssociationDefinition.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
 	private final DefinitionSpace definitionSpace;
+	private final Map<String, DtDefinitionBuilder> dtDefinitionBuilders = new HashMap<>();
 
 	/**
 	 * Constructeur.
@@ -176,11 +177,8 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final List<DynamicDefinitionKey> constraintNames = xdomain.getDefinitionKeys("constraint");
 
 		final String urn = xdomain.getDefinitionKey().getName();
-		//		final String packageName = xdomain.getPackageName();
 		return new Domain(urn, dataType, formatter, createConstraints(constraintNames), extractProperties(xdomain));
 	}
-
-	private final Map<String, DtDefinitionBuilder> dtDefinitionBuilders = new HashMap<>();
 
 	/**
 	 * @param xdtDefinition Définition de DT

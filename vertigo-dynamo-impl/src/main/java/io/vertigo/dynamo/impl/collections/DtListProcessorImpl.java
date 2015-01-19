@@ -49,15 +49,15 @@ final class DtListProcessorImpl implements DtListProcessor {
 		this(new DtListFunction[] {});
 	}
 
-	// Getteur sur Home car dépendance cyclique entre CollectionsManager et PersistenceManager
-	private static PersistenceManager getPersistenceManager() {
-		return Home.getComponentSpace().resolve(PersistenceManager.class);
-	}
-
 	private DtListProcessorImpl(final DtListFunction[] listFunctions) {
 		Assertion.checkNotNull(listFunctions);
 		//-----
 		this.listFunctions = listFunctions;
+	}
+
+	// Getteur sur Home car dépendance cyclique entre CollectionsManager et PersistenceManager
+	private static PersistenceManager getPersistenceManager() {
+		return Home.getComponentSpace().resolve(PersistenceManager.class);
 	}
 
 	private DtListProcessorImpl createNewDtListProcessor(final DtListFunction listFunction) {

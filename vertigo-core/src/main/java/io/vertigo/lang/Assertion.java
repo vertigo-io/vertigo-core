@@ -37,6 +37,10 @@ import io.vertigo.util.StringUtil;
  * @author fconstantin
  */
 public final class Assertion {
+	private Assertion() {
+		//private constructor
+	}
+
 	//=========================================================================
 	//-----NullPointerException
 	//=========================================================================

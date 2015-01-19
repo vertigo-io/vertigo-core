@@ -25,6 +25,9 @@ import java.util.Objects;
  * @author pchretien
  */
 public final class Tuples {
+	private Tuples() {
+		//private constructor
+	}
 
 	/**
 	 * Tuple with 2 Objects.

@@ -59,7 +59,7 @@ import com.google.gson.JsonParser;
  * @author pchretien
  */
 public final class VConsole {
-	private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 	private static final JSonBeautifier jBeautifier = new JSonBeautifier();
 	private final VConsoleHandler consoleHandler;
 	private boolean jsonMode = true;
@@ -215,7 +215,7 @@ public final class VConsole {
 		//suggest a command
 		private void suggestAnotherCommand(final int offset) {
 			index += offset;
-			if (index < 0 || matchingCommands.size() == 0) {
+			if (index < 0 || matchingCommands.isEmpty()) {
 				//On remet la valeur initiale
 				input.setText(typedInput);
 			} else {
@@ -242,7 +242,7 @@ public final class VConsole {
 				final JsonElement jsonElement = parser.parse(response.getResponse());
 				final String pretty;
 				if (console.isJsonMode()) {
-					pretty = gson.toJson(jsonElement);
+					pretty = GSON.toJson(jsonElement);
 				} else {
 					pretty = jBeautifier.beautify(jsonElement);
 				}
