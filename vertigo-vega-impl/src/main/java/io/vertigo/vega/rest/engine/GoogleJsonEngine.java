@@ -201,7 +201,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 
 	private static Type createParameterizedType(final Class<?> rawClass, final Type paramType) {
 		final Type[] typeArguments = { paramType };
-		final Type typeOfDest = new ParameterizedType() {
+		return new ParameterizedType() {
 
 			@Override
 			public Type[] getActualTypeArguments() {
@@ -218,12 +218,11 @@ public final class GoogleJsonEngine implements JsonEngine {
 				return rawClass;
 			}
 		};
-		return typeOfDest;
 	}
 
 	private static class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer<UiObject<D>> {
 		@Override
-		public UiObject<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
+		public UiObject<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
 			final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
 			final Class<D> dtoClass = (Class<D>) typeParameters[0]; // Id has only one parameterized type T
 			final JsonObject jsonObject = json.getAsJsonObject();
@@ -286,7 +285,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 
 	private static class UiListDeltaDeserializer<D extends DtObject> implements JsonDeserializer<UiListDelta<D>> {
 		@Override
-		public UiListDelta<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
+		public UiListDelta<D> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
 			final Type[] typeParameters = ((ParameterizedType) typeOfT).getActualTypeArguments();
 			final Class<D> dtoClass = (Class<D>) typeParameters[0]; // Id has only one parameterized type T
 			final Type uiObjectType = createParameterizedType(UiObject.class, dtoClass);

@@ -32,7 +32,6 @@ import javax.inject.Named;
 
 import com.sleepycat.je.Database;
 import com.sleepycat.je.DatabaseConfig;
-import com.sleepycat.je.DatabaseException;
 import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 
@@ -81,21 +80,7 @@ public final class BerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activ
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		try {
-			doStart(READONLY);
-			berkeleyDatabase = new BerkeleyDatabase(database, transactionManager);
-		} catch (final DatabaseException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	/**
-	 * Ouverture de la DB.
-	 * @param readOnly Si DB en consultation seule.
-	 * @throws DatabaseException Si erreur lors de l'ouverture
-	 */
-	private void doStart(final boolean readOnly) throws DatabaseException {
-
+		final boolean readOnly = READONLY;
 		final EnvironmentConfig environmentConfig = new EnvironmentConfig()
 				.setConfigParam(EnvironmentConfig.LOG_MEM_ONLY, inMemory ? "true" : "false")
 				.setReadOnly(readOnly)
@@ -110,22 +95,13 @@ public final class BerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activ
 				.setTransactional(!readOnly);
 
 		database = environment.openDatabase(null, "MyDB", databaseConfig);
+
+		berkeleyDatabase = new BerkeleyDatabase(database, transactionManager);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void stop() {
-		try {
-			doStop();
-		} catch (final DatabaseException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	/**
-	 * Fermeture de la DB.
-	 */
-	private void doStop() throws DatabaseException {
 		try {
 			if (database != null) {
 				database.close();
