@@ -25,7 +25,7 @@
 
 	<module name="quarto">
 		<component api="PublisherManager" class="io.vertigo.quarto.publisher.impl.PublisherManagerImpl">
-			<plugin class="io.vertigo.quarto.plugins.publisher.odt.MergerPluginOpenOffice" />
+			<plugin class="io.vertigo.quarto.plugins.publisher.odt.OpenOfficeMergerPlugin" />
 		</component>
 	</module>
 
