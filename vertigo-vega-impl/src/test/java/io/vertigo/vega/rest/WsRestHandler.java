@@ -67,22 +67,22 @@ public final class WsRestHandler {
 	}
 
 	private static class OnCloseThread extends Thread {
-		private final AutoCloseable closeableResource;
+		private final App app;
 
-		public OnCloseThread(final AutoCloseable closeableResource) {
+		public OnCloseThread(final App app) {
 			super("Vertigo OnCloseThread");
-			Assertion.checkNotNull(closeableResource);
+			Assertion.checkNotNull(app);
 			//-----
-			this.closeableResource = closeableResource;
+			this.app = app;
 		}
 
 		@Override
 		public void run() {
 			try {
-				System.out.println("Try to close " + closeableResource);
-				closeableResource.close();
+				System.out.println("Try to close " + app);
+				app.close();
 			} catch (final Exception e) {
-				System.err.println("Can't close " + closeableResource + " : " + e.toString());
+				System.err.println("Can't close " + app + " : " + e.toString());
 				e.printStackTrace(System.err);
 			}
 		}

@@ -131,11 +131,7 @@ final class HomeServlerStarter {
 	 * @param servletContext Servlet Context
 	 */
 	public final void contextDestroyed(final ServletContext servletContext) {
-		try {
-			app.close();
-			servletListener.onServletDestroy(getClass().getName());
-		} catch (final Exception e) {
-			LOG.error(e.getMessage(), e);
-		}
+		app.close();
+		servletListener.onServletDestroy(getClass().getName());
 	}
 }

@@ -35,10 +35,10 @@ import org.apache.log4j.xml.DOMConfigurator;
  * Home : Classe d'entrée sur toutes les modules.
  * Life Cycle
  * starting ==> active ==> stopping ==> closed
- *  
+ *
  * When error during starting
  * starting ==> stopping ==> closed ()
- * 
+ *
  * 'starting' and 'stopping' sont are ephemeral transitions.
  *
  * @author pchretien
@@ -57,6 +57,7 @@ public final class Home {
 			closed
 		}
 
+		private static Logger LOGGER = Logger.getLogger(App.class);
 		//Start Date in milliseconds : used to have 'uptime'
 		private final long start;
 		private final AppConfig appConfig;
@@ -106,6 +107,7 @@ public final class Home {
 				definitionSpace.clear();
 				componentSpace.stop();
 			} catch (final Throwable t) {
+				LOGGER.error("an error occured when stopping", t);
 				//Quel que soit l'état, on part en échec de l'arrét.
 				throw new RuntimeException("an error occured when stopping", t);
 			} finally {
