@@ -62,8 +62,9 @@ public final class LocalCoordinator implements Coordinator, Closeable {
 			if (!workers.awaitTermination(60, TimeUnit.SECONDS)) {
 				workers.shutdownNow(); // Cancel currently executing tasks
 				// Wait a while for tasks to respond to being cancelled
-				if (!workers.awaitTermination(60, TimeUnit.SECONDS))
+				if (!workers.awaitTermination(60, TimeUnit.SECONDS)) {
 					System.err.println("Pool did not terminate");
+				}
 			}
 		} catch (final InterruptedException ie) {
 			// (Re-)Cancel if current thread also interrupted

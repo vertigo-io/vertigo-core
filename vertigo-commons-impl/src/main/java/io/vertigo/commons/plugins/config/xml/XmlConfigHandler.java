@@ -34,8 +34,9 @@ final class XmlConfigHandler extends DefaultHandler {
 		applicationConfig, config, property;
 
 		static TagName valueOf2(final String value) {
-			if ("application-config".equals(value))
+			if ("application-config".equals(value)) {
 				return applicationConfig;
+			}
 			return valueOf(value);
 		}
 	}
