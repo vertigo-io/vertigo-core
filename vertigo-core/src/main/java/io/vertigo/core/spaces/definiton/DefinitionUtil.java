@@ -34,9 +34,8 @@ public final class DefinitionUtil {
 		Assertion.checkNotNull(definitionClass);
 		//-----
 		final DefinitionPrefix prefix = definitionClass.getAnnotation(DefinitionPrefix.class);
-		if (prefix == null) {
-			throw new RuntimeException("Annotation '@DefinitionPrefix' not found on " + definitionClass.getName());
-		}
+		//-----
+		Assertion.checkNotNull(prefix, "Annotation '@DefinitionPrefix' not found on {0}", definitionClass.getName());
 		Assertion.checkArgNotEmpty(prefix.value());
 		return prefix.value();
 	}

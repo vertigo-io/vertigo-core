@@ -54,11 +54,10 @@ public final class TemplateTaskDefinition {
 				ins.add(templateTaskAttribute);
 			} else {
 				//On est dans le cas des paramètres OUT
-				if (outTemp == null) {
-					outTemp = templateTaskAttribute;
-				} else {
+				if (outTemp != null) {
 					throw new Error("Les générations acceptent au plus un paramètre OUT");
 				}
+				outTemp = templateTaskAttribute;
 			}
 			hasOption = hasOption || !attribute.isNotNull();
 		}

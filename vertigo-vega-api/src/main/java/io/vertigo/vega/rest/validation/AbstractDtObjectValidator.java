@@ -67,7 +67,6 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	}
 
 	/**
-	 * @param dto Object a tester
 	 * @param modifiedFieldNames Liste des champs modifiés
 	 * @param fieldNames Nom des champs à tester
 	 * @return si le champ a été modifié
