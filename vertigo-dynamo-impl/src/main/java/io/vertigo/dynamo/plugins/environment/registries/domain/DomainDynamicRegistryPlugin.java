@@ -170,14 +170,14 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	}
 
 	private Domain createDomain(final DynamicDefinition xdomain) {
-		final String formatterUrn = xdomain.getDefinitionKey("formatter").getName();
-		final Formatter formatter = definitionSpace.resolve(formatterUrn, Formatter.class);
+		final String formatterName = xdomain.getDefinitionKey("formatter").getName();
+		final Formatter formatter = definitionSpace.resolve(formatterName, Formatter.class);
 
 		final DataType dataType = DataType.valueOf(xdomain.getDefinitionKey("dataType").getName());
 		final List<DynamicDefinitionKey> constraintNames = xdomain.getDefinitionKeys("constraint");
 
-		final String urn = xdomain.getDefinitionKey().getName();
-		return new Domain(urn, dataType, formatter, createConstraints(constraintNames), extractProperties(xdomain));
+		final String domainName = xdomain.getDefinitionKey().getName();
+		return new Domain(domainName, dataType, formatter, createConstraints(constraintNames), extractProperties(xdomain));
 	}
 
 	/**

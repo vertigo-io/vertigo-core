@@ -71,9 +71,9 @@ public final class TemplateDtDefinition {
 	 * @return Collection des associations concernées
 	 */
 	private Collection<AssociationNode> getTargetAssociationNodes() {
-		final Collection<AssociationDefinition> associationDefinitionCollection = Home.getDefinitionSpace().getAll(AssociationDefinition.class);
+		final Collection<AssociationDefinition> associationDefinitions = Home.getDefinitionSpace().getAll(AssociationDefinition.class);
 		final Collection<AssociationNode> result = new ArrayList<>();
-		for (final AssociationDefinition associationDefinition : associationDefinitionCollection) {
+		for (final AssociationDefinition associationDefinition : associationDefinitions) {
 			if (associationDefinition.getAssociationNodeA().getDtDefinition().getName().equals(dtDefinition.getName())) {
 				result.add(associationDefinition.getAssociationNodeB());
 			}

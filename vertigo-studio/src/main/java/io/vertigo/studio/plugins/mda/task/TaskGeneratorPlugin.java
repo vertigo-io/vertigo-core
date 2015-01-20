@@ -124,10 +124,10 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin {
 	}
 
 	private static Map<String, List<TaskDefinition>> buildPackageMap() {
-		final Collection<TaskDefinition> allTaskDefinitions = Home.getDefinitionSpace().getAll(TaskDefinition.class);
+		final Collection<TaskDefinition> taskDefinitions = Home.getDefinitionSpace().getAll(TaskDefinition.class);
 		final Map<String, List<TaskDefinition>> taskDefinitionsMap = new LinkedHashMap<>();
 		//---
-		for (final TaskDefinition taskDefinition : allTaskDefinitions) {
+		for (final TaskDefinition taskDefinition : taskDefinitions) {
 			final TemplateTaskDefinition templateTaskDefinition = new TemplateTaskDefinition(taskDefinition);
 			final DtDefinition dtDefinition = getDtDefinition(templateTaskDefinition);
 			// Correction bug : task avec retour DtObject (non persistant) non générée
@@ -151,7 +151,7 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin {
 	}
 
 	private static Map<DtDefinition, List<TaskDefinition>> builDtDefinitiondMap() {
-		final Collection<TaskDefinition> allTaskDefinitions = Home.getDefinitionSpace().getAll(TaskDefinition.class);
+		final Collection<TaskDefinition> taskDefinitions = Home.getDefinitionSpace().getAll(TaskDefinition.class);
 		final Map<DtDefinition, List<TaskDefinition>> taskDefinitionsMap = new LinkedHashMap<>();
 
 		//---
@@ -161,7 +161,7 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin {
 			taskDefinitionsMap.put(dtDefinition, new ArrayList<TaskDefinition>());
 		}
 		//---
-		for (final TaskDefinition taskDefinition : allTaskDefinitions) {
+		for (final TaskDefinition taskDefinition : taskDefinitions) {
 			final TemplateTaskDefinition templateTaskDefinition = new TemplateTaskDefinition(taskDefinition);
 
 			final DtDefinition dtDefinition = getDtDefinition(templateTaskDefinition);

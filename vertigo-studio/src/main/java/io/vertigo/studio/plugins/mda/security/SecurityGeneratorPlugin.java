@@ -37,7 +37,6 @@ import java.util.Map;
 public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin {
 
 	private static Collection<Role> getRoles() {
-		// return Home.getNameSpace().getDefinitions(Role.class);
 		return Home.getDefinitionSpace().getAll(Role.class);
 	}
 

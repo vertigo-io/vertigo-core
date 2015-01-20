@@ -204,8 +204,8 @@ public final class SwaggerRestServices implements RestfulService {
 
 	private Map<String, Object> createPathsObject() {
 		final Map<String, Object> paths = new LinkedHashMap<>();
-		final Collection<EndPointDefinition> endPointDefCollection = Home.getDefinitionSpace().getAll(EndPointDefinition.class);
-		for (final EndPointDefinition endPointDefinition : endPointDefCollection) {
+		final Collection<EndPointDefinition> endPointDefinitions = Home.getDefinitionSpace().getAll(EndPointDefinition.class);
+		for (final EndPointDefinition endPointDefinition : endPointDefinitions) {
 			final Map<String, Object> pathItem = (Map<String, Object>) paths.get(endPointDefinition.getPath());
 			if (pathItem != null) {
 				pathItem.putAll(createPathItemObject(endPointDefinition));
