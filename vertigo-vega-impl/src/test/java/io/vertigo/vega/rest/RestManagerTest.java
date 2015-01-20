@@ -638,6 +638,30 @@ public final class RestManagerTest {
 	}
 
 	@Test
+	public void testPostInnerBodyObjectFieldErrors() {
+		final Map<String, String> contactFrom = given().filter(sessionFilter)
+				.when().get("/test/5")
+				.body().as(Map.class);
+		contactFrom.put("email", "notAnEmail");
+
+		final Map<String, String> contactTo = given().filter(sessionFilter)
+				.when().get("/test/6")
+				.body().as(Map.class);
+		contactTo.put("firstName", "MoreThan50CharactersIsTooLongForAFirstNameInThisTestApi");
+
+		final Map<String, Object> fullBody = new HashMap<>();
+		fullBody.put("contactFrom", contactFrom);
+		fullBody.put("contactTo", contactTo);
+
+		loggedAndExpect(given().body(fullBody))
+				.body("fieldErrors.\"contactFrom.email\"", Matchers.contains("Le courriel n'est pas valide"))
+				.body("fieldErrors.\"contactTo.firstName\"", Matchers.contains("Le courriel n'est pas valide"))
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.post("/test/innerbody");
+	}
+
+	@Test
 	public void testPostInnerBodyLong() {
 		final Map<String, Object> fullBody = new HashMap<>();
 		fullBody.put("contactId1", 6);
