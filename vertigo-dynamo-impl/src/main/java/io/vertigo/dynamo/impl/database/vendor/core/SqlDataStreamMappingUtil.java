@@ -46,10 +46,12 @@ public final class SqlDataStreamMappingUtil {
 		//StateLess.
 	}
 
-	/*
+	/**
 	 * Récupération d'un flux à partir d'un Blob.
 	 * Si le blob est inférieur à un seuil, il est conservé en mémoire.
 	 * En revanche s'il excéde ce seuil, il est conservé sous la forme d'un fichier temporaire.
+	 * @param rs ResultSet
+	 * @param col index of blob column in resultSet
 	 *
 	 * @return Flux correspondant au blob.
 	 * @throws SQLException Exception SQL.
@@ -77,6 +79,7 @@ public final class SqlDataStreamMappingUtil {
 				copy(in, memoryOut, MEMORY_MAX_LENTH);
 				return new ByteArrayDataStream(memoryOut.toByteArray());
 			} catch (final SqlOffLimitsException e) {
+				//We don't rethrow this dynamo specific exception, we just change the process
 				//Cas où le blob dépasse les limites imposées à la mémoire.
 				return createDataStream(in, memoryOut.toByteArray());
 			}
@@ -88,7 +91,7 @@ public final class SqlDataStreamMappingUtil {
 		final File tmpFile = new TempFile("kdata", ".tmp");
 		//-----
 		try (final OutputStream fileOut = new FileOutputStream(tmpFile)) {
-			//1ere étape : on recopie le contenu de la mémoire dans le fichier. (car on ne peut par relire le Blob)
+			//1ere étape : on recopie le contenu de la mémoire dans le fichier. (car on ne peut pas relire le Blob)
 			try (final InputStream memoryIn = new ByteArrayInputStream(bytes)) {
 				copy(memoryIn, fileOut, FILE_MAX_LENGTH);
 				Assertion.checkState(tmpFile.length() <= MEMORY_MAX_LENTH, "Le fichier n'a pas repris le debut de l'export (RAM)");
