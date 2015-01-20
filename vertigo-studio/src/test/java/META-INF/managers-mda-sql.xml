@@ -22,6 +22,7 @@
 			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
 			<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
 			<plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.environment.registries.search.SearchDynamicRegistryPlugin" />
 			<plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
 		</component>
 	</module>
@@ -52,7 +53,7 @@
 			</plugin>
 
 			<plugin class="io.vertigo.studio.plugins.mda.task.TaskGeneratorPlugin" />
-			<!-- plugin class="io.vertigo.studio.plugins.mda.search.SearchGeneratorPlugin"/ -->
+			<plugin class="io.vertigo.studio.plugins.mda.search.SearchGeneratorPlugin"/> 
 			<plugin class="io.vertigo.studio.plugins.mda.file.FileInfoGeneratorPlugin">
 			</plugin>
 		</component>
