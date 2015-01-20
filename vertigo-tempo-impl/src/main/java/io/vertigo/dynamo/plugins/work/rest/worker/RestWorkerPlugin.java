@@ -21,7 +21,6 @@ package io.vertigo.dynamo.plugins.work.rest.worker;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.impl.node.WorkerPlugin;
 import io.vertigo.dynamo.impl.work.WorkItem;
-import io.vertigo.dynamo.node.Node;
 import io.vertigo.dynamo.work.WorkManager;
 import io.vertigo.lang.Assertion;
 
@@ -65,10 +64,6 @@ public final class RestWorkerPlugin implements WorkerPlugin {
 	@Override
 	public List<String> getWorkTypes() {
 		return workTypes;
-	}
-
-	public List<Node> getNodes() {
-		return null; //Collections.singletonList(new Node(getNodeId(), true));
 	}
 
 	/** {@inheritDoc} */

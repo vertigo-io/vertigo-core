@@ -21,7 +21,6 @@ package io.vertigo.dynamo.plugins.work.redis.worker;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.impl.node.WorkerPlugin;
 import io.vertigo.dynamo.impl.work.WorkItem;
-import io.vertigo.dynamo.node.Node;
 import io.vertigo.dynamo.plugins.work.redis.RedisDB;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
@@ -75,9 +74,9 @@ public final class RedisWorkerPlugin implements WorkerPlugin, Activeable {
 		redisDB.stop();
 	}
 
-	public List<Node> getNodes() {
+	/*public List<Node> getNodes() {
 		return redisDB.getNodes();
-	}
+	}*/
 
 	/** {@inheritDoc} */
 	@Override

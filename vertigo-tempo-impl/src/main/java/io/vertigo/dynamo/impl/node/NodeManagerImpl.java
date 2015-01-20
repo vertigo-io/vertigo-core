@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.impl.node;
 
 import io.vertigo.dynamo.impl.work.worker.local.LocalCoordinator;
-import io.vertigo.dynamo.node.Node;
 import io.vertigo.dynamo.node.NodeManager;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
@@ -42,6 +41,10 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 
 	//private final String nodeId;
 
+	/**
+	 * Constructor.
+	 * @param nodePlugins workerPlugins
+	 */
 	@Inject
 	public NodeManagerImpl(final List<WorkerPlugin> nodePlugins) {
 		Assertion.checkNotNull(nodePlugins);
@@ -54,12 +57,6 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 				dispatcherThreads.add(new Thread(worker));
 			}
 		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public List<Node> getNodes() {
-		return null; //nodes;
 	}
 
 	//	private final List<String> workTypes;

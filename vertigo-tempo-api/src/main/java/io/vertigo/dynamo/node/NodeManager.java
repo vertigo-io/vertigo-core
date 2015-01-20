@@ -20,20 +20,15 @@ package io.vertigo.dynamo.node;
 
 import io.vertigo.lang.Component;
 
-import java.util.List;
-
 /**
  * Gestion des Nodes distribués .
  * Ce manager possède des nodes sous la forme de plugins qui permettent de
  *  - producer : produire des travaux....
  *  - consumer : consommer des travaux (c'est à dire les réaliser)
  *  - supervisor : vérifier le bon fonctionnement du système
- * 
+ *
  * @author npiedeloup, pchretien
  */
 public interface NodeManager extends Component {
-	/**
-	 * @return Liste des noeuds
-	 */
-	List<Node> getNodes();
+	//nothing
 }
