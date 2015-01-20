@@ -100,7 +100,7 @@ public final class DelayedMemoryKVDataStorePlugin implements KVDataStorePlugin, 
 	/** {@inheritDoc} */
 	@Override
 	public <C> List<C> findAll(final int skip, final Integer limit, final Class<C> clazz) {
-		return null;
+		throw new UnsupportedOperationException("This implementation doesn't use ordered datas. Method findAll can't be called.");
 	}
 
 	/** {@inheritDoc} */
