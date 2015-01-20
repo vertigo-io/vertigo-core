@@ -94,5 +94,6 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 			clientNode.stop();
 			clientNode = null;
 		}
+		System.out.println("All was stopped, quit now");
 	}
 }
