@@ -37,6 +37,7 @@ public final class ExportHelper {
 
 	/**
 	 * Constructeur.
+	 * @param persistenceManager PersistenceManager for MasterData management
 	 */
 	public ExportHelper(final PersistenceManager persistenceManager) {
 		Assertion.checkNotNull(persistenceManager);
@@ -71,32 +72,28 @@ public final class ExportHelper {
 	private Object getValue(final boolean forceStringValue, final Map<DtField, Map<Object, String>> referenceCache, final Map<DtField, Map<Object, String>> denormCache, final DtObject dto, final ExportField exportColumn) {
 		final DtField dtField = exportColumn.getDtField();
 		Object value;
-		try {
-			if (dtField.getType() == DtField.FieldType.FOREIGN_KEY && persistenceManager.getMasterDataConfiguration().containsMasterData(dtField.getFkDtDefinition())) {
-				Map<Object, String> referenceIndex = referenceCache.get(dtField);
-				if (referenceIndex == null) {
-					referenceIndex = createReferentielIndex(dtField);
-					referenceCache.put(dtField, referenceIndex);
-				}
-				value = referenceIndex.get(dtField.getDataAccessor().getValue(dto));
-			} else if (exportColumn instanceof ExportDenormField) {
-				final ExportDenormField exportDenormColumn = (ExportDenormField) exportColumn;
-				Map<Object, String> denormIndex = denormCache.get(dtField);
-				if (denormIndex == null) {
-					denormIndex = createDenormIndex(exportDenormColumn.getDenormList(), exportDenormColumn.getKeyField(), exportDenormColumn.getDisplayField());
-					denormCache.put(dtField, denormIndex);
-				}
-				value = denormIndex.get(dtField.getDataAccessor().getValue(dto));
-			} else {
-				value = exportColumn.getDtField().getDataAccessor().getValue(dto);
-				if (forceStringValue) {
-					value = exportColumn.getDtField().getDomain().getFormatter().valueToString(value, exportColumn.getDtField().getDomain().getDataType());
-				}
+		if (dtField.getType() == DtField.FieldType.FOREIGN_KEY && persistenceManager.getMasterDataConfiguration().containsMasterData(dtField.getFkDtDefinition())) {
+			Map<Object, String> referenceIndex = referenceCache.get(dtField);
+			if (referenceIndex == null) {
+				referenceIndex = createReferentielIndex(dtField);
+				referenceCache.put(dtField, referenceIndex);
 			}
-		} catch (final Exception e) {
-			// TODO : solution ? => ouvrir pour surcharge de cette gestion
-			value = "Non Exportable";
+			value = referenceIndex.get(dtField.getDataAccessor().getValue(dto));
+		} else if (exportColumn instanceof ExportDenormField) {
+			final ExportDenormField exportDenormColumn = (ExportDenormField) exportColumn;
+			Map<Object, String> denormIndex = denormCache.get(dtField);
+			if (denormIndex == null) {
+				denormIndex = createDenormIndex(exportDenormColumn.getDenormList(), exportDenormColumn.getKeyField(), exportDenormColumn.getDisplayField());
+				denormCache.put(dtField, denormIndex);
+			}
+			value = denormIndex.get(dtField.getDataAccessor().getValue(dto));
+		} else {
+			value = exportColumn.getDtField().getDataAccessor().getValue(dto);
+			if (forceStringValue) {
+				value = exportColumn.getDtField().getDomain().getFormatter().valueToString(value, exportColumn.getDtField().getDomain().getDataType());
+			}
 		}
+		//Check if we should return some magic value ("??") when exception are throw here. Previous impl manage this "useless ?" case.
 		return value;
 	}
 
