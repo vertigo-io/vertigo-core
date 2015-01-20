@@ -72,7 +72,7 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	 * @param fieldNames Nom des champs à tester
 	 * @return si le champ a été modifié
 	 */
-	protected final boolean shouldCheck(final O dto, final Set<String> modifiedFieldNames, final String... fieldNames) {
+	protected final boolean shouldCheck(final Set<String> modifiedFieldNames, final String... fieldNames) {
 		for (final String fieldName : fieldNames) {
 			final String constFieldName = StringUtil.camelToConstCase(fieldName);
 			if (!modifiedFieldNames.contains(constFieldName)) {
