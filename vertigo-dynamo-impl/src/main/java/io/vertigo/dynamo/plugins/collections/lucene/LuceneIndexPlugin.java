@@ -262,7 +262,7 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 		final BooleanQuery query = new BooleanQuery();
 		for (final DtField dtField : searchedFieldList) {
 			final Query queryWord = createParsedKeywordsQuery(dtField.name(), keywords);
-			if (boostedField.isDefined() && dtField.equals(boostedField)) {
+			if (boostedField.isDefined() && dtField.equals(boostedField.get())) {
 				queryWord.setBoost(4);
 			}
 			query.add(queryWord, BooleanClause.Occur.SHOULD);
