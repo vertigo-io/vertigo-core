@@ -54,10 +54,12 @@ public final class Starter implements Runnable {
 	@Override
 	public void run() {
 		try (App app = new App(appConfig)) {
+			System.out.println("Node started");
 			final Object lock = new Object();
 			synchronized (lock) {
 				lock.wait(timeToWait * 1000); //on attend le temps demandé et 0 => illimité
 			}
+			System.out.println("Node stopping by timeout");
 		} catch (final InterruptedException e) {
 			//rien arret normal
 		} catch (final Exception e) {
