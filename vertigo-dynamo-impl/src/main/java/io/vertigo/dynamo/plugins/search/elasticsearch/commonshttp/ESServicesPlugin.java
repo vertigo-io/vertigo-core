@@ -36,53 +36,59 @@ import org.elasticsearch.node.NodeBuilder;
  * @author npiedeloup
  */
 public final class ESServicesPlugin extends AbstractESServicesPlugin {
+
 	/** url du serveur elasticSearch. */
 	private final String[] serversNames;
+	/** cluster à rejoindre. */
+	private final String clusterName;
 
 	/**
 	 * Constructeur.
-	 * @param serversNamesStr URL du serveur ElasticSearch (ex : "http://localhost:8983/elasticsearch")
+	 *
+	 * @param serversNamesStr URL du serveur ElasticSearch avec le port de communication de cluster (9300 en général)
 	 * @param cores Liste des indexes
 	 * @param rowsPerQuery Liste des indexes
 	 * @param codecManager Manager des codecs
+	 * @param clusterName : nom du cluster à rejoindre
 	 */
 	@Inject
-	public ESServicesPlugin(@Named("servers.names") final String serversNamesStr, @Named("cores") final String cores, @Named("rowsPerQuery") final int rowsPerQuery, final CodecManager codecManager) {
+	public ESServicesPlugin(@Named("servers.names") final String serversNamesStr, @Named("cores") final String cores,
+			@Named("rowsPerQuery") final int rowsPerQuery, final CodecManager codecManager,
+			@Named("cluster.name") final String clusterName) {
 		super(cores, rowsPerQuery, codecManager);
-		Assertion.checkArgNotEmpty(serversNamesStr, "Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','");
-		Assertion.checkArgument(!serversNamesStr.contains(";"), "Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','");
-		//-----
+		Assertion.checkArgNotEmpty(serversNamesStr,
+				"Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','");
+		Assertion.checkArgument(!serversNamesStr.contains(";"),
+				"Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','");
+		Assertion.checkArgNotEmpty(clusterName, "Cluster's name must be defined");
+		Assertion.checkArgument(!"elasticsearch".equals(clusterName), "You have to define a cluster name different from the default one");
+		// ---------------------------------------------------------------------
 		serversNames = serversNamesStr.split(",");
+		this.clusterName = clusterName;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	protected Node createNode() {
-		return createNode(serversNames);
-	}
-
-	private static Node createNode(final String[] serversNames) {
 		return new NodeBuilder()
-				.settings(buildNodeSettings(serversNames))
+				.settings(buildNodeSettings())
 				.client(true)
 				.build();
 	}
 
-	private static Settings buildNodeSettings(final String[] serversNames) {
-		//Build settings
-		return ImmutableSettings.settingsBuilder()
-				.put("node.name", "es-embedded-node-" + System.currentTimeMillis())
+	private Settings buildNodeSettings() {
+		// Build settings
+		return ImmutableSettings.settingsBuilder().put("node.name", "es-embedded-node-" + System.currentTimeMillis())
 				.put("node.data", false)
 				.put("node.master", false)
-				//.put("discovery.zen.fd.ping_timeout", "30s")
-				//.put("discovery.zen.minimum_master_nodes", 2)
+				// .put("discovery.zen.fd.ping_timeout", "30s")
+				// .put("discovery.zen.minimum_master_nodes", 2)
 				.put("discovery.zen.ping.multicast.enabled", false)
 				.putArray("discovery.zen.ping.unicast.hosts", serversNames)
+				.put("cluster.name", clusterName)
+				// .put("index.store.type", "memory")
+				// .put("index.store.fs.memory.enabled", "true")
+				// .put("gateway.type", "none")
 				.build();
-		//.put("cluster.name", "cluster-test-" + NetworkUtils.getLocalAddress().getHostName())
-		//.put("index.store.type", "memory")
-		//.put("index.store.fs.memory.enabled", "true")
-		//.put("gateway.type", "none")
-		//
 	}
 }

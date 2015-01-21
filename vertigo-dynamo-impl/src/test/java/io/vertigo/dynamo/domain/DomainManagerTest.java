@@ -35,7 +35,7 @@ import org.junit.Test;
 public class DomainManagerTest {
 
 	@Test
-	public void createDtDefinitionTest() {
+	public void testCreateDtDefinition() {
 		try (App app = new App(new AppConfigBuilder().build())) {
 			final Formatter formatter = new FormatterDefault("FMT_DEF");
 			final Domain domain = new Domain("DO_NAME", DataType.String, formatter);
