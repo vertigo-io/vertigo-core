@@ -53,12 +53,13 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 		//1- if no xmlUrls we check if a property reference files
 		final String xmlFileNames = myEnvParams.getProperty("boot.applicationConfiguration");
 		if (xmlFileNames != null) {
-			//Assertion.checkNotNull(xmlFileNames, "'applicationConfiguration' property not found in EnvironmentParams");
 			final String[] xmlFileNamesSplit = xmlFileNames.split(";");
 			withXmlFileNames(getClass(), xmlFileNamesSplit);
 			//---
 			myEnvParams.remove("boot.applicationConfiguration");
 		}
+		//-----
+		Assertion.checkNotNull(xmlUrls, "No config found");
 		//-----
 		//2- We load XML with parser to obtain all the moduleConfigs
 		// We check that all the properties are consumed.
