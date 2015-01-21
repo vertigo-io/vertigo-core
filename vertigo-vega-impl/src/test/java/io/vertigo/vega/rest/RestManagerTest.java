@@ -655,7 +655,7 @@ public final class RestManagerTest {
 
 		loggedAndExpect(given().body(fullBody))
 				.body("fieldErrors.\"contactFrom.email\"", Matchers.contains("Le courriel n'est pas valide"))
-				.body("fieldErrors.\"contactTo.firstName\"", Matchers.contains("Le courriel n'est pas valide"))
+				.body("fieldErrors.\"contactTo.firstName\"", Matchers.contains("<<fr:DYNAMO_CONSTRAINT_STRINGLENGTH_EXCEEDED[50]>>"))
 				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 				.when()
 				.post("/test/innerbody");
