@@ -86,23 +86,23 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	/** {@inheritDoc} */
 	@Override
 	public void onDefinition(final DynamicDefinition xdefinition) {
-		final Entity metaDefinition = xdefinition.getEntity();
-		if (metaDefinition.equals(DomainGrammar.DOMAIN_ENTITY)) {
+		final Entity entity = xdefinition.getEntity();
+		if (entity.equals(DomainGrammar.DOMAIN_ENTITY)) {
 			final Domain definition = createDomain(xdefinition);
 			definitionSpace.put(definition, Domain.class);
-		} else if (metaDefinition.equals(DomainGrammar.DT_DEFINITION_ENTITY)) {
+		} else if (entity.equals(DomainGrammar.DT_DEFINITION_ENTITY)) {
 			final DtDefinition dtDefinition = createDtDefinition(xdefinition);
 			definitionSpace.put(dtDefinition, DtDefinition.class);
-		} else if (metaDefinition.equals(DomainGrammar.ASSOCIATION_ENTITY)) {
+		} else if (entity.equals(DomainGrammar.ASSOCIATION_ENTITY)) {
 			final AssociationDefinition definition = createAssociationSimpleDefinition(xdefinition);
 			definitionSpace.put(definition, AssociationDefinition.class);
-		} else if (metaDefinition.equals(DomainGrammar.ASSOCIATION_NN_ENTITY)) {
+		} else if (entity.equals(DomainGrammar.ASSOCIATION_NN_ENTITY)) {
 			final AssociationDefinition definition = createAssociationNNDefinition(xdefinition);
 			definitionSpace.put(definition, AssociationDefinition.class);
-		} else if (metaDefinition.equals(DomainGrammar.CONSTAINT_ENTITY)) {
+		} else if (entity.equals(DomainGrammar.CONSTAINT_ENTITY)) {
 			final Constraint definition = createConstraint(xdefinition);
 			definitionSpace.put(definition, Constraint.class);
-		} else if (metaDefinition.equals(DomainGrammar.FORMATTER_ENTITY)) {
+		} else if (entity.equals(DomainGrammar.FORMATTER_ENTITY)) {
 			final Formatter definition = createFormatter(xdefinition);
 			definitionSpace.put(definition, Formatter.class);
 		} else {

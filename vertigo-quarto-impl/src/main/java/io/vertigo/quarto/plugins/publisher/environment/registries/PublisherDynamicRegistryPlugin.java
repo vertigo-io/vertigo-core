@@ -52,12 +52,12 @@ public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistr
 	/** {@inheritDoc} */
 	@Override
 	public void onDefinition(final DynamicDefinition xdefinition) {
-		final Entity metaDefinition = xdefinition.getEntity();
+		final Entity entity = xdefinition.getEntity();
 
-		if (metaDefinition.equals(PublisherGrammar.publisherDefinition)) {
+		if (entity.equals(PublisherGrammar.publisherDefinition)) {
 			final PublisherDataDefinition definition = createPublisherDataDefinition(xdefinition);
 			Home.getDefinitionSpace().put(definition, PublisherDataDefinition.class);
-		} else if (metaDefinition.equals(PublisherGrammar.publisherNodeDefinition)) {
+		} else if (entity.equals(PublisherGrammar.publisherNodeDefinition)) {
 			createPublisherNodeDefinition(xdefinition);
 		} else {
 			throw new IllegalArgumentException("Type de définition non gérée: " + xdefinition.getDefinitionKey().getName());
@@ -122,7 +122,6 @@ public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistr
 		final PublisherNodeDefinitionBuilder publisherNodeDefinitionBuilder = publisherDefinitionMap.get(name);
 		Assertion.checkNotNull(publisherNodeDefinitionBuilder, "Le PublisherNode {0} est introuvable pour le field {1} de {2}.", name, fieldName, parentNodeName);
 		unusedNodes.remove(name);
-		//		System.out.println("ref " + name + "  in " + parentNodeName + "." + fieldName);
 
 		return publisherNodeDefinitionBuilder;
 	}
