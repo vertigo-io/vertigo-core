@@ -148,11 +148,6 @@ public class KspProperty {
 	 */
 	public static final EntityProperty ROOT = new EntityProperty("ROOT", EntityPropertyType.String);
 
-	/**
-	 * Nom du Store utilisé pour cette définition.
-	 */
-	public static final EntityProperty STORE_NAME = new EntityProperty("STORE_NAME", EntityPropertyType.String);
-
 	//==============================
 	//----Mda
 	//==============================

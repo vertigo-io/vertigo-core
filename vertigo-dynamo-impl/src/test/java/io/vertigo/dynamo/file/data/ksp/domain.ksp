@@ -11,7 +11,6 @@ create Formatter FMT_DATE {
 }
 
 create FileInfo FI_FILE_INFO_STD {
-	storeName : "BddFileStore"
 	root : "KX_FILE_INFO"
 }
 

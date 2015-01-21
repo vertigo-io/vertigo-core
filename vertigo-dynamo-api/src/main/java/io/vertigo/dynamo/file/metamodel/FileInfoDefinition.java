@@ -47,24 +47,15 @@ public final class FileInfoDefinition implements Definition {
 	private final String root;
 
 	/**
-	 * Nom du fileStorePlugin utilisé.
-	 * On garde le nom et pas le plugin qui n'est porté que par le FileManager.
-	 */
-	private final String fileStoreName;
-
-	/**
 	 * Constructeur.
 	 * @param root Racine des fichiers de ce type
-	 * @param fileStoreName Nom du fileStorePlugin utilisé
 	 */
-	public FileInfoDefinition(final String name, final String root, final String fileStoreName) {
+	public FileInfoDefinition(final String name, final String root) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(root);
-		Assertion.checkNotNull(fileStoreName);
 		//-----
 		this.name = name;
 		this.root = root;
-		this.fileStoreName = fileStoreName;
 	}
 
 	/**
@@ -72,13 +63,6 @@ public final class FileInfoDefinition implements Definition {
 	 */
 	public String getRoot() {
 		return root;
-	}
-
-	/**
-	 * @return Nom du fileStorePlugin utilisé pour cette definition.
-	 */
-	public String getFileStorePluginName() {
-		return fileStoreName;
 	}
 
 	/** {@inheritDoc} */
