@@ -83,12 +83,13 @@ public final class Home {
 				componentSpace = new ComponentSpace(appConfig);
 				//----
 				for (final ModuleConfig moduleConfig : appConfig.getModuleConfigs()) {
-					definitionSpace.injectResources(moduleConfig);
+					definitionSpace.injectDefinitions(moduleConfig);
 					componentSpace.injectComponents(moduleConfig);
 					componentSpace.injectAspects(moduleConfig);
 				}
 				//-----
 				componentSpace.start();
+				definitionSpace.start();
 				//	INSTANCE.jmx();
 				this.state = State.active;
 			} catch (final Throwable t) {
@@ -104,7 +105,7 @@ public final class Home {
 			state = State.stopping;
 			//-----
 			try {
-				definitionSpace.clear();
+				definitionSpace.stop();
 				componentSpace.stop();
 			} catch (final Throwable t) {
 				LOGGER.error("an error occured when stopping", t);

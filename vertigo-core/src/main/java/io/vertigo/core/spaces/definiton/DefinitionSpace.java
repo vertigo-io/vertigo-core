@@ -20,6 +20,7 @@ package io.vertigo.core.spaces.definiton;
 
 import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.config.ResourceConfig;
+import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
 
@@ -40,7 +41,7 @@ import java.util.Map;
  *
  * @author pchretien
  */
-public final class DefinitionSpace {
+public final class DefinitionSpace implements Activeable {
 	private final Map<String, ResourceLoader> resourceLoaders = new HashMap<>();
 
 	/**
@@ -54,7 +55,7 @@ public final class DefinitionSpace {
 		//
 	}
 
-	public void injectResources(final ModuleConfig moduleConfig) {
+	public void injectDefinitions(final ModuleConfig moduleConfig) {
 		Assertion.checkNotNull(moduleConfig);
 		//-----
 		//			int resourcesToBeLoad = moduleConfig.getResourceConfigs().size();
@@ -184,10 +185,15 @@ public final class DefinitionSpace {
 		return definitions.isEmpty() && allObjects.isEmpty() && resourceLoaders.isEmpty();
 	}
 
-	/**
-	 * Vide l'ensemble de ce container.
-	 */
-	public void clear() {
+	/** {@inheritDoc} */
+	@Override
+	public void start() {
+		//nop
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void stop() {
 		definitions.clear();
 		allObjects.clear();
 		resourceLoaders.clear();

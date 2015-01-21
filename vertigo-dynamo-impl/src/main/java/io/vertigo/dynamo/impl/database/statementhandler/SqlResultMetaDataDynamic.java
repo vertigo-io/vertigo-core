@@ -157,8 +157,8 @@ final class SqlResultMetaDataDynamic implements SqlResultMetaData {
 			//Initialisation de la map.
 			final Formatter formatter = Home.getDefinitionSpace().resolve(Formatter.FMT_DEFAULT, Formatter.class);
 			for (final DataType dataType : dataTypes) {
-				final Domain newDomain = new Domain("DO_DYN", dataType, formatter);
-				map.put(dataType, newDomain);
+				final Domain domain = new Domain("DO_DYN", dataType, formatter);
+				map.put(dataType, domain);
 			}
 			return map;
 		}
