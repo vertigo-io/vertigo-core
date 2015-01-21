@@ -662,6 +662,22 @@ public final class RestManagerTest {
 	}
 
 	@Test
+	public void testPostInnerBodyValidationErrors() throws ParseException {
+		final Map<String, Object> contactFrom = createDefaultContact(140L);
+		final Map<String, Object> contactTo = createDefaultContact(141L);
+
+		final Map<String, Object> fullBody = new HashMap<>();
+		fullBody.put("contactFrom", contactFrom);
+		fullBody.put("contactTo", contactTo);
+
+		loggedAndExpect(given().body(fullBody))
+				.body("fieldErrors.\"contactFrom.firstname\"", Matchers.contains("Process validation error"))
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.post("/test/innerBodyValidationErrors");
+	}
+
+	@Test
 	public void testPostInnerBodyLong() {
 		final Map<String, Object> fullBody = new HashMap<>();
 		fullBody.put("contactId1", 6);

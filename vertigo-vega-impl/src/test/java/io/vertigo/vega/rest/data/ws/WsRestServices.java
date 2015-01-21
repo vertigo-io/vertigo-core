@@ -85,6 +85,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -464,6 +465,18 @@ public final class WsRestServices implements RestfulService {
 			throw new ValidationUserException();
 		}
 		return uiMessageStack;
+	}
+
+	@POST("/innerBodyValidationErrors")
+	public List<Contact> testInnerBodyValidationErrors(//
+			@InnerBodyParam("contactFrom") final Contact contactFrom, //
+			@InnerBodyParam("contactTo") final Contact contactTo) {
+		//offset + range ?
+		//code 200
+		if (contactFrom != null) {
+			throw new ValidationUserException(new MessageText("Process validation error", null), contactFrom, "firstname");
+		}
+		return Collections.emptyList();
 	}
 
 	@POST("/uploadFile")
