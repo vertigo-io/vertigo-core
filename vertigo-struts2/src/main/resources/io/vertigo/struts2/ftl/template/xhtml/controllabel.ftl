@@ -4,7 +4,7 @@
  * Label pour les controls.
  */
 -->
-<#assign fieldName = parameters.widgetname!parameters.name/><#-- for jquery component -->
+<#assign fieldName = parameters.widgetname!parameters.name!""/><#-- for jquery component -->
 <#assign hasFieldErrors = parameters.name?? && fieldErrors?? && fieldErrors[fieldName]??/>
 <label<#t/>
 <#if parameters.id??>
