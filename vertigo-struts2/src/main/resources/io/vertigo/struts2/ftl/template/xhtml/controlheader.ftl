@@ -16,7 +16,9 @@
  align="${parameters.align?html}"<#rt/>
 	</#if>
 	><#t/>
-	<#if parameters.name?? && fieldErrors?? && fieldErrors[parameters.name]??>
+	<#assign fieldName = parameters.widgetname!parameters.name/> <#-- for jquery component -->
+	<#assign hasFieldErrors = parameters.name?? && fieldErrors?? && fieldErrors[fieldName]??/>
+	<#if hasFieldErrors>
 		<#assign previousCssClass = appendedCssClass!''/>
 		<#assign appendedCssClass = previousCssClass +' error'/>
 	</#if>
