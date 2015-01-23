@@ -18,7 +18,20 @@
 			<artifactId>vertigo-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-dynamo-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-commons-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<!--  tests -->
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-core</artifactId>
@@ -26,26 +39,14 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-commons-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
+		
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-commons-impl</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
-		
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-dynamo-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
+	
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
@@ -53,6 +54,7 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- libs -->
 		<!-- kvdatastore -->
 		<dependency>
 			<groupId>com.sleepycat</groupId>
