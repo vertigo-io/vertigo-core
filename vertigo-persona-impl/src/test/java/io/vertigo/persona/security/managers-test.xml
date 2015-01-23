@@ -1,16 +1,15 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<module name="vertigo-core">
+	<module name="vertigo-commons">
 		<component api="LocaleManager" class="io.vertigoimpl.commons.locale.LocaleManagerImpl">
 			<param name="locales" value="fr_FR" />
+		</component>
+		<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
+			<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
 		</component>
 	</module>
 
 	<module name="vertigo-persona">
-		<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
-			<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
-		</component>
-
 		<component api="KSecurityManager" class="io.vertigo.persona.impl.security.KSecurityManagerImpl">
 			<param name="userSessionClassName" value="io.vertigo.persona.security.TestUserSession" />
 			<plugin class="io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin" />
