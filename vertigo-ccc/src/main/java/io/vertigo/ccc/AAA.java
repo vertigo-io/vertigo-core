@@ -1,34 +1,31 @@
 package io.vertigo.ccc;
 
 import io.vertigo.core.Home;
+import io.vertigo.core.command.VCommand;
+import io.vertigo.core.command.VCommandExecutor;
 import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.config.AppConfigBuilder;
-import io.vertigo.core.spaces.component.VCommand;
-import io.vertigo.core.spaces.component.VCommandEngine;
-import io.vertigo.core.spaces.component.VCommandExecutor;
+import io.vertigo.core.engines.VCommandEngine;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.JsonExclude;
-import io.vertigo.lang.Option;
 
 public class AAA {
-	private final VCommandEngine myCommandEngine = null; // new VCommandEngineImpl(jsonEngine, VCommandEngine.DEFAULT_PORT); //Par défaut
-	public AppConfigBuilder withCommandEngine(final VCommandEngine commandEngine) {
-		Assertion.checkNotNull(commandEngine);
-		Assertion.checkState(this.myCommandEngine == null, "commandEngine is already completed");
-		//-----
-		this.myCommandEngine = commandEngine;
-		return this;
-	}
 
-	@JsonExclude
-	private final Option<VCommandEngine> commandEngine;
+	//	private final VCommandEngine myCommandEngine = null; // new VCommandEngineImpl(jsonEngine, VCommandEngine.DEFAULT_PORT); //Par défaut
 
+	public void start(final AppConfig appConfig, final VCommandEngine commandEngine) {
+		//	public final AppConfigBuilder withCommandEngine(final VCommandEngine commandEngine) {
+		//		Assertion.checkNotNull(commandEngine);
+		//		Assertion.checkState(this.myCommandEngine == null, "commandEngine is already completed");
+		//		//-----
+		//		this.myCommandEngine = commandEngine;
+		//		return this;
+		//	}
 
-	//VCommandEngine must be started after the container
-	if (appConfig.getCommandEngine().isDefined()) {
-		final VCommandEngine commandEngine = appConfig.getCommandEngine().get();
+		//		@JsonExclude
+		//		private final Option<VCommandEngine> commandEngine;
+
+		//VCommandEngine must be started after the container
 		if (commandEngine instanceof Activeable) {
 			((Activeable) commandEngine).start();
 		}
@@ -53,4 +50,5 @@ public class AAA {
 			}
 		});
 	}
+
 }
