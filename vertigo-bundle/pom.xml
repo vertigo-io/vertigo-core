@@ -91,14 +91,6 @@
 		</dependency>
 
 <!-- Dependencies for compilation -->
-
-		<!-- kvdatastore -->
-		<dependency>
-			<groupId>com.sleepycat</groupId>
-			<artifactId>je</artifactId>
-			<version>5.0.73</version>
-		</dependency>
-
 		<!-- CollectionsManager/LuceneIndexPlugin -->
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
@@ -168,6 +160,7 @@
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.1.0</version>
 			<optional>true</optional><!-- EmbeddedSolrSearchServicesPlugin -->
+			<scope>provided</scope>
 		</dependency>
 		
 		<!--FileManager-->
