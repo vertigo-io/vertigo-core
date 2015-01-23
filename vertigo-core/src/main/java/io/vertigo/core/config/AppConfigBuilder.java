@@ -20,7 +20,6 @@ package io.vertigo.core.config;
 
 import io.vertigo.core.engines.AopEngine;
 import io.vertigo.core.engines.ElasticaEngine;
-import io.vertigo.core.engines.VCommandEngine;
 import io.vertigo.engines.aop.cglib.CGLIBAopEngine;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -40,7 +39,6 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	private boolean mySilence;
 	private AopEngine myAopEngine = new CGLIBAopEngine(); //By default
 	private ElasticaEngine myElasticaEngine = null; //par défaut pas d'elasticité.
-	private VCommandEngine myCommandEngine = null; // new VCommandEngineImpl(jsonEngine, VCommandEngine.DEFAULT_PORT); //Par défaut
 
 	/**
 	 * Ajout de paramètres
@@ -72,14 +70,6 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	 */
 	public AppConfigBuilder withSilence(final boolean silence) {
 		this.mySilence = silence;
-		return this;
-	}
-
-	public AppConfigBuilder withCommandEngine(final VCommandEngine commandEngine) {
-		Assertion.checkNotNull(commandEngine);
-		Assertion.checkState(this.myCommandEngine == null, "commandEngine is already completed");
-		//-----
-		this.myCommandEngine = commandEngine;
 		return this;
 	}
 
@@ -117,7 +107,6 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 				myModuleConfigs,
 				myAopEngine,
 				Option.option(myElasticaEngine),
-				Option.option(myCommandEngine),
 				mySilence);
 	}
 

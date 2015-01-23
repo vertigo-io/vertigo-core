@@ -48,7 +48,6 @@ import io.vertigo.dynamo.plugins.export.pdf.PDFExporterPlugin;
 import io.vertigo.dynamo.plugins.kvdatastore.delayedmemory.DelayedMemoryKVDataStorePlugin;
 import io.vertigo.dynamo.plugins.persistence.postgresql.PostgreSqlDataStorePlugin;
 import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.engines.command.TcpVCommandEngine;
 import io.vertigo.persona.impl.security.KSecurityManagerImpl;
 import io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin;
 import io.vertigo.persona.security.KSecurityManager;
@@ -76,7 +75,6 @@ public final class MyApp {
 		// @formatter:off
 		return new AppConfigBuilder()
 			.withSilence(true)
-			.withCommandEngine(new TcpVCommandEngine(4406))
 			.beginModule("commons")
 				.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
 					.withParam("locales", "fr")

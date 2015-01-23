@@ -18,10 +18,7 @@
  */
 package io.vertigo.core.spaces.component;
 
-import io.vertigo.core.Home;
 import io.vertigo.core.aop.Aspect;
-import io.vertigo.core.command.VCommand;
-import io.vertigo.core.command.VCommandExecutor;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.AspectConfig;
@@ -31,8 +28,6 @@ import io.vertigo.core.config.PluginConfig;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.core.di.reactor.DIReactor;
 import io.vertigo.core.engines.AopEngine;
-import io.vertigo.core.engines.VCommandEngine;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
@@ -109,34 +104,6 @@ public final class ComponentSpace implements Container, Activeable {
 		if (!appConfig.isSilence()) {
 			//Si on n'est pas en mode silencieux on affiche les infos
 			componentContainer.print();
-		}
-
-		//VCommandEngine must be started after the container
-		if (appConfig.getCommandEngine().isDefined()) {
-			final VCommandEngine commandEngine = appConfig.getCommandEngine().get();
-			if (commandEngine instanceof Activeable) {
-				((Activeable) commandEngine).start();
-			}
-			//			engines.add(commandEngine);
-			//		}
-			//
-			//		if (componentSpaceConfig.getCommandEngine().isDefined()) {
-			commandEngine.registerCommandExecutor("config", new VCommandExecutor<AppConfig>() {
-				@Override
-				public AppConfig exec(final VCommand command) {
-					return appConfig;
-				}
-			});
-
-			commandEngine.registerCommandExecutor("definitions", new VCommandExecutor<DefinitionSpace>() {
-				/** {@inheritDoc} */
-				@Override
-				public DefinitionSpace exec(final VCommand command) {
-					Assertion.checkNotNull(command);
-					//-----
-					return Home.getDefinitionSpace();
-				}
-			});
 		}
 	}
 

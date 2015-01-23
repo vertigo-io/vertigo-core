@@ -20,7 +20,6 @@ package io.vertigo.core.config;
 
 import io.vertigo.core.engines.AopEngine;
 import io.vertigo.core.engines.ElasticaEngine;
-import io.vertigo.core.engines.VCommandEngine;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
 import io.vertigo.lang.Option;
@@ -42,19 +41,16 @@ public final class AppConfig {
 	private final AopEngine aopEngine;
 	@JsonExclude
 	private final Option<ElasticaEngine> elasticaEngine;
-	@JsonExclude
-	private final Option<VCommandEngine> commandEngine;
 
 	AppConfig(
 			final Option<LogConfig> logConfigOption, final List<ModuleConfig> moduleConfigs,
-			final AopEngine aopEngine, final Option<ElasticaEngine> elasticaEngine, final Option<VCommandEngine> commandEngine,
+			final AopEngine aopEngine, final Option<ElasticaEngine> elasticaEngine,
 			final boolean silence) {
 		Assertion.checkNotNull(logConfigOption);
 		Assertion.checkNotNull(moduleConfigs);
 		//---
 		Assertion.checkNotNull(aopEngine);
 		Assertion.checkNotNull(elasticaEngine);
-		Assertion.checkNotNull(commandEngine);
 		//-----
 		this.logConfigOption = logConfigOption;
 		this.modules = Collections.unmodifiableList(new ArrayList<>(moduleConfigs));
@@ -62,7 +58,6 @@ public final class AppConfig {
 		this.silence = silence;
 		this.aopEngine = aopEngine;
 		this.elasticaEngine = elasticaEngine;
-		this.commandEngine = commandEngine;
 	}
 
 	public Option<LogConfig> getLogConfig() {
@@ -82,10 +77,6 @@ public final class AppConfig {
 
 	public AopEngine getAopEngine() {
 		return aopEngine;
-	}
-
-	public Option<VCommandEngine> getCommandEngine() {
-		return commandEngine;
 	}
 
 	public Option<ElasticaEngine> getElasticaEngine() {
