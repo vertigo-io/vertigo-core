@@ -38,6 +38,13 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 		return this;
 	}
 
+	public ListBuilder<X> addAll(final List<X> values) {
+		Assertion.checkNotNull(values);
+		//-----
+		list.addAll(values);
+		return this;
+	}
+
 	public ListBuilder<X> unmodifiable() {
 		this.list = Collections.unmodifiableList(list);
 		return this;
