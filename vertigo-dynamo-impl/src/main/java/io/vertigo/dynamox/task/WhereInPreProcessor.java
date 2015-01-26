@@ -33,6 +33,9 @@ import java.util.Map;
  * @author npiedeloup
  */
 final class WhereInPreProcessor {
+
+	//private static final String REGEXP_PATTERN = "\\s([A-Z0-9_]+)\\s+((?:NOT\\s+)|(?:not\\s+))?(?:in|IN)\\s+\\(#([A-Z0-9_]+)\\.(?:ROWNUM|rownum)\\.([A-Z0-9_]+)#\\)";
+	//private static final Pattern JAVA_PATTERN = Pattern.compile(REGEXP_PATTERN);
 	private static final String ROWNUM = ".ROWNUM.";
 	private static final int NB_MAX_WHERE_IN_ITEM = 1000;
 	private static final String STR_IN = " IN";
@@ -51,6 +54,10 @@ final class WhereInPreProcessor {
 		this.parameterValuesMap = parameterValuesMap;
 	}
 
+	/**
+	 * @param sqlQuery Query to process
+	 * @return Processed query
+	 */
 	public String evaluate(final String sqlQuery) {
 		//On commence par vérifier la présence des mot clés.
 		if (containsKeywords(sqlQuery)) {
@@ -93,8 +100,8 @@ final class WhereInPreProcessor {
 						indexOfIn = indexOfNotIn;
 						isNotIn = true;
 					}
-					final int indexOfSecondSpace = query.lastIndexOf(" ", indexOfIn + 1);
-					final int indexOfFirstSpace = query.lastIndexOf(" ", indexOfSecondSpace - 1);
+					final int indexOfSecondSpace = lastIndexOfWhiteSpace(query, indexOfIn + 1);
+					final int indexOfFirstSpace = lastIndexOfWhiteSpace(query, indexOfSecondSpace - 1);
 					final String fkColumnName = query.substring(indexOfFirstSpace + 1, indexOfSecondSpace).trim();
 					final int indexRownum = strDtc.indexOf(ROWNUM);
 					final String fieldName = strDtc.substring(indexRownum + ROWNUM.length(), strDtc.length() - 1);
@@ -129,10 +136,8 @@ final class WhereInPreProcessor {
 						String separator = "";
 						int index = 1;
 						for (final DtObject dto : listObject) {
-							if (listObject.size() > NB_MAX_WHERE_IN_ITEM) {
-								if (index == 1) {
-									subQuery.append("(");
-								}
+							if (listObject.size() > NB_MAX_WHERE_IN_ITEM && index == 1) {
+								subQuery.append("(");
 							}
 							subQuery
 									.append(separator)
@@ -175,5 +180,9 @@ final class WhereInPreProcessor {
 
 	private static boolean containsIgnoreCase(final String sqlQuery, final String searchStringUpperCase) {
 		return sqlQuery.contains(searchStringUpperCase) || sqlQuery.contains(searchStringUpperCase.toLowerCase());
+	}
+
+	private static int lastIndexOfWhiteSpace(final String string, final int fromIndex) {
+		return Math.max(string.lastIndexOf(' ', fromIndex), string.lastIndexOf('\t', fromIndex));
 	}
 }
