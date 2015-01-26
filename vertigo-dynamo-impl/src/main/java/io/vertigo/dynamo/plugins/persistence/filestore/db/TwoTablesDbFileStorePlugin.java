@@ -102,40 +102,38 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void put(final FileInfo fileInfo) {
+	public void create(final FileInfo fileInfo) {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
-		final boolean isCreation = fileInfo.getURI() == null;
+		Assertion.checkArgument(fileInfo.getURI() == null, "Only file without any id can be created");
 		//-----
-		final DtObject fileMetadataDto = createMetadataDtObject(fileInfo.getDefinition());
-		final DtObject fileDataDto = createDataDtObject(fileInfo.getDefinition());
+		final DtObject fileMetadataDto = createMetadataDtObject(fileInfo);
+		final DtObject fileDataDto = createDataDtObject(fileInfo);
 		//-----
-		final KFile kFile = fileInfo.getKFile();
-		setValue(fileMetadataDto, DtoFields.FILE_NAME, kFile.getFileName());
-		setValue(fileMetadataDto, DtoFields.MIME_TYPE, kFile.getMimeType());
-		setValue(fileMetadataDto, DtoFields.LAST_MODIFIED, kFile.getLastModified());
-		setValue(fileMetadataDto, DtoFields.LENGTH, kFile.getLength());
-		setValue(fileDataDto, DtoFields.FILE_NAME, kFile.getFileName());
-		setValue(fileDataDto, DtoFields.FILE_DATA, new FileInfoDataStream(kFile));
+		getPersistenceManager().getBroker().create(fileDataDto);
+		setValue(fileMetadataDto, DtoFields.FDT_ID, DtObjectUtil.getId(fileDataDto));
+		getPersistenceManager().getBroker().create(fileMetadataDto);
+		final URI<FileInfo> uri = createURI(fileInfo.getDefinition(), DtObjectUtil.getId(fileMetadataDto));
+		fileInfo.setURIStored(uri);
+	}
 
+	/** {@inheritDoc} */
+	@Override
+	public void update(final FileInfo fileInfo) {
+		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
+		Assertion.checkArgument(fileInfo.getURI() != null, "Only file with id can be updated");
 		//-----
-		if (isCreation) {
-			getPersistenceManager().getBroker().save(fileDataDto);
-			setValue(fileMetadataDto, DtoFields.FDT_ID, DtObjectUtil.getId(fileDataDto));
-			getPersistenceManager().getBroker().save(fileMetadataDto);
-
-			final URI<FileInfo> uri = createURI(fileInfo.getDefinition(), DtObjectUtil.getId(fileMetadataDto));
-			fileInfo.setURIStored(uri);
-		} else {
-			setValue(fileMetadataDto, DtoFields.FMD_ID, fileInfo.getURI().getKey());
-			// Chargement du FDT_ID
-			final URI<DtObject> dtoMetaDataUri = createMetaDataURI(fileInfo.getURI());
-			final DtObject fileMetadataDtoOld = getPersistenceManager().getBroker().<DtObject> get(dtoMetaDataUri);
-			final Object fdtId = TwoTablesDbFileStorePlugin.<Object> getValue(fileMetadataDtoOld, DtoFields.FDT_ID);
-			setValue(fileMetadataDto, DtoFields.FDT_ID, fdtId);
-			setValue(fileDataDto, DtoFields.FDT_ID, fdtId);
-			getPersistenceManager().getBroker().save(fileDataDto);
-			getPersistenceManager().getBroker().save(fileMetadataDto);
-		}
+		final DtObject fileMetadataDto = createMetadataDtObject(fileInfo);
+		final DtObject fileDataDto = createDataDtObject(fileInfo);
+		//-----
+		setValue(fileMetadataDto, DtoFields.FMD_ID, fileInfo.getURI().getKey());
+		// Chargement du FDT_ID
+		final URI<DtObject> dtoMetaDataUri = createMetaDataURI(fileInfo.getURI());
+		final DtObject fileMetadataDtoOld = getPersistenceManager().getBroker().<DtObject> get(dtoMetaDataUri);
+		final Object fdtId = TwoTablesDbFileStorePlugin.<Object> getValue(fileMetadataDtoOld, DtoFields.FDT_ID);
+		setValue(fileMetadataDto, DtoFields.FDT_ID, fdtId);
+		setValue(fileDataDto, DtoFields.FDT_ID, fdtId);
+		getPersistenceManager().getBroker().update(fileDataDto);
+		getPersistenceManager().getBroker().update(fileMetadataDto);
 	}
 
 	private static URI<FileInfo> createURI(final FileInfoDefinition fileInfoDefinition, final Object key) {
@@ -194,12 +192,22 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 		return Home.getDefinitionSpace().resolve(fileDataDefinitionRoot, DtDefinition.class);
 	}
 
-	private static DtObject createMetadataDtObject(final FileInfoDefinition fileInfoDefinition) {
-		return DtObjectUtil.createDtObject(getRootDtDefinition(fileInfoDefinition, 0));
+	private static DtObject createMetadataDtObject(final FileInfo fileInfo) {
+		final DtObject fileMetadataDto = DtObjectUtil.createDtObject(getRootDtDefinition(fileInfo.getDefinition(), 0));
+		final KFile kFile = fileInfo.getKFile();
+		setValue(fileMetadataDto, DtoFields.FILE_NAME, kFile.getFileName());
+		setValue(fileMetadataDto, DtoFields.MIME_TYPE, kFile.getMimeType());
+		setValue(fileMetadataDto, DtoFields.LAST_MODIFIED, kFile.getLastModified());
+		setValue(fileMetadataDto, DtoFields.LENGTH, kFile.getLength());
+		return fileMetadataDto;
 	}
 
-	private static DtObject createDataDtObject(final FileInfoDefinition fileInfoDefinition) {
-		return DtObjectUtil.createDtObject(getRootDtDefinition(fileInfoDefinition, 1));
+	private static DtObject createDataDtObject(final FileInfo fileInfo) {
+		final DtObject fileDataDto = DtObjectUtil.createDtObject(getRootDtDefinition(fileInfo.getDefinition(), 1));
+		final KFile kFile = fileInfo.getKFile();
+		setValue(fileDataDto, DtoFields.FILE_NAME, kFile.getFileName());
+		setValue(fileDataDto, DtoFields.FILE_DATA, new FileInfoDataStream(kFile));
+		return fileDataDto;
 	}
 
 	/**
