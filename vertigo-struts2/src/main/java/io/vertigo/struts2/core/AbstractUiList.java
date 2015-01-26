@@ -208,7 +208,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 	}
 
 	/**
-	 * @return Liste des uiObjects bufferis�s (potentiellement modifiés).
+	 * @return Liste des uiObjects bufferisés (potentiellement modifiés).
 	 */
 	protected final Collection<UiObject<D>> getUiObjectBuffer() {
 		return uiObjectByIndex.values();
