@@ -60,8 +60,14 @@ public final class LogicalFileStore implements FileStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public void put(final FileInfo fileInfo) {
-		getPhysicalStore(fileInfo.getDefinition()).put(fileInfo);
+	public void create(final FileInfo fileInfo) {
+		getPhysicalStore(fileInfo.getDefinition()).create(fileInfo);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void update(final FileInfo fileInfo) {
+		getPhysicalStore(fileInfo.getDefinition()).update(fileInfo);
 	}
 
 	/** {@inheritDoc} */

@@ -49,7 +49,9 @@ public interface FileStore {
 	 *
 	 * @param fileInfo Fichier à sauvegarder (création ou modification)
 	 */
-	void put(FileInfo fileInfo);
+	void create(FileInfo fileInfo);
+
+	void update(FileInfo fileInfo);
 
 	/**
 	 * Suppression d'un fichier.

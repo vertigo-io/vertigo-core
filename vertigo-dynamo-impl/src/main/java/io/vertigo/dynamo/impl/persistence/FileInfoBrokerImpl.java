@@ -47,10 +47,18 @@ final class FileInfoBrokerImpl implements FileInfoBroker {
 
 	/** {@inheritDoc} */
 	@Override
-	public void save(final FileInfo fileInfo) {
+	public void create(final FileInfo fileInfo) {
 		Assertion.checkNotNull(fileInfo);
 		//-----
-		fileStore.put(fileInfo);
+		fileStore.create(fileInfo);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void update(final FileInfo fileInfo) {
+		Assertion.checkNotNull(fileInfo);
+		//-----
+		fileStore.update(fileInfo);
 	}
 
 	/** {@inheritDoc} */

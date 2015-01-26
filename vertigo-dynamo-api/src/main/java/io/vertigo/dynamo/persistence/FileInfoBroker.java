@@ -30,14 +30,18 @@ import io.vertigo.dynamo.file.model.FileInfo;
  */
 public interface FileInfoBroker {
 	/**
-	 * Sauvegarde d'un fichier.
+	 * Create a new File.
 	 *
-	 * Si l'objet possède une URI  : mode modification
-	 * Si l'objet ne possède pas d'URI : mode création
-	 *
-	 * @param fileInfo Fichier à sauvegarder (création ou modification)
+	 * @param fileInfo File to create
 	 */
-	void save(FileInfo fileInfo);
+	void create(FileInfo fileInfo);
+
+	/**
+	 * Update  an existing File.
+	 *
+	 * @param fileInfo File to update
+	 */
+	void update(FileInfo fileInfo);
 
 	/**
 	 * Suppression d'un fichier.
