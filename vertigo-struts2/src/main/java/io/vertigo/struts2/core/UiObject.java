@@ -31,6 +31,7 @@ import io.vertigo.lang.VUserException;
 import io.vertigo.util.StringUtil;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -286,6 +287,15 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	 */
 	public Date getDate(final String constFieldName) {
 		return (Date) getTypedValue(getDtField(constFieldName));
+	}
+
+	/**
+	 * @param constFieldName Nom du champs
+	 * @return Valeur typée
+	 * @throws IllegalAccessError Si le champs possède une erreur de formatage
+	 */
+	public BigDecimal getBigDecimal(final String constFieldName) {
+		return (BigDecimal) getTypedValue(getDtField(constFieldName));
 	}
 
 	private DtField getDtField(final String constFieldName) {
