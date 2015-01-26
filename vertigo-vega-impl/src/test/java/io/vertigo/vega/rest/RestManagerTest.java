@@ -654,8 +654,8 @@ public final class RestManagerTest {
 		fullBody.put("contactTo", contactTo);
 
 		loggedAndExpect(given().body(fullBody))
-				.body("fieldErrors.\"contactFrom.email\"", Matchers.contains("Le courriel n'est pas valide"))
-				.body("fieldErrors.\"contactTo.firstName\"", Matchers.contains("<<fr:DYNAMO_CONSTRAINT_STRINGLENGTH_EXCEEDED[50]>>"))
+				.body("objectFieldErrors.contactFrom.email", Matchers.contains("Le courriel n'est pas valide"))
+				.body("objectFieldErrors.contactTo.firstName", Matchers.contains("<<fr:DYNAMO_CONSTRAINT_STRINGLENGTH_EXCEEDED[50]>>"))
 				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 				.when()
 				.post("/test/innerbody");
@@ -671,7 +671,7 @@ public final class RestManagerTest {
 		fullBody.put("contactTo", contactTo);
 
 		loggedAndExpect(given().body(fullBody))
-				.body("fieldErrors.\"contactFrom.firstname\"", Matchers.contains("Process validation error"))
+				.body("objectFieldErrors.contactFrom.firstname", Matchers.contains("Process validation error"))
 				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 				.when()
 				.post("/test/innerBodyValidationErrors");
@@ -1288,7 +1288,7 @@ public final class RestManagerTest {
 		collDeletes.put("c90", createDefaultContact(90L));
 
 		loggedAndExpect(given().body(dtListDelta))
-				.body("fieldErrors.\"c100.birthday\"", Matchers.contains("You can't add contact younger than 16"))
+				.body("objectFieldErrors.c100.birthday", Matchers.contains("You can't add contact younger than 16"))
 				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 				.when()
 				.post("/test/saveListDelta");
@@ -1333,7 +1333,7 @@ public final class RestManagerTest {
 		new2Contact.put("birthday", convertDate("24/10/2012"));
 		dtList.add(new2Contact);
 		loggedAndExpect(given().body(dtList))
-				.body("fieldErrors.\"idx6.birthday\"", Matchers.contains("You can't add contact younger than 16"))
+				.body("objectFieldErrors.idx6.birthday", Matchers.contains("You can't add contact younger than 16"))
 				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 				.when()
 				.post("/test/saveDtListContact");
@@ -1369,7 +1369,7 @@ public final class RestManagerTest {
 		dtList.add(createDefaultContact(126L));
 
 		loggedAndExpect(given().body(dtList))
-				.body("fieldErrors.\"idx2.birthday\"", Matchers.contains("You can't add contact younger than 16"))
+				.body("objectFieldErrors.idx2.birthday", Matchers.contains("You can't add contact younger than 16"))
 				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 				.when()
 				.post("/test/saveDtListContact");
@@ -1396,7 +1396,7 @@ public final class RestManagerTest {
 				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=npi2loup.png;filename*=UTF-8''npi2loup.png"))
 				.header("Content-Length", Matchers.equalTo("27039"))
 				.statusCode(HttpStatus.SC_OK)
-				.when().log().headers()
+				.when()//.log().headers()
 				.post("/test/uploadFile");
 
 		loggedAndExpect(given()
@@ -1408,7 +1408,7 @@ public final class RestManagerTest {
 				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=npi2loup.png;filename*=UTF-8''npi2loup.png"))
 				.header("Content-Length", Matchers.equalTo("27039"))
 				.statusCode(HttpStatus.SC_OK)
-				.when().log().headers()
+				.when()//.log().headers()
 				.post("/test/uploadFile");
 	}
 

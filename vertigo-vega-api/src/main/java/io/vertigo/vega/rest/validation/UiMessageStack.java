@@ -42,6 +42,10 @@ public final class UiMessageStack {
 	private final Map<String, List<String>> fieldWarnings = new HashMap<>();
 	private final Map<String, List<String>> fieldInfos = new HashMap<>();
 
+	private final Map<String, Map<String, List<String>>> objectFieldErrors = new HashMap<>();
+	private final Map<String, Map<String, List<String>>> objectFieldWarnings = new HashMap<>();
+	private final Map<String, Map<String, List<String>>> objectFieldInfos = new HashMap<>();
+
 	/**
 	 * Niveau du message.
 	 * @author npiedeloup
@@ -127,7 +131,7 @@ public final class UiMessageStack {
 	 * @param fieldName Champ portant l'erreur
 	 */
 	public void error(final String message, final DtObject dto, final String fieldName) {
-		addFieldMessage(Level.ERROR, message, dto, fieldName);
+		addFieldMessage(Level.ERROR, message, uiContextResolver.resolveContextKey(dto), fieldName);
 	}
 
 	/**
@@ -136,7 +140,7 @@ public final class UiMessageStack {
 	 * @param fieldName Champ portant l'erreur
 	 */
 	public void warning(final String message, final DtObject dto, final String fieldName) {
-		addFieldMessage(Level.WARNING, message, dto, fieldName);
+		addFieldMessage(Level.WARNING, message, uiContextResolver.resolveContextKey(dto), fieldName);
 	}
 
 	/**
@@ -145,14 +149,18 @@ public final class UiMessageStack {
 	 * @param fieldName Champ portant l'erreur
 	 */
 	public void info(final String message, final DtObject dto, final String fieldName) {
-		addFieldMessage(Level.INFO, message, dto, fieldName);
-	}
-
-	public void addFieldMessage(final Level level, final String message, final DtObject dto, final String fieldName) {
-		addFieldMessage(level, message, uiContextResolver.resolveContextKey(dto), fieldName);
+		addFieldMessage(Level.INFO, message, uiContextResolver.resolveContextKey(dto), fieldName);
 	}
 
 	public void addFieldMessage(final Level level, final String message, final String contextKey, final String fieldName) {
+		if (contextKey.isEmpty()) {
+			addFieldMessage(level, message, fieldName);
+		} else {
+			addObjectFieldMessage(level, message, contextKey, fieldName);
+		}
+	}
+
+	private void addFieldMessage(final Level level, final String message, final String fieldName) {
 		final Map<String, List<String>> fieldMessageMap;
 		switch (level) {
 			case ERROR:
@@ -168,7 +176,7 @@ public final class UiMessageStack {
 			default:
 				throw new UnsupportedOperationException("Unknowned level");
 		}
-		final String fieldKey = (!contextKey.isEmpty() ? (contextKey + ".") : "") + fieldName;
+		final String fieldKey = fieldName;
 		List<String> messages = fieldMessageMap.get(fieldKey);
 		if (messages == null) {
 			messages = new ArrayList<>();
@@ -177,10 +185,39 @@ public final class UiMessageStack {
 		messages.add(message);
 	}
 
+	private void addObjectFieldMessage(final Level level, final String message, final String contextKey, final String fieldName) {
+		final Map<String, Map<String, List<String>>> fieldMessageMap;
+		switch (level) {
+			case ERROR:
+				fieldMessageMap = objectFieldErrors;
+				break;
+			case WARNING:
+				fieldMessageMap = objectFieldWarnings;
+				break;
+			case INFO:
+				fieldMessageMap = objectFieldInfos;
+				break;
+			case SUCCESS: //unsupported for fields
+			default:
+				throw new UnsupportedOperationException("Unknowned level");
+		}
+		Map<String, List<String>> objectMessages = fieldMessageMap.get(contextKey);
+		if (objectMessages == null) {
+			objectMessages = new HashMap<>();
+			fieldMessageMap.put(contextKey, objectMessages);
+		}
+		List<String> messages = objectMessages.get(fieldName);
+		if (messages == null) {
+			messages = new ArrayList<>();
+			objectMessages.put(fieldName, messages);
+		}
+		messages.add(message);
+	}
+
 	/**
 	 * @return if there are errors in this stack.
 	 */
 	public boolean hasErrors() {
-		return !globalErrors.isEmpty() || !fieldErrors.isEmpty();
+		return !globalErrors.isEmpty() || !fieldErrors.isEmpty() || !objectFieldErrors.isEmpty();
 	}
 }
