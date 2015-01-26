@@ -91,11 +91,7 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 		return new DatabaseFileInfo(uri.<FileInfoDefinition> getDefinition(), kFile);
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public void put(final FileInfo fileInfo) {
-		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
-		//-----
+	private static DtObject createFileInfoDto(final FileInfo fileInfo) {
 		final DtObject fileInfoDto = createDtObject(fileInfo.getDefinition());
 		//-----
 		final KFile kFile = fileInfo.getKFile();
@@ -108,15 +104,34 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 		if (fileInfo.getURI() != null) {
 			setPkValue(fileInfoDto, fileInfo.getURI().getKey());
 		}
-		//-----
+		return fileInfoDto;
+	}
 
-		getPersistenceManager().getBroker().save(fileInfoDto);
-		if (fileInfo.getURI() == null) {
-			final Object fileInfoDtoId = DtObjectUtil.getId(fileInfoDto);
-			Assertion.checkNotNull(fileInfoDtoId, "ID  du fichier doit être renseignée.");
-			final URI<FileInfo> uri = createURI(fileInfo.getDefinition(), fileInfoDtoId);
-			fileInfo.setURIStored(uri);
-		}
+	/** {@inheritDoc} */
+	@Override
+	public void create(final FileInfo fileInfo) {
+		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
+		Assertion.checkNotNull(fileInfo.getURI() == null, "Only file without any id can be created.");
+		//-----
+		final DtObject fileInfoDto = createFileInfoDto(fileInfo);
+		//-----
+		getPersistenceManager().getBroker().create(fileInfoDto);
+		//-----
+		final Object fileInfoDtoId = DtObjectUtil.getId(fileInfoDto);
+		Assertion.checkNotNull(fileInfoDtoId, "ID  du fichier doit être renseignée.");
+		final URI<FileInfo> uri = createURI(fileInfo.getDefinition(), fileInfoDtoId);
+		fileInfo.setURIStored(uri);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void update(final FileInfo fileInfo) {
+		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
+		Assertion.checkNotNull(fileInfo.getURI() != null, "Only file with an id can be updated.");
+		//-----
+		final DtObject fileInfoDto = createFileInfoDto(fileInfo);
+		//-----
+		getPersistenceManager().getBroker().update(fileInfoDto);
 	}
 
 	private static URI<FileInfo> createURI(final FileInfoDefinition fileInfoDefinition, final Object key) {
