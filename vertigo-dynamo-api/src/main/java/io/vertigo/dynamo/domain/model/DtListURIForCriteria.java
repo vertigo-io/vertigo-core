@@ -32,16 +32,16 @@ import io.vertigo.lang.Assertion;
  */
 public final class DtListURIForCriteria<D extends DtObject> extends DtListURI {
 	private static final long serialVersionUID = 7926630153187124165L;
-	private final int maxRows;
+	private final Integer maxRows;
 	private final Criteria<D> criteria;
 
 	/**
 	 * Constructeur.
 	 *  @param dtDefinition Id de la Définition de DT
-	 * @param criteria critere
-	 * @param maxRows Nombre de ligne max
+	 * @param criteria critere //null = no criteria
+	 * @param maxRows Nombre de ligne max //null = ALL
 	 */
-	public DtListURIForCriteria(final DtDefinition dtDefinition, final Criteria<D> criteria, final int maxRows) {
+	public DtListURIForCriteria(final DtDefinition dtDefinition, final Criteria<D> criteria, final Integer maxRows) {
 		super(dtDefinition);
 		this.criteria = criteria;
 		this.maxRows = maxRows;
@@ -69,7 +69,7 @@ public final class DtListURIForCriteria<D extends DtObject> extends DtListURI {
 	/**
 	 * @return Nombre de ligne max
 	 */
-	public int getMaxRows() {
+	public Integer getMaxRows() {
 		return maxRows;
 	}
 

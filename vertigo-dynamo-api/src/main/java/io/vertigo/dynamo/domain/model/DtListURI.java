@@ -28,12 +28,12 @@ import java.util.regex.Pattern;
 
 /**
  * URI d'une DTC.
- *	
+ *
  * @author pchretien
  */
 public abstract class DtListURI implements Serializable {
 	/**
-	 * Expression régulière vérifiée par les URN. 
+	 * Expression régulière vérifiée par les URN.
 	 */
 	public static final Pattern REGEX_URN = Pattern.compile("[a-zA-Z0-9_:@$-]{5,80}");
 	private static final long serialVersionUID = -1L;
@@ -77,11 +77,11 @@ public abstract class DtListURI implements Serializable {
 	/**
 	 * Construit une URN à partir de l'URI.
 	 * Une URN est la  représentation unique d'une URI sous forme de chaine de caractères.
-	 * Cette chaine peut s'insérer telle que dans une URL en tant que paramètre 
+	 * Cette chaine peut s'insérer telle que dans une URL en tant que paramètre
 	 * et ne contient donc aucun caractère spécial.
 	 * Une URN respecte la regex exprimée ci dessus.
 	 * @return URN de la ressource.
-	 * @deprecated cette URN n'est pas déserializable, ne plus utiliser. 
+	 * @deprecated cette URN n'est pas déserializable, ne plus utiliser.
 	 */
 	@Deprecated
 	public final synchronized String toURN() {
@@ -105,13 +105,10 @@ public abstract class DtListURI implements Serializable {
 	 */
 	static final class DtListURICodec {
 		private static final char D2A_SEPARATOR = '@';
-		private static final String ALL_PREFIX = "ALL_";
 		private static final String CRITERIA_PREFIX = "CRITERIA";
 
 		static String writeURN(final DtListURI uri) {
-			if (uri instanceof DtListURIAll) {
-				return writeDtListURNAll(uri);
-			} else if (uri instanceof DtListURIForAssociation) {
+			if (uri instanceof DtListURIForAssociation) {
 				return writeDtListURNForAssociation(DtListURIForAssociation.class.cast(uri));
 			} else if (uri instanceof DtListURIForMasterData) {
 				return writeDtListURNForMasterData(DtListURIForMasterData.class.cast(uri));
@@ -120,16 +117,6 @@ public abstract class DtListURI implements Serializable {
 			} else {
 				throw new IllegalArgumentException("uri " + uri.getClass().getName() + " non serializable");
 			}
-		}
-
-		/**
-		 * Ecriture d'une URI sous forme d'une URN (chaine de caractères).
-		 *
-		 * @param uri URI à transcrire
-		 * @return URN
-		 */
-		private static String writeDtListURNAll(final DtListURI uri) {
-			return ALL_PREFIX + uri.getDtDefinition().getName();
 		}
 
 		/**
@@ -157,7 +144,7 @@ public abstract class DtListURI implements Serializable {
 
 		/**
 		 * Ecriture d'une URI sous forme d'une URN (chaine de caractères).
-		 * 
+		 *
 		 * @param uri URI à transcrire
 		 * @return URN
 		 */

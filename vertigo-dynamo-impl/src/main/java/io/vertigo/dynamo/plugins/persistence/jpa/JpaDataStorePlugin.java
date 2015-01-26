@@ -28,7 +28,6 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
-import io.vertigo.dynamo.domain.model.DtListURIAll;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
@@ -165,9 +164,6 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			} else {
 				dtc = loadListFromNNAssociation(dtListURIForAssociation);
 			}
-		} else if (uri instanceof DtListURIAll) {
-			//on charge toute la liste
-			dtc = loadList(uri.getDtDefinition(), null, null);
 		} else if (uri instanceof DtListURIForCriteria<?>) {
 			//@todo : A voir
 			final DtListURIForCriteria<D> dtListURIForDtCriteria = (DtListURIForCriteria<D>) uri;

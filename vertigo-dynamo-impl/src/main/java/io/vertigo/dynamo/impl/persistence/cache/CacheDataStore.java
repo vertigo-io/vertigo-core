@@ -22,7 +22,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
-import io.vertigo.dynamo.domain.model.DtListURIAll;
+import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -82,7 +82,7 @@ public final class CacheDataStore implements DataStore {
 		final D dto;
 		if (cacheDataStoreConfiguration.isReloadedByList(uri.<DtDefinition> getDefinition())) {
 			//On ne charge pas les cache de façon atomique.
-			final DtListURI dtcURIAll = new DtListURIAll(uri.<DtDefinition> getDefinition());
+			final DtListURI dtcURIAll = new DtListURIForCriteria<>(uri.<DtDefinition> getDefinition(), null, null);
 			reloadList(dtcURIAll); //on charge la liste complete (et on remplit les caches)
 			dto = cacheDataStoreConfiguration.getDataCache().<D> getDtObject(uri);
 		} else {
