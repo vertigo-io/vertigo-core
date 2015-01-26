@@ -23,7 +23,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.lang.Option;
 
 /**
@@ -114,32 +113,4 @@ public interface Broker {
 	 * @param uri URI de l'objet à supprimer
 	 */
 	void delete(URI<? extends DtObject> uri);
-
-	//==========================================================================
-	//=====================FileInfo=============================================
-	//==========================================================================
-
-	/**
-	 * Sauvegarde d'un fichier.
-	 *
-	 * Si l'objet possède une URI  : mode modification
-	 * Si l'objet ne possède pas d'URI : mode création
-	 *
-	 * @param fileInfo Fichier à sauvegarder (création ou modification)
-	 */
-	void save(FileInfo fileInfo);
-
-	/**
-	 * Suppression d'un fichier.
-	 * @param uri URI du fichier à supprimmer
-	 */
-	void deleteFileInfo(URI<FileInfo> uri);
-
-	/**
-	 * Récupération d'un fichier par son URI.
-	 *
-	 * @param uri FileURI du fichier à charger
-	 * @return KFileInfo correspondant à l'URI fournie.
-	 */
-	FileInfo getFileInfo(final URI<FileInfo> uri);
 }

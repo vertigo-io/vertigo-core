@@ -29,6 +29,11 @@ public interface PersistenceManager extends Component {
 	/**
 	 * @return Broker d'objets métier
 	 */
+	FileInfoBroker getFileInfoBroker();
+
+	/**
+	 * @return Broker d'objets métier
+	 */
 	Broker getBroker();
 
 	BrokerNN getBrokerNN();

@@ -354,10 +354,10 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			kFile = TestUtil.createKFile(fileManager, "data/lautreamont.txt", AbstractPersistenceManagerTest.class);
 			//2. Sauvegarde en BDD
 			final FileInfo fileInfo = new FileInfoStd(kFile);
-			persistenceManager.getBroker().save(fileInfo);
+			persistenceManager.getFileInfoBroker().save(fileInfo);
 
 			//3.relecture du fichier
-			final FileInfo readFileInfo = persistenceManager.getBroker().getFileInfo(fileInfo.getURI());
+			final FileInfo readFileInfo = persistenceManager.getFileInfoBroker().getFileInfo(fileInfo.getURI());
 
 			//4. comparaison du fichier créé et du fichier lu.
 

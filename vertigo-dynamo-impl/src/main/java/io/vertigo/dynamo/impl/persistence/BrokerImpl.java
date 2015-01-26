@@ -23,10 +23,8 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.impl.persistence.cache.CacheDataStore;
 import io.vertigo.dynamo.impl.persistence.logical.LogicalDataStore;
-import io.vertigo.dynamo.impl.persistence.logical.LogicalFileStore;
 import io.vertigo.dynamo.persistence.Broker;
 import io.vertigo.dynamo.persistence.Criteria;
 import io.vertigo.dynamo.persistence.DataStore;
@@ -43,7 +41,6 @@ import io.vertigo.lang.Option;
 final class BrokerImpl implements Broker {
 	/** Le store est le point d'accès unique à la base (sql, xml, fichier plat...). */
 	private final DataStore dataStore;
-	private final FileStore fileStore;
 
 	/**
 	 * Constructeur.
@@ -58,7 +55,6 @@ final class BrokerImpl implements Broker {
 		//On crée la pile de Store.
 		final DataStore logicalDataStore = new LogicalDataStore(brokerConfiguration.getLogicalStoreConfiguration(), this);
 		dataStore = new CacheDataStore(logicalDataStore, brokerConfiguration.getCacheStoreConfiguration());
-		fileStore = new LogicalFileStore(brokerConfiguration.getLogicalFileStoreConfiguration());
 	}
 
 	//==========================================================================
@@ -92,31 +88,12 @@ final class BrokerImpl implements Broker {
 
 	/** {@inheritDoc} */
 	@Override
-	public void save(final FileInfo fileInfo) {
-		Assertion.checkNotNull(fileInfo);
-		//-----
-		fileStore.put(fileInfo);
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public void delete(final URI<? extends DtObject> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		dataStore.remove(uri);
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public void deleteFileInfo(final URI<FileInfo> uri) {
-		Assertion.checkNotNull(uri);
-		//-----
-		fileStore.remove(uri);
-	}
-
-	//==========================================================================
-	//==============================Accesseurs =================================
-	//==========================================================================
 	/** {@inheritDoc} */
 	@Override
 	public <D extends DtObject> Option<D> getOption(final URI<D> uri) {
@@ -138,17 +115,6 @@ final class BrokerImpl implements Broker {
 		//-----
 		Assertion.checkNotNull(dto, "L''objet {0} n''a pas été trouvé", uri);
 		return dto;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public FileInfo getFileInfo(final URI<FileInfo> uri) {
-		Assertion.checkNotNull(uri);
-		//-----
-		final FileInfo fileInfo = fileStore.load(uri);
-		//-----
-		Assertion.checkNotNull(fileInfo, "Le fichier {0} n''a pas été trouvé", uri);
-		return fileInfo;
 	}
 
 	/** {@inheritDoc} */
