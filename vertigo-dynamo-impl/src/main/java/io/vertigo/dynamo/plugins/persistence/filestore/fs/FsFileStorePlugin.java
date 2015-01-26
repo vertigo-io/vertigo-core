@@ -138,21 +138,14 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		}
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public void put(final FileInfo fileInfo) {
-		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
-		String pathToSave = null;
-		final KFile kFile = fileInfo.getKFile();
-
-		//-----
+	private static DtObject createFileInfoDto(final FileInfo fileInfo) {
 		final DtObject fileInfoDto = createDtObject(fileInfo.getDefinition());
 		//-----
+		final KFile kFile = fileInfo.getKFile();
 		setValue(fileInfoDto, DtoFields.FILE_NAME, kFile.getFileName());
 		setValue(fileInfoDto, DtoFields.MIME_TYPE, kFile.getMimeType());
 		setValue(fileInfoDto, DtoFields.LAST_MODIFIED, kFile.getLastModified());
 		setValue(fileInfoDto, DtoFields.LENGTH, kFile.getLength());
-
 		if (fileInfo.getURI() == null) {
 			// cas de la création, on ajoute en base un chemin fictif (colonne not null)
 			setValue(fileInfoDto, DtoFields.FILE_PATH, "/dev/null");
@@ -163,34 +156,59 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 			// récupération de l'objet en base pour récupérer le path du fichier et ne pas modifier la base
 			final URI<DtObject> dtoUri = createDtObjectURI(fileInfo.getURI());
 			final DtObject fileInfoDtoBase = getPersistenceManager().getBroker().get(dtoUri);
-			pathToSave = FsFileStorePlugin.<String> getValue(fileInfoDtoBase, DtoFields.FILE_PATH);
+			final String pathToSave = FsFileStorePlugin.<String> getValue(fileInfoDtoBase, DtoFields.FILE_PATH);
 			setValue(fileInfoDto, DtoFields.FILE_PATH, pathToSave);
 		}
+		return fileInfoDto;
+	}
 
-		getPersistenceManager().getBroker().save(fileInfoDto);
-
-		if (fileInfo.getURI() == null) {
-			// cas de la création
-			final Object fileInfoDtoId = DtObjectUtil.getId(fileInfoDto);
-			Assertion.checkNotNull(fileInfoDtoId, "ID  du fichier doit être renseignée.");
-			final URI<FileInfo> uri = createURI(fileInfo.getDefinition(), fileInfoDtoId);
-			fileInfo.setURIStored(uri);
-
-			// on met a jour la base
-			final SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd/", Locale.FRANCE);
-			pathToSave = format.format(new Date()) + fileInfoDtoId;
-			setValue(fileInfoDto, DtoFields.FILE_PATH, pathToSave);
-
-			getPersistenceManager().getBroker().save(fileInfoDto);
-		}
-
-		// sauvegarde du fichier
-		try (InputStream inputStream = kFile.createInputStream()) {
+	private void saveFile(final FileInfo fileInfo, final String pathToSave) {
+		try (InputStream inputStream = fileInfo.getKFile().createInputStream()) {
 			obtainFsTransactionRessource().saveFile(inputStream, documentRoot + pathToSave);
 		} catch (final IOException e) {
 			throw new RuntimeException("Impossible de lire le fichier uploadé.", e);
 		}
+	}
 
+	/** {@inheritDoc} */
+	@Override
+	public void create(final FileInfo fileInfo) {
+		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
+		Assertion.checkNotNull(fileInfo.getURI() == null, "Only file without any id can be created.");
+		//-----
+		final DtObject fileInfoDto = createFileInfoDto(fileInfo);
+		//-----
+		getPersistenceManager().getBroker().create(fileInfoDto);
+
+		// cas de la création
+		final Object fileInfoDtoId = DtObjectUtil.getId(fileInfoDto);
+		Assertion.checkNotNull(fileInfoDtoId, "ID  du fichier doit être renseignée.");
+		final URI<FileInfo> uri = createURI(fileInfo.getDefinition(), fileInfoDtoId);
+		fileInfo.setURIStored(uri);
+
+		// on met a jour la base
+		final SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd/", Locale.FRANCE);
+		final String pathToSave = format.format(new Date()) + fileInfoDtoId;
+		setValue(fileInfoDto, DtoFields.FILE_PATH, pathToSave);
+		//-----
+		getPersistenceManager().getBroker().update(fileInfoDto);
+		//-----
+		saveFile(fileInfo, pathToSave);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void update(final FileInfo fileInfo) {
+		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
+		Assertion.checkNotNull(fileInfo.getURI() != null, "Only file with an id can be updated.");
+		//-----
+		final DtObject fileInfoDto = createFileInfoDto(fileInfo);
+		//-----
+		getPersistenceManager().getBroker().update(fileInfoDto);
+
+		final String pathToSave = getValue(fileInfoDto, DtoFields.FILE_PATH);
+		//-----
+		saveFile(fileInfo, pathToSave);
 	}
 
 	private static URI<FileInfo> createURI(final FileInfoDefinition fileInfoDefinition, final Object key) {
