@@ -35,6 +35,13 @@ import io.vertigo.lang.Option;
  */
 public interface Broker {
 	/**
+	 * Nombre d'éléments présents dans le sysème de persistance.
+	 * @param dtDefinition Définition de DT
+	 * @return Nombre d'éléments.
+	 */
+	int count(final DtDefinition dtDefinition);
+
+	/**
 	 * @param <D> Type des objets de la collection
 	 * @param dtDefinition Définition de DT
 	 * @param criteria Criteria (null=aucun)
@@ -43,65 +50,6 @@ public interface Broker {
 	 */
 	<D extends DtObject> DtList<D> getList(final DtDefinition dtDefinition, final Criteria<D> criteria, Integer limit);
 
-	/**
-	 * Nombre d'éléments présents dans le sysème de persistance.
-	 * @param dtDefinition Définition de DT
-	 * @return Nombre d'éléments.
-	 */
-	int count(final DtDefinition dtDefinition);
-
-	/**
-	* Create an object.
-	* No object with the same id must have been created previously.
-	*
-	* @param dto Object to create
-	*/
-	void create(DtObject dto);
-
-	/**
-	* Update an object.
-	* This object must have an id.
-	* @param dto Object to update
-	*/
-	void update(DtObject dto);
-
-	/**
-	* Merge an object.
-	* Strategy to create or update this object depends on the state of the database.
-	*
-	*  - If  this object is already created : update
-	*  - If  this object is not found : create
-	*
-	* @param dto Object to merge
-	*/
-	void merge(DtObject dto);
-
-	/**
-	 * Sauvegarde d'un fichier.
-	 *
-	 * Si l'objet possède une URI  : mode modification
-	 * Si l'objet ne possède pas d'URI : mode création
-	 *
-	 * @param fileInfo Fichier à sauvegarder (création ou modification)
-	 */
-	void save(FileInfo fileInfo);
-
-	/**
-	 * Destruction d'un objet persistant par son URI.
-	 *
-	 * @param uri URI de l'objet à supprimer
-	 */
-	void delete(URI<? extends DtObject> uri);
-
-	/**
-	 * Suppression d'un fichier.
-	 * @param uri URI du fichier à supprimmer
-	 */
-	void deleteFileInfo(URI<FileInfo> uri);
-
-	//==========================================================================
-	//=====================Accesseurs ==========================================
-	//==========================================================================
 	/**
 	 * Récupération d'un objet persistant par son URI.
 	 * Lorsque l'objet est en lecture seule il est possible d'accéder au objets partagés. (Liste de référence paér ex)
@@ -133,6 +81,59 @@ public interface Broker {
 	 * @return DtList DTC
 	 */
 	<D extends DtObject> DtList<D> getList(final DtListURI uri);
+
+	/**
+	* Create an object.
+	* No object with the same id must have been created previously.
+	*
+	* @param dto Object to create
+	*/
+	void create(DtObject dto);
+
+	/**
+	* Update an object.
+	* This object must have an id.
+	* @param dto Object to update
+	*/
+	void update(DtObject dto);
+
+	/**
+	* Merge an object.
+	* Strategy to create or update this object depends on the state of the database.
+	*
+	*  - If  this object is already created : update
+	*  - If  this object is not found : create
+	*
+	* @param dto Object to merge
+	*/
+	void merge(DtObject dto);
+
+	/**
+	 * Destruction d'un objet persistant par son URI.
+	 *
+	 * @param uri URI de l'objet à supprimer
+	 */
+	void delete(URI<? extends DtObject> uri);
+
+	//==========================================================================
+	//=====================FileInfo=============================================
+	//==========================================================================
+
+	/**
+	 * Sauvegarde d'un fichier.
+	 *
+	 * Si l'objet possède une URI  : mode modification
+	 * Si l'objet ne possède pas d'URI : mode création
+	 *
+	 * @param fileInfo Fichier à sauvegarder (création ou modification)
+	 */
+	void save(FileInfo fileInfo);
+
+	/**
+	 * Suppression d'un fichier.
+	 * @param uri URI du fichier à supprimmer
+	 */
+	void deleteFileInfo(URI<FileInfo> uri);
 
 	/**
 	 * Récupération d'un fichier par son URI.
