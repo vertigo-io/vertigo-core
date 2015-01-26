@@ -66,19 +66,20 @@ final class BrokerImpl implements Broker {
 	//==========================================================================
 	/** {@inheritDoc} */
 	@Override
-	public void save(final DtObject dto) {
+	public void create(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//-----
-		dataStore.put(dto);
+		dataStore.create(dto);
 
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void save(final FileInfo fileInfo) {
-		Assertion.checkNotNull(fileInfo);
+	public void update(final DtObject dto) {
+		Assertion.checkNotNull(dto);
 		//-----
-		fileStore.put(fileInfo);
+		dataStore.update(dto);
+
 	}
 
 	/** {@inheritDoc} */
@@ -87,6 +88,14 @@ final class BrokerImpl implements Broker {
 		Assertion.checkNotNull(dto);
 		//-----
 		dataStore.merge(dto);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void save(final FileInfo fileInfo) {
+		Assertion.checkNotNull(fileInfo);
+		//-----
+		fileStore.put(fileInfo);
 	}
 
 	/** {@inheritDoc} */

@@ -383,13 +383,25 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	//==========================================================================
 	/** {@inheritDoc} */
 	@Override
-	public void put(final DtObject dto) {
-		//Mode insertion ssi uri est null
-		// sinon mode update.
-		final boolean insert = DtObjectUtil.getId(dto) == null;
+	public final void create(final DtObject dto) {
+		Assertion.checkArgument(DtObjectUtil.getId(dto) == null, "Only object without any id can be created");
+		//------
+		final boolean insert = true;
 		final boolean saved = put(dto, insert);
 		if (!saved) {
-			throw new RuntimeException(insert ? "Aucune ligne insérée" : "Aucune ligne modifiée");
+			throw new RuntimeException("no data created");
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public final void update(final DtObject dto) {
+		Assertion.checkNotNull(DtObjectUtil.getId(dto), "Need an id to update an object ");
+		//-----
+		final boolean insert = false;
+		final boolean saved = put(dto, insert);
+		if (!saved) {
+			throw new RuntimeException("no data updated");
 		}
 	}
 

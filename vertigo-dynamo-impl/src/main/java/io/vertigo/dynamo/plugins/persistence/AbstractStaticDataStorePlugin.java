@@ -46,7 +46,13 @@ public abstract class AbstractStaticDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void put(final DtObject dto) {
+	public void create(final DtObject dto) {
+		throw new UnsupportedOperationException();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void update(final DtObject dto) {
 		throw new UnsupportedOperationException();
 	}
 

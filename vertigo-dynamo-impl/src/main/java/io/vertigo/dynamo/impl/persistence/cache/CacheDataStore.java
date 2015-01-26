@@ -145,8 +145,17 @@ public final class CacheDataStore implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public void put(final DtObject dto) {
-		logicalDataStore.put(dto);
+	public void create(final DtObject dto) {
+		logicalDataStore.create(dto);
+		//-----
+		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
+		clearCache(DtObjectUtil.findDtDefinition(dto));
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void update(final DtObject dto) {
+		logicalDataStore.update(dto);
 		//-----
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 		clearCache(DtObjectUtil.findDtDefinition(dto));

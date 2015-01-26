@@ -334,16 +334,25 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	@Override
-	public void put(final DtObject dto) {
+	public void create(final DtObject dto) {
+		put("Jpa:create", dto, true);
+	}
+
+	@Override
+	public void update(final DtObject dto) {
+		put("Jpa:update", dto, false);
+	}
+
+	private void put(final String prefixServiceName, final DtObject dto, final boolean persist) {
 		final EntityManager em = obtainEntityManager();
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 
-		final String serviceName = "Jpa:merge " + dtDefinition.getName();
 		final long start = System.currentTimeMillis();
 		boolean executed = false;
+		final String serviceName = prefixServiceName + dtDefinition.getName();
 		dataBaseListener.onStart(serviceName);
 		try {
-			if (DtObjectUtil.getId(dto) == null) { //si pas de PK exception
+			if (persist) { //si pas de PK exception
 				//Si l'objet est en cours de création (pk null)
 				//(l'objet n'est pas géré par jpa car les objets sont toujours en mode détaché :
 				//sinon on ferait persist aussi si em.contains(dto)).
@@ -361,20 +370,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	@Override
 	public void merge(final DtObject dto) {
-		final EntityManager em = obtainEntityManager();
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-		final String serviceName = "Jpa:replicate " + dtDefinition.getName();
-		final long start = System.currentTimeMillis();
-		boolean executed = false;
-		dataBaseListener.onStart(serviceName);
-		try {
-			em.merge(dto);
-			em.flush();
-			em.clear();
-			executed = true;
-		} finally {
-			dataBaseListener.onFinish(serviceName, executed, System.currentTimeMillis() - start, executed ? 1L : 0L, null);
-		}
+		put("Jpa:merge", dto, false);
 	}
 
 	/** {@inheritDoc} */
@@ -398,74 +394,4 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			dataBaseListener.onFinish(serviceName, executed, System.currentTimeMillis() - start, executed ? 1L : 0L, null);
 		}
 	}
-
-	/*    private <D extends DtObject> DtCollection<D> loadListFromSimpleAssociation(
-	 KTransaction transaction, DtCollectionURI dtcUri) throws Exception {
-	 final EntityManager em = getEntityManager(transaction);
-
-	 final DtDefinition definition = dtcUri.getDefinition();
-	 final DtObjectURI uri = dtcUri.getSource();
-	 final String fkFieldName = dtcUri.getAssociationDefinition()
-	 .getAssociationNode(dtcUri.getRoleName()).getFieldName();
-	 DtCollection<D> result = new DtCollectionStandard<D>(dtcUri
-	 .getDefinition());
-	 List<D> tempList = em.createQuery(
-	 "select a from "
-	 + Class.forName(definition.getJavaClassName())
-	 .getName() + " as a where " + fkFieldName + "="
-	 + uri.getKey()).getResultList();
-	 for (D d : tempList) {
-	 result.add(d);
-	 }
-	 return result;
-	 }
-	 */
-	/*    private <D extends DtObject> DtCollection<D> loadListFromNNAssociation(
-	 KTransaction transaction, DtCollectionURI dtcUri) throws Exception {
-	 final DtDefinition definition = dtcUri.getDefinition();
-	 //-----
-	 final AssociationNNDefinition associationNNDefinition = dtcUri
-	 .getAssociationDefinition().castAsAssociationNNDefinition();
-	 final String tableName = getTableName(definition);
-
-	 final String joinTableName = associationNNDefinition.getTableName();
-
-	 final DtObjectURI uri = dtcUri.getSource();
-
-	 // PK de la DtCollection recherchée
-	 final String pkFieldName = .core.XRepository.getPrimaryKey(
-	 definition).getFieldName();
-	 // FK dans la table nn correspondant à la collection recherchée. (clé de
-	 // jointure ).
-	 final String joinFieldName = dtcUri.getAssociationDefinition()
-	 .getAssociationNode(dtcUri.getRoleName()).getFieldName();
-
-	 // La condition s'applique sur l'autre noeud de la relation (par rapport
-	 // à la collection attendue)
-	 final AssociationNode associationNode = dtcUri
-	 .getAssociationDefinition().getAssociationNodeTarget(
-	 dtcUri.getRoleName());
-	 final String fkFieldName = associationNode.getFieldName();
-
-	 JpaResource resource = obtainJpaResource(transaction);
-	 EntityManager em = resource.getEntityManager();
-	 DtCollection<D> result = new DtCollectionStandard<D>(dtcUri
-	 .getDefinition());
-	 StringBuilder request = new StringBuilder(" Select t.* from ").append(
-	 tableName).append(" t");
-	 request.append(" , ").append(joinTableName).append(" j");
-	 // Condition de la recherche
-	 request.append(" where j.").append(fkFieldName).append(" = ").append(
-	 uri.getKey());
-	 // On établit une jointure fermée entre la pk et la fk de la collection
-	 // recherchée.
-	 request.append(" and j.").append(joinFieldName).append(" = t.").append(
-	 pkFieldName);
-	 List<D> tempList = em.createNativeQuery(request.toString())
-	 .getResultList();
-	 for (D d : tempList) {
-	 result.add(d);
-	 }
-	 return result;
-	 }*/
 }

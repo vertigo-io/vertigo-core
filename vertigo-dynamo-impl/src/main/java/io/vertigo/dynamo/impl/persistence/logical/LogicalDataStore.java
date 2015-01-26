@@ -108,8 +108,14 @@ public final class LogicalDataStore implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public void put(final DtObject dto) {
-		getPhysicalStore(DtObjectUtil.findDtDefinition(dto)).put(dto);
+	public void create(final DtObject dto) {
+		getPhysicalStore(DtObjectUtil.findDtDefinition(dto)).create(dto);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void update(final DtObject dto) {
+		getPhysicalStore(DtObjectUtil.findDtDefinition(dto)).update(dto);
 	}
 
 	/** {@inheritDoc} */

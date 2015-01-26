@@ -119,7 +119,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			for (final Car car : carDataBase.createList()) {
 				car.setId(null);
-				persistenceManager.getBroker().save(car);
+				persistenceManager.getBroker().create(car);
 			}
 			transaction.commit();
 		}
@@ -314,7 +314,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			//-----
 			final Famille famille = new Famille();
 			famille.setLibelle("encore un");
-			persistenceManager.getBroker().save(famille);
+			persistenceManager.getBroker().create(famille);
 			// on attend un objet avec un ID non null ?
 			Assert.assertNotNull(famille.getFamId());
 			//-----
@@ -340,7 +340,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			// libelle
 			famille.setLibelle(sb.toString());
 			//On doit échouer car le libellé est trop long
-			persistenceManager.getBroker().save(famille);
+			persistenceManager.getBroker().create(famille);
 			Assert.fail();
 		}
 	}
@@ -402,7 +402,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			//on crée une famille
 			final Famille famille = new Famille();
 			famille.setLibelle("Ma famille");
-			persistenceManager.getBroker().save(famille);
+			persistenceManager.getBroker().create(famille);
 
 			//on récupère la liste des voitures
 			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
@@ -448,7 +448,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			//on crée une famille
 			final Famille famille = new Famille();
 			famille.setLibelle("Ma famille");
-			persistenceManager.getBroker().save(famille);
+			persistenceManager.getBroker().create(famille);
 
 			//on récupère la liste des voitures
 			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
@@ -459,7 +459,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			//on associe la liste de voiture à la famille en 1N
 			for (final Car car : cars) {
 				car.setFamId(famille.getFamId());
-				persistenceManager.getBroker().save(car);
+				persistenceManager.getBroker().update(car);
 			}
 
 			//On garde le résultat de l'association 1N
@@ -468,7 +468,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			//On met à jour l'association en retirant le premier élément
 			final Car firstCar = cars.get(0);
 			firstCar.setFamId(null);
-			persistenceManager.getBroker().save(firstCar);
+			persistenceManager.getBroker().update(firstCar);
 
 			//on garde le résultat en lazy : il doit avoir le meme nombre de voiture qu'au début
 			final DtList<Car> lazyResult = famille.getVoituresFamilleList();
@@ -508,7 +508,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	public void testTxCrudInsertCrudSelectRollback() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Car car = createNewCar(null);
-			persistenceManager.getBroker().save(car);
+			persistenceManager.getBroker().create(car);
 
 			//on récupère la liste des voitures
 			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
@@ -536,7 +536,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	public void testTxCrudInsertNativeSelectRollback() {
 		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Car car = createNewCar(null);
-			persistenceManager.getBroker().save(car);
+			persistenceManager.getBroker().create(car);
 
 			//on récupère la liste des voitures
 			final DtList<Car> cars = nativeLoadCarList();
@@ -562,7 +562,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	public void testTxCrudInsertRollbackCrudSelectRollback() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Car car = createNewCar(null);
-			persistenceManager.getBroker().save(car);
+			persistenceManager.getBroker().create(car);
 		}
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
@@ -592,7 +592,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	public void testTxCrudInsertRollbackNativeSelectRollback() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Car car = createNewCar(null);
-			persistenceManager.getBroker().save(car);
+			persistenceManager.getBroker().create(car);
 		}
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
@@ -622,7 +622,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			final Car car = createNewCar(null);
 			final Car car2 = createNewCar(null);
 			nativeInsertCar(car2);
-			persistenceManager.getBroker().save(car);
+			persistenceManager.getBroker().create(car);
 			transaction.commit();
 		}
 	}
@@ -631,7 +631,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	public void testTxCrudInsertTwoCommit() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Car car = createNewCar(null);
-			persistenceManager.getBroker().save(car);
+			persistenceManager.getBroker().create(car);
 			transaction.commit();
 			transaction.commit();
 		}
@@ -641,7 +641,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	public void testTxCrudInsertCommitCrudSelectRollback() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Car car = createNewCar(null);
-			persistenceManager.getBroker().save(car);
+			persistenceManager.getBroker().create(car);
 			transaction.commit();
 		}
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
@@ -673,7 +673,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	public void testTxCrudInsertCommitNativeSelectRollback() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Car car = createNewCar(null);
-			persistenceManager.getBroker().save(car);
+			persistenceManager.getBroker().create(car);
 			transaction.commit();
 		}
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
@@ -702,7 +702,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	@Test(expected = NullPointerException.class)
 	public void testCrudInsertNoTx() {
 		final Car car = createNewCar(null);
-		persistenceManager.getBroker().save(car);
+		persistenceManager.getBroker().create(car);
 	}
 
 	@Test(expected = NullPointerException.class)

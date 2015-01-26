@@ -84,13 +84,36 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	}
 
 	/**
-	 * Sauvegarde d'un objet. Création (insert) ou mise à jour (update) en fonction du fait que l'objet existe ou pas
-	 * déjà en base.
+	 * Save an object.
+	 * This method is deprecated : please use save (insert) or update.
 	 *
-	 * @param dto Objet à sauvegarder
+	 * @param dto Object to save
 	 */
+	@Deprecated
 	public final void save(final D dto) {
-		broker.save(dto);
+		if (DtObjectUtil.getId(dto) == null) {
+			broker.create(dto);
+		} else {
+			broker.update(dto);
+		}
+	}
+
+	/**
+	 * Create an object.
+	 *
+	 * @param dto Object to create
+	 */
+	public final void create(final D dto) {
+		broker.create(dto);
+	}
+
+	/**
+	 * Update an object.
+	 *
+	 * @param dto Object to update
+	 */
+	public final void update(final D dto) {
+		broker.update(dto);
 	}
 
 	/**

@@ -77,16 +77,30 @@ public interface DataStore {
 	//=============================== WRITE ====================================
 	//==========================================================================
 	/**
-	* Sauvegarde d'un objet.
-	* La stratégie de création ou de modification est déduite de l'état de l'objet java,
-	* et notamment de la présence ou non d'une URI.
+	* Create an object.
+	* No object with the same id must have been created previously.
 	*
-	* Si l'objet possède une URI  : mode modification
-	* Si l'objet ne possède pas d'URI : mode création
-	*
-	* @param dto Objet à sauvegarder (création ou modification)
+	* @param dto Object to create
 	*/
-	void put(DtObject dto);
+	void create(DtObject dto);
+
+	/**
+	* Update an object.
+	* This object must have an id.
+	* @param dto Object to update
+	*/
+	void update(DtObject dto);
+
+	/**
+	* Merge an object.
+	* Strategy to create or update this object depends on the state of the database.
+	*
+	*  - If  this object is already created : update
+	*  - If  this object is not found : create
+	*
+	* @param dto Object to merge
+	*/
+	void merge(DtObject dto);
 
 	/**
 	 * Suppression d'un objet.
@@ -94,14 +108,4 @@ public interface DataStore {
 	 */
 	void remove(URI<? extends DtObject> uri);
 
-	/**
-	* Sauvegarde d'un objet à l'identique.
-	* La stratégie de création ou de modification est déduite de l'état de l'objet en base,
-	*
-	* Si l'objet est présent en base : mode modification
-	* Si l'objet n'est pas présent en base : mode création
-	*
-	* @param dto Objet à sauvegarder (création ou modification)
-	*/
-	void merge(DtObject dto);
 }

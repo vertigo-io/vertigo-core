@@ -51,11 +51,30 @@ public interface Broker {
 	int count(final DtDefinition dtDefinition);
 
 	/**
-	 * Sauvegarde d'un objet.
-	 * Création (insert) ou mise à jour (update) en fonction de son id.
-	 * @param dto Objet à sauvegarder
-	 */
-	void save(DtObject dto);
+	* Create an object.
+	* No object with the same id must have been created previously.
+	*
+	* @param dto Object to create
+	*/
+	void create(DtObject dto);
+
+	/**
+	* Update an object.
+	* This object must have an id.
+	* @param dto Object to update
+	*/
+	void update(DtObject dto);
+
+	/**
+	* Merge an object.
+	* Strategy to create or update this object depends on the state of the database.
+	*
+	*  - If  this object is already created : update
+	*  - If  this object is not found : create
+	*
+	* @param dto Object to merge
+	*/
+	void merge(DtObject dto);
 
 	/**
 	 * Sauvegarde d'un fichier.
@@ -66,14 +85,6 @@ public interface Broker {
 	 * @param fileInfo Fichier à sauvegarder (création ou modification)
 	 */
 	void save(FileInfo fileInfo);
-
-	/**
-	 * Sauvegarde d'un objet à l'identique, clé primaire incluse.
-	 * Cette méthode est utile pour les transferts de données d'une base à une autre
-	 * Création (insert) ou mise à jour (update) en fonction de l'existence dans la base cible.
-	 * @param dto Objet à sauvegarder
-	 */
-	void merge(DtObject dto);
 
 	/**
 	 * Destruction d'un objet persistant par son URI.
