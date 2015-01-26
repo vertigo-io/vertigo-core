@@ -46,6 +46,8 @@ import java.util.Map;
 public abstract class AbstractUiList<D extends DtObject> extends AbstractList<UiObject<D>> implements Serializable {
 	private static final long serialVersionUID = 5475819598230056558L;
 
+	private static final int NB_MAX_ELEMENTS = 1000; //Max nb elements in list. Must be kept under 1000 to ensure good performances.
+
 	/**
 	 * Accès au persistenceManager.
 	 */
@@ -181,7 +183,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 			final D dto = loadDto(key);
 			uiObject = new UiObject<>(dto);
 			uiObjectById.put(keyValueAsString, uiObject);
-			Assertion.checkState(uiObjectById.size() < 1000, "Trop d'élément dans le buffer uiObjectById de la liste de {0}", getDtDefinition().getName());
+			Assertion.checkState(uiObjectById.size() < NB_MAX_ELEMENTS, "Trop d'élément dans le buffer uiObjectById de la liste de {0}", getDtDefinition().getName());
 		}
 		return uiObject;
 	}

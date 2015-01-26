@@ -44,7 +44,6 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 
 	// Index
 	private final Map<UiObject<D>, D> dtoByUiObject = new HashMap<>();
-	//private final Map<Integer, UiObject<D>> dtoInputByIdInDtc = new HashMap<>();
 
 	// Buffer
 	private final List<UiObject<D>> removedUiObjects = new ArrayList<>();
@@ -57,6 +56,10 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	private final DtList<D> modifiedDtObjects;
 	private final DtList<D> dtList;
 
+	/**
+	 * Constructor.
+	 * @param dtList Inner DtList
+	 */
 	UiListModifiable(final DtList<D> dtList) {
 		Assertion.checkNotNull(dtList);
 		//-----
@@ -81,6 +84,10 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 		}
 	}
 
+	/**
+	 * @param dto Element to removed
+	 * @return If element was removed
+	 */
 	public boolean remove(final UiObject<D> dto) {
 		final boolean result = bufferUiObjects.remove(dto);
 		if (result) {
@@ -105,6 +112,10 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 		return dto;
 	}
 
+	/**
+	 * @param dto Element to add
+	 * @return true (as specified by Collection.add)
+	 */
 	public boolean add(final D dto) {
 		final UiObject<D> uiObject = new UiObject<>(dto);
 		final boolean result = bufferUiObjects.add(uiObject);
@@ -121,7 +132,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	}
 
 	/**
-	 * @return List des objets supprim�s
+	 * @return List des objets supprimés
 	 */
 	public DtList<D> getRemovedList() {
 		Assertion.checkState(removedUiObjects.isEmpty(), "La UiList doit être valid�, pour avoir la liste des éléments supprim�s.");
@@ -150,7 +161,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 	/** {@inheritDoc} */
 	@Override
 	public UiObject<D> get(final int row) {
-		//id>=0    : par index dans la UiList (pour boucle, uniquement dans la même request)
+		//id>=0 : par index dans la UiList (pour boucle, uniquement dans la même request)
 		Assertion.checkState(row >= 0, "Le getteur utilisé n'est pas le bon: utiliser getByRowId");
 		final UiObject<D> UiObject = bufferUiObjects.get(row);
 		Assertion.checkNotNull(UiObject);
@@ -201,7 +212,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 
 	/** {@inheritDoc} */
 	@Override
-	public void check(final UiObjectValidator validator, final UiMessageStack uiMessageStack) {
+	public void check(final UiObjectValidator<D> validator, final UiMessageStack uiMessageStack) {
 		//1. check Error => KUserException
 		//on valide les éléments internes
 		for (final UiObject<D> uiObject : bufferUiObjects) {
@@ -263,11 +274,12 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 
 	/** {@inheritDoc} */
 	@Override
-	public DtList<D> validate(final UiObjectValidator validator, final UiMessageStack uiMessageStack) {
+	public DtList<D> validate(final UiObjectValidator<D> validator, final UiMessageStack uiMessageStack) {
 		check(validator, uiMessageStack);
 		return flush();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<UiObject<D>> iterator() {
 		return new UiListModifiableIterator();
@@ -278,6 +290,9 @@ public final class UiListModifiable<D extends DtObject> extends AbstractList<UiO
 		private final int expectedSize;
 		private int currentIndex; //init a 0
 
+		/**
+		 * Constructor.
+		 */
 		UiListModifiableIterator() {
 			expectedSize = size();
 		}
