@@ -63,6 +63,7 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 
 	/**
 	 * Ajoute dans la response le json de la recherche.
+	 * @param <D> Object Type
 	 * @return Outcome de la requete Ajax.
 	 */
 	public <D extends DtObject> String searchFullText() {
@@ -74,9 +75,7 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 		} else {
 			throw new VUserException(new MessageText("La liste n'est pas du bon type {0}", null, listRef.get()));
 		}
-		//final UiList<D> uiList = getModel().getUiList(listRef.get());
-		//final DtList<D> list = uiList.validate(new UiObjectValidator<D>(), getUiMessageStack());
-		//final DtList<D> list = uiList.flush(); //flush sans validator car elle ne doit pas avoir été modifiée
+
 		final DtDefinition dtDefinition = list.getDefinition();
 		final DtField keyField;
 		final DtField labelField;
@@ -104,23 +103,7 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 				.send();
 	}
 
-	//	private String getSearchString() {
-	//		String paramSearchString = term.get();
-	//		Assertion.checkNotNull(paramSearchString, "Champs : {0} non présent dans la request", "term");
-	//
-	//		// On doit décoder la chaine UTF-8 qui a été récupérée en ISO-8859-1 par getParameter (tomcat récupère
-	//		// par défaut la requête en ISO-8859-1. pour forcer l'UTF-8 il faut modifier le server.xml (trop risqué en cours de projet)
-	//		try {
-	//			paramSearchString = new String(paramSearchString.getBytes("ISO-8859-1"), "UTF-8");
-	//		} catch (final UnsupportedEncodingException e) {
-	//			throw new VRuntimeException("Erreur ce n'est plus un encodage UTF-8 qui est passé par l'appel Ajax", e);
-	//		}
-	//		return paramSearchString;
-	//	}
-
 	private static String toJson(final DtList<?> dtList, final DtField keyField, final DtField labelField) {
-		//final DtField keyField = dtList.getDefinition().getField(StringUtil.camelToConstCase(listKey));
-		//final DtField labelField = dtList.getDefinition().getField(StringUtil.camelToConstCase(listLabel));
 		final StringBuilder sb = new StringBuilder();
 		String sep = "";
 		sb.append("[");
