@@ -84,5 +84,5 @@
 <#include "/${parameters.templateDir}/simple/dynamic-attributes.ftl" />
 /><#rt/>
   ${itemValue}<#rt/>
-</label><br/>
+</label>
 </@s.iterator>
