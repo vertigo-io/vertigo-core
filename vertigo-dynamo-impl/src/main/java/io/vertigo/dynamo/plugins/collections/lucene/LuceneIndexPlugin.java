@@ -31,29 +31,12 @@ import io.vertigo.dynamo.impl.collections.IndexPlugin;
 import io.vertigo.dynamo.impl.collections.functions.sort.SortState;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-import io.vertigo.util.StringUtil;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
-import org.apache.lucene.queryparser.flexible.standard.StandardQueryParser;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.MatchAllDocsQuery;
-import org.apache.lucene.search.PrefixQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.SortField;
 
 /**
  * Plugin de d'indexation de DtList utilisant Lucene en Ram.
@@ -62,7 +45,6 @@ import org.apache.lucene.search.SortField;
  */
 public final class LuceneIndexPlugin implements IndexPlugin {
 
-	private final Analyzer queryAnalyser;
 	//	private final int nbTermsMax = 1024; //a paramètrer
 	private final CacheManager cacheManager;
 
@@ -77,7 +59,6 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 		Assertion.checkNotNull(cacheManager);
 		//-----
 		this.cacheManager = cacheManager;
-		queryAnalyser = new DefaultAnalyzer(false);
 		localeManager.add(Resources.class.getName(), Resources.values());
 	}
 
@@ -117,97 +98,6 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 		return luceneDb;
 	}
 
-	private <D extends DtObject> DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final int skip, final int top, final Option<SortState> sortState, final Option<DtField> boostedField, final LuceneIndex<D> index) throws IOException {
-		Assertion.checkNotNull(index);
-		Assertion.checkNotNull(searchedFields);
-		//-----
-		final Query filterQuery = createFilterQuery(keywords, searchedFields, listFilters, boostedField);
-		final Sort sortQuery = createSortQuery(sortState);
-		return index.executeQuery(filterQuery, skip, top, sortQuery);
-	}
-
-	private Query createFilterQuery(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final Option<DtField> boostedField) throws IOException {
-		final Query filteredQuery;
-		final Query keywordsQuery = createKeywordQuery(keywords, searchedFields, boostedField);
-		if (!listFilters.isEmpty()) {
-			filteredQuery = createFilteredQuery(keywordsQuery, listFilters);
-		} else {
-			filteredQuery = keywordsQuery;
-		}
-		return filteredQuery;
-	}
-
-	private static Sort createSortQuery(final Option<SortState> sortStateOpt) {
-		if (sortStateOpt.isDefined()) {
-			final SortState sortState = sortStateOpt.get();
-			Assertion.checkArgument(sortState.isIgnoreCase(), "Sort by index is always case insensitive. Set sortState.isIgnoreCase to true.");
-			//-----
-			final SortField.Type luceneType = SortField.Type.STRING; //TODO : check if other type are necessary
-			final String fieldName = RamLuceneIndex.SORT_FIELD_PREFIX + sortState.getFieldName(); //can't use the tokenized field with sorting
-			final SortField sortField = new SortField(fieldName, luceneType, sortState.isDesc());
-			final boolean nullLast = sortState.isDesc() ? !sortState.isNullLast() : sortState.isNullLast(); //oh yeah : lucene use nullLast first then revert list if sort Desc :)
-			sortField.setMissingValue(nullLast ? SortField.STRING_LAST : SortField.STRING_FIRST);
-			return new Sort(sortField);
-		}
-		return null;//default null -> sort by score
-	}
-
-	private Query createKeywordQuery(final String keywords, final Collection<DtField> searchedFieldList, final Option<DtField> boostedField) throws IOException {
-		if (StringUtil.isEmpty(keywords)) {
-			return new MatchAllDocsQuery();
-		}
-		//-----
-		final BooleanQuery query = new BooleanQuery();
-		for (final DtField dtField : searchedFieldList) {
-			final Query queryWord = createParsedKeywordsQuery(queryAnalyser, dtField.name(), keywords);
-			if (boostedField.isDefined() && dtField.equals(boostedField.get())) {
-				queryWord.setBoost(4);
-			}
-			query.add(queryWord, BooleanClause.Occur.SHOULD);
-		}
-		return query;
-	}
-
-	private Query createFilteredQuery(final Query keywordsQuery, final List<ListFilter> filters) {
-		final BooleanQuery query = new BooleanQuery();
-		query.add(keywordsQuery, BooleanClause.Occur.MUST);
-
-		for (final ListFilter filter : filters) {
-			final StandardQueryParser queryParser = new StandardQueryParser(queryAnalyser);
-			try {
-				query.add(queryParser.parse(filter.getFilterValue(), null), isExclusion(filter) ? BooleanClause.Occur.MUST_NOT : BooleanClause.Occur.MUST);
-			} catch (final QueryNodeException e) {
-				throw new RuntimeException("Erreur lors de la création du filtrage de la requete", e);
-			}
-		}
-		return query;
-	}
-
-	private static boolean isExclusion(final ListFilter listFilter) {
-		final String listFilterValue = listFilter.getFilterValue().trim();
-		return listFilterValue.startsWith("-");
-	}
-
-	private static Query createParsedKeywordsQuery(final Analyzer queryAnalyser, final String fieldName, final String keywords) throws IOException {
-		final BooleanQuery query = new BooleanQuery();
-		final Reader reader = new StringReader(keywords);
-		try (final TokenStream tokenStream = queryAnalyser.tokenStream(fieldName, reader)) {
-			tokenStream.reset();
-			try {
-				final CharTermAttribute termAttribute = tokenStream.getAttribute(CharTermAttribute.class);
-				while (tokenStream.incrementToken()) {
-					final String term = new String(termAttribute.buffer(), 0, termAttribute.length());
-					final PrefixQuery termQuery = new PrefixQuery(new Term(fieldName, term));
-					query.add(termQuery, BooleanClause.Occur.MUST);
-				}
-			} finally {
-				reader.reset();
-				tokenStream.end();
-			}
-		}
-		return query;
-	}
-
 	/**
 	 * Filtre une liste par des mots clés et une recherche fullText.
 	 * @param <D> type d'objet de la liste
@@ -227,9 +117,10 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 		}
 		try {
 			final LuceneIndex<D> index = indexList(dtc, false);
-			return this.<D> getCollection(keywords, searchedFields, listFilters, skip, top, sortState, boostedField, index);
+			return index.<D> getCollection(keywords, searchedFields, listFilters, skip, top, sortState, boostedField);
 		} catch (final IOException e) {
 			throw new RuntimeException("Erreur d'indexation", e);
 		}
 	}
+
 }

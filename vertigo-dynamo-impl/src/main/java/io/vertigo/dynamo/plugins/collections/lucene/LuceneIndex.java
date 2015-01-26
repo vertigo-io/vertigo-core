@@ -18,14 +18,17 @@
  */
 package io.vertigo.dynamo.plugins.collections.lucene;
 
+import io.vertigo.dynamo.collections.ListFilter;
+import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.impl.collections.functions.sort.SortState;
+import io.vertigo.lang.Option;
 
 import java.io.IOException;
 import java.io.Serializable;
-
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Sort;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Interface réprésentant un IndexLucene.
@@ -36,6 +39,6 @@ import org.apache.lucene.search.Sort;
 public interface LuceneIndex<D extends DtObject> extends Serializable {
 	void addAll(final DtList<D> fullDtc, final boolean storeValue) throws IOException;
 
-	DtList<D> executeQuery(final Query query, final int skip, final int top, final Sort sort) throws IOException;
+	DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final int skip, final int top, final Option<SortState> sortState, final Option<DtField> boostedField) throws IOException;
 
 }
