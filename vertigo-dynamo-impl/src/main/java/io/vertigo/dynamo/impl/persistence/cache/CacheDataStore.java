@@ -52,6 +52,16 @@ public final class CacheDataStore implements DataStore {
 		this.cacheDataStoreConfiguration = cacheDataStoreConfiguration;
 	}
 
+	//==========================================================================
+	//=============================== READ =====================================
+	//==========================================================================
+
+	/** {@inheritDoc} */
+	@Override
+	public int count(final DtDefinition dtDefinition) {
+		return logicalDataStore.count(dtDefinition);
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public <D extends DtObject> D load(final URI<D> uri) {
@@ -122,11 +132,14 @@ public final class CacheDataStore implements DataStore {
 		return logicalDataStore.loadList(dtDefinition, criteria, maxRows);
 	}
 
-	//==============================Fonctions d'écriture=======================
+	//==========================================================================
+	//=============================== WRITE ====================================
+	//==========================================================================
 	/** {@inheritDoc} */
 	@Override
 	public void merge(final DtObject dto) {
 		logicalDataStore.merge(dto);
+		//-----
 		clearCache(DtObjectUtil.findDtDefinition(dto));
 	}
 
@@ -134,6 +147,7 @@ public final class CacheDataStore implements DataStore {
 	@Override
 	public void put(final DtObject dto) {
 		logicalDataStore.put(dto);
+		//-----
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 		clearCache(DtObjectUtil.findDtDefinition(dto));
 	}
@@ -141,8 +155,9 @@ public final class CacheDataStore implements DataStore {
 	/** {@inheritDoc} */
 	@Override
 	public void remove(final URI<? extends DtObject> uri) {
-		final DtDefinition dtDefinition = uri.getDefinition();
 		logicalDataStore.remove(uri);
+		//-----
+		final DtDefinition dtDefinition = uri.getDefinition();
 		clearCache(dtDefinition);
 	}
 
@@ -155,9 +170,4 @@ public final class CacheDataStore implements DataStore {
 		//	}
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public int count(final DtDefinition dtDefinition) {
-		return logicalDataStore.count(dtDefinition);
-	}
 }
