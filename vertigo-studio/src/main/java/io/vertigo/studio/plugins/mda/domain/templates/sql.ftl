@@ -71,7 +71,7 @@ comment on column ${dtDefinition.dtDefinition.localName}.${field.name} is
 </#if>
 <#if "FOREIGN_KEY" == field.dtField.type >
 create index <#if (truncateNames && dtDefinition.dtDefinition.localName?length >5)>${dtDefinition.dtDefinition.localName?substring(0,5)}<#else>${dtDefinition.dtDefinition.localName}</#if>_${field.name}_FK on ${dtDefinition.dtDefinition.localName} (${field.name} asc)<#if tableSpaceIndex?has_content>
-TABLESPACE :TABLESPACE_NAME_INDEX;</#if>
+TABLESPACE :TABLESPACE_NAME_INDEX</#if>;
 </#if>
 </#if>
 </#list>
