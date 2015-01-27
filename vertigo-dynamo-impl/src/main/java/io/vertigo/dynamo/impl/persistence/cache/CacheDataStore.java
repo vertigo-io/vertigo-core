@@ -26,7 +26,6 @@ import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.persistence.Criteria;
 import io.vertigo.dynamo.persistence.DataStore;
 import io.vertigo.lang.Assertion;
 
@@ -123,13 +122,6 @@ public final class CacheDataStore implements DataStore {
 		// Mise en cache de la liste et des éléments.
 		cacheDataStoreConfiguration.getDataCache().putDtList(dtc);
 		return dtc;
-	}
-
-	@Deprecated
-	@Override
-	public <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final Criteria<D> criteria, final Integer maxRows) {
-		//loadCache(dtDefinition);
-		return logicalDataStore.loadList(dtDefinition, criteria, maxRows);
 	}
 
 	//==========================================================================

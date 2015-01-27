@@ -27,7 +27,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.persistence.Broker;
-import io.vertigo.dynamo.persistence.Criteria;
 import io.vertigo.dynamo.persistence.DataStore;
 import io.vertigo.lang.Assertion;
 
@@ -123,13 +122,6 @@ public final class LogicalDataStore implements DataStore {
 	public void remove(final URI<? extends DtObject> uri) {
 		final DtDefinition dtDefinition = getDtDefinition(uri);
 		getPhysicalStore(dtDefinition).remove(uri);
-	}
-
-	/** {@inheritDoc} */
-	@Deprecated
-	@Override
-	public <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final Criteria<D> criteria, final Integer maxRows) {
-		return getPhysicalStore(dtDefinition).loadList(dtDefinition, criteria, maxRows);
 	}
 
 	/** {@inheritDoc} */

@@ -21,6 +21,7 @@ package io.vertigo.dynamo.impl.persistence;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
+import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.persistence.cache.CacheDataStore;
@@ -132,7 +133,7 @@ final class BrokerImpl implements Broker {
 	@Deprecated
 	@Override
 	public <D extends DtObject> DtList<D> getList(final DtDefinition dtDefinition, final Criteria<D> criteria, final Integer maxRows) {
-		final DtList<D> dtc = dataStore.loadList(dtDefinition, criteria, maxRows);
+		final DtList<D> dtc = dataStore.loadList(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
 		//-----
 		Assertion.checkNotNull(dtc);
 		return dtc;

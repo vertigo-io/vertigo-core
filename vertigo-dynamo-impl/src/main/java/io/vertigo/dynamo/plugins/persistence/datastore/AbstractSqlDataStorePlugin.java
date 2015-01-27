@@ -235,9 +235,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 */
 	protected abstract void appendMaxRows(final String separator, final StringBuilder request, final Integer maxRows);
 
-	/** {@inheritDoc} **/
-	@Override
-	public <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final Criteria<D> criteria, final Integer maxRows) {
+	private <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final Criteria<D> criteria, final Integer maxRows) {
 		Assertion.checkArgument(criteria == null || criteria instanceof FilterCriteria<?>, "Ce store ne gére que les FilterCriteria");
 		//-----
 		final FilterCriteria<D> filterCriteria = (FilterCriteria<D>) (criteria == null ? EMPTY_FILTER_CRITERIA : criteria);

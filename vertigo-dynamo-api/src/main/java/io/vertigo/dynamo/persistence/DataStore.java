@@ -42,18 +42,6 @@ public interface DataStore {
 	int count(final DtDefinition dtDefinition);
 
 	/**
-	 * Récupération d'une liste correspondant à des criteres.
-	 * @param dtDefinition Définition de DT
-	 * @param criteria Critere de recherche
-	 * @param maxRows Nombre de résultats max.
-	 * @return DtList<D> Liste correspondant à la recherche
-	 * @param <D> Type de l'objet
-	 * @deprecated Utiliser loadList(DtListURI uri)
-	 */
-	@Deprecated
-	<D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final Criteria<D> criteria, final Integer maxRows);
-
-	/**
 	 * Récupération de l'objet correspondant à l'URI fournie.
 	 * Peut-être null.
 	 *

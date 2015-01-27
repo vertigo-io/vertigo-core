@@ -114,9 +114,8 @@ public abstract class DtListURI implements Serializable {
 				return writeDtListURNForMasterData(DtListURIForMasterData.class.cast(uri));
 			} else if (uri instanceof DtListURIForCriteria) {
 				return writeDtListURNForDtCriteria(DtListURIForCriteria.class.cast(uri));
-			} else {
-				throw new IllegalArgumentException("uri " + uri.getClass().getName() + " non serializable");
 			}
+			throw new IllegalArgumentException("uri " + uri.getClass().getName() + " non serializable");
 		}
 
 		/**
@@ -136,10 +135,10 @@ public abstract class DtListURI implements Serializable {
 		 * @return URN
 		 */
 		private static String writeDtListURNForMasterData(final DtListURIForMasterData uri) {
-			if (uri.getCode() != null) {
-				return uri.getDtDefinition().getName() + D2A_SEPARATOR + uri.getCode();
+			if (uri.getCode() == null) {
+				return uri.getDtDefinition().getName();
 			}
-			return uri.getDtDefinition().getName();
+			return uri.getDtDefinition().getName() + D2A_SEPARATOR + uri.getCode();
 		}
 
 		/**
@@ -149,7 +148,10 @@ public abstract class DtListURI implements Serializable {
 		 * @return URN
 		 */
 		private static String writeDtListURNForDtCriteria(final DtListURIForCriteria<?> uri) {
-			return CRITERIA_PREFIX + D2A_SEPARATOR + uri.getCriteria().hashCode();
+			if (uri.getCriteria() == null) {
+				return CRITERIA_PREFIX;
+			}
+			return CRITERIA_PREFIX + D2A_SEPARATOR + +uri.getCriteria().hashCode();
 		}
 	}
 }

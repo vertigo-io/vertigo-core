@@ -19,12 +19,10 @@
 package io.vertigo.dynamo.plugins.persistence.datastore;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.persistence.DataStorePlugin;
-import io.vertigo.dynamo.persistence.Criteria;
 
 /**
  * Class abstraite des Stores de données static et immutable.
@@ -36,12 +34,6 @@ public abstract class AbstractStaticDataStorePlugin implements DataStorePlugin {
 	@Override
 	public int count(final DtDefinition dtDefinition) {
 		return loadList(new DtListURIForCriteria<>(dtDefinition, null, null)).size();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final Criteria<D> criteria, final Integer maxRows) {
-		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
