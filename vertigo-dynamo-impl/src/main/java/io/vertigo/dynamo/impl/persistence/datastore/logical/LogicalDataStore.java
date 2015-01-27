@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.persistence.logical;
+package io.vertigo.dynamo.impl.persistence.datastore.logical;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -26,8 +26,8 @@ import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.persistence.Broker;
-import io.vertigo.dynamo.persistence.DataStore;
+import io.vertigo.dynamo.persistence.datastore.Broker;
+import io.vertigo.dynamo.persistence.datastore.DataStore;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -37,7 +37,7 @@ import io.vertigo.lang.Assertion;
  * @author  pchretien
  */
 public final class LogicalDataStore implements DataStore {
-	private final LogicalStoreConfiguration logicalStoreConfiguration;
+	private final LogicalDataStoreConfiguration logicalStoreConfiguration;
 	private final Broker broker;
 
 	/**
@@ -45,7 +45,7 @@ public final class LogicalDataStore implements DataStore {
 	 * @param logicalStoreConfiguration Configuration logique des stores physiques.
 	 * @param broker Broker pour réentrance
 	 */
-	public LogicalDataStore(final LogicalStoreConfiguration logicalStoreConfiguration, final Broker broker) {
+	public LogicalDataStore(final LogicalDataStoreConfiguration logicalStoreConfiguration, final Broker broker) {
 		Assertion.checkNotNull(logicalStoreConfiguration);
 		Assertion.checkNotNull(broker);
 		//-----

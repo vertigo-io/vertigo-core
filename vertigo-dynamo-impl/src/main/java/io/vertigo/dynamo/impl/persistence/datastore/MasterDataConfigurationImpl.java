@@ -16,13 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.persistence;
+package io.vertigo.dynamo.impl.persistence.datastore;
 
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.DtListProcessor;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
-import io.vertigo.dynamo.persistence.MasterDataConfiguration;
+import io.vertigo.dynamo.persistence.datastore.MasterDataConfiguration;
 import io.vertigo.lang.Assertion;
 
 import java.io.Serializable;
@@ -33,7 +33,7 @@ import java.util.Map;
  * Configuration des listes de référence.
  * @author pchretien
  */
-final class MasterDataConfigurationImpl implements MasterDataConfiguration {
+public final class MasterDataConfigurationImpl implements MasterDataConfiguration {
 
 	/**
 	 * Fonction de DtList acceptant tout (pour rester not null).
@@ -50,7 +50,7 @@ final class MasterDataConfigurationImpl implements MasterDataConfiguration {
 	 * Constructeur.
 	 * @param collectionsManager Manager des collections
 	 */
-	MasterDataConfigurationImpl(final CollectionsManager collectionsManager) {
+	public MasterDataConfigurationImpl(final CollectionsManager collectionsManager) {
 		Assertion.checkNotNull(collectionsManager);
 		//-----
 		this.collectionsManager = collectionsManager;

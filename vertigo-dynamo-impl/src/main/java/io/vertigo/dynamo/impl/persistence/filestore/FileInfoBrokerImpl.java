@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.persistence;
+package io.vertigo.dynamo.impl.persistence.filestore;
 
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.model.FileInfo;
-import io.vertigo.dynamo.impl.persistence.logical.LogicalFileStore;
-import io.vertigo.dynamo.persistence.FileInfoBroker;
+import io.vertigo.dynamo.impl.persistence.filestore.logical.LogicalFileStore;
+import io.vertigo.dynamo.persistence.filestore.FileInfoBroker;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -31,18 +31,18 @@ import io.vertigo.lang.Assertion;
  * alors que le broker se concentre sur la problématique des accès aux ressources.
  * @author pchretien
  */
-final class FileInfoBrokerImpl implements FileInfoBroker {
+public final class FileInfoBrokerImpl implements FileInfoBroker {
 	private final FileStore fileStore;
 
 	/**
 	 * Constructeur.
 	 * Une fois le broker construit la configuration est bloquée.
-	 * @param brokerConfiguration Configuration du broker
+	 * @param fileBrokerConfiguration Configuration du broker
 	 */
-	FileInfoBrokerImpl(final BrokerConfigurationImpl brokerConfiguration) {
-		Assertion.checkNotNull(brokerConfiguration);
+	public FileInfoBrokerImpl(final FileBrokerConfiguration fileBrokerConfiguration) {
+		Assertion.checkNotNull(fileBrokerConfiguration);
 		//-----
-		fileStore = new LogicalFileStore(brokerConfiguration.getLogicalFileStoreConfiguration());
+		fileStore = new LogicalFileStore(fileBrokerConfiguration.getLogicalFileStoreConfiguration());
 	}
 
 	/** {@inheritDoc} */

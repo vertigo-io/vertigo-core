@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.persistence;
+package io.vertigo.dynamo.impl.persistence.datastore;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -24,11 +24,11 @@ import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.impl.persistence.cache.CacheDataStore;
-import io.vertigo.dynamo.impl.persistence.logical.LogicalDataStore;
-import io.vertigo.dynamo.persistence.Broker;
-import io.vertigo.dynamo.persistence.Criteria;
-import io.vertigo.dynamo.persistence.DataStore;
+import io.vertigo.dynamo.impl.persistence.datastore.cache.CacheDataStore;
+import io.vertigo.dynamo.impl.persistence.datastore.logical.LogicalDataStore;
+import io.vertigo.dynamo.persistence.criteria.Criteria;
+import io.vertigo.dynamo.persistence.datastore.Broker;
+import io.vertigo.dynamo.persistence.datastore.DataStore;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 
@@ -39,7 +39,7 @@ import io.vertigo.lang.Option;
  * alors que le broker se concentre sur la problématique des accès aux ressources.
  * @author pchretien
  */
-final class BrokerImpl implements Broker {
+public final class BrokerImpl implements Broker {
 	/** Le store est le point d'accès unique à la base (sql, xml, fichier plat...). */
 	private final DataStore dataStore;
 
@@ -48,7 +48,7 @@ final class BrokerImpl implements Broker {
 	 * Une fois le broker construit la configuration est bloquée.
 	 * @param brokerConfiguration Configuration du broker
 	 */
-	BrokerImpl(final BrokerConfigurationImpl brokerConfiguration) {
+	public BrokerImpl(final BrokerConfigurationImpl brokerConfiguration) {
 		Assertion.checkNotNull(brokerConfiguration);
 		//-----
 		//On vérouille la configuration.

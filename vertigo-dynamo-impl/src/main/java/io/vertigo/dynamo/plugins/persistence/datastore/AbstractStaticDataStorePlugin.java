@@ -22,7 +22,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.impl.persistence.DataStorePlugin;
+import io.vertigo.dynamo.impl.persistence.datastore.DataStorePlugin;
 
 /**
  * Class abstraite des Stores de données static et immutable.

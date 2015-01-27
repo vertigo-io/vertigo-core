@@ -18,6 +18,11 @@
  */
 package io.vertigo.dynamo.persistence;
 
+import io.vertigo.dynamo.persistence.datastore.Broker;
+import io.vertigo.dynamo.persistence.datastore.BrokerConfiguration;
+import io.vertigo.dynamo.persistence.datastore.BrokerNN;
+import io.vertigo.dynamo.persistence.datastore.MasterDataConfiguration;
+import io.vertigo.dynamo.persistence.filestore.FileInfoBroker;
 import io.vertigo.lang.Component;
 
 /**

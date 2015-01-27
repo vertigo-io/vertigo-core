@@ -16,9 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.persistence;
+package io.vertigo.dynamo.impl.persistence.datastore;
 
-import io.vertigo.dynamo.persistence.DataStore;
+import io.vertigo.dynamo.persistence.datastore.DataStore;
 import io.vertigo.lang.Plugin;
 
 /**

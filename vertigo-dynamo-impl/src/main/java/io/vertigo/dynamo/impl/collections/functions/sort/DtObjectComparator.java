@@ -25,8 +25,8 @@ import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.persistence.Broker;
 import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.persistence.datastore.Broker;
 import io.vertigo.lang.Assertion;
 
 import java.text.Collator;

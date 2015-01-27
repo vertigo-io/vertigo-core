@@ -19,7 +19,7 @@
 /**
  *
  */
-package io.vertigo.dynamo.persistence;
+package io.vertigo.dynamo.persistence.datastore;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;

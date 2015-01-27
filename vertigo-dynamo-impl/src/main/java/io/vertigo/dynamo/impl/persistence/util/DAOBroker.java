@@ -26,13 +26,13 @@ import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.persistence.Broker;
-import io.vertigo.dynamo.persistence.BrokerBatch;
-import io.vertigo.dynamo.persistence.BrokerNN;
-import io.vertigo.dynamo.persistence.Criteria;
 import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.persistence.criteria.Criteria;
 import io.vertigo.dynamo.persistence.criteria.FilterCriteria;
 import io.vertigo.dynamo.persistence.criteria.FilterCriteriaBuilder;
+import io.vertigo.dynamo.persistence.datastore.Broker;
+import io.vertigo.dynamo.persistence.datastore.BrokerBatch;
+import io.vertigo.dynamo.persistence.datastore.BrokerNN;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.lang.Assertion;
 

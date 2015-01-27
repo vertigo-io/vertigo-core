@@ -20,13 +20,20 @@ package io.vertigo.dynamo.impl.persistence;
 
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
+import io.vertigo.dynamo.impl.persistence.datastore.BrokerConfigurationImpl;
+import io.vertigo.dynamo.impl.persistence.datastore.BrokerImpl;
+import io.vertigo.dynamo.impl.persistence.datastore.DataStorePlugin;
+import io.vertigo.dynamo.impl.persistence.datastore.MasterDataConfigurationImpl;
+import io.vertigo.dynamo.impl.persistence.filestore.FileBrokerConfiguration;
+import io.vertigo.dynamo.impl.persistence.filestore.FileInfoBrokerImpl;
+import io.vertigo.dynamo.impl.persistence.filestore.FileStorePlugin;
 import io.vertigo.dynamo.impl.persistence.util.BrokerNNImpl;
-import io.vertigo.dynamo.persistence.Broker;
-import io.vertigo.dynamo.persistence.BrokerConfiguration;
-import io.vertigo.dynamo.persistence.BrokerNN;
-import io.vertigo.dynamo.persistence.FileInfoBroker;
-import io.vertigo.dynamo.persistence.MasterDataConfiguration;
 import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.persistence.datastore.Broker;
+import io.vertigo.dynamo.persistence.datastore.BrokerConfiguration;
+import io.vertigo.dynamo.persistence.datastore.BrokerNN;
+import io.vertigo.dynamo.persistence.datastore.MasterDataConfiguration;
+import io.vertigo.dynamo.persistence.filestore.FileInfoBroker;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
@@ -63,14 +70,20 @@ public final class PersistenceManagerImpl implements PersistenceManager {
 		brokerConfiguration = new BrokerConfigurationImpl(cacheManager, this, collectionsManager);
 		brokerNN = new BrokerNNImpl(taskManager);
 		//---
-		//On enregistre le plugin de gestion des fichiers : facultatif
-		if (fileStorePlugin.isDefined()) {
-			brokerConfiguration.getLogicalFileStoreConfiguration().registerDefaultPhysicalStore(fileStorePlugin.get());
-		}
 		//On enregistre le plugin principal du broker : DefaultPhysicalStore
 		brokerConfiguration.getLogicalStoreConfiguration().registerDefaultPhysicalStore(defaultStorePlugin);
 		broker = new BrokerImpl(brokerConfiguration);
-		fileInfoBroker = new FileInfoBrokerImpl(brokerConfiguration);
+		//-----
+		fileInfoBroker = createFileInfoBroker(fileStorePlugin);
+	}
+
+	private static FileInfoBroker createFileInfoBroker(final Option<FileStorePlugin> fileStorePlugin) {
+		final FileBrokerConfiguration fileBrokerConfiguration = new FileBrokerConfiguration();
+		//On enregistre le plugin de gestion des fichiers : facultatif
+		if (fileStorePlugin.isDefined()) {
+			fileBrokerConfiguration.getLogicalFileStoreConfiguration().registerDefaultPhysicalStore(fileStorePlugin.get());
+		}
+		return new FileInfoBrokerImpl(fileBrokerConfiguration);
 	}
 
 	/** {@inheritDoc} */

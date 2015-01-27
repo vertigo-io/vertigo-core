@@ -16,18 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.persistence;
+package io.vertigo.dynamo.impl.persistence.datastore;
 
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
-import io.vertigo.dynamo.impl.persistence.cache.CacheDataStoreConfiguration;
-import io.vertigo.dynamo.impl.persistence.logical.LogicalFileStoreConfiguration;
-import io.vertigo.dynamo.impl.persistence.logical.LogicalStoreConfiguration;
-import io.vertigo.dynamo.persistence.BrokerConfiguration;
-import io.vertigo.dynamo.persistence.DataStore;
+import io.vertigo.dynamo.impl.persistence.datastore.cache.CacheDataStoreConfiguration;
+import io.vertigo.dynamo.impl.persistence.datastore.logical.LogicalDataStoreConfiguration;
 import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.persistence.datastore.BrokerConfiguration;
+import io.vertigo.dynamo.persistence.datastore.DataStore;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -35,32 +33,22 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-final class BrokerConfigurationImpl implements BrokerConfiguration {
+public final class BrokerConfigurationImpl implements BrokerConfiguration {
 	private final CacheDataStoreConfiguration cacheStoreConfiguration;
-	private final LogicalStoreConfiguration logicalStoreConfiguration;
-	private final LogicalFileStoreConfiguration logicalFileStoreConfiguration;
+	private final LogicalDataStoreConfiguration logicalDataStoreConfiguration;
 
 	/**
 	 * Constructeur.
 	 *
 	 * @param cacheManager Manager de gestion du cache
 	 */
-	BrokerConfigurationImpl(final CacheManager cacheManager, final PersistenceManager persistenceManager, final CollectionsManager collectionsManager) {
+	public BrokerConfigurationImpl(final CacheManager cacheManager, final PersistenceManager persistenceManager, final CollectionsManager collectionsManager) {
 		Assertion.checkNotNull(cacheManager);
 		Assertion.checkNotNull(persistenceManager);
 		Assertion.checkNotNull(collectionsManager);
 		//-----
 		cacheStoreConfiguration = new CacheDataStoreConfiguration(cacheManager);
-		logicalStoreConfiguration = new LogicalStoreConfiguration(persistenceManager, collectionsManager);
-		logicalFileStoreConfiguration = new LogicalFileStoreConfiguration();
-	}
-
-	/**
-	 * @param fileInfoDefinition Definition de fichier
-	 * @param newFileStore Store de fichier
-	 */
-	void registerFileStorePlugin(final FileInfoDefinition fileInfoDefinition, final FileStore newFileStore) {
-		getLogicalFileStoreConfiguration().register(fileInfoDefinition, newFileStore);
+		logicalDataStoreConfiguration = new LogicalDataStoreConfiguration(persistenceManager, collectionsManager);
 	}
 
 	/**
@@ -76,20 +64,16 @@ final class BrokerConfigurationImpl implements BrokerConfiguration {
 		cacheStoreConfiguration.registerCacheable(dtDefinition, timeToLiveInSeconds, isReloadedByList);
 	}
 
-	CacheDataStoreConfiguration getCacheStoreConfiguration() {
+	public CacheDataStoreConfiguration getCacheStoreConfiguration() {
 		return cacheStoreConfiguration;
 	}
 
-	LogicalStoreConfiguration getLogicalStoreConfiguration() {
-		return logicalStoreConfiguration;
-	}
-
-	LogicalFileStoreConfiguration getLogicalFileStoreConfiguration() {
-		return logicalFileStoreConfiguration;
+	public LogicalDataStoreConfiguration getLogicalStoreConfiguration() {
+		return logicalDataStoreConfiguration;
 	}
 
 	@Override
 	public void register(final DtDefinition dtDefinition, final DataStore specificStore) {
-		getLogicalStoreConfiguration().register(dtDefinition, specificStore);
+		logicalDataStoreConfiguration.register(dtDefinition, specificStore);
 	}
 }

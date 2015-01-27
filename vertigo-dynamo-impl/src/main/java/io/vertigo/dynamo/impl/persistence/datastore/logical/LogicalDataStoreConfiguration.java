@@ -16,9 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.persistence.logical;
+package io.vertigo.dynamo.impl.persistence.datastore.logical;
 
-import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.dynamo.collections.CollectionsManager;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.persistence.datastore.DataStore;
 import io.vertigo.lang.Assertion;
 
 import java.util.HashMap;
@@ -28,23 +31,46 @@ import java.util.Map;
  * Configuration logique des stores physiques.
  * @author pchretien, npiedeloup
  */
-abstract class AbstractLogicalStoreConfiguration<D extends Definition, S> {
+public final class LogicalDataStoreConfiguration {
 	/** Store physique par défaut. */
-	private S defaultStore;
+	private DataStore defaultStore;
 
 	/** Map des stores utilisés spécifiquement pour certains DT */
-	private final Map<D, S> storeMap = new HashMap<>();
+	private final Map<DtDefinition, DataStore> storeMap = new HashMap<>();
+
+	private final PersistenceManager persistenceManager;
+	private final CollectionsManager collectionsManager;
+
+	/**
+	 * Constructeur.
+	 * @param collectionsManager Manager des manipulations de liste
+	 */
+	public LogicalDataStoreConfiguration(final PersistenceManager persistenceManager, final CollectionsManager collectionsManager) {
+		Assertion.checkNotNull(collectionsManager);
+		Assertion.checkNotNull(persistenceManager);
+		//-----
+		this.persistenceManager = persistenceManager;
+		this.collectionsManager = collectionsManager;
+	}
+
+	public PersistenceManager getPersistenceManager() {
+		return persistenceManager;
+	}
+
+	public CollectionsManager getCollectionsManager() {
+		return collectionsManager;
+	}
 
 	/**
 	 * Fournit un store adpaté au type de l'objet.
 	 * @param definition Définition
 	 * @return Store utilisé pour cette definition
 	 */
-	protected final S getPhysicalStore(final D definition) {
+	DataStore getPhysicalStore(final DtDefinition definition) {
 		Assertion.checkNotNull(definition);
 		//-----
 		//On regarde si il existe un store enregistré spécifiquement pour cette Definition
-		S physicalStore = storeMap.get(definition);
+		DataStore physicalStore = storeMap.get(definition);
 
 		physicalStore = physicalStore == null ? defaultStore : physicalStore;
 		Assertion.checkNotNull(physicalStore, "Aucun store trouvé pour la définition '{0}'", definition.getName());
@@ -56,7 +82,7 @@ abstract class AbstractLogicalStoreConfiguration<D extends Definition, S> {
 	 * @param definition Définition
 	 * @param specificStore Store spécifique
 	 */
-	public final void register(final D definition, final S specificStore) {
+	public void register(final DtDefinition definition, final DataStore specificStore) {
 		//check();
 		Assertion.checkNotNull(definition);
 		Assertion.checkNotNull(specificStore);
@@ -65,7 +91,7 @@ abstract class AbstractLogicalStoreConfiguration<D extends Definition, S> {
 		storeMap.put(definition, specificStore);
 	}
 
-	public final void registerDefaultPhysicalStore(final S tmpDefaultStore) {
+	public void registerDefaultPhysicalStore(final DataStore tmpDefaultStore) {
 		Assertion.checkNotNull(tmpDefaultStore);
 		Assertion.checkState(defaultStore == null, "defaultStore deja initialisé");
 		//-----

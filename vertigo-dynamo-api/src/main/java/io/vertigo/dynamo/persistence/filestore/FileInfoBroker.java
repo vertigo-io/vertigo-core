@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.persistence;
+package io.vertigo.dynamo.persistence.filestore;
 
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.model.FileInfo;

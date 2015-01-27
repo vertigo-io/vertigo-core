@@ -27,7 +27,7 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
-import io.vertigo.dynamo.persistence.BrokerNN;
+import io.vertigo.dynamo.persistence.datastore.BrokerNN;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;

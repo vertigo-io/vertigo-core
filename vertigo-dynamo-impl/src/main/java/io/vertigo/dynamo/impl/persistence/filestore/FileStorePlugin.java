@@ -16,15 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.persistence.logical;
+package io.vertigo.dynamo.impl.persistence.filestore;
 
-import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
-import io.vertigo.dynamo.impl.persistence.FileStore;
+import io.vertigo.lang.Plugin;
 
 /**
- * Configuration logique des stores physiques.
- * @author pchretien, npiedeloup
+ * Plugin de FileStore.
+ *
+ * @author  npiedeloup
  */
-public final class LogicalFileStoreConfiguration extends AbstractLogicalStoreConfiguration<FileInfoDefinition, FileStore> {
-	//rien
+public interface FileStorePlugin extends Plugin, FileStore {
+	//
 }

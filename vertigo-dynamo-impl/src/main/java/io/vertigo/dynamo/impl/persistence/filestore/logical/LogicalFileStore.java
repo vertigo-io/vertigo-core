@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.persistence.logical;
+package io.vertigo.dynamo.impl.persistence.filestore.logical;
 
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.file.model.FileInfo;
-import io.vertigo.dynamo.impl.persistence.FileStore;
+import io.vertigo.dynamo.impl.persistence.filestore.FileStore;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -43,10 +43,6 @@ public final class LogicalFileStore implements FileStore {
 		this.logicalFileStoreConfiguration = logicalFileStoreConfiguration;
 	}
 
-	private static FileInfoDefinition getFileInfoDefinition(final URI<FileInfo> uri) {
-		return uri.getDefinition();
-	}
-
 	private FileStore getPhysicalStore(final FileInfoDefinition fileInfoDefinition) {
 		return logicalFileStoreConfiguration.getPhysicalStore(fileInfoDefinition);
 	}
@@ -54,7 +50,7 @@ public final class LogicalFileStore implements FileStore {
 	/** {@inheritDoc} */
 	@Override
 	public FileInfo load(final URI<FileInfo> uri) {
-		final FileInfoDefinition fileInfoDefinition = getFileInfoDefinition(uri);
+		final FileInfoDefinition fileInfoDefinition = uri.getDefinition();
 		return getPhysicalStore(fileInfoDefinition).load(uri);
 	}
 
@@ -73,7 +69,7 @@ public final class LogicalFileStore implements FileStore {
 	/** {@inheritDoc} */
 	@Override
 	public void remove(final URI<FileInfo> uri) {
-		final FileInfoDefinition fileInfoDefinition = getFileInfoDefinition(uri);
+		final FileInfoDefinition fileInfoDefinition = uri.getDefinition();
 		getPhysicalStore(fileInfoDefinition).remove(uri);
 	}
 }
