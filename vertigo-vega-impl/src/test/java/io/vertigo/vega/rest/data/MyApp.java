@@ -46,7 +46,7 @@ import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
 import io.vertigo.dynamo.plugins.export.pdf.PDFExporterPlugin;
 import io.vertigo.dynamo.plugins.kvdatastore.delayedmemory.DelayedMemoryKVDataStorePlugin;
-import io.vertigo.dynamo.plugins.persistence.postgresql.PostgreSqlDataStorePlugin;
+import io.vertigo.dynamo.plugins.persistence.datastore.postgresql.PostgreSqlDataStorePlugin;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.persona.impl.security.KSecurityManagerImpl;
 import io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin;

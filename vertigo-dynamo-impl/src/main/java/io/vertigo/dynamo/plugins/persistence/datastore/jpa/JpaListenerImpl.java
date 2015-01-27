@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.persistence.jpa;
+package io.vertigo.dynamo.plugins.persistence.datastore.jpa;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.lang.Assertion;

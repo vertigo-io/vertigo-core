@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.persistence;
+package io.vertigo.dynamo.plugins.persistence.datastore;
 
 import io.vertigo.core.Home;
 import io.vertigo.core.spaces.definiton.Definition;
