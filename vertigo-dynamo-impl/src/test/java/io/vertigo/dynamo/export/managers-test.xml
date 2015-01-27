@@ -24,7 +24,7 @@
 		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
 
 		<component api="PersistenceManager" class="io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl">
-			<plugin class="io.vertigo.dynamo.plugins.persistence.oracle.OracleDataStorePlugin">
+			<plugin class="io.vertigo.dynamo.plugins.persistence.datastore.oracle.OracleDataStorePlugin">
 				<param name="sequencePrefix" value="SEQ_" />
 			</plugin>
 		</component>

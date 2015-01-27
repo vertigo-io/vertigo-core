@@ -35,7 +35,7 @@
 		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
 
 		<component api="PersistenceManager" class="io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl" initClass="io.vertigo.dynamo.persistence.PersistenceManagerInitializer">
-			<plugin class="io.vertigo.dynamo.plugins.persistence.jpa.JpaDataStorePlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.persistence.datastore.jpa.JpaDataStorePlugin" />
 			<plugin class="io.vertigo.dynamo.plugins.persistence.filestore.db.DbFileStorePlugin" />
 		</component>
 

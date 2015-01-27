@@ -94,9 +94,10 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	}
 
 	private void execCallableStatement(final SqlConnection connection, final String sql) throws SQLException {
-		final SqlCallableStatement callableStatement = dataBaseManager.createCallableStatement(connection, sql);
-		callableStatement.init();
-		callableStatement.executeUpdate();
+		try (final SqlCallableStatement callableStatement = dataBaseManager.createCallableStatement(connection, sql)) {
+			callableStatement.init();
+			callableStatement.executeUpdate();
+		}
 	}
 
 	/**
