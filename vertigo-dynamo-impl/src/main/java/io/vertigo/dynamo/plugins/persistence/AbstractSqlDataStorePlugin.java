@@ -102,14 +102,6 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	}
 
 	/**
-	 * @param uri Uri de l'objet
-	 * @return DtDefinition associée
-	 */
-	protected static final DtDefinition getDtDefinition(final URI<? extends DtObject> uri) {
-		return uri.getDefinition();
-	}
-
-	/**
 	 * Nom de la table en fonction de la définition du DT mappé.
 	 *
 	 * @param dtDefinition Définition du DT mappé
@@ -122,7 +114,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public final <D extends DtObject> D load(final URI<D> uri) {
-		final DtDefinition dtDefinition = getDtDefinition(uri);
+		final DtDefinition dtDefinition = uri.getDefinition();
 
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_SELECT.toString() + '_' + tableName + "_BY_URI";
@@ -194,13 +186,13 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final DtField fkField = associationNode.getDtDefinition().getIdField().get();
 		final String fkFieldName = fkField.getName();
 
-		final StringBuilder request = new StringBuilder(" select t.* from ");
-		request.append(tableName).append(" t");
-		//On établit une jointure fermée entre la pk et la fk de la collection recherchée.
-		request.append(" join ").append(joinTableName);
-		request.append(" j on j.").append(joinDtField.getName()).append(" = t.").append(pkFieldName);
-		//Condition de la recherche
-		request.append(" where j.").append(fkFieldName).append(" = #").append(fkFieldName).append('#');
+		final StringBuilder request = new StringBuilder(" select t.* from ")
+				.append(tableName).append(" t")
+				//On établit une jointure fermée entre la pk et la fk de la collection recherchée.
+				.append(" join ").append(joinTableName)
+				.append(" j on j.").append(joinDtField.getName()).append(" = t.").append(pkFieldName)
+				//Condition de la recherche
+				.append(" where j.").append(fkFieldName).append(" = #").append(fkFieldName).append('#');
 		postAlterLoadRequest(request);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
@@ -321,9 +313,9 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 			sep = " and ";
 		}
 		for (final String fieldName : filterCriteria.getPrefixMap().keySet()) {
-			request.append(sep);
-			request.append(fieldName).append(" like #").append(fieldName).append('#');
-			request.append(getConcatOperator() + "'%%'");
+			request.append(sep)
+					.append(fieldName).append(" like #").append(fieldName).append('#')
+					.append(getConcatOperator() + "'%%'");
 			sep = " and ";
 		}
 		if (maxRows != null) {
@@ -415,7 +407,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 			saved = put(dto, true);
 		}
 		if (!saved) {
-			throw new RuntimeException("Aucune ligne répliquée");
+			throw new RuntimeException("no data merged");
 		}
 	}
 
@@ -434,8 +426,8 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	protected static final String createUpdateQuery(final DtDefinition dtDefinition) {
 		final String tableName = getTableName(dtDefinition);
 		final DtField pk = dtDefinition.getIdField().get();
-		final StringBuilder request = new StringBuilder();
-		request.append("update ").append(tableName).append(" set ");
+		final StringBuilder request = new StringBuilder()
+				.append("update ").append(tableName).append(" set ");
 		String separator = "";
 		for (final DtField dtField : dtDefinition.getFields()) {
 			//On ne met à jour que les champs persistants hormis la PK
@@ -506,7 +498,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void remove(final URI<? extends DtObject> uri) {
-		final DtDefinition dtDefinition = getDtDefinition(uri);
+		final DtDefinition dtDefinition = uri.getDefinition();
 		final DtField pk = dtDefinition.getIdField().get();
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_DELETE.toString() + '_' + tableName;
