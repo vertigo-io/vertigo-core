@@ -34,8 +34,8 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class BrokerConfigImpl implements BrokerConfig {
-	private final CacheDataStoreConfig cacheStoreConfiguration;
-	private final LogicalDataStoreConfig logicalDataStoreConfiguration;
+	private final CacheDataStoreConfig cacheStoreConfig;
+	private final LogicalDataStoreConfig logicalDataStoreConfig;
 
 	/**
 	 * Constructeur.
@@ -47,8 +47,8 @@ public final class BrokerConfigImpl implements BrokerConfig {
 		Assertion.checkNotNull(persistenceManager);
 		Assertion.checkNotNull(collectionsManager);
 		//-----
-		cacheStoreConfiguration = new CacheDataStoreConfig(cacheManager);
-		logicalDataStoreConfiguration = new LogicalDataStoreConfig(persistenceManager, collectionsManager);
+		cacheStoreConfig = new CacheDataStoreConfig(cacheManager);
+		logicalDataStoreConfig = new LogicalDataStoreConfig(persistenceManager, collectionsManager);
 	}
 
 	/**
@@ -61,19 +61,19 @@ public final class BrokerConfigImpl implements BrokerConfig {
 	public void registerCacheable(final DtDefinition dtDefinition, final long timeToLiveInSeconds, final boolean isReloadedByList) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
-		cacheStoreConfiguration.registerCacheable(dtDefinition, timeToLiveInSeconds, isReloadedByList);
+		cacheStoreConfig.registerCacheable(dtDefinition, timeToLiveInSeconds, isReloadedByList);
 	}
 
 	public CacheDataStoreConfig getCacheStoreConfiguration() {
-		return cacheStoreConfiguration;
+		return cacheStoreConfig;
 	}
 
 	public LogicalDataStoreConfig getLogicalStoreConfig() {
-		return logicalDataStoreConfiguration;
+		return logicalDataStoreConfig;
 	}
 
 	@Override
 	public void register(final DtDefinition dtDefinition, final DataStore specificStore) {
-		logicalDataStoreConfiguration.register(dtDefinition, specificStore);
+		logicalDataStoreConfig.register(dtDefinition, specificStore);
 	}
 }
