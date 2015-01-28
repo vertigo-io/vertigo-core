@@ -22,7 +22,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.studio.mda.MdaManager;
 import io.vertigo.studio.mda.Result;
 import io.vertigo.studio.mda.ResultBuilder;
-import io.vertigo.studio.plugins.mda.FileConfiguration;
+import io.vertigo.studio.plugins.mda.FileConfig;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ import javax.inject.Named;
  */
 public final class MdaManagerImpl implements MdaManager {
 	private final List<GeneratorPlugin> generatorPlugins;
-	private final FileConfiguration fileConfiguration;
+	private final FileConfig fileConfig;
 
 	@Inject
 	/**
@@ -56,7 +56,7 @@ public final class MdaManagerImpl implements MdaManager {
 		Assertion.checkArgNotEmpty(encoding);
 		//-----
 		this.generatorPlugins = java.util.Collections.unmodifiableList(generatorPlugins);
-		fileConfiguration = new FileConfiguration(targetGenDir, projectPackageName, encoding);
+		fileConfig = new FileConfig(targetGenDir, projectPackageName, encoding);
 	}
 
 	/** {@inheritDoc} */
@@ -66,7 +66,7 @@ public final class MdaManagerImpl implements MdaManager {
 		final ResultBuilder resultBuilder = new ResultBuilder();
 		//Génèration des objets issus de la modélisation
 		for (final GeneratorPlugin generatorPlugin : generatorPlugins) {
-			generatorPlugin.generate(fileConfiguration, resultBuilder);
+			generatorPlugin.generate(fileConfig, resultBuilder);
 		}
 		return resultBuilder.build();
 	}

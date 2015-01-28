@@ -20,19 +20,19 @@ package io.vertigo.dynamo.impl.persistence;
 
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
-import io.vertigo.dynamo.impl.persistence.datastore.BrokerConfigurationImpl;
+import io.vertigo.dynamo.impl.persistence.datastore.BrokerConfigImpl;
 import io.vertigo.dynamo.impl.persistence.datastore.BrokerImpl;
 import io.vertigo.dynamo.impl.persistence.datastore.DataStorePlugin;
-import io.vertigo.dynamo.impl.persistence.datastore.MasterDataConfigurationImpl;
-import io.vertigo.dynamo.impl.persistence.filestore.FileBrokerConfiguration;
+import io.vertigo.dynamo.impl.persistence.datastore.MasterDataConfigImpl;
+import io.vertigo.dynamo.impl.persistence.filestore.FileBrokerConfig;
 import io.vertigo.dynamo.impl.persistence.filestore.FileInfoBrokerImpl;
 import io.vertigo.dynamo.impl.persistence.filestore.FileStorePlugin;
 import io.vertigo.dynamo.impl.persistence.util.BrokerNNImpl;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.persistence.datastore.Broker;
-import io.vertigo.dynamo.persistence.datastore.BrokerConfiguration;
+import io.vertigo.dynamo.persistence.datastore.BrokerConfig;
 import io.vertigo.dynamo.persistence.datastore.BrokerNN;
-import io.vertigo.dynamo.persistence.datastore.MasterDataConfiguration;
+import io.vertigo.dynamo.persistence.datastore.MasterDataConfig;
 import io.vertigo.dynamo.persistence.filestore.FileInfoBroker;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.lang.Assertion;
@@ -46,8 +46,8 @@ import javax.inject.Inject;
 * @author pchretien
 */
 public final class PersistenceManagerImpl implements PersistenceManager {
-	private final MasterDataConfiguration masterDataConfiguration;
-	private final BrokerConfigurationImpl brokerConfiguration;
+	private final MasterDataConfig masterDataConfig;
+	private final BrokerConfigImpl brokerConfig;
 	/** Broker des objets métier et des listes. */
 	private final Broker broker;
 	private final FileInfoBroker fileInfoBroker;
@@ -66,19 +66,19 @@ public final class PersistenceManagerImpl implements PersistenceManager {
 		Assertion.checkNotNull(fileStorePlugin);
 		Assertion.checkNotNull(defaultStorePlugin);
 		//-----
-		masterDataConfiguration = new MasterDataConfigurationImpl(collectionsManager);
-		brokerConfiguration = new BrokerConfigurationImpl(cacheManager, this, collectionsManager);
+		masterDataConfig = new MasterDataConfigImpl(collectionsManager);
+		brokerConfig = new BrokerConfigImpl(cacheManager, this, collectionsManager);
 		brokerNN = new BrokerNNImpl(taskManager);
 		//---
 		//On enregistre le plugin principal du broker : DefaultPhysicalStore
-		brokerConfiguration.getLogicalStoreConfiguration().registerDefaultPhysicalStore(defaultStorePlugin);
-		broker = new BrokerImpl(brokerConfiguration);
+		brokerConfig.getLogicalStoreConfig().registerDefaultPhysicalStore(defaultStorePlugin);
+		broker = new BrokerImpl(brokerConfig);
 		//-----
 		fileInfoBroker = createFileInfoBroker(fileStorePlugin);
 	}
 
 	private static FileInfoBroker createFileInfoBroker(final Option<FileStorePlugin> fileStorePlugin) {
-		final FileBrokerConfiguration fileBrokerConfiguration = new FileBrokerConfiguration();
+		final FileBrokerConfig fileBrokerConfiguration = new FileBrokerConfig();
 		//On enregistre le plugin de gestion des fichiers : facultatif
 		if (fileStorePlugin.isDefined()) {
 			fileBrokerConfiguration.getLogicalFileStoreConfiguration().registerDefaultPhysicalStore(fileStorePlugin.get());
@@ -88,25 +88,16 @@ public final class PersistenceManagerImpl implements PersistenceManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public MasterDataConfiguration getMasterDataConfiguration() {
-		return masterDataConfiguration;
+	public MasterDataConfig getMasterDataConfig() {
+		return masterDataConfig;
 	}
-
-	//	/**
-	//	 * @param storePluginId Id du plugin
-	//	 * @param dtDefinition DtDefinition
-	//	 */
-	//	public void definePhysicalStore(final String storePluginId, final DtDefinition dtDefinition) {
-	//		final StorePlugin storePlugin = Home.getContainer().getPlugin(storePluginId, StorePlugin.class, PersistenceManager.class);
-	//		brokerConfiguration.getLogicalStoreConfiguration().register(dtDefinition, storePlugin);
-	//	}
 
 	/**
 	 * @return Configuration du PersistenceManager
 	 */
 	@Override
-	public BrokerConfiguration getBrokerConfiguration() {
-		return brokerConfiguration;
+	public BrokerConfig getBrokerConfig() {
+		return brokerConfig;
 	}
 
 	/** {@inheritDoc} */

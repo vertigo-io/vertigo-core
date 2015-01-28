@@ -71,7 +71,7 @@ public final class ExportUtil {
 		final DtField dtField = exportColumn.getDtField();
 		Object value;
 		try {
-			if (dtField.getType() == DtField.FieldType.FOREIGN_KEY && persistenceManager.getMasterDataConfiguration().containsMasterData(dtField.getFkDtDefinition())) {
+			if (dtField.getType() == DtField.FieldType.FOREIGN_KEY && persistenceManager.getMasterDataConfig().containsMasterData(dtField.getFkDtDefinition())) {
 				Map<Object, String> referenceIndex = referenceCache.get(dtField);
 				if (referenceIndex == null) {
 					referenceIndex = createReferentielIndex(persistenceManager, dtField);
@@ -104,7 +104,7 @@ public final class ExportUtil {
 		// plus à un helper des MasterData qu'a un bean)
 		// La collection n'est pas précisé alors on va la chercher dans le
 		// repository du référentiel
-		final DtListURIForMasterData mdlUri = persistenceManager.getMasterDataConfiguration().getDtListURIForMasterData(dtField.getFkDtDefinition());
+		final DtListURIForMasterData mdlUri = persistenceManager.getMasterDataConfig().getDtListURIForMasterData(dtField.getFkDtDefinition());
 		final DtList<DtObject> valueList = persistenceManager.getBroker().getList(mdlUri);
 		final DtField dtFieldDisplay = mdlUri.getDtDefinition().getDisplayField().get();
 		final DtField dtFieldKey = valueList.getDefinition().getIdField().get();

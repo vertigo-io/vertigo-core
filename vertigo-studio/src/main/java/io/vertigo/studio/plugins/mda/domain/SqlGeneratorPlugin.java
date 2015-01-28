@@ -23,7 +23,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
-import io.vertigo.studio.plugins.mda.FileConfiguration;
+import io.vertigo.studio.plugins.mda.FileConfig;
 import io.vertigo.studio.plugins.mda.domain.templates.TemplateDtDefinition;
 import io.vertigo.studio.plugins.mda.domain.templates.TemplateMethodSql;
 import io.vertigo.util.MapBuilder;
@@ -69,14 +69,14 @@ public final class SqlGeneratorPlugin extends AbstractGeneratorPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void generate(final FileConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
-		Assertion.checkNotNull(domainConfiguration);
+	public void generate(final FileConfig domainConfig, final ResultBuilder resultBuilder) {
+		Assertion.checkNotNull(domainConfig);
 		Assertion.checkNotNull(resultBuilder);
 		//-----
-		generateSql(domainConfiguration, resultBuilder);
+		generateSql(domainConfig, resultBuilder);
 	}
 
-	private void generateSql(final FileConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
+	private void generateSql(final FileConfig domainConfiguration, final ResultBuilder resultBuilder) {
 		final List<TemplateDtDefinition> list = new ArrayList<>(DomainUtil.getDtDefinitions().size());
 		for (final DtDefinition dtDefinition : DomainUtil.sortAbsoluteDefinitionCollection(DomainUtil.getDtDefinitions())) {
 			final TemplateDtDefinition templateDef = new TemplateDtDefinition(dtDefinition);

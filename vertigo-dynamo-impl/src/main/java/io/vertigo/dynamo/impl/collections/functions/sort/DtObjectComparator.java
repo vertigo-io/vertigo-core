@@ -69,10 +69,10 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 		this.sortField = dtDefinition.getField(sortState.getFieldName());
 
 		//On regarde si on est sur une ForeignKey et sur une MasterDataList
-		if (sortField.getType() == FieldType.FOREIGN_KEY && persistenceManager.getMasterDataConfiguration().containsMasterData(sortField.getFkDtDefinition())) {
+		if (sortField.getType() == FieldType.FOREIGN_KEY && persistenceManager.getMasterDataConfig().containsMasterData(sortField.getFkDtDefinition())) {
 			//Il existe une Liste de référence associée
 			//Dans le cas des liste de référence on délégue la comparaison
-			final DtListURIForMasterData mdlUri = persistenceManager.getMasterDataConfiguration().getDtListURIForMasterData(sortField.getFkDtDefinition());
+			final DtListURIForMasterData mdlUri = persistenceManager.getMasterDataConfig().getDtListURIForMasterData(sortField.getFkDtDefinition());
 			this.comparator = createMasterDataComparator(sortState, persistenceManager, mdlUri, sortState);
 		} else {
 			//Cas par défaut

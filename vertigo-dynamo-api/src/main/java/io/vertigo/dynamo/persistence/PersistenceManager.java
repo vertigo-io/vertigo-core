@@ -19,9 +19,9 @@
 package io.vertigo.dynamo.persistence;
 
 import io.vertigo.dynamo.persistence.datastore.Broker;
-import io.vertigo.dynamo.persistence.datastore.BrokerConfiguration;
+import io.vertigo.dynamo.persistence.datastore.BrokerConfig;
 import io.vertigo.dynamo.persistence.datastore.BrokerNN;
-import io.vertigo.dynamo.persistence.datastore.MasterDataConfiguration;
+import io.vertigo.dynamo.persistence.datastore.MasterDataConfig;
 import io.vertigo.dynamo.persistence.filestore.FileInfoBroker;
 import io.vertigo.lang.Component;
 
@@ -46,10 +46,10 @@ public interface PersistenceManager extends Component {
 	/**
 	 * @return Configuration du composant de persistance
 	 */
-	BrokerConfiguration getBrokerConfiguration();
+	BrokerConfig getBrokerConfig();
 
 	/**
 	 * @return Configuration MDM
 	 */
-	MasterDataConfiguration getMasterDataConfiguration();
+	MasterDataConfig getMasterDataConfig();
 }

@@ -36,14 +36,14 @@ import io.vertigo.lang.Assertion;
  */
 public final class CacheDataStore implements DataStore {
 	private final DataStore logicalDataStore;
-	private final CacheDataStoreConfiguration cacheDataStoreConfiguration;
+	private final CacheDataStoreConfig cacheDataStoreConfiguration;
 
 	/**
 	 * Constructeur.
 	 * @param logicalStore Store logique
 	 * @param cacheDataStoreConfiguration Configuration du cache
 	 */
-	public CacheDataStore(final DataStore logicalStore, final CacheDataStoreConfiguration cacheDataStoreConfiguration) {
+	public CacheDataStore(final DataStore logicalStore, final CacheDataStoreConfig cacheDataStoreConfiguration) {
 		Assertion.checkNotNull(cacheDataStoreConfiguration);
 		Assertion.checkNotNull(logicalStore);
 		//-----

@@ -23,7 +23,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.metamodel.Role;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
-import io.vertigo.studio.plugins.mda.FileConfiguration;
+import io.vertigo.studio.plugins.mda.FileConfig;
 import io.vertigo.util.MapBuilder;
 
 import java.util.Collection;
@@ -42,14 +42,14 @@ public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void generate(final FileConfiguration securityConfiguration, final ResultBuilder resultBuilder) {
+	public void generate(final FileConfig securityConfiguration, final ResultBuilder resultBuilder) {
 		Assertion.checkNotNull(securityConfiguration);
 		Assertion.checkNotNull(resultBuilder);
 		//-----
 		generateRole(securityConfiguration, resultBuilder);
 	}
 
-	private static void generateRole(final FileConfiguration securityConfiguration, final ResultBuilder resultBuilder) {
+	private static void generateRole(final FileConfig securityConfig, final ResultBuilder resultBuilder) {
 		final Collection<Role> roles = getRoles();
 		if (!roles.isEmpty()) {
 			//On ne genere aucun fichier si aucun rele.
@@ -58,10 +58,10 @@ public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin {
 			final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
 					.put("roles", roles)
 					.put("classSimpleName", "Role")
-					.put("packageName", securityConfiguration.getProjectPackageName() + ".security")
+					.put("packageName", securityConfig.getProjectPackageName() + ".security")
 					.build();
 
-			createFileGenerator(securityConfiguration, mapRoot, "Role", securityConfiguration.getProjectPackageName() + ".security", ".java", "security/role.ftl")
+			createFileGenerator(securityConfig, mapRoot, "Role", securityConfig.getProjectPackageName() + ".security", ".java", "security/role.ftl")
 					.generateFile(resultBuilder);
 		}
 	}

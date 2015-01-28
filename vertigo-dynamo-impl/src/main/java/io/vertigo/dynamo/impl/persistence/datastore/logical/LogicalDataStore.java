@@ -37,7 +37,7 @@ import io.vertigo.lang.Assertion;
  * @author  pchretien
  */
 public final class LogicalDataStore implements DataStore {
-	private final LogicalDataStoreConfiguration logicalStoreConfiguration;
+	private final LogicalDataStoreConfig logicalStoreConfiguration;
 	private final Broker broker;
 
 	/**
@@ -45,7 +45,7 @@ public final class LogicalDataStore implements DataStore {
 	 * @param logicalStoreConfiguration Configuration logique des stores physiques.
 	 * @param broker Broker pour réentrance
 	 */
-	public LogicalDataStore(final LogicalDataStoreConfiguration logicalStoreConfiguration, final Broker broker) {
+	public LogicalDataStore(final LogicalDataStoreConfig logicalStoreConfiguration, final Broker broker) {
 		Assertion.checkNotNull(logicalStoreConfiguration);
 		Assertion.checkNotNull(broker);
 		//-----
@@ -83,7 +83,7 @@ public final class LogicalDataStore implements DataStore {
 		//On compose les fonctions
 		//1.on filtre
 		//2.on trie
-		final DtList<D> sortedDtc = logicalStoreConfiguration.getPersistenceManager().getMasterDataConfiguration().getFilter(uri)
+		final DtList<D> sortedDtc = logicalStoreConfiguration.getPersistenceManager().getMasterDataConfig().getFilter(uri)
 				.sort(uri.getDtDefinition().getSortField().get().getName(), false, true, true)
 				.apply(unFilteredDtc);
 		sortedDtc.setURI(uri);

@@ -30,7 +30,7 @@ import java.util.Map;
 public abstract class AbstractGeneratorPlugin implements GeneratorPlugin {
 
 	/**
-	 * @param fileGeneratorConfiguration Configuration de la génération
+	 * @param fileGeneratorConfig Configuration de la génération
 	 * @param mapRoot context
 	 * @param classSimpleName className
 	 * @param packageName Nom du package
@@ -38,7 +38,7 @@ public abstract class AbstractGeneratorPlugin implements GeneratorPlugin {
 	 * @param templateName Nom du template
 	 * @return Générateur de fichier
 	 */
-	protected static final FileGenerator createFileGenerator(final FileConfiguration fileGeneratorConfiguration, final Map<String, Object> mapRoot, final String classSimpleName, final String packageName, final String fileExtention, final String templateName) {
-		return new FileGeneratorFreeMarker(fileGeneratorConfiguration, mapRoot, classSimpleName, packageName, fileExtention, templateName);
+	protected static final FileGenerator createFileGenerator(final FileConfig fileGeneratorConfig, final Map<String, Object> mapRoot, final String classSimpleName, final String packageName, final String fileExtention, final String templateName) {
+		return new FileGeneratorFreeMarker(fileGeneratorConfig, mapRoot, classSimpleName, packageName, fileExtention, templateName);
 	}
 }

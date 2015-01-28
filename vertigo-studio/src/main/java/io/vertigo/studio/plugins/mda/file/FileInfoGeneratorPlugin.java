@@ -23,7 +23,7 @@ import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
-import io.vertigo.studio.plugins.mda.FileConfiguration;
+import io.vertigo.studio.plugins.mda.FileConfig;
 import io.vertigo.util.MapBuilder;
 
 import java.util.Collection;
@@ -37,7 +37,7 @@ import java.util.Map;
 public final class FileInfoGeneratorPlugin extends AbstractGeneratorPlugin {
 	/** {@inheritDoc} */
 	@Override
-	public void generate(final FileConfiguration fileInfoConfiguration, final ResultBuilder resultBuilder) {
+	public void generate(final FileConfig fileInfoConfiguration, final ResultBuilder resultBuilder) {
 		Assertion.checkNotNull(fileInfoConfiguration);
 		Assertion.checkNotNull(resultBuilder);
 		//-----
@@ -45,14 +45,14 @@ public final class FileInfoGeneratorPlugin extends AbstractGeneratorPlugin {
 		generateFileInfos(fileInfoConfiguration, resultBuilder);
 	}
 
-	private static void generateFileInfos(final FileConfiguration fileInfoConfiguration, final ResultBuilder resultBuilder) {
+	private static void generateFileInfos(final FileConfig fileInfoConfig, final ResultBuilder resultBuilder) {
 		final Collection<FileInfoDefinition> fileInfoDefinitions = Home.getDefinitionSpace().getAll(FileInfoDefinition.class);
 		for (final FileInfoDefinition fileInfoDefinition : fileInfoDefinitions) {
-			generateFileInfo(fileInfoConfiguration, resultBuilder, fileInfoDefinition);
+			generateFileInfo(fileInfoConfig, resultBuilder, fileInfoDefinition);
 		}
 	}
 
-	private static void generateFileInfo(final FileConfiguration fileInfoConfiguration, final ResultBuilder resultBuilder, final FileInfoDefinition fileInfoDefinition) {
+	private static void generateFileInfo(final FileConfig fileInfoConfiguration, final ResultBuilder resultBuilder, final FileInfoDefinition fileInfoDefinition) {
 		final TemplateFileInfoDefinition definition = new TemplateFileInfoDefinition(fileInfoDefinition);
 
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()

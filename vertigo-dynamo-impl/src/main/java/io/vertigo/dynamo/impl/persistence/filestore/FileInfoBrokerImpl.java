@@ -39,7 +39,7 @@ public final class FileInfoBrokerImpl implements FileInfoBroker {
 	 * Une fois le broker construit la configuration est bloquée.
 	 * @param fileBrokerConfiguration Configuration du broker
 	 */
-	public FileInfoBrokerImpl(final FileBrokerConfiguration fileBrokerConfiguration) {
+	public FileInfoBrokerImpl(final FileBrokerConfig fileBrokerConfiguration) {
 		Assertion.checkNotNull(fileBrokerConfiguration);
 		//-----
 		fileStore = new LogicalFileStore(fileBrokerConfiguration.getLogicalFileStoreConfiguration());

@@ -21,7 +21,7 @@ package io.vertigo.studio.plugins.mda.task;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.plugins.mda.FileConfiguration;
+import io.vertigo.studio.plugins.mda.FileConfig;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,7 +42,7 @@ public final class TemplateDAO {
 	 *
 	 * @param dtDefinition DtDefinition de l'objet à générer
 	 */
-	TemplateDAO(final FileConfiguration taskConfiguration, final DtDefinition dtDefinition, final Collection<TaskDefinition> taskDefinitionCollection) {
+	TemplateDAO(final FileConfig taskConfiguration, final DtDefinition dtDefinition, final Collection<TaskDefinition> taskDefinitionCollection) {
 		Assertion.checkNotNull(taskConfiguration);
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(taskDefinitionCollection);

@@ -31,13 +31,13 @@ import io.vertigo.lang.Assertion;
  * @author npiedeloup
  */
 public final class LogicalFileStore implements FileStore {
-	private final LogicalFileStoreConfiguration logicalFileStoreConfiguration;
+	private final LogicalFileStoreConfig logicalFileStoreConfiguration;
 
 	/**
 	 * Constructeur.
 	 * @param logicalFileStoreConfiguration Configuration logique des stores physiques.
 	 */
-	public LogicalFileStore(final LogicalFileStoreConfiguration logicalFileStoreConfiguration) {
+	public LogicalFileStore(final LogicalFileStoreConfig logicalFileStoreConfiguration) {
 		Assertion.checkNotNull(logicalFileStoreConfiguration);
 		//-----
 		this.logicalFileStoreConfiguration = logicalFileStoreConfiguration;

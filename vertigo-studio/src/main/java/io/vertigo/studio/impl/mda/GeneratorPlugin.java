@@ -20,7 +20,7 @@ package io.vertigo.studio.impl.mda;
 
 import io.vertigo.lang.Plugin;
 import io.vertigo.studio.mda.ResultBuilder;
-import io.vertigo.studio.plugins.mda.FileConfiguration;
+import io.vertigo.studio.plugins.mda.FileConfig;
 
 /**
  * Plugin de génération de fichiers.
@@ -33,5 +33,5 @@ public interface GeneratorPlugin extends Plugin {
 	 * @param resultBuilder Builder
 	 */
 	//fix FileConfig dependency ?
-	void generate(final FileConfiguration fileConfiguration, final ResultBuilder resultBuilder);
+	void generate(final FileConfig fileConfig, final ResultBuilder resultBuilder);
 }

@@ -46,13 +46,13 @@ public final class BrokerImpl implements Broker {
 	 * Une fois le broker construit la configuration est bloquée.
 	 * @param brokerConfiguration Configuration du broker
 	 */
-	public BrokerImpl(final BrokerConfigurationImpl brokerConfiguration) {
+	public BrokerImpl(final BrokerConfigImpl brokerConfiguration) {
 		Assertion.checkNotNull(brokerConfiguration);
 		//-----
 		//On vérouille la configuration.
 		//brokerConfiguration.lock();
 		//On crée la pile de Store.
-		final DataStore logicalDataStore = new LogicalDataStore(brokerConfiguration.getLogicalStoreConfiguration(), this);
+		final DataStore logicalDataStore = new LogicalDataStore(brokerConfiguration.getLogicalStoreConfig(), this);
 		dataStore = new CacheDataStore(logicalDataStore, brokerConfiguration.getCacheStoreConfiguration());
 	}
 

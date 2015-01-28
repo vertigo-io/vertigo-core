@@ -20,7 +20,7 @@ package io.vertigo.studio.plugins.mda.task;
 
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.plugins.mda.FileConfiguration;
+import io.vertigo.studio.plugins.mda.FileConfig;
 import io.vertigo.util.StringUtil;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public final class TemplatePAO {
 	/**
 	 * Constructeur.
 	 */
-	TemplatePAO(final FileConfiguration taskConfiguration, final Collection<TaskDefinition> taskDefinitionCollection, final String packageName) {
+	TemplatePAO(final FileConfig taskConfiguration, final Collection<TaskDefinition> taskDefinitionCollection, final String packageName) {
 		Assertion.checkNotNull(taskConfiguration);
 		Assertion.checkNotNull(taskDefinitionCollection);
 		Assertion.checkArgument(!taskDefinitionCollection.isEmpty(), "Aucune tache dans le package {0}", packageName);

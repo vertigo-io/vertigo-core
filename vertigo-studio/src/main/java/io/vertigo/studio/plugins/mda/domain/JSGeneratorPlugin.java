@@ -22,7 +22,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
-import io.vertigo.studio.plugins.mda.FileConfiguration;
+import io.vertigo.studio.plugins.mda.FileConfig;
 import io.vertigo.studio.plugins.mda.domain.templates.TemplateDtDefinition;
 import io.vertigo.util.MapBuilder;
 
@@ -59,21 +59,21 @@ public final class JSGeneratorPlugin extends AbstractGeneratorPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void generate(final FileConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
-		Assertion.checkNotNull(domainConfiguration);
+	public void generate(final FileConfig domainConfig, final ResultBuilder resultBuilder) {
+		Assertion.checkNotNull(domainConfig);
 		Assertion.checkNotNull(resultBuilder);
 		//-----
 		/* Génération des ressources afférentes au DT mais pour la partie JS.*/
 		if (generateDtResourcesJS) {
-			generateDtResourcesJS(domainConfiguration, resultBuilder);
+			generateDtResourcesJS(domainConfig, resultBuilder);
 		}
 		/* Génération des fichiers javascripts référençant toutes les définitions. */
 		if (generateJsDtDefinitions) {
-			generateJsDtDefinitions(domainConfiguration, resultBuilder);
+			generateJsDtDefinitions(domainConfig, resultBuilder);
 		}
 	}
 
-	private static void generateJsDtDefinitions(final FileConfiguration domainConfiguration, final ResultBuilder resultBuilder) {
+	private static void generateJsDtDefinitions(final FileConfig domainConfiguration, final ResultBuilder resultBuilder) {
 
 		final List<TemplateDtDefinition> dtDefinitions = new ArrayList<>();
 		for (final DtDefinition dtDefinition : DomainUtil.getDtDefinitions()) {
@@ -95,7 +95,7 @@ public final class JSGeneratorPlugin extends AbstractGeneratorPlugin {
 	 * Génère les ressources JS pour les traductions.
 	 * @param domainConfiguration Configuration du domaine.
 	 */
-	private static void generateDtResourcesJS(final FileConfiguration domainConfiguration, final ResultBuilder result) {
+	private static void generateDtResourcesJS(final FileConfig domainConfiguration, final ResultBuilder result) {
 		final List<TemplateDtDefinition> dtDefinitions = new ArrayList<>();
 		for (final DtDefinition dtDefinition : DomainUtil.getDtDefinitions()) {
 			dtDefinitions.add(new TemplateDtDefinition(dtDefinition));

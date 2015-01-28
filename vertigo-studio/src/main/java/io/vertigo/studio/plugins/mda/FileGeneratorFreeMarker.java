@@ -61,7 +61,7 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 	 * @param fileExtention Extension du ficher (sql, java...)
 	 * @param templateName Nom du template
 	 */
-	public FileGeneratorFreeMarker(final FileConfiguration parameters, final Map<String, Object> mapRoot, final String classSimpleName, final String packageName, final String fileExtention, final String templateName) {
+	public FileGeneratorFreeMarker(final FileConfig parameters, final Map<String, Object> mapRoot, final String classSimpleName, final String packageName, final String fileExtention, final String templateName) {
 		Assertion.checkNotNull(parameters);
 		Assertion.checkNotNull(mapRoot);
 		Assertion.checkNotNull(classSimpleName);

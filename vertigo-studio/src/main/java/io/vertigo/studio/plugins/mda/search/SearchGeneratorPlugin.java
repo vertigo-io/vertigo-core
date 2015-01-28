@@ -23,7 +23,7 @@ import io.vertigo.dynamo.search.metamodel.IndexDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
-import io.vertigo.studio.plugins.mda.FileConfiguration;
+import io.vertigo.studio.plugins.mda.FileConfig;
 import io.vertigo.util.MapBuilder;
 
 import java.util.Map;
@@ -37,20 +37,20 @@ public final class SearchGeneratorPlugin extends AbstractGeneratorPlugin {
 
 	/** {@inheritDoc}  */
 	@Override
-	public void generate(final FileConfiguration searchConfiguration, final ResultBuilder resultBuilder) {
+	public void generate(final FileConfig searchConfiguration, final ResultBuilder resultBuilder) {
 		Assertion.checkNotNull(searchConfiguration);
 		Assertion.checkNotNull(resultBuilder);
 		//-----
 		generateDtDefinitions(searchConfiguration, resultBuilder);
 	}
 
-	private static void generateDtDefinitions(final FileConfiguration searchConfiguration, final ResultBuilder resultBuilder) {
+	private static void generateDtDefinitions(final FileConfig searchConfig, final ResultBuilder resultBuilder) {
 		for (final IndexDefinition indexDefinition : Home.getDefinitionSpace().getAll(IndexDefinition.class)) {
-			generateSchema(searchConfiguration, resultBuilder, indexDefinition);
+			generateSchema(searchConfig, resultBuilder, indexDefinition);
 		}
 	}
 
-	private static void generateSchema(final FileConfiguration searchConfiguration, final ResultBuilder resultBuilder, final IndexDefinition indexDefinition) {
+	private static void generateSchema(final FileConfig searchConfiguration, final ResultBuilder resultBuilder, final IndexDefinition indexDefinition) {
 		/** Registry */
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
 				.put("indexDefinition", indexDefinition)
