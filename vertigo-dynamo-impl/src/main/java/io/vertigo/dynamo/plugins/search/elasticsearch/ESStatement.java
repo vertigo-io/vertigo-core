@@ -76,6 +76,8 @@ import org.elasticsearch.search.aggregations.bucket.range.RangeBuilder;
 import org.elasticsearch.search.aggregations.bucket.range.date.DateRangeBuilder;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsBuilder;
 import org.elasticsearch.search.highlight.HighlightField;
+import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
 //vérifier
@@ -218,8 +220,9 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 				.setSize(rowsPerQuery);
 		if (searchQuery.isSortActive()) {
 			final DtField sortField = searchQuery.getIndexDefinition().getIndexDtDefinition().getField(searchQuery.getSortField());
-			final String indexSortFieldName = indexFieldNameResolver.obtainIndexFieldName(sortField);
-			searchRequestBuilder.addSort(indexSortFieldName, searchQuery.getSortAsc() ? SortOrder.ASC : SortOrder.DESC);
+			final FieldSortBuilder sortBuilder = SortBuilders.fieldSort(indexFieldNameResolver.obtainIndexFieldName(sortField))
+					.ignoreUnmapped(true).order(searchQuery.getSortAsc() ? SortOrder.ASC : SortOrder.DESC);
+			searchRequestBuilder.addSort(sortBuilder);
 		}
 		QueryBuilder queryBuilder = translateToQueryBuilder(searchQuery.getListFilter(), indexFieldNameResolver);
 		if (searchQuery.isBoostMostRecent()) {
