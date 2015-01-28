@@ -495,7 +495,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final URI<? extends DtObject> uri) {
+	public void delete(final URI<? extends DtObject> uri) {
 		final DtDefinition dtDefinition = uri.getDefinition();
 		final DtField pk = dtDefinition.getIdField().get();
 		final String tableName = getTableName(dtDefinition);

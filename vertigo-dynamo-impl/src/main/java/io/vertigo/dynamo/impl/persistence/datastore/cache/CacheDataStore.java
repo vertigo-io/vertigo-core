@@ -155,8 +155,8 @@ public final class CacheDataStore implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final URI<? extends DtObject> uri) {
-		logicalDataStore.remove(uri);
+	public void delete(final URI<? extends DtObject> uri) {
+		logicalDataStore.delete(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
 		clearCache(dtDefinition);

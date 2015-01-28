@@ -119,9 +119,9 @@ public final class LogicalDataStore implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final URI<? extends DtObject> uri) {
+	public void delete(final URI<? extends DtObject> uri) {
 		final DtDefinition dtDefinition = getDtDefinition(uri);
-		getPhysicalStore(dtDefinition).remove(uri);
+		getPhysicalStore(dtDefinition).delete(uri);
 	}
 
 	/** {@inheritDoc} */

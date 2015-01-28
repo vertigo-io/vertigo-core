@@ -19,6 +19,7 @@
 package io.vertigo.studio.plugins.reporting.domain.metrics.persistence;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.reporting.Metric;
@@ -69,7 +70,7 @@ public final class PersistenceMetricEngine implements MetricEngine<DtDefinition>
 			return true;
 		}
 		try {
-			persistenceManager.getBroker().getList(dtDefinition, null, 1);
+			persistenceManager.getBroker().getList(new DtListURIForCriteria<>(dtDefinition, null, 1));
 			return true;
 		} catch (final Exception e) {
 			return false;

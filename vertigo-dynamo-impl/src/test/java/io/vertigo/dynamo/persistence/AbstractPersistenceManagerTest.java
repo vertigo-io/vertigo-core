@@ -27,6 +27,8 @@ import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListURI;
+import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -296,7 +298,8 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	@Test
 	public void testGetFamille() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final DtList<Famille> dtc = persistenceManager.getBroker().getList(dtDefinitionFamille, null, null);
+			final DtListURI allFamilles = new DtListURIForCriteria<>(dtDefinitionFamille, null, null);
+			final DtList<Famille> dtc = persistenceManager.getBroker().getList(allFamilles);
 			Assert.assertNotNull(dtc);
 			Assert.assertTrue("La liste des famille est vide", dtc.isEmpty());
 			transaction.commit();
@@ -309,7 +312,8 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	@Test
 	public void testAddFamille() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			DtList<Famille> dtc = persistenceManager.getBroker().getList(dtDefinitionFamille, null, null);
+			final DtListURI allFamilles = new DtListURIForCriteria<>(dtDefinitionFamille, null, null);
+			DtList<Famille> dtc = persistenceManager.getBroker().getList(allFamilles);
 			Assert.assertEquals(0, dtc.size());
 			//-----
 			final Famille famille = new Famille();
@@ -318,7 +322,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			// on attend un objet avec un ID non null ?
 			Assert.assertNotNull(famille.getFamId());
 			//-----
-			dtc = persistenceManager.getBroker().getList(dtDefinitionFamille, null, null);
+			dtc = persistenceManager.getBroker().getList(allFamilles);
 			Assert.assertEquals(1, dtc.size());
 			transaction.commit();
 		}
@@ -406,7 +410,8 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 
 			//on récupère la liste des voitures
 			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			final DtList<Car> cars = persistenceManager.getBroker().getList(dtDefinitionCar, null, null);
+			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
+			final DtList<Car> cars = persistenceManager.getBroker().getList(allCars);
 			Assert.assertNotNull(cars);
 			Assert.assertFalse("La liste des cars est vide", cars.isEmpty());
 
@@ -431,7 +436,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 
 			//on recharge la famille et on recharge la liste issus de l'association NN : il doit avoir une voiture de moins qu'au début
 			final DtDefinition dtFamille = DtObjectUtil.findDtDefinition(Famille.class);
-			final Famille famille2 = persistenceManager.getBroker().get(new URI<Famille>(dtFamille, famille.getFamId()));
+			final Famille famille2 = persistenceManager.getBroker().getOption(new URI<Famille>(dtFamille, famille.getFamId())).get();
 			final DtList<Car> secondResult = famille2.getVoituresLocationList();
 			Assert.assertEquals("Test tailles du nombre de voiture dans une NN", firstResult.size() - 1, secondResult.size());
 			transaction.commit();
@@ -452,7 +457,8 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 
 			//on récupère la liste des voitures
 			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			final DtList<Car> cars = persistenceManager.getBroker().getList(dtDefinitionCar, null, null);
+			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
+			final DtList<Car> cars = persistenceManager.getBroker().getList(allCars);
 			Assert.assertNotNull(cars);
 			Assert.assertFalse("La liste des cars est vide", cars.isEmpty());
 
@@ -476,7 +482,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 
 			//on recharge la famille et on recharge la liste issus de l'association 1N : il doit avoir une voiture de moins qu'au début
 			final DtDefinition dtFamille = DtObjectUtil.findDtDefinition(Famille.class);
-			final Famille famille2 = persistenceManager.getBroker().get(new URI<Famille>(dtFamille, famille.getFamId()));
+			final Famille famille2 = persistenceManager.getBroker().getOption(new URI<Famille>(dtFamille, famille.getFamId())).get();
 			final DtList<Car> secondResult = famille2.getVoituresFamilleList();
 			Assert.assertEquals("Test tailles du nombre de voiture pour une 1-N", firstResult.size() - 1, secondResult.size());
 			transaction.commit();
@@ -488,7 +494,8 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
 			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			final DtList<Car> cars = persistenceManager.getBroker().getList(dtDefinitionCar, null, null);
+			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
+			final DtList<Car> cars = persistenceManager.getBroker().getList(allCars);
 			Assert.assertNotNull(cars);
 			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize, cars.size());
 		}
@@ -512,7 +519,8 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 
 			//on récupère la liste des voitures
 			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			final DtList<Car> cars = persistenceManager.getBroker().getList(dtDefinitionCar, null, null);
+			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
+			final DtList<Car> cars = persistenceManager.getBroker().getList(allCars);
 			Assert.assertNotNull(cars);
 			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize + 1, cars.size());
 		}
@@ -526,7 +534,8 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 
 			//on récupère la liste des voitures
 			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			final DtList<Car> cars = persistenceManager.getBroker().getList(dtDefinitionCar, null, null);
+			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
+			final DtList<Car> cars = persistenceManager.getBroker().getList(allCars);
 			Assert.assertNotNull(cars);
 			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize + 1, cars.size());
 		}
@@ -567,7 +576,9 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
 			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			final DtList<Car> cars = persistenceManager.getBroker().getList(dtDefinitionCar, null, null);
+			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
+
+			final DtList<Car> cars = persistenceManager.getBroker().getList(allCars);
 			Assert.assertNotNull(cars);
 			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize, cars.size());
 		}
@@ -582,7 +593,8 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
 			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			final DtList<Car> cars = persistenceManager.getBroker().getList(dtDefinitionCar, null, null);
+			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
+			final DtList<Car> cars = persistenceManager.getBroker().getList(allCars);
 			Assert.assertNotNull(cars);
 			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize, cars.size());
 		}
@@ -647,7 +659,8 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
 			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			final DtList<Car> cars = persistenceManager.getBroker().getList(dtDefinitionCar, null, null);
+			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
+			final DtList<Car> cars = persistenceManager.getBroker().getList(allCars);
 			Assert.assertNotNull(cars);
 			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize + 1, cars.size());
 		}
@@ -663,7 +676,8 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
 			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			final DtList<Car> cars = persistenceManager.getBroker().getList(dtDefinitionCar, null, null);
+			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
+			final DtList<Car> cars = persistenceManager.getBroker().getList(allCars);
 			Assert.assertNotNull(cars);
 			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize + 1, cars.size());
 		}
@@ -714,7 +728,8 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	@Test(expected = NullPointerException.class)
 	public void testCrudSelectNoTx() {
 		final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-		final DtList<Car> cars = persistenceManager.getBroker().getList(dtDefinitionCar, null, null);
+		final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
+		final DtList<Car> cars = persistenceManager.getBroker().getList(allCars);
 		Assert.assertNotNull(cars);
 		Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize, cars.size());
 	}

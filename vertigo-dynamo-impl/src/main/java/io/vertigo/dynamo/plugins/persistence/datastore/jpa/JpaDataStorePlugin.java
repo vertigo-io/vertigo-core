@@ -372,7 +372,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final URI<? extends DtObject> uri) {
+	public void delete(final URI<? extends DtObject> uri) {
 		final EntityManager em = obtainEntityManager();
 		final String serviceName = "Jpa:remove " + uri.getDefinition().getName();
 		final long start = System.currentTimeMillis();

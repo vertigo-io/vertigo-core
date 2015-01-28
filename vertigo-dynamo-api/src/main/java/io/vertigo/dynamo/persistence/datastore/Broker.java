@@ -23,7 +23,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.persistence.criteria.Criteria;
 import io.vertigo.lang.Option;
 
 /**
@@ -42,15 +41,6 @@ public interface Broker {
 	int count(final DtDefinition dtDefinition);
 
 	/**
-	 * @param <D> Type des objets de la collection
-	 * @param dtDefinition Définition de DT
-	 * @param criteria Criteria (null=aucun)
-	 * @param limit  Nombre max de lignes retournées (null=tous)
-	 * @return DtList DTC
-	 */
-	<D extends DtObject> DtList<D> getList(final DtDefinition dtDefinition, final Criteria<D> criteria, Integer limit);
-
-	/**
 	 * Récupération d'un objet persistant par son URI.
 	 * Lorsque l'objet est en lecture seule il est possible d'accéder au objets partagés. (Liste de référence paér ex)
 	 * Si l'object n'existe pas l'option sera isEmpty.
@@ -60,18 +50,6 @@ public interface Broker {
 	 * @return Option de l'object récupéré NOT NUL
 	 */
 	<D extends DtObject> Option<D> getOption(final URI<D> uri);
-
-	/**
-	 * Récupération d'un objet persistant par son URI.
-	 * Lorsque l'objet est en lecture seule il est possible d'accéder au objets partagés. (Liste de référence paér ex)
-	 * L'objet doit exister.
-	 * Récupération d'un fichier par son URI.
-	 *
-	 * @param <D> Type de l'objet
-	 * @param uri Uri de l'object
-	 * @return Option de l'object récupéré NOT NUL
-	 */
-	<D extends DtObject> D get(final URI<D> uri);
 
 	/**
 	 * Récupération d'une liste identifiée par son URI.

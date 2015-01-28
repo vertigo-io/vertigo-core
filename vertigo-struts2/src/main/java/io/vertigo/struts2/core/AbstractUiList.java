@@ -191,7 +191,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 	private D loadDto(final Object key) {
 		//-- Transaction BEGIN
 		try (final KTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
-			return persistenceManager.get().getBroker().get(new URI<D>(getDtDefinition(), key));
+			return persistenceManager.get().getBroker().getOption(new URI<D>(getDtDefinition(), key)).get();
 		}
 	}
 

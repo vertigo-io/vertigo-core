@@ -94,6 +94,6 @@ public interface DataStore {
 	 * Suppression d'un objet.
 	 * @param uri URI de l'objet à supprimmer
 	 */
-	void remove(URI<? extends DtObject> uri);
+	void delete(URI<? extends DtObject> uri);
 
 }

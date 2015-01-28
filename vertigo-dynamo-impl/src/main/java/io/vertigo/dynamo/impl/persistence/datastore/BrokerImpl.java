@@ -21,12 +21,10 @@ package io.vertigo.dynamo.impl.persistence.datastore;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
-import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.persistence.datastore.cache.CacheDataStore;
 import io.vertigo.dynamo.impl.persistence.datastore.logical.LogicalDataStore;
-import io.vertigo.dynamo.persistence.criteria.Criteria;
 import io.vertigo.dynamo.persistence.datastore.Broker;
 import io.vertigo.dynamo.persistence.datastore.DataStore;
 import io.vertigo.lang.Assertion;
@@ -92,7 +90,7 @@ public final class BrokerImpl implements Broker {
 	public void delete(final URI<? extends DtObject> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		dataStore.remove(uri);
+		dataStore.delete(uri);
 	}
 
 	/** {@inheritDoc} */
@@ -107,33 +105,10 @@ public final class BrokerImpl implements Broker {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> D get(final URI<D> uri) {
-		Assertion.checkNotNull(uri);
-		//-----
-		//on ne reutilise pas le getOption volontairement
-		//car c'est ici le cas le plus courant, et on l'optimise au maximum
-		final D dto = dataStore.<D> load(uri);
-		//-----
-		Assertion.checkNotNull(dto, "L''objet {0} n''a pas été trouvé", uri);
-		return dto;
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public <D extends DtObject> DtList<D> getList(final DtListURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtList<D> dtc = dataStore.loadList(uri);
-		//-----
-		Assertion.checkNotNull(dtc);
-		return dtc;
-	}
-
-	/** {@inheritDoc} */
-	@Deprecated
-	@Override
-	public <D extends DtObject> DtList<D> getList(final DtDefinition dtDefinition, final Criteria<D> criteria, final Integer maxRows) {
-		final DtList<D> dtc = dataStore.loadList(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
 		//-----
 		Assertion.checkNotNull(dtc);
 		return dtc;

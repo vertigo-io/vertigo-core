@@ -48,18 +48,6 @@ public final class DtListURIForCriteria<D extends DtObject> extends DtListURI {
 	}
 
 	/**
-	 * Pour Récupération une liste filtrée par le champ saisie dans le dtoCritère.
-	 * @param dtDefinition Id de la Définition de DT
-	 * @param dtoCriteria critere
-	 * @param maxRows Nombre de ligne max
-	 * @deprecated Utiliser DtListURIForCriteria(final DtDefinition dtDefinition, final Criteria<D> criteria, final int maxRows)
-	 */
-	@Deprecated
-	public DtListURIForCriteria(final DtDefinition dtDefinition, final DtObject dtoCriteria, final int maxRows) {
-		this(dtDefinition, DtListURIForCriteria.<D> createCriteria(dtoCriteria), maxRows);
-	}
-
-	/**
 	 * @return Criteres de la liste
 	 */
 	public Criteria<D> getCriteria() {
@@ -79,7 +67,7 @@ public final class DtListURIForCriteria<D extends DtObject> extends DtListURI {
 	* @param dtoCriteria Objet de critère
 	* @return Criteria resultant
 	*/
-	private static <D extends DtObject> Criteria<D> createCriteria(final DtObject dtoCriteria) {
+	public static <D extends DtObject> Criteria<D> createCriteria(final DtObject dtoCriteria) {
 		Assertion.checkNotNull(dtoCriteria);
 		//-----
 		final FilterCriteriaBuilder<D> filterCriteriaBuilder = new FilterCriteriaBuilder<>();

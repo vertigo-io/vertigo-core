@@ -143,7 +143,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 * @return D Object recherché
 	 */
 	public final D get(final URI<D> uri) {
-		return broker.<D> get(uri);
+		return broker.<D> getOption(uri).get();
 	}
 
 	/**
@@ -178,7 +178,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 		final FilterCriteria<D> criteria = new FilterCriteriaBuilder<D>().withFilter(fieldName, value).build();
 		// Verification de la valeur est du type du champ
 		dtDefinition.getField(fieldName).getDomain().getDataType().checkValue(value);
-		return broker.<D> getList(dtDefinition, criteria, maxRows);
+		return broker.<D> getList(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
 	}
 
 	/**
@@ -187,7 +187,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 * @return DtList<D> récupéré NOT NUL
 	 */
 	public final DtList<D> getList(final Criteria<D> criteria, final int maxRows) {
-		return broker.<D> getList(dtDefinition, criteria, maxRows);
+		return broker.<D> getList(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
 	}
 
 	/** {@inheritDoc} */
@@ -265,14 +265,14 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	/**
 	 * Récupération une liste filtrée par le champ saisie dans le dtoCritère.
 	 *
-	 * @param dtoCritere les criteres
+	 * @param dtoCriteria les criteres
 	 * @param maxRows Nombre maximum de ligne
 	 * @return Collection de DtObject
 	 * @deprecated utiliser getList(Criteria criteria)
 	 */
 	@Deprecated
-	public final DtList<D> getList(final DtObject dtoCritere, final int maxRows) {
-		final DtListURI collectionURI = new DtListURIForCriteria<D>(dtDefinition, dtoCritere, maxRows);
+	public final DtList<D> getList(final DtObject dtoCriteria, final int maxRows) {
+		final DtListURI collectionURI = new DtListURIForCriteria(dtDefinition, DtListURIForCriteria.createCriteria(dtoCriteria), maxRows);
 		Assertion.checkNotNull(collectionURI);
 		return broker.getList(collectionURI);
 	}
