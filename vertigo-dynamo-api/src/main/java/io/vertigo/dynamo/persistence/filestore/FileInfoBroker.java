@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.persistence.filestore;
 
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.file.model.FileInfo;
 
 /**
@@ -47,7 +47,7 @@ public interface FileInfoBroker {
 	 * Suppression d'un fichier.
 	 * @param uri URI du fichier à supprimmer
 	 */
-	void deleteFileInfo(URI<FileInfo> uri);
+	void deleteFileInfo(FileInfoURI uri);
 
 	/**
 	 * Récupération d'un fichier par son URI.
@@ -55,5 +55,5 @@ public interface FileInfoBroker {
 	 * @param uri FileURI du fichier à charger
 	 * @return KFileInfo correspondant à l'URI fournie.
 	 */
-	FileInfo getFileInfo(final URI<FileInfo> uri);
+	FileInfo getFileInfo(final FileInfoURI uri);
 }

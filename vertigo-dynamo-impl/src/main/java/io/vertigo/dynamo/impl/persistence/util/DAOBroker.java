@@ -121,7 +121,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 *
 	 * @param uri URI de l'objet à supprimer
 	 */
-	public final void delete(final URI<D> uri) {
+	public final void delete(final URI uri) {
 		broker.delete(uri);
 	}
 
@@ -142,7 +142,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 * @param uri URI de l'objet à récupérer
 	 * @return D Object recherché
 	 */
-	public final D get(final URI<D> uri) {
+	public final D get(final URI uri) {
 		return broker.<D> getOption(uri).get();
 	}
 
@@ -164,8 +164,8 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 * @param id identifiant de l'objet persistant recherché
 	 * @return URI recherchée
 	 */
-	private URI<D> createDtObjectURI(final P id) {
-		return new URI<>(dtDefinition, id);
+	private URI createDtObjectURI(final P id) {
+		return new URI(dtDefinition, id);
 	}
 
 	/**
@@ -198,7 +198,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 
 	/** {@inheritDoc} */
 	@Override
-	public final void removeNN(final DtListURIForAssociation dtListURI, final URI<DtObject> uriToDelete) {
+	public final void removeNN(final DtListURIForAssociation dtListURI, final URI uriToDelete) {
 		brokerNN.removeNN(dtListURI, uriToDelete);
 	}
 
@@ -212,7 +212,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	public final <FK extends DtObject> void updateNN(final DtListURIForAssociation dtListURI, final DtList<FK> newDtc) {
 		Assertion.checkNotNull(newDtc);
 		//-----
-		final List<URI<? extends DtObject>> objectURIs = new ArrayList<>();
+		final List<URI> objectURIs = new ArrayList<>();
 		for (final FK dto : newDtc) {
 			objectURIs.add(createURI(dto));
 		}
@@ -221,13 +221,13 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 
 	/** {@inheritDoc} */
 	@Override
-	public final void updateNN(final DtListURIForAssociation dtListURI, final List<URI<? extends DtObject>> newUriList) {
+	public final void updateNN(final DtListURIForAssociation dtListURI, final List<URI> newUriList) {
 		brokerNN.updateNN(dtListURI, newUriList);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final void appendNN(final DtListURIForAssociation dtListURI, final URI<DtObject> uriToAppend) {
+	public final void appendNN(final DtListURIForAssociation dtListURI, final URI uriToAppend) {
 		brokerNN.appendNN(dtListURI, uriToAppend);
 	}
 
@@ -241,11 +241,11 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 		brokerNN.appendNN(dtListURI, createURI(dtoToAppend));
 	}
 
-	private static <D extends DtObject> URI<D> createURI(final D dto) {
+	private static <D extends DtObject> URI createURI(final D dto) {
 		Assertion.checkNotNull(dto);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-		return new URI<>(dtDefinition, DtObjectUtil.getId(dto));
+		return new URI(dtDefinition, DtObjectUtil.getId(dto));
 	}
 
 	/**

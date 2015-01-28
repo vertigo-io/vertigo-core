@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.file.model;
 
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 
 import java.io.Serializable;
@@ -43,13 +43,13 @@ public interface FileInfo extends Serializable {
 	/**
 	 * @return URI de la ressource
 	 */
-	URI<FileInfo> getURI();
+	FileInfoURI getURI();
 
 	/**
 	 * Fixe l'uri de stockage. Cette action n'est possible que si l'URI n'etait pas encore définie.
 	 * @param uri uri de stockage, non null.
 	 */
-	void setURIStored(URI<FileInfo> uri);
+	void setURIStored(FileInfoURI uri);
 
 	/**
 	 * @return Fichier enrichi

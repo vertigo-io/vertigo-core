@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.impl.persistence.filestore.logical;
 
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.impl.persistence.filestore.FileStore;
@@ -49,7 +49,7 @@ public final class LogicalFileStore implements FileStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public FileInfo load(final URI<FileInfo> uri) {
+	public FileInfo load(final FileInfoURI uri) {
 		final FileInfoDefinition fileInfoDefinition = uri.getDefinition();
 		return getPhysicalStore(fileInfoDefinition).load(uri);
 	}
@@ -68,7 +68,7 @@ public final class LogicalFileStore implements FileStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final URI<FileInfo> uri) {
+	public void remove(final FileInfoURI uri) {
 		final FileInfoDefinition fileInfoDefinition = uri.getDefinition();
 		getPhysicalStore(fileInfoDefinition).remove(uri);
 	}

@@ -50,7 +50,7 @@ public abstract class AbstractStaticDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void delete(final URI<? extends DtObject> uri) {
+	public void delete(final URI uri) {
 		throw new UnsupportedOperationException();
 	}
 

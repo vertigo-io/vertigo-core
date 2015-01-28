@@ -100,7 +100,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return transactionManager.getCurrentTransaction();
 	}
 
-	private <D extends DtObject> D loadWithoutClear(final URI<D> uri) {
+	private <D extends DtObject> D loadWithoutClear(final URI uri) {
 		final EntityManager em = obtainEntityManager();
 		final String serviceName = "Jpa:find " + uri.getDefinition().getName();
 		boolean executed = false;
@@ -139,7 +139,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> D load(final URI<D> uri) {
+	public <D extends DtObject> D load(final URI uri) {
 		final D dto = this.<D> loadWithoutClear(uri);
 		//On détache le DTO du contexte jpa
 		//De cette façon on interdit à jpa d'utiliser son cache
@@ -313,7 +313,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 					//Condition de la recherche
 					.append(" where j.").append(fkFieldName).append(" = :").append(fkFieldName);
 
-			final URI<? extends DtObject> uri = dtcUri.getSource();
+			final URI uri = dtcUri.getSource();
 
 			final EntityManager em = obtainEntityManager();
 			final Query q = em.createNativeQuery(request.toString(), resultClass);
@@ -372,7 +372,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void delete(final URI<? extends DtObject> uri) {
+	public void delete(final URI uri) {
 		final EntityManager em = obtainEntityManager();
 		final String serviceName = "Jpa:remove " + uri.getDefinition().getName();
 		final long start = System.currentTimeMillis();

@@ -67,7 +67,7 @@ final class DataCache {
 	 * @param uri URI du DTO
 	 * @return null ou DTO
 	 */
-	<D extends DtObject> D getDtObject(final URI<D> uri) {
+	<D extends DtObject> D getDtObject(final URI uri) {
 		final DtDefinition dtDefinition = uri.getDefinition();
 		return (D) cacheManager.get(getContext(dtDefinition), uri);
 	}
@@ -112,10 +112,10 @@ final class DataCache {
 		cacheManager.put(context, dtc.getURI(), dtc);
 	}
 
-	private static <D extends DtObject> URI<D> createURI(final D dto) {
+	private static <D extends DtObject> URI createURI(final D dto) {
 		Assertion.checkNotNull(dto);
 		//-----
-		return new URI<>(DtObjectUtil.findDtDefinition(dto), DtObjectUtil.getId(dto));
+		return new URI(DtObjectUtil.findDtDefinition(dto), DtObjectUtil.getId(dto));
 	}
 
 	void clear(final DtDefinition dtDefinition) {

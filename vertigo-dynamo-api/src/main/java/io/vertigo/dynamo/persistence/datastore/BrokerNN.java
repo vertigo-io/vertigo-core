@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.persistence.datastore;
 
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation;
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 
 import java.util.List;
@@ -35,14 +34,14 @@ public interface BrokerNN {
 	 * @param dtListURI DtList de référence
 	 * @param uriToAppend URI de l'objet à ajout à la NN
 	 */
-	void appendNN(final DtListURIForAssociation dtListURI, final URI<DtObject> uriToAppend);
+	void appendNN(final DtListURIForAssociation dtListURI, final URI uriToAppend);
 
 	/**
 	 * Mise à jour des associations n-n. Annule et remplace.
 	 * @param dtListURI DtList de référence
-	 * @param newUriList  newUriList
+	 * @param uriList  uriList
 	 */
-	void updateNN(final DtListURIForAssociation dtListURI, final List<URI<? extends DtObject>> newUriList);
+	void updateNN(final DtListURIForAssociation dtListURI, final List<URI> uriList);
 
 	/**
 	 * Supprime toutes les relations liés à l'objet.
@@ -56,5 +55,5 @@ public interface BrokerNN {
 	 * @param dtListURI DtList de référence
 	 * @param uriToDelete URI de l'objet à supprimer de la NN
 	 */
-	void removeNN(final DtListURIForAssociation dtListURI, final URI<DtObject> uriToDelete);
+	void removeNN(final DtListURIForAssociation dtListURI, final URI uriToDelete);
 }

@@ -63,7 +63,7 @@ public final class CacheDataStore implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> D load(final URI<D> uri) {
+	public <D extends DtObject> D load(final URI uri) {
 		// - Prise en compte du cache
 		if (cacheDataStoreConfiguration.isCacheable(uri.<DtDefinition> getDefinition())) {
 			D dto = cacheDataStoreConfiguration.getDataCache().<D> getDtObject(uri);
@@ -77,7 +77,7 @@ public final class CacheDataStore implements DataStore {
 		return logicalDataStore.<D> load(uri);
 	}
 
-	private synchronized <D extends DtObject> D reload(final URI<D> uri) {
+	private synchronized <D extends DtObject> D reload(final URI uri) {
 		final D dto;
 		if (cacheDataStoreConfiguration.isReloadedByList(uri.<DtDefinition> getDefinition())) {
 			//On ne charge pas les cache de façon atomique.
@@ -155,7 +155,7 @@ public final class CacheDataStore implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public void delete(final URI<? extends DtObject> uri) {
+	public void delete(final URI uri) {
 		logicalDataStore.delete(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();

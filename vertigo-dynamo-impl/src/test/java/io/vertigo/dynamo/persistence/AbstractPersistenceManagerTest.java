@@ -29,7 +29,6 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.FileManager;
@@ -416,9 +415,9 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			Assert.assertFalse("La liste des cars est vide", cars.isEmpty());
 
 			//on associe la liste de voiture à la famille en NN
-			final List<URI<? extends DtObject>> carUriList = new ArrayList<>();
+			final List<URI> carUriList = new ArrayList<>();
 			for (final Car car : cars) {
-				carUriList.add(new URI<Car>(dtDefinitionCar, car.getId()));
+				carUriList.add(new URI(dtDefinitionCar, car.getId()));
 			}
 			persistenceManager.getBrokerNN().updateNN(famille.getVoituresLocationDtListURI(), carUriList);
 
@@ -436,7 +435,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 
 			//on recharge la famille et on recharge la liste issus de l'association NN : il doit avoir une voiture de moins qu'au début
 			final DtDefinition dtFamille = DtObjectUtil.findDtDefinition(Famille.class);
-			final Famille famille2 = persistenceManager.getBroker().getOption(new URI<Famille>(dtFamille, famille.getFamId())).get();
+			final Famille famille2 = persistenceManager.getBroker().<Famille> getOption(new URI(dtFamille, famille.getFamId())).get();
 			final DtList<Car> secondResult = famille2.getVoituresLocationList();
 			Assert.assertEquals("Test tailles du nombre de voiture dans une NN", firstResult.size() - 1, secondResult.size());
 			transaction.commit();
@@ -482,7 +481,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 
 			//on recharge la famille et on recharge la liste issus de l'association 1N : il doit avoir une voiture de moins qu'au début
 			final DtDefinition dtFamille = DtObjectUtil.findDtDefinition(Famille.class);
-			final Famille famille2 = persistenceManager.getBroker().getOption(new URI<Famille>(dtFamille, famille.getFamId())).get();
+			final Famille famille2 = persistenceManager.getBroker().<Famille> getOption(new URI(dtFamille, famille.getFamId())).get();
 			final DtList<Car> secondResult = famille2.getVoituresFamilleList();
 			Assert.assertEquals("Test tailles du nombre de voiture pour une 1-N", firstResult.size() - 1, secondResult.size());
 			transaction.commit();

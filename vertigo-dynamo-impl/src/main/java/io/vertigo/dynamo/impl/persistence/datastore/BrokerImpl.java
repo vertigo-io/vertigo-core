@@ -87,7 +87,7 @@ public final class BrokerImpl implements Broker {
 
 	/** {@inheritDoc} */
 	@Override
-	public void delete(final URI<? extends DtObject> uri) {
+	public void delete(final URI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		dataStore.delete(uri);
@@ -95,7 +95,7 @@ public final class BrokerImpl implements Broker {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> Option<D> getOption(final URI<D> uri) {
+	public <D extends DtObject> Option<D> getOption(final URI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final D dto = dataStore.<D> load(uri);

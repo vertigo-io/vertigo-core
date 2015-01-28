@@ -22,6 +22,7 @@ import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.FileManager;
@@ -109,9 +110,9 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public FileInfo load(final URI<FileInfo> uri) {
+	public FileInfo load(final FileInfoURI uri) {
 		// récupération de l'objet en base
-		final URI<DtObject> dtoUri = createDtObjectURI(uri);
+		final URI dtoUri = createDtObjectURI(uri);
 		final DtObject fileInfoDto = getPersistenceManager().getBroker().getOption(dtoUri).get();
 
 		// récupération du fichier
@@ -154,7 +155,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 			setPkValue(fileInfoDto, fileInfo.getURI().getKey());
 
 			// récupération de l'objet en base pour récupérer le path du fichier et ne pas modifier la base
-			final URI<DtObject> dtoUri = createDtObjectURI(fileInfo.getURI());
+			final URI dtoUri = createDtObjectURI(fileInfo.getURI());
 			final DtObject fileInfoDtoBase = getPersistenceManager().getBroker().getOption(dtoUri).get();
 			final String pathToSave = FsFileStorePlugin.<String> getValue(fileInfoDtoBase, DtoFields.FILE_PATH);
 			setValue(fileInfoDto, DtoFields.FILE_PATH, pathToSave);
@@ -183,7 +184,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		// cas de la création
 		final Object fileInfoDtoId = DtObjectUtil.getId(fileInfoDto);
 		Assertion.checkNotNull(fileInfoDtoId, "ID  du fichier doit être renseignée.");
-		final URI<FileInfo> uri = createURI(fileInfo.getDefinition(), fileInfoDtoId);
+		final FileInfoURI uri = createURI(fileInfo.getDefinition(), fileInfoDtoId);
 		fileInfo.setURIStored(uri);
 
 		// on met a jour la base
@@ -211,16 +212,16 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		saveFile(fileInfo, pathToSave);
 	}
 
-	private static URI<FileInfo> createURI(final FileInfoDefinition fileInfoDefinition, final Object key) {
-		return new URI<>(fileInfoDefinition, key);
+	private static FileInfoURI createURI(final FileInfoDefinition fileInfoDefinition, final Object key) {
+		return new FileInfoURI(fileInfoDefinition, key);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final URI<FileInfo> uri) {
+	public void remove(final FileInfoURI uri) {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 
-		final URI<DtObject> dtoUri = createDtObjectURI(uri);
+		final URI dtoUri = createDtObjectURI(uri);
 		//-----suppression du fichier
 		final DtObject fileInfoDto = getPersistenceManager().getBroker().getOption(dtoUri).get();
 		final String path = FsFileStorePlugin.<String> getValue(fileInfoDto, DtoFields.FILE_PATH);
@@ -235,7 +236,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	 * @param uri URI de FileInfo
 	 * @return URI du DTO utilisé en BDD pour stocker.
 	 */
-	private static URI<DtObject> createDtObjectURI(final URI<FileInfo> uri) {
+	private static URI createDtObjectURI(final FileInfoURI uri) {
 		Assertion.checkNotNull(uri, "uri du fichier doit être renseignée.");
 		//-----
 		final FileInfoDefinition fileInfoDefinition = uri.<FileInfoDefinition> getDefinition();
@@ -243,7 +244,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		// Pour ce fileStore, on utilise le root de la fileDefinition comme nom de la table de stockage.
 		// Il doit exister un DtObjet associé, avec la structure attendue.
 		final DtDefinition dtDefinition = Home.getDefinitionSpace().resolve(fileDefinitionRoot, DtDefinition.class);
-		return new URI<>(dtDefinition, uri.getKey());
+		return new URI(dtDefinition, uri.getKey());
 	}
 
 	/**

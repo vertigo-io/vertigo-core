@@ -20,7 +20,6 @@ package io.vertigo.dynamo.domain.metamodel.association;
 
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.model.DtListURI;
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.lang.Assertion;
@@ -35,7 +34,7 @@ public final class DtListURIForAssociation extends DtListURI {
 
 	private final String associationDefinitionName;
 	private final String roleName;
-	private final URI<? extends DtObject> source;
+	private final URI source;
 
 	/**
 	 * Constructeur.
@@ -43,7 +42,7 @@ public final class DtListURIForAssociation extends DtListURI {
 	 * @param source URI (Clé primaire) du dtObject source
 	 * @param roleName Nom du rôle
 	 */
-	public DtListURIForAssociation(final AssociationDefinition associationDefinition, final URI<? extends DtObject> source, final String roleName) {
+	public DtListURIForAssociation(final AssociationDefinition associationDefinition, final URI source, final String roleName) {
 		super(AssociationUtil.getAssociationNode(associationDefinition, roleName).getDtDefinition());
 		Assertion.checkNotNull(associationDefinition);
 		Assertion.checkNotNull(source);
@@ -67,7 +66,7 @@ public final class DtListURIForAssociation extends DtListURI {
 	 * @return Clé identifiant la ressource parmi les ressources du même type.
 	 * Exemple :
 	 */
-	public URI<? extends DtObject> getSource() {
+	public URI getSource() {
 		return source;
 	}
 

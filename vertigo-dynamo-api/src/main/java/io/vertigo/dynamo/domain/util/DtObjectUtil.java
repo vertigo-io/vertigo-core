@@ -87,7 +87,7 @@ public final class DtObjectUtil {
 	 * @param dto DtObject
 	 * @return URI du DTO relié via l'association au dto passé en paramètre (Nullable)
 	 */
-	public static <D extends DtObject> URI<D> createURI(final DtObject dto, final String associationDefinitionName, final Class<D> dtoTargetClass) {
+	public static <D extends DtObject> URI createURI(final DtObject dto, final String associationDefinitionName, final Class<D> dtoTargetClass) {
 		Assertion.checkNotNull(associationDefinitionName);
 		Assertion.checkNotNull(dto);
 		Assertion.checkNotNull(dtoTargetClass);
@@ -95,17 +95,17 @@ public final class DtObjectUtil {
 		final AssociationDefinition associationDefinition = Home.getDefinitionSpace().resolve(associationDefinitionName, AssociationDefinition.class);
 		final AssociationSimpleDefinition associationSimpleDefinition = associationDefinition.castAsAssociationSimpleDefinition();
 		// 1. On recherche le nom du champ portant l'objet référencé (Exemple : personne)
-		final DtDefinition reference = associationSimpleDefinition.getPrimaryAssociationNode().getDtDefinition();
+		final DtDefinition dtDefinition = associationSimpleDefinition.getPrimaryAssociationNode().getDtDefinition();
 
 		// 2. On calcule le nom de la fk.
 		final DtField fkField = associationSimpleDefinition.getFKField();
 
 		// 3. On calcule l'URI de la clé étrangère
-		final Object value = fkField.getDataAccessor().getValue(dto);
-		if (value == null) {
+		final Object id = fkField.getDataAccessor().getValue(dto);
+		if (id == null) {
 			return null;
 		}
-		return new URI<>(reference, value);
+		return new URI(dtDefinition, id);
 	}
 
 	/**
@@ -124,11 +124,11 @@ public final class DtObjectUtil {
 		return new DtListURIForAssociation(associationDefinition, createURI(dto), roleName);
 	}
 
-	private static <D extends DtObject> URI<D> createURI(final D dto) {
+	private static URI createURI(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//-----
 		final DtDefinition dtDefinition = findDtDefinition(dto);
-		return new URI<>(dtDefinition, DtObjectUtil.getId(dto));
+		return new URI(dtDefinition, DtObjectUtil.getId(dto));
 	}
 
 	/**

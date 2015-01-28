@@ -53,7 +53,7 @@ public final class LogicalDataStore implements DataStore {
 		this.broker = broker;
 	}
 
-	private static DtDefinition getDtDefinition(final URI<? extends DtObject> uri) {
+	private static DtDefinition getDtDefinition(final URI uri) {
 		return uri.getDefinition();
 	}
 
@@ -92,7 +92,7 @@ public final class LogicalDataStore implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> D load(final URI<D> uri) {
+	public <D extends DtObject> D load(final URI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtDefinition dtDefinition = getDtDefinition(uri);
@@ -119,7 +119,7 @@ public final class LogicalDataStore implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public void delete(final URI<? extends DtObject> uri) {
+	public void delete(final URI uri) {
 		final DtDefinition dtDefinition = getDtDefinition(uri);
 		getPhysicalStore(dtDefinition).delete(uri);
 	}

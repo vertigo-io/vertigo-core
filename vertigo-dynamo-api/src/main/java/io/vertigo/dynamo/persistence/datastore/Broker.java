@@ -49,7 +49,7 @@ public interface Broker {
 	 * @param uri Uri de l'object
 	 * @return Option de l'object récupéré NOT NUL
 	 */
-	<D extends DtObject> Option<D> getOption(final URI<D> uri);
+	<D extends DtObject> Option<D> getOption(final URI uri);
 
 	/**
 	 * Récupération d'une liste identifiée par son URI.
@@ -91,5 +91,5 @@ public interface Broker {
 	 *
 	 * @param uri URI de l'objet à supprimer
 	 */
-	void delete(URI<? extends DtObject> uri);
+	void delete(URI uri);
 }

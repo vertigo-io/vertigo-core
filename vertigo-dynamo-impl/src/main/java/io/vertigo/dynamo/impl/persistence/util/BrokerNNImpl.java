@@ -24,7 +24,6 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation;
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.persistence.datastore.BrokerNN;
@@ -85,7 +84,7 @@ public final class BrokerNNImpl implements BrokerNN {
 
 	/** {@inheritDoc} */
 	@Override
-	public void appendNN(final DtListURIForAssociation dtListURI, final URI<DtObject> uriToAppend) {
+	public void appendNN(final DtListURIForAssociation dtListURI, final URI uriToAppend) {
 		Assertion.checkNotNull(uriToAppend);
 		//-----
 		appendNN(new DescriptionNN(dtListURI), uriToAppend.getKey());
@@ -100,7 +99,7 @@ public final class BrokerNNImpl implements BrokerNN {
 
 	/** {@inheritDoc} */
 	@Override
-	public void removeNN(final DtListURIForAssociation dtListURI, final URI<DtObject> uriToDelete) {
+	public void removeNN(final DtListURIForAssociation dtListURI, final URI uriToDelete) {
 		Assertion.checkNotNull(uriToDelete);
 		//-----
 		removeNN(new DescriptionNN(dtListURI), uriToDelete.getKey());
@@ -108,15 +107,15 @@ public final class BrokerNNImpl implements BrokerNN {
 
 	/** {@inheritDoc} */
 	@Override
-	public void updateNN(final DtListURIForAssociation dtListURI, final List<URI<? extends DtObject>> newUriList) {
+	public void updateNN(final DtListURIForAssociation dtListURI, final List<URI> newUriList) {
 		Assertion.checkNotNull(newUriList);
 		//-----
 		final DescriptionNN descriptionNN = new DescriptionNN(dtListURI);
 		//1. on supprime tout
 		removeNN(descriptionNN);
 		//2. on enregistre la liste actuelle (un par un)
-		final Set<URI<? extends DtObject>> set = new HashSet<>();
-		for (final URI<? extends DtObject> dtoUri : newUriList) {
+		final Set<URI> set = new HashSet<>();
+		for (final URI dtoUri : newUriList) {
 			//On vérifie que l'on n'enregistre pas deux fois la même relation.
 			Assertion.checkArgument(set.add(dtoUri), "Duplicate key [{0}]dans la nouvelle collection.", dtoUri);
 			appendNN(descriptionNN, dtoUri.getKey());

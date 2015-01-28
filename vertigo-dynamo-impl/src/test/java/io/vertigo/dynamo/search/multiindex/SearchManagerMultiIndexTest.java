@@ -138,9 +138,9 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 		return result.getCount();
 	}
 
-	private static URI<Car> createURI(final Car car) {
+	private static URI createURI(final Car car) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Car.class);
-		return new URI<>(dtDefinition, DtObjectUtil.getId(car));
+		return new URI(dtDefinition, DtObjectUtil.getId(car));
 	}
 
 	private static void waitIndexation() {

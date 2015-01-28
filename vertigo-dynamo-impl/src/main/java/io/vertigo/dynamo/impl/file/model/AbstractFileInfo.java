@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.impl.file.model;
 
 import io.vertigo.core.spaces.definiton.DefinitionReference;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.KFile;
@@ -33,7 +33,7 @@ public abstract class AbstractFileInfo implements FileInfo {
 	private static final long serialVersionUID = 1L;
 	private final KFile kFile;
 	private final DefinitionReference<FileInfoDefinition> fileInfoDefinition;
-	private URI<FileInfo> uri;
+	private FileInfoURI uri;
 
 	/**
 	 * Constructeur.
@@ -51,13 +51,13 @@ public abstract class AbstractFileInfo implements FileInfo {
 
 	/** {@inheritDoc} */
 	@Override
-	public final URI<FileInfo> getURI() {
+	public final FileInfoURI getURI() {
 		return uri;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final void setURIStored(final URI<FileInfo> storedUri) {
+	public final void setURIStored(final FileInfoURI storedUri) {
 		Assertion.checkNotNull(storedUri);
 		Assertion.checkState(uri == null, "Impossible de setter deux fois l'uri de stockage");
 		Assertion.checkArgument(getDefinition().getName().equals(storedUri.<FileInfoDefinition> getDefinition().getName()), "L''URI ({0}) n''est pas compatible avec ce FileInfo ({1})", storedUri, fileInfoDefinition);

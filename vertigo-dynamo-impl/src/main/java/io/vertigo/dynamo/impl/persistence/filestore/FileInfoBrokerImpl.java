@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.impl.persistence.filestore;
 
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.impl.persistence.filestore.logical.LogicalFileStore;
 import io.vertigo.dynamo.persistence.filestore.FileInfoBroker;
@@ -63,7 +63,7 @@ public final class FileInfoBrokerImpl implements FileInfoBroker {
 
 	/** {@inheritDoc} */
 	@Override
-	public void deleteFileInfo(final URI<FileInfo> uri) {
+	public void deleteFileInfo(final FileInfoURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		fileStore.remove(uri);
@@ -71,7 +71,7 @@ public final class FileInfoBrokerImpl implements FileInfoBroker {
 
 	/** {@inheritDoc} */
 	@Override
-	public FileInfo getFileInfo(final URI<FileInfo> uri) {
+	public FileInfo getFileInfo(final FileInfoURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final FileInfo fileInfo = fileStore.load(uri);

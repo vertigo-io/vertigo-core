@@ -569,9 +569,9 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 	}
 
-	private static URI<Car> createURI(final Car car) {
+	private static URI createURI(final Car car) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Car.class);
-		return new URI<>(dtDefinition, DtObjectUtil.getId(car));
+		return new URI(dtDefinition, DtObjectUtil.getId(car));
 	}
 
 	private void doIndex(final boolean all) {
@@ -633,8 +633,8 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		return searchManager.loadList(searchQuery, facetedQuery);
 	}
 
-	private static URI<DtObject> createURI(final long id) {
-		return new URI<>(DtObjectUtil.findDtDefinition(Car.class), id);
+	private static URI createURI(final long id) {
+		return new URI(DtObjectUtil.findDtDefinition(Car.class), id);
 	}
 
 	private static void waitIndexation() {

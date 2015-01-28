@@ -86,7 +86,7 @@ final class ESDocumentCodec {
 		/* On lit du document les données persistantes. */
 		/* 1. URI */
 		final String urn = searchHit.getId();
-		final URI<I> uri = (URI<I>) io.vertigo.dynamo.domain.model.URI.fromURN(urn);
+		final URI uri = io.vertigo.dynamo.domain.model.URI.fromURN(urn);
 
 		/* 2 : Result stocké */
 		final R resultDtObjectdtObject = decode((String) searchHit.field(FULL_RESULT).getValue());

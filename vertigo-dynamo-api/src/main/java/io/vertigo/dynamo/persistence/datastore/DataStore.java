@@ -49,7 +49,7 @@ public interface DataStore {
 	 * @return D correspondant à l'URI fournie.
 	 * @param <D> Type de l'objet
 	 */
-	<D extends DtObject> D load(URI<D> uri);
+	<D extends DtObject> D load(URI uri);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
@@ -94,6 +94,6 @@ public interface DataStore {
 	 * Suppression d'un objet.
 	 * @param uri URI de l'objet à supprimmer
 	 */
-	void delete(URI<? extends DtObject> uri);
+	void delete(URI uri);
 
 }

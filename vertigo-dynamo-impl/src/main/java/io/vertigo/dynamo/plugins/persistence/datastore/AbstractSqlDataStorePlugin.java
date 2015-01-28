@@ -113,7 +113,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public final <D extends DtObject> D load(final URI<D> uri) {
+	public final <D extends DtObject> D load(final URI uri) {
 		final DtDefinition dtDefinition = uri.getDefinition();
 
 		final String tableName = getTableName(dtDefinition);
@@ -202,7 +202,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withAttribute("dtc", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true, false)//OUT, obligatoire
 				.build();
 
-		final URI<? extends DtObject> uri = dtcUri.getSource();
+		final URI uri = dtcUri.getSource();
 
 		final Task task = new TaskBuilder(taskDefinition)
 				.withValue(fkFieldName, uri.getKey())
@@ -495,7 +495,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void delete(final URI<? extends DtObject> uri) {
+	public void delete(final URI uri) {
 		final DtDefinition dtDefinition = uri.getDefinition();
 		final DtField pk = dtDefinition.getIdField().get();
 		final String tableName = getTableName(dtDefinition);

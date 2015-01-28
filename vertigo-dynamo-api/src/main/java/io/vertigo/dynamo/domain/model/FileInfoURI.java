@@ -21,7 +21,7 @@ package io.vertigo.dynamo.domain.model;
 import io.vertigo.core.Home;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -29,7 +29,7 @@ import java.io.Serializable;
 import java.util.regex.Pattern;
 
 /**
- * Représente l'identifiant ABSOLU d'une ressource.
+ * Représente l'identifiant ABSOLU d'une ressource de type FileInfo.
  * Une ressource posséde une définition (sa classe), et une clé.
  * L'URI propose une URN, c'est é dire la transcription sous forme de chaine.
  * L'URI peut étre recomposée é partir de cette URN.
@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
  *
  * @author  pchretien
  */
-public final class URI implements Serializable {
+public final class FileInfoURI implements Serializable {
 	private static final long serialVersionUID = -1L;
 	private static final char D2A_SEPARATOR = '@';
 
@@ -48,7 +48,7 @@ public final class URI implements Serializable {
 	 */
 	public static final Pattern REGEX_URN = Pattern.compile("[a-zA-Z0-9_:@$-]{5,80}");
 
-	private final DefinitionReference<DtDefinition> definitionRef;
+	private final DefinitionReference<FileInfoDefinition> definitionRef;
 	private final Serializable key;
 
 	/** URN de la ressource (Nom complet).*/
@@ -59,7 +59,7 @@ public final class URI implements Serializable {
 	 * @param definition Definition de la ressource
 	 * @param key Clé de la ressource
 	 */
-	public URI(final DtDefinition definition, final Object key) {
+	public FileInfoURI(final FileInfoDefinition definition, final Object key) {
 		Assertion.checkNotNull(key);
 		Assertion.checkNotNull(definition);
 		//-----
@@ -68,7 +68,7 @@ public final class URI implements Serializable {
 
 		//Calcul de l'urn
 		urn = toURN(this);
-		Assertion.checkArgument(URI.REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, URI.REGEX_URN);
+		Assertion.checkArgument(FileInfoURI.REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, FileInfoURI.REGEX_URN);
 	}
 
 	/**
@@ -113,8 +113,8 @@ public final class URI implements Serializable {
 	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object o) {
-		if (o instanceof URI) {
-			return ((URI) o).toURN().equals(this.toURN());
+		if (o instanceof FileInfoURI) {
+			return ((FileInfoURI) o).toURN().equals(this.toURN());
 		}
 		return false;
 	}
@@ -130,7 +130,7 @@ public final class URI implements Serializable {
 	//=============================STATIC======================================
 	//=========================================================================
 
-	public static URI fromURN(final String urn) {
+	public static FileInfoURI fromURN(final String urn) {
 		Assertion.checkNotNull(urn);
 		//-----
 		final int i = urn.indexOf(D2A_SEPARATOR);
@@ -138,11 +138,11 @@ public final class URI implements Serializable {
 		final Object key = stringToKey(urn.substring(i + 1));
 
 		//On ne type pas, la seule chose que l'on sait est qu'il s'agit d'une définition.
-		final DtDefinition definition = Home.getDefinitionSpace().resolve(dname, DtDefinition.class);
-		return new URI(definition, key);
+		final FileInfoDefinition definition = Home.getDefinitionSpace().resolve(dname, FileInfoDefinition.class);
+		return new FileInfoURI(definition, key);
 	}
 
-	private static String toURN(final URI uri) {
+	private static String toURN(final FileInfoURI uri) {
 		final String keyAsText = keyToString(uri.getKey());
 		return uri.getDefinition().getName() + D2A_SEPARATOR + keyAsText;
 	}
