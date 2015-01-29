@@ -55,13 +55,6 @@
 			<artifactId>vertigo-dynamo-impl</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-dynamo-impl</artifactId>
-			<version>${project.version}</version>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
 
 		<!--Open Office dependencies -->
 		<dependency>
@@ -108,14 +101,14 @@
 		</dependency>
 		<!--/Open Office dependencies -->
 	</dependencies>
-	<build>
+<!-- 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<version>2.9</version>
 				<executions>
-					<execution> <!-- For testing purpose, dependencies must be copied in target in order to launch a standalone node -->
+					<execution> For testing purpose, dependencies must be copied in target in order to launch a standalone node
 						<id>copy-dependencies</id>
 						<phase>test-compile</phase>
 						<goals>
@@ -125,5 +118,5 @@
 				</executions>
 			</plugin>
 		</plugins>
-	</build>
+	</build> -->
 </project>

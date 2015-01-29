@@ -23,6 +23,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.persistence.datastore.cache.CacheDataStore;
 import io.vertigo.dynamo.impl.persistence.datastore.logical.LogicalDataStore;
 import io.vertigo.dynamo.persistence.datastore.Broker;
@@ -70,6 +71,19 @@ public final class BrokerImpl implements Broker {
 
 	/** {@inheritDoc} */
 	@Override
+	@Deprecated
+	public void save(final DtObject dto) {
+		Assertion.checkNotNull(dto);
+		//-----
+		if (DtObjectUtil.getId(dto) == null) {
+			create(dto);
+		} else {
+			update(dto);
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public void update(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//-----
@@ -93,9 +107,19 @@ public final class BrokerImpl implements Broker {
 		dataStore.delete(uri);
 	}
 
+	@Override
+	@Deprecated
+	public <D extends DtObject> D get(final URI<D> uri) {
+		Assertion.checkNotNull(uri);
+		//-----
+		final D dto = dataStore.<D> load(uri);
+		//-----
+		return Option.option(dto).get();
+	}
+
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> Option<D> getOption(final URI uri) {
+	public <D extends DtObject> Option<D> getOption(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final D dto = dataStore.<D> load(uri);

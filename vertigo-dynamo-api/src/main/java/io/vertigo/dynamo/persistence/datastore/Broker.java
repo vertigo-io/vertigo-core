@@ -49,7 +49,10 @@ public interface Broker {
 	 * @param uri Uri de l'object
 	 * @return Option de l'object récupéré NOT NUL
 	 */
-	<D extends DtObject> Option<D> getOption(final URI uri);
+	<D extends DtObject> Option<D> getOption(final URI<D> uri);
+
+	@Deprecated
+	<D extends DtObject> D get(final URI<D> uri);
 
 	/**
 	 * Récupération d'une liste identifiée par son URI.
@@ -59,6 +62,9 @@ public interface Broker {
 	 * @return DtList DTC
 	 */
 	<D extends DtObject> DtList<D> getList(final DtListURI uri);
+
+	@Deprecated
+	void save(DtObject dto);
 
 	/**
 	* Create an object.

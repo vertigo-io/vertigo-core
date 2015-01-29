@@ -47,6 +47,20 @@ public final class FileInfoBrokerImpl implements FileInfoBroker {
 
 	/** {@inheritDoc} */
 	@Override
+	@Deprecated
+	public void save(final FileInfo fileInfo) {
+		Assertion.checkNotNull(fileInfo);
+		//-----
+
+		if (fileInfo.getURI() == null) {
+			create(fileInfo);
+		} else {
+			update(fileInfo);
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public void create(final FileInfo fileInfo) {
 		Assertion.checkNotNull(fileInfo);
 		//-----

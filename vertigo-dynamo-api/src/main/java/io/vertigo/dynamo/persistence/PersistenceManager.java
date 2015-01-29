@@ -48,8 +48,15 @@ public interface PersistenceManager extends Component {
 	 */
 	BrokerConfig getBrokerConfig();
 
+	@Deprecated
+	BrokerConfig getBrokerConfiguration();
+
 	/**
 	 * @return Configuration MDM
 	 */
 	MasterDataConfig getMasterDataConfig();
+
+	@Deprecated
+	MasterDataConfig getMasterDataConfiguration();
+
 }

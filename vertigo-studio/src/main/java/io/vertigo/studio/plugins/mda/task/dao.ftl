@@ -30,7 +30,8 @@ import io.vertigo.dynamo.impl.persistence.util.DAOBroker;
 public final class ${dao.classSimpleName} extends DAOBroker<${dao.dtClassCanonicalName}, ${dao.pkFieldType}> {
 	<#if !dao.taskDefinitions.empty>
 	<@lib.generateHeader dao.taskDefinitions/>  
-
+	</#if>
+	 
 	/**
 	 * Contructeur.
 	 * @param persistenceManager Manager de persistance
@@ -43,16 +44,7 @@ public final class ${dao.classSimpleName} extends DAOBroker<${dao.dtClassCanonic
 		//---------------------------------------------------------------------
 		this.taskManager = taskManager;
 	}
+	<#if !dao.taskDefinitions.empty>
 	<@lib.generateBody dao.taskDefinitions/>  
-   	<#else>
-
-	/**
-	 * Contructeur.
-	 * @param persistenceManager Manager de persistance
-	 */
-	@Inject
-	public ${dao.classSimpleName}(final PersistenceManager persistenceManager) {
-		super(${dao.dtClassCanonicalName}.class, persistenceManager);
-	}
     </#if>
 }

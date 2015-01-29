@@ -80,7 +80,7 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public FileInfo load(final FileInfoURI uri) {
-		final URI dtoUri = createDtObjectURI(uri);
+		final URI<DtObject> dtoUri = createDtObjectURI(uri);
 		final DtObject fileInfoDto = getPersistenceManager().getBroker().getOption(dtoUri).get();
 		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder((DataStream) getValue(fileInfoDto, DtoFields.FILE_DATA));
 		final String fileName = (String) getValue(fileInfoDto, DtoFields.FILE_NAME);
@@ -153,7 +153,7 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 	 * @param uri URI de FileInfo
 	 * @return URI du DTO utilisé en BDD pour stocker.
 	 */
-	private static URI createDtObjectURI(final FileInfoURI uri) {
+	private static URI<DtObject> createDtObjectURI(final FileInfoURI uri) {
 		Assertion.checkNotNull(uri, "uri du fichier doit être renseignée.");
 		//-----
 		final FileInfoDefinition fileInfoDefinition = uri.<FileInfoDefinition> getDefinition();
@@ -161,7 +161,7 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 		//Pour ce fileStore, on utilise le root de la fileDefinition comme nom de la table de stockage.
 		//Il doit exister un DtObjet associé, avec la structure attendue.
 		final DtDefinition dtDefinition = Home.getDefinitionSpace().resolve(fileDefinitionRoot, DtDefinition.class);
-		return new URI(dtDefinition, uri.getKey());
+		return new URI<>(dtDefinition, uri.getKey());
 	}
 
 	/**

@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
  *
  * @author  pchretien
  */
-public final class URI implements Serializable {
+public final class URI<D extends DtObject> implements Serializable {
 	private static final long serialVersionUID = -1L;
 	private static final char D2A_SEPARATOR = '@';
 

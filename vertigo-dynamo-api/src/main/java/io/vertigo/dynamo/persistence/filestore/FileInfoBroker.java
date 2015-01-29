@@ -29,6 +29,9 @@ import io.vertigo.dynamo.file.model.FileInfo;
  * @author  pchretien
  */
 public interface FileInfoBroker {
+	@Deprecated
+	void save(FileInfo fileInfo);
+
 	/**
 	 * Create a new File.
 	 *

@@ -153,7 +153,7 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 		final DtField mdFieldSort = dtcURIForMasterData.getDtDefinition().getSortField().get();
 		return new Comparator<Object>() {
 			private Object getSortValue(final Object o) {
-				final URI uri = new URI(dtcURIForMasterData.getDtDefinition(), o);
+				final URI<DtObject> uri = new URI(dtcURIForMasterData.getDtDefinition(), o);
 				DtObject dto;
 				try {
 					dto = broker.getOption(uri).get();
