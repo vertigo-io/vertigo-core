@@ -25,7 +25,7 @@
 		<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
 		<component api="KTransactionManager" class="io.vertigo.dynamo.impl.transaction.KTransactionManagerImpl" />
 		<component api="PersistenceManager" class="io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl">
-			<plugin class="io.vertigo.dynamo.plugins.persistence.oracle.OracleDataStorePlugin">
+			<plugin class="io.vertigo.dynamo.plugins.persistence.datastore.oracle.OracleDataStorePlugin">
 				<param name="sequencePrefix" value="SEQ_" />
 			</plugin>
 			<plugin class="io.vertigo.dynamo.plugins.persistence.filestore.db.DbFileStorePlugin" />
