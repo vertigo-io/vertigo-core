@@ -24,6 +24,14 @@
 			<artifactId>vertigo-dynamo-impl</artifactId> <!-- For reporting ExplainPlan and Performance -->
 			<version>${project.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-dynamo-impl</artifactId> <!-- For dynamock -->
+			<version>${project.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>io.vertigo</groupId>
