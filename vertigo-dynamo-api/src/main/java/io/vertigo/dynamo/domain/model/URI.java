@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.domain.model;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
@@ -76,8 +75,8 @@ public final class URI implements Serializable {
 	 *
 	 * @return Définition de la ressource.
 	 */
-	public <D extends Definition> D getDefinition() {
-		return (D) definitionRef.get();
+	public DtDefinition getDefinition() {
+		return definitionRef.get();
 	}
 
 	/**

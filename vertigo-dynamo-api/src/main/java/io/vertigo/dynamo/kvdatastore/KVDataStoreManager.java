@@ -32,7 +32,7 @@ import java.util.List;
  */
 public interface KVDataStoreManager extends Component {
 
-	void put(String dataStoreName, String id, Object objet);
+	void put(String dataStoreName, String id, Object object);
 
 	void remove(String dataStoreName, String id);
 

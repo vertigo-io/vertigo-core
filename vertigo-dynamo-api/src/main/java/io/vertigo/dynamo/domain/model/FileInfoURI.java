@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.domain.model;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.lang.Assertion;
@@ -56,15 +55,15 @@ public final class FileInfoURI implements Serializable {
 
 	/**
 	 * Constructeur.
-	 * @param definition Definition de la ressource
+	 * @param fileInfoDefinition Definition de la ressource
 	 * @param key Clé de la ressource
 	 */
-	public FileInfoURI(final FileInfoDefinition definition, final Object key) {
+	public FileInfoURI(final FileInfoDefinition fileInfoDefinition, final Object key) {
 		Assertion.checkNotNull(key);
-		Assertion.checkNotNull(definition);
+		Assertion.checkNotNull(fileInfoDefinition);
 		//-----
 		this.key = Serializable.class.cast(key);
-		this.definitionRef = new DefinitionReference<>(definition);
+		this.definitionRef = new DefinitionReference<>(fileInfoDefinition);
 
 		//Calcul de l'urn
 		urn = toURN(this);
@@ -76,8 +75,8 @@ public final class FileInfoURI implements Serializable {
 	 *
 	 * @return Définition de la ressource.
 	 */
-	public <D extends Definition> D getDefinition() {
-		return (D) definitionRef.get();
+	public FileInfoDefinition getDefinition() {
+		return definitionRef.get();
 	}
 
 	/**

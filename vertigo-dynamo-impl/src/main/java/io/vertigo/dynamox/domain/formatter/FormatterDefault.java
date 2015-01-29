@@ -50,10 +50,10 @@ public final class FormatterDefault extends AbstractFormatterImpl {
 	 */
 	public FormatterDefault(final String name) {
 		super(name);
-		booleanFormatterRef = new DefinitionReference<Formatter>(obtainFormatterBoolean());
-		numberformatterRef = new DefinitionReference<Formatter>(obtainFormatterNumber());
-		dateFormaterRef = new DefinitionReference<Formatter>(obtainFormatterDate());
-		stringFormatterRef = new DefinitionReference<Formatter>(obtainFormatterString());
+		booleanFormatterRef = new DefinitionReference<>(obtainFormatterBoolean());
+		numberformatterRef = new DefinitionReference<>(obtainFormatterNumber());
+		dateFormaterRef = new DefinitionReference<>(obtainFormatterDate());
+		stringFormatterRef = new DefinitionReference<>(obtainFormatterString());
 	}
 
 	/** {@inheritDoc} */
