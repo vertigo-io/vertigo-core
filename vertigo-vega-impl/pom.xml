@@ -18,8 +18,19 @@
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-core</artifactId>
 			<version>${project.version}</version>
-		</dependency>
+		</dependency>	
 		
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-commons-impl</artifactId><!-- for ConfigPlugin and ResourceResolverPlugin -->
+			<version>${project.version}</version>
+		</dependency>
+			
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-persona-api</artifactId><!-- for UserSession -->
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-vega-api</artifactId>
@@ -65,12 +76,7 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
-			
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-commons-impl</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+		
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-dynamo-impl</artifactId>
@@ -89,8 +95,6 @@
 			<artifactId>vertigo-persona-impl</artifactId> <!--  depends of SecurityManagerImpl for WsRestHandler -->
 			<version>${project.version}</version>	
 		</dependency>
-		
-	
 		
 		<!-- For Rest Webservice testing -->
 		<dependency>
