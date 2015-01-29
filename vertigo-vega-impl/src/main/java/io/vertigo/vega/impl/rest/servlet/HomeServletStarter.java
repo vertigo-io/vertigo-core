@@ -70,6 +70,7 @@ final class HomeServletStarter {
 			//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
 			if (conf.containsKey(LOG4J_CONFIGURATION_PARAM_NAME)) {
 				appConfigBuilder.withLogConfig(new LogConfig(conf.getProperty(LOG4J_CONFIGURATION_PARAM_NAME)));
+				conf.remove(LOG4J_CONFIGURATION_PARAM_NAME);
 			}
 			// Initialisation de l'état de l'application
 			final AppConfig appConfig = appConfigBuilder
