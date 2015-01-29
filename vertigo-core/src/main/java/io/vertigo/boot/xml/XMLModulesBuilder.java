@@ -1,7 +1,6 @@
 package io.vertigo.boot.xml;
 
-import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.config.AppConfigBuilder;
+import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 
@@ -11,8 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-public final class XMLAppConfigBuilder implements Builder<AppConfig> {
-	private boolean mySilence;
+public final class XMLModulesBuilder implements Builder<List<ModuleConfig>> {
 
 	private final Properties myEnvParams = new Properties();
 	private final List<URL> xmlUrls = new ArrayList<>();
@@ -22,7 +20,7 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 	 * @param envParams envParams
 	 * @return this builder
 	 */
-	public XMLAppConfigBuilder withEnvParams(final Properties envParams) {
+	public XMLModulesBuilder withEnvParams(final Properties envParams) {
 		Assertion.checkNotNull(envParams);
 		//-----
 		myEnvParams.putAll(envParams);
@@ -35,7 +33,7 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 	 * @param xmlFileNames Multiple xmlFileName
 	 * @return this builder
 	 */
-	public XMLAppConfigBuilder withXmlFileNames(final Class<?> relativeRootClass, final String... xmlFileNames) {
+	public XMLModulesBuilder withXmlFileNames(final Class<?> relativeRootClass, final String... xmlFileNames) {
 		for (final String xmlFileName : xmlFileNames) {
 			final URL xmlUrl = createURL(xmlFileName, relativeRootClass);
 			xmlUrls.add(xmlUrl);
@@ -43,13 +41,8 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 		return this;
 	}
 
-	public XMLAppConfigBuilder withSilence(final boolean silence) {
-		mySilence = silence;
-		return this;
-	}
-
 	@Override
-	public AppConfig build() {
+	public List<ModuleConfig> build() {
 		//1- if no xmlUrls we check if a property reference files
 		final String xmlFileNames = myEnvParams.getProperty("boot.applicationConfiguration");
 		if (xmlFileNames != null) {
@@ -60,13 +53,11 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 		}
 		//-----
 		Assertion.checkNotNull(xmlUrls, "No config found");
+
 		//-----
 		//2- We load XML with parser to obtain all the moduleConfigs
 		// We check that all the properties are consumed.
-		return new AppConfigBuilder()
-				.withSilence(mySilence)
-				.withModules(XMLModulesParser.parseAll(myEnvParams, xmlUrls))
-				.build();
+		return XMLModulesParser.parseAll(myEnvParams, xmlUrls);
 	}
 
 	/**

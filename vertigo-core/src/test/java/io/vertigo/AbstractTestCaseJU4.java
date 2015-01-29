@@ -18,10 +18,11 @@
  */
 package io.vertigo;
 
-import io.vertigo.boot.xml.XMLAppConfigBuilder;
+import io.vertigo.boot.xml.XMLModulesBuilder;
 import io.vertigo.core.Home;
 import io.vertigo.core.Home.App;
 import io.vertigo.core.config.AppConfig;
+import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.lang.Component;
@@ -178,8 +179,10 @@ public abstract class AbstractTestCaseJU4 {
 	 * Configuration des tests.
 	 */
 	protected AppConfig buildAppConfig() {
-		return new XMLAppConfigBuilder()
-				.withXmlFileNames(getClass(), getManagersXmlFileName())
+		return new AppConfigBuilder()
+				.withModules(new XMLModulesBuilder()
+						.withXmlFileNames(getClass(), getManagersXmlFileName())
+						.build())
 				.withSilence(true)
 				.build();
 	}

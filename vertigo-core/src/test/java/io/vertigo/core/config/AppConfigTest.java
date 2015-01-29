@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.config;
 
-import io.vertigo.boot.xml.XMLAppConfigBuilder;
+import io.vertigo.boot.xml.XMLModulesBuilder;
 import io.vertigo.core.Home;
 import io.vertigo.core.Home.App;
 import io.vertigo.core.spaces.component.data.BioManager;
@@ -30,9 +30,11 @@ public final class AppConfigTest {
 	@Test
 	public void HomeTest() {
 
-		final AppConfig appConfig = new XMLAppConfigBuilder()
+		final AppConfig appConfig = new AppConfigBuilder()
 				.withSilence(false)
-				.withXmlFileNames(getClass(), "bio.xml")
+				.withModules(new XMLModulesBuilder()
+						.withXmlFileNames(getClass(), "bio.xml")
+						.build())
 				.build();
 
 		try (App app = new App(appConfig)) {

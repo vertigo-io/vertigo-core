@@ -18,8 +18,11 @@
  */
 package io.vertigo.struts2.impl.servlet;
 
-import io.vertigo.boot.xml.XMLAppConfigBuilder;
+import io.vertigo.boot.xml.XMLModulesBuilder;
 import io.vertigo.core.Home.App;
+import io.vertigo.core.config.AppConfig;
+import io.vertigo.core.config.AppConfigBuilder;
+import io.vertigo.core.config.LogConfig;
 import io.vertigo.struts2.plugins.config.servlet.WebAppContextConfigPlugin;
 import io.vertigo.struts2.plugins.resource.servlet.ServletResourceResolverPlugin;
 
@@ -41,8 +44,7 @@ final class HomeServlerStarter {
 
 	private static final String BOOT_PROPERTIES_PREFIX = "boot.";
 	private static final String EXTERNAL_PROPERTIES_PARAM_NAME = "external-properties";
-
-	/** clés dans le fichier Web.xml */
+	private static final String LOG4J_CONFIGURATION_PARAM_NAME = "log4j.configurationFileName";
 
 	/** Servlet listener */
 	private final ServletListener servletListener = new ServletListener();
@@ -63,8 +65,20 @@ final class HomeServlerStarter {
 			final Properties conf = createProperties(servletContext);
 			WebAppContextConfigPlugin.setInitConfig(conf);
 
+			final AppConfigBuilder appConfigBuilder = new AppConfigBuilder();
+			//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
+			if (conf.containsKey(LOG4J_CONFIGURATION_PARAM_NAME)) {
+				appConfigBuilder.withLogConfig(new LogConfig(conf.getProperty(LOG4J_CONFIGURATION_PARAM_NAME)));
+			}
 			// Initialisation de l'état de l'application
-			app = new App(new XMLAppConfigBuilder().withEnvParams(conf).build());
+			final AppConfig appConfig = appConfigBuilder
+					.withSilence(true)
+					.withModules(new XMLModulesBuilder()
+							.withEnvParams(conf)
+							.build())
+					.build();
+			// Initialisation de l'état de l'application
+			app = new App(appConfig);
 
 			servletListener.onServletStart(getClass().getName());
 		} catch (final Throwable t) {
@@ -103,6 +117,20 @@ final class HomeServlerStarter {
 		if (servletParams.isEmpty()) {
 			LOG.warn("None parameters had been loaded from servletcontext. Check they all have the prefix : " + BOOT_PROPERTIES_PREFIX);
 		}
+
+		/*
+		 * On récupère le paramètre du fichier de configuration des logs externe (-Dlog4j.configurationFileName).
+		 * Ce paramètre peut pointer sur un fichier de la webapp ou du FS.
+		 * Il peut aussi être dans le web.xml ou le EXTERNAL_PROPERTIES_PARAM_NAME
+		 */
+		String log4jConfigurationFileName = System.getProperty(LOG4J_CONFIGURATION_PARAM_NAME);
+		if (log4jConfigurationFileName == null) {
+			log4jConfigurationFileName = servletContext.getInitParameter(LOG4J_CONFIGURATION_PARAM_NAME);
+		}
+		if (log4jConfigurationFileName != null) {
+			servletParams.put(LOG4J_CONFIGURATION_PARAM_NAME, log4jConfigurationFileName);
+		}
+
 		/*
 		 * On récupère les paramètres du fichier de configuration externe (-Dexternal-properties). Ces paramètres
 		 * peuvent surcharger les paramètres de la servlet de façon à créer un paramétrage adhoc de développement par
