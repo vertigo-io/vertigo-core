@@ -78,14 +78,14 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public FileInfo load(final FileInfoURI uri) {
+	public FileInfo load(final FileInfoURI fileInfoUri) {
 		// Ramène FileMetada
-		final URI<DtObject> dtoMetaDataUri = createMetaDataURI(uri);
+		final URI<DtObject> dtoMetaDataUri = createMetaDataURI(fileInfoUri);
 		final DtObject fileMetadataDto = getPersistenceManager().getBroker().getOption(dtoMetaDataUri).get();
 		final Object fdtId = TwoTablesDbFileStorePlugin.<Object> getValue(fileMetadataDto, DtoFields.FDT_ID);
 
 		// Ramène FileData
-		final URI<DtObject> dtoDataUri = createDataURI(uri.<FileInfoDefinition> getDefinition(), fdtId);
+		final URI<DtObject> dtoDataUri = createDataURI(fileInfoUri.<FileInfoDefinition> getDefinition(), fdtId);
 		final DtObject fileDataDto = getPersistenceManager().getBroker().getOption(dtoDataUri).get();
 		// Construction du KFile.
 		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder((DataStream) getValue(fileDataDto, DtoFields.FILE_DATA));
@@ -96,8 +96,8 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 		final KFile kFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
 
 		//TODO passer par une factory de FileInfo à partir de la FileInfoDefinition (comme DomainFactory)
-		final FileInfo fileInfo = new DatabaseFileInfo(uri.<FileInfoDefinition> getDefinition(), kFile);
-		fileInfo.setURIStored(uri);
+		final FileInfo fileInfo = new DatabaseFileInfo(fileInfoUri.getDefinition(), kFile);
+		fileInfo.setURIStored(fileInfoUri);
 		return fileInfo;
 	}
 
@@ -113,8 +113,8 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 		getPersistenceManager().getBroker().create(fileDataDto);
 		setValue(fileMetadataDto, DtoFields.FDT_ID, DtObjectUtil.getId(fileDataDto));
 		getPersistenceManager().getBroker().create(fileMetadataDto);
-		final FileInfoURI uri = createURI(fileInfo.getDefinition(), DtObjectUtil.getId(fileMetadataDto));
-		fileInfo.setURIStored(uri);
+		final FileInfoURI fileInfoUri = createURI(fileInfo.getDefinition(), DtObjectUtil.getId(fileMetadataDto));
+		fileInfo.setURIStored(fileInfoUri);
 	}
 
 	/** {@inheritDoc} */
@@ -143,13 +143,13 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final FileInfoURI uri) {
+	public void remove(final FileInfoURI fileInfoUri) {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 		//-----
-		final URI<DtObject> dtoMetaDataUri = createMetaDataURI(uri);
+		final URI<DtObject> dtoMetaDataUri = createMetaDataURI(fileInfoUri);
 		final DtObject fileMetadataDtoOld = getPersistenceManager().getBroker().getOption(dtoMetaDataUri).get();
 		final Object fdtId = TwoTablesDbFileStorePlugin.<Object> getValue(fileMetadataDtoOld, DtoFields.FDT_ID);
-		final URI dtoDataUri = createDataURI(uri.<FileInfoDefinition> getDefinition(), fdtId);
+		final URI<DtObject> dtoDataUri = createDataURI(fileInfoUri.getDefinition(), fdtId);
 
 		getPersistenceManager().getBroker().delete(dtoDataUri);
 		getPersistenceManager().getBroker().delete(dtoMetaDataUri);
