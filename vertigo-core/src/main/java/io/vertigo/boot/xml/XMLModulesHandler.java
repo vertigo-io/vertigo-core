@@ -39,11 +39,11 @@ final class XMLModulesHandler extends DefaultHandler {
 	private ComponentConfigBuilder componentConfigBuilder;
 	private PluginConfigBuilder pluginConfigBuilder;
 	//Global Params
-	private final XMLParams params;
+	private final XMLModulesParams params;
 	//We are populating moduleConfigs during parsing
 	private final ListBuilder<ModuleConfig> moduleConfigsBuilder;
 
-	XMLModulesHandler(final ListBuilder<ModuleConfig> moduleConfigsBuilder, final XMLParams params) {
+	XMLModulesHandler(final ListBuilder<ModuleConfig> moduleConfigsBuilder, final XMLModulesParams params) {
 		Assertion.checkNotNull(moduleConfigsBuilder);
 		Assertion.checkNotNull(params);
 		//-----

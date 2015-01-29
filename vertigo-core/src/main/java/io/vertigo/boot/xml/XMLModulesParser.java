@@ -53,7 +53,7 @@ final class XMLModulesParser {
 		Assertion.checkNotNull(managersURLs);
 		Assertion.checkNotNull(properties);
 		//-----
-		final XMLParams params = new XMLParams(properties);
+		final XMLModulesParams params = new XMLModulesParams(properties);
 		final List<ModuleConfig> moduleConfigs = new ArrayList<>();
 		for (final URL managersURL : managersURLs) {
 			moduleConfigs.addAll(parse(managersURL, params));
@@ -64,7 +64,7 @@ final class XMLModulesParser {
 		return moduleConfigs;
 	}
 
-	private static List<ModuleConfig> parse(final URL managersURL, final XMLParams params) {
+	private static List<ModuleConfig> parse(final URL managersURL, final XMLModulesParams params) {
 		Assertion.checkNotNull(managersURL);
 		//-----
 		try {
@@ -78,7 +78,7 @@ final class XMLModulesParser {
 		}
 	}
 
-	private static List<ModuleConfig> doParse(final URL managersURL, final XMLParams params) throws ParserConfigurationException, SAXException, IOException {
+	private static List<ModuleConfig> doParse(final URL managersURL, final XMLModulesParams params) throws ParserConfigurationException, SAXException, IOException {
 		//---validation XSD
 		final URL xsd = XMLModulesParser.class.getResource("vertigo_1_0.xsd");
 		XMLUtil.validateXmlByXsd(managersURL, xsd);

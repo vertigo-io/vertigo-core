@@ -6,12 +6,12 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-final class XMLParams {
+final class XMLModulesParams {
 	private final Properties properties;
 	private final Set<String> keys;
 	private final Set<String> readKeys = new HashSet<>();
 
-	XMLParams(final Properties properties) {
+	XMLModulesParams(final Properties properties) {
 		Assertion.checkNotNull(properties);
 		//-----
 		this.properties = properties;
