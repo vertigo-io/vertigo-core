@@ -1,0 +1,67 @@
+package io.vertigo.dynamock.domain
+
+/**************************************************************************************************/
+/********************************* Gestion des formatters *****************************************/
+/**************************************************************************************************/
+create Formatter FMT_DEFAULT{
+	className : "io.vertigo.dynamox.domain.formatter.FormatterDefault"
+}
+
+/**************************************************************************************************/
+/********************************* Gestion des contraintes ****************************************/
+/**************************************************************************************************/
+
+/**************************************************************************************************/
+/********************************* Gestion des domaines* ******************************************/
+/**************************************************************************************************/
+create Domain DO_STRING {
+	dataType : String
+	formatter : FMT_DEFAULT
+	indexType : "text.fr"
+}
+
+create Domain DO_LONG {
+	dataType : Long
+	formatter : FMT_DEFAULT
+}
+
+create Domain DO_DOUBLE {
+	dataType : Double
+	formatter : FMT_DEFAULT
+}
+
+create Domain DO_INTEGER {
+	dataType :Integer
+	formatter : FMT_DEFAULT
+}
+
+create Domain DO_DATE {
+	dataType :Date
+	formatter : FMT_DEFAULT
+}
+
+create Domain DO_BOOLEAN {
+	dataType :Boolean
+	formatter : FMT_DEFAULT
+}
+
+create Domain DO_IDENTIFIANT {
+	dataType : Long
+	formatter : FMT_DEFAULT
+}
+
+create Domain DO_LIBELLE_LONG {
+    dataType : String
+    formatter : FMT_DEFAULT
+    constraint : [CK_MAX_LENGTH_250]
+}
+    
+create Domain DO_STREAM{
+	dataType : DataStream
+	formatter : FMT_DEFAULT
+}
+
+create Constraint CK_MAX_LENGTH_250 {
+    className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
+    args :"250"
+}
