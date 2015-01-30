@@ -63,7 +63,7 @@ public final class BrokerImpl implements Broker {
 	public void create(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//-----
-		dataStore.create(dto);
+		dataStore.create(DtObjectUtil.findDtDefinition(dto), dto);
 
 	}
 
@@ -85,7 +85,7 @@ public final class BrokerImpl implements Broker {
 	public void update(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//-----
-		dataStore.update(dto);
+		dataStore.update(DtObjectUtil.findDtDefinition(dto), dto);
 
 	}
 
@@ -94,7 +94,7 @@ public final class BrokerImpl implements Broker {
 	public void merge(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//-----
-		dataStore.merge(dto);
+		dataStore.merge(DtObjectUtil.findDtDefinition(dto), dto);
 	}
 
 	/** {@inheritDoc} */
@@ -102,7 +102,7 @@ public final class BrokerImpl implements Broker {
 	public void delete(final URI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		dataStore.delete(uri);
+		dataStore.delete(uri.getDefinition(), uri);
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public final class BrokerImpl implements Broker {
 	public <D extends DtObject> D get(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final D dto = dataStore.<D> load(uri);
+		final D dto = dataStore.<D> load(uri.getDefinition(), uri);
 		//-----
 		return Option.option(dto).get();
 	}
@@ -120,7 +120,7 @@ public final class BrokerImpl implements Broker {
 	public <D extends DtObject> Option<D> getOption(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final D dto = dataStore.<D> load(uri);
+		final D dto = dataStore.<D> load(uri.getDefinition(), uri);
 		//-----
 		return Option.option(dto);
 	}
@@ -130,7 +130,7 @@ public final class BrokerImpl implements Broker {
 	public <D extends DtObject> DtList<D> getList(final DtListURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final DtList<D> dtc = dataStore.loadList(uri);
+		final DtList<D> dtc = dataStore.loadList(uri.getDtDefinition(), uri);
 		//-----
 		Assertion.checkNotNull(dtc);
 		return dtc;

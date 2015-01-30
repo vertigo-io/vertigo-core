@@ -26,7 +26,6 @@ import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.persistence.datastore.BrokerConfigImpl;
 import io.vertigo.dynamo.impl.persistence.datastore.logical.LogicalDataStoreConfig;
 import io.vertigo.dynamo.persistence.datastore.DataStore;
@@ -67,10 +66,9 @@ public final class CacheDataStore implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> D load(final URI uri) {
+	public <D extends DtObject> D load(final DtDefinition dtDefinition, final URI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final DtDefinition dtDefinition = uri.getDefinition();
 		// - Prise en compte du cache
 		if (cacheDataStoreConfig.isCacheable(dtDefinition)) {
 			D dto = cacheDataStoreConfig.getDataCache().<D> getDtObject(uri);
@@ -86,7 +84,7 @@ public final class CacheDataStore implements DataStore {
 	}
 
 	private <D extends DtObject> D doLoad(final DtDefinition dtDefinition, final URI uri) {
-		return getPhysicalStore(dtDefinition).<D> load(uri);
+		return getPhysicalStore(dtDefinition).<D> load(dtDefinition, uri);
 	}
 
 	private synchronized <D extends DtObject> D reload(final DtDefinition dtDefinition, final URI uri) {
@@ -110,7 +108,7 @@ public final class CacheDataStore implements DataStore {
 		if (uri instanceof DtListURIForMasterData) {
 			return loadMDList((DtListURIForMasterData) uri);
 		}
-		return getPhysicalStore(dtDefinition).<D> loadList(uri);
+		return getPhysicalStore(dtDefinition).<D> loadList(dtDefinition, uri);
 	}
 
 	private <D extends DtObject> DtList<D> loadMDList(final DtListURIForMasterData uri) {
@@ -118,7 +116,7 @@ public final class CacheDataStore implements DataStore {
 		Assertion.checkArgument(uri.getDtDefinition().getSortField().isDefined(), "Sortfield on definition {0} wasn't set. It's mandatory for MasterDataList.", uri.getDtDefinition().getName());
 		//-----
 		//On cherche la liste complete (URIAll n'est pas une DtListURIForMasterData pour ne pas boucler)
-		final DtList<D> unFilteredDtc = loadList(new DtListURIForCriteria<D>(uri.getDtDefinition(), null, null));
+		final DtList<D> unFilteredDtc = loadList(uri.getDtDefinition(), new DtListURIForCriteria<D>(uri.getDtDefinition(), null, null));
 
 		//Composition.
 		//On compose les fonctions
@@ -133,7 +131,7 @@ public final class CacheDataStore implements DataStore {
 
 	/** {@inheritDoc}  */
 	@Override
-	public <D extends DtObject> DtList<D> loadList(final DtListURI uri) {
+	public <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURI uri) {
 		// - Prise en compte du cache
 		//On ne met pas en cache les URI d'une association NN
 		if (cacheDataStoreConfig.isCacheable(uri.getDtDefinition()) && !isMultipleAssociation(uri)) {
@@ -168,18 +166,16 @@ public final class CacheDataStore implements DataStore {
 	//==========================================================================
 	/** {@inheritDoc} */
 	@Override
-	public void merge(final DtObject dto) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-		getPhysicalStore(dtDefinition).merge(dto);
+	public void merge(final DtDefinition dtDefinition, final DtObject dto) {
+		getPhysicalStore(dtDefinition).merge(dtDefinition, dto);
 		//-----
 		clearCache(dtDefinition);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void create(final DtObject dto) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-		getPhysicalStore(dtDefinition).create(dto);
+	public void create(final DtDefinition dtDefinition, final DtObject dto) {
+		getPhysicalStore(dtDefinition).create(dtDefinition, dto);
 		//-----
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 		clearCache(dtDefinition);
@@ -187,9 +183,8 @@ public final class CacheDataStore implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public void update(final DtObject dto) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-		getPhysicalStore(dtDefinition).update(dto);
+	public void update(final DtDefinition dtDefinition, final DtObject dto) {
+		getPhysicalStore(dtDefinition).update(dtDefinition, dto);
 		//-----
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 		clearCache(dtDefinition);
@@ -197,9 +192,8 @@ public final class CacheDataStore implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public void delete(final URI uri) {
-		final DtDefinition dtDefinition = uri.getDefinition();
-		getPhysicalStore(dtDefinition).delete(uri);
+	public void delete(final DtDefinition dtDefinition, final URI uri) {
+		getPhysicalStore(dtDefinition).delete(dtDefinition, uri);
 		//-----
 		clearCache(dtDefinition);
 	}

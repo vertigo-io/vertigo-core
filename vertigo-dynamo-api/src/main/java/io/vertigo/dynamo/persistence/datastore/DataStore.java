@@ -49,7 +49,7 @@ public interface DataStore {
 	 * @return D correspondant à l'URI fournie.
 	 * @param <D> Type de l'objet
 	 */
-	<D extends DtObject> D load(URI uri);
+	<D extends DtObject> D load(DtDefinition dtDefinition, URI uri);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
@@ -59,7 +59,7 @@ public interface DataStore {
 	 * @return DtList<D> Liste correspondant à l'URI fournie
 	 * @param <D> Type de l'objet
 	 */
-	<D extends DtObject> DtList<D> loadList(DtListURI uri);
+	<D extends DtObject> DtList<D> loadList(DtDefinition dtDefinition, DtListURI uri);
 
 	//==========================================================================
 	//=============================== WRITE ====================================
@@ -70,14 +70,14 @@ public interface DataStore {
 	*
 	* @param dto Object to create
 	*/
-	void create(DtObject dto);
+	void create(DtDefinition dtDefinition, DtObject dto);
 
 	/**
 	* Update an object.
 	* This object must have an id.
 	* @param dto Object to update
 	*/
-	void update(DtObject dto);
+	void update(DtDefinition dtDefinition, DtObject dto);
 
 	/**
 	* Merge an object.
@@ -88,12 +88,12 @@ public interface DataStore {
 	*
 	* @param dto Object to merge
 	*/
-	void merge(DtObject dto);
+	void merge(DtDefinition dtDefinition, DtObject dto);
 
 	/**
 	 * Suppression d'un objet.
 	 * @param uri URI de l'objet à supprimmer
 	 */
-	void delete(URI uri);
+	void delete(DtDefinition dtDefinition, URI uri);
 
 }

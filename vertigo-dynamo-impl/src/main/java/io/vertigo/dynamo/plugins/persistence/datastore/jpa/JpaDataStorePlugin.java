@@ -139,7 +139,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> D load(final URI uri) {
+	public <D extends DtObject> D load(final DtDefinition dtDefinition, final URI uri) {
 		final D dto = this.<D> loadWithoutClear(uri);
 		//On détache le DTO du contexte jpa
 		//De cette façon on interdit à jpa d'utiliser son cache
@@ -149,7 +149,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> loadList(final DtListURI uri) {
+	public <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURI uri) {
 		// Assertion.precondition(uri instanceof DtListURIForAssociation, "cas non traité {0}", uri.toURN());
 		// uri.toURN >>  java.lang.IllegalArgumentException: uri urn[.persistence.utilx.DtListURIForDtCriteria]::null non serializable
 		//-----
@@ -331,12 +331,12 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	@Override
-	public void create(final DtObject dto) {
+	public void create(final DtDefinition dtDefinition, final DtObject dto) {
 		put("Jpa:create", dto, true);
 	}
 
 	@Override
-	public void update(final DtObject dto) {
+	public void update(final DtDefinition dtDefinition, final DtObject dto) {
 		put("Jpa:update", dto, false);
 	}
 
@@ -366,13 +366,13 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	@Override
-	public void merge(final DtObject dto) {
+	public void merge(final DtDefinition dtDefinition, final DtObject dto) {
 		put("Jpa:merge", dto, false);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void delete(final URI uri) {
+	public void delete(final DtDefinition dtDefinition, final URI uri) {
 		final EntityManager em = obtainEntityManager();
 		final String serviceName = "Jpa:remove " + uri.getDefinition().getName();
 		final long start = System.currentTimeMillis();

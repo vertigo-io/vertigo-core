@@ -33,30 +33,30 @@ public abstract class AbstractStaticDataStorePlugin implements DataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public int count(final DtDefinition dtDefinition) {
-		return loadList(new DtListURIForCriteria<>(dtDefinition, null, null)).size();
+		return loadList(dtDefinition, new DtListURIForCriteria<>(dtDefinition, null, null)).size();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void create(final DtObject dto) {
+	public void create(final DtDefinition dtDefinition, final DtObject dto) {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void update(final DtObject dto) {
+	public void update(final DtDefinition dtDefinition, final DtObject dto) {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void delete(final URI uri) {
+	public void delete(final DtDefinition dtDefinition, final URI uri) {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void merge(final DtObject dto) {
+	public void merge(final DtDefinition dtDefinition, final DtObject dto) {
 		throw new UnsupportedOperationException();
 	}
 

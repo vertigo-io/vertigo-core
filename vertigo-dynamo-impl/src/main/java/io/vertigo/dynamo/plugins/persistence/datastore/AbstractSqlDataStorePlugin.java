@@ -113,9 +113,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public final <D extends DtObject> D load(final URI uri) {
-		final DtDefinition dtDefinition = uri.getDefinition();
-
+	public final <D extends DtObject> D load(final DtDefinition dtDefinition, final URI uri) {
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_SELECT.toString() + '_' + tableName + "_BY_URI";
 
@@ -144,7 +142,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public final <D extends DtObject> DtList<D> loadList(final DtListURI uri) {
+	public final <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURI uri) {
 		// Assertion.precondition(uri instanceof DtListURIForAssociation, "cas non traité {0}", uri.toURN());
 		// uri.toURN >>  java.lang.IllegalArgumentException: uri urn[dynamoimpl.persistence.utilx.DtListURIForDtCriteria]::null non serializable
 		//-----
@@ -373,7 +371,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	//==========================================================================
 	/** {@inheritDoc} */
 	@Override
-	public final void create(final DtObject dto) {
+	public final void create(final DtDefinition dtDefinition, final DtObject dto) {
 		Assertion.checkArgument(DtObjectUtil.getId(dto) == null, "Only object without any id can be created");
 		//------
 		final boolean insert = true;
@@ -385,7 +383,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public final void update(final DtObject dto) {
+	public final void update(final DtDefinition dtDefinition, final DtObject dto) {
 		Assertion.checkNotNull(DtObjectUtil.getId(dto), "Need an id to update an object ");
 		//-----
 		final boolean insert = false;
@@ -397,7 +395,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void merge(final DtObject dto) {
+	public void merge(final DtDefinition dtDefinition, final DtObject dto) {
 		//On fait un update
 		boolean saved = put(dto, false);
 		if (!saved) {
@@ -495,8 +493,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void delete(final URI uri) {
-		final DtDefinition dtDefinition = uri.getDefinition();
+	public void delete(final DtDefinition dtDefinition, final URI uri) {
 		final DtField pk = dtDefinition.getIdField().get();
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_DELETE.toString() + '_' + tableName;
