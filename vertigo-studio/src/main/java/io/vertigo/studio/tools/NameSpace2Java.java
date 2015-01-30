@@ -22,6 +22,7 @@ import io.vertigo.boot.xml.XMLModulesBuilder;
 import io.vertigo.core.Home.App;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
+import io.vertigo.lang.Assertion;
 import io.vertigo.studio.tools.generate.GenerateGoal;
 import io.vertigo.util.ClassUtil;
 
@@ -75,6 +76,8 @@ public final class NameSpace2Java {
 
 	private static Properties loadProperties(final String propertiesName, final Class<?> relativeRootClass) {
 		final URL url = relativeRootClass.getResource(propertiesName);
+		Assertion.checkNotNull(url, "Unable to find file :{0} in classRoot {1}", propertiesName, relativeRootClass);
+		//-----
 		try (final InputStream in = url.openStream()) {
 			final Properties properties = new Properties();
 			properties.load(in);
