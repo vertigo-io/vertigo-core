@@ -25,7 +25,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.persistence.datastore.cache.CacheDataStore;
-import io.vertigo.dynamo.impl.persistence.datastore.logical.LogicalDataStore;
 import io.vertigo.dynamo.persistence.datastore.Broker;
 import io.vertigo.dynamo.persistence.datastore.DataStore;
 import io.vertigo.lang.Assertion;
@@ -53,8 +52,7 @@ public final class BrokerImpl implements Broker {
 		//On vérouille la configuration.
 		//brokerConfiguration.lock();
 		//On crée la pile de Store.
-		final DataStore logicalDataStore = new LogicalDataStore(brokerConfiguration.getLogicalStoreConfig(), this);
-		dataStore = new CacheDataStore(logicalDataStore, brokerConfiguration.getCacheStoreConfiguration());
+		dataStore = new CacheDataStore(brokerConfiguration);
 	}
 
 	//==========================================================================

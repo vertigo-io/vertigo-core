@@ -64,7 +64,7 @@ public final class BrokerConfigImpl implements BrokerConfig {
 		cacheStoreConfig.registerCacheable(dtDefinition, timeToLiveInSeconds, isReloadedByList);
 	}
 
-	public CacheDataStoreConfig getCacheStoreConfiguration() {
+	public CacheDataStoreConfig getCacheStoreConfig() {
 		return cacheStoreConfig;
 	}
 

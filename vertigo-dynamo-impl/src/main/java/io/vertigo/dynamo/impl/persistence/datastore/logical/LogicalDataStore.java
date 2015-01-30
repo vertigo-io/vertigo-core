@@ -26,7 +26,7 @@ import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.persistence.datastore.Broker;
+import io.vertigo.dynamo.impl.persistence.datastore.cache.CacheDataStore;
 import io.vertigo.dynamo.persistence.datastore.DataStore;
 import io.vertigo.lang.Assertion;
 
@@ -37,20 +37,20 @@ import io.vertigo.lang.Assertion;
  * @author  pchretien
  */
 public final class LogicalDataStore implements DataStore {
-	private final LogicalDataStoreConfig logicalStoreConfiguration;
-	private final Broker broker;
+	private final LogicalDataStoreConfig logicalStoreConfig;
+	private final CacheDataStore cacheDataStore;
 
 	/**
 	 * Constructeur.
-	 * @param logicalStoreConfiguration Configuration logique des stores physiques.
-	 * @param broker Broker pour réentrance
+	 * @param logicalStoreConfig Configuration logique des stores physiques.
+	 * @param dataStore DataStore pour réentrance
 	 */
-	public LogicalDataStore(final LogicalDataStoreConfig logicalStoreConfiguration, final Broker broker) {
-		Assertion.checkNotNull(logicalStoreConfiguration);
-		Assertion.checkNotNull(broker);
+	public LogicalDataStore(final LogicalDataStoreConfig logicalStoreConfig, final CacheDataStore dataStore) {
+		Assertion.checkNotNull(logicalStoreConfig);
+		Assertion.checkNotNull(dataStore);
 		//-----
-		this.logicalStoreConfiguration = logicalStoreConfiguration;
-		this.broker = broker;
+		this.logicalStoreConfig = logicalStoreConfig;
+		this.cacheDataStore = dataStore;
 	}
 
 	private static DtDefinition getDtDefinition(final URI uri) {
@@ -58,7 +58,7 @@ public final class LogicalDataStore implements DataStore {
 	}
 
 	private DataStore getPhysicalStore(final DtDefinition dtDefinition) {
-		return logicalStoreConfiguration.getPhysicalStore(dtDefinition);
+		return logicalStoreConfig.getPhysicalStore(dtDefinition);
 	}
 
 	/** {@inheritDoc} */
@@ -77,13 +77,13 @@ public final class LogicalDataStore implements DataStore {
 		Assertion.checkArgument(uri.getDtDefinition().getSortField().isDefined(), "Sortfield on definition {0} wasn't set. It's mandatory for MasterDataList.", uri.getDtDefinition().getName());
 		//-----
 		//On cherche la liste complete (URIAll n'est pas une DtListURIForMasterData pour ne pas boucler)
-		final DtList<D> unFilteredDtc = broker.<D> getList(new DtListURIForCriteria<D>(uri.getDtDefinition(), null, null));
+		final DtList<D> unFilteredDtc = cacheDataStore.loadList(new DtListURIForCriteria<D>(uri.getDtDefinition(), null, null));
 
 		//Composition.
 		//On compose les fonctions
 		//1.on filtre
 		//2.on trie
-		final DtList<D> sortedDtc = logicalStoreConfiguration.getPersistenceManager().getMasterDataConfig().getFilter(uri)
+		final DtList<D> sortedDtc = logicalStoreConfig.getPersistenceManager().getMasterDataConfig().getFilter(uri)
 				.sort(uri.getDtDefinition().getSortField().get().getName(), false, true, true)
 				.apply(unFilteredDtc);
 		sortedDtc.setURI(uri);

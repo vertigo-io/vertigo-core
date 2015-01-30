@@ -26,6 +26,8 @@ import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.impl.persistence.datastore.BrokerConfigImpl;
+import io.vertigo.dynamo.impl.persistence.datastore.logical.LogicalDataStore;
 import io.vertigo.dynamo.persistence.datastore.DataStore;
 import io.vertigo.lang.Assertion;
 
@@ -36,19 +38,17 @@ import io.vertigo.lang.Assertion;
  */
 public final class CacheDataStore implements DataStore {
 	private final DataStore logicalDataStore;
-	private final CacheDataStoreConfig cacheDataStoreConfiguration;
+	private final CacheDataStoreConfig cacheDataStoreConfig;
 
 	/**
 	 * Constructeur.
-	 * @param logicalStore Store logique
-	 * @param cacheDataStoreConfiguration Configuration du cache
+	 * @param brokerConfig Configuration
 	 */
-	public CacheDataStore(final DataStore logicalStore, final CacheDataStoreConfig cacheDataStoreConfiguration) {
-		Assertion.checkNotNull(cacheDataStoreConfiguration);
-		Assertion.checkNotNull(logicalStore);
+	public CacheDataStore(final BrokerConfigImpl brokerConfig) {
+		Assertion.checkNotNull(brokerConfig);
 		//-----
-		this.logicalDataStore = logicalStore;
-		this.cacheDataStoreConfiguration = cacheDataStoreConfiguration;
+		this.logicalDataStore = new LogicalDataStore(brokerConfig.getLogicalStoreConfig(), this);
+		this.cacheDataStoreConfig = brokerConfig.getCacheStoreConfig();
 	}
 
 	//==========================================================================
@@ -65,8 +65,8 @@ public final class CacheDataStore implements DataStore {
 	@Override
 	public <D extends DtObject> D load(final URI uri) {
 		// - Prise en compte du cache
-		if (cacheDataStoreConfiguration.isCacheable(uri.<DtDefinition> getDefinition())) {
-			D dto = cacheDataStoreConfiguration.getDataCache().<D> getDtObject(uri);
+		if (cacheDataStoreConfig.isCacheable(uri.<DtDefinition> getDefinition())) {
+			D dto = cacheDataStoreConfig.getDataCache().<D> getDtObject(uri);
 			if (dto == null) {
 				//Cas ou le dto représente un objet non mis en cache
 				dto = this.<D> reload(uri);
@@ -79,15 +79,15 @@ public final class CacheDataStore implements DataStore {
 
 	private synchronized <D extends DtObject> D reload(final URI uri) {
 		final D dto;
-		if (cacheDataStoreConfiguration.isReloadedByList(uri.<DtDefinition> getDefinition())) {
+		if (cacheDataStoreConfig.isReloadedByList(uri.<DtDefinition> getDefinition())) {
 			//On ne charge pas les cache de façon atomique.
 			final DtListURI dtcURIAll = new DtListURIForCriteria<>(uri.<DtDefinition> getDefinition(), null, null);
 			reloadList(dtcURIAll); //on charge la liste complete (et on remplit les caches)
-			dto = cacheDataStoreConfiguration.getDataCache().<D> getDtObject(uri);
+			dto = cacheDataStoreConfig.getDataCache().<D> getDtObject(uri);
 		} else {
 			//On charge le cache de façon atomique.
 			dto = logicalDataStore.<D> load(uri);
-			cacheDataStoreConfiguration.getDataCache().putDtObject(dto);
+			cacheDataStoreConfig.getDataCache().putDtObject(dto);
 		}
 		return dto;
 	}
@@ -97,8 +97,8 @@ public final class CacheDataStore implements DataStore {
 	public <D extends DtObject> DtList<D> loadList(final DtListURI uri) {
 		// - Prise en compte du cache
 		//On ne met pas en cache les URI d'une association NN
-		if (cacheDataStoreConfiguration.isCacheable(uri.getDtDefinition()) && !isMultipleAssociation(uri)) {
-			DtList<D> dtc = cacheDataStoreConfiguration.getDataCache().getDtList(uri);
+		if (cacheDataStoreConfig.isCacheable(uri.getDtDefinition()) && !isMultipleAssociation(uri)) {
+			DtList<D> dtc = cacheDataStoreConfig.getDataCache().getDtList(uri);
 			if (dtc == null) {
 				dtc = this.<D> reloadList(uri);
 			}
@@ -120,7 +120,7 @@ public final class CacheDataStore implements DataStore {
 		// On charge la liste initiale avec les critéres définis en amont
 		final DtList<D> dtc = logicalDataStore.loadList(uri);
 		// Mise en cache de la liste et des éléments.
-		cacheDataStoreConfiguration.getDataCache().putDtList(dtc);
+		cacheDataStoreConfig.getDataCache().putDtList(dtc);
 		return dtc;
 	}
 
@@ -167,7 +167,7 @@ public final class CacheDataStore implements DataStore {
 		// On ne vérifie pas que la definition est cachable, Lucene utilise le même cache
 		// A changer si on gère lucene différemment
 		//	if (cacheDataStoreConfiguration.isCacheable(dtDefinition)) {
-		cacheDataStoreConfiguration.getDataCache().clear(dtDefinition);
+		cacheDataStoreConfig.getDataCache().clear(dtDefinition);
 		//	}
 	}
 
