@@ -122,7 +122,7 @@ public final class Famille implements DtObject {
 		//-----
 		// On est toujours dans un mode lazy.
 		if (voituresFamille == null) {
-			voituresFamille = io.vertigo.core.Home.getComponentSpace().resolve(PersistenceManager.class).getBroker().getList(fkDtListURI);
+			voituresFamille = io.vertigo.core.Home.getComponentSpace().resolve(PersistenceManager.class).getBroker().getList(fkDtListURI.getDtDefinition(), fkDtListURI);
 		}
 		return voituresFamille;
 	}
@@ -150,7 +150,7 @@ public final class Famille implements DtObject {
 		//-----
 		// On est toujours dans un mode lazy.
 		if (voituresLocation == null) {
-			voituresLocation = io.vertigo.core.Home.getComponentSpace().resolve(PersistenceManager.class).getBroker().getList(fkDtListURI);
+			voituresLocation = io.vertigo.core.Home.getComponentSpace().resolve(PersistenceManager.class).getBroker().getList(fkDtListURI.getDtDefinition(), fkDtListURI);
 		}
 		return voituresLocation;
 	}

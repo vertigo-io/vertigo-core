@@ -81,7 +81,7 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 	@Override
 	public FileInfo load(final FileInfoURI uri) {
 		final URI<DtObject> dtoUri = createDtObjectURI(uri);
-		final DtObject fileInfoDto = getPersistenceManager().getBroker().getOption(dtoUri).get();
+		final DtObject fileInfoDto = getPersistenceManager().getBroker().getOption(dtoUri.getDefinition(), dtoUri).get();
 		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder((DataStream) getValue(fileInfoDto, DtoFields.FILE_DATA));
 		final String fileName = (String) getValue(fileInfoDto, DtoFields.FILE_NAME);
 		final String mimeType = (String) getValue(fileInfoDto, DtoFields.MIME_TYPE);
@@ -116,7 +116,8 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 		//-----
 		final DtObject fileInfoDto = createFileInfoDto(fileInfo);
 		//-----
-		getPersistenceManager().getBroker().create(fileInfoDto);
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(fileInfoDto);
+		getPersistenceManager().getBroker().create(dtDefinition, fileInfoDto);
 		//-----
 		final Object fileInfoDtoId = DtObjectUtil.getId(fileInfoDto);
 		Assertion.checkNotNull(fileInfoDtoId, "ID  du fichier doit être renseignée.");
@@ -132,7 +133,8 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 		//-----
 		final DtObject fileInfoDto = createFileInfoDto(fileInfo);
 		//-----
-		getPersistenceManager().getBroker().update(fileInfoDto);
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(fileInfoDto);
+		getPersistenceManager().getBroker().update(dtDefinition, fileInfoDto);
 	}
 
 	private static FileInfoURI createURI(final FileInfoDefinition fileInfoDefinition, final Object key) {
@@ -145,7 +147,7 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 		//-----
 		final URI dtoUri = createDtObjectURI(uri);
-		getPersistenceManager().getBroker().delete(dtoUri);
+		getPersistenceManager().getBroker().delete(dtoUri.getDefinition(), dtoUri);
 	}
 
 	/**

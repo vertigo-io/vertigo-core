@@ -25,6 +25,7 @@ import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.data.SuperHero;
@@ -80,7 +81,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			for (int i = 0; i < size; i++) {
 				final SuperHero superHero = new SuperHero();
 				superHero.setName("SuperHero ( " + i + ")");
-				persistenceManager.getBroker().create(superHero);
+				persistenceManager.getBroker().create(DtObjectUtil.findDtDefinition(superHero), superHero);
 			}
 			transaction.commit();
 		}

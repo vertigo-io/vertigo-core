@@ -98,9 +98,9 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	@Deprecated
 	public final void save(final D dto) {
 		if (DtObjectUtil.getId(dto) == null) {
-			broker.create(dto);
+			broker.create(dtDefinition, dto);
 		} else {
-			broker.update(dto);
+			broker.update(dtDefinition, dto);
 		}
 	}
 
@@ -110,7 +110,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 * @param dto Object to create
 	 */
 	public final void create(final D dto) {
-		broker.create(dto);
+		broker.create(dtDefinition, dto);
 	}
 
 	/**
@@ -119,7 +119,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 * @param dto Object to update
 	 */
 	public final void update(final D dto) {
-		broker.update(dto);
+		broker.update(dtDefinition, dto);
 	}
 
 	/**
@@ -128,7 +128,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 * @param uri URI de l'objet à supprimer
 	 */
 	public final void delete(final URI uri) {
-		broker.delete(uri);
+		broker.delete(dtDefinition, uri);
 	}
 
 	/**
@@ -149,7 +149,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 * @return D Object recherché
 	 */
 	public final D get(final URI<D> uri) {
-		return broker.<D> getOption(uri).get();
+		return broker.<D> getOption(dtDefinition, uri).get();
 	}
 
 	/**
@@ -184,7 +184,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 		final FilterCriteria<D> criteria = new FilterCriteriaBuilder<D>().withFilter(fieldName, value).build();
 		// Verification de la valeur est du type du champ
 		dtDefinition.getField(fieldName).getDomain().getDataType().checkValue(value);
-		return broker.<D> getList(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
+		return broker.<D> getList(dtDefinition, new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
 	}
 
 	/**
@@ -193,7 +193,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 * @return DtList<D> récupéré NOT NUL
 	 */
 	public final DtList<D> getList(final Criteria<D> criteria, final int maxRows) {
-		return broker.<D> getList(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
+		return broker.<D> getList(dtDefinition, new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
 	}
 
 	/** {@inheritDoc} */
@@ -280,7 +280,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	public final DtList<D> getList(final DtObject dtoCriteria, final int maxRows) {
 		final DtListURI collectionURI = new DtListURIForCriteria(dtDefinition, DtListURIForCriteria.createCriteria(dtoCriteria), maxRows);
 		Assertion.checkNotNull(collectionURI);
-		return broker.getList(collectionURI);
+		return broker.getList(dtDefinition, collectionURI);
 	}
 
 	/** {@inheritDoc} */
