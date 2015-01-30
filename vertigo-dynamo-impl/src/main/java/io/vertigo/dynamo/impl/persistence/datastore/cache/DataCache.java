@@ -34,7 +34,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author  pchretien
  */
-final class DataCache {
+public final class DataCache {
 	private final CacheManager cacheManager;
 
 	/**
@@ -118,7 +118,7 @@ final class DataCache {
 		return new URI(DtObjectUtil.findDtDefinition(dto), DtObjectUtil.getId(dto));
 	}
 
-	void clear(final DtDefinition dtDefinition) {
+	public void clear(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		cacheManager.clear(getContext(dtDefinition));

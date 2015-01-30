@@ -36,7 +36,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author  pchretien
  */
-public final class CacheDataStore implements DataStore {
+public final class CacheDataStore {
 	private final CacheDataStoreConfig cacheDataStoreConfig;
 	private final LogicalDataStoreConfig logicalStoreConfig;
 
@@ -58,14 +58,6 @@ public final class CacheDataStore implements DataStore {
 		return logicalStoreConfig.getPhysicalStore(dtDefinition);
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public int count(final DtDefinition dtDefinition) {
-		return getPhysicalStore(dtDefinition).count(dtDefinition);
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public <D extends DtObject> D load(final DtDefinition dtDefinition, final URI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
@@ -129,8 +121,6 @@ public final class CacheDataStore implements DataStore {
 		return sortedDtc;
 	}
 
-	/** {@inheritDoc}  */
-	@Override
 	public <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURI uri) {
 		// - Prise en compte du cache
 		//On ne met pas en cache les URI d'une association NN
@@ -160,51 +150,4 @@ public final class CacheDataStore implements DataStore {
 		cacheDataStoreConfig.getDataCache().putDtList(dtc);
 		return dtc;
 	}
-
-	//==========================================================================
-	//=============================== WRITE ====================================
-	//==========================================================================
-	/** {@inheritDoc} */
-	@Override
-	public void merge(final DtDefinition dtDefinition, final DtObject dto) {
-		getPhysicalStore(dtDefinition).merge(dtDefinition, dto);
-		//-----
-		clearCache(dtDefinition);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void create(final DtDefinition dtDefinition, final DtObject dto) {
-		getPhysicalStore(dtDefinition).create(dtDefinition, dto);
-		//-----
-		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
-		clearCache(dtDefinition);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void update(final DtDefinition dtDefinition, final DtObject dto) {
-		getPhysicalStore(dtDefinition).update(dtDefinition, dto);
-		//-----
-		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
-		clearCache(dtDefinition);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void delete(final DtDefinition dtDefinition, final URI uri) {
-		getPhysicalStore(dtDefinition).delete(dtDefinition, uri);
-		//-----
-		clearCache(dtDefinition);
-	}
-
-	/* On notifie la mise à jour du cache, celui-ci est donc vidé. */
-	private void clearCache(final DtDefinition dtDefinition) {
-		// On ne vérifie pas que la definition est cachable, Lucene utilise le même cache
-		// A changer si on gère lucene différemment
-		//	if (cacheDataStoreConfiguration.isCacheable(dtDefinition)) {
-		cacheDataStoreConfig.getDataCache().clear(dtDefinition);
-		//	}
-	}
-
 }

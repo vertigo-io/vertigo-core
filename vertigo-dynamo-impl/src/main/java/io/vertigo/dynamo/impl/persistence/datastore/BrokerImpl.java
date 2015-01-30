@@ -25,6 +25,8 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.persistence.datastore.cache.CacheDataStore;
+import io.vertigo.dynamo.impl.persistence.datastore.cache.CacheDataStoreConfig;
+import io.vertigo.dynamo.impl.persistence.datastore.logical.LogicalDataStoreConfig;
 import io.vertigo.dynamo.persistence.datastore.Broker;
 import io.vertigo.dynamo.persistence.datastore.DataStore;
 import io.vertigo.lang.Assertion;
@@ -39,7 +41,9 @@ import io.vertigo.lang.Option;
  */
 public final class BrokerImpl implements Broker {
 	/** Le store est le point d'accès unique à la base (sql, xml, fichier plat...). */
-	private final DataStore dataStore;
+	private final CacheDataStore cacheDataStore;
+	private final LogicalDataStoreConfig logicalStoreConfig;
+	private final CacheDataStoreConfig cacheDataStoreConfig;
 
 	/**
 	 * Constructeur.
@@ -52,7 +56,22 @@ public final class BrokerImpl implements Broker {
 		//On vérouille la configuration.
 		//brokerConfiguration.lock();
 		//On crée la pile de Store.
-		dataStore = new CacheDataStore(brokerConfiguration);
+		this.logicalStoreConfig = brokerConfiguration.getLogicalStoreConfig();
+		this.cacheDataStoreConfig = brokerConfiguration.getCacheStoreConfig();
+		cacheDataStore = new CacheDataStore(brokerConfiguration);
+	}
+
+	private DataStore getPhysicalStore(final DtDefinition dtDefinition) {
+		return logicalStoreConfig.getPhysicalStore(dtDefinition);
+	}
+
+	/* On notifie la mise à jour du cache, celui-ci est donc vidé. */
+	private void clearCache(final DtDefinition dtDefinition) {
+		// On ne vérifie pas que la definition est cachable, Lucene utilise le même cache
+		// A changer si on gère lucene différemment
+		//	if (cacheDataStoreConfiguration.isCacheable(dtDefinition)) {
+		cacheDataStoreConfig.getDataCache().clear(dtDefinition);
+		//	}
 	}
 
 	//==========================================================================
@@ -63,8 +82,11 @@ public final class BrokerImpl implements Broker {
 	public void create(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//-----
-		dataStore.create(DtObjectUtil.findDtDefinition(dto), dto);
-
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
+		getPhysicalStore(dtDefinition).create(dtDefinition, dto);
+		//-----
+		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
+		clearCache(dtDefinition);
 	}
 
 	/** {@inheritDoc} */
@@ -85,8 +107,11 @@ public final class BrokerImpl implements Broker {
 	public void update(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//-----
-		dataStore.update(DtObjectUtil.findDtDefinition(dto), dto);
-
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
+		getPhysicalStore(dtDefinition).update(dtDefinition, dto);
+		//-----
+		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
+		clearCache(dtDefinition);
 	}
 
 	/** {@inheritDoc} */
@@ -94,7 +119,10 @@ public final class BrokerImpl implements Broker {
 	public void merge(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//-----
-		dataStore.merge(DtObjectUtil.findDtDefinition(dto), dto);
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
+		getPhysicalStore(dtDefinition).merge(dtDefinition, dto);
+		//-----
+		clearCache(dtDefinition);
 	}
 
 	/** {@inheritDoc} */
@@ -102,7 +130,10 @@ public final class BrokerImpl implements Broker {
 	public void delete(final URI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		dataStore.delete(uri.getDefinition(), uri);
+		final DtDefinition dtDefinition = uri.getDefinition();
+		getPhysicalStore(dtDefinition).delete(dtDefinition, uri);
+		//-----
+		clearCache(dtDefinition);
 	}
 
 	@Override
@@ -110,7 +141,7 @@ public final class BrokerImpl implements Broker {
 	public <D extends DtObject> D get(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final D dto = dataStore.<D> load(uri.getDefinition(), uri);
+		final D dto = cacheDataStore.<D> load(uri.getDefinition(), uri);
 		//-----
 		return Option.option(dto).get();
 	}
@@ -120,7 +151,7 @@ public final class BrokerImpl implements Broker {
 	public <D extends DtObject> Option<D> getOption(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final D dto = dataStore.<D> load(uri.getDefinition(), uri);
+		final D dto = cacheDataStore.<D> load(uri.getDefinition(), uri);
 		//-----
 		return Option.option(dto);
 	}
@@ -130,7 +161,7 @@ public final class BrokerImpl implements Broker {
 	public <D extends DtObject> DtList<D> getList(final DtListURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final DtList<D> dtc = dataStore.loadList(uri.getDtDefinition(), uri);
+		final DtList<D> dtc = cacheDataStore.loadList(uri.getDtDefinition(), uri);
 		//-----
 		Assertion.checkNotNull(dtc);
 		return dtc;
@@ -139,6 +170,6 @@ public final class BrokerImpl implements Broker {
 	/** {@inheritDoc} */
 	@Override
 	public int count(final DtDefinition dtDefinition) {
-		return dataStore.count(dtDefinition);
+		return getPhysicalStore(dtDefinition).count(dtDefinition);
 	}
 }

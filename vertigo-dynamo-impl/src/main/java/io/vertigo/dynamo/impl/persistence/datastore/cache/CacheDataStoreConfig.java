@@ -49,7 +49,7 @@ public final class CacheDataStoreConfig {
 		return cacheableDtDefinitionMap.containsKey(dtDefinition);
 	}
 
-	DataCache getDataCache() {
+	public DataCache getDataCache() {
 		return dataCache;
 	}
 
