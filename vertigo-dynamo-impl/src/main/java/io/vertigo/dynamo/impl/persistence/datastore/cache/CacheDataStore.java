@@ -28,6 +28,7 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.persistence.datastore.BrokerConfigImpl;
 import io.vertigo.dynamo.impl.persistence.datastore.logical.LogicalDataStore;
+import io.vertigo.dynamo.impl.persistence.datastore.logical.LogicalDataStoreConfig;
 import io.vertigo.dynamo.persistence.datastore.DataStore;
 import io.vertigo.lang.Assertion;
 
@@ -39,6 +40,7 @@ import io.vertigo.lang.Assertion;
 public final class CacheDataStore implements DataStore {
 	private final DataStore logicalDataStore;
 	private final CacheDataStoreConfig cacheDataStoreConfig;
+	private final LogicalDataStoreConfig logicalStoreConfig;
 
 	/**
 	 * Constructeur.
@@ -49,16 +51,20 @@ public final class CacheDataStore implements DataStore {
 		//-----
 		this.logicalDataStore = new LogicalDataStore(brokerConfig.getLogicalStoreConfig(), this);
 		this.cacheDataStoreConfig = brokerConfig.getCacheStoreConfig();
+		this.logicalStoreConfig = brokerConfig.getLogicalStoreConfig();
 	}
 
 	//==========================================================================
 	//=============================== READ =====================================
 	//==========================================================================
+	private DataStore getPhysicalStore(final DtDefinition dtDefinition) {
+		return logicalStoreConfig.getPhysicalStore(dtDefinition);
+	}
 
 	/** {@inheritDoc} */
 	@Override
 	public int count(final DtDefinition dtDefinition) {
-		return logicalDataStore.count(dtDefinition);
+		return getPhysicalStore(dtDefinition).count(dtDefinition);
 	}
 
 	/** {@inheritDoc} */
@@ -130,35 +136,38 @@ public final class CacheDataStore implements DataStore {
 	/** {@inheritDoc} */
 	@Override
 	public void merge(final DtObject dto) {
-		logicalDataStore.merge(dto);
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
+		getPhysicalStore(dtDefinition).merge(dto);
 		//-----
-		clearCache(DtObjectUtil.findDtDefinition(dto));
+		clearCache(dtDefinition);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void create(final DtObject dto) {
-		logicalDataStore.create(dto);
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
+		getPhysicalStore(dtDefinition).create(dto);
 		//-----
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
-		clearCache(DtObjectUtil.findDtDefinition(dto));
+		clearCache(dtDefinition);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void update(final DtObject dto) {
-		logicalDataStore.update(dto);
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
+		getPhysicalStore(dtDefinition).update(dto);
 		//-----
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
-		clearCache(DtObjectUtil.findDtDefinition(dto));
+		clearCache(dtDefinition);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void delete(final URI uri) {
-		logicalDataStore.delete(uri);
-		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
+		getPhysicalStore(dtDefinition).delete(uri);
+		//-----
 		clearCache(dtDefinition);
 	}
 

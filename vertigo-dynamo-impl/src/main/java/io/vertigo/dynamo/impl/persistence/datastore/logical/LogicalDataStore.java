@@ -25,7 +25,6 @@ import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.persistence.datastore.cache.CacheDataStore;
 import io.vertigo.dynamo.persistence.datastore.DataStore;
 import io.vertigo.lang.Assertion;
@@ -102,31 +101,30 @@ public final class LogicalDataStore implements DataStore {
 	/** {@inheritDoc} */
 	@Override
 	public void merge(final DtObject dto) {
-		getPhysicalStore(DtObjectUtil.findDtDefinition(dto)).merge(dto);
+		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void create(final DtObject dto) {
-		getPhysicalStore(DtObjectUtil.findDtDefinition(dto)).create(dto);
+		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void update(final DtObject dto) {
-		getPhysicalStore(DtObjectUtil.findDtDefinition(dto)).update(dto);
+		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void delete(final URI uri) {
-		final DtDefinition dtDefinition = getDtDefinition(uri);
-		getPhysicalStore(dtDefinition).delete(uri);
+		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public int count(final DtDefinition dtDefinition) {
-		return getPhysicalStore(dtDefinition).count(dtDefinition);
+		throw new UnsupportedOperationException();
 	}
 }

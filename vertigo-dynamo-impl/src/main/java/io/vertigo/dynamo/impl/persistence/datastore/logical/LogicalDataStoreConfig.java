@@ -66,7 +66,7 @@ public final class LogicalDataStoreConfig {
 	 * @param definition Définition
 	 * @return Store utilisé pour cette definition
 	 */
-	DataStore getPhysicalStore(final DtDefinition definition) {
+	public DataStore getPhysicalStore(final DtDefinition definition) {
 		Assertion.checkNotNull(definition);
 		//-----
 		//On regarde si il existe un store enregistré spécifiquement pour cette Definition
