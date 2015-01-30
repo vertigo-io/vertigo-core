@@ -43,30 +43,48 @@ public final class UiListDelta<D extends DtObject> implements Serializable {
 	private final Class<D> objectType;
 
 	/**
+	 * Constructor.
 	 * @param objectType Object type
 	 * @param collCreates Map of created inputs
 	 * @param collUpdates Map of updated inputs
 	 * @param collDeletes Map of removed inputs
 	 */
 	UiListDelta(final Class<D> objectType, final Map<String, UiObject<D>> collCreates, final Map<String, UiObject<D>> collUpdates, final Map<String, UiObject<D>> collDeletes) {
+		Assertion.checkNotNull(objectType);
+		Assertion.checkNotNull(collCreates);
+		Assertion.checkNotNull(collUpdates);
+		Assertion.checkNotNull(collDeletes);
+		//-----
 		this.objectType = objectType;
 		this.collCreates = collCreates;
 		this.collUpdates = collUpdates;
 		this.collDeletes = collDeletes;
 	}
 
+	/**
+	 * @return Object type
+	 */
 	public Class<D> getObjectType() {
 		return objectType;
 	}
 
+	/**
+	 * @return Created uiObjects by client id
+	 */
 	public Map<String, UiObject<D>> getCreatesMap() {
 		return collCreates;
 	}
 
+	/**
+	 * @return Updated uiObjects by client id
+	 */
 	public Map<String, UiObject<D>> getUpdatesMap() {
 		return collUpdates;
 	}
 
+	/**
+	 * @return Deleted uiObject by client id
+	 */
 	public Map<String, UiObject<D>> getDeletesMap() {
 		return collDeletes;
 	}
