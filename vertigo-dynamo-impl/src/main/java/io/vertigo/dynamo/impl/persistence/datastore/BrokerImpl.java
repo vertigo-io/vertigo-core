@@ -79,9 +79,10 @@ public final class BrokerImpl implements Broker {
 	//==========================================================================
 	/** {@inheritDoc} */
 	@Override
-	public void create(final DtDefinition dtDefinition, final DtObject dto) {
+	public void create(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//-----
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		getPhysicalStore(dtDefinition).create(dtDefinition, dto);
 		//-----
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
@@ -91,21 +92,22 @@ public final class BrokerImpl implements Broker {
 	/** {@inheritDoc} */
 	@Override
 	@Deprecated
-	public void save(final DtDefinition dtDefinition, final DtObject dto) {
+	public void save(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//-----
 		if (DtObjectUtil.getId(dto) == null) {
-			create(dtDefinition, dto);
+			create(dto);
 		} else {
-			update(dtDefinition, dto);
+			update(dto);
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void update(final DtDefinition dtDefinition, final DtObject dto) {
+	public void update(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//-----
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		getPhysicalStore(dtDefinition).update(dtDefinition, dto);
 		//-----
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
@@ -114,9 +116,10 @@ public final class BrokerImpl implements Broker {
 
 	/** {@inheritDoc} */
 	@Override
-	public void merge(final DtDefinition dtDefinition, final DtObject dto) {
+	public void merge(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//-----
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		getPhysicalStore(dtDefinition).merge(dtDefinition, dto);
 		//-----
 		clearCache(dtDefinition);
@@ -124,9 +127,10 @@ public final class BrokerImpl implements Broker {
 
 	/** {@inheritDoc} */
 	@Override
-	public void delete(final DtDefinition dtDefinition, final URI uri) {
+	public void delete(final URI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
+		final DtDefinition dtDefinition = uri.getDefinition();
 		getPhysicalStore(dtDefinition).delete(dtDefinition, uri);
 		//-----
 		clearCache(dtDefinition);
@@ -134,30 +138,30 @@ public final class BrokerImpl implements Broker {
 
 	@Override
 	@Deprecated
-	public <D extends DtObject> D get(final DtDefinition dtDefinition, final URI<D> uri) {
+	public <D extends DtObject> D get(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final D dto = cacheDataStore.<D> load(dtDefinition, uri);
+		final D dto = cacheDataStore.<D> load(uri.getDefinition(), uri);
 		//-----
 		return Option.option(dto).get();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> Option<D> getOption(final DtDefinition dtDefinition, final URI<D> uri) {
+	public <D extends DtObject> Option<D> getOption(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final D dto = cacheDataStore.<D> load(dtDefinition, uri);
+		final D dto = cacheDataStore.<D> load(uri.getDefinition(), uri);
 		//-----
 		return Option.option(dto);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> getList(final DtDefinition dtDefinition, final DtListURI uri) {
+	public <D extends DtObject> DtList<D> getList(final DtListURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final DtList<D> dtc = cacheDataStore.loadList(dtDefinition, uri);
+		final DtList<D> dtc = cacheDataStore.loadList(uri.getDtDefinition(), uri);
 		//-----
 		Assertion.checkNotNull(dtc);
 		return dtc;

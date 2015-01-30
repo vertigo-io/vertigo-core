@@ -101,7 +101,7 @@ public final class ExportHelper {
 		//TODO ceci est un copier/coller de KSelectionListBean (qui resemble plus à un helper des MasterData qu'a un bean)
 		//La collection n'est pas précisé alors on va la chercher dans le repository du référentiel
 		final DtListURIForMasterData mdlUri = persistenceManager.getMasterDataConfig().getDtListURIForMasterData(dtField.getFkDtDefinition());
-		final DtList<DtObject> valueList = persistenceManager.getBroker().getList(mdlUri.getDtDefinition(), mdlUri);
+		final DtList<DtObject> valueList = persistenceManager.getBroker().getList(mdlUri);
 		final DtField dtFieldDisplay = mdlUri.getDtDefinition().getDisplayField().get();
 		final DtField dtFieldKey = valueList.getDefinition().getIdField().get();
 		return createDenormIndex(valueList, dtFieldKey, dtFieldDisplay);

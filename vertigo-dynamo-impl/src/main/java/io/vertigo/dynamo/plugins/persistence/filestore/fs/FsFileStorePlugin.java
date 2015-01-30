@@ -113,7 +113,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	public FileInfo load(final FileInfoURI uri) {
 		// récupération de l'objet en base
 		final URI<DtObject> dtoUri = createDtObjectURI(uri);
-		final DtObject fileInfoDto = getPersistenceManager().getBroker().getOption(dtoUri.getDefinition(), dtoUri).get();
+		final DtObject fileInfoDto = getPersistenceManager().getBroker().getOption(dtoUri).get();
 
 		// récupération du fichier
 		final String fileName = FsFileStorePlugin.<String> getValue(fileInfoDto, DtoFields.FILE_NAME);
@@ -156,7 +156,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 
 			// récupération de l'objet en base pour récupérer le path du fichier et ne pas modifier la base
 			final URI<DtObject> dtoUri = createDtObjectURI(fileInfo.getURI());
-			final DtObject fileInfoDtoBase = getPersistenceManager().getBroker().getOption(dtoUri.getDefinition(), dtoUri).get();
+			final DtObject fileInfoDtoBase = getPersistenceManager().getBroker().getOption(dtoUri).get();
 			final String pathToSave = FsFileStorePlugin.<String> getValue(fileInfoDtoBase, DtoFields.FILE_PATH);
 			setValue(fileInfoDto, DtoFields.FILE_PATH, pathToSave);
 		}
@@ -223,11 +223,11 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 
 		final URI<DtObject> dtoUri = createDtObjectURI(uri);
 		//-----suppression du fichier
-		final DtObject fileInfoDto = getPersistenceManager().getBroker().getOption(dtoUri.getDefinition(), dtoUri).get();
+		final DtObject fileInfoDto = getPersistenceManager().getBroker().getOption(dtoUri).get();
 		final String path = FsFileStorePlugin.<String> getValue(fileInfoDto, DtoFields.FILE_PATH);
 		obtainFsTransactionRessource().deleteFile(documentRoot + path);
 		//-----suppression en base
-		getPersistenceManager().getBroker().delete(dtoUri.getDefinition(), dtoUri);
+		getPersistenceManager().getBroker().delete(dtoUri);
 	}
 
 	/**

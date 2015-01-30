@@ -49,10 +49,10 @@ public interface Broker {
 	 * @param uri Uri de l'object
 	 * @return Option de l'object récupéré NOT NUL
 	 */
-	<D extends DtObject> Option<D> getOption(final DtDefinition dtDefinition, final URI<D> uri);
+	<D extends DtObject> Option<D> getOption(final URI<D> uri);
 
 	@Deprecated
-	<D extends DtObject> D get(final DtDefinition dtDefinition, final URI<D> uri);
+	<D extends DtObject> D get(final URI<D> uri);
 
 	/**
 	 * Récupération d'une liste identifiée par son URI.
@@ -61,10 +61,10 @@ public interface Broker {
 	 * @param uri URI de la collection à récupérer
 	 * @return DtList DTC
 	 */
-	<D extends DtObject> DtList<D> getList(final DtDefinition dtDefinition, final DtListURI uri);
+	<D extends DtObject> DtList<D> getList(final DtListURI uri);
 
 	@Deprecated
-	void save(final DtDefinition dtDefinition, DtObject dto);
+	void save(DtObject dto);
 
 	/**
 	* Create an object.
@@ -72,14 +72,14 @@ public interface Broker {
 	*
 	* @param dto Object to create
 	*/
-	void create(final DtDefinition dtDefinition, DtObject dto);
+	void create(DtObject dto);
 
 	/**
 	* Update an object.
 	* This object must have an id.
 	* @param dto Object to update
 	*/
-	void update(final DtDefinition dtDefinition, DtObject dto);
+	void update(DtObject dto);
 
 	/**
 	* Merge an object.
@@ -90,12 +90,12 @@ public interface Broker {
 	*
 	* @param dto Object to merge
 	*/
-	void merge(final DtDefinition dtDefinition, DtObject dto);
+	void merge(DtObject dto);
 
 	/**
 	 * Destruction d'un objet persistant par son URI.
 	 *
 	 * @param uri URI de l'objet à supprimer
 	 */
-	void delete(final DtDefinition dtDefinition, URI uri);
+	void delete(URI uri);
 }

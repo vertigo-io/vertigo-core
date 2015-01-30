@@ -120,7 +120,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			for (final Car car : carDataBase.createList()) {
 				car.setId(null);
-				persistenceManager.getBroker().create(DtObjectUtil.findDtDefinition(car), car);
+				persistenceManager.getBroker().create(car);
 			}
 			transaction.commit();
 		}
@@ -298,7 +298,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	public void testGetFamille() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final DtListURI allFamilles = new DtListURIForCriteria<>(dtDefinitionFamille, null, null);
-			final DtList<Famille> dtc = persistenceManager.getBroker().getList(dtDefinitionFamille, allFamilles);
+			final DtList<Famille> dtc = persistenceManager.getBroker().getList(allFamilles);
 			Assert.assertNotNull(dtc);
 			Assert.assertTrue("La liste des famille est vide", dtc.isEmpty());
 			transaction.commit();
@@ -312,17 +312,16 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	public void testAddFamille() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final DtListURI allFamilles = new DtListURIForCriteria<>(dtDefinitionFamille, null, null);
-			DtList<Famille> dtc = persistenceManager.getBroker().getList(dtDefinitionFamille, allFamilles);
+			DtList<Famille> dtc = persistenceManager.getBroker().getList(allFamilles);
 			Assert.assertEquals(0, dtc.size());
 			//-----
 			final Famille famille = new Famille();
 			famille.setLibelle("encore un");
-			final DtDefinition familleDtDefinition = DtObjectUtil.findDtDefinition(famille);
-			persistenceManager.getBroker().create(familleDtDefinition, famille);
+			persistenceManager.getBroker().create(famille);
 			// on attend un objet avec un ID non null ?
 			Assert.assertNotNull(famille.getFamId());
 			//-----
-			dtc = persistenceManager.getBroker().getList(familleDtDefinition, allFamilles);
+			dtc = persistenceManager.getBroker().getList(allFamilles);
 			Assert.assertEquals(1, dtc.size());
 			transaction.commit();
 		}
@@ -344,7 +343,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			// libelle
 			famille.setLibelle(sb.toString());
 			//On doit échouer car le libellé est trop long
-			persistenceManager.getBroker().create(dtDefinitionFamille, famille);
+			persistenceManager.getBroker().create(famille);
 			Assert.fail();
 		}
 	}
@@ -406,13 +405,12 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			//on crée une famille
 			final Famille famille = new Famille();
 			famille.setLibelle("Ma famille");
-			final DtDefinition familleDtDefinition = DtObjectUtil.findDtDefinition(famille);
-			persistenceManager.getBroker().create(familleDtDefinition, famille);
+			persistenceManager.getBroker().create(famille);
 
 			//on récupère la liste des voitures
 			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
 			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
-			final DtList<Car> cars = persistenceManager.getBroker().getList(dtDefinitionCar, allCars);
+			final DtList<Car> cars = persistenceManager.getBroker().getList(allCars);
 			Assert.assertNotNull(cars);
 			Assert.assertFalse("La liste des cars est vide", cars.isEmpty());
 
@@ -437,7 +435,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 
 			//on recharge la famille et on recharge la liste issus de l'association NN : il doit avoir une voiture de moins qu'au début
 			final DtDefinition dtFamille = DtObjectUtil.findDtDefinition(Famille.class);
-			final Famille famille2 = persistenceManager.getBroker().<Famille> getOption(dtFamille, new URI<Famille>(dtFamille, famille.getFamId())).get();
+			final Famille famille2 = persistenceManager.getBroker().<Famille> getOption(new URI<Famille>(dtFamille, famille.getFamId())).get();
 			final DtList<Car> secondResult = famille2.getVoituresLocationList();
 			Assert.assertEquals("Test tailles du nombre de voiture dans une NN", firstResult.size() - 1, secondResult.size());
 			transaction.commit();
@@ -454,19 +452,19 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			//on crée une famille
 			final Famille famille = new Famille();
 			famille.setLibelle("Ma famille");
-			persistenceManager.getBroker().create(DtObjectUtil.findDtDefinition(famille), famille);
+			persistenceManager.getBroker().create(famille);
 
 			//on récupère la liste des voitures
 			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
 			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
-			final DtList<Car> cars = persistenceManager.getBroker().getList(dtDefinitionCar, allCars);
+			final DtList<Car> cars = persistenceManager.getBroker().getList(allCars);
 			Assert.assertNotNull(cars);
 			Assert.assertFalse("La liste des cars est vide", cars.isEmpty());
 
 			//on associe la liste de voiture à la famille en 1N
 			for (final Car car : cars) {
 				car.setFamId(famille.getFamId());
-				persistenceManager.getBroker().update(dtDefinitionCar, car);
+				persistenceManager.getBroker().update(car);
 			}
 
 			//On garde le résultat de l'association 1N
@@ -475,7 +473,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			//On met à jour l'association en retirant le premier élément
 			final Car firstCar = cars.get(0);
 			firstCar.setFamId(null);
-			persistenceManager.getBroker().update(dtDefinitionCar, firstCar);
+			persistenceManager.getBroker().update(firstCar);
 
 			//on garde le résultat en lazy : il doit avoir le meme nombre de voiture qu'au début
 			final DtList<Car> lazyResult = famille.getVoituresFamilleList();
@@ -483,7 +481,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 
 			//on recharge la famille et on recharge la liste issus de l'association 1N : il doit avoir une voiture de moins qu'au début
 			final DtDefinition dtFamille = DtObjectUtil.findDtDefinition(Famille.class);
-			final Famille famille2 = persistenceManager.getBroker().<Famille> getOption(dtFamille, new URI<Famille>(dtFamille, famille.getFamId())).get();
+			final Famille famille2 = persistenceManager.getBroker().<Famille> getOption(new URI<Famille>(dtFamille, famille.getFamId())).get();
 			final DtList<Car> secondResult = famille2.getVoituresFamilleList();
 			Assert.assertEquals("Test tailles du nombre de voiture pour une 1-N", firstResult.size() - 1, secondResult.size());
 			transaction.commit();
@@ -496,7 +494,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			//on récupère la liste des voitures
 			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
 			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
-			final DtList<Car> cars = persistenceManager.getBroker().getList(dtDefinitionCar, allCars);
+			final DtList<Car> cars = persistenceManager.getBroker().getList(allCars);
 			Assert.assertNotNull(cars);
 			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize, cars.size());
 		}
@@ -516,12 +514,12 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	public void testTxCrudInsertCrudSelectRollback() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Car car = createNewCar(null);
-			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			persistenceManager.getBroker().create(dtDefinitionCar, car);
+			persistenceManager.getBroker().create(car);
 
 			//on récupère la liste des voitures
+			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
 			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
-			final DtList<Car> cars = persistenceManager.getBroker().getList(dtDefinitionCar, allCars);
+			final DtList<Car> cars = persistenceManager.getBroker().getList(allCars);
 			Assert.assertNotNull(cars);
 			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize + 1, cars.size());
 		}
@@ -536,7 +534,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			//on récupère la liste des voitures
 			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
 			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
-			final DtList<Car> cars = persistenceManager.getBroker().getList(dtDefinitionCar, allCars);
+			final DtList<Car> cars = persistenceManager.getBroker().getList(allCars);
 			Assert.assertNotNull(cars);
 			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize + 1, cars.size());
 		}
@@ -546,8 +544,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	public void testTxCrudInsertNativeSelectRollback() {
 		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Car car = createNewCar(null);
-
-			persistenceManager.getBroker().create(DtObjectUtil.findDtDefinition(car), car);
+			persistenceManager.getBroker().create(car);
 
 			//on récupère la liste des voitures
 			final DtList<Car> cars = nativeLoadCarList();
@@ -573,15 +570,14 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	public void testTxCrudInsertRollbackCrudSelectRollback() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Car car = createNewCar(null);
-			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			persistenceManager.getBroker().create(dtDefinitionCar, car);
+			persistenceManager.getBroker().create(car);
 		}
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
 			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
 			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
 
-			final DtList<Car> cars = persistenceManager.getBroker().getList(dtDefinitionCar, allCars);
+			final DtList<Car> cars = persistenceManager.getBroker().getList(allCars);
 			Assert.assertNotNull(cars);
 			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize, cars.size());
 		}
@@ -597,7 +593,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			//on récupère la liste des voitures
 			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
 			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
-			final DtList<Car> cars = persistenceManager.getBroker().getList(dtDefinitionCar, allCars);
+			final DtList<Car> cars = persistenceManager.getBroker().getList(allCars);
 			Assert.assertNotNull(cars);
 			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize, cars.size());
 		}
@@ -607,8 +603,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	public void testTxCrudInsertRollbackNativeSelectRollback() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Car car = createNewCar(null);
-			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			persistenceManager.getBroker().create(dtDefinitionCar, car);
+			persistenceManager.getBroker().create(car);
 		}
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
@@ -638,8 +633,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			final Car car = createNewCar(null);
 			final Car car2 = createNewCar(null);
 			nativeInsertCar(car2);
-			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			persistenceManager.getBroker().create(dtDefinitionCar, car);
+			persistenceManager.getBroker().create(car);
 			transaction.commit();
 		}
 	}
@@ -648,7 +642,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	public void testTxCrudInsertTwoCommit() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Car car = createNewCar(null);
-			persistenceManager.getBroker().create(DtObjectUtil.findDtDefinition(car), car);
+			persistenceManager.getBroker().create(car);
 			transaction.commit();
 			transaction.commit();
 		}
@@ -658,15 +652,14 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	public void testTxCrudInsertCommitCrudSelectRollback() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Car car = createNewCar(null);
-			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			persistenceManager.getBroker().create(dtDefinitionCar, car);
+			persistenceManager.getBroker().create(car);
 			transaction.commit();
 		}
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//on récupère la liste des voitures
 			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
 			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
-			final DtList<Car> cars = persistenceManager.getBroker().getList(dtDefinitionCar, allCars);
+			final DtList<Car> cars = persistenceManager.getBroker().getList(allCars);
 			Assert.assertNotNull(cars);
 			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize + 1, cars.size());
 		}
@@ -683,7 +676,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			//on récupère la liste des voitures
 			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
 			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
-			final DtList<Car> cars = persistenceManager.getBroker().getList(dtDefinitionCar, allCars);
+			final DtList<Car> cars = persistenceManager.getBroker().getList(allCars);
 			Assert.assertNotNull(cars);
 			Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize + 1, cars.size());
 		}
@@ -693,8 +686,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	public void testTxCrudInsertCommitNativeSelectRollback() {
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Car car = createNewCar(null);
-			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			persistenceManager.getBroker().create(dtDefinitionCar, car);
+			persistenceManager.getBroker().create(car);
 			transaction.commit();
 		}
 		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
@@ -723,7 +715,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	@Test(expected = NullPointerException.class)
 	public void testCrudInsertNoTx() {
 		final Car car = createNewCar(null);
-		persistenceManager.getBroker().create(DtObjectUtil.findDtDefinition(car), car);
+		persistenceManager.getBroker().create(car);
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -736,7 +728,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	public void testCrudSelectNoTx() {
 		final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
 		final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
-		final DtList<Car> cars = persistenceManager.getBroker().getList(dtDefinitionCar, allCars);
+		final DtList<Car> cars = persistenceManager.getBroker().getList(allCars);
 		Assert.assertNotNull(cars);
 		Assert.assertEquals("Test tailles du nombre de voiture pour une N", initialDbCarSize, cars.size());
 	}
