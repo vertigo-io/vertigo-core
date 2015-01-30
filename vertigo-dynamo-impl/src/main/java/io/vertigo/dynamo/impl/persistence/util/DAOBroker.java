@@ -55,6 +55,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	private final Broker broker;
 	private final BrokerNN brokerNN;
 	private final BrokerBatch<D, P> brokerBatch;
+	private final TaskManager taskManager;
 
 	/**
 	 * Contructeur.
@@ -81,6 +82,11 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 		brokerNN = persistenceManager.getBrokerNN();
 		this.dtDefinition = dtDefinition;
 		brokerBatch = new BrokerBatchImpl<>(dtDefinition, taskManager);
+		this.taskManager = taskManager;
+	}
+
+	protected final TaskManager getTaskManager() {
+		return taskManager;
 	}
 
 	/**

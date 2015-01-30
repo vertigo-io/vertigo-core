@@ -1,9 +1,9 @@
 <#import "macro_ao.ftl" as lib>
 package ${dao.packageName};
 
-<#if !dao.taskDefinitions.empty >
 import javax.inject.Inject;
 
+<#if !dao.taskDefinitions.empty >
 import io.vertigo.core.Home;
 <#if dao.options >
 import io.vertigo.lang.Option;
@@ -17,10 +17,9 @@ import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.dynamo.impl.persistence.util.DAOBroker;
 <#else>
-import javax.inject.Inject;
-
-import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.impl.persistence.util.DAOBroker;
+import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.task.TaskManager;
 </#if>
 
 /**
@@ -39,10 +38,7 @@ public final class ${dao.classSimpleName} extends DAOBroker<${dao.dtClassCanonic
 	 */
 	@Inject
 	public ${dao.classSimpleName}(final PersistenceManager persistenceManager, final TaskManager taskManager) {
-		super(${dao.dtClassCanonicalName}.class, persistenceManager);
-		Assertion.checkNotNull(taskManager);
-		//---------------------------------------------------------------------
-		this.taskManager = taskManager;
+		super(${dao.dtClassCanonicalName}.class, persistenceManager, taskManager);
 	}
 	<#if !dao.taskDefinitions.empty>
 	<@lib.generateBody dao.taskDefinitions/>  

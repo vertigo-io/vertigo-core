@@ -14,7 +14,6 @@
 
 	</#list>
 </#list>
-	private final TaskManager taskManager;
 </#macro> 
    
 <#macro generateBody taskDefinitions>
@@ -46,14 +45,14 @@
     </#list>
 				.build();
     <#if taskDefinition.out>
-		final TaskResult taskResult = taskManager.execute(task);
+		final TaskResult taskResult = getTaskManager().execute(task);
 		<#if !taskDefinition.outAttribute.notNull>
 		return Option.option(taskResult.<${taskDefinition.outAttribute.dataType}> getValue(${taskDefinition.outAttribute.constantName}));
 		<#else>
 		return taskResult.getValue(${taskDefinition.outAttribute.constantName});
 		</#if>
 	 <#else>
-		taskManager.execute(task);
+		getTaskManager().execute(task);
     </#if>
 	}
 
