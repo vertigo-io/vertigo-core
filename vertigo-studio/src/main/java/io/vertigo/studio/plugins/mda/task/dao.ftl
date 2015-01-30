@@ -8,7 +8,6 @@ import io.vertigo.core.Home;
 <#if dao.options >
 import io.vertigo.lang.Option;
 </#if>
-import io.vertigo.lang.Assertion;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
