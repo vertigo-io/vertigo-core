@@ -118,7 +118,7 @@ public final class DataCache {
 		return new URI(DtObjectUtil.findDtDefinition(dto), DtObjectUtil.getId(dto));
 	}
 
-	public void clear(final DtDefinition dtDefinition) {
+	void clear(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		cacheManager.clear(getContext(dtDefinition));

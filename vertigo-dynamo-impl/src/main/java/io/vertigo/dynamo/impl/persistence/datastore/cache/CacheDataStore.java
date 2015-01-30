@@ -51,9 +51,6 @@ public final class CacheDataStore {
 		this.logicalStoreConfig = brokerConfig.getLogicalStoreConfig();
 	}
 
-	//==========================================================================
-	//=============================== READ =====================================
-	//==========================================================================
 	private DataStore getPhysicalStore(final DtDefinition dtDefinition) {
 		return logicalStoreConfig.getPhysicalStore(dtDefinition);
 	}
@@ -149,5 +146,14 @@ public final class CacheDataStore {
 		// Mise en cache de la liste et des éléments.
 		cacheDataStoreConfig.getDataCache().putDtList(dtc);
 		return dtc;
+	}
+
+	/* On notifie la mise à jour du cache, celui-ci est donc vidé. */
+	public void clearCache(final DtDefinition dtDefinition) {
+		// On ne vérifie pas que la definition est cachable, Lucene utilise le même cache
+		// A changer si on gère lucene différemment
+		//	if (cacheDataStoreConfiguration.isCacheable(dtDefinition)) {
+		cacheDataStoreConfig.getDataCache().clear(dtDefinition);
+		//	}
 	}
 }
