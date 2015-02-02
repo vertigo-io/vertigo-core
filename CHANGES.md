@@ -1,10 +1,46 @@
 Version history
 ===============
 
-Running 0.7.3-SNAPSHOT
+Running 0.7.4-SNAPSHOT
 ----------------------
 
 more to come :)
+
+Release 0.7.3 - 2015/02/02
+----------------------
+* [All] Refactored tests to made them more autonomous
+* [All] Fixed some code style
+* [All] Cleaned some dependencies
+* [Dynamo] Split DtListProcessor to dispatch between java or index powered operations
+* [Dynamo] Made Id fieldName free for FileStorePlugin
+* [Dynamo] Fixed Facet filtering
+* [Dynamo] Fixed #12 in ES connection settings
+* [Dynamo] Fixed FsFileStorePlugin error when target directory already exists
+* [Dynamo] Simpler WhereInPreProcessor using with regexp
+* [Dynamo] Fixed sorting crash on null valued field
+* [Dynamo] Split fileInfoURI and DtObjectURI
+* [Dynamo] Renamed datastore plugin : ...persistence.oracle.OracleDataStorePlugin to ...persistence.datastore.oracle.OracleDataStorePlugin
+* [Dynamo] Refactored DaoBroker, Broker and Datastore
+* [Studio] Changed hibernate generationType SEQUENCE to AUTO
+* [Studio] Fixed crebase.sql a semicolon ommited when no tablespace is defined
+* [Quarto] Added timeout to converterTask
+* [Quarto] Renamed plugins to be compliant with naming rules (MergerPluginDOCX to DOCXMergerPlugin, same for OpenOffice)
+* [Commons] Renamed MapCachePlugin into MemoryCachePlugin
+* [Struts2][Vega] Force to prefix servlet parameters with 'boot.' (for orphan detection)
+* [Struts2] ValidationUserException accept DtFieldName
+* [Struts2] Fixed fieldname in ftl for ajax component
+* [Struts2] Removed <br> in radiomap, should use css instead
+* [Struts2] Added getBidDecimal in UiObject for validators use
+* [Vega] Refactored CorsAllowers : extended, renamed as Handler, made optional
+* [Vega] Changed RateLimiting window from 15mn to 5min
+* [Vega] Fixed paginator
+* [Vega] Splitted fieldErrors and objectFieldErrors for easier managment client side
+* [Core] Renamed XMLAppConfigBuilder to XMLModulesBuilder
+* [Core] Refactored AppConfig, simpler external LogConfig
+* [Core] Merged App and Home
+* [Studio,Core] Refactored Env parameters
+* [Core] Fixed aspect bug
+
 
 Release 0.7.2 - 2014/12/16
 ----------------------
