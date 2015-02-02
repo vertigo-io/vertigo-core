@@ -18,11 +18,12 @@
  */
 package io.vertigo.dynamo.work.distributed.rest;
 
-import io.vertigo.boot.xml.XMLModulesBuilder;
+import io.vertigo.boot.xml.XMLAppConfigBuilder;
 import io.vertigo.core.Home.App;
 import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.lang.Assertion;
+
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
@@ -45,11 +46,9 @@ public final class Starter implements Runnable {
 		//-----
 		this.timeToWait = timeToWait;
 		// Initialisation de l'état de l'application
-		appConfig = new AppConfigBuilder()
+		appConfig = new XMLAppConfigBuilder()
 				.withSilence(true)
-				.withModules(new XMLModulesBuilder()
-						.withXmlFileNames(relativeRootClass, managersXmlFileName)
-						.build())
+				.withModules(relativeRootClass, new Properties(), managersXmlFileName)
 				.build();
 	}
 

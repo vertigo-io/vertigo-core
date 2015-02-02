@@ -18,10 +18,12 @@
  */
 package io.vertigo.core.config;
 
-import io.vertigo.boot.xml.XMLModulesBuilder;
+import io.vertigo.boot.xml.XMLAppConfigBuilder;
 import io.vertigo.core.Home;
 import io.vertigo.core.Home.App;
 import io.vertigo.core.spaces.component.data.BioManager;
+
+import java.util.Properties;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,11 +32,9 @@ public final class AppConfigTest {
 	@Test
 	public void HomeTest() {
 
-		final AppConfig appConfig = new AppConfigBuilder()
+		final AppConfig appConfig = new XMLAppConfigBuilder()
 				.withSilence(false)
-				.withModules(new XMLModulesBuilder()
-						.withXmlFileNames(getClass(), "bio.xml")
-						.build())
+				.withModules(getClass(), new Properties(), "bio.xml")
 				.build();
 
 		try (App app = new App(appConfig)) {

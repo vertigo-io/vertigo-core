@@ -18,11 +18,10 @@
  */
 package io.vertigo;
 
-import io.vertigo.boot.xml.XMLModulesBuilder;
+import io.vertigo.boot.xml.XMLAppConfigBuilder;
 import io.vertigo.core.Home;
 import io.vertigo.core.Home.App;
 import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.lang.Component;
@@ -30,6 +29,7 @@ import io.vertigo.lang.Container;
 import io.vertigo.lang.Describable;
 
 import java.util.List;
+import java.util.Properties;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -179,11 +179,11 @@ public abstract class AbstractTestCaseJU4 {
 	 * Configuration des tests.
 	 */
 	protected AppConfig buildAppConfig() {
-		return new AppConfigBuilder()
-				.withModules(new XMLModulesBuilder()
-						.withXmlFileNames(getClass(), getManagersXmlFileName())
-						.build())
+
+		//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
+		return new XMLAppConfigBuilder()
 				.withSilence(true)
+				.withModules(getClass(), new Properties(), getManagersXmlFileName())
 				.build();
 	}
 }

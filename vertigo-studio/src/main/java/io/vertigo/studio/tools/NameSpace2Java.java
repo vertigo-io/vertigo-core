@@ -18,10 +18,9 @@
  */
 package io.vertigo.studio.tools;
 
-import io.vertigo.boot.xml.XMLModulesBuilder;
+import io.vertigo.boot.xml.XMLAppConfigBuilder;
 import io.vertigo.core.Home.App;
 import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.tools.generate.GenerateGoal;
 import io.vertigo.util.ClassUtil;
@@ -54,13 +53,19 @@ public final class NameSpace2Java {
 			throw new IllegalArgumentException("Usage : java io.vertigo.studio.tools.NameSpace2Java \"<<pathToParams.properties>>\" ");
 		}
 		//-----
-		final Properties properties = loadProperties(args[0], NameSpace2Java.class);
+		final Properties conf = loadProperties(args[0], NameSpace2Java.class);
 		// Initialisation de l'état de l'application
-		final AppConfig appConfig = new AppConfigBuilder()
+		final XMLAppConfigBuilder appConfigBuilder = new XMLAppConfigBuilder();
+		if (conf.containsKey("boot.applicationConfiguration")) {
+			final String xmlModulesFileNames = conf.getProperty("boot.applicationConfiguration");
+			final String[] xmlFileNamesSplit = xmlModulesFileNames.split(";");
+			conf.remove("boot.applicationConfiguration");
+			//-----
+			appConfigBuilder.withModules(NameSpace2Java.class, conf, xmlFileNamesSplit);
+		}
+
+		final AppConfig appConfig = appConfigBuilder
 				.withSilence(true)
-				.withModules(new XMLModulesBuilder()
-						.withEnvParams(properties)
-						.build())
 				.build();
 
 		try (App app = new App(appConfig)) {

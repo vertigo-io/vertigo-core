@@ -18,11 +18,8 @@
  */
 package io.vertigo.vega.impl.rest.servlet;
 
-import io.vertigo.boot.xml.XMLModulesBuilder;
+import io.vertigo.boot.xml.XMLAppConfigBuilder;
 import io.vertigo.core.Home.App;
-import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.config.AppConfigBuilder;
-import io.vertigo.core.config.LogConfig;
 import io.vertigo.vega.plugins.rest.servlet.ServletResourceResolverPlugin;
 import io.vertigo.vega.plugins.rest.servlet.WebAppContextConfigPlugin;
 
@@ -66,20 +63,27 @@ final class HomeServletStarter {
 			final Properties conf = createProperties(servletContext);
 			WebAppContextConfigPlugin.setInitConfig(conf);
 
-			final AppConfigBuilder appConfigBuilder = new AppConfigBuilder();
 			//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
+			final XMLAppConfigBuilder appConfigBuilder = new XMLAppConfigBuilder()
+					.withSilence(true);
+
 			if (conf.containsKey(LOG4J_CONFIGURATION_PARAM_NAME)) {
-				appConfigBuilder.withLogConfig(new LogConfig(conf.getProperty(LOG4J_CONFIGURATION_PARAM_NAME)));
+				final String logFileName = conf.getProperty(LOG4J_CONFIGURATION_PARAM_NAME);
 				conf.remove(LOG4J_CONFIGURATION_PARAM_NAME);
+				//-----
+				appConfigBuilder.withLogConfig(logFileName);
 			}
+			if (conf.containsKey("boot.applicationConfiguration")) {
+				final String xmlModulesFileNames = conf.getProperty("boot.applicationConfiguration");
+				final String[] xmlFileNamesSplit = xmlModulesFileNames.split(";");
+				conf.remove("boot.applicationConfiguration");
+				//-----
+				appConfigBuilder.withModules(getClass(), conf, xmlFileNamesSplit);
+			}
+
 			// Initialisation de l'état de l'application
-			final AppConfig appConfig = appConfigBuilder
-					.withSilence(true)
-					.withModules(new XMLModulesBuilder()
-							.withEnvParams(conf)
-							.build())
-					.build();
-			app = new App(appConfig);
+			app = new App(appConfigBuilder.build());
+
 			servletListener.onServletStart(getClass().getName());
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
