@@ -6,6 +6,9 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
+/**
+ * @author pchretien
+ */
 final class XMLModulesParams {
 	private final Properties properties;
 	private final Set<String> keys;
