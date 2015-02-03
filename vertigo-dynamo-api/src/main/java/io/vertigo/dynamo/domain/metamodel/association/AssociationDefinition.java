@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.domain.metamodel.association;
 
 import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -45,8 +44,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author  jcassignol, pchretien
  */
-@DefinitionPrefix("A")
-public abstract class AssociationDefinition implements Definition {
+abstract public class AssociationDefinition implements Definition {
 	/**
 	 * Nom de la définition.
 	 */
@@ -70,21 +68,6 @@ public abstract class AssociationDefinition implements Definition {
 		associationNodeA.setAssociationDefinition(this);
 		associationNodeB.setAssociationDefinition(this);
 	}
-
-	/**
-	 * @return Si il s'agit d'une association simple
-	 */
-	public abstract boolean isAssociationSimpleDefinition();
-
-	/**
-	 * @return Association castée en simple
-	 */
-	public abstract AssociationSimpleDefinition castAsAssociationSimpleDefinition();
-
-	/**
-	 * @return Association castée en NN
-	 */
-	public abstract AssociationNNDefinition castAsAssociationNNDefinition();
 
 	/**
 	 * Noeud A de l'association.

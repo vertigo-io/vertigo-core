@@ -18,7 +18,8 @@
  */
 package io.vertigo.dynamock.domain.famille;
 
-import io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation;
+import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
+import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.stereotype.Association;
@@ -117,7 +118,7 @@ public final class Famille implements DtObject {
 	@Association(name = "A_FAM_CAR_FAMILLE", fkFieldName = "FAM_ID", primaryDtDefinitionName = "DT_FAMILLE", primaryIsNavigable = false, primaryRole = "Famille", primaryLabel = "Famille", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DT_CAR", foreignIsNavigable = true, foreignRole = "VoituresFamille", foreignLabel = "Voitures de la famille", foreignMultiplicity = "0..*")
 	public final DtList<Car> getVoituresFamilleList() {
 		// return this.<.domain.car.Car> getList(getVoituresFamilleListURI());
-		final DtListURIForAssociation fkDtListURI = getVoituresFamilleDtListURI();
+		final DtListURIForSimpleAssociation fkDtListURI = getVoituresFamilleDtListURI();
 		io.vertigo.lang.Assertion.checkNotNull(fkDtListURI);
 		//-----
 		// On est toujours dans un mode lazy.
@@ -134,18 +135,18 @@ public final class Famille implements DtObject {
 	 */
 	@javax.persistence.Transient
 	@Association(name = "A_FAM_CAR_FAMILLE", fkFieldName = "FAM_ID", primaryDtDefinitionName = "DT_FAMILLE", primaryIsNavigable = false, primaryRole = "Famille", primaryLabel = "Famille", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DT_CAR", foreignIsNavigable = true, foreignRole = "VoituresFamille", foreignLabel = "Voitures de la famille", foreignMultiplicity = "0..*")
-	public final DtListURIForAssociation getVoituresFamilleDtListURI() {
-		return DtObjectUtil.createDtListURI(this, "A_FAM_CAR_FAMILLE", "VoituresFamille");
+	public final DtListURIForSimpleAssociation getVoituresFamilleDtListURI() {
+		return DtObjectUtil.createDtListURIForSimpleAssociation(this, "A_FAM_CAR_FAMILLE", "VoituresFamille");
 	}
 
 	/**
 	 * Association : Voitures de location.
 	 */
 	@javax.persistence.Transient
-	@AssociationNN(name = "A_FAM_CAR_LOCATION", tableName = "FAM_CAR_LOCATION", dtDefinitionA = "DT_FAMILLE", dtDefinitionB = "DT_CAR", navigabilityA = false, navigabilityB = true, roleA = "Famille", roleB = "VoituresLocation", labelA = "Famille", labelB = "Voitures de location")
+	@AssociationNN(name = "ANN_FAM_CAR_LOCATION", tableName = "FAM_CAR_LOCATION", dtDefinitionA = "DT_FAMILLE", dtDefinitionB = "DT_CAR", navigabilityA = false, navigabilityB = true, roleA = "Famille", roleB = "VoituresLocation", labelA = "Famille", labelB = "Voitures de location")
 	public final DtList<Car> getVoituresLocationList() {
 		// return this.<.domain.car.Car> getList(getVoituresLocationListURI());
-		final DtListURIForAssociation fkDtListURI = getVoituresLocationDtListURI();
+		final DtListURIForNNAssociation fkDtListURI = getVoituresLocationDtListURI();
 		io.vertigo.lang.Assertion.checkNotNull(fkDtListURI);
 		//-----
 		// On est toujours dans un mode lazy.
@@ -161,9 +162,9 @@ public final class Famille implements DtObject {
 	 * @return URI de l'association
 	 */
 	@javax.persistence.Transient
-	@AssociationNN(name = "A_FAM_CAR_LOCATION", tableName = "FAM_CAR_LOCATION", dtDefinitionA = "DT_FAMILLE", dtDefinitionB = "DT_CAR", navigabilityA = false, navigabilityB = true, roleA = "Famille", roleB = "VoituresLocation", labelA = "Famille", labelB = "Voitures de location")
-	public final DtListURIForAssociation getVoituresLocationDtListURI() {
-		return DtObjectUtil.createDtListURI(this, "A_FAM_CAR_LOCATION", "VoituresLocation");
+	@AssociationNN(name = "ANN_FAM_CAR_LOCATION", tableName = "FAM_CAR_LOCATION", dtDefinitionA = "DT_FAMILLE", dtDefinitionB = "DT_CAR", navigabilityA = false, navigabilityB = true, roleA = "Famille", roleB = "VoituresLocation", labelA = "Famille", labelB = "Voitures de location")
+	public final DtListURIForNNAssociation getVoituresLocationDtListURI() {
+		return DtObjectUtil.createDtListURIForNNAssociation(this, "ANN_FAM_CAR_LOCATION", "VoituresLocation");
 	}
 
 	/** {@inheritDoc} */

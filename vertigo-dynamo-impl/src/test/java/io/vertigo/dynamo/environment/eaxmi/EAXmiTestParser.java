@@ -21,6 +21,8 @@ package io.vertigo.dynamo.environment.eaxmi;
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
+import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
+import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -42,9 +44,12 @@ public class EAXmiTestParser extends AbstractTestCaseJU4 {
 	 * - Cardinalité notée 	1 ou n
 	 * - Navigabilité notée v
 	 */
+	private static AssociationSimpleDefinition getAssociationSimpleDefinition(final String urn) {
+		return Home.getDefinitionSpace().resolve(urn, AssociationSimpleDefinition.class);
+	}
 
-	private static AssociationDefinition getAssociationDefinition(final String urn) {
-		return Home.getDefinitionSpace().resolve(urn, AssociationDefinition.class);
+	private static AssociationNNDefinition getAssociationNNDefinition(final String urn) {
+		return Home.getDefinitionSpace().resolve(urn, AssociationNNDefinition.class);
 	}
 
 	/**
@@ -52,7 +57,7 @@ public class EAXmiTestParser extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testAssoctationA1Bnv() {
-		final AssociationDefinition association = getAssociationDefinition("A_CHA_CHI_1");
+		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_1");
 		Assert.assertNotNull(association);
 		/* "0..1" */
 		Assert.assertEquals(false, association.getAssociationNodeA().isMultiple());
@@ -74,7 +79,7 @@ public class EAXmiTestParser extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testAssoctationA1vBnv() {
-		final AssociationDefinition association = getAssociationDefinition("A_CHA_CHI_2");
+		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_2");
 		/* "0..1" */
 		Assert.assertEquals(false, association.getAssociationNodeA().isMultiple());
 		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());
@@ -93,8 +98,8 @@ public class EAXmiTestParser extends AbstractTestCaseJU4 {
 	 * Test d'une relation A1v - Bn.
 	 */
 	@Test
-	public void testAssoctationA1vBn() {
-		final AssociationDefinition association = getAssociationDefinition("A_CHA_CHI_3");
+	public void testAssoctationSimpleA1vBn() {
+		final AssociationDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_3");
 		/* "0..1" */
 		Assert.assertEquals(false, association.getAssociationNodeA().isMultiple());
 		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());
@@ -113,8 +118,8 @@ public class EAXmiTestParser extends AbstractTestCaseJU4 {
 	 * Test d'une relation An - B1v.
 	 */
 	@Test
-	public void testAssoctationAnB1v() {
-		final AssociationDefinition association = getAssociationDefinition("A_CHA_CHI_4");
+	public void testAssoctationSimpleAnB1v() {
+		final AssociationDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_4");
 		/* "0..*" */
 		Assert.assertEquals(true, association.getAssociationNodeA().isMultiple());
 		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());
@@ -133,8 +138,8 @@ public class EAXmiTestParser extends AbstractTestCaseJU4 {
 	 * Test d'une relation Anv - B1.
 	 */
 	@Test
-	public void testAssoctationAnvB1() {
-		final AssociationDefinition association = getAssociationDefinition("A_CHA_CHI_5");
+	public void testAssoctationSimpleAnvB1() {
+		final AssociationDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_5");
 		/* "0..*" */
 		Assert.assertEquals(true, association.getAssociationNodeA().isMultiple());
 		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());
@@ -154,7 +159,7 @@ public class EAXmiTestParser extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testAssoctationAnvB1v() {
-		final AssociationDefinition association = getAssociationDefinition("A_CHA_CHI_6");
+		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_6");
 		/* "0..*" */
 		Assert.assertEquals(true, association.getAssociationNodeA().isMultiple());
 		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());
@@ -174,7 +179,7 @@ public class EAXmiTestParser extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testAssoctationAnBnv() {
-		final AssociationDefinition association = getAssociationDefinition("A_CHA_CHI_7");
+		final AssociationNNDefinition association = getAssociationNNDefinition("ANN_CHA_CHI_7");
 		/* "0..*" */
 		Assert.assertEquals(true, association.getAssociationNodeA().isMultiple());
 		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());
@@ -194,7 +199,7 @@ public class EAXmiTestParser extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testAssoctationAnvBnv() {
-		final AssociationDefinition association = getAssociationDefinition("A_CHA_CHI_8");
+		final AssociationNNDefinition association = getAssociationNNDefinition("ANN_CHA_CHI_8");
 		/* "0..*" */
 		Assert.assertEquals(true, association.getAssociationNodeA().isMultiple());
 		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());
@@ -214,7 +219,7 @@ public class EAXmiTestParser extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testAssoctationAnBn() {
-		final AssociationDefinition association = getAssociationDefinition("A_CHA_CHI_9");
+		final AssociationNNDefinition association = getAssociationNNDefinition("ANN_CHA_CHI_9");
 		/* "0..*" */
 		Assert.assertEquals(true, association.getAssociationNodeA().isMultiple());
 		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());
@@ -234,7 +239,7 @@ public class EAXmiTestParser extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testAssoctationAnvBn() {
-		final AssociationDefinition association = getAssociationDefinition("A_CHA_CHI_10");
+		final AssociationNNDefinition association = getAssociationNNDefinition("ANN_CHA_CHI_10");
 		/* "0..*" */
 		Assert.assertEquals(true, association.getAssociationNodeA().isMultiple());
 		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());

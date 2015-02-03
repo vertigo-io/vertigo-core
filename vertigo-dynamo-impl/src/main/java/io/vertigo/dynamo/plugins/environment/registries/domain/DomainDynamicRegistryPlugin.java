@@ -65,7 +65,8 @@ import org.apache.log4j.Logger;
 public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPlugin {
 	private static final Logger LOGGER = Logger.getLogger(DomainDynamicRegistryPlugin.class);
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
-	private static final String ASSOCIATION_DEFINITION_PREFIX = DefinitionUtil.getPrefix(AssociationDefinition.class);
+	private static final String ASSOCIATION_SIMPLE_DEFINITION_PREFIX = DefinitionUtil.getPrefix(AssociationSimpleDefinition.class);
+	private static final String ASSOCIATION_NN_DEFINITION_PREFIX = DefinitionUtil.getPrefix(AssociationNNDefinition.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
 	private final DefinitionSpace definitionSpace;
 	private final Map<String, DtDefinitionBuilder> dtDefinitionBuilders = new HashMap<>();
@@ -80,7 +81,8 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		definitionSpace.register(Domain.class);
 		definitionSpace.register(Formatter.class);
 		definitionSpace.register(Constraint.class);
-		definitionSpace.register(AssociationDefinition.class);
+		definitionSpace.register(AssociationSimpleDefinition.class);
+		definitionSpace.register(AssociationNNDefinition.class);
 	}
 
 	/** {@inheritDoc} */
@@ -95,10 +97,10 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 			definitionSpace.put(dtDefinition, DtDefinition.class);
 		} else if (entity.equals(DomainGrammar.ASSOCIATION_ENTITY)) {
 			final AssociationDefinition definition = createAssociationSimpleDefinition(xdefinition);
-			definitionSpace.put(definition, AssociationDefinition.class);
+			definitionSpace.put(definition, AssociationSimpleDefinition.class);
 		} else if (entity.equals(DomainGrammar.ASSOCIATION_NN_ENTITY)) {
 			final AssociationDefinition definition = createAssociationNNDefinition(xdefinition);
-			definitionSpace.put(definition, AssociationDefinition.class);
+			definitionSpace.put(definition, AssociationNNDefinition.class);
 		} else if (entity.equals(DomainGrammar.CONSTAINT_ENTITY)) {
 			final Constraint definition = createConstraint(xdefinition);
 			definitionSpace.put(definition, Constraint.class);
@@ -302,7 +304,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		}
 	}
 
-	private AssociationDefinition createAssociationNNDefinition(final DynamicDefinition xassociation) {
+	private AssociationNNDefinition createAssociationNNDefinition(final DynamicDefinition xassociation) {
 		final String tableName = getPropertyValueAsString(xassociation, KspProperty.TABLE_NAME);
 
 		final DtDefinition dtDefinitionA = definitionSpace.resolve(xassociation.getDefinitionKey("dtDefinitionA").getName(), DtDefinition.class);
@@ -317,7 +319,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 		final AssociationNode associationNodeA = new AssociationNode(dtDefinitionA, navigabilityA, roleA, labelA, true, false);
 		final AssociationNode associationNodeB = new AssociationNode(dtDefinitionB, navigabilityB, roleB, labelB, true, false);
-		final String urn = fixAssociationName(xassociation.getDefinitionKey().getName());
+		final String urn = fixAssociationName(ASSOCIATION_NN_DEFINITION_PREFIX, xassociation.getDefinitionKey().getName());
 		return new AssociationNNDefinition(urn, tableName, associationNodeA, associationNodeB);
 	}
 
@@ -335,14 +337,14 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	 * @param name Nom de l'association
 	 * @return Nom corrigé de l'association comprenant le préfix obligatoire.
 	 */
-	private static String fixAssociationName(final String name) {
-		if (!name.startsWith(ASSOCIATION_DEFINITION_PREFIX + SEPARATOR)) {
-			return ASSOCIATION_DEFINITION_PREFIX + SEPARATOR + name;
+	private static String fixAssociationName(final String prefix, final String name) {
+		if (!name.startsWith(prefix + SEPARATOR)) {
+			return prefix + SEPARATOR + name;
 		}
 		return name;
 	}
 
-	private AssociationDefinition createAssociationSimpleDefinition(final DynamicDefinition xassociation) {
+	private AssociationSimpleDefinition createAssociationSimpleDefinition(final DynamicDefinition xassociation) {
 		final String fkFieldName = getPropertyValueAsString(xassociation, KspProperty.FK_FIELD_NAME);
 
 		final DtDefinition dtDefinitionA = definitionSpace.resolve(xassociation.getDefinitionKey("dtDefinitionA").getName(), DtDefinition.class);
@@ -368,7 +370,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		}
 
 		//Relation 1-n ou 1-1
-		final String urn = fixAssociationName(xassociation.getDefinitionKey().getName());
+		final String urn = fixAssociationName(ASSOCIATION_SIMPLE_DEFINITION_PREFIX, xassociation.getDefinitionKey().getName());
 		final AssociationSimpleDefinition associationSimpleDefinition = AssociationSimpleDefinition.createAssociationSimpleDefinition(urn, fkFieldName,
 				dtDefinitionA, navigabilityA, roleA, labelA, AssociationUtil.isMultiple(multiplicityA), AssociationUtil.isNotNull(multiplicityA),
 				dtDefinitionB, navigabilityB, roleB, labelB, AssociationUtil.isMultiple(multiplicityB), AssociationUtil.isNotNull(multiplicityB));

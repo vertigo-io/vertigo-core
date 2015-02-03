@@ -20,7 +20,8 @@ package io.vertigo.dynamo.domain.model;
 
 import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation;
+import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
+import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.lang.Assertion;
 
 import java.io.Serializable;
@@ -108,8 +109,10 @@ public abstract class DtListURI implements Serializable {
 		private static final String CRITERIA_PREFIX = "CRITERIA";
 
 		static String writeURN(final DtListURI uri) {
-			if (uri instanceof DtListURIForAssociation) {
-				return writeDtListURNForAssociation(DtListURIForAssociation.class.cast(uri));
+			if (uri instanceof DtListURIForNNAssociation) {
+				return writeDtListURNForNNAssociation(DtListURIForNNAssociation.class.cast(uri));
+			} else if (uri instanceof DtListURIForSimpleAssociation) {
+				return writeDtListURNForSimpleAssociation(DtListURIForSimpleAssociation.class.cast(uri));
 			} else if (uri instanceof DtListURIForMasterData) {
 				return writeDtListURNForMasterData(DtListURIForMasterData.class.cast(uri));
 			} else if (uri instanceof DtListURIForCriteria) {
@@ -124,7 +127,17 @@ public abstract class DtListURI implements Serializable {
 		 * @param uri URI à transcrire
 		 * @return URN
 		 */
-		private static String writeDtListURNForAssociation(final DtListURIForAssociation uri) {
+		private static String writeDtListURNForNNAssociation(final DtListURIForNNAssociation uri) {
+			return uri.getAssociationDefinition().getName() + D2A_SEPARATOR + uri.getRoleName() + D2A_SEPARATOR + uri.getSource().toURN();
+		}
+
+		/**
+		 * Ecriture d'une URI sous forme d'une URN (chaine de caractères).
+		 *
+		 * @param uri URI à transcrire
+		 * @return URN
+		 */
+		private static String writeDtListURNForSimpleAssociation(final DtListURIForSimpleAssociation uri) {
 			return uri.getAssociationDefinition().getName() + D2A_SEPARATOR + uri.getRoleName() + D2A_SEPARATOR + uri.getSource().toURN();
 		}
 

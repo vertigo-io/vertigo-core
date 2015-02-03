@@ -27,7 +27,8 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
-import io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation;
+import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
+import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
@@ -147,13 +148,10 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		// uri.toURN >>  java.lang.IllegalArgumentException: uri urn[dynamoimpl.persistence.utilx.DtListURIForDtCriteria]::null non serializable
 		//-----
 		final DtList<D> dtc;
-		if (uri instanceof DtListURIForAssociation) {
-			final DtListURIForAssociation dtListURIForAssociation = (DtListURIForAssociation) uri;
-			if (dtListURIForAssociation.getAssociationDefinition().isAssociationSimpleDefinition()) {
-				dtc = loadListFromSimpleAssociation(dtListURIForAssociation);
-			} else {
-				dtc = loadListFromNNAssociation(dtListURIForAssociation);
-			}
+		if (uri instanceof DtListURIForSimpleAssociation) {
+			dtc = loadListFromSimpleAssociation((DtListURIForSimpleAssociation) uri);
+		} else if (uri instanceof DtListURIForNNAssociation) {
+			dtc = loadListFromNNAssociation((DtListURIForNNAssociation) uri);
 		} else if (uri instanceof DtListURIForCriteria<?>) {
 			//@todo : A voir
 			final DtListURIForCriteria<D> dtListURIForDtCriteria = (DtListURIForCriteria<D>) uri;
@@ -165,7 +163,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		return dtc;
 	}
 
-	private <D extends DtObject> DtList<D> loadListFromNNAssociation(final DtListURIForAssociation dtcUri) {
+	private <D extends DtObject> DtList<D> loadListFromNNAssociation(final DtListURIForNNAssociation dtcUri) {
 		final DtDefinition dtDefinition = dtcUri.getDtDefinition();
 		final String tableName = getTableName(dtDefinition);
 
@@ -174,7 +172,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		//PK de la DtList recherchée
 		final String pkFieldName = dtDefinition.getIdField().get().getName();
 		//FK dans la table nn correspondant à la collection recherchée. (clé de jointure ).
-		final AssociationNNDefinition associationNNDefinition = dtcUri.getAssociationDefinition().castAsAssociationNNDefinition();
+		final AssociationNNDefinition associationNNDefinition = dtcUri.getAssociationDefinition();
 		final String joinTableName = associationNNDefinition.getTableName();
 		final DtDefinition joinDtDefinition = AssociationUtil.getAssociationNode(associationNNDefinition, dtcUri.getRoleName()).getDtDefinition();
 		final DtField joinDtField = joinDtDefinition.getIdField().get();
@@ -214,9 +212,9 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		return taskResult.getValue("dtc");
 	}
 
-	private <D extends DtObject> DtList<D> loadListFromSimpleAssociation(final DtListURIForAssociation dtcUri) {
+	private <D extends DtObject> DtList<D> loadListFromSimpleAssociation(final DtListURIForSimpleAssociation dtcUri) {
 		final DtDefinition dtDefinition = dtcUri.getDtDefinition();
-		final DtField fkField = dtcUri.getAssociationDefinition().castAsAssociationSimpleDefinition().getFKField();
+		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
 		final Object value = dtcUri.getSource().getKey();
 
 		final FilterCriteria<D> filterCriteria = new FilterCriteriaBuilder<D>()

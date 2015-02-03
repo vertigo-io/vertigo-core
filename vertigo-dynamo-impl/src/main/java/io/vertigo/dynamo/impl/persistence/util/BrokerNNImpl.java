@@ -23,7 +23,7 @@ import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
-import io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation;
+import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.persistence.datastore.BrokerNN;
@@ -55,9 +55,9 @@ public final class BrokerNNImpl implements BrokerNN {
 		final Object sourceValue;
 		final DtField targetField;
 
-		DescriptionNN(final DtListURIForAssociation dtListURIForAssociation) {
+		DescriptionNN(final DtListURIForNNAssociation dtListURIForAssociation) {
 			Assertion.checkNotNull(dtListURIForAssociation);
-			final AssociationNNDefinition associationNNDefinition = dtListURIForAssociation.getAssociationDefinition().castAsAssociationNNDefinition();
+			final AssociationNNDefinition associationNNDefinition = dtListURIForAssociation.getAssociationDefinition();
 
 			//Par rapport à l'objet on distingue la source et la cible.
 			final AssociationNode sourceAssociationNode = AssociationUtil.getAssociationNodeTarget(associationNNDefinition, dtListURIForAssociation.getRoleName());
@@ -84,7 +84,7 @@ public final class BrokerNNImpl implements BrokerNN {
 
 	/** {@inheritDoc} */
 	@Override
-	public void appendNN(final DtListURIForAssociation dtListURI, final URI uriToAppend) {
+	public void appendNN(final DtListURIForNNAssociation dtListURI, final URI uriToAppend) {
 		Assertion.checkNotNull(uriToAppend);
 		//-----
 		appendNN(new DescriptionNN(dtListURI), uriToAppend.getKey());
@@ -92,14 +92,14 @@ public final class BrokerNNImpl implements BrokerNN {
 
 	/** {@inheritDoc} */
 	@Override
-	public void removeAllNN(final DtListURIForAssociation dtListURI) {
+	public void removeAllNN(final DtListURIForNNAssociation dtListURI) {
 		// on supprime tout
 		removeNN(new DescriptionNN(dtListURI));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void removeNN(final DtListURIForAssociation dtListURI, final URI uriToDelete) {
+	public void removeNN(final DtListURIForNNAssociation dtListURI, final URI uriToDelete) {
 		Assertion.checkNotNull(uriToDelete);
 		//-----
 		removeNN(new DescriptionNN(dtListURI), uriToDelete.getKey());
@@ -107,7 +107,7 @@ public final class BrokerNNImpl implements BrokerNN {
 
 	/** {@inheritDoc} */
 	@Override
-	public void updateNN(final DtListURIForAssociation dtListURI, final List<URI> newUriList) {
+	public void updateNN(final DtListURIForNNAssociation dtListURI, final List<URI> newUriList) {
 		Assertion.checkNotNull(newUriList);
 		//-----
 		final DescriptionNN descriptionNN = new DescriptionNN(dtListURI);

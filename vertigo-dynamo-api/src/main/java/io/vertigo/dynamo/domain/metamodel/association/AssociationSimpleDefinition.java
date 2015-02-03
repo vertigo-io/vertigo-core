@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.domain.metamodel.association;
 
+import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
@@ -29,6 +30,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author  jcassignol, pchretien
  */
+@DefinitionPrefix("A")
 public final class AssociationSimpleDefinition extends AssociationDefinition {
 	private final AssociationNode foreignAssociationNode;
 	private final AssociationNode primaryAssociationNode;
@@ -106,24 +108,6 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 	 */
 	public AssociationNode getForeignAssociationNode() {
 		return foreignAssociationNode;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public boolean isAssociationSimpleDefinition() {
-		return true;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public AssociationSimpleDefinition castAsAssociationSimpleDefinition() {
-		return this;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public AssociationNNDefinition castAsAssociationNNDefinition() {
-		throw new IllegalAccessError("Il ne s'agit pas d'une relation NN");
 	}
 
 	/**

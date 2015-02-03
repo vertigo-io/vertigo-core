@@ -25,8 +25,10 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.Dynamic;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
+import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
-import io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation;
+import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
+import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.DynaDtObject;
 import io.vertigo.dynamo.domain.model.URI;
@@ -92,8 +94,7 @@ public final class DtObjectUtil {
 		Assertion.checkNotNull(dto);
 		Assertion.checkNotNull(dtoTargetClass);
 		//-----
-		final AssociationDefinition associationDefinition = Home.getDefinitionSpace().resolve(associationDefinitionName, AssociationDefinition.class);
-		final AssociationSimpleDefinition associationSimpleDefinition = associationDefinition.castAsAssociationSimpleDefinition();
+		final AssociationSimpleDefinition associationSimpleDefinition = (AssociationSimpleDefinition) Home.getDefinitionSpace().resolve(associationDefinitionName, AssociationDefinition.class);
 		// 1. On recherche le nom du champ portant l'objet référencé (Exemple : personne)
 		final DtDefinition dtDefinition = associationSimpleDefinition.getPrimaryAssociationNode().getDtDefinition();
 
@@ -115,13 +116,22 @@ public final class DtObjectUtil {
 	 * @param roleName Nom du role
 	 * @return URI de la collection référencée.
 	 */
-	public static DtListURIForAssociation createDtListURI(final DtObject dto, final String associationDefinitionName, final String roleName) {
+	public static DtListURIForSimpleAssociation createDtListURIForSimpleAssociation(final DtObject dto, final String associationDefinitionName, final String roleName) {
 		Assertion.checkNotNull(associationDefinitionName);
 		Assertion.checkNotNull(roleName);
 		Assertion.checkNotNull(dto);
 		//-----
-		final AssociationDefinition associationDefinition = Home.getDefinitionSpace().resolve(associationDefinitionName, AssociationDefinition.class);
-		return new DtListURIForAssociation(associationDefinition, createURI(dto), roleName);
+		final AssociationSimpleDefinition associationDefinition = Home.getDefinitionSpace().resolve(associationDefinitionName, AssociationSimpleDefinition.class);
+		return new DtListURIForSimpleAssociation(associationDefinition, createURI(dto), roleName);
+	}
+
+	public static DtListURIForNNAssociation createDtListURIForNNAssociation(final DtObject dto, final String associationDefinitionName, final String roleName) {
+		Assertion.checkNotNull(associationDefinitionName);
+		Assertion.checkNotNull(roleName);
+		Assertion.checkNotNull(dto);
+		//-----
+		final AssociationNNDefinition associationDefinition = Home.getDefinitionSpace().resolve(associationDefinitionName, AssociationNNDefinition.class);
+		return new DtListURIForNNAssociation(associationDefinition, createURI(dto), roleName);
 	}
 
 	private static URI createURI(final DtObject dto) {

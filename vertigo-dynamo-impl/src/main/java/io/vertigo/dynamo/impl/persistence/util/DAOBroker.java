@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.impl.persistence.util;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation;
+import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
@@ -198,13 +198,13 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 
 	/** {@inheritDoc} */
 	@Override
-	public final void removeAllNN(final DtListURIForAssociation dtListURI) {
+	public final void removeAllNN(final DtListURIForNNAssociation dtListURI) {
 		brokerNN.removeAllNN(dtListURI);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final void removeNN(final DtListURIForAssociation dtListURI, final URI uriToDelete) {
+	public final void removeNN(final DtListURIForNNAssociation dtListURI, final URI uriToDelete) {
 		brokerNN.removeNN(dtListURI, uriToDelete);
 	}
 
@@ -215,7 +215,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 * @param dtListURI DtList de référence
 	 * @param newDtc DtList modifiée
 	 */
-	public final <FK extends DtObject> void updateNN(final DtListURIForAssociation dtListURI, final DtList<FK> newDtc) {
+	public final <FK extends DtObject> void updateNN(final DtListURIForNNAssociation dtListURI, final DtList<FK> newDtc) {
 		Assertion.checkNotNull(newDtc);
 		//-----
 		final List<URI> objectURIs = new ArrayList<>();
@@ -227,13 +227,13 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 
 	/** {@inheritDoc} */
 	@Override
-	public final void updateNN(final DtListURIForAssociation dtListURI, final List<URI> newUriList) {
+	public final void updateNN(final DtListURIForNNAssociation dtListURI, final List<URI> newUriList) {
 		brokerNN.updateNN(dtListURI, newUriList);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final void appendNN(final DtListURIForAssociation dtListURI, final URI uriToAppend) {
+	public final void appendNN(final DtListURIForNNAssociation dtListURI, final URI uriToAppend) {
 		brokerNN.appendNN(dtListURI, uriToAppend);
 	}
 
@@ -243,7 +243,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 * @param dtListURI DtList de référence
 	 * @param dtoToAppend Objet à ajout à la NN
 	 */
-	public final void appendNN(final DtListURIForAssociation dtListURI, final DtObject dtoToAppend) {
+	public final void appendNN(final DtListURIForNNAssociation dtListURI, final DtObject dtoToAppend) {
 		brokerNN.appendNN(dtListURI, createURI(dtoToAppend));
 	}
 
@@ -265,7 +265,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 */
 	@Deprecated
 	public final <FK extends DtObject> void putNN(final DtList<FK> dtc, final DtList<FK> newDtc) {
-		updateNN(DtListURIForAssociation.class.cast(dtc.getURI()), newDtc);
+		updateNN(DtListURIForNNAssociation.class.cast(dtc.getURI()), newDtc);
 	}
 
 	/**

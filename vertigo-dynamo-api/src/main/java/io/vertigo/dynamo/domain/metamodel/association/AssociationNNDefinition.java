@@ -18,12 +18,14 @@
  */
 package io.vertigo.dynamo.domain.metamodel.association;
 
+import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.lang.Assertion;
 
 /**
  * Définition d'une association NN.
  * @author  jcassignol, pchretien
  */
+@DefinitionPrefix("ANN")
 public final class AssociationNNDefinition extends AssociationDefinition {
 	private final String tableName;
 
@@ -46,23 +48,5 @@ public final class AssociationNNDefinition extends AssociationDefinition {
 	 */
 	public String getTableName() {
 		return tableName;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public boolean isAssociationSimpleDefinition() {
-		return false;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public AssociationSimpleDefinition castAsAssociationSimpleDefinition() {
-		throw new IllegalAccessError("Il ne s'agit pas d'une relation simple");
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public AssociationNNDefinition castAsAssociationNNDefinition() {
-		return this;
 	}
 }

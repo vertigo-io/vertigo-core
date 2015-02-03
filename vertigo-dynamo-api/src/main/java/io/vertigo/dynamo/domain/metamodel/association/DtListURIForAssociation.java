@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.domain.metamodel.association;
 
-import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
@@ -29,10 +28,9 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public final class DtListURIForAssociation extends DtListURI {
+abstract class DtListURIForAssociation<A extends AssociationDefinition> extends DtListURI {
 	private static final long serialVersionUID = 5933412183954919000L;
 
-	private final String associationDefinitionName;
 	private final String roleName;
 	private final URI source;
 
@@ -42,13 +40,12 @@ public final class DtListURIForAssociation extends DtListURI {
 	 * @param source URI (Clé primaire) du dtObject source
 	 * @param roleName Nom du rôle
 	 */
-	public DtListURIForAssociation(final AssociationDefinition associationDefinition, final URI source, final String roleName) {
+	protected DtListURIForAssociation(final A associationDefinition, final URI source, final String roleName) {
 		super(AssociationUtil.getAssociationNode(associationDefinition, roleName).getDtDefinition());
 		Assertion.checkNotNull(associationDefinition);
 		Assertion.checkNotNull(source);
 		Assertion.checkNotNull(roleName);
 		//-----
-		associationDefinitionName = associationDefinition.getName();
 		this.roleName = roleName;
 
 		/**
@@ -75,12 +72,5 @@ public final class DtListURIForAssociation extends DtListURI {
 	 */
 	public String getRoleName() {
 		return roleName;
-	}
-
-	/**
-	 * @return Définition de l'association.
-	 */
-	public AssociationDefinition getAssociationDefinition() {
-		return Home.getDefinitionSpace().resolve(associationDefinitionName, AssociationDefinition.class);
 	}
 }

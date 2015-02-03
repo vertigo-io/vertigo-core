@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.impl.persistence.datastore.cache;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation;
+import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
@@ -133,11 +133,7 @@ public final class CacheDataStore {
 	}
 
 	private static boolean isMultipleAssociation(final DtListURI uri) {
-		if (uri instanceof DtListURIForAssociation) {
-			final DtListURIForAssociation uriForAssociation = (DtListURIForAssociation) uri;
-			return !uriForAssociation.getAssociationDefinition().isAssociationSimpleDefinition();
-		}
-		return false;
+		return uri instanceof DtListURIForNNAssociation;
 	}
 
 	private synchronized <D extends DtObject> DtList<D> reloadList(final DtListURI uri) {
