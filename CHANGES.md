@@ -8,7 +8,7 @@ more to come :)
 
 Release 0.7.3 - 2015/02/02
 ----------------------
-[Migration help](/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide)
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide)
 * [All] Refactored tests to made them more autonomous
 * [All] Fixed some code style
 * [All] Cleaned some dependencies
