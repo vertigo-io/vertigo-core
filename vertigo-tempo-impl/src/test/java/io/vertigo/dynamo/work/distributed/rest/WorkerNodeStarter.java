@@ -18,21 +18,28 @@
  */
 package io.vertigo.dynamo.work.distributed.rest;
 
+import io.vertigo.lang.Assertion;
+
+import org.apache.log4j.Logger;
 
 /**
  * @author npiedeloup
  */
-public final class WorkerNodeStarter {
+public class WorkerNodeStarter {
+	private static final Logger LOG = Logger.getLogger(WorkerNodeStarter.class);
 
 	/**
 	 * Lance l'environnement et attend indéfiniment.
 	 * @param args "Usage: java vertigo.kernel.Starter managers.xml <conf.properties>"
+	 * @throws InterruptedException Interrupt
 	 */
-	public static void main(final String[] args) {
-		final Starter starter = new Starter("./managers-node-test.xml", WorkerNodeStarter.class, args.length == 1 ? Long.parseLong(args[0]) * 1000L : 5 * 60 * 1000L);
-
-		System.out.println("Node starting");
+	public static void main(final String[] args) throws InterruptedException {
+		Assertion.checkArgument(args.length >= 1 && args.length <= 2, "Usage WorkerNodeStarter managers.xml <maxLifeTime>");
+		//-----
+		final Starter starter = new Starter(args[0], WorkerNodeStarter.class, args.length == 2 ? Long.parseLong(args[1]) * 1000L : 5 * 60 * 1000L);
+		LOG.info("Node starting");
 		starter.run();
-		System.out.println("Node stop");
+		LOG.info("Node stop");
 	}
+
 }

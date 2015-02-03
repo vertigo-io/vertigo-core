@@ -19,13 +19,21 @@
 package io.vertigo.dynamo.work.distributed.rest;
 
 import io.vertigo.dynamo.work.AbstractWorkManagerTest;
+import io.vertigo.dynamo.work.MyWorkResultHanlder;
+import io.vertigo.dynamo.work.WorkEngineProvider;
+import io.vertigo.dynamo.work.WorkManager;
+import io.vertigo.dynamo.work.mock.SlowWork;
+import io.vertigo.dynamo.work.mock.SlowWorkEngine;
 
 import java.io.IOException;
 import java.net.URI;
 
+import javax.inject.Inject;
 import javax.ws.rs.core.UriBuilder;
 
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.junit.Assert;
+import org.junit.Test;
 
 import com.sun.jersey.api.container.grizzly2.GrizzlyServerFactory;
 import com.sun.jersey.api.core.PackagesResourceConfig;
@@ -35,9 +43,10 @@ import com.sun.jersey.api.core.ResourceConfig;
  * @author npiedeloup
  */
 public final class RestWorkManagerTest extends AbstractWorkManagerTest {
-
+	@Inject
+	private WorkManager workManager;
 	private HttpServer httpServer;
-	private ClientNode clientNode;
+	private ClientNode clientNode1;
 
 	private static URI getBaseURI() {
 		return UriBuilder.fromUri("http://0.0.0.0/").port(10998).build();
@@ -53,9 +62,9 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 		return GrizzlyServerFactory.createHttpServer(BASE_URI, rc);
 	}
 
-	protected static ClientNode startClientNode() throws IOException {
-		System.out.println("Starting ClientNode...");
-		final ClientNode clientNode = new ClientNode(30);//duree de vie 30s max
+	protected static ClientNode startClientNode(final int numClient) throws IOException {
+		System.out.println("Starting ClientNode " + numClient + "...");
+		final ClientNode clientNode = new ClientNode(numClient, 30);//duree de vie 30s max
 		clientNode.start();
 		return clientNode;
 	}
@@ -69,7 +78,7 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 		//pour éviter le mécanisme d'attente du client lorsque le serveur est absend, on démarre le serveur puis le client
 		httpServer = startServer();
 		Thread.sleep(500);
-		clientNode = startClientNode();
+		clientNode1 = startClientNode(1);
 		System.out.println(String.format("Jersey app started with WADL available at " + "%sapplication.wadl", BASE_URI));
 	}
 
@@ -89,11 +98,38 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 				}
 			}*/
 		}
-		if (clientNode != null) {
+		if (clientNode1 != null) {
 			System.out.println("Stopping ClientNode...");
-			clientNode.stop();
-			clientNode = null;
+			clientNode1.stop();
+			clientNode1 = null;
 		}
 		System.out.println("All was stopped, quit now");
 	}
+
+	/**
+	 * Teste l'exécution asynchrone d'une tache avec une durée de timeOut trop courte.
+	 * @throws InterruptedException
+	 * @throws IOException
+	 */
+	@Test
+	public void testDeadNode() throws InterruptedException, IOException {
+		final MyWorkResultHanlder<Boolean> workResultHanlder = new MyWorkResultHanlder<>();
+		final SlowWork slowWork = new SlowWork(1000);
+		for (int i = 0; i < 20; i++) {
+			workManager.schedule(slowWork, new WorkEngineProvider<>(SlowWorkEngine.class), workResultHanlder);
+		}
+		Thread.sleep(2000);
+		clientNode1.stop(); //On stop le client1 avec des jobs en cours. Ils doivent être dedispatchés après détection des noeuds morts
+		Thread.sleep(1000);
+		final ClientNode clientNode2 = startClientNode(2);
+		try {
+			final boolean finished = workResultHanlder.waitFinish(20, 30 * 1000); //Le timeout des nodes est configuré à 20s
+			System.out.println(workResultHanlder);
+			Assert.assertEquals(null, workResultHanlder.getLastThrowable());
+			Assert.assertEquals(true, finished);
+		} finally {
+			clientNode2.stop();
+		}
+	}
+
 }

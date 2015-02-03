@@ -24,6 +24,9 @@ import io.vertigo.dynamo.work.WorkResultHandler;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
 final class WWorker implements Runnable {
 	private static final int TIMEOUT_IN_SECONDS = 1;
 	private final LocalCoordinator localWorker;
@@ -39,21 +42,24 @@ final class WWorker implements Runnable {
 		//	this.nodeId = nodeId;
 		this.workType = workType;
 		this.localWorker = localWorker;
-		this.workerPlugin = nodePlugin;
+		workerPlugin = nodePlugin;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public final void run() {
-		while (!Thread.interrupted()) {
-			doRun();
+		while (!Thread.currentThread().isInterrupted()) {
+			try {
+				doRun();
+			} catch (final InterruptedException e) {
+				break; //stop on Interrupt
+			}
 		}
 	}
 
-	private <WR, W> void doRun() {
+	private <WR, W> void doRun() throws InterruptedException {
 		final WorkItem<WR, W> workItem = workerPlugin.<WR, W> pollWorkItem(workType, TIMEOUT_IN_SECONDS);
 		if (workItem != null) {
-
 			final Option<WorkResultHandler<WR>> workResultHandler = Option.<WorkResultHandler<WR>> some(new WorkResultHandler<WR>() {
 				@Override
 				public void onStart() {
@@ -62,11 +68,18 @@ final class WWorker implements Runnable {
 
 				@Override
 				public void onDone(final WR result, final Throwable error) {
-					workerPlugin.putResult(workItem.getId(), result, error);
+					//nothing here, should be done by waiting the future result
 				}
 			});
-			//---Et on fait executer par le workerLocalredisDB
-			localWorker.submit(workItem, workResultHandler);
+			//---Et on fait executer par le workerLocal
+			final Future<WR> futureResult = localWorker.submit(workItem, workResultHandler);
+			WR result;
+			try {
+				result = futureResult.get();
+				workerPlugin.putResult(workItem.getId(), result, null);
+			} catch (final ExecutionException e) {
+				workerPlugin.putResult(workItem.getId(), null, e.getCause());
+			}
 		}
 		//if workitem is null, that's mean there is no workitem available;
 	}

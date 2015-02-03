@@ -71,42 +71,47 @@ final class RestQueueClient {
 	<WR, W> WorkItem<WR, W> pollWorkItem(final String workType, final int timeoutInSeconds) {
 		//call methode distante, passe le workItem à started
 		try {
-			final String jsonResult;
-			lockByWorkType.putIfAbsent(workType, new Object());
-			//Cette tache est synchronized sur le workType, pour éviter de surcharger le serveur en demandes multiple
-			synchronized (lockByWorkType.get(workType)) {
-				final WebResource remoteWebResource = locatorClient.resource(serverUrl + "/pollWork/" + workType + "?nodeUID=" + nodeUID);
-				final ClientResponse response = remoteWebResource.get(ClientResponse.class);
-				checkResponseStatus(response);
-				jsonResult = response.getEntity(String.class);
-			}
-			if (!jsonResult.isEmpty()) { //le json est vide s'il n'y a pas de tache en attente
-				final String[] result = new Gson().fromJson(jsonResult, String[].class);
-				final String uuid = result[0];
-				final byte[] serializedResult = codecManager.getBase64Codec().decode(result[1]);
-				final Object work = codecManager.getCompressedSerializationCodec().decode(serializedResult);
-				LOG.info("pollWork(" + workType + ") : 1 Work");
-				return new WorkItem(uuid, work, new WorkEngineProvider(workType));
-				//				return new WorkItem(uuid, work, new WorkEngineProvider(workType), new CallbackWorkResultHandler(uuid, this));
-			}
-			LOG.info("pollWork(" + workType + ") : no Work");
-			//pas de travaux : inutil d'attendre le poll attend déjà 1s coté serveur
-		} catch (final ClientHandlerException c) {
-			LOG.warn("[pollWork] Erreur de connexion au serveur " + serverUrl + "/pollWork/" + workType + " (" + c.getMessage() + ")");
-			//En cas d'erreur on attend quelques secondes, pour attendre que le serveur revienne
 			try {
+				final String jsonResult;
+				lockByWorkType.putIfAbsent(workType, new Object());
+				//Cette tache est synchronized sur le workType, pour éviter de surcharger le serveur en demandes multiple
+				synchronized (lockByWorkType.get(workType)) {
+					checkInterrupted(); //must be check because Thread.interrupt() doesn't freed the synchronized lock
+					final WebResource remoteWebResource = locatorClient.resource(serverUrl + "/pollWork/" + workType + "?nodeUID=" + nodeUID);
+					final ClientResponse response = remoteWebResource.get(ClientResponse.class);
+					checkResponseStatus(response);
+					jsonResult = response.getEntity(String.class);
+				}
+
+				if (!jsonResult.isEmpty()) { //le json est vide s'il n'y a pas de tache en attente
+					final String[] result = new Gson().fromJson(jsonResult, String[].class);
+					final String uuid = result[0];
+					final byte[] serializedResult = codecManager.getBase64Codec().decode(result[1]);
+					final Object work = codecManager.getCompressedSerializationCodec().decode(serializedResult);
+					LOG.info("pollWork(" + workType + ") : 1 Work");
+					return new WorkItem(uuid, work, new WorkEngineProvider(workType));
+					//				return new WorkItem(uuid, work, new WorkEngineProvider(workType), new CallbackWorkResultHandler(uuid, this));
+				}
+				LOG.info("pollWork(" + workType + ") : no Work");
+				//pas de travaux : inutil d'attendre le poll attend déjà 1s coté serveur
+			} catch (final ClientHandlerException c) {
+				LOG.warn("[pollWork] Erreur de connexion au serveur " + serverUrl + "/pollWork/" + workType + " (" + c.getMessage() + ")");
+				//En cas d'erreur on attend quelques secondes, pour attendre que le serveur revienne
 				lockByWorkType.putIfAbsent(serverUrl, new Object());
 				//En cas d'absence du serveur,
 				//ce synchronized permet d'étaler les appels au serveur de chaque worker : le premier attendra 2s, le second 2+2s, le troisième : 4+2s, etc..
 				//dés le retour du serveur, on récupère un worker toute les 2s
 				synchronized (lockByWorkType.get(serverUrl)) {
+					checkInterrupted();//must be check because Thread.interrupt() doesn't freed the synchronized lock
 					Thread.sleep(2000); //on veut bien un sleep
 				}
 			} catch (final InterruptedException e) {
-				//rien on retourne
+				//nothing, in case of interrupt just return null, like no message
+			} catch (final Exception c) {
+				LOG.warn("[pollWork] Erreur de traitement de l'accès au serveur " + serverUrl + "/pollWork/" + workType + " (" + c.getMessage() + ")", c);
 			}
-		} catch (final Exception c) {
-			LOG.warn("[pollWork] Erreur de traitement de l'accès au serveur " + serverUrl + "/pollWork/" + workType + " (" + c.getMessage() + ")", c);
+		} catch (final InterruptedException e) {
+			//nothing, in case of interrupt just return null, like no message
 		}
 		return null;
 	}
@@ -155,6 +160,12 @@ final class RestQueueClient {
 		final Status status = response.getClientResponseStatus();
 		if (status.getFamily() != Family.SUCCESSFUL) {
 			throw new RuntimeException("Une erreur est survenue : " + status.getStatusCode() + " " + status.getReasonPhrase());
+		}
+	}
+
+	private static void checkInterrupted() throws InterruptedException {
+		if (Thread.currentThread().isInterrupted()) {
+			throw new InterruptedException("Thread interruption required");
 		}
 	}
 }

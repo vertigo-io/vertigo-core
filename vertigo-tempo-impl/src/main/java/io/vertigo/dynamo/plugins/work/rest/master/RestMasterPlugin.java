@@ -22,6 +22,7 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.impl.work.MasterPlugin;
 import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.impl.work.WorkResult;
+import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 
 import java.util.Arrays;
@@ -35,7 +36,7 @@ import javax.inject.Named;
  *
  * @author npiedeloup, pchretien
  */
-public final class RestMasterPlugin implements MasterPlugin {
+public final class RestMasterPlugin implements MasterPlugin, Activeable {
 	private final RestQueueServer restQueueRestServer;
 	private final List<String> distributedWorkTypes;
 
@@ -61,6 +62,18 @@ public final class RestMasterPlugin implements MasterPlugin {
 		return distributedWorkTypes;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public void start() {
+		restQueueRestServer.start();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void stop() {
+		restQueueRestServer.stop();
+	}
+
 	/**
 	 * @return RestQueueServer
 	 */
@@ -79,4 +92,5 @@ public final class RestMasterPlugin implements MasterPlugin {
 	public <WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {
 		getWorkQueueRestServer().putWorkItem(workItem);
 	}
+
 }

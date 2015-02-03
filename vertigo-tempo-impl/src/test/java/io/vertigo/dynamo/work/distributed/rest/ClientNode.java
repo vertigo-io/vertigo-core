@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.work.distributed.rest;
 
+import io.vertigo.lang.Assertion;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,20 +36,27 @@ final class ClientNode {
 	private final List<Thread> subThreads = new ArrayList<>();
 	private final int maxLifeTime;
 
+	private final String managersXmlFileName;
+
 	/**
 	 * Constructeur.
+	 * @param nodeId Node id : 1 or 2
 	 * @param maxLifeTime Durée de vie max en seconde
 	 */
-	ClientNode(final int maxLifeTime) {
+	ClientNode(final int nodeId, final int maxLifeTime) {
+		Assertion.checkArgument(nodeId == 1 || nodeId == 2, "You must specified nodeId : 1 or 2");
+		Assertion.checkArgument(maxLifeTime >= 0 && maxLifeTime < 30000, "MaxLifeTime is in seconde and must be less than 30000 ({0}). Use 0 if you need infinit life.", maxLifeTime);
+		//-----
 		this.maxLifeTime = maxLifeTime;
+		managersXmlFileName = "./managers-node" + nodeId + "-test.xml";
 	}
 
 	public void start() throws IOException {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("java -cp ");
 		sb.append(System.getProperty("java.class.path"));
-		sb.append(" io.vertigo.dynamo.work.distributed.rest.WorkerNodeStarter " + maxLifeTime);
-
+		sb.append(" io.vertigo.dynamo.work.distributed.rest.WorkerNodeStarter " + managersXmlFileName + " " + maxLifeTime);
+		System.out.println(sb.toString());
 		nodeProcess = Runtime.getRuntime().exec(sb.toString());
 		subThreads.add(createMaxLifeTime());
 		subThreads.add(createOutputFlusher(nodeProcess.getInputStream(), "[ClientNode] ", System.out));
@@ -64,7 +73,7 @@ final class ClientNode {
 			public void run() {
 				try {
 					Thread.sleep(maxLifeTime * 1000);
-					stop();
+					//stop();
 				} catch (final InterruptedException e) {
 					//rien
 				}

@@ -25,21 +25,18 @@ import io.vertigo.lang.Assertion;
 
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
-
 /**
  * Charge et démarre un environnement.
  * @author pchretien, npiedeloup
  */
 public final class Starter implements Runnable {
-	private final Logger log = Logger.getLogger(getClass());
 	private final AppConfig appConfig;
 	private final long timeToWait;
 
 	/**
 	 * @param managersXmlFileName Fichier managers.xml
 	 * @param relativeRootClass Racine du chemin relatif, le cas échéant
-	 * @param timeToWait Temps d'attente, 0 signifie illimité
+	 * @param timeToWait Temps d'attente en ms, 0 signifie illimité
 	 */
 	public Starter(final String managersXmlFileName, final Class<?> relativeRootClass, final long timeToWait) {
 		Assertion.checkNotNull(managersXmlFileName);
@@ -56,16 +53,22 @@ public final class Starter implements Runnable {
 	@Override
 	public void run() {
 		try (App app = new App(appConfig)) {
-			System.out.println("Node started");
-			final Object lock = new Object();
-			synchronized (lock) {
-				lock.wait(timeToWait * 1000); //on attend le temps demandé et 0 => illimité
+			System.out.println("Node started (timout in " + timeToWait + "s)");
+			if (timeToWait > 0) {
+				Thread.sleep(timeToWait);
+			} else {
+				//infinite
+				while (!Thread.currentThread().isInterrupted()) {
+					Thread.sleep(60 * 1000);
+				}
 			}
 			System.out.println("Node stopping by timeout");
 		} catch (final InterruptedException e) {
 			//rien arret normal
+			System.out.println("Node stopping by interrupted");
 		} catch (final Exception e) {
-			log.error("Application error, exit", e);
+			System.err.println("Application error, exit " + e.getMessage());
+			e.printStackTrace(System.err);
 		}
 	}
 }

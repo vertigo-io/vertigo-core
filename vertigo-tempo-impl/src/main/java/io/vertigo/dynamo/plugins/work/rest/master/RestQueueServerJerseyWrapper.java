@@ -44,6 +44,11 @@ public final class RestQueueServerJerseyWrapper {
 		return masterPlugin.getWorkQueueRestServer();
 	}
 
+	/**
+	 * @param workType
+	 * @param nodeUID
+	 * @return
+	 */
 	@GET
 	@Path("/pollWork/{workType}")
 	public String pollWork(@PathParam("workType") final String workType, @QueryParam("nodeUID") final String nodeUID) {
@@ -77,8 +82,8 @@ public final class RestQueueServerJerseyWrapper {
 	@GET
 	@Path("/version")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String getVersion() {
+	public String getApiVersion() {
 		//-----
-		return getWorkQueueRestServer().getVersion();
+		return getWorkQueueRestServer().getApiVersion();
 	}
 }

@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -50,14 +52,14 @@ final class RestQueueServer {
 	private static final Logger LOG = Logger.getLogger(RestQueueServer.class);
 
 	//On conserve l'état des work en cours, afin de pouvoir les relancer si besoin (avec un autre uuid)
-	//	private final ConcurrentMap<UUID, RunningWorkInfos> runningWorkInfosMap = new ConcurrentHashMap<>();
+	private final ConcurrentMap<String, RunningWorkInfos> runningWorkInfosMap = new ConcurrentHashMap<>();
 	private final ConcurrentMap<String, NodeState> knownNodes = new ConcurrentHashMap<>();
 	private final Set<String> activeWorkTypes = Collections.synchronizedSet(new HashSet<String>());
-	//	private final Timer checkTimeOutTimer = new Timer("WorkQueueRestServerTimeoutCheck", true);
+	private final Timer checkTimeOutTimer = new Timer("WorkQueueRestServerTimeoutCheck", true);
 	private final CodecManager codecManager;
 	private final BlockingQueue<WorkResult> resultQueue = new LinkedBlockingQueue<>();
 
-	//	private final long nodeTimeOut;
+	private final long nodeTimeOutSec;
 	private final int pullTimeoutSec;
 
 	/**
@@ -69,26 +71,47 @@ final class RestQueueServer {
 	public RestQueueServer(final int nodeTimeOutSec, final CodecManager codecManager, final int pullTimeoutSec) {
 		Assertion.checkNotNull(codecManager);
 		//-----
-		//	this.nodeTimeOut = nodeTimeOut;
+		this.nodeTimeOutSec = nodeTimeOutSec;
 		this.pullTimeoutSec = pullTimeoutSec;
 		this.codecManager = codecManager;
 	}
 
-	//
-	//	/**
-	//	 * Démarrage du serveur.
-	//	 */
-	//	public void start() {
-	//		//On lance le démon qui détecte les noeuds morts
-	//		//checkTimeOutTimer.scheduleAtFixedRate(new DeadNodeDetectorTask(multipleWorkQueues, nodeTimeOut, knownNodes, runningWorkInfosMap), 10 * 1000, 10 * 1000);
-	//	}
-	//
-	//	/**
-	//	 * Arret du serveur.
-	//	 */
-	//	public void stop() {
-	//		checkTimeOutTimer.cancel();
-	//	}
+	/**
+	 * Démarrage du serveur.
+	 */
+	public void start() {
+		//On lance le démon qui détecte les noeuds morts
+		checkTimeOutTimer.scheduleAtFixedRate(new DeadNodeDetectorTask(this), 10 * 1000, 10 * 1000);
+	}
+
+	/**
+	 * Arret du serveur.
+	 */
+	public void stop() {
+		checkTimeOutTimer.cancel();
+	}
+
+	/**
+	 * Vérifie les noeuds morts, et si oui remets les workItems dans la pile.
+	 */
+	void checkDeadNodes() {
+		final Set<String> deadNodes = new HashSet<>();
+		//Comme défini dans le contrat de la ConcurrentMap : l'iterator est weakly consistent : et ne lance pas de ConcurrentModificationException
+		for (final NodeState nodeState : knownNodes.values()) {
+			//sans signe de vie depuis deadNodeTimeout, on considère le noeud comme mort
+			if (System.currentTimeMillis() - nodeState.getLastSeenTime() > nodeTimeOutSec * 1000) {
+				deadNodes.add(nodeState.getNodeUID());
+			}
+		}
+		if (!deadNodes.isEmpty()) {
+			LOG.warn("Stopped nodes detected : " + deadNodes);
+			for (final RunningWorkInfos runningWorkInfos : runningWorkInfosMap.values()) {
+				if (deadNodes.contains(runningWorkInfos.getNodeUID())) {
+					putWorkItem(runningWorkInfos.getWorkItem());
+				}
+			}
+		}
+	}
 
 	/**
 	 * Signalement de vie d'un node, avec le type de work qu'il annonce.
@@ -110,40 +133,34 @@ final class RestQueueServer {
 		final WorkItem workItem = pollWorkItem(workType, pullTimeoutSec);
 		final String json;
 		if (workItem != null) {
-			//			final UUID uuid = UUID.randomUUID();
-			//			runningWorkInfosMap.put(uuid, new RunningWorkInfos(workType, workItem, nodeId));
+			runningWorkInfosMap.put(workItem.getId(), new RunningWorkInfos(workItem, nodeId));
 			final byte[] serializedWorkItem = codecManager.getCompressedSerializationCodec().encode((Serializable) workItem.getWork());
 			final String base64WorkItem = codecManager.getBase64Codec().encode(serializedWorkItem);
 			final String[] sendPack = { workItem.getId(), base64WorkItem };
 			json = new Gson().toJson(sendPack, String[].class);
-			LOG.info("pollWork(" + workType + ") : 1 Work");
+			LOG.info("pollWork(" + workType + "," + nodeId + ") : 1 Work");
 		} else {
 			json = ""; //vide si pas de tache en attente
-			LOG.info("pollWork(" + workType + ") : no Work");
+			LOG.info("pollWork(" + workType + "," + nodeId + ") : no Work");
 		}
 		return json;
 	}
 
 	void onStart(final String workId) {
 		LOG.info("onStart(" + workId + ")");
-		//-----
-		//	final RunningWorkInfos runningWorkInfos = runningWorkInfosMap.get(UUID.fromString(uuid));
-		//		Assertion.checkNotNull(runningWorkInfos, "Ce travail ({0}) n''est pas connu, ou n''est plus en cours.", uuid);
-		//		runningWorkInfos.getWorkResultHandler().onStart();
 	}
 
 	void onDone(final boolean success, final String workId, final String base64Result) {
 		LOG.info("onDone " + success + " : (" + workId + ")");
 		//-----
-		//		final RunningWorkInfos runningWorkInfos = runningWorkInfosMap.remove(UUID.fromString(uuid));
-		//		Assertion.checkNotNull(runningWorkInfos, "Ce travail ({0}) n''est pas connu, ou n''est plus en cours.", uuid);
+		final RunningWorkInfos runningWorkInfos = runningWorkInfosMap.remove(workId);
+		Assertion.checkNotNull(runningWorkInfos, "Ce travail ({0}) n''est pas connu, ou n''est plus en cours.", workId);
 
 		final byte[] serializedResult = codecManager.getBase64Codec().decode(base64Result);
 		final Object value = codecManager.getCompressedSerializationCodec().decode(serializedResult);
 		final Object result = success ? value : null;
 		final Throwable error = (Throwable) (success ? null : value);
 		resultQueue.add(new WorkResult(workId, result, error));
-		//		runningWorkInfos.getWorkResultHandler().onDone(success, result, error);
 	}
 
 	WorkResult pollResult(final int waitTimeSeconds) {
@@ -155,7 +172,7 @@ final class RestQueueServer {
 		}
 	}
 
-	String getVersion() {
+	String getApiVersion() {
 		return "1.0.0";
 	}
 
@@ -187,7 +204,8 @@ final class RestQueueServer {
 		}
 	}
 
-	private synchronized BlockingQueue<WorkItem<?, ?>> obtainWorkQueue(final String workType) {
+	private synchronized BlockingQueue<WorkItem<?, ?>> obtainWorkQueue(final String workType) throws InterruptedException {
+		checkInterrupted();
 		BlockingQueue<WorkItem<?, ?>> workQueue = workQueueMap.get(workType);
 		if (workQueue == null) {
 			workQueue = new LinkedBlockingQueue<>();
@@ -195,4 +213,44 @@ final class RestQueueServer {
 		}
 		return workQueue;
 	}
+
+	private static class RunningWorkInfos {
+		private final WorkItem workItem;
+		private final String nodeUID;
+
+		public RunningWorkInfos(final WorkItem workItem, final String nodeUID) {
+			this.workItem = workItem;
+			this.nodeUID = nodeUID;
+		}
+
+		public WorkItem getWorkItem() {
+			return workItem;
+		}
+
+		public String getNodeUID() {
+			return nodeUID;
+		}
+	}
+
+	private static class DeadNodeDetectorTask extends TimerTask {
+		private final RestQueueServer restQueueServer;
+
+		public DeadNodeDetectorTask(final RestQueueServer restQueueServer) {
+			this.restQueueServer = restQueueServer;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public void run() {
+			restQueueServer.checkDeadNodes();
+
+		}
+	}
+
+	private static void checkInterrupted() throws InterruptedException {
+		if (Thread.currentThread().isInterrupted()) {
+			throw new InterruptedException("Thread interruption required");
+		}
+	}
+
 }
