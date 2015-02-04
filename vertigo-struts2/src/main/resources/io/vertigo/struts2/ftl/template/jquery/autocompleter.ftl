@@ -10,19 +10,19 @@
 		<#include "/${parameters.templateDir}/xhtml/controlheader.ftl" />
 	</#if>
 	<input type="hidden"<#rt/>
-	  <#if parameters.widgetid?if_exists != "">
+	  <#if parameters.widgetid?has_content>
 	    id="${parameters.widgetid?html}"<#rt/>
 	  </#if>
-	  <#if parameters.nameValue??>
+	  <#if parameters.nameValue?has_content>
 	    value="${parameters.nameValue?html}"<#rt/>
 	  </#if>
-	  <#if parameters.widgetname?if_exists != "">
+	  <#if parameters.widgetname?has_content>
 	 	name="${parameters.widgetname?html}"<#rt/>
 	  </#if>
-	  <#if parameters.disabled?default(false)>
+	  <#if parameters.disabled!false>
 	    disabled="disabled"<#rt/>
 	  </#if>
-	  <#if parameters.popinURL?if_exists != "">
+	  <#if parameters.popinURL?has_content>
 	 	popinURL="${parameters.popinURL?html}"<#rt/>
 	  </#if>
 	/><#rt/>
