@@ -92,23 +92,11 @@ public final class PersistenceManagerImpl implements PersistenceManager {
 		return masterDataConfig;
 	}
 
-	@Override
-	@Deprecated
-	public MasterDataConfig getMasterDataConfiguration() {
-		return masterDataConfig;
-	}
-
 	/**
 	 * @return Configuration du PersistenceManager
 	 */
 	@Override
 	public BrokerConfig getBrokerConfig() {
-		return brokerConfig;
-	}
-
-	@Override
-	@Deprecated
-	public BrokerConfig getBrokerConfiguration() {
 		return brokerConfig;
 	}
 

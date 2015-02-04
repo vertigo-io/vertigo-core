@@ -79,7 +79,7 @@ final class DynamicSolver {
 		//We check all references were known
 		for (final DynamicDefinitionKey dynamicDefinitionKey : xdef.getAllDefinitionKeys()) {
 			//reference should be already solved in a previous resources module : then continue
-			if (!Home.getDefinitionSpace().containsKey(dynamicDefinitionKey.getName())) {
+			if (!Home.getDefinitionSpace().containsDefinitionName(dynamicDefinitionKey.getName())) {
 				//or references should be in currently parsed resources
 				final DynamicDefinition subDefinition = definitionModelRepository.getDefinition(dynamicDefinitionKey);
 				if (!orderedList.contains(subDefinition)) {

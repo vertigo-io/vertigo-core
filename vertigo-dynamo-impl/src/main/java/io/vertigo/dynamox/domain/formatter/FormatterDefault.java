@@ -102,7 +102,7 @@ public final class FormatterDefault extends AbstractFormatterImpl {
 	}
 
 	private Formatter obtainFormatterBoolean() {
-		if (!Home.getDefinitionSpace().containsKey(FMT_BOOLEAN_DEFAULT)) {
+		if (!Home.getDefinitionSpace().containsDefinitionName(FMT_BOOLEAN_DEFAULT)) {
 			final FormatterBoolean defaultformatter = new FormatterBoolean(FMT_BOOLEAN_DEFAULT);
 			defaultformatter.initParameters("Oui; Non");
 			//Home.getDefinitionSpace().put(defaultformatter, Formatter.class);
@@ -112,7 +112,7 @@ public final class FormatterDefault extends AbstractFormatterImpl {
 	}
 
 	private Formatter obtainFormatterNumber() {
-		if (!Home.getDefinitionSpace().containsKey(FMT_NUMBER_DEFAULT)) {
+		if (!Home.getDefinitionSpace().containsDefinitionName(FMT_NUMBER_DEFAULT)) {
 			final FormatterNumber defaultformatter = new FormatterNumber(FMT_NUMBER_DEFAULT);
 			defaultformatter.initParameters("#,###.##");
 			//Home.getDefinitionSpace().put(defaultformatter, Formatter.class);
@@ -122,7 +122,7 @@ public final class FormatterDefault extends AbstractFormatterImpl {
 	}
 
 	private Formatter obtainFormatterDate() {
-		if (!Home.getDefinitionSpace().containsKey(FMT_DATE_DEFAULT)) {
+		if (!Home.getDefinitionSpace().containsDefinitionName(FMT_DATE_DEFAULT)) {
 			final FormatterDate defaultformatter = new FormatterDate(FMT_DATE_DEFAULT);
 			defaultformatter.initParameters("dd/MM/yyyy HH:mm ; dd/MM/yyyy");
 			//Home.getDefinitionSpace().put(defaultformatter, Formatter.class);
@@ -132,7 +132,7 @@ public final class FormatterDefault extends AbstractFormatterImpl {
 	}
 
 	private Formatter obtainFormatterString() {
-		if (!Home.getDefinitionSpace().containsKey(FMT_STRING_DEFAULT)) {
+		if (!Home.getDefinitionSpace().containsDefinitionName(FMT_STRING_DEFAULT)) {
 			final FormatterString defaultformatter = new FormatterString(FMT_STRING_DEFAULT);
 			defaultformatter.initParameters(null);//Fonctionnement de base (pas de formatage)
 			//Home.getDefinitionSpace().put(defaultformatter, Formatter.class);

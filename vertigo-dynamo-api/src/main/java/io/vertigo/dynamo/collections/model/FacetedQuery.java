@@ -33,7 +33,7 @@ import java.util.List;
 public final class FacetedQuery implements Serializable {
 	private static final long serialVersionUID = -3215786603726103410L;
 
-	private final DefinitionReference<FacetedQueryDefinition> facetedQueryDefinition;
+	private final DefinitionReference<FacetedQueryDefinition> facetedQueryDefinitionRef;
 	private final List<ListFilter> listFilters;
 
 	/**
@@ -45,7 +45,7 @@ public final class FacetedQuery implements Serializable {
 		Assertion.checkNotNull(facetedQueryDefinition);
 		Assertion.checkNotNull(listFilters);
 		//-----
-		this.facetedQueryDefinition = new DefinitionReference<>(facetedQueryDefinition);
+		this.facetedQueryDefinitionRef = new DefinitionReference<>(facetedQueryDefinition);
 		this.listFilters = listFilters;
 	}
 
@@ -53,7 +53,7 @@ public final class FacetedQuery implements Serializable {
 	 * @return Définition du FacetedQuery.
 	 */
 	public FacetedQueryDefinition getDefinition() {
-		return facetedQueryDefinition.get();
+		return facetedQueryDefinitionRef.get();
 	}
 
 	/**

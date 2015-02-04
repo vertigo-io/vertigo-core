@@ -40,7 +40,7 @@ import java.util.Map;
 public final class Facet implements Serializable {
 	private static final long serialVersionUID = -6496651592068817414L;
 
-	private final DefinitionReference<FacetDefinition> facetDefinition;
+	private final DefinitionReference<FacetDefinition> facetDefinitionRef;
 	private final Map<FacetValue, Long> facetValues;
 
 	/**
@@ -52,7 +52,7 @@ public final class Facet implements Serializable {
 		Assertion.checkNotNull(facetDefinition);
 		Assertion.checkNotNull(facetValues);
 		//-----
-		this.facetDefinition = new DefinitionReference<>(facetDefinition);
+		this.facetDefinitionRef = new DefinitionReference<>(facetDefinition);
 		this.facetValues = Collections.unmodifiableMap(facetValues);
 	}
 
@@ -60,7 +60,7 @@ public final class Facet implements Serializable {
 	 * @return Définition de la facette.
 	 */
 	public FacetDefinition getDefinition() {
-		return facetDefinition.get();
+		return facetDefinitionRef.get();
 	}
 
 	/**

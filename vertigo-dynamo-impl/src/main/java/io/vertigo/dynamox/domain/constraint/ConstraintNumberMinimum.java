@@ -32,8 +32,8 @@ import io.vertigo.lang.MessageText;
 public final class ConstraintNumberMinimum extends AbstractConstraintImpl<Number, Number> {
 	private double minValue;
 
-	public ConstraintNumberMinimum(final String urn) {
-		super(urn);
+	public ConstraintNumberMinimum(final String name) {
+		super(name);
 	}
 
 	/**{@inheritDoc}*/

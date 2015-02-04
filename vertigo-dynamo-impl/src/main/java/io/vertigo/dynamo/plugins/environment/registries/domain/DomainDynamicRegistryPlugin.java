@@ -319,8 +319,8 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 		final AssociationNode associationNodeA = new AssociationNode(dtDefinitionA, navigabilityA, roleA, labelA, true, false);
 		final AssociationNode associationNodeB = new AssociationNode(dtDefinitionB, navigabilityB, roleB, labelB, true, false);
-		final String urn = fixAssociationName(ASSOCIATION_NN_DEFINITION_PREFIX, xassociation.getDefinitionKey().getName());
-		return new AssociationNNDefinition(urn, tableName, associationNodeA, associationNodeB);
+		final String name = fixAssociationName(ASSOCIATION_NN_DEFINITION_PREFIX, xassociation.getDefinitionKey().getName());
+		return new AssociationNNDefinition(name, tableName, associationNodeA, associationNodeB);
 	}
 
 	// méthode permettant de créer une liste de contraintes à partir d'une liste de noms de contrainte

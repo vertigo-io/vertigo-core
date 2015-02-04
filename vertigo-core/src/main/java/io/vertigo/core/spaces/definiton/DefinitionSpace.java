@@ -45,7 +45,7 @@ public final class DefinitionSpace implements Activeable {
 	private final Map<String, ResourceLoader> resourceLoaders = new HashMap<>();
 
 	/**
-	 * Liste des objets indexés par Class (le type) et identifiant.
+	 * Liste des objets indexés par Class (le type) et nom.
 	 */
 	private final Map<Class<? extends Definition>, Map<String, Definition>> definitions = new HashMap<>();
 	@JsonExclude
@@ -98,17 +98,17 @@ public final class DefinitionSpace implements Activeable {
 		Assertion.checkArgument(definitions.containsKey(clazz), "L'objet {0} ne peut pas pas être enregistré, son type  '{1}' est inconnu !", definition, clazz);
 		//-----
 		final Map<String, Definition> tobjects = definitions.get(clazz);
-		final String id = definition.getName();
-		checkId(id, clazz);
-		final Definition previous = tobjects.put(id, definition);
-		Assertion.checkArgument(previous == null, "L'objet {0} est déja enregistré !", id);
+		final String name = definition.getName();
+		checkName(name, clazz);
+		final Definition previous = tobjects.put(name, definition);
+		Assertion.checkArgument(previous == null, "L'objet {0} est déja enregistré !", name);
 		//-----
-		final Definition previous2 = allObjects.put(id, definition);
+		final Definition previous2 = allObjects.put(name, definition);
 		//On vérifie l'unicité globale du nom.
-		Assertion.checkState(previous2 == null, "L'objet {0} est déja enregistré !", id);
+		Assertion.checkState(previous2 == null, "L'objet {0} est déja enregistré !", name);
 	}
 
-	private static void checkId(final String name, final Class<? extends Definition> clazz) {
+	private static void checkName(final String name, final Class<? extends Definition> clazz) {
 		final String prefix = DefinitionUtil.getPrefix(clazz);
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkArgument(name.startsWith(prefix), "La définition {0} doit commencer par {1}", name, prefix);
@@ -118,47 +118,47 @@ public final class DefinitionSpace implements Activeable {
 	}
 
 	/**
-	 * @param value  Objet recherché
-	 * @return  Si un objet avec l'identifiant est déjà enregistré.
+	 * @param definition  Definition recherché
+	 * @return  Si une définition avec le nom précisé est déjà enregistrée.
 	 */
-	public boolean containsValue(final Object value) {
-		return allObjects.containsValue(value);
+	public boolean containsDefinition(final Definition definition) {
+		return allObjects.containsValue(definition);
 	}
 
 	/**
-	 * @param id  Objet recherché
+	 * @param name  Objet recherché
 	 * @return Si un objet avec l'identifiant est déjà enregistré.
 	 */
-	public boolean containsKey(final String id) {
-		return allObjects.containsKey(id);
+	public boolean containsDefinitionName(final String name) {
+		return allObjects.containsKey(name);
 	}
 
 	/**
 	 * Cette méthode ne doit être appelée que si l'objet est déjà enregistré.
-	 * @param id Identifiant de l'objet
+	 * @param name Identifiant de l'objet
 	 * @param clazz type de l'object
 	 * @return Objet associé
 	 * @param <C> Type de l'objet
 	 */
-	public <C extends Definition> C resolve(final String id, final Class<C> clazz) {
-		Assertion.checkNotNull(id); // L'identifiant de l'objet recherché ne peut pas être null
+	public <C extends Definition> C resolve(final String name, final Class<C> clazz) {
+		Assertion.checkNotNull(name); // L'identifiant de l'objet recherché ne peut pas être null
 		Assertion.checkNotNull(clazz);
 		Assertion.checkArgument(definitions.containsKey(clazz), "Type '{0}' non enregistré", clazz.getName());
 		//-----
 		final Map<String, Definition> tobjects = definitions.get(clazz);
-		final Object o = tobjects.get(id);
-		Assertion.checkNotNull(o, "Object '{0}' non trouvé", id);
+		final Object o = tobjects.get(name);
+		Assertion.checkNotNull(o, "Object '{0}' non trouvé", name);
 		return clazz.cast(o);
 	}
 
 	/**
-	 * Récupération d'une définition par son URN.
-	 * @param id Identifiant de l'objet
+	 * Récupération d'une définition par son nom.
+	 * @param name Identifiant de l'objet
 	 * @return Objet associé
 	 */
-	public Definition resolve(final String id) {
-		final Definition object = allObjects.get(id);
-		Assertion.checkNotNull(object, "Aucun Objet avec id = {0}", id);
+	public Definition resolve(final String name) {
+		final Definition object = allObjects.get(name);
+		Assertion.checkNotNull(object, "Definition not found with name : {0}", name);
 		return object;
 	}
 

@@ -55,7 +55,7 @@ public abstract class UserSession implements Serializable {
 	/**
 	 * Set des roles autorises pour la session utilisateur.
 	 */
-	private final Set<DefinitionReference<Role>> roles = new HashSet<>();
+	private final Set<DefinitionReference<Role>> roleRefs = new HashSet<>();
 
 	/**
 	 * Indique si l'utilisateur est authentifie.
@@ -80,7 +80,7 @@ public abstract class UserSession implements Serializable {
 	public final UserSession addRole(final Role role) {
 		Assertion.checkNotNull(role);
 		//-----
-		roles.add(new DefinitionReference<>(role));
+		roleRefs.add(new DefinitionReference<>(role));
 		return this;
 	}
 
@@ -91,7 +91,7 @@ public abstract class UserSession implements Serializable {
 	 */
 	public final Set<Role> getRoles() {
 		final Set<Role> roleSet = new HashSet<>();
-		for (final DefinitionReference<Role> roleReference : roles) {
+		for (final DefinitionReference<Role> roleReference : roleRefs) {
 			roleSet.add(roleReference.get());
 		}
 		return Collections.unmodifiableSet(roleSet);
@@ -104,7 +104,7 @@ public abstract class UserSession implements Serializable {
 	public final boolean hasRole(final Role role) {
 		Assertion.checkNotNull(role);
 		//-----
-		return roles.contains(new DefinitionReference<>(role));
+		return roleRefs.contains(new DefinitionReference<>(role));
 	}
 
 	/**
@@ -112,7 +112,7 @@ public abstract class UserSession implements Serializable {
 	 * Attention, cela signifie qu'il n'a plus aucun droit.
 	 */
 	public final void clearRoles() {
-		roles.clear();
+		roleRefs.clear();
 	}
 
 	//===========================================================================

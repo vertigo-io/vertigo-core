@@ -56,7 +56,7 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 	 * Retourne l'URL correspondant au nom du fichier dans le classPath.
 	 *
 	 * @param fileName Nom du fichier
-	 * @return URN non null
+	 * @return URL non null
 	 */
 	private static URL createURL(final String fileName, final Class<?> relativeRootClass) {
 		Assertion.checkArgNotEmpty(fileName);
