@@ -18,6 +18,7 @@
  */
 package io.vertigo.studio.plugins.mda.domain.templates;
 
+import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.lang.Assertion;
 
@@ -40,10 +41,10 @@ public final class TemplateAssociation {
 	}
 
 	/**
-	 * @return Noeud d'une association.
+	 * @return Definition d'une association.
 	 */
-	public AssociationNode getAssociationNode() {
-		return associationNode;
+	public AssociationDefinition getDefinition() {
+		return associationNode.getAssociationDefinition();
 	}
 
 	/**

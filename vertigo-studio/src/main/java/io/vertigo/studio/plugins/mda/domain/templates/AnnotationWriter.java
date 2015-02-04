@@ -103,37 +103,40 @@ class AnnotationWriter {
 	/**
 	 * Ectiture des annotations sur un DT_FIELD gérant une association.
 	 *
-	 * @param associationNode Noeud de l'association
+	 * @param associationSimple Definition de l'association
 	 * @return Liste des lignes de code java à ajouter.
 	 */
-	List<String> writeAnnotations(final AssociationNode associationNode) {
-		// Générations des annotations Dynamo
-		if (associationNode.getAssociationDefinition().isAssociationSimpleDefinition()) {
-			final AssociationSimpleDefinition associationSimple = associationNode.getAssociationDefinition().castAsAssociationSimpleDefinition();
-			final AssociationNode primaryNode = associationSimple.getPrimaryAssociationNode();
-			final AssociationNode foreignNode = associationSimple.getForeignAssociationNode();
-			final String primaryMultiplicity = AssociationUtil.getMultiplicity(primaryNode.isNotNull(), primaryNode.isMultiple());
-			final String foreignMultiplipicity = AssociationUtil.getMultiplicity(foreignNode.isNotNull(), foreignNode.isMultiple());
+	List<String> writeSimpleAssociationAnnotation(final AssociationSimpleDefinition associationSimple) {
+		final AssociationNode primaryNode = associationSimple.getPrimaryAssociationNode();
+		final AssociationNode foreignNode = associationSimple.getForeignAssociationNode();
+		final String primaryMultiplicity = AssociationUtil.getMultiplicity(primaryNode.isNotNull(), primaryNode.isMultiple());
+		final String foreignMultiplipicity = AssociationUtil.getMultiplicity(foreignNode.isNotNull(), foreignNode.isMultiple());
 
-			return new ListBuilder<String>()
-					.add("@" + Association.class.getCanonicalName() + " (")
-					.add(INDENT + "name = \"" + associationSimple.getName() + "\",")
-					.add(INDENT + "fkFieldName = \"" + associationSimple.getFKField().getName() + "\",")
-					.add(INDENT + "primaryDtDefinitionName = \"" + primaryNode.getDtDefinition().getName() + "\",")
-					.add(INDENT + "primaryIsNavigable = " + primaryNode.isNavigable() + ',')
-					.add(INDENT + "primaryRole = \"" + primaryNode.getRole() + "\",")
-					.add(INDENT + "primaryLabel = \"" + primaryNode.getLabel() + "\",")
-					.add(INDENT + "primaryMultiplicity = \"" + primaryMultiplicity + "\",")
-					.add(INDENT + "foreignDtDefinitionName = \"" + foreignNode.getDtDefinition().getName() + "\",")
-					.add(INDENT + "foreignIsNavigable = " + foreignNode.isNavigable() + ',')
-					.add(INDENT + "foreignRole = \"" + foreignNode.getRole() + "\",")
-					.add(INDENT + "foreignLabel = \"" + foreignNode.getLabel() + "\",")
-					.add(INDENT + "foreignMultiplicity = \"" + foreignMultiplipicity + "\"")
-					.add(")")
-					.build();
-		}
+		return new ListBuilder<String>()
+				.add("@" + Association.class.getCanonicalName() + " (")
+				.add(INDENT + "name = \"" + associationSimple.getName() + "\",")
+				.add(INDENT + "fkFieldName = \"" + associationSimple.getFKField().getName() + "\",")
+				.add(INDENT + "primaryDtDefinitionName = \"" + primaryNode.getDtDefinition().getName() + "\",")
+				.add(INDENT + "primaryIsNavigable = " + primaryNode.isNavigable() + ',')
+				.add(INDENT + "primaryRole = \"" + primaryNode.getRole() + "\",")
+				.add(INDENT + "primaryLabel = \"" + primaryNode.getLabel() + "\",")
+				.add(INDENT + "primaryMultiplicity = \"" + primaryMultiplicity + "\",")
+				.add(INDENT + "foreignDtDefinitionName = \"" + foreignNode.getDtDefinition().getName() + "\",")
+				.add(INDENT + "foreignIsNavigable = " + foreignNode.isNavigable() + ',')
+				.add(INDENT + "foreignRole = \"" + foreignNode.getRole() + "\",")
+				.add(INDENT + "foreignLabel = \"" + foreignNode.getLabel() + "\",")
+				.add(INDENT + "foreignMultiplicity = \"" + foreignMultiplipicity + "\"")
+				.add(")")
+				.build();
+	}
 
-		final AssociationNNDefinition associationNN = associationNode.getAssociationDefinition().castAsAssociationNNDefinition();
+	/**
+	 * Ectiture des annotations sur un DT_FIELD gérant une association.
+	 *
+	 * @param associationNN Definition de l'association
+	 * @return Liste des lignes de code java à ajouter.
+	 */
+	List<String> writeNNAssociationAnnotation(final AssociationNNDefinition associationNN) {
 		final AssociationNode nodeA = associationNN.getAssociationNodeA();
 		final AssociationNode nodeB = associationNN.getAssociationNodeB();
 

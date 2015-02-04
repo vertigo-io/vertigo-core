@@ -85,7 +85,8 @@ public final class SqlGeneratorPlugin extends AbstractGeneratorPlugin {
 		final MapBuilder<String, Object> mapRootBuilder = new MapBuilder<String, Object>()
 				.put("sql", new TemplateMethodSql())
 				.put("dtDefinitions", list)
-				.put("associations", DomainUtil.getAssociations())
+				.put("simpleAssociations", DomainUtil.getSimpleAssociations())
+				.put("nnAssociations", DomainUtil.getNNAssociations())
 				.put("drop", generateDrop)
 				// Ne sert actuellement à rien, le sql généré étant le même. Prévu pour le futur
 				.put("basecible", baseCible)

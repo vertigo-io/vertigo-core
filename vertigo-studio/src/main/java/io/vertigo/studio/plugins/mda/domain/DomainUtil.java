@@ -23,6 +23,8 @@ import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
+import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
+import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -103,8 +105,12 @@ public final class DomainUtil {
 		return getDefinitionCollectionMap(getDtDefinitions());
 	}
 
-	static Collection<AssociationDefinition> getAssociations() {
-		return sortAssociationsCollection(Home.getDefinitionSpace().getAll(AssociationDefinition.class));
+	static Collection<AssociationSimpleDefinition> getSimpleAssociations() {
+		return sortAssociationsCollection(Home.getDefinitionSpace().getAll(AssociationSimpleDefinition.class));
+	}
+
+	static Collection<AssociationNNDefinition> getNNAssociations() {
+		return sortAssociationsCollection(Home.getDefinitionSpace().getAll(AssociationNNDefinition.class));
 	}
 
 	/**
@@ -172,8 +178,8 @@ public final class DomainUtil {
 		return list;
 	}
 
-	private static Collection<AssociationDefinition> sortAssociationsCollection(final Collection<AssociationDefinition> associationCollection) {
-		final List<AssociationDefinition> list = new ArrayList<>(associationCollection);
+	private static <A extends AssociationDefinition> Collection<A> sortAssociationsCollection(final Collection<A> associationCollection) {
+		final List<A> list = new ArrayList<>(associationCollection);
 		java.util.Collections.sort(list, new Comparator<AssociationDefinition>() {
 			@Override
 			public int compare(final AssociationDefinition definition1, final AssociationDefinition definition2) {

@@ -74,7 +74,7 @@ public final class ${dtDefinition.classSimpleName} implements DtObject {
 	 * Association : ${association.label}.
 	 * @return <#if association.multiple>io.vertigo.dynamo.domain.model.DtList<${association.returnType}><#else>${association.returnType}</#if>
 	 */
-	<#list annotations(association.associationNode) as annotation>
+	<#list annotations(association.definition) as annotation>
     ${annotation}
 	</#list>
 	<#if association.multiple>
@@ -98,7 +98,7 @@ public final class ${dtDefinition.classSimpleName} implements DtObject {
 	 * Association URI: ${association.label}.
 	 * @return URI de l'association
 	 */
-	<#list annotations(association.associationNode) as annotation>
+	<#list annotations(association.definition) as annotation>
     ${annotation}
 	</#list>
 	public io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation get${association.role?cap_first}DtListURI() {
@@ -129,7 +129,7 @@ public final class ${dtDefinition.classSimpleName} implements DtObject {
 	 * Retourne l'URI: ${association.label}.
 	 * @return URI de l'association
 	 */
-	<#list annotations(association.associationNode) as annotation>
+	<#list annotations(association.definition) as annotation>
     ${annotation}
 	</#list>
 	public io.vertigo.dynamo.domain.model.URI<${association.returnType}> get${association.role?cap_first}URI() {

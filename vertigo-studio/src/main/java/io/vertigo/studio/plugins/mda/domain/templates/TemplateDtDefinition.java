@@ -23,7 +23,8 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
-import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
+import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
+import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -40,7 +41,7 @@ public final class TemplateDtDefinition {
 	private final DtDefinition dtDefinition;
 	private final List<TemplateDtField> dtFields = new ArrayList<>();
 	private final List<TemplateDtField> dtComputedFields = new ArrayList<>();
-	private final List<TemplateAssociation> associations = new ArrayList<>();
+	private final List<TemplateAssociation> templateAssociations = new ArrayList<>();
 
 	/**
 	 * Constructeur.
@@ -59,32 +60,28 @@ public final class TemplateDtDefinition {
 				dtFields.add(new TemplateDtField(dtDefinition, dtField));
 			}
 		}
-		final Collection<AssociationNode> associationNodeCollection = getTargetAssociationNodes();
-		for (final AssociationNode associationNode : associationNodeCollection) {
-			associations.add(new TemplateAssociation(associationNode));
+
+		addTemplateAssociationNodes(Home.getDefinitionSpace().getAll(AssociationSimpleDefinition.class));
+		addTemplateAssociationNodes(Home.getDefinitionSpace().getAll(AssociationNNDefinition.class));
+	}
+
+	/**
+	 * Enregistre toutes les templates d'associations où la DtDéfinition est concernée.
+	 */
+	private void addTemplateAssociationNodes(final Collection<? extends AssociationDefinition> associationDefinitions) {
+		for (final AssociationDefinition associationDefinition : associationDefinitions) {
+			if (associationDefinition.getAssociationNodeA().getDtDefinition().getName().equals(dtDefinition.getName())) {
+				templateAssociations.add(new TemplateAssociation(associationDefinition.getAssociationNodeB()));
+			}
+			if (associationDefinition.getAssociationNodeB().getDtDefinition().getName().equals(dtDefinition.getName())) {
+				templateAssociations.add(new TemplateAssociation(associationDefinition.getAssociationNodeA()));
+			}
 		}
 	}
 
 	/**
-	 * Retourne toutes les associations ou la DtDéfinition est concernée.
-	 *
-	 * @return Collection des associations concernées
+	 * @return Si persistent
 	 */
-	private Collection<AssociationNode> getTargetAssociationNodes() {
-		final Collection<AssociationDefinition> associationDefinitions = Home.getDefinitionSpace().getAll(AssociationDefinition.class);
-		final Collection<AssociationNode> result = new ArrayList<>();
-		for (final AssociationDefinition associationDefinition : associationDefinitions) {
-			if (associationDefinition.getAssociationNodeA().getDtDefinition().getName().equals(dtDefinition.getName())) {
-				result.add(associationDefinition.getAssociationNodeB());
-			}
-			if (associationDefinition.getAssociationNodeB().getDtDefinition().getName().equals(dtDefinition.getName())) {
-				result.add(associationDefinition.getAssociationNodeA());
-			}
-
-		}
-		return result;
-	}
-
 	public boolean isPersistent() {
 		return dtDefinition.isPersistent();
 	}
@@ -142,6 +139,6 @@ public final class TemplateDtDefinition {
 	 * @return Liste des associations
 	 */
 	public List<TemplateAssociation> getAssociations() {
-		return associations;
+		return templateAssociations;
 	}
 }

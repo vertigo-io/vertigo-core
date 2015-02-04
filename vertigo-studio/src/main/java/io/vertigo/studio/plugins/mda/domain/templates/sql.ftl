@@ -7,7 +7,7 @@
 -- ============================================================
 --   Drop                                       
 -- ============================================================
-<#list associations as associationDefinition>
+<#list nnAssociations as associationDefinition>
 <#if !associationDefinition.isAssociationSimpleDefinition()><#-- On drop les tables correspondant aux NN -->
 
 drop table ${associationDefinition.getTableName()} cascade;
@@ -78,13 +78,8 @@ TABLESPACE :TABLESPACE_NAME_INDEX</#if>;
 </#if>
 </#list>
 
-<#list associations as associationDefinition>
+<#list nnAssociations as associationDefinition>
 <#if associationDefinition.getAssociationNodeA().getDtDefinition().isPersistent() && associationDefinition.getAssociationNodeB().getDtDefinition().isPersistent()>
-<#if associationDefinition.isAssociationSimpleDefinition()>
-alter table ${associationDefinition.getForeignAssociationNode().getDtDefinition().localName}
-	add constraint FK_${associationDefinition.getName()?substring(2)} foreign key (${associationDefinition.getFKField().name()})
-	references ${associationDefinition.getPrimaryAssociationNode().getDtDefinition().localName} (${associationDefinition.getPrimaryAssociationNode().getDtDefinition().getIdField().get().name()});
-<#else>
 create table ${associationDefinition.getTableName()}
 (
 	${associationDefinition.getAssociationNodeA().getDtDefinition().getIdField().get().name()?right_pad(12)}${"\t"} ${sql(associationDefinition.getAssociationNodeA().getDtDefinition().getIdField().get().domain)?right_pad(12)}${"\t"} not null,
@@ -104,7 +99,15 @@ TABLESPACE :TABLESPACE_NAME_INDEX</#if>;
 
 create index ${associationDefinition.getName()?substring(2)}_${associationDefinition.getAssociationNodeB().getDtDefinition().localName}_FK on ${associationDefinition.getTableName()} (${associationDefinition.getAssociationNodeB().getDtDefinition().getIdField().get().name()} asc)<#if tableSpaceIndex?has_content>
 TABLESPACE :TABLESPACE_NAME_INDEX</#if>;
+
 </#if>
+</#list>
+
+<#list simpleAssociations as associationDefinition>
+<#if associationDefinition.getAssociationNodeA().getDtDefinition().isPersistent() && associationDefinition.getAssociationNodeB().getDtDefinition().isPersistent()>
+alter table ${associationDefinition.getForeignAssociationNode().getDtDefinition().localName}
+	add constraint FK_${associationDefinition.getName()?substring(2)} foreign key (${associationDefinition.getFKField().name()})
+	references ${associationDefinition.getPrimaryAssociationNode().getDtDefinition().localName} (${associationDefinition.getPrimaryAssociationNode().getDtDefinition().getIdField().get().name()});
 
 </#if>
 </#list>

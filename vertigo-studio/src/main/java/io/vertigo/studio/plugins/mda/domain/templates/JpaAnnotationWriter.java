@@ -21,7 +21,8 @@ package io.vertigo.studio.plugins.mda.domain.templates;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
+import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
+import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,23 +122,35 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 
 	/**
 	 * Ectiture des annotations sur un DT_FIELD gérant une association.
-	 * @param associationNode Noeud de l'association
+	 * @param associationSimple Definition de l'association
 	 * @return Liste des lignes de code java à ajouter.
 	 */
 	@Override
-	List<String> writeAnnotations(final AssociationNode associationNode) {
+	List<String> writeSimpleAssociationAnnotation(final AssociationSimpleDefinition associationSimple) {
 		final List<String> lines;
-		lines = writeJpaAnnotations(associationNode);
-		lines.addAll(super.writeAnnotations(associationNode));
+		lines = writeJpaAnnotations();
+		lines.addAll(super.writeSimpleAssociationAnnotation(associationSimple));
 		return lines;
 	}
 
 	/**
 	 * Ectiture des annotations sur un DT_FIELD gérant une association.
-	 * @param associationNode Noeud de l'association
+	 * @param associationNN Definition de l'association
 	 * @return Liste des lignes de code java à ajouter.
 	 */
-	private static List<String> writeJpaAnnotations(final AssociationNode associationNode) {
+	@Override
+	List<String> writeNNAssociationAnnotation(final AssociationNNDefinition associationNN) {
+		final List<String> lines;
+		lines = writeJpaAnnotations();
+		lines.addAll(super.writeNNAssociationAnnotation(associationNN));
+		return lines;
+	}
+
+	/**
+	 * Ectiture des annotations sur un DT_FIELD gérant une association.
+	 * @return Liste des lignes de code java à ajouter.
+	 */
+	private static List<String> writeJpaAnnotations() {
 		final List<String> lines = new ArrayList<>();
 		lines.add("@javax.persistence.Transient"); //On ne crée pas de grappe d'objet
 		return lines;

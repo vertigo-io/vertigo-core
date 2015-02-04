@@ -20,7 +20,8 @@ package io.vertigo.studio.plugins.mda.domain.templates;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
+import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
+import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.lang.Assertion;
 
 import java.util.List;
@@ -59,10 +60,19 @@ final class TemplateAnnotationLines implements TemplateSequenceModel {
 	/**
 	 * Annotations pour une association.
 	 * @param annotationWriter AnnotationWriter
-	 * @param annotationNode définition de l'association
+	 * @param associationSimple définition de l'association
 	 */
-	TemplateAnnotationLines(final AnnotationWriter annotationWriter, final AssociationNode annotationNode) {
-		this(annotationWriter.writeAnnotations(annotationNode));
+	TemplateAnnotationLines(final AnnotationWriter annotationWriter, final AssociationSimpleDefinition associationSimple) {
+		this(annotationWriter.writeSimpleAssociationAnnotation(associationSimple));
+	}
+
+	/**
+	 * Annotations pour une association.
+	 * @param annotationWriter AnnotationWriter
+	 * @param associationNN définition de l'association
+	 */
+	TemplateAnnotationLines(final AnnotationWriter annotationWriter, final AssociationNNDefinition associationNN) {
+		this(annotationWriter.writeNNAssociationAnnotation(associationNN));
 	}
 
 	private TemplateAnnotationLines(final List<String> lines) {

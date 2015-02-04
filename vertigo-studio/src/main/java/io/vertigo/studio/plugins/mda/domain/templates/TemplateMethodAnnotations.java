@@ -20,7 +20,9 @@ package io.vertigo.studio.plugins.mda.domain.templates;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
+import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.lang.Assertion;
 
 import java.util.List;
@@ -60,7 +62,7 @@ public final class TemplateMethodAnnotations implements TemplateMethodModelEx {
 	/** {@inheritDoc}*/
 	@Override
 	public TemplateModel exec(final List params) throws TemplateModelException {
-		Assertion.checkArgument(!params.isEmpty(), "Un parametre de type [DtField, DtDefinition, AssociationNode] est obligatoire");
+		Assertion.checkArgument(!params.isEmpty(), "Un parametre de type [DtField, DtDefinition, AssociationSimpleDefinition, AssociationNNDefinition] est obligatoire");
 		//-----
 		final Object type = ((StringModel) params.get(0)).getWrappedObject();
 
@@ -70,9 +72,11 @@ public final class TemplateMethodAnnotations implements TemplateMethodModelEx {
 			final Object type2 = ((StringModel) params.get(1)).getWrappedObject();
 			return new TemplateAnnotationLines(annotationWriter, (DtField) type, (DtDefinition) type2);
 		} else if (type instanceof AssociationNode) {
-			return new TemplateAnnotationLines(annotationWriter, (AssociationNode) type);
+			return new TemplateAnnotationLines(annotationWriter, (AssociationSimpleDefinition) type);
+		} else if (type instanceof AssociationNode) {
+			return new TemplateAnnotationLines(annotationWriter, (AssociationNNDefinition) type);
 		} else {
-			throw new TemplateModelException("Le type '" + type.getClass() + "' n''est pas dans la liste [DtField, DtDefinition, AssociationNode]");
+			throw new TemplateModelException("Le type '" + type.getClass() + "' n''est pas dans la liste [DtField, DtDefinition, AssociationSimpleDefinition, AssociationNNDefinition]");
 		}
 	}
 }
