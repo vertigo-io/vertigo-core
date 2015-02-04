@@ -131,13 +131,20 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	}
 
 	private Domain createDomain(final DynamicDefinition xdomain) {
-		final String formatterName = xdomain.getDefinitionKey("formatter").getName();
-		final FormatterDefinition formatter = definitionSpace.resolve(formatterName, FormatterDefinition.class);
-
+		//il y a deux cas 
+		//avec formatter et constraint
 		final DataType dataType = DataType.valueOf(xdomain.getDefinitionKey("dataType").getName());
+		final String domainName = xdomain.getDefinitionKey().getName();
+		final boolean hasFormatter = xdomain.containsDefinitionKey("formatter");
 		final List<DynamicDefinitionKey> constraintNames = xdomain.getDefinitionKeys("constraint");
 
-		final String domainName = xdomain.getDefinitionKey().getName();
+		final FormatterDefinition formatter;
+		if (hasFormatter) {
+			final String formatterName = xdomain.getDefinitionKey("formatter").getName();
+			formatter = definitionSpace.resolve(formatterName, FormatterDefinition.class);
+		} else {
+			formatter = null;
+		}
 		return new Domain(domainName, dataType, formatter, createConstraints(constraintNames), extractProperties(xdomain));
 	}
 
@@ -381,11 +388,9 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		//Notamment la validité de la liste des contraintes et la nullité du formatter
 
 		final Entity metaDefinitionDomain = DomainGrammar.DOMAIN_ENTITY;
-		final DynamicDefinitionKey fmtDefaultKey = new DynamicDefinitionKey(FormatterDefinition.FMT_DEFAULT);
 		final DynamicDefinitionKey dtObjectKey = new DynamicDefinitionKey("DtObject");
 
 		final DynamicDefinition domain = DynamicDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain, packageName)
-				.withDefinition("formatter", fmtDefaultKey)
 				.withDefinition("dataType", dtObjectKey)
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
 				.withPropertyValue(KspProperty.TYPE, definitionName)
@@ -398,7 +403,6 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 		final DynamicDefinitionKey dtListKey = new DynamicDefinitionKey("DtList");
 		final DynamicDefinition domain2 = DynamicDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTC", metaDefinitionDomain, packageName)
-				.withDefinition("formatter", fmtDefaultKey)
 				.withDefinition("dataType", dtListKey)
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
 				.withPropertyValue(KspProperty.TYPE, definitionName)

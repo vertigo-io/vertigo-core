@@ -33,10 +33,6 @@ import java.lang.reflect.Constructor;
 @DefinitionPrefix("FMT")
 public final class FormatterDefinition implements Formatter, Definition {
 	/**
-	 * Nom de du formatter par défaut.
-	 */
-	public static final String FMT_DEFAULT = "FMT_DEFAULT";
-	/**
 	* Nom de la contrainte.
 	* On n'utilise pas les génériques car problémes.
 	*/

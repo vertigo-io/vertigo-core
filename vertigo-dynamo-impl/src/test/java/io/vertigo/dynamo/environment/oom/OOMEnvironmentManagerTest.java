@@ -53,13 +53,13 @@ public final class OOMEnvironmentManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testDefaultFormatter() {
-		final FormatterDefinition formatter = Home.getDefinitionSpace().resolve(FormatterDefinition.FMT_DEFAULT, FormatterDefinition.class);
+		final FormatterDefinition formatter = Home.getDefinitionSpace().resolve("FMT_DEFAULT", FormatterDefinition.class);
 		Assert.assertEquals(FormatterDefault.class.getName(), formatter.getFormatterClassName());
 	}
 
 	@Test
 	public void testDefaultBooleanFormatter() {
-		final Formatter formatter = Home.getDefinitionSpace().resolve(FormatterDefinition.FMT_DEFAULT, FormatterDefinition.class);
+		final Formatter formatter = Home.getDefinitionSpace().resolve("FMT_DEFAULT", FormatterDefinition.class);
 		Assert.assertEquals("MyTrue", formatter.valueToString(true, DataType.Boolean));
 	}
 

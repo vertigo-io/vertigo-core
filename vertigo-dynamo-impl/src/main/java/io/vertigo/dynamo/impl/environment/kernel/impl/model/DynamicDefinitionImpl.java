@@ -151,8 +151,14 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 
 	/** {@inheritDoc} */
 	@Override
+	public final boolean containsDefinitionKey(final String fieldName) {
+		return definitionKeysByFieldName.containsKey(fieldName);
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public final DynamicDefinitionKey getDefinitionKey(final String fieldName) {
-		Assertion.checkArgument(definitionKeysByFieldName.containsKey(fieldName), "Aucune définition déclarée pour ''{0}'' sur ''{1}'' ", fieldName, getDefinitionKey().getName());
+		Assertion.checkArgument(containsDefinitionKey(fieldName), "Aucune définition déclarée pour ''{0}'' sur ''{1}'' ", fieldName, getDefinitionKey().getName());
 		final List<DynamicDefinitionKey> list = definitionKeysByFieldName.get(fieldName);
 		final DynamicDefinitionKey definitionKey = list.get(0);
 		//-----

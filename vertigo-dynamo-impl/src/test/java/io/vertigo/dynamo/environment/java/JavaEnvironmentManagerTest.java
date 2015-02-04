@@ -40,7 +40,7 @@ import org.junit.Test;
 public final class JavaEnvironmentManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testDefaultFormatter() {
-		final FormatterDefinition formatter = Home.getDefinitionSpace().resolve(FormatterDefinition.FMT_DEFAULT, FormatterDefinition.class);
+		final FormatterDefinition formatter = Home.getDefinitionSpace().resolve("FMT_DEFAULT", FormatterDefinition.class);
 		Assert.assertEquals(FormatterDefault.class.getName(), formatter.getFormatterClassName());
 	}
 

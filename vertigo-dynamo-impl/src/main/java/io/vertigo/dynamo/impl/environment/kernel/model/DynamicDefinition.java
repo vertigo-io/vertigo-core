@@ -76,6 +76,8 @@ public interface DynamicDefinition {
 	 */
 	DynamicDefinitionKey getDefinitionKey(final String fieldName);
 
+	boolean containsDefinitionKey(final String fieldName);
+
 	/**
 	 * Permet de récupérer la collection de toutes les liste de définitions utilisées par référence.
 	 * @return Collection de toutes les liste de définitions référencées.
