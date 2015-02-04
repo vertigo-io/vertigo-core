@@ -123,7 +123,7 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 		Thread.sleep(1000);
 		final ClientNode clientNode2 = startClientNode(2);
 		try {
-			final boolean finished = workResultHanlder.waitFinish(20, 30 * 1000); //Le timeout des nodes est configuré à 20s
+			final boolean finished = workResultHanlder.waitFinish(20, 35 * 1000); //Le timeout des nodes est configuré à 20s
 			System.out.println(workResultHanlder);
 			Assert.assertEquals(null, workResultHanlder.getLastThrowable());
 			Assert.assertEquals(true, finished);

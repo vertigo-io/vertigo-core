@@ -56,7 +56,6 @@ final class ClientNode {
 		sb.append("java -cp ");
 		sb.append(System.getProperty("java.class.path"));
 		sb.append(" io.vertigo.dynamo.work.distributed.rest.WorkerNodeStarter " + managersXmlFileName + " " + maxLifeTime);
-		System.out.println(sb.toString());
 		nodeProcess = Runtime.getRuntime().exec(sb.toString());
 		subThreads.add(createMaxLifeTime());
 		subThreads.add(createOutputFlusher(nodeProcess.getInputStream(), "[ClientNode] ", System.out));
