@@ -132,16 +132,11 @@ public final class Domain implements Definition {
 	 *
 	 * @return Formatter.
 	 */
-	public FormatterDefinition getFormatter() {
+	public Formatter getFormatter() {
+		Assertion.checkNotNull(formatterDefinitionRef, "no formatter defined on {0}", this);
+		//-----
 		return formatterDefinitionRef.get();
 	}
-
-	//	/**
-	//	 * @return Liste des constraintes
-	//	 */
-	//	public List<Constraint<?, Object>> getConstraints() {
-	//		return constraints;
-	//	}
 
 	/**
 	 * @return propriétés
