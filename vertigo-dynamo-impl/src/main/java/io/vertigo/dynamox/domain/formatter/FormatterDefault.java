@@ -19,11 +19,10 @@
 package io.vertigo.dynamox.domain.formatter;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
+import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
-import io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -33,34 +32,28 @@ import io.vertigo.lang.Assertion;
  * Must be declared before this default Formatter !!
  * @author pchretien, npiedeloup
  */
-public final class FormatterDefault extends AbstractFormatterImpl {
+public final class FormatterDefault implements Formatter {
 	private static final String FMT_STRING_DEFAULT = "FMT_STRING_DEFAULT";
 	private static final String FMT_DATE_DEFAULT = "FMT_DATE_DEFAULT";
 	private static final String FMT_BOOLEAN_DEFAULT = "FMT_BOOLEAN_DEFAULT";
 	private static final String FMT_NUMBER_DEFAULT = "FMT_NUMBER_DEFAULT";
 
-	private final DefinitionReference<Formatter> booleanFormatterRef;
-	private final DefinitionReference<Formatter> numberformatterRef;
-	private final DefinitionReference<Formatter> dateFormaterRef;
-	private final DefinitionReference<Formatter> stringFormatterRef;
+	private final Formatter booleanFormatter;
+	private final Formatter numberformatter;
+	private final Formatter dateFormater;
+	private final Formatter stringFormatter;
 
 	/**
 	 * Constructeur.
-	 * @param name Nom du formatteur
 	 */
-	public FormatterDefault(final String name) {
-		super(name);
-		booleanFormatterRef = new DefinitionReference<>(obtainFormatterBoolean());
-		numberformatterRef = new DefinitionReference<>(obtainFormatterNumber());
-		dateFormaterRef = new DefinitionReference<>(obtainFormatterDate());
-		stringFormatterRef = new DefinitionReference<>(obtainFormatterString());
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void initParameters(final String args) {
+	public FormatterDefault(final String args) {
 		// Les arguments doivent être vides.
 		Assertion.checkArgument(args == null, "Les arguments pour la construction de FormatterDefault sont invalides");
+		//-----
+		booleanFormatter = obtainFormatterBoolean();
+		numberformatter = obtainFormatterNumber();
+		dateFormater = obtainFormatterDate();
+		stringFormatter = obtainFormatterString();
 	}
 
 	/**
@@ -71,16 +64,16 @@ public final class FormatterDefault extends AbstractFormatterImpl {
 	public Formatter getFormatter(final DataType dataType) {
 		switch (dataType) {
 			case String:
-				return stringFormatterRef.get();
+				return stringFormatter;
 			case Date:
-				return dateFormaterRef.get();
+				return dateFormater;
 			case Boolean:
-				return booleanFormatterRef.get();
+				return booleanFormatter;
 			case Integer:
 			case Long:
 			case Double:
 			case BigDecimal:
-				return numberformatterRef.get();
+				return numberformatter;
 			case DataStream:
 			case DtList:
 			case DtObject:
@@ -102,43 +95,32 @@ public final class FormatterDefault extends AbstractFormatterImpl {
 	}
 
 	private Formatter obtainFormatterBoolean() {
-		if (!Home.getDefinitionSpace().containsDefinitionName(FMT_BOOLEAN_DEFAULT)) {
-			final FormatterBoolean defaultformatter = new FormatterBoolean(FMT_BOOLEAN_DEFAULT);
-			defaultformatter.initParameters("Oui; Non");
-			//Home.getDefinitionSpace().put(defaultformatter, Formatter.class);
-			return defaultformatter; //no register
+		if (Home.getDefinitionSpace().containsDefinitionName(FMT_BOOLEAN_DEFAULT)) {
+			return Home.getDefinitionSpace().resolve(FMT_BOOLEAN_DEFAULT, FormatterDefinition.class);
 		}
-		return Home.getDefinitionSpace().resolve(FMT_BOOLEAN_DEFAULT, Formatter.class);
+		return new FormatterBoolean("Oui; Non");
 	}
 
 	private Formatter obtainFormatterNumber() {
-		if (!Home.getDefinitionSpace().containsDefinitionName(FMT_NUMBER_DEFAULT)) {
-			final FormatterNumber defaultformatter = new FormatterNumber(FMT_NUMBER_DEFAULT);
-			defaultformatter.initParameters("#,###.##");
-			//Home.getDefinitionSpace().put(defaultformatter, Formatter.class);
-			return defaultformatter; //no register
+		if (Home.getDefinitionSpace().containsDefinitionName(FMT_NUMBER_DEFAULT)) {
+			return Home.getDefinitionSpace().resolve(FMT_NUMBER_DEFAULT, FormatterDefinition.class);
 		}
-		return Home.getDefinitionSpace().resolve(FMT_NUMBER_DEFAULT, Formatter.class);
+		return new FormatterNumber("#,###.##");
 	}
 
 	private Formatter obtainFormatterDate() {
-		if (!Home.getDefinitionSpace().containsDefinitionName(FMT_DATE_DEFAULT)) {
-			final FormatterDate defaultformatter = new FormatterDate(FMT_DATE_DEFAULT);
-			defaultformatter.initParameters("dd/MM/yyyy HH:mm ; dd/MM/yyyy");
-			//Home.getDefinitionSpace().put(defaultformatter, Formatter.class);
-			return defaultformatter; //no register
+		if (Home.getDefinitionSpace().containsDefinitionName(FMT_DATE_DEFAULT)) {
+			return Home.getDefinitionSpace().resolve(FMT_DATE_DEFAULT, FormatterDefinition.class);
 		}
-		return Home.getDefinitionSpace().resolve(FMT_DATE_DEFAULT, Formatter.class);
+		return new FormatterDate("dd/MM/yyyy HH:mm ; dd/MM/yyyy");
 	}
 
 	private Formatter obtainFormatterString() {
-		if (!Home.getDefinitionSpace().containsDefinitionName(FMT_STRING_DEFAULT)) {
-			final FormatterString defaultformatter = new FormatterString(FMT_STRING_DEFAULT);
-			defaultformatter.initParameters(null);//Fonctionnement de base (pas de formatage)
-			//Home.getDefinitionSpace().put(defaultformatter, Formatter.class);
-			return defaultformatter; //no register
+		if (Home.getDefinitionSpace().containsDefinitionName(FMT_STRING_DEFAULT)) {
+			return Home.getDefinitionSpace().resolve(FMT_STRING_DEFAULT, FormatterDefinition.class);
 		}
-		return Home.getDefinitionSpace().resolve(FMT_STRING_DEFAULT, Formatter.class);
+		//Fonctionnement de base (pas de formatage)
+		return new FormatterString(null);
 	}
 
 }

@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamox.domain.constraint;
 
+import io.vertigo.dynamo.domain.metamodel.Constraint;
 import io.vertigo.dynamo.domain.metamodel.Property;
-import io.vertigo.dynamo.impl.domain.metamodel.AbstractConstraintImpl;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
 
@@ -33,26 +33,17 @@ import java.math.BigInteger;
  * The maximum number of digits to the left of the decimal point is check too and must be less than M-D.
  * @author mlaroche
  */
-public final class ConstraintBigDecimal extends AbstractConstraintImpl<String, BigDecimal> {
+public final class ConstraintBigDecimal implements Constraint<String, BigDecimal> {
 
 	private static final String SEPARATOR_ARGS = ",";
 	private Integer maxPrecision;
 	private Integer maxScale;
 
 	/**
-	 * Constructeur.
-	 * @param name urn
-	 */
-	public ConstraintBigDecimal(final String name) {
-		super(name);
-	}
-
-	/**
 	 * Initialise les paramètres.
 	 * @param args args but no args
 	 */
-	@Override
-	public void initParameters(final String args) {
+	public ConstraintBigDecimal(final String args) {
 		final String[] beforeAfter = args.split(SEPARATOR_ARGS);
 		Assertion.checkState(beforeAfter.length == 2, "L'argument doit être au format M,D. M le nombre de chiffre au total (precision) et D le nombre de chiffre à droite de la virgule (scale).");
 		try {
@@ -88,7 +79,7 @@ public final class ConstraintBigDecimal extends AbstractConstraintImpl<String, B
 
 	/** {@inheritDoc} */
 	@Override
-	protected MessageText getDefaultMessage() {
+	public MessageText getErrorMessage() {
 		return new MessageText(Resources.DYNAMO_CONSTRAINT_DECIMAL_EXCEEDED, new BigDecimal(new BigInteger("1"), 0 - maxPrecision - maxScale), maxScale, maxPrecision - maxScale);
 	}
 

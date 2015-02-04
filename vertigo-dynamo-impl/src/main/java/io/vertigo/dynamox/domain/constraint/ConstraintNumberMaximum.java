@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamox.domain.constraint;
 
+import io.vertigo.dynamo.domain.metamodel.Constraint;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.metamodel.Property;
-import io.vertigo.dynamo.impl.domain.metamodel.AbstractConstraintImpl;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
 
@@ -29,16 +29,10 @@ import io.vertigo.lang.MessageText;
  * arguments = valeur maximale.
  * @author npiedeloup
  */
-public final class ConstraintNumberMaximum extends AbstractConstraintImpl<Number, Number> {
-	private double maxValue;
+public final class ConstraintNumberMaximum implements Constraint<Number, Number> {
+	private final double maxValue;
 
-	public ConstraintNumberMaximum(final String name) {
-		super(name);
-	}
-
-	/**{@inheritDoc}*/
-	@Override
-	public void initParameters(final String args) {
+	public ConstraintNumberMaximum(final String args) {
 		Assertion.checkArgument(args != null && args.length() > 0, "Vous devez préciser la valeur maximum comme argument de ConstraintNumberMaximum");
 		//-----
 		maxValue = Double.valueOf(args);
@@ -55,7 +49,7 @@ public final class ConstraintNumberMaximum extends AbstractConstraintImpl<Number
 
 	/** {@inheritDoc} */
 	@Override
-	protected MessageText getDefaultMessage() {
+	public MessageText getErrorMessage() {
 		return new MessageText(Resources.DYNAMO_CONSTRAINT_NUMBER_MAXIMUM, maxValue);
 	}
 

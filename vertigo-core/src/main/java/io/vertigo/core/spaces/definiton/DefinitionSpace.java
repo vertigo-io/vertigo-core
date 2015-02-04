@@ -138,16 +138,16 @@ public final class DefinitionSpace implements Activeable {
 	 * @param name Identifiant de l'objet
 	 * @param clazz type de l'object
 	 * @return Objet associé
-	 * @param <C> Type de l'objet
+	 * @param <D> Type de l'objet
 	 */
-	public <C extends Definition> C resolve(final String name, final Class<C> clazz) {
-		Assertion.checkNotNull(name); // L'identifiant de l'objet recherché ne peut pas être null
+	public <D extends Definition> D resolve(final String name, final Class<D> clazz) {
+		Assertion.checkNotNull(name);
 		Assertion.checkNotNull(clazz);
-		Assertion.checkArgument(definitions.containsKey(clazz), "Type '{0}' non enregistré", clazz.getName());
+		Assertion.checkArgument(definitions.containsKey(clazz), "Type de définition '{0}' non enregistré", clazz.getName());
 		//-----
 		final Map<String, Definition> tobjects = definitions.get(clazz);
 		final Object o = tobjects.get(name);
-		Assertion.checkNotNull(o, "Object '{0}' non trouvé", name);
+		Assertion.checkNotNull(o, "Definition '{0}' non trouvé", name);
 		return clazz.cast(o);
 	}
 

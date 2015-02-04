@@ -20,11 +20,11 @@ package io.vertigo.dynamo.environment.java;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.Formatter;
-import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamock.domain.famille.Famille;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
@@ -34,21 +34,21 @@ import org.junit.Test;
 
 /**
  * Test de l'implémentation standard.
- * 
+ *
  * @author dchallas
  */
 public final class JavaEnvironmentManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testDefaultFormatter() {
-		final Formatter formatter = Home.getDefinitionSpace().resolve(Formatter.FMT_DEFAULT, Formatter.class);
-		Assert.assertEquals(FormatterDefault.class, formatter.getClass());
+		final FormatterDefinition formatter = Home.getDefinitionSpace().resolve(FormatterDefinition.FMT_DEFAULT, FormatterDefinition.class);
+		Assert.assertEquals(FormatterDefault.class.getName(), formatter.getFormatterClassName());
 	}
 
 	@Test
 	public void testDomain() {
 		final io.vertigo.dynamo.domain.metamodel.Domain domain = Home.getDefinitionSpace().resolve("DO_IDENTIFIANT", Domain.class);
 		Assert.assertEquals(DataType.Long, domain.getDataType());
-		Assert.assertEquals(FormatterDefault.class, domain.getFormatter().getClass());
+		Assert.assertEquals(FormatterDefault.class.getName(), domain.getFormatter().getFormatterClassName());
 	}
 
 	public void testFamille() {

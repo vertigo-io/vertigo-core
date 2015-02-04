@@ -36,24 +36,19 @@ public final class ConstraintLongLength extends AbstractConstraintLength<Long> {
 	/**
 	 * Borne maximale au sens strict de Long (= 10 puissance maxLength)
 	 */
-	private long maxValue;
+	private final long maxValue;
 
 	/**
 	 * Borne minimale au sens strict de Long (= - maxValue)
 	 */
-	private long minValue;
-
-	public ConstraintLongLength(final String name) {
-		super(name);
-	}
+	private final long minValue;
 
 	/**
 	 * @param args Liste des arguments réduite à un seul castable en long.
 	 * Cet argument correspond au nombre de chifres maximum authorisé sur le Long.
 	 */
-	@Override
-	public void initParameters(final String args) {
-		setMaxLength(args);
+	public ConstraintLongLength(final String args) {
+		super(args);
 		//-----
 		Assertion.checkArgument(getMaxLength() < 19, "Longueur max doit être strictement inférieure à 19");
 		//-----
@@ -77,7 +72,7 @@ public final class ConstraintLongLength extends AbstractConstraintLength<Long> {
 
 	/** {@inheritDoc} */
 	@Override
-	protected MessageText getDefaultMessage() {
+	public MessageText getErrorMessage() {
 		return new MessageText(Resources.DYNAMO_CONSTRAINT_LONGLENGTH_EXCEEDED, minValue, maxValue);
 	}
 }

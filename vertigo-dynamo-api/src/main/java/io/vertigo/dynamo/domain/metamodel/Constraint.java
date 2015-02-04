@@ -18,8 +18,6 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.lang.MessageText;
 
 /**
@@ -30,7 +28,7 @@ import io.vertigo.lang.MessageText;
  * Le contrôle porte en particulier sur les contraintes définies pour un champ
  * via la notion de domaine.
  * En cas d'erreur, la méthode getErrorMessage retourne la description de l'erreur.
- * 
+ *
  * La déclaration des contraintes peut être réalisée :
  *  - dans le fichier ksp/xml
  *  - en java directement.
@@ -39,8 +37,7 @@ import io.vertigo.lang.MessageText;
  * @param <J> Type java de la propriété associée à la contrainte
  * @param <D> Type java de la valeur à contrôler
  */
-@DefinitionPrefix("CK")
-public interface Constraint<J, D> extends Definition {
+public interface Constraint<J, D> {
 	/**
 	 * Cette méthode permet de définir la propriété(le comportement générique) que la contrainte implémente.
 	 *
@@ -56,7 +53,7 @@ public interface Constraint<J, D> extends Definition {
 	J getPropertyValue();
 
 	/**
-	 * Réalise la validation d'une valeur. 
+	 * Réalise la validation d'une valeur.
 	 * Dans le cas où la méthode renvoie false,
 	 * l'appel de checkConstraint() sera suivi de l'appel de getErrorMessage().<br>
 	 *
@@ -70,7 +67,7 @@ public interface Constraint<J, D> extends Definition {
 	 * checkConstraint() ayant renvoyé false. Le message doit commencer par un caractère
 	 * en lettre minuscule et décrire l'action correctrice pour la contrainte
 	 * n'ayant pas été respectée.
-	 * 
+	 *
 	 * Exemple : "le champ doit être renseigné"
 	 *
 	 * @return Message d'erreur

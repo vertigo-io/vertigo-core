@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamox.domain.constraint;
 
+import io.vertigo.dynamo.domain.metamodel.Constraint;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.metamodel.Property;
-import io.vertigo.dynamo.impl.domain.metamodel.AbstractConstraintImpl;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
 
@@ -29,16 +29,10 @@ import io.vertigo.lang.MessageText;
  * arguments = valeur minimale.
  * @author npiedeloup
  */
-public final class ConstraintNumberMinimum extends AbstractConstraintImpl<Number, Number> {
-	private double minValue;
+public final class ConstraintNumberMinimum implements Constraint<Number, Number> {
+	private final double minValue;
 
-	public ConstraintNumberMinimum(final String name) {
-		super(name);
-	}
-
-	/**{@inheritDoc}*/
-	@Override
-	public void initParameters(final String args) {
+	public ConstraintNumberMinimum(final String args) {
 		Assertion.checkArgument(args != null && args.length() > 0, "Vous devez préciser la valeur minimum comme argument de ConstraintNumberMinimum");
 		//-----
 		minValue = Double.valueOf(args);
@@ -55,7 +49,7 @@ public final class ConstraintNumberMinimum extends AbstractConstraintImpl<Number
 
 	/** {@inheritDoc} */
 	@Override
-	protected MessageText getDefaultMessage() {
+	public MessageText getErrorMessage() {
 		return new MessageText(Resources.DYNAMO_CONSTRAINT_NUMBER_MINIMUM, minValue);
 	}
 

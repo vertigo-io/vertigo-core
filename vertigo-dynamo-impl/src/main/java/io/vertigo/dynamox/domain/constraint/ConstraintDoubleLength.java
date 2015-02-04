@@ -35,16 +35,12 @@ public final class ConstraintDoubleLength extends AbstractConstraintLength<Doubl
 	/**
 	 * Borne maximale au sens strict de Double (= 10 puissance maxLength)
 	 */
-	private Double maxValue;
+	private final Double maxValue;
 
 	/**
 	 * Borne minimale au sens strict de Double (= - maxValue)
 	 */
-	private Double minValue;
-
-	public ConstraintDoubleLength(final String name) {
-		super(name);
-	}
+	private final Double minValue;
 
 	/**
 	 * Constructeur nécessaire pour le ksp.
@@ -52,9 +48,8 @@ public final class ConstraintDoubleLength extends AbstractConstraintLength<Doubl
 	 * Cet argument correspond au nombre de chiffres maximum autorisé sur le Double.
 	 * maxLength Valeur n du segment ]-10^n, 10^n[ dans lequel est comprise la valeur.
 	 */
-	@Override
-	public void initParameters(final String args) {
-		setMaxLength(args);
+	public ConstraintDoubleLength(final String args) {
+		super(args);
 		//-----
 		maxValue = BigDecimal.valueOf(1L).movePointRight(getMaxLength()).doubleValue();
 		minValue = BigDecimal.valueOf(1L).movePointRight(getMaxLength()).negate().doubleValue();
@@ -71,7 +66,7 @@ public final class ConstraintDoubleLength extends AbstractConstraintLength<Doubl
 
 	/** {@inheritDoc} */
 	@Override
-	protected MessageText getDefaultMessage() {
+	public MessageText getErrorMessage() {
 		return new MessageText(Resources.DYNAMO_CONSTRAINT_DECIMALLENGTH_EXCEEDED, minValue, maxValue);
 	}
 }

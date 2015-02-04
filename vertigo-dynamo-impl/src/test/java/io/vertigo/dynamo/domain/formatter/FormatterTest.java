@@ -19,8 +19,8 @@
 package io.vertigo.dynamo.domain.formatter;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamox.domain.formatter.FormatterBoolean;
 import io.vertigo.dynamox.domain.formatter.FormatterNumber;
 import io.vertigo.dynamox.domain.formatter.FormatterNumberLocalized;
@@ -51,17 +51,14 @@ public class FormatterTest extends AbstractTestCaseJU4 {
 	/**{@inheritDoc}*/
 	@Override
 	public void doSetUp() {
-		formatterBoolean = new FormatterBoolean("FMT_BOOLEAN");
-		formatterBoolean.initParameters("OUI;NON");
+		formatterBoolean = new FormatterBoolean("OUI;NON");
 		/*
-						formatterDate = new FormatterDate();
-				  formatterDate.initParameters("OUI;NON");
+		formatterDate = new FormatterDate();
+		formatterDate.initParameters("OUI;NON");
 		*/
-		formatterNumber = new FormatterNumber("FMT_NUMMBER");
-		formatterNumber.initParameters("#,###,##0.00");
+		formatterNumber = new FormatterNumber("#,###,##0.00");
 
-		formatterString = new FormatterString("FMT_STRING");
-		formatterString.initParameters("UPPER");
+		formatterString = new FormatterString("UPPER");
 	}
 
 	/**
@@ -88,16 +85,20 @@ public class FormatterTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(1492L, formatterNumber.stringToValue("01492  ", DataType.Long));
 	}
 
+	@Test
+	public void testUpper() throws FormatterException {
+		Assert.assertEquals("AA", formatterString.valueToString("aa", DataType.String));
+	}
+
 	/**
 	 * Test du formatter de nombre.
 	 * @throws FormatterException e
 	 */
 	@Test
 	public void testFormatterNumberMLWithDecimal() throws FormatterException {
-		final FormatterNumber formatterNumberLocalized = new FormatterNumberLocalized("FMT_TEST");
 		//séparateur décimal , et accepte .
 		//séparateur milliers '\u00A0' => espace insécable + espace (implicite)
-		formatterNumberLocalized.initParameters("#,##0.00|,.|\u00A0 ");
+		final FormatterNumber formatterNumberLocalized = new FormatterNumberLocalized("#,##0.00|,.|\u00A0 ");
 
 		//BigDecimal
 		final BigDecimal pi = new BigDecimal("3.14");
@@ -131,14 +132,12 @@ public class FormatterTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testFormatterNumberMLNoDecimal() throws FormatterException {
-		final FormatterNumber formatterNumberLocalized = new FormatterNumberLocalized("FMT_TEST");
 		//séparateur décimal . et accepte ,
 		//séparateur milliers non précisé => par défaut sep \u00A0
-		formatterNumberLocalized.initParameters("#,##0.##|.,|");
+		final FormatterNumber formatterNumberLocalized = new FormatterNumberLocalized("#,##0.##|.,|");
 
-		final FormatterNumber formatterNumberLocalizedSpace = new FormatterNumberLocalized("FMT_TEST");
 		//séparateur milliers ' '
-		formatterNumberLocalizedSpace.initParameters("#,##0.##|.,| \u00A0");
+		final FormatterNumber formatterNumberLocalizedSpace = new FormatterNumberLocalized("#,##0.##|.,| \u00A0");
 
 		//BigDecimal
 		final BigDecimal pi = new BigDecimal("3.14");
@@ -172,8 +171,7 @@ public class FormatterTest extends AbstractTestCaseJU4 {
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testFormatterNumberMLConflit() throws FormatterException {
-		final FormatterNumber formatterNumberLocalized = new FormatterNumberLocalized("FMT_TEST");
-		formatterNumberLocalized.initParameters("#,##0.##|.,|.");
+		final FormatterNumber formatterNumberLocalized = new FormatterNumberLocalized("#,##0.##|.,|.");
 		formatterNumberLocalized.stringToValue("3.14", DataType.BigDecimal);
 		//Détection du conflit entre séparateur décimal et de millier
 	}

@@ -23,13 +23,13 @@ import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.ComputedExpression;
-import io.vertigo.dynamo.domain.metamodel.Constraint;
+import io.vertigo.dynamo.domain.metamodel.ConstraintDefinition;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
-import io.vertigo.dynamo.domain.metamodel.Formatter;
+import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
 import io.vertigo.dynamo.domain.metamodel.Properties;
 import io.vertigo.dynamo.domain.metamodel.PropertiesBuilder;
 import io.vertigo.dynamo.domain.metamodel.Property;
@@ -38,8 +38,6 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
-import io.vertigo.dynamo.impl.domain.metamodel.AbstractConstraintImpl;
-import io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
 import io.vertigo.dynamo.impl.environment.kernel.meta.EntityProperty;
@@ -48,10 +46,7 @@ import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
-import io.vertigo.util.ClassUtil;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,8 +74,8 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		definitionSpace = Home.getDefinitionSpace();
 		definitionSpace.register(DtDefinition.class);
 		definitionSpace.register(Domain.class);
-		definitionSpace.register(Formatter.class);
-		definitionSpace.register(Constraint.class);
+		definitionSpace.register(FormatterDefinition.class);
+		definitionSpace.register(ConstraintDefinition.class);
 		definitionSpace.register(AssociationSimpleDefinition.class);
 		definitionSpace.register(AssociationNNDefinition.class);
 	}
@@ -102,11 +97,11 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 			final AssociationDefinition definition = createAssociationNNDefinition(xdefinition);
 			definitionSpace.put(definition, AssociationNNDefinition.class);
 		} else if (entity.equals(DomainGrammar.CONSTAINT_ENTITY)) {
-			final Constraint definition = createConstraint(xdefinition);
-			definitionSpace.put(definition, Constraint.class);
+			final ConstraintDefinition definition = createConstraint(xdefinition);
+			definitionSpace.put(definition, ConstraintDefinition.class);
 		} else if (entity.equals(DomainGrammar.FORMATTER_ENTITY)) {
-			final Formatter definition = createFormatter(xdefinition);
-			definitionSpace.put(definition, Formatter.class);
+			final FormatterDefinition definition = createFormatter(xdefinition);
+			definitionSpace.put(definition, FormatterDefinition.class);
 		} else {
 			throw new IllegalArgumentException("Type de définition non gérée: " + xdefinition.getDefinitionKey().getName());
 		}
@@ -118,62 +113,26 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	 * @param xconstraint Définition de contrainte
 	 * @return DefinitionStandard Définition typée créée.
 	 */
-	private static Constraint createConstraint(final DynamicDefinition xconstraint) {
+	private static ConstraintDefinition createConstraint(final DynamicDefinition xconstraint) {
 		//On transforme la liste des paramètres (Liste de String) sous forme de tableau de String pour éviter
 		//le sous typage de List et pour se rapprocher de la syntaxe connue de Main.
+		final String name = xconstraint.getDefinitionKey().getName();
 		final String args = getPropertyValueAsString(xconstraint, KspProperty.ARGS);
 		final String msg = getPropertyValueAsString(xconstraint, KspProperty.MSG);
-		final Class<? extends AbstractConstraintImpl> constraintClass = getConstraintClass(xconstraint);
-		//-----
-		//On instancie un objet contrainte.
-		return createConstraint(constraintClass, xconstraint.getDefinitionKey().getName(), args, msg);
-	}
-
-	private static Class<? extends AbstractConstraintImpl> getConstraintClass(final DynamicDefinition xconstraint) {
 		final String className = getPropertyValueAsString(xconstraint, KspProperty.CLASS_NAME);
-		return ClassUtil.classForName(className, AbstractConstraintImpl.class);
+		return new ConstraintDefinition(name, className, msg, args);
 	}
 
-	private static Class<? extends AbstractFormatterImpl> getFormatterClass(final DynamicDefinition xformatter) {
-		final String className = getPropertyValueAsString(xformatter, KspProperty.CLASS_NAME);
-		return ClassUtil.classForName(className, AbstractFormatterImpl.class);
-	}
-
-	private static Constraint createConstraint(final Class<? extends AbstractConstraintImpl> constraintClass, final String constraintName, final String args, final String msg) {
-		final Constructor<? extends AbstractConstraintImpl> constructor = ClassUtil.findConstructor(constraintClass, new Class[] { String.class });
-		final AbstractConstraintImpl constraint = ClassUtil.newInstance(constructor, new Object[] { constraintName });
-		constraint.initParameters(args);
-		constraint.initMsg(msg == null ? null : new MessageText(msg, null));
-		return constraint;
-	}
-
-	private static Formatter createFormatter(final Class<? extends AbstractFormatterImpl> formatterClass, final String formatterName, final String args) {
-		final Constructor<? extends AbstractFormatterImpl> constructor = ClassUtil.findConstructor(formatterClass, new Class[] { String.class });
-		final AbstractFormatterImpl formatter = ClassUtil.newInstance(constructor, new Object[] { formatterName });
-		formatter.initParameters(args);
-		return formatter;
-	}
-
-	/**
-	 * Enregistrement de formatter
-	 *
-	 * @param xformatter Définition du formatter
-	 * @return DefinitionStandard Définition typée créée.
-	 */
-	private static Formatter createFormatter(final DynamicDefinition xformatter) {
-		//On transforme la liste des paramètres (Liste de String) sous forme de tableau de String pour éviter
-		//le sous typage de List et pour se rapprocher de la syntaxe connue de Main.
-
+	private static FormatterDefinition createFormatter(final DynamicDefinition xformatter) {
+		final String name = xformatter.getDefinitionKey().getName();
 		final String args = getPropertyValueAsString(xformatter, KspProperty.ARGS);
-		final Class<? extends AbstractFormatterImpl> formatterClass = getFormatterClass(xformatter);
-		//-----
-		//On instancie un objet formatter.
-		return createFormatter(formatterClass, xformatter.getDefinitionKey().getName(), args);
+		final String className = getPropertyValueAsString(xformatter, KspProperty.CLASS_NAME);
+		return new FormatterDefinition(name, className, args);
 	}
 
 	private Domain createDomain(final DynamicDefinition xdomain) {
 		final String formatterName = xdomain.getDefinitionKey("formatter").getName();
-		final Formatter formatter = definitionSpace.resolve(formatterName, Formatter.class);
+		final FormatterDefinition formatter = definitionSpace.resolve(formatterName, FormatterDefinition.class);
 
 		final DataType dataType = DataType.valueOf(xdomain.getDefinitionKey("dataType").getName());
 		final List<DynamicDefinitionKey> constraintNames = xdomain.getDefinitionKeys("constraint");
@@ -324,10 +283,10 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	}
 
 	// méthode permettant de créer une liste de contraintes à partir d'une liste de noms de contrainte
-	private List<Constraint<?, Object>> createConstraints(final List<DynamicDefinitionKey> constraintKeys) {
-		final List<Constraint<?, Object>> constraints = new ArrayList<>(constraintKeys.size());
+	private List<ConstraintDefinition> createConstraints(final List<DynamicDefinitionKey> constraintKeys) {
+		final List<ConstraintDefinition> constraints = new ArrayList<>(constraintKeys.size());
 		for (final DynamicDefinitionKey constraintKey : constraintKeys) {
-			constraints.add(definitionSpace.resolve(constraintKey.getName(), Constraint.class));
+			constraints.add(definitionSpace.resolve(constraintKey.getName(), ConstraintDefinition.class));
 		}
 		return constraints;
 	}
@@ -422,7 +381,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		//Notamment la validité de la liste des contraintes et la nullité du formatter
 
 		final Entity metaDefinitionDomain = DomainGrammar.DOMAIN_ENTITY;
-		final DynamicDefinitionKey fmtDefaultKey = new DynamicDefinitionKey(Formatter.FMT_DEFAULT);
+		final DynamicDefinitionKey fmtDefaultKey = new DynamicDefinitionKey(FormatterDefinition.FMT_DEFAULT);
 		final DynamicDefinitionKey dtObjectKey = new DynamicDefinitionKey("DtObject");
 
 		final DynamicDefinition domain = DynamicDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain, packageName)

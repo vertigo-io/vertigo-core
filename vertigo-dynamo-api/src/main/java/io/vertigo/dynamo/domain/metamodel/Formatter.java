@@ -18,9 +18,6 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionPrefix;
-
 /**
  * Permet de définir des formats particuliers d'affichages et de saisie.
  *
@@ -29,12 +26,7 @@ import io.vertigo.core.spaces.definiton.DefinitionPrefix;
  *
  * @author pchretien
  */
-@DefinitionPrefix("FMT")
-public interface Formatter extends Definition {
-	/**
-	 * Nom de du formatter par défaut.
-	 */
-	String FMT_DEFAULT = "FMT_DEFAULT";
+public interface Formatter {
 
 	/**
 	 * Transforme une valeur typée en String.

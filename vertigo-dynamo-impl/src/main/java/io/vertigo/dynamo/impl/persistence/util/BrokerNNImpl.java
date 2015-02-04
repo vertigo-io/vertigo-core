@@ -18,9 +18,11 @@
  */
 package io.vertigo.dynamo.impl.persistence.util;
 
+import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
@@ -32,7 +34,6 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.task.model.TaskResult;
-import io.vertigo.dynamox.domain.formatter.FormatterNumber;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.lang.Assertion;
@@ -79,7 +80,7 @@ public final class BrokerNNImpl implements BrokerNN {
 		Assertion.checkNotNull(taskManager);
 		//-----
 		this.taskManager = taskManager;
-		integerDomain = new Domain("DO_INTEGER_BROKER", DataType.Integer, new FormatterNumber("FMT_NUMBER_BROKER"));
+		integerDomain = new Domain("DO_INTEGER_BROKER", DataType.Integer, Home.getDefinitionSpace().resolve("FMT_NUMBER_BROKER", FormatterDefinition.class));
 	}
 
 	/** {@inheritDoc} */

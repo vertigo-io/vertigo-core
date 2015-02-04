@@ -21,8 +21,8 @@ package io.vertigo.dynamox.domain.formatter;
 import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
-import io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
 import io.vertigo.lang.MessageText;
@@ -53,7 +53,7 @@ import java.util.StringTokenizer;
  *
  * @author pchretien
  */
-public final class FormatterDate extends AbstractFormatterImpl {
+public final class FormatterDate implements Formatter {
 	/**
 	 * Année minimum tolérée pour les dates.
 	 */
@@ -67,27 +67,20 @@ public final class FormatterDate extends AbstractFormatterImpl {
 	/**
 	 * Format d'affichage de la date
 	 */
-	private String pattern;
+	private final String pattern;
 
 	/**
 	 * Format(s) étendu(s) de la date en saisie.
 	 * Cette variable n'est créée qu'au besoin.
 	 */
 	@JsonExclude
-	private List<MessageText> lstExFillInFormat;
+	private final List<MessageText> lstExFillInFormat;
 
 	/**
 	 * Constructeur.
-	 * @param name Nom du formatteur
 	 */
 
-	public FormatterDate(final String name) {
-		super(name);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void initParameters(final String args) {
+	public FormatterDate(final String args) {
 		// Les arguments ne doivent pas être vides.
 		assertArgs(args != null);
 		//-----

@@ -19,7 +19,7 @@
 package io.vertigo.dynamox.domain.formatter;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl;
+import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -30,7 +30,7 @@ import java.util.Locale;
  *
  * @author pchretien
  */
-public final class FormatterString extends AbstractFormatterImpl {
+public final class FormatterString implements Formatter {
 
 	private static final Locale TO_UPPER_CASE_LOCALE = Locale.FRANCE;
 
@@ -61,19 +61,12 @@ public final class FormatterString extends AbstractFormatterImpl {
 		UPPER_FIRST
 	}
 
-	private Mode mode;
+	private final Mode mode;
 
 	/**
 	 * Constructeur.
-	 * @param name Nom du formatteur
 	 */
-	public FormatterString(final String name) {
-		super(name);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void initParameters(final String args) {
+	public FormatterString(final String args) {
 		//Si args non renseigné on prend le mode par défaut
 		mode = args == null ? Mode.BASIC : Mode.valueOf(args);
 	}

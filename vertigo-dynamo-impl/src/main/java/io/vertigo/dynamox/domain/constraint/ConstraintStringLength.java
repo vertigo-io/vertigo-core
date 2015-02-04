@@ -26,17 +26,13 @@ import io.vertigo.lang.MessageText;
  * @author  plepaisant
  */
 public final class ConstraintStringLength extends AbstractConstraintLength<String> {
-	public ConstraintStringLength(final String name) {
-		super(name);
-	}
 
 	/**
 	 * @param args Liste des arguments réduite à un seul castable en integer.
 	 * Cet argument correspond au nombre de caractères maximum authorisés sur la chaine de caractères.
 	 */
-	@Override
-	public void initParameters(final String args) {
-		setMaxLength(args);
+	public ConstraintStringLength(final String args) {
+		super(args);
 	}
 
 	/** {@inheritDoc} */
@@ -50,7 +46,7 @@ public final class ConstraintStringLength extends AbstractConstraintLength<Strin
 
 	/** {@inheritDoc} */
 	@Override
-	protected MessageText getDefaultMessage() {
+	public MessageText getErrorMessage() {
 		return new MessageText(Resources.DYNAMO_CONSTRAINT_STRINGLENGTH_EXCEEDED, Integer.toString(getMaxLength()));
 		//return "la taille doit être inférieure à " + maxLength + " caractères.";
 	}

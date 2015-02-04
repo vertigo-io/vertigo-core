@@ -19,8 +19,8 @@
 package io.vertigo.dynamox.domain.formatter;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
-import io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -37,28 +37,21 @@ import java.util.StringTokenizer;
  *
  * @author pchretien
  */
-public final class FormatterBoolean extends AbstractFormatterImpl {
+public final class FormatterBoolean implements Formatter {
 	/**
 	 * MessageText pour les boolean à true
 	 */
-	private String truePattern;
+	private final String truePattern;
 
 	/**
 	 * MessageText pour les boolean à false
 	 */
-	private String falsePattern;
+	private final String falsePattern;
 
 	/**
 	 * Constructeur.
-	 * @param name Nom du formatteur
 	 */
-	public FormatterBoolean(final String name) {
-		super(name);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void initParameters(final String args) {
+	public FormatterBoolean(final String args) {
 		// Les arguments ne doivent pas être vides.
 		assertArgs(args != null, args);
 		//-----

@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamox.domain.constraint;
 
+import io.vertigo.dynamo.domain.metamodel.Constraint;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.metamodel.Property;
-import io.vertigo.dynamo.impl.domain.metamodel.AbstractConstraintImpl;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -31,20 +31,16 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  * @param <D> Type java de la valeur à contréler
  */
-abstract class AbstractConstraintLength<D> extends AbstractConstraintImpl<Integer, D> {
+abstract class AbstractConstraintLength<D> implements Constraint<Integer, D> {
 	/**
 	 * Nombre maximum de caractères pour une chaine, de chiffres pour un entier...
 	 */
-	private int maxLength;
-
-	protected AbstractConstraintLength(final String name) {
-		super(name);
-	}
+	private final int maxLength;
 
 	/**
 	* @param max Nombre maximum de caractères, de chiffres...
 	*/
-	protected final void setMaxLength(final String max) {
+	protected AbstractConstraintLength(final String max) {
 		maxLength = Integer.parseInt(max);
 		//-----
 		Assertion.checkArgument(maxLength > 0, "Longueur max doit être strictement positive");

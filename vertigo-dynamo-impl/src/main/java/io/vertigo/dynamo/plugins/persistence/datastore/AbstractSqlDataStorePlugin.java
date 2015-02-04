@@ -25,6 +25,7 @@ import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
@@ -99,7 +100,8 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(taskManager);
 		//-----
 		this.taskManager = taskManager;
-		integerDomain = new Domain("DO_INTEGER_SQL", DataType.Integer, new FormatterNumber("FMT_INTEGER_SQL"));
+		final FormatterDefinition formatterDefinition = new FormatterDefinition("FMT_INTEGER_SQL", FormatterNumber.class.getName(), null);
+		integerDomain = new Domain("DO_INTEGER_SQL", DataType.Integer, formatterDefinition);
 	}
 
 	/**
@@ -537,7 +539,8 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 		final String taskName = TASK.TK_COUNT.toString() + '_' + tableName;
 
-		final Domain countDomain = new Domain("DO_COUNT", DataType.DtObject, new FormatterNumber("FMT_COUNT"));
+		final FormatterDefinition formatterDefinition = new FormatterDefinition("FMT_COUNT", FormatterNumber.class.getName(), null);
+		final Domain countDomain = new Domain("DO_COUNT", DataType.DtObject, formatterDefinition);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)

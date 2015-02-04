@@ -56,27 +56,20 @@ public class ConstraintTest extends AbstractTestCaseJU4 {
 		//		constraintNotNull = new ConstraintNotNull();
 		//		constraintNotNull.initParameters(null);
 
-		constraintBigDecimal = new ConstraintBigDecimal("CK_BIG_5_2");
-		constraintBigDecimal.initParameters("5,2"); //xxx,xx
+		constraintBigDecimal = new ConstraintBigDecimal("5,2");
 
-		constraintBigDecimalLength = new ConstraintBigDecimalLength("CK_BIG");
-		constraintBigDecimalLength.initParameters("3"); //10^3
+		constraintBigDecimalLength = new ConstraintBigDecimalLength("3"); //10^3
 
-		constraintDoubleLength = new ConstraintDoubleLength("CK_DOUBLE");
-		constraintDoubleLength.initParameters("3"); //10^3
+		constraintDoubleLength = new ConstraintDoubleLength("3"); //10^3
 
-		constraintIntegerLength = new ConstraintIntegerLength("CK_INTEGER");
-		constraintIntegerLength.initParameters("3"); //10^3
+		constraintIntegerLength = new ConstraintIntegerLength("3"); //10^3
 
-		constraintLongLength = new ConstraintLongLength("CK_LONG");
-		constraintLongLength.initParameters("3"); //10^3
+		constraintLongLength = new ConstraintLongLength("3"); //10^3
 
-		constraintStringLength = new ConstraintStringLength("CK_STRING");
-		constraintStringLength.initParameters("3"); //10^3
+		constraintStringLength = new ConstraintStringLength("3"); //10^3
 
-		constraintRegex = new ConstraintRegex("CK_REGEX");
 		// \w signifie WORD [A-Za-z0-9_] et on ajoute le tiret -
-		constraintRegex.initParameters("[\\w-]*");
+		constraintRegex = new ConstraintRegex("[\\w-]*");
 	}
 
 	private void testBDTrue(final BigDecimal value) {

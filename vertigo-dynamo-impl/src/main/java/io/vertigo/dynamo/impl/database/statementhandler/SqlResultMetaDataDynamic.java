@@ -24,7 +24,7 @@ import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
-import io.vertigo.dynamo.domain.metamodel.Formatter;
+import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 
@@ -155,9 +155,9 @@ final class SqlResultMetaDataDynamic implements SqlResultMetaData {
 			final DataType[] dataTypes = DataType.values();
 			final Map<DataType, Domain> map = new HashMap<>(dataTypes.length);
 			//Initialisation de la map.
-			final Formatter formatter = Home.getDefinitionSpace().resolve(Formatter.FMT_DEFAULT, Formatter.class);
+			final FormatterDefinition formatterDefinition = Home.getDefinitionSpace().resolve(FormatterDefinition.FMT_DEFAULT, FormatterDefinition.class);
 			for (final DataType dataType : dataTypes) {
-				final Domain domain = new Domain("DO_DYN", dataType, formatter);
+				final Domain domain = new Domain("DO_DYN", dataType, formatterDefinition);
 				map.put(dataType, domain);
 			}
 			return map;

@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamox.domain.constraint;
 
+import io.vertigo.dynamo.domain.metamodel.Constraint;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.metamodel.Property;
-import io.vertigo.dynamo.impl.domain.metamodel.AbstractConstraintImpl;
 import io.vertigo.lang.MessageText;
 
 import java.util.regex.Matcher;
@@ -31,18 +31,13 @@ import java.util.regex.Pattern;
  *
  * @author  pchretien
  */
-public final class ConstraintRegex extends AbstractConstraintImpl<String, String> {
-	private Pattern pattern;
-
-	public ConstraintRegex(final String name) {
-		super(name);
-	}
+public final class ConstraintRegex implements Constraint<String, String> {
+	private final Pattern pattern;
 
 	/**
 	 * @param regex Expression régulière
 	 */
-	@Override
-	public void initParameters(final String regex) {
+	public ConstraintRegex(final String regex) {
 		pattern = Pattern.compile(regex);
 	}
 
@@ -59,7 +54,7 @@ public final class ConstraintRegex extends AbstractConstraintImpl<String, String
 
 	/** {@inheritDoc} */
 	@Override
-	protected MessageText getDefaultMessage() {
+	public MessageText getErrorMessage() {
 		return new MessageText(Resources.DYNAMO_CONSTRAINT_REGEXP, pattern.pattern());
 		//return "Pas cohérent avec la regex : " + pattern.pattern();
 	}

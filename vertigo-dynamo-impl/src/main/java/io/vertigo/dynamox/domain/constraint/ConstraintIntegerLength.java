@@ -36,25 +36,20 @@ public final class ConstraintIntegerLength extends AbstractConstraintLength<Inte
 	/**
 	 * Borne maximale au sens strict de Integer (= 10 puissance maxLength)
 	 */
-	private int maxValue;
+	private final int maxValue;
 
 	/**
 	 * Borne minimale au sens strict de Integer (= - maxValue)
 	 */
-	private int minValue;
-
-	public ConstraintIntegerLength(final String name) {
-		super(name);
-	}
+	private final int minValue;
 
 	/**
 	 * Constructeur nécessaire pour le ksp.
 	 * @param args Liste des arguments réduite à un seul castable en integer.
 	 * Cet argument correspond au nombre de chifres maximum authorisé sur le Integer.
 	 */
-	@Override
-	public void initParameters(final String args) {
-		setMaxLength(args);
+	public ConstraintIntegerLength(final String args) {
+		super(args);
 		//-----
 		Assertion.checkArgument(getMaxLength() < 10, "Longueur max doit être strictement inférieure à 10");
 		//-----
@@ -79,7 +74,7 @@ public final class ConstraintIntegerLength extends AbstractConstraintLength<Inte
 
 	/** {@inheritDoc} */
 	@Override
-	protected MessageText getDefaultMessage() {
+	public MessageText getErrorMessage() {
 		return new MessageText(Resources.DYNAMO_CONSTRAINT_INTEGERLENGTH_EXCEEDED, minValue, maxValue);
 	}
 }

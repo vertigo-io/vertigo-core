@@ -47,10 +47,10 @@ public final class Domain implements Definition {
 	private final DataType dataType;
 
 	/** Formatter. */
-	private final DefinitionReference<Formatter> formatterRef;
+	private final DefinitionReference<FormatterDefinition> formatterDefinitionRef;
 
 	/** Contraintes du domaine. */
-	private final List<DefinitionReference<Constraint<?, Object>>> constraintRefs;
+	private final List<DefinitionReference<ConstraintDefinition>> constraintDefinitionRefs;
 
 	/** Conteneur des couples (propriétés, valeur) */
 	private final Properties properties;
@@ -63,37 +63,37 @@ public final class Domain implements Definition {
 	/**
 	 * Constructeur.
 	 * @param dataType Type Dynamo
-	 * @param formatter Formatter du domaine
+	 * @param formatterDefinition Formatter du domaine
 	 */
-	public Domain(final String name, final DataType dataType, final Formatter formatter) {
-		this(name, dataType, formatter, Collections.<Constraint<?, Object>> emptyList(), new PropertiesBuilder().build());
+	public Domain(final String name, final DataType dataType, final FormatterDefinition formatterDefinition) {
+		this(name, dataType, formatterDefinition, Collections.<ConstraintDefinition> emptyList(), new PropertiesBuilder().build());
 	}
 
 	/**
 	 * Constructeur.
 	 * @param dataType Type Dynamo
-	 * @param formatter Formatter du domaine
-	 * @param constraints Liste des contraintes du domaine
+	 * @param formatterDefinition Formatter du domaine
+	 * @param constraintDefinitions Liste des definitions de contraintes du domaine
 	 * @param properties Map des (DtProperty, value)
 	 */
-	public Domain(final String name, final DataType dataType, final Formatter formatter, final List<Constraint<?, Object>> constraints, final Properties properties) {
+	public Domain(final String name, final DataType dataType, final FormatterDefinition formatterDefinition, final List<ConstraintDefinition> constraintDefinitions, final Properties properties) {
 		//--Vérification des contrats
 		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(formatter);
-		Assertion.checkNotNull(constraints);
+		Assertion.checkNotNull(formatterDefinition);
+		Assertion.checkNotNull(constraintDefinitions);
 		Assertion.checkNotNull(properties);
 		//-----
 		this.name = name;
 		this.dataType = dataType;
-		formatterRef = new DefinitionReference<>(formatter);
+		formatterDefinitionRef = new DefinitionReference<>(formatterDefinition);
 		//On rend la liste des contraintes non modifiable
-		final List<DefinitionReference<Constraint<?, Object>>> myConstraintRefs = new ArrayList<>();
-		for (final Constraint<?, Object> constraint : constraints) {
-			myConstraintRefs.add(new DefinitionReference<Constraint<?, Object>>(constraint));
+		final List<DefinitionReference<ConstraintDefinition>> myConstraintDefinitionRefs = new ArrayList<>();
+		for (final ConstraintDefinition constraintDefinition : constraintDefinitions) {
+			myConstraintDefinitionRefs.add(new DefinitionReference<>(constraintDefinition));
 		}
-		constraintRefs = Collections.unmodifiableList(myConstraintRefs);
+		constraintDefinitionRefs = Collections.unmodifiableList(myConstraintDefinitionRefs);
 		//========================MISE A JOUR DE LA MAP DES PROPRIETES==========
-		this.properties = buildProperties(constraints, properties);
+		this.properties = buildProperties(constraintDefinitions, properties);
 
 		//Mise à jour de la FK.
 		if (this.properties.getValue(DtProperty.TYPE) != null) {
@@ -106,15 +106,15 @@ public final class Domain implements Definition {
 		}
 	}
 
-	private static Properties buildProperties(final List<Constraint<?, Object>> constraints, final Properties inputProperties) {
+	private static Properties buildProperties(final List<ConstraintDefinition> constraintDefinitions, final Properties inputProperties) {
 		final PropertiesBuilder propertiesBuilder = new PropertiesBuilder();
 		for (final Property property : inputProperties.getProperties()) {
 			propertiesBuilder.withValue(property, inputProperties.getValue(property));
 		}
 
 		//On récupère les propriétés d'après les contraintes
-		for (final Constraint<?, ?> constraint : constraints) {
-			propertiesBuilder.withValue(constraint.getProperty(), constraint.getPropertyValue());
+		for (final ConstraintDefinition constraintDefinition : constraintDefinitions) {
+			propertiesBuilder.withValue(constraintDefinition.getProperty(), constraintDefinition.getPropertyValue());
 		}
 		return propertiesBuilder.build();
 	}
@@ -133,8 +133,8 @@ public final class Domain implements Definition {
 	 *
 	 * @return Formatter.
 	 */
-	public Formatter getFormatter() {
-		return formatterRef.get();
+	public FormatterDefinition getFormatter() {
+		return formatterDefinitionRef.get();
 	}
 
 	//	/**
@@ -163,10 +163,10 @@ public final class Domain implements Definition {
 		getDataType().checkValue(value);
 
 		//2. Dans le cas de l'implémentation standard on vérifie les contraintes
-		for (final DefinitionReference<Constraint<?, Object>> constraintRef : constraintRefs) {
+		for (final DefinitionReference<ConstraintDefinition> constraintDefinitionRef : constraintDefinitionRefs) {
 			//Il suffit d'une contrainte non respectée pour qu'il y ait non validation
-			if (!constraintRef.get().checkConstraint(value)) {
-				throw new ConstraintException(constraintRef.get().getErrorMessage());
+			if (!constraintDefinitionRef.get().checkConstraint(value)) {
+				throw new ConstraintException(constraintDefinitionRef.get().getErrorMessage());
 			}
 		}
 	}
