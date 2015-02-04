@@ -42,8 +42,8 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 	 * @param associationNodeB Noeud B de l'association
 	 * @param isAprimaryNode Qui représente la clé primaire dans la relation ?
 	 */
-	private AssociationSimpleDefinition(final String urn, final String fkFieldName, final AssociationNode associationNodeA, final AssociationNode associationNodeB, final boolean isAprimaryNode) {
-		super(urn, associationNodeA, associationNodeB);
+	private AssociationSimpleDefinition(final String name, final String fkFieldName, final AssociationNode associationNodeA, final AssociationNode associationNodeB, final boolean isAprimaryNode) {
+		super(name, associationNodeA, associationNodeB);
 
 		Assertion.checkNotNull(fkFieldName);
 		//-----
@@ -76,7 +76,7 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 	 */
 	public static AssociationSimpleDefinition createAssociationSimpleDefinition(
 			//
-			final String urn, final String fkFieldName,
+			final String name, final String fkFieldName,
 			final DtDefinition dtDefinitionA, final boolean isANavigable, final String roleA, final String labelA, final boolean isAMultiple, final boolean isANotNull,
 			final DtDefinition dtDefinitionB, final boolean isBNavigable, final String roleB, final String labelB, final boolean isBMultiple, final boolean isBNotNull
 			) {
@@ -92,7 +92,7 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 		//		LOG.trace("Creation NodeA:" + associationNodeA);
 		//		LOG.trace("Creation NodeB:" + associationNodeB);
 
-		return new AssociationSimpleDefinition(urn, fkFieldName, associationNodeA, associationNodeB, isAPrimaryNode);
+		return new AssociationSimpleDefinition(name, fkFieldName, associationNodeA, associationNodeB, isAPrimaryNode);
 	}
 
 	//==========================================================================

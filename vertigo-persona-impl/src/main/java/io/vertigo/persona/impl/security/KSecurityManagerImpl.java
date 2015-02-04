@@ -147,7 +147,7 @@ public final class KSecurityManagerImpl implements KSecurityManager, Activeable 
 		// il faut alors regarder si l'utilisateur possede un role de la liste.
 		final Set<Role> userProfiles = userSession.getRoles();
 		for (final Role role : authorizedRoleSet) {
-			Assertion.checkArgument(Home.getDefinitionSpace().containsValue(role), "Le rele {0} n est pas defini dans RoleRegistry.", role);
+			Assertion.checkArgument(Home.getDefinitionSpace().containsDefinition(role), "Le rele {0} n est pas defini dans RoleRegistry.", role);
 			if (userProfiles.contains(role)) {
 				return true;
 			}
