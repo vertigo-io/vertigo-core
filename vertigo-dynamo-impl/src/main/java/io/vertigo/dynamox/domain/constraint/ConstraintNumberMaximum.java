@@ -32,8 +32,8 @@ import io.vertigo.lang.MessageText;
 public final class ConstraintNumberMaximum extends AbstractConstraintImpl<Number, Number> {
 	private double maxValue;
 
-	public ConstraintNumberMaximum(final String urn) {
-		super(urn);
+	public ConstraintNumberMaximum(final String name) {
+		super(name);
 	}
 
 	/**{@inheritDoc}*/

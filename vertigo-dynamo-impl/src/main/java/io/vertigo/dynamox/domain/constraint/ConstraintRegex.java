@@ -34,8 +34,8 @@ import java.util.regex.Pattern;
 public final class ConstraintRegex extends AbstractConstraintImpl<String, String> {
 	private Pattern pattern;
 
-	public ConstraintRegex(final String urn) {
-		super(urn);
+	public ConstraintRegex(final String name) {
+		super(name);
 	}
 
 	/**

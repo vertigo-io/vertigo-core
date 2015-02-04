@@ -41,10 +41,10 @@ public final class ConstraintBigDecimal extends AbstractConstraintImpl<String, B
 
 	/**
 	 * Constructeur.
-	 * @param urn urn
+	 * @param name urn
 	 */
-	public ConstraintBigDecimal(final String urn) {
-		super(urn);
+	public ConstraintBigDecimal(final String name) {
+		super(name);
 	}
 
 	/**
