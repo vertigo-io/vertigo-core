@@ -132,7 +132,7 @@ public final class Domain implements Definition {
 	 *
 	 * @return Formatter.
 	 */
-	public Formatter getFormatter() {
+	public FormatterDefinition getFormatter() {
 		Assertion.checkNotNull(formatterDefinitionRef, "no formatter defined on {0}", this);
 		//-----
 		return formatterDefinitionRef.get();
