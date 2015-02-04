@@ -200,12 +200,4 @@ public final class UiMessageStack {
 	public boolean hasErrors() {
 		return actionSupport.hasActionErrors() || actionSupport.hasErrors() || actionSupport.hasFieldErrors();
 	}
-
-	/**
-	 * @deprecated Ne pas faire ca. On test pas champs par champs. Le but est de laisser remonter les erreurs. La méthode va bientot disparaitre :)
-	 */
-	@Deprecated
-	public boolean hasErrorOnField(final UiObject<?> dto, final String fieldName) {
-		return actionSupport.getFieldErrors().get(actionSupport.getModel().findKey(dto) + "." + fieldName).isEmpty();
-	}
 }

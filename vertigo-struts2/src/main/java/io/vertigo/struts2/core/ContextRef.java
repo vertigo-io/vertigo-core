@@ -36,21 +36,6 @@ public final class ContextRef<O extends Serializable> {
 	/**
 	 * Constructeur.
 	 * @param contextKey Clé dans le context
-	 * @param action Action struts
-	 * @deprecated Utiliser ContextRef(String contextKey, Class<O> valueClass, AbstractActionSupport action)
-	 */
-	@Deprecated
-	public ContextRef(final String contextKey, final AbstractActionSupport action) {
-		Assertion.checkArgNotEmpty(contextKey);
-		Assertion.checkNotNull(action);
-		//-----
-		this.contextKey = contextKey;
-		this.action = action;
-	}
-
-	/**
-	 * Constructeur.
-	 * @param contextKey Clé dans le context
 	 * @param valueClass Type du paramètre
 	 * @param action Action struts
 	 */
