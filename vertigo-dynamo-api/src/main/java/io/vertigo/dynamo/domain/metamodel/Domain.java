@@ -63,10 +63,9 @@ public final class Domain implements Definition {
 	/**
 	 * Constructeur.
 	 * @param dataType Type Dynamo
-	 * @param formatterDefinition Formatter du domaine
 	 */
-	public Domain(final String name, final DataType dataType, final FormatterDefinition formatterDefinition) {
-		this(name, dataType, formatterDefinition, Collections.<ConstraintDefinition> emptyList(), new PropertiesBuilder().build());
+	public Domain(final String name, final DataType dataType) {
+		this(name, dataType, null, Collections.<ConstraintDefinition> emptyList(), new PropertiesBuilder().build());
 	}
 
 	/**
@@ -79,13 +78,13 @@ public final class Domain implements Definition {
 	public Domain(final String name, final DataType dataType, final FormatterDefinition formatterDefinition, final List<ConstraintDefinition> constraintDefinitions, final Properties properties) {
 		//--Vérification des contrats
 		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(formatterDefinition);
+		//		Assertion.checkNotNull(formatterDefinition);
 		Assertion.checkNotNull(constraintDefinitions);
 		Assertion.checkNotNull(properties);
 		//-----
 		this.name = name;
 		this.dataType = dataType;
-		formatterDefinitionRef = new DefinitionReference<>(formatterDefinition);
+		formatterDefinitionRef = formatterDefinition == null ? null : new DefinitionReference<>(formatterDefinition);
 		//On rend la liste des contraintes non modifiable
 		final List<DefinitionReference<ConstraintDefinition>> myConstraintDefinitionRefs = new ArrayList<>();
 		for (final ConstraintDefinition constraintDefinition : constraintDefinitions) {

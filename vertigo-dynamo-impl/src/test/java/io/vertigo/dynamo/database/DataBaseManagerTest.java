@@ -29,11 +29,9 @@ import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamox.domain.formatter.FormatterDefault;
 
 import java.sql.SQLException;
 
@@ -176,7 +174,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		//On crée les données
 		createDatas();
 		//----
-		final Domain domain = new Domain("DO_INTEGER", DataType.Integer, new FormatterDefault("FMT_INTEGER"));
+		final Domain domain = new Domain("DO_INTEGER", DataType.Integer);
 		final SqlQueryResult result = executeQuery(domain, "select count(*) from movie");
 		Assert.assertEquals(1, result.getSQLRowCount());
 		Assert.assertEquals(3, result.getValue());
@@ -188,7 +186,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		//On crée les données
 		createDatas();
 		//----
-		final Domain domain = new Domain("DO_LIB", DataType.String, new FormatterDefault("FMT_INTEGER"));
+		final Domain domain = new Domain("DO_LIB", DataType.String);
 		final SqlQueryResult result = executeQuery(domain, "select title from movie where id=1");
 		Assert.assertEquals(1, result.getSQLRowCount());
 		Assert.assertEquals(TITLE_MOVIE_1, result.getValue());
@@ -200,7 +198,7 @@ public class DataBaseManagerTest extends AbstractTestCaseJU4 {
 		//On crée les données
 		createDatas();
 		//----
-		final Domain domain = new Domain("DO_TEST", DataType.DtList, Home.getDefinitionSpace().resolve(Formatter.FMT_DEFAULT, Formatter.class));
+		final Domain domain = new Domain("DO_TEST", DataType.DtList);
 		final SqlQueryResult result = executeQuery(domain, "select * from movie");
 
 		Assert.assertEquals(3, result.getSQLRowCount());

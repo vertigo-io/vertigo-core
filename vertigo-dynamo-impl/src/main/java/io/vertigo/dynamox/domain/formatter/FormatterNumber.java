@@ -19,8 +19,8 @@
 package io.vertigo.dynamox.domain.formatter;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
-import io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
 import io.vertigo.util.StringUtil;
@@ -45,7 +45,7 @@ import java.text.NumberFormat;
   *
  * @author pchretien
  */
-public class FormatterNumber extends AbstractFormatterImpl {
+public class FormatterNumber implements Formatter {
 	/**
 	 * Format d'affichage des nombres.
 	 */
@@ -55,13 +55,12 @@ public class FormatterNumber extends AbstractFormatterImpl {
 
 	/**
 	 * Constructeur.
-	 * @param name Nom du formatteur
 	 */
-	public FormatterNumber(final String name) {
-		super(name);
+	public FormatterNumber(final String args) {
 		decFormatSymbols = new java.text.DecimalFormatSymbols();
 		decFormatSymbols.setDecimalSeparator(','); //séparateur décimal
 		decFormatSymbols.setGroupingSeparator(' '); //séparateur de milliers
+		initParameters(args);
 	}
 
 	/**
@@ -71,9 +70,7 @@ public class FormatterNumber extends AbstractFormatterImpl {
 		return pattern;
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public void initParameters(final String args) {
+	protected void initParameters(final String args) {
 		Assertion.checkNotNull(args);
 		//-----
 		pattern = args;

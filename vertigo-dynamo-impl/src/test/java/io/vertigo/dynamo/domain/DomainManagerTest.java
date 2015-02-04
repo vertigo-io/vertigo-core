@@ -24,10 +24,8 @@ import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
-import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamox.domain.formatter.FormatterDefault;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -37,8 +35,7 @@ public class DomainManagerTest {
 	@Test
 	public void testCreateDtDefinition() {
 		try (App app = new App(new AppConfigBuilder().build())) {
-			final Formatter formatter = new FormatterDefault("FMT_DEF");
-			final Domain domain = new Domain("DO_NAME", DataType.String, formatter);
+			final Domain domain = new Domain("DO_NAME", DataType.String);
 
 			final DtDefinition dtDefinition = new DtDefinitionBuilder("DT_MOVIE")
 					.withPersistent(false)

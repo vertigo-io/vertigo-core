@@ -47,7 +47,7 @@ import java.util.StringTokenizer;
 public class FormatterNumberLocalized extends FormatterNumber {
 
 	//Pour chaque locale on conserve les symboles utilisés
-	private final Map<Locale, DecimalFormatSymbols> decimalFormatSymbolsMap;
+	private Map<Locale, DecimalFormatSymbols> decimalFormatSymbolsMap;
 
 	private MessageText decimalSep;
 	private MessageText groupSep;
@@ -55,14 +55,14 @@ public class FormatterNumberLocalized extends FormatterNumber {
 	/**
 	 * Constructeur.
 	 */
-	public FormatterNumberLocalized(final String name) {
-		super(name);
-		decimalFormatSymbolsMap = java.util.Collections.synchronizedMap(new HashMap<Locale, DecimalFormatSymbols>());
+	public FormatterNumberLocalized(final String args) {
+		super(args);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void initParameters(final String args) {
+		decimalFormatSymbolsMap = java.util.Collections.synchronizedMap(new HashMap<Locale, DecimalFormatSymbols>());
 		if (args != null) {
 			//-----
 			final StringTokenizer st = new StringTokenizer(args, "|");

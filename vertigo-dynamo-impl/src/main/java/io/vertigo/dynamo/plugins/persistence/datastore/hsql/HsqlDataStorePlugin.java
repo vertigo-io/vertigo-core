@@ -18,12 +18,10 @@
  */
 package io.vertigo.dynamo.plugins.persistence.datastore.hsql;
 
-import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.plugins.persistence.datastore.AbstractSqlDataStorePlugin;
@@ -59,7 +57,7 @@ public final class HsqlDataStorePlugin extends AbstractSqlDataStorePlugin {
 	 * Domaine à usage interne.
 	 * Ce domaine n'est pas enregistré.
 	 */
-	private final Domain resultDomain = new Domain("DO_HSQL", DataType.DtObject, Home.getDefinitionSpace().resolve("FMT_DEFAULT", FormatterDefinition.class));
+	private final Domain resultDomain = new Domain("DO_HSQL", DataType.DtObject);
 	private final String sequencePrefix;
 
 	/**
