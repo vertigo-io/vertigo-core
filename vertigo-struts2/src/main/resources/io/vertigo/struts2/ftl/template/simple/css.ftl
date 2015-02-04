@@ -5,23 +5,23 @@
  */
 -->
 <#assign hasFieldErrors = parameters.name?? && fieldErrors?? && fieldErrors[parameters.name]??/>
-<#if parameters.cssClass?? || (hasFieldErrors && parameters.cssErrorClass??) || (appendedCssClass?? && appendedCssClass != '') >
+<#if parameters.cssClass?has_content || (hasFieldErrors && parameters.cssErrorClass?has_content) || (appendedCssClass?has_content) >
  class="<#rt/>
 </#if>
-<#if parameters.cssClass??>
+<#if parameters.cssClass?has_content>
  ${parameters.cssClass?html}<#rt/>
 </#if>
-<#if (hasFieldErrors && parameters.cssErrorClass??)>
+<#if (hasFieldErrors && parameters.cssErrorClass?has_content)>
  ${parameters.cssErrorClass?html}<#rt/>
 </#if>
-<#if (appendedCssClass?? && appendedCssClass != '')>
+<#if (appendedCssClass?has_content)>
  ${appendedCssClass?trim?html}<#rt/>
 </#if>
-<#if parameters.cssClass?? || (hasFieldErrors && parameters.cssErrorClass??) || (appendedCssClass?? && appendedCssClass != '') >
+<#if parameters.cssClass?has_content || (hasFieldErrors && parameters.cssErrorClass?has_content) || (appendedCssClass?has_content) >
 "<#rt/>
 </#if>
-<#if parameters.cssStyle?? && !(hasFieldErrors && (parameters.cssErrorStyle?? || parameters.cssErrorClass??))>
+<#if parameters.cssStyle?has_content && !(hasFieldErrors && (parameters.cssErrorStyle?has_content || parameters.cssErrorClass?has_content))>
  style="${parameters.cssStyle?html}"<#rt/>
-<#elseif hasFieldErrors && parameters.cssErrorStyle??>
+<#elseif hasFieldErrors && parameters.cssErrorStyle?has_content>
  style="${parameters.cssErrorStyle?html}"<#rt/>
 </#if>
