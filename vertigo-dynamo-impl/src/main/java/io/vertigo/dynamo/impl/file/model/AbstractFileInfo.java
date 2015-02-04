@@ -32,7 +32,7 @@ import io.vertigo.lang.Assertion;
 public abstract class AbstractFileInfo implements FileInfo {
 	private static final long serialVersionUID = 1L;
 	private final KFile kFile;
-	private final DefinitionReference<FileInfoDefinition> fileInfoDefinition;
+	private final DefinitionReference<FileInfoDefinition> fileInfoDefinitionRef;
 	private FileInfoURI uri;
 
 	/**
@@ -45,7 +45,7 @@ public abstract class AbstractFileInfo implements FileInfo {
 		Assertion.checkNotNull(fileInfoDefinition);
 		Assertion.checkNotNull(kFile);
 		//-----
-		this.fileInfoDefinition = new DefinitionReference<>(fileInfoDefinition);
+		this.fileInfoDefinitionRef = new DefinitionReference<>(fileInfoDefinition);
 		this.kFile = kFile;
 	}
 
@@ -60,7 +60,7 @@ public abstract class AbstractFileInfo implements FileInfo {
 	public final void setURIStored(final FileInfoURI storedUri) {
 		Assertion.checkNotNull(storedUri);
 		Assertion.checkState(uri == null, "Impossible de setter deux fois l'uri de stockage");
-		Assertion.checkArgument(getDefinition().getName().equals(storedUri.<FileInfoDefinition> getDefinition().getName()), "L''URI ({0}) n''est pas compatible avec ce FileInfo ({1})", storedUri, fileInfoDefinition);
+		Assertion.checkArgument(getDefinition().getName().equals(storedUri.<FileInfoDefinition> getDefinition().getName()), "L''URI ({0}) n''est pas compatible avec ce FileInfo ({1})", storedUri, fileInfoDefinitionRef);
 		//-----
 		uri = storedUri;
 	}
@@ -68,7 +68,7 @@ public abstract class AbstractFileInfo implements FileInfo {
 	/** {@inheritDoc} */
 	@Override
 	public final FileInfoDefinition getDefinition() {
-		return fileInfoDefinition.get();
+		return fileInfoDefinitionRef.get();
 	}
 
 	/** {@inheritDoc} */

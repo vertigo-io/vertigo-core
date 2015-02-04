@@ -87,11 +87,11 @@ public final class Domain implements Definition {
 		this.dataType = dataType;
 		formatterRef = new DefinitionReference<>(formatter);
 		//On rend la liste des contraintes non modifiable
-		final List<DefinitionReference<Constraint<?, Object>>> _constraintRefs = new ArrayList<>();
+		final List<DefinitionReference<Constraint<?, Object>>> myConstraintRefs = new ArrayList<>();
 		for (final Constraint<?, Object> constraint : constraints) {
-			_constraintRefs.add(new DefinitionReference<Constraint<?, Object>>(constraint));
+			myConstraintRefs.add(new DefinitionReference<Constraint<?, Object>>(constraint));
 		}
-		constraintRefs = Collections.unmodifiableList(_constraintRefs);
+		constraintRefs = Collections.unmodifiableList(myConstraintRefs);
 		//========================MISE A JOUR DE LA MAP DES PROPRIETES==========
 		this.properties = buildProperties(constraints, properties);
 
