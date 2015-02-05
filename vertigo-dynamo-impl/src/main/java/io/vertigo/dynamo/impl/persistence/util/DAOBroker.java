@@ -91,11 +91,9 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 
 	/**
 	 * Save an object.
-	 * This method is deprecated : please use save (insert) or update.
 	 *
 	 * @param dto Object to save
 	 */
-	@Deprecated
 	public final void save(final D dto) {
 		if (DtObjectUtil.getId(dto) == null) {
 			broker.create(dto);

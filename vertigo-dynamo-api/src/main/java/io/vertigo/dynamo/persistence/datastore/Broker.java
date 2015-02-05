@@ -60,9 +60,6 @@ public interface Broker {
 	 */
 	<D extends DtObject> DtList<D> getList(final DtListURI uri);
 
-	@Deprecated
-	void save(DtObject dto);
-
 	/**
 	* Create an object.
 	* No object with the same id must have been created previously.

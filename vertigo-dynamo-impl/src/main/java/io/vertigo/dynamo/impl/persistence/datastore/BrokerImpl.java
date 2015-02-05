@@ -79,19 +79,6 @@ public final class BrokerImpl implements Broker {
 
 	/** {@inheritDoc} */
 	@Override
-	@Deprecated
-	public void save(final DtObject dto) {
-		Assertion.checkNotNull(dto);
-		//-----
-		if (DtObjectUtil.getId(dto) == null) {
-			create(dto);
-		} else {
-			update(dto);
-		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public void update(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//-----
