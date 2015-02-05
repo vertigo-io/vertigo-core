@@ -51,9 +51,6 @@ public interface Broker {
 	 */
 	<D extends DtObject> Option<D> getOption(final URI<D> uri);
 
-	@Deprecated
-	<D extends DtObject> D get(final URI<D> uri);
-
 	/**
 	 * Récupération d'une liste identifiée par son URI.
 	 *

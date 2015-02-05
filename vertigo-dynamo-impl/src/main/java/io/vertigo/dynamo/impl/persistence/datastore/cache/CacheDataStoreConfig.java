@@ -45,7 +45,7 @@ public final class CacheDataStoreConfig {
 		dataCache = new DataCache(cacheManager);
 	}
 
-	boolean isCacheable(final DtDefinition dtDefinition) {
+	public boolean isCacheable(final DtDefinition dtDefinition) {
 		return cacheableDtDefinitionMap.containsKey(dtDefinition);
 	}
 

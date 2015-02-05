@@ -57,19 +57,15 @@ public final class CacheDataStore {
 
 	public <D extends DtObject> D load(final DtDefinition dtDefinition, final URI uri) {
 		Assertion.checkNotNull(uri);
+		Assertion.checkArgument(cacheDataStoreConfig.isCacheable(dtDefinition), "DtDefinition {0} is not cacheable", dtDefinition);
 		//-----
 		// - Prise en compte du cache
-		if (cacheDataStoreConfig.isCacheable(dtDefinition)) {
-			D dto = cacheDataStoreConfig.getDataCache().<D> getDtObject(uri);
-			if (dto == null) {
-				//Cas ou le dto représente un objet non mis en cache
-				dto = this.<D> reload(dtDefinition, uri);
-			}
-			return dto;
+		D dto = cacheDataStoreConfig.getDataCache().<D> getDtObject(uri);
+		if (dto == null) {
+			//Cas ou le dto représente un objet non mis en cache
+			dto = this.<D> reload(dtDefinition, uri);
 		}
-		//-----
-		//Si on ne récupère rien dans le cache on charge depuis le store.
-		return doLoad(dtDefinition, uri);
+		return dto;
 	}
 
 	private <D extends DtObject> D doLoad(final DtDefinition dtDefinition, final URI uri) {
