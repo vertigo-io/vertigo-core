@@ -20,6 +20,7 @@ package io.vertigo.struts2.impl.servlet;
 
 import io.vertigo.boot.xml.XMLAppConfigBuilder;
 import io.vertigo.core.Home.App;
+import io.vertigo.lang.Assertion;
 import io.vertigo.struts2.plugins.config.servlet.WebAppContextConfigPlugin;
 import io.vertigo.struts2.plugins.resource.servlet.ServletResourceResolverPlugin;
 
@@ -61,6 +62,7 @@ final class HomeServlerStarter {
 			// Lecture des paramètres de configuration
 			final Properties conf = createProperties(servletContext);
 			WebAppContextConfigPlugin.setInitConfig(conf);
+			Assertion.checkArgument(conf.containsKey("boot.applicationConfiguration"), "Param \"boot.applicationConfiguration\" is mandatory, check your .properties or web.xml.");
 
 			//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
 			final XMLAppConfigBuilder appConfigBuilder = new XMLAppConfigBuilder()
@@ -72,13 +74,11 @@ final class HomeServlerStarter {
 				//-----
 				appConfigBuilder.withLogConfig(logFileName);
 			}
-			if (conf.containsKey("boot.applicationConfiguration")) {
-				final String xmlModulesFileNames = conf.getProperty("boot.applicationConfiguration");
-				final String[] xmlFileNamesSplit = xmlModulesFileNames.split(";");
-				conf.remove("boot.applicationConfiguration");
-				//-----
-				appConfigBuilder.withModules(getClass(), conf, xmlFileNamesSplit);
-			}
+			final String xmlModulesFileNames = conf.getProperty("boot.applicationConfiguration");
+			final String[] xmlFileNamesSplit = xmlModulesFileNames.split(";");
+			conf.remove("boot.applicationConfiguration");
+			//-----
+			appConfigBuilder.withModules(getClass(), conf, xmlFileNamesSplit);
 
 			// Initialisation de l'état de l'application
 			app = new App(appConfigBuilder.build());
