@@ -143,27 +143,18 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public final <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURI uri) {
-		// Assertion.precondition(uri instanceof DtListURIForAssociation, "cas non traité {0}", uri.toURN());
-		// uri.toURN >>  java.lang.IllegalArgumentException: uri urn[dynamoimpl.persistence.utilx.DtListURIForDtCriteria]::null non serializable
-		//-----
-		final DtList<D> dtc;
 		if (uri instanceof DtListURIForSimpleAssociation) {
-			dtc = loadListFromSimpleAssociation((DtListURIForSimpleAssociation) uri);
+			return loadListFromSimpleAssociation(dtDefinition, (DtListURIForSimpleAssociation) uri);
 		} else if (uri instanceof DtListURIForNNAssociation) {
-			dtc = loadListFromNNAssociation((DtListURIForNNAssociation) uri);
+			return loadListFromNNAssociation(dtDefinition, (DtListURIForNNAssociation) uri);
 		} else if (uri instanceof DtListURIForCriteria<?>) {
-			//@todo : A voir
-			final DtListURIForCriteria<D> dtListURIForDtCriteria = (DtListURIForCriteria<D>) uri;
-			dtc = loadList(uri.getDtDefinition(), dtListURIForDtCriteria.getCriteria(), dtListURIForDtCriteria.getMaxRows());
+			return loadList(dtDefinition, (DtListURIForCriteria<D>) uri);
 		} else {
 			throw new IllegalArgumentException("cas non traité " + uri);
 		}
-		dtc.setURI(uri);
-		return dtc;
 	}
 
-	private <D extends DtObject> DtList<D> loadListFromNNAssociation(final DtListURIForNNAssociation dtcUri) {
-		final DtDefinition dtDefinition = dtcUri.getDtDefinition();
+	private <D extends DtObject> DtList<D> loadListFromNNAssociation(final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
 		final String tableName = getTableName(dtDefinition);
 
 		final String taskName = TASK.TK_SELECT.toString() + "_N_N_LIST_" + tableName + "_BY_URI";
@@ -211,8 +202,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		return taskResult.getValue("dtc");
 	}
 
-	private <D extends DtObject> DtList<D> loadListFromSimpleAssociation(final DtListURIForSimpleAssociation dtcUri) {
-		final DtDefinition dtDefinition = dtcUri.getDtDefinition();
+	private <D extends DtObject> DtList<D> loadListFromSimpleAssociation(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation dtcUri) {
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
 		final Object value = dtcUri.getSource().getKey();
 
@@ -230,7 +220,12 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 */
 	protected abstract void appendMaxRows(final String separator, final StringBuilder request, final Integer maxRows);
 
-	private <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final Criteria<D> criteria, final Integer maxRows) {
+	private <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri) {
+		Assertion.checkNotNull(dtDefinition);
+		Assertion.checkNotNull(uri);
+		//-----
+		final Criteria<D> criteria = uri.getCriteria();
+		final Integer maxRows = uri.getMaxRows();
 		Assertion.checkArgument(criteria == null || criteria instanceof FilterCriteria<?>, "Ce store ne gére que les FilterCriteria");
 		//-----
 		final FilterCriteria<D> filterCriteria = (FilterCriteria<D>) (criteria == null ? EMPTY_FILTER_CRITERIA : criteria);

@@ -131,7 +131,12 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return count.intValue();
 	}
 
-	private <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final Criteria<D> criteria, final Integer maxRows) {
+	private <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri) {
+		Assertion.checkNotNull(dtDefinition);
+		Assertion.checkNotNull(uri);
+		//-----
+		final Criteria<D> criteria = uri.getCriteria();
+		final Integer maxRows = uri.getMaxRows();
 		Assertion.checkArgument(criteria == null || criteria instanceof FilterCriteria<?>, "Ce store ne gére que les FilterCriteria");
 		//-----
 		final FilterCriteria<D> filterCriteria = (FilterCriteria<D>) (criteria == null ? EMPTY_FILTER_CRITERIA : criteria);
@@ -151,23 +156,15 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURI uri) {
-		// Assertion.precondition(uri instanceof DtListURIForAssociation, "cas non traité {0}", uri.toURN());
-		// uri.toURN >>  java.lang.IllegalArgumentException: uri urn[.persistence.utilx.DtListURIForDtCriteria]::null non serializable
-		//-----
-		final DtList<D> dtc;
 		if (uri instanceof DtListURIForSimpleAssociation) {
-			dtc = loadListFromSimpleAssociation(DtListURIForSimpleAssociation.class.cast(uri));
+			return loadListFromSimpleAssociation(dtDefinition, DtListURIForSimpleAssociation.class.cast(uri));
 		} else if (uri instanceof DtListURIForNNAssociation) {
-			dtc = loadListFromNNAssociation(DtListURIForNNAssociation.class.cast(uri));
+			return loadListFromNNAssociation(dtDefinition, DtListURIForNNAssociation.class.cast(uri));
 		} else if (uri instanceof DtListURIForCriteria<?>) {
-			//@todo : A voir
-			final DtListURIForCriteria<D> dtListURIForDtCriteria = (DtListURIForCriteria<D>) uri;
-			dtc = loadList(uri.getDtDefinition(), dtListURIForDtCriteria.getCriteria(), dtListURIForDtCriteria.getMaxRows());
+			return loadList(dtDefinition, (DtListURIForCriteria<D>) uri);
 		} else {
 			throw new IllegalArgumentException("cas non traité " + uri);
 		}
-		dtc.setURI(uri);
-		return dtc;
 	}
 
 	private <D extends DtObject> DtList<D> doLoadList(final DtDefinition dtDefinition, final FilterCriteria<D> filterCriteria, final Integer maxRows) {
@@ -267,8 +264,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return request.toString();
 	}
 
-	private <D extends DtObject> DtList<D> loadListFromSimpleAssociation(final DtListURIForSimpleAssociation dtcUri) {
-		final DtDefinition dtDefinition = dtcUri.getDtDefinition();
+	private <D extends DtObject> DtList<D> loadListFromSimpleAssociation(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation dtcUri) {
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
 		final Object value = dtcUri.getSource().getKey();
 
@@ -278,8 +274,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return doLoadList(dtDefinition, filterCriteria, null);
 	}
 
-	private <D extends DtObject> DtList<D> loadListFromNNAssociation(final DtListURIForNNAssociation dtcUri) {
-		final DtDefinition dtDefinition = dtcUri.getDtDefinition();
+	private <D extends DtObject> DtList<D> loadListFromNNAssociation(final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
 		final String tableName = getTableName(dtDefinition);
 
 		final String taskName = "N_N_LIST_" + tableName + "_BY_URI";

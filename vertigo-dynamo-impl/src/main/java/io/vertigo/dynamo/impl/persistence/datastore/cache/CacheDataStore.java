@@ -89,7 +89,9 @@ public final class CacheDataStore {
 		if (uri instanceof DtListURIForMasterData) {
 			return loadMDList((DtListURIForMasterData) uri);
 		}
-		return getPhysicalStore(dtDefinition).<D> loadList(dtDefinition, uri);
+		final DtList<D> dtc = getPhysicalStore(dtDefinition).<D> loadList(dtDefinition, uri);
+		dtc.setURI(uri);
+		return dtc;
 	}
 
 	private <D extends DtObject> DtList<D> loadMDList(final DtListURIForMasterData uri) {
