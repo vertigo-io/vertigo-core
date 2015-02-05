@@ -28,7 +28,6 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
@@ -101,7 +100,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return transactionManager.getCurrentTransaction();
 	}
 
-	private <D extends DtObject> D loadWithoutClear(final URI uri) {
+	private <D extends DtObject> D loadWithoutClear(final URI<D> uri) {
 		final EntityManager em = obtainEntityManager();
 		final String serviceName = "Jpa:find " + uri.getDefinition().getName();
 		boolean executed = false;
@@ -131,7 +130,9 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return count.intValue();
 	}
 
-	private <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri) {
+	/** {@inheritDoc} */
+	@Override
+	public <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(uri);
 		//-----
@@ -145,26 +146,12 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> D load(final DtDefinition dtDefinition, final URI uri) {
+	public <D extends DtObject> D load(final DtDefinition dtDefinition, final URI<D> uri) {
 		final D dto = this.<D> loadWithoutClear(uri);
 		//On détache le DTO du contexte jpa
 		//De cette façon on interdit à jpa d'utiliser son cache
 		obtainEntityManager().clear();
 		return dto;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURI uri) {
-		if (uri instanceof DtListURIForSimpleAssociation) {
-			return loadListFromSimpleAssociation(dtDefinition, DtListURIForSimpleAssociation.class.cast(uri));
-		} else if (uri instanceof DtListURIForNNAssociation) {
-			return loadListFromNNAssociation(dtDefinition, DtListURIForNNAssociation.class.cast(uri));
-		} else if (uri instanceof DtListURIForCriteria<?>) {
-			return loadList(dtDefinition, (DtListURIForCriteria<D>) uri);
-		} else {
-			throw new IllegalArgumentException("cas non traité " + uri);
-		}
 	}
 
 	private <D extends DtObject> DtList<D> doLoadList(final DtDefinition dtDefinition, final FilterCriteria<D> filterCriteria, final Integer maxRows) {
@@ -264,7 +251,9 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return request.toString();
 	}
 
-	private <D extends DtObject> DtList<D> loadListFromSimpleAssociation(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation dtcUri) {
+	/** {@inheritDoc} */
+	@Override
+	public <D extends DtObject> DtList<D> loadListFromSimpleAssociation(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation dtcUri) {
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
 		final Object value = dtcUri.getSource().getKey();
 
@@ -274,7 +263,9 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return doLoadList(dtDefinition, filterCriteria, null);
 	}
 
-	private <D extends DtObject> DtList<D> loadListFromNNAssociation(final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
+	/** {@inheritDoc} */
+	@Override
+	public <D extends DtObject> DtList<D> loadListFromNNAssociation(final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
 		final String tableName = getTableName(dtDefinition);
 
 		final String taskName = "N_N_LIST_" + tableName + "_BY_URI";

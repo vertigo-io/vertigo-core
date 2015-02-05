@@ -19,8 +19,10 @@
 package io.vertigo.dynamo.persistence.datastore;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
+import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListURI;
+import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 
@@ -49,7 +51,7 @@ public interface DataStore {
 	 * @return D correspondant à l'URI fournie.
 	 * @param <D> Type de l'objet
 	 */
-	<D extends DtObject> D load(DtDefinition dtDefinition, URI uri);
+	<D extends DtObject> D load(DtDefinition dtDefinition, URI<D> uri);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
@@ -59,7 +61,11 @@ public interface DataStore {
 	 * @return DtList<D> Liste correspondant à l'URI fournie
 	 * @param <D> Type de l'objet
 	 */
-	<D extends DtObject> DtList<D> loadList(DtDefinition dtDefinition, DtListURI uri);
+	<D extends DtObject> DtList<D> loadListFromNNAssociation(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri);
+
+	<D extends DtObject> DtList<D> loadListFromSimpleAssociation(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri);
+
+	<D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri);
 
 	//==========================================================================
 	//=============================== WRITE ====================================

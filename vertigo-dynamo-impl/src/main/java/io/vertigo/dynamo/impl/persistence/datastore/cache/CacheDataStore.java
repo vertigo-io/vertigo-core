@@ -20,6 +20,7 @@ package io.vertigo.dynamo.impl.persistence.datastore.cache;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
+import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
@@ -89,7 +90,17 @@ public final class CacheDataStore {
 		if (uri instanceof DtListURIForMasterData) {
 			return loadMDList((DtListURIForMasterData) uri);
 		}
-		final DtList<D> dtc = getPhysicalStore(dtDefinition).<D> loadList(dtDefinition, uri);
+		//-----
+		final DtList<D> dtc;
+		if (uri instanceof DtListURIForSimpleAssociation) {
+			dtc = getPhysicalStore(dtDefinition).loadListFromSimpleAssociation(dtDefinition, (DtListURIForSimpleAssociation) uri);
+		} else if (uri instanceof DtListURIForNNAssociation) {
+			dtc = getPhysicalStore(dtDefinition).loadListFromNNAssociation(dtDefinition, (DtListURIForNNAssociation) uri);
+		} else if (uri instanceof DtListURIForCriteria<?>) {
+			dtc = getPhysicalStore(dtDefinition).loadList(dtDefinition, (DtListURIForCriteria<D>) uri);
+		} else {
+			throw new IllegalArgumentException("cas non traité " + uri);
+		}
 		dtc.setURI(uri);
 		return dtc;
 	}

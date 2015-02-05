@@ -30,7 +30,6 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
@@ -113,7 +112,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public final <D extends DtObject> D load(final DtDefinition dtDefinition, final URI uri) {
+	public final <D extends DtObject> D load(final DtDefinition dtDefinition, final URI<D> uri) {
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_SELECT.toString() + '_' + tableName + "_BY_URI";
 
@@ -142,19 +141,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public final <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURI uri) {
-		if (uri instanceof DtListURIForSimpleAssociation) {
-			return loadListFromSimpleAssociation(dtDefinition, (DtListURIForSimpleAssociation) uri);
-		} else if (uri instanceof DtListURIForNNAssociation) {
-			return loadListFromNNAssociation(dtDefinition, (DtListURIForNNAssociation) uri);
-		} else if (uri instanceof DtListURIForCriteria<?>) {
-			return loadList(dtDefinition, (DtListURIForCriteria<D>) uri);
-		} else {
-			throw new IllegalArgumentException("cas non traité " + uri);
-		}
-	}
-
-	private <D extends DtObject> DtList<D> loadListFromNNAssociation(final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
+	public <D extends DtObject> DtList<D> loadListFromNNAssociation(final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
 		final String tableName = getTableName(dtDefinition);
 
 		final String taskName = TASK.TK_SELECT.toString() + "_N_N_LIST_" + tableName + "_BY_URI";
@@ -202,7 +189,9 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		return taskResult.getValue("dtc");
 	}
 
-	private <D extends DtObject> DtList<D> loadListFromSimpleAssociation(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation dtcUri) {
+	/** {@inheritDoc} */
+	@Override
+	public <D extends DtObject> DtList<D> loadListFromSimpleAssociation(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation dtcUri) {
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
 		final Object value = dtcUri.getSource().getKey();
 
@@ -220,7 +209,9 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	 */
 	protected abstract void appendMaxRows(final String separator, final StringBuilder request, final Integer maxRows);
 
-	private <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri) {
+	/** {@inheritDoc} */
+	@Override
+	public <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(uri);
 		//-----
