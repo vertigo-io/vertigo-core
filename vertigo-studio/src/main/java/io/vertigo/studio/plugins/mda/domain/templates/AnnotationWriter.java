@@ -52,9 +52,8 @@ class AnnotationWriter {
 	List<String> writeAnnotations(final DtDefinition dtDefinition) {
 		final List<String> lines = new ArrayList<>();
 		// Générations des annotations Dynamo
-		final StringBuilder buffer;
 		// if (!isComputed) {
-		buffer = new StringBuilder("@DtDefinition");
+		final StringBuilder buffer = new StringBuilder("@DtDefinition");
 		if (!dtDefinition.isPersistent()) {
 			buffer.append("(persistent = false)");
 		}

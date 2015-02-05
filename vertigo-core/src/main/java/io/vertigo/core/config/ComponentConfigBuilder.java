@@ -83,11 +83,11 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	@Override
 	public ComponentConfig build() {
 		//Création des pluginConfigs
-		final List<PluginConfig> pluginConfigurations = new ArrayList<>();
+		final List<PluginConfig> pluginConfigs = new ArrayList<>();
 		for (final PluginConfigBuilder pluginConfigBuilder : plugins) {
-			pluginConfigurations.add(pluginConfigBuilder.build());
+			pluginConfigs.add(pluginConfigBuilder.build());
 		}
-		return new ComponentConfig(apiClass, implClass, elastic, managerInitializerClass, pluginConfigurations, params);
+		return new ComponentConfig(apiClass, implClass, elastic, managerInitializerClass, pluginConfigs, params);
 	}
 
 	public ModuleConfigBuilder endComponent() {
