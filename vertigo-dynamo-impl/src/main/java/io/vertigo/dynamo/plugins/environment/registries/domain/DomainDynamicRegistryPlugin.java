@@ -33,7 +33,6 @@ import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
 import io.vertigo.dynamo.domain.metamodel.Properties;
 import io.vertigo.dynamo.domain.metamodel.PropertiesBuilder;
 import io.vertigo.dynamo.domain.metamodel.Property;
-import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
@@ -91,10 +90,10 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 			final DtDefinition dtDefinition = createDtDefinition(xdefinition);
 			definitionSpace.put(dtDefinition, DtDefinition.class);
 		} else if (entity.equals(DomainGrammar.ASSOCIATION_ENTITY)) {
-			final AssociationDefinition definition = createAssociationSimpleDefinition(xdefinition);
+			final AssociationSimpleDefinition definition = createAssociationSimpleDefinition(xdefinition);
 			definitionSpace.put(definition, AssociationSimpleDefinition.class);
 		} else if (entity.equals(DomainGrammar.ASSOCIATION_NN_ENTITY)) {
-			final AssociationDefinition definition = createAssociationNNDefinition(xdefinition);
+			final AssociationNNDefinition definition = createAssociationNNDefinition(xdefinition);
 			definitionSpace.put(definition, AssociationNNDefinition.class);
 		} else if (entity.equals(DomainGrammar.CONSTAINT_ENTITY)) {
 			final ConstraintDefinition definition = createConstraint(xdefinition);
@@ -131,7 +130,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	}
 
 	private Domain createDomain(final DynamicDefinition xdomain) {
-		//il y a deux cas 
+		//il y a deux cas
 		//avec formatter et constraint
 		final DataType dataType = DataType.valueOf(xdomain.getDefinitionKey("dataType").getName());
 		final String domainName = xdomain.getDefinitionKey().getName();

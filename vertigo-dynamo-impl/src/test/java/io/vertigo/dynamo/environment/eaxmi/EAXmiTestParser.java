@@ -20,7 +20,6 @@ package io.vertigo.dynamo.environment.eaxmi;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
-import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 
@@ -99,7 +98,7 @@ public class EAXmiTestParser extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testAssoctationSimpleA1vBn() {
-		final AssociationDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_3");
+		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_3");
 		/* "0..1" */
 		Assert.assertEquals(false, association.getAssociationNodeA().isMultiple());
 		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());
@@ -119,7 +118,7 @@ public class EAXmiTestParser extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testAssoctationSimpleAnB1v() {
-		final AssociationDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_4");
+		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_4");
 		/* "0..*" */
 		Assert.assertEquals(true, association.getAssociationNodeA().isMultiple());
 		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());
@@ -139,7 +138,7 @@ public class EAXmiTestParser extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testAssoctationSimpleAnvB1() {
-		final AssociationDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_5");
+		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_5");
 		/* "0..*" */
 		Assert.assertEquals(true, association.getAssociationNodeA().isMultiple());
 		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());

@@ -75,7 +75,6 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 	 * @return AssociationSimpleDefinitionStandard
 	 */
 	public static AssociationSimpleDefinition createAssociationSimpleDefinition(
-			//
 			final String name, final String fkFieldName,
 			final DtDefinition dtDefinitionA, final boolean isANavigable, final String roleA, final String labelA, final boolean isAMultiple, final boolean isANotNull,
 			final DtDefinition dtDefinitionB, final boolean isBNavigable, final String roleB, final String labelB, final boolean isBMultiple, final boolean isBNotNull

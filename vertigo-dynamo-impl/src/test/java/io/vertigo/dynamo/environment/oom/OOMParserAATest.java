@@ -20,7 +20,6 @@ package io.vertigo.dynamo.environment.oom;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
-import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 
@@ -79,7 +78,7 @@ public final class OOMParserAATest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testAssoctationA1vBnv() {
-		final AssociationDefinition association = getAssociationSimpleDefinition("A_CHI_CHI_2");
+		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("A_CHI_CHI_2");
 		/* "0..1" */
 		Assert.assertEquals(false, association.getAssociationNodeA().isMultiple());
 		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());
@@ -159,7 +158,7 @@ public final class OOMParserAATest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testAssoctationAnvB1v() {
-		final AssociationDefinition association = getAssociationSimpleDefinition("A_CHI_CHI_6");
+		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("A_CHI_CHI_6");
 		/* "0..*" */
 		Assert.assertEquals(true, association.getAssociationNodeA().isMultiple());
 		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());
