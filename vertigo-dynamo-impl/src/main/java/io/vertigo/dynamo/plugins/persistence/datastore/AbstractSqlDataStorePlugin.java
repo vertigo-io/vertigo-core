@@ -141,7 +141,10 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> loadListFromNNAssociation(final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
+	public <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
+		Assertion.checkNotNull(dtDefinition);
+		Assertion.checkNotNull(dtcUri);
+		//-----
 		final String tableName = getTableName(dtDefinition);
 
 		final String taskName = TASK.TK_SELECT.toString() + "_N_N_LIST_" + tableName + "_BY_URI";
@@ -191,7 +194,10 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> DtList<D> loadListFromSimpleAssociation(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation dtcUri) {
+	public <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation dtcUri) {
+		Assertion.checkNotNull(dtDefinition);
+		Assertion.checkNotNull(dtcUri);
+		//-----
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
 		final Object value = dtcUri.getSource().getKey();
 

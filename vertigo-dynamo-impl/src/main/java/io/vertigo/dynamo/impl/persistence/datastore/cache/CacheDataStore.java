@@ -93,9 +93,9 @@ public final class CacheDataStore {
 		//-----
 		final DtList<D> dtc;
 		if (uri instanceof DtListURIForSimpleAssociation) {
-			dtc = getPhysicalStore(dtDefinition).loadListFromSimpleAssociation(dtDefinition, (DtListURIForSimpleAssociation) uri);
+			dtc = getPhysicalStore(dtDefinition).loadList(dtDefinition, (DtListURIForSimpleAssociation) uri);
 		} else if (uri instanceof DtListURIForNNAssociation) {
-			dtc = getPhysicalStore(dtDefinition).loadListFromNNAssociation(dtDefinition, (DtListURIForNNAssociation) uri);
+			dtc = getPhysicalStore(dtDefinition).loadList(dtDefinition, (DtListURIForNNAssociation) uri);
 		} else if (uri instanceof DtListURIForCriteria<?>) {
 			dtc = getPhysicalStore(dtDefinition).loadList(dtDefinition, (DtListURIForCriteria<D>) uri);
 		} else {
