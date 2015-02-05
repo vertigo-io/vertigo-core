@@ -55,12 +55,12 @@ public final class CacheDataStore {
 		return logicalStoreConfig.getPhysicalStore(dtDefinition);
 	}
 
-	public <D extends DtObject> D load(final DtDefinition dtDefinition, final URI uri) {
+	public <D extends DtObject> D load(final DtDefinition dtDefinition, final URI<D> uri) {
 		Assertion.checkNotNull(uri);
 		Assertion.checkArgument(cacheDataStoreConfig.isCacheable(dtDefinition), "DtDefinition {0} is not cacheable", dtDefinition);
 		//-----
 		// - Prise en compte du cache
-		D dto = cacheDataStoreConfig.getDataCache().<D> getDtObject(uri);
+		D dto = cacheDataStoreConfig.getDataCache().getDtObject(uri);
 		if (dto == null) {
 			//Cas ou le dto représente un objet non mis en cache
 			dto = this.<D> reload(dtDefinition, uri);
@@ -68,20 +68,16 @@ public final class CacheDataStore {
 		return dto;
 	}
 
-	private <D extends DtObject> D doLoad(final DtDefinition dtDefinition, final URI uri) {
-		return getPhysicalStore(dtDefinition).<D> load(dtDefinition, uri);
-	}
-
-	private synchronized <D extends DtObject> D reload(final DtDefinition dtDefinition, final URI uri) {
+	private synchronized <D extends DtObject> D reload(final DtDefinition dtDefinition, final URI<D> uri) {
 		final D dto;
 		if (cacheDataStoreConfig.isReloadedByList(dtDefinition)) {
 			//On ne charge pas les cache de façon atomique.
 			final DtListURI dtcURIAll = new DtListURIForCriteria<>(dtDefinition, null, null);
 			reloadList(dtcURIAll); //on charge la liste complete (et on remplit les caches)
-			dto = cacheDataStoreConfig.getDataCache().<D> getDtObject(uri);
+			dto = cacheDataStoreConfig.getDataCache().getDtObject(uri);
 		} else {
-			//On charge le cache de façon atomique.
-			dto = doLoad(dtDefinition, uri);
+			//On charge le cache de façon atomique à partir du dataStore
+			dto = getPhysicalStore(dtDefinition).load(dtDefinition, uri);
 			cacheDataStoreConfig.getDataCache().putDtObject(dto);
 		}
 		return dto;
