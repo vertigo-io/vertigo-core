@@ -627,23 +627,26 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 	private long doQuery(final String query) {
 		//recherche
-		final SearchQueryBuilder searchQueryBuilder = new SearchQueryBuilder(query);
-		return doQuery(searchQueryBuilder).getCount();
+		final SearchQuery searchQuery = new SearchQueryBuilder(query)
+				.withFacetStrategy(carQueryDefinition)
+				.build();
+
+		return doQuery(searchQuery).getCount();
 	}
 
 	private <D extends DtObject> D doQueryAndGetFirst(final String query, final String sortField, final boolean sortAsc) {
 		//recherche
-		final SearchQueryBuilder searchQueryBuilder = new SearchQueryBuilder(query)
-				.withSortStrategy(carIndexDefinition.getIndexDtDefinition().getField(sortField), sortAsc);
-		final DtList<D> dtList = (DtList<D>) doQuery(searchQueryBuilder).getDtList();
+		final SearchQuery searchQuery = new SearchQueryBuilder(query)
+				.withSortStrategy(carIndexDefinition.getIndexDtDefinition().getField(sortField), sortAsc)
+				.withFacetStrategy(carQueryDefinition)
+				.build();
+
+		final DtList<D> dtList = (DtList<D>) doQuery(searchQuery).getDtList();
 		Assert.assertFalse("Result list was empty", dtList.isEmpty());
 		return dtList.get(0);
 	}
 
-	private FacetedQueryResult<DtObject, SearchQuery> doQuery(final SearchQueryBuilder searchQueryBuilder) {
-		final SearchQuery searchQuery = searchQueryBuilder
-				.withFacetStrategy(carQueryDefinition)
-				.build();
+	private FacetedQueryResult<DtObject, SearchQuery> doQuery(final SearchQuery searchQuery) {
 		return searchManager.loadList(carIndexDefinition, searchQuery);
 	}
 
