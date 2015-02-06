@@ -20,12 +20,12 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 
 	/**
 	 * Constructor.
-	 * @param listFilter critère principal
+	 * @param query Query
 	 */
-	public SearchQueryBuilder(final ListFilter listFilter) {
-		Assertion.checkNotNull(listFilter);
+	public SearchQueryBuilder(final String query) {
+		Assertion.checkNotNull(query);
 		//-----
-		myListFilter = listFilter;
+		myListFilter = new ListFilter(query);
 	}
 
 	/**
