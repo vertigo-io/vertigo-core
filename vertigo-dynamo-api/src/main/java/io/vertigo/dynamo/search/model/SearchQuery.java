@@ -50,7 +50,7 @@ public final class SearchQuery implements Serializable {
 	 * @param numDaysOfBoostRefDocument Age des documents servant de référence pour le boost des plus récents par rapport à eux (null si non utilisé)
 	 * @param mostRecentBoost Boost relatif maximum entre les plus récents et ceux ayant l'age de référence (doit être > 1) (null si non utilisé)
 	 */
-	private SearchQuery(final ListFilter listFilter, final DtField sortField, final Boolean sortAsc, final DtField boostedDocumentDateField, final Integer numDaysOfBoostRefDocument, final Integer mostRecentBoost) {
+	SearchQuery(final ListFilter listFilter, final DtField sortField, final Boolean sortAsc, final DtField boostedDocumentDateField, final Integer numDaysOfBoostRefDocument, final Integer mostRecentBoost) {
 		Assertion.checkNotNull(listFilter);
 		Assertion.checkArgument(sortField == null || sortAsc != null, "Lorsque le tri des documents est activé, sortAsc est obligatoires.");
 		Assertion.checkArgument(boostedDocumentDateField == null || numDaysOfBoostRefDocument != null && mostRecentBoost != null, "Lorsque le boost des documents récents est activé, numDaysOfBoostRefDocument et mostRecentBoost sont obligatoires.");
@@ -141,40 +141,4 @@ public final class SearchQuery implements Serializable {
 		return mostRecentBoost;
 	}
 
-	//=========================================================================
-	//=======================Factory des Queries===============================
-	//=========================================================================
-	/**
-	 * Crée un SearchQuery.
-	 * @param listFilter critère principal
-	 * @return SearchQuery.
-	 */
-	public static SearchQuery createSearchQuery(final ListFilter listFilter) {
-		return new SearchQuery(listFilter, null, null, null, null, null);
-	}
-
-	/**
-	 * Crée un SearchQuery.
-	 * @param listFilter critère principal
-	 * @param sortField Champ utilisé pour le tri
-	 * @param sortAsc  Ordre de tri (true pour ascendant)
-	 * @return SearchQuery.
-	 */
-	public static SearchQuery createSearchQuery(final ListFilter listFilter, final DtField sortField, final boolean sortAsc) {
-		return new SearchQuery(listFilter, sortField, sortAsc, null, null, null);
-	}
-
-	/**
-	 * Crée un SearchQuery avec boost des documents les plus récents.
-	 * @param listFilter critère principal
-	 * @param boostedDocumentDateField Nom du champ portant la date du document (null si non utilisé)
-	 * @param numDaysOfBoostRefDocument Age des documents servant de référence pour le boost des plus récents par rapport à eux (null si non utilisé)
-	 * @param mostRecentBoost Boost relatif maximum entre les plus récents et ceux ayant l'age de référence (doit être > 1) (null si non utilisé)
-	 * @return SearchQuery.
-	 */
-	public static SearchQuery createSearchQuery(final ListFilter listFilter, final DtField boostedDocumentDateField, final Integer numDaysOfBoostRefDocument, final Integer mostRecentBoost) {
-		Assertion.checkNotNull(boostedDocumentDateField);
-		//-----
-		return new SearchQuery(listFilter, null, null, boostedDocumentDateField, numDaysOfBoostRefDocument, mostRecentBoost);
-	}
 }
