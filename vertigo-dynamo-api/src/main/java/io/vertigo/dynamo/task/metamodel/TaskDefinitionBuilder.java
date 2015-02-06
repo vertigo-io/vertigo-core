@@ -26,7 +26,8 @@ import io.vertigo.lang.Builder;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Builder des définitions de taches.
+/**
+ * Builder of taskDefinition.
  *
  * @author  fconstantin, pchretien
  */
@@ -39,9 +40,9 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	private String myPackageName;
 
 	/**
-	 * Construction du builder.
+	 * Constructor.
 	 *
-	 * @param taskDefinitionName Nom de la définition de la tache
+	 * @param taskDefinitionName Name (TK_XXX_YYY)
 	 */
 	public TaskDefinitionBuilder(final String taskDefinitionName) {
 		Assertion.checkNotNull(taskDefinitionName);
@@ -50,9 +51,9 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	}
 
 	/**
-	 * Initialise une définition de tache.
+	 * Defines the engine, used at runtime to process the task.
 	 *
-	 * @param taskEngineClass Classe réalisant l'implémentation
+	 * @param taskEngineClass Class running the task
 	 */
 	public TaskDefinitionBuilder withEngine(final Class<? extends TaskEngine> taskEngineClass) {
 		Assertion.checkNotNull(taskEngineClass);
@@ -66,7 +67,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	}
 
 	/**
-	 * @param request Chaine de configuration de la tache
+	 * @param request Request used to configure the task. (ldap request, sql request...)
 	 */
 	public TaskDefinitionBuilder withRequest(final String request) {
 		Assertion.checkNotNull(request);
@@ -79,7 +80,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	}
 
 	/**
-	 * @param packageName Nom du package
+	 * @param packageName Name of the package
 	 */
 	public TaskDefinitionBuilder withPackageName(final String packageName) {
 		//packageName peut être null
@@ -89,27 +90,34 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	}
 
 	/**
-	 * Ajoute un attribut à une définition de tache.
+	 * Add an input attribute.
 	 *
-	 * @param attributeName Nom de l'attribut
-	 * @param domain Domaine de l'attribut
-	 * @param notNull Si attribut obligatoirement non null
+	 * @param attributeName Name of the attribute
+	 * @param domain Domain of the attribute
+	 * @param notNull If attribute must be not null
 	 */
 	public TaskDefinitionBuilder withInAttribute(final String attributeName, final Domain domain, final boolean notNull) {
 		return withAttribute(attributeName, domain, notNull, true);
 	}
 
+	/**
+	 * Add an output attribute.
+	 *
+	 * @param attributeName Name of the attribute
+	 * @param domain Domain of the attribute
+	 * @param notNull If attribute must be not null
+	 */
 	public TaskDefinitionBuilder withOutAttribute(final String attributeName, final Domain domain, final boolean notNull) {
 		return withAttribute(attributeName, domain, notNull, false);
 	}
 
 	/**
-	 * Ajoute un attribut à une définition de tache.
+	 * Add an attribute.
 	 *
-	 * @param attributeName Nom de l'attribut
-	 * @param domain Domaine de l'attribut
-	 * @param notNull Si attribut obligatoirement non null
-	 * @param in Si attribut entrant
+	 * @param attributeName Name of the attribute
+	 * @param domain Domain of the attribute
+	 * @param notNull If attribute must be not null
+	 * @param in If attribute is an input (else it is an output)
 	 */
 	private TaskDefinitionBuilder withAttribute(final String attributeName, final Domain domain, final boolean notNull, final boolean in) {
 		Assertion.checkNotNull(attributeName);
