@@ -87,12 +87,10 @@ public final class CacheDataStore {
 	private <D extends DtObject> DtList<D> doLoadList(final DtDefinition dtDefinition, final DtListURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		if (uri instanceof DtListURIForMasterData) {
-			return loadMDList((DtListURIForMasterData) uri);
-		}
-		//-----
 		final DtList<D> dtc;
-		if (uri instanceof DtListURIForSimpleAssociation) {
+		if (uri instanceof DtListURIForMasterData) {
+			dtc = loadMDList((DtListURIForMasterData) uri);
+		} else if (uri instanceof DtListURIForSimpleAssociation) {
 			dtc = getPhysicalStore(dtDefinition).loadList(dtDefinition, (DtListURIForSimpleAssociation) uri);
 		} else if (uri instanceof DtListURIForNNAssociation) {
 			dtc = getPhysicalStore(dtDefinition).loadList(dtDefinition, (DtListURIForNNAssociation) uri);
@@ -112,18 +110,18 @@ public final class CacheDataStore {
 		//On cherche la liste complete (URIAll n'est pas une DtListURIForMasterData pour ne pas boucler)
 		final DtList<D> unFilteredDtc = loadList(uri.getDtDefinition(), new DtListURIForCriteria<D>(uri.getDtDefinition(), null, null));
 
-		//Composition.
 		//On compose les fonctions
 		//1.on filtre
 		//2.on trie
-		final DtList<D> sortedDtc = logicalStoreConfig.getPersistenceManager().getMasterDataConfig().getFilter(uri)
+		return logicalStoreConfig.getPersistenceManager().getMasterDataConfig().getFilter(uri)
 				.sort(uri.getDtDefinition().getSortField().get().getName(), false, true, true)
 				.apply(unFilteredDtc);
-		sortedDtc.setURI(uri);
-		return sortedDtc;
 	}
 
 	public <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURI uri) {
+		Assertion.checkNotNull(dtDefinition);
+		Assertion.checkNotNull(uri);
+		//-----
 		// - Prise en compte du cache
 		//On ne met pas en cache les URI d'une association NN
 		if (cacheDataStoreConfig.isCacheable(uri.getDtDefinition()) && !isMultipleAssociation(uri)) {
@@ -151,6 +149,8 @@ public final class CacheDataStore {
 
 	/* On notifie la mise à jour du cache, celui-ci est donc vidé. */
 	public void clearCache(final DtDefinition dtDefinition) {
+		Assertion.checkNotNull(dtDefinition);
+		//-----
 		// On ne vérifie pas que la definition est cachable, Lucene utilise le même cache
 		// A changer si on gère lucene différemment
 		//	if (cacheDataStoreConfiguration.isCacheable(dtDefinition)) {

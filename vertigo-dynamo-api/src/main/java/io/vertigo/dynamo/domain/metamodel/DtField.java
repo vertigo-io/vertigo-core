@@ -181,8 +181,6 @@ public final class DtField implements DtFieldName {
 	 * Retourne le nom du champ.
 	 * @return Nom du champ
 	 */
-	@Deprecated
-	// "use name()" instead of name()
 	public String getName() {
 		return name;
 	}
