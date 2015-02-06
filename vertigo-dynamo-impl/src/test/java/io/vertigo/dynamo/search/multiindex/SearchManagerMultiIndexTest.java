@@ -22,7 +22,6 @@ import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
-import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -39,7 +38,6 @@ import io.vertigo.dynamo.search.model.SearchQueryBuilder;
 import io.vertigo.dynamock.domain.car.Car;
 import io.vertigo.dynamock.domain.car.CarDataBase;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -133,7 +131,7 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 		//recherche
 		final FacetedQueryDefinition carQueryDefinition = Home.getDefinitionSpace().resolve(QRY_CAR, FacetedQueryDefinition.class);
 		final SearchQuery searchQuery = new SearchQueryBuilder(query)
-				.withFacetStrategy(new FacetedQuery(carQueryDefinition, Collections.<ListFilter> emptyList()))
+				.withFacetStrategy(carQueryDefinition)
 				.build();
 		final FacetedQueryResult<DtObject, SearchQuery> result = searchManager.loadList(indexDefinition, searchQuery);
 		return result.getCount();

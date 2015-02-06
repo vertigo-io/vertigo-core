@@ -1,10 +1,13 @@
 package io.vertigo.dynamo.search.model;
 
 import io.vertigo.dynamo.collections.ListFilter;
+import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
+
+import java.util.Arrays;
 
 /**
  * @author pchretien
@@ -54,6 +57,10 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 		myNumDaysOfBoostRefDocument = numDaysOfBoostRefDocument;
 		myMostRecentBoost = mostRecentBoost;
 		return this;
+	}
+
+	public SearchQueryBuilder withFacetStrategy(final FacetedQueryDefinition facetedQueryDefinition, final ListFilter... listFilters) {
+		return this.withFacetStrategy(new FacetedQuery(facetedQueryDefinition, Arrays.asList(listFilters)));
 	}
 
 	public SearchQueryBuilder withFacetStrategy(final FacetedQuery facetedQuery) {
