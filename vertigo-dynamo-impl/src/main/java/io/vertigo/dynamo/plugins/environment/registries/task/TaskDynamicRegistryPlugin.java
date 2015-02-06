@@ -72,8 +72,11 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 			final Domain domain = Home.getDefinitionSpace().resolve(domainUrn, Domain.class);
 			//-----
 			final Boolean notNull = getPropertyValueAsBoolean(xtaskAttribute, KspProperty.NOT_NULL);
-			taskDefinitionBuilder.withAttribute(attributeName, domain, notNull.booleanValue(),
-					isInValue(getPropertyValueAsString(xtaskAttribute, KspProperty.IN_OUT)));
+			if (isInValue(getPropertyValueAsString(xtaskAttribute, KspProperty.IN_OUT))) {
+				taskDefinitionBuilder.withInAttribute(attributeName, domain, notNull.booleanValue());
+			} else {
+				taskDefinitionBuilder.withOutAttribute(attributeName, domain, notNull.booleanValue());
+			}
 		}
 		return taskDefinitionBuilder.build();
 	}

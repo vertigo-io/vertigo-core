@@ -19,6 +19,9 @@
 package io.vertigo.dynamo.plugins.persistence.datastore;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
+import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
+import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
@@ -60,4 +63,15 @@ public abstract class AbstractStaticDataStorePlugin implements DataStorePlugin {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri) {
+		throw new UnsupportedOperationException();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri) {
+		throw new UnsupportedOperationException();
+	}
 }

@@ -76,8 +76,7 @@ public final class OracleDataStorePlugin extends AbstractSqlDataStorePlugin {
 		final DtField pk = dtDefinition.getIdField().get();
 
 		final String tableName = getTableName(dtDefinition);
-		final StringBuilder request = new StringBuilder()
-				.append("begin insert into ").append(tableName).append(" ( ");
+		final StringBuilder request = new StringBuilder("begin insert into ").append(tableName).append(" ( ");
 
 		String separator = "";
 		for (final DtField dtField : dtDefinition.getFields()) {

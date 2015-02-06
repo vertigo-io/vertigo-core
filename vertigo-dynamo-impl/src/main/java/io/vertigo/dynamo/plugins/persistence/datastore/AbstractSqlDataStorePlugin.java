@@ -51,7 +51,6 @@ import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -126,9 +125,9 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(request.toString())
-				.withAttribute(pkFieldName, pk.getDomain(), true, true)
+				.withInAttribute(pkFieldName, pk.getDomain(), true)
 				//IN, obligatoire
-				.withAttribute("dto", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + uri.<DtDefinition> getDefinition().getName() + "_DTO", Domain.class), false, false) //OUT, non obligatoire
+				.withOutAttribute("dto", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + uri.getDefinition().getName() + "_DTO", Domain.class), false) //OUT, non obligatoire
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
@@ -174,8 +173,8 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(request.toString())
-				.withAttribute(fkFieldName, fkField.getDomain(), true, true)
-				.withAttribute("dtc", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true, false)//OUT, obligatoire
+				.withInAttribute(fkFieldName, fkField.getDomain(), true)
+				.withOutAttribute("dtc", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)//obligatoire
 				.build();
 
 		final URI uri = dtcUri.getSource();
@@ -233,17 +232,6 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(filterCriteria);
 		//-----
-		//TODO domainMap inutil, non ?
-		final Map<String, Domain> domainMap = new HashMap<>();
-		for (final String fieldName : filterCriteria.getFilterMap().keySet()) {
-			domainMap.put(fieldName, dtDefinition.getField(fieldName).getDomain());
-		}
-		for (final String fieldName : filterCriteria.getPrefixMap().keySet()) {
-			domainMap.put(fieldName, dtDefinition.getField(fieldName).getDomain());
-		}
-		//Il faudrait vérifier que les filtres portent tous sur des champs du DT, mais la tache le fera.
-		////-----
-
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = getListTaskName(tableName, filterCriteria);
 		final String request = createLoadAllLikeQuery(tableName, filterCriteria, maxRows);
@@ -253,14 +241,14 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.withRequest(request.toString());
 		//IN, obligatoire
 		for (final String fieldName : filterCriteria.getFilterMap().keySet()) {
-			taskDefinitionBuilder.withAttribute(fieldName, domainMap.get(fieldName), true, true);
+			taskDefinitionBuilder.withInAttribute(fieldName, dtDefinition.getField(fieldName).getDomain(), true);
 		}
 		for (final String fieldName : filterCriteria.getPrefixMap().keySet()) {
-			taskDefinitionBuilder.withAttribute(fieldName, domainMap.get(fieldName), true, true);
+			taskDefinitionBuilder.withInAttribute(fieldName, dtDefinition.getField(fieldName).getDomain(), true);
 		}
 		//OUT, obligatoire
 		final TaskDefinition taskDefinition = taskDefinitionBuilder
-				.withAttribute("dtc", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true, false)
+				.withOutAttribute("dtc", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)
 				.build();
 
 		final TaskBuilder taskBuilder = new TaskBuilder(taskDefinition);
@@ -316,9 +304,9 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 	}
 
 	private static <D extends DtObject> String getListTaskName(final String tableName, final FilterCriteria<D> filter) {
-		final StringBuilder sb = new StringBuilder(TASK.TK_SELECT.toString());
-		sb.append("_LIST_");
-		sb.append(tableName);
+		final StringBuilder sb = new StringBuilder(TASK.TK_SELECT.toString())
+				.append("_LIST_")
+				.append(tableName);
 		//si il y a plus d'un champs : on nomme _BY_CRITERIA, sinon le nom sera trop long
 		if (filter.getFilterMap().size() + filter.getPrefixMap().size() <= 1) {
 			String sep = "_BY_";
@@ -452,8 +440,8 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(getTaskEngineClass(insert))//IN, obligatoire
 				.withRequest(request)
-				.withAttribute("DTO", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTO", Domain.class), true, true)
-				.withAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true, false) //OUT, obligatoire
+				.withInAttribute("DTO", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTO", Domain.class), true)
+				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true) //OUT, obligatoire
 				.build();
 
 		/*
@@ -495,8 +483,8 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineProc.class)
 				.withRequest(request.toString())
-				.withAttribute(pkFieldName, pk.getDomain(), true, true)//IN, obligatoire
-				.withAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true, false) //OUT, obligatoire
+				.withInAttribute(pkFieldName, pk.getDomain(), true)//IN, obligatoire
+				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true) //OUT, obligatoire
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
@@ -533,7 +521,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(request.toString())
-				.withAttribute("dto", countDomain, true, false)//OUT, obligatoire
+				.withOutAttribute("dto", countDomain, true)//OUT, obligatoire
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)

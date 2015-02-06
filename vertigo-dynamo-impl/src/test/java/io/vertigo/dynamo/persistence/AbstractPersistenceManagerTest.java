@@ -158,7 +158,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 						//syntaxe HsqlDb pour sequence.nextval
 						+ "(NEXT VALUE FOR SEQ_CAR, #DTO_CAR.FAM_ID#, #DTO_CAR.MAKE#, #DTO_CAR.MODEL#, #DTO_CAR.DESCRIPTION#, #DTO_CAR.YEAR#, #DTO_CAR.KILO#, #DTO_CAR.PRICE#, #DTO_CAR.MOTOR_TYPE#)")
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.withAttribute("DTO_CAR", doCar, true, true)
+				.withInAttribute("DTO_CAR", doCar, true)
 				.build();
 
 		Home.getDefinitionSpace().put(taskDefinition, TaskDefinition.class);
@@ -181,7 +181,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 						+ "MOTOR_TYPE = #DTO_CAR.MOTOR_TYPE#) "
 						+ "where CAR_ID = #DTO_CAR.ID#" + "")
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.withAttribute("DTO_CAR", doCar, true, true)
+				.withInAttribute("DTO_CAR", doCar, true)
 				.build();
 
 		Home.getDefinitionSpace().put(taskDefinition, TaskDefinition.class);
@@ -196,8 +196,8 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from CAR where ID = #ID#")
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.withAttribute("ID", doId, true, true)
-				.withAttribute("DTO_CAR_OUT", doCar, true, false)
+				.withInAttribute("ID", doId, true)
+				.withOutAttribute("DTO_CAR_OUT", doCar, true)
 				.build();
 
 		Home.getDefinitionSpace().put(taskDefinition, TaskDefinition.class);
@@ -211,7 +211,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from CAR")
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.withAttribute("DTC_CAR_OUT", doCarList, true, false)
+				.withOutAttribute("DTC_CAR_OUT", doCarList, true)
 				.build();
 	}
 
