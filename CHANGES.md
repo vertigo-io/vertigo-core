@@ -30,7 +30,7 @@ Release 0.7.3 - 2015/02/02
 * [Struts2][Vega] Force to prefix servlet parameters with 'boot.' (for orphan detection)
 * [Struts2] ValidationUserException accept DtFieldName
 * [Struts2] Fixed fieldname in ftl for ajax component
-* [Struts2] Removed <br> in radiomap, should use css instead
+* [Struts2] Removed ``<br>`` in radiomap, should use css instead
 * [Struts2] Added getBidDecimal in UiObject for validators use
 * [Vega] Refactored CorsAllowers : extended, renamed as Handler, made optional
 * [Vega] Changed RateLimiting window from 15mn to 5min
