@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.search;
 
 import io.vertigo.dynamo.collections.ListFilter;
-import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
@@ -66,11 +65,10 @@ public interface SearchManager extends Component {
 	/**
 	 * Récupération du résultat issu d'une requête.
 	 * @param searchQuery critères initiaux
-	 * @param facetedQuery critères de filtrage
 	 * @param <R> Type de l'objet resultant de la recherche
 	 * @return Résultat correspondant à la requête
 	 */
-	<R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final FacetedQuery facetedQuery);
+	<R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(SearchIndexDefinition indexDefinition, final SearchQuery searchQuery);
 
 	/**
 	 * @param indexDefinition  Type de l'index

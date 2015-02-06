@@ -1,6 +1,7 @@
 package io.vertigo.dynamo.search.model;
 
 import io.vertigo.dynamo.collections.ListFilter;
+import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -17,6 +18,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	private DtField myBoostedDocumentDateField;
 	private Integer myNumDaysOfBoostRefDocument;
 	private Integer myMostRecentBoost;
+	private FacetedQuery myFacetedQuery;
 
 	/**
 	 * Constructor.
@@ -54,9 +56,16 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 		return this;
 	}
 
+	public SearchQueryBuilder withFacetStrategy(final FacetedQuery facetedQuery) {
+		Assertion.checkNotNull(facetedQuery);
+		//-----
+		myFacetedQuery = facetedQuery;
+		return this;
+	}
+
 	@Override
 	public SearchQuery build() {
-		return new SearchQuery(myListFilter, mySortField, mySortAsc, myBoostedDocumentDateField, myNumDaysOfBoostRefDocument, myMostRecentBoost);
+		return new SearchQuery(myFacetedQuery, myListFilter, mySortField, mySortAsc, myBoostedDocumentDateField, myNumDaysOfBoostRefDocument, myMostRecentBoost);
 	}
 
 }

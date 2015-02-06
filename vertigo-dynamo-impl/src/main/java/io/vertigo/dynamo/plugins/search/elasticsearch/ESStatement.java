@@ -23,7 +23,6 @@ import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.model.Facet;
 import io.vertigo.dynamo.collections.model.FacetValue;
-import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -186,21 +185,19 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 
 	/**
 	 * @param searchQuery Mots clés de recherche
-	 * @param filtersQuery Filtrage par facette de la recherche
 	 * @param rowsPerQuery Nombre de ligne max
 	 * @return Résultat de la recherche
 	 */
-	FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final FacetedQuery filtersQuery, final int rowsPerQuery) {
+	FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final int rowsPerQuery) {
 		Assertion.checkNotNull(searchQuery);
-		Assertion.checkNotNull(filtersQuery);
 		//-----
-		final SearchRequestBuilder searchRequestBuilder = createSearchRequestBuilder(indexDefinition, searchQuery, filtersQuery, rowsPerQuery);
+		final SearchRequestBuilder searchRequestBuilder = createSearchRequestBuilder(indexDefinition, searchQuery, rowsPerQuery);
 
-		appendFacetDefinition(filtersQuery.getDefinition(), searchRequestBuilder);
+		appendFacetDefinition(searchQuery.getFacetedQuery().getDefinition(), searchRequestBuilder);
 
 		//System.out.println("Query:" + solrQuery.toString());
 		final SearchResponse queryResponse = searchRequestBuilder.execute().actionGet();
-		return translateQuery(indexDefinition, queryResponse, searchQuery, filtersQuery);
+		return translateQuery(indexDefinition, queryResponse, searchQuery);
 	}
 
 	/**
@@ -213,7 +210,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		return response.getCount();
 	}
 
-	private SearchRequestBuilder createSearchRequestBuilder(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final FacetedQuery filtersQuery, final int rowsPerQuery) {
+	private SearchRequestBuilder createSearchRequestBuilder(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final int rowsPerQuery) {
 		final SearchRequestBuilder searchRequestBuilder = esClient.prepareSearch(indexName)
 				.setSearchType(SearchType.QUERY_THEN_FETCH)
 				.addFields(ESDocumentCodec.FULL_RESULT)
@@ -228,17 +225,16 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		if (searchQuery.isBoostMostRecent()) {
 			queryBuilder = appendBoostMostRecent(searchQuery, queryBuilder);
 		}
-		if (!filtersQuery.getListFilters().isEmpty()) {
+		if (!searchQuery.getFacetedQuery().getListFilters().isEmpty()) {
 			final AndFilterBuilder filterBuilder = FilterBuilders.andFilter();
-			for (final ListFilter facetQuery : filtersQuery.getListFilters()) {
+			for (final ListFilter facetQuery : searchQuery.getFacetedQuery().getListFilters()) {
 				filterBuilder.add(translateToFilterBuilder(facetQuery, indexFieldNameResolver));
 			}
 			//use filteredQuery instead of PostFilter in order to filter aggregations too.
 			queryBuilder = QueryBuilders.filteredQuery(queryBuilder, filterBuilder);
 		}
-		searchRequestBuilder.setQuery(queryBuilder);
-
 		return searchRequestBuilder
+				.setQuery(queryBuilder)
 				.setHighlighterFilter(true)
 				.setHighlighterNumOfFragments(3)
 				.addHighlightedField("*");
@@ -342,7 +338,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		return FilterBuilders.queryFilter(translateToQueryBuilder(query, indexFieldNameResolver));
 	}
 
-	private FacetedQueryResult<R, SearchQuery> translateQuery(final SearchIndexDefinition indexDefinition, final SearchResponse queryResponse, final SearchQuery searchQuery, final FacetedQuery filtersQuery) {
+	private FacetedQueryResult<R, SearchQuery> translateQuery(final SearchIndexDefinition indexDefinition, final SearchResponse queryResponse, final SearchQuery searchQuery) {
 		final Map<R, Map<DtField, String>> resultHighlights = new HashMap<>();
 		final DtList<R> dtc = new DtList<>(indexDefinition.getResultDtDefinition());
 		for (final SearchHit searchHit : queryResponse.getHits()) {
@@ -354,9 +350,9 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 			resultHighlights.put(result, highlights);
 		}
 		//On fabrique à la volée le résultat.
-		final List<Facet> facets = createFacetList(filtersQuery.getDefinition(), queryResponse);
+		final List<Facet> facets = createFacetList(searchQuery.getFacetedQuery().getDefinition(), queryResponse);
 		final long count = queryResponse.getHits().getTotalHits();
-		return new FacetedQueryResult<>(filtersQuery, count, dtc, facets, resultHighlights, searchQuery);
+		return new FacetedQueryResult<>(searchQuery.getFacetedQuery(), count, dtc, facets, resultHighlights, searchQuery);
 	}
 
 	private static Map<DtField, String> createHighlight(final SearchHit searchHit, final DtDefinition indexDtDefinition, final SearchIndexFieldNameResolver indexFieldNameResolver) {

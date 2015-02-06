@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.search.model;
 
 import io.vertigo.dynamo.collections.ListFilter;
+import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
 
@@ -40,6 +41,7 @@ public final class SearchQuery implements Serializable {
 	private final String boostedDocumentDateFieldName;
 	private final Integer numDaysOfBoostRefDocument;
 	private final Integer mostRecentBoost;
+	private final FacetedQuery facetedQuery;
 
 	/**
 	 * Constructeur.
@@ -50,19 +52,25 @@ public final class SearchQuery implements Serializable {
 	 * @param numDaysOfBoostRefDocument Age des documents servant de référence pour le boost des plus récents par rapport à eux (null si non utilisé)
 	 * @param mostRecentBoost Boost relatif maximum entre les plus récents et ceux ayant l'age de référence (doit être > 1) (null si non utilisé)
 	 */
-	SearchQuery(final ListFilter listFilter, final DtField sortField, final Boolean sortAsc, final DtField boostedDocumentDateField, final Integer numDaysOfBoostRefDocument, final Integer mostRecentBoost) {
+	SearchQuery(final FacetedQuery facetedQuery, final ListFilter listFilter, final DtField sortField, final Boolean sortAsc, final DtField boostedDocumentDateField, final Integer numDaysOfBoostRefDocument, final Integer mostRecentBoost) {
+		Assertion.checkNotNull(facetedQuery);
 		Assertion.checkNotNull(listFilter);
 		Assertion.checkArgument(sortField == null || sortAsc != null, "Lorsque le tri des documents est activé, sortAsc est obligatoires.");
 		Assertion.checkArgument(boostedDocumentDateField == null || numDaysOfBoostRefDocument != null && mostRecentBoost != null, "Lorsque le boost des documents récents est activé, numDaysOfBoostRefDocument et mostRecentBoost sont obligatoires.");
 		Assertion.checkArgument(boostedDocumentDateField != null || numDaysOfBoostRefDocument == null && mostRecentBoost == null, "Lorsque le boost des documents récents est désactivé, numDaysOfBoostRefDocument et mostRecentBoost doivent être null.");
 		Assertion.checkArgument(numDaysOfBoostRefDocument == null || mostRecentBoost == null || numDaysOfBoostRefDocument.longValue() > 1 && mostRecentBoost.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1.");
 		//-----
+		this.facetedQuery = facetedQuery;
 		this.listFilter = listFilter;
 		sortFieldName = sortField != null ? sortField.getName() : null;
 		this.sortAsc = sortAsc;
 		boostedDocumentDateFieldName = boostedDocumentDateField != null ? boostedDocumentDateField.getName() : null;
 		this.numDaysOfBoostRefDocument = numDaysOfBoostRefDocument;
 		this.mostRecentBoost = mostRecentBoost;
+	}
+
+	public FacetedQuery getFacetedQuery() {
+		return facetedQuery;
 	}
 
 	/**

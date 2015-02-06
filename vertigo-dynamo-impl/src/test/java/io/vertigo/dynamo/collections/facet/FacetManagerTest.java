@@ -143,7 +143,7 @@ public final class FacetManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private static FacetedQuery addFacetQuery(final String facetName, final String facetValueLabel, final FacetedQueryResult<Car, ?> result) {
-		FacetValue facetFilter = null; //pb d'initialisation, et assert.notNull ne suffit pas 
+		FacetValue facetFilter = null; //pb d'initialisation, et assert.notNull ne suffit pas
 		final Facet yearFacet = getFacetByName(result, facetName);
 		for (final Entry<FacetValue, Long> entry : yearFacet.getFacetValues().entrySet()) {
 			if (entry.getKey().getLabel().getDisplay().toLowerCase().contains(facetValueLabel)) {

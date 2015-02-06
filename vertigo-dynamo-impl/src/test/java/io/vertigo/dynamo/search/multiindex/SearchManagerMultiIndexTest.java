@@ -132,9 +132,10 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 	private long query(final String query, final SearchIndexDefinition indexDefinition) {
 		//recherche
 		final FacetedQueryDefinition carQueryDefinition = Home.getDefinitionSpace().resolve(QRY_CAR, FacetedQueryDefinition.class);
-		final SearchQuery searchQuery = new SearchQueryBuilder(query).build();
-		final FacetedQuery facetedQuery = new FacetedQuery(carQueryDefinition, Collections.<ListFilter> emptyList());
-		final FacetedQueryResult<DtObject, SearchQuery> result = searchManager.loadList(indexDefinition, searchQuery, facetedQuery);
+		final SearchQuery searchQuery = new SearchQueryBuilder(query)
+				.withFacetStrategy(new FacetedQuery(carQueryDefinition, Collections.<ListFilter> emptyList()))
+				.build();
+		final FacetedQueryResult<DtObject, SearchQuery> result = searchManager.loadList(indexDefinition, searchQuery);
 		return result.getCount();
 	}
 

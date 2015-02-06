@@ -21,7 +21,6 @@ package io.vertigo.dynamo.plugins.search.elasticsearch;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.collections.ListFilter;
-import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -187,12 +186,11 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 	/** {@inheritDoc} */
 	@Override
-	public final <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final FacetedQuery facetedQuery) {
+	public final <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery) {
 		Assertion.checkNotNull(searchQuery);
-		Assertion.checkNotNull(facetedQuery);
 		//-----
 		final ESStatement<DtObject, R> statement = createElasticStatement(indexDefinition);
-		return statement.loadList(indexDefinition, searchQuery, facetedQuery, rowsPerQuery);
+		return statement.loadList(indexDefinition, searchQuery, rowsPerQuery);
 	}
 
 	/** {@inheritDoc} */
