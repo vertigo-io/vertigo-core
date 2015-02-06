@@ -68,26 +68,6 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		Home.getDefinitionSpace().register(FacetedQueryDefinition.class);
 	}
 
-	//	/** {@inheritDoc} */
-	//	public <D extends DtObject> List<Cluster<D>> cluster(final DtList<D> dtc, final DtField TitleDtField, final DtField SummaryDtField) {
-	//		final List<Cluster<D>> clusterList = new ArrayList<Cluster<D>>();
-	//		final String title;
-	//		final String summary;
-	//		final String id;
-	//
-	//		final Document document = new Document();
-	//		final List<Document> documents = new ArrayList<Document>();
-	//		final SimpleController controller = new SimpleController();
-	//		final Map<String, Object> attributes = new HashMap<String, Object>();
-	//		attributes.put(AttributeNames.DOCUMENTS, documents);
-	//		final ProcessingResult processingResult = controller.process(attributes, ByUrlClusteringAlgorithm.class);
-	//		//		for (org.carrot2.core.Cluster c2Cluster : processingResult.getClusters()) {
-	//		//			clusterList.add(new Cluster<>() {
-	//		//			});
-	//		//		}
-	//		return clusterList;
-	//	}
-
 	/** {@inheritDoc} */
 	@Override
 	public <R extends DtObject> FacetedQueryResult<R, DtList<R>> facetList(final DtList<R> dtList, final FacetedQuery facetedQuery) {

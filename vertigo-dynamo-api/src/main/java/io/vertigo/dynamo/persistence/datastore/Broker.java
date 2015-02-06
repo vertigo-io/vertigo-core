@@ -91,5 +91,5 @@ public interface Broker {
 	 *
 	 * @param uri URI de l'objet à supprimer
 	 */
-	void delete(URI uri);
+	void delete(URI<? extends DtObject> uri);
 }

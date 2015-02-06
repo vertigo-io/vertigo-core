@@ -56,15 +56,21 @@ public final class CacheDataStore {
 		return logicalStoreConfig.getPhysicalStore(dtDefinition);
 	}
 
-	public <D extends DtObject> D load(final DtDefinition dtDefinition, final URI<D> uri) {
+	public <D extends DtObject> D load(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
-		Assertion.checkArgument(cacheDataStoreConfig.isCacheable(dtDefinition), "DtDefinition {0} is not cacheable", dtDefinition);
 		//-----
-		// - Prise en compte du cache
-		D dto = cacheDataStoreConfig.getDataCache().getDtObject(uri);
-		if (dto == null) {
-			//Cas ou le dto représente un objet non mis en cache
-			dto = this.<D> reload(dtDefinition, uri);
+		final DtDefinition dtDefinition = uri.getDefinition();
+		D dto;
+		if (cacheDataStoreConfig.isCacheable(dtDefinition)) {
+			// - Prise en compte du cache
+			dto = cacheDataStoreConfig.getDataCache().getDtObject(uri);
+			// - Prise en compte du cache
+			if (dto == null) {
+				//Cas ou le dto représente un objet non mis en cache
+				dto = this.<D> reload(dtDefinition, uri);
+			}
+		} else {
+			dto = getPhysicalStore(dtDefinition).load(dtDefinition, uri);
 		}
 		return dto;
 	}
@@ -84,22 +90,22 @@ public final class CacheDataStore {
 		return dto;
 	}
 
-	private <D extends DtObject> DtList<D> doLoadList(final DtDefinition dtDefinition, final DtListURI uri) {
-		Assertion.checkNotNull(uri);
+	private <D extends DtObject> DtList<D> doLoadList(final DtDefinition dtDefinition, final DtListURI listUri) {
+		Assertion.checkNotNull(listUri);
 		//-----
 		final DtList<D> dtc;
-		if (uri instanceof DtListURIForMasterData) {
-			dtc = loadMDList((DtListURIForMasterData) uri);
-		} else if (uri instanceof DtListURIForSimpleAssociation) {
-			dtc = getPhysicalStore(dtDefinition).loadList(dtDefinition, (DtListURIForSimpleAssociation) uri);
-		} else if (uri instanceof DtListURIForNNAssociation) {
-			dtc = getPhysicalStore(dtDefinition).loadList(dtDefinition, (DtListURIForNNAssociation) uri);
-		} else if (uri instanceof DtListURIForCriteria<?>) {
-			dtc = getPhysicalStore(dtDefinition).loadList(dtDefinition, (DtListURIForCriteria<D>) uri);
+		if (listUri instanceof DtListURIForMasterData) {
+			dtc = loadMDList((DtListURIForMasterData) listUri);
+		} else if (listUri instanceof DtListURIForSimpleAssociation) {
+			dtc = getPhysicalStore(dtDefinition).loadList(dtDefinition, (DtListURIForSimpleAssociation) listUri);
+		} else if (listUri instanceof DtListURIForNNAssociation) {
+			dtc = getPhysicalStore(dtDefinition).loadList(dtDefinition, (DtListURIForNNAssociation) listUri);
+		} else if (listUri instanceof DtListURIForCriteria<?>) {
+			dtc = getPhysicalStore(dtDefinition).loadList(dtDefinition, (DtListURIForCriteria<D>) listUri);
 		} else {
-			throw new IllegalArgumentException("cas non traité " + uri);
+			throw new IllegalArgumentException("cas non traité " + listUri);
 		}
-		dtc.setURI(uri);
+		dtc.setURI(listUri);
 		return dtc;
 	}
 
@@ -107,8 +113,8 @@ public final class CacheDataStore {
 		Assertion.checkNotNull(uri);
 		Assertion.checkArgument(uri.getDtDefinition().getSortField().isDefined(), "Sortfield on definition {0} wasn't set. It's mandatory for MasterDataList.", uri.getDtDefinition().getName());
 		//-----
-		//On cherche la liste complete (URIAll n'est pas une DtListURIForMasterData pour ne pas boucler)
-		final DtList<D> unFilteredDtc = loadList(uri.getDtDefinition(), new DtListURIForCriteria<D>(uri.getDtDefinition(), null, null));
+		//On cherche la liste complete
+		final DtList<D> unFilteredDtc = loadList(new DtListURIForCriteria<D>(uri.getDtDefinition(), null, null));
 
 		//On compose les fonctions
 		//1.on filtre
@@ -118,11 +124,10 @@ public final class CacheDataStore {
 				.apply(unFilteredDtc);
 	}
 
-	public <D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURI uri) {
-		Assertion.checkNotNull(dtDefinition);
+	public <D extends DtObject> DtList<D> loadList(final DtListURI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		// - Prise en compte du cache
+		//- Prise en compte du cache
 		//On ne met pas en cache les URI d'une association NN
 		if (cacheDataStoreConfig.isCacheable(uri.getDtDefinition()) && !isMultipleAssociation(uri)) {
 			DtList<D> dtc = cacheDataStoreConfig.getDataCache().getDtList(uri);
@@ -153,8 +158,6 @@ public final class CacheDataStore {
 		//-----
 		// On ne vérifie pas que la definition est cachable, Lucene utilise le même cache
 		// A changer si on gère lucene différemment
-		//	if (cacheDataStoreConfiguration.isCacheable(dtDefinition)) {
 		cacheDataStoreConfig.getDataCache().clear(dtDefinition);
-		//	}
 	}
 }
