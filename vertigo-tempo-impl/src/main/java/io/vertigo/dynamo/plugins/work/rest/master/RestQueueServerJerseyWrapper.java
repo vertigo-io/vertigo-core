@@ -44,11 +44,6 @@ public final class RestQueueServerJerseyWrapper {
 		return masterPlugin.getWorkQueueRestServer();
 	}
 
-	/**
-	 * @param workType
-	 * @param nodeUID
-	 * @return
-	 */
 	@GET
 	@Path("/pollWork/{workType}")
 	public String pollWork(@PathParam("workType") final String workType, @QueryParam("nodeUID") final String nodeUID) {

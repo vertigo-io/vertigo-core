@@ -108,8 +108,6 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 
 	/**
 	 * Teste l'exécution asynchrone d'une tache avec une durée de timeOut trop courte.
-	 * @throws InterruptedException
-	 * @throws IOException
 	 */
 	@Test
 	public void testDeadNode() throws InterruptedException, IOException {
