@@ -190,17 +190,17 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	 * @param rowsPerQuery Nombre de ligne max
 	 * @return Résultat de la recherche
 	 */
-	FacetedQueryResult<R, SearchQuery> loadList(final SearchQuery searchQuery, final FacetedQuery filtersQuery, final int rowsPerQuery) {
+	FacetedQueryResult<R, SearchQuery> loadList(final IndexDefinition indexDefinition, final SearchQuery searchQuery, final FacetedQuery filtersQuery, final int rowsPerQuery) {
 		Assertion.checkNotNull(searchQuery);
 		Assertion.checkNotNull(filtersQuery);
 		//-----
-		final SearchRequestBuilder searchRequestBuilder = createSearchRequestBuilder(searchQuery, filtersQuery, rowsPerQuery);
+		final SearchRequestBuilder searchRequestBuilder = createSearchRequestBuilder(indexDefinition, searchQuery, filtersQuery, rowsPerQuery);
 
 		appendFacetDefinition(filtersQuery.getDefinition(), searchRequestBuilder);
 
 		//System.out.println("Query:" + solrQuery.toString());
 		final SearchResponse queryResponse = searchRequestBuilder.execute().actionGet();
-		return translateQuery(queryResponse, searchQuery, filtersQuery);
+		return translateQuery(indexDefinition, queryResponse, searchQuery, filtersQuery);
 	}
 
 	/**
@@ -213,13 +213,13 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		return response.getCount();
 	}
 
-	private SearchRequestBuilder createSearchRequestBuilder(final SearchQuery searchQuery, final FacetedQuery filtersQuery, final int rowsPerQuery) {
+	private SearchRequestBuilder createSearchRequestBuilder(final IndexDefinition indexDefinition, final SearchQuery searchQuery, final FacetedQuery filtersQuery, final int rowsPerQuery) {
 		final SearchRequestBuilder searchRequestBuilder = esClient.prepareSearch(indexName)
 				.setSearchType(SearchType.QUERY_THEN_FETCH)
 				.addFields(ESDocumentCodec.FULL_RESULT)
 				.setSize(rowsPerQuery);
 		if (searchQuery.isSortActive()) {
-			final DtField sortField = searchQuery.getIndexDefinition().getIndexDtDefinition().getField(searchQuery.getSortField());
+			final DtField sortField = indexDefinition.getIndexDtDefinition().getField(searchQuery.getSortField());
 			final FieldSortBuilder sortBuilder = SortBuilders.fieldSort(indexFieldNameResolver.obtainIndexFieldName(sortField))
 					.ignoreUnmapped(true).order(searchQuery.getSortAsc() ? SortOrder.ASC : SortOrder.DESC);
 			searchRequestBuilder.addSort(sortBuilder);
@@ -342,8 +342,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		return FilterBuilders.queryFilter(translateToQueryBuilder(query, indexFieldNameResolver));
 	}
 
-	private FacetedQueryResult<R, SearchQuery> translateQuery(final SearchResponse queryResponse, final SearchQuery searchQuery, final FacetedQuery filtersQuery) {
-		final IndexDefinition indexDefinition = searchQuery.getIndexDefinition();
+	private FacetedQueryResult<R, SearchQuery> translateQuery(final IndexDefinition indexDefinition, final SearchResponse queryResponse, final SearchQuery searchQuery, final FacetedQuery filtersQuery) {
 		final Map<R, Map<DtField, String>> resultHighlights = new HashMap<>();
 		final DtList<R> dtc = new DtList<>(indexDefinition.getResultDtDefinition());
 		for (final SearchHit searchHit : queryResponse.getHits()) {

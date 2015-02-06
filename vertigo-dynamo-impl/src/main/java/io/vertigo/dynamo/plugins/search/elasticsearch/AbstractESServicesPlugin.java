@@ -187,12 +187,12 @@ public abstract class AbstractESServicesPlugin implements SearchServicesPlugin, 
 
 	/** {@inheritDoc} */
 	@Override
-	public final <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchQuery searchQuery, final FacetedQuery facetedQuery) {
+	public final <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final IndexDefinition indexDefinition, final SearchQuery searchQuery, final FacetedQuery facetedQuery) {
 		Assertion.checkNotNull(searchQuery);
 		Assertion.checkNotNull(facetedQuery);
 		//-----
-		final ESStatement<DtObject, R> statement = createElasticStatement(searchQuery.getIndexDefinition());
-		return statement.loadList(searchQuery, facetedQuery, rowsPerQuery);
+		final ESStatement<DtObject, R> statement = createElasticStatement(indexDefinition);
+		return statement.loadList(indexDefinition, searchQuery, facetedQuery, rowsPerQuery);
 	}
 
 	/** {@inheritDoc} */

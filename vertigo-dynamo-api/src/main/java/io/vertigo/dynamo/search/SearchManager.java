@@ -70,7 +70,7 @@ public interface SearchManager extends Component {
 	 * @param <R> Type de l'objet resultant de la recherche
 	 * @return Résultat correspondant à la requête
 	 */
-	<R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchQuery searchQuery, final FacetedQuery facetedQuery);
+	<R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(IndexDefinition indexDefinition, final SearchQuery searchQuery, final FacetedQuery facetedQuery);
 
 	/**
 	 * @param indexDefinition  Type de l'index
@@ -90,5 +90,5 @@ public interface SearchManager extends Component {
 	 * @param indexDefinition Type de l'index
 	 * @param listFilter Filtre des éléments à supprimer
 	 */
-	void remove(IndexDefinition indexDefinition, final ListFilter listFilter);
+	void removeAll(IndexDefinition indexDefinition, final ListFilter listFilter);
 }

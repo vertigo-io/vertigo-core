@@ -116,8 +116,8 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 		final IndexDefinition carIndexDefinition = Home.getDefinitionSpace().resolve(IDX_CAR, IndexDefinition.class);
 		final IndexDefinition carDynIndexDefinition = Home.getDefinitionSpace().resolve(IDX_DYNA_CAR, IndexDefinition.class);
 		final ListFilter removeQuery = new ListFilter("*:*");
-		searchManager.remove(carIndexDefinition, removeQuery);
-		searchManager.remove(carDynIndexDefinition, removeQuery);
+		searchManager.removeAll(carIndexDefinition, removeQuery);
+		searchManager.removeAll(carDynIndexDefinition, removeQuery);
 
 		waitIndexation();
 
@@ -132,9 +132,9 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 		//recherche
 		final FacetedQueryDefinition carQueryDefinition = Home.getDefinitionSpace().resolve(QRY_CAR, FacetedQueryDefinition.class);
 		final ListFilter listFilter = new ListFilter(query);
-		final SearchQuery searchQuery = SearchQuery.createSearchQuery(indexDefinition, listFilter);
+		final SearchQuery searchQuery = SearchQuery.createSearchQuery(listFilter);
 		final FacetedQuery facetedQuery = new FacetedQuery(carQueryDefinition, Collections.<ListFilter> emptyList());
-		final FacetedQueryResult<DtObject, SearchQuery> result = searchManager.loadList(searchQuery, facetedQuery);
+		final FacetedQueryResult<DtObject, SearchQuery> result = searchManager.loadList(indexDefinition, searchQuery, facetedQuery);
 		return result.getCount();
 	}
 

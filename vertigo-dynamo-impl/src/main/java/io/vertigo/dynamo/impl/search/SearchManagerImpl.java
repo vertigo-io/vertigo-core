@@ -72,8 +72,8 @@ public final class SearchManagerImpl implements SearchManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchQuery searchQuery, final FacetedQuery facetedQuery) {
-		return searchServicesPlugin.loadList(searchQuery, facetedQuery);
+	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final IndexDefinition indexDefinition, final SearchQuery searchQuery, final FacetedQuery facetedQuery) {
+		return searchServicesPlugin.loadList(indexDefinition, searchQuery, facetedQuery);
 	}
 
 	/** {@inheritDoc} */
@@ -90,7 +90,7 @@ public final class SearchManagerImpl implements SearchManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final IndexDefinition indexDefinition, final ListFilter listFilter) {
+	public void removeAll(final IndexDefinition indexDefinition, final ListFilter listFilter) {
 		searchServicesPlugin.remove(indexDefinition, listFilter);
 	}
 }

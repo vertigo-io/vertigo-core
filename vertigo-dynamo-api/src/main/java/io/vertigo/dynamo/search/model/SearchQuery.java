@@ -18,10 +18,8 @@
  */
 package io.vertigo.dynamo.search.model;
 
-import io.vertigo.core.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.search.metamodel.IndexDefinition;
 import io.vertigo.lang.Assertion;
 
 import java.io.Serializable;
@@ -33,7 +31,6 @@ import java.io.Serializable;
 public final class SearchQuery implements Serializable {
 	private static final long serialVersionUID = -3215786603726103410L;
 
-	private final String indexDefinitionName;
 	private final ListFilter listFilter;
 	//Informations optionnelles pour trier les résultats (null si inutilisé => tri par pertinence)
 	private final String sortFieldName;
@@ -46,7 +43,6 @@ public final class SearchQuery implements Serializable {
 
 	/**
 	 * Constructeur.
-	 * @param indexDefinition IndexDefinition de la requête
 	 * @param listFilter Filtre principal correspondant aux critères de la recherche
 	 * @param sortField Nom du champ utilisé pour le tri (null si non utilisé)
 	 * @param sortAsc Ordre de tri, True si ascendant (null si non utilisé)
@@ -54,28 +50,19 @@ public final class SearchQuery implements Serializable {
 	 * @param numDaysOfBoostRefDocument Age des documents servant de référence pour le boost des plus récents par rapport à eux (null si non utilisé)
 	 * @param mostRecentBoost Boost relatif maximum entre les plus récents et ceux ayant l'age de référence (doit être > 1) (null si non utilisé)
 	 */
-	private SearchQuery(final IndexDefinition indexDefinition, final ListFilter listFilter, final DtField sortField, final Boolean sortAsc, final DtField boostedDocumentDateField, final Integer numDaysOfBoostRefDocument, final Integer mostRecentBoost) {
-		Assertion.checkNotNull(indexDefinition);
+	private SearchQuery(final ListFilter listFilter, final DtField sortField, final Boolean sortAsc, final DtField boostedDocumentDateField, final Integer numDaysOfBoostRefDocument, final Integer mostRecentBoost) {
 		Assertion.checkNotNull(listFilter);
 		Assertion.checkArgument(sortField == null || sortAsc != null, "Lorsque le tri des documents est activé, sortAsc est obligatoires.");
 		Assertion.checkArgument(boostedDocumentDateField == null || numDaysOfBoostRefDocument != null && mostRecentBoost != null, "Lorsque le boost des documents récents est activé, numDaysOfBoostRefDocument et mostRecentBoost sont obligatoires.");
 		Assertion.checkArgument(boostedDocumentDateField != null || numDaysOfBoostRefDocument == null && mostRecentBoost == null, "Lorsque le boost des documents récents est désactivé, numDaysOfBoostRefDocument et mostRecentBoost doivent être null.");
 		Assertion.checkArgument(numDaysOfBoostRefDocument == null || mostRecentBoost == null || numDaysOfBoostRefDocument.longValue() > 1 && mostRecentBoost.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1.");
 		//-----
-		indexDefinitionName = indexDefinition.getName();
 		this.listFilter = listFilter;
 		sortFieldName = sortField != null ? sortField.getName() : null;
 		this.sortAsc = sortAsc;
 		boostedDocumentDateFieldName = boostedDocumentDateField != null ? boostedDocumentDateField.getName() : null;
 		this.numDaysOfBoostRefDocument = numDaysOfBoostRefDocument;
 		this.mostRecentBoost = mostRecentBoost;
-	}
-
-	/**
-	 * @return Index sur lequel porte la recherche
-	 */
-	public IndexDefinition getIndexDefinition() {
-		return Home.getDefinitionSpace().resolve(indexDefinitionName, IndexDefinition.class);
 	}
 
 	/**
@@ -159,38 +146,35 @@ public final class SearchQuery implements Serializable {
 	//=========================================================================
 	/**
 	 * Crée un SearchQuery.
-	 * @param indexDefinition definition de l'index
 	 * @param listFilter critère principal
 	 * @return SearchQuery.
 	 */
-	public static SearchQuery createSearchQuery(final IndexDefinition indexDefinition, final ListFilter listFilter) {
-		return new SearchQuery(indexDefinition, listFilter, null, null, null, null, null);
+	public static SearchQuery createSearchQuery(final ListFilter listFilter) {
+		return new SearchQuery(listFilter, null, null, null, null, null);
 	}
 
 	/**
 	 * Crée un SearchQuery.
-	 * @param indexDefinition definition de l'index
 	 * @param listFilter critère principal
 	 * @param sortField Champ utilisé pour le tri
 	 * @param sortAsc  Ordre de tri (true pour ascendant)
 	 * @return SearchQuery.
 	 */
-	public static SearchQuery createSearchQuery(final IndexDefinition indexDefinition, final ListFilter listFilter, final DtField sortField, final boolean sortAsc) {
-		return new SearchQuery(indexDefinition, listFilter, sortField, sortAsc, null, null, null);
+	public static SearchQuery createSearchQuery(final ListFilter listFilter, final DtField sortField, final boolean sortAsc) {
+		return new SearchQuery(listFilter, sortField, sortAsc, null, null, null);
 	}
 
 	/**
 	 * Crée un SearchQuery avec boost des documents les plus récents.
-	 * @param indexDefinition definition de l'index
 	 * @param listFilter critère principal
 	 * @param boostedDocumentDateField Nom du champ portant la date du document (null si non utilisé)
 	 * @param numDaysOfBoostRefDocument Age des documents servant de référence pour le boost des plus récents par rapport à eux (null si non utilisé)
 	 * @param mostRecentBoost Boost relatif maximum entre les plus récents et ceux ayant l'age de référence (doit être > 1) (null si non utilisé)
 	 * @return SearchQuery.
 	 */
-	public static SearchQuery createSearchQuery(final IndexDefinition indexDefinition, final ListFilter listFilter, final DtField boostedDocumentDateField, final Integer numDaysOfBoostRefDocument, final Integer mostRecentBoost) {
+	public static SearchQuery createSearchQuery(final ListFilter listFilter, final DtField boostedDocumentDateField, final Integer numDaysOfBoostRefDocument, final Integer mostRecentBoost) {
 		Assertion.checkNotNull(boostedDocumentDateField);
 		//-----
-		return new SearchQuery(indexDefinition, listFilter, null, null, boostedDocumentDateField, numDaysOfBoostRefDocument, mostRecentBoost);
+		return new SearchQuery(listFilter, null, null, boostedDocumentDateField, numDaysOfBoostRefDocument, mostRecentBoost);
 	}
 }

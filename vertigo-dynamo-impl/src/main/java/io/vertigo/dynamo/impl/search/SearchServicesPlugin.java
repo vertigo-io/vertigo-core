@@ -72,7 +72,7 @@ public interface SearchServicesPlugin extends Plugin {
 	 * @param <R> Type de l'objet resultant de la recherche
 	 * @return Résultat correspondant à la requête
 	 */
-	<R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchQuery searchQuery, final FacetedQuery facetedQuery);
+	<R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final IndexDefinition indexDefinition, final SearchQuery searchQuery, final FacetedQuery facetedQuery);
 
 	/**
 	 * @param indexDefinition  Type de l'index
