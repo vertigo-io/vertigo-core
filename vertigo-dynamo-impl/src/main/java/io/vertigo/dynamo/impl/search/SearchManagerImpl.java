@@ -23,10 +23,10 @@ import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.search.IndexFieldNameResolver;
+import io.vertigo.dynamo.search.SearchIndexFieldNameResolver;
 import io.vertigo.dynamo.search.SearchManager;
-import io.vertigo.dynamo.search.metamodel.IndexDefinition;
-import io.vertigo.dynamo.search.model.Index;
+import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
+import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Assertion;
 
@@ -54,43 +54,43 @@ public final class SearchManagerImpl implements SearchManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public void registerIndexFieldNameResolver(final IndexDefinition indexDefinition, final IndexFieldNameResolver indexFieldNameResolver) {
+	public void registerIndexFieldNameResolver(final SearchIndexDefinition indexDefinition, final SearchIndexFieldNameResolver indexFieldNameResolver) {
 		searchServicesPlugin.registerIndexFieldNameResolver(indexDefinition, indexFieldNameResolver);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <I extends DtObject, R extends DtObject> void putAll(final IndexDefinition indexDefinition, final Collection<Index<I, R>> indexCollection) {
+	public <I extends DtObject, R extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<I, R>> indexCollection) {
 		searchServicesPlugin.putAll(indexDefinition, indexCollection);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <I extends DtObject, R extends DtObject> void put(final IndexDefinition indexDefinition, final Index<I, R> index) {
+	public <I extends DtObject, R extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<I, R> index) {
 		searchServicesPlugin.put(indexDefinition, index);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final IndexDefinition indexDefinition, final SearchQuery searchQuery, final FacetedQuery facetedQuery) {
+	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final FacetedQuery facetedQuery) {
 		return searchServicesPlugin.loadList(indexDefinition, searchQuery, facetedQuery);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public long count(final IndexDefinition indexDefinition) {
+	public long count(final SearchIndexDefinition indexDefinition) {
 		return searchServicesPlugin.count(indexDefinition);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final IndexDefinition indexDefinition, final URI uri) {
+	public void remove(final SearchIndexDefinition indexDefinition, final URI uri) {
 		searchServicesPlugin.remove(indexDefinition, uri);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void removeAll(final IndexDefinition indexDefinition, final ListFilter listFilter) {
+	public void removeAll(final SearchIndexDefinition indexDefinition, final ListFilter listFilter) {
 		searchServicesPlugin.remove(indexDefinition, listFilter);
 	}
 }

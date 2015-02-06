@@ -28,7 +28,7 @@ import java.util.Map;
  * Class de résolution du nom des champs de l'index, à partir du nom du DtIndex.
  * @author npiedeloup
  */
-public final class IndexFieldNameResolver {
+public final class SearchIndexFieldNameResolver {
 
 	private final Map<String, String> indexFieldMap;
 	private final Map<String, String> dtFieldMap;
@@ -38,7 +38,7 @@ public final class IndexFieldNameResolver {
 	 * Constructeur.
 	 * @param indexFieldMap Map des noms de champs du DtIndex vers le nom dans l'index
 	 */
-	public IndexFieldNameResolver(final Map<String, String> indexFieldMap) {
+	public SearchIndexFieldNameResolver(final Map<String, String> indexFieldMap) {
 		Assertion.checkNotNull(indexFieldMap);
 		//-----
 		this.indexFieldMap = new HashMap<>(indexFieldMap);

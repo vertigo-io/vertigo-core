@@ -23,8 +23,8 @@ import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.search.metamodel.IndexDefinition;
-import io.vertigo.dynamo.search.model.Index;
+import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
+import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Component;
 
@@ -41,7 +41,7 @@ public interface SearchManager extends Component {
 	 * @param indexDefinition Type de l'index
 	 * @param indexFieldNameResolver Resolver de nom de champs DT/Solr
 	 */
-	void registerIndexFieldNameResolver(IndexDefinition indexDefinition, IndexFieldNameResolver indexFieldNameResolver);
+	void registerIndexFieldNameResolver(SearchIndexDefinition indexDefinition, SearchIndexFieldNameResolver indexFieldNameResolver);
 
 	/**
 	 * Ajout de plusieurs ressources à l'index.
@@ -51,7 +51,7 @@ public interface SearchManager extends Component {
 	 * @param indexDefinition Type de l'index
 	 * @param indexCollection Liste des objets à pousser dans l'index (I + R)
 	 */
-	<I extends DtObject, R extends DtObject> void putAll(IndexDefinition indexDefinition, Collection<Index<I, R>> indexCollection);
+	<I extends DtObject, R extends DtObject> void putAll(SearchIndexDefinition indexDefinition, Collection<SearchIndex<I, R>> indexCollection);
 
 	/**
 	 * Ajout d'une ressource à l'index.
@@ -61,7 +61,7 @@ public interface SearchManager extends Component {
 	 * @param indexDefinition Type de l'index
 	 * @param index Objet à pousser dans l'index (I + R)
 	 */
-	<I extends DtObject, R extends DtObject> void put(IndexDefinition indexDefinition, Index<I, R> index);
+	<I extends DtObject, R extends DtObject> void put(SearchIndexDefinition indexDefinition, SearchIndex<I, R> index);
 
 	/**
 	 * Récupération du résultat issu d'une requête.
@@ -70,25 +70,25 @@ public interface SearchManager extends Component {
 	 * @param <R> Type de l'objet resultant de la recherche
 	 * @return Résultat correspondant à la requête
 	 */
-	<R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(IndexDefinition indexDefinition, final SearchQuery searchQuery, final FacetedQuery facetedQuery);
+	<R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final FacetedQuery facetedQuery);
 
 	/**
 	 * @param indexDefinition  Type de l'index
 	 * @return Nombre de document indexés
 	 */
-	long count(IndexDefinition indexDefinition);
+	long count(SearchIndexDefinition indexDefinition);
 
 	/**
 	 * Suppression d'une ressource de l'index.
 	 * @param indexDefinition Type de l'index
 	 * @param uri URI de la ressource à supprimer
 	 */
-	void remove(IndexDefinition indexDefinition, final URI uri);
+	void remove(SearchIndexDefinition indexDefinition, final URI uri);
 
 	/**
 	 * Suppression des données correspondant à un filtre.
 	 * @param indexDefinition Type de l'index
 	 * @param listFilter Filtre des éléments à supprimer
 	 */
-	void removeAll(IndexDefinition indexDefinition, final ListFilter listFilter);
+	void removeAll(SearchIndexDefinition indexDefinition, final ListFilter listFilter);
 }

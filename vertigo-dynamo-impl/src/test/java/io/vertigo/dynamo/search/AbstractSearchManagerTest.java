@@ -31,8 +31,8 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.search.metamodel.IndexDefinition;
-import io.vertigo.dynamo.search.model.Index;
+import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
+import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.dynamo.search.model.SearchQueryBuilder;
 import io.vertigo.dynamock.domain.car.Car;
@@ -74,7 +74,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	protected SearchManager searchManager;
 
 	/** IndexDefinition. */
-	protected IndexDefinition carIndexDefinition;
+	protected SearchIndexDefinition carIndexDefinition;
 	private FacetedQueryDefinition carQueryDefinition;
 	private FacetedQueryDefinition carFacetQueryDefinition;
 	private CarDataBase carDataBase;
@@ -90,7 +90,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		carDataBase = new CarDataBase();
 		carDataBase.loadDatas();
 		facetSuffix = FCT_CAR_SUFFIX;
-		carIndexDefinition = Home.getDefinitionSpace().resolve(indexName, IndexDefinition.class);
+		carIndexDefinition = Home.getDefinitionSpace().resolve(indexName, SearchIndexDefinition.class);
 		carQueryDefinition = Home.getDefinitionSpace().resolve(QRY_CAR, FacetedQueryDefinition.class);
 		carFacetQueryDefinition = Home.getDefinitionSpace().resolve(QRY_CAR_FACET, FacetedQueryDefinition.class);
 		clean(carIndexDefinition);
@@ -128,7 +128,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	/**
 	 * @param indexDefinition Definition de l'index
 	 */
-	private void clean(final IndexDefinition indexDefinition) {
+	private void clean(final SearchIndexDefinition indexDefinition) {
 		final ListFilter removeQuery = new ListFilter("*:*");
 		searchManager.removeAll(indexDefinition, removeQuery);
 	}
@@ -577,16 +577,16 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 	private void doIndex(final boolean all) {
 		if (all) {
-			final List<Index<Car, Car>> indexes = new ArrayList<>();
+			final List<SearchIndex<Car, Car>> indexes = new ArrayList<>();
 			for (final Car car : carDataBase) {
-				indexes.add(Index.createIndex(carIndexDefinition, createURI(car), car, car));
+				indexes.add(SearchIndex.createIndex(carIndexDefinition, createURI(car), car, car));
 			}
 			searchManager.putAll(carIndexDefinition, indexes);
 		} else {
 			//Indexation unitaire
 			//Indexation des cars de la base
 			for (final Car car : carDataBase) {
-				final Index<Car, Car> index = Index.createIndex(carIndexDefinition, createURI(car), car, car);
+				final SearchIndex<Car, Car> index = SearchIndex.createIndex(carIndexDefinition, createURI(car), car, car);
 				searchManager.put(carIndexDefinition, index);
 			}
 		}

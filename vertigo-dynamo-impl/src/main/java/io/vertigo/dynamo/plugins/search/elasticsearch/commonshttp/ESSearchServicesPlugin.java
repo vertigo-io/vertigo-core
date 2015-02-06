@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.plugins.search.elasticsearch.commonshttp;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESServicesPlugin;
+import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
 import io.vertigo.lang.Assertion;
 
 import javax.inject.Inject;
@@ -35,7 +35,7 @@ import org.elasticsearch.node.NodeBuilder;
  *
  * @author npiedeloup
  */
-public final class ESServicesPlugin extends AbstractESServicesPlugin {
+public final class ESSearchServicesPlugin extends AbstractESSearchServicesPlugin {
 
 	/** url du serveur elasticSearch. */
 	private final String[] serversNames;
@@ -52,7 +52,7 @@ public final class ESServicesPlugin extends AbstractESServicesPlugin {
 	 * @param clusterName : nom du cluster à rejoindre
 	 */
 	@Inject
-	public ESServicesPlugin(@Named("servers.names") final String serversNamesStr, @Named("cores") final String cores,
+	public ESSearchServicesPlugin(@Named("servers.names") final String serversNamesStr, @Named("cores") final String cores,
 			@Named("rowsPerQuery") final int rowsPerQuery, final CodecManager codecManager,
 			@Named("cluster.name") final String clusterName) {
 		super(cores, rowsPerQuery, codecManager);

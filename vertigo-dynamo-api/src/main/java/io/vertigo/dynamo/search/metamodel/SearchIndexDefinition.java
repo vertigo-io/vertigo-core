@@ -35,7 +35,7 @@ import io.vertigo.lang.Assertion;
  * @author dchallas
  */
 @DefinitionPrefix("IDX")
-public final class IndexDefinition implements Definition {
+public final class SearchIndexDefinition implements Definition {
 	/**
 	* Nom de l'index.
 	*/
@@ -52,7 +52,7 @@ public final class IndexDefinition implements Definition {
 	 * @param indexDtDefinition Structure des éléments indexés.
 	 * @param resultDtDefinition Structure des éléments de résultat.
 	 */
-	public IndexDefinition(final String name, final DtDefinition indexDtDefinition, final DtDefinition resultDtDefinition) {
+	public SearchIndexDefinition(final String name, final DtDefinition indexDtDefinition, final DtDefinition resultDtDefinition) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(indexDtDefinition);
 		Assertion.checkNotNull(resultDtDefinition);

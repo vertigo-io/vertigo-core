@@ -21,7 +21,7 @@ package io.vertigo.dynamo.search.dynamic;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.search.AbstractSearchManagerTest;
-import io.vertigo.dynamo.search.IndexFieldNameResolver;
+import io.vertigo.dynamo.search.SearchIndexFieldNameResolver;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +48,6 @@ public final class SearchManagerDynaFieldsTest extends AbstractSearchManagerTest
 			}
 			indexFieldsMap.put(dtField.name(), dtField.name() + "_DYN_" + indexType);
 		}
-		searchManager.registerIndexFieldNameResolver(carIndexDefinition, new IndexFieldNameResolver(indexFieldsMap));
+		searchManager.registerIndexFieldNameResolver(carIndexDefinition, new SearchIndexFieldNameResolver(indexFieldsMap));
 	}
 }

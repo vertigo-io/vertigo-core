@@ -21,7 +21,7 @@ package io.vertigo.dynamo.search.model;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.search.metamodel.IndexDefinition;
+import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -34,9 +34,9 @@ import io.vertigo.lang.Assertion;
  * @param <I> Type de l'objet contenant les champs à indexer
  * @param <R> Type de l'objet resultant de la recherche
  */
-public final class Index<I extends DtObject, R extends DtObject> {
+public final class SearchIndex<I extends DtObject, R extends DtObject> {
 	/** Définition de l'index. */
-	private final IndexDefinition indexDefinition;
+	private final SearchIndexDefinition indexDefinition;
 
 	/** URI de l'objet indexé : par convention il s'agit de l'uri de O.*/
 	private final URI uri;
@@ -52,7 +52,7 @@ public final class Index<I extends DtObject, R extends DtObject> {
 	 * @param indexDefinition definition de O, I, R
 	 * @param uri URI de l'objet indexé
 	 */
-	private Index(final IndexDefinition indexDefinition, final URI uri, final I indexDtObject, final R resultDtObject) {
+	private SearchIndex(final SearchIndexDefinition indexDefinition, final URI uri, final I indexDtObject, final R resultDtObject) {
 		Assertion.checkNotNull(uri);
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkNotNull(resultDtObject);
@@ -70,7 +70,7 @@ public final class Index<I extends DtObject, R extends DtObject> {
 	/**
 	 * @return Définition de l'index.
 	 */
-	public IndexDefinition getDefinition() {
+	public SearchIndexDefinition getDefinition() {
 		return indexDefinition;
 	}
 
@@ -118,8 +118,8 @@ public final class Index<I extends DtObject, R extends DtObject> {
 	 * @param indexDto  DTO représentant l'index
 	 * @return  Objet permettant de créer l'index
 	 */
-	public static <I extends DtObject, R extends DtObject> Index<I, R> createIndex(final IndexDefinition indexDefinition, final URI uri, final I indexDto, final R resultDto) {
-		return new Index<>(indexDefinition, uri, indexDto, resultDto);
+	public static <I extends DtObject, R extends DtObject> SearchIndex<I, R> createIndex(final SearchIndexDefinition indexDefinition, final URI uri, final I indexDto, final R resultDto) {
+		return new SearchIndex<>(indexDefinition, uri, indexDto, resultDto);
 	}
 
 	/**
@@ -131,7 +131,7 @@ public final class Index<I extends DtObject, R extends DtObject> {
 	 * @param resultDto DTO représentant le résultat
 	 * @return Objet permettant d'accéder au résultat d'une recherche
 	 */
-	public static <I extends DtObject, R extends DtObject> Index<I, R> createResult(final IndexDefinition indexDefinition, final URI uri, final R resultDto) {
-		return new Index<>(indexDefinition, uri, null, resultDto);
+	public static <I extends DtObject, R extends DtObject> SearchIndex<I, R> createResult(final SearchIndexDefinition indexDefinition, final URI uri, final R resultDto) {
+		return new SearchIndex<>(indexDefinition, uri, null, resultDto);
 	}
 }

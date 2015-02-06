@@ -32,9 +32,9 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilterUtil;
-import io.vertigo.dynamo.search.IndexFieldNameResolver;
-import io.vertigo.dynamo.search.metamodel.IndexDefinition;
-import io.vertigo.dynamo.search.model.Index;
+import io.vertigo.dynamo.search.SearchIndexFieldNameResolver;
+import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
+import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
@@ -95,7 +95,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	private final String indexName;
 	private final Client esClient;
 	private final ESDocumentCodec elasticSearchDocumentCodec;
-	private final IndexFieldNameResolver indexFieldNameResolver;
+	private final SearchIndexFieldNameResolver indexFieldNameResolver;
 
 	/**
 	 * Constructeur.
@@ -103,7 +103,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	 * @param esClient Client ElasticSearch.
 	 * @param indexFieldNameResolver Resolver de nom de champ de l'index
 	 */
-	ESStatement(final ESDocumentCodec solrDocumentCodec, final String indexName, final Client esClient, final IndexFieldNameResolver indexFieldNameResolver) {
+	ESStatement(final ESDocumentCodec solrDocumentCodec, final String indexName, final Client esClient, final SearchIndexFieldNameResolver indexFieldNameResolver) {
 		Assertion.checkArgNotEmpty(indexName);
 		Assertion.checkNotNull(solrDocumentCodec);
 		Assertion.checkNotNull(esClient);
@@ -118,11 +118,11 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	/**
 	 * @param indexCollection Collection des indexes à insérer
 	 */
-	void putAll(final Collection<Index<I, R>> indexCollection) {
+	void putAll(final Collection<SearchIndex<I, R>> indexCollection) {
 		//Injection spécifique au moteur d'indexation.
 		try {
 			final BulkRequestBuilder bulkRequest = esClient.prepareBulk();
-			for (final Index<I, R> index : indexCollection) {
+			for (final SearchIndex<I, R> index : indexCollection) {
 				try (final XContentBuilder xContentBuilder = elasticSearchDocumentCodec.index2XContentBuilder(index, indexFieldNameResolver)) {
 					bulkRequest.add(esClient.prepareIndex(indexName, index.getURI().getDefinition().getName(), index.getURI().toURN())
 							.setSource(xContentBuilder));
@@ -144,7 +144,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	/**
 	 * @param index index à insérer
 	 */
-	void put(final Index<I, R> index) {
+	void put(final SearchIndex<I, R> index) {
 		//Injection spécifique au moteur d'indexation.
 		try (final XContentBuilder xContentBuilder = elasticSearchDocumentCodec.index2XContentBuilder(index, indexFieldNameResolver)) {
 			esClient.prepareIndex(indexName, index.getURI().getDefinition().getName(), index.getURI().toURN())
@@ -161,7 +161,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	 * @param indexDefinition Index concerné
 	 * @param query Requete de filtrage des documents à supprimer
 	 */
-	void remove(final IndexDefinition indexDefinition, final ListFilter query) {
+	void remove(final SearchIndexDefinition indexDefinition, final ListFilter query) {
 		Assertion.checkNotNull(query);
 		//-----
 		final QueryBuilder queryBuilder = translateToQueryBuilder(query, indexFieldNameResolver);
@@ -176,7 +176,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	 * @param indexDefinition Index concerné
 	 * @param uri Uri du document à supprimer
 	 */
-	void remove(final IndexDefinition indexDefinition, final URI uri) {
+	void remove(final SearchIndexDefinition indexDefinition, final URI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		esClient.prepareDelete(indexName, uri.getDefinition().getName(), uri.toURN())
@@ -190,7 +190,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	 * @param rowsPerQuery Nombre de ligne max
 	 * @return Résultat de la recherche
 	 */
-	FacetedQueryResult<R, SearchQuery> loadList(final IndexDefinition indexDefinition, final SearchQuery searchQuery, final FacetedQuery filtersQuery, final int rowsPerQuery) {
+	FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final FacetedQuery filtersQuery, final int rowsPerQuery) {
 		Assertion.checkNotNull(searchQuery);
 		Assertion.checkNotNull(filtersQuery);
 		//-----
@@ -213,7 +213,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		return response.getCount();
 	}
 
-	private SearchRequestBuilder createSearchRequestBuilder(final IndexDefinition indexDefinition, final SearchQuery searchQuery, final FacetedQuery filtersQuery, final int rowsPerQuery) {
+	private SearchRequestBuilder createSearchRequestBuilder(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final FacetedQuery filtersQuery, final int rowsPerQuery) {
 		final SearchRequestBuilder searchRequestBuilder = esClient.prepareSearch(indexName)
 				.setSearchType(SearchType.QUERY_THEN_FETCH)
 				.addFields(ESDocumentCodec.FULL_RESULT)
@@ -326,7 +326,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 			//}
 			return indexFieldNameResolver.replaceAllIndexFieldNames(stringQuery.toString());
 		}*/
-	private static QueryBuilder translateToQueryBuilder(final ListFilter listFilter, final IndexFieldNameResolver indexFieldNameResolver) {
+	private static QueryBuilder translateToQueryBuilder(final ListFilter listFilter, final SearchIndexFieldNameResolver indexFieldNameResolver) {
 		Assertion.checkNotNull(listFilter);
 		//-----
 		final String query = new StringBuilder()
@@ -338,15 +338,15 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 				.lowercaseExpandedTerms(false);
 	}
 
-	private static FilterBuilder translateToFilterBuilder(final ListFilter query, final IndexFieldNameResolver indexFieldNameResolver) {
+	private static FilterBuilder translateToFilterBuilder(final ListFilter query, final SearchIndexFieldNameResolver indexFieldNameResolver) {
 		return FilterBuilders.queryFilter(translateToQueryBuilder(query, indexFieldNameResolver));
 	}
 
-	private FacetedQueryResult<R, SearchQuery> translateQuery(final IndexDefinition indexDefinition, final SearchResponse queryResponse, final SearchQuery searchQuery, final FacetedQuery filtersQuery) {
+	private FacetedQueryResult<R, SearchQuery> translateQuery(final SearchIndexDefinition indexDefinition, final SearchResponse queryResponse, final SearchQuery searchQuery, final FacetedQuery filtersQuery) {
 		final Map<R, Map<DtField, String>> resultHighlights = new HashMap<>();
 		final DtList<R> dtc = new DtList<>(indexDefinition.getResultDtDefinition());
 		for (final SearchHit searchHit : queryResponse.getHits()) {
-			final Index<I, R> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
+			final SearchIndex<I, R> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
 			final R result = index.getResultDtObject();
 			dtc.add(result);
 
@@ -359,7 +359,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		return new FacetedQueryResult<>(filtersQuery, count, dtc, facets, resultHighlights, searchQuery);
 	}
 
-	private static Map<DtField, String> createHighlight(final SearchHit searchHit, final DtDefinition indexDtDefinition, final IndexFieldNameResolver indexFieldNameResolver) {
+	private static Map<DtField, String> createHighlight(final SearchHit searchHit, final DtDefinition indexDtDefinition, final SearchIndexFieldNameResolver indexFieldNameResolver) {
 		final Map<DtField, String> highlights = new HashMap<>();
 		final Map<String, HighlightField> map = searchHit.getHighlightFields();
 		for (final Map.Entry<String, HighlightField> entry : map.entrySet()) {

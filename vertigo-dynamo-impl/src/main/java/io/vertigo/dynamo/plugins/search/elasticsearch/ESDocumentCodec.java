@@ -24,9 +24,9 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.search.IndexFieldNameResolver;
-import io.vertigo.dynamo.search.metamodel.IndexDefinition;
-import io.vertigo.dynamo.search.model.Index;
+import io.vertigo.dynamo.search.SearchIndexFieldNameResolver;
+import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
+import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.lang.Assertion;
 
 import java.io.IOException;
@@ -82,7 +82,7 @@ final class ESDocumentCodec {
 	 * @param searchHit Resultat ElasticSearch
 	 * @return Objet logique de recherche
 	 */
-	<I extends DtObject, R extends DtObject> Index<I, R> searchHit2Index(final IndexDefinition indexDefinition, final SearchHit searchHit) {
+	<I extends DtObject, R extends DtObject> SearchIndex<I, R> searchHit2Index(final SearchIndexDefinition indexDefinition, final SearchHit searchHit) {
 		/* On lit du document les données persistantes. */
 		/* 1. URI */
 		final String urn = searchHit.getId();
@@ -91,7 +91,7 @@ final class ESDocumentCodec {
 		/* 2 : Result stocké */
 		final R resultDtObjectdtObject = decode((String) searchHit.field(FULL_RESULT).getValue());
 		//-----
-		return Index.createResult(indexDefinition, uri, resultDtObjectdtObject);
+		return SearchIndex.createResult(indexDefinition, uri, resultDtObjectdtObject);
 	}
 
 	/**
@@ -103,7 +103,7 @@ final class ESDocumentCodec {
 	 * @return Document SOLR
 	 * @throws IOException Json exception
 	 */
-	<I extends DtObject, R extends DtObject> XContentBuilder index2XContentBuilder(final Index<I, R> index, final IndexFieldNameResolver indexFieldNameResolver) throws IOException {
+	<I extends DtObject, R extends DtObject> XContentBuilder index2XContentBuilder(final SearchIndex<I, R> index, final SearchIndexFieldNameResolver indexFieldNameResolver) throws IOException {
 		Assertion.checkNotNull(index);
 		Assertion.checkNotNull(indexFieldNameResolver);
 		//-----

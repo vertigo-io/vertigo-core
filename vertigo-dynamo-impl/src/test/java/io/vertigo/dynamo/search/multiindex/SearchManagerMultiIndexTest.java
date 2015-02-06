@@ -30,10 +30,10 @@ import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.search.IndexFieldNameResolver;
+import io.vertigo.dynamo.search.SearchIndexFieldNameResolver;
 import io.vertigo.dynamo.search.SearchManager;
-import io.vertigo.dynamo.search.metamodel.IndexDefinition;
-import io.vertigo.dynamo.search.model.Index;
+import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
+import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.dynamo.search.model.SearchQueryBuilder;
 import io.vertigo.dynamock.domain.car.Car;
@@ -71,7 +71,7 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 		carDataBase.loadDatas();
 
 		final Map<String, String> indexFieldsMap = new HashMap<>();
-		final IndexDefinition carDynIndexDefinition = Home.getDefinitionSpace().resolve(IDX_DYNA_CAR, IndexDefinition.class);
+		final SearchIndexDefinition carDynIndexDefinition = Home.getDefinitionSpace().resolve(IDX_DYNA_CAR, SearchIndexDefinition.class);
 		for (final DtField dtField : carDynIndexDefinition.getIndexDtDefinition().getFields()) {
 			String indexType = dtField.getDomain().getProperties().getValue(DtProperty.INDEX_TYPE);
 			if (indexType == null) {
@@ -79,7 +79,7 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 			}
 			indexFieldsMap.put(dtField.getName(), dtField.getName() + "_DYN" + indexType);
 		}
-		searchManager.registerIndexFieldNameResolver(carDynIndexDefinition, new IndexFieldNameResolver(indexFieldsMap));
+		searchManager.registerIndexFieldNameResolver(carDynIndexDefinition, new SearchIndexFieldNameResolver(indexFieldsMap));
 	}
 
 	/**
@@ -89,14 +89,14 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testIndex() {
-		final IndexDefinition carIndexDefinition = Home.getDefinitionSpace().resolve(IDX_CAR, IndexDefinition.class);
-		final IndexDefinition carDynIndexDefinition = Home.getDefinitionSpace().resolve(IDX_DYNA_CAR, IndexDefinition.class);
+		final SearchIndexDefinition carIndexDefinition = Home.getDefinitionSpace().resolve(IDX_CAR, SearchIndexDefinition.class);
+		final SearchIndexDefinition carDynIndexDefinition = Home.getDefinitionSpace().resolve(IDX_DYNA_CAR, SearchIndexDefinition.class);
 
 		for (final Car car : carDataBase) {
-			final Index<Car, Car> index = Index.createIndex(carIndexDefinition, createURI(car), car, car);
+			final SearchIndex<Car, Car> index = SearchIndex.createIndex(carIndexDefinition, createURI(car), car, car);
 			searchManager.put(carIndexDefinition, index);
 
-			final Index<Car, Car> index2 = Index.createIndex(carDynIndexDefinition, createURI(car), car, car);
+			final SearchIndex<Car, Car> index2 = SearchIndex.createIndex(carDynIndexDefinition, createURI(car), car, car);
 			searchManager.put(carDynIndexDefinition, index2);
 		}
 		waitIndexation();
@@ -114,8 +114,8 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testClean() {
-		final IndexDefinition carIndexDefinition = Home.getDefinitionSpace().resolve(IDX_CAR, IndexDefinition.class);
-		final IndexDefinition carDynIndexDefinition = Home.getDefinitionSpace().resolve(IDX_DYNA_CAR, IndexDefinition.class);
+		final SearchIndexDefinition carIndexDefinition = Home.getDefinitionSpace().resolve(IDX_CAR, SearchIndexDefinition.class);
+		final SearchIndexDefinition carDynIndexDefinition = Home.getDefinitionSpace().resolve(IDX_DYNA_CAR, SearchIndexDefinition.class);
 		final ListFilter removeQuery = new ListFilter("*:*");
 		searchManager.removeAll(carIndexDefinition, removeQuery);
 		searchManager.removeAll(carDynIndexDefinition, removeQuery);
@@ -129,7 +129,7 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(0, sizeCarDyn);
 	}
 
-	private long query(final String query, final IndexDefinition indexDefinition) {
+	private long query(final String query, final SearchIndexDefinition indexDefinition) {
 		//recherche
 		final FacetedQueryDefinition carQueryDefinition = Home.getDefinitionSpace().resolve(QRY_CAR, FacetedQueryDefinition.class);
 		final SearchQuery searchQuery = new SearchQueryBuilder(query).build();

@@ -20,7 +20,7 @@ package io.vertigo.dynamo.plugins.search.elasticsearch.embedded;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.resource.ResourceManager;
-import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESServicesPlugin;
+import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
 import io.vertigo.lang.Assertion;
 
 import java.io.File;
@@ -42,7 +42,7 @@ import org.elasticsearch.node.NodeBuilder;
  *
  * @author pchretien, npiedeloup
  */
-public final class ESEmbeddedServicesPlugin extends AbstractESServicesPlugin {
+public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServicesPlugin {
 	/** url du serveur elasticSearch.  */
 	private final URL elasticSearchHomeURL;
 
@@ -55,7 +55,7 @@ public final class ESEmbeddedServicesPlugin extends AbstractESServicesPlugin {
 	 * @param resourceManager Manager d'accès aux ressources
 	 */
 	@Inject
-	public ESEmbeddedServicesPlugin(@Named("home") final String elasticSearchHome, @Named("cores") final String cores, @Named("rowsPerQuery") final int rowsPerQuery, final CodecManager codecManager, final ResourceManager resourceManager) {
+	public ESEmbeddedSearchServicesPlugin(@Named("home") final String elasticSearchHome, @Named("cores") final String cores, @Named("rowsPerQuery") final int rowsPerQuery, final CodecManager codecManager, final ResourceManager resourceManager) {
 		super(cores, rowsPerQuery, codecManager);
 		Assertion.checkArgNotEmpty(elasticSearchHome);
 		//-----

@@ -19,7 +19,7 @@
 package io.vertigo.studio.plugins.mda.search;
 
 import io.vertigo.core.Home;
-import io.vertigo.dynamo.search.metamodel.IndexDefinition;
+import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
@@ -45,12 +45,12 @@ public final class SearchGeneratorPlugin extends AbstractGeneratorPlugin {
 	}
 
 	private static void generateDtDefinitions(final FileConfig searchConfig, final ResultBuilder resultBuilder) {
-		for (final IndexDefinition indexDefinition : Home.getDefinitionSpace().getAll(IndexDefinition.class)) {
+		for (final SearchIndexDefinition indexDefinition : Home.getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
 			generateSchema(searchConfig, resultBuilder, indexDefinition);
 		}
 	}
 
-	private static void generateSchema(final FileConfig searchConfiguration, final ResultBuilder resultBuilder, final IndexDefinition indexDefinition) {
+	private static void generateSchema(final FileConfig searchConfiguration, final ResultBuilder resultBuilder, final SearchIndexDefinition indexDefinition) {
 		/** Registry */
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
 				.put("indexDefinition", indexDefinition)

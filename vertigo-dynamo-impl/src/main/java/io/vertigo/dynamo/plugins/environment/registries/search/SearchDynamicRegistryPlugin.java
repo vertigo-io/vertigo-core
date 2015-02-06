@@ -22,7 +22,7 @@ import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
-import io.vertigo.dynamo.search.metamodel.IndexDefinition;
+import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 
 /**
  * @author pchretien
@@ -31,7 +31,7 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 	public SearchDynamicRegistryPlugin() {
 		super(SearchGrammar.GRAMMAR);
-		Home.getDefinitionSpace().register(IndexDefinition.class);
+		Home.getDefinitionSpace().register(SearchIndexDefinition.class);
 	}
 
 	/** {@inheritDoc} */
@@ -39,18 +39,18 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	public void onDefinition(final DynamicDefinition xdefinition) {
 		if (SearchGrammar.INDEX_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
 			// Seuls les controllers sont gérés.
-			final IndexDefinition indexDefinition = createIndexDefinition(xdefinition);
-			Home.getDefinitionSpace().put(indexDefinition, IndexDefinition.class);
+			final SearchIndexDefinition indexDefinition = createIndexDefinition(xdefinition);
+			Home.getDefinitionSpace().put(indexDefinition, SearchIndexDefinition.class);
 		}
 	}
 
-	private static IndexDefinition createIndexDefinition(final DynamicDefinition xsearchObjet) {
+	private static SearchIndexDefinition createIndexDefinition(final DynamicDefinition xsearchObjet) {
 		final DtDefinition indexDtDefinition = Home.getDefinitionSpace().resolve(xsearchObjet.getDefinitionKey("dtIndex").getName(), DtDefinition.class);
 		final DtDefinition resultDtDefinition = Home.getDefinitionSpace().resolve(xsearchObjet.getDefinitionKey("dtResult").getName(), DtDefinition.class);
 		//	final List<FacetDefinition> facetDefinitions = Collections.emptyList();
 		final String definitionName = xsearchObjet.getDefinitionKey().getName();
 
-		final IndexDefinition indexDefinition = new IndexDefinition(definitionName, indexDtDefinition, resultDtDefinition);
+		final SearchIndexDefinition indexDefinition = new SearchIndexDefinition(definitionName, indexDtDefinition, resultDtDefinition);
 		//indexDefinition.makeUnmodifiable();
 		return indexDefinition;
 	}
