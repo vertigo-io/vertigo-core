@@ -18,9 +18,7 @@
  */
 package io.vertigo.dynamo.impl.persistence.datastore.logical;
 
-import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.persistence.datastore.DataStore;
 import io.vertigo.lang.Assertion;
 
@@ -33,33 +31,10 @@ import java.util.Map;
  */
 public final class LogicalDataStoreConfig {
 	/** Store physique par défaut. */
-	private DataStore defaultStore;
+	private DataStore defaultDataStore;
 
 	/** Map des stores utilisés spécifiquement pour certains DT */
-	private final Map<DtDefinition, DataStore> storeMap = new HashMap<>();
-
-	private final PersistenceManager persistenceManager;
-	private final CollectionsManager collectionsManager;
-
-	/**
-	 * Constructeur.
-	 * @param collectionsManager Manager des manipulations de liste
-	 */
-	public LogicalDataStoreConfig(final PersistenceManager persistenceManager, final CollectionsManager collectionsManager) {
-		Assertion.checkNotNull(collectionsManager);
-		Assertion.checkNotNull(persistenceManager);
-		//-----
-		this.persistenceManager = persistenceManager;
-		this.collectionsManager = collectionsManager;
-	}
-
-	public PersistenceManager getPersistenceManager() {
-		return persistenceManager;
-	}
-
-	public CollectionsManager getCollectionsManager() {
-		return collectionsManager;
-	}
+	private final Map<DtDefinition, DataStore> dataStores = new HashMap<>();
 
 	/**
 	 * Fournit un store adpaté au type de l'objet.
@@ -70,9 +45,9 @@ public final class LogicalDataStoreConfig {
 		Assertion.checkNotNull(definition);
 		//-----
 		//On regarde si il existe un store enregistré spécifiquement pour cette Definition
-		DataStore physicalStore = storeMap.get(definition);
+		DataStore physicalStore = dataStores.get(definition);
 
-		physicalStore = physicalStore == null ? defaultStore : physicalStore;
+		physicalStore = physicalStore == null ? defaultDataStore : physicalStore;
 		Assertion.checkNotNull(physicalStore, "Aucun store trouvé pour la définition '{0}'", definition.getName());
 		return physicalStore;
 	}
@@ -86,15 +61,15 @@ public final class LogicalDataStoreConfig {
 		//check();
 		Assertion.checkNotNull(definition);
 		Assertion.checkNotNull(specificStore);
-		Assertion.checkArgument(!storeMap.containsKey(definition), "Un store spécifique est déjà enregistré pour cette definition ''{0}'')", storeMap.get(definition));
+		Assertion.checkArgument(!dataStores.containsKey(definition), "Un store spécifique est déjà enregistré pour cette definition ''{0}'')", dataStores.get(definition));
 		//-----
-		storeMap.put(definition, specificStore);
+		dataStores.put(definition, specificStore);
 	}
 
-	public void registerDefaultPhysicalStore(final DataStore tmpDefaultStore) {
-		Assertion.checkNotNull(tmpDefaultStore);
-		Assertion.checkState(defaultStore == null, "defaultStore deja initialisé");
+	public void registerDefault(final DataStore dataStore) {
+		Assertion.checkNotNull(dataStore);
+		Assertion.checkState(defaultDataStore == null, "defaultStore deja initialisé");
 		//-----
-		defaultStore = tmpDefaultStore;
+		defaultDataStore = dataStore;
 	}
 }

@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.impl.persistence.datastore;
 
 import io.vertigo.commons.cache.CacheManager;
-import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.impl.persistence.datastore.cache.CacheDataStoreConfig;
 import io.vertigo.dynamo.impl.persistence.datastore.logical.LogicalDataStoreConfig;
@@ -37,18 +36,24 @@ public final class BrokerConfigImpl implements BrokerConfig {
 	private final CacheDataStoreConfig cacheStoreConfig;
 	private final LogicalDataStoreConfig logicalDataStoreConfig;
 
+	private final PersistenceManager persistenceManager;
+
 	/**
 	 * Constructeur.
 	 *
 	 * @param cacheManager Manager de gestion du cache
 	 */
-	public BrokerConfigImpl(final CacheManager cacheManager, final PersistenceManager persistenceManager, final CollectionsManager collectionsManager) {
+	public BrokerConfigImpl(final CacheManager cacheManager, final PersistenceManager persistenceManager) {
 		Assertion.checkNotNull(cacheManager);
 		Assertion.checkNotNull(persistenceManager);
-		Assertion.checkNotNull(collectionsManager);
 		//-----
+		this.persistenceManager = persistenceManager;
 		cacheStoreConfig = new CacheDataStoreConfig(cacheManager);
-		logicalDataStoreConfig = new LogicalDataStoreConfig(persistenceManager, collectionsManager);
+		logicalDataStoreConfig = new LogicalDataStoreConfig();
+	}
+
+	public PersistenceManager getPersistenceManager() {
+		return persistenceManager;
 	}
 
 	/**

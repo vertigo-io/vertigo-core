@@ -44,7 +44,7 @@ public final class LogicalFileStore implements FileStore {
 	}
 
 	private FileStore getPhysicalStore(final FileInfoDefinition fileInfoDefinition) {
-		return logicalFileStoreConfiguration.getPhysicalStore(fileInfoDefinition);
+		return logicalFileStoreConfiguration.getPhysicalFileStore(fileInfoDefinition);
 	}
 
 	/** {@inheritDoc} */

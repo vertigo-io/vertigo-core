@@ -31,23 +31,23 @@ import java.util.Map;
  */
 public final class LogicalFileStoreConfig {
 	/** Store physique par défaut. */
-	private FileStore defaultStore;
+	private FileStore defaultFileStore;
 
 	/** Map des stores utilisés spécifiquement pour certains DT */
-	private final Map<FileInfoDefinition, FileStore> storeMap = new HashMap<>();
+	private final Map<FileInfoDefinition, FileStore> fileStores = new HashMap<>();
 
 	/**
 	 * Fournit un store adpaté au type de l'objet.
 	 * @param fileInfoDefinition Définition
 	 * @return Store utilisé pour cette definition
 	 */
-	public FileStore getPhysicalStore(final FileInfoDefinition fileInfoDefinition) {
+	public FileStore getPhysicalFileStore(final FileInfoDefinition fileInfoDefinition) {
 		Assertion.checkNotNull(fileInfoDefinition);
 		//-----
 		//On regarde si il existe un store enregistré spécifiquement pour cette Definition
-		FileStore physicalStore = storeMap.get(fileInfoDefinition);
+		FileStore physicalStore = fileStores.get(fileInfoDefinition);
 
-		physicalStore = physicalStore == null ? defaultStore : physicalStore;
+		physicalStore = physicalStore == null ? defaultFileStore : physicalStore;
 		Assertion.checkNotNull(physicalStore, "Aucun store trouvé pour la définition '{0}'", fileInfoDefinition.getName());
 		return physicalStore;
 	}
@@ -55,21 +55,21 @@ public final class LogicalFileStoreConfig {
 	/**
 	 * Enregistre un Store spécifique pour une dtDefinition donnée.
 	 * @param definition Définition
-	 * @param specificStore Store spécifique
+	 * @param fileStore Store spécifique
 	 */
-	public void register(final FileInfoDefinition definition, final FileStore specificStore) {
+	public void register(final FileInfoDefinition definition, final FileStore fileStore) {
 		//check();
 		Assertion.checkNotNull(definition);
-		Assertion.checkNotNull(specificStore);
-		Assertion.checkArgument(!storeMap.containsKey(definition), "Un store spécifique est déjà enregistré pour cette definition ''{0}'')", storeMap.get(definition));
+		Assertion.checkNotNull(fileStore);
+		Assertion.checkArgument(!fileStores.containsKey(definition), "A fileStore is already bound to this definition '{0}')", fileStores.get(definition));
 		//-----
-		storeMap.put(definition, specificStore);
+		fileStores.put(definition, fileStore);
 	}
 
-	public void registerDefaultPhysicalStore(final FileStore defaultFileStore) {
-		Assertion.checkNotNull(defaultFileStore);
-		Assertion.checkState(defaultStore == null, "defaultStore deja initialisé");
+	public void registerDefault(final FileStore fileStore) {
+		Assertion.checkNotNull(fileStore);
+		Assertion.checkState(defaultFileStore == null, "defaultFileStore is alreadey defined");
 		//-----
-		defaultStore = defaultFileStore;
+		defaultFileStore = fileStore;
 	}
 }

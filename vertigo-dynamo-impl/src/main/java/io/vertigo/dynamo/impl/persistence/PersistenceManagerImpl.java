@@ -67,11 +67,11 @@ public final class PersistenceManagerImpl implements PersistenceManager {
 		Assertion.checkNotNull(defaultStorePlugin);
 		//-----
 		masterDataConfig = new MasterDataConfigImpl(collectionsManager);
-		brokerConfig = new BrokerConfigImpl(cacheManager, this, collectionsManager);
+		brokerConfig = new BrokerConfigImpl(cacheManager, this);
 		brokerNN = new BrokerNNImpl(taskManager);
 		//---
 		//On enregistre le plugin principal du broker : DefaultPhysicalStore
-		brokerConfig.getLogicalStoreConfig().registerDefaultPhysicalStore(defaultStorePlugin);
+		brokerConfig.getLogicalStoreConfig().registerDefault(defaultStorePlugin);
 		broker = new BrokerImpl(brokerConfig);
 		//-----
 		fileInfoBroker = createFileInfoBroker(fileStorePlugin);
@@ -81,7 +81,7 @@ public final class PersistenceManagerImpl implements PersistenceManager {
 		final FileBrokerConfig fileBrokerConfiguration = new FileBrokerConfig();
 		//On enregistre le plugin de gestion des fichiers : facultatif
 		if (fileStorePlugin.isDefined()) {
-			fileBrokerConfiguration.getLogicalFileStoreConfiguration().registerDefaultPhysicalStore(fileStorePlugin.get());
+			fileBrokerConfiguration.getLogicalFileStoreConfiguration().registerDefault(fileStorePlugin.get());
 		}
 		return new FileInfoBrokerImpl(fileBrokerConfiguration);
 	}

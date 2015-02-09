@@ -29,6 +29,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.persistence.datastore.BrokerConfigImpl;
 import io.vertigo.dynamo.impl.persistence.datastore.logical.LogicalDataStoreConfig;
+import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.persistence.datastore.DataStore;
 import io.vertigo.lang.Assertion;
 
@@ -38,6 +39,7 @@ import io.vertigo.lang.Assertion;
  * @author  pchretien
  */
 public final class CacheDataStore {
+	private final PersistenceManager persistenceManager;
 	private final CacheDataStoreConfig cacheDataStoreConfig;
 	private final LogicalDataStoreConfig logicalStoreConfig;
 
@@ -48,6 +50,7 @@ public final class CacheDataStore {
 	public CacheDataStore(final BrokerConfigImpl brokerConfig) {
 		Assertion.checkNotNull(brokerConfig);
 		//-----
+		this.persistenceManager = brokerConfig.getPersistenceManager();
 		this.cacheDataStoreConfig = brokerConfig.getCacheStoreConfig();
 		this.logicalStoreConfig = brokerConfig.getLogicalStoreConfig();
 	}
@@ -119,7 +122,7 @@ public final class CacheDataStore {
 		//On compose les fonctions
 		//1.on filtre
 		//2.on trie
-		return logicalStoreConfig.getPersistenceManager().getMasterDataConfig().getFilter(uri)
+		return persistenceManager.getMasterDataConfig().getFilter(uri)
 				.sort(uri.getDtDefinition().getSortField().get().getName(), false, true, true)
 				.apply(unFilteredDtc);
 	}
