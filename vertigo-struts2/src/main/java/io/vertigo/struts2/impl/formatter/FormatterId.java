@@ -19,8 +19,8 @@
 package io.vertigo.struts2.impl.formatter;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
-import io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl;
 import io.vertigo.dynamox.domain.formatter.Resources;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
@@ -28,21 +28,15 @@ import io.vertigo.util.StringUtil;
 /**
  * Gestion des formattages des identifiants.
  *
- * @author pchretien
+ * @author npiedeloup
  */
-public final class FormatterId extends AbstractFormatterImpl {
+public final class FormatterId implements Formatter {
 	/**
-	 * Constructeur.
-	 * @param name Nom du formatteur
+	 * Constructor.
+	 * @param args Arguments
 	 */
-	public FormatterId(final String name) {
-		super(name);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void initParameters(final String args) {
-		//rien
+	public FormatterId(final String args) {
+		//nothing
 	}
 
 	/** {@inheritDoc} */

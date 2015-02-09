@@ -70,6 +70,9 @@ public class FormatterNumber implements Formatter {
 		return pattern;
 	}
 
+	/**
+	 * @param args Arguments
+	 */
 	protected void initParameters(final String args) {
 		Assertion.checkNotNull(args);
 		//-----

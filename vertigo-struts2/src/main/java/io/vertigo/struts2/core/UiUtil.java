@@ -18,11 +18,11 @@
  */
 package io.vertigo.struts2.core;
 
-import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
+import io.vertigo.dynamox.domain.formatter.FormatterDefault;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -38,6 +38,7 @@ import com.opensymphony.xwork2.ActionContext;
 public final class UiUtil implements Serializable {
 
 	private static final long serialVersionUID = -5677843485950859547L;
+	private static final Formatter DEFAULT_FORMATTER = new FormatterDefault(null);//by convention : no args
 
 	/**
 	 * @param uiObject Object du context
@@ -73,7 +74,7 @@ public final class UiUtil implements Serializable {
 	public static final String formatBoolean(final String fieldPath, final Boolean value) {
 		final Formatter formatter;
 		if (!fieldPath.contains(".")) { //cas des ContextRef sans domain
-			formatter = Home.getDefinitionSpace().resolve(Formatter.FMT_DEFAULT, Formatter.class);
+			formatter = DEFAULT_FORMATTER;
 		} else {
 			formatter = getDtField(fieldPath).getDomain().getFormatter();
 		}
