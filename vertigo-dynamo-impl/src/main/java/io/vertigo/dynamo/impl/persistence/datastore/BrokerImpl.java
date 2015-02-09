@@ -59,7 +59,7 @@ public final class BrokerImpl implements Broker {
 	}
 
 	private DataStore getPhysicalStore(final DtDefinition dtDefinition) {
-		return logicalStoreConfig.getPhysicalStore(dtDefinition);
+		return logicalStoreConfig.getPhysicalDataStore(dtDefinition);
 	}
 
 	/** {@inheritDoc} */

@@ -41,29 +41,29 @@ public final class LogicalDataStoreConfig {
 	 * @param definition Définition
 	 * @return Store utilisé pour cette definition
 	 */
-	public DataStore getPhysicalStore(final DtDefinition definition) {
+	public DataStore getPhysicalDataStore(final DtDefinition definition) {
 		Assertion.checkNotNull(definition);
 		//-----
 		//On regarde si il existe un store enregistré spécifiquement pour cette Definition
-		DataStore physicalStore = dataStores.get(definition);
+		DataStore dataStore = dataStores.get(definition);
 
-		physicalStore = physicalStore == null ? defaultDataStore : physicalStore;
-		Assertion.checkNotNull(physicalStore, "Aucun store trouvé pour la définition '{0}'", definition.getName());
-		return physicalStore;
+		dataStore = dataStore == null ? defaultDataStore : dataStore;
+		Assertion.checkNotNull(dataStore, "Aucun store trouvé pour la définition '{0}'", definition.getName());
+		return dataStore;
 	}
 
 	/**
 	 * Enregistre un Store spécifique pour une dtDefinition donnée.
 	 * @param definition Définition
-	 * @param specificStore Store spécifique
+	 * @param dataStore Store spécifique
 	 */
-	public void register(final DtDefinition definition, final DataStore specificStore) {
+	public void register(final DtDefinition definition, final DataStore dataStore) {
 		//check();
 		Assertion.checkNotNull(definition);
-		Assertion.checkNotNull(specificStore);
+		Assertion.checkNotNull(dataStore);
 		Assertion.checkArgument(!dataStores.containsKey(definition), "Un store spécifique est déjà enregistré pour cette definition ''{0}'')", dataStores.get(definition));
 		//-----
-		dataStores.put(definition, specificStore);
+		dataStores.put(definition, dataStore);
 	}
 
 	public void registerDefault(final DataStore dataStore) {

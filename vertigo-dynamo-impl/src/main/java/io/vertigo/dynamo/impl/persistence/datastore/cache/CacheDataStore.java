@@ -56,7 +56,7 @@ public final class CacheDataStore {
 	}
 
 	private DataStore getPhysicalStore(final DtDefinition dtDefinition) {
-		return logicalStoreConfig.getPhysicalStore(dtDefinition);
+		return logicalStoreConfig.getPhysicalDataStore(dtDefinition);
 	}
 
 	public <D extends DtObject> D load(final URI<D> uri) {
