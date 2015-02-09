@@ -38,6 +38,8 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	 * @param sortAsc  Ordre de tri (true pour ascendant)
 	*/
 	public SearchQueryBuilder withSortStrategy(final DtField sortField, final boolean sortAsc) {
+		Assertion.checkNotNull(sortField);
+		//-----
 		mySortField = sortField;
 		mySortAsc = sortAsc;
 		return this;
@@ -50,8 +52,9 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	 * @param mostRecentBoost Boost relatif maximum entre les plus récents et ceux ayant l'age de référence (doit être > 1) (null si non utilisé)
 	 * @return SearchQuery.
 	 */
-	public SearchQueryBuilder withBoostStrategy(final DtField boostedDocumentDateField, final Integer numDaysOfBoostRefDocument, final Integer mostRecentBoost) {
+	public SearchQueryBuilder withBoostStrategy(final DtField boostedDocumentDateField, final int numDaysOfBoostRefDocument, final int mostRecentBoost) {
 		Assertion.checkNotNull(boostedDocumentDateField);
+		Assertion.checkArgument(numDaysOfBoostRefDocument > 1 && mostRecentBoost > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieurs à 1.");
 		//-----
 		myBoostedDocumentDateField = boostedDocumentDateField;
 		myNumDaysOfBoostRefDocument = numDaysOfBoostRefDocument;

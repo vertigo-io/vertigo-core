@@ -58,7 +58,8 @@ public final class SearchQuery implements Serializable {
 		Assertion.checkArgument(sortField == null || sortAsc != null, "Lorsque le tri des documents est activé, sortAsc est obligatoires.");
 		Assertion.checkArgument(boostedDocumentDateField == null || numDaysOfBoostRefDocument != null && mostRecentBoost != null, "Lorsque le boost des documents récents est activé, numDaysOfBoostRefDocument et mostRecentBoost sont obligatoires.");
 		Assertion.checkArgument(boostedDocumentDateField != null || numDaysOfBoostRefDocument == null && mostRecentBoost == null, "Lorsque le boost des documents récents est désactivé, numDaysOfBoostRefDocument et mostRecentBoost doivent être null.");
-		Assertion.checkArgument(numDaysOfBoostRefDocument == null || mostRecentBoost == null || numDaysOfBoostRefDocument.longValue() > 1 && mostRecentBoost.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1.");
+		Assertion.checkArgument(numDaysOfBoostRefDocument == null || numDaysOfBoostRefDocument.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1.");
+		Assertion.checkArgument(mostRecentBoost == null || mostRecentBoost.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1.");
 		//-----
 		this.facetedQuery = facetedQuery;
 		this.listFilter = listFilter;
