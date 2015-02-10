@@ -25,7 +25,6 @@ import io.vertigo.lang.Assertion;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * Résultat de l'exécution d'une tache.
@@ -50,8 +49,8 @@ public final class TaskResult {
 		Assertion.checkNotNull(taskAttributes);
 		//-----
 		this.taskDefinition = taskDefinition;
-		for (final Entry<TaskAttribute, Object> entry : taskAttributes.entrySet()) {
-			Assertion.checkArgument(!entry.getKey().isIn(), "only 'out' taskAttributes are allowed");
+		for (final TaskAttribute taskAttribute : taskAttributes.keySet()) {
+			Assertion.checkArgument(!taskAttribute.isIn(), "only 'out' taskAttributes are allowed");
 		}
 		//---
 		this.taskAttributes = Collections.unmodifiableMap(new HashMap<>(taskAttributes));
