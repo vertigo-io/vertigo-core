@@ -116,7 +116,10 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 	/** {@inheritDoc} */
 	@Override
 	public Serializable get(final Object key) {
-		final String constFieldName = keysIndex.get(String.class.cast(key));
+		final String keyFieldName = String.class.cast(key);
+		Assertion.checkArgNotEmpty(keyFieldName);
+		Assertion.checkArgument(Character.isLowerCase(keyFieldName.charAt(0)) && !keyFieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
+		final String constFieldName = keysIndex.get(keyFieldName);
 		Assertion.checkArgNotEmpty(constFieldName);
 		//-----
 		final DtField dtField = getDtField(constFieldName);
