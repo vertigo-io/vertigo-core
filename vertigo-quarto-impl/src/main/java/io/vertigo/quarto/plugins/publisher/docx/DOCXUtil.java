@@ -18,9 +18,11 @@
  */
 package io.vertigo.quarto.plugins.publisher.docx;
 
+import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.quarto.publisher.impl.merger.processor.ZipUtil;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -202,9 +205,24 @@ final class DOCXUtil {
 				xmlContents.put(entryName, ZipUtil.readEntry(docxFile, entryName));
 			}
 		}
-
 		return xmlContents;
+	}
 
+	public static File obtainModelFile(final URL modelFileURL) throws IOException {
+		final File fsFile = new File(modelFileURL.getFile());
+		if (fsFile.canRead()) {
+			return fsFile;
+		}
+		final File file = new TempFile(fsFile.getName(), ".docx");
+		try (final BufferedInputStream in = new BufferedInputStream(modelFileURL.openStream())) {
+			FileUtil.copy(in, file);
+		} catch (final IOException e) {
+			if (!file.delete()) {
+				file.deleteOnExit();
+			}
+			throw e;
+		}
+		return file;
 	}
 
 	/**
@@ -246,7 +264,7 @@ final class DOCXUtil {
 		final StreamResult result = new StreamResult(writer);
 		final TransformerFactory tf = TransformerFactory.newInstance();
 		try {
-			Transformer transformer = tf.newTransformer();
+			final Transformer transformer = tf.newTransformer();
 			transformer.transform(domSource, result);
 		} catch (final TransformerException e) {
 			LOG.error("Convert XML Document to String error", e);
@@ -279,7 +297,7 @@ final class DOCXUtil {
 	 */
 	public static XPath loadXPath() {
 		final XPathFactory factory = XPathFactory.newInstance();
-		XPath xpath = factory.newXPath();
+		final XPath xpath = factory.newXPath();
 		xpath.setNamespaceContext(new DOCXNamespaceContext());
 		return xpath;
 	}

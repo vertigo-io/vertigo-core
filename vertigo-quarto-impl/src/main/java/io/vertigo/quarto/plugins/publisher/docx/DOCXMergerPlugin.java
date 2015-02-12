@@ -90,7 +90,7 @@ public final class DOCXMergerPlugin implements MergerPlugin {
 		Assertion.checkNotNull(modelFileURL);
 		Assertion.checkNotNull(data);
 		//-----
-		final File file = new File(modelFileURL.getFile());
+		final File file = DOCXUtil.obtainModelFile(modelFileURL);
 		file.setReadOnly();
 		try {
 			return doExecute(file, data);
