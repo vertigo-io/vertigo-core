@@ -19,7 +19,7 @@
 package io.vertigo.vega.impl.rest;
 
 import io.vertigo.lang.Plugin;
-import io.vertigo.vega.impl.rest.handler.HandlerChain;
+import io.vertigo.vega.plugins.rest.handler.HandlerChain;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 
 /**

@@ -19,8 +19,8 @@
 package io.vertigo.vega.impl.rest;
 
 import io.vertigo.lang.Plugin;
-import io.vertigo.vega.impl.rest.handler.HandlerChain;
-import io.vertigo.vega.impl.rest.handler.RouteContext;
+import io.vertigo.vega.plugins.rest.handler.HandlerChain;
+import io.vertigo.vega.plugins.rest.handler.RouteContext;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;

@@ -19,7 +19,7 @@
 package io.vertigo.vega.plugins.rest.routesregister.sparkjava;
 
 import io.vertigo.vega.impl.rest.RoutesRegisterPlugin;
-import io.vertigo.vega.impl.rest.handler.HandlerChain;
+import io.vertigo.vega.plugins.rest.handler.HandlerChain;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import spark.Spark;
 

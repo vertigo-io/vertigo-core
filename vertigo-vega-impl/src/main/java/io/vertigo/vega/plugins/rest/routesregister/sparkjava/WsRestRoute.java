@@ -18,8 +18,8 @@
  */
 package io.vertigo.vega.plugins.rest.routesregister.sparkjava;
 
-import io.vertigo.vega.impl.rest.handler.HandlerChain;
-import io.vertigo.vega.impl.rest.handler.RouteContext;
+import io.vertigo.vega.plugins.rest.handler.HandlerChain;
+import io.vertigo.vega.plugins.rest.handler.RouteContext;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 
 import org.apache.log4j.Logger;
