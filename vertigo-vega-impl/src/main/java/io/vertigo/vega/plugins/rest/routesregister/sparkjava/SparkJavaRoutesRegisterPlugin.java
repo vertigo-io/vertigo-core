@@ -29,7 +29,7 @@ import spark.Spark;
  */
 public final class SparkJavaRoutesRegisterPlugin implements RoutesRegisterPlugin {
 
-	private final String defaultContentCharset = "UTF-8";
+	private static final String defaultContentCharset = "UTF-8";
 
 	/** {@inheritDoc} */
 	@Override

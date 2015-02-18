@@ -75,9 +75,9 @@ public final class ValidatorHandler implements RestHandlerPlugin {
 				final Map<String, DtObject> contextKeyMap = new HashMap<>();
 
 				//Only authorized fields have already been checked (JsonConverterHandler)
-				final DtList<DtObject> dtListCreates = mergeAndCheckInput(uiListDelta.getObjectType(), uiListDelta.getCreatesMap(), "collCreates", dtObjectValidators, uiMessageStack, contextKeyMap);
-				final DtList<DtObject> dtListUpdates = mergeAndCheckInput(uiListDelta.getObjectType(), uiListDelta.getUpdatesMap(), "collUpdates", dtObjectValidators, uiMessageStack, contextKeyMap);
-				final DtList<DtObject> dtListDeletes = mergeAndCheckInput(uiListDelta.getObjectType(), uiListDelta.getDeletesMap(), "collDeletes", dtObjectValidators, uiMessageStack, contextKeyMap);
+				final DtList<DtObject> dtListCreates = mergeAndCheckInput(uiListDelta.getObjectType(), uiListDelta.getCreatesMap(), dtObjectValidators, uiMessageStack, contextKeyMap);
+				final DtList<DtObject> dtListUpdates = mergeAndCheckInput(uiListDelta.getObjectType(), uiListDelta.getUpdatesMap(), dtObjectValidators, uiMessageStack, contextKeyMap);
+				final DtList<DtObject> dtListDeletes = mergeAndCheckInput(uiListDelta.getObjectType(), uiListDelta.getDeletesMap(), dtObjectValidators, uiMessageStack, contextKeyMap);
 				final DtListDelta<DtObject> dtListDelta = new DtListDelta<>(dtListCreates, dtListUpdates, dtListDeletes);
 				routeContext.registerUpdatedDtListDelta(endPointParam, dtListDelta, contextKeyMap);
 			} else if (value instanceof UiList) {
@@ -114,7 +114,7 @@ public final class ValidatorHandler implements RestHandlerPlugin {
 		return dtObjectValidators;
 	}
 
-	private static <D extends DtObject> DtList<D> mergeAndCheckInput(final Class<D> objectType, final Map<String, UiObject<D>> uiObjectMap, final String listName, final List<DtObjectValidator<D>> dtObjectValidators, final UiMessageStack uiMessageStack, final Map<String, DtObject> contextKeyMap) {
+	private static <D extends DtObject> DtList<D> mergeAndCheckInput(final Class<D> objectType, final Map<String, UiObject<D>> uiObjectMap, final List<DtObjectValidator<D>> dtObjectValidators, final UiMessageStack uiMessageStack, final Map<String, DtObject> contextKeyMap) {
 		final DtList<D> dtList = new DtList<>(objectType);
 		for (final Map.Entry<String, UiObject<D>> entry : uiObjectMap.entrySet()) {
 			//entry.getValue().setInputKey(inputKey + "." + listName + "." + entry.getKey());

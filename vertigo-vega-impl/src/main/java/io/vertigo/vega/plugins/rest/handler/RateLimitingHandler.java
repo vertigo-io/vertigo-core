@@ -32,6 +32,7 @@ import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.inject.Inject;
@@ -58,7 +59,7 @@ public final class RateLimitingHandler implements Activeable, RestHandlerPlugin 
 	/**
 	 * Hit counter by userKey.
 	 */
-	final ConcurrentHashMap<String, AtomicLong> hitsCounter = new ConcurrentHashMap<>();
+	final ConcurrentMap<String, AtomicLong> hitsCounter = new ConcurrentHashMap<>();
 	/**
 	 * Last window start time.
 	 */

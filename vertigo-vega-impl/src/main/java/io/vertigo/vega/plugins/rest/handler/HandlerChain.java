@@ -80,10 +80,9 @@ public final class HandlerChain {
 			}
 			//if current  doesn't apply for this EndPointDefinition we look ahead
 			lookAhead++;
-
 			// <<< after doFilter " + nextHandler
 		}
-		throw new RuntimeException("Last routeHandler haven't send response body");
+		throw new IllegalStateException("Last RestHandlerPlugin haven't send a response body");
 	}
 
 }

@@ -18,7 +18,6 @@
  */
 package io.vertigo.vega.plugins.rest.handler;
 
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.vega.impl.rest.RestHandlerPlugin;
@@ -39,7 +38,7 @@ import spark.Response;
  * @author npiedeloup
  */
 public final class AccessTokenHandler implements RestHandlerPlugin {
-	private static final DtObject TOKEN_DATA = new DtObject() {
+	private static final Serializable TOKEN_DATA = new Serializable() {
 		private static final long serialVersionUID = 1L;
 	};
 	/** Access Token header name. */

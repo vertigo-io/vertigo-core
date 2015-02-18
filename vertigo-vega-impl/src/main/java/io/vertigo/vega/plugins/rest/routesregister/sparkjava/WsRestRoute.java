@@ -65,7 +65,6 @@ public final class WsRestRoute extends Route {
 	}
 
 	private static String convertJaxRsPathToSpark(final String path) {
-		final String newPath = path.replaceAll("\\{(.+?)\\}", ":$1"); //.+? : Reluctant regexp
-		return newPath;
+		return path.replaceAll("\\{(.+?)\\}", ":$1"); //.+? : Reluctant regexp
 	}
 }

@@ -34,6 +34,8 @@ import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.http.Part;
 
+import org.apache.log4j.Logger;
+
 import spark.Request;
 import spark.Response;
 
@@ -41,6 +43,7 @@ import spark.Response;
  * @author npiedeloup
  */
 final class KFileUtil {
+	private static final Logger LOG = Logger.getLogger(KFileUtil.class);
 	private static final String NOT_ALLOWED_IN_FILENAME = "\\/:*?\"<>|;";
 
 	private KFileUtil() {
@@ -97,12 +100,12 @@ final class KFileUtil {
 	 * @param response Response
 	 */
 	static void sendKFile(final Object result, final Request request, final Response response) {
-		sendKFile((KFile) result, true, request, response);
+		sendKFile((KFile) result, true, response);
 	}
 
-	private static void sendKFile(final KFile result, final boolean attachment, final Request request, final Response response) {
+	private static void sendKFile(final KFile result, final boolean attachment, final Response response) {
 		try {
-			send(result, attachment, request, response);
+			send(result, attachment, response);
 		} catch (final IOException e) {
 			throw new RuntimeException("Error while sending file. <!-- " + e.getMessage() + "-->", e);
 		}
@@ -121,7 +124,7 @@ final class KFileUtil {
 					sb.append(sep).append(part.getName());
 					sep = ", ";
 				}
-				throw new RuntimeException("File " + endPointParam.getName() + " not found. Parts sent : " + sb.toString());
+				throw new IllegalArgumentException("File " + endPointParam.getName() + " not found. Parts sent : " + sb.toString());
 			}
 			return createKFile(file);
 		} catch (IOException | ServletException e) {
@@ -129,7 +132,7 @@ final class KFileUtil {
 		}
 	}
 
-	private static void send(final KFile kFile, final boolean isAttachment, final Request request, final Response response)
+	private static void send(final KFile kFile, final boolean isAttachment, final Response response)
 			throws IOException {
 		final Long length = kFile.getLength();
 		Assertion.checkArgument(length.longValue() < Integer.MAX_VALUE, "Too big file to be send. It's "
@@ -138,7 +141,7 @@ final class KFileUtil {
 		// response.contentLength(length.intValue());
 		response.header("Content-Length", String.valueOf(length.intValue()));
 		response.header("Content-Disposition",
-				encodeFileNameToContentDisposition(request, kFile.getFileName(), isAttachment));
+				encodeFileNameToContentDisposition(kFile.getFileName(), isAttachment));
 		response.raw().addDateHeader("Last-Modified", kFile.getLastModified().getTime());
 		response.type(kFile.getMimeType());
 
@@ -151,12 +154,11 @@ final class KFileUtil {
 
 	/**
 	 * Encode fileName according to RFC 5987.
-	 * @param request HttpServletRequest
 	 * @param fileName String
 	 * @param isAttachment boolean is Content an attachment
 	 * @return String
 	 */
-	private static String encodeFileNameToContentDisposition(final Request request, final String fileName,
+	private static String encodeFileNameToContentDisposition(final String fileName,
 			final boolean isAttachment) {
 		if (fileName == null) {
 			return "";
@@ -188,7 +190,8 @@ final class KFileUtil {
 				}
 			}
 		} catch (final UnsupportedEncodingException e) {
-			//nothing : utf-8 unsupported we only use the filename= header
+			LOG.warn("UnsupportedEncodingException UTF-8", e);
+			//utf-8 unsupported we only use the filename= header
 		}
 		return sb.toString();
 	}

@@ -342,7 +342,7 @@ public final class JsonConverterHandler implements RestHandlerPlugin {
 		} else if (Date.class.isAssignableFrom(paramClass)) {
 			return paramClass.cast(jsonReaderEngine.fromJson(json, paramClass));
 		} else {
-			throw new RuntimeException("Unsupported type " + paramClass.getSimpleName());
+			throw new IllegalArgumentException("Unsupported type " + paramClass.getSimpleName());
 		}
 	}
 
@@ -402,9 +402,9 @@ public final class JsonConverterHandler implements RestHandlerPlugin {
 			}
 			return uiList;
 		} else if (DtObjectExtended.class.isAssignableFrom(paramClass)) {
-			throw new RuntimeException("Unsupported type DtObjectExtended (use multiple params instead, /*implicit body*/ myDto, @InnerBodyParams others...).");
+			throw new IllegalArgumentException("Unsupported type DtObjectExtended (use multiple params instead, /*implicit body*/ myDto, @InnerBodyParams others...).");
 		} else if (UiContext.class.isAssignableFrom(paramClass)) {
-			throw new RuntimeException("Unsupported type UiContext (use @InnerBodyParams instead).");
+			throw new IllegalArgumentException("Unsupported type UiContext (use @InnerBodyParams instead).");
 		} else {
 			return jsonReaderEngine.fromJson(json, paramClass);
 		}

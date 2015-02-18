@@ -40,11 +40,12 @@ import spark.utils.IOUtils;
  * @author npiedeloup
  */
 final class SparkRequestWrapper extends Request {
-	private static final Pattern charsetPattern = Pattern.compile("(?i)\\bcharset=\\s*\"?([^\\s;\"]*)");
+	private static final Pattern CHARSET_PATTERN = Pattern.compile("(?i)\\bcharset=\\s*\"?([^\\s;\"]*)");
 	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(SparkRequestWrapper.class);
 
 	private final Request innerRequest;
 	private final String defaultContentCharset;
+	private String body;
 
 	/**
 	 * Creates a new KRequestWrapper object.
@@ -134,8 +135,6 @@ final class SparkRequestWrapper extends Request {
 		return innerRequest.ip();
 	}
 
-	private String body;
-
 	/** {@inheritDoc} */
 	@Override
 	public String body() {
@@ -156,7 +155,7 @@ final class SparkRequestWrapper extends Request {
 	}
 
 	private String getContentCharset() {
-		final Matcher m = charsetPattern.matcher(contentType());
+		final Matcher m = CHARSET_PATTERN.matcher(contentType());
 		if (m.find()) {
 			return m.group(1).trim().toUpperCase();
 		}
