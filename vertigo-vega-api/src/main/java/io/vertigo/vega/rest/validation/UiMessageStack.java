@@ -66,6 +66,7 @@ public final class UiMessageStack {
 
 	/**
 	 * Constructor.
+	 * @param uiContextResolver Resolver object to contextKey in request
 	 */
 	public UiMessageStack(final UiContextResolver uiContextResolver) {
 		Assertion.checkNotNull(uiContextResolver);
@@ -152,6 +153,12 @@ public final class UiMessageStack {
 		addFieldMessage(Level.INFO, message, uiContextResolver.resolveContextKey(dto), fieldName);
 	}
 
+	/**
+	 * @param level Message level
+	 * @param message Message text
+	 * @param contextKey contextKey in request
+	 * @param fieldName field name
+	 */
 	public void addFieldMessage(final Level level, final String message, final String contextKey, final String fieldName) {
 		if (contextKey.isEmpty()) {
 			addFieldMessage(level, message, fieldName);

@@ -47,15 +47,28 @@ final class KFileUtil {
 		//nothing
 	}
 
+	/**
+	 * @param request Request
+	 * @return If this request is multipart
+	 */
 	static boolean isMultipartRequest(final Request request) {
 		final String contentType = request.contentType();
 		return "POST".equalsIgnoreCase(request.raw().getMethod()) && contentType != null && contentType.startsWith("multipart/form-data");
 	}
 
+	/**
+	 * @param endPointParam EndPoint param
+	 * @return If this is a KFile param
+	 */
 	static boolean isKFileParam(final EndPointParam endPointParam) {
 		return KFile.class.isAssignableFrom(endPointParam.getType());
 	}
 
+	/**
+	 * @param request Request
+	 * @param endPointParam EndPoint param
+	 * @return All KFile informations
+	 */
 	static KFile readKFileParam(final Request request, final EndPointParam endPointParam) {
 		switch (endPointParam.getParamType()) {
 			case Query:
@@ -70,16 +83,21 @@ final class KFileUtil {
 		}
 	}
 
+	/**
+	 * @param result WebService result
+	 * @return if result is a KFile
+	 */
 	static boolean isKFileResult(final Object result) {
 		return result instanceof KFile;
 	}
 
+	/**
+	 * @param result WebService result
+	 * @param request Request
+	 * @param response Response
+	 */
 	static void sendKFile(final Object result, final Request request, final Response response) {
 		sendKFile((KFile) result, true, request, response);
-	}
-
-	static void sendKFileAsStream(final Object result, final Request request, final Response response) {
-		sendKFile((KFile) result, false, request, response);
 	}
 
 	private static void sendKFile(final KFile result, final boolean attachment, final Request request, final Response response) {

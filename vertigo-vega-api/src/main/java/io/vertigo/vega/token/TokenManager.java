@@ -31,6 +31,7 @@ public interface TokenManager extends Component {
 
 	/**
 	 * Store object and return unique key.
+	 * Same object can be put multiple times, always return a new unique key.
 	 * @param data Object to store
 	 * @return unique key of this object
 	 */

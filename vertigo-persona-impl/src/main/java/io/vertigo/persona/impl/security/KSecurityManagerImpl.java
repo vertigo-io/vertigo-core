@@ -113,9 +113,9 @@ public final class KSecurityManagerImpl implements KSecurityManager, Activeable 
 	@Override
 	public void startCurrentUserSession(final UserSession user) {
 		Assertion.checkNotNull(user);
-		//On verifie que la UserSession precedante a bien été retiree (securite et memoire).
+		//On verifie que la UserSession précédante a bien été retiree (securite et memoire).
 		if (USER_SESSION_THREAD_LOCAL.get() != null) {
-			throw new IllegalStateException("UserSession deje creee, verifier l'utilisation du stopCurrentUserSession dans un block finally ");
+			throw new IllegalStateException("UserSession already created in this thread, check to close session by stopCurrentUserSession in a finally");
 		}
 		//-----
 		USER_SESSION_THREAD_LOCAL.set(user);
