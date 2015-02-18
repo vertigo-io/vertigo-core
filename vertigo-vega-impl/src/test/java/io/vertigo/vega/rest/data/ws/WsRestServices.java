@@ -239,7 +239,7 @@ public final class WsRestServices implements RestfulService {
 
 	//@POST is non-indempotent
 	@POST("/contact")
-	public Contact testPost(
+	public Contact createContact( //create POST method -> 201 instead of 200 by convention
 			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			throw new VUserException(new MessageText("Name is mandatory", null));
@@ -249,7 +249,7 @@ public final class WsRestServices implements RestfulService {
 		return contact;
 	}
 
-	//PUT is indempotent : ID obligatoire
+	//PUT is indempotent : ID mandatory
 	@PUT("/contact")
 	public Contact testUpdate(
 			final @Validate({ ContactValidator.class, MandatoryPkValidator.class }) Contact contact) {
@@ -263,7 +263,7 @@ public final class WsRestServices implements RestfulService {
 		return contact;
 	}
 
-	//PUT is indempotent : ID obligatoire
+	//PUT is indempotent : ID mandatory
 	@PUT("/contact/{conId}")
 	public Contact testUpdateByPath(@PathParam("conId") final long conId,
 			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) Contact contact) {

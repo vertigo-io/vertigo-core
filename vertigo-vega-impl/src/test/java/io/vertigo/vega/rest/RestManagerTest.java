@@ -404,15 +404,15 @@ public final class RestManagerTest {
 
 	@Test
 	public void testPostContact() throws ParseException {
-		doPostContact();
+		doCreateContact();
 	}
 
-	private Map<String, Object> doPostContact() throws ParseException {
+	private Map<String, Object> doCreateContact() throws ParseException {
 		final Map<String, Object> newContact = createDefaultContact(null);
 
 		final Long conId = loggedAndExpect(given().body(newContact))
 				.body("conId", Matchers.notNullValue())
-				.statusCode(HttpStatus.SC_OK)
+				.statusCode(HttpStatus.SC_CREATED)
 				.when()
 				.post("/test/contact")
 				.body().path("conId");
@@ -1487,7 +1487,7 @@ public final class RestManagerTest {
 	}
 
 	private Map<String, Object> doGetServerSideObject() throws ParseException {
-		final Map<String, Object> contact = doPostContact();
+		final Map<String, Object> contact = doCreateContact();
 		final Long oldConId = (Long) contact.get("conId");
 
 		final Response getResponse = loggedAndExpect()
