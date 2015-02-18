@@ -22,8 +22,10 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.persona.security.UserSession;
+import io.vertigo.vega.impl.rest.RestHandlerPlugin;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
+import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 
 import javax.inject.Inject;
 
@@ -35,7 +37,7 @@ import spark.Response;
  * Ensure user is authenticated, throw VSecurityException if not.
  * @author npiedeloup
  */
-public final class SecurityHandler implements RouteHandler {
+public final class SecurityHandler implements RestHandlerPlugin {
 
 	private final KSecurityManager securityManager;
 
@@ -48,6 +50,12 @@ public final class SecurityHandler implements RouteHandler {
 		Assertion.checkNotNull(securityManager);
 		//-----
 		this.securityManager = securityManager;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean accept(final EndPointDefinition endPointDefinition) {
+		return endPointDefinition.isNeedAuthentification();
 	}
 
 	/** {@inheritDoc} */

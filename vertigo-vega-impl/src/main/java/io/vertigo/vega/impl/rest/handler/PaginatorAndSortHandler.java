@@ -24,12 +24,16 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.util.StringUtil;
+import io.vertigo.vega.impl.rest.RestHandlerPlugin;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
 import io.vertigo.vega.rest.model.UiListState;
 import io.vertigo.vega.token.TokenManager;
+
+import javax.inject.Inject;
+
 import spark.Request;
 import spark.Response;
 
@@ -37,31 +41,37 @@ import spark.Response;
  * Auto paginator and Sort handler.
  * @author npiedeloup
  */
-final class PaginatorAndSortHandler implements RouteHandler {
+public final class PaginatorAndSortHandler implements RestHandlerPlugin {
 	private static final int DEFAULT_RESULT_PER_PAGE = 20;
 
-	private final TokenManager uiTokenManager;
+	private final TokenManager tokenManager;
 	private final CollectionsManager collectionsManager;
-	private final EndPointDefinition endPointDefinition;
 
 	/**
 	 * Constructor.
-	 * @param endPointDefinition endpoint definition
 	 * @param collectionsManager collections manager
-	 * @param uiSecurityTokenManager token manager
+	 * @param tokenManager token manager
 	 */
-	public PaginatorAndSortHandler(final EndPointDefinition endPointDefinition, final CollectionsManager collectionsManager, final TokenManager uiSecurityTokenManager) {
+	@Inject
+	public PaginatorAndSortHandler(final CollectionsManager collectionsManager, final TokenManager tokenManager) {
 		Assertion.checkNotNull(collectionsManager);
-		Assertion.checkNotNull(uiSecurityTokenManager);
+		Assertion.checkNotNull(tokenManager);
 		//-----
-		this.endPointDefinition = endPointDefinition;
 		this.collectionsManager = collectionsManager;
-		uiTokenManager = uiSecurityTokenManager;
+		this.tokenManager = tokenManager;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean accept(final EndPointDefinition endPointDefinition) {
+		return endPointDefinition.isAutoSortAndPagination();
 	}
 
 	/** {@inheritDoc}  */
 	@Override
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
+
+		final EndPointDefinition endPointDefinition = routeContext.getEndPointDefinition();
 		//Criteria in body
 		//UiListState in query //see at EndPointDefinitionBuilder withAutoSortAndPagination it defined where UiListState was
 		//serverToken in UiListState
@@ -75,7 +85,7 @@ final class PaginatorAndSortHandler implements RouteHandler {
 		String listServerToken = uiListState.getListServerToken();
 		Option<DtList<?>> fullListOption = Option.none();
 		if (listServerToken != null) {
-			fullListOption = uiTokenManager.<DtList<?>> get(uiListState.getListServerToken());
+			fullListOption = tokenManager.<DtList<?>> get(uiListState.getListServerToken());
 		}
 		final DtList<?> fullList;
 		if (fullListOption.isDefined()) {
@@ -84,7 +94,7 @@ final class PaginatorAndSortHandler implements RouteHandler {
 			final Object result = chain.handle(request, response, routeContext);
 			Assertion.checkArgument(result instanceof DtList, "sort and pagination only supports DtList");
 			fullList = (DtList<?>) result;
-			listServerToken = uiTokenManager.put(fullList);
+			listServerToken = tokenManager.put(fullList);
 		}
 		response.header("listServerToken", listServerToken);
 		response.header("x-total-count", String.valueOf(fullList.size())); //TODO total count should be list meta

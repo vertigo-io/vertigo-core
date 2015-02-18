@@ -16,39 +16,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega.impl.rest.handler;
+package io.vertigo.vega.plugins.rest.routesregister.sparkjava;
 
-import io.vertigo.vega.impl.rest.RestHandlerPlugin;
-import io.vertigo.vega.rest.exception.SessionException;
-import io.vertigo.vega.rest.exception.VSecurityException;
+import io.vertigo.vega.impl.rest.RoutesRegisterPlugin;
+import io.vertigo.vega.impl.rest.handler.HandlerChain;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
-import spark.Request;
-import spark.Response;
-import spark.Session;
+import spark.Spark;
 
 /**
- * Invalidate session handler.
+ * RoutesRegisterPlugin use to register Spark-java route.
  * @author npiedeloup
  */
-public final class SessionInvalidateHandler implements RestHandlerPlugin {
+public final class SparkJavaRoutesRegisterPlugin implements RoutesRegisterPlugin {
+
+	private final String defaultContentCharset = "UTF-8";
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean accept(final EndPointDefinition endPointDefinition) {
-		return endPointDefinition.isSessionInvalidate();
-	}
+	public void register(final HandlerChain handlerChain, final EndPointDefinition endPointDefinition) {
 
-	/** {@inheritDoc} */
-	@Override
-	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
-		try {
-			return chain.handle(request, response, routeContext);
-		} finally {
-			final Session session = request.session();
-			if (session != null) {
-				session.invalidate();
-			}
+		final WsRestRoute wsRestRoute = new WsRestRoute(endPointDefinition, handlerChain, defaultContentCharset);
+
+		switch (endPointDefinition.getVerb()) {
+			case GET:
+				Spark.get(wsRestRoute);
+				break;
+			case POST:
+				Spark.post(wsRestRoute);
+				break;
+			case PUT:
+				Spark.put(wsRestRoute);
+				break;
+			case DELETE:
+				Spark.delete(wsRestRoute);
+				break;
+			default:
+				throw new UnsupportedOperationException();
 		}
 	}
-
 }

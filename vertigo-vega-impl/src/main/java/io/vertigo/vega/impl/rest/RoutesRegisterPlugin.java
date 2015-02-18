@@ -16,29 +16,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega.impl.rest.handler;
+package io.vertigo.vega.impl.rest;
 
-import io.vertigo.vega.rest.exception.SessionException;
-import io.vertigo.vega.rest.exception.VSecurityException;
-import spark.Request;
-import spark.Response;
+import io.vertigo.lang.Plugin;
+import io.vertigo.vega.impl.rest.handler.HandlerChain;
+import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 
 /**
- * Atomic handler of http request. 
+ * Register an handlerchain as a route for this endpoint.
  * @author npiedeloup
  */
-public interface RouteHandler {
+public interface RoutesRegisterPlugin extends Plugin {
 
 	/**
-	 * Do handle of this route.
-	 * 
-	 * @param request spark.Request
-	 * @param response spark.Response
-	 * @param routeContext Context of this request
-	 * @param chain current HandlerChain.
-	 * @return Response body
-	 * @throws SessionException Session expired exception
-	 * @throws VSecurityException Security exception
+	 * @param handlerChain HandlerChain of this route
+	 * @param endPointDefinition EndPointDefinition
 	 */
-	Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException;
+	void register(HandlerChain handlerChain, EndPointDefinition endPointDefinition);
+
 }

@@ -22,6 +22,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.vega.impl.rest.RestHandlerPlugin;
 import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.vega.rest.engine.UiContext;
 import io.vertigo.vega.rest.engine.UiList;
@@ -50,6 +51,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
 import spark.QueryParamsMap;
@@ -64,16 +66,18 @@ import com.google.gson.JsonSyntaxException;
  * Extract and Json convert.
  * @author npiedeloup
  */
-final class JsonConverterHandler implements RouteHandler {
+public final class JsonConverterHandler implements RestHandlerPlugin {
 	private static final String SERVER_SIDE_MANDATORY = "ServerSideToken mandatory";
 	private static final String FORBIDDEN_OPERATION_FIELD_MODIFICATION = "Can't modify field:";
 
 	private final JsonEngine jsonWriterEngine;
 	private final JsonEngine jsonReaderEngine;
 
-	private final TokenManager uiSecurityTokenManager;
-	private final EndPointDefinition endPointDefinition;
+	private final TokenManager tokenManager;
 
+	/**
+	 * encodeType.
+	 */
 	enum EncoderType {
 		/** Type JSON simple */
 		JSON(""),
@@ -96,50 +100,82 @@ final class JsonConverterHandler implements RouteHandler {
 			contentTypePattern = Pattern.compile(contentType.replaceAll("%s", ".+"));
 		}
 
+		/**
+		 * @param entityName Entity name
+		 * @return contentType
+		 */
 		public String createContentType(final String entityName) {
 			return String.format(contentType, entityName);
 		}
 
+		/**
+		 * @param testedContentType contentType to test
+		 * @return If testedContentType is 'this' EncoderType
+		 */
 		public boolean isContentType(final String testedContentType) {
 			return contentTypePattern.matcher(testedContentType).find();
 		}
 	}
 
+	/**
+	 * EncodedType : encoderType + entityName.
+	 */
 	static class EncodedType {
 		private final EncoderType encoderType;
 		private final String contentType;
 
+		/**
+		 * constructor.
+		 * @param encoderType encoderType
+		 * @param entityName entityName
+		 */
 		EncodedType(final EncoderType encoderType, final String entityName) {
 			this.encoderType = encoderType;
 			contentType = encoderType.createContentType(entityName);
 		}
 
+		/**
+		 * @return encoderType
+		 */
 		public EncoderType getEncoderType() {
 			return encoderType;
 		}
 
+		/**
+		 * @return contentType
+		 */
 		public String getContentType() {
 			return contentType;
 		}
 	}
 
-	JsonConverterHandler(final TokenManager uiSecurityTokenManager, final EndPointDefinition endPointDefinition, final JsonEngine jsonWriterEngine, final JsonEngine jsonReaderEngine) {
-		Assertion.checkNotNull(uiSecurityTokenManager);
-		Assertion.checkNotNull(endPointDefinition);
+	/**
+	 * @param tokenManager tokenManager
+	 * @param jsonWriterEngine jsonWriterEngine
+	 * @param jsonReaderEngine jsonReaderEngine
+	 */
+	@Inject
+	public JsonConverterHandler(final TokenManager tokenManager, final JsonEngine jsonWriterEngine, final JsonEngine jsonReaderEngine) {
+		Assertion.checkNotNull(tokenManager);
 		Assertion.checkNotNull(jsonWriterEngine);
 		Assertion.checkNotNull(jsonReaderEngine);
 		//-----
-		this.uiSecurityTokenManager = uiSecurityTokenManager;
-		this.endPointDefinition = endPointDefinition;
+		this.tokenManager = tokenManager;
 		this.jsonWriterEngine = jsonWriterEngine;
 		this.jsonReaderEngine = jsonReaderEngine;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean accept(final EndPointDefinition endPointDefinition) {
+		return true;
 	}
 
 	/** {@inheritDoc}  */
 	@Override
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
 		UiContext innerBodyParsed = null; //we can't read body at first : because if it's a multipart request call body() disabled getParts() access.
-		for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
+		for (final EndPointParam endPointParam : routeContext.getEndPointDefinition().getEndPointParams()) {
 			try {
 				final Object value;
 				if (KFileUtil.isKFileParam(endPointParam)) {
@@ -152,7 +188,7 @@ final class JsonConverterHandler implements RouteHandler {
 						case InnerBody:
 							if (innerBodyParsed == null) {
 								//we read all InnerBody when we get the first one
-								innerBodyParsed = readInnerBodyValue(request.body(), endPointDefinition.getEndPointParams());
+								innerBodyParsed = readInnerBodyValue(request.body(), routeContext.getEndPointDefinition().getEndPointParams());
 							}
 							value = innerBodyParsed.get(endPointParam.getName());
 							break;
@@ -187,7 +223,7 @@ final class JsonConverterHandler implements RouteHandler {
 				Assertion.checkNotNull(value, "RestParam not found : {0}", endPointParam);
 				routeContext.setParamValue(endPointParam, value);
 			} catch (final JsonSyntaxException e) {
-				throw new JsonSyntaxException("Error parsing param " + endPointParam.getFullName() + " on service " + endPointDefinition.getVerb() + " " + endPointDefinition.getPath(), e);
+				throw new JsonSyntaxException("Error parsing param " + endPointParam.getFullName() + " on service " + routeContext.getEndPointDefinition().getVerb() + " " + routeContext.getEndPointDefinition().getPath(), e);
 			}
 		}
 
@@ -214,7 +250,7 @@ final class JsonConverterHandler implements RouteHandler {
 				contentType.append(";").append(encodedType.getContentType());
 			}
 			response.type(contentType.toString());
-			return writeValue(result, response, encodedType);
+			return writeValue(result, response, encodedType, routeContext.getEndPointDefinition());
 		}
 		return ""; //jetty understand null as 404 not found
 	}
@@ -278,9 +314,9 @@ final class JsonConverterHandler implements RouteHandler {
 			for (final EndPointParam endPointParam : innerBodyEndPointParams) {
 				final Serializable value = uiContext.get(endPointParam.getName());
 				if (value instanceof UiObject) {
-					postReadUiObject((UiObject<DtObject>) value, endPointParam.getName(), endPointParam, uiSecurityTokenManager);
+					postReadUiObject((UiObject<DtObject>) value, endPointParam.getName(), endPointParam, tokenManager);
 				} else if (value instanceof UiListDelta) {
-					postReadUiListDelta((UiListDelta<DtObject>) value, endPointParam.getName(), endPointParam, uiSecurityTokenManager);
+					postReadUiListDelta((UiListDelta<DtObject>) value, endPointParam.getName(), endPointParam, tokenManager);
 				}
 			}
 			return uiContext;
@@ -350,19 +386,19 @@ final class JsonConverterHandler implements RouteHandler {
 		} else if (DtObject.class.isAssignableFrom(paramClass)) {
 			final UiObject<DtObject> uiObject = jsonReaderEngine.<DtObject> uiObjectFromJson(json, paramGenericType);
 			if (uiObject != null) {
-				postReadUiObject(uiObject, "", endPointParam, uiSecurityTokenManager);
+				postReadUiObject(uiObject, "", endPointParam, tokenManager);
 			}
 			return uiObject;
 		} else if (DtListDelta.class.isAssignableFrom(paramClass)) {
 			final UiListDelta<DtObject> uiListDelta = jsonReaderEngine.<DtObject> uiListDeltaFromJson(json, paramGenericType);
 			if (uiListDelta != null) {
-				postReadUiListDelta(uiListDelta, "", endPointParam, uiSecurityTokenManager);
+				postReadUiListDelta(uiListDelta, "", endPointParam, tokenManager);
 			}
 			return uiListDelta;
 		} else if (DtList.class.isAssignableFrom(paramClass)) {
 			final UiList<DtObject> uiList = jsonReaderEngine.<DtObject> uiListFromJson(json, paramGenericType);
 			if (uiList != null) {
-				postReadUiList(uiList, "", endPointParam, uiSecurityTokenManager);
+				postReadUiList(uiList, "", endPointParam, tokenManager);
 			}
 			return uiList;
 		} else if (DtObjectExtended.class.isAssignableFrom(paramClass)) {
@@ -438,7 +474,7 @@ final class JsonConverterHandler implements RouteHandler {
 		}
 	}
 
-	private String writeValue(final Object value, final Response response, final EncodedType encodedType) {
+	private String writeValue(final Object value, final Response response, final EncodedType encodedType, final EndPointDefinition endPointDefinition) {
 		Assertion.checkNotNull(value);
 		//-----
 		final String tokenId;
@@ -447,7 +483,7 @@ final class JsonConverterHandler implements RouteHandler {
 					|| DtObjectExtended.class.isInstance(value)
 					|| DtList.class.isInstance(value)
 					|| UiContext.class.isInstance(value), "Return type can't be ServerSide : {0}", value.getClass().getSimpleName());
-			tokenId = uiSecurityTokenManager.put((Serializable) value);
+			tokenId = tokenManager.put((Serializable) value);
 		} else {
 			tokenId = null;
 		}
@@ -456,15 +492,15 @@ final class JsonConverterHandler implements RouteHandler {
 			case JSON:
 				return jsonWriterEngine.toJson(value);
 			case JSON_ENTITY:
-				return toJson(value, Collections.<String, Serializable> emptyMap(), tokenId);
+				return toJson(value, Collections.<String, Serializable> emptyMap(), tokenId, endPointDefinition.getIncludedFields(), endPointDefinition.getExcludedFields());
 			case JSON_ENTITY_META:
 				final DtObjectExtended<?> dtoExtended = (DtObjectExtended<?>) value;
-				return toJson(dtoExtended.getInnerObject(), dtoExtended, tokenId);
+				return toJson(dtoExtended.getInnerObject(), dtoExtended, tokenId, endPointDefinition.getIncludedFields(), endPointDefinition.getExcludedFields());
 			case JSON_LIST:
 				writeListMetaToHeader((List) value, response);
-				return toJson(value, Collections.<String, Serializable> emptyMap(), tokenId);
+				return toJson(value, Collections.<String, Serializable> emptyMap(), tokenId, endPointDefinition.getIncludedFields(), endPointDefinition.getExcludedFields());
 			case JSON_LIST_META:
-				return toJson(value, getListMetas((DtList) value), tokenId);
+				return toJson(value, getListMetas((DtList) value), tokenId, endPointDefinition.getIncludedFields(), endPointDefinition.getExcludedFields());
 			case JSON_UI_CONTEXT:
 				//TODO build json in jsonWriterEngine
 				final StringBuilder sb = new StringBuilder().append("{");
@@ -475,9 +511,9 @@ final class JsonConverterHandler implements RouteHandler {
 					String encodedValue;
 					if (entryValue instanceof DtList) {
 						final DtList<?> dtList = (DtList<?>) entryValue;
-						encodedValue = writeValue(entryValue, response, new EncodedType(EncoderType.JSON_LIST_META, dtList.getDefinition().getClassSimpleName()));
+						encodedValue = writeValue(entryValue, response, new EncodedType(EncoderType.JSON_LIST_META, dtList.getDefinition().getClassSimpleName()), endPointDefinition);
 					} else if (entryValue instanceof DtObject || entryValue instanceof DtObjectExtended) {
-						encodedValue = writeValue(entryValue, response, findEncodedType(entryValue));
+						encodedValue = writeValue(entryValue, response, findEncodedType(entryValue), endPointDefinition);
 					} else {
 						encodedValue = jsonWriterEngine.toJson(entryValue);
 					}
@@ -518,7 +554,7 @@ final class JsonConverterHandler implements RouteHandler {
 		return metaDatas;
 	}
 
-	private String toJson(final Object value, final Map<String, Serializable> metaData, final String tokenId) {
+	private String toJson(final Object value, final Map<String, Serializable> metaData, final String tokenId, final Set<String> includedFields, final Set<String> excludedFields) {
 		final Map<String, Serializable> metaDataToSend;
 		if (tokenId != null) {
 			metaDataToSend = new HashMap<>(metaData);
@@ -526,6 +562,6 @@ final class JsonConverterHandler implements RouteHandler {
 		} else {
 			metaDataToSend = metaData;
 		}
-		return jsonWriterEngine.toJsonWithMeta(value, metaDataToSend, endPointDefinition.getIncludedFields(), endPointDefinition.getExcludedFields());
+		return jsonWriterEngine.toJsonWithMeta(value, metaDataToSend, includedFields, excludedFields);
 	}
 }

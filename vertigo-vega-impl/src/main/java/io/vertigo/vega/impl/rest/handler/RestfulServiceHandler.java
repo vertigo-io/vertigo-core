@@ -19,9 +19,9 @@
 package io.vertigo.vega.impl.rest.handler;
 
 import io.vertigo.core.Home;
-import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VUserException;
 import io.vertigo.util.ClassUtil;
+import io.vertigo.vega.impl.rest.RestHandlerPlugin;
 import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
@@ -42,22 +42,19 @@ import spark.Response;
  * RestfulServiceHandler : call service method.
  * @author npiedeloup
  */
-final class RestfulServiceHandler implements RouteHandler {
-	private final EndPointDefinition endPointDefinition;
+public final class RestfulServiceHandler implements RestHandlerPlugin {
 
-	/**
-	 * @param endPointDefinition EndPointDefinition
-	 */
-	RestfulServiceHandler(final EndPointDefinition endPointDefinition) {
-		Assertion.checkNotNull(endPointDefinition);
-		//-----
-		this.endPointDefinition = endPointDefinition;
+	/** {@inheritDoc} */
+	@Override
+	public boolean accept(final EndPointDefinition endPointDefinition) {
+		return true;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
-		final Object[] serviceArgs = makeArgs(routeContext);
+		final EndPointDefinition endPointDefinition = routeContext.getEndPointDefinition();
+		final Object[] serviceArgs = makeArgs(routeContext, endPointDefinition);
 		final Method method = endPointDefinition.getMethod();
 		final RestfulService service = (RestfulService) Home.getComponentSpace().resolve(method.getDeclaringClass());
 
@@ -88,7 +85,7 @@ final class RestfulServiceHandler implements RouteHandler {
 		}
 	}
 
-	private Object[] makeArgs(final RouteContext routeContext) {
+	private Object[] makeArgs(final RouteContext routeContext, final EndPointDefinition endPointDefinition) {
 		if (endPointDefinition.isAutoSortAndPagination()) {
 			final Object[] serviceArgs = new Object[endPointDefinition.getEndPointParams().size() - 1];
 			int i = 0;

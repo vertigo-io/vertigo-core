@@ -23,9 +23,11 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.persona.security.UserSession;
+import io.vertigo.vega.impl.rest.RestHandlerPlugin;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.TooManyRequestException;
 import io.vertigo.vega.rest.exception.VSecurityException;
+import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -42,7 +44,7 @@ import spark.Response;
  * Rate limit handler.
  * @author npiedeloup
  */
-public final class RateLimitingHandler implements Activeable, RouteHandler {
+public final class RateLimitingHandler implements Activeable, RestHandlerPlugin {
 	private static final long DEFAULT_LIMIT_VALUE = 150; //the rate limit ceiling value
 	private static final long DEFAULT_WINDOW_SECONDS = 5 * 60; //the time windows use to limit calls rate
 	private static final String RATE_LIMIT_LIMIT = "X-Rate-Limit-Limit"; //the rate limit ceiling for that given request
@@ -53,9 +55,15 @@ public final class RateLimitingHandler implements Activeable, RouteHandler {
 	private final long windowSeconds;
 	private final long limitValue;
 
-	private final ConcurrentHashMap<String, AtomicLong> hitsCounter = new ConcurrentHashMap<>();
+	/**
+	 * Hit counter by userKey.
+	 */
+	final ConcurrentHashMap<String, AtomicLong> hitsCounter = new ConcurrentHashMap<>();
+	/**
+	 * Last window start time.
+	 */
+	long lastRateLimitResetTime = System.currentTimeMillis();
 	private Timer purgeTimer;
-	private long lastRateLimitResetTime = System.currentTimeMillis();
 
 	/**
 	 * Constructor.
@@ -93,6 +101,12 @@ public final class RateLimitingHandler implements Activeable, RouteHandler {
 		purgeTimer.cancel();
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public boolean accept(final EndPointDefinition endPointDefinition) {
+		return true;
+	}
+
 	/** {@inheritDoc}  */
 	@Override
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
@@ -125,4 +139,5 @@ public final class RateLimitingHandler implements Activeable, RouteHandler {
 		final AtomicLong oldValue = hitsCounter.putIfAbsent(userKey, value);
 		return (oldValue != null ? oldValue : value).incrementAndGet();
 	}
+
 }

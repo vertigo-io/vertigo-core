@@ -19,8 +19,10 @@
 package io.vertigo.vega.impl.rest.handler;
 
 import io.vertigo.lang.Option;
+import io.vertigo.vega.impl.rest.RestHandlerPlugin;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
+import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -36,7 +38,7 @@ import spark.Response;
  * Handler of Cross-Origin Resource Sharing (CORS).
  * @author npiedeloup
  */
-public final class CorsAllowerHandler implements RouteHandler {
+public final class CorsAllowerHandler implements RestHandlerPlugin {
 
 	private static final String REQUEST_HEADER_ORIGIN = "Origin";
 
@@ -59,6 +61,12 @@ public final class CorsAllowerHandler implements RouteHandler {
 		this.methodCORSFilter = methodCORSFilter.getOrElse(DEFAULT_METHODS_CORS_FILTER);
 		originCORSFiltersSet = parseStringToSet(this.originCORSFilter);
 		methodCORSFiltersSet = parseStringToSet(this.methodCORSFilter);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean accept(final EndPointDefinition endPointDefinition) {
+		return true;
 	}
 
 	/** {@inheritDoc} */

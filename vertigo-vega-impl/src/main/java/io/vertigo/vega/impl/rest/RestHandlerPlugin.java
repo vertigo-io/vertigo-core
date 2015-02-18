@@ -16,39 +16,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega.impl.rest.handler;
+package io.vertigo.vega.impl.rest;
 
-import io.vertigo.vega.impl.rest.RestHandlerPlugin;
+import io.vertigo.lang.Plugin;
+import io.vertigo.vega.impl.rest.handler.HandlerChain;
+import io.vertigo.vega.impl.rest.handler.RouteContext;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import spark.Request;
 import spark.Response;
-import spark.Session;
 
 /**
- * Invalidate session handler.
+ * Handler of WebService Route, are defined as plugins of RestManager.
  * @author npiedeloup
  */
-public final class SessionInvalidateHandler implements RestHandlerPlugin {
+public interface RestHandlerPlugin extends Plugin {
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean accept(final EndPointDefinition endPointDefinition) {
-		return endPointDefinition.isSessionInvalidate();
-	}
+	/**
+	 * @param endPointDefinition EndPointDefinition
+	 * @return If this handler should be use for this endPoint
+	 */
+	boolean accept(EndPointDefinition endPointDefinition);
 
-	/** {@inheritDoc} */
-	@Override
-	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
-		try {
-			return chain.handle(request, response, routeContext);
-		} finally {
-			final Session session = request.session();
-			if (session != null) {
-				session.invalidate();
-			}
-		}
-	}
+	/**
+	 * Do handle of this route.
+	 *
+	 * @param request spark.Request
+	 * @param response spark.Response
+	 * @param routeContext Context of this request
+	 * @param chain current HandlerChain.
+	 * @return Response body
+	 * @throws SessionException Session expired exception
+	 * @throws VSecurityException Security exception
+	 */
+	Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException;
 
 }

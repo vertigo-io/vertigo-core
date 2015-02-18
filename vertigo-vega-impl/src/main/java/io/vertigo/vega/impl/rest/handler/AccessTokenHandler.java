@@ -21,12 +21,15 @@ package io.vertigo.vega.impl.rest.handler;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.vega.impl.rest.RestHandlerPlugin;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.token.TokenManager;
 
 import java.io.Serializable;
+
+import javax.inject.Inject;
 
 import spark.Request;
 import spark.Response;
@@ -35,34 +38,42 @@ import spark.Response;
  * Params handler. Extract and Json convert.
  * @author npiedeloup
  */
-final class AccessTokenHandler implements RouteHandler {
+public final class AccessTokenHandler implements RestHandlerPlugin {
 	private static final DtObject TOKEN_DATA = new DtObject() {
 		private static final long serialVersionUID = 1L;
 	};
 	/** Access Token header name. */
 	private static final String HEADER_ACCESS_TOKEN = "x-access-token";
 	private static final String INVALID_ACCESS_TOKEN_MSG = "Invalid access token"; //Todo make a resource.properties
-	private final TokenManager uiSecurityTokenManager;
-	private final EndPointDefinition endPointDefinition;
+	private final TokenManager tokenManager;
 
-	AccessTokenHandler(final TokenManager uiSecurityTokenManager, final EndPointDefinition endPointDefinition) {
-		Assertion.checkNotNull(uiSecurityTokenManager);
-		Assertion.checkNotNull(endPointDefinition);
+	/**
+	 * Constructor.
+	 * @param tokenManager TokenManager
+	 */
+	@Inject
+	public AccessTokenHandler(final TokenManager tokenManager) {
+		Assertion.checkNotNull(tokenManager);
 		//-----
-		this.uiSecurityTokenManager = uiSecurityTokenManager;
-		this.endPointDefinition = endPointDefinition;
+		this.tokenManager = tokenManager;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean accept(final EndPointDefinition endPointDefinition) {
+		return endPointDefinition.isAccessTokenMandatory() || endPointDefinition.isAccessTokenConsume() || endPointDefinition.isAccessTokenPublish();
 	}
 
 	/** {@inheritDoc}  */
 	@Override
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
 		final String accessTokenKey;
-		if (endPointDefinition.isAccessTokenMandatory()) {
+		if (routeContext.getEndPointDefinition().isAccessTokenMandatory()) {
 			accessTokenKey = request.headers(HEADER_ACCESS_TOKEN);
 			if (accessTokenKey == null) {
 				throw new VSecurityException(INVALID_ACCESS_TOKEN_MSG); //same message for no AccessToken or bad AccessToken
 			}
-			final Option<Serializable> tokenData = uiSecurityTokenManager.get(accessTokenKey);
+			final Option<Serializable> tokenData = tokenManager.get(accessTokenKey);
 			if (tokenData.isEmpty()) {
 				throw new VSecurityException(INVALID_ACCESS_TOKEN_MSG); //same message for no AccessToken or bad AccessToken
 			}
@@ -70,13 +81,14 @@ final class AccessTokenHandler implements RouteHandler {
 			accessTokenKey = null;
 		}
 		final Object result = chain.handle(request, response, routeContext);
-		if (accessTokenKey != null && endPointDefinition.isAccessTokenConsume()) {
-			uiSecurityTokenManager.getAndRemove(accessTokenKey);
+		if (accessTokenKey != null && routeContext.getEndPointDefinition().isAccessTokenConsume()) {
+			tokenManager.getAndRemove(accessTokenKey);
 		}
-		if (endPointDefinition.isAccessTokenPublish()) {
-			final String newAccessTokenKey = uiSecurityTokenManager.put(TOKEN_DATA);
+		if (routeContext.getEndPointDefinition().isAccessTokenPublish()) {
+			final String newAccessTokenKey = tokenManager.put(TOKEN_DATA);
 			response.header(HEADER_ACCESS_TOKEN, newAccessTokenKey);
 		}
 		return result;
 	}
+
 }

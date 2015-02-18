@@ -23,6 +23,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.vega.rest.engine.UiList;
 import io.vertigo.vega.rest.engine.UiListDelta;
 import io.vertigo.vega.rest.engine.UiObject;
+import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
 import io.vertigo.vega.rest.model.DtListDelta;
 import io.vertigo.vega.rest.validation.UiContextResolver;
@@ -37,32 +38,69 @@ import spark.Request;
 */
 public final class RouteContext {
 	private static final String UI_MESSAGE_STACK = "UiMessageStack";
-
+	private final EndPointDefinition endPointDefinition;
 	private final Request request;
 	private final UiContextResolver uiContextResolver;
 
-	RouteContext(final Request request) {
+	/**
+	 * Constructor.
+	 * @param request Request
+	 * @param endPointDefinition EndPointDefinition
+	 */
+	public RouteContext(final Request request, final EndPointDefinition endPointDefinition) {
 		this.request = request;
+		this.endPointDefinition = endPointDefinition;
 		uiContextResolver = new UiContextResolver();
 		request.attribute(UI_MESSAGE_STACK, new UiMessageStack(uiContextResolver));
 	}
 
+	/**
+	 * @return EndPointDefinition
+	 */
+	public EndPointDefinition getEndPointDefinition() {
+		return endPointDefinition;
+	}
+
+	/**
+	 * @return UiMessageStack
+	 */
 	public UiMessageStack getUiMessageStack() {
 		return (UiMessageStack) request.attribute(UI_MESSAGE_STACK);
 	}
 
+	/**
+	 * Set param of an endpoint.
+	 * @param endPointParam param name
+	 * @param value param value
+	 */
 	public void setParamValue(final EndPointParam endPointParam, final Object value) {
 		request.attribute(endPointParam.getFullName(), value);
 	}
 
+	/**
+	 * Get param of an endpoint.
+	 * @param endPointParam param name
+	 * @return param value
+	 */
 	public Object getParamValue(final EndPointParam endPointParam) {
 		return request.attribute(endPointParam.getFullName());
 	}
 
+	/**
+	 * Register UiObject.
+	 * @param endPointParam param name
+	 * @param uiObject param value
+	 */
 	public void registerUiObject(final EndPointParam endPointParam, final UiObject uiObject) {
 		request.attribute(endPointParam.getFullName(), uiObject);
 	}
 
+	/**
+	 * Register Updated Dto.
+	 * @param endPointParam param name
+	 * @param contextKey Context key of this dto in request
+	 * @param updatedDto param value
+	 */
 	public void registerUpdatedDto(final EndPointParam endPointParam, final String contextKey, final DtObject updatedDto) {
 		uiContextResolver.register(contextKey, updatedDto);
 		request.attribute(endPointParam.getFullName() + "-input", request.attribute(endPointParam.getFullName()));
@@ -73,6 +111,12 @@ public final class RouteContext {
 		request.attribute(endPointParam.getFullName(), uiObject);
 	}*/
 
+	/**
+	 * Register Updated DtListDelta.
+	 * @param endPointParam param name
+	 * @param dtListDelta param value
+	 * @param contextKeyMap Map of elements contextKey
+	 */
 	public void registerUpdatedDtListDelta(final EndPointParam endPointParam, final DtListDelta dtListDelta, final Map<String, DtObject> contextKeyMap) {
 		final UiListDelta<?> uiListDelta = (UiListDelta<?>) request.attribute(endPointParam.getFullName());
 		for (final Map.Entry<String, DtObject> entry : contextKeyMap.entrySet()) {
@@ -82,6 +126,12 @@ public final class RouteContext {
 		request.attribute(endPointParam.getFullName(), dtListDelta);
 	}
 
+	/**
+	 * Register Updated DtList.
+	 * @param endPointParam param name
+	 * @param dtList param value
+	 * @param contextKeyMap Map of elements contextKey
+	 */
 	public void registerUpdatedDtList(final EndPointParam endPointParam, final DtList dtList, final Map<String, DtObject> contextKeyMap) {
 		final UiList<?> uiList = (UiList<?>) request.attribute(endPointParam.getFullName());
 		for (final Map.Entry<String, DtObject> entry : contextKeyMap.entrySet()) {

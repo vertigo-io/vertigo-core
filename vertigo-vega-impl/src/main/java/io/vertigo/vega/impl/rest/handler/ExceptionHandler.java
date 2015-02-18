@@ -20,13 +20,16 @@ package io.vertigo.vega.impl.rest.handler;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VUserException;
+import io.vertigo.vega.impl.rest.RestHandlerPlugin;
 import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.TooManyRequestException;
 import io.vertigo.vega.rest.exception.VSecurityException;
+import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.rest.validation.UiMessageStack;
 import io.vertigo.vega.rest.validation.ValidationUserException;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
@@ -40,17 +43,27 @@ import com.google.gson.JsonSyntaxException;
  * Exceptions handler. Convert exception to response.
  * @author npiedeloup
  */
-public final class ExceptionHandler implements RouteHandler {
+public final class ExceptionHandler implements RestHandlerPlugin {
 
 	private static final int SC_UNPROCESSABLE_ENTITY = 422; //server understands the content syntaxe but not semanticly
 	private static final int SC_TOO_MANY_REQUEST = 429; //RFC 6585 : TooManyRequest in time window
 	private static final Logger LOGGER = Logger.getLogger(ExceptionHandler.class);
 	private final JsonEngine jsonWriterEngine;
 
-	ExceptionHandler(final JsonEngine jsonWriterEngine) {
+	/**
+	 * @param jsonWriterEngine JsonEngine
+	 */
+	@Inject
+	public ExceptionHandler(final JsonEngine jsonWriterEngine) {
 		Assertion.checkNotNull(jsonWriterEngine);
 		//-----
 		this.jsonWriterEngine = jsonWriterEngine;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean accept(final EndPointDefinition endPointDefinition) {
+		return true;
 	}
 
 	/** {@inheritDoc} */

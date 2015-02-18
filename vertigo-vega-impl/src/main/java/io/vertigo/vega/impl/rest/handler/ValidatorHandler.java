@@ -20,8 +20,8 @@ package io.vertigo.vega.impl.rest.handler;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
+import io.vertigo.vega.impl.rest.RestHandlerPlugin;
 import io.vertigo.vega.rest.engine.UiList;
 import io.vertigo.vega.rest.engine.UiListDelta;
 import io.vertigo.vega.rest.engine.UiObject;
@@ -48,18 +48,18 @@ import spark.Response;
  * Params handler. Extract and Json convert.
  * @author npiedeloup
  */
-final class ValidatorHandler implements RouteHandler {
-	private final EndPointDefinition endPointDefinition;
+public final class ValidatorHandler implements RestHandlerPlugin {
 
-	ValidatorHandler(final EndPointDefinition endPointDefinition) {
-		Assertion.checkNotNull(endPointDefinition);
-		//-----
-		this.endPointDefinition = endPointDefinition;
+	/** {@inheritDoc} */
+	@Override
+	public boolean accept(final EndPointDefinition endPointDefinition) {
+		return true;
 	}
 
 	/** {@inheritDoc}  */
 	@Override
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
+		final EndPointDefinition endPointDefinition = routeContext.getEndPointDefinition();
 		final UiMessageStack uiMessageStack = routeContext.getUiMessageStack();
 		for (final EndPointParam endPointParam : endPointDefinition.getEndPointParams()) {
 			final Object value = routeContext.getParamValue(endPointParam);

@@ -19,6 +19,7 @@
 package io.vertigo.vega.impl.rest.handler;
 
 import io.vertigo.lang.Assertion;
+import io.vertigo.vega.impl.rest.RestHandlerPlugin;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
 
@@ -33,14 +34,15 @@ import spark.Response;
  * Chain of handlers to handle a Request.
  * @author npiedeloup
  */
-final class HandlerChain {
-	private final List<RouteHandler> handlers;
+public final class HandlerChain {
+	private final List<RestHandlerPlugin> handlers;
 	private final int offset;
 
 	/**
 	 * Constructor.
+	 * @param handlers Handlers
 	 */
-	HandlerChain(final List<RouteHandler> handlers) {
+	public HandlerChain(final List<RestHandlerPlugin> handlers) {
 		Assertion.checkNotNull(handlers);
 		//-----
 		this.handlers = Collections.unmodifiableList(new ArrayList<>(handlers));
@@ -51,11 +53,11 @@ final class HandlerChain {
 	 * private constructor for go forward in chain
 	 * @param previous chain
 	 */
-	private HandlerChain(final HandlerChain previous) {
-		Assertion.checkState(previous.offset < 50, "HandlerChain go through 50 handlers. Force halt : infinit loop suspected.");
+	private HandlerChain(final List<RestHandlerPlugin> handlers, final int offset) {
+		Assertion.checkState(offset < 50, "HandlerChain go through 50 handlers. Force halt : infinit loop suspected.");
 		//-----
-		handlers = previous.handlers;
-		offset = previous.offset + 1; //on avance
+		this.handlers = handlers;
+		this.offset = offset + 1; //new offset
 	}
 
 	/**
@@ -63,13 +65,23 @@ final class HandlerChain {
 	 *
 	 * @param request spark.Request
 	 * @param response spark.Response
+	 * @param routeContext Context of this route
+	 * @return WebService result
+	 * @throws VSecurityException Security exception
+	 * @throws SessionException Session exception
 	 */
-	Object handle(final Request request, final Response response, final RouteContext routeContext) throws VSecurityException, SessionException {
-		if (offset < handlers.size()) {
-			final RouteHandler nextHandler = handlers.get(offset);
-			//System.out.println(">>> before doFilter " + nextHandler);
-			return nextHandler.handle(request, response, routeContext, new HandlerChain(this));
-			//System.out.println("<<< after doFilter " + nextHandler);
+	public Object handle(final Request request, final Response response, final RouteContext routeContext) throws VSecurityException, SessionException {
+		int lookAhead = 0;
+		while (offset + lookAhead < handlers.size()) {
+			final RestHandlerPlugin nextHandler = handlers.get(offset + lookAhead);
+			// >>> before doFilter " + nextHandler
+			if (nextHandler.accept(routeContext.getEndPointDefinition())) {
+				return nextHandler.handle(request, response, routeContext, new HandlerChain(handlers, offset + lookAhead));
+			}
+			//if current  doesn't apply for this EndPointDefinition we look ahead
+			lookAhead++;
+
+			// <<< after doFilter " + nextHandler
 		}
 		throw new RuntimeException("Last routeHandler haven't send response body");
 	}

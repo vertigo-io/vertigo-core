@@ -21,8 +21,13 @@ package io.vertigo.vega.impl.rest.handler;
 import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.persona.security.UserSession;
+import io.vertigo.vega.impl.rest.RestHandlerPlugin;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
+import io.vertigo.vega.rest.metamodel.EndPointDefinition;
+
+import javax.inject.Inject;
+
 import spark.Request;
 import spark.Response;
 import spark.Session;
@@ -32,7 +37,7 @@ import spark.Session;
  * Create and bind UserSession object with client.
  * @author npiedeloup
  */
-public final class SessionHandler implements RouteHandler {
+public final class SessionHandler implements RestHandlerPlugin {
 	/**
 	 * UserSession attributeName in HttpSession.
 	 */
@@ -44,10 +49,17 @@ public final class SessionHandler implements RouteHandler {
 	 * Constructor.
 	 * @param securityManager Security Manager
 	 */
+	@Inject
 	public SessionHandler(final KSecurityManager securityManager) {
 		Assertion.checkNotNull(securityManager);
 		//-----
 		this.securityManager = securityManager;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean accept(final EndPointDefinition endPointDefinition) {
+		return endPointDefinition.isNeedSession();
 	}
 
 	/** {@inheritDoc} */

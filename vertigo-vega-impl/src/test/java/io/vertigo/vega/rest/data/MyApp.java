@@ -54,10 +54,20 @@ import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.vega.impl.rest.RestManagerImpl;
 import io.vertigo.vega.impl.rest.catalog.CatalogRestServices;
 import io.vertigo.vega.impl.rest.catalog.SwaggerRestServices;
+import io.vertigo.vega.impl.rest.handler.AccessTokenHandler;
 import io.vertigo.vega.impl.rest.handler.CorsAllowerHandler;
+import io.vertigo.vega.impl.rest.handler.ExceptionHandler;
+import io.vertigo.vega.impl.rest.handler.JsonConverterHandler;
+import io.vertigo.vega.impl.rest.handler.PaginatorAndSortHandler;
 import io.vertigo.vega.impl.rest.handler.RateLimitingHandler;
+import io.vertigo.vega.impl.rest.handler.RestfulServiceHandler;
+import io.vertigo.vega.impl.rest.handler.SecurityHandler;
+import io.vertigo.vega.impl.rest.handler.SessionHandler;
+import io.vertigo.vega.impl.rest.handler.SessionInvalidateHandler;
+import io.vertigo.vega.impl.rest.handler.ValidatorHandler;
 import io.vertigo.vega.impl.token.TokenManagerImpl;
 import io.vertigo.vega.plugins.rest.instrospector.annotations.AnnotationsEndPointIntrospectorPlugin;
+import io.vertigo.vega.plugins.rest.routesregister.sparkjava.SparkJavaRoutesRegisterPlugin;
 import io.vertigo.vega.rest.RestManager;
 import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.WsRestHandler.DtDefinitions;
@@ -66,6 +76,8 @@ import io.vertigo.vega.rest.data.user.TestUserSession;
 import io.vertigo.vega.rest.data.ws.WsContactsRestServices;
 import io.vertigo.vega.rest.data.ws.WsFileDownload;
 import io.vertigo.vega.rest.data.ws.WsRestServices;
+import io.vertigo.vega.rest.engine.GoogleJsonEngine;
+import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.vega.token.TokenManager;
 import io.vertigoimpl.commons.locale.LocaleManagerImpl;
 import io.vertigoimpl.engines.rest.cmd.ComponentCmdRestServices;
@@ -123,17 +135,30 @@ public final class MyApp {
 				.beginComponent(WsContactsRestServices.class).endComponent()
 				.beginComponent(WsRestServices.class).endComponent()
 				.beginComponent(WsFileDownload.class).endComponent()
+
 			.endModule()
 			.beginModule("restCore").withNoAPI().withInheritance(Object.class)
-				.beginComponent(RestManager.class, RestManagerImpl.class)
-					.beginPlugin(AnnotationsEndPointIntrospectorPlugin.class).endPlugin()
-				.endComponent()
+				.beginComponent(JsonEngine.class, GoogleJsonEngine.class).endComponent()
 				.beginComponent(SwaggerRestServices.class).endComponent()
 				.beginComponent(CatalogRestServices.class).endComponent()
-				.beginComponent(RateLimitingHandler.class).endComponent()
-				.beginComponent(CorsAllowerHandler.class).endComponent()
 				.beginComponent(TokenManager.class, TokenManagerImpl.class)
 					.withParam("dataStoreName", "UiSecurityStore")
+				.endComponent()
+				.beginComponent(RestManager.class, RestManagerImpl.class)
+					.beginPlugin(AnnotationsEndPointIntrospectorPlugin.class).endPlugin()
+					.beginPlugin(SparkJavaRoutesRegisterPlugin.class).endPlugin()
+					//-- Handlers plugins
+					.beginPlugin(ExceptionHandler.class).endPlugin()
+					.beginPlugin(CorsAllowerHandler.class).endPlugin()
+					.beginPlugin(SessionInvalidateHandler.class).endPlugin()
+					.beginPlugin(SessionHandler.class).endPlugin()
+					.beginPlugin(RateLimitingHandler.class).endPlugin()
+					.beginPlugin(SecurityHandler.class).endPlugin()
+					.beginPlugin(AccessTokenHandler.class).endPlugin()
+					.beginPlugin(JsonConverterHandler.class).endPlugin()
+					.beginPlugin(PaginatorAndSortHandler.class).endPlugin()
+					.beginPlugin(ValidatorHandler.class).endPlugin()
+					.beginPlugin(RestfulServiceHandler.class).endPlugin()
 				.endComponent()
 			.endModule()
 			.beginModule("myApp")

@@ -19,22 +19,20 @@
 package io.vertigo.vega.plugins.rest.routesregister.sparkjava;
 
 import io.vertigo.core.Home;
-import io.vertigo.vega.impl.rest.handler.WsRestRoute;
 import io.vertigo.vega.rest.RestManager;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 
 import java.util.Collection;
 
-import spark.Spark;
 import spark.servlet.SparkApplication;
 
 /**
- * Application class, use to register Spark-java route.
+ * Application class, use to register Vertigo Service as Spark-java route.
  * Could be embedded in Tomcat Server (see http://www.sparkjava.com/readme.html#title19)
  *
  * @author npiedeloup
  */
-public final class SparkJavaRoutesRegister implements SparkApplication {
+public final class VegaSparkApplication implements SparkApplication {
 
 	/**
 	 * Spark-java application class.
@@ -43,30 +41,13 @@ public final class SparkJavaRoutesRegister implements SparkApplication {
 	@Override
 	public void init() {
 		final RestManager restManager = Home.getComponentSpace().resolve(RestManager.class);
-		final String defaultContentCharset = "UTF-8"; //TODO : parametrable ?
 		restManager.scanAndRegisterRestfulServices();
 
 		//Translate EndPoints to routes
 		final Collection<EndPointDefinition> endPointDefinitions = Home.getDefinitionSpace().getAll(EndPointDefinition.class);
 
 		for (final EndPointDefinition endPointDefinition : endPointDefinitions) {
-			final WsRestRoute wsRestRoute = new WsRestRoute(endPointDefinition, defaultContentCharset);
-			switch (endPointDefinition.getVerb()) {
-				case GET:
-					Spark.get(wsRestRoute);
-					break;
-				case POST:
-					Spark.post(wsRestRoute);
-					break;
-				case PUT:
-					Spark.put(wsRestRoute);
-					break;
-				case DELETE:
-					Spark.delete(wsRestRoute);
-					break;
-				default:
-					throw new UnsupportedOperationException();
-			}
+			restManager.createAndRegisterWsRestRoute(endPointDefinition);
 		}
 	}
 }
