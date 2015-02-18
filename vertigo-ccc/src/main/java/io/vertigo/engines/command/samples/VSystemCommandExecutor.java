@@ -30,7 +30,15 @@ import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+/**
+ * System Command Executor.
+ * @author pchretien
+ */
 public final class VSystemCommandExecutor implements VCommandExecutor<List<ComponentInfo>> {
+	private static Logger LOG = Logger.getLogger(VSystemCommandExecutor.class);
+
 	/** {@inheritDoc} */
 	@Override
 	public List<ComponentInfo> exec(final VCommand command) {
@@ -42,6 +50,7 @@ public final class VSystemCommandExecutor implements VCommandExecutor<List<Compo
 			address = InetAddress.getLocalHost().getHostAddress();
 		} catch (final UnknownHostException e) {
 			address = "????";
+			LOG.warn("Unknown Host", e);
 		}
 
 		return new ListBuilder<ComponentInfo>()
