@@ -45,7 +45,7 @@ import javax.inject.Inject;
  */
 public final class LuceneIndexPlugin implements IndexPlugin {
 
-	//	private final int nbTermsMax = 1024; //a paramètrer
+	//	private final int nbTermsMax = 1024; //a paramétrer
 	private final CacheManager cacheManager;
 
 	/**

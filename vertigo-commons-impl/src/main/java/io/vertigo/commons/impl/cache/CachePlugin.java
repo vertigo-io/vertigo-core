@@ -48,7 +48,7 @@ public interface CachePlugin extends Plugin {
 	 * @param key Clé de l'objet à insérer
 	 * @param value Objet à insérer
 	 */
-	void put(final String context, final Serializable key, final Serializable value);
+	void put(final String context, final Serializable key, final Object value);
 
 	/**
 	 * Cette methode rend l'objet désigne par le contexte et le handle donnée en entrée.
@@ -59,7 +59,7 @@ public interface CachePlugin extends Plugin {
 	 * @param key Clé de l'objet à récupérer
 	 * @return Objet demandé ou null si non trouvé
 	 */
-	Serializable get(String context, Serializable key);
+	Object get(String context, Serializable key);
 
 	/**
 	 * Suppression du cache de l'objet référencé par sa clé.

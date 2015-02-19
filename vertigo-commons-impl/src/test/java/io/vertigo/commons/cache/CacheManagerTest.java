@@ -59,7 +59,7 @@ public final class CacheManagerTest extends AbstractTestCaseJU4 {
 		final Serializable value = new Element();
 
 		cacheManager.put(CONTEXT, KEY, value);
-		final Serializable retrieve = cacheManager.get(CONTEXT, KEY);
+		final Object retrieve = cacheManager.get(CONTEXT, KEY);
 		//On vérifie qu'il s'agit du même objet.
 		Assert.assertEquals(value, retrieve);
 	}

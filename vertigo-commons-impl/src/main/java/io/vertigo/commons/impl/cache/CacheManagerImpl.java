@@ -57,13 +57,13 @@ public final class CacheManagerImpl implements CacheManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public void put(final String context, final Serializable key, final Serializable value) {
+	public void put(final String context, final Serializable key, final Object value) {
 		cachePlugin.put(context, key, value);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Serializable get(final String context, final Serializable key) {
+	public Object get(final String context, final Serializable key) {
 		return cachePlugin.get(context, key);
 	}
 

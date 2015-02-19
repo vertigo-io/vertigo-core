@@ -102,7 +102,7 @@ final class MemoryCache {
 	 * @param key Clé de l'élément
 	 * @return élément du cache, null si n'existe pas ou obsolete
 	 */
-	synchronized Serializable get(final Serializable key) {
+	synchronized Object get(final Serializable key) {
 		totalCalls++;
 		final MemoryCacheValue cacheValue = cacheDatas.get(key);
 		if (cacheValue != null) {
@@ -126,7 +126,7 @@ final class MemoryCache {
 	 * @param key Clé de l'élément
 	 * @param value Element
 	 */
-	synchronized void put(final Serializable key, final Serializable value) {
+	synchronized void put(final Serializable key, final Object value) {
 		//totalPuts++;
 		cacheDatas.put(key, new MemoryCacheValue(value));
 	}

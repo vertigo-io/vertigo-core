@@ -18,24 +18,33 @@
  */
 package io.vertigo.commons.plugins.cache.memory;
 
-import java.io.Serializable;
 
 /**
  * @author npiedeloup
  */
 final class MemoryCacheValue {
 	private final long createTime;
-	private final Serializable value;
+	private final Object value;
 
-	MemoryCacheValue(final Serializable value) {
+	/**
+	 * Constructor.
+	 * @param value Value
+	 */
+	MemoryCacheValue(final Object value) {
 		this.value = value;
 		createTime = System.currentTimeMillis();
 	}
 
-	Serializable getValue() {
+	/**
+	 * @return Value
+	 */
+	Object getValue() {
 		return value;
 	}
 
+	/**
+	 * @return Creation time
+	 */
 	long getCreateTime() {
 		return createTime;
 	}

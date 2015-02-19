@@ -26,7 +26,6 @@ import io.vertigo.dynamo.impl.collections.functions.sort.SortState;
 import io.vertigo.lang.Option;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
@@ -36,9 +35,28 @@ import java.util.List;
  * @author npiedeloup
  * @param <D> type d'objet indexé
  */
-public interface LuceneIndex<D extends DtObject> extends Serializable {
+public interface LuceneIndex<D extends DtObject> {
+
+	/**
+	 * Add element to index.
+	 * @param fullDtc Full Dtc to index
+	 * @param storeValue if data are store in index
+	 * @throws IOException Indexation error
+	 */
 	void addAll(final DtList<D> fullDtc, final boolean storeValue) throws IOException;
 
+	/**
+	 * Querying index.
+	 * @param keywords Keywords
+	 * @param searchedFields Searched field list
+	 * @param listFilters Added filters
+	 * @param skip skip elements
+	 * @param top max elements (max number of result)
+	 * @param sortState Sort information
+	 * @param boostedField Field use for boosting score
+	 * @return Filtered ordered list
+	 * @throws IOException Query error
+	 */
 	DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final int skip, final int top, final Option<SortState> sortState, final Option<DtField> boostedField) throws IOException;
 
 }

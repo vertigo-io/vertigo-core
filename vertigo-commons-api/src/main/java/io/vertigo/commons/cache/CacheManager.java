@@ -37,6 +37,7 @@ public interface CacheManager extends Component {
 	 * Il s'agit en effet d'une phase d'initialisation.
 	 *
 	 * @param context Contexte du cache
+	 * @param cacheConfig Cache configuration
 	 */
 	void addCache(final String context, final CacheConfig cacheConfig);
 
@@ -49,7 +50,7 @@ public interface CacheManager extends Component {
 	 * @param key Clé de l'objet à insérer
 	 * @param value Objet à insérer
 	 */
-	void put(final String context, final Serializable key, final Serializable value);
+	void put(final String context, final Serializable key, final Object value);
 
 	/**
 	 * Cette methode rend l'objet désigne par le contexte et le handle donnée en entrée.
@@ -60,7 +61,7 @@ public interface CacheManager extends Component {
 	 * @param key Clé de l'objet à récupérer
 	 * @return Objet demandé ou null si non trouvé
 	 */
-	Serializable get(String context, Serializable key);
+	Object get(String context, Serializable key);
 
 	/**
 	 * Suppression du cache de l'objet référencé par sa clé.

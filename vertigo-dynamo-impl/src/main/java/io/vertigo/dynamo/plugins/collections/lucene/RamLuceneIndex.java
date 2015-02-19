@@ -36,6 +36,8 @@ import io.vertigo.lang.VUserException;
 import io.vertigo.util.StringUtil;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Collection;
@@ -84,9 +86,9 @@ import org.apache.lucene.util.Version;
  * @param <D> Type d'objet
  */
 final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifiable {
+	/** Prefix for a created field use for sorting. */
 	static final String SORT_FIELD_PREFIX = "4SORT_";
 
-	private static final long serialVersionUID = -8810115927887053497L;
 	private boolean modifiable = true;
 	//DtDefinition est non serializable
 	private final DtDefinition dtDefinition;
@@ -350,6 +352,17 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifi
 			}
 		}
 		return query;
+	}
+
+	private void writeObject(final ObjectOutputStream oos) throws IOException {
+		// default serialization
+		oos.defaultWriteObject();
+
+	}
+
+	private void readObject(final ObjectInputStream ois) throws ClassNotFoundException, IOException {
+		// default deserialization
+		ois.defaultReadObject();
 	}
 
 }

@@ -81,8 +81,9 @@ public final class MemoryCachePlugin implements CachePlugin, Describable {
 
 	/** {@inheritDoc} */
 	@Override
-	public void put(final String context, final Serializable key, final Serializable value) {
-		Assertion.checkArgument(!(value instanceof byte[]), "Ce CachePlugin ne permet pas de mettre en cache des byte[].");
+	public void put(final String context, final Serializable key, final Object value) {
+		Assertion.checkNotNull(value, "CachePlugin can't cache null value. (context: {0}, key:{1})", context, key);
+		Assertion.checkState(!(value instanceof byte[]), "Ce CachePlugin ne permet pas de mettre en cache des byte[].");
 		//-----
 		//Si l'objet est bien marqué non modifiable (ie : interface Modifiable ET !isModifiable)
 		//on peut le garder tel quel, sinon on le clone
@@ -90,14 +91,15 @@ public final class MemoryCachePlugin implements CachePlugin, Describable {
 		if (isUnmodifiable(value) || noSerializationContext.contains(context)) {
 			putElement(context, key, value);
 		} else {
+			Assertion.checkArgument(value instanceof Serializable, "Object to cache isn't Serializable. Make it unmodifiable or add it in noSerialization's plugin parameter. (context: {0}, key:{1}, class:{2})", context, key, value.getClass().getSimpleName());
 			// Sérialisation avec compression
-			final byte[] serializedObject = codecManager.getCompressedSerializationCodec().encode(value);
+			final byte[] serializedObject = codecManager.getCompressedSerializationCodec().encode((Serializable) value);
 			//La sérialisation est équivalente à un deep Clone.
 			putElement(context, key, serializedObject);
 		}
 	}
 
-	private static boolean isUnmodifiable(final Serializable value) {
+	private static boolean isUnmodifiable(final Object value) {
 		//s'il n'implemente pas Modifiable, il doit être cloné
 		//s'il implemente Modifiable et que isModifiable == true, il doit être cloné
 		return value instanceof Modifiable && !((Modifiable) value).isModifiable();
@@ -105,8 +107,8 @@ public final class MemoryCachePlugin implements CachePlugin, Describable {
 
 	/** {@inheritDoc} */
 	@Override
-	public Serializable get(final String context, final Serializable key) {
-		final Serializable cachedObject = getElement(context, key);
+	public Object get(final String context, final Serializable key) {
+		final Object cachedObject = getElement(context, key);
 		//on ne connait pas l'état Modifiable ou non de l'objet, on se base sur son type.
 		if (cachedObject instanceof byte[]) {
 			final byte[] serializedObject = (byte[]) cachedObject;
@@ -139,11 +141,11 @@ public final class MemoryCachePlugin implements CachePlugin, Describable {
 		}
 	}
 
-	private void putElement(final String context, final Serializable key, final Serializable value) {
+	private void putElement(final String context, final Serializable key, final Object value) {
 		getMapCache(context).put(key, value);
 	}
 
-	private Serializable getElement(final String context, final Serializable key) {
+	private Object getElement(final String context, final Serializable key) {
 		return getMapCache(context).get(key);
 	}
 

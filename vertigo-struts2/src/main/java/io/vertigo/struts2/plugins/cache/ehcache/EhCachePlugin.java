@@ -87,7 +87,8 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void put(final String context, final Serializable key, final Serializable value) {
+	public void put(final String context, final Serializable key, final Object value) {
+		Assertion.checkNotNull(value, "CachePlugin can't cache null value. (context: {0}, key:{1})", context, key);
 		Assertion.checkState(!(value instanceof byte[]), "Ce CachePlugin ne permet pas de mettre en cache des byte[].");
 		//-----
 		//Si l'objet est bien marqué non modifiable (ie : interface Modifiable ET !isModifiable)
@@ -95,14 +96,15 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 		if (isUnmodifiable(value) || noSerializationContext.contains(context)) {
 			putEH(context, key, value);
 		} else {
+			Assertion.checkArgument(value instanceof Serializable, "Object to cache isn't Serializable. Make it unmodifiable or add it in noSerialization's plugin parameter. (context: {0}, key:{1}, class:{2})", context, key, value.getClass().getSimpleName());
 			// Sérialisation avec compression
-			final byte[] serializedObject = codecManager.getCompressedSerializationCodec().encode(value);
+			final byte[] serializedObject = codecManager.getCompressedSerializationCodec().encode((Serializable) value);
 			//La sérialisation est équivalente à un deep Clone.
 			putEH(context, key, serializedObject);
 		}
 	}
 
-	private static boolean isUnmodifiable(final Serializable value) {
+	private static boolean isUnmodifiable(final Object value) {
 		//s'il n'implemente pas Modifiable, il doit être cloné
 		//s'il implemente Modifiable et que isModifiable == true, il doit être cloné
 		return value instanceof Modifiable && !((Modifiable) value).isModifiable();
@@ -110,8 +112,8 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Serializable get(final String context, final Serializable key) {
-		final Serializable cachedObject = getEH(context, key);
+	public Object get(final String context, final Serializable key) {
+		final Object cachedObject = getEH(context, key);
 		//on ne connait pas l'état Modifiable ou non de l'objet, on se base sur son type.
 		if (cachedObject instanceof byte[]) {
 			final byte[] serializedObject = (byte[]) cachedObject;
@@ -139,17 +141,16 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 		if (ehCache != null) {
 			ehCache.removeAll();
 		}
-
 	}
 
-	private void putEH(final String context, final Object key, final Serializable serialized) {
+	private void putEH(final String context, final Object key, final Object serialized) {
 		final Element element = new Element(key, serialized);
 		getEHCache(context).put(element);
 	}
 
-	private Serializable getEH(final String context, final Object key) {
+	private Object getEH(final String context, final Object key) {
 		final Element element = getEHCache(context).get(key);
-		return element == null ? null : element.getValue();
+		return element == null ? null : element.getObjectValue();
 	}
 
 	private Ehcache getEHCache(final String context) {
