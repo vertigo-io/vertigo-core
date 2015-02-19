@@ -202,19 +202,7 @@ public final class JsonConverterHandler implements RestHandlerPlugin {
 							value = readPrimitiveValue(request.headers(endPointParam.getName()), endPointParam.getType());
 							break;
 						case Implicit:
-							switch (ImplicitParam.valueOf(endPointParam.getName())) {
-								case UiMessageStack:
-									value = routeContext.getUiMessageStack();
-									break;
-								case Request:
-									value = request.raw();
-									break;
-								case Response:
-									value = response.raw();
-									break;
-								default:
-									throw new IllegalArgumentException("ImplicitParam : " + endPointParam.getName());
-							}
+							value = readImplicitValue(endPointParam, request, response, routeContext);
 							break;
 						default:
 							throw new IllegalArgumentException("RestParamType : " + endPointParam.getFullName());
@@ -228,8 +216,13 @@ public final class JsonConverterHandler implements RestHandlerPlugin {
 		}
 
 		final Object result = chain.handle(request, response, routeContext);
+		return convertResult(result, request, response, routeContext);
+	}
+
+	private String convertResult(final Object result, final Request request, final Response response, final RouteContext routeContext) {
 		if (result == null) {
 			response.status(HttpServletResponse.SC_NO_CONTENT);
+			return ""; //jetty understand null as 404 not found
 		} else if (KFileUtil.isKFileResult(result)) {
 			KFileUtil.sendKFile(result, request, response);
 			return ""; // response already send but can't send null : javaspark understand it as : not consumed here
@@ -242,7 +235,7 @@ public final class JsonConverterHandler implements RestHandlerPlugin {
 			final int length = resultString.length();
 			Assertion.checkArgument(!(resultString.charAt(0) == '{' && resultString.charAt(length - 1) == '}') && !(resultString.charAt(0) == '[' && resultString.charAt(length - 1) == ']'), "Can't return pre-build json : {0}", resultString);
 			response.type("text/plain;charset=UTF-8");
-			return result;
+			return (String) result;
 		} else {
 			final EncodedType encodedType = findEncodedType(result);
 			final StringBuilder contentType = new StringBuilder("application/json;charset=UTF-8");
@@ -252,7 +245,6 @@ public final class JsonConverterHandler implements RestHandlerPlugin {
 			response.type(contentType.toString());
 			return writeValue(result, response, encodedType, routeContext.getEndPointDefinition());
 		}
-		return ""; //jetty understand null as 404 not found
 	}
 
 	private EncodedType findEncodedType(final Object result) {
@@ -357,6 +349,19 @@ public final class JsonConverterHandler implements RestHandlerPlugin {
 			return (D) readValue(convertToJson(queryMap, endPointParam.getName()), endPointParam);
 		}
 		return readPrimitiveValue(queryMap.get(paramName).value(), paramClass);
+	}
+
+	private Object readImplicitValue(final EndPointParam endPointParam, final Request request, final Response response, final RouteContext routeContext) {
+		switch (ImplicitParam.valueOf(endPointParam.getName())) {
+			case UiMessageStack:
+				return routeContext.getUiMessageStack();
+			case Request:
+				return request.raw();
+			case Response:
+				return response.raw();
+			default:
+				throw new IllegalArgumentException("ImplicitParam : " + endPointParam.getName());
+		}
 	}
 
 	private String convertToJson(final QueryParamsMap queryMap, final String queryPrefix) {
