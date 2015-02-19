@@ -29,13 +29,13 @@ import spark.Spark;
  */
 public final class SparkJavaRoutesRegisterPlugin implements RoutesRegisterPlugin {
 
-	private static final String defaultContentCharset = "UTF-8";
+	private static final String DEFAULT_CONTENT_CHARSET = "UTF-8";
 
 	/** {@inheritDoc} */
 	@Override
 	public void register(final HandlerChain handlerChain, final EndPointDefinition endPointDefinition) {
 
-		final WsRestRoute wsRestRoute = new WsRestRoute(endPointDefinition, handlerChain, defaultContentCharset);
+		final WsRestRoute wsRestRoute = new WsRestRoute(endPointDefinition, handlerChain, DEFAULT_CONTENT_CHARSET);
 
 		switch (endPointDefinition.getVerb()) {
 			case GET:
