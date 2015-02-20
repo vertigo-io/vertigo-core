@@ -19,8 +19,10 @@
 package io.vertigo.dynamo.plugins.search.elasticsearch.commonshttp;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -50,12 +52,14 @@ public final class ESSearchServicesPlugin extends AbstractESSearchServicesPlugin
 	 * @param rowsPerQuery Liste des indexes
 	 * @param codecManager Manager des codecs
 	 * @param clusterName : nom du cluster à rejoindre
+	 * @param configFile fichier de configuration des index
+	 * @param resourceManager Manager d'accès aux ressources
 	 */
 	@Inject
 	public ESSearchServicesPlugin(@Named("servers.names") final String serversNamesStr, @Named("cores") final String cores,
-			@Named("rowsPerQuery") final int rowsPerQuery, final CodecManager codecManager,
-			@Named("cluster.name") final String clusterName) {
-		super(cores, rowsPerQuery, codecManager);
+			@Named("rowsPerQuery") final int rowsPerQuery, @Named("cluster.name") final String clusterName, 
+			@Named("config.file") final Option<String> configFile, final CodecManager codecManager, final ResourceManager resourceManager) {
+		super(cores, rowsPerQuery, configFile, codecManager, resourceManager);
 		Assertion.checkArgNotEmpty(serversNamesStr,
 				"Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','");
 		Assertion.checkArgument(!serversNamesStr.contains(";"),

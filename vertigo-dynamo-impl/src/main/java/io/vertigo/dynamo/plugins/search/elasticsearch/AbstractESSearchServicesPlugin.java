@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.plugins.search.elasticsearch;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
@@ -35,8 +36,10 @@ import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -44,9 +47,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 
 import org.apache.log4j.Logger;
+import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequestBuilder;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.admin.indices.optimize.OptimizeRequest;
@@ -55,6 +58,8 @@ import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.hppc.cursors.ObjectObjectCursor;
+import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.node.Node;
@@ -73,14 +78,19 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	private final Map<String, SearchIndexFieldNameResolver> indexFieldNameResolvers;
 	private final int rowsPerQuery;
 	private final Set<String> cores;
+	private final URL configFile;
 
 	/**
 	 * Constructeur.
 	 * @param cores Nom des noyeaux ES
 	 * @param rowsPerQuery Nombre de lignes
 	 * @param codecManager Manager de codec
+	 * @param configFile Fichier de configuration des indexs
+	 * @param resourceManager Manager des resources
 	 */
-	protected AbstractESSearchServicesPlugin(final String cores, final int rowsPerQuery, final CodecManager codecManager) {
+	protected AbstractESSearchServicesPlugin(final String cores, final int rowsPerQuery, final  Option<String> configFile, 
+			final CodecManager codecManager,
+			final ResourceManager resourceManager) {
 		Assertion.checkArgNotEmpty(cores);
 		Assertion.checkNotNull(codecManager);
 		//-----
@@ -89,6 +99,11 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		indexFieldNameResolvers = new HashMap<>();
 		//------
 		this.cores = new HashSet<>(Arrays.asList(cores.split(",")));
+		if (configFile.isDefined()) {
+			this.configFile = resourceManager.resolve(configFile.get());
+		} else {
+			this.configFile = null;
+		}
 
 	}
 
@@ -103,10 +118,15 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			final String indexName = core.toLowerCase().trim();
 			waitForYellowStatus(); //must wait yellow status to be sure prepareExists works fine (instead of returning false on a already exist index)
 			try {
-				if (!esClient.admin().indices().prepareExists(indexName).execute().get().isExists()) {
-					esClient.admin().indices().prepareCreate(indexName).execute().get();
+				if (!esClient.admin().indices().prepareExists(indexName).get().isExists()) {
+					if (configFile == null) {
+						esClient.admin().indices().prepareCreate(indexName).get();
+					} else {
+						final Settings settings = ImmutableSettings.settingsBuilder().loadFromUrl(configFile).build();
+						esClient.admin().indices().prepareCreate(indexName).setSettings(settings).get();
+					}
 				}
-			} catch (InterruptedException | ExecutionException e) {
+			} catch (ElasticsearchException e) {
 				throw new RuntimeException("Error on index " + indexName, e);
 			}
 		}

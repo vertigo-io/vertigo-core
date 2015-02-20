@@ -22,6 +22,7 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -55,8 +56,10 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 	 * @param resourceManager Manager d'accès aux ressources
 	 */
 	@Inject
-	public ESEmbeddedSearchServicesPlugin(@Named("home") final String elasticSearchHome, @Named("cores") final String cores, @Named("rowsPerQuery") final int rowsPerQuery, final CodecManager codecManager, final ResourceManager resourceManager) {
-		super(cores, rowsPerQuery, codecManager);
+	public ESEmbeddedSearchServicesPlugin(@Named("home") final String elasticSearchHome, @Named("cores") final String cores, 
+			@Named("rowsPerQuery") final int rowsPerQuery, @Named("config.file") final Option<String> configFile,
+			final CodecManager codecManager, final ResourceManager resourceManager) {
+		super(cores, rowsPerQuery, configFile, codecManager, resourceManager);
 		Assertion.checkArgNotEmpty(elasticSearchHome);
 		//-----
 		elasticSearchHomeURL = resourceManager.resolve(elasticSearchHome);
