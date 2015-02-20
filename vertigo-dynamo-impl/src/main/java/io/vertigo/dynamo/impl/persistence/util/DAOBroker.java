@@ -62,6 +62,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 *
 	 * @param dtObjectClass Définition du DtObject associé à ce DAOBroker
 	 * @param persistenceManager Manager de gestion de la persistance
+	 * @param taskManager Manager de gestion des tâches
 	 */
 	public DAOBroker(final Class<? extends DtObject> dtObjectClass, final PersistenceManager persistenceManager, final TaskManager taskManager) {
 		this(DtObjectUtil.findDtDefinition(dtObjectClass), persistenceManager, taskManager);
@@ -72,6 +73,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 *
 	 * @param dtDefinition Définition du DtObject associé à ce DAOBroker
 	 * @param persistenceManager Manager de gestion de la persistance
+	 * @param taskManager Manager de gestion des tâches
 	 */
 	public DAOBroker(final DtDefinition dtDefinition, final PersistenceManager persistenceManager, final TaskManager taskManager) {
 		Assertion.checkNotNull(dtDefinition);
@@ -125,7 +127,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 *
 	 * @param uri URI de l'objet à supprimer
 	 */
-	public final void delete(final URI uri) {
+	public final void delete(final URI<D> uri) {
 		broker.delete(uri);
 	}
 
@@ -168,8 +170,8 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 * @param id identifiant de l'objet persistant recherché
 	 * @return URI recherchée
 	 */
-	private URI createDtObjectURI(final P id) {
-		return new URI(dtDefinition, id);
+	private URI<D> createDtObjectURI(final P id) {
+		return new URI<>(dtDefinition, id);
 	}
 
 	/**
@@ -245,11 +247,11 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 		brokerNN.appendNN(dtListURI, createURI(dtoToAppend));
 	}
 
-	private static <D extends DtObject> URI createURI(final D dto) {
+	private static <D extends DtObject> URI<D> createURI(final D dto) {
 		Assertion.checkNotNull(dto);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-		return new URI(dtDefinition, DtObjectUtil.getId(dto));
+		return new URI<>(dtDefinition, DtObjectUtil.getId(dto));
 	}
 
 	/**
