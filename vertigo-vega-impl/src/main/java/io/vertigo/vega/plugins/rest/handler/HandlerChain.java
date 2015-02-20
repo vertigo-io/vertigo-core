@@ -51,7 +51,6 @@ public final class HandlerChain {
 
 	/**
 	 * private constructor for go forward in chain
-	 * @param previous chain
 	 */
 	private HandlerChain(final List<RestHandlerPlugin> handlers, final int offset) {
 		Assertion.checkState(offset < 50, "HandlerChain go through 50 handlers. Force halt : infinit loop suspected.");
