@@ -278,7 +278,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 	private static Set<String> getFieldNames(final DtDefinition dtDefinition) {
 		final Set<String> dtFieldNames = new HashSet<>();
 		for (final DtField dtField : dtDefinition.getFields()) {
-			dtFieldNames.add(StringUtil.constToCamelCase(dtField.getName(), false));
+			dtFieldNames.add(StringUtil.constToLowerCamelCase(dtField.getName()));
 		}
 		return dtFieldNames;
 	}

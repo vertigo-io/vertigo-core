@@ -18,8 +18,6 @@
  */
 package io.vertigo.util;
 
-import io.vertigo.util.StringUtil;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -75,25 +73,25 @@ public final class StringUtilTest {
 
 	@Test
 	public void testCaseTransform() {
-		Assert.assertEquals("XxxYyyZzz", StringUtil.constToCamelCase(XXX_YYY_ZZZ, true));
-		Assert.assertEquals("xxxYyyZzz", StringUtil.constToCamelCase(XXX_YYY_ZZZ, false));
-		Assert.assertEquals("xxxYZzz", StringUtil.constToCamelCase("XXX_Y_ZZZ", false));
-		Assert.assertEquals("xxxYyy12", StringUtil.constToCamelCase("XXX_YYY_12", false));
+		Assert.assertEquals("XxxYyyZzz", StringUtil.constToUpperCamelCase(XXX_YYY_ZZZ));
+		Assert.assertEquals("xxxYyyZzz", StringUtil.constToLowerCamelCase(XXX_YYY_ZZZ));
+		Assert.assertEquals("xxxYZzz", StringUtil.constToLowerCamelCase("XXX_Y_ZZZ"));
+		Assert.assertEquals("xxxYyy12", StringUtil.constToLowerCamelCase("XXX_YYY_12"));
 
-		Assert.assertEquals("xxxYyy12Ppp", StringUtil.constToCamelCase("XXX_YYY_12_PPP", false));
-		Assert.assertEquals("xxxYyy1", StringUtil.constToCamelCase("XXX_YYY_1", false));
-		Assert.assertEquals("xxxYyy12_3", StringUtil.constToCamelCase("XXX_YYY_12_3", false));
-		Assert.assertEquals("TAdresseAdr", StringUtil.constToCamelCase("T_ADRESSE_ADR", true));
+		Assert.assertEquals("xxxYyy12Ppp", StringUtil.constToLowerCamelCase("XXX_YYY_12_PPP"));
+		Assert.assertEquals("xxxYyy1", StringUtil.constToLowerCamelCase("XXX_YYY_1"));
+		Assert.assertEquals("xxxYyy12_3", StringUtil.constToLowerCamelCase("XXX_YYY_12_3"));
+		Assert.assertEquals("TAdresseAdr", StringUtil.constToUpperCamelCase("T_ADRESSE_ADR"));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testCaseTransformWithErrors() {
-		StringUtil.constToCamelCase("XXX_YYY12_PPP", false);
+		StringUtil.constToLowerCamelCase("XXX_YYY12_PPP");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testCaseTransformWithErrors2() {
-		StringUtil.constToCamelCase("XXX_YYY_12PPP", false);
+		StringUtil.constToLowerCamelCase("XXX_YYY_12PPP");
 	}
 
 	@Test
@@ -114,8 +112,8 @@ public final class StringUtilTest {
 		final String[] values = { XXX_YYY_ZZZ, "XXX_YYY_12", "XXX_YYY_12_PPP", "XXX_YYY_12_3", "RESTE_A_PAYER", "T_ADRESSE_ADR" };
 
 		for (final String value : values) {
-			Assert.assertEquals(value, StringUtil.camelToConstCase(StringUtil.constToCamelCase(value, false)));
-			Assert.assertEquals(value, StringUtil.camelToConstCase(StringUtil.constToCamelCase(value, true)));
+			Assert.assertEquals(value, StringUtil.camelToConstCase(StringUtil.constToLowerCamelCase(value)));
+			Assert.assertEquals(value, StringUtil.camelToConstCase(StringUtil.constToUpperCamelCase(value)));
 		}
 	}
 
@@ -127,7 +125,7 @@ public final class StringUtilTest {
 		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('x'));
 		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('y'));
 		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('z'));
-		//----	
+		//----
 		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('A'));
 		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('B'));
 		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('C'));

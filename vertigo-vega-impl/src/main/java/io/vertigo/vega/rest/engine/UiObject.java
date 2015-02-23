@@ -91,8 +91,8 @@ public final class UiObject<D extends DtObject> implements Serializable {
 
 		this.dtDefinitionRef = new DefinitionReference<>(DtObjectUtil.findDtDefinition(inputDto));
 		for (final DtField dtField : getDtDefinition().getFields()) {
-			camel2ConstIndex.put(StringUtil.constToCamelCase(dtField.getName(), false), dtField.getName());
-			const2CamelIndex.put(dtField.getName(), StringUtil.constToCamelCase(dtField.getName(), false));
+			camel2ConstIndex.put(StringUtil.constToLowerCamelCase(dtField.getName()), dtField.getName());
+			const2CamelIndex.put(dtField.getName(), StringUtil.constToLowerCamelCase(dtField.getName()));
 		}
 	}
 

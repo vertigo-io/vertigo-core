@@ -104,7 +104,7 @@ public final class TemplateDtDefinition {
 	 * Retourne le nom camelCase de la classe.
 	 */
 	public String getClassSimpleNameCamelCase() {
-		return StringUtil.constToCamelCase(dtDefinition.getLocalName(), false);
+		return StringUtil.constToLowerCamelCase(dtDefinition.getLocalName());
 	}
 
 	/**

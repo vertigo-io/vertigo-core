@@ -61,7 +61,7 @@ public final class TemplateTaskAttribute {
 	 * @return Nom de la variable
 	 */
 	public String getVariableName() {
-		return StringUtil.constToCamelCase(taskAttribute.getName(), false);
+		return StringUtil.constToLowerCamelCase(taskAttribute.getName());
 	}
 
 	/**

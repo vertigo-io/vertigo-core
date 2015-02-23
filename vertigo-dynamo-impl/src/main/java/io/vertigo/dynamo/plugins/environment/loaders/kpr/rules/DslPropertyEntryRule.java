@@ -63,7 +63,7 @@ public final class DslPropertyEntryRule extends AbstractRule<DslPropertyEntry, L
 		//-----
 		this.entityProperties = new HashMap<>();
 		for (final EntityProperty entityProperty : entityProperties) {
-			final String propertyName = StringUtil.constToCamelCase(entityProperty.getName(), false);
+			final String propertyName = StringUtil.constToLowerCamelCase(entityProperty.getName());
 			this.entityProperties.put(propertyName, entityProperty);
 		}
 	}

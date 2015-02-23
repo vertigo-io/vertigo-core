@@ -231,7 +231,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		final StringBuilder request = new StringBuilder("select t from ").append(tableName).append(" t");
 		String sep = " where ";
 		for (final String fieldName : filterCriteria.getFilterMap().keySet()) {
-			final String camelFieldName = StringUtil.constToCamelCase(fieldName, false);
+			final String camelFieldName = StringUtil.constToLowerCamelCase(fieldName);
 			request.append(sep);
 			request.append("t.").append(camelFieldName);
 			if (filterCriteria.getFilterMap().get(fieldName) != null) {
@@ -242,10 +242,10 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			sep = " and ";
 		}
 		for (final String fieldName : filterCriteria.getPrefixMap().keySet()) {
-			final String camelFieldName = StringUtil.constToCamelCase(fieldName, false);
-			request.append(sep);
-			request.append("t.").append(camelFieldName).append(" like concat(:").append(fieldName);
-			request.append(",'%')");
+			final String camelFieldName = StringUtil.constToLowerCamelCase(fieldName);
+			request.append(sep)
+					.append("t.").append(camelFieldName).append(" like concat(:").append(fieldName)
+					.append(",'%')");
 			sep = " and ";
 		}
 		return request.toString();

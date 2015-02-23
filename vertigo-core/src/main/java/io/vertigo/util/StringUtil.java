@@ -105,13 +105,31 @@ public final class StringUtil {
 	}
 
 	/**
+	 * XXX_YYY_ZZZ -> xxxYyyZzz.
+	 * @param str la chaine de caratéres sur laquelle s'appliquent les transformation
+	 * @return camelCase
+	 */
+	public static String constToLowerCamelCase(final String str) {
+		return constToCamelCase(str, false);
+	}
+
+	/**
+	 * XXX_YYY_ZZZ -> XxxYyyZzz.
+	 * @param str la chaine de caratéres sur laquelle s'appliquent les transformation
+	 * @return CamelCase
+	 */
+	public static String constToUpperCamelCase(final String str) {
+		return constToCamelCase(str, true);
+	}
+
+	/**
 	 * XXX_YYY_ZZZ -> XxxYyyZzz ou xxxYyyZzz.
 	 * @param str la chaine de caratéres sur laquelle s'appliquent les transformation
 	 * @param first2UpperCase définit si la première lettre est en majuscules
 	 * @return Renvoie une chaine de caratére correspondant à str en minuscule et sans underscores,
 	 * à l'exception des premières lettres aprés les underscores dans str
 	 */
-	public static String constToCamelCase(final String str, final boolean first2UpperCase) {
+	private static String constToCamelCase(final String str, final boolean first2UpperCase) {
 		Assertion.checkNotNull(str);
 		Assertion.checkArgument(str.length() > 0, "Chaine à modifier invalide (ne doit pas être vide)");
 		Assertion.checkArgument(str.indexOf("__") == -1, "Chaine à modifier invalide : {0} (__ interdit)", str);

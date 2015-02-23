@@ -74,6 +74,6 @@ public final class UiError {
 	 * @return Nom du champ
 	 */
 	public String getFieldName() {
-		return StringUtil.constToCamelCase(dtField.getName(), false);
+		return StringUtil.constToLowerCamelCase(dtField.getName());
 	}
 }

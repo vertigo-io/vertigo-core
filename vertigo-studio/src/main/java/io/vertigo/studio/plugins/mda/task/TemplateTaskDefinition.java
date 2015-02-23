@@ -77,7 +77,7 @@ public final class TemplateTaskDefinition {
 	 */
 	public String getMethodName() {
 		final String localName = taskDefinition.getLocalName();
-		return StringUtil.constToCamelCase(localName, false);
+		return StringUtil.constToLowerCamelCase(localName);
 	}
 
 	/**

@@ -195,7 +195,7 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	 * @return camelCase fieldName.
 	 */
 	protected static final String getCamelCaseFieldName(final DtField dtField) {
-		return StringUtil.constToCamelCase(dtField.getName(), false);
+		return StringUtil.constToLowerCamelCase(dtField.getName());
 	}
 
 	/**

@@ -93,7 +93,7 @@ final class ScriptPreProcessor {
 			} else {
 				throw new RuntimeException("Type de paramètre non géré " + taskAttribute.getName() + ":" + domain.getName());
 			}
-			scriptEvaluatorParameter = new ExpressionParameter(StringUtil.constToCamelCase(taskAttribute.getName(), false), clazz, entry.getValue());
+			scriptEvaluatorParameter = new ExpressionParameter(StringUtil.constToLowerCamelCase(taskAttribute.getName()), clazz, entry.getValue());
 			tmpParameters.add(scriptEvaluatorParameter);
 		}
 		return tmpParameters;

@@ -98,7 +98,7 @@ public final class UiUtil implements Serializable {
 	 */
 	public static final String getDisplayField(final AbstractUiList<?> uiList) {
 		final DtDefinition dtDefinition = uiList.getDtDefinition();
-		return StringUtil.constToCamelCase(dtDefinition.getDisplayField().get().getName(), false);
+		return StringUtil.constToLowerCamelCase(dtDefinition.getDisplayField().get().getName());
 	}
 
 	/**
@@ -107,7 +107,7 @@ public final class UiUtil implements Serializable {
 	 */
 	public static final String getIdField(final AbstractUiList<?> uiList) {
 		final DtDefinition dtDefinition = uiList.getDtDefinition();
-		return StringUtil.constToCamelCase(dtDefinition.getIdField().get().getName(), false);
+		return StringUtil.constToLowerCamelCase(dtDefinition.getIdField().get().getName());
 	}
 
 	private static DtField getDtField(final String fieldPath) {

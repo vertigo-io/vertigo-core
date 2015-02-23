@@ -353,7 +353,7 @@ public final class SwaggerRestServices implements RestfulService {
 		final List<String> enums = new ArrayList<>(); //mandatory fields
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(objectClass);
 		for (final DtField dtField : dtDefinition.getFields()) {
-			final String fieldName = StringUtil.constToCamelCase(dtField.getName(), false);
+			final String fieldName = StringUtil.constToLowerCamelCase(dtField.getName());
 			final Type fieldType = getFieldType(dtField);
 			final Map<String, Object> fieldSchema = createSchemaObject(fieldType);
 			fieldSchema.put("title", dtField.getLabel().getDisplay());
@@ -445,7 +445,7 @@ public final class SwaggerRestServices implements RestfulService {
 			parameters.add(parameter);
 		}
 		if (!bodyParameter.isEmpty()) {
-			final String bodyName = StringUtil.constToCamelCase(endPointDefinition.getName().replaceAll("__", "_"), true) + "Body";
+			final String bodyName = StringUtil.constToUpperCamelCase(endPointDefinition.getName().replaceAll("__", "_")) + "Body";
 			final Map<String, Object> compositeSchema = (Map<String, Object>) bodyParameter.get("schema");
 			bodyParameter.put("schema", Collections.singletonMap("$ref", bodyName));
 			final Map<String, Object> bodyDefinition = new LinkedHashMap<>();
@@ -501,7 +501,7 @@ public final class SwaggerRestServices implements RestfulService {
 			final Class<? extends DtObject> paramClass = (Class<? extends DtObject>) endPointParam.getType();
 			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(paramClass);
 			for (final DtField dtField : dtDefinition.getFields()) {
-				final String fieldName = StringUtil.constToCamelCase(dtField.name(), false);
+				final String fieldName = StringUtil.constToLowerCamelCase(dtField.name());
 				pseudoEndPointParams.add(new EndPointParamBuilder(dtField.getDomain().getDataType().getJavaClass())
 						.with(endPointParam.getParamType(), prefix + fieldName)
 						.build());

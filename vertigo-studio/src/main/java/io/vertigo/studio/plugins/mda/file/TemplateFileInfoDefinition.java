@@ -49,6 +49,6 @@ public final class TemplateFileInfoDefinition {
 	 */
 	public String getClassSimpleName() {
 		final String localName = DefinitionUtil.getLocalName(fileInfoDefinition.getName(), FileInfoDefinition.class);
-		return StringUtil.constToCamelCase(localName, true);
+		return StringUtil.constToUpperCamelCase(localName);
 	}
 }

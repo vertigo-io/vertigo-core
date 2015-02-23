@@ -40,7 +40,7 @@ public final class DataAccessor {
 		Assertion.checkNotNull(dtField);
 		//-----
 		this.dtField = dtField;
-		ccFieldName = StringUtil.constToCamelCase(dtField.getName(), false);
+		ccFieldName = StringUtil.constToLowerCamelCase(dtField.getName());
 	}
 
 	/**

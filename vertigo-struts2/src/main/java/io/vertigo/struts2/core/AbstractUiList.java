@@ -74,7 +74,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
 		final Option<DtField> dtIdField = getDtDefinition().getIdField();
 		if (dtIdField.isDefined()) {
-			camelIdFieldName = StringUtil.constToCamelCase(dtIdField.get().name(), false);
+			camelIdFieldName = StringUtil.constToLowerCamelCase(dtIdField.get().name());
 		} else {
 			camelIdFieldName = null;
 		}

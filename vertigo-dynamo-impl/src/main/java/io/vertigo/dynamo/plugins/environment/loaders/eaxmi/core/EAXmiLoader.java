@@ -156,8 +156,8 @@ public final class EAXmiLoader implements XmlLoader {
 			throw new IllegalArgumentException("Noeuds de l'association introuvables");
 		}
 		//Si les roles ne sont pas renseignés ont prend le nom de la table en CamelCase.
-		final String roleLabelA = obj.getRoleALabel() != null ? obj.getRoleALabel() : StringUtil.constToCamelCase(objectA.getName(), true);
-		final String roleLabelB = obj.getRoleBLabel() != null ? obj.getRoleBLabel() : StringUtil.constToCamelCase(objectB.getName(), true);
+		final String roleLabelA = obj.getRoleALabel() != null ? obj.getRoleALabel() : StringUtil.constToUpperCamelCase(objectA.getName());
+		final String roleLabelB = obj.getRoleBLabel() != null ? obj.getRoleBLabel() : StringUtil.constToUpperCamelCase(objectB.getName());
 		// Si il n'existe pas de libelle pour un role donné alors on utilise le nom de l'objet référencé.
 		//Le code du role est déduit du libellé.
 

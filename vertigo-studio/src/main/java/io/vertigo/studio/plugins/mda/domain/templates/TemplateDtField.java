@@ -74,11 +74,11 @@ public final class TemplateDtField {
 	 * @return UnNom
 	 */
 	public String getNameLowerCase() {
-		return StringUtil.constToCamelCase(dtField.getName(), true);
+		return StringUtil.constToUpperCamelCase(dtField.getName());
 	}
 
 	public String getNameCamelCase() {
-		return StringUtil.constToCamelCase(dtField.getName(), false);
+		return StringUtil.constToLowerCamelCase(dtField.getName());
 	}
 
 	/**

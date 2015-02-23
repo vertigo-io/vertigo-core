@@ -137,7 +137,7 @@ public final class DtDefinition implements Definition {
 	 * @return Simple Nom (i.e. sans le package) de la classe d'implémentation du DtObject
 	 */
 	public String getClassSimpleName() {
-		return StringUtil.constToCamelCase(getLocalName(), true);
+		return StringUtil.constToUpperCamelCase(getLocalName());
 	}
 
 	/**

@@ -32,7 +32,7 @@ import freemarker.template.TemplateModelException;
  * si : config.setSharedVariable("constToCamelCase", new TemplateMethodStringHelper());
  * Exemple : execute${constToCamelCase(action.name)?cap_first}()
  * TemplateMethodModel : les params sont considérés comme des String.
- * 
+ *
  * @author  dchallas
  */
 public class TemplateMethodStringUtil implements TemplateMethodModel {
@@ -41,7 +41,7 @@ public class TemplateMethodStringUtil implements TemplateMethodModel {
 	@Override
 	public TemplateModel exec(final List params) throws TemplateModelException {
 		final String str = (String) params.get(0);
-		return new SimpleScalar(StringUtil.constToCamelCase(str, false));
+		return new SimpleScalar(StringUtil.constToLowerCamelCase(str));
 
 	}
 }

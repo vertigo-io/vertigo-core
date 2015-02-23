@@ -54,7 +54,7 @@ public final class ValidationUserException extends VUserException {
 	 * @param fieldName field
 	 */
 	public ValidationUserException(final MessageText messageText, final DtObject dto, final DtFieldName fieldName) {
-		this(messageText, StringUtil.constToCamelCase(fieldName.name(), false), dto);
+		this(messageText, StringUtil.constToLowerCamelCase(fieldName.name()), dto);
 	}
 
 	/**

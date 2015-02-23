@@ -86,7 +86,7 @@ public final class UiObject<D extends DtObject> implements Map<String, Serializa
 		this.dto = dto;
 		this.dtDefinitionRef = new DefinitionReference<>(DtObjectUtil.findDtDefinition(dto));
 		for (final DtField dtField : getDtDefinition().getFields()) {
-			keysIndex.put(StringUtil.constToCamelCase(dtField.getName(), false), dtField.getName());
+			keysIndex.put(StringUtil.constToLowerCamelCase(dtField.getName()), dtField.getName());
 		}
 	}
 

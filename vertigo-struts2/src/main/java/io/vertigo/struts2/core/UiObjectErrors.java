@@ -79,7 +79,7 @@ public final class UiObjectErrors {
 	}
 
 	private static String getCamelCaseFieldName(final DtField dtField) {
-		return StringUtil.constToCamelCase(dtField.getName(), false);
+		return StringUtil.constToLowerCamelCase(dtField.getName());
 	}
 
 	public void flushIntoAction(final UiMessageStack uiMessageStack) {

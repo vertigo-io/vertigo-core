@@ -89,7 +89,7 @@ class AnnotationWriter {
 			buffer.append("persistent = false, ");
 		}
 		// On vérifie que le nom du champ (constante) est transformable en nom de méthode et réciproquement.
-		Assertion.checkArgument(fieldName.equals(StringUtil.camelToConstCase(StringUtil.constToCamelCase(fieldName, true))), "le nom {0} n''est pas transformable en nom de méthode", fieldName);
+		Assertion.checkArgument(fieldName.equals(StringUtil.camelToConstCase(StringUtil.constToUpperCamelCase(fieldName))), "le nom {0} n''est pas transformable en nom de méthode", fieldName);
 
 		buffer
 				.append("label = \"" + dtField.getLabel().getDisplay() + "\"")
