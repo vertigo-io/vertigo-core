@@ -67,10 +67,30 @@ public final class EntityBuilder implements Builder<Entity> {
 	 * Ajout d'un attribut.
 	 * @param fieldName Nom
 	 * @param entity Entité référencée
+	 * @param notNull Si l'attribut est obligatoire
+	 */
+	public EntityBuilder withAttribute(final String fieldName, final Entity entity, final boolean notNull) {
+		return withAttribute(fieldName, entity, false, notNull);
+	}
+
+	/**
+	 * Ajout d'un attribut multiple.
+	 * @param fieldName Nom
+	 * @param entity Entité référencée
+	 * @param notNull Si l'attribut est obligatoire
+	 */
+	public EntityBuilder withAttributes(final String fieldName, final Entity entity, final boolean notNull) {
+		return withAttribute(fieldName, entity, true, notNull);
+	}
+
+	/**
+	 * Ajout d'un attribut.
+	 * @param fieldName Nom
+	 * @param entity Entité référencée
 	 * @param multiple Si il y a plusieurs entités référencées
 	 * @param notNull Si l'attribut est obligatoire
 	 */
-	public EntityBuilder withAttribute(final String fieldName, final Entity entity, final boolean multiple, final boolean notNull) {
+	private EntityBuilder withAttribute(final String fieldName, final Entity entity, final boolean multiple, final boolean notNull) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkNotNull(entity);
 		//On vérifie que le nom du champ n'est pas déjà utilisé.

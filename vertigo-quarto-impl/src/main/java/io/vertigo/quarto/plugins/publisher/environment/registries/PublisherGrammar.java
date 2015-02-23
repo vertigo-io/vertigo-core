@@ -64,20 +64,20 @@ final class PublisherGrammar {
 		publisherFieldDefinition = new EntityBuilder(NODE_FIELD_META_DEFINITION).build();
 
 		publisherDataFieldDefinition = new EntityBuilder(NODE_DATA_FIELD_META_DEFINITION)//
-				.withAttribute("type", builder.build(), false, true)//
+				.withAttribute("type", builder.build(), true)//
 				.build();
 
 		publisherNodeDefinition = builder//
-				.withAttribute(STRING_FIELD, publisherFieldDefinition, true, false) //Multiple, facultative
-				.withAttribute(BOOLEAN_FIELD, publisherFieldDefinition, true, false) //Multiple, facultative
-				.withAttribute(IMAGE_FIELD, publisherFieldDefinition, true, false) //Multiple, facultative
-				.withAttribute(DATA_FIELD, publisherDataFieldDefinition, true, false) //Multiple, facultative
-				.withAttribute(LIST_FIELD, publisherDataFieldDefinition, true, false) //Multiple, facultative
+				.withAttributes(STRING_FIELD, publisherFieldDefinition, false) // facultative
+				.withAttributes(BOOLEAN_FIELD, publisherFieldDefinition, false) // facultative
+				.withAttributes(IMAGE_FIELD, publisherFieldDefinition, false) //facultative
+				.withAttributes(DATA_FIELD, publisherDataFieldDefinition, false) //facultative
+				.withAttributes(LIST_FIELD, publisherDataFieldDefinition, false) //facultative
 				.build();
 
 		//--
 		publisherDefinition = new EntityBuilder(PUB_DEFINITION_META_DEFINITION)//
-				.withAttribute("root", publisherNodeDefinition, false, true)//
+				.withAttribute("root", publisherNodeDefinition, true)//
 				.build();
 		//-----
 		grammar = new Grammar(publisherDefinition, //

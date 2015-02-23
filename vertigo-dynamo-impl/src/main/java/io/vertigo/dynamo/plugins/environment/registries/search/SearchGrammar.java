@@ -32,8 +32,8 @@ final class SearchGrammar {
 
 	static {
 		INDEX_DEFINITION_ENTITY = new EntityBuilder("IndexDefinition")
-				.withAttribute("dtIndex", DomainGrammar.DT_DEFINITION_ENTITY, false, true)
-				.withAttribute("dtResult", DomainGrammar.DT_DEFINITION_ENTITY, false, true)
+				.withAttribute("dtIndex", DomainGrammar.DT_DEFINITION_ENTITY, true)
+				.withAttribute("dtResult", DomainGrammar.DT_DEFINITION_ENTITY, true)
 				.build();
 
 		GRAMMAR = new Grammar(INDEX_DEFINITION_ENTITY);

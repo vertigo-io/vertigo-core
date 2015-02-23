@@ -92,30 +92,30 @@ public final class DomainGrammar {
 				.withProperty(KspProperty.UNIT, false)
 				.withProperty(KspProperty.INDEX_TYPE, false)
 				.withProperty(KspProperty.STORE_TYPE, false)
-				.withAttribute("formatter", FORMATTER_ENTITY, false, true)
-				.withAttribute("dataType", KernelGrammar.getDataTypeEntity(), false, true)
-				.withAttribute("constraint", CONSTAINT_ENTITY, true, false)
+				.withAttribute("formatter", FORMATTER_ENTITY, true)
+				.withAttribute("dataType", KernelGrammar.getDataTypeEntity(), true)
+				.withAttributes("constraint", CONSTAINT_ENTITY, false)
 				.build();
 
 		DT_FIELD_ENTITY = new EntityBuilder(DT_FIELD_META_DEFINITION)
 				.withProperty(KspProperty.LABEL, true)
 				.withProperty(KspProperty.NOT_NULL, true)
-				.withAttribute("domain", DOMAIN_ENTITY, false, true)
+				.withAttribute("domain", DOMAIN_ENTITY, true)
 				.withProperty(KspProperty.PERSISTENT, false)
 				.build();
 
 		FT_COMPUTED_FIELD_ENTITY = new EntityBuilder(DT_COMPUTED_FIELD_META_DEFINITION)
 				.withProperty(KspProperty.LABEL, true)
-				.withAttribute("domain", DOMAIN_ENTITY, false, true)
+				.withAttribute("domain", DOMAIN_ENTITY, true)
 				.withProperty(KspProperty.EXPRESSION, true)
 				.build();
 
 		DT_DEFINITION_ENTITY = new EntityBuilder(DT_DEFINITION_META_DEFINITION)
 				.withProperty(KspProperty.DISPLAY_FIELD, false)
 				.withProperty(KspProperty.SORT_FIELD, false)
-				.withAttribute(FIELD, DT_FIELD_ENTITY, true, false)//Multiple, facultative
-				.withAttribute(COMPUTED, FT_COMPUTED_FIELD_ENTITY, true, false) //Multiple, facultative
-				.withAttribute(PRIMARY_KEY, DT_FIELD_ENTITY, false, false) //Simple, facultative
+				.withAttributes(FIELD, DT_FIELD_ENTITY, false)// facultative
+				.withAttributes(COMPUTED, FT_COMPUTED_FIELD_ENTITY, false) //facultative
+				.withAttribute(PRIMARY_KEY, DT_FIELD_ENTITY, false) // facultative
 				.withProperty(KspProperty.PERSISTENT, false)
 				.withProperty(KspProperty.DYNAMIC, false)
 				//DT_DEFINITION.addMetaDefinitionReference("extends", DT_DEFINITION, true, false);
@@ -131,8 +131,8 @@ public final class DomainGrammar {
 				.withProperty(KspProperty.NAVIGABILITY_B, true)
 				.withProperty(KspProperty.ROLE_B, true)
 				.withProperty(KspProperty.LABEL_B, true)
-				.withAttribute("dtDefinitionA", DT_DEFINITION_ENTITY, false, true)
-				.withAttribute("dtDefinitionB", DT_DEFINITION_ENTITY, false, true)
+				.withAttribute("dtDefinitionA", DT_DEFINITION_ENTITY, true)
+				.withAttribute("dtDefinitionB", DT_DEFINITION_ENTITY, true)
 				.build();
 
 		ASSOCIATION_NN_ENTITY = new EntityBuilder(ASSOCIATION_NN_META_DEFINITION)
@@ -143,8 +143,8 @@ public final class DomainGrammar {
 				.withProperty(KspProperty.NAVIGABILITY_B, true)
 				.withProperty(KspProperty.ROLE_B, true)
 				.withProperty(KspProperty.LABEL_B, true)
-				.withAttribute("dtDefinitionA", DT_DEFINITION_ENTITY, false, true)
-				.withAttribute("dtDefinitionB", DT_DEFINITION_ENTITY, false, true)
+				.withAttribute("dtDefinitionA", DT_DEFINITION_ENTITY, true)
+				.withAttribute("dtDefinitionB", DT_DEFINITION_ENTITY, true)
 				.build();
 
 		GRAMMAR = new Grammar(
