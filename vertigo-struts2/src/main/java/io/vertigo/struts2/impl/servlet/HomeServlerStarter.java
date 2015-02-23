@@ -60,25 +60,27 @@ final class HomeServlerStarter {
 			ServletResourceResolverPlugin.setServletContext(servletContext);
 			// Création de l'état de l'application
 			// Lecture des paramètres de configuration
-			final Properties conf = createProperties(servletContext);
-			WebAppContextConfigPlugin.setInitConfig(conf);
-			Assertion.checkArgument(conf.containsKey("boot.applicationConfiguration"), "Param \"boot.applicationConfiguration\" is mandatory, check your .properties or web.xml.");
+			final Properties webAppConf = createWebAppProperties(servletContext);
+			WebAppContextConfigPlugin.setInitConfig(webAppConf);
+			//-----
+			final Properties bootConf = createBootProperties(servletContext);
+			Assertion.checkArgument(bootConf.containsKey("boot.applicationConfiguration"), "Param \"boot.applicationConfiguration\" is mandatory, check your .properties or web.xml.");
 
 			//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
 			final XMLAppConfigBuilder appConfigBuilder = new XMLAppConfigBuilder()
 					.withSilence(true);
 
-			if (conf.containsKey(LOG4J_CONFIGURATION_PARAM_NAME)) {
-				final String logFileName = conf.getProperty(LOG4J_CONFIGURATION_PARAM_NAME);
-				conf.remove(LOG4J_CONFIGURATION_PARAM_NAME);
+			if (bootConf.containsKey(LOG4J_CONFIGURATION_PARAM_NAME)) {
+				final String logFileName = bootConf.getProperty(LOG4J_CONFIGURATION_PARAM_NAME);
+				bootConf.remove(LOG4J_CONFIGURATION_PARAM_NAME);
 				//-----
 				appConfigBuilder.withLogConfig(logFileName);
 			}
-			final String xmlModulesFileNames = conf.getProperty("boot.applicationConfiguration");
+			final String xmlModulesFileNames = bootConf.getProperty("boot.applicationConfiguration");
 			final String[] xmlFileNamesSplit = xmlModulesFileNames.split(";");
-			conf.remove("boot.applicationConfiguration");
+			bootConf.remove("boot.applicationConfiguration");
 			//-----
-			appConfigBuilder.withModules(getClass(), conf, xmlFileNamesSplit);
+			appConfigBuilder.withModules(getClass(), bootConf, xmlFileNamesSplit);
 
 			// Initialisation de l'état de l'application
 			app = new App(appConfigBuilder.build());
@@ -95,12 +97,33 @@ final class HomeServlerStarter {
 	}
 
 	/**
+	 * Création des propriétés à partir du Web XML : utilisé par le plugin WebAppConfigPlugin du ConfigManager.
+	 * @return Properties
+	 */
+	private static Properties createWebAppProperties(final ServletContext servletContext) {
+		// ======================================================================
+		// ===Conversion en Properties du fichier de paramétrage de la servlet===
+		// ======================================================================
+		final Properties servletParams = new Properties();
+		String name;
+		/*
+		 * On récupère les paramètres du context (web.xml ou fichier tomcat par exemple) Ces paramètres peuvent
+		 * surcharger les paramètres de la servlet de façon à créer un paramétrage adhoc de développement par exemple.
+		 */
+		for (final Enumeration<String> enumeration = servletContext.getInitParameterNames(); enumeration.hasMoreElements();) {
+			name = enumeration.nextElement();
+			servletParams.put(name, servletContext.getInitParameter(name));
+		}
+		return servletParams;
+	}
+
+	/**
 	 * Création des propriétés à partir des différents fichiers de configuration. - Web XML - Fichier externe défini par
 	 * la valeur de la propriété système : external-properties
 	 *
 	 * @return Properties
 	 */
-	private static Properties createProperties(final ServletContext servletContext) {
+	private static Properties createBootProperties(final ServletContext servletContext) {
 		// ======================================================================
 		// ===Conversion en Properties du fichier de paramétrage de la servlet===
 		// ======================================================================
