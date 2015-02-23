@@ -37,8 +37,8 @@ import org.apache.log4j.Logger;
 /**
  * @author npiedeloup
  */
-final class HomeServlerStarter {
-	private static final Logger LOG = Logger.getLogger(HomeServlerStarter.class);
+final class HomeServletStarter {
+	private static final Logger LOG = Logger.getLogger(HomeServletStarter.class);
 
 	private static final String BOOT_PROPERTIES_PREFIX = "boot.";
 	private static final String EXTERNAL_PROPERTIES_PARAM_NAME = "external-properties";

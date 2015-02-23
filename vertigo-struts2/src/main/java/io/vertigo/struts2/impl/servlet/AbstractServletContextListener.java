@@ -28,7 +28,7 @@ public abstract class AbstractServletContextListener implements ServletContextLi
 	/** clés dans le fichier Web.xml */
 
 	/** Servlet listener */
-	private final HomeServlerStarter servlerHomeStarter = new HomeServlerStarter();
+	private final HomeServletStarter servlerHomeStarter = new HomeServletStarter();
 
 	/** {@inheritDoc} */
 	@Override
