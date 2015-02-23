@@ -22,7 +22,6 @@ import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.core.Home;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VUserException;
 import io.vertigo.tempo.job.JobManager;
 import io.vertigo.tempo.job.SchedulerPlugin;
 import io.vertigo.tempo.job.metamodel.JobDefinition;
@@ -30,8 +29,6 @@ import io.vertigo.tempo.job.metamodel.JobDefinition;
 import java.util.Date;
 
 import javax.inject.Inject;
-
-import org.apache.log4j.Logger;
 
 /**
  * Implémentation générique de JobManager.
@@ -42,16 +39,8 @@ import org.apache.log4j.Logger;
  * @author evernat, pchretien
  */
 public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
-	/** Type de process gérant les statistiques des jobs. */
-	private static final String PROCESS_TYPE = "JOB";
-
-	/** Mesures des exceptions utilisateur. */
-	private static final String JOB_USER_EXCEPTION_COUNT = "JOB_USER_EXCEPTION_COUNT";
-	/** Mesures des exceptions system. */
-	private static final String JOB_SYSTEM_EXCEPTION_COUNT = "JOB_SYSTEM_EXCEPTION_COUNT";
-
 	private final SchedulerPlugin schedulerPlugin;
-	private final AnalyticsManager analyticsManager;
+	private final JobListener jobListener;
 
 	/**
 	 * Constructeur.
@@ -59,10 +48,9 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 	 */
 	@Inject
 	public JobManagerImpl(final AnalyticsManager analyticsManager, final SchedulerPlugin schedulerPlugin) {
-		Assertion.checkNotNull(analyticsManager);
 		Assertion.checkNotNull(schedulerPlugin);
 		//-----
-		this.analyticsManager = analyticsManager;
+		this.jobListener = new JobListener(analyticsManager);
 		this.schedulerPlugin = schedulerPlugin;
 		//A déplacer
 		//A déplacer
@@ -74,47 +62,22 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 	/** {@inheritDoc} */
 	@Override
 	public void execute(final JobDefinition jobDefinition) {
-		analyticsManager.getAgent().startProcess(PROCESS_TYPE, jobDefinition.getName());
-		try {
-			doExecute(jobDefinition);
-		} catch (final Throwable throwable) { //NOSONAR
-			// On catche throwable et pas seulement exception pour que le timer
-			// ne s'arrête pas en cas d'Assertion ou de OutOfMemoryError :
-			// Aucune exception ou erreur ne doit être lancée par la méthode doExecute
-			getLogger(jobDefinition.getName()).warn(throwable.toString(), throwable);
-
-			if (isUserException(throwable)) {
-				analyticsManager.getAgent().setMeasure(JOB_USER_EXCEPTION_COUNT, 100);
-			} else {
-				analyticsManager.getAgent().setMeasure(JOB_SYSTEM_EXCEPTION_COUNT, 100);
-			}
-		} finally {
-			analyticsManager.getAgent().stopProcess();
-		}
-	}
-
-	/**
-	 * Gestion de l'exécution d'un Job avec son log.
-	 */
-	private static void doExecute(final JobDefinition jobDefinition) {
-		final Runnable job = Injector.newInstance(jobDefinition.getJobClass(), Home.getComponentSpace());
-
+		//-----
+		jobListener.onStart(jobDefinition);
 		final long start = System.currentTimeMillis();
-		getLogger(jobDefinition.getName()).info("Exécution du job " + jobDefinition.getName());
 		try {
+			final Runnable job = createJob(jobDefinition);
 			job.run(); //NOSONAR : JobManager should managed Job execution, it decided if a runnable job runs in a new thread or not
+		} catch (final Throwable throwable) { //NOSONAR
+			jobListener.onFinish(jobDefinition, throwable);
 		} finally {
-			final long end = System.currentTimeMillis();
-			getLogger(jobDefinition.getName()).info("Job " + jobDefinition.getName() + " exécuté en " + (end - start) + " ms");
+			jobListener.onFinish(jobDefinition, System.currentTimeMillis() - start);
+
 		}
 	}
 
-	private static Logger getLogger(final String jobName) {
-		return Logger.getLogger(jobName);
-	}
-
-	private static boolean isUserException(final Throwable t) {
-		return t instanceof VUserException;
+	private static Runnable createJob(final JobDefinition jobDefinition) {
+		return Injector.newInstance(jobDefinition.getJobClass(), Home.getComponentSpace());
 	}
 
 	/** {@inheritDoc} */
@@ -140,20 +103,4 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 	public void scheduleNow(final JobDefinition jobDefinition) {
 		schedulerPlugin.scheduleNow(this, jobDefinition);
 	}
-
-	// /** {@inheritDoc} */
-	// public void toHtml(final PrintStream out) throws Exception {
-	// analyticsManager.getDashboard().toHtml(DB, out);
-	// }
-	//
-	// /** {@inheritDoc} */
-	// public final String getName() {
-	// return "Job";
-	// }
-	//
-	// /** {@inheritDoc} */
-	// public final String getImage() {
-	// return "cpanel.png";
-	// }
-
 }
