@@ -48,7 +48,7 @@ import spark.Response;
  * Params handler. Extract and Json convert.
  * @author npiedeloup
  */
-public final class ValidatorHandler implements RestHandlerPlugin {
+public final class ValidatorRestHandlerPlugin implements RestHandlerPlugin {
 
 	/** {@inheritDoc} */
 	@Override

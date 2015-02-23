@@ -20,17 +20,17 @@ package io.vertigo.vega.impl.rest;
 
 import io.vertigo.core.Home;
 import io.vertigo.lang.Assertion;
-import io.vertigo.vega.plugins.rest.handler.AccessTokenHandler;
-import io.vertigo.vega.plugins.rest.handler.CorsAllowerHandler;
-import io.vertigo.vega.plugins.rest.handler.ExceptionHandler;
+import io.vertigo.vega.plugins.rest.handler.AccessTokenRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.CorsAllowerRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.ExceptionRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.handler.HandlerChain;
-import io.vertigo.vega.plugins.rest.handler.JsonConverterHandler;
-import io.vertigo.vega.plugins.rest.handler.PaginatorAndSortHandler;
-import io.vertigo.vega.plugins.rest.handler.RateLimitingHandler;
-import io.vertigo.vega.plugins.rest.handler.RestfulServiceHandler;
-import io.vertigo.vega.plugins.rest.handler.SecurityHandler;
-import io.vertigo.vega.plugins.rest.handler.SessionHandler;
-import io.vertigo.vega.plugins.rest.handler.SessionInvalidateHandler;
+import io.vertigo.vega.plugins.rest.handler.JsonConverterRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.PaginatorAndSortRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.RateLimitingRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.RestfulServiceRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.SecurityRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.SessionInvalidateRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.SessionRestHandlerPlugin;
 import io.vertigo.vega.rest.EndPointIntrospectorPlugin;
 import io.vertigo.vega.rest.RestManager;
 import io.vertigo.vega.rest.RestfulService;
@@ -56,17 +56,17 @@ import javax.xml.validation.ValidatorHandler;
 public final class RestManagerImpl implements RestManager {
 
 	private static final String STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG = "Standard configuration (order is important) :\n"
-			+ "- " + ExceptionHandler.class.getSimpleName() + "\n"
-			+ "- " + CorsAllowerHandler.class.getSimpleName() + "\n"
-			+ "- " + SessionInvalidateHandler.class.getSimpleName() + "\n"
-			+ "- " + SessionHandler.class.getSimpleName() + "\n"
-			+ "- " + RateLimitingHandler.class.getSimpleName() + "\n"
-			+ "- " + SecurityHandler.class.getSimpleName() + "\n"
-			+ "- " + AccessTokenHandler.class.getSimpleName() + "\n"
-			+ "- " + JsonConverterHandler.class.getSimpleName() + "\n"
-			+ "- " + PaginatorAndSortHandler.class.getSimpleName() + "\n"
+			+ "- " + ExceptionRestHandlerPlugin.class.getSimpleName() + "\n"
+			+ "- " + CorsAllowerRestHandlerPlugin.class.getSimpleName() + "\n"
+			+ "- " + SessionInvalidateRestHandlerPlugin.class.getSimpleName() + "\n"
+			+ "- " + SessionRestHandlerPlugin.class.getSimpleName() + "\n"
+			+ "- " + RateLimitingRestHandlerPlugin.class.getSimpleName() + "\n"
+			+ "- " + SecurityRestHandlerPlugin.class.getSimpleName() + "\n"
+			+ "- " + AccessTokenRestHandlerPlugin.class.getSimpleName() + "\n"
+			+ "- " + JsonConverterRestHandlerPlugin.class.getSimpleName() + "\n"
+			+ "- " + PaginatorAndSortRestHandlerPlugin.class.getSimpleName() + "\n"
 			+ "- " + ValidatorHandler.class.getSimpleName() + "\n"
-			+ "- " + RestfulServiceHandler.class.getSimpleName() + "\n";
+			+ "- " + RestfulServiceRestHandlerPlugin.class.getSimpleName() + "\n";
 
 	private final EndPointIntrospectorPlugin endPointIntrospectorPlugin;
 	private final RoutesRegisterPlugin routesRegisterPlugin;
@@ -85,7 +85,7 @@ public final class RestManagerImpl implements RestManager {
 		Assertion.checkNotNull(endPointIntrospectorPlugin);
 		Assertion.checkNotNull(routesRegisterPlugin);
 		Assertion.checkArgument(!restHandlerPlugins.isEmpty(), "No RestHandlerPlugins found, check you have declared your RestHandlerPlugins in RestManagerImpl.\n{0}", STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG);
-		Assertion.checkArgument(restHandlerPlugins.get(restHandlerPlugins.size() - 1) instanceof RestfulServiceHandler,
+		Assertion.checkArgument(restHandlerPlugins.get(restHandlerPlugins.size() - 1) instanceof RestfulServiceRestHandlerPlugin,
 				"RestHandlerPlugins must end with a RestfulServiceHandler in order to dispatsh request to WebService, check your RestHandlerPlugins in RestManagerImpl.\n{0}", STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG);
 
 		//-----

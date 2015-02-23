@@ -18,54 +18,37 @@
  */
 package io.vertigo.vega.plugins.rest.handler;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.persona.security.KSecurityManager;
-import io.vertigo.persona.security.UserSession;
 import io.vertigo.vega.impl.rest.RestHandlerPlugin;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
-
-import javax.inject.Inject;
-
 import spark.Request;
 import spark.Response;
+import spark.Session;
 
 /**
- * Security handler.
- * Ensure user is authenticated, throw VSecurityException if not.
+ * Invalidate session handler.
  * @author npiedeloup
  */
-public final class SecurityHandler implements RestHandlerPlugin {
-
-	private final KSecurityManager securityManager;
-
-	/**
-	 * Constructor.
-	 * @param securityManager Security Manager
-	 */
-	@Inject
-	public SecurityHandler(final KSecurityManager securityManager) {
-		Assertion.checkNotNull(securityManager);
-		//-----
-		this.securityManager = securityManager;
-	}
+public final class SessionInvalidateRestHandlerPlugin implements RestHandlerPlugin {
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean accept(final EndPointDefinition endPointDefinition) {
-		return endPointDefinition.isNeedAuthentification();
+		return endPointDefinition.isSessionInvalidate();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
-		// 2. Check user is authentified
-		final Option<UserSession> userSessionOption = securityManager.getCurrentUserSession();
-		if (userSessionOption.isEmpty() || !userSessionOption.get().isAuthenticated()) {
-			throw new VSecurityException("User unauthentified");
+	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws SessionException, VSecurityException {
+		try {
+			return chain.handle(request, response, routeContext);
+		} finally {
+			final Session session = request.session();
+			if (session != null) {
+				session.invalidate();
+			}
 		}
-		return chain.handle(request, response, routeContext);
 	}
+
 }

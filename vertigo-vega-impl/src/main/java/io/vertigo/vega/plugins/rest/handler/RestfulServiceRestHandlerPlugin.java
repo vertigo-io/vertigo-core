@@ -42,7 +42,7 @@ import spark.Response;
  * RestfulServiceHandler : call service method.
  * @author npiedeloup
  */
-public final class RestfulServiceHandler implements RestHandlerPlugin {
+public final class RestfulServiceRestHandlerPlugin implements RestHandlerPlugin {
 
 	/** {@inheritDoc} */
 	@Override

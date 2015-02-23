@@ -37,7 +37,7 @@ import spark.Session;
  * Create and bind UserSession object with client.
  * @author npiedeloup
  */
-public final class SessionHandler implements RestHandlerPlugin {
+public final class SessionRestHandlerPlugin implements RestHandlerPlugin {
 	/**
 	 * UserSession attributeName in HttpSession.
 	 */
@@ -50,7 +50,7 @@ public final class SessionHandler implements RestHandlerPlugin {
 	 * @param securityManager Security Manager
 	 */
 	@Inject
-	public SessionHandler(final KSecurityManager securityManager) {
+	public SessionRestHandlerPlugin(final KSecurityManager securityManager) {
 		Assertion.checkNotNull(securityManager);
 		//-----
 		this.securityManager = securityManager;

@@ -43,18 +43,18 @@ import com.google.gson.JsonSyntaxException;
  * Exceptions handler. Convert exception to response.
  * @author npiedeloup
  */
-public final class ExceptionHandler implements RestHandlerPlugin {
+public final class ExceptionRestHandlerPlugin implements RestHandlerPlugin {
 
 	private static final int SC_UNPROCESSABLE_ENTITY = 422; //server understands the content syntaxe but not semanticly
 	private static final int SC_TOO_MANY_REQUEST = 429; //RFC 6585 : TooManyRequest in time window
-	private static final Logger LOGGER = Logger.getLogger(ExceptionHandler.class);
+	private static final Logger LOGGER = Logger.getLogger(ExceptionRestHandlerPlugin.class);
 	private final JsonEngine jsonWriterEngine;
 
 	/**
 	 * @param jsonWriterEngine JsonEngine
 	 */
 	@Inject
-	public ExceptionHandler(final JsonEngine jsonWriterEngine) {
+	public ExceptionRestHandlerPlugin(final JsonEngine jsonWriterEngine) {
 		Assertion.checkNotNull(jsonWriterEngine);
 		//-----
 		this.jsonWriterEngine = jsonWriterEngine;

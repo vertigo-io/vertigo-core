@@ -38,7 +38,7 @@ import spark.Response;
  * Handler of Cross-Origin Resource Sharing (CORS).
  * @author npiedeloup
  */
-public final class CorsAllowerHandler implements RestHandlerPlugin {
+public final class CorsAllowerRestHandlerPlugin implements RestHandlerPlugin {
 
 	private static final String REQUEST_HEADER_ORIGIN = "Origin";
 
@@ -56,7 +56,7 @@ public final class CorsAllowerHandler implements RestHandlerPlugin {
 	 * @param methodCORSFilter Method CORS Allowed
 	 */
 	@Inject
-	public CorsAllowerHandler(@Named("originCORSFilter") final Option<String> originCORSFilter, @Named("methodCORSFilter") final Option<String> methodCORSFilter) {
+	public CorsAllowerRestHandlerPlugin(@Named("originCORSFilter") final Option<String> originCORSFilter, @Named("methodCORSFilter") final Option<String> methodCORSFilter) {
 		this.originCORSFilter = originCORSFilter.getOrElse(DEFAULT_ORIGIN_CORS_FILTER);
 		this.methodCORSFilter = methodCORSFilter.getOrElse(DEFAULT_METHODS_CORS_FILTER);
 		originCORSFiltersSet = parseStringToSet(this.originCORSFilter);

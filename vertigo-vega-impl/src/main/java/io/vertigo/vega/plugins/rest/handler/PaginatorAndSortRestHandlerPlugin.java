@@ -41,7 +41,7 @@ import spark.Response;
  * Auto paginator and Sort handler.
  * @author npiedeloup
  */
-public final class PaginatorAndSortHandler implements RestHandlerPlugin {
+public final class PaginatorAndSortRestHandlerPlugin implements RestHandlerPlugin {
 	private static final int DEFAULT_RESULT_PER_PAGE = 20;
 
 	private final TokenManager tokenManager;
@@ -53,7 +53,7 @@ public final class PaginatorAndSortHandler implements RestHandlerPlugin {
 	 * @param tokenManager token manager
 	 */
 	@Inject
-	public PaginatorAndSortHandler(final CollectionsManager collectionsManager, final TokenManager tokenManager) {
+	public PaginatorAndSortRestHandlerPlugin(final CollectionsManager collectionsManager, final TokenManager tokenManager) {
 		Assertion.checkNotNull(collectionsManager);
 		Assertion.checkNotNull(tokenManager);
 		//-----

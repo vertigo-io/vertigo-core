@@ -66,7 +66,7 @@ import com.google.gson.JsonSyntaxException;
  * Extract and Json convert.
  * @author npiedeloup
  */
-public final class JsonConverterHandler implements RestHandlerPlugin {
+public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 	private static final String SERVER_SIDE_MANDATORY = "ServerSideToken mandatory";
 	private static final String FORBIDDEN_OPERATION_FIELD_MODIFICATION = "Can't modify field:";
 
@@ -155,7 +155,7 @@ public final class JsonConverterHandler implements RestHandlerPlugin {
 	 * @param jsonReaderEngine jsonReaderEngine
 	 */
 	@Inject
-	public JsonConverterHandler(final TokenManager tokenManager, final JsonEngine jsonWriterEngine, final JsonEngine jsonReaderEngine) {
+	public JsonConverterRestHandlerPlugin(final TokenManager tokenManager, final JsonEngine jsonWriterEngine, final JsonEngine jsonReaderEngine) {
 		Assertion.checkNotNull(tokenManager);
 		Assertion.checkNotNull(jsonWriterEngine);
 		Assertion.checkNotNull(jsonReaderEngine);

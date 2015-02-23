@@ -55,17 +55,17 @@ import io.vertigo.vega.impl.rest.RestManagerImpl;
 import io.vertigo.vega.impl.rest.catalog.CatalogRestServices;
 import io.vertigo.vega.impl.rest.catalog.SwaggerRestServices;
 import io.vertigo.vega.impl.token.TokenManagerImpl;
-import io.vertigo.vega.plugins.rest.handler.AccessTokenHandler;
-import io.vertigo.vega.plugins.rest.handler.CorsAllowerHandler;
-import io.vertigo.vega.plugins.rest.handler.ExceptionHandler;
-import io.vertigo.vega.plugins.rest.handler.JsonConverterHandler;
-import io.vertigo.vega.plugins.rest.handler.PaginatorAndSortHandler;
-import io.vertigo.vega.plugins.rest.handler.RateLimitingHandler;
-import io.vertigo.vega.plugins.rest.handler.RestfulServiceHandler;
-import io.vertigo.vega.plugins.rest.handler.SecurityHandler;
-import io.vertigo.vega.plugins.rest.handler.SessionHandler;
-import io.vertigo.vega.plugins.rest.handler.SessionInvalidateHandler;
-import io.vertigo.vega.plugins.rest.handler.ValidatorHandler;
+import io.vertigo.vega.plugins.rest.handler.AccessTokenRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.CorsAllowerRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.ExceptionRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.JsonConverterRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.PaginatorAndSortRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.RateLimitingRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.RestfulServiceRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.SecurityRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.SessionInvalidateRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.SessionRestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.ValidatorRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.instrospector.annotations.AnnotationsEndPointIntrospectorPlugin;
 import io.vertigo.vega.plugins.rest.routesregister.sparkjava.SparkJavaRoutesRegisterPlugin;
 import io.vertigo.vega.rest.RestManager;
@@ -148,17 +148,17 @@ public final class MyApp {
 					.beginPlugin(AnnotationsEndPointIntrospectorPlugin.class).endPlugin()
 					.beginPlugin(SparkJavaRoutesRegisterPlugin.class).endPlugin()
 					//-- Handlers plugins
-					.beginPlugin(ExceptionHandler.class).endPlugin()
-					.beginPlugin(CorsAllowerHandler.class).endPlugin()
-					.beginPlugin(SessionInvalidateHandler.class).endPlugin()
-					.beginPlugin(SessionHandler.class).endPlugin()
-					.beginPlugin(RateLimitingHandler.class).endPlugin()
-					.beginPlugin(SecurityHandler.class).endPlugin()
-					.beginPlugin(AccessTokenHandler.class).endPlugin()
-					.beginPlugin(JsonConverterHandler.class).endPlugin()
-					.beginPlugin(PaginatorAndSortHandler.class).endPlugin()
-					.beginPlugin(ValidatorHandler.class).endPlugin()
-					.beginPlugin(RestfulServiceHandler.class).endPlugin()
+					.beginPlugin(ExceptionRestHandlerPlugin.class).endPlugin()
+					.beginPlugin(CorsAllowerRestHandlerPlugin.class).endPlugin()
+					.beginPlugin(SessionInvalidateRestHandlerPlugin.class).endPlugin()
+					.beginPlugin(SessionRestHandlerPlugin.class).endPlugin()
+					.beginPlugin(RateLimitingRestHandlerPlugin.class).endPlugin()
+					.beginPlugin(SecurityRestHandlerPlugin.class).endPlugin()
+					.beginPlugin(AccessTokenRestHandlerPlugin.class).endPlugin()
+					.beginPlugin(JsonConverterRestHandlerPlugin.class).endPlugin()
+					.beginPlugin(PaginatorAndSortRestHandlerPlugin.class).endPlugin()
+					.beginPlugin(ValidatorRestHandlerPlugin.class).endPlugin()
+					.beginPlugin(RestfulServiceRestHandlerPlugin.class).endPlugin()
 				.endComponent()
 			.endModule()
 			.beginModule("myApp")

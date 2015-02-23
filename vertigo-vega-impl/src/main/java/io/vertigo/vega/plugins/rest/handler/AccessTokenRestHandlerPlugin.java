@@ -37,7 +37,7 @@ import spark.Response;
  * Params handler. Extract and Json convert.
  * @author npiedeloup
  */
-public final class AccessTokenHandler implements RestHandlerPlugin {
+public final class AccessTokenRestHandlerPlugin implements RestHandlerPlugin {
 	private static final Serializable TOKEN_DATA = new Serializable() {
 		private static final long serialVersionUID = 1L;
 	};
@@ -51,7 +51,7 @@ public final class AccessTokenHandler implements RestHandlerPlugin {
 	 * @param tokenManager TokenManager
 	 */
 	@Inject
-	public AccessTokenHandler(final TokenManager tokenManager) {
+	public AccessTokenRestHandlerPlugin(final TokenManager tokenManager) {
 		Assertion.checkNotNull(tokenManager);
 		//-----
 		this.tokenManager = tokenManager;
