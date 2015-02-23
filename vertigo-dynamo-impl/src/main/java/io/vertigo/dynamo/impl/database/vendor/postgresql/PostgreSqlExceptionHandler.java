@@ -74,10 +74,18 @@ final class PostgreSqlExceptionHandler extends AbstractSqlExceptionHandler {
 	/** {@inheritDoc} */
 	@Override
 	protected String extractConstraintName(final String msg) {
-		final int i1 = msg.indexOf('"', msg.indexOf("constraint"));
-		final int i2 = msg.indexOf('"', i1 + 1);
+		String constraintName = extractConstraintName(msg, "constraint", '"', '"');
+		if (constraintName == null) {
+			constraintName = extractConstraintName(msg, "contrainte", '«', '»');
+		}
+		return constraintName;
+	}
+
+	private String extractConstraintName(final String msg, final String constraintName, final char constraintNameStart, final char constraintNameEnd) {
+		final int i1 = msg.indexOf(constraintNameStart, msg.indexOf(constraintName));
+		final int i2 = msg.indexOf(constraintNameEnd, i1 + 1);
 		if (i1 > -1 && i2 > -1 && i2 > i1) {
-			return msg.substring(i1 + 1, i2).toUpperCase();
+			return msg.substring(i1 + 1, i2).toUpperCase().trim();
 		}
 		return null;
 	}

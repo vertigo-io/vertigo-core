@@ -66,6 +66,9 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 		throw new VUserException(new MessageText(key));
 	}
 
+	/**
+	 * @param sqle SQLException launch by SQL (often PLSQL application specific exception with &lt;text&gt; tag)
+	 */
 	protected void handleUserSQLException(final SQLException sqle) {
 		String msg = sqle.getMessage();
 		final int i1 = msg.indexOf("<text>");
@@ -111,14 +114,24 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 		throw constraintException;
 	}
 
+	/**
+	 * @param sqle ForeignConstraintSQLException
+	 */
 	protected void handleForeignConstraintSQLException(final SQLException sqle) {
 		handleConstraintSQLException(sqle, Resources.DYNAMO_SQL_CONSTRAINT_IMPOSSIBLE_TO_DELETE);
 	}
 
+	/**
+	 * @param sqle UniqueConstraintSQLException
+	 */
 	protected void handleUniqueConstraintSQLException(final SQLException sqle) {
 		handleConstraintSQLException(sqle, Resources.DYNAMO_SQL_CONSTRAINT_ALREADY_REGISTRED);
 	}
 
+	/**
+	 * @param sqle OtherSQLException
+	 * @param statement SqlPreparedStatement
+	 */
 	protected void handleOtherSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
 		final int errCode = sqle.getErrorCode();
 		throw new RuntimeException(StringUtil.format("[Erreur SQL] {0} : {1}", errCode, statement != null ? statement.toString() : null), sqle);

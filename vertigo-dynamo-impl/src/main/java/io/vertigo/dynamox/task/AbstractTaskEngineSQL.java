@@ -42,6 +42,7 @@ import io.vertigo.dynamo.transaction.KTransactionResourceId;
 import io.vertigo.dynamox.task.TaskEngineSQLParam.InOutType;
 import io.vertigo.lang.Assertion;
 
+import java.sql.BatchUpdateException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -165,6 +166,9 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 				final int sqlRowcount = doExecute(connection, statement);
 				//On positionne le nombre de lignes affectées.
 				setRowCount(sqlRowcount);
+			} catch (final BatchUpdateException sqle) { //some exception embedded the usefull one
+				// Gère les erreurs d'exécution Batch JDBC.
+				handleSQLException(connection, sqle.getNextException(), statement);
 			} catch (final SQLException sqle) {
 				//Gère les erreurs d'exécution JDBC.
 				handleSQLException(connection, sqle, statement);
