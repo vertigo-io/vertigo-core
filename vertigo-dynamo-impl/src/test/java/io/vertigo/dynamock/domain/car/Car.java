@@ -24,7 +24,7 @@ import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 /**
- * Attention cette classe est gÃ©nÃ©rÃ©e automatiquement ! Objet de donnÃ©es Car
+ * Attention cette classe est générée automatiquement ! Objet de données Car
  */
 @javax.persistence.Entity
 @javax.persistence.Table(name = "CAR")
@@ -45,7 +45,7 @@ public final class Car implements DtObject {
 	private Long famId;
 
 	/**
-	 * Champ : PRIMARY_KEY. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'identifiant
+	 * Champ : PRIMARY_KEY. récupère la valeur de la propriété 'identifiant
 	 * de la voiture'.
 	 *
 	 * @return Long id <b>Obligatoire</b>
@@ -60,7 +60,7 @@ public final class Car implements DtObject {
 	}
 
 	/**
-	 * Champ : PRIMARY_KEY. DÃ©finit la valeur de la propriÃ©tÃ© 'identifiant de
+	 * Champ : PRIMARY_KEY. Définit la valeur de la propriété 'identifiant de
 	 * la voiture'.
 	 *
 	 * @param id
@@ -71,7 +71,7 @@ public final class Car implements DtObject {
 	}
 
 	/**
-	 * Champ : DATA. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'Constructeur'.
+	 * Champ : DATA. récupère la valeur de la propriété 'Constructeur'.
 	 *
 	 * @return String make <b>Obligatoire</b>
 	 */
@@ -82,7 +82,7 @@ public final class Car implements DtObject {
 	}
 
 	/**
-	 * Champ : DATA. DÃ©finit la valeur de la propriÃ©tÃ© 'Constructeur'.
+	 * Champ : DATA. Définit la valeur de la propriété 'Constructeur'.
 	 *
 	 * @param make
 	 *            String <b>Obligatoire</b>
@@ -92,18 +92,18 @@ public final class Car implements DtObject {
 	}
 
 	/**
-	 * Champ : DATA. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'ModÃ©le'.
+	 * Champ : DATA. récupère la valeur de la propriété 'Modéle'.
 	 *
 	 * @return String model <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "MODEL")
-	@Field(domain = "DO_FULL_TEXT", notNull = true, label = "ModÃ©le")
+	@Field(domain = "DO_FULL_TEXT", notNull = true, label = "Modéle")
 	public final String getModel() {
 		return model;
 	}
 
 	/**
-	 * Champ : DATA. DÃ©finit la valeur de la propriÃ©tÃ© 'ModÃ©le'.
+	 * Champ : DATA. Définit la valeur de la propriété 'Modéle'.
 	 *
 	 * @param model
 	 *            String <b>Obligatoire</b>
@@ -113,7 +113,7 @@ public final class Car implements DtObject {
 	}
 
 	/**
-	 * Champ : DATA. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'Descriptif'.
+	 * Champ : DATA. récupère la valeur de la propriété 'Descriptif'.
 	 *
 	 * @return String description <b>Obligatoire</b>
 	 */
@@ -124,7 +124,7 @@ public final class Car implements DtObject {
 	}
 
 	/**
-	 * Champ : DATA. DÃ©finit la valeur de la propriÃ©tÃ© 'Descriptif'.
+	 * Champ : DATA. Définit la valeur de la propriété 'Descriptif'.
 	 *
 	 * @param description
 	 *            String <b>Obligatoire</b>
@@ -134,18 +134,18 @@ public final class Car implements DtObject {
 	}
 
 	/**
-	 * Champ : DATA. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'AnnÃ©e'.
+	 * Champ : DATA. récupère la valeur de la propriété 'Année'.
 	 *
 	 * @return Integer year <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "YEAR")
-	@Field(domain = "DO_INTEGER", notNull = true, label = "AnnÃ©e")
+	@Field(domain = "DO_INTEGER", notNull = true, label = "Année")
 	public final Integer getYear() {
 		return year;
 	}
 
 	/**
-	 * Champ : DATA. DÃ©finit la valeur de la propriÃ©tÃ© 'AnnÃ©e'.
+	 * Champ : DATA. Définit la valeur de la propriété 'Année'.
 	 *
 	 * @param year
 	 *            Integer <b>Obligatoire</b>
@@ -155,18 +155,18 @@ public final class Car implements DtObject {
 	}
 
 	/**
-	 * Champ : DATA. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'KilomÃ©trage'.
+	 * Champ : DATA. récupère la valeur de la propriété 'Kilométrage'.
 	 *
 	 * @return Integer kilo <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "KILO")
-	@Field(domain = "DO_INTEGER", notNull = true, label = "KilomÃ©trage")
+	@Field(domain = "DO_INTEGER", notNull = true, label = "Kilométrage")
 	public final Integer getKilo() {
 		return kilo;
 	}
 
 	/**
-	 * Champ : DATA. DÃ©finit la valeur de la propriÃ©tÃ© 'KilomÃ©trage'.
+	 * Champ : DATA. Définit la valeur de la propriété 'Kilométrage'.
 	 *
 	 * @param kilo
 	 *            Integer <b>Obligatoire</b>
@@ -176,7 +176,7 @@ public final class Car implements DtObject {
 	}
 
 	/**
-	 * Champ : DATA. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'Prix'.
+	 * Champ : DATA. récupère la valeur de la propriété 'Prix'.
 	 *
 	 * @return Integer price <b>Obligatoire</b>
 	 */
@@ -187,7 +187,7 @@ public final class Car implements DtObject {
 	}
 
 	/**
-	 * Champ : DATA. DÃ©finit la valeur de la propriÃ©tÃ© 'Prix'.
+	 * Champ : DATA. Définit la valeur de la propriété 'Prix'.
 	 *
 	 * @param price
 	 *            Integer <b>Obligatoire</b>
@@ -217,7 +217,7 @@ public final class Car implements DtObject {
 	}
 
 	/**
-	 * Champ : DATA. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'Type de moteur'.
+	 * Champ : DATA. récupère la valeur de la propriété 'Type de moteur'.
 	 *
 	 * @return String motorType <b>Obligatoire</b>
 	 */
@@ -228,7 +228,7 @@ public final class Car implements DtObject {
 	}
 
 	/**
-	 * Champ : DATA. DÃ©finit la valeur de la propriÃ©tÃ© 'Type de moteur'.
+	 * Champ : DATA. Définit la valeur de la propriété 'Type de moteur'.
 	 *
 	 * @param motorType
 	 *            String <b>Obligatoire</b>
@@ -238,7 +238,7 @@ public final class Car implements DtObject {
 	}
 
 	/**
-	 * Champ : FOREIGN_KEY. rÃ©cupÃ¨re la valeur de la propriÃ©tÃ© 'Famille'.
+	 * Champ : FOREIGN_KEY. récupère la valeur de la propriété 'Famille'.
 	 *
 	 * @return Long famId <b>Obligatoire</b>
 	 */
@@ -249,7 +249,7 @@ public final class Car implements DtObject {
 	}
 
 	/**
-	 * Champ : FOREIGN_KEY. DÃ©finit la valeur de la propriÃ©tÃ© 'Famille'.
+	 * Champ : FOREIGN_KEY. Définit la valeur de la propriété 'Famille'.
 	 *
 	 * @param famId
 	 *            Long <b>Obligatoire</b>

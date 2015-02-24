@@ -19,9 +19,11 @@
 package io.vertigo.dynamo.search.model;
 
 import io.vertigo.dynamo.collections.ListFilter;
+import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.io.Serializable;
 
@@ -41,18 +43,21 @@ public final class SearchQuery implements Serializable {
 	private final String boostedDocumentDateFieldName;
 	private final Integer numDaysOfBoostRefDocument;
 	private final Integer mostRecentBoost;
-	private final FacetedQuery facetedQuery;
+	private final Option<FacetedQuery> facetedQuery;
+	private final FacetDefinition clusteringFacetDefinition;
 
 	/**
 	 * Constructeur.
+	 * @param facetedQuery facetedQueryDefinition
 	 * @param listFilter Filtre principal correspondant aux critères de la recherche
 	 * @param sortField Nom du champ utilisé pour le tri (null si non utilisé)
 	 * @param sortAsc Ordre de tri, True si ascendant (null si non utilisé)
+	 * @param clusteringFacetDefinition Facet utilisée pour cluster des resultats (null si non utilisé)
 	 * @param boostedDocumentDateField Nom du champ portant la date du document (null si non utilisé)
 	 * @param numDaysOfBoostRefDocument Age des documents servant de référence pour le boost des plus récents par rapport à eux (null si non utilisé)
 	 * @param mostRecentBoost Boost relatif maximum entre les plus récents et ceux ayant l'age de référence (doit être > 1) (null si non utilisé)
 	 */
-	SearchQuery(final FacetedQuery facetedQuery, final ListFilter listFilter, final DtField sortField, final Boolean sortAsc, final DtField boostedDocumentDateField, final Integer numDaysOfBoostRefDocument, final Integer mostRecentBoost) {
+	SearchQuery(final Option<FacetedQuery> facetedQuery, final ListFilter listFilter, final DtField sortField, final Boolean sortAsc, final FacetDefinition clusteringFacetDefinition, final DtField boostedDocumentDateField, final Integer numDaysOfBoostRefDocument, final Integer mostRecentBoost) {
 		Assertion.checkNotNull(facetedQuery);
 		Assertion.checkNotNull(listFilter);
 		Assertion.checkArgument(sortField == null || sortAsc != null, "Lorsque le tri des documents est activé, sortAsc est obligatoires.");
@@ -68,9 +73,14 @@ public final class SearchQuery implements Serializable {
 		boostedDocumentDateFieldName = boostedDocumentDateField != null ? boostedDocumentDateField.getName() : null;
 		this.numDaysOfBoostRefDocument = numDaysOfBoostRefDocument;
 		this.mostRecentBoost = mostRecentBoost;
+		this.clusteringFacetDefinition = clusteringFacetDefinition;
 	}
 
-	public FacetedQuery getFacetedQuery() {
+	/**
+	 * Facets informations.
+	 * @return facetedQuery.
+	 */
+	public Option<FacetedQuery> getFacetedQuery() {
 		return facetedQuery;
 	}
 
@@ -111,6 +121,24 @@ public final class SearchQuery implements Serializable {
 	}
 
 	/**
+	 * Indique que la recherche propose un clustering des documents par une facette.
+	 * Le nombre de document par valeur des facette est limité
+	 * @return si le clustering est activé
+	 */
+	public boolean isClusteringFacet() {
+		return clusteringFacetDefinition != null;
+	}
+
+	/**
+	 * @return Facette utilisé pour le clustering
+	 */
+	public FacetDefinition getClusteringFacetDefinition() {
+		Assertion.checkArgument(isClusteringFacet(), "Le clustering des documents par facette n'est pas activé sur cette recherche");
+		//-----
+		return clusteringFacetDefinition;
+	}
+
+	/**
 	 * Indique que la recherche boost les documents les plus récents.
 	 * C'est une formule de type 1/x qui est utilisée.
 	 * La formule de boost est 1 / ((documentAgeDay/NumDaysOfBoostRefDocument) + (1/(MostRecentBoost-1)))
@@ -125,7 +153,7 @@ public final class SearchQuery implements Serializable {
 	 * @return Nom du champ portant la date du document
 	 */
 	public String getBoostedDocumentDateField() {
-		Assertion.checkArgument(isBoostMostRecent(), "Le boost des documents les plus récent, n'est pas activé sur cette recherche");
+		Assertion.checkArgument(isBoostMostRecent(), "Le boost des documents les plus récent n'est pas activé sur cette recherche");
 		//-----
 		return boostedDocumentDateFieldName;
 	}

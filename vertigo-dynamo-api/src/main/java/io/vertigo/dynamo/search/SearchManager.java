@@ -66,6 +66,7 @@ public interface SearchManager extends Component {
 	 * Récupération du résultat issu d'une requête.
 	 * @param searchQuery critères initiaux
 	 * @param <R> Type de l'objet resultant de la recherche
+	 * @param indexDefinition Type de l'index
 	 * @return Résultat correspondant à la requête
 	 */
 	<R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(SearchIndexDefinition indexDefinition, final SearchQuery searchQuery);

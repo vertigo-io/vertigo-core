@@ -47,6 +47,7 @@ public final class FacetedQueryDefinition implements Definition {
 
 	/**
 	 * Constructeur.
+	 * @param name Nom de la definition
 	 * @param facetDefinitions Liste des facettes
 	 */
 	public FacetedQueryDefinition(final String name, final List<FacetDefinition> facetDefinitions) {

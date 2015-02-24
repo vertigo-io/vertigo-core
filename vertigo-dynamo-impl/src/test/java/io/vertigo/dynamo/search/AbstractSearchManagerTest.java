@@ -21,6 +21,7 @@ package io.vertigo.dynamo.search;
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.collections.ListFilter;
+import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.model.Facet;
 import io.vertigo.dynamo.collections.model.FacetValue;
@@ -37,13 +38,16 @@ import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.dynamo.search.model.SearchQueryBuilder;
 import io.vertigo.dynamock.domain.car.Car;
 import io.vertigo.dynamock.domain.car.CarDataBase;
+import io.vertigo.dynamock.facet.CarFacetInitializer;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.inject.Inject;
@@ -57,13 +61,6 @@ import org.junit.Test;
  * @author  npiedeloup
  */
 public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
-	public static final String FCT_CAR_SUFFIX = "_CAR";
-
-	//Query sans facette
-	public static final String QRY_CAR = "QRY_CAR";
-
-	//Query avec facette sur le constructeur
-	public static final String QRY_CAR_FACET = "QRY_CAR_FACET";
 
 	/** Logger. */
 	private final Logger log = Logger.getLogger(getClass());
@@ -74,8 +71,9 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 	/** IndexDefinition. */
 	protected SearchIndexDefinition carIndexDefinition;
-	private FacetedQueryDefinition carQueryDefinition;
 	private FacetedQueryDefinition carFacetQueryDefinition;
+	private FacetDefinition makeFacetDefinition;
+	private FacetDefinition yearFacetDefinition;
 	private CarDataBase carDataBase;
 
 	private String facetSuffix;
@@ -88,10 +86,11 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		//On construit la BDD des voitures
 		carDataBase = new CarDataBase();
 		carDataBase.loadDatas();
-		facetSuffix = FCT_CAR_SUFFIX;
+		facetSuffix = CarFacetInitializer.FCT_CAR_SUFFIX;
+		makeFacetDefinition = Home.getDefinitionSpace().resolve(CarFacetInitializer.FCT_MAKE_CAR, FacetDefinition.class);
+		yearFacetDefinition = Home.getDefinitionSpace().resolve(CarFacetInitializer.FCT_YEAR_CAR, FacetDefinition.class);
 		carIndexDefinition = Home.getDefinitionSpace().resolve(indexName, SearchIndexDefinition.class);
-		carQueryDefinition = Home.getDefinitionSpace().resolve(QRY_CAR, FacetedQueryDefinition.class);
-		carFacetQueryDefinition = Home.getDefinitionSpace().resolve(QRY_CAR_FACET, FacetedQueryDefinition.class);
+		carFacetQueryDefinition = Home.getDefinitionSpace().resolve(CarFacetInitializer.QRY_CAR_FACET, FacetedQueryDefinition.class);
 		clean(carIndexDefinition);
 	}
 
@@ -415,7 +414,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		if (facetValue == null) {
 			throw new IllegalArgumentException("Pas de FacetValue contenant " + facetValueLabel + " dans la facette " + facetName);
 		}
-		final FacetedQuery previousQuery = result.getFacetedQuery();
+		final FacetedQuery previousQuery = result.getFacetedQuery().get();
 		final List<ListFilter> queryFilters = new ArrayList<>(previousQuery.getListFilters());
 		queryFilters.add(facetValue.getListFilter());
 		return new FacetedQuery(previousQuery.getDefinition(), queryFilters);
@@ -535,6 +534,98 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		logResult(result1);
 	}
 
+	/**
+	 * Test le facettage par term d'une liste.
+	 */
+	@Test
+	public void testClusterByFacetTerm() {
+		index(true);
+		final SearchQuery searchQuery = new SearchQueryBuilder("*:*")
+				.withFacetClustering(makeFacetDefinition)
+				.build();
+		final FacetedQueryResult<Car, SearchQuery> result = searchManager.loadList(carIndexDefinition, searchQuery);
+
+		//On vérifie qu'il existe une valeur pour chaque marques et que le nombre d'occurrences est correct
+		final Map<String, List<Car>> databaseCluster = new HashMap<>();
+		for (final Car car : carDataBase) {
+			List<Car> carsByMake = databaseCluster.get(car.getMake().toLowerCase());
+			if (carsByMake == null) {
+				carsByMake = new ArrayList<>();
+				databaseCluster.put(car.getMake().toLowerCase(), carsByMake);
+			}
+			carsByMake.add(car);
+		}
+		Assert.assertEquals(databaseCluster.size(), result.getClusters().size());
+		for (final Entry<FacetValue, DtList<Car>> entry : result.getClusters().entrySet()) {
+			final String searchFacetLabel = entry.getKey().getLabel().getDisplay().toLowerCase();
+			final int searchFacetCount = entry.getValue().size();
+			final List<Car> carsByMake = databaseCluster.get(searchFacetLabel);
+			Assert.assertEquals(carsByMake.size(), searchFacetCount);
+			for (final Car car : entry.getValue()) {
+				Assert.assertEquals(searchFacetLabel, car.getMake().toLowerCase());
+			}
+		}
+	}
+
+	private enum YearCluster {
+		before2000("avant 2000"),
+		between2000and2005("2000-2005"),
+		after2005("après 2005");
+
+		private final String label;
+
+		YearCluster(final String label) {
+			this.label = label;
+		}
+
+		String getLabel() {
+			return label;
+		}
+	}
+
+	/**
+	 * Test le facettage par term d'une liste.
+	 */
+	@Test
+	public void testClusterByFacetRange() {
+		index(true);
+		final SearchQuery searchQuery = new SearchQueryBuilder("*:*")
+				.withFacetClustering(yearFacetDefinition) // "avant 2000", "2000-2005", "après 2005"
+				.build();
+		final FacetedQueryResult<Car, SearchQuery> result = searchManager.loadList(carIndexDefinition, searchQuery);
+
+		//On vérifie qu'il existe une valeur pour chaque marques et que le nombre d'occurrences est correct
+		final Map<String, List<Car>> databaseCluster = new HashMap<>();
+		databaseCluster.put(YearCluster.before2000.getLabel(), new ArrayList<Car>());
+		databaseCluster.put(YearCluster.between2000and2005.getLabel(), new ArrayList<Car>());
+		databaseCluster.put(YearCluster.after2005.getLabel(), new ArrayList<Car>());
+		for (final Car car : carDataBase) {
+			if (car.getYear() < 2000) {
+				databaseCluster.get(YearCluster.before2000.getLabel()).add(car);
+			} else if (car.getYear() < 2005) {
+				databaseCluster.get(YearCluster.between2000and2005.getLabel()).add(car);
+			} else {
+				databaseCluster.get(YearCluster.after2005.getLabel()).add(car);
+			}
+		}
+		Assert.assertEquals(databaseCluster.size(), result.getClusters().size());
+		for (final Entry<FacetValue, DtList<Car>> entry : result.getClusters().entrySet()) {
+			final String searchFacetLabel = entry.getKey().getLabel().getDisplay().toLowerCase();
+			final int searchFacetCount = entry.getValue().size();
+			final List<Car> carsByYear = databaseCluster.get(searchFacetLabel);
+			Assert.assertEquals(carsByYear.size(), searchFacetCount);
+			for (final Car car : entry.getValue()) {
+				if (car.getYear() < 2000) {
+					Assert.assertEquals(searchFacetLabel, YearCluster.before2000.getLabel());
+				} else if (car.getYear() < 2005) {
+					Assert.assertEquals(searchFacetLabel, YearCluster.between2000and2005.getLabel());
+				} else {
+					Assert.assertEquals(searchFacetLabel, YearCluster.after2005.getLabel());
+				}
+			}
+		}
+	}
+
 	private void logResult(final FacetedQueryResult<Car, SearchQuery> result) {
 		log.info("====== " + result.getCount() + " Results");
 		for (final Facet facet : result.getFacets()) {
@@ -628,7 +719,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	private long doQuery(final String query) {
 		//recherche
 		final SearchQuery searchQuery = new SearchQueryBuilder(query)
-				.withFacetStrategy(carQueryDefinition)
 				.build();
 
 		return doQuery(searchQuery).getCount();
@@ -638,7 +728,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		//recherche
 		final SearchQuery searchQuery = new SearchQueryBuilder(query)
 				.withSortStrategy(carIndexDefinition.getIndexDtDefinition().getField(sortField), sortAsc)
-				.withFacetStrategy(carQueryDefinition)
 				.build();
 
 		final DtList<D> dtList = (DtList<D>) doQuery(searchQuery).getDtList();

@@ -82,7 +82,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		final Map<R, Map<DtField, String>> highlights = Collections.emptyMap();
 
 		//3- on construit le résultat
-		return new FacetedQueryResult<>(facetedQuery, filteredDtList.size(), filteredDtList, facets, highlights, dtList);
+		return new FacetedQueryResult<>(Option.some(facetedQuery), filteredDtList.size(), filteredDtList, facets, highlights, dtList);
 	}
 
 	//=========================================================================

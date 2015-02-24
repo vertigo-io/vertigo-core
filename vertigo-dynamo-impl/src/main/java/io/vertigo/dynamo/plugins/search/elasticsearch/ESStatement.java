@@ -66,7 +66,9 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.functionscore.exp.ExponentialDecayFunctionBuilder;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.Aggregation;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation;
 import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation.Bucket;
@@ -74,6 +76,7 @@ import org.elasticsearch.search.aggregations.bucket.range.Range;
 import org.elasticsearch.search.aggregations.bucket.range.RangeBuilder;
 import org.elasticsearch.search.aggregations.bucket.range.date.DateRangeBuilder;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsBuilder;
+import org.elasticsearch.search.aggregations.metrics.tophits.TopHits;
 import org.elasticsearch.search.highlight.HighlightField;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
@@ -88,6 +91,8 @@ import org.elasticsearch.search.sort.SortOrder;
  * @param <R> Type de l'objet resultant de la recherche
  */
 final class ESStatement<I extends DtObject, R extends DtObject> {
+	private static final int TOPHITS_SUBAGGREAGTION_SIZE = 20; //max 20 documents per cluster when cluserization is used
+	private static final String TOPHITS_SUBAGGREAGTION_NAME = "top";
 	private static final String DATE_PATTERN = "dd/MM/yy";
 	private static final Pattern RANGE_PATTERN = Pattern.compile("([A-Z_0-9]+):([\\[\\]])(.*) TO (.*)([\\[\\]])");
 
@@ -184,6 +189,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	}
 
 	/**
+	 * @param indexDefinition Index de recherche
 	 * @param searchQuery Mots clés de recherche
 	 * @param rowsPerQuery Nombre de ligne max
 	 * @return Résultat de la recherche
@@ -192,8 +198,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		Assertion.checkNotNull(searchQuery);
 		//-----
 		final SearchRequestBuilder searchRequestBuilder = createSearchRequestBuilder(indexDefinition, searchQuery, rowsPerQuery);
-
-		appendFacetDefinition(searchQuery.getFacetedQuery().getDefinition(), searchRequestBuilder);
+		appendFacetDefinition(searchQuery, searchRequestBuilder);
 
 		//System.out.println("Query:" + solrQuery.toString());
 		final SearchResponse queryResponse = searchRequestBuilder.execute().actionGet();
@@ -225,9 +230,9 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		if (searchQuery.isBoostMostRecent()) {
 			queryBuilder = appendBoostMostRecent(searchQuery, queryBuilder);
 		}
-		if (!searchQuery.getFacetedQuery().getListFilters().isEmpty()) {
+		if (searchQuery.getFacetedQuery().isDefined() && !searchQuery.getFacetedQuery().get().getListFilters().isEmpty()) {
 			final AndFilterBuilder filterBuilder = FilterBuilders.andFilter();
-			for (final ListFilter facetQuery : searchQuery.getFacetedQuery().getListFilters()) {
+			for (final ListFilter facetQuery : searchQuery.getFacetedQuery().get().getListFilters()) {
 				filterBuilder.add(translateToFilterBuilder(facetQuery, indexFieldNameResolver));
 			}
 			//use filteredQuery instead of PostFilter in order to filter aggregations too.
@@ -244,61 +249,84 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		return QueryBuilders.functionScoreQuery(queryBuilder, new ExponentialDecayFunctionBuilder(searchQuery.getBoostedDocumentDateField(), null, searchQuery.getNumDaysOfBoostRefDocument() + "d").setDecay(searchQuery.getMostRecentBoost() - 1d));
 	}
 
-	private void appendFacetDefinition(final FacetedQueryDefinition queryDefinition, final SearchRequestBuilder searchRequestBuilder) {
+	private void appendFacetDefinition(final SearchQuery searchQuery, final SearchRequestBuilder searchRequestBuilder) {
 		Assertion.checkNotNull(searchRequestBuilder);
 		//-----
-		for (final FacetDefinition facetDefinition : queryDefinition.getFacetDefinitions()) {
-			//Récupération des noms des champs correspondant aux facettes.
-			final DtField dtField = facetDefinition.getDtField();
-			if (facetDefinition.isRangeFacet()) {
-				//facette par range
-				//solrQuery.addFacetQuery(translateToQueryBuilder(facetRange.getListFilter(), indexFieldNameResolver));
-				final DataType dataType = dtField.getDomain().getDataType();
-				final DateRangeBuilder dateRangeBuilder;
-				if (dataType == DataType.Date) {
-					dateRangeBuilder = AggregationBuilders.dateRange(facetDefinition.getName())
-							.field(indexFieldNameResolver.obtainIndexFieldName(dtField))
-							.format(DATE_PATTERN);
-					for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-						final String filterValue = facetRange.getListFilter().getFilterValue();
-						final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
-						final String minValue = parsedFilter[3];
-						final String maxValue = parsedFilter[4];
-						if ("*".equals(minValue)) {
-							dateRangeBuilder.addUnboundedTo(filterValue, maxValue);
-						} else if ("*".equals(maxValue)) {
-							dateRangeBuilder.addUnboundedFrom(filterValue, minValue);
-						} else {
-							dateRangeBuilder.addRange(filterValue, minValue, maxValue); //always min include and max exclude in ElasticSearch
-						}
-					}
-					searchRequestBuilder.addAggregation(dateRangeBuilder);
-				} else {
-					final RangeBuilder rangeBuilder = AggregationBuilders.range(facetDefinition.getName())//
-							.field(indexFieldNameResolver.obtainIndexFieldName(dtField));
-					for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-						final String filterValue = facetRange.getListFilter().getFilterValue();
-						final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
-						final Option<Double> minValue = convertToDouble(parsedFilter[3]);
-						final Option<Double> maxValue = convertToDouble(parsedFilter[4]);
-						if (minValue.isEmpty()) {
-							rangeBuilder.addUnboundedTo(filterValue, maxValue.get());
-						} else if (maxValue.isEmpty()) {
-							rangeBuilder.addUnboundedFrom(filterValue, minValue.get());
-						} else {
-							rangeBuilder.addRange(filterValue, minValue.get(), maxValue.get()); //always min include and max exclude in ElasticSearch
-						}
-					}
-					searchRequestBuilder.addAggregation(rangeBuilder);
-				}
-			} else {
-				//facette par field
-				final TermsBuilder aggregationBuilder = AggregationBuilders.terms(facetDefinition.getName())
-						.size(50) //Warning term aggregations are inaccurate : see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html
-						.field(indexFieldNameResolver.obtainIndexFieldName(dtField));
+		//On ajoute le cluster, si présent
+		if (searchQuery.isClusteringFacet()) { //si il y a un cluster on le place en premier
+			final FacetDefinition clusteringFacetDefinition = searchQuery.getClusteringFacetDefinition();
+
+			final AggregationBuilder aggregationBuilder = facetToAggregationBuilder(clusteringFacetDefinition);
+			aggregationBuilder.subAggregation(
+					AggregationBuilders.topHits(TOPHITS_SUBAGGREAGTION_NAME)
+							.setSize(TOPHITS_SUBAGGREAGTION_SIZE)
+							.setFetchSource(false));
+			searchRequestBuilder.addAggregation(aggregationBuilder);
+		}
+		//Puis les facettes liées à la query, si présent
+		if (searchQuery.getFacetedQuery().isDefined()) {
+			final FacetedQueryDefinition facetedQueryDefinition = searchQuery.getFacetedQuery().get().getDefinition();
+			final Collection<FacetDefinition> facetDefinitions = new ArrayList<>(facetedQueryDefinition.getFacetDefinitions());
+			if (searchQuery.isClusteringFacet() && facetDefinitions.contains(searchQuery.getClusteringFacetDefinition())) {
+				facetDefinitions.remove(searchQuery.getClusteringFacetDefinition());
+			}
+			for (final FacetDefinition facetDefinition : facetDefinitions) {
+				final AggregationBuilder aggregationBuilder = facetToAggregationBuilder(facetDefinition);
 				searchRequestBuilder.addAggregation(aggregationBuilder);
 			}
 		}
+	}
+
+	private AggregationBuilder facetToAggregationBuilder(final FacetDefinition facetDefinition) {
+		//Récupération des noms des champs correspondant aux facettes.
+		final DtField dtField = facetDefinition.getDtField();
+		if (facetDefinition.isRangeFacet()) {
+			//facette par range
+			//solrQuery.addFacetQuery(translateToQueryBuilder(facetRange.getListFilter(), indexFieldNameResolver));
+			final DataType dataType = dtField.getDomain().getDataType();
+			final DateRangeBuilder dateRangeBuilder;
+			if (dataType == DataType.Date) {
+				dateRangeBuilder = AggregationBuilders.dateRange(facetDefinition.getName())
+						.field(indexFieldNameResolver.obtainIndexFieldName(dtField))
+						.format(DATE_PATTERN);
+				for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
+					final String filterValue = facetRange.getListFilter().getFilterValue();
+					final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
+					final String minValue = parsedFilter[3];
+					final String maxValue = parsedFilter[4];
+					if ("*".equals(minValue)) {
+						dateRangeBuilder.addUnboundedTo(filterValue, maxValue);
+					} else if ("*".equals(maxValue)) {
+						dateRangeBuilder.addUnboundedFrom(filterValue, minValue);
+					} else {
+						dateRangeBuilder.addRange(filterValue, minValue, maxValue); //always min include and max exclude in ElasticSearch
+					}
+				}
+				return dateRangeBuilder;
+			}
+
+			final RangeBuilder rangeBuilder = AggregationBuilders.range(facetDefinition.getName())//
+					.field(indexFieldNameResolver.obtainIndexFieldName(dtField));
+			for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
+				final String filterValue = facetRange.getListFilter().getFilterValue();
+				final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
+				final Option<Double> minValue = convertToDouble(parsedFilter[3]);
+				final Option<Double> maxValue = convertToDouble(parsedFilter[4]);
+				if (minValue.isEmpty()) {
+					rangeBuilder.addUnboundedTo(filterValue, maxValue.get());
+				} else if (maxValue.isEmpty()) {
+					rangeBuilder.addUnboundedFrom(filterValue, minValue.get());
+				} else {
+					rangeBuilder.addRange(filterValue, minValue.get(), maxValue.get()); //always min include and max exclude in ElasticSearch
+				}
+			}
+			return rangeBuilder;
+		}
+		//facette par field
+		final TermsBuilder aggregationBuilder = AggregationBuilders.terms(facetDefinition.getName())
+				.size(50) //Warning term aggregations are inaccurate : see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html
+				.field(indexFieldNameResolver.obtainIndexFieldName(dtField));
+		return aggregationBuilder;
 	}
 
 	private static Option<Double> convertToDouble(final String valueToConvert) {
@@ -339,20 +367,62 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	}
 
 	private FacetedQueryResult<R, SearchQuery> translateQuery(final SearchIndexDefinition indexDefinition, final SearchResponse queryResponse, final SearchQuery searchQuery) {
+
 		final Map<R, Map<DtField, String>> resultHighlights = new HashMap<>();
 		final DtList<R> dtc = new DtList<>(indexDefinition.getResultDtDefinition());
+		final Map<String, R> dtcIndex = new HashMap<>();
 		for (final SearchHit searchHit : queryResponse.getHits()) {
 			final SearchIndex<I, R> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
 			final R result = index.getResultDtObject();
 			dtc.add(result);
-
+			dtcIndex.put(searchHit.getId(), result);
 			final Map<DtField, String> highlights = createHighlight(searchHit, indexDefinition.getIndexDtDefinition(), indexFieldNameResolver);
 			resultHighlights.put(result, highlights);
 		}
+		final Map<FacetValue, DtList<R>> resultCluster = createCluster(indexDefinition, searchQuery, queryResponse, dtcIndex);
 		//On fabrique à la volée le résultat.
-		final List<Facet> facets = createFacetList(searchQuery.getFacetedQuery().getDefinition(), queryResponse);
+		final List<Facet> facets = createFacetList(searchQuery, queryResponse);
 		final long count = queryResponse.getHits().getTotalHits();
-		return new FacetedQueryResult<>(searchQuery.getFacetedQuery(), count, dtc, facets, resultHighlights, searchQuery);
+		return new FacetedQueryResult<>(searchQuery.getFacetedQuery(), count, dtc, facets, resultCluster, resultHighlights, searchQuery);
+	}
+
+	private Map<FacetValue, DtList<R>> createCluster(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final SearchResponse queryResponse, final Map<String, R> dtcIndex) {
+
+		final Map<FacetValue, DtList<R>> resultCluster = new LinkedHashMap<>();
+		if (searchQuery.isClusteringFacet()) {
+			final FacetDefinition facetDefinition = searchQuery.getClusteringFacetDefinition();
+			final Aggregation facetAggregation = queryResponse.getAggregations().get(facetDefinition.getName());
+			if (facetDefinition.isRangeFacet()) {
+				//Cas des facettes par 'range'
+				final Range rangeBuckets = (Range) facetAggregation;
+				for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
+					final Bucket value = rangeBuckets.getBucketByKey(facetRange.getListFilter().getFilterValue());
+					final SearchHits facetSearchHits = ((TopHits) value.getAggregations().get(TOPHITS_SUBAGGREAGTION_NAME)).getHits();
+					final DtList<R> facetDtc = new DtList<>(indexDefinition.getResultDtDefinition());
+					for (final SearchHit searchHit : facetSearchHits) {
+						facetDtc.add(dtcIndex.get(searchHit.getId()));
+					}
+					resultCluster.put(facetRange, facetDtc);
+				}
+			} else {
+				//Cas des facettes par 'term'
+				final MultiBucketsAggregation multiBuckets = (MultiBucketsAggregation) facetAggregation;
+				FacetValue facetValue;
+				for (final Bucket value : multiBuckets.getBuckets()) {
+					final MessageText label = new MessageText(value.getKey(), null);
+					final String query = facetDefinition.getDtField().name() + ":\"" + value.getKey() + "\"";
+					facetValue = new FacetValue(new ListFilter(query), label);
+
+					final SearchHits facetSearchHits = ((TopHits) value.getAggregations().get(TOPHITS_SUBAGGREAGTION_NAME)).getHits();
+					final DtList<R> facetDtc = new DtList<>(indexDefinition.getResultDtDefinition());
+					for (final SearchHit searchHit : facetSearchHits) {
+						facetDtc.add(dtcIndex.get(searchHit.getId()));
+					}
+					resultCluster.put(facetValue, facetDtc);
+				}
+			}
+		}
+		return resultCluster;
 	}
 
 	private static Map<DtField, String> createHighlight(final SearchHit searchHit, final DtDefinition indexDtDefinition, final SearchIndexFieldNameResolver indexFieldNameResolver) {
@@ -369,9 +439,10 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		return highlights;
 	}
 
-	private static List<Facet> createFacetList(final FacetedQueryDefinition queryDefinition, final SearchResponse queryResponse) {
+	private static List<Facet> createFacetList(final SearchQuery searchQuery, final SearchResponse queryResponse) {
 		final List<Facet> facets = new ArrayList<>();
-		if (queryResponse.getAggregations() != null) {
+		if (searchQuery.getFacetedQuery().isDefined() && queryResponse.getAggregations() != null) {
+			final FacetedQueryDefinition queryDefinition = searchQuery.getFacetedQuery().get().getDefinition();
 			for (final Aggregation aggregation : queryResponse.getAggregations().asList()) {
 				final FacetDefinition facetDefinition = queryDefinition.getFacetDefinition(aggregation.getName());
 				final Facet currentFacet;
@@ -418,7 +489,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		//Cas des facettes par range
 		final Map<FacetValue, Long> rangeValues = new LinkedHashMap<>();
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-			final Range.Bucket value = rangeBuckets.getBucketByKey(facetRange.getListFilter().getFilterValue());
+			final Bucket value = rangeBuckets.getBucketByKey(facetRange.getListFilter().getFilterValue());
 			rangeValues.put(facetRange, value.getDocCount());
 		}
 		return new Facet(facetDefinition, rangeValues);

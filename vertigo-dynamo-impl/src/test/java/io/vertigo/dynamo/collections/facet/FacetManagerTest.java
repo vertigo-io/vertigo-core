@@ -154,7 +154,7 @@ public final class FacetManagerTest extends AbstractTestCaseJU4 {
 		if (facetFilter == null) {
 			throw new IllegalArgumentException("Pas de FacetValue contenant " + facetValueLabel + " dans la facette " + facetName);
 		}
-		final FacetedQuery previousQuery = result.getFacetedQuery();
+		final FacetedQuery previousQuery = result.getFacetedQuery().get();
 		final List<ListFilter> queryFilters = new ArrayList<>(previousQuery.getListFilters());
 		queryFilters.add(facetFilter.getListFilter());
 		return new FacetedQuery(previousQuery.getDefinition(), queryFilters);

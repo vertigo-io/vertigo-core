@@ -29,7 +29,6 @@ import io.vertigo.dynamock.domain.car.Car;
 import io.vertigo.lang.MessageText;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -45,9 +44,6 @@ public final class CarFacetInitializer {
 
 	public static final String FCT_CAR_SUFFIX = "_CAR";
 
-	//Query sans facette
-	public static final String QRY_CAR = "QRY_CAR";
-
 	//Query avec facette sur le constructeur
 	public static final String QRY_CAR_FACET = "QRY_CAR_FACET";
 
@@ -58,23 +54,9 @@ public final class CarFacetInitializer {
 	public static void initCarFacet() {
 		final DtDefinition carDefinition = DtObjectUtil.findDtDefinition(Car.class);
 
-		//On ajoute les types de requêtes par index
-		FacetedQueryDefinition carQueryDefinition;
-		//Le premier type de requête est simple, sans facette
-		carQueryDefinition = createCarQueryDefinition();
+		//On ajoute les types de requêtes à facettes par index
+		final FacetedQueryDefinition carQueryDefinition = createCarQueryDefinitionWithFacets(carDefinition);
 		Home.getDefinitionSpace().put(carQueryDefinition, FacetedQueryDefinition.class);
-
-		//Le secondtype de requête est contient des facettes
-		carQueryDefinition = createCarQueryDefinitionWithFacets(carDefinition);
-		Home.getDefinitionSpace().put(carQueryDefinition, FacetedQueryDefinition.class);
-	}
-
-	/*
-	 * Création d'un type de requête sans facette
-	 */
-	private static FacetedQueryDefinition createCarQueryDefinition() {
-		final List<FacetDefinition> facetDefinitionList = Collections.<FacetDefinition> emptyList();
-		return new FacetedQueryDefinition(QRY_CAR, facetDefinitionList);
 	}
 
 	/*
