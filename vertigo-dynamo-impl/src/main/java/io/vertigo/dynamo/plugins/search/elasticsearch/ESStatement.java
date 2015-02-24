@@ -339,17 +339,6 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		return Option.some(result);
 	}
 
-	/*private static String translateToQueryBuilder(final ListFilter query, final IndexFieldNameResolver indexFieldNameResolver) {
-			Assertion.checkNotNull(query);
-			//-----
-			final StringBuilder stringQuery = new StringBuilder();
-			//for (final QueryFilter facetQuery : queryFilters) {
-			stringQuery.append(" +(");
-			stringQuery.append(query.getFilterValue());
-			stringQuery.append(')');
-			//}
-			return indexFieldNameResolver.replaceAllIndexFieldNames(stringQuery.toString());
-		}*/
 	private static QueryBuilder translateToQueryBuilder(final ListFilter listFilter, final SearchIndexFieldNameResolver indexFieldNameResolver) {
 		Assertion.checkNotNull(listFilter);
 		//-----
