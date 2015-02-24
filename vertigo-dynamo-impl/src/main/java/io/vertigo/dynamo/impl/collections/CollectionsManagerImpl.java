@@ -26,6 +26,7 @@ import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.model.Facet;
+import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -78,11 +79,15 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		final DtList<R> filteredDtList = filter(dtList, facetedQuery);
 		//2- on facette
 		final List<Facet> facets = facetFactory.createFacets(facetedQuery.getDefinition(), filteredDtList);
-		//TODO 2b- mise en valeur vide
+
+		//TODO 2b- cluster vide
+		final Map<FacetValue, DtList<R>> resultCluster = Collections.emptyMap();
+
+		//TODO 2c- mise en valeur vide
 		final Map<R, Map<DtField, String>> highlights = Collections.emptyMap();
 
 		//3- on construit le résultat
-		return new FacetedQueryResult<>(Option.some(facetedQuery), filteredDtList.size(), filteredDtList, facets, highlights, dtList);
+		return new FacetedQueryResult<>(Option.some(facetedQuery), filteredDtList.size(), filteredDtList, facets, resultCluster, highlights, dtList);
 	}
 
 	//=========================================================================
