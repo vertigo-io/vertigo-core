@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 /**
@@ -71,6 +72,25 @@ public final class FacetFactory {
 		return facets;
 	}
 
+	/**
+	 * Création d'un cluster d'une liste à partir d'une facette.
+	 * @param <D> Type de l'entité
+	 * @param facetDefinition Facette utilisée pour le cluster
+	 * @param dtList Liste
+	 * @return Map du cluster
+	 */
+	public <D extends DtObject> Map<FacetValue, DtList<D>> createCluster(final FacetDefinition facetDefinition, final DtList<D> dtList) {
+		Assertion.checkNotNull(facetDefinition);
+		Assertion.checkNotNull(dtList);
+		//-----
+		if (facetDefinition.isRangeFacet()) {
+			//Cas des facettes par 'range'
+			return createRangeCluster(facetDefinition, dtList);
+		}
+		//Cas des facettes par 'term'
+		return createTermCluster(facetDefinition, dtList);
+	}
+
 	private <D extends DtObject> DtList<D> apply(final ListFilter listFilter, final DtList<D> fullDtList) {
 		//on délégue à CollectionsManager les méthodes de requête de filtrage.
 		return collectionManager.createDtListProcessor()
@@ -81,34 +101,55 @@ public final class FacetFactory {
 	private Facet createFacet(final FacetDefinition facetDefinition, final DtList<?> dtList) {
 		if (facetDefinition.isRangeFacet()) {
 			//Cas des facettes par 'range'
-			return createFacetRange(facetDefinition, dtList);
+			return createRangeFacet(facetDefinition, dtList);
 		}
 		//Cas des facettes par 'term'
 		return createTermFacet(facetDefinition, dtList);
 	}
 
-	private Facet createFacetRange(final FacetDefinition facetDefinition, final DtList<?> dtList) {
+	private <D extends DtObject> Facet createRangeFacet(final FacetDefinition facetDefinition, final DtList<D> dtList) {
+		final Map<FacetValue, DtList<D>> clusterValues = createRangeCluster(facetDefinition, dtList);
 		//map résultat avec le count par FacetFilter
 		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
-
-		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-			//Pour chaque Valeur de facette on compte le nombre d'élements.
-			final DtList<?> facetFilteredList = apply(facetRange.getListFilter(), dtList);
-			facetValues.put(facetRange, Long.valueOf(facetFilteredList.size()));
+		for (final Entry<FacetValue, DtList<D>> entry : clusterValues.entrySet()) {
+			facetValues.put(entry.getKey(), Long.valueOf(entry.getValue().size()));
 		}
 		return new Facet(facetDefinition, facetValues);
 	}
 
-	private static Facet createTermFacet(final FacetDefinition facetDefinition, final DtList<?> dtList) {
+	private <D extends DtObject> Map<FacetValue, DtList<D>> createRangeCluster(final FacetDefinition facetDefinition, final DtList<D> dtList) {
+		//map résultat avec les docs par FacetFilter
+		final Map<FacetValue, DtList<D>> clusterValues = new LinkedHashMap<>();
+
+		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
+			//Pour chaque Valeur de facette on trouve les élements.
+			final DtList<D> facetFilteredList = apply(facetRange.getListFilter(), dtList);
+			clusterValues.put(facetRange, facetFilteredList);
+		}
+		return clusterValues;
+	}
+
+	private static <D extends DtObject> Facet createTermFacet(final FacetDefinition facetDefinition, final DtList<D> dtList) {
+		final Map<FacetValue, DtList<D>> clusterValues = createTermCluster(facetDefinition, dtList);
+		//map résultat avec le count par FacetFilter
+		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
+		for (final Entry<FacetValue, DtList<D>> entry : clusterValues.entrySet()) {
+			facetValues.put(entry.getKey(), Long.valueOf(entry.getValue().size()));
+		}
+		return new Facet(facetDefinition, facetValues);
+	}
+
+	private static <D extends DtObject> Map<FacetValue, DtList<D>> createTermCluster(final FacetDefinition facetDefinition, final DtList<D> dtList) {
+		//map résultat avec les docs par FacetFilter
+		final Map<FacetValue, DtList<D>> clusterValues = new LinkedHashMap<>();
+
 		//Cas des facettes par Term
 		final DtField dtField = facetDefinition.getDtField();
 		//on garde un index pour incrémenter le facetFilter pour chaque Term
 		final Map<Object, FacetValue> facetFilterIndex = new HashMap<>();
-		//et la map résultat avec le count par FacetFilter
-		final Map<FacetValue, Long> facetValues = new HashMap<>();
 
 		FacetValue facetValue;
-		for (final DtObject dto : dtList) {
+		for (final D dto : dtList) {
 			final Object value = dtField.getDataAccessor().getValue(dto);
 			facetValue = facetFilterIndex.get(value);
 			if (facetValue == null) {
@@ -124,21 +165,21 @@ public final class FacetFactory {
 				final ListFilter listFilter = new ListFilter(dtField.getName() + ":\"" + valueAsString + "\"");
 				facetValue = new FacetValue(listFilter, label);
 				facetFilterIndex.put(value, facetValue);
-				facetValues.put(facetValue, 0L);
+				clusterValues.put(facetValue, new DtList<D>(dtList.getDefinition()));
 			}
-			facetValues.put(facetValue, facetValues.get(facetValue) + 1L);
+			clusterValues.get(facetValue).add(dto);
 		}
 
 		//tri des facettes
 		final Comparator<FacetValue> facetComparator = new Comparator<FacetValue>() {
 			@Override
 			public int compare(final FacetValue o1, final FacetValue o2) {
-				final int compareNbDoc = (int) (facetValues.get(o2) - facetValues.get(o1));
+				final int compareNbDoc = clusterValues.get(o2).size() - clusterValues.get(o1).size();
 				return compareNbDoc != 0 ? compareNbDoc : o1.getLabel().getDisplay().compareToIgnoreCase(o2.getLabel().getDisplay());
 			}
 		};
-		final Map<FacetValue, Long> sortedFacetValues = new TreeMap<>(facetComparator);
-		sortedFacetValues.putAll(facetValues);
-		return new Facet(facetDefinition, sortedFacetValues);
+		final Map<FacetValue, DtList<D>> sortedFacetValues = new TreeMap<>(facetComparator);
+		sortedFacetValues.putAll(clusterValues);
+		return sortedFacetValues;
 	}
 }
