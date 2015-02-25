@@ -74,7 +74,7 @@ public final class SearchQuery implements Serializable {
 		boostedDocumentDateFieldName = boostedDocumentDateField != null ? boostedDocumentDateField.getName() : null;
 		this.numDaysOfBoostRefDocument = numDaysOfBoostRefDocument;
 		this.mostRecentBoost = mostRecentBoost;
-		this.clusteringFacetDefinition = new DefinitionReference<>(clusteringFacetDefinition);
+		this.clusteringFacetDefinition = clusteringFacetDefinition != null ? new DefinitionReference<>(clusteringFacetDefinition) : null;
 	}
 
 	/**
