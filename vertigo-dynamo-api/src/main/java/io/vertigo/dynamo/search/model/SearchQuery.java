@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.search.model;
 
+import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
@@ -44,7 +45,7 @@ public final class SearchQuery implements Serializable {
 	private final Integer numDaysOfBoostRefDocument;
 	private final Integer mostRecentBoost;
 	private final Option<FacetedQuery> facetedQuery;
-	private final FacetDefinition clusteringFacetDefinition;
+	private final DefinitionReference<FacetDefinition> clusteringFacetDefinition;
 
 	/**
 	 * Constructeur.
@@ -73,7 +74,7 @@ public final class SearchQuery implements Serializable {
 		boostedDocumentDateFieldName = boostedDocumentDateField != null ? boostedDocumentDateField.getName() : null;
 		this.numDaysOfBoostRefDocument = numDaysOfBoostRefDocument;
 		this.mostRecentBoost = mostRecentBoost;
-		this.clusteringFacetDefinition = clusteringFacetDefinition;
+		this.clusteringFacetDefinition = new DefinitionReference<>(clusteringFacetDefinition);
 	}
 
 	/**
@@ -135,7 +136,7 @@ public final class SearchQuery implements Serializable {
 	public FacetDefinition getClusteringFacetDefinition() {
 		Assertion.checkArgument(isClusteringFacet(), "Le clustering des documents par facette n'est pas activé sur cette recherche");
 		//-----
-		return clusteringFacetDefinition;
+		return clusteringFacetDefinition.get();
 	}
 
 	/**
