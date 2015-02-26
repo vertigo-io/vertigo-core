@@ -111,8 +111,7 @@ public class DOCXNamespaceContext implements NamespaceContext {
 	/** {@inheritDoc} */
 	@Override
 	public Iterator<String> getPrefixes(final String arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Not implemented");
 	}
 
 }
