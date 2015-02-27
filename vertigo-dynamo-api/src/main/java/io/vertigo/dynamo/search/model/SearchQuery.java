@@ -45,7 +45,7 @@ public final class SearchQuery implements Serializable {
 	private final Integer numDaysOfBoostRefDocument;
 	private final Integer mostRecentBoost;
 	private final Option<FacetedQuery> facetedQuery;
-	private final DefinitionReference<FacetDefinition> clusteringFacetDefinition;
+	private final DefinitionReference<FacetDefinition> clusteringFacetDefinitionRef;
 
 	/**
 	 * Constructeur.
@@ -74,7 +74,7 @@ public final class SearchQuery implements Serializable {
 		boostedDocumentDateFieldName = boostedDocumentDateField != null ? boostedDocumentDateField.getName() : null;
 		this.numDaysOfBoostRefDocument = numDaysOfBoostRefDocument;
 		this.mostRecentBoost = mostRecentBoost;
-		this.clusteringFacetDefinition = clusteringFacetDefinition != null ? new DefinitionReference<>(clusteringFacetDefinition) : null;
+		this.clusteringFacetDefinitionRef = clusteringFacetDefinition != null ? new DefinitionReference<>(clusteringFacetDefinition) : null;
 	}
 
 	/**
@@ -127,7 +127,7 @@ public final class SearchQuery implements Serializable {
 	 * @return si le clustering est activé
 	 */
 	public boolean isClusteringFacet() {
-		return clusteringFacetDefinition != null;
+		return clusteringFacetDefinitionRef != null;
 	}
 
 	/**
@@ -136,7 +136,7 @@ public final class SearchQuery implements Serializable {
 	public FacetDefinition getClusteringFacetDefinition() {
 		Assertion.checkArgument(isClusteringFacet(), "Le clustering des documents par facette n'est pas activé sur cette recherche");
 		//-----
-		return clusteringFacetDefinition.get();
+		return clusteringFacetDefinitionRef.get();
 	}
 
 	/**
