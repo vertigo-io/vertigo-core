@@ -41,6 +41,7 @@ import javax.inject.Named;
  * @author pchretien
  */
 public final class SqlGeneratorPlugin extends AbstractGeneratorPlugin {
+	private final String targetSubDir;
 	private final boolean generateDrop;
 	private final String baseCible;
 	private final Option<String> tableSpaceData;
@@ -48,7 +49,7 @@ public final class SqlGeneratorPlugin extends AbstractGeneratorPlugin {
 
 	/**
 	 * Constructeur.
-	 *
+	 * @param targetSubDir Repertoire de generation des fichiers de ce plugin
 	 * @param generateDrop Si on génère les Drop table dans le fichier SQL
 	 * @param baseCible Type de base de données ciblé.
 	 * @param tableSpaceData Nom du tableSpace des données
@@ -56,11 +57,13 @@ public final class SqlGeneratorPlugin extends AbstractGeneratorPlugin {
 	 */
 	@Inject
 	public SqlGeneratorPlugin(
+			@Named("targetSubDir") final String targetSubDir,
 			@Named("generateDrop") final boolean generateDrop,
 			@Named("baseCible") final String baseCible,
 			@Named("tableSpaceData") final Option<String> tableSpaceData,
 			@Named("tableSpaceIndex") final Option<String> tableSpaceIndex) {
 		//-----
+		this.targetSubDir = targetSubDir;
 		this.generateDrop = generateDrop;
 		this.baseCible = baseCible;
 		this.tableSpaceData = tableSpaceData;
@@ -100,7 +103,7 @@ public final class SqlGeneratorPlugin extends AbstractGeneratorPlugin {
 		}
 		final Map<String, Object> mapRoot = mapRootBuilder.build();
 
-		createFileGenerator(domainConfiguration, mapRoot, "crebas", "sqlgen", ".sql", "domain/templates/sql.ftl")
+		createFileGenerator(domainConfiguration, mapRoot, "crebas", targetSubDir, "", ".sql", "domain/templates/sql.ftl")
 				.generateFile(resultBuilder);
 	}
 

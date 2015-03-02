@@ -29,6 +29,9 @@ import io.vertigo.util.MapBuilder;
 import java.util.Collection;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 /**
  * Generation des objets relatifs au module Securite.
  *
@@ -36,8 +39,17 @@ import java.util.Map;
  */
 public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin {
 
-	private static Collection<Role> getRoles() {
-		return Home.getDefinitionSpace().getAll(Role.class);
+	private final String targetSubDir;
+
+	/**
+	 * Constructeur.
+	 * @param targetSubDir Repertoire de generation des fichiers de ce plugin
+	 */
+	@Inject
+	public SecurityGeneratorPlugin(
+			@Named("targetSubDir") final String targetSubDir) {
+		//-----
+		this.targetSubDir = targetSubDir;
 	}
 
 	/** {@inheritDoc} */
@@ -46,10 +58,14 @@ public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin {
 		Assertion.checkNotNull(securityConfiguration);
 		Assertion.checkNotNull(resultBuilder);
 		//-----
-		generateRole(securityConfiguration, resultBuilder);
+		generateRole(targetSubDir, securityConfiguration, resultBuilder);
 	}
 
-	private static void generateRole(final FileConfig securityConfig, final ResultBuilder resultBuilder) {
+	private static Collection<Role> getRoles() {
+		return Home.getDefinitionSpace().getAll(Role.class);
+	}
+
+	private static void generateRole(final String targetSubDir, final FileConfig securityConfig, final ResultBuilder resultBuilder) {
 		final Collection<Role> roles = getRoles();
 		if (!roles.isEmpty()) {
 			//On ne genere aucun fichier si aucun rele.
@@ -61,7 +77,7 @@ public final class SecurityGeneratorPlugin extends AbstractGeneratorPlugin {
 					.put("packageName", securityConfig.getProjectPackageName() + ".security")
 					.build();
 
-			createFileGenerator(securityConfig, mapRoot, "Role", securityConfig.getProjectPackageName() + ".security", ".java", "security/role.ftl")
+			createFileGenerator(securityConfig, mapRoot, "Role", targetSubDir, securityConfig.getProjectPackageName() + ".security", ".java", "security/role.ftl")
 					.generateFile(resultBuilder);
 		}
 	}

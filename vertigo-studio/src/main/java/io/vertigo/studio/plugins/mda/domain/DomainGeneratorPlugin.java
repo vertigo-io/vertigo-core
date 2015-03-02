@@ -40,6 +40,7 @@ import javax.inject.Named;
  * @author pchretien
  */
 public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin {
+	private final String targetSubDir;
 	private final boolean generateDtResources;
 	private final boolean generateJpaAnnotations;
 	private final boolean generateDtDefinitions;
@@ -47,7 +48,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin {
 
 	/**
 	 * Constructeur.
-	 *
+	 * @param targetSubDir Repertoire de generation des fichiers de ce plugin
 	 * @param generateDtResources Si on génère les fichiers i18n pour MessageText des labels des champs
 	 * @param generateJpaAnnotations Si on ajoute les annotations JPA
 	 * @param generateDtDefinitions Si on génère le fichier fournissant la liste des classes de Dt
@@ -55,11 +56,13 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin {
 	 */
 	@Inject
 	public DomainGeneratorPlugin(
+			@Named("targetSubDir") final String targetSubDir,
 			@Named("generateDtResources") final boolean generateDtResources,
 			@Named("generateJpaAnnotations") final boolean generateJpaAnnotations,
 			@Named("generateDtDefinitions") final boolean generateDtDefinitions,
 			@Named("generateDtObject") final boolean generateDtObject) {
 		//-----
+		this.targetSubDir = targetSubDir;
 		this.generateDtResources = generateDtResources;
 		this.generateJpaAnnotations = generateJpaAnnotations;
 		this.generateDtDefinitions = generateDtDefinitions;
@@ -74,12 +77,12 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin {
 		//-----
 		/* Génération des ressources afférentes au DT. */
 		if (generateDtResources) {
-			generateDtResources(fileConfig, resultBuilder);
+			generateDtResources(targetSubDir, fileConfig, resultBuilder);
 		}
 
 		/* Génération de la lgeneratee référençant toutes des définitions. */
 		if (generateDtDefinitions) {
-			generateDtDefinitions(fileConfig, resultBuilder);
+			generateDtDefinitions(targetSubDir, fileConfig, resultBuilder);
 		}
 
 		/* Générations des DTO. */
@@ -89,7 +92,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin {
 
 	}
 
-	private static void generateDtDefinitions(final FileConfig fileConfig, final ResultBuilder resultBuilder) {
+	private static void generateDtDefinitions(final String targetSubDir, final FileConfig fileConfig, final ResultBuilder resultBuilder) {
 
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
 				.put("packageName", fileConfig.getProjectPackageName() + ".domain")
@@ -97,7 +100,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin {
 				.put("dtDefinitions", DomainUtil.getDtDefinitions())
 				.build();
 
-		createFileGenerator(fileConfig, mapRoot, "DtDefinitions", fileConfig.getProjectPackageName() + ".domain", ".java", "domain/templates/dtdefinitions.ftl")
+		createFileGenerator(fileConfig, mapRoot, "DtDefinitions", targetSubDir, fileConfig.getProjectPackageName() + ".domain", ".java", "domain/templates/dtdefinitions.ftl")
 				.generateFile(resultBuilder);
 
 	}
@@ -116,11 +119,11 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin {
 				.put("annotations", new TemplateMethodAnnotations(generateJpaAnnotations))
 				.build();
 
-		createFileGenerator(fileConfig, mapRoot, definition.getClassSimpleName(), definition.getPackageName(), ".java", "domain/templates/dto.ftl")
+		createFileGenerator(fileConfig, mapRoot, definition.getClassSimpleName(), targetSubDir, definition.getPackageName(), ".java", "domain/templates/dto.ftl")
 				.generateFile(resultBuilder);
 	}
 
-	private static void generateDtResources(final FileConfig fileConfig, final ResultBuilder resultBuilder) {
+	private static void generateDtResources(final String targetSubDir, final FileConfig fileConfig, final ResultBuilder resultBuilder) {
 		final String simpleClassName = "DtResources";
 		/**
 		 * Génération des ressources afférentes au DT.
@@ -136,10 +139,10 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin {
 					.put("dtDefinitions", dtDefinitionCollection)
 					.build();
 
-			createFileGenerator(fileConfig, mapRoot, simpleClassName, packageName, ".java", "domain/templates/resources.ftl")
+			createFileGenerator(fileConfig, mapRoot, simpleClassName, targetSubDir, packageName, ".java", "domain/templates/resources.ftl")
 					.generateFile(resultBuilder);
 
-			createFileGenerator(fileConfig, mapRoot, simpleClassName, packageName, ".properties", "domain/templates/properties.ftl")
+			createFileGenerator(fileConfig, mapRoot, simpleClassName, targetSubDir, packageName, ".properties", "domain/templates/properties.ftl")
 					.generateFile(resultBuilder);
 		}
 	}

@@ -20,6 +20,7 @@ package io.vertigo.studio.plugins.mda;
 
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
 
+import java.io.File;
 import java.util.Map;
 
 /**
@@ -33,12 +34,13 @@ public abstract class AbstractGeneratorPlugin implements GeneratorPlugin {
 	 * @param fileGeneratorConfig Configuration de la génération
 	 * @param mapRoot context
 	 * @param classSimpleName className
+	 * @param genSubDir Nom subdir de génération
 	 * @param packageName Nom du package
 	 * @param fileExtention Extension du ficher (sql, java...)
 	 * @param templateName Nom du template
 	 * @return Générateur de fichier
 	 */
-	protected static final FileGenerator createFileGenerator(final FileConfig fileGeneratorConfig, final Map<String, Object> mapRoot, final String classSimpleName, final String packageName, final String fileExtention, final String templateName) {
-		return new FileGeneratorFreeMarker(fileGeneratorConfig, mapRoot, classSimpleName, packageName, fileExtention, templateName);
+	protected static final FileGenerator createFileGenerator(final FileConfig fileGeneratorConfig, final Map<String, Object> mapRoot, final String classSimpleName, final String genSubDir, final String packageName, final String fileExtention, final String templateName) {
+		return new FileGeneratorFreeMarker(mapRoot, classSimpleName, packageName, fileExtention, templateName, fileGeneratorConfig.getTargetGenDir() + genSubDir + File.separatorChar, fileGeneratorConfig.getEncoding(), fileGeneratorConfig.getClass());
 	}
 }

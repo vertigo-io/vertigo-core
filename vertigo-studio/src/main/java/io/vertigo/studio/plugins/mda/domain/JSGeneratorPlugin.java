@@ -39,20 +39,23 @@ import javax.inject.Named;
  * @author pchretien
  */
 public final class JSGeneratorPlugin extends AbstractGeneratorPlugin {
+	private final String targetSubDir;
 	private final boolean generateDtResourcesJS;
 	private final boolean generateJsDtDefinitions;
 
 	/**
 	 * Constructeur.
-	 *
+	 * @param targetSubDir Repertoire de generation des fichiers de ce plugin
 	 * @param generateDtResourcesJS Si on génère les fichiers i18n pour les labels des champs en JS
 	 * @param generateJsDtDefinitions Si on génère les classes JS.
 	 */
 	@Inject
 	public JSGeneratorPlugin(
+			@Named("targetSubDir") final String targetSubDir,
 			@Named("generateDtResourcesJS") final boolean generateDtResourcesJS,
 			@Named("generateJsDtDefinitions") final boolean generateJsDtDefinitions) {
 		//-----
+		this.targetSubDir = targetSubDir;
 		this.generateDtResourcesJS = generateDtResourcesJS;
 		this.generateJsDtDefinitions = generateJsDtDefinitions;
 	}
@@ -65,15 +68,15 @@ public final class JSGeneratorPlugin extends AbstractGeneratorPlugin {
 		//-----
 		/* Génération des ressources afférentes au DT mais pour la partie JS.*/
 		if (generateDtResourcesJS) {
-			generateDtResourcesJS(domainConfig, resultBuilder);
+			generateDtResourcesJS(targetSubDir, domainConfig, resultBuilder);
 		}
 		/* Génération des fichiers javascripts référençant toutes les définitions. */
 		if (generateJsDtDefinitions) {
-			generateJsDtDefinitions(domainConfig, resultBuilder);
+			generateJsDtDefinitions(targetSubDir, domainConfig, resultBuilder);
 		}
 	}
 
-	private static void generateJsDtDefinitions(final FileConfig domainConfiguration, final ResultBuilder resultBuilder) {
+	private static void generateJsDtDefinitions(final String targetSubDir, final FileConfig domainConfiguration, final ResultBuilder resultBuilder) {
 
 		final List<TemplateDtDefinition> dtDefinitions = new ArrayList<>();
 		for (final DtDefinition dtDefinition : DomainUtil.getDtDefinitions()) {
@@ -86,7 +89,7 @@ public final class JSGeneratorPlugin extends AbstractGeneratorPlugin {
 				.put("dtDefinitions", dtDefinitions)
 				.build();
 
-		createFileGenerator(domainConfiguration, mapRoot, "DtDefinitions", domainConfiguration.getProjectPackageName() + ".domain", ".js", "domain/templates/js.ftl")
+		createFileGenerator(domainConfiguration, mapRoot, "DtDefinitions", targetSubDir, domainConfiguration.getProjectPackageName() + ".domain", ".js", "domain/templates/js.ftl")
 				.generateFile(resultBuilder);
 
 	}
@@ -95,7 +98,7 @@ public final class JSGeneratorPlugin extends AbstractGeneratorPlugin {
 	 * Génère les ressources JS pour les traductions.
 	 * @param domainConfiguration Configuration du domaine.
 	 */
-	private static void generateDtResourcesJS(final FileConfig domainConfiguration, final ResultBuilder result) {
+	private static void generateDtResourcesJS(final String targetSubDir, final FileConfig domainConfiguration, final ResultBuilder result) {
 		final List<TemplateDtDefinition> dtDefinitions = new ArrayList<>();
 		for (final DtDefinition dtDefinition : DomainUtil.getDtDefinitions()) {
 			dtDefinitions.add(new TemplateDtDefinition(dtDefinition));
@@ -110,7 +113,7 @@ public final class JSGeneratorPlugin extends AbstractGeneratorPlugin {
 				.put("dtDefinitions", dtDefinitions)
 				.build();
 
-		createFileGenerator(domainConfiguration, mapRoot, simpleClassName, packageName, ".js", "domain/templates/propertiesJS.ftl").generateFile(result);
+		createFileGenerator(domainConfiguration, mapRoot, simpleClassName, targetSubDir, packageName, ".js", "domain/templates/propertiesJS.ftl").generateFile(result);
 	}
 
 }

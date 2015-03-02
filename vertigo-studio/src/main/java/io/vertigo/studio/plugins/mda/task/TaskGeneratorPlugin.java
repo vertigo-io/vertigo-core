@@ -35,6 +35,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 /**
  * Génération des objets relatifs au module Task.
  *
@@ -42,26 +45,39 @@ import java.util.Map.Entry;
  */
 public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin {
 
+	private final String targetSubDir;
+
+	/**
+	 * Constructeur.
+	 * @param targetSubDir Repertoire de generation des fichiers de ce plugin
+	 */
+	@Inject
+	public TaskGeneratorPlugin(
+			@Named("targetSubDir") final String targetSubDir) {
+		//-----
+		this.targetSubDir = targetSubDir;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public void generate(final FileConfig taskConfiguration, final ResultBuilder resultBuilder) {
 		Assertion.checkNotNull(taskConfiguration);
 		Assertion.checkNotNull(resultBuilder);
 		//-----
-		generatePaos(taskConfiguration, resultBuilder);
-		generateDaos(taskConfiguration, resultBuilder);
+		generatePaos(targetSubDir, taskConfiguration, resultBuilder);
+		generateDaos(targetSubDir, taskConfiguration, resultBuilder);
 	}
 
 	/**
 	 * Génération de tous les PAOs.
 	 */
-	private static void generatePaos(final FileConfig taskConfig, final ResultBuilder resultBuilder) {
+	private static void generatePaos(final String targetSubDir, final FileConfig taskConfig, final ResultBuilder resultBuilder) {
 		//On liste des taches regroupées par Package.
 		for (final Entry<String, List<TaskDefinition>> entry : buildPackageMap().entrySet()) {
 			final Collection<TaskDefinition> taskDefinitionCollection = entry.getValue();
 			if (!taskDefinitionCollection.isEmpty()) {
 				final String packageName = entry.getKey();
-				generatePao(taskConfig, resultBuilder, taskDefinitionCollection, packageName);
+				generatePao(targetSubDir, taskConfig, resultBuilder, taskDefinitionCollection, packageName);
 			}
 		}
 	}
@@ -69,12 +85,12 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin {
 	/**
 	 * Génération de tous les DAOs.
 	 */
-	private static void generateDaos(final FileConfig taskConfiguration, final ResultBuilder resultBuilder) {
+	private static void generateDaos(final String targetSubDir, final FileConfig taskConfiguration, final ResultBuilder resultBuilder) {
 		for (final Entry<DtDefinition, List<TaskDefinition>> entry : builDtDefinitiondMap().entrySet()) {
 			final DtDefinition dtDefinition = entry.getKey();
 			if (dtDefinition.isPersistent()) {
 				//Si DAO est persitant on génère son CRUD.
-				generateDao(taskConfiguration, resultBuilder, dtDefinition, entry.getValue());
+				generateDao(targetSubDir, taskConfiguration, resultBuilder, dtDefinition, entry.getValue());
 			}
 		}
 	}
@@ -82,28 +98,28 @@ public final class TaskGeneratorPlugin extends AbstractGeneratorPlugin {
 	/**
 	 * Génération d'un DAO c'est à dire des taches afférentes à un objet.
 	 */
-	private static void generateDao(final FileConfig taskConfiguration, final ResultBuilder resultBuilder, final DtDefinition dtDefinition, final Collection<TaskDefinition> taskDefinitionCollection) {
+	private static void generateDao(final String targetSubDir, final FileConfig taskConfiguration, final ResultBuilder resultBuilder, final DtDefinition dtDefinition, final Collection<TaskDefinition> taskDefinitionCollection) {
 		final TemplateDAO dao = new TemplateDAO(taskConfiguration, dtDefinition, taskDefinitionCollection);
 
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
 				.put("dao", dao)
 				.build();
 
-		createFileGenerator(taskConfiguration, mapRoot, dao.getClassSimpleName(), dao.getPackageName(), ".java", "task/dao.ftl")
+		createFileGenerator(taskConfiguration, mapRoot, dao.getClassSimpleName(), targetSubDir, dao.getPackageName(), ".java", "task/dao.ftl")
 				.generateFile(resultBuilder);
 	}
 
 	/**
 	 *  Génération d'un PAO c'est à dire des taches afférentes à un package.
 	 */
-	private static void generatePao(final FileConfig taskConfiguration, final ResultBuilder resultBuilder, final Collection<TaskDefinition> taskDefinitionCollection, final String packageName) {
+	private static void generatePao(final String targetSubDir, final FileConfig taskConfiguration, final ResultBuilder resultBuilder, final Collection<TaskDefinition> taskDefinitionCollection, final String packageName) {
 		final TemplatePAO pao = new TemplatePAO(taskConfiguration, taskDefinitionCollection, packageName);
 
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
 				.put("pao", pao)
 				.build();
 
-		createFileGenerator(taskConfiguration, mapRoot, pao.getClassSimpleName(), pao.getPackageName(), ".java", "task/pao.ftl")
+		createFileGenerator(taskConfiguration, mapRoot, pao.getClassSimpleName(), targetSubDir, pao.getPackageName(), ".java", "task/pao.ftl")
 				.generateFile(resultBuilder);
 	}
 

@@ -29,12 +29,28 @@ import io.vertigo.util.MapBuilder;
 import java.util.Collection;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 /**
  * Génération des objets relatifs au module File.
  *
  * @author npiedeloup
  */
 public final class FileInfoGeneratorPlugin extends AbstractGeneratorPlugin {
+	private final String targetSubDir;
+
+	/**
+	 * Constructeur.
+	 * @param targetSubDir Repertoire de generation des fichiers de ce plugin
+	 */
+	@Inject
+	public FileInfoGeneratorPlugin(
+			@Named("targetSubDir") final String targetSubDir) {
+		//-----
+		this.targetSubDir = targetSubDir;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public void generate(final FileConfig fileInfoConfiguration, final ResultBuilder resultBuilder) {
@@ -42,17 +58,17 @@ public final class FileInfoGeneratorPlugin extends AbstractGeneratorPlugin {
 		Assertion.checkNotNull(resultBuilder);
 		//-----
 		/* Générations des FI. */
-		generateFileInfos(fileInfoConfiguration, resultBuilder);
+		generateFileInfos(targetSubDir, fileInfoConfiguration, resultBuilder);
 	}
 
-	private static void generateFileInfos(final FileConfig fileInfoConfig, final ResultBuilder resultBuilder) {
+	private static void generateFileInfos(final String targetSubDir, final FileConfig fileInfoConfig, final ResultBuilder resultBuilder) {
 		final Collection<FileInfoDefinition> fileInfoDefinitions = Home.getDefinitionSpace().getAll(FileInfoDefinition.class);
 		for (final FileInfoDefinition fileInfoDefinition : fileInfoDefinitions) {
-			generateFileInfo(fileInfoConfig, resultBuilder, fileInfoDefinition);
+			generateFileInfo(targetSubDir, fileInfoConfig, resultBuilder, fileInfoDefinition);
 		}
 	}
 
-	private static void generateFileInfo(final FileConfig fileInfoConfiguration, final ResultBuilder resultBuilder, final FileInfoDefinition fileInfoDefinition) {
+	private static void generateFileInfo(final String targetSubDir, final FileConfig fileInfoConfiguration, final ResultBuilder resultBuilder, final FileInfoDefinition fileInfoDefinition) {
 		final TemplateFileInfoDefinition definition = new TemplateFileInfoDefinition(fileInfoDefinition);
 
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
@@ -60,7 +76,7 @@ public final class FileInfoGeneratorPlugin extends AbstractGeneratorPlugin {
 				.put("packageName", fileInfoConfiguration.getProjectPackageName() + ".fileinfo")
 				.build();
 
-		createFileGenerator(fileInfoConfiguration, mapRoot, definition.getClassSimpleName(), fileInfoConfiguration.getProjectPackageName() + ".fileinfo", ".java", "file/fileInfo.ftl")
+		createFileGenerator(fileInfoConfiguration, mapRoot, definition.getClassSimpleName(), targetSubDir, fileInfoConfiguration.getProjectPackageName() + ".fileinfo", ".java", "file/fileInfo.ftl")
 				.generateFile(resultBuilder);
 	}
 }

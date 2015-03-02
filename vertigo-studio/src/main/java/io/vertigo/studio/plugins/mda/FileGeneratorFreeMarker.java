@@ -42,41 +42,45 @@ public final class FileGeneratorFreeMarker implements FileGenerator {
 	 * Répertoire des fichiers TOUJOURS générés
 	 * Doit être renseigné dans le fichier properties [targetDir]
 	 */
-	private final String targetGenDir;
-	private final Configuration configuration;
 	private final Map<String, Object> mapRoot;
 	private final String classSimpleName;
 	private final String packageName;
 	private final String fileExtention;
 	private final String templateName;
+	private final String targetGenDir;
 	private final String encoding;
+	private final Configuration configuration;
 
 	/**
 	 * Constructeur.
 	 *
-	 * @param parameters Paramètres de génération des fichiers java
 	 * @param mapRoot context
 	 * @param classSimpleName className
 	 * @param packageName Nom du package
 	 * @param fileExtention Extension du ficher (sql, java...)
 	 * @param templateName Nom du template
+	 * @param targetGenDir Target dir for gen files
+	 * @param encoding Encoding use
+	 * @param referenceClass ReferenceClass for ftl loading
 	 */
-	public FileGeneratorFreeMarker(final FileConfig parameters, final Map<String, Object> mapRoot, final String classSimpleName, final String packageName, final String fileExtention, final String templateName) {
-		Assertion.checkNotNull(parameters);
+	public FileGeneratorFreeMarker(final Map<String, Object> mapRoot, final String classSimpleName, final String packageName, final String fileExtention, final String templateName, final String targetGenDir, final String encoding, final Class<?> referenceClass) {
 		Assertion.checkNotNull(mapRoot);
 		Assertion.checkNotNull(classSimpleName);
 		Assertion.checkNotNull(packageName);
 		Assertion.checkNotNull(fileExtention);
 		Assertion.checkNotNull(templateName);
+		Assertion.checkArgNotEmpty(targetGenDir);
+		Assertion.checkArgNotEmpty(encoding);
+		Assertion.checkNotNull(referenceClass);
 		//-----
 		this.mapRoot = mapRoot;
 		this.classSimpleName = classSimpleName;
 		this.packageName = packageName;
 		this.fileExtention = fileExtention;
 		this.templateName = templateName;
-		configuration = initConfiguration(parameters.getClass());
-		targetGenDir = parameters.getTargetGenDir();
-		encoding = parameters.getEncoding();
+		this.targetGenDir = targetGenDir;
+		this.encoding = encoding;
+		configuration = initConfiguration(referenceClass);
 	}
 
 	/**
