@@ -50,6 +50,7 @@ public final class DtDefinition implements Definition {
 	/** Map  des champs du DTO. (Nom du champ, DtField). */
 	private final Map<String, DtField> mappedFields = new HashMap<>();
 
+	private final DtStereotype stereotype;
 	/** Si la classe est persistée. */
 	private final boolean persistent;
 
@@ -67,11 +68,13 @@ public final class DtDefinition implements Definition {
 	/**
 	 * Constructeur.
 	 */
-	DtDefinition(final String name, final String packageName, final boolean persistent, final List<DtField> dtFields, final boolean dynamic) {
+	DtDefinition(final String name, final String packageName, final DtStereotype stereotype, final boolean persistent, final List<DtField> dtFields, final boolean dynamic) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(dtFields);
+		Assertion.checkNotNull(stereotype);
 		//-----
 		this.name = name;
+		this.stereotype = stereotype;
 		this.persistent = persistent;
 		this.packageName = packageName;
 		DtField id = null;
@@ -124,6 +127,10 @@ public final class DtDefinition implements Definition {
 		if (dtField.isDisplay()) {
 			registerDisplay(dtField);
 		}
+	}
+
+	public DtStereotype getStereotype() {
+		return stereotype;
 	}
 
 	/**

@@ -56,6 +56,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	private DtDefinition dtDefinition;
 	private final String myName;
 	private String myPackageName;
+	private DtStereotype myStereotype = DtStereotype.Data;
 	private boolean myPersistent;
 	private boolean myDynamic;
 	private final List<DtField> myFields = new ArrayList<>();
@@ -73,6 +74,13 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		//packageName peut être null
 		//-----
 		myPackageName = packageName;
+		return this;
+	}
+
+	public DtDefinitionBuilder withStereoType(final DtStereotype stereotype) {
+		Assertion.checkNotNull(stereotype);
+		//-----
+		myStereotype = stereotype;
 		return this;
 	}
 
@@ -173,9 +181,9 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 
 	@Override
 	public DtDefinition build() {
-		Assertion.checkState(dtDefinition == null, "Build deja effectué");
+		Assertion.checkState(dtDefinition == null, "build already done");
 		//-----
-		dtDefinition = new DtDefinition(myName, myPackageName, myPersistent, myFields, myDynamic);
+		dtDefinition = new DtDefinition(myName, myPackageName, myStereotype, myPersistent, myFields, myDynamic);
 		return dtDefinition;
 	}
 
