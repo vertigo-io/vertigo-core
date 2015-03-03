@@ -36,11 +36,13 @@ final class UiMdList<D extends DtObject> extends AbstractUiList<D> implements Ui
 
 	/**
 	 * Constructeur.
+	 * 
 	 * @param dtListUri Uri de la Liste à encapsuler
 	 */
 	public UiMdList(final DtListURI dtListUri) {
 		super(dtListUri.getDtDefinition());
-		//-----
+		Assertion.checkArgument(persistenceManager.get().getMasterDataConfiguration().containsMasterData(dtListUri.getDtDefinition()), "UiMdList can't be use with {0}, it's not a MasterDataList.", dtListUri.getDtDefinition().getName());
+		// -------------------------------------------------------------------------
 		this.dtListUri = dtListUri;
 	}
 
