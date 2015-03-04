@@ -98,13 +98,13 @@
         <#if tag.contains(parameters.nameValue, itemKey) == true>
  selected="selected"<#rt/>
         </#if>
-        <#if itemCssClass?hasContent>
+        <#if itemCssClass?has_content>
  class="${itemCssClass?html}"<#rt/>
         </#if>
-        <#if itemCssStyle?hasContent>
+        <#if itemCssStyle?has_content>
  style="${itemCssStyle?html}"<#rt/>
         </#if>
-        <#if itemTitle?hasContent>
+        <#if itemTitle?has_content>
  title="${itemTitle?html}"<#rt/>
         </#if>
     >${itemValue?html}</option><#lt/>
