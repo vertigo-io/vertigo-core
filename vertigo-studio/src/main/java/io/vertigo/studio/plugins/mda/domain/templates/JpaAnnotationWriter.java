@@ -116,6 +116,8 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 			if (field.isPersistent() && field.getDomain().getDataType() == DataType.DataStream) {
 				lines.add("@org.hibernate.annotations.Type(type = \"DO_STREAM\")");
 			}
+		} else if (field.getType() == DtField.FieldType.COMPUTED) {
+			lines.add("@javax.persistence.Transient");
 		}
 		return lines;
 	}
