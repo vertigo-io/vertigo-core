@@ -22,6 +22,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.transaction.KTransactionWritable;
+import io.vertigo.lang.Assertion;
 
 /**
  * Wrapper d'affichage des listes d'objets métier.
@@ -36,12 +37,12 @@ final class UiMdList<D extends DtObject> extends AbstractUiList<D> implements Ui
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param dtListUri Uri de la Liste à encapsuler
 	 */
 	public UiMdList(final DtListURI dtListUri) {
 		super(dtListUri.getDtDefinition());
-		Assertion.checkArgument(persistenceManager.get().getMasterDataConfiguration().containsMasterData(dtListUri.getDtDefinition()), "UiMdList can't be use with {0}, it's not a MasterDataList.", dtListUri.getDtDefinition().getName());
+		Assertion.checkArgument(persistenceManager.get().getMasterDataConfig().containsMasterData(dtListUri.getDtDefinition()), "UiMdList can't be use with {0}, it's not a MasterDataList.", dtListUri.getDtDefinition().getName());
 		// -------------------------------------------------------------------------
 		this.dtListUri = dtListUri;
 	}
