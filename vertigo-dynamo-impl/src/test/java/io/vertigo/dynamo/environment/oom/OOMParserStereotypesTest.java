@@ -22,7 +22,6 @@ import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
-import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -36,16 +35,6 @@ public final class OOMParserStereotypesTest extends AbstractTestCaseJU4 {
 	@Override
 	protected String[] getManagersXmlFileName() {
 		return new String[] { "managers-test.xml", "resources-test-stereotypes.xml" };
-	}
-
-	/*
-	 * Conventions de nommage utilisées pour les tests ci dessous.
-	 * - Relation de A vers B
-	 * - Cardinalité notée 	1 ou n
-	 * - Navigabilité notée v
-	 */
-	private static AssociationSimpleDefinition getAssociationSimpleDefinition(final String urn) {
-		return Home.getDefinitionSpace().resolve(urn, AssociationSimpleDefinition.class);
 	}
 
 	private static DtDefinition getDtDefinition(final String urn) {
