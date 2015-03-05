@@ -73,7 +73,7 @@ public final class ComponentSpace implements Container, Activeable {
 	private final ComponentContainer componentContainer = new ComponentContainer();
 
 	//---Aspects
-	private final Map<Class<? extends Aspect>, Aspect> aspects = new HashMap<>();
+	private final Map<Class<? extends Aspect>, Aspect> aspects = new LinkedHashMap<>();
 	//---/Aspects
 
 	private final List<Engine> engines = new ArrayList<>();
