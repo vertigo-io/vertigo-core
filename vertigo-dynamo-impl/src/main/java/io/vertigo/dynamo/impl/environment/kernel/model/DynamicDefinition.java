@@ -76,6 +76,10 @@ public interface DynamicDefinition {
 	 */
 	DynamicDefinitionKey getDefinitionKey(final String fieldName);
 
+	/**
+	 * @param fieldName Nom du champ.
+	 * @return Si la définition contient le champ
+	 */
 	boolean containsDefinitionKey(final String fieldName);
 
 	/**

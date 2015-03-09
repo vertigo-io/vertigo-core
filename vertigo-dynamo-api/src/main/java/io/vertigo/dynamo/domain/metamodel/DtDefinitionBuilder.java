@@ -63,6 +63,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 
 	/**
 	 * Constructeur.
+	 * @param name Definition name
 	 */
 	public DtDefinitionBuilder(final String name) {
 		Assertion.checkArgNotEmpty(name);
@@ -70,6 +71,10 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		myName = name;
 	}
 
+	/**
+	 * @param packageName Definition's package (nullable)
+	 * @return this builder
+	 */
 	public DtDefinitionBuilder withPackageName(final String packageName) {
 		//packageName peut être null
 		//-----
@@ -77,6 +82,10 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		return this;
 	}
 
+	/**
+	 * @param stereotype Definition's stereotype
+	 * @return this builder
+	 */
 	public DtDefinitionBuilder withStereoType(final DtStereotype stereotype) {
 		Assertion.checkNotNull(stereotype);
 		//-----
@@ -84,11 +93,19 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		return this;
 	}
 
+	/**
+	 * @param persistent Definition's persistence
+	 * @return this builder
+	 */
 	public DtDefinitionBuilder withPersistent(final boolean persistent) {
 		myPersistent = persistent;
 		return this;
 	}
 
+	/**
+	 * @param dynamic If this definition is dynamic
+	 * @return this builder
+	 */
 	public DtDefinitionBuilder withDynamic(final boolean dynamic) {
 		myDynamic = dynamic;
 		return this;
@@ -138,6 +155,9 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param label Libellé du champ
 	 * @param notNull Si le champ est obligatoire
 	 * @param persistent Si le champ est persisté
+	 * @param sort If this field is use for sorting
+	 * @param display If this field is use for display
+	 * @return Builder
 	 */
 	public DtDefinitionBuilder withDataField(final String fieldName, final String label, final Domain domain, final boolean notNull, final boolean persistent, final boolean sort, final boolean display) {
 		//le champ  est dynamic SSI la définition est dynamique
@@ -151,6 +171,9 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param fieldName Nom du champ
 	 * @param domain Domaine associé au champ
 	 * @param label Libellé du champ
+	 * @param sort If this field is use for sorting
+	 * @param display If this field is use for display
+	 * @return Builder
 	 */
 	public DtDefinitionBuilder withIdField(final String fieldName, final String label, final Domain domain, final boolean sort, final boolean display) {
 		//le champ ID est tjrs notNull
@@ -179,6 +202,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		return new DtField(id, fieldName, type, domain, label, notNull, persistent && myPersistent, fkDtDefinitionName, computedExpression, dynamic, sort, display);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public DtDefinition build() {
 		Assertion.checkState(dtDefinition == null, "build already done");

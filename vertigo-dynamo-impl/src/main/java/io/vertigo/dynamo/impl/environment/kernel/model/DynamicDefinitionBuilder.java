@@ -28,13 +28,22 @@ import java.util.List;
  * @author  pchretien
  */
 public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
+	/**
+	 * @param packageName Package name
+	 * @return Builder
+	 */
 	DynamicDefinitionBuilder withPackageName(String packageName);
 
+	/**
+	 * @param dynamicDefinition Definition body
+	 * @return Builder
+	 */
 	DynamicDefinitionBuilder withBody(DynamicDefinition dynamicDefinition);
 
 	/**
 	 * @param property Propriété
 	 * @param value Valeur de la propriété
+	 * @return Builder
 	 */
 	DynamicDefinitionBuilder withPropertyValue(final EntityProperty property, final Object value);
 
@@ -43,6 +52,7 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	 * La définition n'est connue que par sa référence, son nom.
 	 * @param fieldName Nom du champ
 	 * @param definitionKey Clé de la définition
+	 * @return Builder
 	 */
 	DynamicDefinitionBuilder withDefinition(final String fieldName, final DynamicDefinitionKey definitionKey);
 
@@ -51,6 +61,7 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	 * La définition n'est connue que par sa référence, son nom.
 	 * @param fieldName Nom du champ
 	 * @param definitionKeys  Liste des clés de définition
+	 * @return Builder
 	 */
 	DynamicDefinitionBuilder withDefinitions(final String fieldName, final List<DynamicDefinitionKey> definitionKeys);
 
@@ -58,6 +69,7 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	 * Ajoute une définition au champ défini par fieldName.
 	 * @param fieldName Nom du champ
 	 * @param definition Définition
+	 * @return Builder
 	 */
 	DynamicDefinitionBuilder withChildDefinition(final String fieldName, final DynamicDefinition definition);
 }

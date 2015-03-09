@@ -45,6 +45,7 @@ import io.vertigo.lang.MessageText;
  * @author  fconstantin, pchretien , npiedeloup
  */
 public final class DtField implements DtFieldName {
+	/** Field definition Prefix. */
 	public static final String PREFIX = "FLD_";
 
 	/**
@@ -116,6 +117,8 @@ public final class DtField implements DtFieldName {
 	 * @param fkDtDefinitionName Nom de la DtDefinition de la FK (noNull si type=FK)
 	 * @param computedExpression Expression du computed (noNull si type=Computed)
 	 * @param dynamic Gestion des champs dynamiques
+	 * @param sort If this field is use for sorting
+	 * @param display If this field is use for display
 	 */
 	DtField(final String id, final String fieldName, final FieldType type,
 			final Domain domain, final MessageText label, final boolean notNull,
@@ -128,7 +131,7 @@ public final class DtField implements DtFieldName {
 		Assertion.checkNotNull(type);
 		//-----
 		this.id = id;
-		this.domainRef = new DefinitionReference<>(domain);
+		domainRef = new DefinitionReference<>(domain);
 		this.type = type;
 		this.notNull = notNull;
 		//-----
@@ -261,10 +264,16 @@ public final class DtField implements DtFieldName {
 		return dynamic;
 	}
 
+	/**
+	 * @return Si il s'agit d'un champ utilisé pour le tri
+	 */
 	public boolean isSort() {
 		return sort;
 	}
 
+	/**
+	 * @return Si il s'agit d'un champ utilisé pour l'affichage
+	 */
 	public boolean isDisplay() {
 		return display;
 	}
