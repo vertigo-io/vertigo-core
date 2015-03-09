@@ -25,6 +25,9 @@ import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
+import io.vertigo.dynamo.domain.model.DtMasterData;
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.DtSubject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -102,6 +105,7 @@ public final class TemplateDtDefinition {
 
 	/**
 	 * Retourne le nom camelCase de la classe.
+	 * @return Simple Nom (i.e. sans le package) de la definition du DtObject
 	 */
 	public String getClassSimpleNameCamelCase() {
 		return StringUtil.constToLowerCamelCase(dtDefinition.getLocalName());
@@ -119,6 +123,22 @@ public final class TemplateDtDefinition {
 	 */
 	public String getUrn() {
 		return dtDefinition.getName();
+	}
+
+	/**
+	 * @return Nom simple de l'nterface associé au Sterotype de l'objet (DtObject, DtMasterData ou DtSubject)
+	 */
+	public String getStereotypeInterfaceName() {
+		switch (dtDefinition.getStereotype()) {
+			case Data:
+				return DtObject.class.getSimpleName();
+			case MasterData:
+				return DtMasterData.class.getSimpleName();
+			case Subject:
+				return DtSubject.class.getSimpleName();
+			default:
+				throw new IllegalArgumentException("Stereotype " + dtDefinition.getStereotype().name() + " non géré");
+		}
 	}
 
 	/**

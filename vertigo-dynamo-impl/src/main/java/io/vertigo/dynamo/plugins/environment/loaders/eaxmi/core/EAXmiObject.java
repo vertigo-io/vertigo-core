@@ -81,6 +81,7 @@ final class EAXmiObject {
 
 	//Données spécifiques
 	private String name;
+	private String stereotype;
 
 	//=========Gestion des attributes============================
 	private String label;
@@ -172,6 +173,11 @@ final class EAXmiObject {
 		this.name = name;
 	}
 
+	String getStereotype() {
+		//TODO : load stereotype from XMI
+		return stereotype;
+	}
+
 	String getLabel() {
 		return label != null ? label : getName();
 	}
@@ -250,6 +256,7 @@ final class EAXmiObject {
 	void setProperty(final String propertyName, final Attributes attributes) {
 		Assertion.checkNotNull(propertyName);
 		//-----
+		//TODO : load stereotype from XMI
 		if (PROPERTY_NAME.equals(propertyName)) {
 			name = "";
 		} else if (PROPERTY_COMMENT.equals(propertyName)) {

@@ -118,6 +118,7 @@ public final class DomainGrammar {
 				.withAttribute(PRIMARY_KEY, DT_FIELD_ENTITY, false) // facultative
 				.withProperty(KspProperty.PERSISTENT, false)
 				.withProperty(KspProperty.DYNAMIC, false)
+				.withProperty(KspProperty.STEREOTYPE, false)
 				//DT_DEFINITION.addMetaDefinitionReference("extends", DT_DEFINITION, true, false);
 				.build();
 

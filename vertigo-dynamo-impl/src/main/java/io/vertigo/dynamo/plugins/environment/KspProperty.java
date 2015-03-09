@@ -78,6 +78,11 @@ public class KspProperty {
 	public static final EntityProperty DYNAMIC = new EntityProperty("DYNAMIC", EntityPropertyType.Boolean);
 
 	/**
+	 * Le Stereotype appliqué au DT : Data (defaut), MasterData ou Subject
+	 */
+	public static final EntityProperty STEREOTYPE = new EntityProperty("STEREOTYPE", EntityPropertyType.String);
+
+	/**
 	 * Nom du champ représentant la clé étrangére dans une association simple (non NN).
 	 */
 	public static final EntityProperty FK_FIELD_NAME = new EntityProperty("FK_FIELD_NAME", EntityPropertyType.String);

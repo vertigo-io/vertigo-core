@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.environment.oom;
+package io.vertigo.dynamo.environment.java;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
@@ -27,14 +27,14 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test de lecture d'un OOM.
+ * Test de lecture de class Java.
  *
  * @author npiedeloup
  */
-public final class OOMParserStereotypesTest extends AbstractTestCaseJU4 {
+public final class JavaParserStereotypesTest extends AbstractTestCaseJU4 {
 	@Override
 	protected String[] getManagersXmlFileName() {
-		return new String[] { "managers-test.xml", "resources-test-stereotypes.xml" };
+		return new String[] { "managers-test.xml", "managers-test-stereotypes.xml" };
 	}
 
 	private static DtDefinition getDtDefinition(final String urn) {

@@ -31,10 +31,19 @@ import java.util.List;
 public final class XmlClass {
 	private final String code;
 	private final String packageName;
+	private final String stereotype;
 	private final List<XmlAttribute> keyAttributes;
 	private final List<XmlAttribute> fieldAttributes;
 
-	public XmlClass(final String code, final String packageName, final List<XmlAttribute> keyAttributes, final List<XmlAttribute> fieldAttributes) {
+	/**
+	 * Constructor.
+	 * @param code Code
+	 * @param packageName package name
+	 * @param stereotype stereotype
+	 * @param keyAttributes Listes des champs identifiants (PK).
+	 * @param fieldAttributes Liste des champs non PK.
+	 */
+	public XmlClass(final String code, final String packageName, final String stereotype, final List<XmlAttribute> keyAttributes, final List<XmlAttribute> fieldAttributes) {
 		Assertion.checkArgNotEmpty(code);
 		//Assertion.notEmpty(packageName);
 		Assertion.checkNotNull(keyAttributes);
@@ -42,6 +51,7 @@ public final class XmlClass {
 		//-----
 		this.code = code;
 		this.packageName = packageName;
+		this.stereotype = stereotype;
 		this.keyAttributes = Collections.unmodifiableList(new ArrayList<>(keyAttributes));
 		this.fieldAttributes = Collections.unmodifiableList(new ArrayList<>(fieldAttributes));
 	}
@@ -58,6 +68,13 @@ public final class XmlClass {
 	 */
 	public String getPackageName() {
 		return packageName;
+	}
+
+	/**
+	 * @return Stereotype
+	 */
+	public String getStereotype() {
+		return stereotype;
 	}
 
 	/**

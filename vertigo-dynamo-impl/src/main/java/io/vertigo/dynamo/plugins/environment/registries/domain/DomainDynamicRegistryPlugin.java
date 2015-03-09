@@ -29,6 +29,7 @@ import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
+import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
 import io.vertigo.dynamo.domain.metamodel.Properties;
 import io.vertigo.dynamo.domain.metamodel.PropertiesBuilder;
@@ -155,6 +156,10 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final String sortFieldName = (String) xdtDefinition.getPropertyValue(KspProperty.SORT_FIELD);
 		final String displayFieldName = (String) xdtDefinition.getPropertyValue(KspProperty.DISPLAY_FIELD);
 		//-----
+		final String tmpStereotype = (String) xdtDefinition.getPropertyValue(KspProperty.STEREOTYPE);
+		//Si v est non renseigné on suppose que la définition est DtStereotype.Data.
+		final DtStereotype stereotype = tmpStereotype != null ? DtStereotype.valueOf(tmpStereotype) : DtStereotype.Data;
+		//-----
 		final Boolean persistent = (Boolean) xdtDefinition.getPropertyValue(KspProperty.PERSISTENT);
 		Assertion.checkNotNull(persistent, "Le mot-clé ''persistent'' est obligatoire sur une DtDefinition ({0}).", xdtDefinition.getDefinitionKey().getName());
 		//-----
@@ -165,6 +170,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final String dtDefinitionName = xdtDefinition.getDefinitionKey().getName();
 		final DtDefinitionBuilder dtDefinitionBuilder = new DtDefinitionBuilder(dtDefinitionName)
 				.withPackageName(xdtDefinition.getPackageName())
+				.withStereoType(stereotype)
 				.withPersistent(persistent)
 				.withDynamic(dynamic);
 		//On enregistre les Builder pour pouvoir les mettre à jour sur les associations.

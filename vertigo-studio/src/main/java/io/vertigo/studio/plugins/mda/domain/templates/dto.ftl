@@ -2,7 +2,7 @@ package ${dtDefinition.packageName};
 
 import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.${dtDefinition.stereotypeInterfaceName};
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 /**
@@ -12,7 +12,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 <#list annotations(dtDefinition.dtDefinition) as annotation>
 ${annotation}
 </#list>
-public final class ${dtDefinition.classSimpleName} implements DtObject {
+public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.stereotypeInterfaceName} {
 
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -120,7 +120,7 @@ public final class ${dtDefinition.classSimpleName} implements DtObject {
 			}
 		}		
 		if (${association.role?uncap_first} == null) {
-			${association.role?uncap_first} = io.vertigo.core.Home.getComponentSpace().resolve(io.vertigo.dynamo.persistence.PersistenceManager.class).getBroker().get(fkURI);
+			${association.role?uncap_first} = io.vertigo.core.Home.getComponentSpace().resolve(io.vertigo.dynamo.persistence.PersistenceManager.class).getBroker().getOption(fkURI).get();
 		}
 		return ${association.role?uncap_first};
 	}

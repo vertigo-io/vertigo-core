@@ -87,7 +87,8 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 		final Entity dtDefinitionEntity = DomainGrammar.DT_DEFINITION_ENTITY;
 		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(getDtDefinitionName(clazz.getCode()), dtDefinitionEntity, clazz.getPackageName())
 				//Par défaut les DT lues depuis le OOM/XMI sont persistantes.
-				.withPropertyValue(KspProperty.PERSISTENT, true);
+				.withPropertyValue(KspProperty.PERSISTENT, true)
+				.withPropertyValue(KspProperty.STEREOTYPE, clazz.getStereotype());
 
 		for (final XmlAttribute attribute : clazz.getKeyAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(attribute, dynamicModelrepository);

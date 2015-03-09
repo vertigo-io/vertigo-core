@@ -88,6 +88,7 @@ public final class OOMLoader implements XmlLoader {
 		//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
 		final String code = obj.getCode();
 		final String packageName = obj.getParent().getPackageName();
+		final String stereotype = obj.getStereotype();
 		//On recherche les PrimaryIdentifiers :
 		//La class possède
 		//- une liste des identifiers qui référencent des champs
@@ -113,7 +114,7 @@ public final class OOMLoader implements XmlLoader {
 				}
 			}
 		}
-		return new XmlClass(code, packageName, keyAttributes, fieldAttributes);
+		return new XmlClass(code, packageName, stereotype, keyAttributes, fieldAttributes);
 	}
 
 	private XmlAttribute createAttribute(final OOMObject obj, final boolean isPK) {

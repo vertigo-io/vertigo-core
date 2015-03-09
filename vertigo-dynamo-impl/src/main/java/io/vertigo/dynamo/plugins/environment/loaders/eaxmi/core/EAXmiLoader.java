@@ -101,6 +101,7 @@ public final class EAXmiLoader implements XmlLoader {
 		//On recherche les attributs (>DtField) de cette classe(>Dt_DEFINITION)
 		final String code = obj.getName().toUpperCase();
 		final String packageName = obj.getParent().getPackageName();
+		final String stereotype = obj.getStereotype();
 
 		final List<XmlAttribute> keyAttributes = new ArrayList<>();
 		final List<XmlAttribute> fieldAttributes = new ArrayList<>();
@@ -115,7 +116,7 @@ public final class EAXmiLoader implements XmlLoader {
 				}
 			}
 		}
-		return new XmlClass(code, packageName, keyAttributes, fieldAttributes);
+		return new XmlClass(code, packageName, stereotype, keyAttributes, fieldAttributes);
 	}
 
 	private static XmlAttribute createAttribute(final EAXmiObject obj, final boolean isPK) {

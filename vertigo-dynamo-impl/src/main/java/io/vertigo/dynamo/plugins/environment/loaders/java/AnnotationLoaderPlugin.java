@@ -22,6 +22,9 @@ import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
+import io.vertigo.dynamo.domain.metamodel.DtStereotype;
+import io.vertigo.dynamo.domain.model.DtMasterData;
+import io.vertigo.dynamo.domain.model.DtSubject;
 import io.vertigo.dynamo.impl.environment.LoaderPlugin;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
@@ -107,6 +110,7 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		final String urn = DT_DEFINITION_PREFIX + SEPARATOR + StringUtil.camelToConstCase(simpleName);
 
 		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(urn, DomainGrammar.DT_DEFINITION_ENTITY, packageName)
+				.withPropertyValue(KspProperty.STEREOTYPE, parseStereotype(clazz).name())
 				.withPropertyValue(KspProperty.PERSISTENT, dtDefinitionAnnotation.persistent());
 
 		// Le tri des champs et des méthodes par ordre alphabétique est important car classe.getMethods() retourne
@@ -130,6 +134,15 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 		}
 		final DynamicDefinition dtDefinition = dtDefinitionBuilder.build();
 		dynamicModelRepository.addDefinition(dtDefinition);
+	}
+
+	private static DtStereotype parseStereotype(final Class<?> clazz) {
+		if (DtMasterData.class.isAssignableFrom(clazz)) {
+			return DtStereotype.MasterData;
+		} else if (DtSubject.class.isAssignableFrom(clazz)) {
+			return DtStereotype.Subject;
+		}
+		return DtStereotype.Data;
 	}
 
 	private static void parseAssociationDefinition(final DynamicDefinitionRepository dynamicModelRepository, final Method method, final String packageName) {

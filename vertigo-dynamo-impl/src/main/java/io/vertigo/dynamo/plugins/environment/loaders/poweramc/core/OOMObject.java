@@ -47,6 +47,8 @@ final class OOMObject {
 	private static final String PROPERTY_ROLE_A_NAME = "a:RoleAName";
 	private static final String PROPERTY_ROLE_B_NAME = "a:RoleBName";
 
+	private static final String PROPERTY_STEREOTYPE = "a:Stereotype";
+
 	private final XmlId id;
 	private final OOMObject parent;
 	private final OOMType type;
@@ -56,6 +58,7 @@ final class OOMObject {
 	//Données spécifiques
 	private String code;
 	private String name;
+	private String stereotype;
 
 	//=========Gestion des attributes============================
 	private String label;
@@ -97,6 +100,9 @@ final class OOMObject {
 		root = parent.root;
 	}
 
+	/**
+	 * @return OOMObject
+	 */
 	static OOMObject createdRoot() {
 		return new OOMObject();
 	}
@@ -151,6 +157,11 @@ final class OOMObject {
 
 	String getLabel() {
 		return label != null ? label : getName();
+	}
+
+	String getStereotype() {
+		//Assertion.checkNotNull(stereotype);
+		return stereotype;
 	}
 
 	//================================ASSOCIATIONS==============================
@@ -222,6 +233,8 @@ final class OOMObject {
 			roleALabel = propertyValue;
 		} else if (PROPERTY_ROLE_B_NAME.equals(propertyName)) {
 			roleBLabel = propertyValue;
+		} else if (PROPERTY_STEREOTYPE.equals(propertyName)) {
+			stereotype = propertyValue;
 		}
 		//On ne tient pas compte des autres propriétés
 	}
