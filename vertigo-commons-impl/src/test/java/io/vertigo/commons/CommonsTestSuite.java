@@ -31,14 +31,8 @@ import io.vertigo.commons.codec.hash.HashCodecSha1Test;
 import io.vertigo.commons.codec.hash.HashCodecSha256Test;
 import io.vertigo.commons.codec.html.HtmlCodecTest;
 import io.vertigo.commons.codec.serialization.SerializationCodecTest;
-import io.vertigo.commons.config.hierarchy.ConfigManagerTest;
-import io.vertigo.commons.config.multi.MultiConfigManagerTest;
-import io.vertigo.commons.config.properties.PropertiesConfigManagerTest;
-import io.vertigo.commons.config.xml.XmlConfigManagerTest;
-import io.vertigo.commons.locale.LocaleManagerTest;
 import io.vertigo.commons.parser.CalculatorTest;
 import io.vertigo.commons.parser.ParserTest;
-import io.vertigo.commons.resource.ResourceManagerTest;
 import io.vertigo.commons.script.ScriptManagerTest;
 
 import org.junit.runner.RunWith;
@@ -68,15 +62,6 @@ import org.junit.runners.Suite.SuiteClasses;
 		HashCodecSha256Test.class,
 		HtmlCodecTest.class,
 		SerializationCodecTest.class,
-		//--config
-		ConfigManagerTest.class,
-		LocaleManagerTest.class,
-		ResourceManagerTest.class,
-		MultiConfigManagerTest.class,
-		PropertiesConfigManagerTest.class,
-		XmlConfigManagerTest.class,
-		//--resource
-		ResourceManagerTest.class,
 		//--script
 		ScriptManagerTest.class,
 		//--parser

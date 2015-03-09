@@ -22,6 +22,7 @@ import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.cache.CacheManagerImpl;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
+import io.vertigo.commons.impl.locale.LocaleManagerImpl;
 import io.vertigo.commons.impl.resource.ResourceManagerImpl;
 import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
@@ -79,7 +80,6 @@ import io.vertigo.vega.rest.data.ws.WsRestServices;
 import io.vertigo.vega.rest.engine.GoogleJsonEngine;
 import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.vega.token.TokenManager;
-import io.vertigoimpl.commons.locale.LocaleManagerImpl;
 import io.vertigoimpl.engines.rest.cmd.ComponentCmdRestServices;
 
 public final class MyApp {

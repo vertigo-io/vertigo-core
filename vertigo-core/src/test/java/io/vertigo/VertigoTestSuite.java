@@ -18,7 +18,12 @@
  */
 package io.vertigo;
 
+import io.vertigo.commons.config.hierarchy.ConfigManagerTest;
+import io.vertigo.commons.config.multi.MultiConfigManagerTest;
+import io.vertigo.commons.config.properties.PropertiesConfigManagerTest;
+import io.vertigo.commons.config.xml.XmlConfigManagerTest;
 import io.vertigo.commons.locale.LocaleManagerTest;
+import io.vertigo.commons.resource.ResourceManagerTest;
 import io.vertigo.core.aop.AspectTest;
 import io.vertigo.core.config.AppConfigTest;
 import io.vertigo.core.di.injector.InjectorTest;
@@ -71,6 +76,15 @@ import org.junit.runners.Suite.SuiteClasses;
 		DateUtilTest.class,
 		StringUtilTest.class,
 		MapBuilderTest.class,
+
+		//--config
+		ConfigManagerTest.class,
+		MultiConfigManagerTest.class,
+		PropertiesConfigManagerTest.class,
+		XmlConfigManagerTest.class,
+		//--resource
+		ResourceManagerTest.class,
+
 })
 public final class VertigoTestSuite {
 	//
