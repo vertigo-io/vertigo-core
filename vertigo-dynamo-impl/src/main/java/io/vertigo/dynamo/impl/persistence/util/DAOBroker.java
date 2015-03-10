@@ -149,7 +149,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 * @return D Object recherché
 	 */
 	public final D get(final URI<D> uri) {
-		return broker.<D> getOption(uri).get();
+		return broker.<D> get(uri);
 	}
 
 	/**

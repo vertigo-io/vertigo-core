@@ -123,7 +123,7 @@ public final class Command implements DtSubject {
 			}
 		}
 		if (commandType == null) {
-			commandType = io.vertigo.core.Home.getComponentSpace().resolve(io.vertigo.dynamo.persistence.PersistenceManager.class).getBroker().getOption(fkURI).get();
+			commandType = io.vertigo.core.Home.getComponentSpace().resolve(io.vertigo.dynamo.persistence.PersistenceManager.class).getBroker().get(fkURI);
 		}
 		return commandType;
 	}
@@ -185,7 +185,7 @@ public final class Command implements DtSubject {
 			}
 		}
 		if (city == null) {
-			city = io.vertigo.core.Home.getComponentSpace().resolve(io.vertigo.dynamo.persistence.PersistenceManager.class).getBroker().getOption(fkURI).get();
+			city = io.vertigo.core.Home.getComponentSpace().resolve(io.vertigo.dynamo.persistence.PersistenceManager.class).getBroker().get(fkURI);
 		}
 		return city;
 	}

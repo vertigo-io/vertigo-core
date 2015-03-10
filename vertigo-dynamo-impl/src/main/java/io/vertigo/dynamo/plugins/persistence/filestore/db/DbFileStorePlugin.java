@@ -81,7 +81,7 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 	@Override
 	public FileInfo load(final FileInfoURI uri) {
 		final URI<DtObject> dtoUri = createDtObjectURI(uri);
-		final DtObject fileInfoDto = getPersistenceManager().getBroker().getOption(dtoUri).get();
+		final DtObject fileInfoDto = getPersistenceManager().getBroker().get(dtoUri);
 		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder((DataStream) getValue(fileInfoDto, DtoFields.FILE_DATA));
 		final String fileName = (String) getValue(fileInfoDto, DtoFields.FILE_NAME);
 		final String mimeType = (String) getValue(fileInfoDto, DtoFields.MIME_TYPE);

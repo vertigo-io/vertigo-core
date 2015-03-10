@@ -29,7 +29,6 @@ import io.vertigo.dynamo.impl.persistence.datastore.logical.LogicalDataStoreConf
 import io.vertigo.dynamo.persistence.datastore.Broker;
 import io.vertigo.dynamo.persistence.datastore.DataStore;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 
 /**
  * Implémentation Standard du Broker.
@@ -54,7 +53,7 @@ public final class BrokerImpl implements Broker {
 		//On vérouille la configuration.
 		//brokerConfiguration.lock();
 		//On crée la pile de Store.
-		this.logicalStoreConfig = brokerConfig.getLogicalStoreConfig();
+		logicalStoreConfig = brokerConfig.getLogicalStoreConfig();
 		cacheDataStore = new CacheDataStore(brokerConfig);
 	}
 
@@ -110,12 +109,13 @@ public final class BrokerImpl implements Broker {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends DtObject> Option<D> getOption(final URI<D> uri) {
+	public <D extends DtObject> D get(final URI<D> uri) {
 		Assertion.checkNotNull(uri);
-		//-----
-		final D dto = cacheDataStore.load(uri);
-		//-----
-		return Option.option(dto);
+		//----------------------------------------------------------------------
+		final D dto = cacheDataStore.<D> load(uri);
+		//----------------------------------------------------------------------
+		Assertion.checkNotNull(dto, "L''objet {0} n''a pas été trouvé", uri);
+		return dto;
 	}
 
 	/** {@inheritDoc} */

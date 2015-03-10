@@ -23,7 +23,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.lang.Option;
 
 /**
  * Un objet est automatiquement géré par le broker.
@@ -43,13 +42,13 @@ public interface Broker {
 	/**
 	 * Récupération d'un objet persistant par son URI.
 	 * Lorsque l'objet est en lecture seule il est possible d'accéder au objets partagés. (Liste de référence paér ex)
-	 * Si l'object n'existe pas l'option sera isEmpty.
+	 * L'objet doit exister.
 	 *
 	 * @param <D> Type de l'objet
 	 * @param uri Uri de l'object
-	 * @return Option de l'object récupéré NOT NUL
+	 * @return object récupéré NOT NULL
 	 */
-	<D extends DtObject> Option<D> getOption(final URI<D> uri);
+	<D extends DtObject> D get(final URI<D> uri);
 
 	/**
 	 * Récupération d'une liste identifiée par son URI.

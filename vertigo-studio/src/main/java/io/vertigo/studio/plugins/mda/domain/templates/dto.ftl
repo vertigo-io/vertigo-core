@@ -120,7 +120,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 			}
 		}		
 		if (${association.role?uncap_first} == null) {
-			${association.role?uncap_first} = io.vertigo.core.Home.getComponentSpace().resolve(io.vertigo.dynamo.persistence.PersistenceManager.class).getBroker().getOption(fkURI).get();
+			${association.role?uncap_first} = io.vertigo.core.Home.getComponentSpace().resolve(io.vertigo.dynamo.persistence.PersistenceManager.class).getBroker().get(fkURI);
 		}
 		return ${association.role?uncap_first};
 	}

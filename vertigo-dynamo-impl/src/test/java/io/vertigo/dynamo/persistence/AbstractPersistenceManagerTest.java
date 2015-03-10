@@ -435,7 +435,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 
 			//on recharge la famille et on recharge la liste issus de l'association NN : il doit avoir une voiture de moins qu'au début
 			final DtDefinition dtFamille = DtObjectUtil.findDtDefinition(Famille.class);
-			final Famille famille2 = persistenceManager.getBroker().<Famille> getOption(new URI<Famille>(dtFamille, famille.getFamId())).get();
+			final Famille famille2 = persistenceManager.getBroker().<Famille> get(new URI<Famille>(dtFamille, famille.getFamId()));
 			final DtList<Car> secondResult = famille2.getVoituresLocationList();
 			Assert.assertEquals("Test tailles du nombre de voiture dans une NN", firstResult.size() - 1, secondResult.size());
 			transaction.commit();
@@ -481,7 +481,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 
 			//on recharge la famille et on recharge la liste issus de l'association 1N : il doit avoir une voiture de moins qu'au début
 			final DtDefinition dtFamille = DtObjectUtil.findDtDefinition(Famille.class);
-			final Famille famille2 = persistenceManager.getBroker().<Famille> getOption(new URI<Famille>(dtFamille, famille.getFamId())).get();
+			final Famille famille2 = persistenceManager.getBroker().<Famille> get(new URI<Famille>(dtFamille, famille.getFamId()));
 			final DtList<Car> secondResult = famille2.getVoituresFamilleList();
 			Assert.assertEquals("Test tailles du nombre de voiture pour une 1-N", firstResult.size() - 1, secondResult.size());
 			transaction.commit();
