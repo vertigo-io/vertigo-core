@@ -283,4 +283,31 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 		response = servletResponse;
 	}
 
+	/** {@inheritDoc}
+	 * @deprecated Utiliser getUiMessageStack() */
+	//We keep the deprecated, to keep a warning to not use the struts method
+	@Override
+	@Deprecated
+	public final void addActionMessage(final String message) {
+		super.addActionMessage(message);
+	}
+
+	/** {@inheritDoc}
+	 * @deprecated Utiliser getUiMessageStack() */
+	//We keep the deprecated, to keep a warning to not use the struts method
+	@Override
+	@Deprecated
+	public final void addActionError(final String message) {
+		super.addActionError(message);
+	}
+
+	/** {@inheritDoc}
+	 * @deprecated Utiliser getUiMessageStack() */
+	//We keep the deprecated, to keep a warning to not use the struts method
+	@Override
+	@Deprecated
+	public final void addFieldError(final String fieldName, final String errorMessage) {
+		super.addFieldError(fieldName, errorMessage);
+	}
+
 }
