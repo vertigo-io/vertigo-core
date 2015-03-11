@@ -85,7 +85,6 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 	public LocaleManagerImpl(@Named("locales") final String locales) {
 		Assertion.checkArgNotEmpty(locales);
 		//-----
-		// this.locales = new Locale[] { Locale.getDefault() };
 		this.locales = createLocales(locales);
 		//-----
 		Assertion.checkNotNull(this.locales);
@@ -159,7 +158,6 @@ public final class LocaleManagerImpl implements LocaleManager, Describable {
 	}
 
 	private void load(final Locale locale, final ResourceBundle resourceBundle, final boolean override) {
-		//logger.trace("locale=" + locale + ", resourceBundle=" + resourceBundle + ", override=" + override);
 		for (final String key : Collections.list(resourceBundle.getKeys())) {
 			final String value = resourceBundle.getString(key);
 			Assertion.checkNotNull(value);

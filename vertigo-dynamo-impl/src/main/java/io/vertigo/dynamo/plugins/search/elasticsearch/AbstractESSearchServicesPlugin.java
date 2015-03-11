@@ -88,7 +88,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	 * @param configFile Fichier de configuration des indexs
 	 * @param resourceManager Manager des resources
 	 */
-	protected AbstractESSearchServicesPlugin(final String cores, final int rowsPerQuery, final  Option<String> configFile, 
+	protected AbstractESSearchServicesPlugin(final String cores, final int rowsPerQuery, final Option<String> configFile,
 			final CodecManager codecManager,
 			final ResourceManager resourceManager) {
 		Assertion.checkArgNotEmpty(cores);
@@ -116,7 +116,8 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		esClient = node.client();
 		for (final String core : cores) {
 			final String indexName = core.toLowerCase().trim();
-			waitForYellowStatus(); //must wait yellow status to be sure prepareExists works fine (instead of returning false on a already exist index)
+			//must wait yellow status to be sure prepareExists works fine (instead of returning false on a already exist index)
+			waitForYellowStatus();
 			try {
 				if (!esClient.admin().indices().prepareExists(indexName).get().isExists()) {
 					if (configFile == null) {
@@ -126,7 +127,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 						esClient.admin().indices().prepareCreate(indexName).setSettings(settings).get();
 					}
 				}
-			} catch (ElasticsearchException e) {
+			} catch (final ElasticsearchException e) {
 				throw new RuntimeException("Error on index " + indexName, e);
 			}
 		}
@@ -141,7 +142,6 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 	private void logMappings(final SearchIndexDefinition indexDefinition) {
 		final IndicesAdminClient indicesAdmin = esClient.admin().indices();
-		//logger.warn("Index " + indexName + " CurrentMapping:");
 		final ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> indexMappings = indicesAdmin.prepareGetMappings(indexDefinition.getName().toLowerCase()).get().getMappings();
 		for (final ObjectObjectCursor<String, ImmutableOpenMap<String, MappingMetaData>> indexMapping : indexMappings) {
 			LOGGER.info("Index " + indexMapping.key + " CurrentMapping:");
@@ -267,9 +267,6 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
 			for (final DtField dtField : indexDtDefinition.getFields()) {
 				final String indexType = resolveIndexType(dtField.getDomain());
-				//final String fieldType = dtField.getDomain().getProperties().getValue(DtProperty.INDEX_TYPE);
-				//final String indexType = "{" + resolveIndexType(dtField.getDomain()) + "}";
-				//typeMapping.rawField(dtField.getName(), indexType.getBytes("utf8"));
 				if (indexType != null) {
 					typeMapping.startObject(indexFieldNameResolver.obtainIndexFieldName(dtField));
 					typeMapping.field("type", "string").field("analyzer", indexType); //par convention l'indextype du domain => l'analyzer de l'index

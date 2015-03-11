@@ -45,8 +45,6 @@ import org.xml.sax.SAXException;
  * @author  pchretien
  */
 public final class XmlConfigPlugin implements ConfigPlugin { /*implements Loader<HomeConfigBuilder>*/
-	//	private final URL managersURL;
-	//	private final Properties properties;
 	private final Map<String, Map<String, String>> configs;
 
 	/**
@@ -104,10 +102,10 @@ public final class XmlConfigPlugin implements ConfigPlugin { /*implements Loader
 	}
 
 	private static void xsdValidate(final URL configURL) {
-		//---validation XSD
+		//--- validation XSD
 		final URL xsd = ConfigManager.class.getResource("vertigo-config_1_0.xsd");
 		XMLUtil.validateXmlByXsd(configURL, xsd);
-		//---fin validation XSD}
+		//--- fin validation XSD
 	}
 
 }

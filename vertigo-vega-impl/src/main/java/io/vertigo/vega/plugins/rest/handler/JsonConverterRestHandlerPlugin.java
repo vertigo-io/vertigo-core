@@ -174,7 +174,8 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 	/** {@inheritDoc}  */
 	@Override
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
-		UiContext innerBodyParsed = null; //we can't read body at first : because if it's a multipart request call body() disabled getParts() access.
+		//we can't read body at first : because if it's a multipart request call body() disabled getParts() access.
+		UiContext innerBodyParsed = null;
 		for (final EndPointParam endPointParam : routeContext.getEndPointDefinition().getEndPointParams()) {
 			try {
 				final Object value;
@@ -258,7 +259,7 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 					encodedType = new EncodedType(EncoderType.JSON_LIST, dtList.getDefinition().getClassSimpleName());
 				}
 			} else {
-				encodedType = new EncodedType(EncoderType.JSON_LIST, Object.class.getSimpleName()); //TODO check entityName
+				encodedType = new EncodedType(EncoderType.JSON_LIST, Object.class.getSimpleName());
 			}
 		} else if (result instanceof DtObject) {
 			encodedType = new EncodedType(EncoderType.JSON_ENTITY, result.getClass().getSimpleName());
@@ -426,7 +427,8 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 			}
 			final Option<Serializable> serverSideObject;
 			if (endPointParam.isConsumeServerSideToken()) {
-				serverSideObject = uiSecurityTokenManager.getAndRemove(accessToken); //TODO if exception : token is consume ?
+				//if exception : token is consume. It's for security reason : no replay on bad request (brute force password)
+				serverSideObject = uiSecurityTokenManager.getAndRemove(accessToken);
 			} else {
 				serverSideObject = uiSecurityTokenManager.get(accessToken);
 			}

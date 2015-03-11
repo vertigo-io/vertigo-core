@@ -86,9 +86,9 @@ final class HomeServletStarter {
 			app = new App(appConfigBuilder.build());
 
 			servletListener.onServletStart(getClass().getName());
-		} catch (final Throwable t) {
-			LOG.error(t.getMessage(), t);
-			throw new RuntimeException("Problème d'initialisation de l'application", t);
+		} catch (final Exception e) {
+			LOG.error(e.getMessage(), e);
+			throw new RuntimeException("Problème d'initialisation de l'application", e);
 		} finally {
 			if (LOG.isInfoEnabled()) {
 				LOG.info("Temps d'initialisation du listener " + (System.currentTimeMillis() - start));

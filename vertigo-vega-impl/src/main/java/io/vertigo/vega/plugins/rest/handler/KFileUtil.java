@@ -138,7 +138,6 @@ final class KFileUtil {
 		Assertion.checkArgument(length.longValue() < Integer.MAX_VALUE, "Too big file to be send. It's "
 				+ length.longValue() / 1024 + " Ko long, but maximum was " + (Integer.MAX_VALUE / 1024)
 				+ " Ko.");
-		// response.contentLength(length.intValue());
 		response.header("Content-Length", String.valueOf(length.intValue()));
 		response.header("Content-Disposition",
 				encodeFileNameToContentDisposition(kFile.getFileName(), isAttachment));
@@ -232,8 +231,6 @@ final class KFileUtil {
 	}
 
 	private static String getSubmittedFileName(final Part filePart) {
-		//final String fileName = Home.getComponentSpace().resolve(CodecManager.class).getHtmlCodec().decode(file.getName());
-		//TODO : check if encoded fileName ?
 		final String header = filePart.getHeader("content-disposition");
 		if (header == null) {
 			return null;
