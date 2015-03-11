@@ -52,12 +52,11 @@ public final class ConstraintDefinition implements Constraint, Definition {
 	public ConstraintDefinition(final String name, final String constraintClassName, final String msg, final String args) {
 		Assertion.checkArgNotEmpty(constraintClassName);
 		Assertion.checkArgNotEmpty(name);
-		//Assertion.checkNotNull(msg);
 		//-----
 		this.name = name;
 		this.msg = msg == null ? null : new MessageText(msg, null);
 		//-----
-		this.constraint = createConstraint(constraintClassName, args);
+		constraint = createConstraint(constraintClassName, args);
 	}
 
 	private static Constraint createConstraint(final String constraintClassName, final String args) {

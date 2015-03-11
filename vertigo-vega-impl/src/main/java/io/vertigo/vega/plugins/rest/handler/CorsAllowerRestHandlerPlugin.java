@@ -43,8 +43,8 @@ public final class CorsAllowerRestHandlerPlugin implements RestHandlerPlugin {
 	private static final String REQUEST_HEADER_ORIGIN = "Origin";
 
 	private static final String DEFAULT_ORIGIN_CORS_FILTER = "*";
-	private static final String DEFAULT_METHODS_CORS_FILTER = "GET, POST, DELETE, PUT";//"*";
-	private static final String DEFAULT_HEADERS_CORS_FILTER = "Content-Type, listServerToken, x-total-count, x-access-token"; //"*";
+	private static final String DEFAULT_METHODS_CORS_FILTER = "GET, POST, DELETE, PUT"; // may use *
+	private static final String DEFAULT_HEADERS_CORS_FILTER = "Content-Type, listServerToken, x-total-count, x-access-token"; // may use *
 
 	private final String originCORSFilter;
 	private final String methodCORSFilter;

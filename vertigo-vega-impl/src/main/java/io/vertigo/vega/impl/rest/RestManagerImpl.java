@@ -72,8 +72,6 @@ public final class RestManagerImpl implements RestManager {
 	private final RoutesRegisterPlugin routesRegisterPlugin;
 	private final HandlerChain handlerChain;
 
-	//private final JsonEngine jsonEngine = new GoogleJsonEngine();
-
 	/**
 	 * Constructor.
 	 * @param endPointIntrospectorPlugin EndPointIntrospector Plugin

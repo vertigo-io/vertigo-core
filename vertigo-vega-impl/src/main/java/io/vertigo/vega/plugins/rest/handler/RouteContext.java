@@ -107,10 +107,6 @@ public final class RouteContext {
 		request.attribute(endPointParam.getFullName(), updatedDto);
 	}
 
-	/*public void registerUiListDelta(final EndPointParam endPointParam, final UiObject uiObject) {
-		request.attribute(endPointParam.getFullName(), uiObject);
-	}*/
-
 	/**
 	 * Register Updated DtListDelta.
 	 * @param endPointParam param name

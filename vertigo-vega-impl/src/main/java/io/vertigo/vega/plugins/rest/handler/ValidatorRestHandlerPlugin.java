@@ -117,7 +117,6 @@ public final class ValidatorRestHandlerPlugin implements RestHandlerPlugin {
 	private static <D extends DtObject> DtList<D> mergeAndCheckInput(final Class<D> objectType, final Map<String, UiObject<D>> uiObjectMap, final List<DtObjectValidator<D>> dtObjectValidators, final UiMessageStack uiMessageStack, final Map<String, DtObject> contextKeyMap) {
 		final DtList<D> dtList = new DtList<>(objectType);
 		for (final Map.Entry<String, UiObject<D>> entry : uiObjectMap.entrySet()) {
-			//entry.getValue().setInputKey(inputKey + "." + listName + "." + entry.getKey());
 			final D dto = entry.getValue().mergeAndCheckInput(dtObjectValidators, uiMessageStack);
 			dtList.add(dto);
 			contextKeyMap.put(entry.getValue().getInputKey(), dto);
@@ -128,7 +127,6 @@ public final class ValidatorRestHandlerPlugin implements RestHandlerPlugin {
 	private static <D extends DtObject> DtList<D> mergeAndCheckInput(final Class<DtObject> objectType, final UiList<D> uiList, final List<DtObjectValidator<D>> dtObjectValidators, final UiMessageStack uiMessageStack, final Map<String, DtObject> contextKeyMap) {
 		final DtList<D> dtList = new DtList<>(objectType);
 		for (final UiObject<D> element : uiList) {
-			//entry.getValue().setInputKey(inputKey + "." + listName + "." + entry.getKey());
 			final D dto = element.mergeAndCheckInput(dtObjectValidators, uiMessageStack);
 			dtList.add(dto);
 			contextKeyMap.put(element.getInputKey(), dto);

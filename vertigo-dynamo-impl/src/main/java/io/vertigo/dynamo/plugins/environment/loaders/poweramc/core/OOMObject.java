@@ -160,7 +160,6 @@ final class OOMObject {
 	}
 
 	String getStereotype() {
-		//Assertion.checkNotNull(stereotype);
 		return stereotype;
 	}
 
