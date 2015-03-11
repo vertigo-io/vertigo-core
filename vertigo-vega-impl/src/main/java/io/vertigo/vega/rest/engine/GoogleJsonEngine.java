@@ -20,6 +20,9 @@ package io.vertigo.vega.rest.engine;
 
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.core.spaces.definiton.DefinitionReference;
+import io.vertigo.dynamo.collections.model.Facet;
+import io.vertigo.dynamo.collections.model.FacetValue;
+import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -354,6 +357,34 @@ public final class GoogleJsonEngine implements JsonEngine {
 						return jsonObject;
 					}
 				})*/
+				.registerTypeAdapter(FacetedQueryResult.class, new JsonSerializer<FacetedQueryResult>() {
+					@Override
+					public JsonElement serialize(final FacetedQueryResult facetedQueryResult, final Type typeOfSrc, final JsonSerializationContext context) {
+						final JsonObject jsonObject = new JsonObject();
+						//1- add result list as data
+						final JsonArray jsonData = (JsonArray) context.serialize(facetedQueryResult.getDtList());
+						jsonObject.add("data", jsonData);
+
+						//2- add facet list as facets
+						final List<Facet> facets = facetedQueryResult.getFacets();
+						final JsonArray facetList = new JsonArray();
+						for (final Facet facet : facets) {
+							final JsonObject jsonFacet = new JsonObject();
+
+							final Map<String, Long> maps = new HashMap<>();
+							for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
+								maps.put(entry.getKey().getLabel().getDisplay(), entry.getValue());
+							}
+
+							final JsonObject jsonFacetValues = (JsonObject) context.serialize(maps);
+							final String facetName = facet.getDefinition().getLabel().getDisplay();
+							jsonFacet.add(facetName, jsonFacetValues);
+							facetList.add(jsonFacet);
+						}
+						jsonObject.add("facets", context.serialize(facetList));
+						return jsonObject;
+					}
+				})
 				.registerTypeAdapter(ComponentInfo.class, new JsonSerializer<ComponentInfo>() {
 					@Override
 					public JsonElement serialize(final ComponentInfo componentInfo, final Type typeOfSrc, final JsonSerializationContext context) {
