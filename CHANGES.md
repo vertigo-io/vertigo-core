@@ -1,10 +1,43 @@
 Version history
 ===============
 
-Running 0.7.4-SNAPSHOT
+Running 0.8.0-SNAPSHOT
 ----------------------
-
 more to come :)
+
+Prerelease 0.7.4-SNAPSHOT
+----------------------
+more to come :)
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide)
+* [All] Fixed some code style
+* [All] Removed some deprecated : PersistenceManager.getBrokerConfiguration, PersistenceManager.getMasterDataConfiguration, UiMessageStack.hasErrorOnField, UiRequestUtil.getHttpServletRequest, UiRequestUtil.getHttpSession
+* [Core] Aspects Order preserved
+* [Core] Renamed KTransaction to VTransaction
+* [Core] Renamed vertigoimpl.commons to vertigo.commons.impl
+* [Commons, Dynamo] Fixed index cacheability. For cache not serializable value. 
+* [Dynamo] Added Stereotype of DtObject : Data, MasterData or Subject
+* [Dynamo] Refactored broker, cacheStore, SearchManager (introducing searchQueryBuilder)
+* [Dynamo] Fixed searchQuery serializable
+* [Dynamo] Added search clusering by facet, and FacetQuery is now optionnal, SearchQuery serializable
+* [Dynamo] Fixed WhereIn with lowercase column name
+*	[Dynamo] Fixed user exception detection/extraction
+* [Dynamo] Updated ElasticSearch configFile
+* [Struts2] Fixed readonly multi select
+* [Struts2] Added assert uiMdList used with MasterData DtDefinition
+* [Struts2] Renamed HomeServlerStarter to HomeServletStarter
+* [Struts2] Added assert fieldName in camelCase
+* [Struts2] Refactored formatter (no more FMT_DEFAULT)
+* [Struts2][Vega] Added check of boot.applicationConfiguration
+* [Struts2] Changed ftl usage as struts2.3.20
+* [Struts2] Updated fielderror to add a onclick on error label to focus the field
+* [Struts2] Updated to struts 2.3.20
+* [Vega] Refactored RouteHandler to RestHandlerPlugin : make more configurable request processor stack
+* [Vega] Added check response is commited when managed in controller
+* [Studio] Made computed field always transient
+* [Studio] Made generator target dir defined by plugins. Now you could generate : javagen, sqlgen, jsgen
+* [Studio] Fixed hibernate sequence
+* [Tempo] Added dead node detection of rest distributed
+* [Quarto] Fixed #14
 
 Release 0.7.3 - 2015/02/02
 ----------------------
