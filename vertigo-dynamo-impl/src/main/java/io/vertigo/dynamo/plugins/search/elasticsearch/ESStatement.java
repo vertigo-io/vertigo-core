@@ -416,8 +416,9 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 
 	private static Map<DtField, String> createHighlight(final SearchHit searchHit, final DtDefinition indexDtDefinition, final SearchIndexFieldNameResolver indexFieldNameResolver) {
 		final Map<DtField, String> highlights = new HashMap<>();
-		final Map<String, HighlightField> map = searchHit.getHighlightFields();
-		for (final Map.Entry<String, HighlightField> entry : map.entrySet()) {
+		final Map<String, HighlightField> highlightsMap = searchHit.getHighlightFields();
+		highlightsMap.remove(ESDocumentCodec.FULL_RESULT); //TODO : may really highlighs match on FULL_RESULT field ?
+		for (final Map.Entry<String, HighlightField> entry : highlightsMap.entrySet()) {
 			final StringBuilder sb = new StringBuilder();
 			for (final Text fragment : entry.getValue().getFragments()) {
 				sb.append("<hlfrag>").append(fragment).append("</hlfrag>");
