@@ -15,6 +15,8 @@ more to come :)
 * [Core] Renamed KTransaction to VTransaction
 * [Core] Renamed vertigoimpl.commons to vertigo.commons.impl
 * [Commons, Dynamo] Fixed index cacheability. For cache not serializable value. 
+* [Dynamo] Added index settings check at startup
+* [Dynamo] Fixed highlights on full_result field
 * [Dynamo] Added Stereotype of DtObject : Data, MasterData or Subject
 * [Dynamo] Refactored broker, cacheStore, SearchManager (introducing searchQueryBuilder)
 * [Dynamo] Fixed searchQuery serializable
@@ -31,6 +33,7 @@ more to come :)
 * [Struts2] Changed ftl usage as struts2.3.20
 * [Struts2] Updated fielderror to add a onclick on error label to focus the field
 * [Struts2] Updated to struts 2.3.20
+* [Vega] Added encoder FacetedQueryResult to Json
 * [Vega] Refactored RouteHandler to RestHandlerPlugin : make more configurable request processor stack
 * [Vega] Added check response is commited when managed in controller
 * [Studio] Made computed field always transient
