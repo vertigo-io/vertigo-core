@@ -4,6 +4,8 @@ Version history
 Running 0.8.0-SNAPSHOT
 ----------------------
 more to come :)
+* [Core] Renamed KTransaction to VTransaction
+
 
 Release 0.7.4 - 2015/03/12
 ----------------------
@@ -11,7 +13,6 @@ Release 0.7.4 - 2015/03/12
 * [All] Fixed some code style
 * [All] Removed some deprecated : PersistenceManager.getBrokerConfiguration, PersistenceManager.getMasterDataConfiguration, UiMessageStack.hasErrorOnField, UiRequestUtil.getHttpServletRequest, UiRequestUtil.getHttpSession
 * [Core] Aspects Order preserved
-* [Core] Renamed KTransaction to VTransaction
 * [Core] Renamed vertigoimpl.commons to vertigo.commons.impl
 * [Commons, Dynamo] Fixed index cacheability. For cache not serializable value. 
 * [Dynamo] Added index settings check at startup
