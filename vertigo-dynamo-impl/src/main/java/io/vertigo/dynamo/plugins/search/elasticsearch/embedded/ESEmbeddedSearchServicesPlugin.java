@@ -54,9 +54,10 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 	 * @param rowsPerQuery Nombre d'élément retourné par query
 	 * @param codecManager Manager des codecs
 	 * @param resourceManager Manager d'accès aux ressources
+	 * @param configFile Fichier de configuration des indexs
 	 */
 	@Inject
-	public ESEmbeddedSearchServicesPlugin(@Named("home") final String elasticSearchHome, @Named("cores") final String cores, 
+	public ESEmbeddedSearchServicesPlugin(@Named("home") final String elasticSearchHome, @Named("cores") final String cores,
 			@Named("rowsPerQuery") final int rowsPerQuery, @Named("config.file") final Option<String> configFile,
 			final CodecManager codecManager, final ResourceManager resourceManager) {
 		super(cores, rowsPerQuery, configFile, codecManager, resourceManager);

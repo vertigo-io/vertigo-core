@@ -46,6 +46,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -79,6 +80,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	private final int rowsPerQuery;
 	private final Set<String> cores;
 	private final URL configFile;
+	private boolean indexSettingsValid = false;
 
 	/**
 	 * Constructeur.
@@ -89,8 +91,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	 * @param resourceManager Manager des resources
 	 */
 	protected AbstractESSearchServicesPlugin(final String cores, final int rowsPerQuery, final Option<String> configFile,
-			final CodecManager codecManager,
-			final ResourceManager resourceManager) {
+			final CodecManager codecManager, final ResourceManager resourceManager) {
 		Assertion.checkArgNotEmpty(cores);
 		Assertion.checkNotNull(codecManager);
 		//-----
@@ -104,7 +105,6 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		} else {
 			this.configFile = null;
 		}
-
 	}
 
 	/** {@inheritDoc} */
@@ -114,6 +114,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		node = createNode();
 		node.start();
 		esClient = node.client();
+		indexSettingsValid = true;
 		for (final String core : cores) {
 			final String indexName = core.toLowerCase().trim();
 			//must wait yellow status to be sure prepareExists works fine (instead of returning false on a already exist index)
@@ -126,6 +127,10 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 						final Settings settings = ImmutableSettings.settingsBuilder().loadFromUrl(configFile).build();
 						esClient.admin().indices().prepareCreate(indexName).setSettings(settings).get();
 					}
+				} else if (configFile != null) {
+					// If we use local config file, we check config against ES server
+					final Settings settings = ImmutableSettings.settingsBuilder().loadFromUrl(configFile).build();
+					indexSettingsValid = indexSettingsValid && checkSettings(indexName, settings);
 				}
 			} catch (final ElasticsearchException e) {
 				throw new RuntimeException("Error on index " + indexName, e);
@@ -138,6 +143,28 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		}
 
 		waitForYellowStatus();
+	}
+
+	private boolean checkSettings(final String indexName, final Settings settings) {
+		final Settings currentSettings = esClient.admin().indices().prepareGetIndex()
+				.addIndices(indexName).get()
+				.getSettings().get(indexName);
+		boolean indexSettingsDirty = false;
+		final Map<String, String> settingsMap = settings.getAsMap();
+		for (final Entry<String, String> entry : settingsMap.entrySet()) {
+			final String currentValue = currentSettings.get(entry.getKey());
+			if (currentValue == null) {
+				indexSettingsDirty = true;
+				break;
+			}
+			final String expectedValue = entry.getValue();
+			if (!currentValue.equals(expectedValue)) {
+				indexSettingsDirty = true;
+				LOGGER.warn("[" + indexName + "] " + entry.getKey() + ":  current=" + currentValue + ", expected=" + expectedValue);
+				break;
+			}
+		}
+		return indexSettingsDirty;
 	}
 
 	private void logMappings(final SearchIndexDefinition indexDefinition) {
@@ -244,6 +271,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	}
 
 	private <I extends DtObject, R extends DtObject> ESStatement<I, R> createElasticStatement(final SearchIndexDefinition indexDefinition) {
+		Assertion.checkArgument(indexSettingsValid, "Index settings have changed and are nomore compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.");
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkArgument(cores.contains(indexDefinition.getName()), "Index {0} hasn't been registered (Registered indexes: {2}).", indexDefinition.getName(), cores);
 		//-----
