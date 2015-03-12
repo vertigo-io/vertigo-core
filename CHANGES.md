@@ -5,9 +5,8 @@ Running 0.8.0-SNAPSHOT
 ----------------------
 more to come :)
 
-Prerelease 0.7.4-SNAPSHOT
+Release 0.7.4 - 2015/03/12
 ----------------------
-more to come :)
 [Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide)
 * [All] Fixed some code style
 * [All] Removed some deprecated : PersistenceManager.getBrokerConfiguration, PersistenceManager.getMasterDataConfiguration, UiMessageStack.hasErrorOnField, UiRequestUtil.getHttpServletRequest, UiRequestUtil.getHttpSession
