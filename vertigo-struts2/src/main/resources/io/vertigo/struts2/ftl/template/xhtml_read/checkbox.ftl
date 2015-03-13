@@ -8,7 +8,7 @@
 <#if !parameters.labelposition?? && (parameters.form.labelposition)??>
 <#assign labelpos = parameters.form.labelposition/>
 <#else>
-<#assign labelpos = = parameters.labelposition?default("right")/>
+<#assign labelpos = parameters.labelposition?default("right")/>
 </#if>
 <#if labelpos = 'left'>
 	<#include "/${parameters.templateDir}/xhtml/controlheader.ftl" />

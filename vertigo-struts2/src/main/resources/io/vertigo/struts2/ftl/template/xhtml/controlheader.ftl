@@ -16,12 +16,6 @@
  align="${parameters.align?html}"<#rt/>
 	</#if>
 	><#t/>
-	<#assign fieldName = parameters.widgetname!parameters.name!""/> <#-- for jquery component -->
-	<#assign hasFieldErrors = parameters.name?? && fieldErrors?? && fieldErrors[fieldName]??/>
-	<#if hasFieldErrors>
-		<#assign previousCssClass = appendedCssClass!''/>
-		<#assign appendedCssClass = previousCssClass +' error'/>
-	</#if>
 	<#if controlLayout_tablecolspan?exists >
     		<#assign columnCount = controlLayout_currentColumnCount + parameters.inputcolspan?default(1) />
 		<#-- update the value of the controlLayout_currentColumnCount bean on the value stack. -->

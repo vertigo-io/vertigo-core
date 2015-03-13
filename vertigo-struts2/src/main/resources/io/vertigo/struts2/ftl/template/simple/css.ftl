@@ -5,19 +5,19 @@
  */
 -->
 <#assign hasFieldErrors = parameters.name?? && fieldErrors?? && fieldErrors[parameters.name]??/>
-<#if parameters.cssClass?has_content || (hasFieldErrors && parameters.cssErrorClass?has_content) || (appendedCssClass?has_content) >
+<#if parameters.cssClass?has_content || hasFieldErrors || (appendedCssClass?has_content) >
  class="<#rt/>
 </#if>
 <#if parameters.cssClass?has_content>
  ${parameters.cssClass?html}<#rt/>
 </#if>
-<#if (hasFieldErrors && parameters.cssErrorClass?has_content)>
- ${parameters.cssErrorClass?html}<#rt/>
+<#if hasFieldErrors >
+ ${parameters.cssErrorClass!' error'?html}<#rt/>
 </#if>
 <#if (appendedCssClass?has_content)>
  ${appendedCssClass?trim?html}<#rt/>
 </#if>
-<#if parameters.cssClass?has_content || (hasFieldErrors && parameters.cssErrorClass?has_content) || (appendedCssClass?has_content) >
+<#if parameters.cssClass?has_content || hasFieldErrors || (appendedCssClass?has_content) >
 "<#rt/>
 </#if>
 <#if parameters.cssStyle?has_content && !(hasFieldErrors && (parameters.cssErrorStyle?has_content || parameters.cssErrorClass?has_content))>

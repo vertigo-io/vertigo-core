@@ -27,11 +27,11 @@
 <#if parameters.tabindex?has_content>
  tabindex="${parameters.tabindex?html}"<#rt/>
 </#if>
-<#if parameters.id??has_content>
+<#if parameters.id?has_content>
  id="${parameters.id?html}"<#rt/>
 </#if>
 <#include "/${parameters.templateDir}/${parameters.expandTheme}/css.ftl" />
-<#if parameters.title??has_content>
+<#if parameters.title?has_content>
  title="${parameters.title?html}"<#rt/>
 </#if>
 <#include "/${parameters.templateDir}/${parameters.expandTheme}/scripting-events.ftl" />

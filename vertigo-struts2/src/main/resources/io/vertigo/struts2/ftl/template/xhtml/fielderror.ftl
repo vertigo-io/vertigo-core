@@ -76,6 +76,7 @@
         	<span class="message"><#if parameters.escape>${eEachValue!?html}<#else>${eEachValue!}</#if></span><#t/>
       	</li><#rt/>
             </#list>
+		</#list>
 	</ul>
     </#if>
 </#if>
