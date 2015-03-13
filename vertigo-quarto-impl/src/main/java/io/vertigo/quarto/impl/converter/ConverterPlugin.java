@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.impl.converter;
 
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Plugin;
 
 /**
@@ -34,6 +34,6 @@ public interface ConverterPlugin extends Plugin {
 	 * @param targetFormat Type de document de sortie ODT,RTF,DOC,CSV,PDF
 	 * @return Fichier converti
 	 */
-	KFile convertToFormat(final KFile file, final String targetFormat);
+	VFile convertToFormat(final VFile file, final String targetFormat);
 
 }

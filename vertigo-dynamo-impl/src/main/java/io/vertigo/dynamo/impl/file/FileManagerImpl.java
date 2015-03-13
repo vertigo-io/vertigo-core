@@ -20,7 +20,7 @@ package io.vertigo.dynamo.impl.file;
 
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.dynamo.impl.file.model.FSFile;
@@ -41,31 +41,31 @@ import javax.activation.MimetypesFileTypeMap;
 public final class FileManagerImpl implements FileManager {
 	/** {@inheritDoc} */
 	@Override
-	public File obtainReadOnlyFile(final KFile file) {
+	public File obtainReadOnlyFile(final VFile file) {
 		return doObtainReadOnlyFile(file);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public KFile createFile(final String fileName, final String typeMime, final File file) {
+	public VFile createFile(final String fileName, final String typeMime, final File file) {
 		return new FSFile(fileName, typeMime, file);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public KFile createFile(final File file) {
+	public VFile createFile(final File file) {
 		return new FSFile(file.getName(), new MimetypesFileTypeMap().getContentType(file), file);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public KFile createFile(final String fileName, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
+	public VFile createFile(final String fileName, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
 		return createFile(fileName, new MimetypesFileTypeMap().getContentType(fileName), lastModified, length, inputStreamBuilder);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public KFile createFile(final String fileName, final String mimeType, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
+	public VFile createFile(final String fileName, final String mimeType, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
 		return new StreamFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
 	}
 
@@ -75,7 +75,7 @@ public final class FileManagerImpl implements FileManager {
 	 * @param fileInfo FileInfo à utiliser
 	 * @return Fichier temporaire.
 	 */
-	private static File createTempFile(final KFile fileInfo) {
+	private static File createTempFile(final VFile fileInfo) {
 		// TODO voir a ajouter une WeakRef sur FileInfo pour vérifier la suppression des fichiers temp après usage
 		try {
 			return doCreateTempFile(fileInfo);
@@ -84,7 +84,7 @@ public final class FileManagerImpl implements FileManager {
 		}
 	}
 
-	private static File doCreateTempFile(final KFile fileInfo) throws IOException {
+	private static File doCreateTempFile(final VFile fileInfo) throws IOException {
 		final File tmpFile = new TempFile("fileInfo", '.' + FileUtil.getFileExtension(fileInfo.getFileName()));
 		try (final InputStream inputStream = fileInfo.createInputStream()) {
 			FileUtil.copy(inputStream, tmpFile);
@@ -96,7 +96,7 @@ public final class FileManagerImpl implements FileManager {
 	 * @param fileInfo FileInfo à lire
 	 * @return Fichier physique readOnly (pour lecture d'un FileInfo)
 	 */
-	private static File doObtainReadOnlyFile(final KFile fileInfo) {
+	private static File doObtainReadOnlyFile(final VFile fileInfo) {
 		final File inputFile;
 		if (fileInfo instanceof FSFile) {
 			inputFile = ((FSFile) fileInfo).getFile();

@@ -20,7 +20,7 @@ package io.vertigo.tempo.mail;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VUserException;
 
@@ -280,7 +280,7 @@ public final class MailManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test(expected = NullPointerException.class)
 	public void testWritableMailErrorsWithNullAttachment() {
-		final KFile files = null;
+		final VFile files = null;
 
 		final Mail mail = new MailBuilder()
 				.withSubject("-5-testWritableMailErrors")
@@ -496,7 +496,7 @@ public final class MailManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testSendMailWithPJ() {
-		final KFile image = TestUtil.createKFile(fileManager, "data/logo.jpg", getClass());
+		final VFile image = TestUtil.createVFile(fileManager, "data/logo.jpg", getClass());
 
 		final Mail mail = new MailBuilder()
 				.from(DT_MAIL)
@@ -518,8 +518,8 @@ public final class MailManagerTest extends AbstractTestCaseJU4 {
 				.to(NPI_MAIL)
 				.withSubject("9-testSendMailWithOneContentTwoPJ")
 				.withTextContent("Mon test en <b>TEXT</b>")
-				.withAttachments(TestUtil.createKFile(fileManager, "data/logo.jpg", getClass()))
-				.withAttachments(TestUtil.createKFile(fileManager, "data/test.txt", getClass()))
+				.withAttachments(TestUtil.createVFile(fileManager, "data/logo.jpg", getClass()))
+				.withAttachments(TestUtil.createVFile(fileManager, "data/test.txt", getClass()))
 				.build();
 		mailManager.sendMail(mail);
 	}
@@ -541,8 +541,8 @@ public final class MailManagerTest extends AbstractTestCaseJU4 {
 				.to("Philippe Chretien (cc)<pchretien@kleegroup.com>")
 				.to("Denis Challas (cc)<dchallas@kleegroup.com>")
 
-				.withAttachments(TestUtil.createKFile(fileManager, "data/logo.jpg", getClass()))
-				.withAttachments(TestUtil.createKFile(fileManager, "data/test.txt", getClass()))
+				.withAttachments(TestUtil.createVFile(fileManager, "data/logo.jpg", getClass()))
+				.withAttachments(TestUtil.createVFile(fileManager, "data/test.txt", getClass()))
 				.build();
 		mailManager.sendMail(mail);
 	}

@@ -18,7 +18,7 @@
  */
 package io.vertigo.struts2.core;
 
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 
 import java.io.BufferedInputStream;
@@ -35,7 +35,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author npiedeloup
  */
-public final class KFileResponseBuilder {
+public final class VFileResponseBuilder {
 	private static final String NOT_ALLOWED_IN_FILENAME = "\\/:*?\"<>|;";
 
 	private final HttpServletRequest httpRequest;
@@ -46,7 +46,7 @@ public final class KFileResponseBuilder {
 	 * @param httpRequest ServletRequest
 	 * @param httpResponse ServletResponse
 	 */
-	public KFileResponseBuilder(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
+	public VFileResponseBuilder(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
 		Assertion.checkNotNull(httpRequest);
 		Assertion.checkNotNull(httpResponse);
 		//-----
@@ -56,38 +56,38 @@ public final class KFileResponseBuilder {
 
 	/**
 	 * Envoi les données au client sous forme d'attachment.
-	 * @param kFile Fichier a envoyer
+	 * @param VFile Fichier a envoyer
 	 */
-	public void send(final KFile kFile) {
-		send(kFile, true);
+	public void send(final VFile VFile) {
+		send(VFile, true);
 	}
 
 	/**
 	 * Envoi les données au client sous forme de stream.
-	 * @param kFile Fichier a envoyer
+	 * @param VFile Fichier a envoyer
 	 */
-	public void sendAsStream(final KFile kFile) {
-		send(kFile, false);
+	public void sendAsStream(final VFile VFile) {
+		send(VFile, false);
 	}
 
-	private String send(final KFile kFile, final boolean attachment) {
+	private String send(final VFile VFile, final boolean attachment) {
 		try {
-			doSend(kFile, attachment);
+			doSend(VFile, attachment);
 		} catch (final IOException e) {
 			handleException(e);
 		}
 		return null;
 	}
 
-	private void doSend(final KFile kFile, final boolean attachment) throws IOException {
-		final Long length = kFile.getLength();
+	private void doSend(final VFile VFile, final boolean attachment) throws IOException {
+		final Long length = VFile.getLength();
 		Assertion.checkArgument(length.longValue() < Integer.MAX_VALUE, "Le fichier est trop gros pour être envoyé. Il fait " + length.longValue() / 1024 + " Ko, mais le maximum acceptable est de " + (Integer.MAX_VALUE / 1024) + " Ko.");
 		httpResponse.setContentLength(length.intValue());
-		httpResponse.addHeader("Content-Disposition", encodeFileNameToContentDisposition(httpRequest, kFile.getFileName(), attachment));
-		httpResponse.setDateHeader("Last-Modified", kFile.getLastModified().getTime());
-		httpResponse.setContentType(kFile.getMimeType());
+		httpResponse.addHeader("Content-Disposition", encodeFileNameToContentDisposition(httpRequest, VFile.getFileName(), attachment));
+		httpResponse.setDateHeader("Last-Modified", VFile.getLastModified().getTime());
+		httpResponse.setContentType(VFile.getMimeType());
 
-		try (final InputStream input = kFile.createInputStream()) {
+		try (final InputStream input = VFile.createInputStream()) {
 			try (final BufferedInputStream bInput = new BufferedInputStream(input)) {
 				try (final OutputStream output = httpResponse.getOutputStream()) {
 					copy(bInput, output);

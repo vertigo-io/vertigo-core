@@ -20,7 +20,7 @@ package io.vertigo.tempo.plugins.mail.javaxmail;
 
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Describable;
 import io.vertigo.lang.MessageKey;
@@ -142,7 +142,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 			}
 			message.setHeader("X-Mailer", "Java");
 			message.setSentDate(new Date());
-			final List<KFile> attachments = mail.getAttachments();
+			final List<VFile> attachments = mail.getAttachments();
 			if (attachments.isEmpty()) {
 				setBodyContent(mail.getTextContent(), mail.getHtmlContent(), message);
 			} else {
@@ -150,8 +150,8 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 				final BodyPart bodyPart = new MimeBodyPart();
 				setBodyContent(mail.getTextContent(), mail.getHtmlContent(), bodyPart);
 				multiPart.addBodyPart(bodyPart);
-				for (final KFile kFile : attachments) {
-					final BodyPart bodyFile = createBodyFile(kFile);
+				for (final VFile VFile : attachments) {
+					final BodyPart bodyFile = createBodyFile(VFile);
 					multiPart.addBodyPart(bodyFile);
 				}
 				message.setContent(multiPart);
@@ -247,12 +247,12 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		}
 	}
 
-	private BodyPart createBodyFile(final KFile kFile) throws MessagingException {
+	private BodyPart createBodyFile(final VFile VFile) throws MessagingException {
 		try {
-			final File file = fileManager.obtainReadOnlyFile(kFile);
+			final File file = fileManager.obtainReadOnlyFile(VFile);
 			final MimeBodyPart bodyFile = new MimeBodyPart();
 			bodyFile.attachFile(file);
-			bodyFile.setFileName(kFile.getFileName());
+			bodyFile.setFileName(VFile.getFileName());
 			return bodyFile;
 		} catch (final IOException e) {
 			throw new RuntimeException("Erreur de lecture des pieces jointes");

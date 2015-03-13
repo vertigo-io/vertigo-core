@@ -19,7 +19,7 @@
 package io.vertigo.vega.rest;
 
 import io.vertigo.core.Home.App;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.util.ListBuilder;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.vega.impl.rest.filter.JettyMultipartConfig;
@@ -1376,7 +1376,7 @@ public final class RestManagerTest {
 	}
 
 	@POST("/uploadFile")
-	public KFile testUploadFile(final @QueryParam("upfile") KFile inputFile, //
+	public VFile testUploadFile(final @QueryParam("upfile") VFile inputFile, //
 			final @QueryParam("id") Integer id, //
 			final @QueryParam("note") String note) {
 

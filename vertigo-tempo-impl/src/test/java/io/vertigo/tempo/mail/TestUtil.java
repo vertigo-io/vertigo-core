@@ -19,7 +19,7 @@
 package io.vertigo.tempo.mail;
 
 import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.lang.Assertion;
@@ -43,12 +43,12 @@ public final class TestUtil {
 	}
 
 	/**
-	 * Crée un KFile relativement d'un class de base.
+	 * Crée un VFile relativement d'un class de base.
 	 * @param fileName Nom/path du fichier
 	 * @param baseClass Class de base pour le chemin relatif
-	 * @return KFile
+	 * @return VFile
 	 */
-	public static KFile createKFile(final FileManager fileManager, final String fileName, final Class<?> baseClass) {
+	public static VFile createVFile(final FileManager fileManager, final String fileName, final Class<?> baseClass) {
 		try (final InputStream in = baseClass.getResourceAsStream(fileName)) {
 			Assertion.checkNotNull(in, "fichier non trouvé : {0}", fileName);
 			final File file = new TempFile("tmp", '.' + FileUtil.getFileExtension(fileName));

@@ -18,7 +18,7 @@
  */
 package io.vertigo.tempo.mail;
 
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 
@@ -39,7 +39,7 @@ public class MailBuilder implements Builder<Mail> {
 
 	private final List<String> myToAddresses = new ArrayList<>();
 	private final List<String> myCcAddresses = new ArrayList<>();
-	private final List<KFile> myAttachments = new ArrayList<>();
+	private final List<VFile> myAttachments = new ArrayList<>();
 
 	/**
 	 * Set subject.
@@ -141,10 +141,10 @@ public class MailBuilder implements Builder<Mail> {
 	 * @param files Files to attach (one or more)
 	 * @return MailBuilder
 	 */
-	public MailBuilder withAttachments(final KFile... files) {
+	public MailBuilder withAttachments(final VFile... files) {
 		Assertion.checkNotNull(files);
 		//-----
-		for (final KFile attachment : files) {
+		for (final VFile attachment : files) {
 			Assertion.checkNotNull(attachment);
 			myAttachments.add(attachment);
 		}

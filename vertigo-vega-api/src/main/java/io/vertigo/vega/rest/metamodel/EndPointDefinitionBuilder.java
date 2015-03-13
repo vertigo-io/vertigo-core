@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.rest.metamodel;
 
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.util.StringUtil;
@@ -250,7 +250,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 
 	private String computeAcceptedType() {
 		for (final EndPointParam endPointParam : myEndPointParams) {
-			if (KFile.class.isAssignableFrom(endPointParam.getType())) {
+			if (VFile.class.isAssignableFrom(endPointParam.getType())) {
 				return "multipart/form-data";
 			} else if (endPointParam.getParamType() == RestParamType.Query) {
 				if (myVerb != Verb.GET) {//if GET => nothing

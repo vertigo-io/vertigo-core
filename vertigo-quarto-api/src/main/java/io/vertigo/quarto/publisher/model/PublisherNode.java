@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.publisher.model;
 
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.quarto.publisher.metamodel.PublisherField;
@@ -124,8 +124,8 @@ public final class PublisherNode implements Serializable {
 	 * @param fieldName Code de l'image
 	 * @return Image portée par ce champ
 	 */
-	public KFile getImage(final String fieldName) {
-		return getValue(fieldName, PublisherFieldType.Image, KFile.class);
+	public VFile getImage(final String fieldName) {
+		return getValue(fieldName, PublisherFieldType.Image, VFile.class);
 	}
 
 	/**
@@ -198,7 +198,7 @@ public final class PublisherNode implements Serializable {
 	 * @param fieldName Code de l'image, tel qu'on le retrouve dans le modèle
 	 * @param image Fichier image
 	 */
-	public void setImage(final String fieldName, final KFile image) {
+	public void setImage(final String fieldName, final VFile image) {
 		setValue(fieldName, PublisherFieldType.Image, image);
 	}
 
@@ -240,8 +240,8 @@ public final class PublisherNode implements Serializable {
 				sb.append("\n\t").append(tab);
 				sb.append(((PublisherNode) data).toString(tab + "\t"));
 				sb.append(" }");
-			} else if (data instanceof KFile) {
-				sb.append("KFile ").append(((KFile) data).getFileName());
+			} else if (data instanceof VFile) {
+				sb.append("VFile ").append(((VFile) data).getFileName());
 			} else if (data instanceof List) {
 				sb.append(" {");
 				for (final PublisherNode publisherNode : (List<PublisherNode>) data) {

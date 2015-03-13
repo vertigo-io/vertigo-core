@@ -179,8 +179,8 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 		for (final EndPointParam endPointParam : routeContext.getEndPointDefinition().getEndPointParams()) {
 			try {
 				final Object value;
-				if (KFileUtil.isKFileParam(endPointParam)) {
-					value = KFileUtil.readKFileParam(request, endPointParam);
+				if (VFileUtil.isVFileParam(endPointParam)) {
+					value = VFileUtil.readVFileParam(request, endPointParam);
 				} else {
 					switch (endPointParam.getParamType()) {
 						case Body:
@@ -224,8 +224,8 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 		if (result == null) {
 			response.status(HttpServletResponse.SC_NO_CONTENT);
 			return ""; //jetty understand null as 404 not found
-		} else if (KFileUtil.isKFileResult(result)) {
-			KFileUtil.sendKFile(result, request, response);
+		} else if (VFileUtil.isVFileResult(result)) {
+			VFileUtil.sendVFile(result, request, response);
 			return ""; // response already send but can't send null : javaspark understand it as : not consumed here
 		} else if (result instanceof HttpServletResponse) {
 			Assertion.checkState(((HttpServletResponse) result).isCommitted(), "The httpResponse returned wasn't close. Ensure you have close your streams.");

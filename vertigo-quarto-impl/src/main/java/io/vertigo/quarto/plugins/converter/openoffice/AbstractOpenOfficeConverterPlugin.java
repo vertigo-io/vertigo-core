@@ -19,7 +19,7 @@
 package io.vertigo.quarto.plugins.converter.openoffice;
 
 import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
@@ -96,13 +96,13 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 
 	/** {@inheritDoc} */
 	@Override
-	public final KFile convertToFormat(final KFile file, final String targetFormat) {
+	public final VFile convertToFormat(final VFile file, final String targetFormat) {
 		Assertion.checkArgNotEmpty(targetFormat);
 		//-----
 		return convertToFormat(file, ConverterFormat.find(targetFormat));
 	}
 
-	private KFile convertToFormat(final KFile file, final ConverterFormat targetFormat) {
+	private VFile convertToFormat(final VFile file, final ConverterFormat targetFormat) {
 		Assertion.checkNotNull(file);
 		Assertion.checkNotNull(targetFormat);
 		// si le format de sortie est celui d'entrée la convertion est inutile

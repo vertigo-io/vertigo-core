@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.plugins.persistence.filestore.db;
 
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
 
 /**
@@ -32,9 +32,9 @@ final class DatabaseFileInfo extends AbstractFileInfo {
 	/**
 	 * Constructeur.
 	 * @param fileInfoDefinition Définition du FileInfo
-	 * @param kFile Fichier sous jacent
+	 * @param VFile Fichier sous jacent
 	 */
-	protected DatabaseFileInfo(final FileInfoDefinition fileInfoDefinition, final KFile kFile) {
-		super(fileInfoDefinition, kFile);
+	protected DatabaseFileInfo(final FileInfoDefinition fileInfoDefinition, final VFile VFile) {
+		super(fileInfoDefinition, VFile);
 	}
 }

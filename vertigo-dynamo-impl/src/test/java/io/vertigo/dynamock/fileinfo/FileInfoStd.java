@@ -19,7 +19,7 @@
 package io.vertigo.dynamock.fileinfo;
 
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
 
 /**
@@ -32,10 +32,10 @@ public final class FileInfoStd extends AbstractFileInfo {
 
 	/**
 	 * Constructeur par défaut.
-	 * @param kFile Données du fichier
+	 * @param VFile Données du fichier
 	 */
-	public FileInfoStd(final KFile kFile) {
-		super(FileInfoDefinition.findFileInfoDefinition(FileInfoStd.class), kFile);
+	public FileInfoStd(final VFile VFile) {
+		super(FileInfoDefinition.findFileInfoDefinition(FileInfoStd.class), VFile);
 	}
 }
 

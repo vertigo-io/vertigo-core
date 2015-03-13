@@ -32,7 +32,7 @@ public interface FileStore {
 	 * Peut-être null.
 	 *
 	 * @param uri FileURI du fichier à charger
-	 * @return KFileInfo correspondant à l'URI fournie.
+	 * @return VFileInfo correspondant à l'URI fournie.
 	 */
 	FileInfo load(FileInfoURI uri);
 

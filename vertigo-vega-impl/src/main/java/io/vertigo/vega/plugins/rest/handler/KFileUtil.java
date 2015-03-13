@@ -21,7 +21,7 @@ package io.vertigo.vega.plugins.rest.handler;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
 
@@ -42,11 +42,11 @@ import spark.Response;
 /**
  * @author npiedeloup
  */
-final class KFileUtil {
-	private static final Logger LOG = Logger.getLogger(KFileUtil.class);
+final class VFileUtil {
+	private static final Logger LOG = Logger.getLogger(VFileUtil.class);
 	private static final String NOT_ALLOWED_IN_FILENAME = "\\/:*?\"<>|;";
 
-	private KFileUtil() {
+	private VFileUtil() {
 		//nothing
 	}
 
@@ -61,18 +61,18 @@ final class KFileUtil {
 
 	/**
 	 * @param endPointParam EndPoint param
-	 * @return If this is a KFile param
+	 * @return If this is a VFile param
 	 */
-	static boolean isKFileParam(final EndPointParam endPointParam) {
-		return KFile.class.isAssignableFrom(endPointParam.getType());
+	static boolean isVFileParam(final EndPointParam endPointParam) {
+		return VFile.class.isAssignableFrom(endPointParam.getType());
 	}
 
 	/**
 	 * @param request Request
 	 * @param endPointParam EndPoint param
-	 * @return All KFile informations
+	 * @return All VFile informations
 	 */
-	static KFile readKFileParam(final Request request, final EndPointParam endPointParam) {
+	static VFile readVFileParam(final Request request, final EndPointParam endPointParam) {
 		switch (endPointParam.getParamType()) {
 			case Query:
 				return readQueryFile(request, endPointParam);
@@ -88,10 +88,10 @@ final class KFileUtil {
 
 	/**
 	 * @param result WebService result
-	 * @return if result is a KFile
+	 * @return if result is a VFile
 	 */
-	static boolean isKFileResult(final Object result) {
-		return result instanceof KFile;
+	static boolean isVFileResult(final Object result) {
+		return result instanceof VFile;
 	}
 
 	/**
@@ -99,11 +99,11 @@ final class KFileUtil {
 	 * @param request Request
 	 * @param response Response
 	 */
-	static void sendKFile(final Object result, final Request request, final Response response) {
-		sendKFile((KFile) result, true, response);
+	static void sendVFile(final Object result, final Request request, final Response response) {
+		sendVFile((VFile) result, true, response);
 	}
 
-	private static void sendKFile(final KFile result, final boolean attachment, final Response response) {
+	private static void sendVFile(final VFile result, final boolean attachment, final Response response) {
 		try {
 			send(result, attachment, response);
 		} catch (final IOException e) {
@@ -112,7 +112,7 @@ final class KFileUtil {
 		// response already send
 	}
 
-	private static KFile readQueryFile(final Request request, final EndPointParam endPointParam) {
+	private static VFile readQueryFile(final Request request, final EndPointParam endPointParam) {
 		try {
 			Assertion.checkArgument(request.contentType().contains("multipart/form-data"), "File {0} not found. Request contentType isn't \"multipart/form-data\"", endPointParam.getName());
 			Assertion.checkArgument(!request.raw().getParts().isEmpty(), "File {0} not found. Request is multipart but there is no Parts. : Check you have defined MultipartConfig (example for Tomcat set allowCasualMultipartParsing=\"true\" on context tag in your context definition, for Jetty use JettyMultipartConfig)", endPointParam.getName());
@@ -126,25 +126,25 @@ final class KFileUtil {
 				}
 				throw new IllegalArgumentException("File " + endPointParam.getName() + " not found. Parts sent : " + sb.toString());
 			}
-			return createKFile(file);
+			return createVFile(file);
 		} catch (IOException | ServletException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private static void send(final KFile kFile, final boolean isAttachment, final Response response)
+	private static void send(final VFile VFile, final boolean isAttachment, final Response response)
 			throws IOException {
-		final Long length = kFile.getLength();
+		final Long length = VFile.getLength();
 		Assertion.checkArgument(length.longValue() < Integer.MAX_VALUE, "Too big file to be send. It's "
 				+ length.longValue() / 1024 + " Ko long, but maximum was " + (Integer.MAX_VALUE / 1024)
 				+ " Ko.");
 		response.header("Content-Length", String.valueOf(length.intValue()));
 		response.header("Content-Disposition",
-				encodeFileNameToContentDisposition(kFile.getFileName(), isAttachment));
-		response.raw().addDateHeader("Last-Modified", kFile.getLastModified().getTime());
-		response.type(kFile.getMimeType());
+				encodeFileNameToContentDisposition(VFile.getFileName(), isAttachment));
+		response.raw().addDateHeader("Last-Modified", VFile.getLastModified().getTime());
+		response.type(VFile.getMimeType());
 
-		try (final InputStream input = kFile.createInputStream()) {
+		try (final InputStream input = VFile.createInputStream()) {
 			try (final OutputStream output = response.raw().getOutputStream()) {
 				copy(input, output);
 			}
@@ -215,7 +215,7 @@ final class KFileUtil {
 		return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9';
 	}
 
-	private static KFile createKFile(final Part file) {
+	private static VFile createVFile(final Part file) {
 		final String fileName = getSubmittedFileName(file);
 		String mimeType = file.getContentType();
 		if (mimeType == null) {

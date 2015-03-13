@@ -22,7 +22,7 @@ import io.vertigo.core.spaces.definiton.DefinitionReference;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.file.model.FileInfo;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -31,7 +31,7 @@ import io.vertigo.lang.Assertion;
  */
 public abstract class AbstractFileInfo implements FileInfo {
 	private static final long serialVersionUID = 1L;
-	private final KFile kFile;
+	private final VFile VFile;
 	private final DefinitionReference<FileInfoDefinition> fileInfoDefinitionRef;
 	private FileInfoURI uri;
 
@@ -39,14 +39,14 @@ public abstract class AbstractFileInfo implements FileInfo {
 	 * Constructeur.
 	 * Associe un fichier à des méta-données
 	 * @param fileInfoDefinition Definition du FileInfo
-	 * @param kFile Données du fichier
+	 * @param VFile Données du fichier
 	*/
-	protected AbstractFileInfo(final FileInfoDefinition fileInfoDefinition, final KFile kFile) {
+	protected AbstractFileInfo(final FileInfoDefinition fileInfoDefinition, final VFile VFile) {
 		Assertion.checkNotNull(fileInfoDefinition);
-		Assertion.checkNotNull(kFile);
+		Assertion.checkNotNull(VFile);
 		//-----
 		this.fileInfoDefinitionRef = new DefinitionReference<>(fileInfoDefinition);
-		this.kFile = kFile;
+		this.VFile = VFile;
 	}
 
 	/** {@inheritDoc} */
@@ -73,7 +73,7 @@ public abstract class AbstractFileInfo implements FileInfo {
 
 	/** {@inheritDoc} */
 	@Override
-	public final KFile getKFile() {
-		return kFile;
+	public final VFile getVFile() {
+		return VFile;
 	}
 }

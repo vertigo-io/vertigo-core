@@ -20,7 +20,7 @@ package io.vertigo.quarto.publisher.impl;
 
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.publisher.PublisherManager;
 import io.vertigo.quarto.publisher.model.PublisherData;
@@ -57,7 +57,7 @@ public final class PublisherManagerImpl implements PublisherManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public KFile publish(final String fileName, final URL modelFileURL, final PublisherData data) {
+	public VFile publish(final String fileName, final URL modelFileURL, final PublisherData data) {
 		Assertion.checkNotNull(fileName);
 		Assertion.checkNotNull(modelFileURL);
 		Assertion.checkNotNull(data);
@@ -70,7 +70,7 @@ public final class PublisherManagerImpl implements PublisherManager {
 		}
 	}
 
-	private KFile generateFile(final String fileName, final URL modelFileURL, final PublisherData data) throws IOException {
+	private VFile generateFile(final String fileName, final URL modelFileURL, final PublisherData data) throws IOException {
 		// attention : pour ce generateFile le File retourné n'a pas le nom de fichier donné dans
 		// mergeParameter.getOuputFileName() car on utilise cette méthode notamment dans send
 		// ci-dessus pour plusieurs utilisateurs simultanément avec probablement le même

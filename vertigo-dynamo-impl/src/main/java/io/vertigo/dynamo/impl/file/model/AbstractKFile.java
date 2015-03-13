@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.impl.file.model;
 
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 
 import java.util.Date;
@@ -27,7 +27,7 @@ import java.util.Date;
  * Class générique de définition d'un fichier.
  * @author npiedeloup
  */
-abstract class AbstractKFile implements KFile {
+abstract class AbstractVFile implements VFile {
 	private static final long serialVersionUID = 1L;
 	private final String fileName;
 	private final String mimeType;
@@ -42,7 +42,7 @@ abstract class AbstractKFile implements KFile {
 	 * @param lastModified Date de derniére modification du fichier
 	 * @param length Longueur du fichier (en octet)
 	 */
-	protected AbstractKFile(final String fileName, final String mimeType, final Date lastModified, final long length) {
+	protected AbstractVFile(final String fileName, final String mimeType, final Date lastModified, final long length) {
 		Assertion.checkNotNull(fileName);
 		Assertion.checkNotNull(mimeType);
 		Assertion.checkNotNull(lastModified);

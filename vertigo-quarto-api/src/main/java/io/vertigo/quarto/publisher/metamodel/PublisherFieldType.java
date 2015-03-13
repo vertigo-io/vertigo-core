@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.publisher.metamodel;
 
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.publisher.model.PublisherNode;
 
@@ -82,7 +82,7 @@ public enum PublisherFieldType {
 				}
 				return true;
 			case Image:
-				return value instanceof KFile;
+				return value instanceof VFile;
 			case String:
 				return value instanceof String;
 			default:

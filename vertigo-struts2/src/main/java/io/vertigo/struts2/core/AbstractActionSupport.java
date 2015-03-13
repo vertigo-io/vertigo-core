@@ -264,10 +264,10 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	}
 
 	/**
-	 * @return KFileResponseBuilder pour l'envoi de fichier
+	 * @return VFileResponseBuilder pour l'envoi de fichier
 	 */
-	public final KFileResponseBuilder createKFileResponseBuilder() {
-		return new KFileResponseBuilder(ServletActionContext.getRequest(), response);
+	public final VFileResponseBuilder createVFileResponseBuilder() {
+		return new VFileResponseBuilder(ServletActionContext.getRequest(), response);
 	}
 
 	/**

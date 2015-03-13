@@ -22,7 +22,7 @@ import io.vertigo.dynamo.export.ExportManager;
 import io.vertigo.dynamo.export.model.Export;
 import io.vertigo.dynamo.export.model.ExportFormat;
 import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.lang.Assertion;
 
@@ -73,7 +73,7 @@ public final class ExportManagerImpl implements ExportManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public KFile createExportFile(final Export export) {
+	public VFile createExportFile(final Export export) {
 		Assertion.checkNotNull(export);
 		//-----
 		try {
@@ -93,7 +93,7 @@ public final class ExportManagerImpl implements ExportManager {
 	 * @param export Paramètres de l'export
 	 * @throws Exception Exception lors de la création du fichier
 	 */
-	private KFile generateFile(final Export export) throws Exception {
+	private VFile generateFile(final Export export) throws Exception {
 		final ExporterPlugin exporterPlugin = getExporterPlugin(export.getFormat());
 
 		final File file = new TempFile("csvGenerated", "." + export.getFormat().name().toLowerCase());

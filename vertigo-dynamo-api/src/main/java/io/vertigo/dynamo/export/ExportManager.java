@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.export;
 
 import io.vertigo.dynamo.export.model.Export;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Component;
 
 /**
@@ -35,6 +35,6 @@ public interface ExportManager extends Component {
 	 * @param export Config of the export
 	 * @return sFile
 	 */
-	KFile createExportFile(final Export export);
+	VFile createExportFile(final Export export);
 
 }

@@ -30,7 +30,7 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.persistence.filestore.FileStorePlugin;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.lang.Assertion;
@@ -87,16 +87,16 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 		// Ramène FileData
 		final URI<DtObject> dtoDataUri = createDataURI(fileInfoUri.<FileInfoDefinition> getDefinition(), fdtId);
 		final DtObject fileDataDto = getPersistenceManager().getBroker().get(dtoDataUri);
-		// Construction du KFile.
+		// Construction du VFile.
 		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder((DataStream) getValue(fileDataDto, DtoFields.FILE_DATA));
 		final String fileName = (String) getValue(fileMetadataDto, DtoFields.FILE_NAME);
 		final String mimeType = (String) getValue(fileMetadataDto, DtoFields.MIME_TYPE);
 		final Date lastModified = (Date) getValue(fileMetadataDto, DtoFields.LAST_MODIFIED);
 		final Long length = (Long) getValue(fileMetadataDto, DtoFields.LENGTH);
-		final KFile kFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
+		final VFile VFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
 
 		//TODO passer par une factory de FileInfo à partir de la FileInfoDefinition (comme DomainFactory)
-		final FileInfo fileInfo = new DatabaseFileInfo(fileInfoUri.getDefinition(), kFile);
+		final FileInfo fileInfo = new DatabaseFileInfo(fileInfoUri.getDefinition(), VFile);
 		fileInfo.setURIStored(fileInfoUri);
 		return fileInfo;
 	}
@@ -195,19 +195,19 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 
 	private static DtObject createMetadataDtObject(final FileInfo fileInfo) {
 		final DtObject fileMetadataDto = DtObjectUtil.createDtObject(getRootDtDefinition(fileInfo.getDefinition(), 0));
-		final KFile kFile = fileInfo.getKFile();
-		setValue(fileMetadataDto, DtoFields.FILE_NAME, kFile.getFileName());
-		setValue(fileMetadataDto, DtoFields.MIME_TYPE, kFile.getMimeType());
-		setValue(fileMetadataDto, DtoFields.LAST_MODIFIED, kFile.getLastModified());
-		setValue(fileMetadataDto, DtoFields.LENGTH, kFile.getLength());
+		final VFile VFile = fileInfo.getVFile();
+		setValue(fileMetadataDto, DtoFields.FILE_NAME, VFile.getFileName());
+		setValue(fileMetadataDto, DtoFields.MIME_TYPE, VFile.getMimeType());
+		setValue(fileMetadataDto, DtoFields.LAST_MODIFIED, VFile.getLastModified());
+		setValue(fileMetadataDto, DtoFields.LENGTH, VFile.getLength());
 		return fileMetadataDto;
 	}
 
 	private static DtObject createDataDtObject(final FileInfo fileInfo) {
 		final DtObject fileDataDto = DtObjectUtil.createDtObject(getRootDtDefinition(fileInfo.getDefinition(), 1));
-		final KFile kFile = fileInfo.getKFile();
-		setValue(fileDataDto, DtoFields.FILE_NAME, kFile.getFileName());
-		setValue(fileDataDto, DtoFields.FILE_DATA, new FileInfoDataStream(kFile));
+		final VFile VFile = fileInfo.getVFile();
+		setValue(fileDataDto, DtoFields.FILE_NAME, VFile.getFileName());
+		setValue(fileDataDto, DtoFields.FILE_DATA, new FileInfoDataStream(VFile));
 		return fileDataDto;
 	}
 
@@ -238,24 +238,24 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 	}
 
 	private static final class FileInfoDataStream implements DataStream {
-		private final KFile kFile;
+		private final VFile VFile;
 
-		FileInfoDataStream(final KFile kFile) {
-			Assertion.checkNotNull(kFile);
+		FileInfoDataStream(final VFile VFile) {
+			Assertion.checkNotNull(VFile);
 			//-----
-			this.kFile = kFile;
+			this.VFile = VFile;
 		}
 
 		/** {@inheritDoc} */
 		@Override
 		public InputStream createInputStream() throws IOException {
-			return kFile.createInputStream();
+			return VFile.createInputStream();
 		}
 
 		/** {@inheritDoc} */
 		@Override
 		public long getLength() {
-			return kFile.getLength();
+			return VFile.getLength();
 		}
 	}
 

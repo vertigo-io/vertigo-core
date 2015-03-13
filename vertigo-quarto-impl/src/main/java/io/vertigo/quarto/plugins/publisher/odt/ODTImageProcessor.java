@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.plugins.publisher.odt;
 
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.quarto.publisher.impl.merger.processor.MergerProcessor;
 import io.vertigo.quarto.publisher.model.PublisherData;
 
@@ -53,7 +53,7 @@ final class ODTImageProcessor implements MergerProcessor {
 	private static final int IMAGE_FILENAME_GROUP = 8;//(Pictures/[0-9A-F\\.a-z]+)
 	private static final int DUMMY5_GROUP = 9; //(\".*/></draw:frame>)"
 
-	private final Map<String, KFile> newImagesMap = new HashMap<>();
+	private final Map<String, VFile> newImagesMap = new HashMap<>();
 
 	/** {@inheritDoc} */
 	@Override
@@ -66,7 +66,7 @@ final class ODTImageProcessor implements MergerProcessor {
 			final String imageCode = imageMatcher.group(IMAGE_CODE_GROUP); //([A-Z_]+)
 			final String imageFileName = imageMatcher.group(IMAGE_FILENAME_GROUP);//(Pictures/[0-9A-F\\.a-z]+)
 
-			final KFile imageFileInfo = publisherData.getRootNode().getImage(imageCode);
+			final VFile imageFileInfo = publisherData.getRootNode().getImage(imageCode);
 			newImagesMap.put(imageFileName, imageFileInfo);
 
 			//on copie le début (avant le tag image)
@@ -121,11 +121,11 @@ final class ODTImageProcessor implements MergerProcessor {
 	/**
 	 * @return Map des nouveaux fichiers images, avec le path du fichier en clé, et le nouveau FileInfo en value.
 	 */
-	public Map<String, KFile> getNewImageMap() {
+	public Map<String, VFile> getNewImageMap() {
 		return Collections.unmodifiableMap(newImagesMap);
 	}
 
-	private static Dimension getImageSize(final KFile imageFile) throws IOException {
+	private static Dimension getImageSize(final VFile imageFile) throws IOException {
 		final InputStream is = new BufferedInputStream(imageFile.createInputStream());
 		final BufferedImage image = ImageIO.read(is);
 

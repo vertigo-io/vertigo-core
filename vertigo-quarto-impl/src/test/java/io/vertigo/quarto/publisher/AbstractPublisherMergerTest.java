@@ -22,7 +22,7 @@ import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.quarto.publisher.metamodel.PublisherDataDefinition;
 import io.vertigo.quarto.publisher.mock.Address;
@@ -77,7 +77,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 		PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
 
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModel." + getExtension());
-		final KFile result = publisherManager.publish(OUTPUT_PATH + "testFusion." + getExtension(), modelFileURL, publisherData);
+		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusion." + getExtension(), modelFileURL, publisherData);
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
@@ -94,7 +94,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 		publisherData.getRootNode().setString("COMMENTAIRE", " euro:" + (char) 128 + "\n gt:>\n lt:<\n tab:>\t<\n cr:>\n<\n  amp:&\n dquote:\"\n squote:\'\n");
 
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModel." + getExtension());
-		final KFile result = publisherManager.publish(OUTPUT_PATH + "testFusionSpecialsCharacters." + getExtension(), modelFileURL, publisherData);
+		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionSpecialsCharacters." + getExtension(), modelFileURL, publisherData);
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
@@ -108,7 +108,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 		final PublisherData publisherData = createPublisherData("PU_PUBLISHER_MOCK");
 		PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelError." + getExtension());
-		final KFile result = publisherManager.publish(OUTPUT_PATH + "testFusionError." + getExtension(), modelFileURL, publisherData);
+		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionError." + getExtension(), modelFileURL, publisherData);
 		nop(result);
 		Assert.fail("La fusion ne doit pas être possible quand le modèle contient une erreur");
 	}
@@ -120,7 +120,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 		PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
 		publisherData.getRootNode().setString("TITRE", "NOM");
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelIfEquals." + getExtension());
-		final KFile result = publisherManager.publish(OUTPUT_PATH + "testFusionIfEquals." + getExtension(), modelFileURL, publisherData);
+		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionIfEquals." + getExtension(), modelFileURL, publisherData);
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
@@ -135,7 +135,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 		final PublisherData publisherData = createPublisherData("PU_PUBLISHER_MOCK");
 		PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelIfEquals." + getExtension());
-		final KFile result = publisherManager.publish(OUTPUT_PATH + "testFusionIfNotEquals." + getExtension(), modelFileURL, publisherData);
+		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionIfNotEquals." + getExtension(), modelFileURL, publisherData);
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
@@ -177,7 +177,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 		pnEnquete.setNodes("MIS_EN_CAUSE", publisherNodes);
 
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelEnquete." + getExtension());
-		final KFile result = publisherManager.publish(OUTPUT_PATH + "testFusionEnquete." + getExtension(), modelFileURL, publisherData);
+		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionEnquete." + getExtension(), modelFileURL, publisherData);
 		nop(result);
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
@@ -202,7 +202,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 		PublisherDataUtil.populateField(pnEnquete, "MIS_EN_CAUSE", dtcMisEnCause);
 
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelEnquete." + getExtension());
-		final KFile result = publisherManager.publish(OUTPUT_PATH + "testFusionEnquetePerField." + getExtension(), modelFileURL, publisherData);
+		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionEnquetePerField." + getExtension(), modelFileURL, publisherData);
 		nop(result);
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
@@ -217,7 +217,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 		PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
 
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModel2." + getExtension());
-		final KFile result = publisherManager.publish(OUTPUT_PATH + "testFusionBlock." + getExtension(), modelFileURL, publisherData);
+		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionBlock." + getExtension(), modelFileURL, publisherData);
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
@@ -231,12 +231,12 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 	//		final DtObject reportData = createTestPublisher();
 	//		final PublisherDataDtoExtractor dataExtractor = new PublisherDataDtoExtractor(reportData);
 	//
-	//		final KFile image = TestUtil.createKFile("data/logo.jpg", getClass());
+	//		final VFile image = TestUtil.createVFile("data/logo.jpg", getClass());
 	//		final PublisherData publisherData = dataExtractor.getPublisherData();
 	//		publisherData.getRoot().addImage("LOGO", image);
 	//		final PublisherWork publisherWork = publisherManager.createWork("c:/xxx/testFusionImage."+getExtension(), PACKAGE + "/data/ExempleModelImage."+getExtension(), "report", publisherData);
 	//
-	//		final KFile result = workManager.process(publisherWork);
+	//		final VFile result = workManager.process(publisherWork);
 	//		log.trace("testMergerImageJpg result : " + result);
 	//		assertTrue(true);
 	//	}
@@ -247,12 +247,12 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 	//		final DtObject reportData = createTestPublisher();
 	//		final PublisherDataDtoExtractor dataExtractor = new PublisherDataDtoExtractor(reportData);
 	//
-	//		final KFile image = TestUtil.createKFile("data/logoMasque.gif", getClass());
+	//		final VFile image = TestUtil.createVFile("data/logoMasque.gif", getClass());
 	//		final PublisherData publisherData = dataExtractor.getPublisherData();
 	//		publisherData.getRoot().addImage("LOGO", image);
 	//		final PublisherWork publisherWork = publisherManager.createWork("c:/xxx/testFusionImage2."+getExtension(), PACKAGE + "/data/ExempleModelImage2."+getExtension(), "report", publisherData);
 	//
-	//		final KFile result = workManager.process(publisherWork);
+	//		final VFile result = workManager.process(publisherWork);
 	//		log.trace("testMergerImageRatio result : " + result);
 	//		assertTrue(true);
 	//	}
@@ -307,7 +307,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU4 {
 		return publisherData;
 	}
 
-	private static void save(final KFile result) {
+	private static void save(final VFile result) {
 		try {
 			FileUtil.copy(result.createInputStream(), new File(result.getFileName()));
 		} catch (final IOException e) {

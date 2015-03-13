@@ -20,7 +20,7 @@ package io.vertigo.vega.rest.data.ws;
 
 import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.rest.stereotype.GET;
@@ -45,7 +45,7 @@ public final class WsFileDownload implements RestfulService {
 
 	@AnonymousAccessAllowed
 	@GET("/downloadFileContentType")
-	public KFile testDownloadFile(final @QueryParam("id") Integer id) {
+	public VFile testDownloadFile(final @QueryParam("id") Integer id) {
 		final URL imageUrl = resourcetManager.resolve("npi2loup.png");
 		final File imageFile = asFile(imageUrl);
 		return fileManager.createFile("image" + id + generateSpecialChars(id) + ".png", "image/png", imageFile);

@@ -33,7 +33,7 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.FileInfo;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
@@ -351,12 +351,12 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	@Test
 	public void testCreateFile() throws Exception {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final KFile kFile;
+			final VFile VFile;
 			//1.Création du fichier depuis un fichier texte du FS
 
-			kFile = TestUtil.createKFile(fileManager, "data/lautreamont.txt", AbstractPersistenceManagerTest.class);
+			VFile = TestUtil.createVFile(fileManager, "data/lautreamont.txt", AbstractPersistenceManagerTest.class);
 			//2. Sauvegarde en BDD
-			final FileInfo fileInfo = new FileInfoStd(kFile);
+			final FileInfo fileInfo = new FileInfoStd(VFile);
 			persistenceManager.getFileInfoBroker().create(fileInfo);
 
 			//3.relecture du fichier
@@ -366,13 +366,13 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 
 			final String source;
 			try (final OutputStream sourceOS = new java.io.ByteArrayOutputStream()) {
-				FileUtil.copy(kFile.createInputStream(), sourceOS);
+				FileUtil.copy(VFile.createInputStream(), sourceOS);
 				source = sourceOS.toString();
 			}
 
 			final String read;
 			try (final OutputStream readOS = new java.io.ByteArrayOutputStream()) {
-				FileUtil.copy(readFileInfo.getKFile().createInputStream(), readOS);
+				FileUtil.copy(readFileInfo.getVFile().createInputStream(), readOS);
 				read = readOS.toString();
 			}
 			//on vérifie que le contenu des fichiers est identique.

@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.publisher;
 
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Component;
 import io.vertigo.quarto.publisher.model.PublisherData;
 
@@ -38,5 +38,5 @@ public interface PublisherManager extends Component {
 	 * @param data Données à fusionner avec le model
 	 * @return Tache permettant la production d'un document au format passé en paramètre
 	 */
-	KFile publish(String fileName, URL modelFileURL, PublisherData data);
+	VFile publish(String fileName, URL modelFileURL, PublisherData data);
 }

@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.converter;
 
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Component;
 
 /**
@@ -38,5 +38,5 @@ public interface ConverterManager extends Component {
 	 * @param format Format du document à cible
 	 * @return Document converti au format passé en paramètre.
 	 */
-	KFile convert(KFile inputFile, String format);
+	VFile convert(VFile inputFile, String format);
 }

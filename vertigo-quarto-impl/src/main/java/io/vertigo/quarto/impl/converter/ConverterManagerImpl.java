@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.impl.converter;
 
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.converter.ConverterManager;
 
@@ -52,7 +52,7 @@ public final class ConverterManagerImpl implements ConverterManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public KFile convert(final KFile inputFile, final String format) {
+	public VFile convert(final VFile inputFile, final String format) {
 		Assertion.checkNotNull(inputFile);
 		Assertion.checkArgNotEmpty(format);
 		//-----

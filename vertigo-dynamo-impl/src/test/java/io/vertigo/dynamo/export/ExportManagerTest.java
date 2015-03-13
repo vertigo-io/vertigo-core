@@ -25,7 +25,7 @@ import io.vertigo.dynamo.export.data.DtDefinitions.CountryFields;
 import io.vertigo.dynamo.export.model.Export;
 import io.vertigo.dynamo.export.model.ExportBuilder;
 import io.vertigo.dynamo.export.model.ExportFormat;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.MessageText;
 
 import javax.inject.Inject;
@@ -54,7 +54,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test.csv")
 				.beginSheet(dtc, "famille").endSheet()
 				.build();
-		final KFile result = exportManager.createExportFile(export);
+		final VFile result = exportManager.createExportFile(export);
 		nop(result);
 	}
 
@@ -68,7 +68,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test2.csv")
 				.beginSheet(china, "china").endSheet()
 				.build();
-		final KFile result = exportManager.createExportFile(export);
+		final VFile result = exportManager.createExportFile(export);
 		nop(result);
 	}
 
@@ -83,7 +83,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 				.beginSheet(china, "china").withField(CountryFields.NAME).endSheet()
 				.build();
 
-		final KFile result = exportManager.createExportFile(export);
+		final VFile result = exportManager.createExportFile(export);
 		nop(result);
 	}
 
@@ -98,7 +98,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 				.beginSheet(china, "china").withField(CountryFields.NAME, new MessageText("test", null)).endSheet()
 				.build();
 
-		final KFile result = exportManager.createExportFile(export);
+		final VFile result = exportManager.createExportFile(export);
 		nop(result);
 	}
 
@@ -118,7 +118,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 				.endSheet()
 				.build();
 
-		final KFile result = exportManager.createExportFile(export);
+		final VFile result = exportManager.createExportFile(export);
 		nop(result);
 	}
 
@@ -137,7 +137,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 				.beginSheet(germany, "country").withField(CountryFields.ID, dtc, CountryFields.NAME, new MessageText("test", null)).endSheet()
 				.build();
 
-		final KFile result = exportManager.createExportFile(export);
+		final VFile result = exportManager.createExportFile(export);
 		nop(result);
 	}
 
@@ -152,7 +152,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 				.beginSheet(dtc, "famille").endSheet()
 				.build();
 
-		final KFile result = exportManager.createExportFile(export);
+		final VFile result = exportManager.createExportFile(export);
 		nop(result);
 	}
 
@@ -169,7 +169,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 				.beginSheet(dtc, "famille").endSheet()
 				.build();
 
-		final KFile result = exportManager.createExportFile(export);
+		final VFile result = exportManager.createExportFile(export);
 		nop(result);
 	}
 
@@ -185,7 +185,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 				.withAuthor("test")
 				.build();
 
-		final KFile result = exportManager.createExportFile(export);
+		final VFile result = exportManager.createExportFile(export);
 		nop(result);
 	}
 

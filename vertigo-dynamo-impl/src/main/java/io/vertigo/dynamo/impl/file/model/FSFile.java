@@ -28,7 +28,7 @@ import java.util.Date;
  *
  * @author npiedeloup
  */
-public final class FSFile extends AbstractKFile {
+public final class FSFile extends AbstractVFile {
 	private static final long serialVersionUID = 1L;
 	private final File file;
 

@@ -25,7 +25,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
@@ -588,7 +588,7 @@ public final class SwaggerRestServices implements RestfulService {
 			return new String[] { "integer", "int64" };
 		} else if (Date.class.isAssignableFrom(paramClass)) {
 			return new String[] { "string", "date-time" };
-		} else if (KFile.class.isAssignableFrom(paramClass)) {
+		} else if (VFile.class.isAssignableFrom(paramClass)) {
 			return new String[] { "file", null };
 		} else if (List.class.isAssignableFrom(paramClass) || Collection.class.isAssignableFrom(paramClass)) {
 			return new String[] { "array", null };

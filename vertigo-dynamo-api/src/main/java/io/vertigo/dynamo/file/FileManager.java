@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.file;
 
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Component;
 
 import java.io.File;
@@ -32,10 +32,10 @@ import java.util.Date;
 public interface FileManager extends Component {
 
 	/**
-	 * @param kFile KFile à lire
+	 * @param VFile VFile à lire
 	 * @return Fichier physique readOnly (pour lecture d'un FileInfo)
 	 */
-	File obtainReadOnlyFile(final KFile kFile);
+	File obtainReadOnlyFile(final VFile VFile);
 
 	/**
 	 * Crée un Fileinfo temporaire à partir d'un fichier physique.
@@ -45,7 +45,7 @@ public interface FileManager extends Component {
 	 * @param file Fichier physique
 	 * @return FileInfo crée
 	 */
-	KFile createFile(final String fileName, final String typeMime, final File file);
+	VFile createFile(final String fileName, final String typeMime, final File file);
 
 	/**
 	 * Crée un Fileinfo temporaire à partir d'un fichier physique.
@@ -53,7 +53,7 @@ public interface FileManager extends Component {
 	 * @param file Fichier physique
 	 * @return FileInfo crée
 	 */
-	KFile createFile(final File file);
+	VFile createFile(final File file);
 
 	/**
 	 * Crée un Fileinfo temporaire à partir d'un Builder du flux des données.
@@ -65,7 +65,7 @@ public interface FileManager extends Component {
 	 * @param inputStreamBuilder Builder du flux des données
 	 * @return FileInfo crée
 	 */
-	KFile createFile(final String fileName, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder);
+	VFile createFile(final String fileName, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder);
 
 	/**
 	 * Crée un Fileinfo temporaire à partir d'un Builder du flux des données.
@@ -76,6 +76,6 @@ public interface FileManager extends Component {
 	 * @param inputStreamBuilder Builder du flux des données
 	 * @return FileInfo crée
 	 */
-	KFile createFile(final String fileName, final String typeMime, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder);
+	VFile createFile(final String fileName, final String typeMime, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder);
 
 }

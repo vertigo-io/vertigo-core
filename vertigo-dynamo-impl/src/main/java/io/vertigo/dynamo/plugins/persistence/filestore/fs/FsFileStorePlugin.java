@@ -29,7 +29,7 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
 import io.vertigo.dynamo.impl.persistence.filestore.FileStorePlugin;
 import io.vertigo.dynamo.persistence.PersistenceManager;
@@ -123,10 +123,10 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		final String filePath = FsFileStorePlugin.<String> getValue(fileInfoDto, DtoFields.FILE_PATH);
 
 		final InputStreamBuilder inputStreamBuilder = new FileInputStreamBuilder(new File(documentRoot + filePath));
-		final KFile kFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
+		final VFile VFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
 
 		// retourne le fileinfo avec le fichier et son URI
-		final FsFileInfo fsFileInfo = new FsFileInfo(uri.<FileInfoDefinition> getDefinition(), kFile);
+		final FsFileInfo fsFileInfo = new FsFileInfo(uri.<FileInfoDefinition> getDefinition(), VFile);
 		fsFileInfo.setURIStored(uri);
 		return fsFileInfo;
 	}
@@ -134,19 +134,19 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	private static class FsFileInfo extends AbstractFileInfo {
 		private static final long serialVersionUID = -1610176974946554828L;
 
-		protected FsFileInfo(final FileInfoDefinition fileInfoDefinition, final KFile kFile) {
-			super(fileInfoDefinition, kFile);
+		protected FsFileInfo(final FileInfoDefinition fileInfoDefinition, final VFile VFile) {
+			super(fileInfoDefinition, VFile);
 		}
 	}
 
 	private static DtObject createFileInfoDto(final FileInfo fileInfo) {
 		final DtObject fileInfoDto = createDtObject(fileInfo.getDefinition());
 		//-----
-		final KFile kFile = fileInfo.getKFile();
-		setValue(fileInfoDto, DtoFields.FILE_NAME, kFile.getFileName());
-		setValue(fileInfoDto, DtoFields.MIME_TYPE, kFile.getMimeType());
-		setValue(fileInfoDto, DtoFields.LAST_MODIFIED, kFile.getLastModified());
-		setValue(fileInfoDto, DtoFields.LENGTH, kFile.getLength());
+		final VFile VFile = fileInfo.getVFile();
+		setValue(fileInfoDto, DtoFields.FILE_NAME, VFile.getFileName());
+		setValue(fileInfoDto, DtoFields.MIME_TYPE, VFile.getMimeType());
+		setValue(fileInfoDto, DtoFields.LAST_MODIFIED, VFile.getLastModified());
+		setValue(fileInfoDto, DtoFields.LENGTH, VFile.getLength());
 		if (fileInfo.getURI() == null) {
 			// cas de la création, on ajoute en base un chemin fictif (colonne not null)
 			setValue(fileInfoDto, DtoFields.FILE_PATH, "/dev/null");
@@ -164,7 +164,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	}
 
 	private void saveFile(final FileInfo fileInfo, final String pathToSave) {
-		try (InputStream inputStream = fileInfo.getKFile().createInputStream()) {
+		try (InputStream inputStream = fileInfo.getVFile().createInputStream()) {
 			obtainFsTransactionRessource().saveFile(inputStream, documentRoot + pathToSave);
 		} catch (final IOException e) {
 			throw new RuntimeException("Impossible de lire le fichier uploadé.", e);

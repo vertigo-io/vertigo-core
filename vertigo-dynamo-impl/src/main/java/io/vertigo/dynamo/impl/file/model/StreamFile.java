@@ -28,7 +28,7 @@ import java.util.Date;
  *
  * @author npiedeloup
  */
-public final class StreamFile extends AbstractKFile {
+public final class StreamFile extends AbstractVFile {
 	private static final long serialVersionUID = -4565434303879706815L;
 
 	private final InputStreamBuilder inputStreamBuilder;

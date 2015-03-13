@@ -20,7 +20,7 @@ package io.vertigo.quarto.converter;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.lang.Assertion;
@@ -49,7 +49,7 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private FileManager fileManager;
 
-	private KFile resultFile;
+	private VFile resultFile;
 
 	/** {@inheritDoc} */
 	@Override
@@ -71,7 +71,7 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testConvertOdt2Odt() {
-		final KFile inputFile = createKFile(fileManager, "../data/testFile.odt", this.getClass());
+		final VFile inputFile = createVFile(fileManager, "../data/testFile.odt", this.getClass());
 		resultFile = converterManager.convert(inputFile, "ODT");
 
 		log("Odt2Odt", resultFile);
@@ -82,7 +82,7 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testConvertOdt2Doc() {
-		final KFile inputFile = createKFile(fileManager, "../data/testFile.odt", this.getClass());
+		final VFile inputFile = createVFile(fileManager, "../data/testFile.odt", this.getClass());
 		resultFile = converterManager.convert(inputFile, "DOC");
 
 		log("Odt2Doc", resultFile);
@@ -93,7 +93,7 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testConvertOdt2Rtf() {
-		final KFile inputFile = createKFile(fileManager, "../data/testFile.odt", this.getClass());
+		final VFile inputFile = createVFile(fileManager, "../data/testFile.odt", this.getClass());
 		resultFile = converterManager.convert(inputFile, "RTF");
 
 		log("Odt2Rtf", resultFile);
@@ -104,7 +104,7 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testConvertOdt2Pdf() {
-		final KFile inputFile = createKFile(fileManager, "../data/testFile.odt", this.getClass());
+		final VFile inputFile = createVFile(fileManager, "../data/testFile.odt", this.getClass());
 		resultFile = converterManager.convert(inputFile, "PDF");
 
 		log("Odt2Pdf", resultFile);
@@ -115,7 +115,7 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testConvertOdt2Txt() {
-		final KFile inputFile = createKFile(fileManager, "../data/testFile.odt", this.getClass());
+		final VFile inputFile = createVFile(fileManager, "../data/testFile.odt", this.getClass());
 		resultFile = converterManager.convert(inputFile, "TXT");
 
 		log("Odt2Txt", resultFile);
@@ -126,7 +126,7 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testConvertTxt2Odt() {
-		final KFile inputFile = createKFile(fileManager, "../data/testFile.txt", this.getClass());
+		final VFile inputFile = createVFile(fileManager, "../data/testFile.txt", this.getClass());
 		resultFile = converterManager.convert(inputFile, "ODT");
 
 		log("Txt2Odt", resultFile);
@@ -137,7 +137,7 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testConvertTxt2Doc() {
-		final KFile inputFile = createKFile(fileManager, "../data/testFile.txt", this.getClass());
+		final VFile inputFile = createVFile(fileManager, "../data/testFile.txt", this.getClass());
 		resultFile = converterManager.convert(inputFile, "DOC");
 
 		log("Txt2Doc", resultFile);
@@ -148,7 +148,7 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testConvertTxt2Rtf() {
-		final KFile inputFile = createKFile(fileManager, "../data/testFile.txt", this.getClass());
+		final VFile inputFile = createVFile(fileManager, "../data/testFile.txt", this.getClass());
 		resultFile = converterManager.convert(inputFile, "RTF");
 
 		log("Txt2Rtf", resultFile);
@@ -159,7 +159,7 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testConvertTxt2Pdf() {
-		final KFile inputFile = createKFile(fileManager, "../data/testFile.txt", this.getClass());
+		final VFile inputFile = createVFile(fileManager, "../data/testFile.txt", this.getClass());
 		resultFile = converterManager.convert(inputFile, "PDF");
 
 		log("Txt2Pdf", resultFile);
@@ -170,17 +170,17 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testConvertTxt2Txt() {
-		final KFile inputFile = createKFile(fileManager, "../data/testFile.txt", this.getClass());
+		final VFile inputFile = createVFile(fileManager, "../data/testFile.txt", this.getClass());
 		resultFile = converterManager.convert(inputFile, "PDF");
 
 		log("Txt2Txt", resultFile);
 	}
 
-	private void log(final String methode, final KFile kFile) {
-		log.info(methode + " => " + fileManager.obtainReadOnlyFile(kFile).getAbsolutePath());
+	private void log(final String methode, final VFile VFile) {
+		log.info(methode + " => " + fileManager.obtainReadOnlyFile(VFile).getAbsolutePath());
 	}
 
-	private static KFile createKFile(final FileManager fileManager, final String fileName, final Class<?> baseClass) {
+	private static VFile createVFile(final FileManager fileManager, final String fileName, final Class<?> baseClass) {
 		try (final InputStream in = baseClass.getResourceAsStream(fileName)) {
 			Assertion.checkNotNull(in, "fichier non trouvé : {0}", fileName);
 			final File file = new TempFile("tmp", '.' + FileUtil.getFileExtension(fileName));

@@ -54,6 +54,11 @@ public interface VFile extends Serializable {
 	Date getLastModified();
 
 	/**
+	 * @return Type mime du fichier
+	 */
+	String getMimeType();
+
+	/**
 	 * @return Stream représentant le document physique.
 	 * @throws IOException Erreur d'entrée/sortie
 	 */

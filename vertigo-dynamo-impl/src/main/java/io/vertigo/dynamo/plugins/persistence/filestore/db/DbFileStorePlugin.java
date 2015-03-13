@@ -30,7 +30,7 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.persistence.filestore.FileStorePlugin;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.lang.Assertion;
@@ -87,20 +87,20 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 		final String mimeType = (String) getValue(fileInfoDto, DtoFields.MIME_TYPE);
 		final Date lastModified = (Date) getValue(fileInfoDto, DtoFields.LAST_MODIFIED);
 		final Long length = (Long) getValue(fileInfoDto, DtoFields.LENGTH);
-		final KFile kFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
+		final VFile VFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
 		//TODO passer par une factory de FileInfo à partir de la FileInfoDefinition (comme DomainFactory)
-		return new DatabaseFileInfo(uri.<FileInfoDefinition> getDefinition(), kFile);
+		return new DatabaseFileInfo(uri.<FileInfoDefinition> getDefinition(), VFile);
 	}
 
 	private static DtObject createFileInfoDto(final FileInfo fileInfo) {
 		final DtObject fileInfoDto = createDtObject(fileInfo.getDefinition());
 		//-----
-		final KFile kFile = fileInfo.getKFile();
-		setValue(fileInfoDto, DtoFields.FILE_NAME, kFile.getFileName());
-		setValue(fileInfoDto, DtoFields.MIME_TYPE, kFile.getMimeType());
-		setValue(fileInfoDto, DtoFields.LAST_MODIFIED, kFile.getLastModified());
-		setValue(fileInfoDto, DtoFields.LENGTH, kFile.getLength());
-		setValue(fileInfoDto, DtoFields.FILE_DATA, new FileInfoDataStream(kFile));
+		final VFile VFile = fileInfo.getVFile();
+		setValue(fileInfoDto, DtoFields.FILE_NAME, VFile.getFileName());
+		setValue(fileInfoDto, DtoFields.MIME_TYPE, VFile.getMimeType());
+		setValue(fileInfoDto, DtoFields.LAST_MODIFIED, VFile.getLastModified());
+		setValue(fileInfoDto, DtoFields.LENGTH, VFile.getLength());
+		setValue(fileInfoDto, DtoFields.FILE_DATA, new FileInfoDataStream(VFile));
 
 		if (fileInfo.getURI() != null) {
 			setPkValue(fileInfoDto, fileInfo.getURI().getKey());
@@ -212,20 +212,20 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 	}
 
 	private static final class FileInfoDataStream implements DataStream {
-		private final KFile kFile;
+		private final VFile VFile;
 
-		FileInfoDataStream(final KFile kFile) {
-			this.kFile = kFile;
+		FileInfoDataStream(final VFile VFile) {
+			this.VFile = VFile;
 		}
 
 		@Override
 		public InputStream createInputStream() throws IOException {
-			return kFile.createInputStream();
+			return VFile.createInputStream();
 		}
 
 		@Override
 		public long getLength() {
-			return kFile.getLength();
+			return VFile.getLength();
 		}
 	}
 

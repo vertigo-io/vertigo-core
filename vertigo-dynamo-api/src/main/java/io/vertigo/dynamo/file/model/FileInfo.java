@@ -54,5 +54,5 @@ public interface FileInfo extends Serializable {
 	/**
 	 * @return Fichier enrichi
 	 */
-	KFile getKFile();
+	VFile getVFile();
 }

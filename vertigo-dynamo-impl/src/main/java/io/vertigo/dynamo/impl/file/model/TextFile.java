@@ -28,7 +28,7 @@ import java.util.Date;
  *
  * @author npiedeloup
  */
-public final class TextFile extends AbstractKFile {
+public final class TextFile extends AbstractVFile {
 	private static final String TEXT_CHARSET = "UTF8";
 	private static final long serialVersionUID = 1L;
 	private final byte[] contentAsBytes;

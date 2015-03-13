@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.plugins.publisher.odt;
 
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.quarto.publisher.impl.merger.processor.ZipUtil;
 
@@ -94,7 +94,7 @@ final class ODTUtil {
 	 * @return Fichier fusionné
 	 * @throws IOException Si une IOException a lieu
 	 */
-	static File createODT(final ZipFile odtFile, final String contentXml, final String stylesXml, final Map<String, KFile> newImagesMap) throws IOException {
+	static File createODT(final ZipFile odtFile, final String contentXml, final String stylesXml, final Map<String, VFile> newImagesMap) throws IOException {
 		final File resultFile = new TempFile(TEMP_FILE_PREFIX, TEMP_FILE_SUFFIX);
 		try (final ZipOutputStream outputFichierOdt = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(resultFile)))) {
 			for (final ZipEntry zipEntry : Collections.list(odtFile.entries())) {

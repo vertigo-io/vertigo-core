@@ -18,7 +18,7 @@
  */
 package io.vertigo.tempo.mail;
 
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 
 import java.util.Collections;
@@ -45,7 +45,7 @@ public final class Mail {
 
 	private final List<String> toAddresses;
 	private final List<String> ccAddresses;
-	private final List<KFile> attachments;
+	private final List<VFile> attachments;
 
 	/**
 	 * Constructeur utilisé par le Builder.
@@ -58,7 +58,7 @@ public final class Mail {
 	 * @param htmlContent Contenu html
 	 * @param attachments Liste des pièces jointes
 	 */
-	Mail(final String subject, final String replyTo, final String fromAddress, final List<String> toAddresses, final List<String> ccAddresses, final String textContent, final String htmlContent, final List<KFile> attachments) {
+	Mail(final String subject, final String replyTo, final String fromAddress, final List<String> toAddresses, final List<String> ccAddresses, final String textContent, final String htmlContent, final List<VFile> attachments) {
 		Assertion.checkArgNotEmpty(subject, "Sujet du mail obligatoire");
 		//Assertion.notEmpty(replyTo);
 		Assertion.checkArgNotEmpty(fromAddress, "Adresse email de l'émetteur obligatoire");
@@ -130,7 +130,7 @@ public final class Mail {
 	/**
 	 * @return Liste des pièces jointes
 	 */
-	public List<KFile> getAttachments() {
+	public List<VFile> getAttachments() {
 		return attachments;
 	}
 }

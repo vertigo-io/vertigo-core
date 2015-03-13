@@ -31,7 +31,7 @@ import io.vertigo.dynamo.export.model.Export;
 import io.vertigo.dynamo.export.model.ExportBuilder;
 import io.vertigo.dynamo.export.model.ExportFormat;
 import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListChainFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListFilter;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
@@ -175,26 +175,26 @@ public final class WsRestServices implements RestfulService {
 	}
 
 	@GET("/export/pdf/")
-	public KFile testExportContacts() {
+	public VFile testExportContacts() {
 		final DtList<Contact> fullList = asDtList(contactDao.getList(), Contact.class);
 		final Export export = new ExportBuilder(ExportFormat.PDF, "contacts")
 				.beginSheet(fullList, "Contacts").endSheet()
 				.withAuthor("vertigo-test")
 				.build();
 
-		final KFile result = exportManager.createExportFile(export);
+		final VFile result = exportManager.createExportFile(export);
 		//200
 		return result;
 	}
 
 	@GET("/export/pdf/{conId}")
-	public KFile testExportContact(@PathParam("conId") final long conId) {
+	public VFile testExportContact(@PathParam("conId") final long conId) {
 		final Contact contact = contactDao.get(conId);
 		final Export export = new ExportBuilder(ExportFormat.PDF, "contact" + conId)
 				.beginSheet(contact, "Contact").endSheet()
 				.withAuthor("vertigo-test").build();
 
-		final KFile result = exportManager.createExportFile(export);
+		final VFile result = exportManager.createExportFile(export);
 		//200
 		return result;
 	}
@@ -480,7 +480,7 @@ public final class WsRestServices implements RestfulService {
 	}
 
 	@POST("/uploadFile")
-	public KFile testUploadFile(final @QueryParam("upfile") KFile inputFile, //
+	public VFile testUploadFile(final @QueryParam("upfile") VFile inputFile, //
 			final @QueryParam("id") Integer id, //
 			final @QueryParam("note") String note) {
 
@@ -488,18 +488,18 @@ public final class WsRestServices implements RestfulService {
 	}
 
 	@GET("/downloadFile")
-	public KFile testDownloadFile(final @QueryParam("id") Integer id) {
+	public VFile testDownloadFile(final @QueryParam("id") Integer id) {
 		final URL imageUrl = resourcetManager.resolve("npi2loup.png");
 		final File imageFile = asFile(imageUrl);
-		final KFile imageKFile = fileManager.createFile("image" + id + ".png", "image/png", imageFile);
-		return imageKFile;
+		final VFile imageVFile = fileManager.createFile("image" + id + ".png", "image/png", imageFile);
+		return imageVFile;
 	}
 
 	@GET("/downloadNotModifiedFile")
-	public KFile testDownloadNotModifiedFile(final @QueryParam("id") Integer id, final HttpServletResponse response) {
+	public VFile testDownloadNotModifiedFile(final @QueryParam("id") Integer id, final HttpServletResponse response) {
 		response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
 		return null;
-		//this service must declared KFile as return type because it should return KFile when file was modified
+		//this service must declared VFile as return type because it should return VFile when file was modified
 	}
 
 	private File asFile(final URL url) {

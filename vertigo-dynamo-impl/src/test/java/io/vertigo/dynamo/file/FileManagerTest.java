@@ -21,7 +21,7 @@ package io.vertigo.dynamo.file;
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
-import io.vertigo.dynamo.file.model.KFile;
+import io.vertigo.dynamo.file.model.VFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,15 +47,15 @@ public final class FileManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testCreateTempFile() {
 		final File file = TestUtil.getFile("data/testFile.txt", getClass());
-		final KFile kFile = fileManager.createFile(file);
-		checkFile(kFile, "testFile.txt", null, "text/plain", 71092L);
+		final VFile VFile = fileManager.createFile(file);
+		checVFile(VFile, "testFile.txt", null, "text/plain", 71092L);
 	}
 
 	@Test
 	public void testObtainReadOnlyFile() {
 		final File file = TestUtil.getFile("data/testFile.txt", getClass());
-		final KFile kFile = fileManager.createFile(file);
-		checkFile(fileManager.obtainReadOnlyFile(kFile), file);
+		final VFile VFile = fileManager.createFile(file);
+		checVFile(fileManager.obtainReadOnlyFile(VFile), file);
 	}
 
 	@Test
@@ -63,8 +63,8 @@ public final class FileManagerTest extends AbstractTestCaseJU4 {
 		final String fileName = "monTestFile.txt";
 		final String typeMime = "monTypeMime";
 		final File file = TestUtil.getFile("data/testFile.txt", getClass());
-		final KFile kFile = fileManager.createFile(fileName, typeMime, file);
-		checkFile(kFile, fileName, null, typeMime, 71092L);
+		final VFile VFile = fileManager.createFile(fileName, typeMime, file);
+		checVFile(VFile, fileName, null, typeMime, 71092L);
 	}
 
 	@Test
@@ -78,8 +78,8 @@ public final class FileManagerTest extends AbstractTestCaseJU4 {
 				return new StringBufferInputStream("Contenu test");
 			}
 		};
-		final KFile kFile = fileManager.createFile(fileName, lastModified, length, inputStreamBuilder);
-		checkFile(kFile, fileName, lastModified, "text/plain", length);
+		final VFile VFile = fileManager.createFile(fileName, lastModified, length, inputStreamBuilder);
+		checVFile(VFile, fileName, lastModified, "text/plain", length);
 	}
 
 	@Test
@@ -94,26 +94,26 @@ public final class FileManagerTest extends AbstractTestCaseJU4 {
 				return new StringBufferInputStream("Contenu test");
 			}
 		};
-		final KFile kFile = fileManager.createFile(fileName, typeMime, lastModified, length, inputStreamBuilder);
-		checkFile(kFile, fileName, lastModified, typeMime, length);
+		final VFile VFile = fileManager.createFile(fileName, typeMime, lastModified, length, inputStreamBuilder);
+		checVFile(VFile, fileName, lastModified, typeMime, length);
 	}
 
-	private static void checkFile(final KFile kFile, final String fileName, final Date lastModified, final String mimeType, final Long length) {
-		Assert.assertEquals(fileName, kFile.getFileName());
+	private static void checVFile(final VFile VFile, final String fileName, final Date lastModified, final String mimeType, final Long length) {
+		Assert.assertEquals(fileName, VFile.getFileName());
 		if (lastModified != null) { //le lastModified peut être inconnu du test
-			Assert.assertEquals(lastModified, kFile.getLastModified());
+			Assert.assertEquals(lastModified, VFile.getLastModified());
 		}
-		Assert.assertEquals(mimeType, kFile.getMimeType());
-		Assert.assertEquals(length, kFile.getLength(), length * 0.1); //+ or - 10%
+		Assert.assertEquals(mimeType, VFile.getMimeType());
+		Assert.assertEquals(length, VFile.getLength(), length * 0.1); //+ or - 10%
 
 		try {
-			nop(kFile.createInputStream());
+			nop(VFile.createInputStream());
 		} catch (final IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private static void checkFile(final File outFile, final File inFile) {
+	private static void checVFile(final File outFile, final File inFile) {
 		Assert.assertEquals(inFile.getAbsolutePath(), outFile.getAbsolutePath());
 	}
 }
