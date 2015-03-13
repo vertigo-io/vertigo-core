@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.plugins.kvdatastore.berkeley;
 
 import io.vertigo.dynamo.impl.kvdatastore.KVDataStorePlugin;
-import io.vertigo.dynamo.transaction.KTransactionManager;
+import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
@@ -43,10 +43,10 @@ import com.sleepycat.je.EnvironmentConfig;
 public final class BerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activeable {
 	private static final boolean READONLY = false;
 
-	//	private final KTransactionResourceId<LuceneResource> luceneResourceId = new KTransactionResourceId<LuceneResource>(KTransactionResourceId.Priority.NORMAL, "demo-lucene");
+	//	private final VTransactionResourceId<LuceneResource> luceneResourceId = new VTransactionResourceId<LuceneResource>(VTransactionResourceId.Priority.NORMAL, "demo-lucene");
 	//	private final Directory directory;
 	private final String dataStoreName;
-	private final KTransactionManager transactionManager;
+	private final VTransactionManager transactionManager;
 	private final File dbFile;
 	private final boolean inMemory;
 
@@ -60,7 +60,7 @@ public final class BerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activ
 	 * @param transactionManager Manager des transactions
 	 */
 	@Inject
-	public BerkeleyKVDataStorePlugin(final @Named("dataStoreName") String dataStoreName, @Named("fileName") final String dbFileName /*, final LuceneDB luceneDb*/, @Named("inMemory") final boolean inMemory, final KTransactionManager transactionManager) {
+	public BerkeleyKVDataStorePlugin(final @Named("dataStoreName") String dataStoreName, @Named("fileName") final String dbFileName /*, final LuceneDB luceneDb*/, @Named("inMemory") final boolean inMemory, final VTransactionManager transactionManager) {
 		Assertion.checkArgNotEmpty(dataStoreName);
 		Assertion.checkArgNotEmpty(dbFileName);
 		Assertion.checkNotNull(transactionManager);
@@ -114,7 +114,7 @@ public final class BerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activ
 	}
 
 	/*private LuceneResource obtainLuceneResource() {
-		final KTransaction transaction = getTransactionManager().getCurrentTransaction();
+		final VTransaction transaction = getTransactionManager().getCurrentTransaction();
 		final LuceneResource ktr = transaction.getResource(luceneResourceId);
 		if (ktr == null) {
 			//On a rien trouvé il faut créer la resourceLucene et l'ajouter à la transaction

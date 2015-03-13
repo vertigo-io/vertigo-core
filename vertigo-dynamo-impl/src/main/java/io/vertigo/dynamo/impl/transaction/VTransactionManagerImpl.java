@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.impl.transaction;
 
-import io.vertigo.dynamo.impl.transaction.listener.KTransactionListener;
-import io.vertigo.dynamo.impl.transaction.listener.KTransactionListenerImpl;
-import io.vertigo.dynamo.transaction.KTransaction;
-import io.vertigo.dynamo.transaction.KTransactionManager;
-import io.vertigo.dynamo.transaction.KTransactionWritable;
+import io.vertigo.dynamo.impl.transaction.listener.VTransactionListener;
+import io.vertigo.dynamo.impl.transaction.listener.VTransactionListenerImpl;
+import io.vertigo.dynamo.transaction.VTransaction;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -30,45 +30,45 @@ import io.vertigo.lang.Assertion;
  *
  * @author  pchretien
  */
-public final class KTransactionManagerImpl implements KTransactionManager {
-	private final KTransactionListener transactionListener = new KTransactionListenerImpl();
+public final class VTransactionManagerImpl implements VTransactionManager {
+	private final VTransactionListener transactionListener = new VTransactionListenerImpl();
 
 	/** {@inheritDoc} */
 	@Override
-	public KTransaction getCurrentTransaction() {
+	public VTransaction getCurrentTransaction() {
 		return getCurrentTransactionImpl();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean hasCurrentTransaction() {
-		return KTransactionImpl.getLocalCurrentTransaction() != null;
+		return VTransactionImpl.getLocalCurrentTransaction() != null;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public KTransactionWritable createCurrentTransaction() {
+	public VTransactionWritable createCurrentTransaction() {
 		//Il faut qu'il n'existe aucune transaction en cours.
 		if (hasCurrentTransaction()) {
 			throw new IllegalStateException("current transaction already created");
 		}
 		//On démarre la Transaction à cet endroit précis.
-		return new KTransactionImpl(transactionListener);
+		return new VTransactionImpl(transactionListener);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public KTransactionWritable createAutonomousTransaction() {
-		final KTransactionImpl currentTransaction = getCurrentTransactionImpl();
-		return new KTransactionImpl(currentTransaction);
+	public VTransactionWritable createAutonomousTransaction() {
+		final VTransactionImpl currentTransaction = getCurrentTransactionImpl();
+		return new VTransactionImpl(currentTransaction);
 	}
 
 	/**
 	 * Retourne la transaction courante (forcément non null).
 	 * @return Transaction courante (la plus basse)
 	 */
-	private static KTransactionImpl getCurrentTransactionImpl() {
-		final KTransactionImpl transaction = KTransactionImpl.getLocalCurrentTransaction();
+	private static VTransactionImpl getCurrentTransactionImpl() {
+		final VTransactionImpl transaction = VTransactionImpl.getLocalCurrentTransaction();
 		Assertion.checkNotNull(transaction, "current transaction not found");
 		return transaction.getDeepestTransaction();
 	}

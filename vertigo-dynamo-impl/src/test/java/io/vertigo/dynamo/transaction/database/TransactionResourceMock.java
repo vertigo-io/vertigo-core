@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.transaction.database;
 
-import io.vertigo.dynamo.transaction.KTransactionResource;
+import io.vertigo.dynamo.transaction.VTransactionResource;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -26,7 +26,7 @@ import io.vertigo.lang.Assertion;
  * @author dchallas
  *
  */
-public final class TransactionResourceMock implements KTransactionResource, IDataBaseMock {
+public final class TransactionResourceMock implements VTransactionResource, IDataBaseMock {
 	private final DataBaseMock bdd;
 	private String dataUpdated;
 	private boolean isUpdated;

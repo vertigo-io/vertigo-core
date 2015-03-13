@@ -33,13 +33,13 @@ import io.vertigo.lang.Component;
  *
  * @author  pchretien
  */
-public interface KTransactionManager extends Component {
+public interface VTransactionManager extends Component {
 	/**
 	 * Crée la transaction courante.
 	 * Il est nécessaire qu'aucune transaction courante vivante n'existe.
 	 * @return Transaction courante.
 	 */
-	KTransactionWritable createCurrentTransaction();
+	VTransactionWritable createCurrentTransaction();
 
 	/**
 	 * Crée une transaction autonome sous la transaction courante déjà démarrée.
@@ -48,14 +48,14 @@ public interface KTransactionManager extends Component {
 	 * avant d'agir sur la transaction parente.
 	 * @return Nouvelle transaction courante
 	 */
-	KTransactionWritable createAutonomousTransaction();
+	VTransactionWritable createAutonomousTransaction();
 
 	/**
 	 * Récupère la transaction courante.
 	 * Il est nécessaire que cette transaction existe.
 	 * @return Transaction courante.
 	 */
-	KTransaction getCurrentTransaction();
+	VTransaction getCurrentTransaction();
 
 	/**
 	 * Indique si une transaction courante existe.

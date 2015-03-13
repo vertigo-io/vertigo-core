@@ -21,8 +21,8 @@ package io.vertigo.studio.plugins.reporting.domain;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.persistence.PersistenceManager;
-import io.vertigo.dynamo.transaction.KTransactionManager;
-import io.vertigo.dynamo.transaction.KTransactionWritable;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.reporting.domain.metrics.count.CountMetricEngine;
 import io.vertigo.studio.plugins.reporting.domain.metrics.dependency.DependencyMetricEngine;
@@ -46,12 +46,12 @@ import javax.inject.Inject;
  * @author pchretien
  */
 public final class DomainReportingPlugin implements ReportingPlugin {
-	private final KTransactionManager transactionManager;
+	private final VTransactionManager transactionManager;
 	private final PersistenceManager persistenceManager;
 	private final List<MetricEngine<DtDefinition>> metricEngines;
 
 	@Inject
-	public DomainReportingPlugin(final KTransactionManager transactionManager, final PersistenceManager persistenceManager) {
+	public DomainReportingPlugin(final VTransactionManager transactionManager, final PersistenceManager persistenceManager) {
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(persistenceManager);
 		//-----
@@ -64,7 +64,7 @@ public final class DomainReportingPlugin implements ReportingPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Report analyze() {
-		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			return doAnalyze();
 		}
 	}

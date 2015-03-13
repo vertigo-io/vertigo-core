@@ -21,7 +21,7 @@
  */
 package io.vertigo.dynamo.plugins.persistence.filestore.fs;
 
-import io.vertigo.dynamo.transaction.KTransactionResource;
+import io.vertigo.dynamo.transaction.VTransactionResource;
 
 import java.io.File;
 import java.io.InputStream;
@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
  *
  * @author skerdudou
  */
-public final class FsTransactionResource implements KTransactionResource {
+public final class FsTransactionResource implements VTransactionResource {
 
 	private static final Logger LOG = Logger.getLogger(FsTransactionResource.class.getName());
 	private final List<FileAction> fileActions = new ArrayList<>();

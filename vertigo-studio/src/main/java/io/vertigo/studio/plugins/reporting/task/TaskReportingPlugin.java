@@ -21,8 +21,8 @@ package io.vertigo.studio.plugins.reporting.task;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamo.transaction.KTransactionManager;
-import io.vertigo.dynamo.transaction.KTransactionWritable;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.reporting.task.metrics.explainplan.ExplainPlanMetricEngine;
 import io.vertigo.studio.plugins.reporting.task.metrics.join.JoinMetricEngine;
@@ -47,12 +47,12 @@ import javax.inject.Inject;
  * @author tchassagnette
  */
 public final class TaskReportingPlugin implements ReportingPlugin {
-	private final KTransactionManager transactionManager;
+	private final VTransactionManager transactionManager;
 	private final TaskManager taskManager;
 	private final List<MetricEngine<TaskDefinition>> metricEngines;
 
 	@Inject
-	public TaskReportingPlugin(final KTransactionManager transactionManager, final TaskManager taskManager) {
+	public TaskReportingPlugin(final VTransactionManager transactionManager, final TaskManager taskManager) {
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(taskManager);
 		//-----
@@ -65,7 +65,7 @@ public final class TaskReportingPlugin implements ReportingPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Report analyze() {
-		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			return doAnalyze();
 		}
 

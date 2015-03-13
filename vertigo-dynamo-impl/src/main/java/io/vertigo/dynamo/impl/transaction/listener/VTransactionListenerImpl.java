@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
  *
  * @author pchretien
  */
-public final class KTransactionListenerImpl implements KTransactionListener {
+public final class VTransactionListenerImpl implements VTransactionListener {
 	private static final String MS = " ms)";
 
 	/**

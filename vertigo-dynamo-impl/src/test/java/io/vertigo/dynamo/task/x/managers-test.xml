@@ -44,7 +44,7 @@
 			</plugin>
 			<plugin class="io.vertigo.dynamo.plugins.persistence.filestore.db.DbFileStorePlugin" />
 		</component>
-		<component api="KTransactionManager" class="io.vertigo.dynamo.impl.transaction.KTransactionManagerImpl" />
+		<component api="VTransactionManager" class="io.vertigo.dynamo.impl.transaction.VTransactionManagerImpl" />
 		<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
 	</module>
 

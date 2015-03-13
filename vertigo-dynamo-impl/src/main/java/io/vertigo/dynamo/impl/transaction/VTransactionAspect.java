@@ -20,8 +20,8 @@ package io.vertigo.dynamo.impl.transaction;
 
 import io.vertigo.core.aop.Aspect;
 import io.vertigo.core.aop.AspectMethodInvocation;
-import io.vertigo.dynamo.transaction.KTransactionManager;
-import io.vertigo.dynamo.transaction.KTransactionWritable;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.dynamo.transaction.Transactional;
 import io.vertigo.lang.Assertion;
 
@@ -32,11 +32,11 @@ import javax.inject.Inject;
  * de la couche service.
  * @author prahmoune
  */
-public final class KTransactionAspect implements Aspect {
-	private final KTransactionManager transactionManager;
+public final class VTransactionAspect implements Aspect {
+	private final VTransactionManager transactionManager;
 
 	@Inject
-	public KTransactionAspect(final KTransactionManager transactionManager) {
+	public VTransactionAspect(final VTransactionManager transactionManager) {
 		Assertion.checkNotNull(transactionManager);
 		//-----
 		this.transactionManager = transactionManager;
@@ -49,7 +49,7 @@ public final class KTransactionAspect implements Aspect {
 			return methodInvocation.proceed(args);
 		}
 		//Dans le cas ou il n'existe pas de transaction on en crée une.
-		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Object o = methodInvocation.proceed(args);
 			transaction.commit();
 			return o;

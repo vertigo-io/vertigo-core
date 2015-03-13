@@ -27,7 +27,7 @@ package io.vertigo.dynamo.transaction;
  *
  * @author  pchretien
  */
-public interface KTransaction {
+public interface VTransaction {
 	/**
 	 * Ajoute une ressource à la transaction en précisant son ordre au sein de la transaction.
 	 * Il n'est pas possible d'enregistrer pour une même transaction, deux ressources avec le même identifiant.
@@ -35,12 +35,12 @@ public interface KTransaction {
 	 * @param resource Ressource transactionnelle
 	 * @param <TR> Ressource transactionnelle
 	 */
-	<TR extends KTransactionResource> void addResource(KTransactionResourceId<TR> id, TR resource);
+	<TR extends VTransactionResource> void addResource(VTransactionResourceId<TR> id, TR resource);
 
 	/**
 	 * @param transactionResourceId Identifiant/type de ressource transactionnelle.
 	 * @return Ressource transactionnelle correspondant à l'id
 	 * @param <TR> Ressource transactionnelle
 	 */
-	<TR extends KTransactionResource> TR getResource(KTransactionResourceId<TR> transactionResourceId);
+	<TR extends VTransactionResource> TR getResource(VTransactionResourceId<TR> transactionResourceId);
 }

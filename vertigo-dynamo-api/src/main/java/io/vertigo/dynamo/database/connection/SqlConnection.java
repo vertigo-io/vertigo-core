@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.database.connection;
 
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
-import io.vertigo.dynamo.transaction.KTransactionResource;
+import io.vertigo.dynamo.transaction.VTransactionResource;
 import io.vertigo.lang.Assertion;
 
 import java.sql.Connection;
@@ -33,7 +33,7 @@ import java.sql.SQLException;
  *
  * @author pchretien, npiedeloup
  */
-public final class SqlConnection implements KTransactionResource {
+public final class SqlConnection implements VTransactionResource {
 	private final Connection jdbcConnection;
 	private final SqlDataBase dataBase;
 	private final boolean closeable;

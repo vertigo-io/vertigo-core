@@ -33,9 +33,9 @@ import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
 import io.vertigo.dynamo.impl.persistence.filestore.FileStorePlugin;
 import io.vertigo.dynamo.persistence.PersistenceManager;
-import io.vertigo.dynamo.transaction.KTransaction;
-import io.vertigo.dynamo.transaction.KTransactionManager;
-import io.vertigo.dynamo.transaction.KTransactionResourceId;
+import io.vertigo.dynamo.transaction.VTransaction;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.lang.Assertion;
 
 import java.io.File;
@@ -61,7 +61,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	/**
 	 * Identifiant de ressource FileSystem par défaut.
 	 */
-	private static final KTransactionResourceId<FsTransactionResource> FS_RESOURCE_ID = new KTransactionResourceId<>(KTransactionResourceId.Priority.NORMAL, "FS");
+	private static final VTransactionResourceId<FsTransactionResource> FS_RESOURCE_ID = new VTransactionResourceId<>(VTransactionResourceId.Priority.NORMAL, "FS");
 
 	/**
 	 * Liste des champs du Dto de stockage.
@@ -88,7 +88,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	private final boolean readOnly;
 	private final FileManager fileManager;
 	private final String documentRoot;
-	private final KTransactionManager transactionManager;
+	private final VTransactionManager transactionManager;
 
 	/**
 	 * Constructeur.
@@ -97,7 +97,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	 * @param path le chemin jndi pour récupérer le paramètre path dans le context
 	 */
 	@Inject
-	public FsFileStorePlugin(final KTransactionManager transactionManager, final FileManager fileManager, @Named("path") final String path) {
+	public FsFileStorePlugin(final VTransactionManager transactionManager, final FileManager fileManager, @Named("path") final String path) {
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkNotNull(path);
@@ -313,7 +313,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	}
 
 	/** récupère la transaction courante. */
-	private KTransaction getCurrentTransaction() {
+	private VTransaction getCurrentTransaction() {
 		return transactionManager.getCurrentTransaction();
 	}
 
@@ -322,18 +322,18 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	 *
 	 * @return Id de la Ressource Connexion FileSystem dans la transaction
 	 */
-	private static KTransactionResourceId<FsTransactionResource> getKTransactionResourceId() {
+	private static VTransactionResourceId<FsTransactionResource> getVTransactionResourceId() {
 		return FS_RESOURCE_ID;
 	}
 
 	/** récupère la ressource FS de la transaction et la créé si nécessaire. */
 	private FsTransactionResource obtainFsTransactionRessource() {
-		FsTransactionResource resource = getCurrentTransaction().getResource(getKTransactionResourceId());
+		FsTransactionResource resource = getCurrentTransaction().getResource(getVTransactionResourceId());
 
 		if (resource == null) {
 			// Si aucune ressource de type FS existe sur la transaction, on la créé
 			resource = new FsTransactionResource();
-			getCurrentTransaction().addResource(getKTransactionResourceId(), resource);
+			getCurrentTransaction().addResource(getVTransactionResourceId(), resource);
 		}
 		return resource;
 	}

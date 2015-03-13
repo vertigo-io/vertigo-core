@@ -33,14 +33,14 @@ import org.junit.Test;
  * @author dchallas
  *
  */
-public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
+public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 	private static int count;
 
 	@Inject
 	private SampleServices sampleServices;
 
 	@Inject
-	private KTransactionManager transactionManager;
+	private VTransactionManager transactionManager;
 	private SampleDataBase dataBase;
 
 	private static String createData() {
@@ -63,7 +63,7 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testFailCreateCurrentTransaction() {
-		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 			transactionManager.createCurrentTransaction();
 		} catch (final IllegalStateException e) {
 			Assert.assertEquals("current transaction already created", e.getMessage());
@@ -75,7 +75,7 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testGetCurrentTransaction() {
-		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 			Assert.assertEquals(currentTransaction, transactionManager.getCurrentTransaction());
 			currentTransaction.rollback();
 		}
@@ -86,7 +86,7 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testCommit() {
-		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 
 			final SampleDataBaseConnection connection = obtainDataBaseConnection(dataBase, "test-memory-1");
 
@@ -105,7 +105,7 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testRollback() {
-		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 
 			final SampleDataBaseConnection connection = obtainDataBaseConnection(dataBase, "test-memory-1");
 
@@ -125,7 +125,7 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test(expected = Exception.class)
 	public void testCommitCommit() {
-		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 			currentTransaction.commit();
 
 			//L'appel au second commit doit déclencher une exception
@@ -139,7 +139,7 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test(expected = Exception.class)
 	public void testRollbackCommit() {
-		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 			currentTransaction.rollback();
 
 			//L'appel au commit après un rollback doit déclencher une exception
@@ -153,7 +153,7 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testCommitRollback() {
-		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 			currentTransaction.commit();
 			currentTransaction.rollback();
 		}
@@ -165,7 +165,7 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testRollbackRollback() {
-		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 			currentTransaction.rollback();
 			currentTransaction.rollback();
 		}
@@ -176,14 +176,14 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testCreateAutonomousTransaction() {
-		try (final KTransactionWritable rootTransaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable rootTransaction = transactionManager.createCurrentTransaction()) {
 			final SampleDataBaseConnection rootConnection = obtainDataBaseConnection(dataBase, "test-memory-1");
 			// --- modification de la bdd sur la transaction principale.
 			final String rootValue = createData();
 			rootConnection.setData(rootValue);
 			Assert.assertEquals(rootValue, rootConnection.getData());
 
-			try (final KTransactionWritable autonomousTransaction = transactionManager.createAutonomousTransaction()) {
+			try (final VTransactionWritable autonomousTransaction = transactionManager.createAutonomousTransaction()) {
 				final SampleDataBaseConnection connection = obtainDataBaseConnection(dataBase, "test-memory-2");
 				// --- modification de la bdd sur la transaction autonome.
 				final String value = createData();
@@ -207,7 +207,7 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test(expected = NullPointerException.class)
 	public void testFailCreateAutonomousTransaction() {
-		try (final KTransactionWritable autonomousTransaction = transactionManager.createAutonomousTransaction()) {
+		try (final VTransactionWritable autonomousTransaction = transactionManager.createAutonomousTransaction()) {
 			nop(autonomousTransaction);
 		}
 	}
@@ -215,7 +215,7 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 	//Utilitaire
 	private SampleDataBaseConnection obtainDataBaseConnection(final SampleDataBase myDataBase, final String resourceId) {
 		// --- resource 1
-		final KTransactionResourceId<SampleTransactionResource> transactionResourceId = new KTransactionResourceId<>(KTransactionResourceId.Priority.TOP, resourceId);
+		final VTransactionResourceId<SampleTransactionResource> transactionResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, resourceId);
 
 		final SampleTransactionResource sampleTransactionResource = new SampleTransactionResource(myDataBase);
 		transactionManager.getCurrentTransaction().addResource(transactionResourceId, sampleTransactionResource);
@@ -230,7 +230,7 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 		//On crée une autre BDD.
 		final SampleDataBase secondDataBase = new SampleDataBase();
 
-		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 
 			final SampleDataBaseConnection sampleDataBaseConnection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
 			final SampleDataBaseConnection sampleDataBaseConnection2 = obtainDataBaseConnection(secondDataBase, "test-memory-2");
@@ -259,7 +259,7 @@ public final class KTransactionManagerTest extends AbstractTestCaseJU4 {
 		//On crée une autre BDD.
 		final SampleDataBase secondDataBase = new SampleDataBase();
 
-		try (final KTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 
 			final SampleDataBaseConnection sampleDataBaseConnection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
 			final SampleDataBaseConnection sampleDataBaseConnection2 = obtainDataBaseConnection(secondDataBase, "test-memory-2");

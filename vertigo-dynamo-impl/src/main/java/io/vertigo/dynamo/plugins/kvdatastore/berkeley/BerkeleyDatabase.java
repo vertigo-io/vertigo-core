@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.plugins.kvdatastore.berkeley;
 
-import io.vertigo.dynamo.transaction.KTransaction;
-import io.vertigo.dynamo.transaction.KTransactionManager;
-import io.vertigo.dynamo.transaction.KTransactionResourceId;
+import io.vertigo.dynamo.transaction.VTransaction;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 
@@ -42,10 +42,10 @@ import com.sleepycat.je.Transaction;
  * @author pchretien
  */
 final class BerkeleyDatabase {
-	private final KTransactionResourceId<BerkeleyResource> berkeleyResourceId = new KTransactionResourceId<>(KTransactionResourceId.Priority.TOP, "demo-berkeley");
+	private final VTransactionResourceId<BerkeleyResource> berkeleyResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "demo-berkeley");
 	private static final TupleBinding dataBinding = new BerkeleyDataBinding();
 	private static final EntryBinding<String> keyBinding = TupleBinding.getPrimitiveBinding(String.class);
-	private final KTransactionManager transactionManager;
+	private final VTransactionManager transactionManager;
 	private final Database database;
 
 	/**
@@ -53,7 +53,7 @@ final class BerkeleyDatabase {
 	 * @param database Berkeley DataBase
 	 * @param transactionManager Transaction manager
 	 */
-	BerkeleyDatabase(final Database database, final KTransactionManager transactionManager) {
+	BerkeleyDatabase(final Database database, final VTransactionManager transactionManager) {
 		Assertion.checkNotNull(database);
 		Assertion.checkNotNull(transactionManager);
 		//-----
@@ -62,7 +62,7 @@ final class BerkeleyDatabase {
 	}
 
 	private Transaction getCurrentBerkeleyTransaction() {
-		final KTransaction transaction = transactionManager.getCurrentTransaction();
+		final VTransaction transaction = transactionManager.getCurrentTransaction();
 		BerkeleyResource berkeleyResource = transaction.getResource(berkeleyResourceId);
 		if (berkeleyResource == null) {
 			//On a rien trouvé il faut créer la resourceLucene et l'ajouter à la transaction

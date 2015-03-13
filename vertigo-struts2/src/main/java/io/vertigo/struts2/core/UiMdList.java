@@ -21,7 +21,7 @@ package io.vertigo.struts2.core;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.transaction.KTransactionWritable;
+import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -55,7 +55,7 @@ final class UiMdList<D extends DtObject> extends AbstractUiList<D> implements Ui
 	@Override
 	public DtList<D> obtainDtList() {
 		if (lazyDtList == null) {
-			try (final KTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
+			try (final VTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
 				lazyDtList = persistenceManager.get().getBroker().<D> getList(dtListUri);
 			}
 		}

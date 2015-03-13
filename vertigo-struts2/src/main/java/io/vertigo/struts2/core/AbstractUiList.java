@@ -26,8 +26,8 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.persistence.PersistenceManager;
-import io.vertigo.dynamo.transaction.KTransactionManager;
-import io.vertigo.dynamo.transaction.KTransactionWritable;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.util.StringUtil;
@@ -55,7 +55,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 	/**
 	 * Accès au transactionManager.
 	 */
-	protected final ComponentRef<KTransactionManager> transactionManager = ComponentRef.makeLazyRef(KTransactionManager.class);
+	protected final ComponentRef<VTransactionManager> transactionManager = ComponentRef.makeLazyRef(VTransactionManager.class);
 
 	private final Map<Integer, UiObject<D>> uiObjectByIndex = new HashMap<>();
 	private final Map<String, Map<String, UiObject<D>>> uiObjectByFieldValue = new HashMap<>();
@@ -190,7 +190,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 
 	private D loadDto(final Object key) {
 		//-- Transaction BEGIN
-		try (final KTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
+		try (final VTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
 			return persistenceManager.get().getBroker().<D> get(new URI<D>(getDtDefinition(), key));
 		}
 	}

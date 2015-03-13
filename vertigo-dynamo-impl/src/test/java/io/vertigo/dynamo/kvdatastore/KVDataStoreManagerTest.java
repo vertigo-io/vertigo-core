@@ -20,8 +20,8 @@ package io.vertigo.dynamo.kvdatastore;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.kvdatastore.data.Flower;
-import io.vertigo.dynamo.transaction.KTransactionManager;
-import io.vertigo.dynamo.transaction.KTransactionWritable;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Option;
 import io.vertigo.util.ListBuilder;
 
@@ -40,7 +40,7 @@ public final class KVDataStoreManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private KVDataStoreManager kvDataStoreManager;
 	@Inject
-	private KTransactionManager transactionManager;
+	private VTransactionManager transactionManager;
 
 	private static Flower buildFlower(final String name, final double price) {
 		final Flower flower = new Flower();
@@ -51,7 +51,7 @@ public final class KVDataStoreManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testFind() {
-		try (KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Option<Flower> foundFlower = kvDataStoreManager.find(DEFAULT_DATA_STORE_NAME, "1", Flower.class);
 			Assert.assertTrue(foundFlower.isEmpty());
 			final Flower tulip = buildFlower("tulip", 100);
@@ -74,7 +74,7 @@ public final class KVDataStoreManagerTest extends AbstractTestCaseJU4 {
 				.add(buildFlower("orchid", 200))
 				.build();
 
-		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final List<Flower> foundFlowers = kvDataStoreManager.findAll(DEFAULT_DATA_STORE_NAME, 0, null, Flower.class);
 			Assert.assertTrue(foundFlowers.isEmpty());
 
@@ -93,7 +93,7 @@ public final class KVDataStoreManagerTest extends AbstractTestCaseJU4 {
 
 	@Test(expected = RuntimeException.class)
 	public void testRemoveFail() {
-		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			kvDataStoreManager.remove(DEFAULT_DATA_STORE_NAME, "1");
 		}
 	}
@@ -101,7 +101,7 @@ public final class KVDataStoreManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testRemove() {
 		testFindAll();
-		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final List<Flower> foundFlowers = kvDataStoreManager.findAll(DEFAULT_DATA_STORE_NAME, 0, 1000, Flower.class);
 			//-----
 			kvDataStoreManager.remove(DEFAULT_DATA_STORE_NAME, "1");

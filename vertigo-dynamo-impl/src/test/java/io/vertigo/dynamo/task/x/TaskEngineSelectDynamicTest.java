@@ -33,8 +33,8 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.task.model.TaskResult;
-import io.vertigo.dynamo.transaction.KTransactionManager;
-import io.vertigo.dynamo.transaction.KTransactionWritable;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 
 import java.sql.SQLException;
@@ -62,7 +62,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Inject
 	private SqlDataBaseManager dataBaseManager;
 	@Inject
-	private KTransactionManager transactionManager;
+	private VTransactionManager transactionManager;
 
 	@Override
 	protected void doSetUp() throws Exception {
@@ -75,7 +75,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	}
 
 	private void addNSuperHero(final int size) {
-		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//-----
 			for (int i = 0; i < size; i++) {
 				final SuperHero superHero = new SuperHero();
@@ -105,7 +105,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testScript() {
-		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final TaskDefinition taskDefinition = registerTaskObject("TK_SCRIPT_TEST",
 					"select * from SUPER_HERO <%if(false) {%>where ID = #DTO_SUPER_HERO.ID#<%}%>");
 
@@ -127,7 +127,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testScriptVar() {
-		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final TaskDefinition taskDefinition = registerTaskObject("TK_SCRIPT_TEST",
 					"select * from SUPER_HERO <%if(dtoSuperHero.getId() == 10002L) {%>where ID = #DTO_SUPER_HERO.ID#<%}%>");
 
@@ -151,7 +151,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testNullable() {
-		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final TaskDefinition taskDefinition = registerTaskWithNullableIn("TK_NULLABLE_TEST",
 					"select * from SUPER_HERO where ID = #PARAM_1#<%if(param2!=null) {%> OR ID = #PARAM_2#+2 <%}%><%if(param3!=null) {%> OR ID = #PARAM_3#+3<%}%>");
 
@@ -175,7 +175,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testScriptVarList() {
-		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final TaskDefinition taskDefinition = registerTaskList("TK_SCRIPT_TEST",
 					"select * from SUPER_HERO <%if(!dtcSuperHeroIn.isEmpty()) {%>where ID in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)<%}%>");
 
@@ -198,7 +198,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testTrim() {
-		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final TaskDefinition taskDefinition = registerTaskObject("TK_SCRIPT_TEST",
 					"select * from SUPER_HERO  \n<%if(false) {%>\nwhere ID = #DTO_SUPER_HERO.ID#\n<%}%>\n");
 
@@ -221,7 +221,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testWhereIn() {
-		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
 					"select * from SUPER_HERO  where ID in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
 
@@ -247,7 +247,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testWhereInTab() {
-		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
 					"select * from SUPER_HERO  where\tID in\t(#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
 
@@ -273,7 +273,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testWhereInEmpty() {
-		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
 					"select * from SUPER_HERO where ID in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
 
@@ -295,7 +295,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testWhereNotIn() {
-		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
 					"select * from SUPER_HERO where ID not in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
 
@@ -327,7 +327,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testWhereNotInEmpty() {
-		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
 					"select * from SUPER_HERO where ID not in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
 
@@ -350,7 +350,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	public void testWhereIn2200() {
 		addNSuperHero(4500);
 
-		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
 					"select * from SUPER_HERO  where ID in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
 
@@ -377,7 +377,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	public void testWhereNotIn2200() {
 		addNSuperHero(4500);
 
-		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
 					"select * from SUPER_HERO  where ID not in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
 

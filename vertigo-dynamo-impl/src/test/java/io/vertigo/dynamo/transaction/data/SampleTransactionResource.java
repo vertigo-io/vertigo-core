@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.transaction.data;
 
-import io.vertigo.dynamo.transaction.KTransactionResource;
+import io.vertigo.dynamo.transaction.VTransactionResource;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -26,7 +26,7 @@ import io.vertigo.lang.Assertion;
  * @author dchallas
  *
  */
-public final class SampleTransactionResource implements KTransactionResource, SampleDataBaseConnection {
+public final class SampleTransactionResource implements VTransactionResource, SampleDataBaseConnection {
 	private final SampleDataBase sampleDataBase;
 	private String dataUpdated;
 	private boolean isUpdated;

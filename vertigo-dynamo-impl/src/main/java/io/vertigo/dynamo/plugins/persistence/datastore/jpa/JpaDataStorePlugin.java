@@ -39,8 +39,8 @@ import io.vertigo.dynamo.persistence.criteria.FilterCriteria;
 import io.vertigo.dynamo.persistence.criteria.FilterCriteriaBuilder;
 import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaDataBase;
 import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaResource;
-import io.vertigo.dynamo.transaction.KTransaction;
-import io.vertigo.dynamo.transaction.KTransactionManager;
+import io.vertigo.dynamo.transaction.VTransaction;
+import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
@@ -64,7 +64,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	 */
 	private static final FilterCriteria<?> EMPTY_FILTER_CRITERIA = new FilterCriteriaBuilder<>().build();
 
-	private final KTransactionManager transactionManager;
+	private final VTransactionManager transactionManager;
 	private final SqlDataBaseManager dataBaseManager;
 	private final JpaListenerImpl dataBaseListener;
 
@@ -72,7 +72,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	 * Constructeur.
 	 */
 	@Inject
-	public JpaDataStorePlugin(final KTransactionManager transactionManager, final SqlDataBaseManager dataBaseManager, final AnalyticsManager analyticsManager) {
+	public JpaDataStorePlugin(final VTransactionManager transactionManager, final SqlDataBaseManager dataBaseManager, final AnalyticsManager analyticsManager) {
 		//super(workManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(dataBaseManager);
@@ -96,7 +96,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	/** récupère la transaction courante. */
-	private KTransaction getCurrentTransaction() {
+	private VTransaction getCurrentTransaction() {
 		return transactionManager.getCurrentTransaction();
 	}
 

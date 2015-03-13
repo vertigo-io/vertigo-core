@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.impl.transaction;
 
-import io.vertigo.dynamo.impl.transaction.listener.KTransactionListener;
-import io.vertigo.dynamo.transaction.KTransaction;
-import io.vertigo.dynamo.transaction.KTransactionResource;
-import io.vertigo.dynamo.transaction.KTransactionResourceId;
-import io.vertigo.dynamo.transaction.KTransactionWritable;
+import io.vertigo.dynamo.impl.transaction.listener.VTransactionListener;
+import io.vertigo.dynamo.transaction.VTransaction;
+import io.vertigo.dynamo.transaction.VTransactionResource;
+import io.vertigo.dynamo.transaction.VTransactionResourceId;
+import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
@@ -35,33 +35,33 @@ import java.util.Map;
  *
  * @author  pchretien
  */
-public final class KTransactionImpl implements KTransactionWritable {
+public final class VTransactionImpl implements VTransactionWritable {
 	/**
 	 * Contient la transaction du Thread courant.
 	 */
-	private static final ThreadLocal<KTransactionImpl> currentThreadLocalTransaction = new ThreadLocal<>();
+	private static final ThreadLocal<VTransactionImpl> currentThreadLocalTransaction = new ThreadLocal<>();
 
 	/**
 	 * A la création la transaction est démarrée.
 	 */
 	private boolean transactionClosed;
-	private final KTransactionListener transactionListener;
+	private final VTransactionListener transactionListener;
 	/**
 	 * Map des autres ressources de la transaction.
 	 */
-	private Map<KTransactionResourceId<?>, KTransactionResource> resources;
+	private Map<VTransactionResourceId<?>, VTransactionResource> resources;
 
 	/**
 	 * Transaction parente dans le cadre d'une transaction imbriquée.
 	 * Nullable.
 	 */
-	private final KTransactionImpl parentTransaction;
+	private final VTransactionImpl parentTransaction;
 
 	/**
 	 * Transaction imbriquée.
 	 * Nullable.
 	 */
-	private KTransactionImpl innerTransaction;
+	private VTransactionImpl innerTransaction;
 	/**
 	 * Début de la transaction
 	 */
@@ -74,7 +74,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 	 * Construit un contexte de transaction.
 	 * @param transactionListener Listener des événements produits par
 	 */
-	KTransactionImpl(final KTransactionListener transactionListener) {
+	VTransactionImpl(final VTransactionListener transactionListener) {
 		Assertion.checkNotNull(transactionListener);
 		//-----
 		parentTransaction = null;
@@ -88,7 +88,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 	 * Construit un contexte de transaction imbriquée.
 	 * @param parentTransaction transaction parente
 	 */
-	KTransactionImpl(final KTransactionImpl parentTransaction) {
+	VTransactionImpl(final VTransactionImpl parentTransaction) {
 		Assertion.checkNotNull(parentTransaction);
 		//-----
 		this.parentTransaction = parentTransaction;
@@ -113,7 +113,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <TR extends KTransactionResource> TR getResource(final KTransactionResourceId<TR> transactionResourceId) {
+	public <TR extends VTransactionResource> TR getResource(final VTransactionResourceId<TR> transactionResourceId) {
 		checkStateStarted();
 		Assertion.checkNotNull(transactionResourceId);
 		//-----
@@ -127,7 +127,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 	 * Retourne la transaction imbriquée de plus bas étage ou elle même si aucune transaction imbriquée.
 	 * @return Transaction de plus bas niveau (elle même si il n'y a pas de transaction imbriquée)
 	 */
-	KTransactionImpl getDeepestTransaction() {
+	VTransactionImpl getDeepestTransaction() {
 		return innerTransaction == null ? this : innerTransaction.getDeepestTransaction();
 	}
 
@@ -138,7 +138,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 	 * - démarrée
 	 * @param newInnerTransaction Transaction imbriquée
 	 */
-	private void addInnerTransaction(final KTransactionImpl newInnerTransaction) {
+	private void addInnerTransaction(final VTransactionImpl newInnerTransaction) {
 		Assertion.checkState(innerTransaction == null, "La transaction possède déjà une transaction imbriquée");
 		Assertion.checkNotNull(newInnerTransaction);
 		newInnerTransaction.checkStateStarted();
@@ -161,7 +161,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <TR extends KTransactionResource> void addResource(final KTransactionResourceId<TR> id, final TR resource) {
+	public <TR extends VTransactionResource> void addResource(final VTransactionResourceId<TR> id, final TR resource) {
 		checkStateStarted();
 		Assertion.checkNotNull(resource);
 		Assertion.checkNotNull(id);
@@ -260,8 +260,8 @@ public final class KTransactionImpl implements KTransactionWritable {
 		if (resources != null) {
 			//Il existe des ressources
 			//On traite les ressources par ordre de priorité
-			for (final KTransactionResourceId<?> id : getOrderedListByPriority()) {
-				final KTransactionResource ktr = resources.remove(id);
+			for (final VTransactionResourceId<?> id : getOrderedListByPriority()) {
+				final VTransactionResource ktr = resources.remove(id);
 				//On termine toutes les resources utilisées en les otant de la map.
 				Assertion.checkNotNull(ktr);
 				final Throwable throwable = doEnd(ktr, shouldRollback);
@@ -285,19 +285,19 @@ public final class KTransactionImpl implements KTransactionWritable {
 	//=========================================================================
 	//=============TRI de la liste des id de ressouces par priorité============
 	//=========================================================================
-	private List<KTransactionResourceId<?>> getOrderedListByPriority() {
+	private List<VTransactionResourceId<?>> getOrderedListByPriority() {
 		//On termine les ressources dans l'ordre DEFAULT, A, B...F
-		final List<KTransactionResourceId<?>> list = new ArrayList<>();
+		final List<VTransactionResourceId<?>> list = new ArrayList<>();
 
-		populate(list, KTransactionResourceId.Priority.TOP);
-		populate(list, KTransactionResourceId.Priority.NORMAL);
-		populate(list, KTransactionResourceId.Priority.LOW);
+		populate(list, VTransactionResourceId.Priority.TOP);
+		populate(list, VTransactionResourceId.Priority.NORMAL);
+		populate(list, VTransactionResourceId.Priority.LOW);
 		return list;
 	}
 
-	private void populate(final List<KTransactionResourceId<?>> list, final KTransactionResourceId.Priority priority) {
+	private void populate(final List<VTransactionResourceId<?>> list, final VTransactionResourceId.Priority priority) {
 		// Ajout des ressources ayant une ceraine priorité à la liste.
-		for (final KTransactionResourceId<?> id : resources.keySet()) {
+		for (final VTransactionResourceId<?> id : resources.keySet()) {
 			if (id.getPriority().equals(priority)) {
 				list.add(id);
 			}
@@ -313,7 +313,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 	 * @param rollback Si vrai annule, sinon valide.
 	 * @return Exception à lancer.
 	 */
-	private static Throwable doEnd(final KTransactionResource resource, final boolean rollback) {
+	private static Throwable doEnd(final VTransactionResource resource, final boolean rollback) {
 		Assertion.checkNotNull(resource);
 		//-----
 		Throwable throwable = null;
@@ -321,7 +321,7 @@ public final class KTransactionImpl implements KTransactionWritable {
 			if (rollback) {
 				resource.rollback();
 			} else {
-				if (resource instanceof KTransaction) {
+				if (resource instanceof VTransaction) {
 					//Si la ressource est elle même une transaction, elle ne doit pas etre commitée de cette facon implicite
 					resource.rollback();
 					throw new IllegalStateException("La transaction incluse dans la transaction courante n'a pas été commité correctement");
@@ -374,10 +374,10 @@ public final class KTransactionImpl implements KTransactionWritable {
 	 * Retourne la transaction courante de plus haut niveau.
 	 * - jamais closed
 	 * - peut être null
-	 * @return KTransaction
+	 * @return VTransaction
 	 */
-	static KTransactionImpl getLocalCurrentTransaction() {
-		KTransactionImpl transaction = currentThreadLocalTransaction.get();
+	static VTransactionImpl getLocalCurrentTransaction() {
+		VTransactionImpl transaction = currentThreadLocalTransaction.get();
 		//Si la transaction courante est finie on ne la retourne pas.
 		if (transaction != null && transaction.isClosed()) {
 			transaction = null;

@@ -13,12 +13,12 @@ public class SampleServices implements Component {
 	private static int count;
 
 	@Inject
-	private KTransactionManager transactionManager;
+	private VTransactionManager transactionManager;
 	private final SampleDataBase dataBase = new SampleDataBase();
 
 	private SampleDataBaseConnection obtainDataBaseConnection(final SampleDataBase sampleDataBase, final String resourceId) {
 		// --- resource 1
-		final KTransactionResourceId<SampleTransactionResource> transactionResourceId = new KTransactionResourceId<>(KTransactionResourceId.Priority.TOP, resourceId);
+		final VTransactionResourceId<SampleTransactionResource> transactionResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, resourceId);
 
 		final SampleTransactionResource transactionResourceMock = new SampleTransactionResource(sampleDataBase);
 		transactionManager.getCurrentTransaction().addResource(transactionResourceId, transactionResourceMock);

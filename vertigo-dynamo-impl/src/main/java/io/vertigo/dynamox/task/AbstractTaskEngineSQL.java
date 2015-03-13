@@ -36,9 +36,9 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.model.TaskEngine;
-import io.vertigo.dynamo.transaction.KTransaction;
-import io.vertigo.dynamo.transaction.KTransactionManager;
-import io.vertigo.dynamo.transaction.KTransactionResourceId;
+import io.vertigo.dynamo.transaction.VTransaction;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.dynamox.task.TaskEngineSQLParam.InOutType;
 import io.vertigo.lang.Assertion;
 
@@ -96,7 +96,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	/**
 	 * Identifiant de ressource SQL par défaut.
 	 */
-	public static final KTransactionResourceId<SqlConnection> SQL_RESOURCE_ID = new KTransactionResourceId<>(KTransactionResourceId.Priority.TOP, "Sql");
+	public static final VTransactionResourceId<SqlConnection> SQL_RESOURCE_ID = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Sql");
 
 	/**
 	 * Nom de l'attribut recevant le nombre de lignes affectées par un Statement.
@@ -418,8 +418,8 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @return Connexion SQL
 	 */
 	private SqlConnection obtainConnection() {
-		final KTransaction transaction = getTransactionManager().getCurrentTransaction();
-		SqlConnection connection = transaction.getResource(getKTransactionResourceId());
+		final VTransaction transaction = getTransactionManager().getCurrentTransaction();
+		SqlConnection connection = transaction.getResource(getVTransactionResourceId());
 		if (connection == null) {
 			// On récupère une connexion du pool
 			// Utilise le provider de connexion déclaré sur le Container.
@@ -428,7 +428,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 			} catch (final SQLException e) {
 				throw new RuntimeException("Obtention de connexion impossible", e);
 			}
-			transaction.addResource(getKTransactionResourceId(), connection);
+			transaction.addResource(getVTransactionResourceId(), connection);
 		}
 		return connection;
 	}
@@ -436,12 +436,12 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	/**
 	 * @return Id de la Ressource Connexion SQL dans la transaction
 	 */
-	protected KTransactionResourceId<SqlConnection> getKTransactionResourceId() {
+	protected VTransactionResourceId<SqlConnection> getVTransactionResourceId() {
 		return SQL_RESOURCE_ID;
 	}
 
-	private static KTransactionManager getTransactionManager() {
-		return Home.getComponentSpace().resolve(KTransactionManager.class);
+	private static VTransactionManager getTransactionManager() {
+		return Home.getComponentSpace().resolve(VTransactionManager.class);
 	}
 
 	/**

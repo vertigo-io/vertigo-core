@@ -21,8 +21,8 @@ package io.vertigo.dynamo.plugins.database.connection.hibernate;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.plugins.database.connection.AbstractSqlConnectionProviderPlugin;
-import io.vertigo.dynamo.transaction.KTransaction;
-import io.vertigo.dynamo.transaction.KTransactionManager;
+import io.vertigo.dynamo.transaction.VTransaction;
+import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
 
@@ -39,7 +39,7 @@ import javax.persistence.Persistence;
  * @author pchretien, npiedeloup
  */
 abstract class JpaConnectionProviderPlugin extends AbstractSqlConnectionProviderPlugin {
-	private final KTransactionManager transactionManager;
+	private final VTransactionManager transactionManager;
 
 	/**
 	 * Constructeur.
@@ -47,7 +47,7 @@ abstract class JpaConnectionProviderPlugin extends AbstractSqlConnectionProvider
 	 * @param persistenceUnit Nom de la persistenceUnit à utiliser (dans le persistence.xml)
 	 */
 	@Inject
-	public JpaConnectionProviderPlugin(@Named("persistenceUnit") final String persistenceUnit, @Named("dataBaseName") final String dataBaseName, final KTransactionManager transactionManager) {
+	public JpaConnectionProviderPlugin(@Named("persistenceUnit") final String persistenceUnit, @Named("dataBaseName") final String dataBaseName, final VTransactionManager transactionManager) {
 		super(new JpaDataBase(createDataBase(dataBaseName), Persistence.createEntityManagerFactory(persistenceUnit)));
 		Assertion.checkArgNotEmpty(persistenceUnit);
 		//-----
@@ -76,7 +76,7 @@ abstract class JpaConnectionProviderPlugin extends AbstractSqlConnectionProvider
 	}
 
 	/** récupère la transaction courante. */
-	private KTransaction getCurrentTransaction() {
+	private VTransaction getCurrentTransaction() {
 		return transactionManager.getCurrentTransaction();
 	}
 

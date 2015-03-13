@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.database.connection.hibernate;
 
-import io.vertigo.dynamo.transaction.KTransactionResource;
+import io.vertigo.dynamo.transaction.VTransactionResource;
 import io.vertigo.lang.Assertion;
 
 import javax.persistence.EntityManager;
@@ -32,7 +32,7 @@ import javax.persistence.EntityTransaction;
  *
  * @author pchretien
  */
-public class JpaResource implements KTransactionResource {
+public class JpaResource implements VTransactionResource {
 	private final EntityManager em;
 	private final EntityTransaction tx;
 

@@ -16,35 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.transaction;
+package io.vertigo.dynamo.impl.transaction.listener;
 
-/**
- * Ressource participant à une transaction.
- * Cette ressource est par exemple :
- * - une connexion à une BDD Oracle, Sybase, MySQL....
- * - un mailer
- * - un fileSystem
- * - un objet java
- *
- * @author  pchretien
- */
-public interface KTransactionResource {
+public interface VTransactionListener {
 	/**
-	 * Valide la ressource.
-	 * @throws Exception Si impossible.
+	 * Enregistre le début d'une transaction.
 	 */
-	void commit() throws Exception;
+	void onTransactionStart();
 
 	/**
-	 * Annule la ressource.
-	 * @throws Exception Si impossible.
+	 * Fin de transaction.
+	 * @param rollback Si la transaction a réussie ou rollbackée
+	 * @param elapsedTime Temps d'exécution en ms
 	 */
-	void rollback() throws Exception;
-
-	/**
-	 * Libère la ressource.
-	 * Appelée systématiquement après un commit ou un rollback.
-	 * @throws Exception Si impossible.
-	 */
-	void release() throws Exception;
+	void onTransactionFinish(boolean rollback, long elapsedTime);
 }

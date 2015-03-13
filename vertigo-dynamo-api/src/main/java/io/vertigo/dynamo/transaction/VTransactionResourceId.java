@@ -26,7 +26,7 @@ import io.vertigo.lang.Assertion;
  * @author  pchretien
  * @param <TR> Ressource transactionnelle.
  */
-public final class KTransactionResourceId<TR extends KTransactionResource> {
+public final class VTransactionResourceId<TR extends VTransactionResource> {
 	/**
 	 * Ordre dans lequel les ressources sont commitées.
 	 * @author pchretien
@@ -56,7 +56,7 @@ public final class KTransactionResourceId<TR extends KTransactionResource> {
 	 * @param priority Priorité de la ressource.
 	 * @param name Nom de code de la ressource.
 	 */
-	public KTransactionResourceId(final Priority priority, final String name) {
+	public VTransactionResourceId(final Priority priority, final String name) {
 		Assertion.checkNotNull(priority);
 		Assertion.checkNotNull(name);
 		//-----
@@ -80,8 +80,8 @@ public final class KTransactionResourceId<TR extends KTransactionResource> {
 	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object object) {
-		if (object instanceof KTransactionResourceId<?>) {
-			return name.equals(((KTransactionResourceId<?>) object).name);
+		if (object instanceof VTransactionResourceId<?>) {
+			return name.equals(((VTransactionResourceId<?>) object).name);
 		}
 		return false;
 	}

@@ -21,8 +21,8 @@ package io.vertigo.dynamo.plugins.database.connection.hibernate;
 import io.vertigo.dynamo.database.vendor.SqlDataBase;
 import io.vertigo.dynamo.database.vendor.SqlExceptionHandler;
 import io.vertigo.dynamo.database.vendor.SqlMapping;
-import io.vertigo.dynamo.transaction.KTransaction;
-import io.vertigo.dynamo.transaction.KTransactionResourceId;
+import io.vertigo.dynamo.transaction.VTransaction;
+import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.lang.Assertion;
 
 import javax.persistence.EntityManagerFactory;
@@ -34,7 +34,7 @@ import javax.persistence.EntityManagerFactory;
  */
 public final class JpaDataBase implements SqlDataBase {
 	//This Resource must be commited AFTER the KConnection ones. The release of EntityManager close the DB Connection and KConnection can't be commited anymore
-	private static final KTransactionResourceId<JpaResource> JPA_RESOURCE_ID = new KTransactionResourceId<>(KTransactionResourceId.Priority.NORMAL, "Jpa");
+	private static final VTransactionResourceId<JpaResource> JPA_RESOURCE_ID = new VTransactionResourceId<>(VTransactionResourceId.Priority.NORMAL, "Jpa");
 
 	private final SqlDataBase innerDataBase;
 	private final EntityManagerFactory entityManagerFactory;
@@ -69,7 +69,7 @@ public final class JpaDataBase implements SqlDataBase {
 	 * @param transaction Transaction courante
 	 * @return ResourceJpa de la transaction, elle est crée si nécessaire.
 	 * */
-	public JpaResource obtainJpaResource(final KTransaction transaction) {
+	public JpaResource obtainJpaResource(final VTransaction transaction) {
 		JpaResource resource = transaction.getResource(JPA_RESOURCE_ID);
 
 		if (resource == null) {

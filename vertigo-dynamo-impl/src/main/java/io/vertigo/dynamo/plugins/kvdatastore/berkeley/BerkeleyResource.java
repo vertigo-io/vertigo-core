@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.kvdatastore.berkeley;
 
-import io.vertigo.dynamo.transaction.KTransactionResource;
+import io.vertigo.dynamo.transaction.VTransactionResource;
 import io.vertigo.lang.Assertion;
 
 import com.sleepycat.je.Database;
@@ -31,7 +31,7 @@ import com.sleepycat.je.Transaction;
  *
  * @author pchretien
  */
-final class BerkeleyResource implements KTransactionResource {
+final class BerkeleyResource implements VTransactionResource {
 	private Transaction transaction;
 
 	/***

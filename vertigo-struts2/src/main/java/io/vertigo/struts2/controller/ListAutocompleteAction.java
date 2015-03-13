@@ -24,8 +24,8 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.transaction.KTransactionManager;
-import io.vertigo.dynamo.transaction.KTransactionWritable;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.struts2.core.AbstractActionSupport;
@@ -53,7 +53,7 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 	@Inject
 	private CollectionsManager collectionsManager;
 	@Inject
-	private KTransactionManager transactionManager; //used for search in linked masterdatalist
+	private VTransactionManager transactionManager; //used for search in linked masterdatalist
 
 	/** {@inheritDoc} */
 	@Override
@@ -92,7 +92,7 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 
 		final Collection<DtField> searchedFields = Collections.singletonList(labelField);
 		final DtList<D> results;
-		try (final KTransactionWritable transaction = transactionManager.createCurrentTransaction()) { //Open a transaction because all fields are indexed. If there is a MDL it was load too.
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) { //Open a transaction because all fields are indexed. If there is a MDL it was load too.
 			final DtListFunction<D> fullTextFilter = collectionsManager.<D> createIndexDtListFunctionBuilder()
 					.filter(searchString != null ? searchString : "", 20, searchedFields)
 					.build();

@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.plugins.database.connection.hibernate;
 
 import io.vertigo.dynamo.database.connection.SqlConnection;
-import io.vertigo.dynamo.transaction.KTransactionManager;
+import io.vertigo.dynamo.transaction.VTransactionManager;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -44,7 +44,7 @@ public final class HibernateConnectionProviderPlugin extends JpaConnectionProvid
 	 * @param persistenceUnit Nom de la persistenceUnit à utiliser (dans le persistence.xml)
 	 */
 	@Inject
-	public HibernateConnectionProviderPlugin(@Named("persistenceUnit") final String persistenceUnit, @Named("dataBaseName") final String dataBaseName, final KTransactionManager transactionManager) {
+	public HibernateConnectionProviderPlugin(@Named("persistenceUnit") final String persistenceUnit, @Named("dataBaseName") final String dataBaseName, final VTransactionManager transactionManager) {
 		super(persistenceUnit, dataBaseName, transactionManager);
 	}
 

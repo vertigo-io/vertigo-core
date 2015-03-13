@@ -25,8 +25,8 @@ import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamo.transaction.KTransaction;
-import io.vertigo.dynamo.transaction.KTransactionManager;
+import io.vertigo.dynamo.transaction.VTransaction;
+import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
@@ -190,7 +190,7 @@ public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinitio
 	 * @return Connexion SQL
 	 */
 	private static SqlConnection getCurrentConnection() {
-		final KTransaction transaction = Home.getComponentSpace().resolve(KTransactionManager.class).getCurrentTransaction();
+		final VTransaction transaction = Home.getComponentSpace().resolve(VTransactionManager.class).getCurrentTransaction();
 		return transaction.getResource(AbstractTaskEngineSQL.SQL_RESOURCE_ID);
 	}
 

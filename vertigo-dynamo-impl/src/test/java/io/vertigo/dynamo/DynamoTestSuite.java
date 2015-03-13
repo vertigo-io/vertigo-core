@@ -54,7 +54,7 @@ import io.vertigo.dynamo.search.multiindex.SearchManagerMultiIndexTest;
 import io.vertigo.dynamo.search.standard.SearchManagerTest;
 import io.vertigo.dynamo.task.TaskManagerTest;
 import io.vertigo.dynamo.task.x.TaskEngineSelectDynamicTest;
-import io.vertigo.dynamo.transaction.KTransactionManagerTest;
+import io.vertigo.dynamo.transaction.VTransactionManagerTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -90,7 +90,7 @@ import org.junit.runners.Suite.SuiteClasses;
 		TaskManagerTest.class, TaskEngineSelectDynamicTest.class,
 
 		//--transaction
-		KTransactionManagerTest.class,
+		VTransactionManagerTest.class,
 
 		//Rule
 		DslDefinitionRuleTest.class, DslPackageRuleTest.class, DslDefinitionBodyRuleTest.class, DslWordListRuleTest.class, DslPropertyEntryRuleTest.class, DslDefinitionEntryRuleTest.class,

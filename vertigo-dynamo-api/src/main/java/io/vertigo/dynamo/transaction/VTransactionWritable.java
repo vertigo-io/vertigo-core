@@ -31,7 +31,7 @@ package io.vertigo.dynamo.transaction;
  *
  * @author  pchretien
  */
-public interface KTransactionWritable extends KTransaction, AutoCloseable {
+public interface VTransactionWritable extends VTransaction, AutoCloseable {
 	/**
 	 * Valide la transaction.
 	 * Cette méthode commit puis libère dans l'ordre toutes les ressources participant à la transaction.
