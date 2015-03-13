@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.impl.file.model;
 
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 /**
@@ -28,8 +29,9 @@ import java.util.Date;
  * @author npiedeloup
  */
 public final class TextFile extends AbstractKFile {
+	private static final String TEXT_CHARSET = "UTF8";
 	private static final long serialVersionUID = 1L;
-	private final String content;
+	private final byte[] contentAsBytes;
 
 	/**
 	 * Constructeur.
@@ -49,14 +51,23 @@ public final class TextFile extends AbstractKFile {
 	 */
 	public TextFile(final String fileName, final String mimeType, final String content) {
 		//le content ne doit pas être null
-		super(fileName, mimeType, new Date(), Long.valueOf(content.length()));
+		super(fileName, mimeType, new Date(), Long.valueOf(convertContentAsByte(content).length));
 		//-----
-		this.content = content;
+		contentAsBytes = convertContentAsByte(content);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public InputStream createInputStream() {
-		return new java.io.ByteArrayInputStream(content.getBytes());
+		return new java.io.ByteArrayInputStream(contentAsBytes);
+	}
+
+	private static byte[] convertContentAsByte(final String content) {
+		try {
+			return content.getBytes(TEXT_CHARSET);
+		} catch (final UnsupportedEncodingException e) {
+			//Just rethrow this "utf8 charset not found" error
+			throw new RuntimeException(e);
+		}
 	}
 }
