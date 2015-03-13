@@ -21,6 +21,7 @@ package io.vertigo.vega.rest.metamodel;
 import io.vertigo.dynamo.file.model.KFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
+import io.vertigo.util.StringUtil;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition.Verb;
 import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
 import io.vertigo.vega.rest.model.UiListState;
@@ -102,8 +103,8 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	 * @return this builder
 	 */
 	public EndPointDefinitionBuilder withPathPrefix(final String pathPrefix) {
-		Assertion.checkArgNotEmpty(pathPrefix, "Route pathPrefix must be specified on {0}", myMethod.getName());
-		Assertion.checkArgument(pathPrefix.startsWith("/"), "Route pathPrefix must starts with / (on {0})", myMethod.getName());
+		Assertion.checkArgNotEmpty(pathPrefix, "Route pathPrefix must be specified on {0}.{1}", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName());
+		Assertion.checkArgument(pathPrefix.startsWith("/"), "Route pathPrefix must starts with / (on {0}.{1})", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName());
 		//-----
 		myPathPrefix = pathPrefix;
 		return this;
@@ -115,8 +116,8 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	 * @return this builder
 	 */
 	public EndPointDefinitionBuilder with(final Verb verb, final String path) {
-		Assertion.checkState(myVerb == null, "A verb is already specified on {0} ({1})", myMethod.getName(), myVerb);
-		Assertion.checkArgNotEmpty(path, "Route path must be specified on {0}", myMethod.getName());
+		Assertion.checkState(myVerb == null, "A verb is already specified on {0}.{1} ({2})", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName(), myVerb);
+		Assertion.checkArgument(!StringUtil.isEmpty(myPathPrefix) || !StringUtil.isEmpty(path), "Route path must be specified on {0}.{1} (at least you should defined a pathPrefix)", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName());
 		//-----
 		myVerb = verb;
 		myPath = path;

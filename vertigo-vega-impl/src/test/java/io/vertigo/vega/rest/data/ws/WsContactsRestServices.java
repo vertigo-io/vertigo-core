@@ -20,7 +20,6 @@ package io.vertigo.vega.rest.data.ws;
 
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
-import io.vertigo.persona.security.KSecurityManager;
 import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.data.domain.Contact;
 import io.vertigo.vega.rest.data.domain.ContactCriteria;
@@ -33,6 +32,7 @@ import io.vertigo.vega.rest.stereotype.GET;
 import io.vertigo.vega.rest.stereotype.POST;
 import io.vertigo.vega.rest.stereotype.PUT;
 import io.vertigo.vega.rest.stereotype.PathParam;
+import io.vertigo.vega.rest.stereotype.PathPrefix;
 import io.vertigo.vega.rest.stereotype.SessionLess;
 import io.vertigo.vega.rest.stereotype.Validate;
 
@@ -42,37 +42,29 @@ import javax.inject.Inject;
 
 //basé sur http://www.restapitutorial.com/lessons/httpmethods.html
 
+@PathPrefix("/contacts")
 public final class WsContactsRestServices implements RestfulService {
 
 	@Inject
-	private KSecurityManager securityManager;
-	@Inject
 	private ContactDao contactDao;
 
-	@GET("/contacts/search")
+	@GET("/search")
 	public List<Contact> readList(final ContactCriteria listCriteria) {
 		//offset + range ?
 		//code 200
 		return contactDao.getList();
 	}
 
-	@AnonymousAccessAllowed
-	@GET("/login")
-	public void login() {
-		//code 200
-		securityManager.getCurrentUserSession().get().authenticate();
-	}
-
 	@SessionLess
 	@AnonymousAccessAllowed
-	@GET("/contacts")
+	@GET("")
 	public List<Contact> readAllList() {
 		//offset + range ?
 		//code 200
 		return contactDao.getList();
 	}
 
-	@GET("/contacts/{conId}")
+	@GET("/{conId}")
 	public Contact read(@PathParam("conId") final long conId) {
 		final Contact contact = contactDao.get(conId);
 		if (contact == null) {
@@ -84,7 +76,7 @@ public final class WsContactsRestServices implements RestfulService {
 	}
 
 	//@POST is non-indempotent
-	@POST("/contacts")
+	@POST("")
 	public Contact insert(//
 			final @Validate({ ContactValidator.class, MandatoryPkValidator.class }) Contact contact) {
 		if (contact.getConId() != null) {
@@ -99,7 +91,7 @@ public final class WsContactsRestServices implements RestfulService {
 	}
 
 	//PUT is indempotent : ID obligatoire
-	@PUT("/contacts/*")
+	@PUT("/*")
 	public Contact update(final Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
@@ -113,7 +105,7 @@ public final class WsContactsRestServices implements RestfulService {
 		return contact;
 	}
 
-	@DELETE("/contacts/{conId}")
+	@DELETE("/{conId}")
 	public void delete(@PathParam("conId") final long conId) {
 		if (!contactDao.containsKey(conId)) {
 			//404

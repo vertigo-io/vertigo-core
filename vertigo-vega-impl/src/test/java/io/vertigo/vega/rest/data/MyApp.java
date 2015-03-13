@@ -74,6 +74,7 @@ import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.WsRestHandler.DtDefinitions;
 import io.vertigo.vega.rest.data.domain.ContactDao;
 import io.vertigo.vega.rest.data.user.TestUserSession;
+import io.vertigo.vega.rest.data.ws.WsCommonRestServices;
 import io.vertigo.vega.rest.data.ws.WsContactsRestServices;
 import io.vertigo.vega.rest.data.ws.WsFileDownload;
 import io.vertigo.vega.rest.data.ws.WsRestServices;
@@ -132,6 +133,7 @@ public final class MyApp {
 			.endModule()
 			.beginModule("restServices").withNoAPI().withInheritance(RestfulService.class)
 				.beginComponent(ComponentCmdRestServices.class).endComponent()
+				.beginComponent(WsCommonRestServices.class).endComponent()
 				.beginComponent(WsContactsRestServices.class).endComponent()
 				.beginComponent(WsRestServices.class).endComponent()
 				.beginComponent(WsFileDownload.class).endComponent()
