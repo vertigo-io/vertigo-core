@@ -4,7 +4,7 @@
  *
  */
 -->
-<#assign hasFieldErrors = parameters.name?? && fieldErrors?? && fieldErrors[parameters.name]??/>
+<#assign hasFieldErrors = parameters.name?? && fieldErrors?? && fieldErrors[parameters.widgetname!parameters.name]??/>
 <#if parameters.cssClass?has_content || hasFieldErrors || (appendedCssClass?has_content) >
  class="<#rt/>
 </#if>
