@@ -39,7 +39,7 @@ public final class VTransactionImpl implements VTransactionWritable {
 	/**
 	 * Contient la transaction du Thread courant.
 	 */
-	private static final ThreadLocal<VTransactionImpl> currentThreadLocalTransaction = new ThreadLocal<>();
+	private static final ThreadLocal<VTransactionImpl> CURRENT_THREAD_LOCAL_TRANSACTION = new ThreadLocal<>();
 
 	/**
 	 * A la création la transaction est démarrée.
@@ -81,7 +81,7 @@ public final class VTransactionImpl implements VTransactionWritable {
 		this.transactionListener = transactionListener;
 		//La transaction démarre
 		transactionListener.onTransactionStart();
-		currentThreadLocalTransaction.set(this);
+		CURRENT_THREAD_LOCAL_TRANSACTION.set(this);
 	}
 
 	/**
@@ -357,12 +357,13 @@ public final class VTransactionImpl implements VTransactionWritable {
 		throw new RuntimeException("Transaction", error);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void close() {
 		try {
 			rollback();
 		} finally {
-			currentThreadLocalTransaction.remove();
+			CURRENT_THREAD_LOCAL_TRANSACTION.remove();
 		}
 	}
 
@@ -377,7 +378,7 @@ public final class VTransactionImpl implements VTransactionWritable {
 	 * @return VTransaction
 	 */
 	static VTransactionImpl getLocalCurrentTransaction() {
-		VTransactionImpl transaction = currentThreadLocalTransaction.get();
+		VTransactionImpl transaction = CURRENT_THREAD_LOCAL_TRANSACTION.get();
 		//Si la transaction courante est finie on ne la retourne pas.
 		if (transaction != null && transaction.isClosed()) {
 			transaction = null;
