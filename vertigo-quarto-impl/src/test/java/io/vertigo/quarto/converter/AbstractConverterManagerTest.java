@@ -176,8 +176,8 @@ public abstract class AbstractConverterManagerTest extends AbstractTestCaseJU4 {
 		log("Txt2Txt", resultFile);
 	}
 
-	private void log(final String methode, final VFile VFile) {
-		log.info(methode + " => " + fileManager.obtainReadOnlyFile(VFile).getAbsolutePath());
+	private void log(final String methode, final VFile vFile) {
+		log.info(methode + " => " + fileManager.obtainReadOnlyFile(vFile).getAbsolutePath());
 	}
 
 	private static VFile createVFile(final FileManager fileManager, final String fileName, final Class<?> baseClass) {

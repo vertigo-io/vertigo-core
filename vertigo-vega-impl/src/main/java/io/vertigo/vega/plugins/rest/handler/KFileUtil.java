@@ -132,19 +132,19 @@ final class VFileUtil {
 		}
 	}
 
-	private static void send(final VFile VFile, final boolean isAttachment, final Response response)
+	private static void send(final VFile vFile, final boolean isAttachment, final Response response)
 			throws IOException {
-		final Long length = VFile.getLength();
+		final Long length = vFile.getLength();
 		Assertion.checkArgument(length.longValue() < Integer.MAX_VALUE, "Too big file to be send. It's "
 				+ length.longValue() / 1024 + " Ko long, but maximum was " + (Integer.MAX_VALUE / 1024)
 				+ " Ko.");
 		response.header("Content-Length", String.valueOf(length.intValue()));
 		response.header("Content-Disposition",
-				encodeFileNameToContentDisposition(VFile.getFileName(), isAttachment));
-		response.raw().addDateHeader("Last-Modified", VFile.getLastModified().getTime());
-		response.type(VFile.getMimeType());
+				encodeFileNameToContentDisposition(vFile.getFileName(), isAttachment));
+		response.raw().addDateHeader("Last-Modified", vFile.getLastModified().getTime());
+		response.type(vFile.getMimeType());
 
-		try (final InputStream input = VFile.createInputStream()) {
+		try (final InputStream input = vFile.createInputStream()) {
 			try (final OutputStream output = response.raw().getOutputStream()) {
 				copy(input, output);
 			}

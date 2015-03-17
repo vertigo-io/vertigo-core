@@ -351,12 +351,12 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	@Test
 	public void testCreateFile() throws Exception {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final VFile VFile;
+			final VFile vFile;
 			//1.Création du fichier depuis un fichier texte du FS
 
-			VFile = TestUtil.createVFile(fileManager, "data/lautreamont.txt", AbstractPersistenceManagerTest.class);
+			vFile = TestUtil.createVFile(fileManager, "data/lautreamont.txt", AbstractPersistenceManagerTest.class);
 			//2. Sauvegarde en BDD
-			final FileInfo fileInfo = new FileInfoStd(VFile);
+			final FileInfo fileInfo = new FileInfoStd(vFile);
 			persistenceManager.getFileInfoBroker().create(fileInfo);
 
 			//3.relecture du fichier
@@ -366,7 +366,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 
 			final String source;
 			try (final OutputStream sourceOS = new java.io.ByteArrayOutputStream()) {
-				FileUtil.copy(VFile.createInputStream(), sourceOS);
+				FileUtil.copy(vFile.createInputStream(), sourceOS);
 				source = sourceOS.toString();
 			}
 

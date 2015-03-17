@@ -150,8 +150,8 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 				final BodyPart bodyPart = new MimeBodyPart();
 				setBodyContent(mail.getTextContent(), mail.getHtmlContent(), bodyPart);
 				multiPart.addBodyPart(bodyPart);
-				for (final VFile VFile : attachments) {
-					final BodyPart bodyFile = createBodyFile(VFile);
+				for (final VFile vFile : attachments) {
+					final BodyPart bodyFile = createBodyFile(vFile);
 					multiPart.addBodyPart(bodyFile);
 				}
 				message.setContent(multiPart);
@@ -247,12 +247,12 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 		}
 	}
 
-	private BodyPart createBodyFile(final VFile VFile) throws MessagingException {
+	private BodyPart createBodyFile(final VFile vFile) throws MessagingException {
 		try {
-			final File file = fileManager.obtainReadOnlyFile(VFile);
+			final File file = fileManager.obtainReadOnlyFile(vFile);
 			final MimeBodyPart bodyFile = new MimeBodyPart();
 			bodyFile.attachFile(file);
-			bodyFile.setFileName(VFile.getFileName());
+			bodyFile.setFileName(vFile.getFileName());
 			return bodyFile;
 		} catch (final IOException e) {
 			throw new RuntimeException("Erreur de lecture des pieces jointes");

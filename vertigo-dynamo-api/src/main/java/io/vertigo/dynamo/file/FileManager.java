@@ -32,10 +32,10 @@ import java.util.Date;
 public interface FileManager extends Component {
 
 	/**
-	 * @param VFile VFile à lire
+	 * @param vFile VFile à lire
 	 * @return Fichier physique readOnly (pour lecture d'un FileInfo)
 	 */
-	File obtainReadOnlyFile(final VFile VFile);
+	File obtainReadOnlyFile(final VFile vFile);
 
 	/**
 	 * Crée un Fileinfo temporaire à partir d'un fichier physique.
@@ -58,7 +58,7 @@ public interface FileManager extends Component {
 	/**
 	 * Crée un Fileinfo temporaire à partir d'un Builder du flux des données.
 	 * Le typeMime sera déterminé à partir du fileName.
-	 * 
+	 *
 	 * @param fileName Nom du fichier
 	 * @param lastModified Date de dernière modification
 	 * @param length Taille du fichier

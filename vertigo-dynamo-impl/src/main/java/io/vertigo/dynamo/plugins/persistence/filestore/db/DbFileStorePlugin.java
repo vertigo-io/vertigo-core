@@ -87,20 +87,20 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 		final String mimeType = (String) getValue(fileInfoDto, DtoFields.MIME_TYPE);
 		final Date lastModified = (Date) getValue(fileInfoDto, DtoFields.LAST_MODIFIED);
 		final Long length = (Long) getValue(fileInfoDto, DtoFields.LENGTH);
-		final VFile VFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
+		final VFile vFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
 		//TODO passer par une factory de FileInfo à partir de la FileInfoDefinition (comme DomainFactory)
-		return new DatabaseFileInfo(uri.<FileInfoDefinition> getDefinition(), VFile);
+		return new DatabaseFileInfo(uri.<FileInfoDefinition> getDefinition(), vFile);
 	}
 
 	private static DtObject createFileInfoDto(final FileInfo fileInfo) {
 		final DtObject fileInfoDto = createDtObject(fileInfo.getDefinition());
 		//-----
-		final VFile VFile = fileInfo.getVFile();
-		setValue(fileInfoDto, DtoFields.FILE_NAME, VFile.getFileName());
-		setValue(fileInfoDto, DtoFields.MIME_TYPE, VFile.getMimeType());
-		setValue(fileInfoDto, DtoFields.LAST_MODIFIED, VFile.getLastModified());
-		setValue(fileInfoDto, DtoFields.LENGTH, VFile.getLength());
-		setValue(fileInfoDto, DtoFields.FILE_DATA, new FileInfoDataStream(VFile));
+		final VFile vFile = fileInfo.getVFile();
+		setValue(fileInfoDto, DtoFields.FILE_NAME, vFile.getFileName());
+		setValue(fileInfoDto, DtoFields.MIME_TYPE, vFile.getMimeType());
+		setValue(fileInfoDto, DtoFields.LAST_MODIFIED, vFile.getLastModified());
+		setValue(fileInfoDto, DtoFields.LENGTH, vFile.getLength());
+		setValue(fileInfoDto, DtoFields.FILE_DATA, new FileInfoDataStream(vFile));
 
 		if (fileInfo.getURI() != null) {
 			setPkValue(fileInfoDto, fileInfo.getURI().getKey());
@@ -212,20 +212,20 @@ public final class DbFileStorePlugin implements FileStorePlugin {
 	}
 
 	private static final class FileInfoDataStream implements DataStream {
-		private final VFile VFile;
+		private final VFile vFile;
 
-		FileInfoDataStream(final VFile VFile) {
-			this.VFile = VFile;
+		FileInfoDataStream(final VFile vFile) {
+			this.vFile = vFile;
 		}
 
 		@Override
 		public InputStream createInputStream() throws IOException {
-			return VFile.createInputStream();
+			return vFile.createInputStream();
 		}
 
 		@Override
 		public long getLength() {
-			return VFile.getLength();
+			return vFile.getLength();
 		}
 	}
 

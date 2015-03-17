@@ -31,7 +31,7 @@ import io.vertigo.lang.Assertion;
  */
 public abstract class AbstractFileInfo implements FileInfo {
 	private static final long serialVersionUID = 1L;
-	private final VFile VFile;
+	private final VFile vFile;
 	private final DefinitionReference<FileInfoDefinition> fileInfoDefinitionRef;
 	private FileInfoURI uri;
 
@@ -39,14 +39,14 @@ public abstract class AbstractFileInfo implements FileInfo {
 	 * Constructeur.
 	 * Associe un fichier à des méta-données
 	 * @param fileInfoDefinition Definition du FileInfo
-	 * @param VFile Données du fichier
+	 * @param vFile Données du fichier
 	*/
-	protected AbstractFileInfo(final FileInfoDefinition fileInfoDefinition, final VFile VFile) {
+	protected AbstractFileInfo(final FileInfoDefinition fileInfoDefinition, final VFile vFile) {
 		Assertion.checkNotNull(fileInfoDefinition);
-		Assertion.checkNotNull(VFile);
+		Assertion.checkNotNull(vFile);
 		//-----
 		this.fileInfoDefinitionRef = new DefinitionReference<>(fileInfoDefinition);
-		this.VFile = VFile;
+		this.vFile = vFile;
 	}
 
 	/** {@inheritDoc} */
@@ -74,6 +74,6 @@ public abstract class AbstractFileInfo implements FileInfo {
 	/** {@inheritDoc} */
 	@Override
 	public final VFile getVFile() {
-		return VFile;
+		return vFile;
 	}
 }

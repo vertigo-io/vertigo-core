@@ -87,16 +87,16 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 		// Ramène FileData
 		final URI<DtObject> dtoDataUri = createDataURI(fileInfoUri.<FileInfoDefinition> getDefinition(), fdtId);
 		final DtObject fileDataDto = getPersistenceManager().getBroker().get(dtoDataUri);
-		// Construction du VFile.
+		// Construction du vFile.
 		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder((DataStream) getValue(fileDataDto, DtoFields.FILE_DATA));
 		final String fileName = (String) getValue(fileMetadataDto, DtoFields.FILE_NAME);
 		final String mimeType = (String) getValue(fileMetadataDto, DtoFields.MIME_TYPE);
 		final Date lastModified = (Date) getValue(fileMetadataDto, DtoFields.LAST_MODIFIED);
 		final Long length = (Long) getValue(fileMetadataDto, DtoFields.LENGTH);
-		final VFile VFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
+		final VFile vFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
 
 		//TODO passer par une factory de FileInfo à partir de la FileInfoDefinition (comme DomainFactory)
-		final FileInfo fileInfo = new DatabaseFileInfo(fileInfoUri.getDefinition(), VFile);
+		final FileInfo fileInfo = new DatabaseFileInfo(fileInfoUri.getDefinition(), vFile);
 		fileInfo.setURIStored(fileInfoUri);
 		return fileInfo;
 	}
@@ -195,19 +195,19 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 
 	private static DtObject createMetadataDtObject(final FileInfo fileInfo) {
 		final DtObject fileMetadataDto = DtObjectUtil.createDtObject(getRootDtDefinition(fileInfo.getDefinition(), 0));
-		final VFile VFile = fileInfo.getVFile();
-		setValue(fileMetadataDto, DtoFields.FILE_NAME, VFile.getFileName());
-		setValue(fileMetadataDto, DtoFields.MIME_TYPE, VFile.getMimeType());
-		setValue(fileMetadataDto, DtoFields.LAST_MODIFIED, VFile.getLastModified());
-		setValue(fileMetadataDto, DtoFields.LENGTH, VFile.getLength());
+		final VFile vFile = fileInfo.getVFile();
+		setValue(fileMetadataDto, DtoFields.FILE_NAME, vFile.getFileName());
+		setValue(fileMetadataDto, DtoFields.MIME_TYPE, vFile.getMimeType());
+		setValue(fileMetadataDto, DtoFields.LAST_MODIFIED, vFile.getLastModified());
+		setValue(fileMetadataDto, DtoFields.LENGTH, vFile.getLength());
 		return fileMetadataDto;
 	}
 
 	private static DtObject createDataDtObject(final FileInfo fileInfo) {
 		final DtObject fileDataDto = DtObjectUtil.createDtObject(getRootDtDefinition(fileInfo.getDefinition(), 1));
-		final VFile VFile = fileInfo.getVFile();
-		setValue(fileDataDto, DtoFields.FILE_NAME, VFile.getFileName());
-		setValue(fileDataDto, DtoFields.FILE_DATA, new FileInfoDataStream(VFile));
+		final VFile vFile = fileInfo.getVFile();
+		setValue(fileDataDto, DtoFields.FILE_NAME, vFile.getFileName());
+		setValue(fileDataDto, DtoFields.FILE_DATA, new FileInfoDataStream(vFile));
 		return fileDataDto;
 	}
 
@@ -238,24 +238,24 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 	}
 
 	private static final class FileInfoDataStream implements DataStream {
-		private final VFile VFile;
+		private final VFile vFile;
 
-		FileInfoDataStream(final VFile VFile) {
-			Assertion.checkNotNull(VFile);
+		FileInfoDataStream(final VFile vFile) {
+			Assertion.checkNotNull(vFile);
 			//-----
-			this.VFile = VFile;
+			this.vFile = vFile;
 		}
 
 		/** {@inheritDoc} */
 		@Override
 		public InputStream createInputStream() throws IOException {
-			return VFile.createInputStream();
+			return vFile.createInputStream();
 		}
 
 		/** {@inheritDoc} */
 		@Override
 		public long getLength() {
-			return VFile.getLength();
+			return vFile.getLength();
 		}
 	}
 

@@ -47,15 +47,15 @@ public final class FileManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testCreateTempFile() {
 		final File file = TestUtil.getFile("data/testFile.txt", getClass());
-		final VFile VFile = fileManager.createFile(file);
-		checVFile(VFile, "testFile.txt", null, "text/plain", 71092L);
+		final VFile vFile = fileManager.createFile(file);
+		checVFile(vFile, "testFile.txt", null, "text/plain", 71092L);
 	}
 
 	@Test
 	public void testObtainReadOnlyFile() {
 		final File file = TestUtil.getFile("data/testFile.txt", getClass());
-		final VFile VFile = fileManager.createFile(file);
-		checVFile(fileManager.obtainReadOnlyFile(VFile), file);
+		final VFile vFile = fileManager.createFile(file);
+		checVFile(fileManager.obtainReadOnlyFile(vFile), file);
 	}
 
 	@Test
@@ -63,8 +63,8 @@ public final class FileManagerTest extends AbstractTestCaseJU4 {
 		final String fileName = "monTestFile.txt";
 		final String typeMime = "monTypeMime";
 		final File file = TestUtil.getFile("data/testFile.txt", getClass());
-		final VFile VFile = fileManager.createFile(fileName, typeMime, file);
-		checVFile(VFile, fileName, null, typeMime, 71092L);
+		final VFile vFile = fileManager.createFile(fileName, typeMime, file);
+		checVFile(vFile, fileName, null, typeMime, 71092L);
 	}
 
 	@Test
@@ -78,8 +78,8 @@ public final class FileManagerTest extends AbstractTestCaseJU4 {
 				return new StringBufferInputStream("Contenu test");
 			}
 		};
-		final VFile VFile = fileManager.createFile(fileName, lastModified, length, inputStreamBuilder);
-		checVFile(VFile, fileName, lastModified, "text/plain", length);
+		final VFile vFile = fileManager.createFile(fileName, lastModified, length, inputStreamBuilder);
+		checVFile(vFile, fileName, lastModified, "text/plain", length);
 	}
 
 	@Test
@@ -94,20 +94,20 @@ public final class FileManagerTest extends AbstractTestCaseJU4 {
 				return new StringBufferInputStream("Contenu test");
 			}
 		};
-		final VFile VFile = fileManager.createFile(fileName, typeMime, lastModified, length, inputStreamBuilder);
-		checVFile(VFile, fileName, lastModified, typeMime, length);
+		final VFile vFile = fileManager.createFile(fileName, typeMime, lastModified, length, inputStreamBuilder);
+		checVFile(vFile, fileName, lastModified, typeMime, length);
 	}
 
-	private static void checVFile(final VFile VFile, final String fileName, final Date lastModified, final String mimeType, final Long length) {
-		Assert.assertEquals(fileName, VFile.getFileName());
+	private static void checVFile(final VFile vFile, final String fileName, final Date lastModified, final String mimeType, final Long length) {
+		Assert.assertEquals(fileName, vFile.getFileName());
 		if (lastModified != null) { //le lastModified peut être inconnu du test
-			Assert.assertEquals(lastModified, VFile.getLastModified());
+			Assert.assertEquals(lastModified, vFile.getLastModified());
 		}
-		Assert.assertEquals(mimeType, VFile.getMimeType());
-		Assert.assertEquals(length, VFile.getLength(), length * 0.1); //+ or - 10%
+		Assert.assertEquals(mimeType, vFile.getMimeType());
+		Assert.assertEquals(length, vFile.getLength(), length * 0.1); //+ or - 10%
 
 		try {
-			nop(VFile.createInputStream());
+			nop(vFile.createInputStream());
 		} catch (final IOException e) {
 			throw new RuntimeException(e);
 		}

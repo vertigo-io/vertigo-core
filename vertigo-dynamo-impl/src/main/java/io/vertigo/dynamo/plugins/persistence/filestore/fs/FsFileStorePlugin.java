@@ -123,10 +123,10 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		final String filePath = FsFileStorePlugin.<String> getValue(fileInfoDto, DtoFields.FILE_PATH);
 
 		final InputStreamBuilder inputStreamBuilder = new FileInputStreamBuilder(new File(documentRoot + filePath));
-		final VFile VFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
+		final VFile vFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
 
 		// retourne le fileinfo avec le fichier et son URI
-		final FsFileInfo fsFileInfo = new FsFileInfo(uri.<FileInfoDefinition> getDefinition(), VFile);
+		final FsFileInfo fsFileInfo = new FsFileInfo(uri.<FileInfoDefinition> getDefinition(), vFile);
 		fsFileInfo.setURIStored(uri);
 		return fsFileInfo;
 	}
@@ -134,19 +134,19 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	private static class FsFileInfo extends AbstractFileInfo {
 		private static final long serialVersionUID = -1610176974946554828L;
 
-		protected FsFileInfo(final FileInfoDefinition fileInfoDefinition, final VFile VFile) {
-			super(fileInfoDefinition, VFile);
+		protected FsFileInfo(final FileInfoDefinition fileInfoDefinition, final VFile vFile) {
+			super(fileInfoDefinition, vFile);
 		}
 	}
 
 	private static DtObject createFileInfoDto(final FileInfo fileInfo) {
 		final DtObject fileInfoDto = createDtObject(fileInfo.getDefinition());
 		//-----
-		final VFile VFile = fileInfo.getVFile();
-		setValue(fileInfoDto, DtoFields.FILE_NAME, VFile.getFileName());
-		setValue(fileInfoDto, DtoFields.MIME_TYPE, VFile.getMimeType());
-		setValue(fileInfoDto, DtoFields.LAST_MODIFIED, VFile.getLastModified());
-		setValue(fileInfoDto, DtoFields.LENGTH, VFile.getLength());
+		final VFile vFile = fileInfo.getVFile();
+		setValue(fileInfoDto, DtoFields.FILE_NAME, vFile.getFileName());
+		setValue(fileInfoDto, DtoFields.MIME_TYPE, vFile.getMimeType());
+		setValue(fileInfoDto, DtoFields.LAST_MODIFIED, vFile.getLastModified());
+		setValue(fileInfoDto, DtoFields.LENGTH, vFile.getLength());
 		if (fileInfo.getURI() == null) {
 			// cas de la création, on ajoute en base un chemin fictif (colonne not null)
 			setValue(fileInfoDto, DtoFields.FILE_PATH, "/dev/null");

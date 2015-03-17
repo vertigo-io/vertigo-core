@@ -32,9 +32,9 @@ final class DatabaseFileInfo extends AbstractFileInfo {
 	/**
 	 * Constructeur.
 	 * @param fileInfoDefinition Définition du FileInfo
-	 * @param VFile Fichier sous jacent
+	 * @param vFile Fichier sous jacent
 	 */
-	protected DatabaseFileInfo(final FileInfoDefinition fileInfoDefinition, final VFile VFile) {
-		super(fileInfoDefinition, VFile);
+	protected DatabaseFileInfo(final FileInfoDefinition fileInfoDefinition, final VFile vFile) {
+		super(fileInfoDefinition, vFile);
 	}
 }

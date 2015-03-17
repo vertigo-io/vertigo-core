@@ -56,38 +56,38 @@ public final class VFileResponseBuilder {
 
 	/**
 	 * Envoi les données au client sous forme d'attachment.
-	 * @param VFile Fichier a envoyer
+	 * @param vFile Fichier a envoyer
 	 */
-	public void send(final VFile VFile) {
-		send(VFile, true);
+	public void send(final VFile vFile) {
+		send(vFile, true);
 	}
 
 	/**
 	 * Envoi les données au client sous forme de stream.
-	 * @param VFile Fichier a envoyer
+	 * @param vFile Fichier a envoyer
 	 */
-	public void sendAsStream(final VFile VFile) {
-		send(VFile, false);
+	public void sendAsStream(final VFile vFile) {
+		send(vFile, false);
 	}
 
-	private String send(final VFile VFile, final boolean attachment) {
+	private String send(final VFile vFile, final boolean attachment) {
 		try {
-			doSend(VFile, attachment);
+			doSend(vFile, attachment);
 		} catch (final IOException e) {
 			handleException(e);
 		}
 		return null;
 	}
 
-	private void doSend(final VFile VFile, final boolean attachment) throws IOException {
-		final Long length = VFile.getLength();
+	private void doSend(final VFile vFile, final boolean attachment) throws IOException {
+		final Long length = vFile.getLength();
 		Assertion.checkArgument(length.longValue() < Integer.MAX_VALUE, "Le fichier est trop gros pour être envoyé. Il fait " + length.longValue() / 1024 + " Ko, mais le maximum acceptable est de " + (Integer.MAX_VALUE / 1024) + " Ko.");
 		httpResponse.setContentLength(length.intValue());
-		httpResponse.addHeader("Content-Disposition", encodeFileNameToContentDisposition(httpRequest, VFile.getFileName(), attachment));
-		httpResponse.setDateHeader("Last-Modified", VFile.getLastModified().getTime());
-		httpResponse.setContentType(VFile.getMimeType());
+		httpResponse.addHeader("Content-Disposition", encodeFileNameToContentDisposition(httpRequest, vFile.getFileName(), attachment));
+		httpResponse.setDateHeader("Last-Modified", vFile.getLastModified().getTime());
+		httpResponse.setContentType(vFile.getMimeType());
 
-		try (final InputStream input = VFile.createInputStream()) {
+		try (final InputStream input = vFile.createInputStream()) {
 			try (final BufferedInputStream bInput = new BufferedInputStream(input)) {
 				try (final OutputStream output = httpResponse.getOutputStream()) {
 					copy(bInput, output);

@@ -32,10 +32,10 @@ public final class FileInfoStd extends AbstractFileInfo {
 
 	/**
 	 * Constructeur par défaut.
-	 * @param VFile Données du fichier
+	 * @param vFile Données du fichier
 	 */
-	public FileInfoStd(final VFile VFile) {
-		super(FileInfoDefinition.findFileInfoDefinition(FileInfoStd.class), VFile);
+	public FileInfoStd(final VFile vFile) {
+		super(FileInfoDefinition.findFileInfoDefinition(FileInfoStd.class), vFile);
 	}
 }
 
