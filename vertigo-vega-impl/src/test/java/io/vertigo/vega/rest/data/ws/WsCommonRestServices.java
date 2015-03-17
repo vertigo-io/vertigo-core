@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.rest.data.ws;
 
-import io.vertigo.persona.security.KSecurityManager;
+import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.rest.stereotype.GET;
@@ -29,7 +29,7 @@ import javax.inject.Inject;
 public final class WsCommonRestServices implements RestfulService {
 
 	@Inject
-	private KSecurityManager securityManager;
+	private VSecurityManager securityManager;
 
 	@AnonymousAccessAllowed
 	@GET("/login")

@@ -21,7 +21,7 @@ package io.vertigo.vega.impl.token;
 import io.vertigo.dynamo.kvdatastore.KVDataStoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-import io.vertigo.persona.security.KSecurityManager;
+import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.vega.token.TokenManager;
 
@@ -40,12 +40,12 @@ import javax.inject.Named;
 public final class TokenManagerImpl implements TokenManager {
 
 	private final String dataStoreName;
-	private final KSecurityManager securityManager;
+	private final VSecurityManager securityManager;
 	/** Object token, by */
 	private final KVDataStoreManager kvDataStoreManager;
 
 	@Inject
-	public TokenManagerImpl(@Named("dataStoreName") final String dataStoreName, final KSecurityManager securityManager, final KVDataStoreManager kvDataStoreManager) {
+	public TokenManagerImpl(@Named("dataStoreName") final String dataStoreName, final VSecurityManager securityManager, final KVDataStoreManager kvDataStoreManager) {
 		Assertion.checkArgNotEmpty(dataStoreName);
 		Assertion.checkNotNull(securityManager);
 		Assertion.checkNotNull(kvDataStoreManager);

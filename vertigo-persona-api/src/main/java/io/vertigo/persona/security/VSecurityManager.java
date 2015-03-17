@@ -29,7 +29,7 @@ import java.util.Set;
  *
  * @author npiedeloup
  */
-public interface KSecurityManager extends Component {
+public interface VSecurityManager extends Component {
 	//=========================================================================
 	//===============Gestion de l'utilisateur (porteur des droits)=============
 	//=========================================================================

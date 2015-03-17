@@ -21,7 +21,7 @@ package io.vertigo.vega.plugins.rest.handler;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-import io.vertigo.persona.security.KSecurityManager;
+import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.vega.impl.rest.RestHandlerPlugin;
 import io.vertigo.vega.rest.exception.SessionException;
@@ -52,7 +52,7 @@ public final class RateLimitingRestHandlerPlugin implements Activeable, RestHand
 	private static final String RATE_LIMIT_REMAINING = "X-Rate-Limit-Remaining"; //the number of requests left for the M minute window
 	private static final String RATE_LIMIT_RESET = "X-Rate-Limit-Reset"; //the remaining seconds before the rate limit resets
 
-	private final KSecurityManager securityManager;
+	private final VSecurityManager securityManager;
 	private final long windowSeconds;
 	private final long limitValue;
 
@@ -73,7 +73,7 @@ public final class RateLimitingRestHandlerPlugin implements Activeable, RestHand
 	 * @param securityManager Security Manager
 	 */
 	@Inject
-	public RateLimitingRestHandlerPlugin(final KSecurityManager securityManager, @Named("windowSeconds") final Option<Long> windowSeconds, @Named("limitValue") final Option<Long> limitValue) {
+	public RateLimitingRestHandlerPlugin(final VSecurityManager securityManager, @Named("windowSeconds") final Option<Long> windowSeconds, @Named("limitValue") final Option<Long> limitValue) {
 		Assertion.checkNotNull(securityManager);
 		Assertion.checkNotNull(limitValue);
 		Assertion.checkNotNull(windowSeconds);

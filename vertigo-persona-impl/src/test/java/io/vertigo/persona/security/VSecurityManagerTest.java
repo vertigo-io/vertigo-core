@@ -38,9 +38,9 @@ import org.junit.Test;
 /**
  * @author pchretien
  */
-public final class KSecurityManagerTest extends AbstractTestCaseJU4 {
+public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 	@Inject
-	private KSecurityManager securityManager;
+	private VSecurityManager securityManager;
 
 	@Test
 	public void testCreateUserSession() {

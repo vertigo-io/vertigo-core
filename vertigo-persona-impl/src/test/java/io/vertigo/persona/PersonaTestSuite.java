@@ -18,7 +18,7 @@
  */
 package io.vertigo.persona;
 
-import io.vertigo.persona.security.KSecurityManagerTest;
+import io.vertigo.persona.security.VSecurityManagerTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -30,7 +30,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * @author pchretien
  */
 @RunWith(Suite.class)
-@SuiteClasses({ KSecurityManagerTest.class })
+@SuiteClasses({ VSecurityManagerTest.class })
 public final class PersonaTestSuite {
 	//
 }

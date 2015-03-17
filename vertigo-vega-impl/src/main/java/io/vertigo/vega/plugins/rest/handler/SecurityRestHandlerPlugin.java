@@ -20,7 +20,7 @@ package io.vertigo.vega.plugins.rest.handler;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-import io.vertigo.persona.security.KSecurityManager;
+import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.vega.impl.rest.RestHandlerPlugin;
 import io.vertigo.vega.rest.exception.SessionException;
@@ -39,14 +39,14 @@ import spark.Response;
  */
 public final class SecurityRestHandlerPlugin implements RestHandlerPlugin {
 
-	private final KSecurityManager securityManager;
+	private final VSecurityManager securityManager;
 
 	/**
 	 * Constructor.
 	 * @param securityManager Security Manager
 	 */
 	@Inject
-	public SecurityRestHandlerPlugin(final KSecurityManager securityManager) {
+	public SecurityRestHandlerPlugin(final VSecurityManager securityManager) {
 		Assertion.checkNotNull(securityManager);
 		//-----
 		this.securityManager = securityManager;

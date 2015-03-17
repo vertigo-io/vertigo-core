@@ -49,9 +49,9 @@ import io.vertigo.dynamo.plugins.export.pdf.PDFExporterPlugin;
 import io.vertigo.dynamo.plugins.kvdatastore.delayedmemory.DelayedMemoryKVDataStorePlugin;
 import io.vertigo.dynamo.plugins.persistence.datastore.postgresql.PostgreSqlDataStorePlugin;
 import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.persona.impl.security.KSecurityManagerImpl;
+import io.vertigo.persona.impl.security.VSecurityManagerImpl;
 import io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin;
-import io.vertigo.persona.security.KSecurityManager;
+import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.impl.rest.RestManagerImpl;
 import io.vertigo.vega.impl.rest.catalog.CatalogRestServices;
 import io.vertigo.vega.impl.rest.catalog.SwaggerRestServices;
@@ -95,7 +95,7 @@ public final class MyApp {
 				.beginComponent(ResourceManager.class, ResourceManagerImpl.class)
 					.beginPlugin( ClassPathResourceResolverPlugin.class).endPlugin()
 				.endComponent()
-				.beginComponent(KSecurityManager.class, KSecurityManagerImpl.class)
+				.beginComponent(VSecurityManager.class, VSecurityManagerImpl.class)
 					.withParam("userSessionClassName", TestUserSession.class.getName())
 					.beginPlugin(SecurityResourceLoaderPlugin.class).endPlugin()
 				.endComponent()

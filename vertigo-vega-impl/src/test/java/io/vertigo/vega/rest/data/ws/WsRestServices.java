@@ -40,7 +40,7 @@ import io.vertigo.dynamo.impl.collections.functions.filter.FilterFunction;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.VUserException;
-import io.vertigo.persona.security.KSecurityManager;
+import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.util.DateUtil;
 import io.vertigo.util.StringUtil;
 import io.vertigo.vega.rest.RestfulService;
@@ -99,7 +99,7 @@ import javax.servlet.http.HttpServletResponse;
 public final class WsRestServices implements RestfulService {
 
 	@Inject
-	private KSecurityManager securityManager;
+	private VSecurityManager securityManager;
 	@Inject
 	private CollectionsManager collectionsManager;
 	@Inject
