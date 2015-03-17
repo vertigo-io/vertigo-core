@@ -1,6 +1,6 @@
 package io.vertigo.dynamock.domain.fileinfo
 
-create DtDefinition DT_KX_FILE_INFO {
+create DtDefinition DT_VX_FILE_INFO {
 	 persistent : "true"
 	 key FIL_ID {domain:DO_IDENTIFIANT	 label:"Identifiant" 			notNull: "true"}
 	 field FILE_NAME {domain:DO_STRING	 label:"Nom"	 				notNull: "true"}

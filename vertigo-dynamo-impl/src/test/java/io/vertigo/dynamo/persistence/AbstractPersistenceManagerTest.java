@@ -109,8 +109,8 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			//execPreparedStatement(connection, "SELECT * FROM   INFORMATION_SCHEMA.SYSTEM_SESSIONS;");
 			//execPreparedStatement(connection, "call next value for SEQ_CAR;");
 
-			execCallableStatement(connection, "create table KX_FILE_INFO(FIL_ID BIGINT , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH BIGINT, LAST_MODIFIED date, FILE_DATA BLOB);");
-			execCallableStatement(connection, "create sequence SEQ_KX_FILE_INFO start with 10001 increment by 1");
+			execCallableStatement(connection, "create table VX_FILE_INFO(FIL_ID BIGINT , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH BIGINT, LAST_MODIFIED date, FILE_DATA BLOB);");
+			execCallableStatement(connection, "create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1");
 			transaction.commit();
 		}
 
@@ -282,11 +282,11 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	//		statement.execute("SET PROPERTY \"sql.enforce_strict_size\" TRUE; " + "create table famille(ID BIGINT, LIBELLE varchar(255), PRIMARY KEY (ID))");
 	//	// TODO private
 	//	protected void createHsqlTablesFileInfo() throws SQLException {
-	//		statement.execute("drop table KX_FILE_INFO if exists");
-	//		statement.execute("drop sequence SEQ_KX_FILE_INFO if exists");
-	//		statement.execute("create sequence SEQ_KX_FILE_INFO start with 10001 increment by 1");
+	//		statement.execute("drop table VX_FILE_INFO if exists");
+	//		statement.execute("drop sequence SEQ_VX_FILE_INFO if exists");
+	//		statement.execute("create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1");
 	//		//BIGINT > LONG
-	//		statement.execute("SET PROPERTY \"sql.enforce_strict_size\" TRUE; " + "create table KX_FILE_INFO(FIL_ID BIGINT, " + "FILE_NAME varchar(50), " + "MIME_TYPE varchar(50), "
+	//		statement.execute("SET PROPERTY \"sql.enforce_strict_size\" TRUE; " + "create table VX_FILE_INFO(FIL_ID BIGINT, " + "FILE_NAME varchar(50), " + "MIME_TYPE varchar(50), "
 	//				+ "LENGTH BIGINT, " + "LAST_MODIFIED date, " + "FILE_DATA LONGVARBINARY, " + "PRIMARY KEY (FIL_ID))");
 	//
 	//	}

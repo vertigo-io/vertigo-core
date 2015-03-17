@@ -18,20 +18,20 @@
  */
 package io.vertigo.dynamock.domain.fileinfo;
 
+import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 /**
  * Attention cette classe est générée automatiquement !
- * Objet de données KxFileInfo
+ * Objet de données VxFileInfo
  */
 @javax.persistence.Entity
-@javax.persistence.Table(name = "KX_FILE_INFO")
+@javax.persistence.Table(name = "VX_FILE_INFO")
 @org.hibernate.annotations.TypeDefs(value = { @org.hibernate.annotations.TypeDef(name = "DO_STREAM", typeClass = io.vertigo.dynamo.plugins.database.connection.hibernate.DataStreamType.class) })
 @DtDefinition
-public final class KxFileInfo implements DtObject {
+public final class VxFileInfo implements DtObject {
 
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -45,11 +45,11 @@ public final class KxFileInfo implements DtObject {
 
 	/**
 	 * Champ : PRIMARY_KEY.
-	 * Récupère la valeur de la propriété 'Identifiant'. 
+	 * Récupère la valeur de la propriété 'Identifiant'.
 	 * @return Long filId <b>Obligatoire</b>
 	 */
 	@javax.persistence.Id
-	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_KX_FILE_INFO")
+	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_VX_FILE_INFO")
 	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.SEQUENCE, generator = "sequence")
 	@javax.persistence.Column(name = "FIL_ID")
 	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", notNull = true, label = "Identifiant")
@@ -68,7 +68,7 @@ public final class KxFileInfo implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Nom'. 
+	 * Récupère la valeur de la propriété 'Nom'.
 	 * @return String fileName <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "FILE_NAME")
@@ -88,7 +88,7 @@ public final class KxFileInfo implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Type mime'. 
+	 * Récupère la valeur de la propriété 'Type mime'.
 	 * @return String mimeType <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "MIME_TYPE")
@@ -108,7 +108,7 @@ public final class KxFileInfo implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Taille'. 
+	 * Récupère la valeur de la propriété 'Taille'.
 	 * @return Long length <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "LENGTH")
@@ -128,7 +128,7 @@ public final class KxFileInfo implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Date de derniÃ¨re modification'. 
+	 * Récupère la valeur de la propriété 'Date de derniÃ¨re modification'.
 	 * @return java.util.Date lastModified <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "LAST_MODIFIED")
@@ -148,8 +148,8 @@ public final class KxFileInfo implements DtObject {
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'data'. 
-	 * @return io.vertigo.dynamo.domain.metamodel.DataStream fileData 
+	 * Récupère la valeur de la propriété 'data'.
+	 * @return io.vertigo.dynamo.domain.metamodel.DataStream fileData
 	 */
 	@javax.persistence.Column(name = "FILE_DATA")
 	@org.hibernate.annotations.Type(type = "DO_STREAM")
@@ -161,7 +161,7 @@ public final class KxFileInfo implements DtObject {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'data'.
-	 * @param fileData io.vertigo.dynamo.domain.metamodel.DataStream 
+	 * @param fileData io.vertigo.dynamo.domain.metamodel.DataStream
 	 */
 	public void setFileData(final io.vertigo.dynamo.domain.metamodel.DataStream fileData) {
 		this.fileData = fileData;
