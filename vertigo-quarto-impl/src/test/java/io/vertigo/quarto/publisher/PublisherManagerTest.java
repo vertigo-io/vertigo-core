@@ -179,32 +179,6 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test l'enregistrement de deux définitions avec le même nom.
-	 */
-	@Test
-	public final void testDefinitionInfinitLoopRegister() {
-		try {
-			final PublisherNodeDefinition publisherNodeDefinition = new PublisherNodeDefinitionBuilder()
-					.withBooleanField("TEST_BOOLEAN")
-					.build();
-			final PublisherDataDefinition publisherDataDefinition = new PublisherDataDefinition("PU_TEST_1_BIS", publisherNodeDefinition);
-			registerDefinition(publisherDataDefinition);
-
-			/*final PublisherDataNodeDefinition subDefinition = publisherDataDefinitionFactory.createPublisherDataNodeDefinitionBuilder()
-					.registerStringField("TEST_STRING")
-					.registerNodeField("TEST_DATA", rootDefinition)
-					.toNodeDefinition();
-			 */
-
-			final PublisherData publisherData = createPublisherData("PU_TEST_1_BIS");
-			log.trace(asString(publisherData.getDefinition()));
-			Assert.fail("Il est possible de créer une structure cyclique.");
-		} catch (final IllegalArgumentException a) {
-			// succes
-		}
-	}
-
-	/**
 	 * Crée une Définition simple avec 1 bool, 1 string et un sous objet.
 	 */
 	@Test
@@ -385,6 +359,9 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 		log.trace(asString(publisherData.getDefinition()));
 	}
 
+	/**
+	 * Génère le Ksp de déclaration de PublisherNodeDefinition à partir d'un ou plusieur DTs.
+	 */
 	@Test
 	public final void testPublisherNodeGenerator() {
 		log.trace(PublisherDataUtil.generatePublisherNodeDefinitionAsKsp("DT_ENQUETE", "DT_ENQUETEUR"));
