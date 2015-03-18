@@ -19,7 +19,9 @@
 package io.vertigo.studio.plugins.mda.domain.templates;
 
 import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
+import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
+import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -66,6 +68,16 @@ public final class TemplateAssociation {
 	 */
 	public boolean isMultiple() {
 		return associationNode.isMultiple();
+	}
+
+	/**
+	 * @return Type de l'association : Simple ou NN
+	 */
+	public boolean isSimple() {
+		final AssociationDefinition associationDefinition = getDefinition();
+		Assertion.checkArgument(associationDefinition instanceof AssociationNNDefinition || associationDefinition instanceof AssociationSimpleDefinition, "AssociationDefinition type not supported : {0}", associationDefinition.getClass().getSimpleName());
+		//-----
+		return associationDefinition instanceof AssociationSimpleDefinition;
 	}
 
 	/**

@@ -84,7 +84,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 		if (io.vertigo.dynamo.domain.util.DtObjectUtil.getId(this) == null) {
 			return new io.vertigo.dynamo.domain.model.DtList<>(${association.returnType}.class);
 		}
-		final io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation fkDtListURI = get${association.role?cap_first}DtListURI();
+		final io.vertigo.dynamo.domain.metamodel.association.DtListURIFor<#if association.simple>Simple<#else>NN</#if>Association fkDtListURI = get${association.role?cap_first}DtListURI();
 		io.vertigo.lang.Assertion.checkNotNull(fkDtListURI);
 		//---------------------------------------------------------------------
 		//On est toujours dans un mode lazy.
@@ -101,8 +101,8 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	<#list annotations(association.definition) as annotation>
     ${annotation}
 	</#list>
-	public io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation get${association.role?cap_first}DtListURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createDtListURI(this, "${association.urn}", "${association.role}");
+	public io.vertigo.dynamo.domain.metamodel.association.DtListURIFor<#if association.simple>Simple<#else>NN</#if>Association get${association.role?cap_first}DtListURI() {
+		return io.vertigo.dynamo.domain.util.DtObjectUtil.createDtListURIFor<#if association.simple>Simple<#else>NN</#if>Association(this, "${association.urn}", "${association.role}");
 	}
 	<#else>
 	public ${association.returnType} get${association.role?cap_first}() {

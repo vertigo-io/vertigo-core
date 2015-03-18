@@ -43,7 +43,7 @@ create Association A_CMD_ATT {
   	dtDefinitionA : DT_ATTACHMENT,
 	dtDefinitionB : DT_COMMAND,
 			
-	navigabilityA : "false",
+	navigabilityA : "true",
 	navigabilityB : "true",
 	
 	multiplicityA:"0..*",
