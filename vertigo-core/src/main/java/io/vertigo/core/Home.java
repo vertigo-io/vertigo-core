@@ -22,6 +22,7 @@ import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.LogConfig;
 import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.spaces.component.ComponentSpace;
+import io.vertigo.core.spaces.config.ConfigSpace;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.lang.Assertion;
 
@@ -65,6 +66,7 @@ public final class Home {
 
 		private final DefinitionSpace definitionSpace;
 		private final ComponentSpace componentSpace;
+		private final ConfigSpace configSpace;
 
 		public App(final AppConfig appConfig) {
 			Assertion.checkNotNull(appConfig);
@@ -79,8 +81,9 @@ public final class Home {
 					initLog(appConfig.getLogConfig().get());
 				}
 				//-----
-				definitionSpace = new DefinitionSpace();
+				definitionSpace = new DefinitionSpace(appConfig);
 				componentSpace = new ComponentSpace(appConfig);
+				configSpace = new ConfigSpace(appConfig);
 				//----
 				for (final ModuleConfig moduleConfig : appConfig.getModuleConfigs()) {
 					definitionSpace.injectDefinitions(moduleConfig);
@@ -90,7 +93,6 @@ public final class Home {
 				//-----
 				componentSpace.start();
 				definitionSpace.start();
-				//	INSTANCE.jmx();
 				this.state = State.active;
 			} catch (final Throwable t) {
 				this.close();
@@ -134,6 +136,10 @@ public final class Home {
 
 		private ComponentSpace getComponentSpace() {
 			return componentSpace;
+		}
+
+		private ConfigSpace getConfigSpace() {
+			return configSpace;
 		}
 
 		private static void initLog(final LogConfig log4Config) {
@@ -181,4 +187,10 @@ public final class Home {
 		return getApp().getComponentSpace();
 	}
 
+	/**
+	 * @return ConfigSpace contains application's parameters
+	 */
+	public static ConfigSpace getConfigSpace() {
+		return getApp().getConfigSpace();
+	}
 }

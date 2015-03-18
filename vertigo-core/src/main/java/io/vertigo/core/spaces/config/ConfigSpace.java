@@ -1,6 +1,7 @@
 package io.vertigo.core.spaces.config;
 
 import io.vertigo.commons.impl.config.ConfigPlugin;
+import io.vertigo.core.config.AppConfig;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
@@ -16,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import javax.inject.Inject;
 
 /**
  * Interface du gestionnaire de la configuration applicative.
@@ -77,11 +76,10 @@ public final class ConfigSpace {
 	private static final String TRUE = "true";
 	private static final String FALSE = "false";
 
-	@Inject
-	ConfigSpace(final List<ConfigPlugin> configPlugins) {
-		Assertion.checkNotNull(configPlugins);
+	public ConfigSpace(final AppConfig appConfig) {
+		Assertion.checkNotNull(appConfig);
 		//-----
-		this.configPlugins = configPlugins;
+		this.configPlugins = null;
 	}
 
 	private static void checkPath(final String configPath) {
