@@ -265,11 +265,13 @@ public final class VTransactionImpl implements VTransactionWritable {
 				//On termine toutes les resources utilisées en les otant de la map.
 				Assertion.checkNotNull(ktr);
 				final Throwable throwable = doEnd(ktr, shouldRollback);
-				if (firstThrowable == null) {
-					firstThrowable = throwable;
-				}
-				if (!shouldRollback && throwable != null) {
+				if (throwable != null) {
 					shouldRollback = true;
+					if (firstThrowable == null) {
+						firstThrowable = throwable;
+					} else {
+						firstThrowable.addSuppressed(throwable);
+					}
 				}
 			}
 		}
@@ -317,28 +319,21 @@ public final class VTransactionImpl implements VTransactionWritable {
 		Assertion.checkNotNull(resource);
 		//-----
 		Throwable throwable = null;
-		try {
+		//autoCloseableResource is use to call release() in a finally/suppressedException block
+		try (AutoCloseableResource autoCloseableResource = new AutoCloseableResource(resource)) {
 			if (rollback) {
-				resource.rollback();
+				autoCloseableResource.rollback();
 			} else {
 				if (resource instanceof VTransaction) {
 					//Si la ressource est elle même une transaction, elle ne doit pas etre commitée de cette facon implicite
-					resource.rollback();
+					autoCloseableResource.rollback();
 					throw new IllegalStateException("La transaction incluse dans la transaction courante n'a pas été commité correctement");
 				}
-				resource.commit();
+				autoCloseableResource.commit();
 			}
 		} catch (final Throwable t) {
+			//we catch Throwable in order to handle all ressources even if one of them throw an error
 			throwable = t;
-		}
-		try {
-			resource.release();
-		} catch (final Throwable t) {
-			if (throwable == null) {
-				//L'exception survenue sur un release est moins grave
-				//que celle survenue lors du commit ou rollback
-				throwable = t;
-			}
 		}
 		return throwable;
 	}
@@ -370,6 +365,27 @@ public final class VTransactionImpl implements VTransactionWritable {
 	//==========================================================================
 	//=========================PRIVATE==========================================
 	//==========================================================================
+
+	private static class AutoCloseableResource implements AutoCloseable {
+		private final VTransactionResource innerResource;
+
+		AutoCloseableResource(final VTransactionResource innerResource) {
+			this.innerResource = innerResource;
+		}
+
+		void commit() throws Exception {
+			innerResource.commit();
+		}
+
+		void rollback() throws Exception {
+			innerResource.rollback();
+		}
+
+		@Override
+		public void close() throws Exception {
+			innerResource.release();
+		}
+	}
 
 	/**
 	 * Retourne la transaction courante de plus haut niveau.

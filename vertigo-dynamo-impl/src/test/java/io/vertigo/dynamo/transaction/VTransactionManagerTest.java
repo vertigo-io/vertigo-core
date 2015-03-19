@@ -26,7 +26,9 @@ import io.vertigo.dynamo.transaction.data.SampleTransactionResource;
 import javax.inject.Inject;
 
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  *
@@ -42,6 +44,9 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private VTransactionManager transactionManager;
 	private SampleDataBase dataBase;
+
+	@Rule
+	public final ExpectedException expectedEx = ExpectedException.none();
 
 	private static String createData() {
 		count++;
@@ -203,6 +208,30 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 
 	/**
 	 * Création d'une transaction automome à l'intérieur d'une transaction.
+	 */
+	@Test(expected = IllegalStateException.class)
+	public void testCreateAutonomousTransactionForgetToClose() {
+		try (final VTransactionWritable rootTransaction = transactionManager.createCurrentTransaction()) {
+			final SampleDataBaseConnection rootConnection = obtainDataBaseConnection(dataBase, "test-memory-1");
+			// --- modification de la bdd sur la transaction principale.
+			final String rootValue = createData();
+			rootConnection.setData(rootValue);
+			Assert.assertEquals(rootValue, rootConnection.getData());
+
+			try (final VTransactionWritable autonomousTransaction = transactionManager.createAutonomousTransaction()) {
+				final SampleDataBaseConnection connection = obtainDataBaseConnection(dataBase, "test-memory-2");
+				// --- modification de la bdd sur la transaction autonome.
+				final String value = createData();
+				connection.setData(value);
+				Assert.assertEquals(value, connection.getData());
+				rootTransaction.commit();
+				//plante
+			}
+		}
+	}
+
+	/**
+	 * Création d'une transaction automome à l'intérieur d'une transaction.
 	 * Quand la transaction n'existe pas.
 	 */
 	@Test(expected = NullPointerException.class)
@@ -284,11 +313,145 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
+	 * Vérifier la gestion des erreurs lors d'un commit.
+	 * @throws Throwable Exception
+	 */
+	@Test
+	public void testResourcesExceptionInCommit() throws Throwable {
+		expectedEx.expect(Error.class);
+		expectedEx.expectMessage("SpecificException on commit");
+
+		final ErronousTransactionResource sampleTransactionResource = new ErronousTransactionResource(new Error("SpecificException on commit"), null, null);
+		try {
+			try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+				// --- resource 1
+				final VTransactionResourceId<VTransactionResource> transactionResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Ressource-commit-exception");
+				transactionManager.getCurrentTransaction().addResource(transactionResourceId, sampleTransactionResource);
+				currentTransaction.commit();
+			}
+		} catch (final RuntimeException e) {
+			throw e.getCause(); //we unwrapp RuntimeException
+		} finally {
+			Assert.assertTrue("Commit resource must be called", sampleTransactionResource.commitCalled);
+			Assert.assertFalse("Rollback resource should not be called", sampleTransactionResource.rollbackCalled);
+			Assert.assertTrue("Release resource must be called", sampleTransactionResource.releaseCalled);
+		}
+	}
+
+	/**
+	 *  Vérifier la gestion des erreurs lors d'un commit et release.
+	 * @throws Throwable Exception
+	 */
+	@Test
+	public void testResourcesErrorInCommitAndRelease() throws Throwable {
+		expectedEx.expect(Error.class);
+		expectedEx.expectMessage("SpecificException on commit");
+		final ErronousTransactionResource sampleTransactionResource = new ErronousTransactionResource(new Error("SpecificException on commit"), null, new Error("SpecificException on release"));
+		try {
+			try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+				// --- resource 1
+				final VTransactionResourceId<VTransactionResource> transactionResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Ressource-commit-exception");
+				transactionManager.getCurrentTransaction().addResource(transactionResourceId, sampleTransactionResource);
+
+				currentTransaction.commit();
+			}
+		} catch (final RuntimeException e) {
+			throw e.getCause(); //we unwrapp RuntimeException
+		} finally {
+			Assert.assertTrue("Commit resource must be called", sampleTransactionResource.commitCalled);
+			Assert.assertFalse("Rollback resource should not be called", sampleTransactionResource.rollbackCalled);
+			Assert.assertTrue("Release resource must be called", sampleTransactionResource.releaseCalled);
+		}
+	}
+
+	/**
+	 *  Vérifier la gestion des erreurs lors d'un commit et release sur deux resources.
+	 * @throws Throwable Exception
+	 */
+	@Test
+	public void testTwoResourcesErrorInCommitAndRelease() throws Throwable {
+		expectedEx.expect(Error.class);
+		expectedEx.expectMessage("SpecificException on commit 1");
+		final ErronousTransactionResource sampleTransactionResource1 = new ErronousTransactionResource(new Error("SpecificException on commit 1"), null, new Error("SpecificException on release 1"));
+		final ErronousTransactionResource sampleTransactionResource2 = new ErronousTransactionResource(new Error("SpecificException on commit 2"), null, new Error("SpecificException on release 2"));
+		try {
+			try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+				// --- resource 1
+				final VTransactionResourceId<VTransactionResource> transactionResource1Id = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Ressource1-commit-exception");
+				transactionManager.getCurrentTransaction().addResource(transactionResource1Id, sampleTransactionResource1);
+
+				// --- resource 2
+				final VTransactionResourceId<VTransactionResource> transactionResource2Id = new VTransactionResourceId<>(VTransactionResourceId.Priority.NORMAL, "Ressource2-commit-exception");
+				transactionManager.getCurrentTransaction().addResource(transactionResource2Id, sampleTransactionResource2);
+
+				currentTransaction.commit();
+			}
+		} catch (final RuntimeException e) {
+			throw e.getCause(); //we unwrapp RuntimeException
+		} finally {
+			Assert.assertTrue("Commit resource1 must be called", sampleTransactionResource1.commitCalled);
+			Assert.assertFalse("Rollback resource1 should not be called", sampleTransactionResource1.rollbackCalled);
+			Assert.assertTrue("Release resource1 must be called", sampleTransactionResource1.releaseCalled);
+
+			Assert.assertFalse("Commit resource2 should not be called", sampleTransactionResource2.commitCalled);
+			Assert.assertTrue("Rollback resource2 must be called", sampleTransactionResource2.rollbackCalled);
+			Assert.assertTrue("Release resource2 must be called", sampleTransactionResource2.releaseCalled);
+		}
+	}
+
+	/**
 	 * Test @Transactional aspect placed upon all methods of BusinessServices component.
 	 */
 	@Test
 	public void testTransactional() {
 		final String value = sampleServices.test();
 		sampleServices.check(value);
+	}
+
+	private static class ErronousTransactionResource implements VTransactionResource {
+		boolean commitCalled = false;
+		boolean rollbackCalled = false;
+		boolean releaseCalled = false;
+
+		Throwable throwOnCommit = null;
+		Throwable throwOnRollback = null;
+		Throwable throwOnRelease = null;
+
+		ErronousTransactionResource(final Throwable throwOnCommit, final Throwable throwOnRollback, final Throwable throwOnRelease) {
+			this.throwOnCommit = throwOnCommit;
+			this.throwOnRollback = throwOnRollback;
+			this.throwOnRelease = throwOnRelease;
+		}
+
+		@Override
+		public void commit() throws Exception {
+			commitCalled = true;
+			if (throwOnCommit != null) {
+				doThrow(throwOnCommit);
+			}
+		}
+
+		@Override
+		public void rollback() throws Exception {
+			rollbackCalled = true;
+			if (throwOnRollback != null) {
+				doThrow(throwOnRollback);
+			}
+		}
+
+		@Override
+		public void release() throws Exception {
+			releaseCalled = true;
+			if (throwOnRelease != null) {
+				doThrow(throwOnRelease);
+			}
+		}
+
+		private void doThrow(final Throwable t) throws Exception {
+			if (t instanceof Exception) {
+				throw (Exception) t;
+			}
+			throw (Error) t;
+		}
 	}
 }

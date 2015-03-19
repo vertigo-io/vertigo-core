@@ -20,10 +20,10 @@ package io.vertigo.dynamo.transaction;
 
 /**
  * Transaction.
- * Soit on commit, soit on rollback une transaction. 
+ * Soit on commit, soit on rollback une transaction.
  * Le commit ou le rollback est propagé sur toutes les ressources participant à la transaction.
  * Pour des raisons de simplicité on se refuse à utiliser le commit à 2 phases.
- * Les ressources sont commitées selon leur priorités.	
+ * Les ressources sont commitées selon leur priorités.
  * La transaction possède un état interne qui est modifié de façon irréversible lors du commit ou du rollback.
  * Une transaction est soit démarrée, soit terminée.
  *
@@ -35,7 +35,7 @@ public interface VTransactionWritable extends VTransaction, AutoCloseable {
 	/**
 	 * Valide la transaction.
 	 * Cette méthode commit puis libère dans l'ordre toutes les ressources participant à la transaction.
-	 * Si aucune ressource n'est présente, cette méthode ne fait rien.	 *
+	 * Si aucune ressource n'est présente, cette méthode ne fait rien.
 	 */
 	void commit();
 
@@ -51,6 +51,7 @@ public interface VTransactionWritable extends VTransaction, AutoCloseable {
 
 	//method is overriden to delete "throw Exception"
 	//close is similar to rollback
+	/** {@inheritDoc} */
 	@Override
 	void close();
 
