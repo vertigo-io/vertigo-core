@@ -143,7 +143,7 @@ public final class VFileResponseBuilder {
 				}
 			}
 		} catch (final UnsupportedEncodingException e) {
-			//nothing : utf-8 unsupported we only use the filename= header
+			throw new AssertionError(e); // can't ever happen
 		}
 		return sb.toString();
 	}
