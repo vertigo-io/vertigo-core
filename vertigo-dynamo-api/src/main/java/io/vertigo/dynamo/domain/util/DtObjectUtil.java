@@ -29,6 +29,7 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
+import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.DynaDtObject;
 import io.vertigo.dynamo.domain.model.URI;
@@ -116,7 +117,7 @@ public final class DtObjectUtil {
 	 * @param roleName Nom du role
 	 * @return URI de la collection référencée.
 	 */
-	public static DtListURIForSimpleAssociation createDtListURIForSimpleAssociation(final DtObject dto, final String associationDefinitionName, final String roleName) {
+	public static DtListURI createDtListURIForSimpleAssociation(final DtObject dto, final String associationDefinitionName, final String roleName) {
 		Assertion.checkNotNull(associationDefinitionName);
 		Assertion.checkNotNull(roleName);
 		Assertion.checkNotNull(dto);
@@ -125,7 +126,14 @@ public final class DtObjectUtil {
 		return new DtListURIForSimpleAssociation(associationDefinition, createURI(dto), roleName);
 	}
 
-	public static DtListURIForNNAssociation createDtListURIForNNAssociation(final DtObject dto, final String associationDefinitionName, final String roleName) {
+	/**
+	 * Récupération d'une URI de Collection à partir d'un dto
+	 * @param dto DtObject
+	 * @param associationDefinitionName Nom de l'association
+	 * @param roleName Nom du role
+	 * @return URI de la collection référencée.
+	 */
+	public static DtListURI createDtListURIForNNAssociation(final DtObject dto, final String associationDefinitionName, final String roleName) {
 		Assertion.checkNotNull(associationDefinitionName);
 		Assertion.checkNotNull(roleName);
 		Assertion.checkNotNull(dto);
