@@ -100,7 +100,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	<#list annotations(association.definition) as annotation>
     ${annotation}
 	</#list>
-	public io.vertigo.dynamo.domain.model.DtListURI get${association.role?cap_first}DtListURI() {
+	public io.vertigo.dynamo.domain.metamodel.association.DtListURIFor<#if association.simple>Simple<#else>NN</#if>Association get${association.role?cap_first}DtListURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createDtListURIFor<#if association.simple>Simple<#else>NN</#if>Association(this, "${association.urn}", "${association.role}");
 	}
 	<#else>

@@ -21,6 +21,7 @@ package io.vertigo.dynamock.domain.famille;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.stereotype.Association;
 import io.vertigo.dynamo.domain.stereotype.AssociationNN;
@@ -118,7 +119,7 @@ public final class Famille implements DtObject {
 	@Association(name = "A_FAM_CAR_FAMILLE", fkFieldName = "FAM_ID", primaryDtDefinitionName = "DT_FAMILLE", primaryIsNavigable = false, primaryRole = "Famille", primaryLabel = "Famille", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DT_CAR", foreignIsNavigable = true, foreignRole = "VoituresFamille", foreignLabel = "Voitures de la famille", foreignMultiplicity = "0..*")
 	public final DtList<Car> getVoituresFamilleList() {
 		// return this.<.domain.car.Car> getList(getVoituresFamilleListURI());
-		final DtListURIForSimpleAssociation fkDtListURI = getVoituresFamilleDtListURI();
+		final DtListURI fkDtListURI = getVoituresFamilleDtListURI();
 		io.vertigo.lang.Assertion.checkNotNull(fkDtListURI);
 		//-----
 		// On est toujours dans un mode lazy.
@@ -146,7 +147,7 @@ public final class Famille implements DtObject {
 	@AssociationNN(name = "ANN_FAM_CAR_LOCATION", tableName = "FAM_CAR_LOCATION", dtDefinitionA = "DT_FAMILLE", dtDefinitionB = "DT_CAR", navigabilityA = false, navigabilityB = true, roleA = "Famille", roleB = "VoituresLocation", labelA = "Famille", labelB = "Voitures de location")
 	public final DtList<Car> getVoituresLocationList() {
 		// return this.<.domain.car.Car> getList(getVoituresLocationListURI());
-		final DtListURIForNNAssociation fkDtListURI = getVoituresLocationDtListURI();
+		final DtListURI fkDtListURI = getVoituresLocationDtListURI();
 		io.vertigo.lang.Assertion.checkNotNull(fkDtListURI);
 		//-----
 		// On est toujours dans un mode lazy.

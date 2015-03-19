@@ -29,7 +29,6 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
-import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.DynaDtObject;
 import io.vertigo.dynamo.domain.model.URI;
@@ -117,7 +116,7 @@ public final class DtObjectUtil {
 	 * @param roleName Nom du role
 	 * @return URI de la collection référencée.
 	 */
-	public static DtListURI createDtListURIForSimpleAssociation(final DtObject dto, final String associationDefinitionName, final String roleName) {
+	public static DtListURIForSimpleAssociation createDtListURIForSimpleAssociation(final DtObject dto, final String associationDefinitionName, final String roleName) {
 		Assertion.checkNotNull(associationDefinitionName);
 		Assertion.checkNotNull(roleName);
 		Assertion.checkNotNull(dto);
@@ -133,7 +132,7 @@ public final class DtObjectUtil {
 	 * @param roleName Nom du role
 	 * @return URI de la collection référencée.
 	 */
-	public static DtListURI createDtListURIForNNAssociation(final DtObject dto, final String associationDefinitionName, final String roleName) {
+	public static DtListURIForNNAssociation createDtListURIForNNAssociation(final DtObject dto, final String associationDefinitionName, final String roleName) {
 		Assertion.checkNotNull(associationDefinitionName);
 		Assertion.checkNotNull(roleName);
 		Assertion.checkNotNull(dto);
