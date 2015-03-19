@@ -225,7 +225,7 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 				connection.setData(value);
 				Assert.assertEquals(value, connection.getData());
 				rootTransaction.commit();
-				//plante
+				//commit sur la transaction parent avant d'avoir fermer l'inner transaction lance une exception
 			}
 		}
 	}
@@ -249,6 +249,31 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 		final SampleTransactionResource sampleTransactionResource = new SampleTransactionResource(myDataBase);
 		transactionManager.getCurrentTransaction().addResource(transactionResourceId, sampleTransactionResource);
 		return sampleTransactionResource;
+	}
+
+	/**
+	 * Vérifier la gestion du commit sur une ressource avant la fin de la transaction.
+	 */
+	@Test
+	public void testGetResourcesCommit() {
+
+		try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+
+			final SampleDataBaseConnection sampleDataBaseConnection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
+			final VTransactionResourceId<SampleTransactionResource> transactionResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "test-memory-1");
+			final SampleTransactionResource sampleDataBaseTransactionResource = currentTransaction.getResource(transactionResourceId);
+
+			// --- modification des deux bdd
+			final String value1 = createData();
+			sampleDataBaseConnection1.setData(value1);
+			Assert.assertEquals(value1, sampleDataBaseConnection1.getData());
+
+			sampleDataBaseTransactionResource.commit();
+
+			// --- test du commit
+			currentTransaction.commit();
+			Assert.assertEquals(value1, dataBase.getData());
+		}
 	}
 
 	/**

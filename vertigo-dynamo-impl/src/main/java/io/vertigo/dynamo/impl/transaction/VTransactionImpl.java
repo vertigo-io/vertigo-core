@@ -252,34 +252,39 @@ public final class VTransactionImpl implements VTransactionWritable {
 		//Changement d'état
 		transactionClosed = true;
 
-		//Fin de la transaction (Cette transaction peut être vide de ressources!!
-		transactionListener.onTransactionFinish(rollback, System.currentTimeMillis() - start);
-
 		Throwable firstThrowable = null;
-		boolean shouldRollback = rollback;
 		if (resources != null) {
 			//Il existe des ressources
-			//On traite les ressources par ordre de priorité
-			for (final VTransactionResourceId<?> id : getOrderedListByPriority()) {
-				final VTransactionResource ktr = resources.remove(id);
-				//On termine toutes les resources utilisées en les otant de la map.
-				Assertion.checkNotNull(ktr);
-				final Throwable throwable = doEnd(ktr, shouldRollback);
-				if (throwable != null) {
-					shouldRollback = true;
-					if (firstThrowable == null) {
-						firstThrowable = throwable;
-					} else {
-						firstThrowable.addSuppressed(throwable);
-					}
-				}
-			}
+			firstThrowable = doEndResources(rollback);
 		}
 
 		if (parentTransaction != null) {
 			//Lors de la clôture d'une transaction imbriquée,
 			//on la supprime de la transaction parente.
 			parentTransaction.removeInnerTransaction();
+		}
+		//Fin de la transaction, si firstThrowable!=null alors on a rollbacké tout ou partie des resources
+		transactionListener.onTransactionFinish(rollback || firstThrowable != null, System.currentTimeMillis() - start);
+		return firstThrowable;
+	}
+
+	private Throwable doEndResources(final boolean rollback) {
+		Throwable firstThrowable = null;
+		boolean shouldRollback = rollback;
+		//On traite les ressources par ordre de priorité
+		for (final VTransactionResourceId<?> id : getOrderedListByPriority()) {
+			final VTransactionResource ktr = resources.remove(id);
+			//On termine toutes les resources utilisées en les otant de la map.
+			Assertion.checkNotNull(ktr);
+			final Throwable throwable = doEnd(ktr, shouldRollback);
+			if (throwable != null) {
+				shouldRollback = true;
+				if (firstThrowable == null) {
+					firstThrowable = throwable;
+				} else {
+					firstThrowable.addSuppressed(throwable);
+				}
+			}
 		}
 		return firstThrowable;
 	}
@@ -289,7 +294,7 @@ public final class VTransactionImpl implements VTransactionWritable {
 	//=========================================================================
 	private List<VTransactionResourceId<?>> getOrderedListByPriority() {
 		//On termine les ressources dans l'ordre DEFAULT, A, B...F
-		final List<VTransactionResourceId<?>> list = new ArrayList<>();
+		final List<VTransactionResourceId<?>> list = new ArrayList<>(resources.size());
 
 		populate(list, VTransactionResourceId.Priority.TOP);
 		populate(list, VTransactionResourceId.Priority.NORMAL);
