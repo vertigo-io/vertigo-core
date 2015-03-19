@@ -113,14 +113,14 @@ public final class VTransactionImpl implements VTransactionWritable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <TR extends VTransactionResource> TR getResource(final VTransactionResourceId<TR> transactionResourceId) {
+	public <R extends VTransactionResource> R getResource(final VTransactionResourceId<R> transactionResourceId) {
 		checkStateStarted();
 		Assertion.checkNotNull(transactionResourceId);
 		//-----
 		if (resources == null) {
 			return null;
 		}
-		return (TR) resources.get(transactionResourceId);
+		return (R) resources.get(transactionResourceId);
 	}
 
 	/**
@@ -161,7 +161,7 @@ public final class VTransactionImpl implements VTransactionWritable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <TR extends VTransactionResource> void addResource(final VTransactionResourceId<TR> id, final TR resource) {
+	public <R extends VTransactionResource> void addResource(final VTransactionResourceId<R> id, final R resource) {
 		checkStateStarted();
 		Assertion.checkNotNull(resource);
 		Assertion.checkNotNull(id);

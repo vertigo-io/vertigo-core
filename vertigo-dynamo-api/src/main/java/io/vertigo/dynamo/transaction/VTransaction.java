@@ -33,14 +33,14 @@ public interface VTransaction {
 	 * Il n'est pas possible d'enregistrer pour une même transaction, deux ressources avec le même identifiant.
 	 * @param id Identifiant de la ressource transactionnelle au sein de la transaction
 	 * @param resource Ressource transactionnelle
-	 * @param <TR> Ressource transactionnelle
+	 * @param <R> Ressource transactionnelle
 	 */
-	<TR extends VTransactionResource> void addResource(VTransactionResourceId<TR> id, TR resource);
+	<R extends VTransactionResource> void addResource(VTransactionResourceId<R> id, R resource);
 
 	/**
 	 * @param transactionResourceId Identifiant/type de ressource transactionnelle.
 	 * @return Ressource transactionnelle correspondant à l'id
-	 * @param <TR> Ressource transactionnelle
+	 * @param <R> Ressource transactionnelle
 	 */
-	<TR extends VTransactionResource> TR getResource(VTransactionResourceId<TR> transactionResourceId);
+	<R extends VTransactionResource> R getResource(VTransactionResourceId<R> transactionResourceId);
 }

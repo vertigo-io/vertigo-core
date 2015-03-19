@@ -24,9 +24,9 @@ import io.vertigo.lang.Assertion;
  * Identification des ressources participant à la transaction.
  *
  * @author  pchretien
- * @param <TR> Ressource transactionnelle.
+ * @param <R> Ressource transactionnelle.
  */
-public final class VTransactionResourceId<TR extends VTransactionResource> {
+public final class VTransactionResourceId<R extends VTransactionResource> {
 	/**
 	 * Ordre dans lequel les ressources sont commitées.
 	 * @author pchretien
