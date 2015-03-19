@@ -59,6 +59,7 @@ public final class Home {
 		}
 
 		private static Logger LOGGER = Logger.getLogger(App.class);
+
 		//Start Date in milliseconds : used to have 'uptime'
 		private final long start;
 		private final AppConfig appConfig;
@@ -68,6 +69,10 @@ public final class Home {
 		private final ComponentSpace componentSpace;
 		private final ConfigSpace configSpace;
 
+		/**
+		 * Constructor.
+		 * @param appConfig Application configuration
+		 */
 		public App(final AppConfig appConfig) {
 			Assertion.checkNotNull(appConfig);
 			//-----
@@ -93,13 +98,14 @@ public final class Home {
 				//-----
 				componentSpace.start();
 				definitionSpace.start();
-				this.state = State.active;
-			} catch (final Throwable t) {
-				this.close();
-				throw new RuntimeException("an error occured when starting", t);
+				state = State.active;
+			} catch (final Exception e) {
+				close();
+				throw new RuntimeException("an error occured when starting", e);
 			}
 		}
 
+		/** {@inheritDoc} */
 		@Override
 		public void close() {
 			//En cas d'erreur on essaie de fermer proprement les composants démarrés.
@@ -109,10 +115,10 @@ public final class Home {
 			try {
 				definitionSpace.stop();
 				componentSpace.stop();
-			} catch (final Throwable t) {
-				LOGGER.error("an error occured when stopping", t);
+			} catch (final Exception e) {
+				LOGGER.error("an error occured when stopping", e);
 				//Quel que soit l'état, on part en échec de l'arrét.
-				throw new RuntimeException("an error occured when stopping", t);
+				throw new RuntimeException("an error occured when stopping", e);
 			} finally {
 				state = State.closed;
 				CURRENT_APP = null;
@@ -126,6 +132,9 @@ public final class Home {
 			return start;
 		}
 
+		/**
+		 * @return Application configuration
+		 */
 		public AppConfig getConfig() {
 			return appConfig;
 		}
@@ -168,6 +177,9 @@ public final class Home {
 		// Classe statique d'accès aux composants.
 	}
 
+	/**
+	 * @return Application
+	 */
 	public static App getApp() {
 		Assertion.checkNotNull(CURRENT_APP, "app has not been started");
 		return CURRENT_APP;
