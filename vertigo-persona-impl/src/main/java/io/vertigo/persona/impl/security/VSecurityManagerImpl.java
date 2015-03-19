@@ -25,9 +25,9 @@ import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin;
-import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.persona.security.ResourceNameFactory;
 import io.vertigo.persona.security.UserSession;
+import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.persona.security.metamodel.Permission;
 import io.vertigo.persona.security.metamodel.Role;
 import io.vertigo.util.ClassUtil;
@@ -53,7 +53,6 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 	 */
 	private static final ThreadLocal<UserSession> USER_SESSION_THREAD_LOCAL = new ThreadLocal<>();
 
-	//private final Map<NameSpace<?>, String> nameSpaceNameMap = new HashMap<NameSpace<?>, String>();
 	private final LocaleManager localeManager;
 	private final String userSessionClassName;
 	private final Map<String, ResourceNameFactory> resourceNameFactories = new HashMap<>();
