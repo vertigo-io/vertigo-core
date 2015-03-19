@@ -20,7 +20,6 @@ package io.vertigo.core.spaces.component;
 
 import io.vertigo.core.aop.Aspect;
 import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.AspectConfig;
 import io.vertigo.core.config.ComponentConfig;
 import io.vertigo.core.config.ModuleConfig;
@@ -67,8 +66,6 @@ import java.util.Set;
  * @author pchretien
  */
 public final class ComponentSpace implements Container, Activeable {
-	public static final ComponentSpace EMPTY = new ComponentSpace(new AppConfigBuilder().build());
-
 	private final AppConfig appConfig;
 	private final ComponentContainer componentContainer = new ComponentContainer();
 
