@@ -4,7 +4,21 @@ Version history
 Running 0.8.0-SNAPSHOT
 ----------------------
 more to come :)
+
+
+Release 0.7.5 - 2015/03/20
+----------------------
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide)
 * [Core] Renamed KTransaction to VTransaction
+* [Dynamo] Renamed KSecurityManager to VSecurityManager
+* [Dynamo] Renamed KFile to VFile
+* [Dynamo] Renamed KxFileInfo to VxFileInfo
+* [Dynamo] Added DtFieldName to FilterCriteria API
+* [Dynamo] Added DtListState for sorting, offset and limit query. Applied on search only
+* [Dynamo] Some code style
+* [Studio] Fixed Dto generated with DtListURIForXXAssociation
+* [Struts2] Fixed FTL : css, checkbox
+* [Quarto] XDocReportConverterPlugin : XDocReport based ODT to PDF converter plugin
 
 
 Release 0.7.4 - 2015/03/12
