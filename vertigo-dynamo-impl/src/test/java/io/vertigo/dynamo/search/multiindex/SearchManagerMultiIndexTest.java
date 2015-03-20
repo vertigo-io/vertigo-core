@@ -128,7 +128,7 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 		//recherche
 		final SearchQuery searchQuery = new SearchQueryBuilder(query)
 				.build();
-		final FacetedQueryResult<DtObject, SearchQuery> result = searchManager.loadList(indexDefinition, searchQuery);
+		final FacetedQueryResult<DtObject, SearchQuery> result = searchManager.loadList(indexDefinition, searchQuery, null);
 		return result.getCount();
 	}
 

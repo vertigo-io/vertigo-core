@@ -18,9 +18,6 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 
 	private final ListFilter myListFilter;
 	//-----
-	private DtField mySortField;
-	private boolean mySortAsc;
-	//-----
 	private DtField myBoostedDocumentDateField;
 	private Integer myNumDaysOfBoostRefDocument;
 	private Integer myMostRecentBoost;
@@ -35,19 +32,6 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 		Assertion.checkNotNull(query);
 		//-----
 		myListFilter = new ListFilter(query);
-	}
-
-	/**
-	 * @param sortField Champ utilisé pour le tri
-	 * @param sortAsc  Ordre de tri (true pour ascendant)
-	 * @return this builder
-	*/
-	public SearchQueryBuilder withSortStrategy(final DtField sortField, final boolean sortAsc) {
-		Assertion.checkNotNull(sortField);
-		//-----
-		mySortField = sortField;
-		mySortAsc = sortAsc;
-		return this;
 	}
 
 	/**
@@ -102,6 +86,6 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	/** {@inheritDoc} */
 	@Override
 	public SearchQuery build() {
-		return new SearchQuery(Option.option(myFacetedQuery), myListFilter, mySortField, mySortAsc, myClusteringFacetDefinition, myBoostedDocumentDateField, myNumDaysOfBoostRefDocument, myMostRecentBoost);
+		return new SearchQuery(Option.option(myFacetedQuery), myListFilter, myClusteringFacetDefinition, myBoostedDocumentDateField, myNumDaysOfBoostRefDocument, myMostRecentBoost);
 	}
 }

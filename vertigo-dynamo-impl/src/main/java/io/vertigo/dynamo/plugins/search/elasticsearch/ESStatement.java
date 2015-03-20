@@ -28,6 +28,7 @@ import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilterUtil;
@@ -191,16 +192,16 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	/**
 	 * @param indexDefinition Index de recherche
 	 * @param searchQuery Mots clés de recherche
-	 * @param rowsPerQuery Nombre de ligne max
+	 * @param listState Etat de la liste (tri et pagination)
+	 * @param defaultMaxRows Nombre de ligne max par defaut
 	 * @return Résultat de la recherche
 	 */
-	FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final int rowsPerQuery) {
+	FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows) {
 		Assertion.checkNotNull(searchQuery);
 		//-----
-		final SearchRequestBuilder searchRequestBuilder = createSearchRequestBuilder(indexDefinition, searchQuery, rowsPerQuery);
+		final SearchRequestBuilder searchRequestBuilder = createSearchRequestBuilder(indexDefinition, searchQuery, listState, defaultMaxRows);
 		appendFacetDefinition(searchQuery, searchRequestBuilder);
 
-		//System.out.println("Query:" + solrQuery.toString());
 		final SearchResponse queryResponse = searchRequestBuilder.execute().actionGet();
 		return translateQuery(indexDefinition, queryResponse, searchQuery);
 	}
@@ -215,15 +216,17 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		return response.getCount();
 	}
 
-	private SearchRequestBuilder createSearchRequestBuilder(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final int rowsPerQuery) {
+	private SearchRequestBuilder createSearchRequestBuilder(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows) {
 		final SearchRequestBuilder searchRequestBuilder = esClient.prepareSearch(indexName)
 				.setSearchType(SearchType.QUERY_THEN_FETCH)
 				.addFields(ESDocumentCodec.FULL_RESULT)
-				.setSize(rowsPerQuery);
-		if (searchQuery.isSortActive()) {
-			final DtField sortField = indexDefinition.getIndexDtDefinition().getField(searchQuery.getSortField());
+				.setFrom(listState.getSkipRows())
+				.setSize(listState.getMaxRows().getOrElse(defaultMaxRows));
+		if (listState.getSortFieldName().isDefined()) {
+			final DtField sortField = indexDefinition.getIndexDtDefinition().getField(listState.getSortFieldName().get());
 			final FieldSortBuilder sortBuilder = SortBuilders.fieldSort(indexFieldNameResolver.obtainIndexFieldName(sortField))
-					.ignoreUnmapped(true).order(searchQuery.getSortAsc() ? SortOrder.ASC : SortOrder.DESC);
+					.ignoreUnmapped(true)
+					.order(listState.isSortDesc().get() ? SortOrder.DESC : SortOrder.ASC);
 			searchRequestBuilder.addSort(sortBuilder);
 		}
 		QueryBuilder queryBuilder = translateToQueryBuilder(searchQuery.getListFilter(), indexFieldNameResolver);

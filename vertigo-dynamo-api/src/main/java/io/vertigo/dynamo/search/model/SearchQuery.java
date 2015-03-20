@@ -36,9 +36,6 @@ public final class SearchQuery implements Serializable {
 	private static final long serialVersionUID = -3215786603726103410L;
 
 	private final ListFilter listFilter;
-	//Informations optionnelles pour trier les résultats (null si inutilisé => tri par pertinence)
-	private final String sortFieldName;
-	private final Boolean sortAsc; //true si tri ascendant
 
 	//Informations optionnelles pour booster la pertinence des documents plus récent (null si inutilisé)
 	private final String boostedDocumentDateFieldName;
@@ -51,17 +48,14 @@ public final class SearchQuery implements Serializable {
 	 * Constructeur.
 	 * @param facetedQuery facetedQueryDefinition
 	 * @param listFilter Filtre principal correspondant aux critères de la recherche
-	 * @param sortField Nom du champ utilisé pour le tri (null si non utilisé)
-	 * @param sortAsc Ordre de tri, True si ascendant (null si non utilisé)
-	 * @param clusteringFacetDefinition Facet utilisée pour cluster des resultats (null si non utilisé)
+	  * @param clusteringFacetDefinition Facet utilisée pour cluster des resultats (null si non utilisé)
 	 * @param boostedDocumentDateField Nom du champ portant la date du document (null si non utilisé)
 	 * @param numDaysOfBoostRefDocument Age des documents servant de référence pour le boost des plus récents par rapport à eux (null si non utilisé)
 	 * @param mostRecentBoost Boost relatif maximum entre les plus récents et ceux ayant l'age de référence (doit être > 1) (null si non utilisé)
 	 */
-	SearchQuery(final Option<FacetedQuery> facetedQuery, final ListFilter listFilter, final DtField sortField, final Boolean sortAsc, final FacetDefinition clusteringFacetDefinition, final DtField boostedDocumentDateField, final Integer numDaysOfBoostRefDocument, final Integer mostRecentBoost) {
+	SearchQuery(final Option<FacetedQuery> facetedQuery, final ListFilter listFilter, final FacetDefinition clusteringFacetDefinition, final DtField boostedDocumentDateField, final Integer numDaysOfBoostRefDocument, final Integer mostRecentBoost) {
 		Assertion.checkNotNull(facetedQuery);
 		Assertion.checkNotNull(listFilter);
-		Assertion.checkArgument(sortField == null || sortAsc != null, "Lorsque le tri des documents est activé, sortAsc est obligatoires.");
 		Assertion.checkArgument(boostedDocumentDateField == null || numDaysOfBoostRefDocument != null && mostRecentBoost != null, "Lorsque le boost des documents récents est activé, numDaysOfBoostRefDocument et mostRecentBoost sont obligatoires.");
 		Assertion.checkArgument(boostedDocumentDateField != null || numDaysOfBoostRefDocument == null && mostRecentBoost == null, "Lorsque le boost des documents récents est désactivé, numDaysOfBoostRefDocument et mostRecentBoost doivent être null.");
 		Assertion.checkArgument(numDaysOfBoostRefDocument == null || numDaysOfBoostRefDocument.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1.");
@@ -69,12 +63,10 @@ public final class SearchQuery implements Serializable {
 		//-----
 		this.facetedQuery = facetedQuery;
 		this.listFilter = listFilter;
-		sortFieldName = sortField != null ? sortField.getName() : null;
-		this.sortAsc = sortAsc;
 		boostedDocumentDateFieldName = boostedDocumentDateField != null ? boostedDocumentDateField.getName() : null;
 		this.numDaysOfBoostRefDocument = numDaysOfBoostRefDocument;
 		this.mostRecentBoost = mostRecentBoost;
-		this.clusteringFacetDefinitionRef = clusteringFacetDefinition != null ? new DefinitionReference<>(clusteringFacetDefinition) : null;
+		clusteringFacetDefinitionRef = clusteringFacetDefinition != null ? new DefinitionReference<>(clusteringFacetDefinition) : null;
 	}
 
 	/**
@@ -91,34 +83,6 @@ public final class SearchQuery implements Serializable {
 	 */
 	public ListFilter getListFilter() {
 		return listFilter;
-	}
-
-	/**
-	 * Indique que les documents doivent être trié par un champs particulier.
-	 *@return si le tri est activé
-	 */
-	public boolean isSortActive() {
-		return sortFieldName != null;
-	}
-
-	/**
-	 * Si le tri des documents est activé.
-	 * @return Nom du champ portant la date du document
-	 */
-	public String getSortField() {
-		Assertion.checkArgument(isSortActive(), "Le tri des documents n'est pas activé sur cette recherche");
-		//-----
-		return sortFieldName;
-	}
-
-	/**
-	 * Si le tri des documents est activé.
-	 * @return Age des documents servant de référence pour le boost des plus récents par rapport à eux
-	 */
-	public boolean getSortAsc() {
-		Assertion.checkArgument(isSortActive(), "Le tri des documents n'est pas activé sur cette recherche");
-		//-----
-		return sortAsc;
 	}
 
 	/**

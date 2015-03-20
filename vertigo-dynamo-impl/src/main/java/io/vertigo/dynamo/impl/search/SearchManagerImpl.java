@@ -20,6 +20,7 @@ package io.vertigo.dynamo.impl.search;
 
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.search.SearchIndexFieldNameResolver;
@@ -71,8 +72,8 @@ public final class SearchManagerImpl implements SearchManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery) {
-		return searchServicesPlugin.loadList(indexDefinition, searchQuery);
+	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
+		return searchServicesPlugin.loadList(indexDefinition, searchQuery, listState);
 	}
 
 	/** {@inheritDoc} */

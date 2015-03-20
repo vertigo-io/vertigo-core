@@ -27,6 +27,7 @@ import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.search.SearchServicesPlugin;
@@ -76,8 +77,9 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 	private Node node;
 	private Client esClient;
+	private final DtListState defaultListState;
+	private final int defaultMaxRows;
 	private final Map<String, SearchIndexFieldNameResolver> indexFieldNameResolvers;
-	private final int rowsPerQuery;
 	private final Set<String> cores;
 	private final URL configFile;
 	private boolean indexSettingsValid = false;
@@ -85,17 +87,18 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	/**
 	 * Constructeur.
 	 * @param cores Nom des noyeaux ES
-	 * @param rowsPerQuery Nombre de lignes
+	 * @param defaultMaxRows Nombre de lignes
 	 * @param codecManager Manager de codec
 	 * @param configFile Fichier de configuration des indexs
 	 * @param resourceManager Manager des resources
 	 */
-	protected AbstractESSearchServicesPlugin(final String cores, final int rowsPerQuery, final Option<String> configFile,
+	protected AbstractESSearchServicesPlugin(final String cores, final int defaultMaxRows, final Option<String> configFile,
 			final CodecManager codecManager, final ResourceManager resourceManager) {
 		Assertion.checkArgNotEmpty(cores);
 		Assertion.checkNotNull(codecManager);
 		//-----
-		this.rowsPerQuery = rowsPerQuery;
+		this.defaultMaxRows = defaultMaxRows;
+		defaultListState = new DtListState(defaultMaxRows, 0, null, null);
 		elasticDocumentCodec = new ESDocumentCodec(codecManager);
 		indexFieldNameResolvers = new HashMap<>();
 		//------
@@ -233,11 +236,12 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 	/** {@inheritDoc} */
 	@Override
-	public final <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery) {
+	public final <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
 		Assertion.checkNotNull(searchQuery);
 		//-----
 		final ESStatement<DtObject, R> statement = createElasticStatement(indexDefinition);
-		return statement.loadList(indexDefinition, searchQuery, rowsPerQuery);
+		final DtListState usedListState = listState != null ? listState : defaultListState;
+		return statement.loadList(indexDefinition, searchQuery, usedListState, defaultMaxRows);
 	}
 
 	/** {@inheritDoc} */
