@@ -100,6 +100,14 @@
 			<scope>test</scope>
 		</dependency>
 		<!--/Open Office dependencies -->
+
+		<dependency>
+			<groupId>fr.opensagres.xdocreport</groupId> <!-- pour le plugin XDocReportConverterPlugin -->
+			<artifactId>fr.opensagres.xdocreport.converter.odt.odfdom</artifactId>
+			<version>1.0.5</version>
+			<optional>true</optional>
+		</dependency>
+
 	</dependencies>
 <!-- 	<build>
 		<plugins>
