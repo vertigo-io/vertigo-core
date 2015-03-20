@@ -37,7 +37,7 @@ import org.junit.Test;
 
 /**
  * Test de l'implémentation avec la librairie XDocReport.
- * 
+ *
  * @author jgarnier
  */
 public final class XDocReportConverterManagerTest extends AbstractTestCaseJU4 {
@@ -56,7 +56,7 @@ public final class XDocReportConverterManagerTest extends AbstractTestCaseJU4 {
 	 * Converssion de Odt vers Pdf.
 	 */
 	@Test
-	public void testConvertOdt2Pdf() {
+	public void testConvertOdt2Pdf() throws IOException {
 		final VFile inputFile = createVFile(fileManager, "../data/testFile.odt", this.getClass());
 		resultFile = converterManager.convert(inputFile, "PDF");
 
@@ -67,14 +67,12 @@ public final class XDocReportConverterManagerTest extends AbstractTestCaseJU4 {
 		log.info(methode + " => " + fileManager.obtainReadOnlyFile(vFile).getAbsolutePath());
 	}
 
-	private static VFile createVFile(final FileManager fileManager, final String fileName, final Class<?> baseClass) {
+	private static VFile createVFile(final FileManager fileManager, final String fileName, final Class<?> baseClass) throws IOException {
 		try (final InputStream in = baseClass.getResourceAsStream(fileName)) {
 			Assertion.checkNotNull(in, "fichier non trouvé : {0}", fileName);
 			final File file = new TempFile("tmp", '.' + FileUtil.getFileExtension(fileName));
 			FileUtil.copy(in, file);
 			return fileManager.createFile(file.getName(), "application/vnd.oasis.opendocument.text", file);
-		} catch (final IOException e) {
-			throw new RuntimeException(e);
 		}
 	}
 
