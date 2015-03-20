@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.persistence.criteria;
 
+import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -37,6 +38,28 @@ import java.util.Map;
 public final class FilterCriteriaBuilder<D extends DtObject> implements Builder<FilterCriteria<D>> {
 	private final Map<String, Object> mapFilter = new HashMap<>();
 	private final Map<String, String> mapPrefix = new HashMap<>();
+
+	/**
+	 * Ajout un critère de filtre.
+	 * Filtre en égalité stricte.
+	 * @param fieldName Nom du champs à filtrer
+	 * @param value Valeur du champs.
+	 * @return Builder
+	 */
+	public FilterCriteriaBuilder<D> withFilter(final DtFieldName fieldName, final Object value) {
+		return withFilter(fieldName.name(), value);
+	}
+
+	/**
+	 * Ajout un critère de type préfixe.
+	 * Filtre "commence par" le préfixe.
+	 * @param fieldName Nom du champs à filtrer.
+	 * @param prefix Préfix du champs.
+	 * @return Builder
+	 */
+	public FilterCriteriaBuilder<D> withPrefix(final DtFieldName fieldName, final String prefix) {
+		return withFilter(fieldName.name(), prefix);
+	}
 
 	/**
 	 * Ajout un critère de filtre.
