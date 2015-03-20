@@ -11,6 +11,7 @@ import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.dynamo.impl.file.model.FSFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.impl.converter.ConverterPlugin;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +34,7 @@ public final class XDocReportConverterPlugin implements ConverterPlugin {
 				"Seul le format ODT peut être utilisé en entrée");
 		Assertion.checkArgument(targetFormat.equalsIgnoreCase(ConverterFormat.PDF.name()),
 				"Seul le format PDF peut être utilisé en sortie");
+		//-----
 		final Options options = Options.getFrom(DocumentKind.ODT).to(ConverterTypeTo.PDF);
 		final IConverter converter = ConverterRegistry.getRegistry().getConverter(options);
 		try (InputStream in = file.createInputStream()) {
@@ -45,9 +47,7 @@ public final class XDocReportConverterPlugin implements ConverterPlugin {
 			converter.convert(in, out, options);
 			final VFile pdf = new FSFile(resultFile.getName(), ConverterFormat.PDF.getTypeMime(), resultFile);
 			return pdf;
-		} catch (final IOException e) {
-			throw new RuntimeException(e);
-		} catch (final XDocConverterException e) {
+		} catch (final IOException | XDocConverterException e) {
 			throw new RuntimeException(e);
 		}
 	}
