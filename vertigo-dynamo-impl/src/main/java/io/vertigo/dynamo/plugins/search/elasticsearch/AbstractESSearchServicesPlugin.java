@@ -133,7 +133,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 				} else if (configFile != null) {
 					// If we use local config file, we check config against ES server
 					final Settings settings = ImmutableSettings.settingsBuilder().loadFromUrl(configFile).build();
-					indexSettingsValid = indexSettingsValid && checkSettings(indexName, settings);
+					indexSettingsValid = indexSettingsValid && !isIndexSettingsDirty(indexName, settings);
 				}
 			} catch (final ElasticsearchException e) {
 				throw new RuntimeException("Error on index " + indexName, e);
@@ -148,7 +148,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		waitForYellowStatus();
 	}
 
-	private boolean checkSettings(final String indexName, final Settings settings) {
+	private boolean isIndexSettingsDirty(final String indexName, final Settings settings) {
 		final Settings currentSettings = esClient.admin().indices().prepareGetIndex()
 				.addIndices(indexName).get()
 				.getSettings().get(indexName);
@@ -275,7 +275,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	}
 
 	private <I extends DtObject, R extends DtObject> ESStatement<I, R> createElasticStatement(final SearchIndexDefinition indexDefinition) {
-		Assertion.checkArgument(indexSettingsValid, "Index settings have changed and are nomore compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.");
+		Assertion.checkArgument(indexSettingsValid, "Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.");
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkArgument(cores.contains(indexDefinition.getName()), "Index {0} hasn't been registered (Registered indexes: {2}).", indexDefinition.getName(), cores);
 		//-----
