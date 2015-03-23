@@ -6,6 +6,10 @@ Running 0.8.0-SNAPSHOT
 more to come :)
 
 
+Release 0.7.5a - 2015/03/23
+----------------------
+* Fix of two 0.7.5 issues 
+
 Release 0.7.5 - 2015/03/20
 ----------------------
 [Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide)
