@@ -24,7 +24,6 @@ import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.Dynamic;
-import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
@@ -94,7 +93,7 @@ public final class DtObjectUtil {
 		Assertion.checkNotNull(dto);
 		Assertion.checkNotNull(dtoTargetClass);
 		//-----
-		final AssociationSimpleDefinition associationSimpleDefinition = (AssociationSimpleDefinition) Home.getDefinitionSpace().resolve(associationDefinitionName, AssociationDefinition.class);
+		final AssociationSimpleDefinition associationSimpleDefinition = Home.getDefinitionSpace().resolve(associationDefinitionName, AssociationSimpleDefinition.class);
 		// 1. On recherche le nom du champ portant l'objet référencé (Exemple : personne)
 		final DtDefinition dtDefinition = associationSimpleDefinition.getPrimaryAssociationNode().getDtDefinition();
 
