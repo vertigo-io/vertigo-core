@@ -48,4 +48,12 @@ public class NameSpace2JavaTest {
 	public void testGenerateSql() {
 		NameSpace2Java.main(new String[] { "/io/vertigo/studio/tools/testSql.properties" });
 	}
+
+	/**
+	 * Lancement du test.
+	 */
+	@Test
+	public void testGenerateDtDefinitions() {
+		NameSpace2Java.main(new String[] { "/io/vertigo/studio/tools/testDtDefinitions.properties" });
+	}
 }

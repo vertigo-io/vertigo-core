@@ -20,6 +20,7 @@ package io.vertigo.studio.plugins.mda.domain;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 import io.vertigo.studio.mda.ResultBuilder;
 import io.vertigo.studio.plugins.mda.AbstractGeneratorPlugin;
 import io.vertigo.studio.plugins.mda.FileConfig;
@@ -45,6 +46,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin {
 	private final boolean generateJpaAnnotations;
 	private final boolean generateDtDefinitions;
 	private final boolean generateDtObject;
+	private final String dictionaryClassName;
 
 	/**
 	 * Constructeur.
@@ -60,12 +62,14 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin {
 			@Named("generateDtResources") final boolean generateDtResources,
 			@Named("generateJpaAnnotations") final boolean generateJpaAnnotations,
 			@Named("generateDtDefinitions") final boolean generateDtDefinitions,
+			@Named("dictionaryClassName") final Option<String> dictionaryClassNameOption,
 			@Named("generateDtObject") final boolean generateDtObject) {
 		//-----
 		this.targetSubDir = targetSubDir;
 		this.generateDtResources = generateDtResources;
 		this.generateJpaAnnotations = generateJpaAnnotations;
 		this.generateDtDefinitions = generateDtDefinitions;
+		dictionaryClassName = dictionaryClassNameOption.getOrElse("DtDefinitions");
 		this.generateDtObject = generateDtObject;
 	}
 
@@ -82,7 +86,7 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin {
 
 		/* Génération de la lgeneratee référençant toutes des définitions. */
 		if (generateDtDefinitions) {
-			generateDtDefinitions(targetSubDir, fileConfig, resultBuilder);
+			generateDtDefinitions(targetSubDir, fileConfig, resultBuilder, dictionaryClassName);
 		}
 
 		/* Générations des DTO. */
@@ -92,15 +96,15 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin {
 
 	}
 
-	private static void generateDtDefinitions(final String targetSubDir, final FileConfig fileConfig, final ResultBuilder resultBuilder) {
+	private static void generateDtDefinitions(final String targetSubDir, final FileConfig fileConfig, final ResultBuilder resultBuilder, final String dictionaryClassName) {
 
 		final Map<String, Object> mapRoot = new MapBuilder<String, Object>()
 				.put("packageName", fileConfig.getProjectPackageName() + ".domain")
-				.put("classSimpleName", "DtDefinitions")
+				.put("classSimpleName", dictionaryClassName)
 				.put("dtDefinitions", DomainUtil.getDtDefinitions())
 				.build();
 
-		createFileGenerator(fileConfig, mapRoot, "DtDefinitions", targetSubDir, fileConfig.getProjectPackageName() + ".domain", ".java", "domain/templates/dtdefinitions.ftl")
+		createFileGenerator(fileConfig, mapRoot, dictionaryClassName, targetSubDir, fileConfig.getProjectPackageName() + ".domain", ".java", "domain/templates/dtdefinitions.ftl")
 				.generateFile(resultBuilder);
 
 	}
