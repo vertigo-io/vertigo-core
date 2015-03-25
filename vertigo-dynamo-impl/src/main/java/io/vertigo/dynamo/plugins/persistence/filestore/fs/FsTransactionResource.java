@@ -101,6 +101,7 @@ public final class FsTransactionResource implements VTransactionResource {
 			final FileAction act = fileActions.get(i);
 			if (act instanceof FileActionSave && absPath.equals(act.getAbsolutePath())) {
 				found = true;
+				act.clean();
 				fileActions.remove(i);
 			}
 		}
