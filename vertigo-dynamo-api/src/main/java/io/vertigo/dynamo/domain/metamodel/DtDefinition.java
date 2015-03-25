@@ -183,10 +183,10 @@ public final class DtDefinition implements Definition {
 	 * @param fieldName FieldName
 	 * @return if this field exists in this DtDefinition
 	 */
-	public boolean contains(final DtFieldName fieldName) {
+	public boolean contains(final String fieldName) {
 		Assertion.checkNotNull(fieldName);
 		//-----
-		return mappedFields.containsKey(fieldName.name());
+		return mappedFields.containsKey(fieldName);
 	}
 
 	/**
