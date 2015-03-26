@@ -300,8 +300,14 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			for (final DtField dtField : indexDtDefinition.getFields()) {
 				final String indexType = resolveIndexType(dtField.getDomain());
 				if (indexType != null) {
+					// par convention l'indexType du domain => l'analyzer de l'index
+					// L'indexType peut-être compléter pour préciser le type si différente de string avec le séparateur :
+					final String[] indexTypeArray = indexType.split(":", 2);
+					final String indexAnalyzer = indexTypeArray[0];
+					final String indexDataType = indexTypeArray.length == 2 ? indexTypeArray[1] : "string";
+
 					typeMapping.startObject(indexFieldNameResolver.obtainIndexFieldName(dtField));
-					typeMapping.field("type", "string").field("analyzer", indexType); //par convention l'indextype du domain => l'analyzer de l'index
+					typeMapping.field("type", indexDataType).field("analyzer", indexAnalyzer);
 					typeMapping.endObject();
 				}
 			}
