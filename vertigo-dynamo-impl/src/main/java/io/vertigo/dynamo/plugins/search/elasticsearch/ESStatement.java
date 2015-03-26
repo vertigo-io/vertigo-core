@@ -43,6 +43,7 @@ import io.vertigo.lang.Option;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -92,7 +93,7 @@ import org.elasticsearch.search.sort.SortOrder;
  * @param <R> Type de l'objet resultant de la recherche
  */
 final class ESStatement<I extends DtObject, R extends DtObject> {
-	private static final int TOPHITS_SUBAGGREAGTION_SIZE = 20; //max 20 documents per cluster when cluserization is used
+	private static final int TOPHITS_SUBAGGREAGTION_SIZE = 10; //max 10 documents per cluster when clusterization is used
 	private static final String TOPHITS_SUBAGGREAGTION_NAME = "top";
 	private static final String DATE_PATTERN = "dd/MM/yy";
 	private static final Pattern RANGE_PATTERN = Pattern.compile("([A-Z_0-9]+):([\\[\\]])(.*) TO (.*)([\\[\\]])");
@@ -221,7 +222,8 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 				.setSearchType(SearchType.QUERY_THEN_FETCH)
 				.addFields(ESDocumentCodec.FULL_RESULT)
 				.setFrom(listState.getSkipRows())
-				.setSize(listState.getMaxRows().getOrElse(defaultMaxRows));
+				//If we send a clustering query, we don't retrieve result with hits response but with buckets
+				.setSize(searchQuery.isClusteringFacet() ? 0 : listState.getMaxRows().getOrElse(defaultMaxRows));
 		if (listState.getSortFieldName().isDefined()) {
 			final DtField sortField = indexDefinition.getIndexDtDefinition().getField(listState.getSortFieldName().get());
 			final FieldSortBuilder sortBuilder = SortBuilders.fieldSort(indexFieldNameResolver.obtainIndexFieldName(sortField))
@@ -262,8 +264,8 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 			final AggregationBuilder aggregationBuilder = facetToAggregationBuilder(clusteringFacetDefinition);
 			aggregationBuilder.subAggregation(
 					AggregationBuilders.topHits(TOPHITS_SUBAGGREAGTION_NAME)
-							.setSize(TOPHITS_SUBAGGREAGTION_SIZE)
-							.setFetchSource(false));
+							.setSize(TOPHITS_SUBAGGREAGTION_SIZE));
+			//We fetch source, because it's our only source to create result list
 			searchRequestBuilder.addAggregation(aggregationBuilder);
 		}
 		//Puis les facettes liées à la query, si présent
@@ -361,17 +363,22 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	private FacetedQueryResult<R, SearchQuery> translateQuery(final SearchIndexDefinition indexDefinition, final SearchResponse queryResponse, final SearchQuery searchQuery) {
 
 		final Map<R, Map<DtField, String>> resultHighlights = new HashMap<>();
+		final Map<FacetValue, DtList<R>> resultCluster;
 		final DtList<R> dtc = new DtList<>(indexDefinition.getResultDtDefinition());
-		final Map<String, R> dtcIndex = new HashMap<>();
-		for (final SearchHit searchHit : queryResponse.getHits()) {
-			final SearchIndex<I, R> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
-			final R result = index.getResultDtObject();
-			dtc.add(result);
-			dtcIndex.put(searchHit.getId(), result);
-			final Map<DtField, String> highlights = createHighlight(searchHit, indexDefinition.getResultDtDefinition(), indexFieldNameResolver);
-			resultHighlights.put(result, highlights);
+		if (searchQuery.isClusteringFacet()) {
+			final Map<String, R> dtcIndex = new LinkedHashMap<>();
+			resultCluster = createCluster(indexDefinition, searchQuery, queryResponse, dtcIndex);
+			dtc.addAll(dtcIndex.values());
+		} else {
+			for (final SearchHit searchHit : queryResponse.getHits()) {
+				final SearchIndex<I, R> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
+				final R result = index.getResultDtObject();
+				dtc.add(result);
+				final Map<DtField, String> highlights = createHighlight(searchHit, indexDefinition.getResultDtDefinition(), indexFieldNameResolver);
+				resultHighlights.put(result, highlights);
+			}
+			resultCluster = Collections.emptyMap();
 		}
-		final Map<FacetValue, DtList<R>> resultCluster = createCluster(indexDefinition, searchQuery, queryResponse, dtcIndex);
 		//On fabrique à la volée le résultat.
 		final List<Facet> facets = createFacetList(searchQuery, queryResponse);
 		final long count = queryResponse.getHits().getTotalHits();
@@ -379,39 +386,48 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	}
 
 	private Map<FacetValue, DtList<R>> createCluster(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final SearchResponse queryResponse, final Map<String, R> dtcIndex) {
-
 		final Map<FacetValue, DtList<R>> resultCluster = new LinkedHashMap<>();
-		if (searchQuery.isClusteringFacet()) {
-			final FacetDefinition facetDefinition = searchQuery.getClusteringFacetDefinition();
-			final Aggregation facetAggregation = queryResponse.getAggregations().get(facetDefinition.getName());
-			if (facetDefinition.isRangeFacet()) {
-				//Cas des facettes par 'range'
-				final Range rangeBuckets = (Range) facetAggregation;
-				for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-					final Bucket value = rangeBuckets.getBucketByKey(facetRange.getListFilter().getFilterValue());
-					final SearchHits facetSearchHits = ((TopHits) value.getAggregations().get(TOPHITS_SUBAGGREAGTION_NAME)).getHits();
-					final DtList<R> facetDtc = new DtList<>(indexDefinition.getResultDtDefinition());
-					for (final SearchHit searchHit : facetSearchHits) {
-						facetDtc.add(dtcIndex.get(searchHit.getId()));
+		final FacetDefinition facetDefinition = searchQuery.getClusteringFacetDefinition();
+		final Aggregation facetAggregation = queryResponse.getAggregations().get(facetDefinition.getName());
+		if (facetDefinition.isRangeFacet()) {
+			//Cas des facettes par 'range'
+			final Range rangeBuckets = (Range) facetAggregation;
+			for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
+				final Bucket value = rangeBuckets.getBucketByKey(facetRange.getListFilter().getFilterValue());
+				final SearchHits facetSearchHits = ((TopHits) value.getAggregations().get(TOPHITS_SUBAGGREAGTION_NAME)).getHits();
+				final DtList<R> facetDtc = new DtList<>(indexDefinition.getResultDtDefinition());
+				for (final SearchHit searchHit : facetSearchHits) {
+					R result = dtcIndex.get(searchHit.getId());
+					if (result == null) {
+						final SearchIndex<I, R> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
+						result = index.getResultDtObject();
+						dtcIndex.put(searchHit.getId(), result);
 					}
-					resultCluster.put(facetRange, facetDtc);
+					facetDtc.add(result);
 				}
-			} else {
-				//Cas des facettes par 'term'
-				final MultiBucketsAggregation multiBuckets = (MultiBucketsAggregation) facetAggregation;
-				FacetValue facetValue;
-				for (final Bucket value : multiBuckets.getBuckets()) {
-					final MessageText label = new MessageText(value.getKey(), null);
-					final String query = facetDefinition.getDtField().name() + ":\"" + value.getKey() + "\"";
-					facetValue = new FacetValue(new ListFilter(query), label);
+				resultCluster.put(facetRange, facetDtc);
+			}
+		} else {
+			//Cas des facettes par 'term'
+			final MultiBucketsAggregation multiBuckets = (MultiBucketsAggregation) facetAggregation;
+			FacetValue facetValue;
+			for (final Bucket value : multiBuckets.getBuckets()) {
+				final MessageText label = new MessageText(value.getKey(), null);
+				final String query = facetDefinition.getDtField().name() + ":\"" + value.getKey() + "\"";
+				facetValue = new FacetValue(new ListFilter(query), label);
 
-					final SearchHits facetSearchHits = ((TopHits) value.getAggregations().get(TOPHITS_SUBAGGREAGTION_NAME)).getHits();
-					final DtList<R> facetDtc = new DtList<>(indexDefinition.getResultDtDefinition());
-					for (final SearchHit searchHit : facetSearchHits) {
-						facetDtc.add(dtcIndex.get(searchHit.getId()));
+				final SearchHits facetSearchHits = ((TopHits) value.getAggregations().get(TOPHITS_SUBAGGREAGTION_NAME)).getHits();
+				final DtList<R> facetDtc = new DtList<>(indexDefinition.getResultDtDefinition());
+				for (final SearchHit searchHit : facetSearchHits) {
+					R result = dtcIndex.get(searchHit.getId());
+					if (result == null) {
+						final SearchIndex<I, R> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
+						result = index.getResultDtObject();
+						dtcIndex.put(searchHit.getId(), result);
 					}
-					resultCluster.put(facetValue, facetDtc);
+					facetDtc.add(result);
 				}
+				resultCluster.put(facetValue, facetDtc);
 			}
 		}
 		return resultCluster;

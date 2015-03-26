@@ -89,7 +89,12 @@ final class ESDocumentCodec {
 		final URI uri = io.vertigo.dynamo.domain.model.URI.fromURN(urn);
 
 		/* 2 : Result stocké */
-		final R resultDtObjectdtObject = decode((String) searchHit.field(FULL_RESULT).getValue());
+		final R resultDtObjectdtObject;
+		if (searchHit.field(FULL_RESULT) == null) {
+			resultDtObjectdtObject = decode((String) searchHit.getSource().get(FULL_RESULT));
+		} else {
+			resultDtObjectdtObject = decode((String) searchHit.field(FULL_RESULT).getValue());
+		}
 		//-----
 		return SearchIndex.createResult(indexDefinition, uri, resultDtObjectdtObject);
 	}

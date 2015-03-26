@@ -651,6 +651,49 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
+	/**
+	 * Test le facettage par term d'une liste.
+	 */
+	@Test
+	public void testClusterByFacetRangeVerySmallMaxRows() {
+		index(true);
+		final SearchQuery searchQuery = new SearchQueryBuilder("*:*")
+				.withFacetClustering(yearFacetDefinition) // "avant 2000", "2000-2005", "après 2005"
+				.build();
+		final FacetedQueryResult<Car, SearchQuery> result = searchManager.loadList(carIndexDefinition, searchQuery, new DtListState(1, 0, null, null));
+
+		//On vérifie qu'il existe une valeur pour chaque marques et que le nombre d'occurrences est correct
+		final Map<String, List<Car>> databaseCluster = new HashMap<>();
+		databaseCluster.put(YearCluster.before2000.getLabel(), new ArrayList<Car>());
+		databaseCluster.put(YearCluster.between2000and2005.getLabel(), new ArrayList<Car>());
+		databaseCluster.put(YearCluster.after2005.getLabel(), new ArrayList<Car>());
+		for (final Car car : carDataBase) {
+			if (car.getYear() < 2000) {
+				databaseCluster.get(YearCluster.before2000.getLabel()).add(car);
+			} else if (car.getYear() < 2005) {
+				databaseCluster.get(YearCluster.between2000and2005.getLabel()).add(car);
+			} else {
+				databaseCluster.get(YearCluster.after2005.getLabel()).add(car);
+			}
+		}
+		Assert.assertEquals(databaseCluster.size(), result.getClusters().size());
+		for (final Entry<FacetValue, DtList<Car>> entry : result.getClusters().entrySet()) {
+			final String searchFacetLabel = entry.getKey().getLabel().getDisplay().toLowerCase();
+			final int searchFacetCount = entry.getValue().size();
+			final List<Car> carsByYear = databaseCluster.get(searchFacetLabel);
+			Assert.assertEquals(carsByYear.size(), searchFacetCount);
+			for (final Car car : entry.getValue()) {
+				if (car.getYear() < 2000) {
+					Assert.assertEquals(searchFacetLabel, YearCluster.before2000.getLabel());
+				} else if (car.getYear() < 2005) {
+					Assert.assertEquals(searchFacetLabel, YearCluster.between2000and2005.getLabel());
+				} else {
+					Assert.assertEquals(searchFacetLabel, YearCluster.after2005.getLabel());
+				}
+			}
+		}
+	}
+
 	private void logResult(final FacetedQueryResult<Car, SearchQuery> result) {
 		log.info("====== " + result.getCount() + " Results");
 		for (final Facet facet : result.getFacets()) {
