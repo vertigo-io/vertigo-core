@@ -44,13 +44,14 @@ public final class RedisWorkerPlugin implements WorkerPlugin, Activeable {
 	private final RedisDB redisDB;
 
 	@Inject
-	public RedisWorkerPlugin(final CodecManager codecManager, @Named("nodeId") final String nodeId, final @Named("workTypes") String workTypes, final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> password) {
+	public RedisWorkerPlugin(final CodecManager codecManager, @Named("nodeId") final String nodeId, final @Named("workTypes") String workTypes, final @Named("host") String redisHost, final @Named("port") int redisPort, @Named("timeoutSeconds") final int timeoutSeconds, final @Named("password") Option<String> password) {
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkArgNotEmpty(workTypes);
 		Assertion.checkArgNotEmpty(redisHost);
+		Assertion.checkArgument(timeoutSeconds < 10000, "Le timeout s'exprime en seconde.");
 		//-----
 		this.workTypes = Arrays.asList(workTypes.trim().split(";"));
-		redisDB = new RedisDB(codecManager, redisHost, redisPort, password);
+		redisDB = new RedisDB(codecManager, redisHost, redisPort, timeoutSeconds, password);
 	}
 
 	/** {@inheritDoc} */
@@ -80,8 +81,8 @@ public final class RedisWorkerPlugin implements WorkerPlugin, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <WR, W> WorkItem<WR, W> pollWorkItem(final String workType, final int timeoutInSeconds) {
-		return redisDB.pollWorkItem(workType, timeoutInSeconds);
+	public <WR, W> WorkItem<WR, W> pollWorkItem(final String workType) {
+		return redisDB.pollWorkItem(workType);
 	}
 
 	/** {@inheritDoc} */

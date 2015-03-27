@@ -48,16 +48,18 @@ public final class RestWorkerPlugin implements WorkerPlugin {
 	 * @param nodeId Identifiant du noeud
 	 * @param workTypes Types de travail gérés
 	 * @param serverUrl Url du serveur
+	 * @param timeoutSeconds Timeout en seconde des connections vers le serveur (doit être > au timeoutSeconds du serveur)
 	 * @param workManager Manager des works
 	 * @param codecManager Manager d'encodage/decodage
 	 */
 	@Inject
-	public RestWorkerPlugin(@Named("nodeId") final String nodeId, @Named("workTypes") final String workTypes, @Named("serverUrl") final String serverUrl, final WorkManager workManager, final CodecManager codecManager) {
+	public RestWorkerPlugin(@Named("nodeId") final String nodeId, @Named("workTypes") final String workTypes, @Named("serverUrl") final String serverUrl, @Named("timeoutSeconds") final int timeoutSeconds, final WorkManager workManager, final CodecManager codecManager) {
 		Assertion.checkArgNotEmpty(workTypes);
 		Assertion.checkArgNotEmpty(serverUrl);
+		Assertion.checkArgument(timeoutSeconds < 10000, "Le timeout s'exprime en seconde.");
 		//-----
 		this.workTypes = Arrays.asList(workTypes.trim().split(";"));
-		restQueueClient = new RestQueueClient(nodeId, serverUrl + "/workQueue", codecManager);
+		restQueueClient = new RestQueueClient(nodeId, serverUrl + "/workQueue", timeoutSeconds, codecManager);
 	}
 
 	/** {@inheritDoc} */
@@ -68,8 +70,8 @@ public final class RestWorkerPlugin implements WorkerPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <WR, W> WorkItem<WR, W> pollWorkItem(final String workType, final int timeoutInSeconds) {
-		return restQueueClient.pollWorkItem(workType, timeoutInSeconds);
+	public <WR, W> WorkItem<WR, W> pollWorkItem(final String workType) {
+		return restQueueClient.pollWorkItem(workType);
 	}
 
 	/** {@inheritDoc} */

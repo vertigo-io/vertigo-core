@@ -28,7 +28,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 final class WWorker implements Runnable {
-	private static final int TIMEOUT_IN_SECONDS = 1;
 	private final LocalCoordinator localWorker;
 	private final String workType;
 	private final WorkerPlugin workerPlugin;
@@ -58,7 +57,7 @@ final class WWorker implements Runnable {
 	}
 
 	private <WR, W> void doRun() throws InterruptedException {
-		final WorkItem<WR, W> workItem = workerPlugin.<WR, W> pollWorkItem(workType, TIMEOUT_IN_SECONDS);
+		final WorkItem<WR, W> workItem = workerPlugin.<WR, W> pollWorkItem(workType);
 		if (workItem != null) {
 			final Option<WorkResultHandler<WR>> workResultHandler = Option.<WorkResultHandler<WR>> some(new WorkResultHandler<WR>() {
 				@Override

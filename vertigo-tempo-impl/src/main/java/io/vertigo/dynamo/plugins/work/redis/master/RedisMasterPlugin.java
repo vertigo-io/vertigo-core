@@ -44,14 +44,13 @@ public final class RedisMasterPlugin implements MasterPlugin, Activeable {
 	private final List<String> distributedWorkTypes;
 
 	@Inject
-	public RedisMasterPlugin(final CodecManager codecManager, final @Named("distributedWorkTypes") String distributedWorkTypes, final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> password, final @Named("timeoutSeconds") int timeoutSeconds) {
+	public RedisMasterPlugin(final CodecManager codecManager, final @Named("distributedWorkTypes") String distributedWorkTypes, final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("timeoutSeconds") int timeoutSeconds, final @Named("password") Option<String> password) {
 		Assertion.checkArgNotEmpty(distributedWorkTypes);
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkArgNotEmpty(redisHost);
 		//-----
 		this.distributedWorkTypes = Arrays.asList(distributedWorkTypes.split(";"));
-		redisDB = new RedisDB(codecManager, redisHost, redisPort, password);
-		//		this.timeoutSeconds = timeoutSeconds;
+		redisDB = new RedisDB(codecManager, redisHost, redisPort, timeoutSeconds, password);
 	}
 
 	/** {@inheritDoc} */

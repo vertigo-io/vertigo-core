@@ -43,11 +43,12 @@ import redis.clients.jedis.Transaction;
  * @author pchretien
  */
 public final class RedisDB implements Activeable {
-	private static final int timeout = 2000;
+	private static final int CONNECT_TIMEOUT = 2000;
 	private final JedisPool jedisPool;
 	private final CodecManager codecManager;
+	private final int readTimeout;
 
-	public RedisDB(final CodecManager codecManager, final String redisHost, final int port, final Option<String> password) {
+	public RedisDB(final CodecManager codecManager, final String redisHost, final int port, final int readTimeout, final Option<String> password) {
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkArgNotEmpty(redisHost);
 		Assertion.checkNotNull(password);
@@ -56,10 +57,11 @@ public final class RedisDB implements Activeable {
 		final JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 		//jedisPoolConfig.setMaxActive(10);
 		if (password.isDefined()) {
-			jedisPool = new JedisPool(jedisPoolConfig, redisHost, port, timeout, password.get());
+			jedisPool = new JedisPool(jedisPoolConfig, redisHost, port, CONNECT_TIMEOUT, password.get());
 		} else {
-			jedisPool = new JedisPool(jedisPoolConfig, redisHost, port, timeout);
+			jedisPool = new JedisPool(jedisPoolConfig, redisHost, port, CONNECT_TIMEOUT);
 		}
+		this.readTimeout = readTimeout;
 
 		//test
 		try (Jedis jedis = jedisPool.getResource()) {
@@ -111,11 +113,11 @@ public final class RedisDB implements Activeable {
 		}
 	}
 
-	public <WR, W> WorkItem<WR, W> pollWorkItem(final String workType, final int timeoutInSeconds) {
+	public <WR, W> WorkItem<WR, W> pollWorkItem(final String workType) {
 		Assertion.checkNotNull(workType);
 		//-----
 		try (Jedis jedis = jedisPool.getResource()) {
-			final String workId = jedis.brpoplpush("works:todo:" + workType, "works:in progress", timeoutInSeconds);
+			final String workId = jedis.brpoplpush("works:todo:" + workType, "works:in progress", readTimeout);
 			if (workId == null) {
 				return null;
 			}

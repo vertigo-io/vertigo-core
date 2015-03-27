@@ -38,7 +38,7 @@ public interface WorkerPlugin extends Plugin {
 	 * @param workType Type de tache
 	 * @return Workitem or null (if timeout)
 	 */
-	<WR, W> WorkItem<WR, W> pollWorkItem(final String workType, final int timeoutInSeconds);
+	<WR, W> WorkItem<WR, W> pollWorkItem(final String workType);
 
 	/**
 	 * Send result or error if execution failed

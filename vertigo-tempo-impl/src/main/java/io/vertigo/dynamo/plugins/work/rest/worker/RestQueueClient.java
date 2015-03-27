@@ -46,6 +46,7 @@ import com.sun.jersey.api.client.WebResource;
  * @author npiedeloup
  */
 final class RestQueueClient {
+	private static final int CONNECT_TIMEOUT = 10 * 1000; // 10s
 	private static final Logger LOG = Logger.getLogger(RestQueueClient.class);
 	private final CodecManager codecManager;
 	private final String nodeUID;
@@ -56,7 +57,7 @@ final class RestQueueClient {
 	/**
 	 * Constructeur.
 	 */
-	RestQueueClient(final String nodeUID, final String serverUrl, final CodecManager codecManager) {
+	RestQueueClient(final String nodeUID, final String serverUrl, final int readTimeout, final CodecManager codecManager) {
 		Assertion.checkArgNotEmpty(nodeUID);
 		Assertion.checkArgNotEmpty(serverUrl);
 		Assertion.checkNotNull(codecManager);
@@ -66,9 +67,11 @@ final class RestQueueClient {
 		this.codecManager = codecManager;
 		locatorClient = Client.create();
 		locatorClient.addFilter(new com.sun.jersey.api.client.filter.GZIPContentEncodingFilter());
+		locatorClient.setConnectTimeout(CONNECT_TIMEOUT);
+		locatorClient.setReadTimeout(readTimeout);
 	}
 
-	<WR, W> WorkItem<WR, W> pollWorkItem(final String workType, final int timeoutInSeconds) {
+	<WR, W> WorkItem<WR, W> pollWorkItem(final String workType) {
 		//call methode distante, passe le workItem à started
 		try {
 			try {
@@ -90,7 +93,6 @@ final class RestQueueClient {
 					final Object work = codecManager.getCompressedSerializationCodec().decode(serializedResult);
 					LOG.info("pollWork(" + workType + ") : 1 Work");
 					return new WorkItem(uuid, work, new WorkEngineProvider(workType));
-					//				return new WorkItem(uuid, work, new WorkEngineProvider(workType), new CallbackWorkResultHandler(uuid, this));
 				}
 				LOG.info("pollWork(" + workType + ") : no Work");
 				//pas de travaux : inutil d'attendre le poll attend déjà 1s coté serveur
