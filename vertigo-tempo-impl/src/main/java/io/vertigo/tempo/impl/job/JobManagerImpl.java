@@ -23,10 +23,7 @@ import io.vertigo.core.Home;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.tempo.job.JobManager;
-import io.vertigo.tempo.job.SchedulerPlugin;
 import io.vertigo.tempo.job.metamodel.JobDefinition;
-
-import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -39,7 +36,6 @@ import javax.inject.Inject;
  * @author evernat, pchretien
  */
 public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
-	private final SchedulerPlugin schedulerPlugin;
 	private final JobListener jobListener;
 
 	/**
@@ -47,11 +43,10 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 	 * @param analyticsManager Manager de la performance applicative
 	 */
 	@Inject
-	public JobManagerImpl(final AnalyticsManager analyticsManager, final SchedulerPlugin schedulerPlugin) {
-		Assertion.checkNotNull(schedulerPlugin);
+	public JobManagerImpl(final AnalyticsManager analyticsManager) {
+		Assertion.checkNotNull(analyticsManager);
 		//-----
 		this.jobListener = new JobListener(analyticsManager);
-		this.schedulerPlugin = schedulerPlugin;
 		//A déplacer
 		//A déplacer
 		//A déplacer
@@ -78,29 +73,5 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 
 	private static Runnable createJob(final JobDefinition jobDefinition) {
 		return Injector.newInstance(jobDefinition.getJobClass(), Home.getComponentSpace());
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void scheduleEverySecondInterval(final JobDefinition jobDefinition, final int periodInSecond) {
-		schedulerPlugin.scheduleEverySecondInterval(this, jobDefinition, periodInSecond);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void scheduleEveryDayAtHour(final JobDefinition jobDefinition, final int hour) {
-		schedulerPlugin.scheduleEveryDayAtHour(this, jobDefinition, hour);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void scheduleAtDate(final JobDefinition jobDefinition, final Date date) {
-		schedulerPlugin.scheduleAtDate(this, jobDefinition, date);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void scheduleNow(final JobDefinition jobDefinition) {
-		schedulerPlugin.scheduleNow(this, jobDefinition);
 	}
 }

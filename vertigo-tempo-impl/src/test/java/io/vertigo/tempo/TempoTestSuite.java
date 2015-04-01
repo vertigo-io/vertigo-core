@@ -23,6 +23,7 @@ import io.vertigo.dynamo.work.distributed.rest.RestWorkManagerTest;
 import io.vertigo.dynamo.work.local.WorkManagerTest;
 import io.vertigo.tempo.job.JobManagerTest;
 import io.vertigo.tempo.mail.MailManagerTest;
+import io.vertigo.tempo.scheduler.SchedulerManager;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -37,6 +38,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
 		MailManagerTest.class,
 		JobManagerTest.class,
+		SchedulerManager.class,
 		WorkManagerTest.class,
 		RedisWorkManagerTest.class,
 		RestWorkManagerTest.class,

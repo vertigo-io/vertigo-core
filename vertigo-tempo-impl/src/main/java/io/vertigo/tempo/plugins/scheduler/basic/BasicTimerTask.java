@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.tempo.plugins.job.basic;
+package io.vertigo.tempo.plugins.scheduler.basic;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.tempo.job.JobManager;
@@ -25,36 +25,28 @@ import io.vertigo.tempo.job.metamodel.JobDefinition;
 import java.util.TimerTask;
 
 /**
- * Timer permettant de reprogrammer un job.
+ * Timer permettant l'exécution d'un Job.
  * @author npiedeloup
  */
-final class ReschedulerTimerTask extends TimerTask {
-	private final JobManager jobManager;
+final class BasicTimerTask extends TimerTask {
 	private final JobDefinition jobDefinition;
-	private final int hour;
+	private final JobManager jobManager;
 
 	/**
 	 * Constructeur.
-	 * @param jobManager Manager des job
-	 * @param jobDefinition Définition du job à reprogrammer
-	 * @param hour Heure du prochaine lancement
+	 * @param jobManager Manager des jobs.
 	 */
-	ReschedulerTimerTask(final JobManager jobManager, final JobDefinition jobDefinition, final int hour) {
-		Assertion.checkNotNull(jobManager);
+	BasicTimerTask(final JobDefinition jobDefinition, final JobManager jobManager) {
 		Assertion.checkNotNull(jobDefinition);
+		Assertion.checkNotNull(jobManager);
 		//-----
-		this.jobManager = jobManager;
 		this.jobDefinition = jobDefinition;
-		this.hour = hour;
+		this.jobManager = jobManager;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void run() {
-		// pour un job s'exécutant tous les jours, on schedule chaque jour
-		// pour éviter que l'exécution se décale d'une heure lors des changements d'heure été-hiver
-
-		// On rappel le scheduleEveryDayAtHour qui reprogrammera à la fois la prochaine task du Job et celle du ReschedulerTimerTask.
-		jobManager.scheduleEveryDayAtHour(jobDefinition, hour);
+		jobManager.execute(jobDefinition);
 	}
 }

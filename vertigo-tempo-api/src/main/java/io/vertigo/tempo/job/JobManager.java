@@ -21,8 +21,6 @@ package io.vertigo.tempo.job;
 import io.vertigo.lang.Component;
 import io.vertigo.tempo.job.metamodel.JobDefinition;
 
-import java.util.Date;
-
 /**
  * Job scheduler.
  * Cette classe permet d'exécuter une "tâche" de manière indépendante d'une servlet :
@@ -36,31 +34,6 @@ import java.util.Date;
  * @author evernat
  */
 public interface JobManager extends Component {
-	/**
-	 * Programme un job pour exécution à une fréquence donnée en secondes.
-	 * @param periodInSecond Fréquence d'exécution en secondes
-	 */
-	void scheduleEverySecondInterval(final JobDefinition jobDefinition, int periodInSecond);
-
-	/**
-	 * Programme un job pour exécution chaque jour à heure fixe.
-	 * <br/>Si il y a besoin de programmer un job pour exécution à jour fixe dans la semaine
-	 * ou dans le mois, il peut être programmé un job chaque puis conditioner l'exécution selon la
-	 * date courante en utilisant la classe Calendar.
-	 * @param hour Heure fixe d'exécution
-	 */
-	void scheduleEveryDayAtHour(final JobDefinition jobDefinition, int hour);
-
-	/**
-	 * Programme un job pour une seul exécution à une date donnée.
-	 * @param date Date d'exécution
-	 */
-	void scheduleAtDate(final JobDefinition jobDefinition, Date date);
-
-	/**
-	 * Exécution immédiate et asynchrone d'un job.
-	 */
-	void scheduleNow(final JobDefinition jobDefinition);
 
 	/**
 	 * Exécution immédiate et synchrone d'un job.

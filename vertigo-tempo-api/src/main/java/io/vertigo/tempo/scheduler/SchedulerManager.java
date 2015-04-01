@@ -52,4 +52,9 @@ public interface SchedulerManager extends Component {
 	 * @param date Date d'exécution
 	 */
 	void scheduleAtDate(final JobDefinition jobDefinition, Date date);
+
+	/**
+	 * Exécution immédiate et asynchrone d'un job.
+	 */
+	void scheduleNow(final JobDefinition jobDefinition);
 }

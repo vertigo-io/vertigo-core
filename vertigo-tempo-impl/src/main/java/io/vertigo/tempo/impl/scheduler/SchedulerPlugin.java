@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.tempo.job;
+package io.vertigo.tempo.impl.scheduler;
 
 import io.vertigo.lang.Plugin;
 import io.vertigo.tempo.job.metamodel.JobDefinition;
@@ -32,7 +32,7 @@ public interface SchedulerPlugin extends Plugin {
 	 * Programme un job pour exécution à une fréquence donnée en secondes.
 	 * @param periodInSecond Fréquence d'exécution en secondes
 	 */
-	void scheduleEverySecondInterval(final JobManager jobManager, final JobDefinition jobDefinition, int periodInSecond);
+	void scheduleEverySecondInterval(final JobDefinition jobDefinition, int periodInSecond);
 
 	/**
 	 * Programme un job pour exécution chaque jour à heure fixe.
@@ -41,16 +41,16 @@ public interface SchedulerPlugin extends Plugin {
 	 * date courante en utilisant la classe Calendar.
 	 * @param hour Heure fixe d'exécution
 	 */
-	void scheduleEveryDayAtHour(final JobManager jobManager, final JobDefinition jobDefinition, int hour);
+	void scheduleEveryDayAtHour(final JobDefinition jobDefinition, int hour);
 
 	/**
 	 * Programme un job pour une seul exécution à une date donnée.
 	 * @param date Date d'exécution
 	 */
-	void scheduleAtDate(final JobManager jobManager, final JobDefinition jobDefinition, Date date);
+	void scheduleAtDate(final JobDefinition jobDefinition, Date date);
 
 	/**
 	 * Programme un job pour une seul exécution immédiate.
 	 */
-	void scheduleNow(final JobManager jobManager, final JobDefinition jobDefinition);
+	void scheduleNow(final JobDefinition jobDefinition);
 }

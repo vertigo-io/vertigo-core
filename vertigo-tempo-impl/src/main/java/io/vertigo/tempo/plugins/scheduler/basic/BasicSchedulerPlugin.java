@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.tempo.plugins.job.basic;
+package io.vertigo.tempo.plugins.scheduler.basic;
 
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
+import io.vertigo.tempo.impl.scheduler.SchedulerPlugin;
 import io.vertigo.tempo.job.JobManager;
-import io.vertigo.tempo.job.SchedulerPlugin;
 import io.vertigo.tempo.job.metamodel.JobDefinition;
 
 import java.text.SimpleDateFormat;
@@ -32,6 +32,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 
@@ -63,11 +65,20 @@ import org.apache.log4j.Logger;
  * @author evernat
  */
 public final class BasicSchedulerPlugin implements SchedulerPlugin, Activeable {
+
 	/**
 	 * Pool de timers permettant l'exécution des Jobs.
 	 */
 	private final TimerPool timerPool = new TimerPool();
 	private boolean active;
+	private final JobManager jobManager;
+
+	@Inject
+	public BasicSchedulerPlugin(JobManager jobManager) {
+		Assertion.checkNotNull(jobManager);
+		//-----
+		this.jobManager = jobManager;
+	}
 
 	/** {@inheritDoc} */
 	@Override
@@ -92,11 +103,11 @@ public final class BasicSchedulerPlugin implements SchedulerPlugin, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public void scheduleEverySecondInterval(final JobManager jobManager, final JobDefinition jobDefinition, final int periodInSecond) {
+	public void scheduleEverySecondInterval(final JobDefinition jobDefinition, final int periodInSecond) {
 		checkActive();
 		Assertion.checkArgument(periodInSecond <= 7 * 24 * 60 * 60, "La période doit être inférieure à une semaine");
 		//-----
-		final TimerTask task = createTimerTask(jobManager, jobDefinition);
+		final TimerTask task = createTimerTask(jobDefinition);
 		final int startDelay = periodInSecond;
 		// on utilise schedule et non scheduleAtFixedRate car c'est la période inter-exécution
 		// qui importe et non l'intervalle avec la référence de démarrage
@@ -107,15 +118,15 @@ public final class BasicSchedulerPlugin implements SchedulerPlugin, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public void scheduleEveryDayAtHour(final JobManager jobManager, final JobDefinition jobDefinition, final int hour) {
+	public void scheduleEveryDayAtHour(final JobDefinition jobDefinition, final int hour) {
 		checkActive();
 		//a chaque exécution il est nécessaire de reprogrammer l'execution.
 		final Date nextExecutionDate = getNextExecutionDate(hour);
-		scheduleAtDate(jobManager, jobDefinition, nextExecutionDate);
+		scheduleAtDate(jobDefinition, nextExecutionDate);
 
 		//a chaque exécution il est nécessaire de reprogrammer l'execution.
 		final Date nextReschedulerDate = new Date(nextExecutionDate.getTime() + 1 * 60 * 1000); //on reprogramme à l'heure dite + 1min (comme on est sur le m^me timer elle passera après
-		final TimerTask task = createRescheduledTimerTask(jobManager, jobDefinition, hour);
+		final TimerTask task = createRescheduledTimerTask(jobDefinition, hour);
 		timerPool.getTimer(jobDefinition.getName()).schedule(task, nextReschedulerDate);
 		log("Tache de reprogrammation du Job ", jobDefinition, nextReschedulerDate);
 	}
@@ -127,27 +138,27 @@ public final class BasicSchedulerPlugin implements SchedulerPlugin, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public void scheduleNow(final JobManager jobManager, final JobDefinition jobDefinition) {
+	public void scheduleNow(final JobDefinition jobDefinition) {
 		checkActive();
-		final TimerTask task = createTimerTask(jobManager, jobDefinition);
+		final TimerTask task = createTimerTask(jobDefinition);
 		timerPool.getTimer(jobDefinition.getName()).schedule(task, new Date());
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void scheduleAtDate(final JobManager jobManager, final JobDefinition jobDefinition, final Date date) {
+	public void scheduleAtDate(final JobDefinition jobDefinition, final Date date) {
 		checkActive();
-		final TimerTask task = createTimerTask(jobManager, jobDefinition);
+		final TimerTask task = createTimerTask(jobDefinition);
 		timerPool.getTimer(jobDefinition.getName()).schedule(task, date);
 		log("Job ", jobDefinition, date);
 	}
 
-	private static TimerTask createTimerTask(final JobManager jobManager, final JobDefinition jobDefinition) {
+	private TimerTask createTimerTask(final JobDefinition jobDefinition) {
 		return new BasicTimerTask(jobDefinition, jobManager);
 	}
 
-	private static TimerTask createRescheduledTimerTask(final JobManager jobManager, final JobDefinition jobDefinition, final int hour) {
-		return new ReschedulerTimerTask(jobManager, jobDefinition, hour);
+	private TimerTask createRescheduledTimerTask(final JobDefinition jobDefinition, final int hour) {
+		return new ReschedulerTimerTask(this, jobDefinition, hour);
 	}
 
 	private static Date getNextExecutionDate(final int hour) {

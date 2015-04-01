@@ -16,37 +16,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.tempo.plugins.job.basic;
+package io.vertigo.tempo.scheduler;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.tempo.job.JobManager;
-import io.vertigo.tempo.job.metamodel.JobDefinition;
+public final class TestJob implements Runnable {
+	private static int count = 0;
 
-import java.util.TimerTask;
-
-/**
- * Timer permettant l'exécution d'un Job.
- * @author npiedeloup
- */
-final class BasicTimerTask extends TimerTask {
-	private final JobDefinition jobDefinition;
-	private final JobManager jobManager;
-
-	/**
-	 * Constructeur.
-	 * @param jobManager Manager des jobs.
-	 */
-	BasicTimerTask(final JobDefinition jobDefinition, final JobManager jobManager) {
-		Assertion.checkNotNull(jobDefinition);
-		Assertion.checkNotNull(jobManager);
-		//-----
-		this.jobDefinition = jobDefinition;
-		this.jobManager = jobManager;
-	}
-
-	/** {@inheritDoc} */
 	@Override
 	public void run() {
-		jobManager.execute(jobDefinition);
+		try {
+			//On simule une attente qui correspond à un traitement métier de 100 ms
+			Thread.sleep(100);
+		} catch (final InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+		incCount();
+	}
+
+	private synchronized void incCount() {
+		count++;
+	}
+
+	public static synchronized int getCount() {
+		return count;
+	}
+
+	public static synchronized void reset() {
+		count = 0;
 	}
 }
