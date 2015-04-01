@@ -42,7 +42,7 @@ import org.junit.runners.Suite.SuiteClasses;
 		XMLHelperTest.class,
 		//----
 		ConverterManagerRemoteTest.class,
-		XDocReportConverterManagerTest.class,
+		XDocReportConverterManagerTest.class
 })
 public final class QuartoTestSuite {
 	//
