@@ -32,6 +32,7 @@ import io.vertigo.quarto.publisher.model.PublisherData;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +85,12 @@ public final class OpenOfficeMergerPlugin implements MergerPlugin {
 		Assertion.checkNotNull(modelFileURL);
 		Assertion.checkNotNull(data);
 		//-----
-		final File file = new File(modelFileURL.getFile());
+		File file;
+		try {
+			file = new File(modelFileURL.toURI());
+		} catch (final URISyntaxException e) {
+			throw new IOException("Model URL invalid", e);
+		}
 		Assertion.checkArgument(file.exists(), "Le fichier du modèle est introuvable");
 		Assertion.checkArgument(file.canRead(), "Le fichier du modèle n'est pas lisible");
 		file.setReadOnly();

@@ -18,11 +18,10 @@
  */
 package io.vertigo.quarto.plugins.publisher.docx;
 
-
 /**
  * Classe pour les tests.
  * Publie les visibilités packages.
- * 
+ *
  * @author adufranne
  */
 public final class DOCXTest {
@@ -33,7 +32,7 @@ public final class DOCXTest {
 
 	/**
 	 * Teste le retour à la ligne pour les docx.
-	 * 
+	 *
 	 * @param content le docx format texte.
 	 * @return le xml
 	 */
@@ -45,7 +44,7 @@ public final class DOCXTest {
 	/**
 	 * Adaptation de la syntaxe utilisateur vers la syntaxe KSP.
 	 * les <# #> sont rajoutés si ils sont manquants.
-	 * 
+	 *
 	 * @param content le xml.
 	 * @return le xml.
 	 */
@@ -57,7 +56,7 @@ public final class DOCXTest {
 
 	/**
 	 * Publication de la méthode de nettoyage des tags pour les tests.
-	 * 
+	 *
 	 * @param content le xml.
 	 * @return le xml.
 	 */
@@ -68,7 +67,7 @@ public final class DOCXTest {
 
 	/**
 	 * Publication de la méthode de factorisation des tags multiples pour les tests.
-	 * 
+	 *
 	 * @param content le xml.
 	 * @return le xml.
 	 */
