@@ -53,6 +53,8 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 
 	/**
 	 * Constructeur.
+	 * @param workerCount Nb workers
+	 * @param masterPlugin Optional plugin for work's distribution
 	 */
 	@Inject
 	public WorkManagerImpl(final @Named("workerCount") int workerCount, final Option<MasterPlugin> masterPlugin) {
