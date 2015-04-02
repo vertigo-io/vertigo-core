@@ -9,6 +9,10 @@ import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 
+/**
+ * Listener of the execution of the jobs.
+ * @author pchretien
+ */
 final class JobListener {
 	/** Type de process gérant les statistiques des jobs. */
 	private static final String PROCESS_TYPE = "JOB";

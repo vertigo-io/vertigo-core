@@ -28,29 +28,24 @@ import io.vertigo.tempo.job.metamodel.JobDefinition;
 import javax.inject.Inject;
 
 /**
- * Implémentation générique de JobManager.
- * Attention, cette implémentation n'est pas transactionnelle ; la gestion des transaction doit rester à la charge des services.
+ * Impl of JobManager.
  *
- * Les jobs sont instanciés, y sont injectés les composants métiers et les managers.
+ * Jobs are built by DI using injection of the current components (defined in ComponentSpace).
  *
- * @author evernat, pchretien
+ * @author pchretien
  */
-public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
+public final class JobManagerImpl implements JobManager {
 	private final JobListener jobListener;
 
 	/**
-	 * Constructeur.
-	 * @param analyticsManager Manager de la performance applicative
+	 * Constructor.
+	 * @param analyticsManager Application Performance Manager.
 	 */
 	@Inject
 	public JobManagerImpl(final AnalyticsManager analyticsManager) {
 		Assertion.checkNotNull(analyticsManager);
 		//-----
 		this.jobListener = new JobListener(analyticsManager);
-		//A déplacer
-		//A déplacer
-		//A déplacer
-		//A déplacer
 		Home.getDefinitionSpace().register(JobDefinition.class);
 	}
 
@@ -62,7 +57,7 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 		final long start = System.currentTimeMillis();
 		try {
 			final Runnable job = createJob(jobDefinition);
-			job.run(); //NOSONAR : JobManager should managed Job execution, it decided if a runnable job runs in a new thread or not
+			job.run(); //NOSONAR : JobManager manages Job execution, it decides if a runnable job runs in a new thread or not
 		} catch (final Throwable throwable) { //NOSONAR
 			jobListener.onFinish(jobDefinition, throwable);
 		} finally {
