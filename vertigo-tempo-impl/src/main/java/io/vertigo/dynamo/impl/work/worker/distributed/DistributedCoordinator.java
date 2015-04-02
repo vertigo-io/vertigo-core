@@ -91,7 +91,7 @@ public final class DistributedCoordinator implements Coordinator, Activeable {
 	}
 
 	private Thread createWatcher() {
-		return new Thread() {
+		return new Thread("DistributedWorkResultWatcher") {
 			/** {@inheritDoc} */
 			@Override
 			public void run() {
@@ -116,13 +116,11 @@ public final class DistributedCoordinator implements Coordinator, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public final void stop() {
-		if (watcher != null) {
-			watcher.interrupt();
-			try {
-				watcher.join();
-			} catch (final InterruptedException e) {
-				//On ne fait rien
-			}
+		watcher.interrupt();
+		try {
+			watcher.join();
+		} catch (final InterruptedException e) {
+			//On ne fait rien
 		}
 	}
 

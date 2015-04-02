@@ -11,12 +11,14 @@
 		<component api="NodeManager" class="io.vertigo.dynamo.impl.node.NodeManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.work.rest.worker.RestWorkerPlugin">
 				<param name="nodeId" value="node-1-1" />
+				<param name="timeoutSeconds" value="10" />
 				<param name="serverUrl" value="http://localhost:10998" />
 				<!-- On déclare la spécialisation des 10 workers du WorkManager : 5 de chaque pour les TU -->
 				<param name="workTypes" value="io.vertigo.dynamo.work.mock.DivideWorkEngine;io.vertigo.dynamo.work.mock.DivideWorkEngine;io.vertigo.dynamo.work.mock.DivideWorkEngine;io.vertigo.dynamo.work.mock.DivideWorkEngine;io.vertigo.dynamo.work.mock.DivideWorkEngine" />
 			</plugin>
 			<plugin class="io.vertigo.dynamo.plugins.work.rest.worker.RestWorkerPlugin">
 				<param name="nodeId" value="node-1-2" />
+				<param name="timeoutSeconds" value="10" />
 				<param name="serverUrl" value="http://localhost:10998" />
 				<!-- On déclare la spécialisation des 10 workers du WorkManager : 5 de chaque pour les TU -->
 				<param name="workTypes" value="io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine" />
