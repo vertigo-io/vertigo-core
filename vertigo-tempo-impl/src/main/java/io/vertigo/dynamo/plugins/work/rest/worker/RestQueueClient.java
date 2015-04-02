@@ -57,7 +57,7 @@ final class RestQueueClient {
 	/**
 	 * Constructeur.
 	 */
-	RestQueueClient(final String nodeUID, final String serverUrl, final int readTimeout, final CodecManager codecManager) {
+	RestQueueClient(final String nodeUID, final String serverUrl, final int timeoutSeconds, final CodecManager codecManager) {
 		Assertion.checkArgNotEmpty(nodeUID);
 		Assertion.checkArgNotEmpty(serverUrl);
 		Assertion.checkNotNull(codecManager);
@@ -68,7 +68,7 @@ final class RestQueueClient {
 		locatorClient = Client.create();
 		locatorClient.addFilter(new com.sun.jersey.api.client.filter.GZIPContentEncodingFilter());
 		locatorClient.setConnectTimeout(CONNECT_TIMEOUT);
-		locatorClient.setReadTimeout(readTimeout);
+		locatorClient.setReadTimeout(timeoutSeconds * 1000);
 	}
 
 	<WR, W> WorkItem<WR, W> pollWorkItem(final String workType) {

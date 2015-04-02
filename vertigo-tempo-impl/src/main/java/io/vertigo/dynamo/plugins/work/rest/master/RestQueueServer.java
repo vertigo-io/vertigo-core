@@ -23,10 +23,12 @@ import io.vertigo.dynamo.impl.work.WorkItem;
 import io.vertigo.dynamo.impl.work.WorkResult;
 import io.vertigo.lang.Assertion;
 
+import java.io.IOException;
 import java.io.Serializable;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
@@ -47,18 +49,18 @@ import com.google.gson.Gson;
  */
 final class RestQueueServer {
 	//pas besoin de synchronized la map, car le obtain est le seul accès et est synchronized
-	private final Map<String, BlockingQueue<WorkItem<?, ?>>> workQueueMap = new HashMap<>();
+	private final Map<String, BlockingQueue<WaitingWorkInfos>> workQueueMap = new HashMap<>();
 
 	private static final Logger LOG = Logger.getLogger(RestQueueServer.class);
 
 	//On conserve l'état des work en cours, afin de pouvoir les relancer si besoin (avec un autre uuid)
 	private final ConcurrentMap<String, RunningWorkInfos> runningWorkInfosMap = new ConcurrentHashMap<>();
 	private final ConcurrentMap<String, NodeState> knownNodes = new ConcurrentHashMap<>();
-	private final Set<String> activeWorkTypes = Collections.synchronizedSet(new HashSet<String>());
 	private final Timer checkTimeOutTimer = new Timer("WorkQueueRestServerTimeoutCheck", true);
 	private final CodecManager codecManager;
 	private final BlockingQueue<WorkResult> resultQueue = new LinkedBlockingQueue<>();
 
+	private final int deadWorkTypeTimeoutSec;
 	private final long nodeTimeOutSec;
 	private final int pullTimeoutSec;
 
@@ -73,6 +75,7 @@ final class RestQueueServer {
 		//-----
 		this.nodeTimeOutSec = nodeTimeOutSec;
 		this.pullTimeoutSec = pullTimeoutSec;
+		deadWorkTypeTimeoutSec = 60; //by convention : dead workType timeout after 60s
 		this.codecManager = codecManager;
 	}
 
@@ -99,7 +102,7 @@ final class RestQueueServer {
 		//Comme défini dans le contrat de la ConcurrentMap : l'iterator est weakly consistent : et ne lance pas de ConcurrentModificationException
 		for (final NodeState nodeState : knownNodes.values()) {
 			//sans signe de vie depuis deadNodeTimeout, on considère le noeud comme mort
-			if (System.currentTimeMillis() - nodeState.getLastSeenTime() > nodeTimeOutSec * 1000) {
+			if (!isActiveNode(nodeState)) {
 				deadNodes.add(nodeState.getNodeUID());
 			}
 		}
@@ -114,6 +117,45 @@ final class RestQueueServer {
 	}
 
 	/**
+	 * Vérifie les WorkItems sur des workTypes inactifs
+	 */
+	void checkDeadWorkItems() {
+		for (final String workType : new ArrayList<>(workQueueMap.keySet())) {
+			BlockingQueue<WaitingWorkInfos> workItemQueue;
+			try {
+				workItemQueue = obtainWorkQueue(workType);
+			} catch (final InterruptedException e) {
+				Thread.currentThread().interrupt();
+				return;
+			}
+			if (!workItemQueue.isEmpty() && !isActiveWorkType(workType)) {
+				//Comme défini dans le contrat de la BlockingQueue : l'iterator est weakly consistent : et ne lance pas de ConcurrentModificationException
+				for (final Iterator<WaitingWorkInfos> it = workItemQueue.iterator(); it.hasNext();) {
+					final WaitingWorkInfos waitingWorkInfos = it.next();
+					if (waitingWorkInfos.getWaitingAge() > deadWorkTypeTimeoutSec * 1000) {
+						it.remove();
+						LOG.info("waiting timeout (" + waitingWorkInfos.getWorkItem().getId() + ")");
+						resultQueue.add(new WorkResult(waitingWorkInfos.getWorkItem().getId(), null, new IOException("Timeout workId " + waitingWorkInfos.getWorkItem().getId() + " after " + deadWorkTypeTimeoutSec + "s : No active node for this workType (" + workType + ")")));
+					}
+				}
+			}
+		}
+	}
+
+	private boolean isActiveNode(final NodeState nodeState) {
+		return System.currentTimeMillis() - nodeState.getLastSeenTime() < nodeTimeOutSec * 1000;
+	}
+
+	private boolean isActiveWorkType(final String workType) {
+		for (final NodeState nodeState : knownNodes.values()) {
+			if (isActiveNode(nodeState) && nodeState.isWorkTypeSupported(workType)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Signalement de vie d'un node, avec le type de work qu'il annonce.
 	 * Le type de work annoncé, vient compléter les précédents.
 	 * @param nodeUID UID du node
@@ -124,7 +166,6 @@ final class RestQueueServer {
 		if (nodeState != null) {
 			nodeState.touch(nodeWorkType);
 		}
-		activeWorkTypes.add(nodeWorkType);
 	}
 
 	String pollWork(final String workType, final String nodeId) {
@@ -180,7 +221,8 @@ final class RestQueueServer {
 		try {
 			//take attend qu'un élément soit disponible toutes les secondes.
 			//Poll attend (1s) qu'un élément soit disponible et sinon renvoit null
-			return obtainWorkQueue(workType).poll(pullTimeoutInSeconds, TimeUnit.SECONDS);
+			final WaitingWorkInfos waitingWorkInfos = obtainWorkQueue(workType).poll(pullTimeoutInSeconds, TimeUnit.SECONDS);
+			return waitingWorkInfos != null ? waitingWorkInfos.getWorkItem() : null;
 		} catch (final InterruptedException e) {
 			//dans le cas d'une interruption on arrête de dépiler
 			return null;
@@ -195,23 +237,43 @@ final class RestQueueServer {
 	 */
 	<WR, W> void putWorkItem(final WorkItem<WR, W> workItem) {
 		Assertion.checkNotNull(workItem);
-		//-----
+		if (!isActiveWorkType(workItem.getWorkType())) {
+			LOG.warn("No active node for this workType : " + workItem.getWorkType());
+		}
 		try {
-			obtainWorkQueue(workItem.getWorkType()).put(workItem);
+			obtainWorkQueue(workItem.getWorkType()).put(new WaitingWorkInfos(workItem));
 		} catch (final InterruptedException e) {
 			//dans le cas d'une interruption on interdit d'empiler de nouveaux Works
 			throw new RuntimeException("putWorkItem", e);
 		}
 	}
 
-	private synchronized BlockingQueue<WorkItem<?, ?>> obtainWorkQueue(final String workType) throws InterruptedException {
+	private synchronized BlockingQueue<WaitingWorkInfos> obtainWorkQueue(final String workType) throws InterruptedException {
 		checkInterrupted();
-		BlockingQueue<WorkItem<?, ?>> workQueue = workQueueMap.get(workType);
+		BlockingQueue<WaitingWorkInfos> workQueue = workQueueMap.get(workType);
 		if (workQueue == null) {
 			workQueue = new LinkedBlockingQueue<>();
 			workQueueMap.put(workType, workQueue);
 		}
 		return workQueue;
+	}
+
+	private static class WaitingWorkInfos {
+		private final WorkItem workItem;
+		private final long startWaitingTime;
+
+		public WaitingWorkInfos(final WorkItem workItem) {
+			this.workItem = workItem;
+			startWaitingTime = System.currentTimeMillis();
+		}
+
+		public WorkItem getWorkItem() {
+			return workItem;
+		}
+
+		public long getWaitingAge() {
+			return System.currentTimeMillis() - startWaitingTime;
+		}
 	}
 
 	private static class RunningWorkInfos {
@@ -243,7 +305,7 @@ final class RestQueueServer {
 		@Override
 		public void run() {
 			restQueueServer.checkDeadNodes();
-
+			restQueueServer.checkDeadWorkItems();
 		}
 	}
 

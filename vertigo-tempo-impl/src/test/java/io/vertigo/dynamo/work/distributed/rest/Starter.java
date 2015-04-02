@@ -53,7 +53,7 @@ public final class Starter implements Runnable {
 	@Override
 	public void run() {
 		try (App app = new App(appConfig)) {
-			System.out.println("Node started (timout in " + timeToWait + "s)");
+			System.out.println("Node started (timout in " + (timeToWait / 1000) + "s)");
 			if (timeToWait > 0) {
 				Thread.sleep(timeToWait);
 			} else {

@@ -71,4 +71,12 @@ final class NodeState {
 	public String getNodeUID() {
 		return nodeUID;
 	}
+
+	/**
+	 * @param workType WorkType to test
+	 * @return If this workType is supported by this node
+	 */
+	public boolean isWorkTypeSupported(final String workType) {
+		return nodeWorkTypes.contains(workType);
+	}
 }
