@@ -43,7 +43,7 @@ final class WhereInPreProcessor {
 	private static final String REGEXP_CHECK_PATTERN = "\\s(?:IN|in).+#.+(?:ROWNUM|rownum).+#";
 	private static final Pattern JAVA_CHECK_PATTERN = Pattern.compile(REGEXP_CHECK_PATTERN);
 
-	private static final String REGEXP_PATTERN = "\\s([A-Za-z0-9_\\.]+)\\s+((?:NOT|not)\\s+)?(?:IN|in)\\s+\\(#([A-Z0-9_]+)\\.(?:ROWNUM|rownum)\\.([A-Z0-9_]+)#\\)";
+	private static final String REGEXP_PATTERN = "\\W([A-Za-z0-9_\\.]+)\\s+((?:NOT|not)\\s+)?(?:IN|in)\\s+\\(#([A-Z0-9_]+)\\.(?:ROWNUM|rownum)\\.([A-Z0-9_]+)#\\)";
 	private static final Pattern JAVA_PATTERN = Pattern.compile(REGEXP_PATTERN);
 
 	private static final int NB_MAX_WHERE_IN_ITEM = 1000;
