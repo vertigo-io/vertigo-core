@@ -32,20 +32,23 @@ final class ReschedulerTimerTask extends TimerTask {
 	private final JobManager jobManager;
 	private final JobDefinition jobDefinition;
 	private final int hour;
+	private final int minute;
 
 	/**
 	 * Constructeur.
 	 * @param jobManager Manager des job
 	 * @param jobDefinition Définition du job à reprogrammer
 	 * @param hour Heure du prochaine lancement
+	 * @param minute Minute du prochaine lancement
 	 */
-	ReschedulerTimerTask(final JobManager jobManager, final JobDefinition jobDefinition, final int hour) {
+	ReschedulerTimerTask(final JobManager jobManager, final JobDefinition jobDefinition, final int hour, final int minute) {
 		Assertion.checkNotNull(jobManager);
 		Assertion.checkNotNull(jobDefinition);
 		//-----
 		this.jobManager = jobManager;
 		this.jobDefinition = jobDefinition;
 		this.hour = hour;
+		this.minute = minute;
 	}
 
 	/** {@inheritDoc} */
@@ -55,6 +58,6 @@ final class ReschedulerTimerTask extends TimerTask {
 		// pour éviter que l'exécution se décale d'une heure lors des changements d'heure été-hiver
 
 		// On rappel le scheduleEveryDayAtHour qui reprogrammera à la fois la prochaine task du Job et celle du ReschedulerTimerTask.
-		jobManager.scheduleEveryDayAtHour(jobDefinition, hour);
+		jobManager.scheduleEveryDayAtHourMinute(jobDefinition, hour, minute);
 	}
 }

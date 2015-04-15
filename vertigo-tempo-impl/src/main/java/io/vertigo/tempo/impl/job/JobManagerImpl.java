@@ -50,7 +50,7 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 	public JobManagerImpl(final AnalyticsManager analyticsManager, final SchedulerPlugin schedulerPlugin) {
 		Assertion.checkNotNull(schedulerPlugin);
 		//-----
-		this.jobListener = new JobListener(analyticsManager);
+		jobListener = new JobListener(analyticsManager);
 		this.schedulerPlugin = schedulerPlugin;
 		//A déplacer
 		//A déplacer
@@ -88,8 +88,8 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 
 	/** {@inheritDoc} */
 	@Override
-	public void scheduleEveryDayAtHour(final JobDefinition jobDefinition, final int hour) {
-		schedulerPlugin.scheduleEveryDayAtHour(this, jobDefinition, hour);
+	public void scheduleEveryDayAtHourMinute(final JobDefinition jobDefinition, final int hour, final int minute) {
+		schedulerPlugin.scheduleEveryDayAtHourMinute(this, jobDefinition, hour, minute);
 	}
 
 	/** {@inheritDoc} */
