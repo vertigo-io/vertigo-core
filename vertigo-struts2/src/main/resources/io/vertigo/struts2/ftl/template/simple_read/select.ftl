@@ -27,8 +27,9 @@
 				<#elseif parameters.title??>
  title="${parameters.title?html}"<#rt/>
 				</#if>
+				<#assign previousCssClass = appendedCssClass?default('') />
 				<#if uiObject?? && parameters.multiple?default(false) && parameters.listCssClass??>
-					<#assign appendedCssClass = appendedCssClass?default('') + " " + uiObject.get(parameters.listCssClass)?html />
+					<#assign appendedCssClass = previousCssClass + " " + uiObject.get(parameters.listCssClass)?html />
 				</#if>
 <#-- gestion de listCssStyle desactive car necessite de faire evoluer css.ftl egalement pour être coherent (sur le modele de cssClass)
 				<#if uiObject?? && parameters.multiple?default(false) && parameters.listCssStyle??>
@@ -39,6 +40,7 @@
 				<#include "/${parameters.templateDir}/simple/scripting-events.ftl" /><#t/>
 				<#include "/${parameters.templateDir}/simple/common-attributes.ftl" /><#t/>
 				<#include "/${parameters.templateDir}/simple/dynamic-attributes.ftl" /><#t/>
+				<#assign appendedCssClass = previousCssClass/>
 				><#t/>
 				<#if parameters.headerKey?? && parameters.headerValue?? && tag.contains(parameters.nameValue, parameters.headerKey) == true>
 					${parameters.headerValue?html}<#t/>
