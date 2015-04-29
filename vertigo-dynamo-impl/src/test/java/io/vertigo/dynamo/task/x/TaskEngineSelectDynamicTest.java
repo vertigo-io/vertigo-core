@@ -272,6 +272,32 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	 * Test exécution d'une tache.
 	 */
 	@Test
+	public void testWhereInParenthesis() {
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
+					"select * from SUPER_HERO  where\t(ID in\t(#DTC_SUPER_HERO_IN.ROWNUM.ID#))");
+
+			final DtList<SuperHero> ids = new DtList<>(SuperHero.class);
+			ids.add(createSuperHero(10001L + 1));
+			ids.add(createSuperHero(10001L + 3));
+
+			final Task task = new TaskBuilder(taskDefinition)
+					.withValue(DTC_SUPER_HERO_IN, ids)
+					.build();
+
+			final TaskResult result = taskManager.execute(task);
+
+			final DtList<SuperHero> resultList = result.getValue(DTC_SUPER_HERO_OUT);
+			Assert.assertEquals(2, resultList.size());
+			Assert.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
+			Assert.assertEquals(10001L + 3, resultList.get(1).getId().longValue());
+		}
+	}
+
+	/**
+	 * Test exécution d'une tache.
+	 */
+	@Test
 	public void testWhereInEmpty() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",

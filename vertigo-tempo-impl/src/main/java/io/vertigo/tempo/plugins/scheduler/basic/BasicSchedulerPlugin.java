@@ -74,7 +74,7 @@ public final class BasicSchedulerPlugin implements SchedulerPlugin, Activeable {
 	private final JobManager jobManager;
 
 	@Inject
-	public BasicSchedulerPlugin(JobManager jobManager) {
+	public BasicSchedulerPlugin(final JobManager jobManager) {
 		Assertion.checkNotNull(jobManager);
 		//-----
 		this.jobManager = jobManager;
@@ -118,15 +118,15 @@ public final class BasicSchedulerPlugin implements SchedulerPlugin, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public void scheduleEveryDayAtHour(final JobDefinition jobDefinition, final int hour) {
+	public void scheduleEveryDayAtHourMinute(final JobDefinition jobDefinition, final int hour, final int minute) {
 		checkActive();
 		//a chaque exécution il est nécessaire de reprogrammer l'execution.
-		final Date nextExecutionDate = getNextExecutionDate(hour);
+		final Date nextExecutionDate = getNextExecutionDate(hour, minute);
 		scheduleAtDate(jobDefinition, nextExecutionDate);
 
 		//a chaque exécution il est nécessaire de reprogrammer l'execution.
 		final Date nextReschedulerDate = new Date(nextExecutionDate.getTime() + 1 * 60 * 1000); //on reprogramme à l'heure dite + 1min (comme on est sur le m^me timer elle passera après
-		final TimerTask task = createRescheduledTimerTask(jobDefinition, hour);
+		final TimerTask task = createRescheduledTimerTask(jobDefinition, hour, minute);
 		timerPool.getTimer(jobDefinition.getName()).schedule(task, nextReschedulerDate);
 		log("Tache de reprogrammation du Job ", jobDefinition, nextReschedulerDate);
 	}
@@ -157,15 +157,16 @@ public final class BasicSchedulerPlugin implements SchedulerPlugin, Activeable {
 		return new BasicTimerTask(jobDefinition, jobManager);
 	}
 
-	private TimerTask createRescheduledTimerTask(final JobDefinition jobDefinition, final int hour) {
-		return new ReschedulerTimerTask(this, jobDefinition, hour);
+	private TimerTask createRescheduledTimerTask(final JobDefinition jobDefinition, final int hour, final int minute) {
+		return new ReschedulerTimerTask(this, jobDefinition, hour, minute);
 	}
 
-	private static Date getNextExecutionDate(final int hour) {
+	private static Date getNextExecutionDate(final int hour, final int minute) {
 		Assertion.checkArgument(hour >= 0 && hour <= 23, "hour doit être compris entre 0 et 23");
+		Assertion.checkArgument(minute >= 0 && minute <= 59, "minute doit être compris entre 0 et 59");
 		final Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.HOUR_OF_DAY, hour);
-		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.MINUTE, minute);
 		calendar.set(Calendar.SECOND, 0);
 		calendar.set(Calendar.MILLISECOND, 0);
 

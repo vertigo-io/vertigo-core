@@ -39,13 +39,14 @@ public interface SchedulerManager extends Component {
 	void scheduleEverySecondInterval(final JobDefinition jobDefinition, int periodInSecond);
 
 	/**
-	 * Programme un job pour exécution chaque jour à heure fixe.
+	 * Programme un job pour exécution chaque jour à heure et minute fixe.
 	 * <br/>Si il y a besoin de programmer un job pour exécution à jour fixe dans la semaine
 	 * ou dans le mois, il peut être programmé un job chaque puis conditioner l'exécution selon la
 	 * date courante en utilisant la classe Calendar.
 	 * @param hour Heure fixe d'exécution
+	 * @param minute Minute fixe d'exécution
 	 */
-	void scheduleEveryDayAtHour(final JobDefinition jobDefinition, int hour);
+	void scheduleEveryDayAtHourMinute(final JobDefinition jobDefinition, int hour, int minute);
 
 	/**
 	 * Programme un job pour une seul exécution à une date donnée.

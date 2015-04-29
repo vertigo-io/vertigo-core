@@ -27,10 +27,15 @@
 				<#elseif parameters.title??>
  title="${parameters.title?html}"<#rt/>
 				</#if>
+				<#assign previousCssClass = appendedCssClass?default('') />
+				<#if uiObject?? && parameters.multiple?default(false) && parameters.listCssClass??>
+					<#assign appendedCssClass = previousCssClass + " " + uiObject.get(parameters.listCssClass)?html />
+				</#if>
 				<#include "/${parameters.templateDir}/simple/css.ftl" /><#t/>
 				<#include "/${parameters.templateDir}/simple/scripting-events.ftl" /><#t/>
 				<#include "/${parameters.templateDir}/simple/common-attributes.ftl" /><#t/>
 				<#include "/${parameters.templateDir}/simple/dynamic-attributes.ftl" /><#t/>
+				<#assign appendedCssClass = previousCssClass/>
 				><#t/>
 				<#if parameters.headerKey?? && parameters.headerValue?? && tag.contains(parameters.nameValue, parameters.headerKey) == true>
 					${parameters.headerValue?html}<#t/>

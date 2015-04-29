@@ -51,8 +51,8 @@ public final class SchedulerManagerImpl implements SchedulerManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public void scheduleEveryDayAtHour(final JobDefinition jobDefinition, final int hour) {
-		schedulerPlugin.scheduleEveryDayAtHour(jobDefinition, hour);
+	public void scheduleEveryDayAtHourMinute(final JobDefinition jobDefinition, final int hour, final int minute) {
+		schedulerPlugin.scheduleEveryDayAtHourMinute(jobDefinition, hour, minute);
 	}
 
 	/** {@inheritDoc} */

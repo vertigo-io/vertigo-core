@@ -126,7 +126,7 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 	}
 
 	private static String jsonEncode(final String json) {
-		String jsonEncoded = json.replaceAll("([\"\\\\])", "\\$1");// " => \" et \ => \\ (ils sont echappés avec \ devant)
+		String jsonEncoded = json.replaceAll("([\"\\\\])", "\\\\$1");// " => \" et \ => \\ (ils sont echappés avec \ devant)
 		jsonEncoded = jsonEncoded.replaceAll("\n", "|");// \n => | (interdit en json)
 		return jsonEncoded;
 	}
