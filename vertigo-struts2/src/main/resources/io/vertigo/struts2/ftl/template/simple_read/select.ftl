@@ -31,11 +31,6 @@
 				<#if uiObject?? && parameters.multiple?default(false) && parameters.listCssClass??>
 					<#assign appendedCssClass = previousCssClass + " " + uiObject.get(parameters.listCssClass)?html />
 				</#if>
-<#-- gestion de listCssStyle desactive car necessite de faire evoluer css.ftl egalement pour être coherent (sur le modele de cssClass)
-				<#if uiObject?? && parameters.multiple?default(false) && parameters.listCssStyle??>
- style="${uiObject.get(parameters.listCssStyle)?html}"<#rt/>
-				</#if>
--->
 				<#include "/${parameters.templateDir}/simple/css.ftl" /><#t/>
 				<#include "/${parameters.templateDir}/simple/scripting-events.ftl" /><#t/>
 				<#include "/${parameters.templateDir}/simple/common-attributes.ftl" /><#t/>
