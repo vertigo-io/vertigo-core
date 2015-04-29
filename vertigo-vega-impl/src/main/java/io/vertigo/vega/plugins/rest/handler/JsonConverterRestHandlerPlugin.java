@@ -73,7 +73,7 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 	private final JsonEngine jsonWriterEngine;
 	private final JsonEngine jsonReaderEngine;
 
-	private final TokenManager tokenManager;
+	private final Option<TokenManager> tokenManager;
 
 	/**
 	 * encodeType.
@@ -150,12 +150,12 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 	}
 
 	/**
-	 * @param tokenManager tokenManager
+	 * @param tokenManager tokenManager (optional)
 	 * @param jsonWriterEngine jsonWriterEngine
 	 * @param jsonReaderEngine jsonReaderEngine
 	 */
 	@Inject
-	public JsonConverterRestHandlerPlugin(final TokenManager tokenManager, final JsonEngine jsonWriterEngine, final JsonEngine jsonReaderEngine) {
+	public JsonConverterRestHandlerPlugin(final Option<TokenManager> tokenManager, final JsonEngine jsonWriterEngine, final JsonEngine jsonReaderEngine) {
 		Assertion.checkNotNull(tokenManager);
 		Assertion.checkNotNull(jsonWriterEngine);
 		Assertion.checkNotNull(jsonReaderEngine);
@@ -416,11 +416,12 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 		}
 	}
 
-	private static void postReadUiObject(final UiObject<DtObject> uiObject, final String inputKey, final EndPointParam endPointParam, final TokenManager uiSecurityTokenManager) throws VSecurityException {
+	private static void postReadUiObject(final UiObject<DtObject> uiObject, final String inputKey, final EndPointParam endPointParam, final Option<TokenManager> tokenManager) throws VSecurityException {
 		uiObject.setInputKey(inputKey);
 		checkUnauthorizedFieldModifications(uiObject, endPointParam);
 
 		if (endPointParam.isNeedServerSideToken()) {
+			Assertion.checkArgument(tokenManager.isDefined(), "TokenManager must be declared in order to use Vega ServerSide features");
 			final String accessToken = uiObject.getServerSideToken();
 			if (accessToken == null) {
 				throw new VSecurityException(SERVER_SIDE_MANDATORY); //same message for no ServerSideToken or bad ServerSideToken
@@ -428,9 +429,9 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 			final Option<Serializable> serverSideObject;
 			if (endPointParam.isConsumeServerSideToken()) {
 				//if exception : token is consume. It's for security reason : no replay on bad request (brute force password)
-				serverSideObject = uiSecurityTokenManager.getAndRemove(accessToken);
+				serverSideObject = tokenManager.get().getAndRemove(accessToken);
 			} else {
-				serverSideObject = uiSecurityTokenManager.get(accessToken);
+				serverSideObject = tokenManager.get().get(accessToken);
 			}
 			if (serverSideObject.isEmpty()) {
 				throw new VSecurityException(SERVER_SIDE_MANDATORY); //same message for no ServerSideToken or bad ServerSideToken
@@ -439,28 +440,28 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 		}
 	}
 
-	private static void postReadUiListDelta(final UiListDelta<DtObject> uiListDelta, final String inputKey, final EndPointParam endPointParam, final TokenManager uiSecurityTokenManager) throws VSecurityException {
+	private static void postReadUiListDelta(final UiListDelta<DtObject> uiListDelta, final String inputKey, final EndPointParam endPointParam, final Option<TokenManager> tokenManager) throws VSecurityException {
 		final String prefix = inputKey.length() > 0 ? inputKey + "." : "";
 		for (final Map.Entry<String, UiObject<DtObject>> entry : uiListDelta.getCreatesMap().entrySet()) {
 			final String uiObjectInputKey = prefix + entry.getKey();
-			postReadUiObject(entry.getValue(), uiObjectInputKey, endPointParam, uiSecurityTokenManager);
+			postReadUiObject(entry.getValue(), uiObjectInputKey, endPointParam, tokenManager);
 		}
 		for (final Map.Entry<String, UiObject<DtObject>> entry : uiListDelta.getUpdatesMap().entrySet()) {
 			final String uiObjectInputKey = prefix + entry.getKey();
-			postReadUiObject(entry.getValue(), uiObjectInputKey, endPointParam, uiSecurityTokenManager);
+			postReadUiObject(entry.getValue(), uiObjectInputKey, endPointParam, tokenManager);
 		}
 		for (final Map.Entry<String, UiObject<DtObject>> entry : uiListDelta.getDeletesMap().entrySet()) {
 			final String uiObjectInputKey = prefix + entry.getKey();
-			postReadUiObject(entry.getValue(), uiObjectInputKey, endPointParam, uiSecurityTokenManager);
+			postReadUiObject(entry.getValue(), uiObjectInputKey, endPointParam, tokenManager);
 		}
 	}
 
-	private static void postReadUiList(final UiList<DtObject> uiList, final String inputKey, final EndPointParam endPointParam, final TokenManager uiSecurityTokenManager) throws VSecurityException {
+	private static void postReadUiList(final UiList<DtObject> uiList, final String inputKey, final EndPointParam endPointParam, final Option<TokenManager> tokenManager) throws VSecurityException {
 		final String prefix = inputKey.length() > 0 ? inputKey + "." : "";
 		int index = 0;
 		for (final UiObject<DtObject> entry : uiList) {
 			final String uiObjectInputKey = prefix + "idx" + index;
-			postReadUiObject(entry, uiObjectInputKey, endPointParam, uiSecurityTokenManager);
+			postReadUiObject(entry, uiObjectInputKey, endPointParam, tokenManager);
 			index++;
 		}
 	}
@@ -486,11 +487,12 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 		//-----
 		final String tokenId;
 		if (endPointDefinition.isServerSideSave()) {
+			Assertion.checkArgument(tokenManager.isDefined(), "TokenManager must be declared in order to use Vega ServerSide features");
 			Assertion.checkArgument(DtObject.class.isInstance(value)
 					|| DtObjectExtended.class.isInstance(value)
 					|| DtList.class.isInstance(value)
 					|| UiContext.class.isInstance(value), "Return type can't be ServerSide : {0}", value.getClass().getSimpleName());
-			tokenId = tokenManager.put((Serializable) value);
+			tokenId = tokenManager.get().put((Serializable) value);
 		} else {
 			tokenId = null;
 		}
