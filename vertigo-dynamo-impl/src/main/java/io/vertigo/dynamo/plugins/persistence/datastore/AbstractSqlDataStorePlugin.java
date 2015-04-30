@@ -84,7 +84,9 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		/** Prefix de la tache DELETE.*/
 		TK_DELETE,
 		/** Prefix de la tache COUNT.*/
-		TK_COUNT
+		TK_COUNT,
+		/** Prefix de la tache LOCK.*/
+		TK_LOCK
 	}
 
 	private final TaskManager taskManager;
@@ -529,5 +531,32 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final TaskResult taskResult = process(task);
 		final DtObject dto = taskResult.getValue("dto");
 		return (Integer) DtObjectUtil.findDtDefinition(dto).getField("COUNT").getDataAccessor().getValue(dto);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void lockForUpdate(final DtDefinition dtDefinition, final URI uri) {
+		final DtField pk = dtDefinition.getIdField().get();
+		final String tableName = getTableName(dtDefinition);
+		final String taskName = TASK.TK_LOCK.toString() + '_' + tableName;
+
+		final String pkFieldName = pk.getName();
+		final StringBuilder request = new StringBuilder()
+				.append("select 1 from ").append(tableName)
+				.append(" where ").append(pkFieldName).append(" = #").append(pkFieldName).append('#')
+				.append(" for update ");
+
+		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
+				.withEngine(TaskEngineSelect.class)
+				.withRequest(request.toString())
+				.withInAttribute(pkFieldName, pk.getDomain(), true)//IN, obligatoire
+				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true) //OUT, obligatoire
+				.build();
+
+		final Task task = new TaskBuilder(taskDefinition)
+				.withValue(pkFieldName, uri.getKey())
+				.build();
+
+		process(task);
 	}
 }

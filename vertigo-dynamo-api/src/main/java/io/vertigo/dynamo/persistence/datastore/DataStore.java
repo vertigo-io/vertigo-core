@@ -102,4 +102,11 @@ public interface DataStore {
 	 */
 	void delete(DtDefinition dtDefinition, URI uri);
 
+	/**
+	 * Lock for update.
+	 * @param dtDefinition Object's definition
+	 * @param uri Object's uri
+	 */
+	void lockForUpdate(DtDefinition dtDefinition, URI uri);
+
 }

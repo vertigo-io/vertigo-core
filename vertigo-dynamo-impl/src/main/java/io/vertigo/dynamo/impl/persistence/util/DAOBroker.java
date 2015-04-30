@@ -52,7 +52,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 
 	/** DT de l'objet dont on gére le CRUD. */
 	private final DtDefinition dtDefinition;
-	private final Broker broker;
+	final Broker broker; //visibility package only
 	private final BrokerNN brokerNN;
 	private final BrokerBatch<D, P> brokerBatch;
 	private final TaskManager taskManager;
@@ -170,7 +170,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 * @param id identifiant de l'objet persistant recherché
 	 * @return URI recherchée
 	 */
-	private URI<D> createDtObjectURI(final P id) {
+	protected final URI<D> createDtObjectURI(final P id) {
 		return new URI<>(dtDefinition, id);
 	}
 

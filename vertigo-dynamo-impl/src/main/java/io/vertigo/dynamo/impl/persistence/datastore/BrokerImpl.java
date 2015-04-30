@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.persistence.datastore;
 
+import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
@@ -28,6 +29,8 @@ import io.vertigo.dynamo.impl.persistence.datastore.cache.CacheDataStore;
 import io.vertigo.dynamo.impl.persistence.datastore.logical.LogicalDataStoreConfig;
 import io.vertigo.dynamo.persistence.datastore.Broker;
 import io.vertigo.dynamo.persistence.datastore.DataStore;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -50,7 +53,7 @@ public final class BrokerImpl implements Broker {
 	public BrokerImpl(final BrokerConfigImpl brokerConfig) {
 		Assertion.checkNotNull(brokerConfig);
 		//-----
-		//On vérouille la configuration.
+		//On vérrouille la configuration.
 		//brokerConfiguration.lock();
 		//On crée la pile de Store.
 		logicalStoreConfig = brokerConfig.getLogicalStoreConfig();
@@ -63,14 +66,92 @@ public final class BrokerImpl implements Broker {
 
 	/** {@inheritDoc} */
 	@Override
+	public void workOn(final URI<? extends DtObject> uri) {
+		Assertion.checkNotNull(uri);
+		//-----
+		final DtDefinition dtDefinition = uri.getDefinition();
+		getPhysicalStore(dtDefinition).lockForUpdate(dtDefinition, uri);
+		//-----
+		obtainEventTx().fire("update", uri.toURN());
+	}
+
+	//--- Transactionnal Event
+	/**
+	 * Identifiant de ressource Event.
+	 */
+	public static final VTransactionResourceId<EventTransactionResource> EVENT_RESOURCE_ID = new VTransactionResourceId<>(VTransactionResourceId.Priority.LOW, "Events");
+
+	private EventTransactionResource obtainEventTx() {
+		EventTransactionResource eventTransactionResource = getTransactionManager().getCurrentTransaction().getResource(EVENT_RESOURCE_ID);
+		if (eventTransactionResource == null) { //by convention resource is null if not already registered
+			eventTransactionResource = new EventTransactionResource();
+			getTransactionManager().getCurrentTransaction().addResource(EVENT_RESOURCE_ID, eventTransactionResource);
+
+			//register cache flush listener
+			//TODO move to a upper layer
+			final EventListener cacheClearEventListener = new CacheClearEventListener(cacheDataStore);
+			eventTransactionResource.subscribe("update", cacheClearEventListener);
+			eventTransactionResource.subscribe("create", cacheClearEventListener);
+			eventTransactionResource.subscribe("delete", cacheClearEventListener);
+
+			//register searchDirty listener
+			//TODO move to a upper layer
+			//final SearchManager searchManager = Home.getComponentSpace().resolve(SearchManager.class);
+			final EventListener searchIndexDirtyEventListener = new SearchIndexDirtyEventListener(/*searchManager*/);
+			eventTransactionResource.subscribe("update", searchIndexDirtyEventListener);
+			eventTransactionResource.subscribe("create", searchIndexDirtyEventListener);
+			eventTransactionResource.subscribe("delete", searchIndexDirtyEventListener);
+		}
+		return eventTransactionResource;
+	}
+
+	private static final class CacheClearEventListener implements EventListener {
+
+		private final CacheDataStore cacheDataStore;
+
+		CacheClearEventListener(final CacheDataStore cacheDataStore) {
+			this.cacheDataStore = cacheDataStore;
+		}
+
+		@Override
+		public void onEvent(final String event) {
+			final URI uri = URI.fromURN(event);
+			cacheDataStore.clearCache(uri.getDefinition());
+		}
+	}
+
+	private static final class SearchIndexDirtyEventListener implements EventListener {
+
+		//private final SearchManager searchManager;
+
+		//SearchIndexDirtyEventListener(final SearchManager searchManager) {
+		//	this.searchManager = searchManager;
+		//}
+
+		@Override
+		public void onEvent(final String event) {
+			//final URI uri = URI.fromURN(event);
+			//TODO searchManager.markSubjectDirty(uri);
+		}
+	}
+
+	private static VTransactionManager getTransactionManager() {
+		return Home.getComponentSpace().resolve(VTransactionManager.class);
+	}
+
+	//--- Transactionnal Event
+
+	/** {@inheritDoc} */
+	@Override
 	public void create(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		getPhysicalStore(dtDefinition).create(dtDefinition, dto);
 		//-----
+		obtainEventTx().fire("create", new URI(dtDefinition, DtObjectUtil.getId(dto)).toURN());
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
-		cacheDataStore.clearCache(dtDefinition);
+		//cacheDataStore.clearCache(dtDefinition);
 	}
 
 	/** {@inheritDoc} */
@@ -81,8 +162,9 @@ public final class BrokerImpl implements Broker {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		getPhysicalStore(dtDefinition).update(dtDefinition, dto);
 		//-----
+		obtainEventTx().fire("update", new URI(dtDefinition, DtObjectUtil.getId(dto)).toURN());
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
-		cacheDataStore.clearCache(dtDefinition);
+		//cacheDataStore.clearCache(dtDefinition);
 	}
 
 	/** {@inheritDoc} */
@@ -93,7 +175,8 @@ public final class BrokerImpl implements Broker {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		getPhysicalStore(dtDefinition).merge(dtDefinition, dto);
 		//-----
-		cacheDataStore.clearCache(dtDefinition);
+		obtainEventTx().fire("update", new URI(dtDefinition, DtObjectUtil.getId(dto)).toURN());
+		//cacheDataStore.clearCache(dtDefinition);
 	}
 
 	/** {@inheritDoc} */
@@ -104,7 +187,8 @@ public final class BrokerImpl implements Broker {
 		final DtDefinition dtDefinition = uri.getDefinition();
 		getPhysicalStore(dtDefinition).delete(dtDefinition, uri);
 		//-----
-		cacheDataStore.clearCache(dtDefinition);
+		obtainEventTx().fire("delete", uri.toURN());
+		//cacheDataStore.clearCache(dtDefinition);
 	}
 
 	/** {@inheritDoc} */

@@ -50,6 +50,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
@@ -379,6 +380,26 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			executed = true;
 		} finally {
 			dataBaseListener.onFinish(serviceName, executed, System.currentTimeMillis() - start, executed ? 1L : 0L, null);
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void lockForUpdate(final DtDefinition dtDefinition, final URI uri) {
+		final EntityManager em = obtainEntityManager();
+		final String serviceName = "Jpa:lock " + uri.getDefinition().getName();
+		final long start = System.currentTimeMillis();
+		boolean executed = false;
+		long nbResult = 0;
+		dataBaseListener.onStart(serviceName);
+		try {
+			final Class<DtObject> objectClass = (Class<DtObject>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
+			final DtObject result = em.find(objectClass, uri.getKey(), LockModeType.PESSIMISTIC_WRITE);
+			executed = true;
+			nbResult = result != null ? 1L : 0L;
+			//Objet null géré par le broker
+		} finally {
+			dataBaseListener.onFinish(serviceName, executed, System.currentTimeMillis() - start, null, nbResult);
 		}
 	}
 }

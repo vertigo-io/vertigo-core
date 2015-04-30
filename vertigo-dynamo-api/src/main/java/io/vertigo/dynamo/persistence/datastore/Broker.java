@@ -60,6 +60,12 @@ public interface Broker {
 	<D extends DtObject> DtList<D> getList(final DtListURI uri);
 
 	/**
+	 * Mark element for update, and ensure non concurrency.
+	 * @param uri URI of object
+	 */
+	void workOn(URI<? extends DtObject> uri);
+
+	/**
 	* Create an object.
 	* No object with the same id must have been created previously.
 	*
@@ -91,4 +97,5 @@ public interface Broker {
 	 * @param uri URI de l'objet à supprimer
 	 */
 	void delete(URI<? extends DtObject> uri);
+
 }
