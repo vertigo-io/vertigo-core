@@ -39,7 +39,8 @@ public final class StringUtil {
 	 * Implémentation du test de la chaine vide.
 	 * ie null ou blank (espace, \t \n \r \p ...)
 	 * @param strValue String
-	 * @return Si la chaine aprés trim est null ou vide
+	 * @return Si la chaine ne contient que des caractères blank
+	 * @see java.lang.Character isWhitespace(char)
 	 */
 	public static boolean isEmpty(final String strValue) {
 		if (strValue == null) {
@@ -47,7 +48,7 @@ public final class StringUtil {
 		}
 		//On prefere cette implementation qui ne crée pas de nouvelle chaine (contrairement au trim())
 		for (int i = 0; i < strValue.length(); i++) {
-			if (strValue.charAt(i) > ' ') {
+			if (Character.isWhitespace(strValue.charAt(i))) {
 				return false;
 			}
 		}
