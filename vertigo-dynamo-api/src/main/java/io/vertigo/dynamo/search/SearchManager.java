@@ -22,6 +22,7 @@ import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.DtSubject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
@@ -29,13 +30,36 @@ import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Component;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Gestionnaire des indexes de recherche.
  *
- * @author dchallas
+ * @author dchallas, npiedeloup
  */
 public interface SearchManager extends Component {
+
+	/**
+	 * Find IndexDefinition for a DtSubject. It must be one and only one IndexDefinition.
+	 * @param dtSubjectClass DtSubject class
+	 * @return SearchIndexDefinition for this DtSubject (not null)
+	 */
+	//TODO si par DtDefinition comment s'assurer que c'est un subject ?
+	SearchIndexDefinition findIndexDefinitionBySubject(Class<? extends DtSubject> dtSubjectClass);
+
+	/**
+	 * Mark an uri list as dirty. Index of these elements will be reindexed.
+	 * Reindexation isn't syncrhone, strategy is dependant of plugin's parameters.
+	 * @param subjectUris Uri of subject marked as dirty.
+	 */
+	void markAsDirty(List<URI<? extends DtSubject>> subjectUris);
+
+	/**
+	 * Launch a complete reindexation of an index.
+	 * @param indexDefinition Type de l'index
+	 */
+	void reindexAll(SearchIndexDefinition indexDefinition);
+
 	/**
 	 * Enregistre un resolver de nom, entre ceux du DT et ceux du schéma Solr.
 	 * @param indexDefinition Type de l'index
