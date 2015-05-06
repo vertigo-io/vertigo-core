@@ -27,7 +27,7 @@ import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 /**
  * @author pchretien
  */
-final class TaskGrammar {
+public final class TaskGrammar {
 	public static final String TASK_ATTRIBUTE = "attribute";
 
 	/**Définition d'un attribut de tache.*/

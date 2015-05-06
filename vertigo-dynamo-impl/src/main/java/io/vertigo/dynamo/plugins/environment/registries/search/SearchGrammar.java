@@ -22,6 +22,7 @@ import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
 import io.vertigo.dynamo.impl.environment.kernel.meta.EntityBuilder;
 import io.vertigo.dynamo.impl.environment.kernel.meta.Grammar;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
+import io.vertigo.dynamo.plugins.environment.registries.task.TaskGrammar;
 
 /**
  * @author pchretien
@@ -32,8 +33,10 @@ final class SearchGrammar {
 
 	static {
 		INDEX_DEFINITION_ENTITY = new EntityBuilder("IndexDefinition")
+				.withAttribute("dtSubject", DomainGrammar.DT_DEFINITION_ENTITY, true)
 				.withAttribute("dtIndex", DomainGrammar.DT_DEFINITION_ENTITY, true)
 				.withAttribute("dtResult", DomainGrammar.DT_DEFINITION_ENTITY, true)
+				.withAttribute("reloadTask", TaskGrammar.TASK_DEFINITION_ENTITY, true)
 				.build();
 
 		GRAMMAR = new Grammar(INDEX_DEFINITION_ENTITY);

@@ -23,6 +23,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
+import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 
 /**
  * @author pchretien
@@ -45,12 +46,14 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	}
 
 	private static SearchIndexDefinition createIndexDefinition(final DynamicDefinition xsearchObjet) {
+		final DtDefinition subjectDtDefinition = Home.getDefinitionSpace().resolve(xsearchObjet.getDefinitionKey("dtSubject").getName(), DtDefinition.class);
 		final DtDefinition indexDtDefinition = Home.getDefinitionSpace().resolve(xsearchObjet.getDefinitionKey("dtIndex").getName(), DtDefinition.class);
 		final DtDefinition resultDtDefinition = Home.getDefinitionSpace().resolve(xsearchObjet.getDefinitionKey("dtResult").getName(), DtDefinition.class);
+		final TaskDefinition reloadTaskDefinition = Home.getDefinitionSpace().resolve(xsearchObjet.getDefinitionKey("reloadTask").getName(), TaskDefinition.class);
 		//	final List<FacetDefinition> facetDefinitions = Collections.emptyList();
 		final String definitionName = xsearchObjet.getDefinitionKey().getName();
 
-		final SearchIndexDefinition indexDefinition = new SearchIndexDefinition(definitionName, indexDtDefinition, resultDtDefinition);
+		final SearchIndexDefinition indexDefinition = new SearchIndexDefinition(definitionName, subjectDtDefinition, indexDtDefinition, resultDtDefinition, reloadTaskDefinition);
 		//indexDefinition.makeUnmodifiable();
 		return indexDefinition;
 	}
