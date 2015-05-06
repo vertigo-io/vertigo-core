@@ -133,7 +133,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
-				.withValue(pkFieldName, uri.getKey())
+				.withValue(pkFieldName, uri.getId())
 				.build();
 		final TaskResult taskResult = process(task);
 
@@ -182,7 +182,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		final URI uri = dtcUri.getSource();
 
 		final Task task = new TaskBuilder(taskDefinition)
-				.withValue(fkFieldName, uri.getKey())
+				.withValue(fkFieldName, uri.getId())
 				.build();
 		final TaskResult taskResult = process(task);
 
@@ -200,7 +200,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(dtcUri);
 		//-----
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
-		final Object value = dtcUri.getSource().getKey();
+		final Object value = dtcUri.getSource().getId();
 
 		final FilterCriteria<D> filterCriteria = new FilterCriteriaBuilder<D>()
 				.withFilter(fkField.getName(), value)
@@ -490,7 +490,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
-				.withValue(pkFieldName, uri.getKey())
+				.withValue(pkFieldName, uri.getId())
 				.build();
 
 		final TaskResult taskResult = process(task);
@@ -554,7 +554,7 @@ public abstract class AbstractSqlDataStorePlugin implements DataStorePlugin {
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
-				.withValue(pkFieldName, uri.getKey())
+				.withValue(pkFieldName, uri.getId())
 				.build();
 
 		process(task);

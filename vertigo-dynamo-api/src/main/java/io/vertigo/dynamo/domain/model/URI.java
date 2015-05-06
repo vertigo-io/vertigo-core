@@ -48,7 +48,7 @@ public final class URI<D extends DtObject> implements Serializable {
 	public static final Pattern REGEX_URN = Pattern.compile("[a-zA-Z0-9_:@$-]{5,80}");
 
 	private final DefinitionReference<DtDefinition> definitionRef;
-	private final Serializable key;
+	private final Serializable id;
 
 	/** URN de la ressource (Nom complet).*/
 	private final String urn;
@@ -56,13 +56,13 @@ public final class URI<D extends DtObject> implements Serializable {
 	/**
 	 * Constructeur.
 	 * @param definition Definition de la ressource
-	 * @param key Clé de la ressource
+	 * @param id Clé de la ressource
 	 */
-	public URI(final DtDefinition definition, final Object key) {
-		Assertion.checkNotNull(key);
+	public URI(final DtDefinition definition, final Object id) {
+		Assertion.checkNotNull(id);
 		Assertion.checkNotNull(definition);
 		//-----
-		this.key = Serializable.class.cast(key);
+		this.id = Serializable.class.cast(id);
 		this.definitionRef = new DefinitionReference<>(definition);
 
 		//Calcul de l'urn
@@ -95,13 +95,9 @@ public final class URI<D extends DtObject> implements Serializable {
 	 * @return Clé identifiant la ressource parmi les ressources du méme type.
 	 * Exemple : identifiant numérique d'une commande.
 	 */
-	public Serializable getKey() {
-		return key;
+	public Serializable getId() {
+		return id;
 	}
-
-	//=========================================================================
-	//=============================OVERRIDE====================================
-	//=========================================================================
 
 	/** {@inheritDoc} */
 	@Override
@@ -129,21 +125,21 @@ public final class URI<D extends DtObject> implements Serializable {
 	//=============================STATIC======================================
 	//=========================================================================
 
-	public static URI fromURN(final String urn) {
+	public static URI<?> fromURN(final String urn) {
 		Assertion.checkNotNull(urn);
 		//-----
 		final int i = urn.indexOf(D2A_SEPARATOR);
 		final String dname = urn.substring(0, i);
-		final Object key = stringToKey(urn.substring(i + 1));
+		final Object id = stringToId(urn.substring(i + 1));
 
 		//On ne type pas, la seule chose que l'on sait est qu'il s'agit d'une définition.
 		final DtDefinition definition = Home.getDefinitionSpace().resolve(dname, DtDefinition.class);
-		return new URI(definition, key);
+		return new URI(definition, id);
 	}
 
-	private static String toURN(final URI uri) {
-		final String keyAsText = keyToString(uri.getKey());
-		return uri.getDefinition().getName() + D2A_SEPARATOR + keyAsText;
+	private static String toURN(final URI<?> uri) {
+		final String idAsText = idToString(uri.getId());
+		return uri.getDefinition().getName() + D2A_SEPARATOR + idAsText;
 	}
 
 	/**
@@ -152,7 +148,7 @@ public final class URI<D extends DtObject> implements Serializable {
 	 * @param key clé
 	 * @return Chaine représentant la clé
 	 */
-	private static String keyToString(final Serializable key) {
+	private static String idToString(final Serializable key) {
 		if (key == null) {
 			return null;
 		}
@@ -171,7 +167,7 @@ public final class URI<D extends DtObject> implements Serializable {
 	 * @param strValue Valeur
 	 * @return Clé lue é partir de la chaine
 	 */
-	private static Serializable stringToKey(final String strValue) {
+	private static Serializable stringToId(final String strValue) {
 		if (StringUtil.isEmpty(strValue)) {
 			return null;
 		}

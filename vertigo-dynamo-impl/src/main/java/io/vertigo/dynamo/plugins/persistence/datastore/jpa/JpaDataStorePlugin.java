@@ -110,7 +110,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		final long start = System.currentTimeMillis();
 		try {
 			final Class<D> objectClass = (Class<D>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
-			final D result = em.find(objectClass, uri.getKey());
+			final D result = em.find(objectClass, uri.getId());
 			executed = true;
 			nbResult = result != null ? 1L : 0L;
 			return result;
@@ -259,7 +259,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(dtcUri);
 		//-----
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
-		final Object value = dtcUri.getSource().getKey();
+		final Object value = dtcUri.getSource().getId();
 
 		final FilterCriteria<D> filterCriteria = new FilterCriteriaBuilder<D>()
 				.withFilter(fkField.getName(), value)
@@ -308,7 +308,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 			final EntityManager em = obtainEntityManager();
 			final Query q = em.createNativeQuery(request.toString(), resultClass);
-			q.setParameter(fkFieldName, uri.getKey());
+			q.setParameter(fkFieldName, uri.getId());
 
 			final List<D> results = q.getResultList();
 			final DtList<D> dtc = new DtList<>(dtDefinition);
@@ -394,7 +394,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		dataBaseListener.onStart(serviceName);
 		try {
 			final Class<DtObject> objectClass = (Class<DtObject>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
-			final DtObject result = em.find(objectClass, uri.getKey(), LockModeType.PESSIMISTIC_WRITE);
+			final DtObject result = em.find(objectClass, uri.getId(), LockModeType.PESSIMISTIC_WRITE);
 			executed = true;
 			nbResult = result != null ? 1L : 0L;
 			//Objet null géré par le broker

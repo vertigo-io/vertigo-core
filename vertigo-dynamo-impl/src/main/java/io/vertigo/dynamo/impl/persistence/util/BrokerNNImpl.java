@@ -65,7 +65,7 @@ public final class BrokerNNImpl implements BrokerNN {
 			//Clés primaires de la relation n-n.
 			final AssociationNode targetAssociationNode = AssociationUtil.getAssociationNode(associationNNDefinition, dtListURIForAssociation.getRoleName());
 			targetField = targetAssociationNode.getDtDefinition().getIdField().get();
-			sourceValue = dtListURIForAssociation.getSource().getKey();
+			sourceValue = dtListURIForAssociation.getSource().getId();
 			tableName = associationNNDefinition.getTableName();
 		}
 	}
@@ -86,7 +86,7 @@ public final class BrokerNNImpl implements BrokerNN {
 	public void appendNN(final DtListURIForNNAssociation dtListURI, final URI uriToAppend) {
 		Assertion.checkNotNull(uriToAppend);
 		//-----
-		appendNN(new DescriptionNN(dtListURI), uriToAppend.getKey());
+		appendNN(new DescriptionNN(dtListURI), uriToAppend.getId());
 	}
 
 	/** {@inheritDoc} */
@@ -101,7 +101,7 @@ public final class BrokerNNImpl implements BrokerNN {
 	public void removeNN(final DtListURIForNNAssociation dtListURI, final URI uriToDelete) {
 		Assertion.checkNotNull(uriToDelete);
 		//-----
-		removeNN(new DescriptionNN(dtListURI), uriToDelete.getKey());
+		removeNN(new DescriptionNN(dtListURI), uriToDelete.getId());
 	}
 
 	/** {@inheritDoc} */
@@ -117,7 +117,7 @@ public final class BrokerNNImpl implements BrokerNN {
 		for (final URI dtoUri : newUriList) {
 			//On vérifie que l'on n'enregistre pas deux fois la même relation.
 			Assertion.checkArgument(set.add(dtoUri), "Duplicate key [{0}]dans la nouvelle collection.", dtoUri);
-			appendNN(descriptionNN, dtoUri.getKey());
+			appendNN(descriptionNN, dtoUri.getId());
 		}
 	}
 
