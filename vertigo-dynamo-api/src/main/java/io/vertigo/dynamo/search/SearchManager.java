@@ -75,7 +75,7 @@ public interface SearchManager extends Component {
 	 * @param indexDefinition Type de l'index
 	 * @param indexCollection Liste des objets à pousser dans l'index (I + R)
 	 */
-	<I extends DtObject, R extends DtObject> void putAll(SearchIndexDefinition indexDefinition, Collection<SearchIndex<I, R>> indexCollection);
+	<S extends DtSubject, I extends DtObject, R extends DtObject> void putAll(SearchIndexDefinition indexDefinition, Collection<SearchIndex<S, I, R>> indexCollection);
 
 	/**
 	 * Ajout d'une ressource à l'index.
@@ -85,7 +85,7 @@ public interface SearchManager extends Component {
 	 * @param indexDefinition Type de l'index
 	 * @param index Objet à pousser dans l'index (I + R)
 	 */
-	<I extends DtObject, R extends DtObject> void put(SearchIndexDefinition indexDefinition, SearchIndex<I, R> index);
+	<S extends DtSubject, I extends DtObject, R extends DtObject> void put(SearchIndexDefinition indexDefinition, SearchIndex<S, I, R> index);
 
 	/**
 	 * Récupération du résultat issu d'une requête.

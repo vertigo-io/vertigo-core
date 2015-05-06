@@ -22,6 +22,7 @@ import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.DtSubject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.search.SearchIndexFieldNameResolver;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
@@ -53,7 +54,7 @@ public interface SearchServicesPlugin extends Plugin {
 	 * @param indexDefinition Type de l'index
 	 * @param indexCollection Liste des objets à pousser dans l'index (I + R)
 	 */
-	<I extends DtObject, R extends DtObject> void putAll(SearchIndexDefinition indexDefinition, Collection<SearchIndex<I, R>> indexCollection);
+	<S extends DtSubject, I extends DtObject, R extends DtObject> void putAll(SearchIndexDefinition indexDefinition, Collection<SearchIndex<S, I, R>> indexCollection);
 
 	/**
 	 * Ajout d'une ressource à l'index.
@@ -63,7 +64,7 @@ public interface SearchServicesPlugin extends Plugin {
 	 * @param indexDefinition Type de l'index
 	 * @param index Objet à pousser dans l'index (I + R)
 	 */
-	<I extends DtObject, R extends DtObject> void put(SearchIndexDefinition indexDefinition, SearchIndex<I, R> index);
+	<S extends DtSubject, I extends DtObject, R extends DtObject> void put(SearchIndexDefinition indexDefinition, SearchIndex<S, I, R> index);
 
 	/**
 	 * Récupération du résultat issu d'une requête.

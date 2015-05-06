@@ -59,9 +59,13 @@ public final class SearchIndexDefinition implements Definition {
 	 * @param subjectDtDefinition Subject associé à l'index
 	 * @param indexDtDefinition Structure des éléments indexés.
 	 * @param resultDtDefinition Structure des éléments de résultat.
-	 * @param reloadTaskDefinition Tache de rechargement des éléments indéxés et résultat
+	 * @param loadTaskDefinition Tache de rechargement des éléments indéxés et résultat
 	 */
-	public SearchIndexDefinition(final String name, final DtDefinition subjectDtDefinition, final DtDefinition indexDtDefinition, final DtDefinition resultDtDefinition, final TaskDefinition reloadTaskDefinition) {
+	public SearchIndexDefinition(final String name,
+			final DtDefinition subjectDtDefinition,
+			final DtDefinition indexDtDefinition,
+			final DtDefinition resultDtDefinition,
+			final TaskDefinition reloadTaskDefinition) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(subjectDtDefinition);
 		Assertion.checkArgument(subjectDtDefinition.getStereotype() == DtStereotype.Subject, "subjectDtDefinition ({0}) must be a DtDefinition of a DtSubject class", subjectDtDefinition.getName());

@@ -64,7 +64,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	private final VTransactionManager transactionManager;
 
 	private final ScheduledExecutorService executorService; //TODO : replace by WorkManager to make distributed work easier
-	private final Map<String, List<URI>> dirtyElementsPerIndexName = new HashMap<>();
+	private final Map<String, List<URI<? extends DtSubject>>> dirtyElementsPerIndexName = new HashMap<>();
 
 	/**
 	 * Constructor.
@@ -83,7 +83,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	@Override
 	public void start() {
 		for (final SearchIndexDefinition indexDefinition : Home.getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
-			dirtyElementsPerIndexName.put(indexDefinition.getName(), new ArrayList<URI>());
+			dirtyElementsPerIndexName.put(indexDefinition.getName(), new ArrayList<URI<? extends DtSubject>>());
 		}
 	}
 
@@ -100,13 +100,13 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <I extends DtObject, R extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<I, R>> indexCollection) {
+	public <S extends DtSubject, I extends DtObject, R extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I, R>> indexCollection) {
 		searchServicesPlugin.putAll(indexDefinition, indexCollection);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <I extends DtObject, R extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<I, R> index) {
+	public <S extends DtSubject, I extends DtObject, R extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I, R> index) {
 		searchServicesPlugin.put(indexDefinition, index);
 	}
 
@@ -156,7 +156,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		Assertion.checkArgument(!subjectUris.isEmpty(), "dirty subjectUris cant be empty");
 		//-----
 		final SearchIndexDefinition searchIndexDefinition = findIndexDefinitionBySubject(subjectUris.get(0).getDefinition());
-		final List<URI> dirtyElements = dirtyElementsPerIndexName.get(searchIndexDefinition.getName());
+		final List<URI<? extends DtSubject>> dirtyElements = dirtyElementsPerIndexName.get(searchIndexDefinition.getName());
 		synchronized (dirtyElements) {
 			dirtyElements.addAll(subjectUris); //TODO : doublons ?
 		}
@@ -173,12 +173,12 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	private static class ReindexTask implements Runnable {
 
 		private final SearchIndexDefinition searchIndexDefinition;
-		private final List<URI> dirtyElements;
+		private final List<URI<? extends DtSubject>> dirtyElements;
 		private final TaskManager taskManager;
 		private final VTransactionManager transactionManager;
 		private final SearchManager searchManager;
 
-		public ReindexTask(final SearchIndexDefinition searchIndexDefinition, final List<URI> dirtyElements, final TaskManager taskManager, final VTransactionManager transactionManager, final SearchManager searchManager) {
+		public ReindexTask(final SearchIndexDefinition searchIndexDefinition, final List<URI<? extends DtSubject>> dirtyElements, final TaskManager taskManager, final VTransactionManager transactionManager, final SearchManager searchManager) {
 			this.searchIndexDefinition = searchIndexDefinition;
 			this.dirtyElements = dirtyElements;//On ne fait pas la copie ici
 			this.taskManager = taskManager;
@@ -188,7 +188,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 		@Override
 		public void run() {
-			final List<URI> reindexUris;
+			final List<URI<? extends DtSubject>> reindexUris;
 			synchronized (dirtyElements) {
 				reindexUris = new ArrayList<>(dirtyElements);
 				dirtyElements.clear();
@@ -201,7 +201,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 						.build();
 				final TaskResult taskResult = taskManager.execute(task);
 				final DtList<?> result = taskResult.getValue("RESULT");
-				searchManager.putAll(searchIndexDefinition, (Collection<SearchIndex<I, R>>) result);
+				searchManager.putAll(searchIndexDefinition, (Collection<SearchIndex<? extends DtSubject, I, R>>) result);
 			}
 		}
 	}
