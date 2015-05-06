@@ -126,13 +126,12 @@ public final class ComponentSpace implements Container, Activeable {
 	//		injectResources(moduleConfig);
 	//	}
 
-	//fix me
 	public void injectComponents(final ModuleConfig moduleConfig) {
 		final AopEngine aopEngine = appConfig.getAopEngine();
 
 		final DIReactor reactor = new DIReactor();
 		for (final String id : componentContainer.keySet()) {
-			reactor.addParent(id);
+			reactor.addParent(id); //liste des ids qui sont déjà résolus.
 		}
 
 		//Map des composants définis par leur id
@@ -169,7 +168,6 @@ public final class ComponentSpace implements Container, Activeable {
 
 	}
 
-	//fix me
 	public void injectAspects(final ModuleConfig moduleConfig) {
 		//. On enrichit la liste des aspects
 		for (final Aspect aspect : findAspects(moduleConfig)) {
