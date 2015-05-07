@@ -22,7 +22,6 @@ import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
-import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -51,7 +50,7 @@ public final class SearchIndexDefinition implements Definition {
 
 	private final DtDefinition subjectDtDefinition;
 
-	private final TaskDefinition reloadTaskDefinition;
+	private final Class<? extends SearchLoader> searchLoaderClass;
 
 	/**
 	 * Constructeur.
@@ -59,27 +58,25 @@ public final class SearchIndexDefinition implements Definition {
 	 * @param subjectDtDefinition Subject associé à l'index
 	 * @param indexDtDefinition Structure des éléments indexés.
 	 * @param resultDtDefinition Structure des éléments de résultat.
-	 * @param loadTaskDefinition Tache de rechargement des éléments indéxés et résultat
+	 * @param searchLoaderClass Loader de chargement des éléments indéxés et résultat
 	 */
 	public SearchIndexDefinition(final String name,
 			final DtDefinition subjectDtDefinition,
 			final DtDefinition indexDtDefinition,
 			final DtDefinition resultDtDefinition,
-			final TaskDefinition reloadTaskDefinition) {
+			final Class<? extends SearchLoader> searchLoaderClass) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(subjectDtDefinition);
 		Assertion.checkArgument(subjectDtDefinition.getStereotype() == DtStereotype.Subject, "subjectDtDefinition ({0}) must be a DtDefinition of a DtSubject class", subjectDtDefinition.getName());
 		Assertion.checkNotNull(indexDtDefinition);
 		Assertion.checkNotNull(resultDtDefinition);
-		Assertion.checkNotNull(reloadTaskDefinition);
-		Assertion.checkArgument(reloadTaskDefinition.containsAttribute("IDS"), "reloadTaskDefinition ({0}) must contains an input attribute IDS which accept a list of Subject's ids", reloadTaskDefinition.getName());
-		Assertion.checkArgument(reloadTaskDefinition.containsAttribute("RESULT"), "reloadTaskDefinition ({0}) must contains an output attribute RESULT which return a dtc of indexDtDefinition ({1})", reloadTaskDefinition.getName(), indexDtDefinition.getName());
+		Assertion.checkNotNull(searchLoaderClass);
 		//-----
 		this.name = name;
 		this.subjectDtDefinition = subjectDtDefinition;
 		this.indexDtDefinition = indexDtDefinition;
 		this.resultDtDefinition = resultDtDefinition;
-		this.reloadTaskDefinition = reloadTaskDefinition;
+		this.searchLoaderClass = searchLoaderClass;
 	}
 
 	/**
@@ -109,12 +106,11 @@ public final class SearchIndexDefinition implements Definition {
 	}
 
 	/**
-	 * Définition des éléments résultats.
-	 * Les éléments de résultats doivent être conservés, stockés dans l'index.
-	 * @return Définition des éléments de résultats.
+	 * Class de chargement des éléments à indexer.
+	 * @return Class de chargement des éléments à indexer.
 	 */
-	public TaskDefinition getReloadTaskDefinition() {
-		return reloadTaskDefinition;
+	public Class<? extends SearchLoader> getSearchLoaderClass() {
+		return searchLoaderClass;
 	}
 
 	/** {@inheritDoc} */
