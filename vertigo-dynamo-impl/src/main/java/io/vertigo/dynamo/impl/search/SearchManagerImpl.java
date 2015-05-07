@@ -194,7 +194,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 				dirtyElements.clear();
 			}
 			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-				final TaskDefinition taskDefinition = searchIndexDefinition.getReloadTaskDefinition();
+				final TaskDefinition taskDefinition = searchIndexDefinition.getLoadTaskDefinition();
 
 				final Task task = new TaskBuilder(taskDefinition)
 						.withValue("IDS", reindexUris)
