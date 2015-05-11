@@ -30,9 +30,9 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.DtSubject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilterUtil;
-import io.vertigo.dynamo.search.SearchIndexFieldNameResolver;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
@@ -92,7 +92,7 @@ import org.elasticsearch.search.sort.SortOrder;
  * @param <I> Type de l'objet contenant les champs à indexer
  * @param <R> Type de l'objet resultant de la recherche
  */
-final class ESStatement<I extends DtObject, R extends DtObject> {
+final class ESStatement<S extends DtSubject, I extends DtObject, R extends DtObject> {
 	private static final int TOPHITS_SUBAGGREAGTION_SIZE = 10; //max 10 documents per cluster when clusterization is used
 	private static final String TOPHITS_SUBAGGREAGTION_NAME = "top";
 	private static final String DATE_PATTERN = "dd/MM/yy";
@@ -101,35 +101,31 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	private final String indexName;
 	private final Client esClient;
 	private final ESDocumentCodec elasticSearchDocumentCodec;
-	private final SearchIndexFieldNameResolver indexFieldNameResolver;
 
 	/**
 	 * Constructeur.
 	 * @param solrDocumentCodec Codec de traduction (bi-directionnelle) des objets métiers en document Solr
 	 * @param esClient Client ElasticSearch.
-	 * @param indexFieldNameResolver Resolver de nom de champ de l'index
 	 */
-	ESStatement(final ESDocumentCodec solrDocumentCodec, final String indexName, final Client esClient, final SearchIndexFieldNameResolver indexFieldNameResolver) {
+	ESStatement(final ESDocumentCodec solrDocumentCodec, final String indexName, final Client esClient) {
 		Assertion.checkArgNotEmpty(indexName);
 		Assertion.checkNotNull(solrDocumentCodec);
 		Assertion.checkNotNull(esClient);
-		Assertion.checkNotNull(indexFieldNameResolver);
 		//-----
 		this.indexName = indexName;
 		this.esClient = esClient;
 		this.elasticSearchDocumentCodec = solrDocumentCodec;
-		this.indexFieldNameResolver = indexFieldNameResolver;
 	}
 
 	/**
 	 * @param indexCollection Collection des indexes à insérer
 	 */
-	void putAll(final Collection<SearchIndex<I, R>> indexCollection) {
+	void putAll(final Collection<SearchIndex<S, I, R>> indexCollection) {
 		//Injection spécifique au moteur d'indexation.
 		try {
 			final BulkRequestBuilder bulkRequest = esClient.prepareBulk();
-			for (final SearchIndex<I, R> index : indexCollection) {
-				try (final XContentBuilder xContentBuilder = elasticSearchDocumentCodec.index2XContentBuilder(index, indexFieldNameResolver)) {
+			for (final SearchIndex<S, I, R> index : indexCollection) {
+				try (final XContentBuilder xContentBuilder = elasticSearchDocumentCodec.index2XContentBuilder(index)) {
 					bulkRequest.add(esClient.prepareIndex(indexName, index.getURI().getDefinition().getName(), index.getURI().toURN())
 							.setSource(xContentBuilder));
 				}
@@ -150,9 +146,9 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	/**
 	 * @param index index à insérer
 	 */
-	void put(final SearchIndex<I, R> index) {
+	void put(final SearchIndex<S, I, R> index) {
 		//Injection spécifique au moteur d'indexation.
-		try (final XContentBuilder xContentBuilder = elasticSearchDocumentCodec.index2XContentBuilder(index, indexFieldNameResolver)) {
+		try (final XContentBuilder xContentBuilder = elasticSearchDocumentCodec.index2XContentBuilder(index)) {
 			esClient.prepareIndex(indexName, index.getURI().getDefinition().getName(), index.getURI().toURN())
 					.setSource(xContentBuilder)
 					.execute() //execute asynchrone
@@ -170,7 +166,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	void remove(final SearchIndexDefinition indexDefinition, final ListFilter query) {
 		Assertion.checkNotNull(query);
 		//-----
-		final QueryBuilder queryBuilder = translateToQueryBuilder(query, indexFieldNameResolver);
+		final QueryBuilder queryBuilder = translateToQueryBuilder(query);
 		esClient.prepareDeleteByQuery(indexName)
 				.setQuery(queryBuilder)
 				.execute()
@@ -226,19 +222,19 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 				.setSize(searchQuery.isClusteringFacet() ? 0 : listState.getMaxRows().getOrElse(defaultMaxRows));
 		if (listState.getSortFieldName().isDefined()) {
 			final DtField sortField = indexDefinition.getIndexDtDefinition().getField(listState.getSortFieldName().get());
-			final FieldSortBuilder sortBuilder = SortBuilders.fieldSort(indexFieldNameResolver.obtainIndexFieldName(sortField))
+			final FieldSortBuilder sortBuilder = SortBuilders.fieldSort(sortField.getName())
 					.ignoreUnmapped(true)
 					.order(listState.isSortDesc().get() ? SortOrder.DESC : SortOrder.ASC);
 			searchRequestBuilder.addSort(sortBuilder);
 		}
-		QueryBuilder queryBuilder = translateToQueryBuilder(searchQuery.getListFilter(), indexFieldNameResolver);
+		QueryBuilder queryBuilder = translateToQueryBuilder(searchQuery.getListFilter());
 		if (searchQuery.isBoostMostRecent()) {
 			queryBuilder = appendBoostMostRecent(searchQuery, queryBuilder);
 		}
 		if (searchQuery.getFacetedQuery().isDefined() && !searchQuery.getFacetedQuery().get().getListFilters().isEmpty()) {
 			final AndFilterBuilder filterBuilder = FilterBuilders.andFilter();
 			for (final ListFilter facetQuery : searchQuery.getFacetedQuery().get().getListFilters()) {
-				filterBuilder.add(translateToFilterBuilder(facetQuery, indexFieldNameResolver));
+				filterBuilder.add(translateToFilterBuilder(facetQuery));
 			}
 			//use filteredQuery instead of PostFilter in order to filter aggregations too.
 			queryBuilder = QueryBuilders.filteredQuery(queryBuilder, filterBuilder);
@@ -292,7 +288,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 			final DateRangeBuilder dateRangeBuilder;
 			if (dataType == DataType.Date) {
 				dateRangeBuilder = AggregationBuilders.dateRange(facetDefinition.getName())
-						.field(indexFieldNameResolver.obtainIndexFieldName(dtField))
+						.field(dtField.getName())
 						.format(DATE_PATTERN);
 				for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 					final String filterValue = facetRange.getListFilter().getFilterValue();
@@ -311,7 +307,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 			}
 
 			final RangeBuilder rangeBuilder = AggregationBuilders.range(facetDefinition.getName())//
-					.field(indexFieldNameResolver.obtainIndexFieldName(dtField));
+					.field(dtField.getName());
 			for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 				final String filterValue = facetRange.getListFilter().getFilterValue();
 				final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
@@ -330,7 +326,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		//facette par field
 		final TermsBuilder aggregationBuilder = AggregationBuilders.terms(facetDefinition.getName())
 				.size(50) //Warning term aggregations are inaccurate : see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html
-				.field(indexFieldNameResolver.obtainIndexFieldName(dtField));
+				.field(dtField.getName());
 		return aggregationBuilder;
 	}
 
@@ -344,7 +340,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		return Option.some(result);
 	}
 
-	private static QueryBuilder translateToQueryBuilder(final ListFilter listFilter, final SearchIndexFieldNameResolver indexFieldNameResolver) {
+	private static QueryBuilder translateToQueryBuilder(final ListFilter listFilter) {
 		Assertion.checkNotNull(listFilter);
 		//-----
 		final String query = new StringBuilder()
@@ -352,12 +348,12 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 				.append(listFilter.getFilterValue())
 				.append(')')
 				.toString();
-		return QueryBuilders.queryString(indexFieldNameResolver.replaceAllIndexFieldNames(query))
+		return QueryBuilders.queryString(query)
 				.lowercaseExpandedTerms(false);
 	}
 
-	private static FilterBuilder translateToFilterBuilder(final ListFilter query, final SearchIndexFieldNameResolver indexFieldNameResolver) {
-		return FilterBuilders.queryFilter(translateToQueryBuilder(query, indexFieldNameResolver));
+	private static FilterBuilder translateToFilterBuilder(final ListFilter query) {
+		return FilterBuilders.queryFilter(translateToQueryBuilder(query));
 	}
 
 	private FacetedQueryResult<R, SearchQuery> translateQuery(final SearchIndexDefinition indexDefinition, final SearchResponse queryResponse, final SearchQuery searchQuery) {
@@ -371,10 +367,10 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 			dtc.addAll(dtcIndex.values());
 		} else {
 			for (final SearchHit searchHit : queryResponse.getHits()) {
-				final SearchIndex<I, R> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
+				final SearchIndex<S, I, R> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
 				final R result = index.getResultDtObject();
 				dtc.add(result);
-				final Map<DtField, String> highlights = createHighlight(searchHit, indexDefinition.getResultDtDefinition(), indexFieldNameResolver);
+				final Map<DtField, String> highlights = createHighlight(searchHit, indexDefinition.getResultDtDefinition());
 				resultHighlights.put(result, highlights);
 			}
 			resultCluster = Collections.emptyMap();
@@ -399,7 +395,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 				for (final SearchHit searchHit : facetSearchHits) {
 					R result = dtcIndex.get(searchHit.getId());
 					if (result == null) {
-						final SearchIndex<I, R> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
+						final SearchIndex<S, I, R> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
 						result = index.getResultDtObject();
 						dtcIndex.put(searchHit.getId(), result);
 					}
@@ -421,7 +417,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 				for (final SearchHit searchHit : facetSearchHits) {
 					R result = dtcIndex.get(searchHit.getId());
 					if (result == null) {
-						final SearchIndex<I, R> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
+						final SearchIndex<S, I, R> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
 						result = index.getResultDtObject();
 						dtcIndex.put(searchHit.getId(), result);
 					}
@@ -433,12 +429,12 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		return resultCluster;
 	}
 
-	private static Map<DtField, String> createHighlight(final SearchHit searchHit, final DtDefinition resultDtDefinition, final SearchIndexFieldNameResolver indexFieldNameResolver) {
+	private static Map<DtField, String> createHighlight(final SearchHit searchHit, final DtDefinition resultDtDefinition) {
 		final Map<DtField, String> highlights = new HashMap<>();
 		final Map<String, HighlightField> highlightsMap = searchHit.getHighlightFields();
 
 		for (final Map.Entry<String, HighlightField> entry : highlightsMap.entrySet()) {
-			final String fieldName = indexFieldNameResolver.obtainDtFieldName(entry.getKey());
+			final String fieldName = entry.getKey();
 			if (resultDtDefinition.contains(fieldName)) { //We only keep highlighs match on result's fields
 				final DtField dtField = resultDtDefinition.getField(fieldName);
 				final StringBuilder sb = new StringBuilder();

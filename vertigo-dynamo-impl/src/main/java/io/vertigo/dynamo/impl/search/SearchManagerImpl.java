@@ -22,24 +22,15 @@ import io.vertigo.core.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.DtSubject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.search.SearchIndexFieldNameResolver;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamo.task.model.TaskBuilder;
-import io.vertigo.dynamo.task.model.TaskResult;
-import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 
@@ -60,8 +51,6 @@ import javax.inject.Inject;
  */
 public final class SearchManagerImpl implements SearchManager, Activeable {
 	private final SearchServicesPlugin searchServicesPlugin;
-	private final TaskManager taskManager;
-	private final VTransactionManager transactionManager;
 
 	private final ScheduledExecutorService executorService; //TODO : replace by WorkManager to make distributed work easier
 	private final Map<String, List<URI<? extends DtSubject>>> dirtyElementsPerIndexName = new HashMap<>();
@@ -71,12 +60,10 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	 * @param searchServicesPlugin Search plugin
 	 */
 	@Inject
-	public SearchManagerImpl(final SearchServicesPlugin searchServicesPlugin, final TaskManager taskManager, final VTransactionManager transactionManager) {
+	public SearchManagerImpl(final SearchServicesPlugin searchServicesPlugin) {
 		Assertion.checkNotNull(searchServicesPlugin);
 		//-----
 		this.searchServicesPlugin = searchServicesPlugin;
-		this.taskManager = taskManager;
-		this.transactionManager = transactionManager;
 		executorService = Executors.newSingleThreadScheduledExecutor();
 	}
 
@@ -90,12 +77,6 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	@Override
 	public void stop() {
 		//nothing
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void registerIndexFieldNameResolver(final SearchIndexDefinition indexDefinition, final SearchIndexFieldNameResolver indexFieldNameResolver) {
-		searchServicesPlugin.registerIndexFieldNameResolver(indexDefinition, indexFieldNameResolver);
 	}
 
 	/** {@inheritDoc} */
@@ -160,49 +141,14 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		synchronized (dirtyElements) {
 			dirtyElements.addAll(subjectUris); //TODO : doublons ?
 		}
-		executorService.scheduleAtFixedRate(new ReindexTask(searchIndexDefinition, dirtyElements, taskManager, transactionManager, this), 0, 5, TimeUnit.SECONDS); //une reindexation dans max 5s
+		executorService.scheduleAtFixedRate(new ReindexTask(searchIndexDefinition, dirtyElements, this), 0, 5, TimeUnit.SECONDS); //une reindexation dans max 5s
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void reindexAll(final SearchIndexDefinition indexDefinition) {
-		// TODO Auto-generated method stub
-
+	public void reindexAll(final SearchIndexDefinition searchIndexDefinition) {
+		//TODO return un Futur ?
+		executorService.scheduleAtFixedRate(new ReindexAllTask(searchIndexDefinition, this), 0, 5, TimeUnit.SECONDS); //une reindexation total dans max 5s
 	}
 
-	private static class ReindexTask implements Runnable {
-
-		private final SearchIndexDefinition searchIndexDefinition;
-		private final List<URI<? extends DtSubject>> dirtyElements;
-		private final TaskManager taskManager;
-		private final VTransactionManager transactionManager;
-		private final SearchManager searchManager;
-
-		public ReindexTask(final SearchIndexDefinition searchIndexDefinition, final List<URI<? extends DtSubject>> dirtyElements, final TaskManager taskManager, final VTransactionManager transactionManager, final SearchManager searchManager) {
-			this.searchIndexDefinition = searchIndexDefinition;
-			this.dirtyElements = dirtyElements;//On ne fait pas la copie ici
-			this.taskManager = taskManager;
-			this.transactionManager = transactionManager;
-			this.searchManager = searchManager;
-		}
-
-		@Override
-		public void run() {
-			final List<URI<? extends DtSubject>> reindexUris;
-			synchronized (dirtyElements) {
-				reindexUris = new ArrayList<>(dirtyElements);
-				dirtyElements.clear();
-			}
-			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-				final TaskDefinition taskDefinition = searchIndexDefinition.getLoadTaskDefinition();
-
-				final Task task = new TaskBuilder(taskDefinition)
-						.withValue("IDS", reindexUris)
-						.build();
-				final TaskResult taskResult = taskManager.execute(task);
-				final DtList<?> result = taskResult.getValue("RESULT");
-				searchManager.putAll(searchIndexDefinition, (Collection<SearchIndex<? extends DtSubject, I, R>>) result);
-			}
-		}
-	}
 }

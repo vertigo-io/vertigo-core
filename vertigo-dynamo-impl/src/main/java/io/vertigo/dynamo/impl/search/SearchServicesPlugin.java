@@ -24,7 +24,6 @@ import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.DtSubject;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.search.SearchIndexFieldNameResolver;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
@@ -38,13 +37,6 @@ import java.util.Collection;
  * @author pchretien
  */
 public interface SearchServicesPlugin extends Plugin {
-
-	/**
-	 * Enregistre un resolver de nom, entre ceux du DT et ceux du schéma Solr.
-	 * @param indexDefinition Type de l'index
-	 * @param indexFieldNameResolver Resolver de nom de champs DT/Solr
-	 */
-	void registerIndexFieldNameResolver(SearchIndexDefinition indexDefinition, SearchIndexFieldNameResolver indexFieldNameResolver);
 
 	/**
 	 * Ajout de plusieurs ressources à l'index.

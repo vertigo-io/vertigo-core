@@ -61,13 +61,6 @@ public interface SearchManager extends Component {
 	void reindexAll(SearchIndexDefinition indexDefinition);
 
 	/**
-	 * Enregistre un resolver de nom, entre ceux du DT et ceux du schéma Solr.
-	 * @param indexDefinition Type de l'index
-	 * @param indexFieldNameResolver Resolver de nom de champs DT/Solr
-	 */
-	void registerIndexFieldNameResolver(SearchIndexDefinition indexDefinition, SearchIndexFieldNameResolver indexFieldNameResolver);
-
-	/**
 	 * Ajout de plusieurs ressources à l'index.
 	 * Si les éléments étaient déjà dans l'index ils sont remplacés.
 	 * @param <I> Type de l'objet contenant les champs à indexer

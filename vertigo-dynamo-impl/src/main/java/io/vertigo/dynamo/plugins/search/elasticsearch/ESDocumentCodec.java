@@ -22,9 +22,9 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.DtSubject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.search.SearchIndexFieldNameResolver;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.lang.Assertion;
@@ -76,13 +76,14 @@ final class ESDocumentCodec {
 	/**
 	 * Transformation d'un resultat ElasticSearch en un index.
 	 * Les highlights sont ajoutés avant ou après (non determinable).
+	 * @param <S> Type du sujet représenté par ce document
 	 * @param <I> Type d'object indexé
 	 * @param <R> Type d'object resultat
 	 * @param indexDefinition Definition de l'index
 	 * @param searchHit Resultat ElasticSearch
 	 * @return Objet logique de recherche
 	 */
-	<I extends DtObject, R extends DtObject> SearchIndex<I, R> searchHit2Index(final SearchIndexDefinition indexDefinition, final SearchHit searchHit) {
+	<S extends DtSubject, I extends DtObject, R extends DtObject> SearchIndex<S, I, R> searchHit2Index(final SearchIndexDefinition indexDefinition, final SearchHit searchHit) {
 		/* On lit du document les données persistantes. */
 		/* 1. URI */
 		final String urn = searchHit.getId();
@@ -100,7 +101,8 @@ final class ESDocumentCodec {
 	}
 
 	/**
-	 * Transformation d'un index en un document SOLR.
+	 * Transformation d'un index en un document ElasticSearch.
+	 * @param <S> Type du sujet représenté par ce document
 	 * @param <I> Type d'object indexé
 	 * @param <R> Type d'object resultat
 	 * @param index Objet logique de recherche
@@ -108,9 +110,8 @@ final class ESDocumentCodec {
 	 * @return Document SOLR
 	 * @throws IOException Json exception
 	 */
-	<I extends DtObject, R extends DtObject> XContentBuilder index2XContentBuilder(final SearchIndex<I, R> index, final SearchIndexFieldNameResolver indexFieldNameResolver) throws IOException {
+	<S extends DtSubject, I extends DtObject, R extends DtObject> XContentBuilder index2XContentBuilder(final SearchIndex<S, I, R> index) throws IOException {
 		Assertion.checkNotNull(index);
-		Assertion.checkNotNull(indexFieldNameResolver);
 		//-----
 
 		final XContentBuilder xContentBuilder = XContentFactory.jsonBuilder();
@@ -129,8 +130,7 @@ final class ESDocumentCodec {
 		for (final DtField dtField : indexDtDefinition.getFields()) {
 			final Object value = dtField.getDataAccessor().getValue(dtIndex);
 			if (value != null) { //les valeurs null ne sont pas indexées => conséquence : on ne peut les rechercher
-				//solrInputDocument.addField(dtField.getName(), value);
-				final String indexFieldName = indexFieldNameResolver.obtainIndexFieldName(dtField);
+				final String indexFieldName = dtField.getName();
 				if (value instanceof String) {
 					final String encodedValue = escapeInvalidUTF8Char((String) value);
 					xContentBuilder.field(indexFieldName, encodedValue);

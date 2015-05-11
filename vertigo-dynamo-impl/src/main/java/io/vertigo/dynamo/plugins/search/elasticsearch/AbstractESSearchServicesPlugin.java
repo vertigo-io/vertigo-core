@@ -29,9 +29,9 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.DtSubject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.search.SearchServicesPlugin;
-import io.vertigo.dynamo.search.SearchIndexFieldNameResolver;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
@@ -43,8 +43,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -71,7 +69,6 @@ import org.elasticsearch.node.Node;
  * @author dchallas
  */
 public abstract class AbstractESSearchServicesPlugin implements SearchServicesPlugin, Activeable {
-	private static final SearchIndexFieldNameResolver DEFAULT_INDEX_FIELD_NAME_RESOLVER = new SearchIndexFieldNameResolver(Collections.<String, String> emptyMap());
 	private static final Logger LOGGER = Logger.getLogger(AbstractESSearchServicesPlugin.class);
 	private final ESDocumentCodec elasticDocumentCodec;
 
@@ -79,7 +76,6 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	private Client esClient;
 	private final DtListState defaultListState;
 	private final int defaultMaxRows;
-	private final Map<String, SearchIndexFieldNameResolver> indexFieldNameResolvers;
 	private final Set<String> cores;
 	private final URL configFile;
 	private boolean indexSettingsValid = false;
@@ -100,7 +96,6 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		this.defaultMaxRows = defaultMaxRows;
 		defaultListState = new DtListState(defaultMaxRows, 0, null, null);
 		elasticDocumentCodec = new ESDocumentCodec(codecManager);
-		indexFieldNameResolvers = new HashMap<>();
 		//------
 		this.cores = new HashSet<>(Arrays.asList(cores.split(",")));
 		if (configFile.isDefined()) {
@@ -194,33 +189,22 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 	/** {@inheritDoc} */
 	@Override
-	public final void registerIndexFieldNameResolver(final SearchIndexDefinition indexDefinition, final SearchIndexFieldNameResolver indexFieldNameResolver) {
-		Assertion.checkNotNull(indexDefinition);
-		Assertion.checkNotNull(indexFieldNameResolver);
-		//-----
-		indexFieldNameResolvers.put(indexDefinition.getName(), indexFieldNameResolver);
-		updateTypeMapping(indexDefinition);
-		logMappings(indexDefinition);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public final <I extends DtObject, R extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<I, R>> indexCollection) {
+	public final <S extends DtSubject, I extends DtObject, R extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I, R>> indexCollection) {
 		Assertion.checkNotNull(indexCollection);
 		//-----
-		final ESStatement<I, R> statement = createElasticStatement(indexDefinition);
+		final ESStatement<S, I, R> statement = createElasticStatement(indexDefinition);
 		statement.putAll(indexCollection);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final <I extends DtObject, R extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<I, R> index) {
+	public final <S extends DtSubject, I extends DtObject, R extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I, R> index) {
 		//On vérifie la cohérence des données SO et SOD.
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkNotNull(index);
 		Assertion.checkArgument(indexDefinition.equals(index.getDefinition()), "les Définitions ne sont pas conformes");
 		//-----
-		final ESStatement<I, R> statement = createElasticStatement(indexDefinition);
+		final ESStatement<S, I, R> statement = createElasticStatement(indexDefinition);
 		statement.put(index);
 	}
 
@@ -239,7 +223,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	public final <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
 		Assertion.checkNotNull(searchQuery);
 		//-----
-		final ESStatement<DtObject, R> statement = createElasticStatement(indexDefinition);
+		final ESStatement<DtSubject, DtObject, R> statement = createElasticStatement(indexDefinition);
 		final DtListState usedListState = listState != null ? listState : defaultListState;
 		return statement.loadList(indexDefinition, searchQuery, usedListState, defaultMaxRows);
 	}
@@ -262,24 +246,12 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		markToOptimize(indexDefinition);
 	}
 
-	/**
-	 * Fournit l' IndexFieldNameResolver d'un index.
-	 * @param indexDefinition IndexDefinition de l'index
-	 * @return IndexFieldNameResolver associé à l'index
-	 */
-	protected final SearchIndexFieldNameResolver obtainIndexFieldNameResolver(final SearchIndexDefinition indexDefinition) {
-		Assertion.checkNotNull(indexDefinition);
-		//-----
-		final SearchIndexFieldNameResolver indexFieldNameResolver = indexFieldNameResolvers.get(indexDefinition.getName());
-		return indexFieldNameResolver != null ? indexFieldNameResolver : DEFAULT_INDEX_FIELD_NAME_RESOLVER;
-	}
-
-	private <I extends DtObject, R extends DtObject> ESStatement<I, R> createElasticStatement(final SearchIndexDefinition indexDefinition) {
+	private <S extends DtSubject, I extends DtObject, R extends DtObject> ESStatement<S, I, R> createElasticStatement(final SearchIndexDefinition indexDefinition) {
 		Assertion.checkArgument(indexSettingsValid, "Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.");
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkArgument(cores.contains(indexDefinition.getName()), "Index {0} hasn't been registered (Registered indexes: {2}).", indexDefinition.getName(), cores);
 		//-----
-		return new ESStatement<>(elasticDocumentCodec, indexDefinition.getName().toLowerCase(), esClient, obtainIndexFieldNameResolver(indexDefinition));
+		return new ESStatement<>(elasticDocumentCodec, indexDefinition.getName().toLowerCase(), esClient);
 	}
 
 	/**
@@ -289,7 +261,6 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	private void updateTypeMapping(final SearchIndexDefinition indexDefinition) {
 		Assertion.checkNotNull(indexDefinition);
 		//-----
-		final SearchIndexFieldNameResolver indexFieldNameResolver = obtainIndexFieldNameResolver(indexDefinition);
 		try (final XContentBuilder typeMapping = XContentFactory.jsonBuilder()) {
 			typeMapping.startObject().startObject("properties")
 					.startObject(ESDocumentCodec.FULL_RESULT)
@@ -306,7 +277,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					final String indexAnalyzer = indexTypeArray[0];
 					final String indexDataType = indexTypeArray.length == 2 ? indexTypeArray[1] : "string";
 
-					typeMapping.startObject(indexFieldNameResolver.obtainIndexFieldName(dtField));
+					typeMapping.startObject(dtField.getName());
 					typeMapping.field("type", indexDataType).field("analyzer", indexAnalyzer);
 					typeMapping.endObject();
 				}
