@@ -23,12 +23,9 @@ import io.vertigo.core.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.search.SearchIndexFieldNameResolver;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
@@ -36,9 +33,6 @@ import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.dynamo.search.model.SearchQueryBuilder;
 import io.vertigo.dynamock.domain.car.Car;
 import io.vertigo.dynamock.domain.car.CarDataBase;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -64,17 +58,6 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 	protected void doSetUp() {
 		carDataBase = new CarDataBase();
 		carDataBase.loadDatas();
-
-		final Map<String, String> indexFieldsMap = new HashMap<>();
-		final SearchIndexDefinition carDynIndexDefinition = Home.getDefinitionSpace().resolve(IDX_DYNA_CAR, SearchIndexDefinition.class);
-		for (final DtField dtField : carDynIndexDefinition.getIndexDtDefinition().getFields()) {
-			String indexType = dtField.getDomain().getProperties().getValue(DtProperty.INDEX_TYPE);
-			if (indexType == null) {
-				indexType = dtField.getDomain().getDataType().name().toLowerCase();
-			}
-			indexFieldsMap.put(dtField.getName(), dtField.getName() + "_DYN" + indexType);
-		}
-		searchManager.registerIndexFieldNameResolver(carDynIndexDefinition, new SearchIndexFieldNameResolver(indexFieldsMap));
 	}
 
 	/**
@@ -88,10 +71,10 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 		final SearchIndexDefinition carDynIndexDefinition = Home.getDefinitionSpace().resolve(IDX_DYNA_CAR, SearchIndexDefinition.class);
 
 		for (final Car car : carDataBase) {
-			final SearchIndex<Car, Car> index = SearchIndex.createIndex(carIndexDefinition, createURI(car), car, car);
+			final SearchIndex<Car, Car, Car> index = SearchIndex.createIndex(carIndexDefinition, createURI(car), car, car);
 			searchManager.put(carIndexDefinition, index);
 
-			final SearchIndex<Car, Car> index2 = SearchIndex.createIndex(carDynIndexDefinition, createURI(car), car, car);
+			final SearchIndex<Car, Car, Car> index2 = SearchIndex.createIndex(carDynIndexDefinition, createURI(car), car, car);
 			searchManager.put(carDynIndexDefinition, index2);
 		}
 		waitIndexation();

@@ -116,8 +116,8 @@ public final class DynamicDefinitionRepository {
 
 	private void registerAllDefinitions(final List<DynamicDefinition> orderedDefinitionList) {
 		for (final DynamicDefinition xdefinition : orderedDefinitionList) {
-			dynamicRegistry.onDefinition(xdefinition);
 			xdefinition.check();
+			dynamicRegistry.onDefinition(xdefinition);
 		}
 		//On sort sur la console le nombre de définitions trouvées
 		//System.out.println(MessageFormat.format(">> {0} definitions trouvees.", orderedDefinitionList.size()));

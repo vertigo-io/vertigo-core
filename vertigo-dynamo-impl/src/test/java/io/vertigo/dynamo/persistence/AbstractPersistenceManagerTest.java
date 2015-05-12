@@ -448,10 +448,12 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 	 */
 	@Test
 	public void testGetFamilliesCars() {
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			//on crée une famille
-			final Famille famille = new Famille();
-			famille.setLibelle("Ma famille");
+		//on crée une famille
+		final Famille famille = new Famille();
+		famille.setLibelle("Ma famille");
+
+		final DtList<Car> firstResult;
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			persistenceManager.getBroker().create(famille);
 
 			//on récupère la liste des voitures
@@ -468,12 +470,16 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 			}
 
 			//On garde le résultat de l'association 1N
-			final DtList<Car> firstResult = famille.getVoituresFamilleList();
+			firstResult = famille.getVoituresFamilleList();
 
 			//On met à jour l'association en retirant le premier élément
 			final Car firstCar = cars.get(0);
 			firstCar.setFamId(null);
 			persistenceManager.getBroker().update(firstCar);
+			transaction.commit(); //sans commit le cache n'est pas rafraichit
+		}
+
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 
 			//on garde le résultat en lazy : il doit avoir le meme nombre de voiture qu'au début
 			final DtList<Car> lazyResult = famille.getVoituresFamilleList();

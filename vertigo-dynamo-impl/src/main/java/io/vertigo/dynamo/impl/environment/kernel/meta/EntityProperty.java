@@ -52,4 +52,10 @@ public final class EntityProperty {
 	public EntityPropertyType getPrimitiveType() {
 		return primitiveType;
 	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return name;
+	}
 }

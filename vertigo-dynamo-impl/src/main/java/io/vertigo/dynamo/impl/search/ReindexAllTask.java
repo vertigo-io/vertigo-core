@@ -11,9 +11,8 @@ import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.util.ClassUtil;
 
 import java.util.Collection;
-import java.util.Iterator;
 
-final class ReindexAllTask implements Runnable {
+final class ReindexAllTask<S extends DtSubject> implements Runnable {
 
 	private final SearchIndexDefinition searchIndexDefinition;
 	private final SearchManager searchManager;
@@ -25,11 +24,10 @@ final class ReindexAllTask implements Runnable {
 
 	@Override
 	public void run() {
-		final Class<? extends DtSubject> subjectClass = ClassUtil.classForName(searchIndexDefinition.getSubjectDtDefinition().getClassCanonicalName(), DtSubject.class);
-		final SearchLoader searchLoader = Home.getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderClass());
-		for (final Iterator<SearchChunk> it = searchLoader.chunk(subjectClass); it.hasNext();) {
-			final SearchChunk searchChunk = it.next();
-			final Collection<SearchIndex<DtSubject, DtObject, DtObject>> searchIndexes = searchLoader.loadData(searchChunk.getAllURIs());
+		final Class<S> subjectClass = (Class<S>) ClassUtil.classForName(searchIndexDefinition.getSubjectDtDefinition().getClassCanonicalName(), DtSubject.class);
+		final SearchLoader<S, DtObject, DtObject> searchLoader = Home.getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderClass());
+		for (final SearchChunk<S> searchChunk : searchLoader.chunk(subjectClass)) {
+			final Collection<SearchIndex<S, DtObject, DtObject>> searchIndexes = searchLoader.loadData(searchChunk.getAllURIs());
 			searchManager.putAll(searchIndexDefinition, searchIndexes);
 		}
 	}

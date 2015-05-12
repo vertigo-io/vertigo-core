@@ -5,7 +5,6 @@ import io.vertigo.dynamo.domain.model.DtSubject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.search.model.SearchIndex;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -28,5 +27,5 @@ public interface SearchLoader<S extends DtSubject, I extends DtObject, R extends
 	 * @param subjectClass Subject class
 	 * @return Iterator of chunk
 	 */
-	Iterator<SearchChunk<S>> chunk(final Class<S> subjectClass);
+	Iterable<SearchChunk<S>> chunk(final Class<S> subjectClass);
 }

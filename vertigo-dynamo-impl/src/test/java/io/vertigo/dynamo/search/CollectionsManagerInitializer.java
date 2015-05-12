@@ -20,7 +20,6 @@ package io.vertigo.dynamo.search;
 
 import io.vertigo.core.spaces.component.ComponentInitializer;
 import io.vertigo.dynamo.collections.CollectionsManager;
-import io.vertigo.dynamock.facet.CarFacetInitializer;
 
 /**
  * Configuration du manager Search.
@@ -30,6 +29,6 @@ public final class CollectionsManagerInitializer implements ComponentInitializer
 	/** {@inheritDoc} */
 	@Override
 	public void init(final CollectionsManager collectionsManager) {
-		CarFacetInitializer.initCarFacet();
+		//CarFacetInitializer.initCarFacet();
 	}
 }

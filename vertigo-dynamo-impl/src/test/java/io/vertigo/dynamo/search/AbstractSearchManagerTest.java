@@ -595,7 +595,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	private enum YearCluster {
 		before2000("avant 2000"),
 		between2000and2005("2000-2005"),
-		after2005("après 2005");
+		after2005("apres 2005");
 
 		private final String label;
 
@@ -756,7 +756,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 	private void doIndex(final boolean all) {
 		if (all) {
-			final List<SearchIndex<Car, Car>> indexes = new ArrayList<>();
+			final List<SearchIndex<Car, Car, Car>> indexes = new ArrayList<>();
 			for (final Car car : carDataBase) {
 				indexes.add(SearchIndex.createIndex(carIndexDefinition, createURI(car), car, car));
 			}
@@ -765,7 +765,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 			//Indexation unitaire
 			//Indexation des cars de la base
 			for (final Car car : carDataBase) {
-				final SearchIndex<Car, Car> index = SearchIndex.createIndex(carIndexDefinition, createURI(car), car, car);
+				final SearchIndex<Car, Car, Car> index = SearchIndex.createIndex(carIndexDefinition, createURI(car), car, car);
 				searchManager.put(carIndexDefinition, index);
 			}
 		}

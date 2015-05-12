@@ -29,7 +29,9 @@ public final class EventTransactionResource implements VTransactionResource {
 		check();
 		for (final Entry<String, Set<String>> eventEntry : eventsPerTopic.entrySet()) {
 			for (final EventListener listener : listenersPerTopic.get(eventEntry.getKey())) {
-				listener.onEvent(eventEntry.getKey());
+				for (final String eventPayload : eventEntry.getValue()) {
+					listener.onEvent(eventPayload);
+				}
 			}
 		}
 	}

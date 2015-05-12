@@ -180,7 +180,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	/** {@inheritDoc} */
 	@Override
 	public DynamicDefinitionBuilder withPackageName(final String newPackageName) {
-		this.packageName = newPackageName;
+		packageName = newPackageName;
 		return this;
 	}
 
@@ -220,9 +220,8 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	@Override
 	public final DynamicDefinitionBuilder withDefinitions(final String fieldName, final List<DynamicDefinitionKey> definitionKeys) {
 		Assertion.checkNotNull(definitionKeys);
-		Assertion.checkArgument(obtainDefinitionKeys(fieldName).isEmpty(), "syntaxe interdite");
-		// On vérifie que la liste est vide pour éviter les syntaxe avec multi
-		// déclarations
+		Assertion.checkArgument(obtainDefinitionKeys(fieldName).isEmpty(), "syntaxe interdite : multi {0}", fieldName);
+		//On vérifie que la liste est vide pour éviter les syntaxe avec multi déclarations
 		//-----
 		for (final DynamicDefinitionKey definitionKey : definitionKeys) {
 			doAddDefinition(fieldName, definitionKey);
