@@ -27,6 +27,7 @@ import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
+import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
@@ -91,7 +92,6 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		if (rangeDefinitions.isEmpty()) {
 			facetDefinition = FacetDefinition.createFacetDefinitionByTerm(definitionName, dtField, new MessageText(label, null, (Serializable[]) null));
 		} else {
-
 			final FacetDefinitionByRangeBuilder facetDefinitionByRangeBuilder = new FacetDefinitionByRangeBuilder(definitionName, dtField, new MessageText(label, null, (Serializable[]) null));
 			for (final DynamicDefinition rangeDefinition : rangeDefinitions) {
 				final FacetValue facetValue = createFacetValue(rangeDefinition);
@@ -113,10 +113,10 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 	private FacetedQueryDefinition createFacetedQueryDefinition(final DynamicDefinition xdefinition) {
 		final String definitionName = xdefinition.getDefinitionKey().getName();
-		final List<DynamicDefinition> dynamicFacetDefinitions = xdefinition.getChildDefinitions("facet");
+		final List<DynamicDefinitionKey> dynamicFacetDefinitionKeys = xdefinition.getDefinitionKeys("facet");
 		final List<FacetDefinition> facetDefinitions = new ArrayList<>();
-		for (final DynamicDefinition dynamicFacetDefinition : dynamicFacetDefinitions) {
-			final FacetDefinition facetDefinition = Home.getDefinitionSpace().resolve(dynamicFacetDefinition.getDefinitionKey().getName(), FacetDefinition.class);
+		for (final DynamicDefinitionKey dynamicDefinitionKey : dynamicFacetDefinitionKeys) {
+			final FacetDefinition facetDefinition = Home.getDefinitionSpace().resolve(dynamicDefinitionKey.getName(), FacetDefinition.class);
 			facetDefinitions.add(facetDefinition);
 		}
 		final FacetedQueryDefinition facetedQueryDefinition = new FacetedQueryDefinition(definitionName, facetDefinitions);
