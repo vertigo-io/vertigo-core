@@ -18,10 +18,15 @@
  */
 package io.vertigo.studio.plugins.mda.task;
 
+import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtStereotype;
+import io.vertigo.dynamo.domain.model.DtSubject;
+import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.mda.FileConfig;
+import io.vertigo.util.ClassUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,6 +38,7 @@ import java.util.Collection;
  */
 public final class TemplateDAO {
 	private final DtDefinition dtDefinition;
+	private final boolean hasSearchBehavior;
 	private final String packageName;
 	private final Collection<TemplateTaskDefinition> taskDefinitions;
 	private final boolean hasOptions;
@@ -62,6 +68,12 @@ public final class TemplateDAO {
 			hasOption = hasOption || templateTaskDefinition.hasOptions();
 		}
 		hasOptions = hasOption;
+		//TODO : find better than one dependency per behavior
+		if (Home.getComponentSpace().contains(SearchManager.class.getSimpleName())) {
+			hasSearchBehavior = Home.getComponentSpace().resolve(SearchManager.class).hasIndexDefinitionBySubject(ClassUtil.classForName(dtDefinition.getClassCanonicalName(), DtSubject.class));
+		} else {
+			hasSearchBehavior = false;
+		}
 	}
 
 	/**
@@ -69,6 +81,20 @@ public final class TemplateDAO {
 	 */
 	public String getClassSimpleName() {
 		return dtDefinition.getClassSimpleName() + "DAO";
+	}
+
+	/**
+	 * @return Si l'entité est un DtSubject
+	 */
+	public boolean isDtSubject() {
+		return dtDefinition.getStereotype() == DtStereotype.Subject;
+	}
+
+	/**
+	 * @return Si l'entité possède le "behavior" Search
+	 */
+	public boolean hasSearchBehavior() {
+		return hasSearchBehavior;
 	}
 
 	/**

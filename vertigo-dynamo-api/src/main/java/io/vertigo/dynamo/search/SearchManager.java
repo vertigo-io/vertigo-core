@@ -48,6 +48,13 @@ public interface SearchManager extends Component {
 	SearchIndexDefinition findIndexDefinitionBySubject(Class<? extends DtSubject> dtSubjectClass);
 
 	/**
+	 * Check if a DtSubject have an IndexDefinition.
+	 * @param dtSubjectClass DtSubject class
+	 * @return if there is a IndexDefinition for this Subject
+	 */
+	boolean hasIndexDefinitionBySubject(Class<? extends DtSubject> dtSubjectClass);
+
+	/**
 	 * Mark an uri list as dirty. Index of these elements will be reindexed.
 	 * Reindexation isn't syncrhone, strategy is dependant of plugin's parameters.
 	 * @param subjectUris Uri of subject marked as dirty.
@@ -109,4 +116,5 @@ public interface SearchManager extends Component {
 	 * @param listFilter Filtre des éléments à supprimer
 	 */
 	void removeAll(SearchIndexDefinition indexDefinition, final ListFilter listFilter);
+
 }

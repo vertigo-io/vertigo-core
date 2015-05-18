@@ -118,7 +118,16 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public SearchIndexDefinition findIndexDefinitionBySubject(final Class<? extends DtSubject> dtSubjectClass) {
-		return findIndexDefinitionBySubject(DtObjectUtil.findDtDefinition(dtSubjectClass));
+		final SearchIndexDefinition indexDefinition = findIndexDefinitionBySubject(DtObjectUtil.findDtDefinition(dtSubjectClass));
+		Assertion.checkNotNull(indexDefinition, "No SearchIndexDefinition was defined for this Subject : {0}", dtSubjectClass.getSimpleName());
+		return indexDefinition;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean hasIndexDefinitionBySubject(final Class<? extends DtSubject> dtSubjectClass) {
+		final SearchIndexDefinition indexDefinition = findIndexDefinitionBySubject(DtObjectUtil.findDtDefinition(dtSubjectClass));
+		return indexDefinition != null;
 	}
 
 	private SearchIndexDefinition findIndexDefinitionBySubject(final DtDefinition subjectDtDefinition) {
@@ -127,7 +136,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 				return indexDefinition;
 			}
 		}
-		throw new IllegalArgumentException("No SearchIndexDefinition was defined for this Subject : " + subjectDtDefinition.getClassSimpleName());
+		return null;
 	}
 
 	/** {@inheritDoc} */
