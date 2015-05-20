@@ -106,7 +106,6 @@ final class ESDocumentCodec {
 	 * @param <I> Type d'object indexé
 	 * @param <R> Type d'object resultat
 	 * @param index Objet logique de recherche
-	 * @param indexFieldNameResolver Resolver de nom de champs d'index
 	 * @return Document SOLR
 	 * @throws IOException Json exception
 	 */
