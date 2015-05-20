@@ -25,8 +25,10 @@ import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.events.EventsManager;
 import io.vertigo.dynamo.impl.persistence.datastore.cache.CacheDataStore;
 import io.vertigo.dynamo.impl.persistence.datastore.logical.LogicalDataStoreConfig;
+import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.persistence.datastore.Broker;
 import io.vertigo.dynamo.persistence.datastore.DataStore;
 import io.vertigo.dynamo.transaction.VTransactionManager;
@@ -44,6 +46,7 @@ public final class BrokerImpl implements Broker {
 	/** Le store est le point d'accès unique à la base (sql, xml, fichier plat...). */
 	private final CacheDataStore cacheDataStore;
 	private final LogicalDataStoreConfig logicalStoreConfig;
+	private final EventsManager eventsManager;
 
 	/**
 	 * Constructeur.
@@ -58,6 +61,7 @@ public final class BrokerImpl implements Broker {
 		//On crée la pile de Store.
 		logicalStoreConfig = brokerConfig.getLogicalStoreConfig();
 		cacheDataStore = new CacheDataStore(brokerConfig);
+		eventsManager = brokerConfig.getEventsManager();
 	}
 
 	private DataStore getPhysicalStore(final DtDefinition dtDefinition) {
@@ -72,67 +76,22 @@ public final class BrokerImpl implements Broker {
 		final DtDefinition dtDefinition = uri.getDefinition();
 		getPhysicalStore(dtDefinition).lockForUpdate(dtDefinition, uri);
 		//-----
-		obtainEventTx().fire("update", uri.toURN());
+		obtainEventTx().fireOnCommit(PersistenceManager.FiredEvent.storeUpdate, uri);
 	}
 
 	//--- Transactionnal Event
 	/**
 	 * Identifiant de ressource Event.
 	 */
-	public static final VTransactionResourceId<EventTransactionResource> EVENT_RESOURCE_ID = new VTransactionResourceId<>(VTransactionResourceId.Priority.LOW, "Events");
+	public static final VTransactionResourceId<EventTransactionResource<URI>> EVENT_RESOURCE_ID = new VTransactionResourceId<>(VTransactionResourceId.Priority.LOW, "Events");
 
-	private EventTransactionResource obtainEventTx() {
-		EventTransactionResource eventTransactionResource = getTransactionManager().getCurrentTransaction().getResource(EVENT_RESOURCE_ID);
+	private EventTransactionResource<URI> obtainEventTx() {
+		EventTransactionResource<URI> eventTransactionResource = getTransactionManager().getCurrentTransaction().getResource(EVENT_RESOURCE_ID);
 		if (eventTransactionResource == null) { //by convention resource is null if not already registered
-			eventTransactionResource = new EventTransactionResource();
+			eventTransactionResource = new EventTransactionResource<>(eventsManager);
 			getTransactionManager().getCurrentTransaction().addResource(EVENT_RESOURCE_ID, eventTransactionResource);
-
-			//register cache flush listener
-			//TODO move to a upper layer
-			final EventListener cacheClearEventListener = new CacheClearEventListener(cacheDataStore);
-			eventTransactionResource.subscribe("update", cacheClearEventListener);
-			eventTransactionResource.subscribe("create", cacheClearEventListener);
-			eventTransactionResource.subscribe("delete", cacheClearEventListener);
-
-			//register searchDirty listener
-			//TODO move to a upper layer
-			//final SearchManager searchManager = Home.getComponentSpace().resolve(SearchManager.class);
-			final EventListener searchIndexDirtyEventListener = new SearchIndexDirtyEventListener(/*searchManager*/);
-			eventTransactionResource.subscribe("update", searchIndexDirtyEventListener);
-			eventTransactionResource.subscribe("create", searchIndexDirtyEventListener);
-			eventTransactionResource.subscribe("delete", searchIndexDirtyEventListener);
 		}
 		return eventTransactionResource;
-	}
-
-	private static final class CacheClearEventListener implements EventListener {
-
-		private final CacheDataStore cacheDataStore;
-
-		CacheClearEventListener(final CacheDataStore cacheDataStore) {
-			this.cacheDataStore = cacheDataStore;
-		}
-
-		@Override
-		public void onEvent(final String event) {
-			final URI uri = URI.fromURN(event);
-			cacheDataStore.clearCache(uri.getDefinition());
-		}
-	}
-
-	private static final class SearchIndexDirtyEventListener implements EventListener {
-
-		//private final SearchManager searchManager;
-
-		//SearchIndexDirtyEventListener(final SearchManager searchManager) {
-		//	this.searchManager = searchManager;
-		//}
-
-		@Override
-		public void onEvent(final String event) {
-			//final URI uri = URI.fromURN(event);
-			//TODO searchManager.markSubjectDirty(uri);
-		}
 	}
 
 	private static VTransactionManager getTransactionManager() {
@@ -149,7 +108,7 @@ public final class BrokerImpl implements Broker {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		getPhysicalStore(dtDefinition).create(dtDefinition, dto);
 		//-----
-		obtainEventTx().fire("create", new URI(dtDefinition, DtObjectUtil.getId(dto)).toURN());
+		obtainEventTx().fireOnCommit(PersistenceManager.FiredEvent.storeCreate, new URI(dtDefinition, DtObjectUtil.getId(dto)));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 		//cacheDataStore.clearCache(dtDefinition);
 	}
@@ -162,7 +121,7 @@ public final class BrokerImpl implements Broker {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		getPhysicalStore(dtDefinition).update(dtDefinition, dto);
 		//-----
-		obtainEventTx().fire("update", new URI(dtDefinition, DtObjectUtil.getId(dto)).toURN());
+		obtainEventTx().fireOnCommit(PersistenceManager.FiredEvent.storeUpdate, new URI(dtDefinition, DtObjectUtil.getId(dto)));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 		//cacheDataStore.clearCache(dtDefinition);
 	}
@@ -175,7 +134,7 @@ public final class BrokerImpl implements Broker {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		getPhysicalStore(dtDefinition).merge(dtDefinition, dto);
 		//-----
-		obtainEventTx().fire("update", new URI(dtDefinition, DtObjectUtil.getId(dto)).toURN());
+		obtainEventTx().fireOnCommit(PersistenceManager.FiredEvent.storeUpdate, new URI(dtDefinition, DtObjectUtil.getId(dto)));
 		//cacheDataStore.clearCache(dtDefinition);
 	}
 
@@ -187,7 +146,7 @@ public final class BrokerImpl implements Broker {
 		final DtDefinition dtDefinition = uri.getDefinition();
 		getPhysicalStore(dtDefinition).delete(dtDefinition, uri);
 		//-----
-		obtainEventTx().fire("delete", uri.toURN());
+		obtainEventTx().fireOnCommit(PersistenceManager.FiredEvent.storeDelete, uri);
 		//cacheDataStore.clearCache(dtDefinition);
 	}
 

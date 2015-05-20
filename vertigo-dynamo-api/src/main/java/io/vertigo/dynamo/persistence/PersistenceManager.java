@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.persistence;
 
+import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.events.EventChannel;
 import io.vertigo.dynamo.persistence.datastore.Broker;
 import io.vertigo.dynamo.persistence.datastore.BrokerConfig;
 import io.vertigo.dynamo.persistence.datastore.BrokerNN;
@@ -31,6 +33,16 @@ import io.vertigo.lang.Component;
 * @author pchretien
 */
 public interface PersistenceManager extends Component {
+
+	/**
+	 * ChannelNamed events fired.
+	 */
+	enum FiredEvent implements EventChannel<URI> {
+		storeCreate,
+		storeUpdate,
+		storeDelete
+	}
+
 	/**
 	 * @return Broker d'objets métier
 	 */

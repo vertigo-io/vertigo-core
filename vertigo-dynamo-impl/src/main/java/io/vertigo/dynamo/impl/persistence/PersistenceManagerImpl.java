@@ -20,6 +20,7 @@ package io.vertigo.dynamo.impl.persistence;
 
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
+import io.vertigo.dynamo.events.EventsManager;
 import io.vertigo.dynamo.impl.persistence.datastore.BrokerConfigImpl;
 import io.vertigo.dynamo.impl.persistence.datastore.BrokerImpl;
 import io.vertigo.dynamo.impl.persistence.datastore.DataStorePlugin;
@@ -59,7 +60,7 @@ public final class PersistenceManagerImpl implements PersistenceManager {
 	 * @param collectionsManager Manager de gestion des collections
 	 */
 	@Inject
-	public PersistenceManagerImpl(final TaskManager taskManager, final CacheManager cacheManager, final CollectionsManager collectionsManager, final Option<FileStorePlugin> fileStorePlugin, final DataStorePlugin defaultStorePlugin) {
+	public PersistenceManagerImpl(final TaskManager taskManager, final CacheManager cacheManager, final CollectionsManager collectionsManager, final Option<FileStorePlugin> fileStorePlugin, final DataStorePlugin defaultStorePlugin, final EventsManager eventsManager) {
 		Assertion.checkNotNull(taskManager);
 		Assertion.checkNotNull(cacheManager);
 		Assertion.checkNotNull(collectionsManager);
@@ -67,7 +68,7 @@ public final class PersistenceManagerImpl implements PersistenceManager {
 		Assertion.checkNotNull(defaultStorePlugin);
 		//-----
 		masterDataConfig = new MasterDataConfigImpl(collectionsManager);
-		brokerConfig = new BrokerConfigImpl(cacheManager, this);
+		brokerConfig = new BrokerConfigImpl(cacheManager, this, eventsManager);
 		brokerNN = new BrokerNNImpl(taskManager);
 		//---
 		//On enregistre le plugin principal du broker : DefaultPhysicalStore

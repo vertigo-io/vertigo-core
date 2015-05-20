@@ -27,6 +27,8 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.DtSubject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.events.EventsManager;
+import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
@@ -60,10 +62,16 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	 * @param searchServicesPlugin Search plugin
 	 */
 	@Inject
-	public SearchManagerImpl(final SearchServicesPlugin searchServicesPlugin) {
+	public SearchManagerImpl(final SearchServicesPlugin searchServicesPlugin, final EventsManager eventsManager) {
 		Assertion.checkNotNull(searchServicesPlugin);
 		//-----
 		this.searchServicesPlugin = searchServicesPlugin;
+
+		final SearchIndexDirtyEventListener searchIndexDirtyEventListener = new SearchIndexDirtyEventListener(this);
+		eventsManager.register(PersistenceManager.FiredEvent.storeCreate, false, searchIndexDirtyEventListener);
+		eventsManager.register(PersistenceManager.FiredEvent.storeUpdate, false, searchIndexDirtyEventListener);
+		eventsManager.register(PersistenceManager.FiredEvent.storeDelete, false, searchIndexDirtyEventListener);
+
 		executorService = Executors.newSingleThreadScheduledExecutor();
 	}
 

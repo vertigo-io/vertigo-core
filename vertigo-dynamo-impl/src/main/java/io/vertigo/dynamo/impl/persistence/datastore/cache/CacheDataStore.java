@@ -50,9 +50,13 @@ public final class CacheDataStore {
 	public CacheDataStore(final BrokerConfigImpl brokerConfig) {
 		Assertion.checkNotNull(brokerConfig);
 		//-----
-		this.persistenceManager = brokerConfig.getPersistenceManager();
-		this.cacheDataStoreConfig = brokerConfig.getCacheStoreConfig();
-		this.logicalStoreConfig = brokerConfig.getLogicalStoreConfig();
+		persistenceManager = brokerConfig.getPersistenceManager();
+		cacheDataStoreConfig = brokerConfig.getCacheStoreConfig();
+		logicalStoreConfig = brokerConfig.getLogicalStoreConfig();
+		final CacheClearEventListener cacheClearEventListener = new CacheClearEventListener(this);
+		brokerConfig.getEventsManager().register(PersistenceManager.FiredEvent.storeCreate, false, cacheClearEventListener);
+		brokerConfig.getEventsManager().register(PersistenceManager.FiredEvent.storeUpdate, false, cacheClearEventListener);
+		brokerConfig.getEventsManager().register(PersistenceManager.FiredEvent.storeDelete, false, cacheClearEventListener);
 	}
 
 	private DataStore getPhysicalStore(final DtDefinition dtDefinition) {
