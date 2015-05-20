@@ -77,6 +77,9 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 
 	/**
 	 * encodeType.
+     * jgarnier le 20/05/2015 : les content-type ne doivent pas contenir de ":" mais des "=" pour les paramètres.
+     * http://www.w3.org/Protocols/rfc1341/4_Content-Type.html : Content-Type := type "/" subtype *[";" parameter]
+     * avec : parameter := attribute "=" value
 	 */
 	enum EncoderType {
 		/** Type JSON simple */
@@ -84,13 +87,13 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 		/** Type JSON UiContext */
 		JSON_UI_CONTEXT("json+uicontext"),
 		/** Type JSON list */
-		JSON_LIST("json+list:%s"),
+		JSON_LIST("json+list=%s"),
 		/** Type JSON list with meta */
-		JSON_LIST_META("json+list:%s+meta"),
+		JSON_LIST_META("json+list=%s+meta"),
 		/** Type JSON entity */
-		JSON_ENTITY("json+entity:%s"),
+		JSON_ENTITY("json+entity=%s"),
 		/** Type JSON entity + meta */
-		JSON_ENTITY_META("json+entity:%s+meta");
+		JSON_ENTITY_META("json+entity=%s+meta");
 
 		private final Pattern contentTypePattern;
 		private final String contentType;
