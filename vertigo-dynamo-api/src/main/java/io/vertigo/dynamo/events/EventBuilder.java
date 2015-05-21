@@ -3,24 +3,24 @@ package io.vertigo.dynamo.events;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
  * Event builder.
  * @author pchretien
  */
-public final class EventBuilder implements Builder<Event> {
+public final class EventBuilder<P extends Serializable> implements Builder<Event<P>> {
 	private UUID myUuid;
-	private String myPayload;
+	private P myPayload;
 
 	/**
 	 * Fix the payload.
 	 * @param payload event's payload
 	 * @return this builder
 	 */
-	public EventBuilder withPayload(final String payload) {
+	public EventBuilder<P> withPayload(final P payload) {
 		Assertion.checkArgument(myPayload == null, "payload already set");
-		Assertion.checkArgNotEmpty(payload);
 		//-----
 		myPayload = payload;
 		return this;
@@ -31,7 +31,7 @@ public final class EventBuilder implements Builder<Event> {
 	 * @param uuid event's uuid
 	 * @return this builder
 	 */
-	public EventBuilder withUUID(final UUID uuid) {
+	public EventBuilder<P> withUUID(final UUID uuid) {
 		Assertion.checkArgument(myUuid == null, "uuid already set");
 		Assertion.checkNotNull(uuid);
 		//-----
@@ -41,8 +41,8 @@ public final class EventBuilder implements Builder<Event> {
 
 	/** {@inheritDoc} */
 	@Override
-	public Event build() {
+	public Event<P> build() {
 		myUuid = myUuid == null ? UUID.randomUUID() : myUuid;
-		return new Event(myUuid, myPayload);
+		return new Event<>(myUuid, myPayload);
 	}
 }
