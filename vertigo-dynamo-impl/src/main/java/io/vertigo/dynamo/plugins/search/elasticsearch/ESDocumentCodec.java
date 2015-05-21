@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.plugins.search.elasticsearch;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.dynamo.domain.metamodel.DataAccessor;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -30,6 +31,8 @@ import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.lang.Assertion;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
@@ -83,35 +86,43 @@ final class ESDocumentCodec {
 	 * @param searchHit Resultat ElasticSearch
 	 * @return Objet logique de recherche
 	 */
-	<S extends DtSubject, I extends DtObject, R extends DtObject> SearchIndex<S, I, R> searchHit2Index(final SearchIndexDefinition indexDefinition, final SearchHit searchHit) {
+	<S extends DtSubject, I extends DtObject> SearchIndex<S, I> searchHit2Index(final SearchIndexDefinition indexDefinition, final SearchHit searchHit) {
 		/* On lit du document les données persistantes. */
 		/* 1. URI */
 		final String urn = searchHit.getId();
 		final URI uri = io.vertigo.dynamo.domain.model.URI.fromURN(urn);
 
 		/* 2 : Result stocké */
-		final R resultDtObjectdtObject;
+		final I resultDtObjectdtObject;
 		if (searchHit.field(FULL_RESULT) == null) {
 			resultDtObjectdtObject = decode((String) searchHit.getSource().get(FULL_RESULT));
 		} else {
 			resultDtObjectdtObject = decode((String) searchHit.field(FULL_RESULT).getValue());
 		}
 		//-----
-		return SearchIndex.createResult(indexDefinition, uri, resultDtObjectdtObject);
+		return SearchIndex.createIndex(indexDefinition, uri, resultDtObjectdtObject);
 	}
 
 	/**
 	 * Transformation d'un index en un document ElasticSearch.
 	 * @param <S> Type du sujet représenté par ce document
 	 * @param <I> Type d'object indexé
-	 * @param <R> Type d'object resultat
 	 * @param index Objet logique de recherche
 	 * @return Document SOLR
 	 * @throws IOException Json exception
 	 */
-	<S extends DtSubject, I extends DtObject, R extends DtObject> XContentBuilder index2XContentBuilder(final SearchIndex<S, I, R> index) throws IOException {
+	<S extends DtSubject, I extends DtObject> XContentBuilder index2XContentBuilder(final SearchIndex<S, I> index) throws IOException {
 		Assertion.checkNotNull(index);
 		//-----
+
+		final DtDefinition dtDefinition = index.getDefinition().getIndexDtDefinition();
+		final List<DtField> nonPersistentFields = getNonPersistentFields(dtDefinition);
+		final I dtResult;
+		if (nonPersistentFields.isEmpty()) {
+			dtResult = index.getIndexDtObject();
+		} else {
+			dtResult = cloneDto(dtDefinition, index.getIndexDtObject(), nonPersistentFields);
+		}
 
 		final XContentBuilder xContentBuilder = XContentFactory.jsonBuilder();
 
@@ -119,7 +130,7 @@ final class ESDocumentCodec {
 		xContentBuilder.startObject();
 		//xContentBuilder.field(URN, index.getURI().toURN());
 		/* 2 : Result stocké */
-		final String result = encode(index.getResultDtObject());
+		final String result = encode(dtResult);
 		xContentBuilder.field(FULL_RESULT, result);
 
 		/* 3 : Les champs du dto index */
@@ -140,6 +151,27 @@ final class ESDocumentCodec {
 		}
 		xContentBuilder.endObject();
 		return xContentBuilder;
+	}
+
+	private List<DtField> getNonPersistentFields(final DtDefinition dtDefinition) {
+		final List<DtField> nonPersistentFields = new ArrayList<>();
+		for (final DtField dtField : dtDefinition.getFields()) {
+			if (!dtField.isPersistent()) {
+				nonPersistentFields.add(dtField);
+			}
+		}
+		return nonPersistentFields;
+	}
+
+	private <I extends DtObject> I cloneDto(final DtDefinition dtDefinition, final I dto, final List<DtField> excludedFields) {
+		final I clonedDto = (I) DtObjectUtil.createDtObject(dtDefinition);
+		for (final DtField dtField : dtDefinition.getFields()) {
+			if (!excludedFields.contains(dtField)) {
+				final DataAccessor dataAccessor = dtField.getDataAccessor();
+				dataAccessor.setValue(clonedDto, dataAccessor.getValue(dto));
+			}
+		}
+		return clonedDto;
 	}
 
 	private static String escapeInvalidUTF8Char(final String value) {

@@ -27,13 +27,19 @@ import io.vertigo.lang.Assertion;
 /**
  * Définition de l'index de recherche.
  *
- * Un index est constitué de deux types d'objets.
+ * Fondalementalement un index est constitué de deux types d'objets.
  * - Un objet d'index (les champs indexés)
- * - Un objet d'affichage
+ * - Un subject représentant le concept métier réprésenté par cet index.
+ * La définition d'index précise également un SearchLoader permettant la mise à jour autonome de l'index.
+ *
+ * L'objet d'index est à la fois porteur des champs de recherche, et ceux utilisé à l'affichage.
+ * La différence entre les deux peut-être affiné par :
+ * - la propriété 'persistent' des fields pour savoir si le champs fait partit ou non du résultat utilisé pour l'affichage
+ * - le domain et sa propriété indexType pour savoir si le champs est indéxé ou non
  *
  * L'objet d'affichage peut être simple (Ex: résultat google) alors qu'il se réfère à un index plus riche.
  *
- * @author dchallas
+ * @author dchallas, npiedeloup
  */
 @DefinitionPrefix("IDX")
 public final class SearchIndexDefinition implements Definition {
@@ -45,9 +51,6 @@ public final class SearchIndexDefinition implements Definition {
 	/** Structure des éléments indexés. */
 	private final DtDefinition indexDtDefinition;
 
-	/** Structure des éléments de résultat.*/
-	private final DtDefinition resultDtDefinition;
-
 	private final DtDefinition subjectDtDefinition;
 
 	private final Class<? extends SearchLoader> searchLoaderClass;
@@ -57,43 +60,30 @@ public final class SearchIndexDefinition implements Definition {
 	 * @param name Index name
 	 * @param subjectDtDefinition Subject associé à l'index
 	 * @param indexDtDefinition Structure des éléments indexés.
-	 * @param resultDtDefinition Structure des éléments de résultat.
 	 * @param searchLoaderClass Loader de chargement des éléments indéxés et résultat
 	 */
 	public SearchIndexDefinition(final String name,
 			final DtDefinition subjectDtDefinition,
 			final DtDefinition indexDtDefinition,
-			final DtDefinition resultDtDefinition,
 			final Class<? extends SearchLoader> searchLoaderClass) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(subjectDtDefinition);
 		Assertion.checkArgument(subjectDtDefinition.getStereotype() == DtStereotype.Subject, "subjectDtDefinition ({0}) must be a DtDefinition of a DtSubject class", subjectDtDefinition.getName());
 		Assertion.checkNotNull(indexDtDefinition);
-		Assertion.checkNotNull(resultDtDefinition);
 		Assertion.checkNotNull(searchLoaderClass);
 		//-----
 		this.name = name;
 		this.subjectDtDefinition = subjectDtDefinition;
 		this.indexDtDefinition = indexDtDefinition;
-		this.resultDtDefinition = resultDtDefinition;
 		this.searchLoaderClass = searchLoaderClass;
 	}
 
 	/**
-	 * Définition des champs indexés.
+	 * Définition de l'objet représentant le contenu de l'index (indexé et résultat).
 	 * @return Définition des champs indexés.
 	 */
 	public DtDefinition getIndexDtDefinition() {
 		return indexDtDefinition;
-	}
-
-	/**
-	 * Définition des éléments résultats.
-	 * Les éléments de résultats doivent être conservés, stockés dans l'index.
-	 * @return Définition des éléments de résultats.
-	 */
-	public DtDefinition getResultDtDefinition() {
-		return resultDtDefinition;
 	}
 
 	/**

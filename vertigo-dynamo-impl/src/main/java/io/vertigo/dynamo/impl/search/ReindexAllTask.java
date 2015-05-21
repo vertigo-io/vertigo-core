@@ -25,9 +25,9 @@ final class ReindexAllTask<S extends DtSubject> implements Runnable {
 	@Override
 	public void run() {
 		final Class<S> subjectClass = (Class<S>) ClassUtil.classForName(searchIndexDefinition.getSubjectDtDefinition().getClassCanonicalName(), DtSubject.class);
-		final SearchLoader<S, DtObject, DtObject> searchLoader = Home.getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderClass());
+		final SearchLoader<S, DtObject> searchLoader = Home.getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderClass());
 		for (final SearchChunk<S> searchChunk : searchLoader.chunk(subjectClass)) {
-			final Collection<SearchIndex<S, DtObject, DtObject>> searchIndexes = searchLoader.loadData(searchChunk.getAllURIs());
+			final Collection<SearchIndex<S, DtObject>> searchIndexes = searchLoader.loadData(searchChunk.getAllURIs());
 			searchManager.putAll(searchIndexDefinition, searchIndexes);
 		}
 	}

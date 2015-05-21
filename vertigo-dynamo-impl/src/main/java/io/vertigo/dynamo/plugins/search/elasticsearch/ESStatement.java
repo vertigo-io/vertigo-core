@@ -89,10 +89,10 @@ import org.elasticsearch.search.sort.SortOrder;
  * Requête physique d'accès à ElasticSearch.
  * Le driver exécute les requêtes de façon synchrone dans le contexte transactionnelle de la ressource.
  * @author pchretien, npiedeloup
- * @param <I> Type de l'objet contenant les champs à indexer
- * @param <R> Type de l'objet resultant de la recherche
+ * @param <I> Type de l'objet représentant l'index
+ * @param <S> Type du subject métier indexé
  */
-final class ESStatement<S extends DtSubject, I extends DtObject, R extends DtObject> {
+final class ESStatement<S extends DtSubject, I extends DtObject> {
 	private static final int TOPHITS_SUBAGGREAGTION_SIZE = 10; //max 10 documents per cluster when clusterization is used
 	private static final String TOPHITS_SUBAGGREAGTION_NAME = "top";
 	private static final String DATE_PATTERN = "dd/MM/yy";
@@ -105,6 +105,7 @@ final class ESStatement<S extends DtSubject, I extends DtObject, R extends DtObj
 	/**
 	 * Constructeur.
 	 * @param solrDocumentCodec Codec de traduction (bi-directionnelle) des objets métiers en document Solr
+	 * @param indexName Index name
 	 * @param esClient Client ElasticSearch.
 	 */
 	ESStatement(final ESDocumentCodec solrDocumentCodec, final String indexName, final Client esClient) {
@@ -120,11 +121,11 @@ final class ESStatement<S extends DtSubject, I extends DtObject, R extends DtObj
 	/**
 	 * @param indexCollection Collection des indexes à insérer
 	 */
-	void putAll(final Collection<SearchIndex<S, I, R>> indexCollection) {
+	void putAll(final Collection<SearchIndex<S, I>> indexCollection) {
 		//Injection spécifique au moteur d'indexation.
 		try {
 			final BulkRequestBuilder bulkRequest = esClient.prepareBulk();
-			for (final SearchIndex<S, I, R> index : indexCollection) {
+			for (final SearchIndex<S, I> index : indexCollection) {
 				try (final XContentBuilder xContentBuilder = elasticSearchDocumentCodec.index2XContentBuilder(index)) {
 					bulkRequest.add(esClient.prepareIndex(indexName, index.getURI().getDefinition().getName(), index.getURI().toURN())
 							.setSource(xContentBuilder));
@@ -146,7 +147,7 @@ final class ESStatement<S extends DtSubject, I extends DtObject, R extends DtObj
 	/**
 	 * @param index index à insérer
 	 */
-	void put(final SearchIndex<S, I, R> index) {
+	void put(final SearchIndex<S, I> index) {
 		//Injection spécifique au moteur d'indexation.
 		try (final XContentBuilder xContentBuilder = elasticSearchDocumentCodec.index2XContentBuilder(index)) {
 			esClient.prepareIndex(indexName, index.getURI().getDefinition().getName(), index.getURI().toURN())
@@ -193,7 +194,7 @@ final class ESStatement<S extends DtSubject, I extends DtObject, R extends DtObj
 	 * @param defaultMaxRows Nombre de ligne max par defaut
 	 * @return Résultat de la recherche
 	 */
-	FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows) {
+	FacetedQueryResult<I, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows) {
 		Assertion.checkNotNull(searchQuery);
 		//-----
 		final SearchRequestBuilder searchRequestBuilder = createSearchRequestBuilder(indexDefinition, searchQuery, listState, defaultMaxRows);
@@ -356,21 +357,21 @@ final class ESStatement<S extends DtSubject, I extends DtObject, R extends DtObj
 		return FilterBuilders.queryFilter(translateToQueryBuilder(query));
 	}
 
-	private FacetedQueryResult<R, SearchQuery> translateQuery(final SearchIndexDefinition indexDefinition, final SearchResponse queryResponse, final SearchQuery searchQuery) {
+	private FacetedQueryResult<I, SearchQuery> translateQuery(final SearchIndexDefinition indexDefinition, final SearchResponse queryResponse, final SearchQuery searchQuery) {
 
-		final Map<R, Map<DtField, String>> resultHighlights = new HashMap<>();
-		final Map<FacetValue, DtList<R>> resultCluster;
-		final DtList<R> dtc = new DtList<>(indexDefinition.getResultDtDefinition());
+		final Map<I, Map<DtField, String>> resultHighlights = new HashMap<>();
+		final Map<FacetValue, DtList<I>> resultCluster;
+		final DtList<I> dtc = new DtList<>(indexDefinition.getIndexDtDefinition());
 		if (searchQuery.isClusteringFacet()) {
-			final Map<String, R> dtcIndex = new LinkedHashMap<>();
+			final Map<String, I> dtcIndex = new LinkedHashMap<>();
 			resultCluster = createCluster(indexDefinition, searchQuery, queryResponse, dtcIndex);
 			dtc.addAll(dtcIndex.values());
 		} else {
 			for (final SearchHit searchHit : queryResponse.getHits()) {
-				final SearchIndex<S, I, R> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
-				final R result = index.getResultDtObject();
+				final SearchIndex<S, I> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
+				final I result = index.getIndexDtObject();
 				dtc.add(result);
-				final Map<DtField, String> highlights = createHighlight(searchHit, indexDefinition.getResultDtDefinition());
+				final Map<DtField, String> highlights = createHighlight(searchHit, indexDefinition.getIndexDtDefinition());
 				resultHighlights.put(result, highlights);
 			}
 			resultCluster = Collections.emptyMap();
@@ -381,8 +382,8 @@ final class ESStatement<S extends DtSubject, I extends DtObject, R extends DtObj
 		return new FacetedQueryResult<>(searchQuery.getFacetedQuery(), count, dtc, facets, resultCluster, resultHighlights, searchQuery);
 	}
 
-	private Map<FacetValue, DtList<R>> createCluster(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final SearchResponse queryResponse, final Map<String, R> dtcIndex) {
-		final Map<FacetValue, DtList<R>> resultCluster = new LinkedHashMap<>();
+	private Map<FacetValue, DtList<I>> createCluster(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final SearchResponse queryResponse, final Map<String, I> dtcIndex) {
+		final Map<FacetValue, DtList<I>> resultCluster = new LinkedHashMap<>();
 		final FacetDefinition facetDefinition = searchQuery.getClusteringFacetDefinition();
 		final Aggregation facetAggregation = queryResponse.getAggregations().get(facetDefinition.getName());
 		if (facetDefinition.isRangeFacet()) {
@@ -391,12 +392,12 @@ final class ESStatement<S extends DtSubject, I extends DtObject, R extends DtObj
 			for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 				final Bucket value = rangeBuckets.getBucketByKey(facetRange.getListFilter().getFilterValue());
 				final SearchHits facetSearchHits = ((TopHits) value.getAggregations().get(TOPHITS_SUBAGGREAGTION_NAME)).getHits();
-				final DtList<R> facetDtc = new DtList<>(indexDefinition.getResultDtDefinition());
+				final DtList<I> facetDtc = new DtList<>(indexDefinition.getIndexDtDefinition());
 				for (final SearchHit searchHit : facetSearchHits) {
-					R result = dtcIndex.get(searchHit.getId());
+					I result = dtcIndex.get(searchHit.getId());
 					if (result == null) {
-						final SearchIndex<S, I, R> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
-						result = index.getResultDtObject();
+						final SearchIndex<S, I> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
+						result = index.getIndexDtObject();
 						dtcIndex.put(searchHit.getId(), result);
 					}
 					facetDtc.add(result);
@@ -413,12 +414,12 @@ final class ESStatement<S extends DtSubject, I extends DtObject, R extends DtObj
 				facetValue = new FacetValue(new ListFilter(query), label);
 
 				final SearchHits facetSearchHits = ((TopHits) value.getAggregations().get(TOPHITS_SUBAGGREAGTION_NAME)).getHits();
-				final DtList<R> facetDtc = new DtList<>(indexDefinition.getResultDtDefinition());
+				final DtList<I> facetDtc = new DtList<>(indexDefinition.getIndexDtDefinition());
 				for (final SearchHit searchHit : facetSearchHits) {
-					R result = dtcIndex.get(searchHit.getId());
+					I result = dtcIndex.get(searchHit.getId());
 					if (result == null) {
-						final SearchIndex<S, I, R> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
-						result = index.getResultDtObject();
+						final SearchIndex<S, I> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
+						result = index.getIndexDtObject();
 						dtcIndex.put(searchHit.getId(), result);
 					}
 					facetDtc.add(result);

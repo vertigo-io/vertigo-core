@@ -71,10 +71,10 @@ public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 		final SearchIndexDefinition carDynIndexDefinition = Home.getDefinitionSpace().resolve(IDX_DYNA_CAR, SearchIndexDefinition.class);
 
 		for (final Car car : carDataBase) {
-			final SearchIndex<Car, Car, Car> index = SearchIndex.createIndex(carIndexDefinition, createURI(car), car, car);
+			final SearchIndex<Car, Car> index = SearchIndex.createIndex(carIndexDefinition, createURI(car), car);
 			searchManager.put(carIndexDefinition, index);
 
-			final SearchIndex<Car, Car, Car> index2 = SearchIndex.createIndex(carDynIndexDefinition, createURI(car), car, car);
+			final SearchIndex<Car, Car> index2 = SearchIndex.createIndex(carDynIndexDefinition, createURI(car), car);
 			searchManager.put(carDynIndexDefinition, index2);
 		}
 		waitIndexation();

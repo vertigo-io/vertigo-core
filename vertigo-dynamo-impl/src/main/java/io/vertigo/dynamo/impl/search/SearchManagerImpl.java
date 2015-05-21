@@ -89,13 +89,13 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <S extends DtSubject, I extends DtObject, R extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I, R>> indexCollection) {
+	public <S extends DtSubject, I extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
 		searchServicesPlugin.putAll(indexDefinition, indexCollection);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <S extends DtSubject, I extends DtObject, R extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I, R> index) {
+	public <S extends DtSubject, I extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
 		searchServicesPlugin.put(indexDefinition, index);
 	}
 
@@ -113,7 +113,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final SearchIndexDefinition indexDefinition, final URI uri) {
+	public <S extends DtSubject> void remove(final SearchIndexDefinition indexDefinition, final URI<S> uri) {
 		searchServicesPlugin.remove(indexDefinition, uri);
 	}
 

@@ -31,11 +31,14 @@ import io.vertigo.lang.Assertion;
  *  - construire l'index de recherche
  *  - consulter le résultat d'une recherhe
  *
+ *  Le DtObject d'index utilise
+ *  - la propriété 'persistent' des fields pour savoir si le champs fait partit du résultat ou non
+ *  - le domain et sa propriété indexType pour savoir si le champs est indéxé ou non
+ *
  * @author dchallas
- * @param <I> Type de l'objet contenant les champs à indexer
- * @param <R> Type de l'objet resultant de la recherche
+ * @param <I> Type de l'objet de l'index
  */
-public final class SearchIndex<S extends DtSubject, I extends DtObject, R extends DtObject> {
+public final class SearchIndex<S extends DtSubject, I extends DtObject> {
 	/** Définition de l'index. */
 	private final SearchIndexDefinition indexDefinition;
 
@@ -45,27 +48,21 @@ public final class SearchIndex<S extends DtSubject, I extends DtObject, R extend
 	/** DtObject d'index. */
 	private final I indexDtObject;
 
-	/** DtObject de resultat. */
-	private final R resultDtObject;
-
 	/**
 	 * Constructeur .
-	 * @param indexDefinition definition de O, I, R
+	 * @param indexDefinition definition de O, I
 	 * @param uri URI de l'objet indexé
 	 */
-	private SearchIndex(final SearchIndexDefinition indexDefinition, final URI<S> uri, final I indexDtObject, final R resultDtObject) {
+	private SearchIndex(final SearchIndexDefinition indexDefinition, final URI<S> uri, final I indexDtObject) {
 		Assertion.checkNotNull(uri);
 		Assertion.checkNotNull(indexDefinition);
-		Assertion.checkNotNull(resultDtObject);
 		//indexDtObject peut être null
 		//On vérifie la consistance des données.
-		Assertion.checkArgument(indexDefinition.getResultDtDefinition().equals(DtObjectUtil.findDtDefinition(resultDtObject)), "le type du DTO result n''est pas correct");
 		Assertion.checkArgument(indexDtObject == null || indexDefinition.getIndexDtDefinition().equals(DtObjectUtil.findDtDefinition(indexDtObject)), "le type du DTO index n''est pas correct");
 		//-----
 		this.uri = uri;
 		this.indexDefinition = indexDefinition;
 		this.indexDtObject = indexDtObject;
-		this.resultDtObject = resultDtObject;
 	}
 
 	/**
@@ -73,14 +70,6 @@ public final class SearchIndex<S extends DtSubject, I extends DtObject, R extend
 	 */
 	public SearchIndexDefinition getDefinition() {
 		return indexDefinition;
-	}
-
-	/**
-	 * Récupération de l'objet de résultat.
-	 * @return Objet de résultat de résultat
-	 */
-	public R getResultDtObject() {
-		return resultDtObject;
 	}
 
 	/**
@@ -111,28 +100,14 @@ public final class SearchIndex<S extends DtSubject, I extends DtObject, R extend
 
 	/**
 	 * Constructeur de l'Objet permettant de créer l'index.
-	 * @param <I> Type de l'objet contenant les champs à indexer
-	 * @param <R> Type de l'objet resultant de la recherche
+	 * @param <I> Type de l'objet représentant l'index
 	 * @param uri URI de l'objet indexé
 	 * @param indexDefinition Définition de l'index de recherche.
-	 * @param resultDto DTO représentant le résultat
 	 * @param indexDto  DTO représentant l'index
 	 * @return  Objet permettant de créer l'index
 	 */
-	public static <S extends DtSubject, I extends DtObject, R extends DtObject> SearchIndex<S, I, R> createIndex(final SearchIndexDefinition indexDefinition, final URI<S> uri, final I indexDto, final R resultDto) {
-		return new SearchIndex<>(indexDefinition, uri, indexDto, resultDto);
+	public static <S extends DtSubject, I extends DtObject> SearchIndex<S, I> createIndex(final SearchIndexDefinition indexDefinition, final URI<S> uri, final I indexDto) {
+		return new SearchIndex<>(indexDefinition, uri, indexDto);
 	}
 
-	/**
-	 * Constructeur de l'objet permettant d'accéder au résultat d'une recherche .
-	 * @param <I> Type de l'objet contenant les champs à indexer
-	 * @param <R> Type de l'objet resultant de la recherche
-	 * @param uri URI de l'objet indexé
-	 * @param indexDefinition Définition de l'index de recherche.
-	 * @param resultDto DTO représentant le résultat
-	 * @return Objet permettant d'accéder au résultat d'une recherche
-	 */
-	public static <S extends DtSubject, I extends DtObject, R extends DtObject> SearchIndex<S, I, R> createResult(final SearchIndexDefinition indexDefinition, final URI<S> uri, final R resultDto) {
-		return new SearchIndex<>(indexDefinition, uri, null, resultDto);
-	}
 }

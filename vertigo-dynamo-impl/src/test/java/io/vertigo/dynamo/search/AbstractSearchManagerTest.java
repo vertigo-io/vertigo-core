@@ -756,16 +756,16 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 	private void doIndex(final boolean all) {
 		if (all) {
-			final List<SearchIndex<Car, Car, Car>> indexes = new ArrayList<>();
+			final List<SearchIndex<Car, Car>> indexes = new ArrayList<>();
 			for (final Car car : carDataBase) {
-				indexes.add(SearchIndex.createIndex(carIndexDefinition, createURI(car), car, car));
+				indexes.add(SearchIndex.createIndex(carIndexDefinition, createURI(car), car));
 			}
 			searchManager.putAll(carIndexDefinition, indexes);
 		} else {
 			//Indexation unitaire
 			//Indexation des cars de la base
 			for (final Car car : carDataBase) {
-				final SearchIndex<Car, Car, Car> index = SearchIndex.createIndex(carIndexDefinition, createURI(car), car, car);
+				final SearchIndex<Car, Car> index = SearchIndex.createIndex(carIndexDefinition, createURI(car), car);
 				searchManager.put(carIndexDefinition, index);
 			}
 		}

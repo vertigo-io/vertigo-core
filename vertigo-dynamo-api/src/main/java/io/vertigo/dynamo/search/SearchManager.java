@@ -70,22 +70,22 @@ public interface SearchManager extends Component {
 	/**
 	 * Ajout de plusieurs ressources à l'index.
 	 * Si les éléments étaient déjà dans l'index ils sont remplacés.
-	 * @param <I> Type de l'objet contenant les champs à indexer
-	 * @param <R> Type de l'objet resultant de la recherche
+	 * @param <I> Type de l'objet représentant l'index
+	 * @param <S> Type du subject métier indexé
 	 * @param indexDefinition Type de l'index
-	 * @param indexCollection Liste des objets à pousser dans l'index (I + R)
+	 * @param indexCollection Liste des objets à pousser dans l'index
 	 */
-	<S extends DtSubject, I extends DtObject, R extends DtObject> void putAll(SearchIndexDefinition indexDefinition, Collection<SearchIndex<S, I, R>> indexCollection);
+	<S extends DtSubject, I extends DtObject> void putAll(SearchIndexDefinition indexDefinition, Collection<SearchIndex<S, I>> indexCollection);
 
 	/**
 	 * Ajout d'une ressource à l'index.
 	 * Si l'élément était déjà dans l'index il est remplacé.
-	 * @param <I> Type de l'objet contenant les champs à indexer
-	 * @param <R> Type de l'objet resultant de la recherche
+	 * @param <I> Type de l'objet représentant l'index
+	 * @param <S> Type du subject métier indexé
 	 * @param indexDefinition Type de l'index
-	 * @param index Objet à pousser dans l'index (I + R)
+	 * @param index Objet à pousser dans l'index
 	 */
-	<S extends DtSubject, I extends DtObject, R extends DtObject> void put(SearchIndexDefinition indexDefinition, SearchIndex<S, I, R> index);
+	<S extends DtSubject, I extends DtObject> void put(SearchIndexDefinition indexDefinition, SearchIndex<S, I> index);
 
 	/**
 	 * Récupération du résultat issu d'une requête.
@@ -93,9 +93,9 @@ public interface SearchManager extends Component {
 	 * @param indexDefinition Type de l'index
 	 * @param listState Etat de la liste (tri et pagination)
 	 * @return Résultat correspondant à la requête
-	 * @param <R> Type de l'objet resultant de la recherche
+	 * @param <I> Type de l'objet resultant de la recherche
 	 */
-	<R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState);
+	<I extends DtObject> FacetedQueryResult<I, SearchQuery> loadList(SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState);
 
 	/**
 	 * @param indexDefinition  Type de l'index
@@ -105,10 +105,11 @@ public interface SearchManager extends Component {
 
 	/**
 	 * Suppression d'une ressource de l'index.
+	 * @param <S> Type du subject métier indexé
 	 * @param indexDefinition Type de l'index
 	 * @param uri URI de la ressource à supprimer
 	 */
-	void remove(SearchIndexDefinition indexDefinition, final URI uri);
+	<S extends DtSubject> void remove(SearchIndexDefinition indexDefinition, final URI<S> uri);
 
 	/**
 	 * Suppression des données correspondant à un filtre.

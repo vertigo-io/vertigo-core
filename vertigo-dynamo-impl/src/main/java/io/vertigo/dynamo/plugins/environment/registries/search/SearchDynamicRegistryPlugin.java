@@ -67,13 +67,12 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	private static SearchIndexDefinition createIndexDefinition(final DynamicDefinition xsearchObjet) {
 		final DtDefinition subjectDtDefinition = Home.getDefinitionSpace().resolve(xsearchObjet.getDefinitionKey("dtSubject").getName(), DtDefinition.class);
 		final DtDefinition indexDtDefinition = Home.getDefinitionSpace().resolve(xsearchObjet.getDefinitionKey("dtIndex").getName(), DtDefinition.class);
-		final DtDefinition resultDtDefinition = Home.getDefinitionSpace().resolve(xsearchObjet.getDefinitionKey("dtResult").getName(), DtDefinition.class);
 		//	final List<FacetDefinition> facetDefinitions = Collections.emptyList();
 		final String definitionName = xsearchObjet.getDefinitionKey().getName();
 		final String searchLoaderClassName = (String) xsearchObjet.getPropertyValue(SearchGrammar.SEARCH_LOADER_PROPERTY);
 		final Class<? extends SearchLoader> searchLoaderClass = ClassUtil.classForName(searchLoaderClassName, SearchLoader.class);
 
-		final SearchIndexDefinition indexDefinition = new SearchIndexDefinition(definitionName, subjectDtDefinition, indexDtDefinition, resultDtDefinition, searchLoaderClass);
+		final SearchIndexDefinition indexDefinition = new SearchIndexDefinition(definitionName, subjectDtDefinition, indexDtDefinition, searchLoaderClass);
 		//indexDefinition.makeUnmodifiable();
 		return indexDefinition;
 	}

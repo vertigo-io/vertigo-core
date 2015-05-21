@@ -36,7 +36,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-public final class CarSearchLoader implements SearchLoader<Car, Car, Car> {
+public final class CarSearchLoader implements SearchLoader<Car, Car> {
 	private static final int SEARCH_CHUNK_SIZE = 5;
 	private final SearchIndexDefinition indexDefinition;
 	private CarDataBase carDataBase;
@@ -57,15 +57,15 @@ public final class CarSearchLoader implements SearchLoader<Car, Car, Car> {
 
 	/** {@inheritDoc} */
 	@Override
-	public List<SearchIndex<Car, Car, Car>> loadData(final List<URI<Car>> uris) {
-		final List<SearchIndex<Car, Car, Car>> carIndexes = new ArrayList<>(uris.size());
+	public List<SearchIndex<Car, Car>> loadData(final List<URI<Car>> uris) {
+		final List<SearchIndex<Car, Car>> carIndexes = new ArrayList<>(uris.size());
 		final Map<Long, Car> carPerId = new HashMap<>();
 		for (final Car car : carDataBase) {
 			carPerId.put(car.getId(), car);
 		}
 		for (final URI<Car> uri : uris) {
 			final Car car = carPerId.get(uri.getId());
-			carIndexes.add(SearchIndex.createIndex(indexDefinition, uri, car, car));
+			carIndexes.add(SearchIndex.createIndex(indexDefinition, uri, car));
 		}
 		return carIndexes;
 	}

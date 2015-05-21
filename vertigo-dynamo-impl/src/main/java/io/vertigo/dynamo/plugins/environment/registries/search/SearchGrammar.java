@@ -75,7 +75,6 @@ final class SearchGrammar {
 		INDEX_DEFINITION_ENTITY = new EntityBuilder("IndexDefinition")
 				.withAttribute("dtSubject", DomainGrammar.DT_DEFINITION_ENTITY, true)
 				.withAttribute("dtIndex", DomainGrammar.DT_DEFINITION_ENTITY, true)
-				.withAttribute("dtResult", DomainGrammar.DT_DEFINITION_ENTITY, true)
 				.withProperty(SEARCH_LOADER_PROPERTY, true)
 				.build();
 

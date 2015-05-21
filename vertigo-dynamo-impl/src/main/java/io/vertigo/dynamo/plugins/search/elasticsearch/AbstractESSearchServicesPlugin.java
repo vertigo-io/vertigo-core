@@ -189,28 +189,28 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 	/** {@inheritDoc} */
 	@Override
-	public final <S extends DtSubject, I extends DtObject, R extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I, R>> indexCollection) {
+	public final <S extends DtSubject, I extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
 		Assertion.checkNotNull(indexCollection);
 		//-----
-		final ESStatement<S, I, R> statement = createElasticStatement(indexDefinition);
+		final ESStatement<S, I> statement = createElasticStatement(indexDefinition);
 		statement.putAll(indexCollection);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final <S extends DtSubject, I extends DtObject, R extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I, R> index) {
+	public final <S extends DtSubject, I extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
 		//On vérifie la cohérence des données SO et SOD.
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkNotNull(index);
 		Assertion.checkArgument(indexDefinition.equals(index.getDefinition()), "les Définitions ne sont pas conformes");
 		//-----
-		final ESStatement<S, I, R> statement = createElasticStatement(indexDefinition);
+		final ESStatement<S, I> statement = createElasticStatement(indexDefinition);
 		statement.put(index);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final void remove(final SearchIndexDefinition indexDefinition, final URI uri) {
+	public final <S extends DtSubject> void remove(final SearchIndexDefinition indexDefinition, final URI<S> uri) {
 		Assertion.checkNotNull(uri);
 		Assertion.checkNotNull(indexDefinition);
 		//-----
@@ -223,7 +223,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	public final <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
 		Assertion.checkNotNull(searchQuery);
 		//-----
-		final ESStatement<DtSubject, DtObject, R> statement = createElasticStatement(indexDefinition);
+		final ESStatement<DtSubject, R> statement = createElasticStatement(indexDefinition);
 		final DtListState usedListState = listState != null ? listState : defaultListState;
 		return statement.loadList(indexDefinition, searchQuery, usedListState, defaultMaxRows);
 	}
@@ -246,7 +246,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		markToOptimize(indexDefinition);
 	}
 
-	private <S extends DtSubject, I extends DtObject, R extends DtObject> ESStatement<S, I, R> createElasticStatement(final SearchIndexDefinition indexDefinition) {
+	private <S extends DtSubject, I extends DtObject> ESStatement<S, I> createElasticStatement(final SearchIndexDefinition indexDefinition) {
 		Assertion.checkArgument(indexSettingsValid, "Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.");
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkArgument(cores.contains(indexDefinition.getName()), "Index {0} hasn't been registered (Registered indexes: {2}).", indexDefinition.getName(), cores);
