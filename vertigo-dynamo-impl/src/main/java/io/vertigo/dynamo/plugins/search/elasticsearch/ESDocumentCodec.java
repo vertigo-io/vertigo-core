@@ -81,7 +81,6 @@ final class ESDocumentCodec {
 	 * Les highlights sont ajoutés avant ou après (non determinable).
 	 * @param <S> Type du sujet représenté par ce document
 	 * @param <I> Type d'object indexé
-	 * @param <R> Type d'object resultat
 	 * @param indexDefinition Definition de l'index
 	 * @param searchHit Resultat ElasticSearch
 	 * @return Objet logique de recherche
