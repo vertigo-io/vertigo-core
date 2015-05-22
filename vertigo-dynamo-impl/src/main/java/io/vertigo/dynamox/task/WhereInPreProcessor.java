@@ -132,9 +132,10 @@ final class WhereInPreProcessor {
 					separator = ",";
 					//-----
 					if (moreThanOneWhereIn && index != listObject.size() && index % NB_MAX_WHERE_IN_ITEM == 0) {
-						buildQuery.append(isNotIn ? ") AND " : ") OR ");
-						buildQuery.append(fkFieldName);
-						buildQuery.append(isNotIn ? " NOT IN (" : " IN (");
+						buildQuery
+								.append(isNotIn ? ") AND " : ") OR ")
+								.append(fkFieldName)
+								.append(isNotIn ? " NOT IN (" : " IN (");
 						separator = "";
 					}
 					//-----
