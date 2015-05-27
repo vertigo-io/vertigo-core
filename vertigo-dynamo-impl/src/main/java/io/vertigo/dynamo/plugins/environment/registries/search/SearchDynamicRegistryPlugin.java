@@ -31,9 +31,7 @@ import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
-import io.vertigo.dynamo.search.metamodel.SearchLoader;
 import io.vertigo.lang.MessageText;
-import io.vertigo.util.ClassUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -69,10 +67,8 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final DtDefinition indexDtDefinition = Home.getDefinitionSpace().resolve(xsearchObjet.getDefinitionKey("dtIndex").getName(), DtDefinition.class);
 		//	final List<FacetDefinition> facetDefinitions = Collections.emptyList();
 		final String definitionName = xsearchObjet.getDefinitionKey().getName();
-		final String searchLoaderClassName = (String) xsearchObjet.getPropertyValue(SearchGrammar.SEARCH_LOADER_PROPERTY);
-		final Class<? extends SearchLoader> searchLoaderClass = ClassUtil.classForName(searchLoaderClassName, SearchLoader.class);
-
-		final SearchIndexDefinition indexDefinition = new SearchIndexDefinition(definitionName, subjectDtDefinition, indexDtDefinition, searchLoaderClass);
+		final String searchLoaderId = (String) xsearchObjet.getPropertyValue(SearchGrammar.SEARCH_LOADER_PROPERTY);
+		final SearchIndexDefinition indexDefinition = new SearchIndexDefinition(definitionName, subjectDtDefinition, indexDtDefinition, searchLoaderId);
 		//indexDefinition.makeUnmodifiable();
 		return indexDefinition;
 	}

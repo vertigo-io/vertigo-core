@@ -32,7 +32,7 @@ final class ReindexTask implements Runnable {
 			reindexUris = new ArrayList<>(dirtyElements);
 			dirtyElements.clear();
 		}
-		final SearchLoader searchLoader = Home.getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderClass());
+		final SearchLoader searchLoader = Home.getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
 		final Collection<SearchIndex<DtSubject, DtObject>> searchIndexes = searchLoader.loadData(reindexUris);
 		searchManager.putAll(searchIndexDefinition, searchIndexes);
 	}

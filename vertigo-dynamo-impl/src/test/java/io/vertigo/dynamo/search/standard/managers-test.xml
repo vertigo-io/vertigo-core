@@ -29,7 +29,9 @@
 		<resource type="kpr" path="io/vertigo/dynamo/search/ksp/search.kpr" />			
 		<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
 		
-		<component api="EventsManager" class="io.vertigo.dynamo.impl.events.EventsManagerImpl" />
+		<component api="EventsManager" class="io.vertigo.dynamo.impl.events.EventsManagerImpl">
+			<plugin class="io.vertigo.dynamo.plugins.events.local.LocalEventsPlugin"/>
+		</component>
 		<component api="SearchManager" class="io.vertigo.dynamo.impl.search.SearchManagerImpl">
 			<!-- <plugin class="io.vertigo.dynamo.plugins.search.solr.commonshttp.CommonsHttpSolrSearchServicesPlugin" > <param name="solr.url" value="http://localhost:8983/solr" /> <param name="cores" value="IDX_ARTICLE,IDX_VOITURE,IDX_DEMANDE,IDX_DOCUMENT" /> </plugin> -->
 			<plugin class="io.vertigo.dynamo.plugins.search.elasticsearch.embedded.ESEmbeddedSearchServicesPlugin">
@@ -38,5 +40,9 @@
 				<param name="rowsPerQuery" value="50" />
 			</plugin>
 		</component>
+	</module>
+	
+	<module name="SearchLoaders" api="false" inheritance="io.vertigo.dynamo.search.metamodel.SearchLoader">
+		<component class="io.vertigo.dynamock.domain.car.CarSearchLoader"/>
 	</module>
 </config>

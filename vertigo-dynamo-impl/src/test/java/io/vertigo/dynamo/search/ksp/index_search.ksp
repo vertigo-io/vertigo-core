@@ -3,13 +3,13 @@ package io.vertigo.dynamock.search
 create IndexDefinition IDX_CAR {
     dtSubject : DT_CAR
     dtIndex : DT_CAR
-    searchLoader : "io.vertigo.dynamock.domain.car.CarSearchLoader"
+    searchLoader : "CarSearchLoader"
 }
 
 create IndexDefinition IDX_DYNA_CAR {
     dtSubject : DT_CAR
     dtIndex : DT_CAR
-    searchLoader : "io.vertigo.dynamock.domain.car.CarSearchLoader"
+    searchLoader : "CarSearchLoader"
 }
 
 create FacetDefinition FCT_DESCRIPTION_CAR {

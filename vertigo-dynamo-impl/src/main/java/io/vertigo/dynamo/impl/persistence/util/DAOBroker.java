@@ -52,7 +52,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 
 	/** DT de l'objet dont on gére le CRUD. */
 	private final DtDefinition dtDefinition;
-	final Broker broker; //visibility package only
+	protected final Broker broker;
 	private final BrokerNN brokerNN;
 	private final BrokerBatch<D, P> brokerBatch;
 	private final TaskManager taskManager;

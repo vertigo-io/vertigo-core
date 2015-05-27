@@ -53,29 +53,29 @@ public final class SearchIndexDefinition implements Definition {
 
 	private final DtDefinition subjectDtDefinition;
 
-	private final Class<? extends SearchLoader> searchLoaderClass;
+	private final String searchLoaderId;
 
 	/**
 	 * Constructeur.
 	 * @param name Index name
 	 * @param subjectDtDefinition Subject associé à l'index
 	 * @param indexDtDefinition Structure des éléments indexés.
-	 * @param searchLoaderClass Loader de chargement des éléments indéxés et résultat
+	 * @param searchLoaderId Loader de chargement des éléments indéxés et résultat
 	 */
 	public SearchIndexDefinition(final String name,
 			final DtDefinition subjectDtDefinition,
 			final DtDefinition indexDtDefinition,
-			final Class<? extends SearchLoader> searchLoaderClass) {
+			final String searchLoaderId) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(subjectDtDefinition);
 		Assertion.checkArgument(subjectDtDefinition.getStereotype() == DtStereotype.Subject, "subjectDtDefinition ({0}) must be a DtDefinition of a DtSubject class", subjectDtDefinition.getName());
 		Assertion.checkNotNull(indexDtDefinition);
-		Assertion.checkNotNull(searchLoaderClass);
+		Assertion.checkArgNotEmpty(searchLoaderId);
 		//-----
 		this.name = name;
 		this.subjectDtDefinition = subjectDtDefinition;
 		this.indexDtDefinition = indexDtDefinition;
-		this.searchLoaderClass = searchLoaderClass;
+		this.searchLoaderId = searchLoaderId;
 	}
 
 	/**
@@ -96,11 +96,11 @@ public final class SearchIndexDefinition implements Definition {
 	}
 
 	/**
-	 * Class de chargement des éléments à indexer.
-	 * @return Class de chargement des éléments à indexer.
+	 * Nom du composant de chargement des éléments à indexer.
+	 * @return Nom du composant de chargement des éléments à indexer.
 	 */
-	public Class<? extends SearchLoader> getSearchLoaderClass() {
-		return searchLoaderClass;
+	public String getSearchLoaderId() {
+		return searchLoaderId;
 	}
 
 	/** {@inheritDoc} */
