@@ -59,6 +59,20 @@ public final class ${dao.classSimpleName} extends DAOBroker<${dao.dtClassCanonic
 	
 	</#if>
     <#if dao.dtSubject && dao.hasSearchBehavior()>
+    
+    <#list dao.facetedQueryDefinitions as facetedQueryDefinition>
+    /**
+	 * Création d'une SearchQuery de type : ${facetedQueryDefinition.name}.
+	 * @param query Mots clés de recherche
+	 * @param listFilters Liste des filtres à appliquer (notament les facettes sélectionnées)
+	 * @return SearchQueryBuilder pour ce type de recherche
+	 */
+	public SearchQueryBuilder createSearchQueryBuilder${facetedQueryDefinition.name}(final String query, final ListFilter... listFilters) {
+		final FacetedQueryDefinition facetedQueryDefinition = Home.getDefinitionSpace().resolve("${facetedQueryDefinition.urn}", FacetedQueryDefinition.class);
+		return new SearchQueryBuilder(query).withFacetStrategy(facetedQueryDefinition, listFilters);
+	}
+	</#list>
+    
 	/**
 	 * Récupération du résultat issu d'une requête.
 	 * @param searchQuery critères initiaux

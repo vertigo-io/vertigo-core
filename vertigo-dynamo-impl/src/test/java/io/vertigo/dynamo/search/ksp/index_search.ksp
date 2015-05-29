@@ -28,6 +28,7 @@ create FacetDefinition FCT_YEAR_CAR {
 }
 
 create FacetedQueryDefinition QRY_CAR_FACET {
+    dtSubject : DT_CAR
 	facet : [ FCT_DESCRIPTION_CAR, FCT_MAKE_CAR, FCT_YEAR_CAR]
 }
 

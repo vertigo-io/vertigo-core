@@ -93,6 +93,6 @@ public final class CarFacetInitializer {
 		Home.getDefinitionSpace().put(facetDefinition, FacetDefinition.class);
 		facetDefinitions.add(facetDefinition);
 
-		return new FacetedQueryDefinition(QRY_CAR_FACET, facetDefinitions);
+		return new FacetedQueryDefinition(QRY_CAR_FACET, carDefinition, facetDefinitions);
 	}
 }

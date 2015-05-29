@@ -20,6 +20,7 @@ package io.vertigo.dynamo.collections.metamodel;
 
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
 
 import java.util.Collection;
@@ -42,19 +43,24 @@ public final class FacetedQueryDefinition implements Definition {
 	 */
 	private final String name;
 
+	private final DtDefinition subjectDtDefinition;
+
 	/** Liste indexée des facettes.*/
 	private final Map<String, FacetDefinition> facetDefinitions = new LinkedHashMap<>();
 
 	/**
 	 * Constructeur.
 	 * @param name Nom de la definition
+	 * @param subjectDtDefinition Definition du subject sur lequel s'applique cette recherche
 	 * @param facetDefinitions Liste des facettes
 	 */
-	public FacetedQueryDefinition(final String name, final List<FacetDefinition> facetDefinitions) {
+	public FacetedQueryDefinition(final String name, final DtDefinition subjectDtDefinition, final List<FacetDefinition> facetDefinitions) {
 		Assertion.checkArgNotEmpty(name);
+		Assertion.checkNotNull(subjectDtDefinition);
 		Assertion.checkNotNull(facetDefinitions);
 		//-----
 		this.name = name;
+		this.subjectDtDefinition = subjectDtDefinition;
 		for (final FacetDefinition facetDefinition : facetDefinitions) {
 			this.facetDefinitions.put(facetDefinition.getName(), facetDefinition);
 		}
@@ -86,6 +92,14 @@ public final class FacetedQueryDefinition implements Definition {
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * Définition du subject de cette recherche.
+	 * @return Définition du subject.
+	 */
+	public DtDefinition getSubjectDtDefinition() {
+		return subjectDtDefinition;
 	}
 
 	/** {@inheritDoc} */

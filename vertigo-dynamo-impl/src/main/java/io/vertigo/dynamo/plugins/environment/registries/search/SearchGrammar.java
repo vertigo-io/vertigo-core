@@ -91,6 +91,7 @@ final class SearchGrammar {
 				.build();
 
 		FACETED_QUERY_DEFINITION_ENTITY = new EntityBuilder("FacetedQueryDefinition")
+				.withAttribute("dtSubject", DomainGrammar.DT_DEFINITION_ENTITY, true)
 				.withAttributes("facet", FACET_DEFINITION_ENTITY, true)
 				.build();
 
