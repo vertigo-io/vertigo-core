@@ -205,7 +205,7 @@ public final class UiErrorBuilder {
 	/**
 	 * @throws ValidationUserException Si il y a des erreurs
 	 */
-	public void throwUserExceptionIfErrorsr() {
+	public void throwUserExceptionIfErrors() {
 		if (!uiObjectErrors.isEmpty()) {
 			throw new ValidationUserException(uiObjectErrors);
 		}
