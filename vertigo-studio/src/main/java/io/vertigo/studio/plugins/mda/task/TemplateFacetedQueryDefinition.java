@@ -18,6 +18,7 @@
  */
 package io.vertigo.studio.plugins.mda.task;
 
+import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
@@ -37,10 +38,10 @@ public final class TemplateFacetedQueryDefinition {
 	}
 
 	/**
-	 * @return Nom CamelCase de la facetedQueryDefinition
+	 * @return Nom local CamelCase de la facetedQueryDefinition
 	 */
-	public String getName() {
-		return StringUtil.constToUpperCamelCase(facetedQueryDefinition.getName());
+	public String getSimpleName() {
+		return StringUtil.constToUpperCamelCase(DefinitionUtil.getLocalName(facetedQueryDefinition.getName(), FacetedQueryDefinition.class));
 	}
 
 	/**

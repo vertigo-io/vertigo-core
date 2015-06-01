@@ -22,7 +22,6 @@ import io.vertigo.core.Home;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
-import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
@@ -38,9 +37,10 @@ import java.util.Collection;
  */
 public final class TemplateDAO {
 	private final DtDefinition dtDefinition;
-	private final boolean hasSearchBehavior;
 	private final String packageName;
 	private final Collection<TemplateTaskDefinition> taskDefinitions = new ArrayList<>();
+
+	private final SearchIndexDefinition indexDefinition;
 	private final Collection<TemplateFacetedQueryDefinition> facetedQueryDefinitions = new ArrayList<>();
 	private final boolean hasOptions;
 
@@ -69,22 +69,22 @@ public final class TemplateDAO {
 		}
 		hasOptions = hasOption;
 		//TODO : find better than one dependency per behavior
-		if (Home.getComponentSpace().contains(SearchManager.class.getSimpleName())) {
+		if (Home.getDefinitionSpace().getAllTypes().contains(SearchIndexDefinition.class)) {
 			SearchIndexDefinition currentIndexDefinition = null;
-			for (final SearchIndexDefinition indexDefinition : Home.getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
-				if (indexDefinition.getSubjectDtDefinition().equals(dtDefinition)) {
-					currentIndexDefinition = indexDefinition;
+			for (final SearchIndexDefinition tmpIndexDefinition : Home.getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
+				if (tmpIndexDefinition.getSubjectDtDefinition().equals(dtDefinition)) {
+					currentIndexDefinition = tmpIndexDefinition;
 				}
 			}
-			hasSearchBehavior = currentIndexDefinition != null;
-			if (hasSearchBehavior) {
+			indexDefinition = currentIndexDefinition;
+			if (indexDefinition != null) {
 				for (final FacetedQueryDefinition facetedQueryDefinition : Home.getDefinitionSpace().getAll(FacetedQueryDefinition.class)) {
 					final TemplateFacetedQueryDefinition templateFacetedQueryDefinition = new TemplateFacetedQueryDefinition(facetedQueryDefinition);
 					facetedQueryDefinitions.add(templateFacetedQueryDefinition);
 				}
 			}
 		} else {
-			hasSearchBehavior = false;
+			indexDefinition = null;
 		}
 	}
 
@@ -106,7 +106,7 @@ public final class TemplateDAO {
 	 * @return Si l'entité possède le "behavior" Search
 	 */
 	public boolean hasSearchBehavior() {
-		return hasSearchBehavior;
+		return indexDefinition != null;
 	}
 
 	/**
@@ -128,6 +128,27 @@ public final class TemplateDAO {
 	 */
 	public String getDtClassCanonicalName() {
 		return dtDefinition.getClassCanonicalName();
+	}
+
+	/**
+	 * @return Nom simple de la classe du Dt
+	 */
+	public String getDtClassSimpleName() {
+		return dtDefinition.getClassSimpleName();
+	}
+
+	/**
+	 * @return Nom simple de la classe du Dt d'index
+	 */
+	public String getIndexDtClassSimpleName() {
+		return indexDefinition.getIndexDtDefinition().getClassSimpleName();
+	}
+
+	/**
+	 * @return Nom de la classe du Dt d'index
+	 */
+	public String getIndexDtClassCanonicalName() {
+		return indexDefinition.getIndexDtDefinition().getClassCanonicalName();
 	}
 
 	/**
