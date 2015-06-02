@@ -2,7 +2,9 @@
 package ${dao.packageName};
 
 import javax.inject.Inject;
-
+<#if dao.hasSearchBehavior()>
+import java.util.List;
+</#if>
 <#if !dao.taskDefinitions.empty >
 import io.vertigo.core.Home;
 <#if dao.options >
@@ -93,7 +95,7 @@ public final class ${dao.classSimpleName} extends DAOBroker<${dao.dtClassSimpleN
 	 * @param listFilters Liste des filtres à appliquer (notament les facettes sélectionnées)
 	 * @return SearchQueryBuilder pour ce type de recherche
 	 */
-	public SearchQueryBuilder createSearchQueryBuilder${facetedQueryDefinition.simpleName}(final ${facetedQueryDefinition.criteriaClassCanonicalName} criteria, final ListFilter... listFilters) {
+	public SearchQueryBuilder createSearchQueryBuilder${facetedQueryDefinition.simpleName}(final ${facetedQueryDefinition.criteriaClassCanonicalName} criteria, final List<ListFilter> listFilters) {
 		final FacetedQueryDefinition facetedQueryDefinition = Home.getDefinitionSpace().resolve("${facetedQueryDefinition.urn}", FacetedQueryDefinition.class);
 		final ListFilterBuilder<${facetedQueryDefinition.criteriaClassCanonicalName}> listFilterBuilder = Injector.newInstance(facetedQueryDefinition.getListFilterBuilderClass(), Home.getComponentSpace());
 		final ListFilter criteriaListFilter = listFilterBuilder.withBuildQuery(facetedQueryDefinition.getListFilterBuilderQuery()).withCriteria(criteria).build();
