@@ -20,6 +20,7 @@ package io.vertigo.studio.plugins.mda.task;
 
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -30,18 +31,22 @@ import io.vertigo.util.StringUtil;
  */
 public final class TemplateFacetedQueryDefinition {
 	private final FacetedQueryDefinition facetedQueryDefinition;
+	private final String simpleName;
+	private final String criteriaClassCanonicalName;
 
 	TemplateFacetedQueryDefinition(final FacetedQueryDefinition facetedQueryDefinition) {
 		Assertion.checkNotNull(facetedQueryDefinition);
 		//-----
 		this.facetedQueryDefinition = facetedQueryDefinition;
+		simpleName = StringUtil.constToUpperCamelCase(DefinitionUtil.getLocalName(facetedQueryDefinition.getName(), FacetedQueryDefinition.class));
+		criteriaClassCanonicalName = obtainCriteriaClassCanonicalName();
 	}
 
 	/**
 	 * @return Nom local CamelCase de la facetedQueryDefinition
 	 */
 	public String getSimpleName() {
-		return StringUtil.constToUpperCamelCase(DefinitionUtil.getLocalName(facetedQueryDefinition.getName(), FacetedQueryDefinition.class));
+		return simpleName;
 	}
 
 	/**
@@ -49,6 +54,39 @@ public final class TemplateFacetedQueryDefinition {
 	 */
 	public String getUrn() {
 		return facetedQueryDefinition.getName();
+	}
+
+	/**
+	 * @return Nom de la classe du criteria
+	 */
+	public String getCriteriaClassCanonicalName() {
+		return criteriaClassCanonicalName;
+	}
+
+	private String obtainCriteriaClassCanonicalName() {
+		final DataType domainDataType = facetedQueryDefinition.getCriteriaDomain().getDataType();
+		final String domainClassName;
+		switch (domainDataType) {
+			case Boolean:
+			case Double:
+			case Integer:
+			case Long:
+			case String:
+				domainClassName = domainDataType.name();
+				break;
+			case Date:
+			case BigDecimal:
+				domainClassName = domainDataType.getJavaClass().getCanonicalName();
+				break;
+			case DtObject:
+				domainClassName = facetedQueryDefinition.getCriteriaDomain().getDtDefinition().getClassCanonicalName();
+				break;
+			case DtList:
+			case DataStream:
+			default:
+				throw new IllegalArgumentException("Domain " + facetedQueryDefinition.getCriteriaDomain().getName() + " can't be use for a searchCriteria : use DtObject or primitive");
+		}
+		return domainClassName;
 	}
 
 }

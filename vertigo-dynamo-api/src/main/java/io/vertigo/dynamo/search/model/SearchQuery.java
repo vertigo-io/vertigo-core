@@ -35,7 +35,8 @@ import java.io.Serializable;
 public final class SearchQuery implements Serializable {
 	private static final long serialVersionUID = -3215786603726103410L;
 
-	private final ListFilter listFilter;
+	private final ListFilter queryListFilter;
+	private final Option<ListFilter> securityListFilter;
 
 	//Informations optionnelles pour booster la pertinence des documents plus récent (null si inutilisé)
 	private final String boostedDocumentDateFieldName;
@@ -47,22 +48,25 @@ public final class SearchQuery implements Serializable {
 	/**
 	 * Constructeur.
 	 * @param facetedQuery facetedQueryDefinition
-	 * @param listFilter Filtre principal correspondant aux critères de la recherche
-	  * @param clusteringFacetDefinition Facet utilisée pour cluster des resultats (null si non utilisé)
+	 * @param queryListFilter Filtre principal correspondant aux critères de la recherche
+	 * @param securityListFilter Filtre de sécurité
+	 * @param clusteringFacetDefinition Facet utilisée pour cluster des resultats (null si non utilisé)
 	 * @param boostedDocumentDateField Nom du champ portant la date du document (null si non utilisé)
 	 * @param numDaysOfBoostRefDocument Age des documents servant de référence pour le boost des plus récents par rapport à eux (null si non utilisé)
 	 * @param mostRecentBoost Boost relatif maximum entre les plus récents et ceux ayant l'age de référence (doit être > 1) (null si non utilisé)
 	 */
-	SearchQuery(final Option<FacetedQuery> facetedQuery, final ListFilter listFilter, final FacetDefinition clusteringFacetDefinition, final DtField boostedDocumentDateField, final Integer numDaysOfBoostRefDocument, final Integer mostRecentBoost) {
+	SearchQuery(final Option<FacetedQuery> facetedQuery, final ListFilter queryListFilter, final Option<ListFilter> securityListFilter, final FacetDefinition clusteringFacetDefinition, final DtField boostedDocumentDateField, final Integer numDaysOfBoostRefDocument, final Integer mostRecentBoost) {
 		Assertion.checkNotNull(facetedQuery);
-		Assertion.checkNotNull(listFilter);
+		Assertion.checkNotNull(queryListFilter);
+		Assertion.checkNotNull(securityListFilter);
 		Assertion.checkArgument(boostedDocumentDateField == null || numDaysOfBoostRefDocument != null && mostRecentBoost != null, "Lorsque le boost des documents récents est activé, numDaysOfBoostRefDocument et mostRecentBoost sont obligatoires.");
 		Assertion.checkArgument(boostedDocumentDateField != null || numDaysOfBoostRefDocument == null && mostRecentBoost == null, "Lorsque le boost des documents récents est désactivé, numDaysOfBoostRefDocument et mostRecentBoost doivent être null.");
 		Assertion.checkArgument(numDaysOfBoostRefDocument == null || numDaysOfBoostRefDocument.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1.");
 		Assertion.checkArgument(mostRecentBoost == null || mostRecentBoost.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1.");
 		//-----
 		this.facetedQuery = facetedQuery;
-		this.listFilter = listFilter;
+		this.queryListFilter = queryListFilter;
+		this.securityListFilter = securityListFilter;
 		boostedDocumentDateFieldName = boostedDocumentDateField != null ? boostedDocumentDateField.getName() : null;
 		this.numDaysOfBoostRefDocument = numDaysOfBoostRefDocument;
 		this.mostRecentBoost = mostRecentBoost;
@@ -82,7 +86,15 @@ public final class SearchQuery implements Serializable {
 	 * @return Valeur du filtre
 	 */
 	public ListFilter getListFilter() {
-		return listFilter;
+		return queryListFilter;
+	}
+
+	/**
+	 * Filtre correspondant aux critères de sécurité.
+	 * @return Valeur du filtre
+	 */
+	public Option<ListFilter> getSecurityListFilter() {
+		return securityListFilter;
 	}
 
 	/**

@@ -45,6 +45,9 @@ final class SearchGrammar {
 	public static final EntityProperty RANGE_FILTER_PROPERTY = new EntityProperty("FILTER", EntityPropertyType.String);
 
 	public static final Entity FACETED_QUERY_DEFINITION_ENTITY;
+	public static final EntityProperty LIST_FILTER_BUILDER_CLASS = new EntityProperty("LIST_FILTER_BUILDER_CLASS", EntityPropertyType.String);
+
+	public static final EntityProperty LIST_FILTER_BUILDER_QUERY = new EntityProperty("LIST_FILTER_BUILDER_QUERY", EntityPropertyType.String);
 
 	/*
 	 * create IndexDefinition IDX_TEST {
@@ -92,6 +95,9 @@ final class SearchGrammar {
 
 		FACETED_QUERY_DEFINITION_ENTITY = new EntityBuilder("FacetedQueryDefinition")
 				.withAttribute("dtSubject", DomainGrammar.DT_DEFINITION_ENTITY, true)
+				.withAttribute("domainCriteria", DomainGrammar.DOMAIN_ENTITY, true)
+				.withProperty(LIST_FILTER_BUILDER_CLASS, true)
+				.withProperty(LIST_FILTER_BUILDER_QUERY, true)
 				.withAttributes("facet", FACET_DEFINITION_ENTITY, true)
 				.build();
 

@@ -9,7 +9,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Option;
 
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author pchretien
@@ -17,6 +17,7 @@ import java.util.Arrays;
 public final class SearchQueryBuilder implements Builder<SearchQuery> {
 
 	private final ListFilter myListFilter;
+	private ListFilter mySecurityListFilter;
 	//-----
 	private DtField myBoostedDocumentDateField;
 	private Integer myNumDaysOfBoostRefDocument;
@@ -29,9 +30,17 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	 * @param query Query
 	 */
 	public SearchQueryBuilder(final String query) {
-		Assertion.checkNotNull(query);
+		this(new ListFilter(query));
+	}
+
+	/**
+	 * Constructor.
+	 * @param listFilter ListFilter
+	 */
+	public SearchQueryBuilder(final ListFilter listFilter) {
+		Assertion.checkNotNull(listFilter);
 		//-----
-		myListFilter = new ListFilter(query);
+		myListFilter = listFilter;
 	}
 
 	/**
@@ -56,8 +65,8 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	 * @param listFilters ListFilter of selected facets
 	 * @return this builder
 	 */
-	public SearchQueryBuilder withFacetStrategy(final FacetedQueryDefinition facetedQueryDefinition, final ListFilter... listFilters) {
-		return this.withFacetStrategy(new FacetedQuery(facetedQueryDefinition, Arrays.asList(listFilters)));
+	public SearchQueryBuilder withFacetStrategy(final FacetedQueryDefinition facetedQueryDefinition, final List<ListFilter> listFilters) {
+		return this.withFacetStrategy(new FacetedQuery(facetedQueryDefinition, listFilters));
 	}
 
 	/**
@@ -68,6 +77,17 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 		Assertion.checkNotNull(facetedQuery);
 		//-----
 		myFacetedQuery = facetedQuery;
+		return this;
+	}
+
+	/**
+	 * @param securityListFilter security related ListFilter
+	 * @return this builder
+	 */
+	public SearchQueryBuilder withSecurityFilter(final ListFilter securityListFilter) {
+		Assertion.checkNotNull(mySecurityListFilter);
+		//-----
+		mySecurityListFilter = securityListFilter;
 		return this;
 	}
 
@@ -86,6 +106,6 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	/** {@inheritDoc} */
 	@Override
 	public SearchQuery build() {
-		return new SearchQuery(Option.option(myFacetedQuery), myListFilter, myClusteringFacetDefinition, myBoostedDocumentDateField, myNumDaysOfBoostRefDocument, myMostRecentBoost);
+		return new SearchQuery(Option.option(myFacetedQuery), myListFilter, Option.option(mySecurityListFilter), myClusteringFacetDefinition, myBoostedDocumentDateField, myNumDaysOfBoostRefDocument, myMostRecentBoost);
 	}
 }

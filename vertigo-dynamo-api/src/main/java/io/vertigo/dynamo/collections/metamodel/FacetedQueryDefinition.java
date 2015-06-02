@@ -20,6 +20,7 @@ package io.vertigo.dynamo.collections.metamodel;
 
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
+import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
 
@@ -48,22 +49,39 @@ public final class FacetedQueryDefinition implements Definition {
 	/** Liste indexée des facettes.*/
 	private final Map<String, FacetDefinition> facetDefinitions = new LinkedHashMap<>();
 
+	/** Domain du criteria. */
+	private final Domain criteriaDomain;
+
+	/** Query du listFilterBuilder. */
+	private final String listFilterBuilderQuery;
+
+	/**
+	 * Moyen de créer le ListFilter à partir du Criteria.
+	 */
+	private final Class<? extends ListFilterBuilder> listFilterBuilderClass;
+
 	/**
 	 * Constructeur.
 	 * @param name Nom de la definition
 	 * @param subjectDtDefinition Definition du subject sur lequel s'applique cette recherche
 	 * @param facetDefinitions Liste des facettes
 	 */
-	public FacetedQueryDefinition(final String name, final DtDefinition subjectDtDefinition, final List<FacetDefinition> facetDefinitions) {
+	public FacetedQueryDefinition(final String name, final DtDefinition subjectDtDefinition, final List<FacetDefinition> facetDefinitions, final Domain criteriaDomain, final Class<? extends ListFilterBuilder> listFilterBuilderClass, final String listFilterBuilderQuery) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(subjectDtDefinition);
 		Assertion.checkNotNull(facetDefinitions);
+		Assertion.checkNotNull(criteriaDomain);
+		Assertion.checkNotNull(listFilterBuilderClass);
+		Assertion.checkNotNull(listFilterBuilderQuery);
 		//-----
 		this.name = name;
 		this.subjectDtDefinition = subjectDtDefinition;
 		for (final FacetDefinition facetDefinition : facetDefinitions) {
 			this.facetDefinitions.put(facetDefinition.getName(), facetDefinition);
 		}
+		this.criteriaDomain = criteriaDomain;
+		this.listFilterBuilderClass = listFilterBuilderClass;
+		this.listFilterBuilderQuery = listFilterBuilderQuery;
 	}
 
 	/**
@@ -81,13 +99,6 @@ public final class FacetedQueryDefinition implements Definition {
 		return facetDefinition;
 	}
 
-	/**
-	 * @return Liste des facettes portées par l'index.
-	 */
-	public Collection<FacetDefinition> getFacetDefinitions() {
-		return Collections.<FacetDefinition> unmodifiableCollection(facetDefinitions.values());
-	}
-
 	/** {@inheritDoc} */
 	@Override
 	public String getName() {
@@ -100,6 +111,34 @@ public final class FacetedQueryDefinition implements Definition {
 	 */
 	public DtDefinition getSubjectDtDefinition() {
 		return subjectDtDefinition;
+	}
+
+	/**
+	 * @return Liste des facettes portées par l'index.
+	 */
+	public Collection<FacetDefinition> getFacetDefinitions() {
+		return Collections.<FacetDefinition> unmodifiableCollection(facetDefinitions.values());
+	}
+
+	/**
+	 * @return Domain du criteria.
+	 */
+	public Domain getCriteriaDomain() {
+		return criteriaDomain;
+	}
+
+	/**
+	  * @return Class du ListFilterBuilder.
+	 */
+	public Class<? extends ListFilterBuilder> getListFilterBuilderClass() {
+		return listFilterBuilderClass;
+	}
+
+	/**
+	 * @return Query du ListFilterBuilder.
+	 */
+	public String getListFilterBuilderQuery() {
+		return listFilterBuilderQuery;
 	}
 
 	/** {@inheritDoc} */

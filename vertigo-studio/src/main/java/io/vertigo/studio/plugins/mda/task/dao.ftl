@@ -9,6 +9,7 @@ import io.vertigo.core.Home;
 import io.vertigo.lang.Option;
 </#if>
 <#if dao.hasSearchBehavior()>
+import io.vertigo.core.di.injector.Injector;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchQuery;
@@ -16,6 +17,7 @@ import io.vertigo.dynamo.search.model.SearchQueryBuilder;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
+import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import ${dao.indexDtClassCanonicalName};
 </#if>
@@ -87,13 +89,15 @@ public final class ${dao.classSimpleName} extends DAOBroker<${dao.dtClassSimpleN
     <#list dao.facetedQueryDefinitions as facetedQueryDefinition>
     /**
 	 * Création d'une SearchQuery de type : ${facetedQueryDefinition.simpleName}.
-	 * @param query Mots clés de recherche
+	 * @param criteria Critères de recherche
 	 * @param listFilters Liste des filtres à appliquer (notament les facettes sélectionnées)
 	 * @return SearchQueryBuilder pour ce type de recherche
 	 */
-	public SearchQueryBuilder createSearchQueryBuilder${facetedQueryDefinition.simpleName}(final String query, final ListFilter... listFilters) {
+	public SearchQueryBuilder createSearchQueryBuilder${facetedQueryDefinition.simpleName}(final ${facetedQueryDefinition.criteriaClassCanonicalName} criteria, final ListFilter... listFilters) {
 		final FacetedQueryDefinition facetedQueryDefinition = Home.getDefinitionSpace().resolve("${facetedQueryDefinition.urn}", FacetedQueryDefinition.class);
-		return new SearchQueryBuilder(query).withFacetStrategy(facetedQueryDefinition, listFilters);
+		final ListFilterBuilder<${facetedQueryDefinition.criteriaClassCanonicalName}> listFilterBuilder = Injector.newInstance(facetedQueryDefinition.getListFilterBuilderClass(), Home.getComponentSpace());
+		final ListFilter criteriaListFilter = listFilterBuilder.withBuildQuery(facetedQueryDefinition.getListFilterBuilderQuery()).withCriteria(criteria).build();
+		return new SearchQueryBuilder(criteriaListFilter).withFacetStrategy(facetedQueryDefinition, listFilters);
 	}
 	</#list>
     
