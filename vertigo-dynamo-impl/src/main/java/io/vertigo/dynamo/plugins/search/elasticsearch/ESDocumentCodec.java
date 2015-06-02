@@ -20,6 +20,7 @@ package io.vertigo.dynamo.plugins.search.elasticsearch;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.domain.metamodel.DataAccessor;
+import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -29,6 +30,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,6 +49,7 @@ import org.elasticsearch.search.SearchHit;
 final class ESDocumentCodec {
 	/** FieldName containing Full result object. */
 	static final String FULL_RESULT = "FULL_RESULT";
+
 	//public static final String URN = "URI";
 	//-----
 	private final CodecManager codecManager;
@@ -115,12 +118,12 @@ final class ESDocumentCodec {
 		//-----
 
 		final DtDefinition dtDefinition = index.getDefinition().getIndexDtDefinition();
-		final List<DtField> nonPersistentFields = getNonPersistentFields(dtDefinition);
+		final List<DtField> notStoredFields = getNotStoredFields(dtDefinition);
 		final I dtResult;
-		if (nonPersistentFields.isEmpty()) {
+		if (notStoredFields.isEmpty()) {
 			dtResult = index.getIndexDtObject();
 		} else {
-			dtResult = cloneDto(dtDefinition, index.getIndexDtObject(), nonPersistentFields);
+			dtResult = cloneDto(dtDefinition, index.getIndexDtObject(), notStoredFields);
 		}
 
 		final XContentBuilder xContentBuilder = XContentFactory.jsonBuilder();
@@ -152,14 +155,14 @@ final class ESDocumentCodec {
 		return xContentBuilder;
 	}
 
-	private List<DtField> getNonPersistentFields(final DtDefinition dtDefinition) {
-		final List<DtField> nonPersistentFields = new ArrayList<>();
+	private List<DtField> getNotStoredFields(final DtDefinition dtDefinition) {
+		final List<DtField> notStoredFields = new ArrayList<>();
 		for (final DtField dtField : dtDefinition.getFields()) {
-			if (!dtField.isPersistent()) {
-				nonPersistentFields.add(dtField);
+			if (!isIndexStoredDomain(dtField.getDomain())) {
+				notStoredFields.add(dtField);
 			}
 		}
-		return nonPersistentFields;
+		return notStoredFields;
 	}
 
 	private <I extends DtObject> I cloneDto(final DtDefinition dtDefinition, final I dto, final List<DtField> excludedFields) {
@@ -171,6 +174,11 @@ final class ESDocumentCodec {
 			}
 		}
 		return clonedDto;
+	}
+
+	private static boolean isIndexStoredDomain(final Domain domain) {
+		final Option<IndexType> indexType = IndexType.readIndexType(domain);
+		return indexType.isEmpty() || indexType.get().isIndexStored(); //is no specific indexType, the field should be stored
 	}
 
 	private static String escapeInvalidUTF8Char(final String value) {

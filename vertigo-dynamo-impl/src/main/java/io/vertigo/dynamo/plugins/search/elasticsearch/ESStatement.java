@@ -100,22 +100,22 @@ final class ESStatement<S extends DtSubject, I extends DtObject> {
 
 	private final String indexName;
 	private final Client esClient;
-	private final ESDocumentCodec elasticSearchDocumentCodec;
+	private final ESDocumentCodec esDocumentCodec;
 
 	/**
 	 * Constructeur.
-	 * @param solrDocumentCodec Codec de traduction (bi-directionnelle) des objets métiers en document Solr
+	 * @param esDocumentCodec Codec de traduction (bi-directionnelle) des objets métiers en document Solr
 	 * @param indexName Index name
 	 * @param esClient Client ElasticSearch.
 	 */
-	ESStatement(final ESDocumentCodec solrDocumentCodec, final String indexName, final Client esClient) {
+	ESStatement(final ESDocumentCodec esDocumentCodec, final String indexName, final Client esClient) {
 		Assertion.checkArgNotEmpty(indexName);
-		Assertion.checkNotNull(solrDocumentCodec);
+		Assertion.checkNotNull(esDocumentCodec);
 		Assertion.checkNotNull(esClient);
 		//-----
 		this.indexName = indexName;
 		this.esClient = esClient;
-		this.elasticSearchDocumentCodec = solrDocumentCodec;
+		this.esDocumentCodec = esDocumentCodec;
 	}
 
 	/**
@@ -126,7 +126,7 @@ final class ESStatement<S extends DtSubject, I extends DtObject> {
 		try {
 			final BulkRequestBuilder bulkRequest = esClient.prepareBulk();
 			for (final SearchIndex<S, I> index : indexCollection) {
-				try (final XContentBuilder xContentBuilder = elasticSearchDocumentCodec.index2XContentBuilder(index)) {
+				try (final XContentBuilder xContentBuilder = esDocumentCodec.index2XContentBuilder(index)) {
 					bulkRequest.add(esClient.prepareIndex(indexName, index.getURI().getDefinition().getName(), index.getURI().toURN())
 							.setSource(xContentBuilder));
 				}
@@ -149,7 +149,7 @@ final class ESStatement<S extends DtSubject, I extends DtObject> {
 	 */
 	void put(final SearchIndex<S, I> index) {
 		//Injection spécifique au moteur d'indexation.
-		try (final XContentBuilder xContentBuilder = elasticSearchDocumentCodec.index2XContentBuilder(index)) {
+		try (final XContentBuilder xContentBuilder = esDocumentCodec.index2XContentBuilder(index)) {
 			esClient.prepareIndex(indexName, index.getURI().getDefinition().getName(), index.getURI().toURN())
 					.setSource(xContentBuilder)
 					.execute() //execute asynchrone
@@ -368,7 +368,7 @@ final class ESStatement<S extends DtSubject, I extends DtObject> {
 			dtc.addAll(dtcIndex.values());
 		} else {
 			for (final SearchHit searchHit : queryResponse.getHits()) {
-				final SearchIndex<S, I> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
+				final SearchIndex<S, I> index = esDocumentCodec.searchHit2Index(indexDefinition, searchHit);
 				final I result = index.getIndexDtObject();
 				dtc.add(result);
 				final Map<DtField, String> highlights = createHighlight(searchHit, indexDefinition.getIndexDtDefinition());
@@ -396,7 +396,7 @@ final class ESStatement<S extends DtSubject, I extends DtObject> {
 				for (final SearchHit searchHit : facetSearchHits) {
 					I result = dtcIndex.get(searchHit.getId());
 					if (result == null) {
-						final SearchIndex<S, I> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
+						final SearchIndex<S, I> index = esDocumentCodec.searchHit2Index(indexDefinition, searchHit);
 						result = index.getIndexDtObject();
 						dtcIndex.put(searchHit.getId(), result);
 					}
@@ -418,7 +418,7 @@ final class ESStatement<S extends DtSubject, I extends DtObject> {
 				for (final SearchHit searchHit : facetSearchHits) {
 					I result = dtcIndex.get(searchHit.getId());
 					if (result == null) {
-						final SearchIndex<S, I> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
+						final SearchIndex<S, I> index = esDocumentCodec.searchHit2Index(indexDefinition, searchHit);
 						result = index.getIndexDtObject();
 						dtcIndex.put(searchHit.getId(), result);
 					}

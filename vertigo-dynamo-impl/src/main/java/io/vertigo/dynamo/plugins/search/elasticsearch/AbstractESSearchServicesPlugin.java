@@ -23,10 +23,8 @@ import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.DtSubject;
@@ -269,16 +267,12 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			/* 3 : Les champs du dto index */
 			final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
 			for (final DtField dtField : indexDtDefinition.getFields()) {
-				final String indexType = resolveIndexType(dtField.getDomain());
-				if (indexType != null) {
-					// par convention l'indexType du domain => l'analyzer de l'index
-					// L'indexType peut-être compléter pour préciser le type si différente de string avec le séparateur :
-					final String[] indexTypeArray = indexType.split(":", 2);
-					final String indexAnalyzer = indexTypeArray[0];
-					final String indexDataType = indexTypeArray.length == 2 ? indexTypeArray[1] : "string";
-
+				final Option<IndexType> indexType = IndexType.readIndexType(dtField.getDomain());
+				if (indexType.isDefined()) {
 					typeMapping.startObject(dtField.getName());
-					typeMapping.field("type", indexDataType).field("analyzer", indexAnalyzer);
+					typeMapping
+							.field("type", indexType.get().getIndexDataType())
+							.field("analyzer", indexType.get().getIndexAnalyzer());
 					typeMapping.endObject();
 				}
 			}
@@ -295,33 +289,6 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		} catch (final IOException e) {
 			throw new RuntimeException("Serveur ElasticSearch indisponible", e);
 		}
-	}
-
-	private String resolveIndexType(final Domain domain) {
-		// On peut préciser pour chaque domaine le type d'indexation
-		final String fieldType = domain.getProperties().getValue(DtProperty.INDEX_TYPE);
-		// Calcul automatique  par default.
-		switch (domain.getDataType()) {
-			case Boolean: // native
-			case Date: // native
-			case Double: // native
-			case Integer: // native
-			case Long: // native
-				break;
-			case String:
-			case BigDecimal:
-				if (fieldType == null) {
-					throw new IllegalArgumentException("## Précisez la valeur \"indexType\" dans le domain [" + domain + "].");
-				}
-				break;
-			case DataStream: // IllegalArgumentException
-			case DtObject: // IllegalArgumentException
-			case DtList: // IllegalArgumentException
-			default: // IllegalArgumentException
-				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + domain + "].");
-
-		}
-		return fieldType;
 	}
 
 	private void markToOptimize(final SearchIndexDefinition indexDefinition) {
