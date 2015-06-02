@@ -24,34 +24,23 @@ import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 /**
- * Country.
+ * Continent.
  */
 @DtDefinition
-public final class Country implements DtObject {
+public final class Continent implements DtObject {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-	private Long conId;
 	private String name;
 
-	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", notNull = true, label = "id of the country")
+	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", notNull = true, label = "id of the Continent")
 	public final Long getId() {
 		return id;
 	}
 
-	public Country setId(final Long id) {
+	public Continent setId(final Long id) {
 		this.id = id;
-		return this;
-	}
-
-	@Field(domain = "DO_IDENTIFIANT", notNull = true, label = "id of the continent")
-	public final Long getConId() {
-		return conId;
-	}
-
-	public Country setConId(final Long conId) {
-		this.conId = conId;
 		return this;
 	}
 
@@ -60,7 +49,7 @@ public final class Country implements DtObject {
 		return name;
 	}
 
-	public Country setName(final String name) {
+	public Continent setName(final String name) {
 		this.name = name;
 		return this;
 	}

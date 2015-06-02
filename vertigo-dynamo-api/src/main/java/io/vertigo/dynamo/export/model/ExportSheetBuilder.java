@@ -140,10 +140,11 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 		Assertion.checkNotNull(fieldName);
 		// On vérifie que la colonne est bien dans la définition de la DTC
 		Assertion.checkArgument(dtDefinition.contains(fieldName.name()), "Le champ " + fieldName.name() + " n'est pas dans la liste à exporter");
+		Assertion.checkArgument(list.getDefinition().contains(displayfield.name()), "Le champ " + displayfield.name() + " n'est pas dans la liste de dénorm");
 		// On ne vérifie pas que les champs ne sont placés qu'une fois
 		// car pour des raisons diverses ils peuvent l'être plusieurs fois.
 		//-----
-		final ExportField exportField = new ExportDenormField(resolveDtField(fieldName), overridedLabel, list, resolveDtField(displayfield));
+		final ExportField exportField = new ExportDenormField(resolveDtField(fieldName), overridedLabel, list, resolveDtField(displayfield, list.getDefinition()));
 		exportFields.add(exportField);
 		return this;
 	}
@@ -171,6 +172,10 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	}
 
 	private DtField resolveDtField(final DtFieldName fieldName) {
-		return dtDefinition.getField(fieldName);
+		return resolveDtField(fieldName, dtDefinition);
+	}
+
+	private DtField resolveDtField(final DtFieldName fieldName, final DtDefinition definition) {
+		return definition.getField(fieldName);
 	}
 }
