@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +62,7 @@ import org.junit.Test;
  * @author  npiedeloup
  */
 public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
+	private final static List<ListFilter> EMPTY_LIST_FILTERS = Collections.emptyList();
 
 	/** Logger. */
 	private final Logger log = Logger.getLogger(getClass());
@@ -401,7 +403,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	public void testFacetListByRange() {
 		index(true);
 		final SearchQuery searchQuery = new SearchQueryBuilder("*:*")
-				.withFacetStrategy(carFacetQueryDefinition)
+				.withFacetStrategy(carFacetQueryDefinition, EMPTY_LIST_FILTERS)
 				.build();
 		final FacetedQueryResult<Car, SearchQuery> result = searchManager.loadList(carIndexDefinition, searchQuery, null);
 		testFacetResultByRange(result);
@@ -415,7 +417,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	public void testFilterFacetListByRange() {
 		index(true);
 		final SearchQuery searchQuery = new SearchQueryBuilder("*:*")
-				.withFacetStrategy(carFacetQueryDefinition)
+				.withFacetStrategy(carFacetQueryDefinition, EMPTY_LIST_FILTERS)
 				.build();
 		final FacetedQueryResult<Car, SearchQuery> result = searchManager.loadList(carIndexDefinition, searchQuery, null);
 
@@ -462,7 +464,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	public void testFacetListByTerm() {
 		index(true);
 		final SearchQuery searchQuery = new SearchQueryBuilder("*:*")
-				.withFacetStrategy(carFacetQueryDefinition)
+				.withFacetStrategy(carFacetQueryDefinition, EMPTY_LIST_FILTERS)
 				.build();
 		final FacetedQueryResult<Car, SearchQuery> result = searchManager.loadList(carIndexDefinition, searchQuery, null);
 		testFacetResultByTerm(result);
@@ -476,7 +478,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	public void testFilterFacetListByTerm() {
 		index(true);
 		final SearchQuery searchQuery = new SearchQueryBuilder("*:*")
-				.withFacetStrategy(carFacetQueryDefinition)
+				.withFacetStrategy(carFacetQueryDefinition, EMPTY_LIST_FILTERS)
 				.build();
 		final FacetedQueryResult<Car, SearchQuery> result = searchManager.loadList(carIndexDefinition, searchQuery, null);
 		Assert.assertEquals(carDataBase.getByMake("peugeot").size(), getFacetValueCount("FCT_MAKE" + facetSuffix, "peugeot", result));
@@ -500,7 +502,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		//final long peugeotContainsSiegCount = carDataBase.containsDescription("cuir");
 
 		final SearchQuery searchQuery = new SearchQueryBuilder("*:*")
-				.withFacetStrategy(carFacetQueryDefinition)
+				.withFacetStrategy(carFacetQueryDefinition, EMPTY_LIST_FILTERS)
 				.build();
 		final FacetedQueryResult<Car, SearchQuery> result = searchManager.loadList(carIndexDefinition, searchQuery, null);
 		//logResult(result);
@@ -534,7 +536,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		final long peugeot2000To2005Count = before(peugeotCars, 2005) - before(peugeotCars, 2000);
 
 		final SearchQuery searchQuery = new SearchQueryBuilder("*:*")
-				.withFacetStrategy(carFacetQueryDefinition)
+				.withFacetStrategy(carFacetQueryDefinition, EMPTY_LIST_FILTERS)
 				.build();
 		final FacetedQueryResult<Car, SearchQuery> result = searchManager.loadList(carIndexDefinition, searchQuery, null);
 		logResult(result);
@@ -808,7 +810,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 	private FacetedQueryResult<Car, SearchQuery> doFacetQuery(final String query) {
 		final SearchQuery searchQuery = new SearchQueryBuilder(query)
-				.withFacetStrategy(carFacetQueryDefinition)
+				.withFacetStrategy(carFacetQueryDefinition, EMPTY_LIST_FILTERS)
 				.build();
 		return searchManager.loadList(carIndexDefinition, searchQuery, null);
 	}
