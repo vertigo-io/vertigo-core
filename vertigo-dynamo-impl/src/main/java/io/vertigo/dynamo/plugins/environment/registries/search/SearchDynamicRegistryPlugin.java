@@ -112,7 +112,7 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	private FacetedQueryDefinition createFacetedQueryDefinition(final DynamicDefinition xdefinition) {
 		final String definitionName = xdefinition.getDefinitionKey().getName();
 		final DtDefinition subjectDtDefinition = Home.getDefinitionSpace().resolve(xdefinition.getDefinitionKey("dtSubject").getName(), DtDefinition.class);
-		final List<DynamicDefinitionKey> dynamicFacetDefinitionKeys = xdefinition.getDefinitionKeys("facet");
+		final List<DynamicDefinitionKey> dynamicFacetDefinitionKeys = xdefinition.getDefinitionKeys("facets");
 		final List<FacetDefinition> facetDefinitions = new ArrayList<>();
 		for (final DynamicDefinitionKey dynamicDefinitionKey : dynamicFacetDefinitionKeys) {
 			final FacetDefinition facetDefinition = Home.getDefinitionSpace().resolve(dynamicDefinitionKey.getName(), FacetDefinition.class);

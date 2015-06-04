@@ -33,7 +33,7 @@ final class SearchGrammar {
 
 	public static final Entity INDEX_DEFINITION_ENTITY;
 
-	public static final EntityProperty SEARCH_LOADER_PROPERTY = new EntityProperty("SEARCH_LOADER", EntityPropertyType.String);
+	public static final EntityProperty SEARCH_LOADER_PROPERTY = new EntityProperty("LOADER_ID", EntityPropertyType.String);
 
 	public static final EntityProperty FIELD_NAME = new EntityProperty("FIELD_NAME", EntityPropertyType.String);
 
@@ -98,7 +98,7 @@ final class SearchGrammar {
 				.withAttribute("domainCriteria", DomainGrammar.DOMAIN_ENTITY, true)
 				.withProperty(LIST_FILTER_BUILDER_CLASS, true)
 				.withProperty(LIST_FILTER_BUILDER_QUERY, true)
-				.withAttributes("facet", FACET_DEFINITION_ENTITY, true)
+				.withAttributes("facets", FACET_DEFINITION_ENTITY, true)
 				.build();
 
 		GRAMMAR = new Grammar(INDEX_DEFINITION_ENTITY, FACET_DEFINITION_ENTITY, FACETED_QUERY_DEFINITION_ENTITY);
