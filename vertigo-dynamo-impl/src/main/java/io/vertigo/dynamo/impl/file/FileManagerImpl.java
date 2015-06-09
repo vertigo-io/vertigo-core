@@ -72,15 +72,15 @@ public final class FileManagerImpl implements FileManager {
 	/**
 	 * Crée un fichier temporaire à partir d'un fileInfo.
 	 * Attention le processus appelant doit s'assurer de la suppression de ce fichier temporaire.
-	 * @param fileInfo FileInfo à utiliser
+	 * @param vFile FileInfo à utiliser
 	 * @return Fichier temporaire.
 	 */
-	private static File createTempFile(final VFile fileInfo) {
+	private static File createTempFile(final VFile vFile) {
 		// TODO voir a ajouter une WeakRef sur FileInfo pour vérifier la suppression des fichiers temp après usage
 		try {
-			return doCreateTempFile(fileInfo);
+			return doCreateTempFile(vFile);
 		} catch (final IOException e) {
-			throw new RuntimeException("Impossible de créer un fichier temporaire pour le FileInfo " + fileInfo.getFileName(), e);
+			throw new RuntimeException("Impossible de créer un fichier temporaire pour le FileInfo " + vFile.getFileName(), e);
 		}
 	}
 
@@ -93,15 +93,15 @@ public final class FileManagerImpl implements FileManager {
 	}
 
 	/**
-	 * @param fileInfo FileInfo à lire
+	 * @param vFile FileInfo à lire
 	 * @return Fichier physique readOnly (pour lecture d'un FileInfo)
 	 */
-	private static File doObtainReadOnlyFile(final VFile fileInfo) {
+	private static File doObtainReadOnlyFile(final VFile vFile) {
 		final File inputFile;
-		if (fileInfo instanceof FSFile) {
-			inputFile = ((FSFile) fileInfo).getFile();
+		if (vFile instanceof FSFile) {
+			inputFile = ((FSFile) vFile).getFile();
 		} else {
-			inputFile = createTempFile(fileInfo);
+			inputFile = createTempFile(vFile);
 		}
 		return inputFile;
 	}
