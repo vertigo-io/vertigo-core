@@ -161,7 +161,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 				.withInAttribute("DTO_CAR", doCar, true)
 				.build();
 
-		Home.getDefinitionSpace().put(taskDefinition, TaskDefinition.class);
+		Home.getDefinitionSpace().put(taskDefinition);
 		return taskDefinition;
 	}
 
@@ -184,7 +184,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 				.withInAttribute("DTO_CAR", doCar, true)
 				.build();
 
-		Home.getDefinitionSpace().put(taskDefinition, TaskDefinition.class);
+		Home.getDefinitionSpace().put(taskDefinition);
 		return taskDefinition;
 	}
 
@@ -200,7 +200,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 				.withOutAttribute("DTO_CAR_OUT", doCar, true)
 				.build();
 
-		Home.getDefinitionSpace().put(taskDefinition, TaskDefinition.class);
+		Home.getDefinitionSpace().put(taskDefinition);
 		return taskDefinition;
 	}
 

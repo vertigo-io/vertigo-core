@@ -34,7 +34,6 @@ public final class FileDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 	 */
 	public FileDynamicRegistryPlugin() {
 		super(FileGrammar.GRAMMAR);
-		Home.getDefinitionSpace().register(FileInfoDefinition.class);
 	}
 
 	/** {@inheritDoc} */
@@ -43,7 +42,7 @@ public final class FileDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 		if (FileGrammar.FILE_INFO_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
 			//Seuls les taches sont gérées.
 			final FileInfoDefinition definition = createFileDefinition(xdefinition);
-			Home.getDefinitionSpace().put(definition, FileInfoDefinition.class);
+			Home.getDefinitionSpace().put(definition);
 		}
 	}
 

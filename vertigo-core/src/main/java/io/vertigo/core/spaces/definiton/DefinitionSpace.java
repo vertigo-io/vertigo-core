@@ -81,7 +81,7 @@ public final class DefinitionSpace implements Activeable {
 	 * Enregistrement d'une nouveau type d'objet géré par le space (éligibles).
 	 * @param clazz Classe gérée
 	 */
-	public void register(final Class<? extends Definition> clazz) {
+	private void register(final Class<? extends Definition> clazz) {
 		Assertion.checkNotNull(clazz);
 		Assertion.checkArgument(!definitions.containsKey(clazz), "Type '{0}' deja enregistré", clazz.getName());
 		//-----
@@ -91,16 +91,16 @@ public final class DefinitionSpace implements Activeable {
 	/**
 	 * Enregistrement d'un nouvel object.
 	 * @param definition Objet à enregistrer
-	 * @param clazz type de l'object
 	 */
-	public void put(final Definition definition, final Class<? extends Definition> clazz) {
+	public void put(final Definition definition) {
 		Assertion.checkNotNull(definition, "L'objet ne peut pas pas être null !");
-		Assertion.checkNotNull(clazz);
-		Assertion.checkArgument(definitions.containsKey(clazz), "L'objet {0} ne peut pas pas être enregistré, son type  '{1}' est inconnu !", definition, clazz);
 		//-----
-		final Map<String, Definition> tobjects = definitions.get(clazz);
+		if (!definitions.containsKey(definition.getClass())) {
+			register(definition.getClass());
+		}
+		final Map<String, Definition> tobjects = definitions.get(definition.getClass());
 		final String name = definition.getName();
-		checkName(name, clazz);
+		checkName(name, definition.getClass());
 		final Definition previous = tobjects.put(name, definition);
 		Assertion.checkArgument(previous == null, "L'objet {0} est déja enregistré !", name);
 		//-----

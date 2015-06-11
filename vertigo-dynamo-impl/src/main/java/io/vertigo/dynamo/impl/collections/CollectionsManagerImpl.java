@@ -18,13 +18,10 @@
  */
 package io.vertigo.dynamo.impl.collections;
 
-import io.vertigo.core.Home;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.DtListProcessor;
 import io.vertigo.dynamo.collections.IndexDtListFunctionBuilder;
 import io.vertigo.dynamo.collections.ListFilter;
-import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
-import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.model.Facet;
 import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
@@ -64,9 +61,6 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		this.indexPlugin = indexPlugin;
 		facetFactory = new FacetFactory(this);
 		listProcessor = new DtListProcessorImpl();
-		//-----
-		Home.getDefinitionSpace().register(FacetDefinition.class);
-		Home.getDefinitionSpace().register(FacetedQueryDefinition.class);
 	}
 
 	/** {@inheritDoc} */

@@ -55,7 +55,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testRegistry() {
 		final TaskDefinition taskDefinition1 = buildTaskDefinition("TK_ADD", "+");
-		Home.getDefinitionSpace().put(taskDefinition1, TaskDefinition.class);
+		Home.getDefinitionSpace().put(taskDefinition1);
 
 		final TaskDefinition taskDefinition2 = Home.getDefinitionSpace().resolve("TK_ADD", TaskDefinition.class);
 		Assert.assertNotNull(taskDefinition2);
@@ -67,11 +67,11 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	@Test(expected = IllegalArgumentException.class)
 	public void testDoubleRegistry() {
 		final TaskDefinition taskDefinition1 = buildTaskDefinition("TK_MULTI_3", "*");
-		Home.getDefinitionSpace().put(taskDefinition1, TaskDefinition.class);
+		Home.getDefinitionSpace().put(taskDefinition1);
 
 		//On déclenche une assertion en réenregistrant la même tache
 		final TaskDefinition taskDefinition2 = buildTaskDefinition("TK_MULTI_3", "*");
-		Home.getDefinitionSpace().put(taskDefinition2, TaskDefinition.class);
+		Home.getDefinitionSpace().put(taskDefinition2);
 	}
 
 	/**

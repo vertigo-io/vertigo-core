@@ -94,13 +94,13 @@ final class XmlSecurityLoader {
 		final List<Element> permissions = root.getChildren(PERMISSION_KEY);
 		for (final Element permissionElement : permissions) {
 			final Permission permission = createPermission(permissionElement);
-			Home.getDefinitionSpace().put(permission, Permission.class);
+			Home.getDefinitionSpace().put(permission);
 		}
 		// Role
 		final List<Element> roleKeys = root.getChildren(ROLE_KEY);
 		for (final Element roleElement : roleKeys) {
 			final Role role = createRole(roleElement);
-			Home.getDefinitionSpace().put(role, Role.class);
+			Home.getDefinitionSpace().put(role);
 		}
 	}
 
