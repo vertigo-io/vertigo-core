@@ -82,8 +82,8 @@ public final class Home {
 			state = State.starting;
 			//-----
 			try {
-				if (appConfig.getBootConfig().getLogConfig().isDefined()) {
-					initLog(appConfig.getBootConfig().getLogConfig().get());
+				if (appConfig.getLogConfig().isDefined()) {
+					initLog(appConfig.getLogConfig().get());
 				}
 				//-----
 				definitionSpace = new DefinitionSpace(appConfig.getBootConfig());

@@ -25,7 +25,6 @@ import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.core.Home;
 import io.vertigo.core.Home.App;
-import io.vertigo.core.boot.BootConfigBuilder;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.LogConfig;
@@ -106,7 +105,7 @@ public final class SplittedModulesEnvironmentManagerTest {
 	private AppConfigBuilder prepareDefaultAppConfigBuilder() {
 		// @formatter:off
 		final AppConfigBuilder appConfigBuilder = new AppConfigBuilder()
-		.withBootConfig(new BootConfigBuilder().withLogConfig(new LogConfig("/log4j.xml")).build())
+		.withLogConfig(new LogConfig("/log4j.xml"))
 		.beginModule("vertigo")
 			.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
 				.withParam("locales", "locales")

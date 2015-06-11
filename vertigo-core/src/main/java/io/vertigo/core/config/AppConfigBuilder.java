@@ -22,6 +22,7 @@ import io.vertigo.core.boot.BootConfig;
 import io.vertigo.core.boot.BootConfigBuilder;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
+import io.vertigo.lang.Option;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ import java.util.List;
  * @author npiedeloup, pchretien
  */
 public final class AppConfigBuilder implements Builder<AppConfig> {
+	private Option<LogConfig> myLogConfigOption = Option.none(); //par défaut
 	private final List<ModuleConfig> myModuleConfigs = new ArrayList<>();
 	private BootConfig myBootConfig;
 
@@ -39,6 +41,17 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 		Assertion.checkNotNull(bootConfig);
 		//-----
 		this.myBootConfig = bootConfig;
+		return this;
+	}
+
+	/**
+	 * Ajout de paramètres
+	 * @param logConfig Config of logs
+	 */
+	public AppConfigBuilder withLogConfig(final LogConfig logConfig) {
+		Assertion.checkNotNull(logConfig);
+		//-----
+		myLogConfigOption = Option.some(logConfig);
 		return this;
 	}
 
@@ -69,6 +82,6 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	 */
 	@Override
 	public AppConfig build() {
-		return new AppConfig(myBootConfig == null ? new BootConfigBuilder().build() : myBootConfig, myModuleConfigs);
+		return new AppConfig(myLogConfigOption, myBootConfig == null ? new BootConfigBuilder().build() : myBootConfig, myModuleConfigs);
 	}
 }

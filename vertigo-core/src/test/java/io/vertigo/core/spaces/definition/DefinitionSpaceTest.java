@@ -20,7 +20,6 @@ package io.vertigo.core.spaces.definition;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.Home;
-import io.vertigo.core.boot.BootConfigBuilder;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.LogConfig;
@@ -43,9 +42,7 @@ public class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 	@Override
 	protected AppConfig buildAppConfig() {
 		return new AppConfigBuilder()
-				.withBootConfig(new BootConfigBuilder()
-						.withLogConfig(new LogConfig("/log4j.xml"))
-						.build())
+				.withLogConfig(new LogConfig("/log4j.xml"))
 				.build();
 	}
 

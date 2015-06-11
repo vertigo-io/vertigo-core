@@ -18,7 +18,6 @@
  */
 package io.vertigo.core.boot;
 
-import io.vertigo.core.config.LogConfig;
 import io.vertigo.core.engines.AopEngine;
 import io.vertigo.core.engines.ElasticaEngine;
 import io.vertigo.engines.aop.cglib.CGLIBAopEngine;
@@ -32,21 +31,9 @@ import io.vertigo.lang.Option;
  * @author npiedeloup, pchretien
  */
 public final class BootConfigBuilder implements Builder<BootConfig> {
-	private Option<LogConfig> myLogConfigOption = Option.none(); //par défaut
 	private boolean mySilence; //false by default
 	private AopEngine myAopEngine = new CGLIBAopEngine(); //By default
 	private ElasticaEngine myElasticaEngine = null; //par défaut pas d'elasticité.
-
-	/**
-	 * Ajout de paramètres
-	 * @param logConfig Config of logs
-	 */
-	public BootConfigBuilder withLogConfig(final LogConfig logConfig) {
-		Assertion.checkNotNull(logConfig);
-		//-----
-		myLogConfigOption = Option.some(logConfig);
-		return this;
-	}
 
 	/**
 	 * Permet de définir un démarrage silencieux. (Sans retour console)
@@ -78,7 +65,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 */
 	@Override
 	public BootConfig build() {
-		return new BootConfig(myLogConfigOption,
+		return new BootConfig(
 				myAopEngine,
 				Option.option(myElasticaEngine),
 				mySilence);

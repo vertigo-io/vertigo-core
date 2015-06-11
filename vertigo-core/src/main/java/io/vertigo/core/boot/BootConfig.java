@@ -18,7 +18,6 @@
  */
 package io.vertigo.core.boot;
 
-import io.vertigo.core.config.LogConfig;
 import io.vertigo.core.engines.AopEngine;
 import io.vertigo.core.engines.ElasticaEngine;
 import io.vertigo.lang.Assertion;
@@ -31,8 +30,6 @@ import io.vertigo.lang.Option;
  * @author pchretien
  */
 public final class BootConfig {
-	private final Option<LogConfig> logConfigOption;
-
 	private final boolean silence;
 	@JsonExclude
 	private final AopEngine aopEngine;
@@ -40,24 +37,16 @@ public final class BootConfig {
 	private final Option<ElasticaEngine> elasticaEngine;
 
 	BootConfig(
-			final Option<LogConfig> logConfigOption,
+
 			final AopEngine aopEngine,
 			final Option<ElasticaEngine> elasticaEngine,
 			final boolean silence) {
-		Assertion.checkNotNull(logConfigOption);
-		//---
 		Assertion.checkNotNull(aopEngine);
 		Assertion.checkNotNull(elasticaEngine);
-		//-----
-		this.logConfigOption = logConfigOption;
 		//-----
 		this.silence = silence;
 		this.aopEngine = aopEngine;
 		this.elasticaEngine = elasticaEngine;
-	}
-
-	public Option<LogConfig> getLogConfig() {
-		return logConfigOption;
 	}
 
 	public boolean isSilence() {

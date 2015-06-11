@@ -20,6 +20,7 @@ package io.vertigo.core.config;
 
 import io.vertigo.core.boot.BootConfig;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,20 +30,29 @@ import java.util.List;
  * @author pchretien
  */
 public final class AppConfig {
+	private final Option<LogConfig> logConfigOption;
 	private final BootConfig bootConfig;
 	private final List<ModuleConfig> modules;
 
-	AppConfig(final BootConfig bootConfig,
+	AppConfig(
+			final Option<LogConfig> logConfigOption,
+			final BootConfig bootConfig,
 			final List<ModuleConfig> moduleConfigs) {
+		Assertion.checkNotNull(logConfigOption);
 		Assertion.checkNotNull(bootConfig);
 		Assertion.checkNotNull(moduleConfigs);
 		//---
+		this.logConfigOption = logConfigOption;
 		this.bootConfig = bootConfig;
 		this.modules = Collections.unmodifiableList(new ArrayList<>(moduleConfigs));
 	}
 
 	public BootConfig getBootConfig() {
 		return bootConfig;
+	}
+
+	public Option<LogConfig> getLogConfig() {
+		return logConfigOption;
 	}
 
 	/**
