@@ -7,6 +7,7 @@ import io.vertigo.dynamo.events.EventsListener;
 import io.vertigo.dynamo.events.EventsManager;
 import io.vertigo.dynamo.plugins.events.local.LocalEventsPlugin;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.io.Serializable;
 
@@ -17,10 +18,10 @@ import javax.inject.Inject;
  */
 public final class EventsManagerImpl implements EventsManager {
 	private final EventsPlugin localEventsPlugin = new LocalEventsPlugin();
-	private final EventsPlugin remoteEventsPlugin;
+	private final Option<EventsPlugin> remoteEventsPlugin;
 
 	@Inject
-	public EventsManagerImpl(final EventsPlugin remoteEventsPlugin) {
+	public EventsManagerImpl(final Option<EventsPlugin> remoteEventsPlugin) {
 		Assertion.checkNotNull(remoteEventsPlugin);
 		//-----
 		this.remoteEventsPlugin = remoteEventsPlugin;
@@ -30,7 +31,9 @@ public final class EventsManagerImpl implements EventsManager {
 	public <P extends Serializable> void fire(final EventChannel<P> channel, final P payload) {
 		final Event<P> event = new EventBuilder().withPayload(payload).build();
 		localEventsPlugin.emit(channel, event);
-		remoteEventsPlugin.emit(channel, event);
+		if (remoteEventsPlugin.isDefined()) {
+			remoteEventsPlugin.get().emit(channel, event);
+		}
 	}
 
 	/**
@@ -41,10 +44,11 @@ public final class EventsManagerImpl implements EventsManager {
 	 */
 	@Override
 	public <P extends Serializable> void register(final EventChannel<P> channel, final boolean localOnly, final EventsListener<P> eventsListener) {
-		if (localOnly) {
+		if (localOnly || remoteEventsPlugin.isEmpty()) {
 			localEventsPlugin.register(channel, eventsListener);
 		} else {
-			remoteEventsPlugin.register(channel, eventsListener);
+			//Can't assert if there is no remotePlugin, because listener component aren't aware of this (ex: PersistanceManager can't determine if there is a remoteEventPlugin)
+			remoteEventsPlugin.get().register(channel, eventsListener);
 		}
 	}
 }

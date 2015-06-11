@@ -35,6 +35,7 @@
 
 		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
 
+		<component api="EventsManager" class="io.vertigo.dynamo.impl.events.EventsManagerImpl" />
 		<component api="PersistenceManager" class="io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl" initClass="io.vertigo.dynamo.persistence.PersistenceManagerInitializer">
 			<plugin class="io.vertigo.dynamo.plugins.persistence.datastore.hsql.HsqlDataStorePlugin">
 				<param name="sequencePrefix" value="SEQ_" />
