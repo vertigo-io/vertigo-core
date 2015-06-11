@@ -77,6 +77,7 @@ final class HomeServletStarter {
 				//-----
 				appConfigBuilder.withLogConfig(logFileName);
 			}
+
 			final String xmlModulesFileNames = bootConf.getProperty("boot.applicationConfiguration");
 			final String[] xmlFileNamesSplit = xmlModulesFileNames.split(";");
 			bootConf.remove("boot.applicationConfiguration");

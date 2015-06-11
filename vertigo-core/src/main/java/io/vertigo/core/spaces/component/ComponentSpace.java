@@ -19,7 +19,7 @@
 package io.vertigo.core.spaces.component;
 
 import io.vertigo.core.aop.Aspect;
-import io.vertigo.core.config.AppConfig;
+import io.vertigo.core.boot.BootConfig;
 import io.vertigo.core.config.AspectConfig;
 import io.vertigo.core.config.ComponentConfig;
 import io.vertigo.core.config.ModuleConfig;
@@ -66,7 +66,7 @@ import java.util.Set;
  * @author pchretien
  */
 public final class ComponentSpace implements Container, Activeable {
-	private final AppConfig appConfig;
+	private final BootConfig bootConfig;
 	private final ComponentContainer componentContainer = new ComponentContainer();
 
 	//---Aspects
@@ -75,21 +75,21 @@ public final class ComponentSpace implements Container, Activeable {
 
 	private final List<Engine> engines = new ArrayList<>();
 
-	public ComponentSpace(final AppConfig appConfig) {
-		Assertion.checkNotNull(appConfig);
+	public ComponentSpace(final BootConfig bootConfig) {
+		Assertion.checkNotNull(bootConfig);
 		//-----
-		this.appConfig = appConfig;
+		this.bootConfig = bootConfig;
 	}
 
 	/* We are registered all the components and their plugins*/
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		if (appConfig.getElasticaEngine().isDefined()) {
-			engines.add(appConfig.getElasticaEngine().get());
+		if (bootConfig.getElasticaEngine().isDefined()) {
+			engines.add(bootConfig.getElasticaEngine().get());
 		}
 
-		engines.add(appConfig.getAopEngine());
+		engines.add(bootConfig.getAopEngine());
 
 		for (final Engine engine : engines) {
 			if (engine instanceof Activeable) {
@@ -98,7 +98,7 @@ public final class ComponentSpace implements Container, Activeable {
 		}
 		//---
 		componentContainer.start();
-		if (!appConfig.isSilence()) {
+		if (!bootConfig.isSilence()) {
 			//Si on n'est pas en mode silencieux on affiche les infos
 			componentContainer.print();
 		}
@@ -127,7 +127,7 @@ public final class ComponentSpace implements Container, Activeable {
 	//	}
 
 	public void injectComponents(final ModuleConfig moduleConfig) {
-		final AopEngine aopEngine = appConfig.getAopEngine();
+		final AopEngine aopEngine = bootConfig.getAopEngine();
 
 		final DIReactor reactor = new DIReactor();
 		for (final String id : componentContainer.keySet()) {
@@ -238,7 +238,7 @@ public final class ComponentSpace implements Container, Activeable {
 		}
 		//---
 		if (componentConfig.isElastic()) {
-			return appConfig.getElasticaEngine().get().createProxy(componentConfig.getApiClass().get());
+			return bootConfig.getElasticaEngine().get().createProxy(componentConfig.getApiClass().get());
 		}
 		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(componentConfig.getParams());
 		final ComponentDualContainer container = new ComponentDualContainer(componentContainer, paramsContainer);

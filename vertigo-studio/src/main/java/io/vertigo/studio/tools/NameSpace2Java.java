@@ -20,6 +20,7 @@ package io.vertigo.studio.tools;
 
 import io.vertigo.boot.xml.XMLAppConfigBuilder;
 import io.vertigo.core.Home.App;
+import io.vertigo.core.boot.BootConfigBuilder;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.tools.generate.GenerateGoal;
@@ -65,7 +66,7 @@ public final class NameSpace2Java {
 		}
 
 		final AppConfig appConfig = appConfigBuilder
-				.withSilence(true)
+				.withBootConfig(new BootConfigBuilder().withSilence(true).build())
 				.build();
 
 		try (App app = new App(appConfig)) {

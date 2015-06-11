@@ -18,12 +18,10 @@
  */
 package io.vertigo.core.config;
 
-import io.vertigo.core.engines.AopEngine;
-import io.vertigo.core.engines.ElasticaEngine;
-import io.vertigo.engines.aop.cglib.CGLIBAopEngine;
+import io.vertigo.core.boot.BootConfig;
+import io.vertigo.core.boot.BootConfigBuilder;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.lang.Option;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,19 +33,12 @@ import java.util.List;
  */
 public final class AppConfigBuilder implements Builder<AppConfig> {
 	private final List<ModuleConfig> myModuleConfigs = new ArrayList<>();
-	private Option<LogConfig> myLogConfigOption = Option.none(); //par défaut
-	private boolean mySilence;
-	private AopEngine myAopEngine = new CGLIBAopEngine(); //By default
-	private ElasticaEngine myElasticaEngine = null; //par défaut pas d'elasticité.
+	private BootConfig myBootConfig;
 
-	/**
-	 * Ajout de paramètres
-	 * @param logConfig Config of logs
-	 */
-	public AppConfigBuilder withLogConfig(final LogConfig logConfig) {
-		Assertion.checkNotNull(logConfig);
+	public AppConfigBuilder withBootConfig(final BootConfig bootConfig) {
+		Assertion.checkNotNull(bootConfig);
 		//-----
-		myLogConfigOption = Option.some(logConfig);
+		this.myBootConfig = bootConfig;
 		return this;
 	}
 
@@ -60,31 +51,6 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
 		myModuleConfigs.addAll(moduleConfigs);
-		return this;
-	}
-
-	/**
-	 * Permet de définir un démarrage silencieux. (Sans retour console)
-	 * @param silence Si le mode est silencieux
-	 * @return Builder
-	 */
-	public AppConfigBuilder withSilence(final boolean silence) {
-		this.mySilence = silence;
-		return this;
-	}
-
-	public AppConfigBuilder withElasticaEngine(final ElasticaEngine elasticaEngine) {
-		Assertion.checkNotNull(elasticaEngine);
-		Assertion.checkState(this.myElasticaEngine == null, "elasticaEngine is already completed");
-		//-----
-		this.myElasticaEngine = elasticaEngine;
-		return this;
-	}
-
-	public AppConfigBuilder withAopEngine(final AopEngine aopEngine) {
-		Assertion.checkNotNull(aopEngine);
-		//-----
-		this.myAopEngine = aopEngine;
 		return this;
 	}
 
@@ -103,11 +69,6 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	 */
 	@Override
 	public AppConfig build() {
-		return new AppConfig(myLogConfigOption,
-				myModuleConfigs,
-				myAopEngine,
-				Option.option(myElasticaEngine),
-				mySilence);
+		return new AppConfig(myBootConfig == null ? new BootConfigBuilder().build() : myBootConfig, myModuleConfigs);
 	}
-
 }

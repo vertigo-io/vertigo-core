@@ -82,13 +82,13 @@ public final class Home {
 			state = State.starting;
 			//-----
 			try {
-				if (appConfig.getLogConfig().isDefined()) {
-					initLog(appConfig.getLogConfig().get());
+				if (appConfig.getBootConfig().getLogConfig().isDefined()) {
+					initLog(appConfig.getBootConfig().getLogConfig().get());
 				}
 				//-----
-				definitionSpace = new DefinitionSpace(appConfig);
-				componentSpace = new ComponentSpace(appConfig);
-				configSpace = new ConfigSpace(appConfig);
+				definitionSpace = new DefinitionSpace(appConfig.getBootConfig());
+				componentSpace = new ComponentSpace(appConfig.getBootConfig());
+				configSpace = new ConfigSpace(appConfig.getBootConfig());
 				//----
 				for (final ModuleConfig moduleConfig : appConfig.getModuleConfigs()) {
 					definitionSpace.injectDefinitions(moduleConfig);

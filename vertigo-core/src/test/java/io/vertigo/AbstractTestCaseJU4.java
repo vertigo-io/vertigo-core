@@ -21,6 +21,7 @@ package io.vertigo;
 import io.vertigo.boot.xml.XMLAppConfigBuilder;
 import io.vertigo.core.Home;
 import io.vertigo.core.Home.App;
+import io.vertigo.core.boot.BootConfigBuilder;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.core.spaces.component.ComponentInfo;
@@ -182,7 +183,7 @@ public abstract class AbstractTestCaseJU4 {
 
 		//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
 		return new XMLAppConfigBuilder()
-				.withSilence(true)
+				.withBootConfig(new BootConfigBuilder().withSilence(true).build())
 				.withModules(getClass(), new Properties(), getManagersXmlFileName())
 				.build();
 	}

@@ -20,6 +20,7 @@ package io.vertigo.core.spaces.component;
 
 import io.vertigo.core.Home;
 import io.vertigo.core.Home.App;
+import io.vertigo.core.boot.BootConfigBuilder;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.LogConfig;
@@ -89,9 +90,10 @@ public final class ComponentSpace3Test {
 
 	private static AppConfig startHomeWithFunctionManager(final Class<? extends FunctionManager> implClass, final boolean withNullMult) {
 		// @formatter:off
+		
+		
 		return  new AppConfigBuilder()
-			.withLogConfig(new LogConfig("/log4j.xml"))
-			.withSilence(false)
+			.withBootConfig(new BootConfigBuilder().withLogConfig(new LogConfig("/log4j.xml")).build())
 			.beginModule("Function")
 				.beginComponent(FunctionManager.class, implClass)
 					.beginPlugin(FunctionPlugin.class)
