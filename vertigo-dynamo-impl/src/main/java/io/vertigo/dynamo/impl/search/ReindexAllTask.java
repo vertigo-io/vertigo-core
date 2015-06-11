@@ -3,7 +3,7 @@ package io.vertigo.dynamo.impl.search;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.model.DtSubject;
+import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchChunk;
@@ -16,7 +16,7 @@ import io.vertigo.util.ClassUtil;
 import java.util.Collection;
 import java.util.List;
 
-final class ReindexAllTask<S extends DtSubject> implements Runnable {
+final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 
 	private final SearchIndexDefinition searchIndexDefinition;
 	private final SearchManager searchManager;
@@ -28,10 +28,10 @@ final class ReindexAllTask<S extends DtSubject> implements Runnable {
 
 	@Override
 	public void run() {
-		final Class<S> subjectClass = (Class<S>) ClassUtil.classForName(searchIndexDefinition.getSubjectDtDefinition().getClassCanonicalName(), DtSubject.class);
+		final Class<S> keyConceptClass = (Class<S>) ClassUtil.classForName(searchIndexDefinition.getKeyConceptDtDefinition().getClassCanonicalName(), KeyConcept.class);
 		final SearchLoader<S, DtObject> searchLoader = Home.getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
 		String lastUri = "*";
-		for (final SearchChunk<S> searchChunk : searchLoader.chunk(subjectClass)) {
+		for (final SearchChunk<S> searchChunk : searchLoader.chunk(keyConceptClass)) {
 			final List<URI<S>> uris = searchChunk.getAllURIs();
 			Assertion.checkArgument(!uris.isEmpty(), "The uris list of a SearchChunk can't be empty");
 			//-----

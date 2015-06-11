@@ -19,10 +19,10 @@
 package io.vertigo.dynamo.domain.model;
 
 /**
- * Interface to have a marker on all Subject object (properly Main Business Object).
+ * Interface to have a marker on all KeyConcept object (properly Main Business Object).
  *
  * @author npiedeloup, pchretien
  */
-public interface DtSubject extends DtObject {
+public interface KeyConcept extends DtObject {
 	//
 }

@@ -3,7 +3,7 @@ package io.vertigo.dynamo.impl.search;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.model.DtSubject;
+import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
@@ -19,10 +19,10 @@ import java.util.Set;
 final class ReindexTask implements Runnable {
 
 	private final SearchIndexDefinition searchIndexDefinition;
-	private final List<URI<? extends DtSubject>> dirtyElements;
+	private final List<URI<? extends KeyConcept>> dirtyElements;
 	private final SearchManager searchManager;
 
-	public ReindexTask(final SearchIndexDefinition searchIndexDefinition, final List<URI<? extends DtSubject>> dirtyElements, final SearchManager searchManager) {
+	public ReindexTask(final SearchIndexDefinition searchIndexDefinition, final List<URI<? extends KeyConcept>> dirtyElements, final SearchManager searchManager) {
 		this.searchIndexDefinition = searchIndexDefinition;
 		this.dirtyElements = dirtyElements;//On ne fait pas la copie ici
 		this.searchManager = searchManager;
@@ -30,23 +30,23 @@ final class ReindexTask implements Runnable {
 
 	@Override
 	public void run() {
-		final List<URI<? extends DtSubject>> reindexUris;
+		final List<URI<? extends KeyConcept>> reindexUris;
 		synchronized (dirtyElements) {
 			reindexUris = new ArrayList<>(dirtyElements);
 			dirtyElements.clear();
 		}
 		if (!reindexUris.isEmpty()) {
 			final SearchLoader searchLoader = Home.getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
-			final Collection<SearchIndex<DtSubject, DtObject>> searchIndexes = searchLoader.loadData(reindexUris);
-			removedNotFoundSubject(searchIndexes, reindexUris);
+			final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes = searchLoader.loadData(reindexUris);
+			removedNotFoundKeyConcept(searchIndexes, reindexUris);
 			searchManager.putAll(searchIndexDefinition, searchIndexes);
 		}
 	}
 
-	private void removedNotFoundSubject(final Collection<SearchIndex<DtSubject, DtObject>> searchIndexes, final List<URI<? extends DtSubject>> reindexUris) {
+	private void removedNotFoundKeyConcept(final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes, final List<URI<? extends KeyConcept>> reindexUris) {
 		if (searchIndexes.size() < reindexUris.size()) {
-			final Set<URI<? extends DtSubject>> notFoundUris = new LinkedHashSet<>(reindexUris);
-			for (final SearchIndex<DtSubject, DtObject> searchIndex : searchIndexes) {
+			final Set<URI<? extends KeyConcept>> notFoundUris = new LinkedHashSet<>(reindexUris);
+			for (final SearchIndex<KeyConcept, DtObject> searchIndex : searchIndexes) {
 				if (notFoundUris.contains(searchIndex.getURI())) {
 					notFoundUris.remove(searchIndex.getURI());
 				}
@@ -55,7 +55,7 @@ final class ReindexTask implements Runnable {
 		}
 	}
 
-	private ListFilter urisToListFilter(final Set<URI<? extends DtSubject>> removedUris) {
+	private ListFilter urisToListFilter(final Set<URI<? extends KeyConcept>> removedUris) {
 		final String indexIdFieldName = searchIndexDefinition.getIndexDtDefinition().getIdField().get().getName();
 		final StringBuilder sb = new StringBuilder();
 		sb.append(indexIdFieldName).append(":(");

@@ -56,13 +56,13 @@ public final class OOMParserStereotypesTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test du stereotype Subject
+	 * Test du stereotype keyConcept
 	 */
 	@Test
-	public void testStereotypeSubject() {
+	public void testStereotypeKeyConcept() {
 		final DtDefinition dtDefinitionCommand = getDtDefinition("DT_COMMAND");
 		Assert.assertNotNull(dtDefinitionCommand);
-		Assert.assertEquals(DtStereotype.Subject, dtDefinitionCommand.getStereotype());
+		Assert.assertEquals(DtStereotype.KeyConcept, dtDefinitionCommand.getStereotype());
 
 	}
 

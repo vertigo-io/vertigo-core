@@ -30,7 +30,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.model.DtSubject;
+import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilterUtil;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
@@ -90,9 +90,9 @@ import org.elasticsearch.search.sort.SortOrder;
  * Le driver exécute les requêtes de façon synchrone dans le contexte transactionnelle de la ressource.
  * @author pchretien, npiedeloup
  * @param <I> Type de l'objet représentant l'index
- * @param <S> Type du subject métier indexé
+ * @param <K> Type du keyConcept métier indexé
  */
-final class ESStatement<S extends DtSubject, I extends DtObject> {
+final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	private static final int TOPHITS_SUBAGGREAGTION_SIZE = 10; //max 10 documents per cluster when clusterization is used
 	private static final String TOPHITS_SUBAGGREAGTION_NAME = "top";
 	private static final String DATE_PATTERN = "dd/MM/yy";
@@ -121,11 +121,11 @@ final class ESStatement<S extends DtSubject, I extends DtObject> {
 	/**
 	 * @param indexCollection Collection des indexes à insérer
 	 */
-	void putAll(final Collection<SearchIndex<S, I>> indexCollection) {
+	void putAll(final Collection<SearchIndex<K, I>> indexCollection) {
 		//Injection spécifique au moteur d'indexation.
 		try {
 			final BulkRequestBuilder bulkRequest = esClient.prepareBulk();
-			for (final SearchIndex<S, I> index : indexCollection) {
+			for (final SearchIndex<K, I> index : indexCollection) {
 				try (final XContentBuilder xContentBuilder = esDocumentCodec.index2XContentBuilder(index)) {
 					bulkRequest.add(esClient.prepareIndex(indexName, index.getURI().getDefinition().getName(), index.getURI().toURN())
 							.setSource(xContentBuilder));
@@ -147,7 +147,7 @@ final class ESStatement<S extends DtSubject, I extends DtObject> {
 	/**
 	 * @param index index à insérer
 	 */
-	void put(final SearchIndex<S, I> index) {
+	void put(final SearchIndex<K, I> index) {
 		//Injection spécifique au moteur d'indexation.
 		try (final XContentBuilder xContentBuilder = esDocumentCodec.index2XContentBuilder(index)) {
 			esClient.prepareIndex(indexName, index.getURI().getDefinition().getName(), index.getURI().toURN())
@@ -368,7 +368,7 @@ final class ESStatement<S extends DtSubject, I extends DtObject> {
 			dtc.addAll(dtcIndex.values());
 		} else {
 			for (final SearchHit searchHit : queryResponse.getHits()) {
-				final SearchIndex<S, I> index = esDocumentCodec.searchHit2Index(indexDefinition, searchHit);
+				final SearchIndex<K, I> index = esDocumentCodec.searchHit2Index(indexDefinition, searchHit);
 				final I result = index.getIndexDtObject();
 				dtc.add(result);
 				final Map<DtField, String> highlights = createHighlight(searchHit, indexDefinition.getIndexDtDefinition());
@@ -396,7 +396,7 @@ final class ESStatement<S extends DtSubject, I extends DtObject> {
 				for (final SearchHit searchHit : facetSearchHits) {
 					I result = dtcIndex.get(searchHit.getId());
 					if (result == null) {
-						final SearchIndex<S, I> index = esDocumentCodec.searchHit2Index(indexDefinition, searchHit);
+						final SearchIndex<K, I> index = esDocumentCodec.searchHit2Index(indexDefinition, searchHit);
 						result = index.getIndexDtObject();
 						dtcIndex.put(searchHit.getId(), result);
 					}
@@ -418,7 +418,7 @@ final class ESStatement<S extends DtSubject, I extends DtObject> {
 				for (final SearchHit searchHit : facetSearchHits) {
 					I result = dtcIndex.get(searchHit.getId());
 					if (result == null) {
-						final SearchIndex<S, I> index = esDocumentCodec.searchHit2Index(indexDefinition, searchHit);
+						final SearchIndex<K, I> index = esDocumentCodec.searchHit2Index(indexDefinition, searchHit);
 						result = index.getIndexDtObject();
 						dtcIndex.put(searchHit.getId(), result);
 					}

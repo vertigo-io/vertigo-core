@@ -24,7 +24,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.dynamo.domain.model.DtMasterData;
-import io.vertigo.dynamo.domain.model.DtSubject;
+import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.impl.environment.LoaderPlugin;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
@@ -139,8 +139,8 @@ public final class AnnotationLoaderPlugin implements LoaderPlugin {
 	private static DtStereotype parseStereotype(final Class<?> clazz) {
 		if (DtMasterData.class.isAssignableFrom(clazz)) {
 			return DtStereotype.MasterData;
-		} else if (DtSubject.class.isAssignableFrom(clazz)) {
-			return DtStereotype.Subject;
+		} else if (KeyConcept.class.isAssignableFrom(clazz)) {
+			return DtStereotype.KeyConcept;
 		}
 		return DtStereotype.Data;
 	}

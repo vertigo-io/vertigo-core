@@ -27,7 +27,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.model.DtSubject;
+import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.search.SearchServicesPlugin;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
@@ -187,7 +187,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 	/** {@inheritDoc} */
 	@Override
-	public final <S extends DtSubject, I extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
+	public final <S extends KeyConcept, I extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
 		Assertion.checkNotNull(indexCollection);
 		//-----
 		final ESStatement<S, I> statement = createElasticStatement(indexDefinition);
@@ -196,7 +196,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 	/** {@inheritDoc} */
 	@Override
-	public final <S extends DtSubject, I extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
+	public final <S extends KeyConcept, I extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
 		//On vérifie la cohérence des données SO et SOD.
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkNotNull(index);
@@ -208,7 +208,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 	/** {@inheritDoc} */
 	@Override
-	public final <S extends DtSubject> void remove(final SearchIndexDefinition indexDefinition, final URI<S> uri) {
+	public final <S extends KeyConcept> void remove(final SearchIndexDefinition indexDefinition, final URI<S> uri) {
 		Assertion.checkNotNull(uri);
 		Assertion.checkNotNull(indexDefinition);
 		//-----
@@ -221,7 +221,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	public final <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
 		Assertion.checkNotNull(searchQuery);
 		//-----
-		final ESStatement<DtSubject, R> statement = createElasticStatement(indexDefinition);
+		final ESStatement<KeyConcept, R> statement = createElasticStatement(indexDefinition);
 		final DtListState usedListState = listState != null ? listState : defaultListState;
 		return statement.loadList(indexDefinition, searchQuery, usedListState, defaultMaxRows);
 	}
@@ -244,7 +244,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		markToOptimize(indexDefinition);
 	}
 
-	private <S extends DtSubject, I extends DtObject> ESStatement<S, I> createElasticStatement(final SearchIndexDefinition indexDefinition) {
+	private <S extends KeyConcept, I extends DtObject> ESStatement<S, I> createElasticStatement(final SearchIndexDefinition indexDefinition) {
 		Assertion.checkArgument(indexSettingsValid, "Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.");
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkArgument(cores.contains(indexDefinition.getName()), "Index {0} hasn't been registered (Registered indexes: {2}).", indexDefinition.getName(), cores);

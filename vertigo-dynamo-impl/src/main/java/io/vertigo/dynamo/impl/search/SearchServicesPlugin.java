@@ -22,7 +22,7 @@ import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.model.DtSubject;
+import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
@@ -42,21 +42,21 @@ public interface SearchServicesPlugin extends Plugin {
 	 * Ajout de plusieurs ressources à l'index.
 	 * Si les éléments étaient déjà dans l'index ils sont remplacés.
 	 * @param <I> Type de l'objet représentant l'index
-	 * @param <S> Type du subject métier indexé
+	 * @param <K> Type du keyConcept métier indexé
 	 * @param indexDefinition Type de l'index
 	 * @param indexCollection Liste des objets à pousser dans l'index
 	 */
-	<S extends DtSubject, I extends DtObject> void putAll(SearchIndexDefinition indexDefinition, Collection<SearchIndex<S, I>> indexCollection);
+	<K extends KeyConcept, I extends DtObject> void putAll(SearchIndexDefinition indexDefinition, Collection<SearchIndex<K, I>> indexCollection);
 
 	/**
 	 * Ajout d'une ressource à l'index.
 	 * Si l'élément était déjà dans l'index il est remplacé.
 	 * @param <I> Type de l'objet représentant l'index
-	 * @param <S> Type du subject métier indexé
+	 * @param <K> Type du keyConcept métier indexé
 	 * @param indexDefinition Type de l'index
 	 * @param index Objet à pousser dans l'index
 	 */
-	<S extends DtSubject, I extends DtObject> void put(SearchIndexDefinition indexDefinition, SearchIndex<S, I> index);
+	<K extends KeyConcept, I extends DtObject> void put(SearchIndexDefinition indexDefinition, SearchIndex<K, I> index);
 
 	/**
 	 * Récupération du résultat issu d'une requête.
@@ -76,11 +76,11 @@ public interface SearchServicesPlugin extends Plugin {
 
 	/**
 	 * Suppression d'une ressource de l'index.
-	 * @param <S> Type du subject métier indexé
+	 * @param <K> Type du keyConcept métier indexé
 	 * @param indexDefinition Type de l'index
 	 * @param uri URI de la ressource à supprimer
 	 */
-	<S extends DtSubject> void remove(SearchIndexDefinition indexDefinition, final URI<S> uri);
+	<K extends KeyConcept> void remove(SearchIndexDefinition indexDefinition, final URI<K> uri);
 
 	/**
 	 * Suppression des données correspondant à un filtre.

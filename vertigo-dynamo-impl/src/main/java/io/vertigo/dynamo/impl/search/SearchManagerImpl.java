@@ -24,7 +24,7 @@ import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.model.DtSubject;
+import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.events.EventsManager;
@@ -55,7 +55,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	private final SearchServicesPlugin searchServicesPlugin;
 
 	private final ScheduledExecutorService executorService; //TODO : replace by WorkManager to make distributed work easier
-	private final Map<String, List<URI<? extends DtSubject>>> dirtyElementsPerIndexName = new HashMap<>();
+	private final Map<String, List<URI<? extends KeyConcept>>> dirtyElementsPerIndexName = new HashMap<>();
 
 	/**
 	 * Constructor.
@@ -78,7 +78,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	@Override
 	public void start() {
 		for (final SearchIndexDefinition indexDefinition : Home.getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
-			dirtyElementsPerIndexName.put(indexDefinition.getName(), new ArrayList<URI<? extends DtSubject>>());
+			dirtyElementsPerIndexName.put(indexDefinition.getName(), new ArrayList<URI<? extends KeyConcept>>());
 		}
 	}
 
@@ -89,13 +89,13 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <S extends DtSubject, I extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
+	public <S extends KeyConcept, I extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
 		searchServicesPlugin.putAll(indexDefinition, indexCollection);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <S extends DtSubject, I extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
+	public <S extends KeyConcept, I extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
 		searchServicesPlugin.put(indexDefinition, index);
 	}
 
@@ -113,7 +113,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <S extends DtSubject> void remove(final SearchIndexDefinition indexDefinition, final URI<S> uri) {
+	public <S extends KeyConcept> void remove(final SearchIndexDefinition indexDefinition, final URI<S> uri) {
 		searchServicesPlugin.remove(indexDefinition, uri);
 	}
 
@@ -125,22 +125,22 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public SearchIndexDefinition findIndexDefinitionBySubject(final Class<? extends DtSubject> dtSubjectClass) {
-		final SearchIndexDefinition indexDefinition = findIndexDefinitionBySubject(DtObjectUtil.findDtDefinition(dtSubjectClass));
-		Assertion.checkNotNull(indexDefinition, "No SearchIndexDefinition was defined for this Subject : {0}", dtSubjectClass.getSimpleName());
+	public SearchIndexDefinition findIndexDefinitionByKeyConcept(final Class<? extends KeyConcept> keyConceptClass) {
+		final SearchIndexDefinition indexDefinition = findIndexDefinitionByKeyConcept(DtObjectUtil.findDtDefinition(keyConceptClass));
+		Assertion.checkNotNull(indexDefinition, "No SearchIndexDefinition was defined for this keyConcept : {0}", keyConceptClass.getSimpleName());
 		return indexDefinition;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean hasIndexDefinitionBySubject(final Class<? extends DtSubject> dtSubjectClass) {
-		final SearchIndexDefinition indexDefinition = findIndexDefinitionBySubject(DtObjectUtil.findDtDefinition(dtSubjectClass));
+	public boolean hasIndexDefinitionByKeyConcept(final Class<? extends KeyConcept> keyConceptClass) {
+		final SearchIndexDefinition indexDefinition = findIndexDefinitionByKeyConcept(DtObjectUtil.findDtDefinition(keyConceptClass));
 		return indexDefinition != null;
 	}
 
-	private SearchIndexDefinition findIndexDefinitionBySubject(final DtDefinition subjectDtDefinition) {
+	private SearchIndexDefinition findIndexDefinitionByKeyConcept(final DtDefinition keyConceptDtDefinition) {
 		for (final SearchIndexDefinition indexDefinition : Home.getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
-			if (indexDefinition.getSubjectDtDefinition().equals(subjectDtDefinition)) {
+			if (indexDefinition.getKeyConceptDtDefinition().equals(keyConceptDtDefinition)) {
 				return indexDefinition;
 			}
 		}
@@ -149,14 +149,14 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public void markAsDirty(final List<URI<? extends DtSubject>> subjectUris) {
-		Assertion.checkNotNull(subjectUris);
-		Assertion.checkArgument(!subjectUris.isEmpty(), "dirty subjectUris cant be empty");
+	public void markAsDirty(final List<URI<? extends KeyConcept>> keyConceptUris) {
+		Assertion.checkNotNull(keyConceptUris);
+		Assertion.checkArgument(!keyConceptUris.isEmpty(), "dirty keyConceptUris cant be empty");
 		//-----
-		final SearchIndexDefinition searchIndexDefinition = findIndexDefinitionBySubject(subjectUris.get(0).getDefinition());
-		final List<URI<? extends DtSubject>> dirtyElements = dirtyElementsPerIndexName.get(searchIndexDefinition.getName());
+		final SearchIndexDefinition searchIndexDefinition = findIndexDefinitionByKeyConcept(keyConceptUris.get(0).getDefinition());
+		final List<URI<? extends KeyConcept>> dirtyElements = dirtyElementsPerIndexName.get(searchIndexDefinition.getName());
 		synchronized (dirtyElements) {
-			dirtyElements.addAll(subjectUris); //TODO : doublons ?
+			dirtyElements.addAll(keyConceptUris); //TODO : doublons ?
 		}
 		executorService.scheduleAtFixedRate(new ReindexTask(searchIndexDefinition, dirtyElements, this), 0, 5, TimeUnit.SECONDS); //une reindexation dans max 5s
 	}

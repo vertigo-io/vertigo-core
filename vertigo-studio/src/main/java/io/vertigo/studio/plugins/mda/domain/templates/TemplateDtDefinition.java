@@ -27,7 +27,7 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.dynamo.domain.model.DtMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.model.DtSubject;
+import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -126,7 +126,7 @@ public final class TemplateDtDefinition {
 	}
 
 	/**
-	 * @return Nom simple de l'nterface associé au Sterotype de l'objet (DtObject, DtMasterData ou DtSubject)
+	 * @return Nom simple de l'nterface associé au Sterotype de l'objet (DtObject, DtMasterData ou KeyConcept)
 	 */
 	public String getStereotypeInterfaceName() {
 		switch (dtDefinition.getStereotype()) {
@@ -134,8 +134,8 @@ public final class TemplateDtDefinition {
 				return DtObject.class.getSimpleName();
 			case MasterData:
 				return DtMasterData.class.getSimpleName();
-			case Subject:
-				return DtSubject.class.getSimpleName();
+			case KeyConcept:
+				return KeyConcept.class.getSimpleName();
 			default:
 				throw new IllegalArgumentException("Stereotype " + dtDefinition.getStereotype().name() + " non géré");
 		}

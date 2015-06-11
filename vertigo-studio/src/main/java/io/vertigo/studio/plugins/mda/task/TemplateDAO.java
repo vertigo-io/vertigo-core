@@ -72,7 +72,7 @@ public final class TemplateDAO {
 		if (Home.getDefinitionSpace().getAllTypes().contains(SearchIndexDefinition.class)) {
 			SearchIndexDefinition currentIndexDefinition = null;
 			for (final SearchIndexDefinition tmpIndexDefinition : Home.getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
-				if (tmpIndexDefinition.getSubjectDtDefinition().equals(dtDefinition)) {
+				if (tmpIndexDefinition.getKeyConceptDtDefinition().equals(dtDefinition)) {
 					currentIndexDefinition = tmpIndexDefinition;
 				}
 			}
@@ -96,10 +96,10 @@ public final class TemplateDAO {
 	}
 
 	/**
-	 * @return Si l'entité est un DtSubject
+	 * @return Si l'entité est un keyConcept
 	 */
-	public boolean isDtSubject() {
-		return dtDefinition.getStereotype() == DtStereotype.Subject;
+	public boolean isKeyConcept() {
+		return dtDefinition.getStereotype() == DtStereotype.KeyConcept;
 	}
 
 	/**

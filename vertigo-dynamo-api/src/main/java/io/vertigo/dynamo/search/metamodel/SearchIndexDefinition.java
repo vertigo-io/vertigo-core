@@ -29,7 +29,7 @@ import io.vertigo.lang.Assertion;
  *
  * Fondalementalement un index est constitué de deux types d'objets.
  * - Un objet d'index (les champs indexés)
- * - Un subject représentant le concept métier réprésenté par cet index.
+ * - Un keyConcept représentant le concept métier réprésenté par cet index.
  * La définition d'index précise également un SearchLoader permettant la mise à jour autonome de l'index.
  *
  * L'objet d'index est à la fois porteur des champs de recherche, et ceux utilisé à l'affichage.
@@ -51,29 +51,29 @@ public final class SearchIndexDefinition implements Definition {
 	/** Structure des éléments indexés. */
 	private final DtDefinition indexDtDefinition;
 
-	private final DtDefinition subjectDtDefinition;
+	private final DtDefinition keyConceptDtDefinition;
 
 	private final String searchLoaderId;
 
 	/**
 	 * Constructeur.
 	 * @param name Index name
-	 * @param subjectDtDefinition Subject associé à l'index
+	 * @param keyConceptDtDefinition KeyConcept associé à l'index
 	 * @param indexDtDefinition Structure des éléments indexés.
 	 * @param searchLoaderId Loader de chargement des éléments indéxés et résultat
 	 */
 	public SearchIndexDefinition(final String name,
-			final DtDefinition subjectDtDefinition,
+			final DtDefinition keyConceptDtDefinition,
 			final DtDefinition indexDtDefinition,
 			final String searchLoaderId) {
 		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(subjectDtDefinition);
-		Assertion.checkArgument(subjectDtDefinition.getStereotype() == DtStereotype.Subject, "subjectDtDefinition ({0}) must be a DtDefinition of a DtSubject class", subjectDtDefinition.getName());
+		Assertion.checkNotNull(keyConceptDtDefinition);
+		Assertion.checkArgument(keyConceptDtDefinition.getStereotype() == DtStereotype.KeyConcept, "keyConceptDtDefinition ({0}) must be a DtDefinition of a KeyConcept class", keyConceptDtDefinition.getName());
 		Assertion.checkNotNull(indexDtDefinition);
 		Assertion.checkArgNotEmpty(searchLoaderId);
 		//-----
 		this.name = name;
-		this.subjectDtDefinition = subjectDtDefinition;
+		this.keyConceptDtDefinition = keyConceptDtDefinition;
 		this.indexDtDefinition = indexDtDefinition;
 		this.searchLoaderId = searchLoaderId;
 	}
@@ -87,12 +87,12 @@ public final class SearchIndexDefinition implements Definition {
 	}
 
 	/**
-	 * Définition du subject maitre de cet index.
-	 * Le Subject de l'index est surveillé pour rafraichir l'index.
-	 * @return Définition du subject.
+	 * Définition du keyConcept maitre de cet index.
+	 * Le keyConcept de l'index est surveillé pour rafraichir l'index.
+	 * @return Définition du keyConcept.
 	 */
-	public DtDefinition getSubjectDtDefinition() {
-		return subjectDtDefinition;
+	public DtDefinition getKeyConceptDtDefinition() {
+		return keyConceptDtDefinition;
 	}
 
 	/**

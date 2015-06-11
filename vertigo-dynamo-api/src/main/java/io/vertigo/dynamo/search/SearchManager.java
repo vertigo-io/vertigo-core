@@ -22,7 +22,7 @@ import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.model.DtSubject;
+import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
@@ -40,26 +40,26 @@ import java.util.List;
 public interface SearchManager extends Component {
 
 	/**
-	 * Find IndexDefinition for a DtSubject. It must be one and only one IndexDefinition.
-	 * @param dtSubjectClass DtSubject class
-	 * @return SearchIndexDefinition for this DtSubject (not null)
+	 * Find IndexDefinition for a keyConcept. It must be one and only one IndexDefinition.
+	 * @param keyConceptClass keyConcept class
+	 * @return SearchIndexDefinition for this keyConcept (not null)
 	 */
-	//TODO si par DtDefinition comment s'assurer que c'est un subject ?
-	SearchIndexDefinition findIndexDefinitionBySubject(Class<? extends DtSubject> dtSubjectClass);
+	//TODO si par DtDefinition comment s'assurer que c'est un keyConcept ?
+	SearchIndexDefinition findIndexDefinitionByKeyConcept(Class<? extends KeyConcept> keyConceptClass);
 
 	/**
-	 * Check if a DtSubject have an IndexDefinition.
-	 * @param dtSubjectClass DtSubject class
-	 * @return if there is a IndexDefinition for this Subject
+	 * Check if a keyConcept have an IndexDefinition.
+	 * @param keyConceptClass KeyConcept class
+	 * @return if there is a IndexDefinition for this keyConcept
 	 */
-	boolean hasIndexDefinitionBySubject(Class<? extends DtSubject> dtSubjectClass);
+	boolean hasIndexDefinitionByKeyConcept(Class<? extends KeyConcept> keyConceptClass);
 
 	/**
 	 * Mark an uri list as dirty. Index of these elements will be reindexed.
 	 * Reindexation isn't syncrhone, strategy is dependant of plugin's parameters.
-	 * @param subjectUris Uri of subject marked as dirty.
+	 * @param keyConceptUris Uri of keyConcept marked as dirty.
 	 */
-	void markAsDirty(List<URI<? extends DtSubject>> subjectUris);
+	void markAsDirty(List<URI<? extends KeyConcept>> keyConceptUris);
 
 	/**
 	 * Launch a complete reindexation of an index.
@@ -71,21 +71,21 @@ public interface SearchManager extends Component {
 	 * Ajout de plusieurs ressources à l'index.
 	 * Si les éléments étaient déjà dans l'index ils sont remplacés.
 	 * @param <I> Type de l'objet représentant l'index
-	 * @param <S> Type du subject métier indexé
+	 * @param <K> Type du keyConcept métier indexé
 	 * @param indexDefinition Type de l'index
 	 * @param indexCollection Liste des objets à pousser dans l'index
 	 */
-	<S extends DtSubject, I extends DtObject> void putAll(SearchIndexDefinition indexDefinition, Collection<SearchIndex<S, I>> indexCollection);
+	<K extends KeyConcept, I extends DtObject> void putAll(SearchIndexDefinition indexDefinition, Collection<SearchIndex<K, I>> indexCollection);
 
 	/**
 	 * Ajout d'une ressource à l'index.
 	 * Si l'élément était déjà dans l'index il est remplacé.
 	 * @param <I> Type de l'objet représentant l'index
-	 * @param <S> Type du subject métier indexé
+	 * @param <K> Type du keyConcept métier indexé
 	 * @param indexDefinition Type de l'index
 	 * @param index Objet à pousser dans l'index
 	 */
-	<S extends DtSubject, I extends DtObject> void put(SearchIndexDefinition indexDefinition, SearchIndex<S, I> index);
+	<K extends KeyConcept, I extends DtObject> void put(SearchIndexDefinition indexDefinition, SearchIndex<K, I> index);
 
 	/**
 	 * Récupération du résultat issu d'une requête.
@@ -105,11 +105,11 @@ public interface SearchManager extends Component {
 
 	/**
 	 * Suppression d'une ressource de l'index.
-	 * @param <S> Type du subject métier indexé
+	 * @param <K> Type du keyConcept métier indexé
 	 * @param indexDefinition Type de l'index
 	 * @param uri URI de la ressource à supprimer
 	 */
-	<S extends DtSubject> void remove(SearchIndexDefinition indexDefinition, final URI<S> uri);
+	<K extends KeyConcept> void remove(SearchIndexDefinition indexDefinition, final URI<K> uri);
 
 	/**
 	 * Suppression des données correspondant à un filtre.

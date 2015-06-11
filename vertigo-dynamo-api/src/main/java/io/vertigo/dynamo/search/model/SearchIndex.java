@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.search.model;
 
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.model.DtSubject;
+import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
@@ -38,7 +38,7 @@ import io.vertigo.lang.Assertion;
  * @author dchallas
  * @param <I> Type de l'objet de l'index
  */
-public final class SearchIndex<S extends DtSubject, I extends DtObject> {
+public final class SearchIndex<S extends KeyConcept, I extends DtObject> {
 	/** Définition de l'index. */
 	private final SearchIndexDefinition indexDefinition;
 
@@ -106,7 +106,7 @@ public final class SearchIndex<S extends DtSubject, I extends DtObject> {
 	 * @param indexDto  DTO représentant l'index
 	 * @return  Objet permettant de créer l'index
 	 */
-	public static <S extends DtSubject, I extends DtObject> SearchIndex<S, I> createIndex(final SearchIndexDefinition indexDefinition, final URI<S> uri, final I indexDto) {
+	public static <S extends KeyConcept, I extends DtObject> SearchIndex<S, I> createIndex(final SearchIndexDefinition indexDefinition, final URI<S> uri, final I indexDto) {
 		return new SearchIndex<>(indexDefinition, uri, indexDto);
 	}
 

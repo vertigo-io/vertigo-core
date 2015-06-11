@@ -51,7 +51,7 @@ final class SearchGrammar {
 
 	/*
 	 * create IndexDefinition IDX_TEST {
-	    dtSubject : DT_TEST,
+	    keyConcept : DT_TEST,
 	    dtResult : DT_TEST,
 	    dtIndex : DT_TEST,
 	    searchLoader : com.project.domain.search.dao.SearchLoaderPeople
@@ -76,7 +76,7 @@ final class SearchGrammar {
 
 	static {
 		INDEX_DEFINITION_ENTITY = new EntityBuilder("IndexDefinition")
-				.withAttribute("dtSubject", DomainGrammar.DT_DEFINITION_ENTITY, true)
+				.withAttribute("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY, true)
 				.withAttribute("dtIndex", DomainGrammar.DT_DEFINITION_ENTITY, true)
 				.withProperty(SEARCH_LOADER_PROPERTY, true)
 				.build();
@@ -94,7 +94,7 @@ final class SearchGrammar {
 				.build();
 
 		FACETED_QUERY_DEFINITION_ENTITY = new EntityBuilder("FacetedQueryDefinition")
-				.withAttribute("dtSubject", DomainGrammar.DT_DEFINITION_ENTITY, true)
+				.withAttribute("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY, true)
 				.withAttribute("domainCriteria", DomainGrammar.DOMAIN_ENTITY, true)
 				.withProperty(LIST_FILTER_BUILDER_CLASS, true)
 				.withProperty(LIST_FILTER_BUILDER_QUERY, true)

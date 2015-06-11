@@ -24,7 +24,7 @@ import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.model.DtSubject;
+import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
@@ -88,7 +88,7 @@ final class ESDocumentCodec {
 	 * @param searchHit Resultat ElasticSearch
 	 * @return Objet logique de recherche
 	 */
-	<S extends DtSubject, I extends DtObject> SearchIndex<S, I> searchHit2Index(final SearchIndexDefinition indexDefinition, final SearchHit searchHit) {
+	<S extends KeyConcept, I extends DtObject> SearchIndex<S, I> searchHit2Index(final SearchIndexDefinition indexDefinition, final SearchHit searchHit) {
 		/* On lit du document les données persistantes. */
 		/* 1. URI */
 		final String urn = searchHit.getId();
@@ -113,7 +113,7 @@ final class ESDocumentCodec {
 	 * @return Document SOLR
 	 * @throws IOException Json exception
 	 */
-	<S extends DtSubject, I extends DtObject> XContentBuilder index2XContentBuilder(final SearchIndex<S, I> index) throws IOException {
+	<S extends KeyConcept, I extends DtObject> XContentBuilder index2XContentBuilder(final SearchIndex<S, I> index) throws IOException {
 		Assertion.checkNotNull(index);
 		//-----
 

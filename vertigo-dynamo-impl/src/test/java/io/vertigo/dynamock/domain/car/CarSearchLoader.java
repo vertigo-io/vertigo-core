@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamock.domain.car;
 
-import io.vertigo.dynamo.domain.model.DtSubject;
+import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchChunk;
@@ -43,7 +43,7 @@ public final class CarSearchLoader implements SearchLoader<Car, Car> {
 
 	@Inject
 	public CarSearchLoader(final SearchManager searchManager) {
-		indexDefinition = searchManager.findIndexDefinitionBySubject(Car.class);
+		indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Car.class);
 	}
 
 	/**
@@ -72,7 +72,7 @@ public final class CarSearchLoader implements SearchLoader<Car, Car> {
 
 	/** {@inheritDoc} */
 	@Override
-	public Iterable<SearchChunk<Car>> chunk(final Class<Car> subjectClass) {
+	public Iterable<SearchChunk<Car>> chunk(final Class<Car> keyConceptClass) {
 
 		return new Iterable<SearchChunk<Car>>() {
 			private final Iterator<SearchChunk<Car>> iterator = new Iterator<SearchChunk<Car>>() {
@@ -80,12 +80,12 @@ public final class CarSearchLoader implements SearchLoader<Car, Car> {
 
 				@Override
 				public boolean hasNext() {
-					return hasNextChunk(subjectClass, current);
+					return hasNextChunk(keyConceptClass, current);
 				}
 
 				@Override
 				public SearchChunk<Car> next() {
-					final SearchChunk<Car> next = nextChunk(subjectClass, current);
+					final SearchChunk<Car> next = nextChunk(keyConceptClass, current);
 					current = next;
 					return current;
 				}
@@ -104,11 +104,11 @@ public final class CarSearchLoader implements SearchLoader<Car, Car> {
 		};
 	}
 
-	private SearchChunk<Car> nextChunk(final Class<Car> subjectClass, final SearchChunk<Car> previousChunck) {
+	private SearchChunk<Car> nextChunk(final Class<Car> keyConceptClass, final SearchChunk<Car> previousChunck) {
 		Long lastId = -1L;
 		if (previousChunck != null) {
 			final List<URI<Car>> previousUris = previousChunck.getAllURIs();
-			Assertion.checkState(!previousUris.isEmpty(), "No more SearchChunk for DtSubject {0}, ensure you use Iterable pattern or call hasNext before next", subjectClass.getSimpleName());
+			Assertion.checkState(!previousUris.isEmpty(), "No more SearchChunk for keyConcept {0}, ensure you use Iterable pattern or call hasNext before next", keyConceptClass.getSimpleName());
 			lastId = (Long) previousUris.get(previousUris.size() - 1).getId();
 		}
 		final List<URI<Car>> uris = new ArrayList<>(SEARCH_CHUNK_SIZE);
@@ -116,7 +116,7 @@ public final class CarSearchLoader implements SearchLoader<Car, Car> {
 		int i = 0;
 		for (final Car car : carDataBase) {
 			if (i > lastId) {
-				uris.add(new URI(indexDefinition.getSubjectDtDefinition(), car.getId()));
+				uris.add(new URI(indexDefinition.getKeyConceptDtDefinition(), car.getId()));
 			}
 			if (uris.size() >= SEARCH_CHUNK_SIZE) {
 				break;
@@ -126,12 +126,12 @@ public final class CarSearchLoader implements SearchLoader<Car, Car> {
 		return new SearchChunkImpl<>(uris);
 	}
 
-	private boolean hasNextChunk(final Class<Car> subjectClass, final SearchChunk<Car> previousChunck) {
+	private boolean hasNextChunk(final Class<Car> keyConceptClass, final SearchChunk<Car> previousChunck) {
 		//il y a une suite, si on a pas commencé, ou s'il y avait des résultats la dernière fois.
 		return previousChunck == null || !previousChunck.getAllURIs().isEmpty();
 	}
 
-	public static class SearchChunkImpl<S extends DtSubject> implements SearchChunk<S> {
+	public static class SearchChunkImpl<S extends KeyConcept> implements SearchChunk<S> {
 		private final List<URI<S>> uris;
 
 		/**

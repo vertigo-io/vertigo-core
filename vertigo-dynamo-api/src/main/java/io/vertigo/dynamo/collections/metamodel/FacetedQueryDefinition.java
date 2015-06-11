@@ -44,7 +44,7 @@ public final class FacetedQueryDefinition implements Definition {
 	 */
 	private final String name;
 
-	private final DtDefinition subjectDtDefinition;
+	private final DtDefinition keyConceptDtDefinition;
 
 	/** Liste indexée des facettes.*/
 	private final Map<String, FacetDefinition> facetDefinitions = new LinkedHashMap<>();
@@ -63,19 +63,19 @@ public final class FacetedQueryDefinition implements Definition {
 	/**
 	 * Constructeur.
 	 * @param name Nom de la definition
-	 * @param subjectDtDefinition Definition du subject sur lequel s'applique cette recherche
+	 * @param keyConceptDtDefinition Definition du keyConcept sur lequel s'applique cette recherche
 	 * @param facetDefinitions Liste des facettes
 	 */
-	public FacetedQueryDefinition(final String name, final DtDefinition subjectDtDefinition, final List<FacetDefinition> facetDefinitions, final Domain criteriaDomain, final Class<? extends ListFilterBuilder> listFilterBuilderClass, final String listFilterBuilderQuery) {
+	public FacetedQueryDefinition(final String name, final DtDefinition keyConceptDtDefinition, final List<FacetDefinition> facetDefinitions, final Domain criteriaDomain, final Class<? extends ListFilterBuilder> listFilterBuilderClass, final String listFilterBuilderQuery) {
 		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(subjectDtDefinition);
+		Assertion.checkNotNull(keyConceptDtDefinition);
 		Assertion.checkNotNull(facetDefinitions);
 		Assertion.checkNotNull(criteriaDomain);
 		Assertion.checkNotNull(listFilterBuilderClass);
 		Assertion.checkNotNull(listFilterBuilderQuery);
 		//-----
 		this.name = name;
-		this.subjectDtDefinition = subjectDtDefinition;
+		this.keyConceptDtDefinition = keyConceptDtDefinition;
 		for (final FacetDefinition facetDefinition : facetDefinitions) {
 			this.facetDefinitions.put(facetDefinition.getName(), facetDefinition);
 		}
@@ -106,11 +106,11 @@ public final class FacetedQueryDefinition implements Definition {
 	}
 
 	/**
-	 * Définition du subject de cette recherche.
-	 * @return Définition du subject.
+	 * Définition du keyConcept de cette recherche.
+	 * @return Définition du keyConcept.
 	 */
-	public DtDefinition getSubjectDtDefinition() {
-		return subjectDtDefinition;
+	public DtDefinition getKeyConceptDtDefinition() {
+		return keyConceptDtDefinition;
 	}
 
 	/**

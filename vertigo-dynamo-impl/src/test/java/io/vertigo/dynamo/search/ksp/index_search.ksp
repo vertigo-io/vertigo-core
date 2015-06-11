@@ -1,13 +1,13 @@
 package io.vertigo.dynamock.search
 
 create IndexDefinition IDX_CAR {
-    dtSubject : DT_CAR
+    keyConcept : DT_CAR
     dtIndex : DT_CAR
     loaderId : "CarSearchLoader"
 }
 
 create IndexDefinition IDX_DYNA_CAR {
-    dtSubject : DT_CAR
+    keyConcept : DT_CAR
     dtIndex : DT_CAR
     loaderId : "CarSearchLoader"
 }
@@ -28,7 +28,7 @@ create FacetDefinition FCT_YEAR_CAR {
 }
 
 create FacetedQueryDefinition QRY_CAR_FACET {
-    dtSubject : DT_CAR
+    keyConcept : DT_CAR
     facets : [ FCT_DESCRIPTION_CAR, FCT_MAKE_CAR, FCT_YEAR_CAR]
     domainCriteria : DO_STRING
     listFilterBuilderClass : "io.vertigo.dynamox.search.DefaultListFilterBuilder"  
