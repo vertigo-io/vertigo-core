@@ -90,7 +90,6 @@ public final class RestManagerImpl implements RestManager {
 		this.endPointIntrospectorPlugin = endPointIntrospectorPlugin;
 		this.routesRegisterPlugin = routesRegisterPlugin;
 		handlerChain = new HandlerChain(restHandlerPlugins);
-		Home.getDefinitionSpace().register(EndPointDefinition.class);
 	}
 
 	/**
@@ -122,7 +121,7 @@ public final class RestManagerImpl implements RestManager {
 
 		//3- We register EndPoint Definition in this order
 		for (final EndPointDefinition endPointDefinition : allEndPointDefinitions) {
-			Home.getDefinitionSpace().put(endPointDefinition, EndPointDefinition.class);
+			Home.getDefinitionSpace().put(endPointDefinition);
 		}
 	}
 

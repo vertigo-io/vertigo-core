@@ -41,7 +41,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	private final Logger log = Logger.getLogger(getClass());
 
 	private static void registerDefinition(final PublisherDataDefinition publisherDataDefinition) {
-		Home.getDefinitionSpace().put(publisherDataDefinition, PublisherDataDefinition.class);
+		Home.getDefinitionSpace().put(publisherDataDefinition);
 	}
 
 	/**
@@ -69,7 +69,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	public final void testDefinitionNomMinuscules() {
 		final PublisherNodeDefinition rootDefinition = createNodeDefinition();
 		final PublisherDataDefinition publisherDataDefinition = new PublisherDataDefinition("pu_test", rootDefinition);
-		Home.getDefinitionSpace().put(publisherDataDefinition, PublisherDataDefinition.class);
+		Home.getDefinitionSpace().put(publisherDataDefinition);
 	}
 
 	/**
@@ -79,7 +79,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	public final void testDefinitionNomAvecPoint() {
 		final PublisherNodeDefinition rootDefinition = createNodeDefinition();
 		final PublisherDataDefinition publisherDataDefinition = new PublisherDataDefinition("PU_TEST.TOTO", rootDefinition);
-		Home.getDefinitionSpace().put(publisherDataDefinition, PublisherDataDefinition.class);
+		Home.getDefinitionSpace().put(publisherDataDefinition);
 		nop(publisherDataDefinition);
 	}
 
@@ -90,7 +90,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	public final void testDefinitionNomAvecArobase() {
 		final PublisherNodeDefinition rootDefinition = createNodeDefinition();
 		final PublisherDataDefinition publisherDataDefinition = new PublisherDataDefinition("PU_TEST@TOTO", rootDefinition);
-		Home.getDefinitionSpace().put(publisherDataDefinition, PublisherDataDefinition.class);
+		Home.getDefinitionSpace().put(publisherDataDefinition);
 		nop(publisherDataDefinition);
 	}
 
@@ -101,7 +101,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	public final void testDefinitionNom1() {
 		final PublisherNodeDefinition rootDefinition = createNodeDefinition();
 		final PublisherDataDefinition publisherDataDefinition = new PublisherDataDefinition("PU_TEST_AZERTYUIOPQSDFGHJKLMWXCVBN_AZERTYUIOPQSDFGHJKLMWXCVBN", rootDefinition);
-		Home.getDefinitionSpace().put(publisherDataDefinition, PublisherDataDefinition.class);
+		Home.getDefinitionSpace().put(publisherDataDefinition);
 		nop(publisherDataDefinition);
 	}
 

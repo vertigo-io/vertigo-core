@@ -46,7 +46,6 @@ public final class JobManagerImpl implements JobManager {
 		Assertion.checkNotNull(analyticsManager);
 		//-----
 		jobListener = new JobListener(analyticsManager);
-		Home.getDefinitionSpace().register(JobDefinition.class);
 	}
 
 	/** {@inheritDoc} */
