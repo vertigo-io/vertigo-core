@@ -79,8 +79,10 @@ public final class TemplateDAO {
 			indexDefinition = currentIndexDefinition;
 			if (indexDefinition != null) {
 				for (final FacetedQueryDefinition facetedQueryDefinition : Home.getDefinitionSpace().getAll(FacetedQueryDefinition.class)) {
-					final TemplateFacetedQueryDefinition templateFacetedQueryDefinition = new TemplateFacetedQueryDefinition(facetedQueryDefinition);
-					facetedQueryDefinitions.add(templateFacetedQueryDefinition);
+					if (facetedQueryDefinition.getKeyConceptDtDefinition().equals(dtDefinition)) {
+						final TemplateFacetedQueryDefinition templateFacetedQueryDefinition = new TemplateFacetedQueryDefinition(facetedQueryDefinition);
+						facetedQueryDefinitions.add(templateFacetedQueryDefinition);
+					}
 				}
 			}
 		} else {
