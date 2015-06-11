@@ -73,9 +73,6 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 		this.localeManager = localeManager;
 		this.userSessionClassName = userSessionClassName;
 		//---
-		Home.getDefinitionSpace().register(Role.class);
-		Home.getDefinitionSpace().register(Permission.class);
-		//---
 		//We are populating xml loader or anything that can load security policy.
 		Home.getDefinitionSpace().addLoader(securityLoaderPlugin);
 	}

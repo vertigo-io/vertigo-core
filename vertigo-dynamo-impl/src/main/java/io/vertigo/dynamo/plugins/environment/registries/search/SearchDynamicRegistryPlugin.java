@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.plugins.environment.registries.search;
 
 import io.vertigo.core.Home;
+import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinitionByRangeBuilder;
@@ -47,22 +48,22 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 	public SearchDynamicRegistryPlugin() {
 		super(SearchGrammar.GRAMMAR);
-		Home.getDefinitionSpace().register(SearchIndexDefinition.class);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void onDefinition(final DynamicDefinition xdefinition) {
+		final Definition definition;
 		if (SearchGrammar.INDEX_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
-			final SearchIndexDefinition indexDefinition = createIndexDefinition(xdefinition);
-			Home.getDefinitionSpace().put(indexDefinition, SearchIndexDefinition.class);
+			definition = createIndexDefinition(xdefinition);
 		} else if (SearchGrammar.FACET_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
-			final FacetDefinition facetDefinition = createFacetDefinition(xdefinition);
-			Home.getDefinitionSpace().put(facetDefinition, FacetDefinition.class);
+			definition = createFacetDefinition(xdefinition);
 		} else if (SearchGrammar.FACETED_QUERY_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
-			final FacetedQueryDefinition facetedQueryDefinition = createFacetedQueryDefinition(xdefinition);
-			Home.getDefinitionSpace().put(facetedQueryDefinition, FacetedQueryDefinition.class);
+			definition = createFacetedQueryDefinition(xdefinition);
+		} else {
+			throw new IllegalStateException("unknown definition :" + xdefinition);
 		}
+		Home.getDefinitionSpace().put(definition);
 	}
 
 	private static SearchIndexDefinition createIndexDefinition(final DynamicDefinition xsearchObjet) {

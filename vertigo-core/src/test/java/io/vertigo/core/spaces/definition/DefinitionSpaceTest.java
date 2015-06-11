@@ -52,17 +52,10 @@ public class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals("definitionSpace must be emmpty", 0L, Home.getDefinitionSpace().getAllTypes().size());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testRegisterIsMandatory() {
-		Assert.assertEquals("definitionSpace must be emmpty", 0L, Home.getDefinitionSpace().getAllTypes().size());
-		Home.getDefinitionSpace().put(new SampleDefinition(), SampleDefinition.class);
-	}
-
 	@Test
 	public void testRegister() throws IOException, ClassNotFoundException {
 		Assert.assertEquals("definitionSpace must be emmpty", 0L, Home.getDefinitionSpace().getAllTypes().size());
-		Home.getDefinitionSpace().register(SampleDefinition.class);
-		Home.getDefinitionSpace().put(new SampleDefinition(), SampleDefinition.class);
+		Home.getDefinitionSpace().put(new SampleDefinition());
 
 		Assert.assertEquals("definitionSpace must contain one element ", 1L, Home.getDefinitionSpace().getAllTypes().size());
 		Assert.assertEquals("definitionSpace[SampleDefinition.class] must contain one element ", 1L, Home.getDefinitionSpace().getAll(SampleDefinition.class).size());

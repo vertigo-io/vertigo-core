@@ -72,39 +72,29 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	public DomainDynamicRegistryPlugin() {
 		super(DomainGrammar.GRAMMAR);
 		definitionSpace = Home.getDefinitionSpace();
-		definitionSpace.register(DtDefinition.class);
-		definitionSpace.register(Domain.class);
-		definitionSpace.register(FormatterDefinition.class);
-		definitionSpace.register(ConstraintDefinition.class);
-		definitionSpace.register(AssociationSimpleDefinition.class);
-		definitionSpace.register(AssociationNNDefinition.class);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void onDefinition(final DynamicDefinition xdefinition) {
 		final Entity entity = xdefinition.getEntity();
+		final Definition definition;
 		if (entity.equals(DomainGrammar.DOMAIN_ENTITY)) {
-			final Domain definition = createDomain(xdefinition);
-			definitionSpace.put(definition, Domain.class);
+			definition = createDomain(xdefinition);
 		} else if (entity.equals(DomainGrammar.DT_DEFINITION_ENTITY)) {
-			final DtDefinition dtDefinition = createDtDefinition(xdefinition);
-			definitionSpace.put(dtDefinition, DtDefinition.class);
+			definition = createDtDefinition(xdefinition);
 		} else if (entity.equals(DomainGrammar.ASSOCIATION_ENTITY)) {
-			final AssociationSimpleDefinition definition = createAssociationSimpleDefinition(xdefinition);
-			definitionSpace.put(definition, AssociationSimpleDefinition.class);
+			definition = createAssociationSimpleDefinition(xdefinition);
 		} else if (entity.equals(DomainGrammar.ASSOCIATION_NN_ENTITY)) {
-			final AssociationNNDefinition definition = createAssociationNNDefinition(xdefinition);
-			definitionSpace.put(definition, AssociationNNDefinition.class);
+			definition = createAssociationNNDefinition(xdefinition);
 		} else if (entity.equals(DomainGrammar.CONSTAINT_ENTITY)) {
-			final ConstraintDefinition definition = createConstraint(xdefinition);
-			definitionSpace.put(definition, ConstraintDefinition.class);
+			definition = createConstraint(xdefinition);
 		} else if (entity.equals(DomainGrammar.FORMATTER_ENTITY)) {
-			final FormatterDefinition definition = createFormatter(xdefinition);
-			definitionSpace.put(definition, FormatterDefinition.class);
+			definition = createFormatter(xdefinition);
 		} else {
 			throw new IllegalArgumentException("Type de définition non gérée: " + xdefinition.getDefinitionKey().getName());
 		}
+		definitionSpace.put(definition);
 	}
 
 	/**
