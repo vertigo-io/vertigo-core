@@ -28,7 +28,7 @@ import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.task.model.TaskResult;
 </#if>
-<#if dao.dtSubject>
+<#if dao.keyConcept>
 import io.vertigo.dynamo.domain.model.URI;
 </#if>
 import io.vertigo.dynamo.impl.persistence.util.DAOBroker;
@@ -41,7 +41,7 @@ import ${dao.dtClassCanonicalName};
  * ${dao.classSimpleName}
  */
 public final class ${dao.classSimpleName} extends DAOBroker<${dao.dtClassSimpleName}, ${dao.pkFieldType}> {
-	<#if dao.dtSubject && dao.hasSearchBehavior()>
+	<#if dao.keyConcept && dao.hasSearchBehavior()>
 	private final SearchManager searchManager;
 	</#if>
 	<#if !dao.taskDefinitions.empty>
@@ -52,41 +52,41 @@ public final class ${dao.classSimpleName} extends DAOBroker<${dao.dtClassSimpleN
 	 * Contructeur.
 	 * @param persistenceManager Manager de persistance
 	 * @param taskManager Manager de Task
-	 <#if dao.dtSubject && dao.hasSearchBehavior()>
+	 <#if dao.keyConcept && dao.hasSearchBehavior()>
 	 * @param searchManager Manager de Search
 	 </#if>
 	 */
 	@Inject
-	public ${dao.classSimpleName}(final PersistenceManager persistenceManager, final TaskManager taskManager<#if dao.dtSubject && dao.hasSearchBehavior()>, final SearchManager searchManager</#if>) {
+	public ${dao.classSimpleName}(final PersistenceManager persistenceManager, final TaskManager taskManager<#if dao.keyConcept && dao.hasSearchBehavior()>, final SearchManager searchManager</#if>) {
 		super(${dao.dtClassSimpleName}.class, persistenceManager, taskManager);
-		<#if dao.dtSubject && dao.hasSearchBehavior()>
+		<#if dao.keyConcept && dao.hasSearchBehavior()>
 		this.searchManager = searchManager;
 		</#if>
 	}
 	
-	<#if dao.dtSubject>
+	<#if dao.keyConcept>
 	/**
-	 * Indique que le subject associé à cette uri va être modifié.
+	 * Indique que le keyConcept associé à cette uri va être modifié.
 	 * Techniquement cela interdit les opérations d'ecriture en concurrence 
-	 * et envoie un évenement de modification du subject (à la fin de transaction eventuellement) 
-	 * @param uri URI du subject modifié
+	 * et envoie un évenement de modification du keyConcept (à la fin de transaction eventuellement) 
+	 * @param uri URI du keyConcept modifié
 	 */
-	 public void workOnSubject(final URI<${dao.dtClassSimpleName}> uri) {
+	 public void workOnKeyConcept(final URI<${dao.dtClassSimpleName}> uri) {
 		broker.workOn(uri);
 	}
 
 	/**
-	 * Indique que le subject associé à cet id va être modifié.
+	 * Indique que le keyConcept associé à cet id va être modifié.
 	 * Techniquement cela interdit les opérations d'ecriture en concurrence 
-	 * et envoie un évenement de modification du subject (à la fin de transaction eventuellement) 
-	 * @param id Clé du subject modifié
+	 * et envoie un évenement de modification du keyConcept (à la fin de transaction eventuellement) 
+	 * @param id Clé du keyConcept modifié
 	 */
-	 public void workOnSubject(final ${dao.pkFieldType} id) {
-		workOnSubject(createDtObjectURI(id));
+	 public void workOnKeyConcept(final ${dao.pkFieldType} id) {
+		workOnKeyConcept(createDtObjectURI(id));
 	}
 	
 	</#if>
-    <#if dao.dtSubject && dao.hasSearchBehavior()>
+    <#if dao.keyConcept && dao.hasSearchBehavior()>
     
     <#list dao.facetedQueryDefinitions as facetedQueryDefinition>
     /**
@@ -110,7 +110,7 @@ public final class ${dao.classSimpleName} extends DAOBroker<${dao.dtClassSimpleN
 	 * @return Résultat correspondant à la requête (de type ${dao.indexDtClassSimpleName}) 
 	 */
 	public FacetedQueryResult<${dao.indexDtClassSimpleName}, SearchQuery> loadList(final SearchQuery searchQuery, final DtListState listState) {
-		final SearchIndexDefinition indexDefinition = searchManager.findIndexDefinitionBySubject(${dao.dtClassSimpleName}.class);
+		final SearchIndexDefinition indexDefinition = searchManager.findIndexDefinitionByKeyConcept(${dao.dtClassSimpleName}.class);
 		return searchManager.loadList(indexDefinition, searchQuery, listState);
 	}
 	
