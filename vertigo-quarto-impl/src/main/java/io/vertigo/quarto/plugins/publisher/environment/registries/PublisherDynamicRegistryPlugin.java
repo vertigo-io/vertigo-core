@@ -46,7 +46,6 @@ public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistr
 	 */
 	public PublisherDynamicRegistryPlugin() {
 		super(PublisherGrammar.grammar);
-		Home.getDefinitionSpace().register(PublisherDataDefinition.class);
 	}
 
 	/** {@inheritDoc} */
@@ -56,7 +55,7 @@ public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistr
 
 		if (entity.equals(PublisherGrammar.publisherDefinition)) {
 			final PublisherDataDefinition definition = createPublisherDataDefinition(xdefinition);
-			Home.getDefinitionSpace().put(definition, PublisherDataDefinition.class);
+			Home.getDefinitionSpace().put(definition);
 		} else if (entity.equals(PublisherGrammar.publisherNodeDefinition)) {
 			createPublisherNodeDefinition(xdefinition);
 		} else {
