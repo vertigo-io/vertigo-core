@@ -193,7 +193,7 @@ public final class SwaggerRestServices implements RestfulService {
 		final Map<String, Object> swagger = new LinkedHashMap<>();
 		swagger.put("swagger", 2.0);
 		swagger.put("info", createInfoObject());
-		swagger.put("basePath", contextPath);
+		swagger.put("basePath", contextPath.isEmpty() ? "/" : contextPath);
 
 		//host, basePath, schemes, consumes, produces
 		swagger.put("paths", createPathsObject());
@@ -350,20 +350,20 @@ public final class SwaggerRestServices implements RestfulService {
 	private void appendPropertiesDtObject(final Map<String, Object> entity, final Class<? extends DtObject> objectClass) {
 		//can't be a primitive nor array nor DtListDelta
 		final Map<String, Object> properties = new LinkedHashMap<>();
-		final List<String> enums = new ArrayList<>(); //mandatory fields
+		final List<String> required = new ArrayList<>(); //mandatory fields
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(objectClass);
 		for (final DtField dtField : dtDefinition.getFields()) {
 			final String fieldName = StringUtil.constToLowerCamelCase(dtField.getName());
 			final Type fieldType = getFieldType(dtField);
 			final Map<String, Object> fieldSchema = createSchemaObject(fieldType);
 			fieldSchema.put("title", dtField.getLabel().getDisplay());
-			fieldSchema.put("required", dtField.isNotNull());
 			if (dtField.isNotNull()) {
-				enums.add(fieldName);
+				required.add(fieldName);
 			}
+			//could add enum on field to specify all values authorized
 			properties.put(fieldName, fieldSchema);
 		}
-		putIfNotEmpty(entity, "enum", enums);
+		putIfNotEmpty(entity, "required", required);
 		putIfNotEmpty(entity, "properties", properties);
 	}
 
