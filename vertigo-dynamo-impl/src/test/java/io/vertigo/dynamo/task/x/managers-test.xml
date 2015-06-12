@@ -38,6 +38,7 @@
 		</component>
 		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl" />
 
+		<component api="EventsManager" class="io.vertigo.dynamo.impl.events.EventsManagerImpl" />
 		<component api="PersistenceManager" class="io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl" >
 			<plugin class="io.vertigo.dynamo.plugins.persistence.datastore.hsql.HsqlDataStorePlugin">
 				<param name="sequencePrefix" value="SEQ_" />
