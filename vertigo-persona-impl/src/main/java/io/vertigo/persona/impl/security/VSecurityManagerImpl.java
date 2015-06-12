@@ -24,7 +24,6 @@ import io.vertigo.core.Home;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-import io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin;
 import io.vertigo.persona.security.ResourceNameFactory;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
@@ -60,21 +59,16 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 	/**
 	 * Constructeur.
 	 * Les deux namespace ne sont pas types pour eviter des couplages forts (notamment sur UI).
-	 * @param securityLoaderPlugin Plugin responsible for loading security model
 	 * @param localeManager Manager des messages localises
 	 * @param userSessionClassName ClassName de l'objet de session utilisateur
 	 */
 	@Inject
-	public VSecurityManagerImpl(final SecurityResourceLoaderPlugin securityLoaderPlugin, final LocaleManager localeManager, @Named("userSessionClassName") final String userSessionClassName) {
-		Assertion.checkNotNull(securityLoaderPlugin);
+	public VSecurityManagerImpl(final LocaleManager localeManager, @Named("userSessionClassName") final String userSessionClassName) {
 		Assertion.checkNotNull(localeManager);
 		Assertion.checkArgNotEmpty(userSessionClassName);
 		//-----
 		this.localeManager = localeManager;
 		this.userSessionClassName = userSessionClassName;
-		//---
-		//We are populating xml loader or anything that can load security policy.
-		Home.getDefinitionSpace().addLoader(securityLoaderPlugin);
 	}
 
 	/** {@inheritDoc} */

@@ -107,8 +107,8 @@ public final class DIReactor {
 		final List<DIDependency> missing = new ArrayList<>();
 		for (final DIComponentInfo componentInfo : diComponentInfos) {
 			for (final DIDependency dependency : componentInfo.getDependencies()) {
-				//Si une référence est optionnelle alors elle n'est jamais manquante.
-				if (!dependency.isOptional() && !allComponentInfos.contains(dependency.getId())) {
+				//Si une référence est une liste ou optionnelle alors elle n'est jamais manquante.
+				if (!dependency.isList() && !dependency.isOptional() && !allComponentInfos.contains(dependency.getId())) {
 					missing.add(dependency);
 				}
 			}
@@ -132,7 +132,7 @@ public final class DIReactor {
 				for (final DIDependency dependency : componentInfo.getDependencies()) {
 					//On vérifie si pour un composant
 					//TOUTES ses dépendances sont bien déjà résolues.
-					if (allComponentInfos.contains(dependency.getId()) || !dependency.isOptional()) {
+					if (allComponentInfos.contains(dependency.getId()) || !(dependency.isOptional() || dependency.isList())) {
 						//On doit résoudre toutes des références connues(y compris les référenes optionnelles) sans tenir compte des références inconnues et optionnelles.
 						solved = solved && (sorted.contains(dependency.getId()) || parentComponentInfos.contains(dependency.getId()));
 					}

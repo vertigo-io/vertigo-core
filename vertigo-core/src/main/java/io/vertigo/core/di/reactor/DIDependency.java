@@ -34,6 +34,7 @@ final class DIDependency {
 	private final DIComponentInfo componentInfo;
 	private final String id;
 	private final boolean option;
+	private final boolean isList;
 
 	//Each component has a dependency on its plugins
 	DIDependency(final DIComponentInfo componentInfo, final String id) {
@@ -43,6 +44,7 @@ final class DIDependency {
 		this.componentInfo = componentInfo;
 		this.id = id;
 		option = false;
+		isList = false;
 	}
 
 	DIDependency(final DIComponentInfo componentInfo, final Field field) {
@@ -52,6 +54,7 @@ final class DIDependency {
 		this.componentInfo = componentInfo;
 		id = DIAnnotationUtil.buildId(field);
 		option = DIAnnotationUtil.isOptional(field);
+		isList = DIAnnotationUtil.isList(field);
 	}
 
 	DIDependency(final DIComponentInfo componentInfo, final Constructor<?> constructor, final int i) {
@@ -61,6 +64,8 @@ final class DIDependency {
 		this.componentInfo = componentInfo;
 		id = DIAnnotationUtil.buildId(constructor, i);
 		option = DIAnnotationUtil.isOptional(constructor, i);
+		isList = DIAnnotationUtil.isList(constructor, i);
+
 	}
 
 	String getId() {
@@ -69,6 +74,10 @@ final class DIDependency {
 
 	boolean isOptional() {
 		return option;
+	}
+
+	public boolean isList() {
+		return isList;
 	}
 
 	@Override

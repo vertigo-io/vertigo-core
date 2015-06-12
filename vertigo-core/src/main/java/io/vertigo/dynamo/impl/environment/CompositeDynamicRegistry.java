@@ -30,6 +30,7 @@ import java.util.List;
 final class CompositeDynamicRegistry implements DynamicRegistry {
 	private final List<DynamicRegistry> dynamicRegistries;
 	private final Grammar grammar;
+	private final List<DynamicDefinition> rootDynamicDefinitions;
 
 	/**
 	 * Constructeur.
@@ -40,6 +41,11 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 		this.dynamicRegistries = new ArrayList<DynamicRegistry>(handlerList);
 		//Création de la grammaire.
 		grammar = createGrammar();
+
+		rootDynamicDefinitions = new ArrayList<>();
+		for (final DynamicRegistry dynamicRegistry : dynamicRegistries) {
+			rootDynamicDefinitions.addAll(dynamicRegistry.getRootDynamicDefinitions());
+		}
 	}
 
 	private Grammar createGrammar() {
@@ -54,6 +60,12 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 	@Override
 	public Grammar getGrammar() {
 		return grammar;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<DynamicDefinition> getRootDynamicDefinitions() {
+		return rootDynamicDefinitions;
 	}
 
 	/** {@inheritDoc} */

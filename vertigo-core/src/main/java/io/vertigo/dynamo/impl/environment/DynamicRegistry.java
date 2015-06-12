@@ -22,6 +22,8 @@ import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRep
 import io.vertigo.dynamo.impl.environment.kernel.meta.Grammar;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 
+import java.util.List;
+
 /**
  * Handler qui permet de créer des définitions statiques à partir d'une définition dynamique.
  * @author pchretien
@@ -31,6 +33,12 @@ public interface DynamicRegistry {
 	 * @return Grammaire
 	 */
 	Grammar getGrammar();
+
+	/**
+	 * 
+	 * @return Liste des definitions de base (String ....) permettant de construire les autes
+	 */
+	List<DynamicDefinition> getRootDynamicDefinitions();
 
 	/**
 	 * Enregistrement d'une définition.

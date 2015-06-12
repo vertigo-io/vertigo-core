@@ -19,10 +19,7 @@
 package io.vertigo.dynamo.impl.environment;
 
 import io.vertigo.core.config.ResourceConfig;
-import io.vertigo.core.spaces.definiton.ResourceLoader;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
-import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.lang.Assertion;
 
@@ -33,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+
  * Environnement permettant de charger le Modèle.
  * Le Modèle peut être chargé de multiples façon :
  * - par lecture d'un fichier oom (poweramc),
@@ -43,8 +41,8 @@ import java.util.Set;
  *
  * @author pchretien
  */
-final class Environment implements ResourceLoader {
-	private final Map<String, Loader> loaders = new HashMap<>();
+public final class Environment {
+	private final Map<String, LoaderPlugin> loaderPlugins = new HashMap<>();
 	private final List<DynamicRegistryPlugin> dynamicRegistryPlugins;
 
 	/**
@@ -57,11 +55,13 @@ final class Environment implements ResourceLoader {
 		this.dynamicRegistryPlugins = dynamicRegistryPlugins;
 		//On enregistre les loaders
 		for (final LoaderPlugin loaderPlugin : loaderPlugins) {
-			loaders.put(loaderPlugin.getType(), loaderPlugin);
+			this.loaderPlugins.put(loaderPlugin.getType(), loaderPlugin);
 		}
 	}
 
-	@Override
+	/**
+	 * @param resourceConfigs List of resources (must be in a type managed by this loader)
+	 */
 	public void parse(final List<ResourceConfig> resourceConfigs) {
 		final CompositeDynamicRegistry handler = new CompositeDynamicRegistry(dynamicRegistryPlugins);
 
@@ -69,21 +69,23 @@ final class Environment implements ResourceLoader {
 		final DynamicDefinitionRepository dynamicModelRepository = new DynamicDefinitionRepository(handler);
 
 		//--Enregistrement des types primitifs
-		final Entity dataTypeEntity = KernelGrammar.getDataTypeEntity();
-		for (final DataType type : DataType.values()) {
-			final DynamicDefinition definition = DynamicDefinitionRepository.createDynamicDefinitionBuilder(type.name(), dataTypeEntity, null).build();
-			dynamicModelRepository.addDefinition(definition);
+		for (final DynamicRegistryPlugin dynamicRegistryPlugin : dynamicRegistryPlugins) {
+			for (final DynamicDefinition dynamicDefinition : dynamicRegistryPlugin.getRootDynamicDefinitions()) {
+				dynamicModelRepository.addDefinition(dynamicDefinition);
+			}
 		}
 		for (final ResourceConfig resourceConfig : resourceConfigs) {
-			final Loader loader = loaders.get(resourceConfig.getType());
-			Assertion.checkNotNull(loader, "This resource {0} can not be parse by this loader", resourceConfig);
-			loader.load(resourceConfig.getPath(), dynamicModelRepository);
+			final LoaderPlugin loaderPlugin = loaderPlugins.get(resourceConfig.getType());
+			Assertion.checkNotNull(loaderPlugin, "This resource {0} can not be parse by this loader", resourceConfig);
+			loaderPlugin.load(resourceConfig.getPath(), dynamicModelRepository);
 		}
 		dynamicModelRepository.solve();
 	}
 
-	@Override
+	/**
+	 * @return Types that can be parsed.
+	 */
 	public Set<String> getTypes() {
-		return Collections.unmodifiableSet(loaders.keySet());
+		return Collections.unmodifiableSet(loaderPlugins.keySet());
 	}
 }

@@ -16,28 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.spaces.definiton;
+package io.vertigo.dynamo.impl.environment;
 
-import io.vertigo.core.config.ResourceConfig;
-
-import java.util.List;
-import java.util.Set;
+import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
+import io.vertigo.lang.Plugin;
 
 /**
- * This object can parse and load resources from a certain type.
- * All 'static' definitions should use this way to be populated.
- *
+ * Plugin de chargement de l'environnement.
  * @author pchretien
  */
-public interface ResourceLoader {
+public interface LoaderPlugin extends Plugin {
 	/**
-	 * @return Types that can be parsed.
+	 * Type parsed by loader. 
+	 * Examples : oom, kpr, eaxmi...
 	 */
-	Set<String> getTypes();
+	String getType();
 
 	/**
-	 *
-	 * @param resourceConfigs List of resources (must be in a type managed by this loader)
+	 * Parsing des définitions pour un fichier (oom, kpr ou ksp)
+	 * défini par une url (sur système de fichier ou classpath)
+	 * et selon la grammaire en argument.
+	 * @param dynamicModelRepository DynamicModelRepository
 	 */
-	void parse(List<ResourceConfig> resourceConfigs);
+	void load(String resourcePath, DynamicDefinitionRepository dynamicModelRepository);
+
 }

@@ -38,6 +38,7 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
+import io.vertigo.dynamo.impl.environment.KernelGrammar;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
 import io.vertigo.dynamo.impl.environment.kernel.meta.EntityProperty;
@@ -72,6 +73,19 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	public DomainDynamicRegistryPlugin() {
 		super(DomainGrammar.GRAMMAR);
 		definitionSpace = Home.getDefinitionSpace();
+
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<DynamicDefinition> getRootDynamicDefinitions() {
+		final List<DynamicDefinition> dynamicDefinitions = new ArrayList<>();
+		//On liste les types primitifs
+		final Entity dataTypeEntity = KernelGrammar.getDataTypeEntity();
+		for (final DataType type : DataType.values()) {
+			dynamicDefinitions.add(DynamicDefinitionRepository.createDynamicDefinitionBuilder(type.name(), dataTypeEntity, null).build());
+		}
+		return dynamicDefinitions;
 	}
 
 	/** {@inheritDoc} */
