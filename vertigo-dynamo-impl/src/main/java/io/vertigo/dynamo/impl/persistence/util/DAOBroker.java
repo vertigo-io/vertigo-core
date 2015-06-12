@@ -21,7 +21,6 @@ package io.vertigo.dynamo.impl.persistence.util;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
@@ -252,35 +251,6 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		return new URI<>(dtDefinition, DtObjectUtil.getId(dto));
-	}
-
-	/**
-	 * Sauvegarde des associations n-n.
-	 *
-	 * @param dtc DtList initiale chargée à partir du DAO pour obtenir les méta-données qui indiquent sur quel
-	 *            objet on a la relation n-n (utiliser un "getCollection()").
-	 * @param newDtc DtList
-	 * @param <FK> Objet en Foreign Key
-	 * @deprecated utiliser updateNN() # l'URI de la collection (getXXXCollection -> getXXXCollectionURI())
-	 */
-	@Deprecated
-	public final <FK extends DtObject> void putNN(final DtList<FK> dtc, final DtList<FK> newDtc) {
-		updateNN(DtListURIForNNAssociation.class.cast(dtc.getURI()), newDtc);
-	}
-
-	/**
-	 * Récupération une liste filtrée par le champ saisie dans le dtoCritère.
-	 *
-	 * @param dtoCriteria les criteres
-	 * @param maxRows Nombre maximum de ligne
-	 * @return Collection de DtObject
-	 * @deprecated utiliser getList(Criteria criteria)
-	 */
-	@Deprecated
-	public final DtList<D> getList(final DtObject dtoCriteria, final int maxRows) {
-		final DtListURI collectionURI = new DtListURIForCriteria(dtDefinition, DtListURIForCriteria.createCriteria(dtoCriteria), maxRows);
-		Assertion.checkNotNull(collectionURI);
-		return broker.getList(collectionURI);
 	}
 
 	/** {@inheritDoc} */
