@@ -9,6 +9,9 @@ import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.metamodel.SearchLoader;
 import io.vertigo.dynamo.search.model.SearchIndex;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.dynamo.transaction.VTransactionWritable;
+import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,10 +25,18 @@ final class ReindexTask implements Runnable {
 	private final List<URI<? extends KeyConcept>> dirtyElements;
 	private final SearchManager searchManager;
 
-	public ReindexTask(final SearchIndexDefinition searchIndexDefinition, final List<URI<? extends KeyConcept>> dirtyElements, final SearchManager searchManager) {
+	private final VTransactionManager transactionManager;
+
+	public ReindexTask(final SearchIndexDefinition searchIndexDefinition, final List<URI<? extends KeyConcept>> dirtyElements, final SearchManager searchManager, final VTransactionManager transactionManager) {
+		Assertion.checkNotNull(searchIndexDefinition);
+		Assertion.checkNotNull(dirtyElements);
+		Assertion.checkNotNull(searchManager);
+		Assertion.checkNotNull(transactionManager);
+		//-----
 		this.searchIndexDefinition = searchIndexDefinition;
 		this.dirtyElements = dirtyElements;//On ne fait pas la copie ici
 		this.searchManager = searchManager;
+		this.transactionManager = transactionManager;
 	}
 
 	@Override
@@ -37,7 +48,14 @@ final class ReindexTask implements Runnable {
 		}
 		if (!reindexUris.isEmpty()) {
 			final SearchLoader searchLoader = Home.getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
-			final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes = searchLoader.loadData(reindexUris);
+			final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes;
+
+			// >>> Tx start
+			try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) { //on execute dans une transaction
+				searchIndexes = searchLoader.loadData(reindexUris);
+			}
+			// <<< Tx end
+
 			removedNotFoundKeyConcept(searchIndexes, reindexUris);
 			searchManager.putAll(searchIndexDefinition, searchIndexes);
 		}

@@ -33,6 +33,7 @@ import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
+import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 
@@ -52,6 +53,8 @@ import javax.inject.Inject;
  * @author dchallas
  */
 public final class SearchManagerImpl implements SearchManager, Activeable {
+
+	private final VTransactionManager transactionManager;
 	private final SearchServicesPlugin searchServicesPlugin;
 
 	private final ScheduledExecutorService executorService; //TODO : replace by WorkManager to make distributed work easier
@@ -60,10 +63,14 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	/**
 	 * Constructor.
 	 * @param searchServicesPlugin Search plugin
+	 * @param eventsManager Events Manager
+	 * @param transactionManager Transaction Manager
 	 */
 	@Inject
-	public SearchManagerImpl(final SearchServicesPlugin searchServicesPlugin, final EventsManager eventsManager) {
+	public SearchManagerImpl(final SearchServicesPlugin searchServicesPlugin, final EventsManager eventsManager, final VTransactionManager transactionManager) {
 		Assertion.checkNotNull(searchServicesPlugin);
+		Assertion.checkNotNull(eventsManager);
+		Assertion.checkNotNull(transactionManager);
 		//-----
 		this.searchServicesPlugin = searchServicesPlugin;
 
@@ -73,6 +80,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		eventsManager.register(PersistenceManager.FiredEvent.storeDelete, false, searchIndexDirtyEventListener);
 
 		executorService = Executors.newSingleThreadScheduledExecutor();
+		this.transactionManager = transactionManager;
 	}
 
 	@Override
@@ -158,14 +166,14 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		synchronized (dirtyElements) {
 			dirtyElements.addAll(keyConceptUris); //TODO : doublons ?
 		}
-		executorService.scheduleAtFixedRate(new ReindexTask(searchIndexDefinition, dirtyElements, this), 0, 5, TimeUnit.SECONDS); //une reindexation dans max 5s
+		executorService.scheduleAtFixedRate(new ReindexTask(searchIndexDefinition, dirtyElements, this, transactionManager), 0, 5, TimeUnit.SECONDS); //une reindexation dans max 5s
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void reindexAll(final SearchIndexDefinition searchIndexDefinition) {
 		//TODO return un Futur ?
-		executorService.scheduleAtFixedRate(new ReindexAllTask(searchIndexDefinition, this), 0, 5, TimeUnit.SECONDS); //une reindexation total dans max 5s
+		executorService.scheduleAtFixedRate(new ReindexAllTask(searchIndexDefinition, this, transactionManager), 0, 5, TimeUnit.SECONDS); //une reindexation total dans max 5s
 	}
 
 }

@@ -70,6 +70,7 @@ public final class SearchIndexDefinition implements Definition {
 		Assertion.checkNotNull(keyConceptDtDefinition);
 		Assertion.checkArgument(keyConceptDtDefinition.getStereotype() == DtStereotype.KeyConcept, "keyConceptDtDefinition ({0}) must be a DtDefinition of a KeyConcept class", keyConceptDtDefinition.getName());
 		Assertion.checkNotNull(indexDtDefinition);
+		Assertion.checkState(indexDtDefinition.getIdField().isDefined(), "Index Object {0} must have a field declared as key", indexDtDefinition.getClassSimpleName());
 		Assertion.checkArgNotEmpty(searchLoaderId);
 		//-----
 		this.name = name;
