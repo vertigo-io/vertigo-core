@@ -19,6 +19,7 @@
 package io.vertigo.vega.impl.rest.catalog;
 
 import io.vertigo.core.Home;
+import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -322,9 +323,10 @@ public final class SwaggerRestServices implements RestfulService {
 			final String objectName;
 			final Class<?> parameterClass;
 			if (type instanceof ParameterizedType
-					&& ((ParameterizedType) type).getActualTypeArguments().length == 1
+					&& (((ParameterizedType) type).getActualTypeArguments().length == 1 || FacetedQueryResult.class.isAssignableFrom(objectClass))
 					&& !(((ParameterizedType) type).getActualTypeArguments()[0] instanceof WildcardType)) {
-				final Type itemsType = ((ParameterizedType) type).getActualTypeArguments()[0]; //we known that DtListDelta has one parameterized type
+				//We have checked there is one parameter or we known that FacetedQueryResult has two parameterized type
+				final Type itemsType = ((ParameterizedType) type).getActualTypeArguments()[0];
 				parameterClass = EndPointTypeUtil.castAsClass(itemsType);
 				objectName = objectClass.getSimpleName() + "&lt;" + parameterClass.getSimpleName() + "&gt;";
 			} else {
