@@ -85,7 +85,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 	 * @param resultLabelKey MessageKey label for result
 	 * @return this builder
 	 */
-	FacetedQueryResultMerger<R, S> with(final FacetedQueryResult<?, S> result, final String resultFilter, final String resultLabel, final MessageKey resultLabelKey) {
+	public FacetedQueryResultMerger<R, S> with(final FacetedQueryResult<?, S> result, final String resultFilter, final String resultLabel, final MessageKey resultLabelKey) {
 		Assertion.checkNotNull(result);
 		Assertion.checkArgNotEmpty(resultFilter);
 		Assertion.checkArgument(resultLabelKey != null || resultLabel != null, "You must set a label when merging result");
@@ -110,7 +110,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 	 * @param facetDefinitionName FacetDefinitionName
 	 * @return this builder
 	 */
-	FacetedQueryResultMerger<R, S> withFacet(final String facetDefinitionName) {
+	public FacetedQueryResultMerger<R, S> withFacet(final String facetDefinitionName) {
 		Assertion.checkArgNotEmpty(facetDefinitionName);
 		//-----
 		final FacetDefinition facetDefinition = Home.getDefinitionSpace().resolve(facetDefinitionName, FacetDefinition.class);
