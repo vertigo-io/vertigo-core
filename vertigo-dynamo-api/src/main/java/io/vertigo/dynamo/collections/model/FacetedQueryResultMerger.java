@@ -18,7 +18,9 @@
  */
 package io.vertigo.dynamo.collections.model;
 
+import io.vertigo.core.Home;
 import io.vertigo.dynamo.collections.ListFilter;
+import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -50,6 +52,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 	private final Map<String, FacetValue> facetValuePerFilter = new HashMap<>();
 	private final Map<FacetValue, List<FacetedQueryResult<?, S>>> otherResults = new HashMap<>();
 
+	private Option<FacetDefinition> clusterFacetDefinition = Option.<FacetDefinition> none();
 	private final Option<FacetedQuery> facetedQuery;
 	private final DtList<R> results;
 	private final S source;
@@ -74,15 +77,23 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 		with(firstResult, firstResultFilter, firstResultLabel, firstResultLabelKey);
 	}
 
-	FacetedQueryResultMerger with(final FacetedQueryResult<?, S> otherResult, final String otherResultFilter, final String otherResultLabel, final MessageKey otherResultLabelKey) {
-		Assertion.checkNotNull(otherResult);
-		Assertion.checkArgNotEmpty(otherResultFilter);
-		Assertion.checkArgument(otherResultLabelKey != null || otherResultLabel != null, "You must set a label when merging result");
+	/**
+	 * Merger should create a facet for this cluster.
+	 * @param result Result to merge
+	 * @param resultFilter SearchQuery filter for result
+	 * @param resultLabel Default string label for result
+	 * @param resultLabelKey MessageKey label for result
+	 * @return this builder
+	 */
+	FacetedQueryResultMerger<R, S> with(final FacetedQueryResult<?, S> result, final String resultFilter, final String resultLabel, final MessageKey resultLabelKey) {
+		Assertion.checkNotNull(result);
+		Assertion.checkArgNotEmpty(resultFilter);
+		Assertion.checkArgument(resultLabelKey != null || resultLabel != null, "You must set a label when merging result");
 		//-----
-		FacetValue otherFacetValue = facetValuePerFilter.get(otherResultFilter);
+		FacetValue otherFacetValue = facetValuePerFilter.get(resultFilter);
 		if (otherFacetValue == null) {
-			otherFacetValue = new FacetValue(new ListFilter(otherResultFilter), new MessageText(otherResultLabel, otherResultLabelKey));
-			facetValuePerFilter.put(otherResultFilter, otherFacetValue);
+			otherFacetValue = new FacetValue(new ListFilter(resultFilter), new MessageText(resultLabel, resultLabelKey));
+			facetValuePerFilter.put(resultFilter, otherFacetValue);
 		}
 
 		List<FacetedQueryResult<?, S>> facetedQueryResults = otherResults.get(otherFacetValue);
@@ -90,7 +101,21 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 			facetedQueryResults = new ArrayList<>();
 			otherResults.put(otherFacetValue, facetedQueryResults);
 		}
-		facetedQueryResults.add(otherResult);
+		facetedQueryResults.add(result);
+		return this;
+	}
+
+	/**
+	 * Merger should create a facet for this cluster.
+	 * @param facetDefinitionName FacetDefinitionName
+	 * @return this builder
+	 */
+	FacetedQueryResultMerger<R, S> withFacet(final String facetDefinitionName) {
+		Assertion.checkArgNotEmpty(facetDefinitionName);
+		//-----
+		final FacetDefinition facetDefinition = Home.getDefinitionSpace().resolve(facetDefinitionName, FacetDefinition.class);
+		//Très compliqué de créer une fausse FacetDefinition, il est plus simple d'imposer une facet détournée.
+		clusterFacetDefinition = Option.some(facetDefinition);
 		return this;
 	}
 
@@ -99,15 +124,17 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 	public FacetedQueryResult<R, S> build() {
 		Assertion.checkArgument(otherResults.size() > 1, "You need at least 2 FacetedQueryResults in order to merge them");
 		//-----
-		long count = 0;
-		final Map<FacetValue, DtList<R>> clusteredDtc = new HashMap<>(2);
+		long totalCount = 0;
+		final Map<FacetValue, DtList<R>> clustersDtc = new HashMap<>(otherResults.size());
+		final Map<FacetValue, Long> clustersCount = new HashMap<>(otherResults.size());
 		final List<Facet> facets = new ArrayList<>();
 		final Map<R, Map<DtField, String>> highlights = Collections.emptyMap();
 
 		for (final Entry<FacetValue, List<FacetedQueryResult<?, S>>> otherResult : otherResults.entrySet()) {
+			long clusterCount = 0;
 			//merge count
 			for (final FacetedQueryResult<?, S> result : otherResult.getValue()) {
-				count += result.getCount();
+				clusterCount += result.getCount();
 			}
 			//cluster result
 			final DtList clusterDtList;
@@ -119,10 +146,17 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 					clusterDtList.addAll(result.getDtList());
 				}
 			}
-			clusteredDtc.put(otherResult.getKey(), clusterDtList);
+			clustersDtc.put(otherResult.getKey(), clusterDtList);
+			clustersCount.put(otherResult.getKey(), clusterCount);
+			totalCount += clusterCount;
 			//TODO merge facets
 			//TODO merge highlights
 		}
-		return new FacetedQueryResult<>(facetedQuery, count, results, facets, clusteredDtc, highlights, source);
+
+		if (clusterFacetDefinition.isDefined()) {
+			final Facet clusterFacet = new Facet(clusterFacetDefinition.get(), clustersCount);
+			facets.add(clusterFacet);
+		}
+		return new FacetedQueryResult<>(facetedQuery, totalCount, results, facets, clustersDtc, highlights, source);
 	}
 }
