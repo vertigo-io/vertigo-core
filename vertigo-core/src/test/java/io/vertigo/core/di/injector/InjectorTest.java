@@ -21,6 +21,7 @@ package io.vertigo.core.di.injector;
 import io.vertigo.core.di.DIException;
 import io.vertigo.core.di.data.A;
 import io.vertigo.core.di.data.B;
+import io.vertigo.core.di.data.B2;
 import io.vertigo.core.di.data.E;
 import io.vertigo.core.di.data.F;
 import io.vertigo.lang.Assertion;
@@ -120,13 +121,22 @@ public final class InjectorTest {
 		nop(b);
 	}
 
+	@Test(expected = DIException.class)
+	public void testB2() {
+		final MyContainer container = new MyContainer();
+		final A a = Injector.newInstance(A.class, container);
+		container.put("a", a);
+		final B2 b2 = Injector.newInstance(B2.class, container);
+		Assert.fail();
+	}
+
 	@Test
 	public void testB() {
 		final MyContainer container = new MyContainer();
 		final A a = Injector.newInstance(A.class, container);
 		container.put("a", a);
 		final B b = Injector.newInstance(B.class, container);
-		Assert.assertEquals(b.getA(), a);
+		Assert.assertEquals(a, b.getA());
 	}
 
 	@Test
