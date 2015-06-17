@@ -19,7 +19,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 final class ReindexTask implements Runnable {
+	private static final Logger LOGGER = Logger.getLogger(ReindexTask.class);
 
 	private final SearchIndexDefinition searchIndexDefinition;
 	private final List<URI<? extends KeyConcept>> dirtyElements;
@@ -41,23 +44,31 @@ final class ReindexTask implements Runnable {
 
 	@Override
 	public void run() {
-		final List<URI<? extends KeyConcept>> reindexUris;
-		synchronized (dirtyElements) {
-			reindexUris = new ArrayList<>(dirtyElements);
-			dirtyElements.clear();
-		}
-		if (!reindexUris.isEmpty()) {
-			final SearchLoader searchLoader = Home.getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
-			final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes;
-
-			// >>> Tx start
-			try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) { //on execute dans une transaction
-				searchIndexes = searchLoader.loadData(reindexUris);
+		long dirtyElementsCount = 0;
+		final long startTime = System.currentTimeMillis();
+		try {
+			final List<URI<? extends KeyConcept>> reindexUris;
+			synchronized (dirtyElements) {
+				reindexUris = new ArrayList<>(dirtyElements);
+				dirtyElements.clear();
 			}
-			// <<< Tx end
+			dirtyElementsCount = reindexUris.size();
+			if (!reindexUris.isEmpty()) {
+				final SearchLoader searchLoader = Home.getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
+				final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes;
 
-			removedNotFoundKeyConcept(searchIndexes, reindexUris);
-			searchManager.putAll(searchIndexDefinition, searchIndexes);
+				// >>> Tx start
+				try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) { //on execute dans une transaction
+					searchIndexes = searchLoader.loadData(reindexUris);
+				}
+				// <<< Tx end
+				removedNotFoundKeyConcept(searchIndexes, reindexUris);
+				searchManager.putAll(searchIndexDefinition, searchIndexes);
+			}
+		} catch (final Exception e) {
+			LOGGER.error("Update index error", e);
+		} finally {
+			LOGGER.info("Update index, " + dirtyElementsCount + " " + searchIndexDefinition.getName() + " finished in " + (System.currentTimeMillis() - startTime) + "ms");
 		}
 	}
 

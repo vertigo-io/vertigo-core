@@ -19,7 +19,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 final class ReindexAllTask<S extends KeyConcept> implements Runnable {
+	private static final Logger LOGGER = Logger.getLogger(ReindexAllTask.class);
+	private static long REINDEX_COUNT = 0;
 	private static boolean REINDEXATION_IN_PROGRESS = false;
 	private final SearchIndexDefinition searchIndexDefinition;
 	private final SearchManager searchManager;
@@ -35,43 +39,52 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 		this.transactionManager = transactionManager;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void run() {
-		Assertion.checkState(!REINDEXATION_IN_PROGRESS, "A reindexation is already in progress");
-		//-----
-		REINDEXATION_IN_PROGRESS = true;
-		try {
-			final Class<S> keyConceptClass = (Class<S>) ClassUtil.classForName(searchIndexDefinition.getKeyConceptDtDefinition().getClassCanonicalName(), KeyConcept.class);
-			final SearchLoader<S, DtObject> searchLoader = Home.getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
-			String lastUri = "*";
-			for (final Iterator<SearchChunk<S>> it = searchLoader.chunk(keyConceptClass).iterator(); it.hasNext();) {
-				final SearchChunk<S> searchChunk;
-				// >>> Tx start
-				try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) { //on execute dans une transaction
-					searchChunk = it.next();
-				}
-				// <<< Tx end
+		if (REINDEXATION_IN_PROGRESS) {
+			LOGGER.warn("Reindexation of " + searchIndexDefinition.getName() + " is already in progess (" + REINDEX_COUNT + " elements done)");
+		} else {
+			//-----
+			REINDEXATION_IN_PROGRESS = true;
+			REINDEX_COUNT = 0;
+			final long startTime = System.currentTimeMillis();
+			try {
+				final Class<S> keyConceptClass = (Class<S>) ClassUtil.classForName(searchIndexDefinition.getKeyConceptDtDefinition().getClassCanonicalName(), KeyConcept.class);
+				final SearchLoader<S, DtObject> searchLoader = Home.getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
+				String lastUri = "*";
+				LOGGER.info("Reindexation of " + searchIndexDefinition.getName() + " started");
+				for (final Iterator<SearchChunk<S>> it = searchLoader.chunk(keyConceptClass).iterator(); it.hasNext();) {
+					final SearchChunk<S> searchChunk;
+					// >>> Tx start
+					try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) { //on execute dans une transaction
+						searchChunk = it.next();
+					}
+					// <<< Tx end
 
-				final List<URI<S>> uris = searchChunk.getAllURIs();
-				Assertion.checkArgument(!uris.isEmpty(), "The uris list of a SearchChunk can't be empty");
-				//-----
-				final Collection<SearchIndex<S, DtObject>> searchIndexes;
-				// >>> Tx start
-				try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) { //on execute dans une transaction
-					searchIndexes = searchLoader.loadData(uris);
+					final List<URI<S>> uris = searchChunk.getAllURIs();
+					Assertion.checkArgument(!uris.isEmpty(), "The uris list of a SearchChunk can't be empty");
+					//-----
+					final Collection<SearchIndex<S, DtObject>> searchIndexes;
+					// >>> Tx start
+					try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) { //on execute dans une transaction
+						searchIndexes = searchLoader.loadData(uris);
+					}
+					// <<< Tx end
+					final URI<S> chunkMaxUri = uris.get(uris.size() - 1);
+					final String maxUri = String.valueOf(chunkMaxUri.getId());
+					searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter(lastUri, maxUri));
+					searchManager.putAll(searchIndexDefinition, searchIndexes);
+					lastUri = maxUri;
 				}
-				// <<< Tx end
-				final URI<S> chunkMaxUri = uris.get(uris.size() - 1);
-				final String maxUri = String.valueOf(chunkMaxUri.getId());
-				searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter(lastUri, maxUri));
-				searchManager.putAll(searchIndexDefinition, searchIndexes);
-				lastUri = maxUri;
+				//On ne retire pas la fin, il y a un risque de retirer les données ajoutées depuis le démarrage de l'indexation
+				//TODO : à valider
+			} catch (final Exception e) {
+				LOGGER.error("Reindexation error", e);
+			} finally {
+				REINDEXATION_IN_PROGRESS = false;
+				LOGGER.info("Reindexation of " + searchIndexDefinition.getName() + " finished in " + (System.currentTimeMillis() - startTime) + "ms (" + REINDEX_COUNT + " elements done)");
 			}
-
-			//On ne retire pas la fin, il y a un risque de retirer les données ajoutées depuis le démarrage de l'indexation
-			//TODO : à valider
-		} finally {
-			REINDEXATION_IN_PROGRESS = false;
 		}
 	}
 

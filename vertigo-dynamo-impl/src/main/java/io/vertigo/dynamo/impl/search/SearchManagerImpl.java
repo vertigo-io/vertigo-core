@@ -166,14 +166,14 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		synchronized (dirtyElements) {
 			dirtyElements.addAll(keyConceptUris); //TODO : doublons ?
 		}
-		executorService.scheduleAtFixedRate(new ReindexTask(searchIndexDefinition, dirtyElements, this, transactionManager), 0, 5, TimeUnit.SECONDS); //une reindexation dans max 5s
+		executorService.schedule(new ReindexTask(searchIndexDefinition, dirtyElements, this, transactionManager), 5, TimeUnit.SECONDS); //une reindexation dans max 5s
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void reindexAll(final SearchIndexDefinition searchIndexDefinition) {
 		//TODO return un Futur ?
-		executorService.scheduleAtFixedRate(new ReindexAllTask(searchIndexDefinition, this, transactionManager), 0, 5, TimeUnit.SECONDS); //une reindexation total dans max 5s
+		executorService.schedule(new ReindexAllTask(searchIndexDefinition, this, transactionManager), 5, TimeUnit.SECONDS); //une reindexation total dans max 5s
 	}
 
 }
