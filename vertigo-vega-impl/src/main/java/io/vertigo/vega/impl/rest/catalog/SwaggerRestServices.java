@@ -27,6 +27,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
@@ -82,6 +83,17 @@ public final class SwaggerRestServices implements RestfulService {
 	};
 
 	private final Map<String, Object> definitions = new LinkedHashMap<>();
+	private final Map<String, Object> unknownObjectRef = new LinkedHashMap<>();
+
+	private static final String UNKNOWN_OBJECT_NAME = "unkwnown";
+
+	public SwaggerRestServices() {
+		final Map<String, Object> schema = new LinkedHashMap<>();
+		schema.put("type", "object");
+		definitions.put(UNKNOWN_OBJECT_NAME, schema);
+
+		unknownObjectRef.put("$ref", "#/definitions/" + UNKNOWN_OBJECT_NAME);
+	}
 
 	/**
 	 * @param request HttpRequest
@@ -307,6 +319,8 @@ public final class SwaggerRestServices implements RestfulService {
 	}
 
 	private Map<String, Object> createSchemaObject(final Type type) {
+		Assertion.checkNotNull(type, "Object type unknown"); //doit-être testé en amont et rerouté vers unknownObject
+		//-----
 		final Map<String, Object> schema = new LinkedHashMap<>();
 		final Class<?> objectClass = EndPointTypeUtil.castAsClass(type);
 		final String[] typeAndFormat = toSwaggerType(objectClass);
@@ -318,7 +332,8 @@ public final class SwaggerRestServices implements RestfulService {
 			return null;
 		} else if (EndPointTypeUtil.isAssignableFrom(List.class, type)) {
 			final Type itemsType = ((ParameterizedType) type).getActualTypeArguments()[0]; //we known that List has one parameterized type
-			schema.put("items", createSchemaObject(itemsType));
+			//Si le itemsType est null, on prend le unknownObject
+			schema.put("items", itemsType != null ? createSchemaObject(itemsType) : unknownObjectRef);
 		} else if ("object".equals(typeAndFormat[0])) {
 			final String objectName;
 			final Class<?> parameterClass;
@@ -333,7 +348,7 @@ public final class SwaggerRestServices implements RestfulService {
 				objectName = objectClass.getSimpleName();
 				parameterClass = null;
 			}
-			schema.put("$ref", objectName);
+			schema.put("$ref", "#/definitions/" + objectName);
 			schema.remove("type");
 			if (!definitions.containsKey(objectName)) {
 				final Map<String, Object> definition = new LinkedHashMap<>();
