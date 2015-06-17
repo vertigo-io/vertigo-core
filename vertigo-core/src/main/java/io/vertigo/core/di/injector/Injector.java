@@ -36,13 +36,15 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * Injection des dépendances.
+ * Injector.
+ * Create new instances.
+ * Warning : Activeable méthods (preDestroy and PostConstruct) are not managed by Injector. 
  *
  * @author pchretien
  */
 public final class Injector {
 	private Injector() {
-		//constructor is protected
+		//constructor is protected, Injector contains only static methods
 	}
 
 	/**
@@ -108,9 +110,11 @@ public final class Injector {
 		final boolean optionalParameter = DIAnnotationUtil.isOptional(constructor, i);
 		if (optionalParameter) {
 			if (container.contains(id)) {
+				//On récupère la valeur et on la transforme en option.
 				//ex : <param name="opt-port" value="a value that can be null or not">
 				return Option.option(container.resolve(id, ClassUtil.getGeneric(constructor, i)));
 			}
+			//
 			return Option.none();
 		}
 		//Injection des listes de plugins
