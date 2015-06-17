@@ -56,17 +56,6 @@ public final class StringUtil {
 	}
 
 	/**
-	 * On normalise les id.
-	 * @param strValue String non null
-	 * @return id normalisé
-	 */
-	public static String normalize(final String strValue) {
-		Assertion.checkNotNull(strValue);
-		//-----
-		return first2LowerCase(strValue);
-	}
-
-	/**
 	 * On abaisse la premiere lettre.
 	 * @param strValue String non null
 	 * @return Chaine avec la premiere lettre en minuscule

@@ -188,7 +188,7 @@ public final class DIAnnotationUtil {
 
 	private static String getId(final Class<?> implClass) {
 		//Par convention on prend le nom de la classe.
-		return StringUtil.normalize(implClass.getSimpleName());
+		return StringUtil.first2LowerCase(implClass.getSimpleName());
 	}
 
 	/**

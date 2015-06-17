@@ -78,7 +78,7 @@ final class ComponentContainer implements Container, Activeable {
 	public boolean contains(final String id) {
 		Assertion.checkArgNotEmpty(id);
 		//-----
-		final String normalizedId = StringUtil.normalize(id);
+		final String normalizedId = StringUtil.first2LowerCase(id);
 		return startedComponents.containsKey(normalizedId);
 	}
 
@@ -91,7 +91,7 @@ final class ComponentContainer implements Container, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public <C> C resolve(final String id, final Class<C> componentClass) {
-		final String normalizedId = StringUtil.normalize(id);
+		final String normalizedId = StringUtil.first2LowerCase(id);
 		Assertion.checkArgument(contains(normalizedId), "Aucun composant enregistré pour id = {0} parmi {1}", normalizedId, Home.getComponentSpace().keySet());
 		//-----
 		return componentClass.cast(startedComponents.get(normalizedId));

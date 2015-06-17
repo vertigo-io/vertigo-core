@@ -282,7 +282,7 @@ public final class ComponentSpace implements Container, Activeable {
 	 * @return Gestionnaire centralisé des documents.
 	 */
 	public <T> T resolve(final Class<T> componentClass) {
-		final String normalizedId = StringUtil.normalize(componentClass.getSimpleName());
+		final String normalizedId = StringUtil.first2LowerCase(componentClass.getSimpleName());
 		return componentContainer.resolve(normalizedId, componentClass);
 	}
 
