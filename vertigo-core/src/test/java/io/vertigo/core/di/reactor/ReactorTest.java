@@ -25,7 +25,6 @@ import io.vertigo.core.di.data.C;
 import io.vertigo.core.di.data.D;
 import io.vertigo.core.di.data.E;
 import io.vertigo.core.di.data.F;
-import io.vertigo.core.di.reactor.DIReactor;
 
 import java.util.HashSet;
 import java.util.List;
@@ -81,6 +80,17 @@ public final class ReactorTest {
 		Assert.assertEquals(2, list.size());
 		Assert.assertEquals("a", list.get(0));
 		Assert.assertEquals("b", list.get(1));
+	}
+
+	@Test
+	public void testB2() {
+		//La resolution fonctionne ; l'erreur ne survenant qu'à la résolution
+		final List<String> list = new DIReactor()
+				.addComponent("a", A.class)
+				.addComponent("b", B.class)
+				.proceed();
+		Assert.assertEquals(2, list.size());
+		Assert.assertEquals("a", list.get(0));
 	}
 
 	@Test
