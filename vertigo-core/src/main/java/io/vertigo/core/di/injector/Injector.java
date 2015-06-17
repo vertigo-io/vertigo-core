@@ -87,9 +87,7 @@ public final class Injector {
 		for (final Field field : fields) {
 			final Object injected = getInjected(container, field);
 			//On vérifie que si il s'agit d'un champ non primitif alors ce champs n'avait pas été initialisé
-			if (!field.getType().isPrimitive()) {
-				Assertion.checkState(null == ClassUtil.get(instance, field), "field '{0}' is already initialized", field);
-			}
+			Assertion.checkState(null == ClassUtil.get(instance, field), "field '{0}' is already initialized", field);
 			ClassUtil.set(instance, field, injected);
 		}
 	}
@@ -112,7 +110,8 @@ public final class Injector {
 			if (container.contains(id)) {
 				//On récupère la valeur et on la transforme en option.
 				//ex : <param name="opt-port" value="a value that can be null or not">
-				return Option.option(container.resolve(id, ClassUtil.getGeneric(constructor, i)));
+				final Class<?> pluginType = ClassUtil.getGeneric(constructor, i);
+				return Option.option(container.resolve(id, pluginType));
 			}
 			//
 			return Option.none();
@@ -120,8 +119,8 @@ public final class Injector {
 		//Injection des listes de plugins
 		final boolean pluginsField = DIAnnotationUtil.hasPlugins(constructor, i);
 		if (pluginsField) {
-			final String pluginType = DIAnnotationUtil.buildId(ClassUtil.getGeneric(constructor, i));
-			return getPlugins(container, pluginType);
+			final Class<?> pluginType = ClassUtil.getGeneric(constructor, i);
+			return getPlugins(container, DIAnnotationUtil.buildId(pluginType));
 		}
 		//-----
 		final Object value = container.resolve(id, constructor.getParameterTypes()[i]);
@@ -138,7 +137,8 @@ public final class Injector {
 		final boolean optionalField = DIAnnotationUtil.isOptional(field);
 		if (optionalField) {
 			if (container.contains(id)) {
-				return Option.some(container.resolve(id, ClassUtil.getGeneric(field)));
+				final Class<?> pluginType = ClassUtil.getGeneric(field);
+				return Option.some(container.resolve(id, pluginType));
 			}
 			return Option.none();
 		}
@@ -146,8 +146,8 @@ public final class Injector {
 		//Injection des listes de plugins
 		final boolean pluginsField = DIAnnotationUtil.hasPlugins(field);
 		if (pluginsField) {
-			final String pluginType = DIAnnotationUtil.buildId(ClassUtil.getGeneric(field));
-			return getPlugins(container, pluginType);
+			final Class<?> pluginType = ClassUtil.getGeneric(field);
+			return getPlugins(container, DIAnnotationUtil.buildId(pluginType));
 		}
 		//-----
 		final Object value = container.resolve(id, field.getType());
