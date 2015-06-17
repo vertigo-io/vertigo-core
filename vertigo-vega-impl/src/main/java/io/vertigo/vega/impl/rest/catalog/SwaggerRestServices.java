@@ -27,7 +27,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
@@ -319,7 +318,9 @@ public final class SwaggerRestServices implements RestfulService {
 	}
 
 	private Map<String, Object> createSchemaObject(final Type type) {
-		Assertion.checkNotNull(type, "Object type unknown"); //doit-être testé en amont et rerouté vers unknownObject
+		if (type == null) { //Si le type est null, on a pas réussi à récupérer la class : souvant dans le cas des generics
+			return unknownObjectRef;
+		}
 		//-----
 		final Map<String, Object> schema = new LinkedHashMap<>();
 		final Class<?> objectClass = EndPointTypeUtil.castAsClass(type);
@@ -333,7 +334,7 @@ public final class SwaggerRestServices implements RestfulService {
 		} else if (EndPointTypeUtil.isAssignableFrom(List.class, type)) {
 			final Type itemsType = ((ParameterizedType) type).getActualTypeArguments()[0]; //we known that List has one parameterized type
 			//Si le itemsType est null, on prend le unknownObject
-			schema.put("items", itemsType != null ? createSchemaObject(itemsType) : unknownObjectRef);
+			schema.put("items", createSchemaObject(itemsType));
 		} else if ("object".equals(typeAndFormat[0])) {
 			final String objectName;
 			final Class<?> parameterClass;
@@ -400,18 +401,18 @@ public final class SwaggerRestServices implements RestfulService {
 		final Class<?> objectClass = EndPointTypeUtil.castAsClass(type);
 		//can't be a primitive nor array nor DtListDelta
 		final Map<String, Object> properties = new LinkedHashMap<>();
-		final List<String> enums = new ArrayList<>(); //mandatory fields
+		final List<String> requireds = new ArrayList<>(); //mandatory fields
 		for (final Field field : objectClass.getDeclaredFields()) {
 			if ((field.getModifiers() & (Modifier.STATIC | Modifier.TRANSIENT | 0x1000)) == 0) { //0x1000 is for synthetic field (excludes)
-				final Map<String, Object> fieldSchema = obtainFieldSchema(field, parameterClass, enums);
+				final Map<String, Object> fieldSchema = obtainFieldSchema(field, parameterClass, requireds);
 				properties.put(field.getName(), fieldSchema);
 			}
 		}
-		putIfNotEmpty(entity, "enum", enums);
+		putIfNotEmpty(entity, "required", requireds);
 		putIfNotEmpty(entity, "properties", properties);
 	}
 
-	private Map<String, Object> obtainFieldSchema(final Field field, final Class<? extends Object> parameterClass, final List<String> enums) {
+	private Map<String, Object> obtainFieldSchema(final Field field, final Class<? extends Object> parameterClass, final List<String> requireds) {
 		final Type fieldType = field.getGenericType();
 		Type usedFieldType = fieldType;
 		if (fieldType instanceof ParameterizedType) {
@@ -425,7 +426,7 @@ public final class SwaggerRestServices implements RestfulService {
 		final Map<String, Object> fieldSchema = createSchemaObject(usedFieldType);
 		if ((field.getModifiers() & Modifier.FINAL) != 0
 				&& !Option.class.isAssignableFrom(field.getType())) {
-			enums.add(field.getName());
+			requireds.add(field.getName());
 		}
 		return fieldSchema;
 	}
@@ -466,7 +467,7 @@ public final class SwaggerRestServices implements RestfulService {
 			final Map<String, Object> compositeSchema = (Map<String, Object>) bodyParameter.get("schema");
 			bodyParameter.put("schema", Collections.singletonMap("$ref", bodyName));
 			final Map<String, Object> bodyDefinition = new LinkedHashMap<>();
-			bodyDefinition.put("enum", compositeSchema.keySet().toArray(new String[compositeSchema.size()]));
+			bodyDefinition.put("required", compositeSchema.keySet().toArray(new String[compositeSchema.size()]));
 			putIfNotEmpty(bodyDefinition, "properties", compositeSchema);
 			definitions.put(bodyName, bodyDefinition);
 
