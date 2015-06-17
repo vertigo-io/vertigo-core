@@ -121,15 +121,7 @@ public final class Injector {
 		final boolean pluginsField = DIAnnotationUtil.hasPlugins(constructor, i);
 		if (pluginsField) {
 			final String pluginType = DIAnnotationUtil.buildId(ClassUtil.getGeneric(constructor, i));
-			//on récupère la liste des plugin du type concerné
-			final List<Plugin> list = new ArrayList<>();
-			for (final String pluginId : container.keySet()) {
-				//On prend tous les plugins du type concerné
-				if (pluginId.startsWith(pluginType)) {
-					list.add(container.resolve(pluginId, Plugin.class));
-				}
-			}
-			return Collections.unmodifiableList(list);
+			return getPlugins(container, pluginType);
 		}
 		//-----
 		final Object value = container.resolve(id, constructor.getParameterTypes()[i]);
@@ -155,20 +147,24 @@ public final class Injector {
 		final boolean pluginsField = DIAnnotationUtil.hasPlugins(field);
 		if (pluginsField) {
 			final String pluginType = DIAnnotationUtil.buildId(ClassUtil.getGeneric(field));
-			//on récupère la liste des plugin du type concerné
-			final List<Plugin> list = new ArrayList<>();
-			for (final String pluginId : container.keySet()) {
-				//On prend tous les plugins du type concerné
-				if (pluginId.startsWith(pluginType)) {
-					list.add(container.resolve(pluginId, Plugin.class));
-				}
-			}
-			return Collections.unmodifiableList(list);
+			return getPlugins(container, pluginType);
 		}
 		//-----
 		final Object value = container.resolve(id, field.getType());
 		Assertion.checkNotNull(value);
 		//-----
 		return value;
+	}
+
+	private static Object getPlugins(final Container container, final String pluginType) {
+		//on récupère la liste des plugin du type concerné
+		final List<Plugin> list = new ArrayList<>();
+		for (final String pluginId : container.keySet()) {
+			//On prend tous les plugins du type concerné
+			if (pluginId.startsWith(pluginType)) {
+				list.add(container.resolve(pluginId, Plugin.class));
+			}
+		}
+		return Collections.unmodifiableList(list);
 	}
 }
