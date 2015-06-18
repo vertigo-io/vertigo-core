@@ -106,8 +106,8 @@ public final class Injector {
 		final Class<?> type = constructor.getParameterTypes()[i];
 		//-----
 		// Options
-		final boolean optionalParameter = DIAnnotationUtil.isOption(type);
-		if (optionalParameter) {
+		final boolean isOption = DIAnnotationUtil.isOption(type);
+		if (isOption) {
 			if (container.contains(id)) {
 				//On récupère la valeur et on la transforme en option.
 				//ex : <param name="opt-port" value="a value that can be null or not">
@@ -118,8 +118,8 @@ public final class Injector {
 			return Option.none();
 		}
 		//Injection des listes de plugins
-		final boolean pluginsField = DIAnnotationUtil.hasPlugins(constructor, i);
-		if (pluginsField) {
+		final boolean hasPlugins = DIAnnotationUtil.hasPlugins(constructor, i);
+		if (hasPlugins) {
 			final Class<?> pluginType = ClassUtil.getGeneric(constructor, i);
 			return getPlugins(container, DIAnnotationUtil.buildId(pluginType));
 		}
@@ -136,8 +136,8 @@ public final class Injector {
 		final Class<?> type = field.getType();
 		//-----
 		// Options
-		final boolean optionalField = DIAnnotationUtil.isOption(type);
-		if (optionalField) {
+		final boolean isOption = DIAnnotationUtil.isOption(type);
+		if (isOption) {
 			if (container.contains(id)) {
 				final Class<?> pluginType = ClassUtil.getGeneric(field);
 				return Option.some(container.resolve(id, pluginType));
@@ -146,8 +146,8 @@ public final class Injector {
 		}
 		//-----
 		//Injection des listes de plugins
-		final boolean pluginsField = DIAnnotationUtil.hasPlugins(field);
-		if (pluginsField) {
+		final boolean hasPlugins = DIAnnotationUtil.hasPlugins(field);
+		if (hasPlugins) {
 			final Class<?> pluginType = ClassUtil.getGeneric(field);
 			return getPlugins(container, DIAnnotationUtil.buildId(pluginType));
 		}
