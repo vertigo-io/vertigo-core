@@ -107,7 +107,7 @@ public final class DIAnnotationUtil {
 	public static boolean isList(final Field field) {
 		Assertion.checkNotNull(field);
 		//-----
-		return Option.class.isAssignableFrom(field.getType());
+		return List.class.isAssignableFrom(field.getType());
 	}
 
 	/**
