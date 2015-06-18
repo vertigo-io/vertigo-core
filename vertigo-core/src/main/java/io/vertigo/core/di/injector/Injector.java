@@ -106,7 +106,7 @@ public final class Injector {
 		final Class<?> type = constructor.getParameterTypes()[i];
 		//-----
 		// Options
-		final boolean optionalParameter = DIAnnotationUtil.isOptional(type);
+		final boolean optionalParameter = DIAnnotationUtil.isOption(type);
 		if (optionalParameter) {
 			if (container.contains(id)) {
 				//On récupère la valeur et on la transforme en option.
@@ -136,7 +136,7 @@ public final class Injector {
 		final Class<?> type = field.getType();
 		//-----
 		// Options
-		final boolean optionalField = DIAnnotationUtil.isOptional(type);
+		final boolean optionalField = DIAnnotationUtil.isOption(type);
 		if (optionalField) {
 			if (container.contains(id)) {
 				final Class<?> pluginType = ClassUtil.getGeneric(field);

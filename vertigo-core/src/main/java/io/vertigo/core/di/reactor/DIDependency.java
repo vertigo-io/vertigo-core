@@ -54,7 +54,7 @@ final class DIDependency {
 		this.componentInfo = componentInfo;
 		id = DIAnnotationUtil.buildId(field);
 		final Class<?> type = field.getType();
-		option = DIAnnotationUtil.isOptional(type);
+		option = DIAnnotationUtil.isOption(type);
 		isList = DIAnnotationUtil.isList(type);
 	}
 
@@ -65,7 +65,7 @@ final class DIDependency {
 		this.componentInfo = componentInfo;
 		id = DIAnnotationUtil.buildId(constructor, i);
 		final Class<?> type = constructor.getParameterTypes()[i];
-		option = DIAnnotationUtil.isOptional(type);
+		option = DIAnnotationUtil.isOption(type);
 		isList = DIAnnotationUtil.isList(type);
 
 	}
@@ -74,7 +74,7 @@ final class DIDependency {
 		return id;
 	}
 
-	boolean isOptional() {
+	boolean isOption() {
 		return option;
 	}
 

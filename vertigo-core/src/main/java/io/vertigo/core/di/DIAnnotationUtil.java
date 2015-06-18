@@ -69,7 +69,7 @@ public final class DIAnnotationUtil {
 	 * @param type Type
 	 * @return If type is an Option
 	 */
-	public static boolean isOptional(final Class<?> type) {
+	public static boolean isOption(final Class<?> type) {
 		Assertion.checkNotNull(type);
 		//-----
 		return Option.class.isAssignableFrom(type);
@@ -175,16 +175,18 @@ public final class DIAnnotationUtil {
 	public static String buildId(final Field field) {
 		Assertion.checkNotNull(field);
 		//-----
-		final Class<?> implClass;
 		final String named = getNamedValue(field.getAnnotations());
-		if (Option.class.isAssignableFrom(field.getType())) {
+
+		final Class<?> implClass;
+		final Class<?> type = field.getType();
+		if (Option.class.isAssignableFrom(type)) {
 			implClass = ClassUtil.getGeneric(field);
-		} else if (List.class.isAssignableFrom(field.getType())) {
+		} else if (List.class.isAssignableFrom(type)) {
 			implClass = ClassUtil.getGeneric(field);
 			Assertion.checkArgument(Plugin.class.isAssignableFrom(implClass), "Only plugins can be injected in list");
 			Assertion.checkState(named == null, "List of plugins can not be named");
 		} else {
-			implClass = field.getType();
+			implClass = type;
 		}
 
 		//Si le champ est une option alors on prend le type de l'option.
@@ -203,14 +205,15 @@ public final class DIAnnotationUtil {
 		final String named = getNamedValue(constructor.getParameterAnnotations()[i]);
 
 		final Class<?> implClass;
-		if (Option.class.isAssignableFrom(constructor.getParameterTypes()[i])) {
+		final Class<?> type = constructor.getParameterTypes()[i];
+		if (Option.class.isAssignableFrom(type)) {
 			implClass = ClassUtil.getGeneric(constructor, i);
-		} else if (List.class.isAssignableFrom(constructor.getParameterTypes()[i])) {
+		} else if (List.class.isAssignableFrom(type)) {
 			implClass = ClassUtil.getGeneric(constructor, i);
 			Assertion.checkArgument(Plugin.class.isAssignableFrom(implClass), "Only plugins can be injected in list");
 			Assertion.checkState(named == null, "List of plugins can not be named");
 		} else {
-			implClass = constructor.getParameterTypes()[i];
+			implClass = type;
 		}
 		return named != null ? named : getId(implClass);
 	}
