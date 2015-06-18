@@ -24,6 +24,8 @@ import io.vertigo.core.di.data.B;
 import io.vertigo.core.di.data.B2;
 import io.vertigo.core.di.data.E;
 import io.vertigo.core.di.data.F;
+import io.vertigo.core.di.data.P;
+import io.vertigo.core.di.data.P2;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
 
@@ -144,10 +146,24 @@ public final class InjectorTest {
 		final MyContainer container = new MyContainer();
 		final A a = Injector.newInstance(A.class, container);
 		container.put("a", a);
-		final E e = Injector.newInstance(E.class, container);
+		E e = Injector.newInstance(E.class, container);
 		Assert.assertTrue(e.getA().isDefined());
-		Assert.assertEquals(e.getA().get(), a);
+		Assert.assertEquals(a, e.getA().get());
 		Assert.assertTrue(e.getB().isEmpty());
+		Assert.assertEquals(0, e.getPPlugins().size());
+		Assert.assertEquals(0, e.getP2Plugins().size());
+		//-----
+		container.put("p", new P());
+		container.put("p#1", new P());
+		container.put("p2", new P2());
+		container.put("p2#1", new P2());
+		container.put("p2#2", new P2());
+		e = Injector.newInstance(E.class, container);
+		Assert.assertTrue(e.getA().isDefined());
+		Assert.assertEquals(a, e.getA().get());
+		Assert.assertTrue(e.getB().isEmpty());
+		Assert.assertEquals(2, e.getPPlugins().size());
+		Assert.assertEquals(3, e.getP2Plugins().size());
 	}
 
 	@Test

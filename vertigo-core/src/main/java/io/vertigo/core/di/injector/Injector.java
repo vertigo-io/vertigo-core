@@ -106,7 +106,7 @@ public final class Injector {
 		final Class<?> type = constructor.getParameterTypes()[i];
 		//-----
 		final boolean isOption = DIAnnotationUtil.isOption(type);
-		final boolean hasPlugins = DIAnnotationUtil.hasPlugins(constructor, i);
+		final boolean hasPlugins = DIAnnotationUtil.isList(type);
 		final Class<?> genericType = (isOption || hasPlugins) ? ClassUtil.getGeneric(constructor, i) : null;
 		//-----
 		return getInjected(container, id, type, isOption, hasPlugins, genericType);
@@ -118,7 +118,7 @@ public final class Injector {
 		final Class<?> type = field.getType();
 		//-----
 		final boolean isOption = DIAnnotationUtil.isOption(type);
-		final boolean hasPlugins = DIAnnotationUtil.hasPlugins(field);
+		final boolean hasPlugins = DIAnnotationUtil.isList(type);
 		final Class<?> genericType = (isOption || hasPlugins) ? ClassUtil.getGeneric(field) : null;
 
 		return getInjected(container, id, type, isOption, hasPlugins, genericType);
@@ -142,8 +142,10 @@ public final class Injector {
 			final List<Plugin> list = new ArrayList<>();
 			for (final String pluginId : container.keySet()) {
 				//On prend tous les plugins du type concerné
-				if (pluginId.startsWith(pluginIdPrefix)) {
-					list.add(container.resolve(pluginId, Plugin.class));
+				if (pluginId.equals(pluginIdPrefix) || pluginId.startsWith(pluginIdPrefix + '#')) {
+					final Plugin injected = container.resolve(pluginId, Plugin.class);
+					Assertion.checkArgument(genericType.isAssignableFrom(injected.getClass()), "type of {0} is incorrect ; expected : {1}", pluginId, genericType.getName());
+					list.add(injected);
 				}
 			}
 			return Collections.unmodifiableList(list);

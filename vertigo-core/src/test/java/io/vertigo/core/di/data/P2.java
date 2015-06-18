@@ -18,40 +18,8 @@
  */
 package io.vertigo.core.di.data;
 
-import io.vertigo.lang.Option;
+import io.vertigo.lang.Plugin;
 
-import java.util.List;
-
-import javax.inject.Inject;
-
-public final class E {
-	private final List<P2> p2Plugins;
-	private final Option<A> a;
-
-	@Inject
-	private Option<B> b;
-	@Inject
-	private List<P> pPlugins;
-
-	@Inject
-	public E(final Option<A> a, final List<P2> p2Plugins) {
-		this.a = a;
-		this.p2Plugins = p2Plugins;
-	}
-
-	public Option<A> getA() {
-		return a;
-	}
-
-	public Option<B> getB() {
-		return b;
-	}
-
-	public List<P> getPPlugins() {
-		return pPlugins;
-	}
-
-	public List<P2> getP2Plugins() {
-		return p2Plugins;
-	}
+public final class P2 implements Plugin {
+	//
 }

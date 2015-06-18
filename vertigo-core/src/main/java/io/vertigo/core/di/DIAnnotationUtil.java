@@ -87,41 +87,6 @@ public final class DIAnnotationUtil {
 	}
 
 	/**
-	 * Indique Indique si le i-éme paramètre du constructeur est une liste de plugins.
-	 * @param constructor Constructeur testé
-	 * @param i indice du paramètre
-	 * @return Si le i-éme paramètre du contructeur une liste de plugins.
-	 */
-	public static boolean hasPlugins(final Constructor<?> constructor, final int i) {
-		Assertion.checkNotNull(constructor);
-		//-----
-		if (List.class.isAssignableFrom(constructor.getParameterTypes()[i])) {
-			if (!Plugin.class.isAssignableFrom(ClassUtil.getGeneric(constructor, i))) {
-				throw new IllegalStateException("Only plugins can be injected in list");
-			}
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Indique si le champ du composant correspond à une liste de plugins.
-	 * @param field Champ du composant
-	 * @return Si ce champ est optionnel.
-	 */
-	public static boolean hasPlugins(final Field field) {
-		Assertion.checkNotNull(field);
-		//-----
-		if (List.class.isAssignableFrom(field.getType())) {
-			if (!Plugin.class.isAssignableFrom(ClassUtil.getGeneric(field))) {
-				throw new IllegalStateException("Only plugins can be injected in list");
-			}
-			return true;
-		}
-		return false;
-	}
-
-	/**
 	 * @return Création de l'identifiant du composant
 	 */
 	public static String buildId(final Option<Class<?>> apiClass, final Class<?> implClass) {
