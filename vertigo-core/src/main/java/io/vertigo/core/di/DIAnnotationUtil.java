@@ -66,48 +66,24 @@ public final class DIAnnotationUtil {
 
 	/**
 	 * Indique si le i-éme paramètre du constructeur est optionnel.
-	 * @param constructor Constructeur testé
-	 * @param i indice du paramètre
-	 * @return Si le i-éme paramètre du contructeur est optionnel.
+	 * @param type Type
+	 * @return If type is an Option
 	 */
-	public static boolean isOptional(final Constructor<?> constructor, final int i) {
-		Assertion.checkNotNull(constructor);
+	public static boolean isOptional(final Class<?> type) {
+		Assertion.checkNotNull(type);
 		//-----
-		return Option.class.isAssignableFrom(constructor.getParameterTypes()[i]);
+		return Option.class.isAssignableFrom(type);
 	}
 
 	/**
 	 * Indique si le i-éme paramètre du constructeur est une liste .
-	 * @param constructor Constructeur testé
-	 * @param i indice du paramètre
+	 * @param type Type
 	 * @return Si le i-éme paramètre du contructeur est optionnel.
 	 */
-	public static boolean isList(final Constructor<?> constructor, final int i) {
-		Assertion.checkNotNull(constructor);
+	public static boolean isList(final Class<?> type) {
+		Assertion.checkNotNull(type);
 		//-----
-		return List.class.isAssignableFrom(constructor.getParameterTypes()[i]);
-	}
-
-	/**
-	 * Indique si le champ du composant est optionnel.
-	 * @param field Champ du composant
-	 * @return Si ce champ est optionnel.
-	 */
-	public static boolean isOptional(final Field field) {
-		Assertion.checkNotNull(field);
-		//-----
-		return Option.class.isAssignableFrom(field.getType());
-	}
-
-	/**
-	 * Indique si le champ du composant est une liste.
-	 * @param field Champ du composant
-	 * @return Si ce champ est optionnel.
-	 */
-	public static boolean isList(final Field field) {
-		Assertion.checkNotNull(field);
-		//-----
-		return List.class.isAssignableFrom(field.getType());
+		return List.class.isAssignableFrom(type);
 	}
 
 	/**

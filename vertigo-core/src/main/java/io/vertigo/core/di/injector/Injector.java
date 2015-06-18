@@ -103,9 +103,10 @@ public final class Injector {
 	//On récupère pour le paramètre i du constructeur l'objet à injecter
 	private static Object getInjected(final Container container, final Constructor<?> constructor, final int i) {
 		final String id = DIAnnotationUtil.buildId(constructor, i);
+		final Class<?> type = constructor.getParameterTypes()[i];
 		//-----
 		// Options
-		final boolean optionalParameter = DIAnnotationUtil.isOptional(constructor, i);
+		final boolean optionalParameter = DIAnnotationUtil.isOptional(type);
 		if (optionalParameter) {
 			if (container.contains(id)) {
 				//On récupère la valeur et on la transforme en option.
@@ -123,7 +124,7 @@ public final class Injector {
 			return getPlugins(container, DIAnnotationUtil.buildId(pluginType));
 		}
 		//-----
-		final Object value = container.resolve(id, constructor.getParameterTypes()[i]);
+		final Object value = container.resolve(id, type);
 		Assertion.checkNotNull(value);
 		//-----
 		return value;
@@ -132,9 +133,10 @@ public final class Injector {
 	//On récupère pour le champ 'field' l'objet à injecter
 	private static Object getInjected(final Container container, final Field field) {
 		final String id = DIAnnotationUtil.buildId(field);
+		final Class<?> type = field.getType();
 		//-----
 		// Options
-		final boolean optionalField = DIAnnotationUtil.isOptional(field);
+		final boolean optionalField = DIAnnotationUtil.isOptional(type);
 		if (optionalField) {
 			if (container.contains(id)) {
 				final Class<?> pluginType = ClassUtil.getGeneric(field);
@@ -150,7 +152,7 @@ public final class Injector {
 			return getPlugins(container, DIAnnotationUtil.buildId(pluginType));
 		}
 		//-----
-		final Object value = container.resolve(id, field.getType());
+		final Object value = container.resolve(id, type);
 		Assertion.checkNotNull(value);
 		//-----
 		return value;
