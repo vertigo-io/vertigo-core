@@ -111,8 +111,8 @@ public final class Injector {
 			if (container.contains(id)) {
 				//On récupère la valeur et on la transforme en option.
 				//ex : <param name="opt-port" value="a value that can be null or not">
-				final Class<?> pluginType = ClassUtil.getGeneric(constructor, i);
-				return Option.option(container.resolve(id, pluginType));
+				final Class<?> genericType = ClassUtil.getGeneric(constructor, i);
+				return Option.option(container.resolve(id, genericType));
 			}
 			//
 			return Option.none();
@@ -120,8 +120,8 @@ public final class Injector {
 		//Injection des listes de plugins
 		final boolean hasPlugins = DIAnnotationUtil.hasPlugins(constructor, i);
 		if (hasPlugins) {
-			final Class<?> pluginType = ClassUtil.getGeneric(constructor, i);
-			return getPlugins(container, DIAnnotationUtil.buildId(pluginType));
+			final Class<?> genericType = ClassUtil.getGeneric(constructor, i);
+			return getPlugins(container, DIAnnotationUtil.buildId(genericType));
 		}
 		//-----
 		final Object value = container.resolve(id, type);
@@ -139,8 +139,8 @@ public final class Injector {
 		final boolean isOption = DIAnnotationUtil.isOption(type);
 		if (isOption) {
 			if (container.contains(id)) {
-				final Class<?> pluginType = ClassUtil.getGeneric(field);
-				return Option.some(container.resolve(id, pluginType));
+				final Class<?> genericType = ClassUtil.getGeneric(field);
+				return Option.some(container.resolve(id, genericType));
 			}
 			return Option.none();
 		}
@@ -148,8 +148,8 @@ public final class Injector {
 		//Injection des listes de plugins
 		final boolean hasPlugins = DIAnnotationUtil.hasPlugins(field);
 		if (hasPlugins) {
-			final Class<?> pluginType = ClassUtil.getGeneric(field);
-			return getPlugins(container, DIAnnotationUtil.buildId(pluginType));
+			final Class<?> genericType = ClassUtil.getGeneric(field);
+			return getPlugins(container, DIAnnotationUtil.buildId(genericType));
 		}
 		//-----
 		final Object value = container.resolve(id, type);
@@ -158,12 +158,12 @@ public final class Injector {
 		return value;
 	}
 
-	private static Object getPlugins(final Container container, final String pluginType) {
+	private static Object getPlugins(final Container container, final String genericType) {
 		//on récupère la liste des plugin du type concerné
 		final List<Plugin> list = new ArrayList<>();
 		for (final String pluginId : container.keySet()) {
 			//On prend tous les plugins du type concerné
-			if (pluginId.startsWith(pluginType)) {
+			if (pluginId.startsWith(genericType)) {
 				list.add(container.resolve(pluginId, Plugin.class));
 			}
 		}
