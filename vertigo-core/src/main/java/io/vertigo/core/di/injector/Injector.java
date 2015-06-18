@@ -106,10 +106,10 @@ public final class Injector {
 		final Class<?> type = constructor.getParameterTypes()[i];
 		//-----
 		final boolean isOption = DIAnnotationUtil.isOption(type);
-		final boolean hasPlugins = DIAnnotationUtil.isList(type);
-		final Class<?> genericType = (isOption || hasPlugins) ? ClassUtil.getGeneric(constructor, i) : null;
+		final boolean isList = DIAnnotationUtil.isList(type);
+		final Class<?> genericType = (isOption || isList) ? ClassUtil.getGeneric(constructor, i) : null;
 		//-----
-		return getInjected(container, id, type, isOption, hasPlugins, genericType);
+		return getInjected(container, id, type, isOption, isList, genericType);
 	}
 
 	//On récupère pour le champ 'field' l'objet à injecter
@@ -118,13 +118,13 @@ public final class Injector {
 		final Class<?> type = field.getType();
 		//-----
 		final boolean isOption = DIAnnotationUtil.isOption(type);
-		final boolean hasPlugins = DIAnnotationUtil.isList(type);
-		final Class<?> genericType = (isOption || hasPlugins) ? ClassUtil.getGeneric(field) : null;
+		final boolean isList = DIAnnotationUtil.isList(type);
+		final Class<?> genericType = (isOption || isList) ? ClassUtil.getGeneric(field) : null;
 
-		return getInjected(container, id, type, isOption, hasPlugins, genericType);
+		return getInjected(container, id, type, isOption, isList, genericType);
 	}
 
-	private static Object getInjected(final Container container, final String id, final Class<?> type, final boolean isOption, final boolean hasPlugins, final Class<?> genericType) {
+	private static Object getInjected(final Container container, final String id, final Class<?> type, final boolean isOption, final boolean isList, final Class<?> genericType) {
 		if (isOption) {
 			if (container.contains(id)) {
 				//On récupère la valeur et on la transforme en option.
@@ -135,7 +135,7 @@ public final class Injector {
 			return Option.none();
 		}
 		//Injection des listes de plugins
-		if (hasPlugins) {
+		if (isList) {
 			final String pluginIdPrefix = DIAnnotationUtil.buildId(genericType);
 
 			//on récupère la liste des plugin du type concerné
