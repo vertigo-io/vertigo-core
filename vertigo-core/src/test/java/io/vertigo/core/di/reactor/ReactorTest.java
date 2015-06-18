@@ -25,6 +25,8 @@ import io.vertigo.core.di.data.C;
 import io.vertigo.core.di.data.D;
 import io.vertigo.core.di.data.E;
 import io.vertigo.core.di.data.F;
+import io.vertigo.core.di.data.P;
+import io.vertigo.core.di.data.P3;
 
 import java.util.HashSet;
 import java.util.List;
@@ -122,11 +124,17 @@ public final class ReactorTest {
 		final List<String> list = new DIReactor()
 				.addComponent("e", E.class)
 				.addComponent("a", A.class)
+				.addComponent("p3", P3.class) //Plugin objligatoire
+				.addComponent("p", P.class) //Plugin facultatif car liste 
+				.addComponent("p2", P.class) //Plugin facultatif car liste 
 				.proceed();
 		//E dépend de option(A) et de option(B) donc A doit être le premier élément listé
-		Assert.assertEquals(2, list.size());
+		Assert.assertEquals(5, list.size());
 		Assert.assertEquals("a", list.get(0));
-		Assert.assertEquals("e", list.get(1));
+		//		Assert.assertEquals("p3", list.get(1));
+		//		Assert.assertEquals("p", list.get(1));
+		//		Assert.assertEquals("p2", list.get(1));
+		Assert.assertEquals("e", list.get(4));
 	}
 
 	@Test

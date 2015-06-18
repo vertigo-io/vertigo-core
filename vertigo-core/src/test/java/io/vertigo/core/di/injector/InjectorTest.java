@@ -26,6 +26,7 @@ import io.vertigo.core.di.data.E;
 import io.vertigo.core.di.data.F;
 import io.vertigo.core.di.data.P;
 import io.vertigo.core.di.data.P2;
+import io.vertigo.core.di.data.P3;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
 
@@ -146,6 +147,7 @@ public final class InjectorTest {
 		final MyContainer container = new MyContainer();
 		final A a = Injector.newInstance(A.class, container);
 		container.put("a", a);
+		container.put("p3", new P3());
 		E e = Injector.newInstance(E.class, container);
 		Assert.assertTrue(e.getA().isDefined());
 		Assert.assertEquals(a, e.getA().get());
