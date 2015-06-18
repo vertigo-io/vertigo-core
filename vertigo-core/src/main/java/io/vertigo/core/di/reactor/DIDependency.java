@@ -25,7 +25,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
 /**
- * Une dépendance est identifiée par son id et son caractère optionnel.
+ * Une dépendance est identifiée par son id.
+ * une dépendance peut porter sur une Classe quelconque, une option ou une Liste.
+ * 
  * Un composant possède une liste de dépendances.
  * @author pchretien
  */

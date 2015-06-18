@@ -105,29 +105,11 @@ public final class Injector {
 		final String id = DIAnnotationUtil.buildId(constructor, i);
 		final Class<?> type = constructor.getParameterTypes()[i];
 		//-----
-		// Options
 		final boolean isOption = DIAnnotationUtil.isOption(type);
-		if (isOption) {
-			if (container.contains(id)) {
-				//On récupère la valeur et on la transforme en option.
-				//ex : <param name="opt-port" value="a value that can be null or not">
-				final Class<?> genericType = ClassUtil.getGeneric(constructor, i);
-				return Option.option(container.resolve(id, genericType));
-			}
-			//
-			return Option.none();
-		}
-		//Injection des listes de plugins
 		final boolean hasPlugins = DIAnnotationUtil.hasPlugins(constructor, i);
-		if (hasPlugins) {
-			final Class<?> genericType = ClassUtil.getGeneric(constructor, i);
-			return getPlugins(container, DIAnnotationUtil.buildId(genericType));
-		}
+		final Class<?> genericType = (isOption || hasPlugins) ? ClassUtil.getGeneric(constructor, i) : null;
 		//-----
-		final Object value = container.resolve(id, type);
-		Assertion.checkNotNull(value);
-		//-----
-		return value;
+		return getInjected(container, id, type, isOption, hasPlugins, genericType);
 	}
 
 	//On récupère pour le champ 'field' l'objet à injecter
@@ -135,21 +117,36 @@ public final class Injector {
 		final String id = DIAnnotationUtil.buildId(field);
 		final Class<?> type = field.getType();
 		//-----
-		// Options
 		final boolean isOption = DIAnnotationUtil.isOption(type);
+		final boolean hasPlugins = DIAnnotationUtil.hasPlugins(field);
+		final Class<?> genericType = (isOption || hasPlugins) ? ClassUtil.getGeneric(field) : null;
+
+		return getInjected(container, id, type, isOption, hasPlugins, genericType);
+	}
+
+	private static Object getInjected(final Container container, final String id, final Class<?> type, final boolean isOption, final boolean hasPlugins, final Class<?> genericType) {
 		if (isOption) {
 			if (container.contains(id)) {
-				final Class<?> genericType = ClassUtil.getGeneric(field);
-				return Option.some(container.resolve(id, genericType));
+				//On récupère la valeur et on la transforme en option.
+				//ex : <param name="opt-port" value="a value that can be null or not">
+				return Option.option(container.resolve(id, genericType));
 			}
+			//
 			return Option.none();
 		}
-		//-----
 		//Injection des listes de plugins
-		final boolean hasPlugins = DIAnnotationUtil.hasPlugins(field);
 		if (hasPlugins) {
-			final Class<?> genericType = ClassUtil.getGeneric(field);
-			return getPlugins(container, DIAnnotationUtil.buildId(genericType));
+			final String pluginIdPrefix = DIAnnotationUtil.buildId(genericType);
+
+			//on récupère la liste des plugin du type concerné
+			final List<Plugin> list = new ArrayList<>();
+			for (final String pluginId : container.keySet()) {
+				//On prend tous les plugins du type concerné
+				if (pluginId.startsWith(pluginIdPrefix)) {
+					list.add(container.resolve(pluginId, Plugin.class));
+				}
+			}
+			return Collections.unmodifiableList(list);
 		}
 		//-----
 		final Object value = container.resolve(id, type);
@@ -158,15 +155,4 @@ public final class Injector {
 		return value;
 	}
 
-	private static Object getPlugins(final Container container, final String genericType) {
-		//on récupère la liste des plugin du type concerné
-		final List<Plugin> list = new ArrayList<>();
-		for (final String pluginId : container.keySet()) {
-			//On prend tous les plugins du type concerné
-			if (pluginId.startsWith(genericType)) {
-				list.add(container.resolve(pluginId, Plugin.class));
-			}
-		}
-		return Collections.unmodifiableList(list);
-	}
 }
