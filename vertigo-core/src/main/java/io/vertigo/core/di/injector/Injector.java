@@ -116,14 +116,11 @@ public final class Injector {
 			//
 			return Option.none();
 		} else if (port.isList()) {
-			//Injection des listes
-			final String idPrefix = DIAnnotationUtil.buildId(port.getType());
-
 			//on récupère la liste des objets du type concerné
 			final List<Object> list = new ArrayList<>();
 			for (final String id : container.keySet()) {
 				//On prend tous les objets ayant l'identifiant requis 
-				if (id.equals(idPrefix) || id.startsWith(idPrefix + '#')) {
+				if (id.equals(port.getId()) || id.startsWith(port.getId() + '#')) {
 					final Object injected = container.resolve(id, Object.class);
 					Assertion.checkArgument(port.getType().isAssignableFrom(injected.getClass()), "type of {0} is incorrect ; expected : {1}", id, port.getType().getName());
 					list.add(injected);
