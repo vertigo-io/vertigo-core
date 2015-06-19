@@ -95,7 +95,7 @@ final class DIComponentInfo {
 		//On construit la liste de ses dépendances.
 		for (int i = 0; i < constructor.getParameterTypes().length; i++) {
 			final DIDependency dependency = new DIDependency(diComponentInfo, constructor, i);
-			if (!params.contains(dependency.getId())) {
+			if (!params.contains(dependency.getPort().getId())) {
 				dependencies.add(dependency);
 			}
 		}
@@ -109,7 +109,7 @@ final class DIComponentInfo {
 		for (final Field field : fields) {
 			//On utilise le build sur les champs avec les options autorisées.
 			final DIDependency dependency = new DIDependency(diComponentInfo, field);
-			if (!params.contains(dependency.getId())) {
+			if (!params.contains(dependency.getPort().getId())) {
 				dependencies.add(dependency);
 			}
 		}

@@ -158,9 +158,9 @@ public final class InjectorTest {
 		//-----
 		container.put("p", new P());
 		container.put("p#1", new P());
-		container.put("p2", new P2());
-		container.put("p2#1", new P2());
-		container.put("p2#2", new P2());
+		container.put("pen", new P2());
+		container.put("pen#1", new P2());
+		container.put("pen#2", new P2());
 		e = Injector.newInstance(E.class, container);
 		Assert.assertTrue(e.getA().isDefined());
 		Assert.assertEquals(a, e.getA().get());

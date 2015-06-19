@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.di.reactor;
 
-import io.vertigo.core.di.DIAnnotationUtil;
+import io.vertigo.core.di.DIPort;
 import io.vertigo.lang.Assertion;
 
 import java.lang.reflect.Constructor;
@@ -34,9 +34,7 @@ import java.lang.reflect.Field;
 final class DIDependency {
 	//Id du composant déclarant la dépendance
 	private final DIComponentInfo componentInfo;
-	private final String id;
-	private final boolean option;
-	private final boolean isList;
+	private final DIPort port;
 
 	//Each component has a dependency on its plugins
 	DIDependency(final DIComponentInfo componentInfo, final String id) {
@@ -44,48 +42,29 @@ final class DIDependency {
 		Assertion.checkArgNotEmpty(id);
 		//-----
 		this.componentInfo = componentInfo;
-		this.id = id;
-		option = false;
-		isList = false;
+		this.port = new DIPort(id);
 	}
 
 	DIDependency(final DIComponentInfo componentInfo, final Field field) {
 		Assertion.checkNotNull(componentInfo);
-		Assertion.checkNotNull(field);
 		//-----
 		this.componentInfo = componentInfo;
-		id = DIAnnotationUtil.buildId(field);
-		final Class<?> type = field.getType();
-		option = DIAnnotationUtil.isOption(type);
-		isList = DIAnnotationUtil.isList(type);
+		this.port = new DIPort(field);
 	}
 
 	DIDependency(final DIComponentInfo componentInfo, final Constructor<?> constructor, final int i) {
 		Assertion.checkNotNull(componentInfo);
-		Assertion.checkNotNull(constructor);
 		//-----
 		this.componentInfo = componentInfo;
-		id = DIAnnotationUtil.buildId(constructor, i);
-		final Class<?> type = constructor.getParameterTypes()[i];
-		option = DIAnnotationUtil.isOption(type);
-		isList = DIAnnotationUtil.isList(type);
-
+		this.port = new DIPort(constructor, i);
 	}
 
-	String getId() {
-		return id;
-	}
-
-	boolean isOption() {
-		return option;
-	}
-
-	public boolean isList() {
-		return isList;
+	public DIPort getPort() {
+		return port;
 	}
 
 	@Override
 	public String toString() {
-		return id + " (referenced by " + componentInfo.getId() + ")";
+		return port + " (referenced by " + componentInfo.getId() + ")";
 	}
 }

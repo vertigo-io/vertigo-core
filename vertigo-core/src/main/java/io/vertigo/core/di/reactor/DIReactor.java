@@ -108,7 +108,7 @@ public final class DIReactor {
 		for (final DIComponentInfo componentInfo : diComponentInfos) {
 			for (final DIDependency dependency : componentInfo.getDependencies()) {
 				//Si une référence est une liste ou optionnelle alors elle n'est jamais manquante.
-				if (!dependency.isList() && !dependency.isOption() && !allComponentInfos.contains(dependency.getId())) {
+				if (!dependency.getPort().isList() && !dependency.getPort().isOption() && !allComponentInfos.contains(dependency.getPort().getId())) {
 					missing.add(dependency);
 				}
 			}
@@ -132,9 +132,9 @@ public final class DIReactor {
 				for (final DIDependency dependency : componentInfo.getDependencies()) {
 					//On vérifie si pour un composant
 					//TOUTES ses dépendances sont bien déjà résolues.
-					if (allComponentInfos.contains(dependency.getId()) || !(dependency.isOption() || dependency.isList())) {
+					if (allComponentInfos.contains(dependency.getPort().getId()) || !(dependency.getPort().isOption() || dependency.getPort().isList())) {
 						//On doit résoudre toutes des références connues(y compris les référenes optionnelles) sans tenir compte des références inconnues et optionnelles.
-						solved = solved && (sorted.contains(dependency.getId()) || parentComponentInfos.contains(dependency.getId()));
+						solved = solved && (sorted.contains(dependency.getPort().getId()) || parentComponentInfos.contains(dependency.getPort().getId()));
 					}
 					if (!solved) {
 						//Si ce n'est pas le cas on passe au composant suivant.
