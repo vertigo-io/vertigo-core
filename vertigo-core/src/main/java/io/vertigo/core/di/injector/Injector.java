@@ -62,18 +62,21 @@ public final class Injector {
 		//-----
 		//On encapsule la création par un bloc try/ctach afin de préciser le type de composant qui n'a pas pu être créé.
 		try {
-			//On a un et un seul constructeur public injectable.
-			final Constructor<T> constructor = DIAnnotationUtil.findInjectableConstructor(clazz);
-			//On recherche les paramètres
-			final Object[] constructorParameters = findConstructorParameters(container, constructor);
-			final T instance = ClassUtil.newInstance(constructor, constructorParameters);
-
+			final T instance = createInstance(clazz, container);
 			injectMembers(instance, container);
 			return instance;
 		} catch (final Exception e) {
 			//Contextualisation de l'exception et des assertions.
 			throw new DIException("Erreur lors de la création du composant de type : '" + clazz.getName() + "'", e);
 		}
+	}
+
+	private static <T> T createInstance(final Class<T> clazz, final Container container) {
+		//On a un et un seul constructeur public injectable.
+		final Constructor<T> constructor = DIAnnotationUtil.findInjectableConstructor(clazz);
+		//On recherche les paramètres
+		final Object[] constructorParameters = findConstructorParameters(container, constructor);
+		return ClassUtil.newInstance(constructor, constructorParameters);
 	}
 
 	/**
