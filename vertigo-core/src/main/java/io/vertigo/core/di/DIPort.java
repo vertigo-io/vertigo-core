@@ -22,9 +22,12 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.List;
+
+import javax.inject.Named;
 
 /**
  * Un composant possède une liste de dépendances.
@@ -50,22 +53,25 @@ public final class DIPort {
 	public DIPort(final Field field) {
 		Assertion.checkNotNull(field);
 		//-----
-		id = DIAnnotationUtil.buildId(field);
+		final String named = getNamedValue(field.getAnnotations());
 		final Class<?> rootType = field.getType();
+
 		isOption = isOption(rootType);
 		isList = isList(rootType);
 		type = (isOption || isList) ? ClassUtil.getGeneric(field) : rootType;
+		id = named != null ? named : DIAnnotationUtil.buildId(type);
 	}
 
 	public DIPort(final Constructor<?> constructor, final int i) {
 		Assertion.checkNotNull(constructor);
 		//-----
-		id = DIAnnotationUtil.buildId(constructor, i);
+		final String named = getNamedValue(constructor.getParameterAnnotations()[i]);
 		final Class<?> rootType = constructor.getParameterTypes()[i];
+
 		isOption = isOption(rootType);
 		isList = isList(rootType);
-
 		type = (isOption || isList) ? ClassUtil.getGeneric(constructor, i) : rootType;
+		id = named != null ? named : DIAnnotationUtil.buildId(type);
 	}
 
 	public String getId() {
@@ -81,6 +87,7 @@ public final class DIPort {
 	}
 
 	public Class<?> getType() {
+		Assertion.checkNotNull(type);
 		return type;
 	}
 
@@ -95,5 +102,14 @@ public final class DIPort {
 
 	public static boolean isList(final Class<?> type) {
 		return List.class.isAssignableFrom(type);
+	}
+
+	private static String getNamedValue(final Annotation[] annotations) {
+		for (final Annotation annotation : annotations) {
+			if (annotation instanceof Named) {
+				return Named.class.cast(annotation).value();
+			}
+		}
+		return null;
 	}
 }

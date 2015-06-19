@@ -24,7 +24,6 @@ import io.vertigo.core.di.DIPort;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
 import io.vertigo.lang.Option;
-import io.vertigo.lang.Plugin;
 import io.vertigo.util.ClassUtil;
 
 import java.lang.reflect.Constructor;
@@ -117,16 +116,16 @@ public final class Injector {
 			//
 			return Option.none();
 		} else if (port.isList()) {
-			//Injection des listes de plugins
-			final String pluginIdPrefix = DIAnnotationUtil.buildId(port.getType());
+			//Injection des listes
+			final String idPrefix = DIAnnotationUtil.buildId(port.getType());
 
-			//on récupère la liste des plugin du type concerné
-			final List<Plugin> list = new ArrayList<>();
-			for (final String pluginId : container.keySet()) {
-				//On prend tous les plugins du type concerné
-				if (pluginId.equals(pluginIdPrefix) || pluginId.startsWith(pluginIdPrefix + '#')) {
-					final Plugin injected = container.resolve(pluginId, Plugin.class);
-					Assertion.checkArgument(port.getType().isAssignableFrom(injected.getClass()), "type of {0} is incorrect ; expected : {1}", pluginId, port.getType().getName());
+			//on récupère la liste des objets du type concerné
+			final List<Object> list = new ArrayList<>();
+			for (final String id : container.keySet()) {
+				//On prend tous les objets ayant l'identifiant requis 
+				if (id.equals(idPrefix) || id.startsWith(idPrefix + '#')) {
+					final Object injected = container.resolve(id, Object.class);
+					Assertion.checkArgument(port.getType().isAssignableFrom(injected.getClass()), "type of {0} is incorrect ; expected : {1}", id, port.getType().getName());
 					list.add(injected);
 				}
 			}
