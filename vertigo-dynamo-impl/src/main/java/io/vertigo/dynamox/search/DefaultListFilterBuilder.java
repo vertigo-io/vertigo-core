@@ -49,29 +49,33 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 	private static final Set<String> RESERVED_QUERY_KEYWORDS = new HashSet<>(Arrays.asList(new String[] { "AND", "OR", "and", "or", "And", "Or" }));
 
 	/**
+	 * Match the listFilterBuilderQuery declared in KSP.
 	 * Groups regExp=>
 	 *   1: index field (optional)
 	 *   2: pre-expression value
 	 *   3: field expression value (optional)
 	 *   4: post-expression value
+	 *   5: separator value
 	 */
-	private final static String QUERY_PATTERN_STRING = "(\\S+:)?([^\\s#]*)(?:#(\\S+)#)?([^\\s#]*)(?:\\s|$)+";
+	private final static String QUERY_PATTERN_STRING = "(\\S+:)?([^\\s#]*)(?:#(\\S+)#)?([^\\s#]*)(\\s|$)+";
 	private final static Pattern QUERY_PATTERN = Pattern.compile(QUERY_PATTERN_STRING);
 
 	private final static String FULL_QUERY_PATTERN_STRING = "^(?:" + QUERY_PATTERN_STRING + ")*";
 	private final static Pattern FULL_QUERY_PATTERN = Pattern.compile(FULL_QUERY_PATTERN_STRING);
 
 	/**
+	 * Match the field expression inner the listFilterBuilderQuery declared in KSP.
 	 * Groups :
 	 *  1 : pre-fieldName (optional, non word)
 	 *  2 : fieldName (word)
 	 *  3 : post-fieldName (optional,non word)
 	 */
-	private final static String FIELD_EXPRESSION_PATTERN_STRING = "(\\W*)(\\w+)(\\W*)"; //note: expressions must already match \\S non-whitespace from QUERY_PATTERN
+	private final static String FIELD_EXPRESSION_PATTERN_STRING = "(\\W*)(\\w+)(\\W*[0-9]*)"; //note: expressions must already match \\S non-whitespace from QUERY_PATTERN
 	private final static Pattern FIELD_EXPRESSION_PATTERN = Pattern.compile(FIELD_EXPRESSION_PATTERN_STRING);
 
 	/**
-	 * Regexp to parse user query string. User cas use some elaticSearch syntax + - * ? ~ or and ( ) field: [ to ] { to }
+	 * Regexp to parse USER query string.
+	 * User can use some elaticSearch syntax + - * ? ~ or and ( ) field: [ to ] { to }
 	 * Any use of these commands but and or ( ) desactivate process of the word
 	 * Like : Harry~ (Potter or Poter) -azkaban year:1998
 	 *
@@ -99,8 +103,16 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 	private final static String CRITERIA_VALUE_OTHER_FIELD_PATTERN_STRING = "(?:(\\S+:)\\(()([^\\\"]*)()\\))"; //attention a bien avoir 4 groups
 	private final static String CRITERIA_VALUE_QUOTED_PATTERN_STRING = "(?:(\\S+:)?(\\\")([^\\\"]*)(\\\"))";
 	private final static String CRITERIA_VALUE_RANGE_PATTERN_STRING = "(?:(\\S+:)?([\\[\\{])([^\\]\\}]*)([\\]\\}]))";
-	private final static String WORD_PATTERN = "\\s\\\"\\[\\{\\]\\}():";
-	private final static String CRITERIA_VALUE_WORD_PATTERN_STRING = "(?:(\\S+:)?([^\\w" + WORD_PATTERN + "]*)([^" + WORD_PATTERN + "]+)([^\\w" + WORD_PATTERN + "]*))";
+	//private final static String WORD_RESERVERD_PATTERN = "\\s\\+\\-\\=\\&\\|\\>\\<\\!\\(\\)\\{\\}\\[\\]\\^\\\"\\~\\*\\?\\:\\/\\\\";
+	//private final static String PREFIX_RESERVERD_PATTERN = "^\\s\\\"\\[\\{\\]\\}():,";
+	//private final static String SUFFIX_RESERVERD_PATTERN = "^\\s\\\"\\[\\{\\]\\}():,";
+
+	private final static String WORD_RESERVERD_PATTERN = "^\\s\\p{Punct}";
+	private final static String PREFIX_RESERVERD_PATTERN = "\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<";
+	private final static String SUFFIX_RESERVERD_PATTERN = "\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<";
+	//private final static String NOT_WORD_PATTERN = "\\s\\\"\\[\\{\\]\\}():";
+	//private final static String CRITERIA_VALUE_WORD_PATTERN_STRING = "(?:(\\S+:)?([^\\w" + NOT_WORD_PATTERN + "]*)([^" + NOT_WORD_PATTERN + "]+)([^\\w" + NOT_WORD_PATTERN + "]*))";
+	private final static String CRITERIA_VALUE_WORD_PATTERN_STRING = "(?:(\\S+:)?([" + PREFIX_RESERVERD_PATTERN + "]*?)([" + WORD_RESERVERD_PATTERN + "]+)((?:[\\^\\~][0-9]+)|(?:[" + SUFFIX_RESERVERD_PATTERN + "]*)))";
 	private final static String CRITERIA_VALUE_PATTERN_STRING = "(?:"
 			+ CRITERIA_VALUE_OTHER_FIELD_PATTERN_STRING // group 1
 			+ "|" + CRITERIA_VALUE_QUOTED_PATTERN_STRING
@@ -157,9 +169,10 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 			final String preExpression = queryMatcher.group(2);
 			final String fieldExpression = queryMatcher.group(3);
 			final String postExpression = queryMatcher.group(4);
-
+			final String separator = queryMatcher.group(5);
 			//On traite l'expression avant de concaténer, car si le critère est null on retire tout
 			appendFieldExpression(query, indexFieldName, preExpression, fieldExpression, postExpression);
+			query.append(separator);
 		}
 		return query.toString();
 	}
@@ -213,11 +226,20 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 		int lastIndex = 0;
 		while (criteriaValueMatcher.find()) {
 			final int startIndex = criteriaValueMatcher.start();
-			final String missingPart;
+			final String preMissingPart;
+			final String postMissingPart;
 			if (startIndex > lastIndex) {
-				missingPart = stringValue.substring(lastIndex, startIndex);
+				final String missingPart = stringValue.substring(lastIndex, startIndex);
+				if (!missingPart.startsWith(" ")) {
+					preMissingPart = "";
+					postMissingPart = missingPart;
+				} else {
+					preMissingPart = missingPart;
+					postMissingPart = "";
+				}
 			} else {
-				missingPart = "";
+				preMissingPart = "";
+				postMissingPart = "";
 			}
 			lastIndex = criteriaValueMatcher.end();
 			//les capturing groups matchs par group de 4, on cherche le premier qui match 4 par 4
@@ -236,7 +258,10 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 			if (criteriaValue != null && !criteriaValue.trim().isEmpty()) {
 				if (overridedFieldName != null) {
 					//si le field est surchargé on flush l'expression précédente
-					flushExpressionValueToQuery(query, indexFieldName, preExpression, postExpression, expressionValue, missingPart);
+
+					appendMissingPart(expressionValue, query, postMissingPart);
+					flushExpressionValueToQuery(query, indexFieldName, preExpression, postExpression, expressionValue);
+					appendMissingPart(expressionValue, query, preMissingPart);
 					//et on ajout la requete sur l'autre champs
 					appendIfNotNull(query, overridedFieldName);
 					query.append('(');
@@ -244,11 +269,14 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 					appendIfNotNull(query, criteriaValue);
 					appendIfNotNull(query, overridedPostModifier);
 					query.append(')');
+
 				} else if (RESERVED_QUERY_KEYWORDS.contains(criteriaValue)) {
-					appendMissingPart(expressionValue, query, missingPart);
+					appendMissingPart(expressionValue, expressionValue, preMissingPart);
+					appendMissingPart(expressionValue, expressionValue, postMissingPart);
 					appendIfNotNull(expressionValue, criteriaValue);
 				} else {
-					appendMissingPart(expressionValue, query, missingPart);
+					appendMissingPart(expressionValue, query, preMissingPart);
+					appendMissingPart(expressionValue, expressionValue, postMissingPart);
 					appendIfNotNull(expressionValue, overridedPreModifier.isEmpty() ? preModifier : overridedPreModifier);
 					appendIfNotNull(expressionValue, criteriaValue);
 					appendIfNotNull(expressionValue, overridedPostModifier.isEmpty() ? postModifier : overridedPostModifier);
@@ -256,10 +284,22 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 			} //else no query
 		}
 		final String missingPart = stringValue.substring(lastIndex);
-		flushExpressionValueToQuery(query, indexFieldName, preExpression, postExpression, expressionValue, missingPart);
+		final String preMissingPart;
+		final String postMissingPart;
+		if (!missingPart.startsWith(" ")) {
+			preMissingPart = "";
+			postMissingPart = missingPart;
+		} else {
+			preMissingPart = missingPart;
+			postMissingPart = "";
+		}
+
+		appendMissingPart(expressionValue, expressionValue, preMissingPart);
+		appendMissingPart(expressionValue, expressionValue, postMissingPart);
+		flushExpressionValueToQuery(query, indexFieldName, preExpression, postExpression, expressionValue);
 	}
 
-	private void flushExpressionValueToQuery(final StringBuilder query, final String indexFieldName, final String preExpression, final String postExpression, final StringBuilder expressionValue, final String missingPart) {
+	private void flushExpressionValueToQuery(final StringBuilder query, final String indexFieldName, final String preExpression, final String postExpression, final StringBuilder expressionValue) {
 		if (expressionValue.length() > 0) {
 			appendIfNotNull(query, indexFieldName);
 			appendIfNotNull(query, preExpression);
@@ -269,7 +309,6 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 			appendIfNotNull(query, postExpression);
 			expressionValue.setLength(0); //on la remet à 0
 		}
-		appendMissingPart(expressionValue, query, missingPart);
 	}
 
 	private StringBuilder appendIfNotNull(final StringBuilder query, final String str) {

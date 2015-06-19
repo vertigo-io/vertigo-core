@@ -28,90 +28,166 @@ import org.junit.Test;
  */
 public class DefaultListFilterBuilderTest {
 
-	private static final String[][] TEST_STRING_QUERY = new String[][] {
-			//QueryPattern, UserQuery, EspectedResult
-			{ "ALL:#query#", "Test", "ALL:(Test)" },
-			{ "ALL:#query#", "Test test2", "ALL:(Test test2)" },
-			{ "ALL:#query*#", "Test", "ALL:(Test*)" },
-			{ "ALL:#query*#", "Test test2", "ALL:(Test* test2*)" },
-			{ "ALL:#+query#", "Test", "ALL:(+Test)" },
-			{ "ALL:#+query#", "Test test2", "ALL:(+Test +test2)" },
-			{ "+ALL:#query#", "Test", "+ALL:(Test)" },
-			{ "+ALL:#query#", "Test test2", "+ALL:(Test test2)" },
-	};
-
-	private static final String[][] TEST_STRING_ADVANCED_QUERY = new String[][] {
-			//QueryPattern, UserQuery, EspectedResult
-			{ "ALL:#query#", "Test or test2", "ALL:(Test or test2)" },
-			{ "ALL:#query#", "Test and test2", "ALL:(Test and test2)" },
-			{ "ALL:#query#", "Test OR test2", "ALL:(Test OR test2)" },
-			{ "ALL:#query#", "Test AND test2", "ALL:(Test AND test2)" },
-			{ "ALL:#query#", "Test AND (test2 OR test3)", "ALL:(Test AND (test2 OR test3))" },
-			{ "ALL:#query*#", "Test AND test2", "ALL:(Test* AND test2*)" },
-			{ "ALL:#query*#", "Test AND (test2 OR test3)", "ALL:(Test* AND (test2* OR test3*))" },
-			{ "ALL:#+query*#", "Test AND (test2 OR test3)", "ALL:(+Test* AND (+test2* OR +test3*))" },
-			{ "+ALL:#query#", "Test or test2", "+ALL:(Test or test2)" },
-	};
-
-	private static final String[][] TEST_STRING_OVERRIDED_FIELD_QUERY = new String[][] {
-			//QueryPattern, UserQuery, EspectedResult
-			{ "ALL:#query#", "OTHER:Test", "OTHER:(Test)" },
-			{ "ALL:#+query*#", "OTHER:Test", "OTHER:(Test)" },
-			{ "ALL:#query#", "OTHER:Test test2", "OTHER:(Test) ALL:(test2)" },
-			{ "ALL:#query#", "Test OTHER:test2", "ALL:(Test) OTHER:(test2)" },
-			{ "ALL:#query#", "OTHER:Test test2 test3", "OTHER:(Test) ALL:(test2 test3)" },
-			{ "ALL:#query#", "Test OTHER:test2 test3", "ALL:(Test) OTHER:(test2) ALL:(test3)" },
-			{ "ALL:#query#", "Test test2 OTHER:test3", "ALL:(Test test2) OTHER:(test3)" },
-			{ "ALL:#+query*#", "Test test2 OTHER:test3", "ALL:(+Test* +test2*) OTHER:(test3)" },
-			{ "+ALL:#query#", "Test test2 OTHER:test3", "+ALL:(Test test2) OTHER:(test3)" },
-			{ "ALL:#+query*#", "Test OTHER:(test2 test3)", "ALL:(+Test*) OTHER:(test2 test3)" },
-			{ "+ALL:#query#", "Test OTHER:(test2 test3)", "+ALL:(Test) OTHER:(test2 test3)" },
-			{ "ALL:#query#", "Test +OTHER:(test2 test3)", "ALL:(Test) +OTHER:(test2 test3)" },
-	};
-
-	private static final String[][] TEST_STRING_OVERRIDED_MODIFIER_QUERY = new String[][] {
-			//QueryPattern, UserQuery, EspectedResult
-			{ "ALL:#query#", "+Test", "ALL:(+Test)" },
-			{ "ALL:#query#", "+Test test2", "ALL:(+Test test2)" },
-			{ "ALL:#query#", "Test*", "ALL:(Test*)" },
-			{ "ALL:#query#", "Test* test2", "ALL:(Test* test2)" },
-			{ "ALL:#+query#", "-Test", "ALL:(-Test)" },
-			{ "ALL:#+query#", "-Test test2", "ALL:(-Test +test2)" },
-			{ "+ALL:#query#", "-Test", "+ALL:(-Test)" },
-			{ "+ALL:#query#", "-Test test2", "+ALL:(-Test test2)" },
-			{ "ALL:#+query*#", "-Test", "ALL:(-Test*)" },
-			{ "ALL:#+query*#", "-Test test2", "ALL:(-Test* +test2*)" },
-	};
-
-	private static final String[][] TEST_STRING_FIXED_QUERY = new String[][] {
-			//QueryPattern, UserQuery, EspectedResult
-			{ "ALL:fixedValue", "Test", "ALL:fixedValue" },
-			{ "ALL:fixedValue", "Test test2", "ALL:fixedValue" },
-	};
-
 	@Test
 	public void testStringQuery() {
-		testStringFixedQuery(TEST_STRING_QUERY);
+		final String[][] testQueries = new String[][] {
+				//QueryPattern, UserQuery, EspectedResult
+				{ "ALL:#query#", "Test", "ALL:(Test)" }, //0
+				{ "ALL:#query#", "Test test2", "ALL:(Test test2)" }, //1
+				{ "ALL:#query*#", "Test", "ALL:(Test*)" }, //2
+				{ "ALL:#query*#", "Test test2", "ALL:(Test* test2*)" }, //3
+				{ "ALL:#+query#", "Test", "ALL:(+Test)" }, //4
+				{ "ALL:#+query#", "Test test2", "ALL:(+Test +test2)" }, //5
+				{ "+ALL:#query#", "Test", "+ALL:(Test)" }, //6
+				{ "+ALL:#query#", "Test test2", "+ALL:(Test test2)" }, //7
+		};
+		testStringFixedQuery(testQueries);
+	}
+
+	@Test
+	public void testStringGlobalModifierQuery() {
+		final String[][] testQueries = new String[][] {
+				//QueryPattern, UserQuery, EspectedResult
+				{ "ALL:#query#", "Test", "ALL:(Test)" }, //0
+				{ "ALL:#query#", "Test test2", "ALL:(Test test2)" }, //1
+				{ "ALL:#query#*", "Test", "ALL:(Test)*" }, //2
+				{ "ALL:#query#*", "Test test2", "ALL:(Test test2)*" }, //3
+				{ "ALL:+#query#", "Test", "ALL:+(Test)" }, //4
+				{ "ALL:+#query#", "Test test2", "ALL:+(Test test2)" }, //5
+				{ "-ALL:+#query#*", "Test", "-ALL:+(Test)*" }, //6
+				{ "-ALL:+#query#*", "Test test2", "-ALL:+(Test test2)*" }, //7
+				{ "-ALL:+#query#*", "Test AND (test2 OR test3)", "-ALL:+(Test AND (test2 OR test3))*" }, //8
+		};
+		testStringFixedQuery(testQueries[8]);
+		testStringFixedQuery(testQueries);
 	}
 
 	@Test
 	public void testStringAdvancedQuery() {
-		testStringFixedQuery(TEST_STRING_ADVANCED_QUERY);
+		final String[][] testQueries = new String[][] {
+				//QueryPattern, UserQuery, EspectedResult
+				{ "ALL:#query#", "Test or test2", "ALL:(Test or test2)" }, //0
+				{ "ALL:#query#", "Test and test2", "ALL:(Test and test2)" }, //1
+				{ "ALL:#query#", "Test OR test2", "ALL:(Test OR test2)" }, //2
+				{ "ALL:#query#", "Test AND test2", "ALL:(Test AND test2)" }, //3
+				{ "ALL:#query#", "Test AND (test2 OR test3)", "ALL:(Test AND (test2 OR test3))" }, //4
+				{ "ALL:#query*#", "Test AND test2", "ALL:(Test* AND test2*)" }, //5
+				{ "ALL:#query*#", "Test AND (test2 OR test3)", "ALL:(Test* AND (test2* OR test3*))" }, //6
+				{ "ALL:#+query*#", "Test AND (test2 OR test3)", "ALL:(+Test* AND (+test2* OR +test3*))" }, //7
+				{ "+ALL:#query#", "Test or test2", "+ALL:(Test or test2)" }, //8
+				{ "ALL:#+query~#", "Test AND (test2 OR test3)", "ALL:(+Test~ AND (+test2~ OR +test3~))" }, //9
+				{ "ALL:#+query~1#", "Test AND (test2 OR test3)", "ALL:(+Test~1 AND (+test2~1 OR +test3~1))" }, //10
+				{ "ALL:#+query#", "Test AND (test2^2 OR test3)", "ALL:(+Test AND (+test2^2 OR +test3))" }, //11
+				{ "ALL:#+query^2#", "Test AND (test2 OR test3)", "ALL:(+Test^2 AND (+test2^2 OR +test3^2))" }, //12
+				{ "ALL:#+query#^2", "Test AND (test2 OR test3)", "ALL:(+Test AND (+test2 OR +test3))^2" }, //13
+				{ "ALL:#+query*#", "Test, test2, test3", "ALL:(+Test*, +test2*, +test3*)" }, //14
+				{ "ALL:#query# +YEAR:[2000 to 2005]", "Test AND (test2 OR test3)", "ALL:(Test AND (test2 OR test3)) +YEAR:[2000 to 2005]" }, //15
+		};
+		testStringFixedQuery(testQueries[11]);
+		testStringFixedQuery(testQueries);
 	}
 
 	@Test
 	public void testStringOverridedFieldQuery() {
-		testStringFixedQuery(TEST_STRING_OVERRIDED_FIELD_QUERY);
+		final String[][] testQueries = new String[][] {
+				//QueryPattern, UserQuery, EspectedResult
+				{ "ALL:#query#", "OTHER:Test", "OTHER:(Test)" }, //0
+				{ "ALL:#+query*#", "OTHER:Test", "OTHER:(Test)" }, //1
+				{ "ALL:#query#", "OTHER:Test test2", "OTHER:(Test) ALL:(test2)" }, //2
+				{ "ALL:#query#", "Test OTHER:test2", "ALL:(Test) OTHER:(test2)" }, //3
+				{ "ALL:#query#", "OTHER:Test test2 test3", "OTHER:(Test) ALL:(test2 test3)" }, //4
+				{ "ALL:#query#", "Test OTHER:test2 test3", "ALL:(Test) OTHER:(test2) ALL:(test3)" }, //5
+				{ "ALL:#query#", "Test test2 OTHER:test3", "ALL:(Test test2) OTHER:(test3)" }, //6
+				{ "ALL:#+query*#", "Test test2 OTHER:test3", "ALL:(+Test* +test2*) OTHER:(test3)" }, //7
+				{ "+ALL:#query#", "Test test2 OTHER:test3", "+ALL:(Test test2) OTHER:(test3)" }, //8
+				{ "ALL:#+query*#", "Test OTHER:(test2 test3)", "ALL:(+Test*) OTHER:(test2 test3)" }, //9
+				{ "+ALL:#query#", "Test OTHER:(test2 test3)", "+ALL:(Test) OTHER:(test2 test3)" }, //10
+				{ "ALL:#query#", "Test +OTHER:(test2 test3)", "ALL:(Test) +OTHER:(test2 test3)" }, //11
+				{ "ALL:#+query*#", "Test test2~", "ALL:(+Test* +test2~)" }, //12
+		};
+		testStringFixedQuery(testQueries[2]);
+		testStringFixedQuery(testQueries);
 	}
 
 	@Test
 	public void testStringOverridedModifierQuery() {
-		testStringFixedQuery(TEST_STRING_OVERRIDED_MODIFIER_QUERY);
+		final String[][] testQueries = new String[][] {
+				//QueryPattern, UserQuery, EspectedResult
+				{ "ALL:#query#", "+Test", "ALL:(+Test)" }, //0
+				{ "ALL:#query#", "+Test test2", "ALL:(+Test test2)" }, //1
+				{ "ALL:#query#", "Test*", "ALL:(Test*)" }, //2
+				{ "ALL:#query#", "Test* test2", "ALL:(Test* test2)" }, //3
+				{ "ALL:#+query#", "-Test", "ALL:(-Test)" }, //4
+				{ "ALL:#+query#", "-Test test2", "ALL:(-Test +test2)" }, //5
+				{ "+ALL:#query#", "-Test", "+ALL:(-Test)" }, //6
+				{ "+ALL:#query#", "-Test test2", "+ALL:(-Test test2)" }, //7
+				{ "ALL:#+query*#", "-Test", "ALL:(-Test*)" }, //8
+				{ "ALL:#+query*#", "-Test test2", "ALL:(-Test* +test2*)" }, //9
+		};
+		testStringFixedQuery(testQueries[2]);
+		testStringFixedQuery(testQueries);
 	}
 
 	@Test
 	public void testStringFixedQuery() {
-		testStringFixedQuery(TEST_STRING_FIXED_QUERY);
+		final String[][] testQueries = new String[][] {
+				//QueryPattern, UserQuery, EspectedResult
+				{ "ALL:fixedValue", "Test", "ALL:fixedValue" },
+				{ "ALL:fixedValue", "Test test2", "ALL:fixedValue" },
+		};
+		testStringFixedQuery(testQueries);
+	}
+
+	@Test
+	public void testStringEmptyQuery() {
+		final String[][] testQueries = new String[][] {
+				//QueryPattern, UserQuery, EspectedResult
+				{ "ALL:#+query*# +security:fixedValue", "Test", "ALL:(+Test*) +security:fixedValue" },
+				{ "ALL:#+query*# +security:fixedValue", "*", "* +security:fixedValue" },
+				{ "ALL:#+query*# +security:fixedValue", "*:*", "*:* +security:fixedValue" },
+		};
+		testStringFixedQuery(testQueries[2]);
+		testStringFixedQuery(testQueries);
+	}
+
+	@Test
+	public void testStringSpecialCharQuery() {
+		//ElasticSearch reserved characters are: + - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \ /
+		final String[][] testQueries = new String[][] {
+				//QueryPattern, UserQuery, EspectedResult
+				{ "ALL:#+query*#", "-Test", "ALL:(-Test*)" },
+				{ "ALL:#+query*#", "Test-", "ALL:(+Test-)" },
+				{ "ALL:#+query*#", "-Test-", "ALL:(-Test-)" },
+				{ "ALL:#+query*#", "+Test+", "ALL:(+Test+)" },
+				{ "ALL:#+query*#", "=Test=", "ALL:(=Test=)" },
+				//{ "ALL:#+query*#", "&Test&", "ALL:(&Test&)" },
+				//{ "ALL:#+query*#", "|Test|", "ALL:(|Test|)" },
+				{ "ALL:#+query*#", ">Test>", "ALL:(>Test>)" },
+				{ "ALL:#+query*#", "<Test<", "ALL:(<Test<)" },
+				{ "ALL:#+query*#", "!Test!", "ALL:(!Test!)" },
+				{ "ALL:#+query*#", "^Test^", "ALL:(^Test^)" },
+				{ "ALL:#+query*#", "\"Test\"", "ALL:(\"Test\")" },
+				{ "ALL:#+query*#", "~Test~", "ALL:(~Test~)" },
+				{ "ALL:#+query*#", "*Test*", "ALL:(*Test*)" },
+				{ "ALL:#+query*#", "?Test?", "ALL:(?Test?)" },
+				//{ "ALL:#+query*#", ":Test:", "ALL:(:Test:)" },
+				//{ "ALL:#+query*#", "\\Test\\", "ALL:(\\Test\\)" },
+				//{ "ALL:#+query*#", "/Test/", "ALL:(/Test/)" },
+				{ "ALL:#+query*#", ",Test,", "ALL:(,+Test*,)" },
+				{ "ALL:#+query*#", ";Test;", "ALL:(;+Test*;)" },
+
+		};
+		testStringFixedQuery(testQueries);
+	}
+
+	@Test
+	public void testStringHackQuery() {
+		final String[][] testQueries = new String[][] {
+				//QueryPattern, UserQuery, EspectedResult
+				{ "ALL:#query# +security:fixedValue", "Test OR 1=1", "ALL:(Test OR 1=1) +security:fixedValue" },
+				{ "ALL:#query# +security:fixedValue", "Test) OR (1=1", "ALL:(Test) OR (1=1) +security:fixedValue" },
+		};
+		testStringFixedQuery(testQueries);
 	}
 
 	private void testStringFixedQuery(final String[]... testData) {
