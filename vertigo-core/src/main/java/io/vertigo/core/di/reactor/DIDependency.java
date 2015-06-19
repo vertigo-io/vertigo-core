@@ -21,9 +21,6 @@ package io.vertigo.core.di.reactor;
 import io.vertigo.core.di.DIPort;
 import io.vertigo.lang.Assertion;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-
 /**
  * Une dépendance est identifiée par son id.
  * une dépendance peut porter sur une Classe quelconque, une option ou une Liste.
@@ -45,18 +42,12 @@ final class DIDependency {
 		this.port = new DIPort(id);
 	}
 
-	DIDependency(final DIComponentInfo componentInfo, final Field field) {
+	DIDependency(final DIComponentInfo componentInfo, final DIPort port) {
 		Assertion.checkNotNull(componentInfo);
+		Assertion.checkNotNull(port);
 		//-----
 		this.componentInfo = componentInfo;
-		this.port = new DIPort(field);
-	}
-
-	DIDependency(final DIComponentInfo componentInfo, final Constructor<?> constructor, final int i) {
-		Assertion.checkNotNull(componentInfo);
-		//-----
-		this.componentInfo = componentInfo;
-		this.port = new DIPort(constructor, i);
+		this.port = port;
 	}
 
 	public DIPort getPort() {

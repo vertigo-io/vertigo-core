@@ -19,6 +19,7 @@
 package io.vertigo.core.di.reactor;
 
 import io.vertigo.core.di.DIAnnotationUtil;
+import io.vertigo.core.di.DIPort;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
 
@@ -94,9 +95,9 @@ final class DIComponentInfo {
 		final Constructor<?> constructor = DIAnnotationUtil.findInjectableConstructor(implClass);
 		//On construit la liste de ses dépendances.
 		for (int i = 0; i < constructor.getParameterTypes().length; i++) {
-			final DIDependency dependency = new DIDependency(diComponentInfo, constructor, i);
-			if (!params.contains(dependency.getPort().getId())) {
-				dependencies.add(dependency);
+			final DIPort port = new DIPort(constructor, i);
+			if (!params.contains(port.getId())) {
+				dependencies.add(new DIDependency(diComponentInfo, port));
 			}
 		}
 	}
@@ -108,9 +109,9 @@ final class DIComponentInfo {
 		final Collection<Field> fields = ClassUtil.getAllFields(implClass, Inject.class);
 		for (final Field field : fields) {
 			//On utilise le build sur les champs avec les options autorisées.
-			final DIDependency dependency = new DIDependency(diComponentInfo, field);
-			if (!params.contains(dependency.getPort().getId())) {
-				dependencies.add(dependency);
+			final DIPort port = new DIPort(field);
+			if (!params.contains(port.getId())) {
+				dependencies.add(new DIDependency(diComponentInfo, port));
 			}
 		}
 	}

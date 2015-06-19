@@ -19,7 +19,6 @@
 package io.vertigo.core.di;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.util.StringUtil;
 
 import java.lang.reflect.Constructor;
@@ -57,26 +56,6 @@ public final class DIAnnotationUtil {
 
 	private static boolean isInjectable(final Constructor<?> constructor) {
 		return constructor.getParameterTypes().length == 0 || constructor.isAnnotationPresent(Inject.class);
-	}
-
-	/**
-	 * @return Création de l'identifiant du composant
-	 */
-	public static String buildId(final Option<Class<?>> apiClass, final Class<?> implClass) {
-		Assertion.checkNotNull(apiClass);
-		Assertion.checkNotNull(implClass);
-		//-----
-		if (apiClass.isDefined()) {
-			//if en api is defined, api muust define id
-			final String id = buildId(apiClass.get());
-			if (implClass.isAnnotationPresent(Named.class)) {
-				//if an api is defined and an annotation is found on implementation then we have to check the consistency
-				final Named named = implClass.getAnnotation(Named.class);
-				Assertion.checkArgument(id.equals(named.value()), "Name of component '{0}'is ambiguous, 'named' annotation on implementation conflict with api", apiClass.get());
-			}
-			return id;
-		}
-		return buildId(implClass);
 	}
 
 	/**
