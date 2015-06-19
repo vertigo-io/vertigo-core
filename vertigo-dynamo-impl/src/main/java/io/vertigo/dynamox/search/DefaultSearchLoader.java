@@ -107,11 +107,16 @@ public abstract class DefaultSearchLoader<P extends Serializable, S extends KeyC
 		final String taskName = "TK_SELECT_" + tableName + "_NEXT_SEARCH_CHUNK";
 		final DtField pk = dtDefinition.getIdField().get();
 		final String pkFieldName = pk.getName();
+		final String sqlQueryFilter = getSqlQueryFilter();
+		Assertion.checkNotNull(sqlQueryFilter, "getSqlQueryFilter can't be null");
 		final StringBuilder request = new StringBuilder()
 				.append(" select " + pkFieldName + " from ")
 				.append(tableName)
-				.append(" where ").append(pkFieldName).append(" > #").append(pkFieldName).append('#')
-				.append(" order by " + pkFieldName + " ASC")
+				.append(" where ").append(pkFieldName).append(" > #").append(pkFieldName).append('#');
+		if (!sqlQueryFilter.isEmpty()) {
+			request.append("and (").append(sqlQueryFilter).append(")");
+		}
+		request.append(" order by " + pkFieldName + " ASC")
 				.append(" limit " + SEARCH_CHUNK_SIZE); //Attention : non compatible avec toutes les bases
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
@@ -132,6 +137,11 @@ public abstract class DefaultSearchLoader<P extends Serializable, S extends KeyC
 			uris.add(new URI(dtDefinition, DtObjectUtil.getId(dto)));
 		}
 		return uris;
+	}
+
+	protected String getSqlQueryFilter() {
+		//nothing, but overrideable
+		return null;
 	}
 
 	/**

@@ -74,7 +74,9 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 					final URI<S> chunkMaxUri = uris.get(uris.size() - 1);
 					final String maxUri = String.valueOf(chunkMaxUri.getId());
 					searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter(lastUri, maxUri));
-					searchManager.putAll(searchIndexDefinition, searchIndexes);
+					if (!searchIndexes.isEmpty()) {
+						searchManager.putAll(searchIndexDefinition, searchIndexes);
+					}
 					lastUri = maxUri;
 				}
 				//On ne retire pas la fin, il y a un risque de retirer les données ajoutées depuis le démarrage de l'indexation
