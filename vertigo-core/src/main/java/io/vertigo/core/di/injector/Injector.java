@@ -20,6 +20,7 @@ package io.vertigo.core.di.injector;
 
 import io.vertigo.core.di.DIAnnotationUtil;
 import io.vertigo.core.di.DIException;
+import io.vertigo.core.di.DIPort;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
 import io.vertigo.lang.Option;
@@ -88,7 +89,9 @@ public final class Injector {
 		//-----
 		final Collection<Field> fields = ClassUtil.getAllFields(instance.getClass(), Inject.class);
 		for (final Field field : fields) {
-			final Object injected = getInjected(container, field);
+			final DIPort port = new DIPort(field);
+			final Object injected = getInjected(container, port);
+
 			//On vérifie que si il s'agit d'un champ non primitif alors ce champs n'avait pas été initialisé
 			Assertion.checkState(field.getType().isPrimitive() || null == ClassUtil.get(instance, field), "field '{0}' is already initialized", field);
 			ClassUtil.set(instance, field, injected);
@@ -98,48 +101,24 @@ public final class Injector {
 	private static Object[] findConstructorParameters(final Container container, final Constructor<?> constructor) {
 		final Object[] parameters = new Object[constructor.getParameterTypes().length];
 		for (int i = 0; i < constructor.getParameterTypes().length; i++) {
-			parameters[i] = getInjected(container, constructor, i);
+			final DIPort port = new DIPort(constructor, i);
+			parameters[i] = getInjected(container, port);
 		}
 		return parameters;
 	}
 
-	//On récupère pour le paramètre i du constructeur l'objet à injecter
-	private static Object getInjected(final Container container, final Constructor<?> constructor, final int i) {
-		final String id = DIAnnotationUtil.buildId(constructor, i);
-		final Class<?> type = constructor.getParameterTypes()[i];
-		//-----
-		final boolean isOption = DIAnnotationUtil.isOption(type);
-		final boolean isList = DIAnnotationUtil.isList(type);
-		final Class<?> genericType = (isOption || isList) ? ClassUtil.getGeneric(constructor, i) : null;
-		//-----
-		return getInjected(container, id, type, isOption, isList, genericType);
-	}
-
-	//On récupère pour le champ 'field' l'objet à injecter
-	private static Object getInjected(final Container container, final Field field) {
-		final String id = DIAnnotationUtil.buildId(field);
-		final Class<?> type = field.getType();
-		//-----
-		final boolean isOption = DIAnnotationUtil.isOption(type);
-		final boolean isList = DIAnnotationUtil.isList(type);
-		final Class<?> genericType = (isOption || isList) ? ClassUtil.getGeneric(field) : null;
-
-		return getInjected(container, id, type, isOption, isList, genericType);
-	}
-
-	private static Object getInjected(final Container container, final String id, final Class<?> type, final boolean isOption, final boolean isList, final Class<?> genericType) {
-		if (isOption) {
-			if (container.contains(id)) {
+	private static Object getInjected(final Container container, final DIPort port) {
+		if (port.isOption()) {
+			if (container.contains(port.getId())) {
 				//On récupère la valeur et on la transforme en option.
 				//ex : <param name="opt-port" value="a value that can be null or not">
-				return Option.option(container.resolve(id, genericType));
+				return Option.option(container.resolve(port.getId(), port.getType()));
 			}
 			//
 			return Option.none();
-		}
-		//Injection des listes de plugins
-		if (isList) {
-			final String pluginIdPrefix = DIAnnotationUtil.buildId(genericType);
+		} else if (port.isList()) {
+			//Injection des listes de plugins
+			final String pluginIdPrefix = DIAnnotationUtil.buildId(port.getType());
 
 			//on récupère la liste des plugin du type concerné
 			final List<Plugin> list = new ArrayList<>();
@@ -147,14 +126,14 @@ public final class Injector {
 				//On prend tous les plugins du type concerné
 				if (pluginId.equals(pluginIdPrefix) || pluginId.startsWith(pluginIdPrefix + '#')) {
 					final Plugin injected = container.resolve(pluginId, Plugin.class);
-					Assertion.checkArgument(genericType.isAssignableFrom(injected.getClass()), "type of {0} is incorrect ; expected : {1}", pluginId, genericType.getName());
+					Assertion.checkArgument(port.getType().isAssignableFrom(injected.getClass()), "type of {0} is incorrect ; expected : {1}", pluginId, port.getType().getName());
 					list.add(injected);
 				}
 			}
 			return Collections.unmodifiableList(list);
 		}
 		//-----
-		final Object value = container.resolve(id, type);
+		final Object value = container.resolve(port.getId(), port.getType());
 		Assertion.checkNotNull(value);
 		//-----
 		return value;

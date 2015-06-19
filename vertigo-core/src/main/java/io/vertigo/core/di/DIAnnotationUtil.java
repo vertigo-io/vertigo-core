@@ -65,28 +65,6 @@ public final class DIAnnotationUtil {
 	}
 
 	/**
-	 * Indique si le i-éme paramètre du constructeur est optionnel.
-	 * @param type Type
-	 * @return If type is an Option
-	 */
-	public static boolean isOption(final Class<?> type) {
-		Assertion.checkNotNull(type);
-		//-----
-		return Option.class.isAssignableFrom(type);
-	}
-
-	/**
-	 * Indique si le i-éme paramètre du constructeur est une liste .
-	 * @param type Type
-	 * @return Si le i-éme paramètre du contructeur est optionnel.
-	 */
-	public static boolean isList(final Class<?> type) {
-		Assertion.checkNotNull(type);
-		//-----
-		return List.class.isAssignableFrom(type);
-	}
-
-	/**
 	 * @return Création de l'identifiant du composant
 	 */
 	public static String buildId(final Option<Class<?>> apiClass, final Class<?> implClass) {
