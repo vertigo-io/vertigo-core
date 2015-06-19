@@ -130,6 +130,7 @@ public final class InjectorTest {
 		final A a = Injector.newInstance(A.class, container);
 		container.put("a", a);
 		final B2 b2 = Injector.newInstance(B2.class, container);
+		nop(b2);
 		Assert.fail();
 	}
 
