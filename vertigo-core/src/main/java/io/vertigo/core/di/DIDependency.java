@@ -35,13 +35,13 @@ import javax.inject.Named;
  * une dépendance peut porter sur une Classe quelconque, une option ou une Liste.
  * @author pchretien
  */
-public final class DIPort {
+public final class DIDependency {
 	private final String id;
 	private final boolean isOption;
 	private final boolean isList;
 	private final Class<?> type;
 
-	public DIPort(final String id) {
+	public DIDependency(final String id) {
 		Assertion.checkArgNotEmpty(id);
 		//-----
 		this.id = id;
@@ -50,7 +50,7 @@ public final class DIPort {
 		type = null;
 	}
 
-	public DIPort(final Field field) {
+	public DIDependency(final Field field) {
 		Assertion.checkNotNull(field);
 		//-----
 		final String named = getNamedValue(field.getAnnotations());
@@ -62,7 +62,7 @@ public final class DIPort {
 		id = named != null ? named : DIAnnotationUtil.buildId(type);
 	}
 
-	public DIPort(final Constructor<?> constructor, final int i) {
+	public DIDependency(final Constructor<?> constructor, final int i) {
 		Assertion.checkNotNull(constructor);
 		//-----
 		final String named = getNamedValue(constructor.getParameterAnnotations()[i]);

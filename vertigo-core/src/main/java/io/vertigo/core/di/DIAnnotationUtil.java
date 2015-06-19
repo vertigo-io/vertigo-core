@@ -76,12 +76,8 @@ public final class DIAnnotationUtil {
 			final Named named = clazz.getAnnotation(Named.class);
 			return named.value();
 		}
-		return getId(clazz);
-	}
-
-	private static String getId(final Class<?> implClass) {
 		//Par convention on prend le nom de la classe.
-		return StringUtil.first2LowerCase(implClass.getSimpleName());
+		return StringUtil.first2LowerCase(clazz.getSimpleName());
 	}
 
 }

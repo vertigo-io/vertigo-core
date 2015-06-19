@@ -19,6 +19,7 @@
 package io.vertigo.core.di.reactor;
 
 import io.vertigo.core.di.DIException;
+import io.vertigo.core.di.DIDependency;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -104,17 +105,18 @@ public final class DIReactor {
 	public List<String> proceed() {
 		//-----
 		//1.On vérifie si tous les composants définis par leurs ids existent
-		final List<DIDependency> missing = new ArrayList<>();
+		final StringBuilder missing = new StringBuilder();
 		for (final DIComponentInfo componentInfo : diComponentInfos) {
 			for (final DIDependency dependency : componentInfo.getDependencies()) {
 				//Si une référence est une liste ou optionnelle alors elle n'est jamais manquante.
-				if (!dependency.getPort().isList() && !dependency.getPort().isOption() && !allComponentInfos.contains(dependency.getPort().getId())) {
-					missing.add(dependency);
+				if (!dependency.isList() && !dependency.isOption() && !allComponentInfos.contains(dependency.getId())) {
+					missing.append(dependency).append(" (referenced by " + componentInfo.getId() + ")")
+							.append(", ");
 				}
 			}
 		}
-		if (!missing.isEmpty()) {
-			throw new DIException("Components not found :" + missing + "\n\tLoaded components : " + diComponentInfos);
+		if (missing.length() > 0) {
+			throw new DIException("Components not found :" + missing.toString() + "\n\tLoaded components : " + diComponentInfos);
 		}
 		//-----
 		//2.On résout les dépendances
@@ -132,9 +134,9 @@ public final class DIReactor {
 				for (final DIDependency dependency : componentInfo.getDependencies()) {
 					//On vérifie si pour un composant
 					//TOUTES ses dépendances sont bien déjà résolues.
-					if (allComponentInfos.contains(dependency.getPort().getId()) || !(dependency.getPort().isOption() || dependency.getPort().isList())) {
+					if (allComponentInfos.contains(dependency.getId()) || !(dependency.isOption() || dependency.isList())) {
 						//On doit résoudre toutes des références connues(y compris les référenes optionnelles) sans tenir compte des références inconnues et optionnelles.
-						solved = solved && (sorted.contains(dependency.getPort().getId()) || parentComponentInfos.contains(dependency.getPort().getId()));
+						solved = solved && (sorted.contains(dependency.getId()) || parentComponentInfos.contains(dependency.getId()));
 					}
 					if (!solved) {
 						//Si ce n'est pas le cas on passe au composant suivant.

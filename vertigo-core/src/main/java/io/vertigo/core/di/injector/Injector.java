@@ -19,8 +19,8 @@
 package io.vertigo.core.di.injector;
 
 import io.vertigo.core.di.DIAnnotationUtil;
+import io.vertigo.core.di.DIDependency;
 import io.vertigo.core.di.DIException;
-import io.vertigo.core.di.DIPort;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
 import io.vertigo.lang.Option;
@@ -88,8 +88,8 @@ public final class Injector {
 		//-----
 		final Collection<Field> fields = ClassUtil.getAllFields(instance.getClass(), Inject.class);
 		for (final Field field : fields) {
-			final DIPort port = new DIPort(field);
-			final Object injected = getInjected(container, port);
+			final DIDependency dependency = new DIDependency(field);
+			final Object injected = getInjected(container, dependency);
 
 			//On vérifie que si il s'agit d'un champ non primitif alors ce champs n'avait pas été initialisé
 			Assertion.checkState(field.getType().isPrimitive() || null == ClassUtil.get(instance, field), "field '{0}' is already initialized", field);
@@ -100,36 +100,36 @@ public final class Injector {
 	private static Object[] findConstructorParameters(final Container container, final Constructor<?> constructor) {
 		final Object[] parameters = new Object[constructor.getParameterTypes().length];
 		for (int i = 0; i < constructor.getParameterTypes().length; i++) {
-			final DIPort port = new DIPort(constructor, i);
-			parameters[i] = getInjected(container, port);
+			final DIDependency dependency = new DIDependency(constructor, i);
+			parameters[i] = getInjected(container, dependency);
 		}
 		return parameters;
 	}
 
-	private static Object getInjected(final Container container, final DIPort port) {
-		if (port.isOption()) {
-			if (container.contains(port.getId())) {
+	private static Object getInjected(final Container container, final DIDependency dependency) {
+		if (dependency.isOption()) {
+			if (container.contains(dependency.getId())) {
 				//On récupère la valeur et on la transforme en option.
 				//ex : <param name="opt-port" value="a value that can be null or not">
-				return Option.option(container.resolve(port.getId(), port.getType()));
+				return Option.option(container.resolve(dependency.getId(), dependency.getType()));
 			}
 			//
 			return Option.none();
-		} else if (port.isList()) {
+		} else if (dependency.isList()) {
 			//on récupère la liste des objets du type concerné
 			final List<Object> list = new ArrayList<>();
 			for (final String id : container.keySet()) {
 				//On prend tous les objets ayant l'identifiant requis 
-				if (id.equals(port.getId()) || id.startsWith(port.getId() + '#')) {
+				if (id.equals(dependency.getId()) || id.startsWith(dependency.getId() + '#')) {
 					final Object injected = container.resolve(id, Object.class);
-					Assertion.checkArgument(port.getType().isAssignableFrom(injected.getClass()), "type of {0} is incorrect ; expected : {1}", id, port.getType().getName());
+					Assertion.checkArgument(dependency.getType().isAssignableFrom(injected.getClass()), "type of {0} is incorrect ; expected : {1}", id, dependency.getType().getName());
 					list.add(injected);
 				}
 			}
 			return Collections.unmodifiableList(list);
 		}
 		//-----
-		final Object value = container.resolve(port.getId(), port.getType());
+		final Object value = container.resolve(dependency.getId(), dependency.getType());
 		Assertion.checkNotNull(value);
 		//-----
 		return value;
