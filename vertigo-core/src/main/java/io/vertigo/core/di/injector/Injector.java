@@ -134,5 +134,4 @@ public final class Injector {
 		//-----
 		return value;
 	}
-
 }

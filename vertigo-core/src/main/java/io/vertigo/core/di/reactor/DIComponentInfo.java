@@ -22,12 +22,11 @@ import io.vertigo.core.di.DIAnnotationUtil;
 import io.vertigo.core.di.DIDependency;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
+import io.vertigo.util.ListBuilder;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -71,33 +70,33 @@ final class DIComponentInfo {
 	 * Build Dependencies
 	 */
 	private static Collection<DIDependency> buildDependencies(final DIComponentInfo diComponentInfo, final Class<?> implClass, final Set<String> params, final Set<String> pluginIds) {
-		final Collection<DIDependency> tmpDependencies = new ArrayList<>();
+		final ListBuilder<DIDependency> dependenciesBuilder = new ListBuilder<>();
 		//Les paramètres sont supposés connus et ne sont donc pas concernés par l'analyse de dépendances
-		populateConstructorDepedencies(diComponentInfo, tmpDependencies, implClass, params);
-		populateFieldDepencies(diComponentInfo, tmpDependencies, implClass, params);
-		populatePluginDepedencies(diComponentInfo, tmpDependencies, pluginIds);
-		return Collections.unmodifiableList(new ArrayList<>(tmpDependencies));
+		populateConstructorDepedencies(diComponentInfo, dependenciesBuilder, implClass, params);
+		populateFieldDepencies(diComponentInfo, dependenciesBuilder, implClass, params);
+		populatePluginDepedencies(diComponentInfo, dependenciesBuilder, pluginIds);
+		return dependenciesBuilder.unmodifiable().build();
 	}
 
 	/**
 	 * Dependencies on each plugin
 	 */
-	private static void populatePluginDepedencies(final DIComponentInfo diComponentInfo, final Collection<DIDependency> dependencies, final Set<String> pluginIds) {
+	private static void populatePluginDepedencies(final DIComponentInfo diComponentInfo, final ListBuilder<DIDependency> dependenciesBuilder, final Set<String> pluginIds) {
 		for (final String pluginId : pluginIds) {
-			dependencies.add(new DIDependency(pluginId));
+			dependenciesBuilder.add(new DIDependency(pluginId));
 		}
 	}
 
 	/**
 	 * Dependencies on constructor
 	 */
-	private static void populateConstructorDepedencies(final DIComponentInfo diComponentInfo, final Collection<DIDependency> dependencies, final Class<?> implClass, final Set<String> params) {
+	private static void populateConstructorDepedencies(final DIComponentInfo diComponentInfo, final ListBuilder<DIDependency> dependenciesBuilder, final Class<?> implClass, final Set<String> params) {
 		final Constructor<?> constructor = DIAnnotationUtil.findInjectableConstructor(implClass);
 		//On construit la liste de ses dépendances.
 		for (int i = 0; i < constructor.getParameterTypes().length; i++) {
 			final DIDependency dependency = new DIDependency(constructor, i);
 			if (!params.contains(dependency.getId())) {
-				dependencies.add(dependency);
+				dependenciesBuilder.add(dependency);
 			}
 		}
 	}
@@ -105,13 +104,13 @@ final class DIComponentInfo {
 	/**
 	 * Dependencies on each field
 	 */
-	private static void populateFieldDepencies(final DIComponentInfo diComponentInfo, final Collection<DIDependency> dependencies, final Class<?> implClass, final Set<String> params) {
+	private static void populateFieldDepencies(final DIComponentInfo diComponentInfo, final ListBuilder<DIDependency> dependenciesBuilder, final Class<?> implClass, final Set<String> params) {
 		final Collection<Field> fields = ClassUtil.getAllFields(implClass, Inject.class);
 		for (final Field field : fields) {
 			//On utilise le build sur les champs avec les options autorisées.
 			final DIDependency dependency = new DIDependency(field);
 			if (!params.contains(dependency.getId())) {
-				dependencies.add(dependency);
+				dependenciesBuilder.add(dependency);
 			}
 		}
 	}
