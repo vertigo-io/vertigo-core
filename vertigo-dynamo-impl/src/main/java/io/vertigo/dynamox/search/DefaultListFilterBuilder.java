@@ -103,10 +103,11 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 	private final static String CRITERIA_VALUE_OTHER_FIELD_PATTERN_STRING = "(?:(\\S+:)\\(()([^\\\"]*)()\\))"; //attention a bien avoir 4 groups
 	private final static String CRITERIA_VALUE_QUOTED_PATTERN_STRING = "(?:(\\S+:)?(\\\")([^\\\"]*)(\\\"))";
 	private final static String CRITERIA_VALUE_RANGE_PATTERN_STRING = "(?:(\\S+:)?([\\[\\{])([^\\]\\}]*)([\\]\\}]))";
+	private final static String CRITERIA_VALUE_STAR_PATTERN_STRING = "(?:([^\\s\\*]+:)?(^|[\\s]*)(\\*)($|[\\s]+))";
 	//private final static String WORD_RESERVERD_PATTERN = "\\s\\+\\-\\=\\&\\|\\>\\<\\!\\(\\)\\{\\}\\[\\]\\^\\\"\\~\\*\\?\\:\\/\\\\";
 	//private final static String PREFIX_RESERVERD_PATTERN = "^\\s\\\"\\[\\{\\]\\}():,";
 	//private final static String SUFFIX_RESERVERD_PATTERN = "^\\s\\\"\\[\\{\\]\\}():,";
-
+	//\p{Punct}:  !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~
 	private final static String WORD_RESERVERD_PATTERN = "^\\s\\p{Punct}";
 	private final static String PREFIX_RESERVERD_PATTERN = "\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<";
 	private final static String SUFFIX_RESERVERD_PATTERN = "\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<";
@@ -117,6 +118,7 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 			+ CRITERIA_VALUE_OTHER_FIELD_PATTERN_STRING // group 1
 			+ "|" + CRITERIA_VALUE_QUOTED_PATTERN_STRING
 			+ "|" + CRITERIA_VALUE_RANGE_PATTERN_STRING
+			+ "|" + CRITERIA_VALUE_STAR_PATTERN_STRING
 			+ "|" + CRITERIA_VALUE_WORD_PATTERN_STRING
 			+ ")";
 	private final static Pattern CRITERIA_VALUE_PATTERN = Pattern.compile(CRITERIA_VALUE_PATTERN_STRING);
@@ -199,6 +201,7 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 			} else if (value != null) {
 				appendSimpleCriteria(query, indexFieldName, preExpression, postExpression, preModifier, postModifier, value.toString());
 			}
+			//if value null => no criteria (TODO : CHECKME)
 		} else {
 			//no fieldExpression : fixed param
 			appendIfNotNull(query, indexFieldName);
@@ -219,7 +222,12 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 	}
 
 	private void appendUserStringCriteria(final StringBuilder query, final String indexFieldName, final String preExpression, final String postExpression, final String preModifier, final String postModifier, final Object value) {
-		final String stringValue = (String) value;
+
+		final String stringValue = cleanUserQuery((String) value);
+		/*if ("*".equals(stringValue)) {
+			appendSimpleCriteria(query, indexFieldName != null ? indexFieldName : "*", preExpression, postExpression, "", "", stringValue);
+			return;
+		}*/
 		//split space chars to add preModifier and postModifier
 		final Matcher criteriaValueMatcher = CRITERIA_VALUE_PATTERN.matcher(stringValue);
 		final StringBuilder expressionValue = new StringBuilder();
@@ -294,9 +302,16 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 			postMissingPart = "";
 		}
 
-		appendMissingPart(expressionValue, expressionValue, preMissingPart);
-		appendMissingPart(expressionValue, expressionValue, postMissingPart);
+		appendMissingPart(expressionValue, query, preMissingPart);
+		appendMissingPart(expressionValue, query, postMissingPart);
 		flushExpressionValueToQuery(query, indexFieldName, preExpression, postExpression, expressionValue);
+	}
+
+	private String cleanUserQuery(final String value) {
+		if (value.trim().isEmpty()) {
+			return "*";
+		}
+		return value;
 	}
 
 	private void flushExpressionValueToQuery(final StringBuilder query, final String indexFieldName, final String preExpression, final String postExpression, final StringBuilder expressionValue) {
