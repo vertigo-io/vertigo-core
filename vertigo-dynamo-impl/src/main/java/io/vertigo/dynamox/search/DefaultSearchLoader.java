@@ -141,7 +141,7 @@ public abstract class DefaultSearchLoader<P extends Serializable, S extends KeyC
 
 	protected String getSqlQueryFilter() {
 		//nothing, but overrideable
-		return null;
+		return "";
 	}
 
 	/**
