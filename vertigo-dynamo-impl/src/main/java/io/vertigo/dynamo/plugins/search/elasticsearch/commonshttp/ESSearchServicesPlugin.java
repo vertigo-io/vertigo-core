@@ -64,8 +64,7 @@ public final class ESSearchServicesPlugin extends AbstractESSearchServicesPlugin
 	@Inject
 	public ESSearchServicesPlugin(@Named("servers.names") final String serversNamesStr, @Named("cores") final String cores,
 			@Named("rowsPerQuery") final int rowsPerQuery, @Named("cluster.name") final String clusterName,
-			@Named("config.file") final Option<String> configFile, @Named("cluster.name") final Option<String> nodeName,
-			final CodecManager codecManager, final ResourceManager resourceManager) {
+			@Named("config.file") final Option<String> configFile, @Named("node.name") final Option<String> nodeName, final CodecManager codecManager, final ResourceManager resourceManager) {
 		super(cores, rowsPerQuery, configFile, codecManager, resourceManager);
 		Assertion.checkArgNotEmpty(serversNamesStr,
 				"Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','");
