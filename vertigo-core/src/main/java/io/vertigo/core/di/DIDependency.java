@@ -82,6 +82,10 @@ public final class DIDependency {
 		return isOption;
 	}
 
+	public boolean isRequired() {
+		return !(isList && isOption);
+	}
+
 	public boolean isList() {
 		return isList;
 	}
