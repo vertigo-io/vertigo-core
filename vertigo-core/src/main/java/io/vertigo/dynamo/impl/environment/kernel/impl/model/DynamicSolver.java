@@ -59,7 +59,7 @@ final class DynamicSolver {
 				//==============================================================
 				//==============================================================
 				//On vérifie que les sous éléments sont résolues
-				if (isSolved(definitionModelRepository, orderedList, xdef)) {
+				if (isSolved(definitionModelRepository, orderedList, xdef, xdef)) {
 					orderedList.add(xdef);
 					it.remove();
 				}
@@ -73,7 +73,7 @@ final class DynamicSolver {
 		return orderedList;
 	}
 
-	private boolean isSolved(final DynamicDefinitionRepository definitionModelRepository, final List<DynamicDefinition> orderedList, final DynamicDefinition xdef) {
+	private boolean isSolved(final DynamicDefinitionRepository definitionModelRepository, final List<DynamicDefinition> orderedList, final DynamicDefinition xdef, final DynamicDefinition xdefRoot) {
 		//A definition is solved if all its sub definitions have been solved
 
 		//We check all references were known
@@ -81,6 +81,9 @@ final class DynamicSolver {
 			//reference should be already solved in a previous resources module : then continue
 			if (!Home.getDefinitionSpace().containsDefinitionName(dynamicDefinitionKey.getName())) {
 				//or references should be in currently parsed resources
+				if (!definitionModelRepository.containsDefinitionKey(dynamicDefinitionKey)) {
+					throw new RuntimeException("Clé " + dynamicDefinitionKey.getName() + " référencée par " + xdefRoot.getDefinitionKey().getName() + " non trouvée");
+				}
 				final DynamicDefinition subDefinition = definitionModelRepository.getDefinition(dynamicDefinitionKey);
 				if (!orderedList.contains(subDefinition)) {
 					return false;
@@ -90,7 +93,7 @@ final class DynamicSolver {
 
 		//On vérifie que les composites sont résolues.
 		for (final DynamicDefinition dynamicDefinition : xdef.getAllChildDefinitions()) {
-			if (!isSolved(definitionModelRepository, orderedList, dynamicDefinition)) {
+			if (!isSolved(definitionModelRepository, orderedList, dynamicDefinition, xdefRoot)) {
 				return false;
 			}
 		}

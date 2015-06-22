@@ -300,6 +300,13 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		// TODO vérifier les définitions références
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		//nécessaire pour le log
+		return dynamicDefinitionKey.getName();
+	}
+
 	private void checkProperties(final Set<EntityProperty> propertySet, final Set<EntityProperty> metaDefinitionPropertySet) {
 		// Vérification que toutes les propriétés sont déclarées sur le
 		// métamodèle
