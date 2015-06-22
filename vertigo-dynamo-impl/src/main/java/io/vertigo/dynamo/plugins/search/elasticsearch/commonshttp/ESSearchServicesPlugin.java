@@ -86,6 +86,7 @@ public final class ESSearchServicesPlugin extends AbstractESSearchServicesPlugin
 				.settings(buildNodeSettings())
 				.client(true)
 				.build();
+		node.start();
 		return node.client();
 	}
 

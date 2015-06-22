@@ -72,6 +72,7 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 	@Override
 	protected Client createClient() {
 		node = createNode(elasticSearchHomeURL);
+		node.start();
 		return node.client();
 	}
 
