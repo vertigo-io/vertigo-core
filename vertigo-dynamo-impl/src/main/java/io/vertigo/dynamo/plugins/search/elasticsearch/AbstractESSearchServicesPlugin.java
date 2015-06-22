@@ -60,7 +60,6 @@ import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.node.Node;
 
 /**
  * Gestion de la connexion au serveur Solr de manière transactionnel.
@@ -70,7 +69,6 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	private static final Logger LOGGER = Logger.getLogger(AbstractESSearchServicesPlugin.class);
 	private final ESDocumentCodec elasticDocumentCodec;
 
-	private Node node;
 	private Client esClient;
 	private final DtListState defaultListState;
 	private final int defaultMaxRows;
@@ -106,10 +104,8 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	/** {@inheritDoc} */
 	@Override
 	public final void start() {
-		//Init ElasticSearch Node
-		node = createNode();
-		node.start();
-		esClient = node.client();
+		//Init ElasticSearch Client
+		esClient = createClient();
 		indexSettingsValid = true;
 		for (final String core : cores) {
 			final String indexName = core.toLowerCase().trim();
@@ -175,14 +171,19 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	}
 
 	/**
-	 * @return ElasticSearch node.
+	 * @return ElasticSearch client.
 	 */
-	protected abstract Node createNode();
+	protected abstract Client createClient();
+
+	/**
+	 * Close created client.
+	 */
+	protected abstract void closeClient();
 
 	/** {@inheritDoc} */
 	@Override
 	public final void stop() {
-		node.close();
+		closeClient();
 	}
 
 	/** {@inheritDoc} */
