@@ -107,21 +107,11 @@ public abstract class DefaultSearchLoader<P extends Serializable, S extends KeyC
 		final String taskName = "TK_SELECT_" + tableName + "_NEXT_SEARCH_CHUNK";
 		final DtField pk = dtDefinition.getIdField().get();
 		final String pkFieldName = pk.getName();
-		final String sqlQueryFilter = getSqlQueryFilter();
-		Assertion.checkNotNull(sqlQueryFilter, "getSqlQueryFilter can't be null");
-		final StringBuilder request = new StringBuilder()
-				.append(" select " + pkFieldName + " from ")
-				.append(tableName)
-				.append(" where ").append(pkFieldName).append(" > #").append(pkFieldName).append('#');
-		if (!sqlQueryFilter.isEmpty()) {
-			request.append("and (").append(sqlQueryFilter).append(")");
-		}
-		request.append(" order by " + pkFieldName + " ASC")
-				.append(" limit " + SEARCH_CHUNK_SIZE); //Attention : non compatible avec toutes les bases
+		final String request = getNextIdsSqlQuery(tableName, pkFieldName);
 
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
-				.withRequest(request.toString())
+				.withRequest(request)
 				.withInAttribute(pkFieldName, pk.getDomain(), true)
 				//IN, obligatoire
 				.withOutAttribute("dtc", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)//obligatoire
@@ -137,6 +127,21 @@ public abstract class DefaultSearchLoader<P extends Serializable, S extends KeyC
 			uris.add(new URI(dtDefinition, DtObjectUtil.getId(dto)));
 		}
 		return uris;
+	}
+
+	protected String getNextIdsSqlQuery(final String tableName, final String pkFieldName) {
+		final StringBuilder request = new StringBuilder()
+				.append(" select " + pkFieldName + " from ")
+				.append(tableName)
+				.append(" where ").append(pkFieldName).append(" > #").append(pkFieldName).append('#');
+		final String sqlQueryFilter = getSqlQueryFilter();
+		Assertion.checkNotNull(sqlQueryFilter, "getSqlQueryFilter can't be null");
+		if (!sqlQueryFilter.isEmpty()) {
+			request.append("and (").append(sqlQueryFilter).append(")");
+		}
+		request.append(" order by " + pkFieldName + " ASC")
+				.append(" limit " + SEARCH_CHUNK_SIZE); //Attention : non compatible avec toutes les bases
+		return request.toString();
 	}
 
 	protected String getSqlQueryFilter() {
