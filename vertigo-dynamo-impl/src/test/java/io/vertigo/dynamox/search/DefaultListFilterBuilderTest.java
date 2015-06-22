@@ -144,12 +144,11 @@ public class DefaultListFilterBuilderTest {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:#+query*# +security:fixedValue", "Test", "ALL:(+Test*) +security:fixedValue" }, //0
 				{ "ALL:#+query*# +security:fixedValue", "*", "ALL:(*) +security:fixedValue" }, //1
-				{ "ALL:#+query*# +security:fixedValue", "*:*", "*:* +security:fixedValue" }, //2
-				{ "ALL:#+query*# +security:fixedValue", " ", "*:* +security:fixedValue" }, //3
-				{ "ALL:#+query*# +security:fixedValue", "", "*:* +security:fixedValue" }, //4
+				{ "ALL:#+query*# +security:fixedValue", "*:*", "*:(*) +security:fixedValue" }, //2
+				{ "ALL:#+query*# +security:fixedValue", " ", "ALL:(*) +security:fixedValue" }, //3
+				{ "ALL:#+query*# +security:fixedValue", "", "ALL:(*) +security:fixedValue" }, //4
 				{ "ALL:#+query*# +security:fixedValue", "YEAR:*", "YEAR:(*) +security:fixedValue" }, //5
 		};
-		testStringFixedQuery(testQueries[5]);
 		testStringFixedQuery(testQueries);
 	}
 

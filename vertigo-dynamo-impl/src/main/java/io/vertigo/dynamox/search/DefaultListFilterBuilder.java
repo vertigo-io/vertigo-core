@@ -103,7 +103,7 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 	private final static String CRITERIA_VALUE_OTHER_FIELD_PATTERN_STRING = "(?:(\\S+:)\\(()([^\\\"]*)()\\))"; //attention a bien avoir 4 groups
 	private final static String CRITERIA_VALUE_QUOTED_PATTERN_STRING = "(?:(\\S+:)?(\\\")([^\\\"]*)(\\\"))";
 	private final static String CRITERIA_VALUE_RANGE_PATTERN_STRING = "(?:(\\S+:)?([\\[\\{])([^\\]\\}]*)([\\]\\}]))";
-	private final static String CRITERIA_VALUE_STAR_PATTERN_STRING = "(?:([^\\s\\*]+:)?(^|[\\s]*)(\\*)($|[\\s]+))";
+	private final static String CRITERIA_VALUE_STAR_PATTERN_STRING = "(?:(\\S+:)?(^|[\\s]*)(\\*)($|[\\s]+))";
 	//private final static String WORD_RESERVERD_PATTERN = "\\s\\+\\-\\=\\&\\|\\>\\<\\!\\(\\)\\{\\}\\[\\]\\^\\\"\\~\\*\\?\\:\\/\\\\";
 	//private final static String PREFIX_RESERVERD_PATTERN = "^\\s\\\"\\[\\{\\]\\}():,";
 	//private final static String SUFFIX_RESERVERD_PATTERN = "^\\s\\\"\\[\\{\\]\\}():,";
@@ -280,6 +280,10 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 				} else if (RESERVED_QUERY_KEYWORDS.contains(criteriaValue)) {
 					appendMissingPart(expressionValue, expressionValue, preMissingPart);
+					appendMissingPart(expressionValue, expressionValue, postMissingPart);
+					appendIfNotNull(expressionValue, criteriaValue);
+				} else if (foundGroup == 13 && !"*:".equals(postMissingPart)) { //case of *:* and *, maybe better tested..
+					appendMissingPart(expressionValue, query, preMissingPart);
 					appendMissingPart(expressionValue, expressionValue, postMissingPart);
 					appendIfNotNull(expressionValue, criteriaValue);
 				} else {
