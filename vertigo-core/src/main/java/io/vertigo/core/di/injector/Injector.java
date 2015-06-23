@@ -108,10 +108,10 @@ public final class Injector {
 
 	private static Object getInjected(final Container container, final DIDependency dependency) {
 		if (dependency.isOption()) {
-			if (container.contains(dependency.getId())) {
+			if (container.contains(dependency.getName())) {
 				//On récupère la valeur et on la transforme en option.
 				//ex : <param name="opt-port" value="a value that can be null or not">
-				return Option.option(container.resolve(dependency.getId(), dependency.getType()));
+				return Option.option(container.resolve(dependency.getName(), dependency.getType()));
 			}
 			//
 			return Option.none();
@@ -120,7 +120,7 @@ public final class Injector {
 			final List<Object> list = new ArrayList<>();
 			for (final String id : container.keySet()) {
 				//On prend tous les objets ayant l'identifiant requis 
-				if (id.equals(dependency.getId()) || id.startsWith(dependency.getId() + '#')) {
+				if (id.equals(dependency.getName()) || id.startsWith(dependency.getName() + '#')) {
 					final Object injected = container.resolve(id, Object.class);
 					Assertion.checkArgument(dependency.getType().isAssignableFrom(injected.getClass()), "type of {0} is incorrect ; expected : {1}", id, dependency.getType().getName());
 					list.add(injected);
@@ -129,7 +129,7 @@ public final class Injector {
 			return Collections.unmodifiableList(list);
 		}
 		//-----
-		final Object value = container.resolve(dependency.getId(), dependency.getType());
+		final Object value = container.resolve(dependency.getName(), dependency.getType());
 		Assertion.checkNotNull(value);
 		//-----
 		return value;

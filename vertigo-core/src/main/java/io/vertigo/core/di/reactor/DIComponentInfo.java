@@ -41,14 +41,14 @@ final class DIComponentInfo {
 	private final String id;
 	private final Collection<DIDependency> dependencies;
 
-	DIComponentInfo(final String id, final Class<?> implClass, final Set<String> pluginIds, final Set<String> params) {
+	DIComponentInfo(final String id, final Class<?> implClass, final Set<String> params) {
 		Assertion.checkArgNotEmpty(id);
 		//		Assertion.precondition(Container.REGEX_ID.matcher(id).matches(), "id '{0}' doit être camelCase et commencer par une minuscule", id);
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
 		//-----
 		this.id = id;
-		dependencies = buildDependencies(this, implClass, params, pluginIds);
+		dependencies = buildDependencies(this, implClass, params);
 	}
 
 	String getId() {
@@ -69,22 +69,12 @@ final class DIComponentInfo {
 	/*
 	 * Build Dependencies
 	 */
-	private static Collection<DIDependency> buildDependencies(final DIComponentInfo diComponentInfo, final Class<?> implClass, final Set<String> params, final Set<String> pluginIds) {
+	private static Collection<DIDependency> buildDependencies(final DIComponentInfo diComponentInfo, final Class<?> implClass, final Set<String> params) {
 		final ListBuilder<DIDependency> dependenciesBuilder = new ListBuilder<>();
 		//Les paramètres sont supposés connus et ne sont donc pas concernés par l'analyse de dépendances
 		populateConstructorDepedencies(diComponentInfo, dependenciesBuilder, implClass, params);
 		populateFieldDepencies(diComponentInfo, dependenciesBuilder, implClass, params);
-		populatePluginDepedencies(diComponentInfo, dependenciesBuilder, pluginIds);
 		return dependenciesBuilder.unmodifiable().build();
-	}
-
-	/**
-	 * Dependencies on each plugin
-	 */
-	private static void populatePluginDepedencies(final DIComponentInfo diComponentInfo, final ListBuilder<DIDependency> dependenciesBuilder, final Set<String> pluginIds) {
-		for (final String pluginId : pluginIds) {
-			dependenciesBuilder.add(new DIDependency(pluginId));
-		}
 	}
 
 	/**
@@ -95,7 +85,7 @@ final class DIComponentInfo {
 		//On construit la liste de ses dépendances.
 		for (int i = 0; i < constructor.getParameterTypes().length; i++) {
 			final DIDependency dependency = new DIDependency(constructor, i);
-			if (!params.contains(dependency.getId())) {
+			if (!params.contains(dependency.getName())) {
 				dependenciesBuilder.add(dependency);
 			}
 		}
@@ -109,7 +99,7 @@ final class DIComponentInfo {
 		for (final Field field : fields) {
 			//On utilise le build sur les champs avec les options autorisées.
 			final DIDependency dependency = new DIDependency(field);
-			if (!params.contains(dependency.getId())) {
+			if (!params.contains(dependency.getName())) {
 				dependenciesBuilder.add(dependency);
 			}
 		}

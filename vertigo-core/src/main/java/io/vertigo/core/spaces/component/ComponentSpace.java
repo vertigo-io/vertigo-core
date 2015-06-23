@@ -139,22 +139,20 @@ public final class ComponentSpace implements Container, Activeable {
 		for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
 			map.put(componentConfig.getId(), componentConfig);
 			//On insère une seule fois un même type de Plugin pour la résolution le plugin
-			final Set<String> pluginIds = new HashSet<>();
 			int nb = 0;
 			for (final PluginConfig pluginConfig : componentConfig.getPluginConfigs()) {
 				//Attention : il peut y avoir plusieurs plugin d'un même type
 				//On enregistre tjrs le premier Plugin de chaque type avec le nom du type de plugin
 				String pluginId = pluginConfig.getType();
-				if (pluginIds.contains(pluginId)) {
+				if (nb > 0) {
 					pluginId += "#" + nb;
 				}
 				reactor.addComponent(pluginId, pluginConfig.getImplClass(), pluginConfig.getParams().keySet());
 				nb++;
-				pluginIds.add(pluginId);
 			}
 			//On insère les plugins puis les composants car les composants dépendent des plugins
 			//de sorte on facilite le calcul d'ordre
-			reactor.addComponent(componentConfig.getId(), componentConfig.getImplClass(), componentConfig.getParams().keySet(), pluginIds);
+			reactor.addComponent(componentConfig.getId(), componentConfig.getImplClass(), componentConfig.getParams().keySet());
 		}
 
 		final List<String> ids = reactor.proceed();

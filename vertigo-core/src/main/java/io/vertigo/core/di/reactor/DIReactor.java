@@ -56,10 +56,11 @@ public final class DIReactor {
 	 * @return Reactor
 	 */
 	public DIReactor addComponent(final String id, final Class<?> implClass) {
-		return addComponent(id, implClass, Collections.<String> emptySet(), Collections.<String> emptySet());
+		return addComponent(id, implClass, Collections.<String> emptySet());
 	}
 
 	/**
+	 *
 	 * Add a component
 	 * @param id ID f the component
 	 * @param implClass Impl class of the component
@@ -67,19 +68,7 @@ public final class DIReactor {
 	 * @return Reactor
 	 */
 	public DIReactor addComponent(final String id, final Class<?> implClass, final Set<String> params) {
-		return addComponent(id, implClass, params, Collections.<String> emptySet());
-	}
-
-	/**
-	 * Add a component
-	 * @param id ID f the component
-	 * @param implClass Impl class of the component
-	 * @params params List of ID of all local params - which will be automatically injected-
-	 * @params pluginIds List of plugin IDs of all local plugins, which must be resolved before the component.
-	 * @return Reactor
-	 */
-	public DIReactor addComponent(final String id, final Class<?> implClass, final Set<String> params, final Set<String> pluginIds) {
-		final DIComponentInfo diComponentInfo = new DIComponentInfo(id, implClass, pluginIds, params);
+		final DIComponentInfo diComponentInfo = new DIComponentInfo(id, implClass, params);
 		check(diComponentInfo.getId());
 		allComponentInfos.add(diComponentInfo.getId());
 		diComponentInfos.add(diComponentInfo);
@@ -108,8 +97,9 @@ public final class DIReactor {
 		final StringBuilder missing = new StringBuilder();
 		for (final DIComponentInfo componentInfo : diComponentInfos) {
 			for (final DIDependency dependency : componentInfo.getDependencies()) {
-				//Si une référence est une liste ou optionnelle alors elle n'est jamais manquante.
-				if (dependency.isRequired() && !allComponentInfos.contains(dependency.getId())) {
+				//Si une référence est requise 
+				//et qu'elle est absente, c'est qu'elle est manquante !
+				if (dependency.isRequired() && !allComponentInfos.contains(dependency.getName())) {
 					missing.append(dependency).append(" (referenced by " + componentInfo.getId() + ")")
 							.append(", ");
 				}
@@ -130,20 +120,7 @@ public final class DIReactor {
 			final int countSorted = sorted.size();
 			for (final Iterator<DIComponentInfo> iterator = unsorted.iterator(); iterator.hasNext();) {
 				final DIComponentInfo componentInfo = iterator.next();
-				boolean solved = true;
-				for (final DIDependency dependency : componentInfo.getDependencies()) {
-					//On vérifie si pour un composant
-					//TOUTES ses dépendances sont bien déjà résolues.
-					if (allComponentInfos.contains(dependency.getId()) || dependency.isRequired()) {
-						//On doit résoudre toutes des références connues(y compris les référenes optionnelles) sans tenir compte des références inconnues et optionnelles.
-						solved = solved && (sorted.contains(dependency.getId()) || parentComponentInfos.contains(dependency.getId()));
-					}
-					if (!solved) {
-						//Si ce n'est pas le cas on passe au composant suivant.
-						//On arréte de regarder les autres dépendances
-						break;
-					}
-				}
+				final boolean solved = isSolved(componentInfo, parentComponentInfos, allComponentInfos, sorted);
 				if (solved) {
 					//Le composant est résolu
 					// - On l'ajoute sa clé à la liste des clés de composants résolus
@@ -162,5 +139,43 @@ public final class DIReactor {
 		//3 On expose un liste de ids et non les composantInfos
 		return Collections.unmodifiableList(sorted);
 
+	}
+
+	private static boolean isSolved(final DIComponentInfo componentInfo, final Set<String> parentComponentInfos, final Set<String> allComponentInfos, final List<String> sorted) {
+		//Un composant est résolu si
+		// les dépendances obligatoires sont déjà résolues
+		// les dépendantes facultatives 
+		for (final DIDependency dependency : componentInfo.getDependencies()) {
+			if (!isSolved(dependency, parentComponentInfos, allComponentInfos, sorted)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private static boolean isSolved(final DIDependency dependency, final Set<String> parentComponentInfos, final Set<String> allComponentInfos, final List<String> sorted) {
+		//Une dépendace est résolue si tous les ids concernés sont résolus.
+		//Si la dépendance est déjà résolue et bien c'est bon on pass à la dépendances suivante
+
+		if (dependency.isRequired()) {
+			return parentComponentInfos.contains(dependency.getName()) || sorted.contains(dependency.getName());
+		} else if (dependency.isOption()) {
+			//Si l'objet fait partie de la liste alors il doit être résolu.
+			if (allComponentInfos.contains(dependency.getName())) {
+				return sorted.contains(dependency.getName());
+			}
+			//Sinon comme il est optionnel c'est ok.
+			return true;
+		} else if (dependency.isList()) {
+			//Si l'objet fait partie de la liste alors il doit être résolu.
+			for (final String id : allComponentInfos) {
+				if (id.startsWith(dependency.getName() + '#') && !sorted.contains(id)) {
+					//L'objet id fait partie de la liste
+					return sorted.contains(id);
+				}
+			}
+			return true;
+		}
+		throw new IllegalStateException();
 	}
 }

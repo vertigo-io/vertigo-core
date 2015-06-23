@@ -31,24 +31,20 @@ import javax.inject.Named;
 
 /**
  * Un composant possède une liste de dépendances.
- * Une dépendance est donc une realtion entre une définition de composant et une autre définition de composant, identifiée par son id.   
- * une dépendance peut porter sur une Classe quelconque, une option ou une Liste.
+ * Une dépendance est donc une relation entre une définition de composant et une autre définition de composant, identifiée par son id.   
+ * une dépendance peut porter sur 
+ * - une Classe quelconque, 
+ * - une option
+ * - une Liste
+ * Seul le premier type de relation revët un caractère obligatoire.
+ * 
  * @author pchretien
  */
 public final class DIDependency {
-	private final String id;
+	private final String name;
 	private final boolean isOption;
 	private final boolean isList;
 	private final Class<?> type;
-
-	public DIDependency(final String id) {
-		Assertion.checkArgNotEmpty(id);
-		//-----
-		this.id = id;
-		isOption = false;
-		isList = false;
-		type = null;
-	}
 
 	public DIDependency(final Field field) {
 		Assertion.checkNotNull(field);
@@ -59,7 +55,7 @@ public final class DIDependency {
 		isOption = isOption(rootType);
 		isList = isList(rootType);
 		type = (isOption || isList) ? ClassUtil.getGeneric(field) : rootType;
-		id = named != null ? named : DIAnnotationUtil.buildId(type);
+		name = named != null ? named : DIAnnotationUtil.buildId(type);
 	}
 
 	public DIDependency(final Constructor<?> constructor, final int i) {
@@ -71,11 +67,11 @@ public final class DIDependency {
 		isOption = isOption(rootType);
 		isList = isList(rootType);
 		type = (isOption || isList) ? ClassUtil.getGeneric(constructor, i) : rootType;
-		id = named != null ? named : DIAnnotationUtil.buildId(type);
+		name = named != null ? named : DIAnnotationUtil.buildId(type);
 	}
 
-	public String getId() {
-		return id;
+	public String getName() {
+		return name;
 	}
 
 	public boolean isOption() {
@@ -83,7 +79,7 @@ public final class DIDependency {
 	}
 
 	public boolean isRequired() {
-		return !(isList && isOption);
+		return !(isList || isOption);
 	}
 
 	public boolean isList() {
@@ -97,7 +93,13 @@ public final class DIDependency {
 
 	@Override
 	public String toString() {
-		return id;
+		final char c;
+		if (isList) {
+			return name + '*';
+		} else if (isOption) {
+			return name + '?';
+		}
+		return name;
 	}
 
 	private static boolean isOption(final Class<?> type) {
