@@ -227,7 +227,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 		//autoSortAndPagination use a Implicit UiListState, this one must be show in API, so we add it to endPointParams
 		//autoSortAndPaginationHandler will use it
 		if (autoSortAndPagination) {
-			withEndPointParam(new EndPointParamBuilder(UiListState.class)
+			addEndPointParam(new EndPointParamBuilder(UiListState.class)
 					.with(RestParamType.Query, "") // We declare ListState in query without prefix
 					.build());
 		}
@@ -247,7 +247,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	 * @param endPointParam endPointParam
 	 * @return this builder
 	 */
-	public EndPointDefinitionBuilder withEndPointParam(final EndPointParam endPointParam) {
+	public EndPointDefinitionBuilder addEndPointParam(final EndPointParam endPointParam) {
 		myEndPointParams.add(endPointParam);
 		return this;
 	}

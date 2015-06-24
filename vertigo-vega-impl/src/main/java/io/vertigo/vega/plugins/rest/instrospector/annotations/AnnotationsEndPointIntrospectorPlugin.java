@@ -127,7 +127,7 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 
 			for (int i = 0; i < paramType.length; i++) {
 				final EndPointParam endPointParam = buildEndPointParam(parameterAnnotation[i], paramType[i]);
-				builder.withEndPointParam(endPointParam);
+				builder.addEndPointParam(endPointParam);
 			}
 			//---
 			return Option.some(builder.build());
