@@ -130,21 +130,21 @@ final class XMLModulesHandler extends DefaultHandler {
 			case resource:
 				final String resourceType = attrs.getValue("type");
 				final String resourcePath = attrs.getValue("path");
-				moduleConfigBuilder.withResource(resourceType, evalParamValue(resourcePath));
+				moduleConfigBuilder.addResource(resourceType, evalParamValue(resourcePath));
 				break;
 			case param:
 				final String paramName = attrs.getValue("name");
 				final String paramValue = attrs.getValue("value");
 				if (current == TagName.plugin) {
-					pluginConfigBuilder.withParam(paramName, evalParamValue(paramValue));
+					pluginConfigBuilder.addParam(paramName, evalParamValue(paramValue));
 				} else {
-					componentConfigBuilder.withParam(paramName, evalParamValue(paramValue));
+					componentConfigBuilder.addParam(paramName, evalParamValue(paramValue));
 				}
 				break;
 			case aspect:
 				final String aspectImplClassStr = attrs.getValue("class");
 				final Class<? extends Aspect> aspectImplClass = ClassUtil.classForName(aspectImplClassStr, Aspect.class);
-				moduleConfigBuilder.withAspect(aspectImplClass);
+				moduleConfigBuilder.addAspect(aspectImplClass);
 				break;
 			case config: //non géré
 			default:

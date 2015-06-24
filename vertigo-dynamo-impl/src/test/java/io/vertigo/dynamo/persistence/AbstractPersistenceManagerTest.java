@@ -158,7 +158,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 						//syntaxe HsqlDb pour sequence.nextval
 						+ "(NEXT VALUE FOR SEQ_CAR, #DTO_CAR.FAM_ID#, #DTO_CAR.MAKE#, #DTO_CAR.MODEL#, #DTO_CAR.DESCRIPTION#, #DTO_CAR.YEAR#, #DTO_CAR.KILO#, #DTO_CAR.PRICE#, #DTO_CAR.MOTOR_TYPE#)")
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.withInAttribute("DTO_CAR", doCar, true)
+				.addInAttribute("DTO_CAR", doCar, true)
 				.build();
 
 		Home.getDefinitionSpace().put(taskDefinition);
@@ -181,7 +181,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 						+ "MOTOR_TYPE = #DTO_CAR.MOTOR_TYPE#) "
 						+ "where CAR_ID = #DTO_CAR.ID#" + "")
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.withInAttribute("DTO_CAR", doCar, true)
+				.addInAttribute("DTO_CAR", doCar, true)
 				.build();
 
 		Home.getDefinitionSpace().put(taskDefinition);
@@ -196,8 +196,8 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from CAR where ID = #ID#")
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.withInAttribute("ID", doId, true)
-				.withOutAttribute("DTO_CAR_OUT", doCar, true)
+				.addInAttribute("ID", doId, true)
+				.addOutAttribute("DTO_CAR_OUT", doCar, true)
 				.build();
 
 		Home.getDefinitionSpace().put(taskDefinition);
@@ -211,7 +211,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from CAR")
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.withOutAttribute("DTC_CAR_OUT", doCarList, true)
+				.addOutAttribute("DTC_CAR_OUT", doCarList, true)
 				.build();
 	}
 
@@ -219,7 +219,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		Assertion.checkArgument(car.getId() == null, "L'id n'est pas null {0}", car.getId());
 		//-----
 		final Task task = new TaskBuilder(taskInsertCar)
-				.withValue("DTO_CAR", car)
+				.addValue("DTO_CAR", car)
 				.build();
 		final TaskResult taskResult = taskManager.execute(task);
 		nop(taskResult);
@@ -229,7 +229,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 		Assertion.checkArgument(car.getId() != null, "L'id est null");
 		//-----
 		final Task task = new TaskBuilder(taskUpdateCar)
-				.withValue("DTO_CAR", car)
+				.addValue("DTO_CAR", car)
 				.build();
 		final TaskResult taskResult = taskManager.execute(task);
 		nop(taskResult);
@@ -238,7 +238,7 @@ public abstract class AbstractPersistenceManagerTest extends AbstractTestCaseJU4
 
 	protected final Car nativeLoadCar(final long carId) {
 		final Task task = new TaskBuilder(taskLoadCar)
-				.withValue("CAR_ID", carId)
+				.addValue("CAR_ID", carId)
 				.build();
 		final TaskResult taskResult = taskManager.execute(task);
 		return taskResult.getValue("DTO_CAR_OUT");

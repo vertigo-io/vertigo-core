@@ -96,7 +96,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @return ExportSheetBuilder
 	 */
 	public ExportSheetBuilder withField(final DtFieldName fieldName) {
-		withField(fieldName, null);
+		addField(fieldName, null);
 		return this;
 	}
 
@@ -108,7 +108,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @return ExportSheetBuilder
 	 */
 	public ExportSheetBuilder withField(final DtFieldName fieldName, final DtList<?> list, final DtFieldName displayfield) {
-		withField(fieldName, list, displayfield, null);
+		addField(fieldName, list, displayfield, null);
 		return this;
 	}
 
@@ -117,7 +117,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @param overridedLabel nom spécifique à utiliser dans l'export, null si l'on souhaite utiliser celui indiqué dans le DT pour ce champs
 	 * @return ExportSheetBuilder
 	 */
-	public ExportSheetBuilder withField(final DtFieldName fieldName, final MessageText overridedLabel) {
+	public ExportSheetBuilder addField(final DtFieldName fieldName, final MessageText overridedLabel) {
 		Assertion.checkNotNull(fieldName);
 		// On vérifie que la colonne est bien dans la définition de la DTC
 		Assertion.checkArgument(dtDefinition.contains(fieldName.name()), "Le champ " + fieldName.name() + " n'est pas dans la liste à exporter");
@@ -136,7 +136,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @param overridedLabel nom spécifique à utiliser dans l'export, null si l'on souhaite utiliser celui indiqué dans le DT pour ce champs
 	 * @return ExportSheetBuilder
 	 */
-	public ExportSheetBuilder withField(final DtFieldName fieldName, final DtList<?> list, final DtFieldName displayfield, final MessageText overridedLabel) {
+	public ExportSheetBuilder addField(final DtFieldName fieldName, final DtList<?> list, final DtFieldName displayfield, final MessageText overridedLabel) {
 		Assertion.checkNotNull(fieldName);
 		// On vérifie que la colonne est bien dans la définition de la DTC
 		Assertion.checkArgument(dtDefinition.contains(fieldName.name()), "Le champ " + fieldName.name() + " n'est pas dans la liste à exporter");
@@ -168,7 +168,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @return ExportBuilder
 	 */
 	public ExportBuilder endSheet() {
-		return exportBuilder.withSheet(build());
+		return exportBuilder.addSheet(build());
 	}
 
 	private DtField resolveDtField(final DtFieldName fieldName) {

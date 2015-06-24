@@ -69,8 +69,8 @@ public final class EntityBuilder implements Builder<Entity> {
 	 * @param entity Entité référencée
 	 * @param notNull Si l'attribut est obligatoire
 	 */
-	public EntityBuilder withAttribute(final String fieldName, final Entity entity, final boolean notNull) {
-		return withAttribute(fieldName, entity, false, notNull);
+	public EntityBuilder addAttribute(final String fieldName, final Entity entity, final boolean notNull) {
+		return addAttribute(fieldName, entity, false, notNull);
 	}
 
 	/**
@@ -79,8 +79,8 @@ public final class EntityBuilder implements Builder<Entity> {
 	 * @param entity Entité référencée
 	 * @param notNull Si l'attribut est obligatoire
 	 */
-	public EntityBuilder withAttributes(final String fieldName, final Entity entity, final boolean notNull) {
-		return withAttribute(fieldName, entity, true, notNull);
+	public EntityBuilder addAttributes(final String fieldName, final Entity entity, final boolean notNull) {
+		return addAttribute(fieldName, entity, true, notNull);
 	}
 
 	/**
@@ -90,7 +90,7 @@ public final class EntityBuilder implements Builder<Entity> {
 	 * @param multiple Si il y a plusieurs entités référencées
 	 * @param notNull Si l'attribut est obligatoire
 	 */
-	private EntityBuilder withAttribute(final String fieldName, final Entity entity, final boolean multiple, final boolean notNull) {
+	private EntityBuilder addAttribute(final String fieldName, final Entity entity, final boolean multiple, final boolean notNull) {
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkNotNull(entity);
 		//On vérifie que le nom du champ n'est pas déjà utilisé.
@@ -106,7 +106,7 @@ public final class EntityBuilder implements Builder<Entity> {
 	 * @param property Propriété
 	 * @param notNull Si la propriété est obligatoire
 	 */
-	public EntityBuilder withProperty(final EntityProperty property, final boolean notNull) {
+	public EntityBuilder addProperty(final EntityProperty property, final boolean notNull) {
 		Assertion.checkNotNull(property);
 		Assertion.checkArgument(!properties.containsKey(property), "la propriete {0} est deja declaree pour {1}", property, this);
 		//-----

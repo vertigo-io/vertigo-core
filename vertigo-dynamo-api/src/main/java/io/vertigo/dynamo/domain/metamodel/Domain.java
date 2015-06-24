@@ -108,12 +108,12 @@ public final class Domain implements Definition {
 	private static Properties buildProperties(final List<ConstraintDefinition> constraintDefinitions, final Properties inputProperties) {
 		final PropertiesBuilder propertiesBuilder = new PropertiesBuilder();
 		for (final Property property : inputProperties.getProperties()) {
-			propertiesBuilder.withValue(property, inputProperties.getValue(property));
+			propertiesBuilder.addValue(property, inputProperties.getValue(property));
 		}
 
 		//On récupère les propriétés d'après les contraintes
 		for (final ConstraintDefinition constraintDefinition : constraintDefinitions) {
-			propertiesBuilder.withValue(constraintDefinition.getProperty(), constraintDefinition.getPropertyValue());
+			propertiesBuilder.addValue(constraintDefinition.getProperty(), constraintDefinition.getPropertyValue());
 		}
 		return propertiesBuilder.build();
 	}

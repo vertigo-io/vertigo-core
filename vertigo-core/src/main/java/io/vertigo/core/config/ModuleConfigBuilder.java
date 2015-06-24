@@ -62,7 +62,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		myAppConfigBuilderOption = Option.some(appConfigBuilder);
 	}
 
-	public ModuleConfigBuilder withAspect(final Class<? extends Aspect> implClass) {
+	public ModuleConfigBuilder addAspect(final Class<? extends Aspect> implClass) {
 		Assertion.checkArgument(!ended, "this builder is ended");
 		//-----
 		myAspectConfigs.add(new AspectConfig(implClass));
@@ -88,7 +88,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * Ajout de resources
 	 * @param resourceType Type of resource
 	 */
-	public ModuleConfigBuilder withResource(final String resourceType, final String resourcePath) {
+	public ModuleConfigBuilder addResource(final String resourceType, final String resourcePath) {
 		Assertion.checkArgument(!ended, "this builder is ended");
 		Assertion.checkArgNotEmpty(resourceType);
 		Assertion.checkNotNull(resourcePath);

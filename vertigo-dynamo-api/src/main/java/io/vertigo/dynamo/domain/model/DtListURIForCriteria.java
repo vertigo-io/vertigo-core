@@ -80,7 +80,7 @@ public final class DtListURIForCriteria<D extends DtObject> extends DtListURI {
 					//si String et pas une FK : on met en préfix
 					filterCriteriaBuilder.withPrefix(field.getName(), (String) value);
 				} else if (value != null) {
-					filterCriteriaBuilder.withFilter(field.getName(), value);
+					filterCriteriaBuilder.addFilter(field.getName(), value);
 				}
 			}
 			//si null, alors on ne filtre pas

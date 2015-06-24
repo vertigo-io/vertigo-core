@@ -36,24 +36,24 @@ public final class PublisherNodeDefinitionBuilder implements Builder<PublisherNo
 	 * Ajoute un champ booléen.
 	 * @param fieldName Nom du champ
 	 */
-	public PublisherNodeDefinitionBuilder withBooleanField(final String fieldName) {
-		return registerField(fieldName, PublisherFieldType.Boolean, null);
+	public PublisherNodeDefinitionBuilder addBooleanField(final String fieldName) {
+		return addField(fieldName, PublisherFieldType.Boolean, null);
 	}
 
 	/**
 	 * Ajoute un champ String.
 	 * @param fieldName Nom du champ
 	 */
-	public PublisherNodeDefinitionBuilder withStringField(final String fieldName) {
-		return registerField(fieldName, PublisherFieldType.String, null);
+	public PublisherNodeDefinitionBuilder addStringField(final String fieldName) {
+		return addField(fieldName, PublisherFieldType.String, null);
 	}
 
 	/**
 	 * Ajoute un champ Image.
 	 * @param fieldName Nom du champ
 	 */
-	public PublisherNodeDefinitionBuilder withImageField(final String fieldName) {
-		return registerField(fieldName, PublisherFieldType.Image, null);
+	public PublisherNodeDefinitionBuilder addImageField(final String fieldName) {
+		return addField(fieldName, PublisherFieldType.Image, null);
 	}
 
 	/**
@@ -61,8 +61,8 @@ public final class PublisherNodeDefinitionBuilder implements Builder<PublisherNo
 	 * @param fieldName Nom du champ
 	 * @param nodeDefinition Définition du noeud
 	 */
-	public PublisherNodeDefinitionBuilder withNodeField(final String fieldName, final PublisherNodeDefinition nodeDefinition) {
-		return registerField(fieldName, PublisherFieldType.Node, nodeDefinition);
+	public PublisherNodeDefinitionBuilder addNodeField(final String fieldName, final PublisherNodeDefinition nodeDefinition) {
+		return addField(fieldName, PublisherFieldType.Node, nodeDefinition);
 	}
 
 	/**
@@ -70,11 +70,11 @@ public final class PublisherNodeDefinitionBuilder implements Builder<PublisherNo
 	 * @param fieldName Nom du champ
 	 * @param nodeDefinition Définition des éléments de la liste
 	 */
-	public PublisherNodeDefinitionBuilder withListField(final String fieldName, final PublisherNodeDefinition nodeDefinition) {
-		return registerField(fieldName, PublisherFieldType.List, nodeDefinition);
+	public PublisherNodeDefinitionBuilder addListField(final String fieldName, final PublisherNodeDefinition nodeDefinition) {
+		return addField(fieldName, PublisherFieldType.List, nodeDefinition);
 	}
 
-	private PublisherNodeDefinitionBuilder registerField(final String fieldName, final PublisherFieldType fieldType, final PublisherNodeDefinition nodeDefinition) {
+	private PublisherNodeDefinitionBuilder addField(final String fieldName, final PublisherFieldType fieldType, final PublisherNodeDefinition nodeDefinition) {
 		publisherFields.add(new PublisherField(fieldName, fieldType, nodeDefinition));
 		return this;
 	}

@@ -133,9 +133,9 @@ public class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P>
 		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(request.toString())
-				.withInAttribute(inDtcName, Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDef.getName() + "_DTC", Domain.class),
+				.addInAttribute(inDtcName, Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDef.getName() + "_DTC", Domain.class),
 						true)
-				.withOutAttribute(outDtcName, Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDef.getName() + "_DTC", Domain.class),
+				.addOutAttribute(outDtcName, Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDef.getName() + "_DTC", Domain.class),
 						true);
 		final TaskDefinition taskDefinition = taskDefinitionBuilder.build();
 		// On exécute par paquet
@@ -143,7 +143,7 @@ public class BrokerBatchImpl<D extends DtObject, P> implements BrokerBatch<D, P>
 		for (final DtList<D> paq : set) {
 			/* Création de la tache. */
 			final TaskBuilder taskBuilder = new TaskBuilder(taskDefinition);
-			taskBuilder.withValue(inDtcName, paq);
+			taskBuilder.addValue(inDtcName, paq);
 			// Exécution de la tache
 			final TaskResult taskResult = taskManager.execute(taskBuilder.build());
 			ret.addAll((DtList<D>) taskResult.getValue(outDtcName));

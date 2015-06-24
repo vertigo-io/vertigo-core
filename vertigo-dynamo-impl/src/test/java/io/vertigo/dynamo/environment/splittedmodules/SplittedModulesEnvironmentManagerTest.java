@@ -55,7 +55,7 @@ public final class SplittedModulesEnvironmentManagerTest {
 	@Test
 	public void testFirstModule() {
 		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
-				.beginModule("myApp").withResource("kpr", "io/vertigo/dynamock/execution.kpr").endModule()
+				.beginModule("myApp").addResource("kpr", "io/vertigo/dynamock/execution.kpr").endModule()
 				.build();
 
 		try (final App app = new App(appConfig)) {
@@ -69,8 +69,8 @@ public final class SplittedModulesEnvironmentManagerTest {
 		// @formatter:off
 		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
 				.beginModule("myApp")
-					.withResource("kpr", "io/vertigo/dynamock/execution.kpr")
-					.withResource("classes", DtDefinitions.class.getCanonicalName())
+					.addResource("kpr", "io/vertigo/dynamock/execution.kpr")
+					.addResource("classes", DtDefinitions.class.getCanonicalName())
 				.endModule()
 			.build();
 		// @formatter:on
@@ -88,8 +88,8 @@ public final class SplittedModulesEnvironmentManagerTest {
 		// @formatter:off
 		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
 				.beginModule("myApp")
-					.withResource("kpr", "io/vertigo/dynamock/execution.kpr")
-					.withResource("classes", DtDefinitions.class.getCanonicalName())
+					.addResource("kpr", "io/vertigo/dynamock/execution.kpr")
+					.addResource("classes", DtDefinitions.class.getCanonicalName())
 				.endModule()
 			.build();
 		// @formatter:on
@@ -108,7 +108,7 @@ public final class SplittedModulesEnvironmentManagerTest {
 		.withLogConfig(new LogConfig("/log4j.xml"))
 		.beginModule("vertigo")
 			.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
-				.withParam("locales", "locales")
+				.addParam("locales", "locales")
 			.endComponent()
 			.beginComponent(ResourceManager.class, ResourceManagerImpl.class)
 				.beginPlugin(ClassPathResourceResolverPlugin.class).endPlugin()

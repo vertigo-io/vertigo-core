@@ -122,7 +122,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param display si champ de display
 	 * @return Builder
 	 */
-	public DtDefinitionBuilder withForeignKey(final String fieldName, final String label, final Domain domain, final boolean notNull, final String fkDtDefinitionName, final boolean sort, final boolean display) {
+	public DtDefinitionBuilder addForeignKey(final String fieldName, final String label, final Domain domain, final boolean notNull, final String fkDtDefinitionName, final boolean sort, final boolean display) {
 		//Pour l'instant on ne gère pas les chamsp computed dynamiques
 		final boolean persistent = true;
 		final DtField dtField = createField(fieldName, DtField.FieldType.FOREIGN_KEY, domain, label, notNull, persistent, fkDtDefinitionName, null, false, sort, display);
@@ -141,7 +141,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param display si champ de display
 	 * @return Builder
 	 */
-	public DtDefinitionBuilder withComputedField(final String fieldName, final String label, final Domain domain, final ComputedExpression computedExpression, final boolean sort, final boolean display) {
+	public DtDefinitionBuilder addComputedField(final String fieldName, final String label, final Domain domain, final ComputedExpression computedExpression, final boolean sort, final boolean display) {
 		//Pour l'instant on ne gère pas les chamsp computed dynamiques
 		final DtField dtField = createField(fieldName, DtField.FieldType.COMPUTED, domain, label, false, false, null, computedExpression, false, sort, display);
 		myFields.add(dtField);

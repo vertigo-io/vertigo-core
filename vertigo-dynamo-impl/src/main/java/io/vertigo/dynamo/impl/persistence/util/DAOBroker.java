@@ -180,7 +180,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 	 * @return DtList<D> récupéré NOT NUL
 	 */
 	public final DtList<D> getListByDtField(final String fieldName, final Object value, final int maxRows) {
-		final FilterCriteria<D> criteria = new FilterCriteriaBuilder<D>().withFilter(fieldName, value).build();
+		final FilterCriteria<D> criteria = new FilterCriteriaBuilder<D>().addFilter(fieldName, value).build();
 		// Verification de la valeur est du type du champ
 		dtDefinition.getField(fieldName).getDomain().getDataType().checkValue(value);
 		return broker.<D> getList(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));

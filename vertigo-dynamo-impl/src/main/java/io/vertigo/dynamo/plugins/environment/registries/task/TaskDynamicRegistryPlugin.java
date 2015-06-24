@@ -72,9 +72,9 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 			//-----
 			final Boolean notNull = getPropertyValueAsBoolean(xtaskAttribute, KspProperty.NOT_NULL);
 			if (isInValue(getPropertyValueAsString(xtaskAttribute, KspProperty.IN_OUT))) {
-				taskDefinitionBuilder.withInAttribute(attributeName, domain, notNull.booleanValue());
+				taskDefinitionBuilder.addInAttribute(attributeName, domain, notNull.booleanValue());
 			} else {
-				taskDefinitionBuilder.withOutAttribute(attributeName, domain, notNull.booleanValue());
+				taskDefinitionBuilder.addOutAttribute(attributeName, domain, notNull.booleanValue());
 			}
 		}
 		return taskDefinitionBuilder.build();

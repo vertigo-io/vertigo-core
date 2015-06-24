@@ -112,13 +112,13 @@ public abstract class DefaultSearchLoader<P extends Serializable, S extends KeyC
 		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(request)
-				.withInAttribute(pkFieldName, pk.getDomain(), true)
+				.addInAttribute(pkFieldName, pk.getDomain(), true)
 				//IN, obligatoire
-				.withOutAttribute("dtc", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)//obligatoire
+				.addOutAttribute("dtc", Home.getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class), true)//obligatoire
 				.build();
 
 		final Task task = new TaskBuilder(taskDefinition)
-				.withValue(pkFieldName, lastId)
+				.addValue(pkFieldName, lastId)
 				.build();
 		final TaskResult taskResult = process(task);
 		final DtList<S> resultDtc = getDtList(taskResult);

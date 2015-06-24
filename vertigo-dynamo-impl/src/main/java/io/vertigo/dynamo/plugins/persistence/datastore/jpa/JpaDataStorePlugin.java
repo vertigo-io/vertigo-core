@@ -262,7 +262,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		final Object value = dtcUri.getSource().getId();
 
 		final FilterCriteria<D> filterCriteria = new FilterCriteriaBuilder<D>()
-				.withFilter(fkField.getName(), value)
+				.addFilter(fkField.getName(), value)
 				.build();
 		return doLoadList(dtDefinition, filterCriteria, null);
 	}

@@ -73,7 +73,9 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 	 * @param validatorClasses List of validator to check
 	 * @return Builder
 	 */
-	public EndPointParamBuilder withValidatorClasses(final Class<? extends DtObjectValidator>... validatorClasses) {
+	public EndPointParamBuilder addValidatorClasses(final Class<? extends DtObjectValidator>... validatorClasses) {
+		Assertion.checkNotNull(validatorClasses);
+		//-----
 		myValidatorClasses.addAll(Arrays.asList(validatorClasses));
 		return this;
 	}
@@ -82,7 +84,9 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 	 * @param excludedFields List of exluded fields
 	 * @return Builder
 	 */
-	public EndPointParamBuilder withExcludedFields(final String... excludedFields) {
+	public EndPointParamBuilder addExcludedFields(final String... excludedFields) {
+		Assertion.checkNotNull(excludedFields);
+		//-----
 		myExcludedFields.addAll(Arrays.asList(excludedFields));
 		return this;
 	}

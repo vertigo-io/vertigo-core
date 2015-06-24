@@ -98,7 +98,7 @@ public final class TaskPopulator {
 					break;
 
 			}
-			taskBuilder.withValue(attributeName, value);
+			taskBuilder.addValue(attributeName, value);
 
 		}
 	}

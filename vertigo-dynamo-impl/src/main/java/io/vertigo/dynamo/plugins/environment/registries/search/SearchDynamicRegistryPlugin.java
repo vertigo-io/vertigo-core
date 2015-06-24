@@ -94,7 +94,7 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 			final FacetDefinitionByRangeBuilder facetDefinitionByRangeBuilder = new FacetDefinitionByRangeBuilder(definitionName, dtField, new MessageText(label, null, (Serializable[]) null));
 			for (final DynamicDefinition rangeDefinition : rangeDefinitions) {
 				final FacetValue facetValue = createFacetValue(rangeDefinition);
-				facetDefinitionByRangeBuilder.withFacetValue(facetValue);
+				facetDefinitionByRangeBuilder.addFacetValue(facetValue);
 			}
 			facetDefinition = facetDefinitionByRangeBuilder.build();
 		}

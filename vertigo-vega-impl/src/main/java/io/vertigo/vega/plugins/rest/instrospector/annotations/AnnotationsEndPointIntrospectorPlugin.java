@@ -103,9 +103,9 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 			} else if (annotation instanceof SessionInvalidate) {
 				builder.withSessionInvalidate(true);
 			} else if (annotation instanceof ExcludedFields) {
-				builder.withExcludedFields(((ExcludedFields) annotation).value());
+				builder.addExcludedFields(((ExcludedFields) annotation).value());
 			} else if (annotation instanceof IncludedFields) {
-				builder.withIncludedFields(((IncludedFields) annotation).value());
+				builder.addIncludedFields(((IncludedFields) annotation).value());
 			} else if (annotation instanceof AccessTokenPublish) {
 				builder.withAccessTokenPublish(true);
 			} else if (annotation instanceof AccessTokenMandatory) {
@@ -138,9 +138,9 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 	private static EndPointParam buildEndPointParam(final Annotation[] annotations, final Type paramType) {
 		final EndPointParamBuilder builder = new EndPointParamBuilder(paramType);
 		if (EndPointTypeUtil.isAssignableFrom(DtObject.class, paramType) || EndPointTypeUtil.isAssignableFrom(DtObjectExtended.class, paramType)) {
-			builder.withValidatorClasses(DefaultDtObjectValidator.class);
+			builder.addValidatorClasses(DefaultDtObjectValidator.class);
 		} else if (EndPointTypeUtil.isParameterizedBy(DtObject.class, paramType) || EndPointTypeUtil.isParameterizedBy(DtObjectExtended.class, paramType)) {
-			builder.withValidatorClasses(DefaultDtObjectValidator.class);
+			builder.addValidatorClasses(DefaultDtObjectValidator.class);
 		} else if (isImplicitParam(paramType)) {
 			builder.with(RestParamType.Implicit, getImplicitParam(paramType).name());
 		} else if (UiListState.class.equals(paramType)) {
@@ -156,9 +156,9 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 			} else if (annotation instanceof InnerBodyParam) {
 				builder.with(RestParamType.InnerBody, ((InnerBodyParam) annotation).value());
 			} else if (annotation instanceof Validate) {
-				builder.withValidatorClasses(((Validate) annotation).value());
+				builder.addValidatorClasses(((Validate) annotation).value());
 			} else if (annotation instanceof ExcludedFields) {
-				builder.withExcludedFields(((ExcludedFields) annotation).value());
+				builder.addExcludedFields(((ExcludedFields) annotation).value());
 			} else if (annotation instanceof IncludedFields) {
 				builder.withIncludedFields(((IncludedFields) annotation).value());
 			} else if (annotation instanceof ServerSideRead) {

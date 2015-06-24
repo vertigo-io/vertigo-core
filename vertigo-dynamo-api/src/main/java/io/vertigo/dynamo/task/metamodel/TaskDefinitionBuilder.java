@@ -96,8 +96,8 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 * @param domain Domain of the attribute
 	 * @param notNull If attribute must be not null
 	 */
-	public TaskDefinitionBuilder withInAttribute(final String attributeName, final Domain domain, final boolean notNull) {
-		return withAttribute(attributeName, domain, notNull, true);
+	public TaskDefinitionBuilder addInAttribute(final String attributeName, final Domain domain, final boolean notNull) {
+		return addAttribute(attributeName, domain, notNull, true);
 	}
 
 	/**
@@ -107,8 +107,8 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 * @param domain Domain of the attribute
 	 * @param notNull If attribute must be not null
 	 */
-	public TaskDefinitionBuilder withOutAttribute(final String attributeName, final Domain domain, final boolean notNull) {
-		return withAttribute(attributeName, domain, notNull, false);
+	public TaskDefinitionBuilder addOutAttribute(final String attributeName, final Domain domain, final boolean notNull) {
+		return addAttribute(attributeName, domain, notNull, false);
 	}
 
 	/**
@@ -119,7 +119,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 * @param notNull If attribute must be not null
 	 * @param in If attribute is an input (else it is an output)
 	 */
-	private TaskDefinitionBuilder withAttribute(final String attributeName, final Domain domain, final boolean notNull, final boolean in) {
+	private TaskDefinitionBuilder addAttribute(final String attributeName, final Domain domain, final boolean notNull, final boolean in) {
 		Assertion.checkNotNull(attributeName);
 		Assertion.checkNotNull(domain);
 		//-----

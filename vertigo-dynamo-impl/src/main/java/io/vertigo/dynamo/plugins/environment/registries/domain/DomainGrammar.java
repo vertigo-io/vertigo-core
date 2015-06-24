@@ -76,76 +76,76 @@ public final class DomainGrammar {
 
 	static {
 		CONSTAINT_ENTITY = new EntityBuilder("Constraint")
-				.withProperty(KspProperty.CLASS_NAME, true)
-				.withProperty(KspProperty.ARGS, false)
-				.withProperty(KspProperty.MSG, false)
+				.addProperty(KspProperty.CLASS_NAME, true)
+				.addProperty(KspProperty.ARGS, false)
+				.addProperty(KspProperty.MSG, false)
 				.build();
 		FORMATTER_ENTITY = new EntityBuilder("Formatter")
-				.withProperty(KspProperty.CLASS_NAME, true)
-				.withProperty(KspProperty.ARGS, false)
+				.addProperty(KspProperty.CLASS_NAME, true)
+				.addProperty(KspProperty.ARGS, false)
 				.build();
 		PROPERTY_ENTITY = new EntityBuilder("Property").build();
 
 		DOMAIN_ENTITY = new EntityBuilder("Domain")
-				.withProperty(KspProperty.MAX_LENGTH, false)
-				.withProperty(KspProperty.TYPE, false)
-				.withProperty(KspProperty.UNIT, false)
-				.withProperty(KspProperty.INDEX_TYPE, false)
-				.withProperty(KspProperty.STORE_TYPE, false)
-				.withAttribute("formatter", FORMATTER_ENTITY, true)
-				.withAttribute("dataType", KernelGrammar.getDataTypeEntity(), true)
-				.withAttributes("constraint", CONSTAINT_ENTITY, false)
+				.addProperty(KspProperty.MAX_LENGTH, false)
+				.addProperty(KspProperty.TYPE, false)
+				.addProperty(KspProperty.UNIT, false)
+				.addProperty(KspProperty.INDEX_TYPE, false)
+				.addProperty(KspProperty.STORE_TYPE, false)
+				.addAttribute("formatter", FORMATTER_ENTITY, true)
+				.addAttribute("dataType", KernelGrammar.getDataTypeEntity(), true)
+				.addAttributes("constraint", CONSTAINT_ENTITY, false)
 				.build();
 
 		DT_FIELD_ENTITY = new EntityBuilder(DT_FIELD_META_DEFINITION)
-				.withProperty(KspProperty.LABEL, true)
-				.withProperty(KspProperty.NOT_NULL, true)
-				.withAttribute("domain", DOMAIN_ENTITY, true)
-				.withProperty(KspProperty.PERSISTENT, false)
+				.addProperty(KspProperty.LABEL, true)
+				.addProperty(KspProperty.NOT_NULL, true)
+				.addAttribute("domain", DOMAIN_ENTITY, true)
+				.addProperty(KspProperty.PERSISTENT, false)
 				.build();
 
 		FT_COMPUTED_FIELD_ENTITY = new EntityBuilder(DT_COMPUTED_FIELD_META_DEFINITION)
-				.withProperty(KspProperty.LABEL, true)
-				.withAttribute("domain", DOMAIN_ENTITY, true)
-				.withProperty(KspProperty.EXPRESSION, true)
+				.addProperty(KspProperty.LABEL, true)
+				.addAttribute("domain", DOMAIN_ENTITY, true)
+				.addProperty(KspProperty.EXPRESSION, true)
 				.build();
 
 		DT_DEFINITION_ENTITY = new EntityBuilder(DT_DEFINITION_META_DEFINITION)
-				.withProperty(KspProperty.DISPLAY_FIELD, false)
-				.withProperty(KspProperty.SORT_FIELD, false)
-				.withAttributes(FIELD, DT_FIELD_ENTITY, false)// facultative
-				.withAttributes(COMPUTED, FT_COMPUTED_FIELD_ENTITY, false) //facultative
-				.withAttribute(PRIMARY_KEY, DT_FIELD_ENTITY, false) // facultative
-				.withProperty(KspProperty.PERSISTENT, false)
-				.withProperty(KspProperty.DYNAMIC, false)
-				.withProperty(KspProperty.STEREOTYPE, false)
+				.addProperty(KspProperty.DISPLAY_FIELD, false)
+				.addProperty(KspProperty.SORT_FIELD, false)
+				.addAttributes(FIELD, DT_FIELD_ENTITY, false)// facultative
+				.addAttributes(COMPUTED, FT_COMPUTED_FIELD_ENTITY, false) //facultative
+				.addAttribute(PRIMARY_KEY, DT_FIELD_ENTITY, false) // facultative
+				.addProperty(KspProperty.PERSISTENT, false)
+				.addProperty(KspProperty.DYNAMIC, false)
+				.addProperty(KspProperty.STEREOTYPE, false)
 				//DT_DEFINITION.addMetaDefinitionReference("extends", DT_DEFINITION, true, false);
 				.build();
 
 		ASSOCIATION_ENTITY = new EntityBuilder(ASSOCIATION_META_DEFINITION)
-				.withProperty(KspProperty.FK_FIELD_NAME, false)
-				.withProperty(KspProperty.MULTIPLICITY_A, true)
-				.withProperty(KspProperty.NAVIGABILITY_A, true)
-				.withProperty(KspProperty.ROLE_A, true)
-				.withProperty(KspProperty.LABEL_A, true)
-				.withProperty(KspProperty.MULTIPLICITY_B, true)
-				.withProperty(KspProperty.NAVIGABILITY_B, true)
-				.withProperty(KspProperty.ROLE_B, true)
-				.withProperty(KspProperty.LABEL_B, true)
-				.withAttribute("dtDefinitionA", DT_DEFINITION_ENTITY, true)
-				.withAttribute("dtDefinitionB", DT_DEFINITION_ENTITY, true)
+				.addProperty(KspProperty.FK_FIELD_NAME, false)
+				.addProperty(KspProperty.MULTIPLICITY_A, true)
+				.addProperty(KspProperty.NAVIGABILITY_A, true)
+				.addProperty(KspProperty.ROLE_A, true)
+				.addProperty(KspProperty.LABEL_A, true)
+				.addProperty(KspProperty.MULTIPLICITY_B, true)
+				.addProperty(KspProperty.NAVIGABILITY_B, true)
+				.addProperty(KspProperty.ROLE_B, true)
+				.addProperty(KspProperty.LABEL_B, true)
+				.addAttribute("dtDefinitionA", DT_DEFINITION_ENTITY, true)
+				.addAttribute("dtDefinitionB", DT_DEFINITION_ENTITY, true)
 				.build();
 
 		ASSOCIATION_NN_ENTITY = new EntityBuilder(ASSOCIATION_NN_META_DEFINITION)
-				.withProperty(KspProperty.TABLE_NAME, true)
-				.withProperty(KspProperty.NAVIGABILITY_A, true)
-				.withProperty(KspProperty.ROLE_A, true)
-				.withProperty(KspProperty.LABEL_A, true)
-				.withProperty(KspProperty.NAVIGABILITY_B, true)
-				.withProperty(KspProperty.ROLE_B, true)
-				.withProperty(KspProperty.LABEL_B, true)
-				.withAttribute("dtDefinitionA", DT_DEFINITION_ENTITY, true)
-				.withAttribute("dtDefinitionB", DT_DEFINITION_ENTITY, true)
+				.addProperty(KspProperty.TABLE_NAME, true)
+				.addProperty(KspProperty.NAVIGABILITY_A, true)
+				.addProperty(KspProperty.ROLE_A, true)
+				.addProperty(KspProperty.LABEL_A, true)
+				.addProperty(KspProperty.NAVIGABILITY_B, true)
+				.addProperty(KspProperty.ROLE_B, true)
+				.addProperty(KspProperty.LABEL_B, true)
+				.addAttribute("dtDefinitionA", DT_DEFINITION_ENTITY, true)
+				.addAttribute("dtDefinitionB", DT_DEFINITION_ENTITY, true)
 				.build();
 
 		GRAMMAR = new Grammar(

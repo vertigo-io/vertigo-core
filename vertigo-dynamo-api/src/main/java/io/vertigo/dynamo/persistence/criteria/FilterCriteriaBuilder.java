@@ -47,7 +47,7 @@ public final class FilterCriteriaBuilder<D extends DtObject> implements Builder<
 	 * @return Builder
 	 */
 	public FilterCriteriaBuilder<D> withFilter(final DtFieldName fieldName, final Object value) {
-		return withFilter(fieldName.name(), value);
+		return addFilter(fieldName.name(), value);
 	}
 
 	/**
@@ -58,7 +58,7 @@ public final class FilterCriteriaBuilder<D extends DtObject> implements Builder<
 	 * @return Builder
 	 */
 	public FilterCriteriaBuilder<D> withPrefix(final DtFieldName fieldName, final String prefix) {
-		return withFilter(fieldName.name(), prefix);
+		return addFilter(fieldName.name(), prefix);
 	}
 
 	/**
@@ -68,7 +68,7 @@ public final class FilterCriteriaBuilder<D extends DtObject> implements Builder<
 	 * @param value Valeur du champs.
 	 * @return Builder
 	 */
-	public FilterCriteriaBuilder<D> withFilter(final String fieldName, final Object value) {
+	public FilterCriteriaBuilder<D> addFilter(final String fieldName, final Object value) {
 		Assertion.checkNotNull(value);
 		check(fieldName);
 		//-----

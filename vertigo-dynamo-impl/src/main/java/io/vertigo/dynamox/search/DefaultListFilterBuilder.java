@@ -123,35 +123,35 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 			+ ")";
 	private final static Pattern CRITERIA_VALUE_PATTERN = Pattern.compile(CRITERIA_VALUE_PATTERN_STRING);
 
-	private String buildQuery;
-	private C criteria;
+	private String myBuildQuery;
+	private C myCriteria;
 
 	/**
 	 * Fix query pattern.
-	 * @param newBuildQuery Pattern (not null, could be empty)
+	 * @param buildQuery Pattern (not null, could be empty)
 	 * @return this builder
 	 */
 	@Override
-	public ListFilterBuilder<C> withBuildQuery(final String newBuildQuery) {
-		Assertion.checkNotNull(newBuildQuery);
-		Assertion.checkState(buildQuery == null, "query was already set : {0}", buildQuery);
-		Assertion.checkArgument(FULL_QUERY_PATTERN.matcher(newBuildQuery).matches(), "BuildQuery syntax error ({0}), should match : (<indexField:>#criteriaField# )+", newBuildQuery);
+	public ListFilterBuilder<C> withBuildQuery(final String buildQuery) {
+		Assertion.checkNotNull(buildQuery);
+		Assertion.checkState(myBuildQuery == null, "query was already set : {0}", myBuildQuery);
+		Assertion.checkArgument(FULL_QUERY_PATTERN.matcher(buildQuery).matches(), "BuildQuery syntax error ({0}), should match : (<indexField:>#criteriaField# )+", buildQuery);
 		//-----
-		this.buildQuery = newBuildQuery;
+		this.myBuildQuery = buildQuery;
 		return this;
 	}
 
 	/**
 	 * Fix criteria.
-	 * @param newCriteria Criteria
+	 * @param criteria Criteria
 	 * @return this builder
 	 */
 	@Override
-	public ListFilterBuilder<C> withCriteria(final C newCriteria) {
-		Assertion.checkNotNull(newCriteria);
-		Assertion.checkState(criteria == null, "criteria was already set : {0}", criteria);
+	public ListFilterBuilder<C> withCriteria(final C criteria) {
+		Assertion.checkNotNull(criteria);
+		Assertion.checkState(myCriteria == null, "criteria was already set : {0}", myCriteria);
 		//-----
-		this.criteria = newCriteria;
+		this.myCriteria = criteria;
 		return this;
 
 	}
@@ -165,7 +165,7 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 	private String buildQueryString() {
 		final StringBuilder query = new StringBuilder();
-		final Matcher queryMatcher = QUERY_PATTERN.matcher(buildQuery);
+		final Matcher queryMatcher = QUERY_PATTERN.matcher(myBuildQuery);
 		while (queryMatcher.find()) {
 			final String indexFieldName = queryMatcher.group(1);
 			final String preExpression = queryMatcher.group(2);
@@ -182,7 +182,7 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 	private void appendFieldExpression(final StringBuilder query, final String indexFieldName, final String preExpression, final String fieldExpression, final String postExpression) {
 		if (fieldExpression != null) {
 			final Matcher expressionMatcher = FIELD_EXPRESSION_PATTERN.matcher(fieldExpression);
-			Assertion.checkArgument(expressionMatcher.matches(), "BuildQuery syntax error, field ({0}) in query ({1}) should match a criteria fieldName", fieldExpression, buildQuery);
+			Assertion.checkArgument(expressionMatcher.matches(), "BuildQuery syntax error, field ({0}) in query ({1}) should match a criteria fieldName", fieldExpression, myBuildQuery);
 			//-----
 			final String preModifier = expressionMatcher.group(1);
 			final String fieldName = expressionMatcher.group(2);
@@ -190,9 +190,9 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 			final Object value;
 			if (USER_QUERY_KEYWORD.equalsIgnoreCase(fieldName)) {
-				value = criteria.toString();
+				value = myCriteria.toString();
 			} else {
-				value = BeanUtil.getValue(criteria, fieldName);
+				value = BeanUtil.getValue(myCriteria, fieldName);
 			}
 			if (value instanceof String) { //so not null too
 				appendUserStringCriteria(query, indexFieldName, preExpression, postExpression, preModifier, postModifier, value);

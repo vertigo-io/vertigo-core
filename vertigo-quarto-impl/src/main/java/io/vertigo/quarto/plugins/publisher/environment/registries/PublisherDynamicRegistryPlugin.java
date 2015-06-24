@@ -79,19 +79,19 @@ public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistr
 		final List<DynamicDefinition> stringFields = xpublisherNodeDefinition.getChildDefinitions(PublisherGrammar.STRING_FIELD);
 		for (final DynamicDefinition field : stringFields) {
 			final String fieldName = field.getDefinitionKey().getName();
-			publisherNodeDefinitionBuilder.withStringField(fieldName);
+			publisherNodeDefinitionBuilder.addStringField(fieldName);
 		}
 
 		//Déclaration des champs boolean
 		final List<DynamicDefinition> booleanFields = xpublisherNodeDefinition.getChildDefinitions(PublisherGrammar.BOOLEAN_FIELD);
 		for (final DynamicDefinition field : booleanFields) {
-			publisherNodeDefinitionBuilder.withBooleanField(field.getDefinitionKey().getName());
+			publisherNodeDefinitionBuilder.addBooleanField(field.getDefinitionKey().getName());
 		}
 
 		//Déclaration des champs images
 		final List<DynamicDefinition> imageFields = xpublisherNodeDefinition.getChildDefinitions(PublisherGrammar.IMAGE_FIELD);
 		for (final DynamicDefinition field : imageFields) {
-			publisherNodeDefinitionBuilder.withImageField(field.getDefinitionKey().getName());
+			publisherNodeDefinitionBuilder.addImageField(field.getDefinitionKey().getName());
 		}
 
 		//Déclaration des champs data
@@ -101,7 +101,7 @@ public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistr
 			final String refNodeName = field.getDefinitionKey("type").getName();
 			final PublisherNodeDefinition publisherNodeDefinition = getNodeDefinitionBuilder(refNodeName, fieldName, publisherNodeDefinitionName)
 					.build();
-			publisherNodeDefinitionBuilder.withNodeField(fieldName, publisherNodeDefinition);
+			publisherNodeDefinitionBuilder.addNodeField(fieldName, publisherNodeDefinition);
 		}
 
 		//Déclaration des champs list
@@ -111,7 +111,7 @@ public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistr
 			final String refNodeName = field.getDefinitionKey("type").getName();
 			final PublisherNodeDefinition publisherNodeDefinition = getNodeDefinitionBuilder(refNodeName, fieldName, publisherNodeDefinitionName)
 					.build();
-			publisherNodeDefinitionBuilder.withListField(fieldName, publisherNodeDefinition);
+			publisherNodeDefinitionBuilder.addListField(fieldName, publisherNodeDefinition);
 		}
 
 		//		System.out.println("Add " + publisherDataNodeName);

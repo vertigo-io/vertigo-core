@@ -49,12 +49,12 @@ public final class FacetDefinitionByRangeBuilder implements Builder<FacetDefinit
 		this.label = label;
 	}
 
-	public FacetDefinitionByRangeBuilder withFacetValue(final String query, final String facetValueLabel) {
+	public FacetDefinitionByRangeBuilder addFacetValue(final String query, final String facetValueLabel) {
 		final ListFilter listFilter = new ListFilter(query);
-		return withFacetValue(new FacetValue(listFilter, new MessageText(facetValueLabel, null)));
+		return addFacetValue(new FacetValue(listFilter, new MessageText(facetValueLabel, null)));
 	}
 
-	public FacetDefinitionByRangeBuilder withFacetValue(final FacetValue facetValue) {
+	public FacetDefinitionByRangeBuilder addFacetValue(final FacetValue facetValue) {
 		Assertion.checkNotNull(facetValue);
 		//-----
 		facetRanges.add(facetValue);

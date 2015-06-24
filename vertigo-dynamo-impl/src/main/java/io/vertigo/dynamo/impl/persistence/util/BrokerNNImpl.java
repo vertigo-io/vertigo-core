@@ -185,19 +185,19 @@ public final class BrokerNNImpl implements BrokerNN {
 		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskDefinitionName)
 				.withEngine(TaskEngineProc.class)
 				.withRequest(request)
-				.withInAttribute(sourceFieldName, sourceField.getDomain(), true); //IN, obligatoire
+				.addInAttribute(sourceFieldName, sourceField.getDomain(), true); //IN, obligatoire
 		if (targetField != null) {
-			taskDefinitionBuilder.withInAttribute(targetField.getName(), targetField.getDomain(), true);
+			taskDefinitionBuilder.addInAttribute(targetField.getName(), targetField.getDomain(), true);
 		}
 		//OUT, obligatoire
-		final TaskDefinition taskDefinition = taskDefinitionBuilder.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true)
+		final TaskDefinition taskDefinition = taskDefinitionBuilder.addOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, true)
 				.build();
 
 		/* Création de la tache. */
 		final TaskBuilder taskBuilder = new TaskBuilder(taskDefinition)
-				.withValue(sourceFieldName, sourceValue);
+				.addValue(sourceFieldName, sourceValue);
 		if (targetField != null) {
-			taskBuilder.withValue(targetField.getName(), targetValue);
+			taskBuilder.addValue(targetField.getName(), targetValue);
 		}
 
 		final TaskResult taskResult = taskManager.execute(taskBuilder.build());

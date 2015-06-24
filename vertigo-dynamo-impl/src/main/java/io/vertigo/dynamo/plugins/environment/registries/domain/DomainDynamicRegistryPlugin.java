@@ -275,7 +275,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 			final boolean sort = fieldName.equals(sortFieldName);
 			final boolean display = fieldName.equals(displayFieldName);
 
-			dtDefinitionBuilder.withComputedField(fieldName, label, domain, computedExpression, sort, display);
+			dtDefinitionBuilder.addComputedField(fieldName, label, domain, computedExpression, sort, display);
 		}
 	}
 
@@ -358,7 +358,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		LOGGER.trace("" + xassociation.getDefinitionKey().getName() + " : ajout d'une FK [" + fkFieldName + "] sur la table '" + foreignAssociationNode.getDtDefinition().getName() + "'");
 
 		final String label = primaryAssociationNode.getLabel();
-		dtDefinitionBuilders.get(foreignAssociationNode.getDtDefinition().getName()).withForeignKey(fkFieldName, label, fkDefinition.getIdField().get().getDomain(), primaryAssociationNode.isNotNull(), fkDefinition.getName(), false, false); //On estime qu'une FK n'est ni une colonne de tri ni un champ d'affichage
+		dtDefinitionBuilders.get(foreignAssociationNode.getDtDefinition().getName()).addForeignKey(fkFieldName, label, fkDefinition.getIdField().get().getDomain(), primaryAssociationNode.isNotNull(), fkDefinition.getName(), false, false); //On estime qu'une FK n'est ni une colonne de tri ni un champ d'affichage
 
 		return associationSimpleDefinition;
 	}
@@ -375,7 +375,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		//On associe les propriétés Dt et Ksp par leur nom.
 		for (final EntityProperty entityProperty : dynamicDefinition.getProperties()) {
 			final Property property = DtProperty.valueOf(entityProperty.getName());
-			propertiesBuilder.withValue(property, dynamicDefinition.getPropertyValue(entityProperty));
+			propertiesBuilder.addValue(property, dynamicDefinition.getPropertyValue(entityProperty));
 		}
 		return propertiesBuilder.build();
 	}

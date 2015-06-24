@@ -171,7 +171,9 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	 * @param excludedFields list of excludedFields
 	 * @return this builder
 	 */
-	public EndPointDefinitionBuilder withExcludedFields(final String... excludedFields) {
+	public EndPointDefinitionBuilder addExcludedFields(final String... excludedFields) {
+		Assertion.checkNotNull(excludedFields);
+		//-----
 		myExcludedFields.addAll(Arrays.asList(excludedFields));
 		return this;
 	}
@@ -180,7 +182,9 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	 * @param includedFields list of includedFields
 	 * @return this builder
 	 */
-	public EndPointDefinitionBuilder withIncludedFields(final String... includedFields) {
+	public EndPointDefinitionBuilder addIncludedFields(final String... includedFields) {
+		Assertion.checkNotNull(includedFields);
+		//-----
 		myIncludedFields.addAll(Arrays.asList(includedFields));
 		return this;
 	}

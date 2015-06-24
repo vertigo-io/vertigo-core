@@ -109,7 +109,7 @@ public class ExportXlsHelper<R extends DtObject> {
 			} else {
 				// final String label = specificLabelMap.get(field.getName());
 				// TODO exportListParameters.addExportField(field, label);
-				exportSheetBuilder.withField(dtField, null);
+				exportSheetBuilder.addField(dtField, null);
 			}
 		}
 		exportSheetBuilder.endSheet();

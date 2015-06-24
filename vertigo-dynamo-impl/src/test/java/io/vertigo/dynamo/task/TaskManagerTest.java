@@ -130,9 +130,9 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 		final TaskDefinition taskDefinition = buildTaskDefinition("TK_ADD_2", "+");
 
 		final Task task = new TaskBuilder(taskDefinition)
-				.withValue(TaskEngineMock.ATTR_IN_INT_1, 1)
-				.withValue(TaskEngineMock.ATTR_IN_INT_2, 8)
-				.withValue(TaskEngineMock.ATTR_IN_INT_3, 7)
+				.addValue(TaskEngineMock.ATTR_IN_INT_1, 1)
+				.addValue(TaskEngineMock.ATTR_IN_INT_2, 8)
+				.addValue(TaskEngineMock.ATTR_IN_INT_3, 7)
 				.build();
 
 		final TaskResult taskResult1 = taskManager.execute(task);
@@ -151,9 +151,9 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	 */
 	private Integer executeTask(final TaskDefinition taskDefinition, final Integer value1, final Integer value2, final Integer value3) {
 		final Task task = new TaskBuilder(taskDefinition)
-				.withValue(TaskEngineMock.ATTR_IN_INT_1, value1)
-				.withValue(TaskEngineMock.ATTR_IN_INT_2, value2)
-				.withValue(TaskEngineMock.ATTR_IN_INT_3, value3)
+				.addValue(TaskEngineMock.ATTR_IN_INT_1, value1)
+				.addValue(TaskEngineMock.ATTR_IN_INT_2, value2)
+				.addValue(TaskEngineMock.ATTR_IN_INT_3, value3)
 				.build();
 
 		final TaskResult taskResult = taskManager.execute(task);
@@ -167,10 +167,10 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 				.withEngine(TaskEngineMock.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineMock.class.getPackage().getName())
-				.withInAttribute(TaskEngineMock.ATTR_IN_INT_1, doInteger, true)
-				.withInAttribute(TaskEngineMock.ATTR_IN_INT_2, doInteger, true)
-				.withInAttribute(TaskEngineMock.ATTR_IN_INT_3, doInteger, true)
-				.withOutAttribute(TaskEngineMock.ATTR_OUT, doInteger, true)
+				.addInAttribute(TaskEngineMock.ATTR_IN_INT_1, doInteger, true)
+				.addInAttribute(TaskEngineMock.ATTR_IN_INT_2, doInteger, true)
+				.addInAttribute(TaskEngineMock.ATTR_IN_INT_3, doInteger, true)
+				.addOutAttribute(TaskEngineMock.ATTR_OUT, doInteger, true)
 				.build();
 	}
 
