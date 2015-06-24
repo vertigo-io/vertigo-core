@@ -82,7 +82,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		final Country china = new Country().setName("china");
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test3.csv")
-				.beginSheet(china, "china").withField(CountryFields.NAME).endSheet()
+				.beginSheet(china, "china").addField(CountryFields.NAME).endSheet()
 				.build();
 
 		final VFile result = exportManager.createExportFile(export);
@@ -116,7 +116,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test4.csv")
 				.beginSheet(germany, "germany")
-				.withField(CountryFields.CON_ID, dtc, ContinentFields.NAME)
+				.addField(CountryFields.CON_ID, dtc, ContinentFields.NAME)
 				.endSheet()
 				.build();
 

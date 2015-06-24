@@ -225,7 +225,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 			final boolean sort = fieldName.equals(sortFieldName);
 			final boolean display = fieldName.equals(displayFieldName);
 			//-----
-			dtDefinitionBuilder.withIdField(fieldName, label, domain, sort, display);
+			dtDefinitionBuilder.addIdField(fieldName, label, domain, sort, display);
 		}
 	}
 
@@ -252,7 +252,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 			final boolean sort = fieldName.equals(sortFieldName);
 			final boolean display = fieldName.equals(displayFieldName);
 			//-----
-			dtDefinitionBuilder.withDataField(fieldName, label, domain, notNull, persistent, sort, display);
+			dtDefinitionBuilder.addDataField(fieldName, label, domain, notNull, persistent, sort, display);
 		}
 	}
 

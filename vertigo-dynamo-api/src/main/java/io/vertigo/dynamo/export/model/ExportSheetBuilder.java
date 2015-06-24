@@ -95,7 +95,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @param fieldName ajout d'un champs du Dt à exporter
 	 * @return ExportSheetBuilder
 	 */
-	public ExportSheetBuilder withField(final DtFieldName fieldName) {
+	public ExportSheetBuilder addField(final DtFieldName fieldName) {
 		addField(fieldName, null);
 		return this;
 	}
@@ -107,7 +107,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @param displayfield Field du libellé à utiliser.
 	 * @return ExportSheetBuilder
 	 */
-	public ExportSheetBuilder withField(final DtFieldName fieldName, final DtList<?> list, final DtFieldName displayfield) {
+	public ExportSheetBuilder addField(final DtFieldName fieldName, final DtList<?> list, final DtFieldName displayfield) {
 		addField(fieldName, list, displayfield, null);
 		return this;
 	}
