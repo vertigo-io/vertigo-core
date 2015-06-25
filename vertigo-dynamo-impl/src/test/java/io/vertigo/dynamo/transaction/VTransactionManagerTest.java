@@ -181,29 +181,37 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testCreateAutonomousTransaction() {
+		Assert.assertFalse(transactionManager.hasCurrentTransaction());
 		try (final VTransactionWritable rootTransaction = transactionManager.createCurrentTransaction()) {
 			final SampleDataBaseConnection rootConnection = obtainDataBaseConnection(dataBase, "test-memory-1");
+
+			Assert.assertEquals(rootTransaction, transactionManager.getCurrentTransaction());
 			// --- modification de la bdd sur la transaction principale.
 			final String rootValue = createData();
 			rootConnection.setData(rootValue);
 			Assert.assertEquals(rootValue, rootConnection.getData());
 
+			final String value = createData();
 			try (final VTransactionWritable autonomousTransaction = transactionManager.createAutonomousTransaction()) {
+				Assert.assertEquals(autonomousTransaction, transactionManager.getCurrentTransaction());
 				final SampleDataBaseConnection connection = obtainDataBaseConnection(dataBase, "test-memory-2");
 				// --- modification de la bdd sur la transaction autonome.
-				final String value = createData();
 				connection.setData(value);
 				Assert.assertEquals(value, connection.getData());
 				autonomousTransaction.commit();
-				//On vérifie que la bdd est mise à jour.
-				Assert.assertEquals(value, dataBase.getData());
-				rootTransaction.commit();
-				//On vérifie que la bdd est mise à jour.
-				Assert.assertEquals(rootValue, dataBase.getData());
 
 				Assert.assertNotSame(rootTransaction, autonomousTransaction);
 			}
+			Assert.assertEquals(rootTransaction, transactionManager.getCurrentTransaction());
+
+			//On vérifie que la bdd est mise à jour.
+			Assert.assertEquals(value, dataBase.getData());
+			Assert.assertEquals(rootValue, rootConnection.getData());
+			rootTransaction.commit();
+			//On vérifie que la bdd est mise à jour.
+			Assert.assertEquals(rootValue, dataBase.getData());
 		}
+		Assert.assertFalse(transactionManager.hasCurrentTransaction());
 	}
 
 	/**
