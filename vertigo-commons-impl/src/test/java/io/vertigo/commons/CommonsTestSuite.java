@@ -70,6 +70,7 @@ import org.junit.runners.Suite.SuiteClasses;
 		//--parser
 		ParserTest.class,
 		CalculatorTest.class,
+		DaemonManagerTest.class
 })
 public final class CommonsTestSuite {
 	//

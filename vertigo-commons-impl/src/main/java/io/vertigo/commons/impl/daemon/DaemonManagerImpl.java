@@ -36,7 +36,7 @@ public final class DaemonManagerImpl implements DaemonManager {
 	 * Il sera lancé puis réexécuté périodiquement.
 	 * L'instance du démon est créée par injection de dépendances.
 	 *
-	 * @param daemon Le démon à lancer.
+	 * @param daemonDefinition Le démon à lancer.
 	 */
 	private void startDaemon(final DaemonDefinition daemonDefinition) {
 		Assertion.checkNotNull(daemonDefinition);
