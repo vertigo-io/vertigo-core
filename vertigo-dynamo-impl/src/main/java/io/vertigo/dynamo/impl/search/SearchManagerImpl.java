@@ -75,9 +75,9 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		this.searchServicesPlugin = searchServicesPlugin;
 
 		final SearchIndexDirtyEventListener searchIndexDirtyEventListener = new SearchIndexDirtyEventListener(this);
-		eventsManager.register(PersistenceManager.FiredEvent.storeCreate, false, searchIndexDirtyEventListener);
-		eventsManager.register(PersistenceManager.FiredEvent.storeUpdate, false, searchIndexDirtyEventListener);
-		eventsManager.register(PersistenceManager.FiredEvent.storeDelete, false, searchIndexDirtyEventListener);
+		eventsManager.register(PersistenceManager.FiredEvent.storeCreate, searchIndexDirtyEventListener);
+		eventsManager.register(PersistenceManager.FiredEvent.storeUpdate, searchIndexDirtyEventListener);
+		eventsManager.register(PersistenceManager.FiredEvent.storeDelete, searchIndexDirtyEventListener);
 
 		executorService = Executors.newSingleThreadScheduledExecutor();
 		this.transactionManager = transactionManager;

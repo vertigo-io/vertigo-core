@@ -7,11 +7,11 @@ import java.io.Serializable;
 /**
  * Inter-components events manager.
  * Producer/Consumer on channel for communication between components.
- * When registering to channel, Listeners are configured to listen locally or globally over system.
+ * When registering to channel, Listeners are configured to listen locally only.
  *
  * Example :
- * A cache component should listen globally : a modification in one app should flush cache all over the system
- * An audit component should listen locally to ensure only one app do the audit log
+ * A cache component should listen : a modification in one app should flush cache all over the system : it's cache component responsibility to do this
+ * An audit component should listen to do the audit log
  *
  * @author pchretien, npiedeloup
  */
@@ -27,9 +27,8 @@ public interface EventManager extends Component {
 	/**
 	 * Register a new listener for this channel.
 	 * @param channel ChannelName to listen
-	 * @param localOnly If this listener is local sent event only
 	 * @param eventsListener EventsListener
 	 */
-	<P extends Serializable> void register(EventChannel<P> channel, boolean localOnly, EventListener<P> eventsListener);
+	<P extends Serializable> void register(EventChannel<P> channel, EventListener<P> eventsListener);
 
 }

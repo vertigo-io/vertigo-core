@@ -54,9 +54,9 @@ public final class CacheDataStore {
 		cacheDataStoreConfig = brokerConfig.getCacheStoreConfig();
 		logicalStoreConfig = brokerConfig.getLogicalStoreConfig();
 		final CacheClearEventListener cacheClearEventListener = new CacheClearEventListener(this);
-		brokerConfig.getEventsManager().register(PersistenceManager.FiredEvent.storeCreate, false, cacheClearEventListener);
-		brokerConfig.getEventsManager().register(PersistenceManager.FiredEvent.storeUpdate, false, cacheClearEventListener);
-		brokerConfig.getEventsManager().register(PersistenceManager.FiredEvent.storeDelete, false, cacheClearEventListener);
+		brokerConfig.getEventsManager().register(PersistenceManager.FiredEvent.storeCreate, cacheClearEventListener);
+		brokerConfig.getEventsManager().register(PersistenceManager.FiredEvent.storeUpdate, cacheClearEventListener);
+		brokerConfig.getEventsManager().register(PersistenceManager.FiredEvent.storeDelete, cacheClearEventListener);
 	}
 
 	private DataStore getPhysicalStore(final DtDefinition dtDefinition) {
