@@ -1,11 +1,11 @@
-package io.vertigo.dynamo.impl.events;
+package io.vertigo.commons.impl.events;
 
-import io.vertigo.dynamo.events.Event;
-import io.vertigo.dynamo.events.EventBuilder;
-import io.vertigo.dynamo.events.EventChannel;
-import io.vertigo.dynamo.events.EventsListener;
-import io.vertigo.dynamo.events.EventsManager;
-import io.vertigo.dynamo.plugins.events.local.LocalEventsPlugin;
+import io.vertigo.commons.event.Event;
+import io.vertigo.commons.event.EventBuilder;
+import io.vertigo.commons.event.EventChannel;
+import io.vertigo.commons.event.EventListener;
+import io.vertigo.commons.event.EventManager;
+import io.vertigo.commons.plugins.event.local.LocalEventsPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 
@@ -16,12 +16,12 @@ import javax.inject.Inject;
 /**
  * @author pchretien, npiedeloup
  */
-public final class EventsManagerImpl implements EventsManager {
-	private final EventsPlugin localEventsPlugin = new LocalEventsPlugin();
-	private final Option<EventsPlugin> remoteEventsPlugin;
+public final class EventManagerImpl implements EventManager {
+	private final EventPlugin localEventsPlugin = new LocalEventsPlugin();
+	private final Option<EventPlugin> remoteEventsPlugin;
 
 	@Inject
-	public EventsManagerImpl(final Option<EventsPlugin> remoteEventsPlugin) {
+	public EventManagerImpl(final Option<EventPlugin> remoteEventsPlugin) {
 		Assertion.checkNotNull(remoteEventsPlugin);
 		//-----
 		this.remoteEventsPlugin = remoteEventsPlugin;
@@ -43,7 +43,7 @@ public final class EventsManagerImpl implements EventsManager {
 	 * @param eventsListener EventsListener
 	 */
 	@Override
-	public <P extends Serializable> void register(final EventChannel<P> channel, final boolean localOnly, final EventsListener<P> eventsListener) {
+	public <P extends Serializable> void register(final EventChannel<P> channel, final boolean localOnly, final EventListener<P> eventsListener) {
 		if (localOnly || remoteEventsPlugin.isEmpty()) {
 			localEventsPlugin.register(channel, eventsListener);
 		} else {

@@ -1,12 +1,12 @@
 package io.vertigo.dynamo.plugins.events.redis;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.commons.event.Event;
+import io.vertigo.commons.event.EventBuilder;
+import io.vertigo.commons.event.EventChannel;
+import io.vertigo.commons.event.EventListener;
+import io.vertigo.commons.impl.events.EventPlugin;
 import io.vertigo.dynamo.addons.connectors.redis.RedisConnector;
-import io.vertigo.dynamo.events.Event;
-import io.vertigo.dynamo.events.EventBuilder;
-import io.vertigo.dynamo.events.EventChannel;
-import io.vertigo.dynamo.events.EventsListener;
-import io.vertigo.dynamo.impl.events.EventsPlugin;
 import io.vertigo.lang.Assertion;
 
 import java.io.Serializable;
@@ -20,7 +20,7 @@ import redis.clients.jedis.Transaction;
 /**
  * @author pchretien
  */
-public final class RedisEventsPlugin implements EventsPlugin {
+public final class RedisEventsPlugin implements EventPlugin {
 
 	private final RedisConnector redisConnector;
 	private final CodecManager codecManager;
@@ -57,7 +57,7 @@ public final class RedisEventsPlugin implements EventsPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <P extends Serializable> void register(final EventChannel<P> channel, final EventsListener<P> eventsListener) {
+	public <P extends Serializable> void register(final EventChannel<P> channel, final EventListener<P> eventsListener) {
 		Assertion.checkNotNull(channel);
 		Assertion.checkNotNull(eventsListener);
 		//----
@@ -69,9 +69,9 @@ public final class RedisEventsPlugin implements EventsPlugin {
 		private final CodecManager codecManager;
 		private final EventChannel<P> channel;
 		private final RedisConnector redisConnector;
-		private final EventsListener<P> eventsListener;
+		private final EventListener<P> eventsListener;
 
-		MyListener(final EventChannel<P> channel, final EventsListener<P> eventsListener, final RedisConnector redisConnector, final CodecManager codecManager) {
+		MyListener(final EventChannel<P> channel, final EventListener<P> eventsListener, final RedisConnector redisConnector, final CodecManager codecManager) {
 			this.channel = channel;
 			this.redisConnector = redisConnector;
 			this.eventsListener = eventsListener;

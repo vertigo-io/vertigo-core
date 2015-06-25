@@ -185,7 +185,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	}
 
 	@Override
-	public final DynamicDefinitionBuilder withPropertyValue(final EntityProperty property, final Object value) {
+	public final DynamicDefinitionBuilder addPropertyValue(final EntityProperty property, final Object value) {
 		property.getPrimitiveType().checkValue(value);
 		properties.put(property, value);
 		return this;
@@ -204,7 +204,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	}
 
 	@Override
-	public final DynamicDefinitionBuilder withChildDefinition(final String fieldName, final DynamicDefinition definition) {
+	public final DynamicDefinitionBuilder addChildDefinition(final String fieldName, final DynamicDefinition definition) {
 		Assertion.checkNotNull(definition);
 		//-----
 		obtainComposites(fieldName).add(definition);
@@ -218,7 +218,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	}
 
 	@Override
-	public final DynamicDefinitionBuilder withDefinitions(final String fieldName, final List<DynamicDefinitionKey> definitionKeys) {
+	public final DynamicDefinitionBuilder addDefinitions(final String fieldName, final List<DynamicDefinitionKey> definitionKeys) {
 		Assertion.checkNotNull(definitionKeys);
 		Assertion.checkArgument(obtainDefinitionKeys(fieldName).isEmpty(), "syntaxe interdite : multi {0}", fieldName);
 		//On vérifie que la liste est vide pour éviter les syntaxe avec multi déclarations
@@ -242,10 +242,12 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	}
 
 	@Override
-	public final DynamicDefinitionBuilder withBody(final DynamicDefinition dynamicDefinition) {
+	//Cas des alter
+			public final
+			DynamicDefinitionBuilder addBody(final DynamicDefinition dynamicDefinition) {
 		// 1. maj des EntityProperty
 		for (final EntityProperty property : dynamicDefinition.getProperties()) {
-			withPropertyValue(property, dynamicDefinition.getPropertyValue(property));
+			addPropertyValue(property, dynamicDefinition.getPropertyValue(property));
 		}
 
 		// 2. maj fieldNameDefinitionKeyListMap
@@ -263,7 +265,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 	}
 
 	@Override
-	public DynamicDefinitionBuilder withDefinition(final String fieldName, final DynamicDefinitionKey definitionKey) {
+	public DynamicDefinitionBuilder addDefinition(final String fieldName, final DynamicDefinitionKey definitionKey) {
 		// On vérifie que la liste est vide pour éviter les syntaxe avec multi
 		// déclarations
 		Assertion.checkArgument(obtainDefinitionKeys(fieldName).isEmpty(), "syntaxe interdite");

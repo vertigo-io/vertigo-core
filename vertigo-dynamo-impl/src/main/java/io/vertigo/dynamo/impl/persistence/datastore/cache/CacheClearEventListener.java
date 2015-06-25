@@ -1,14 +1,14 @@
 package io.vertigo.dynamo.impl.persistence.datastore.cache;
 
+import io.vertigo.commons.event.Event;
+import io.vertigo.commons.event.EventListener;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.events.Event;
-import io.vertigo.dynamo.events.EventsListener;
 
 /**
  * Clear cache eventListener.
  * @author npiedeloup
  */
-final class CacheClearEventListener implements EventsListener<URI> {
+final class CacheClearEventListener implements EventListener<URI> {
 
 	private final CacheDataStore cacheDataStore;
 

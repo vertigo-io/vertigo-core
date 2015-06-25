@@ -1,4 +1,4 @@
-package io.vertigo.dynamo.events;
+package io.vertigo.commons.event;
 
 import java.io.Serializable;
 

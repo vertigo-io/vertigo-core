@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.search;
 
+import io.vertigo.commons.event.EventManager;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
@@ -27,7 +28,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.events.EventsManager;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
@@ -67,7 +67,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	 * @param transactionManager Transaction Manager
 	 */
 	@Inject
-	public SearchManagerImpl(final SearchServicesPlugin searchServicesPlugin, final EventsManager eventsManager, final VTransactionManager transactionManager) {
+	public SearchManagerImpl(final SearchServicesPlugin searchServicesPlugin, final EventManager eventsManager, final VTransactionManager transactionManager) {
 		Assertion.checkNotNull(searchServicesPlugin);
 		Assertion.checkNotNull(eventsManager);
 		Assertion.checkNotNull(transactionManager);

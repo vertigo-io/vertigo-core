@@ -1,7 +1,7 @@
 package io.vertigo.dynamo.impl.persistence.datastore;
 
-import io.vertigo.dynamo.events.EventChannel;
-import io.vertigo.dynamo.events.EventsManager;
+import io.vertigo.commons.event.EventChannel;
+import io.vertigo.commons.event.EventManager;
 import io.vertigo.dynamo.transaction.VTransactionResource;
 import io.vertigo.lang.Assertion;
 
@@ -19,7 +19,7 @@ import java.util.Set;
  */
 public final class EventTransactionResource<P extends Serializable> implements VTransactionResource {
 	private final Map<EventChannel<P>, Set<P>> eventPayloadsPerChannel = new HashMap<>();
-	private final EventsManager eventsManager;
+	private final EventManager eventsManager;
 
 	private enum State {
 		Started, Closed
@@ -31,7 +31,7 @@ public final class EventTransactionResource<P extends Serializable> implements V
 	 * Constructor.
 	 * @param eventsManager EventsManager
 	 */
-	EventTransactionResource(final EventsManager eventsManager) {
+	EventTransactionResource(final EventManager eventsManager) {
 		Assertion.checkNotNull(eventsManager);
 		//-----
 		this.eventsManager = eventsManager;

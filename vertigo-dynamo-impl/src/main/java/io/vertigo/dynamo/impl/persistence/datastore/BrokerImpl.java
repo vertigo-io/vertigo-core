@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.persistence.datastore;
 
+import io.vertigo.commons.event.EventManager;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -25,7 +26,6 @@ import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.events.EventsManager;
 import io.vertigo.dynamo.impl.persistence.datastore.cache.CacheDataStore;
 import io.vertigo.dynamo.impl.persistence.datastore.logical.LogicalDataStoreConfig;
 import io.vertigo.dynamo.persistence.PersistenceManager;
@@ -46,7 +46,7 @@ public final class BrokerImpl implements Broker {
 	/** Le store est le point d'accès unique à la base (sql, xml, fichier plat...). */
 	private final CacheDataStore cacheDataStore;
 	private final LogicalDataStoreConfig logicalStoreConfig;
-	private final EventsManager eventsManager;
+	private final EventManager eventsManager;
 
 	/**
 	 * Constructeur.

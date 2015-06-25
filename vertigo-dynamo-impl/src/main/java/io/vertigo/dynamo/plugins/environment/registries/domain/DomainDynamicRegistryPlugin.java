@@ -400,9 +400,9 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final DynamicDefinitionKey dtObjectKey = new DynamicDefinitionKey("DtObject");
 
 		final DynamicDefinition domain = DynamicDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain, packageName)
-				.withDefinition("dataType", dtObjectKey)
+				.addDefinition("dataType", dtObjectKey)
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
-				.withPropertyValue(KspProperty.TYPE, definitionName)
+				.addPropertyValue(KspProperty.TYPE, definitionName)
 				.build();
 
 		//On ajoute le domain crée au repository
@@ -412,9 +412,9 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 		final DynamicDefinitionKey dtListKey = new DynamicDefinitionKey("DtList");
 		final DynamicDefinition domain2 = DynamicDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTC", metaDefinitionDomain, packageName)
-				.withDefinition("dataType", dtListKey)
+				.addDefinition("dataType", dtListKey)
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
-				.withPropertyValue(KspProperty.TYPE, definitionName)
+				.addPropertyValue(KspProperty.TYPE, definitionName)
 				.build();
 
 		//On ajoute le domain crée au repository

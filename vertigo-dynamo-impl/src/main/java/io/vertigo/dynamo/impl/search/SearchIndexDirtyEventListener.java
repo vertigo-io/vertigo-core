@@ -1,9 +1,9 @@
 package io.vertigo.dynamo.impl.search;
 
+import io.vertigo.commons.event.Event;
+import io.vertigo.commons.event.EventListener;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.events.Event;
-import io.vertigo.dynamo.events.EventsListener;
 import io.vertigo.dynamo.search.SearchManager;
 
 import java.util.Collections;
@@ -13,7 +13,7 @@ import java.util.List;
  * Declare index dirty on event.
  * @author npiedeloup
  */
-final class SearchIndexDirtyEventListener implements EventsListener<URI> {
+final class SearchIndexDirtyEventListener implements EventListener<URI> {
 
 	private final SearchManager searchManager;
 

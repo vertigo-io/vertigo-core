@@ -38,14 +38,14 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	 * @param dynamicDefinition Definition body
 	 * @return Builder
 	 */
-	DynamicDefinitionBuilder withBody(DynamicDefinition dynamicDefinition);
+	DynamicDefinitionBuilder addBody(DynamicDefinition dynamicDefinition);
 
 	/**
 	 * @param property Propriété
 	 * @param value Valeur de la propriété
 	 * @return Builder
 	 */
-	DynamicDefinitionBuilder withPropertyValue(final EntityProperty property, final Object value);
+	DynamicDefinitionBuilder addPropertyValue(final EntityProperty property, final Object value);
 
 	/**
 	 * Ajoute une définition au champ défini par fieldName.
@@ -54,7 +54,7 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	 * @param definitionKey Clé de la définition
 	 * @return Builder
 	 */
-	DynamicDefinitionBuilder withDefinition(final String fieldName, final DynamicDefinitionKey definitionKey);
+	DynamicDefinitionBuilder addDefinition(final String fieldName, final DynamicDefinitionKey definitionKey);
 
 	/**
 	 * Ajoute une liste de définitions au champ défini par fieldName.
@@ -63,7 +63,7 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	 * @param definitionKeys  Liste des clés de définition
 	 * @return Builder
 	 */
-	DynamicDefinitionBuilder withDefinitions(final String fieldName, final List<DynamicDefinitionKey> definitionKeys);
+	DynamicDefinitionBuilder addDefinitions(final String fieldName, final List<DynamicDefinitionKey> definitionKeys);
 
 	/**
 	 * Ajoute une définition au champ défini par fieldName.
@@ -71,5 +71,5 @@ public interface DynamicDefinitionBuilder extends Builder<DynamicDefinition> {
 	 * @param definition Définition
 	 * @return Builder
 	 */
-	DynamicDefinitionBuilder withChildDefinition(final String fieldName, final DynamicDefinition definition);
+	DynamicDefinitionBuilder addChildDefinition(final String fieldName, final DynamicDefinition definition);
 }

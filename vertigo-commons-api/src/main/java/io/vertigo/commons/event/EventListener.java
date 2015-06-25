@@ -1,4 +1,4 @@
-package io.vertigo.dynamo.events;
+package io.vertigo.commons.event;
 
 import java.io.Serializable;
 
@@ -6,7 +6,7 @@ import java.io.Serializable;
  * EventsListener.
  * @author npiedeloup
  */
-public interface EventsListener<P extends Serializable> {
+public interface EventListener<P extends Serializable> {
 
 	/**
 	 * Call when registered channel received an event.

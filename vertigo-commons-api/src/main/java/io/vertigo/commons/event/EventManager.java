@@ -1,4 +1,4 @@
-package io.vertigo.dynamo.events;
+package io.vertigo.commons.event;
 
 import io.vertigo.lang.Component;
 
@@ -15,7 +15,7 @@ import java.io.Serializable;
  *
  * @author pchretien, npiedeloup
  */
-public interface EventsManager extends Component {
+public interface EventManager extends Component {
 
 	/**
 	 * Fire an event on a channel.
@@ -30,6 +30,6 @@ public interface EventsManager extends Component {
 	 * @param localOnly If this listener is local sent event only
 	 * @param eventsListener EventsListener
 	 */
-	<P extends Serializable> void register(EventChannel<P> channel, boolean localOnly, EventsListener<P> eventsListener);
+	<P extends Serializable> void register(EventChannel<P> channel, boolean localOnly, EventListener<P> eventsListener);
 
 }

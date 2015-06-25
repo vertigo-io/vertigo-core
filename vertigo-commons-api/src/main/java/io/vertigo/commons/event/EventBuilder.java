@@ -1,4 +1,4 @@
-package io.vertigo.dynamo.events;
+package io.vertigo.commons.event;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;

@@ -1,8 +1,8 @@
-package io.vertigo.dynamo.impl.events;
+package io.vertigo.commons.impl.events;
 
-import io.vertigo.dynamo.events.Event;
-import io.vertigo.dynamo.events.EventChannel;
-import io.vertigo.dynamo.events.EventsListener;
+import io.vertigo.commons.event.Event;
+import io.vertigo.commons.event.EventChannel;
+import io.vertigo.commons.event.EventListener;
 import io.vertigo.lang.Plugin;
 
 import java.io.Serializable;
@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * @author pchretien
  */
-public interface EventsPlugin extends Plugin {
+public interface EventPlugin extends Plugin {
 
 	/**
 	 * Emit an event on a channel.
@@ -26,5 +26,5 @@ public interface EventsPlugin extends Plugin {
 	 * @param channel ChannelName to listen
 	 * @param eventsListener EventsListener
 	 */
-	<P extends Serializable> void register(EventChannel<P> channel, EventsListener<P> eventsListener);
+	<P extends Serializable> void register(EventChannel<P> channel, EventListener<P> eventsListener);
 }

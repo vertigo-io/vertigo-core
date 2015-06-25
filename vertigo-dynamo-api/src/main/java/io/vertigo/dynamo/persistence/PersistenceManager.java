@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.persistence;
 
+import io.vertigo.commons.event.EventChannel;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.events.EventChannel;
 import io.vertigo.dynamo.persistence.datastore.Broker;
 import io.vertigo.dynamo.persistence.datastore.BrokerConfig;
 import io.vertigo.dynamo.persistence.datastore.BrokerNN;

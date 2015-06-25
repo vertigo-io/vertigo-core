@@ -110,7 +110,7 @@ public final class DynamicDefinitionRepository {
 
 	private void solveTemplates() {
 		for (final DynamicDefinition template : templates) {
-			((DynamicDefinitionBuilder) getDefinition(template.getDefinitionKey())).withBody(template);
+			((DynamicDefinitionBuilder) getDefinition(template.getDefinitionKey())).addBody(template);
 		}
 	}
 
