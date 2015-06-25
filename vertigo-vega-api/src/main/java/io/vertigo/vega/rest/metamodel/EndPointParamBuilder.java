@@ -95,7 +95,7 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 	 * @param includedFields list of included fields (empty means all fields included)
 	 * @return Builder
 	 */
-	public EndPointParamBuilder withIncludedFields(final String... includedFields) {
+	public EndPointParamBuilder addIncludedFields(final String... includedFields) {
 		myIncludedFields.addAll(Arrays.asList(includedFields));
 		return this;
 	}

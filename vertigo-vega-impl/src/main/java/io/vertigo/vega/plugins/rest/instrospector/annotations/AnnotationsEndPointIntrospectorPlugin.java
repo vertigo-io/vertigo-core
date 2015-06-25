@@ -160,7 +160,7 @@ public final class AnnotationsEndPointIntrospectorPlugin implements EndPointIntr
 			} else if (annotation instanceof ExcludedFields) {
 				builder.addExcludedFields(((ExcludedFields) annotation).value());
 			} else if (annotation instanceof IncludedFields) {
-				builder.withIncludedFields(((IncludedFields) annotation).value());
+				builder.addIncludedFields(((IncludedFields) annotation).value());
 			} else if (annotation instanceof ServerSideRead) {
 				builder.withNeedServerSideToken(true);
 			} else if (annotation instanceof ServerSideConsume) {
