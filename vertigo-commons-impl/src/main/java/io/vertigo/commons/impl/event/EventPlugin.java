@@ -1,4 +1,4 @@
-package io.vertigo.commons.impl.events;
+package io.vertigo.commons.impl.event;
 
 import io.vertigo.commons.event.Event;
 import io.vertigo.commons.event.EventChannel;

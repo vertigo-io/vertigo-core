@@ -96,25 +96,27 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 	 * @return Builder
 	 */
 	public EndPointParamBuilder addIncludedFields(final String... includedFields) {
+		Assertion.checkNotNull(includedFields);
+		//-----
 		myIncludedFields.addAll(Arrays.asList(includedFields));
 		return this;
 	}
 
 	/**
-	 * @param needServerSideToken is serverSide token is needed and used
+	 * If serverSide token is needed and used
 	 * @return Builder
 	 */
-	public EndPointParamBuilder withNeedServerSideToken(final boolean needServerSideToken) {
-		myNeedServerSideToken = needServerSideToken;
+	public EndPointParamBuilder needServerSideToken() {
+		myNeedServerSideToken = true;
 		return this;
 	}
 
 	/**
-	 * @param consumeServerSideToken if serverSide token is consume
+	 * If serverSide token is consume
 	 * @return Builder
 	 */
-	public EndPointParamBuilder withConsumeServerSideToken(final boolean consumeServerSideToken) {
-		myConsumeServerSideToken = consumeServerSideToken;
+	public EndPointParamBuilder consumeServerSideToken() {
+		myConsumeServerSideToken = true;
 		return this;
 	}
 

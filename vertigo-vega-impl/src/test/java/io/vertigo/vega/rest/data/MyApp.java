@@ -89,7 +89,7 @@ public final class MyApp {
 		// @formatter:off
 		return new AppConfigBuilder()
 		.withBootConfig(new BootConfigBuilder()
-			.withSilence(true)
+			.silently()
 			.build())
 			.beginModule("commons")
 				.beginComponent(LocaleManager.class, LocaleManagerImpl.class)

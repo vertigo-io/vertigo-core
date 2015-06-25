@@ -71,7 +71,7 @@ final class HomeServletStarter {
 
 			final XMLAppConfigBuilder appConfigBuilder = new XMLAppConfigBuilder()
 					.withBootConfig(new BootConfigBuilder()
-							.withSilence(true)
+							.silently()
 							.build());
 
 			//si présent on récupère le paramétrage du fichier externe de paramétrage log4j

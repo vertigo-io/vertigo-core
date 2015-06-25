@@ -37,11 +37,10 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 
 	/**
 	 * Permet de définir un démarrage silencieux. (Sans retour console)
-	 * @param silence Si le mode est silencieux
 	 * @return Builder
 	 */
-	public BootConfigBuilder withSilence(final boolean silence) {
-		this.mySilence = silence;
+	public BootConfigBuilder silently() {
+		this.mySilence = true;
 		return this;
 	}
 

@@ -183,7 +183,7 @@ public abstract class AbstractTestCaseJU4 {
 
 		//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
 		return new XMLAppConfigBuilder()
-				.withBootConfig(new BootConfigBuilder().withSilence(true).build())
+				.withBootConfig(new BootConfigBuilder().silently().build())
 				.withModules(getClass(), new Properties(), getManagersXmlFileName())
 				.build();
 	}

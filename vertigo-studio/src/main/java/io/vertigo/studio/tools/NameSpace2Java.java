@@ -66,7 +66,7 @@ public final class NameSpace2Java {
 		}
 
 		final AppConfig appConfig = appConfigBuilder
-				.withBootConfig(new BootConfigBuilder().withSilence(true).build())
+				.withBootConfig(new BootConfigBuilder().silently().build())
 				.build();
 
 		try (App app = new App(appConfig)) {

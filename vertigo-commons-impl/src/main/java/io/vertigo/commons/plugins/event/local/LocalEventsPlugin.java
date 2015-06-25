@@ -3,7 +3,7 @@ package io.vertigo.commons.plugins.event.local;
 import io.vertigo.commons.event.Event;
 import io.vertigo.commons.event.EventChannel;
 import io.vertigo.commons.event.EventListener;
-import io.vertigo.commons.impl.events.EventPlugin;
+import io.vertigo.commons.impl.event.EventPlugin;
 
 import java.io.Serializable;
 import java.util.HashMap;

@@ -45,7 +45,7 @@ public final class Starter implements Runnable {
 		this.timeToWait = timeToWait;
 		// Initialisation de l'état de l'application
 		appConfig = new XMLAppConfigBuilder()
-				.withBootConfig(new BootConfigBuilder().withSilence(true).build())
+				.withBootConfig(new BootConfigBuilder().silently().build())
 				.withModules(relativeRootClass, new Properties(), managersXmlFileName)
 				.build();
 	}
