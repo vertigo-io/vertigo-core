@@ -31,13 +31,13 @@ import javax.inject.Named;
 
 /**
  * Un composant possède une liste de dépendances.
- * Une dépendance est donc une relation entre une définition de composant et une autre définition de composant, identifiée par son id.   
- * une dépendance peut porter sur 
- * - une Classe quelconque, 
+ * Une dépendance est donc une relation entre une définition de composant et une autre définition de composant, identifiée par son id.
+ * une dépendance peut porter sur
+ * - une Classe quelconque,
  * - une option
  * - une Liste
  * Seul le premier type de relation revët un caractère obligatoire.
- * 
+ *
  * @author pchretien
  */
 public final class DIDependency {
@@ -91,9 +91,9 @@ public final class DIDependency {
 		return type;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		final char c;
 		if (isList) {
 			return name + '*';
 		} else if (isOption) {
