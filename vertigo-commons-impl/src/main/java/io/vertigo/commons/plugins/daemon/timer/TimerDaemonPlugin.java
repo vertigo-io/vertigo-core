@@ -15,8 +15,7 @@ import org.apache.log4j.Logger;
  *
  * @author TINGARGIOLA
  */
-public class TimerDaemonPlugin implements DaemonPlugin, Activeable {
-
+public final class TimerDaemonPlugin implements DaemonPlugin, Activeable {
 	private boolean isActive;
 	private final Timer timer = new Timer(true);
 
