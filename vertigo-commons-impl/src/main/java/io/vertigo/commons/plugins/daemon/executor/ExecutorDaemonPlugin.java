@@ -1,12 +1,13 @@
-package io.vertigo.commons.plugins.daemon.timer;
+package io.vertigo.commons.plugins.daemon.executor;
 
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.impl.daemon.DaemonPlugin;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
@@ -15,9 +16,9 @@ import org.apache.log4j.Logger;
  *
  * @author TINGARGIOLA
  */
-public final class TimerDaemonPlugin implements DaemonPlugin, Activeable {
+public final class ExecutorDaemonPlugin implements DaemonPlugin, Activeable {
 	private boolean isActive;
-	private final Timer timer = new Timer(true);
+	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
 
 	/** {@inheritDoc} */
 	@Override
@@ -25,8 +26,7 @@ public final class TimerDaemonPlugin implements DaemonPlugin, Activeable {
 		Assertion.checkNotNull(daemon);
 		Assertion.checkState(isActive, "Le manager n'est pas actif.");
 		// -----
-		final long delay = 0; // starts now
-		timer.schedule(new MyTimerTask(daemonName, daemon), delay, periodInSeconds * 1000);
+		scheduler.scheduleWithFixedDelay(new MyTimerTask(daemonName, daemon), periodInSeconds, periodInSeconds, TimeUnit.SECONDS);
 	}
 
 	/** {@inheritDoc} */
@@ -41,7 +41,7 @@ public final class TimerDaemonPlugin implements DaemonPlugin, Activeable {
 		isActive = false;
 	}
 
-	private static class MyTimerTask extends TimerTask {
+	private static class MyTimerTask implements Runnable {
 
 		private static final Logger LOG = Logger.getLogger(MyTimerTask.class);
 		private final Daemon daemon;
@@ -58,7 +58,7 @@ public final class TimerDaemonPlugin implements DaemonPlugin, Activeable {
 		/** {@inheritDoc} */
 		@Override
 		public void run() {
-			try {
+			try {//try catch needed to ensure execution aren't suppressed
 				LOG.info("Start daemon: " + daemonName);
 				daemon.run();
 				LOG.info("Executio succeeded on daemon: " + daemonName);

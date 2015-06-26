@@ -2,7 +2,7 @@
 <config>
 	<module name="vertigo-commons">
 		<component api="DaemonManager" class="io.vertigo.commons.impl.daemon.DaemonManagerImpl" >
-			<plugin class="io.vertigo.commons.plugins.daemon.timer.TimerDaemonPlugin" />
+			<plugin class="io.vertigo.commons.plugins.daemon.executor.ExecutorDaemonPlugin" />
 		</component>
 	</module>
 </config>
