@@ -26,7 +26,7 @@ public final class ExecutorDaemonPlugin implements DaemonPlugin, Activeable {
 		Assertion.checkNotNull(daemon);
 		Assertion.checkState(isActive, "Le manager n'est pas actif.");
 		// -----
-		scheduler.scheduleWithFixedDelay(new MyTimerTask(daemonName, daemon), periodInSeconds, periodInSeconds, TimeUnit.SECONDS);
+		scheduler.scheduleWithFixedDelay(new MyTimerTask(daemonName, daemon), 0, periodInSeconds, TimeUnit.SECONDS);
 	}
 
 	/** {@inheritDoc} */
@@ -38,6 +38,7 @@ public final class ExecutorDaemonPlugin implements DaemonPlugin, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public void stop() {
+		scheduler.shutdown();
 		isActive = false;
 	}
 

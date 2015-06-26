@@ -32,7 +32,7 @@ public final class DaemonManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertTrue(SimpleDaemon.executions > 0);
 	}
 
-	public static class SimpleDaemon implements Daemon {
+	public static final class SimpleDaemon implements Daemon {
 
 		static int executions = 0;
 
