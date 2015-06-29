@@ -21,7 +21,7 @@ package io.vertigo.dynamo.impl.collections.functions.sort;
 import io.vertigo.dynamo.collections.DtListFunction;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 
 import java.util.ArrayList;
@@ -35,14 +35,14 @@ import java.util.List;
  */
 public final class SortFunction<D extends DtObject> implements DtListFunction<D> {
 	private final SortState sortState;
-	private final PersistenceManager persistenceManager;
+	private final StoreManager storeManager;
 
-	public SortFunction(final SortState sortState, final PersistenceManager persistenceManager) {
-		Assertion.checkNotNull(persistenceManager);
+	public SortFunction(final SortState sortState, final StoreManager storeManager) {
+		Assertion.checkNotNull(storeManager);
 		Assertion.checkNotNull(sortState);
 		//-----
 		this.sortState = sortState;
-		this.persistenceManager = persistenceManager;
+		this.storeManager = storeManager;
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public final class SortFunction<D extends DtObject> implements DtListFunction<D>
 		final List<D> list = new ArrayList<>(dtc);
 
 		//On trie.
-		final Comparator<D> comparator = new DtObjectComparator<>(persistenceManager, dtc.getDefinition(), sortState);
+		final Comparator<D> comparator = new DtObjectComparator<>(storeManager, dtc.getDefinition(), sortState);
 		Collections.sort(list, comparator);
 
 		//On reconstitue la collection.

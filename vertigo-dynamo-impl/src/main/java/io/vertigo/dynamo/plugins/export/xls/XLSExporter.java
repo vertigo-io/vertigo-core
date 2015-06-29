@@ -25,7 +25,7 @@ import io.vertigo.dynamo.export.model.Export;
 import io.vertigo.dynamo.export.model.ExportField;
 import io.vertigo.dynamo.export.model.ExportSheet;
 import io.vertigo.dynamo.impl.export.util.ExportUtil;
-import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
 
@@ -68,12 +68,12 @@ final class XLSExporter {
 	private final Map<DataType, HSSFCellStyle> evenHssfStyleCache = new HashMap<>();
 	private final Map<DataType, HSSFCellStyle> oddHssfStyleCache = new HashMap<>();
 
-	private final PersistenceManager persistenceManager;
+	private final StoreManager storeManager;
 
-	XLSExporter(final PersistenceManager persistenceManagers) {
-		Assertion.checkNotNull(persistenceManagers);
+	XLSExporter(final StoreManager storeManagers) {
+		Assertion.checkNotNull(storeManagers);
 		//-----
-		this.persistenceManager = persistenceManagers;
+		this.storeManager = storeManagers;
 	}
 
 	private static HSSFCellStyle createHeaderCellStyle(final HSSFWorkbook workbook) {
@@ -253,7 +253,7 @@ final class XLSExporter {
 			for (final ExportField exportColumn : parameters.getExportFields()) {
 				final HSSFCell cell = row.createCell(cellIndex);
 
-				value = ExportUtil.getValue(persistenceManager, referenceCache, denormCache, dto, exportColumn);
+				value = ExportUtil.getValue(storeManager, referenceCache, denormCache, dto, exportColumn);
 				putValueInCell(value, cell, rowIndex % 2 == 0 ? evenHssfStyleCache : oddHssfStyleCache, cellIndex, maxWidthPerColumn, exportColumn.getDtField().getDomain().getDataType());
 
 				cellIndex++;
@@ -295,7 +295,7 @@ final class XLSExporter {
 																									// majuscules
 
 			final HSSFCell valueCell = row.createCell(valueCellIndex);
-			value = ExportUtil.getValue(persistenceManager, referenceCache, denormCache, dto, exportColumn);
+			value = ExportUtil.getValue(storeManager, referenceCache, denormCache, dto, exportColumn);
 			putValueInCell(value, valueCell, oddHssfStyleCache, valueCellIndex, maxWidthPerColumn, exportColumn.getDtField().getDomain().getDataType());
 			rowIndex++;
 		}

@@ -38,17 +38,17 @@ import io.vertigo.dynamo.impl.collections.CollectionsManagerImpl;
 import io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl;
 import io.vertigo.dynamo.impl.export.ExportManagerImpl;
 import io.vertigo.dynamo.impl.file.FileManagerImpl;
-import io.vertigo.dynamo.impl.kvdatastore.KVDataStoreManagerImpl;
-import io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl;
+import io.vertigo.dynamo.impl.store.StoreManagerImpl;
+import io.vertigo.dynamo.impl.store.kvstore.KVStoreImpl;
 import io.vertigo.dynamo.impl.task.TaskManagerImpl;
 import io.vertigo.dynamo.kvdatastore.KVDataStoreManager;
-import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
 import io.vertigo.dynamo.plugins.export.pdf.PDFExporterPlugin;
 import io.vertigo.dynamo.plugins.kvdatastore.delayedmemory.DelayedMemoryKVDataStorePlugin;
-import io.vertigo.dynamo.plugins.persistence.datastore.postgresql.PostgreSqlDataStorePlugin;
+import io.vertigo.dynamo.plugins.store.datastore.postgresql.PostgreSqlDataStorePlugin;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.persona.impl.security.VSecurityManagerImpl;
 import io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin;
@@ -107,13 +107,13 @@ public final class MyApp {
 				.beginComponent(CodecManager.class, CodecManagerImpl.class).endComponent()
 				.beginComponent(CollectionsManager.class, CollectionsManagerImpl.class).endComponent()
 				.beginComponent(FileManager.class, FileManagerImpl.class).endComponent()
-				.beginComponent(KVDataStoreManager.class, KVDataStoreManagerImpl.class)
+				.beginComponent(KVDataStoreManager.class, KVStoreImpl.class)
 					.beginPlugin(DelayedMemoryKVDataStorePlugin.class)
 						.addParam("dataStoreName", "UiSecurityStore")
 						.addParam("timeToLiveSeconds", "120")
 					.endPlugin()
 				.endComponent()
-				.beginComponent(PersistenceManager.class, PersistenceManagerImpl.class)
+				.beginComponent(StoreManager.class, StoreManagerImpl.class)
 					.beginPlugin(PostgreSqlDataStorePlugin.class)
 						.addParam("sequencePrefix","SEQ_")
 					.endPlugin()

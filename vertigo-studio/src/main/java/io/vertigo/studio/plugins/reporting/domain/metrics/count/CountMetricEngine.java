@@ -19,7 +19,7 @@
 package io.vertigo.studio.plugins.reporting.domain.metrics.count;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.reporting.Metric;
 import io.vertigo.studio.reporting.MetricBuilder;
@@ -31,13 +31,13 @@ import io.vertigo.studio.reporting.MetricEngine;
  * @author pchretien
  */
 public final class CountMetricEngine implements MetricEngine<DtDefinition> {
-	private final PersistenceManager persistenceManager;
+	private final StoreManager persistenceManager;
 
 	/**
 	 * Constructeur.
 	 * @param persistenceManager Manager de persistance
 	 */
-	public CountMetricEngine(final PersistenceManager persistenceManager) {
+	public CountMetricEngine(final StoreManager persistenceManager) {
 		Assertion.checkNotNull(persistenceManager);
 		//-----
 		this.persistenceManager = persistenceManager;

@@ -25,8 +25,8 @@ import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.persistence.PersistenceManager;
-import io.vertigo.dynamo.persistence.datastore.DataStore;
+import io.vertigo.dynamo.store.StoreManager;
+import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.lang.Assertion;
 
 import java.text.Collator;
@@ -56,11 +56,11 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 
 	/**
 	 * Constructeur.
-	 * @param persistenceManager Manager de persistence
+	 * @param storeManager Manager de persistence
 	 * @param dtDefinition DtDefinition des éléments à comparer
 	 * @param sortState Etat du tri
 	 */
-	DtObjectComparator(final PersistenceManager persistenceManager, final DtDefinition dtDefinition, final SortState sortState) {
+	DtObjectComparator(final StoreManager storeManager, final DtDefinition dtDefinition, final SortState sortState) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(sortState);
 		//-----
@@ -69,11 +69,11 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 		this.sortField = dtDefinition.getField(sortState.getFieldName());
 
 		//On regarde si on est sur une ForeignKey et sur une MasterDataList
-		if (sortField.getType() == FieldType.FOREIGN_KEY && persistenceManager.getMasterDataConfig().containsMasterData(sortField.getFkDtDefinition())) {
+		if (sortField.getType() == FieldType.FOREIGN_KEY && storeManager.getMasterDataConfig().containsMasterData(sortField.getFkDtDefinition())) {
 			//Il existe une Liste de référence associée
 			//Dans le cas des liste de référence on délégue la comparaison
-			final DtListURIForMasterData mdlUri = persistenceManager.getMasterDataConfig().getDtListURIForMasterData(sortField.getFkDtDefinition());
-			this.comparator = createMasterDataComparator(sortState, persistenceManager, mdlUri, sortState);
+			final DtListURIForMasterData mdlUri = storeManager.getMasterDataConfig().getDtListURIForMasterData(sortField.getFkDtDefinition());
+			this.comparator = createMasterDataComparator(sortState, storeManager, mdlUri, sortState);
 		} else {
 			//Cas par défaut
 			this.comparator = createDefaultComparator(sortState);
@@ -143,12 +143,12 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 	 * @param sortStateParam Etat du tri
 	 * @return Comparator à utiliser pour trier la colonne.
 	 */
-	private static Comparator<Object> createMasterDataComparator(final SortState sortState, final PersistenceManager persistenceManager, final DtListURIForMasterData dtcURIForMasterData, final SortState sortStateParam) {
-		Assertion.checkNotNull(persistenceManager);
+	private static Comparator<Object> createMasterDataComparator(final SortState sortState, final StoreManager storeManager, final DtListURIForMasterData dtcURIForMasterData, final SortState sortStateParam) {
+		Assertion.checkNotNull(storeManager);
 		Assertion.checkNotNull(dtcURIForMasterData);
 		Assertion.checkNotNull(sortStateParam);
 		//-----
-		final DataStore broker = persistenceManager.getDataStore();
+		final DataStore broker = storeManager.getDataStore();
 		//		final Store store = getPhysicalStore(masterDataDefinition.getDtDefinition());
 		final DtField mdFieldSort = dtcURIForMasterData.getDtDefinition().getSortField().get();
 		return new Comparator<Object>() {

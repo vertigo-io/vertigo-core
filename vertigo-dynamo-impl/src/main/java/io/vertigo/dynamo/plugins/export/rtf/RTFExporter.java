@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.export.rtf;
 
-import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.plugins.export.pdfrtf.AbstractExporterIText;
+import io.vertigo.dynamo.store.StoreManager;
 
 import java.io.OutputStream;
 
@@ -45,8 +45,8 @@ final class RTFExporter extends AbstractExporterIText {
 	// l'implémentation de ExportHandlerRTF est majoritairement commune avec
 	// ExportHandlerPDF
 
-	RTFExporter(final PersistenceManager persistenceManager) {
-		super(persistenceManager);
+	RTFExporter(final StoreManager storeManager) {
+		super(storeManager);
 	}
 
 	/** {@inheritDoc} */

@@ -22,7 +22,7 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.export.model.Export;
 import io.vertigo.dynamo.export.model.ExportFormat;
 import io.vertigo.dynamo.impl.export.ExporterPlugin;
-import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 
 import java.io.IOException;
@@ -37,7 +37,7 @@ import javax.inject.Inject;
  */
 public final class CSVExporterPlugin implements ExporterPlugin {
 	private final CodecManager codecManager;
-	private final PersistenceManager persistenceManager;
+	private final StoreManager storeManager;
 
 	/**
 	 * Constructeur.
@@ -45,17 +45,18 @@ public final class CSVExporterPlugin implements ExporterPlugin {
 	 * @param codecManager Manager des mécanismes de codage/décodage.
 	 */
 	@Inject
-	public CSVExporterPlugin(final PersistenceManager persistenceManager, final CodecManager codecManager) {
+	public CSVExporterPlugin(final StoreManager storeManager, final CodecManager codecManager) {
+		Assertion.checkNotNull(storeManager);
 		Assertion.checkNotNull(codecManager);
 		//-----
 		this.codecManager = codecManager;
-		this.persistenceManager = persistenceManager;
+		this.storeManager = storeManager;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void exportData(final Export export, final OutputStream out) throws IOException {
-		new CSVExporter(codecManager, persistenceManager).exportData(export, out);
+		new CSVExporter(codecManager, storeManager).exportData(export, out);
 	}
 
 	/** {@inheritDoc} */

@@ -28,7 +28,7 @@ import io.vertigo.dynamo.domain.stereotype.AssociationNN;
 import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamock.domain.car.Car;
 
 /**
@@ -124,7 +124,7 @@ public final class Famille implements DtObject {
 		//-----
 		// On est toujours dans un mode lazy.
 		if (voituresFamille == null) {
-			voituresFamille = io.vertigo.core.Home.getComponentSpace().resolve(PersistenceManager.class).getDataStore().getList(fkDtListURI);
+			voituresFamille = io.vertigo.core.Home.getComponentSpace().resolve(StoreManager.class).getDataStore().getList(fkDtListURI);
 		}
 		return voituresFamille;
 	}
@@ -152,7 +152,7 @@ public final class Famille implements DtObject {
 		//-----
 		// On est toujours dans un mode lazy.
 		if (voituresLocation == null) {
-			voituresLocation = io.vertigo.core.Home.getComponentSpace().resolve(PersistenceManager.class).getDataStore().getList(fkDtListURI);
+			voituresLocation = io.vertigo.core.Home.getComponentSpace().resolve(StoreManager.class).getDataStore().getList(fkDtListURI);
 		}
 		return voituresLocation;
 	}

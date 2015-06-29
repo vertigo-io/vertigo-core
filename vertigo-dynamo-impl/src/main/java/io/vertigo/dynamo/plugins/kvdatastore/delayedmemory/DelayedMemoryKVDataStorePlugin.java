@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.kvdatastore.delayedmemory;
 
-import io.vertigo.dynamo.impl.kvdatastore.KVDataStorePlugin;
+import io.vertigo.dynamo.impl.store.kvstore.KVDataStorePlugin;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;

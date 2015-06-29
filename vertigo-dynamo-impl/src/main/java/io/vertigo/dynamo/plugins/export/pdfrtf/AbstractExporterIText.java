@@ -24,7 +24,7 @@ import io.vertigo.dynamo.export.model.Export;
 import io.vertigo.dynamo.export.model.ExportField;
 import io.vertigo.dynamo.export.model.ExportSheet;
 import io.vertigo.dynamo.impl.export.util.ExportUtil;
-import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 
 import java.awt.Color;
@@ -53,12 +53,12 @@ public abstract class AbstractExporterIText {
 	private final Map<DtField, Map<Object, String>> referenceCache = new HashMap<>();
 	private final Map<DtField, Map<Object, String>> denormCache = new HashMap<>();
 
-	private final PersistenceManager persistenceManager;
+	private final StoreManager storeManager;
 
-	protected AbstractExporterIText(final PersistenceManager persistenceManager) {
-		Assertion.checkNotNull(persistenceManager);
+	protected AbstractExporterIText(final StoreManager storeManager) {
+		Assertion.checkNotNull(storeManager);
 		//-----
-		this.persistenceManager = persistenceManager;
+		this.storeManager = storeManager;
 	}
 
 	/**
@@ -163,7 +163,7 @@ public abstract class AbstractExporterIText {
 			}
 			datatable.getDefaultCell().setHorizontalAlignment(horizontalAlignement);
 
-			String text = ExportUtil.getText(persistenceManager, referenceCache, denormCache, exportSheet.getDtObject(), exportColumn);
+			String text = ExportUtil.getText(storeManager, referenceCache, denormCache, exportSheet.getDtObject(), exportColumn);
 			if (text == null) {
 				text = "";
 			}
@@ -225,7 +225,7 @@ public abstract class AbstractExporterIText {
 				}
 				datatable.getDefaultCell().setHorizontalAlignment(horizontalAlignement);
 
-				String text = ExportUtil.getText(persistenceManager, referenceCache, denormCache, dto, exportColumn);
+				String text = ExportUtil.getText(storeManager, referenceCache, denormCache, dto, exportColumn);
 				if (text == null) {
 					text = "";
 				}
