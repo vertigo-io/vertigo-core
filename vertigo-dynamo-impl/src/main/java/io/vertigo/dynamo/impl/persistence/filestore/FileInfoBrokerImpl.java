@@ -21,7 +21,7 @@ package io.vertigo.dynamo.impl.persistence.filestore;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.impl.persistence.filestore.logical.LogicalFileStore;
-import io.vertigo.dynamo.persistence.filestore.FileInfoBroker;
+import io.vertigo.dynamo.persistence.filestore.FileStore;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -31,7 +31,7 @@ import io.vertigo.lang.Assertion;
  * alors que le broker se concentre sur la problématique des accès aux ressources.
  * @author pchretien
  */
-public final class FileInfoBrokerImpl implements FileInfoBroker {
+public final class FileInfoBrokerImpl implements FileStore {
 	private final FileStore fileStore;
 
 	/**

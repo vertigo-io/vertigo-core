@@ -29,8 +29,8 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.persistence.datastore.cache.CacheDataStore;
 import io.vertigo.dynamo.impl.persistence.datastore.logical.LogicalDataStoreConfig;
 import io.vertigo.dynamo.persistence.PersistenceManager;
-import io.vertigo.dynamo.persistence.datastore.Broker;
 import io.vertigo.dynamo.persistence.datastore.DataStore;
+import io.vertigo.dynamo.persistence.datastore.DataStorePlugin;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionResourceId;
 import io.vertigo.lang.Assertion;
@@ -42,7 +42,7 @@ import io.vertigo.lang.Assertion;
  * alors que le broker se concentre sur la problématique des accès aux ressources.
  * @author pchretien
  */
-public final class BrokerImpl implements Broker {
+public final class BrokerImpl implements DataStore {
 	/** Le store est le point d'accès unique à la base (sql, xml, fichier plat...). */
 	private final CacheDataStore cacheDataStore;
 	private final LogicalDataStoreConfig logicalStoreConfig;
@@ -64,7 +64,7 @@ public final class BrokerImpl implements Broker {
 		eventsManager = brokerConfig.getEventsManager();
 	}
 
-	private DataStore getPhysicalStore(final DtDefinition dtDefinition) {
+	private DataStorePlugin getPhysicalStore(final DtDefinition dtDefinition) {
 		return logicalStoreConfig.getPhysicalDataStore(dtDefinition);
 	}
 

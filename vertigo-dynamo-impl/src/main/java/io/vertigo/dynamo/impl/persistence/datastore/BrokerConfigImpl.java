@@ -25,7 +25,7 @@ import io.vertigo.dynamo.impl.persistence.datastore.cache.CacheDataStoreConfig;
 import io.vertigo.dynamo.impl.persistence.datastore.logical.LogicalDataStoreConfig;
 import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.persistence.datastore.BrokerConfig;
-import io.vertigo.dynamo.persistence.datastore.DataStore;
+import io.vertigo.dynamo.persistence.datastore.DataStorePlugin;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -94,7 +94,7 @@ public final class BrokerConfigImpl implements BrokerConfig {
 	}
 
 	@Override
-	public void register(final DtDefinition dtDefinition, final DataStore specificStore) {
+	public void register(final DtDefinition dtDefinition, final DataStorePlugin specificStore) {
 		logicalDataStoreConfig.register(dtDefinition, specificStore);
 	}
 }

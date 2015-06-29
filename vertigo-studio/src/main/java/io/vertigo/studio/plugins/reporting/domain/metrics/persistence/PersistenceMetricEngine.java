@@ -70,7 +70,7 @@ public final class PersistenceMetricEngine implements MetricEngine<DtDefinition>
 			return true;
 		}
 		try {
-			persistenceManager.getBroker().getList(new DtListURIForCriteria<>(dtDefinition, null, 1));
+			persistenceManager.getDataStore().getList(new DtListURIForCriteria<>(dtDefinition, null, 1));
 			return true;
 		} catch (final Exception e) {
 			return false;

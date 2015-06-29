@@ -23,18 +23,18 @@ import io.vertigo.commons.event.EventManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.impl.persistence.datastore.BrokerConfigImpl;
 import io.vertigo.dynamo.impl.persistence.datastore.BrokerImpl;
-import io.vertigo.dynamo.impl.persistence.datastore.DataStorePlugin;
 import io.vertigo.dynamo.impl.persistence.datastore.MasterDataConfigImpl;
 import io.vertigo.dynamo.impl.persistence.filestore.FileBrokerConfig;
 import io.vertigo.dynamo.impl.persistence.filestore.FileInfoBrokerImpl;
 import io.vertigo.dynamo.impl.persistence.filestore.FileStorePlugin;
 import io.vertigo.dynamo.impl.persistence.util.BrokerNNImpl;
 import io.vertigo.dynamo.persistence.PersistenceManager;
-import io.vertigo.dynamo.persistence.datastore.Broker;
+import io.vertigo.dynamo.persistence.datastore.DataStore;
 import io.vertigo.dynamo.persistence.datastore.BrokerConfig;
 import io.vertigo.dynamo.persistence.datastore.BrokerNN;
+import io.vertigo.dynamo.persistence.datastore.DataStorePlugin;
 import io.vertigo.dynamo.persistence.datastore.MasterDataConfig;
-import io.vertigo.dynamo.persistence.filestore.FileInfoBroker;
+import io.vertigo.dynamo.persistence.filestore.FileStore;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
@@ -50,8 +50,8 @@ public final class PersistenceManagerImpl implements PersistenceManager {
 	private final MasterDataConfig masterDataConfig;
 	private final BrokerConfigImpl brokerConfig;
 	/** Broker des objets métier et des listes. */
-	private final Broker broker;
-	private final FileInfoBroker fileInfoBroker;
+	private final DataStore broker;
+	private final FileStore fileInfoBroker;
 	private final BrokerNN brokerNN;
 
 	/**
@@ -78,7 +78,7 @@ public final class PersistenceManagerImpl implements PersistenceManager {
 		fileInfoBroker = createFileInfoBroker(fileStorePlugin);
 	}
 
-	private static FileInfoBroker createFileInfoBroker(final Option<FileStorePlugin> fileStorePlugin) {
+	private static FileStore createFileInfoBroker(final Option<FileStorePlugin> fileStorePlugin) {
 		final FileBrokerConfig fileBrokerConfiguration = new FileBrokerConfig();
 		//On enregistre le plugin de gestion des fichiers : facultatif
 		if (fileStorePlugin.isDefined()) {
@@ -103,13 +103,13 @@ public final class PersistenceManagerImpl implements PersistenceManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public Broker getBroker() {
+	public DataStore getDataStore() {
 		return broker;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public FileInfoBroker getFileInfoBroker() {
+	public FileStore getFileStore() {
 		return fileInfoBroker;
 	}
 

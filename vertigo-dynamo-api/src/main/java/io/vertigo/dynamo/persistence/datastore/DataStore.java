@@ -19,71 +19,66 @@
 package io.vertigo.dynamo.persistence.datastore;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
-import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
+import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 
 /**
- * Objet permettant de gérer les accès aux systèmes de stockage.
+ * Un objet est automatiquement géré par le broker.
+ * Les méthodes de mises à jour lacent des erreurs utilisateurs et techniques.
+ * Les méthodes d'accès aux données ne lancent que des erreurs techniques.
  *
- * @author pchretien
+ * @author  pchretien
  */
 public interface DataStore {
-	//==========================================================================
-	//=============================== READ =====================================
-	//==========================================================================
-
 	/**
-	 * Nombre d'éléments.
+	 * Nombre d'éléments présents dans le sysème de persistance.
 	 * @param dtDefinition Définition de DT
 	 * @return Nombre d'éléments.
 	 */
 	int count(final DtDefinition dtDefinition);
 
 	/**
-	 * Récupération de l'objet correspondant à l'URI fournie.
-	 * Peut-être null.
+	 * Récupération d'un objet persistant par son URI.
+	 * Lorsque l'objet est en lecture seule il est possible d'accéder au objets partagés. (Liste de référence paér ex)
+	 * L'objet doit exister.
 	 *
-	 * @param uri URI de l'objet à charger
-	 * @return D correspondant à l'URI fournie.
 	 * @param <D> Type de l'objet
+	 * @param uri Uri de l'object
+	 * @return object récupéré NOT NULL
 	 */
-	<D extends DtObject> D load(DtDefinition dtDefinition, URI<D> uri);
+	<D extends DtObject> D get(final URI<D> uri);
 
 	/**
-	 * Récupération d'une liste correspondant à l'URI fournie.
-	 * NOT NULL
+	 * Récupération d'une liste identifiée par son URI.
 	 *
-	 * @param uri URI de la collection à charger
-	 * @return DtList<D> Liste correspondant à l'URI fournie
-	 * @param <D> Type de l'objet
+	 * @param <D> Type des objets de la collection
+	 * @param uri URI de la collection à récupérer
+	 * @return DtList DTC
 	 */
-	<D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri);
+	<D extends DtObject> DtList<D> getList(final DtListURI uri);
 
-	<D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri);
+	/**
+	 * Mark element for update, and ensure non concurrency.
+	 * @param uri URI of object
+	 */
+	void workOn(URI<? extends DtObject> uri);
 
-	<D extends DtObject> DtList<D> loadList(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri);
-
-	//==========================================================================
-	//=============================== WRITE ====================================
-	//==========================================================================
 	/**
 	* Create an object.
 	* No object with the same id must have been created previously.
 	*
 	* @param dto Object to create
 	*/
-	void create(DtDefinition dtDefinition, DtObject dto);
+	void create(DtObject dto);
 
 	/**
 	* Update an object.
 	* This object must have an id.
 	* @param dto Object to update
 	*/
-	void update(DtDefinition dtDefinition, DtObject dto);
+	void update(DtObject dto);
 
 	/**
 	* Merge an object.
@@ -94,19 +89,13 @@ public interface DataStore {
 	*
 	* @param dto Object to merge
 	*/
-	void merge(DtDefinition dtDefinition, DtObject dto);
+	void merge(DtObject dto);
 
 	/**
-	 * Suppression d'un objet.
-	 * @param uri URI de l'objet à supprimmer
+	 * Destruction d'un objet persistant par son URI.
+	 *
+	 * @param uri URI de l'objet à supprimer
 	 */
-	void delete(DtDefinition dtDefinition, URI uri);
-
-	/**
-	 * Lock for update.
-	 * @param dtDefinition Object's definition
-	 * @param uri Object's uri
-	 */
-	void lockForUpdate(DtDefinition dtDefinition, URI uri);
+	void delete(URI<? extends DtObject> uri);
 
 }

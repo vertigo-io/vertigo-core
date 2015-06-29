@@ -40,5 +40,5 @@ public interface BrokerConfig {
 	 * @param dtDefinition Définition de DT
 	 * @param specificStore Store spécifique
 	 */
-	void register(final DtDefinition dtDefinition, final DataStore specificStore);
+	void register(final DtDefinition dtDefinition, final DataStorePlugin specificStore);
 }

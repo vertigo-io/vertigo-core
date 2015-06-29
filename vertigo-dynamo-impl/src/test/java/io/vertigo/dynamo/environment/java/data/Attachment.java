@@ -119,7 +119,7 @@ public final class Attachment implements DtObject {
 			}
 		}
 		if (command == null) {
-			command = io.vertigo.core.Home.getComponentSpace().resolve(io.vertigo.dynamo.persistence.PersistenceManager.class).getBroker().get(fkURI);
+			command = io.vertigo.core.Home.getComponentSpace().resolve(io.vertigo.dynamo.persistence.PersistenceManager.class).getDataStore().get(fkURI);
 		}
 		return command;
 	}

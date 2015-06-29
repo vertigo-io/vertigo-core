@@ -26,7 +26,7 @@ import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.persistence.PersistenceManager;
-import io.vertigo.dynamo.persistence.datastore.Broker;
+import io.vertigo.dynamo.persistence.datastore.DataStore;
 import io.vertigo.lang.Assertion;
 
 import java.text.Collator;
@@ -148,7 +148,7 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 		Assertion.checkNotNull(dtcURIForMasterData);
 		Assertion.checkNotNull(sortStateParam);
 		//-----
-		final Broker broker = persistenceManager.getBroker();
+		final DataStore broker = persistenceManager.getDataStore();
 		//		final Store store = getPhysicalStore(masterDataDefinition.getDtDefinition());
 		final DtField mdFieldSort = dtcURIForMasterData.getDtDefinition().getSortField().get();
 		return new Comparator<Object>() {

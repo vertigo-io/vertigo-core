@@ -81,12 +81,12 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 	public FileInfo load(final FileInfoURI fileInfoUri) {
 		// Ramène FileMetada
 		final URI<DtObject> dtoMetaDataUri = createMetaDataURI(fileInfoUri);
-		final DtObject fileMetadataDto = getPersistenceManager().getBroker().get(dtoMetaDataUri);
+		final DtObject fileMetadataDto = getPersistenceManager().getDataStore().get(dtoMetaDataUri);
 		final Object fdtId = TwoTablesDbFileStorePlugin.<Object> getValue(fileMetadataDto, DtoFields.FDT_ID);
 
 		// Ramène FileData
 		final URI<DtObject> dtoDataUri = createDataURI(fileInfoUri.<FileInfoDefinition> getDefinition(), fdtId);
-		final DtObject fileDataDto = getPersistenceManager().getBroker().get(dtoDataUri);
+		final DtObject fileDataDto = getPersistenceManager().getDataStore().get(dtoDataUri);
 		// Construction du vFile.
 		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder((DataStream) getValue(fileDataDto, DtoFields.FILE_DATA));
 		final String fileName = (String) getValue(fileMetadataDto, DtoFields.FILE_NAME);
@@ -110,9 +110,9 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 		final DtObject fileMetadataDto = createMetadataDtObject(fileInfo);
 		final DtObject fileDataDto = createDataDtObject(fileInfo);
 		//-----
-		getPersistenceManager().getBroker().create(fileDataDto);
+		getPersistenceManager().getDataStore().create(fileDataDto);
 		setValue(fileMetadataDto, DtoFields.FDT_ID, DtObjectUtil.getId(fileDataDto));
-		getPersistenceManager().getBroker().create(fileMetadataDto);
+		getPersistenceManager().getDataStore().create(fileMetadataDto);
 		final FileInfoURI fileInfoUri = createURI(fileInfo.getDefinition(), DtObjectUtil.getId(fileMetadataDto));
 		fileInfo.setURIStored(fileInfoUri);
 	}
@@ -129,12 +129,12 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 		setValue(fileMetadataDto, DtoFields.FMD_ID, fileInfo.getURI().getKey());
 		// Chargement du FDT_ID
 		final URI<DtObject> dtoMetaDataUri = createMetaDataURI(fileInfo.getURI());
-		final DtObject fileMetadataDtoOld = getPersistenceManager().getBroker().get(dtoMetaDataUri);
+		final DtObject fileMetadataDtoOld = getPersistenceManager().getDataStore().get(dtoMetaDataUri);
 		final Object fdtId = TwoTablesDbFileStorePlugin.<Object> getValue(fileMetadataDtoOld, DtoFields.FDT_ID);
 		setValue(fileMetadataDto, DtoFields.FDT_ID, fdtId);
 		setValue(fileDataDto, DtoFields.FDT_ID, fdtId);
-		getPersistenceManager().getBroker().update(fileDataDto);
-		getPersistenceManager().getBroker().update(fileMetadataDto);
+		getPersistenceManager().getDataStore().update(fileDataDto);
+		getPersistenceManager().getDataStore().update(fileMetadataDto);
 	}
 
 	private static FileInfoURI createURI(final FileInfoDefinition fileInfoDefinition, final Object key) {
@@ -147,12 +147,12 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 		//-----
 		final URI<DtObject> dtoMetaDataUri = createMetaDataURI(fileInfoUri);
-		final DtObject fileMetadataDtoOld = getPersistenceManager().getBroker().get(dtoMetaDataUri);
+		final DtObject fileMetadataDtoOld = getPersistenceManager().getDataStore().get(dtoMetaDataUri);
 		final Object fdtId = TwoTablesDbFileStorePlugin.<Object> getValue(fileMetadataDtoOld, DtoFields.FDT_ID);
 		final URI<DtObject> dtoDataUri = createDataURI(fileInfoUri.getDefinition(), fdtId);
 
-		getPersistenceManager().getBroker().delete(dtoDataUri);
-		getPersistenceManager().getBroker().delete(dtoMetaDataUri);
+		getPersistenceManager().getDataStore().delete(dtoDataUri);
+		getPersistenceManager().getDataStore().delete(dtoMetaDataUri);
 	}
 
 	/**

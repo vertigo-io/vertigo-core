@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.impl.persistence.datastore.logical;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.persistence.datastore.DataStore;
+import io.vertigo.dynamo.persistence.datastore.DataStorePlugin;
 import io.vertigo.lang.Assertion;
 
 import java.util.HashMap;
@@ -31,21 +31,21 @@ import java.util.Map;
  */
 public final class LogicalDataStoreConfig {
 	/** Store physique par défaut. */
-	private DataStore defaultDataStore;
+	private DataStorePlugin defaultDataStore;
 
 	/** Map des stores utilisés spécifiquement pour certains DT */
-	private final Map<DtDefinition, DataStore> dataStores = new HashMap<>();
+	private final Map<DtDefinition, DataStorePlugin> dataStores = new HashMap<>();
 
 	/**
 	 * Fournit un store adpaté au type de l'objet.
 	 * @param definition Définition
 	 * @return Store utilisé pour cette definition
 	 */
-	public DataStore getPhysicalDataStore(final DtDefinition definition) {
+	public DataStorePlugin getPhysicalDataStore(final DtDefinition definition) {
 		Assertion.checkNotNull(definition);
 		//-----
 		//On regarde si il existe un store enregistré spécifiquement pour cette Definition
-		DataStore dataStore = dataStores.get(definition);
+		DataStorePlugin dataStore = dataStores.get(definition);
 
 		dataStore = dataStore == null ? defaultDataStore : dataStore;
 		Assertion.checkNotNull(dataStore, "Aucun store trouvé pour la définition '{0}'", definition.getName());
@@ -57,7 +57,7 @@ public final class LogicalDataStoreConfig {
 	 * @param definition Définition
 	 * @param dataStore Store spécifique
 	 */
-	public void register(final DtDefinition definition, final DataStore dataStore) {
+	public void register(final DtDefinition definition, final DataStorePlugin dataStore) {
 		//check();
 		Assertion.checkNotNull(definition);
 		Assertion.checkNotNull(dataStore);
@@ -66,10 +66,10 @@ public final class LogicalDataStoreConfig {
 		dataStores.put(definition, dataStore);
 	}
 
-	public void registerDefault(final DataStore dataStore) {
-		Assertion.checkNotNull(dataStore);
+	public void registerDefault(final DataStorePlugin dataStorePlugin) {
+		Assertion.checkNotNull(dataStorePlugin);
 		Assertion.checkState(defaultDataStore == null, "defaultStore deja initialisé");
 		//-----
-		defaultDataStore = dataStore;
+		defaultDataStore = dataStorePlugin;
 	}
 }

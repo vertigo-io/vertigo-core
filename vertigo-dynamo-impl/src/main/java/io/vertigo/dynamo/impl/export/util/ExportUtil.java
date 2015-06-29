@@ -105,7 +105,7 @@ public final class ExportUtil {
 		// La collection n'est pas précisé alors on va la chercher dans le
 		// repository du référentiel
 		final DtListURIForMasterData mdlUri = persistenceManager.getMasterDataConfig().getDtListURIForMasterData(dtField.getFkDtDefinition());
-		final DtList<DtObject> valueList = persistenceManager.getBroker().getList(mdlUri);
+		final DtList<DtObject> valueList = persistenceManager.getDataStore().getList(mdlUri);
 		final DtField dtFieldDisplay = mdlUri.getDtDefinition().getDisplayField().get();
 		final DtField dtFieldKey = valueList.getDefinition().getIdField().get();
 		return createDenormIndex(valueList, dtFieldKey, dtFieldDisplay);

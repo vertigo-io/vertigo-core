@@ -20,11 +20,11 @@ package io.vertigo.dynamo.persistence;
 
 import io.vertigo.commons.event.EventChannel;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.persistence.datastore.Broker;
+import io.vertigo.dynamo.persistence.datastore.DataStore;
 import io.vertigo.dynamo.persistence.datastore.BrokerConfig;
 import io.vertigo.dynamo.persistence.datastore.BrokerNN;
 import io.vertigo.dynamo.persistence.datastore.MasterDataConfig;
-import io.vertigo.dynamo.persistence.filestore.FileInfoBroker;
+import io.vertigo.dynamo.persistence.filestore.FileStore;
 import io.vertigo.lang.Component;
 
 /**
@@ -46,12 +46,12 @@ public interface PersistenceManager extends Component {
 	/**
 	 * @return Broker d'objets métier
 	 */
-	FileInfoBroker getFileInfoBroker();
+	FileStore getFileStore();
 
 	/**
 	 * @return Broker d'objets métier
 	 */
-	Broker getBroker();
+	DataStore getDataStore();
 
 	BrokerNN getBrokerNN();
 

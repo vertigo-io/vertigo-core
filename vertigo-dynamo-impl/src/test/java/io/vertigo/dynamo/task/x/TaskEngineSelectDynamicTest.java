@@ -80,7 +80,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			for (int i = 0; i < size; i++) {
 				final SuperHero superHero = new SuperHero();
 				superHero.setName("SuperHero ( " + i + ")");
-				persistenceManager.getBroker().create(superHero);
+				persistenceManager.getDataStore().create(superHero);
 			}
 			transaction.commit();
 		}

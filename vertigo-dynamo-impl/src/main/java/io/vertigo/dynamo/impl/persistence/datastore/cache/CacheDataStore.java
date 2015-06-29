@@ -30,7 +30,7 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.persistence.datastore.BrokerConfigImpl;
 import io.vertigo.dynamo.impl.persistence.datastore.logical.LogicalDataStoreConfig;
 import io.vertigo.dynamo.persistence.PersistenceManager;
-import io.vertigo.dynamo.persistence.datastore.DataStore;
+import io.vertigo.dynamo.persistence.datastore.DataStorePlugin;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -59,7 +59,7 @@ public final class CacheDataStore {
 		brokerConfig.getEventsManager().register(PersistenceManager.FiredEvent.storeDelete, cacheClearEventListener);
 	}
 
-	private DataStore getPhysicalStore(final DtDefinition dtDefinition) {
+	private DataStorePlugin getPhysicalStore(final DtDefinition dtDefinition) {
 		return logicalStoreConfig.getPhysicalDataStore(dtDefinition);
 	}
 

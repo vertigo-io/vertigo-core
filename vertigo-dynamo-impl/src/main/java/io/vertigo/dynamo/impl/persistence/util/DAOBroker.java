@@ -29,7 +29,7 @@ import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.persistence.criteria.Criteria;
 import io.vertigo.dynamo.persistence.criteria.FilterCriteria;
 import io.vertigo.dynamo.persistence.criteria.FilterCriteriaBuilder;
-import io.vertigo.dynamo.persistence.datastore.Broker;
+import io.vertigo.dynamo.persistence.datastore.DataStore;
 import io.vertigo.dynamo.persistence.datastore.BrokerBatch;
 import io.vertigo.dynamo.persistence.datastore.BrokerNN;
 import io.vertigo.dynamo.task.TaskManager;
@@ -51,7 +51,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 
 	/** DT de l'objet dont on gére le CRUD. */
 	private final DtDefinition dtDefinition;
-	protected final Broker broker;
+	protected final DataStore broker;
 	private final BrokerNN brokerNN;
 	private final BrokerBatch<D, P> brokerBatch;
 	private final TaskManager taskManager;
@@ -79,7 +79,7 @@ public class DAOBroker<D extends DtObject, P> implements BrokerNN, BrokerBatch<D
 		Assertion.checkNotNull(persistenceManager);
 		Assertion.checkNotNull(taskManager);
 		//-----
-		broker = persistenceManager.getBroker();
+		broker = persistenceManager.getDataStore();
 		brokerNN = persistenceManager.getBrokerNN();
 		this.dtDefinition = dtDefinition;
 		brokerBatch = new BrokerBatchImpl<>(dtDefinition, taskManager);

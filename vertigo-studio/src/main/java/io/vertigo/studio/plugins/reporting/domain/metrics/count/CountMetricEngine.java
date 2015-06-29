@@ -59,7 +59,7 @@ public final class CountMetricEngine implements MetricEngine<DtDefinition> {
 		}
 		//Dans le cas ou DT est persistant on compte le nombre de lignes.
 		try {
-			final int count = persistenceManager.getBroker().count(dtDefinition);
+			final int count = persistenceManager.getDataStore().count(dtDefinition);
 			return metricBuilder
 					.withStatus(Metric.Status.Executed)
 					.withValue(count)

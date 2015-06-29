@@ -28,7 +28,7 @@ import io.vertigo.dynamo.file.model.FileInfo;
  *
  * @author  pchretien
  */
-public interface FileInfoBroker {
+public interface FileStore {
 
 	/**
 	 * @param fileInfo File to save
