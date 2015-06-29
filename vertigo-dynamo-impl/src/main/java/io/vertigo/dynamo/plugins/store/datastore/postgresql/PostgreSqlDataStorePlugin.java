@@ -71,8 +71,8 @@ public final class PostgreSqlDataStorePlugin extends AbstractSqlDataStorePlugin 
 		String separator = "";
 		for (final DtField dtField : dtDefinition.getFields()) {
 			if (dtField.isPersistent()) {
-				request.append(separator);
-				request.append(dtField.getName());
+				request.append(separator)
+						.append(dtField.getName());
 				separator = ", ";
 			}
 		}

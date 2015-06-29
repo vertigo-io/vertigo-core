@@ -51,7 +51,7 @@ import io.vertigo.dynamo.search.multiindex.SearchManagerMultiIndexTest;
 import io.vertigo.dynamo.search.standard.SearchManagerTest;
 import io.vertigo.dynamo.store.direct.StoreManagerTest;
 import io.vertigo.dynamo.store.jpa.JpaStoreManagerTest;
-import io.vertigo.dynamo.store.kvstore.KVDataStoreManagerTest;
+import io.vertigo.dynamo.store.kvstore.KVStoreManagerTest;
 import io.vertigo.dynamo.task.TaskManagerTest;
 import io.vertigo.dynamo.task.x.TaskEngineSelectDynamicTest;
 import io.vertigo.dynamo.transaction.VTransactionManagerTest;
@@ -83,7 +83,7 @@ import org.junit.runners.Suite.SuiteClasses;
 		//--file
 		FileManagerTest.class,
 		//--kvdatastore
-		KVDataStoreManagerTest.class,
+		KVStoreManagerTest.class,
 		//--persistence
 		StoreManagerTest.class, JpaStoreManagerTest.class,
 		//--task

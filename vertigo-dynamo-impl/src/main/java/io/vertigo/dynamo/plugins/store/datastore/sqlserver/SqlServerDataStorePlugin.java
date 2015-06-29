@@ -76,8 +76,8 @@ public final class SqlServerDataStorePlugin extends AbstractSqlDataStorePlugin {
 
 		for (final DtField dtField : dtDefinition.getFields()) {
 			if (dtField.isPersistent() && dtField.getType() != DtField.FieldType.PRIMARY_KEY) {
-				request.append(separator);
-				request.append(dtField.getName());
+				request.append(separator)
+						.append(dtField.getName());
 				separator = ", ";
 			}
 		}

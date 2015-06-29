@@ -37,7 +37,7 @@ import org.junit.Test;
 /**
  * @author pchretien
  */
-public final class KVDataStoreManagerTest extends AbstractTestCaseJU4 {
+public final class KVStoreManagerTest extends AbstractTestCaseJU4 {
 	private static final String DEFAULT_DATA_STORE_NAME = "default";
 	@Inject
 	private StoreManager storeManager;

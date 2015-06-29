@@ -29,13 +29,13 @@ import io.vertigo.dynamo.file.model.FileInfo;
  * @author  pchretien
  */
 public interface FileStore {
-
-	/**
-	 * @param fileInfo File to save
-	 * @deprecated Use create or update instead. Will be removed in next version.
-	 */
-	@Deprecated
-	void save(FileInfo fileInfo);
+	//
+	//	/**
+	//	 * @param fileInfo File to save
+	//	 * @deprecated Use create or update instead. Will be removed in next version.
+	//	 */
+	//	@Deprecated
+	//	void save(FileInfo fileInfo);
 
 	/**
 	 * Create a new File.

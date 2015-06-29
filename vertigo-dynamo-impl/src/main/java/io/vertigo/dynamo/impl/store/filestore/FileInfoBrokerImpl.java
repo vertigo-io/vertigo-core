@@ -45,19 +45,19 @@ public final class FileInfoBrokerImpl implements FileStore {
 		fileStore = new LogicalFileStore(fileBrokerConfiguration.getLogicalFileStoreConfiguration());
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	@Deprecated
-	public void save(final FileInfo fileInfo) {
-		Assertion.checkNotNull(fileInfo);
-		//-----
-
-		if (fileInfo.getURI() == null) {
-			create(fileInfo);
-		} else {
-			update(fileInfo);
-		}
-	}
+	//	/** {@inheritDoc} */
+	//	@Override
+	//	@Deprecated
+	//	public void save(final FileInfo fileInfo) {
+	//		Assertion.checkNotNull(fileInfo);
+	//		//-----
+	//
+	//		if (fileInfo.getURI() == null) {
+	//			create(fileInfo);
+	//		} else {
+	//			update(fileInfo);
+	//		}
+	//	}
 
 	/** {@inheritDoc} */
 	@Override
