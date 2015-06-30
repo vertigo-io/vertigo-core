@@ -25,7 +25,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
@@ -51,7 +51,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 	/**
 	 * Accès au persistenceManager.
 	 */
-	protected final ComponentRef<PersistenceManager> persistenceManager = ComponentRef.makeLazyRef(PersistenceManager.class);
+	protected final ComponentRef<StoreManager> storeManager = ComponentRef.makeLazyRef(StoreManager.class);
 	/**
 	 * Accès au transactionManager.
 	 */
@@ -191,7 +191,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 	private D loadDto(final Object key) {
 		//-- Transaction BEGIN
 		try (final VTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
-			return persistenceManager.get().getBroker().<D> get(new URI<D>(getDtDefinition(), key));
+			return storeManager.get().getDataStore().<D> get(new URI<D>(getDtDefinition(), key));
 		}
 	}
 
