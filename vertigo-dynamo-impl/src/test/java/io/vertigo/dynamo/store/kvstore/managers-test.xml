@@ -2,7 +2,7 @@
 <config>
 	<module name="vertigo-dynamo">
 		<component api="VTransactionManager" class="io.vertigo.dynamo.impl.transaction.VTransactionManagerImpl" />
-		<component api="KVDataStoreManager" class="io.vertigo.dynamo.impl.kvdatastore.KVDataStoreManagerImpl">
+		<component api="StoreManager" class="io.vertigo.dynamo.impl.store.StoreManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.kvdatastore.berkeley.BerkeleyKVDataStorePlugin">
 				<param name="dataStoreName" value="default" />
 				<param name="fileName" value="d:/dynamo-tmp" />
