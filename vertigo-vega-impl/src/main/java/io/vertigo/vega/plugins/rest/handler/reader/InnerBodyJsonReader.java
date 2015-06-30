@@ -1,0 +1,72 @@
+package io.vertigo.vega.plugins.rest.handler.reader;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.vega.plugins.rest.handler.RouteContext;
+import io.vertigo.vega.rest.engine.JsonEngine;
+import io.vertigo.vega.rest.engine.UiContext;
+import io.vertigo.vega.rest.metamodel.EndPointParam;
+import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import spark.Request;
+
+public final class InnerBodyJsonReader implements JsonReader<UiContext> {
+
+	private final JsonEngine jsonReaderEngine;
+
+	/**
+	 * @param jsonReaderEngine jsonReaderEngine
+	 */
+	@Inject
+	public InnerBodyJsonReader(final JsonEngine jsonReaderEngine) {
+		Assertion.checkNotNull(jsonReaderEngine);
+		//-----
+		this.jsonReaderEngine = jsonReaderEngine;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public RestParamType[] getSupportedInput() {
+		return new RestParamType[] { RestParamType.InnerBody };
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Class<UiContext> getSupportedOutput() {
+		return UiContext.class;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public UiContext extractData(final Request request, final EndPointParam endPointParam, final RouteContext routeContext) {
+		Assertion.checkArgument(getSupportedInput()[0].equals(endPointParam.getParamType()), "This JsonReader can't read the asked request ParamType {0}. Only {1} is supported", endPointParam.getParamType(), Arrays.toString(getSupportedInput()));
+		//-----
+		UiContext uiContext = (UiContext) routeContext.getRequest().attribute("InnerBodyValues");
+		if (uiContext == null) {
+			uiContext = readInnerBodyValue(request.body(), routeContext.getEndPointDefinition().getEndPointParams());
+			routeContext.getRequest().attribute("InnerBodyValues", uiContext);
+		}
+		return uiContext;
+	}
+
+	private UiContext readInnerBodyValue(final String jsonBody, final List<EndPointParam> endPointParams) {
+		final List<EndPointParam> innerBodyEndPointParams = new ArrayList<>();
+		final Map<String, Type> innerBodyParams = new HashMap<>();
+		for (final EndPointParam endPointParam : endPointParams) {
+			if (endPointParam.getParamType() == RestParamType.InnerBody || endPointParam.getParamType() == RestParamType.Implicit) {
+				innerBodyEndPointParams.add(endPointParam);
+				innerBodyParams.put(endPointParam.getName(), endPointParam.getGenericType());
+			}
+		}
+		return jsonReaderEngine.uiContextFromJson(jsonBody, innerBodyParams);
+	}
+
+}

@@ -32,6 +32,7 @@ import io.vertigo.vega.rest.validation.UiMessageStack;
 import java.util.Map;
 
 import spark.Request;
+import spark.Response;
 
 /**
 * @author npiedeloup
@@ -40,6 +41,7 @@ public final class RouteContext {
 	private static final String UI_MESSAGE_STACK = "UiMessageStack";
 	private final EndPointDefinition endPointDefinition;
 	private final Request request;
+	private final Response response;
 	private final UiContextResolver uiContextResolver;
 
 	/**
@@ -47,8 +49,9 @@ public final class RouteContext {
 	 * @param request Request
 	 * @param endPointDefinition EndPointDefinition
 	 */
-	public RouteContext(final Request request, final EndPointDefinition endPointDefinition) {
+	public RouteContext(final Request request, final Response response, final EndPointDefinition endPointDefinition) {
 		this.request = request;
+		this.response = response;
 		this.endPointDefinition = endPointDefinition;
 		uiContextResolver = new UiContextResolver();
 		request.attribute(UI_MESSAGE_STACK, new UiMessageStack(uiContextResolver));
@@ -66,6 +69,20 @@ public final class RouteContext {
 	 */
 	public UiMessageStack getUiMessageStack() {
 		return (UiMessageStack) request.attribute(UI_MESSAGE_STACK);
+	}
+
+	/**
+	 * @return Request
+	 */
+	public Request getRequest() {
+		return request;
+	}
+
+	/**
+	 * @return Response
+	 */
+	public Response getResponse() {
+		return response;
 	}
 
 	/**

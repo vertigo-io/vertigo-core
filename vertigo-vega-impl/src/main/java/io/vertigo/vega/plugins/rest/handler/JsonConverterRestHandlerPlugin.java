@@ -18,43 +18,51 @@
  */
 package io.vertigo.vega.plugins.rest.handler;
 
+import io.vertigo.core.Home;
+import io.vertigo.core.di.injector.Injector;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.vega.impl.rest.RestHandlerPlugin;
+import io.vertigo.vega.plugins.rest.handler.converter.DefaultJsonConverter;
+import io.vertigo.vega.plugins.rest.handler.converter.DtListDeltaJsonConverter;
+import io.vertigo.vega.plugins.rest.handler.converter.DtListJsonConverter;
+import io.vertigo.vega.plugins.rest.handler.converter.DtObjectJsonConverter;
+import io.vertigo.vega.plugins.rest.handler.converter.ImplicitJsonConverter;
+import io.vertigo.vega.plugins.rest.handler.converter.JsonConverter;
+import io.vertigo.vega.plugins.rest.handler.converter.PrimitiveJsonConverter;
+import io.vertigo.vega.plugins.rest.handler.converter.VFileJsonConverter;
+import io.vertigo.vega.plugins.rest.handler.reader.BodyJsonReader;
+import io.vertigo.vega.plugins.rest.handler.reader.DefaultJsonReader;
+import io.vertigo.vega.plugins.rest.handler.reader.HeaderJsonReader;
+import io.vertigo.vega.plugins.rest.handler.reader.InnerBodyJsonReader;
+import io.vertigo.vega.plugins.rest.handler.reader.JsonReader;
+import io.vertigo.vega.plugins.rest.handler.reader.PathJsonReader;
+import io.vertigo.vega.plugins.rest.handler.reader.QueryJsonReader;
 import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.vega.rest.engine.UiContext;
-import io.vertigo.vega.rest.engine.UiList;
-import io.vertigo.vega.rest.engine.UiListDelta;
-import io.vertigo.vega.rest.engine.UiObject;
 import io.vertigo.vega.rest.exception.SessionException;
 import io.vertigo.vega.rest.exception.VSecurityException;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 import io.vertigo.vega.rest.metamodel.EndPointParam;
-import io.vertigo.vega.rest.metamodel.EndPointParam.ImplicitParam;
 import io.vertigo.vega.rest.metamodel.EndPointParam.RestParamType;
-import io.vertigo.vega.rest.model.DtListDelta;
 import io.vertigo.vega.rest.model.DtObjectExtended;
-import io.vertigo.vega.rest.model.UiListState;
 import io.vertigo.vega.token.TokenManager;
 
 import java.io.Serializable;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
-import spark.QueryParamsMap;
 import spark.Request;
 import spark.Response;
 
@@ -67,11 +75,18 @@ import com.google.gson.JsonSyntaxException;
  * @author npiedeloup
  */
 public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
-	private static final String SERVER_SIDE_MANDATORY = "ServerSideToken mandatory";
-	private static final String FORBIDDEN_OPERATION_FIELD_MODIFICATION = "Can't modify field:";
+	private static final Class<? extends JsonConverter>[] JSON_CONVERTER_CLASSES = new Class[] {
+			ImplicitJsonConverter.class, PrimitiveJsonConverter.class,
+			DtListJsonConverter.class, DtObjectJsonConverter.class, DtListDeltaJsonConverter.class,
+			VFileJsonConverter.class, DefaultJsonConverter.class };
+	private static final Class<? extends JsonReader<?>>[] JSON_READER_CLASSES = new Class[] {
+			BodyJsonReader.class, InnerBodyJsonReader.class, HeaderJsonReader.class,
+			PathJsonReader.class, QueryJsonReader.class, DefaultJsonReader.class };
 
 	private final JsonEngine jsonWriterEngine;
-	private final JsonEngine jsonReaderEngine;
+
+	private final Map<Class, List<JsonConverter>> jsonConverters = new HashMap<>();
+	private final Map<RestParamType, List<JsonReader<?>>> jsonReaders = new HashMap<>();
 
 	private final Option<TokenManager> tokenManager;
 
@@ -86,11 +101,11 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 		/** Type JSON list */
 		JSON_LIST("json+list:%s"),
 		/** Type JSON list with meta */
-		JSON_LIST_META("json+list:%s+meta"),
+		JSON_LIST_META("json+list=%s+meta"),
 		/** Type JSON entity */
-		JSON_ENTITY("json+entity:%s"),
+		JSON_ENTITY("json+entity=%s"),
 		/** Type JSON entity + meta */
-		JSON_ENTITY_META("json+entity:%s+meta");
+		JSON_ENTITY_META("json+entity=%s+meta");
 
 		private final Pattern contentTypePattern;
 		private final String contentType;
@@ -162,7 +177,30 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 		//-----
 		this.tokenManager = tokenManager;
 		this.jsonWriterEngine = jsonWriterEngine;
-		this.jsonReaderEngine = jsonReaderEngine;
+
+		for (final Class<? extends JsonConverter> jsonConverterClass : JSON_CONVERTER_CLASSES) {
+			final JsonConverter jsonConverter = Injector.newInstance(jsonConverterClass, Home.getComponentSpace());
+			for (final Class inputType : jsonConverter.getSupportedInputs()) {
+				List<JsonConverter> jsonConverterBySourceType = jsonConverters.get(inputType);
+				if (jsonConverterBySourceType == null) {
+					jsonConverterBySourceType = new ArrayList<>();
+					jsonConverters.put(inputType, jsonConverterBySourceType);
+				}
+				jsonConverterBySourceType.add(jsonConverter);
+			}
+		}
+
+		for (final Class<? extends JsonReader<?>> jsonReaderClass : JSON_READER_CLASSES) {
+			final JsonReader<?> jsonReader = Injector.newInstance(jsonReaderClass, Home.getComponentSpace());
+			for (final RestParamType restParamType : jsonReader.getSupportedInput()) {
+				List<JsonReader<?>> jsonReaderByRestParamType = jsonReaders.get(restParamType);
+				if (jsonReaderByRestParamType == null) {
+					jsonReaderByRestParamType = new ArrayList<>();
+					jsonReaders.put(restParamType, jsonReaderByRestParamType);
+				}
+				jsonReaderByRestParamType.add(jsonReader);
+			}
+		}
 	}
 
 	/** {@inheritDoc} */
@@ -175,42 +213,32 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 	@Override
 	public Object handle(final Request request, final Response response, final RouteContext routeContext, final HandlerChain chain) throws VSecurityException, SessionException {
 		//we can't read body at first : because if it's a multipart request call body() disabled getParts() access.
-		UiContext innerBodyParsed = null;
 		for (final EndPointParam endPointParam : routeContext.getEndPointDefinition().getEndPointParams()) {
 			try {
-				final Object value;
-				if (VFileUtil.isVFileParam(endPointParam)) {
-					value = VFileUtil.readVFileParam(request, endPointParam);
-				} else {
-					switch (endPointParam.getParamType()) {
-						case Body:
-							value = readValue(request.body(), endPointParam);
+				boolean found = false;
+				JsonReader jsonReaderToApply = null;
+				JsonConverter jsonConverterToApply = null;
+				for (final JsonReader jsonReader : jsonReaders.get(endPointParam.getParamType())) {
+					jsonReaderToApply = jsonReader;
+
+					for (final JsonConverter jsonConverter : jsonConverters.get(jsonReader.getSupportedOutput())) {
+						if (jsonConverter.canHandle(endPointParam.getType())) {
+							jsonConverterToApply = jsonConverter;
+							found = true;
 							break;
-						case InnerBody:
-							if (innerBodyParsed == null) {
-								//we read all InnerBody when we get the first one
-								innerBodyParsed = readInnerBodyValue(request.body(), routeContext.getEndPointDefinition().getEndPointParams());
-							}
-							value = innerBodyParsed.get(endPointParam.getName());
-							break;
-						case Path:
-							value = readPrimitiveValue(request.params(endPointParam.getName()), endPointParam.getType());
-							break;
-						case Query:
-							value = readQueryValue(request.queryMap(), endPointParam);
-							break;
-						case Header:
-							value = readPrimitiveValue(request.headers(endPointParam.getName()), endPointParam.getType());
-							break;
-						case Implicit:
-							value = readImplicitValue(endPointParam, request, response, routeContext);
-							break;
-						default:
-							throw new IllegalArgumentException("RestParamType : " + endPointParam.getFullName());
+						}
+					}
+					if (found) {
+						break;
 					}
 				}
-				Assertion.checkNotNull(value, "RestParam not found : {0}", endPointParam);
-				routeContext.setParamValue(endPointParam, value);
+				//-----
+				Assertion.checkNotNull(jsonReaderToApply, "Can't parse param {0} of service {1} {2} no compatible JsonReader found for {3}", endPointParam.getFullName(), routeContext.getEndPointDefinition().getVerb(), routeContext.getEndPointDefinition().getPath(), endPointParam.getParamType());
+				Assertion.checkNotNull(jsonConverterToApply, "Can't parse param {0} of service {1} {2} no compatible JsonConverter found for {3} {4}", endPointParam.getFullName(), routeContext.getEndPointDefinition().getVerb(), routeContext.getEndPointDefinition().getPath(), endPointParam.getParamType(), endPointParam.getType());
+				//-----
+				final Object converterSource = jsonReaderToApply.extractData(request, endPointParam, routeContext);
+				jsonConverterToApply.populateRouteContext(converterSource, endPointParam, routeContext);
+				Assertion.checkNotNull(routeContext.getParamValue(endPointParam), "RestParam not found : {0}", endPointParam);
 			} catch (final JsonSyntaxException e) {
 				throw new JsonSyntaxException("Error parsing param " + endPointParam.getFullName() + " on service " + routeContext.getEndPointDefinition().getVerb() + " " + routeContext.getEndPointDefinition().getPath(), e);
 			}
@@ -291,195 +319,6 @@ public final class JsonConverterRestHandlerPlugin implements RestHandlerPlugin {
 			}
 		}
 		return false;
-	}
-
-	private UiContext readInnerBodyValue(final String jsonBody, final List<EndPointParam> endPointParams) throws VSecurityException {
-		final List<EndPointParam> innerBodyEndPointParams = new ArrayList<>();
-		final Map<String, Type> innerBodyParams = new HashMap<>();
-		for (final EndPointParam endPointParam : endPointParams) {
-			if (endPointParam.getParamType() == RestParamType.InnerBody || endPointParam.getParamType() == RestParamType.Implicit) {
-				innerBodyEndPointParams.add(endPointParam);
-				innerBodyParams.put(endPointParam.getName(), endPointParam.getGenericType());
-			}
-		}
-		if (!innerBodyParams.isEmpty()) {
-			final UiContext uiContext = jsonReaderEngine.uiContextFromJson(jsonBody, innerBodyParams);
-			for (final EndPointParam endPointParam : innerBodyEndPointParams) {
-				final Serializable value = uiContext.get(endPointParam.getName());
-				if (value instanceof UiObject) {
-					postReadUiObject((UiObject<DtObject>) value, endPointParam.getName(), endPointParam, tokenManager);
-				} else if (value instanceof UiListDelta) {
-					postReadUiListDelta((UiListDelta<DtObject>) value, endPointParam.getName(), endPointParam, tokenManager);
-				}
-			}
-			return uiContext;
-		}
-		return null;
-	}
-
-	private <D> D readPrimitiveValue(final String json, final Class<D> paramClass) {
-		if (json == null) {
-			return null;
-		} else if (paramClass.isPrimitive()) {
-			return jsonReaderEngine.fromJson(json, paramClass);
-		} else if (String.class.isAssignableFrom(paramClass)) {
-			return paramClass.cast(json);
-		} else if (Integer.class.isAssignableFrom(paramClass)) {
-			return paramClass.cast(Integer.valueOf(json));
-		} else if (Long.class.isAssignableFrom(paramClass)) {
-			return paramClass.cast(Long.valueOf(json));
-		} else if (Float.class.isAssignableFrom(paramClass)) {
-			return paramClass.cast(Float.valueOf(json));
-		} else if (Double.class.isAssignableFrom(paramClass)) {
-			return paramClass.cast(Double.valueOf(json));
-		} else if (Date.class.isAssignableFrom(paramClass)) {
-			return paramClass.cast(jsonReaderEngine.fromJson(json, paramClass));
-		} else {
-			throw new IllegalArgumentException("Unsupported type " + paramClass.getSimpleName());
-		}
-	}
-
-	private <D> D readQueryValue(final QueryParamsMap queryMap, final EndPointParam endPointParam) throws VSecurityException {
-		final Class<D> paramClass = (Class<D>) endPointParam.getType();
-		final String paramName = endPointParam.getName();
-		if (queryMap == null) {
-			return null;
-		}
-		if (UiListState.class.isAssignableFrom(paramClass)
-				|| DtObject.class.isAssignableFrom(paramClass)) {
-			return (D) readValue(convertToJson(queryMap, endPointParam.getName()), endPointParam);
-		}
-		return readPrimitiveValue(queryMap.get(paramName).value(), paramClass);
-	}
-
-	private Object readImplicitValue(final EndPointParam endPointParam, final Request request, final Response response, final RouteContext routeContext) {
-		switch (ImplicitParam.valueOf(endPointParam.getName())) {
-			case UiMessageStack:
-				return routeContext.getUiMessageStack();
-			case Request:
-				return request.raw();
-			case Response:
-				return response.raw();
-			default:
-				throw new IllegalArgumentException("ImplicitParam : " + endPointParam.getName());
-		}
-	}
-
-	private String convertToJson(final QueryParamsMap queryMap, final String queryPrefix) {
-		final String checkedQueryPrefix = queryPrefix.isEmpty() ? "" : queryPrefix + ".";
-		final Map<String, Object> queryParams = new HashMap<>();
-		for (final Entry<String, String[]> entry : queryMap.toMap().entrySet()) {
-			if (entry.getKey().startsWith(checkedQueryPrefix)) {
-				final String[] value = entry.getValue();
-				final Object simplerValue = value.length == 0 ? null : value.length == 1 ? value[0] : value;
-				queryParams.put(entry.getKey().substring(checkedQueryPrefix.length()), simplerValue);
-			}
-		}
-		return jsonWriterEngine.toJson(queryParams);
-	}
-
-	private Object readValue(final String json, final EndPointParam endPointParam) throws VSecurityException {
-		final Class<?> paramClass = endPointParam.getType();
-		final Type paramGenericType = endPointParam.getGenericType();
-		if (json == null) {
-			return null;
-		} else if (String.class.isAssignableFrom(paramClass)) {
-			return json;
-		} else if (Integer.class.isAssignableFrom(paramClass)) {
-			return Integer.valueOf(json);
-		} else if (Long.class.isAssignableFrom(paramClass)) {
-			return Long.valueOf(json);
-		} else if (DtObject.class.isAssignableFrom(paramClass)) {
-			final UiObject<DtObject> uiObject = jsonReaderEngine.<DtObject> uiObjectFromJson(json, paramGenericType);
-			if (uiObject != null) {
-				postReadUiObject(uiObject, "", endPointParam, tokenManager);
-			}
-			return uiObject;
-		} else if (DtListDelta.class.isAssignableFrom(paramClass)) {
-			final UiListDelta<DtObject> uiListDelta = jsonReaderEngine.<DtObject> uiListDeltaFromJson(json, paramGenericType);
-			if (uiListDelta != null) {
-				postReadUiListDelta(uiListDelta, "", endPointParam, tokenManager);
-			}
-			return uiListDelta;
-		} else if (DtList.class.isAssignableFrom(paramClass)) {
-			final UiList<DtObject> uiList = jsonReaderEngine.<DtObject> uiListFromJson(json, paramGenericType);
-			if (uiList != null) {
-				postReadUiList(uiList, "", endPointParam, tokenManager);
-			}
-			return uiList;
-		} else if (DtObjectExtended.class.isAssignableFrom(paramClass)) {
-			throw new IllegalArgumentException("Unsupported type DtObjectExtended (use multiple params instead, /*implicit body*/ myDto, @InnerBodyParams others...).");
-		} else if (UiContext.class.isAssignableFrom(paramClass)) {
-			throw new IllegalArgumentException("Unsupported type UiContext (use @InnerBodyParams instead).");
-		} else {
-			return jsonReaderEngine.fromJson(json, paramClass);
-		}
-	}
-
-	private static void postReadUiObject(final UiObject<DtObject> uiObject, final String inputKey, final EndPointParam endPointParam, final Option<TokenManager> tokenManager) throws VSecurityException {
-		uiObject.setInputKey(inputKey);
-		checkUnauthorizedFieldModifications(uiObject, endPointParam);
-
-		if (endPointParam.isNeedServerSideToken()) {
-			Assertion.checkArgument(tokenManager.isDefined(), "TokenManager must be declared in order to use Vega ServerSide features");
-			final String accessToken = uiObject.getServerSideToken();
-			if (accessToken == null) {
-				throw new VSecurityException(SERVER_SIDE_MANDATORY); //same message for no ServerSideToken or bad ServerSideToken
-			}
-			final Option<Serializable> serverSideObject;
-			if (endPointParam.isConsumeServerSideToken()) {
-				//if exception : token is consume. It's for security reason : no replay on bad request (brute force password)
-				serverSideObject = tokenManager.get().getAndRemove(accessToken);
-			} else {
-				serverSideObject = tokenManager.get().get(accessToken);
-			}
-			if (serverSideObject.isEmpty()) {
-				throw new VSecurityException(SERVER_SIDE_MANDATORY); //same message for no ServerSideToken or bad ServerSideToken
-			}
-			uiObject.setServerSideObject((DtObject) serverSideObject.get());
-		}
-	}
-
-	private static void postReadUiListDelta(final UiListDelta<DtObject> uiListDelta, final String inputKey, final EndPointParam endPointParam, final Option<TokenManager> tokenManager) throws VSecurityException {
-		final String prefix = inputKey.length() > 0 ? inputKey + "." : "";
-		for (final Map.Entry<String, UiObject<DtObject>> entry : uiListDelta.getCreatesMap().entrySet()) {
-			final String uiObjectInputKey = prefix + entry.getKey();
-			postReadUiObject(entry.getValue(), uiObjectInputKey, endPointParam, tokenManager);
-		}
-		for (final Map.Entry<String, UiObject<DtObject>> entry : uiListDelta.getUpdatesMap().entrySet()) {
-			final String uiObjectInputKey = prefix + entry.getKey();
-			postReadUiObject(entry.getValue(), uiObjectInputKey, endPointParam, tokenManager);
-		}
-		for (final Map.Entry<String, UiObject<DtObject>> entry : uiListDelta.getDeletesMap().entrySet()) {
-			final String uiObjectInputKey = prefix + entry.getKey();
-			postReadUiObject(entry.getValue(), uiObjectInputKey, endPointParam, tokenManager);
-		}
-	}
-
-	private static void postReadUiList(final UiList<DtObject> uiList, final String inputKey, final EndPointParam endPointParam, final Option<TokenManager> tokenManager) throws VSecurityException {
-		final String prefix = inputKey.length() > 0 ? inputKey + "." : "";
-		int index = 0;
-		for (final UiObject<DtObject> entry : uiList) {
-			final String uiObjectInputKey = prefix + "idx" + index;
-			postReadUiObject(entry, uiObjectInputKey, endPointParam, tokenManager);
-			index++;
-		}
-	}
-
-	private static void checkUnauthorizedFieldModifications(final UiObject<DtObject> uiObject, final EndPointParam endPointParam) throws VSecurityException {
-		for (final String excludedField : endPointParam.getExcludedFields()) {
-			if (uiObject.isModified(excludedField)) {
-				throw new VSecurityException(FORBIDDEN_OPERATION_FIELD_MODIFICATION + excludedField);
-			}
-		}
-		final Set<String> includedFields = endPointParam.getIncludedFields();
-		if (!includedFields.isEmpty()) {
-			for (final String modifiedField : uiObject.getModifiedFields()) {
-				if (!includedFields.contains(modifiedField)) {
-					throw new VSecurityException(FORBIDDEN_OPERATION_FIELD_MODIFICATION + modifiedField);
-				}
-			}
-		}
 	}
 
 	private String writeValue(final Object value, final Response response, final EncodedType encodedType, final EndPointDefinition endPointDefinition) {

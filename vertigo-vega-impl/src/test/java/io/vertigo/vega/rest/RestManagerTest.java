@@ -932,7 +932,7 @@ public final class RestManagerTest {
 				.body("conId", Matchers.equalTo(1))
 				.body("vanillaUnsupportedMultipleIds", Matchers.iterableWithSize(3))
 				.body("vanillaUnsupportedMultipleIds", Matchers.hasItems(1, 2, 3))
-				.header("content-type", Matchers.containsString("json+entity:Contact+meta"))
+				.header("content-type", Matchers.containsString("json+entity=Contact+meta"))
 				.statusCode(HttpStatus.SC_OK)
 				.when()
 				.get("/test/contactExtended/1");

@@ -188,7 +188,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					final Type typeOfDest = createParameterizedType(UiListDelta.class, dtoClass);
 					value = gson.fromJson(jsonSubElement, typeOfDest);
 				} else if (EndPointTypeUtil.isAssignableFrom(DtList.class, paramType)) {
-					final Class<DtObject> dtoClass = (Class<DtObject>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that DtListDelta has one parameterized type
+					final Class<DtObject> dtoClass = (Class<DtObject>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that DtList has one parameterized type
 					final Type typeOfDest = createParameterizedType(UiList.class, dtoClass);
 					value = gson.fromJson(jsonSubElement, typeOfDest);
 				} else {

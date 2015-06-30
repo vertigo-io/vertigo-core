@@ -205,7 +205,7 @@ public final class SwaggerRestServices implements RestfulService {
 		final Map<String, Object> swagger = new LinkedHashMap<>();
 		swagger.put("swagger", 2.0);
 		swagger.put("info", createInfoObject());
-		swagger.put("basePath", contextPath.isEmpty() ? "/" : contextPath);
+		swagger.put("basePath", (contextPath == null || contextPath.isEmpty()) ? "/" : contextPath);
 
 		//host, basePath, schemes, consumes, produces
 		swagger.put("paths", createPathsObject());
