@@ -55,18 +55,22 @@ public abstract class DefaultSearchLoader<P extends Serializable, S extends KeyC
 			private final Iterator<SearchChunk<S>> iterator = new Iterator<SearchChunk<S>>() {
 
 				private SearchChunk<S> current = null;
+				private SearchChunk<S> next = null;
 
 				/** {@inheritDoc} */
 				@Override
 				public boolean hasNext() {
-					return hasNextChunk(keyConceptClass, current);
+					return hasNextChunk(keyConceptClass, next);
 				}
 
 				/** {@inheritDoc} */
 				@Override
 				public SearchChunk<S> next() {
-					final SearchChunk<S> next = nextChunk(keyConceptClass, current);
+					if (next == null) {
+						next = nextChunk(keyConceptClass, null);
+					}
 					current = next;
+					next = nextChunk(keyConceptClass, current);
 					return current;
 				}
 
@@ -191,9 +195,9 @@ public abstract class DefaultSearchLoader<P extends Serializable, S extends KeyC
 		return pkValue;
 	}
 
-	private boolean hasNextChunk(final Class<S> keyConceptClass, final SearchChunk<S> previousChunck) {
+	private boolean hasNextChunk(final Class<S> keyConceptClass, final SearchChunk<S> currentChunck) {
 		// il y a une suite, si on a pas commencé, ou s'il y avait des résultats la dernière fois.
-		return previousChunck == null || !previousChunck.getAllURIs().isEmpty();
+		return currentChunck == null || !currentChunck.getAllURIs().isEmpty();
 	}
 
 	/**
