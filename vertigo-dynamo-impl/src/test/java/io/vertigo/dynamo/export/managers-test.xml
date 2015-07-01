@@ -28,10 +28,7 @@
 				<param name="sequencePrefix" value="SEQ_" />
 			</plugin>
 		</component>
-		<component api="EventManager" class="io.vertigo.dynamo.impl.event.EventManagerImpl">
-			<plugin class="io.vertigo.commons.plugins.event.local.LocalEventsPlugin"/>
-		</component>
-
+		<component api="EventManager" class="io.vertigo.commons.impl.event.EventManagerImpl"/>
 		<component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
 			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" />
