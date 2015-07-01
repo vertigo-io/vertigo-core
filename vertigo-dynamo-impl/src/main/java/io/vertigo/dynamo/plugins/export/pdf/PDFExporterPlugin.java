@@ -35,6 +35,9 @@ import javax.inject.Inject;
 public final class PDFExporterPlugin implements ExporterPlugin {
 	private final StoreManager storeManager;
 
+	/**
+	 * @param storeManager store manager
+	 */
 	@Inject
 	public PDFExporterPlugin(final StoreManager storeManager) {
 		this.storeManager = storeManager;
