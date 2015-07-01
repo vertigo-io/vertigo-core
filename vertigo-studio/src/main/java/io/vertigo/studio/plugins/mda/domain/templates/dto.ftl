@@ -88,7 +88,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 		//---------------------------------------------------------------------
 		//On est toujours dans un mode lazy.
 		if (${association.role?uncap_first} == null) {
-			${association.role?uncap_first} = io.vertigo.core.Home.getComponentSpace().resolve(io.vertigo.dynamo.persistence.PersistenceManager.class).getBroker().getList(fkDtListURI);
+			${association.role?uncap_first} = io.vertigo.core.Home.getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getBroker().getList(fkDtListURI);
 		}
 		return ${association.role?uncap_first};
 	}
@@ -119,7 +119,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 			}
 		}		
 		if (${association.role?uncap_first} == null) {
-			${association.role?uncap_first} = io.vertigo.core.Home.getComponentSpace().resolve(io.vertigo.dynamo.persistence.PersistenceManager.class).getBroker().get(fkURI);
+			${association.role?uncap_first} = io.vertigo.core.Home.getComponentSpace().resolve(io.vertigo.dynamo.persistence.PersistenceManager.class).getDataStore().get(fkURI);
 		}
 		return ${association.role?uncap_first};
 	}

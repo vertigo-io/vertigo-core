@@ -31,16 +31,16 @@ import io.vertigo.studio.reporting.MetricEngine;
  * @author pchretien
  */
 public final class CountMetricEngine implements MetricEngine<DtDefinition> {
-	private final StoreManager persistenceManager;
+	private final StoreManager storeManager;
 
 	/**
 	 * Constructeur.
-	 * @param persistenceManager Manager de persistance
+	 * @param storeManager Manager de persistance
 	 */
-	public CountMetricEngine(final StoreManager persistenceManager) {
-		Assertion.checkNotNull(persistenceManager);
+	public CountMetricEngine(final StoreManager storeManager) {
+		Assertion.checkNotNull(storeManager);
 		//-----
-		this.persistenceManager = persistenceManager;
+		this.storeManager = storeManager;
 	}
 
 	/** {@inheritDoc} */
@@ -59,7 +59,7 @@ public final class CountMetricEngine implements MetricEngine<DtDefinition> {
 		}
 		//Dans le cas ou DT est persistant on compte le nombre de lignes.
 		try {
-			final int count = persistenceManager.getDataStore().count(dtDefinition);
+			final int count = storeManager.getDataStore().count(dtDefinition);
 			return metricBuilder
 					.withStatus(Metric.Status.Executed)
 					.withValue(count)

@@ -32,16 +32,16 @@ import io.vertigo.studio.reporting.MetricEngine;
  * @author pchretien
  */
 public final class PersistenceMetricEngine implements MetricEngine<DtDefinition> {
-	private final StoreManager persistenceManager;
+	private final StoreManager storeManager;
 
 	/**
 	 * Constructeur.
-	 * @param persistenceManager Manager de persistance
+	 * @param storeManager Manager de persistance
 	 */
-	public PersistenceMetricEngine(final StoreManager persistenceManager) {
-		Assertion.checkNotNull(persistenceManager);
+	public PersistenceMetricEngine(final StoreManager storeManager) {
+		Assertion.checkNotNull(storeManager);
 		//-----
-		this.persistenceManager = persistenceManager;
+		this.storeManager = storeManager;
 	}
 
 	/** {@inheritDoc} */
@@ -70,7 +70,7 @@ public final class PersistenceMetricEngine implements MetricEngine<DtDefinition>
 			return true;
 		}
 		try {
-			persistenceManager.getDataStore().getList(new DtListURIForCriteria<>(dtDefinition, null, 1));
+			storeManager.getDataStore().getList(new DtListURIForCriteria<>(dtDefinition, null, 1));
 			return true;
 		} catch (final Exception e) {
 			return false;

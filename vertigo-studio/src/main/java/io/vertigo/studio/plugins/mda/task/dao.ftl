@@ -31,8 +31,8 @@ import io.vertigo.dynamo.task.model.TaskResult;
 <#if dao.keyConcept>
 import io.vertigo.dynamo.domain.model.URI;
 </#if>
-import io.vertigo.dynamo.impl.persistence.util.DAOBroker;
-import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.impl.store.util.DAOBroker;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.TaskManager;
 import ${dao.dtClassCanonicalName};
 
@@ -50,15 +50,15 @@ public final class ${dao.classSimpleName} extends DAOBroker<${dao.dtClassSimpleN
 	 
 	/**
 	 * Contructeur.
-	 * @param persistenceManager Manager de persistance
+	 * @param storeManager Manager de persistance
 	 * @param taskManager Manager de Task
 	 <#if dao.keyConcept && dao.hasSearchBehavior()>
 	 * @param searchManager Manager de Search
 	 </#if>
 	 */
 	@Inject
-	public ${dao.classSimpleName}(final PersistenceManager persistenceManager, final TaskManager taskManager<#if dao.keyConcept && dao.hasSearchBehavior()>, final SearchManager searchManager</#if>) {
-		super(${dao.dtClassSimpleName}.class, persistenceManager, taskManager);
+	public ${dao.classSimpleName}(final StoreManager storeManager, final TaskManager taskManager<#if dao.keyConcept && dao.hasSearchBehavior()>, final SearchManager searchManager</#if>) {
+		super(${dao.dtClassSimpleName}.class, storeManager, taskManager);
 		<#if dao.keyConcept && dao.hasSearchBehavior()>
 		this.searchManager = searchManager;
 		</#if>
