@@ -293,6 +293,11 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 			}
 		}
 		Assert.assertEquals(true, found);
+
+		//on vérifie l'ordre
+		final List<FacetValue> facetValueDefinition = yearFacet.getDefinition().getFacetRanges();
+		final List<FacetValue> facetValueResult = new ArrayList<>(yearFacet.getFacetValues().keySet());
+		Assert.assertEquals(facetValueDefinition, facetValueResult); //equals vérifie aussi l'ordre
 	}
 
 	/**
@@ -331,6 +336,13 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 			}
 		}
 		Assert.assertEquals(true, found);
+
+		//on vérifie l'ordre
+		int lastCount = Integer.MAX_VALUE;
+		for (final Entry<FacetValue, Long> entry : makeFacet.getFacetValues().entrySet()) {
+			Assert.assertTrue("Ordre des facettes par 'count' non respecté", entry.getValue().intValue() <= lastCount);
+			lastCount = entry.getValue().intValue();
+		}
 	}
 
 	private static Facet getFacetByName(final FacetedQueryResult<Car, ?> result, final String facetName) {

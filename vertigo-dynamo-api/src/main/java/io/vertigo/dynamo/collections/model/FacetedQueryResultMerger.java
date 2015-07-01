@@ -33,6 +33,7 @@ import io.vertigo.lang.Option;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -125,8 +126,8 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> implements Bu
 		Assertion.checkArgument(otherResults.size() > 1, "You need at least 2 FacetedQueryResults in order to merge them");
 		//-----
 		long totalCount = 0;
-		final Map<FacetValue, DtList<R>> clustersDtc = new HashMap<>(otherResults.size());
-		final Map<FacetValue, Long> clustersCount = new HashMap<>(otherResults.size());
+		final Map<FacetValue, DtList<R>> clustersDtc = new LinkedHashMap<>(otherResults.size());
+		final Map<FacetValue, Long> clustersCount = new LinkedHashMap<>(otherResults.size());
 		final List<Facet> facets = new ArrayList<>();
 		final Map<R, Map<DtField, String>> highlights = Collections.emptyMap();
 

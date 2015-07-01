@@ -77,6 +77,7 @@ import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation.Buck
 import org.elasticsearch.search.aggregations.bucket.range.Range;
 import org.elasticsearch.search.aggregations.bucket.range.RangeBuilder;
 import org.elasticsearch.search.aggregations.bucket.range.date.DateRangeBuilder;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsBuilder;
 import org.elasticsearch.search.aggregations.metrics.tophits.TopHits;
 import org.elasticsearch.search.highlight.HighlightField;
@@ -286,9 +287,8 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 			//facette par range
 			//solrQuery.addFacetQuery(translateToQueryBuilder(facetRange.getListFilter(), indexFieldNameResolver));
 			final DataType dataType = dtField.getDomain().getDataType();
-			final DateRangeBuilder dateRangeBuilder;
 			if (dataType == DataType.Date) {
-				dateRangeBuilder = AggregationBuilders.dateRange(facetDefinition.getName())
+				final DateRangeBuilder dateRangeBuilder = AggregationBuilders.dateRange(facetDefinition.getName())
 						.field(dtField.getName())
 						.format(DATE_PATTERN);
 				for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
@@ -327,7 +327,8 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		//facette par field
 		final TermsBuilder aggregationBuilder = AggregationBuilders.terms(facetDefinition.getName())
 				.size(50) //Warning term aggregations are inaccurate : see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html
-				.field(dtField.getName());
+				.field(dtField.getName())
+				.order(Terms.Order.count(false));
 		return aggregationBuilder;
 	}
 
