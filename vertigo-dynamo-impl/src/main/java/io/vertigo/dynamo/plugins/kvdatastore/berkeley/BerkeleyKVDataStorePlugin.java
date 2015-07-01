@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.kvdatastore.berkeley;
 
-import io.vertigo.dynamo.impl.kvdatastore.KVDataStorePlugin;
+import io.vertigo.dynamo.impl.store.kvstore.KVDataStorePlugin;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
@@ -187,7 +187,7 @@ public final class BerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activ
 	//		//					break;
 	//		//				}*/
 	//		//			final DtObjectURI uri = URIHelper.readURN(urn);
-	//		//			final D item = getPersistenceManager().getBroker().<D> get(uri);
+	//		//			final D item = getStoreeManager().getBroker().<D> get(uri);
 	//-----
 	//		//			dtc.add(item);
 	//		//		}
@@ -207,7 +207,7 @@ public final class BerkeleyKVDataStorePlugin implements KVDataStorePlugin, Activ
 	//		//		for (final String urn : list) {
 	//		//			final DtObjectURI uri = URIHelper.readURN(urn);
 	//		//			try {
-	//		//				final D item = getPersistenceManager().getBroker().<D> get(uri);
+	//		//				final D item = getStoreManager().getBroker().<D> get(uri);
 	//-----
 	//		//				dtc.add(item);
 	//		//			} catch (final Exception e) {

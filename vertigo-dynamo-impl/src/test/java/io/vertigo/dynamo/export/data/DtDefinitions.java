@@ -28,6 +28,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	public Iterator<Class<?>> iterator() {
 		return Arrays.asList(new Class<?>[] {
 				Country.class,
+				Continent.class,
 		}).iterator();
 	}
 
@@ -35,6 +36,12 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 * Enumération des champs de Famille.
 	 */
 	public enum CountryFields implements DtFieldName {
+		ID,
+		CON_ID,
+		NAME,
+	}
+
+	public enum ContinentFields implements DtFieldName {
 		ID,
 		NAME,
 	}

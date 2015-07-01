@@ -91,8 +91,8 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 	public void testRole() {
 		final Role admin = createRole("R_ADMIN");
 		final Role user = createRole("R_USER");
-		Home.getDefinitionSpace().put(admin, Role.class);
-		Home.getDefinitionSpace().put(user, Role.class);
+		Home.getDefinitionSpace().put(admin);
+		Home.getDefinitionSpace().put(user);
 
 		final Role r1 = Home.getDefinitionSpace().resolve(admin.getName(), Role.class);
 		Assert.assertTrue(admin.equals(r1));
@@ -106,10 +106,10 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final Role user = createRole("R_USER");
 		final Role manager = createRole("R_MANAGER");
 		final Role secretary = createRole("R_SECRETARY");
-		Home.getDefinitionSpace().put(admin, Role.class);
-		Home.getDefinitionSpace().put(user, Role.class);
-		Home.getDefinitionSpace().put(manager, Role.class);
-		Home.getDefinitionSpace().put(secretary, Role.class);
+		Home.getDefinitionSpace().put(admin);
+		Home.getDefinitionSpace().put(user);
+		Home.getDefinitionSpace().put(manager);
+		Home.getDefinitionSpace().put(secretary);
 
 		final UserSession userSession = securityManager.createUserSession()
 				.addRole(admin)
@@ -240,10 +240,10 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final Role user = createRole("R_USER");
 		final Role manager = createRole("R_MANAGER");
 		final Role secretary = createRole("R_SECRETARY");
-		Home.getDefinitionSpace().put(admin, Role.class);
-		Home.getDefinitionSpace().put(user, Role.class);
-		Home.getDefinitionSpace().put(manager, Role.class);
-		Home.getDefinitionSpace().put(secretary, Role.class);
+		Home.getDefinitionSpace().put(admin);
+		Home.getDefinitionSpace().put(user);
+		Home.getDefinitionSpace().put(manager);
+		Home.getDefinitionSpace().put(secretary);
 		testDescription(securityManager);
 	}
 

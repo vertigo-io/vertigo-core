@@ -87,16 +87,16 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 		final Entity dtDefinitionEntity = DomainGrammar.DT_DEFINITION_ENTITY;
 		final DynamicDefinitionBuilder dtDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(getDtDefinitionName(clazz.getCode()), dtDefinitionEntity, clazz.getPackageName())
 				//Par défaut les DT lues depuis le OOM/XMI sont persistantes.
-				.withPropertyValue(KspProperty.PERSISTENT, true)
-				.withPropertyValue(KspProperty.STEREOTYPE, clazz.getStereotype());
+				.addPropertyValue(KspProperty.PERSISTENT, true)
+				.addPropertyValue(KspProperty.STEREOTYPE, clazz.getStereotype());
 
 		for (final XmlAttribute attribute : clazz.getKeyAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(attribute, dynamicModelrepository);
-			dtDefinitionBuilder.withChildDefinition(DomainGrammar.PRIMARY_KEY, dtField);
+			dtDefinitionBuilder.addChildDefinition(DomainGrammar.PRIMARY_KEY, dtField);
 		}
 		for (final XmlAttribute tagAttribute : clazz.getFieldAttributes()) {
 			final DynamicDefinition dtField = toDynamicDefinition(tagAttribute, dynamicModelrepository);
-			dtDefinitionBuilder.withChildDefinition(DomainGrammar.FIELD, dtField);
+			dtDefinitionBuilder.addChildDefinition(DomainGrammar.FIELD, dtField);
 		}
 		return dtDefinitionBuilder.build();
 	}
@@ -106,10 +106,10 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 		final DynamicDefinitionKey domainKey = new DynamicDefinitionKey(attribute.getDomain());
 
 		return DynamicDefinitionRepository.createDynamicDefinitionBuilder(attribute.getCode(), dtFieldEntity, null)
-				.withPropertyValue(KspProperty.LABEL, attribute.getLabel())
-				.withPropertyValue(KspProperty.PERSISTENT, attribute.isPersistent())
-				.withPropertyValue(KspProperty.NOT_NULL, attribute.isNotNull())
-				.withDefinition("domain", domainKey)
+				.addPropertyValue(KspProperty.LABEL, attribute.getLabel())
+				.addPropertyValue(KspProperty.PERSISTENT, attribute.isPersistent())
+				.addPropertyValue(KspProperty.NOT_NULL, attribute.isNotNull())
+				.addDefinition("domain", domainKey)
 				.build();
 	}
 
@@ -130,31 +130,31 @@ public abstract class XmlLoaderPlugin implements LoaderPlugin {
 
 		//On crée l'association
 		final DynamicDefinitionBuilder associationDefinitionBuilder = DynamicDefinitionRepository.createDynamicDefinitionBuilder(name, dynamicMetaDefinition, association.getPackageName())
-				.withPropertyValue(KspProperty.NAVIGABILITY_A, association.isNavigableA())
-				.withPropertyValue(KspProperty.NAVIGABILITY_B, association.isNavigableB())
+				.addPropertyValue(KspProperty.NAVIGABILITY_A, association.isNavigableA())
+				.addPropertyValue(KspProperty.NAVIGABILITY_B, association.isNavigableB())
 				//---
-				.withPropertyValue(KspProperty.LABEL_A, association.getRoleLabelA())
+				.addPropertyValue(KspProperty.LABEL_A, association.getRoleLabelA())
 				//On transforme en CODE ce qui est écrit en toutes lettres.
-				.withPropertyValue(KspProperty.ROLE_A, XmlUtil.french2Java(association.getRoleLabelA()))
-				.withPropertyValue(KspProperty.LABEL_B, association.getRoleLabelB())
-				.withPropertyValue(KspProperty.ROLE_B, XmlUtil.french2Java(association.getRoleLabelB()))
+				.addPropertyValue(KspProperty.ROLE_A, XmlUtil.french2Java(association.getRoleLabelA()))
+				.addPropertyValue(KspProperty.LABEL_B, association.getRoleLabelB())
+				.addPropertyValue(KspProperty.ROLE_B, XmlUtil.french2Java(association.getRoleLabelB()))
 				//---
-				.withDefinition("dtDefinitionA", getDtDefinitionKey(association.getCodeA()))
-				.withDefinition("dtDefinitionB", getDtDefinitionKey(association.getCodeB()));
+				.addDefinition("dtDefinitionA", getDtDefinitionKey(association.getCodeA()))
+				.addDefinition("dtDefinitionB", getDtDefinitionKey(association.getCodeB()));
 
 		if (isAssociationNN) {
 			//Dans le cas d'une association NN il faut établir le nom de la table intermédiaire qui porte les relations
 			final String tableName = association.getCode();
-			associationDefinitionBuilder.withPropertyValue(KspProperty.TABLE_NAME, tableName);
+			associationDefinitionBuilder.addPropertyValue(KspProperty.TABLE_NAME, tableName);
 			LOGGER.trace("isAssociationNN:Code=" + association.getCode());
 		} else {
 			LOGGER.trace("!isAssociationNN:Code=" + association.getCode());
 			//Dans le cas d'une NN ses deux propriétés sont redondantes ;
 			//elles ne font donc pas partie de la définition d'une association de type NN
 			associationDefinitionBuilder
-					.withPropertyValue(KspProperty.MULTIPLICITY_A, association.getMultiplicityA())
-					.withPropertyValue(KspProperty.MULTIPLICITY_B, association.getMultiplicityB())
-					.withPropertyValue(KspProperty.FK_FIELD_NAME, buildFkFieldName(association, dynamicModelrepository));
+					.addPropertyValue(KspProperty.MULTIPLICITY_A, association.getMultiplicityA())
+					.addPropertyValue(KspProperty.MULTIPLICITY_B, association.getMultiplicityB())
+					.addPropertyValue(KspProperty.FK_FIELD_NAME, buildFkFieldName(association, dynamicModelrepository));
 
 		}
 		return associationDefinitionBuilder.build();

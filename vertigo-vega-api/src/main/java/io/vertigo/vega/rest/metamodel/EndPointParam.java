@@ -172,13 +172,6 @@ public final class EndPointParam {
 		return type;
 	}
 
-	//	/**
-	//	 * @return Parameter generics class param
-	//	 */
-	//	public Class<?> getGenericsType() {
-	//		return genericType;
-	//	}
-
 	/**
 	 * @return List of included fieldNames
 	 */

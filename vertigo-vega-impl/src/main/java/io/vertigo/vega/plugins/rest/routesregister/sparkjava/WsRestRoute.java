@@ -57,7 +57,7 @@ public final class WsRestRoute extends Route {
 	public Object handle(final Request request, final Response response) {
 		try {
 			final Request requestWrapper = new SparkRequestWrapper(request, defaultContentCharset);
-			return handlerChain.handle(requestWrapper, response, new RouteContext(requestWrapper, endPointDefinition));
+			return handlerChain.handle(requestWrapper, response, new RouteContext(requestWrapper, response, endPointDefinition));
 		} catch (final Throwable th) {
 			LOGGER.error(th);
 			return th.getMessage();

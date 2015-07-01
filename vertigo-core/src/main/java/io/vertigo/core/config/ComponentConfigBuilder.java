@@ -62,7 +62,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 		return this;
 	}
 
-	public ComponentConfigBuilder withParam(final String paramName, final String paramValue) {
+	public ComponentConfigBuilder addParam(final String paramName, final String paramValue) {
 		Assertion.checkArgNotEmpty(paramName);
 		Assertion.checkNotNull(paramValue);
 		//-----

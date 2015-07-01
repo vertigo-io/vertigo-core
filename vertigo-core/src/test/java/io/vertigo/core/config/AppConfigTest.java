@@ -33,7 +33,6 @@ public final class AppConfigTest {
 	public void HomeTest() {
 
 		final AppConfig appConfig = new XMLAppConfigBuilder()
-				.withSilence(false)
 				.withModules(getClass(), new Properties(), "bio.xml")
 				.build();
 

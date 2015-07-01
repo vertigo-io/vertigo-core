@@ -27,6 +27,7 @@ import io.vertigo.lang.Option;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
@@ -43,6 +44,10 @@ public final class ESSearchServicesPlugin extends AbstractESSearchServicesPlugin
 	private final String[] serversNames;
 	/** cluster à rejoindre. */
 	private final String clusterName;
+	/** Nom du node. */
+	private final String nodeName;
+	/** Started node. */
+	private Node node;
 
 	/**
 	 * Constructeur.
@@ -50,15 +55,16 @@ public final class ESSearchServicesPlugin extends AbstractESSearchServicesPlugin
 	 * @param serversNamesStr URL du serveur ElasticSearch avec le port de communication de cluster (9300 en général)
 	 * @param cores Liste des indexes
 	 * @param rowsPerQuery Liste des indexes
-	 * @param codecManager Manager des codecs
 	 * @param clusterName : nom du cluster à rejoindre
 	 * @param configFile fichier de configuration des index
+	 * @param nodeName : nom du node
+	 * @param codecManager Manager des codecs
 	 * @param resourceManager Manager d'accès aux ressources
 	 */
 	@Inject
 	public ESSearchServicesPlugin(@Named("servers.names") final String serversNamesStr, @Named("cores") final String cores,
-			@Named("rowsPerQuery") final int rowsPerQuery, @Named("cluster.name") final String clusterName, 
-			@Named("config.file") final Option<String> configFile, final CodecManager codecManager, final ResourceManager resourceManager) {
+			@Named("rowsPerQuery") final int rowsPerQuery, @Named("cluster.name") final String clusterName,
+			@Named("config.file") final Option<String> configFile, @Named("node.name") final Option<String> nodeName, final CodecManager codecManager, final ResourceManager resourceManager) {
 		super(cores, rowsPerQuery, configFile, codecManager, resourceManager);
 		Assertion.checkArgNotEmpty(serversNamesStr,
 				"Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','");
@@ -69,20 +75,30 @@ public final class ESSearchServicesPlugin extends AbstractESSearchServicesPlugin
 		// ---------------------------------------------------------------------
 		serversNames = serversNamesStr.split(",");
 		this.clusterName = clusterName;
+		this.nodeName = nodeName.isDefined() ? nodeName.get() : "es-client-node-" + System.currentTimeMillis();
+
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	protected Node createNode() {
-		return new NodeBuilder()
+	protected Client createClient() {
+		node = new NodeBuilder()
 				.settings(buildNodeSettings())
 				.client(true)
 				.build();
+		node.start();
+		return node.client();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	protected void closeClient() {
+		node.close();
 	}
 
 	private Settings buildNodeSettings() {
 		// Build settings
-		return ImmutableSettings.settingsBuilder().put("node.name", "es-embedded-node-" + System.currentTimeMillis())
+		return ImmutableSettings.settingsBuilder().put("node.name", nodeName)
 				.put("node.data", false)
 				.put("node.master", false)
 				// .put("discovery.zen.fd.ping_timeout", "30s")

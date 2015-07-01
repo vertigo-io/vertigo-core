@@ -1,7 +1,7 @@
 package io.vertigo.core.spaces.config;
 
 import io.vertigo.commons.impl.config.ConfigPlugin;
-import io.vertigo.core.config.AppConfig;
+import io.vertigo.core.boot.BootConfig;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
@@ -76,8 +76,8 @@ public final class ConfigSpace {
 	private static final String TRUE = "true";
 	private static final String FALSE = "false";
 
-	public ConfigSpace(final AppConfig appConfig) {
-		Assertion.checkNotNull(appConfig);
+	public ConfigSpace(final BootConfig bootConfig) {
+		Assertion.checkNotNull(bootConfig);
 		//-----
 		this.configPlugins = null;
 	}

@@ -1,6 +1,6 @@
 package io.vertigo.dynamo.environment.java.data;
 
-import io.vertigo.dynamo.domain.model.DtSubject;
+import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -12,7 +12,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 @javax.persistence.Entity
 @javax.persistence.Table(name = "COMMAND")
 @DtDefinition
-public final class Command implements DtSubject {
+public final class Command implements KeyConcept {
 
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -123,7 +123,7 @@ public final class Command implements DtSubject {
 			}
 		}
 		if (commandType == null) {
-			commandType = io.vertigo.core.Home.getComponentSpace().resolve(io.vertigo.dynamo.persistence.PersistenceManager.class).getBroker().get(fkURI);
+			commandType = io.vertigo.core.Home.getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().get(fkURI);
 		}
 		return commandType;
 	}
@@ -185,7 +185,7 @@ public final class Command implements DtSubject {
 			}
 		}
 		if (city == null) {
-			city = io.vertigo.core.Home.getComponentSpace().resolve(io.vertigo.dynamo.persistence.PersistenceManager.class).getBroker().get(fkURI);
+			city = io.vertigo.core.Home.getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().get(fkURI);
 		}
 		return city;
 	}

@@ -22,7 +22,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 
 import java.util.HashMap;
@@ -33,16 +33,16 @@ import java.util.Map;
  * @author pchretien, evernat
  */
 public final class ExportHelper {
-	private final PersistenceManager persistenceManager;
+	private final StoreManager storeManager;
 
 	/**
 	 * Constructeur.
-	 * @param persistenceManager PersistenceManager for MasterData management
+	 * @param storeManager StoreManager for MasterData management
 	 */
-	public ExportHelper(final PersistenceManager persistenceManager) {
-		Assertion.checkNotNull(persistenceManager);
+	public ExportHelper(final StoreManager storeManager) {
+		Assertion.checkNotNull(storeManager);
 		//-----
-		this.persistenceManager = persistenceManager;
+		this.storeManager = storeManager;
 	}
 
 	/**
@@ -72,7 +72,7 @@ public final class ExportHelper {
 	private Object getValue(final boolean forceStringValue, final Map<DtField, Map<Object, String>> referenceCache, final Map<DtField, Map<Object, String>> denormCache, final DtObject dto, final ExportField exportColumn) {
 		final DtField dtField = exportColumn.getDtField();
 		Object value;
-		if (dtField.getType() == DtField.FieldType.FOREIGN_KEY && persistenceManager.getMasterDataConfig().containsMasterData(dtField.getFkDtDefinition())) {
+		if (dtField.getType() == DtField.FieldType.FOREIGN_KEY && storeManager.getMasterDataConfig().containsMasterData(dtField.getFkDtDefinition())) {
 			Map<Object, String> referenceIndex = referenceCache.get(dtField);
 			if (referenceIndex == null) {
 				referenceIndex = createReferentielIndex(dtField);
@@ -100,8 +100,8 @@ public final class ExportHelper {
 	private Map<Object, String> createReferentielIndex(final DtField dtField) {
 		//TODO ceci est un copier/coller de KSelectionListBean (qui resemble plus à un helper des MasterData qu'a un bean)
 		//La collection n'est pas précisé alors on va la chercher dans le repository du référentiel
-		final DtListURIForMasterData mdlUri = persistenceManager.getMasterDataConfig().getDtListURIForMasterData(dtField.getFkDtDefinition());
-		final DtList<DtObject> valueList = persistenceManager.getBroker().getList(mdlUri);
+		final DtListURIForMasterData mdlUri = storeManager.getMasterDataConfig().getDtListURIForMasterData(dtField.getFkDtDefinition());
+		final DtList<DtObject> valueList = storeManager.getDataStore().getList(mdlUri);
 		final DtField dtFieldDisplay = mdlUri.getDtDefinition().getDisplayField().get();
 		final DtField dtFieldKey = valueList.getDefinition().getIdField().get();
 		return createDenormIndex(valueList, dtFieldKey, dtFieldDisplay);

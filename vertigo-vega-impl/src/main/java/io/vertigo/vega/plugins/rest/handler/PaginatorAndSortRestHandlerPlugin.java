@@ -99,7 +99,7 @@ public final class PaginatorAndSortRestHandlerPlugin implements RestHandlerPlugi
 		response.header("listServerToken", listServerToken);
 		response.header("x-total-count", String.valueOf(fullList.size())); //TODO total count should be list meta
 		final DtList<?> filteredList = applySortAndPagination(fullList, uiListState);
-		filteredList.setMetaData("total-count", fullList.size());
+		filteredList.setMetaData(DtList.TOTAL_COUNT_META, fullList.size());
 		return filteredList;
 	}
 

@@ -48,7 +48,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 			.beginModule("spacs").
 				beginComponent(LocaleManager.class, LocaleManagerImpl.class)
 					//les locales doivent être séparées par des virgules
-					.withParam("locales", "fr_FR, en , de_DE")
+					.addParam("locales", "fr_FR, en , de_DE")
 				.endComponent()
 			.endModule()
 			.build();

@@ -363,7 +363,11 @@ public final class VTransactionImpl implements VTransactionWritable {
 		try {
 			rollback();
 		} finally {
-			CURRENT_THREAD_LOCAL_TRANSACTION.remove();
+			final boolean isAutonomous = parentTransaction != null;
+			if (!isAutonomous) {
+				//C'est uniquement lors de la clôture de la transaction racine qu'on la supprime du threadLocal.
+				CURRENT_THREAD_LOCAL_TRANSACTION.remove();
+			}
 		}
 	}
 

@@ -18,11 +18,11 @@
  */
 package io.vertigo.vega.impl.token;
 
-import io.vertigo.dynamo.kvdatastore.KVDataStoreManager;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
-import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.persona.security.UserSession;
+import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.token.TokenManager;
 
 import java.io.Serializable;
@@ -42,17 +42,17 @@ public final class TokenManagerImpl implements TokenManager {
 	private final String dataStoreName;
 	private final VSecurityManager securityManager;
 	/** Object token, by */
-	private final KVDataStoreManager kvDataStoreManager;
+	private final StoreManager storeManager;
 
 	@Inject
-	public TokenManagerImpl(@Named("dataStoreName") final String dataStoreName, final VSecurityManager securityManager, final KVDataStoreManager kvDataStoreManager) {
+	public TokenManagerImpl(@Named("dataStoreName") final String dataStoreName, final VSecurityManager securityManager, final StoreManager storeManager) {
 		Assertion.checkArgNotEmpty(dataStoreName);
 		Assertion.checkNotNull(securityManager);
-		Assertion.checkNotNull(kvDataStoreManager);
+		Assertion.checkNotNull(storeManager);
 		//-----
 		this.dataStoreName = dataStoreName;
 		this.securityManager = securityManager;
-		this.kvDataStoreManager = kvDataStoreManager;
+		this.storeManager = storeManager;
 	}
 
 	//===========================================================================
@@ -66,7 +66,7 @@ public final class TokenManagerImpl implements TokenManager {
 		//-----
 		final String objectUUID = UUID.randomUUID().toString();
 		final String tokenKey = makeTokenKey(objectUUID);
-		kvDataStoreManager.put(dataStoreName, tokenKey, data);
+		storeManager.getKVStore().put(dataStoreName, tokenKey, data);
 		return objectUUID; //We only return the object part.
 	}
 
@@ -76,7 +76,7 @@ public final class TokenManagerImpl implements TokenManager {
 		Assertion.checkArgNotEmpty(objectUUID, "Security key is mandatory");
 		//-----
 		final String tokenKey = makeTokenKey(objectUUID);
-		return kvDataStoreManager.find(dataStoreName, tokenKey, Serializable.class);
+		return storeManager.getKVStore().find(dataStoreName, tokenKey, Serializable.class);
 	}
 
 	/** {@inheritDoc} */
@@ -85,9 +85,9 @@ public final class TokenManagerImpl implements TokenManager {
 		Assertion.checkArgNotEmpty(objectUUID, "Security key is mandatory");
 		//-----
 		final String tokenKey = makeTokenKey(objectUUID);
-		final Option<Serializable> result = kvDataStoreManager.find(dataStoreName, tokenKey, Serializable.class);
+		final Option<Serializable> result = storeManager.getKVStore().find(dataStoreName, tokenKey, Serializable.class);
 		if (result.isDefined()) {
-			kvDataStoreManager.remove(dataStoreName, tokenKey);
+			storeManager.getKVStore().remove(dataStoreName, tokenKey);
 		}
 		return result;
 	}

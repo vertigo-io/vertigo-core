@@ -24,7 +24,9 @@ import io.vertigo.lang.Assertion;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.SortedMap;
 
 /**
  * Facette.
@@ -46,13 +48,14 @@ public final class Facet implements Serializable {
 	/**
 	 * Constructeur.
 	 * @param facetDefinition Definition de la facette
-	 * @param facetValues Liste des valeurs de facette
+	 * @param facetValues Liste des valeurs de facette (ordonnée)
 	 */
 	public Facet(final FacetDefinition facetDefinition, final Map<FacetValue, Long> facetValues) {
 		Assertion.checkNotNull(facetDefinition);
 		Assertion.checkNotNull(facetValues);
+		Assertion.checkArgument(facetValues instanceof LinkedHashMap || facetValues instanceof SortedMap, "FacetValues must be sorted, shoud implements SortedMap or LinkedHashMap ({0})", facetValues.getClass().getSimpleName());
 		//-----
-		this.facetDefinitionRef = new DefinitionReference<>(facetDefinition);
+		facetDefinitionRef = new DefinitionReference<>(facetDefinition);
 		this.facetValues = Collections.unmodifiableMap(facetValues);
 	}
 
@@ -64,7 +67,7 @@ public final class Facet implements Serializable {
 	}
 
 	/**
-	 * Valeurs des facettes. (Range ou Term)
+	 * Valeurs des facettes ordonnées. (Range ou Term)
 	 * @return Map (range | term ; count)
 	 */
 	public Map<FacetValue, Long> getFacetValues() {

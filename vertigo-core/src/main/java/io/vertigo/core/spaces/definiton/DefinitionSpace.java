@@ -18,9 +18,10 @@
  */
 package io.vertigo.core.spaces.definiton;
 
-import io.vertigo.core.config.AppConfig;
+import io.vertigo.core.boot.BootConfig;
 import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.config.ResourceConfig;
+import io.vertigo.dynamo.impl.environment.Environment;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
@@ -43,7 +44,7 @@ import java.util.Map;
  * @author pchretien
  */
 public final class DefinitionSpace implements Activeable {
-	private final Map<String, ResourceLoader> resourceLoaders = new HashMap<>();
+	private Environment myEnvironment = null;
 
 	/**
 	 * Liste des objets indexés par Class (le type) et nom.
@@ -52,7 +53,7 @@ public final class DefinitionSpace implements Activeable {
 	@JsonExclude
 	private final Map<String, Definition> allObjects = new LinkedHashMap<>(); //byId
 
-	public DefinitionSpace(final AppConfig appConfig) {
+	public DefinitionSpace(final BootConfig bootConfig) {
 		//
 	}
 
@@ -62,18 +63,20 @@ public final class DefinitionSpace implements Activeable {
 		//			int resourcesToBeLoad = moduleConfig.getResourceConfigs().size();
 		//We are doing a copy of all resources, to check that they are all parsed.
 		final List<ResourceConfig> resourceConfigsToDo = new ArrayList<>(moduleConfig.getResourceConfigs());
-		for (final ResourceLoader resourceLoader : getResourceLoaders()) {
-			//Candidates contins all resources that can be treated by the resourceLoader
-			final List<ResourceConfig> candidates = new ArrayList<>();
-			for (final Iterator<ResourceConfig> it = resourceConfigsToDo.iterator(); it.hasNext();) {
-				final ResourceConfig resourceConfig = it.next();
-				if (resourceLoader.getTypes().contains(resourceConfig.getType())) {
-					candidates.add(resourceConfig);
-					it.remove();
-				}
+		//-----
+		//Candidates contins all resources that can be treated by the resourceLoader
+		final List<ResourceConfig> candidates = new ArrayList<>();
+		for (final Iterator<ResourceConfig> it = resourceConfigsToDo.iterator(); it.hasNext();) {
+			final ResourceConfig resourceConfig = it.next();
+			if (myEnvironment.getTypes().contains(resourceConfig.getType())) {
+				candidates.add(resourceConfig);
+				it.remove();
 			}
-			resourceLoader.parse(candidates);
 		}
+		if (myEnvironment != null) {
+			myEnvironment.parse(candidates);
+		}
+		//-----	
 		Assertion.checkArgument(resourceConfigsToDo.isEmpty(), "All resources '{0}' have not been parsed successfully ", resourceConfigsToDo);
 	}
 
@@ -81,7 +84,7 @@ public final class DefinitionSpace implements Activeable {
 	 * Enregistrement d'une nouveau type d'objet géré par le space (éligibles).
 	 * @param clazz Classe gérée
 	 */
-	public void register(final Class<? extends Definition> clazz) {
+	private void register(final Class<? extends Definition> clazz) {
 		Assertion.checkNotNull(clazz);
 		Assertion.checkArgument(!definitions.containsKey(clazz), "Type '{0}' deja enregistré", clazz.getName());
 		//-----
@@ -91,16 +94,16 @@ public final class DefinitionSpace implements Activeable {
 	/**
 	 * Enregistrement d'un nouvel object.
 	 * @param definition Objet à enregistrer
-	 * @param clazz type de l'object
 	 */
-	public void put(final Definition definition, final Class<? extends Definition> clazz) {
+	public void put(final Definition definition) {
 		Assertion.checkNotNull(definition, "L'objet ne peut pas pas être null !");
-		Assertion.checkNotNull(clazz);
-		Assertion.checkArgument(definitions.containsKey(clazz), "L'objet {0} ne peut pas pas être enregistré, son type  '{1}' est inconnu !", definition, clazz);
 		//-----
-		final Map<String, Definition> tobjects = definitions.get(clazz);
+		if (!definitions.containsKey(definition.getClass())) {
+			register(definition.getClass());
+		}
+		final Map<String, Definition> tobjects = definitions.get(definition.getClass());
 		final String name = definition.getName();
-		checkName(name, clazz);
+		checkName(name, definition.getClass());
 		final Definition previous = tobjects.put(name, definition);
 		Assertion.checkArgument(previous == null, "L'objet {0} est déja enregistré !", name);
 		//-----
@@ -177,13 +180,15 @@ public final class DefinitionSpace implements Activeable {
 	 */
 	public <C extends Definition> Collection<C> getAll(final Class<C> clazz) {
 		Assertion.checkNotNull(clazz); // Le type des objets recherchés ne peut pas être null
-		Assertion.checkArgument(definitions.containsKey(clazz), "Type '{0}' non enregistré", clazz.getName());
 		//-----
-		return (Collection<C>) definitions.get(clazz).values();
+		if (definitions.containsKey(clazz)) {
+			return (Collection<C>) definitions.get(clazz).values();
+		}
+		return Collections.emptyList();
 	}
 
 	public boolean isEmpty() {
-		return definitions.isEmpty() && allObjects.isEmpty() && resourceLoaders.isEmpty();
+		return definitions.isEmpty() && allObjects.isEmpty();
 	}
 
 	/** {@inheritDoc} */
@@ -197,20 +202,13 @@ public final class DefinitionSpace implements Activeable {
 	public void stop() {
 		definitions.clear();
 		allObjects.clear();
-		resourceLoaders.clear();
+		myEnvironment = null;
 	}
 
-	private Collection<ResourceLoader> getResourceLoaders() {
-		return Collections.unmodifiableCollection(resourceLoaders.values());
-	}
-
-	public void addLoader(final ResourceLoader resourceLoader) {
-		Assertion.checkNotNull(resourceLoader);
-		Assertion.checkArgument(!resourceLoader.getTypes().isEmpty(), "a loader must be able to parse at least one type of resource");
+	public void addLoader(final Environment environment) {
+		Assertion.checkNotNull(environment);
+		Assertion.checkArgument(!environment.getTypes().isEmpty(), "a loader must be able to parse at least one type of resource");
 		//-----
-		for (final String type : resourceLoader.getTypes()) {
-			final ResourceLoader previous = resourceLoaders.put(type, resourceLoader);
-			Assertion.checkArgument(previous == null, "this type {0} of resource is already defined", type);
-		}
+		myEnvironment = environment;
 	}
 }

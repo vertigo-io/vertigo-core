@@ -19,17 +19,22 @@
 package io.vertigo.dynamo.plugins.search.elasticsearch;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.dynamo.domain.metamodel.DataAccessor;
+import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.search.SearchIndexFieldNameResolver;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
@@ -44,6 +49,7 @@ import org.elasticsearch.search.SearchHit;
 final class ESDocumentCodec {
 	/** FieldName containing Full result object. */
 	static final String FULL_RESULT = "FULL_RESULT";
+
 	//public static final String URN = "URI";
 	//-----
 	private final CodecManager codecManager;
@@ -76,42 +82,49 @@ final class ESDocumentCodec {
 	/**
 	 * Transformation d'un resultat ElasticSearch en un index.
 	 * Les highlights sont ajoutés avant ou après (non determinable).
+	 * @param <S> Type du sujet représenté par ce document
 	 * @param <I> Type d'object indexé
-	 * @param <R> Type d'object resultat
 	 * @param indexDefinition Definition de l'index
 	 * @param searchHit Resultat ElasticSearch
 	 * @return Objet logique de recherche
 	 */
-	<I extends DtObject, R extends DtObject> SearchIndex<I, R> searchHit2Index(final SearchIndexDefinition indexDefinition, final SearchHit searchHit) {
+	<S extends KeyConcept, I extends DtObject> SearchIndex<S, I> searchHit2Index(final SearchIndexDefinition indexDefinition, final SearchHit searchHit) {
 		/* On lit du document les données persistantes. */
 		/* 1. URI */
 		final String urn = searchHit.getId();
 		final URI uri = io.vertigo.dynamo.domain.model.URI.fromURN(urn);
 
 		/* 2 : Result stocké */
-		final R resultDtObjectdtObject;
+		final I resultDtObjectdtObject;
 		if (searchHit.field(FULL_RESULT) == null) {
 			resultDtObjectdtObject = decode((String) searchHit.getSource().get(FULL_RESULT));
 		} else {
 			resultDtObjectdtObject = decode((String) searchHit.field(FULL_RESULT).getValue());
 		}
 		//-----
-		return SearchIndex.createResult(indexDefinition, uri, resultDtObjectdtObject);
+		return SearchIndex.createIndex(indexDefinition, uri, resultDtObjectdtObject);
 	}
 
 	/**
-	 * Transformation d'un index en un document SOLR.
+	 * Transformation d'un index en un document ElasticSearch.
+	 * @param <S> Type du sujet représenté par ce document
 	 * @param <I> Type d'object indexé
-	 * @param <R> Type d'object resultat
 	 * @param index Objet logique de recherche
-	 * @param indexFieldNameResolver Resolver de nom de champs d'index
 	 * @return Document SOLR
 	 * @throws IOException Json exception
 	 */
-	<I extends DtObject, R extends DtObject> XContentBuilder index2XContentBuilder(final SearchIndex<I, R> index, final SearchIndexFieldNameResolver indexFieldNameResolver) throws IOException {
+	<S extends KeyConcept, I extends DtObject> XContentBuilder index2XContentBuilder(final SearchIndex<S, I> index) throws IOException {
 		Assertion.checkNotNull(index);
-		Assertion.checkNotNull(indexFieldNameResolver);
 		//-----
+
+		final DtDefinition dtDefinition = index.getDefinition().getIndexDtDefinition();
+		final List<DtField> notStoredFields = getNotStoredFields(dtDefinition);
+		final I dtResult;
+		if (notStoredFields.isEmpty()) {
+			dtResult = index.getIndexDtObject();
+		} else {
+			dtResult = cloneDto(dtDefinition, index.getIndexDtObject(), notStoredFields);
+		}
 
 		final XContentBuilder xContentBuilder = XContentFactory.jsonBuilder();
 
@@ -119,7 +132,7 @@ final class ESDocumentCodec {
 		xContentBuilder.startObject();
 		//xContentBuilder.field(URN, index.getURI().toURN());
 		/* 2 : Result stocké */
-		final String result = encode(index.getResultDtObject());
+		final String result = encode(dtResult);
 		xContentBuilder.field(FULL_RESULT, result);
 
 		/* 3 : Les champs du dto index */
@@ -129,8 +142,7 @@ final class ESDocumentCodec {
 		for (final DtField dtField : indexDtDefinition.getFields()) {
 			final Object value = dtField.getDataAccessor().getValue(dtIndex);
 			if (value != null) { //les valeurs null ne sont pas indexées => conséquence : on ne peut les rechercher
-				//solrInputDocument.addField(dtField.getName(), value);
-				final String indexFieldName = indexFieldNameResolver.obtainIndexFieldName(dtField);
+				final String indexFieldName = dtField.getName();
 				if (value instanceof String) {
 					final String encodedValue = escapeInvalidUTF8Char((String) value);
 					xContentBuilder.field(indexFieldName, encodedValue);
@@ -141,6 +153,32 @@ final class ESDocumentCodec {
 		}
 		xContentBuilder.endObject();
 		return xContentBuilder;
+	}
+
+	private List<DtField> getNotStoredFields(final DtDefinition dtDefinition) {
+		final List<DtField> notStoredFields = new ArrayList<>();
+		for (final DtField dtField : dtDefinition.getFields()) {
+			if (!isIndexStoredDomain(dtField.getDomain())) {
+				notStoredFields.add(dtField);
+			}
+		}
+		return notStoredFields;
+	}
+
+	private <I extends DtObject> I cloneDto(final DtDefinition dtDefinition, final I dto, final List<DtField> excludedFields) {
+		final I clonedDto = (I) DtObjectUtil.createDtObject(dtDefinition);
+		for (final DtField dtField : dtDefinition.getFields()) {
+			if (!excludedFields.contains(dtField)) {
+				final DataAccessor dataAccessor = dtField.getDataAccessor();
+				dataAccessor.setValue(clonedDto, dataAccessor.getValue(dto));
+			}
+		}
+		return clonedDto;
+	}
+
+	private static boolean isIndexStoredDomain(final Domain domain) {
+		final Option<IndexType> indexType = IndexType.readIndexType(domain);
+		return indexType.isEmpty() || indexType.get().isIndexStored(); //is no specific indexType, the field should be stored
 	}
 
 	private static String escapeInvalidUTF8Char(final String value) {

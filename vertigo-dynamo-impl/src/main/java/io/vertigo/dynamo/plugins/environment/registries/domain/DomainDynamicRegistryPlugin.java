@@ -38,6 +38,7 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
+import io.vertigo.dynamo.impl.environment.KernelGrammar;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
 import io.vertigo.dynamo.impl.environment.kernel.meta.EntityProperty;
@@ -72,39 +73,42 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 	public DomainDynamicRegistryPlugin() {
 		super(DomainGrammar.GRAMMAR);
 		definitionSpace = Home.getDefinitionSpace();
-		definitionSpace.register(DtDefinition.class);
-		definitionSpace.register(Domain.class);
-		definitionSpace.register(FormatterDefinition.class);
-		definitionSpace.register(ConstraintDefinition.class);
-		definitionSpace.register(AssociationSimpleDefinition.class);
-		definitionSpace.register(AssociationNNDefinition.class);
+
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<DynamicDefinition> getRootDynamicDefinitions() {
+		final List<DynamicDefinition> dynamicDefinitions = new ArrayList<>();
+		//On liste les types primitifs
+		final Entity dataTypeEntity = KernelGrammar.getDataTypeEntity();
+		for (final DataType type : DataType.values()) {
+			dynamicDefinitions.add(DynamicDefinitionRepository.createDynamicDefinitionBuilder(type.name(), dataTypeEntity, null).build());
+		}
+		return dynamicDefinitions;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void onDefinition(final DynamicDefinition xdefinition) {
 		final Entity entity = xdefinition.getEntity();
+		final Definition definition;
 		if (entity.equals(DomainGrammar.DOMAIN_ENTITY)) {
-			final Domain definition = createDomain(xdefinition);
-			definitionSpace.put(definition, Domain.class);
+			definition = createDomain(xdefinition);
 		} else if (entity.equals(DomainGrammar.DT_DEFINITION_ENTITY)) {
-			final DtDefinition dtDefinition = createDtDefinition(xdefinition);
-			definitionSpace.put(dtDefinition, DtDefinition.class);
+			definition = createDtDefinition(xdefinition);
 		} else if (entity.equals(DomainGrammar.ASSOCIATION_ENTITY)) {
-			final AssociationSimpleDefinition definition = createAssociationSimpleDefinition(xdefinition);
-			definitionSpace.put(definition, AssociationSimpleDefinition.class);
+			definition = createAssociationSimpleDefinition(xdefinition);
 		} else if (entity.equals(DomainGrammar.ASSOCIATION_NN_ENTITY)) {
-			final AssociationNNDefinition definition = createAssociationNNDefinition(xdefinition);
-			definitionSpace.put(definition, AssociationNNDefinition.class);
+			definition = createAssociationNNDefinition(xdefinition);
 		} else if (entity.equals(DomainGrammar.CONSTAINT_ENTITY)) {
-			final ConstraintDefinition definition = createConstraint(xdefinition);
-			definitionSpace.put(definition, ConstraintDefinition.class);
+			definition = createConstraint(xdefinition);
 		} else if (entity.equals(DomainGrammar.FORMATTER_ENTITY)) {
-			final FormatterDefinition definition = createFormatter(xdefinition);
-			definitionSpace.put(definition, FormatterDefinition.class);
+			definition = createFormatter(xdefinition);
 		} else {
 			throw new IllegalArgumentException("Type de définition non gérée: " + xdefinition.getDefinitionKey().getName());
 		}
+		definitionSpace.put(definition);
 	}
 
 	/**
@@ -221,7 +225,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 			final boolean sort = fieldName.equals(sortFieldName);
 			final boolean display = fieldName.equals(displayFieldName);
 			//-----
-			dtDefinitionBuilder.withIdField(fieldName, label, domain, sort, display);
+			dtDefinitionBuilder.addIdField(fieldName, label, domain, sort, display);
 		}
 	}
 
@@ -248,7 +252,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 			final boolean sort = fieldName.equals(sortFieldName);
 			final boolean display = fieldName.equals(displayFieldName);
 			//-----
-			dtDefinitionBuilder.withDataField(fieldName, label, domain, notNull, persistent, sort, display);
+			dtDefinitionBuilder.addDataField(fieldName, label, domain, notNull, persistent, sort, display);
 		}
 	}
 
@@ -271,7 +275,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 			final boolean sort = fieldName.equals(sortFieldName);
 			final boolean display = fieldName.equals(displayFieldName);
 
-			dtDefinitionBuilder.withComputedField(fieldName, label, domain, computedExpression, sort, display);
+			dtDefinitionBuilder.addComputedField(fieldName, label, domain, computedExpression, sort, display);
 		}
 	}
 
@@ -354,7 +358,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		LOGGER.trace("" + xassociation.getDefinitionKey().getName() + " : ajout d'une FK [" + fkFieldName + "] sur la table '" + foreignAssociationNode.getDtDefinition().getName() + "'");
 
 		final String label = primaryAssociationNode.getLabel();
-		dtDefinitionBuilders.get(foreignAssociationNode.getDtDefinition().getName()).withForeignKey(fkFieldName, label, fkDefinition.getIdField().get().getDomain(), primaryAssociationNode.isNotNull(), fkDefinition.getName(), false, false); //On estime qu'une FK n'est ni une colonne de tri ni un champ d'affichage
+		dtDefinitionBuilders.get(foreignAssociationNode.getDtDefinition().getName()).addForeignKey(fkFieldName, label, fkDefinition.getIdField().get().getDomain(), primaryAssociationNode.isNotNull(), fkDefinition.getName(), false, false); //On estime qu'une FK n'est ni une colonne de tri ni un champ d'affichage
 
 		return associationSimpleDefinition;
 	}
@@ -371,7 +375,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		//On associe les propriétés Dt et Ksp par leur nom.
 		for (final EntityProperty entityProperty : dynamicDefinition.getProperties()) {
 			final Property property = DtProperty.valueOf(entityProperty.getName());
-			propertiesBuilder.withValue(property, dynamicDefinition.getPropertyValue(entityProperty));
+			propertiesBuilder.addValue(property, dynamicDefinition.getPropertyValue(entityProperty));
 		}
 		return propertiesBuilder.build();
 	}
@@ -396,9 +400,9 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		final DynamicDefinitionKey dtObjectKey = new DynamicDefinitionKey("DtObject");
 
 		final DynamicDefinition domain = DynamicDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain, packageName)
-				.withDefinition("dataType", dtObjectKey)
+				.addDefinition("dataType", dtObjectKey)
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
-				.withPropertyValue(KspProperty.TYPE, definitionName)
+				.addPropertyValue(KspProperty.TYPE, definitionName)
 				.build();
 
 		//On ajoute le domain crée au repository
@@ -408,9 +412,9 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 		final DynamicDefinitionKey dtListKey = new DynamicDefinitionKey("DtList");
 		final DynamicDefinition domain2 = DynamicDefinitionRepository.createDynamicDefinitionBuilder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTC", metaDefinitionDomain, packageName)
-				.withDefinition("dataType", dtListKey)
+				.addDefinition("dataType", dtListKey)
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
-				.withPropertyValue(KspProperty.TYPE, definitionName)
+				.addPropertyValue(KspProperty.TYPE, definitionName)
 				.build();
 
 		//On ajoute le domain crée au repository

@@ -35,7 +35,7 @@ final class FileGrammar {
 
 	static {
 		FILE_INFO_DEFINITION_ENTITY = new EntityBuilder("FileInfo")
-				.withProperty(KspProperty.ROOT, true)
+				.addProperty(KspProperty.ROOT, true)
 				.build();
 		GRAMMAR = new Grammar(FILE_INFO_DEFINITION_ENTITY);
 	}

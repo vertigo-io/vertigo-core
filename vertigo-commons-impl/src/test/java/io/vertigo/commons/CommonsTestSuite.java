@@ -31,6 +31,8 @@ import io.vertigo.commons.codec.hash.HashCodecSha1Test;
 import io.vertigo.commons.codec.hash.HashCodecSha256Test;
 import io.vertigo.commons.codec.html.HtmlCodecTest;
 import io.vertigo.commons.codec.serialization.SerializationCodecTest;
+import io.vertigo.commons.daemon.DaemonManagerTest;
+import io.vertigo.commons.event.EventManagerTest;
 import io.vertigo.commons.parser.CalculatorTest;
 import io.vertigo.commons.parser.ParserTest;
 import io.vertigo.commons.script.ScriptManagerTest;
@@ -62,11 +64,14 @@ import org.junit.runners.Suite.SuiteClasses;
 		HashCodecSha256Test.class,
 		HtmlCodecTest.class,
 		SerializationCodecTest.class,
+		//--daemon
+		DaemonManagerTest.class,
 		//--script
 		ScriptManagerTest.class,
 		//--parser
 		ParserTest.class,
 		CalculatorTest.class,
+		EventManagerTest.class
 })
 public final class CommonsTestSuite {
 	//

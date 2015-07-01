@@ -30,9 +30,9 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilterUtil;
-import io.vertigo.dynamo.search.SearchIndexFieldNameResolver;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
@@ -77,6 +77,7 @@ import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation.Buck
 import org.elasticsearch.search.aggregations.bucket.range.Range;
 import org.elasticsearch.search.aggregations.bucket.range.RangeBuilder;
 import org.elasticsearch.search.aggregations.bucket.range.date.DateRangeBuilder;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsBuilder;
 import org.elasticsearch.search.aggregations.metrics.tophits.TopHits;
 import org.elasticsearch.search.highlight.HighlightField;
@@ -89,10 +90,10 @@ import org.elasticsearch.search.sort.SortOrder;
  * Requête physique d'accès à ElasticSearch.
  * Le driver exécute les requêtes de façon synchrone dans le contexte transactionnelle de la ressource.
  * @author pchretien, npiedeloup
- * @param <I> Type de l'objet contenant les champs à indexer
- * @param <R> Type de l'objet resultant de la recherche
+ * @param <I> Type de l'objet représentant l'index
+ * @param <K> Type du keyConcept métier indexé
  */
-final class ESStatement<I extends DtObject, R extends DtObject> {
+final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	private static final int TOPHITS_SUBAGGREAGTION_SIZE = 10; //max 10 documents per cluster when clusterization is used
 	private static final String TOPHITS_SUBAGGREAGTION_NAME = "top";
 	private static final String DATE_PATTERN = "dd/MM/yy";
@@ -100,36 +101,33 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 
 	private final String indexName;
 	private final Client esClient;
-	private final ESDocumentCodec elasticSearchDocumentCodec;
-	private final SearchIndexFieldNameResolver indexFieldNameResolver;
+	private final ESDocumentCodec esDocumentCodec;
 
 	/**
 	 * Constructeur.
-	 * @param solrDocumentCodec Codec de traduction (bi-directionnelle) des objets métiers en document Solr
+	 * @param esDocumentCodec Codec de traduction (bi-directionnelle) des objets métiers en document Solr
+	 * @param indexName Index name
 	 * @param esClient Client ElasticSearch.
-	 * @param indexFieldNameResolver Resolver de nom de champ de l'index
 	 */
-	ESStatement(final ESDocumentCodec solrDocumentCodec, final String indexName, final Client esClient, final SearchIndexFieldNameResolver indexFieldNameResolver) {
+	ESStatement(final ESDocumentCodec esDocumentCodec, final String indexName, final Client esClient) {
 		Assertion.checkArgNotEmpty(indexName);
-		Assertion.checkNotNull(solrDocumentCodec);
+		Assertion.checkNotNull(esDocumentCodec);
 		Assertion.checkNotNull(esClient);
-		Assertion.checkNotNull(indexFieldNameResolver);
 		//-----
 		this.indexName = indexName;
 		this.esClient = esClient;
-		this.elasticSearchDocumentCodec = solrDocumentCodec;
-		this.indexFieldNameResolver = indexFieldNameResolver;
+		this.esDocumentCodec = esDocumentCodec;
 	}
 
 	/**
 	 * @param indexCollection Collection des indexes à insérer
 	 */
-	void putAll(final Collection<SearchIndex<I, R>> indexCollection) {
+	void putAll(final Collection<SearchIndex<K, I>> indexCollection) {
 		//Injection spécifique au moteur d'indexation.
 		try {
 			final BulkRequestBuilder bulkRequest = esClient.prepareBulk();
-			for (final SearchIndex<I, R> index : indexCollection) {
-				try (final XContentBuilder xContentBuilder = elasticSearchDocumentCodec.index2XContentBuilder(index, indexFieldNameResolver)) {
+			for (final SearchIndex<K, I> index : indexCollection) {
+				try (final XContentBuilder xContentBuilder = esDocumentCodec.index2XContentBuilder(index)) {
 					bulkRequest.add(esClient.prepareIndex(indexName, index.getURI().getDefinition().getName(), index.getURI().toURN())
 							.setSource(xContentBuilder));
 				}
@@ -150,9 +148,9 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	/**
 	 * @param index index à insérer
 	 */
-	void put(final SearchIndex<I, R> index) {
+	void put(final SearchIndex<K, I> index) {
 		//Injection spécifique au moteur d'indexation.
-		try (final XContentBuilder xContentBuilder = elasticSearchDocumentCodec.index2XContentBuilder(index, indexFieldNameResolver)) {
+		try (final XContentBuilder xContentBuilder = esDocumentCodec.index2XContentBuilder(index)) {
 			esClient.prepareIndex(indexName, index.getURI().getDefinition().getName(), index.getURI().toURN())
 					.setSource(xContentBuilder)
 					.execute() //execute asynchrone
@@ -170,7 +168,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	void remove(final SearchIndexDefinition indexDefinition, final ListFilter query) {
 		Assertion.checkNotNull(query);
 		//-----
-		final QueryBuilder queryBuilder = translateToQueryBuilder(query, indexFieldNameResolver);
+		final QueryBuilder queryBuilder = translateToQueryBuilder(query);
 		esClient.prepareDeleteByQuery(indexName)
 				.setQuery(queryBuilder)
 				.execute()
@@ -197,7 +195,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 	 * @param defaultMaxRows Nombre de ligne max par defaut
 	 * @return Résultat de la recherche
 	 */
-	FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows) {
+	FacetedQueryResult<I, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows) {
 		Assertion.checkNotNull(searchQuery);
 		//-----
 		final SearchRequestBuilder searchRequestBuilder = createSearchRequestBuilder(indexDefinition, searchQuery, listState, defaultMaxRows);
@@ -226,19 +224,19 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 				.setSize(searchQuery.isClusteringFacet() ? 0 : listState.getMaxRows().getOrElse(defaultMaxRows));
 		if (listState.getSortFieldName().isDefined()) {
 			final DtField sortField = indexDefinition.getIndexDtDefinition().getField(listState.getSortFieldName().get());
-			final FieldSortBuilder sortBuilder = SortBuilders.fieldSort(indexFieldNameResolver.obtainIndexFieldName(sortField))
+			final FieldSortBuilder sortBuilder = SortBuilders.fieldSort(sortField.getName())
 					.ignoreUnmapped(true)
 					.order(listState.isSortDesc().get() ? SortOrder.DESC : SortOrder.ASC);
 			searchRequestBuilder.addSort(sortBuilder);
 		}
-		QueryBuilder queryBuilder = translateToQueryBuilder(searchQuery.getListFilter(), indexFieldNameResolver);
+		QueryBuilder queryBuilder = translateToQueryBuilder(searchQuery.getListFilter());
 		if (searchQuery.isBoostMostRecent()) {
 			queryBuilder = appendBoostMostRecent(searchQuery, queryBuilder);
 		}
 		if (searchQuery.getFacetedQuery().isDefined() && !searchQuery.getFacetedQuery().get().getListFilters().isEmpty()) {
 			final AndFilterBuilder filterBuilder = FilterBuilders.andFilter();
 			for (final ListFilter facetQuery : searchQuery.getFacetedQuery().get().getListFilters()) {
-				filterBuilder.add(translateToFilterBuilder(facetQuery, indexFieldNameResolver));
+				filterBuilder.add(translateToFilterBuilder(facetQuery));
 			}
 			//use filteredQuery instead of PostFilter in order to filter aggregations too.
 			queryBuilder = QueryBuilders.filteredQuery(queryBuilder, filterBuilder);
@@ -289,10 +287,9 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 			//facette par range
 			//solrQuery.addFacetQuery(translateToQueryBuilder(facetRange.getListFilter(), indexFieldNameResolver));
 			final DataType dataType = dtField.getDomain().getDataType();
-			final DateRangeBuilder dateRangeBuilder;
 			if (dataType == DataType.Date) {
-				dateRangeBuilder = AggregationBuilders.dateRange(facetDefinition.getName())
-						.field(indexFieldNameResolver.obtainIndexFieldName(dtField))
+				final DateRangeBuilder dateRangeBuilder = AggregationBuilders.dateRange(facetDefinition.getName())
+						.field(dtField.getName())
 						.format(DATE_PATTERN);
 				for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 					final String filterValue = facetRange.getListFilter().getFilterValue();
@@ -311,7 +308,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 			}
 
 			final RangeBuilder rangeBuilder = AggregationBuilders.range(facetDefinition.getName())//
-					.field(indexFieldNameResolver.obtainIndexFieldName(dtField));
+					.field(dtField.getName());
 			for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 				final String filterValue = facetRange.getListFilter().getFilterValue();
 				final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
@@ -330,7 +327,8 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		//facette par field
 		final TermsBuilder aggregationBuilder = AggregationBuilders.terms(facetDefinition.getName())
 				.size(50) //Warning term aggregations are inaccurate : see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html
-				.field(indexFieldNameResolver.obtainIndexFieldName(dtField));
+				.field(dtField.getName())
+				.order(Terms.Order.count(false));
 		return aggregationBuilder;
 	}
 
@@ -344,7 +342,7 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		return Option.some(result);
 	}
 
-	private static QueryBuilder translateToQueryBuilder(final ListFilter listFilter, final SearchIndexFieldNameResolver indexFieldNameResolver) {
+	private static QueryBuilder translateToQueryBuilder(final ListFilter listFilter) {
 		Assertion.checkNotNull(listFilter);
 		//-----
 		final String query = new StringBuilder()
@@ -352,29 +350,29 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 				.append(listFilter.getFilterValue())
 				.append(')')
 				.toString();
-		return QueryBuilders.queryString(indexFieldNameResolver.replaceAllIndexFieldNames(query))
+		return QueryBuilders.queryString(query)
 				.lowercaseExpandedTerms(false);
 	}
 
-	private static FilterBuilder translateToFilterBuilder(final ListFilter query, final SearchIndexFieldNameResolver indexFieldNameResolver) {
-		return FilterBuilders.queryFilter(translateToQueryBuilder(query, indexFieldNameResolver));
+	private static FilterBuilder translateToFilterBuilder(final ListFilter query) {
+		return FilterBuilders.queryFilter(translateToQueryBuilder(query));
 	}
 
-	private FacetedQueryResult<R, SearchQuery> translateQuery(final SearchIndexDefinition indexDefinition, final SearchResponse queryResponse, final SearchQuery searchQuery) {
+	private FacetedQueryResult<I, SearchQuery> translateQuery(final SearchIndexDefinition indexDefinition, final SearchResponse queryResponse, final SearchQuery searchQuery) {
 
-		final Map<R, Map<DtField, String>> resultHighlights = new HashMap<>();
-		final Map<FacetValue, DtList<R>> resultCluster;
-		final DtList<R> dtc = new DtList<>(indexDefinition.getResultDtDefinition());
+		final Map<I, Map<DtField, String>> resultHighlights = new HashMap<>();
+		final Map<FacetValue, DtList<I>> resultCluster;
+		final DtList<I> dtc = new DtList<>(indexDefinition.getIndexDtDefinition());
 		if (searchQuery.isClusteringFacet()) {
-			final Map<String, R> dtcIndex = new LinkedHashMap<>();
+			final Map<String, I> dtcIndex = new LinkedHashMap<>();
 			resultCluster = createCluster(indexDefinition, searchQuery, queryResponse, dtcIndex);
 			dtc.addAll(dtcIndex.values());
 		} else {
 			for (final SearchHit searchHit : queryResponse.getHits()) {
-				final SearchIndex<I, R> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
-				final R result = index.getResultDtObject();
+				final SearchIndex<K, I> index = esDocumentCodec.searchHit2Index(indexDefinition, searchHit);
+				final I result = index.getIndexDtObject();
 				dtc.add(result);
-				final Map<DtField, String> highlights = createHighlight(searchHit, indexDefinition.getResultDtDefinition(), indexFieldNameResolver);
+				final Map<DtField, String> highlights = createHighlight(searchHit, indexDefinition.getIndexDtDefinition());
 				resultHighlights.put(result, highlights);
 			}
 			resultCluster = Collections.emptyMap();
@@ -385,8 +383,8 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		return new FacetedQueryResult<>(searchQuery.getFacetedQuery(), count, dtc, facets, resultCluster, resultHighlights, searchQuery);
 	}
 
-	private Map<FacetValue, DtList<R>> createCluster(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final SearchResponse queryResponse, final Map<String, R> dtcIndex) {
-		final Map<FacetValue, DtList<R>> resultCluster = new LinkedHashMap<>();
+	private Map<FacetValue, DtList<I>> createCluster(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final SearchResponse queryResponse, final Map<String, I> dtcIndex) {
+		final Map<FacetValue, DtList<I>> resultCluster = new LinkedHashMap<>();
 		final FacetDefinition facetDefinition = searchQuery.getClusteringFacetDefinition();
 		final Aggregation facetAggregation = queryResponse.getAggregations().get(facetDefinition.getName());
 		if (facetDefinition.isRangeFacet()) {
@@ -395,12 +393,12 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 			for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 				final Bucket value = rangeBuckets.getBucketByKey(facetRange.getListFilter().getFilterValue());
 				final SearchHits facetSearchHits = ((TopHits) value.getAggregations().get(TOPHITS_SUBAGGREAGTION_NAME)).getHits();
-				final DtList<R> facetDtc = new DtList<>(indexDefinition.getResultDtDefinition());
+				final DtList<I> facetDtc = new DtList<>(indexDefinition.getIndexDtDefinition());
 				for (final SearchHit searchHit : facetSearchHits) {
-					R result = dtcIndex.get(searchHit.getId());
+					I result = dtcIndex.get(searchHit.getId());
 					if (result == null) {
-						final SearchIndex<I, R> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
-						result = index.getResultDtObject();
+						final SearchIndex<K, I> index = esDocumentCodec.searchHit2Index(indexDefinition, searchHit);
+						result = index.getIndexDtObject();
 						dtcIndex.put(searchHit.getId(), result);
 					}
 					facetDtc.add(result);
@@ -417,12 +415,12 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 				facetValue = new FacetValue(new ListFilter(query), label);
 
 				final SearchHits facetSearchHits = ((TopHits) value.getAggregations().get(TOPHITS_SUBAGGREAGTION_NAME)).getHits();
-				final DtList<R> facetDtc = new DtList<>(indexDefinition.getResultDtDefinition());
+				final DtList<I> facetDtc = new DtList<>(indexDefinition.getIndexDtDefinition());
 				for (final SearchHit searchHit : facetSearchHits) {
-					R result = dtcIndex.get(searchHit.getId());
+					I result = dtcIndex.get(searchHit.getId());
 					if (result == null) {
-						final SearchIndex<I, R> index = elasticSearchDocumentCodec.searchHit2Index(indexDefinition, searchHit);
-						result = index.getResultDtObject();
+						final SearchIndex<K, I> index = esDocumentCodec.searchHit2Index(indexDefinition, searchHit);
+						result = index.getIndexDtObject();
 						dtcIndex.put(searchHit.getId(), result);
 					}
 					facetDtc.add(result);
@@ -433,12 +431,12 @@ final class ESStatement<I extends DtObject, R extends DtObject> {
 		return resultCluster;
 	}
 
-	private static Map<DtField, String> createHighlight(final SearchHit searchHit, final DtDefinition resultDtDefinition, final SearchIndexFieldNameResolver indexFieldNameResolver) {
+	private static Map<DtField, String> createHighlight(final SearchHit searchHit, final DtDefinition resultDtDefinition) {
 		final Map<DtField, String> highlights = new HashMap<>();
 		final Map<String, HighlightField> highlightsMap = searchHit.getHighlightFields();
 
 		for (final Map.Entry<String, HighlightField> entry : highlightsMap.entrySet()) {
-			final String fieldName = indexFieldNameResolver.obtainDtFieldName(entry.getKey());
+			final String fieldName = entry.getKey();
 			if (resultDtDefinition.contains(fieldName)) { //We only keep highlighs match on result's fields
 				final DtField dtField = resultDtDefinition.getField(fieldName);
 				final StringBuilder sb = new StringBuilder();

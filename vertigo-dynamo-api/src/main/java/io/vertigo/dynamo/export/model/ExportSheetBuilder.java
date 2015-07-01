@@ -95,8 +95,8 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @param fieldName ajout d'un champs du Dt à exporter
 	 * @return ExportSheetBuilder
 	 */
-	public ExportSheetBuilder withField(final DtFieldName fieldName) {
-		withField(fieldName, null);
+	public ExportSheetBuilder addField(final DtFieldName fieldName) {
+		addField(fieldName, null);
 		return this;
 	}
 
@@ -107,8 +107,8 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @param displayfield Field du libellé à utiliser.
 	 * @return ExportSheetBuilder
 	 */
-	public ExportSheetBuilder withField(final DtFieldName fieldName, final DtList<?> list, final DtFieldName displayfield) {
-		withField(fieldName, list, displayfield, null);
+	public ExportSheetBuilder addField(final DtFieldName fieldName, final DtList<?> list, final DtFieldName displayfield) {
+		addField(fieldName, list, displayfield, null);
 		return this;
 	}
 
@@ -117,7 +117,7 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @param overridedLabel nom spécifique à utiliser dans l'export, null si l'on souhaite utiliser celui indiqué dans le DT pour ce champs
 	 * @return ExportSheetBuilder
 	 */
-	public ExportSheetBuilder withField(final DtFieldName fieldName, final MessageText overridedLabel) {
+	public ExportSheetBuilder addField(final DtFieldName fieldName, final MessageText overridedLabel) {
 		Assertion.checkNotNull(fieldName);
 		// On vérifie que la colonne est bien dans la définition de la DTC
 		Assertion.checkArgument(dtDefinition.contains(fieldName.name()), "Le champ " + fieldName.name() + " n'est pas dans la liste à exporter");
@@ -136,14 +136,15 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @param overridedLabel nom spécifique à utiliser dans l'export, null si l'on souhaite utiliser celui indiqué dans le DT pour ce champs
 	 * @return ExportSheetBuilder
 	 */
-	public ExportSheetBuilder withField(final DtFieldName fieldName, final DtList<?> list, final DtFieldName displayfield, final MessageText overridedLabel) {
+	public ExportSheetBuilder addField(final DtFieldName fieldName, final DtList<?> list, final DtFieldName displayfield, final MessageText overridedLabel) {
 		Assertion.checkNotNull(fieldName);
 		// On vérifie que la colonne est bien dans la définition de la DTC
 		Assertion.checkArgument(dtDefinition.contains(fieldName.name()), "Le champ " + fieldName.name() + " n'est pas dans la liste à exporter");
+		Assertion.checkArgument(list.getDefinition().contains(displayfield.name()), "Le champ " + displayfield.name() + " n'est pas dans la liste de dénorm");
 		// On ne vérifie pas que les champs ne sont placés qu'une fois
 		// car pour des raisons diverses ils peuvent l'être plusieurs fois.
 		//-----
-		final ExportField exportField = new ExportDenormField(resolveDtField(fieldName), overridedLabel, list, resolveDtField(displayfield));
+		final ExportField exportField = new ExportDenormField(resolveDtField(fieldName), overridedLabel, list, resolveDtField(displayfield, list.getDefinition()));
 		exportFields.add(exportField);
 		return this;
 	}
@@ -167,10 +168,14 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @return ExportBuilder
 	 */
 	public ExportBuilder endSheet() {
-		return exportBuilder.withSheet(build());
+		return exportBuilder.addSheet(build());
 	}
 
 	private DtField resolveDtField(final DtFieldName fieldName) {
-		return dtDefinition.getField(fieldName);
+		return resolveDtField(fieldName, dtDefinition);
+	}
+
+	private DtField resolveDtField(final DtFieldName fieldName, final DtDefinition definition) {
+		return definition.getField(fieldName);
 	}
 }

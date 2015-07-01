@@ -21,7 +21,7 @@ package io.vertigo.dynamo.plugins.export.rtf;
 import io.vertigo.dynamo.export.model.Export;
 import io.vertigo.dynamo.export.model.ExportFormat;
 import io.vertigo.dynamo.impl.export.ExporterPlugin;
-import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.store.StoreManager;
 
 import java.io.OutputStream;
 
@@ -35,17 +35,17 @@ import com.lowagie.text.DocumentException;
  * @author pchretien, npiedeloup
  */
 public final class RTFExporterPlugin implements ExporterPlugin {
-	private final PersistenceManager persistenceManager;
+	private final StoreManager storeManager;
 
 	@Inject
-	public RTFExporterPlugin(final PersistenceManager persistenceManager) {
-		this.persistenceManager = persistenceManager;
+	public RTFExporterPlugin(final StoreManager storeManager) {
+		this.storeManager = storeManager;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void exportData(final Export export, final OutputStream out) throws DocumentException {
-		new RTFExporter(persistenceManager).exportData(export, out);
+		new RTFExporter(storeManager).exportData(export, out);
 	}
 
 	/** {@inheritDoc} */

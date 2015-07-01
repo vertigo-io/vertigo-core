@@ -20,13 +20,28 @@ package io.vertigo.core.di.data;
 
 import io.vertigo.lang.Option;
 
+import java.util.List;
+
 import javax.inject.Inject;
+import javax.inject.Named;
 
 public final class E {
+	private final List<P2> p2Plugins;
+	private final Option<A> a;
+
+	@Inject
+	private P3 p3;
+
 	@Inject
 	private Option<B> b;
 	@Inject
-	private Option<A> a;
+	private List<P> pPlugins;
+
+	@Inject
+	public E(final Option<A> a, final @Named("pen") List<P2> p2Plugins) {
+		this.a = a;
+		this.p2Plugins = p2Plugins;
+	}
 
 	public Option<A> getA() {
 		return a;
@@ -34,5 +49,17 @@ public final class E {
 
 	public Option<B> getB() {
 		return b;
+	}
+
+	public List<P> getPPlugins() {
+		return pPlugins;
+	}
+
+	public List<P2> getP2Plugins() {
+		return p2Plugins;
+	}
+
+	public P3 getP3() {
+		return p3;
 	}
 }

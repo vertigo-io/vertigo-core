@@ -32,7 +32,7 @@ import io.vertigo.dynamo.impl.collections.functions.filter.FilterFunction;
 import io.vertigo.dynamo.impl.collections.functions.sort.SortFunction;
 import io.vertigo.dynamo.impl.collections.functions.sort.SortState;
 import io.vertigo.dynamo.impl.collections.functions.sublist.SubListFunction;
-import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 
@@ -55,9 +55,9 @@ final class DtListProcessorImpl implements DtListProcessor {
 		this.listFunctions = listFunctions;
 	}
 
-	// Getteur sur Home car dépendance cyclique entre CollectionsManager et PersistenceManager
-	private static PersistenceManager getPersistenceManager() {
-		return Home.getComponentSpace().resolve(PersistenceManager.class);
+	// Getteur sur Home car dépendance cyclique entre CollectionsManager et StoreManager
+	private static StoreManager getStoreManager() {
+		return Home.getComponentSpace().resolve(StoreManager.class);
 	}
 
 	private DtListProcessorImpl createNewDtListProcessor(final DtListFunction listFunction) {
@@ -79,7 +79,7 @@ final class DtListProcessorImpl implements DtListProcessor {
 	@Override
 	public DtListProcessor sort(final String fieldName, final boolean desc, final boolean nullLast, final boolean ignoreCase) {
 		final SortState sortState = new SortState(fieldName, desc, nullLast, ignoreCase);
-		return add(new SortFunction<>(sortState, getPersistenceManager()));
+		return add(new SortFunction<>(sortState, getStoreManager()));
 	}
 
 	/** {@inheritDoc} */

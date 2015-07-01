@@ -73,7 +73,9 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 	 * @param validatorClasses List of validator to check
 	 * @return Builder
 	 */
-	public EndPointParamBuilder withValidatorClasses(final Class<? extends DtObjectValidator>... validatorClasses) {
+	public EndPointParamBuilder addValidatorClasses(final Class<? extends DtObjectValidator>... validatorClasses) {
+		Assertion.checkNotNull(validatorClasses);
+		//-----
 		myValidatorClasses.addAll(Arrays.asList(validatorClasses));
 		return this;
 	}
@@ -82,7 +84,9 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 	 * @param excludedFields List of exluded fields
 	 * @return Builder
 	 */
-	public EndPointParamBuilder withExcludedFields(final String... excludedFields) {
+	public EndPointParamBuilder addExcludedFields(final String... excludedFields) {
+		Assertion.checkNotNull(excludedFields);
+		//-----
 		myExcludedFields.addAll(Arrays.asList(excludedFields));
 		return this;
 	}
@@ -91,26 +95,28 @@ public final class EndPointParamBuilder implements Builder<EndPointParam> {
 	 * @param includedFields list of included fields (empty means all fields included)
 	 * @return Builder
 	 */
-	public EndPointParamBuilder withIncludedFields(final String... includedFields) {
+	public EndPointParamBuilder addIncludedFields(final String... includedFields) {
+		Assertion.checkNotNull(includedFields);
+		//-----
 		myIncludedFields.addAll(Arrays.asList(includedFields));
 		return this;
 	}
 
 	/**
-	 * @param needServerSideToken is serverSide token is needed and used
+	 * If serverSide token is needed and used
 	 * @return Builder
 	 */
-	public EndPointParamBuilder withNeedServerSideToken(final boolean needServerSideToken) {
-		myNeedServerSideToken = needServerSideToken;
+	public EndPointParamBuilder needServerSideToken() {
+		myNeedServerSideToken = true;
 		return this;
 	}
 
 	/**
-	 * @param consumeServerSideToken if serverSide token is consume
+	 * If serverSide token is consume
 	 * @return Builder
 	 */
-	public EndPointParamBuilder withConsumeServerSideToken(final boolean consumeServerSideToken) {
-		myConsumeServerSideToken = consumeServerSideToken;
+	public EndPointParamBuilder consumeServerSideToken() {
+		myConsumeServerSideToken = true;
 		return this;
 	}
 

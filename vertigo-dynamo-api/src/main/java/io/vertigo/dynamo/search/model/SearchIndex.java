@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.search.model;
 
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
@@ -30,41 +31,38 @@ import io.vertigo.lang.Assertion;
  *  - construire l'index de recherche
  *  - consulter le résultat d'une recherhe
  *
+ *  Le DtObject d'index utilise
+ *  - la propriété 'persistent' des fields pour savoir si le champs fait partit du résultat ou non
+ *  - le domain et sa propriété indexType pour savoir si le champs est indéxé ou non
+ *
  * @author dchallas
- * @param <I> Type de l'objet contenant les champs à indexer
- * @param <R> Type de l'objet resultant de la recherche
+ * @param <I> Type de l'objet de l'index
  */
-public final class SearchIndex<I extends DtObject, R extends DtObject> {
+public final class SearchIndex<S extends KeyConcept, I extends DtObject> {
 	/** Définition de l'index. */
 	private final SearchIndexDefinition indexDefinition;
 
 	/** URI de l'objet indexé : par convention il s'agit de l'uri de O.*/
-	private final URI uri;
+	private final URI<S> uri;
 
 	/** DtObject d'index. */
 	private final I indexDtObject;
 
-	/** DtObject de resultat. */
-	private final R resultDtObject;
-
 	/**
 	 * Constructeur .
-	 * @param indexDefinition definition de O, I, R
+	 * @param indexDefinition definition de O, I
 	 * @param uri URI de l'objet indexé
 	 */
-	private SearchIndex(final SearchIndexDefinition indexDefinition, final URI uri, final I indexDtObject, final R resultDtObject) {
+	private SearchIndex(final SearchIndexDefinition indexDefinition, final URI<S> uri, final I indexDtObject) {
 		Assertion.checkNotNull(uri);
 		Assertion.checkNotNull(indexDefinition);
-		Assertion.checkNotNull(resultDtObject);
 		//indexDtObject peut être null
 		//On vérifie la consistance des données.
-		Assertion.checkArgument(indexDefinition.getResultDtDefinition().equals(DtObjectUtil.findDtDefinition(resultDtObject)), "le type du DTO result n''est pas correct");
 		Assertion.checkArgument(indexDtObject == null || indexDefinition.getIndexDtDefinition().equals(DtObjectUtil.findDtDefinition(indexDtObject)), "le type du DTO index n''est pas correct");
 		//-----
 		this.uri = uri;
 		this.indexDefinition = indexDefinition;
 		this.indexDtObject = indexDtObject;
-		this.resultDtObject = resultDtObject;
 	}
 
 	/**
@@ -75,19 +73,11 @@ public final class SearchIndex<I extends DtObject, R extends DtObject> {
 	}
 
 	/**
-	 * Récupération de l'objet de résultat.
-	 * @return Objet de résultat de résultat
-	 */
-	public R getResultDtObject() {
-		return resultDtObject;
-	}
-
-	/**
 	 * Récupération de l'uri de la ressource indexée.
 	 *  - Utilisé pour la récupération de highlight.
 	 * @return URI de la ressource indexée.
 	 */
-	public URI getURI() {
+	public URI<S> getURI() {
 		return uri;
 	}
 
@@ -110,28 +100,14 @@ public final class SearchIndex<I extends DtObject, R extends DtObject> {
 
 	/**
 	 * Constructeur de l'Objet permettant de créer l'index.
-	 * @param <I> Type de l'objet contenant les champs à indexer
-	 * @param <R> Type de l'objet resultant de la recherche
+	 * @param <I> Type de l'objet représentant l'index
 	 * @param uri URI de l'objet indexé
 	 * @param indexDefinition Définition de l'index de recherche.
-	 * @param resultDto DTO représentant le résultat
 	 * @param indexDto  DTO représentant l'index
 	 * @return  Objet permettant de créer l'index
 	 */
-	public static <I extends DtObject, R extends DtObject> SearchIndex<I, R> createIndex(final SearchIndexDefinition indexDefinition, final URI uri, final I indexDto, final R resultDto) {
-		return new SearchIndex<>(indexDefinition, uri, indexDto, resultDto);
+	public static <S extends KeyConcept, I extends DtObject> SearchIndex<S, I> createIndex(final SearchIndexDefinition indexDefinition, final URI<S> uri, final I indexDto) {
+		return new SearchIndex<>(indexDefinition, uri, indexDto);
 	}
 
-	/**
-	 * Constructeur de l'objet permettant d'accéder au résultat d'une recherche .
-	 * @param <I> Type de l'objet contenant les champs à indexer
-	 * @param <R> Type de l'objet resultant de la recherche
-	 * @param uri URI de l'objet indexé
-	 * @param indexDefinition Définition de l'index de recherche.
-	 * @param resultDto DTO représentant le résultat
-	 * @return Objet permettant d'accéder au résultat d'une recherche
-	 */
-	public static <I extends DtObject, R extends DtObject> SearchIndex<I, R> createResult(final SearchIndexDefinition indexDefinition, final URI uri, final R resultDto) {
-		return new SearchIndex<>(indexDefinition, uri, null, resultDto);
-	}
 }

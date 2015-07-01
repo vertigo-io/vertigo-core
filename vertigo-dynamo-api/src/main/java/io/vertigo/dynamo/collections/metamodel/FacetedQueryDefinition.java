@@ -20,6 +20,8 @@ package io.vertigo.dynamo.collections.metamodel;
 
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
+import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
 
 import java.util.Collection;
@@ -42,22 +44,44 @@ public final class FacetedQueryDefinition implements Definition {
 	 */
 	private final String name;
 
+	private final DtDefinition keyConceptDtDefinition;
+
 	/** Liste indexée des facettes.*/
 	private final Map<String, FacetDefinition> facetDefinitions = new LinkedHashMap<>();
+
+	/** Domain du criteria. */
+	private final Domain criteriaDomain;
+
+	/** Query du listFilterBuilder. */
+	private final String listFilterBuilderQuery;
+
+	/**
+	 * Moyen de créer le ListFilter à partir du Criteria.
+	 */
+	private final Class<? extends ListFilterBuilder> listFilterBuilderClass;
 
 	/**
 	 * Constructeur.
 	 * @param name Nom de la definition
+	 * @param keyConceptDtDefinition Definition du keyConcept sur lequel s'applique cette recherche
 	 * @param facetDefinitions Liste des facettes
 	 */
-	public FacetedQueryDefinition(final String name, final List<FacetDefinition> facetDefinitions) {
+	public FacetedQueryDefinition(final String name, final DtDefinition keyConceptDtDefinition, final List<FacetDefinition> facetDefinitions, final Domain criteriaDomain, final Class<? extends ListFilterBuilder> listFilterBuilderClass, final String listFilterBuilderQuery) {
 		Assertion.checkArgNotEmpty(name);
+		Assertion.checkNotNull(keyConceptDtDefinition);
 		Assertion.checkNotNull(facetDefinitions);
+		Assertion.checkNotNull(criteriaDomain);
+		Assertion.checkNotNull(listFilterBuilderClass);
+		Assertion.checkNotNull(listFilterBuilderQuery);
 		//-----
 		this.name = name;
+		this.keyConceptDtDefinition = keyConceptDtDefinition;
 		for (final FacetDefinition facetDefinition : facetDefinitions) {
 			this.facetDefinitions.put(facetDefinition.getName(), facetDefinition);
 		}
+		this.criteriaDomain = criteriaDomain;
+		this.listFilterBuilderClass = listFilterBuilderClass;
+		this.listFilterBuilderQuery = listFilterBuilderQuery;
 	}
 
 	/**
@@ -75,6 +99,20 @@ public final class FacetedQueryDefinition implements Definition {
 		return facetDefinition;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Définition du keyConcept de cette recherche.
+	 * @return Définition du keyConcept.
+	 */
+	public DtDefinition getKeyConceptDtDefinition() {
+		return keyConceptDtDefinition;
+	}
+
 	/**
 	 * @return Liste des facettes portées par l'index.
 	 */
@@ -82,10 +120,25 @@ public final class FacetedQueryDefinition implements Definition {
 		return Collections.<FacetDefinition> unmodifiableCollection(facetDefinitions.values());
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public String getName() {
-		return name;
+	/**
+	 * @return Domain du criteria.
+	 */
+	public Domain getCriteriaDomain() {
+		return criteriaDomain;
+	}
+
+	/**
+	  * @return Class du ListFilterBuilder.
+	 */
+	public Class<? extends ListFilterBuilder> getListFilterBuilderClass() {
+		return listFilterBuilderClass;
+	}
+
+	/**
+	 * @return Query du ListFilterBuilder.
+	 */
+	public String getListFilterBuilderQuery() {
+		return listFilterBuilderQuery;
 	}
 
 	/** {@inheritDoc} */

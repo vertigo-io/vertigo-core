@@ -188,7 +188,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					final Type typeOfDest = createParameterizedType(UiListDelta.class, dtoClass);
 					value = gson.fromJson(jsonSubElement, typeOfDest);
 				} else if (EndPointTypeUtil.isAssignableFrom(DtList.class, paramType)) {
-					final Class<DtObject> dtoClass = (Class<DtObject>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that DtListDelta has one parameterized type
+					final Class<DtObject> dtoClass = (Class<DtObject>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that DtList has one parameterized type
 					final Type typeOfDest = createParameterizedType(UiList.class, dtoClass);
 					value = gson.fromJson(jsonSubElement, typeOfDest);
 				} else {
@@ -357,31 +357,41 @@ public final class GoogleJsonEngine implements JsonEngine {
 						return jsonObject;
 					}
 				})*/
-				.registerTypeAdapter(FacetedQueryResult.class, new JsonSerializer<FacetedQueryResult>() {
+				.registerTypeAdapter(FacetedQueryResult.class, new JsonSerializer<FacetedQueryResult<?, ?>>() {
 					@Override
-					public JsonElement serialize(final FacetedQueryResult facetedQueryResult, final Type typeOfSrc, final JsonSerializationContext context) {
+					public JsonElement serialize(final FacetedQueryResult<?, ?> facetedQueryResult, final Type typeOfSrc, final JsonSerializationContext context) {
 						final JsonObject jsonObject = new JsonObject();
+
 						//1- add result list as data
-						final JsonArray jsonData = (JsonArray) context.serialize(facetedQueryResult.getDtList());
-						jsonObject.add("data", jsonData);
+						if (facetedQueryResult.getClusters().isEmpty()) {
+							final JsonArray jsonList = (JsonArray) context.serialize(facetedQueryResult.getDtList());
+							jsonObject.add("list", jsonList);
+						} else {
+							//if it's a cluster add data's cluster
+							final JsonObject jsonCluster = new JsonObject();
+							for (final Entry<FacetValue, ?> cluster : facetedQueryResult.getClusters().entrySet()) {
+								final JsonArray jsonList = (JsonArray) context.serialize(cluster.getValue());
+								jsonCluster.add(cluster.getKey().getLabel().getDisplay(), jsonList);
+							}
+							jsonObject.add("groups", jsonCluster);
+						}
 
 						//2- add facet list as facets
 						final List<Facet> facets = facetedQueryResult.getFacets();
-						final JsonArray facetList = new JsonArray();
+						final JsonObject jsonFacet = new JsonObject();
 						for (final Facet facet : facets) {
-							final JsonObject jsonFacet = new JsonObject();
-
 							final Map<String, Long> maps = new HashMap<>();
 							for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
 								maps.put(entry.getKey().getLabel().getDisplay(), entry.getValue());
 							}
-
 							final JsonObject jsonFacetValues = (JsonObject) context.serialize(maps);
-							final String facetName = facet.getDefinition().getLabel().getDisplay();
+							final String facetName = facet.getDefinition().getName();
 							jsonFacet.add(facetName, jsonFacetValues);
-							facetList.add(jsonFacet);
 						}
-						jsonObject.add("facets", context.serialize(facetList));
+						jsonObject.add("facets", jsonFacet);
+
+						//3 -add totalCount
+						jsonObject.addProperty(DtList.TOTAL_COUNT_META, facetedQueryResult.getCount());
 						return jsonObject;
 					}
 				})

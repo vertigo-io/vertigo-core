@@ -1,5 +1,6 @@
 package io.vertigo.boot.xml;
 
+import io.vertigo.core.boot.BootConfig;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.LogConfig;
@@ -19,13 +20,8 @@ import java.util.Properties;
 public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 	private final AppConfigBuilder appConfigBuilder = new AppConfigBuilder();
 
-	public XMLAppConfigBuilder withSilence(final boolean silence) {
-		appConfigBuilder.withSilence(silence);
-		return this;
-	}
-
-	public XMLAppConfigBuilder withLogConfig(final String logFileName) {
-		appConfigBuilder.withLogConfig(new LogConfig(logFileName));
+	public XMLAppConfigBuilder withBootConfig(final BootConfig bootConfig) {
+		appConfigBuilder.withBootConfig(bootConfig);
 		return this;
 	}
 
@@ -44,6 +40,17 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 		}
 		final List<ModuleConfig> moduleConfigs = XMLModulesParser.parseAll(xmlModulesParams, xmlModulesAsUrls);
 		appConfigBuilder.withModules(moduleConfigs);
+		return this;
+	}
+
+	/**
+	 * @param logConfig Config of logs
+	 * @return  this builder
+	 */
+	public XMLAppConfigBuilder withLogConfig(final LogConfig logConfig) {
+		Assertion.checkNotNull(logConfig);
+		//-----
+		appConfigBuilder.withLogConfig(logConfig);
 		return this;
 	}
 

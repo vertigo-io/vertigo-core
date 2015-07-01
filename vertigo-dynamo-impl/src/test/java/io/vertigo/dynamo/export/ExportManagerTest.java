@@ -20,7 +20,9 @@ package io.vertigo.dynamo.export;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.export.data.Continent;
 import io.vertigo.dynamo.export.data.Country;
+import io.vertigo.dynamo.export.data.DtDefinitions.ContinentFields;
 import io.vertigo.dynamo.export.data.DtDefinitions.CountryFields;
 import io.vertigo.dynamo.export.model.Export;
 import io.vertigo.dynamo.export.model.ExportBuilder;
@@ -80,7 +82,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		final Country china = new Country().setName("china");
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test3.csv")
-				.beginSheet(china, "china").withField(CountryFields.NAME).endSheet()
+				.beginSheet(china, "china").addField(CountryFields.NAME).endSheet()
 				.build();
 
 		final VFile result = exportManager.createExportFile(export);
@@ -95,7 +97,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		final Country china = new Country().setName("china");
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test3.csv")
-				.beginSheet(china, "china").withField(CountryFields.NAME, new MessageText("test", null)).endSheet()
+				.beginSheet(china, "china").addField(CountryFields.NAME, new MessageText("test", null)).endSheet()
 				.build();
 
 		final VFile result = exportManager.createExportFile(export);
@@ -107,14 +109,14 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testExportFieldDenorm() {
-		final DtList<Country> dtc = buildCountries();
+		final DtList<Continent> dtc = buildContinents();
 		final Country germany = new Country()
 				.setId(1L)
 				.setName("germany");
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test4.csv")
 				.beginSheet(germany, "germany")
-				.withField(CountryFields.ID, dtc, CountryFields.NAME)
+				.addField(CountryFields.CON_ID, dtc, ContinentFields.NAME)
 				.endSheet()
 				.build();
 
@@ -134,7 +136,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 				.setName("germany");
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test5.csv")
-				.beginSheet(germany, "country").withField(CountryFields.ID, dtc, CountryFields.NAME, new MessageText("test", null)).endSheet()
+				.beginSheet(germany, "country").addField(CountryFields.ID, dtc, CountryFields.NAME, new MessageText("test", null)).endSheet()
 				.build();
 
 		final VFile result = exportManager.createExportFile(export);
@@ -189,17 +191,32 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 		nop(result);
 	}
 
+	private static DtList<Continent> buildContinents() {
+		final Continent europe = new Continent().setId(10L).setName("Europe");
+		final Continent america = new Continent().setId(20L).setName("America");
+		final Continent unknownContinent = new Continent().setId(30L); //no name
+		final Continent asie = new Continent().setId(40L).setName("Asie");
+
+		final DtList<Continent> dtc = new DtList<>(Continent.class);
+		// les index sont données par ordre alpha > null à la fin >
+		dtc.add(america);
+		dtc.add(asie);
+		dtc.add(europe);
+		dtc.add(unknownContinent);
+		return dtc;
+	}
+
 	private static DtList<Country> buildCountries() {
-		final Country france = new Country().setId(1L).setName("France");
-		final Country usa = new Country().setId(2L).setName("usa");
-		final Country unknown = new Country().setId(3L); //no name
-		final Country japan = new Country().setId(4L).setName("japan");
+		final Country france = new Country().setId(1L).setConId(10L).setName("France");
+		final Country usa = new Country().setId(2L).setConId(20L).setName("usa");
+		final Country unknownCountry = new Country().setId(3L).setConId(30L); //no name
+		final Country japan = new Country().setId(4L).setConId(40L).setName("japan");
 
 		final DtList<Country> dtc = new DtList<>(Country.class);
 		// les index sont données par ordre alpha > null à la fin >
 		dtc.add(france);
 		dtc.add(usa);
-		dtc.add(unknown);
+		dtc.add(unknownCountry);
 		dtc.add(japan);
 		return dtc;
 	}

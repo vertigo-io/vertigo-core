@@ -23,40 +23,29 @@ import io.vertigo.core.Home;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.tempo.job.JobManager;
-import io.vertigo.tempo.job.SchedulerPlugin;
 import io.vertigo.tempo.job.metamodel.JobDefinition;
-
-import java.util.Date;
 
 import javax.inject.Inject;
 
 /**
- * Implémentation générique de JobManager.
- * Attention, cette implémentation n'est pas transactionnelle ; la gestion des transaction doit rester à la charge des services.
+ * Impl of JobManager.
  *
- * Les jobs sont instanciés, y sont injectés les composants métiers et les managers.
+ * Jobs are built by DI using injection of the current components (defined in ComponentSpace).
  *
- * @author evernat, pchretien
+ * @author pchretien
  */
-public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
-	private final SchedulerPlugin schedulerPlugin;
+public final class JobManagerImpl implements JobManager {
 	private final JobListener jobListener;
 
 	/**
-	 * Constructeur.
-	 * @param analyticsManager Manager de la performance applicative
+	 * Constructor.
+	 * @param analyticsManager Application Performance Manager.
 	 */
 	@Inject
-	public JobManagerImpl(final AnalyticsManager analyticsManager, final SchedulerPlugin schedulerPlugin) {
-		Assertion.checkNotNull(schedulerPlugin);
+	public JobManagerImpl(final AnalyticsManager analyticsManager) {
+		Assertion.checkNotNull(analyticsManager);
 		//-----
 		jobListener = new JobListener(analyticsManager);
-		this.schedulerPlugin = schedulerPlugin;
-		//A déplacer
-		//A déplacer
-		//A déplacer
-		//A déplacer
-		Home.getDefinitionSpace().register(JobDefinition.class);
 	}
 
 	/** {@inheritDoc} */
@@ -67,7 +56,7 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 		final long start = System.currentTimeMillis();
 		try {
 			final Runnable job = createJob(jobDefinition);
-			job.run(); //NOSONAR : JobManager should managed Job execution, it decided if a runnable job runs in a new thread or not
+			job.run(); //NOSONAR : JobManager manages Job execution, it decides if a runnable job runs in a new thread or not
 		} catch (final Throwable throwable) { //NOSONAR
 			jobListener.onFinish(jobDefinition, throwable);
 		} finally {
@@ -78,29 +67,5 @@ public final class JobManagerImpl implements JobManager/*, ManagerDescription*/{
 
 	private static Runnable createJob(final JobDefinition jobDefinition) {
 		return Injector.newInstance(jobDefinition.getJobClass(), Home.getComponentSpace());
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void scheduleEverySecondInterval(final JobDefinition jobDefinition, final int periodInSecond) {
-		schedulerPlugin.scheduleEverySecondInterval(this, jobDefinition, periodInSecond);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void scheduleEveryDayAtHourMinute(final JobDefinition jobDefinition, final int hour, final int minute) {
-		schedulerPlugin.scheduleEveryDayAtHourMinute(this, jobDefinition, hour, minute);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void scheduleAtDate(final JobDefinition jobDefinition, final Date date) {
-		schedulerPlugin.scheduleAtDate(this, jobDefinition, date);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void scheduleNow(final JobDefinition jobDefinition) {
-		schedulerPlugin.scheduleNow(this, jobDefinition);
 	}
 }

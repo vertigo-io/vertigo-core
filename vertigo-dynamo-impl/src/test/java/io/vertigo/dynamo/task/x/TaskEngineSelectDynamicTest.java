@@ -25,7 +25,7 @@ import io.vertigo.dynamo.database.connection.SqlConnection;
 import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.data.SuperHero;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
@@ -58,7 +58,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Inject
 	private TaskManager taskManager;
 	@Inject
-	private PersistenceManager persistenceManager;
+	private StoreManager storeManager;
 	@Inject
 	private SqlDataBaseManager dataBaseManager;
 	@Inject
@@ -80,7 +80,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			for (int i = 0; i < size; i++) {
 				final SuperHero superHero = new SuperHero();
 				superHero.setName("SuperHero ( " + i + ")");
-				persistenceManager.getBroker().create(superHero);
+				storeManager.getDataStore().create(superHero);
 			}
 			transaction.commit();
 		}
@@ -112,7 +112,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			final SuperHero superHero = createSuperHero(10001L + 1);
 
 			final Task task = new TaskBuilder(taskDefinition)
-					.withValue(DTO_SUPER_HERO, superHero)
+					.addValue(DTO_SUPER_HERO, superHero)
 					.build();
 
 			final TaskResult result = taskManager.execute(task);
@@ -135,7 +135,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			superHero.setId(10001L + 1);
 
 			final Task task = new TaskBuilder(taskDefinition)
-					.withValue(DTO_SUPER_HERO, superHero)
+					.addValue(DTO_SUPER_HERO, superHero)
 					.build();
 
 			final TaskResult result = taskManager.execute(task);
@@ -156,9 +156,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					"select * from SUPER_HERO where ID = #PARAM_1#<%if(param2!=null) {%> OR ID = #PARAM_2#+2 <%}%><%if(param3!=null) {%> OR ID = #PARAM_3#+3<%}%>");
 
 			final Task task = new TaskBuilder(taskDefinition)
-					.withValue("PARAM_1", 10002)
-					.withValue("PARAM_2", null)
-					.withValue("PARAM_3", 10002)
+					.addValue("PARAM_1", 10002)
+					.addValue("PARAM_2", null)
+					.addValue("PARAM_3", 10002)
 					.build();
 
 			final TaskResult result = taskManager.execute(task);
@@ -182,7 +182,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			final DtList<SuperHero> ids = new DtList<>(SuperHero.class);
 
 			final Task task = new TaskBuilder(taskDefinition)
-					.withValue(DTC_SUPER_HERO_IN, ids)
+					.addValue(DTC_SUPER_HERO_IN, ids)
 					.build();
 
 			final TaskResult result = taskManager.execute(task);
@@ -206,7 +206,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			superHero.setId(10001L + 1);
 
 			final Task task = new TaskBuilder(taskDefinition)
-					.withValue(DTO_SUPER_HERO, superHero)
+					.addValue(DTO_SUPER_HERO, superHero)
 					.build();
 
 			final TaskResult result = taskManager.execute(task);
@@ -230,7 +230,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			ids.add(createSuperHero(10001L + 3));
 
 			final Task task = new TaskBuilder(taskDefinition)
-					.withValue(DTC_SUPER_HERO_IN, ids)
+					.addValue(DTC_SUPER_HERO_IN, ids)
 					.build();
 
 			final TaskResult result = taskManager.execute(task);
@@ -256,7 +256,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			ids.add(createSuperHero(10001L + 3));
 
 			final Task task = new TaskBuilder(taskDefinition)
-					.withValue(DTC_SUPER_HERO_IN, ids)
+					.addValue(DTC_SUPER_HERO_IN, ids)
 					.build();
 
 			final TaskResult result = taskManager.execute(task);
@@ -282,7 +282,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			ids.add(createSuperHero(10001L + 3));
 
 			final Task task = new TaskBuilder(taskDefinition)
-					.withValue(DTC_SUPER_HERO_IN, ids)
+					.addValue(DTC_SUPER_HERO_IN, ids)
 					.build();
 
 			final TaskResult result = taskManager.execute(task);
@@ -306,7 +306,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			final DtList<SuperHero> ids = new DtList<>(SuperHero.class);
 
 			final Task task = new TaskBuilder(taskDefinition)
-					.withValue(DTC_SUPER_HERO_IN, ids)
+					.addValue(DTC_SUPER_HERO_IN, ids)
 					.build();
 
 			final TaskResult result = taskManager.execute(task);
@@ -328,7 +328,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			final DtList<SuperHero> ids = new DtList<>(SuperHero.class);
 
 			final Task task = new TaskBuilder(taskDefinition)
-					.withValue(DTC_SUPER_HERO_IN, ids).build();
+					.addValue(DTC_SUPER_HERO_IN, ids).build();
 
 			ids.add(createSuperHero(10001L + 1));
 			ids.add(createSuperHero(10001L + 3));
@@ -359,7 +359,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 
 			final DtList<SuperHero> ids = new DtList<>(SuperHero.class);
 			final Task task = new TaskBuilder(taskDefinition)
-					.withValue(DTC_SUPER_HERO_IN, ids)
+					.addValue(DTC_SUPER_HERO_IN, ids)
 					.build();
 
 			final TaskResult result = taskManager.execute(task);
@@ -386,7 +386,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			}
 
 			final Task task = new TaskBuilder(taskDefinition)
-					.withValue(DTC_SUPER_HERO_IN, ids)
+					.addValue(DTC_SUPER_HERO_IN, ids)
 					.build();
 
 			final TaskResult result = taskManager.execute(task);
@@ -413,7 +413,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			}
 
 			final Task task = new TaskBuilder(taskDefinition)
-					.withValue(DTC_SUPER_HERO_IN, ids)
+					.addValue(DTC_SUPER_HERO_IN, ids)
 					.build();
 
 			final TaskResult result = taskManager.execute(task);
@@ -437,10 +437,10 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.withInAttribute("PARAM_1", doInteger, true)
-				.withInAttribute("PARAM_2", doInteger, false)
-				.withInAttribute("PARAM_3", doInteger, false)
-				.withOutAttribute(DTC_SUPER_HERO_OUT, doSuperHeroList, true)
+				.addInAttribute("PARAM_1", doInteger, true)
+				.addInAttribute("PARAM_2", doInteger, false)
+				.addInAttribute("PARAM_3", doInteger, false)
+				.addOutAttribute(DTC_SUPER_HERO_OUT, doSuperHeroList, true)
 				.build();
 	}
 
@@ -452,8 +452,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.withInAttribute(DTO_SUPER_HERO, doSupeHero, true)
-				.withOutAttribute(DTC_SUPER_HERO_OUT, doSupeHeroList, true)
+				.addInAttribute(DTO_SUPER_HERO, doSupeHero, true)
+				.addOutAttribute(DTC_SUPER_HERO_OUT, doSupeHeroList, true)
 				.build();
 	}
 
@@ -464,8 +464,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.withInAttribute(DTC_SUPER_HERO_IN, doSupeHeroList, true)
-				.withOutAttribute(DTC_SUPER_HERO_OUT, doSupeHeroList, true)
+				.addInAttribute(DTC_SUPER_HERO_IN, doSupeHeroList, true)
+				.addOutAttribute(DTC_SUPER_HERO_OUT, doSupeHeroList, true)
 				.build();
 	}
 

@@ -20,6 +20,7 @@ package io.vertigo.dynamo.work.distributed.rest;
 
 import io.vertigo.boot.xml.XMLAppConfigBuilder;
 import io.vertigo.core.Home.App;
+import io.vertigo.core.boot.BootConfigBuilder;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.lang.Assertion;
 
@@ -44,7 +45,7 @@ public final class Starter implements Runnable {
 		this.timeToWait = timeToWait;
 		// Initialisation de l'état de l'application
 		appConfig = new XMLAppConfigBuilder()
-				.withSilence(true)
+				.withBootConfig(new BootConfigBuilder().silently().build())
 				.withModules(relativeRootClass, new Properties(), managersXmlFileName)
 				.build();
 	}

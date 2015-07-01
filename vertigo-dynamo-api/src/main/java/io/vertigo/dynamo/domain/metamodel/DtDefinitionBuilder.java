@@ -122,7 +122,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param display si champ de display
 	 * @return Builder
 	 */
-	public DtDefinitionBuilder withForeignKey(final String fieldName, final String label, final Domain domain, final boolean notNull, final String fkDtDefinitionName, final boolean sort, final boolean display) {
+	public DtDefinitionBuilder addForeignKey(final String fieldName, final String label, final Domain domain, final boolean notNull, final String fkDtDefinitionName, final boolean sort, final boolean display) {
 		//Pour l'instant on ne gère pas les chamsp computed dynamiques
 		final boolean persistent = true;
 		final DtField dtField = createField(fieldName, DtField.FieldType.FOREIGN_KEY, domain, label, notNull, persistent, fkDtDefinitionName, null, false, sort, display);
@@ -141,7 +141,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param display si champ de display
 	 * @return Builder
 	 */
-	public DtDefinitionBuilder withComputedField(final String fieldName, final String label, final Domain domain, final ComputedExpression computedExpression, final boolean sort, final boolean display) {
+	public DtDefinitionBuilder addComputedField(final String fieldName, final String label, final Domain domain, final ComputedExpression computedExpression, final boolean sort, final boolean display) {
 		//Pour l'instant on ne gère pas les chamsp computed dynamiques
 		final DtField dtField = createField(fieldName, DtField.FieldType.COMPUTED, domain, label, false, false, null, computedExpression, false, sort, display);
 		myFields.add(dtField);
@@ -159,7 +159,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param display If this field is use for display
 	 * @return Builder
 	 */
-	public DtDefinitionBuilder withDataField(final String fieldName, final String label, final Domain domain, final boolean notNull, final boolean persistent, final boolean sort, final boolean display) {
+	public DtDefinitionBuilder addDataField(final String fieldName, final String label, final Domain domain, final boolean notNull, final boolean persistent, final boolean sort, final boolean display) {
 		//le champ  est dynamic SSI la définition est dynamique
 		final DtField dtField = createField(fieldName, DtField.FieldType.DATA, domain, label, notNull, persistent, null, null, myDynamic, sort, display);
 		myFields.add(dtField);
@@ -175,7 +175,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param display If this field is use for display
 	 * @return Builder
 	 */
-	public DtDefinitionBuilder withIdField(final String fieldName, final String label, final Domain domain, final boolean sort, final boolean display) {
+	public DtDefinitionBuilder addIdField(final String fieldName, final String label, final Domain domain, final boolean sort, final boolean display) {
 		//le champ ID est tjrs notNull
 		final boolean notNull = true;
 		//le champ ID est persistant SSI la définition est persitante.

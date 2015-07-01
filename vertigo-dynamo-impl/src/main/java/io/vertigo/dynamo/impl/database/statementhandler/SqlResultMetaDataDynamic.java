@@ -142,7 +142,7 @@ final class SqlResultMetaDataDynamic implements SqlResultMetaData {
 
 				for (final SerializableDtField field : fields) {
 					//On considére le champ nullable et non persistent
-					dtDefinitionBuilder.withDataField(field.name, field.label, getDomain(field.dataType), false, false, false, false);
+					dtDefinitionBuilder.addDataField(field.name, field.label, getDomain(field.dataType), false, false, false, false);
 				}
 				dtDefinition = dtDefinitionBuilder.build();
 			}

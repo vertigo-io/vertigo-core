@@ -22,6 +22,7 @@ import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
@@ -29,39 +30,62 @@ import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Component;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Gestionnaire des indexes de recherche.
  *
- * @author dchallas
+ * @author dchallas, npiedeloup
  */
 public interface SearchManager extends Component {
+
 	/**
-	 * Enregistre un resolver de nom, entre ceux du DT et ceux du schéma Solr.
-	 * @param indexDefinition Type de l'index
-	 * @param indexFieldNameResolver Resolver de nom de champs DT/Solr
+	 * Find IndexDefinition for a keyConcept. It must be one and only one IndexDefinition.
+	 * @param keyConceptClass keyConcept class
+	 * @return SearchIndexDefinition for this keyConcept (not null)
 	 */
-	void registerIndexFieldNameResolver(SearchIndexDefinition indexDefinition, SearchIndexFieldNameResolver indexFieldNameResolver);
+	//TODO si par DtDefinition comment s'assurer que c'est un keyConcept ?
+	SearchIndexDefinition findIndexDefinitionByKeyConcept(Class<? extends KeyConcept> keyConceptClass);
+
+	/**
+	 * Check if a keyConcept have an IndexDefinition.
+	 * @param keyConceptClass KeyConcept class
+	 * @return if there is a IndexDefinition for this keyConcept
+	 */
+	boolean hasIndexDefinitionByKeyConcept(Class<? extends KeyConcept> keyConceptClass);
+
+	/**
+	 * Mark an uri list as dirty. Index of these elements will be reindexed.
+	 * Reindexation isn't syncrhone, strategy is dependant of plugin's parameters.
+	 * @param keyConceptUris Uri of keyConcept marked as dirty.
+	 */
+	void markAsDirty(List<URI<? extends KeyConcept>> keyConceptUris);
+
+	/**
+	 * Launch a complete reindexation of an index.
+	 * @param indexDefinition Type de l'index
+	 */
+	void reindexAll(SearchIndexDefinition indexDefinition);
 
 	/**
 	 * Ajout de plusieurs ressources à l'index.
 	 * Si les éléments étaient déjà dans l'index ils sont remplacés.
-	 * @param <I> Type de l'objet contenant les champs à indexer
-	 * @param <R> Type de l'objet resultant de la recherche
+	 * @param <I> Type de l'objet représentant l'index
+	 * @param <K> Type du keyConcept métier indexé
 	 * @param indexDefinition Type de l'index
-	 * @param indexCollection Liste des objets à pousser dans l'index (I + R)
+	 * @param indexCollection Liste des objets à pousser dans l'index
 	 */
-	<I extends DtObject, R extends DtObject> void putAll(SearchIndexDefinition indexDefinition, Collection<SearchIndex<I, R>> indexCollection);
+	<K extends KeyConcept, I extends DtObject> void putAll(SearchIndexDefinition indexDefinition, Collection<SearchIndex<K, I>> indexCollection);
 
 	/**
 	 * Ajout d'une ressource à l'index.
 	 * Si l'élément était déjà dans l'index il est remplacé.
-	 * @param <I> Type de l'objet contenant les champs à indexer
-	 * @param <R> Type de l'objet resultant de la recherche
+	 * @param <I> Type de l'objet représentant l'index
+	 * @param <K> Type du keyConcept métier indexé
 	 * @param indexDefinition Type de l'index
-	 * @param index Objet à pousser dans l'index (I + R)
+	 * @param index Objet à pousser dans l'index
 	 */
-	<I extends DtObject, R extends DtObject> void put(SearchIndexDefinition indexDefinition, SearchIndex<I, R> index);
+	<K extends KeyConcept, I extends DtObject> void put(SearchIndexDefinition indexDefinition, SearchIndex<K, I> index);
 
 	/**
 	 * Récupération du résultat issu d'une requête.
@@ -69,9 +93,9 @@ public interface SearchManager extends Component {
 	 * @param indexDefinition Type de l'index
 	 * @param listState Etat de la liste (tri et pagination)
 	 * @return Résultat correspondant à la requête
-	 * @param <R> Type de l'objet resultant de la recherche
+	 * @param <I> Type de l'objet resultant de la recherche
 	 */
-	<R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState);
+	<I extends DtObject> FacetedQueryResult<I, SearchQuery> loadList(SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState);
 
 	/**
 	 * @param indexDefinition  Type de l'index
@@ -81,10 +105,11 @@ public interface SearchManager extends Component {
 
 	/**
 	 * Suppression d'une ressource de l'index.
+	 * @param <K> Type du keyConcept métier indexé
 	 * @param indexDefinition Type de l'index
 	 * @param uri URI de la ressource à supprimer
 	 */
-	void remove(SearchIndexDefinition indexDefinition, final URI uri);
+	<K extends KeyConcept> void remove(SearchIndexDefinition indexDefinition, final URI<K> uri);
 
 	/**
 	 * Suppression des données correspondant à un filtre.
@@ -92,4 +117,5 @@ public interface SearchManager extends Component {
 	 * @param listFilter Filtre des éléments à supprimer
 	 */
 	void removeAll(SearchIndexDefinition indexDefinition, final ListFilter listFilter);
+
 }

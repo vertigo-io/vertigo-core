@@ -20,7 +20,7 @@ package io.vertigo.studio.plugins.reporting.domain.metrics.persistence;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
-import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.reporting.Metric;
 import io.vertigo.studio.reporting.MetricBuilder;
@@ -32,16 +32,16 @@ import io.vertigo.studio.reporting.MetricEngine;
  * @author pchretien
  */
 public final class PersistenceMetricEngine implements MetricEngine<DtDefinition> {
-	private final PersistenceManager persistenceManager;
+	private final StoreManager storeManager;
 
 	/**
 	 * Constructeur.
-	 * @param persistenceManager Manager de persistance
+	 * @param storeManager Manager de persistance
 	 */
-	public PersistenceMetricEngine(final PersistenceManager persistenceManager) {
-		Assertion.checkNotNull(persistenceManager);
+	public PersistenceMetricEngine(final StoreManager storeManager) {
+		Assertion.checkNotNull(storeManager);
 		//-----
-		this.persistenceManager = persistenceManager;
+		this.storeManager = storeManager;
 	}
 
 	/** {@inheritDoc} */
@@ -70,7 +70,7 @@ public final class PersistenceMetricEngine implements MetricEngine<DtDefinition>
 			return true;
 		}
 		try {
-			persistenceManager.getBroker().getList(new DtListURIForCriteria<>(dtDefinition, null, 1));
+			storeManager.getDataStore().getList(new DtListURIForCriteria<>(dtDefinition, null, 1));
 			return true;
 		} catch (final Exception e) {
 			return false;

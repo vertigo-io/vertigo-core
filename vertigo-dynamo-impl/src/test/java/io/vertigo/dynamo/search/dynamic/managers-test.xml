@@ -13,14 +13,23 @@
 	</module>
 
 	<module name="vertigo-dynamo">
-		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl" initClass="io.vertigo.dynamo.search.CollectionsManagerInitializer" />
+		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl" />
 		<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
+		<component api="EventManager" class="io.vertigo.commons.impl.event.EventManagerImpl" />
+		<component api="VTransactionManager" class="io.vertigo.dynamo.impl.transaction.VTransactionManagerImpl" />
 		<component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
 			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
 			<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
 			<plugin class="io.vertigo.dynamo.plugins.environment.registries.search.SearchDynamicRegistryPlugin" />
 		</component>
+	</module>
+	<module name="vertigo-search">
+	<!-- si les defs sont dans un autre module le mapping de l'index n'est pas correct -->
+		<resource type="kpr" path="io/vertigo/dynamo/search/ksp/search.kpr" />
+		<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
+		
+		<!-- doit être après le module dynamo, car il faut charger les définitions d'index avant le start du SearchManagerImpl qui les utilisent pour envoyer la conf a ElasticSearch -->
 		<component api="SearchManager" class="io.vertigo.dynamo.impl.search.SearchManagerImpl">
 			<!-- <plugin class="io.vertigo.dynamo.plugins.search.solr.commonshttp.CommonsHttpSolrSearchServicesPlugin" > <param name="solr.url" value="http://localhost:8983/solr" /> <param name="cores" value="IDX_ARTICLE,IDX_VOITURE,IDX_DEMANDE,IDX_DOCUMENT" /> </plugin> -->
 			<plugin class="io.vertigo.dynamo.plugins.search.elasticsearch.embedded.ESEmbeddedSearchServicesPlugin">
@@ -30,9 +39,8 @@
 			</plugin>
 		</component>
 	</module>
-
-	<module name="myApp">
-		<resource type="kpr" path="io/vertigo/dynamo/search/ksp/search.kpr" />
-		<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
+	
+	<module name="SearchLoaders" api="false" inheritance="io.vertigo.dynamo.search.metamodel.SearchLoader">
+		<component class="io.vertigo.dynamock.domain.car.CarSearchLoader"/>
 	</module>
 </config>

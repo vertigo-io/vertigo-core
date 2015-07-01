@@ -43,7 +43,7 @@ public final class PluginConfigBuilder implements Builder<PluginConfig> {
 		this.myComponentConfigBuilder = componentConfigBuilder;
 	}
 
-	public PluginConfigBuilder withParam(final String paramName, final String paramValue) {
+	public PluginConfigBuilder addParam(final String paramName, final String paramValue) {
 		Assertion.checkArgNotEmpty(paramName, "Parameter must not be empty");
 		Assertion.checkNotNull(paramValue, "parameter '{0}' is required ", paramName);
 		//-----

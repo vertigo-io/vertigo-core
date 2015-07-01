@@ -43,6 +43,7 @@ import java.util.Set;
  */
 public final class DtList<D extends DtObject> extends AbstractList<D> implements Serializable {
 	private static final long serialVersionUID = -8059200549636099190L;
+	public static final String TOTAL_COUNT_META = "totalCount";
 
 	private DtListURI uri;
 

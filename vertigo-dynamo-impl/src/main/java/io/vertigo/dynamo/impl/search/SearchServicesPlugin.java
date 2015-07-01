@@ -22,8 +22,8 @@ import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.search.SearchIndexFieldNameResolver;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
@@ -39,31 +39,24 @@ import java.util.Collection;
 public interface SearchServicesPlugin extends Plugin {
 
 	/**
-	 * Enregistre un resolver de nom, entre ceux du DT et ceux du schéma Solr.
-	 * @param indexDefinition Type de l'index
-	 * @param indexFieldNameResolver Resolver de nom de champs DT/Solr
-	 */
-	void registerIndexFieldNameResolver(SearchIndexDefinition indexDefinition, SearchIndexFieldNameResolver indexFieldNameResolver);
-
-	/**
 	 * Ajout de plusieurs ressources à l'index.
 	 * Si les éléments étaient déjà dans l'index ils sont remplacés.
-	 * @param <I> Type de l'objet contenant les champs à indexer
-	 * @param <R> Type de l'objet resultant de la recherche
+	 * @param <I> Type de l'objet représentant l'index
+	 * @param <K> Type du keyConcept métier indexé
 	 * @param indexDefinition Type de l'index
-	 * @param indexCollection Liste des objets à pousser dans l'index (I + R)
+	 * @param indexCollection Liste des objets à pousser dans l'index
 	 */
-	<I extends DtObject, R extends DtObject> void putAll(SearchIndexDefinition indexDefinition, Collection<SearchIndex<I, R>> indexCollection);
+	<K extends KeyConcept, I extends DtObject> void putAll(SearchIndexDefinition indexDefinition, Collection<SearchIndex<K, I>> indexCollection);
 
 	/**
 	 * Ajout d'une ressource à l'index.
 	 * Si l'élément était déjà dans l'index il est remplacé.
-	 * @param <I> Type de l'objet contenant les champs à indexer
-	 * @param <R> Type de l'objet resultant de la recherche
+	 * @param <I> Type de l'objet représentant l'index
+	 * @param <K> Type du keyConcept métier indexé
 	 * @param indexDefinition Type de l'index
-	 * @param index Objet à pousser dans l'index (I + R)
+	 * @param index Objet à pousser dans l'index
 	 */
-	<I extends DtObject, R extends DtObject> void put(SearchIndexDefinition indexDefinition, SearchIndex<I, R> index);
+	<K extends KeyConcept, I extends DtObject> void put(SearchIndexDefinition indexDefinition, SearchIndex<K, I> index);
 
 	/**
 	 * Récupération du résultat issu d'une requête.
@@ -83,10 +76,11 @@ public interface SearchServicesPlugin extends Plugin {
 
 	/**
 	 * Suppression d'une ressource de l'index.
+	 * @param <K> Type du keyConcept métier indexé
 	 * @param indexDefinition Type de l'index
 	 * @param uri URI de la ressource à supprimer
 	 */
-	void remove(SearchIndexDefinition indexDefinition, final URI uri);
+	<K extends KeyConcept> void remove(SearchIndexDefinition indexDefinition, final URI<K> uri);
 
 	/**
 	 * Suppression des données correspondant à un filtre.

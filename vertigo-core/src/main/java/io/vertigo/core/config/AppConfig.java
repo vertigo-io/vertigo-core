@@ -18,10 +18,8 @@
  */
 package io.vertigo.core.config;
 
-import io.vertigo.core.engines.AopEngine;
-import io.vertigo.core.engines.ElasticaEngine;
+import io.vertigo.core.boot.BootConfig;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.JsonExclude;
 import io.vertigo.lang.Option;
 
 import java.util.ArrayList;
@@ -33,31 +31,24 @@ import java.util.List;
  */
 public final class AppConfig {
 	private final Option<LogConfig> logConfigOption;
-
+	private final BootConfig bootConfig;
 	private final List<ModuleConfig> modules;
-	//---
-	private final boolean silence;
-	@JsonExclude
-	private final AopEngine aopEngine;
-	@JsonExclude
-	private final Option<ElasticaEngine> elasticaEngine;
 
 	AppConfig(
-			final Option<LogConfig> logConfigOption, final List<ModuleConfig> moduleConfigs,
-			final AopEngine aopEngine, final Option<ElasticaEngine> elasticaEngine,
-			final boolean silence) {
+			final Option<LogConfig> logConfigOption,
+			final BootConfig bootConfig,
+			final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(logConfigOption);
+		Assertion.checkNotNull(bootConfig);
 		Assertion.checkNotNull(moduleConfigs);
 		//---
-		Assertion.checkNotNull(aopEngine);
-		Assertion.checkNotNull(elasticaEngine);
-		//-----
 		this.logConfigOption = logConfigOption;
+		this.bootConfig = bootConfig;
 		this.modules = Collections.unmodifiableList(new ArrayList<>(moduleConfigs));
-		//-----
-		this.silence = silence;
-		this.aopEngine = aopEngine;
-		this.elasticaEngine = elasticaEngine;
+	}
+
+	public BootConfig getBootConfig() {
+		return bootConfig;
 	}
 
 	public Option<LogConfig> getLogConfig() {
@@ -69,17 +60,5 @@ public final class AppConfig {
 	 */
 	public List<ModuleConfig> getModuleConfigs() {
 		return modules;
-	}
-
-	public boolean isSilence() {
-		return silence;
-	}
-
-	public AopEngine getAopEngine() {
-		return aopEngine;
-	}
-
-	public Option<ElasticaEngine> getElasticaEngine() {
-		return elasticaEngine;
 	}
 }

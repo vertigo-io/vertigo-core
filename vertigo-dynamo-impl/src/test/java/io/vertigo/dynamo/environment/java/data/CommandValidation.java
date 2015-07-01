@@ -119,7 +119,7 @@ public final class CommandValidation implements DtObject {
 			}
 		}
 		if (command == null) {
-			command = io.vertigo.core.Home.getComponentSpace().resolve(io.vertigo.dynamo.persistence.PersistenceManager.class).getBroker().get(fkURI);
+			command = io.vertigo.core.Home.getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().get(fkURI);
 		}
 		return command;
 	}

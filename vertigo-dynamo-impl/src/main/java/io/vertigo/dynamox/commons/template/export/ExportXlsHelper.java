@@ -105,11 +105,11 @@ public class ExportXlsHelper<R extends DtObject> {
 		// exportListParameters.setMetaData(PublisherMetaData.TITLE, tabName);
 		for (final DtField dtField : getExportColumnList(dtcToExport, collectionColumnNameList)) {
 			if (specificLabelMap == null) {
-				exportSheetBuilder.withField(dtField);
+				exportSheetBuilder.addField(dtField);
 			} else {
 				// final String label = specificLabelMap.get(field.getName());
 				// TODO exportListParameters.addExportField(field, label);
-				exportSheetBuilder.withField(dtField, null);
+				exportSheetBuilder.addField(dtField, null);
 			}
 		}
 		exportSheetBuilder.endSheet();
@@ -133,7 +133,7 @@ public class ExportXlsHelper<R extends DtObject> {
 
 		// exportObjectParameters.setMetaData(PublisherMetaData.TITLE, tabName);
 		for (final DtField dtField : getExportCriterionFields(criterion, criterionExcludedColumnNames)) {
-			exportSheetBuilder.withField(dtField);
+			exportSheetBuilder.addField(dtField);
 		}
 
 		exportSheetBuilder.endSheet();

@@ -236,13 +236,9 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		Assertion.checkState(params == null, "La query a déjà été préparée !");
 		//-----
 		final SqlParserHandler scriptHandler = new SqlParserHandler(getTaskDefinition());
-		getScriptManager().parse(query, scriptHandler, SQL_SEPARATORS);
+		scriptManager.parse(query, scriptHandler, SQL_SEPARATORS);
 		params = scriptHandler.getParams();
 		return scriptHandler.getSql();
-	}
-
-	private static ScriptManager getScriptManager() {
-		return Home.getComponentSpace().resolve(ScriptManager.class);
 	}
 
 	//==========================================================================

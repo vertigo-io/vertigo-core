@@ -32,6 +32,7 @@ public final class Country implements DtObject {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
+	private Long conId;
 	private String name;
 
 	@Field(domain = "DO_IDENTIFIANT", type = "PRIMARY_KEY", notNull = true, label = "id of the country")
@@ -41,6 +42,16 @@ public final class Country implements DtObject {
 
 	public Country setId(final Long id) {
 		this.id = id;
+		return this;
+	}
+
+	@Field(domain = "DO_IDENTIFIANT", notNull = true, label = "id of the continent")
+	public final Long getConId() {
+		return conId;
+	}
+
+	public Country setConId(final Long conId) {
+		this.conId = conId;
 		return this;
 	}
 

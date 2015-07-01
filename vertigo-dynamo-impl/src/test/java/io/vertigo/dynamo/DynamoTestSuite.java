@@ -46,12 +46,12 @@ import io.vertigo.dynamo.environment.plugins.loaders.kpr.definition.DslWordListR
 import io.vertigo.dynamo.environment.splittedmodules.SplittedModulesEnvironmentManagerTest;
 import io.vertigo.dynamo.export.ExportManagerTest;
 import io.vertigo.dynamo.file.FileManagerTest;
-import io.vertigo.dynamo.kvdatastore.KVDataStoreManagerTest;
-import io.vertigo.dynamo.persistence.direct.PersistenceManagerTest;
-import io.vertigo.dynamo.persistence.jpa.JpaPersistenceManagerTest;
 import io.vertigo.dynamo.search.dynamic.SearchManagerDynaFieldsTest;
 import io.vertigo.dynamo.search.multiindex.SearchManagerMultiIndexTest;
 import io.vertigo.dynamo.search.standard.SearchManagerTest;
+import io.vertigo.dynamo.store.direct.StoreManagerTest;
+import io.vertigo.dynamo.store.jpa.JpaStoreManagerTest;
+import io.vertigo.dynamo.store.kvstore.KVStoreManagerTest;
 import io.vertigo.dynamo.task.TaskManagerTest;
 import io.vertigo.dynamo.task.x.TaskEngineSelectDynamicTest;
 import io.vertigo.dynamo.transaction.VTransactionManagerTest;
@@ -83,9 +83,9 @@ import org.junit.runners.Suite.SuiteClasses;
 		//--file
 		FileManagerTest.class,
 		//--kvdatastore
-		KVDataStoreManagerTest.class,
+		KVStoreManagerTest.class,
 		//--persistence
-		PersistenceManagerTest.class, JpaPersistenceManagerTest.class,
+		StoreManagerTest.class, JpaStoreManagerTest.class,
 		//--task
 		TaskManagerTest.class, TaskEngineSelectDynamicTest.class,
 

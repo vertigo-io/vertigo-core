@@ -86,9 +86,9 @@ public final class Home {
 					initLog(appConfig.getLogConfig().get());
 				}
 				//-----
-				definitionSpace = new DefinitionSpace(appConfig);
-				componentSpace = new ComponentSpace(appConfig);
-				configSpace = new ConfigSpace(appConfig);
+				definitionSpace = new DefinitionSpace(appConfig.getBootConfig());
+				componentSpace = new ComponentSpace(appConfig.getBootConfig());
+				configSpace = new ConfigSpace(appConfig.getBootConfig());
 				//----
 				for (final ModuleConfig moduleConfig : appConfig.getModuleConfigs()) {
 					definitionSpace.injectDefinitions(moduleConfig);

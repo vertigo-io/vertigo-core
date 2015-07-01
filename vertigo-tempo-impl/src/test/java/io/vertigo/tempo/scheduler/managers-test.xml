@@ -1,0 +1,10 @@
+<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
+<config>
+	<module name="kasper-labs">
+		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
+		<component api="JobManager" class="io.vertigo.tempo.impl.job.JobManagerImpl" />
+		<component api="SchedulerManager" class="io.vertigo.tempo.impl.scheduler.SchedulerManagerImpl">
+			<plugin class="io.vertigo.tempo.plugins.scheduler.basic.BasicSchedulerPlugin" />
+		</component>
+	</module>
+</config>

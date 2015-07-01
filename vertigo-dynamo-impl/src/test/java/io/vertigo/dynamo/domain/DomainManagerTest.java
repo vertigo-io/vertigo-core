@@ -40,7 +40,7 @@ public class DomainManagerTest {
 			final DtDefinition dtDefinition = new DtDefinitionBuilder("DT_MOVIE")
 					.withPersistent(false)
 					.withDynamic(true)
-					.withDataField("NAME", "nom du film", domain, true, true, false, false)
+					.addDataField("NAME", "nom du film", domain, true, true, false, false)
 					.build();
 
 			final DtObject dto = DtObjectUtil.createDtObject(dtDefinition);

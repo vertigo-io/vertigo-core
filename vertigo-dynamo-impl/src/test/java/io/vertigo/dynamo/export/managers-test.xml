@@ -23,12 +23,12 @@
 		</component>
 		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
 
-		<component api="PersistenceManager" class="io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl">
-			<plugin class="io.vertigo.dynamo.plugins.persistence.datastore.oracle.OracleDataStorePlugin">
+		<component api="StoreManager" class="io.vertigo.dynamo.impl.store.StoreManagerImpl">
+			<plugin class="io.vertigo.dynamo.plugins.store.datastore.oracle.OracleDataStorePlugin">
 				<param name="sequencePrefix" value="SEQ_" />
 			</plugin>
 		</component>
-
+		<component api="EventManager" class="io.vertigo.commons.impl.event.EventManagerImpl"/>
 		<component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
 			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" />

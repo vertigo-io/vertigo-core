@@ -20,7 +20,7 @@ package io.vertigo.studio.plugins.reporting.domain;
 
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
@@ -47,11 +47,11 @@ import javax.inject.Inject;
  */
 public final class DomainReportingPlugin implements ReportingPlugin {
 	private final VTransactionManager transactionManager;
-	private final PersistenceManager persistenceManager;
+	private final StoreManager persistenceManager;
 	private final List<MetricEngine<DtDefinition>> metricEngines;
 
 	@Inject
-	public DomainReportingPlugin(final VTransactionManager transactionManager, final PersistenceManager persistenceManager) {
+	public DomainReportingPlugin(final VTransactionManager transactionManager, final StoreManager persistenceManager) {
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(persistenceManager);
 		//-----

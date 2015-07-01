@@ -146,7 +146,9 @@ public final class DomainGeneratorPlugin extends AbstractGeneratorPlugin {
 			createFileGenerator(fileConfig, mapRoot, simpleClassName, targetSubDir, packageName, ".java", "domain/templates/resources.ftl")
 					.generateFile(resultBuilder);
 
-			createFileGenerator(fileConfig, mapRoot, simpleClassName, targetSubDir, packageName, ".properties", "domain/templates/properties.ftl")
+			//pour les .properties on force l'ISO-8859-1 comme la norme l'impose
+			final FileConfig propertiesFileConfig = new FileConfig(fileConfig.getTargetGenDir(), fileConfig.getProjectPackageName(), "ISO-8859-1");
+			createFileGenerator(propertiesFileConfig, mapRoot, simpleClassName, targetSubDir, packageName, ".properties", "domain/templates/properties.ftl")
 					.generateFile(resultBuilder);
 		}
 	}

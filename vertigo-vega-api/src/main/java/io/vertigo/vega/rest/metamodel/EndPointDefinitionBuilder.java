@@ -171,7 +171,9 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	 * @param excludedFields list of excludedFields
 	 * @return this builder
 	 */
-	public EndPointDefinitionBuilder withExcludedFields(final String... excludedFields) {
+	public EndPointDefinitionBuilder addExcludedFields(final String... excludedFields) {
+		Assertion.checkNotNull(excludedFields);
+		//-----
 		myExcludedFields.addAll(Arrays.asList(excludedFields));
 		return this;
 	}
@@ -180,7 +182,9 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	 * @param includedFields list of includedFields
 	 * @return this builder
 	 */
-	public EndPointDefinitionBuilder withIncludedFields(final String... includedFields) {
+	public EndPointDefinitionBuilder addIncludedFields(final String... includedFields) {
+		Assertion.checkNotNull(includedFields);
+		//-----
 		myIncludedFields.addAll(Arrays.asList(includedFields));
 		return this;
 	}
@@ -223,7 +227,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 		//autoSortAndPagination use a Implicit UiListState, this one must be show in API, so we add it to endPointParams
 		//autoSortAndPaginationHandler will use it
 		if (autoSortAndPagination) {
-			withEndPointParam(new EndPointParamBuilder(UiListState.class)
+			addEndPointParam(new EndPointParamBuilder(UiListState.class)
 					.with(RestParamType.Query, "") // We declare ListState in query without prefix
 					.build());
 		}
@@ -243,7 +247,7 @@ public final class EndPointDefinitionBuilder implements Builder<EndPointDefiniti
 	 * @param endPointParam endPointParam
 	 * @return this builder
 	 */
-	public EndPointDefinitionBuilder withEndPointParam(final EndPointParam endPointParam) {
+	public EndPointDefinitionBuilder addEndPointParam(final EndPointParam endPointParam) {
 		myEndPointParams.add(endPointParam);
 		return this;
 	}

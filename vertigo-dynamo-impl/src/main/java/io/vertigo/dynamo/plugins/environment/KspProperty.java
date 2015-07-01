@@ -78,7 +78,7 @@ public class KspProperty {
 	public static final EntityProperty DYNAMIC = new EntityProperty("DYNAMIC", EntityPropertyType.Boolean);
 
 	/**
-	 * Le Stereotype appliqué au DT : Data (defaut), MasterData ou Subject
+	 * Le Stereotype appliqué au DT : Data (defaut), MasterData ou KeyConcept
 	 */
 	public static final EntityProperty STEREOTYPE = new EntityProperty("STEREOTYPE", EntityPropertyType.String);
 

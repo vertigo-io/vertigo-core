@@ -27,7 +27,7 @@ import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.collections.functions.sort.SortState;
-import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
 import io.vertigo.lang.Modifiable;
@@ -230,20 +230,20 @@ final class RamLuceneIndex<D extends DtObject> implements LuceneIndex<D>, Modifi
 		}
 	}
 
-	private static PersistenceManager getPersistenceManager() {
-		return Home.getComponentSpace().resolve(PersistenceManager.class);
+	private static StoreManager getStoreManager() {
+		return Home.getComponentSpace().resolve(StoreManager.class);
 	}
 
 	private static String getStringValue(final DtObject dto, final DtField field) {
 		final String stringValue;
 		final Object value = field.getDataAccessor().getValue(dto);
 		if (value != null) {
-			if (field.getType() == DtField.FieldType.FOREIGN_KEY && getPersistenceManager().getMasterDataConfig().containsMasterData(field.getFkDtDefinition())) {
+			if (field.getType() == DtField.FieldType.FOREIGN_KEY && getStoreManager().getMasterDataConfig().containsMasterData(field.getFkDtDefinition())) {
 				//TODO voir pour mise en cache de cette navigation
-				final DtListURIForMasterData mdlUri = getPersistenceManager().getMasterDataConfig().getDtListURIForMasterData(field.getFkDtDefinition());
+				final DtListURIForMasterData mdlUri = getStoreManager().getMasterDataConfig().getDtListURIForMasterData(field.getFkDtDefinition());
 				final DtField displayField = mdlUri.getDtDefinition().getDisplayField().get();
 				final URI<DtObject> uri = new URI(field.getFkDtDefinition(), value);
-				final DtObject fkDto = getPersistenceManager().getBroker().get(uri);
+				final DtObject fkDto = getStoreManager().getDataStore().get(uri);
 				final Object displayValue = displayField.getDataAccessor().getValue(fkDto);
 				stringValue = displayField.getDomain().getFormatter().valueToString(displayValue, displayField.getDomain().getDataType());
 			} else {

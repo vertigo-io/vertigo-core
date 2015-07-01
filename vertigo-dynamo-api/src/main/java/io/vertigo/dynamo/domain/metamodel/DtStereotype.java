@@ -2,6 +2,6 @@ package io.vertigo.dynamo.domain.metamodel;
 
 public enum DtStereotype {
 	MasterData,
-	Subject,
+	KeyConcept,
 	Data; //By default
 }

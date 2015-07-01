@@ -25,6 +25,7 @@ import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -59,5 +60,10 @@ public final class DslDynamicRegistryMock implements DynamicRegistry {
 	@Override
 	public void onNewDefinition(final DynamicDefinition xdefinition, final DynamicDefinitionRepository dynamicModelrepository) {
 		//rien
+	}
+
+	@Override
+	public List<DynamicDefinition> getRootDynamicDefinitions() {
+		return Collections.emptyList();
 	}
 }

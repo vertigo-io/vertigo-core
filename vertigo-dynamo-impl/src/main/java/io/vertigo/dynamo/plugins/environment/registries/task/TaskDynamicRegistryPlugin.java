@@ -38,7 +38,6 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 	 */
 	public TaskDynamicRegistryPlugin() {
 		super(TaskGrammar.GRAMMAR);
-		Home.getDefinitionSpace().register(TaskDefinition.class);
 	}
 
 	/** {@inheritDoc} */
@@ -47,7 +46,7 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 		if (TaskGrammar.TASK_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
 			//Seuls les taches sont gérées.
 			final TaskDefinition definition = createTaskDefinition(xdefinition);
-			Home.getDefinitionSpace().put(definition, TaskDefinition.class);
+			Home.getDefinitionSpace().put(definition);
 		}
 	}
 
@@ -73,9 +72,9 @@ public final class TaskDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 			//-----
 			final Boolean notNull = getPropertyValueAsBoolean(xtaskAttribute, KspProperty.NOT_NULL);
 			if (isInValue(getPropertyValueAsString(xtaskAttribute, KspProperty.IN_OUT))) {
-				taskDefinitionBuilder.withInAttribute(attributeName, domain, notNull.booleanValue());
+				taskDefinitionBuilder.addInAttribute(attributeName, domain, notNull.booleanValue());
 			} else {
-				taskDefinitionBuilder.withOutAttribute(attributeName, domain, notNull.booleanValue());
+				taskDefinitionBuilder.addOutAttribute(attributeName, domain, notNull.booleanValue());
 			}
 		}
 		return taskDefinitionBuilder.build();

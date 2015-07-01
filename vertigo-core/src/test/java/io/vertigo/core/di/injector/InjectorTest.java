@@ -21,8 +21,12 @@ package io.vertigo.core.di.injector;
 import io.vertigo.core.di.DIException;
 import io.vertigo.core.di.data.A;
 import io.vertigo.core.di.data.B;
+import io.vertigo.core.di.data.B2;
 import io.vertigo.core.di.data.E;
 import io.vertigo.core.di.data.F;
+import io.vertigo.core.di.data.P;
+import io.vertigo.core.di.data.P2;
+import io.vertigo.core.di.data.P3;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
 
@@ -120,13 +124,23 @@ public final class InjectorTest {
 		nop(b);
 	}
 
+	@Test(expected = DIException.class)
+	public void testB2() {
+		final MyContainer container = new MyContainer();
+		final A a = Injector.newInstance(A.class, container);
+		container.put("a", a);
+		final B2 b2 = Injector.newInstance(B2.class, container);
+		nop(b2);
+		Assert.fail();
+	}
+
 	@Test
 	public void testB() {
 		final MyContainer container = new MyContainer();
 		final A a = Injector.newInstance(A.class, container);
 		container.put("a", a);
 		final B b = Injector.newInstance(B.class, container);
-		Assert.assertEquals(b.getA(), a);
+		Assert.assertEquals(a, b.getA());
 	}
 
 	@Test
@@ -134,10 +148,25 @@ public final class InjectorTest {
 		final MyContainer container = new MyContainer();
 		final A a = Injector.newInstance(A.class, container);
 		container.put("a", a);
-		final E e = Injector.newInstance(E.class, container);
+		container.put("p3", new P3());
+		E e = Injector.newInstance(E.class, container);
 		Assert.assertTrue(e.getA().isDefined());
-		Assert.assertEquals(e.getA().get(), a);
+		Assert.assertEquals(a, e.getA().get());
 		Assert.assertTrue(e.getB().isEmpty());
+		Assert.assertEquals(0, e.getPPlugins().size());
+		Assert.assertEquals(0, e.getP2Plugins().size());
+		//-----
+		container.put("p", new P());
+		container.put("p#1", new P());
+		container.put("pen", new P2());
+		container.put("pen#1", new P2());
+		container.put("pen#2", new P2());
+		e = Injector.newInstance(E.class, container);
+		Assert.assertTrue(e.getA().isDefined());
+		Assert.assertEquals(a, e.getA().get());
+		Assert.assertTrue(e.getB().isEmpty());
+		Assert.assertEquals(2, e.getPPlugins().size());
+		Assert.assertEquals(3, e.getP2Plugins().size());
 	}
 
 	@Test

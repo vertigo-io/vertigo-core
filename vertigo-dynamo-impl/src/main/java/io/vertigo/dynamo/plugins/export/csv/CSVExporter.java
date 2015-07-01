@@ -27,7 +27,7 @@ import io.vertigo.dynamo.export.model.Export;
 import io.vertigo.dynamo.export.model.ExportField;
 import io.vertigo.dynamo.export.model.ExportSheet;
 import io.vertigo.dynamo.impl.export.util.ExportUtil;
-import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 
 import java.io.IOException;
@@ -61,19 +61,19 @@ final class CSVExporter {
 
 	private final Map<DtField, Map<Object, String>> referenceCache = new HashMap<>();
 	private final Map<DtField, Map<Object, String>> denormCache = new HashMap<>();
-	private final PersistenceManager persistenceManager;
+	private final StoreManager storeManager;
 
 	/**
 	 * Constructeur.
 	 *
 	 * @param codecManager Manager des codecs
 	 */
-	CSVExporter(final CodecManager codecManager, final PersistenceManager persistenceManager) {
+	CSVExporter(final CodecManager codecManager, final StoreManager storeManager) {
 		Assertion.checkNotNull(codecManager);
-		Assertion.checkNotNull(persistenceManager);
+		Assertion.checkNotNull(storeManager);
 		//-----
 		csvEncoder = codecManager.getCsvEncoder();
-		this.persistenceManager = persistenceManager;
+		this.storeManager = storeManager;
 	}
 
 	/**
@@ -150,7 +150,7 @@ final class CSVExporter {
 		for (final ExportField exportColumn : parameters.getExportFields()) {
 			final DtField dtField = exportColumn.getDtField();
 			out.write(sep);
-			sValue = ExportUtil.getText(persistenceManager, referenceCache, denormCache, dto, exportColumn);
+			sValue = ExportUtil.getText(storeManager, referenceCache, denormCache, dto, exportColumn);
 			// si toutes les colonnes de cette ligne sont vides,
 			// on n'obtient pas une ligne correctement formatée ...
 			if ("".equals(sValue)) {

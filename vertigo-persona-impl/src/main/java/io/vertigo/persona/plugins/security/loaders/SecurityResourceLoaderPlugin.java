@@ -19,21 +19,16 @@
 package io.vertigo.persona.plugins.security.loaders;
 
 import io.vertigo.commons.resource.ResourceManager;
-import io.vertigo.core.config.ResourceConfig;
-import io.vertigo.core.spaces.definiton.ResourceLoader;
+import io.vertigo.dynamo.impl.environment.LoaderPlugin;
+import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Plugin;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 
 /**
  * @author pchretien
  */
-public final class SecurityResourceLoaderPlugin implements ResourceLoader, Plugin {
+public final class SecurityResourceLoaderPlugin implements LoaderPlugin {
 	private final ResourceManager resourceManager;
 
 	/**
@@ -49,16 +44,14 @@ public final class SecurityResourceLoaderPlugin implements ResourceLoader, Plugi
 
 	/** {@inheritDoc} */
 	@Override
-	public Set<String> getTypes() {
-		return Collections.singleton("security");
+	public String getType() {
+		return "security";
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void parse(final List<ResourceConfig> resourceConfigs) {
-		for (final ResourceConfig resourceConfig : resourceConfigs) {
-			final XmlSecurityLoader xmlSecurityLoader = new XmlSecurityLoader(resourceManager, resourceConfig.getPath());
-			xmlSecurityLoader.load();
-		}
+	public void load(String resourcePath, DynamicDefinitionRepository dynamicModelRepository) {
+		final XmlSecurityLoader xmlSecurityLoader = new XmlSecurityLoader(resourceManager, resourcePath);
+		xmlSecurityLoader.load();
 	}
 }

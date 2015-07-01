@@ -34,10 +34,10 @@ import java.util.List;
  * @author pchretien
  */
 public final class FacetDefinitionByRangeBuilder implements Builder<FacetDefinition> {
-	final String name;
-	final DtField dtField;
-	final MessageText label;
-	final List<FacetValue> facetRanges = new ArrayList<>();
+	private final String name;
+	private final DtField dtField;
+	private final MessageText label;
+	private final List<FacetValue> facetRanges = new ArrayList<>();
 
 	public FacetDefinitionByRangeBuilder(final String name, final DtField dtField, final MessageText label) {
 		Assertion.checkArgNotEmpty(name);
@@ -49,12 +49,12 @@ public final class FacetDefinitionByRangeBuilder implements Builder<FacetDefinit
 		this.label = label;
 	}
 
-	public FacetDefinitionByRangeBuilder withFacetValue(final String query, final String facetValueLabel) {
+	public FacetDefinitionByRangeBuilder addFacetValue(final String query, final String facetValueLabel) {
 		final ListFilter listFilter = new ListFilter(query);
-		return withFacetValue(new FacetValue(listFilter, new MessageText(facetValueLabel, null)));
+		return addFacetValue(new FacetValue(listFilter, new MessageText(facetValueLabel, null)));
 	}
 
-	public FacetDefinitionByRangeBuilder withFacetValue(final FacetValue facetValue) {
+	public FacetDefinitionByRangeBuilder addFacetValue(final FacetValue facetValue) {
 		Assertion.checkNotNull(facetValue);
 		//-----
 		facetRanges.add(facetValue);

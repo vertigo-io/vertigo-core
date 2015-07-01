@@ -18,19 +18,33 @@
  */
 package io.vertigo.dynamo.impl.search;
 
+import io.vertigo.commons.event.EventManager;
+import io.vertigo.core.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.search.SearchIndexFieldNameResolver;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
+import io.vertigo.dynamo.store.StoreManager;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -38,35 +52,58 @@ import javax.inject.Inject;
  * Implémentation standard du gestionnaire des indexes de recherche.
  * @author dchallas
  */
-public final class SearchManagerImpl implements SearchManager {
+public final class SearchManagerImpl implements SearchManager, Activeable {
+
+	private final VTransactionManager transactionManager;
 	private final SearchServicesPlugin searchServicesPlugin;
+
+	private final ScheduledExecutorService executorService; //TODO : replace by WorkManager to make distributed work easier
+	private final Map<String, List<URI<? extends KeyConcept>>> dirtyElementsPerIndexName = new HashMap<>();
 
 	/**
 	 * Constructor.
 	 * @param searchServicesPlugin Search plugin
+	 * @param eventsManager Events Manager
+	 * @param transactionManager Transaction Manager
 	 */
 	@Inject
-	public SearchManagerImpl(final SearchServicesPlugin searchServicesPlugin) {
+	public SearchManagerImpl(final SearchServicesPlugin searchServicesPlugin, final EventManager eventsManager, final VTransactionManager transactionManager) {
 		Assertion.checkNotNull(searchServicesPlugin);
+		Assertion.checkNotNull(eventsManager);
+		Assertion.checkNotNull(transactionManager);
 		//-----
 		this.searchServicesPlugin = searchServicesPlugin;
+
+		final SearchIndexDirtyEventListener searchIndexDirtyEventListener = new SearchIndexDirtyEventListener(this);
+		eventsManager.register(StoreManager.FiredEvent.storeCreate, searchIndexDirtyEventListener);
+		eventsManager.register(StoreManager.FiredEvent.storeUpdate, searchIndexDirtyEventListener);
+		eventsManager.register(StoreManager.FiredEvent.storeDelete, searchIndexDirtyEventListener);
+
+		executorService = Executors.newSingleThreadScheduledExecutor();
+		this.transactionManager = transactionManager;
+	}
+
+	@Override
+	public void start() {
+		for (final SearchIndexDefinition indexDefinition : Home.getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
+			dirtyElementsPerIndexName.put(indexDefinition.getName(), new ArrayList<URI<? extends KeyConcept>>());
+		}
+	}
+
+	@Override
+	public void stop() {
+		//nothing
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void registerIndexFieldNameResolver(final SearchIndexDefinition indexDefinition, final SearchIndexFieldNameResolver indexFieldNameResolver) {
-		searchServicesPlugin.registerIndexFieldNameResolver(indexDefinition, indexFieldNameResolver);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <I extends DtObject, R extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<I, R>> indexCollection) {
+	public <S extends KeyConcept, I extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
 		searchServicesPlugin.putAll(indexDefinition, indexCollection);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <I extends DtObject, R extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<I, R> index) {
+	public <S extends KeyConcept, I extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
 		searchServicesPlugin.put(indexDefinition, index);
 	}
 
@@ -84,7 +121,7 @@ public final class SearchManagerImpl implements SearchManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final SearchIndexDefinition indexDefinition, final URI uri) {
+	public <S extends KeyConcept> void remove(final SearchIndexDefinition indexDefinition, final URI<S> uri) {
 		searchServicesPlugin.remove(indexDefinition, uri);
 	}
 
@@ -93,4 +130,50 @@ public final class SearchManagerImpl implements SearchManager {
 	public void removeAll(final SearchIndexDefinition indexDefinition, final ListFilter listFilter) {
 		searchServicesPlugin.remove(indexDefinition, listFilter);
 	}
+
+	/** {@inheritDoc} */
+	@Override
+	public SearchIndexDefinition findIndexDefinitionByKeyConcept(final Class<? extends KeyConcept> keyConceptClass) {
+		final SearchIndexDefinition indexDefinition = findIndexDefinitionByKeyConcept(DtObjectUtil.findDtDefinition(keyConceptClass));
+		Assertion.checkNotNull(indexDefinition, "No SearchIndexDefinition was defined for this keyConcept : {0}", keyConceptClass.getSimpleName());
+		return indexDefinition;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean hasIndexDefinitionByKeyConcept(final Class<? extends KeyConcept> keyConceptClass) {
+		final SearchIndexDefinition indexDefinition = findIndexDefinitionByKeyConcept(DtObjectUtil.findDtDefinition(keyConceptClass));
+		return indexDefinition != null;
+	}
+
+	private SearchIndexDefinition findIndexDefinitionByKeyConcept(final DtDefinition keyConceptDtDefinition) {
+		for (final SearchIndexDefinition indexDefinition : Home.getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
+			if (indexDefinition.getKeyConceptDtDefinition().equals(keyConceptDtDefinition)) {
+				return indexDefinition;
+			}
+		}
+		return null;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void markAsDirty(final List<URI<? extends KeyConcept>> keyConceptUris) {
+		Assertion.checkNotNull(keyConceptUris);
+		Assertion.checkArgument(!keyConceptUris.isEmpty(), "dirty keyConceptUris cant be empty");
+		//-----
+		final SearchIndexDefinition searchIndexDefinition = findIndexDefinitionByKeyConcept(keyConceptUris.get(0).getDefinition());
+		final List<URI<? extends KeyConcept>> dirtyElements = dirtyElementsPerIndexName.get(searchIndexDefinition.getName());
+		synchronized (dirtyElements) {
+			dirtyElements.addAll(keyConceptUris); //TODO : doublons ?
+		}
+		executorService.schedule(new ReindexTask(searchIndexDefinition, dirtyElements, this, transactionManager), 5, TimeUnit.SECONDS); //une reindexation dans max 5s
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void reindexAll(final SearchIndexDefinition searchIndexDefinition) {
+		//TODO return un Futur ?
+		executorService.schedule(new ReindexAllTask(searchIndexDefinition, this, transactionManager), 5, TimeUnit.SECONDS); //une reindexation total dans max 5s
+	}
+
 }

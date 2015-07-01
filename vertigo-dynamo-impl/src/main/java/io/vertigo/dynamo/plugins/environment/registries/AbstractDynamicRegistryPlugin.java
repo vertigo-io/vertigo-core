@@ -25,6 +25,9 @@ import io.vertigo.dynamo.impl.environment.kernel.meta.Grammar;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.lang.Assertion;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @author pchretien
  */
@@ -44,6 +47,11 @@ public abstract class AbstractDynamicRegistryPlugin implements DynamicRegistryPl
 	@Override
 	public Grammar getGrammar() {
 		return grammar;
+	}
+
+	@Override
+	public List<DynamicDefinition> getRootDynamicDefinitions() {
+		return Collections.emptyList();
 	}
 
 	/** {@inheritDoc} */

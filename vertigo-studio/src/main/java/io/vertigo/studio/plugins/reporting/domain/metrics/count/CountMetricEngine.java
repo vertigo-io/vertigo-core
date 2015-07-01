@@ -19,7 +19,7 @@
 package io.vertigo.studio.plugins.reporting.domain.metrics.count;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.reporting.Metric;
 import io.vertigo.studio.reporting.MetricBuilder;
@@ -31,16 +31,16 @@ import io.vertigo.studio.reporting.MetricEngine;
  * @author pchretien
  */
 public final class CountMetricEngine implements MetricEngine<DtDefinition> {
-	private final PersistenceManager persistenceManager;
+	private final StoreManager storeManager;
 
 	/**
 	 * Constructeur.
-	 * @param persistenceManager Manager de persistance
+	 * @param storeManager Manager de persistance
 	 */
-	public CountMetricEngine(final PersistenceManager persistenceManager) {
-		Assertion.checkNotNull(persistenceManager);
+	public CountMetricEngine(final StoreManager storeManager) {
+		Assertion.checkNotNull(storeManager);
 		//-----
-		this.persistenceManager = persistenceManager;
+		this.storeManager = storeManager;
 	}
 
 	/** {@inheritDoc} */
@@ -59,7 +59,7 @@ public final class CountMetricEngine implements MetricEngine<DtDefinition> {
 		}
 		//Dans le cas ou DT est persistant on compte le nombre de lignes.
 		try {
-			final int count = persistenceManager.getBroker().count(dtDefinition);
+			final int count = storeManager.getDataStore().count(dtDefinition);
 			return metricBuilder
 					.withStatus(Metric.Status.Executed)
 					.withValue(count)

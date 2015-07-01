@@ -21,18 +21,25 @@ package io.vertigo.dynamo.search.metamodel;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionPrefix;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.lang.Assertion;
 
 /**
  * Définition de l'index de recherche.
  *
- * Un index est constitué de deux types d'objets.
+ * Fondalementalement un index est constitué de deux types d'objets.
  * - Un objet d'index (les champs indexés)
- * - Un objet d'affichage
+ * - Un keyConcept représentant le concept métier réprésenté par cet index.
+ * La définition d'index précise également un SearchLoader permettant la mise à jour autonome de l'index.
+ *
+ * L'objet d'index est à la fois porteur des champs de recherche, et ceux utilisé à l'affichage.
+ * La différence entre les deux peut-être affiné par :
+ * - la propriété 'persistent' des fields pour savoir si le champs fait partit ou non du résultat utilisé pour l'affichage
+ * - le domain et sa propriété indexType pour savoir si le champs est indéxé ou non
  *
  * L'objet d'affichage peut être simple (Ex: résultat google) alors qu'il se réfère à un index plus riche.
  *
- * @author dchallas
+ * @author dchallas, npiedeloup
  */
 @DefinitionPrefix("IDX")
 public final class SearchIndexDefinition implements Definition {
@@ -44,26 +51,36 @@ public final class SearchIndexDefinition implements Definition {
 	/** Structure des éléments indexés. */
 	private final DtDefinition indexDtDefinition;
 
-	/** Structure des éléments de résultat.*/
-	private final DtDefinition resultDtDefinition;
+	private final DtDefinition keyConceptDtDefinition;
+
+	private final String searchLoaderId;
 
 	/**
 	 * Constructeur.
+	 * @param name Index name
+	 * @param keyConceptDtDefinition KeyConcept associé à l'index
 	 * @param indexDtDefinition Structure des éléments indexés.
-	 * @param resultDtDefinition Structure des éléments de résultat.
+	 * @param searchLoaderId Loader de chargement des éléments indéxés et résultat
 	 */
-	public SearchIndexDefinition(final String name, final DtDefinition indexDtDefinition, final DtDefinition resultDtDefinition) {
+	public SearchIndexDefinition(final String name,
+			final DtDefinition keyConceptDtDefinition,
+			final DtDefinition indexDtDefinition,
+			final String searchLoaderId) {
 		Assertion.checkArgNotEmpty(name);
+		Assertion.checkNotNull(keyConceptDtDefinition);
+		Assertion.checkArgument(keyConceptDtDefinition.getStereotype() == DtStereotype.KeyConcept, "keyConceptDtDefinition ({0}) must be a DtDefinition of a KeyConcept class", keyConceptDtDefinition.getName());
 		Assertion.checkNotNull(indexDtDefinition);
-		Assertion.checkNotNull(resultDtDefinition);
+		Assertion.checkState(indexDtDefinition.getIdField().isDefined(), "Index Object {0} must have a field declared as key", indexDtDefinition.getClassSimpleName());
+		Assertion.checkArgNotEmpty(searchLoaderId);
 		//-----
 		this.name = name;
+		this.keyConceptDtDefinition = keyConceptDtDefinition;
 		this.indexDtDefinition = indexDtDefinition;
-		this.resultDtDefinition = resultDtDefinition;
+		this.searchLoaderId = searchLoaderId;
 	}
 
 	/**
-	 * Définition des champs indexés.
+	 * Définition de l'objet représentant le contenu de l'index (indexé et résultat).
 	 * @return Définition des champs indexés.
 	 */
 	public DtDefinition getIndexDtDefinition() {
@@ -71,12 +88,20 @@ public final class SearchIndexDefinition implements Definition {
 	}
 
 	/**
-	 * Définition des éléments résultats.
-	 * Les éléments de résultats doivent être conservés, stockés dans l'index.
-	 * @return Définition des éléments de résultats.
+	 * Définition du keyConcept maitre de cet index.
+	 * Le keyConcept de l'index est surveillé pour rafraichir l'index.
+	 * @return Définition du keyConcept.
 	 */
-	public DtDefinition getResultDtDefinition() {
-		return resultDtDefinition;
+	public DtDefinition getKeyConceptDtDefinition() {
+		return keyConceptDtDefinition;
+	}
+
+	/**
+	 * Nom du composant de chargement des éléments à indexer.
+	 * @return Nom du composant de chargement des éléments à indexer.
+	 */
+	public String getSearchLoaderId() {
+		return searchLoaderId;
 	}
 
 	/** {@inheritDoc} */

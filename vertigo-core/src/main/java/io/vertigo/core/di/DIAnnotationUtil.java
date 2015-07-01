@@ -19,15 +19,9 @@
 package io.vertigo.core.di;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-import io.vertigo.lang.Plugin;
-import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -65,84 +59,6 @@ public final class DIAnnotationUtil {
 	}
 
 	/**
-	 * Indique si le i-éme paramètre du constructeur est optionnel.
-	 * @param constructor Constructeur testé
-	 * @param i indice du paramètre
-	 * @return Si le i-éme paramètre du contructeur est optionnel.
-	 */
-	public static boolean isOptional(final Constructor<?> constructor, final int i) {
-		Assertion.checkNotNull(constructor);
-		//-----
-		return Option.class.isAssignableFrom(constructor.getParameterTypes()[i]);
-	}
-
-	/**
-	 * Indique si le champ du composant est optionnel.
-	 * @param field Champ du composant
-	 * @return Si ce champ est optionnel.
-	 */
-	public static boolean isOptional(final Field field) {
-		Assertion.checkNotNull(field);
-		//-----
-		return Option.class.isAssignableFrom(field.getType());
-	}
-
-	/**
-	 * Indique Indique si le i-éme paramètre du constructeur est une liste de plugins.
-	 * @param constructor Constructeur testé
-	 * @param i indice du paramètre
-	 * @return Si le i-éme paramètre du contructeur une liste de plugins.
-	 */
-	public static boolean hasPlugins(final Constructor<?> constructor, final int i) {
-		Assertion.checkNotNull(constructor);
-		//-----
-		if (List.class.isAssignableFrom(constructor.getParameterTypes()[i])) {
-			if (!Plugin.class.isAssignableFrom(ClassUtil.getGeneric(constructor, i))) {
-				throw new IllegalStateException("Only plugins can be injected in list");
-			}
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Indique si le champ du composant correspond à une liste de plugins.
-	 * @param field Champ du composant
-	 * @return Si ce champ est optionnel.
-	 */
-	public static boolean hasPlugins(final Field field) {
-		Assertion.checkNotNull(field);
-		//-----
-		if (List.class.isAssignableFrom(field.getType())) {
-			if (!Plugin.class.isAssignableFrom(ClassUtil.getGeneric(field))) {
-				throw new IllegalStateException("Only plugins can be injected in list");
-			}
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * @return Création de l'identifiant du composant
-	 */
-	public static String buildId(final Option<Class<?>> apiClass, final Class<?> implClass) {
-		Assertion.checkNotNull(apiClass);
-		Assertion.checkNotNull(implClass);
-		//-----
-		if (apiClass.isDefined()) {
-			//if en api is defined, api muust define id
-			final String id = buildId(apiClass.get());
-			if (implClass.isAnnotationPresent(Named.class)) {
-				//if an api is defined and an annotation is found on implementation then we have to check the consistency
-				final Named named = implClass.getAnnotation(Named.class);
-				Assertion.checkArgument(id.equals(named.value()), "Name of component '{0}'is ambiguous, 'named' annotation on implementation conflict with api", apiClass.get());
-			}
-			return id;
-		}
-		return buildId(implClass);
-	}
-
-	/**
 	 * Construction d'un ID pour un composant défini par une implémentation.
 	 * @param clazz Classe d'implémentation du composant
 	 * @return Identifiant du composant
@@ -160,68 +76,8 @@ public final class DIAnnotationUtil {
 			final Named named = clazz.getAnnotation(Named.class);
 			return named.value();
 		}
-		return getId(clazz);
-	}
-
-	private static String getId(final Class<?> implClass) {
 		//Par convention on prend le nom de la classe.
-		return StringUtil.normalize(implClass.getSimpleName());
+		return StringUtil.first2LowerCase(clazz.getSimpleName());
 	}
 
-	/**
-	 * Construction d'un ID pour un champ (Les options sont autorisées).
-	 * @param field Champ du composant (Option autorisée)
-	 * @return Identifiant du composant
-	 */
-	public static String buildId(final Field field) {
-		Assertion.checkNotNull(field);
-		//-----
-		final Class<?> implClass;
-		final String named = getNamedValue(field.getAnnotations());
-		if (Option.class.isAssignableFrom(field.getType())) {
-			implClass = ClassUtil.getGeneric(field);
-		} else if (List.class.isAssignableFrom(field.getType())) {
-			implClass = ClassUtil.getGeneric(field);
-			Assertion.checkArgument(Plugin.class.isAssignableFrom(implClass), "Only plugins can be injected in list");
-			Assertion.checkState(named == null, "List of plugins can not be named");
-		} else {
-			implClass = field.getType();
-		}
-
-		//Si le champ est une option alors on prend le type de l'option.
-		return named != null ? named : getId(implClass);
-	}
-
-	/**
-	 * Construction d'un ID pour le i-éme paramètre du constructeur (Les options sont autorisées).
-	 * @param constructor Constructeur
-	 * @param i indice du paramètre
-	 * @return Identifiant du composant
-	 */
-	public static String buildId(final Constructor<?> constructor, final int i) {
-		Assertion.checkNotNull(constructor);
-		//-----
-		final String named = getNamedValue(constructor.getParameterAnnotations()[i]);
-
-		final Class<?> implClass;
-		if (Option.class.isAssignableFrom(constructor.getParameterTypes()[i])) {
-			implClass = ClassUtil.getGeneric(constructor, i);
-		} else if (List.class.isAssignableFrom(constructor.getParameterTypes()[i])) {
-			implClass = ClassUtil.getGeneric(constructor, i);
-			Assertion.checkArgument(Plugin.class.isAssignableFrom(implClass), "Only plugins can be injected in list");
-			Assertion.checkState(named == null, "List of plugins can not be named");
-		} else {
-			implClass = constructor.getParameterTypes()[i];
-		}
-		return named != null ? named : getId(implClass);
-	}
-
-	private static String getNamedValue(final Annotation[] annotations) {
-		for (final Annotation annotation : annotations) {
-			if (annotation instanceof Named) {
-				return Named.class.cast(annotation).value();
-			}
-		}
-		return null;
-	}
 }

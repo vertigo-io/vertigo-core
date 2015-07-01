@@ -100,7 +100,7 @@ public final class ExportBuilder implements Builder<Export> {
 	/**
 	 * @param sheet parametre de données(DTO ou DTC) à ajouter à ce document.
 	 */
-	ExportBuilder withSheet(final ExportSheet sheet) {
+	ExportBuilder addSheet(final ExportSheet sheet) {
 		Assertion.checkNotNull(sheet);
 		//-----
 		sheets.add(sheet);

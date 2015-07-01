@@ -24,7 +24,7 @@ import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.export.model.ExportDenormField;
 import io.vertigo.dynamo.export.model.ExportField;
-import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.store.StoreManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,8 +50,8 @@ public final class ExportUtil {
 	 * @param exportColumn Information de la colonne a exporter.
 	 * @return Valeur d'affichage de la colonne de l'objet métier
 	 */
-	public static String getText(final PersistenceManager persistenceManager, final Map<DtField, Map<Object, String>> referenceCache, final Map<DtField, Map<Object, String>> denormCache, final DtObject dto, final ExportField exportColumn) {
-		return (String) getValue(persistenceManager, true, referenceCache, denormCache, dto, exportColumn);
+	public static String getText(final StoreManager storeManager, final Map<DtField, Map<Object, String>> referenceCache, final Map<DtField, Map<Object, String>> denormCache, final DtObject dto, final ExportField exportColumn) {
+		return (String) getValue(storeManager, true, referenceCache, denormCache, dto, exportColumn);
 	}
 
 	/**
@@ -63,18 +63,18 @@ public final class ExportUtil {
 	 * @param exportColumn Information de la colonne a exporter.
 	 * @return Valeur typée de la colonne de l'objet métier
 	 */
-	public static Object getValue(final PersistenceManager persistenceManager, final Map<DtField, Map<Object, String>> referenceCache, final Map<DtField, Map<Object, String>> denormCache, final DtObject dto, final ExportField exportColumn) {
-		return getValue(persistenceManager, false, referenceCache, denormCache, dto, exportColumn);
+	public static Object getValue(final StoreManager storeManager, final Map<DtField, Map<Object, String>> referenceCache, final Map<DtField, Map<Object, String>> denormCache, final DtObject dto, final ExportField exportColumn) {
+		return getValue(storeManager, false, referenceCache, denormCache, dto, exportColumn);
 	}
 
-	private static Object getValue(final PersistenceManager persistenceManager, final boolean forceStringValue, final Map<DtField, Map<Object, String>> referenceCache, final Map<DtField, Map<Object, String>> denormCache, final DtObject dto, final ExportField exportColumn) {
+	private static Object getValue(final StoreManager storeManager, final boolean forceStringValue, final Map<DtField, Map<Object, String>> referenceCache, final Map<DtField, Map<Object, String>> denormCache, final DtObject dto, final ExportField exportColumn) {
 		final DtField dtField = exportColumn.getDtField();
 		Object value;
 		try {
-			if (dtField.getType() == DtField.FieldType.FOREIGN_KEY && persistenceManager.getMasterDataConfig().containsMasterData(dtField.getFkDtDefinition())) {
+			if (dtField.getType() == DtField.FieldType.FOREIGN_KEY && storeManager.getMasterDataConfig().containsMasterData(dtField.getFkDtDefinition())) {
 				Map<Object, String> referenceIndex = referenceCache.get(dtField);
 				if (referenceIndex == null) {
-					referenceIndex = createReferentielIndex(persistenceManager, dtField);
+					referenceIndex = createReferentielIndex(storeManager, dtField);
 					referenceCache.put(dtField, referenceIndex);
 				}
 				value = referenceIndex.get(dtField.getDataAccessor().getValue(dto));
@@ -99,13 +99,13 @@ public final class ExportUtil {
 		return value;
 	}
 
-	private static Map<Object, String> createReferentielIndex(final PersistenceManager persistenceManager, final DtField dtField) {
+	private static Map<Object, String> createReferentielIndex(final StoreManager storeManager, final DtField dtField) {
 		// TODO ceci est un copier/coller de KSelectionListBean (qui resemble
 		// plus à un helper des MasterData qu'a un bean)
 		// La collection n'est pas précisé alors on va la chercher dans le
 		// repository du référentiel
-		final DtListURIForMasterData mdlUri = persistenceManager.getMasterDataConfig().getDtListURIForMasterData(dtField.getFkDtDefinition());
-		final DtList<DtObject> valueList = persistenceManager.getBroker().getList(mdlUri);
+		final DtListURIForMasterData mdlUri = storeManager.getMasterDataConfig().getDtListURIForMasterData(dtField.getFkDtDefinition());
+		final DtList<DtObject> valueList = storeManager.getDataStore().getList(mdlUri);
 		final DtField dtFieldDisplay = mdlUri.getDtDefinition().getDisplayField().get();
 		final DtField dtFieldKey = valueList.getDefinition().getIdField().get();
 		return createDenormIndex(valueList, dtFieldKey, dtFieldDisplay);

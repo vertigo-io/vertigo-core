@@ -80,7 +80,7 @@ public abstract class TaskEngine {
 	 * @param o Valeur
 	 */
 	protected final void setValue(final String attributeName, final Object o) {
-		output.withValue(attributeName, o);
+		output.addValue(attributeName, o);
 	}
 
 	/**

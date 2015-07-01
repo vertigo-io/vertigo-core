@@ -21,7 +21,7 @@ package io.vertigo.dynamo.plugins.export.pdf;
 import io.vertigo.dynamo.export.model.Export;
 import io.vertigo.dynamo.export.model.ExportFormat;
 import io.vertigo.dynamo.impl.export.ExporterPlugin;
-import io.vertigo.dynamo.persistence.PersistenceManager;
+import io.vertigo.dynamo.store.StoreManager;
 
 import java.io.OutputStream;
 
@@ -33,17 +33,20 @@ import javax.inject.Inject;
  * @author pchretien, npiedeloup
  */
 public final class PDFExporterPlugin implements ExporterPlugin {
-	private final PersistenceManager persistenceManager;
+	private final StoreManager storeManager;
 
+	/**
+	 * @param storeManager store manager
+	 */
 	@Inject
-	public PDFExporterPlugin(final PersistenceManager persistenceManager) {
-		this.persistenceManager = persistenceManager;
+	public PDFExporterPlugin(final StoreManager storeManager) {
+		this.storeManager = storeManager;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void exportData(final Export export, final OutputStream out) throws Exception {
-		new PDFExporter(persistenceManager).exportData(export, out);
+		new PDFExporter(storeManager).exportData(export, out);
 	}
 
 	/** {@inheritDoc} */

@@ -20,14 +20,17 @@ package io.vertigo.vega.rest.data;
 
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.commons.event.EventManager;
 import io.vertigo.commons.impl.cache.CacheManagerImpl;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
+import io.vertigo.commons.impl.event.EventManagerImpl;
 import io.vertigo.commons.impl.locale.LocaleManagerImpl;
 import io.vertigo.commons.impl.resource.ResourceManagerImpl;
 import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.commons.resource.ResourceManager;
+import io.vertigo.core.boot.BootConfigBuilder;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.dynamo.collections.CollectionsManager;
@@ -37,17 +40,15 @@ import io.vertigo.dynamo.impl.collections.CollectionsManagerImpl;
 import io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl;
 import io.vertigo.dynamo.impl.export.ExportManagerImpl;
 import io.vertigo.dynamo.impl.file.FileManagerImpl;
-import io.vertigo.dynamo.impl.kvdatastore.KVDataStoreManagerImpl;
-import io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl;
+import io.vertigo.dynamo.impl.store.StoreManagerImpl;
 import io.vertigo.dynamo.impl.task.TaskManagerImpl;
-import io.vertigo.dynamo.kvdatastore.KVDataStoreManager;
-import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
 import io.vertigo.dynamo.plugins.export.pdf.PDFExporterPlugin;
 import io.vertigo.dynamo.plugins.kvdatastore.delayedmemory.DelayedMemoryKVDataStorePlugin;
-import io.vertigo.dynamo.plugins.persistence.datastore.postgresql.PostgreSqlDataStorePlugin;
+import io.vertigo.dynamo.plugins.store.datastore.postgresql.PostgreSqlDataStorePlugin;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.persona.impl.security.VSecurityManagerImpl;
 import io.vertigo.persona.plugins.security.loaders.SecurityResourceLoaderPlugin;
@@ -87,45 +88,49 @@ public final class MyApp {
 	public static AppConfig config() {
 		// @formatter:off
 		return new AppConfigBuilder()
-			.withSilence(true)
+		.withBootConfig(new BootConfigBuilder()
+			.silently()
+			.build())
 			.beginModule("commons")
 				.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
-					.withParam("locales", "fr")
+					.addParam("locales", "fr")
 				.endComponent()
 				.beginComponent(ResourceManager.class, ResourceManagerImpl.class)
 					.beginPlugin( ClassPathResourceResolverPlugin.class).endPlugin()
 				.endComponent()
 				.beginComponent(VSecurityManager.class, VSecurityManagerImpl.class)
-					.withParam("userSessionClassName", TestUserSession.class.getName())
-					.beginPlugin(SecurityResourceLoaderPlugin.class).endPlugin()
+					.addParam("userSessionClassName", TestUserSession.class.getName())
 				.endComponent()
 			.endModule()
 			.beginModule("dynamo").withNoAPI()
 				.beginComponent(CodecManager.class, CodecManagerImpl.class).endComponent()
 				.beginComponent(CollectionsManager.class, CollectionsManagerImpl.class).endComponent()
 				.beginComponent(FileManager.class, FileManagerImpl.class).endComponent()
-				.beginComponent(KVDataStoreManager.class, KVDataStoreManagerImpl.class)
-					.beginPlugin(DelayedMemoryKVDataStorePlugin.class)
-						.withParam("dataStoreName", "UiSecurityStore")
-						.withParam("timeToLiveSeconds", "120")
-					.endPlugin()
-				.endComponent()
-				.beginComponent(PersistenceManager.class, PersistenceManagerImpl.class)
+				.beginComponent(EventManager.class, EventManagerImpl.class).endComponent()
+				.beginComponent(StoreManager.class, StoreManagerImpl.class)
 					.beginPlugin(PostgreSqlDataStorePlugin.class)
-						.withParam("sequencePrefix","SEQ_")
+						.addParam("sequencePrefix","SEQ_")
+					.endPlugin()
+					.beginPlugin(DelayedMemoryKVDataStorePlugin.class)
+						.addParam("dataStoreName", "UiSecurityStore")
+						.addParam("timeToLiveSeconds", "120")
 					.endPlugin()
 				.endComponent()
 				.beginComponent(CacheManager.class, CacheManagerImpl.class)
 					.beginPlugin( MemoryCachePlugin.class).endPlugin()
 				.endComponent()
 				.beginComponent(TaskManager.class, TaskManagerImpl.class).endComponent()
-				.beginComponent(ExportManager.class, ExportManagerImpl.class)
-					.beginPlugin(PDFExporterPlugin.class).endPlugin()
-				.endComponent()
+
 				.beginComponent(EnvironmentManagerImpl.class)
+				.beginPlugin(SecurityResourceLoaderPlugin.class).endPlugin()
 					.beginPlugin(AnnotationLoaderPlugin.class).endPlugin()
 					.beginPlugin(KprLoaderPlugin.class).endPlugin()
 					.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
+				.endComponent()
+			.endModule()
+			.beginModule("dynamo2").withNoAPI().withInheritance(Object.class)
+			.beginComponent(ExportManager.class, ExportManagerImpl.class)
+					.beginPlugin(PDFExporterPlugin.class).endPlugin()
 				.endComponent()
 			.endModule()
 			.beginModule("dao").withNoAPI().withInheritance(Object.class)
@@ -144,7 +149,7 @@ public final class MyApp {
 				.beginComponent(SwaggerRestServices.class).endComponent()
 				.beginComponent(CatalogRestServices.class).endComponent()
 				.beginComponent(TokenManager.class, TokenManagerImpl.class)
-					.withParam("dataStoreName", "UiSecurityStore")
+					.addParam("dataStoreName", "UiSecurityStore")
 				.endComponent()
 				.beginComponent(RestManager.class, RestManagerImpl.class)
 					.beginPlugin(AnnotationsEndPointIntrospectorPlugin.class).endPlugin()
@@ -157,6 +162,7 @@ public final class MyApp {
 					.beginPlugin(RateLimitingRestHandlerPlugin.class).endPlugin()
 					.beginPlugin(SecurityRestHandlerPlugin.class).endPlugin()
 					.beginPlugin(AccessTokenRestHandlerPlugin.class).endPlugin()
+					//.beginPlugin(OldJsonConverterRestHandlerPlugin.class).endPlugin()
 					.beginPlugin(JsonConverterRestHandlerPlugin.class).endPlugin()
 					.beginPlugin(PaginatorAndSortRestHandlerPlugin.class).endPlugin()
 					.beginPlugin(ValidatorRestHandlerPlugin.class).endPlugin()
@@ -164,8 +170,8 @@ public final class MyApp {
 				.endComponent()
 			.endModule()
 			.beginModule("myApp")
-				.withResource("classes", DtDefinitions.class.getName())
-				.withResource("kpr", "io/vertigo/vega/rest/data/execution.kpr")
+				.addResource("classes", DtDefinitions.class.getName())
+				.addResource("kpr", "io/vertigo/vega/rest/data/execution.kpr")
 			.endModule()
 		.build();
 		// @formatter:on

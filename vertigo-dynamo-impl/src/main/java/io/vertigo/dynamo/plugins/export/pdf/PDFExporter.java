@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.export.pdf;
 
-import io.vertigo.dynamo.persistence.PersistenceManager;
 import io.vertigo.dynamo.plugins.export.pdfrtf.AbstractExporterIText;
+import io.vertigo.dynamo.store.StoreManager;
 
 import java.io.OutputStream;
 
@@ -33,8 +33,8 @@ import com.lowagie.text.pdf.PdfWriter;
  * @author evernat
  */
 final class PDFExporter extends AbstractExporterIText {
-	PDFExporter(final PersistenceManager persistenceManager) {
-		super(persistenceManager);
+	PDFExporter(final StoreManager storeManager) {
+		super(storeManager);
 	}
 
 	/** {@inheritDoc} */

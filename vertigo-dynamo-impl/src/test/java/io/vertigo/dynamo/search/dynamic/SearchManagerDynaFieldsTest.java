@@ -18,13 +18,7 @@
  */
 package io.vertigo.dynamo.search.dynamic;
 
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.search.AbstractSearchManagerTest;
-import io.vertigo.dynamo.search.SearchIndexFieldNameResolver;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author  npiedeloup
@@ -40,14 +34,5 @@ public final class SearchManagerDynaFieldsTest extends AbstractSearchManagerTest
 		//attention : la première utilisation de l'index fige la définition des types
 		init(IDX_DYNA_CAR);
 		//-----
-		final Map<String, String> indexFieldsMap = new HashMap<>();
-		for (final DtField dtField : carIndexDefinition.getIndexDtDefinition().getFields()) {
-			String indexType = dtField.getDomain().getProperties().getValue(DtProperty.INDEX_TYPE);
-			if (indexType == null) {
-				indexType = dtField.getDomain().getDataType().name().toLowerCase();
-			}
-			indexFieldsMap.put(dtField.name(), dtField.name() + "_DYN_" + indexType);
-		}
-		searchManager.registerIndexFieldNameResolver(carIndexDefinition, new SearchIndexFieldNameResolver(indexFieldsMap));
 	}
 }

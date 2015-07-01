@@ -59,7 +59,7 @@ public final class ComponentConfig {
 		Assertion.checkNotNull(pluginConfigurations);
 		Assertion.checkNotNull(params);
 		//-----
-		id = DIAnnotationUtil.buildId(apiClass, implClass);
+		id = apiClass.isDefined() ? DIAnnotationUtil.buildId(apiClass.get()) : DIAnnotationUtil.buildId(implClass);
 		this.elastic = elastic;
 		this.componentInitializerClass = componentInitializerClass;
 		plugins = Collections.unmodifiableList(new ArrayList<>(pluginConfigurations));

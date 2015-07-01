@@ -14,8 +14,10 @@
 	</module>
 	
 	<module name="vertigo-dynamo">
-		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl" initClass="io.vertigo.dynamo.search.CollectionsManagerInitializer" />
+		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl" />
 		<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
+		<component api="EventManager" class="io.vertigo.commons.impl.event.EventManagerImpl" />
+		<component api="VTransactionManager" class="io.vertigo.dynamo.impl.transaction.VTransactionManagerImpl" />
 		<component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
 			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
@@ -36,5 +38,9 @@
 				<param name="rowsPerQuery" value="50" />
 			</plugin>
 		</component>
+	</module>
+	
+	<module name="SearchLoaders" api="false" inheritance="io.vertigo.dynamo.search.metamodel.SearchLoader">
+		<component class="io.vertigo.dynamock.domain.car.CarSearchLoader"/>
 	</module>
 </config>
