@@ -41,6 +41,12 @@ final class DIComponentInfo {
 	private final String id;
 	private final Collection<DIDependency> dependencies;
 
+	/**
+	 * Constructor.
+	 * @param id id
+	 * @param implClass class
+	 * @param params parameters
+	 */
 	DIComponentInfo(final String id, final Class<?> implClass, final Set<String> params) {
 		Assertion.checkArgNotEmpty(id);
 		//		Assertion.precondition(Container.REGEX_ID.matcher(id).matches(), "id '{0}' doit être camelCase et commencer par une minuscule", id);
@@ -48,17 +54,24 @@ final class DIComponentInfo {
 		Assertion.checkNotNull(params);
 		//-----
 		this.id = id;
-		dependencies = buildDependencies(this, implClass, params);
+		dependencies = buildDependencies(implClass, params);
 	}
 
+	/**
+	 * @return id
+	 */
 	String getId() {
 		return id;
 	}
 
+	/**
+	 * @return dependencies
+	 */
 	Collection<DIDependency> getDependencies() {
 		return dependencies;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		//Utilisé pour afficher les messages d'erreurs lors du calcul des DI
@@ -69,18 +82,18 @@ final class DIComponentInfo {
 	/*
 	 * Build Dependencies
 	 */
-	private static Collection<DIDependency> buildDependencies(final DIComponentInfo diComponentInfo, final Class<?> implClass, final Set<String> params) {
+	private static Collection<DIDependency> buildDependencies(final Class<?> implClass, final Set<String> params) {
 		final ListBuilder<DIDependency> dependenciesBuilder = new ListBuilder<>();
 		//Les paramètres sont supposés connus et ne sont donc pas concernés par l'analyse de dépendances
-		populateConstructorDepedencies(diComponentInfo, dependenciesBuilder, implClass, params);
-		populateFieldDepencies(diComponentInfo, dependenciesBuilder, implClass, params);
+		populateConstructorDepedencies(dependenciesBuilder, implClass, params);
+		populateFieldDepencies(dependenciesBuilder, implClass, params);
 		return dependenciesBuilder.unmodifiable().build();
 	}
 
 	/**
-	 * Dependencies on constructor
+	 * Dependencies on constructor.
 	 */
-	private static void populateConstructorDepedencies(final DIComponentInfo diComponentInfo, final ListBuilder<DIDependency> dependenciesBuilder, final Class<?> implClass, final Set<String> params) {
+	private static void populateConstructorDepedencies(final ListBuilder<DIDependency> dependenciesBuilder, final Class<?> implClass, final Set<String> params) {
 		final Constructor<?> constructor = DIAnnotationUtil.findInjectableConstructor(implClass);
 		//On construit la liste de ses dépendances.
 		for (int i = 0; i < constructor.getParameterTypes().length; i++) {
@@ -94,7 +107,7 @@ final class DIComponentInfo {
 	/**
 	 * Dependencies on each field
 	 */
-	private static void populateFieldDepencies(final DIComponentInfo diComponentInfo, final ListBuilder<DIDependency> dependenciesBuilder, final Class<?> implClass, final Set<String> params) {
+	private static void populateFieldDepencies(final ListBuilder<DIDependency> dependenciesBuilder, final Class<?> implClass, final Set<String> params) {
 		final Collection<Field> fields = ClassUtil.getAllFields(implClass, Inject.class);
 		for (final Field field : fields) {
 			//On utilise le build sur les champs avec les options autorisées.

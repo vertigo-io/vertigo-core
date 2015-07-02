@@ -9,6 +9,7 @@ import java.util.UUID;
 /**
  * Event builder.
  * @author pchretien
+ * @param <P> Payload's type
  */
 public final class EventBuilder<P extends Serializable> implements Builder<Event<P>> {
 	private UUID myUuid;

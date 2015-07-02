@@ -27,8 +27,9 @@ import io.vertigo.lang.Plugin;
  */
 public interface LoaderPlugin extends Plugin {
 	/**
-	 * Type parsed by loader. 
+	 * Type parsed by loader.
 	 * Examples : oom, kpr, eaxmi...
+	 * @return Type parsed by loader
 	 */
 	String getType();
 
@@ -36,6 +37,7 @@ public interface LoaderPlugin extends Plugin {
 	 * Parsing des définitions pour un fichier (oom, kpr ou ksp)
 	 * défini par une url (sur système de fichier ou classpath)
 	 * et selon la grammaire en argument.
+	 * @param resourcePath resourcePath
 	 * @param dynamicModelRepository DynamicModelRepository
 	 */
 	void load(String resourcePath, DynamicDefinitionRepository dynamicModelRepository);

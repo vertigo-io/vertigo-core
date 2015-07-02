@@ -46,6 +46,10 @@ public final class DIDependency {
 	private final boolean isList;
 	private final Class<?> type;
 
+	/**
+	 * Constructor for field injection.
+	 * @param field Field to inject into
+	 */
 	public DIDependency(final Field field) {
 		Assertion.checkNotNull(field);
 		//-----
@@ -58,6 +62,11 @@ public final class DIDependency {
 		name = named != null ? named : DIAnnotationUtil.buildId(type);
 	}
 
+	/**
+	 * Constructor for constructor parameter injection.
+	 * @param constructor Constructor to inject into
+	 * @param i parameter index to inject into
+	 */
 	public DIDependency(final Constructor<?> constructor, final int i) {
 		Assertion.checkNotNull(constructor);
 		//-----
@@ -70,22 +79,37 @@ public final class DIDependency {
 		name = named != null ? named : DIAnnotationUtil.buildId(type);
 	}
 
+	/**
+	 * @return Inject name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * @return if optionnal
+	 */
 	public boolean isOption() {
 		return isOption;
 	}
 
+	/**
+	 * @return if required (not null)
+	 */
 	public boolean isRequired() {
 		return !(isList || isOption);
 	}
 
+	/**
+	 * @return is list
+	 */
 	public boolean isList() {
 		return isList;
 	}
 
+	/**
+	 * @return get object class
+	 */
 	public Class<?> getType() {
 		Assertion.checkNotNull(type);
 		return type;
@@ -102,12 +126,12 @@ public final class DIDependency {
 		return name;
 	}
 
-	private static boolean isOption(final Class<?> type) {
-		return Option.class.isAssignableFrom(type);
+	private static boolean isList(final Class<?> type) {
+		return List.class.isAssignableFrom(type);
 	}
 
-	public static boolean isList(final Class<?> type) {
-		return List.class.isAssignableFrom(type);
+	private static boolean isOption(final Class<?> type) {
+		return Option.class.isAssignableFrom(type);
 	}
 
 	private static String getNamedValue(final Annotation[] annotations) {

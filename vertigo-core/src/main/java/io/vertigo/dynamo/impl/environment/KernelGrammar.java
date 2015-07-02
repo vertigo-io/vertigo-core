@@ -32,9 +32,10 @@ public final class KernelGrammar {
 	/**Type Primitif.*/
 	private static final Entity DATA_TYPE_ENTITY = new EntityBuilder(DATA_TYPE_META_DEFINITION).build();
 
-	public static final Grammar grammar = new Grammar(DATA_TYPE_ENTITY);
-
-	/**Définition d'un champ de DT.*/
+	/**
+	 * Gramar.
+	 */
+	public static final Grammar GRAMMAR = new Grammar(DATA_TYPE_ENTITY);
 
 	/**
 	 * @return Type primitif.

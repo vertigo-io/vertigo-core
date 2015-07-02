@@ -40,22 +40,30 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 * @return Builder
 	 */
 	public BootConfigBuilder silently() {
-		this.mySilence = true;
+		mySilence = true;
 		return this;
 	}
 
+	/**
+	 * @param elasticaEngine ElasticaEngine
+	 * @return this builder
+	 */
 	public BootConfigBuilder withElasticaEngine(final ElasticaEngine elasticaEngine) {
 		Assertion.checkNotNull(elasticaEngine);
-		Assertion.checkState(this.myElasticaEngine == null, "elasticaEngine is already completed");
+		Assertion.checkState(myElasticaEngine == null, "elasticaEngine is already completed");
 		//-----
-		this.myElasticaEngine = elasticaEngine;
+		myElasticaEngine = elasticaEngine;
 		return this;
 	}
 
+	/**
+	 * @param aopEngine AopEngine
+	 * @return this builder
+	 */
 	public BootConfigBuilder withAopEngine(final AopEngine aopEngine) {
 		Assertion.checkNotNull(aopEngine);
 		//-----
-		this.myAopEngine = aopEngine;
+		myAopEngine = aopEngine;
 		return this;
 	}
 

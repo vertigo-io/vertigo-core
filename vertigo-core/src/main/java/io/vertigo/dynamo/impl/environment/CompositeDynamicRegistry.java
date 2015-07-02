@@ -27,18 +27,22 @@ import io.vertigo.lang.Assertion;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author pchretien
+ */
 final class CompositeDynamicRegistry implements DynamicRegistry {
 	private final List<DynamicRegistry> dynamicRegistries;
 	private final Grammar grammar;
 	private final List<DynamicDefinition> rootDynamicDefinitions;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
+	 * @param handlerList Grammar handlers
 	 */
 	CompositeDynamicRegistry(final List<DynamicRegistryPlugin> handlerList) {
 		Assertion.checkNotNull(handlerList);
 		//-----
-		this.dynamicRegistries = new ArrayList<DynamicRegistry>(handlerList);
+		dynamicRegistries = new ArrayList<DynamicRegistry>(handlerList);
 		//Création de la grammaire.
 		grammar = createGrammar();
 
@@ -72,7 +76,7 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 	@Override
 	public void onNewDefinition(final DynamicDefinition xdefinition, final DynamicDefinitionRepository dynamicModelrepository) {
 		//Les entités du noyaux ne sont pas à gérer per des managers spécifiques.
-		if (KernelGrammar.grammar.getEntities().contains(xdefinition.getEntity())) {
+		if (KernelGrammar.GRAMMAR.getEntities().contains(xdefinition.getEntity())) {
 			return;
 		}
 		final DynamicRegistry dynamicRegistry = lookUpDynamicRegistry(xdefinition);
@@ -83,11 +87,10 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 	@Override
 	public void onDefinition(final DynamicDefinition xdefinition) {
 		//Les entités du noyaux ne sont pas à gérer per des managers spécifiques.
-		if (KernelGrammar.grammar.getEntities().contains(xdefinition.getEntity())) {
+		if (KernelGrammar.GRAMMAR.getEntities().contains(xdefinition.getEntity())) {
 			return;
 		}
 		try {
-			//final DynamicMetaDefinition metaDefinition = xdefinition.getMetaDefinition();
 			// perf: ifs ordonnés en gros par fréquence sur les projets
 			final DynamicRegistry dynamicRegistry = lookUpDynamicRegistry(xdefinition);
 			dynamicRegistry.onDefinition(xdefinition);

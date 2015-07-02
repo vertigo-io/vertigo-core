@@ -24,8 +24,8 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
 import io.vertigo.lang.Option;
 
-/*
- * This Class defines the properties of ComponentSpace and DefinitionSpace. 
+/**
+ * This Class defines the properties of ComponentSpace and DefinitionSpace.
  * That's to say : how to boot the modules of Vertigo.
  * @author pchretien
  */
@@ -36,6 +36,12 @@ public final class BootConfig {
 	@JsonExclude
 	private final Option<ElasticaEngine> elasticaEngine;
 
+	/**
+	 * Constructor.
+	 * @param aopEngine AopEngine
+	 * @param elasticaEngine ElasticaEngine (optional)
+	 * @param silence is no logs
+	 */
 	BootConfig(
 
 			final AopEngine aopEngine,
@@ -49,14 +55,23 @@ public final class BootConfig {
 		this.elasticaEngine = elasticaEngine;
 	}
 
+	/**
+	 * @return if silent mode
+	 */
 	public boolean isSilence() {
 		return silence;
 	}
 
+	/**
+	 * @return AopEngine
+	 */
 	public AopEngine getAopEngine() {
 		return aopEngine;
 	}
 
+	/**
+	 * @return Option of ElasticaEngine
+	 */
 	public Option<ElasticaEngine> getElasticaEngine() {
 		return elasticaEngine;
 	}

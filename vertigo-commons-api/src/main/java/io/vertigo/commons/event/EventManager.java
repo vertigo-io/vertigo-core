@@ -19,6 +19,7 @@ public interface EventManager extends Component {
 
 	/**
 	 * Fire an event on a channel.
+	 * @param <P> Payload's type
 	 * @param channel ChannelName to send event to
 	 * @param payload event's payload
 	 */
@@ -26,6 +27,7 @@ public interface EventManager extends Component {
 
 	/**
 	 * Register a new listener for this channel.
+	* @param <P> Payload's type
 	 * @param channel ChannelName to listen
 	 * @param eventsListener EventsListener
 	 */

@@ -119,8 +119,6 @@ public final class DynamicDefinitionRepository {
 			xdefinition.check();
 			dynamicRegistry.onDefinition(xdefinition);
 		}
-		//On sort sur la console le nombre de définitions trouvées
-		//System.out.println(MessageFormat.format(">> {0} definitions trouvees.", orderedDefinitionList.size()));
 	}
 
 	/**
@@ -130,19 +128,17 @@ public final class DynamicDefinitionRepository {
 	public void addDefinition(final DynamicDefinition definition) {
 		Assertion.checkNotNull(definition);
 		//-----
-		//		if (definition.getDefinitionKey().getName().equals("DT_FAMILLE"))
-		//			throw new RuntimeException();
 		put(definition.getDefinitionKey(), definition);
 		dynamicRegistry.onNewDefinition(definition, this);
 	}
 
 	/**
 	 * Ajoute un template.
+	 * @param dynamicDefinition Template de définition
 	 */
 	public void addTemplate(final DynamicDefinition dynamicDefinition) {
 		Assertion.checkNotNull(dynamicDefinition);
 		//-----
-		//definition.check();
 		//On enregistre la définition qu'elle soit renseignée ou null.
 		//---
 		templates.add(dynamicDefinition);
@@ -166,7 +162,6 @@ public final class DynamicDefinitionRepository {
 	 * @param definition DynamicDefinition
 	 */
 	private void put(final DynamicDefinitionKey definitionKey, final DynamicDefinition definition) {
-		//	Assertion.notNull(definition);
 		Assertion.checkNotNull(definitionKey);
 		if (definition != null) {
 			Assertion.checkArgument(definition.getDefinitionKey().equals(definitionKey), "si la définition est renseignée la clé doit correspondre !");

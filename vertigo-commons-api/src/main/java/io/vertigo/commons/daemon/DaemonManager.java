@@ -14,5 +14,4 @@ public interface DaemonManager extends Component {
 	 * Démarre l'ensemble des démons préalablement enregistré dans le spaceDefinition.
 	 */
 	void startAllDaemons();
-	// void stopAllDaemons();
 }

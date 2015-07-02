@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * EventsListener.
  * @author npiedeloup
+ * @param <P> Payload's type
  */
 public interface EventListener<P extends Serializable> {
 
