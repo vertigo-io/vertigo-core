@@ -1,14 +1,58 @@
 Version history
 ===============
 
-Running 0.8.0-SNAPSHOT
+Running 0.8.1-SNAPSHOT
 ----------------------
 more to come :)
 
 
+Release 0.8.0 - 2015/07/02
+----------------------
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide)
+* [Dynamo] Added possibility to specify a search data type for index (in addition to the analyzer)
+Use indexType : "analyzerName:dataTypeName" in domain declaration in KSP
+* [All] Fixed some code style and some refactor to simpler code
+* [Dynamo] Fixed FsTransactionResource, Temp files not deleted in some case
+* [Studio] Added optionnal dictionaryClassName param to specify dictionaryClassName, default to DtDefinitions (Fix #3)
+* [Dynamo] Search return hightlights on result's fields only
+* [Dynamo] Fixed search clustering create full list
+* [Tempo] Added timeout in DistributedWorkerPlugins for connections from client to server
+* [Quarto] Fixed UnitTests
+* [Tempo] Split scheduler and executor
+* [struts2] Fixed an error when escaping caracters in JSON
+* [Dynamo] Fixed and test #15
+* [Tempo] Added minute to jobManager.scheduleEveryDayAtHour
+* [Struts2] Select multiple : listCssClass
+* [Vega] TokenManager optionnal in JsonConverterHandler
+* [Dynamo] Renamed stereotype Subject to KeyConcept
+* [Studio] Continue refactor to use stereotype KeyConcept in studio
+* [Dynamo] Complete refactor of SearchManager : integration in broker, KSP declaration of index definitions
+* [Studio] Continue refactor to Search in generated DAO
+* [Dynamo] Refactored and removed SearchIndexFieldNameResolver
+* [Dynamo] Added EventsManager required by StoreManager (old PersistenceManager) 
+* [Dynamo] Added RedisConnector
+*	[Vega] Fixed content-type name : now use '=' instead of ':'
+* [Core] split BootConfig from AppConfig
+* [Vega] Updated Swagger-ui to 2.1.0
+* [Dynamo] Removed deprecated methods
+* [Vega] Added support of FacetedQueryResult in WebService
+* [Dynamo] Added FacetQueryResultMerger
+* [Dynamo] Added DefaultSearchLoader and DefaultListFilterBuilder
+* [core] Refactoring DI
+* [Core] Added better error message for missing definition while solving
+* [Dynamo] Added ESSearchPlugin with TransportClient
+* [Dynamo] Updated elasticSearch to 1.4.5
+* [All] Renamed prefix in Builder with ==> add
+* [Dynamo] Fixed try with ressource of autonomous transaction
+* [Commons] Added daemonManager
+* [Dynamo, Studio] Renamed PersistenceManager to StoreManager
+* [Dynamo, Studio] Renamed Broker to DataStore
+* [Dynamo] Added Search facetValue sorted by count
+
 Release 0.7.5a - 2015/03/23
 ----------------------
 * Fix of two 0.7.5 issues 
+
 
 Release 0.7.5 - 2015/03/20
 ----------------------
