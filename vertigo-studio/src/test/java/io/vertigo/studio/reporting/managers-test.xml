@@ -18,6 +18,7 @@
 		<component api="CacheManager" class="io.vertigo.commons.impl.cache.CacheManagerImpl">
 			<plugin class="io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin" />
 		</component>
+		<component api="EventManager" class="io.vertigo.commons.impl.event.EventManagerImpl" />		
 	</module>
 
 	<module name="vertigo-dynamo">
