@@ -47,16 +47,16 @@ import javax.inject.Inject;
  */
 public final class DomainReportingPlugin implements ReportingPlugin {
 	private final VTransactionManager transactionManager;
-	private final StoreManager persistenceManager;
+	private final StoreManager storeManager;
 	private final List<MetricEngine<DtDefinition>> metricEngines;
 
 	@Inject
-	public DomainReportingPlugin(final VTransactionManager transactionManager, final StoreManager persistenceManager) {
+	public DomainReportingPlugin(final VTransactionManager transactionManager, final StoreManager storeManager) {
 		Assertion.checkNotNull(transactionManager);
-		Assertion.checkNotNull(persistenceManager);
+		Assertion.checkNotNull(storeManager);
 		//-----
 		this.transactionManager = transactionManager;
-		this.persistenceManager = persistenceManager;
+		this.storeManager = storeManager;
 		metricEngines = createMetricEngines();
 
 	}
@@ -87,8 +87,8 @@ public final class DomainReportingPlugin implements ReportingPlugin {
 		return new ListBuilder<MetricEngine<DtDefinition>>()
 				.add(new FieldsMetricEngine())
 				.add(new DependencyMetricEngine())
-				.add(new PersistenceMetricEngine(persistenceManager))
-				.add(new CountMetricEngine(persistenceManager))
+				.add(new PersistenceMetricEngine(storeManager))
+				.add(new CountMetricEngine(storeManager))
 				.unmodifiable()
 				.build();
 	}

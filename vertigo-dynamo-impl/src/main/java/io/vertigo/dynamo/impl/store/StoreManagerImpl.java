@@ -126,7 +126,7 @@ public final class StoreManagerImpl implements StoreManager {
 	}
 
 	/**
-	 * @return Configuration du PersistenceManager
+	 * @return Configuration du StoreManager
 	 */
 	@Override
 	public BrokerConfig getBrokerConfig() {

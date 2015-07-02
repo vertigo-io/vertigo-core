@@ -24,11 +24,11 @@
 		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl" />
 		<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
 		<component api="VTransactionManager" class="io.vertigo.dynamo.impl.transaction.VTransactionManagerImpl" />
-		<component api="PersistenceManager" class="io.vertigo.dynamo.impl.persistence.PersistenceManagerImpl">
-			<plugin class="io.vertigo.dynamo.plugins.persistence.datastore.oracle.OracleDataStorePlugin">
+		<component api="StoreManager" class="io.vertigo.dynamo.impl.store.StoreManagerImpl">
+			<plugin class="io.vertigo.dynamo.plugins.store.datastore.oracle.OracleDataStorePlugin">
 				<param name="sequencePrefix" value="SEQ_" />
 			</plugin>
-			<plugin class="io.vertigo.dynamo.plugins.persistence.filestore.db.DbFileStorePlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.store.filestore.db.DbFileStorePlugin" />
 		</component>
 		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
 		<component api="SqlDataBaseManager" class="io.vertigo.dynamo.impl.database.SqlDataBaseManagerImpl">

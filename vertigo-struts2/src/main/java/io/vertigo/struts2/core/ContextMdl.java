@@ -64,7 +64,7 @@ public final class ContextMdl<O extends DtObject> {
 	//		this.action = action;
 	//
 	//		final DtListURIForMasterData dtListURI = new DtListURIForMasterData(DtObjectUtil.findDtDefinition(dtoClass), code);
-	//		final DtList<O> fkMasterDataList = persistenceManager.get().getBroker().getList(dtListURI);
+	//		final DtList<O> fkMasterDataList = storeManager.get().getBroker().getList(dtListURI);
 	//		action.getModel().putTransient(contextKey, new UiList<O>(fkMasterDataList));
 	//	}
 

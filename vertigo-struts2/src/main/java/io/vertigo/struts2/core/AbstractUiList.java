@@ -49,7 +49,7 @@ public abstract class AbstractUiList<D extends DtObject> extends AbstractList<Ui
 	private static final int NB_MAX_ELEMENTS = 1000; //Max nb elements in list. Must be kept under 1000 to ensure good performances.
 
 	/**
-	 * Accès au persistenceManager.
+	 * Accès au storeManager.
 	 */
 	protected final ComponentRef<StoreManager> storeManager = ComponentRef.makeLazyRef(StoreManager.class);
 	/**
