@@ -5,10 +5,8 @@ import javax.inject.Inject;
 <#if dao.hasSearchBehavior()>
 import java.util.List;
 </#if>
-<#if !dao.taskDefinitions.empty >
+<#if !dao.taskDefinitions.empty || dao.hasSearchBehavior() >
 import io.vertigo.core.Home;
-<#if dao.options >
-import io.vertigo.lang.Option;
 </#if>
 <#if dao.hasSearchBehavior()>
 import io.vertigo.core.di.injector.Injector;
@@ -22,6 +20,10 @@ import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import ${dao.indexDtClassCanonicalName};
+</#if>
+<#if !dao.taskDefinitions.empty >
+<#if dao.options >
+import io.vertigo.lang.Option;
 </#if>
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
