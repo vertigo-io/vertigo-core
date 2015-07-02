@@ -120,7 +120,7 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 			facetDefinitions.add(facetDefinition);
 		}
 		final String listFilterBuilderQuery = getPropertyValueAsString(xdefinition, SearchGrammar.LIST_FILTER_BUILDER_QUERY);
-		final Class<? extends ListFilterBuilder> listFilterBuilderClass = getListFilterBuilderClass(xdefinition);
+		final Class<? extends ListFilterBuilder<?>> listFilterBuilderClass = getListFilterBuilderClass(xdefinition);
 		final String criteriaDomainUrn = xdefinition.getDefinitionKey("domainCriteria").getName();
 		final Domain criteriaDomain = Home.getDefinitionSpace().resolve(criteriaDomainUrn, Domain.class);
 
@@ -129,9 +129,9 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		return facetedQueryDefinition;
 	}
 
-	private static Class<? extends ListFilterBuilder> getListFilterBuilderClass(final DynamicDefinition xtaskDefinition) {
+	private static Class<? extends ListFilterBuilder<?>> getListFilterBuilderClass(final DynamicDefinition xtaskDefinition) {
 		final String listFilterBuilderClassName = getPropertyValueAsString(xtaskDefinition, SearchGrammar.LIST_FILTER_BUILDER_CLASS);
-		return ClassUtil.classForName(listFilterBuilderClassName, ListFilterBuilder.class);
+		return (Class<? extends ListFilterBuilder<?>>) ClassUtil.classForName(listFilterBuilderClassName, ListFilterBuilder.class);
 	}
 
 }

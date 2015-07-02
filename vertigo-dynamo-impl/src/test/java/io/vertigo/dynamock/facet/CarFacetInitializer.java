@@ -22,6 +22,7 @@ import io.vertigo.core.Home;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinitionByRangeBuilder;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
+import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -97,6 +98,6 @@ public final class CarFacetInitializer {
 
 		final Domain criteriaDomain = descriptionDtField.getDomain();
 
-		return new FacetedQueryDefinition(QRY_CAR_FACET, carDefinition, facetDefinitions, criteriaDomain, DefaultListFilterBuilder.class, DefaultListFilterBuilder.DEFAULT_QUERY);
+		return new FacetedQueryDefinition(QRY_CAR_FACET, carDefinition, facetDefinitions, criteriaDomain, (Class<? extends ListFilterBuilder<?>>) DefaultListFilterBuilder.class, DefaultListFilterBuilder.DEFAULT_QUERY);
 	}
 }
