@@ -61,11 +61,7 @@ final class XMLModulesHandler extends DefaultHandler {
 
 	@Override
 	public void endElement(final String namespaceURI, final String localName, final String qName) {
-		String eName = localName; // Element name
-		if ("".equals(eName)) {
-			eName = qName;
-		}
-		switch (TagName.valueOf(eName)) {
+		switch (TagName.valueOf(qName)) {
 			case module:
 				moduleConfigBuilder.endModule();
 				moduleConfigBuilder = null;
@@ -88,11 +84,7 @@ final class XMLModulesHandler extends DefaultHandler {
 
 	@Override
 	public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attrs) {
-		String eName = localName; // Element name
-		if ("".equals(eName)) {
-			eName = qName;
-		}
-		switch (TagName.valueOf(eName)) {
+		switch (TagName.valueOf(qName)) {
 			case module:
 				current = TagName.module;
 				final String moduleName = attrs.getValue("name");
