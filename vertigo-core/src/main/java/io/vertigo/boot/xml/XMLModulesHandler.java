@@ -39,7 +39,6 @@ final class XMLModulesHandler extends DefaultHandler {
 	private PluginConfigBuilder pluginConfigBuilder;
 	//Global Params
 	private final XMLModulesParams params;
-	//We are populating moduleConfigs during parsing
 	private final AppConfigBuilder appConfigBuilder;
 
 	XMLModulesHandler(final AppConfigBuilder appConfigBuilder, final XMLModulesParams params) {

@@ -200,7 +200,7 @@ public final class ComponentSpace implements Container, Activeable {
 	private void registerComponent(final ComponentConfig componentConfig, final AopEngine aopEngine) {
 		// 1. On crée et on enregistre les plugins (Qui ne doivent pas dépendre du composant)
 		final Map<PluginConfig, Plugin> plugins = createPlugins(componentConfig);
-		componentContainer.registerPlugins(componentConfig, plugins);
+		componentContainer.registerPlugins(componentConfig.getId(), plugins);
 
 		// 2. On crée l'initializer (Qui ne doit pas dépendre du composant)
 		final Option<ComponentInitializer> initializer;

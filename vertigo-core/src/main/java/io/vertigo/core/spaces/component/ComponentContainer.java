@@ -20,7 +20,6 @@ package io.vertigo.core.spaces.component;
 
 import io.vertigo.core.Home;
 import io.vertigo.core.Logo;
-import io.vertigo.core.config.ComponentConfig;
 import io.vertigo.core.config.PluginConfig;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
@@ -57,7 +56,7 @@ final class ComponentContainer implements Container, Activeable {
 	 * Récupère tous les plugins d'un composant.
 	 * @return Liste des plugins
 	 */
-	List<Plugin> getPlugins(final String componentId) {
+	private List<Plugin> getPlugins(final String componentId) {
 		Assertion.checkArgNotEmpty(componentId);
 		//-----
 		return subComponents.get(componentId);
@@ -100,13 +99,13 @@ final class ComponentContainer implements Container, Activeable {
 	/**
 	 * Enregistrement des plugins .
 	 */
-	void registerPlugins(final ComponentConfig componentConfig, final Map<PluginConfig, Plugin> plugins) {
-		Assertion.checkNotNull(componentConfig);
+	void registerPlugins(final String componentId, final Map<PluginConfig, Plugin> plugins) {
+		Assertion.checkNotNull(componentId);
 		Assertion.checkNotNull(plugins);
 		//-----
 		//On crée le container des sous composants (plugins) associés au Manager.
-		final Object previous = subComponents.put(componentConfig.getId(), new ArrayList<>(plugins.values()));
-		Assertion.checkState(previous == null, "subComponents of component '{0}' deja enregistrés", componentConfig.getId());
+		final Object previous = subComponents.put(componentId, new ArrayList<>(plugins.values()));
+		Assertion.checkState(previous == null, "subComponents of component '{0}' deja enregistrés", componentId);
 		//-----
 		// Il est nécessaire d'enregistrer les sous-composants.
 
