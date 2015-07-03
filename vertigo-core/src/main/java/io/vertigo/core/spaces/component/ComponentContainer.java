@@ -63,14 +63,14 @@ final class ComponentContainer implements Container, Activeable {
 		return subComponents.get(componentId);
 	}
 
-	private void registerComponent(final Object component, final String normalizedId) {
-		Assertion.checkArgNotEmpty(normalizedId);
+	private void registerComponent(final String componentId, final Object component) {
+		Assertion.checkArgNotEmpty(componentId);
 		Assertion.checkNotNull(component);
 		//-----
 		//Démarrage du composant
 		startComponent(component);
-		final Object previous = startedComponents.put(normalizedId, component);
-		Assertion.checkState(previous == null, "Composant '{0}' deja enregistré", normalizedId);
+		final Object previous = startedComponents.put(componentId, component);
+		Assertion.checkState(previous == null, "Composant '{0}' deja enregistré", componentId);
 	}
 
 	/** {@inheritDoc} */
@@ -118,7 +118,7 @@ final class ComponentContainer implements Container, Activeable {
 			if (contains(pluginId)) {
 				pluginId += "#" + nb;
 			}
-			registerComponent(entry.getValue(), pluginId);
+			registerComponent(pluginId, entry.getValue());
 			nb++;
 		}
 	}
@@ -127,17 +127,17 @@ final class ComponentContainer implements Container, Activeable {
 	 * Enregistrement d'un composant.
 	 * @param component Gestionnaire
 	 */
-	void registerComponent(final ComponentConfig componentConfig, final Object component, final Option<ComponentInitializer> componentInitializer) {
-		Assertion.checkNotNull(componentConfig);
+	void registerComponent(final String componentId, final Object component, final Option<ComponentInitializer> componentInitializer) {
+		Assertion.checkNotNull(componentId);
 		Assertion.checkNotNull(component);
 		Assertion.checkNotNull(componentInitializer);
 		//On vérifie que le manager est unique
-		final Object old = components.put(componentConfig.getId(), component);
-		Assertion.checkState(old == null, "component {0} deja enregistré", componentConfig.getId());
+		final Object old = components.put(componentId, component);
+		Assertion.checkState(old == null, "component {0} deja enregistré", componentId);
 		//-----
-		registerComponent(component, componentConfig.getId());
+		registerComponent(componentId, component);
 		if (componentInitializer.isDefined()) {
-			initializers.put(componentConfig.getId(), componentInitializer.get());
+			initializers.put(componentId, componentInitializer.get());
 		}
 	}
 
