@@ -223,7 +223,7 @@ public final class ComponentSpace implements Container, Activeable {
 		}
 
 		// 5. On enregistre le manager et son initializer
-		componentContainer.registerComponent(componentConfig, reference, initializer);
+		componentContainer.registerComponent(componentConfig.getId(), reference, initializer);
 	}
 
 	private ComponentInitializer<?> createComponentInitializer(final ComponentConfig componentConfig) {
