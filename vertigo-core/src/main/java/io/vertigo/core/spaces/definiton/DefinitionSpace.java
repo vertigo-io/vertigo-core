@@ -26,11 +26,9 @@ import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,24 +58,13 @@ public final class DefinitionSpace implements Activeable {
 	public void injectDefinitions(final ModuleConfig moduleConfig) {
 		Assertion.checkNotNull(moduleConfig);
 		//-----
-		//			int resourcesToBeLoad = moduleConfig.getResourceConfigs().size();
-		//We are doing a copy of all resources, to check that they are all parsed.
-		final List<ResourceConfig> resourceConfigsToDo = new ArrayList<>(moduleConfig.getResourceConfigs());
-		//-----
-		//Candidates contins all resources that can be treated by the resourceLoader
-		final List<ResourceConfig> candidates = new ArrayList<>();
-		for (final Iterator<ResourceConfig> it = resourceConfigsToDo.iterator(); it.hasNext();) {
-			final ResourceConfig resourceConfig = it.next();
-			if (myEnvironment.getTypes().contains(resourceConfig.getType())) {
-				candidates.add(resourceConfig);
-				it.remove();
+		final List<ResourceConfig> resourceConfigs = moduleConfig.getResourceConfigs();
+		if (!resourceConfigs.isEmpty()) {
+			if (myEnvironment == null) {
+				throw new RuntimeException("NO environment found to load definitions");
 			}
+			myEnvironment.parse(resourceConfigs);
 		}
-		if (myEnvironment != null) {
-			myEnvironment.parse(candidates);
-		}
-		//-----	
-		Assertion.checkArgument(resourceConfigsToDo.isEmpty(), "All resources '{0}' have not been parsed successfully ", resourceConfigsToDo);
 	}
 
 	/**
