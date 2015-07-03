@@ -19,14 +19,13 @@
 package io.vertigo.boot.xml;
 
 import io.vertigo.core.aop.Aspect;
+import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.ComponentConfigBuilder;
-import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.config.ModuleConfigBuilder;
 import io.vertigo.core.config.PluginConfigBuilder;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Plugin;
 import io.vertigo.util.ClassUtil;
-import io.vertigo.util.ListBuilder;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
@@ -41,13 +40,13 @@ final class XMLModulesHandler extends DefaultHandler {
 	//Global Params
 	private final XMLModulesParams params;
 	//We are populating moduleConfigs during parsing
-	private final ListBuilder<ModuleConfig> moduleConfigsBuilder;
+	private final AppConfigBuilder appConfigBuilder;
 
-	XMLModulesHandler(final ListBuilder<ModuleConfig> moduleConfigsBuilder, final XMLModulesParams params) {
-		Assertion.checkNotNull(moduleConfigsBuilder);
+	XMLModulesHandler(final AppConfigBuilder appConfigBuilder, final XMLModulesParams params) {
+		Assertion.checkNotNull(appConfigBuilder);
 		Assertion.checkNotNull(params);
 		//-----
-		this.moduleConfigsBuilder = moduleConfigsBuilder;
+		this.appConfigBuilder = appConfigBuilder;
 		this.params = params;
 	}
 
@@ -68,13 +67,15 @@ final class XMLModulesHandler extends DefaultHandler {
 		}
 		switch (TagName.valueOf(eName)) {
 			case module:
-				moduleConfigsBuilder.add(moduleConfigBuilder.build());
+				moduleConfigBuilder.endModule();
 				moduleConfigBuilder = null;
 				break;
 			case component:
+				componentConfigBuilder.endComponent();
 				componentConfigBuilder = null;
 				break;
 			case plugin:
+				pluginConfigBuilder.endPlugin();
 				pluginConfigBuilder = null;
 				break;
 			case aspect: //non géré
@@ -97,7 +98,7 @@ final class XMLModulesHandler extends DefaultHandler {
 				final String moduleName = attrs.getValue("name");
 				final String api = attrs.getValue("api");
 				final String superClass = attrs.getValue("inheritance");
-				moduleConfigBuilder = new ModuleConfigBuilder(moduleName);
+				moduleConfigBuilder = appConfigBuilder.beginModule(moduleName);
 				if (api != null) {
 					if (!Boolean.valueOf(api)) {
 						moduleConfigBuilder.withNoAPI();

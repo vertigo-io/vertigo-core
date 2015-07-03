@@ -39,6 +39,8 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 
 	public AppConfigBuilder withBootConfig(final BootConfig bootConfig) {
 		Assertion.checkNotNull(bootConfig);
+		Assertion.checkArgument(myBootConfig == null, "bootConfig already set");
+		Assertion.checkArgument(myModuleConfigs.isEmpty(), "bootConfig must be the first");
 		//-----
 		this.myBootConfig = bootConfig;
 		return this;
