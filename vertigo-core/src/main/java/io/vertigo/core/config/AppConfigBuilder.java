@@ -18,8 +18,6 @@
  */
 package io.vertigo.core.config;
 
-import io.vertigo.core.boot.BootConfig;
-import io.vertigo.core.boot.BootConfigBuilder;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Option;
@@ -35,15 +33,16 @@ import java.util.List;
 public final class AppConfigBuilder implements Builder<AppConfig> {
 	private Option<LogConfig> myLogConfigOption = Option.none(); //par défaut
 	private final List<ModuleConfig> myModuleConfigs = new ArrayList<>();
-	private BootConfig myBootConfig;
+	private final BootConfigBuilder myBootConfigBuilder = new BootConfigBuilder(this);
 
-	public AppConfigBuilder withBootConfig(final BootConfig bootConfig) {
-		Assertion.checkNotNull(bootConfig);
-		Assertion.checkArgument(myBootConfig == null, "bootConfig already set");
-		Assertion.checkArgument(myModuleConfigs.isEmpty(), "bootConfig must be the first");
-		//-----
-		this.myBootConfig = bootConfig;
-		return this;
+	//There is exactly one BootConfig(Builder) per AppConfig(Builer).  
+
+	public ModuleConfigBuilder beginBootModule() {
+		return myBootConfigBuilder.beginBootModule();
+	}
+
+	public BootConfigBuilder beginBoot() {
+		return myBootConfigBuilder;
 	}
 
 	/**
@@ -84,6 +83,6 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	 */
 	@Override
 	public AppConfig build() {
-		return new AppConfig(myLogConfigOption, myBootConfig == null ? new BootConfigBuilder().build() : myBootConfig, myModuleConfigs);
+		return new AppConfig(myLogConfigOption, myBootConfigBuilder.build(), myModuleConfigs);
 	}
 }

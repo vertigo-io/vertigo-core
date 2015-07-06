@@ -45,8 +45,8 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 	protected AppConfig buildAppConfig() {
 		// @formatter:off
 		return new AppConfigBuilder()
-			.beginModule("spacs").
-				beginComponent(LocaleManager.class, LocaleManagerImpl.class)
+			.beginBootModule()
+				.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
 					//les locales doivent être séparées par des virgules
 					.addParam("locales", "fr_FR, en , de_DE")
 				.endComponent()

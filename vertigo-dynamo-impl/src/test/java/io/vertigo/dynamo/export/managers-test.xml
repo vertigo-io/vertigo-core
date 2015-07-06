@@ -1,14 +1,21 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<module name="vertigo-core">
+	<boot>
 		<component api="LocaleManager" class="io.vertigo.commons.impl.locale.LocaleManagerImpl">
 			<param name="locales" value="fr_FR" />
 		</component>
-	</module>
-	<module name="vertigo-commons">
 		<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
 			<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
 		</component>
+		<component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
+			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
+		</component>
+	</boot>
+
+	<module name="vertigo-commons">
 		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
 		<component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
 		<component api="CacheManager" class="io.vertigo.commons.impl.cache.CacheManagerImpl">
@@ -29,12 +36,6 @@
 			</plugin>
 		</component>
 		<component api="EventManager" class="io.vertigo.commons.impl.event.EventManagerImpl"/>
-		<component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
-			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
-		</component>
 		<component api="ExportManager" class="io.vertigo.dynamo.impl.export.ExportManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.export.xls.XLSExporterPlugin" />
 			<!-- plugin class="io.vertigo.dynamo.plugins.export.ods.ODSExporterPlugin" / -->

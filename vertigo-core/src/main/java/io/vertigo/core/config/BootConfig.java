@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.boot;
+package io.vertigo.core.config;
 
 import io.vertigo.core.engines.AopEngine;
 import io.vertigo.core.engines.ElasticaEngine;
@@ -36,6 +36,8 @@ public final class BootConfig {
 	@JsonExclude
 	private final Option<ElasticaEngine> elasticaEngine;
 
+	private final ModuleConfig bootModuleConfig;
+
 	/**
 	 * Constructor.
 	 * @param aopEngine AopEngine
@@ -43,16 +45,22 @@ public final class BootConfig {
 	 * @param silence is no logs
 	 */
 	BootConfig(
-
+			final ModuleConfig bootModuleConfig,
 			final AopEngine aopEngine,
 			final Option<ElasticaEngine> elasticaEngine,
 			final boolean silence) {
+		Assertion.checkNotNull(bootModuleConfig);
 		Assertion.checkNotNull(aopEngine);
 		Assertion.checkNotNull(elasticaEngine);
 		//-----
+		this.bootModuleConfig = bootModuleConfig;
 		this.silence = silence;
 		this.aopEngine = aopEngine;
 		this.elasticaEngine = elasticaEngine;
+	}
+
+	public ModuleConfig getBootModuleConfig() {
+		return bootModuleConfig;
 	}
 
 	/**

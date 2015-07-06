@@ -1,19 +1,18 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<module name="vertigo-commonos">
+	<boot>
 		<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
 			<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
 		</component>
-	</module>
-
-	<module name="dynamo">
-		<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
-
 		<component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
 			<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
 			<plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
 		</component>
+	</boot>
+
+	<module name="dynamo">
+		<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
 	</module>
 
 	<module name="myApp">

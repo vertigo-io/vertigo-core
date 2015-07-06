@@ -19,8 +19,8 @@
 package io.vertigo.core.spaces.component;
 
 import io.vertigo.core.aop.Aspect;
-import io.vertigo.core.boot.BootConfig;
 import io.vertigo.core.config.AspectConfig;
+import io.vertigo.core.config.BootConfig;
 import io.vertigo.core.config.ComponentConfig;
 import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.config.PluginConfig;

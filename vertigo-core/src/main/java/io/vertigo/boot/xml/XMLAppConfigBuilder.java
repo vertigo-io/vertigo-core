@@ -18,9 +18,9 @@
  */
 package io.vertigo.boot.xml;
 
-import io.vertigo.core.boot.BootConfig;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
+import io.vertigo.core.config.BootConfigBuilder;
 import io.vertigo.core.config.LogConfig;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -37,9 +37,8 @@ import java.util.Properties;
 public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 	private final AppConfigBuilder appConfigBuilder = new AppConfigBuilder();
 
-	public XMLAppConfigBuilder withBootConfig(final BootConfig bootConfig) {
-		appConfigBuilder.withBootConfig(bootConfig);
-		return this;
+	public BootConfigBuilder beginBoot() {
+		return appConfigBuilder.beginBoot();
 	}
 
 	/**

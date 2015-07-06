@@ -86,12 +86,17 @@ public final class Home {
 					initLog(appConfig.getLogConfig().get());
 				}
 				//-----
-				definitionSpace = new DefinitionSpace(appConfig.getBootConfig());
+				definitionSpace = new DefinitionSpace();
+				configSpace = new ConfigSpace();
 				componentSpace = new ComponentSpace(appConfig.getBootConfig());
-				configSpace = new ConfigSpace(appConfig.getBootConfig());
+				//Boot 
+				componentSpace.injectComponents(appConfig.getBootConfig().getBootModuleConfig());
+
 				//----
 				for (final ModuleConfig moduleConfig : appConfig.getModuleConfigs()) {
 					definitionSpace.injectDefinitions(moduleConfig);
+				}
+				for (final ModuleConfig moduleConfig : appConfig.getModuleConfigs()) {
 					componentSpace.injectComponents(moduleConfig);
 					componentSpace.injectAspects(moduleConfig);
 				}

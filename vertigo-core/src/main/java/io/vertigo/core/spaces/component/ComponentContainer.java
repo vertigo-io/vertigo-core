@@ -1,5 +1,5 @@
 /**
- * vertigo - simple java starter
+ * vertigo -	 simple java starter
  *
  * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
@@ -51,16 +51,6 @@ final class ComponentContainer implements Container, Activeable {
 	private final Map<String, Object> startedComponents = new LinkedHashMap<>();
 	private final Map<String, ComponentInitializer> initializers = new HashMap<>();
 	private final Map<String, List<Plugin>> subComponents = new LinkedHashMap<>();
-
-	/**
-	 * Récupère tous les plugins d'un composant.
-	 * @return Liste des plugins
-	 */
-	private List<Plugin> getPlugins(final String componentId) {
-		Assertion.checkArgNotEmpty(componentId);
-		//-----
-		return subComponents.get(componentId);
-	}
 
 	private void registerComponent(final String componentId, final Object component) {
 		Assertion.checkArgNotEmpty(componentId);
@@ -225,9 +215,9 @@ final class ComponentContainer implements Container, Activeable {
 		out.println("####################################################################################################");
 	}
 
-	private void printComponent(final PrintStream out, final String componentid, final Object component) {
-		printComponent(out, componentid, component.getClass().getSimpleName(), null);
-		for (final Plugin plugin : getPlugins(componentid)) {
+	private void printComponent(final PrintStream out, final String componentId, final Object component) {
+		printComponent(out, componentId, component.getClass().getSimpleName(), null);
+		for (final Plugin plugin : subComponents.get(componentId)) {
 			printComponent(out, null, null, plugin.getClass().getSimpleName());
 		}
 		//			final ComponentDescription componentDescription = entry.getValue().getDescription();

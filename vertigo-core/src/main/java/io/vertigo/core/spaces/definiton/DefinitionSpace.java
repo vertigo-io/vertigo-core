@@ -18,7 +18,6 @@
  */
 package io.vertigo.core.spaces.definiton;
 
-import io.vertigo.core.boot.BootConfig;
 import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.config.ResourceConfig;
 import io.vertigo.dynamo.impl.environment.Environment;
@@ -51,7 +50,7 @@ public final class DefinitionSpace implements Activeable {
 	@JsonExclude
 	private final Map<String, Definition> allObjects = new LinkedHashMap<>(); //byId
 
-	public DefinitionSpace(final BootConfig bootConfig) {
+	public DefinitionSpace() {
 		//
 	}
 

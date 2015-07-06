@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.boot;
+package io.vertigo.core.config;
 
 import io.vertigo.core.engines.AopEngine;
 import io.vertigo.core.engines.ElasticaEngine;
@@ -31,9 +31,17 @@ import io.vertigo.lang.Option;
  * @author npiedeloup, pchretien
  */
 public final class BootConfigBuilder implements Builder<BootConfig> {
+	private final AppConfigBuilder appConfigBuilder;
 	private boolean mySilence; //false by default
 	private AopEngine myAopEngine = new CGLIBAopEngine(); //By default
 	private ElasticaEngine myElasticaEngine = null; //par défaut pas d'elasticité.
+	private ModuleConfig myBootModuleConfig = null;
+
+	BootConfigBuilder(final AppConfigBuilder appConfigBuilder) {
+		Assertion.checkNotNull(appConfigBuilder);
+		//-----
+		this.appConfigBuilder = appConfigBuilder;
+	}
 
 	/**
 	 * Permet de définir un démarrage silencieux. (Sans retour console)
@@ -41,6 +49,18 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 */
 	public BootConfigBuilder silently() {
 		mySilence = true;
+		return this;
+	}
+
+	ModuleConfigBuilder beginBootModule() {
+		return new ModuleConfigBuilder(appConfigBuilder);
+	}
+
+	public BootConfigBuilder withModule(final ModuleConfig moduleConfig) {
+		Assertion.checkNotNull(moduleConfig);
+		Assertion.checkState(myBootModuleConfig == null, "moduleConfig is already completed");
+		//-----
+		myBootModuleConfig = moduleConfig;
 		return this;
 	}
 
@@ -67,12 +87,20 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 		return this;
 	}
 
+	public AppConfigBuilder endBoot() {
+		return appConfigBuilder;
+	}
+
 	/**
 	 * @return BootConfig
 	 */
 	@Override
 	public BootConfig build() {
+		if (myBootModuleConfig == null) {
+			beginBootModule().endModule();
+		}
 		return new BootConfig(
+				myBootModuleConfig,
 				myAopEngine,
 				Option.option(myElasticaEngine),
 				mySilence);

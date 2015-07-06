@@ -51,7 +51,7 @@ final class DynamicSolver {
 		//-----
 		final Collection<DynamicDefinition> coll = new ArrayList<>(definitionModelRepository.getDefinitions());
 
-		DynamicDefinition xdef = null;
+		DynamicDefinition xdef ;
 		int size = coll.size();
 		while (size > 0) {
 			for (final Iterator<DynamicDefinition> it = coll.iterator(); it.hasNext();) {

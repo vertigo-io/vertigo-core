@@ -104,22 +104,23 @@ public final class SplittedModulesEnvironmentManagerTest {
 
 	private AppConfigBuilder prepareDefaultAppConfigBuilder() {
 		// @formatter:off
-		final AppConfigBuilder appConfigBuilder = new AppConfigBuilder()
-		.withLogConfig(new LogConfig("/log4j.xml"))
-		.beginModule("vertigo")
-			.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
-				.addParam("locales", "locales")
-			.endComponent()
-			.beginComponent(ResourceManager.class, ResourceManagerImpl.class)
-				.beginPlugin(ClassPathResourceResolverPlugin.class).endPlugin()
-			.endComponent()
-			.beginComponent(EnvironmentManager.class, EnvironmentManagerImpl.class)
-				.beginPlugin(KprLoaderPlugin.class).endPlugin()
-				.beginPlugin(AnnotationLoaderPlugin.class).endPlugin()
-				.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
-			.endComponent()
-		.endModule();
+		
+		return 
+			new AppConfigBuilder()
+			.withLogConfig(new LogConfig("/log4j.xml"))
+			.beginBootModule()
+				.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
+					.addParam("locales", "locales")
+				.endComponent()
+				.beginComponent(ResourceManager.class, ResourceManagerImpl.class)
+					.beginPlugin(ClassPathResourceResolverPlugin.class).endPlugin()
+				.endComponent()
+				.beginComponent(EnvironmentManager.class, EnvironmentManagerImpl.class)
+					.beginPlugin(KprLoaderPlugin.class).endPlugin()
+					.beginPlugin(AnnotationLoaderPlugin.class).endPlugin()
+					.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
+				.endComponent()
+			.endModule();	
 		// @formatter:on
-		return appConfigBuilder;
 	}
 }

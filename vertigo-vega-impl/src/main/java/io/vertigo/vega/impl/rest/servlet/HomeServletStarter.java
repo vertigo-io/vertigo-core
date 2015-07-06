@@ -20,7 +20,6 @@ package io.vertigo.vega.impl.rest.servlet;
 
 import io.vertigo.boot.xml.XMLAppConfigBuilder;
 import io.vertigo.core.Home.App;
-import io.vertigo.core.boot.BootConfigBuilder;
 import io.vertigo.core.config.LogConfig;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.plugins.rest.servlet.ServletResourceResolverPlugin;
@@ -69,10 +68,8 @@ final class HomeServletStarter {
 			final Properties bootConf = createBootProperties(servletContext);
 			Assertion.checkArgument(bootConf.containsKey("boot.applicationConfiguration"), "Param \"boot.applicationConfiguration\" is mandatory, check your .properties or web.xml.");
 
-			final XMLAppConfigBuilder appConfigBuilder = new XMLAppConfigBuilder()
-					.withBootConfig(new BootConfigBuilder()
-							.silently()
-							.build());
+			final XMLAppConfigBuilder appConfigBuilder = new XMLAppConfigBuilder();
+			appConfigBuilder.beginBoot().silently();
 
 			//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
 			if (bootConf.containsKey(LOG4J_CONFIGURATION_PARAM_NAME)) {

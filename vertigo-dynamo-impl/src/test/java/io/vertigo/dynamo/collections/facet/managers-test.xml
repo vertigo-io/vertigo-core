@@ -1,16 +1,16 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<module name="vertigo-commons">
+	<boot>
 		<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
 			<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
 		</component>
-	</module>
-	<module name="vertigo-dynamo">
 		<component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
 			<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
 		</component>
+	</boot>
 
+	<module name="vertigo-dynamo">
 		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl" initClass="io.vertigo.dynamo.collections.facet.CollectionsManagerInitializer" />
 	</module>
 

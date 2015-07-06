@@ -18,7 +18,6 @@
  */
 package io.vertigo.core.config;
 
-import io.vertigo.core.boot.BootConfig;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 

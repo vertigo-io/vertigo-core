@@ -34,7 +34,8 @@ import java.util.List;
  * @author npiedeloup, pchretien
  */
 public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
-	private final Option<AppConfigBuilder> myAppConfigBuilderOption;
+	private final boolean boot;
+	private final AppConfigBuilder myAppConfigBuilder;
 	private final String myName;
 	private final List<ComponentConfigBuilder> myComponentConfigBuilders = new ArrayList<>();
 	private final List<AspectConfig> myAspectConfigs = new ArrayList<>();
@@ -47,19 +48,22 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	//State to avoid reuse of this Builder
 	private boolean ended = false;
 
-	public ModuleConfigBuilder(final String name) {
-		Assertion.checkArgNotEmpty(name);
+	ModuleConfigBuilder(final AppConfigBuilder appConfigBuilder) {
+		Assertion.checkNotNull(appConfigBuilder);
 		//-----
-		myName = name;
-		myAppConfigBuilderOption = Option.none();
+		myName = "boot";
+		boot = true;
+		myAppConfigBuilder = appConfigBuilder;
 	}
 
 	ModuleConfigBuilder(final AppConfigBuilder appConfigBuilder, final String name) {
 		Assertion.checkNotNull(appConfigBuilder);
+		Assertion.checkArgument(!"boot".equalsIgnoreCase(name), "boot is a reserved name");
 		Assertion.checkArgNotEmpty(name);
 		//-----
+		boot = false;
 		myName = name;
-		myAppConfigBuilderOption = Option.some(appConfigBuilder);
+		myAppConfigBuilder = appConfigBuilder;
 	}
 
 	public ModuleConfigBuilder addAspect(final Class<? extends Aspect> implClass) {
@@ -149,11 +153,14 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 */
 	public AppConfigBuilder endModule() {
 		Assertion.checkArgument(!ended, "this builder is ended");
-		Assertion.checkArgument(myAppConfigBuilderOption.isDefined(), "beginModule() must be used before endModule()");
 		//-----
-		myAppConfigBuilderOption.get().withModules(Collections.singletonList(this.build()));
+		if (boot) {
+			myAppConfigBuilder.beginBoot().withModule(this.build()).endBoot();
+		} else {
+			myAppConfigBuilder.withModules(Collections.singletonList(this.build()));
+		}
 		ended = true;
-		return myAppConfigBuilderOption.get();
+		return myAppConfigBuilder;
 	}
 
 	/** {@inheritDoc} */

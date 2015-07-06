@@ -23,8 +23,9 @@
 
 	<xs:element name="config">
 		<xs:complexType>
-	    	<xs:sequence minOccurs="0" maxOccurs="unbounded">
-	        	<xs:element name="module" type="moduleType"/>
+	    	<xs:sequence>
+	        	<xs:element name="boot" type="bootType" minOccurs="0" maxOccurs="1"/>
+	        	<xs:element name="module" type="moduleType" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
 		</xs:complexType>
   	</xs:element>
@@ -33,6 +34,13 @@
 	<xs:complexType name="resourceType">
 	  	<xs:attribute name="type" type="xs:string" use="required"/>
 	  	<xs:attribute name="path" type="xs:string" use="required"/>
+	</xs:complexType>
+	
+	<xs:complexType name="bootType">
+		<!--Boot is a module without definitions, without aspects, with only pure components  -->
+		<xs:sequence>
+			<xs:element name="component" type="componentType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
 	</xs:complexType>
 	
 	<xs:complexType name="moduleType">

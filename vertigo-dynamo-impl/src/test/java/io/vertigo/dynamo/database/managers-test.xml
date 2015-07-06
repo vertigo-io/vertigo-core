@@ -1,15 +1,20 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<module name="vertigo-core">
+	<boot>
 		<component api="LocaleManager" class="io.vertigo.commons.impl.locale.LocaleManagerImpl">
 			<param name="locales" value="fr_FR" />
 		</component>
-	</module>
-
-	<module name="vertigo-commons">
 		<component api="ResourceManager" class="io.vertigo.commons.impl.resource.ResourceManagerImpl">
 			<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
 		</component>
+		<component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
+			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
+		</component>
+	</boot>
+
+	<module name="vertigo-commons">
 		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
 	</module>
 
@@ -20,12 +25,6 @@
 				<param name="jdbcDriver" value="org.hsqldb.jdbcDriver" />
 				<param name="jdbcUrl" value="jdbc:hsqldb:mem:database" />
 			</plugin>
-		</component>
-
-		<component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
-			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
 		</component>
 	</module>
 
