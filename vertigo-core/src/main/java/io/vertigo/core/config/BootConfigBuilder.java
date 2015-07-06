@@ -56,7 +56,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 		return new ModuleConfigBuilder(appConfigBuilder);
 	}
 
-	public BootConfigBuilder withModule(final ModuleConfig moduleConfig) {
+	BootConfigBuilder withModule(final ModuleConfig moduleConfig) {
 		Assertion.checkNotNull(moduleConfig);
 		Assertion.checkState(myBootModuleConfig == null, "moduleConfig is already completed");
 		//-----

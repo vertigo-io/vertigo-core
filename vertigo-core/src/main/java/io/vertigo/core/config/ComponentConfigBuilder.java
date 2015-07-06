@@ -41,7 +41,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	private final Class<?> implClass;
 	private final boolean elastic;
 	private Class<? extends ComponentInitializer<?>> managerInitializerClass;
-	final Map<String, String> params = new HashMap<>();
+	private final Map<String, String> params = new HashMap<>();
 	private final List<PluginConfigBuilder> plugins = new ArrayList<>();
 
 	ComponentConfigBuilder(final ModuleConfigBuilder moduleConfigBuilder, final Option<Class<?>> apiClass, final Class<?> implClass, final boolean elastic) {
