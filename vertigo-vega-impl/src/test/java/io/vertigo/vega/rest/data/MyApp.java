@@ -32,7 +32,6 @@ import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
-import io.vertigo.core.config.BootConfigBuilder;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.export.ExportManager;
 import io.vertigo.dynamo.file.FileManager;
@@ -88,9 +87,9 @@ public final class MyApp {
 	public static AppConfig config() {
 		// @formatter:off
 		return new AppConfigBuilder()
-		.withBootConfig(new BootConfigBuilder()
-			.silently()
-			.build())
+			.beginBoot()
+				.silently()
+			.endBoot()
 			.beginModule("commons")
 				.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
 					.addParam("locales", "fr")
