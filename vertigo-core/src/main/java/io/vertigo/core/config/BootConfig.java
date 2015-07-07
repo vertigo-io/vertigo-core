@@ -21,8 +21,12 @@ package io.vertigo.core.config;
 import io.vertigo.core.engines.AopEngine;
 import io.vertigo.core.engines.ElasticaEngine;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Engine;
 import io.vertigo.lang.JsonExclude;
 import io.vertigo.lang.Option;
+import io.vertigo.util.ListBuilder;
+
+import java.util.List;
 
 /**
  * This Class defines the properties of ComponentSpace and DefinitionSpace.
@@ -37,6 +41,7 @@ public final class BootConfig {
 	private final Option<ElasticaEngine> elasticaEngine;
 
 	private final ModuleConfig bootModuleConfig;
+	private final List<Engine> engines;
 
 	/**
 	 * Constructor.
@@ -57,6 +62,14 @@ public final class BootConfig {
 		this.silence = silence;
 		this.aopEngine = aopEngine;
 		this.elasticaEngine = elasticaEngine;
+		//-----
+		final ListBuilder<Engine> enginesBuilder = new ListBuilder<>();
+		if (getElasticaEngine().isDefined()) {
+			enginesBuilder.add(getElasticaEngine().get());
+		}
+		enginesBuilder.add(getAopEngine());
+
+		engines = enginesBuilder.unmodifiable().build();
 	}
 
 	public ModuleConfig getBootModuleConfig() {
@@ -82,5 +95,9 @@ public final class BootConfig {
 	 */
 	public Option<ElasticaEngine> getElasticaEngine() {
 		return elasticaEngine;
+	}
+
+	public List<Engine> getEngines() {
+		return engines;
 	}
 }

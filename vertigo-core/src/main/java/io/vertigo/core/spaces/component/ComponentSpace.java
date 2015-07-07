@@ -72,9 +72,8 @@ public final class ComponentSpace implements Container, Activeable {
 
 	//---Aspects
 	private final Map<Class<? extends Aspect>, Aspect> aspects = new LinkedHashMap<>();
-	//---/Aspects
 
-	private final List<Engine> engines = new ArrayList<>();
+	//---/Aspects
 
 	public ComponentSpace(final BootConfig bootConfig) {
 		Assertion.checkNotNull(bootConfig);
@@ -86,17 +85,7 @@ public final class ComponentSpace implements Container, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		if (bootConfig.getElasticaEngine().isDefined()) {
-			engines.add(bootConfig.getElasticaEngine().get());
-		}
-
-		engines.add(bootConfig.getAopEngine());
-
-		for (final Engine engine : engines) {
-			if (engine instanceof Activeable) {
-				Activeable.class.cast(engine).start();
-			}
-		}
+		startEngines();
 		//---
 		componentContainer.start();
 		if (!bootConfig.isSilence()) {
@@ -105,13 +94,16 @@ public final class ComponentSpace implements Container, Activeable {
 		}
 	}
 
-	/*We are stopping all the components.*/
-	/** {@inheritDoc} */
-	@Override
-	public void stop() {
-		componentContainer.stop();
-		//---
-		final List<Engine> reverseEngines = new ArrayList<>(engines);
+	private void startEngines() {
+		for (final Engine engine : bootConfig.getEngines()) {
+			if (engine instanceof Activeable) {
+				Activeable.class.cast(engine).start();
+			}
+		}
+	}
+
+	private void stopEngines() {
+		final List<Engine> reverseEngines = new ArrayList<>(bootConfig.getEngines());
 		java.util.Collections.reverse(reverseEngines);
 
 		for (final Engine engine : reverseEngines) {
@@ -119,7 +111,16 @@ public final class ComponentSpace implements Container, Activeable {
 				Activeable.class.cast(engine).stop();
 			}
 		}
+	}
+
+	/*We are stopping all the components.*/
+	/** {@inheritDoc} */
+	@Override
+	public void stop() {
+		componentContainer.stop();
 		aspects.clear();
+		//---
+		stopEngines();
 	}
 
 	public void inject(final List<ModuleConfig> moduleConfigs) {
