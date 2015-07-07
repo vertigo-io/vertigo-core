@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.impl.environment;
 
-import io.vertigo.core.Home;
 import io.vertigo.dynamo.environment.EnvironmentManager;
 import io.vertigo.lang.Assertion;
 
@@ -35,12 +34,20 @@ import javax.inject.Inject;
  * @author pchretien, npiedeloup
  */
 public final class EnvironmentManagerImpl implements EnvironmentManager {
+	private final List<LoaderPlugin> loaderPlugins;
+	private final List<DynamicRegistryPlugin> dynamicRegistryPlugins;
 
 	@Inject
 	public EnvironmentManagerImpl(final List<LoaderPlugin> loaderPlugins, final List<DynamicRegistryPlugin> dynamicRegistryPlugins) {
 		Assertion.checkNotNull(loaderPlugins);
 		Assertion.checkNotNull(dynamicRegistryPlugins);
 		//-----
-		Home.getDefinitionSpace().addLoader(new Environment(dynamicRegistryPlugins, loaderPlugins));
+		this.dynamicRegistryPlugins = dynamicRegistryPlugins;
+		this.loaderPlugins = loaderPlugins;
+	}
+
+	@Override
+	public Environment createEnvironment() {
+		return new Environment(dynamicRegistryPlugins, loaderPlugins);
 	}
 }

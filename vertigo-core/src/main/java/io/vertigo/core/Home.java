@@ -24,7 +24,10 @@ import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.core.spaces.config.ConfigSpace;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.dynamo.environment.EnvironmentManager;
+import io.vertigo.dynamo.impl.environment.Environment;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 import java.io.File;
 import java.net.URL;
@@ -89,13 +92,17 @@ public final class Home {
 				definitionSpace = new DefinitionSpace();
 				configSpace = new ConfigSpace();
 				componentSpace = new ComponentSpace(appConfig.getBootConfig());
-				//Boot 
+
+				//-----0. Boot (considered as a Module)
 				componentSpace.injectComponents(appConfig.getBootConfig().getBootModuleConfig());
 
-				//----
-				for (final ModuleConfig moduleConfig : appConfig.getModuleConfigs()) {
-					definitionSpace.injectDefinitions(moduleConfig);
+				//-----1. Load all definitions
+				final String EnvironmentManagerId = StringUtil.first2LowerCase(EnvironmentManager.class.getSimpleName());
+				if (componentSpace.contains(EnvironmentManagerId)) {
+					final Environment environment = componentSpace.resolve(EnvironmentManager.class).createEnvironment();
+					environment.injectDefinitions(appConfig.getModuleConfigs());
 				}
+				//-----2. Load all components (and aspects).
 				for (final ModuleConfig moduleConfig : appConfig.getModuleConfigs()) {
 					componentSpace.injectComponents(moduleConfig);
 					componentSpace.injectAspects(moduleConfig);

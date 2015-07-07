@@ -18,16 +18,15 @@
  */
 package io.vertigo.dynamo.impl.environment;
 
+import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.config.ResourceConfig;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.lang.Assertion;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
 
@@ -62,7 +61,7 @@ public final class Environment {
 	/**
 	 * @param resourceConfigs List of resources (must be in a type managed by this loader)
 	 */
-	public void parse(final List<ResourceConfig> resourceConfigs) {
+	private void parse(final List<ResourceConfig> resourceConfigs) {
 		final CompositeDynamicRegistry handler = new CompositeDynamicRegistry(dynamicRegistryPlugins);
 
 		//Création du repositoy des instances le la grammaire (=> model)
@@ -82,10 +81,28 @@ public final class Environment {
 		dynamicModelRepository.solve();
 	}
 
-	/**
-	 * @return Types that can be parsed.
-	 */
-	public Set<String> getTypes() {
-		return Collections.unmodifiableSet(loaderPlugins.keySet());
+	//	/**
+	//	 * @return Types that can be parsed.
+	//	 */
+	//	public Set<String> getTypes() {
+	//		return Collections.unmodifiableSet(loaderPlugins.keySet());
+	//	}
+
+	public void injectDefinitions(final List<ModuleConfig> moduleConfigs) {
+		Assertion.checkNotNull(moduleConfigs);
+		//-----
+		for (final ModuleConfig moduleConfig : moduleConfigs) {
+			injectDefinitions(moduleConfig);
+		}
 	}
+
+	private void injectDefinitions(final ModuleConfig moduleConfig) {
+		Assertion.checkNotNull(moduleConfig);
+		//-----
+		final List<ResourceConfig> resourceConfigs = moduleConfig.getResourceConfigs();
+		if (!resourceConfigs.isEmpty()) {
+			this.parse(resourceConfigs);
+		}
+	}
+
 }

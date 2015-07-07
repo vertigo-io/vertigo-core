@@ -18,9 +18,6 @@
  */
 package io.vertigo.core.spaces.definiton;
 
-import io.vertigo.core.config.ModuleConfig;
-import io.vertigo.core.config.ResourceConfig;
-import io.vertigo.dynamo.impl.environment.Environment;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
@@ -29,7 +26,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,30 +37,12 @@ import java.util.Map;
  * @author pchretien
  */
 public final class DefinitionSpace implements Activeable {
-	private Environment myEnvironment = null;
-
 	/**
 	 * Liste des objets indexés par Class (le type) et nom.
 	 */
 	private final Map<Class<? extends Definition>, Map<String, Definition>> definitions = new HashMap<>();
 	@JsonExclude
 	private final Map<String, Definition> allObjects = new LinkedHashMap<>(); //byId
-
-	public DefinitionSpace() {
-		//
-	}
-
-	public void injectDefinitions(final ModuleConfig moduleConfig) {
-		Assertion.checkNotNull(moduleConfig);
-		//-----
-		final List<ResourceConfig> resourceConfigs = moduleConfig.getResourceConfigs();
-		if (!resourceConfigs.isEmpty()) {
-			if (myEnvironment == null) {
-				throw new RuntimeException("NO environment found to load definitions");
-			}
-			myEnvironment.parse(resourceConfigs);
-		}
-	}
 
 	/**
 	 * Enregistrement d'une nouveau type d'objet géré par le space (éligibles).
@@ -188,13 +166,6 @@ public final class DefinitionSpace implements Activeable {
 	public void stop() {
 		definitions.clear();
 		allObjects.clear();
-		myEnvironment = null;
 	}
 
-	public void addLoader(final Environment environment) {
-		Assertion.checkNotNull(environment);
-		Assertion.checkArgument(!environment.getTypes().isEmpty(), "a loader must be able to parse at least one type of resource");
-		//-----
-		myEnvironment = environment;
-	}
 }
