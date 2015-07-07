@@ -87,7 +87,6 @@ public final class ComponentLoader {
 	private void doInjectAspects(final ModuleConfig moduleConfig) {
 		//. On enrichit la liste des aspects
 		for (final Aspect aspect : findAspects(componentSpace, moduleConfig)) {
-			Assertion.checkArgument(!componentSpace.containsAspect(aspect.getClass()), "aspect {0} already registered", aspect.getClass());
 			componentSpace.registerAspect(aspect);
 		}
 	}
@@ -130,7 +129,7 @@ public final class ComponentLoader {
 		final Object instance = createComponent(bootConfig, componentSpace, componentConfig);
 
 		//4. AOP, on aopise le composant
-		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(componentConfig, componentSpace.getAllAspects());
+		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(componentConfig, componentSpace.getAspects());
 		Object reference;
 		if (!joinPoints.isEmpty()) {
 			reference = aopEngine.create(instance, joinPoints);

@@ -100,15 +100,14 @@ public final class ComponentSpace implements Container, Activeable {
 
 	}
 
-	Collection<Aspect> getAllAspects() {
+	Collection<Aspect> getAspects() {
 		return aspects.values();
 	}
 
-	boolean containsAspect(final Class<? extends Aspect> aspectClass) {
-		return aspects.containsKey(aspectClass);
-	}
-
 	void registerAspect(final Aspect aspect) {
+		Assertion.checkNotNull(aspect);
+		Assertion.checkArgument(!aspects.containsKey(aspect.getClass()), "aspect {0} already registered", aspect.getClass());
+		//-----
 		aspects.put(aspect.getClass(), aspect);
 	}
 
