@@ -30,7 +30,7 @@ import java.util.Map;
 
 /**
  * Espace de définitions (non threadSafe).
- * Il est nécessaier d'enregistrer toutes les définitions au démarrage du serveur.
+ * Il est nécessaire d'enregistrer toutes les définitions au démarrage du serveur.
  * Etape 1 : Enregistrer les classes éligibles (register)
  * Etape 2 : Ajouter les objets (put)
  *

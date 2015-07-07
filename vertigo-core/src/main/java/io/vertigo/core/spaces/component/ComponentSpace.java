@@ -37,6 +37,7 @@ import io.vertigo.util.StringUtil;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -121,12 +122,22 @@ public final class ComponentSpace implements Container, Activeable {
 		aspects.clear();
 	}
 
-	//	private void startModule(final ModuleConfig moduleConfig, final boolean resource) {
-	//		injectComponents(moduleConfig);
-	//		injectResources(moduleConfig);
-	//	}
+	public void inject(final List<ModuleConfig> moduleConfigs) {
+		Assertion.checkNotNull(moduleConfigs);
+		//-----
+		for (final ModuleConfig moduleConfig : moduleConfigs) {
+			inject(moduleConfig);
+		}
+	}
 
-	public void injectComponents(final ModuleConfig moduleConfig) {
+	public void inject(final ModuleConfig moduleConfig) {
+		Assertion.checkNotNull(moduleConfig);
+		//-----
+		doInjectComponents(bootConfig, componentContainer, aspects.values(), moduleConfig);
+		doInjectAspects(componentContainer, aspects, moduleConfig);
+	}
+
+	private static void doInjectComponents(final BootConfig bootConfig, final ComponentContainer componentContainer, final Collection<Aspect> aspects, final ModuleConfig moduleConfig) {
 		final AopEngine aopEngine = bootConfig.getAopEngine();
 
 		final DIReactor reactor = new DIReactor();
@@ -162,15 +173,15 @@ public final class ComponentSpace implements Container, Activeable {
 		for (final String id : ids) {
 			if (map.containsKey(id)) {
 				final ComponentConfig componentConfig = map.get(id);
-				registerComponent(componentConfig, aopEngine);
+				registerComponent(bootConfig, componentContainer, componentConfig, aopEngine, aspects);
 			}
 		}
 
 	}
 
-	public void injectAspects(final ModuleConfig moduleConfig) {
+	private static void doInjectAspects(final Container container, final Map<Class<? extends Aspect>, Aspect> aspects, final ModuleConfig moduleConfig) {
 		//. On enrichit la liste des aspects
-		for (final Aspect aspect : findAspects(moduleConfig)) {
+		for (final Aspect aspect : findAspects(container, moduleConfig)) {
 			Assertion.checkArgument(!aspects.containsKey(aspect.getClass()), "aspect {0} already registered", aspect.getClass());
 			aspects.put(aspect.getClass(), aspect);
 		}
@@ -181,13 +192,13 @@ public final class ComponentSpace implements Container, Activeable {
 	 * @param moduleConfig Module
 	 * @return aspects (and its config)
 	 */
-	private List<Aspect> findAspects(final ModuleConfig moduleConfig) {
+	private static List<Aspect> findAspects(final Container container, final ModuleConfig moduleConfig) {
 		Assertion.checkNotNull(moduleConfig);
 		//-----
 		final List<Aspect> findAspects = new ArrayList<>();
 		for (final AspectConfig aspectConfig : moduleConfig.getAspectConfigs()) {
 			// création de l'instance du composant
-			final Aspect aspect = Injector.newInstance(aspectConfig.getAspectImplClass(), this);
+			final Aspect aspect = Injector.newInstance(aspectConfig.getAspectImplClass(), container);
 			//---
 			Assertion.checkNotNull(aspect.getAnnotationType());
 			Assertion.checkArgument(aspect.getAnnotationType().isAnnotation(), "On attend une annotation '{0}'", aspect.getAnnotationType());
@@ -197,24 +208,24 @@ public final class ComponentSpace implements Container, Activeable {
 		return findAspects;
 	}
 
-	private void registerComponent(final ComponentConfig componentConfig, final AopEngine aopEngine) {
+	private static void registerComponent(final BootConfig bootConfig, final ComponentContainer componentContainer, final ComponentConfig componentConfig, final AopEngine aopEngine, final Collection<Aspect> aspects) {
 		// 1. On crée et on enregistre les plugins (Qui ne doivent pas dépendre du composant)
-		final Map<PluginConfig, Plugin> plugins = createPlugins(componentConfig);
+		final Map<PluginConfig, Plugin> plugins = createPlugins(componentContainer, componentConfig);
 		componentContainer.registerPlugins(componentConfig.getId(), plugins);
 
 		// 2. On crée l'initializer (Qui ne doit pas dépendre du composant)
 		final Option<ComponentInitializer> initializer;
 		if (componentConfig.getInitializerClass() != null) {
-			initializer = Option.<ComponentInitializer> some(createComponentInitializer(componentConfig));
+			initializer = Option.<ComponentInitializer> some(createComponentInitializer(componentContainer, componentConfig));
 		} else {
 			initializer = Option.none();
 		}
 
 		// 3. On crée le composant
-		final Object instance = createComponent(componentConfig);
+		final Object instance = createComponent(bootConfig, componentContainer, componentConfig);
 
 		//4. AOP, on aopise le composant
-		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(componentConfig, aspects.values());
+		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(componentConfig, aspects);
 		Object reference;
 		if (!joinPoints.isEmpty()) {
 			reference = aopEngine.create(instance, joinPoints);
@@ -226,11 +237,11 @@ public final class ComponentSpace implements Container, Activeable {
 		componentContainer.registerComponent(componentConfig.getId(), reference, initializer);
 	}
 
-	private ComponentInitializer<?> createComponentInitializer(final ComponentConfig componentConfig) {
+	private static ComponentInitializer<?> createComponentInitializer(final ComponentContainer componentContainer, final ComponentConfig componentConfig) {
 		return Injector.newInstance(componentConfig.getInitializerClass(), componentContainer);
 	}
 
-	private Object createComponent(final ComponentConfig componentConfig) {
+	private static Object createComponent(final BootConfig bootConfig, final ComponentContainer componentContainer, final ComponentConfig componentConfig) {
 		//---pluginTypes
 		final Set<String> pluginTypes = new HashSet<>();
 		for (final PluginConfig pluginConfig : componentConfig.getPluginConfigs()) {
@@ -258,7 +269,7 @@ public final class ComponentSpace implements Container, Activeable {
 		return component;
 	}
 
-	private Plugin createPlugin(final PluginConfig pluginConfig) {
+	private static Plugin createPlugin(final ComponentContainer componentContainer, final PluginConfig pluginConfig) {
 		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(pluginConfig.getParams());
 		final Container container = new ComponentDualContainer(componentContainer, paramsContainer);
 		//---
@@ -267,10 +278,10 @@ public final class ComponentSpace implements Container, Activeable {
 		return plugin;
 	}
 
-	private Map<PluginConfig, Plugin> createPlugins(final ComponentConfig componentConfig) {
+	private static Map<PluginConfig, Plugin> createPlugins(final ComponentContainer componentContainer, final ComponentConfig componentConfig) {
 		final Map<PluginConfig, Plugin> plugins = new LinkedHashMap<>();
 		for (final PluginConfig pluginConfig : componentConfig.getPluginConfigs()) {
-			final Plugin plugin = createPlugin(pluginConfig);
+			final Plugin plugin = createPlugin(componentContainer, pluginConfig);
 			plugins.put(pluginConfig, plugin);
 		}
 		return plugins;
