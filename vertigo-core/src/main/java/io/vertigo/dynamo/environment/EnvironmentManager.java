@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.environment;
 
-import io.vertigo.dynamo.impl.environment.Environment;
+import io.vertigo.dynamo.impl.environment.DefinitionLoader;
 import io.vertigo.lang.Component;
 
 /**
@@ -29,5 +29,5 @@ import io.vertigo.lang.Component;
  * @author pchretien
  */
 public interface EnvironmentManager extends Component {
-	Environment createEnvironment();
+	DefinitionLoader createDefinitionLoader();
 }

@@ -25,7 +25,7 @@ import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.core.spaces.config.ConfigSpace;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.environment.EnvironmentManager;
-import io.vertigo.dynamo.impl.environment.Environment;
+import io.vertigo.dynamo.impl.environment.DefinitionLoader;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Engine;
@@ -93,24 +93,24 @@ public final class Home {
 					initLog(appConfig.getLogConfig().get());
 				}
 				//-----
-				definitionSpace = new DefinitionSpace();
 				configSpace = new ConfigSpace();
+				definitionSpace = new DefinitionSpace();
 				componentSpace = new ComponentSpace(appConfig.getBootConfig().isSilence());
 
 				final ComponentLoader componentLoader = new ComponentLoader(appConfig.getBootConfig(), componentSpace);
 
 				//-----0. Boot (considered as a Module)
-				componentLoader.inject(appConfig.getBootConfig().getBootModuleConfig());
+				componentLoader.injectComponent(appConfig.getBootConfig().getBootModuleConfig());
 
 				//-----1. Load all definitions
 				final String EnvironmentManagerId = StringUtil.first2LowerCase(EnvironmentManager.class.getSimpleName());
 				if (componentSpace.contains(EnvironmentManagerId)) {
 					final EnvironmentManager environmentManager = componentSpace.resolve(EnvironmentManager.class);
-					final Environment environment = environmentManager.createEnvironment();
-					environment.injectDefinitions(appConfig.getModuleConfigs());
+					final DefinitionLoader definitionLoader = environmentManager.createDefinitionLoader();
+					definitionLoader.injectDefinitions(appConfig.getModuleConfigs());
 				}
 				//-----2. Load all components (and aspects).
-				componentLoader.inject(appConfig.getModuleConfigs());
+				componentLoader.injectComponents(appConfig.getModuleConfigs());
 				//-----
 				startEngines();
 				componentSpace.start();

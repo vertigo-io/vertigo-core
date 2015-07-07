@@ -36,15 +36,15 @@ public final class ComponentLoader {
 		this.componentSpace = componentSpace;
 	}
 
-	public void inject(final List<ModuleConfig> moduleConfigs) {
+	public void injectComponents(final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
-			inject(moduleConfig);
+			injectComponent(moduleConfig);
 		}
 	}
 
-	public void inject(final ModuleConfig moduleConfig) {
+	public void injectComponent(final ModuleConfig moduleConfig) {
 		Assertion.checkNotNull(moduleConfig);
 		//-----
 		doInjectComponents(moduleConfig);

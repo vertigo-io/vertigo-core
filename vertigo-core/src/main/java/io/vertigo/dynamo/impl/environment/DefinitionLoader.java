@@ -40,14 +40,14 @@ import java.util.Map;
  *
  * @author pchretien
  */
-public final class Environment {
+public final class DefinitionLoader {
 	private final Map<String, LoaderPlugin> loaderPlugins = new HashMap<>();
 	private final List<DynamicRegistryPlugin> dynamicRegistryPlugins;
 
 	/**
 	 * Constructeur.
 	 */
-	Environment(final List<DynamicRegistryPlugin> dynamicRegistryPlugins, final List<LoaderPlugin> loaderPlugins) {
+	DefinitionLoader(final List<DynamicRegistryPlugin> dynamicRegistryPlugins, final List<LoaderPlugin> loaderPlugins) {
 		Assertion.checkNotNull(dynamicRegistryPlugins);
 		Assertion.checkNotNull(loaderPlugins);
 		//-----

@@ -47,7 +47,7 @@ public final class EnvironmentManagerImpl implements EnvironmentManager {
 	}
 
 	@Override
-	public Environment createEnvironment() {
-		return new Environment(dynamicRegistryPlugins, loaderPlugins);
+	public DefinitionLoader createDefinitionLoader() {
+		return new DefinitionLoader(dynamicRegistryPlugins, loaderPlugins);
 	}
 }
