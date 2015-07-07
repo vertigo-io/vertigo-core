@@ -66,7 +66,6 @@ public final class ComponentLoader {
 			map.put(componentConfig.getId(), componentConfig);
 			//On insère une seule fois un même type de Plugin pour la résolution le plugin
 			for (final PluginConfig pluginConfig : componentConfig.getPluginConfigs()) {
-
 				reactor.addComponent(pluginConfig.getId(), pluginConfig.getImplClass(), pluginConfig.getParams().keySet());
 			}
 			//On insère les plugins puis les composants car les composants dépendent des plugins

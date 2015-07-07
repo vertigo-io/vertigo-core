@@ -18,8 +18,8 @@
  */
 package io.vertigo.core.spaces.component;
 
+import io.vertigo.core.App;
 import io.vertigo.core.Home;
-import io.vertigo.core.Home.App;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.LogConfig;

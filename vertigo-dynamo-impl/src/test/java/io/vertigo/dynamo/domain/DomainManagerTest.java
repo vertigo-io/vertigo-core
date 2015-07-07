@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.domain;
 
-import io.vertigo.core.Home.App;
+import io.vertigo.core.App;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
