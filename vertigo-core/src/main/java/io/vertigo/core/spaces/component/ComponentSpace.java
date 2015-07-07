@@ -18,31 +18,26 @@
  */
 package io.vertigo.core.spaces.component;
 
+import io.vertigo.core.Home;
+import io.vertigo.core.Logo;
 import io.vertigo.core.aop.Aspect;
-import io.vertigo.core.config.AspectConfig;
-import io.vertigo.core.config.BootConfig;
-import io.vertigo.core.config.ComponentConfig;
-import io.vertigo.core.config.ModuleConfig;
-import io.vertigo.core.config.PluginConfig;
-import io.vertigo.core.di.injector.Injector;
-import io.vertigo.core.di.reactor.DIReactor;
-import io.vertigo.core.engines.AopEngine;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
-import io.vertigo.lang.Engine;
 import io.vertigo.lang.Option;
 import io.vertigo.lang.Plugin;
+import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 
+import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -67,217 +62,54 @@ import java.util.Set;
  * @author pchretien
  */
 public final class ComponentSpace implements Container, Activeable {
-	private final BootConfig bootConfig;
-	private final ComponentContainer componentContainer = new ComponentContainer();
-
 	//---Aspects
 	private final Map<Class<? extends Aspect>, Aspect> aspects = new LinkedHashMap<>();
 
-	//---/Aspects
+	//On conserve l'ordre d'enregistrement. (plugins + pure components)
+	private final Map<String, Object> components = new LinkedHashMap<>();
 
-	public ComponentSpace(final BootConfig bootConfig) {
-		Assertion.checkNotNull(bootConfig);
-		//-----
-		this.bootConfig = bootConfig;
+	//Map des composant démarrés dans l'ordre de démarrage
+	private final Map<String, Object> startedComponents = new LinkedHashMap<>();
+	private final Map<String, ComponentInitializer> initializers = new HashMap<>();
+	private final Map<String, List<Plugin>> pluginsByComponentId = new LinkedHashMap<>();
+
+	private final boolean silently;
+
+	public ComponentSpace(final boolean silently) {
+		this.silently = silently;
 	}
 
-	/* We are registered all the components and their plugins*/
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		startEngines();
-		//---
-		componentContainer.start();
-		if (!bootConfig.isSilence()) {
-			//Si on n'est pas en mode silencieux on affiche les infos
-			componentContainer.print();
+		//le démarrage des composants est effectué au fur et à mesure de leur création.
+		//L'initialisation est en revanche globale.
+		for (final Entry<String, Object> component : startedComponents.entrySet()) {
+			initializeComponent(component.getKey(), component.getValue());
+		}
+		if (!silently) {
+			print();
 		}
 	}
 
-	private void startEngines() {
-		for (final Engine engine : bootConfig.getEngines()) {
-			if (engine instanceof Activeable) {
-				Activeable.class.cast(engine).start();
-			}
-		}
-	}
-
-	private void stopEngines() {
-		final List<Engine> reverseEngines = new ArrayList<>(bootConfig.getEngines());
-		java.util.Collections.reverse(reverseEngines);
-
-		for (final Engine engine : reverseEngines) {
-			if (engine instanceof Activeable) {
-				Activeable.class.cast(engine).stop();
-			}
-		}
-	}
-
-	/*We are stopping all the components.*/
 	/** {@inheritDoc} */
 	@Override
 	public void stop() {
-		componentContainer.stop();
-		aspects.clear();
-		//---
-		stopEngines();
-	}
-
-	public void inject(final List<ModuleConfig> moduleConfigs) {
-		Assertion.checkNotNull(moduleConfigs);
-		//-----
-		for (final ModuleConfig moduleConfig : moduleConfigs) {
-			inject(moduleConfig);
-		}
-	}
-
-	public void inject(final ModuleConfig moduleConfig) {
-		Assertion.checkNotNull(moduleConfig);
-		//-----
-		doInjectComponents(bootConfig, componentContainer, aspects.values(), moduleConfig);
-		doInjectAspects(componentContainer, aspects, moduleConfig);
-	}
-
-	private static void doInjectComponents(final BootConfig bootConfig, final ComponentContainer componentContainer, final Collection<Aspect> aspects, final ModuleConfig moduleConfig) {
-		final AopEngine aopEngine = bootConfig.getAopEngine();
-
-		final DIReactor reactor = new DIReactor();
-		//0; On ajoute la liste des ids qui sont déjà résolus.
-		for (final String id : componentContainer.keySet()) {
-			reactor.addParent(id);
-		}
-
-		//Map des composants définis par leur id
-		final Map<String, ComponentConfig> map = new HashMap<>();
-		for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
-			map.put(componentConfig.getId(), componentConfig);
-			//On insère une seule fois un même type de Plugin pour la résolution le plugin
-			for (final PluginConfig pluginConfig : componentConfig.getPluginConfigs()) {
-
-				reactor.addComponent(pluginConfig.getId(), pluginConfig.getImplClass(), pluginConfig.getParams().keySet());
-			}
-			//On insère les plugins puis les composants car les composants dépendent des plugins
-			//de sorte on facilite le calcul d'ordre
-			reactor.addComponent(componentConfig.getId(), componentConfig.getImplClass(), componentConfig.getParams().keySet());
-		}
-
-		final List<String> ids = reactor.proceed();
-		//On a récupéré la liste ordonnée des ids.
-		for (final String id : ids) {
-			if (map.containsKey(id)) {
-				final ComponentConfig componentConfig = map.get(id);
-				registerComponent(bootConfig, componentContainer, componentConfig, aopEngine, aspects);
-			}
-		}
+		stopComponents();
+		clear();
 
 	}
 
-	private static void doInjectAspects(final Container container, final Map<Class<? extends Aspect>, Aspect> aspects, final ModuleConfig moduleConfig) {
-		//. On enrichit la liste des aspects
-		for (final Aspect aspect : findAspects(container, moduleConfig)) {
-			Assertion.checkArgument(!aspects.containsKey(aspect.getClass()), "aspect {0} already registered", aspect.getClass());
-			aspects.put(aspect.getClass(), aspect);
-		}
+	Collection<Aspect> getAllAspects() {
+		return aspects.values();
 	}
 
-	/**
-	 * Find all aspects declared inside a module
-	 * @param moduleConfig Module
-	 * @return aspects (and its config)
-	 */
-	private static List<Aspect> findAspects(final Container container, final ModuleConfig moduleConfig) {
-		Assertion.checkNotNull(moduleConfig);
-		//-----
-		final List<Aspect> findAspects = new ArrayList<>();
-		for (final AspectConfig aspectConfig : moduleConfig.getAspectConfigs()) {
-			// création de l'instance du composant
-			final Aspect aspect = Injector.newInstance(aspectConfig.getAspectImplClass(), container);
-			//---
-			Assertion.checkNotNull(aspect.getAnnotationType());
-			Assertion.checkArgument(aspect.getAnnotationType().isAnnotation(), "On attend une annotation '{0}'", aspect.getAnnotationType());
-
-			findAspects.add(aspect);
-		}
-		return findAspects;
+	boolean containsAspect(final Class<? extends Aspect> aspectClass) {
+		return aspects.containsKey(aspectClass);
 	}
 
-	private static void registerComponent(final BootConfig bootConfig, final ComponentContainer componentContainer, final ComponentConfig componentConfig, final AopEngine aopEngine, final Collection<Aspect> aspects) {
-		// 1. On crée et on enregistre les plugins (Qui ne doivent pas dépendre du composant)
-		final Map<PluginConfig, Plugin> plugins = createPlugins(componentContainer, componentConfig);
-		componentContainer.registerPlugins(componentConfig.getId(), plugins);
-
-		// 2. On crée l'initializer (Qui ne doit pas dépendre du composant)
-		final Option<ComponentInitializer> initializer;
-		if (componentConfig.getInitializerClass() != null) {
-			initializer = Option.<ComponentInitializer> some(createComponentInitializer(componentContainer, componentConfig));
-		} else {
-			initializer = Option.none();
-		}
-
-		// 3. On crée le composant
-		final Object instance = createComponent(bootConfig, componentContainer, componentConfig);
-
-		//4. AOP, on aopise le composant
-		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(componentConfig, aspects);
-		Object reference;
-		if (!joinPoints.isEmpty()) {
-			reference = aopEngine.create(instance, joinPoints);
-		} else {
-			reference = instance;
-		}
-
-		// 5. On enregistre le manager et son initializer
-		componentContainer.registerComponent(componentConfig.getId(), reference, initializer);
-	}
-
-	private static ComponentInitializer<?> createComponentInitializer(final ComponentContainer componentContainer, final ComponentConfig componentConfig) {
-		return Injector.newInstance(componentConfig.getInitializerClass(), componentContainer);
-	}
-
-	private static Object createComponent(final BootConfig bootConfig, final ComponentContainer componentContainer, final ComponentConfig componentConfig) {
-		//---pluginTypes
-		final Set<String> pluginIds = new HashSet<>();
-		for (final PluginConfig pluginConfig : componentConfig.getPluginConfigs()) {
-			pluginIds.add(pluginConfig.getId());
-		}
-		//---
-		if (componentConfig.isElastic()) {
-			return bootConfig.getElasticaEngine().get().createProxy(componentConfig.getApiClass().get());
-		}
-		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(componentConfig.getParams());
-		final ComponentDualContainer container = new ComponentDualContainer(componentContainer, paramsContainer);
-		//---
-		final Object component = Injector.newInstance(componentConfig.getImplClass(), container);
-		//--Search for unuseds plugins
-		// We are inspecting all unused keys, and we check if we can find almost one plugin of the component.
-		for (final String key : container.getUnusedKeys()) {
-			for (final String pluginId : pluginIds) {
-				if (key.equals(pluginId)) {
-					throw new RuntimeException(StringUtil.format("plugin '{0}' on component '{1}' is not used by injection", container.resolve(key, Plugin.class).getClass(), componentConfig));
-				}
-			}
-		}
-		//--Search for unuseds params
-		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}'", paramsContainer.getUnusedKeys());
-		return component;
-	}
-
-	private static Plugin createPlugin(final ComponentContainer componentContainer, final PluginConfig pluginConfig) {
-		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(pluginConfig.getParams());
-		final Container container = new ComponentDualContainer(componentContainer, paramsContainer);
-		//---
-		final Plugin plugin = Injector.newInstance(pluginConfig.getImplClass(), container);
-		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}'", paramsContainer.getUnusedKeys());
-		return plugin;
-	}
-
-	private static Map<PluginConfig, Plugin> createPlugins(final ComponentContainer componentContainer, final ComponentConfig componentConfig) {
-		final Map<PluginConfig, Plugin> plugins = new LinkedHashMap<>();
-		for (final PluginConfig pluginConfig : componentConfig.getPluginConfigs()) {
-			final Plugin plugin = createPlugin(componentContainer, pluginConfig);
-			plugins.put(pluginConfig, plugin);
-		}
-		return plugins;
+	void registerAspect(final Aspect aspect) {
+		aspects.put(aspect.getClass(), aspect);
 	}
 
 	/**
@@ -287,24 +119,168 @@ public final class ComponentSpace implements Container, Activeable {
 	 */
 	public <T> T resolve(final Class<T> componentClass) {
 		final String normalizedId = StringUtil.first2LowerCase(componentClass.getSimpleName());
-		return componentContainer.resolve(normalizedId, componentClass);
+		return resolve(normalizedId, componentClass);
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public <T> T resolve(final String id, final Class<T> componentClass) {
-		return componentContainer.resolve(id, componentClass);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Set<String> keySet() {
-		return componentContainer.keySet();
+	private void registerComponent(final String componentId, final Object component) {
+		Assertion.checkArgNotEmpty(componentId);
+		Assertion.checkNotNull(component);
+		//-----
+		//Démarrage du composant
+		startComponent(component);
+		final Object previous = startedComponents.put(componentId, component);
+		Assertion.checkState(previous == null, "Composant '{0}' deja enregistré", componentId);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean contains(final String id) {
-		return componentContainer.contains(id);
+		Assertion.checkArgNotEmpty(id);
+		//-----
+		final String normalizedId = StringUtil.first2LowerCase(id);
+		return startedComponents.containsKey(normalizedId);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <C> C resolve(final String id, final Class<C> componentClass) {
+		final String normalizedId = StringUtil.first2LowerCase(id);
+		Assertion.checkArgument(contains(normalizedId), "Aucun composant enregistré pour id = {0} parmi {1}", normalizedId, Home.getComponentSpace().keySet());
+		//-----
+		return componentClass.cast(startedComponents.get(normalizedId));
+	}
+
+	/**
+	 * Enregistrement des plugins .
+	 */
+	void registerPlugins(final String componentId, final Map<String, Plugin> plugins) {
+		Assertion.checkNotNull(componentId);
+		Assertion.checkNotNull(plugins);
+		//-----
+		//On crée le container des sous composants (plugins) associés au Manager.
+		final Object previous = pluginsByComponentId.put(componentId, new ArrayList<>(plugins.values()));
+		Assertion.checkState(previous == null, "subComponents of component '{0}' deja enregistrés", componentId);
+		//-----
+		// Il est nécessaire d'enregistrer tous les plugins.
+		for (final Entry<String, Plugin> entry : plugins.entrySet()) {
+			registerComponent(entry.getKey(), entry.getValue());
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Set<String> keySet() {
+		return startedComponents.keySet();
+	}
+
+	/**
+	 * Enregistrement d'un composant.
+	 * @param component Gestionnaire
+	 */
+	void registerComponent(final String componentId, final Object component, final Option<ComponentInitializer> componentInitializer) {
+		Assertion.checkNotNull(componentId);
+		Assertion.checkNotNull(component);
+		Assertion.checkNotNull(componentInitializer);
+		//On vérifie que le manager est unique
+		final Object old = components.put(componentId, component);
+		Assertion.checkState(old == null, "component {0} deja enregistré", componentId);
+		//-----
+		registerComponent(componentId, component);
+		if (componentInitializer.isDefined()) {
+			initializers.put(componentId, componentInitializer.get());
+		}
+	}
+
+	private static void startComponent(final Object component) {
+		final Method startMethod = ComponentLifeCycleUtil.getStartMethod(component.getClass());
+		if (startMethod != null) {
+			ClassUtil.invoke(component, startMethod);
+		}
+	}
+
+	private static void stopComponent(final Object component) {
+		final Method stopMethod = ComponentLifeCycleUtil.getStopMethod(component.getClass());
+		if (stopMethod != null) {
+			ClassUtil.invoke(component, stopMethod);
+		}
+	}
+
+	private <C> void initializeComponent(final String normalizedId, final C component) {
+		final ComponentInitializer<C> initializer = initializers.get(normalizedId);
+		if (initializer != null) {
+			initializer.init(component);
+		}
+	}
+
+	private void clear() {
+		//On nettoie les maps.
+		components.clear();
+		startedComponents.clear();
+		pluginsByComponentId.clear();
+		initializers.clear();
+		aspects.clear();
+	}
+
+	private void stopComponents() {
+		/* Fermeture de tous les gestionnaires.*/
+		//On fait les fermetures dans l'ordre inverse des enregistrements.
+		//On se limite aux composants qui ont été démarrés.
+		final List<Object> reverseComponents = new ArrayList<>(startedComponents.values());
+		java.util.Collections.reverse(reverseComponents);
+
+		for (final Object component : reverseComponents) {
+			stopComponent(component);
+		}
+	}
+
+	//=========================================================================
+	//======================Gestion des affichages=============================
+	//=========================================================================
+	private void print() {
+		// ---Affichage du logo et des modules---
+		final PrintStream out = System.out;
+		Logo.printCredits(out);
+		out.println();
+		print(out);
+	}
+
+	/**
+	 * Affiche dans la console le logo.
+	 * @param out Flux de sortie des informations
+	 */
+	private void print(final PrintStream out) {
+		out.println("####################################################################################################");
+		printComponent(out, "Module", "ClassName", "Plugins");
+		out.println("# -------------------------+------------------------+----------------------------------------------#");
+		//-----
+		for (final Entry<String, Object> entry : components.entrySet()) {
+			printComponent(out, entry.getKey(), entry.getValue());
+			out.println("# -------------------------+------------------------+----------------------------------------------#");
+		}
+		out.println("####################################################################################################");
+	}
+
+	private void printComponent(final PrintStream out, final String componentId, final Object component) {
+		printComponent(out, componentId, component.getClass().getSimpleName(), null);
+		for (final Plugin plugin : pluginsByComponentId.get(componentId)) {
+			printComponent(out, null, null, plugin.getClass().getSimpleName());
+		}
+		//			final ComponentDescription componentDescription = entry.getValue().getDescription();
+		//final String info;
+		//			if (componentDescription != null && componentDescription.getMainSummaryInfo() != null) {
+		//				info = componentDescription.getMainSummaryInfo().getInfo();
+		//			} else {
+		//info = null;
+		//}
+		//		printComponent(out, componentClass.getSimpleName(), component.getClass().getSimpleName(), buffer.toString());
+	}
+
+	private static void printComponent(final PrintStream out, final String column1, final String column2, final String column3) {
+		out.println("# " + truncate(column1, 24) + " | " + truncate(column2, 22) + " | " + truncate(column3, 44) + " #");
+	}
+
+	private static String truncate(final String value, final int size) {
+		final String result = (value != null ? value : "") + "                                                                  ";
+		return result.substring(0, size);
 	}
 }

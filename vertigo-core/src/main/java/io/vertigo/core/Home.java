@@ -20,16 +20,21 @@ package io.vertigo.core;
 
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.LogConfig;
+import io.vertigo.core.spaces.component.ComponentLoader;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.core.spaces.config.ConfigSpace;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.environment.EnvironmentManager;
 import io.vertigo.dynamo.impl.environment.Environment;
+import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Engine;
 import io.vertigo.util.StringUtil;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
@@ -90,20 +95,24 @@ public final class Home {
 				//-----
 				definitionSpace = new DefinitionSpace();
 				configSpace = new ConfigSpace();
-				componentSpace = new ComponentSpace(appConfig.getBootConfig());
+				componentSpace = new ComponentSpace(appConfig.getBootConfig().isSilence());
+
+				final ComponentLoader componentLoader = new ComponentLoader(appConfig.getBootConfig(), componentSpace);
 
 				//-----0. Boot (considered as a Module)
-				componentSpace.inject(appConfig.getBootConfig().getBootModuleConfig());
+				componentLoader.inject(appConfig.getBootConfig().getBootModuleConfig());
 
 				//-----1. Load all definitions
 				final String EnvironmentManagerId = StringUtil.first2LowerCase(EnvironmentManager.class.getSimpleName());
 				if (componentSpace.contains(EnvironmentManagerId)) {
-					final Environment environment = componentSpace.resolve(EnvironmentManager.class).createEnvironment();
+					final EnvironmentManager environmentManager = componentSpace.resolve(EnvironmentManager.class);
+					final Environment environment = environmentManager.createEnvironment();
 					environment.injectDefinitions(appConfig.getModuleConfigs());
 				}
 				//-----2. Load all components (and aspects).
-				componentSpace.inject(appConfig.getModuleConfigs());
+				componentLoader.inject(appConfig.getModuleConfigs());
 				//-----
+				startEngines();
 				componentSpace.start();
 				definitionSpace.start();
 				state = State.active;
@@ -123,6 +132,7 @@ public final class Home {
 			try {
 				definitionSpace.stop();
 				componentSpace.stop();
+				stopEngines();
 			} catch (final Exception e) {
 				LOGGER.error("an error occured when stopping", e);
 				//Quel que soit l'état, on part en échec de l'arrét.
@@ -130,6 +140,25 @@ public final class Home {
 			} finally {
 				state = State.closed;
 				CURRENT_APP = null;
+			}
+		}
+
+		private void startEngines() {
+			for (final Engine engine : appConfig.getBootConfig().getEngines()) {
+				if (engine instanceof Activeable) {
+					Activeable.class.cast(engine).start();
+				}
+			}
+		}
+
+		private void stopEngines() {
+			final List<Engine> reverseEngines = new ArrayList<>(appConfig.getBootConfig().getEngines());
+			java.util.Collections.reverse(reverseEngines);
+
+			for (final Engine engine : reverseEngines) {
+				if (engine instanceof Activeable) {
+					Activeable.class.cast(engine).stop();
+				}
 			}
 		}
 
