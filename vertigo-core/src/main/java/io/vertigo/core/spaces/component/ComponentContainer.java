@@ -98,17 +98,8 @@ final class ComponentContainer implements Container, Activeable {
 		Assertion.checkState(previous == null, "subComponents of component '{0}' deja enregistrés", componentId);
 		//-----
 		// Il est nécessaire d'enregistrer les sous-composants.
-
-		int nb = 0;
 		for (final Entry<PluginConfig, Plugin> entry : plugins.entrySet()) {
-			//Attention : il peut y avoir plusieurs plugin d'un même type
-			//On enregistre tjrs le premier Plugin de chaque type avec le nom du type de plugin
-			String pluginId = entry.getKey().getType();
-			if (contains(pluginId)) {
-				pluginId += "#" + nb;
-			}
-			registerComponent(pluginId, entry.getValue());
-			nb++;
+			registerComponent(entry.getKey().getId(), entry.getValue());
 		}
 	}
 

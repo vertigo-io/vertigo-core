@@ -142,27 +142,19 @@ public final class ComponentSpace implements Container, Activeable {
 		final AopEngine aopEngine = bootConfig.getAopEngine();
 
 		final DIReactor reactor = new DIReactor();
+		//0; On ajoute la liste des ids qui sont déjà résolus.
 		for (final String id : componentContainer.keySet()) {
-			reactor.addParent(id); //liste des ids qui sont déjà résolus.
+			reactor.addParent(id);
 		}
 
 		//Map des composants définis par leur id
 		final Map<String, ComponentConfig> map = new HashMap<>();
-		final Set<String> pluginIds = new HashSet<>();
 		for (final ComponentConfig componentConfig : moduleConfig.getComponentConfigs()) {
 			map.put(componentConfig.getId(), componentConfig);
 			//On insère une seule fois un même type de Plugin pour la résolution le plugin
-			int nb = 0;
 			for (final PluginConfig pluginConfig : componentConfig.getPluginConfigs()) {
-				//Attention : il peut y avoir plusieurs plugin d'un même type
-				//On enregistre tjrs le premier Plugin de chaque type avec le nom du type de plugin
-				String pluginId = pluginConfig.getType();
-				if (pluginIds.contains(pluginId)) {
-					pluginId += "#" + nb;
-				}
-				reactor.addComponent(pluginId, pluginConfig.getImplClass(), pluginConfig.getParams().keySet());
-				nb++;
-				pluginIds.add(pluginId);
+
+				reactor.addComponent(pluginConfig.getId(), pluginConfig.getImplClass(), pluginConfig.getParams().keySet());
 			}
 			//On insère les plugins puis les composants car les composants dépendent des plugins
 			//de sorte on facilite le calcul d'ordre
@@ -244,9 +236,9 @@ public final class ComponentSpace implements Container, Activeable {
 
 	private static Object createComponent(final BootConfig bootConfig, final ComponentContainer componentContainer, final ComponentConfig componentConfig) {
 		//---pluginTypes
-		final Set<String> pluginTypes = new HashSet<>();
+		final Set<String> pluginIds = new HashSet<>();
 		for (final PluginConfig pluginConfig : componentConfig.getPluginConfigs()) {
-			pluginTypes.add(pluginConfig.getType());
+			pluginIds.add(pluginConfig.getId());
 		}
 		//---
 		if (componentConfig.isElastic()) {
@@ -259,8 +251,8 @@ public final class ComponentSpace implements Container, Activeable {
 		//--Search for unuseds plugins
 		// We are inspecting all unused keys, and we check if we can find almost one plugin of the component.
 		for (final String key : container.getUnusedKeys()) {
-			for (final String pluginType : pluginTypes) {
-				if (key.startsWith(pluginType)) {
+			for (final String pluginId : pluginIds) {
+				if (key.equals(pluginId)) {
 					throw new RuntimeException(StringUtil.format("plugin '{0}' on component '{1}' is not used by injection", container.resolve(key, Plugin.class).getClass(), componentConfig));
 				}
 			}

@@ -26,8 +26,10 @@ import io.vertigo.lang.Plugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Paramétrage de l'application.
@@ -84,7 +86,18 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	public ComponentConfig build() {
 		//Création des pluginConfigs
 		final List<PluginConfig> pluginConfigs = new ArrayList<>();
+		final Set<String> pluginTypes = new HashSet<>();
+		int index = 1;
 		for (final PluginConfigBuilder pluginConfigBuilder : plugins) {
+			final boolean added = pluginTypes.add(pluginConfigBuilder.getPluginType());
+			if (added) {
+				//If added, its the first plugin to this type.
+				pluginConfigBuilder.withIndex(0);
+			} else {
+				pluginConfigBuilder.withIndex(index);
+				index++;
+			}
+
 			pluginConfigs.add(pluginConfigBuilder.build());
 		}
 		return new ComponentConfig(apiClass, implClass, elastic, managerInitializerClass, pluginConfigs, params);
