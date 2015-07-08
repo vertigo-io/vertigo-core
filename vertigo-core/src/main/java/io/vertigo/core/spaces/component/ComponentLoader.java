@@ -117,12 +117,7 @@ public final class ComponentLoader {
 		componentSpace.registerPlugins(componentConfig.getId(), plugins);
 
 		// 2. On crée l'initializer (Qui ne doit pas dépendre du composant)
-		final Option<ComponentInitializer> initializer;
-		if (componentConfig.getInitializerClass() != null) {
-			initializer = Option.<ComponentInitializer> some(createComponentInitializer(componentSpace, componentConfig));
-		} else {
-			initializer = Option.none();
-		}
+		final Option<ComponentInitializer> initializer = createComponentInitializer(componentSpace, componentConfig);
 
 		// 3. On crée le composant
 		final Object instance = createComponent(bootConfig, componentSpace, componentConfig);
@@ -140,8 +135,12 @@ public final class ComponentLoader {
 		componentSpace.registerComponent(componentConfig.getId(), reference, initializer);
 	}
 
-	private static ComponentInitializer<?> createComponentInitializer(final Container componentContainer, final ComponentConfig componentConfig) {
-		return Injector.newInstance(componentConfig.getInitializerClass(), componentContainer);
+	private static final Option<ComponentInitializer> createComponentInitializer(final Container componentContainer, final ComponentConfig componentConfig) {
+		if (componentConfig.getInitializerClass() != null) {
+			final ComponentInitializer<?> componentInitializer = Injector.newInstance(componentConfig.getInitializerClass(), componentContainer);
+			return Option.<ComponentInitializer> some(componentInitializer);
+		}
+		return Option.none();
 	}
 
 	private static Object createComponent(final BootConfig bootConfig, final Container componentContainer, final ComponentConfig componentConfig) {
