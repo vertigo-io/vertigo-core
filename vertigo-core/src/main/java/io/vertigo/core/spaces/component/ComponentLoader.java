@@ -26,32 +26,34 @@ import java.util.Set;
 
 public final class ComponentLoader {
 	private final BootConfig bootConfig;
-	private final ComponentSpace componentSpace;
 
-	public ComponentLoader(final BootConfig bootConfig, final ComponentSpace componentSpace) {
+	public ComponentLoader(final BootConfig bootConfig) {
 		Assertion.checkNotNull(bootConfig);
-		Assertion.checkNotNull(componentSpace);
 		//-----
 		this.bootConfig = bootConfig;
-		this.componentSpace = componentSpace;
 	}
 
-	public void injectComponents(final List<ModuleConfig> moduleConfigs) {
+	public void injectAllComponents(final ComponentSpace componentSpace, final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
-			injectComponent(moduleConfig);
+			injectComponent(componentSpace, moduleConfig);
 		}
 	}
 
-	public void injectComponent(final ModuleConfig moduleConfig) {
-		Assertion.checkNotNull(moduleConfig);
-		//-----
-		doInjectComponents(moduleConfig);
-		doInjectAspects(moduleConfig);
+	public void injectBootComponents(final ComponentSpace componentSpace) {
+		injectComponent(componentSpace, bootConfig.getBootModuleConfig());
+
 	}
 
-	private void doInjectComponents(final ModuleConfig moduleConfig) {
+	private void injectComponent(final ComponentSpace componentSpace, final ModuleConfig moduleConfig) {
+		Assertion.checkNotNull(moduleConfig);
+		//-----
+		doInjectComponents(componentSpace, moduleConfig);
+		doInjectAspects(componentSpace, moduleConfig);
+	}
+
+	private void doInjectComponents(final ComponentSpace componentSpace, final ModuleConfig moduleConfig) {
 		final AopEngine aopEngine = bootConfig.getAopEngine();
 
 		final DIReactor reactor = new DIReactor();
@@ -78,12 +80,12 @@ public final class ComponentLoader {
 		for (final String id : ids) {
 			if (map.containsKey(id)) {
 				final ComponentConfig componentConfig = map.get(id);
-				registerComponent(componentConfig, aopEngine);
+				registerComponent(componentSpace, componentConfig, aopEngine);
 			}
 		}
 	}
 
-	private void doInjectAspects(final ModuleConfig moduleConfig) {
+	private void doInjectAspects(final ComponentSpace componentSpace, final ModuleConfig moduleConfig) {
 		//. On enrichit la liste des aspects
 		for (final Aspect aspect : findAspects(componentSpace, moduleConfig)) {
 			componentSpace.registerAspect(aspect);
@@ -111,7 +113,7 @@ public final class ComponentLoader {
 		return findAspects;
 	}
 
-	private void registerComponent(final ComponentConfig componentConfig, final AopEngine aopEngine) {
+	private void registerComponent(final ComponentSpace componentSpace, final ComponentConfig componentConfig, final AopEngine aopEngine) {
 		// 1. On crée et on enregistre les plugins (Qui ne doivent pas dépendre du composant)
 		final Map<String, Plugin> plugins = createPlugins(componentSpace, componentConfig);
 		componentSpace.registerPlugins(componentConfig.getId(), plugins);

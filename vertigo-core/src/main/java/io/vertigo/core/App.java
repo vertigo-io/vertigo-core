@@ -50,17 +50,16 @@ public final class App implements AutoCloseable {
 		state = State.starting;
 		//-----
 		try {
+			//-----0. Boot (considered as a Module)
 			boot = new Boot(appConfig.getBootConfig());
-
+			final boolean silently = appConfig.getBootConfig().isSilence();
 			//-----
 			configSpace = new ConfigSpace();
 			definitionSpace = new DefinitionSpace();
-			componentSpace = new ComponentSpace(appConfig.getBootConfig().isSilence());
+			componentSpace = new ComponentSpace(silently);
 
-			final ComponentLoader componentLoader = new ComponentLoader(appConfig.getBootConfig(), componentSpace);
-
-			//-----0. Boot (considered as a Module)
-			componentLoader.injectComponent(appConfig.getBootConfig().getBootModuleConfig());
+			final ComponentLoader componentLoader = new ComponentLoader(appConfig.getBootConfig());
+			componentLoader.injectBootComponents(componentSpace);
 
 			//-----1. Load all definitions
 			final String EnvironmentManagerId = StringUtil.first2LowerCase(EnvironmentManager.class.getSimpleName());
@@ -71,7 +70,7 @@ public final class App implements AutoCloseable {
 				definitionLoader.injectDefinitions(appConfig.getModuleConfigs());
 			}
 			//-----2. Load all components (and aspects).
-			componentLoader.injectComponents(appConfig.getModuleConfigs());
+			componentLoader.injectAllComponents(componentSpace, appConfig.getModuleConfigs());
 			//-----
 			boot.start();
 			componentSpace.start();
