@@ -57,8 +57,8 @@ public final class App implements AutoCloseable {
 		state = State.starting;
 		//-----
 		try {
-			if (appConfig.getLogConfig().isDefined()) {
-				initLog(appConfig.getLogConfig().get());
+			if (appConfig.getBootConfig().getLogConfig().isDefined()) {
+				initLog(appConfig.getBootConfig().getLogConfig().get());
 			}
 			//-----
 			configSpace = new ConfigSpace();

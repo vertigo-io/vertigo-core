@@ -92,7 +92,9 @@ public final class ComponentSpace3Test {
 		
 		
 		return  new AppConfigBuilder()
-			.withLogConfig(new LogConfig("/log4j.xml"))
+			.beginBoot()
+				.withLogConfig(new LogConfig("/log4j.xml"))
+			.endBoot()	
 			.beginModule("Function")
 				.beginComponent(FunctionManager.class, implClass)
 					.beginPlugin(FunctionPlugin.class)

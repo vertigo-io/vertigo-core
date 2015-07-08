@@ -31,6 +31,7 @@ import io.vertigo.lang.Option;
  * @author npiedeloup, pchretien
  */
 public final class BootConfigBuilder implements Builder<BootConfig> {
+	private Option<LogConfig> myLogConfigOption = Option.none(); //par défaut
 	private final AppConfigBuilder appConfigBuilder;
 	private boolean mySilence; //false by default
 	private AopEngine myAopEngine = new CGLIBAopEngine(); //By default
@@ -41,6 +42,17 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 		Assertion.checkNotNull(appConfigBuilder);
 		//-----
 		this.appConfigBuilder = appConfigBuilder;
+	}
+
+	/**
+	 * Ajout de paramètres
+	 * @param logConfig Config of logs
+	 */
+	public BootConfigBuilder withLogConfig(final LogConfig logConfig) {
+		Assertion.checkNotNull(logConfig);
+		//-----
+		myLogConfigOption = Option.some(logConfig);
+		return this;
 	}
 
 	/**
@@ -100,6 +112,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 			beginBootModule().endModule();
 		}
 		return new BootConfig(
+				myLogConfigOption,
 				myBootModuleConfig,
 				myAopEngine,
 				Option.option(myElasticaEngine),

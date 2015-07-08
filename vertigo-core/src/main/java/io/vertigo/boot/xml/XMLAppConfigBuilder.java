@@ -65,7 +65,7 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 	public XMLAppConfigBuilder withLogConfig(final LogConfig logConfig) {
 		Assertion.checkNotNull(logConfig);
 		//-----
-		appConfigBuilder.withLogConfig(logConfig);
+		appConfigBuilder.beginBoot().withLogConfig(logConfig).endBoot();
 		return this;
 	}
 

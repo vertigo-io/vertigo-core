@@ -34,6 +34,7 @@ import java.util.List;
  * @author pchretien
  */
 public final class BootConfig {
+	private final Option<LogConfig> logConfigOption;
 	private final boolean silence;
 	@JsonExclude
 	private final AopEngine aopEngine;
@@ -50,14 +51,17 @@ public final class BootConfig {
 	 * @param silence is no logs
 	 */
 	BootConfig(
+			final Option<LogConfig> logConfigOption,
 			final ModuleConfig bootModuleConfig,
 			final AopEngine aopEngine,
 			final Option<ElasticaEngine> elasticaEngine,
 			final boolean silence) {
+		Assertion.checkNotNull(logConfigOption);
 		Assertion.checkNotNull(bootModuleConfig);
 		Assertion.checkNotNull(aopEngine);
 		Assertion.checkNotNull(elasticaEngine);
 		//-----
+		this.logConfigOption = logConfigOption;
 		this.bootModuleConfig = bootModuleConfig;
 		this.silence = silence;
 		this.aopEngine = aopEngine;
@@ -70,6 +74,10 @@ public final class BootConfig {
 		enginesBuilder.add(getAopEngine());
 
 		engines = enginesBuilder.unmodifiable().build();
+	}
+
+	public Option<LogConfig> getLogConfig() {
+		return logConfigOption;
 	}
 
 	public ModuleConfig getBootModuleConfig() {
