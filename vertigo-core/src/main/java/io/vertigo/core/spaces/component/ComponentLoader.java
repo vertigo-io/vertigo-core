@@ -157,7 +157,7 @@ public final class ComponentLoader {
 		for (final String key : container.getUnusedKeys()) {
 			for (final PluginConfig pluginConfig : componentConfig.getPluginConfigs()) {
 				if (key.equals(pluginConfig.getId())) {
-					throw new RuntimeException(StringUtil.format("plugin '{0}' on component '{1}' is not used by injection", container.resolve(key, Plugin.class).getClass(), componentConfig));
+					throw new RuntimeException(StringUtil.format("plugin '{0}' on component '{1}' is not used by injection", pluginConfig, componentConfig));
 				}
 			}
 		}
