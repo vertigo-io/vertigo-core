@@ -18,11 +18,9 @@ import io.vertigo.util.StringUtil;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public final class ComponentLoader {
 	private final BootConfig bootConfig;
@@ -147,12 +145,6 @@ public final class ComponentLoader {
 	}
 
 	private static Object createComponent(final BootConfig bootConfig, final Container componentContainer, final ComponentConfig componentConfig) {
-		//---pluginTypes
-		final Set<String> pluginIds = new HashSet<>();
-		for (final PluginConfig pluginConfig : componentConfig.getPluginConfigs()) {
-			pluginIds.add(pluginConfig.getId());
-		}
-		//---
 		if (componentConfig.isElastic()) {
 			return bootConfig.getElasticaEngine().get().createProxy(componentConfig.getApiClass().get());
 		}
@@ -163,8 +155,8 @@ public final class ComponentLoader {
 		//--Search for unuseds plugins
 		// We are inspecting all unused keys, and we check if we can find almost one plugin of the component.
 		for (final String key : container.getUnusedKeys()) {
-			for (final String pluginId : pluginIds) {
-				if (key.equals(pluginId)) {
+			for (final PluginConfig pluginConfig : componentConfig.getPluginConfigs()) {
+				if (key.equals(pluginConfig.getId())) {
 					throw new RuntimeException(StringUtil.format("plugin '{0}' on component '{1}' is not used by injection", container.resolve(key, Plugin.class).getClass(), componentConfig));
 				}
 			}
