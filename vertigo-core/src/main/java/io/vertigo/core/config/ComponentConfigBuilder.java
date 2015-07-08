@@ -85,6 +85,11 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	@Override
 	public ComponentConfig build() {
 		//Création des pluginConfigs
+		final List<PluginConfig> pluginConfigs = buildPluginConfigs();
+		return new ComponentConfig(apiClass, implClass, elastic, managerInitializerClass, pluginConfigs, params);
+	}
+
+	private List<PluginConfig> buildPluginConfigs() {
 		final List<PluginConfig> pluginConfigs = new ArrayList<>();
 		final Set<String> pluginTypes = new HashSet<>();
 		int index = 1;
@@ -100,7 +105,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 
 			pluginConfigs.add(pluginConfigBuilder.build());
 		}
-		return new ComponentConfig(apiClass, implClass, elastic, managerInitializerClass, pluginConfigs, params);
+		return pluginConfigs;
 	}
 
 	public ModuleConfigBuilder endComponent() {
