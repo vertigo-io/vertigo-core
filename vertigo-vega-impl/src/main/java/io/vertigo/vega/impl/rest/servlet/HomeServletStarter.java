@@ -19,7 +19,7 @@
 package io.vertigo.vega.impl.rest.servlet;
 
 import io.vertigo.boot.xml.XMLAppConfigBuilder;
-import io.vertigo.core.Home.App;
+import io.vertigo.core.App;
 import io.vertigo.core.config.LogConfig;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.plugins.rest.servlet.ServletResourceResolverPlugin;

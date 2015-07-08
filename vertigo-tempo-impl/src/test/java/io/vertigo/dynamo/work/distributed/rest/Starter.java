@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.work.distributed.rest;
 
 import io.vertigo.boot.xml.XMLAppConfigBuilder;
-import io.vertigo.core.Home.App;
+import io.vertigo.core.App;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.lang.Assertion;
 

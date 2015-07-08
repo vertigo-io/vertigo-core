@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.rest;
 
-import io.vertigo.core.Home.App;
+import io.vertigo.core.App;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.impl.rest.filter.JettyMultipartConfig;
 import io.vertigo.vega.plugins.rest.routesregister.sparkjava.VegaSparkApplication;
