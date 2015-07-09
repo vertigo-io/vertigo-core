@@ -78,7 +78,17 @@ public final class ComponentLoader {
 		for (final String id : ids) {
 			if (map.containsKey(id)) {
 				final ComponentConfig componentConfig = map.get(id);
-				registerComponent(componentSpace, componentConfig, aopEngine);
+				//-----
+				// 1.a On crée les plugins (Qui ne doivent pas dépendre du composant)
+				final Map<String, Plugin> plugins = createPlugins(componentSpace, componentConfig.getPluginConfigs());
+				// 1.b On enregistre les plugins
+				componentSpace.registerPlugins(componentConfig.getId(), plugins);
+				// 2.a On crée le composant avec AOP et autres options (elastic)
+				final Object component = createComponentWithOptions(componentSpace, componentConfig, aopEngine);
+				// 2.b On crée l'initializer (Qui ne doit pas dépendre du composant)
+				final Option<ComponentInitializer> initializer = createComponentInitializer(componentSpace, componentConfig);
+				// 2.c. On enregistre le composant avec son initializer
+				componentSpace.registerComponent(componentConfig.getId(), component, initializer);
 			}
 		}
 	}
@@ -111,28 +121,17 @@ public final class ComponentLoader {
 		return findAspects;
 	}
 
-	private void registerComponent(final ComponentSpace componentSpace, final ComponentConfig componentConfig, final AopEngine aopEngine) {
-		// 1. On crée et on enregistre les plugins (Qui ne doivent pas dépendre du composant)
-		final Map<String, Plugin> plugins = createPlugins(componentSpace, componentConfig);
-		componentSpace.registerPlugins(componentConfig.getId(), plugins);
-
-		// 2. On crée l'initializer (Qui ne doit pas dépendre du composant)
-		final Option<ComponentInitializer> initializer = createComponentInitializer(componentSpace, componentConfig);
-
-		// 3. On crée le composant
+	private Object createComponentWithOptions(final ComponentSpace componentSpace, final ComponentConfig componentConfig, final AopEngine aopEngine) {
+		// 2. On crée le composant
 		final Object instance = createComponent(bootConfig, componentSpace, componentConfig);
 
-		//4. AOP, on aopise le composant
+		//3. AOP, on aopise le composant
 		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(componentConfig, componentSpace.getAspects());
-		Object reference;
+		final Object reference;
 		if (!joinPoints.isEmpty()) {
-			reference = aopEngine.create(instance, joinPoints);
-		} else {
-			reference = instance;
+			return aopEngine.create(instance, joinPoints);
 		}
-
-		// 5. On enregistre le manager et son initializer
-		componentSpace.registerComponent(componentConfig.getId(), reference, initializer);
+		return instance;
 	}
 
 	private static final Option<ComponentInitializer> createComponentInitializer(final Container componentContainer, final ComponentConfig componentConfig) {
@@ -147,10 +146,18 @@ public final class ComponentLoader {
 		if (componentConfig.isElastic()) {
 			return bootConfig.getElasticaEngine().get().createProxy(componentConfig.getApiClass().get());
 		}
+		//---
 		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(componentConfig.getParams());
 		final ComponentDualContainer container = new ComponentDualContainer(componentContainer, paramsContainer);
 		//---
 		final Object component = Injector.newInstance(componentConfig.getImplClass(), container);
+		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}'", paramsContainer.getUnusedKeys());
+		//---
+		checkUnusedPlugins(componentConfig, container);
+		return component;
+	}
+
+	private static void checkUnusedPlugins(final ComponentConfig componentConfig, final ComponentDualContainer container) {
 		//--Search for unuseds plugins
 		// We are inspecting all unused keys, and we check if we can find almost one plugin of the component.
 		for (final String key : container.getUnusedKeys()) {
@@ -161,8 +168,6 @@ public final class ComponentLoader {
 			}
 		}
 		//--Search for unuseds params
-		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}'", paramsContainer.getUnusedKeys());
-		return component;
 	}
 
 	private static Plugin createPlugin(final Container componentContainer, final PluginConfig pluginConfig) {
@@ -174,9 +179,13 @@ public final class ComponentLoader {
 		return plugin;
 	}
 
-	private static Map<String, Plugin> createPlugins(final Container componentContainer, final ComponentConfig componentConfig) {
+	/**
+	 * 
+	 * @return Plugins identified by their id
+	 */
+	private static Map<String, Plugin> createPlugins(final Container componentContainer, final List<PluginConfig> pluginConfigs) {
 		final Map<String, Plugin> plugins = new LinkedHashMap<>();
-		for (final PluginConfig pluginConfig : componentConfig.getPluginConfigs()) {
+		for (final PluginConfig pluginConfig : pluginConfigs) {
 			final Plugin plugin = createPlugin(componentContainer, pluginConfig);
 			plugins.put(pluginConfig.getId(), plugin);
 		}
