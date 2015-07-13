@@ -72,15 +72,25 @@ public final class App implements AutoCloseable {
 			//-----2. Load all components (and aspects).
 			componentLoader.injectAllComponents(componentSpace, appConfig.getModuleConfigs());
 			//-----
-			boot.start();
-			componentSpace.start();
-			definitionSpace.start();
+			appStart();
 			//-----
 			state = State.active;
 		} catch (final Exception e) {
 			close();
 			throw new RuntimeException("an error occured when starting", e);
 		}
+	}
+
+	private void appStart() {
+		boot.start();
+		componentSpace.start();
+		definitionSpace.start();
+	}
+
+	private void appStop() {
+		definitionSpace.stop();
+		componentSpace.stop();
+		boot.stop();
 	}
 
 	/** {@inheritDoc} */
@@ -91,11 +101,7 @@ public final class App implements AutoCloseable {
 		state = State.stopping;
 		//-----
 		try {
-			//------
-			definitionSpace.stop();
-			componentSpace.stop();
-			boot.stop();
-			//------
+			appStop();
 		} catch (final Exception e) {
 			LOGGER.error("an error occured when stopping", e);
 			//Quel que soit l'état, on part en échec de l'arrét.
