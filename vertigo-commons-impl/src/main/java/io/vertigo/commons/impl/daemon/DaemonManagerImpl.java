@@ -23,6 +23,7 @@ import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.core.Home;
 import io.vertigo.core.di.injector.Injector;
+import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 
 import javax.inject.Inject;
@@ -32,20 +33,16 @@ import javax.inject.Inject;
  *
  * @author TINGARGIOLA
  */
-public final class DaemonManagerImpl implements DaemonManager {
+public final class DaemonManagerImpl implements DaemonManager, Activeable {
 
-	private final DaemonPlugin daemonPlugin;
+	private final DaemonExecutor daemonExecutor;
 
 	/**
 	 * Construct an instance of DeamonManagerImpl.
-	 *
-	 * @param daemonPlugin Plugin de gestion du deamon.
 	 */
 	@Inject
-	public DaemonManagerImpl(final DaemonPlugin daemonPlugin) {
-		Assertion.checkNotNull(daemonPlugin);
-		// -----
-		this.daemonPlugin = daemonPlugin;
+	public DaemonManagerImpl() {
+		this.daemonExecutor = new DaemonExecutor();
 	}
 
 	/**
@@ -60,7 +57,7 @@ public final class DaemonManagerImpl implements DaemonManager {
 		Assertion.checkNotNull(daemonDefinition);
 		// -----
 		final Daemon daemon = createDaemon(daemonDefinition);
-		daemonPlugin.scheduleDaemon(daemonDefinition.getName(), daemon, daemonDefinition.getPeriodInSeconds());
+		daemonExecutor.scheduleDaemon(daemonDefinition.getName(), daemon, daemonDefinition.getPeriodInSeconds());
 	}
 
 	/**
@@ -77,5 +74,15 @@ public final class DaemonManagerImpl implements DaemonManager {
 		for (final DaemonDefinition daemonDefinition : Home.getDefinitionSpace().getAll(DaemonDefinition.class)) {
 			startDaemon(daemonDefinition);
 		}
+	}
+
+	@Override
+	public void start() {
+		daemonExecutor.start();
+	}
+
+	@Override
+	public void stop() {
+		daemonExecutor.stop();
 	}
 }

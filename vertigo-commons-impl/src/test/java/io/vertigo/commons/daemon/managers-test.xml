@@ -1,8 +1,6 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
 	<module name="vertigo-commons">
-		<component api="DaemonManager" class="io.vertigo.commons.impl.daemon.DaemonManagerImpl" >
-			<plugin class="io.vertigo.commons.plugins.daemon.executor.ExecutorDaemonPlugin" />
-		</component>
+		<component api="DaemonManager" class="io.vertigo.commons.impl.daemon.DaemonManagerImpl" />
 	</module>
 </config>
