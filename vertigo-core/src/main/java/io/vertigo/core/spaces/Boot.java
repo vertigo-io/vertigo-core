@@ -16,10 +16,6 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
 public final class Boot implements Activeable {
-	private final String oldName;
-
-	private static String THREAD_NAME = "BOOT";
-
 	private final BootConfig bootConfig;
 
 	public Boot(final BootConfig bootConfig) {
@@ -30,17 +26,10 @@ public final class Boot implements Activeable {
 		if (bootConfig.getLogConfig().isDefined()) {
 			initLog(bootConfig.getLogConfig().get());
 		}
-		oldName = Thread.currentThread().getName();
-		Thread.currentThread().setName(THREAD_NAME);
-	}
-
-	public static void assertBootPhase() {
-		Assertion.checkArgument(THREAD_NAME.equals(Thread.currentThread().getName()), "This action is only available during boot phase");
 	}
 
 	@Override
 	public void start() {
-		assertBootPhase();
 		startEngines();
 	}
 
@@ -54,11 +43,7 @@ public final class Boot implements Activeable {
 
 	@Override
 	public void stop() {
-		assertBootPhase();
-		//-----
 		stopEngines();
-		//-----
-		Thread.currentThread().setName(oldName);
 	}
 
 	private void stopEngines() {
