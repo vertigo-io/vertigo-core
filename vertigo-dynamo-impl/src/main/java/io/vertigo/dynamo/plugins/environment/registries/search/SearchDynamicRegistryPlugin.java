@@ -35,6 +35,7 @@ import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.lang.MessageText;
+import io.vertigo.lang.Option;
 import io.vertigo.util.ClassUtil;
 
 import java.io.Serializable;
@@ -52,7 +53,7 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 	/** {@inheritDoc} */
 	@Override
-	public void onDefinition(final DynamicDefinition xdefinition) {
+	public Option<Definition> createDefinition(final DynamicDefinition xdefinition) {
 		final Definition definition;
 		if (SearchGrammar.INDEX_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
 			definition = createIndexDefinition(xdefinition);
@@ -63,7 +64,7 @@ public final class SearchDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		} else {
 			throw new IllegalStateException("unknown definition :" + xdefinition);
 		}
-		Home.getDefinitionSpace().put(definition);
+		return Option.some(definition);
 	}
 
 	private static SearchIndexDefinition createIndexDefinition(final DynamicDefinition xsearchObjet) {

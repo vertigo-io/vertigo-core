@@ -18,11 +18,13 @@
  */
 package io.vertigo.dynamo.impl.environment;
 
+import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
 import io.vertigo.dynamo.impl.environment.kernel.meta.Grammar;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,15 +87,15 @@ final class CompositeDynamicRegistry implements DynamicRegistry {
 
 	/** {@inheritDoc} */
 	@Override
-	public void onDefinition(final DynamicDefinition xdefinition) {
+	public Option<Definition> createDefinition(final DynamicDefinition xdefinition) {
 		//Les entités du noyaux ne sont pas à gérer per des managers spécifiques.
 		if (KernelGrammar.GRAMMAR.getEntities().contains(xdefinition.getEntity())) {
-			return;
+			return Option.none();
 		}
 		try {
 			// perf: ifs ordonnés en gros par fréquence sur les projets
 			final DynamicRegistry dynamicRegistry = lookUpDynamicRegistry(xdefinition);
-			dynamicRegistry.onDefinition(xdefinition);
+			return dynamicRegistry.createDefinition(xdefinition);
 		} catch (final Exception e) {
 			//on catch tout (notament les assertions) car c'est ici qu'on indique l'URI de la définition posant problème
 			throw new RuntimeException("Erreur dans le traitement de " + xdefinition.getDefinitionKey().getName(), e);

@@ -57,7 +57,7 @@ public abstract class AbstractDynamicRegistryPlugin implements DynamicRegistryPl
 	/** {@inheritDoc} */
 	@Override
 	public void onNewDefinition(final DynamicDefinition xdefinition, final DynamicDefinitionRepository dynamicModelrepository) {
-		//Par défaut rien .
+		//
 	}
 
 	/**

@@ -18,9 +18,11 @@
  */
 package io.vertigo.dynamo.impl.environment;
 
+import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.dynamo.impl.environment.kernel.meta.Grammar;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
+import io.vertigo.lang.Option;
 
 import java.util.List;
 
@@ -44,7 +46,7 @@ public interface DynamicRegistry {
 	 * Enregistrement d'une définition.
 	 * @param definition Définition
 	 */
-	void onDefinition(DynamicDefinition definition);
+	Option<Definition> createDefinition(DynamicDefinition definition);
 
 	/**
 	 * Ajout d'une définition.

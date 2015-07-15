@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.impl.environment.kernel.impl.model;
 
+import io.vertigo.core.Home;
+import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.dynamo.impl.environment.DynamicRegistry;
 import io.vertigo.dynamo.impl.environment.kernel.meta.Entity;
 import io.vertigo.dynamo.impl.environment.kernel.meta.Grammar;
@@ -25,6 +27,7 @@ import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionBuilder;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -117,7 +120,10 @@ public final class DynamicDefinitionRepository {
 	private void registerAllDefinitions(final List<DynamicDefinition> orderedDefinitionList) {
 		for (final DynamicDefinition xdefinition : orderedDefinitionList) {
 			xdefinition.check();
-			dynamicRegistry.onDefinition(xdefinition);
+			final Option<Definition> definitionOption = dynamicRegistry.createDefinition(xdefinition);
+			if (definitionOption.isDefined()) {
+				Home.getDefinitionSpace().put(definitionOption.get());
+			}
 		}
 	}
 

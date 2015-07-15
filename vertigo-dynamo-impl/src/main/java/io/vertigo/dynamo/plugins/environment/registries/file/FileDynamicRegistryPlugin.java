@@ -18,11 +18,12 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.file;
 
-import io.vertigo.core.Home;
+import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
+import io.vertigo.lang.Option;
 
 /**
  * @author pchretien
@@ -38,12 +39,13 @@ public final class FileDynamicRegistryPlugin extends AbstractDynamicRegistryPlug
 
 	/** {@inheritDoc} */
 	@Override
-	public void onDefinition(final DynamicDefinition xdefinition) {
+	public Option<Definition> createDefinition(final DynamicDefinition xdefinition) {
 		if (FileGrammar.FILE_INFO_DEFINITION_ENTITY.equals(xdefinition.getEntity())) {
 			//Seuls les taches sont gérées.
-			final FileInfoDefinition definition = createFileDefinition(xdefinition);
-			Home.getDefinitionSpace().put(definition);
+			final Definition definition = createFileDefinition(xdefinition);
+			return Option.some(definition);
 		}
+		return Option.none();
 	}
 
 	private static FileInfoDefinition createFileDefinition(final DynamicDefinition xFileDefinition) {

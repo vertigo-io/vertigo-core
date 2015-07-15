@@ -47,6 +47,7 @@ import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinitionKey;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.registries.AbstractDynamicRegistryPlugin;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,7 +91,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 
 	/** {@inheritDoc} */
 	@Override
-	public void onDefinition(final DynamicDefinition xdefinition) {
+	public Option<Definition> createDefinition(final DynamicDefinition xdefinition) {
 		final Entity entity = xdefinition.getEntity();
 		final Definition definition;
 		if (entity.equals(DomainGrammar.DOMAIN_ENTITY)) {
@@ -108,7 +109,7 @@ public final class DomainDynamicRegistryPlugin extends AbstractDynamicRegistryPl
 		} else {
 			throw new IllegalArgumentException("Type de définition non gérée: " + xdefinition.getDefinitionKey().getName());
 		}
-		definitionSpace.put(definition);
+		return Option.some(definition);
 	}
 
 	/**
