@@ -21,6 +21,7 @@ package io.vertigo.core.spaces.component;
 import io.vertigo.core.Home;
 import io.vertigo.core.Logo;
 import io.vertigo.core.aop.Aspect;
+import io.vertigo.core.spaces.Boot;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
@@ -153,6 +154,7 @@ public final class ComponentSpace implements Container, Activeable {
 	 * Enregistrement des plugins .
 	 */
 	void registerPlugins(final String componentId, final Map<String, Plugin> plugins) {
+		Boot.assertBootPhase();
 		Assertion.checkNotNull(componentId);
 		Assertion.checkNotNull(plugins);
 		//-----
@@ -177,6 +179,7 @@ public final class ComponentSpace implements Container, Activeable {
 	 * @param component Gestionnaire
 	 */
 	void registerComponent(final String componentId, final Object component, final Option<ComponentInitializer> componentInitializer) {
+		Boot.assertBootPhase();
 		Assertion.checkNotNull(componentId);
 		Assertion.checkNotNull(component);
 		Assertion.checkNotNull(componentInitializer);

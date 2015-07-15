@@ -18,6 +18,7 @@
  */
 package io.vertigo.core.spaces.definiton;
 
+import io.vertigo.core.spaces.Boot;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
@@ -30,9 +31,7 @@ import java.util.Map;
 
 /**
  * Espace de définitions (non threadSafe).
- * Il est nécessaire d'enregistrer toutes les définitions au démarrage du serveur.
- * Etape 1 : Enregistrer les classes éligibles (register)
- * Etape 2 : Ajouter les objets (put)
+ * Il est nécessaire d'enregistrer toutes les définitions au démarrage du serveur durant la phase de boot.
  *
  * @author pchretien
  */
@@ -56,10 +55,11 @@ public final class DefinitionSpace implements Activeable {
 	}
 
 	/**
-	 * Enregistrement d'un nouvel object.
-	 * @param definition Objet à enregistrer
+	 * Register a new definition ; only available during the boot Phase.
+	 * @param definition Definition to register
 	 */
 	public void put(final Definition definition) {
+		Boot.assertBootPhase();
 		Assertion.checkNotNull(definition, "L'objet ne peut pas pas être null !");
 		//-----
 		if (!definitions.containsKey(definition.getClass())) {
