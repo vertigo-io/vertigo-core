@@ -33,6 +33,7 @@ import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.dynamo.collections.CollectionsManager;
+import io.vertigo.dynamo.environment.EnvironmentManager;
 import io.vertigo.dynamo.export.ExportManager;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.impl.collections.CollectionsManagerImpl;
@@ -87,16 +88,24 @@ public final class MyApp {
 	public static AppConfig config() {
 		// @formatter:off
 		return new AppConfigBuilder()
-			.beginBoot()
-				.silently()
-			.endBoot()
-			.beginModule("commons")
+			.beginBootModule()
 				.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
 					.addParam("locales", "fr")
 				.endComponent()
 				.beginComponent(ResourceManager.class, ResourceManagerImpl.class)
 					.beginPlugin( ClassPathResourceResolverPlugin.class).endPlugin()
 				.endComponent()
+				.beginComponent(EnvironmentManager.class, EnvironmentManagerImpl.class)
+					.beginPlugin(SecurityResourceLoaderPlugin.class).endPlugin()
+					.beginPlugin(AnnotationLoaderPlugin.class).endPlugin()
+					.beginPlugin(KprLoaderPlugin.class).endPlugin()
+					.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
+				.endComponent()				
+			.endModule()
+			.beginBoot()	
+				.silently()
+			.endBoot()
+			.beginModule("persona")
 				.beginComponent(VSecurityManager.class, VSecurityManagerImpl.class)
 					.addParam("userSessionClassName", TestUserSession.class.getName())
 				.endComponent()
@@ -119,13 +128,6 @@ public final class MyApp {
 					.beginPlugin( MemoryCachePlugin.class).endPlugin()
 				.endComponent()
 				.beginComponent(TaskManager.class, TaskManagerImpl.class).endComponent()
-
-				.beginComponent(EnvironmentManagerImpl.class)
-				.beginPlugin(SecurityResourceLoaderPlugin.class).endPlugin()
-					.beginPlugin(AnnotationLoaderPlugin.class).endPlugin()
-					.beginPlugin(KprLoaderPlugin.class).endPlugin()
-					.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
-				.endComponent()
 			.endModule()
 			.beginModule("dynamo2").withNoAPI().withInheritance(Object.class)
 			.beginComponent(ExportManager.class, ExportManagerImpl.class)
@@ -141,7 +143,6 @@ public final class MyApp {
 				.beginComponent(WsContactsRestServices.class).endComponent()
 				.beginComponent(WsRestServices.class).endComponent()
 				.beginComponent(WsFileDownload.class).endComponent()
-
 			.endModule()
 			.beginModule("restCore").withNoAPI().withInheritance(Object.class)
 				.beginComponent(JsonEngine.class, GoogleJsonEngine.class).endComponent()
