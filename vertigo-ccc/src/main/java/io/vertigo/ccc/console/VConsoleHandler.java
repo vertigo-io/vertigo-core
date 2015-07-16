@@ -40,7 +40,7 @@ import com.google.gson.JsonParser;
  */
 public final class VConsoleHandler implements Activeable {
 	private static String DEFAULT_HOST = "localhost";
-	private static int DEFAULT_PORT = 4400;
+	private static int DEFAULT_PORT = 4444;
 	private final Map<SocketAddress, VClient> clients = new LinkedHashMap<>();
 
 	@Override
@@ -87,7 +87,7 @@ public final class VConsoleHandler implements Activeable {
 			}
 		}
 		if (clients.isEmpty()) {
-			return VResponse.createResponseWithError("you are not connected");
+			return VResponse.createResponseWithError("you are not connected, try $help");
 		}
 		//
 		final JsonParser parser = new JsonParser();
