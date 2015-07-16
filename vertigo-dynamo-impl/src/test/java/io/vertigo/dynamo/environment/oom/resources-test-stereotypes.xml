@@ -1,7 +1,9 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
 	<module name="myApp">
-		<resource type="oom" path="io/vertigo/dynamo/environment/oom/data/Stereotypes.oom" />
-		<resource type="kpr" path="io/vertigo/dynamo/environment/oom/data/domain.kpr" />
+		<definitions>
+			<resource type="oom" path="io/vertigo/dynamo/environment/oom/data/Stereotypes.oom" />
+			<resource type="kpr" path="io/vertigo/dynamo/environment/oom/data/domain.kpr" />
+		</definitions>
 	</module>
 </config>

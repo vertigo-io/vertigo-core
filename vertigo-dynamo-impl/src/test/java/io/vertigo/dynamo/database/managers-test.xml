@@ -29,7 +29,9 @@
 	</module>
 
 	<module name="myApp">
-		<resource type="kpr" path="io/vertigo/dynamo/database/data/execution.kpr" />
-		<resource type="classes" path="io.vertigo.dynamo.database.data.DtDefinitions" />
+		<definitions>
+			<resource type="kpr" path="io/vertigo/dynamo/database/data/execution.kpr" />
+			<resource type="classes" path="io.vertigo.dynamo.database.data.DtDefinitions" />
+		</definitions>
 	</module>
 </config>

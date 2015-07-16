@@ -27,9 +27,10 @@
 	</module>
 	<module name="vertigo-search">
 	<!-- si les defs sont dans un autre module le mapping de l'index n'est pas correct -->
-		<resource type="kpr" path="io/vertigo/dynamo/search/ksp/search.kpr" />
-		<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
-		
+		<definitions>	
+			<resource type="kpr" path="io/vertigo/dynamo/search/ksp/search.kpr" />
+			<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
+		</definitions>
 		<!-- doit être après le module dynamo, car il faut charger les définitions d'index avant le start du SearchManagerImpl qui les utilisent pour envoyer la conf a ElasticSearch -->
 		<component api="SearchManager" class="io.vertigo.dynamo.impl.search.SearchManagerImpl">
 			<!-- <plugin class="io.vertigo.dynamo.plugins.search.solr.commonshttp.CommonsHttpSolrSearchServicesPlugin" > <param name="solr.url" value="http://localhost:8983/solr" /> <param name="cores" value="IDX_ARTICLE,IDX_VOITURE,IDX_DEMANDE,IDX_DOCUMENT" /> </plugin> -->

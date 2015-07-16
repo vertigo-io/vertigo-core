@@ -16,6 +16,8 @@
 	</module>
 
 	<module name="myApp">
-		<resource type="kpr" path="io/vertigo/dynamo/file/data/execution.kpr" />
+		<definitions>
+			<resource type="kpr" path="io/vertigo/dynamo/file/data/execution.kpr" />
+		</definitions>
 	</module>
 </config>

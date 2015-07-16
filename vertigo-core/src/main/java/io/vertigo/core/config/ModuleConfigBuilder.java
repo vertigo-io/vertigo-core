@@ -23,6 +23,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.Option;
+import io.vertigo.util.ClassUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,9 +40,9 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	private final String myName;
 	private final List<ComponentConfigBuilder> myComponentConfigBuilders = new ArrayList<>();
 	private final List<AspectConfig> myAspectConfigs = new ArrayList<>();
-	private final List<ResourceConfig> myResourceConfigs = new ArrayList<>();
+	private final List<DefinitionResourceConfig> myDefinitionResourceConfigs = new ArrayList<>();
+	private final List<DefinitionProviderConfig> myDefinitionProviderConfigs = new ArrayList<>();
 
-	//---Rules
 	private boolean myHasApi = true; //par défaut on a une api.
 	private Class<?> mySuperClass = Component.class; //Par défaut la super Classe est Manager
 
@@ -89,15 +90,27 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
+	 * Ajout de définitions définie par un iterable.
+	 */
+	public ModuleConfigBuilder addDefinitionProvider(final String definitionProviderClassName) {
+		Assertion.checkArgument(!ended, "this builder is ended");
+		Assertion.checkArgNotEmpty(definitionProviderClassName);
+		//-----
+		final Class<? extends DefinitionProvider> definitionProviderClass = ClassUtil.classForName(definitionProviderClassName, DefinitionProvider.class);
+		myDefinitionProviderConfigs.add(new DefinitionProviderConfig(definitionProviderClass));
+		return this;
+	}
+
+	/**
 	 * Ajout de resources
 	 * @param resourceType Type of resource
 	 */
-	public ModuleConfigBuilder addResource(final String resourceType, final String resourcePath) {
+	public ModuleConfigBuilder addDefinitionResource(final String resourceType, final String resourcePath) {
 		Assertion.checkArgument(!ended, "this builder is ended");
 		Assertion.checkArgNotEmpty(resourceType);
 		Assertion.checkNotNull(resourcePath);
 		//-----
-		myResourceConfigs.add(new ResourceConfig(resourceType, resourcePath));
+		myDefinitionResourceConfigs.add(new DefinitionResourceConfig(resourceType, resourcePath));
 		return this;
 	}
 
@@ -179,7 +192,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		for (final ComponentConfigBuilder componentConfigBuilder : myComponentConfigBuilders) {
 			componentConfig.add(componentConfigBuilder.build());
 		}
-		final ModuleConfig moduleConfig = new ModuleConfig(myName, myResourceConfigs, componentConfig, myAspectConfigs, moduleRules);
+		final ModuleConfig moduleConfig = new ModuleConfig(myName, myDefinitionProviderConfigs, myDefinitionResourceConfigs, componentConfig, myAspectConfigs, moduleRules);
 		moduleConfig.checkRules();
 		return moduleConfig;
 	}

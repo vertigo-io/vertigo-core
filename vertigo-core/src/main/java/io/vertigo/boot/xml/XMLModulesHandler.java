@@ -53,8 +53,15 @@ final class XMLModulesHandler extends DefaultHandler {
 		config,
 		boot,
 		module,
+		//---
+		definitions,
 		resource,
-		component, plugin, param, aspect
+		provider,
+		//---
+		component,
+		plugin,
+		param,
+		aspect
 	}
 
 	private TagName current;
@@ -77,6 +84,8 @@ final class XMLModulesHandler extends DefaultHandler {
 				break;
 			case aspect: //non géré
 			case param: //non géré
+			case definitions: //non géré
+			case provider: //non géré
 			case resource: //non géré
 			case config: //non géré
 			default:
@@ -125,10 +134,14 @@ final class XMLModulesHandler extends DefaultHandler {
 				final Class<? extends Plugin> pluginImplClass = ClassUtil.classForName(attrs.getValue("class"), Plugin.class);
 				pluginConfigBuilder = componentConfigBuilder.beginPlugin(pluginImplClass);
 				break;
+			case provider:
+				final String definitionProviderClassName = attrs.getValue("className");
+				moduleConfigBuilder.addDefinitionProvider(definitionProviderClassName);
+				break;
 			case resource:
 				final String resourceType = attrs.getValue("type");
 				final String resourcePath = attrs.getValue("path");
-				moduleConfigBuilder.addResource(resourceType, evalParamValue(resourcePath));
+				moduleConfigBuilder.addDefinitionResource(resourceType, evalParamValue(resourcePath));
 				break;
 			case param:
 				final String paramName = attrs.getValue("name");
@@ -144,6 +157,7 @@ final class XMLModulesHandler extends DefaultHandler {
 				final Class<? extends Aspect> aspectImplClass = ClassUtil.classForName(aspectImplClassStr, Aspect.class);
 				moduleConfigBuilder.addAspect(aspectImplClass);
 				break;
+			case definitions: //non géré
 			case config: //non géré
 			default:
 		}

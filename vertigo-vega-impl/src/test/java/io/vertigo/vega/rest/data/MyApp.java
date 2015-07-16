@@ -169,8 +169,8 @@ public final class MyApp {
 				.endComponent()
 			.endModule()
 			.beginModule("myApp")
-				.addResource("classes", DtDefinitions.class.getName())
-				.addResource("kpr", "io/vertigo/vega/rest/data/execution.kpr")
+				.addDefinitionResource("classes", DtDefinitions.class.getName())
+				.addDefinitionResource("kpr", "io/vertigo/vega/rest/data/execution.kpr")
 			.endModule()
 		.build();
 		// @formatter:on

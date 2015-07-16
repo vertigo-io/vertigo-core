@@ -16,7 +16,9 @@
 	</boot >
 
 	<module name="myApp">
-		<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
-		<resource type="classes" path="io.vertigo.dynamock.domain.DtDefinitions" />
+		<definitions>
+			<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
+			<resource type="classes" path="io.vertigo.dynamock.domain.DtDefinitions" />
+		</definitions>
 	</module>
 </config>

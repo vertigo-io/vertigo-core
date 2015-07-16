@@ -15,7 +15,9 @@
 	</module>
 
 	<module name="myApp">
-		<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
-		<resource type="kpr" path="io/vertigo/dynamo/collections/facet/ksp/facet.kpr" />
+		<definitions>
+			<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
+			<resource type="kpr" path="io/vertigo/dynamo/collections/facet/ksp/facet.kpr" />
+		</definitions>
 	</module>
 </config>

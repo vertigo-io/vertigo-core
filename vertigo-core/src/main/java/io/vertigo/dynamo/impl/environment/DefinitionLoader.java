@@ -18,11 +18,16 @@
  */
 package io.vertigo.dynamo.impl.environment;
 
+import io.vertigo.core.Home;
+import io.vertigo.core.config.DefinitionProvider;
+import io.vertigo.core.config.DefinitionProviderConfig;
+import io.vertigo.core.config.DefinitionResourceConfig;
 import io.vertigo.core.config.ModuleConfig;
-import io.vertigo.core.config.ResourceConfig;
+import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.ClassUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -59,9 +64,9 @@ public final class DefinitionLoader {
 	}
 
 	/**
-	 * @param resourceConfigs List of resources (must be in a type managed by this loader)
+	 * @param definitionResourceConfigs List of resources (must be in a type managed by this loader)
 	 */
-	private void parse(final List<ResourceConfig> resourceConfigs) {
+	private void parse(final List<DefinitionResourceConfig> definitionResourceConfigs) {
 		final CompositeDynamicRegistry handler = new CompositeDynamicRegistry(dynamicRegistryPlugins);
 
 		//Création du repositoy des instances le la grammaire (=> model)
@@ -73,10 +78,10 @@ public final class DefinitionLoader {
 				dynamicModelRepository.addDefinition(dynamicDefinition);
 			}
 		}
-		for (final ResourceConfig resourceConfig : resourceConfigs) {
-			final LoaderPlugin loaderPlugin = loaderPlugins.get(resourceConfig.getType());
-			Assertion.checkNotNull(loaderPlugin, "This resource {0} can not be parse by this loader", resourceConfig);
-			loaderPlugin.load(resourceConfig.getPath(), dynamicModelRepository);
+		for (final DefinitionResourceConfig definitionResourceConfig : definitionResourceConfigs) {
+			final LoaderPlugin loaderPlugin = loaderPlugins.get(definitionResourceConfig.getType());
+			Assertion.checkNotNull(loaderPlugin, "This resource {0} can not be parse by this loader", definitionResourceConfig);
+			loaderPlugin.load(definitionResourceConfig.getPath(), dynamicModelRepository);
 		}
 		dynamicModelRepository.solve();
 	}
@@ -99,10 +104,16 @@ public final class DefinitionLoader {
 	private void injectDefinitions(final ModuleConfig moduleConfig) {
 		Assertion.checkNotNull(moduleConfig);
 		//-----
-		final List<ResourceConfig> resourceConfigs = moduleConfig.getResourceConfigs();
-		if (!resourceConfigs.isEmpty()) {
-			this.parse(resourceConfigs);
+		final List<DefinitionResourceConfig> definitionResourceConfigs = moduleConfig.getDefinitionResourceConfigs();
+		if (!definitionResourceConfigs.isEmpty()) {
+			this.parse(definitionResourceConfigs);
+		}
+		//-----
+		for (final DefinitionProviderConfig definitionProviderConfig : moduleConfig.getDefinitionProviderConfigs()) {
+			final DefinitionProvider definitionProvider = ClassUtil.newInstance(definitionProviderConfig.getDefinitionProviderClass());
+			for (final Definition definition : definitionProvider) {
+				Home.getDefinitionSpace().put(definition);
+			}
 		}
 	}
-
 }

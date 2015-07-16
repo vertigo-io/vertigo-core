@@ -29,11 +29,11 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public final class ResourceConfig {
+public final class DefinitionResourceConfig {
 	private final String type;
 	private final String path;
 
-	ResourceConfig(final String type, final String path) {
+	DefinitionResourceConfig(final String type, final String path) {
 		Assertion.checkArgNotEmpty(type);
 		Assertion.checkArgNotEmpty(path);
 		//-----
