@@ -18,6 +18,7 @@
 	<module name="vertigo-commons">
 		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
 		<component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
+		<component api="EventManager" class="io.vertigo.commons.impl.event.EventManagerImpl"/>
 		<component api="CacheManager" class="io.vertigo.commons.impl.cache.CacheManagerImpl">
 			<plugin class="io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin" />
 		</component>
@@ -35,7 +36,6 @@
 				<param name="sequencePrefix" value="SEQ_" />
 			</plugin>
 		</component>
-		<component api="EventManager" class="io.vertigo.commons.impl.event.EventManagerImpl"/>
 		<component api="ExportManager" class="io.vertigo.dynamo.impl.export.ExportManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.export.xls.XLSExporterPlugin" />
 			<!-- plugin class="io.vertigo.dynamo.plugins.export.ods.ODSExporterPlugin" / -->
