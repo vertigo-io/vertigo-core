@@ -90,7 +90,7 @@ public final class DefinitionLoader {
 		}
 		for (final DefinitionResourceConfig definitionResourceConfig : definitionResourceConfigs) {
 			final LoaderPlugin loaderPlugin = loaderPlugins.get(definitionResourceConfig.getType());
-			Assertion.checkNotNull(loaderPlugin, "This resource {0} can not be parse by this loader", definitionResourceConfig);
+			Assertion.checkNotNull(loaderPlugin, "This resource {0} can not be parse by these loaders : {1}", definitionResourceConfig, loaderPlugins.keySet());
 			loaderPlugin.load(definitionResourceConfig.getPath(), dynamicModelRepository);
 		}
 		dynamicModelRepository.solve();
