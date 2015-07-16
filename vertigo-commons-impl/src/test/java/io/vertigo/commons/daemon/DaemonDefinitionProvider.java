@@ -12,7 +12,7 @@ public final class DaemonDefinitionProvider implements DefinitionProvider {
 	@Override
 	public Iterator<Definition> iterator() {
 		return new ListBuilder<Definition>()
-				.add(new DaemonDefinition("DMN_SIMPLE", SimpleDaemon.class, 3))
+				.add(new DaemonDefinition("DMN_SIMPLE", SimpleDaemon.class, 2))
 				.build()
 				.iterator();
 	}

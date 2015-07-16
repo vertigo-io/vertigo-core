@@ -21,11 +21,14 @@ package io.vertigo.commons.impl.daemon;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.commons.daemon.DaemonStat;
 import io.vertigo.core.AppListener;
 import io.vertigo.core.Home;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -53,6 +56,11 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 		});
 	}
 
+	@Override
+	public List<DaemonStat> getSats() {
+		return daemonExecutor.getSats();
+	}
+
 	/**
 	 * Démarre un démon.
 	 * Celui-ci aura été préalablement enregistré.
@@ -65,7 +73,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 		Assertion.checkNotNull(daemonDefinition);
 		// -----
 		final Daemon daemon = createDaemon(daemonDefinition);
-		daemonExecutor.scheduleDaemon(daemonDefinition.getName(), daemon, daemonDefinition.getPeriodInSeconds());
+		daemonExecutor.scheduleDaemon(daemonDefinition, daemon);
 	}
 
 	/**

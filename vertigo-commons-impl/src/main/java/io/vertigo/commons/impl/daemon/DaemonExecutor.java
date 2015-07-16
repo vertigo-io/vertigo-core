@@ -1,9 +1,14 @@
 package io.vertigo.commons.impl.daemon;
 
 import io.vertigo.commons.daemon.Daemon;
+import io.vertigo.commons.daemon.DaemonDefinition;
+import io.vertigo.commons.daemon.DaemonStat;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.ListBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -18,21 +23,30 @@ import org.apache.log4j.Logger;
 final class DaemonExecutor implements Activeable {
 	private boolean isActive;
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
+	private final List<MyTimerTask> myTimerTasks = new ArrayList<>();
 
 	/**
-	 * Enregistre un démon. Il sera lancé après le temp delay (en milliseconde) et sera réexécuté périodiquement toute
-	 * les period (en milliseconde).
-	 *
-	 * @param daemonName Nom du démon (DMN_XXX)
-	 * @param daemon Le démon à lancer.
-	 * @param periodInSeconds La période d'exécution du démon.
-	 */
-
-	void scheduleDaemon(final String daemonName, final Daemon daemon, final long periodInSeconds) {
-		Assertion.checkNotNull(daemon);
-		Assertion.checkState(isActive, "Le manager n'est pas actif.");
+	* Enregistre un démon. 
+	* Il sera lancé après le temp delay (en milliseconde) et sera réexécuté périodiquement toutes les period (en milliseconde).
+	*
+	* @param daemonDefinition Daemono's definition (DMN_XXX)
+	* @param daemon Daemon to schedule.
+	*/
+	void scheduleDaemon(final DaemonDefinition daemonDefinition, final Daemon daemon) {
+		Assertion.checkNotNull(daemonDefinition);
+		Assertion.checkState(isActive, "Manager must be active to schedule a daemon");
 		// -----
-		scheduler.scheduleWithFixedDelay(new MyTimerTask(daemonName, daemon), 0, periodInSeconds, TimeUnit.SECONDS);
+		MyTimerTask timerTask = new MyTimerTask(daemonDefinition, daemon);
+		myTimerTasks.add(timerTask);
+		scheduler.scheduleWithFixedDelay(timerTask, daemonDefinition.getPeriodInSeconds(), daemonDefinition.getPeriodInSeconds(), TimeUnit.SECONDS);
+	}
+
+	List<DaemonStat> getSats() {
+		ListBuilder<DaemonStat> listBuilder = new ListBuilder<>();
+		for (MyTimerTask timerTask : myTimerTasks) {
+			listBuilder.add(timerTask.getStat());
+		}
+		return listBuilder.unmodifiable().build();
 	}
 
 	/** {@inheritDoc} */
@@ -52,26 +66,55 @@ final class DaemonExecutor implements Activeable {
 
 		private static final Logger LOG = Logger.getLogger(MyTimerTask.class);
 		private final Daemon daemon;
-		private final String daemonName;
+		private final DaemonDefinition daemonDefinition;
+		//-----
+		private long successes;
+		private long failures;
+		private DaemonStat.Status status = DaemonStat.Status.pending;
 
-		MyTimerTask(final String daemonName, final Daemon daemon) {
-			Assertion.checkArgNotEmpty(daemonName);
+		MyTimerTask(final DaemonDefinition daemonDefinition, final Daemon daemon) {
+			Assertion.checkNotNull(daemonDefinition);
 			Assertion.checkNotNull(daemon);
 			// -----
 			this.daemon = daemon;
-			this.daemonName = daemonName;
+			this.daemonDefinition = daemonDefinition;
 		}
 
 		/** {@inheritDoc} */
 		@Override
 		public void run() {
 			try {//try catch needed to ensure execution aren't suppressed
-				LOG.info("Start daemon: " + daemonName);
+				onStart();
 				daemon.run();
-				LOG.info("Executio succeeded on daemon: " + daemonName);
+				onSuccess();
 			} catch (final Exception e) {
-				LOG.error("Daemon :  an error has occured during the execution of the daemon: " + daemonName, e);
+				onFailure(e);
 			}
+		}
+
+		//Les synchronized sont placés de façon à garantir l'intégrité des données
+		//On effectue une copie/snapshot des stats de façon à ne pas perturber la suite du fonctionnement.
+
+		private synchronized DaemonStat getStat() {
+			//On copie les données 
+			return new DaemonStatImpl(daemonDefinition, successes, failures, status);
+		}
+
+		private synchronized void onStart() {
+			status = DaemonStat.Status.running;
+			LOG.info("Start daemon: " + daemonDefinition.getName());
+		}
+
+		private synchronized void onFailure(Exception e) {
+			status = DaemonStat.Status.pending;
+			failures++;
+			LOG.error("Daemon :  an error has occured during the execution of the daemon: " + daemonDefinition.getName(), e);
+		}
+
+		private synchronized void onSuccess() {
+			status = DaemonStat.Status.pending;
+			successes++;
+			LOG.info("Executio succeeded on daemon: " + daemonDefinition.getName());
 		}
 	}
 }
