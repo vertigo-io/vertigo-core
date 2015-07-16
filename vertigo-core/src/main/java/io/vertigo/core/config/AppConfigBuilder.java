@@ -36,7 +36,7 @@ public final class AppConfigBuilder implements Builder<AppConfig> {
 	//There is exactly one BootConfig(Builder) per AppConfig(Builer).  
 
 	public ModuleConfigBuilder beginBootModule() {
-		return myBootConfigBuilder.beginBootModule();
+		return myBootConfigBuilder.beginBootModule().withNoAPI();
 	}
 
 	public BootConfigBuilder beginBoot() {
