@@ -11,6 +11,9 @@ import io.vertigo.dynamo.impl.environment.DefinitionLoader;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 public final class App implements AutoCloseable {
@@ -37,6 +40,9 @@ public final class App implements AutoCloseable {
 	private final ComponentSpace componentSpace;
 	private final ConfigSpace configSpace;
 
+	//à remplacer par event ??
+	private final List<AppListener> appListeners = new ArrayList<>();
+
 	/**
 	 * Constructor.
 	 * @param appConfig Application configuration
@@ -58,6 +64,7 @@ public final class App implements AutoCloseable {
 			definitionSpace = new DefinitionSpace();
 			componentSpace = new ComponentSpace(silently);
 
+			//A faire créer par Boot : stratégie de chargement des composants à partir de ...
 			final ComponentLoader componentLoader = new ComponentLoader(appConfig.getBootConfig());
 			componentLoader.injectBootComponents(componentSpace);
 
@@ -73,6 +80,7 @@ public final class App implements AutoCloseable {
 			componentLoader.injectAllComponents(componentSpace, appConfig.getModuleConfigs());
 			//-----
 			appStart();
+			appPostStart();
 			//-----
 			state = State.active;
 		} catch (final Exception e) {
@@ -81,10 +89,24 @@ public final class App implements AutoCloseable {
 		}
 	}
 
+	public void registerAppListener(final AppListener appListener) {
+		Assertion.checkArgument(State.starting.equals(state), "Applisteners can't be registered at runtime");
+		Assertion.checkNotNull(appListener);
+		//-----
+		appListeners.add(appListener);
+	}
+
+	private void appPostStart() {
+		for (final AppListener appListener : appListeners) {
+			appListener.onPostStart();
+		}
+	}
+
 	private void appStart() {
 		boot.start();
 		componentSpace.start();
 		definitionSpace.start();
+		Thread.currentThread().setName("MAIN");
 	}
 
 	private void appStop() {
