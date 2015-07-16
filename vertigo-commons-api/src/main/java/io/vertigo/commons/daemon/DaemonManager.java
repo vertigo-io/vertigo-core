@@ -27,9 +27,5 @@ import io.vertigo.lang.Component;
  * @author tingargiola
  */
 public interface DaemonManager extends Component {
-
-	/**
-	 * Démarre l'ensemble des démons préalablement enregistré dans le spaceDefinition.
-	 */
-	void startAllDaemons();
+	//
 }

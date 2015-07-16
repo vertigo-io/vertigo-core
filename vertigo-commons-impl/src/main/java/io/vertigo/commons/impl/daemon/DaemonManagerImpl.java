@@ -21,6 +21,7 @@ package io.vertigo.commons.impl.daemon;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.core.AppListener;
 import io.vertigo.core.Home;
 import io.vertigo.core.di.injector.Injector;
 import io.vertigo.lang.Activeable;
@@ -34,7 +35,6 @@ import javax.inject.Inject;
  * @author TINGARGIOLA
  */
 public final class DaemonManagerImpl implements DaemonManager, Activeable {
-
 	private final DaemonExecutor daemonExecutor;
 
 	/**
@@ -43,6 +43,14 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	@Inject
 	public DaemonManagerImpl() {
 		this.daemonExecutor = new DaemonExecutor();
+
+		Home.getApp().registerAppListener(new AppListener() {
+
+			@Override
+			public void onPostStart() {
+				startAllDaemons();
+			}
+		});
 	}
 
 	/**
@@ -68,9 +76,10 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 		return Injector.newInstance(daemonDefinition.getDaemonClass(), Home.getComponentSpace());
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public void startAllDaemons() {
+	/**
+	 * Démarre l'ensemble des démons préalablement enregistré dans le spaceDefinition.
+	 */
+	private void startAllDaemons() {
 		for (final DaemonDefinition daemonDefinition : Home.getDefinitionSpace().getAll(DaemonDefinition.class)) {
 			startDaemon(daemonDefinition);
 		}
