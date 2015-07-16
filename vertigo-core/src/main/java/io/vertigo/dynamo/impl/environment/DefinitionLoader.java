@@ -29,6 +29,7 @@ import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,8 +47,16 @@ import java.util.Map;
  * @author pchretien
  */
 public final class DefinitionLoader {
-	private final Map<String, LoaderPlugin> loaderPlugins = new HashMap<>();
+	private final Map<String, LoaderPlugin> loaderPlugins;
 	private final List<DynamicRegistryPlugin> dynamicRegistryPlugins;
+
+	/**
+	 * Constructeur.
+	 */
+	public DefinitionLoader() {
+		loaderPlugins = Collections.emptyMap();
+		dynamicRegistryPlugins = Collections.emptyList();
+	}
 
 	/**
 	 * Constructeur.
@@ -58,6 +67,7 @@ public final class DefinitionLoader {
 		//-----
 		this.dynamicRegistryPlugins = dynamicRegistryPlugins;
 		//On enregistre les loaders
+		this.loaderPlugins = new HashMap<>();
 		for (final LoaderPlugin loaderPlugin : loaderPlugins) {
 			this.loaderPlugins.put(loaderPlugin.getType(), loaderPlugin);
 		}

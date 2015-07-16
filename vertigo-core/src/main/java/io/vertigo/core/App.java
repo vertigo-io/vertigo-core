@@ -1,7 +1,6 @@
 package io.vertigo.core;
 
 import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.spaces.Boot;
 import io.vertigo.core.spaces.component.ComponentLoader;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.core.spaces.config.ConfigSpace;
@@ -65,17 +64,13 @@ public final class App implements AutoCloseable {
 			componentSpace = new ComponentSpace(silently);
 
 			//A faire créer par Boot : stratégie de chargement des composants à partir de ...
-			final ComponentLoader componentLoader = new ComponentLoader(appConfig.getBootConfig());
+			final ComponentLoader componentLoader = createComponentLoader(appConfig);
 			componentLoader.injectBootComponents(componentSpace);
 
 			//-----1. Load all definitions
-			final String EnvironmentManagerId = StringUtil.first2LowerCase(EnvironmentManager.class.getSimpleName());
-			if (componentSpace.contains(EnvironmentManagerId)) {
-				final EnvironmentManager environmentManager = componentSpace.resolve(EnvironmentManager.class);
-				final DefinitionLoader definitionLoader = environmentManager.createDefinitionLoader();
-				//-----
-				definitionLoader.injectDefinitions(appConfig.getModuleConfigs());
-			}
+			final DefinitionLoader definitionLoader = createDefinitionLoader();
+
+			definitionLoader.injectDefinitions(appConfig.getModuleConfigs());
 			//-----2. Load all components (and aspects).
 			componentLoader.injectAllComponents(componentSpace, appConfig.getModuleConfigs());
 			//-----
@@ -87,6 +82,21 @@ public final class App implements AutoCloseable {
 			close();
 			throw new RuntimeException("an error occured when starting", e);
 		}
+	}
+
+	private DefinitionLoader createDefinitionLoader() {
+		final String EnvironmentManagerId = StringUtil.first2LowerCase(EnvironmentManager.class.getSimpleName());
+		if (componentSpace.contains(EnvironmentManagerId)) {
+			final EnvironmentManager environmentManager = componentSpace.resolve(EnvironmentManager.class);
+			return environmentManager.createDefinitionLoader();
+		}
+		return new DefinitionLoader();
+	}
+
+	private ComponentLoader createComponentLoader(final AppConfig appConfig) {
+		final ComponentLoader componentLoader;
+		componentLoader = new ComponentLoader(appConfig.getBootConfig());
+		return componentLoader;
 	}
 
 	public void registerAppListener(final AppListener appListener) {

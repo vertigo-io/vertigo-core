@@ -1,6 +1,5 @@
-package io.vertigo.core.spaces;
+package io.vertigo.core;
 
-import io.vertigo.core.Home;
 import io.vertigo.core.config.BootConfig;
 import io.vertigo.core.config.LogConfig;
 import io.vertigo.lang.Activeable;
@@ -15,10 +14,13 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
-public final class Boot implements Activeable {
+/**
+ * @author pchretien
+ */
+final class Boot implements Activeable {
 	private final BootConfig bootConfig;
 
-	public Boot(final BootConfig bootConfig) {
+	Boot(final BootConfig bootConfig) {
 		Assertion.checkNotNull(bootConfig);
 		//-----
 		this.bootConfig = bootConfig;
@@ -75,4 +77,5 @@ public final class Boot implements Activeable {
 		}
 		Logger.getRootLogger().info("Log4J configuration chargée (fichier) : " + log4jFileName);
 	}
+
 }
