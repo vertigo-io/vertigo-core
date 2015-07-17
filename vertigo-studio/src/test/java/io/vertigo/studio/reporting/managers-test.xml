@@ -1,13 +1,20 @@
 <?xml version = '1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<module name="vertigo">
+	<boot>
 		<component api="LocaleManager" class="io.vertigo.core.impl.locale.LocaleManagerImpl">
 			<param name="locales" value="fr_FR" />
 		</component>
 		<component api="ResourceManager" class="io.vertigo.core.impl.resource.ResourceManagerImpl">
 			<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
 		</component>
-	</module>
+		<component api="EnvironmentManager" class="io.vertigo.core.impl.environment.EnvironmentManagerImpl">
+			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
+		</component>
+	</boot>
 
 	<module name="vertigo-commons">
 		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
@@ -39,13 +46,6 @@
 				<param name="jdbcUrl" value="jdbc:hsqldb:mem:database" />
 			</plugin>
 		</component>
-		<component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
-			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
-		</component>
 	</module>
 
 	<module name="vertigo-studio">
@@ -57,7 +57,9 @@
 	</module>
 
 	<module name="myApp">
-		<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
-		<resource type="classes" path="io.vertigo.dynamock.domain.DtDefinitions" />
+		<definitions>
+			<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
+			<resource type="classes" path="io.vertigo.dynamock.domain.DtDefinitions" />
+		</definitions>
 	</module>
 </config>

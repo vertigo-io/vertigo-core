@@ -1,25 +1,24 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<module name="vertigo">
+	<boot>
 		<component api="LocaleManager" class="io.vertigo.core.impl.locale.LocaleManagerImpl">
 			<param name="locales" value="fr_FR" />
 		</component>
-	</module>
-
-	<module name="vertigo-commons">
 		<component api="ResourceManager" class="io.vertigo.core.impl.resource.ResourceManagerImpl">
 			<plugin class="io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin" />
 		</component>
-		<component api="ScriptManager" class="io.vertigo.commons.impl.script.ScriptManagerImpl">
-			<plugin class="io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin" />
-		</component>
-		<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
-
-		<component api="EnvironmentManager" class="io.vertigo.dynamo.impl.environment.EnvironmentManagerImpl">
+		<component api="EnvironmentManager" class="io.vertigo.core.impl.environment.EnvironmentManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin" />
 			<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
 			<plugin class="io.vertigo.quarto.plugins.publisher.environment.registries.PublisherDynamicRegistryPlugin" />
 		</component>
+	</boot>
+
+	<module name="vertigo-commons">
+		<component api="ScriptManager" class="io.vertigo.commons.impl.script.ScriptManagerImpl">
+			<plugin class="io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin" />
+		</component>
+		<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
 	</module>
 
 	<module name="vertigo-publisher">
@@ -29,8 +28,10 @@
 	</module>
 
 	<module name="myApp">
-		<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
-		<resource type="kpr" path="io/vertigo/quarto/publisher/ksp/publisher.kpr" />
+		<definitions>
+			<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
+			<resource type="kpr" path="io/vertigo/quarto/publisher/ksp/publisher.kpr" />
+		</definitions>	
 	</module>
 </config>
 
