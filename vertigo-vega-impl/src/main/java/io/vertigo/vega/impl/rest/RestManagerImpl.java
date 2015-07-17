@@ -96,7 +96,7 @@ public final class RestManagerImpl implements RestManager {
 	 * Scan and register ResfulServices as EndPointDefinitions.
 	 */
 	@Override
-	public void scanAndRegisterRestfulServices() {
+	public List<EndPointDefinition> scanRestfulServices() {
 		final List<EndPointDefinition> allEndPointDefinitions = new ArrayList<>();
 
 		//1- We introspect all RestfulService class
@@ -119,17 +119,14 @@ public final class RestManagerImpl implements RestManager {
 
 		});
 
-		//3- We register EndPoint Definition in this order
-		for (final EndPointDefinition endPointDefinition : allEndPointDefinitions) {
-			Home.getDefinitionSpace().put(endPointDefinition);
-		}
+		return allEndPointDefinitions;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void createAndRegisterWsRestRoute(final EndPointDefinition endPointDefinition) {
+	public void registerWsRoute(final EndPointDefinition endPointDefinition) {
 		//1- register handlerChain for this endPointDefinition
-		routesRegisterPlugin.register(handlerChain, endPointDefinition);
+		routesRegisterPlugin.registerWsRoute(handlerChain, endPointDefinition);
 	}
 
 }
