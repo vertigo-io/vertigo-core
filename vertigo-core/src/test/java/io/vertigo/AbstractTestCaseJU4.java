@@ -47,7 +47,9 @@ public abstract class AbstractTestCaseJU4 {
 	}
 
 	private synchronized void stopHome() {
-		app.close();
+		if (app != null) {
+			app.close();
+		}
 		app = null;
 	}
 

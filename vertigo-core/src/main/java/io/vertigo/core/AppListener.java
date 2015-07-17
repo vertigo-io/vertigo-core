@@ -1,5 +1,8 @@
 package io.vertigo.core;
 
+/**
+ * @author pchretien
+ */
 public interface AppListener {
 	//Phases
 	//Start App
