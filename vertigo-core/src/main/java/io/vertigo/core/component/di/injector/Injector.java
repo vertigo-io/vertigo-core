@@ -16,11 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.di.injector;
+package io.vertigo.core.component.di.injector;
 
-import io.vertigo.core.di.DIAnnotationUtil;
-import io.vertigo.core.di.DIDependency;
-import io.vertigo.core.di.DIException;
+import io.vertigo.core.component.di.DIAnnotationUtil;
+import io.vertigo.core.component.di.DIDependency;
+import io.vertigo.core.component.di.DIException;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;
 import io.vertigo.lang.Option;

@@ -18,8 +18,8 @@
  */
 package io.vertigo.engines.aop.cglib;
 
-import io.vertigo.core.aop.Aspect;
-import io.vertigo.core.aop.AspectMethodInvocation;
+import io.vertigo.core.component.aop.Aspect;
+import io.vertigo.core.component.aop.AspectMethodInvocation;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
 

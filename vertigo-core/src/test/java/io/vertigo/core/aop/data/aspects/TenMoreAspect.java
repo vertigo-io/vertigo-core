@@ -18,8 +18,8 @@
  */
 package io.vertigo.core.aop.data.aspects;
 
-import io.vertigo.core.aop.Aspect;
-import io.vertigo.core.aop.AspectMethodInvocation;
+import io.vertigo.core.component.aop.Aspect;
+import io.vertigo.core.component.aop.AspectMethodInvocation;
 
 /**
  * @author pchretien

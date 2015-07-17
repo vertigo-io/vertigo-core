@@ -16,10 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.di.reactor;
+package io.vertigo.core.component.di.reactor;
 
-import io.vertigo.core.di.DIAnnotationUtil;
-import io.vertigo.core.di.DIDependency;
+import io.vertigo.core.component.di.DIAnnotationUtil;
+import io.vertigo.core.component.di.DIDependency;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.ListBuilder;

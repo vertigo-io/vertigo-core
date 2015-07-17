@@ -16,23 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.aop;
+package io.vertigo.core.component.aop;
+
+import java.lang.reflect.Method;
 
 /**
- * Aspect.
- *
- * use cases
- *  - log
- *  - monitoring
- *  - transaction
- *
+ * Abstraction de l'invocation d'une méthode.
  * @author pchretien
  */
-public interface Aspect {
-	Object invoke(final Object[] args, final AspectMethodInvocation methodInvocation) throws Exception;
+public interface AspectMethodInvocation {
+	Method getMethod();
 
-	/**
-	 * return Annotation that tagged any method or class concerned by this aspect
-	 */
-	Class<?> getAnnotationType();
+	Object proceed(Object[] args) throws Exception;
 }

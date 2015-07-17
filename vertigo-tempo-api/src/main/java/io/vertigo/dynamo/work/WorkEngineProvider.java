@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.work;
 
 import io.vertigo.core.Home;
-import io.vertigo.core.di.injector.Injector;
+import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
 

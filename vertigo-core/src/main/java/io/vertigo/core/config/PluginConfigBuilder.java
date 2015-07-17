@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.config;
 
-import io.vertigo.core.di.DIAnnotationUtil;
+import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.Plugin;

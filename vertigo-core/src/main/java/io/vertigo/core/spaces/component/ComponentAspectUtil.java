@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.spaces.component;
 
-import io.vertigo.core.aop.Aspect;
+import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.config.ComponentConfig;
 import io.vertigo.lang.Assertion;
 

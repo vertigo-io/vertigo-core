@@ -1,13 +1,13 @@
 package io.vertigo.core.spaces.component;
 
-import io.vertigo.core.aop.Aspect;
+import io.vertigo.core.component.aop.Aspect;
+import io.vertigo.core.component.di.injector.Injector;
+import io.vertigo.core.component.di.reactor.DIReactor;
 import io.vertigo.core.config.AspectConfig;
 import io.vertigo.core.config.BootConfig;
 import io.vertigo.core.config.ComponentConfig;
 import io.vertigo.core.config.ModuleConfig;
 import io.vertigo.core.config.PluginConfig;
-import io.vertigo.core.di.injector.Injector;
-import io.vertigo.core.di.reactor.DIReactor;
 import io.vertigo.core.engines.AopEngine;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;

@@ -16,22 +16,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.di;
+package io.vertigo.core.component.aop;
 
 /**
- * Exception générique aux services relatifs à la DI.
- * Cette exception est de type runtime, elle sert à valider le bon fonctionnement du moteur dans les tests.
- * 
+ * Aspect.
+ *
+ * use cases
+ *  - log
+ *  - monitoring
+ *  - transaction
+ *
  * @author pchretien
  */
-public final class DIException extends RuntimeException {
-	private static final long serialVersionUID = 1L;
+public interface Aspect {
+	Object invoke(final Object[] args, final AspectMethodInvocation methodInvocation) throws Exception;
 
-	public DIException(final String message) {
-		super(message);
-	}
-
-	public DIException(final String message, final Throwable t) {
-		super(message, t);
-	}
+	/**
+	 * return Annotation that tagged any method or class concerned by this aspect
+	 */
+	Class<?> getAnnotationType();
 }

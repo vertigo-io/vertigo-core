@@ -16,16 +16,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.aop;
-
-import java.lang.reflect.Method;
+package io.vertigo.core.component.di;
 
 /**
- * Abstraction de l'invocation d'une méthode.
+ * Exception générique aux services relatifs à la DI.
+ * Cette exception est de type runtime, elle sert à valider le bon fonctionnement du moteur dans les tests.
+ * 
  * @author pchretien
  */
-public interface AspectMethodInvocation {
-	Method getMethod();
+public final class DIException extends RuntimeException {
+	private static final long serialVersionUID = 1L;
 
-	Object proceed(Object[] args) throws Exception;
+	public DIException(final String message) {
+		super(message);
+	}
+
+	public DIException(final String message, final Throwable t) {
+		super(message, t);
+	}
 }

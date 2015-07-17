@@ -20,7 +20,7 @@ package io.vertigo.core.spaces.component;
 
 import io.vertigo.core.Home;
 import io.vertigo.core.Logo;
-import io.vertigo.core.aop.Aspect;
+import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Container;

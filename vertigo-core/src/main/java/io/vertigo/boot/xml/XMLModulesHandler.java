@@ -18,7 +18,7 @@
  */
 package io.vertigo.boot.xml;
 
-import io.vertigo.core.aop.Aspect;
+import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.ComponentConfigBuilder;
 import io.vertigo.core.config.ModuleConfigBuilder;

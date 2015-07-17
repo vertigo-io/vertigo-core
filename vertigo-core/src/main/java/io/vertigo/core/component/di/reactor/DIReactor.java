@@ -16,10 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.di.reactor;
+package io.vertigo.core.component.di.reactor;
 
-import io.vertigo.core.di.DIDependency;
-import io.vertigo.core.di.DIException;
+import io.vertigo.core.component.di.DIDependency;
+import io.vertigo.core.component.di.DIException;
 
 import java.util.ArrayList;
 import java.util.Collections;
