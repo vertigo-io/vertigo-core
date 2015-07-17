@@ -16,14 +16,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.environment;
-
-import io.vertigo.lang.Plugin;
+package io.vertigo.core.impl.environment;
 
 /**
- * Plugin de DynamicRegistry.
- * @author pchretien
+ * Exception lors du chargement par un LoaderPlugin.
+ * @author npiedeloup
  */
-public interface DynamicRegistryPlugin extends DynamicRegistry, Plugin {
-	//
+public final class LoaderException extends Exception {
+	private static final long serialVersionUID = -8554090427385680300L;
+
+	/**
+	 * Constructeur.
+	 * @param msg Message de l'exception
+	 * @param e Cause de l'exception (peut être null)
+	 */
+	public LoaderException(final String msg, final Exception e) {
+		super(msg, e);
+	}
 }

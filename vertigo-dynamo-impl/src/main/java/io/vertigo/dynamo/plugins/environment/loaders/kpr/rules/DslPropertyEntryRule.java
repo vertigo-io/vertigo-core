@@ -29,7 +29,7 @@ import io.vertigo.commons.parser.OptionRule;
 import io.vertigo.commons.parser.Rule;
 import io.vertigo.commons.parser.SequenceRule;
 import io.vertigo.commons.parser.TermRule;
-import io.vertigo.dynamo.impl.environment.kernel.meta.EntityProperty;
+import io.vertigo.core.impl.environment.kernel.meta.EntityProperty;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;

@@ -16,18 +16,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.environment;
+package io.vertigo.core.impl.environment;
 
-import io.vertigo.dynamo.impl.environment.DefinitionLoader;
-import io.vertigo.lang.Component;
+import io.vertigo.core.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
+import io.vertigo.lang.Plugin;
 
 /**
- * Manager de gestion de l'environnement applicatif.
- * - on start  : load les donnése
- * - on stop  : unload les donnése
- * 
+ * Plugin de chargement de l'environnement.
  * @author pchretien
  */
-public interface EnvironmentManager extends Component {
-	DefinitionLoader createDefinitionLoader();
+public interface LoaderPlugin extends Plugin {
+	/**
+	 * Type parsed by loader.
+	 * Examples : oom, kpr, eaxmi...
+	 * @return Type parsed by loader
+	 */
+	String getType();
+
+	/**
+	 * Parsing des définitions pour un fichier (oom, kpr ou ksp)
+	 * défini par une url (sur système de fichier ou classpath)
+	 * et selon la grammaire en argument.
+	 * @param resourcePath resourcePath
+	 * @param dynamicModelRepository DynamicModelRepository
+	 */
+	void load(String resourcePath, DynamicDefinitionRepository dynamicModelRepository);
+
 }

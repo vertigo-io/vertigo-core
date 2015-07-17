@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.environment;
 
-import io.vertigo.dynamo.impl.environment.kernel.meta.EntityProperty;
-import io.vertigo.dynamo.impl.environment.kernel.meta.EntityPropertyType;
+import io.vertigo.core.impl.environment.kernel.meta.EntityProperty;
+import io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType;
 
 /**
  * Métadonnée liée à la grammaire.

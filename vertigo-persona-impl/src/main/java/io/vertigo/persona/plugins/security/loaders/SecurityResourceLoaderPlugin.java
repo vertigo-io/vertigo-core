@@ -18,9 +18,9 @@
  */
 package io.vertigo.persona.plugins.security.loaders;
 
+import io.vertigo.core.impl.environment.LoaderPlugin;
+import io.vertigo.core.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.dynamo.impl.environment.LoaderPlugin;
-import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
 import io.vertigo.lang.Assertion;
 
 import javax.inject.Inject;

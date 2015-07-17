@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.environment.plugins.loaders.kpr.definition;
 
+import io.vertigo.core.impl.environment.DynamicRegistry;
+import io.vertigo.core.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
+import io.vertigo.core.impl.environment.kernel.meta.Grammar;
+import io.vertigo.core.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.dynamo.impl.environment.DynamicRegistry;
-import io.vertigo.dynamo.impl.environment.kernel.impl.model.DynamicDefinitionRepository;
-import io.vertigo.dynamo.impl.environment.kernel.meta.Grammar;
-import io.vertigo.dynamo.impl.environment.kernel.model.DynamicDefinition;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.lang.Option;
 

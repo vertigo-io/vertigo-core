@@ -16,9 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.environment.kernel.model;
+package io.vertigo.core.impl.environment.kernel.model;
 
-import io.vertigo.dynamo.impl.environment.kernel.meta.EntityProperty;
+import io.vertigo.core.impl.environment.kernel.meta.EntityProperty;
 import io.vertigo.lang.Builder;
 
 import java.util.List;

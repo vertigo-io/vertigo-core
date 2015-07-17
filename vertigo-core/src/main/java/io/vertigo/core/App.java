@@ -1,12 +1,12 @@
 package io.vertigo.core;
 
 import io.vertigo.core.config.AppConfig;
+import io.vertigo.core.environment.EnvironmentManager;
+import io.vertigo.core.impl.environment.DefinitionLoader;
 import io.vertigo.core.spaces.component.ComponentLoader;
 import io.vertigo.core.spaces.component.ComponentSpace;
 import io.vertigo.core.spaces.config.ConfigSpace;
 import io.vertigo.core.spaces.definiton.DefinitionSpace;
-import io.vertigo.dynamo.environment.EnvironmentManager;
-import io.vertigo.dynamo.impl.environment.DefinitionLoader;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 

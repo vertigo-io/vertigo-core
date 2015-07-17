@@ -16,21 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.environment;
+package io.vertigo.core.environment;
+
+import io.vertigo.core.impl.environment.DefinitionLoader;
+import io.vertigo.lang.Component;
 
 /**
- * Exception lors du chargement par un LoaderPlugin.
- * @author npiedeloup
+ * Manager de gestion de l'environnement applicatif.
+ * - on start  : load les donnése
+ * - on stop  : unload les donnése
+ * 
+ * @author pchretien
  */
-public final class LoaderException extends Exception {
-	private static final long serialVersionUID = -8554090427385680300L;
-
-	/**
-	 * Constructeur.
-	 * @param msg Message de l'exception
-	 * @param e Cause de l'exception (peut être null)
-	 */
-	public LoaderException(final String msg, final Exception e) {
-		super(msg, e);
-	}
+public interface EnvironmentManager extends Component {
+	DefinitionLoader createDefinitionLoader();
 }

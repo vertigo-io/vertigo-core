@@ -16,63 +16,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.environment.kernel.meta;
+package io.vertigo.core.impl.environment.kernel.meta;
 
 import io.vertigo.lang.Assertion;
 
 /**
- * Attribut d'une entité.
+ * Propriété (meta-data, aspect, attribute) d'une entity.
  *
- * @author pchretien
+ * @author  pchretien, npiedeloup
  */
-public final class EntityAttribute {
+public final class EntityProperty {
 	private final String name;
-	private final boolean multiple;
-	private final boolean notNull;
-	private final Entity entity;
+	private final EntityPropertyType primitiveType;
 
-	/**
-	 * Constructeur.
-	 * @param name Nom
-	 * @param entity Entité / Méta-définition parente (composition ou référence)
-	 * @param multiple Si multiple
-	 * @param notNull Si not null
-	 */
-	EntityAttribute(final String name, final Entity entity, final boolean multiple, final boolean notNull) {
+	public EntityProperty(final String name, final EntityPropertyType primitiveType) {
 		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(entity);
+		Assertion.checkNotNull(primitiveType);
 		//-----
 		this.name = name;
-		this.multiple = multiple;
-		this.notNull = notNull;
-		this.entity = entity;
+		this.primitiveType = primitiveType;
 	}
 
 	/**
-	 * @return Nom
+	 * @return Nom de la propriété (Const)
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @return Si multiple
+	 * Toute propriété dynamo est déclarée dans un type primitif .
+	 * Ceci permet de gérer au mieux l'utilisation des propriétés dans la grammaire.
+	 * @return Type primitif utilisé pour déclarer la valuer de la propriété.
 	 */
-	public boolean isMultiple() {
-		return multiple;
+	public EntityPropertyType getPrimitiveType() {
+		return primitiveType;
 	}
 
-	/**
-	 * @return Si not null
-	 */
-	public boolean isNotNull() {
-		return notNull;
-	}
-
-	/**
-	 * @return Entité référencée. (composition ou référence)
-	 */
-	public Entity getEntity() {
-		return entity;
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return name;
 	}
 }

@@ -16,46 +16,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.environment.kernel.meta;
+package io.vertigo.core.impl.environment.kernel.model;
 
 import io.vertigo.lang.Assertion;
 
 /**
- * Propriété (meta-data, aspect, attribute) d'une entity.
- *
- * @author  pchretien, npiedeloup
+ * Clé d'une definition.
+ * @author  pchretien
  */
-public final class EntityProperty {
+public final class DynamicDefinitionKey {
+	/**
+	 * Nom de la dynamic Definition.
+	 */
 	private final String name;
-	private final EntityPropertyType primitiveType;
 
-	public EntityProperty(final String name, final EntityPropertyType primitiveType) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(primitiveType);
+	/**
+	* Constructeur.
+	* @param name Nom de la Définition
+	*/
+	public DynamicDefinitionKey(final String name) {
+		Assertion.checkNotNull(name);
 		//-----
 		this.name = name;
-		this.primitiveType = primitiveType;
 	}
 
 	/**
-	 * @return Nom de la propriété (Const)
+	 * @return Nom de la Définition
 	 */
 	public String getName() {
 		return name;
 	}
 
-	/**
-	 * Toute propriété dynamo est déclarée dans un type primitif .
-	 * Ceci permet de gérer au mieux l'utilisation des propriétés dans la grammaire.
-	 * @return Type primitif utilisé pour déclarer la valuer de la propriété.
-	 */
-	public EntityPropertyType getPrimitiveType() {
-		return primitiveType;
+	@Override
+	/** {@inheritDoc} */
+	public String toString() {
+		return getName();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public String toString() {
-		return name;
+	public int hashCode() {
+		return name.hashCode();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean equals(final Object o) {
+		if (o instanceof DynamicDefinitionKey) {
+			return ((DynamicDefinitionKey) o).getName().equals(getName());
+		}
+		return false;
 	}
 }

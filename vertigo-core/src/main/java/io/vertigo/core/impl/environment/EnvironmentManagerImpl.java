@@ -16,9 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.environment;
+package io.vertigo.core.impl.environment;
 
-import io.vertigo.dynamo.environment.EnvironmentManager;
+import io.vertigo.core.environment.EnvironmentManager;
 import io.vertigo.lang.Assertion;
 
 import java.util.List;

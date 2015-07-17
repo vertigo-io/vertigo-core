@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.kpr.definition;
 
-import io.vertigo.dynamo.impl.environment.kernel.meta.EntityProperty;
+import io.vertigo.core.impl.environment.kernel.meta.EntityProperty;
 import io.vertigo.lang.Assertion;
 
 /**
