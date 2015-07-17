@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.xml;
 
-import io.vertigo.commons.resource.ResourceManager;
+import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.core.spaces.definiton.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;

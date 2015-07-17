@@ -16,10 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.impl.locale;
+package io.vertigo.core.impl.locale;
 
-import io.vertigo.commons.locale.LocaleManager;
-import io.vertigo.commons.locale.LocaleProvider;
+import io.vertigo.core.locale.LocaleManager;
+import io.vertigo.core.locale.LocaleProvider;
 import io.vertigo.core.spaces.component.ComponentInfo;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Describable;

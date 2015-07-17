@@ -16,22 +16,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.impl.resource;
+package io.vertigo.core.resource;
 
-import io.vertigo.lang.Option;
-import io.vertigo.lang.Plugin;
+import io.vertigo.lang.Component;
 
 import java.net.URL;
 
 /**
- * Résout une ressource en fournissant son URL.
- * @author prahmoune
+ * Selecteurs de ressources. 
+ * Les ressources sont identifiées par une URL. 
+ * Cette URL peut être 
+ *  - relative au classpath de l'application dans le cas d'une application JAVA 
+ *  - relative au context de l'application WEB 
+ * 
+ * La ressource peut aussi être résolue de façon ad-hoc par la création d'un plugin de résolution spécifique.
+ * 
+ * Les fichiers de configuration sont à considérer comme des ressources.  
+ * Ex: 
+ * 	classpath: 
+ * 		/myproject/components/components-config.dtd
+ * 	web:
+ *     /WEB-INF/components-config.xml
+ *  
+ * @author pchretien
  */
-public interface ResourceResolverPlugin extends Plugin {
+public interface ResourceManager extends Component {
 	/**
 	 * Retourne une URL à partir de sa représentation 'chaîne de caractères'
+	 * 
 	 * @param resource Url de la ressource(chaîne de caractères)
-	 * @return URL associée à la ressource 
+	 * @return URL associée à la ressource (Not Null)
 	 */
-	Option<URL> resolve(String resource);
+	URL resolve(String resource);
 }

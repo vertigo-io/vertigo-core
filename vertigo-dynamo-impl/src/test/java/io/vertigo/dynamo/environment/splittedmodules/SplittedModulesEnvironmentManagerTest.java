@@ -18,16 +18,16 @@
  */
 package io.vertigo.dynamo.environment.splittedmodules;
 
-import io.vertigo.commons.impl.locale.LocaleManagerImpl;
-import io.vertigo.commons.impl.resource.ResourceManagerImpl;
-import io.vertigo.commons.locale.LocaleManager;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
-import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.core.App;
 import io.vertigo.core.Home;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.config.LogConfig;
+import io.vertigo.core.impl.locale.LocaleManagerImpl;
+import io.vertigo.core.impl.resource.ResourceManagerImpl;
+import io.vertigo.core.locale.LocaleManager;
+import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.environment.EnvironmentManager;

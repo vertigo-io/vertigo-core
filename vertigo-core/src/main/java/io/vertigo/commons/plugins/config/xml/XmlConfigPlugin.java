@@ -20,7 +20,7 @@ package io.vertigo.commons.plugins.config.xml;
 
 import io.vertigo.commons.config.ConfigManager;
 import io.vertigo.commons.impl.config.ConfigPlugin;
-import io.vertigo.commons.resource.ResourceManager;
+import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.util.StringUtil;

@@ -16,32 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.plugins.resource.local;
+package io.vertigo.core.locale;
 
-import io.vertigo.core.impl.resource.ResourceResolverPlugin;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
-
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.Locale;
 
 /**
- * Résolution des URL liées à l'emplacement local.
+ * Provide current language.
  *
- * @author prahmoune
+ * @author  pchretien, npiedeloup
  */
-public final class LocalResourceResolverPlugin implements ResourceResolverPlugin {
-
-	/** {@inheritDoc} */
-	@Override
-	public Option<URL> resolve(final String resource) {
-		Assertion.checkNotNull(resource);
-		//-----
-		try {
-			return Option.option(new File(resource).toURI().toURL());
-		} catch (final MalformedURLException e) {
-			return Option.none();
-		}
-	}
+public interface LocaleProvider {
+	/**
+	 * @return Current locale (may be null)
+	 */
+	Locale getCurrentLocale();
 }

@@ -19,8 +19,8 @@
 package io.vertigo.dynamo.plugins.search.elasticsearch;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.resource.ResourceManager;
 import io.vertigo.core.Home;
+import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;

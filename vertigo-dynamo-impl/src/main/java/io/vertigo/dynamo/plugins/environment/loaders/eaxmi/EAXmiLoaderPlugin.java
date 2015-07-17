@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.eaxmi;
 
-import io.vertigo.commons.resource.ResourceManager;
+import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.plugins.environment.loaders.eaxmi.core.EAXmiLoader;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlLoaderPlugin;
 

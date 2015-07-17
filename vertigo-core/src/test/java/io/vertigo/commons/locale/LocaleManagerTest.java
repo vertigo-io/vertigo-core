@@ -19,10 +19,12 @@
 package io.vertigo.commons.locale;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.commons.impl.locale.LocaleManagerImpl;
 import io.vertigo.commons.locale.data.CityGuide;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
+import io.vertigo.core.impl.locale.LocaleManagerImpl;
+import io.vertigo.core.locale.LocaleManager;
+import io.vertigo.core.locale.LocaleProvider;
 import io.vertigo.lang.MessageKey;
 import io.vertigo.lang.MessageText;
 

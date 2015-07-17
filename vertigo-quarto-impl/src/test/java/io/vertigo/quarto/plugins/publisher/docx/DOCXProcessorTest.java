@@ -19,7 +19,7 @@
 package io.vertigo.quarto.plugins.publisher.docx;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.commons.resource.ResourceManager;
+import io.vertigo.core.resource.ResourceManager;
 
 import java.io.File;
 import java.io.IOException;

@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.rest.data.ws;
 
-import io.vertigo.commons.resource.ResourceManager;
+import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.vega.rest.RestfulService;
