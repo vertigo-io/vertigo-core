@@ -24,7 +24,7 @@ import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.daemon.DaemonStat;
 import io.vertigo.core.AppListener;
 import io.vertigo.core.Home;
-import io.vertigo.core.di.injector.Injector;
+import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 
@@ -45,7 +45,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	 */
 	@Inject
 	public DaemonManagerImpl() {
-		this.daemonExecutor = new DaemonExecutor();
+		daemonExecutor = new DaemonExecutor();
 
 		Home.getApp().registerAppListener(new AppListener() {
 
