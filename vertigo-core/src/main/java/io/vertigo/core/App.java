@@ -96,12 +96,15 @@ public final class App implements AutoCloseable {
 		return new DefinitionLoader();
 	}
 
-	private ComponentLoader createComponentLoader(final AppConfig appConfig) {
+	private ComponentLoader createComponentLoader(final AppConfig currentAppConfig) {
 		final ComponentLoader componentLoader;
-		componentLoader = new ComponentLoader(appConfig.getBootConfig());
+		componentLoader = new ComponentLoader(currentAppConfig.getBootConfig());
 		return componentLoader;
 	}
 
+	/**
+	 * @param appListener Listener of AppLifeCycle
+	 */
 	public void registerAppListener(final AppListener appListener) {
 		Assertion.checkArgument(State.starting.equals(state), "Applisteners can't be registered at runtime");
 		Assertion.checkNotNull(appListener);

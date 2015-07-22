@@ -130,7 +130,6 @@ public final class ComponentLoader {
 
 		//3. AOP, on aopise le composant
 		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(componentConfig, componentSpace.getAspects());
-		final Object reference;
 		if (!joinPoints.isEmpty()) {
 			return aopEngine.create(instance, joinPoints);
 		}
@@ -183,7 +182,7 @@ public final class ComponentLoader {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return Plugins identified by their id
 	 */
 	private static Map<String, Plugin> createPlugins(final Container componentContainer, final List<PluginConfig> pluginConfigs) {
