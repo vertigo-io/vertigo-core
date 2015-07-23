@@ -202,7 +202,10 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		size = query("YEAR:[* TO 2005]"); //On compte les véhicules avant 2005
 		Assert.assertEquals(carDataBase.before(2005), size);
 
-		size = query("DESCRIPTION:panoRAmique");
+		size = query("DESCRIPTION:panoRAmique");//La description est un text insenssible à la casse
+		Assert.assertEquals(carDataBase.containsDescription("panoramique"), size);
+
+		size = query("DESCRIPTION:panoRAmi*");//La description est un text insenssible à la casse (y compris en wildcard)
 		Assert.assertEquals(carDataBase.containsDescription("panoramique"), size);
 
 		size = query("DESCRIPTION:clim");
@@ -213,6 +216,37 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 		size = query("DESCRIPTION:l'avenir");
 		Assert.assertEquals(carDataBase.containsDescription("l'avenir"), size);
+	}
+
+	/**
+	 * Test de requétage de l'index description : insenssible à la casse et aux accents.
+	 */
+	@Test
+	public void testInsensitivityQuery() {
+		index(false);
+		waitIndexation();
+
+		final long databaseResult = carDataBase.containsDescription("sieges") + carDataBase.containsDescription("sièges");
+		long size;
+		size = query("DESCRIPTION:sieges");
+		Assert.assertEquals(databaseResult, size);
+		size = query("DESCRIPTION:Sieges");
+		Assert.assertEquals(databaseResult, size);
+		size = query("DESCRIPTION:sièges");
+		Assert.assertEquals(databaseResult, size);
+		size = query("DESCRIPTION:Sièges");
+		Assert.assertEquals(databaseResult, size);
+
+		//y compris en wildcard
+		size = query("DESCRIPTION:sièg*");
+		Assert.assertEquals(databaseResult, size);
+		size = query("DESCRIPTION:Sièg*");
+		Assert.assertEquals(databaseResult, size);
+		size = query("DESCRIPTION:sieg*");
+		Assert.assertEquals(databaseResult, size);
+		size = query("DESCRIPTION:Sieg*");
+		Assert.assertEquals(databaseResult, size);
+
 	}
 
 	/**
