@@ -43,8 +43,8 @@ final class CommandScannerUtil {
 		//		}
 		for (final Annotation annotation : method.getAnnotations()) {
 			if (annotation instanceof COMMAND) {
-				Assertion.checkArgument(method.getParameterCount() == 0, " Only methods without params are accepted, check component {0}", method.getDeclaringClass());
-				//-----	
+				Assertion.checkArgument(method.getParameterTypes().length == 0, " Only methods without params are accepted, check component {0}", method.getDeclaringClass());
+				//-----
 				mapBuilder.put(((COMMAND) annotation).value(), new VCommandExecutor() {
 					@Override
 					public Object exec(final VCommand command) {
