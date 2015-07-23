@@ -19,6 +19,9 @@
 package io.vertigo.dynamox.search;
 
 import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
+import io.vertigo.util.DateUtil;
+
+import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -83,7 +86,16 @@ public class DefaultListFilterBuilderTest {
 				{ "ALL:#+query*#", "Test, test2, test3", "ALL:(+Test*, +test2*, +test3*)" }, //14
 				{ "ALL:#query# +YEAR:[2000 to 2005]", "Test AND (test2 OR test3)", "ALL:(Test AND (test2 OR test3)) +YEAR:[2000 to 2005]" }, //15
 		};
-		testStringFixedQuery(testQueries[11]);
+		testStringFixedQuery(testQueries);
+	}
+
+	@Test
+	public void testNullableStringQuery() {
+		final String[][] testQueries = new String[][] {
+				//QueryPattern, UserQuery, EspectedResult
+				{ "ALL:#query#", "", "ALL:(*)" }, //0
+				{ "+YEAR:[2000 to #query#!(*)]", "", "+YEAR:[2000 to *]" }, //1
+		};
 		testStringFixedQuery(testQueries);
 	}
 
@@ -192,6 +204,32 @@ public class DefaultListFilterBuilderTest {
 		testStringFixedQuery(testQueries);
 	}
 
+	@Test
+	public void testBeanQuery() {
+		final Date dateTest1 = DateUtil.parse("230715 123000 -00", "ddMMyy HHmmss X");
+		final Date dateTest2 = DateUtil.parse("230715 164500 -00", "ddMMyy HHmmss X");
+		final TestBean testBean = new TestBean("Test", "Test test2", dateTest1, dateTest2, 5, 10);
+		final Object[][] testQueries = new Object[][] {
+				//QueryPattern, UserQuery, EspectedResult
+				{ "ALL:#str1#", testBean, "ALL:(Test)" }, //0
+				{ "ALL:#str2#", testBean, "ALL:(Test test2)" }, //1
+				{ "ALL:#date1#", testBean, "ALL:\"2015-07-23T12:30:00.000Z\"" }, //2
+				{ "ALL:#date2#", testBean, "ALL:\"2015-07-23T16:45:00.000Z\"" }, //3
+				{ "ALL:#int1#", testBean, "ALL:5" }, //4
+				{ "ALL:#int2#", testBean, "ALL:10" }, //5
+				{ "ALL:[#int1# to #int2#] ", testBean, "ALL:[5 to 10]" }, //6
+				{ "ALL:[#date1# to #date2#] ", testBean, "ALL:[\"2015-07-23T12:30:00.000Z\" to \"2015-07-23T16:45:00.000Z\"]" }, //7
+				{ "ALL:[#int1# to #null# ] ", testBean, "ALL:[5 to  ]" }, //8
+				{ "ALL:[#int1# to #null#!(*)] ", testBean, "ALL:[5 to *]" }, //9
+				{ "ALL:[#null#!(*) to #int2#] ", testBean, "ALL:[* to 10]" }, //10
+				{ "ALL:[ #null# to #null# ] ", testBean, "ALL:[  to  ]" }, //11
+				{ "ALL:[#date1# to #null#!(*)] ", testBean, "ALL:[\"2015-07-23T12:30:00.000Z\" to *]" }, //12
+
+		};
+		testObjectFixedQuery(testQueries[6]);
+		testObjectFixedQuery(testQueries);
+	}
+
 	private void testStringFixedQuery(final String[]... testData) {
 		int i = 0;
 		for (final String[] testParam : testData) {
@@ -202,5 +240,67 @@ public class DefaultListFilterBuilderTest {
 			Assert.assertEquals("Built query #" + i + " incorrect", testParam[2], result);
 			i++;
 		}
+	}
+
+	private void testObjectFixedQuery(final Object[]... testData) {
+		int i = 0;
+		for (final Object[] testParam : testData) {
+			final ListFilterBuilder<Object> listFilterBuilder = new DefaultListFilterBuilder<>()
+					.withBuildQuery((String) testParam[0])
+					.withCriteria(testParam[1]);
+			final String result = listFilterBuilder.build().getFilterValue();
+			Assert.assertEquals("Built query #" + i + " incorrect", testParam[2], result);
+			i++;
+		}
+	}
+
+	public static class TestBean {
+
+		private final String str1;
+		private final String str2;
+		private final Date date1;
+		private final Date date2;
+		private final Integer int1;
+		private final Integer int2;
+
+		TestBean(final String str1, final String str2,
+				final Date date1, final Date date2,
+				final Integer int1, final Integer int2) {
+			this.str1 = str1;
+			this.str2 = str2;
+			this.date1 = date1;
+			this.date2 = date2;
+			this.int1 = int1;
+			this.int2 = int2;
+		}
+
+		public String getStr1() {
+			return str1;
+		}
+
+		public String getStr2() {
+			return str2;
+		}
+
+		public Date getDate1() {
+			return date1;
+		}
+
+		public Date getDate2() {
+			return date2;
+		}
+
+		public Integer getInt1() {
+			return int1;
+		}
+
+		public Integer getInt2() {
+			return int2;
+		}
+
+		public Object getNull() {
+			return null;
+		}
+
 	}
 }
