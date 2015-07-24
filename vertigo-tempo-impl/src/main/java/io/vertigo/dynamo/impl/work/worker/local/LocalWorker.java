@@ -91,15 +91,15 @@ final class LocalWorker<WR, W> implements Callable<WR> {
 				workResultHandler.get().onDone(result, null);
 			}
 			return result;
-		} catch (final Throwable t) {
+		} catch (final Exception e) {
 			if (workResultHandler.isDefined()) {
-				workResultHandler.get().onDone(null, t);
+				workResultHandler.get().onDone(null, e);
 			}
-			logError(t);
-			if (t instanceof RuntimeException) {
-				throw (RuntimeException) t;
+			logError(e);
+			if (e instanceof RuntimeException) {
+				throw (RuntimeException) e;
 			}
-			throw new RuntimeException(t);
+			throw new RuntimeException(e);
 		} finally {
 			try {
 				//Vide le threadLocal
