@@ -179,9 +179,7 @@ public final class StringUtil {
 			if (Character.isDigit(c) || c == '_') {
 				if (!isDigit && !upperCase) {
 					isDigit = true;
-					if (!upperCase) {
-						result.append('_');
-					}
+					result.append('_');
 				}
 			} else if (Character.isUpperCase(c)) {
 				if (!upperCase || (upperCase && i == 1)) {
