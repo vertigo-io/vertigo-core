@@ -96,10 +96,7 @@ final class LocalWorker<WR, W> implements Callable<WR> {
 				workResultHandler.get().onDone(null, e);
 			}
 			logError(e);
-			if (e instanceof RuntimeException) {
-				throw (RuntimeException) e;
-			}
-			throw new RuntimeException(e);
+			throw asRuntimeException(e);
 		} finally {
 			try {
 				//Vide le threadLocal
@@ -113,6 +110,13 @@ final class LocalWorker<WR, W> implements Callable<WR> {
 
 	private void logError(final Throwable e) {
 		LOGGER.error("Erreur de la tache de type : " + workItem.getWorkEngineProvider().getName(), e);
+	}
+
+	private RuntimeException asRuntimeException(final Exception e) {
+		if (e instanceof RuntimeException) {
+			return (RuntimeException) e;
+		}
+		return new RuntimeException(e);
 	}
 
 	/**
