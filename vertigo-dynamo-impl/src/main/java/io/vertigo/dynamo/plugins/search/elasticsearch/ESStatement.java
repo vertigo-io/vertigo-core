@@ -200,7 +200,6 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		//-----
 		final SearchRequestBuilder searchRequestBuilder = createSearchRequestBuilder(indexDefinition, searchQuery, listState, defaultMaxRows);
 		appendFacetDefinition(searchQuery, searchRequestBuilder);
-
 		final SearchResponse queryResponse = searchRequestBuilder.execute().actionGet();
 		return translateQuery(indexDefinition, queryResponse, searchQuery);
 	}
@@ -230,6 +229,12 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 			searchRequestBuilder.addSort(sortBuilder);
 		}
 		QueryBuilder queryBuilder = translateToQueryBuilder(searchQuery.getListFilter());
+		if (searchQuery.getSecurityListFilter().isDefined()) {
+			final FilterBuilder securityFilterBuilder = translateToFilterBuilder(searchQuery.getSecurityListFilter().get());
+			//use filteredQuery instead of PostFilter in order to filter aggregations too.
+			queryBuilder = QueryBuilders.filteredQuery(queryBuilder, securityFilterBuilder);
+		}
+
 		if (searchQuery.isBoostMostRecent()) {
 			queryBuilder = appendBoostMostRecent(searchQuery, queryBuilder);
 		}

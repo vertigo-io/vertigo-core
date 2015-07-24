@@ -379,6 +379,32 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
+	/**
+	 * Test de requétage de l'index avec tri.
+	 * La création s'effectue dans une seule transaction.
+	 */
+	@Test
+	public void testSecurityQuery() {
+		index(false);
+		waitIndexation();
+		long size;
+		size = query("*:*", "+YEAR:[ 2005 TO * ]");
+		Assert.assertEquals(carDataBase.size() - carDataBase.before(2005), size);
+
+		size = query("MAKE:Peugeot", "+YEAR:[2005 TO * ]"); //Les constructeur sont des mots clés donc sensible à la casse
+		Assert.assertEquals(0L, (int) size);
+
+		size = query("MAKE:Vol*", "+YEAR:[2005 TO *]"); //On compte les volkswagen
+		Assert.assertEquals(carDataBase.getByMake("volkswagen").size(), (int) size);
+
+		size = query("YEAR:[* TO 2005]", "+YEAR:[2005 TO *]"); //On compte les véhicules avant 2005
+		Assert.assertEquals(0L, size);
+
+		size = query("DESCRIPTION:siège", "+YEAR:[2005 TO *]");//La description est un text insenssible à la casse
+		Assert.assertEquals(2L, size);
+
+	}
+
 	private static Facet getFacetByName(final FacetedQueryResult<Car, ?> result, final String facetName) {
 		for (final Facet facet : result.getFacets()) {
 			if (facetName.equals(facet.getDefinition().getName())) {
@@ -772,11 +798,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		return count;
 	}
 
-	private long query(final String query) {
-		return doQuery(query);
-
-	}
-
 	private FacetedQueryResult<Car, SearchQuery> facetQuery(final String query) {
 		return doFacetQuery(query);
 
@@ -832,9 +853,18 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		searchManager.removeAll(carIndexDefinition, removeQuery);
 	}
 
-	private long doQuery(final String query) {
+	private long query(final String query) {
 		//recherche
 		final SearchQuery searchQuery = new SearchQueryBuilder(query)
+				.build();
+
+		return doQuery(searchQuery, null).getCount();
+	}
+
+	private long query(final String query, final String securityFilter) {
+		//recherche
+		final SearchQuery searchQuery = new SearchQueryBuilder(query)
+				.withSecurityFilter(new ListFilter(securityFilter))
 				.build();
 
 		return doQuery(searchQuery, null).getCount();

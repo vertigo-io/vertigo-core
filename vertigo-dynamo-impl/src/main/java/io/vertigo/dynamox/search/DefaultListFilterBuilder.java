@@ -215,7 +215,7 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 				value = BeanUtil.getValue(myCriteria, fieldName);
 			}
 			if (value instanceof String) { //so not null too
-				appendUserStringCriteria(query, indexFieldName, preExpression, postExpression, preModifier, postModifier, value, defaultValue);
+				appendUserStringCriteria(query, indexFieldName, preExpression, postExpression, preModifier, postModifier, (String) value, defaultValue);
 			} else if (value instanceof Date) { //so not null too
 				appendSimpleCriteria(query, indexFieldName, preExpression, postExpression, preModifier, postModifier, formatDate((Date) value));
 			} else if (value != null) {
@@ -241,9 +241,9 @@ public final class DefaultListFilterBuilder<C> implements ListFilterBuilder<C> {
 		appendIfNotNull(query, postExpression);
 	}
 
-	private void appendUserStringCriteria(final StringBuilder query, final String indexFieldName, final String preExpression, final String postExpression, final String preModifier, final String postModifier, final Object value, final String defaultValue) {
+	private void appendUserStringCriteria(final StringBuilder query, final String indexFieldName, final String preExpression, final String postExpression, final String preModifier, final String postModifier, final String value, final String defaultValue) {
 
-		final String stringValue = cleanUserQuery((String) value, defaultValue != null ? defaultValue : "*");
+		final String stringValue = cleanUserQuery(value, defaultValue != null ? defaultValue : "*");
 		/*if ("*".equals(stringValue)) {
 			appendSimpleCriteria(query, indexFieldName != null ? indexFieldName : "*", preExpression, postExpression, "", "", stringValue);
 			return;
