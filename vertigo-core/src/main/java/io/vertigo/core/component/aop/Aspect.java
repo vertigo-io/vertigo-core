@@ -29,10 +29,20 @@ package io.vertigo.core.component.aop;
  * @author pchretien
  */
 public interface Aspect {
+
+	/**
+	 * Invoke method with this current aspect.
+	 * Apply aspect then call sub method
+	 * @param args method arguments
+	 * @param methodInvocation method invocation object
+	 * @return sub-method return
+	 * @throws Exception sub-method exception
+	 */
 	Object invoke(final Object[] args, final AspectMethodInvocation methodInvocation) throws Exception;
 
 	/**
 	 * return Annotation that tagged any method or class concerned by this aspect
+	 * @return Annotation type.
 	 */
 	Class<?> getAnnotationType();
 }

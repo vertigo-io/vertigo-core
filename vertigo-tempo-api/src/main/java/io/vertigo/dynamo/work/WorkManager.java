@@ -36,6 +36,15 @@ import java.util.concurrent.Callable;
  * @author pchretien
  */
 public interface WorkManager extends Component {
+
+	/**
+	 * Create a new WorkProcessor.
+	 * It ca be use for composing WorkEngine.
+	 * @param <WR> WorkEngine result's type
+	 * @param <W> Work's type : input of workEngine
+	 * @param workEngineProvider WorkEngine provider
+	 * @return a new WorkProcessor
+	 */
 	<WR, W> WorkProcessor<WR, W> createProcessor(final WorkEngineProvider<WR, W> workEngineProvider);
 
 	/**
@@ -43,7 +52,8 @@ public interface WorkManager extends Component {
 	 * @param <W> Type de Work (Travail)
 	 * @param <WR> Produit d'un work à l'issu de son exécution
 	 * @param work Travail à exécuter
-	 * @return resultat
+	 * @param workEngineProvider WorkEngine provider
+	 * @return result
 	 */
 	<WR, W> WR process(final W work, final WorkEngineProvider<WR, W> workEngineProvider);
 
@@ -52,13 +62,15 @@ public interface WorkManager extends Component {
 	 * @param <W> Type de Work (Travail)
 	 * @param <WR> Produit d'un work à l'issu de son exécution
 	 * @param work Travail à exécuter
-	 * @param  workResultHandler Handler permettant un callback après exécution
+	 * @param workEngineProvider WorkEngine provider
+	 * @param workResultHandler Handler permettant un callback après exécution
 	 */
 	<WR, W> void schedule(final W work, WorkEngineProvider<WR, W> workEngineProvider, WorkResultHandler<WR> workResultHandler);
 
 	/**
 	 * Lancement asynchrone d'un travail 'dès que possible'.
 	 * @param <WR> Produit d'un work à l'issu de son exécution
+	 * @param callable Travail à exécuter
 	 * @param  workResultHandler Handler permettant un callback après exécution
 	 */
 	<WR> void schedule(final Callable<WR> callable, final WorkResultHandler<WR> workResultHandler);

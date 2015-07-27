@@ -85,7 +85,10 @@ import java.util.regex.Pattern;
  * @author prahmoune, npiedeloup, pchretien
  */
 public final class ConfigSpace {
+	/** Regexp path. */
 	public static final Pattern REGEX_PATH = Pattern.compile("([a-z][a-zA-Z0-9]*)([a-z][a-zA-Z0-9]*.)*");
+
+	/** Regexp propertyName. */
 	public static final Pattern REGEX_PROPERTY = Pattern.compile("[a-z][a-zA-Z0-9]*");
 
 	private final List<ConfigPlugin> configPlugins;
@@ -93,8 +96,11 @@ public final class ConfigSpace {
 	private static final String TRUE = "true";
 	private static final String FALSE = "false";
 
+	/**
+	 * Constructor.
+	 */
 	public ConfigSpace() {
-		this.configPlugins = null;
+		configPlugins = null;
 	}
 
 	private static void checkPath(final String configPath) {
@@ -113,6 +119,7 @@ public final class ConfigSpace {
 	 * @param <C> Type de l'interface de la configuration
 	 * @param configPath Chemin décrivant la configuration
 	 * @param configClass Interface ou Class de la configuration
+	 * @return Instance of configBean
 	 */
 	public <C> C resolve(final String configPath, final Class<C> configClass) {
 		Assertion.checkNotNull(configPath);
@@ -200,9 +207,11 @@ public final class ConfigSpace {
 	 * Retourne la config a utiliser pour cette propriété.
 	 * Le séparateur par défaut est le .
 	 * @param configPath Chemin de la config de départ
+	 * @param property property's name
+	 * @param propertyClass property's class
 	 * @return Config à utiliser : une supérieur ou égale. Si property inconnue on retourne celle de départ
 	 */
-	private Object doGetPropertyValue(final String configPath, final String property, final Class<?> propertyClass) {
+	Object doGetPropertyValue(final String configPath, final String property, final Class<?> propertyClass) {
 		checkPath(configPath);
 		checkProperty(property);
 		//-----

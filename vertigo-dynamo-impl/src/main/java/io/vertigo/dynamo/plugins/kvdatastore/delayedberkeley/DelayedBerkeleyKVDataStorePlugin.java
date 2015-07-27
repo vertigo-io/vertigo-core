@@ -79,7 +79,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	 * @param timeToLiveSeconds Durée de vie des éléments en seconde
 	 */
 	@Inject
-	public DelayedBerkeleyKVDataStorePlugin(final CodecManager codecManager, final @Named("dataStoreName") String dataStoreName, final @Named("cachePath") String cachePath, final @Named("timeToLiveSeconds") int timeToLiveSeconds) {
+	public DelayedBerkeleyKVDataStorePlugin(final CodecManager codecManager, @Named("dataStoreName") final String dataStoreName, @Named("cachePath") final String cachePath, @Named("timeToLiveSeconds") final int timeToLiveSeconds) {
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkArgNotEmpty(dataStoreName);
 		//-----
@@ -87,7 +87,8 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 		this.timeToLiveSeconds = timeToLiveSeconds;
 		final String translatedCachePath = translatePath(cachePath);
 		myCacheEnvPath = new File(translatedCachePath);
-		myCacheEnvPath.mkdirs();
+		final boolean createDirs = myCacheEnvPath.mkdirs();
+		Assertion.checkState(createDirs, "Can't create dirs for cache storage directory ({0})", myCacheEnvPath.getAbsolutePath());
 		Assertion.checkState(myCacheEnvPath.canWrite(), "Can't access cache storage directory ({0})", myCacheEnvPath.getAbsolutePath());
 
 		cacheValueBinding = new DelayedBerkeleyCacheValueBinding(new DelayedBerkeleySerializableBinding(codecManager.getCompressedSerializationCodec()));
@@ -112,7 +113,6 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 		Assertion.checkNotNull(data);
 		Assertion.checkArgument(data instanceof Serializable, "Value must be Serializable {0}", data.getClass().getSimpleName());
 		//-----
-		//totalPuts++;
 		try {
 			final Transaction transaction = createTransaction();
 			boolean committed = false;
@@ -124,9 +124,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 
 				final OperationStatus status = cacheDatas.put(transaction, theKey, theData);
 				if (!OperationStatus.SUCCESS.equals(status)) {
-					throw new DatabaseException("Write error in UiSecurityTokenCache") { //DatabaseException est abstract, mais aucun fils ne semble correct
-						private static final long serialVersionUID = -2201117970033615366L;
-					};
+					throw new SimpleDatabaseException("Write error in UiSecurityTokenCache");
 				}
 				transaction.commit();
 				committed = true;
@@ -143,7 +141,6 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	/** {@inheritDoc} */
 	@Override
 	public <C> Option<C> find(final String key, final Class<C> clazz) {
-		//totalCalls++;
 		try {
 			final DatabaseEntry theKey = new DatabaseEntry();
 			keyBinding.objectToEntry(key, theKey);
@@ -183,13 +180,12 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 							list.add(clazz.cast(value));
 						}
 					}
-					//totalHits++;
 				}
 
 			}
 			return list;
 		} catch (final DatabaseException e) {
-			throw new RuntimeException("findAll failed");
+			throw new RuntimeException("findAll failed", e);
 		}
 	}
 
@@ -301,6 +297,24 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 			return myEnv.openDatabase(null, "KVDataStorePlugin", myDbConfig);
 		} catch (final DatabaseException e) {
 			throw new RuntimeException(e);
+		}
+	}
+
+	//DatabaseException est abstract, mais aucun fils ne semble correct
+	/**
+	 *
+	 * @author npiedeloup
+	 */
+	static final class SimpleDatabaseException extends DatabaseException {
+
+		private static final long serialVersionUID = -2201117970033615366L;
+
+		/**
+		 * Constructor.
+		 * @param message Message
+		 */
+		SimpleDatabaseException(final String message) {
+			super(message);
 		}
 	}
 
