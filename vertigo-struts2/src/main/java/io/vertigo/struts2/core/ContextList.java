@@ -110,13 +110,13 @@ public final class ContextList<O extends DtObject> {
 
 		/** {@inheritDoc} */
 		@Override
-		public final int hashCode() {
+		public int hashCode() {
 			return uuid.hashCode();
 		}
 
 		/** {@inheritDoc} */
 		@Override
-		public final boolean equals(final Object o) {
+		public boolean equals(final Object o) {
 			if (o instanceof UuidCriteria) {
 				return uuid.equals(((UuidCriteria<?>) o).uuid);
 			}
