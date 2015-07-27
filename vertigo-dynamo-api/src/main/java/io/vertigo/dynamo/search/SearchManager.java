@@ -31,6 +31,7 @@ import io.vertigo.lang.Component;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  * Gestionnaire des indexes de recherche.
@@ -64,8 +65,9 @@ public interface SearchManager extends Component {
 	/**
 	 * Launch a complete reindexation of an index.
 	 * @param indexDefinition Type de l'index
+	 * @return Future of number elements indexed
 	 */
-	void reindexAll(SearchIndexDefinition indexDefinition);
+	Future<Long> reindexAll(SearchIndexDefinition indexDefinition);
 
 	/**
 	 * Ajout de plusieurs ressources à l'index.

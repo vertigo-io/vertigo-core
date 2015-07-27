@@ -43,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -171,9 +172,10 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public void reindexAll(final SearchIndexDefinition searchIndexDefinition) {
-		//TODO return un Futur ?
-		executorService.schedule(new ReindexAllTask(searchIndexDefinition, this, transactionManager), 5, TimeUnit.SECONDS); //une reindexation total dans max 5s
+	public Future<Long> reindexAll(final SearchIndexDefinition searchIndexDefinition) {
+		final WritableFuture<Long> reindexFuture = new WritableFuture<>();
+		executorService.schedule(new ReindexAllTask(searchIndexDefinition, reindexFuture, this, transactionManager), 5, TimeUnit.SECONDS); //une reindexation total dans max 5s
+		return reindexFuture;
 	}
 
 }
