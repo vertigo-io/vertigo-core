@@ -86,6 +86,9 @@ public final class SwaggerRestServices implements RestfulService {
 
 	private static final String UNKNOWN_OBJECT_NAME = "unkwnown";
 
+	/**
+	 * Constructor.
+	 */
 	public SwaggerRestServices() {
 		final Map<String, Object> schema = new LinkedHashMap<>();
 		schema.put("type", "object");
@@ -192,7 +195,7 @@ public final class SwaggerRestServices implements RestfulService {
 		}
 	}
 
-	private String resolveContentType(final String resourceUrl) {
+	private static String resolveContentType(final String resourceUrl) {
 		for (final String[] entry : SUPPORTED_CONTENT_TYPE) {
 			if (resourceUrl.endsWith(entry[0])) {
 				return entry[1];
@@ -301,9 +304,16 @@ public final class SwaggerRestServices implements RestfulService {
 		return headers;
 	}
 
-	final class ErrorMessage {
+	/**
+	 * ErrorMessage for json converssion.
+	 * @author npiedeloup
+	 */
+	static final class ErrorMessage {
 		private final List<String> globalErrorMessages = Collections.emptyList();
 
+		/**
+		 * @return Error message
+		 */
 		public List<String> getGlobalErrorMessages() {
 			return globalErrorMessages;
 		}
@@ -388,11 +398,10 @@ public final class SwaggerRestServices implements RestfulService {
 	private Type getFieldType(final DtField dtField) {
 		final DataType dataType = dtField.getDomain().getDataType();
 		if (DataType.DtObject == dataType) {
-			final Class<?> dtClass = ClassUtil.classForName(dtField.getDomain().getDtDefinition().getClassCanonicalName());
-			return dtClass;
+			return ClassUtil.classForName(dtField.getDomain().getDtDefinition().getClassCanonicalName());
 		} else if (DataType.DtList == dataType) {
 			final Class<?> dtClass = ClassUtil.classForName(dtField.getDomain().getDtDefinition().getClassCanonicalName());
-			return createParameterizedType(DtList.class, dtClass);
+			return new CustomParameterizedType(DtList.class, dtClass);
 		}
 		return dataType.getJavaClass();
 	}
@@ -418,7 +427,7 @@ public final class SwaggerRestServices implements RestfulService {
 		if (fieldType instanceof ParameterizedType) {
 			final Type[] actualTypeArguments = ((ParameterizedType) fieldType).getActualTypeArguments();
 			if (actualTypeArguments.length == 1 && actualTypeArguments[0] instanceof TypeVariable) {
-				usedFieldType = createParameterizedType(fieldType, parameterClass);
+				usedFieldType = new CustomParameterizedType(fieldType, parameterClass);
 			}
 		} else if (fieldType instanceof TypeVariable) {
 			usedFieldType = parameterClass;
@@ -437,7 +446,7 @@ public final class SwaggerRestServices implements RestfulService {
 		return tags;
 	}
 
-	private List<String> createConsumesArray(final EndPointDefinition endPointDefinition) {
+	private static List<String> createConsumesArray(final EndPointDefinition endPointDefinition) {
 		if (endPointDefinition.getEndPointParams().isEmpty()) {
 			return Collections.emptyList();
 		}
@@ -505,7 +514,7 @@ public final class SwaggerRestServices implements RestfulService {
 
 	private List<EndPointParam> createPseudoEndPointParams(final EndPointParam endPointParam) {
 		final List<EndPointParam> pseudoEndPointParams = new ArrayList<>();
-		final String prefix = !endPointParam.getName().isEmpty() ? endPointParam.getName() + "." : "";
+		final String prefix = (!endPointParam.getName().isEmpty()) ? (endPointParam.getName() + ".") : "";
 		if (UiListState.class.isAssignableFrom(endPointParam.getType())) {
 			pseudoEndPointParams.add(new EndPointParamBuilder(int.class)
 					.with(endPointParam.getParamType(), prefix + "top").build());
@@ -528,12 +537,12 @@ public final class SwaggerRestServices implements RestfulService {
 		return pseudoEndPointParams;
 	}
 
-	private boolean isOneInMultipleOutParams(final EndPointParam endPointParam) {
+	private static boolean isOneInMultipleOutParams(final EndPointParam endPointParam) {
 		final Class<?> paramClass = endPointParam.getType();
 		return endPointParam.getParamType() == RestParamType.Query && (UiListState.class.isAssignableFrom(paramClass) || DtObject.class.isAssignableFrom(paramClass));
 	}
 
-	private boolean isMultipleInOneOutParams(final EndPointParam endPointParam) {
+	private static boolean isMultipleInOneOutParams(final EndPointParam endPointParam) {
 		return endPointParam.getParamType() == RestParamType.InnerBody;
 	}
 
@@ -631,25 +640,31 @@ public final class SwaggerRestServices implements RestfulService {
 		return licence;
 	}
 
-	private static Type createParameterizedType(final Type fieldType, final Type paramType) {
-		final Type[] typeArguments = { paramType };
-		final Type typeOfDest = new ParameterizedType() {
+	private static final class CustomParameterizedType implements ParameterizedType {
+		private final Type fieldType;
+		private final Type[] typeArguments;
 
-			@Override
-			public Type[] getActualTypeArguments() {
-				return typeArguments;
-			}
+		CustomParameterizedType(final Type fieldType, final Type paramType) {
+			this.fieldType = fieldType;
+			typeArguments = new Type[] { paramType };
+		}
 
-			@Override
-			public Type getOwnerType() {
-				return fieldType instanceof ParameterizedType ? ((ParameterizedType) fieldType).getOwnerType() : null;
-			}
+		/** {@inheritDoc} */
+		@Override
+		public Type[] getActualTypeArguments() {
+			return typeArguments;
+		}
 
-			@Override
-			public Type getRawType() {
-				return fieldType instanceof ParameterizedType ? ((ParameterizedType) fieldType).getRawType() : fieldType;
-			}
-		};
-		return typeOfDest;
+		/** {@inheritDoc} */
+		@Override
+		public Type getOwnerType() {
+			return fieldType instanceof ParameterizedType ? ((ParameterizedType) fieldType).getOwnerType() : null;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public Type getRawType() {
+			return fieldType instanceof ParameterizedType ? ((ParameterizedType) fieldType).getRawType() : fieldType;
+		}
 	}
 }
