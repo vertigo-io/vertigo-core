@@ -205,8 +205,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 		String key = "IdError";
 		try {
 			key = keyBinding.entryToObject(theKey);
-			final DelayedBerkeleyCacheValue cacheValue = cacheValueBinding.entryToObject(theData);
-			return cacheValue;
+			return cacheValueBinding.entryToObject(theData);
 		} catch (final RuntimeException e) {
 			LOGGER.warn("Read error in UiSecurityTokenCache : remove tokenKey : " + key, e);
 			cacheDatas.delete(null, theKey);
@@ -218,7 +217,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 		return System.currentTimeMillis() - cacheValue.getCreateTime() >= timeToLiveSeconds * 1000;
 	}
 
-	private Transaction createTransaction() throws DatabaseException {
+	private Transaction createTransaction() {
 		return cacheDatas.getEnvironment().beginTransaction(null, null);
 	}
 
@@ -226,7 +225,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 	 * Purge les elements trop vieux.
 	 * @throws DatabaseException Si erreur
 	 */
-	void removeTooOldElements() throws DatabaseException {
+	void removeTooOldElements() {
 		final DatabaseEntry foundKey = new DatabaseEntry();
 		final DatabaseEntry foundData = new DatabaseEntry();
 		try (Cursor cursor = cacheDatas.openCursor(null, null)) {
@@ -257,7 +256,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 			throw new RuntimeException(e);
 		}
 
-		final long purgePeriod = Math.min(15 * 60 * 1000, timeToLiveSeconds * 1000);
+		final long purgePeriod = Math.min(15 * 60 * 1000L, timeToLiveSeconds * 1000);
 		purgeTimer = new Timer("PurgeContextCache", true);
 		purgeTimer.schedule(new RemoveTooOldElementsTask(this), purgePeriod, purgePeriod);
 	}
@@ -277,7 +276,7 @@ public final class DelayedBerkeleyKVDataStorePlugin implements KVDataStorePlugin
 		}
 	}
 
-	private Environment createDbEnv() throws DatabaseException {
+	private Environment createDbEnv() {
 		final EnvironmentConfig myEnvConfig = new EnvironmentConfig()
 				.setReadOnly(false)
 				.setAllowCreate(true)
