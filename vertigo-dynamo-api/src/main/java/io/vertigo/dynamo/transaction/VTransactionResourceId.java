@@ -31,7 +31,7 @@ public final class VTransactionResourceId<R extends VTransactionResource> {
 	 * Ordre dans lequel les ressources sont commitées.
 	 * @author pchretien
 	 */
-	public static enum Priority {
+	public enum Priority {
 		/**
 		 * Priorité maximale.
 		 * Doit être utilisée pour la ressource critique.
