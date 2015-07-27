@@ -94,7 +94,7 @@ public final class SqlGeneratorPlugin extends AbstractGeneratorPlugin {
 				// Ne sert actuellement à rien, le sql généré étant le même. Prévu pour le futur
 				.put("basecible", baseCible)
 				// Oracle limite le nom des entités (index) à 30 charactères. Il faut alors tronquer les noms composés.
-				.put("truncateNames", baseCible == "Oracle");
+				.put("truncateNames", "Oracle".equals(baseCible));
 		if (tableSpaceData.isDefined()) {
 			mapRootBuilder.put("tableSpaceData", tableSpaceData.get());
 		}

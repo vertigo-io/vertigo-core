@@ -28,6 +28,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -100,7 +101,7 @@ public final class ConfigSpace {
 	 * Constructor.
 	 */
 	public ConfigSpace() {
-		configPlugins = null;
+		configPlugins = Collections.emptyList(); //TODO finalize this ConfigSpace
 	}
 
 	private static void checkPath(final String configPath) {

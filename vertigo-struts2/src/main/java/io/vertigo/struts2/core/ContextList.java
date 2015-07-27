@@ -104,7 +104,7 @@ public final class ContextList<O extends DtObject> {
 	 * Criteria unique Id.
 	 * @param <O> Object type
 	 */
-	static class UuidCriteria<O extends DtObject> implements Criteria<O> {
+	static final class UuidCriteria<O extends DtObject> implements Criteria<O> {
 		private static final long serialVersionUID = -5967571928701007323L;
 		private final UUID uuid = UUID.randomUUID();
 

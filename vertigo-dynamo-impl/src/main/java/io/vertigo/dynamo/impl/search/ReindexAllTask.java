@@ -39,14 +39,25 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+/**
+ * Reindex all data taks.
+ * @author npiedeloup (27 juil. 2015 14:35:14)
+ * @param <S> KeyConcept type
+ */
 final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 	private static final Logger LOGGER = Logger.getLogger(ReindexAllTask.class);
-	private static long REINDEX_COUNT = 0;
-	private static boolean REINDEXATION_IN_PROGRESS = false;
+	private static volatile long REINDEX_COUNT = 0;
+	private static volatile boolean REINDEXATION_IN_PROGRESS = false;
 	private final SearchIndexDefinition searchIndexDefinition;
 	private final SearchManager searchManager;
 	private final VTransactionManager transactionManager;
 
+	/**
+	 * Constructor.
+	 * @param searchIndexDefinition Search index definition
+	 * @param searchManager Search manager
+	 * @param transactionManager Transaction manager
+	 */
 	public ReindexAllTask(final SearchIndexDefinition searchIndexDefinition, final SearchManager searchManager, final VTransactionManager transactionManager) {
 		Assertion.checkNotNull(searchIndexDefinition);
 		Assertion.checkNotNull(searchManager);

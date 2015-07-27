@@ -20,6 +20,8 @@ package io.vertigo.commons.script.parser;
 
 import io.vertigo.lang.Assertion;
 
+import java.io.Serializable;
+
 /**
  * Gestion des Séparateurs utilisés par le parser.
  *
@@ -28,10 +30,13 @@ import io.vertigo.lang.Assertion;
  *      Exemple #  : #name#
  * - soit par des chaines de caractères.(qui peuvent être différentes)
  *      Exemple <% et %> : XXXX<%if (1=1){%>
- *
+ * ScriptSeparator implements Serializable because it's referenced by Serializable object (enum SeparatorType)
  * @author  pchretien
  */
-public final class ScriptSeparator {
+public final class ScriptSeparator implements Serializable {
+
+	private static final long serialVersionUID = -2124487462604625558L;
+
 	/**
 	 * Le paramètre est-il défini par un simple séparateur.
 	 */
