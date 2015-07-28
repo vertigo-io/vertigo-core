@@ -12,7 +12,7 @@
 			<plugin class="io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin" />
 			<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
 			<plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
-			<plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
+			<plugin class="io.vertigo.dynamo.plugins.environment.registries.search.SearchDynamicRegistryPlugin" />
 		</component>
 	</boot>
 
@@ -39,7 +39,16 @@
 			</plugin>
 		</component>
 		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl" />
+		<component api="SearchManager" class="io.vertigo.dynamo.impl.search.SearchManagerImpl">
+			<!-- <plugin class="io.vertigo.dynamo.plugins.search.solr.commonshttp.CommonsHttpSolrSearchServicesPlugin" > <param name="solr.url" value="http://localhost:8983/solr" /> <param name="cores" value="IDX_ARTICLE,IDX_VOITURE,IDX_DEMANDE,IDX_DOCUMENT" /> </plugin> -->
+			<plugin class="io.vertigo.dynamo.plugins.search.elasticsearch.embedded.ESEmbeddedSearchServicesPlugin">
+				<param name="home" value="io/vertigo/dynamo/search/serverelastic" />
+				<param name="cores" value="IDX_CAR,IDX_DYNA_CAR" />
+				<param name="rowsPerQuery" value="50" />
+			</plugin>
+		</component>
 		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
+
 		<component api="EventManager" class="io.vertigo.commons.impl.event.EventManagerImpl" />
 		<component api="StoreManager" class="io.vertigo.dynamo.impl.store.StoreManagerImpl" initClass="io.vertigo.dynamo.store.StoreManagerInitializer">
 			<plugin class="io.vertigo.dynamo.plugins.store.datastore.hsql.HsqlDataStorePlugin">
@@ -51,10 +60,13 @@
 		<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
 	</module>
 
-	<module name="myApp">
+	<module name="myApp" api="false" inheritance="io.vertigo.dynamo.search.metamodel.SearchLoader">
 		<definitions>
-			<resource type="kpr" path="io/vertigo/dynamock/executionWfileinfo.kpr" />
+			<resource type="kpr" path="io/vertigo/dynamo/search/ksp/searchIndex.kpr" />			
+			<resource type="kpr" path="io/vertigo/dynamock/execution.kpr" />
 			<resource type="classes" path="io.vertigo.dynamock.domain.DtDefinitions" />
 		</definitions>
+		<component class="io.vertigo.dynamo.search.withstore.CarSearchLoader"/>
 	</module>
+	
 </config>

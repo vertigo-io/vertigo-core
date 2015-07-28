@@ -81,7 +81,9 @@ final class ReindexTask implements Runnable {
 				}
 				// <<< Tx end
 				removedNotFoundKeyConcept(searchIndexes, reindexUris);
-				searchManager.putAll(searchIndexDefinition, searchIndexes);
+				if (!searchIndexes.isEmpty()) {
+					searchManager.putAll(searchIndexDefinition, searchIndexes);
+				}
 			}
 		} catch (final Exception e) {
 			LOGGER.error("Update index error", e);
