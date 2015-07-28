@@ -142,8 +142,8 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean hasIndexDefinitionByKeyConcept(final Class<? extends KeyConcept> keyConceptClass) {
-		final SearchIndexDefinition indexDefinition = findIndexDefinitionByKeyConcept(DtObjectUtil.findDtDefinition(keyConceptClass));
+	public boolean hasIndexDefinitionByKeyConcept(final DtDefinition keyConceptDefinition) {
+		final SearchIndexDefinition indexDefinition = findIndexDefinitionByKeyConcept(keyConceptDefinition);
 		return indexDefinition != null;
 	}
 
@@ -162,7 +162,10 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		Assertion.checkNotNull(keyConceptUris);
 		Assertion.checkArgument(!keyConceptUris.isEmpty(), "dirty keyConceptUris cant be empty");
 		//-----
-		final SearchIndexDefinition searchIndexDefinition = findIndexDefinitionByKeyConcept(keyConceptUris.get(0).getDefinition());
+		final DtDefinition keyConceptDefinition = keyConceptUris.get(0).getDefinition();
+		final SearchIndexDefinition searchIndexDefinition = findIndexDefinitionByKeyConcept(keyConceptDefinition);
+		Assertion.checkNotNull(searchIndexDefinition, "No SearchIndexDefinition was defined for this keyConcept : {0}", keyConceptDefinition.getName());
+		//-----
 		final List<URI<? extends KeyConcept>> dirtyElements = dirtyElementsPerIndexName.get(searchIndexDefinition.getName());
 		synchronized (dirtyElements) {
 			dirtyElements.addAll(keyConceptUris); //TODO : doublons ?

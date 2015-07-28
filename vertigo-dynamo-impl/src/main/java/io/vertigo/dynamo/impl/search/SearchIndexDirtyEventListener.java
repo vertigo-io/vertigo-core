@@ -20,6 +20,7 @@ package io.vertigo.dynamo.impl.search;
 
 import io.vertigo.commons.event.Event;
 import io.vertigo.commons.event.EventListener;
+import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.search.SearchManager;
@@ -47,7 +48,11 @@ final class SearchIndexDirtyEventListener implements EventListener<URI> {
 	@Override
 	public void onEvent(final Event<URI> event) {
 		final URI uri = event.getPayload();
-		final List<URI<? extends KeyConcept>> list = Collections.<URI<? extends KeyConcept>> singletonList(uri);
-		searchManager.markAsDirty(list);
+		//On ne traite l'event que si il porte sur un KeyConcept
+		if (uri.getDefinition().getStereotype() == DtStereotype.KeyConcept
+				&& searchManager.hasIndexDefinitionByKeyConcept(uri.getDefinition())) {
+			final List<URI<? extends KeyConcept>> list = Collections.<URI<? extends KeyConcept>> singletonList(uri);
+			searchManager.markAsDirty(list);
+		}
 	}
 }
