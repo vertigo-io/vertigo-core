@@ -28,6 +28,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -83,6 +84,7 @@ final class XMLModulesParser {
 
 		final XMLModulesHandler handler = new XMLModulesHandler(appConfigBuilder, params);
 		final SAXParserFactory factory = SAXParserFactory.newInstance();
+		factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
 		final SAXParser saxParser = factory.newSAXParser();
 		saxParser.parse(new BufferedInputStream(managersURL.openStream()), handler);

@@ -40,6 +40,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -279,10 +280,10 @@ final class DOCXUtil {
 	 * @return le Document résultant.
 	 */
 	public static Document loadDOM(final String xmlInput) {
-		final DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
-		domFactory.setNamespaceAware(true);
-
 		try (final StringReader reader = new StringReader(xmlInput)) {
+			final DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+			domFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			domFactory.setNamespaceAware(true);
 			final DocumentBuilder builder = domFactory.newDocumentBuilder();
 			return builder.parse(new InputSource(reader));
 		} catch (final ParserConfigurationException | SAXException | IOException e) {

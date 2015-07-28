@@ -24,55 +24,55 @@ import java.util.regex.Pattern;
 
 /**
  * Interface du gestionnaire de la configuration applicative.
- * Une configuration est identifiée par un chemin et possède une liste de propriétés. 
+ * Une configuration est identifiée par un chemin et possède une liste de propriétés.
  * Une propriété est identifiée par un nom et possède une valeur.
- * Le chemmin est camelCase.camelCase et ne contient que des lettres et chiffres; les séparateurs sont des points.  
- * 	- Une propriété est camelCase et ne contient que des lettres et chiffres.  
+ * Le chemmin est camelCase.camelCase et ne contient que des lettres et chiffres; les séparateurs sont des points.
+ * 	- Une propriété est camelCase et ne contient que des lettres et chiffres.
  *  - Une regex précise les chaines autorisées.
- * 
- * Les propriétés sont de trois types : 
+ *
+ * Les propriétés sont de trois types :
  * -boolean
  * -String
  * -int
- *  
- * Le chemin des configuration est hiérachique, il y a un héritage implicite des propriétés. 
+ *
+ * Le chemin des configuration est hiérachique, il y a un héritage implicite des propriétés.
  * Le séparateur est le caractère point (.)
- * 
- * Même si une configuration n'est pas déclarée, la remontée est automatique. 
- *  
- * 
+ *
+ * Même si une configuration n'est pas déclarée, la remontée est automatique.
+ *
+ *
  * Exemple :
- * 
+ *
  * maconf:{
  *  mapropriete1:toto,
  *  mapropriete2:titi
  * }
- * 
+ *
  * maconf.subConf1:{
  *  mapropriete2:tata,
  *  mapropriete3:titi
  * }
- * 
+ *
  * maconf.subConf2:{
  *  mapropriete3:tata
  * }
- * 
+ *
  * getStringValue(maconf, mapropriete1) => toto
  * getStringValue(maconf.subConf1, mapropriete1) => toto  #La propriété 'mapropriete1' n'étant pas trouvée on remonte au parent.
- * 
+ *
  * getStringValue(maconf, mapropriete2) => titi
- * getStringValue(maconf.subConf1, mapropriete2) => tata #La propriété 'mapropriete2' est surchargée 
- *  
+ * getStringValue(maconf.subConf1, mapropriete2) => tata #La propriété 'mapropriete2' est surchargée
+ *
  * getStringValue(maconf.subConf2, mapropriete3) => tata
  * getStringValue(maconf, mapropriete3) => erreur #'mapropriete3' n'est pas déclarée dans maConf
- * 
- * getStringValue(maconf.unknown, mapropriete2) => titi 
- * getStringValue(maconf.subConf1.unknown, mapropriete2) => tata 
- * 
+ *
+ * getStringValue(maconf.unknown, mapropriete2) => titi
+ * getStringValue(maconf.subConf1.unknown, mapropriete2) => tata
+ *
  * @author prahmoune, npiedeloup
  */
 public interface ConfigManager extends Component {
-	Pattern REGEX_PATH = Pattern.compile("([a-z][a-zA-Z0-9]*)([a-z][a-zA-Z0-9]*.)*");
+	Pattern REGEX_PATH = Pattern.compile("([a-z][a-zA-Z0-9]*)(\\.[a-z][a-zA-Z0-9]*)*");
 	Pattern REGEX_PROPERTY = Pattern.compile("[a-z][a-zA-Z0-9]*");
 
 	/**

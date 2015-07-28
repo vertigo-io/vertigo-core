@@ -32,6 +32,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
+import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 /**
@@ -52,7 +54,11 @@ public final class OOMLoader implements XmlLoader {
 		map = new LinkedHashMap<>();
 		final OOMHandler handler = new OOMHandler(map);
 		try {
-			SAXParserFactory.newInstance().newSAXParser().parse(powerAMCURL.openStream(), handler);
+			final SAXParserFactory factory = SAXParserFactory.newInstance();
+			factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
+			final SAXParser saxParser = factory.newSAXParser();
+			saxParser.parse(powerAMCURL.openStream(), handler);
 		} catch (final Exception e) {
 			throw new RuntimeException("erreur lors de la lecture du fichier oom : " + powerAMCURL, e);
 		}

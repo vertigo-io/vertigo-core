@@ -32,6 +32,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
+import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.log4j.Logger;
@@ -55,7 +57,11 @@ public final class EAXmiLoader implements XmlLoader {
 		map = new LinkedHashMap<>();
 		final EAXmiHandler handler = new EAXmiHandler(map);
 		try {
-			SAXParserFactory.newInstance().newSAXParser().parse(xmiFileURL.openStream(), handler);
+			final SAXParserFactory factory = SAXParserFactory.newInstance();
+			factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
+			final SAXParser saxParser = factory.newSAXParser();
+			saxParser.parse(xmiFileURL.openStream(), handler);
 		} catch (final Exception e) {
 			throw new RuntimeException("erreur lors de la lecture du fichier xmi : " + xmiFileURL, e);
 		}

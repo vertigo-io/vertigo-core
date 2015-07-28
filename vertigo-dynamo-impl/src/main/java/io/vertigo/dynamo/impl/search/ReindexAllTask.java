@@ -78,7 +78,7 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 		if (REINDEXATION_IN_PROGRESS) {
 			final String warnMessage = "Reindexation of " + searchIndexDefinition.getName() + " is already in progess (" + REINDEX_COUNT + " elements done)";
 			LOGGER.warn(warnMessage);
-			reindexFuture.failed(new RuntimeException(warnMessage));
+			reindexFuture.fail(new RuntimeException(warnMessage));
 		} else {
 			//-----
 			REINDEXATION_IN_PROGRESS = true;
@@ -115,10 +115,10 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 					lastUri = maxUri;
 				}
 				//On ne retire pas la fin, il y a un risque de retirer les données ajoutées depuis le démarrage de l'indexation
-				reindexFuture.completed(REINDEX_COUNT);
+				reindexFuture.success(REINDEX_COUNT);
 			} catch (final Exception e) {
 				LOGGER.error("Reindexation error", e);
-				reindexFuture.failed(e);
+				reindexFuture.fail(e);
 			} finally {
 				REINDEXATION_IN_PROGRESS = false;
 				LOGGER.info("Reindexation of " + searchIndexDefinition.getName() + " finished in " + (System.currentTimeMillis() - startTime) + "ms (" + REINDEX_COUNT + " elements done)");

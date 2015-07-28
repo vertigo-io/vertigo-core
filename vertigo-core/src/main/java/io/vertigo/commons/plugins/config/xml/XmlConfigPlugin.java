@@ -34,6 +34,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -95,6 +96,7 @@ public final class XmlConfigPlugin implements ConfigPlugin { /*implements Loader
 
 		final XmlConfigHandler handler = new XmlConfigHandler(tmpConfigs);
 		final SAXParserFactory factory = SAXParserFactory.newInstance();
+		factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
 		final SAXParser saxParser = factory.newSAXParser();
 		saxParser.parse(new BufferedInputStream(configURL.openStream()), handler);

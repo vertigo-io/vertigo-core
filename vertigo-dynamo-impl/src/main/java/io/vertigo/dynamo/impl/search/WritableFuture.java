@@ -7,6 +7,12 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+/**
+ * WritableFuture for set result after execution.
+ * @see org.apache.http.concurrent.BasicFuture
+ * @author npiedeloup
+ * @param <V> Result type
+ */
 public final class WritableFuture<V> implements Future<V> {
 
 	private volatile boolean completed;
@@ -76,9 +82,10 @@ public final class WritableFuture<V> implements Future<V> {
 	}
 
 	/**
+	 * Mark this execution as success.
 	 * @param result Result of execution
 	 */
-	public void completed(final V result) {
+	public void success(final V result) {
 		synchronized (this) {
 			Assertion.checkState(!this.completed, "Task already completed");
 			//-----
@@ -88,7 +95,11 @@ public final class WritableFuture<V> implements Future<V> {
 		}
 	}
 
-	public void failed(final Exception exception) {
+	/**
+	 * Mark this execution as failed.
+	 * @param exception Failure reason
+	 */
+	public void fail(final Exception exception) {
 		synchronized (this) {
 			Assertion.checkState(!this.completed, "Task already completed");
 			//-----

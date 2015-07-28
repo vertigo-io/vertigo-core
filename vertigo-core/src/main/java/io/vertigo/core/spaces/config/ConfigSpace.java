@@ -87,7 +87,7 @@ import java.util.regex.Pattern;
  */
 public final class ConfigSpace {
 	/** Regexp path. */
-	public static final Pattern REGEX_PATH = Pattern.compile("([a-z][a-zA-Z0-9]*)([a-z][a-zA-Z0-9]*.)*");
+	public static final Pattern REGEX_PATH = Pattern.compile("([a-z][a-zA-Z0-9]*)(\\.[a-z][a-zA-Z0-9]*)*");
 
 	/** Regexp propertyName. */
 	public static final Pattern REGEX_PROPERTY = Pattern.compile("[a-z][a-zA-Z0-9]*");

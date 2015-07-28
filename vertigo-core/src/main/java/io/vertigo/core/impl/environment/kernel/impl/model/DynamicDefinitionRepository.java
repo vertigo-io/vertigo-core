@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Espace de nommage.
@@ -188,9 +189,9 @@ public final class DynamicDefinitionRepository {
 	 */
 	Collection<DynamicDefinitionKey> getOrphanDefinitionKeys() {
 		final Collection<DynamicDefinitionKey> collection = new ArrayList<>();
-		for (final DynamicDefinitionKey definitionKey : definitions.keySet()) {
-			if (definitions.get(definitionKey) == null) {
-				collection.add(definitionKey);
+		for (final Entry<DynamicDefinitionKey, DynamicDefinition> entry : definitions.entrySet()) {
+			if (entry.getValue() == null) {
+				collection.add(entry.getKey());
 			}
 		}
 		return Collections.unmodifiableCollection(collection);

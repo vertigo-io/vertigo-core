@@ -38,6 +38,9 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	private ElasticaEngine myElasticaEngine = null; //par défaut pas d'elasticité.
 	private ModuleConfig myBootModuleConfig = null;
 
+	/**
+	 * @param appConfigBuilder Parent AppConfig builder
+	 */
 	BootConfigBuilder(final AppConfigBuilder appConfigBuilder) {
 		Assertion.checkNotNull(appConfigBuilder);
 		//-----
@@ -47,6 +50,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	/**
 	 * Ajout de paramètres
 	 * @param logConfig Config of logs
+	 * @return this builder
 	 */
 	public BootConfigBuilder withLogConfig(final LogConfig logConfig) {
 		Assertion.checkNotNull(logConfig);
@@ -57,17 +61,24 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 
 	/**
 	 * Permet de définir un démarrage silencieux. (Sans retour console)
-	 * @return Builder
+	 * @return this builder
 	 */
 	public BootConfigBuilder silently() {
 		mySilence = true;
 		return this;
 	}
 
+	/**
+	 * @return Module config builder
+	 */
 	ModuleConfigBuilder beginBootModule() {
 		return new ModuleConfigBuilder(appConfigBuilder);
 	}
 
+	/**
+	 * @param moduleConfig Module config
+	 * @return this builder
+	 */
 	BootConfigBuilder withModule(final ModuleConfig moduleConfig) {
 		Assertion.checkNotNull(moduleConfig);
 		Assertion.checkState(myBootModuleConfig == null, "moduleConfig is already completed");
@@ -99,6 +110,9 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 		return this;
 	}
 
+	/**
+	 * @return AppConfig builder
+	 */
 	public AppConfigBuilder endBoot() {
 		return appConfigBuilder;
 	}

@@ -106,7 +106,7 @@ final class XMLModulesHandler extends DefaultHandler {
 				final String superClass = attrs.getValue("inheritance");
 				moduleConfigBuilder = appConfigBuilder.beginModule(moduleName);
 				if (api != null) {
-					if (!Boolean.valueOf(api)) {
+					if (!Boolean.parseBoolean(api)) {
 						moduleConfigBuilder.withNoAPI();
 					}
 				}
@@ -124,8 +124,9 @@ final class XMLModulesHandler extends DefaultHandler {
 				} else {
 					componentConfigBuilder = moduleConfigBuilder.beginComponent(componentImplClass);
 				}
-				if (attrs.getValue("initClass") != null) {
-					final Class componentInitialierClass = ClassUtil.classForName(attrs.getValue("initClass"));
+				final String initClass = attrs.getValue("initClass");
+				if (initClass != null) {
+					final Class componentInitialierClass = ClassUtil.classForName(initClass);
 					componentConfigBuilder.withInitializer(componentInitialierClass);
 				}
 				break;
