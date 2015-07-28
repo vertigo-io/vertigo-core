@@ -38,7 +38,7 @@ import org.elasticsearch.node.NodeBuilder;
  *
  * @author npiedeloup
  */
-public final class ESSearchServicesPlugin extends AbstractESSearchServicesPlugin {
+public final class ESNodeSearchServicesPlugin extends AbstractESSearchServicesPlugin {
 
 	/** url du serveur elasticSearch. */
 	private final String[] serversNames;
@@ -62,7 +62,7 @@ public final class ESSearchServicesPlugin extends AbstractESSearchServicesPlugin
 	 * @param resourceManager Manager d'accès aux ressources
 	 */
 	@Inject
-	public ESSearchServicesPlugin(@Named("servers.names") final String serversNamesStr, @Named("cores") final String cores,
+	public ESNodeSearchServicesPlugin(@Named("servers.names") final String serversNamesStr, @Named("cores") final String cores,
 			@Named("rowsPerQuery") final int rowsPerQuery, @Named("cluster.name") final String clusterName,
 			@Named("config.file") final Option<String> configFile, @Named("node.name") final Option<String> nodeName, final CodecManager codecManager, final ResourceManager resourceManager) {
 		super(cores, rowsPerQuery, configFile, codecManager, resourceManager);
