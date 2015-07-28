@@ -33,5 +33,5 @@ public interface DaemonManager extends Component {
 	 * Provides a snapshot/copy of execution's stats.
 	 * @return Stats
 	 */
-	List<DaemonStat> getSats();
+	List<DaemonStat> getStats();
 }

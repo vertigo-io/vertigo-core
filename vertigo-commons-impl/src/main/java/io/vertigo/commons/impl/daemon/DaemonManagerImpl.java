@@ -56,9 +56,22 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 		});
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public List<DaemonStat> getSats() {
-		return daemonExecutor.getSats();
+	public List<DaemonStat> getStats() {
+		return daemonExecutor.getStats();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void start() {
+		daemonExecutor.start();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void stop() {
+		daemonExecutor.stop();
 	}
 
 	/**
@@ -87,19 +100,10 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	/**
 	 * Démarre l'ensemble des démons préalablement enregistré dans le spaceDefinition.
 	 */
-	private void startAllDaemons() {
+	void startAllDaemons() {
 		for (final DaemonDefinition daemonDefinition : Home.getDefinitionSpace().getAll(DaemonDefinition.class)) {
 			startDaemon(daemonDefinition);
 		}
 	}
 
-	@Override
-	public void start() {
-		daemonExecutor.start();
-	}
-
-	@Override
-	public void stop() {
-		daemonExecutor.stop();
-	}
 }

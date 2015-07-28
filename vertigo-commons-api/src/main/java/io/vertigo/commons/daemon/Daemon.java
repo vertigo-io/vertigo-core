@@ -26,8 +26,7 @@ package io.vertigo.commons.daemon;
 public interface Daemon {
 
 	/**
-	 * Runnalbe with exception...
-	 *
+	 * Runnable with exception.
 	 * @throws Exception exception.
 	 */
 	void run() throws Exception;

@@ -14,37 +14,58 @@ public final class DaemonStatImpl implements DaemonStat {
 	private final DaemonStat.Status status;
 	private final long sucesses;
 	private final long failures;
+	private final boolean lastExecSuccess;
 
-	public DaemonStatImpl(DaemonDefinition daemonDefinition, long successes, long failures, DaemonStat.Status status) {
+	/**
+	 * Constructor.
+	 * @param daemonDefinition Deamon definition
+	 * @param successes Nb success
+	 * @param failures Nb failure
+	 * @param status Current status
+	 * @param lastExecSuccess if last exec was a success
+	 */
+	public DaemonStatImpl(final DaemonDefinition daemonDefinition, final long successes, final long failures, final DaemonStat.Status status, final boolean lastExecSuccess) {
 		Assertion.checkNotNull(daemonDefinition);
 		Assertion.checkNotNull(status);
 		//-----
 		this.daemonDefinition = daemonDefinition;
 		this.failures = failures;
-		this.sucesses = successes;
+		sucesses = successes;
 		this.status = status;
+		this.lastExecSuccess = lastExecSuccess;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public DaemonDefinition getDaemonDefinition() {
 		return daemonDefinition;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long getCount() {
 		return sucesses + failures;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long getSuccesses() {
 		return sucesses;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long getFailures() {
 		return failures;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public boolean isLastExecSuccess() {
+		return lastExecSuccess;
+	}
+
+	/** {@inheritDoc} */
 	@Override
 	public Status getStatus() {
 		return status;
