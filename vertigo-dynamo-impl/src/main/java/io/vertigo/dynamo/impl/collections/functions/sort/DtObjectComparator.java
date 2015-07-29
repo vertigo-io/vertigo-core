@@ -43,6 +43,7 @@ import java.util.Locale;
  * @author pchretien
  */
 final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
+
 	//On ne veut pas d'un comparateur sérializable !!!
 	/**
 	 * Comparateur du tri
@@ -128,14 +129,7 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 	 * @return Comparator
 	 */
 	private static Comparator<Object> createDefaultComparator(final SortState sortState) {
-		return new Comparator<Object>() {
-			/** {@inheritDoc} */
-			@Override
-			public int compare(final Object v1, final Object v2) {
-				return compareValues(sortState, v1, v2);
-			}
-
-		};
+		return new DefaultComparator(sortState);
 	}
 
 	/**
@@ -151,28 +145,57 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 		final DataStore broker = storeManager.getDataStore();
 		//		final Store store = getPhysicalStore(masterDataDefinition.getDtDefinition());
 		final DtField mdFieldSort = dtcURIForMasterData.getDtDefinition().getSortField().get();
-		return new Comparator<Object>() {
-			private Object getSortValue(final Object o) {
-				final URI<DtObject> uri = new URI(dtcURIForMasterData.getDtDefinition(), o);
-				DtObject dto;
-				try {
-					dto = broker.get(uri);
-				} catch (final Exception e) {
-					//Il ne peut pas y avoir d'exception typée dans un comparateur.
-					throw new RuntimeException(e);
-				}
-				return mdFieldSort.getDataAccessor().getValue(dto);
-			}
-
-			@Override
-			public int compare(final Object o1, final Object o2) {
-				if (o1 != null && o2 != null) {
-					final Object lib1 = getSortValue(o1);
-					final Object lib2 = getSortValue(o2);
-					return compareValues(sortState, lib1, lib2);
-				}
-				return compareValues(sortState, o1, o2);//si l'un des deux est null on retombe sur la comparaison standard
-			}
-		};
+		return new MasterDataComparator(dtcURIForMasterData, sortState, broker, mdFieldSort);
 	}
+
+	private static final class DefaultComparator implements Comparator<Object> {
+		private final SortState sortState;
+
+		DefaultComparator(final SortState sortState) {
+			this.sortState = sortState;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public int compare(final Object v1, final Object v2) {
+			return compareValues(sortState, v1, v2);
+		}
+	}
+
+	private static final class MasterDataComparator implements Comparator<Object> {
+		private final DtListURIForMasterData dtcURIForMasterData;
+		private final SortState sortState;
+		private final DataStore broker;
+		private final DtField mdFieldSort;
+
+		MasterDataComparator(final DtListURIForMasterData dtcURIForMasterData, final SortState sortState, final DataStore broker, final DtField mdFieldSort) {
+			this.dtcURIForMasterData = dtcURIForMasterData;
+			this.sortState = sortState;
+			this.broker = broker;
+			this.mdFieldSort = mdFieldSort;
+		}
+
+		private Object getSortValue(final Object o) {
+			final URI<DtObject> uri = new URI(dtcURIForMasterData.getDtDefinition(), o);
+			DtObject dto;
+			try {
+				dto = broker.get(uri);
+			} catch (final Exception e) {
+				//Il ne peut pas y avoir d'exception typée dans un comparateur.
+				throw new RuntimeException(e);
+			}
+			return mdFieldSort.getDataAccessor().getValue(dto);
+		}
+
+		@Override
+		public int compare(final Object o1, final Object o2) {
+			if (o1 != null && o2 != null) {
+				final Object lib1 = getSortValue(o1);
+				final Object lib2 = getSortValue(o2);
+				return compareValues(sortState, lib1, lib2);
+			}
+			return compareValues(sortState, o1, o2);//si l'un des deux est null on retombe sur la comparaison standard
+		}
+	}
+
 }

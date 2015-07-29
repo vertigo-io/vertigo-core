@@ -46,6 +46,7 @@ import javax.inject.Named;
  * @author pchretien, npiedeloup
  */
 public final class WorkManagerImpl implements WorkManager, Activeable {
+
 	private final WorkListener workListener;
 	//There is always ONE LocalWorker, but distributedWorker is optionnal
 	private final LocalCoordinator localCoordinator;
@@ -129,16 +130,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		Assertion.checkNotNull(callable);
 		Assertion.checkNotNull(workResultHandler);
 		//-----
-		final WorkEngineProvider<WR, Void> workEngineProvider = new WorkEngineProvider<>(new WorkEngine<WR, Void>() {
-			@Override
-			public WR process(final Void dummy) {
-				try {
-					return callable.call();
-				} catch (final Exception e) {
-					throw new RuntimeException(e);
-				}
-			}
-		});
+		final WorkEngineProvider<WR, Void> workEngineProvider = new WorkEngineProvider<>(new CallableWorkEngine<>(callable));
 
 		final WorkItem<WR, Void> workItem = new WorkItem<>(createWorkId(), null, workEngineProvider);
 		submit(workItem, Option.some(workResultHandler));
@@ -172,4 +164,23 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		}
 		return localCoordinator;
 	}
+
+	private static final class CallableWorkEngine<WR> implements WorkEngine<WR, Void> {
+		private final Callable<WR> callable;
+
+		CallableWorkEngine(final Callable<WR> callable) {
+			this.callable = callable;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public WR process(final Void dummy) {
+			try {
+				return callable.call();
+			} catch (final Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
 }

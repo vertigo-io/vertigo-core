@@ -109,15 +109,7 @@ public final class RestManagerImpl implements RestManager {
 		}
 
 		//2- We sort by path, parameterized path should be after strict path
-		Collections.sort(allEndPointDefinitions, new Comparator<EndPointDefinition>() {
-
-			/** {@inheritDoc} */
-			@Override
-			public int compare(final EndPointDefinition endPointDefinition1, final EndPointDefinition endPointDefinition2) {
-				return endPointDefinition1.getPath().compareTo(endPointDefinition2.getPath());
-			}
-
-		});
+		Collections.sort(allEndPointDefinitions, new EndPointComparator());
 
 		return allEndPointDefinitions;
 	}
@@ -129,4 +121,15 @@ public final class RestManagerImpl implements RestManager {
 		routesRegisterPlugin.registerWsRoute(handlerChain, endPointDefinition);
 	}
 
+	private static final class EndPointComparator implements Comparator<EndPointDefinition> {
+		EndPointComparator() {
+			//rien
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public int compare(final EndPointDefinition endPointDefinition1, final EndPointDefinition endPointDefinition2) {
+			return endPointDefinition1.getPath().compareTo(endPointDefinition2.getPath());
+		}
+	}
 }

@@ -94,6 +94,7 @@ import org.elasticsearch.search.sort.SortOrder;
  * @param <K> Type du keyConcept métier indexé
  */
 final class ESStatement<K extends KeyConcept, I extends DtObject> {
+
 	private static final int TOPHITS_SUBAGGREAGTION_SIZE = 10; //max 10 documents per cluster when clusterization is used
 	private static final String TOPHITS_SUBAGGREAGTION_NAME = "top";
 	private static final String DATE_PATTERN = "dd/MM/yy";
@@ -488,13 +489,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		}
 
 		//tri des facettes
-		final Comparator<FacetValue> facetComparator = new Comparator<FacetValue>() {
-			@Override
-			public int compare(final FacetValue o1, final FacetValue o2) {
-				final int compareNbDoc = (int) (facetValues.get(o2) - facetValues.get(o1));
-				return compareNbDoc != 0 ? compareNbDoc : o1.getLabel().getDisplay().compareToIgnoreCase(o2.getLabel().getDisplay());
-			}
-		};
+		final Comparator<FacetValue> facetComparator = new FacetComparator(facetValues);
 		final Map<FacetValue, Long> sortedFacetValues = new TreeMap<>(facetComparator);
 		sortedFacetValues.putAll(facetValues);
 
@@ -510,4 +505,20 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		}
 		return new Facet(facetDefinition, rangeValues);
 	}
+
+	private static final class FacetComparator implements Comparator<FacetValue> {
+		private final Map<FacetValue, Long> facetValues;
+
+		FacetComparator(final Map<FacetValue, Long> facetValues) {
+			this.facetValues = facetValues;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public int compare(final FacetValue o1, final FacetValue o2) {
+			final int compareNbDoc = (int) (facetValues.get(o2) - facetValues.get(o1));
+			return compareNbDoc != 0 ? compareNbDoc : o1.getLabel().getDisplay().compareToIgnoreCase(o2.getLabel().getDisplay());
+		}
+	}
+
 }

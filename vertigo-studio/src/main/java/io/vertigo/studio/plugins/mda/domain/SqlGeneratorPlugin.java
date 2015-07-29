@@ -81,7 +81,7 @@ public final class SqlGeneratorPlugin extends AbstractGeneratorPlugin {
 
 	private void generateSql(final FileConfig domainConfiguration, final ResultBuilder resultBuilder) {
 		final List<TemplateDtDefinition> list = new ArrayList<>(DomainUtil.getDtDefinitions().size());
-		for (final DtDefinition dtDefinition : DomainUtil.sortAbsoluteDefinitionCollection(DomainUtil.getDtDefinitions())) {
+		for (final DtDefinition dtDefinition : DomainUtil.sortDefinitionCollection(DomainUtil.getDtDefinitions())) {
 			final TemplateDtDefinition templateDef = new TemplateDtDefinition(dtDefinition);
 			list.add(templateDef);
 		}
