@@ -48,14 +48,17 @@ import javax.inject.Named;
 public final class TcpVCommandEngine implements VCommandEngine, Component, Activeable {
 	private final int port;
 	private final Map<String, VCommandExecutor> commmandExecutors = new LinkedHashMap<>();
+	private Thread tcpServerThread;
 
+	/**
+	 * @param port port
+	 */
 	@Inject
 	public TcpVCommandEngine(@Named("port") final int port) {
 		this.port = port;
 	}
 
-	private Thread tcpServerThread;
-
+	/** {@inheritDoc} */
 	@Override
 	public void registerCommandExecutor(final String name, final VCommandExecutor commandExecutor) {
 		Assertion.checkArgNotEmpty(name);
@@ -65,6 +68,7 @@ public final class TcpVCommandEngine implements VCommandEngine, Component, Activ
 		commmandExecutors.put(name, commandExecutor);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void start() {
 		Home.getApp().registerAppListener(new AppListener() {
