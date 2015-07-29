@@ -82,8 +82,8 @@ public class OOMTest {
 		Assert.assertEquals("R1A", association.getRoleLabelA());
 		Assert.assertEquals("R1B", association.getRoleLabelB());
 
-		Assert.assertEquals(false, association.isNavigableA());
-		Assert.assertEquals(true, association.isNavigableB());
+		Assert.assertFalse(association.isNavigableA());
+		Assert.assertTrue(association.isNavigableB());
 	}
 
 	/**
@@ -98,8 +98,8 @@ public class OOMTest {
 		Assert.assertEquals("R2A", association.getRoleLabelA());
 		Assert.assertEquals("R2B", association.getRoleLabelB());
 
-		Assert.assertEquals(true, association.isNavigableA());
-		Assert.assertEquals(true, association.isNavigableB());
+		Assert.assertTrue(association.isNavigableA());
+		Assert.assertTrue(association.isNavigableB());
 	}
 
 	/**
@@ -114,8 +114,8 @@ public class OOMTest {
 		Assert.assertEquals("R3A", association.getRoleLabelA());
 		Assert.assertEquals("R3B", association.getRoleLabelB());
 
-		Assert.assertEquals(true, association.isNavigableA());
-		Assert.assertEquals(false, association.isNavigableB());
+		Assert.assertTrue(association.isNavigableA());
+		Assert.assertFalse(association.isNavigableB());
 	}
 
 	/**
@@ -130,8 +130,8 @@ public class OOMTest {
 		Assert.assertEquals("R4A", association.getRoleLabelA());
 		Assert.assertEquals("R4B", association.getRoleLabelB());
 
-		Assert.assertEquals(false, association.isNavigableA());
-		Assert.assertEquals(true, association.isNavigableB());
+		Assert.assertFalse(association.isNavigableA());
+		Assert.assertTrue(association.isNavigableB());
 	}
 
 	/**
@@ -146,8 +146,8 @@ public class OOMTest {
 		Assert.assertEquals("R5A", association.getRoleLabelA());
 		Assert.assertEquals("R5B", association.getRoleLabelB());
 
-		Assert.assertEquals(true, association.isNavigableA());
-		Assert.assertEquals(false, association.isNavigableB());
+		Assert.assertTrue(association.isNavigableA());
+		Assert.assertFalse(association.isNavigableB());
 	}
 
 	/**
@@ -162,8 +162,8 @@ public class OOMTest {
 		Assert.assertEquals("R6A", association.getRoleLabelA());
 		Assert.assertEquals("R6B", association.getRoleLabelB());
 
-		Assert.assertEquals(true, association.isNavigableA());
-		Assert.assertEquals(true, association.isNavigableB());
+		Assert.assertTrue(association.isNavigableA());
+		Assert.assertTrue(association.isNavigableB());
 	}
 
 	/**
@@ -178,8 +178,8 @@ public class OOMTest {
 		Assert.assertEquals("R7A", association.getRoleLabelA());
 		Assert.assertEquals("R7B", association.getRoleLabelB());
 
-		Assert.assertEquals(false, association.isNavigableA());
-		Assert.assertEquals(true, association.isNavigableB());
+		Assert.assertFalse(association.isNavigableA());
+		Assert.assertTrue(association.isNavigableB());
 	}
 
 	/**
@@ -194,8 +194,8 @@ public class OOMTest {
 		Assert.assertEquals("R8A", association.getRoleLabelA());
 		Assert.assertEquals("R8B", association.getRoleLabelB());
 
-		Assert.assertEquals(true, association.isNavigableA());
-		Assert.assertEquals(true, association.isNavigableB());
+		Assert.assertTrue(association.isNavigableA());
+		Assert.assertTrue(association.isNavigableB());
 	}
 
 	/**
@@ -210,8 +210,8 @@ public class OOMTest {
 		Assert.assertEquals("R9A", association.getRoleLabelA());
 		Assert.assertEquals("R9B", association.getRoleLabelB());
 
-		Assert.assertEquals(false, association.isNavigableA());
-		Assert.assertEquals(false, association.isNavigableB());
+		Assert.assertFalse(association.isNavigableA());
+		Assert.assertFalse(association.isNavigableB());
 	}
 
 	/**
@@ -226,7 +226,7 @@ public class OOMTest {
 		Assert.assertEquals("R10A", association.getRoleLabelA());
 		Assert.assertEquals("R10B", association.getRoleLabelB());
 
-		Assert.assertEquals(true, association.isNavigableA());
-		Assert.assertEquals(false, association.isNavigableB());
+		Assert.assertTrue(association.isNavigableA());
+		Assert.assertFalse(association.isNavigableB());
 	}
 }

@@ -30,11 +30,11 @@ public final class StringUtilTest {
 
 	@Test
 	public void testIsEmpty() {
-		Assert.assertEquals(true, StringUtil.isEmpty(null));
-		Assert.assertEquals(true, StringUtil.isEmpty(""));
-		Assert.assertEquals(true, StringUtil.isEmpty("  "));
-		Assert.assertEquals(false, StringUtil.isEmpty("a"));
-		Assert.assertEquals(false, StringUtil.isEmpty(" a "));
+		Assert.assertTrue(StringUtil.isEmpty(null));
+		Assert.assertTrue(StringUtil.isEmpty(""));
+		Assert.assertTrue(StringUtil.isEmpty("  "));
+		Assert.assertFalse(StringUtil.isEmpty("a"));
+		Assert.assertFalse(StringUtil.isEmpty(" a "));
 	}
 
 	/**
@@ -119,42 +119,42 @@ public final class StringUtilTest {
 
 	@Test
 	public void testSimpleLetter() {
-		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('a'));
-		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('b'));
-		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('c'));
-		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('x'));
-		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('y'));
-		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('z'));
+		Assert.assertTrue(StringUtil.isSimpleLetterOrDigit('a'));
+		Assert.assertTrue(StringUtil.isSimpleLetterOrDigit('b'));
+		Assert.assertTrue(StringUtil.isSimpleLetterOrDigit('c'));
+		Assert.assertTrue(StringUtil.isSimpleLetterOrDigit('x'));
+		Assert.assertTrue(StringUtil.isSimpleLetterOrDigit('y'));
+		Assert.assertTrue(StringUtil.isSimpleLetterOrDigit('z'));
 		//----
-		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('A'));
-		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('B'));
-		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('C'));
-		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('X'));
-		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('Y'));
-		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('Z'));
+		Assert.assertTrue(StringUtil.isSimpleLetterOrDigit('A'));
+		Assert.assertTrue(StringUtil.isSimpleLetterOrDigit('B'));
+		Assert.assertTrue(StringUtil.isSimpleLetterOrDigit('C'));
+		Assert.assertTrue(StringUtil.isSimpleLetterOrDigit('X'));
+		Assert.assertTrue(StringUtil.isSimpleLetterOrDigit('Y'));
+		Assert.assertTrue(StringUtil.isSimpleLetterOrDigit('Z'));
 		//----
-		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('0'));
-		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('1'));
-		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('2'));
-		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('3'));
-		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('4'));
-		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('5'));
-		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('6'));
-		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('7'));
-		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('8'));
-		Assert.assertEquals(true, StringUtil.isSimpleLetterOrDigit('9'));
+		Assert.assertTrue(StringUtil.isSimpleLetterOrDigit('0'));
+		Assert.assertTrue(StringUtil.isSimpleLetterOrDigit('1'));
+		Assert.assertTrue(StringUtil.isSimpleLetterOrDigit('2'));
+		Assert.assertTrue(StringUtil.isSimpleLetterOrDigit('3'));
+		Assert.assertTrue(StringUtil.isSimpleLetterOrDigit('4'));
+		Assert.assertTrue(StringUtil.isSimpleLetterOrDigit('5'));
+		Assert.assertTrue(StringUtil.isSimpleLetterOrDigit('6'));
+		Assert.assertTrue(StringUtil.isSimpleLetterOrDigit('7'));
+		Assert.assertTrue(StringUtil.isSimpleLetterOrDigit('8'));
+		Assert.assertTrue(StringUtil.isSimpleLetterOrDigit('9'));
 	}
 
 	@Test
 	public void testNoSimpleLetter() {
-		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('é'));
-		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('à'));
-		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('ù'));
-		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('â'));
-		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('"'));
-		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('+'));
-		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('-'));
-		Assert.assertEquals(false, StringUtil.isSimpleLetterOrDigit('&'));
+		Assert.assertFalse(StringUtil.isSimpleLetterOrDigit('é'));
+		Assert.assertFalse(StringUtil.isSimpleLetterOrDigit('à'));
+		Assert.assertFalse(StringUtil.isSimpleLetterOrDigit('ù'));
+		Assert.assertFalse(StringUtil.isSimpleLetterOrDigit('â'));
+		Assert.assertFalse(StringUtil.isSimpleLetterOrDigit('"'));
+		Assert.assertFalse(StringUtil.isSimpleLetterOrDigit('+'));
+		Assert.assertFalse(StringUtil.isSimpleLetterOrDigit('-'));
+		Assert.assertFalse(StringUtil.isSimpleLetterOrDigit('&'));
 	}
 
 	@Test

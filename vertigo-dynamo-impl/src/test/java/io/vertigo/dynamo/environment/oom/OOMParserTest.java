@@ -59,17 +59,17 @@ public class OOMParserTest extends AbstractTestCaseJU4 {
 		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_1");
 		Assert.assertNotNull(association);
 		/* "0..1" */
-		Assert.assertEquals(false, association.getAssociationNodeA().isMultiple());
-		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());
+		Assert.assertFalse(association.getAssociationNodeA().isMultiple());
+		Assert.assertFalse(association.getAssociationNodeA().isNotNull());
 		/* "0..*" */
-		Assert.assertEquals(true, association.getAssociationNodeB().isMultiple());
-		Assert.assertEquals(false, association.getAssociationNodeB().isNotNull());
+		Assert.assertTrue(association.getAssociationNodeB().isMultiple());
+		Assert.assertFalse(association.getAssociationNodeB().isNotNull());
 
 		Assert.assertEquals("R1A", association.getAssociationNodeA().getRole());
 		Assert.assertEquals("R1B", association.getAssociationNodeB().getRole());
 
-		Assert.assertEquals(false, association.getAssociationNodeA().isNavigable());
-		Assert.assertEquals(true, association.getAssociationNodeB().isNavigable());
+		Assert.assertFalse(association.getAssociationNodeA().isNavigable());
+		Assert.assertTrue(association.getAssociationNodeB().isNavigable());
 
 	}
 
@@ -80,17 +80,17 @@ public class OOMParserTest extends AbstractTestCaseJU4 {
 	public void testAssoctationA1vBnv() {
 		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_2");
 		/* "0..1" */
-		Assert.assertEquals(false, association.getAssociationNodeA().isMultiple());
-		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());
+		Assert.assertFalse(association.getAssociationNodeA().isMultiple());
+		Assert.assertFalse(association.getAssociationNodeA().isNotNull());
 		/* "0..*" */
-		Assert.assertEquals(true, association.getAssociationNodeB().isMultiple());
-		Assert.assertEquals(false, association.getAssociationNodeB().isNotNull());
+		Assert.assertTrue(association.getAssociationNodeB().isMultiple());
+		Assert.assertFalse(association.getAssociationNodeB().isNotNull());
 
 		Assert.assertEquals("R2A", association.getAssociationNodeA().getRole());
 		Assert.assertEquals("R2B", association.getAssociationNodeB().getRole());
 
-		Assert.assertEquals(true, association.getAssociationNodeA().isNavigable());
-		Assert.assertEquals(true, association.getAssociationNodeB().isNavigable());
+		Assert.assertTrue(association.getAssociationNodeA().isNavigable());
+		Assert.assertTrue(association.getAssociationNodeB().isNavigable());
 	}
 
 	/**
@@ -100,17 +100,17 @@ public class OOMParserTest extends AbstractTestCaseJU4 {
 	public void testAssoctationA1vBn() {
 		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_3");
 		/* "0..1" */
-		Assert.assertEquals(false, association.getAssociationNodeA().isMultiple());
-		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());
+		Assert.assertFalse(association.getAssociationNodeA().isMultiple());
+		Assert.assertFalse(association.getAssociationNodeA().isNotNull());
 		/* "0..*" */
-		Assert.assertEquals(true, association.getAssociationNodeB().isMultiple());
-		Assert.assertEquals(false, association.getAssociationNodeB().isNotNull());
+		Assert.assertTrue(association.getAssociationNodeB().isMultiple());
+		Assert.assertFalse(association.getAssociationNodeB().isNotNull());
 
 		Assert.assertEquals("R3A", association.getAssociationNodeA().getRole());
 		Assert.assertEquals("R3B", association.getAssociationNodeB().getRole());
 
-		Assert.assertEquals(true, association.getAssociationNodeA().isNavigable());
-		Assert.assertEquals(false, association.getAssociationNodeB().isNavigable());
+		Assert.assertTrue(association.getAssociationNodeA().isNavigable());
+		Assert.assertFalse(association.getAssociationNodeB().isNavigable());
 	}
 
 	/**
@@ -120,17 +120,17 @@ public class OOMParserTest extends AbstractTestCaseJU4 {
 	public void testAssoctationAnB1v() {
 		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_4");
 		/* "0..*" */
-		Assert.assertEquals(true, association.getAssociationNodeA().isMultiple());
-		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());
+		Assert.assertTrue(association.getAssociationNodeA().isMultiple());
+		Assert.assertFalse(association.getAssociationNodeA().isNotNull());
 		/* "0..1" */
-		Assert.assertEquals(false, association.getAssociationNodeB().isMultiple());
-		Assert.assertEquals(false, association.getAssociationNodeB().isNotNull());
+		Assert.assertFalse(association.getAssociationNodeB().isMultiple());
+		Assert.assertFalse(association.getAssociationNodeB().isNotNull());
 
 		Assert.assertEquals("R4A", association.getAssociationNodeA().getRole());
 		Assert.assertEquals("R4B", association.getAssociationNodeB().getRole());
 
-		Assert.assertEquals(false, association.getAssociationNodeA().isNavigable());
-		Assert.assertEquals(true, association.getAssociationNodeB().isNavigable());
+		Assert.assertFalse(association.getAssociationNodeA().isNavigable());
+		Assert.assertTrue(association.getAssociationNodeB().isNavigable());
 	}
 
 	/**
@@ -140,17 +140,17 @@ public class OOMParserTest extends AbstractTestCaseJU4 {
 	public void testAssoctationAnvB1() {
 		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_5");
 		/* "0..*" */
-		Assert.assertEquals(true, association.getAssociationNodeA().isMultiple());
-		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());
+		Assert.assertTrue(association.getAssociationNodeA().isMultiple());
+		Assert.assertFalse(association.getAssociationNodeA().isNotNull());
 		/* "0..*" */
-		Assert.assertEquals(false, association.getAssociationNodeB().isMultiple());
-		Assert.assertEquals(false, association.getAssociationNodeB().isNotNull());
+		Assert.assertFalse(association.getAssociationNodeB().isMultiple());
+		Assert.assertFalse(association.getAssociationNodeB().isNotNull());
 
 		Assert.assertEquals("R5A", association.getAssociationNodeA().getRole());
 		Assert.assertEquals("R5B", association.getAssociationNodeB().getRole());
 
-		Assert.assertEquals(true, association.getAssociationNodeA().isNavigable());
-		Assert.assertEquals(false, association.getAssociationNodeB().isNavigable());
+		Assert.assertTrue(association.getAssociationNodeA().isNavigable());
+		Assert.assertFalse(association.getAssociationNodeB().isNavigable());
 	}
 
 	/**
@@ -160,17 +160,17 @@ public class OOMParserTest extends AbstractTestCaseJU4 {
 	public void testAssoctationAnvB1v() {
 		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_6");
 		/* "0..*" */
-		Assert.assertEquals(true, association.getAssociationNodeA().isMultiple());
-		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());
+		Assert.assertTrue(association.getAssociationNodeA().isMultiple());
+		Assert.assertFalse(association.getAssociationNodeA().isNotNull());
 		/* "0..1" */
-		Assert.assertEquals(false, association.getAssociationNodeB().isMultiple());
-		Assert.assertEquals(false, association.getAssociationNodeB().isNotNull());
+		Assert.assertFalse(association.getAssociationNodeB().isMultiple());
+		Assert.assertFalse(association.getAssociationNodeB().isNotNull());
 
 		Assert.assertEquals("R6A", association.getAssociationNodeA().getRole());
 		Assert.assertEquals("R6B", association.getAssociationNodeB().getRole());
 
-		Assert.assertEquals(true, association.getAssociationNodeA().isNavigable());
-		Assert.assertEquals(true, association.getAssociationNodeB().isNavigable());
+		Assert.assertTrue(association.getAssociationNodeA().isNavigable());
+		Assert.assertTrue(association.getAssociationNodeB().isNavigable());
 	}
 
 	/**
@@ -180,17 +180,17 @@ public class OOMParserTest extends AbstractTestCaseJU4 {
 	public void testAssoctationAnBnv() {
 		final AssociationNNDefinition association = getAssociationNNDefinition("ANN_CHA_CHI_7");
 		/* "0..*" */
-		Assert.assertEquals(true, association.getAssociationNodeA().isMultiple());
-		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());
+		Assert.assertTrue(association.getAssociationNodeA().isMultiple());
+		Assert.assertFalse(association.getAssociationNodeA().isNotNull());
 		/* "0..*" */
-		Assert.assertEquals(true, association.getAssociationNodeB().isMultiple());
-		Assert.assertEquals(false, association.getAssociationNodeB().isNotNull());
+		Assert.assertTrue(association.getAssociationNodeB().isMultiple());
+		Assert.assertFalse(association.getAssociationNodeB().isNotNull());
 
 		Assert.assertEquals("R7A", association.getAssociationNodeA().getRole());
 		Assert.assertEquals("R7B", association.getAssociationNodeB().getRole());
 
-		Assert.assertEquals(false, association.getAssociationNodeA().isNavigable());
-		Assert.assertEquals(true, association.getAssociationNodeB().isNavigable());
+		Assert.assertFalse(association.getAssociationNodeA().isNavigable());
+		Assert.assertTrue(association.getAssociationNodeB().isNavigable());
 	}
 
 	/**
@@ -200,17 +200,17 @@ public class OOMParserTest extends AbstractTestCaseJU4 {
 	public void testAssoctationAnvBnv() {
 		final AssociationNNDefinition association = getAssociationNNDefinition("ANN_CHA_CHI_8");
 		/* "0..*" */
-		Assert.assertEquals(true, association.getAssociationNodeA().isMultiple());
-		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());
+		Assert.assertTrue(association.getAssociationNodeA().isMultiple());
+		Assert.assertFalse(association.getAssociationNodeA().isNotNull());
 		/* "0..*" */
-		Assert.assertEquals(true, association.getAssociationNodeB().isMultiple());
-		Assert.assertEquals(false, association.getAssociationNodeB().isNotNull());
+		Assert.assertTrue(association.getAssociationNodeB().isMultiple());
+		Assert.assertFalse(association.getAssociationNodeB().isNotNull());
 
 		Assert.assertEquals("R8A", association.getAssociationNodeA().getRole());
 		Assert.assertEquals("R8B", association.getAssociationNodeB().getRole());
 
-		Assert.assertEquals(true, association.getAssociationNodeA().isNavigable());
-		Assert.assertEquals(true, association.getAssociationNodeB().isNavigable());
+		Assert.assertTrue(association.getAssociationNodeA().isNavigable());
+		Assert.assertTrue(association.getAssociationNodeB().isNavigable());
 	}
 
 	/**
@@ -220,17 +220,17 @@ public class OOMParserTest extends AbstractTestCaseJU4 {
 	public void testAssoctationAnBn() {
 		final AssociationNNDefinition association = getAssociationNNDefinition("ANN_CHA_CHI_9");
 		/* "0..*" */
-		Assert.assertEquals(true, association.getAssociationNodeA().isMultiple());
-		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());
+		Assert.assertTrue(association.getAssociationNodeA().isMultiple());
+		Assert.assertFalse(association.getAssociationNodeA().isNotNull());
 		/* "0..*" */
-		Assert.assertEquals(true, association.getAssociationNodeB().isMultiple());
-		Assert.assertEquals(false, association.getAssociationNodeB().isNotNull());
+		Assert.assertTrue(association.getAssociationNodeB().isMultiple());
+		Assert.assertFalse(association.getAssociationNodeB().isNotNull());
 
 		Assert.assertEquals("R9A", association.getAssociationNodeA().getRole());
 		Assert.assertEquals("R9B", association.getAssociationNodeB().getRole());
 
-		Assert.assertEquals(false, association.getAssociationNodeA().isNavigable());
-		Assert.assertEquals(false, association.getAssociationNodeB().isNavigable());
+		Assert.assertFalse(association.getAssociationNodeA().isNavigable());
+		Assert.assertFalse(association.getAssociationNodeB().isNavigable());
 	}
 
 	/**
@@ -240,16 +240,16 @@ public class OOMParserTest extends AbstractTestCaseJU4 {
 	public void testAssoctationAnvBn() {
 		final AssociationNNDefinition association = getAssociationNNDefinition("ANN_CHA_CHI_10");
 		/* "0..*" */
-		Assert.assertEquals(true, association.getAssociationNodeA().isMultiple());
-		Assert.assertEquals(false, association.getAssociationNodeA().isNotNull());
+		Assert.assertTrue(association.getAssociationNodeA().isMultiple());
+		Assert.assertFalse(association.getAssociationNodeA().isNotNull());
 		/* "0..*" */
-		Assert.assertEquals(true, association.getAssociationNodeB().isMultiple());
-		Assert.assertEquals(false, association.getAssociationNodeB().isNotNull());
+		Assert.assertTrue(association.getAssociationNodeB().isMultiple());
+		Assert.assertFalse(association.getAssociationNodeB().isNotNull());
 
 		Assert.assertEquals("R10A", association.getAssociationNodeA().getRole());
 		Assert.assertEquals("R10B", association.getAssociationNodeB().getRole());
 
-		Assert.assertEquals(true, association.getAssociationNodeA().isNavigable());
-		Assert.assertEquals(false, association.getAssociationNodeB().isNavigable());
+		Assert.assertTrue(association.getAssociationNodeA().isNavigable());
+		Assert.assertFalse(association.getAssociationNodeB().isNavigable());
 	}
 }

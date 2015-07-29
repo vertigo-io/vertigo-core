@@ -317,7 +317,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		//On recherche la facette date
 		final Facet yearFacet = getFacetByName(result, "FCT_YEAR" + facetSuffix);
 		Assert.assertNotNull(yearFacet);
-		Assert.assertEquals(true, yearFacet.getDefinition().isRangeFacet());
+		Assert.assertTrue(yearFacet.getDefinition().isRangeFacet());
 
 		boolean found = false;
 		for (final Entry<FacetValue, Long> entry : yearFacet.getFacetValues().entrySet()) {
@@ -326,7 +326,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 				Assert.assertEquals(carDataBase.before(2000), entry.getValue().longValue());
 			}
 		}
-		Assert.assertEquals(true, found);
+		Assert.assertTrue(found);
 
 		//on vérifie l'ordre
 		final List<FacetValue> facetValueDefinition = yearFacet.getDefinition().getFacetRanges();
@@ -357,7 +357,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertNotNull(makeFacet);
 		//On vérifie que l'on est sur le champ Make
 		Assert.assertEquals("MAKE", makeFacet.getDefinition().getDtField().getName());
-		Assert.assertEquals(false, makeFacet.getDefinition().isRangeFacet());
+		Assert.assertFalse(makeFacet.getDefinition().isRangeFacet());
 
 		//On vérifie qu'il existe une valeur pour peugeot et que le nombre d'occurrences est correct
 		boolean found = false;
@@ -369,7 +369,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 				Assert.assertEquals(carDataBase.getByMake(make).size(), entry.getValue().intValue());
 			}
 		}
-		Assert.assertEquals(true, found);
+		Assert.assertTrue(found);
 
 		//on vérifie l'ordre
 		int lastCount = Integer.MAX_VALUE;

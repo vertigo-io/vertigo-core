@@ -69,7 +69,7 @@ public final class FacetManagerTest extends AbstractTestCaseJU4 {
 		//On recherche la facette date
 		final Facet yearFacet = getFacetByName(result, CarFacetInitializer.FCT_YEAR_CAR);
 		Assert.assertNotNull(yearFacet);
-		Assert.assertEquals(true, yearFacet.getDefinition().isRangeFacet());
+		Assert.assertTrue(yearFacet.getDefinition().isRangeFacet());
 
 		boolean found = false;
 		for (final Entry<FacetValue, Long> entry : yearFacet.getFacetValues().entrySet()) {
@@ -78,7 +78,7 @@ public final class FacetManagerTest extends AbstractTestCaseJU4 {
 				Assert.assertEquals(carDataBase.before(2000), entry.getValue().longValue());
 			}
 		}
-		Assert.assertEquals(true, found);
+		Assert.assertTrue(found);
 	}
 
 	private void testFacetResultByTerm(final FacetedQueryResult<Car, ?> result) {
@@ -92,7 +92,7 @@ public final class FacetManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertNotNull(makeFacet);
 		//On vérifie que l'on est sur le champ Make
 		Assert.assertEquals("MAKE", makeFacet.getDefinition().getDtField().getName());
-		Assert.assertEquals(false, makeFacet.getDefinition().isRangeFacet());
+		Assert.assertFalse(makeFacet.getDefinition().isRangeFacet());
 
 		//On vérifie qu'il existe une valeur pour peugeot et que le nombre d'occurrences est correct
 		boolean found = false;
@@ -104,7 +104,7 @@ public final class FacetManagerTest extends AbstractTestCaseJU4 {
 				Assert.assertEquals(carDataBase.getByMake(make).size(), entry.getValue().intValue());
 			}
 		}
-		Assert.assertEquals(true, found);
+		Assert.assertTrue(found);
 	}
 
 	private static Facet getFacetByName(final FacetedQueryResult<Car, ?> result, final String facetName) {

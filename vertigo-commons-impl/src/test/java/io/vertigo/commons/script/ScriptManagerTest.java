@@ -161,20 +161,20 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testExpressionVarBoolean() {
 		final Boolean test = scriptManager.evaluateExpression("age>20", createParameters(), Boolean.class);
-		Assert.assertEquals(true, test.booleanValue());
+		Assert.assertTrue(test.booleanValue());
 	}
 
 	//
 	//	@Test
 	//	public void testBSExpressionVarBoolean() {
 	//		final Boolean test = bsExpressionEvaluatorPlugin.evaluate("age>20", createParameters(), Boolean.class);
-	//		Assert.assertEquals(true, test.booleanValue());
+	//		Assert.assertTrue(test.booleanValue());
 	//	}
 	//
 	//	@Test
 	//	public void testMVELExpressionVarBoolean() {
 	//		final Boolean test = mvelExpressionEvaluatorPlugin.evaluate("nom == 'Duraton'", createParameters(), Boolean.class);
-	//		Assert.assertEquals(true, test.booleanValue());
+	//		Assert.assertTrue(test.booleanValue());
 	//	}
 
 	private class MyScriptParserHandler implements ScriptParserHandler {

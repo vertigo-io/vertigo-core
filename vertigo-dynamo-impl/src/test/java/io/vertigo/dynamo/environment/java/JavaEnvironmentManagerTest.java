@@ -53,7 +53,7 @@ public final class JavaEnvironmentManagerTest extends AbstractTestCaseJU4 {
 
 	public void testFamille() {
 		final DtDefinition dtDefinition = Home.getDefinitionSpace().resolve("DT_FAMILLE", DtDefinition.class);
-		Assert.assertEquals(true, dtDefinition.isPersistent());
+		Assert.assertTrue(dtDefinition.isPersistent());
 		Assert.assertEquals(io.vertigo.dynamock.domain.famille.Famille.class.getCanonicalName(), dtDefinition.getClassCanonicalName());
 		Assert.assertEquals(io.vertigo.dynamock.domain.famille.Famille.class.getPackage().getName(), dtDefinition.getPackageName());
 		Assert.assertEquals(io.vertigo.dynamock.domain.famille.Famille.class.getSimpleName(), dtDefinition.getClassSimpleName());

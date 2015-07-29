@@ -134,7 +134,7 @@ public final class ConfigManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals("monBeauServer", serverConfig.getName());
 		Assert.assertEquals(99, serverConfig.getPort());
 		Assert.assertEquals("http://wwww", serverConfig.getHost());
-		Assert.assertEquals(true, serverConfig.isActive());
+		Assert.assertTrue(serverConfig.isActive());
 	}
 
 	@Test(expected = Exception.class)
@@ -149,7 +149,7 @@ public final class ConfigManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals("monBeauServer", serverConfig.getName());
 		Assert.assertEquals(99, serverConfig.getPort());
 		Assert.assertEquals("http://wwww/fr", serverConfig.getHost());
-		Assert.assertEquals(false, serverConfig.isActive());
+		Assert.assertFalse(serverConfig.isActive());
 	}
 
 	@Test
@@ -158,7 +158,7 @@ public final class ConfigManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals("monBeauServer", serverConfig.getName());
 		Assert.assertEquals(99, serverConfig.getPort());
 		Assert.assertEquals("http://wwww/en", serverConfig.getHost());
-		Assert.assertEquals(false, serverConfig.isActive());
+		Assert.assertFalse(serverConfig.isActive());
 	}
 
 	@Test
@@ -167,7 +167,7 @@ public final class ConfigManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals("marecette", serverConfig.getName());
 		Assert.assertEquals(8080, serverConfig.getPort());
 		Assert.assertEquals("http://wwww/fr", serverConfig.getHost());
-		Assert.assertEquals(true, serverConfig.isActive());
+		Assert.assertTrue(serverConfig.isActive());
 	}
 
 	@Test
@@ -176,7 +176,7 @@ public final class ConfigManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals("monsite", serverConfig.getName());
 		Assert.assertEquals(80, serverConfig.getPort());
 		Assert.assertEquals("http://wwww/fr", serverConfig.getHost());
-		Assert.assertEquals(true, serverConfig.isActive());
+		Assert.assertTrue(serverConfig.isActive());
 	}
 
 	@Test
@@ -185,7 +185,7 @@ public final class ConfigManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals("monsite", serverConfig.getName());
 		Assert.assertEquals(80, serverConfig.getPort());
 		Assert.assertEquals("http://wwww/fr", serverConfig.getHost());
-		Assert.assertEquals(true, serverConfig.isActive());
+		Assert.assertTrue(serverConfig.isActive());
 	}
 
 	@Test
@@ -194,6 +194,6 @@ public final class ConfigManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals("monsite", serverConfig.getName());
 		Assert.assertEquals(80, serverConfig.getPort());
 		Assert.assertEquals("http://wwww/fr", serverConfig.getHost());
-		Assert.assertEquals(true, serverConfig.isActive());
+		Assert.assertTrue(serverConfig.isActive());
 	}
 }

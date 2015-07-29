@@ -67,7 +67,7 @@ public final class ResourceManagerTest extends AbstractTestCaseJU4 {
 	public void testResourceSelector() {
 		final String expected = "io/vertigo/commons/resource/hello.properties";
 		final URL url = resourceManager.resolve(expected);
-		Assert.assertEquals(true, url.getPath().indexOf(expected) != -1);
+		Assert.assertTrue(url.getPath().indexOf(expected) != -1);
 	}
 	//
 	//	@Test
