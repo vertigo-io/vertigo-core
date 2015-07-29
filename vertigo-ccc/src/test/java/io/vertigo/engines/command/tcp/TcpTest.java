@@ -24,6 +24,8 @@ import io.vertigo.core.command.VResponse;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -56,10 +58,12 @@ public final class TcpTest {
 	}
 
 	public void test(final int threadCount, final int count) throws InterruptedException {
+		final SharedExecStatus sharedExecStatus = new SharedExecStatus();
+
 		final Thread[] threads = new Thread[threadCount];
 		final long start = System.currentTimeMillis();
 		for (int j = 0; j < threadCount; j++) {
-			threads[j] = new Thread(new Sender(count));
+			threads[j] = new Thread(new Sender(count, sharedExecStatus));
 			threads[j].start();
 		}
 		for (int j = 0; j < threadCount; j++) {
@@ -70,15 +74,36 @@ public final class TcpTest {
 		System.out.println("----- count/thread  : " + count);
 		System.out.println("----- elapsed time  : " + ((System.currentTimeMillis() - start) / 1000) + "s");
 		System.out.println("--------------------------------------------------- ");
+		Assert.assertFalse(sharedExecStatus.hasErrors());
+	}
 
+	public static final class SharedExecStatus {
+		//private final int id;
+		private final List<String> errors = new ArrayList<>();
+
+		public synchronized void addError(final String error) {
+			errors.add(error);
+		}
+
+		public synchronized boolean hasErrors() {
+			return !errors.isEmpty();
+		}
+
+		public synchronized void logErrors() {
+			for (final String error : errors) {
+				System.err.println(error);
+			}
+		}
 	}
 
 	public static final class Sender implements Runnable {
 		//private final int id;
 		private final int count;
+		private final SharedExecStatus sharedExecStatus;
 
-		Sender(final int count) {
+		Sender(final int count, final SharedExecStatus sharedExecStatus) {
 			this.count = count;
+			this.sharedExecStatus = sharedExecStatus;
 		}
 
 		static VClient createClient() {
@@ -94,8 +119,12 @@ public final class TcpTest {
 					//	System.out.println(">>[" + id + "] :" + i);
 					//}
 					final VResponse response = tcpClient.execCommand(new VCommand("ping"));
-					Assert.assertFalse(response.hasError());
-					Assert.assertTrue(response.getResponse().contains("pong"));
+					if (response.hasError()) {
+						sharedExecStatus.addError("response.hasError");
+					}
+					if (!response.getResponse().contains("pong")) {
+						sharedExecStatus.addError("!response.contains(pong)");
+					}
 				}
 			}
 		}
