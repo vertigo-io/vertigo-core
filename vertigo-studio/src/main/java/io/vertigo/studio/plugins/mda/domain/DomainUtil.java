@@ -27,6 +27,7 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -150,7 +151,9 @@ public final class DomainUtil {
 		return list;
 	}
 
-	private static final class DefinitionComparator<D extends Definition> implements Comparator<D> {
+	private static final class DefinitionComparator<D extends Definition> implements Comparator<D>, Serializable {
+		private static final long serialVersionUID = 2382100262536812147L;
+
 		DefinitionComparator() {
 			//rien
 		}

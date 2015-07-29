@@ -31,6 +31,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
 import io.vertigo.util.StringUtil;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -49,6 +50,10 @@ public final class FacetFactory {
 
 	private final CollectionsManager collectionManager;
 
+	/**
+	 * Constructor.
+	 * @param collectionManager Collections Manager
+	 */
 	public FacetFactory(final CollectionsManager collectionManager) {
 		Assertion.checkNotNull(collectionManager);
 		//-----
@@ -178,7 +183,8 @@ public final class FacetFactory {
 		return sortedFacetValues;
 	}
 
-	private static final class FacetComparator<O extends DtObject> implements Comparator<FacetValue> {
+	private static final class FacetComparator<O extends DtObject> implements Comparator<FacetValue>, Serializable {
+		private static final long serialVersionUID = 6149508435834977887L;
 		private final Map<FacetValue, DtList<O>> clusterValues;
 
 		FacetComparator(final Map<FacetValue, DtList<O>> clusterValues) {

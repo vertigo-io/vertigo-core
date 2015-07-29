@@ -36,6 +36,7 @@ import io.vertigo.vega.rest.RestManager;
 import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.metamodel.EndPointDefinition;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -121,7 +122,9 @@ public final class RestManagerImpl implements RestManager {
 		routesRegisterPlugin.registerWsRoute(handlerChain, endPointDefinition);
 	}
 
-	private static final class EndPointComparator implements Comparator<EndPointDefinition> {
+	private static final class EndPointComparator implements Comparator<EndPointDefinition>, Serializable {
+		private static final long serialVersionUID = -3628192753809615711L;
+
 		EndPointComparator() {
 			//rien
 		}

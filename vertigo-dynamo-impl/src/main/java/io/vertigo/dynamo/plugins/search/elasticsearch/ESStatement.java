@@ -41,6 +41,7 @@ import io.vertigo.lang.MessageText;
 import io.vertigo.lang.Option;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -506,7 +507,8 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		return new Facet(facetDefinition, rangeValues);
 	}
 
-	private static final class FacetComparator implements Comparator<FacetValue> {
+	private static final class FacetComparator implements Comparator<FacetValue>, Serializable {
+		private static final long serialVersionUID = 7890908569483553289L;
 		private final Map<FacetValue, Long> facetValues;
 
 		FacetComparator(final Map<FacetValue, Long> facetValues) {
