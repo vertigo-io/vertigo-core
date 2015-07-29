@@ -37,7 +37,7 @@ public class AbstractFilterTest {
 
 		final String uri = "http://localhost:8080/testFilter/myExactMatchTest.html";
 		final boolean result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertEquals(uri + " doesn't match " + pattern.get(), true, result);
+		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
 	}
 
 	@Test
@@ -47,11 +47,11 @@ public class AbstractFilterTest {
 
 		String uri = "http://localhost:8080/testFilter/myNotSeparatedStarMatchTest.html";
 		boolean result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertEquals(uri + " doesn't match " + pattern.get(), true, result);
+		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
 
 		uri = "http://localhost:8080/testFilter/mySeparated/StarMatchTest.html";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertEquals(uri + " match " + pattern.get(), false, result);
+		Assert.assertFalse(uri + " match " + pattern.get(), result);
 	}
 
 	@Test
@@ -61,19 +61,19 @@ public class AbstractFilterTest {
 
 		String uri = "http://localhost:8080/testFilter/firstNotSeparatedStarMatch1Test.html";
 		boolean result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertEquals(uri + " doesn't match " + pattern.get(), true, result);
+		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
 
 		uri = "http://localhost:8080/testFilter/otherNotSeparatedStarMatch2Test.html";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertEquals(uri + " doesn't match " + pattern.get(), true, result);
+		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
 
 		uri = "http://localhost:8080/testFilter/firstNotSeparatedStarMatch2Test.html";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertEquals(uri + " match " + pattern.get(), false, result);
+		Assert.assertFalse(uri + " match " + pattern.get(), result);
 
 		uri = "http://localhost:8080/testFilter/otherNotSeparatedStarMatch1Test.html";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertEquals(uri + " match " + pattern.get(), false, result);
+		Assert.assertFalse(uri + " match " + pattern.get(), result);
 	}
 
 	@Test
@@ -83,19 +83,19 @@ public class AbstractFilterTest {
 
 		String uri = "http://localhost:8080/testFilter/myEndMatchTest.html";
 		boolean result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertEquals(uri + " doesn't match " + pattern.get(), true, result);
+		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
 
 		uri = "http://localhost:8080/testFilter/myEndMatchTest.xhtml";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertEquals(uri + " doesn't match " + pattern.get(), true, result);
+		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
 
 		uri = "http://localhost:8080/testFilter/myEndMatchTest.do";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertEquals(uri + " doesn't match " + pattern.get(), true, result);
+		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
 
 		uri = "http://localhost:8080/testFilter/myEndMatchTest.middle/orOtherpath";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertEquals(uri + " doesn't match " + pattern.get(), true, result);
+		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
 	}
 
 	@Test
@@ -105,23 +105,23 @@ public class AbstractFilterTest {
 
 		String uri = "http://localhost:8080/testFilter/myEndMatchTest.html";
 		boolean result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertEquals(uri + " doesn't match " + pattern.get(), true, result);
+		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
 
 		uri = "http://localhost:8080/testFilter/myEndMatchTest.do";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertEquals(uri + " doesn't match " + pattern.get(), true, result);
+		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
 
 		uri = "http://localhost:8080/testFilter/myPathMatchTest/andTheEnd.html";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertEquals(uri + " doesn't match " + pattern.get(), true, result);
+		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
 
 		uri = "http://localhost:8080/testFilter/myPathMatchTest/otherPath/andAtLast.html";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertEquals(uri + " doesn't match " + pattern.get(), true, result);
+		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
 
 		uri = "http://localhost:8080/testFilter/myPathMatchTestCompleted/andEndIt.html";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertEquals(uri + " match " + pattern.get(), false, result);
+		Assert.assertFalse(uri + " match " + pattern.get(), result);
 
 	}
 
@@ -132,14 +132,14 @@ public class AbstractFilterTest {
 
 		String uri = "http://localhost:8080/testFilter/myPathMatchTest/andTheEnd.html";
 		boolean result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertEquals(uri + " doesn't match " + pattern.get(), true, result);
+		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
 
 		uri = "http://localhost:8080/testFilter/myPathMatchTest/otherPath/andAtLast.html";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertEquals(uri + " doesn't match " + pattern.get(), true, result);
+		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
 
 		uri = "http://localhost:8080/testFilter/myPathMatchTestCompleted/andEndIt.html";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertEquals(uri + " doesn't match " + pattern.get(), true, result);
+		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
 	}
 }

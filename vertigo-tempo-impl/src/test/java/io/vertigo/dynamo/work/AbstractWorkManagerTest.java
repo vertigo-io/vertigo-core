@@ -204,7 +204,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 		final boolean finished = workResultHanlder.waitFinish(workToCreate, timeout);
 		//On estime que la durée max n'excéde pas le workTime + 1000ms
 		//-----
-		Assert.assertEquals("Les works n'ont pas terminés dans les temps, le timeout à " + timeout + "ms s'est déclenché", true, finished);
+		Assert.assertTrue("Les works n'ont pas terminés dans les temps, le timeout à " + timeout + "ms s'est déclenché", finished);
 
 	}
 
@@ -220,7 +220,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 
 		final boolean finished = workResultHanlder.waitFinish(workToCreate, workTime * workToCreate);
 		//-----
-		Assert.assertEquals("Les works n'ont pas terminés dans les temps, le timeout à " + workTime * workToCreate + "ms s'est déclenché", true, finished);
+		Assert.assertTrue("Les works n'ont pas terminés dans les temps, le timeout à " + workTime * workToCreate + "ms s'est déclenché", finished);
 		Assert.assertEquals("ThreadLocal conservé entre deux exécutions ", Integer.valueOf(1), workResultHanlder.getLastResult());
 	}
 
@@ -236,7 +236,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 
 		final boolean finished = workResultHanlder.waitFinish(workToCreate, 50 * workTime * workToCreate);
 		//-----
-		Assert.assertEquals("Les works n'ont pas terminés dans les temps, le timeout à " + workTime * workToCreate + "ms s'est déclanché", true, finished);
+		Assert.assertTrue("Les works n'ont pas terminés dans les temps, le timeout à " + workTime * workToCreate + "ms s'est déclanché", finished);
 		Assert.assertEquals("ThreadLocal conservé entre deux exécutions ", Integer.valueOf(1), workResultHanlder.getLastResult());
 	}
 
