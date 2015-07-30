@@ -184,6 +184,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public final DynamicDefinitionBuilder addPropertyValue(final EntityProperty property, final Object value) {
 		property.getPrimitiveType().checkValue(value);
@@ -203,6 +204,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return list;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public final DynamicDefinitionBuilder addChildDefinition(final String fieldName, final DynamicDefinition definition) {
 		Assertion.checkNotNull(definition);
@@ -217,6 +219,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		obtainDefinitionKeys(fieldName).add(definitionKey);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public final DynamicDefinitionBuilder addDefinitions(final String fieldName, final List<DynamicDefinitionKey> definitionKeys) {
 		Assertion.checkNotNull(definitionKeys);
@@ -241,6 +244,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return list;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	//Cas des alter
 			public final
@@ -264,6 +268,7 @@ final class DynamicDefinitionImpl implements DynamicDefinitionBuilder, DynamicDe
 		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public DynamicDefinitionBuilder addDefinition(final String fieldName, final DynamicDefinitionKey definitionKey) {
 		// On vérifie que la liste est vide pour éviter les syntaxe avec multi
