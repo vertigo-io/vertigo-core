@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 public final class DtListPatternFilterUtil {
 	private static final String DATE_PATTERN = "dd/MM/yy";
 
-	public static enum FilterPattern {
+	public enum FilterPattern {
 		/** range. */
 		Range("([A-Z_0-9]+):([\\[\\]])(.*) TO (.*)([\\[\\]])"),
 		/** term. */

@@ -1,6 +1,6 @@
 <#macro generateHeader taskDefinitions>
 	/** Liste des taches. */
-	private static enum Tasks {
+	private enum Tasks {
 <#list taskDefinitions as taskDefinition>
 		/** Tache ${taskDefinition.urn} */
 		${taskDefinition.urn},

@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  * @author pchretien
  */
 public final class App implements AutoCloseable {
-	private static enum State {
+	private enum State {
 		/** Composants en cours de démarrage*/
 		starting,
 		/** Composants configurés et démarrés*/

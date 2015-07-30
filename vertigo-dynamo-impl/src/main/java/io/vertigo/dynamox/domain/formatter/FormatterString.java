@@ -41,7 +41,7 @@ public final class FormatterString implements Formatter {
 	 * Concernant le trim à gauche, il est possible de s'en passer
 	 * il convient alors de créer un formatter ad hoc.
 	 */
-	public static enum Mode {
+	public enum Mode {
 		/**
 		 * Aucun formattage.
 		 */

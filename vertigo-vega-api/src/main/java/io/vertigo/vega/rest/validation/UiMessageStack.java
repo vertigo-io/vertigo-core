@@ -50,7 +50,7 @@ public final class UiMessageStack {
 	 * Niveau du message.
 	 * @author npiedeloup
 	 */
-	public static enum Level {
+	public enum Level {
 		/** Erreur. */
 		ERROR,
 		/** Warning. */

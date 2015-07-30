@@ -53,7 +53,7 @@ public final class TwoTablesDbFileStorePlugin implements FileStorePlugin {
 	 * Liste des champs du Dto de stockage.
 	 * Ces champs sont obligatoire sur les Dt associés aux fileInfoDefinitions
 	 */
-	private static enum DtoFields {
+	private enum DtoFields {
 		FILE_NAME, MIME_TYPE, LAST_MODIFIED, LENGTH, FILE_DATA, FMD_ID, FDT_ID
 	}
 

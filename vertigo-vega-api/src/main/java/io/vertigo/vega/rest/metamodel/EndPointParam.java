@@ -55,11 +55,11 @@ public final class EndPointParam {
 	/**
 	 * Parameter's source types.
 	 */
-	public static enum RestParamType {
+	public enum RestParamType {
 		Query, Path, Header, Body, InnerBody, Implicit
 	}
 
-	public static enum ImplicitParam {
+	public enum ImplicitParam {
 		UiMessageStack(UiMessageStack.class),
 		//UiListState(UiListState.class),
 		Request(HttpServletRequest.class),

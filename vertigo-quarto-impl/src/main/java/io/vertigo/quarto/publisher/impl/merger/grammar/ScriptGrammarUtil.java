@@ -35,7 +35,7 @@ public final class ScriptGrammarUtil {
 	/*
 	 * Mots clés de la grammaire de base.
 	 */
-	private static enum Keyword {
+	private enum Keyword {
 		/**
 		 * FIELD.
 		 */
