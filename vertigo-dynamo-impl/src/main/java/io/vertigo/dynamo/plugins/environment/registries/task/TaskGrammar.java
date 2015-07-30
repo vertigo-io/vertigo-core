@@ -29,12 +29,12 @@ import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
  */
 final class TaskGrammar {
 	/** Attribute name. */
-	static final String TASK_ATTRIBUTE = "attribute";
+	public static final String TASK_ATTRIBUTE = "attribute";
 
 	/**Définition d'un attribut de tache.*/
-	static final Entity TASK_ATTRIBUTE_DEFINITION_ENTITY;
+	private static final Entity TASK_ATTRIBUTE_DEFINITION_ENTITY;
 	/**Définition de tache.*/
-	static final Entity TASK_DEFINITION_ENTITY;
+	public static final Entity TASK_DEFINITION_ENTITY;
 	/** Task Grammar instance. */
 	public static final Grammar GRAMMAR;
 

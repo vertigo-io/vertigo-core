@@ -31,16 +31,25 @@ import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
  */
 final class SearchGrammar {
 
-	static final Entity INDEX_DEFINITION_ENTITY;
-	static final EntityProperty SEARCH_LOADER_PROPERTY = new EntityProperty("LOADER_ID", EntityPropertyType.String);
-	static final EntityProperty LIST_FILTER_BUILDER_CLASS = new EntityProperty("LIST_FILTER_BUILDER_CLASS", EntityPropertyType.String);
-	static final EntityProperty LIST_FILTER_BUILDER_QUERY = new EntityProperty("LIST_FILTER_BUILDER_QUERY", EntityPropertyType.String);
+	/** Index definition. */
+	public static final Entity INDEX_DEFINITION_ENTITY;
+	/** Search loader id. */
+	public static final EntityProperty SEARCH_LOADER_PROPERTY = new EntityProperty("LOADER_ID", EntityPropertyType.String);
+	/** List filter class. */
+	public static final EntityProperty LIST_FILTER_BUILDER_CLASS = new EntityProperty("LIST_FILTER_BUILDER_CLASS", EntityPropertyType.String);
+	/** List filter query. */
+	public static final EntityProperty LIST_FILTER_BUILDER_QUERY = new EntityProperty("LIST_FILTER_BUILDER_QUERY", EntityPropertyType.String);
 
-	static final EntityProperty FIELD_NAME = new EntityProperty("FIELD_NAME", EntityPropertyType.String);
-	static final Entity FACET_DEFINITION_ENTITY;
-	static final Entity FACET_RANGE_ENTITY;
-	static final EntityProperty RANGE_FILTER_PROPERTY = new EntityProperty("FILTER", EntityPropertyType.String);
-	static final Entity FACETED_QUERY_DEFINITION_ENTITY;
+	/** Fieldname. */
+	public static final EntityProperty FIELD_NAME = new EntityProperty("FIELD_NAME", EntityPropertyType.String);
+	/** Facet definition. */
+	public static final Entity FACET_DEFINITION_ENTITY;
+	/** Facet range. */
+	private static final Entity FACET_RANGE_ENTITY;
+	/** Range filter. */
+	public static final EntityProperty RANGE_FILTER_PROPERTY = new EntityProperty("FILTER", EntityPropertyType.String);
+	/** Faceted query definition. */
+	public static final Entity FACETED_QUERY_DEFINITION_ENTITY;
 
 	/** Search Grammar instance. */
 	public static final Grammar GRAMMAR;
