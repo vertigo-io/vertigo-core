@@ -7,7 +7,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.lang.Assertion;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 /**
@@ -54,7 +54,7 @@ final class SerializableDtDefinition implements Serializable {
 
 	private static Map<DataType, Domain> createDomainMap() {
 		final DataType[] dataTypes = DataType.values();
-		final Map<DataType, Domain> map = new HashMap<>(dataTypes.length);
+		final Map<DataType, Domain> map = new EnumMap<>(DataType.class);
 		//Initialisation de la map.
 		for (final DataType dataType : dataTypes) {
 			final Domain domain = new Domain("DO_DYN", dataType);

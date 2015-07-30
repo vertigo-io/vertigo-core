@@ -39,7 +39,7 @@ import org.apache.log4j.Logger;
  */
 public abstract class AbstractSqlConnectionProviderPlugin implements SqlConnectionProviderPlugin, Describable {
 
-	protected Logger log = Logger.getLogger(this.getClass());
+	private static final Logger LOG = Logger.getLogger(AbstractSqlConnectionProviderPlugin.class);
 
 	/**
 	* Base de données utilisée
@@ -90,7 +90,7 @@ public abstract class AbstractSqlConnectionProviderPlugin implements SqlConnecti
 			}
 
 		} catch (final Exception e) {
-			log.warn("Can't get database infos", e);
+			LOG.warn("Can't get database infos", e);
 		}
 		return componentInfos;
 	}

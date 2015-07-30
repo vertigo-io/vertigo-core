@@ -34,21 +34,21 @@ final class SerializableDtField implements Serializable {
 	/**
 	 * @return Name
 	 */
-	final String getName() {
+	String getName() {
 		return name;
 	}
 
 	/**
 	 *  @return Label
 	 */
-	final String getLabel() {
+	String getLabel() {
 		return label;
 	}
 
 	/**
 	 * @return Datatype
 	 */
-	final DataType getDataType() {
+	DataType getDataType() {
 		return dataType;
 	}
 }

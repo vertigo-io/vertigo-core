@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
  * @author pchretien
  */
 public final class VServer implements Runnable/*, VEventListener */{
-	private static Logger LOG = Logger.getLogger(VServer.class);
+	private static final Logger LOG = Logger.getLogger(VServer.class);
 	private final int port;
 	private final VCommandHandler commandHandler;
 	private final VProtocol protocol = new VProtocol();

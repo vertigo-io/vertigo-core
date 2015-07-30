@@ -38,7 +38,7 @@ import org.apache.log4j.Logger;
  */
 public final class ExportUtil {
 
-	private static Logger LOGGER = Logger.getLogger(ExportUtil.class);
+	private static final Logger LOGGER = Logger.getLogger(ExportUtil.class);
 
 	private ExportUtil() {
 		//private constructor
