@@ -9,7 +9,7 @@ import java.util.List;
 import io.vertigo.core.Home;
 </#if>
 <#if dao.hasSearchBehavior()>
-import io.vertigo.core.di.injector.Injector;
+import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchQuery;
