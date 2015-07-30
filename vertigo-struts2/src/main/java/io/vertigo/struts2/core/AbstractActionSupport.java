@@ -259,7 +259,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 			response.setCharacterEncoding("UTF-8");
 			return new AjaxResponseBuilder(response.getWriter(), false);
 		} catch (final IOException e) {
-			throw new RuntimeException("Impossible de récupérer la response.");
+			throw new RuntimeException("Impossible de récupérer la response.", e);
 		}
 	}
 

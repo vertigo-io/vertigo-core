@@ -255,7 +255,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin, Describable {
 			bodyFile.setFileName(vFile.getFileName());
 			return bodyFile;
 		} catch (final IOException e) {
-			throw new RuntimeException("Erreur de lecture des pieces jointes");
+			throw new RuntimeException("Erreur de lecture des pieces jointes", e);
 		}
 	}
 
