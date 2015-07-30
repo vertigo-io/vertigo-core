@@ -31,6 +31,7 @@ final class FileGrammar {
 	/**Définition de tache.*/
 	public static final Entity FILE_INFO_DEFINITION_ENTITY;
 
+	/** File Grammar instance. */
 	public static final Grammar GRAMMAR;
 
 	static {
@@ -38,5 +39,9 @@ final class FileGrammar {
 				.addProperty(KspProperty.ROOT, true)
 				.build();
 		GRAMMAR = new Grammar(FILE_INFO_DEFINITION_ENTITY);
+	}
+
+	private FileGrammar() {
+		//private
 	}
 }

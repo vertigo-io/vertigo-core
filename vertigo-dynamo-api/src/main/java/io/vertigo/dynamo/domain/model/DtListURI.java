@@ -108,6 +108,14 @@ public abstract class DtListURI implements Serializable {
 		private static final char D2A_SEPARATOR = '@';
 		private static final String CRITERIA_PREFIX = "CRITERIA";
 
+		private DtListURICodec() {
+			//private
+		}
+
+		/**
+		 * @param uri Uri to encode
+		 * @return Urn
+		 */
 		static String writeURN(final DtListURI uri) {
 			if (uri instanceof DtListURIForNNAssociation) {
 				return writeDtListURNForNNAssociation(DtListURIForNNAssociation.class.cast(uri));

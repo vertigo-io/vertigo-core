@@ -20,14 +20,14 @@ package io.vertigoimpl.engines.elastica.redis;
 
 import java.io.Serializable;
 
+/**
+ * @author pchretien
+ */
 final class Util {
-	//	private static final Gson gson = new GsonBuilder().create();
 
-	//private static final CodecManager codecManager = new CodecManagerImpl();
-
-	//	static ZMethod decode(final String encoded) {
-	//		return codecManager.getSerializationCodec().decode(codecManager.getBase64Codec().decode(encoded));
-	//	}
+	private Util() {
+		//private
+	}
 
 	static ZMethod decodeMethod(final String method) {
 		return (ZMethod) doDecode(method);

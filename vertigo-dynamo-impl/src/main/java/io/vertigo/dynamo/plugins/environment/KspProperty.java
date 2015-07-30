@@ -26,7 +26,7 @@ import io.vertigo.core.impl.environment.kernel.meta.EntityPropertyType;
  *
  * @author  pchretien
  */
-public class KspProperty {
+public final class KspProperty {
 	/**
 	 * Nom de la classe java implémentant un concept tel que formatter, constraint...
 	 */
@@ -209,4 +209,8 @@ public class KspProperty {
 	 * Propriété standard : Type de l'index. (SOLR par exemple)
 	 */
 	public static final EntityProperty INDEX_TYPE = new EntityProperty("INDEX_TYPE", EntityPropertyType.String);
+
+	private KspProperty() {
+		//private
+	}
 }

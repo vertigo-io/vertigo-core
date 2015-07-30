@@ -31,23 +31,19 @@ import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
  */
 final class SearchGrammar {
 
-	public static final Entity INDEX_DEFINITION_ENTITY;
+	static final Entity INDEX_DEFINITION_ENTITY;
+	static final EntityProperty SEARCH_LOADER_PROPERTY = new EntityProperty("LOADER_ID", EntityPropertyType.String);
+	static final EntityProperty LIST_FILTER_BUILDER_CLASS = new EntityProperty("LIST_FILTER_BUILDER_CLASS", EntityPropertyType.String);
+	static final EntityProperty LIST_FILTER_BUILDER_QUERY = new EntityProperty("LIST_FILTER_BUILDER_QUERY", EntityPropertyType.String);
 
-	public static final EntityProperty SEARCH_LOADER_PROPERTY = new EntityProperty("LOADER_ID", EntityPropertyType.String);
+	static final EntityProperty FIELD_NAME = new EntityProperty("FIELD_NAME", EntityPropertyType.String);
+	static final Entity FACET_DEFINITION_ENTITY;
+	static final Entity FACET_RANGE_ENTITY;
+	static final EntityProperty RANGE_FILTER_PROPERTY = new EntityProperty("FILTER", EntityPropertyType.String);
+	static final Entity FACETED_QUERY_DEFINITION_ENTITY;
 
-	public static final EntityProperty FIELD_NAME = new EntityProperty("FIELD_NAME", EntityPropertyType.String);
-
+	/** Search Grammar instance. */
 	public static final Grammar GRAMMAR;
-
-	public static final Entity FACET_DEFINITION_ENTITY;
-
-	public static final Entity FACET_RANGE_ENTITY;
-	public static final EntityProperty RANGE_FILTER_PROPERTY = new EntityProperty("FILTER", EntityPropertyType.String);
-
-	public static final Entity FACETED_QUERY_DEFINITION_ENTITY;
-	public static final EntityProperty LIST_FILTER_BUILDER_CLASS = new EntityProperty("LIST_FILTER_BUILDER_CLASS", EntityPropertyType.String);
-
-	public static final EntityProperty LIST_FILTER_BUILDER_QUERY = new EntityProperty("LIST_FILTER_BUILDER_QUERY", EntityPropertyType.String);
 
 	/*
 	 * create IndexDefinition IDX_TEST {
@@ -104,4 +100,7 @@ final class SearchGrammar {
 		GRAMMAR = new Grammar(INDEX_DEFINITION_ENTITY, FACET_DEFINITION_ENTITY, FACETED_QUERY_DEFINITION_ENTITY);
 	}
 
+	private SearchGrammar() {
+		//private
+	}
 }

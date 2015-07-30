@@ -31,6 +31,9 @@ import spark.Response;
 import spark.Route;
 
 public final class Hub {
+	private Hub() {
+		//private
+	}
 
 	public static void main(final String[] args) {
 		final VConsoleHandler consoleHandler = new VConsoleHandler();

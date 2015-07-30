@@ -40,6 +40,10 @@ public final class UiUtil implements Serializable {
 	private static final long serialVersionUID = -5677843485950859547L;
 	private static final Formatter DEFAULT_FORMATTER = new FormatterDefault(null);//by convention : no args
 
+	private UiUtil() {
+		//private
+	}
+
 	/**
 	 * @param uiObject Object du context
 	 * @return Nom de l'object dans le context
@@ -51,9 +55,10 @@ public final class UiUtil implements Serializable {
 	}
 
 	/**
-	* @param uiObject Object du context
-	* @return index de l'objet dans sa liste
-	*/
+	 * @param uiList List du context
+	 * @param uiObject Objet de la liste
+	 * @return index de l'objet dans sa liste
+	 */
 	public static final int indexOf(final List<?> uiList, final UiObject<?> uiObject) {
 		return uiList.indexOf(uiObject);
 	}

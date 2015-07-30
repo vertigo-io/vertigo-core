@@ -53,7 +53,8 @@ final class PublisherGrammar {
 	/**Définition des champs typés.*/
 	private static final Entity publisherDataFieldDefinition;
 
-	static final Grammar grammar;
+	/** Publisher Grammar instance. */
+	public static final Grammar GRAMMAR;
 	/**
 	 * Initialisation des métadonnées permettant de décrire le métamodèle de Dynamo.
 	 */
@@ -80,7 +81,7 @@ final class PublisherGrammar {
 				.addAttribute("root", publisherNodeDefinition, true)//
 				.build();
 		//-----
-		grammar = new Grammar(publisherDefinition, //
+		GRAMMAR = new Grammar(publisherDefinition, //
 				publisherNodeDefinition, //
 				publisherFieldDefinition, //
 				publisherDataFieldDefinition);

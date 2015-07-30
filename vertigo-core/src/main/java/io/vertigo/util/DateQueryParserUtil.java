@@ -49,6 +49,10 @@ final class DateQueryParserUtil {
 	private static final Pattern PATTERN = Pattern.compile("([0-9]{1,})([y,M, w,d,h,m,s]{1})");
 	private static final String NOW = "now";
 
+	private DateQueryParserUtil() {
+		//private
+	}
+
 	private static Map<String, Integer> createCalendarUnits() {
 		final Map<String, Integer> units = new HashMap<>(5);
 		units.put("y", Calendar.YEAR);

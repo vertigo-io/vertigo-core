@@ -13,7 +13,14 @@ import io.vertigo.util.MapBuilder;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
+/**
+ * @author pchretien
+ */
 final class CommandScannerUtil {
+
+	private CommandScannerUtil() {
+		//private
+	}
 
 	static void scan(final MapBuilder<String, VCommandExecutor> mapBuilder, final String componentId, final Object component) {
 		Assertion.checkNotNull(mapBuilder);

@@ -29,4 +29,7 @@ final class FacetGrammar {
 	 */
 	public static final Grammar GRAMMAR = new Grammar();
 
+	private FacetGrammar() {
+		//private
+	}
 }

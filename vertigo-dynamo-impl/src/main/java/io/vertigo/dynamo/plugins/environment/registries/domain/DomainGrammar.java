@@ -72,6 +72,7 @@ public final class DomainGrammar {
 	/**Définition d'une association NN.*/
 	public static final Entity ASSOCIATION_NN_ENTITY;
 
+	/** Domain Grammar instance. */
 	public static final Grammar GRAMMAR;
 
 	static {
@@ -160,5 +161,9 @@ public final class DomainGrammar {
 				ASSOCIATION_ENTITY,
 				ASSOCIATION_NN_ENTITY
 				);
+	}
+
+	private DomainGrammar() {
+		//private
 	}
 }

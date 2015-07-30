@@ -44,6 +44,14 @@ public final class JsonUtil {
 
 	private static final Gson gson = createGson();
 
+	private JsonUtil() {
+		//private
+	}
+
+	/**
+	 * @param data Object to encode
+	 * @return Json string
+	 */
 	public static String toJson(final Object data) {
 		return gson.toJson(data);
 	}
