@@ -86,17 +86,12 @@ public final class CompressionCodec implements Codec<byte[], byte[]>, Describabl
 		}
 		final byte[] newCompressedObject = new byte[compressedSize + COMPRESS_KEY.length + 4];
 		System.arraycopy(COMPRESS_KEY, 0, newCompressedObject, 0, COMPRESS_KEY.length);
-		newCompressedObject[COMPRESS_KEY.length] = (byte) (nonCompressedLength >>> 24 & 0xFF);
-		newCompressedObject[COMPRESS_KEY.length + 1] = (byte) (nonCompressedLength >>> 16 & 0xFF);
-		newCompressedObject[COMPRESS_KEY.length + 2] = (byte) (nonCompressedLength >>> 8 & 0xFF);
+		newCompressedObject[COMPRESS_KEY.length] = (byte) ((nonCompressedLength >>> 24) & 0xFF);
+		newCompressedObject[COMPRESS_KEY.length + 1] = (byte) ((nonCompressedLength >>> 16) & 0xFF);
+		newCompressedObject[COMPRESS_KEY.length + 2] = (byte) ((nonCompressedLength >>> 8) & 0xFF);
 		newCompressedObject[COMPRESS_KEY.length + 3] = (byte) (nonCompressedLength & 0xFF);
 
 		System.arraycopy(compressedObject, 0, newCompressedObject, COMPRESS_KEY.length + 4, compressedSize);
-		//        if (Logger.getRootLogger().isTraceEnabled()) {
-		//            Logger.getRootLogger().trace(
-		//                    "Compress notification de " + nonCompressedLength + " octets à " + newCompressedObject.length + " octets ("
-		//                    + (((newCompressedObject.length * 10000) / nonCompressedLength) / 100d) + "%) en " + (System.currentTimeMillis() - time) + " ms");
-		//        }
 		return newCompressedObject;
 	}
 

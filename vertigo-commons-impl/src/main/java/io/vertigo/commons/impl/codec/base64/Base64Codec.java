@@ -100,11 +100,11 @@ public final class Base64Codec implements Codec<byte[], String> {
 			for (int j = 0; j < BASE64_ENCODED_BLOCK_LEN; j++) {
 				b[j] = DECODE_TABLE[coded.charAt(i + j)];
 			}
-			res[pos] = (byte) ((b[OFFSET_0] << SHIFT_1BIT | b[OFFSET_1] >> SHIFT_2BIT) & 0xFF);
+			res[pos] = (byte) (((b[OFFSET_0] << SHIFT_1BIT) | (b[OFFSET_1] >> SHIFT_2BIT)) & 0xFF);
 			if (pos < len1) {
-				res[pos + OFFSET_1] = (byte) ((b[OFFSET_1] << SHIFT_2BIT | b[OFFSET_2] >> SHIFT_1BIT) & 0xFF);
+				res[pos + OFFSET_1] = (byte) (((b[OFFSET_1] << SHIFT_2BIT) | (b[OFFSET_2] >> SHIFT_1BIT)) & 0xFF);
 				if (pos < len2) {
-					res[pos + OFFSET_2] = (byte) ((b[OFFSET_2] << SHIFT_3BIT | b[OFFSET_3]) & 0xFF);
+					res[pos + OFFSET_2] = (byte) (((b[OFFSET_2] << SHIFT_3BIT) | b[OFFSET_3]) & 0xFF);
 				}
 			}
 			pos += BASE64_DECODED_BLOCK_LEN;
@@ -125,11 +125,11 @@ public final class Base64Codec implements Codec<byte[], String> {
 		final int[] e = new int[BASE64_DECODED_BLOCK_LEN];
 		for (int i = 0; i < len; i += BASE64_DECODED_BLOCK_LEN) {
 			e[OFFSET_0] = raw[i] & 0xFF;
-			e[OFFSET_1] = (i + OFFSET_1 < len ? raw[i + OFFSET_1] : 0) & 0xFF;
-			e[OFFSET_2] = (i + OFFSET_2 < len ? raw[i + OFFSET_2] : 0) & 0xFF;
+			e[OFFSET_1] = ((i + OFFSET_1 < len) ? raw[i + OFFSET_1] : 0) & 0xFF;
+			e[OFFSET_2] = ((i + OFFSET_2 < len) ? raw[i + OFFSET_2] : 0) & 0xFF;
 			res.append(ENCODE_TABLE[e[OFFSET_0] >> SHIFT_1BIT]);
-			res.append(ENCODE_TABLE[(e[OFFSET_0] << SHIFT_2BIT | e[OFFSET_1] >> SHIFT_2BIT) & 0x3F]);
-			res.append(i + OFFSET_1 < len ? ENCODE_TABLE[(e[OFFSET_1] << SHIFT_1BIT | e[OFFSET_2] >> SHIFT_3BIT) & 0x3F] : PADDING);
+			res.append(ENCODE_TABLE[((e[OFFSET_0] << SHIFT_2BIT) | (e[OFFSET_1] >> SHIFT_2BIT)) & 0x3F]);
+			res.append(i + OFFSET_1 < len ? ENCODE_TABLE[((e[OFFSET_1] << SHIFT_1BIT) | (e[OFFSET_2] >> SHIFT_3BIT)) & 0x3F] : PADDING);
 			res.append(i + OFFSET_2 < len ? ENCODE_TABLE[e[OFFSET_2] & 0x3F] : PADDING);
 		}
 		return res.toString();
