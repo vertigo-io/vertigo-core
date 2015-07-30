@@ -73,7 +73,6 @@ public final class CompressionCodec implements Codec<byte[], byte[]>, Describabl
 			return unCompressedObject;
 		}
 
-		//long time = System.currentTimeMillis();
 		final int nonCompressedLength = unCompressedObject.length;
 		final byte[] compressedObject = new byte[nonCompressedLength + 8];
 		final int compressedSize;
