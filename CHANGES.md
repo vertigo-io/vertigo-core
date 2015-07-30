@@ -1,10 +1,32 @@
 Version history
 ===============
 
-Running 0.8.1-SNAPSHOT
+Running 0.8.2-SNAPSHOT
 ----------------------
 more to come :)
 
+Running 0.8.1 - 2015/07/31
+----------------------
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide)
+* [All] Lots of code cleaning and refactoring
+* [Core] Renamed io.vertigo.core.Home.App to io.vertigo.core.App
+* [Core] Renamed io.vertigo.core.boot to io.vertigo.core.config
+* [Core] Renamed io.vertigo.core.di to io.vertigo.core.component.di
+* [Core] Refactor XMLAppConfigBuilder 
+* [Core] Refactor modules order/priority in managers.xml. Loading order are more predictible now : 
+ 1. boot module
+ 2. definitions
+ 3. other components module per module (as before)
+* [Core] Moved LocalManager and ResourceManager from commons to core.
+* [Core] Moved EnvironmentManager from dynamo to core
+* [Dynamo] Fixed search case/accent sensitive while using wildcard
+* [Dynamo] Fixed search securityFilter
+* [Dynamo] Add default value to DefaultListFilterBuilder
+* [Dynamo] return Future<Long> on reindexAll to allow join on reindex
+* [Dynamo] CSVExporter should kept empty value as empty
+* [Dynamo] Renamed ESSearchServicePlugin to ESNodeSearchServicePlugin
+* [Dynamo] Fixed store object without index
+* [Studio] Fix JS templates style, to fit with ESLint
 
 Release 0.8.0 - 2015/07/02
 ----------------------
