@@ -7,7 +7,7 @@ more to come :)
 
 Running 0.8.1 - 2015/07/31
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide)
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-080-to-081)
 * [All] Lots of code cleaning and refactoring
 * [Core] Renamed io.vertigo.core.Home.App to io.vertigo.core.App
 * [Core] Renamed io.vertigo.core.boot to io.vertigo.core.config
@@ -30,7 +30,7 @@ Running 0.8.1 - 2015/07/31
 
 Release 0.8.0 - 2015/07/02
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide)
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-075-to-080)
 * [All] Fixed some code style and some refactor to simpler code
 * [All] Renamed prefix in Builder with ==> add
 * [Core] split BootConfig from AppConfig
@@ -80,7 +80,7 @@ Release 0.7.5a - 2015/03/23
 
 Release 0.7.5 - 2015/03/20
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide)
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-074-to-075)
 * [Core] Renamed KTransaction to VTransaction
 * [Dynamo] Renamed KSecurityManager to VSecurityManager
 * [Dynamo] Renamed KFile to VFile
@@ -95,7 +95,7 @@ Release 0.7.5 - 2015/03/20
 
 Release 0.7.4 - 2015/03/12
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide)
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-073-to-074)
 * [All] Fixed some code style
 * [All] Removed some deprecated : PersistenceManager.getBrokerConfiguration, PersistenceManager.getMasterDataConfiguration, UiMessageStack.hasErrorOnField, UiRequestUtil.getHttpServletRequest, UiRequestUtil.getHttpSession
 * [Core] Aspects Order preserved
@@ -130,7 +130,7 @@ Release 0.7.4 - 2015/03/12
 
 Release 0.7.3 - 2015/02/02
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide)
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-072-to-073)
 * [All] Refactored tests to made them more autonomous
 * [All] Fixed some code style
 * [All] Cleaned some dependencies
@@ -175,6 +175,7 @@ Release 0.7.2 - 2014/12/16
 
 Release 0.7.1 - 2014/12/09
 ----------------------
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-070-to-071)
 * [Studio] Refactored : DomainGeneratorPlugin splited into more Plugins usages dependents (look at SqlGeneratorPlugin and JSGeneratorPlugin)
 * [Studio] Fixed sql.ftl
 * [Vega] UiListState in query instead of body
@@ -189,6 +190,7 @@ Release 0.7.1 - 2014/12/09
 
 Release 0.7.0 - 2014/11/25
 ----------------------
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-06x-to-070)
 A big version :)
 * [All] Lots of code style fixes, tests units coverage, cleaning and refactoring
 * [Core] Managers.xml syntax changed : Renamed &lt;modules&gt; to &lt;config&gt; (tag module doesn't change)
