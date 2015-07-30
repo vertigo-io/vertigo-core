@@ -39,7 +39,7 @@ public final class ServletResourceResolverPlugin implements ResourceResolverPlug
 	/**
 	 * @param servletContext ServletContext
 	 */
-	public static void setServletContext(final ServletContext servletContext) {
+	public static synchronized void setServletContext(final ServletContext servletContext) {
 		Assertion.checkNotNull(servletContext);
 		//-----
 		servletContextRef = new WeakReference<>(servletContext);
