@@ -46,7 +46,7 @@ public final class PublisherDynamicRegistryPlugin extends AbstractDynamicRegistr
 	 * Constructeur.
 	 */
 	public PublisherDynamicRegistryPlugin() {
-		super(PublisherGrammar.grammar);
+		super(PublisherGrammar.GRAMMAR);
 	}
 
 	/** {@inheritDoc} */

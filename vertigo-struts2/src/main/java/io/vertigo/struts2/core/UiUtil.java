@@ -40,8 +40,12 @@ public final class UiUtil implements Serializable {
 	private static final long serialVersionUID = -5677843485950859547L;
 	private static final Formatter DEFAULT_FORMATTER = new FormatterDefault(null);//by convention : no args
 
-	private UiUtil() {
-		//private
+	/**
+	 * Constructor.
+	 */
+	//can't be private, because an instance must be put into struts context, for access from tags.
+	UiUtil() {
+		//empty
 	}
 
 	/**
