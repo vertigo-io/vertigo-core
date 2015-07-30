@@ -88,7 +88,7 @@ public final class VServer implements Runnable/*, VEventListener */{
 				}
 			}
 		} catch (final IOException e) {
-			LOG.error(e);
+			LOG.error("VServer", e);
 		}
 	}
 

@@ -169,13 +169,12 @@ public abstract class AbstractTestCaseJU4 {
 
 	/**
 	 * Configuration des tests.
+	 * @return App config
 	 */
 	protected AppConfig buildAppConfig() {
-
 		//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
-		final XMLAppConfigBuilder xmlAppConfigBuilder = new XMLAppConfigBuilder()
-				.withModules(getClass(), new Properties(), getManagersXmlFileName());
-		xmlAppConfigBuilder.beginBoot().silently();
-		return xmlAppConfigBuilder.build();
+		return new XMLAppConfigBuilder()
+				.withModules(getClass(), new Properties(), getManagersXmlFileName())
+				.beginBoot().silently().endBoot().build();
 	}
 }
